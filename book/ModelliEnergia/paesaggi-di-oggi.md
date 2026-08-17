@@ -407,3 +407,13 @@ una profezia.
   discute per quello che è.
 ```
 `````
+
+L'energia, più che un modello, è una lente, ed è come lente che conviene
+tenerla: un punteggio di compatibilità fra due cose, basso quando stanno bene
+insieme, e nessun obbligo di trasformarlo in una probabilità. Resta però in
+sospeso la domanda che questo capitolo ha incontrato a ogni pagina, da dove
+arrivano gli esempi che tengono alto il resto del paesaggio.
+«Auto-supervisione» la prende dall'altro capo e chiede da dove venga il segnale
+di addestramento quando nessuno ha etichettato niente, che è poi la domanda da
+cui dipende se un modello del genere impara qualcosa o impara a rispondere
+sempre la stessa cosa.

@@ -192,8 +192,8 @@ in pratica si minimizzi la cross-entropia e non la KL. Le due quantità
 differiscono per una sola cosa, la sorpresa media della realtà $p$, che
 dipende dai dati e non da chi li prevede: è la stessa qualunque modello si
 usi. Spingere in basso l'una o l'altra porta quindi esattamente allo stesso
-modello, e la cross-entropia ha il vantaggio di potersi calcolare **anche senza
-conoscere $p$**.
+modello, e la cross-entropia ha il vantaggio di potersi **stimare dai soli
+esempi**, senza mai scrivere $p$.
 
 A prima vista sembra impossibile, visto che nella definizione la $p$ c'è. Il
 punto è che non serve la tabella completa delle probabilità vere: bastano gli
@@ -386,7 +386,7 @@ sono poche. Per una sorgente con memoria il limite vero è più basso, ed è la
 sorpresa media di ogni lettera **dato tutto ciò che la precede**.
 
 La differenza si tocca con mano, e si può rifare a casa: prendendo i file di
-testo con cui questo libro è scritto (una ventina di megabyte) e contando
+testo con cui questo libro è scritto (sei megabyte abbondanti) e contando
 soltanto quanto è frequente ciascun carattere, la sorpresa media viene circa
 $4{,}7$ bit a carattere. Poi si passa il tutto a `gzip`, che è il compressore
 più ordinario che ci sia, e il file esce a circa $2{,}9$ bit a carattere, cioè

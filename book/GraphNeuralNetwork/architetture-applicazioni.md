@@ -865,7 +865,9 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
 - Un **Graph Transformer** sostituisce l'aggregazione sui vicini con
   l'attenzione su tutte le coppie: ogni nodo raggiunge ogni altro in un passo
   (fine dell'over-squashing, **non** dell'oversmoothing, che sul grafo completo
-  peggiora perché lì $\lambda_2 = 0$), al costo di $O(N^2)$ e della perdita
+  peggiora perché lì il **secondo autovalore di $\hat{\mathbf{A}}$** vale zero,
+  contro lo $0{,}729$ della catena a quattro nodi), al costo di $O(N^2)$ e
+  della perdita
   della topologia, perché l'attenzione piena non prende $\mathbf{A}$ in ingresso. La
   struttura si reinietta come **codifica posizionale** con i primi autovettori
   del laplaciano, sommati alle feature dopo una proiezione lineare e solo allo
@@ -880,3 +882,10 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
 ```
 
 `````
+
+Il grafo, da qui in avanti, non è più un caso particolare, è una lente. Ogni
+volta che i dati sono fatti di cose collegate ad altre cose, la domanda «che
+cosa dicono di questo nodo i suoi vicini?» è già mezza risposta. Il capitolo
+sui sistemi di raccomandazione lavora sul grafo più quotidiano che ci sia,
+quello di chi ha guardato che cosa, e su un compito che ormai sai riconoscere,
+dire quali collegamenti mancano.

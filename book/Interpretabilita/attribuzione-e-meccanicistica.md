@@ -1013,3 +1013,10 @@ volevamo poter vedere.
 ```
 
 `````
+
+Una spiegazione convincente non è per questo vera, ed è la cosa più scomoda di
+questo capitolo: una spiegazione va messa alla prova esattamente come si mette
+alla prova un modello. Nel capitolo sull'AI responsabile la stessa pretesa si
+sposta sulle conseguenze, perché quando un sistema decide di una persona sapere
+che cosa guarda non basta, bisogna stabilire se sia giusto e chi risponde
+quando sbaglia.

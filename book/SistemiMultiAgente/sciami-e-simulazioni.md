@@ -1042,3 +1042,11 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
 ```
 
 `````
+
+Chi progetta un sistema con più di una parte che parla ha una domanda da farsi
+prima di tutte le altre, e non riguarda soltanto gli agenti software: chi può
+scrivere a chi, quando, e chi decide dopo. Qui finisce il tratto del libro
+dedicato ai modelli linguistici e a chi li mette in squadra.
+«Audio oltre la voce» cambia materia e riparte da un segnale grezzo, l'onda che
+esce da un microfono; gli attrezzi però restano, e il Transformer riappare
+presto, con al posto delle parole dei simboli che descrivono un suono.

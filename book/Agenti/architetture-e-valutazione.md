@@ -644,3 +644,11 @@ Sei punti per chiudere il capitolo.
 ```
 
 `````
+
+Il capitolo si chiude su una nota di prudenza, e ci sta: un agente è la cosa
+più fragile che questo libro abbia costruito, perché ogni passo in più è
+un'altra occasione di sbagliare. Quello che ci portiamo dietro, però, non è la
+fragilità: è che a decidere quanto un agente vale non è il modello che ha
+dentro, ma quello che gli si mette davanti a ogni passo, e come lo si rimette
+in circolo. Il capitolo su prompt, contesto e loop è dedicato per intero a
+quel mestiere lì.

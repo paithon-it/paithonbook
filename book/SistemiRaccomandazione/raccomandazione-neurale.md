@@ -789,3 +789,10 @@ smettere di prendere la vetrina per il catalogo.
 ```
 
 `````
+
+Due cose da portarsi dietro, e non valgono solo per le classifiche di film. La
+prima è che il metro scelto plasma il sistema che si costruisce. La seconda è
+che il modo di dividere i dati per misurare può ribaltare la graduatoria dei
+metodi. Quella divisione, nel capitolo sulle serie temporali, smette di essere
+una scelta, perché i dati hanno un verso e misurare vuol dire non lasciare che
+il modello sbirci il futuro che gli si sta chiedendo di prevedere.

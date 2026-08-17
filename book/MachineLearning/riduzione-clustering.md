@@ -111,7 +111,7 @@ $d=100$ vale $1 - 0{,}8^{100} \approx 1 - 2\cdot 10^{-10}$, ossia
 praticamente $1$. All'aumentare di $d$ il volume fugge verso la superficie.
 
 Parallelamente, le distanze si **concentrano**: per molte distribuzioni si
-dimostra che il rapporto tra la distanza massima e minima tra $n$ punti
+dimostra che il rapporto tra la distanza massima e minima tra $m$ punti
 casuali tende a $1$ al crescere di $d$, cioè
 
 $$
@@ -521,7 +521,10 @@ $$
 \bigl\lVert \mathbf{x}_i - \boldsymbol{\mu}_{c_i} \bigr\rVert^2,
 $$
 
-dove $c_i \in \{1, \dots, k\}$ è il cluster assegnato al punto $\mathbf{x}_i$. L'algoritmo
+dove $c_i \in \{1, \dots, k\}$ è il cluster assegnato al punto $\mathbf{x}_i$ e
+$C_j = \{i : c_i = j\}$ l'insieme dei punti finiti nel cluster $j$ (niente a
+che vedere con la matrice di covarianza $\mathbf{C}$ della PCA: qui la lettera
+fa un altro mestiere). L'algoritmo
 di Lloyd minimizza $\mathcal{L}$ alternando due passi di coordinate:
 
 $$

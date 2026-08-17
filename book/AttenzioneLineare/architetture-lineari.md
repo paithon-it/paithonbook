@@ -574,8 +574,17 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
   porta alla scala dei grandi modelli.
 - Il filo comune: RetNet, RWKV e xLSTM (con GLA e DeltaNet) sono la stessa
   **RNN lineare a stato fisso**; cambia **solo la transizione di stato**. Gli
-  State Space Model del prossimo capitolo arriveranno allo stesso punto da
-  un'altra strada, e Mamba-2 dimostrerà che sono la stessa cosa.
+  State Space Model, che il libro racconta subito dopo, arrivano allo stesso
+  punto da un'altra strada, e Mamba-2 dimostra che sono la stessa cosa.
 ```
 
 `````
+
+Da portarsi dietro c'è una cosa sola: tutti i modelli di questo capitolo sono
+un riassunto di taglia fissa che si aggiorna parola per parola, e a
+distinguerli è soltanto il modo in cui la memoria di ieri sopravvive a oggi.
+Resta una pagina di verifica, poche righe che rifanno lo stesso conto in due
+modi per vedere se torna lo stesso numero; poi si cambia strada, e non è un
+gradino più su. **State Space Model** è l'altro ramo della stessa famiglia:
+allo stesso motore ci arriva da lontano, senza passare dall'attenzione, e per
+un buon tratto le due strade non sanno di somigliarsi.

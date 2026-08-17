@@ -146,15 +146,16 @@ Dato un insieme di addestramento
 $\{(\mathbf{x}^{(i)}, y^{(i)})\}_{i=1}^{m}$, dove $\mathbf{x}^{(i)}$ è il
 vettore delle feature dell'esempio $i$-esimo e $y^{(i)}$ la sua
 etichetta, si cerca $f_\theta$ che minimizzi una funzione di costo (o *loss*)
-$\mathcal{L}$ che penalizza le previsioni sbagliate:
+che penalizza le previsioni sbagliate:
 
 $$
 \theta^\star = \arg\min_{\theta}\ \frac{1}{m}\sum_{i=1}^{m}
-\mathcal{L}\!\left(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\right).
+\ell\!\left(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\right).
 $$
 
 Qui $f_\theta(\mathbf{x}^{(i)}) = \hat{y}^{(i)}$ è la predizione del modello e
-$\mathcal{L}$ misura la sua distanza dal valore vero $y^{(i)}$. L'intero
+$\ell$ misura la sua distanza dal valore vero $y^{(i)}$; la media di tutti gli
+$\ell$ è la loss sull'intero insieme, che il libro scrive $\mathcal{L}$. L'intero
 addestramento supervisionato è, in fondo, questo problema di minimizzazione.
 
 `````

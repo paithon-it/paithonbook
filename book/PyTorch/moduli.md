@@ -267,7 +267,7 @@ i logit $z_1, \dots, z_K$ e la classe vera $c$ di un singolo esempio,
 $$
 \mathcal{L} = -\log \hat{y}_c,
 \qquad
-\hat{y}_k = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}} .
+\hat{y}_k = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}} ,
 $$
 
 dove qui $k$ e $j$ scorrono le $K$ classi, non gli esempi. Sul batch il modulo

@@ -115,7 +115,8 @@ $Q(s,a)$. Dopo ogni passo reale $(s, a, r, s')$ esegue due tipi di
 aggiornamento. Il primo, dall'esperienza vera:
 
 $$
-Q(s, a) \leftarrow Q(s, a) + \alpha \big[\, r + \gamma \max_{a'} Q(s', a') - Q(s, a) \,\big],
+Q(s, a) \leftarrow Q(s, a) + \alpha \big[\, r + \gamma \max_{a'} Q(s', a') -
+Q(s, a) \,\big],
 $$
 
 e memorizza la transizione nel modello,

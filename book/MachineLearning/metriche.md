@@ -62,9 +62,9 @@ $$
 $$
 
 Il numeratore è la diagonale della matrice, il denominatore il totale. Per
-problemi con più di due classi la matrice diventa $k \times k$ e l'accuratezza
+problemi con più di due classi la matrice diventa $K \times K$ e l'accuratezza
 resta la somma della diagonale sul totale; le metriche che seguono, invece,
-sono definite sul caso **binario** e per estenderle a $k$ classi bisogna
+sono definite sul caso **binario** e per estenderle a $K$ classi bisogna
 scegliere come mediarle, questione tutt'altro che innocua a cui è dedicato un
 paragrafo più avanti.
 
@@ -133,8 +133,11 @@ qualità che si migliorano insieme: sono i due piatti di una bilancia, e più
 avanti vedremo che a spostarla basta un numero.
 
 Per questo si usa spesso la **F1**, un voto unico che riassume le due e resta
-alto solo quando *entrambe* sono alte. Con i due esempi qui sopra, precision
-$8/10 = 0{,}8$ e recall $15/20 = 0{,}75$, la F1 vale $0{,}77$: sta in mezzo, e
+alto solo quando *entrambe* sono alte. Attenzione a quali due: vanno prese la
+precision e la recall **dello stesso modello sugli stessi dati**, non due
+numeri pescati da due tabelle diverse come i due esempi qui sopra, che sono di
+un filtro antispam e di un medico. Se un unico modello avesse precision
+$0{,}8$ e recall $0{,}75$, la sua F1 varrebbe $0{,}77$: sta in mezzo, e
 sta più vicino al peggiore dei due. Se una delle due crollasse a $0{,}1$, la
 F1 crollerebbe con lei anche con l'altra al massimo.
 
@@ -171,7 +174,7 @@ precision, non due, e $\beta = 3$ nove volte. Per $\beta = 1$ si ritrova la
 $F_1$.
 
 **Con più di due classi va scelta una media, e la scelta è tutto.** Le formule
-qui sopra presuppongono una classe «positiva»: con $k$ classi si calcolano
+qui sopra presuppongono una classe «positiva»: con $K$ classi si calcolano
 precision, recall e $F_1$ **una per classe** e poi si aggregano, e
 `classification_report` ne offre tre modi che non sono intercambiabili.
 
@@ -224,7 +227,7 @@ preferisce pagare.
 La diagonale di {numref}`fig-curva-roc` è il termine di paragone che rende
 leggibile tutto il resto: è ciò che otterrebbe un modello che tira a
 indovinare. Più la curva sale verso l'angolo in alto a sinistra, meglio va, e l’**AUC** è il
-modo di ridurre quello «stacco» a un numero solo: è l'area che resta sotto la
+modo di ridurre quel confronto a un numero solo: è l'area che resta sotto la
 curva. Il suo pregio è di riassumere *tutte* le soglie, senza che se ne debba
 fissare una.
 
@@ -268,8 +271,11 @@ scelto a caso uno score più alto che a un negativo scelto a caso, **contando
 mezzo punto quando i due score coincidono**:
 
 $$
-\text{AUC} = P(s^+ > s^-) + \tfrac{1}{2}\,P(s^+ = s^-).
+\text{AUC} = P(s^+ > s^-) + \tfrac{1}{2}\,P(s^+ = s^-),
 $$
+
+dove $s^+$ è lo score che il modello dà a un positivo estratto a caso e $s^-$
+quello che dà a un negativo estratto a caso.
 
 Il termine dei pareggi non è un cavillo, ed è la statistica di
 Mann–Whitney a imporlo: gli score pari sono all'ordine del giorno appena il
@@ -560,7 +566,10 @@ confrontabili.
 Sul fronte del **modello**, la soluzione elegante è la **regressione
 ordinale**: invece di $K$ probabilità indipendenti si stima una variabile
 latente continua e $K-1$ soglie, e la probabilità cumulata
-$P(y \leq k) = \sigma(\tau_k - f(\mathbf{x}))$ è monotona per costruzione. Il
+$P(y \leq k) = \sigma(\tau_k - f(\mathbf{x}))$ è monotona per costruzione, dove
+$f(\mathbf{x})$ è la variabile latente stimata, $\tau_1 < \dots < \tau_{K-1}$
+sono le soglie apprese (un'altra cosa dalla soglia di decisione $\tau^\star$ di
+poche pagine fa) e $\sigma$ è la sigmoide. Il
 vantaggio pratico rispetto alla regressione seguita da arrotondamento è che le
 soglie sono **apprese** invece che imposte equidistanti, quindi il modello può
 scoprire che fra due classi c'è poco spazio e fra altre due molto.
@@ -652,7 +661,7 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
   classe maggioritaria.
 - **Precision** (pochi falsi allarmi) vs **recall** (pochi casi mancati): la
   $F_1$ le riassume. Privilegia la recall nello screening medico, la precision
-  nell'antispam. Con $k$ classi va dichiarata la **media**: la *micro* coincide
+  nell'antispam. Con $K$ classi va dichiarata la **media**: la *micro* coincide
   con l'accuratezza, la *macro* è quella che dà voce alle classi rare.
 - **AUC**: qualità del classificatore indipendente dalla soglia, in $[0,1]$,
   con $0{,}5$ come punteggio del caso e non come minimo. È

@@ -243,7 +243,7 @@ esempio se una molecola è tossica.
 - **Livello-arco.** Si prevede se un arco esiste, o esisterà, tra due nodi: la
   **link prediction**. È il motore del «forse conosci…» di un social e del «chi
   ha comprato questo…» di un negozio online. È anche, alla lettera, la forma
-  del problema che il capitolo sui sistemi di raccomandazione, il prossimo,
+  del problema che il capitolo sui sistemi di raccomandazione
   affronterà per intero: un grafo con gli utenti da una parte e i prodotti
   dall'altra, e consigliare un film vuol dire prevedere un arco che ancora non
   c'è.

@@ -482,13 +482,13 @@ $\mathcal{L}$; quella direzione, valutata su ciascun esempio, è l'opposto del
 gradiente
 
 $$
-r_i^{(t)} = -\left[\frac{\partial \mathcal{L}(y_i, F(\mathbf{x}_i))}
+r_i^{(t)} = -\left[\frac{\partial \ell(y_i, F(\mathbf{x}_i))}
 {\partial F(\mathbf{x}_i)}\right]_{F = F_{t-1}} ,
 $$
 
 detto **pseudo-residuo**. Il nuovo albero $h_t$ viene addestrato per
 approssimare proprio questi pseudo-residui. Nel caso della loss quadratica
-$\mathcal{L} = \tfrac{1}{2}(y - F)^2$ il gradiente si riduce a $r_i = y_i -
+$\ell = \tfrac{1}{2}(y - F)^2$ il gradiente si riduce a $r_i = y_i -
 F_{t-1}(\mathbf{x}_i)$: cioè, semplicemente, l’**errore residuo** ancora da
 spiegare (al primo passo, lo scarto dalla media $F_0$).
 Detto a parole: ogni albero fitta ciò che i precedenti hanno sbagliato. AdaBoost
@@ -501,7 +501,7 @@ cercando in ciascuna la costante che minimizza la loss vera,
 
 $$
 \gamma_{jt} = \arg\min_{\gamma} \sum_{\mathbf{x}_i \in R_{jt}}
-\mathcal{L}\big(y_i,\ F_{t-1}(\mathbf{x}_i) + \gamma\big) ,
+\ell\big(y_i,\ F_{t-1}(\mathbf{x}_i) + \gamma\big) ,
 $$
 
 dove $R_{jt}$ è la $j$-esima foglia dell'albero $t$ e $\gamma_{jt}$ il valore
@@ -562,8 +562,8 @@ Il **bagging** (e la sua incarnazione migliore, la random forest) parte da
 alberi a varianza alta e la abbatte mediando. È robusto, poco sensibile agli
 iperparametri, difficile da mandare in overfitting: aggiungere alberi non
 peggiora quasi mai. Ottima scelta di default, specie quando si vuole un modello
-solido con poca messa a punto, e si parallelizza banalmente (gli alberi sono
-indipendenti).
+solido con poca messa a punto, e si parallelizza in modo naturale (gli alberi
+sono indipendenti).
 
 Il **boosting** parte da alberi deboli a bias alto e lo abbatte correggendo
 gli errori in sequenza. Tipicamente raggiunge l'accuratezza più alta sui dati

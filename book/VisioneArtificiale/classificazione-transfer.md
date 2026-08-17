@@ -27,7 +27,7 @@ L'immagine entra come una griglia di pixel. La rete la fa passare attraverso
 una pila di **strati convoluzionali**, quelli del capitolo precedente: ognuno
 passa sull'immagine una lente piccola, sempre la stessa, e segna dove trova il
 disegno che quella lente cerca. I primi riconoscono cose semplici (bordi,
-angoli, macchie di colore) quelli più profondi combinano questi pezzetti in
+angoli, macchie di colore), quelli più profondi combinano questi pezzetti in
 forme via via più complesse: la trama di un pelo, un occhio, un muso. Alla fine
 tutte queste "prove raccolte" vengono riassunte in una lista di numeri, e un
 ultimo strato le trasforma in probabilità: `cane 0.82`, `gatto 0.11`, e così
@@ -70,9 +70,9 @@ numeri interni che la rete regola mentre impara, un po’ come le manopole di un
 impianto che si tarano una a una finché il suono non è giusto. Più manopole ci
 sono, più esempi servono per trovare la posizione giusta di tutte. Per
 regolarle senza andare in **overfitting**, cioè senza che la rete impari a
-memoria gli esempi che le abbiamo mostrato invece della regola che li spiega,
-servono moltissimi esempi etichettati
-e molta potenza di calcolo. Con le poche migliaia di foto di un progetto reale
+memoria gli esempi mostrati invece della regola che li spiega, servono
+moltissimi esempi etichettati e molta potenza di calcolo. Con le poche
+migliaia di foto di un progetto reale
 (le lastre di un ambulatorio, i difetti su una linea di produzione, le specie
 di una guida botanica), una rete addestrata da zero fa esattamente così: sulle
 foto di addestramento risponde benissimo, su tutte le altre sbaglia. Il collo di bottiglia, quasi sempre, non è

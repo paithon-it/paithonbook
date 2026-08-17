@@ -502,3 +502,10 @@ capitolo intero: i **Transformer** ci aspettano alla prossima pagina.
   non dare è più attuale del suo programma.
 ```
 `````
+
+Quello che resta in mano, arrivati qui, non è un catalogo di modelli: è un
+catalogo di problemi. Dove si taglia un testo, come una parola diventa numeri,
+come si giudica una macchina che parla quando la risposta giusta non è una
+sola. Il capitolo sui **Transformer** eredita quelle domande per intero: a
+cambiare è la macchina che prova a rispondere, non le domande, e chi le ha
+lette qui riconoscerà là dentro i problemi di sempre sotto nomi nuovi.

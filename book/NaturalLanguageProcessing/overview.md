@@ -25,24 +25,23 @@ preferisce. Prima però bisogna sapere che cos'è una frase, per una macchina, e
 
 `````{tab} Elementare
 
-Prendi la frase "Ho visto un uomo con il binocolo". Chi ha il binocolo? Tu, che
+Prendi la frase «Ho visto un uomo con il binocolo». Chi ha il binocolo? Tu, che
 guardavi, oppure l'uomo che hai visto? Nessuna delle due letture è sbagliata:
 la frase è **ambigua**, e solo il contesto scioglie il dubbio.
 
-E il contesto cambia tutto. La parola "campo" vuol dire una cosa in "campo di
-grano", un'altra in "campo magnetico", un'altra ancora in "campo da calcio".
-Poi ci sono i **sinonimi**: "auto", "macchina" e "vettura" indicano lo stesso
+E il contesto cambia tutto. La parola «campo» vuol dire una cosa in «campo di
+grano», un'altra in «campo magnetico», un'altra ancora in «campo da calcio».
+Poi ci sono i **sinonimi**: «auto», «macchina» e «vettura» indicano lo stesso
 oggetto, e una macchina deve capirlo. Ci sono le parole piccole che da sole non
-vogliono dire niente e vanno a pescare il significato in quello che è già
-stato detto: in "Marco ha preso il libro e l'ha letto", quel "l" è il libro, ma
-per saperlo bisogna ricordarsi la prima metà della frase. Questo rimando
+vogliono dire niente e vanno a pescare il significato in quello che è già stato
+detto: in «Marco ha preso il libro e l'ha letto», quel «l’» è il libro, ma per
+saperlo bisogna ricordarsi la prima metà della frase. Questo rimando
 all'indietro ha un nome, l’**anafora**, e tornerà nell'ultima sezione del
 capitolo, quella sul dialogo: lì le parole piccole dovranno pescare il
 significato non nella stessa frase, ma in una battuta detta prima da un'altra
-persona. E c'è
-l’**ironia**: se dico "che bella giornata" mentre diluvia, intendo l'esatto
-contrario. Nessuna di queste cose è scritta nelle parole: sta tra le righe, ed
-è lì che le macchine si perdono.
+persona. E c'è l’**ironia**: se dico «che bella giornata» mentre diluvia,
+intendo l'esatto contrario. Nessuna di queste cose è scritta nelle parole: sta
+tra le righe, ed è lì che le macchine si perdono.
 
 `````
 

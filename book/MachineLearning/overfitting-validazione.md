@@ -238,8 +238,8 @@ $3{,}471 - 0{,}09 = 3{,}38$.
 
 Il modello lineare, passando da 120 a 2400 esempi, chiude il divario da
 $+0{,}230$ a $+0{,}013$: le due curve si sono **toccate**. Ma si sono toccate a
-$2{,}3$, e $2{,}3$ è ancora quasi in cima: dai $3{,}471$ di partenza sono
-scesi appena $1{,}17$ su $3{,}38$, cioè un terzo della strada. (Metà strada
+$2{,}335$, che è ancora quasi in cima: dai $3{,}471$ di partenza sono
+scesi appena $1{,}14$ su $3{,}38$, cioè un terzo della strada. (Metà strada
 sarebbe stata $0{,}09 + 3{,}38/2 = 1{,}78$, parecchio più in basso.)
 L'errore di addestramento, per giunta, non è migliorato di un'unghia, anzi è
 salito appena ($2{,}294$ con 120 esempi, $2{,}321$ con 2400). Il rialzo è
@@ -606,9 +606,13 @@ Un avvertimento sulla lettera $\alpha$, che in questa sezione fa due mestieri
 diversi. Nella formula dell'Elastic Net è il **rapporto di miscela** fra le due
 penalità ($\alpha = 1$ è Lasso puro, $\alpha = 0$ è Ridge puro) e non ha niente
 a che vedere con la loro intensità, che resta $\lambda$. Nel codice, invece,
-l'argomento `alpha` di `Ridge`, `Lasso` ed `ElasticNet` è proprio
-l’**intensità**, cioè il nostro $\lambda$, mentre la miscela lì si chiama
-`l1_ratio`. Sono due tradizioni che si sono incrociate su una lettera sola:
+l'argomento `alpha` di `Ridge`, `Lasso` ed `ElasticNet` fa il mestiere
+dell’**intensità**, cioè del nostro $\lambda$, mentre la miscela lì si chiama
+`l1_ratio`. Fa il mestiere, però non è lo stesso numero, e per la stessa
+ragione vista con la hinge delle SVM: la loss qui è **mediata** sugli esempi e
+la penalità no, mentre `Ridge` non media affatto e `Lasso` divide per $2m$.
+A parità di soluzione, $\lambda = \texttt{alpha}/m$ per la prima e
+$\lambda = 2\,\texttt{alpha}$ per la seconda. Sono due tradizioni che si sono incrociate su una lettera sola:
 conviene guardare che cosa fa il parametro, non come si chiama.
 
 `````

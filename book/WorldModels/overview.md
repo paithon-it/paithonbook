@@ -7,9 +7,9 @@ Turing 2018 (il riconoscimento che in informatica vale quanto un Nobel) e uno
 dei padri del deep learning. Mentre mezzo mondo si stupiva di ciò che sanno
 scrivere i programmi che compongono un testo indovinando una parola dopo
 l'altra, i grandi modelli di linguaggio (gli **LLM**, *Large Language Model*),
-uno dei loro nonni intellettuali indicava un gatto. Provocazione calcolata, certo. Ma
-proviamo a prenderla sul serio: che cosa sa fare, un gatto? Non risolve
-integrali e non scrive sonetti; però salta sul mobile calibrando la
+uno dei loro nonni intellettuali indicava un gatto. Provocazione calcolata,
+certo. Ma proviamo a prenderla sul serio: che cosa sa fare, un gatto? Non
+risolve integrali e non scrive sonetti; però salta sul mobile calibrando la
 traiettoria al primo colpo, prevede da che parte sbucherà il gomitolo rotolato
 sotto il divano, e se una mossa è finita male non la ripete tale e quale.
 

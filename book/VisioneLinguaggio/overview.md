@@ -1,33 +1,20 @@
 # Modelli che vedono e parlano
 
-Il 7 luglio 1966, al Project MAC del MIT, il gruppo di intelligenza artificiale
-diffonde un promemoria di sei pagine intestato *Vision Memo. No. 100*. Si
-chiama *The Summer Vision Project*, lo firma Seymour Papert, e attacca così: il
-progetto «è un tentativo di impiegare in modo efficace i nostri lavoratori
-estivi nella costruzione di una parte significativa di un sistema visivo». A
-coordinare le riunioni del progetto c'è un giovane studente, Gerald Sussman.
+Nel 1929 René Magritte dipinge una pipa su fondo chiaro e, sotto, ci scrive a
+mano *Ceci n'est pas une pipe*: questa non è una pipa. Non è un gioco di
+parole, è una constatazione esatta. Il disegno non è la pipa, è un velo di
+colore steso su una tela; e la frase sotto non è il disegno, è una fila di
+segni d'inchiostro. Eppure chi guarda il quadro attraversa quei due confini
+senza accorgersene: vede una forma, pensa a un oggetto, gli dà un nome.
 
-Gli obiettivi conviene leggerli nell'ordine in cui sono scritti. Primo:
-dividere l'immagine ripresa dalla telecamera in regioni che sono «oggetti
-probabili», regioni che sono «sfondo probabile» e regioni che sono «caos», cioè
-separare le figure da ciò che sta loro dietro (nel promemoria, l'analisi
-*figura-sfondo*). Secondo: descrivere quelle regioni. Terzo e ultimo,
-il riconoscimento degli oggetti (nel promemoria, *object identification*), che
-deve «dare un nome agli oggetti confrontandoli con un vocabolario di oggetti
-noti». Per luglio erano previste scene di oggetti
-non sovrapposti (palle, mattoncini, cilindri) con superfici di colore uniforme e
-sfondo omogeneo; ad agosto si sarebbe passati a superfici e sfondi complicati,
-e poi a «oggetti come utensili, tazze e simili».
-
-L'aneddoto si racconta di solito come una barzelletta sull'ottimismo di quegli
-anni, ma non è la lettura interessante. Papert era tutto tranne che un ingenuo
-(tre anni dopo avrebbe scritto con Marvin Minsky *Perceptrons*, il libro che
-dei limiti del percettrone a uno strato fece una dimostrazione matematica), e
-la scaletta che aveva in mente era giusta: isolare gli oggetti, descriverli,
-chiamarli per nome. Non era l'idea a mancare: mancava un modo di far parlare
-fra loro una griglia di misure di luce e un vocabolario di parole, e per
-trovarlo un'estate non poteva bastare. Ci sono voluti sessant'anni, e quel modo
-(o meglio quei modi) è l'argomento del capitolo.
+Per una macchina quel passaggio è tutto tranne che gratis, ed è stato a lungo
+il confine fra due mestieri separati. Da una parte i programmi che guardano,
+addestrati a mettere una fotografia in una casella e poi a tacere; dall'altra i
+programmi che scrivono, addestrati a indovinare la parola dopo. Farli lavorare
+insieme non vuol dire attaccare una telecamera a un generatore di testo: vuol
+dire costruire un posto in cui le misure della luce e le parole di una lingua
+possano incontrarsi. È quel posto, e i tre modi di costruirlo, l'argomento del
+capitolo.
 
 ## Due materie che non si somigliano
 
@@ -82,9 +69,9 @@ informazione linguistica smettono di essere separate.
 
 La prima delle due cose da fare, dare all'immagine dei pezzi, ha una risposta
 condivisa da quasi tutti i sistemi di oggi, e il lettore la conosce già: il
-**Vision Transformer**
-{cite}`dosovitskiy2021image` del capitolo sui Transformer. Vale la pena
-richiamarne il gesto, perché tutto il resto ci poggia sopra, e sta in due mosse.
+**Vision Transformer** {cite}`dosovitskiy2021image` del capitolo sui
+Transformer. Vale la pena richiamarne il gesto, perché tutto il resto ci poggia
+sopra, e sta in due mosse.
 
 La prima: si taglia la fotografia in quadratini tutti uguali, che qui chiameremo
 **tessere** (in inglese *patch*, ed è la parola che si incontra ovunque, questo
@@ -326,11 +313,9 @@ che il sistema abbia davvero guardato.
 
 ```{admonition} Da ricordare
 :class: important
-- Nel 1966, al MIT, si pensava di insegnare a vedere a una macchina in
-  un'estate: separare gli oggetti dallo sfondo, descriverli e dar loro un nome «confrontandoli con un
-  vocabolario di oggetti noti». La scaletta era giusta; mancava il modo di legare
-  i puntini di una fotografia alle parole di una lingua, e ci sono voluti
-  sessant'anni.
+- La pipa di Magritte dice il problema in un colpo: il disegno non è la cosa,
+  la parola non è il disegno, e a tenere insieme i tre pezzi è la nostra testa.
+  Insegnare quel salto a una macchina è ciò di cui parla il capitolo.
 - Le due materie prime hanno nature opposte: una pagina scritta arriva **già
   tagliata a pezzi**, le parole, sempre le stesse per tutti; una fotografia è un
   **tappeto di puntini colorati** senza cuciture, e il confine fra il gatto e il
@@ -357,10 +342,9 @@ che il sistema abbia davvero guardato.
 
 ```{admonition} Da ricordare
 :class: important
-- Nel 1966 il *Summer Vision Project* di Papert voleva separare gli oggetti
-  dallo sfondo, descriverli e dar loro un nome «confrontandoli con un
-  vocabolario di oggetti noti»: la scaletta era giusta, mancava il modo di
-  legare pixel e parole.
+- Il problema non è di formato ma di **raccordo fra rappresentazioni**: quello
+  che manca non è un convertitore, è uno spazio in cui la vicinanza voglia dire
+  la stessa cosa per una misura di luce e per una parola.
 - Testo e immagine hanno nature opposte: il testo è **discreto e già
   simbolico**, l'immagine un reticolo **continuo** senza unità naturali, dove
   la distanza fra i pixel non misura la distanza fra i significati.

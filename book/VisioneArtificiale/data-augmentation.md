@@ -194,10 +194,10 @@ osservati. L'augmentation sostituisce ogni punto con una nuvola di varianti:
 
 $$
 \hat{R}_{\text{aug}}(\theta) \;=\; \frac{1}{n}\sum_{i=1}^{n}
-\mathbb{E}_{T\sim\tau}\Big[\mathcal{L}\big(f_\theta(T(\mathbf{x}_i)),\, y_i\big)\Big],
+\mathbb{E}_{T\sim\mathcal{T}}\Big[\mathcal{L}\big(f_\theta(T(\mathbf{x}_i)),\, y_i\big)\Big],
 $$
 
-dove $\tau$ è la distribuzione sulle trasformazioni ammesse. In altre parole
+dove $\mathcal{T}$ è la distribuzione sulle trasformazioni ammesse. In altre parole
 **allarga il supporto della distribuzione empirica**: invece di esigere la
 risposta giusta in $n$ punti isolati, la esige su interi intorni, e questo
 spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte (un

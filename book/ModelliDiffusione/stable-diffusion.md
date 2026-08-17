@@ -32,9 +32,11 @@ da elaborare, meno conti, meno attesa.
 
 Per capire il trasloco, però, dobbiamo prima conoscere il traslocatore, che è
 una rete a sé, diversa da quella che toglie il rumore, e si chiama
-*variational autoencoder*. Il libro l'ha finora solo nominata di sfuggita e ne
-ha usato una variante fra i codec neurali dell'audio; qui la guardiamo per
-esteso, perché è lei che porta i mobili.
+*variational autoencoder*. Metà di quel nome il libro ce l'ha già: un
+**autoencoder** è una rete che impara a comprimere e a ricostruire, e il
+capitolo sull'audio ne ha montato uno per i codec neurali, cioè per comprimere
+il suono. Nuova è l'altra metà, il *variational*, ed è la sola che guarderemo
+per esteso, perché è quella che rende il trasloco possibile.
 
 ## Il prezzo dei pixel
 
@@ -66,30 +68,33 @@ compatta che conserva il contenuto e scarta il dettaglio ricostruibile. La
 diffusione, poi, impara la **composizione** dentro quello spazio compatto, dove
 ogni passo costa decine di volte meno.
 
-Quello spazio compatto ha un nome che ricorre ovunque in questa letteratura, e
-tanto vale prenderlo subito: si chiama **spazio latente**. «Latente» vuol dire
-nascosto, non manifesto, ed è il modo in cui si nominano le grandezze che un
-modello si costruisce per conto suo e che nessuno gli ha mostrato: nei dati non
-c'era scritto da nessuna parte come comprimere un gatto, la rete se l'è
-inventato. La ricetta si chiama quindi dei *latent diffusion models*, e Stable
-Diffusion ne è il figlio famoso.
+Quello spazio compatto ha un nome, e il libro l'ha già battezzato parlando dei
+codec neurali nel capitolo sull'audio: si chiama **spazio latente**, cioè
+l'insieme dei riassunti che una rete si costruisce da sola, «latenti» perché
+nessuno le ha insegnato come farli e a guardarli non dicono niente. Là dentro
+c'era del suono, qui ci sono immagini; e cambia soprattutto che cosa ci si fa.
+Per un codec quello spazio è un corridoio: ci si entra da una parte per
+comprimere e si esce dall'altra. Qui invece ci si va ad abitare, perché è lì che
+avverrà tutta la diffusione. La ricetta si chiama infatti dei *latent diffusion
+models*, e Stable Diffusion ne è il figlio famoso.
 
 ## L'archivista: il variational autoencoder
 
-Il pezzo che porta i mobili è una rete a forma di clessidra, l’**autoencoder**,
-che il capitolo sull'audio ha già montato per i codec neurali e che qui
-riprendiamo dall'inizio perché è la sua variante a fare la differenza. A
-prima vista fa la cosa più inutile del mondo, cioè si allena a riprodurre
-esattamente quello che le si dà in pasto. L'inutilità sparisce appena si guarda
-la strettoia in mezzo alla clessidra: quello che entra deve passare di lì, e di
-lì passano molti meno numeri di quanti ne sono entrati. Per riuscire a
-riprodurre l'immagine, la rete è dunque costretta a scegliere che cosa fare
-stare nella strettoia, e imparare a scegliere è tutto il punto. La variante che
-ci serve, il **variational
-autoencoder** (VAE) di Diederik Kingma e Max Welling {cite}`kingma2014auto`, è
-del 2014 (più vecchia della diffusione moderna e persino delle GAN) e tornerà
-più avanti nel libro. Qui ci serve l'essenziale: che cosa fa e perché rende lo
-spazio latente un posto dove si può lavorare. Per parlarne useremo una
+Il pezzo che porta i mobili è l’**autoencoder**, la rete a clessidra che il
+capitolo sull'audio ha montato per i codec neurali: una metà stringe quello che
+entra fino a farlo passare per una strettoia dove i numeri sono molti meno,
+l'altra metà da quella strettoia prova a ritirare fuori l'originale, e il voto è
+uno solo per tutte e due, cioè quanto quello che esce somiglia a quello che è
+entrato. (Le due metà hanno i nomi inglesi che si trovano nel codice, *encoder*
+e *decoder*.) Quel voto, da solo, insegna a comprimere e nient'altro, e a noi
+non basta: in quello spazio bisognerà anche pescare punti a caso e pretendere
+che ne esca un'immagine. Ecco perché ci serve la variante,
+il **variational
+autoencoder** (VAE) di Diederik Kingma e Max Welling {cite}`kingma2014auto`, del
+2014 (più vecchio della diffusione moderna e persino delle GAN) e destinato a
+tornare più avanti nel libro. Ce ne serve l'essenziale: che cosa aggiunge alla
+clessidra, e perché quel poco rende lo spazio latente un posto dove si può
+lavorare. Per parlarne useremo una
 metafora che ci accompagnerà fino alla fine del capitolo. Le due metà della
 clessidra diventano due persone: la rete che comprime è un **archivista** e
 la rappresentazione compatta che scrive è la sua **scheda**; la rete che
@@ -153,13 +158,13 @@ adesso.
 
 `````{tab} Elementare
 
-Immagina l'archivista di un museo pieno di quadri enormi. Per ogni quadro
-scrive una scheda molto più piccola dell'originale, e il suo mestiere si
-giudica con una prova concreta: il copista deve *ridipingere* il quadro
-leggendo solo la scheda. Se la copia somiglia all'originale, la scheda
-conteneva l'essenziale; se non somiglia, la scheda va scritta meglio. I due si
-allenano insieme e si giudicano insieme, perché una scheda è buona o cattiva
-solo rispetto a chi la deve leggere.
+Immagina l'archivista di un museo pieno di quadri enormi. È la stessa clessidra
+che il capitolo sull'audio usava per comprimere il suono, con due mestieri al
+posto delle due metà: per ogni quadro l'archivista scrive una scheda molto più
+piccola dell'originale, e il copista deve *ridipingere* il quadro leggendo solo
+quella. Se la copia somiglia all'originale la scheda conteneva l'essenziale, e i
+due si allenano insieme perché una scheda è buona o cattiva solo rispetto a chi
+la deve leggere.
 
 Dopo milioni di prove su milioni di quadri, l'archivista ha imparato da solo
 che cosa annotare (soggetto, composizione, colori dominanti) e che cosa

@@ -222,7 +222,7 @@ il domani.
 `````{tab} Superiore
 
 La stima di validazione approssima
-$\mathbb{E}_{(X,y)\sim P_{\text{train}}}\!\left[\mathcal{L}\big(f_\theta(X), y\big)\right]$:
+$\mathbb{E}_{(X,y)\sim P_{\text{train}}}\!\left[\ell\big(f_\theta(X), y\big)\right]$:
 un valore atteso **sotto la distribuzione di addestramento**. Se la
 distribuzione operativa è un'altra, questo numero non vincola in alcun modo
 l'errore reale: può restare ottimo mentre l'errore sotto $P_{\text{test}}$
@@ -284,7 +284,7 @@ frequenti in produzione ma rari in addestramento contino di più,
 $$
 \mathcal{L}_w(\theta) = \frac{1}{m} \sum_{i=1}^{m}
 w\big(\mathbf{x}^{(i)}\big)\,
-\mathcal{L}\big(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\big),
+\ell\big(f_\theta(\mathbf{x}^{(i)}),\, y^{(i)}\big),
 \qquad
 w(\mathbf{x}) = \frac{p_{\text{test}}(\mathbf{x})}{p_{\text{train}}(\mathbf{x})},
 $$

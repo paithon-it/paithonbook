@@ -23,7 +23,7 @@ non si potevano scrivere. Il codice, nel frattempo, è passato a PyTorch. Quello
 che non è cambiato è il motivo per cui il libro esiste.
 
 Quello che è cambiato, e molto, è il mondo intorno. Nel 2019 questa era una
-materia da addetti ai lavori. Oggi la usano tutti, e attorno le si sono mossi
+materia da addetti ai lavori. Oggi la usano tutti, e attorno si sono mossi
 interessi industriali e commerciali di ogni ordine di grandezza. È guardando
 quel passaggio che ho capito perché valeva la pena riprendere il manoscritto.
 
@@ -96,8 +96,7 @@ che spiega se stessa**.
 
 E lo fa **due volte**, in tutti e due i sensi della parola. Il primo lo trovi
 in ogni capitolo, ed è quello di cui parlavo qui sopra: ogni concetto che
-conta è spiegato una volta con un'analogia che non chiede prerequisiti e una
-volta con le formule al posto giusto.
+conta è spiegato prima con un'immagine di tutti i giorni e poi con le formule.
 
 Il secondo senso riguarda la strada che il testo fa per arrivare fin qui.
 Quello che una AI ha scritto lo rilegge **un'altra AI**, che alla stesura non

@@ -31,14 +31,14 @@ dall'altro capo, a modello ormai fissato: è il valore che quel modello assegna
 a un dato, letto come «quanto mi aspettavo di vedere una cosa così». Alta se il
 dato è di quelli su cui il modello avrebbe scommesso, bassa se lo coglie di
 sorpresa. Il nome è scomodo e il concetto no: è un voto, e a differenza
-dell'energia del capitolo che segue è un voto **normalizzato**, cioè sommato su
+dell'energia del capitolo sui modelli a energia è un voto **normalizzato**, cioè sommato su
 tutti i dati possibili fa esattamente uno.
 
 Quel «fa esattamente uno» è tutto il problema, ed è il filo che tiene insieme
 questo capitolo e il prossimo. Sommare su tutti i dati possibili non si può, e
 il capitolo sui modelli a energia mostrerà quanto quel conto sia fuori portata.
 Le strade sono allora due: rinunciare alla normalizzazione e cavarsela lo
-stesso (è il prossimo capitolo), oppure **costruire il modello in modo che
+stesso (è il capitolo sui modelli a energia), oppure **costruire il modello in modo che
 venga normalizzato da sé**, senza mai fare quel conto. È la strada di questo.
 
 ## La mappa
@@ -109,7 +109,7 @@ la ragione strutturale per cui ha perso.
   proprio lo sportello. Ha imparato a fabbricare, non a giudicare.
 - I modelli si mettono in fila secondo che cosa sanno dire di quel numero.
   Alcuni **niente** (le GAN). Alcuni **qualcosa di approssimato**: i modelli
-  del capitolo sulla diffusione e quelli del capitolo che segue sanno dire chi
+  del capitolo sulla diffusione e quelli sull'energia sanno dire chi
   è più plausibile fra due dati, non stampare una percentuale. E alcuni lo
   sanno **esatto**, ed è la famiglia di questo capitolo.
 - Le strade per saperlo esatto sono due. **A pezzi in fila**: si taglia il

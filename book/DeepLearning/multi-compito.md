@@ -74,6 +74,12 @@ $$
 \mathcal{L}_t\big(h_{\theta_t}(g_\phi(\mathbf{x})),\, y_t\big).
 $$
 
+Qui $\mathbf{x}$ è l'esempio in ingresso, $\phi$ sono i parametri del tronco
+condiviso e $\theta_t$ quelli della testa del compito $t$, $y_t$ è l'etichetta
+di quel compito, $\mathcal{L}_t$ la sua perdita e $\lambda_t > 0$ il peso con
+cui entra nella somma. Quei pesi sono il punto delicato di tutto il metodo, e
+la sezione «Quando invece fa danno» ci torna sopra.
+
 L'alternativa è la **condivisione morbida** (*soft sharing*): $T$ reti
 separate, ciascuna con i propri parametri, legate da un termine di
 regolarizzazione che ne penalizza la distanza, per esempio $\sum_{t \neq s}
@@ -446,3 +452,10 @@ provandoli a coppie, più che deducendolo.
   $0{,}01$ all'1,5%.
 ```
 `````
+
+Il capitolo si chiude su un tronco solo che serve a più mestieri, ed è
+l'immagine da portarsi via: la profondità costruisce una scala di descrizioni,
+dal bordo alla forma, e quella scala non appartiene al compito per cui era
+nata. Il capitolo sulla visione artificiale porta quel tronco dentro un solo
+dominio, le immagini, dove i mestieri hanno nomi precisi: dire che cosa c'è,
+dire dov'è, ritagliarne il contorno.

@@ -112,10 +112,15 @@ quelle di là.
 La stima naturale di $q_*(a)$ è la **media campionaria**
 
 $$
-Q_t(a) = \frac{\sum_{i<t} R_i \cdot \mathbb{1}[A_i = a]}{\sum_{i<t} \mathbb{1}[A_i = a]},
+Q_t(a) = \frac{\sum_{i<t} R_i \cdot \mathbb{1}[A_i = a]}{\sum_{i<t}
+\mathbb{1}[A_i = a]},
 $$
 
-che si calcola in forma incrementale, senza tenere in memoria la storia. Se
+dove $\mathbb{1}[\cdot]$ vale $1$ quando la condizione è vera e $0$ altrimenti:
+al numeratore somma le sole ricompense incassate tirando $a$, al denominatore
+conta quante volte $a$ è stata tirata.
+
+Si calcola in forma incrementale, senza tenere in memoria la storia. Se
 $Q_n$ è la stima dopo $n-1$ tiri della stessa leva e $R_n$ è l’$n$-esima
 ricompensa,
 
@@ -466,7 +471,9 @@ H_{t+1}(a) = H_t(a) - \alpha\,\big(R_t - \bar{R}_t\big)\,\pi_t(a)
 \;\; \forall a \neq A_t ,
 $$
 
-dove $\bar{R}_t$ è la media delle ricompense fino a $t$, cioè la **baseline**.
+dove $\bar{R}_t$ è la media delle ricompense incassate **prima** di $t$, cioè
+la **baseline** (è quello che fa anche il codice più sotto, che aggiorna la
+media dopo averla usata).
 
 Vale la pena riconoscere che cosa si sta guardando: è **REINFORCE con
 baseline**, il metodo a gradiente di policy del capitolo sul deep

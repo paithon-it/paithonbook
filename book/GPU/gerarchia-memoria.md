@@ -264,7 +264,7 @@ Nel tiling classico del GEMM la cosa non morde (la tessera di $\mathbf{A}$ si
 legge in broadcast, quella di $\mathbf{B}$ per parole consecutive) e proprio
 per questo la nota serve: il caso comodo è quello, mentre ogni variante che
 percorre una tessera *per colonna* (una trasposta, il caricamento dei frammenti
-per i tensor core, il tile di $K^\top$ in FlashAttention) cade nel caso
+per i tensor core, il tile di $\mathbf{K}^\top$ in FlashAttention) cade nel caso
 scomodo. Il rimedio canonico sta in una riga: si dichiara la tessera con una
 colonna in più (`[32][33]` invece di `[32][32]`), così l'indirizzo di ogni riga
 slitta di un banco e la colonna smette di ricadere sempre sullo stesso.
@@ -354,7 +354,7 @@ intorno ai dieci conti per byte: sotto sei bloccato dal magazzino, sopra dai
 cuochi. Ma è un valore che si sposta, e sempre nella stessa direzione: accendi
 le unità costruite apposta per moltiplicare due tabelloni (i *tensor core*
 della sezione sul GEMM) e sale oltre i centocinquanta, perché i cuochi sono
-diventati quindici volte più svelti mentre il magazzino consegna alla stessa
+diventati sedici volte più svelti mentre il magazzino consegna alla stessa
 velocità di prima. Da qui la cura, per chi sta sotto: fare *più conti con gli stessi
 ingredienti* prima di rimandarli indietro, che è esattamente ciò che fa la
 fusione dei kernel vista nella sezione «Prestazioni e scala».

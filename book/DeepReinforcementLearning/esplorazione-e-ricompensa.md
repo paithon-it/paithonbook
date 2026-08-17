@@ -229,7 +229,8 @@ $a_t$; la ricompensa
 intrinseca è
 
 $$
-r_t^{\text{int}} = \frac{\eta}{2}\,\big\lVert \hat\phi(s_{t+1}) - \phi(s_{t+1}) \big\rVert^2 ,
+r_t^{\text{int}} = \frac{\eta}{2}\,\big\lVert \hat\phi(s_{t+1}) -
+\phi(s_{t+1}) \big\rVert^2 ,
 $$
 
 l'errore di predizione, con $\eta>0$ un fattore di scala. Alta sugli stati la

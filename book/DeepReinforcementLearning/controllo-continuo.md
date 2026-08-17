@@ -143,8 +143,10 @@ y = r + \gamma\, Q_{\phi'}\!\big(s', \mu_{\theta'}(s')\big),
 $$
 
 dove $\phi'$ e $\theta'$ sono i parametri delle reti target, aggiornate con
-uno scorrimento lento (*Polyak averaging*) $\phi’ \leftarrow \tau\phi +
-(1-\tau)\phi’$, con $\tau\ll 1$. L'esplorazione avviene aggiungendo rumore
+uno scorrimento lento (*Polyak averaging*) $\phi' \leftarrow \tau\phi +
+(1-\tau)\phi'$, con $\tau\ll 1$ (questo $\tau$ è un numero, il peso dello
+scorrimento, e non ha niente a che vedere con la traiettoria $\tau$ della
+sezione precedente). L'esplorazione avviene aggiungendo rumore
 all'azione in fase di raccolta, $a = \mu_\theta(s) + \epsilon$: nel paper
 originale $\epsilon$ è un processo di Ornstein-Uhlenbeck (rumore temporalmente
 correlato, utile in sistemi con inerzia), ma nella pratica un semplice rumore
@@ -227,6 +229,9 @@ $$
 y = r + \gamma \min_{i=1,2} Q_{\phi'_i}\!\big(s', \tilde a'\big).
 $$
 
+dove $\tilde a'$ è l'azione dell'attore target *sfumata dal rumore*, che il
+punto (c) qui sotto definisce.
+
 Prendere il minimo introduce un bias *pessimista* che compensa la sovrastima:
 poiché l'errore che si propaga è il più piccolo dei due, il valore tende a non
 gonfiarsi. Vale però lo stesso caveat visto per il Double DQN, ed è la stessa
@@ -245,7 +250,9 @@ $$
 \qquad \epsilon \sim \operatorname{clip}\big(\mathcal{N}(0,\sigma^2),\,-c,\,c\big),
 $$
 
-così che il bersaglio sia liscio rispetto all'azione: previene lo
+dove $\sigma$ è l'ampiezza del rumore e $c$ la soglia oltre la quale viene
+troncato (nel paper $\sigma = 0{,}2$ e $c = 0{,}5$), così che il bersaglio sia
+liscio rispetto all'azione: previene lo
 sfruttamento, da parte dell'attore, di picchi acuti ed erronei nella superficie
 del critico. Dei due difetti elencati sopra, TD3 attacca frontalmente **il
 primo**, la sovrastima, con il clipped double-Q e il target smoothing; il *delayed
@@ -296,9 +303,11 @@ SAC ottimizza l'obiettivo di **massima entropia**: al ritorno somma l'entropia
 della policy in ogni stato,
 
 $$
-J(\pi) = \sum_{t=0}^{T} \mathbb{E}\Big[\, r_t + \alpha\, \mathcal{H}\big(\pi(\cdot\mid s_t)\big)\Big],
+J(\pi) = \sum_{t=0}^{T} \mathbb{E}\Big[\, r_t + \alpha\,
+\mathcal{H}\big(\pi(\cdot\mid s_t)\big)\Big],
 \qquad
-\mathcal{H}\big(\pi(\cdot\mid s)\big) = -\,\mathbb{E}_{a\sim\pi}\big[\log \pi(a\mid s)\big].
+\mathcal{H}\big(\pi(\cdot\mid s)\big) = -\,\mathbb{E}_{a\sim\pi}\big[\log
+\pi(a\mid s)\big].
 $$
 
 Il coefficiente $\alpha>0$ è la **temperatura**, che pesa quanto conta esplorare
@@ -308,7 +317,8 @@ prematuramente su un'unica azione, migliorando l'esplorazione e la robustezza.
 Il critico impara un *soft* Q-value con bersaglio
 
 $$
-y = r + \gamma\Big(\min_{i=1,2} Q_{\phi'_i}(s', a') - \alpha \log \pi_\theta(a'\mid s')\Big),
+y = r + \gamma\Big(\min_{i=1,2} Q_{\phi'_i}(s', a') - \alpha \log
+\pi_\theta(a'\mid s')\Big),
 \qquad a' \sim \pi_\theta(\cdot\mid s'),
 $$
 
@@ -403,7 +413,8 @@ robot direttamente nel mondo fisico è lento e rischioso, così quasi sempre si
 impara in simulazione, dove le prove sono infinite e le cadute non rompono
 nulla. Ma il simulatore non è la realtà: attriti, ritardi dei motori, giochi
 meccanici e rumore dei sensori non coincidono mai del tutto. Una strategia
-perfetta nel simulatore può inciampare al primo passo reale. Colmare quello scarto (con randomizzazione dei parametri
+perfetta nel simulatore può inciampare al primo passo reale. Colmare quello
+scarto (con randomizzazione dei parametri
 fisici, calibrazione, adattamento sul campo) è un problema di ricerca ancora
 aperto, e ci ricorda che l'algoritmo di controllo è solo un pezzo del percorso
 che porta un robot a muoversi nel mondo.

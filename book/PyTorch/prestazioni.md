@@ -53,7 +53,7 @@ videogiochi.
 `````
 
 `````{tab} Superiore
-Il prodotto tra una matrice $(n, m)$ e una $(m, p)$ costa circa $2nmp$
+Il prodotto tra una matrice $(M, K)$ e una $(K, N)$ costa circa $2MNK$
 operazioni in virgola mobile, tutte indipendenti a livello di prodotto
 scalare: parallelismo perfetto. Le GPU adottano un'architettura *throughput
 oriented* (migliaia di unità di calcolo semplici, modello SIMT: stessa
@@ -540,7 +540,7 @@ gira e che stampa, fra le altre cose, quale percentuale della scheda è
 effettivamente occupata. Ottimizzare senza misurare è potare un albero al buio.
 
 Con questa sezione il capitolo si chiude: dal primo tensore alla macchina
-tenuta a regime. Il capitolo successivo apre il cofano dell'hardware.
+tenuta a regime.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -591,3 +591,9 @@ tenuta a regime. Il capitolo successivo apre il cofano dell'hardware.
   minimo di più ripetizioni, non la prima.
 ```
 `````
+
+Una riga, in tutto il capitolo, l'abbiamo usata senza aprirla: quella che
+sposta il modello e i dati sulla scheda grafica. Funziona, cambia i tempi di
+un addestramento, e finora non ha spiegato niente di sé. Il capitolo su GPU e
+calcolo parallelo apre quella scatola, e da lì in poi «lento» smette di essere
+un'impressione e diventa qualcosa che si sa dove andare a cercare.

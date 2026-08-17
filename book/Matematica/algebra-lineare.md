@@ -437,9 +437,11 @@ $$
 \mathbf{A}\mathbf{v} = \lambda\mathbf{v}.
 $$
 
-Riscrivendo come $(\mathbf{A}-\lambda \mathbf{I})\mathbf{v}=\mathbf{0}$: la
-soluzione non banale esiste solo se $\mathbf{A}-\lambda \mathbf{I}$ è
-singolare, cioè se
+Riscrivendo come $(\mathbf{A}-\lambda \mathbf{I})\mathbf{v}=\mathbf{0}$, dove
+$\mathbf{I}$ è la **matrice identità** (uno sulla diagonale e zero altrove:
+quella che moltiplicando non cambia niente), la soluzione non banale esiste
+solo se $\mathbf{A}-\lambda \mathbf{I}$ è **singolare**, cioè non invertibile,
+cioè se
 
 $$
 \det(\mathbf{A} - \lambda \mathbf{I}) = 0 .
@@ -497,10 +499,11 @@ di quanto al massimo la matrice allunga un vettore, $\sigma_{\min}$ di quanto
 al minimo (per una matrice con almeno tante righe quante colonne: altrimenti
 c'è sempre una direzione che viene annullata), e il **rango** è il numero dei
 $\sigma_i$ non nulli. Per una matrice simmetrica i valori singolari sono i
-moduli degli autovalori; in generale le due famiglie non coincidono, ma non
-sono nemmeno estranee: il loro prodotto è lo stesso (entrambi danno
-$|\det\mathbf{A}|$) e soprattutto $\sigma_{\max}\ge|\lambda|_{\max}$, cioè
-l'allungamento massimo non è mai inferiore all'autovalore più grande. È una
+moduli degli autovalori; per una matrice quadrata qualsiasi le due famiglie non
+coincidono, ma non sono nemmeno estranee: il prodotto dei moduli è lo stesso
+(entrambe le famiglie danno $|\det\mathbf{A}|$) e soprattutto
+$\sigma_{\max}\ge|\lambda|_{\max}$, cioè l'allungamento massimo non è mai
+inferiore al **modulo** dell'autovalore più grande. È una
 disuguaglianza che può essere larghissima, e fra poche righe si vedrà che
 proprio in quella distanza sta il fenomeno più interessante. Tornerà nella sezione
 di analisi numerica (dove il numero di condizionamento è il rapporto
@@ -592,10 +595,16 @@ $$
 \lVert \hat{\mathbf{y}}^{(i)} - \mathbf{y}^{(i)} \rVert_2^2 .
 $$
 
+Qui $m$ è il numero di esempi (in questa pagina la stessa lettera contava le
+righe di una matrice: da qui in avanti, e nel resto del libro, conta gli
+esempi), $\mathbf{y}^{(i)}$ è l'uscita vera dell'esempio $i$-esimo e
+$\hat{\mathbf{y}}^{(i)}$ quella predetta dal modello.
+
 (Scritta così la media è sui soli $m$ esempi. Con uscite vettoriali le
 librerie mediano anche sulle componenti: `mean_squared_error` di scikit-learn
-e `nn.MSELoss` con `reduction='mean'` dividono per $m\cdot d$, quindi il loro
-numero differisce da questo per un fattore $d$. Il minimo è lo stesso, il
+e `nn.MSELoss` con `reduction='mean'` dividono per $m\cdot d$, dove $d$ è
+quante componenti ha ciascuna uscita, quindi il loro numero differisce da
+questo per un fattore $d$. Il minimo è lo stesso, il
 valore stampato no.)
 
 Norme e prodotti scalari sono legati da $\lVert\mathbf{x}\rVert_2^2 =

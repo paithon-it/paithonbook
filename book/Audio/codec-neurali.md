@@ -27,8 +27,10 @@ Un codec **neurale** ribalta l'approccio. Invece di scrivere le regole, le fa
 che vale la pena guardare: un **encoder** che stringe quello che entra fino a
 farlo diventare un pugno di numeri, e un **decoder** che da quel pugno di numeri
 cerca di ritirare fuori l'originale. I due si addestrano *insieme*, con un'unica
-regola: quello che esce deve somigliare a quello che è entrato. (La stessa idea
-tornerà per le immagini, nel capitolo sui modelli di diffusione.)
+regola: quello che esce deve somigliare a quello che è entrato. Questa forma non
+è del suono, è di qualunque cosa si voglia comprimere, ed è qui che il libro la
+monta: il capitolo sui modelli di diffusione la riprenderà per le immagini, e le
+aggiungerà l'unica cosa che le manca per servire anche a *generare*.
 
 ```{figure} ../figures/autoencoder-comprimere-per-capire.svg
 :name: fig-autoencoder-clessidra
@@ -48,8 +50,12 @@ codice: l’*input* è ciò che entra, l’*encoder* la parte che stringe, il
 che esce. Il pugno di numeri che sopravvive nella strozzatura si chiama
 **latente**, ed è una parola che da qui in poi torna in ogni pagina: latente
 perché quei numeri non li ha scelti nessuno e non dicono niente a guardarli, ma
-dentro c'è tutto ciò che serve per rifare il suono. Le lettere sono le
-abbreviazioni consuete ($\mathbf{x}$ l'ingresso, $\hat{\mathbf{x}}$ la sua
+dentro c'è tutto ciò che serve per rifare il suono. E siccome un pugno di numeri
+si può sempre immaginare come un punto, l'insieme di tutti i latenti possibili
+prende il nome di **spazio latente**: il magazzino dove la rete tiene i suoi
+riassunti. È un nome che nel libro tornerà ogni volta che un modello preferisce
+lavorare sulla versione compressa dei dati invece che sui dati. Le lettere sono
+le abbreviazioni consuete ($\mathbf{x}$ l'ingresso, $\hat{\mathbf{x}}$ la sua
 ricostruzione, $\mathbf{z}$ il latente, *loss* la distanza fra i primi due, cioè
 quanto la rete ha sbagliato).
 

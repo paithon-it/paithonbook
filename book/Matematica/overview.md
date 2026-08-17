@@ -128,7 +128,6 @@ nasconde un'idea che sapresti spiegare a voce.
 
 Alla fine delle sei sezioni avrai in mano poche cose, e sono sempre quelle: una
 lista di numeri, un modo per capire da che parte migliorare, un modo per dire
-quanto sei sicuro. Servono subito, e non fra dieci capitoli: il prossimo, il
-machine learning, è quello in cui questi attrezzi vengono messi al lavoro su un
-problema vero, e comincia con un programma del 1959 che gioca a dama e batte
-l'uomo che l'aveva scritto.
+quanto sei sicuro. Servono subito, e non fra dieci capitoli: il capitolo sul
+machine learning, che viene dopo questo, è già tutto un metterle al lavoro su
+un problema vero.

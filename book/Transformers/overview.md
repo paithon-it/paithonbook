@@ -2,20 +2,18 @@
 
 Nel giugno del 2017 otto ricercatori, tutti passati per Google Brain e Google
 Research, pubblicano un *paper* (un articolo scientifico: il modo in cui chi fa
-ricerca racconta agli altri quello che ha trovato) dal titolo che suona come
-una battuta: *Attention Is All You Need* {cite}`vaswani2017attention`,
-"l'attenzione è tutto ciò che serve", eco di *All You Need Is Love* dei
-Beatles. Dentro
-c'è un'architettura di rete neurale nuova, il **Transformer**, che fa una
-scommessa radicale: per capire il linguaggio non servono né la ricorrenza delle
-RNN (leggere una parola alla volta, portandosi dietro un riassunto di quel che
-è venuto prima) né le convoluzioni (i filtri che scorrono su un testo o su
-un'immagine guardando solo i vicini, del capitolo sul deep learning); basta il
-meccanismo di **attenzione**, usato fino ad allora come accessorio. La
-scommessa è vinta
-oltre ogni previsione: oggi il Transformer è la base di quasi tutti i grandi
-modelli linguistici, e quella "T" è la stessa che trovi nel nome di GPT e di
-ChatGPT.
+ricerca racconta agli altri quello che ha trovato) dal titolo che suona come una
+battuta: *Attention Is All You Need* {cite}`vaswani2017attention`
+(«l'attenzione è tutto ciò che serve», eco di *All You Need Is Love* dei
+Beatles). Dentro c'è un'architettura di rete neurale nuova, il **Transformer**,
+che fa una scommessa radicale: per capire il linguaggio non servono né la
+ricorrenza delle RNN (leggere una parola alla volta, portandosi dietro un
+riassunto di quel che è venuto prima) né le convoluzioni (i filtri che scorrono
+su un testo o su un'immagine guardando solo i vicini, del capitolo sul deep
+learning); basta il meccanismo di **attenzione**, usato fino ad allora come
+accessorio. La scommessa è vinta oltre ogni previsione: oggi il Transformer è la
+base di quasi tutti i grandi modelli linguistici, e quella «T» è la stessa che
+trovi nel nome di GPT e di ChatGPT.
 
 ## Il problema: leggere una frase tutta insieme
 
@@ -87,16 +85,45 @@ completatore di frasi diventa un assistente che risponde. E il **retrieval**,
 cioè come si insegna a un modello a cercare prima di rispondere. Chiude uno
 sguardo alle **tendenze**, con i limiti, che non mancano.
 
+`````{tab} Elementare
+
+```{admonition} Da ricordare
+:class: important
+- Il **Transformer** (Vaswani e colleghi, 2017, *Attention Is All You Need*)
+  toglie di mezzo sia la lettura in fila sia i filtri che guardano solo i
+  vicini: tutta l'architettura si regge sul meccanismo di **attenzione**.
+- Attacca alla radice i due guai delle reti che leggono una parola alla volta.
+  Le **dipendenze lunghe**: ogni parola guarda direttamente ogni altra, e il
+  ricordo dell'inizio non sbiadisce più per strada. E la
+  **parallelizzazione**: le parole si elaborano tutte insieme invece che in
+  fila, e i cento amici di prima servono davvero, perché è quello che permette
+  di addestrare questi modelli su macchine con migliaia di processori.
+- Proprio perché regge dati e macchine sempre più grandi è diventato la base
+  dei grandi modelli linguistici: quella «T» è la stessa di GPT, BERT e
+  ChatGPT.
+```
+
+`````
+
+`````{tab} Superiore
+
 ```{admonition} Da ricordare
 :class: important
 - Il **Transformer** (Vaswani et al., 2017, *Attention Is All You Need*)
-  elimina ricorrenza e convoluzioni: l'intera architettura si regge sul
-  meccanismo di **attenzione**.
-- Rispetto alle RNN attacca alla radice due problemi: le **dipendenze lunghe** (ogni
-  parola vede direttamente ogni altra) e la **parallelizzazione** (le parole si
-  possono elaborare tutte insieme invece che in fila, e i cento amici della
-  scheda Elementare servono davvero: è quello che permette di addestrare i
-  modelli su macchine con migliaia di processori).
-- La capacità di scalare con dati e parametri ne ha fatto la base dei grandi
-  modelli linguistici: la "T" di GPT, BERT e ChatGPT.
+  sostituisce ricorrenza e convoluzione con la **self-attention**. La Tabella 1
+  dell'articolo mette in fila il guadagno: il cammino massimo fra due posizioni
+  qualsiasi scende da $O(n)$ di uno strato ricorrente a $O(1)$, ed è questa la
+  ragione per cui le dipendenze lunghe si imparano meglio.
+- Cade con la ricorrenza anche il vincolo sequenziale: le operazioni da fare
+  una dopo l'altra passano da $O(n)$ a $O(1)$, quindi l'intera sequenza si
+  elabora in parallelo e l'addestramento sfrutta l'hardware a molti core.
+- Il prezzo sta nell'altra colonna della stessa tabella: il costo per strato è
+  $O(n^2 \cdot d)$, cioè **quadratico** nella lunghezza $n$ della sequenza; ed
+  è quadratica in $n$ anche la memoria per i punteggi, $O(n^2)$, senza il
+  fattore $d$. È il conto che il capitolo nomina e non salda.
+- Su questa architettura poggiano i grandi modelli linguistici (GPT, BERT,
+  T5): a imporla è stata la capacità di scalare con dati e parametri.
 ```
+
+`````
+

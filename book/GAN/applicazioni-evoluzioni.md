@@ -349,15 +349,17 @@ agisce separatamente su ogni mappa di attivazioni $\mathbf{x}_i$:
 
 $$
 \mathrm{AdaIN}(\mathbf{x}_i, \mathbf{y}) =
-\mathbf{y}_{s,i}\, \frac{\mathbf{x}_i - \mu(\mathbf{x}_i)}{\sigma(\mathbf{x}_i)}
-+ \mathbf{y}_{b,i},
+y_{s,i}\, \frac{\mathbf{x}_i - \mu(\mathbf{x}_i)}{\sigma(\mathbf{x}_i)}
++ y_{b,i},
 $$
 
-dove $\mu$ e $\sigma$ sono media e deviazione standard **della mappa stessa**, e
-la coppia $(\mathbf{y}_s, \mathbf{y}_b)$ è lo stile, ricavato da $\mathbf{w}$
-con una trasformazione affine appresa. Il varco del contrabbandiere è quella
-divisione per $\sigma(\mathbf{x}_i)$, che è l'unico punto in cui il calcolo
-guarda i valori prodotti.
+dove $\mathbf{x}_i$ è l’$i$-esima mappa di attivazioni, $\mu$ e $\sigma$ sono
+media e deviazione standard **della mappa stessa**, e la coppia di vettori
+$(\mathbf{y}_s, \mathbf{y}_b)$ è lo stile, ricavato da $\mathbf{w}$ con una
+trasformazione affine appresa; $y_{s,i}$ e $y_{b,i}$, tondi perché sono due
+numeri e non due vettori, sono le loro componenti sul canale $i$. Il varco del
+contrabbandiere è quella divisione per $\sigma(\mathbf{x}_i)$, che è l'unico
+punto in cui il calcolo guarda i valori prodotti.
 
 Al suo posto la modulazione scala i pesi della convoluzione per lo stile, e la
 demodulazione li rinormalizza sotto l'ipotesi che gli ingressi siano
@@ -366,13 +368,17 @@ indipendenti e a varianza unitaria:
 $$
 w'_{ijk} = s_i \, w_{ijk},
 \qquad
-w''_{ijk} = \frac{w'_{ijk}}{\sqrt{\sum_{i,k} \big(w'_{ijk}\big)^2 + \epsilon}},
+w''_{ijk} = \frac{w'_{ijk}}{\sqrt{\sum_{i',k'} \big(w'_{i'jk'}\big)^2 + \epsilon}},
 $$
 
 dove $i$ indicizza i canali d'ingresso, $j$ quelli d'uscita, $k$ le posizioni
 spaziali del filtro, $s_i$ è la scala dettata dallo stile ed $\epsilon$ evita la
-divisione per zero. L'ipotesi statistica è il punto: la demodulazione non
-misura le attivazioni vere, le assume, e per questo non offre nessun canale in
+divisione per zero. Gli apici al denominatore non sono decorativi: la somma
+corre su tutti i canali d'ingresso e su tutte le posizioni **a canale d'uscita
+$j$ fissato**, cioè è la norma dell'intero filtro che produce il canale $j$, e
+$i'$ e $k'$ scorrono mentre l’$i$ e il $k$ del numeratore restano fermi.
+L'ipotesi statistica è il punto: la demodulazione non misura le attivazioni
+vere, le assume, e per questo non offre nessun canale in
 cui nascondere segnale. Gli autori la dichiarano per quello che è, cioè **più
 debole** dell'instance normalization proprio perché poggia su ipotesi sul
 segnale invece che sul contenuto effettivo delle mappe: il controllo
@@ -758,3 +764,12 @@ duello, e conviene ripassarle così.
 ```
 
 `````
+
+Il duello esce da questo capitolo ridimensionato ma non archiviato, ed è quello
+il lascito: non una famiglia di architetture, ma un modo di addestrare che
+sopravvive dentro sistemi che non si chiamano più GAN. La domanda però resta
+intera, fabbricare dati nuovi e plausibili senza un originale con cui
+confrontarsi, e i capitoli che seguono sono altrettante risposte diverse alla
+stessa domanda. La prima è «Modelli di diffusione», che al posto di due reti
+che si sfidano mette un dato ridotto a rumore e una rete che rifà la strada
+all'indietro.

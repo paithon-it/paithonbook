@@ -232,6 +232,8 @@ misurare se è buona. Chiuderemo con il funzionamento vero della macchina che ti
 consiglia i video, e con la domanda che le sta sotto: quando un consiglio
 smette di essere un consiglio.
 
+`````{tab} Elementare
+
 ```{admonition} Da ricordare
 :class: important
 - Consigliare non è riconoscere: **non esiste una risposta valida per tutti**,
@@ -249,7 +251,37 @@ smette di essere un consiglio.
   ciò che si sa, per poi vedere se il modello la ritrova.
 - **Il sistema si fabbrica da solo i dati con cui impara**: mostra quello che
   ha scelto lui, e ciò che mostra è ciò che verrà cliccato. È il cameriere che
-  consiglia sempre gli
-  stessi tre piatti, ed è il problema che questo capitolo si porta dietro fino
-  all'ultima riga.
+  consiglia sempre gli stessi tre piatti, ed è il problema che questo capitolo
+  si porta dietro fino all'ultima riga.
 ```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- Il problema è prevedere le preferenze mancanti nella matrice di interazione
+  $\mathbf{R}$, utenti per oggetti, di cui si osserva una frazione minima: nel
+  Netflix Prize l'1,2% delle celle, nei cataloghi industriali di oggi meno
+  dello 0,1%. Quel vuoto ha un nome, **sparsità**, ed è il vincolo che detta
+  quasi tutte le scelte che seguono.
+- Il segnale è di due specie. **Esplicito**: voti su una scala, cioè un target
+  continuo o ordinale su una matrice incompleta, e raro. **Implicito**: click,
+  acquisti, minuti di visione, cioè dati binari o di conteggio, abbondanti ma
+  senza negativi certi, perché un oggetto mai mostrato non è un oggetto
+  rifiutato.
+- La verità di riferimento è **controfattuale** e per la gran parte delle
+  coppie non esisterà mai. Si valuta per ripiego: si nascondono interazioni
+  note e si guarda se il modello le ritrova. *Quale* parte si nasconde sposta
+  i risultati più di quasi ogni scelta di modello.
+- I dati non vengono dalla distribuzione vera delle preferenze ma dalla
+  **politica di esposizione** del sistema che li ha raccolti: è un *feedback
+  loop* che amplifica i bias invece di mediarli, cioè un caso severo di
+  *dataset shift*, con l'aggravante di essere prodotto dal sistema stesso. Le
+  contromisure (esplorazione controllata, correzioni per propensità) esistono
+  e nessuna è gratis.
+```
+
+`````
+

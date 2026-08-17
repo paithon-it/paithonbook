@@ -359,8 +359,9 @@ di transizione. Il suo
 scarto sul bin centrale vale $+0{,}00357$ a $\epsilon = 0{,}01$, $+0{,}00071$
 a $\epsilon = 0{,}002$ e $+0{,}00018$ a $\epsilon = 0{,}0005$: sempre positivo
 (la barriera è sovrappesata), e il rapporto fra lo scarto e la durata del
-saltello resta fra $0{,}35$ e $0{,}36$ su due ordini di grandezza. Lo scarto,
-cioè, cala esattamente in proporzione al passo: passo cinque volte più corto,
+saltello resta fra $0{,}35$ e $0{,}36$ mentre il passo si accorcia di venti
+volte. Lo scarto, cioè, cala esattamente in proporzione al passo: passo cinque
+volte più corto,
 scarto cinque volte più piccolo, e zero soltanto al limite di saltelli di
 durata nulla. Sparirebbe anche in un altro modo: aggiungendo, dopo ogni
 saltello, un controllo che confronta il punto di arrivo con quello di partenza
@@ -385,8 +386,9 @@ e un'unità è esattamente la salita che le spintarelle casuali riescono a far
 fare a una pallina senza sforzarsi: barriere così si scavalcano di continuo, e
 le catene sono ventimila e indipendenti. Ma la difficoltà di superare una
 barriera non cresce in proporzione alla sua altezza, cresce molto più in
-fretta. Misurato sullo stesso paesaggio, alzando la collinetta da uno a dieci
-le catene la scavalcano **duemila volte** più di rado. Alzandola, o passando a
+fretta. Misurato sullo stesso paesaggio, con le stesse ventimila catene e lo
+stesso numero di passi, alzando la collinetta da uno a dieci gli scavalcamenti
+crollano di **oltre duemila volte**. Alzandola, o passando a
 mille dimensioni dove le valli sono separate da creste lunghissime,
 la stessa procedura darebbe una fotografia sbilanciata, e nessuno se ne
 accorgerebbe: in alta dimensione la colonna «esatto» non si può stampare.

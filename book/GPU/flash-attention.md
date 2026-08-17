@@ -68,14 +68,15 @@ Con mille parole, sono un milione di confronti: una tabella di mille righe per
 mille colonne. Fin qui, tanti conti ma niente di drammatico. Il guaio è *dove*
 metti quella tabella. È troppo grande per il tavolo di lavoro veloce, il
 ripiano accanto ai calcolatori, quindi la GPU la scrive nel magazzino lontano
-e poi deve tornare a prenderla per fare il secondo passo (le percentuali) e
-*di nuovo* per il terzo (la media). Tre spedizioni al magazzino per una tabella
-enorme che, alla fine, non serviva nemmeno tenere: era solo un passaggio
-intermedio.
+e poi deve tornare a prenderla per fare il secondo passo (le percentuali),
+riscrivere anche quelle, e tornare *di nuovo* per il terzo (la media). Quattro
+viaggi al magazzino per una tabella enorme che, alla fine, non serviva nemmeno
+tenere: era solo un passaggio intermedio.
 
 È come dover tenere la sfoglia in un capannone lontano perché sul tavolo non ci
-sta, e correre fin là a ogni operazione: una volta per tagliarla, una per
-condirla, una per infornarla. Il tempo non se ne va nel taglio: se ne va nella
+sta, e correre fin là a ogni operazione: una volta per portarcela, una per
+andarla a riprendere e tagliarla, una per riportarci i pezzi, una per andarli
+a riprendere e infornarli. Il tempo non se ne va nel taglio: se ne va nella
 corsa.
 `````
 
@@ -100,7 +101,8 @@ spesso (i due matmul sarebbero compute-bound, e a rovinare tutto sarebbe la
 softmax in mezzo) è sbagliata di suo. Un matmul che produce un'uscita
 $N \times N$ ha intensità limitata dalla propria **dimensione interna**, che
 qui è $d_k$, cioè 64 o 128: al crescere di $N$ il traffico è dominato dalla
-scrittura di $S$ e l'intensità tende a $2N^2 d_k / (2N^2) = d_k$ esatti. Con
+scrittura di $\mathbf{S}$ e l'intensità tende a $2N^2 d_k / (2N^2) = d_k$
+esatti. Con
 $N = 8192$, $d_k = 64$ in `float16` fa 63 FLOP/byte, contro un ginocchio di
 161 su A100 e 295 su H100: **anche i due matmul, da soli, sono memory-bound**,
 e userebbero al più il 39 % del picco. Con $d_k = 128$ si arriva a 124, e resta
@@ -244,8 +246,8 @@ magazzino.
 
 Il nodo tecnico è che la softmax *non* è elemento-per-elemento: normalizza per
 righe, e la normalizzazione richiede in teoria di aver già visto tutti i
-punteggi della riga. Scorrere $K$ a blocchi significa vedere i punteggi un
-pezzo per volta, e qui entra la online softmax.
+punteggi della riga. Scorrere $\mathbf{K}$ a blocchi significa vedere i
+punteggi un pezzo per volta, e qui entra la online softmax.
 `````
 
 ### La online softmax, con i numeri
@@ -271,10 +273,10 @@ istante contiene un solo blocchetto, e tutto il resto della riga resta vuoto,
 perché quella tabella non viene mai scritta da nessuna parte. Sotto, la tabella
 di marcia: a ogni blocchetto si aggiornano il record ($m$, il punteggio più
 alto visto finora) e il totale ($l$), insieme al risultato che si sta
-accumulando ($O$). Quando arriva un punteggio più alto del record, cioè alla
+accumulando ($\mathbf{o}$). Quando arriva un punteggio più alto del record, cioè alla
 seconda e alla quarta riga, il fattore $\alpha$ (qui $0{,}368$, perché il
 record sale di un punto) riesprime rispetto al nuovo record quello che era già
-stato messo da parte. Alla fine $O$ diviso $l$ vale $5{,}257$, lo stesso numero
+stato messo da parte. Alla fine $\mathbf{o}$ diviso $l$ vale $5{,}257$, lo stesso numero
 che darebbe il calcolo fatto in un colpo solo su tutti e otto.
 ```
 
@@ -312,12 +314,13 @@ quelli del calcolo fatto in un colpo unico.
 
 `````{tab} Superiore
 Facciamo il conto a mano su una riga di quattro punteggi
-$s = (1, 3, 2, 4)$ (i valori di $\mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ per una query contro quattro
+$\mathbf{s} = (1, 3, 2, 4)$ (i valori di
+$\mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ per una query contro quattro
 key). Il calcolo *in un colpo solo*, con la solita stabilizzazione che sottrae il
 massimo per non far esplodere gli esponenziali:
 
 $$
-m = \max(s) = 4, \qquad
+m = \max(\mathbf{s}) = 4, \qquad
 l = \sum_i e^{s_i - m} = e^{-3}+e^{-1}+e^{-2}+e^{0} \approx 1{,}553,
 $$
 
@@ -388,7 +391,7 @@ leggono il testo in parallelo, e ognuna descrive una parola con 128 numeri; di
 ogni parola vanno conservate chiave e valore, quindi due volte tanto; e ogni
 numero occupa due byte. In tutto $2 \times 32 \times 8 \times 128 \times 2$
 byte, cioè $131\,072$ byte, che sono esattamente **128 KB** (un KB è 1024 byte)
-**per ogni parola letta**. Su centomila parole di contesto fanno **tredici
+**per ogni parola letta**. Su centomila parole di contesto fanno **dodici
 gigabyte**, per una conversazione sola, su una scheda che di gigabyte ne ha
 ottanta. FlashAttention non lo tocca: è un altro
 mestiere, e lo raccontano la sezione sui modelli linguistici del capitolo sui
@@ -556,12 +559,12 @@ capitolo.
 :class: important
 - L'attenzione materializza due matrici $N \times N$
   ($\mathbf{S} = \mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ e
-  $P = \text{softmax}(S)$): $O(N^2)$ memoria e traffico HBM. Il collo di
+  $\mathbf{P} = \text{softmax}(\mathbf{S})$): $O(N^2)$ memoria e traffico HBM. Il collo di
   bottiglia è la **memoria**, non i FLOP, e lo è per intero: anche i due matmul,
   avendo dimensione interna $d_k$, stanno a $\approx 63$ FLOP/byte contro un
   ginocchio di 161 su A100. Nella forma standard **niente** è compute-bound.
 - **FlashAttention** {cite}`dao2022flashattention` è **IO-aware**: con il
-  **tiling** di $Q,K,V$ in shared memory e la
+  **tiling** di $\mathbf{Q},\mathbf{K},\mathbf{V}$ in shared memory e la
   **online softmax** non scrive mai la matrice $N \times N$ in HBM. Il risultato
   è **esatto**, non approssimato.
 - La **online softmax** normalizza i punteggi a blocchi tenendo due scalari di
@@ -569,7 +572,7 @@ capitolo.
   già sommato quando compare un massimo nuovo: dà gli stessi pesi del calcolo
   in un colpo solo.
 - Non fa **meno** FLOP: in avanti altrettanti, e nel backward $10N^2 d_k$
-  contro $8N^2 d_k$, perché $S$ e $P$ non sono salvate e vanno **ricalcolate**
+  contro $8N^2 d_k$, perché $\mathbf{S}$ e $\mathbf{P}$ non sono salvate e vanno **ricalcolate**
   ($+25\,\%$ sul backward, $+12{,}9\,\%$ misurati sul totale nel paper). È il
   baratto calcolo-per-traffico del *gradient checkpointing*, e conviene perché
   i FLOP ricomprati sono matmul e i byte risparmiati sono HBM.

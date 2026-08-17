@@ -1,14 +1,14 @@
 # Far funzionare le reti profonde
 
 Per molto tempo una rete con tanti strati è stata più un'idea che una pratica.
-Negli anni '90 e nei primi 2000 impilare più livelli spesso *peggiorava* le
-cose: la loss (il numero che misura quanto la rete sbaglia) non scendeva,
-l'addestramento si arenava dopo poche passate sui dati. Non
-era solo questione di potenza di calcolo. Mancavano gli accorgimenti che
-rendono stabile l'apprendimento quando la rete è profonda.
+Negli anni Novanta e nei primi anni Duemila impilare più livelli spesso
+*peggiorava* le cose: la loss (il numero che misura quanto la rete sbaglia) non
+scendeva, l'addestramento si arenava dopo poche passate sui dati. Non era solo
+questione di potenza di calcolo. Mancavano gli accorgimenti che rendono stabile
+l'apprendimento quando la rete è profonda.
 
-Sono arrivati fra il 2010 e il 2015, e sono una manciata: inizializzazioni
-pensate meglio, la *batch normalization* {cite}`ioffe2015batch`, il *dropout*
+Sono arrivati fra il 2010 e il 2015, e sono una manciata: inizializzazioni più
+accorte, la *batch normalization* {cite}`ioffe2015batch`, il *dropout*
 {cite}`srivastava2014dropout`, gli optimizer adattivi come Adam
 {cite}`kingma2015adam`. Insieme hanno trasformato le reti profonde da promessa
 fragile a strumento affidabile. Questa sezione li mette in fila: prima il
@@ -228,10 +228,13 @@ Su reti poco profonde la differenza si assorbe. Su una pila di quaranta blocchi
 `Linear(100, 100)` + ReLU no. Il protocollo, perché la misura si possa rifare:
 ingresso $64\times100$ da una normale standard, loss l'errore quadratico medio
 dell'uscita contro zero, si legge la norma del gradiente sui pesi del **primo**
-strato, mediana su cinque semi. I **bias** si lasciano come li mette PyTorch, e
-non è un dettaglio: azzerandoli il default arriva a zero esatto già a quaranta
-blocchi invece che a sessanta, perché quei valori uniformi sono l'unica cosa
-che tiene in vita il segnale quando i pesi lo spengono. Viene $4{,}2\times10^{-1}$ inizializzando alla
+strato, mediana su cinque semi. I **bias** seguono ciascuno la propria ricetta:
+azzerati con He e con Glorot, come le due prescrivono, e lasciati come li mette
+PyTorch nel caso del default, che è appunto quel che si ottiene senza toccare
+niente. Non è un dettaglio: azzerando anche quelli del default, si arriva a
+zero esatto già a quaranta blocchi invece che a sessanta, perché quei valori
+uniformi sono l'unica cosa che tiene in vita il segnale quando i pesi lo
+spengono. Viene $4{,}2\times10^{-1}$ inizializzando alla
 He, $5{,}5\times10^{-13}$ alla Glorot e $9{,}7\times10^{-18}$ con il default di
 PyTorch: più di sedici ordini di grandezza fra la prima e l'ultima, e
 l'addestramento non è ancora cominciato. La dispersione fra semi è ampia (con
@@ -525,8 +528,14 @@ media mobile esponenziale, che dimentica il passato remoto:
 $$
 \mathbf{s}_t = \rho\,\mathbf{s}_{t-1} + (1-\rho)\,\mathbf{g}_t^2,
 \qquad
-\theta_t = \theta_{t-1} - \frac{\eta}{\sqrt{\mathbf{s}_t}+\epsilon}\,\mathbf{g}_t.
+\theta_t = \theta_{t-1} - \frac{\eta}{\sqrt{\mathbf{s}_t}+\epsilon}\,\mathbf{g}_t,
 $$
+
+dove $\rho \in (0,1)$ è il coefficiente della media mobile: quanto più è
+vicino a uno, tanto più lungo è il passato che $\mathbf{s}_t$ tiene in conto,
+e tanto più lentamente il passo si riadatta. La formulazione originale usa
+$0{,}9$; `torch.optim.RMSprop` chiama questo coefficiente `alpha` e lo lascia
+a $0{,}99$.
 
 Sulla stessa idea, **Adadelta** {cite}`zeiler2012adadelta` accumula una media
 mobile anche degli aggiornamenti, eliminando di fatto la scelta di $\eta$.
@@ -785,7 +794,13 @@ $$
 \end{cases}
 $$
 
-ed è quella che si trova, con nomi diversi, in quasi ogni configurazione di
+dove $t$ è il passo di addestramento, $T$ il numero totale di passi previsti,
+$T_w$ la durata del warmup, $\eta_0$ il learning rate di picco (quello che si
+tocca esattamente alla fine del warmup) ed $\eta_{\min}$ il valore su cui il
+coseno si appoggia a fine corsa, spesso zero. Le due righe si saldano senza
+scalini: in $t = T_w$ la prima dà $\eta_0$ e la seconda pure, perché
+$\cos 0 = 1$; in $t = T$ resta $\eta_{\min}$, perché $\cos \pi = -1$. Ed è
+quella che si trova, con nomi diversi, in quasi ogni configurazione di
 addestramento su larga scala.
 
 `````

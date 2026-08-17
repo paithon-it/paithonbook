@@ -624,16 +624,18 @@ La **contrastive loss** lavora su coppie: avvicina le simili, allontana le
 dissimili fino a un margine $m$, e oltre quel margine smette di spingere
 (altrimenti spenderebbe capacità a separare cose già separate).
 
-La **triplet loss** lavora su terne $(a, p, n)$, ancora, positivo, negativo, e
-chiede una disuguaglianza **relativa**:
+La **triplet loss** lavora su terne $(\mathbf{a}, \mathbf{p}, \mathbf{n})$, gli
+embedding di ancora, positivo e negativo, e chiede una disuguaglianza
+**relativa**:
 
 $$
-\mathcal{L} = \max\big(0,\; m + d(a, p) - d(a, n)\big),
+\mathcal{L} = \max\big(0,\; m + d(\mathbf{a}, \mathbf{p}) - d(\mathbf{a}, \mathbf{n})\big),
 $$
 
-cioè «il positivo deve stare più vicino del negativo, e di almeno $m$». È più
-robusta della contrastive perché non impone distanze assolute, che sarebbero
-arbitrarie, ma solo un ordinamento.
+dove $d(\cdot,\cdot)$ è una distanza fra due embedding (di solito l'euclidea, o
+$1-\cos$) e $m > 0$ è il margine di poco fa: cioè «il positivo deve stare più
+vicino del negativo, e di almeno $m$». È più robusta della contrastive perché
+non impone distanze assolute, che sarebbero arbitrarie, ma solo un ordinamento.
 
 La **multiple negatives ranking loss** (o InfoNCE, la stessa forma già
 incontrata per SimCLR nella sezione *Imparare senza etichette* del capitolo
@@ -642,9 +644,17 @@ capitolo su visione e linguaggio) usa come negativi tutti gli altri elementi
 del batch:
 
 $$
-\mathcal{L} = -\log \frac{\exp(\mathrm{sim}(a, p)/\tau)}
-{\sum_{j} \exp(\mathrm{sim}(a, p_j)/\tau)} .
+\mathcal{L} = -\log \frac{\exp\big(\mathrm{sim}(\mathbf{a}, \mathbf{p})/\tau\big)}
+{\sum_{j=1}^{B} \exp\big(\mathrm{sim}(\mathbf{a}, \mathbf{p}_j)/\tau\big)} ,
 $$
+
+dove $\mathbf{a}$ è l'ancora e $\mathbf{p}$ il suo positivo,
+$\mathbf{p}_1, \dots, \mathbf{p}_B$ sono i positivi di tutti gli esempi del
+batch di taglia $B$ (il proprio, che sta anche al numeratore, più i $B-1$
+altrui, che fanno da negativi), $\mathrm{sim}$ è la similarità del coseno di
+poco sopra e $\tau > 0$ è la **temperatura**, che decide quanto il denominatore
+sia dominato dai candidati più vicini. È una cross-entropia su un problema a
+$B$ vie in cui la classe giusta è «il proprio positivo».
 
 È oggi la scelta prevalente, perché un batch da 1024 fornisce 1023 negativi
 gratis a ogni esempio, ed è precisamente la ricetta degli *in-batch negatives*

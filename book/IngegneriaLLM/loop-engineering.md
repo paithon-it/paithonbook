@@ -631,3 +631,11 @@ una frase, va sorvegliato mentre lavora.
 ```
 
 `````
+
+Tre cerchi, uno dentro l'altro: la frase, il contesto che le sta intorno, il
+ciclo che di frasi ne produce a ripetizione. E in mezzo un'idea che vale ben
+oltre i modelli di linguaggio, cioè che chi propone non può essere anche chi
+approva. **Sistemi multi-agente** toglie l'ultimo presupposto rimasto in piedi,
+che il ciclo sia uno solo: quando ne girano molti insieme non basta più contare
+gli errori di ogni passo, perché ci si mette anche il modo in cui due che
+decidono si mettono d'accordo, e mettersi d'accordo ha un prezzo suo.

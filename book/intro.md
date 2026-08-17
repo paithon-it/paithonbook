@@ -17,9 +17,15 @@
 
 # Il Libro di Intelligenza Artificiale che spiega due volte.
 
-L'intelligenza artificiale ha la fama di essere una materia per pochi, e in giro si trovano soprattutto due cose: articoli che promettono tutto senza spiegare niente, e testi che spiegano bene ma danno per acquisiti tre esami di matematica. Questo libro prova a stare nel mezzo, in italiano, partendo da zero e senza saltare i passaggi difficili: se una cosa è complicata te lo dice, e poi te la spiega lo stesso.
-
-Te la spiega **due volte**: una con un'analogia di tutti i giorni, una con la notazione e le formule per intero. Non è la stessa spiegazione in versione corta e in versione lunga: sono due strade per lo stesso posto, e prendendone una non perdi l'altra.
+L'intelligenza artificiale ha la fama di essere una materia per pochi, e in
+giro si trovano soprattutto due cose: articoli che promettono tutto senza
+spiegare niente, e testi che spiegano bene ma danno per acquisiti corsi
+universitari di analisi e statistica. Questo libro prova a stare nel mezzo, in
+italiano, partendo da zero e senza saltare i passaggi difficili. Ogni concetto
+che conta è spiegato **due volte**, una con un'analogia di tutti i giorni e una
+con la notazione e le formule per intero. Non è la stessa spiegazione in
+versione corta e in versione lunga: sono due strade per lo stesso posto, e
+prendendone una non perdi l'altra.
 
 ```{epigraph}
 Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino?
@@ -61,7 +67,7 @@ in un colpo solo, e si cambia quando vuoi.
 :::
 
 :::{only} html
-Questa versione online del libro **è gratuita** ed **in continuo aggiornamento** per stare al passo con le innovazioni di questa materia: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice usa **PyTorch**, NumPy e scikit-learn, e per provarlo non devi installare niente. Dove in alto compare **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che fa girare il codice su una macchina di Google (serve un account Google). Qualche pagina è essa stessa un notebook, e si riconosce dall'icona a razzo 🚀 in alto a destra: lì il codice si esegue restando nel libro. Altrove si legge qui e si copia dove preferisci.
+Questa versione online del libro **è gratuita** ed **è in continuo aggiornamento** per stare al passo con le innovazioni di questa materia: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice usa **PyTorch**, NumPy e scikit-learn, e per provarlo non devi installare niente. Dove in alto compare **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che fa girare il codice su una macchina di Google (serve un account Google). Qualche pagina è essa stessa un notebook, e si riconosce dall'icona a razzo 🚀 in alto a destra: lì il codice si esegue restando nel libro. Altrove si legge qui e si copia dove preferisci.
 
 Che cosa è cambiato, e quando, sta scritto: {doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa è la versione **{{ versione }}** ({{ data_versione }}).
 :::
@@ -305,7 +311,7 @@ f(x) = x^+ = \max(0, x)
 $$
 
 
-Questa funzione può anche essere definita "a tratti" (*piecewise*) nel seguente modo:
+Questa funzione può anche essere definita «a tratti» (*piecewise*) nel seguente modo:
 
 $$
 f(x) = \begin{cases}
@@ -314,7 +320,7 @@ f(x) = \begin{cases}
 \end{cases}
 $$
 
-Questa funzione prende un input $x$ e restituisce $x$ se $x$ è positivo; altrimenti, restituisce zero. \
+Questa funzione prende un input $x$ e restituisce $x$ se $x$ è positivo; altrimenti, restituisce zero.
 La ReLU è ampiamente utilizzata nelle reti neurali perché introduce una non linearità essenziale e la sua derivata vale esattamente $1$ per $x > 0$: durante la *backpropagation*, **lungo i cammini attivi**, il gradiente non si attenua per colpa dell'attivazione, e sparisce la saturazione che affligge sigmoide e tangente iperbolica.
 
 Attenzione però a non chiedere alla ReLU più di quanto dia. Il gradiente che attraversa uno strato è $\mathbf{W}^\top \mathrm{diag}(\mathbb{1}[z>0])$: l'attenuazione la producono i pesi e le unità spente, non l'attivazione. Che il segnale sopravviva a molti strati dipende quindi dalla **scala dell'inizializzazione**, e con quella sbagliata si vede subito: attraversando cinquanta strati di sole ReLU, con la scala di Xavier (giusta per la tangente iperbolica) il gradiente si attenua di sette ordini di grandezza, e con una scala un po’ troppo grande esplode di otto. È proprio la ReLU a richiedere una scala sua, il fattore $2$ di He, perché azzera metà delle unità: la frazione di derivate nulle, misurata, è $0{,}50$.
@@ -335,7 +341,7 @@ Ogni progetto ha bisogno di supporto per crescere e migliorare. I progetti open 
     <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🔋"  data-font="Cookie" data-text="Ricarica la mia energia" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
 </span>
 
-- Aiutaci a scoprire errori e migliorare il progetto: selezionando un pezzo di testo in qualunque pagina compare un pulsante che apre una segnalazione (un *issue*) già compilata su GitHub, dove la correzione viene discussa e poi accolta.
+- Aiutaci a scoprire errori e migliorare il progetto: selezionando un pezzo di testo in qualunque pagina compare un pulsante che apre una segnalazione (una *issue*) già compilata su GitHub, dove la correzione viene discussa e poi accolta.
 - Invia i tuoi feedback ✉ a *info@paithon.it*. Saranno utilizzati esclusivamente per migliorare e arricchire il libro.
 :::
 

@@ -121,7 +121,7 @@ economica, la seconda si può leggere.
 
 L’**Universal Transformer** {cite}`dehghani2019universal` (l'articolo è del
 luglio 2018, presentato a ICLR l'anno successivo, che è la data della voce in
-bibliografia) sostituisce gli $N$
+bibliografia) sostituisce gli $L$
 strati distinti con **un solo blocco applicato ricorrentemente in profondità**,
 cioè con i pesi legati fra le iterazioni. La motivazione dichiarata è
 recuperare il *bias induttivo* ricorrente che il Transformer aveva buttato via
@@ -209,19 +209,21 @@ sono quasi sempre ricombinazioni ingegnose di idee semplici, rese possibili da
 più dati e più calcolo. Chi conosce le idee semplici non insegue le mode: le
 legge.
 
+`````{tab} Elementare
+
 ```{admonition} Da ricordare
 :class: important
 - La ricerca punta su **efficienza** (la *distillazione*, cioè l'apprendista
   che impara dal maestro; la *quantizzazione*, cioè scrivere ogni numero con
-  meno cifre per farlo stare in un telefono; e i modelli che tengono acceso solo
-  un pezzo di sé per ogni parola), **contesto lungo** (modi più economici di
-  far parlare fra loro le parti di un testo, fino agli *state space model*) e
-  **multimodalità** (leggere, guardare e ascoltare con lo stesso meccanismo).
+  meno cifre per farlo stare in un telefono; e i modelli che tengono acceso
+  solo un pezzo di sé per ogni parola), **contesto lungo** (modi più economici
+  di far parlare fra loro le parti di un testo, fino agli *state space model*)
+  e **multimodalità** (leggere, guardare e ascoltare con lo stesso meccanismo).
 - Un Transformer spende **lo stesso calcolo** su ogni ingresso, facile o
-  difficile che sia. L’**Universal Transformer** (2018) provò a togliere quel
-  vincolo legando i pesi fra gli strati e lasciando che ogni posizione decida
-  quando fermarsi. Non prese piede allora, ed è tornata attuale dalla parte
-  opposta: i modelli che ragionano spendono più calcolo sulle domande difficili
+  difficile che sia. Nel 2018 si provò a togliere quel vincolo con un piano
+  solo riapplicato più volte, lasciando a ogni parola il diritto di dire «io ho
+  finito» e fermarsi. Allora non prese piede, e l'idea è tornata attuale dalla
+  parte opposta: i modelli che ragionano spendono più calcolo sulle difficili
   **scrivendo** i passi invece di girare in silenzio. La prima strada costa
   meno, la seconda si può leggere.
 - I limiti sono strutturali: costi concentrati, bias dei dati, e il fatto che
@@ -231,3 +233,42 @@ legge.
 - Tutti gli ingredienti dei Transformer li hai già studiati in questo libro:
   ciò che è nuovo è la composizione, non i mattoni.
 ```
+
+`````
+
+`````{tab} Superiore
+
+```{admonition} Da ricordare
+:class: important
+- Le direzioni di frontiera: **efficienza** (distillazione, quantizzazione a 8
+  o 4 bit, pruning, architetture *mixture-of-experts* che attivano solo una
+  frazione dei parametri per token), **contesto lungo** (attenzioni sparse e
+  lineari, ottimizzazioni di memoria come FlashAttention, *state space model*)
+  e **multimodalità** (spazi di rappresentazione condivisi fra testo, immagini
+  e audio). A cui si aggiunge l’**allineamento**, che è oggi un'area di ricerca
+  a pieno titolo e non un ritocco finale.
+- Il calcolo **condizionato all'ingresso**: l’*Universal Transformer*
+  {cite}`dehghani2019universal` lega i pesi fra le iterazioni, e sopra ci mette
+  l’*Adaptive Computation Time* {cite}`graves2016adaptive`, che a ogni giro dà
+  a ogni posizione una probabilità di arresto. La Turing-completezza che ne
+  segue vale **sotto ipotesi**, e quella che pesa è il numero di passi non
+  limitato a priori.
+- Lo stesso filone è tornato dalla porta opposta: invece di iterare in
+  silenzio dentro la pila, i modelli che ragionano allungano la **generazione**
+  e scrivono i passi. Si paga in token prodotti, si guadagna che il
+  ragionamento resta leggibile.
+- Limiti aperti: il costo quadratico $O(n^2)$ dell'attenzione piena e
+  l'archivio degli appunti che cresce a ogni token generato (la *KV cache*);
+  costi concentrati e bias dei dati; e lo scarto fra massimizzare la
+  verosimiglianza di una continuazione e stabilire che sia vera.
+```
+
+`````
+
+C'è però un conto che questo capitolo nomina e non salda. Se ogni parola guarda
+tutte le altre, il lavoro cresce col quadrato della lunghezza, e mentre il
+modello scrive l'archivio dei suoi appunti si allunga a ogni parola prodotta:
+sono i due prezzi dell'attenzione, e li paga chi vuole leggere lungo. Da lì
+riparte **Attenzione lineare**, che per abbassarli mette le mani sull'unico
+pezzo che qui non abbiamo mai discusso, quello che decide come l'attenzione si
+spartisce fra le parole.

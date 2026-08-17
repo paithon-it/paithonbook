@@ -141,7 +141,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Mamba](https://book.paithon.it/main/StateSpaceModel/mamba.html)
   - [Mamba-2 e Mamba-3](https://book.paithon.it/main/StateSpaceModel/dualita-e-mamba-2-3.html)
   - [Panorama e limiti](https://book.paithon.it/main/StateSpaceModel/panorama-e-limiti.html)
-- [Visione e linguaggio](https://book.paithon.it/main/VisioneLinguaggio/overview.html): Il 7 luglio 1966, al Project MAC del MIT, il gruppo di intelligenza artificiale diffonde un promemoria di sei pagine intestato Vision Memo. No. 100.
+- [Visione e linguaggio](https://book.paithon.it/main/VisioneLinguaggio/overview.html): Nel 1929 René Magritte dipinge una pipa su fondo chiaro e, sotto, ci scrive a mano Ceci n'est pas une pipe: questa non è una pipa. Non è un gioco di parole, è una constatazione esatta.
   - [Allineare due spazi](https://book.paithon.it/main/VisioneLinguaggio/allineare-due-spazi.html)
   - [Innestare gli occhi](https://book.paithon.it/main/VisioneLinguaggio/innestare-gli-occhi.html)
   - [Fusione precoce e tardiva](https://book.paithon.it/main/VisioneLinguaggio/fusione-precoce-tardiva.html)

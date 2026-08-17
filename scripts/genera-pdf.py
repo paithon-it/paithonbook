@@ -120,6 +120,22 @@ def costruisci_tex(pulisci: bool = False) -> pathlib.Path:
           f"({sorgente.stat().st_size // 1024} KB, {len(avvisi)} avvisi)")
     for r in avvisi[:10]:
         print(f"    {r}")
+
+    # I fermi immagine delle animazioni li mette in pagina `pt_stampa`, che
+    # gira a doctree RISOLTO, cioe' dopo che Sphinx ha gia' raccolto e copiato
+    # le immagini: quei PNG non li vede nessuno e nella cartella del .tex non
+    # arrivano. Non se n'era accorto nessuno perche' la build e' incrementale e
+    # li trovava avanzati da un giro precedente; alla prima build pulita sono
+    # spariti tutti e 132 in una volta, con 365 errori di LuaLaTeX che pero'
+    # non fermano niente (gira in nonstopmode) e un PDF che esce lo stesso, coi
+    # buchi. Si copiano qui, esplicitamente.
+    fermi = LIBRO / "figures" / "fermi"
+    if fermi.is_dir():
+        dove = TEX / "figures" / "fermi"
+        dove.mkdir(parents=True, exist_ok=True)
+        for png in fermi.glob("*.png"):
+            shutil.copy2(png, dove / png.name)
+        print(f"  fermi immagine copiati: {len(list(dove.glob('*.png')))}")
     return TEX
 
 

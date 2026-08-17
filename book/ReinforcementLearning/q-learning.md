@@ -34,7 +34,8 @@ minuti, e quei venti minuti sono l'errore: il viaggio andrà meglio di come lo
 avevi previsto, e la previsione va tirata giù. (Attenzione a un dettaglio che
 inganna: qui il numero che si stima è un tempo, e una bella notizia lo fa
 *scendere*. Nel resto del capitolo il numero è un punteggio, e una bella
-notizia lo fa salire. Il meccanismo è lo stesso, cambia solo che cosa si conta.) Il TD learning fa esattamente
+notizia lo fa salire. Il meccanismo è lo stesso, cambia solo che cosa si
+conta.) Il TD learning fa esattamente
 questo, correggendo un pezzetto alla volta. E si noti che il primo dei due
 pezzi, quello che è già successo, è l'unico dato vero della faccenda: è quello
 che tiene la correzione ancorata alla realtà invece che a un'altra opinione.
@@ -49,7 +50,8 @@ transizione $s \to s'$ con ricompensa **osservata** $r$, l'aggiornamento TD(0)
 è
 
 $$
-V(s) \leftarrow V(s) + \alpha\,\underbrace{\big[\,r + \gamma\,V(s') - V(s)\,\big]}_{\text{errore TD}\;\delta} .
+V(s) \leftarrow V(s) + \alpha\,\underbrace{\big[\,r + \gamma\,V(s') -
+V(s)\,\big]}_{\text{errore TD}\;\delta} .
 $$
 
 Qui $\alpha \in (0,1]$ è il **learning rate**, $\gamma \in [0,1]$ il **fattore
@@ -368,7 +370,8 @@ Un episodio dopo, la cella precedente $s^-$, da cui si arriva a $s$, "vede"
 $\max_{a'} Q(s,a')=0{,}5$ e si aggiorna:
 
 $$
-Q(s^-,\rightarrow) \leftarrow 0 + 0{,}5\,\big[\,0 + 0{,}9\cdot 0{,}5 - 0\,\big] = 0{,}225 .
+Q(s^-,\rightarrow) \leftarrow 0 + 0{,}5\,\big[\,0 + 0{,}9\cdot 0{,}5 -
+0\,\big] = 0{,}225 .
 $$
 
 Entrambi i conti usano $r$ come ricompensa **osservata** e sfruttano il fatto
@@ -464,7 +467,8 @@ programma stampa arrotondati a $0{,}73$ e $0{,}66$. Ci sono tutti: l'angolo in
 basso a sinistra, che dalla meta dista cinque passi ed è la casella più
 lontana, porta appunto il $0{,}66$.
 
-Un momento, però: poco fa quella stessa casella valeva $0{,}5$. Non è una
+Un momento, però: la casella da cui basta una mossa per arrivare, quella che
+qui vale $1{,}00$, poco fa valeva $0{,}5$. Non è una
 contraddizione, sono due istantanee della stessa storia. Il $0{,}5$ era il voto
 dopo il **primo** passaggio, quando alla sorpresa si dava retta a metà
 partendo da zero. Per quella mossa il bersaglio resta sempre $1$, perché
@@ -496,7 +500,8 @@ rincorrere le ultime sorprese, invece di posarsi su un numero, ed è una scelta
 che ha un prezzo. Esiste infatti un teorema, di cui la fine della sezione dice
 qualcosa in più, che promette che i voti finiscono prima o poi al posto giusto;
 e fra le cose che chiede c'è proprio un tasso che si riduca col tempo, come il
-passo del quaderno delle leve all'inizio del capitolo. Qui ci si rinuncia, in cambio di un algoritmo che
+passo del quaderno delle leve all'inizio del capitolo. Qui ci si rinuncia, in
+cambio di un algoritmo che
 reagisce in fretta, che nella pratica conviene quasi sempre.
 
 Ogni partita comincia da una casella sorteggiata invece che dalla partenza. Si
@@ -519,7 +524,8 @@ Torniamo un momento alla macchia che si allarga all'indietro dalla meta. Il
 Q-learning la fa retrocedere **di una casella per partita**, perché il suo
 bersaglio guarda avanti di un passo solo. Monte Carlo, all'estremo opposto,
 usa il totale della partita, e in una partita sola porta la notizia a tutte le
-caselle attraversate: una notizia sola, però, e rumorosa. Detta così, la scelta sembra fra due
+caselle attraversate: una notizia sola, però, e rumorosa. Detta così, la
+scelta sembra fra due
 poli. Non lo è: fra i due c'è un continuo, e si attraversa con una manopola.
 
 `````{tab} Elementare
@@ -530,7 +536,8 @@ oppure tre, o dieci.
 
 Guardare pochi passi dà una correzione stabile ma quasi sempre un po’
 sbagliata, perché si appoggia a una stima che, quando si è appena cominciato a
-giocare, non vale niente. Guardare fino in fondo dà una correzione sempre onesta ma ballerina.
+giocare, non vale niente. Guardare fino in fondo dà una correzione sempre
+onesta ma ballerina.
 Guardarne una manciata, in pratica, batte quasi sempre entrambi gli estremi.
 
 C'è anche un modo elegante di non scegliere: fare la **media di tutte le
@@ -707,8 +714,8 @@ qualcosa che nessuno ha dimostrato che funzioni.
   Per dodici caselle la tabella si scrive; per un videogioco in cui quasi ogni
   schermata è nuova, no, e nemmeno basterebbero le partite per riempirla. Al
   suo posto serve qualcosa che sappia **indovinare** il voto di una situazione
-  mai vista somigliandola a quelle già viste: sono le reti neurali del capitolo
-  successivo.
+  mai vista somigliandola a quelle già viste: sono le reti neurali del Deep
+  Reinforcement Learning.
 ```
 
 `````
@@ -745,3 +752,11 @@ qualcosa che nessuno ha dimostrato che funzioni.
 ```
 
 `````
+
+Il capitolo si chiude con una tabella in mano, ed è proprio lei a rompersi
+appena il mondo diventa grande. Tutto il resto regge: correggere una stima con
+la stima successiva, dosare quella correzione, decidere quanto pesa il futuro,
+tentare ogni tanto una strada nuova per non affezionarsi alla prima trovata. In
+**Deep Reinforcement Learning** la tabella lascia il posto a una rete, che le
+situazioni non le elenca ma le riconosce; e insieme alla tabella se ne va la
+certezza che il metodo converga.

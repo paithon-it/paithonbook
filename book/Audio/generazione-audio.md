@@ -574,6 +574,32 @@ non c'è. L'ultima riga è il secondo difetto messo in cifre: per lasciare alla
 griglia la possibilità di scrivere terzine il conto passa da trentadue a
 novantasei token, il triplo, e lo paga tutta la musica.
 
+Quei totali però dicono dove si arriva, non come ci si arriva, e il come è
+metà del problema: {numref}`fig-spartito-in-fila` fa scorrere la battuta e
+lascia crescere le due file una sotto l'altra. La griglia si allunga di due
+caselle a ogni sedicesimo, che ci sia o non ci sia qualcosa da dire; gli
+eventi restano fermi per mezza battuta e poi ne aggiungono tre in un colpo
+solo, quando il SOL finisce e riparte. È la differenza fra una fila
+proporzionale al **tempo** e una proporzionale a **quanto accade**, ed è la
+ragione per cui un passaggio fitto di note, nella seconda, riempie la fila
+molto più in fretta di una nota lunga.
+
+```{figure} ../figures/spartito-in-fila.svg
+:name: fig-spartito-in-fila
+:alt: In alto la battuta disegnata come rullo di pianola, con tre rettangoli: un DO grave lungo tutta la battuta e due SOL da mezza battuta ciascuno, separati da uno stacco a metà. Un cursore verticale la percorre da sinistra a destra. Sotto, la fila a griglia, due righe di sedici caselle (voce acuta e voce grave) con dentro l'altezza MIDI di ciò che sta suonando, trentadue in tutto. Più sotto la fila a eventi, otto scatole con i nomi dei token, raccolte nei tre istanti in cui accade qualcosa. A destra due contatori, che arrivano a trentadue e a otto.
+:width: 92%
+
+La stessa battuta scritta in tre modi. In alto il rullo (il *piano roll*): tre
+rettangoli, il DO grave tenuto per tutta la battuta e i due SOL da mezza
+battuta l'uno. In mezzo la fila a griglia, trentadue caselle, due per ogni
+sedicesimo, con dentro l'altezza MIDI di ciò che quella voce sta suonando. In
+basso la fila a eventi, otto scatole, raccolte nei tre istanti in cui accade
+qualcosa. Nella riga della voce acuta i sedici `67` non portano nessuno stacco
+a metà battuta: quello che il rullo mostra come due rettangoli separati, e che
+fra gli eventi si legge come `NOTE_OFF<67>` seguito da `NOTE_ON<67>`, nella
+griglia non c'è più.
+```
+
 Chiarito come si mette la musica in fila, la macchina che indovina il simbolo
 successivo è quella del capitolo sui Transformer, senza una riga di differenza.
 C'è però una ragione per cui proprio qui l'attenzione ha contato più che
@@ -774,3 +800,13 @@ più che altrove, le regole del gioco sono ancora tutte da scrivere.
 ```
 
 `````
+
+Questo capitolo ha parlato di tutto il suono tranne uno, e la voce è rimasta
+fuori per una ragione e non per dimenticanza. Con la musica e con i suoni
+d'ambiente non esiste una continuazione giusta e una sbagliata: lo spartito,
+qui, è stato materiale da generare, non un verdetto con cui confrontarsi. Con il
+parlato invece una risposta giusta c'è, ed è già scritta: il testo che qualcuno
+ha pronunciato davvero. La catena costruita qui ci viene dietro tutta, onda,
+spettrogramma, token, e sopra di essi un modello che li produce come
+produrrebbe delle parole. «Speech Recognition» la rimette in fila nei due
+sensi, dalla voce al testo e dal testo alla voce.

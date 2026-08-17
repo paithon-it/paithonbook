@@ -300,8 +300,10 @@ a `float32`: è la modalità dell'addestramento in precisione mista, così la
 somma di molti prodotti non degrada (il silicio offre anche l'accumulo a 16
 bit, usato talvolta in inferenza). È, non a caso, la
 forma «generale» del GEMM delle BLAS
-($\mathbf{C} \leftarrow \alpha \mathbf{A}\mathbf{B} + \beta \mathbf{C}$,
-moltiplica *e* accumula) cablata nel silicio. Il guadagno è di circa un ordine
+($\mathbf{C} \leftarrow \alpha \mathbf{A}\mathbf{B} + \beta \mathbf{C}$, dove
+$\alpha$ e $\beta$ sono due numeri che pesano il prodotto nuovo e il valore già
+accumulato: moltiplica *e* accumula) cablata nel silicio. Il guadagno è di
+circa un ordine
 di grandezza sul throughput di matmul rispetto ai CUDA core normali (un fattore
 8 sulla V100, 16 sull'A100, 15 sulla H100): è
 l'innalzamento di $P_\text{picco}$ che, come notava il roofline, sposta il

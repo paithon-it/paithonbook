@@ -163,6 +163,7 @@ nota, e costa meno di un minuto.
 | `svg/percettrone-impara.py` | `fig-percettrone-impara` | `RetiNeurali/percettrone.md` |
 | `svg/pinn-residuo.py` | `fig-pinn-residuo` | `PINN/come-funziona.md` |
 | `svg/scan-parallelo.py` | `fig-scan-parallelo` | `StateSpaceModel/mamba.md` |
+| `svg/spartito-in-fila.py` | `fig-spartito-in-fila` | `Audio/generazione-audio.md` |
 | `svg/vetrina-si-ordina.py` | `fig-vetrina-si-ordina` | `SistemiRaccomandazione/raccomandazione-neurale.md` |
 | `svg/sogno-diverge.py` | `fig-sogno-diverge` | `WorldModels/mondi-in-miniatura.md` |
 | `svg/xor-non-separabile.py` | `fig-xor-non-separabile` | `RetiNeurali/percettrone.md` |

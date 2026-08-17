@@ -94,7 +94,8 @@ altri.
 
 **Programmazione dinamica** è il nome che Bellman diede al modo di procedere
 della sezione precedente (con lo scrivere programmi per il computer non c'entra
-niente: «programmazione», per lui, voleva dire pianificazione), quello che trova i valori girando e rigirando su tutte
+niente: «programmazione», per lui, voleva dire pianificazione), quello che
+trova i valori girando e rigirando su tutte
 le caselle con la mappa in mano: da qui in avanti lo useremo come nome
 collettivo delle sue due ricette, l'iterazione dei valori e quella della
 pagella (*value iteration* e *policy iteration*). Vale la pena metterlo accanto
@@ -152,7 +153,8 @@ tentenna, ed ecco tre sue partite, con le ricompense incassate lungo la strada.
 
 1. $s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,+10\,} s_2$
 2. $s_0 \xrightarrow{\,-1\,} s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,+10\,} s_2$
-3. $s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,-1\,} s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,+10\,} s_2$
+3. $s_0 \xrightarrow{\,0\,} s_1 \xrightarrow{\,-1\,} s_0 \xrightarrow{\,0\,}
+s_1 \xrightarrow{\,+10\,} s_2$
 
 Ogni riga si legge da sinistra a destra, e il numero sopra la freccia è quello
 che si incassa facendo quel passo, col suo segno: $+10$ vuol dire dieci punti
@@ -237,7 +239,8 @@ $$
 `````
 
 Per ogni casella sono usciti due numeri diversi dagli stessi identici dati, ed
-entrambi sono legittimi: sono due modi di stimare la stessa cosa, e nella pratica si usano tutti e due. Quello a prima
+entrambi sono legittimi: sono due modi di stimare la stessa cosa, e nella
+pratica si usano tutti e due. Quello a prima
 visita è il più facile da giustificare: ogni partita porta un numero solo, e
 numeri che vengono da partite diverse non si influenzano a vicenda, che è
 esattamente la condizione in cui fare una media è la cosa giusta da fare.
@@ -431,7 +434,8 @@ ordinario** fa la media semplice dei ritorni pesati; quello **pesato**
 normalizza per la somma dei pesi:
 
 $$
-V_{\text{ord}}(s) = \frac{\sum_{t\in\mathcal{T}(s)} \rho_{t:T-1}\,G_t}{|\mathcal{T}(s)|},
+V_{\text{ord}}(s) = \frac{\sum_{t\in\mathcal{T}(s)}
+\rho_{t:T-1}\,G_t}{|\mathcal{T}(s)|},
 \qquad
 V_{\text{pes}}(s) = \frac{\sum_{t\in\mathcal{T}(s)} \rho_{t:T-1}\,G_t}
                           {\sum_{t\in\mathcal{T}(s)} \rho_{t:T-1}} .

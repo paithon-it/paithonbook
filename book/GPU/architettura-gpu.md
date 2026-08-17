@@ -73,8 +73,8 @@ si ferma in attesa di un dato dalla memoria, ne fa partire un altro già
 pronto. Non accorcia l'attesa del singolo: la *copre* con il lavoro degli
 altri. È una scelta sensata solo se il problema offre parallelismo a valanga,
 ed è esattamente il caso delle reti neurali: come richiamato nella sezione
-«Prestazioni e scala», il prodotto di due matrici $(n,m)$ e $(m,p)$ costa
-circa $2nmp$ operazioni tutte indipendenti.
+«Prestazioni e scala», il prodotto di due matrici $(M,K)$ e $(K,N)$ costa
+circa $2MNK$ operazioni tutte indipendenti.
 
 `````
 

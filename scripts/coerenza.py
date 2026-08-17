@@ -42,6 +42,10 @@ toglierli di mezzo prima di rileggere:
              di font generica invece di quelle del brand
   avanti     rimandi in avanti ("vedremo", "prossima sezione"), solo elenco,
              la verifica resta umana
+  matematica segni di prosa finiti dentro `$...$`: l'apostrofo tipografico
+             al posto della derivata prima, virgolette, lineette. Nessuno se ne
+             accorge (Sphinx non avvisa, MathJax li disegna), e una campagna di
+             ripulitura tipografica ne ha piazzati 36 in una volta sola
   verso      rimandi che vanno dalla parte sbagliata: «come abbiamo visto»
              seguito da un capitolo che il lettore non ha ancora letto (e il
              contrario, «vedremo» verso un capitolo gia' letto). L'ordine di
@@ -268,7 +272,7 @@ def main():
     attivi = set(args.solo.split(",")) if args.solo else {
         "numref", "cite", "ref", "figure", "toc", "landing", "animazioni",
         "schede", "ricordare", "avanti", "palette", "clip", "ambiente",
-        "lineette", "stampa", "verso"}
+        "lineette", "stampa", "verso", "matematica"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -800,6 +804,73 @@ def main():
                     problemi["lineette scritte in ASCII (-- oppure - )"].append(
                         f"{f}:{n}  {pulita.strip()[:88]}")
 
+    if "matematica" in attivi:
+        # Dentro `$...$` la tipografia italiana non vale, e nessuno se ne
+        # accorge. Una campagna che ha sostituito 1086 apostrofi ASCII con
+        # quello tipografico (perche' `smartquotes`, in italiano, rende `'` come
+        # `”` a fine parola) e' entrata anche in **36 formule**, dove `'` non e'
+        # un apostrofo ma la derivata prima: `s'`, `a'`, `w'` del Reinforcement
+        # Learning sono diventati `s’`, `a’`, `w’`.
+        #
+        # E sono passati sotto tre reti: `coerenza.py` non guardava dentro la
+        # matematica (l'asse `lineette` la maschera apposta), la build Sphinx
+        # non ha alzato un avviso, e MathJax `’` lo disegna e basta. Il difetto
+        # si vede solo aprendo la pagina e riconoscendo che quel segno non e'
+        # un primo. In stampa e' peggio, perche' LuaLaTeX gira in nonstopmode.
+        #
+        # Il filtro che ha fatto il danno ragionava riga per riga, e riga per
+        # riga il `$$` di blocco non si vede: sta su piu' righe. Qui la
+        # matematica si estrae dal testo intero, con la stessa pila di recinti
+        # dell'asse `lineette`, e i numeri di riga si ricavano dagli offset.
+        #
+        # Fuori dal setaccio resta `\text{...}` (e `\textrm`, `\mbox`), che e'
+        # il posto in cui l'italiano dentro una formula ci sta di diritto: li'
+        # un apostrofo tipografico e' giusto, non sbagliato.
+        SEGNI = {"’": "apostrofo tipografico (in matematica ' e' la derivata)",
+                 "‘": "virgoletta singola tipografica",
+                 "“": "virgoletta doppia tipografica",
+                 "”": "virgoletta doppia tipografica",
+                 "«": "virgoletta caporale",
+                 "»": "virgoletta caporale",
+                 "—": "lineetta lunga",
+                 "–": "lineetta breve",
+                 "…": "puntini di sospensione"}
+
+        def solo_prosa(testo: str) -> str:
+            """Spegne i recinti di codice lasciando intatte le posizioni."""
+            fuori, pila = [], []
+            for riga in testo.split("\n"):
+                m = re.match(r"^(\s*)(`{3,}|~{3,})(.*)$", riga)
+                if m:
+                    tick, info = m.group(2), m.group(3).strip()
+                    dentro_direttiva = info.startswith("{") and not info.startswith("{code")
+                    if pila and len(tick) >= len(pila[-1][0]) and not info:
+                        pila.pop()
+                    elif info or not pila:
+                        pila.append((tick, dentro_direttiva))
+                    else:
+                        pila.pop()
+                    fuori.append(" " * len(riga))
+                    continue
+                codice = any(not direttiva for _, direttiva in pila)
+                fuori.append(" " * len(riga) if codice else riga)
+            return "\n".join(fuori)
+
+        formule = re.compile(r"\$\$.*?\$\$|\$[^$]+?\$", re.S)
+        testuale = re.compile(r"\\(?:text|textrm|textit|textbf|mbox)\{[^{}]*\}")
+        for f, t in sorted(testi.items()):
+            if not f.endswith(".md"):
+                continue
+            prosa = solo_prosa(t)
+            for m in formule.finditer(prosa):
+                corpo = testuale.sub(lambda x: " " * len(x.group(0)), m.group(0))
+                for i, ch in enumerate(corpo):
+                    if ch in SEGNI:
+                        n = prosa.count("\n", 0, m.start() + i) + 1
+                        estratto = " ".join(m.group(0).split())[:70]
+                        problemi["segni di prosa dentro una formula"].append(
+                            f"{f}:{n}  {ch}  {SEGNI[ch]}\n      {estratto}")
+
     if "verso" in attivi:
         # Il difetto piu' insidioso di questo libro non e' un fatto sbagliato:
         # e' una frase giusta messa nel verso sbagliato. «Come abbiamo visto»
@@ -943,6 +1014,7 @@ def main():
               "fermi immagine piu' vecchi dell'animazione",
               "fermi immagine orfani",
               "figure che non dichiarano i font del brand",
+              "segni di prosa dentro una formula",
               "rimandi all'indietro che puntano in avanti",
               "rimandi in avanti che puntano indietro",
               "rimandi in avanti (da leggere)"]

@@ -342,7 +342,7 @@ importa a questo capitolo: la densità del modello, integrata su tutto il piano,
 fa **uno**, e non perché qualcuno l'abbia normalizzata a mano. Fa uno perché il
 cambio di variabile lo garantisce, e togliendo il termine `logdet` dal codice
 non farebbe più uno. È esattamente la differenza fra questa famiglia e quella
-del capitolo che segue, dove quel conto non si può fare e tutto il capitolo
+del capitolo sui modelli a energia, dove quel conto non si può fare e tutto il capitolo
 gira attorno a come evitarlo. Le ultime due vanno lette insieme, e dicono che
 il modello ha imparato dov'è la roba: sulle lune assegna circa $-1{,}3$, su
 punti presi a caso nel quadrato circa $-169$. Sono centosessantotto nat di

@@ -100,29 +100,32 @@ $$
 \;\to\;
 \underbrace{\alpha_t \mathbf{I}}_{\text{RetNet, Mamba-2}}
 \;\to\;
-\underbrace{\mathrm{Diag}(\alpha_t)}_{\text{GLA}}
+\underbrace{\mathrm{Diag}(\boldsymbol{\alpha}_t)}_{\text{GLA}}
 \;\to\;
 \underbrace{\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top}_{\text{DeltaNet}}
 \;\to\;
 \underbrace{\alpha_t\,(\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top)}_{\text{Gated DeltaNet}}
 $$
 
-dove $\alpha_t$ è un fattore di **oblio** compreso fra $0$ e $1$ (un numero
-solo dove moltiplica l'identità, un valore per canale dove compare dentro
-$\mathrm{Diag}$) e $\beta_t \in (0,1)$ la
-**forza di riscrittura** della delta rule. Si va dall'accumulo puro (identità,
-non si dimentica nulla) al decadimento scalare uniforme, a quello diagonale
-per-canale, alla correzione mirata di Householder che *cancella* la vecchia
-associazione prima di scrivere la nuova, fino alla combinazione dei due
+dove l'**oblio** è compreso fra $0$ e $1$ e cambia forma lungo la fila: dove
+moltiplica l'identità è lo scalare $\alpha_t$, un numero solo; dentro
+$\mathrm{Diag}$ è il vettore $\boldsymbol{\alpha}_t \in (0,1)^d$, un valore per
+canale, e il grassetto è lì apposta per non far leggere le due cose come una
+sola. $\beta_t \in (0,1)$ è invece la **forza di riscrittura** della delta
+rule. Si va dall'accumulo puro (identità, non si dimentica nulla) al
+decadimento scalare uniforme, a quello diagonale per-canale, alla correzione
+mirata di Householder che *cancella* la vecchia associazione prima di scrivere
+la nuova, fino alla combinazione dei due
 (decadimento globale *più* correzione mirata) del Gated DeltaNet
 {cite}`yang2024gateddelta`. Due precisazioni, perché la fila non è una scala
 regolare. La prima: i primi tre gradini sono nidificati (ciascuno contiene il
-precedente come caso particolare), ma il passo da $\mathrm{Diag}(\alpha_t)$
-alla delta rule non è un'inclusione, perché il decadimento diagonale e la
-correzione mirata di Householder sono capacità **complementari** e nessuna
-delle due contiene l'altra. La seconda: quello che il Gated DeltaNet unisce
-non è la coppia appena nominata. Il suo $\alpha_t$ è uno **scalare**, quindi
-mette insieme il decadimento *globale* (il secondo gradino) con la delta rule,
+precedente come caso particolare), ma il passo dal decadimento diagonale
+$\mathrm{Diag}(\boldsymbol{\alpha}_t)$ alla delta rule non è un'inclusione,
+perché quel decadimento e la correzione mirata di Householder sono capacità
+**complementari** e nessuna delle due contiene l'altra. La seconda: quello che
+il Gated DeltaNet unisce non è la coppia appena nominata. Il suo $\alpha_t$ è
+uno **scalare**, quindi mette insieme il decadimento *globale* (il secondo
+gradino) con la delta rule,
 e contiene il secondo e il quarto ma non il terzo: il gating per canale della
 GLA resta fuori anche dall'ultimo gradino. Lungo tutta la catena, però, il
 conto è lo stesso: si paga in complessità della transizione (via via più
@@ -367,7 +370,7 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   inferenza ricorrente a memoria costante per token.
 - **Tre manopole di progetto**: la dimensione dello stato (capacità), la
   struttura della transizione ($\mathbf{I} \to \alpha_t \mathbf{I} \to
-  \mathrm{Diag}(\alpha_t) \to \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
+  \mathrm{Diag}(\boldsymbol{\alpha}_t) \to \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
   \to \alpha_t(\mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top)$, via via più
   ricca, ma non è una scala in cui ogni gradino contiene il precedente:
   decadimento per canale e cancellazione mirata fanno cose diverse, e l'ultimo
@@ -397,3 +400,11 @@ stesso scheletro sotto il prossimo nome che farà rumore.
 ```
 
 `````
+
+Qui finisce il discorso sulle macchine che leggono sequenze: una famiglia sola,
+tre manopole per costruirne una, un limite che non si aggira (uno stato di
+taglia fissa non ridà alla lettera quello che ha letto) e la ricetta mista che
+ne discende. Da qui in avanti la domanda cambia lato. Non più come attraversare
+un testo lunghissimo senza pagarlo troppo, ma che cosa diventa un'immagine
+quando la si dà in pasto a una macchina costruita per le parole: è l'argomento
+di **Visione e linguaggio**.

@@ -431,3 +431,10 @@ per cui vale la pena studiarle.
 ```
 
 `````
+
+Un modello del mondo può nascere da solo, dalla sola previsione, e restare
+incoerente proprio dove nessuno lo ha mai messo alla prova. Accorgersene non è
+questione di fargli altre domande facili, bisogna interrogarlo dove non è stato
+addestrato. Con il capitolo sulle reti neurali su grafo si cambia aria, perché
+lì la struttura del mondo non va indovinata dai dati, arriva già scritta
+insieme a loro.

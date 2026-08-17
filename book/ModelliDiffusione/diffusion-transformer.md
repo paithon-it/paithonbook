@@ -730,3 +730,12 @@ senza fermarci.
 ```
 
 `````
+
+La ricetta sta in tre gesti (comprimere, sporcare di rumore, insegnare a
+ripulire), ma quello che serve più avanti è l'abitudine con cui è stata letta,
+guardare un'architettura nuova cercandoci dentro i mattoni vecchi.
+«Verosimiglianza esatta» tiene la stessa domanda, generare, e cambia il metro
+di giudizio: chiede a un modello
+non soltanto di produrre dati plausibili, ma di dire con un numero preciso
+quanto lo sono, e mostra a che cosa serve quel numero fuori dalla generazione,
+comprimere e accorgersi di ciò che è fuori posto.

@@ -44,7 +44,8 @@ l'ingresso è la situazione, l'uscita da indovinare è la mossa dell'esperto.
 Si chiama **clonazione comportamentale**, ed è tanto semplice che il libro l'ha
 già usata due volte senza chiamarla così. Il primo AlphaGo, prima di giocare
 contro sé stesso, aveva imparato a proporre mosse guardando
-centosessantamila partite di giocatori forti. E la prima fase dell'addestramento di un assistente
+centosessantamila partite di giocatori forti. E la prima fase
+dell'addestramento di un assistente
 conversazionale è esattamente questa: si raccolgono risposte scritte da persone
 e si insegna al modello a scriverne di simili.
 
@@ -182,7 +183,10 @@ $$
 J(\hat\pi) \;\le\; J(\pi^\star) + u\,T\,\epsilon_N + O(1),
 $$
 
-dove $\epsilon_N$ **non** è il tasso d'errore del paragrafo precedente: è
+dove $J$ è qui il **costo** atteso di una politica sull'orizzonte $T$, e non il
+ritorno da massimizzare delle sezioni precedenti: il verso della disuguaglianza
+è quello di un danno da contenere, e infatti $J(\hat\pi)$ sta a sinistra.
+Quanto a $\epsilon_N$, **non** è il tasso d'errore del paragrafo precedente: è
 l'errore della migliore politica *col senno di poi*, misurato sulla media di
 tutte le distribuzioni di stati accumulate nei $N$ giri. Che quel numero sia
 piccolo non è gratis: lo garantisce il fatto che i giri si comportino come un

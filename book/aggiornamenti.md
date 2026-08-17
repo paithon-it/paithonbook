@@ -38,6 +38,21 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-6-1)=
+
+## 1.6.1 · 17 agosto 2026
+
+### Sezioni nuove
+
+- {doc}`Generare suono e musica </Audio/generazione-audio>` (Audio oltre la voce). **Una figura animata per capire perché uno spartito costa poco e pesa molto.** La battuta scorre come su un rullo di pianola, e sotto crescono le due file di simboli: quella a griglia si allunga a ogni sedicesimo anche quando non succede niente, quella a eventi resta ferma e poi salta. È il compromesso di tutta la sezione, visto invece che descritto.
+
+### Correzioni
+
+- **Adesso ogni capitolo saluta, invece di finire dentro un elenco puntato.** Trentaquattro capitoli su trentasei si chiudevano sull'ultima riga del riquadro «Da ricordare»: chi arrivava in fondo trovava tre punti elenco e la pagina che finiva. Ora ognuno ha due o tre righe che dicono che cosa ci si porta dietro e a che cosa serve nel capitolo dopo, che è nominato per nome. È il genere di difetto che non si vede leggendo un capitolo da solo: si vede solo leggendo di fila.
+- **Tutte le formule del libro sono state rifatte a mano, e i conti tornano.** Quattrocento e passa blocchi di formule, letti insieme al paragrafo che li commenta, con le verifiche rifatte in Python invece che a occhio: nessuna formula sbagliata. Sono venuti fuori i difetti *attorno* alle formule, che sono quelli che fanno inciampare chi legge: simboli usati senza essere mai presentati, la stessa lettera per due cose diverse nello stesso capitolo, e una F1 di esempio calcolata prendendo un numero da una tabella e l'altro da un'altra.
+- **Dove la spiegazione facile prometteva più di quella difficile.** Il libro spiega ogni cosa due volte, e le due spiegazioni devono essere lo stesso oggetto con altri nomi: chi si costruisce l'intuizione sulla versione elementare non deve **disimparare** niente aprendo l'altra. In quattro punti non era così, e l'elementare affermava come certo ciò che la versione formale smentiva dieci righe più sotto (la discesa del gradiente che «converge da qualsiasi punto», il passo di apprendimento del percettrone che «assesta gradualmente»). Riscritti.
+- **Le aperture di alcuni capitoli, e un quadro di Magritte.** Visione e linguaggio apriva con lo stesso aneddoto del 1966 con cui apre Visione artificiale, cioè con una ripetizione. Adesso apre con la pipa dipinta da Magritte nel 1929 e la scritta «questa non è una pipa», che è la stessa domanda del capitolo: il disegno non è la cosa, la parola non è il disegno, e la macchina deve attraversare quel doppio confine.
+
 (v1-6-0)=
 
 ## 1.6.0 · 16 agosto 2026

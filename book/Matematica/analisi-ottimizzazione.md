@@ -27,9 +27,9 @@ Pensa al tachimetro di un'auto. La posizione cambia nel tempo, e la velocità
 è "quanto in fretta" cambia: è la derivata della posizione.
 
 Sul grafico si vede ancora meglio. Appoggia un righello alla curva in un
-punto, inclinandolo finché la tocca senza attraversarla: quella è la retta
-**tangente**, e la sua inclinazione (di quanto sale ogni volta che si avanza
-di un passo verso destra) è la derivata lì. Dove la curva sale ripida il
+punto e giralo finché, lì attorno, righello e curva si sovrappongono: quella è
+la retta **tangente**, e la sua inclinazione (di quanto sale ogni volta che si
+avanza di un passo verso destra) è la derivata lì. Dove la curva sale ripida il
 righello è ripido e la derivata è grande e positiva; dove scende, il righello
 punta in giù e la derivata è negativa; in cima a una gobba o in fondo a una
 conca, dove per un istante il terreno è piatto, il righello è orizzontale e la
@@ -262,9 +262,9 @@ chiama *backpropagation*, cioè «propagazione all'indietro».
 
 `````{tab} Elementare
 
-Immagina tre ingranaggi: A muove B, B muove C. Se A gira due volte più in
-fretta di B, e B una volta e mezza più in fretta di C, allora A gira rispetto
-a C di $2 \times 1{,}5 = 3$ volte. Gli effetti lungo la catena si
+Immagina tre ingranaggi: A muove B, B muove C. Se B gira due volte più in
+fretta di A, e C una volta e mezza più in fretta di B, allora C gira rispetto
+ad A di $2 \times 1{,}5 = 3$ volte. Gli effetti lungo la catena si
 **moltiplicano**.
 
 E un ingranaggio è una derivata travestita, perché «quanti giri fa B per ogni
@@ -413,10 +413,12 @@ c'è modo di distinguerlo, dall'esterno, da un problema difficile.
 
 `````{tab} Elementare
 
-Dipende dal paesaggio. Se è una scodella liscia, con un'unica valle, qualsiasi
-punto di partenza porta all'unico fondo: è il caso **convesso**, il più
-comodo. Se invece è una catena montuosa piena di conche, si può finire
-intrappolati in una conca che non è la più profonda: un **minimo locale**, un
+Dipende dal paesaggio. Se è una scodella liscia, con un'unica valle, non ci
+sono conche secondarie in cui restare intrappolati: da qualunque punto si
+parta si scende verso quell'unico fondo, purché il passo non sia troppo lungo.
+È il caso **convesso**, il più comodo. Se invece è una catena montuosa piena
+di conche, si può finire intrappolati in una conca che non è la più profonda:
+un **minimo locale**, un
 buon posto ma non il migliore.
 
 `````

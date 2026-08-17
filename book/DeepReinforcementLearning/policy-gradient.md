@@ -117,7 +117,8 @@ theorem* {cite}`sutton2000policy`:
 
 $$
 \nabla_\theta J(\theta) =
-\mathbb{E}\Big[ \sum_{t=0}^{T} \gamma^{\,t}\,\nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t \Big],
+\mathbb{E}\Big[ \sum_{t=0}^{T} \gamma^{\,t}\,\nabla_\theta \log \pi_\theta(a_t
+\mid s_t)\, G_t \Big],
 $$
 
 dove $G_t=\sum_{k\ge t}\gamma^{\,k-t} r_k$ è il ritorno osservato a partire dal
@@ -321,7 +322,8 @@ PPO massimizza un obiettivo "tosato" (*clipped*):
 
 $$
 L^{\text{CLIP}}(\theta) =
-\mathbb{E}\big[\min\!\big(\rho_t A_t,\ \operatorname{clip}(\rho_t,\,1-\epsilon,\,1+\epsilon)\,A_t\big)\big],
+\mathbb{E}\big[\min\!\big(\rho_t A_t,\
+\operatorname{clip}(\rho_t,\,1-\epsilon,\,1+\epsilon)\,A_t\big)\big],
 $$
 
 dove $\rho_t = \dfrac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{\text{old}}}(a_t\mid s_t)}$
@@ -342,8 +344,8 @@ sotto $1-\epsilon$ il gradiente resta pieno, perché rendere *meno* probabile
 un'azione buona non è il rischio da cui ci si vuole difendere. Se l'azione è
 andata peggio del previsto ($A_t<0$) i due lati si scambiano: il taglio scatta
 sotto $1-\epsilon$, e sopra $1+\epsilon$ non scatta affatto. Con $\epsilon=0{,}2$,
-$A_t=-1$ e $\rho_t=5$, cioè un rapporto fuori scala di venticinque volte
-dall'estremo consentito, l'obiettivo vale $-5$ e la sua derivata rispetto a
+$A_t=-1$ e $\rho_t=5$, cioè un rapporto più di quattro volte l'estremo
+superiore della fascia ($1{,}2$), l'obiettivo vale $-5$ e la sua derivata rispetto a
 $\rho_t$ vale $-1$: gradiente intero, niente tosatura. Metà dei campioni fuori
 banda, insomma, non viene tosata affatto.
 
@@ -377,6 +379,10 @@ $$
 \le \delta .
 $$
 
+dove $\delta$ è il raggio ammesso, cioè quanto la policy nuova può differire
+dalla vecchia: è la manopola che in PPO fa l'$\epsilon$ del tosaggio, con la
+differenza che qui è un vincolo e là un incentivo.
+
 Il vincolo definisce una **regione di fiducia**, cioè l'intorno entro il quale
 l'approssimazione lineare dell'obiettivo è ancora credibile. La ragione per cui
 serve è quella che la sezione ha già raccontato con la metafora del
@@ -393,9 +399,17 @@ normale ottimizzatore del primo ordine.
 
 Va aggiunto, per completezza, che a rigore l'obiettivo che si implementa non è
 solo $L^{\text{CLIP}}$: gli si sommano la perdita del critico e un piccolo
-**bonus di entropia**, $L^{\text{CLIP}} - c_1 L^{\text{VF}} + c_2 S[\pi_\theta]$,
-dove il secondo tiene la policy dal collassare troppo presto su un'unica azione.
-È lo stesso ingrediente che la sezione sul controllo continuo presenterà come
+**bonus di entropia**,
+
+$$
+L^{\text{CLIP}} - c_1 L^{\text{VF}} + c_2\, \mathcal{H}[\pi_\theta],
+$$
+
+dove $L^{\text{VF}}$ è l'errore quadratico del critico, $\mathcal{H}[\pi_\theta]$
+è l'entropia media della policy (la stessa $\mathcal{H}$ che la sezione sul
+controllo continuo definirà come $-\mathbb{E}_{a\sim\pi}[\log\pi(a\mid s)]$) e
+$c_1, c_2$ sono due pesi fissi. Il terzo termine tiene la policy dal collassare
+troppo presto su un'unica azione: è lo stesso ingrediente che diventerà il
 segno distintivo di SAC, qui con un peso molto più piccolo e uno scopo più
 modesto.
 

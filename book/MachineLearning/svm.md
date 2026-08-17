@@ -455,13 +455,16 @@ Ma sappiamo già come buttare via il pezzo che non interessa: l'ombra. Facciamo
 fare a quella freccia l'ombra sulla direzione perpendicolare alla strada, e
 quello che resta è esattamente la larghezza, come mostra
 {numref}`fig-svm-larghezza`. Una accortezza sola: la freccia $\mathbf{w}$ ci
-serve qui come direzione e non come lunghezza, quindi prima la si accorcia
-finché è lunga esattamente $1$, dividendo tutte le sue coordinate per la sua
-lunghezza. Una freccia di lunghezza $1$ indica una direzione e basta.
+serve qui come direzione e non come lunghezza, quindi se ne fa una **copia**
+lunga esattamente $1$, dividendone tutte le coordinate per la lunghezza
+dell'originale. Una freccia di lunghezza $1$ indica una direzione e basta;
+l'originale però resta dov'è, e fra due righe torna utile proprio con la sua
+lunghezza.
 
 Il conto è di due righe e sta nella scheda accanto, ma il risultato si può
 raccontare, perché è sorprendente. Viene fuori che la larghezza della strada
-vale sempre $2$ diviso la lunghezza della freccia $\mathbf{w}$. Sempre: delle
+vale sempre $2$ diviso la lunghezza della freccia $\mathbf{w}$ di partenza,
+quella che non abbiamo accorciato. Sempre: delle
 due case, che erano il punto di partenza, non resta traccia. Il $2$ non è un
 numero magico ma la conseguenza di come abbiamo fissato l'asticella al passo
 precedente, cioè a $+1$ da una parte e $-1$ dall'altra: fra i due c'è appunto
@@ -604,9 +607,14 @@ $$
 - \sum_{i=1}^{m} \alpha_i\Big[\,y_i(\mathbf{w}^\top\mathbf{x}_i + b) - 1\,\Big],
 $$
 
-dove il primo termine è la quantità da minimizzare e la parentesi quadra è
+dove il primo termine è la quantità da minimizzare, la parentesi quadra è
 esattamente il vincolo del secondo passo, quello che vale zero sui punti di
-margine. Il segno meno, con $\alpha_i \ge 0$, non è arbitrario: se un vincolo è
+margine, e $\alpha_i$ è il moltiplicatore associato al vincolo $i$-esimo. Un
+avvertimento sul simbolo, perché qui il libro fa un'eccezione: in queste pagine
+$\mathcal{L}$ è la **lagrangiana**, non la funzione di costo che la stessa
+lettera indica ovunque altrove. È la notazione consolidata di questa
+derivazione, e vale fino alla fine della sezione. Il segno meno, con
+$\alpha_i \ge 0$, non è arbitrario: se un vincolo è
 violato la parentesi diventa negativa, il termine $-\alpha_i[\,\cdot\,]$ diventa
 positivo e si può far crescere quanto si vuole alzando $\alpha_i$, quindi la
 violazione si paga; se invece il vincolo è rispettato con margine, il valore di
@@ -912,9 +920,11 @@ $$
 $$
 
 dove $d$ è il grado del polinomio, $c \ge 0$ un termine costante e $\gamma > 0$
-il parametro di ampiezza del kernel gaussiano, che è l’**inverso** della
-larghezza della campana (la deviazione standard equivalente vale
-$1/\sqrt{2\gamma}$): $\gamma$ grande, campana stretta. Il kernel RBF
+il parametro di ampiezza del kernel gaussiano, che **stringe** la campana al
+crescere. La larghezza è la deviazione standard equivalente $\sigma$, e vale
+$\sigma = 1/\sqrt{2\gamma}$, cioè $\gamma = 1/(2\sigma^2)$: $\gamma$ è quindi
+l'inverso del *quadrato* della larghezza, e per dimezzare la campana va
+quadruplicato, non raddoppiato. $\gamma$ grande, campana stretta. Il kernel RBF
 corrisponde a uno spazio $\phi$ di dimensione *infinita*: sarebbe impossibile
 da costruire, eppure $k$ si calcola in una riga.
 
@@ -923,7 +933,8 @@ speranza. La frase «se esiste una funzione $k$ che calcola quel prodotto
 scalare» rovescia l'ordine dei fatti: in pratica non si parte da $\phi$ per
 cercare $k$, si **sceglie** $k$ e si spera che un $\phi$ esista. Esiste se e
 solo se $k$ è simmetrica e **semidefinita positiva**, cioè se ogni matrice di
-Gram $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$ ha autovalori non negativi: è il
+Gram $\mathbf{K}$, quella di elementi $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$,
+ha autovalori non negativi: è il
 teorema di Mercer {cite}`scholkopf2002learning`, ed è la ragione per cui i
 kernel non si inventano a piacere. Se $k$ non lo è, il duale smette di essere
 concavo e il solutore sta risolvendo un problema diverso da quello che si
@@ -968,7 +979,7 @@ Non riceve la metà della luce, e nemmeno un terzo. Il motivo è che a decidere
 non è la distanza ma il suo **quadrato**, e raddoppiando la distanza il
 quadrato si moltiplica per quattro: è come se quel lampione, per lui, fosse
 lontano quattro portate invece di una. La luce che gli arriva è quindi $0{,}37$
-moltiplicato per sé stesso quattro volte, cioè $0{,}018$: meno di due
+elevato alla quarta, cioè circa $0{,}018$: meno di due
 centesimi, praticamente buio. Ecco perché il raggio d'influenza di un punto
 finisce così bruscamente.
 
@@ -1133,7 +1144,7 @@ lin = make_pipeline(StandardScaler(), LinearSVC(C=1.0))
 lin.fit(X, y)
 
 # Regressione: qui serve un target CONTINUO, non le classi 0/1 di sopra.
-# Fabbrichiamone uno: una sinusoide della prima coordinata, con un po' di rumore.
+# Fabbrichiamone uno: una sinusoide della prima coordinata, con un po’ di rumore.
 rng = np.random.default_rng(0)
 y_reg = np.sin(3 * X[:, 0]) + rng.normal(0, 0.1, size=len(X))
 
@@ -1229,7 +1240,7 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
   senza costruirlo: funziona perché nel **duale** gli esempi compaiono solo
   dentro prodotti scalari, e vale se e solo se $k$ è simmetrica e semidefinita
   positiva (Mercer). Kernel principali: lineare, polinomiale, RBF, dove
-  $\gamma$ è l’**inverso** della larghezza della campana.
+  $\gamma$ **stringe** la campana al crescere ($\gamma = 1/(2\sigma^2)$).
 - La **SVR** regredisce con un tubo $\epsilon$-insensitive; la **one-class SVM**
   ($\nu$ = frazione di anomalie attese) impara la regione dei dati normali per
   la **novelty/anomaly detection**, senza vedere esempi anomali.

@@ -792,3 +792,10 @@ noi.
 ```
 
 `````
+
+Con questo capitolo il libro smette di aggiungere strumenti. Quello che resta
+non è una garanzia, è un'abitudine, e consiste nel chiedere su quale numero un
+sistema è stato premiato, che cosa quel numero lascia fuori e chi risponde
+quando la risposta è sbagliata. Restano le Conclusioni, che non insegnano
+niente di nuovo: servono a vedere che cosa, di tutto quello che hai letto,
+rimane in mano quando si chiude il libro.

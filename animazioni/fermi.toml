@@ -36,3 +36,12 @@ istanti = [0.25, 0.50, 0.90]
 # fermo immagine mostra una griglia vuota mentre la didascalia dice che la riga
 # si sta stendendo. Al 25% la copia e' scesa di una riga e la prima ha gia' le
 # sue letture: si vede il movimento, che e' il motivo per cui la clip esiste.
+
+[spartito-in-fila]
+istanti = [0.10, 0.50, 0.97]
+# perche': il ciclo ha diciassette soste (le posizioni del cursore, da 0 a 16)
+# e l'ultima comincia al 94,1%. Al 90% la battuta non e' ancora finita: manca
+# la terza riga di eventi, i contatori dicono 30 e 5, e in stampa il libro non
+# avrebbe mai mostrato la figura completa, che e' proprio quella che porta i
+# due numeri di cui parla il testo. Il terzo fermo va quindi dentro l'ultima
+# sosta, dove la fila a griglia e' arrivata a 32 e quella a eventi a 8.

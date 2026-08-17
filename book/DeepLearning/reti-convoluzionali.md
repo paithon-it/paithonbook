@@ -51,7 +51,7 @@ $2\times10^{8}$ parametri, un invito all’*overfitting*.
 Soprattutto, lo strato denso non è **equivariante alla traslazione**: un
 pattern spostato di un vettore $\boldsymbol{\Delta}$ attiva pesi diversi,
 perché l'indice
-della componente cambia. Le CNN recuperano l'equivarianza via due vincoli
+della componente cambia. Le CNN recuperano l'equivarianza grazie a due vincoli
 architetturali (connettività locale e condivisione dei pesi) che riducono
 anche i parametri: sposti l'input, e l'attivazione si sposta con lui.
 Attenzione a non chiamarla invarianza, che è un'altra proprietà (la risposta

@@ -658,6 +658,15 @@ Anche qui, il ripasso su due livelli.
 
 `````
 
+A decidere se una voce sintetica è buona resta l'orecchio, e non è una
+particolarità della sintesi: quando le risposte accettabili sono molte, nessun
+conto automatico dice quale valga, e da qui in avanti è la regola. È la
+condizione di chi fabbrica dati nuovi invece di riconoscerli, ed è il terreno
+di «GAN». Ci si arriva con un pezzo già in mano, la gara fra falsario ed
+esperti che rende HiFi-GAN capace di scrivere l'onda in un colpo solo, e quel
+capitolo la smonta per mostrare a quali condizioni un duello del genere si
+tiene in piedi.
+
 [^stesso-tipo]: Chi riconosce e chi sintetizza ritagliano il suono in modo
     diverso, perché servono a due mestieri diversi. Il riconoscimento misura
     una finestrella di venticinque millesimi di secondo e ne comincia una

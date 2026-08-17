@@ -347,8 +347,11 @@ $$
 $$
 
 dove $\mathbf{W}_1, \mathbf{W}_3 \in \mathbb{R}^{d \times d_{\text{ff}}}$ e
-$\mathbf{W}_2 \in \mathbb{R}^{d_{\text{ff}} \times d}$, e $\odot$ è il prodotto
-elemento per elemento. (Shazeer chiama $\mathbf{V}$ la matrice del cancello;
+$\mathbf{W}_2 \in \mathbb{R}^{d_{\text{ff}} \times d}$, $\odot$ è il prodotto
+elemento per elemento, e nella Swish $z$ è un numero singolo (la funzione si
+applica componente per componente) e $\sigma$ è la sigmoide, così che
+$\mathrm{Swish}$ sia una ReLU ammorbidita: quasi $z$ per $z$ grande, quasi zero
+per $z$ molto negativo. (Shazeer chiama $\mathbf{V}$ la matrice del cancello;
 qui la lettera è già impegnata dai *value* dell'attenzione, e riusarla sarebbe
 una trappola.)
 

@@ -379,7 +379,7 @@ Serve dunque a quello per cui l'abbiamo chiamato in causa: mostrare che la
 povertà del segnale non è una fatalità dell'imparare agendo, ma la conseguenza
 di *quale* quantità si è scelto di ottimizzare. E l'oggetto della discordia, a
 ben vedere, non è se il rinforzo serva, ma se basti a spiegare da dove venga la
-comprensione. Su quella domanda si apre il capitolo che segue.
+comprensione. Su quella domanda si apre il capitolo sui world model.
 
 `````{tab} Elementare
 
@@ -437,3 +437,10 @@ comprensione. Su quella domanda si apre il capitolo che segue.
 ```
 
 `````
+
+Da questo capitolo si esce con un criterio più che con una risposta: prima di
+chiedersi se un modo di addestrare funzioni, conviene chiedersi quanta
+informazione porta il segnale su cui si regge, e a quante scelte quel poco va
+poi diviso. Nel capitolo sui world model il segnale resta la previsione, ma la
+cosa da prevedere non è più la parte coperta di un dato, è quello che succede
+dopo nel mondo.

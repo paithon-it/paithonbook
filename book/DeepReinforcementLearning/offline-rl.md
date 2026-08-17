@@ -219,7 +219,9 @@ mezzo al nulla.
 `````{tab} Superiore
 
 Per sapere quali azioni siano plausibili, BCQ addestra un **modello
-generativo** (un *variational autoencoder*), sulle coppie $(s, a)$ del
+generativo** (un *variational autoencoder*: una rete che strozza i dati in
+poche variabili e da quelle li ricostruisce, spiegata per esteso nel capitolo
+sull'audio) sulle coppie $(s, a)$ del
 dataset: dato uno stato, genera azioni simili a quelle che $\pi_\beta$ avrebbe
 scelto in situazioni analoghe. La rete $Q$ viene poi massimizzata solo su un
 pugno di azioni campionate da questo generatore (con una piccola perturbazione
@@ -254,7 +256,8 @@ documentato: il critico non correrà mai dietro a una fantasia.
 CQL insegna esattamente questa prudenza alla rete dei voti. Una rete non impara
 in un colpo solo: si corregge migliaia di volte, un pochino per volta, e a ogni
 correzione CQL aggiunge due spinte. **Abbassa** i voti delle mosse che nel
-diario non compaiono, e **alza** quelli delle mosse che ci sono davvero. Il risultato è un
+diario non compaiono, e **alza** quelli delle mosse che ci sono davvero. Il
+risultato è un
 sistema di voti *conservativo* (pessimista su tutto ciò che non ha visto) che
 difficilmente si fa abbagliare dall'ignoto. Perde forse qualche occasione
 buona ma nascosta; in cambio non si getta mai in un burrone che non ha mai
@@ -269,9 +272,11 @@ regolarizzatore che comprime i valori delle azioni fuori distribuzione:
 
 $$
 \min_{Q}\ \alpha\Big(
-\underbrace{\mathbb{E}_{s\sim\mathcal{D},\, a\sim\mu(\cdot\mid s)}\big[Q(s,a)\big]}_{\text{abbassa: azioni OOD}}
+\underbrace{\mathbb{E}_{s\sim\mathcal{D},\, a\sim\mu(\cdot\mid
+s)}\big[Q(s,a)\big]}_{\text{abbassa: azioni OOD}}
 -
-\underbrace{\mathbb{E}_{(s,a)\sim\mathcal{D}}\big[Q(s,a)\big]}_{\text{alza: azioni nel dataset}}
+\underbrace{\mathbb{E}_{(s,a)\sim\mathcal{D}}\big[Q(s,a)\big]}_{\text{alza:
+azioni nel dataset}}
 \Big)
 + \tfrac{1}{2}\,\mathbb{E}_{\mathcal{D}}\Big[\big(Q - \hat{\mathcal{B}}Q\big)^2\Big].
 $$
@@ -343,13 +348,15 @@ stato fatto» senza mai nominare un'azione ipotetica. Le tre reti si addestrano
 per pura regressione sui dati:
 
 $$
-\mathcal{L}_V = \mathbb{E}_{(s,a)\sim\mathcal{D}}\Big[ L_2^{\tau}\big(Q(s,a) - V(s)\big)\Big],
+\mathcal{L}_V = \mathbb{E}_{(s,a)\sim\mathcal{D}}\Big[ L_2^{\tau}\big(Q(s,a) -
+V(s)\big)\Big],
 \qquad
 L_2^{\tau}(u) = \big|\,\tau - \mathbb{1}(u<0)\,\big|\; u^2,
 $$
 
 $$
-\mathcal{L}_Q = \mathbb{E}_{(s,a,s')\sim\mathcal{D}}\Big[\big(r + \gamma\, V(s') - Q(s,a)\big)^2\Big].
+\mathcal{L}_Q = \mathbb{E}_{(s,a,s')\sim\mathcal{D}}\Big[\big(r + \gamma\,
+V(s') - Q(s,a)\big)^2\Big].
 $$
 
 Dove $\tau \in (0,1)$ è l’**expectile** (in pratica $\tau \approx 0{,}7$–$0{,}9$):
@@ -358,7 +365,8 @@ verso l'alto della distribuzione dei $Q$ nel dataset. Un dettaglio che sembra di
 implementazione e non lo è: il $Q$ dentro $\mathcal{L}_V$ è una **copia
 ritardata**, come la rete-target di DQN. Senza, le due regressioni si
 inseguirebbero a vicenda senza niente di fermo a cui aggrapparsi, ed è il punto
-esatto in cui una reimplementazione di IQL smette di funzionare. Il target di $\mathcal{L}_Q$
+esatto in cui una reimplementazione di IQL smette di funzionare. Il target di
+$\mathcal{L}_Q$
 usa $V(s')$, **non** un massimo su azioni arbitrarie: ecco perché nessuna azione
 OOD viene mai valutata. La policy si estrae infine per *advantage-weighted
 regression*, imitando le azioni del dataset pesate per il loro vantaggio
@@ -414,7 +422,8 @@ la recita.
 Il Decision Transformer riordina la traiettoria come una sequenza di token
 
 $$
-\big(\hat{R}_1,\, s_1,\, a_1,\ \hat{R}_2,\, s_2,\, a_2,\ \dots,\ \hat{R}_T,\, s_T,\, a_T\big),
+\big(\hat{R}_1,\, s_1,\, a_1,\ \hat{R}_2,\, s_2,\, a_2,\ \dots,\ \hat{R}_T,\,
+s_T,\, a_T\big),
 \qquad
 \hat{R}_t = \sum_{t'=t}^{T} r_{t'},
 $$

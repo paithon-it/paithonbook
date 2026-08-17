@@ -307,7 +307,10 @@ C_{\text{totale}} = C_{\text{operativo}}(t) + C_{\text{incorporato}} \cdot
 \frac{t}{T_{\text{vita}}},
 $$
 
-e il rapporto fra i due termini dipende interamente dal **fattore di utilizzo**.
+dove $t$ è il tempo trascorso in servizio e $T_{\text{vita}}$ la vita utile
+attesa del dispositivo, cioè su quanto tempo il carbonio di fabbricazione va
+spalmato. Il rapporto fra i due termini dipende interamente dal **fattore di
+utilizzo**.
 Un acceleratore da centro dati con utilizzo alto e vita di qualche anno è
 dominato dall'operativo; un dispositivo *edge* con utilizzo dell'ordine
 dell'uno per cento è dominato dall'incorporato.
@@ -427,3 +430,10 @@ molto.
   carico moltiplicato per più di sei.
 ```
 `````
+
+La sorveglianza di cui parla questo capitolo dice sempre e solo che qualcosa è
+cambiato. Che l'errore è salito, che i dati in arrivo non somigliano più a
+quelli di prima, che la bolletta è cresciuta. Non dice mai perché, e nemmeno su
+che cosa il modello si stia basando per rispondere. È la domanda del capitolo
+sull'interpretabilità, che prova a guardare dentro il modello invece che
+intorno.

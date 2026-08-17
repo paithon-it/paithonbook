@@ -156,8 +156,8 @@ statistico: quando un gruppo di thread si ferma in attesa di un dato, ne fa
 partire un altro già pronto. Non accorcia l'attesa del singolo: la *copre* con
 il lavoro degli altri. È una scommessa che paga solo se il problema offre
 parallelismo a valanga, ed è esattamente il caso delle reti neurali: come
-ricordava la sezione «Prestazioni e scala», il prodotto di due matrici $(n,m)$
-e $(m,p)$ costa circa $2nmp$ operazioni, scomponibili in prodotti scalari
+ricordava la sezione «Prestazioni e scala», il prodotto di due matrici $(M,K)$
+e $(K,N)$ costa circa $2MNK$ operazioni, scomponibili in prodotti scalari
 indipendenti l'uno dall'altro. La sezione sull'architettura scioglie i
 dettagli di questo modello: Streaming Multiprocessor, warp, SIMT, occupancy.
 `````

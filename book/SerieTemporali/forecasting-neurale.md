@@ -826,6 +826,12 @@ confronto con la **linea di base** classica.
 
 `````
 
+In tutto il capitolo l'unica conoscenza a disposizione è stata la storia del
+fenomeno. Nessuno ha spiegato al modello perché la marea sale, e la marea si
+prevede lo stesso, finché le regolarità tengono. Il capitolo sulle PINN parte
+dal caso opposto, quello in cui la legge che governa il fenomeno si conosce
+benissimo e a scarseggiare sono le misure.
+
 [^banda-limite]: I conti, per chi li vuole. Un AR(1) con $|\phi|<1$ ha
     varianza di lungo periodo $\sigma^2/(1-\phi^2)$, che con $\sigma=1$ e
     $\phi=0{,}6$ dà una deviazione di $1{,}25$; una banda all'80% è larga

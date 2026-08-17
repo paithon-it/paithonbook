@@ -247,7 +247,7 @@ applica a ogni gruppo $g$ una funzione di aggregazione. Per la media, sul
 gruppo con valori $\{x_1,\dots,x_{n_g}\}$:
 
 $$
-\bar{x}_g = \frac{1}{n_g}\sum_{i=1}^{n_g} x_i .
+\bar{x}_g = \frac{1}{n_g}\sum_{i=1}^{n_g} x_i ,
 $$
 
 dove $n_g$ è la numerosità del gruppo. Oltre a `mean` sono disponibili
@@ -495,3 +495,12 @@ nella sostanza.
 ```
 
 `````
+
+All'inizio del capitolo Python era una lingua da imparare; adesso è un attrezzo
+che risponde: un array di NumPy per i numeri, un DataFrame di Pandas per le
+tabelle, un grafico per guardarle prima di fidarsene. Sono le stesse cose che il
+capitolo di
+matematica chiama con altri nomi, perché una lista di numeri lì diventa un
+vettore, una tabella diventa una matrice, e la domanda «questa media dice la
+verità?» diventa una domanda di statistica. Da lì in avanti non si impara più a
+scrivere codice: si impara che cosa fargli calcolare.

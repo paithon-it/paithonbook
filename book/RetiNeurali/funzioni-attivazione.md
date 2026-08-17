@@ -29,7 +29,11 @@ singolo neurone della sezione precedente: per dividere i casi in due gruppi sa
 tracciare una riga dritta e nient'altro. Non imparerà mai una spirale, una
 lettera scritta a mano, il tono di una frase. Serve, tra uno strato e l'altro,
 una "piega": una funzione che *storce* i numeri in modo non proporzionale. È
-lei che dà alla rete la libertà di disegnare curve.
+lei che dà alla rete la libertà di disegnare curve. Non una qualunque, però:
+se la piega è a sua volta fatta di sole moltiplicazioni e somme, come elevare
+al quadrato, mettere mille neuroni in uno strato non fa disegnare niente di
+più che metterne dieci. Le pieghe che incontreremo qui sotto non hanno quel
+difetto.
 
 `````
 
@@ -61,8 +65,10 @@ la fattorizzazione salta.
 
 Non basta però che $g$ sia non lineare, ed è un punto su cui si scivola spesso.
 Se $g$ fosse un polinomio, per esempio $g(x)=x^2$, uno strato nascosto
-calcolerebbe $\sum_i c_i\,(w_i x + b_i)^2 + d$, che comunque si scelgano i
-parametri resta un polinomio di grado $2$: aggiungere neuroni non servirebbe a
+calcolerebbe $\sum_i c_i\,(w_i x + b_i)^2 + d$, dove $w_i$ e $b_i$ sono peso e
+bias dell'$i$-esimo neurone nascosto, $c_i$ il peso con cui l'uscita lo
+raccoglie e $d$ il bias d'uscita: comunque si scelgano quei parametri resta un
+polinomio di grado $2$, e aggiungere neuroni non servirebbe a
 niente. Provato ai minimi quadrati su $x^3$ in $[-1,1]$ (duemila punti
 equispaziati, uno strato nascosto, Adam per quattromila passi con
 $\eta = 10^{-2}$), dieci neuroni e ottocento danno lo **stesso** errore,
@@ -164,10 +170,13 @@ sempre di uno (da $-6$ a $-5$), sale da $0{,}0025$ a $0{,}0067$: si è mossa di
 quattro millesimi, cioè più di cinquanta volte meno, per uno spostamento
 identico.
 
-E quei due numeri *sono* la pendenza, perché la pendenza è proprio quanto si
-muove l'uscita per un passo di ingresso lungo uno. Nelle code, quindi, la
-pendenza vale quattro millesimi: il messaggio che risale la rete viene
-moltiplicato per quel numero, e si spegne.
+E quei due numeri sono, in pratica, la pendenza: la pendenza vera è quanto si
+muove l'uscita per un passo *piccolissimo*, e su un passo lungo uno viene fuori
+un po’ meno (vicino allo zero la pendenza vera è $0{,}25$, non $0{,}23$). Nelle
+code il divario resta, ma i numeri in gioco sono tutti dello stesso ordine: la
+pendenza vera vale meno di tre millesimi in $-6$ e quasi sette in $-5$, e i
+quattro millesimi letti sulla tabella stanno in mezzo. Il messaggio che risale
+la rete viene moltiplicato per un numero così, e si spegne.
 
 `````
 
@@ -372,7 +381,9 @@ successiva, vengono semplicissime.
 
 `````{tab} Superiore
 
-Dato il vettore di *logit* $\mathbf{z}\in\mathbb{R}^K$, la softmax è
+Dato il vettore dei punteggi grezzi dell'ultimo strato, che si chiamano
+*logit* e qui indichiamo con $\mathbf{z}\in\mathbb{R}^K$ (dove $K$ è il numero
+di classi), la softmax è
 
 $$
 \mathrm{softmax}(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}},

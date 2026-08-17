@@ -6,9 +6,9 @@ ricercatori fra la Svizzera e gli Stati Uniti (Katharopoulos, Vyas, Pappas e
 Fleuret) pubblicano un articolo dal titolo che suona come una provocazione:
 *Transformers are RNNs* {cite}`katharopoulos2020transformers`, dove RNN è la
 sigla inglese delle reti ricorrenti, quelle che leggono una parola alla volta.
-La tesi è tanto semplice quanto spiazzante. Togliete al meccanismo di attenzione la sua
-funzione softmax (il passaggio che, davanti a una parola, spartisce l'attenzione
-fra tutte le altre come le fette di una torta), mettete al suo posto un modo
+La tesi è tanto semplice quanto spiazzante. Togli al meccanismo di attenzione la
+sua funzione softmax (il passaggio che, davanti a una parola, spartisce l'attenzione
+fra tutte le altre come le fette di una torta), metti al suo posto un modo
 più rozzo di misurare quanto due parole si somigliano, e il Transformer, il
 modello che aveva appena spodestato le reti ricorrenti, ricade esattamente in
 una **rete ricorrente**. Il re, sotto il mantello, era un vecchio parente.

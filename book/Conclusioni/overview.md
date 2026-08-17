@@ -10,7 +10,7 @@ dal codice che fa correre una scheda grafica alle domande su chi risponde
 quando un modello sbaglia. Dei meccanismi non è rimasto quasi niente di
 prodigioso: guardati da vicino, sono conti. Ed è proprio per questo che
 l'intelligenza artificiale continua a non lasciarsi definire: ogni cosa che si
-riesce a spiegare smette di sembrare intelligenza e diventa "solo" un
+riesce a spiegare smette di sembrare intelligenza e diventa «solo» un
 algoritmo.
 
 Ma adesso abbiamo qualcosa che all'inizio non avevamo: gli strumenti per capire

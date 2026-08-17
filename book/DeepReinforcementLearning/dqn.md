@@ -7,7 +7,8 @@ diversi videogiochi Atari (*Breakout*, *Pong*, *Space
 Invaders*) senza che nessuno gli avesse spiegato le regole. L'algoritmo
 riceveva solo ciò che vedrebbe un ragazzino davanti al cabinato: i pixel dello
 schermo e il punteggio. Da lì, per tentativi, su tre di quei giochi
-arrivava a superare un umano esperto {cite}`mnih2013playing`. Due anni dopo il risultato finì sulla
+arrivava a superare un umano esperto {cite}`mnih2013playing`. Due anni dopo il
+risultato finì sulla
 copertina di *Nature* {cite}`mnih2015human`. Quel programma si chiama **Deep
 Q-Network**, DQN.
 
@@ -130,7 +131,8 @@ il contrario, e questo è tutto il punto. L'esempio classico si chiama
 compito non si può fare: sette situazioni, e in nessuna si guadagna mai niente.
 La risposta giusta è «tutto vale zero», il sistema saprebbe scriverla alla
 perfezione (e non serve nemmeno una rete profonda: bastano una manciata di pesi
-e la più semplice delle reti), e ciononostante quei pesi, invece di posarsi sullo zero, cominciano a
+e la più semplice delle reti), e ciononostante quei pesi, invece di posarsi
+sullo zero, cominciano a
 crescere e non smettono più. Se il metodo sbaglia il problema più semplice del
 mondo, il guasto non è nel problema.
 
@@ -196,7 +198,8 @@ Non basta osservare che l'aggiornamento semi-gradiente non è il gradiente di
 nessuna funzione obiettivo (si deriva rispetto alla stima ma non rispetto al
 bersaglio, che pure dipende dai parametri): lo stesso aggiornamento, con
 approssimatore lineare e sotto la distribuzione on-policy, converge, come
-dimostrarono Tsitsiklis e Van Roy nel 1997 {cite}`tsitsiklis1997analysis`. Ed è a quel caso, lineare e
+dimostrarono Tsitsiklis e Van Roy nel 1997 {cite}`tsitsiklis1997analysis`. Ed
+è a quel caso, lineare e
 on-policy, che si fermano le garanzie di convergenza note: con approssimatori
 non lineari come le reti si conoscono controesempi di divergenza perfino
 on-policy.
@@ -267,7 +270,8 @@ sull'equazione di Bellman:
 
 $$
 \mathcal{L}(\theta) = \mathbb{E}_{(s,a,r,s')\sim U(\mathcal{D})}
-\left[\big(\, r + \gamma \max_{a'} Q(s', a'; \theta^{-}) - Q(s, a; \theta)\,\big)^2\right].
+\left[\big(\, r + \gamma \max_{a'} Q(s', a'; \theta^{-}) - Q(s, a;
+\theta)\,\big)^2\right].
 $$
 
 Qui $r$ è la ricompensa immediata, $\gamma\in[0,1)$ il fattore di sconto, e il
@@ -432,8 +436,9 @@ $$
 $$
 
 e il divario cresce con il numero di azioni e con la varianza dell'errore: la
-disuguaglianza è **stretta** solo perché $\hat Q$ è aleatoria, e con stime esatte
-si ridurrebbe a un'uguaglianza. Basta quindi un errore di stima a media nulla
+disuguaglianza è **stretta** ogni volta che il rumore può cambiare quale azione
+risulti la migliore, e con stime esatte si ridurrebbe a un'uguaglianza. Basta
+quindi un errore di stima a media nulla
 perché il bersaglio sia sistematicamente gonfio, e il bootstrapping lo propaga
 all'indietro.
 

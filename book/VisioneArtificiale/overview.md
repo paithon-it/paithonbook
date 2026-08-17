@@ -11,10 +11,10 @@ aperto. Quella sottovalutazione racconta una verità profonda: vedere ci
 pochi millisecondi.
 
 Questo capitolo parte proprio da lì: da che cosa significhi, per una macchina,
-"vedere". E dalla scoperta, arrivata sul serio solo dopo il 2010, che il modo
+«vedere». E dalla scoperta, arrivata sul serio solo dopo il 2010, che il modo
 migliore per insegnarglielo non è scrivere regole, ma mostrarle milioni di
 esempi. Il programma che impara così si chiama **rete neurale**, ed è quello
-che il capitolo precedente ha costruito pezzo per pezzo: qui lo mettiamo al
+che i capitoli precedenti hanno costruito pezzo per pezzo: qui lo mettiamo al
 lavoro sulle immagini, e per brevità lo chiameremo «la rete».
 
 ## Un'immagine è una griglia di numeri
@@ -93,7 +93,7 @@ vediamo senza pensarci il computer li deve inferire.
 **Variazione dentro la classe.** Un siamese e un persiano condividono
 l'etichetta e quasi nient'altro.
 
-Tenete a mente l'elenco, perché tornerà voce per voce. E notate che una
+Tieni a mente l'elenco, perché tornerà voce per voce. E nota che una
 variazione, la più elementare di tutte, nell'elenco non compare nemmeno:
 *dove* sta il gatto dentro l'inquadratura. Manca perché la risposta è già nel
 modo in cui la rete è fatta dentro, cioè nella sua **architettura**, e in
@@ -112,12 +112,11 @@ misurato su reti vere, non un sospetto.
 
 Le sette voci dell'elenco, quelle, restano tutte da affrontare. E c'è una
 sezione, più avanti in questo stesso capitolo, che è quell'elenco riletto come
-un elenco di cose da fare: moltiplicare le foto che abbiamo deformando quelle
-che già abbiamo, e si chiama **data augmentation**. Ruotare contro il punto di
-vista, ritagliare contro la scala, cancellare rettangoli contro l'occlusione,
-alterare la luminosità contro l'illuminazione. Non è un insieme di trucchi: è
-un modo di dire alla rete quali cambiamenti **non** devono cambiare la
-risposta.
+un elenco di cose da fare: moltiplicare le foto che si hanno deformandole, e si
+chiama **data augmentation**. Ruotare contro il punto di vista, ritagliare
+contro la scala, cancellare rettangoli contro l'occlusione, alterare la
+luminosità contro l'illuminazione. Non è un insieme di trucchi: è un modo di
+dire alla rete quali cambiamenti **non** devono cambiare la risposta.
 
 `````
 

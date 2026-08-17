@@ -488,8 +488,8 @@ impiego più importante.
 
 Il risultato ha la stessa forma di prima, e costa parecchio meno. Con i numeri
 dell'esempio qui sotto (un quadratino di tre per tre, 64 opinioni in entrata e
-128 in uscita) si passa da $73\,728$ numeri da imparare a $8\,768$: otto volte e
-mezzo di meno. Più sono le opinioni in uscita, più ci si avvicina a nove volte,
+128 in uscita) si passa da $73\,728$ numeri da imparare a $8\,768$: poco più di
+otto volte di meno. Più sono le opinioni in uscita, più ci si avvicina a nove volte,
 che è il tetto e non si supera mai.
 
 Il motivo è semplice. Nella versione ordinaria ogni combinazione «quale pixel

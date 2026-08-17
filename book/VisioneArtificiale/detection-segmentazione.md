@@ -4,14 +4,14 @@ Un'auto a guida autonoma si avvicina a un incrocio. Una rete di
 classificazione, di quelle viste finora, sa dirle una cosa sola:
 *nell'immagine c'è un pedone*. Vero, ma inutile. Per frenare in tempo l'auto
 deve sapere **dove** si trova quel pedone, se è uno o sono tre, se quello a
-destra è un ciclista, e (al limite), quale sagoma esatta occupa sull'asfalto.
-La classificazione risponde alla domanda "cosa"; qui impariamo a rispondere
-anche a "dove" e "quali contorni".
+destra è un ciclista, e (al limite) quale sagoma esatta occupa sull'asfalto.
+La classificazione risponde alla domanda «cosa»; qui impariamo a rispondere
+anche a «dove» e «quali contorni».
 
 ## Dalla classificazione al riquadro
 
-Salire dalla classificazione alla localizzazione è come passare da "in questa
-foto c'è un gatto" a "il gatto sta in *quel* rettangolo". Il compito si chiama
+Salire dalla classificazione alla localizzazione è come passare da «in questa
+foto c'è un gatto» a «il gatto sta in *quel* rettangolo». Il compito si chiama
 **object detection**: per ogni oggetto presente, la rete deve produrre insieme
 un riquadro e un'etichetta.
 
@@ -235,10 +235,14 @@ cornici che ha disegnato, quante erano giuste? Quella frazione si chiama
 rilevatore è prudente: se disegna una cornice sola, quella di cui è
 sicurissimo, la sua precisione è alta ma si è perso quasi tutto; se ne disegna
 mille, le trova tutte ma ne sbaglia moltissime. Allora non si guarda un valore
-solo: si fa disegnare al rilevatore le sue cornici in ordine di sicurezza, si
-misura la precisione dopo la prima, dopo le prime due, dopo le prime tre, e si
-fa la media di tutte quelle misure. Quel numero, che tiene conto insieme di
-quanto è preciso e di quanto è coraggioso, è il voto su **una** categoria.
+solo: si fa disegnare al rilevatore le sue cornici in ordine di sicurezza e si
+misura la precisione **ogni volta che ne esce una giusta** (dopo la prima
+cornice giusta, dopo la seconda, dopo la terza). Poi si sommano quelle misure e
+si divide per **quanti oggetti c'erano davvero** nelle foto, non per quante
+cornici il rilevatore ha disegnato: così ogni oggetto che non ha mai cerchiato
+pesa come uno zero, ed è questo a punire il rilevatore troppo prudente. Quel
+numero, che tiene conto insieme di quanto è preciso e di quanto è coraggioso, è
+il voto su **una** categoria.
 
 Poi si fa la media di quei voti **sulle categorie**, e questa è la seconda
 media, quella che dà la «m» di *mean*. Il risultato è un numero fra 0 e 1 che

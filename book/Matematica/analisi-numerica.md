@@ -63,9 +63,10 @@ La distinzione di {numref}`fig-formati-virgola-mobile` fra **portata** e
 guai di cui parleremo nascono dall'esaurirsi ora dell'uno (si finisce fuori
 dai numeri rappresentabili) ora dell'altro (restano troppo poche cifre buone).
 Il `bfloat16` della terza barra è nato apposta per il deep learning: rinuncia
-a metà delle cifre significative pur di tenere la stessa portata del
-`float32`, perché in un addestramento sbagliare la settima cifra non fa danno
-e finire fuori scala sì.
+a due terzi delle cifre significative (sette bit di mantissa contro
+ventitré) pur di tenere la stessa portata del `float32`, perché in un
+addestramento le cifre oltre la terza non fanno quasi mai danno e finire fuori
+scala sì.
 
 `````{tab} Elementare
 
@@ -521,7 +522,7 @@ euro.
 - **Condizionamento** e **stabilità** sono due cause indipendenti di un
   risultato sbagliato: il primo è del problema ($\kappa_2 =
   \sigma_{\max}/\sigma_{\min}$), la seconda dell'algoritmo, e l'errore finale
-  è il prodotto delle due.
+  è **al più** il prodotto delle due.
 - **Standardizzare** i dati non è solo buona educazione statistica: riduce il
   condizionamento del problema e fa convergere l'ottimizzazione molto più in
   fretta.

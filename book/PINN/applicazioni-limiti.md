@@ -611,3 +611,10 @@ capitolo per capitolo, era troppo vicino per vedersi.
 ```
 
 `````
+
+Le PINN chiudono la parte del libro che cambia dominio a ogni capitolo, grafi,
+cataloghi, serie storiche, equazioni della fisica, cioè la stessa matematica
+che si adatta di volta in volta alla forma dei dati. Da qui la
+domanda cambia. Il capitolo su MLOps non chiede più che cosa un modello riesca
+a imparare, ma che cosa gli succede il giorno dopo, quando smette di essere un
+esperimento e diventa un servizio che qualcuno usa davvero.

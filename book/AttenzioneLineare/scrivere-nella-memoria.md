@@ -125,11 +125,13 @@ all'ICML 2024 {cite}`yang2024gla`, la rende molto più fine sostituendo lo
 scalare con un **gate diagonale**:
 
 $$
-\mathbf{S}_t = \mathbf{S}_{t-1}\, \operatorname{Diag}(\alpha_t) + \mathbf{v}_t\, \mathbf{k}_t^\top ,
+\mathbf{S}_t = \mathbf{S}_{t-1}\, \operatorname{Diag}(\boldsymbol{\alpha}_t) + \mathbf{v}_t\, \mathbf{k}_t^\top ,
 $$
 
-dove ora $\alpha_t \in (0,1)^d$ è un *vettore* di gate, uno per canale di
-chiave, e $\operatorname{Diag}(\alpha_t)$ è la matrice diagonale che ne fa i
+dove ora $\boldsymbol{\alpha}_t \in (0,1)^d$ è un *vettore* di gate, uno per
+canale di chiave (il grassetto lo distingue dallo scalare $\alpha_t$ della
+formula precedente: stesso ruolo, una componente sola contro $d$), e
+$\operatorname{Diag}(\boldsymbol{\alpha}_t)$ è la matrice diagonale che ne fa i
 coefficienti. Il **lato** da cui moltiplica non è un dettaglio di scrittura:
 con la convenzione di questo capitolo ($\mathbf{S} = \sum_i \mathbf{v}_i \mathbf{k}_i^\top$,
 lettura $\mathbf{o} = \mathbf{S}\mathbf{q}$) le colonne di $\mathbf{S}$ sono
@@ -144,7 +146,7 @@ bottiglia stretto, dimensione 16) seguita da una sigmoide, così da generare $d$
 gate distinti senza far esplodere il numero di parametri; la sigmoide è poi
 elevata a $1/\tau$ con $\tau = 16$, una *temperatura* che spinge i gate verso
 1, cioè verso l'oblio lento, che è la molla di tutto il meccanismo:
-$\alpha_t = \sigma\big(\mathbf{x}_t \mathbf{W}^1_\alpha \mathbf{W}^2_\alpha + \mathbf{b}_\alpha\big)^{1/\tau}$. La
+$\boldsymbol{\alpha}_t = \sigma\big(\mathbf{x}_t \mathbf{W}^1_\alpha \mathbf{W}^2_\alpha + \mathbf{b}_\alpha\big)^{1/\tau}$. La
 gerarchia è chiara: scalare fisso (RetNet) $\to$ scalare data-dipendente
 (Mamba-2) $\to$ diagonale data-dipendente (GLA), dal più grossolano al più
 selettivo.
@@ -261,8 +263,9 @@ stessa per tutte, ed è un dettaglio che vale la pena guardare: la
 normalizzazione $L_2$ delle chiavi è di **DeltaNet**, dove serve a tenere gli
 autovalori della transizione in $[0,1]$, cioè a fare della transizione una
 contrazione; in GLA le chiavi sono una proiezione lineare secca, e a tenere
-limitato lo stato è il gate $\alpha_t \in (0,1)^d$, cioè la contrazione è nella
-memoria e non nella trasformazione. Due vie diverse per lo stesso scopo.
+limitato lo stato è il gate $\boldsymbol{\alpha}_t \in (0,1)^d$, cioè la
+contrazione è nella memoria e non nella trasformazione. Due vie diverse per lo
+stesso scopo.
 
 `````
 
@@ -490,7 +493,7 @@ volta) è identico in tutte e cinque.
 | :--- | :--- | :--- |
 | Attenzione lineare | $\mathbf{S}_t = \mathbf{S}_{t-1} + \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\mathbf{I}$ (identità) |
 | Mamba-2 / RetNet | $\mathbf{S}_t = \alpha_t\, \mathbf{S}_{t-1} + \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\alpha_t \mathbf{I}$ (decadimento scalare; commuta con lo stato) |
-| GLA | $\mathbf{S}_t = \mathbf{S}_{t-1}\operatorname{Diag}(\alpha_t) + \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\operatorname{Diag}(\alpha_t)$ (decadimento diagonale) |
+| GLA | $\mathbf{S}_t = \mathbf{S}_{t-1}\operatorname{Diag}(\boldsymbol{\alpha}_t) + \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\operatorname{Diag}(\boldsymbol{\alpha}_t)$ (decadimento diagonale, un gate per canale) |
 | DeltaNet | $\mathbf{S}_t = \mathbf{S}_{t-1}(\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top) + \beta_t\, \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top$ (Householder) |
 | Gated DeltaNet | $\mathbf{S}_t = \mathbf{S}_{t-1}\big[\alpha_t(\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top)\big] + \beta_t\, \mathbf{v}_t\, \mathbf{k}_t^\top$ | $\alpha_t(\mathbf{I} - \beta_t\, \mathbf{k}_t \mathbf{k}_t^\top)$ (gated-delta) |
 
@@ -587,7 +590,7 @@ chiamano *dualità* quella doppia scrittura.
   finché le chiavi non si assomigliano fra loro; il gate serve a non far
   gonfiare la memoria all'infinito.
 - A cambiare, da un'architettura all'altra, è **solo la transizione di stato**
-  ($\mathbf{I} \to \alpha_t \mathbf{I} \to \operatorname{Diag}(\alpha_t) \to
+  ($\mathbf{I} \to \alpha_t \mathbf{I} \to \operatorname{Diag}(\boldsymbol{\alpha}_t) \to
   \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
   \to \alpha_t(\mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top)$): tutto il
   resto della ricorrenza resta identico.

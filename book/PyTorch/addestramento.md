@@ -87,7 +87,7 @@ cosa cambia dentro il modello.
 Tre giri dello stesso ciclo, su una rete piccola presa a esempio. I gradienti
 compaiono quando `backward()` li calcola, restano finché lo `zero_grad()` del
 giro dopo non li toglie di mezzo, e intanto `step()` sposta i pesi. A destra la
-loss dei tre giri: parte da $2{,}35$, che è quanto vale per chi tira a
+loss dei tre giri: parte da $2{,}35$, poco sopra il $2{,}30$ di chi tira a
 indovinare fra dieci cifre, e a ogni giro scende un poco.
 ```
 
@@ -330,9 +330,9 @@ la varianza per canale non è stimabile, e la libreria preferisce fermarsi
 piuttosto che normalizzare per qualcosa che non ha calcolato. Dove invece i
 valori per canale sono più di uno il conto si fa e `nan` non ne esce: un
 ingresso $(1, 3, 5)$, o l'immagine $(1, 3, 4, 4)$ di una `nn.BatchNorm2d`,
-passano senza storie, e su un ingresso costante l'uscita non è `nan` ma un
-numero minuscolo, dell'ordine di $10^{-5}$, cioè l’$\varepsilon$ che si somma
-al denominatore proprio perché non possa mai essere zero.
+passano senza storie, e su un ingresso costante l'uscita non è `nan`: è zero, o
+un residuo minuscolo di arrotondamento, perché l’$\varepsilon$ che si somma al
+denominatore impedisce che si divida zero per zero.
 `torch.no_grad()` è un context manager che sospende la
 costruzione del grafo autograd: non vengono salvati i valori intermedi per un
 `backward()` che non arriverà mai, con un risparmio di memoria che cresce con
@@ -490,7 +490,11 @@ strutturale, quella che vale su qualunque problema, è questa: la correzione
 del bias riparte da $t = 1$, e a $t = 1$ il rapporto
 $\hat{m}/(\sqrt{\hat{v}} + \varepsilon)$ vale $\pm 1$ per costruzione, quindi
 il primo aggiornamento è **$\eta$ pieno**, il passo più lungo che quella
-manopola consenta. Ricaricando lo stato, invece, il passo coincide
+manopola consenta. Qui $\hat{m}$ e $\hat{v}$ sono i due momenti corretti per il
+bias ($m$ e $v$ divisi per $1-\beta_1^t$ e $1-\beta_2^t$) ed $\varepsilon$ è il
+termine minuscolo che evita la divisione per zero: a $t = 1$ quelle correzioni
+danno $\hat{m} = g$ e $\hat{v} = g^2$, con $g$ il gradiente, da cui il rapporto
+$\pm 1$. Ricaricando lo stato, invece, il passo coincide
 esattamente con quello della traiettoria mai interrotta.
 
 Di quanto sia più lungo dipende dal problema, e quindi va detto su quale è

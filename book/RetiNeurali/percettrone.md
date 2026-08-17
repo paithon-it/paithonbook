@@ -217,10 +217,15 @@ sbagliato: chi valeva zero non si muove per niente (non aveva colpa, non ha
 detto la sua), chi valeva molto si muove molto. È il criterio più naturale del
 mondo: si corregge chi ha parlato più forte.
 
-Ogni correzione poi è piccola, perché la si moltiplica per un numeretto scelto
-da noi, il **passo di apprendimento** (in inglese *learning rate*, e nel codice
-qui sotto si chiama `eta`): così la macchina non "salta" da una parte
-all'altra, ma si assesta gradualmente.
+Ogni correzione poi si moltiplica per un numeretto scelto da noi, il **passo di
+apprendimento** (in inglese *learning rate*, e nel codice qui sotto si chiama
+`eta`): decide quanto grandi diventano i pesi. Qui, curiosamente, non decide
+altro. Il neurone risponde guardando soltanto se il totale sta sopra o sotto
+lo zero, e moltiplicare tutti i pesi per uno stesso numero quel confine non lo
+sposta: con un passo dieci volte più lungo si ottengono pesi dieci volte più
+grandi e le stesse identiche risposte. Diventerà una scelta che conta davvero
+quando la correzione smetterà di essere un passo fisso, nella sezione sulla
+backpropagation.
 
 Vediamola su numeri veri. Passo di apprendimento $0{,}1$; l'esempio ha due
 ingressi, $x_1 = 1$ e $x_2 = 0$; entrambi i pesi partono da zero; il neurone ha

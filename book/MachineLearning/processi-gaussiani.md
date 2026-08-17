@@ -141,15 +141,20 @@ $$
 -\tfrac{1}{2} \mathbf{y}^\top
 \big(\mathbf{K} + \sigma_n^2\mathbf{I}\big)^{-1} \mathbf{y}
 -\tfrac{1}{2} \log\big\lvert \mathbf{K} + \sigma_n^2\mathbf{I} \big\rvert
--\tfrac{m}{2}\log 2\pi .
+-\tfrac{m}{2}\log 2\pi ,
 $$
+
+dove $\mathbf{K}$ è la matrice del kernel fra i punti di addestramento
+($K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$), $\sigma_n^2$ la varianza del
+**rumore di misura** (da non confondere con la $\sigma^2$ di segnale del
+kernel, qui sopra), $\mathbf{I}$ la matrice identità e $m$ il numero di esempi.
 
 Il primo termine premia l'aderenza ai dati, il secondo (il logaritmo del
 determinante) penalizza i kernel «capaci», quelli che ammettono troppe funzioni
 diverse. È il **rasoio di Occam scritto dentro il criterio**: qui non serve un
 validation set per punire la complessità, ci pensa la formula. Con una
 avvertenza pratica: quella funzione **non è concava** negli iperparametri e ha
-minimi locali {cite}`rasmussen2006gaussian`, ed è la ragione per cui il codice
+massimi locali {cite}`rasmussen2006gaussian`, ed è la ragione per cui il codice
 della prossima pagina la fa ripartire cinque volte da inizializzazioni diverse
 (`n_restarts_optimizer=5`), esattamente nello spirito della sezione sugli
 iperparametri.
@@ -286,7 +291,7 @@ x = 8.0  ->  f(x) = +0.12 ± 1.38
 E racconta la storia della figura in tre gradini, non
 in due. A $x = 1{,}5$, accanto a un dato osservato, la banda è strettissima
 ($\pm 0{,}20$). A $x = 3{,}0$ siamo ancora *dentro* l'intervallo esplorato, ma
-in mezzo a un buco: gli otto punti sorteggiati cadono tutti fra $0{,}10$ e
+in mezzo a un buco: gli otto punti sorteggiati cadono tutti fra $0{,}09$ e
 $5{,}48$, però fra $1{,}62$ e $3{,}64$ non ce n'è nessuno, e $3{,}0$ sta
 proprio in quel vuoto. La banda si
 allarga già a $\pm 0{,}36$, quasi il doppio, pur restando utile. A $x = 8{,}0$,
@@ -394,3 +399,10 @@ aperto il cofano del suo motore.
 ```
 
 `````
+
+Fin qui la forma del modello l'abbiamo scelta noi, una per problema: una retta,
+un albero, un confine largo, un fascio di curve. Cambiava il problema e si
+cambiava attrezzo, mentre il modo di giudicarli restava sempre lo stesso, cioè
+dati tenuti da parte e un numero onesto alla fine. Quel modo va portato intatto
+nel capitolo sulle reti neurali, dove invece l'attrezzo è uno solo e prende la
+forma che serve impilando pezzi tutti uguali.

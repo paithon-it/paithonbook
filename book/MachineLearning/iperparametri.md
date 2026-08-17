@@ -89,8 +89,9 @@ esponenziale in $d$. E a parità di budget la risoluzione per dimensione è
 misera, $n = |\Lambda|^{1/d}$: con nove prove in due dimensioni si vedono
 appena tre valori per asse. La grid search resta ragionevole per $d \le 2$, e
 ha il pregio che i punti, indipendenti tra loro, si valutano in parallelo; per
-i parametri di scala, come learning rate e $\lambda$, i candidati vanno
-disposti in progressione geometrica ($10^{-4}, 10^{-3}, \dots$).
+i parametri di scala, come il learning rate e la forza di regolarizzazione, i
+candidati vanno disposti in progressione geometrica
+($10^{-4}, 10^{-3}, \dots$).
 
 `````
 
@@ -312,9 +313,12 @@ $$
 \gamma = \frac{f_{\min} - \mu(\lambda)}{\sigma(\lambda)},
 $$
 
-dove $\Phi$ e $\varphi$ sono la funzione di ripartizione e la densità della
-normale standard. La formula premia sia $\mu(\lambda)$ basso (sfruttamento)
-sia $\sigma(\lambda)$ alto (esplorazione); la prossima prova è
+dove $\gamma$ è il miglioramento rispetto al record, misurato in deviazioni
+standard del surrogato (niente a che vedere con il $\gamma$ del kernel RBF
+della sezione sulle SVM: è la stessa lettera con un altro mestiere), e $\Phi$ e
+$\varphi$ sono la funzione di ripartizione e la densità della normale standard.
+La formula premia sia $\mu(\lambda)$ basso (sfruttamento) sia
+$\sigma(\lambda)$ alto (esplorazione); la prossima prova è
 $\lambda_{\text{next}} = \arg\max_\lambda \mathrm{EI}(\lambda)$:
 un'ottimizzazione a sua volta, ma sul surrogato, che risponde in millisecondi.
 Il prezzo è la natura essenzialmente **sequenziale** del metodo (ogni scelta

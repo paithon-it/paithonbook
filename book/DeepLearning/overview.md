@@ -112,9 +112,9 @@ quanto più $\ell$ è profondo, perché aggrega l'output di neuroni che a loro
 volta aggregano porzioni più piccole.
 
 Formalmente, la rappresentazione allo strato $\ell$ è
-$\mathbf{Z}^{(\ell)} = f_\ell(\mathbf{Z}^{(\ell-1)})$, con $\mathbf{Z}^{(0)} = \mathbf{X}$ l'immagine di ingresso.
-Le $\mathbf{Z}^{(\ell)}$ superficiali codificano feature locali e generiche (bordi,
-condivisi tra compiti diversi); le $\mathbf{Z}^{(\ell)}$ profonde codificano feature
+$\mathbf{Z}^{[\ell]} = f_\ell(\mathbf{Z}^{[\ell-1]})$, con $\mathbf{Z}^{[0]} = \mathbf{X}$ l'immagine di ingresso.
+Le $\mathbf{Z}^{[\ell]}$ superficiali codificano feature locali e generiche (bordi,
+condivisi tra compiti diversi); le $\mathbf{Z}^{[\ell]}$ profonde codificano feature
 astratte e specifiche del compito (categorie di oggetti). È questa gerarchia a
 rendere così efficace il *transfer learning*: i primi strati, appresi su un
 dataset enorme, si riusano quasi invariati su problemi nuovi.

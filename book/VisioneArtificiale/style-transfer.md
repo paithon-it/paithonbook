@@ -396,3 +396,11 @@ Neckar.
 ```
 
 `````
+
+In tutto il capitolo, da qualche parte, c'era sempre un bersaglio già scritto:
+l'etichetta della foto, il riquadro intorno all'oggetto, la maschera dei pixel,
+e perfino qui, dove il bersaglio era un quadro appeso in un museo. Dove le
+etichette mancavano, la rete se lo fabbricava da sé, nascondendo un pezzo
+dell'immagine e provando a indovinarlo. Il capitolo sul Reinforcement Learning
+toglie anche quello: là nessuno scrive la risposta giusta, e resta da capire
+come si impari quando l'unica cosa che torna indietro è come è andata a finire.

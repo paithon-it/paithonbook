@@ -322,8 +322,8 @@ sulle curve.
   con un learning rate piccolo la loss resta perfino *migliore* di quella del
   ciclo corretto per tutta la corsa ($0{,}043$ contro $0{,}690$ in una misura
   su una regressione giocattolo), con uno grande esplode (fino a
-  $4{,}5 \cdot 10^{3}$, e su MNIST fino a $177$, dove una loss sana sta a
-  $2{,}3$: il modello aveva finito per tirare a indovinare). Con **Adam** non
+  $4{,}5 \cdot 10^{3}$, e su MNIST fino a $177$, contro il $2{,}3$ di chi tira
+  a indovinare: molto peggio che non aver imparato niente). Con **Adam** non
   esplode mai, in nessuna prova, e la ragione è strutturale: Adam non usa il
   gradiente così com'è, lo divide per una misura di quanto quel gradiente è
   grande di solito. È una frazione in cui il numero cresce sopra e sotto

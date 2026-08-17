@@ -295,13 +295,16 @@ $\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$ con $\rho_3 =
 momento terzo **assoluto**, che non sa distinguere una coda lunga da un lato
 sola da due code lunghe simmetriche. A separarle è lo sviluppo di Edgeworth, il
 cui primo termine correttivo è proporzionale all’**asimmetria** e si annulla
-quando la distribuzione di partenza è simmetrica: è quella, e non la
-"stranezza" percepita, a governare la velocità. Misurato con la statistica di
+quando la distribuzione di partenza è simmetrica: è lei, a parità di tutto il
+resto, a governare il termine dominante. Misurato con la statistica di
 Kolmogorov–Smirnov sulla somma standardizzata: partendo da un dado uniforme
 (asimmetria nulla) la distanza dalla normale è già $0{,}069$ con $n=3$;
-partendo da una Bernoulli$(0{,}01)$ resta $0{,}45$ a $n=30$, e da una
-lognormale$(0;\,2)$ resta $0{,}27$. Il caso «piatto» è il più gentile di tutti,
-non il più ostile.
+partendo da una lognormale$(0;\,2)$, asimmetrica e continua, resta $0{,}27$ a
+$n=30$. Il confronto con una Bernoulli$(0{,}01)$, che a $n=30$ dà $0{,}45$, non
+è dello stesso tipo: lì il numero non misura l'asimmetria ma la
+**discretezza**, perché la somma mette il $74\%$ della massa su un valore solo
+e quel salto, da solo, vale $0{,}449$. Il caso «piatto» resta il più gentile di
+tutti, non il più ostile.
 
 `````
 
@@ -650,7 +653,13 @@ $$
 \rho_{XY} = \frac{\mathrm{Cov}(X,Y)}{\sigma_X\,\sigma_Y} \in [-1,1],
 $$
 
-e misura la sola dipendenza **lineare**: $\rho=0$ non implica indipendenza;
+dove $\mathrm{Cov}(X,Y)=\mathbb{E}\big[(X-\mu_X)(Y-\mu_Y)\big]$ è la
+**covarianza**, cioè la media del prodotto dei due scarti dalla propria media
+(positiva se le due grandezze stanno di solito dalla stessa parte del proprio
+centro, negativa se da parti opposte), e $\sigma_X,\sigma_Y$ sono le due
+deviazioni standard, che servono a togliere di mezzo le unità di misura.
+
+Il coefficiente misura la sola dipendenza **lineare**: $\rho=0$ non implica indipendenza;
 se $X$ è distribuita in modo simmetrico attorno allo zero, $Y=X^2$ ha
 correlazione nulla con $X$ e dipendenza perfetta. (La simmetria è essenziale:
 per $X$ uniforme su $[0,1]$ la stessa parabola dà una correlazione vicina a
@@ -821,7 +830,7 @@ $$
 e la stima di massima verosimiglianza è
 
 $$
-\hat{\theta}=\arg\max_{\theta}\ \sum_{i=1}^{m}\log p\big(x^{(i)};\theta\big),
+\hat{\theta}=\arg\max_{\theta}\ \sum_{i=1}^{m}\log p\big(x^{(i)};\theta\big).
 $$
 
 Il passaggio dal prodotto alla somma dei logaritmi è lecito perché il

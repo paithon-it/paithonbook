@@ -116,7 +116,9 @@ $$
 
 Per la classificazione si preferisce la **cross-entropia**, che confronta la
 distribuzione prevista $\hat{\mathbf{y}}$ con l'etichetta $\mathbf{y}$:
-$\mathcal{L} = -\sum_{k} y_k \log \hat{y}_k$. In entrambi i casi $\mathcal{L}$ è
+$\mathcal{L} = -\sum_{k} y_k \log \hat{y}_k$, dove $k$ scorre le classi, $y_k$
+vale $1$ per quella giusta e $0$ per tutte le altre, e $\hat{y}_k$ è la
+probabilità che il modello le assegna. In entrambi i casi $\mathcal{L}$ è
 una funzione dei parametri
 $\theta = \{\mathbf{W}^{[l]}, \mathbf{b}^{[l]}\}$: cambiando i pesi
 cambia la loss, e il nostro obiettivo è trovare i $\theta$ che la minimizzano.
@@ -193,8 +195,10 @@ era lontana, con il suo segno. I 30.000 € di errore vengono ripartiti tra i ne
 dell'ultimo strato in proporzione a quanto ciascuno ha pesato sulla risposta:
 chi ha contribuito con un peso grande eredita una colpa grande, chi ha
 contribuito poco quasi niente. Se i neuroni fossero due, uno con peso $2$ e uno
-con peso $1$, il primo si prenderebbe due terzi della colpa, 20.000, e il
-secondo un terzo, 10.000. Poi ogni neurone gira la propria quota di colpa ai
+con peso $1$, al primo toccherebbe il doppio del secondo: 60.000 contro 30.000.
+Che la somma sia più grande dei 30.000 di partenza non è un errore di conto: la
+colpa non è una torta da spartire, è una quantità che si moltiplica per il peso
+del filo, e un filo che conta molto la amplifica. Poi ogni neurone gira la propria quota di colpa ai
 neuroni dello strato prima, con lo stesso criterio, fino all'ingresso.
 
 E adesso la cosa da vedere, perché è quella che rende la faccenda praticabile:
@@ -464,7 +468,8 @@ si ripete come se fosse assodata.
 
 L'obiezione è che "larga" e "stretta", misurate così, non dicono niente sul
 modello. In una rete con la ReLU si possono moltiplicare per dieci i pesi di
-uno strato e dividere per dieci quelli dello strato dopo, e la rete calcola
+uno strato (bias compreso, altrimenti il conto non torna) e dividere per dieci
+quelli dello strato dopo, e la rete calcola
 **la stessa identica funzione**: la ReLU lascia passare i fattori positivi
 (dieci volte l'ingresso dà dieci volte l'uscita), quindi quel dieci attraversa
 lo strato e si semplifica con la divisione per dieci che trova subito dopo.
@@ -549,7 +554,8 @@ prodotto tende a zero esponenzialmente con la profondità (*vanishing
 gradient*), e la garanzia è immediata: la norma di un prodotto non supera il
 prodotto delle norme,
 $\lVert\prod_l \mathbf{J}^{[l]}\rVert \le \prod_l \sigma_{\max}(\mathbf{J}^{[l]})
-\le c^{\,L}$.
+\le c^{\,L}$, dove $c<1$ è il maggiorante comune dei valori singolari massimi
+e $L$ il numero di strati attraversati.
 
 Nell'altro verso, però, **non c'è simmetria**, ed è l'errore che si fa a
 scrivere la frase di getto. Che ogni fattore allunghi qualche direzione non
@@ -702,3 +708,11 @@ per riga.
 ```
 
 `````
+
+Adesso sappiamo fare a mano una cosa che a mano non fa quasi più nessuno:
+seguire l'errore all'indietro, strato per strato, fino a ogni singola manopola.
+Continua a servire, perché quando un addestramento non parte il guasto sta
+quasi sempre lì, in un messaggio che si è spento per strada oppure è andato
+fuori scala. Nel capitolo su PyTorch quel giro all'indietro lo farà una libreria
+al posto nostro, in una riga: noi scriveremo soltanto l'andata, e sapremo
+riconoscere che cosa sta facendo il ritorno.

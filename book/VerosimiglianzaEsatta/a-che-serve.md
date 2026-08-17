@@ -309,3 +309,11 @@ ed è per questo che vale la pena sapere da dove viene la parola.
 ```
 
 `````
+
+Il filo da tenere è il prezzo. La verosimiglianza esatta non è gratis, si paga
+in vincoli su come la rete può essere fatta, e ogni modello di questo capitolo
+è un modo diverso di pagarla, dalla generazione un pezzo alla volta ai
+determinanti facili dei flussi. «Modelli a energia» quel prezzo si rifiuta di
+pagarlo e prende la strada opposta: rinuncia a normalizzare, cioè al conto che
+trasforma i punteggi in probabilità vere, e si tiene soltanto il confronto fra
+un dato e l'altro.

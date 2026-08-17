@@ -69,7 +69,7 @@ alla Seconda Guerra Mondiale, quando per la prima volta ci sono delle macchine
 su cui provare.
 
 Nella vita di tutti i giorni è entrata **due volte**. Negli anni Dieci
-(il decennio 2010-2019) ci è entrata senza farsi notare, dentro il traduttore
+(il decennio 2010–2019) ci è entrata senza farsi notare, dentro il traduttore
 automatico, i suggerimenti di un negozio online, il riconoscimento dei volti
 nelle fotografie: la usavano tutti e quasi nessuno la chiamava per nome. Dal
 novembre 2022, con ChatGPT, è diventata invece qualcosa con cui si parla
@@ -144,11 +144,10 @@ chiude nel 1986, quando si trova il modo di addestrarle sul serio. Viene prima
 degli altri due, dura molto di più, ed è una vicenda parallela: la racconta il
 capitolo dedicato a loro.
 
-E se dicessi che una delle auto a guida autonoma più interessanti degli anni
-Novanta è stata costruita in Italia, su una «fiammante» Lancia Thema? Ebbene
-sì. A partire dal 1996, all'Università di Parma, un gruppo di ricercatori e
-ingegneri coordinato dal prof. Alberto Broggi ha costruito un prototipo di auto
-che si guida da sola. Il suo nome è ARGO. Vedeva con due telecamere in bianco e
+Meno noto, e vale la pena saperlo, è che una delle auto che si guidavano da
+sole negli anni Novanta girava sulle strade italiane, su una Lancia Thema. A
+partire dal 1996, all'Università di Parma, un gruppo di ricercatori e ingegneri
+guidato da Alberto Broggi costruì ARGO. Vedeva con due telecamere in bianco e
 nero montate in coppia, come i nostri due occhi, e le sue decisioni le prendeva
 un computer di bordo del tutto ordinario per l'epoca, un Pentium 200 MMX: un
 processore incomparabilmente più lento di quello del telefono che oggi tieni in

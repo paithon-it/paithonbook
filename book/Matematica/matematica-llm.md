@@ -553,8 +553,9 @@ numeri, e ruotare quelle liste è la stessa faccenda, cioè descrivere le stesse
 frecce partendo da un'altra direzione. Terzo, ed è il punto: una rotazione non
 cambia né le lunghezze né gli angoli fra le frecce, e il prodotto scalare
 della sezione di algebra lineare dipende soltanto da quelli. Ruotando tutto
-insieme, quindi, i punteggi restano identici fino all'ultima cifra: quello che
-la prima tabella gira, la seconda lo gira indietro.
+insieme, quindi, i punteggi restano identici fino all'ultima cifra: le due
+liste girano **nello stesso verso**, e il prodotto scalare, che guarda solo
+lunghezze e angoli, non se ne accorge.
 
 Di rotazioni così ce ne sono infinite, e tutte danno lo stesso identico
 modello. Ne segue che chiedersi «che cosa significa la riga 7 di quella
@@ -1245,3 +1246,9 @@ identificabili separatamente.
   stocastica.
 ```
 `````
+
+Qui il capitolo si chiude, e vale la pena guardare che cosa ci portiamo dietro:
+una lista di numeri con cui rappresentare qualunque cosa, un modo per capire da
+che parte conviene migliorare, e un modo per dire quanto siamo sicuri di quello
+che abbiamo trovato. Sono tre attrezzi, e nel capitolo sul machine learning non
+si studiano più: si usano, su un problema vero, dal primo esempio all'ultimo.

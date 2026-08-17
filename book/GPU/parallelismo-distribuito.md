@@ -530,3 +530,11 @@ entra, è da lì che si comincia.
   più in fretta della memoria per GPU) è la ragione per cui lo sharding conta.
 ```
 `````
+
+Da qui in avanti la macchina non è più una scatola chiusa: sappiamo perché le
+piacciono certi conti e non altri, dove il tempo se ne va per davvero, e come
+un modello che non entrerebbe in nessuna scheda venga fatto stare in mille. È
+il motivo per cui oggi si possono impilare decine di strati senza aspettare
+mesi. Resta però la domanda a cui l'hardware non risponde, ed è quella del
+capitolo sul Deep Learning: la profondità, che adesso ci possiamo permettere,
+che cosa ci fa guadagnare?

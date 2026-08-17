@@ -565,8 +565,9 @@ L'altra grande famiglia non chiede al modello di riconoscere niente: gli chiede
 di **ricostruire**. È il gioco della parola coperta, quello con cui si
 pre-addestrano i modelli di linguaggio, trasportato sui pixel: la stessa idea
 che nell'audio muove wav2vec 2.0 e HuBERT. Sulle immagini l'operazione è stata a
-lungo deludente, e il MAE (*masked autoencoder*) {cite}`he2022masked` ha
-mostrato che il problema era la dose.
+lungo deludente, e il MAE (*masked autoencoder*, cioè una rete che impara a
+rimettere a posto quello che le si è coperto) {cite}`he2022masked` ha mostrato
+che il problema era la dose.
 
 `````{tab} Elementare
 
@@ -616,7 +617,7 @@ la metà dei tratti). E poiché l'encoder elabora solo il 25% dei token, il cost
 del passaggio in avanti scende **all'incirca in proporzione**, e appena di più.
 Vale la pena essere precisi, perché il quadratico dell'attenzione fa spesso dire
 più di quanto sia vero: in un blocco Transformer quasi tutte le moltiplicazioni
-(proiezioni $Q$, $K$, $V$, proiezione d'uscita, MLP) sono **lineari** in $N$, e
+(proiezioni $\mathbf{Q}$, $\mathbf{K}$, $\mathbf{V}$, proiezione d'uscita, MLP) sono **lineari** in $N$, e
 solo il prodotto $N \times N$ fra query e chiavi è quadratico. È quest'ultimo, e
 soltanto lui, a scendere a un sedicesimo passando da $N$ a $N/4$; ma alle taglie
 in gioco pesa poco. Contando i FLOP di un blocco come $24Nd^2$ (parte lineare)

@@ -186,8 +186,8 @@ chiama **softmax**, ed è una divisione con un passaggio in più: si prende il
 numero $e = 2{,}718\ldots$, lo si eleva a ciascun punteggio, e si divide
 ciascun risultato per la somma di tutti. Su tre punteggi $2$, $1$ e $-1$:
 $e^2 = 7{,}39$, $e^1 = 2{,}72$, $e^{-1} = 0{,}37$, che sommati fanno $10{,}48$;
-le tre intensità sono allora $0{,}71$, $0{,}26$ e $0{,}04$, e sommano a uno
-come promesso. L'elevamento a potenza serve a due cose: non far uscire mai
+le tre intensità sono allora $0{,}71$, $0{,}26$ e $0{,}04$, che sommano a uno a
+meno degli arrotondamenti, come promesso. L'elevamento a potenza serve a due cose: non far uscire mai
 numeri negativi (una parola non può contribuire in negativo), e allargare le
 differenze, così che un punto di vantaggio si veda davvero. Fatto questo, i
 value si mescolano in quelle proporzioni.
@@ -222,12 +222,14 @@ parentele di significato ("nero" e "gatto" vanno insieme perché uno è il color
 dell'altro), un altro ancora chi sta vicino a chi nella frase.
 
 Ogni lettore consegna la sua versione arricchita della parola, e a questo punto
-di liste ce ne sono otto invece di una. Come si torna a una sola? Prima si
-attaccano una in coda all'altra, ottenendo una lista otto volte più lunga; poi
-la si fa passare per un'ultima tabella, che la riporta alla lunghezza di
-partenza mescolando i contributi. Il trucco è che ogni lettore lavora fin
-dall'inizio su liste corte, un ottavo di quelle intere: otto ottavi fanno di
-nuovo uno, e alla fine il conto costa quanto un lettore solo a lista piena.
+di liste ce ne sono otto invece di una. Come si torna a una sola? Il trucco è
+che ogni lettore lavora fin dall'inizio su liste corte, un ottavo di quelle
+intere: attaccandole una in coda all'altra si ottiene di nuovo una lista lunga
+quanto quella di partenza, perché otto ottavi fanno uno. Resta un ultimo
+passaggio, una tabella che la lunghezza non la cambia ma mescola fra loro i
+contributi degli otto, così che quello che ciascuno ha visto arrivi in tutte
+le caselle e non solo nel proprio ottavo. Alla fine il conto costa quanto un
+lettore solo a lista piena.
 
 Ogni lettore si chiama, per ragioni che nessuno ricorda più, una "**testa**" di
 attenzione, e il Transformer originale ne usa otto. Perché otto e non nove?
@@ -248,7 +250,8 @@ dove $\text{head}_i = \text{Attention}(\mathbf{Q}\mathbf{W}_i^Q,
 \mathbf{K}\mathbf{W}_i^K, \mathbf{V}\mathbf{W}_i^V)$ e
 $\mathbf{W}_i^Q, \mathbf{W}_i^K, \mathbf{W}_i^V, \mathbf{W}^O$ sono matrici
 apprese. Nel Transformer originale
-$h = 8$ e ogni testa lavora in dimensione $d_k = d_{\text{model}}/h = 64$: il
+$h = 8$ e, con $d_{\text{model}} = 512$, ogni testa lavora in dimensione
+$d_k = d_{\text{model}}/h = 64$: il
 costo complessivo resta paragonabile a una singola attenzione a dimensione
 piena, ma il modello può dedicare teste diverse a relazioni diverse
 (sintattiche, semantiche, posizionali), cosa che l'analisi empirica delle
