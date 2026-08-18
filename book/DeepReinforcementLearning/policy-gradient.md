@@ -453,6 +453,13 @@ linguistici (i programmi che scrivono testo, come quelli dietro agli assistenti
 conversazionali) quando esplorano più ragionamenti prima di rispondere. Vale la
 pena vederlo una volta per bene, anche perché è un vecchio amico travestito.
 
+Il capitolo sulla ricerca aveva lasciato la faccenda esattamente qui: la
+ricerca classica, per fermarsi a metà albero, ha bisogno di una formula che
+dia un voto alla posizione, e nel Go quella formula nessuno è mai riuscito a
+scriverla. La via d'uscita era smettere di giudicare e mettersi a contare, cioè
+giocare da lì un mucchio di partite a caso e guardare come finiscono. Quello
+che segue è il seguito di quella frase.
+
 `````{tab} Elementare
 
 Il problema è che le continuazioni sono troppe. Agli scacchi, dopo tre mosse a

@@ -802,17 +802,18 @@ raggiungevano l'accuratezza piena in un numero comparabile di iterazioni.
 Due avvertenze onestà, perché il risultato è più fragile di come viene spesso
 citato.
 
-**Alla scala grande la ricetta va corretta.** Su reti profonde e dataset seri il
-riavvolgimento a $\theta_0$ smette di funzionare; si riavvolge invece a un
-$\theta_k$ dopo qualche iterazione di addestramento (*rewinding* tardivo). Il
-biglietto, quindi, non è del tutto presente all'inizializzazione: si forma nelle
-prime fasi.
+**Alla scala grande la ricetta va corretta**, e la correzione non è nel lavoro
+del 2019 ma in uno successivo degli stessi autori {cite}`frankle2020linear`: su
+reti profonde e dataset seri il riavvolgimento a $\theta_0$ smette di
+funzionare, e si riavvolge invece a un $\theta_k$ dopo qualche iterazione di
+addestramento (*rewinding* tardivo). Il biglietto, quindi, non è del tutto
+presente all'inizializzazione: si forma nelle prime fasi.
 
 **Non è un metodo di compressione pratico.** Per *trovare* il biglietto
 bisogna addestrare la rete piena, più volte. Il valore è conoscitivo (dice
 qualcosa su cosa fa la sovraparametrizzazione) non computazionale. Per
-comprimere davvero si usano la potatura strutturata e la quantizzazione del
-capitolo su MLOps.
+comprimere davvero si usano la potatura strutturata e la quantizzazione, che
+sono il mestiere del capitolo sull’efficienza.
 
 Il filo con la sezione precedente è comunque lo stesso: il numero di parametri
 misura male la complessità. La doppia discesa lo mostra dall'esterno, guardando

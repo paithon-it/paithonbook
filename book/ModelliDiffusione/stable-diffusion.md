@@ -30,13 +30,11 @@ paga, perché in tutta la sezione parleremo di costi: si paga in **conti da
 fare**, cioè in secondi di attesa e in memoria occupata sulla GPU. Meno numeri
 da elaborare, meno conti, meno attesa.
 
-Per capire il trasloco, però, dobbiamo prima conoscere il traslocatore, che è
-una rete a sé, diversa da quella che toglie il rumore, e si chiama
-*variational autoencoder*. Metà di quel nome il libro ce l'ha già: un
-**autoencoder** è una rete che impara a comprimere e a ricostruire, e il
-capitolo sull'audio ne ha montato uno per i codec neurali, cioè per comprimere
-il suono. Nuova è l'altra metà, il *variational*, ed è la sola che guarderemo
-per esteso, perché è quella che rende il trasloco possibile.
+Il traslocatore è una rete a sé, diversa da quella che toglie il rumore, e la
+conosciamo già: è il *variational autoencoder* del capitolo sui modelli
+latenti, dove è stato derivato per intero. Qui lo riprendiamo solo per quello
+che serve al trasloco, cioè per il mestiere che gli si chiede in questa
+catena di montaggio, che non è quello per cui di solito lo si costruisce.
 
 ## Il prezzo dei pixel
 
@@ -80,26 +78,21 @@ models*, e Stable Diffusion ne è il figlio famoso.
 
 ## L'archivista: il variational autoencoder
 
-Il pezzo che porta i mobili è l’**autoencoder**, la rete a clessidra che il
-capitolo sull'audio ha montato per i codec neurali: una metà stringe quello che
-entra fino a farlo passare per una strettoia dove i numeri sono molti meno,
-l'altra metà da quella strettoia prova a ritirare fuori l'originale, e il voto è
-uno solo per tutte e due, cioè quanto quello che esce somiglia a quello che è
-entrato. (Le due metà hanno i nomi inglesi che si trovano nel codice, *encoder*
-e *decoder*.) Quel voto, da solo, insegna a comprimere e nient'altro, e a noi
-non basta: in quello spazio bisognerà anche pescare punti a caso e pretendere
-che ne esca un'immagine. Ecco perché ci serve la variante,
-il **variational
-autoencoder** (VAE) di Diederik Kingma e Max Welling {cite}`kingma2014auto`, del
-2014 (più vecchio della diffusione moderna e persino delle GAN) e destinato a
-tornare più avanti nel libro. Ce ne serve l'essenziale: che cosa aggiunge alla
-clessidra, e perché quel poco rende lo spazio latente un posto dove si può
-lavorare. Per parlarne useremo una
-metafora che ci accompagnerà fino alla fine del capitolo. Le due metà della
-clessidra diventano due persone: la rete che comprime è un **archivista** e
-la rappresentazione compatta che scrive è la sua **scheda**; la rete che
-ricostruisce è un **copista**, che dalla scheda ridipinge il quadro. Da qui
-in avanti «scheda» vorrà dire sempre e solo questo.
+Il pezzo che porta i mobili è il **variational autoencoder** (VAE) di Diederik
+Kingma e Max Welling {cite}`kingma2014auto`, del 2014, quindi più vecchio della
+diffusione moderna e persino delle GAN. Con lui viene anche la metafora del
+capitolo sui modelli latenti, che qui accompagna il resto del capitolo: la rete
+che comprime è un **archivista** e la rappresentazione compatta che scrive è la
+sua **scheda**; la rete che ricostruisce è un **copista**, che dalla scheda
+ridipinge il quadro. Da qui in avanti «scheda» vorrà dire sempre e solo questo.
+
+Di quel capitolo qui serve una cosa sola, ed è la differenza fra la clessidra
+semplice e la sua variante: la clessidra impara a comprimere e nient'altro,
+perché il suo unico voto è quanto la copia somiglia all'originale, e in quello
+spazio non si può pescare. Il VAE aggiunge il poco che serve, cioè una scheda
+scritta con un margine di tolleranza e la regola che tiene tutte le schede
+raccolte attorno a uno stesso centro. È quel poco a rendere lo spazio latente
+un posto dove la diffusione può lavorare.
 
 ```{figure} ../figures/vae-auto-encoding-variational-bayes.svg
 :name: fig-vae
@@ -123,43 +116,25 @@ c'è sempre tutto lo spazio in mezzo. È quello che permette di dire frasi come
 «una scheda a metà strada fra due che esistono», che con dei foglietti di carta
 non vorrebbero dire niente.
 
-Sulla mappa si vede anche perché un archivista semplice, quello senza il
-margine di tolleranza, non serve a inventare niente. Comprime e ricostruisce, e
-in quel mestiere è ottimo. Ma proviamo a usarlo al contrario: scegliamo un
-punto sulla mappa, diamolo al copista, guardiamo che cosa dipinge. Il guaio è
-che non si sa **dove** sceglierlo. Nessuno ha mai chiesto alle schede di stare
-in una zona precisa, e quindi si sistemano dove capita: la regione che occupano
-non ha una forma nota né un centro noto, i vari soggetti (gatti, ritratti,
-paesaggi) se la spartiscono male, chi prendendosi una fetta larga chi restando
-schiacciato in una scaglia sottile, e in mezzo restano dei vuoti. Un punto
-pescato a caso finisce quasi sempre fuori
-dalla regione o dentro uno di quei vuoti, e il copista, che lì non è mai stato,
-dipinge una macchia. Non è una svista dell'archivista: nella pagella con cui
-l'abbiamo giudicato («la copia somiglia all'originale?») la richiesta di
-generare non compariva da nessuna parte, e quello che non si chiede non si
-ottiene.
-
-Il sorteggio in mezzo alla figura (si prende la scheda, la si sposta di un po’
-a caso dentro il margine di tolleranza, e solo allora la si passa al copista) è
-ciò che distingue questa rete da un compressore qualunque. La conseguenza è
-precisa: siccome durante l'addestramento il copista vede ogni volta una scheda
-leggermente spostata, è costretto a funzionare su tutta una zona e non su un
-punto solo. Lo spazio delle schede ne esce **continuo**, cioè senza i vuoti di
-prima: un punto a metà strada fra due schede vere non è più terra sconosciuta,
-e il copista sa che farsene. Ed è la premessa perché la diffusione ci si
-possa muovere dentro, dato che la diffusione, di suo, passa il tempo a mettere
-piede in posti sorteggiati a caso.
-
-Il sorteggio, però, è metà del rimedio: aggiusta le vicinanze, una scheda alla
-volta, e non dice ancora dove sia la regione in cui pescare. La seconda metà è
-una regola che tiene tutte le schede raccolte attorno a uno stesso centro: è il
-secondo dei due tratti che danno a questa rete il suo nome, e li vediamo
-adesso.
+Sulla mappa si rivede in un colpo d'occhio quello che il capitolo sui modelli
+latenti ha misurato. Un archivista senza margine di tolleranza comprime e
+ricostruisce benissimo, e a inventare non serve, perché nessuno ha mai chiesto
+alle sue schede di stare in una zona precisa: si sistemano dove capita, e in
+mezzo restano dei vuoti in cui il copista non ha mai messo piede. I due tratti
+che danno il nome a questa rete rimediano uno per volta. Il sorteggio dentro il
+margine (è il pallino in mezzo alla figura) fa sì che in addestramento il
+copista veda ogni volta una scheda leggermente spostata, quindi lo costringe a
+funzionare su tutta una zona invece che su un punto, e toglie i vuoti; la regola
+che tiene le schede raccolte attorno a uno stesso centro dice **dove** pescare.
+Insieme fanno di quello spazio un posto in cui la diffusione può abitare, dato
+che la diffusione, di suo, passa il tempo a mettere piede in posti sorteggiati a
+caso.
 
 `````{tab} Elementare
 
-Immagina l'archivista di un museo pieno di quadri enormi. È la stessa clessidra
-che il capitolo sull'audio usava per comprimere il suono, con due mestieri al
+L'archivista del museo è quello del capitolo sui modelli latenti, ed è la
+stessa clessidra che il capitolo sull'audio usava per comprimere il suono, con
+due mestieri al
 posto delle due metà: per ogni quadro l'archivista scrive una scheda molto più
 piccola dell'originale, e il copista deve *ridipingere* il quadro leggendo solo
 quella. Se la copia somiglia all'originale la scheda conteneva l'essenziale, e i
@@ -239,30 +214,20 @@ stimare: l'obiettivo è che ogni regione con probabilità apprezzabile sotto il
 prior decodifichi in un dato plausibile, e quanto ci si riesca davvero è la
 domanda del paragrafo che segue. Nella convenzione del libro, dove $\mathcal{L}$ si
 minimizza, la loss corrispondente è $\mathcal{L} = -\mathrm{ELBO}$. La
-derivazione dell'ELBO come limite inferiore della
-log-verosimiglianza è nel paper originale {cite}`kingma2014auto`; qui ci basta
-il ruolo funzionale dei due termini.
+derivazione, come limite inferiore della log-verosimiglianza, sta nel capitolo
+sui modelli latenti; qui ci basta il ruolo funzionale dei due termini.
 
-Conviene dire che cosa manca a un autoencoder semplice, perché è esattamente
-ciò che il secondo di quei due termini aggiunge. Un autoencoder ottimizza la sola
-ricostruzione: nella sua loss non compare nulla che riguardi la distribuzione
-dei codici che produce. L'aggregato
-$q_\phi(\mathbf{z}) = \mathbb{E}_{p_{\text{dati}}}\!\big[q_\phi(\mathbf{z} \mid \mathbf{x})\big]$
-resta quindi ignoto, e generare richiede di conoscerlo: senza, non esiste
-alcuna distribuzione da cui pescare $\mathbf{z}$. Il termine KL scioglie il nodo
-imponendo il bersaglio invece di stimarlo, ed è il motivo per cui il prior si
-sceglie semplice. Con una precisazione che vale la pena registrare: quel
-termine agisce **su un esempio alla volta**, quindi vincola ciascuna
-$q_\phi(\mathbf{z} \mid \mathbf{x})$ e non direttamente l'aggregato. I due non
-coincidono, e lo scarto lascia regioni con massa apprezzabile sotto il prior
-che il decoder ha visto poco: campionarle produce immagini deboli. È un limite
-noto del VAE puro, non un difetto di implementazione, e ha anche un nome e una
-letteratura: lo scarto fra prior e posteriore aggregato
-{cite}`hoffman2016elbo,rosca2018distribution`. In Stable Diffusion il
-problema si aggira non risolvendolo: al VAE non si chiede affatto di generare,
-il peso KL è tenuto molto piccolo (la fedeltà della ricostruzione conta più
-della somiglianza al prior) e a decidere che cosa esce dal latente pensa la
-diffusione, non il decoder da solo.
+Di quel capitolo va richiamato anche il limite, perché in Stable Diffusion
+determina una scelta di progetto. Il termine KL agisce **su un esempio alla
+volta**, quindi vincola ciascuna $q_\phi(\mathbf{z} \mid \mathbf{x})$ e non
+l'aggregato $q_\phi(\mathbf{z}) = \mathbb{E}_{p_{\text{dati}}}\!\big[q_\phi(\mathbf{z} \mid \mathbf{x})\big]$;
+i due non coincidono, e nello scarto restano regioni con massa apprezzabile
+sotto il prior che il decoder ha visto poco
+{cite}`hoffman2016elbo,rosca2018distribution`. Qui il problema si aggira non
+risolvendolo: al VAE non si chiede affatto di generare, il peso KL è tenuto
+molto piccolo (la fedeltà della ricostruzione conta più della somiglianza al
+prior) e a decidere che cosa esce dal latente pensa la diffusione, non il
+decoder da solo.
 
 Il VAE di Stable Diffusion è convoluzionale e riduce ogni lato di un fattore
 $f = 8$, con 4 canali latenti: da $512 \times 512 \times 3$ a

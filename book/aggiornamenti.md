@@ -38,18 +38,33 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
-(v1-6-3)=
+(v1-7-0)=
 
-## 1.6.3 · 17 agosto 2026
+## 1.7.0 · 18 agosto 2026
+
+### Sezioni nuove
+
+- {doc}`Efficienza </Efficienza/overview>`. **Un capitolo su perché il modello che si addestra non è quello che si usa.** Addestrare può essere lento quanto vuole, rispondere no: sono due mestieri diversi, e quasi sempre si mette in produzione lo stesso identico modello. Il capitolo racconta le tre leve per stringerlo (meno bit per numero, meno numeri, un modello nuovo e più piccolo che impara dal grande) e soprattutto **che cosa costano**, perché è la parte che di solito non si dice. Con qualche sorpresa misurata: a quattro bit arrotondare e basta non basta affatto, una rete alleggerita del novantacinque per cento non gira più veloce sul conto di prima, e il grosso di quello che un maestro insegna a un modello piccolo non sono i suoi dubbi ma il fatto che possa commentare esempi che nessuno ha etichettato.
+- {doc}`Ricerca e pianificazione </Ricerca/overview>`. **Un capitolo sull’intelligenza artificiale prima dell’apprendimento.** Prima che le macchine imparassero dai dati, decidevano immaginando: se muovo qui lui risponde là, e allora io potrei. Il capitolo parte da un automa a ingranaggi del 1912 che giocava a scacchi senza pensare, mostra perché l’albero dei futuri esploda oltre ogni possibilità fisica, e racconta le due idee che lo rendono percorribile lo stesso: una stima di quanto manca, e l’accorgersi che certi rami non vanno guardati affatto. Finisce sulle tre cose che tutto questo dava per scontate e che nel mondo vero spesso non ci sono: è da lì che comincia l’apprendimento per rinforzo.
+- {doc}`Modelli latenti </ModelliLatenti/overview>`. **Un capitolo su come si spiegano i dati con una causa che non si vede.** È l’idea che il libro usava già in quattro punti senza averla mai derivata: comprimere in poche cifre e ricostruire, e scoprire che fra una cifra e l’altra ci sono buchi in cui il modello non è mai stato. Il capitolo deriva il rimedio (chiedere al modello non un punto ma una nuvola, e quanto costa descriverla) e mostra dove quel latente stava già lavorando: nei codec audio, nel deep reinforcement learning, nella diffusione, nei world model.
 
 ### Pagine ampliate
 
-- {doc}`Prefazione </prefazione>`. **La chiusa torna a legarsi a quello che la precede.** Le ultime due frasi erano rimaste affiancate senza il ponte che le teneva, e il «Perché» finale restava sospeso. Rimesso il nesso, e riportato il paragrafo sul triangolo impossibile alla lunghezza giusta: dice ancora che l'impossibilità è un teorema e che i tre pezzi sono isomorfismi perfetti che non si compongono, in un terzo dello spazio e senza più separare due frasi che si tenevano.
+- **Tre capitoli inseriti in mezzo hanno cambiato i numeri di tutti gli altri**, e con essi i rimandi. Le pagine che promettevano «il capitolo seguente» parlando di qualcos’altro sono state riscritte col nome del capitolo, che è la forma che non invecchia. Dove il libro spiegava la stessa cosa due volte (la quantizzazione in MLOps, la potatura fra tre capitoli, il biglietto della lotteria) adesso c’è una spiegazione sola e gli altri la richiamano.
+
+### Correzioni
+
+- **Una revisione a nove letture antagoniste sui capitoli nuovi**, ed è la parte che vale la pena leggere se si è già letto qualcosa. Fra le cose raddrizzate: la spiegazione facile della ricerca A* descriveva in realtà un altro algoritmo, meno buono; un conto sull’efficienza contava la metà di quello del capitolo sulla GPU pur dichiarando di essere lo stesso; un miglioramento attribuito alla potatura era in realtà il riavvio dell’ottimizzatore; e una frase su A*, ripresa da un manuale molto citato, era imprecisa nel manuale stesso.
+
+(v1-6-3)=
+
+## 1.6.3 · 17 agosto 2026
 
 ### Correzioni
 
 - **Due spiegazioni facili insegnavano il contrario di quello che succede.** Nel capitolo sull'auto-supervisione, la pagina dice che il guasto da evitare è descrivere tutte le fotografie allo stesso modo, e poi raccontava che a impedirlo è la richiesta di non ripetersi. È il contrario: quel guasto lo ferma l'altra richiesta, quella che due ritagli della stessa foto diano la stessa scheda, e la pagina non diceva la cosa da cui dipende tutto, cioè che una casella che scrive sempre lo stesso numero viene messa da parte prima del confronto. Nei modelli a energia, la descrizione «locale» del paesaggio era data per completa a meno dell'altezza complessiva: su un paesaggio a due valli separate se ne perde una per ogni valle, ed è per questo che quei metodi sbagliano le proporzioni fra gruppi di dati distinti. Corrette tutte e due, e anche i riquadri finali che le ripetevano.
 - **Diciotto punti in cui la spiegazione facile e quella formale non raccontavano lo stesso oggetto.** Il passo di tempo dei modelli a spazio di stato era presentato come la finezza di un campionamento, «con più lavoro» se piccolo, mentre è la manopola che decide quanto in fretta il sistema dimentica, e stringerla non costa niente. La divisione che protegge l'attenzione dal saturare non aveva nessuna controparte concreta, e con essa spariva un modo in cui l'attenzione si guasta. «Attenzione lineare» sembrava voler dire «più veloce sempre», mentre sotto qualche migliaio di parole il metodo classico vince ancora. E poi: i lucidi di LoRA adattano ma non insegnano, il metodo diretto di allineamento e quello classico non finiscono nello stesso punto, e la verosimiglianza «esatta» di un flusso è esatta su dati leggermente sporcati, non sul file vero.
+- {doc}`Prefazione </prefazione>`. **La chiusa torna a legarsi a quello che la precede.** Le ultime due frasi erano rimaste affiancate senza il ponte che le teneva, e il «Perché» finale restava sospeso. Rimesso il nesso, e riportato il paragrafo sul triangolo impossibile alla lunghezza giusta: dice ancora che l'impossibilità è un teorema e che i tre pezzi sono isomorfismi perfetti che non si compongono, in un terzo dello spazio e senza più separare due frasi che si tenevano.
 
 (v1-6-2)=
 

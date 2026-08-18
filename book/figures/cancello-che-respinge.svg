@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book, figura animata: il cancello respinge tre volte, e la memoria del fallimento cresce
+  Paithon Book, figura animata: il cancello respinge tre volte, e la memoria del fallimento cresce
   Generata da animazioni/svg/cancello-che-respinge.py: non modificare a mano.
   Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
   Lo stato di riposo è quello finale: chi non anima (stampa, PDF,

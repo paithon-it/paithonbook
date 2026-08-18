@@ -30,6 +30,13 @@ punto per punto, di quanto ci si è allontanati. La domanda di questo capitolo �
 proprio questa: come si insegna a una rete a **fabbricare dati nuovi e
 plausibili** quando non c'è niente con cui confrontarli.
 
+Una risposta il libro l'ha appena data, ed è quella del capitolo sui modelli
+latenti: si scrive una formula per la probabilità di un dato, si rinuncia a
+calcolarla esattamente e si ottimizza quello che si riesce a calcolare. Questo
+capitolo prende la strada opposta, e conviene tenerlo a mente perché è la
+scelta che spiega tutto il resto: qui la probabilità non si scrive affatto, e
+al suo posto si mette qualcuno che guarda il risultato e dice se ci crede.
+
 `````{tab} Elementare
 
 Un classificatore guarda la foto di un gatto e dice "gatto". Un modello

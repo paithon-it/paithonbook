@@ -69,8 +69,8 @@ $64 \times 64 \times 3 = 12\,288$ numeri. Troppi, e quasi tutti ridondanti:
 alla guida non servono i singoli fili d'erba, serve sapere dove curva la
 strada e dove sta l'auto. V è una rete addestrata a spremere ogni fotogramma in
 un codice di appena 32 numeri, quasi quattrocento volte meno; il suo nome
-tecnico è **autoencoder variazionale**, in sigla VAE, e l'abbiamo conosciuta
-nel capitolo sui Modelli di Diffusione {cite}`kingma2014auto`. Quel codice si
+tecnico è **autoencoder variazionale**, in sigla VAE, ed è la macchina che il
+capitolo sui modelli latenti deriva per intero {cite}`kingma2014auto`. Quel codice si
 chiama $\mathbf{z}$, e
 la lettera è soltanto un nome (come la $x$ dell'incognita a scuola): da qui in
 avanti «$\mathbf{z}$» vuol dire «il riassunto in 32 numeri di quel che si vede adesso».
@@ -110,8 +110,8 @@ prodotte da una pila di convoluzioni con parametri $\phi$,
 $\mathbf{z} \in \mathbb{R}^{32}$ è il codice latente e la seconda uguaglianza è il
 *trucco della riparametrizzazione*, che rende campionabile e derivabile il
 passaggio. L'addestramento massimizza l'ELBO, ricostruzione più
-regolarizzazione KL verso la prior $\mathcal{N}(0, \mathbf{I})$, come visto nel
-capitolo sui Modelli di Diffusione; qui non lo rideriviamo.
+regolarizzazione KL verso la prior $\mathcal{N}(0, \mathbf{I})$, derivato nel
+capitolo sui modelli latenti; qui non lo rideriviamo.
 
 ```{figure} ../figures/vae-autoencoder-che-immaginano.svg
 :name: fig-latente-campionabile

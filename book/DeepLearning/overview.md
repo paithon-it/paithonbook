@@ -303,7 +303,7 @@ espressiva. È più economico comporre trasformazioni che allargarne una sola.
 `````
 
 Questa gerarchia si legge anche nel codice. Una piccola rete convoluzionale
-scritta in PyTorch, la libreria del capitolo precedente, è letteralmente una
+scritta in PyTorch, la libreria del capitolo omonimo, è letteralmente una
 pila di strati che vanno dal semplice al complesso. Di che cosa faccia ciascuno
 di quegli strati parla la sezione seguente: qui conta solo vedere la pila.
 

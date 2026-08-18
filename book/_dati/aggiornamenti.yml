@@ -48,6 +48,73 @@
 
 versioni:
 
+- versione: "1.7.0"
+  data: 2026-08-18
+  voci:
+
+  - tipo: nuovo
+    pagina: Efficienza/overview.md
+    testo: >
+      **Un capitolo su perché il modello che si addestra non è quello che si
+      usa.** Addestrare può essere lento quanto vuole, rispondere no: sono due
+      mestieri diversi, e quasi sempre si mette in produzione lo stesso identico
+      modello. Il capitolo racconta le tre leve per stringerlo (meno bit per
+      numero, meno numeri, un modello nuovo e più piccolo che impara dal
+      grande) e soprattutto **che cosa costano**, perché è la parte che di
+      solito non si dice. Con qualche sorpresa misurata: a quattro bit
+      arrotondare e basta non basta affatto, una rete alleggerita del
+      novantacinque per cento non gira più veloce sul conto di prima, e il
+      grosso di quello che un maestro insegna a un modello piccolo non sono i
+      suoi dubbi ma il fatto che possa commentare esempi che nessuno ha
+      etichettato.
+
+  - tipo: nuovo
+    pagina: Ricerca/overview.md
+    testo: >
+      **Un capitolo sull’intelligenza artificiale prima dell’apprendimento.**
+      Prima che le macchine imparassero dai dati, decidevano immaginando: se
+      muovo qui lui risponde là, e allora io potrei. Il capitolo parte da un
+      automa a ingranaggi del 1912 che giocava a scacchi senza pensare, mostra
+      perché l’albero dei futuri esploda oltre ogni possibilità fisica, e
+      racconta le due idee che lo rendono percorribile lo stesso: una stima di
+      quanto manca, e l’accorgersi che certi rami non vanno guardati affatto.
+      Finisce sulle tre cose che tutto questo dava per scontate e che nel mondo
+      vero spesso non ci sono: è da lì che comincia l’apprendimento per
+      rinforzo.
+
+  - tipo: nuovo
+    pagina: ModelliLatenti/overview.md
+    testo: >
+      **Un capitolo su come si spiegano i dati con una causa che non si vede.**
+      È l’idea che il libro usava già in quattro punti senza averla mai
+      derivata: comprimere in poche cifre e ricostruire, e scoprire che fra una
+      cifra e l’altra ci sono buchi in cui il modello non è mai stato. Il
+      capitolo deriva il rimedio (chiedere al modello non un punto ma una
+      nuvola, e quanto costa descriverla) e mostra dove quel latente stava già
+      lavorando: nei codec audio, nel deep reinforcement learning, nella
+      diffusione, nei world model.
+
+  - tipo: ampliato
+    testo: >
+      **Tre capitoli inseriti in mezzo hanno cambiato i numeri di tutti gli
+      altri**, e con essi i rimandi. Le pagine che promettevano «il capitolo
+      seguente» parlando di qualcos’altro sono state riscritte col nome del
+      capitolo, che è la forma che non invecchia. Dove il libro spiegava la
+      stessa cosa due volte (la quantizzazione in MLOps, la potatura fra tre
+      capitoli, il biglietto della lotteria) adesso c’è una spiegazione sola e
+      gli altri la richiamano.
+
+  - tipo: corretto
+    testo: >
+      **Una revisione a nove letture antagoniste sui capitoli nuovi**, ed è la
+      parte che vale la pena leggere se si è già letto qualcosa. Fra le cose
+      raddrizzate: la spiegazione facile della ricerca A* descriveva in realtà
+      un altro algoritmo, meno buono; un conto sull’efficienza contava la metà
+      di quello del capitolo sulla GPU pur dichiarando di essere lo stesso; un
+      miglioramento attribuito alla potatura era in realtà il riavvio
+      dell’ottimizzatore; e una frase su A*, ripresa da un manuale molto
+      citato, era imprecisa nel manuale stesso.
+
 - versione: "1.6.3"
   data: 2026-08-17
   voci:
@@ -84,7 +151,7 @@ versioni:
       verosimiglianza «esatta» di un flusso è esatta su dati leggermente
       sporcati, non sul file vero.
 
-  - tipo: ampliato
+  - tipo: corretto
     pagina: prefazione.md
     testo: >
       **La chiusa torna a legarsi a quello che la precede.** Le ultime due frasi

@@ -133,11 +133,13 @@ nota, e costa meno di un minuto.
 
 | Sorgente | Figura nel libro | Sezione |
 |---|---|---|
+| `svg/alfabeta-pota.py` | `fig-alfabeta-pota` | `Ricerca/giocare-contro-qualcuno.md` |
 | `svg/apertura-flusso.py` | `fig-apertura-flusso` | `VisioneArtificiale/geometria-e-profondita.md` |
 | `svg/attacco-epsilon.py` | `fig-attacco-epsilon` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
 | `svg/bpe-fusioni.py` | `fig-bpe-fusioni` | `NaturalLanguageProcessing/tokenizzatori.md` |
 | `svg/broadcasting-si-stende.py` | `fig-broadcasting-si-stende` | `Python/numpy.md` |
+| `svg/cammino-latente.py` | `fig-cammino-latente` | `ModelliLatenti/il-salto-probabilistico.md` |
 | `svg/campo-cieco.py` | `fig-campo-cieco` | `VerosimiglianzaEsatta/pixel-per-pixel.md` |
 | `svg/cancello-che-respinge.py` | `fig-cancello-che-respinge` | `IngegneriaLLM/loop-engineering.md` |
 | `svg/ciclo-addestramento.py` | `fig-ciclo-addestramento` | `PyTorch/addestramento.md` |
@@ -153,6 +155,7 @@ nota, e costa meno di un minuto.
 | `svg/finestra-spettrogramma.py` | `fig-finestra-spettrogramma` | `Audio/dal-suono-alle-feature.md` |
 | `svg/flash-attention-blocchi.py` | `fig-flash-attention-blocchi` | `GPU/flash-attention.md` |
 | `svg/formiche-feromone.py` | `fig-formiche-feromone` | `SistemiMultiAgente/sciami-e-simulazioni.md` |
+| `svg/frontiera-che-si-allarga.py` | `fig-frontiera` | `Ricerca/esplorare-lo-spazio.md` |
 | `svg/gan-inseguimento.py` | `fig-gan-inseguimento` | `GAN/come-funziona.md` |
 | `svg/gradiente-svanisce.py` | `fig-gradiente-svanisce` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/gradienti-integrati.py` | `fig-gradienti-integrati` | `Interpretabilita/attribuzione-e-meccanicistica.md` |
@@ -162,6 +165,7 @@ nota, e costa meno di un minuto.
 | `svg/origine-mobile.py` | `fig-walk-forward-validazione` | `SerieTemporali/validazione-e-feature.md` |
 | `svg/percettrone-impara.py` | `fig-percettrone-impara` | `RetiNeurali/percettrone.md` |
 | `svg/pinn-residuo.py` | `fig-pinn-residuo` | `PINN/come-funziona.md` |
+| `svg/potatura-che-assottiglia.py` | `fig-potatura` | `Efficienza/meno-pesi.md` |
 | `svg/scan-parallelo.py` | `fig-scan-parallelo` | `StateSpaceModel/mamba.md` |
 | `svg/spartito-in-fila.py` | `fig-spartito-in-fila` | `Audio/generazione-audio.md` |
 | `svg/vetrina-si-ordina.py` | `fig-vetrina-si-ordina` | `SistemiRaccomandazione/raccomandazione-neurale.md` |

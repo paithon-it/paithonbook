@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: La potatura alfa-beta mentre avviene
+  Generata da animazioni/svg/alfabeta-pota.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430"
+     role="img" aria-label="Un albero a due livelli. In cima un nodo tondo, chi muove per primo, che prende il massimo; sotto, tre nodi tondi dell'avversario, che prendono il minimo; sotto ancora nove caselle con i numeri 3, 12, 8, poi 2, 4, 6, poi 14, 5, 2. Le caselle si scoprono da sinistra a destra. Scoperte le prime tre, il nodo sopra di esse segna 3, e in basso compare il 3 come guadagno già assicurato. Nel secondo gruppo si scopre soltanto il 2: le due caselle che restano e i loro rami diventano grigi e barrati, e il loro nodo segna «minore o uguale a 2», perché quel valore nessuno l'ha misurato fino in fondo. Il terzo gruppo si scopre tutto, 14, 5 e 2, e segna 2. Alla fine la radice segna 3, e la riga in basso conta sette foglie guardate su nove.">
+  <style>
+    svg  { --d: 11.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .ram    { stroke:#C5BEAA; stroke-width:2; }
+    .spento { stroke:#E2DCC9; stroke-dasharray:5 5; }
+    .nodo   { stroke-width:2.5; fill:#F8F5EE; }
+    .max    { stroke:#B5532C; }
+    .min    { stroke:#2D5A5C; }
+    .cassa  { fill:#F8F5EE; stroke:#C5BEAA; stroke-width:2; }
+    .spenta { stroke:#E2DCC9; }
+    .croce  { stroke:#C5BEAA; stroke-width:2.5; }
+    .val    { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:600;
+               fill:#1A1A1A; text-anchor:middle; }
+    .alfa   { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:600;
+               fill:#B5532C; text-anchor:middle; }
+        @keyframes sram11{0.00%{opacity:1}45.30%{opacity:1}46.50%{opacity:0}100.00%{opacity:0}}
+    @keyframes tram11{0.00%{opacity:0}45.30%{opacity:0}46.50%{opacity:1}100.00%{opacity:1}}
+    @keyframes sram12{0.00%{opacity:1}45.30%{opacity:1}46.50%{opacity:0}100.00%{opacity:0}}
+    @keyframes tram12{0.00%{opacity:0}45.30%{opacity:0}46.50%{opacity:1}100.00%{opacity:1}}
+    @keyframes vradice{0.00%{opacity:0}86.80%{opacity:0}88.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes vmin0{0.00%{opacity:0}24.55%{opacity:0}25.75%{opacity:1}100.00%{opacity:1}}
+    @keyframes vmin1{0.00%{opacity:0}52.22%{opacity:0}53.42%{opacity:1}100.00%{opacity:1}}
+    @keyframes vmin2{0.00%{opacity:0}79.88%{opacity:0}81.08%{opacity:1}100.00%{opacity:1}}
+    @keyframes vfog00{0.00%{opacity:0}3.80%{opacity:0}5.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes vfog01{0.00%{opacity:0}10.72%{opacity:0}11.92%{opacity:1}100.00%{opacity:1}}
+    @keyframes vfog02{0.00%{opacity:0}17.63%{opacity:0}18.83%{opacity:1}100.00%{opacity:1}}
+    @keyframes vfog10{0.00%{opacity:0}38.38%{opacity:0}39.58%{opacity:1}100.00%{opacity:1}}
+    @keyframes vtag11{0.00%{opacity:0}45.30%{opacity:0}46.50%{opacity:1}100.00%{opacity:1}}
+    @keyframes vtag12{0.00%{opacity:0}45.30%{opacity:0}46.50%{opacity:1}100.00%{opacity:1}}
+    @keyframes vfog20{0.00%{opacity:0}59.13%{opacity:0}60.33%{opacity:1}100.00%{opacity:1}}
+    @keyframes vfog21{0.00%{opacity:0}66.05%{opacity:0}67.25%{opacity:1}100.00%{opacity:1}}
+    @keyframes vfog22{0.00%{opacity:0}72.97%{opacity:0}74.17%{opacity:1}100.00%{opacity:1}}
+    @keyframes valfa0{0.00%{opacity:0}31.47%{opacity:0}32.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes vconto{0.00%{opacity:0}86.80%{opacity:0}88.00%{opacity:1}100.00%{opacity:1}}
+    @media (prefers-reduced-motion:reduce) { g { animation:none !important; } }
+  </style>
+  <line class="ram" x1="380.0" y1="96" x2="148" y2="180"/><line class="ram" x1="148" y1="224" x2="84" y2="310"/><line class="ram" x1="148" y1="224" x2="148" y2="310"/><line class="ram" x1="148" y1="224" x2="212" y2="310"/><line class="ram" x1="380.0" y1="96" x2="380" y2="180"/><line class="ram" x1="380" y1="224" x2="316" y2="310"/><g style="opacity:0;animation:sram11 var(--d) linear infinite"><line class="ram" x1="380" y1="224" x2="380" y2="310"/></g><g style="animation:tram11 var(--d) linear infinite"><line class="ram spento" x1="380" y1="224" x2="380" y2="310"/></g><g style="opacity:0;animation:sram12 var(--d) linear infinite"><line class="ram" x1="380" y1="224" x2="444" y2="310"/></g><g style="animation:tram12 var(--d) linear infinite"><line class="ram spento" x1="380" y1="224" x2="444" y2="310"/></g><line class="ram" x1="380.0" y1="96" x2="612" y2="180"/><line class="ram" x1="612" y1="224" x2="548" y2="310"/><line class="ram" x1="612" y1="224" x2="612" y2="310"/><line class="ram" x1="612" y1="224" x2="676" y2="310"/><circle class="nodo max" cx="380.0" cy="74" r="22"/><g style="animation:vradice var(--d) linear infinite"><text class="val" x="380.0" y="80">3</text></g><circle class="nodo max" cx="46" cy="34" r="8"/><text class="lbs" x="62" y="38">tocca a me, e prendo il massimo</text><circle class="nodo min" cx="46" cy="58" r="8"/><text class="lbs" x="62" y="62">tocca a lui, e prende il minimo</text><circle class="nodo min" cx="148" cy="202" r="22"/><g style="animation:vmin0 var(--d) linear infinite"><text class="val" x="148" y="208">3</text></g><circle class="nodo min" cx="380" cy="202" r="22"/><g style="animation:vmin1 var(--d) linear infinite"><text class="val" x="380" y="208">≤2</text></g><circle class="nodo min" cx="612" cy="202" r="22"/><g style="animation:vmin2 var(--d) linear infinite"><text class="val" x="612" y="208">2</text></g><g style="animation:vfog00 var(--d) linear infinite"><rect class="cassa" x="62" y="310" width="44" height="40" rx="5"/><text class="val" x="84" y="336">3</text></g><g style="animation:vfog01 var(--d) linear infinite"><rect class="cassa" x="126" y="310" width="44" height="40" rx="5"/><text class="val" x="148" y="336">12</text></g><g style="animation:vfog02 var(--d) linear infinite"><rect class="cassa" x="190" y="310" width="44" height="40" rx="5"/><text class="val" x="212" y="336">8</text></g><g style="animation:vfog10 var(--d) linear infinite"><rect class="cassa" x="294" y="310" width="44" height="40" rx="5"/><text class="val" x="316" y="336">2</text></g><g style="animation:vtag11 var(--d) linear infinite"><rect class="cassa spenta" x="358" y="310" width="44" height="40" rx="5"/><line class="croce" x1="368" y1="320" x2="392" y2="342"/><line class="croce" x1="392" y1="320" x2="368" y2="342"/></g><g style="animation:vtag12 var(--d) linear infinite"><rect class="cassa spenta" x="422" y="310" width="44" height="40" rx="5"/><line class="croce" x1="432" y1="320" x2="456" y2="342"/><line class="croce" x1="456" y1="320" x2="432" y2="342"/></g><g style="animation:vfog20 var(--d) linear infinite"><rect class="cassa" x="526" y="310" width="44" height="40" rx="5"/><text class="val" x="548" y="336">14</text></g><g style="animation:vfog21 var(--d) linear infinite"><rect class="cassa" x="590" y="310" width="44" height="40" rx="5"/><text class="val" x="612" y="336">5</text></g><g style="animation:vfog22 var(--d) linear infinite"><rect class="cassa" x="654" y="310" width="44" height="40" rx="5"/><text class="val" x="676" y="336">2</text></g><text class="lbs" x="40" y="398">quello che mi sono già assicurato:</text><g style="animation:valfa0 var(--d) linear infinite"><text class="alfa" x="322" y="398">3</text></g><g style="animation:vconto var(--d) linear infinite"><text class="lbs" x="720" y="398" text-anchor="end">foglie guardate: 7 su 9</text></g>
+</svg>

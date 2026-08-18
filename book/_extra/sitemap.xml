@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://book.paithon.it/main/intro.html</loc>
-    <lastmod>2026-08-17T12:18:43+00:00</lastmod>
+    <lastmod>2026-08-18T09:53:51+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/prefazione.html</loc>
@@ -78,7 +78,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/MachineLearning/overfitting-validazione.html</loc>
-    <lastmod>2026-08-17T10:23:32+00:00</lastmod>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/MachineLearning/metriche.html</loc>
@@ -98,7 +98,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/MachineLearning/riduzione-clustering.html</loc>
-    <lastmod>2026-08-17T11:06:38+00:00</lastmod>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/MachineLearning/dati-che-cambiano.html</loc>
@@ -193,8 +193,28 @@
     <lastmod>2026-08-16T12:05:40+00:00</lastmod>
   </url>
   <url>
+    <loc>https://book.paithon.it/main/Efficienza/overview.html</loc>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Efficienza/meno-bit.html</loc>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Efficienza/meno-pesi.html</loc>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Efficienza/un-modello-piccolo-che-imita.html</loc>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Efficienza/far-rispondere-in-fretta.html</loc>
+    <lastmod>2026-08-18T12:05:38+00:00</lastmod>
+  </url>
+  <url>
     <loc>https://book.paithon.it/main/DeepLearning/overview.html</loc>
-    <lastmod>2026-08-17T10:23:32+00:00</lastmod>
+    <lastmod>2026-08-18T09:53:51+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepLearning/reti-convoluzionali.html</loc>
@@ -242,7 +262,23 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/VisioneArtificiale/style-transfer.html</loc>
-    <lastmod>2026-08-16T12:05:40+00:00</lastmod>
+    <lastmod>2026-08-18T09:07:29+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Ricerca/overview.html</loc>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Ricerca/esplorare-lo-spazio.html</loc>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Ricerca/giocare-contro-qualcuno.html</loc>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/Ricerca/quando-il-mondo-non-si-conosce.html</loc>
+    <lastmod>2026-08-18T11:41:03+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/ReinforcementLearning/overview.html</loc>
@@ -274,7 +310,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepReinforcementLearning/policy-gradient.html</loc>
-    <lastmod>2026-08-17T10:33:09+00:00</lastmod>
+    <lastmod>2026-08-18T09:07:29+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepReinforcementLearning/controllo-continuo.html</loc>
@@ -290,7 +326,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepReinforcementLearning/offline-rl.html</loc>
-    <lastmod>2026-08-17T10:33:09+00:00</lastmod>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepReinforcementLearning/esplorazione-e-ricompensa.html</loc>
@@ -386,7 +422,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Transformers/tendenzefuture.html</loc>
-    <lastmod>2026-08-17T10:23:32+00:00</lastmod>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AttenzioneLineare/overview.html</loc>
@@ -530,7 +566,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/codec-neurali.html</loc>
-    <lastmod>2026-08-16T12:09:47+00:00</lastmod>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/generazione-audio.html</loc>
@@ -546,11 +582,27 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/SpeechRecognition/sintesi-vocale.html</loc>
-    <lastmod>2026-08-16T12:06:27+00:00</lastmod>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/ModelliLatenti/overview.html</loc>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/ModelliLatenti/comprimere-e-ricostruire.html</loc>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/ModelliLatenti/il-salto-probabilistico.html</loc>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://book.paithon.it/main/ModelliLatenti/il-latente-che-si-usa.html</loc>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GAN/overview.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GAN/come-funziona.html</loc>
@@ -570,7 +622,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/ModelliDiffusione/stable-diffusion.html</loc>
-    <lastmod>2026-08-16T12:09:47+00:00</lastmod>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/ModelliDiffusione/diffusion-transformer.html</loc>
@@ -578,7 +630,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/VerosimiglianzaEsatta/overview.html</loc>
-    <lastmod>2026-08-16T12:06:27+00:00</lastmod>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/VerosimiglianzaEsatta/pixel-per-pixel.html</loc>
@@ -638,7 +690,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/WorldModels/mondi-in-miniatura.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-18T07:41:16+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/WorldModels/jepa.html</loc>
@@ -726,7 +778,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/deployment-e-serving.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/monitoring-e-drift.html</loc>
@@ -734,7 +786,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/llmops.html</loc>
-    <lastmod>2026-08-16T09:39:44+00:00</lastmod>
+    <lastmod>2026-08-18T12:28:52+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/MLOps/metriche-di-servizio.html</loc>
@@ -790,6 +842,6 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/aggiornamenti.html</loc>
-    <lastmod>2026-08-17T16:43:10+00:00</lastmod>
+    <lastmod>2026-08-18T13:08:11+00:00</lastmod>
   </url>
 </urlset>

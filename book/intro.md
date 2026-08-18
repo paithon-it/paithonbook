@@ -123,7 +123,7 @@ framework del libro.</span> </a> <a class="pt-card" href="GPU/overview.html">
 <span class="pt-card-num"></span> <span class="pt-card-title">GPU e calcolo
 parallelo</span> <span class="pt-card-desc">Sotto il cofano dell'hardware:
 architettura, memoria, kernel, GEMM e tensor core, Flash Attention e
-parallelismo su più GPU.</span> </a> <a class="pt-card"
+parallelismo su più GPU.</span> </a> <a class="pt-card" href="Efficienza/overview.html"> <span class="pt-card-num"></span> <span class="pt-card-title">Efficienza</span> <span class="pt-card-desc">Il modello che si addestra non è quello che si usa: quantizzazione e componenti anomale, potatura e biglietto della lotteria, distillazione, e perché starci in memoria non è rispondere in fretta.</span> </a> <a class="pt-card"
 href="DeepLearning/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Deep Learning</span> <span class="pt-card-desc">Reti
 convoluzionali, ottimizzazione, regolarizzazione, architetture storiche e una
@@ -132,6 +132,11 @@ href="VisioneArtificiale/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Visione Artificiale</span> <span
 class="pt-card-desc">Classificare, riconoscere, segmentare: le macchine che
 vedono.</span> </a> <a class="pt-card"
+href="Ricerca/overview.html"> <span class="pt-card-num"></span> <span
+class="pt-card-title">Ricerca e pianificazione</span> <span
+class="pt-card-desc">Guardare avanti nelle mosse possibili: alberi di ricerca,
+euristiche e A*, minimax e potatura alfa-beta, e le tre cose che quando
+mancano cambiano tutto.</span> </a> <a class="pt-card"
 href="ReinforcementLearning/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Reinforcement Learning</span> <span
 class="pt-card-desc">Imparare per tentativi: i bandit, gli MDP e le funzioni
@@ -184,6 +189,10 @@ href="SpeechRecognition/overview.html"> <span class="pt-card-num"></span>
 <span class="pt-card-title">Speech Recognition</span> <span
 class="pt-card-desc">Dalla voce al testo e ritorno: allineamento, CTC,
 Whisper, sintesi vocale.</span> </a> <a class="pt-card"
+href="ModelliLatenti/overview.html"> <span class="pt-card-num"></span> <span
+class="pt-card-title">Modelli latenti</span> <span class="pt-card-desc">Spiegare
+i dati con qualcosa che non si vede: autoencoder, ELBO e riparametrizzazione,
+il latente che il resto del libro monta senza spiegarlo.</span> </a> <a class="pt-card"
 href="GAN/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">GAN</span> <span class="pt-card-desc">Due reti che si
 sfidano: il gioco avversario che genera immagini.</span> </a> <a

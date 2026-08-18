@@ -134,6 +134,17 @@ parts:
       title: FlashAttention
     - file: GPU/parallelismo-distribuito.md
       title: Parallelismo distribuito
+  - file: Efficienza/overview.md
+    title: Efficienza
+    sections:
+    - file: Efficienza/meno-bit.md
+      title: Meno bit
+    - file: Efficienza/meno-pesi.md
+      title: Meno pesi
+    - file: Efficienza/un-modello-piccolo-che-imita.md
+      title: Un modello che imita
+    - file: Efficienza/far-rispondere-in-fretta.md
+      title: Starci non è rispondere
 
 - caption: Deep learning e visione
   chapters:
@@ -168,6 +179,15 @@ parts:
 
 - caption: Apprendimento per rinforzo
   chapters:
+  - file: Ricerca/overview.md
+    title: Ricerca e pianificazione
+    sections:
+    - file: Ricerca/esplorare-lo-spazio.md
+      title: Esplorare lo spazio
+    - file: Ricerca/giocare-contro-qualcuno.md
+      title: Giocare contro qualcuno
+    - file: Ricerca/quando-il-mondo-non-si-conosce.md
+      title: Le tre cose date per scontate
   - file: ReinforcementLearning/overview.md
     title: Reinforcement Learning
     sections:
@@ -344,6 +364,15 @@ parts:
 
 - caption: Energia e generazione
   chapters:
+  - file: ModelliLatenti/overview.md
+    title: Modelli latenti
+    sections:
+    - file: ModelliLatenti/comprimere-e-ricostruire.md
+      title: Comprimere e ricostruire
+    - file: ModelliLatenti/il-salto-probabilistico.md
+      title: ELBO e riparametrizzazione
+    - file: ModelliLatenti/il-latente-che-si-usa.md
+      title: Il latente che si usa
   - file: GAN/overview.md
     title: GAN
     sections:

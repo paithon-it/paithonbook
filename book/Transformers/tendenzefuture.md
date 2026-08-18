@@ -43,13 +43,13 @@ esitazione fra gatto e lince dice all'allievo che i due si somigliano, e
 imparare quali cose si somigliano è metà del mestiere.
 
 `````{tab} Elementare
-Gli altri modi di rimpicciolire un modello sono due, e sono più bruti. Il primo
-è scrivere ogni suo numero con meno cifre: dove prima ne servivano dieci adesso
-ne bastano due o tre, il modello occupa quattro o otto volte meno spazio, e in
-cambio è un po’ meno preciso, spesso molto meno di quanto ci si aspetterebbe.
-Il secondo è togliere di mezzo i numeri che contano poco: in una rete
-addestrata ce ne sono moltissimi vicini allo zero, che si possono azzerare del
-tutto senza che quasi nulla cambi.
+Gli altri modi di rimpicciolire un modello sono due, e li costruisce il
+capitolo sull’efficienza, che vale la pena rileggere prima di crederli facili.
+Il primo è scrivere ogni numero con meno cifre; il secondo è togliere di mezzo
+i numeri che contano poco. Detti così sembrano gratis, e non lo sono: là si
+misura che arrotondare a quattro bit, senza altri accorgimenti, sposta di quasi
+un quinto quello che esce da uno strato, e che una rete a cui si tolgono nove
+pesi su dieci smette di funzionare finché non la si riaddestra.
 
 Sul contesto lungo la ricerca prova invece a far comunicare le parole senza
 convocarle tutte insieme, e i due filoni più promettenti hanno un capitolo
@@ -62,9 +62,11 @@ disciplina a sé.
 `````
 
 `````{tab} Superiore
-Sul fronte dell'efficienza: **distillazione** (un modello piccolo addestrato a
-imitare le uscite di uno grande), **quantizzazione** (pesi a 8 o 4 bit invece
-che a 32, con perdite di qualità spesso modeste), **pruning**, e architetture
+Sul fronte dell'efficienza, e per il meccanismo si rimanda al capitolo che gli
+è dedicato: **distillazione** (un modello piccolo addestrato a imitare le
+uscite di uno grande), **quantizzazione** (pesi a 8 o 4 bit invece che a 32,
+dove sotto gli otto la perdita smette di essere trascurabile e servono metodi
+che facciano più che arrotondare), **pruning**, e architetture
 *mixture-of-experts* che attivano solo una frazione dei parametri per ogni
 token. Sul fronte del contesto lungo: attenzioni sparse e lineari,
 ottimizzazioni di memoria come FlashAttention, e gli *state space model*

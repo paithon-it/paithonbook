@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paithon book, figura animata: la online softmax scorre i blocchi e ricalibra
+  Paithon Book, figura animata: la online softmax scorre i blocchi e ricalibra
   Generata da animazioni/svg/flash-attention-blocchi.py: non modificare a mano.
   Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
   Lo stato di riposo è quello finale: chi non anima (stampa, PDF,

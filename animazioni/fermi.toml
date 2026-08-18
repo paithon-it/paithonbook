@@ -45,3 +45,12 @@ istanti = [0.10, 0.50, 0.97]
 # avrebbe mai mostrato la figura completa, che e' proprio quella che porta i
 # due numeri di cui parla il testo. Il terzo fermo va quindi dentro l'ultima
 # sosta, dove la fila a griglia e' arrivata a 32 e quella a eventi a 8.
+
+[potatura-che-assottiglia]
+istanti = [0.10, 0.45, 0.90]
+# perche': i dieci cartigli si avvicendano ogni 8,9% con una dissolvenza di
+# 0,8, e il 50% cade proprio dentro quella fra il quinto e il sesto giro: il
+# fermo di mezzo stampava «82% tolti» e «88% tolti» sovrapposti, cifra su
+# cifra, e in stampa e' una delle tre immagini che sostituiscono la clip. Al
+# 45% il quinto giro e' fermo e pieno, e la curva non ha ancora raccontato il
+# crollo, che e' quello che il fermo di mezzo non deve anticipare.

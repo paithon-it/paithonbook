@@ -21,6 +21,8 @@ on:
       - 'book/**/*.md'
       - 'notebooks/**'
       - 'scripts/genera-notebook.py'
+      - 'scripts/verifica-uscite.py'
+      - 'notebooks/_preludi/**'
       - 'requirements-notebook.txt'
       - '.github/workflows/verifica-notebook.yml'
   pull_request:
@@ -28,6 +30,8 @@ on:
       - 'book/**/*.md'
       - 'notebooks/**'
       - 'scripts/genera-notebook.py'
+      - 'scripts/verifica-uscite.py'
+      - 'notebooks/_preludi/**'
       - 'requirements-notebook.txt'
   workflow_dispatch:
 
@@ -62,3 +66,14 @@ jobs:
       # ha modificato il codice in una pagina senza rifare il notebook.
       - name: I notebook committati sono aggiornati?
         run: git diff --exit-code -- notebooks book/_config.yml
+
+      # Il passo sopra si accorge se il codice si ROMPE. Questo si accorge se
+      # il codice funziona e stampa qualcosa di diverso da quello che la pagina
+      # dichiara: i blocchi ```text sono copiati a mano da un terminale, e su
+      # di essi poggia la regola che i numeri commentati li stampi la macchina.
+      # Gira sul sorgente, quindi copre anche i capitoli sotto le tre celle,
+      # che un notebook non ce l'hanno.
+      - name: I numeri stampati nel libro sono quelli veri?
+        env:
+          MPLBACKEND: Agg
+        run: python3 scripts/verifica-uscite.py

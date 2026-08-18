@@ -73,6 +73,11 @@ della sezione e URL), non si ridistribuisce il testo.
   - [GEMM e tensor core](https://book.paithon.it/main/GPU/gemm-e-tensor-core.html)
   - [FlashAttention](https://book.paithon.it/main/GPU/flash-attention.html)
   - [Parallelismo distribuito](https://book.paithon.it/main/GPU/parallelismo-distribuito.html)
+- [Efficienza](https://book.paithon.it/main/Efficienza/overview.html): Molti insetti vivono due vite in un corpo solo. La larva è fatta per mangiare: lenta, molle, con un apparato digerente che occupa quasi tutto lo spazio disponibile.
+  - [Meno bit](https://book.paithon.it/main/Efficienza/meno-bit.html)
+  - [Meno pesi](https://book.paithon.it/main/Efficienza/meno-pesi.html)
+  - [Un modello che imita](https://book.paithon.it/main/Efficienza/un-modello-piccolo-che-imita.html)
+  - [Starci non è rispondere](https://book.paithon.it/main/Efficienza/far-rispondere-in-fretta.html)
 
 ## Deep learning e visione
 
@@ -92,6 +97,10 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Apprendimento per rinforzo
 
+- [Ricerca e pianificazione](https://book.paithon.it/main/Ricerca/overview.html): Una cassa di ingranaggi e contatti elettrici, in una sala di Parigi, gioca a scacchi da sola davanti al pubblico.
+  - [Esplorare lo spazio](https://book.paithon.it/main/Ricerca/esplorare-lo-spazio.html)
+  - [Giocare contro qualcuno](https://book.paithon.it/main/Ricerca/giocare-contro-qualcuno.html)
+  - [Le tre cose date per scontate](https://book.paithon.it/main/Ricerca/quando-il-mondo-non-si-conosce.html)
 - [Reinforcement Learning](https://book.paithon.it/main/ReinforcementLearning/overview.html): Nessuno insegna a un bambino a camminare elencandogli la sequenza esatta di contrazioni muscolari. Il bambino ci prova, oscilla, cade, si rialza, fa un passo e cade di nuovo.
   - [I bandit a più braccia](https://book.paithon.it/main/ReinforcementLearning/banditi.html)
   - [MDP e funzioni valore](https://book.paithon.it/main/ReinforcementLearning/mdp-valore.html)
@@ -180,6 +189,10 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Energia e generazione
 
+- [Modelli latenti](https://book.paithon.it/main/ModelliLatenti/overview.html): In una scuola preparatoria inglese, trentatré ragazzi fanno gli esami di quattro materie: le materie classiche, il francese, l’inglese e la matematica. I voti si somigliano più di quanto dovrebbero.
+  - [Comprimere e ricostruire](https://book.paithon.it/main/ModelliLatenti/comprimere-e-ricostruire.html)
+  - [ELBO e riparametrizzazione](https://book.paithon.it/main/ModelliLatenti/il-salto-probabilistico.html)
+  - [Il latente che si usa](https://book.paithon.it/main/ModelliLatenti/il-latente-che-si-usa.html)
 - [GAN](https://book.paithon.it/main/GAN/overview.html): L'idea di cui parla questo capitolo è nata, dice la leggenda (perché ormai è una leggenda), in un bar di Montréal, i Trois Brasseurs, nel 2014.
   - [L'addestramento avversario](https://book.paithon.it/main/GAN/come-funziona.html)
   - [Evoluzioni e applicazioni](https://book.paithon.it/main/GAN/applicazioni-evoluzioni.html)

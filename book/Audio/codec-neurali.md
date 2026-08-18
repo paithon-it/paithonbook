@@ -29,7 +29,7 @@ farlo diventare un pugno di numeri, e un **decoder** che da quel pugno di numeri
 cerca di ritirare fuori l'originale. I due si addestrano *insieme*, con un'unica
 regola: quello che esce deve somigliare a quello che è entrato. Questa forma non
 è del suono, è di qualunque cosa si voglia comprimere, ed è qui che il libro la
-monta: il capitolo sui modelli di diffusione la riprenderà per le immagini, e le
+monta: il capitolo sui modelli latenti la riprenderà per le immagini, e le
 aggiungerà l'unica cosa che le manca per servire anche a *generare*.
 
 ```{figure} ../figures/autoencoder-comprimere-per-capire.svg

@@ -220,8 +220,8 @@ mezzo al nulla.
 
 Per sapere quali azioni siano plausibili, BCQ addestra un **modello
 generativo** (un *variational autoencoder*: una rete che strozza i dati in
-poche variabili e da quelle li ricostruisce, spiegata per esteso nel capitolo
-sull'audio) sulle coppie $(s, a)$ del
+poche variabili e da quelle li ricostruisce, derivata per esteso nel capitolo
+sui modelli latenti) sulle coppie $(s, a)$ del
 dataset: dato uno stato, genera azioni simili a quelle che $\pi_\beta$ avrebbe
 scelto in situazioni analoghe. La rete $Q$ viene poi massimizzata solo su un
 pugno di azioni campionate da questo generatore (con una piccola perturbazione

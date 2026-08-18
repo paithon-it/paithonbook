@@ -107,17 +107,20 @@ sphinx:
       - AutoSupervisione
       - DeepLearning
       - DeepReinforcementLearning
+      - Efficienza
       - GraphNeuralNetwork
       - Interpretabilita
       - MLOps
       - MachineLearning
       - Matematica
       - ModelliDiffusione
+      - ModelliLatenti
       - NaturalLanguageProcessing
       - PINN
       - PyTorch
       - Python
       - ReinforcementLearning
+      - Ricerca
       - SerieTemporali
       - SistemiMultiAgente
       - SistemiRaccomandazione

@@ -434,38 +434,13 @@ sotto, il degrado cresce più in fretta di quanto si risparmi.
 La quantizzazione scrive gli stessi pesi con meno cifre. La **potatura**
 (*pruning*) fa una cosa diversa: ne butta via una parte.
 
-`````{tab} Elementare
-
-Il fatto sorprendente è quanto se ne può buttare. Prendi un modello
-addestrato, elimina i pesi più vicini a zero (quelli che contribuiscono poco)
-e scopri che, sulle reti di visione su cui la cosa è stata misurata più a
-lungo, si può arrivare a rimuovere il **90%** dei pesi (le «connessioni» fra i
-neuroni sono la stessa cosa: ogni connessione porta un peso) perdendo
-pochissimo in accuratezza. Le reti addestrate, insomma, sono largamente
-sovradimensionate rispetto a ciò che serve per fare il lavoro.
-
-C'è però una delusione che aspetta chi ci prova per la prima volta: **un modello
-con il 90% dei pesi a zero non gira dieci volte più veloce**. Anzi, spesso non
-gira più veloce affatto. Il motivo è che una GPU è costruita per moltiplicare
-blocchi densi di numeri: se gli zeri sono sparsi a caso, la scheda li moltiplica
-comunque, e l'unico risparmio è sul disco.
-
-Per guadagnare davvero bisogna togliere in modo **ordinato**: non un peso qua e
-uno là, ma pezzi interi e ben delimitati del modello, uno strato completo o una
-delle sue colonne. Così quel che resta è ancora un blocco pieno, solo più
-piccolo, e la scheda lo sa moltiplicare alla sua velocità. Si toglie meno, ma
-il tempo si accorcia sul serio.
-
-`````
+Quanto se ne possa buttare, e perché toglierne il novanta per cento non renda
+un modello dieci volte più veloce, li costruisce il capitolo sull'efficienza,
+insieme alla distinzione fra sparsità non strutturata e strutturata e agli
+schemi a densità fissa che l'hardware sa eseguire. Qui interessa la parte che
+di là non c'è, ed è quella che rende gli LLM un caso a sé.
 
 `````{tab} Superiore
-
-La distinzione operativa è fra sparsità **non strutturata** (singoli pesi
-messi a zero, ottima compressione ma nessuna accelerazione senza kernel
-dedicati) e **strutturata** (canali, teste, blocchi: meno compressione, ma il
-guadagno si traduce in latenza). La via di mezzo hardware è la sparsità
-**2:4** dei tensor core NVIDIA (due zeri ogni quattro elementi contigui) che
-dà circa $2\times$ sulle GEMM restando prevedibile per la scheda.
 
 Sugli LLM la potatura post-training è più delicata che sulle reti di visione,
 perché non si può riaddestrare. **SparseGPT** e **Wanda** affrontano proprio
@@ -475,15 +450,17 @@ i pesi importanti si riconoscono guardando cosa ci passa attraverso, non
 quanto sono grandi. Con questi metodi il $50\%$ di sparsità è raggiungibile
 senza riaddestramento e con degrado contenuto; oltre, il conto si fa salato.
 
-Quantizzazione e potatura non sono alternative ma complementari, e agiscono su
-cose diverse: la prima riscrive gli stessi pesi con meno cifre e il guadagno in
-memoria è garantito; la seconda ne toglie, e il guadagno in tempo arriva solo
-se si toglie in modo ordinato. È la ragione per cui, a parità di rischio, si
-comincia dalla prima. Vale poi la regola di sempre: **misurare**, perché il
-degrado si distribuisce in modo diseguale fra i compiti e una media aggregata
-lo nasconde.
-
 `````
+
+La ragione per cui su un LLM la potatura è più difficile è tutta in quella
+riga: **non si può riaddestrare**. Il capitolo sull'efficienza mostra che il
+riaddestramento è la parte non opzionale della potatura, quella che riporta la
+rete dov'era; qui non c'è, perché riaddestrare un modello da miliardi di
+parametri non è una cosa che si fa a valle di un deploy. Da qui la regola
+pratica: a parità di rischio si comincia dalla quantizzazione, che il
+riaddestramento non lo chiede. E vale la regola di sempre, **misurare**, perché
+il degrado si distribuisce in modo diseguale fra i compiti e una media
+aggregata lo nasconde.
 
 ## Valutare l'invalutabile
 

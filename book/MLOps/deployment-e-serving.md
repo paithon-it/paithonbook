@@ -319,52 +319,19 @@ quel modello lì.
 
 `````{tab} Superiore
 
-La forma più economica è la **quantizzazione post-training** (*PTQ*): si prende un
-modello già addestrato in `float32` e se ne convertono i pesi in interi, senza
-riaddestrare. Il legame tra il numero reale $r$ e l'intero $q$ è una **mappa affine**
-{cite}`jacob2018quantization`:
-
-$$
-r = S\,(q - Z),
-$$
-
-dove $q$ è l'intero a 8 bit (in $[-128, 127]$), $S > 0$ è la **scala** (un numero
-reale, l'ampiezza di un gradino), e $Z$ è lo **zero-point**, l'intero che
-rappresenta il valore reale $0$. La quantizzazione è l'inversa,
-$q = \mathrm{round}(r / S) + Z$, troncata all'intervallo.
-
-Facciamo i conti a mano su un vettore di pesi
-$\mathbf{w} = [-1{,}00,\ -0{,}352,\ 0{,}20,\ 1{,}55,\ 0{,}073]$. Da minimo e massimo
-($r_{\min} = -1{,}00$, $r_{\max} = 1{,}55$) si ricava la scala
-$S = (r_{\max} - r_{\min}) / (127 - (-128)) = 2{,}55 / 255 = 0{,}01$ e lo
-zero-point $Z = -128 - \mathrm{round}(r_{\min}/S) = -128 - (-100) = -28$.
-Quantizzando ($q = \mathrm{round}(r/S) + Z$) si ottiene
-$\mathbf{q} = [-128,\ -63,\ -8,\ 127,\ -21]$; ricostruendo ($\hat r = S(q - Z)$) si torna a
-$\hat{\mathbf{r}} = [-1{,}00,\ -0{,}35,\ 0{,}20,\ 1{,}55,\ 0{,}07]$. L’**errore** è al più
-$0{,}003$: non può superare mezzo gradino, $S/2 = 0{,}005$. Sul piano dei byte, i
-cinque `float32` (20 byte) diventano cinque `int8` (5 byte) più i due parametri di
-calibrazione $S$ e $Z$ condivisi da tutto il tensore: per uno strato con milioni di
-pesi, quei due numeri sono trascurabili e la compressione è di circa **4×**.
-
-Quel «condivisi da tutto il tensore» è però la forma più semplice, ed è anche
-la più fragile. Il limite non sta nel mezzo gradino, sta in **quanto è largo il
-gradino**: la scala $S$ la dettano gli estremi, quindi basta un solo canale con
-pesi anomali per allargare il gradino di tutti gli altri e schiacciarli in poche
-decine di livelli. Il rimedio costa una manciata di scalari per strato e si
-chiama quantizzazione **per canale**: una coppia $S, Z$ per ogni riga della
-matrice dei pesi.
-
-Quanto pesi lo si misura in poche righe, e conviene farlo perché il numero
-sorprende. Si prende una matrice $256 \times 512$ di pesi normali standard, se
-ne moltiplica **una riga sola** per venti e la si moltiplica per ingressi
-anch'essi normali ($512 \times 4096$). Con una scala per tutto il tensore
-l'errore relativo sull'uscita dei $255$ canali **rimasti normali** vale circa
-il $14\%$: quel solo canale ha allargato il gradino di tutti. Con una scala per
-riga scende a circa lo $0{,}7\%$, venti volte meno, a parità di bit
-memorizzati. (Su dieci semi diversi il primo valore oscilla fra il $12$ e il
-$17\%$ e il secondo resta fermo a $0{,}7$, quindi il rapporto sta fra
-diciassette e ventiquattro.) È anche il ponte verso i metodi per i grandi modelli
-linguistici della sezione su LLMOps, che di quell'idea sono lo sviluppo.
+La forma più economica è la **quantizzazione post-training** (*PTQ*): si prende
+un modello già addestrato in `float32` e se ne convertono i pesi in interi,
+senza riaddestrare. Il meccanismo (la mappa affine $r = S(q - Z)$ fra il numero
+reale $r$ e l'intero $q$, con $S$ la larghezza di un gradino e $Z$ il livello
+che rappresenta lo zero; l'errore limitato a mezzo gradino; e soprattutto il
+fatto che
+la larghezza del gradino la detti l'elemento più grande fra quelli che
+condividono la scala) è costruito per esteso nel capitolo sull'efficienza
+{cite}`jacob2018quantization`, insieme alle due conseguenze che qui si danno
+per acquisite: che la **granularità** della scala sia la leva più economica, e
+che nei modelli linguistici poche componenti anomale la dettino per tutte le
+altre. Qui interessa la parte di servizio, cioè che cosa si scrive e che cosa
+si misura.
 
 In PyTorch la quantizzazione dinamica post-training è una riga, e l'esportazione
 verso un runtime dedicato (indipendente da Python) è un'altra:
@@ -388,9 +355,10 @@ torch.onnx.export(modello, (esempio,), "modello.onnx")  # lo stesso, in ONNX
 
 La `quantize_dynamic` è la variante più indolore (nessun dato di calibrazione
 richiesto, adatta agli strati lineari), e va usata sapendo due cose. La prima è
-che qui PyTorch adotta lo schema **simmetrico**, con $Z = 0$: nel tensore che ne
-esce lo zero-point del conto fatto a mano qui sopra non si ritrova, perché quel
-conto mostra il caso generale e la libreria ne implementa un caso particolare.
+che qui PyTorch adotta lo schema **simmetrico**, cioè quello con lo zero-point
+fissato a zero: è il caso particolare della mappa affine, quello in cui la
+scala basta da sola, ed è anche la forma su cui il capitolo sull’efficienza
+costruisce tutto il meccanismo.
 La seconda è che quell'API è dichiarata in uscita (il messaggio di deprecazione
 rimanda a `torchao` e alla sua `quantize_`), quindi è materia da ricontrollare a
 ogni aggiornamento invece che da imparare a memoria.
@@ -618,7 +586,8 @@ prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
   il grafo del backward.
 - Le leve per accelerare sono il **batching dinamico**, la **riduzione di
   precisione** (`float16`, come nel capitolo PyTorch) e la **quantizzazione a
-  `int8`** con la mappa affine $r = S(q - Z)$ {cite}`jacob2018quantization`: circa
+  `int8`** con la mappa affine $r = S(q - Z)$, cioè scala e livello dello zero
+  {cite}`jacob2018quantization`: circa
   4× di memoria in meno al prezzo di un piccolo calo di accuratezza, **da
   misurare** sempre. La scala **per canale** costa una manciata di scalari per
   strato ed evita che un solo canale anomalo allarghi il gradino di tutti.

@@ -662,10 +662,13 @@ A decidere se una voce sintetica è buona resta l'orecchio, e non è una
 particolarità della sintesi: quando le risposte accettabili sono molte, nessun
 conto automatico dice quale valga, e da qui in avanti è la regola. È la
 condizione di chi fabbrica dati nuovi invece di riconoscerli, ed è il terreno
-di «GAN». Ci si arriva con un pezzo già in mano, la gara fra falsario ed
-esperti che rende HiFi-GAN capace di scrivere l'onda in un colpo solo, e quel
-capitolo la smonta per mostrare a quali condizioni un duello del genere si
-tiene in piedi.
+dei capitoli che seguono. Il primo, «Modelli latenti», parte proprio da lì: se
+le risposte accettabili sono molte, tanto vale mettere nel modello una
+quantità nascosta che le distingua, e imparare a sorteggiarla. Quello dopo,
+«GAN», sceglie la strada opposta e mette un giudice; ci si arriva con un pezzo
+già in mano, la gara fra falsario ed esperti che rende HiFi-GAN capace di
+scrivere l'onda in un colpo solo, e quel capitolo la smonta per mostrare a
+quali condizioni un duello del genere si tiene in piedi.
 
 [^stesso-tipo]: Chi riconosce e chi sintetizza ritagliano il suono in modo
     diverso, perché servono a due mestieri diversi. Il riconoscimento misura

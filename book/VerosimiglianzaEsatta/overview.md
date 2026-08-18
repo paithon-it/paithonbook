@@ -61,7 +61,8 @@ no.
 
 **Ce l'ha approssimata.** Il modello ha di che parlare di probabilità, ma quel
 che ottimizza e quel che sa dire è un surrogato. I **VAE**, gli autoencoder
-variazionali del capitolo precedente, danno un limite inferiore, l'ELBO: si sa
+variazionali del capitolo sui modelli latenti, danno un limite inferiore,
+l'ELBO: si sa
 che il valore vero sta più in alto, non di quanto. I **modelli a energia**
 danno il voto a meno di una costante che nessuno conosce: bastano per dire
 quale di due dati è più plausibile, non per stampare una percentuale. I

@@ -945,12 +945,16 @@ libro e ogni volta sotto un altro nome. Lo schema è sempre lo stesso, e convien
 tenerlo come sagoma: *quando la cosa che renderebbe facile la stima è proprio
 quella che non osservi, stimala e alterna*.
 
-Due posti in cui lo si ritrova. Il primo è il capitolo sul riconoscimento
+Tre posti in cui lo si ritrova. Il primo è il capitolo sul riconoscimento
 vocale: i sistemi che per trent'anni hanno trascritto il parlato usavano proprio
 misture gaussiane come queste, e le addestravano con EM. Il secondo è il
 capitolo sui modi di spezzare un testo in pezzi da dare a un modello: anche lì
 c'è un metodo che sceglie i pezzi migliori senza sapere in anticipo come le
-parole vadano tagliate, e il motore è di nuovo EM.
+parole vadano tagliate, e il motore è di nuovo EM. Il terzo arriva molto più
+avanti, ed è quello che rende questa sezione più importante di quanto sembri:
+il capitolo sui **modelli latenti** riprende la mistura gaussiana per quello
+che è davvero, cioè il caso più semplice di un modello che spiega i dati con
+una causa che non si osserva, e sostituisce il ciclo di EM con una rete.
 
 ## In pratica, con scikit-learn
 
