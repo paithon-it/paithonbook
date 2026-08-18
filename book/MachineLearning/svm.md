@@ -679,9 +679,9 @@ un punto nuovo si scrivono entrambi usando soltanto quelle ombre a due a due.
 Detto altrimenti: della mappa del quartiere si può buttare via tutto, tenendo
 solo una tabella che per ogni coppia di case dice quanto si «vedono». Con quella
 tabella si costruisce la frontiera, e senza la mappa. È un fatto che al momento
-sembra soltanto elegante; è invece la porta della prossima sezione, perché se i
-dati entrano **solo** attraverso quelle ombre, allora nessuno ci vieta di
-cambiare il modo di calcolarle.
+sembra soltanto elegante; è invece la porta di quello che viene fra poco in
+questa stessa pagina, perché se i dati entrano **solo** attraverso quelle
+ombre, allora nessuno ci vieta di cambiare il modo di calcolarle.
 
 `````
 
@@ -798,7 +798,7 @@ l'identità $\sum_i \alpha_i = \lVert\mathbf{w}\rVert^2$, che discende
 dall'uguaglianza fra primale e duale all'ottimo: qui $0{,}25 + 0{,}25 = 0{,}5$ e
 $\lVert\mathbf{w}\rVert^2 = 0{,}25 + 0{,}25 = 0{,}5$, e il margine
 $2/\lVert\mathbf{w}\rVert = 2/\sqrt{0{,}5} \approx 2{,}83$ torna con il conto
-della sezione precedente.
+svolto per via geometrica all'inizio di questa pagina.
 
 `````
 
@@ -818,8 +818,8 @@ vent'anni, quel lavoro non lo lesse quasi nessuno.
 
 Nel 1990 Vapnik emigra negli Stati Uniti e finisce ai laboratori Bell di
 Holmdel, nel New Jersey, dove si lavorava al riconoscimento delle cifre scritte
-a mano. È lì che, nel 1992, nasce l'idea che occuperà la prossima sezione: si
-prende la tabella delle ombre a due a due appena trovata e si cambia il modo di
+a mano. È lì che, nel 1992, nasce l'idea del paragrafo che segue: si prende la
+tabella delle ombre a due a due appena trovata e si cambia il modo di
 riempirla, ed è il **kernel** {cite}`boser1992training`. Winston fa notare per
 inciso il vantaggio di
 studiare cose fatte da gente ancora viva: a Fourier non si può telefonare per
@@ -1122,8 +1122,8 @@ queste crescite (si legge «ordine di») è circa fra $O(m^2)$ e $O(m^3)$ nel
 numero di esempi $m$: ottima da poche
 centinaia a qualche decina di migliaia di punti, diventa proibitiva su milioni.
 Per i dataset molto grandi si ripiega su modelli lineari (`LinearSVC`,
-`SGDClassifier`, che scalano circa come $O(m)$) o sugli alberi in boosting della
-sezione precedente {cite}`geron2022hands`.
+`SGDClassifier`, che scalano circa come $O(m)$) o sugli alberi in boosting
+della sezione sugli ensemble {cite}`geron2022hands`.
 
 ```python
 import numpy as np
@@ -1161,6 +1161,10 @@ det = make_pipeline(StandardScaler(),
 det.fit(normali)
 esito = det.predict(X)                   # +1 = normale, -1 = anomalia
 print("anomalie segnalate:", int(np.sum(esito == -1)))
+```
+
+```text
+anomalie segnalate: 104
 ```
 
 La solita grammatica `fit`/`predict` regge anche qui. Per la SVM con kernel la

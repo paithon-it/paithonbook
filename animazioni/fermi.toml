@@ -54,3 +54,12 @@ istanti = [0.10, 0.45, 0.90]
 # cifra, e in stampa e' una delle tre immagini che sostituiscono la clip. Al
 # 45% il quinto giro e' fermo e pieno, e la curva non ha ancora raccontato il
 # crollo, che e' quello che il fermo di mezzo non deve anticipare.
+
+[bootstrap-si-accumula]
+istanti = [0.04, 0.50, 0.90]
+# perche': gli otto scatti durano un ottavo di ciclo ciascuno e sostano solo
+# per il primo 55%, quindi il 10% di default cade nella transizione fra il
+# primo scatto e il secondo: il contatore diceva «1 pescata» e l'istogramma
+# mostrava gia' due barre, cioe' la prima immagine si contraddiceva da sola.
+# Al 4% lo scatto e' fermo e la barra e' una, che e' il punto di partenza da
+# cui l'accumulo si capisce. Gli altri due vanno bene come sono.

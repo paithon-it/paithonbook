@@ -261,6 +261,12 @@ def verifica() -> list[str]:
 
     if FERMI.exists():
         for orfano in sorted(FERMI.glob("*.png")):
+            # i file nascosti sono i fogli a contatto che scrive `--provino`,
+            # gia' gitignorati: contarli come orfani vuol dire che guardare il
+            # provino (cosa che CLAUDE.md raccomanda) fa fallire il controllo, e
+            # quel controllo sta nel cancello di `pubblica.py`. E' successo.
+            if orfano.name.startswith("."):
+                continue
             if orfano.name not in viste:
                 problemi.append(f"{orfano.name}: fermo orfano, l'animazione "
                                 f"non c'e' piu'")

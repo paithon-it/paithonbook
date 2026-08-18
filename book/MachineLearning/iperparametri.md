@@ -63,8 +63,8 @@ macinatura, temperatura, pressione, tempo di estrazione. Cinque livelli
 ciascuna. Per assaggiare tutte le combinazioni servono
 $5 \times 5 \times 5 \times 5 = 625$ caffè. E siccome un solo assaggio può
 ingannare (magari quella tazzina è venuta bene per caso), ogni combinazione va
-provata cinque volte: è la cross-validation della sezione precedente, che
-divide i dati in cinque blocchi e fa girare il blocco di prova. Quindi
+provata cinque volte: è la cross-validation della sezione su overfitting e
+validazione, che divide i dati in cinque blocchi e fa girare il blocco di prova. Quindi
 $625 \times 5 = 3\,125$ caffè.
 
 Se ogni «caffè» è un addestramento da due minuti, sono
@@ -370,6 +370,12 @@ print(ricerca_casuale.best_params_, round(ricerca_casuale.best_score_, 3))
 
 # il test si apre una sola volta, alla fine
 print(ricerca_casuale.score(X_test, y_test))
+```
+
+```text
+{'C': 10, 'gamma': 0.001} 0.99
+{'C': np.float64(26.373339933815235), 'gamma': np.float64(0.0015876781526923994)} 0.989
+0.9888888888888889
 ```
 
 Il trucco di `loguniform` merita una riga, perché tornerà ogni volta che si

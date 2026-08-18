@@ -76,12 +76,20 @@ parts:
       title: Valutare un modello
     - file: MachineLearning/iperparametri.md
       title: Trovare gli iperparametri
+    - file: MachineLearning/curve-al-posto-di-rette.md
+      title: Spline e modelli additivi
     - file: MachineLearning/alberi-ensemble.md
       title: Alberi e metodi ensemble
+    - file: MachineLearning/il-bootstrap.md
+      title: Il bootstrap
     - file: MachineLearning/svm.md
       title: Support Vector Machine
+    - file: MachineLearning/modelli-generativi.md
+      title: Modelli generativi
     - file: MachineLearning/riduzione-clustering.md
       title: Riduzione e clustering
+    - file: MachineLearning/valutare-un-raggruppamento.md
+      title: Valutare un raggruppamento
     - file: MachineLearning/dati-che-cambiano.md
       title: Quando i dati cambiano
     - file: MachineLearning/processi-gaussiani.md

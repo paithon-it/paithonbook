@@ -218,6 +218,19 @@ for nome, modello in [("lineare (troppo semplice)", LinearRegression()),
           f"  divario {va[-1]-tr[-1]:+.3f}")
 ```
 
+```text
+rispondere sempre la media: 3.471
+pavimento del rumore:       0.090
+
+lineare (troppo semplice)
+  con  120 esempi: train 2.294  validazione 2.524  divario +0.230
+  con 2400 esempi: train 2.321  validazione 2.335  divario +0.013
+
+foresta (abbastanza ricca)
+  con  120 esempi: train 0.142  validazione 0.844  divario +0.702
+  con 2400 esempi: train 0.031  validazione 0.215  divario +0.184
+```
+
 Una parola su che cosa sono questi numeri. Qui gli $y$ non sono euro né gradi:
 sono numeri puri, fabbricati apposta dalla riga `y = ...`. E l'errore si misura
 come per la retta di best fit, cioè scarto fra vero e previsto, elevato al
@@ -461,6 +474,10 @@ modello = Ridge(alpha=1.0)              # alpha = quanto frena il modello (v. so
 scores = cross_val_score(modello, X_train, y_train, cv=5,
                          scoring="neg_mean_squared_error")  # 5-fold CV
 print(-scores.mean())                  # errore medio di validazione
+```
+
+```text
+2.248011007321831
 ```
 
 ## Mettere un freno: la regolarizzazione

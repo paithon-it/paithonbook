@@ -44,9 +44,13 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Overfitting e validazione](https://book.paithon.it/main/MachineLearning/overfitting-validazione.html)
   - [Valutare un modello](https://book.paithon.it/main/MachineLearning/metriche.html)
   - [Trovare gli iperparametri](https://book.paithon.it/main/MachineLearning/iperparametri.html)
+  - [Spline e modelli additivi](https://book.paithon.it/main/MachineLearning/curve-al-posto-di-rette.html)
   - [Alberi e metodi ensemble](https://book.paithon.it/main/MachineLearning/alberi-ensemble.html)
+  - [Il bootstrap](https://book.paithon.it/main/MachineLearning/il-bootstrap.html)
   - [Support Vector Machine](https://book.paithon.it/main/MachineLearning/svm.html)
+  - [Modelli generativi](https://book.paithon.it/main/MachineLearning/modelli-generativi.html)
   - [Riduzione e clustering](https://book.paithon.it/main/MachineLearning/riduzione-clustering.html)
+  - [Valutare un raggruppamento](https://book.paithon.it/main/MachineLearning/valutare-un-raggruppamento.html)
   - [Quando i dati cambiano](https://book.paithon.it/main/MachineLearning/dati-che-cambiano.html)
   - [Processi gaussiani](https://book.paithon.it/main/MachineLearning/processi-gaussiani.html)
 - [Reti neurali](https://book.paithon.it/main/RetiNeurali/overview.html): C'è un'immagine che accompagna le reti neurali fin dal loro battesimo: quella del cervello. Miliardi di cellule che si scambiano segnali, e da quel brulichio emergono la memoria, il linguaggio, il…

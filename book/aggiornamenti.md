@@ -38,6 +38,25 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-8-0)=
+
+## 1.8.0 · 18 agosto 2026
+
+### Sezioni nuove
+
+- {doc}`Spline e modelli additivi </MachineLearning/curve-al-posto-di-rette>` (Machine Learning). **Come si piega una retta senza che impazzisca ai bordi.** Fin qui, quando i dati non stavano su una linea, il libro cambiava famiglia di modelli. Questa sezione fa la cosa più ovvia e mai raccontata: tiene la linea e la piega. Si apre con un attrezzo da tavolo da disegno, il listello di legno con cui si tracciavano gli scafi delle navi, e mostra che la curva del legno e quella che la statistica calcola non si somigliano, sono la stessa curva. Dentro: perché un polinomio unico ondeggia proprio dove i dati sono radi, come le spline aggiungono flessibilità **dove serve**, la manopola che va dallo spago al righello di acciaio, e i modelli additivi, che sommano una curva per colonna e per questo si possono guardare uno per uno.
+- {doc}`Il bootstrap </MachineLearning/il-bootstrap>` (Machine Learning). **Quanto ci si può credere, a un numero misurato una volta sola.** L’accuratezza è dell’ottantasette per cento: sì, ma su quel test. Rifacendo la prova quanto verrebbe? Per la media una formula c’è da due secoli; per la mediana, per l’accuratezza di un modello, per la differenza fra due modelli, no. La sezione racconta il metodo con cui Bradley Efron nel 1979 ha risposto lo stesso, senza raccogliere un dato in più, e soprattutto **dove si rompe**: sul massimo, su dati non indipendenti, e su un campione raccolto male, dove restituisce un intervallo stretto attorno al numero sbagliato.
+- {doc}`Modelli generativi </MachineLearning/modelli-generativi>` (Machine Learning). **Classificare descrivendo, invece che tracciando confini.** Un ornitologo non ti dice dove finisce una cornacchia e comincia una gazza: ti dice com’è fatta ciascuna delle due. È l’altra strada per classificare, e in cambio dà una cosa che l’altra non dà: accorgersi di quello che **non somiglia a niente di visto**, un gettone fra le monete. La sezione costruisce l’analisi discriminante lineare e quadratica e il naive Bayes, misura quando conviene la più flessibile e quando no, e mostra il numero che riassume tutto: sullo stesso punto assurdo lo stesso modello dice «non capita mai» e «sono sicuro al 99,99%».
+- {doc}`Valutare un raggruppamento </MachineLearning/valutare-un-raggruppamento>` (Machine Learning). **Come si giudica un raggruppamento, quando la risposta giusta non esiste.** Che Plutone non sia un pianeta lo ha deciso un’alzata di mano: le misure erano note a tutti, a mancare era il criterio. La sezione mostra il caso in cui il voto automatico più usato **preferisce la risposta sbagliata** con un margine confortevole, spiega perché l’indice di Rand grezzo può dare 0,9 al puro caso, e chiude su un teorema del 2002: tre proprietà che sembrano minime non possono valere tutte e tre insieme, e quindi la scelta va dichiarata, perché nessun dato la farà al posto nostro.
+
+### Pagine ampliate
+
+- {doc}`Alberi e metodi ensemble </MachineLearning/alberi-ensemble>` (Machine Learning). **Il capitolo di machine learning adesso dice che cosa stampa il suo codice.** Prima non lo dichiarava da nessuna parte, quindi nessun controllo lo eseguiva mai: ventiquattro uscite sono ora confrontate a ogni pubblicazione con quello che il codice produce davvero. Il primo giro ha trovato due blocchi che misuravano su dati di **un’altra pagina** (una foresta che spiegava l’importanza di 64 pixel in un capitolo che parla di colonne di una tabella) e un rilevatore di deriva che dichiarava «nessuno scostamento» su dati che ne avevano parecchio.
+
+### Correzioni
+
+- **Una revisione a tre letture antagoniste sulle sezioni nuove**, una per chi legge il livello facile, una per chi legge quello formale, una che esegue il codice e apre le fonti. Fra le cose raddrizzate: la dimostrazione di un teorema attribuita all’argomento sbagliato; la provenienza del più famoso insieme di dati della statistica, che Fisher stesso segnala come non omogenea e che il libro dava per omogenea; un esperimento sulla copertura di un intervallo la cui conclusione, misurata bene, si rovesciava sulla seconda cifra decimale; e il testo per lettori di schermo di un’animazione, che un difetto nel programma che la disegna spezzava in tre frammenti e che prometteva una forma che il disegno non ha.
+
 (v1-7-0)=
 
 ## 1.7.0 · 18 agosto 2026

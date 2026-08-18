@@ -59,6 +59,9 @@ OPUS-MT (Università di Helsinki) via Hugging Face:
 ```{code-block} python
 :class: pt-lento
 
+# pt-lento non per il tempo (sette secondi), ma per i 658 MB del modello: e'
+# l'unico blocco del libro che dipenderebbe dalla rete di Hugging Face, e in CI
+# non c'e' un HF_TOKEN.
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 # modello encoder-decoder pre-addestrato inglese -> italiano (su PyTorch)
@@ -71,9 +74,11 @@ for frase in ["The cat sits on the mat.",
     ingresso = tokenizzatore(frase, return_tensors="pt")  # testo -> token
     uscita = modello.generate(**ingresso, max_new_tokens=40)  # autoregressiva
     print(tokenizzatore.decode(uscita[0], skip_special_tokens=True))
-# -> Il gatto si siede sul tappetino.
-# -> Il gatto si siede sulla riva del fiume.
-#    (uscite reali al momento della stesura: i pesi remoti possono cambiare)
+```
+
+```text
+Il gatto si siede sul tappetino.
+Il gatto si siede sulla riva del fiume.
 ```
 
 La seconda frase è la disambiguazione lessicale in atto: nessun dizionario
@@ -127,6 +132,7 @@ come se la cava il modello che stiamo usando, e la risposta è: male.
 ```{code-block} python
 :class: pt-lento
 
+# come sopra: cinque secondi di calcolo e 640 MB di modello da scaricare.
 from transformers import pipeline
 
 # modello multilingue (italiano compreso) che assegna da 1 a 5 stelle.
@@ -149,8 +155,6 @@ for r in recensioni:
     print(f"{r!r}\n   -> {vincente['label']}   [{coda}]")
 ```
 
-L'uscita, eseguendo davvero:
-
 ```text
 'Mi è piaciuto moltissimo questo prodotto!'
    -> 5 stars   [5 stars 0.64  4 stars 0.31  3 stars 0.04]
@@ -162,8 +166,11 @@ L'uscita, eseguendo davvero:
    -> 3 stars   [3 stars 0.47  4 stars 0.32  5 stars 0.13]
 ```
 
-I numeri sono quelli usciti al momento della stesura: come per la traduzione
-qui sopra, i pesi stanno su un server di altri e possono cambiare.
+I numeri sono quelli usciti eseguendo davvero il blocco, e come per la
+traduzione qui sopra i pesi stanno su un server di altri e possono cambiare:
+sono le due uscite del libro che nessun controllo automatico sorveglia, perché
+la marcatura `pt-lento` le tiene fuori dalla CI. Si ricontrollano a mano con
+`python3 scripts/verifica-uscite.py --anche-lenti Transformers`.
 
 Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
 classificazione usa la rappresentazione del token speciale `[CLS]` passata a

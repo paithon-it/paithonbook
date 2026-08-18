@@ -24,10 +24,12 @@
 torch==2.13.0
 torchvision==0.28.0
 # `torchaudio` serve a `SpeechRecognition/sintesi-vocale.md` (Tacotron 2 +
-# WaveRNN) ed era l'unica dipendenza del libro non dichiarata qui. Passava
-# inosservata per una doppia cecità: quel blocco è `pt-lento`, che la verifica
-# salta, e il capitolo sta sotto le tre celle, quindi un notebook compagno non
-# esiste nemmeno.
+# WaveRNN) e passava inosservato per una doppia cecità: quel blocco è
+# `pt-lento`, che la verifica salta, e il capitolo sta sotto le tre celle,
+# quindi un notebook compagno non esiste nemmeno. Fu allora dichiarato «l'unica
+# dipendenza del libro non dichiarata qui», e non lo era: la stessa cecità
+# nascondeva `xgboost` (vedi in fondo). Di una cecità non si conta il pescato
+# guardando il primo pesce.
 #
 # Il `+cpu` è esplicito e NON è ridondante. Con il solo `--extra-index-url` del
 # workflow, `torchaudio==2.11.0` si risolve sulla ruota di PyPI, che è legata a
@@ -52,6 +54,23 @@ librosa==0.11.0
 soundfile==0.14.0
 torch-geometric==2.8.0.post1
 torchinfo==1.8.0
+# `xgboost` serve al blocco «da competizione» di
+# `MachineLearning/alberi-ensemble.md`, che era marcato `pt-lento` e quindi mai
+# eseguito da nessuno. Misurato con la macchina scarica: **0,2 secondi**. La
+# marcatura era infondata, è stata tolta, e il blocco è entrato nella rete
+# portandosi dietro questa riga.
+xgboost==3.4.1
+
+# `sentencepiece` non lo importa nessun blocco del libro, e serve lo stesso: e'
+# la dipendenza **opzionale** con cui `transformers` costruisce i tokenizzatori
+# della famiglia Marian (`Transformers/esempi.md`, la traduzione con OPUS-MT).
+# Senza, `AutoTokenizer` non fallisce dicendo che manca una libreria: dice
+# `Unrecognized configuration class MarianConfig`, seguito dall'elenco delle
+# duecento config che invece conosce, che e' un messaggio da API rimossa. Ci si
+# casca: la prima diagnosi scritta qui diceva «Marian e' uscito dalle mappe
+# automatiche di transformers 5», ed era falsa. Il codice della pagina non ha
+# mai avuto niente che non andasse.
+sentencepiece==0.2.2
 
 # --- serve al generatore, non ai notebook (legge _toc.yml) ---
 pyyaml==6.0.3

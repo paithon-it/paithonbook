@@ -61,6 +61,7 @@ script gira anche in un ambiente spoglio.
 
 import functools
 import json
+import os
 import pathlib
 import re
 import subprocess
@@ -545,6 +546,20 @@ def main() -> None:
     # In CI le librerie ci sono tutte: se un modulo manca là non è "non
     # verificabile", è la lista dei pacchetti del workflow che è incompleta.
     severo = "--severo" in sys.argv
+
+    if con_verifica:
+        # `uptime` prima di misurare, e non solo all'inizio di una sessione: il
+        # carico che falsa un tempo e' quasi sempre quello che si e' lanciato da
+        # soli un momento prima. Misurato il 18 agosto 2026: lo stesso notebook,
+        # 223 secondi con altri controlli in parallelo e 28 a macchina libera.
+        try:
+            carico, cpu = os.getloadavg()[0], os.cpu_count() or 1
+            if carico > cpu * 0.4:
+                print(f"  ATTENZIONE: carico {carico:.1f} su {cpu} CPU. I dieci "
+                      f"minuti per notebook si consumano in fretta cosi', e un "
+                      f"TIMEOUT qui non vuol dire che il codice e' rotto.\n")
+        except (OSError, AttributeError):
+            pass
 
     elenco = capitoli()
     for nome, motivo in RINVIATI.items():

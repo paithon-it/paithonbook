@@ -210,9 +210,7 @@ viste. Ci sono dentro tre chiamate che non abbiamo ancora presentato
 possono leggere come «adesso studia» e «adesso rispondi e basta», e la sezione
 subito dopo il codice se ne occupa per esteso.
 
-```{code-block} python
-:class: pt-lento
-
+```python
 import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader

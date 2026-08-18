@@ -228,9 +228,19 @@ mentre in realtà l'auto-supervisione «usa molti più segnali di correzione di
 quanti ne usino i metodi supervisionati e per rinforzo standard».
 
 Quella frase è il conto della sezione precedente, detto in una riga e dalla
-persona che ha disegnato la torta. Ed è anche la ragione per cui in questo
-libro la parola «non supervisionato» compare pochissimo: descrive un'assenza
-che non c'è.
+persona che ha disegnato la torta.
+
+Vale però la pena essere precisi su che cosa quell'obiezione colpisce, perché
+questo libro la parola «non supervisionato» continua a usarla, e non per
+distrazione. Colpisce l'uso del termine per i metodi che **prevedono una parte
+del dato a partire dal resto**: là un segnale di correzione c'è, ed è quello che
+rende l'espressione fuorviante. Non colpisce i metodi che non prevedono niente e
+si limitano a descrivere la forma dei dati, cioè il raggruppamento, la riduzione
+della dimensionalità e la stima di densità: lì la supervisione manca davvero, e
+il nome tradizionale non inganna nessuno. Il capitolo di machine learning tiene
+la distinzione esplicita nella sezione su come si valuta un raggruppamento; qui
+basti sapere che dei due usi solo il primo è quello contestato, ed è l'unico che
+questo libro evita.
 
 ```{admonition} Una nota sulla fonte
 :class: note

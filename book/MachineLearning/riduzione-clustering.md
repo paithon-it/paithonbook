@@ -987,6 +987,10 @@ db = DBSCAN(eps=0.5, min_samples=5)
 etichette_db = db.fit_predict(X_std)   # -1 marca il rumore
 ```
 
+```text
+[0.94174775 0.05825225]
+```
+
 Due dettagli che fanno la differenza in pratica. La **standardizzazione**
 prima di PCA o di qualunque clustering per distanza non è opzionale: senza, la
 feature con la scala numerica più ampia domina il conto e falsa tutto. E le
@@ -1037,6 +1041,17 @@ for k in range(1, 6):
     bic = GaussianMixture(n_components=k, covariance_type="full",
                           random_state=0).fit(X).bic(X)
     print(f"  k={k}  BIC={bic:9.1f}")
+```
+
+```text
+k-means           : 0.663
+mistura gaussiana : 0.997
+punti su cui il modello resta incerto: 5 su 600
+  k=1  BIC=   4431.2
+  k=2  BIC=   3971.9
+  k=3  BIC=   4008.9
+  k=4  BIC=   4039.6
+  k=5  BIC=   4078.2
 ```
 
 I numeri stampati sono la **quota di punti finiti nel gruppo giusto**: $1$

@@ -9,7 +9,9 @@ dividere i casi nel modo più netto possibile, fino a una risposta.
 
 Nelle sezioni precedenti abbiamo incontrato modelli che separano i dati con un
 taglio **dritto**: la regressione lineare traccia una retta che segue i punti,
-la logistica una retta che li divide. Con due sole colonne quel taglio è una
+la logistica una retta che li divide. La sezione appena finita quella retta la
+piegava, tenendola una curva sola e liscia; gli alberi fanno la mossa opposta,
+che è spezzarla. Con due sole colonne quel taglio è una
 retta su un foglio; con tre è un piano che taglia in due una scatola; con
 cento è la stessa cosa in uno spazio che non sappiamo disegnare, e il nome
 tecnico, che tornerà nella sezione sulle SVM, è *iperpiano*.
@@ -715,6 +717,15 @@ print(f"{'voto morbido':<12} {morbido.score(X_te, y_te):.4f}")
 print(f"{'stacking':<12} {pila.score(X_te, y_te):.4f}")
 ```
 
+```text
+foresta      0.8933
+vicini       0.8889
+bayes        0.8156
+voto duro    0.8867
+voto morbido 0.8822
+stacking     0.9089
+```
+
 I singoli arrivano a $0{,}8933$ (foresta), $0{,}8889$ (vicini) e $0{,}8156$
 (Bayes ingenuo); il **voto duro** dà $0{,}8867$, quello **morbido** $0{,}8822$,
 lo **stacking** $0{,}9089$.
@@ -778,13 +789,22 @@ manuale di Géron {cite}`geron2022hands`. I quattro protagonisti di questa
 sezione stanno in poche righe:
 
 ```python
+from sklearn.datasets import make_classification
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+
+# una tabella con venti colonne, di cui otto che contano davvero
+X, y = make_classification(n_samples=3000, n_features=20, n_informative=8,
+                           class_sep=0.7, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
+                                                    random_state=0)
 
 # Un solo albero: interpretabile, ma ad alta varianza.
 # max_depth frena la crescita per non memorizzare i dati.
-albero = DecisionTreeClassifier(max_depth=4, criterion="gini")
-albero.fit(X_train, y_train)
+albero = DecisionTreeClassifier(max_depth=4, criterion="gini", random_state=0)
+albero.fit(X_train, y_train)   # senza seme il numero balla: fra split di pari
+                               # merito l'albero ne sceglie uno a caso
 
 # Random forest: 300 alberi in parallelo, split su un sottoinsieme di feature.
 # oob_score chiede la stima out-of-bag dell'errore, gratis.
@@ -792,22 +812,42 @@ foresta = RandomForestClassifier(
     n_estimators=300, max_features="sqrt", oob_score=True, n_jobs=-1,
     random_state=0)   # senza seme, OOB e importanze cambiano a ogni esecuzione
 foresta.fit(X_train, y_train)
-print("accuratezza OOB:", foresta.oob_score_)
-print("importanza feature:", foresta.feature_importances_)
 
 # Gradient boosting: alberi piccoli in sequenza.
 # learning_rate basso + molti alberi = più stabile.
-gb = GradientBoostingClassifier(
-    n_estimators=300, learning_rate=0.05, max_depth=3)
+gb = GradientBoostingClassifier(n_estimators=300, learning_rate=0.05,
+                                max_depth=3, random_state=0)
 gb.fit(X_train, y_train)
+
+for nome, m in (("albero", albero), ("foresta", foresta), ("boosting", gb)):
+    print(f"{nome:9} accuratezza sul test: {m.score(X_test, y_test):.3f}")
+print(f"foresta   accuratezza OOB      : {foresta.oob_score_:.3f}")
+
+# l'importanza e' un vettore lungo quanto le colonne: si guardano le prime
+ordine = foresta.feature_importances_.argsort()[::-1]
+print("le cinque colonne che contano di piu':", ordine[:5])
 ```
+
+```text
+albero    accuratezza sul test: 0.796
+foresta   accuratezza sul test: 0.891
+boosting  accuratezza sul test: 0.883
+foresta   accuratezza OOB      : 0.898
+le cinque colonne che contano di piu': [14  8 16 11  4]
+```
+
+Le prime tre righe sono la ragione per cui questa sezione esiste: un albero solo
+si ferma a $0{,}796$, e gli stessi alberi messi a votare arrivano a $0{,}891$,
+messi in fila a $0{,}883$. Quasi dieci punti, senza cambiare famiglia di
+modelli. La quarta riga è il regalo dell'out-of-bag: una stima dell'errore
+ottenuta senza mettere da parte niente, che qui dà $0{,}898$ contro lo
+$0{,}891$ misurato sul test vero, cioè sbaglia di sette millesimi in favore
+del modello.
 
 Per il gradient boosting «da competizione» si usa di norma la libreria
 dedicata, con la stessa interfaccia e l'early stopping integrato:
 
-```{code-block} python
-:class: pt-lento
-
+```python
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
 
@@ -824,6 +864,14 @@ xgb = XGBClassifier(
 xgb.fit(X_fit, y_fit, eval_set=[(X_val, y_val)], verbose=False)
 print("alberi usati:", xgb.best_iteration + 1, "su 1000")
 ```
+
+```text
+alberi usati: 253 su 1000
+```
+
+Duecentocinquantatré alberi invece di mille: l'arresto anticipato ha fermato la
+sequenza appena la validazione ha smesso di migliorare, e i settecento e passa
+alberi non costruiti sono quelli che avrebbero cominciato a imparare a memoria.
 
 Un consiglio pratico, che riassume tutta la sezione: su un problema tabellare
 nuovo, una random forest con i parametri di default è quasi sempre la prima

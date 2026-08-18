@@ -24,7 +24,7 @@ authors:
     given-names: "Francesco"
     orcid: "https://orcid.org/0009-0008-8586-9018"
     website: "https://www.paithon.it"
-version: "1.7.0"
+version: "1.8.0"
 date-released: "2026-08-18"
 url: "https://book.paithon.it/main/"
 repository-code: "https://github.com/paithon-it/paithonbook"
@@ -51,7 +51,7 @@ preferred-citation:
     - family-names: "Messina"
       given-names: "Francesco"
       orcid: "https://orcid.org/0009-0008-8586-9018"
-  version: "1.7.0"
+  version: "1.8.0"
   year: 2026
   month: 8
   doi: "10.5281/zenodo.21947219"

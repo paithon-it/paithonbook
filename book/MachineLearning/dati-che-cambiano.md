@@ -334,19 +334,41 @@ che è: un allarme quando suona, non un certificato quando tace.
 
 ```python
 import numpy as np
+from sklearn.datasets import make_classification
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, train_test_split
 
-# X_train: input di addestramento; X_prod: input raccolti in produzione
-X_tutti = np.vstack([X_train, X_prod])
-origine = np.hstack([np.zeros(len(X_train)), np.ones(len(X_prod))])
+X, y = make_classification(n_samples=400, n_features=8, n_informative=5,
+                           n_redundant=1, random_state=0)
+X_vecchi, X_nuovi, _, _ = train_test_split(X, y, test_size=0.25, random_state=0)
 
-# un "detective" prova a indovinare da quale epoca viene ogni esempio
-detective = GradientBoostingClassifier()
-auc = cross_val_score(detective, X_tutti, origine, cv=5, scoring="roc_auc")
+# in produzione arrivano gli stessi input, ma con la prima caratteristica
+# scivolata di 1,5: è la deriva che il detective deve scoprire
+X_derivati = X_nuovi.copy()
+X_derivati[:, 0] += 1.5
 
-print(auc.mean())  # ~0.5: nessuno shift rilevabile; verso 1: allarme
+def sospetto(X_prima, X_dopo):
+    """Quanto bene un modello indovina da quale delle due epoche viene un esempio."""
+    X_tutti = np.vstack([X_prima, X_dopo])
+    origine = np.hstack([np.zeros(len(X_prima)), np.ones(len(X_dopo))])
+    return cross_val_score(GradientBoostingClassifier(random_state=0),
+                           X_tutti, origine, cv=5, scoring="roc_auc").mean()
+
+print(f"produzione con la deriva : {sospetto(X_vecchi, X_derivati):.3f}")
+print(f"produzione senza deriva  : {sospetto(X_vecchi, X_nuovi):.3f}")
 ```
+
+```text
+produzione con la deriva : 0.736
+produzione senza deriva  : 0.508
+```
+
+I due numeri sono le due letture possibili di questo strumento, e conviene
+tenerle vicine perché da sole non si interpretano. Il secondo, $0{,}508$, è il
+caso in cui non è cambiato niente: il detective tira a indovinare, come chi
+lanciasse una monetina. Il primo, $0{,}736$, è l'allarme: una sola
+caratteristica scivolata di un'unità e mezza basta perché l'epoca di
+provenienza diventi in buona parte indovinabile.
 
 ## Quando è il modello a cambiare i dati
 

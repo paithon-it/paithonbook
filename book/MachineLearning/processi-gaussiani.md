@@ -272,6 +272,12 @@ for x, mu, s in zip(X_test.ravel(), media, dev_std):
     print(f"x = {x:.1f}  ->  f(x) = {mu:+.2f} ± {2 * s:.2f}")
 ```
 
+```text
+x = 1.5  ->  f(x) = +0.83 ± 0.20
+x = 3.0  ->  f(x) = +0.07 ± 0.36
+x = 8.0  ->  f(x) = +0.12 ± 1.38
+```
+
 La riga chiave è `return_std=True`: accanto a ogni previsione arriva la sua
 **deviazione standard**, cioè di quanto il valore vero, tipicamente, si scosta
 dalla stima. Nella stampa la raddoppiamo, e non a caso: in una curva a campana,

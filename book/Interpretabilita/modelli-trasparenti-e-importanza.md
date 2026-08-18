@@ -145,6 +145,9 @@ dice il meccanismo: **additivi** perché la risposta resta una somma di
 contributi, uno per colonna, che non si mescolano fra loro; **generalizzati**
 perché lo stesso impianto va bene sia quando la risposta è una quantità sia
 quando è una probabilità. Si citano quasi sempre con la sigla inglese, **GAM**.
+Come si costruiscono, e che cosa costa la loro ipotesi quando è falsa, lo
+racconta la sezione sulle spline del capitolo di machine learning; qui interessa
+l'altra metà, cioè perché si lasciano leggere.
 
 `````{tab} Elementare
 
@@ -165,7 +168,7 @@ alla volta, come le voci di una ricevuta.
 Un GAM scrive
 
 $$
-g\big(\mathbb{E}[y \mid \mathbf{x}]\big) = \beta_0 + \sum_j f_j(x_j),
+g\big(\mathbb{E}[y \mid \mathbf{x}]\big) = \theta_0 + \sum_j f_j(x_j),
 $$
 
 dove ogni $f_j$ è una funzione liscia stimata dai dati (spline, smoother) e $g$
@@ -176,7 +179,7 @@ caso di una risposta continua: senza di essa la somma additiva vivrebbe su
 tutta la retta reale anche quando la quantità da prevedere è una probabilità.
 Nel caso logit ogni $f_j$ si legge come contributo alle *log-odds*, esattamente
 come il $w_j$ della regressione logistica, ma variabile con $x_j$ invece che
-costante (Hastie e Tibshirani, 1986). L'additività è ciò che conserva la
+costante {cite}`hastie1986generalized`. L'additività è ciò che conserva la
 leggibilità: nessun termine di interazione, quindi ogni curva si può guardare
 da sola.
 

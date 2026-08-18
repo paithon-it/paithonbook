@@ -137,6 +137,7 @@ nota, e costa meno di un minuto.
 | `svg/apertura-flusso.py` | `fig-apertura-flusso` | `VisioneArtificiale/geometria-e-profondita.md` |
 | `svg/attacco-epsilon.py` | `fig-attacco-epsilon` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
+| `svg/bootstrap-si-accumula.py` | `fig-bootstrap-accumula` | `MachineLearning/il-bootstrap.md` |
 | `svg/bpe-fusioni.py` | `fig-bpe-fusioni` | `NaturalLanguageProcessing/tokenizzatori.md` |
 | `svg/broadcasting-si-stende.py` | `fig-broadcasting-si-stende` | `Python/numpy.md` |
 | `svg/cammino-latente.py` | `fig-cammino-latente` | `ModelliLatenti/il-salto-probabilistico.md` |

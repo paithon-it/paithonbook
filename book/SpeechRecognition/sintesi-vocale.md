@@ -528,9 +528,7 @@ la trasforma in onda. La frase da pronunciare è la traduzione inglese
 dell'esempio che il libro si porta dietro dal capitolo sul linguaggio
 naturale, «il gatto nero salta sul muro».
 
-```{code-block} python
-:class: pt-lento
-
+```python
 import torch
 import torchaudio
 import soundfile as sf
