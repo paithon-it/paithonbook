@@ -96,10 +96,10 @@ for nodi in (5, 9, 15, 21):
 ```
 
 ```text
-nodi=  5  errore max =      0.438  (al centro: 5.551e-16)
-nodi=  9  errore max =      1.045  (al centro: 1.554e-15)
-nodi= 15  errore max =      7.195  (al centro: 7.870e-13)
-nodi= 21  errore max =     59.822  (al centro: 5.807e-11)
+nodi=  5  errore max =      0.438  (al centro: 4.441e-16)
+nodi=  9  errore max =      1.045  (al centro: 1.177e-14)
+nodi= 15  errore max =      7.195  (al centro: 5.327e-13)
+nodi= 21  errore max =     59.822  (al centro: 4.478e-11)
 ```
 
 La causa è la costante di Lebesgue dei nodi equispaziati, che cresce come

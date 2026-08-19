@@ -232,7 +232,7 @@ print(f"lo studente ha {parametri(maestro) / parametri(studente):.0f} volte "
 maestro, con tutte le 898 etichette: 96.9%
 studente, niente maestro         90.2%   (tre semi: 90.5, 90.2, 89.8)
 studente, maestro sui soli 120   92.6%   (tre semi: 92.7, 92.0, 93.1)
-studente, maestro su tutti gli 898 95.8%   (tre semi: 96.1, 95.4, 95.8)
+studente, maestro su tutti gli 898 95.8%   (tre semi: 96.1, 95.4, 95.9)
 lo studente ha 249 volte meno parametri del maestro
 ```
 

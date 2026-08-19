@@ -312,6 +312,127 @@ a seconda di *come* la si calcola.
 
 `````
 
+## Lo stesso programma, due calcolatori, due risultati
+
+Questo libro ha un controllo che riesegue il codice delle sue pagine e
+confronta quello che stampa con quello che c’è scritto sotto. Sul computer dell’autore
+ha sempre detto che andava tutto bene. La prima volta che è
+girato sui calcolatori di GitHub, in quattro punti i numeri stampati non
+combaciavano: dove una pagina dichiarava un’accuratezza del $67{,}0\%$ ne
+usciva $66{,}5\%$, e dove ne dichiarava un’altra pari a $5{,}551\cdot10^{-16}$
+ne usciva una di $4{,}441\cdot10^{-16}$. Nessuno aveva toccato il codice, le
+librerie erano alla stessa versione fino all’ultima cifra, e il seme del
+generatore casuale era lo stesso.
+
+Il colpevole è una proprietà che a scuola si dà per acquisita e in virgola
+mobile è falsa: **l’addizione non è associativa**. $(a+b)+c$ e $a+(b+c)$ sono
+lo stesso numero in matematica e due numeri diversi nel calcolatore, perché
+ogni somma parziale viene arrotondata al gradino più vicino, e i gradini non
+cadono negli stessi punti.
+
+```python
+import numpy as np
+
+def in_fila(valori):
+    """Somma uno dopo l’altro, senza correzioni: è quello che fa un ciclo."""
+    totale = 0.0
+    for v in valori:
+        totale += v
+    return totale
+
+x = np.random.default_rng(0).random(10_000).tolist()
+
+avanti = in_fila(x)                # gli stessi diecimila numeri...
+indietro = in_fila(reversed(x))    # ...sommati dall’ultimo al primo
+
+print(f"in avanti:    {avanti!r}")
+print(f"all’indietro: {indietro!r}")
+print("uguali?", avanti == indietro)
+print(f"differenza:   {abs(avanti - indietro):.3e}")
+```
+
+```text
+in avanti:    4994.106600608079
+all’indietro: 4994.106600608084
+uguali? False
+differenza:   4.547e-12
+```
+
+Gli addendi sono gli stessi e cambia solo l’ordine, ma il totale cambia nella
+dodicesima cifra. (Il ciclo scritto a mano non è pignoleria: da Python 3.12 la
+funzione `sum()` applica ai numeri in virgola mobile la somma compensata di
+Neumaier, che recupera le cifre perse, e con lei i due totali tornerebbero
+uguali.)
+
+Resta da spiegare perché due calcolatori dovrebbero sommare in ordine diverso,
+visto che il programma è lo stesso.
+
+`````{tab} Elementare
+
+Un negozio deve totalizzare uno scontrino lunghissimo, e la cassa lavora al
+centesimo: ogni volta che aggiorna un totale, arrotonda. Due cassiere fanno lo
+stesso conto in due modi. La prima somma gli articoli uno dopo l’altro,
+tenendo un totale solo. La seconda divide lo scontrino in otto colonne, fa il
+totale di ogni colonna e alla fine somma gli otto totali. Stessi prezzi, e
+perfino lo stesso numero di addizioni; ma gli arrotondamenti non cadono negli
+stessi punti, e i due totali possono differire di un centesimo. (Il caso limite è lo stesso: se
+fra i prezzi ce n’è uno enorme e uno da un centesimo, il centesimo può sparire
+del tutto nell’arrotondamento, come sparisce un numero piccolo sommato a uno
+grande.)
+
+Nel calcolatore i centesimi sono l’ultima cifra che il formato riesce a
+tenere, e a decidere in quante colonne si divide la somma è il processore: le
+sue istruzioni lavorano su quattro, otto o sedici numeri per volta, e la
+libreria di calcolo, appena parte, sceglie la versione fatta apposta per il
+processore che si trova sotto. Quella versione ha un nome: si chiama
+**kernel**, ed è la stessa parola che il libro userà più avanti per il
+programma che gira sulla scheda grafica. Il senso è quello: un pezzo di codice specializzato per
+il ferro su cui deve girare.
+
+`````
+
+`````{tab} Superiore
+
+Una libreria di algebra lineare non contiene una sola implementazione di
+ciascuna routine: ne contiene molte, compilate ciascuna per un insieme di
+istruzioni vettoriali (SSE2, AVX2, AVX-512), e ne sceglie una al caricamento
+in base a quello che la CPU dichiara di saper fare. In OpenBLAS il meccanismo
+si chiama `DYNAMIC_ARCH`; PyTorch fa la stessa cosa smistando le proprie
+operazioni su CPU fra più varianti compilate.
+
+La larghezza dei registri decide quanti accumulatori parziali la riduzione
+tiene aperti insieme: sommare $N$ numeri con otto accumulatori è un albero di
+somme diverso dal sommarli con sedici, e due alberi diversi arrotondano in
+punti diversi. Lo standard IEEE 754 garantisce che **ogni singola operazione**
+sia arrotondata correttamente, non che una riduzione abbia un ordine canonico;
+per la stessa ragione conta anche il numero di thread, perché una riduzione
+parallela spezza la somma in tanti pezzi quanti sono gli esecutori.
+
+Le due scelte si possono fissare dall’esterno, con `OPENBLAS_CORETYPE` per
+OpenBLAS e `ATEN_CPU_CAPABILITY` per PyTorch. È la prova che chiude
+l’aneddoto: fissandole entrambe al minimo comune denominatore fra i due
+processori, i numeri che erano in disaccordo sono tornati identici.
+
+`````
+
+Una differenza nella sedicesima cifra sembra irrilevante, e quasi sempre lo
+è. Smette di esserlo quando quel numero non è il risultato ma l’ingresso di un
+calcolo lungo: se su quei valori si fa una discesa del gradiente, due
+traiettorie che partono a distanza $10^{-16}$ si separano passo dopo passo, e a
+fine addestramento la differenza non è più nell’ultima cifra ma nel primo
+decimale. È quello che era successo all’accuratezza dell’aneddoto: $67{,}0\%$ e
+$66{,}5\%$ sono la stessa rete, addestrata dallo stesso codice con lo stesso
+seme, su due processori diversi.
+
+Da qui tre abitudini che costano poco. Un numero che esce da un addestramento
+si racconta con le cifre che reggono, non con tutte quelle che il calcolatore
+stampa. Due risultati in virgola mobile non si confrontano con `==` ma con una
+tolleranza dichiarata, che `np.allclose` prende come argomento. E le cifre di un
+residuo di arrotondamento non si leggono come un risultato: il
+$5{,}551\cdot10^{-16}$ di prima vuol dire zero, a meno dell’epsilon macchina, e
+la sua mantissa non è un’informazione sul problema, è l’impronta del processore
+su cui è girato il conto.
+
 ## Condizionamento: quanto un problema amplifica gli errori
 
 C'è una parola che riassume tutto quello che è successo finora, e vale la pena
@@ -507,6 +628,9 @@ euro.
 - **Standardizzare** i dati, cioè portare ogni caratteristica a centro zero e
   larghezza uno, non è pignoleria: è ciò che rende la valle da scendere più
   tonda, e quindi la discesa più svelta.
+- Lo stesso programma, sugli stessi dati, può stampare ultime cifre diverse su
+  due calcolatori diversi: non è un guasto, è l’ordine in cui il processore
+  somma. Un numero che cambia solo in fondo non è cambiato.
 ```
 `````
 
@@ -526,5 +650,9 @@ euro.
 - **Standardizzare** i dati non è solo buona educazione statistica: riduce il
   condizionamento del problema e fa convergere l'ottimizzazione molto più in
   fretta.
+- L’addizione in virgola mobile **non è associativa**: l’ordine della riduzione
+  dipende dal kernel che la libreria sceglie per la CPU e dal numero di thread,
+  quindi la riproducibilità bit a bit fra macchine diverse non è garantita. Due
+  risultati si confrontano con una tolleranza, non con `==`.
 ```
 `````

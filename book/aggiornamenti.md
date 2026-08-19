@@ -38,6 +38,19 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-8-1)=
+
+## 1.8.1 · 19 agosto 2026
+
+### Pagine ampliate
+
+- {doc}`Analisi numerica </Matematica/analisi-numerica>` (Matematica). **Perché lo stesso programma, su due calcolatori, stampa due numeri diversi.** È successo a questo libro: il controllo che riesegue il codice delle pagine diceva che andava tutto bene sul computer dell’autore, e la prima volta che è girato sui calcolatori di GitHub, in quattro punti i numeri non combaciavano. Stesso codice, stesse versioni delle librerie, stesso seme. La sezione nuova racconta il perché: in virgola mobile l’addizione **non è associativa**, e a decidere in che ordine si somma è il **kernel**, cioè la versione della routine che la libreria di calcolo sceglie per il processore che si trova sotto. C’è il conto che lo fa vedere in tre righe (gli stessi diecimila numeri sommati nei due versi danno due totali diversi), la spiegazione di che cos’è un kernel, e le due variabili con cui la scelta si fissa quando la riproducibilità serve davvero.
+
+### Correzioni
+
+- {doc}`Meno pesi </Efficienza/meno-pesi>` (Efficienza). **I numeri di potatura e quantizzazione sono stati rimisurati a kernel fissato**, così che chiunque rifaccia il conto ottenga le stesse cifre invece di quelle del proprio processore. Cambiano di qualche decimo, e con loro le frasi che reggevano: comporre le due leve costa 1,1 punti di accuratezza invece di 1,7, e la rete potata di nove pesi su dieci ne perde meno di uno invece di poco più di uno. La conclusione non cambia: il budget di errore non si spartisce a tavolino.
+- **Il controllo che confronta i numeri stampati con quelli che il codice produce adesso gira anche sul libro pubblicato.** Ci girava solo qui: lo script non era fra i file che vengono pubblicati, e di là il controllo moriva prima di cominciare, senza che nessuno lo vedesse.
+
 (v1-8-0)=
 
 ## 1.8.0 · 18 agosto 2026

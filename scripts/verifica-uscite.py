@@ -36,6 +36,7 @@ import importlib.util
 import json
 import os
 import pathlib
+import platform
 import re
 import subprocess
 import sys
@@ -45,6 +46,28 @@ RADICE = pathlib.Path(__file__).resolve().parents[1]
 LIBRO = RADICE / "book"
 SEGNALE = "\x00PT\x00"
 ATTESA = 900          # secondi per capitolo: qui dentro ci sono addestramenti
+
+# Due macchine sommano in ordine diverso, e i numeri del libro se ne accorgono.
+# Le librerie di calcolo portano piu' implementazioni della stessa routine, una
+# per insieme di istruzioni vettoriali, e all'avvio scelgono quella adatta alla
+# CPU che trovano: registri piu' larghi vogliono dire piu' accumulatori
+# parziali, cioe' un albero di somme diverso e arrotondamenti in punti diversi.
+# Misurato: su questa macchina (kernel SkylakeX, AVX-512) un residuo dava
+# 5,551e-16 e su un runner di GitHub 4,441e-16, e tre accuratezze di Efficienza
+# ballavano di mezzo punto, perche' quelle ultime cifre entrano in un
+# addestramento che le amplifica. Stesse versioni delle librerie, stesso seme.
+#
+# Fissando le due scelte al minimo comune denominatore (AVX2, che qualunque
+# x86-64 dal 2013 ha) le due macchine tornano a stampare le stesse cifre, ed e'
+# stato verificato prima di scrivere questa riga. Il racconto per il lettore
+# sta in `book/Matematica/analisi-numerica.md`.
+#
+# Solo su x86-64: `Haswell` su ARM non esiste, e chi verifica da un Mac Apple
+# Silicon si troverebbe OpenBLAS a lamentarsi di un nome che non conosce.
+KERNEL_FISSI = {
+    "OPENBLAS_CORETYPE": "Haswell",
+    "ATEN_CPU_CAPABILITY": "avx2",
+} if platform.machine() in ("x86_64", "AMD64") else {}
 
 
 def avvisa_se_carica() -> None:
@@ -167,7 +190,8 @@ def esegui(codici: list[str]) -> tuple[list[str], str]:
         try:
             esito = subprocess.run(
                 [sys.executable, str(d / "driver.py"), str(d / "b.json")],
-                capture_output=True, text=True, timeout=ATTESA, cwd=cartella)
+                capture_output=True, text=True, timeout=ATTESA,
+                env={**os.environ, **KERNEL_FISSI}, cwd=cartella)
         except subprocess.TimeoutExpired:
             return [], f"TIMEOUT: piu' di {ATTESA} secondi"
 

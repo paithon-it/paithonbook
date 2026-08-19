@@ -160,15 +160,15 @@ rete intera: 97.8%
 
   tolti   subito dopo   dopo il riaddestramento
     50%         95.9%                     98.0%
-    80%         67.0%                     97.6%
-    90%         38.5%                     96.7%
+    80%         66.5%                     97.6%
+    90%         39.3%                     96.9%
     95%         30.4%                     93.0%
 ```
 
 La colonna di mezzo e quella di destra dicono due cose diverse, e la seconda è
 quella che conta. Tolti nove pesi su dieci la rete non sa più leggere una
-cifra, e dopo trecento passi di riaddestramento è tornata a 96,7 contro il 97,8
-di partenza: ha perso poco più di un punto **avendo dentro un decimo dei
+cifra, e dopo trecento passi di riaddestramento è tornata a 96,9 contro il 97,8
+di partenza: ha perso meno di un punto **avendo dentro un decimo dei
 collegamenti**. A metà strada, con la metà dei pesi, è perfino salita di due
 decimi, e qui bisogna resistere alla tentazione di dedurne qualcosa. Il
 riaddestramento dà alla rete potata trecento passi in più **e un ottimizzatore
@@ -384,14 +384,14 @@ print(f"potata e poi a quattro bit: {accuratezza(rete):.1f}%")
 ```text
 rete intera:                97.8%
 solo quattro bit:           98.0%
-solo potata al 90%:         96.7%
-potata e poi a quattro bit: 96.1%
+solo potata al 90%:         96.9%
+potata e poi a quattro bit: 96.7%
 ```
 
 Arrotondare da solo non costa niente (anzi, due decimi in più, che è rumore).
-Potare da solo costa 1,1 punti. Fare tutte e due costa **1,7**, cioè più della
+Potare da solo costa 0,9 punti. Fare tutte e due costa **1,1**, cioè più della
 somma dei due costi presi separatamente. Non è tanto, ed è comunque un ottimo
-affare (un decimo dei pesi, un ottavo dei bit, un punto e mezzo di
+affare (un decimo dei pesi, un ottavo dei bit, poco più di un punto di
 accuratezza); ma dice la cosa che l’apertura prometteva, e cioè che il budget
 di errore non si spartisce a tavolino.
 
@@ -415,8 +415,8 @@ basso, e in mezzo c’è un calcolatore che quella promessa non la sa incassare.
 :class: important
 - **Potare** vuol dire mettere a zero i pesi più piccoli. Da solo distrugge la
   rete; quello che la salva è **riaddestrare tenendo i tagli**. Misurato:
-  togliendo nove pesi su dieci si passa da 97,8% a 38,5%, e dopo trecento passi
-  di riaddestramento si è a 96,7%.
+  togliendo nove pesi su dieci si passa da 97,8% a 39,3%, e dopo trecento passi
+  di riaddestramento si è a 96,9%.
 - La promessa però si riscuote male: con il novantacinque per cento di zeri le
   moltiplicazioni **utili** sono una su venti, e il calcolatore **le fa tutte e
   venti** lo stesso: 268 milioni in tutti e due i casi, di cui 255 milioni per
@@ -445,8 +445,8 @@ basso, e in mezzo c’è un calcolatore che quella promessa non la sa incassare.
   piccola e singola.
 - Il **riaddestramento con maschera fissa** è la parte non opzionale: la rete
   potata è fuori dal minimo in cui stava, e i superstiti vanno riportati in un
-  minimo della funzione ristretta. Misurato a sparsità 0,9: 38,5% subito,
-  96,7% dopo.
+  minimo della funzione ristretta. Misurato a sparsità 0,9: 39,3% subito,
+  96,9% dopo.
 - **Sparsità non strutturata**: riduce i parametri, non il tempo, perché un
   kernel GEMM denso esegue lo stesso numero di prodotti indipendentemente da
   quanti operandi siano nulli: a sparsità 0,95 il lavoro utile è un ventesimo e
