@@ -370,6 +370,7 @@
     const esiti = pannello.querySelector('.pt-ricerca-esiti');
     const conto = pannello.querySelector('.pt-ricerca-conto');
     let voci = [], scelta = -1, ultima = null, attesa = null, evidenzia = [];
+    let testo = '';   // l'ultimo testo battuto: serve a rimetterlo, vedi sotto
 
     const radice = document.documentElement.dataset.content_root || './';
 
@@ -468,6 +469,39 @@
       window.location.href = href;
     }
 
+    /**
+     * Carica l'indice e, appena arrivato, RIMETTE nel campo quello che si
+     * stava scrivendo.
+     *
+     * Perché serve, ed è il difetto che ha fatto sembrare la ricerca rotta a
+     * intermittenza: in fondo a `searchtools.js` c'è `_ready(Search.init)`, e
+     * `Search.init` fa questo:
+     *
+     *     const query = new URLSearchParams(location.search).get("q");
+     *     document.querySelectorAll('input[name="q"]')
+     *             .forEach((el) => (el.value = query));
+     *
+     * Su una pagina normale il parametro `?q=` non c'è, quindi `query` è
+     * `null` e quella riga SVUOTA ogni campo di ricerca della pagina, incluso
+     * quello in cui si sta scrivendo. Quando searchtools era caricato dal
+     * tema, a pagina ferma, non se ne accorgeva nessuno; caricandolo alla
+     * prima apertura della finestra, arriva mentre le dita sono sui tasti.
+     *
+     * Perché non si vedeva provando in locale: da `localhost` quei file
+     * arrivano in millisecondi, cioè prima che si faccia in tempo a scrivere.
+     * Sul sito vero arrivano dopo, e le lettere sparivano. È lo stesso motivo
+     * per cui il difetto sembrava capitare «a caso» e solo online.
+     */
+    function caricaERipristina() {
+      return caricaIndice().then(function () {
+        if (!campo.value && testo) {
+          campo.value = testo;
+          ultima = null;      // la stessa domanda va rifatta, non saltata
+          aggiorna();
+        }
+      });
+    }
+
     function aggiorna() {
       const query = campo.value.trim();
       if (query === ultima) return;
@@ -477,7 +511,7 @@
                     : 'Scrivi per cercare in tutto il libro.');
         return;
       }
-      caricaIndice().then(function () {
+      caricaERipristina().then(function () {
         if (campo.value.trim() !== query) return;   // ha continuato a scrivere
         disegna(query);
       }).catch(function () {
@@ -485,8 +519,9 @@
       });
     }
 
-    campo.addEventListener('focus', caricaIndice, { once: true });
+    campo.addEventListener('focus', caricaERipristina, { once: true });
     campo.addEventListener('input', () => {
+      testo = campo.value;
       window.clearTimeout(attesa);
       attesa = window.setTimeout(aggiorna, 120);
     });
