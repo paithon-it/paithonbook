@@ -161,8 +161,10 @@ tutti in un colpo solo: più corto da scrivere, e molto più veloce da eseguire.
 
 La differenza si chiama **vettorizzazione**. Un `ndarray` di NumPy è una vista
 tipizzata su un blocco di memoria, contiguo nel caso più comune: le operazioni
-elemento-per-elemento sono delegate a cicli in C ottimizzati (spesso con
-istruzioni SIMD), evitando
+elemento-per-elemento sono delegate a cicli in C ottimizzati, e spesso a
+**istruzioni SIMD** (*single instruction, multiple data*: una sola istruzione
+del processore che opera su più numeri insieme, tanti quanti ne entrano nei
+suoi registri vettoriali), evitando
 l’*overhead* dell'interprete Python su ogni iterazione; i prodotti tra
 matrici passano invece per librerie BLAS dedicate. Il risultato tipico è un
 codice più conciso e due o tre ordini di grandezza più veloce del ciclo

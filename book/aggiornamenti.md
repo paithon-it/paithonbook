@@ -38,6 +38,15 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-8-2)=
+
+## 1.8.2 · 19 agosto 2026
+
+### Correzioni
+
+- {doc}`Python </Python/overview>`. **SIMD adesso vuol dire qualcosa.** La sigla compariva quattro volte nel libro, sempre nuda, come se fosse noto a tutti che cosa sia: adesso è sciolta dove nasce, nel paragrafo che spiega perché NumPy è veloce. È una sola istruzione del processore che opera su più numeri insieme, tanti quanti ne entrano nei suoi registri.
+- {doc}`Analisi numerica </Matematica/analisi-numerica>` (Matematica). **La sezione sui due calcolatori non dà più per noto quello che il lettore non ha ancora incontrato.** Nominava SSE2, AVX2 e AVX-512 senza dire che cosa sono (sono generazioni di istruzioni vettoriali, e a distinguerle è la larghezza dei registri: 128, 256 e 512 bit, cioè due, quattro e otto numeri in doppia precisione per volta), e citava PyTorch, che nel percorso di lettura arriva tre capitoli dopo, come se fosse già stato presentato. Sistemate anche due incoerenze interne: la scheda facile contava i numeri per istruzione in singola precisione mentre tutto il resto ragiona in doppia, e la chiusura si appoggiava a «addestramento» e «accuratezza», che a quel punto del libro non sono ancora stati definiti.
+
 (v1-8-1)=
 
 ## 1.8.1 · 19 agosto 2026

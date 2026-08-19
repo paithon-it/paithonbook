@@ -315,13 +315,13 @@ a seconda di *come* la si calcola.
 ## Lo stesso programma, due calcolatori, due risultati
 
 Questo libro ha un controllo che riesegue il codice delle sue pagine e
-confronta quello che stampa con quello che c’è scritto sotto. Sul computer dell’autore
-ha sempre detto che andava tutto bene. La prima volta che è
+confronta quello che stampa con quello che c’è scritto sotto. Sul computer
+dell’autore ha sempre detto che andava tutto bene. La prima volta che è
 girato sui calcolatori di GitHub, in quattro punti i numeri stampati non
-combaciavano: dove una pagina dichiarava un’accuratezza del $67{,}0\%$ ne
-usciva $66{,}5\%$, e dove ne dichiarava un’altra pari a $5{,}551\cdot10^{-16}$
-ne usciva una di $4{,}441\cdot10^{-16}$. Nessuno aveva toccato il codice, le
-librerie erano alla stessa versione fino all’ultima cifra, e il seme del
+combaciavano: dove una pagina dichiarava $67{,}0\%$ ne usciva $66{,}5\%$, e
+dove un’altra dichiarava $5{,}551\cdot10^{-16}$ ne usciva
+$4{,}441\cdot10^{-16}$. Nessuno aveva toccato il codice, le librerie erano
+alla stessa versione fino all’ultima cifra, e il seme del
 generatore casuale era lo stesso.
 
 Il colpevole è una proprietà che a scuola si dà per acquisita e in virgola
@@ -375,34 +375,41 @@ stesso conto in due modi. La prima somma gli articoli uno dopo l’altro,
 tenendo un totale solo. La seconda divide lo scontrino in otto colonne, fa il
 totale di ogni colonna e alla fine somma gli otto totali. Stessi prezzi, e
 perfino lo stesso numero di addizioni; ma gli arrotondamenti non cadono negli
-stessi punti, e i due totali possono differire di un centesimo. (Il caso limite è lo stesso: se
-fra i prezzi ce n’è uno enorme e uno da un centesimo, il centesimo può sparire
-del tutto nell’arrotondamento, come sparisce un numero piccolo sommato a uno
-grande.)
+stessi punti, e i due totali possono differire di un centesimo. (Il caso
+limite è lo stesso: se fra i prezzi ce n’è uno enorme e uno da un centesimo,
+il centesimo può sparire del tutto nell’arrotondamento, come sparisce un
+numero piccolo sommato a uno grande.)
 
 Nel calcolatore i centesimi sono l’ultima cifra che il formato riesce a
 tenere, e a decidere in quante colonne si divide la somma è il processore: le
-sue istruzioni lavorano su quattro, otto o sedici numeri per volta, e la
+sue istruzioni lavorano su due, quattro o otto numeri per volta, e la
 libreria di calcolo, appena parte, sceglie la versione fatta apposta per il
 processore che si trova sotto. Quella versione ha un nome: si chiama
 **kernel**, ed è la stessa parola che il libro userà più avanti per il
-programma che gira sulla scheda grafica. Il senso è quello: un pezzo di codice specializzato per
-il ferro su cui deve girare.
+programma che gira sulla scheda grafica. Il senso è quello: un pezzo di
+codice specializzato per il ferro su cui deve girare.
 
 `````
 
 `````{tab} Superiore
 
 Una libreria di algebra lineare non contiene una sola implementazione di
-ciascuna routine: ne contiene molte, compilate ciascuna per un insieme di
-istruzioni vettoriali (SSE2, AVX2, AVX-512), e ne sceglie una al caricamento
-in base a quello che la CPU dichiara di saper fare. In OpenBLAS il meccanismo
-si chiama `DYNAMIC_ARCH`; PyTorch fa la stessa cosa smistando le proprie
+ciascuna routine: ne contiene molte, compilate ciascuna per un **insieme di
+istruzioni vettoriali**, cioè per una delle SIMD di cui si è detto parlando di
+NumPy. Su un processore x86 sono generazioni successive, e a distinguerle è la
+larghezza dei registri su cui lavorano: 128 bit per SSE2, 256 per AVX2, 512
+per AVX-512, dove il numero nel nome è proprio quella larghezza. In doppia
+precisione vuol dire due, quattro e otto numeri per istruzione.
+
+Al caricamento la libreria sceglie la variante adatta a quello che la CPU
+dichiara di saper fare: in OpenBLAS il meccanismo si chiama `DYNAMIC_ARCH`.
+Fa lo stesso PyTorch, la libreria con cui il libro addestrerà le reti neurali
+a partire dal capitolo che porta il suo nome: anche lui smista le proprie
 operazioni su CPU fra più varianti compilate.
 
 La larghezza dei registri decide quanti accumulatori parziali la riduzione
-tiene aperti insieme: sommare $N$ numeri con otto accumulatori è un albero di
-somme diverso dal sommarli con sedici, e due alberi diversi arrotondano in
+tiene aperti insieme: sommare $N$ numeri con quattro accumulatori è un albero
+di somme diverso dal sommarli con otto, e due alberi diversi arrotondano in
 punti diversi. Lo standard IEEE 754 garantisce che **ogni singola operazione**
 sia arrotondata correttamente, non che una riduzione abbia un ordine canonico;
 per la stessa ragione conta anche il numero di thread, perché una riduzione
@@ -417,18 +424,18 @@ processori, i numeri che erano in disaccordo sono tornati identici.
 
 Una differenza nella sedicesima cifra sembra irrilevante, e quasi sempre lo
 è. Smette di esserlo quando quel numero non è il risultato ma l’ingresso di un
-calcolo lungo: se su quei valori si fa una discesa del gradiente, due
-traiettorie che partono a distanza $10^{-16}$ si separano passo dopo passo, e a
-fine addestramento la differenza non è più nell’ultima cifra ma nel primo
-decimale. È quello che era successo all’accuratezza dell’aneddoto: $67{,}0\%$ e
-$66{,}5\%$ sono la stessa rete, addestrata dallo stesso codice con lo stesso
-seme, su due processori diversi.
+calcolo lungo: se su quei valori si fa una discesa del gradiente, cioè
+migliaia di passi in cui ognuno riparte da dove è arrivato il precedente, due
+traiettorie che partono a distanza $10^{-16}$ si separano, e alla fine la
+differenza non è più nell’ultima cifra ma nel primo decimale. Vengono da un
+calcolo di quel tipo i due numeri dell’aneddoto: $67{,}0\%$ e $66{,}5\%$ escono
+dallo stesso codice, con lo stesso seme, su due processori diversi.
 
-Da qui tre abitudini che costano poco. Un numero che esce da un addestramento
+Da qui tre abitudini che costano poco. Un numero che esce da un calcolo lungo
 si racconta con le cifre che reggono, non con tutte quelle che il calcolatore
 stampa. Due risultati in virgola mobile non si confrontano con `==` ma con una
-tolleranza dichiarata, che `np.allclose` prende come argomento. E le cifre di un
-residuo di arrotondamento non si leggono come un risultato: il
+tolleranza dichiarata, che `np.allclose` prende come argomento. E le cifre
+di un residuo di arrotondamento non si leggono come un risultato: il
 $5{,}551\cdot10^{-16}$ di prima vuol dire zero, a meno dell’epsilon macchina, e
 la sua mantissa non è un’informazione sul problema, è l’impronta del processore
 su cui è girato il conto.
