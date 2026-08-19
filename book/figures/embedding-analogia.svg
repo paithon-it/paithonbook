@@ -58,7 +58,7 @@
   <text class="lbl" x="140" y="255" text-anchor="middle">uomo</text>
   <text class="lbl" x="322" y="214">re</text>
   <text class="lbl" x="168" y="98"  text-anchor="end">donna</text>
-  <text class="lbl" x="357" y="84"  fill="#B5532C">regina</text>
+  <text class="lbl" x="357" y="84"  style="fill:#B5532C">regina</text>
 
   <!-- annotazioni degli offset -->
   <text class="ann" x="78"  y="163" fill="#C9A961">+ femminile</text>

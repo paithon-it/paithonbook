@@ -426,6 +426,8 @@ parts:
       title: Le quattro famiglie
     - file: AutoSupervisione/collasso-e-misura.md
       title: Collasso e misura
+    - file: AutoSupervisione/capire-e-accorciare.md
+      title: Capire è accorciare
     - file: AutoSupervisione/dibattito-rl.md
       title: Il dibattito sul rinforzo
   - file: WorldModels/overview.md

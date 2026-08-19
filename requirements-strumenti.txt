@@ -66,3 +66,17 @@ playwright
 # c'è e il testo uscirebbe in un ripiego che non è la nostra voce.
 cairosvg
 fonttools
+
+# yt-dlp serve alla redazione, non al libro: prendere sottotitoli e metadati di
+# un video quando una fonte è un talk e non un paper (è successo con «An
+# Observation on Generalization», che un paper non ce l'ha). Sta qui perché è
+# un attrezzo, come pymupdf: nessuna pagina del libro lo importa.
+#
+# ATTENZIONE, ed è il motivo per cui la riga porta una nota invece di stare da
+# sola: da una macchina in cloud spesso non funziona. YouTube risponde «Sign in
+# to confirm you're not a bot» agli IP dei provider, e lo fa anche a un browser
+# vero guidato da playwright, quindi non è una questione di impronta del client.
+# Da una rete domestica funziona. Se serve il testo di un talk e la strada è
+# chiusa, la seconda via è cercare una trascrizione pubblicata e dichiarare che
+# si sta citando quella: un riassunto di una citazione non è una citazione.
+yt-dlp

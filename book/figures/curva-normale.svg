@@ -49,7 +49,7 @@
   <!-- etichette sull'asse -->
   <text class="lbl" x="140" y="267" text-anchor="middle">&#956;&#8722;2&#963;</text>
   <text class="lbl" x="195" y="267" text-anchor="middle">&#956;&#8722;&#963;</text>
-  <text class="lbl" x="250" y="267" text-anchor="middle" fill="#1A1A1A">&#956;</text>
+  <text class="lbl" x="250" y="267" text-anchor="middle" style="fill:#1A1A1A">&#956;</text>
   <text class="lbl" x="305" y="267" text-anchor="middle">&#956;+&#963;</text>
   <text class="lbl" x="360" y="267" text-anchor="middle">&#956;+2&#963;</text>
 

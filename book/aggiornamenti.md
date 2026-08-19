@@ -38,6 +38,19 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-9-0)=
+
+## 1.9.0 · 19 agosto 2026
+
+### Sezioni nuove
+
+- {doc}`Capire è accorciare </AutoSupervisione/capire-e-accorciare>` (Auto-supervisione). **Perché il pre-addestramento funzioni, il libro non lo aveva mai spiegato.** Il capitolo sull'auto-supervisione diceva che cos'è, come si fabbrica un pretesto e che cosa va storto, e si fermava lì. Questa sezione risponde alla domanda che uno studente fa al secondo minuto: perché coprire una parola e farla indovinare dovrebbe produrre qualcosa che sa di biologia. La risposta che una parte del campo dà è che per prevedere bene bisogna accorciare, e per accorciare bisogna aver capito. Dentro ci sono la complessità di Kolmogorov e il rasoio di Occam scritto in bit, il premio da mezzo milione di euro per chi comprime Wikipedia, l'argomento di Ilya Sutskever con il rimpianto che ne è il cuore, le due misure che dal 2023 lo mettono alla prova, e l'obiezione che decide tutto: chi paga il vocabolario. Si apre con Funes, il personaggio di Borges che ricorda ogni cosa e proprio per questo non riesce a pensare. C'è un esperimento che sta in una pagina e si può rilanciare (una lingua inventata in cui contare le lettere non serve a niente), e una figura animata che fa vedere il prezzo di imparare mentre lo si paga.
+
+### Correzioni
+
+- {doc}`Capire è accorciare </AutoSupervisione/capire-e-accorciare>` (Auto-supervisione). **La sezione è stata riletta da tre lettori avversari e ne sono usciti nove errori.** Il più grosso: il 99% che iGPT ottiene su CIFAR-10 è la rete rifinita per intero, non il sondaggio con la rete congelata, che dà 96,3%, ed è proprio il numero su cui poggiava il paragrafo dedicato a quanto sia misteriosa la separabilità lineare. Poi la verosimiglianza scritta senza il condizionamento, cioè la formula di un modello che la pagina stessa mostra non guadagnare niente; il passaggio che chiude l'argomento di Sutskever, che non c'era; l'apertura di Borges, che raccontava tre dettagli assenti dal racconto; e la frase «nessun programma scende sotto il fondo», che la pagina si smentiva da sola venti righe dopo. E una riscrittura di leggibilità, perché il lettore senza basi si fermava a metà: il pezzo più difficile stava fuori dalle schede, dove vale per tutti.
+- **Tre figure avevano un'etichetta nera al posto del suo colore.** Su quella nuova della compressione non era cosmesi: le tre curve si distinguono soltanto dal colore, e le tre etichette erano l'unica legenda.
+
 (v1-8-5)=
 
 ## 1.8.5 · 19 agosto 2026

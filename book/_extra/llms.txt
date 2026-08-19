@@ -217,6 +217,7 @@ della sezione e URL), non si ridistribuisce il testo.
 - [Auto-supervisione](https://book.paithon.it/main/AutoSupervisione/overview.html): Nel 1953 Wilson Taylor, che studiava giornalismo e non calcolatori, aveva un problema pratico: misurare quanto un testo sia facile da leggere.
   - [Le quattro famiglie](https://book.paithon.it/main/AutoSupervisione/famiglie.html)
   - [Collasso e misura](https://book.paithon.it/main/AutoSupervisione/collasso-e-misura.html)
+  - [Capire è accorciare](https://book.paithon.it/main/AutoSupervisione/capire-e-accorciare.html)
   - [Il dibattito sul rinforzo](https://book.paithon.it/main/AutoSupervisione/dibattito-rl.html)
 - [World Model](https://book.paithon.it/main/WorldModels/overview.html): Un gatto di casa ha molto più senso comune e comprensione del mondo di qualunque modello di linguaggio.
   - [Mondi in miniatura](https://book.paithon.it/main/WorldModels/mondi-in-miniatura.html)

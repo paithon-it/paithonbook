@@ -297,15 +297,18 @@ dipende dal mestiere di chi parla: «errore di predizione» dove si spiegano
 segnali cerebrali, «energia libera variazionale» dove si fa apprendimento
 automatico.
 
-Da qui il capitolo prosegue in tre sezioni. Prima le **famiglie**: i quattro
+Da qui il capitolo prosegue in quattro sezioni. Prima le **famiglie**: i quattro
 modi di fabbricare un pretesto, letti tutti come risposte diverse a una sola
 domanda, che è come si impedisce al modello di rispondere sempre la stessa
 cosa. Poi il **collasso e la misura**: che cosa va storto, e come si fa a
-sapere se ha funzionato quando non c'è nessun punteggio da guardare. Infine la
-**ciliegina**, cioè il dibattito su quanto conti l'apprendimento per rinforzo
-rispetto alla torta dell'auto-supervisione, che è la parte in cui persone molto
-autorevoli non sono d'accordo fra loro e questo libro si limita a riportare gli
-argomenti con i loro nomi giusti.
+sapere se ha funzionato quando non c'è nessun punteggio da guardare. Poi
+**capire è accorciare**, che affronta la domanda che le prime due si lasciano
+alle spalle, cioè *perché* tutto questo funzioni: la risposta che una parte del
+campo dà è che prevedere bene obbliga a comprimere, e comprimere obbliga a
+capire. Infine la **ciliegina**, cioè il dibattito su quanto conti
+l'apprendimento per rinforzo rispetto alla torta dell'auto-supervisione, che è
+la parte in cui persone molto autorevoli non sono d'accordo fra loro e questo
+libro si limita a riportare gli argomenti con i loro nomi giusti.
 
 `````{tab} Elementare
 
