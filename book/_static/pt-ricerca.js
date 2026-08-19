@@ -408,11 +408,26 @@
         });
         html += '</div>';
       });
+      // L'ultima riga porta alla PAGINA della ricerca, che questo pannello
+      // non sostituisce: lì i risultati si leggono tutti insieme, con
+      // l'estratto sotto, e l'indirizzo si può salvare o mandare a qualcuno.
+      // Era rimasta raggiungibile solo con l'invio a vuoto, cioè da nessuna
+      // parte su un telefono: una scorciatoia non è una via.
+      html += '<a class="pt-ricerca-voce pt-ricerca-tutti" role="option" href="' +
+        radice + 'search.html?q=' + encodeURIComponent(query) + '">' +
+        'Vedi tutti i risultati per «' + proteggi(query) +
+        '» nella pagina della ricerca</a>';
+
       esiti.innerHTML = html;
       voci = Array.prototype.slice.call(
         esiti.querySelectorAll('.pt-ricerca-voce'));
+      // NESSUNA voce preselezionata, e sono due cose in una. L'invio torna a
+      // fare quello che faceva prima, cioè portare alla pagina della ricerca,
+      // che con il primo risultato già scelto non era più raggiungibile. E
+      // sul telefono sparisce lo scatto: preselezionare voleva dire chiamare
+      // `scrollIntoView` appena disegnato l'elenco, e la finestra finiva
+      // sopra il bordo dello schermo con il primo risultato non toccabile.
       scelta = -1;
-      muovi(1);
       // Il conto dice quello che si VEDE: le sezioni oltre MAX_PER_PAGINA
       // restano fuori, e un numero piu' grande di quello che c'e' in pagina
       // fa cercare al lettore risultati che non esistono.

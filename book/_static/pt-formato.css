@@ -333,12 +333,25 @@ html[data-pt-livello="superiore"] .pt-livello__icona--superiore {
    petrolio, Superiore terracotta. Passano dagli alias del tema — quindi in
    dark mode diventano da soli le varianti più chiare, #5BA39C e #E27B52, che
    sul fondo scuro si leggono. Le barrette usano `currentColor`, quindi basta
-   colorare il pulsante perché seguano icona e parola. */
-html:not([data-pt-livello="superiore"]) .pt-livello__bottone {
+   colorare il pulsante perché seguano icona e parola.
+
+   E il `:hover` va ripetuto, che è la parte contro-intuitiva. La barra
+   dell'articolo colora di terracotta QUALUNQUE suo pulsante sotto il
+   puntatore (`.bd-header .btn:hover` in custom.css): su questo pulsante quel
+   colore non è decorazione, è lo stesso colore che qui significa
+   «Superiore», e quindi mentiva. Dopo un clic il puntatore resta dov'è,
+   quindi si vedeva il livello passare a Elementare e il segno restare
+   terracotta finché non si toccava altro; su un telefono lo stato hover
+   resta appiccicato ancora piu' a lungo, e il colore tornava verde solo
+   selezionando qualcos'altro. Lo stato di una cosa batte l'effetto del
+   passarci sopra. */
+html:not([data-pt-livello="superiore"]) .pt-livello__bottone,
+html:not([data-pt-livello="superiore"]) .pt-livello__bottone:hover {
   color: var(--accent-color, #1F5E58);
 }
 
-html[data-pt-livello="superiore"] .pt-livello__bottone {
+html[data-pt-livello="superiore"] .pt-livello__bottone,
+html[data-pt-livello="superiore"] .pt-livello__bottone:hover {
   color: var(--primary-color, #A44B28);
 }
 

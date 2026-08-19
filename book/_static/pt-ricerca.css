@@ -14,7 +14,8 @@
   display: flex;
   flex-direction: column;
   margin-top: 9vh;
-  max-height: 78vh;
+  max-height: 78vh;    /* per i browser che non conoscono dvh */
+  max-height: 78dvh;
   padding: 0;
   overflow: hidden;
   background-color: var(--pt-bg-elev);
@@ -108,6 +109,22 @@
   margin-right: 0.45rem;
 }
 
+/* L'ultima riga: la via alla pagina della ricerca. Si stacca dalle altre
+   perché non è un risultato, è una destinazione. */
+.pt-ricerca-tutti {
+  margin-top: 0.3rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--pt-border);
+  border-radius: 0;
+  font-size: 0.85rem;
+  color: var(--pt-accent-2);
+}
+
+.pt-ricerca-tutti::before {
+  content: "⌕";
+  margin-right: 0.45rem;
+}
+
 .pt-ricerca-voce mark {
   background-color: var(--pt-tint-accent-3);
   color: inherit;
@@ -165,15 +182,29 @@
 }
 
 /* Su schermo piccolo la finestra prende quasi tutto: una lista di risultati
-   dentro un rettangolo alto sei righe non si usa. */
+   dentro un rettangolo alto sei righe non si usa.
+
+   Le altezze sono in `dvh` e non in `vh`, e la differenza qui è il difetto
+   che si è visto: su un telefono `vh` è calcolato sulla finestra SENZA la
+   barra dell'indirizzo e senza la tastiera a schermo, che invece ci sono
+   entrambe mentre si cerca. Una finestra alta 92vh su uno schermo che ne
+   mostra 70 sborda, e sborda anche in alto: il primo risultato finisce sopra
+   il bordo, si vede solo scorrendo e non si riesce a toccare. `dvh` è
+   l'altezza VERA in quel momento, e cambia da sé quando la tastiera si apre.
+
+   `margin-bottom: auto` serve a fissare la finestra in alto: senza, il
+   browser la centra e con la tastiera aperta la spinge fuori. */
 @media (max-width: 720px) {
   #pst-search-dialog[open] {
-    margin-top: 2vh;
-    max-height: 92vh;
+    margin-top: 1rem;
+    margin-bottom: auto;
+    max-height: 85dvh;
     width: 96%;
   }
   .pt-ricerca-piede span:first-child { display: none; }
   .pt-ricerca-piede { justify-content: flex-end; }
+  /* Bersagli più grandi: un risultato si tocca col pollice, non col mouse. */
+  .pt-ricerca-voce { padding: 0.6rem; }
 }
 
 /* ---------- Il richiamo «nascondi le corrispondenze» ---------- */
