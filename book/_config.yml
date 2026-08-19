@@ -75,10 +75,16 @@ sphinx:
     - custom.css
     - tabs-enhanced.css
     - pt-formato.css
+    # La ricerca che risponde mentre si scrive. Vedi `_static/pt-ricerca.js`.
+    - pt-ricerca.css
     html_js_files:
     - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
     - custom.js
     - pt-formato.js
+    # Deve venire DOPO `sphinx_highlight.js` (che Sphinx mette da se' in
+    # testa) perche' ne rifa' `highlightSearchWords`: vedi il commento in
+    # cima al file.
+    - pt-ricerca.js
     # Lo scambio di tema per la stampa. Sta nel brand perche' serve identico
     # al sito, che nasce scuro come il libro: il CSS da solo non arriva alla
     # tavolozza del codice, che pende da data-theme.

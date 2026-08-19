@@ -1,0 +1,201 @@
+/* =========================================================================
+   PAITHON BOOK — LA RICERCA
+   Il pannello dei risultati che compare mentre si scrive. Il motore sta in
+   `pt-ricerca.js`; qui c'è solo l'aspetto.
+
+   I colori sono tutti token del brand (`_static/brand/tokens.css`), che si
+   ribaltano da soli in tema scuro: qui non c'è nessuna regola
+   `[data-theme="dark"]`, ed è voluto.
+   ========================================================================= */
+
+/* La finestra del tema è pensata per contenere solo il campo di ricerca:
+   diventa una colonna, così i risultati scorrono e il campo resta in cima. */
+#pst-search-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  margin-top: 9vh;
+  max-height: 78vh;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--pt-bg-elev);
+  border: 1px solid var(--pt-border);
+  border-radius: var(--pt-radius-lg);
+  box-shadow: var(--pt-shadow-lg);
+}
+
+#pst-search-dialog[open] form.bd-search {
+  flex: 0 0 auto;
+  border: 0;
+  border-bottom: 1px solid var(--pt-border);
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0.15rem 0.9rem;
+}
+
+#pst-search-dialog[open] form.bd-search input {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+  font-family: var(--pt-font-body);
+}
+
+.pt-ricerca {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;   /* senza, il figlio scorrevole spinge la finestra */
+}
+
+/* ---------- I risultati ---------- */
+.pt-ricerca-esiti {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.5rem;
+  min-height: 0;
+}
+
+.pt-ricerca-gruppo {
+  margin-bottom: 0.35rem;
+}
+
+.pt-ricerca-voce {
+  display: block;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--pt-radius-md);
+  color: var(--pt-fg);
+  text-decoration: none;
+  line-height: 1.35;
+}
+
+.pt-ricerca-voce:hover {
+  background-color: var(--pt-bg-tint-soft);
+  text-decoration: none;
+}
+
+/* La voce sotto la tastiera. Il colore è lo stesso dell'hover più una barra
+   terracotta a sinistra: due segnali diversi per due gesti diversi, così il
+   mouse fermo su una riga non fa credere di aver perso la selezione. */
+.pt-ricerca-voce.scelto {
+  background-color: var(--pt-tint-accent);
+  box-shadow: inset 3px 0 0 var(--pt-accent);
+}
+
+/* La pagina: il titolo in Fraunces, sopra il capitolo in cui sta. */
+.pt-ricerca-pagina .pt-ricerca-strada {
+  display: block;
+  font-size: var(--pt-text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pt-fg-subtle);
+  margin-bottom: 0.1rem;
+}
+
+.pt-ricerca-pagina .pt-ricerca-titolo {
+  font-family: var(--pt-font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
+}
+
+/* Le sezioni dentro quella pagina. */
+.pt-ricerca-sezione {
+  margin-left: 0.85rem;
+  font-size: 0.88rem;
+  color: var(--pt-fg-muted);
+}
+
+.pt-ricerca-sezione::before {
+  content: "›";
+  color: var(--pt-accent-3);
+  margin-right: 0.45rem;
+}
+
+.pt-ricerca-voce mark {
+  background-color: var(--pt-tint-accent-3);
+  color: inherit;
+  padding: 0 0.1em;
+  border-radius: var(--pt-radius-sm);
+}
+
+/* «Nessun risultato per X. Forse cercavi:» — la rete per i refusi. */
+.pt-ricerca-forse {
+  margin: 0.2rem 0.6rem 0.5rem;
+  font-size: var(--pt-text-sm);
+  color: var(--pt-fg-subtle);
+  font-style: italic;
+}
+
+.pt-ricerca-stato {
+  margin: 0;
+  padding: 1.6rem 0.8rem;
+  text-align: center;
+  color: var(--pt-fg-subtle);
+  font-size: 0.9rem;
+}
+
+/* ---------- Il piede, con i tasti ---------- */
+.pt-ricerca-piede {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.9rem;
+  border-top: 1px solid var(--pt-border);
+  background-color: var(--pt-bg-tint-soft);
+  color: var(--pt-fg-subtle);
+  font-size: var(--pt-text-xs);
+}
+
+.pt-ricerca-piede kbd {
+  display: inline-block;
+  min-width: 1.4em;
+  margin-right: 0.15em;
+  padding: 0.05em 0.3em;
+  text-align: center;
+  font-family: var(--pt-font-mono);
+  font-size: 0.9em;
+  color: var(--pt-fg-muted);
+  background-color: var(--pt-bg-elev);
+  border: 1px solid var(--pt-border-strong);
+  border-radius: var(--pt-radius-sm);
+  box-shadow: none;
+}
+
+.pt-ricerca-conto {
+  white-space: nowrap;
+}
+
+/* Su schermo piccolo la finestra prende quasi tutto: una lista di risultati
+   dentro un rettangolo alto sei righe non si usa. */
+@media (max-width: 720px) {
+  #pst-search-dialog[open] {
+    margin-top: 2vh;
+    max-height: 92vh;
+    width: 96%;
+  }
+  .pt-ricerca-piede span:first-child { display: none; }
+  .pt-ricerca-piede { justify-content: flex-end; }
+}
+
+/* ---------- Il richiamo «nascondi le corrispondenze» ---------- */
+/* Lo scrive `pt-ricerca.js` sulla pagina d'arrivo, e solo se qualcosa è
+   stato davvero evidenziato. Sta sopra l'articolo: va letto come una nota di
+   servizio, non come un titolo. */
+#searchbox .pt-evidenziate {
+  margin: 0 0 0.8rem;
+  font-size: var(--pt-text-sm);
+}
+
+#searchbox .pt-evidenziate a {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  color: var(--pt-fg-muted);
+  background-color: var(--pt-bg-tint-soft);
+  border: 1px solid var(--pt-border);
+  border-radius: var(--pt-radius-full);
+  text-decoration: none;
+}
+
+#searchbox .pt-evidenziate a:hover {
+  color: var(--pt-accent);
+  border-color: var(--pt-accent);
+}

@@ -38,6 +38,18 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-8-4)=
+
+## 1.8.4 · 19 agosto 2026
+
+### Correzioni
+
+- **L’avviso «Nascondi i risultati della ricerca» compariva dove non c’era niente da nascondere**, per esempio tornando alla copertina dopo una ricerca, o soltanto dopo aver aperto la finestra e averla richiusa senza andare da nessuna parte. Adesso esce solo se in quella pagina qualcosa è stato davvero evidenziato, e dice quante corrispondenze sono. Riparandolo è venuto fuori un difetto più grosso e opposto: sulle versioni recenti del tema l’evidenziazione non partiva affatto, quindi chi arrivava da una ricerca non vedeva marcata nessuna delle parole che aveva cercato. Adesso parte, e sempre allo stesso modo.
+
+### Impianto
+
+- **La ricerca risponde mentre si scrive.** Prima bisognava battere invio e finire su una pagina di risultati a parte; adesso i risultati compaiono a ogni tasto, raggruppati per pagina e con il capitolo scritto sopra, e portano alla **singola sezione** invece che in cima al file. Si scorrono con le frecce e si aprono con invio, senza togliere le mani dalla tastiera (la finestra si apre con Ctrl+K, o ⌘K), e le parole cercate restano evidenziate sulla pagina in cui si arriva. Se c’è un refuso la ricerca lo perdona e lo dichiara: chi scrive «trasformer» trova i Transformer sotto un «forse cercavi», invece di sentirsi rispondere che il libro non ne parla. Un effetto collaterale che si sente: l’indice della ricerca, che è il file più pesante del sito, adesso si scarica solo quando la finestra si apre. Chi legge e basta non lo paga più.
+
 (v1-8-3)=
 
 ## 1.8.3 · 19 agosto 2026

@@ -137,22 +137,11 @@
     }
   }
 
-  // ===== KEYBOARD SHORTCUTS =====
-  function setupKeyboardShortcuts() {
-    document.addEventListener('keydown', (e) => {
-      // Ctrl/Cmd + K: Focus search
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        const searchInput = document.querySelector('input[type="search"]');
-        if (searchInput) searchInput.focus();
-      }
-
-      // Escape: Close modals/sidebars
-      if (e.key === 'Escape') {
-        // Add your modal/sidebar close logic here
-      }
-    });
-  }
+  // Il Ctrl/Cmd+K stava qui e non serviva a niente: il tema lo lega gia' lui
+  // (in fase di cattura, quindi arriva prima) e apre la finestra della
+  // ricerca, che al campo da' il fuoco da se'. Quello di qui, dopo, cercava
+  // un `input[type=search]` e ne trovava uno dentro un <dialog> chiuso.
+  // L'altro ramo, quello dell'Escape, era un segnaposto vuoto.
 
   // ===== IMPROVED SIDEBAR NAVIGATION =====
   // ===== NUMERI DEI CAPITOLI NELL'INDICE DI SINISTRA =====
@@ -642,7 +631,6 @@
     markExternalLinks();
     makeTablesResponsive();
     setupLazyLoading();
-    setupKeyboardShortcuts();
     numeraCapitoli();
     improveSidebarNav();
     setupSidebarWidening();
