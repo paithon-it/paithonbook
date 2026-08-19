@@ -46,8 +46,15 @@
   if (window.__ptRicercaCaricata) return;
   window.__ptRicercaCaricata = true;
 
-  const MAX_ESITI = 40;     // in tutto
-  const MAX_PER_PAGINA = 4; // sezioni mostrate sotto una stessa pagina
+  // Quanti risultati mostra la finestra. Sei, non quaranta, ed e' una scelta
+  // di forma prima che di spazio: questa finestra fa il mestiere di Spotlight,
+  // cioe' porta dritti alla cosa cercata, e per quel mestiere una lista lunga
+  // e' peggio di una corta. Con quaranta il pannello diventava alto quanto lo
+  // schermo e su un telefono spingeva fuori vista il campo in cui si sta
+  // scrivendo: non si rileggeva piu' quello che si era battuto. Gli altri
+  // risultati non si perdono, stanno nella pagina della ricerca, che l'ultima
+  // riga dell'elenco raggiunge.
+  const MAX_MOSTRATI = 6;
 
   // ===== L'EVIDENZIAZIONE SULLA PAGINA D'ARRIVO =====
   /**
@@ -331,13 +338,10 @@
     const approssimato = esiti.length === 0;
     if (approssimato) esiti.push(...cercaApprossimato(query));
 
-    // Raggruppati per pagina, nell'ordine in cui la pagina è comparsa.
-    const gruppi = new Map();
-    for (const e of esiti.slice(0, MAX_ESITI)) {
-      if (!gruppi.has(e.file)) gruppi.set(e.file, []);
-      gruppi.get(e.file).push(e);
-    }
-    return { gruppi, evidenzia, approssimato, quanti: esiti.length };
+    // Il totale serve dichiarato, perché la finestra ne mostra solo i primi:
+    // troncare senza dirlo farebbe credere che il libro non abbia altro.
+    return { mostrati: esiti.slice(0, MAX_MOSTRATI), evidenzia, approssimato,
+             totale: esiti.length };
   }
 
   // ===== LA FINESTRA =====
@@ -377,7 +381,7 @@
     function disegna(query) {
       const esito = cerca(query);
       evidenzia = esito.evidenzia;
-      if (!esito.quanti) {
+      if (!esito.totale) {
         stato('Nessun risultato per «' + query + '».');
         return;
       }
@@ -390,33 +394,39 @@
         ? '<p class="pt-ricerca-forse">Nessun risultato per «' +
           proteggi(query) + '». Forse cercavi:</p>'
         : '';
-      esito.gruppi.forEach((righe, file) => {
-        const titoloPagina = idx.titles[posizione[file]] || file;
-        const capitolo = capitoli[file.split('/')[0]];
-        const strada = capitolo && capitolo !== titoloPagina
-          ? '<span class="pt-ricerca-strada">' + proteggi(capitolo) + '</span>'
-          : '';
-        html += '<div class="pt-ricerca-gruppo">' +
-          '<a class="pt-ricerca-voce pt-ricerca-pagina" role="option" ' +
-          'href="' + radice + file + '.html">' + strada +
+
+      // Una riga per risultato, piatta. Prima erano annidati (la pagina, e
+      // sotto le sue sezioni): con sei righe in tutto l'annidamento non
+      // organizza più niente e raddoppia solo le cose da leggere. Sopra il
+      // titolo sta dove si finisce: capitolo, e la pagina se ha un altro nome.
+      esito.mostrati.forEach((r) => {
+        const titoloPagina = idx.titles[posizione[r.file]] || r.file;
+        const capitolo = capitoli[r.file.split('/')[0]];
+        // Nella strada non entra quello che è già scritto sotto: la pagina
+        // d'apertura di un capitolo si chiama come il capitolo, e senza
+        // questo controllo la riga diceva due volte la stessa cosa.
+        const mostrato = r.sezione || titoloPagina;
+        const pezzi = Array.from(new Set(
+          [capitolo, r.sezione ? titoloPagina : null]
+            .filter((p) => p && p !== mostrato))).map(proteggi);
+        html += '<a class="pt-ricerca-voce" role="option" href="' +
+          radice + r.file + '.html' + r.ancora + '">' +
+          (pezzi.length ? '<span class="pt-ricerca-strada">' +
+            pezzi.join(' <span aria-hidden="true">›</span> ') + '</span>' : '') +
           '<span class="pt-ricerca-titolo">' +
-          segna(titoloPagina, evidenzia) + '</span></a>';
-        righe.filter((r) => r.sezione).slice(0, MAX_PER_PAGINA).forEach((r) => {
-          html += '<a class="pt-ricerca-voce pt-ricerca-sezione" role="option" ' +
-            'href="' + radice + file + '.html' + r.ancora + '">' +
-            segna(r.sezione, evidenzia) + '</a>';
-        });
-        html += '</div>';
+          segna(r.sezione || titoloPagina, evidenzia) + '</span></a>';
       });
+
       // L'ultima riga porta alla PAGINA della ricerca, che questo pannello
-      // non sostituisce: lì i risultati si leggono tutti insieme, con
+      // non sostituisce ma completa: lì ci sono TUTTI i risultati, con
       // l'estratto sotto, e l'indirizzo si può salvare o mandare a qualcuno.
-      // Era rimasta raggiungibile solo con l'invio a vuoto, cioè da nessuna
-      // parte su un telefono: una scorciatoia non è una via.
+      // È anche il posto dove finiscono quelli che qui non entrano.
+      const restano = esito.totale - esito.mostrati.length;
       html += '<a class="pt-ricerca-voce pt-ricerca-tutti" role="option" href="' +
         radice + 'search.html?q=' + encodeURIComponent(query) + '">' +
-        'Vedi tutti i risultati per «' + proteggi(query) +
-        '» nella pagina della ricerca</a>';
+        (restano > 0
+          ? 'Vedi tutti i ' + esito.totale + ' risultati'
+          : 'Apri la pagina della ricerca') + '</a>';
 
       esiti.innerHTML = html;
       voci = Array.prototype.slice.call(
@@ -428,11 +438,12 @@
       // `scrollIntoView` appena disegnato l'elenco, e la finestra finiva
       // sopra il bordo dello schermo con il primo risultato non toccabile.
       scelta = -1;
-      // Il conto dice quello che si VEDE: le sezioni oltre MAX_PER_PAGINA
-      // restano fuori, e un numero piu' grande di quello che c'e' in pagina
-      // fa cercare al lettore risultati che non esistono.
-      conto.textContent = voci.length === 1
-        ? '1 risultato' : voci.length + ' risultati';
+      // Il piede dice quanti se ne vedono su quanti ce n'è: il totale da solo
+      // ripeteva il pulsante, e non diceva la cosa che serve sapere, cioè che
+      // quelli in finestra sono una parte.
+      conto.textContent = restano > 0
+        ? esito.mostrati.length + ' di ' + esito.totale + ' risultati'
+        : (esito.totale === 1 ? '1 risultato' : esito.totale + ' risultati');
     }
 
     function muovi(passo) {

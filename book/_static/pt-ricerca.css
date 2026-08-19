@@ -54,9 +54,9 @@
   min-height: 0;
 }
 
-.pt-ricerca-gruppo {
-  margin-bottom: 0.35rem;
-}
+/* Le righe sono piatte: un risultato, una riga. L'elenco annidato (pagina,
+   e sotto le sue sezioni) serviva quando i risultati erano quaranta; con sei
+   raddoppiava soltanto le cose da leggere. */
 
 .pt-ricerca-voce {
   display: block;
@@ -80,49 +80,55 @@
   box-shadow: inset 3px 0 0 var(--pt-accent);
 }
 
-/* La pagina: il titolo in Fraunces, sopra il capitolo in cui sta. */
-.pt-ricerca-pagina .pt-ricerca-strada {
+/* Sopra il titolo, dove si finisce: capitolo e pagina. */
+/* Una riga sola: la strada dice dove si finisce, e se è lunga si accorcia
+   invece di mandare a capo e rubare spazio al titolo, che è la cosa che si
+   legge davvero. */
+.pt-ricerca-strada {
   display: block;
   font-size: var(--pt-text-xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--pt-fg-subtle);
   margin-bottom: 0.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.pt-ricerca-pagina .pt-ricerca-titolo {
+.pt-ricerca-titolo {
   font-family: var(--pt-font-display);
   font-weight: 600;
   font-size: 0.98rem;
 }
 
-/* Le sezioni dentro quella pagina. */
-.pt-ricerca-sezione {
-  margin-left: 0.85rem;
-  font-size: 0.88rem;
-  color: var(--pt-fg-muted);
-}
-
-.pt-ricerca-sezione::before {
-  content: "›";
-  color: var(--pt-accent-3);
-  margin-right: 0.45rem;
-}
-
-/* L'ultima riga: la via alla pagina della ricerca. Si stacca dalle altre
-   perché non è un risultato, è una destinazione. */
+/* L'ultima riga è un PULSANTE, e si vede che lo è: non è un risultato, è la
+   porta verso tutti gli altri. La finestra ne mostra sei; il resto sta nella
+   pagina della ricerca, e da qui ci si arriva col dito, non solo con l'invio
+   a vuoto (che su un telefono non esiste). */
 .pt-ricerca-tutti {
-  margin-top: 0.3rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--pt-border);
-  border-radius: 0;
+  margin: 0.5rem 0.15rem 0.15rem;
+  padding: 0.5rem 0.6rem;
+  text-align: center;
+  font-family: var(--pt-font-body);
   font-size: 0.85rem;
+  font-weight: 600;
   color: var(--pt-accent-2);
+  background-color: var(--pt-bg-tint-soft);
+  border: 1px solid var(--pt-border-strong);
+  border-radius: var(--pt-radius-md);
 }
 
-.pt-ricerca-tutti::before {
-  content: "⌕";
-  margin-right: 0.45rem;
+.pt-ricerca-tutti::after {
+  content: " →";
+}
+
+.pt-ricerca-tutti:hover,
+.pt-ricerca-tutti.scelto {
+  color: var(--pt-bg-elev);
+  background-color: var(--pt-accent-2);
+  border-color: var(--pt-accent-2);
+  box-shadow: none;
 }
 
 .pt-ricerca-voce mark {
