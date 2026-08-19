@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-8-5)=
+
+## 1.8.5 · 19 agosto 2026
+
+### Correzioni
+
+- **La finestra della ricerca restava muta quando il testo era già nel campo.** Succedeva arrivando da un vecchio collegamento alla pagina dei risultati, o tornando indietro col browser su un modulo ripristinato: la domanda si vedeva scritta e sotto non c’era niente, finché non si ribatteva un tasto. Adesso, appena la finestra si apre, cerca quello che trova già scritto. La ragione per cui era sfuggita vale la pena di dirla: il libro qui si costruisce con una versione del tema più recente di quella con cui il sito è pubblicato, e le due caricano l’indice della ricerca in due momenti diversi. Il difetto viveva solo nella seconda. Il controllo adesso prova tutt’e due.
+
 (v1-8-4)=
 
 ## 1.8.4 · 19 agosto 2026

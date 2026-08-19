@@ -486,7 +486,30 @@
       apri(voce.href);
     });
 
-    stato('Scrivi per cercare in tutto il libro.');
+    // Alla fine si cerca quello che nel campo c'è GIÀ, invece di scrivere il
+    // messaggio di riposo e aspettare un tasto. Sembra un dettaglio e non lo
+    // è: il campo può essere pieno prima che questo file abbia agganciato i
+    // suoi ascoltatori, e in quel caso l'evento che lo ha riempito è passato
+    // e non torna, quindi la finestra resterebbe muta per sempre. Succede
+    // quando il testo arriva tutto insieme invece che a lettere (un
+    // incollaggio), su `search.html`, dove Sphinx riempie il campo da sé, e
+    // quando il browser ripristina il modulo tornando indietro.
+    //
+    // Il difetto si vedeva SOLO sul sito pubblicato, e la ragione va saputa
+    // prima di credere a una prova locale: qui il tema è più recente e
+    // precarica l'indice della ricerca su ogni pagina, quindi `caricaIndice`
+    // risolve subito e la finestra di corsa non si apre mai. Là l'indice
+    // arriva davvero dopo. Adesso il collaudo prova tutt'e due le topologie.
+    aggiorna();
+
+    // E lo stesso quando la finestra si riapre: dentro c'è ancora la ricerca
+    // di prima, e vederla senza i suoi risultati è peggio che non vederla.
+    document.querySelectorAll('.search-button__button').forEach((pulsante) => {
+      pulsante.addEventListener('click', () => {
+        ultima = null;       // la stessa domanda va rifatta, non saltata
+        window.setTimeout(aggiorna, 0);
+      });
+    });
   }
 
   if (document.readyState === 'loading') {
