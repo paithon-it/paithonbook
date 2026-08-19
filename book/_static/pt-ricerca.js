@@ -141,6 +141,58 @@
 
   const perRegex = (s) => s.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&');
 
+  // I pochi simboli che compaiono nei titoli del libro. Non è una tabella
+  // LaTeX: è la lista di quello che serve, e cresce quando serve.
+  const SIMBOLI = {
+    alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε',
+    varepsilon: 'ε', zeta: 'ζ', eta: 'η', theta: 'θ', kappa: 'κ',
+    lambda: 'λ', mu: 'μ', nu: 'ν', xi: 'ξ', pi: 'π', rho: 'ρ',
+    sigma: 'σ', tau: 'τ', phi: 'φ', varphi: 'φ', chi: 'χ', psi: 'ψ',
+    omega: 'ω', Gamma: 'Γ', Delta: 'Δ', Theta: 'Θ', Lambda: 'Λ',
+    Xi: 'Ξ', Pi: 'Π', Sigma: 'Σ', Phi: 'Φ', Psi: 'Ψ', Omega: 'Ω',
+    nabla: '∇', partial: '∂', infty: '∞', times: '×', cdot: '·',
+    leq: '≤', geq: '≥', neq: '≠', approx: '≈', sim: '∼', to: '→',
+    in: '∈', hat: '', mathbf: '', mathcal: '', text: '',
+  };
+
+  const ENTITA = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': '\'',
+                   nbsp: ' ' };
+
+  /**
+   * Il titolo dell'indice, reso leggibile.
+   *
+   * Sphinx mette nell'indice di ricerca il titolo di una pagina COSÌ COM'È,
+   * e se quel titolo contiene una formula o del codice in linea ci finisce
+   * dentro il marcatore grezzo. Nel libro succede in tre casi:
+   *
+   *   Oltre la partizione: ... <span class="math ...">\(Z\)</span>
+   *   Dati su misura: <code class="docutils literal"><span class="pre">Dataset</span></code>
+   *   Perché \varepsilon-greedy non basta
+   *
+   * che nella finestra si leggevano alla lettera, tag compresi. Qui i tag
+   * si tolgono, i delimitatori della matematica pure, e le macro che hanno
+   * un simbolo diventano il simbolo: `\varepsilon` si legge ε.
+   *
+   * Perché non si lascia passare l'HTML e basta, che renderebbe tutto: il
+   * contenuto arriva sì dalla build, ma stampare marcatura non verificata
+   * dentro la pagina è una porta che non vale la pena aprire per tre titoli.
+   * Un simbolo si ottiene con una tabella, e la tabella non esegue niente.
+   */
+  function ripulisci(testo) {
+    if (testo.indexOf('<') === -1 && testo.indexOf('\\') === -1 &&
+        testo.indexOf('&') === -1) return testo;
+    return testo
+      .replace(/<[^>]*>/g, '')                       // i tag
+      .replace(/&(#?\w+);/g, (t, e) => (e in ENTITA ? ENTITA[e] : t))
+      .replace(/\\[()[\]]/g, '')                     // \( \) \[ \]
+      .replace(/\$+/g, '')
+      .replace(/\\([A-Za-z]+)\s?/g, (t, nome) =>
+        (nome in SIMBOLI ? SIMBOLI[nome] : nome))
+      .replace(/[{}]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   /** Il testo con i termini cercati avvolti in <mark>. Restituisce HTML. */
   function segna(testo, termini) {
     const html = proteggi(testo);
@@ -253,7 +305,11 @@
   function cercaNeiTitoli(query) {
     const parole = normalizza(query).split(/\s+/).filter(Boolean);
     if (!parole.length) return [];
-    return scorriTitoli((titolo) => punteggio(normalizza(titolo), parole));
+    // `ripulisci` anche qui, se no cercando «Z» non si trova il titolo che
+    // nell'indice sta scritto `<span class="math ...">\\(Z\\)</span>`, e
+    // cercando «span» lo si trova.
+    return scorriTitoli((titolo) =>
+      punteggio(normalizza(ripulisci(titolo)), parole));
   }
 
   /**
@@ -286,7 +342,7 @@
     const parole = normalizza(query).split(/\s+/).filter((p) => p.length >= 5);
     if (!parole.length) return [];
     return scorriTitoli((titolo) => {
-      const pezzi = normalizza(titolo).split(/[^a-z0-9]+/).filter(Boolean);
+      const pezzi = normalizza(ripulisci(titolo)).split(/[^a-z0-9]+/).filter(Boolean);
       return parole.every((p) => pezzi.some((t) => entroUno(p, t))) ? 1 : 0;
     });
   }
@@ -401,12 +457,13 @@
       // organizza più niente e raddoppia solo le cose da leggere. Sopra il
       // titolo sta dove si finisce: capitolo, e la pagina se ha un altro nome.
       esito.mostrati.forEach((r) => {
-        const titoloPagina = idx.titles[posizione[r.file]] || r.file;
-        const capitolo = capitoli[r.file.split('/')[0]];
+        const titoloPagina = ripulisci(idx.titles[posizione[r.file]] || r.file);
+        const grezzoCap = capitoli[r.file.split('/')[0]];
+        const capitolo = grezzoCap ? ripulisci(grezzoCap) : grezzoCap;
         // Nella strada non entra quello che è già scritto sotto: la pagina
         // d'apertura di un capitolo si chiama come il capitolo, e senza
         // questo controllo la riga diceva due volte la stessa cosa.
-        const mostrato = r.sezione || titoloPagina;
+        const mostrato = ripulisci(r.sezione) || titoloPagina;
         const pezzi = Array.from(new Set(
           [capitolo, r.sezione ? titoloPagina : null]
             .filter((p) => p && p !== mostrato))).map(proteggi);

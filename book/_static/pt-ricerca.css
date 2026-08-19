@@ -61,6 +61,16 @@
   padding: 0.15rem 0.9rem;
 }
 
+/* L'anello che si accende attorno al campo quando ci si scrive dentro. Il
+   tema lo fa con `--pst-color-accent`, che qui è l'ocra: un colore terziario,
+   che sulla riga più visibile della finestra sembrava una sottolineatura
+   gialla capitata lì. Va nel terracotta del marchio, che è l'accento vero.
+   (Si vede solo sotto: i lati e la cima li taglia l'`overflow: hidden` della
+   finestra, perché il campo sta appoggiato al bordo.) */
+#pst-search-dialog[open] form.bd-search:focus-within {
+  box-shadow: 0 0 0 0.1875rem var(--pt-accent);
+}
+
 #pst-search-dialog[open] form.bd-search input {
   background-color: transparent;
   border: 0;
