@@ -33,13 +33,32 @@ pyyaml
 # sia davvero il file che sta per depositare.
 pymupdf
 
-# Chromium, che è il convertitore delle figure in stampa (`book/_ext/pt_stampa.py`):
-# 73 dei 312 SVG portano un `<style>` con selettori di classe e tutti usano i
-# font del brand, e un browser vero è l'unica cosa che li disegna come li vede
-# chi legge online. ATTENZIONE: il pacchetto pip non basta, il browser si
-# scarica a parte, ed è un passo che si dimentica:
+# Playwright serve a due mestieri diversi, e vuole DUE browser.
+#
+# Chromium è il convertitore delle figure in stampa
+# (`book/_ext/pt_stampa.py`): 73 dei 312 SVG portano un `<style>` con
+# selettori di classe e tutti usano i font del brand, e un browser vero è
+# l'unica cosa che li disegna come li vede chi legge online.
+#
+# WebKit è il motore di Safari, cioè di ogni browser su iPhone, e serve a
+# `scripts/verifica-ricerca.py`. Non è pignoleria: il difetto più lungo che la
+# ricerca del libro abbia avuto si vedeva SOLO lì. Safari centra una finestra
+# modale dentro un riquadro più piccolo dello schermo, quindi la finestra della
+# ricerca finiva 51px sopra il bordo e il campo in cui si scrive non si vedeva.
+# Su Chromium quel comportamento non esiste, e per giorni il collaudo è passato
+# mentre il libro era rotto sui telefoni.
+#
+# ATTENZIONE: il pacchetto pip non basta. I browser si scaricano a parte, ed è
+# il passo che si dimentica; WebKit vuole anche delle librerie di sistema
+# (GTK4, GStreamer e altre), che si installano con i permessi di
+# amministratore:
 #
 #     python3 -m playwright install chromium
+#     sudo python3 -m playwright install-deps webkit
+#     python3 -m playwright install webkit
+#
+# Senza WebKit `verifica-ricerca.py` non fallisce: salta quei controlli e lo
+# dice.
 playwright
 
 # La card social (`scripts/genera-og.py`): cairosvg rasterizza il PNG 1200x630

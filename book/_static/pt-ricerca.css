@@ -9,11 +9,39 @@
    ========================================================================= */
 
 /* La finestra del tema è pensata per contenere solo il campo di ricerca:
-   diventa una colonna, così i risultati scorrono e il campo resta in cima. */
+   diventa una colonna, così i risultati scorrono e il campo resta in cima.
+
+   IL POSIZIONAMENTO SI RIFÀ DA ZERO, e non è pignoleria: è la riparazione del
+   difetto più lungo di questa funzione. Il tema con cui il sito è pubblicato
+   piazza la finestra così:
+
+       #pst-search-dialog[open] { top: 30%; left: 50%;
+                                  transform: translate(-50%, -50%); }
+
+   cioè la CENTRA sul 30% dell'altezza dello schermo. Con dentro solo un campo
+   di ricerca sta in piedi; con dentro anche i risultati la finestra diventa
+   alta, e metà di quell'altezza finisce sopra il bordo: misurato su un iPhone
+   13 (schermo 664), la finestra alta 539 partiva da −54 e il campo in cui si
+   scrive stava a −51, cioè fuori. Si scriveva senza poter rileggere.
+
+   Sovrascrivere il margine non basta e non bastava: il `top` e la `transform`
+   restavano. Qui si azzerano tutti e tre e la finestra si ancora in alto, che
+   è deterministico e non dipende da quanto è alta.
+
+   Perché non si vedeva provandolo: il tema installato in locale è più recente
+   e quella regola non ce l'ha (usa `margin: 15vh auto 0`, senza `transform`).
+   Stessa CSS, stessa altezza, stesso contenuto, e la finestra a +16 di qua e a
+   −54 di là. Il collaudo adesso gira anche su WebKit, che è il motore di
+   Safari, perché su Chromium questo difetto non esiste. */
 #pst-search-dialog[open] {
   display: flex;
   flex-direction: column;
-  margin-top: 9vh;
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: 0;
+  transform: none;
+  margin: 9vh auto auto;
   max-height: 78vh;    /* per i browser che non conoscono dvh */
   max-height: 78dvh;
   padding: 0;
@@ -198,12 +226,16 @@
    il bordo, si vede solo scorrendo e non si riesce a toccare. `dvh` è
    l'altezza VERA in quel momento, e cambia da sé quando la tastiera si apre.
 
-   `margin-bottom: auto` serve a fissare la finestra in alto: senza, il
-   browser la centra e con la tastiera aperta la spinge fuori. */
+   Il `margin: 1rem auto auto` funziona perché la regola qui sopra ha già
+   azzerato il `top` e la `transform` del tema: da sole le tre righe di
+   margine non spostavano niente, ed è per questo che i primi tentativi di
+   riparare questa cosa sono falliti. Vedi il commento della regola base.
+
+   Chi ritocca queste misure le verifichi su WebKit, non su Chromium, dove il
+   difetto non esiste: `python3 scripts/verifica-ricerca.py` lo fa da sé. */
 @media (max-width: 720px) {
   #pst-search-dialog[open] {
-    margin-top: 1rem;
-    margin-bottom: auto;
+    margin: 1rem auto auto;
     max-height: 85dvh;
     width: 96%;
   }
