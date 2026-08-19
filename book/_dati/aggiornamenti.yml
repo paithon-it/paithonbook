@@ -48,6 +48,24 @@
 
 versioni:
 
+- versione: "1.8.3"
+  data: 2026-08-19
+  voci:
+
+  - tipo: corretto
+    pagina: Matematica/analisi-numerica.md
+    testo: >
+      **La sezione sui due calcolatori prometteva più di quanto si possa
+      mantenere.** Diceva che fissando due variabili d’ambiente le macchine
+      tornano a stampare le stesse cifre: è vero per la parte di conto che
+      passa da quelle due strade, e infatti il residuo dell’aneddoto è tornato
+      identico, ma non in generale. I prodotti fra matrici di PyTorch passano
+      da un’altra libreria ancora, che quelle variabili non toccano, e una
+      terza macchina si è discostata di nuovo nell’ultima cifra. Adesso la
+      pagina lo dice, e ne trae la conseguenza pratica: due esecuzioni su
+      macchine diverse si confrontano con una tolleranza, non con
+      l’uguaglianza.
+
 - versione: "1.8.2"
   data: 2026-08-19
   voci:

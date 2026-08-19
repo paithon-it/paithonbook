@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-8-3)=
+
+## 1.8.3 · 19 agosto 2026
+
+### Correzioni
+
+- {doc}`Analisi numerica </Matematica/analisi-numerica>` (Matematica). **La sezione sui due calcolatori prometteva più di quanto si possa mantenere.** Diceva che fissando due variabili d’ambiente le macchine tornano a stampare le stesse cifre: è vero per la parte di conto che passa da quelle due strade, e infatti il residuo dell’aneddoto è tornato identico, ma non in generale. I prodotti fra matrici di PyTorch passano da un’altra libreria ancora, che quelle variabili non toccano, e una terza macchina si è discostata di nuovo nell’ultima cifra. Adesso la pagina lo dice, e ne trae la conseguenza pratica: due esecuzioni su macchine diverse si confrontano con una tolleranza, non con l’uguaglianza.
+
 (v1-8-2)=
 
 ## 1.8.2 · 19 agosto 2026

@@ -57,10 +57,15 @@ ATTESA = 900          # secondi per capitolo: qui dentro ci sono addestramenti
 # ballavano di mezzo punto, perche' quelle ultime cifre entrano in un
 # addestramento che le amplifica. Stesse versioni delle librerie, stesso seme.
 #
-# Fissando le due scelte al minimo comune denominatore (AVX2, che qualunque
-# x86-64 dal 2013 ha) le due macchine tornano a stampare le stesse cifre, ed e'
-# stato verificato prima di scrivere questa riga. Il racconto per il lettore
-# sta in `book/Matematica/analisi-numerica.md`.
+# Fissarle al minimo comune denominatore (AVX2, che qualunque x86-64 dal 2013
+# ha) rimette d'accordo numpy, e su quello si regge il residuo del polyfit di
+# `MachineLearning`. NON basta per torch, e la prima stesura di questa riga
+# diceva il contrario: `BLAS_INFO=mkl`, cioe' le moltiplicazioni fra matrici di
+# torch passano da MKL, che `OPENBLAS_CORETYPE` non tocca. Provate e scartate
+# anche `MKL_CBWR` (la riproducibilita' condizionale di MKL),
+# `DNNL_MAX_CPU_ISA` e il numero di thread: nessuna sposta i numeri qui.
+# Da qui `INSTABILI` piu' sotto. Il racconto per il lettore sta in
+# `book/Matematica/analisi-numerica.md`.
 #
 # Solo su x86-64: `Haswell` su ARM non esiste, e chi verifica da un Mac Apple
 # Silicon si troverebbe OpenBLAS a lamentarsi di un nome che non conosce.
@@ -68,6 +73,28 @@ KERNEL_FISSI = {
     "OPENBLAS_CORETYPE": "Haswell",
     "ATEN_CPU_CAPABILITY": "avx2",
 } if platform.machine() in ("x86_64", "AMD64") else {}
+
+# I capitoli le cui uscite NON sono riproducibili fra macchine diverse, e il
+# perche' di ciascuno. Non e' una scusa per non controllarli: qui sono
+# controllati sempre, e il cancello di `strumenti/pubblica.py` li esegue prima
+# di ogni pubblicazione, sulla macchina che quei numeri li ha prodotti. E'
+# `--salta-instabili` (che passa solo la CI pubblica) a lasciarli fuori, perche'
+# li' l'hardware ruota.
+#
+# Misurato sul commit 33cbf33: lo stesso identico codice e' andato rosso 2 volte
+# su 6, sempre negli stessi undici punti e sempre con gli stessi valori. I
+# runner di GitHub sono di due tipi, ciascuno deterministico, e l'ultima cifra
+# di un addestramento in virgola mobile dipende da quale ti tocca.
+INSTABILI = {
+    "Efficienza":
+        "pota e riaddestra una rete, e quantizza: l'accuratezza dopo la"
+        " potatura cambia di un punto fra un runner e l'altro",
+    "ModelliLatenti":
+        "addestra autoencoder e li disegna in ASCII, quindi la differenza"
+        " nell'ultima cifra diventa un carattere diverso nel disegno",
+    "VerosimiglianzaEsatta":
+        "la log-verosimiglianza media si sposta di un millesimo di nat",
+}
 
 
 def avvisa_se_carica() -> None:
@@ -242,6 +269,10 @@ def main() -> None:
     ap.add_argument("capitoli", nargs="*", help="quali capitoli (tutti se vuoto)")
     ap.add_argument("--elenco", action="store_true",
                     help="dice che cosa e' coperto e che cosa no, senza eseguire")
+    ap.add_argument("--salta-instabili", action="store_true",
+                    help="lascia fuori i capitoli di `INSTABILI`, le cui uscite"
+                         " non sono riproducibili fra macchine diverse (lo usa"
+                         " la CI pubblica, dove l'hardware ruota)")
     ap.add_argument("--anche-lenti", action="store_true",
                     help="esegue anche i blocchi `pt-lento`, che la CI salta "
                          "(scaricano modelli: serve la rete, e del tempo)")
@@ -250,6 +281,11 @@ def main() -> None:
     tutti = GN.capitoli()
     scelti = {k: v for k, v in tutti.items()
               if not args.capitoli or k in args.capitoli}
+    saltati = {}
+    if args.salta_instabili:
+        saltati = {k: INSTABILI[k] for k in list(scelti) if k in INSTABILI}
+        for k in saltati:
+            del scelti[k]
     if args.capitoli and not scelti:
         print(f"nessun capitolo fra {args.capitoli}; ci sono: "
               f"{', '.join(sorted(tutti))}")
@@ -271,6 +307,10 @@ def main() -> None:
         return
 
     avvisa_se_carica()
+    # Un'esclusione taciuta e' un buco; detta, e' una decisione. La si legge nel
+    # log della CI, accanto ai capitoli che invece sono stati controllati.
+    for nome, perche in sorted(saltati.items()):
+        print(f"  ~  {nome:28} fuori da qui: {perche}")
     problemi = 0
     for nome, pagine in sorted(scelti.items()):
         raccolti = [(p, *x) for p in pagine

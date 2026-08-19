@@ -73,7 +73,13 @@ jobs:
       # di essi poggia la regola che i numeri commentati li stampi la macchina.
       # Gira sul sorgente, quindi copre anche i capitoli sotto le tre celle,
       # che un notebook non ce l'hanno.
+      # `--salta-instabili` lascia fuori i tre capitoli che addestrano: le loro
+      # ultime cifre dipendono dal runner che tocca (misurato: 2 rossi su 6
+      # esecuzioni dello stesso commit), e un controllo rosso a caso non lo
+      # legge piu' nessuno. Quei tre li esegue il cancello di `pubblica.py`,
+      # sulla macchina che i numeri li ha scritti. La ragione di ciascuno sta
+      # in `INSTABILI`, dentro lo script, e viene stampata qui sotto.
       - name: I numeri stampati nel libro sono quelli veri?
         env:
           MPLBACKEND: Agg
-        run: python3 scripts/verifica-uscite.py
+        run: python3 scripts/verifica-uscite.py --salta-instabili

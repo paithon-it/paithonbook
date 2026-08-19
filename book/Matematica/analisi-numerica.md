@@ -415,10 +415,19 @@ sia arrotondata correttamente, non che una riduzione abbia un ordine canonico;
 per la stessa ragione conta anche il numero di thread, perché una riduzione
 parallela spezza la somma in tanti pezzi quanti sono gli esecutori.
 
-Le due scelte si possono fissare dall’esterno, con `OPENBLAS_CORETYPE` per
-OpenBLAS e `ATEN_CPU_CAPABILITY` per PyTorch. È la prova che chiude
-l’aneddoto: fissandole entrambe al minimo comune denominatore fra i due
-processori, i numeri che erano in disaccordo sono tornati identici.
+La scelta si può fissare dall’esterno, con `OPENBLAS_CORETYPE` per OpenBLAS e
+`ATEN_CPU_CAPABILITY` per le operazioni su CPU di PyTorch, e fissarla rimette
+d’accordo la parte di conto che passa da quelle due strade: è così che il
+residuo dell’aneddoto è tornato identico sulle due macchine.
+
+Non basta però a garantire l’accordo in generale, e il seguito della storia
+vale più della prima parte. I prodotti fra matrici di PyTorch non passano da
+OpenBLAS ma da un’altra libreria ancora, che quelle variabili non toccano; e
+una terza macchina, con le stesse due variabili fissate, ha ricominciato a
+discostarsi nell’ultima cifra. La riproducibilità bit a bit fra calcolatori
+diversi non è una casella da spuntare: si perde di nuovo appena un pezzo del
+conto sceglie una strada per conto proprio, e per questo due esecuzioni su
+macchine diverse si confrontano con una tolleranza, non con l’uguaglianza.
 
 `````
 
