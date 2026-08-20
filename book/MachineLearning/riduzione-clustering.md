@@ -953,7 +953,7 @@ Tre posti in cui lo si ritrova. Il primo è
 {doc}`Speech Recognition </SpeechRecognition/overview>`: i sistemi che per
 trent'anni hanno trascritto il parlato usavano proprio misture gaussiane come
 queste, e le addestravano con EM. Il secondo è
-{doc}`Come si spezza il testo </NaturalLanguageProcessing/tokenizzatori>`:
+{doc}`Oltre il BPE </NaturalLanguageProcessing/oltre-il-bpe>`:
 anche lì
 c'è un metodo che sceglie i pezzi migliori senza sapere in anticipo come le
 parole vadano tagliate, e il motore è di nuovo EM. Il terzo arriva molto più

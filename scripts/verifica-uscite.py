@@ -169,6 +169,13 @@ def blocchi_di(pagina: pathlib.Path, anche_lenti: bool = False):
         # la fine del recinto: da qui in poi si cerca l'uscita attesa
         fine = testo.index("```", testo.index(codice, posizione) + len(codice)) + 3
         att = attesa_dopo(testo, fine)
+        # le magie IPython (`%timeit`, `!pip`) sono legittime in un notebook
+        # ma non in Python puro: si commentano, come fa gia' la verifica dei
+        # notebook, invece di lasciare che facciano rosso l'intero capitolo
+        # (la ricerca della fine del blocco usa il testo originale, quindi la
+        # trasformazione arriva DOPO)
+        codice = "".join(("# " + r) if re.match(r"^\s*[%!]", r) else r
+                         for r in codice.splitlines(keepends=True))
         fuori.append((riga_di(testo, posizione), codice,
                       att[0] if att else None,
                       riga_di(testo, att[1]) if att else None))

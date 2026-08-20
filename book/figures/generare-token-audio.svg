@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: la generazione audio via token.
+  Riga sopra: la forma d'onda entra nell'encoder del codec neurale e diventa
+  una fila corta di token numerati. Riga sotto: un Transformer continua la
+  fila (token nuovi in terracotta) e il decoder del codec ritrasforma i token
+  in suono. Palette-locked, fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" role="img"
+     aria-label="Sopra: una forma d'onda entra nell'encoder del codec neurale e ne esce una fila corta di token numerati. Sotto: un Transformer continua la fila producendo token nuovi, evidenziati in terracotta, e il decoder del codec ritrasforma la fila di token in una forma d'onda nuova.">
+  <style>
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#1A1A1A; }
+    .leg { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#5E5852; }
+    .tok { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; }
+  </style>
+
+  <!-- RIGA 1: comprimere -->
+  <g transform="translate(20,34)">
+    <path d="M 0,26 C 6,10 12,42 20,26 C 26,16 32,36 40,26 C 46,4 56,48 64,26
+             C 70,18 76,34 84,26 C 90,8 100,44 108,26"
+          fill="none" stroke="#2D5A5C" stroke-width="2.4"/>
+    <text class="leg" x="54" y="58" text-anchor="middle">il suono</text>
+  </g>
+  <path d="M 140,60 L 168,60" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="172,60 162,55 162,65" fill="#1A1A1A"/>
+  <g transform="translate(178,36)">
+    <polygon points="0,0 64,12 64,36 0,48" fill="#C9A961" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round"/>
+    <text class="lbl" x="30" y="28" text-anchor="middle">encoder</text>
+    <text class="leg" x="32" y="66" text-anchor="middle">del codec</text>
+  </g>
+  <path d="M 250,60 L 278,60" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="282,60 272,55 272,65" fill="#1A1A1A"/>
+  <g transform="translate(290,40)">
+    <g stroke="#1A1A1A" stroke-width="1.6">
+      <rect x="0"   y="0" width="44" height="40" rx="5" fill="#2D5A5C" opacity="0.22"/>
+      <rect x="52"  y="0" width="44" height="40" rx="5" fill="#2D5A5C" opacity="0.22"/>
+      <rect x="104" y="0" width="44" height="40" rx="5" fill="#2D5A5C" opacity="0.22"/>
+      <rect x="156" y="0" width="44" height="40" rx="5" fill="#2D5A5C" opacity="0.22"/>
+    </g>
+    <text class="tok" x="22"  y="25" text-anchor="middle" fill="#1A1A1A">17</text>
+    <text class="tok" x="74"  y="25" text-anchor="middle" fill="#1A1A1A">4</text>
+    <text class="tok" x="126" y="25" text-anchor="middle" fill="#1A1A1A">92</text>
+    <text class="tok" x="178" y="25" text-anchor="middle" fill="#1A1A1A">31</text>
+    <text class="leg" x="100" y="62" text-anchor="middle">pochi token al secondo,</text>
+    <text class="leg" x="100" y="76" text-anchor="middle">non migliaia di campioni</text>
+  </g>
+
+  <!-- RIGA 2: generare e decodificare -->
+  <g transform="translate(20,196)">
+    <rect x="0" y="0" width="110" height="48" rx="6" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="2"/>
+    <text class="lbl" x="55" y="22" text-anchor="middle" style="fill:#F8F5EE">Transformer</text>
+    <text class="leg" x="55" y="38" text-anchor="middle" style="fill:#F8F5EE">un token alla volta</text>
+  </g>
+  <path d="M 134,220 L 150,220" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="150,220 140,215 140,225" fill="#1A1A1A"/>
+  <g transform="translate(158,200)">
+    <g stroke="#1A1A1A" stroke-width="1.6">
+      <rect x="0"   y="0" width="44" height="40" rx="5" fill="#2D5A5C" opacity="0.22"/>
+      <rect x="52"  y="0" width="44" height="40" rx="5" fill="#2D5A5C" opacity="0.22"/>
+      <rect x="104" y="0" width="44" height="40" rx="5" fill="#B5532C"/>
+      <rect x="156" y="0" width="44" height="40" rx="5" fill="#B5532C"/>
+    </g>
+    <text class="tok" x="22"  y="25" text-anchor="middle" fill="#1A1A1A">92</text>
+    <text class="tok" x="74"  y="25" text-anchor="middle" fill="#1A1A1A">31</text>
+    <text class="tok" x="126" y="25" text-anchor="middle" fill="#F8F5EE">58</text>
+    <text class="tok" x="178" y="25" text-anchor="middle" fill="#F8F5EE">6</text>
+    <text class="leg" x="100" y="60" text-anchor="middle">la fila continua: i nuovi</text>
+    <text class="leg" x="100" y="74" text-anchor="middle">sono in terracotta</text>
+  </g>
+  <path d="M 372,220 L 400,220" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="404,220 394,215 394,225" fill="#1A1A1A"/>
+  <g transform="translate(410,196)">
+    <polygon points="0,12 64,0 64,48 0,36" fill="#C9A961" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round"/>
+    <text class="lbl" x="31" y="28" text-anchor="middle">decoder</text>
+    <text class="leg" x="32" y="66" text-anchor="middle">del codec</text>
+  </g>
+  <path d="M 486,220 L 514,220" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="518,220 508,215 508,225" fill="#1A1A1A"/>
+  <g transform="translate(524,194)">
+    <path d="M 0,26 C 6,6 12,46 20,26 C 26,14 32,38 40,26 C 46,2 56,50 64,26
+             C 70,18 76,34 84,26 C 90,10 98,42 104,26"
+          fill="none" stroke="#B5532C" stroke-width="2.4"/>
+    <text class="leg" x="52" y="58" text-anchor="middle">suono nuovo</text>
+  </g>
+</svg>

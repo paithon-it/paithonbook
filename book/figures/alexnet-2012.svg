@@ -1,42 +1,110 @@
-<svg viewBox="0 0 700 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Uno stack profondo di otto strati addestrato su due GPU produce il crollo dell'errore top-5 di ImageNet dal 26,2% dei metodi a mano al 15,3% di AlexNet">
-  <rect x="0" y="0" width="700" height="380" fill="#F8F5EE"/>
-  <text x="350" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Profondità + GPU = svolta</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: AlexNet 2012, due tronchi e il salto.
+  Sinistra: gli otto strati addestrabili spezzati in DUE colonne, una per GPU,
+  come nel paper: fra conv1-conv2 e fra conv3-conv4-conv5 le colonne restano
+  separate; dopo conv2 e su tutti i passaggi densi le connessioni incrociano
+  (linee a X). Destra: il salto dell'errore top-5, 26,2% -> 15,3%.
+  Palette-locked, fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 370" role="img"
+     aria-label="A sinistra gli otto strati addestrabili di AlexNet divisi in due colonne, una per ciascuna delle due GPU: cinque strati convolutivi in teal e tre densi in ocra. Fra il primo e il secondo strato, e fra il terzo, il quarto e il quinto, le due colonne restano separate; dopo il secondo strato e su tutti i passaggi fra gli strati densi le connessioni incrociano da una GPU all'altra, disegnate come linee a X. A destra il confronto dell'errore top-5: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet.">
+  <style>
+    .tit { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:bold; fill:#1A1A1A; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#1A1A1A; }
+    .leg { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#5E5852; }
+    .num { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:bold; fill:#1A1A1A; }
+  </style>
+  <text class="tit" x="350" y="30" text-anchor="middle">Profondità + GPU = svolta</text>
 
-  <!-- Ladder di 8 strati -->
-  <text x="145" y="66" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">8 strati addestrabili</text>
-  <rect x="70" y="78"  width="150" height="20" rx="3" fill="#2D5A5C"/>
-  <rect x="70" y="102" width="150" height="20" rx="3" fill="#2D5A5C"/>
-  <rect x="70" y="126" width="150" height="20" rx="3" fill="#2D5A5C"/>
-  <rect x="70" y="150" width="150" height="20" rx="3" fill="#2D5A5C"/>
-  <rect x="70" y="174" width="150" height="20" rx="3" fill="#2D5A5C"/>
-  <rect x="70" y="198" width="150" height="20" rx="3" fill="#C9A961"/>
-  <rect x="70" y="222" width="150" height="20" rx="3" fill="#C9A961"/>
-  <rect x="70" y="246" width="150" height="20" rx="3" fill="#C9A961"/>
-  <text x="235" y="150" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">conv</text>
-  <text x="235" y="228" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">densi</text>
+  <!-- DUE TRONCHI -->
+  <g transform="translate(60,58)">
+    <text class="leg" x="90" y="0" text-anchor="middle">8 strati addestrabili, spezzati in due</text>
+    <!-- conv1 -->
+    <rect x="20"  y="12" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <rect x="100" y="12" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <!-- dritte -->
+    <line x1="42" y1="28" x2="42" y2="40" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="58" y1="28" x2="58" y2="40" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="122" y1="28" x2="122" y2="40" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="138" y1="28" x2="138" y2="40" stroke="#1A1A1A" stroke-width="1.6"/>
+    <!-- conv2 -->
+    <rect x="20"  y="40" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <rect x="100" y="40" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <!-- INCROCIO dopo conv2 -->
+    <g stroke="#B5532C" stroke-width="1.8">
+      <line x1="50" y1="56" x2="50" y2="70"/><line x1="130" y1="56" x2="130" y2="70"/>
+      <line x1="50" y1="56" x2="130" y2="70"/><line x1="130" y1="56" x2="50" y2="70"/>
+    </g>
+    <!-- conv3 -->
+    <rect x="20"  y="70" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <rect x="100" y="70" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <line x1="42" y1="86" x2="42" y2="98" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="58" y1="86" x2="58" y2="98" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="122" y1="86" x2="122" y2="98" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="138" y1="86" x2="138" y2="98" stroke="#1A1A1A" stroke-width="1.6"/>
+    <!-- conv4 -->
+    <rect x="20"  y="98" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <rect x="100" y="98" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <line x1="42" y1="114" x2="42" y2="126" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="58" y1="114" x2="58" y2="126" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="122" y1="114" x2="122" y2="126" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="138" y1="114" x2="138" y2="126" stroke="#1A1A1A" stroke-width="1.6"/>
+    <!-- conv5 -->
+    <rect x="20"  y="126" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <rect x="100" y="126" width="60" height="16" rx="4" fill="#2D5A5C"/>
+    <!-- INCROCIO conv5 -> fc6 -->
+    <g stroke="#B5532C" stroke-width="1.8">
+      <line x1="50" y1="142" x2="50" y2="156"/><line x1="130" y1="142" x2="130" y2="156"/>
+      <line x1="50" y1="142" x2="130" y2="156"/><line x1="130" y1="142" x2="50" y2="156"/>
+    </g>
+    <!-- fc6 -->
+    <rect x="20"  y="156" width="60" height="16" rx="4" fill="#C9A961"/>
+    <rect x="100" y="156" width="60" height="16" rx="4" fill="#C9A961"/>
+    <!-- INCROCIO fc6 -> fc7 -->
+    <g stroke="#B5532C" stroke-width="1.8">
+      <line x1="50" y1="172" x2="50" y2="186"/><line x1="130" y1="172" x2="130" y2="186"/>
+      <line x1="50" y1="172" x2="130" y2="186"/><line x1="130" y1="172" x2="50" y2="186"/>
+    </g>
+    <!-- fc7 -->
+    <rect x="20"  y="186" width="60" height="16" rx="4" fill="#C9A961"/>
+    <rect x="100" y="186" width="60" height="16" rx="4" fill="#C9A961"/>
+    <!-- INCROCIO fc7 -> fc8 -->
+    <g stroke="#B5532C" stroke-width="1.8">
+      <line x1="50" y1="202" x2="50" y2="216"/><line x1="130" y1="202" x2="130" y2="216"/>
+      <line x1="50" y1="202" x2="130" y2="216"/><line x1="130" y1="202" x2="50" y2="216"/>
+    </g>
+    <!-- fc8 -->
+    <rect x="20"  y="216" width="60" height="16" rx="4" fill="#C9A961"/>
+    <rect x="100" y="216" width="60" height="16" rx="4" fill="#C9A961"/>
+    <!-- etichette laterali -->
+    <text class="leg" x="172" y="80">conv</text>
+    <text class="leg" x="172" y="198">densi</text>
+    <!-- GPU -->
+    <rect x="20"  y="248" width="60" height="22" rx="5" fill="none" stroke="#1A1A1A" stroke-width="1.6"/>
+    <rect x="100" y="248" width="60" height="22" rx="5" fill="none" stroke="#1A1A1A" stroke-width="1.6"/>
+    <text class="lbl" x="50"  y="263" text-anchor="middle">GPU 1</text>
+    <text class="lbl" x="130" y="263" text-anchor="middle">GPU 2</text>
+    <text class="leg" x="90" y="292" text-anchor="middle">2× GTX 580, ~6 giorni</text>
+    <text class="leg" x="90" y="308" text-anchor="middle">in terracotta: dove le due metà si parlano</text>
+  </g>
 
-  <!-- Due GPU -->
-  <rect x="70"  y="286" width="70" height="30" rx="4" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="105" y="305" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">GPU 1</text>
-  <rect x="150" y="286" width="70" height="30" rx="4" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="185" y="305" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">GPU 2</text>
-  <text x="145" y="338" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">2× GTX 580, ~6 giorni</text>
+  <!-- freccia -->
+  <path d="M 270,175 L 420,175" stroke="#1A1A1A" stroke-width="2.4"/>
+  <polygon points="428,175 414,168 414,182" fill="#1A1A1A"/>
+  <text class="lbl" x="349" y="163" text-anchor="middle">profondità + GPU</text>
 
-  <!-- Freccia centrale -->
-  <text x="350" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">profondità + GPU</text>
-  <line x1="250" y1="180" x2="452" y2="180" stroke="#1A1A1A" stroke-width="2"/>
-  <path d="M452 180 L 440 174 L 440 186 Z" fill="#1A1A1A"/>
-
-  <!-- Grafico crollo errore -->
-  <line x1="480" y1="90" x2="480" y2="300" stroke="#1A1A1A" stroke-width="1.5"/>
-  <line x1="480" y1="300" x2="668" y2="300" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="478" y="80" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">errore top-5</text>
-
-  <line x1="515" y1="117" x2="630" y2="193" stroke="#B5532C" stroke-width="2.5"/>
-  <circle cx="515" cy="117" r="7" fill="#8B847C"/>
-  <circle cx="630" cy="193" r="7" fill="#B5532C"/>
-  <text x="515" y="105" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">26,2%</text>
-  <text x="630" y="181" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">15,3%</text>
-  <text x="515" y="320" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">metodi a mano</text>
-  <text x="630" y="320" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">AlexNet</text>
+  <!-- SALTO DELL'ERRORE -->
+  <g transform="translate(440,58)">
+    <line x1="20" y1="14" x2="20" y2="230" stroke="#1A1A1A" stroke-width="1.6"/>
+    <line x1="20" y1="230" x2="220" y2="230" stroke="#1A1A1A" stroke-width="1.6"/>
+    <text class="leg" x="38" y="20">errore top-5</text>
+    <circle cx="75" cy="52" r="7" fill="#8B847C"/>
+    <circle cx="190" cy="122" r="7" fill="#B5532C"/>
+    <line x1="80" y1="56" x2="184" y2="118" stroke="#B5532C" stroke-width="2.4"/>
+    <text class="num" x="75" y="38" text-anchor="middle">26,2%</text>
+    <text class="num" x="190" y="108" text-anchor="middle">15,3%</text>
+    <text class="leg" x="75" y="250" text-anchor="middle">metodi a mano</text>
+    <text class="lbl" x="190" y="250" text-anchor="middle">AlexNet</text>
+  </g>
 </svg>

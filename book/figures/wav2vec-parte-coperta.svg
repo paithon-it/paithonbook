@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: il gioco della parte coperta di wav2vec 2.0.
+  Sopra: la forma d'onda spezzata in pezzetti, con due pezzetti coperti da
+  una mascherina scura. Sotto: l'alfabeto sonoro delle unita'; per il pezzetto
+  coperto il modello deve scegliere l'unita' giusta (teal, spuntata) fra i
+  distrattori. Palette-locked, fondo trasparente.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img"
+     aria-label="In alto una forma d'onda spezzata in pezzetti da linee verticali; due pezzetti sono coperti da un rettangolo scuro con un punto interrogativo. In basso quattro unita' dell'alfabeto sonoro come tessere: una, in teal con la spunta, e' quella giusta sotto la copertura; le altre tre, in grigio, sono i distrattori. Una freccia scende dal pezzetto coperto alla fila delle unita': il gioco e' riconoscere quale unita' c'era sotto.">
+  <style>
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#1A1A1A; }
+    .leg { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#5E5852; }
+    .big { font-family:Fraunces, Georgia, serif; font-size:22px; font-weight:600; fill:#F8F5EE; }
+  </style>
+
+  <!-- FORMA D'ONDA -->
+  <g transform="translate(40,46)">
+    <path d="M 0,40 C 10,20 18,60 28,40 C 36,26 44,58 56,40 C 64,10 76,66 88,40
+             C 96,30 104,52 116,40 C 126,6 138,72 150,40 C 158,28 166,50 178,40
+             C 188,16 200,62 212,40 C 220,32 228,48 240,40 C 250,12 262,66 274,40
+             C 284,28 294,52 306,40 C 316,20 328,58 340,40 C 350,30 360,50 372,40
+             C 382,14 396,64 408,40 C 418,30 428,50 440,40 C 450,22 462,56 472,40
+             C 480,32 490,46 500,40"
+          fill="none" stroke="#2D5A5C" stroke-width="2.4"/>
+    <!-- separatori dei pezzetti -->
+    <g stroke="#1A1A1A" stroke-width="1" opacity="0.35">
+      <line x1="62"  y1="0" x2="62"  y2="80"/><line x1="125" y1="0" x2="125" y2="80"/>
+      <line x1="188" y1="0" x2="188" y2="80"/><line x1="250" y1="0" x2="250" y2="80"/>
+      <line x1="312" y1="0" x2="312" y2="80"/><line x1="375" y1="0" x2="375" y2="80"/>
+      <line x1="438" y1="0" x2="438" y2="80"/>
+    </g>
+    <!-- mascherine -->
+    <rect x="128" y="4" width="57" height="72" rx="4" fill="#1A1A1A"/>
+    <text class="big" x="156" y="48" text-anchor="middle">?</text>
+    <rect x="378" y="4" width="57" height="72" rx="4" fill="#1A1A1A"/>
+    <text class="big" x="406" y="48" text-anchor="middle">?</text>
+    <text class="leg" x="250" y="100" text-anchor="middle">la forma d'onda, a pezzetti: due sono coperti</text>
+  </g>
+
+  <!-- freccia dal pezzetto coperto alla scelta -->
+  <path d="M 196,130 C 210,160 240,180 268,192" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+  <polygon points="272,194 261,193 265,184" fill="#1A1A1A"/>
+  <text class="leg" x="176" y="168">che cosa c'era sotto?</text>
+
+  <!-- L'ALFABETO SONORO: risposta multipla -->
+  <g transform="translate(284,186)">
+    <g stroke="#1A1A1A" stroke-width="1.6">
+      <rect x="0"   y="0" width="56" height="44" rx="5" fill="#8B847C" opacity="0.5"/>
+      <rect x="70"  y="0" width="56" height="44" rx="5" fill="#2D5A5C"/>
+      <rect x="140" y="0" width="56" height="44" rx="5" fill="#8B847C" opacity="0.5"/>
+      <rect x="210" y="0" width="56" height="44" rx="5" fill="#8B847C" opacity="0.5"/>
+    </g>
+    <text class="lbl" x="28"  y="27" text-anchor="middle">unità 12</text>
+    <text class="lbl" x="98"  y="27" text-anchor="middle" style="fill:#F8F5EE">unità 41</text>
+    <text class="lbl" x="168" y="27" text-anchor="middle">unità 7</text>
+    <text class="lbl" x="238" y="27" text-anchor="middle">unità 89</text>
+    <!-- spunta sulla giusta -->
+    <path d="M 84,-14 L 94,-4 L 112,-26" fill="none" stroke="#B5532C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="leg" x="98" y="62" text-anchor="middle">la giusta</text>
+    <text class="leg" x="203" y="62" text-anchor="middle">i distrattori</text>
+    <text class="leg" x="133" y="84" text-anchor="middle">l'alfabeto sonoro: un test a risposta multipla</text>
+  </g>
+</svg>

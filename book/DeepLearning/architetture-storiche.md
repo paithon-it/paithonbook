@@ -83,18 +83,21 @@ squadra tornerà con ResNet, più avanti in questa sezione.)
 
 ```{figure} ../figures/alexnet-2012.svg
 :name: fig-alexnet
-:alt: "A sinistra, la pila degli otto strati addestrabili di AlexNet: cinque convolutivi e poi tre densi; sotto la pila, due riquadri per le due schede grafiche e la nota «2× GTX 580, circa sei giorni». A destra, il confronto dell'errore top-5 delle sottomissioni a ImageNet: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet."
+:alt: "A sinistra, gli otto strati addestrabili di AlexNet divisi in due colonne, una per ciascuna delle due GPU: cinque convolutivi in teal e tre densi in ocra. Fra il primo e il secondo strato, e fra il terzo, il quarto e il quinto, le due colonne restano separate; dopo il secondo strato e su tutti i passaggi fra gli strati densi le connessioni incrociano da una GPU all'altra, disegnate come linee a X in terracotta. A destra, il confronto dell'errore top-5 delle sottomissioni a ImageNet: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet."
 :width: 96%
 
 Profondità più GPU. Il salto dell'errore, a destra, è la parte che fece
-notizia; la riga in fondo a sinistra, due schede da gioco per sei giorni, è
-quella che rese l'esperimento ripetibile da chiunque.
+notizia; a sinistra la rete com'era davvero: due metà, una per scheda, che si
+parlano soltanto agli incroci in terracotta. Due schede da gioco per sei
+giorni sono anche la ragione per cui l'esperimento era ripetibile da chiunque.
 ```
 
 La riga in fondo a sinistra della {numref}`fig-alexnet`, le due schede grafiche
 da videogioco, non era una scelta di eleganza: la memoria di una scheda sola non
 bastava a contenere la rete, e per farcela stare gli autori la divisero in due
-metà, una per scheda, che si scambiano informazione soltanto a certi strati.
+metà, una per scheda, che si scambiano informazione soltanto agli incroci che
+la figura segna in terracotta: dopo il secondo strato convolutivo, e su tutti
+i passaggi fra gli strati densi.
 
 Non è la prima volta che il costo del calcolo disegna una rete: già in LeNet-5,
 quattordici anni prima, LeCun aveva rinunciato a collegare ogni pezzo di uno

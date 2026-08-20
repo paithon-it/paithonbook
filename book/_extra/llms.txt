@@ -48,6 +48,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Alberi e metodi ensemble](https://book.paithon.it/main/MachineLearning/alberi-ensemble.html)
   - [Il bootstrap](https://book.paithon.it/main/MachineLearning/il-bootstrap.html)
   - [Support Vector Machine](https://book.paithon.it/main/MachineLearning/svm.html)
+  - [Il kernel trick](https://book.paithon.it/main/MachineLearning/svm-kernel.html)
   - [Modelli generativi](https://book.paithon.it/main/MachineLearning/modelli-generativi.html)
   - [Riduzione e clustering](https://book.paithon.it/main/MachineLearning/riduzione-clustering.html)
   - [Valutare un raggruppamento](https://book.paithon.it/main/MachineLearning/valutare-un-raggruppamento.html)
@@ -113,6 +114,7 @@ della sezione e URL), non si ridistribuisce il testo.
 - [Deep Reinforcement Learning](https://book.paithon.it/main/DeepReinforcementLearning/overview.html): Nel 2013 un laboratorio londinese ancora poco noto, DeepMind, pubblica un risultato che sembra un giochino e invece è uno spartiacque: una rete neurale impara a giocare a Breakout, il classico dei…
   - [Deep Q-Network (DQN)](https://book.paithon.it/main/DeepReinforcementLearning/dqn.html)
   - [Gradiente di policy](https://book.paithon.it/main/DeepReinforcementLearning/policy-gradient.html)
+  - [MCTS e AlphaGo](https://book.paithon.it/main/DeepReinforcementLearning/mcts-alphago.html)
   - [Controllo continuo](https://book.paithon.it/main/DeepReinforcementLearning/controllo-continuo.html)
   - [RL basato su modello](https://book.paithon.it/main/DeepReinforcementLearning/model-based.html)
   - [Imparare guardando](https://book.paithon.it/main/DeepReinforcementLearning/imitazione.html)
@@ -125,6 +127,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [La cassetta degli attrezzi](https://book.paithon.it/main/NaturalLanguageProcessing/strumenti-classici.html)
   - [Rappresentare il testo](https://book.paithon.it/main/NaturalLanguageProcessing/rappresentare-testo.html)
   - [Come si spezza il testo](https://book.paithon.it/main/NaturalLanguageProcessing/tokenizzatori.html)
+  - [Oltre il BPE](https://book.paithon.it/main/NaturalLanguageProcessing/oltre-il-bpe.html)
   - [Classificare il testo](https://book.paithon.it/main/NaturalLanguageProcessing/classificazione-testo.html)
   - [Modelli n-gram](https://book.paithon.it/main/NaturalLanguageProcessing/modelli-ngram.html)
   - [Modelli di sequenza](https://book.paithon.it/main/NaturalLanguageProcessing/modelli-sequenza.html)

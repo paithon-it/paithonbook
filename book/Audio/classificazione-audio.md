@@ -182,7 +182,17 @@ di Gong, Chung e Glass {cite}`gong2021ast`, e ha buttato via proprio quelle. Le
 convoluzioni sono i **filtri che scorrono**: piccole griglie di numeri, larghe
 pochi quadretti, che passano sull'immagine un pezzetto alla volta cercando
 sempre la stessa cosa (un bordo, una macchia, una riga). Erano il pezzo di
-macchina attorno a cui tutto il resto era costruito.
+macchina attorno a cui tutto il resto era costruito
+({numref}`fig-ast-tessere`).
+
+```{figure} ../figures/ast-tessere.svg
+:name: fig-ast-tessere
+:alt: A sinistra uno spettrogramma stilizzato con un colpo secco, una banda verticale marcata, e la sua eco più tenue più avanti nel tempo, tagliato in tessere quadrate da una griglia. A destra le stesse tessere in fila come parole, con un arco che collega la tessera del colpo a quella dell'eco, lontane nella fila.
+:width: 100%
+
+Lo spettrogramma tagliato in tessere, e le tessere messe in fila: il colpo e
+la sua eco, lontani sulla lastra, si guardano direttamente.
+```
 
 `````{tab} Elementare
 

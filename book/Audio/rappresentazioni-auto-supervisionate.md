@@ -111,7 +111,17 @@ Il primo modello a rendere questa idea pienamente convincente per il parlato è
 che oggi si chiama Meta AI) nel 2020 {cite}`baevski2020wav2vec`. La ricetta
 ricalca il «gioco della parola coperta» che nel testo ha reso grande BERT (il
 *cloze test*, riempire il buco in una frase) ma applicato a pezzetti di suono
-invece che a parole.
+invece che a parole ({numref}`fig-wav2vec-parte-coperta`).
+
+```{figure} ../figures/wav2vec-parte-coperta.svg
+:name: fig-wav2vec-parte-coperta
+:alt: In alto una forma d'onda spezzata in pezzetti, con due pezzetti coperti da un rettangolo scuro con un punto interrogativo. In basso quattro unità dell'alfabeto sonoro come tessere di un test a risposta multipla, una giusta con la spunta e tre distrattori in grigio; una freccia scende dal pezzetto coperto alla fila delle unità.
+:width: 100%
+
+Il gioco della parte coperta: sotto la mascherina c'è una delle unità
+dell'alfabeto sonoro, e il modello deve riconoscere quale, fra la giusta e i
+distrattori.
+```
 
 `````{tab} Elementare
 

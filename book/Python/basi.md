@@ -570,6 +570,104 @@ confondersi con l'uguale singolo, che invece assegna; messi insieme,
 per ogni `n` da 0 a 9, se `n` è pari". La stessa forma esiste per i dizionari
 (`{k: v for ...}`) e per i set.
 
+## Quando il programma si rompe: il traceback, e il paracadute
+
+Prima o poi una riga va storta, e Python risponde con un **traceback**: la
+ricostruzione dell'incidente, stampata un attimo prima di fermarsi. Salvato in
+un file `errore.py`, questo programma chiede il voto di una persona che nel
+registro non c'è:
+
+```{code-block} python
+:class: pt-non-eseguibile
+
+voti = {"Ada": 30, "Bruno": 28}
+
+def voto_di(nome):
+    return voti[nome]
+
+print(voto_di("Carla"))
+```
+
+Eseguito con `python3 errore.py`, si ferma così:
+
+```text
+Traceback (most recent call last):
+  File "errore.py", line 6, in <module>
+    print(voto_di("Carla"))
+  File "errore.py", line 4, in voto_di
+    return voti[nome]
+KeyError: 'Carla'
+```
+
+`````{tab} Elementare
+
+Un traceback si legge **dal fondo**. L'ultima riga dice *che cosa* è successo:
+`KeyError: 'Carla'`, cioè «ho cercato la chiave `Carla` e non c'era». Le righe
+sopra dicono *dove*: ogni coppia «`File`, `line`» è una tappa del viaggio che
+il programma stava facendo, dalla prima chiamata in cima fino alla riga
+incriminata in fondo. Qui il viaggio ha due tappe: la riga 6 ha chiamato
+`voto_di`, e dentro `voto_di` la riga 4 è quella che è caduta.
+
+Quindi, davanti a un traceback lungo uno schermo: niente panico, ultima riga
+per il che cosa, e poi si risale con calma per il dove. È la prima cosa da
+imparare a leggere in Python, perché la si incontra più spesso di qualunque
+altra.
+
+E si può fare di meglio che schiantarsi: mettere un **paracadute** attorno
+alla riga che può cadere. Si scrive `try:` («prova»), e sotto, con
+`except:` («se è andata male»), che cosa fare invece. Il paracadute si mette
+attorno alla riga fragile, non attorno al programma intero: un paracadute che
+copre tutto nasconde anche gli errori che avresti voluto vedere.
+
+`````
+
+`````{tab} Superiore
+
+Il costrutto è `try`/`except`, e la regola d'oro è catturare **poco**:
+
+- si dichiara sempre *quale* eccezione si sta aspettando (`except KeyError:`),
+  perché un `except:` nudo prende qualunque cosa, compreso il `Ctrl+C` con cui
+  vorresti fermare il programma, e trasforma ogni guasto in un silenzio;
+- con `except KeyError as e:` l'oggetto-eccezione finisce in `e`, e porta il
+  messaggio;
+- `raise` senza argomenti, dentro un `except`, rilancia l'eccezione appena
+  catturata: si usa quando si vuole registrare il guasto ma non nasconderlo;
+- i rami facoltativi: `else` gira solo se il `try` è filato liscio, `finally`
+  gira **comunque**, ed è il posto delle pulizie (chiudere un file, rilasciare
+  una risorsa). Il mestiere di `finally` è esattamente quello che il
+  costrutto `with`, più sotto, automatizza.
+
+Lo stile che ne esce ha un nome, **EAFP** (*easier to ask forgiveness than
+permission*): si prova e si gestisce il fallimento, invece di controllare
+tutto prima (`if nome in voti: ...`, lo stile *look before you leap*). In
+Python l'EAFP è idiomatico anche per una ragione pratica: fra il controllo e
+l'uso il mondo può cambiare, mentre il `try` è un gesto solo.
+
+`````
+
+Il paracadute, sul programma di prima:
+
+```python
+voti = {"Ada": 30, "Bruno": 28}
+
+def voto_di(nome):
+    try:
+        return voti[nome]
+    except KeyError:
+        return f"{nome} non e' a verbale"
+
+print(voto_di("Bruno"))
+print(voto_di("Carla"))
+```
+
+```text
+28
+Carla non e' a verbale
+```
+
+Adesso la mancanza di Carla è un fatto gestito, non un incidente: il programma
+decide lui che cosa significa, e lo dice con le sue parole.
+
 ## Un assaggio di oggetti: le classi
 
 Un **oggetto** è una cosa che Python tiene in memoria e che porta con sé due
@@ -1100,6 +1198,9 @@ parete non scende e la CPU è quasi zero, si sta solo aspettando.
 - Le **f-string** (`f"{nome} ha {eta} anni"`) infilano valori dentro il testo, e
   dopo i due punti si dice che aspetto devono avere: `f"{loss:.3f}"` sono tre
   cifre dopo la virgola.
+- Un **traceback** si legge dal fondo: l'ultima riga dice *che cosa* è
+  successo, risalendo si scopre *dove*. E il **paracadute** (`try`/`except`)
+  si mette attorno alla riga fragile, non attorno a tutto il programma.
 - Un **decoratore** (`@qualcosa`) avvolge una funzione senza toccarla:
   `@cronometra` è solo `f = cronometra(f)`. `with` fa la stessa cosa su un
   blocco, e garantisce che alla fine si rimetta tutto a posto anche se qualcosa
@@ -1131,6 +1232,10 @@ parete non scende e la CPU è quasi zero, si sta solo aspettando.
   di scikit-learn e PyTorch.
 - Le **f-string** (`f"{nome} ha {eta} anni"`) inseriscono valori nel testo, con
   il formato dopo i due punti: `f"{loss:.3f}"`.
+- Le eccezioni si gestiscono con `try`/`except` **stretto** (mai `except:`
+  nudo), `else`/`finally` per il seguito e le pulizie, `raise` per rilanciare:
+  è lo stile EAFP, e il traceback si legge dall'ultima riga risalendo la pila
+  delle chiamate.
 - Un **decoratore** (`@qualcosa`) avvolge una funzione senza modificarla:
   `@cronometra` è solo `f = cronometra(f)`. `with` fa la stessa cosa su un
   blocco invece che su una funzione, e garantisce la pulizia anche in caso di

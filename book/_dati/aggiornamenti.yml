@@ -48,6 +48,55 @@
 
 versioni:
 
+- versione: "1.10.0"
+  data: 2026-08-20
+  voci:
+
+  - tipo: nuovo
+    pagina: MachineLearning/svm-kernel.md
+    testo: >
+      **Il kernel trick ha la sua pagina.** La Support Vector Machine, che era
+      la pagina più lunga del libro, si è spezzata alla cucitura naturale: di
+      qua il margine massimo con la strada più larga percorsa passo per passo,
+      di là il kernel trick con la regressione, il riconoscere le anomalie e
+      la pratica con scikit-learn. Due sedute invece di una maratona.
+
+  - tipo: nuovo
+    pagina: DeepReinforcementLearning/mcts-alphago.md
+    testo: >
+      **La ricerca ad albero Monte Carlo, AlphaGo e l'allineamento dei modelli
+      linguistici** si leggono ora in una pagina propria, staccata dal
+      gradiente di policy, che si ferma a PPO e chiude con i suoi riquadri.
+      Il pensare prima di muovere comincia dove finisce l'istinto, e adesso
+      anche l'indice lo dice.
+
+  - tipo: nuovo
+    pagina: NaturalLanguageProcessing/oltre-il-bpe.md
+    testo: >
+      **Oltre il BPE.** WordPiece, SentencePiece e i byte hanno la loro
+      pagina, con le quattro conseguenze che si incontrano davvero lavorando
+      (i numeri spezzati male, l'italiano che costa più token, lo spazio di
+      troppo, il vocabolario congelato). Il BPE resta di qua, con l'esempio
+      svolto e le trenta righe di Python.
+
+  - tipo: ampliato
+    pagina: Python/basi.md
+    testo: >
+      **Il traceback e il paracadute.** Le basi di Python insegnano a leggere
+      un errore (dal fondo, il che cosa; risalendo, il dove) e a mettere
+      `try`/`except` attorno alla riga fragile, con l'except stretto e lo
+      stile che chiede scusa invece di chiedere permesso. Era il buco più
+      grosso del capitolo, e il primo in cui un lettore inciampa da solo.
+
+  - tipo: ampliato
+    testo: >
+      **Cinque disegni nuovi.** I ritagli gemelli dell'apprendimento
+      contrastivo, lo spettrogramma a tessere dell'AST col colpo che guarda la
+      sua eco, la parte coperta di wav2vec col test a risposta multipla, il
+      giro codec-Transformer-decoder della generazione a token; e AlexNet è
+      ridisegnata com'era davvero: due tronchi, uno per GPU, che si parlano
+      soltanto agli incroci.
+
 - versione: "1.9.4"
   data: 2026-08-20
   voci:
@@ -1578,7 +1627,7 @@ versioni:
       scegliere quanti gruppi con un criterio invece che a occhio.
 
   - tipo: ampliato
-    pagina: DeepReinforcementLearning/policy-gradient.md
+    pagina: DeepReinforcementLearning/mcts-alphago.md
     testo: >
       La ricerca ad albero Monte Carlo, che il libro invocava quattro volte
       come spiegazione di AlphaGo e MuZero senza averla mai insegnata. Le sue

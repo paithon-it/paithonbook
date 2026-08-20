@@ -245,7 +245,18 @@ sequenza, e poi il *decoder* del codec li ritrasforma in suono. Il modo in cui
 li produce lo abbiamo già visto per il testo: il modello indovina il token
 successivo, quel token gli rientra davanti insieme a tutti i precedenti, e si
 ricomincia da capo. Si chiama generazione **autoregressiva**, ed è il motore dei
-grandi modelli di linguaggio (gli **LLM**, *large language model*). La via dei
+grandi modelli di linguaggio (gli **LLM**, *large language model*). Il giro
+completo sta in {numref}`fig-generare-token-audio`: il codec comprime, il
+Transformer continua la fila, il decoder la ritrasforma in suono.
+
+```{figure} ../figures/generare-token-audio.svg
+:name: fig-generare-token-audio
+:alt: Sopra, una forma d'onda entra nell'encoder del codec neurale e ne esce una fila corta di token numerati. Sotto, un Transformer continua la fila producendo token nuovi, evidenziati in terracotta, e il decoder del codec ritrasforma la fila in una forma d'onda nuova.
+:width: 100%
+
+Generare token, non campioni: il codec comprime il suono in pochi simboli al
+secondo, il Transformer allunga la fila, e il decoder restituisce l'onda.
+``` La via dei
 token ha un
 precursore: già nel 2020 **Jukebox** {cite}`dhariwal2020jukebox`, di OpenAI,
 riduceva la musica a token e li faceva scrivere in sequenza a un Transformer,

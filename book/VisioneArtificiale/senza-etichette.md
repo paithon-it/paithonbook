@@ -58,7 +58,18 @@ esempi che si elaborano insieme). Quelle altre viste, i rivali da cui il gemello
 va distinto, hanno un nome che tornerà spesso: si chiamano i **negativi**. È la
 ricetta di SimCLR {cite}`chen2020simple`, il lavoro che nel 2020 ha mostrato
 che per far funzionare l'idea non serve nessuna macchineria in più: bastano un
-encoder normale, due trasformazioni scelte bene e batch abbastanza grandi.
+encoder normale, due trasformazioni scelte bene e batch abbastanza grandi
+({numref}`fig-ritagli-gemelli`).
+
+```{figure} ../figures/ritagli-gemelli.svg
+:name: fig-ritagli-gemelli
+:alt: Tre pannelli. A sinistra una fotografia stilizzata di un gatto su un muro, con due ritagli tratteggiati, uno sul muso e uno su coda e muro. Al centro i due ritagli entrano nello stesso encoder. A destra la mappa degli embedding, con i due punti dei ritagli gemelli vicini e cerchiati e i punti grigi dei negativi sparsi lontano.
+:width: 100%
+
+Due ritagli della stessa foto passano nello stesso encoder e devono finire
+vicini sulla mappa; i ritagli delle altre foto, i negativi, vanno tenuti
+lontani.
+```
 
 `````{tab} Elementare
 

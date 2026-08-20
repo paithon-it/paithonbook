@@ -15,7 +15,7 @@ vuol dire scorrere le mosse una per una: con un joystick si può, con uno sterzo
 un acceleratore o sette giunti che si muovono insieme le combinazioni sono
 infinite e non si scorre più niente.
 
-I metodi a gradiente di policy della sezione precedente (REINFORCE,
+I metodi a [gradiente di policy](policy-gradient.md) (REINFORCE,
 attore-critico, A3C, PPO) su questo non hanno problemi: imparano a decidere,
 non a votare, e una quantità da dosare la sanno produrre. Ma hanno due difetti
 loro. Il primo: imparano soltanto dalla strategia che stanno giocando in quel
@@ -75,7 +75,7 @@ DeepMind nel 2016 {cite}`lillicrap2016continuous`.
 
 L'idea è tenere due reti che collaborano. L’**attore** guarda la situazione e
 propone un'azione precisa: non un ventaglio di possibilità con le loro
-probabilità, come faceva la strategia della sezione precedente, ma esattamente
+probabilità, come facevano le policy del gradiente di policy, ma esattamente
 la spinta da dare, un numero per ciascun motore. È **deterministica**, cioè
 nella stessa situazione risponde sempre la stessa cosa, senza tirare dadi: da lì
 la seconda D del nome. Il **critico** è la vecchia rete dei voti di DQN con una
@@ -145,8 +145,8 @@ $$
 dove $\phi'$ e $\theta'$ sono i parametri delle reti target, aggiornate con
 uno scorrimento lento (*Polyak averaging*) $\phi' \leftarrow \tau\phi +
 (1-\tau)\phi'$, con $\tau\ll 1$ (questo $\tau$ è un numero, il peso dello
-scorrimento, e non ha niente a che vedere con la traiettoria $\tau$ della
-sezione precedente). L'esplorazione avviene aggiungendo rumore
+scorrimento, e non ha niente a che vedere con la traiettoria $\tau$ del
+gradiente di policy). L'esplorazione avviene aggiungendo rumore
 all'azione in fase di raccolta, $a = \mu_\theta(s) + \epsilon$: nel paper
 originale $\epsilon$ è un processo di Ornstein-Uhlenbeck (rumore temporalmente
 correlato, utile in sistemi con inerzia), ma nella pratica un semplice rumore
@@ -425,7 +425,7 @@ pescandola dal quaderno, e quindi imparano da molte meno prove nel mondo. È
 decisivo quando ogni tentativo consuma un robot vero. Il prezzo è la
 **stabilità**. DDPG, in particolare, è fragile e capriccioso; TD3 e SAC lo
 domano, ma restano più delicati da mettere a punto di un PPO ben tarato (PPO è
-l'algoritmo della sezione precedente, quello che «perdona» gli errori di
+l'algoritmo del gradiente di policy che «perdona» gli errori di
 taratura), e per questo spesso si preferisce lui. Non esiste il vincitore
 assoluto: la scelta dipende da quanto costa una prova e da quanta cura si può
 dedicare alla messa a punto.

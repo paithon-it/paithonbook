@@ -38,6 +38,21 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-10-0)=
+
+## 1.10.0 · 20 agosto 2026
+
+### Sezioni nuove
+
+- {doc}`Il kernel trick </MachineLearning/svm-kernel>` (Machine Learning). **Il kernel trick ha la sua pagina.** La Support Vector Machine, che era la pagina più lunga del libro, si è spezzata alla cucitura naturale: di qua il margine massimo con la strada più larga percorsa passo per passo, di là il kernel trick con la regressione, il riconoscere le anomalie e la pratica con scikit-learn. Due sedute invece di una maratona.
+- {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>` (Deep Reinforcement Learning). **La ricerca ad albero Monte Carlo, AlphaGo e l'allineamento dei modelli linguistici** si leggono ora in una pagina propria, staccata dal gradiente di policy, che si ferma a PPO e chiude con i suoi riquadri. Il pensare prima di muovere comincia dove finisce l'istinto, e adesso anche l'indice lo dice.
+- {doc}`Oltre il BPE </NaturalLanguageProcessing/oltre-il-bpe>` (Natural Language Processing). **Oltre il BPE.** WordPiece, SentencePiece e i byte hanno la loro pagina, con le quattro conseguenze che si incontrano davvero lavorando (i numeri spezzati male, l'italiano che costa più token, lo spazio di troppo, il vocabolario congelato). Il BPE resta di qua, con l'esempio svolto e le trenta righe di Python.
+
+### Pagine ampliate
+
+- {doc}`Le basi di Python </Python/basi>` (Python). **Il traceback e il paracadute.** Le basi di Python insegnano a leggere un errore (dal fondo, il che cosa; risalendo, il dove) e a mettere `try`/`except` attorno alla riga fragile, con l'except stretto e lo stile che chiede scusa invece di chiedere permesso. Era il buco più grosso del capitolo, e il primo in cui un lettore inciampa da solo.
+- **Cinque disegni nuovi.** I ritagli gemelli dell'apprendimento contrastivo, lo spettrogramma a tessere dell'AST col colpo che guarda la sua eco, la parte coperta di wav2vec col test a risposta multipla, il giro codec-Transformer-decoder della generazione a token; e AlexNet è ridisegnata com'era davvero: due tronchi, uno per GPU, che si parlano soltanto agli incroci.
+
 (v1-9-4)=
 
 ## 1.9.4 · 20 agosto 2026
@@ -456,7 +471,7 @@ piedi.
 ### Pagine ampliate
 
 - {doc}`Riduzione e clustering </MachineLearning/riduzione-clustering>` (Machine Learning). Le misture gaussiane e l'algoritmo EM, che due capitoli più avanti (i tokenizzatori e il riconoscimento vocale) davano già per noti senza che fossero mai stati spiegati. Assegnare una probabilità invece di un'etichetta, imparare la forma di un gruppo e non solo il suo centro, e scegliere quanti gruppi con un criterio invece che a occhio.
-- {doc}`Gradiente di policy </DeepReinforcementLearning/policy-gradient>` (Deep Reinforcement Learning). La ricerca ad albero Monte Carlo, che il libro invocava quattro volte come spiegazione di AlphaGo e MuZero senza averla mai insegnata. Le sue quattro mosse, il perché si sceglie la mossa più visitata e non quella con la media migliore, e il fatto che la formula che le fa scoprire dove guardare è la stessa dei bandit a più braccia.
+- {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>` (Deep Reinforcement Learning). La ricerca ad albero Monte Carlo, che il libro invocava quattro volte come spiegazione di AlphaGo e MuZero senza averla mai insegnata. Le sue quattro mosse, il perché si sceglie la mossa più visitata e non quella con la media migliore, e il fatto che la formula che le fa scoprire dove guardare è la stessa dei bandit a più braccia.
 - {doc}`Le basi di Python </Python/basi>` (Python). Il GIL, cioè perché in Python i thread aiutano quando si aspetta e non quando si calcola. Serviva: il capitolo su PyTorch lo usava due volte come spiegazione di scelte importanti, dando per noto un termine mai introdotto.
 - {doc}`Rappresentare il testo </NaturalLanguageProcessing/rappresentare-testo>` (Natural Language Processing). Come si ottiene un vettore per una frase intera, e non solo per le singole parole. Il capitolo si fermava alla parola, e intanto due capitoli sul recupero di documenti poggiavano su modelli di embedding mai spiegati. Con la sorpresa che regge la sezione: un BERT preso così com'è dà vettori di frase mediocri, perché è stato addestrato ad altro.
 - {doc}`Architetture storiche </DeepLearning/architetture-storiche>` (Deep Learning). La convoluzione separabile in profondità, cioè il mattone di cui è fatta EfficientNet, che il capitolo raccontava senza averlo mai descritto. Stessa forma in uscita, quasi nove volte meno pesi: è la ragione per cui la visione artificiale sta in un telefono.

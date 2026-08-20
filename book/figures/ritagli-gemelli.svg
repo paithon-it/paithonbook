@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  paithon book - figura: l'apprendimento contrastivo con due viste (SimCLR).
+  Sinistra: una foto (gatto su un muro) con due ritagli tratteggiati, uno sul
+  muso (terracotta) e uno su coda e muro (teal). Centro: i due ritagli passano
+  nello STESSO encoder. Destra: la mappa degli embedding, con i due gemelli
+  vicini e i negativi (grigio) sparsi lontano.
+  Palette-locked, fondo trasparente: leggibile in light e dark mode.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img"
+     aria-label="Tre pannelli. A sinistra una fotografia stilizzata di un gatto su un muro, con due ritagli tratteggiati: uno inquadra il muso, l'altro la coda e un pezzo di muro. Al centro i due ritagli entrano nello stesso encoder. A destra una mappa di punti: i due punti dei ritagli gemelli sono vicini e cerchiati, gli altri punti, i negativi delle altre foto, stanno sparsi lontano.">
+  <style>
+    .lbl  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:600; fill:#1A1A1A; }
+    .leg  { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#5E5852; }
+  </style>
+
+  <!-- PANNELLO 1: la foto -->
+  <g transform="translate(18,30)">
+    <rect x="0" y="0" width="170" height="140" rx="6" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <!-- muro -->
+    <rect x="2" y="88" width="166" height="50" fill="#C9A961" opacity="0.45"/>
+    <line x1="2" y1="105" x2="168" y2="105" stroke="#1A1A1A" stroke-width="1" opacity="0.35"/>
+    <line x1="2" y1="122" x2="168" y2="122" stroke="#1A1A1A" stroke-width="1" opacity="0.35"/>
+    <line x1="55" y1="88" x2="55" y2="105" stroke="#1A1A1A" stroke-width="1" opacity="0.35"/>
+    <line x1="110" y1="105" x2="110" y2="122" stroke="#1A1A1A" stroke-width="1" opacity="0.35"/>
+    <line x1="85" y1="88" x2="85" y2="105" stroke="#1A1A1A" stroke-width="1" opacity="0.0"/>
+    <!-- gatto: corpo, testa, orecchie, coda -->
+    <ellipse cx="88" cy="78" rx="34" ry="18" fill="#1A1A1A"/>
+    <circle cx="52" cy="62" r="15" fill="#1A1A1A"/>
+    <polygon points="42,52 46,38 52,50" fill="#1A1A1A"/>
+    <polygon points="58,50 64,37 68,51" fill="#1A1A1A"/>
+    <path d="M 120,80 C 140,74 144,58 136,48" fill="none" stroke="#1A1A1A" stroke-width="6" stroke-linecap="round"/>
+    <!-- ritaglio A: muso -->
+    <rect x="30" y="36" width="52" height="46" fill="none" stroke="#B5532C" stroke-width="2.5" stroke-dasharray="6 4"/>
+    <!-- ritaglio B: coda e muro -->
+    <rect x="106" y="42" width="58" height="72" fill="none" stroke="#2D5A5C" stroke-width="2.5" stroke-dasharray="6 4"/>
+    <text class="leg" x="85" y="160" text-anchor="middle">stessa foto, due ritagli</text>
+  </g>
+
+  <!-- frecce dai ritagli all'encoder -->
+  <path d="M 108,90 C 160,70 200,80 238,104" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <path d="M 178,120 C 205,130 220,132 238,130" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <polygon points="238,104 228,100 230,110" fill="#B5532C"/>
+  <polygon points="238,130 228,126 229,136" fill="#2D5A5C"/>
+
+  <!-- PANNELLO 2: l'encoder -->
+  <g transform="translate(244,88)">
+    <polygon points="0,0 70,16 70,44 0,60" fill="#C9A961" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round"/>
+    <text class="lbl" x="35" y="34" text-anchor="middle">encoder</text>
+    <text class="leg" x="35" y="86" text-anchor="middle">lo stesso per</text>
+    <text class="leg" x="35" y="100" text-anchor="middle">tutti e due</text>
+  </g>
+
+  <!-- frecce dall'encoder alla mappa -->
+  <path d="M 318,108 C 350,96 370,92 396,96" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <path d="M 318,126 C 350,132 368,132 392,120" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <polygon points="396,96 386,92 388,102" fill="#B5532C"/>
+  <polygon points="392,120 382,117 384,127" fill="#2D5A5C"/>
+
+  <!-- PANNELLO 3: la mappa -->
+  <g transform="translate(400,30)">
+    <rect x="0" y="0" width="220" height="140" rx="6" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <!-- i gemelli, vicini e cerchiati -->
+    <circle cx="52" cy="66" r="7" fill="#B5532C"/>
+    <circle cx="72" cy="78" r="7" fill="#2D5A5C"/>
+    <ellipse cx="62" cy="72" rx="34" ry="26" fill="none" stroke="#1A1A1A" stroke-width="1.6" stroke-dasharray="4 4"/>
+    <!-- i negativi -->
+    <circle cx="150" cy="30" r="5" fill="#8B847C"/>
+    <circle cx="186" cy="58" r="5" fill="#8B847C"/>
+    <circle cx="162" cy="96" r="5" fill="#8B847C"/>
+    <circle cx="196" cy="118" r="5" fill="#8B847C"/>
+    <circle cx="122" cy="122" r="5" fill="#8B847C"/>
+    <circle cx="30" cy="120" r="5" fill="#8B847C"/>
+    <circle cx="118" cy="20" r="5" fill="#8B847C"/>
+    <text class="lbl" x="62" y="34" text-anchor="middle">i gemelli, vicini</text>
+    <text class="leg" x="110" y="152" text-anchor="middle" fill="#5E5852">grigi: i negativi, da tenere lontani</text>
+    <text class="leg" x="110" y="166" text-anchor="middle">la mappa degli embedding</text>
+  </g>
+</svg>

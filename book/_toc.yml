@@ -84,6 +84,8 @@ parts:
       title: Il bootstrap
     - file: MachineLearning/svm.md
       title: Support Vector Machine
+    - file: MachineLearning/svm-kernel.md
+      title: Il kernel trick
     - file: MachineLearning/modelli-generativi.md
       title: Modelli generativi
     - file: MachineLearning/riduzione-clustering.md
@@ -214,6 +216,8 @@ parts:
       title: Deep Q-Network (DQN)
     - file: DeepReinforcementLearning/policy-gradient.md
       title: Gradiente di policy
+    - file: DeepReinforcementLearning/mcts-alphago.md
+      title: MCTS e AlphaGo
     - file: DeepReinforcementLearning/controllo-continuo.md
       title: Controllo continuo
     - file: DeepReinforcementLearning/model-based.md
@@ -236,6 +240,8 @@ parts:
       title: Rappresentare il testo
     - file: NaturalLanguageProcessing/tokenizzatori.md
       title: Come si spezza il testo
+    - file: NaturalLanguageProcessing/oltre-il-bpe.md
+      title: Oltre il BPE
     - file: NaturalLanguageProcessing/classificazione-testo.md
       title: Classificare il testo
     - file: NaturalLanguageProcessing/modelli-ngram.md
