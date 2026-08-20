@@ -266,8 +266,10 @@ sparito dalla matrice. Da lì gli autori
 indebolisce, perché con positional embedding **appresi** i risultati sono
 «quasi identici» (Tabella 3, riga E, dell'articolo). Molti modelli successivi
 usano invece encoding **appresi** (BERT) o codifiche relative più sofisticate
-(RoPE nei modelli recenti): il principio (iniettare l'ordine, perché
-l'attenzione da sola è permutation-invariant) resta lo stesso.
+(RoPE nei modelli recenti): il principio resta lo stesso: iniettare l'ordine, perché la self-attention da
+sola è permutation-**equivariante**, cioè permutando i token in ingresso le
+uscite escono permutate allo stesso modo e la rappresentazione di ogni parola
+non dipende da dove sta.
 `````
 
 ## La feed-forward network: il lavoro individuale
@@ -365,29 +367,28 @@ della versione classica. Stessi parametri, risultati migliori a parità di
 addestramento.
 `````
 
-Con la feed-forward il giro è completo, e vale la pena guardare indietro un
+Con la feed-forward il giro è completo, e conviene guardare indietro un
 momento. In questa pagina un solo ingrediente era nuovo davvero, il posto
 numerato; tutti gli altri erano già sul tavolo. C'è l'attenzione della sezione
-precedente, c'è una piccola rete di neuroni come quelle del capitolo sulle reti
-neurali, ci sono una scorciatoia e una taratura attorno a ciascuna delle due.
-Il Transformer non è un pezzo nuovo, è un modo di impilare quei quattro, sempre
-nello stesso ordine, per sei piani e poi per sessanta.
+precedente, c'è una piccola rete di neuroni come quelle del capitolo sulle
+reti neurali, ci sono una scorciatoia e una taratura attorno a ciascuna delle
+due. Il Transformer non è un pezzo nuovo, è un modo di impilare quei quattro, sempre nello stesso ordine: sei piani nel
+modello del 2017, qualche decina in quelli su cui si fanno i conti oggi.
 
 È il motivo per cui l'architettura ha retto senza cambiare forma mentre i
 modelli diventavano quasi tremila volte più grandi: dai 65 milioni di parametri
 del modello base del 2017 ai 175 miliardi di GPT-3, tre anni dopo. Non c'era
 una forma da cambiare, c'era una sequenza da ripetere.
 
-E il nome GPT-3 dice anche un'altra cosa, che vale la pena anticipare perché
-altrimenti si resta con l'idea che il Transformer sia una macchina per tradurre
-e basta. Quella macchina non traduce, chiacchiera, perché tiene **solo la torre
-che scrive** e butta via quella che legge: e con la torre che legge se ne va
-anche il momento in cui il decoder la consultava, cioè dei tre pezzi di ogni
-suo piano ne restano due. Quel che rimane, davanti a un pezzo di testo
-qualsiasi, fa esattamente quello che sa fare, cioè continuarlo; e continuare un
-testo, se il testo è una domanda, somiglia molto a rispondere. Le famiglie di
-modelli che nascono da questa potatura sono l'argomento di una delle prossime
-sezioni.
+E il nome GPT-3 dice anche un'altra cosa, da anticipare perché altrimenti si
+resta con l'idea che il Transformer sia una macchina per tradurre e basta.
+Quella macchina non traduce, chiacchiera, perché tiene **solo la torre che
+scrive** e butta via quella che legge: e con la torre che legge se ne va anche
+il momento in cui il decoder la consultava, cioè dei tre pezzi di ogni suo
+piano ne restano due. Quel che rimane, davanti a un pezzo di testo qualsiasi,
+fa esattamente quello che sa fare, cioè continuarlo; e continuare un testo, se
+il testo è una domanda, somiglia molto a rispondere. Le famiglie di modelli
+che nascono da questa potatura sono l'argomento di una delle prossime sezioni.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

@@ -140,7 +140,7 @@ davvero, e che l'accuratezza aggregata, per costruzione, non può vedere.
 ## Perché aprire la scatola
 
 Le ragioni per volere una spiegazione non sono una sola, e non hanno tutte lo
-stesso peso. Vale la pena elencarle, perché guidano *che tipo* di spiegazione
+stesso peso. Conviene elencarle, perché guidano *che tipo* di spiegazione
 cerchiamo.
 
 - **Fiducia.** Un medico non delega una diagnosi a un sistema di cui non
@@ -321,20 +321,16 @@ per quello che non è. Chi cerca un difetto nel modello vuole la prima. Chi cerc
 una causa nel mondo vorrebbe la seconda, e conviene dire subito che nemmeno
 quella gliela darà: un modello ha visto solo cose che vanno insieme (si dice
 che sono **correlate**), non ha mai fatto un esperimento, e due cose che vanno
-insieme non sono per forza l'una la causa dell'altra. Questo bivio tornerà più volte
-nel capitolo, ogni volta che due metodi entrambi ragionevoli daranno due numeri
-diversi per lo stesso caso. (Il bivio ricompare soprattutto nei passaggi più
-tecnici del capitolo, quelli del livello Superiore: se ne troverà traccia ogni
-volta che due metodi discordano.)
+insieme non sono per forza l'una la causa dell'altra. Questo bivio tornerà più volte, ogni volta che due metodi entrambi ragionevoli
+daranno due numeri diversi per lo stesso caso.
 
 ## Un modello che si spiega da sé
 
 Basta di teoria: guardiamone uno. Della prima delle tre domande abbiamo detto
-che alcuni modelli si leggono da sé e altri no, e vale la pena vedere in
-concreto che aspetto ha un modello del primo tipo. Ricordiamo il nome che gli
-diamo: **trasparente**, e nel resto del capitolo si dirà anche che è
-interpretabile in modo **intrinseco**, che è la stessa cosa detta col termine
-di mestiere.
+che alcuni modelli si leggono da sé e altri no, e conviene vedere in concreto
+che aspetto ha un modello del primo tipo. Ricordiamo il nome che gli diamo:
+**trasparente**, e nel resto del capitolo si dirà anche che è interpretabile
+in modo **intrinseco**, che è la stessa cosa detta col termine di mestiere.
 
 L'esempio più pulito è l'albero di decisione già incontrato, tenuto basso, con
 poche domande. Qui sotto lo costruiamo davvero, con qualche riga di codice: chi
@@ -380,17 +376,18 @@ aggiunta dopo: il modello *è* la propria spiegazione, e sta in sette righe.
 
 Adesso il confronto. Al posto di un albero solo se ne possono far crescere
 centinaia, tutti un po’ diversi fra loro, e far votare le loro risposte: si
-chiama **foresta casuale**, ed è il metodo visto nella sezione sugli alberi e
-gli insiemi di modelli del capitolo sul machine learning. Tanti pareri sbagliano meno di
-uno, e infatti su questi fiori la foresta indovina un po’ più dell'alberello: il
-$96{,}0\%$ contro il $94{,}7\%$. Il modo di misurarlo è quello di sempre, e vale
-la pena dirlo: si dividono i 150 fiori in dieci gruppi, si addestra il modello
-su nove gruppi e lo si interroga sul decimo, e si ripete dieci volte cambiando
-ogni volta il gruppo tenuto da parte, così che ogni fiore prima o poi faccia da
-esame. La media di quelle dieci prove è il numero scritto sopra. La differenza,
-dunque, è di **un punto e tre**. In cambio, la logica della foresta non si
-stampa più, perché non è una ricetta: sono centinaia di ricette che votano. È in questo scambio che nascono i metodi del capitolo, e
-vale la pena notare fin d'ora che qui lo scambio conviene poco.
+chiama **foresta casuale**, ed è il metodo visto nella
+{doc}`sezione su alberi e metodi ensemble </MachineLearning/alberi-ensemble>`. Tanti pareri
+sbagliano meno di uno, e infatti su questi fiori la foresta indovina un po’
+più dell'alberello: il $96{,}0\%$ contro il $94{,}7\%$. Il modo di misurarlo è
+quello di sempre, e conviene dirlo: si dividono i 150 fiori in dieci gruppi,
+si addestra il modello su nove gruppi e lo si interroga sul decimo, e si
+ripete dieci volte cambiando ogni volta il gruppo tenuto da parte, così che
+ogni fiore prima o poi faccia da esame. La media di quelle dieci prove è il
+numero scritto sopra. La differenza, dunque, è di **un punto e tre**. In
+cambio, la logica della foresta non si stampa più, perché non è una ricetta:
+sono centinaia di ricette che votano. È in questo scambio che nascono i metodi
+del capitolo, e conviene notare fin d'ora che qui lo scambio conviene poco.
 
 ## Una spiegazione può convincere ed essere falsa
 
@@ -491,9 +488,9 @@ nessuno si sognerebbe di dichiarare senza dire su quali casi l'ha contata. Non
 esistono spiegazioni «gratis»: esistono spiegazioni verificate e spiegazioni
 che ci raccontiamo.
 
-## Come è organizzato il capitolo
+## Dai modelli trasparenti ai circuiti
 
-Con questa mappa in tasca, il capitolo procede seguendo quelle tre domande.
+Cominciamo dai modelli trasparenti, quelli che si leggono senza aiuto.
 
 Cominceremo dai **modelli trasparenti**, quelli che si leggono senza aiuto:
 l'albero di poco fa, e i modelli che rispondono facendo una somma, tanti punti
@@ -520,10 +517,10 @@ diverso perché la risposta cambiasse?», e sono le spiegazioni
 Chiuderemo dentro le reti profonde. Lì la domanda diventa quanto ogni pezzo
 dell'ingresso, ogni singolo pixel, ha contribuito a una risposta: quella quota
 di merito si chiama **attribuzione**, e la cartina che la disegna sopra la foto
-(le macchie dell'inizio) si chiama mappa di **salienza**. Vedremo che quelle
-mappe promettono più di quanto mantengano, e la stessa domanda la rivolgeremo
-ai pesi di attenzione che abbiamo visto nascere nel capitolo sui Transformer,
-che sembrano una spiegazione già pronta e non lo sono. E finiremo con il
+(le macchie dell'inizio) si chiama mappa di **salienza**. Quelle mappe promettono più di quanto mantengano, e la stessa domanda vale per
+i pesi di attenzione nati nel
+{doc}`capitolo sui Transformer </Transformers/overview>`: sembrano una
+spiegazione già pronta e non lo sono. E finiremo con il
 tentativo più ambizioso e più giovane, quello di smontare una rete pezzo per pezzo come un
 ingegnere apre un chip per capire che cosa fa ciascun componente: si chiama
 **interpretabilità meccanicistica**.

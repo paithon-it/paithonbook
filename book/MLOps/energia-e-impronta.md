@@ -13,7 +13,7 @@ corretti, e va detto subito: **le cifre di questa materia invecchiano in
 fretta**, perché dipendono dall'hardware di quell'anno, dal centro dati e
 perfino dall'ora del giorno. Quello che non invecchia è la catena che porta da
 un'operazione aritmetica a un grammo di anidride carbonica, e sono i suoi
-anelli che vale la pena conoscere, perché ognuno è una leva.
+anelli da conoscere, perché ognuno è una leva.
 
 ## Dal FLOP al joule
 
@@ -30,8 +30,8 @@ Intuitivamente, l'energia se ne va nei conti: più moltiplicazioni, più
 corrente. È sbagliato, ed è sbagliato di parecchio.
 
 I due numeri veri li ha misurati un ingegnere di Stanford, Mark Horowitz, e
-sono facili da tenere a mente. Moltiplicare due numeri dentro il processore
-costa **circa 5**. Andare a **prendere** un numero nella memoria che sta fuori
+sono facili da tenere a mente. Fare un conto dentro il processore (una moltiplicazione e la somma che la
+segue) costa **circa 5**. Andare a **prendere** un numero nella memoria che sta fuori
 dal chip costa **circa 640**, cioè più di cento volte tanto: e i numeri da
 prendere sono due, quindi la spesa vera del viaggio è più di duecento volte
 quella del conto. L'unità in cui sono misurati non conta (è il picojoule, una
@@ -146,9 +146,9 @@ identico, cambia impronta a seconda di dove e quando lo si fa girare**. Da qui
 l'idea di spostare i lavori che possono aspettare verso le ore e i luoghi in
 cui la rete è pulita.
 
-Un gruppo di ricerca di Google, guidato da David Patterson, ha provato a
-mettere in fila quanto pesano le varie decisioni, e il risultato sorprende
-perché le quattro leve non pesano affatto uguale.
+Un gruppo di ricerca di Google, guidato da David Patterson, ha messo un numero accanto a quattro decisioni diverse, e i numeri non si
+somigliano: sono quattro ampiezze, non una classifica, e le prime due si
+sovrappongono.
 
 Al primo posto c'è **quale modello si sceglie**. Alcuni modelli, per rispondere,
 si accendono tutti quanti; altri sono costruiti a scomparti, e per ogni domanda
@@ -241,12 +241,12 @@ singola risposta consuma pochissimo, ma se il modello risponde a milioni di
 richieste al giorno per due anni, il totale supera facilmente l'addestramento
 che l'ha prodotto. C'è quindi un momento, nella vita di un modello, in cui la
 somma di tutte le risposte date fin lì raggiunge il costo di averlo costruito:
-è il **punto di pareggio**. Dove cada non è un numero universale e non lo si può
-scrivere qui: dipende da quanto è grande il modello, da quante richieste riceve
-e da quanto a lungo resta acceso, e ciascuno se lo deve calcolare per il proprio
-caso. Quello che è stabile è l'ordine di priorità che ne discende, e vale la
-pena tenerlo in mente quando si sceglie fra un modello grande e uno piccolo
-rifinito bene.
+è il **punto di pareggio**. Dove cada non è un numero universale e non lo si
+può scrivere qui: dipende da quanto è grande il modello, da quante richieste
+riceve e da quanto a lungo resta acceso, e ciascuno se lo deve calcolare per
+il proprio caso. Quello che è stabile è l'ordine di priorità che ne discende,
+e conviene tenerlo in mente quando si sceglie fra un modello grande e uno
+piccolo rifinito bene.
 
 Ne segue che **le leve che contano sono quelle del rispondere, non quelle
 dell'addestrare**. E la buona notizia è che non sono leve nuove: sono le
@@ -260,7 +260,7 @@ cosa vista da un'altra finestra.
 Se ne aggiunge una, ed è la più radicale, perché non alleggerisce il modello:
 lo sostituisce. Si chiama **distillazione** e consiste nell'addestrare un
 modello piccolo a imitare le risposte di uno grande, per poi mandare in
-servizio soltanto il piccolo. La incontra il capitolo sui Transformer, nella
+servizio soltanto il piccolo. La incontra il {doc}`capitolo sui Transformer </Transformers/overview>`, nella
 sezione *Tendenze e limiti*.
 
 ## Il carbonio che c'è già dentro
@@ -434,6 +434,6 @@ molto.
 La sorveglianza di cui parla questo capitolo dice sempre e solo che qualcosa è
 cambiato. Che l'errore è salito, che i dati in arrivo non somigliano più a
 quelli di prima, che la bolletta è cresciuta. Non dice mai perché, e nemmeno su
-che cosa il modello si stia basando per rispondere. È la domanda del capitolo
-sull'interpretabilità, che prova a guardare dentro il modello invece che
-intorno.
+che cosa il modello si stia basando per rispondere. È la domanda del
+{doc}`capitolo sull'interpretabilità </Interpretabilita/overview>`, che prova
+a guardare dentro il modello invece che intorno.

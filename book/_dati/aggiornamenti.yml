@@ -48,6 +48,51 @@
 
 versioni:
 
+- versione: "1.9.1"
+  data: 2026-08-20
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Formule e attribuzioni.** Corretti la risoluzione della trasformata a
+      finestra in *Dal suono alle feature*, le dimensioni della matrice
+      condivisa della GAT, la perdita del VQ-VAE, il costo del calcolo a
+      blocchi di Mamba-2, il reticolo del trasduttore e la penalità di
+      gradiente delle GAN.
+
+  - tipo: corretto
+    testo: >
+      **Numeri rifatti.** La ripartizione dei fallimenti della rete di
+      Hopfield, i punteggi dell'Audio Spectrogram Transformer e di V-JEPA 2,
+      il MOS di Tacotron 2, l'accuratezza di Hearsay-II e la banda di
+      previsione in *Forecasting neurale*, che adesso il codice stampa.
+
+  - tipo: corretto
+    testo: >
+      **Le due schede tornano a dire la stessa cosa** dove si
+      contraddicevano, in *Verosimiglianza esatta*, *Modelli latenti* e
+      *Costo del coordinamento*; e l'apertura delle PINN non attribuisce più
+      l'idea a un lavoro che il capitolo stesso, due pagine dopo, fa risalire
+      al 1994.
+
+  - tipo: ampliato
+    testo: >
+      **Diciassette voci nuove in bibliografia**, per lavori che il libro
+      nominava senza permettere di risalirci: fra gli altri la policy
+      iteration di Howard, TRPO, DAgger, DistMult, ComplEx e RotatE.
+
+  - tipo: corretto
+    testo: >
+      **I rimandi fra capitoli adesso sono link.** Quando il testo cita la
+      backpropagation o la sezione sugli ensemble ci si arriva con un dito,
+      invece di cercarle nell'indice.
+
+  - tipo: corretto
+    testo: >
+      **La prosa è più asciutta** in tutti i capitoli: meno grassetti, meno
+      contrapposizioni «non è X, è Y», e le schede entrano nella scena invece
+      di annunciarla.
+
 - versione: "1.9.0"
   data: 2026-08-19
   voci:
@@ -77,8 +122,8 @@ versioni:
   - tipo: corretto
     pagina: AutoSupervisione/capire-e-accorciare.md
     testo: >
-      **La sezione è stata riletta da tre lettori avversari e ne sono usciti
-      nove errori.** Il più grosso: il 99% che iGPT ottiene su CIFAR-10 è la
+      **Nove correzioni in una sezione sola.** La più grossa: il 99% che iGPT
+      ottiene su CIFAR-10 è la
       rete rifinita per intero, non il sondaggio con la rete congelata, che dà
       96,3%, ed è proprio il numero su cui poggiava il paragrafo dedicato a
       quanto sia misteriosa la separabilità lineare. Poi la verosimiglianza
@@ -960,7 +1005,7 @@ versioni:
       progetto: li chiedeva in modo generico, e ogni lettore se le vedeva
       disegnate con il carattere del proprio sistema, diverso su Windows, su Mac
       e su Linux. Adesso le etichette delle figure sono le stesse per tutti, e
-      un controllo automatico impedisce che la cosa ricapiti.
+      restano le stesse per tutti.
 
   - tipo: corretto
     pagina: NaturalLanguageProcessing/modelli-ngram.md
@@ -1048,13 +1093,9 @@ versioni:
 
   - tipo: corretto
     testo: >
-      Il libro è stato riletto per intero da tre lenti indipendenti per
-      capitolo: chi verifica i fatti eseguendo il codice, un lettore di tredici
-      anni che legge solo il livello Elementare, e uno studente magistrale che
-      rifà i conti. Questa voce e le successive dicono cosa ne è uscito. La
-      cosa più importante non è nessuna delle singole correzioni: è che il
-      codice del libro, per la prima volta, è stato eseguito davvero invece che
-      letto.
+      Correzioni in tutti i capitoli, elencate nelle voci che seguono. La più
+      importante non è nessuna delle singole: è che il codice del libro, da
+      questa versione, gira davvero.
 
   - tipo: corretto
     testo: >
@@ -1761,9 +1802,8 @@ versioni:
 
   - tipo: corretto
     testo: >
-      Tutti i capitoli riletti a tre lenti (i fatti sulle fonti primarie, i
-      conti rifatti a mano, il codice eseguito davvero) e corretti dove
-      serviva: date, attribuzioni, esempi numerici, notazione.
+      Correzioni in tutti i capitoli dove servivano: date, attribuzioni,
+      esempi numerici, notazione.
 
   - tipo: corretto
     testo: >

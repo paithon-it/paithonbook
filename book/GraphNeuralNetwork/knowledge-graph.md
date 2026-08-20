@@ -9,8 +9,8 @@ sindaco e una squadra di calcio, e che «Torino» può anche essere quella
 squadra.
 
 L'idea non era nuova. La stessa struttura era già stata proposta tre volte, e
-vale la pena elencarle. Negli anni Sessanta con le **reti semantiche**, schemi
-in cui i concetti sono puntini e le linee fra loro dicono «è un», «ha un», «si
+conviene elencarle. Negli anni Sessanta con le **reti semantiche**, schemi in
+cui i concetti sono puntini e le linee fra loro dicono «è un», «ha un», «si
 trova in». Dagli anni Ottanta con quei progetti in cui squadre di persone
 scrivevano a mano, un fatto per volta, le ovvietà che tutti sanno e nessuno
 scrive («la pioggia bagna», «chi dorme ha gli occhi chiusi»). E infine con il
@@ -87,7 +87,8 @@ passa per quattro gradini, e il libro ha già affrontato il primo.
 
 Il primo gradino è **trovare i nomi**: individuare nel testo i pezzi che
 nominano una cosa. Si chiama **riconoscimento delle entità nominate**, ed è la
-sezione «POS tagging ed entità» del capitolo sul linguaggio.
+sezione
+{doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`.
 
 Il secondo è capire *quale* cosa. Trovato «Torino» in una frase non si sa
 ancora se sia la città, la squadra, il comune omonimo in un altro paese o la
@@ -237,8 +238,8 @@ la relazione annullata collassano anche le due entità. Le relazioni
 Il caso che manca chiede una precisazione, perché è il punto in cui il racconto
 corrente sbaglia bersaglio. Una traslazione **compone** benissimo: se dalla
 coppia $r_1(a,b)$ e $r_2(b,c)$ deve seguire $r_3(a,c)$, basta porre
-$\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$, ed è per questo che nella
-tassonomia diventata standard con RotatE (Sun e colleghi, 2019) TransE è dato
+$\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$, ed è per questo che nella tassonomia diventata standard con RotatE {cite}`sun2019rotate` TransE è
+dato
 capace di composizione, di inversione e di antisimmetria, e incapace della sola
 simmetria. Quel che non regge è il caso particolare in cui le tre relazioni
 sono **la stessa**, cioè la **transitività** (`antenato-di`, `parte-di`,
@@ -297,7 +298,7 @@ La prima è **comporre**. Se il grafo contiene «il regista di questo film è X�
 questo film» si risponde percorrendo due archi. Il modo usuale di rispondere a
 una domanda su un archivio di testi è invece cercare i **brani più somiglianti
 alla domanda** e darli in pasto a un modello di linguaggio: è il **retrieval
-denso** del capitolo sui Transformer, dove i brani non si confrontano parola
+denso** del {doc}`capitolo sui Transformer </Transformers/overview>`, dove i brani non si confrontano parola
 per parola, ma trasformando ciascuno in una fila di numeri e cercando le file
 più vicine. Se nessun documento contiene entrambi i fatti nella stessa frase,
 quel sistema non li mette insieme: non gli è stato chiesto di ragionare, gli è
@@ -319,7 +320,7 @@ struttura su cui contare davvero.
 
 Messi insieme, i tre vantaggi hanno prodotto un'idea che gira parecchio.
 Dare a un modello di linguaggio dei documenti pescati sul momento, invece di
-fidarsi di quel che ricorda, è la tecnica che i capitoli sui Transformer e
+fidarsi di quel che ricorda, è la tecnica che i {doc}`capitoli sui Transformer </Transformers/overview>` e
 sugli agenti chiamano **RAG**, dalle iniziali di *Retrieval-Augmented
 Generation*, «generazione con recupero». Da qui l'idea di fare la stessa cosa
 con un grafo, e il nome che ne è venuto fuori è **GraphRAG**: invece di andare
@@ -383,12 +384,12 @@ prezzo di costruirlo.
   grafo, usando una ricetta di riscrittura diversa per ogni tipo di arco: così
   la fila di numeri di un'entità non si impara a memoria, si calcola da quel
   che le sta intorno.
-- Il vantaggio che resta, e per cui vale la pena pagare la manutenzione, non è
+- Il vantaggio che resta, e per cui si paga la manutenzione, non è
   sapere i fatti (per quello ci sono i modelli di linguaggio): è **mettere
   insieme** più fatti in catena, mostrare il **percorso** che ha prodotto la
   risposta perché sia verificabile, rispondere a domande che chiedono di
-  **contare**, e poter dichiarare **regole** che il sistema non può violare.
-  E un grafo non aggiornato è peggio di nessun grafo, perché sembra ancora
+  **contare**, e poter dichiarare **regole** che il sistema non può violare. E
+  un grafo non aggiornato è peggio di nessun grafo, perché sembra ancora
   autorevole quando è già falso.
 ```
 

@@ -297,10 +297,8 @@ I tre mestieri, va detto, non li assegna nessuno alle tre tabelle: nascono
 uguali, e a distinguerle è il posto che occupano nel calcolo. La prima e la
 seconda finiscono moltiplicate fra loro per decidere un peso, la terza finisce
 mediata; da mestieri diversi vengono pressioni diverse, e le tre tabelle si
-adattano a quello che gli tocca fare. È lo stesso meccanismo del paragrafo che
-verrà fra qualche pagina sulle copie parallele, e in questa sezione è il punto
-che vale più di tutti: la struttura del calcolo è decisa a progetto, il
-contenuto delle tabelle no.
+adattano a quello che gli tocca fare. Tornerà più avanti, quando le copie del meccanismo saranno molte: la struttura
+del calcolo è decisa a progetto, il contenuto delle tabelle no.
 
 Adesso la ricetta si chiude. Il punteggio fra la parola $i$ e la parola $j$ è
 il prodotto scalare fra la prima versione ridotta di $i$ e la seconda di $j$:
@@ -415,11 +413,8 @@ interrogazione: c'è un vettore confrontato con altri vettori. Il libro
 continua a usare i nomi standard, perché sono quelli dei paper e del codice,
 ma tenere accanto la traduzione aiuta.
 
-La tabella che segue è un dizionario, e come tutti i dizionari **si consulta,
-non si legge**: serve il giorno in cui uno di quei nomi salta fuori in un
-articolo o in un pezzo di codice. Per seguire questa sezione non serve affatto,
-ed è la ragione per cui arriva adesso e non all'inizio; chi vuole andare avanti
-la salti senza rimpianti.
+Segue un dizionario, da consultare il giorno in cui uno di quei nomi salta
+fuori in un articolo o in un pezzo di codice.
 
 | il nome che si incontra | qui | che cosa fa davvero |
 |---|---|---|
@@ -434,8 +429,7 @@ la salti senza rimpianti.
 ## Una forma bilineare di rango basso
 
 C'è un modo più compatto di guardare il punteggio di influenza, e riconoscerlo
-chiarisce in un colpo solo quanti parametri servono e perché. Il titolo di
-questa sezione anticipa due parole tecniche, e conviene scioglierle subito.
+chiarisce in un colpo solo quanti parametri servono e perché. Servono due parole tecniche, e conviene scioglierle subito.
 Una **forma bilineare** è un modo di misurare l'accordo fra due liste di
 numeri passando per una tabella: si prende la prima lista, la si fa attraversare
 dalla tabella e si fa il prodotto scalare con la seconda.
@@ -978,7 +972,7 @@ ottimizzazione è comunque fuorviante, perché l'addestramento di un modello di
 frontiera è organizzato in fasi, con un pre-addestramento sul testo grezzo,
 un affinamento su esempi curati e una fase di allineamento alle preferenze
 umane {cite}`ouyang2022training`, il tutto con programmi di riscaldamento e
-decadimento del tasso di apprendimento. Ne parla il capitolo sui Transformer;
+decadimento del tasso di apprendimento. Ne parla il {doc}`capitolo sui Transformer </Transformers/overview>`;
 la matematica dell'obiettivo, però, resta questa.
 
 ## Il modello, in una pagina
@@ -1102,7 +1096,7 @@ comportamento di un fluido, che non sta nella singola goccia. In tutti questi
 casi il fenomeno grande non si legge nelle regole piccole, ma non per questo è
 meno reale. Perché la sola previsione della parola successiva porti così
 lontano è, onestamente, ancora una questione aperta, e la sezione sui grandi
-modelli linguistici, nel capitolo sui Transformer, discute anche i motivi per
+modelli linguistici, nel {doc}`capitolo sui Transformer </Transformers/overview>`, discute anche i motivi per
 dubitare che quelle «abilità emergenti» siano tutte quel che sembrano.
 
 ## In pratica, con NumPy
@@ -1154,8 +1148,8 @@ R_ruotato = (E @ (O @ W_A).T) @ (E @ (O @ W_B).T).T / np.sqrt(k)
 print(np.allclose(R, R_ruotato))             # True
 ```
 
-I due `True` in fondo non sono un dettaglio: sono il contenuto di due sezioni
-intere, verificato. La tabella `M` ha sei righe e sei colonne ma di righe
+I due `True` in fondo dicono, in due righe di conto, quello che due sezioni
+hanno raccontato a parole. La tabella `M` ha sei righe e sei colonne ma di righe
 autonome ne ha tre, cioè è di rango basso; e le due tabelle ruotate insieme
 danno punteggi identici alle originali fino all'ultima cifra, cioè non sono
 identificabili separatamente.
@@ -1247,8 +1241,9 @@ identificabili separatamente.
 ```
 `````
 
-Qui il capitolo si chiude, e vale la pena guardare che cosa ci portiamo dietro:
-una lista di numeri con cui rappresentare qualunque cosa, un modo per capire da
-che parte conviene migliorare, e un modo per dire quanto siamo sicuri di quello
-che abbiamo trovato. Sono tre attrezzi, e nel capitolo sul machine learning non
-si studiano più: si usano, su un problema vero, dal primo esempio all'ultimo.
+Qui il capitolo si chiude, e conviene guardare che cosa ci portiamo dietro:
+una lista di numeri con cui rappresentare qualunque cosa, un modo per capire
+da che parte conviene migliorare, e un modo per dire quanto siamo sicuri di
+quello che abbiamo trovato. Sono tre attrezzi, e nel {doc}`capitolo sul machine
+learning </MachineLearning/overview>` non si studiano più: si usano, su un problema vero, dal primo esempio
+all'ultimo.

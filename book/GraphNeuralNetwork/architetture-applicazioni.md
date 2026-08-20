@@ -174,13 +174,14 @@ GraphSAGE tratta i vicini campionati alla pari: nella media, ognuno pesa quanto
 gli altri. Ma è ragionevole? In una molecola, non tutti i legami di un atomo
 sono ugualmente informativi; in un social, l'amico stretto conta più del
 contatto occasionale. L'idea di **pesare** i vicini l'abbiamo già incontrata, e
-in grande stile: è l’**attenzione** del capitolo sui Transformer. La *Graph
+in grande stile: è l’**attenzione** del {doc}`capitolo sui Transformer </Transformers/overview>`. La *Graph
 Attention Network* (GAT), proposta nel 2018 da Petar Veličković e colleghi, la
 prende pari pari e la porta sui grafi {cite}`velickovic2018graph`.
 
 `````{tab} Elementare
 
-Ricordi l'evidenziatore del capitolo sull'attenzione? Davanti a una parola, il
+Ricordi l'evidenziatore della
+{doc}`sezione sull'attenzione </Transformers/attenzione>`? Davanti a una parola, il
 modello ripassava tutte le altre e le colorava con intensità diversa, secondo
 quanto contavano. La GAT fa la stessa cosa, ma l'evidenziatore lo passa sui
 **vicini di un nodo nel grafo**. Quando aggiorna un nodo non fa più una media
@@ -226,8 +227,10 @@ $$
 dove il vicinato, come nel paper, comprende il nodo stesso ($j$ corre su
 $\mathcal{N}(i) \cup \{i\}$): senza questo cappio il nodo dimenticherebbe la
 propria feature, il difetto che i *self-loop* della GCN erano nati per evitare.
-Qui $\|$ è la concatenazione, $\mathbf{W} \in \mathbb{R}^{F \times F'}$ è la
-trasformazione lineare condivisa, $\mathbf{a} \in \mathbb{R}^{2F'}$ è un
+Qui $\|$ è la concatenazione, $\mathbf{W} \in \mathbb{R}^{F' \times F}$ è la
+trasformazione lineare condivisa (moltiplica a sinistra, quindi ha le
+dimensioni girate rispetto alla $\mathbf{W}^{(l)}$ della GCN, che moltiplicava
+a destra), $\mathbf{a} \in \mathbb{R}^{2F'}$ è un
 vettore di parametri appreso (la lunghezza è $2F'$ perché deve moltiplicare due
 vettori concatenati, ed è quel che rende il punteggio uno **scalare**),
 $\mathrm{LeakyReLU}$ la non linearità usata sul punteggio (pendenza $0{,}2$ per
@@ -408,15 +411,15 @@ compito a livello di grafo. L'idea di leggere le molecole con reti su grafo
 risale ai *fingerprint molecolari neurali* di Duvenaud e colleghi del 2015
 {cite}`duvenaud2015convolutional`: prima di allora le caratteristiche di una
 molecola da dare in pasto a un modello (quanti anelli, quali gruppi chimici,
-che peso) le sceglieva un chimico a mano, una per una; il lavoro di Duvenaud le
-fa trovare alla rete, che dalla struttura della molecola ricava da sé la fila
-di numeri che la descrive. La punta di diamante è **halicin**, la molecola con
-cui si è aperto il capitolo. Vale la pena aggiungere solo quello che lì non era
-stato detto: la rete che l'ha pescata è una rete a message passing come quelle
-di queste pagine, e la molecola non funziona su un batterio soltanto, ma su
-batteri molto diversi fra loro (fra gli altri il bacillo della tubercolosi e
-alcuni ceppi
-intestinali che ai farmaci più recenti non rispondono più).
+che peso) le sceglieva un chimico a mano, una per una; il lavoro di Duvenaud
+le fa trovare alla rete, che dalla struttura della molecola ricava da sé la
+fila di numeri che la descrive. La punta di diamante è **halicin**, la
+molecola con cui si è aperto il capitolo. Conviene aggiungere solo quello che
+lì non era stato detto: la rete che l'ha pescata è una rete a message passing
+come quelle di queste pagine, e la molecola non funziona su un batterio
+soltanto, ma su batteri molto diversi fra loro (fra gli altri il bacillo della
+tubercolosi e alcuni ceppi intestinali che ai farmaci più recenti non
+rispondono più).
 
 **Raccomandazione su grafo.** Il caso industriale più celebre è **PinSage**, il
 sistema che Pinterest mette in produzione nel 2018
@@ -445,21 +448,20 @@ esercizio.
 Maps** sono calcolate da una GNN sviluppata con DeepMind: la rete stradale è
 il grafo (segmenti di strada nei nodi, incroci a collegarli) e il modello
 prevede i tempi propagando informazione lungo il percorso, migliorando
-l'accuratezza degli arrivi stimati in molte città (lavoro pubblicato da
-Derrow-Pinion e colleghi nel 2021).
+l'accuratezza degli arrivi stimati in molte città {cite}`derrowpinion2021eta`.
 
 **Scienza e fisica.** Le GNN sono diventate *simulatori*: rappresentando un
-fluido o un materiale come un grafo di particelle interagenti, reti come quelle
-di Sanchez-Gonzalez e colleghi (2020) imparano a prevederne l'evoluzione nel
-tempo. La stessa impalcatura muove GraphCast (DeepMind, 2023), che modella il
+fluido o un materiale come un grafo di particelle interagenti, reti come quelle di Sanchez-Gonzalez e colleghi
+{cite}`sanchezgonzalez2020learning` imparano a prevederne l'evoluzione nel
+tempo. La stessa impalcatura muove GraphCast {cite}`lam2023graphcast`, che modella il
 pianeta come un grafo di punti sulla superficie terrestre per la previsione
 meteorologica, e diversi analizzatori di collisioni nella fisica delle particelle.
 
 ## I limiti, senza nasconderli
 
 Le GNN non sono una bacchetta magica, e la letteratura è onesta sui loro punti
-deboli: vale la pena conoscerli prima di innamorarsene. Una rassegna d'insieme
-è la survey di Wu e colleghi {cite}`wu2021comprehensive`.
+deboli, e conoscerli prima di innamorarsene fa risparmiare tempo. Una rassegna
+d'insieme è quella di Wu e colleghi {cite}`wu2021comprehensive`.
 
 `````{tab} Elementare
 
@@ -492,7 +494,7 @@ connesso è *diverso*, rendono molto meno.
 
 `````{tab} Superiore
 
-- **Oversmoothing.** Li, Han e Wu (2018) mostrano che uno strato GCN è, in
+- **Oversmoothing.** Li, Han e Wu {cite}`li2018deeper` mostrano che uno strato GCN è, in
   sostanza, un passo di *smoothing* laplaciano: iterandolo molte volte le
   feature dei nodi convergono verso un punto fisso che dipende dai gradi e non
   dai nodi, rendendoli indistinguibili. La derivazione spettrale della sezione
@@ -502,21 +504,19 @@ connesso è *diverso*, rendono molto meno.
   $\tilde{\mathbf{D}}^{1/2}\mathbf{1}$ e non distingue un nodo dall'altro. È la
   ragione teorica per cui, oltre pochi strati, l'accuratezza crolla. I rimedi
   hanno nomi e forme precise, e vale la pena averli in mente perché sono tre
-  risposte diverse alla stessa domanda. **Highway GCN** (Rahimi e colleghi,
-  2018) mette un *gate* per strato che decide quanto del vecchio stato lasciar
+  risposte diverse alla stessa domanda. **Highway GCN** {cite}`rahimi2018semi` mette un *gate* per strato che decide quanto del vecchio stato lasciar
   passare accanto al nuovo, e nei loro esperimenti le prestazioni smettono di
-  migliorare attorno ai quattro strati. **Jumping Knowledge Network** (Xu e
-  colleghi, 2018) parte da un'osservazione diversa, cioè che nodi diversi
+  migliorare attorno ai quattro strati. **Jumping Knowledge Network** {cite}`xu2018jumping` parte da un'osservazione diversa, cioè che nodi diversi
   vogliono campi recettivi diversi (un hub satura in due salti, un nodo
   periferico no), e quindi invece di prendere l'uscita dell'ultimo strato le
   **concatena tutte**, lasciando che sia il modello a scegliere la profondità
-  nodo per nodo. **DeepGCN** (Li e colleghi, 2019) importa di peso residui e
+  nodo per nodo. **DeepGCN** {cite}`li2019deepgcns` importa di peso residui e
   connessioni dense da ResNet e DenseNet contro i gradienti che svaniscono, e
   aggiunge un vicinato **dilatato** (si prendono i vicini saltandone alcuni)
   contro l'oversmoothing: con questa ricetta arrivano a 56 strati su nuvole di
   punti. Restano eccezioni, però: il vincolo pratico alla profondità è ancora
   la regola.
-- **Over-squashing.** Alon e Yahav (2021) osservano che il campo recettivo di un
+- **Over-squashing.** Alon e Yahav {cite}`alon2021bottleneck` osservano che il campo recettivo di un
   nodo cresce esponenzialmente con il numero di strati, mentre il vettore che lo
   riassume ha dimensione fissa: l'informazione proveniente da nodi distanti viene
   «schiacciata» attraverso colli di bottiglia topologici, penalizzando i compiti a

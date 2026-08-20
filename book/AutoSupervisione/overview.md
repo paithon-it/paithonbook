@@ -208,8 +208,8 @@ numero di bit. L'ultima sezione di questo capitolo lo prende di petto.
 
 ## La torta, e la parola che ci hanno cambiato dentro
 
-L'argomento ha una forma celebre, e vale la pena raccontarla per intero perché
-la sua storia dice qualcosa sul campo.
+L'argomento ha una forma celebre, e conviene raccontarla per intero perché la
+sua storia dice qualcosa sul campo.
 
 Nel dicembre del 2016, a un convegno, Yann LeCun mostra una diapositiva con
 una fetta di torta e una frase: «se l'intelligenza è una torta, il grosso della
@@ -230,17 +230,17 @@ quanti ne usino i metodi supervisionati e per rinforzo standard».
 Quella frase è il conto della sezione precedente, detto in una riga e dalla
 persona che ha disegnato la torta.
 
-Vale però la pena essere precisi su che cosa quell'obiezione colpisce, perché
-questo libro la parola «non supervisionato» continua a usarla, e non per
-distrazione. Colpisce l'uso del termine per i metodi che **prevedono una parte
-del dato a partire dal resto**: là un segnale di correzione c'è, ed è quello che
-rende l'espressione fuorviante. Non colpisce i metodi che non prevedono niente e
-si limitano a descrivere la forma dei dati, cioè il raggruppamento, la riduzione
-della dimensionalità e la stima di densità: lì la supervisione manca davvero, e
-il nome tradizionale non inganna nessuno. Il capitolo di machine learning tiene
-la distinzione esplicita nella sezione su come si valuta un raggruppamento; qui
-basti sapere che dei due usi solo il primo è quello contestato, ed è l'unico che
-questo libro evita.
+Conviene essere precisi su che cosa quell'obiezione colpisce, perché «non
+supervisionato» resta una parola giusta in un caso e fuorviante nell'altro.
+Colpisce l'uso del termine per i metodi che **prevedono una parte del dato a
+partire dal resto**: là un segnale di correzione c'è, ed è quello che rende
+l'espressione fuorviante. Non colpisce i metodi che non prevedono niente e si
+limitano a descrivere la forma dei dati, cioè il raggruppamento, la riduzione
+della dimensionalità e la stima di densità: lì la supervisione manca davvero,
+e il nome tradizionale non inganna nessuno. Il {doc}`capitolo di machine learning </MachineLearning/overview>`
+tiene la distinzione esplicita nella sezione su come si valuta un
+raggruppamento; qui basti sapere che dei due usi solo il primo è quello
+contestato, ed è l'unico che questo libro evita.
 
 ```{admonition} Una nota sulla fonte
 :class: note
@@ -253,17 +253,17 @@ immagine e come cronologia, non come prova.
 
 ## Dove il libro l'ha già fatto
 
-Se l'auto-supervisione è il paradigma, allora questo libro ne è pieno, e la
-tabella che segue serve a due cose: al lettore, per accorgersene, e a questo
-capitolo, per dichiarare che non le rifarà.
+Se l'auto-supervisione è il paradigma, allora il libro ne è pieno, e la
+tabella che segue è l'elenco delle volte in cui l'ha già fatta senza chiamarla
+per nome.
 
 | dove | il pretesto | che cosa se ne tiene |
 |---|---|---|
-| `NaturalLanguageProcessing`, `Transformers` | coprire una parola, o indovinare la prossima | un modello di linguaggio |
-| `VisioneArtificiale`, «Imparare a vedere senza etichette» | ritrovare il ritaglio gemello, oppure ricostruire i tre quarti coperti | un encoder di immagini |
-| `Audio`, «Imparare senza etichette» | indovinare il tratto di parlato mascherato | rappresentazioni del suono |
-| `VisioneLinguaggio`, «Allineare due spazi» | riappaiare l'immagine con la sua didascalia | uno spazio comune fra vista e lingua |
-| `WorldModels` | prevedere come continua la scena | un simulatore interno |
+| {doc}`Natural Language Processing </NaturalLanguageProcessing/overview>` e {doc}`Transformer </Transformers/overview>` | coprire una parola, o indovinare la prossima | un modello di linguaggio |
+| {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>` | ritrovare il ritaglio gemello, oppure ricostruire i tre quarti coperti | un encoder di immagini |
+| {doc}`Imparare senza etichette, nell'audio </Audio/rappresentazioni-auto-supervisionate>` | indovinare il tratto di parlato mascherato | rappresentazioni del suono |
+| {doc}`Allineare due spazi </VisioneLinguaggio/allineare-due-spazi>` | riappaiare l'immagine con la sua didascalia | uno spazio comune fra vista e lingua |
+| {doc}`World model </WorldModels/overview>` | prevedere come continua la scena | un simulatore interno |
 
 Cinque righe e un solo meccanismo, distribuito su sei capitoli, perché la prima
 riga ne tiene due. La colonna di mezzo cambia sempre; la colonna di destra è
@@ -276,7 +276,7 @@ C'è poi una sesta riga, che non è un capitolo del libro ma un organismo vivo.
 Nelle neuroscienze teoriche c'è un modo di guardare al cervello, l’**inferenza
 attiva**, secondo cui percepire e agire non sono due mestieri distinti ma lo
 stesso mestiere: indovinare che cosa c'è là fuori, e muoversi per indovinare
-meglio. Il capitolo sui world model gli dedica una sezione. Qui serve una frase
+meglio. Il {doc}`capitolo sui world model </WorldModels/overview>` gli dedica una sezione. Qui serve una frase
 sola, perché dice del paradigma qualcosa che nessun sistema artificiale può
 dire: imparare «non è fondamentalmente diverso dalla percezione; opera
 semplicemente su una scala di tempo più lenta» {cite}`parr2022active`.

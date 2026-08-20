@@ -261,8 +261,8 @@ test_loader = DataLoader(dati_test, batch_size=64, shuffle=False,
                          num_workers=os.cpu_count(), pin_memory=True)
 ```
 
-Vale la pena capire ognuno di questi argomenti, perché sono la differenza tra
-un addestramento che dura un'ora e uno che ne dura sei.
+Conviene capire ognuno di questi argomenti, perché sono la differenza tra un
+addestramento che dura un'ora e uno che ne dura sei.
 
 `````{tab} Elementare
 `num_workers` è il numero di aiutanti che preparano i vassoi mentre la cucina
@@ -413,7 +413,7 @@ loader = DataLoader(dati_train, batch_size=32, sampler=campionatore)
 
 Il campionamento pesato è una delle tre leve possibili: le altre sono pesare
 la *loss* (`weight` in `CrossEntropyLoss`) e generare esempi sintetici della
-classe rara. Il capitolo sul machine learning discute quando conviene ciascuna.
+classe rara. Il {doc}`capitolo sul machine learning </MachineLearning/overview>` discute quando conviene ciascuna.
 
 E discute anche perché, quando le classi sono sbilanciate così, l'accuratezza
 smette di dire la verità. Basta un conto: se su duemila foto millenovecento
@@ -472,9 +472,9 @@ gonfia i risultati di poco, ma abbastanza da falsare un confronto.
 
 Un'ultima cosa, la meno intuitiva, ed è forse la più utile della sezione.
 Quando un addestramento è lento, l'istinto dice che la colpa è del modello.
-Nella maggior parte dei progetti che non riguardano i modelli giganti, la colpa
-è invece del **caricamento dei dati**: la cucina finisce il vassoio e resta
-ferma ad aspettare il successivo. Vale la pena tenerlo a mente, perché è la
+Nella maggior parte dei progetti che non riguardano i modelli giganti, la
+colpa è invece del **caricamento dei dati**: la cucina finisce il vassoio e
+resta ferma ad aspettare il successivo. Conviene tenerlo a mente, perché è la
 diagnosi che quasi nessuno prova per prima e quasi sempre è quella giusta.
 
 Come ci si accorge, se una scheda grafica c'è: si guarda quanto è occupata
@@ -542,7 +542,7 @@ Due avvertenze, e sono le stesse di sempre. La prima: quei sei numeri si
 calcolano **solo sulle foto di addestramento**, mai su tutte. Calcolarli su
 tutte vuol dire far entrare nelle mie decisioni anche le foto d'esame, e il
 voto non è più onesto: è la stessa perdita di informazione della divisione
-fatta a caso su esempi che si assomigliano, e il capitolo sul machine learning
+fatta a caso su esempi che si assomigliano, e il {doc}`capitolo sul machine learning </MachineLearning/overview>`
 la tratta per esteso. La seconda: se si parte da un modello già addestrato da
 altri, i sei numeri non si calcolano affatto, si prendono quelli con cui è
 stato addestrato lui. Le librerie li tengono insieme ai pesi proprio per

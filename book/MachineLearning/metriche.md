@@ -1,11 +1,12 @@
 # Valutare un modello: le metriche
 
-Un modello di machine learning, l'abbiamo visto, "impara" solo se **migliora
-con l'esperienza in un compito, e in modo misurabile**: è la definizione di
-Mitchell, e la parte che qui ci interessa è l'ultima, la misura. Come la
-misuriamo davvero? La domanda sembra tecnica e invece è
-la più delicata dell'intero progetto: scegliere male la metrica significa
-ottimizzare il modello verso l'obiettivo sbagliato.
+Un modello deve diagnosticare una malattia rara, presente in una persona su
+cento. Il modello più pigro del mondo, quello che risponde sempre «sano»,
+indovina il 99% delle volte: un voto quasi perfetto, e non ha riconosciuto un
+solo malato. È il caso da tenere in mente per tutta questa pagina, perché dice
+in due righe che cosa può andare storto quando si sceglie male il modo di dare
+un voto a un modello: si finisce per premiare l'obiettivo sbagliato. Come si
+misura davvero, allora, se un modello è bravo?
 
 Partiamo da un caso che mette in guardia. Immagina un modello che deve
 diagnosticare una malattia rara, presente in 1 persona su 100. Un modello
@@ -137,9 +138,9 @@ alto solo quando *entrambe* sono alte. Attenzione a quali due: vanno prese la
 precision e la recall **dello stesso modello sugli stessi dati**, non due
 numeri pescati da due tabelle diverse come i due esempi qui sopra, che sono di
 un filtro antispam e di un medico. Se un unico modello avesse precision
-$0{,}8$ e recall $0{,}75$, la sua F1 varrebbe $0{,}77$: sta in mezzo, e
-sta più vicino al peggiore dei due. Se una delle due crollasse a $0{,}1$, la
-F1 crollerebbe con lei anche con l'altra al massimo.
+$0{,}9$ e recall $0{,}4$, la sua F1 varrebbe $0{,}55$: non $0{,}65$, che è la
+media dei due, ma molto più vicina al peggiore. Se una delle due crollasse a $0{,}1$, la F1 crollerebbe con lei anche con
+l'altra al massimo.
 
 `````
 
@@ -169,8 +170,14 @@ $$
 
 dove $P$ è la precision, $R$ la recall e $\beta$ la manopola che decide a quale
 delle due si tiene di più. Attenzione a quanto sposta: nella formula la recall
-entra con $\beta^2$, quindi $\beta = 2$ la fa pesare **quattro** volte la
-precision, non due, e $\beta = 3$ nove volte. Per $\beta = 1$ si ritrova la
+entra con $\beta^2$, e questo va letto sapendo di che peso si parla. Nella
+media armonica il termine della recall vale $\beta^2$ volte quello della
+precision: partendo da precision e recall uguali, con $\beta = 2$ un punto di
+recall in più vale quattro punti di precision. La formulazione tradizionale di
+van Rijsbergen dice invece che $\beta$ è il rapporto $R/P$ al quale i due
+errori pesano uguale, e in quel senso $\beta = 2$ vuol dire «recall due volte
+più importante». Stesso $\beta$, due letture, e conviene dichiarare quale si
+sta usando; per $\beta = 1$ coincidono e si ritrova la $F_1$. Per $\beta = 1$ si ritrova la
 $F_1$.
 
 **Con più di due classi va scelta una media, e la scelta è tutto.** Le formule

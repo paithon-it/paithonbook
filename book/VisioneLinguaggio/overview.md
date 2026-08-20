@@ -70,7 +70,7 @@ informazione linguistica smettono di essere separate.
 La prima delle due cose da fare, dare all'immagine dei pezzi, ha una risposta
 condivisa da quasi tutti i sistemi di oggi, e il lettore la conosce già: il
 **Vision Transformer** {cite}`dosovitskiy2021image` del capitolo sui
-Transformer. Vale la pena richiamarne il gesto, perché tutto il resto ci poggia
+Transformer. Conviene richiamarne il gesto, perché tutto il resto ci poggia
 sopra, e sta in due mosse.
 
 La prima: si taglia la fotografia in quadratini tutti uguali, che qui chiameremo
@@ -231,8 +231,8 @@ suggerisca, e i sistemi reali sono spesso ibridi.
 
 ## Quello che serve avere già in mano
 
-Il capitolo poggia su cose viste altrove e non le rispiega. Vale però la pena
-dire quali sono, una riga ciascuna.
+Il capitolo poggia su cose viste altrove e non le rispiega. Conviene dire
+quali sono, una riga ciascuna.
 
 Dal capitolo sul **linguaggio** serve la **mappa del significato**: l'idea che
 una parola si possa scrivere come una fila di numeri, e che su quella mappa
@@ -285,7 +285,7 @@ non un incidente, ma quel che l'obiettivo premia.
 
 `````
 
-## Come è organizzato il capitolo
+## Allineare, innestare, fondere
 
 Le cinque sezioni seguono l'ordine delle domande: allineare due spazi,
 collegarli, fonderli, pagare il conto della risoluzione, e infine controllare

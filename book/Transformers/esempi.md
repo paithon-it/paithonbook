@@ -15,11 +15,9 @@ cui li si adopera si chiama `transformers` ed è una *libreria*, cioè una
 cassetta degli attrezzi già pronta che un programma può aprire e usare.
 Sotto c'è PyTorch, lo strumento con cui in questo libro si costruiscono le reti.
 
-Una parola su come leggere questa pagina. Il programma che fa girare i due
-esempi sta nelle schede Superiore, ma non serve saperlo leggere per seguire
-quel che succede: nelle schede Elementare c'è scritto in italiano che cosa
-entra e che cosa esce, e qui nel testo comune, alla fine, c'è quello che il
-modello **sbaglia**, che è la parte più istruttiva delle due.
+Dei due esempi conta soprattutto il secondo, e non per quello che indovina:
+per quello che **sbaglia**. Sta in fondo alla pagina, e in un capitolo che
+finora ha raccontato solo successi vale il doppio.
 
 ## Traduzione automatica
 
@@ -168,9 +166,9 @@ for r in recensioni:
 
 I numeri sono quelli usciti eseguendo davvero il blocco, e come per la
 traduzione qui sopra i pesi stanno su un server di altri e possono cambiare:
-sono le due uscite del libro che nessun controllo automatico sorveglia, perché
-la marcatura `pt-lento` le tiene fuori dalla CI. Si ricontrollano a mano con
-`python3 scripts/verifica-uscite.py --anche-lenti Transformers`.
+i pesi di questo modello stanno sul server di chi lo pubblica: se un giorno lo
+riaddestrano, le cifre esatte possono cambiare, mentre la graduatoria e il
+fenomeno che segue restano.
 
 Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
 classificazione usa la rappresentazione del token speciale `[CLS]` passata a
@@ -242,7 +240,7 @@ questa pagina l'ha appena dimostrato su sé stessa.
   di classificazione: capire, non generare.
 - La libreria `transformers` di Hugging Face (su PyTorch) dà accesso a
   modelli pre-addestrati per entrambi i compiti in poche righe: sotto, sono
-  `nn.Module` come quelli del capitolo su PyTorch.
+  `nn.Module` come quelli del {doc}`capitolo su PyTorch </PyTorch/overview>`.
 - I risultati vanno **validati sul proprio dominio**: ironia, gergo e litoti
   restano difficili, e la demo di questa pagina ne fornisce il controesempio in
   casa.

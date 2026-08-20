@@ -114,9 +114,9 @@ $$
 \text{margine} = \frac{2}{\lVert \mathbf{w}\rVert}.
 $$
 
-Il conto che porta a questa formula occupa due righe e sta più avanti, nella
-sezione sull'approccio della strada più larga, dove il problema viene ricavato
-da capo per intero. Massimizzare il margine equivale allora a *minimizzare*
+Il conto che porta a questa formula occupa due righe e sta più avanti in
+questa pagina, sotto il titolo «L'approccio della strada più larga», dove il
+problema viene ricavato da capo per intero. Massimizzare il margine equivale allora a *minimizzare*
 $\lVert \mathbf{w}\rVert$, o più comodamente il suo quadrato (differenziabile
 ovunque). Il problema del
 **margine rigido** (*hard margin*) è
@@ -958,11 +958,11 @@ dividerli.
 Come illustra {numref}`fig-svm-kernel`, ciò che era un anello inseparabile
 diventa, dopo il sollevamento, un problema lineare banale.
 
-Fra i kernel c'è un preferito, e si chiama **RBF** (sono le iniziali di *radial
-basis function*, «funzione a base radiale»: radiale perché guarda solo la
-distanza fra due punti, in qualunque direzione). Ha una manopola sola, che nelle
-formule si chiama $\gamma$, «gamma», e vale la pena capire che cosa fa, perché è
-il **raggio d'influenza** di ogni punto.
+Fra i kernel c'è un preferito, e si chiama **RBF** (sono le iniziali di
+*radial basis function*, «funzione a base radiale»: radiale perché guarda solo
+la distanza fra due punti, in qualunque direzione). Ha una manopola sola, che
+nelle formule si chiama $\gamma$, «gamma», e conviene capire che cosa fa,
+perché è il **raggio d'influenza** di ogni punto.
 
 `````{tab} Elementare
 
@@ -1056,9 +1056,10 @@ di *una sola* classe? Vogliamo imparare com'è fatto il «normale» (transazioni
 regolari, macchinari sani, traffico di rete legittimo) per poi accorgerci di
 ciò che se ne discosta. È il problema della **novelty detection** (riconoscere
 il nuovo) e dell’**anomaly detection** (riconoscere il guasto), e si lega a
-quel tema dei dati fuori distribuzione toccato nella sezione sui dati che
-cambiano: individuare gli input troppo lontani da ciò che il modello ha visto,
-invece di predire con finta sicurezza.
+quel tema dei dati fuori distribuzione di cui si occupa la
+{doc}`sezione sui dati che cambiano <dati-che-cambiano>`: individuare gli
+input troppo lontani da ciò che il modello ha visto, invece di predire con
+finta sicurezza.
 
 `````{tab} Elementare
 
@@ -1111,9 +1112,8 @@ media e la si divide per la sua ampiezza tipica, così che i metri quadri (che
 valgono decine) e il numero di stanze (che vale unità) contino allo stesso
 modo. La SVM misura distanze, e senza questa operazione una colonna con numeri
 grandi domina il conto e schiaccia le altre, esattamente come
-succede al k-NN. Si antepone quindi sempre uno `StandardScaler` in una
-`Pipeline`, come nel pattern «In pratica, con scikit-learn» delle sezioni
-precedenti.
+succede al k-NN. Si antepone quindi sempre uno `StandardScaler` in una `Pipeline`, come si è
+fatto per il k-NN e per Ridge.
 
 **Attenzione ai numeri grandi.** Il costo di addestramento cresce assai più in
 fretta del numero di esempi: raddoppiando gli esempi il lavoro non raddoppia,

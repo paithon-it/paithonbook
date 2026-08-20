@@ -148,8 +148,8 @@ venute dopo.
 
 `````{tab} Elementare
 Ogni lente che scorre sull'immagine lascia dietro di sé un foglio di numeri, uno
-per punto: quanto lì sotto c'era la cosa che cercava. Sono le **mappe** della
-sezione precedente, e la rete ne accumula tante, strato dopo strato. Guardando
+per punto: quanto lì sotto c'era la cosa che cercava. Sono le **feature map** di {doc}`Reti convoluzionali <reti-convoluzionali>`, e
+la rete ne accumula tante, strato dopo strato. Guardando
 un singolo punto dell'immagine, quella pila di mappe è una collezione di
 opinioni su quel punto: una dice che lì c'è un bordo, un'altra una macchia di
 colore, un'altra ancora una trama.
@@ -563,8 +563,8 @@ $3\times3$, arrivando all'accuratezza di AlexNet con cinquanta volte meno
 parametri.
 `````
 
-Il conto si verifica in poche righe, ed è utile farlo perché il numero che ne
-esce è meno ovvio della formula.
+Il numero che esce da quel conto è meno ovvio della formula, e vale la spesa
+di guardarlo.
 
 ```python
 import torch

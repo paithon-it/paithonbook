@@ -20,7 +20,7 @@ E dietro entrambe si nasconde la domanda più scomoda del campo, quella che
 nessuno ha davvero chiuso: come si fa a sapere se un agente **funziona
 davvero**? Già dare un voto a un modello che si limita a rispondere è
 difficile, quando la risposta è libera e non esiste una soluzione unica con cui
-confrontarla; lo vedremo più avanti, nel capitolo su MLOps, che è il mestiere
+confrontarla; lo vedremo più avanti, nel {doc}`capitolo su MLOps </MLOps/overview>`, che è il mestiere
 di portare un modello dal laboratorio all'uso di tutti i giorni. Dare un voto
 a un agente che *agisce*, in più passi, in un ambiente che cambia sotto i suoi
 piedi, è molto più difficile ancora.
@@ -133,8 +133,10 @@ dedicato pesca errori che l'esecutore non vedeva.
 
 Ma attenzione: più teste vuol dire anche più stipendi. Ogni volta che un
 agente parla, qualcuno da qualche parte fa lavorare un modello, e quel lavoro
-si paga a consumo: quattro agenti che si scrivono a vicenda per dieci giri
-costano quaranta volte una risposta secca. E ci sono più modi di litigare o
+si paga a consumo: quattro agenti che si scrivono a vicenda per dieci giri non costano quattro
+volte, e nemmeno quaranta: ogni volta che uno prende la parola rilegge da capo
+tutto quello che gli altri hanno già detto, e quella rilettura si paga come il
+resto. E ci sono più modi di litigare o
 fraintendersi. Non sempre la bottega batte il buon artigiano.
 
 `````
@@ -170,8 +172,9 @@ perché nessuno dei partecipanti le vede dal proprio posto.
 
 Chi è andato a controllare se la bottega batte davvero l'artigiano ha trovato
 due cose, e nessuna delle due fa piacere a chi si entusiasma
-{cite}`cemri2025why`. La prima è che il vantaggio di mettere insieme più
-agenti, sulle prove che si usano oggi, è spesso piccolo. La seconda è dove si
+{cite}`cemri2025why`. La prima è che il vantaggio di mettere insieme più agenti va misurato ogni
+volta, perché chi è andato a misurarlo sui banchi di prova che aveva a
+disposizione lo ha trovato, spesso, piccolo. La seconda è dove si
 sbaglia: non tanto dentro un agente, che di solito il suo pezzo lo fa, quanto
 **nel passarsi il lavoro**. Ruoli descritti male, agenti che vanno per conto
 proprio, e soprattutto nessuno incaricato di controllare se il risultato finale
@@ -372,7 +375,7 @@ basta. Immaginiamo di aver fatto girare un agente su un pugno di compiti e di
 aver registrato, per ciascuno, l'esito, i passi, i token e se la traiettoria
 era «pulita». Ogni singola prova, cioè una volta che gli si dà un compito e lo
 si lascia lavorare finché non finisce, la chiameremo un **episodio**, come si
-fa nel capitolo sul reinforcement learning.
+fa nel {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`.
 
 ```python
 import math
@@ -488,8 +491,8 @@ segnalazione o nei commenti sotto; e che un'altra quota quasi uguale
 Tolte le segnalazioni difettose, il sistema che allora guidava la classifica
 scendeva dal $12{,}47\%$ al $3{,}97\%$: fra il numero pubblicato e quello che
 resta c'è un fattore tre. Non è la prima volta che quei difetti vengono
-notati. Due mesi prima di quel riesame era già uscito **SWE-bench Verified**,
-una versione ripulita del banco di prova: cinquecento segnalazioni rilette una
+notati. Due mesi prima di quel riesame era già uscito **SWE-bench Verified**, una
+versione ripulita del banco di prova, curata da OpenAI nell'agosto 2024: cinquecento segnalazioni rilette una
 per una da sviluppatori professionisti e tenute solo se il problema era posto
 bene e i test erano all'altezza di giudicarlo.
 
@@ -523,7 +526,7 @@ più un sistema di controlli attorno.
 
 ## Uno sguardo onesto
 
-Chiudiamo dove il libro chiude sempre: sull'onestà. Gli agenti sono
+ Gli agenti sono
 promettenti: l'idea di un modello che pianifica, usa strumenti, collabora e
 ricorda è potente, e i primi risultati su compiti reali, per quanto modesti,
 erano impensabili pochi anni fa. Ma sono anche **fragili**, e i loro difetti
@@ -554,7 +557,7 @@ numero troppo bello. La distanza tra un agente che *sembra* funzionare in una
 dimostrazione e uno di cui *fidarsi* quando lo usa la gente si misura
 esattamente con gli strumenti di questa sezione.
 
-Sei punti per chiudere il capitolo.
+
 
 `````{tab} Elementare
 
@@ -650,5 +653,5 @@ più fragile che questo libro abbia costruito, perché ogni passo in più è
 un'altra occasione di sbagliare. Quello che ci portiamo dietro, però, non è la
 fragilità: è che a decidere quanto un agente vale non è il modello che ha
 dentro, ma quello che gli si mette davanti a ogni passo, e come lo si rimette
-in circolo. Il capitolo su prompt, contesto e loop è dedicato per intero a
+in circolo. Il {doc}`capitolo su prompt, contesto e loop </IngegneriaLLM/overview>` è dedicato per intero a
 quel mestiere lì.

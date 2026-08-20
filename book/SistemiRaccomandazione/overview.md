@@ -15,7 +15,8 @@ mezzo c'è la media, e serve a riportare il risultato sulla scala delle stelle.
 Con due sole previsioni, sbagliate di 1 e di 3 stelle, il conto fa
 $(1 + 9) / 2 = 5$ e poi $\sqrt{5} \approx 2{,}24$: più della media semplice,
 che sarebbe 2, ed è proprio quello che si voleva. Questo metro ha un nome che
-ritroverai ovunque, **RMSE**, e il capitolo di Machine Learning lo definisce per
+ritroverai ovunque, **RMSE**, e la {doc}`sezione sulle metriche </MachineLearning/metriche>` lo definisce
+per
 esteso. Misurato così, l'errore di Cinematch valeva $0{,}9525$ stelle: togliere
 il 10% vuol dire scendere sotto $0{,}8572$, ed è quella la soglia dell'assegno.
 
@@ -39,7 +40,7 @@ streaming, dove prevedere il voto in stelle conta meno di prevedere che cosa
 guarderai stasera. Due ingredienti emersi durante la gara, invece, in
 produzione ci finirono davvero. Uno è una rete che impara a riconoscere le
 combinazioni di gusti che ricorrono fra gli spettatori, e si chiama macchina di
-Boltzmann ristretta: il capitolo sui modelli a energia la racconta per intero.
+Boltzmann ristretta: il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` la racconta per intero.
 L'altro è la **fattorizzazione di matrici**, che è la protagonista di questo
 capitolo {cite}`koren2009matrix`.
 Fattorizzare vuol dire scomporre in fattori, come si fa da sempre con i numeri
@@ -58,11 +59,11 @@ resto tenendola in mano.
 
 Un motore di ricerca risponde a una domanda che fai tu. Un sistema di
 raccomandazione risponde a una domanda che non hai fatto: *tra queste
-centomila cose, quali vale la pena mostrarti?* Quelle cose sono film, canzoni,
+centomila cose, quali conviene mostrarti?* Quelle cose sono film, canzoni,
 prodotti, articoli, video, a seconda del catalogo. Nel gergo del settore si
 chiamano tutte **oggetti** (in inglese *item*), e qui useremo spesso «film»,
-perché l'esempio è quello. La differenza cruciale è che non esiste una risposta
-valida per tutti.
+perché l'esempio è quello. La differenza cruciale è che non esiste una
+risposta valida per tutti.
 
 `````{tab} Elementare
 
@@ -210,7 +211,7 @@ non avrebbe scelto.
 
 `````
 
-## Come è organizzato il capitolo
+## Da chi somiglia a chi, fino alle reti
 
 Due sezioni, dall'idea classica a quella neurale.
 

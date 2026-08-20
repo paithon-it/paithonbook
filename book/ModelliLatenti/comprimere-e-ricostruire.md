@@ -42,7 +42,7 @@ l’archivista.
 
 ## La strozzatura è il compito
 
-Vale la pena rimettere a fuoco che cosa fa la clessidra, perché quello che qui
+Conviene rimettere a fuoco che cosa fa la clessidra, perché quello che qui
 serve non è la compressione, è la **scheda**. E la parte stretta in mezzo alla
 clessidra, quella da cui deve passare tutto, si chiama **strozzatura**: qui
 sotto la chiamiamo anche «il collo stretto», ed è la stessa cosa.
@@ -106,9 +106,9 @@ discende tutto il resto della sezione.
 
 ## La clessidra è la PCA, quando è dritta
 
-C’è un fatto che vale la pena mettere qui, perché lega questa macchina a una
-che il libro ha già. PCA sta per *principal component analysis*, cioè l’analisi
-delle componenti principali della sezione su riduzione e clustering: quella che
+C’è un fatto da mettere qui, perché lega questa macchina a una che il libro ha
+già. PCA sta per *principal component analysis*, cioè l’analisi delle
+componenti principali della sezione su riduzione e clustering: quella che
 cerca le poche direzioni lungo cui i dati differiscono di più e butta via il
 resto. E la macchina di Spearman con cui si apre il capitolo, l’analisi
 fattoriale, è sua parente stretta.
@@ -134,11 +134,16 @@ solo approssimare.
 
 `````{tab} Superiore
 
-Con $e_\phi$ e $d_\theta$ **lineari** e $\ell$ l’errore quadratico, il minimo
+Con $e_\phi$ e $d_\theta$ **affini** e $\ell$ l’errore quadratico, il minimo
 della loss si raggiunge quando la **ricostruzione**
 $d_\theta(e_\phi(\mathbf{x}))$ è la proiezione ortogonale di $\mathbf{x}$ sul
-sottospazio generato dalle prime $L$ componenti principali
-{cite}`bourlard1988auto`, e il codice ne è un sistema di coordinate. Con una
+sottospazio generato dalle prime $L$ componenti principali dei dati
+**centrati** {cite}`bourlard1988auto`, e il codice ne è un sistema di
+coordinate. La centratura non è un dettaglio: con mappe puramente lineari e
+dati non centrati il minimo è il sottospazio dei primi $L$ vettori singolari
+della matrice grezza, che passa per l'origine e in generale non coincide con
+quello della PCA. A farsene carico è il termine additivo, ed è la ragione per
+cui le `nn.Linear` del blocco più avanti ce l'hanno. Con una
 precisazione che conta: la soluzione è unica solo **a meno di un cambio di
 base** nel latente, cioè l’autoencoder lineare recupera il *sottospazio* di
 massima varianza, non le singole direzioni principali né il loro ordinamento;
@@ -173,16 +178,17 @@ Le cifre scritte a mano di `scikit-learn` sono immagini di 8 pixel per lato,
 cioè 64 numeri, e sono 1797. Le comprimiamo in **otto** numeri, che è un ottavo
 del dato, e chiediamo alla rete di rifarle.
 
-Il voto che le diamo è la **cross-entropia** dei richiami di matematica, presa
-un pixel alla volta: invece di contare i grigi di differenza fra originale e
+Il voto che le diamo è la **cross-entropia**, il metro introdotto nel
+{doc}`capitolo di matematica </Matematica/overview>`, presa un pixel alla
+volta: invece di contare i grigi di differenza fra originale e
 copia, misura quanto il copista si è sbilanciato su quel pixel e quanto ci ha
 azzeccato. È la scelta consueta su immagini a un canale come queste, dove ogni
 pixel è un grigio fra bianco e nero, e in cambio dà un numero che si legge in
 unità di informazione.
 
-Nel blocco c’è anche una riga che con gli autoencoder non c’entra niente,
-`torch.set_num_threads(1)`, e vale la pena dire perché sta lì: senza, i numeri
-stampati in questo capitolo cambierebbero da un computer all’altro.[^thread]
+Nel blocco c'è anche una riga che con gli autoencoder non c'entra niente,
+`torch.set_num_threads(1)`: chiede a PyTorch di fare i conti su un nucleo
+solo, e serve perché gli stessi numeri escano su qualunque macchina.[^thread]
 
 ```python
 import torch
@@ -395,7 +401,7 @@ mai battuta, e non è una zona di frontiera: è la regola.
 
 ## Perché la strozzatura non basta
 
-Vale la pena dire per bene di chi sia la colpa, perché non è dell’archivista.
+Conviene dire per bene di chi sia la colpa, perché non è dell’archivista.
 
 `````{tab} Elementare
 
@@ -530,28 +536,23 @@ misura con la cosa che si vuole. La sezione seguente non aggiusta la clessidra:
 cambia la domanda.
 
 
-[^thread]: Il motivo è che **le somme in virgola mobile non sono associative**:
-    sommando gli stessi numeri in un ordine diverso il risultato cambia
-    nell’ultima cifra, perché a ogni passo il totale parziale viene arrotondato
-    a quante cifre il formato può tenere, e arrotondare un totale grande
-    insieme a un addendo piccolo ne perde un pezzo. PyTorch, per andare più
-    veloce, spezza ogni somma lunga fra i nuclei di calcolo disponibili e poi
-    rimette insieme i pezzi: quanti sono i pezzi dipende da quanti nuclei ha la
-    macchina, quindi **macchine diverse sommano in ordini diversi**. Su una
-    rete addestrata per quattromila passi quelle ultime cifre si accumulano, e
-    alla fine si vedono: il costo di descrizione dell’ultima sezione, senza
-    quella riga, vale 6,04 lasciando lavorare i quattro nuclei di questa
-    macchina e 6,03 usandone uno solo. È successo davvero, e se n’è accorto un
-    controllo che ha eseguito il codice con un’altra impostazione: il libro si
-    è trovato smentito dal proprio codice. Vale la pena tenere la regola, perché è più larga di PyTorch:
-    **fissare il seme non basta**, dato che il seme governa i sorteggi e non
-    l’ordine delle somme.
-    E la riparazione non costa niente, anzi. Su tensori piccoli come questi
-    (1797 cifre da 64 numeri) un thread solo è **più veloce**: le quattro reti
-    dell’ultima sezione si addestrano in 36 secondi con un thread e in 46 con
-    quattro. Non è un paradosso: spartire il lavoro e rimettere insieme i pezzi
-    ha un costo fisso, che qui si paga quattromila volte, e ogni volta a
-    ciascun nucleo tocca un pezzo di conto talmente piccolo che il tempo per
-    consegnarglielo supera il tempo per farlo. Il parallelismo rende quando a
-    ciascuno tocca abbastanza da fare, ed è la stessa ragione per cui non si
-    chiamano quattro muratori a spostare un mattone.
+[^thread]: Il motivo è che **le somme in virgola mobile non sono
+associative**: sommando gli stessi numeri in un ordine diverso il risultato
+cambia nell’ultima cifra, perché a ogni passo il totale parziale viene
+arrotondato a quante cifre il formato può tenere, e arrotondare un totale
+grande insieme a un addendo piccolo ne perde un pezzo. PyTorch, per andare più
+veloce, spezza ogni somma lunga fra i nuclei di calcolo disponibili e poi
+rimette insieme i pezzi: quanti sono i pezzi dipende da quanti nuclei ha la
+macchina, quindi **macchine diverse sommano in ordini diversi**. Su una rete
+addestrata per quattromila passi quelle ultime cifre si accumulano, e alla
+fine si vedono: il costo di descrizione dell’ultima sezione, senza quella
+riga, vale 6,04 lasciando lavorare i quattro nuclei di questa macchina e 6,03
+usandone uno solo. Conviene tenere la regola, perché è più larga di PyTorch:
+**fissare il seme non basta**, dato che il seme governa i sorteggi e non
+l’ordine delle somme. E la riparazione non costa niente, anzi. Su tensori piccoli come questi (1797 cifre da 64 numeri) un thread solo è
+**più veloce**, e di parecchio. Non è un paradosso: spartire il lavoro e rimettere
+insieme i pezzi ha un costo fisso, che qui si paga quattromila volte, e ogni
+volta a ciascun nucleo tocca un pezzo di conto talmente piccolo che il tempo
+per consegnarglielo supera il tempo per farlo. Il parallelismo rende quando a
+ciascuno tocca abbastanza da fare, ed è la stessa ragione per cui non si
+chiamano quattro muratori a spostare un mattone.

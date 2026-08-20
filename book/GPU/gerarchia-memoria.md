@@ -1,6 +1,6 @@
 # La memoria: il vero collo di bottiglia
 
-Nella sezione «Prestazioni e scala» del capitolo su PyTorch avevamo lasciato
+Nella sezione «Prestazioni e scala» del {doc}`capitolo su PyTorch </PyTorch/overview>` avevamo lasciato
 cadere, quasi di sfuggita, un'osservazione scomoda: «il collo di bottiglia, più
 spesso del calcolo, è il movimento dei dati». È il momento di prenderla sul
 serio, perché è una delle verità meno intuitive di tutto l'hardware moderno.
@@ -48,8 +48,7 @@ memoria più veloce ma più piccola; scendendo verso la base memoria più
 capiente ma più lenta, perché più lontana dalle unità che fanno i conti. I
 primi tre piani stanno *dentro* il chip della GPU (in inglese *on-chip*); gli
 ultimi due, la memoria grande della scheda e quella del computer, stanno fuori
-dal chip (*off-chip*), ed è per questo che raggiungerli costa tanto. La scheda
-Elementare qui sotto racconta gli stessi cinque piani come una scrivania.
+dal chip (*off-chip*), ed è per questo che raggiungerli costa tanto. 
 ```
 
 `````{tab} Elementare
@@ -213,8 +212,8 @@ ri-leggere dalla HBM ciò che ti serve più volte. Se un blocco di dati verrà
 usato da molti thread, conviene portarlo *una sola volta* nella shared memory
 (il ripiano condiviso della scrivania) e da lì servirlo a tutti.
 
-Di questo principio c'è un esempio celebre, e vale la pena anticiparlo qui
-perché è il principio di questa sezione allo stato puro. Si chiama
+Di questo principio c'è un esempio celebre, e conviene anticiparlo qui perché
+è il principio di questa sezione allo stato puro. Si chiama
 **FlashAttention**, ed è il modo in cui oggi si eseguono i confronti fra le
 parole di un testo dentro un modello linguistico; una sezione più avanti lo
 racconta per esteso. La cosa da sapere fin da adesso è una sola: quel metodo
@@ -406,7 +405,8 @@ Due esempi concreti, con dati in `float32` (4 byte):
   saldamente compute-bound. Attenzione però a che cosa vuol dire «riuso
   perfetto»: leggere ogni elemento di $\mathbf{A}$ e $\mathbf{B}$ *una volta
   sola*, cioè tenerle intere in memoria veloce. Per $n = 4096$ in `float32`
-  sarebbero 201 MB, contro gli 84 MB di memoria on-chip di una H100: quell’$n/6$
+  sarebbero 201 MB, contro i poco meno di 120 MB che una H100 ha on-chip in tutto (50 di cache L2,
+  34 di shared e L1, 34 di registri): quell’$n/6$
   è un tetto ideale, non un traguardo. Ci si torna nella sezione sul GEMM, dove
   si vede quanto ci si arriva davvero (e perché non serve arrivarci).
 

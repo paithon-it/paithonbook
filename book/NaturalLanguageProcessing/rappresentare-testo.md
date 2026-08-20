@@ -190,9 +190,10 @@ $$
 $$
 
 dove $\text{tf}(t,d)$ è la frequenza di $t$ in $d$, $N$ il numero totale di
-documenti, $\text{df}(t)$ il numero di documenti che contengono $t$ e il
-logaritmo è quello **naturale** (è la scelta di `scikit-learn`; la base
-cambia solo un fattore di scala comune a tutti i termini). Il
+documenti, $\text{df}(t)$ il numero di documenti che contengono $t$ e il logaritmo è quello **naturale** (la base cambia solo un fattore di scala
+comune a tutti i termini). È la forma da manuale: la variante che
+`scikit-learn` calcola davvero, e i decimali che ne escono, arrivano fra due
+pagine. Il
 fattore logaritmico penalizza i termini onnipresenti (df alto). Restano due
 limiti strutturali: i vettori sono ancora sparsi e $|V|$-dimensionali, e
 nessuna relazione lega parole diverse tra loro.
@@ -284,10 +285,10 @@ parola: gli si fa vedere in quali compagnie compare, milioni di volte, e il
 vettore è il riassunto di quelle compagnie.
 ```
 
-Vale la pena notare cosa quella procedura **non** usa: nessun dizionario,
-nessun elenco di significati, nessuna persona che spieghi qualcosa. Serve solo
-del testo qualsiasi, e questa è la ragione del suo successo. Il testo qualsiasi
-è gratis e infinito; un archivio di testi con le spiegazioni scritte a mano da
+Conviene notare cosa quella procedura **non** usa: nessun dizionario, nessun
+elenco di significati, nessuna persona che spieghi qualcosa. Serve solo del
+testo qualsiasi, e questa è la ragione del suo successo. Il testo qualsiasi è
+gratis e infinito; un archivio di testi con le spiegazioni scritte a mano da
 esperti (in gergo si dice che è **annotato**) costa mesi di lavoro di persone
 vere ed è sempre piccolo. Il mucchio di testi su cui un programma si addestra
 ha un nome che da qui in poi ricorre di continuo, ed è **corpus** (al plurale,
@@ -757,18 +758,18 @@ detto alla rete quali fossero i quattro argomenti né dove metterli: le sono
 state date solo delle terne e un ordine da rispettare, e la geometria si è
 riorganizzata da sé.
 
-Vale la pena guardare anche il rovescio della medaglia. Un coseno di $0{,}876$
-fra frasi dello stesso argomento è tantissimo: vuol dire che quelle trentadue
+Conviene guardare anche il rovescio della medaglia. Un coseno di $0{,}876$ fra
+frasi dello stesso argomento è tantissimo: vuol dire che quelle trentadue
 frasi si sono quasi ammucchiate in un punto solo. Va benissimo se il compito è
 separare quattro temi, e malissimo se il compito è distinguere due sfumature
-*dentro* lo stesso tema, perché lì dentro non c'è più spazio. Il rimedio, in un
-modello vero, è scegliere meglio la terza frase di ogni terna, quella che deve
-stare lontana: se la si pesca a caso è quasi sempre di un altro pianeta, la
-regola è già rispettata e la rete non impara niente. Si vanno allora a cercare
-apposta le frasi *quasi* uguali all'ancora e però diverse, che in gergo si
-chiamano **negativi difficili**, e sono quelle che insegnano qualcosa. Ecco
-perché un modello di embedding si sceglie guardando il compito che si ha
-davvero, e non una classifica generica.
+*dentro* lo stesso tema, perché lì dentro non c'è più spazio. Il rimedio, in
+un modello vero, è scegliere meglio la terza frase di ogni terna, quella che
+deve stare lontana: se la si pesca a caso è quasi sempre di un altro pianeta,
+la regola è già rispettata e la rete non impara niente. Si vanno allora a
+cercare apposta le frasi *quasi* uguali all'ancora e però diverse, che in
+gergo si chiamano **negativi difficili**, e sono quelle che insegnano
+qualcosa. Ecco perché un modello di embedding si sceglie guardando il compito
+che si ha davvero, e non una classifica generica.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

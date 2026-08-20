@@ -26,7 +26,7 @@ rete che genera audio grezzo con una qualità mai sentita prima, e lo fa nel mod
 più diretto possibile: produce un campione dell'onda alla volta, ciascuno sulla
 base di tutti quelli già prodotti.
 
-La ritroveremo nel capitolo sul riconoscimento vocale, dove farà l'ultimo pezzo
+La ritroveremo nel {doc}`capitolo sul riconoscimento vocale </SpeechRecognition/overview>`, dove farà l'ultimo pezzo
 della voce sintetica: quello che riprende l'immagine del suono e ne ricava
 l'onda vera e propria, che poi esce dagli altoparlanti (un pezzo di macchina che
 si chiama *vocoder*). Ma la sua origine è qui.
@@ -225,8 +225,8 @@ conseguenze: l'audio diventa qualche centinaio di simboli al secondo invece di
 decine di migliaia di campioni.
 
 Ma il numero che conta davvero non è quello: è quanti **passi in fila** servono,
-perché è la fila a costare. Prendiamo il codec di MusicGen, il generatore di
-musica di cui parliamo fra due sezioni. È lo stesso EnCodec dei codec neurali,
+perché è la fila a costare. Prendiamo il codec di MusicGen, il generatore di musica di cui si dice qui
+sotto. È lo stesso EnCodec dei codec neurali,
 regolato però per la musica: taglia il suono in 50 frame al secondo invece di
 75, e per ogni frame produce quattro token invece di otto. Quei quattro il
 modello li tira fuori in un colpo solo, con un accorgimento che vedremo. Quindi
@@ -329,13 +329,14 @@ and Controllable Music Generation*) rivendica proprio la semplicità: **un
 singolo** Transformer autoregressivo, non una cascata, che genera i token di
 un codec (EnCodec) condizionato da una descrizione testuale.
 
-Guidare una generazione con una descrizione scritta si chiama **condizionare**,
-ed è la stessa idea che ritroveremo con i modelli di diffusione. La descrizione
-(«un riff di chitarra elettrica anni Settanta, ritmo incalzante») viene tradotta
-in numeri da un modello che sa leggere il testo, e quei numeri restano lì
-accanto per tutta la generazione, a tirare i token prodotti verso ciò che si è
-chiesto. Ciò che MusicGen deve risolvere in più è un dettaglio tecnico del
-codec, e vale la pena capirlo perché è lì che sta l'ingegno.
+Guidare una generazione con una descrizione scritta si chiama
+**condizionare**, ed è la stessa idea che ritroveremo con i modelli di
+diffusione. La descrizione («un riff di chitarra elettrica anni Settanta,
+ritmo incalzante») viene tradotta in numeri da un modello che sa leggere il
+testo, e quei numeri restano lì accanto per tutta la generazione, a tirare i
+token prodotti verso ciò che si è chiesto. Ciò che MusicGen deve risolvere in
+più è un dettaglio tecnico del codec, e conviene capirlo perché è lì che sta
+l'ingegno.
 
 `````{tab} Elementare
 
@@ -601,7 +602,7 @@ griglia non c'è più.
 ```
 
 Chiarito come si mette la musica in fila, la macchina che indovina il simbolo
-successivo è quella del capitolo sui Transformer, senza una riga di differenza.
+successivo è quella del {doc}`capitolo sui Transformer </Transformers/overview>`, senza una riga di differenza.
 C'è però una ragione per cui proprio qui l'attenzione ha contato più che
 altrove, e la dice il titolo del lavoro che l'ha portata nella musica: *Music
 Transformer: Generating Music with Long-Term Structure*, di Cheng-Zhi Anna
@@ -674,22 +675,21 @@ macchina che predice il simbolo successivo.
 ## Diffusione, e uno sguardo onesto ai limiti
 
 Torniamo al suono. Anche lì la via dei token non è l'unica: c'è un secondo
-grande filone, quello dei
-**modelli di diffusione**, a cui il libro dedica un capitolo intero più avanti
-(dove il metodo nasce, per le immagini) e che qui vale la pena almeno nominare,
-perché nell'audio pesa quanto l'altro. L'idea in due righe: si prende un dato
-vero e lo si sporca di rumore un po’ alla volta, finché non resta che rumore;
-poi si addestra una rete a fare il percorso inverso, a togliere rumore un passo
-per volta. Fatto questo, si può partire da rumore puro e arrivare a un dato
-nuovo, che nessuno ha mai visto. Il dato, nell'audio, raramente è l'onda grezza:
-di solito è
-il suo **spettrogramma** (l'immagine tempo-frequenza costruita nella prima
-sezione del capitolo), che si può trattare quasi come una figura, oppure il
-riassunto compatto che l'encoder di un codec produce prima di arrotondarlo in
-token, quello che nella sezione precedente abbiamo chiamato **latente** (è la
-stessa strategia della diffusione latente di Stable Diffusion, trasferita al
-suono). I due filoni corrono paralleli, e quale dei due convenga dipende dal
-compito più che dall'anno.
+grande filone, quello dei **modelli di diffusione**, a cui il libro dedica un
+capitolo intero più avanti (dove il metodo nasce, per le immagini) e che qui
+conviene almeno nominare, perché nell'audio pesa quanto l'altro. L'idea in due
+righe: si prende un dato vero e lo si sporca di rumore un po’ alla volta,
+finché non resta che rumore; poi si addestra una rete a fare il percorso
+inverso, a togliere rumore un passo per volta. Fatto questo, si può partire da
+rumore puro e arrivare a un dato nuovo, che nessuno ha mai visto. Il dato,
+nell'audio, raramente è l'onda grezza: di solito è il suo **spettrogramma**
+(l'immagine tempo-frequenza costruita nella prima sezione del capitolo), che
+si può trattare quasi come una figura, oppure il riassunto compatto che
+l'encoder di un codec produce prima di arrotondarlo in token, quello che nella
+sezione precedente abbiamo chiamato **latente** (è la stessa strategia della
+diffusione latente di Stable Diffusion, trasferita al suono). I due filoni
+corrono paralleli, e quale dei due convenga dipende dal compito più che
+dall'anno.
 
 Detto ciò che funziona, l'onestà impone di dire ciò che ancora non funziona.
 La **coerenza a lungo termine** resta fragile: un modello sa produrre trenta
@@ -704,7 +704,7 @@ suonano come suonerebbe una stanza vera. Un orecchio allenato li riconosce.
 Ma la questione più grande non è tecnica. I modelli di questa sezione imparano
 da enormi cataloghi di musica registrata, e questo apre un nodo di **copyright
 e consenso** (con le sue cause legali sui dati di addestramento) che
-ritroveremo per le immagini generate (nel capitolo sui modelli di diffusione)
+ritroveremo per le immagini generate (nel {doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`)
 e per la clonazione vocale (in quello sulla sintesi vocale). A chi appartiene
 un brano generato «nello stile di» un artista che non ha mai dato il permesso,
 e che non viene pagato? Chi ha diritto sulla musica di addestramento? La voce

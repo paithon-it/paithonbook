@@ -1,13 +1,13 @@
 # Confronto con i modelli precedenti
 
-Ogni nuova architettura va giudicata contro ciò che sostituisce. Prima del 2017
-il testo lo trattavano le **reti ricorrenti**, quelle che leggono una parola
-alla volta portandosi dietro un riassunto di quel che è venuto prima: la
-capostipite si chiama RNN (*recurrent neural network*), e le due varianti
-raffinate che l'hanno soppiantata si chiamano LSTM e GRU. Le abbiamo incontrate
-nel capitolo sul Natural Language Processing. Vale la pena metterle accanto al
-Transformer con onestà: capire *perché* ha vinto, e anche *dove* non vince
-affatto.
+Ogni nuova architettura va giudicata contro ciò che sostituisce. Prima del
+2017 il testo lo trattavano le **reti ricorrenti**, quelle che leggono una
+parola alla volta portandosi dietro un riassunto di quel che è venuto prima:
+la capostipite si chiama RNN (*recurrent neural network*), e le due varianti
+raffinate che l'hanno soppiantata si chiamano LSTM e GRU. Le abbiamo
+incontrate nel {doc}`capitolo sul Natural Language Processing </NaturalLanguageProcessing/overview>`. Conviene metterle
+accanto al Transformer con onestà: capire *perché* ha vinto, e anche *dove*
+non vince affatto.
 
 ## Tre generazioni di memoria
 
@@ -223,20 +223,18 @@ Messi su una bilancia, il Transformer vince quando ricorrono tre condizioni
 insieme: c'è tantissimo testo su cui studiare, c'è una macchina che sa fare
 molti conti insieme invece che uno dopo l'altro, e conta capire legami fra
 parole molto distanti fra loro. Sono esattamente le condizioni in cui vivono i
-sistemi tipo ChatGPT, e non è un caso. Le architetture ricorrenti restano
-sensate quando le risorse sono poche e il testo è lunghissimo, e nei sistemi
-che devono rispondere mentre le parole arrivano, una alla volta, senza poter
-aspettare la fine (i sottotitoli in diretta, per dire, o un traduttore che
-lavora mentre l'altro parla). E come idea non sono affatto morte: due linee di
-ricerca recenti
-rimettono in mezzo un riassunto che si aggiorna passo per passo, proprio come
-facevano le RNN, ma costruito in modo da non pagare il costo della riunione
-plenaria. Si chiamano *attenzioni lineari* e *state space model* (in italiano
-«modelli a spazio di stato», dove lo stato è appunto il riassunto che si
-aggiorna; il più noto si chiama Mamba), e hanno un capitolo ciascuna subito
-dopo questo. In altre
-parole: il Transformer ha vinto la partita del decennio, non necessariamente il
-campionato eterno.
+sistemi tipo ChatGPT. Le architetture ricorrenti restano sensate quando le
+risorse sono poche e il testo è lunghissimo, e nei sistemi che devono
+rispondere mentre le parole arrivano, una alla volta, senza poter aspettare la
+fine (i sottotitoli in diretta, per dire, o un traduttore che lavora mentre
+l'altro parla). E come idea non sono affatto morte: due linee di ricerca
+recenti rimettono in mezzo un riassunto che si aggiorna passo per passo,
+proprio come facevano le RNN, ma costruito in modo da non pagare il costo
+della riunione plenaria. Si chiamano *attenzioni lineari* e *state space
+model* (in italiano «modelli a spazio di stato», dove lo stato è appunto il
+riassunto che si aggiorna; il più noto si chiama Mamba), e hanno un capitolo
+ciascuna subito dopo questo. In altre parole: il Transformer ha vinto la
+partita del decennio, non necessariamente il campionato eterno.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

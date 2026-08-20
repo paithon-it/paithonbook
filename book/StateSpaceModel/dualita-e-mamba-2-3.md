@@ -146,28 +146,27 @@ con maschera semiseparabile.
 
 `````
 
-Il risultato ha una lettura che vale la pena esplicitare, perché è il perno di
-due capitoli. Nel capitolo sull'attenzione lineare avevamo messo in fila una
-piccola collezione di architetture (uno «zoo», lo avevamo chiamato) che
-avevano tutte lo stesso corpo (una memoria di taglia fissa, addestrata in
-parallelo e usata passo dopo passo) e differivano in una cosa sola: **come il
-passato sbiadisce** quando arriva il presente. C'era chi non dimentica niente,
-chi sbiadisce tutta la memoria della stessa quantità, chi la sbiadisce cassetto
-per cassetto, e chi cancella di mira la vecchia voce che sta per essere
+Il risultato ha una lettura da esplicitare, perché è il perno di due capitoli.
+Nel capitolo sull'attenzione lineare avevamo messo in fila una piccola
+collezione di architetture (uno «zoo», lo avevamo chiamato) che avevano tutte
+lo stesso corpo (una memoria di taglia fissa, addestrata in parallelo e usata
+passo dopo passo) e differivano in una cosa sola: **come il passato
+sbiadisce** quando arriva il presente. C'era chi non dimentica niente, chi
+sbiadisce tutta la memoria della stessa quantità, chi la sbiadisce casella per casella, e chi cancella di mira la vecchia voce che sta per essere
 riscritta. Mamba-2 occupa il secondo gradino, quello che sbiadisce tutto in
-blocco. Arrivando dai sistemi dinamici invece che dall'attenzione, ci ritroviamo
-esattamente lì: è la prova che le due strade (quella partita dall'attenzione e
-quella partita dai sistemi dinamici di Kálmán) portavano alla stessa
-città. La stessa funzione ha
-una forma **ricorrente**, che costa quanto la lunghezza del testo (la vista
-«SSM»), e una forma **a tabella**, la grande griglia dei confronti fra tutte le
-coppie di parole, mascherata perché ciascuna guardi solo all'indietro (la vista
-«attenzione»). Non è un'analogia: è un'uguaglianza.
+blocco. Arrivando dai sistemi dinamici invece che dall'attenzione, ci
+ritroviamo esattamente lì: è la prova che le due strade (quella partita
+dall'attenzione e quella partita dai sistemi dinamici di Kálmán) portavano
+alla stessa città. La stessa funzione ha una forma **ricorrente**, che costa
+quanto la lunghezza del testo (la vista «SSM»), e una forma **a tabella**, la
+grande griglia dei confronti fra tutte le coppie di parole, mascherata perché
+ciascuna guardi solo all'indietro (la vista «attenzione»). Non è un'analogia:
+è un'uguaglianza.
 
 ## Perché conviene: i tensor core
 
 La dualità sarebbe solo un'eleganza teorica se non pagasse in velocità. Paga, e
-la chiave è una rinuncia apparentemente minima. In Mamba-1 ogni cassetto della
+la chiave è una rinuncia apparentemente minima. In Mamba-1 ogni casella della
 memoria sbiadiva a velocità propria; Mamba-2 impone che sbiadiscano tutti alla
 stessa. Sembra una perdita di espressività, cioè di cose che il modello sa
 distinguere, ed è invece ciò che rende l'algoritmo esprimibile come pura
@@ -190,7 +189,7 @@ lasciare che ogni corsia dimentichi a modo suo, si chiede a un intero gruppo di
 corsie di dimenticare tutte alla stessa velocità. Basta questo, e il calcolo di
 tutto il gruppo diventa una sola moltiplicazione di tabelle invece di tante
 operazioni minute: la pressa si accende. In più, potendo permettersi una
-memoria più capiente senza pagarla in velocità, Mamba-2 allarga il taccuino di
+memoria più capiente senza pagarla in velocità, Mamba-2 allarga il foglio di
 ogni corsia (da una manciata di numeri a diverse decine o centinaia) e
 organizza le corsie in gruppi, che chiama **teste**, esattamente come
 l'attenzione.
@@ -230,8 +229,8 @@ di rango basso, in forma ricorrente. Si interpola così tra le due viste della
 dualità: quadratica dentro il blocco, lineare tra i blocchi.
 
 Sul costo conviene essere precisi, perché è qui che si annida il malinteso.
-Il conto torna **lineare nella lunghezza**: $O\big(L\,N\,(Q+P)\big)$ con
-blocchi di lunghezza $Q$, stato $N$ e dimensione di testa $P$, che nel caso
+Il conto torna **lineare nella lunghezza**: $O\big(L\,Q\,(N+P) + L\,N\,P\big)$
+con blocchi di lunghezza $Q$, stato $N$ e dimensione di testa $P$, che nel caso
 del Teorema 6.1 del paper ($P = N$, blocchi dell'ordine di $N$) diventa
 $O(L\,N^2)$. Rispetto alla forma quadratica, che di operazioni ne fa
 $O(L^2 N)$, è un
@@ -411,12 +410,12 @@ La terza novità è più ingegneristica.
 
 `````{tab} Elementare
 
-Finora ogni corsia del modello teneva un taccuino tutto suo, e i taccuini non
+Finora ogni corsia del modello teneva un foglio tutto suo, e i fogli non
 si parlavano. Mamba-3 fa condividere a più corsie un
-taccuino comune, più capiente. Il vantaggio sta nel modo di lavorare delle
+foglio comune, più capiente. Il vantaggio sta nel modo di lavorare delle
 schede grafiche: andare a prendere i dati in memoria costa più che farci i
 conti sopra, quindi conviene, a ogni viaggio, portare a casa più lavoro utile.
-Con il taccuino condiviso ogni lettura serve più corsie in un colpo solo, e il
+Con il foglio condiviso ogni lettura serve più corsie in un colpo solo, e il
 risultato pratico è una qualità un po’ migliore **senza** rallentare la
 generazione: l'attesa tra una parola prodotta e la successiva resta la stessa.
 
@@ -474,7 +473,7 @@ interno: i conti sull'intervallo rifatti a trapezi invece che a rettangoli (e
 il mini-filtro che stava prima del cuore selettivo diventa opzionale), una
 memoria che oltre a sbiadire sa ruotare come una lancetta su un quadrante
 (utile per contare e tenere il segno, ed è la stessa idea con cui i Transformer
-codificano la posizione), e un taccuino condiviso fra più corsie, che spreme
+codificano la posizione), e un foglio condiviso fra più corsie, che spreme
 meglio l'hardware. Da una macchina che tratta tutti allo stesso modo e ricorda
 a lungo, a una che sceglie, poi riconciliata con l'attenzione e resa veloce,
 poi affinata nel modo in cui la memoria evolve: è la parabola di una singola,
@@ -504,7 +503,7 @@ al costo lineare.
   alla stessa velocità) dà ai conti la forma che la pressa accetta: tutto
   diventa moltiplicazione di tabelle. Non si fanno **meno** operazioni, se ne
   fanno di un tipo che la macchina digerisce meglio. In più la memoria si
-  organizza a gruppi (le **teste**, come nell'attenzione) e il taccuino di ogni
+  organizza a gruppi (le **teste**, come nell'attenzione) e il foglio di ogni
   corsia può diventare molto più capiente.
 - **Mamba-3** (Lahoti et al., 2026) non cambia l'impianto, ne raffina la
   dinamica con tre mosse: i conti sull'intervallo rifatti a **trapezi** invece
@@ -512,7 +511,7 @@ al costo lineare.
   modello (e il mini-filtro che stava prima del cuore selettivo diventa
   **opzionale**, purché si aggiunga il numero fisso che l'accompagna); uno
   stato che oltre a sbiadire sa **ruotare**, come una lancetta su un quadrante,
-  utile per contare e tenere il segno; e un taccuino di memoria **condiviso**
+  utile per contare e tenere il segno; e un foglio di memoria **condiviso**
   fra più corsie, che dà più qualità senza rallentare la generazione. Lavoro
   recente: la direzione è solida, le cifre da confermare.
 - L'arco **S4 → Mamba → Mamba-2 → Mamba-3**: da un sistema che tratta ogni

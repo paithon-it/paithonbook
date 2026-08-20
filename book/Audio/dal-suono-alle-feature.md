@@ -10,14 +10,11 @@ chiamò *visible speech*, "parola visibile". È esattamente il percorso che
 compie oggi *qualsiasi* sistema che lavora sull'audio (riconoscere una voce,
 un canto, un allarme) **prima** ancora di provare a capire *cosa* quel suono
 significhi: trasformare un'onda in numeri, e i numeri in un'immagine su cui un
-modello sa lavorare. Questa sezione, in apertura del capitolo, costruisce quel
-percorso: sono le fondamenta comuni a tutto ciò che segue (qui, e nel capitolo
-sullo Speech Recognition).
+modello sa lavorare.
 
-Nel titolo c'è la parola **feature**, che in questo libro indica i numeri con
-cui descriviamo una cosa da dare in pasto a un modello: qui, i numeri con cui
-descriviamo un suono. La domanda della sezione è quali scegliere, e perché
-proprio quelli.
+**Feature** sono i numeri con cui descriviamo una cosa da dare in pasto a un
+modello: qui, i numeri con cui descriviamo un suono. Quali scegliere, e perché
+proprio quelli, è tutto il resto.
 
 ## Il suono come numeri
 
@@ -255,15 +252,18 @@ Da dove escono? La prima sorprende, perché è molto più piccola dei 25 millesi
 della finestra: il motivo è che la finestra non pesa uguale dappertutto, è gonfia
 in mezzo e va a zero ai bordi, quindi il suo peso è tutto concentrato in un
 tratto molto più corto della sua lunghezza. La seconda si ottiene facendo il
-conto sulla stessa curva. Per capire se 23 sono tante o poche: attorno al la del
-diapason due tasti vicini del pianoforte distano 26 oscillazioni al secondo,
-quindi lì li separa appena; un'ottava più in basso quella distanza si dimezza,
-e non li separa più.
+conto sulla stessa curva. Per capire se 23 sono tante o poche serve però una cautela: quel numero è la
+*larghezza* della finestra vista in frequenza, non la distanza minima fra due
+note che si riescano ancora a distinguere. Quest'ultima è più grande, e per la
+curva che stiamo usando vale una sessantina di oscillazioni al secondo.
+Attorno al la del diapason due tasti vicini ne distano 26, cioè stanno
+abbondantemente sotto quella soglia: la finestra da 25 millesimi non li
+separa, li impasta in una macchia sola.
 
-Adesso allunghiamo la finestra a 100 millesimi, quattro volte tanto. La
-precisione sulle note migliora esattamente di quattro (23 diviso 4 fa 5,75
-oscillazioni al secondo, e i due tasti gravi ora si separano senza fatica) e
-quella sugli istanti peggiora esattamente di quattro (3,5 per 4 fa 14 millesimi
+Adesso allunghiamo la finestra a 100 millesimi, quattro volte tanto. La precisione sulle note migliora esattamente di quattro (23 diviso 4 fa 5,75
+oscillazioni al secondo, e i due tasti del diapason cominciano appena a
+distinguersi: fra i due picchi si apre un avvallamento, ancora poco profondo)
+e quella sugli istanti peggiora esattamente di quattro (3,5 per 4 fa 14 millesimi
 di secondo). Moltiplichiamole, prima e dopo: $3{,}5 \times 23 = 80{,}5$ e
 $14 \times 5{,}75 = 80{,}5$. Identico.
 
@@ -286,9 +286,13 @@ $$
 
 dove $\mathbf{w}$ è la **finestra** (lunga $N$ campioni), $H$ il **passo** (*hop*) di cui
 essa avanza da una colonna alla successiva, $m$ l'indice della colonna e $k$
-quello del bin di frequenza. Con frequenza di campionamento $f_s$, i bin sono
-spaziati di $f_s/N$ hertz e le colonne di $H/f_s$ secondi: sono le due
-risoluzioni, e si muovono in senso opposto. Per il parlato la scelta standard è
+quello del bin di frequenza. Con frequenza di campionamento $f_s$ la trasformata restituisce bin spaziati
+di $f_s/N$ hertz e una colonna ogni $H/f_s$ secondi. Sono i passi con cui
+*campioniamo* il piano tempo-frequenza, e non vanno confusi con la
+risoluzione: infittirli (zero-padding in frequenza, $H$ più piccolo nel tempo)
+non aggiunge informazione, la interpola soltanto. La risoluzione vera dipende
+dalla sola lunghezza della finestra, ed è il compromesso del paragrafo che
+segue. Per il parlato la scelta standard è
 $N$ pari a 25 ms e $H$ a 10 ms (a 16 kHz: `n_fft=400`, `hop_length=160`, gli
 stessi valori del codice più sotto), perché i fonemi durano decine di
 millisecondi e una finestra più lunga ne mescolerebbe due.
@@ -454,7 +458,7 @@ learning.
 
 Vale la pena fermarsi sulla parola **feature**, quella del titolo, perché è qui
 che cambia padrone. Fin dal
-capitolo sul machine learning le feature erano *scelte da noi*: qualcuno decideva
+{doc}`capitolo sul machine learning </MachineLearning/overview>` le feature erano *scelte da noi*: qualcuno decideva
 quali numeri estrarre da ogni esempio, e quella decisione era metà del lavoro.
 Da questa pagina in poi saranno quasi sempre *imparate dalla rete*, che si
 costruisce da sé i numeri che le servono. La parola indica lo stesso oggetto (i
@@ -492,11 +496,10 @@ mfcc = librosa.feature.mfcc(S=S_db, n_mfcc=13)
 print(S_db.shape, mfcc.shape)  # (bande, tempo) e (coefficienti, tempo)
 ```
 
-Le due tabelle escono con lo stesso numero di colonne, e non è un dettaglio:
-sono allineate finestra per finestra, quindi si possono affiancare e dare al
-modello insieme. Sarebbe bastato chiamare `mfcc(y=...)` invece che `mfcc(S=...)`
-per ritrovarsi due assi dei tempi diversi e un errore di dimensione
-incomprensibile.
+Le due tabelle escono con lo stesso numero di colonne: sono allineate finestra
+per finestra, quindi si possono affiancare e dare al modello insieme. Sarebbe
+bastato chiamare `mfcc(y=...)` invece che `mfcc(S=...)` per ritrovarsi due
+assi dei tempi diversi e un errore di dimensione incomprensibile.
 
 `````{tab} Elementare
 

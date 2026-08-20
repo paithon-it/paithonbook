@@ -45,8 +45,9 @@ capitolo sulla [GPU](../GPU/overview.md) abbiamo visto perché una
 moltiplicazione di matrici è veloce solo se i numeri arrivano dalla memoria
 abbastanza in fretta da tenere occupato il processore. Le reti convoluzionali
 hanno insegnato alle macchine a vedere, e lo spartiacque è AlexNet, che nel
-2012 vince la gara di riconoscimento di immagini ImageNet portando l'errore dal
-26,2% al 15,3%. Quel 26,2% era del miglior metodo costruito a mano, cioè con i
+2012 vince la gara di riconoscimento di immagini ImageNet con un errore
+*top-5* (la risposta giusta non è fra le cinque proposte) del 15,3%, contro il
+26,2% del secondo classificato. Quel 26,2% era del miglior metodo costruito a mano, cioè con i
 dettagli da guardare scelti da un esperto invece che imparati: è il salto che
 nessuno si aspettava. I modelli di sequenza, e i Transformer dopo di loro,
 hanno insegnato alle macchine a leggere e a scrivere
@@ -66,7 +67,8 @@ inventa impara a non farsi smascherare dall'altra; la
 [diffusione](../ModelliDiffusione/overview.md), che parte dal rumore e lo
 ripulisce un poco alla volta; e i [modelli a
 energia](../ModelliEnergia/overview.md), la più antica delle tre famiglie, di
-cui la diffusione, guardata da vicino, è un caso particolare. Poi il
+cui la diffusione, riscritta nel loro linguaggio, è un modello a energia che
+ha smesso di dirlo. Poi il
 [reinforcement learning](../ReinforcementLearning/overview.md), dove l'agente
 non riceve le risposte giuste ma le scopre agendo: è così che AlphaGo, nel
 2016, è diventato più forte dei giocatori umani dalle cui partite aveva
@@ -123,8 +125,7 @@ appendici morali messe in fondo per buona educazione: sono la parte del lavoro
 che decide se quello che hai costruito serve a qualcuno o fa danni.
 
 Argomenti diversissimi, e in mezzo quasi settant'anni di storia: dal
-percettrone di Rosenblatt del 1958 ai modelli di oggi. Eppure, sotto, tornano
-sempre le stesse tre idee. Vale la pena nominarle.
+percettrone di Rosenblatt del 1958 ai modelli di oggi. Eppure, sotto, tornano sempre le stesse tre idee.
 
 ## Tre fili, un solo tessuto
 
@@ -333,8 +334,8 @@ come andrà a finire, e si può controllare.
 
 Con un avvertimento, perché questa è la sezione più deperibile del libro: è
 scritta al presente, e il presente a cui si riferisce è quello della versione
-che stai leggendo. Si rilegge a ogni pubblicazione, ed è normale che invecchi
-prima del resto.
+che stai leggendo. Trattala come una fotografia con una data sopra, non come
+una previsione. 
 
 `````{tab} Elementare
 Ecco la cosa che quel nome teneva insieme, e che ormai fanno tutti: non si
@@ -371,8 +372,10 @@ passo va bene 95 volte su 100, cioè con probabilità 0,95, e se i venti passi
 non si influenzano fra loro, la probabilità che vadano bene *tutti e venti* è
 0,95 elevato alla ventesima, cioè venti fattori 0,95 moltiplicati fra loro: si
 moltiplica perché ogni passo aggiunge una condizione da soddisfare. Viene
-0,3585, appena 36 volte su 100. Nella pratica va meglio, perché un agente può
-accorgersi di uno sbaglio e tornare sui suoi passi, ma l'ordine di grandezza è
+0,3585, appena 36 volte su 100. Nella pratica quel numero non è né il caso migliore né il peggiore, è solo il
+caso più semplice: se l'agente si accorge di uno sbaglio e torna sui suoi
+passi va meglio, se i venti passi sbagliano insieme per la stessa ragione va
+peggio, ma l'ordine di grandezza è
 quello, ed è la ragione per cui i compiti lunghi restano difficili.
 
 **Quanto consuma.** Addestrare e far girare questi modelli costa corrente,
@@ -502,8 +505,11 @@ di intelligenza, o a dama, è relativamente facile; dargli le capacità di un
 bambino di un anno nel percepire e nel muoversi è difficile o impossibile
 {cite}`moravec1988mind`.
 
-L'osservazione ha retto. La spiegazione che ne diede lui è un'altra cosa, e va
-tenuta separata, perché nessuno l'ha mai messa alla prova. Moravec la
+L'osservazione si ripete da decenni, ma non è mai stata messa alla prova, ed è
+il primo punto di chi la contesta: nessuno ha mai preso un campione di
+compiti, misurato quanto sono difficili per noi e per una macchina, e guardato
+se la correlazione ci sia davvero. La spiegazione che ne diede Moravec è
+un'altra cosa ancora, e va tenuta separata. Moravec la
 attribuiva ai tempi dell'evoluzione: nel vedere e nel muoverci abbiamo dietro
 un miliardo di anni di mestiere, mentre il pensiero astratto è un trucco
 recente, forse di meno di centomila anni. È un racconto che convince, ed è per
@@ -641,7 +647,7 @@ scritti, e da fuori i due si distinguono male. Vanno letti come va letto un
 modello: senza prendere per buono niente solo perché è scritto bene.
 
 E soprattutto *riproduci il codice*, perché un modello lo capisci quando lo fai
-girare e lo rompi. Il metodo per farlo sta nel capitolo su PyTorch, nella
+girare e lo rompi. Il metodo per farlo sta nel {doc}`capitolo su PyTorch </PyTorch/overview>`, nella
 sezione su [come si replica un paper](../PyTorch/replicare-un-paper.md):
 quattro mosse, e i controlli che contano si fanno senza nemmeno addestrare.
 
@@ -787,4 +793,4 @@ pratica.
 ```
 `````
 
-Buon lavoro. E, come si dice in Italia, *in bocca al lupo*.
+Buon lavoro, e in bocca al lupo.

@@ -219,19 +219,17 @@ non dice solo *quanto*, dice anche *da che parte*, perché ha un segno. Nel
 nostro caso la rete ha previsto **troppo poco**: allora un peso che spingeva la
 risposta verso l'alto va alzato, uno che la tirava verso il basso va abbassato.
 Se la rete avesse previsto troppo, tutto al contrario. E questo è quanto:
-sapere di quanto e da che parte è tutto ciò che serve. Spostare i pesi di
-conseguenza è il passo successivo, ed è il titolo «Aggiornare i pesi» qui
-sotto.
+sapere di quanto e da che parte è tutto ciò che serve. Spostare i pesi di conseguenza è il passo successivo.
 
 `````
 
 `````{tab} Superiore
 
-Il meccanismo è la **regola della catena** del capitolo di Matematica, qui
+Il meccanismo è la **regola della catena** di
+{doc}`Analisi e ottimizzazione </Matematica/analisi-ottimizzazione>`, qui
 allungata di un anello per strato e percorsa a ritroso. Scriviamo tutto per un
 **singolo esempio**: il gradiente della loss media di un mini-batch (il
-gruppetto di esempi su cui si fa un aggiornamento per volta, di cui parliamo
-più avanti in questa stessa pagina) è la media di questi contributi, uno per
+gruppetto di esempi su cui si fa un aggiornamento per volta) è la media di questi contributi, uno per
 esempio.
 
 Serve un nome per la quantità che si propaga, ed è l'unica definizione da tenere
@@ -294,7 +292,13 @@ $\varphi'$ le derivate delle due attivazioni: la scrittura con $\odot$
 presuppone quindi un'attivazione applicata componente per componente. La
 softmax, cioè la $\varphi$ tipica della classificazione, non lo è (ogni
 uscita dipende da tutti i logit), ma accoppiata alla cross-entropia il conto
-si semplifica e il termine d'uscita diventa
+si semplifica in due righe. La derivata della softmax è
+$\partial\hat{y}_k/\partial z_i = \hat{y}_k(\delta_{ki}-\hat{y}_i)$, e
+mettendola nella cross-entropia $\mathcal{L}=-\sum_k y_k\log\hat{y}_k$ i
+termini si accorciano:
+$\partial\mathcal{L}/\partial z_i = \hat{y}_i \sum_k y_k - y_i$, cioè
+$\hat{y}_i - y_i$, perché l'etichetta è one-hot e la somma vale $1$. Il
+termine d'uscita diventa quindi
 $\boldsymbol{\delta}^{[L]} = \hat{\mathbf{y}} - \mathbf{y}$: è la combinazione
 che i framework implementano. Il punto cruciale: ogni
 $\boldsymbol{\delta}^{[l]}$ riusa $\boldsymbol{\delta}^{[l+1]}$, così un solo
@@ -325,8 +329,8 @@ una rete di venti strati da $512$ unità: i pesi sono venti matrici
 $512\times512$, le attivazioni trattenute venti vettori da $512$ numeri **per
 ciascun esempio del batch** (l'ingresso di ogni strato; quella dell'ultimo non
 serve a nessun gradiente), quindi il rapporto è esattamente $B/512$, e a
-$B=512$ le due voci si pareggiano. Misurato sui byte davvero trattenuti dal
-grafo, torna: a batch $32$ le attivazioni pesano un sedicesimo del modello, a
+$B=512$ le due voci si pareggiano: a batch $32$ le attivazioni pesano un
+sedicesimo del modello, a
 batch $512$ lo pareggiano, a batch $2048$ pesano quattro volte tanto, cioè
 sessantaquattro volte più che a batch $32$ per un batch sessantaquattro volte
 più grande. Da qui il *gradient checkpointing*, che ne butta via una parte e la
@@ -347,20 +351,18 @@ strato.
 ```
 
 La {numref}`fig-backpropagation-animata` fa vedere anche perché questo conto è
-sostenibile, e non è un dettaglio: un modello grosso si addestra ripetendo il
-giro milioni di volte, quindi il **tempo** che il giro costa decide se
-addestrarlo è possibile oppure no. Il ritorno costa più o meno quanto un paio
-di andate; una rete di cento strati costa naturalmente più di una da dieci, ma
-il *rapporto* fra ritorno e andata resta quello, perché niente viene
-ricalcolato da capo: a ogni strato si aggiunge soltanto un fattore a un
-prodotto che esiste già. Chi ha le derivate nello zaino ci riconosce la regola
-della catena; chi non le ha può tenersi l'immagine del prodotto che si allunga,
-che è la stessa cosa.
+sostenibile: un modello grosso si addestra ripetendo il giro milioni di volte,
+quindi il **tempo** che il giro costa decide se addestrarlo è possibile oppure
+no. Il ritorno costa più o meno quanto un paio di andate; una rete di cento
+strati costa naturalmente più di una da dieci, ma il *rapporto* fra ritorno e
+andata resta quello, perché niente viene ricalcolato da capo: a ogni strato si
+aggiunge soltanto un fattore a un prodotto che esiste già. Chi ha le derivate
+nello zaino ci riconosce la regola della catena; chi non le ha può tenersi
+l'immagine del prodotto che si allunga, che è la stessa cosa.
 
 ## Aggiornare i pesi: discesa del gradiente e learning rate
 
-Prima di procedere conviene mettere insieme due parole che finora sono corse
-separate.
+
 
 La "colpa" di un peso e la sua **pendenza** sono la stessa identica cosa. La
 quota di colpa di un peso dice di quanto cambierebbe l'errore se muovessi quel
@@ -370,7 +372,7 @@ passettino che fa quel peso. Due nomi, una cosa sola.
 
 Il **gradiente**, poi, non è che l'elenco completo di queste pendenze, una per
 peso. Quindi la backpropagation, che distribuisce le colpe, e la discesa in cui
-stiamo per entrare, che segue le pendenze, non sono due meccanismi: sono la
+stiamo per entrare, che segue le pendenze, sono la
 prima metà e la seconda metà dello stesso gesto.
 
 Il gradiente indica, per ogni peso, la direzione in cui la loss *cresce*. Per
@@ -391,7 +393,7 @@ lunghezza è proporzionale alla pendenza, che vicino al fondo è quasi nulla.
 
 `````{tab} Elementare
 
-Immagina di essere su una collina, nella nebbia, e di voler scendere a valle.
+Sei su una collina, nella nebbia, e devi scendere a valle.
 Non vedi lontano, ma puoi sentire la pendenza sotto i piedi e fare un passo
 nella direzione più ripida verso il basso. Ripeti, passo dopo passo.
 
@@ -426,14 +428,15 @@ resta questo.
 
 `````
 
-Adesso che l'immagine della collina c'è, si può vedere il rovescio della
-medaglia. Che i passi si accorcino da soli, come in
+C'è un rovescio della medaglia, e sta proprio nella cosa più comoda: che i
+passi si accorcino da soli. Che i passi si accorcino da soli, come in
 {numref}`fig-discesa-passi`, è comodo e insieme un problema. Comodo perché
 l'algoritmo rallenta da sé arrivando a destinazione, senza che nessuno glielo
 dica. Problema perché rallenta altrettanto sui tratti piatti che *non* sono il
 fondo: quelli in cui il terreno si stende in piano pur essendo ancora in
 quota, e quelli in cui scende da una parte e sale dall'altra, come una sella da
-cavallo. Sono i plateau e le selle già incontrati nel capitolo di matematica.
+cavallo. Sono i plateau e le selle di
+{doc}`Analisi e ottimizzazione </Matematica/analisi-ottimizzazione>`.
 
 ## Mini-batch, epoche e SGD
 
@@ -460,16 +463,16 @@ perfettamente preciso resterebbe immobile. Un po’ di imprecisione dà la spint
 per uscirne.
 
 Si racconta anche che i gruppetti piccoli portino a fermarsi in valli larghe
-invece che in fessure strette, e che sia un bene: una soluzione che regge anche
-spostandola un po’ dovrebbe reggere meglio sui dati nuovi, quelli che la rete
-non ha mai visto. Il fenomeno è documentato {cite}`keskar2017large`; la
-spiegazione, invece, è contestata, e vale la pena dirlo perché è una frase che
-si ripete come se fosse assodata.
+invece che in fessure strette, e che sia un bene: una soluzione che regge
+anche spostandola un po’ dovrebbe reggere meglio sui dati nuovi, quelli che la
+rete non ha mai visto. Il fenomeno è documentato {cite}`keskar2017large`; la
+spiegazione, invece, è contestata, e conviene dirlo perché è una frase che si
+ripete come se fosse assodata.
 
 L'obiezione è che "larga" e "stretta", misurate così, non dicono niente sul
 modello. In una rete con la ReLU si possono moltiplicare per dieci i pesi di
-uno strato (bias compreso, altrimenti il conto non torna) e dividere per dieci
-quelli dello strato dopo, e la rete calcola
+uno strato, bias compreso, e dividere per dieci soltanto i **pesi** dello
+strato dopo, lasciandone il bias dov'era, e la rete calcola
 **la stessa identica funzione**: la ReLU lascia passare i fattori positivi
 (dieci volte l'ingresso dà dieci volte l'uscita), quindi quel dieci attraversa
 lo strato e si semplifica con la divisione per dieci che trova subito dopo.
@@ -511,7 +514,7 @@ in uno strato di cento, con tutti i pesi a zero i cento neuroni calcolerebbero
 lo stesso identico numero, riceverebbero la stessa identica correzione e
 resterebbero uguali fra loro per sempre. Il caso iniziale serve a rompere quella
 simmetria. Quanto piccoli, e con quale regola, è una scelta che pesa parecchio,
-e se ne occupa per esteso il capitolo sul deep learning.
+e se ne occupa per esteso il {doc}`capitolo sul deep learning </DeepLearning/overview>`.
 
 `````{tab} Elementare
 
@@ -630,23 +633,23 @@ for epoca in range(20):
         optimizer.step()                   # aggiornamento dei pesi
 ```
 
-Le righe dentro il ciclo sono cinque e sono esattamente i movimenti che abbiamo
-descritto: i dati avanzano, la loss misura l'errore, `loss.backward()` fa
-tornare indietro il gradiente, `optimizer.step()` aggiorna i pesi. La quinta,
-`optimizer.zero_grad()`, è una pulizia, e vale la pena capirla perché
+Le righe dentro il ciclo sono cinque e sono esattamente i movimenti che
+abbiamo descritto: i dati avanzano, la loss misura l'errore, `loss.backward()`
+fa tornare indietro il gradiente, `optimizer.step()` aggiorna i pesi. La
+quinta, `optimizer.zero_grad()`, è una pulizia, e conviene capirla perché
 dimenticarla è l'errore da principianti più comune: PyTorch **somma** i
 gradienti nuovi a quelli che trova, invece di sostituirli, quindi senza quella
 riga il gruppetto di adesso si porterebbe addosso anche le colpe di quello di
 prima. Il `nn.ReLU()` fra i due `nn.Linear`, invece, è la piega della sezione
-precedente messa dove va messa: fra uno strato e l'altro. E `train_loader` è il
-pezzo che serve i dati un gruppetto alla volta: per ora diamolo per dato, lo
-costruiamo nel prossimo capitolo.
+precedente messa dove va messa: fra uno strato e l'altro. E `train_loader` è
+il pezzo che serve i dati un gruppetto alla volta: per ora diamolo per dato,
+lo costruiamo nel prossimo capitolo.
 
 Il `20` delle epoche non è un numero magico, ed è anzi la domanda che il codice
 lascia aperta: quand'è che si smette? Non quando la loss sui dati di
 addestramento smette di calare, perché quella può calare anche mentre il
 modello sta imparando a memoria gli esempi che ha visto invece della regola che
-li governa. È l’*overfitting* incontrato nel capitolo di machine learning, e si
+li governa. È l’*overfitting* incontrato nel {doc}`capitolo di machine learning </MachineLearning/overview>`, e si
 riconosce nello stesso modo: tenendo da parte dei dati che la rete non vede
 mai, e fermandosi quando è su **quelli** che i risultati smettono di migliorare.
 Il prossimo capitolo è dedicato proprio a questo codice: lo riprenderemo riga
@@ -713,6 +716,6 @@ Adesso sappiamo fare a mano una cosa che a mano non fa quasi più nessuno:
 seguire l'errore all'indietro, strato per strato, fino a ogni singola manopola.
 Continua a servire, perché quando un addestramento non parte il guasto sta
 quasi sempre lì, in un messaggio che si è spento per strada oppure è andato
-fuori scala. Nel capitolo su PyTorch quel giro all'indietro lo farà una libreria
+fuori scala. Nel {doc}`capitolo su PyTorch </PyTorch/overview>` quel giro all'indietro lo farà una libreria
 al posto nostro, in una riga: noi scriveremo soltanto l'andata, e sapremo
 riconoscere che cosa sta facendo il ritorno.

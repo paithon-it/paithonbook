@@ -121,8 +121,7 @@ suoni, decide quali produrre.
 Su questa divisione del lavoro il riconoscimento vocale si è retto per
 trent'anni, dagli anni Ottanta al 2010 circa, e chi legge qualsiasi cosa
 scritta in quel periodo trova sempre la stessa sigla poco amichevole,
-**HMM-GMM**. Sono due macchine che il libro ha già raccontate altrove, e qui
-lavorano insieme.
+**HMM-GMM**. Sono due macchine già incontrate, e qui lavorano insieme.
 
 La prima descrive il parlato come una fila di suoni che si susseguono e che
 nessuno vede direttamente: è una recita dietro la tenda, dove si sentono le
@@ -138,7 +137,7 @@ numeri, cioè, se ti aiuta immaginarlo, a un puntino su una mappa; e la «a» di
 mille persone diverse non cade tutte le volte sullo stesso puntino, cade in una
 nuvola di puntini vicini. Descrivere quella nuvola invece del suo centro è
 esattamente quello che fanno le misture di gaussiane (GMM) incontrate nel
-capitolo di Machine Learning, dove servivano a trovare gruppi nei dati:
+{doc}`capitolo di Machine Learning </MachineLearning/overview>`, dove servivano a trovare gruppi nei dati:
 «gaussiana» è il nome della forma di nuvola più comune in natura, quella fitta
 al centro e sempre più rada man mano che ci si allontana.
 
@@ -199,18 +198,15 @@ facile che lavorare sull'onda di partenza.
 
 `````{tab} Superiore
 
-Il segnale continuo viene diviso in **frame** sovrapposti (finestre di circa
-25 ms, una ogni 10 ms). Su ogni frame si calcola lo spettro con la trasformata
-di Fourier a tempo breve e lo si filtra su scala **Mel** (che imita la
-sensibilità non lineare dell'orecchio umano); il logaritmo delle energie di
-banda dà il *log-mel*, e una trasformata coseno discreta (DCT), che decorrela
-i coefficienti, lo comprime nei **MFCC** (*Mel-Frequency Cepstral
-Coefficients*): un vettore $\mathbf{x}_t \in \mathbb{R}^{d}$ di una dozzina di
-componenti per frame (una quarantina se si aggiungono le derivate prima e
-seconda). I sistemi neurali end-to-end, Whisper compreso, si
-fermano di solito al log-mel (la decorrelazione serviva alle covarianze
-diagonali delle GMM); in entrambi i casi è la matrice $\mathbf{X}$ così
-ottenuta a entrare nel modello acustico.
+Il segnale continuo viene diviso in **frame** sovrapposti e trasformato nello
+spettrogramma **log-mel** costruito in
+{doc}`Dal suono alle feature </Audio/dal-suono-alle-feature>`: è la matrice
+$\mathbf{X}$ che entra nel modello acustico. I sistemi classici applicavano un
+ultimo passaggio, la trasformata coseno discreta (DCT), che decorrelava i
+coefficienti e riduceva ogni frame a una dozzina di **MFCC** (*Mel-Frequency
+Cepstral Coefficients*, una quarantina con le derivate prima e seconda):
+serviva alle covarianze diagonali delle GMM, e i sistemi neurali end-to-end,
+Whisper compreso, non lo fanno più.
 
 `````
 

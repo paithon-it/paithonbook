@@ -35,16 +35,13 @@ una sceneggiatura dà a ogni scena il contesto per recitarla bene. È
 un'affermazione di chi costruisce, non un risultato misurato, e la riportiamo
 per quello che è.
 
-Una precisazione, per non ripeterci. Del contesto abbiamo già smontato la
-**meccanica** nel capitolo sugli **Agenti**: come si sceglie cosa mettere in
-una finestra che non basta per tutto, come il programma rimonta quel carico a
-ogni giro, dove si tengono i ricordi che nella finestra non stanno, e perché
-un testo lungo viene letto peggio proprio nella sua parte centrale (una cosa
-che sorprende, e su cui torneremo più avanti). Quella parte non la
-riscriviamo. Qui prendiamo un'angolazione diversa e complementare:
-**come si pensa** il contesto (un modello mentale a scale di complessità),
-**quali mosse** lo governano, **come si guasta**, e **come lo si rende una
-procedura ripetibile**.
+La meccanica del contesto, cioè come si sceglie che cosa entra in una finestra
+che non basta per tutto, come il programma rimonta quel carico a ogni giro e
+dove si tengono i ricordi che nella finestra non stanno, è quella del
+{doc}`context engineering degli agenti </Agenti/context-engineering>`. Qui si
+guarda l'altra metà: **come si pensa** il contesto (un modello mentale a scale
+di complessità), **quali mosse** lo governano, **come si guasta**, e **come lo
+si rende una procedura ripetibile**.
 
 ## Una scala di complessità: dagli atomi agli organi
 
@@ -117,8 +114,8 @@ Più si sale di scala, più il contesto va amministrato invece che scritto e
 basta. Chi costruisce agenti ha finito per raccogliere tutte le tattiche in
 quattro mosse sole, ed è una divisione comoda che si è imposta a partire dalle
 note di LangChain, una delle cassette di attrezzi già pronti con cui questi
-sistemi si costruiscono {cite}`langchain2025context`. Vale la pena tenerle a
-mente come un piccolo repertorio.
+sistemi si costruiscono {cite}`langchain2025context`. Conviene tenerle a mente
+come un piccolo repertorio.
 
 `````{tab} Elementare
 

@@ -719,18 +719,11 @@ chiamano $0$ e $1$: fai conto che $1$ voglia dire «pratica da approvare».
 L'esperimento: scegliamo un caso che il modello azzecca, poi spostiamo ogni
 caratteristica di un soffio, tutte nella direzione che danneggia di più il
 modello (trenta piccole spinte concordi, invisibili una per una: sono le dita
-del titolo), e guardiamo la predizione ribaltarsi. Se non programmi, il codice
-si può saltare: quello che conta sono le righe stampate alla fine.
+del titolo), e guardiamo la predizione ribaltarsi. 
 
-Due dettagli del codice meritano di essere annunciati, perché sono lì proprio
-per evitare che l'esperimento si autoconvinca. Il primo: l'esempio non è
-scelto a mano, lo sceglie un criterio (il primo che il modello azzecca con una
-fiducia fra l’$85$ e il $95$ per cento), e la ragione è che un esempio su cui
-il modello è sicuro al $100\%$ questo attacco non lo ribalta, e sceglierne uno
-a caso avrebbe potuto nasconderlo. Il secondo: la parola «corretto» o
-«sbagliato» accanto a ogni riga la calcola il programma confrontando
-predizione ed etichetta vera, non è scritta a mano; se il ribaltamento non
-avvenisse, le righe lo direbbero.
+L'esempio non è scelto a mano: il programma prende il primo caso che il
+modello azzecca con una fiducia fra l'$85$ e il $95$ per cento. Su un caso in
+cui è sicuro al $100\%$ questa spinta non basterebbe a ribaltarlo.
 
 ```python
 import numpy as np

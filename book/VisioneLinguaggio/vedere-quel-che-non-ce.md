@@ -24,9 +24,10 @@ contenerlo.
 ## Un errore che non riguarda gli occhi
 
 L'overview del capitolo ha già dato un nome al fenomeno, **allucinazione
-visiva**, e ne ha mostrato la radice nella funzione di costo, cioè nel punteggio
-dell'errore che l'addestramento fa scendere. Vale la pena scavare un poco più a fondo, perché
-la forma precisa dell'argomento dice anche dove si può intervenire.
+visiva**, e ne ha mostrato la radice nella funzione di costo, cioè nel
+punteggio dell'errore che l'addestramento fa scendere. Conviene scavare un
+poco più a fondo, perché la forma precisa dell'argomento dice anche dove si
+può intervenire.
 
 `````{tab} Elementare
 
@@ -269,23 +270,21 @@ modello che guarda davvero ma sbaglia due volte su cinque, sia sulle domande a
 cui va risposto sì sia su quelle a cui va risposto no, si ferma a $0{,}60$:
 **meno**.
 
-A leggere il solo F1 si metterebbe in classifica sopra a tutti un modello che
-dell'immagine non ha usato un pixel. La quota di sì scioglie l'equivoco in un
+A leggere il solo F1 si metterebbe in classifica sopra a chi guarda davvero e
+sbaglia due volte su cinque un modello che dell'immagine non ha usato un
+pixel. La quota di sì scioglie l'equivoco in un
 colpo: $1{,}0$ contro $0{,}5$, e il primo dei due non sta rispondendo, sta
 ripetendo sempre la stessa cosa.
 
-Tre onestà, per non trasformare un protocollo in un oracolo. La prima: si misura
+Il protocollo ha tre limiti. Il primo: si misura
 l’**esistenza degli oggetti**, e nient'altro; un colore sbagliato, un conteggio
-sbagliato, una relazione rovesciata restano invisibili. La seconda: poiché la
-misura è pubblica e la strategia per migliorarla è nota, un modello istruito a
+sbagliato, una relazione rovesciata restano invisibili. Il secondo: poiché la misura è pubblica e la strategia per migliorarla è nota, un modello istruito a
 dire «no» più spesso guadagna punti senza aver guadagnato un grammo di vista, e
 la quota di sì lo smaschera soltanto se chi legge se la va a guardare. È la
 legge di Goodhart, quella per cui una misura, appena diventa un obiettivo,
-smette di misurare ciò che misurava, e vale qui come altrove. Del resto la ragione per
-descrivere il metodo e non i punteggi è proprio questa: i punteggi sono cronaca,
-il disegno dell'esperimento no.
+smette di misurare ciò che misurava, e vale qui come altrove.
 
-La terza è la più facile da dimenticare, perché riguarda il confine fra le due
+Il terzo è il più facile da dimenticare, perché riguarda il confine fra le due
 misure e non i loro difetti. Domandare non è far descrivere: qui si misura se il
 modello **acconsente** a un oggetto che non c'è, non se lo **nomina** scrivendo
 di sua iniziativa. Sono due grandezze diverse, non due letture della stessa, e la
@@ -480,18 +479,18 @@ la risposta già scritta.
 
 **Ancorare la risposta a ciò che si vede.** Invece di chiedere al modello *che
 cosa* c'è, gli si chiede anche *dove*: il nome dell'oggetto accompagnato dalle
-quattro coordinate del riquadro che lo contiene, scritte nella stessa risposta.
-I quattro numeri sono le coordinate di due angoli opposti del rettangolo, l'alto
-a sinistra e il basso a destra, misurate in frazioni di immagine: zero a un
-bordo, uno al bordo opposto. Su come scriverli i due lavori di riferimento
-prendono strade opposte, e vale la pena vederle affiancate. Kosmos-2
-{cite}`peng2023kosmos` taglia quell'intervallo in un numero fisso di gradini e
-dà a ogni gradino un simbolo **nuovo**, aggiunto all'elenco da cui il modello
-pesca: è il gesto del mosaicista con il suo catalogo di tessere, applicato qui a
-una grandezza che non è l'immagine.
-Shikra {cite}`chen2023shikra` fa il contrario, e lo rivendica: nessun simbolo
-nuovo, nessun gradino, le coordinate sono numeri decimali scritti in lingua
-naturale dentro la frase, come li scriverebbe una persona.
+quattro coordinate del riquadro che lo contiene, scritte nella stessa
+risposta. I quattro numeri sono le coordinate di due angoli opposti del
+rettangolo, l'alto a sinistra e il basso a destra, misurate in frazioni di
+immagine: zero a un bordo, uno al bordo opposto. Su come scriverli i due
+lavori di riferimento prendono strade opposte, e conviene vederle affiancate.
+Kosmos-2 {cite}`peng2023kosmos` taglia quell'intervallo in un numero fisso di
+gradini e dà a ogni gradino un simbolo **nuovo**, aggiunto all'elenco da cui
+il modello pesca: è il gesto del mosaicista con il suo catalogo di tessere,
+applicato qui a una grandezza che non è l'immagine. Shikra
+{cite}`chen2023shikra` fa il contrario, e lo rivendica: nessun simbolo nuovo,
+nessun gradino, le coordinate sono numeri decimali scritti in lingua naturale
+dentro la frase, come li scriverebbe una persona.
 
 Quale delle due si scelga, per il nostro problema cambia poco, ed è questo il
 punto: «una forchetta» l'abitudine della lingua te la regala, «una forchetta in
@@ -660,14 +659,16 @@ riusa così com'è, altrimenti si sovrascrivono le 256 voci meno frequenti. La
 politica è allora
 
 $$
-\pi_\theta\big(\mathbf{a} \mid \mathbf{I}, \mathbf{x}\big) = \prod_{j=1}^{7}
+\pi_\theta\big(\mathbf{a} \mid \mathbf{I}, \mathbf{x}\big) = \prod_{j=1}^{8}
 p_\theta\big(k_j \mid k_{<j},\, E(\mathbf{I}),\, \mathbf{x}\big),
 $$
 
-dove $k_j$ è il token del gradino della componente $j$, $\mathbf{I}$ l'osservazione ed
-$\mathbf{x}$ l'istruzione in lingua naturale. È la fattorizzazione
-autoregressiva dei grandi modelli linguistici, vista nel capitolo sui
-Transformer, applicata a una sequenza lunga sette, con la stessa cross-entropia
+dove $k_1, \dots, k_7$ sono i token dei gradini delle sette componenti, $k_8$
+quello di fine episodio, $\mathbf{I}$ l'osservazione ed $\mathbf{x}$
+l'istruzione in lingua naturale. È la fattorizzazione autoregressiva dei
+grandi modelli linguistici, vista nel
+{doc}`capitolo sui Transformer </Transformers/overview>`, applicata a una
+sequenza lunga otto, con la stessa cross-entropia
 come perdita. È l'impostazione di RT-2
 {cite}`brohan2023rt2`, che addestra il modello in **co-fine-tuning** su una
 miscela di traiettorie robotiche e di dati visione-linguaggio del web: le
@@ -725,10 +726,10 @@ print((alto - basso) / (2 * N_BIN))   # [0.0002 0.0002 0.0002 0.0008 0.0008 0.00
 
 L'ultima riga è l'errore massimo dell'arrotondamento a gradini, che è mezzo
 gradino: due decimi di millimetro sulla traslazione, meno di un millesimo di
-radiante sulla rotazione, cioè meno di un ventesimo di grado.
-È un limite noto e accettabile. Quelli che non si liquidano con un numero sono
-altri tre, e vale la pena elencarli, perché fra il video di una dimostrazione e
-un impianto che lavora ci sono tutti e tre.
+radiante sulla rotazione, cioè meno di un ventesimo di grado. È un limite noto
+e accettabile. Quelli che non si liquidano con un numero sono altri tre, e
+conviene elencarli, perché fra il video di una dimostrazione e un impianto che
+lavora ci sono tutti e tre.
 
 Il primo è la **frequenza**. Un modello da decine di miliardi di parametri emette
 fra uno e tre comandi al secondo, e sceso a qualche miliardo arriva a cinque o

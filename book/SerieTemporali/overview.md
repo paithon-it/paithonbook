@@ -185,10 +185,8 @@ stessa cosa). La somiglianza si misura mettendo le due file di numeri a coppie,
 il primo con il primo, il secondo con il secondo, e guardando se salgono e
 scendono insieme: quello che ne esce è un numero solo, il **coefficiente di
 autocorrelazione**, ed è il modo più diretto di vedere quanto una serie sia
-lontana dai dati indipendenti del resto del libro. Il
-codice qui sotto lo calcola su una serie inventata da noi, che sale piano e ha
-un ciclo di dodici passi; quello che conta sono i cinque numeri che stampa, e i
-paragrafi che seguono li leggono uno per uno, dopo aver detto che scala hanno.
+lontana dai dati indipendenti del resto del libro. Il codice qui sotto lo calcola su una serie inventata da noi, che sale piano e
+ha un ciclo di dodici passi, e stampa cinque coefficienti.
 
 ```python
 import numpy as np
@@ -331,9 +329,10 @@ tra gli esempi (la comoda finzione su cui abbiamo costruito il resto del
 machine learning supervisionato) semplicemente non c'è, e ogni metodo del
 capitolo è un modo diverso di prenderla sul serio.
 
-## Come è organizzato il capitolo
+## Dai modelli classici alle reti
 
-Il capitolo è in tre sezioni, e si leggono in fila.
+Prevedere una serie si è sempre fatto in tre modi, e in quest'ordine sono
+anche la storia della disciplina.
 
 1. **Componenti e modelli classici**, come scomporre una serie in tendenza,
    stagionalità e residuo, e i due cavalli di battaglia storici: la famiglia
@@ -343,13 +342,13 @@ Il capitolo è in tre sezioni, e si leggono in fila.
    costa.
 2. **Validazione temporale e feature** (le *feature* sono le colonne di una
    tabella, quelle che si danno in pasto a un modello). Perché la *k-fold*
-   mescolata del capitolo sul Machine Learning (dividere gli esempi in fette a
+   mescolata del {doc}`capitolo sul Machine Learning </MachineLearning/overview>` (dividere gli esempi in fette a
    caso e provare il modello su una fetta per volta) qui è vietata, e come si
    valida sul tempo facendo scorrere in avanti il confine fra passato e futuro
    (è il *backtesting*). Poi come si trasforma una serie in una tabella di
    quelle: una colonna per il valore di ieri, una per la media degli ultimi
    giorni, una per il giorno della settimana, e a quel punto la sanno leggere
-   tutti i modelli del capitolo sul Machine Learning.
+   tutti i modelli del {doc}`capitolo sul Machine Learning </MachineLearning/overview>`.
 3. **Forecasting neurale**: le reti che possono guardare solo all'indietro
    (**TCN**), quelle che invece di un numero prevedono un ventaglio di futuri
    possibili (**DeepAR**), i **Transformer** adattati alle serie, e infine i
@@ -357,8 +356,7 @@ Il capitolo è in tre sezioni, e si leggono in fila.
    collezioni sterminate di serie e poi capaci di prevedere fenomeni che non
    hanno mai visto.
 
-L'ordine è quello della storia, e la storia del forecasting è una lunga
-convivenza fra due famiglie: i metodi **statistici** classici, trasparenti e
+La storia del forecasting è una lunga convivenza fra due famiglie: i metodi **statistici** classici, trasparenti e
 sorprendentemente difficili da battere, e i metodi **neurali**, che hanno fame
 di dati ma sanno cogliere regolarità più intricate e, guardando insieme migliaia
 di serie diverse, portare a ciascuna quello che hanno imparato dalle altre. La

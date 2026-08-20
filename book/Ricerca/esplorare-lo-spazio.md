@@ -178,9 +178,9 @@ indovinare, guardando uno stato, **quanto lavoro resta** da lì alla fine.
 
 Quel fiuto ha un nome, e da qui in avanti il capitolo lo userà sempre: si
 chiama **euristica**, che è una parola greca per «che aiuta a trovare» ed è il
-nome che in informatica si dà a una regola pratica, non garantita, che indirizza
-la ricerca. E la proprietà che deve avere ha anch’essa un nome, che vale la
-pena avere in tasca prima di incontrarlo: un’euristica si dice **ammissibile**
+nome che in informatica si dà a una regola pratica, non garantita, che
+indirizza la ricerca. E la proprietà che deve avere ha anch’essa un nome, da
+avere in tasca prima di incontrarlo: un’euristica si dice **ammissibile**
 quando non esagera mai, cioè quando il lavoro che stima non supera mai quello
 che serve davvero.
 
@@ -300,8 +300,9 @@ modo ottimo, e allora marcarlo come fatto e non tornarci più è lecito. Va dett
 con quelle parole lì: **estratto**, non raggiunto. Uno stato si può *generare*
 per una strada pessima molto prima di generarlo per quella buona (succede anche
 con $h \equiv 0$, che è consistente ed è l’euristica del primo blocco di questa
-pagina), e chiudere uno stato alla prima *generazione* restituisce soluzioni
-peggiori dell’ottimo. La riga del codice qui sopra che riscrive `costo[t]`
+pagina), e chiudere uno stato alla prima *generazione* può restituire soluzioni
+peggiori dell'ottimo, e basta che succeda una volta perché la garanzia non ci
+sia più. La riga del codice qui sopra che riscrive `costo[t]`
 esiste esattamente per questo, e se la frase valesse alla prima generazione
 quella riga sarebbe codice morto.
 
@@ -318,7 +319,7 @@ senza, sta dentro quasi tutto ciò che cerca un percorso: navigatori, robot che
 attraversano una stanza, personaggi di videogioco che aggirano un muro.
 
 Le due euristiche classiche per il rompicapo delle otto tessere non sono
-inventate a caso, e vale la pena vedere da dove escono, perché è il modo
+inventate a caso, e conviene vedere da dove escono, perché è il modo
 principale in cui si inventa un’euristica.
 
 Si prende il problema e gli si **tolgono delle regole**. Nel rompicapo vero una
@@ -407,9 +408,11 @@ quanto un’altra alla stessa distanza dalla partenza.
 
 E il confronto fra le due stime ha una regola sola, che si legge nella loro
 definizione: contare i passi è **sempre almeno quanto** contare le tessere
-fuori posto, perché una tessera fuori posto dista almeno un passo. Fra due
-euristiche consistenti, quella che dà sempre il numero più grande è quella che
-fa guardare meno, perché resta ottimista ma di poco. Cercare una buona
+fuori posto, perché una tessera fuori posto dista almeno un passo. Fra due euristiche consistenti, quella che dà sempre il numero più grande
+**domina** l'altra: A\* non apre mai più stati con la dominante che con
+l'altra, perché apre comunque tutti quelli per cui i passi fatti più la stima
+stanno sotto il costo della soluzione, e alzare la stima quell'insieme lo
+restringe. Cercare una buona
 euristica vuol dire cercare la stima più alta che non superi mai il vero.
 
 `````{tab} Elementare

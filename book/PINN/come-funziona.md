@@ -1,7 +1,8 @@
 # La legge dentro la loss
 
-Dentro PyTorch c'è un registratore. Nel capitolo che gli è dedicato lo abbiamo
-raccontato così: annota i calcoli mentre li fai e poi li riavvolge
+Dentro PyTorch c'è un registratore. Nel
+{doc}`capitolo che gli è dedicato </PyTorch/overview>` lo abbiamo raccontato
+così: annota i calcoli mentre li fai e poi li riavvolge
 all'indietro, e a ogni addestramento di questo libro ha risposto sempre alla
 stessa domanda, *se ritocco questo peso, quanto cambia l'errore?* Si chiama
 **autograd**, e finora ha fatto un mestiere solo: milioni di volte la stessa
@@ -219,10 +220,10 @@ violazione dieci volte più grossa.
 
 Lo schema è disegnato nel caso generale, quello di un'equazione con una
 coordinata di spazio e una di tempo; nel resto della sezione lavoreremo sul
-caso più semplice, con il solo tempo in ingresso. Vale la pena fissare il ramo
-in alto, quello giallo-bruno (color ocra): quelle derivate *rispetto
-all'input* non compaiono in nessun'altra architettura di questo libro. È il
-pezzo nuovo, ed è tutto qui.
+caso più semplice, con il solo tempo in ingresso. Conviene fissare il ramo in
+alto, quello giallo-bruno (color ocra): quelle derivate *rispetto all'input*
+non compaiono in nessun'altra architettura di questo libro. È il pezzo nuovo,
+ed è tutto qui.
 
 ## Una molla come banco di prova
 
@@ -523,7 +524,7 @@ conveniente quella scorciatoia. E la rende meno conveniente, **non la vieta**:
 fra poche pagine ne vedremo la prova.
 
 Trentamila epoche dopo, ecco il verdetto. A guidare l'addestramento è Adam
-{cite}`kingma2015adam`, l'ottimizzatore che dal capitolo sul deep learning è
+{cite}`kingma2015adam`, l'ottimizzatore che dal {doc}`capitolo sul deep learning </DeepLearning/overview>` è
 la nostra scelta di partenza, e a fare da pagella è la formula esatta della
 molla, quella ricavata poco fa, calcolata qui in NumPy:
 
@@ -619,8 +620,7 @@ $8 \cdot 10^{-3}$, cioè la molla risulta obbedita quasi alla lettera; ma lo
 scarto massimo dalla soluzione vera è $0{,}154$, il 15% dello spostamento di
 partenza, e le due curve messe una sull'altra si distinguono benissimo.
 
-E c'è un modo più severo di leggere quel 15%, che il testo non deve
-nascondere. Quello scarto non è sparso: sta quasi tutto nella **coda**, dopo
+E quel 15% si può leggere in un modo più severo. Quello scarto non è sparso: sta quasi tutto nella **coda**, dopo
 il quinto secondo, dove la rete comincia ad appiattirsi mentre la molla vera
 sta ancora oscillando. Ma nella coda l'oscillazione vera si è ormai ridotta
 parecchio, e al decimo secondo è scesa al 13,5% dello spostamento di partenza.
@@ -660,7 +660,7 @@ scarto: le due curve stanno appiccicate per metà intervallo e si staccano
 nella coda.
 
 Quello scarto fra i due numeri, il residuo piccolo e l'errore grande, non è un
-dettaglio di rifinitura. Vale la pena vedere fin dove arriva.
+dettaglio di rifinitura. Conviene vedere fin dove arriva.
 
 ## Lo stesso codice, un altro seme
 
@@ -740,8 +740,7 @@ assert res_griglia_7 > res_griglia, (
 )
 ```
 
-Ecco che cosa stampa la corsa con il **seme 7**, sulla macchina su cui è stato
-scritto questo capitolo. Nella colonna «errore vero» c'è la distanza massima
+Ecco che cosa stampa la corsa con il **seme 7**. Nella colonna «errore vero» c'è la distanza massima
 fra la curva della rete e la formula esatta, sempre in frazioni dello
 spostamento di partenza, che vale 1: 0,879 vuol dire che in qualche istante la
 rete sbaglia di quasi tutto lo spostamento da cui il corpo era partito.
@@ -782,7 +781,7 @@ zero, quella che rispetta la regola senza dire niente, e che d'ora in poi
 chiameremo la **soluzione banale**.
 
 Ma il confronto stampato alla fine dice qualcosa di più, ed è la ragione per
-cui vale la pena misurare il residuo in due posti invece che in uno:
+cui conviene misurare il residuo in due posti invece che in uno:
 
 ```text
                            seme 42      seme 7
@@ -852,8 +851,7 @@ guarda, e nulla in quel punteggio gli chiede di comportarsi anche altrove.
 
 Due meccanismi distinti si sommano qui, e conviene separarli.
 
-Il primo è la **degenerazione del termine di fisica**, già annotata nella
-scheda di apertura: $u \equiv 0$ risolve esattamente l'equazione omogenea,
+Il primo è la **degenerazione del termine di fisica**, già annotata quando abbiamo scritto la loss: $u \equiv 0$ risolve esattamente l'equazione omogenea,
 quindi il minimo del solo residuo è degenere e la soluzione banale ne fa
 parte. Il termine sulle condizioni iniziali dovrebbe selezionare la nostra fra
 le infinite soluzioni, ma agisce su un singolo istante, e $\lambda_0 = 100$
@@ -931,9 +929,8 @@ tenuti da parte e mai visti in addestramento: un punteggio calcolato dove il
 modello si è allenato misura anche quanto bene ha imparato a compiacere quel
 campione. C'è anche un rimedio, ed è il più diffuso: **ricampionare** i punti
 di collocazione a ogni epoca, cioè sorteggiarne di nuovi ogni volta, così che
-non esista un esame su cui prepararsi. Il programma di questa pagina non lo fa
-apposta, perché è proprio tenendo fermi i duecento punti che la scorciatoia si
-vede a occhio nudo.
+non esista un esame su cui prepararsi. Qui i duecento punti restano fermi dal principio alla fine, ed è tenendoli
+fermi che la scorciatoia si vede a occhio nudo.
 
 Niente di tutto questo smentisce il metodo, e non è il caso di esagerare in
 senso opposto: quattro corse su sei ricostruiscono un'oscillazione smorzata
@@ -963,7 +960,7 @@ invece restituisce una **funzione**: chiedile il valore a $3{,}7$ secondi, o
 in qualunque altro punto, e risponde, perché la soluzione ormai abita dentro
 la rete.
 
-Onestà d'obbligo, perché qui è facile vendere fumo. Su questo problemino il
+Su questo problemino il
 conto a passettini vince su tutta la linea: qualche centesimo di secondo
 contro i minuti dell'addestramento, e uno scarto dalla formula esatta di
 $5 \cdot 10^{-11}$, cioè cinque centomiliardesimi, contro il nostro
@@ -1098,12 +1095,11 @@ nessuno ha misurato, esce come sottoprodotto dello stesso addestramento. Un
 seme diverso la porta a $3{,}75$, che è un buon promemoria di quello che
 abbiamo appena finito di dire: una corsa sola non è una misura.
 
-E c'è un dettaglio che vale la pena raccogliere, dopo la brutta figura di
-poco fa. Qui la traiettoria ricostruita è **più accurata** di quella che
-avevamo ottenuto conoscendo la legge per intero, pur essendo il problema più
-difficile dei due: lo scarto massimo dalla curva vera è circa $0{,}07$, e
-circa $0{,}08$ rilanciando con il seme 7, quello sfortunato, contro lo
-$0{,}15$ di prima. Il
+E c'è un dettaglio da raccogliere, dopo la brutta figura di poco fa. Qui la
+traiettoria ricostruita è **più accurata** di quella che avevamo ottenuto
+conoscendo la legge per intero, pur essendo il problema più difficile dei due:
+lo scarto massimo dalla curva vera è circa $0{,}07$, e circa $0{,}08$
+rilanciando con il seme 7, quello sfortunato, contro lo $0{,}15$ di prima. Il
 motivo è tutto nella disposizione degli ancoraggi: prima la rete aveva un solo
 punto fermo, l'istante zero, e più si andava avanti nel tempo più era libera
 di inventare; qui ha venticinque misure sparse su tutto l'intervallo, che la

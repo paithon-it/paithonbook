@@ -13,7 +13,7 @@ più rozzo di misurare quanto due parole si somigliano, e il Transformer, il
 modello che aveva appena spodestato le reti ricorrenti, ricade esattamente in
 una **rete ricorrente**. Il re, sotto il mantello, era un vecchio parente.
 
-Non è un gioco di prestigio: è una porta. Nel capitolo sui Transformer abbiamo
+Non è un gioco di prestigio: è una porta. Nel {doc}`capitolo sui Transformer </Transformers/overview>` abbiamo
 visto che l'attenzione si paga due volte. Il primo conto è il lavoro: ogni
 parola guarda tutte le altre, quindi raddoppiando la lunghezza del testo il
 lavoro **quadruplica**, ed è ciò che si chiama costo *quadratico*: dieci volte
@@ -52,8 +52,8 @@ e nessun passo la libera.
 ```
 
 {numref}`fig-kv-cache-cresce` mostra il secondo dei due conti, quello che si
-paga mentre il modello scrive: è il muro in una figura, ed è il motivo per cui
-tutto questo capitolo esiste. Una ricorrenza a stato fisso non fa crescere
+paga mentre il modello scrive: è il muro in una figura: la memoria che si allunga sotto gli occhi, un token
+dopo l'altro. Una ricorrenza a stato fisso non fa crescere
 niente: comprime il passato in una memoria di taglia costante, e la domanda
 diventa quanto si perde nel comprimerlo.
 
@@ -158,7 +158,7 @@ transizione è, letteralmente, cambiare modello.
 
 `````
 
-## Come è organizzato il capitolo
+## Dalla softmax alla memoria
 
 Tre tappe, dal meccanismo alle architetture concrete.
 
@@ -177,29 +177,13 @@ Transformer (RetNet, RWKV, xLSTM). Chiude un breve **notebook**, cioè una
 pagina di codice che si può far girare, in cui verifichiamo con i numeri veri
 che i due modi di fare il conto danno davvero lo stesso risultato.
 
-`````{tab} Elementare
-
-Non serve portarsi dietro niente: ogni parola nuova viene spiegata dove
-compare, e le formule stanno tutte nell'altro livello (qui restano solo dei
-conti con i numeri, tenuti il più semplici possibile). Se leggi solo questo, il
-capitolo si legge di fila. Le figure del capitolo sono quattro e le loro
-didascalie raccontano da sole la storia: se un passaggio si complica, guarda
-la figura più vicina.
-
-`````
-
-`````{tab} Superiore
-
-Con i nomi che si trovano nei paper: il *trucco del kernel* che spezza la
+Con i nomi che si trovano negli articoli: il *trucco del kernel* che spezza la
 softmax e trasforma l'attenzione in una ricorrenza a stato-matrice, con la sua
 doppia natura parallelo/ricorrente, e il limite di capacità dell'accumulo puro;
 poi i *gate* per dimenticare (RetNet, Mamba-2, GLA) e la *delta rule* per
 correggere (DeltaNet, Gated DeltaNet), unificati dalla tabella finale come casi
 di una stessa **regressione online**; infine RetNet, RWKV e xLSTM come istanze
-dello stesso scheletro, e un notebook NumPy che verifica l'equivalenza fra
-forma parallela e forma ricorrente.
-
-`````
+dello stesso scheletro.
 
 Si comincia dal problema, cioè dal punto in cui l'attenzione dei Transformer
 smette di essere sostenibile, e dall'osservazione algebrica che permette di

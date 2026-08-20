@@ -37,7 +37,7 @@ RuntimeError: mat1 and mat2 shapes cannot be multiplied (32x784 and 128x10)
 dice già tutto: PyTorch ha provato a moltiplicare una tabella $32 \times 784$
 per una $128 \times 10$, e non si può, perché il numero di colonne della prima
 ($784$) non coincide con il numero di righe della seconda ($128$). È la regola
-del prodotto fra matrici vista nel capitolo di algebra lineare, e il motivo per
+del prodotto fra matrici vista nel {doc}`capitolo di algebra lineare </Matematica/overview>`, e il motivo per
 cui esiste è che ogni riga della prima matrice viene accoppiata a una colonna
 della seconda, numero per numero: se le due file non hanno la stessa lunghezza,
 gli accoppiamenti non si chiudono.
@@ -270,7 +270,7 @@ stacca dal grafo, `cpu` fa il trasloco, `numpy` converte.
 ## Un metodo, non un rimedio
 
 I tre errori sopra si risolvono in trenta secondi *se* si legge il messaggio.
-Vale la pena rendere esplicito il metodo con cui li si risolve, perché quello
+Conviene rendere esplicito il metodo con cui li si risolve, perché quello
 funziona anche sugli errori che nessun elenco contiene, compresi quelli che
 nasceranno il mese prossimo.
 
@@ -558,8 +558,8 @@ plt.xlabel("epoche"); plt.ylabel("loss"); plt.legend()
 
 Tre errori che si annunciano, otto che tacciono, più il sovradattamento delle
 curve, che è di gran lunga il più comune di tutti e si merita una sezione sua.
-Il metodo, però, vale per tutti e dodici. È la sezione a cui si torna, e vale la
-pena rileggerne il riassunto la prima volta che qualcosa si rompe.
+Il metodo, però, vale per tutti e dodici. È la sezione a cui si torna, e
+conviene rileggerne il riassunto la prima volta che qualcosa si rompe.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

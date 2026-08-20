@@ -367,8 +367,8 @@ Kullback-Leibler della formula qui sotto, che TRPO impone davvero, quasi per
 costruzione, e che gli stessi autori misurano e trovano rispettata.
 
 Detto così il tosaggio sembra un trucco, e invece è l'approssimazione
-economica di un'idea precisa che lo precede. **TRPO** (*Trust Region Policy
-Optimization*) pone il problema come massimizzazione **vincolata**: si
+economica di un'idea precisa che lo precede. **TRPO** (*Trust Region Policy Optimization*) {cite}`schulman2015trust` pone
+il problema come massimizzazione **vincolata**: si
 massimizza lo stesso obiettivo con importance sampling, ma imponendo che la
 nuova policy resti vicina alla vecchia in **divergenza di Kullback-Leibler**,
 
@@ -446,12 +446,13 @@ un giocatore forte, prima di muovere, **pensa**: prova mentalmente qualche
 continuazione, valuta dove porta, sceglie.
 
 Quel pensare ha un algoritmo, e si chiama **ricerca ad albero Monte Carlo**
-(MCTS, dalle iniziali inglesi; e «Monte Carlo», come al casinò, è il nome che i
-matematici danno ai metodi che fanno i conti tirando a sorte). Il libro lo
-nominerà spesso da qui in avanti: AlphaGo, AlphaZero, MuZero, e i modelli
-linguistici (i programmi che scrivono testo, come quelli dietro agli assistenti
-conversazionali) quando esplorano più ragionamenti prima di rispondere. Vale la
-pena vederlo una volta per bene, anche perché è un vecchio amico travestito.
+(MCTS, dalle iniziali inglesi; e «Monte Carlo», come al casinò, è il nome che
+i matematici danno ai metodi che fanno i conti tirando a sorte). Torna in AlphaGo, in AlphaZero, in MuZero, e nei modelli linguistici che
+esplorano più ragionamenti prima di rispondere: AlphaGo, AlphaZero, MuZero, e i modelli
+linguistici (i programmi che scrivono testo, come quelli dietro agli
+assistenti conversazionali) quando esplorano più ragionamenti prima di
+rispondere. Conviene vederlo una volta per bene, anche perché è un vecchio
+amico travestito.
 
 Il capitolo sulla ricerca aveva lasciato la faccenda esattamente qui: la
 ricerca classica, per fermarsi a metà albero, ha bisogno di una formula che
@@ -733,12 +734,12 @@ primo che i successori toglieranno.
 ```
 
 Il ciclo di {numref}`fig-alphago` è il motivo per cui i successori di AlphaGo
-poterono fare a meno delle partite umane, e poggia su un fatto che vale la pena
-enunciare da solo: **la ricerca gioca meglio delle due reti che la guidano**. Se
-ci si pensa è quasi ovvio. La rete propone di getto, guardando la posizione; la
-ricerca, prima di decidere, prova per davvero migliaia di continuazioni. Quindi
-la mossa che esce dalla ricerca è quasi sempre migliore di quella che la rete
-avrebbe scelto da sola, ed è un esempio su cui la rete può allenarsi.
+poterono fare a meno delle partite umane, e poggia su un fatto da enunciare da
+solo: **la ricerca gioca meglio delle due reti che la guidano**. Se ci si
+pensa è quasi ovvio. La rete propone di getto, guardando la posizione; la
+ricerca, prima di decidere, prova per davvero migliaia di continuazioni.
+Quindi la mossa che esce dalla ricerca è quasi sempre migliore di quella che
+la rete avrebbe scelto da sola, ed è un esempio su cui la rete può allenarsi.
 
 Ecco la fonte di supervisione interna: non serve un maestro, basta giocare
 contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo
@@ -780,18 +781,18 @@ fila delle risposte, ed è il *reward model* (il modello di ricompensa) a
 tradurre quell'ordine in un punteggio che l'ottimizzazione sa usare.
 ```
 
-Il dettaglio di {numref}`fig-instructgpt` che vale la pena notare è il primo
-riquadro: alle persone si chiede di **ordinare**, non di valutare. Confrontare
-due risposte è un giudizio che gli esseri umani danno con buona coerenza fra
-loro; assegnare un voto da uno a dieci molto meno, e su scale diverse.
-Nell’**RLHF** (*Reinforcement Learning from Human Feedback*, cioè apprendimento
-per rinforzo dal giudizio umano; {cite}`christiano2017deep`,
-{cite}`ouyang2022training`) le risposte del modello sono l’"azione", dei
-valutatori umani indicano quali preferiscono, e le loro preferenze addestrano un
-*modello di ricompensa* che fa da critico. Con PPO si ritocca poi la policy del
-modello (la sua tendenza a produrre certe risposte), verso ciò che gli umani
-apprezzano. La stessa idea che ha portato una macchina a giocare la mossa 37
-aiuta oggi un assistente a rispondere in modo utile e onesto.
+Il dettaglio di {numref}`fig-instructgpt` da notare è il primo riquadro: alle
+persone si chiede di **ordinare**, non di valutare. Confrontare due risposte è
+un giudizio che gli esseri umani danno con buona coerenza fra loro; assegnare
+un voto da uno a dieci molto meno, e su scale diverse. Nell’**RLHF**
+(*Reinforcement Learning from Human Feedback*, cioè apprendimento per rinforzo
+dal giudizio umano; {cite}`christiano2017deep`, {cite}`ouyang2022training`) le
+risposte del modello sono l’"azione", dei valutatori umani indicano quali
+preferiscono, e le loro preferenze addestrano un *modello di ricompensa* che
+fa da critico. Con PPO si ritocca poi la policy del modello (la sua tendenza a
+produrre certe risposte), verso ciò che gli umani apprezzano. La stessa idea
+che ha portato una macchina a giocare la mossa 37 aiuta oggi un assistente a
+rispondere in modo utile e onesto.
 
 Il disegno comincia dagli ordinamenti, ma prima c'è un passo che non si vede:
 il modello viene addestrato a imitare risposte scritte da persone, cioè a

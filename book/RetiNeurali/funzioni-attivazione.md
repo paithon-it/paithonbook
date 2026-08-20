@@ -100,9 +100,8 @@ funzione qualunque di $d$ variabili cresce esponenzialmente in $d$.
 
 `````
 
-Prima di guardarle una per una serve un anticipo su come una rete impara. È il
-tema della sezione dopo, ma qui serve subito, perché è il metro con cui si
-giudica una funzione di attivazione.
+Prima di guardarle una per una serve sapere una cosa su come una rete impara,
+perché è il metro con cui una funzione di attivazione si giudica.
 
 Per correggersi, una rete deve sapere in che direzione muovere ciascun peso, e
 lo scopre chiedendosi: *se muovessi questo peso di pochissimo, di quanto
@@ -147,7 +146,7 @@ la rete si spegne.
 La prima scelta, storicamente: schiaccia qualunque numero in un valore fra $0$
 e $1$. Comoda, perché un numero fra zero e uno si legge come un interruttore
 acceso a metà, o come «quanto sono convinto». Viene dalla regressione
-logistica, il classificatore incontrato nel capitolo di machine learning.
+logistica, il classificatore incontrato nel {doc}`capitolo di machine learning </MachineLearning/overview>`.
 
 `````{tab} Elementare
 
@@ -205,7 +204,7 @@ positiva), il che rallenta la convergenza della discesa del gradiente.
 La via d'uscita che viene in mente per prima non funziona, e vale la pena
 chiudere la porta: non si rimedia alzando i pesi per compensare il fattore
 $1/4$. Pesi più grandi spingono $z$ nelle code, dove $\sigma'$ è ancora più
-piccola, e i due effetti si mangiano a vicenda. Misurato così: venti strati da
+piccola, e i due effetti si mangiano a vicenda. In una rete di venti strati da
 $128$ unità, pesi estratti con l'inizializzazione di Glorot, ingressi normali
 standard, e per «fattore» si intende il rapporto fra la norma del gradiente che
 esce da uno strato verso l'ingresso e quella del gradiente che vi è entrato
@@ -267,7 +266,7 @@ a zero. Nessun conto complicato e, dal lato positivo, nessuna zona piatta.
 La ReLU (*Rectified Linear Unit*) fa una cosa sola: se l'ingresso è positivo lo
 restituisce identico, se è negativo o zero restituisce zero. È uno sportello
 che lascia passare i versamenti e blocca i prelievi (è l'esempio con cui si
-apre il libro): entra $10$, esce $10$; entra $-3$, esce $0$.
+blocca i prelievi: entra $10$, esce $10$; entra $-3$, esce $0$.
 
 Perché ha sbloccato le reti profonde? Perché dal lato positivo la curva è una
 riga inclinata: la sua pendenza è sempre $1$, non si appiattisce mai. Si misura
@@ -284,9 +283,10 @@ maledizione. Se un neurone finisce nella zona negativa per **tutti** gli
 esempi (cioè per tutti i dati con cui la rete viene addestrata), la sua uscita
 è sempre zero, e allora anche la pendenza che sente è
 sempre zero: nessuna indicazione, nessuna correzione, i suoi pesi restano
-fermi. È il neurone "morto". Non è del tutto senza ritorno, perché i neuroni
-che stanno **prima** di lui continuano a cambiare e possono cominciare a
-mandargli numeri diversi; ma da solo non si tira fuori. La **Leaky ReLU**
+fermi. È il neurone "morto". Non è del tutto senza ritorno, perché i neuroni che stanno **prima** di lui
+continuano a cambiare e possono cominciare a mandargli numeri diversi; a meno
+che non sia lui il primo della fila, e allora davanti ha solo i dati, che non
+cambiano mai, e da lì non si esce; ma da solo non si tira fuori. La **Leaky ReLU**
 previene il problema lasciando filtrare una piccola pendenza anche per i valori
 negativi, così un po’ di indicazione arriva sempre.
 
@@ -419,13 +419,12 @@ problema, non il gusto.
 ## In pratica, con NumPy
 
 Ogni funzione è una o due righe. La softmax ne chiede due in più, e sono due
-precauzioni che vale la pena conoscere. La prima: si sottrae il punteggio più
-alto prima di fare gli ingrandimenti, così i numeri restano piccoli e il
-computer non va fuori scala (il risultato non cambia). La seconda: si dichiara
-su quali numeri fare la somma. Senza, dando alla funzione un gruppo di esempi
-tutti insieme, le percentuali sommerebbero a $100$ sull'intero gruppo invece
-che su ciascun esempio, e sarebbe un risultato sbagliato che non dà nessun
-errore.
+precauzioni da conoscere. La prima: si sottrae il punteggio più alto prima di
+fare gli ingrandimenti, così i numeri restano piccoli e il computer non va
+fuori scala (il risultato non cambia). La seconda: si dichiara su quali numeri
+fare la somma. Senza, dando alla funzione un gruppo di esempi tutti insieme,
+le percentuali sommerebbero a $100$ sull'intero gruppo invece che su ciascun
+esempio, e sarebbe un risultato sbagliato che non dà nessun errore.
 
 ```python
 import numpy as np

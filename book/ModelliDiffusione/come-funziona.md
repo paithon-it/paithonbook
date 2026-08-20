@@ -21,8 +21,7 @@ pulviscolo non c'era nessuna fotografia, eppure alla fine della scala una
 fotografia c'è, ed è nuova: a decidere quale è il pulviscolo di partenza,
 sorteggiato e sempre diverso.
 
-Il capitolo si è aperto con la promessa di smontare questo giocattolo pezzo per
-pezzo, e questa sezione la mantiene. Cominciamo dal verso facile, quello che
+Smontiamolo pezzo per pezzo. Cominciamo dal verso facile, quello che
 rovina la fotografia; poi il verso difficile, quello che si impara; e la
 {numref}`fig-diffusione-processo` è la mappa dei due.
 
@@ -141,7 +140,7 @@ q(\mathbf{x}_t \mid \mathbf{x}_0) = \mathcal{N}\!\left(\mathbf{x}_t;\ \sqrt{\bar
 \mathbf{x}_t = \sqrt{\bar{\alpha}_t}\,\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon},
 $$
 
-con $\boldsymbol{\epsilon} \sim \mathcal{N}(0, \mathbf{I})$; qui $\bar{\alpha}_t$ è la frazione di
+con $\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$; qui $\bar{\alpha}_t$ è la frazione di
 segnale originale sopravvissuta al passo $t$ e $1-\bar{\alpha}_t$ la varianza
 del rumore accumulato. La forma chiusa esiste perché la somma di gaussiane
 indipendenti è ancora gaussiana (richiami di statistica): componendo un passo
@@ -153,17 +152,17 @@ sono calibrati perché la scala resti stabile: se $\mathbf{x}_0$ ha varianza uni
 $\mathrm{Var}(\mathbf{x}_t) = \bar{\alpha}_t + (1-\bar{\alpha}_t) = 1$ a ogni passo (il
 processo è *variance-preserving*). Con lo schedule di DDPM,
 $\bar{\alpha}_T \approx 4 \cdot 10^{-5}$: al passo finale
-$q(\mathbf{x}_T \mid \mathbf{x}_0) \approx \mathcal{N}(0, \mathbf{I})$ per qualunque $\mathbf{x}_0$, cioè $\mathbf{x}_T$ è
+$q(\mathbf{x}_T \mid \mathbf{x}_0) \approx \mathcal{N}(\mathbf{0}, \mathbf{I})$ per qualunque $\mathbf{x}_0$, cioè $\mathbf{x}_T$ è
 rumore gaussiano puro, indipendente dal dato di partenza.
 
 `````
 
-In quella ricetta c'è una scorciatoia, e vale la pena vederla prima di
-proseguire, perché è quella che rende il metodo praticabile. Per portare una
-fotografia al livello di rovina 700 non serve eseguire settecento passi: ci si
-arriva in un colpo solo. Il motivo è la proprietà della campana di Gauss di cui
-si diceva sopra. Settecento sorteggi da quella campana, sommati, danno ancora
-un sorteggio da quella campana, solo più ampio: quindi i settecento pizzichi si
+In quella ricetta c'è una scorciatoia, e conviene vederla prima di proseguire,
+perché è quella che rende il metodo praticabile. Per portare una fotografia al
+livello di rovina 700 non serve eseguire settecento passi: ci si arriva in un
+colpo solo. Il motivo è la proprietà della campana di Gauss di cui si diceva
+sopra. Settecento sorteggi da quella campana, sommati, danno ancora un
+sorteggio da quella campana, solo più ampio: quindi i settecento pizzichi si
 possono rimpiazzare con un unico pizzico grosso, e le settecento attenuazioni
 con un'unica moltiplicazione.
 
@@ -316,12 +315,12 @@ $$
 $$
 
 dove $\mathbf{x}_0$ è un dato del training set, $t$ è uniforme su $\{1, \dots, T\}$ e
-$\boldsymbol{\epsilon} \sim \mathcal{N}(0, \mathbf{I})$: si campiona una tripla, si costruisce $\mathbf{x}_t$
+$\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$: si campiona una tripla, si costruisce $\mathbf{x}_t$
 in un colpo solo con la forma chiusa (senza percorrere la catena), e si
 confrontano rumore vero e rumore predetto. Si noti che predire $\boldsymbol{\epsilon}$ e
 predire $\boldsymbol{\mu}$ sono formulazioni legate da una relazione affine (dato $\mathbf{x}_t$,
 l'una si ricava dall'altra) ma non equivalenti come problemi di regressione:
-il bersaglio $\boldsymbol{\epsilon}$ ha distribuzione $\mathcal{N}(0, \mathbf{I})$ *a ogni* $t$,
+il bersaglio $\boldsymbol{\epsilon}$ ha distribuzione $\mathcal{N}(\mathbf{0}, \mathbf{I})$ *a ogni* $t$,
 quindi scala costante e ben condizionata.
 
 L'ablazione di DDPM su questo punto va letta con attenzione, perché dice
@@ -449,13 +448,13 @@ diversi. Il costo, invece, si vede tutto: mille valutazioni della rete per
 `````{tab} Superiore
 
 Il campionamento *ancestrale* di DDPM percorre la catena inversa da
-$t = T$ a $t = 1$: si parte da $\mathbf{x}_T \sim \mathcal{N}(0, \mathbf{I})$ e si itera
+$t = T$ a $t = 1$: si parte da $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$ e si itera
 
 $$
 \mathbf{x}_{t-1} = \frac{1}{\sqrt{\alpha_t}}\left(\mathbf{x}_t -
 \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\,\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\right)
 + \sigma_t \mathbf{z},
-\qquad \mathbf{z} \sim \mathcal{N}(0, \mathbf{I}),
+\qquad \mathbf{z} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
 dove il primo termine è la media appresa $\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)$ e $\sigma_t \mathbf{z}$ è
@@ -555,9 +554,8 @@ uguale: quelli quasi puliti, dove indovinare è facile, peserebbero una
 cinquantina di volte più di quelli pieni di rumore. DDPM li fa contare tutti
 uguali, e così facendo promuove proprio i passi difficili, che nella ricetta
 originale contavano pochissimo. Non è più la ricetta di prima, quindi; è una
-sua versione riequilibrata a mano. Seguita alla lettera dà immagini peggiori;
-con i pesi appiattiti così, migliori. Capita, e chi scrive queste cose fa bene
-a dirlo invece di far finta che tutto torni.
+sua versione riequilibrata a mano. Seguita alla lettera dà immagini peggiori; con i pesi appiattiti così,
+migliori. 
 
 La seconda risposta è più bella. Immagina una mappa sterminata in cui ogni
 punto è una possibile immagine: ogni combinazione di pixel, anche le più
@@ -1052,7 +1050,7 @@ carattere per carattere.
   non l'immagine: bersaglio a scala costante per ogni $t$, loss MSE
   $\mathbb{E}\lVert\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta\rVert^2$ {cite}`ho2020denoising`
   (una regressione, stabile come un problema supervisionato).
-- Generare = partire da $\mathbf{x}_T \sim \mathcal{N}(0,\mathbf{I})$ e risalire la
+- Generare = partire da $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$ e risalire la
   catena in $T$ passi, e ogni passo fa **tre** cose: sottrae una frazione del
   rumore stimato, riscala per $1/\sqrt{\alpha_t}$, inietta rumore fresco di
   deviazione standard $\sigma_t$ (tranne all'ultimo).

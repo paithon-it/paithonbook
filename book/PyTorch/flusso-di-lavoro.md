@@ -12,9 +12,9 @@ lastra, le stazioni da attraversare sono sempre quelle.
 
 ## Sei stazioni, sempre le stesse
 
-La {numref}`fig-flusso-pytorch` le mette in fila. Vale la pena guardarla una
-volta per intero: è la mappa non solo di questa sezione, ma di tutto quello che
-si fa quando si addestra un modello.
+La {numref}`fig-flusso-pytorch` le mette in fila. Conviene guardarla una volta
+per intero: è la mappa non solo di questa sezione, ma di tutto quello che si
+fa quando si addestra un modello.
 
 ```{figure} ../figures/flusso-di-lavoro-pytorch.svg
 :name: fig-flusso-pytorch
@@ -137,8 +137,8 @@ questo `manual_seed` conta: fissa anche quel sorteggio. (Il $0{,}7645$ che esce
 dal caso somiglia al $0{,}7$ vero per pura coincidenza; il bias, $0{,}83$
 contro $0{,}3$, è bello lontano.)
 
-Adesso il ciclo. Rispetto alla sezione precedente cambiano tre cose, e vale la
-pena dirle prima perché altrimenti sembrano contraddizioni. Primo: qui i
+Adesso il ciclo. Rispetto alla sezione precedente cambiano tre cose, e
+conviene dirle prima perché altrimenti sembrano contraddizioni. Primo: qui i
 quaranta punti entrano tutti insieme a ogni giro, non a pacchetti, perché sono
 quaranta e starebbero in un pacchetto solo; quindi qui «epoca» e «un giro di
 correzione» coincidono, mentre su MNIST un'epoca erano quasi mille giri.
@@ -183,11 +183,11 @@ OrderedDict({'strato.weight': tensor([[0.6968]]), 'strato.bias': tensor([0.3025]
 ```
 
 Alla fine `state_dict()` stampa due numeri molto vicini a $0{,}7$ e $0{,}3$:
-$0{,}6968$ e $0{,}3025$, cioè $0{,}70$ e $0{,}30$ arrotondati al centesimo. Non
-identici, perché la discesa del gradiente si ferma quando è *abbastanza*
+$0{,}6968$ e $0{,}3025$, cioè $0{,}70$ e $0{,}30$ arrotondati al centesimo.
+Non identici, perché la discesa del gradiente si ferma quando è *abbastanza*
 vicina. È una verifica che nella maggior parte dei problemi veri non potremo
-mai fare, e proprio per questo vale la pena farla almeno una volta: qui
-sappiamo con certezza che la macchina funziona.
+mai fare, e proprio per questo conviene farla almeno una volta: qui sappiamo
+con certezza che la macchina funziona.
 
 Guardando la tabella si nota che le ultime righe si ripetono: $0{,}0103$ e
 $0{,}0013$ tornano a turno. Non è un caso, ed è la cosa più istruttiva di tutto
@@ -252,8 +252,8 @@ il tipo di problema, e insieme a lei decide anche la forma dell'ultimo strato.
 I tipi di problema, in fondo, sono quattro, e sono quattro modi di fare una
 domanda a un modello: *quanto?*, *sì o no?*, *quale fra tanti?*, *quali fra
 tanti?* Ognuno ha la sua riga nella tabella. Le due lettere che vi compaiono
-stanno per «quanti numeri entrano nell'ultimo strato» ($d$) e «quante categorie
-ci sono» ($K$). Vale la pena tenerla sott'occhio: metà degli errori dei
+stanno per «quanti numeri entrano nell'ultimo strato» ($d$) e «quante
+categorie ci sono» ($K$). Conviene tenerla sott'occhio: metà degli errori dei
 principianti nascono da una riga sbagliata qui.
 
 | Tipo di problema | Ultimo strato | Funzione di perdita | Per leggere l'output |

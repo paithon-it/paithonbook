@@ -1,14 +1,14 @@
 # Dalla softmax alla ricorrenza
 
-Il capitolo sui Transformer si chiude con un paradosso. Il meccanismo che ha
+Il {doc}`capitolo sui Transformer </Transformers/overview>` si chiude con un paradosso. Il meccanismo che ha
 vinto la partita (l'attenzione, che lascia ogni parola libera di guardare
 tutte le altre) vince *proprio perché* guarda tutte le altre; ed è esattamente
-questo il suo conto da pagare. Sono i due conti di cui si è detto aprendo il
-capitolo: il lavoro che cresce col quadrato della lunghezza (gli informatici lo
-scrivono $O(n^2)$, che è solo un modo compatto di dirlo) e la **KV cache** che
-si allunga a ogni parola generata, il "segnalibro" che nel capitolo sui
-Transformer conserva le chiavi e i valori già calcolati per non rifarli a ogni
-passo.
+questo il suo conto da pagare. Sono i due conti di cui si è detto aprendo il capitolo. Il primo è il lavoro,
+che cresce col quadrato della lunghezza (gli informatici lo scrivono $O(n^2)$,
+che è solo un modo compatto di dirlo). Il secondo è il segnalibro che il
+modello si tiene mentre scrive, con dentro le etichette e le informazioni già
+calcolate per non rifare ogni volta gli stessi conti: quel segnalibro si
+allunga a ogni parola generata, e si chiama **KV cache**.
 
 Le reti ricorrenti che abbiamo studiato prima dei Transformer non avevano
 nessuno di questi due problemi: leggevano in fila, a costo lineare, con uno
@@ -64,11 +64,10 @@ $4\times 16$. Quel $16$ si calcola **una volta per tutte**, e le caselle della
 tabella grande non si scrivono mai.
 
 La stessa cosa, raccontata come una scena. Riprendiamo l'assemblea del capitolo
-sui Transformer: mille parole sono mille persone, e farle parlare tutte con
-tutte sono quasi mezzo milione di conversazioni (le caselle della tabella erano
-un milione perché ogni coppia ci compare due volte, una per la domanda che il
-primo fa al secondo e una per quella che il secondo fa al primo; le
-conversazioni, contate una volta sola, sono la metà). Il costo esplode perché
+sui Transformer: mille parole sono mille persone, e farle parlare tutte con tutte sono quasi mezzo milione di conversazioni (le
+caselle della tabella sono un milione perché ogni parola ha la sua riga e la
+sua colonna, diagonale compresa; le conversazioni fra due parole diverse,
+contate una volta sola, sono $499\,500$). Il costo esplode perché
 ogni coppia va gestita a parte.
 
 Invece di metterli tutti a chiacchierare fra loro, teniamo un **registro
@@ -84,8 +83,7 @@ Il trucco sta tutto nel trovare un modo di riassumere che non perda ciò che
 serve, e questo è il punto delicato: un riassunto, per quanto ben fatto, tiene
 meno cose di un archivio completo. Il conto lo pagheremo più avanti in questa
 pagina, quando vedremo che cosa succede a un registro su cui si continua a
-scrivere senza mai cancellare. In matematica quel modo di misurare la
-somiglianza si chiama **kernel**, ed è il nome che dà il titolo alla sezione.
+scrivere senza mai cancellare. In matematica quel modo di misurare la somiglianza si chiama **kernel**.
 
 `````
 
@@ -124,9 +122,13 @@ $$
     = \mathbf{S}\,\phi(\mathbf{q}_i),
 $$
 
-dove il passaggio chiave è la semplice **associatività** del prodotto: lo
-scalare $\phi(\mathbf{k}_j)^\top \phi(\mathbf{q}_i)$ si può portare a destra di $\mathbf{v}_j$, e allora
-la somma su $j$ si stacca dalla query e si condensa in un'unica matrice
+dove i passaggi sono tre, e conviene separarli perché è su questi che si regge
+il capitolo: il prodotto scalare è simmetrico, quindi
+$\phi(\mathbf{q}_i)^\top \phi(\mathbf{k}_j) = \phi(\mathbf{k}_j)^\top \phi(\mathbf{q}_i)$;
+uno scalare si può spostare a destra del vettore $\mathbf{v}_j$; e a quel
+punto è l'**associatività** del prodotto a permettere di raccogliere
+$\phi(\mathbf{q}_i)$ fuori dalla somma su $j$, che si stacca dalla query e si
+condensa in un'unica matrice
 $\mathbf{S} = \sum_j \mathbf{v}_j\, \phi(\mathbf{k}_j)^\top \in \mathbb{R}^{d_v\times C}$ (il «registro»
 chiave→valore). Qui $\mathbf{q}_i, \mathbf{k}_j, \mathbf{v}_j$ sono i vettori query, key e value del
 token e $d_v$ è la dimensione del value. Da qui in avanti, per semplicità,
@@ -270,32 +272,18 @@ raccolgono la stessa informazione in modi opposti: la KV cache la conserva
 tutta e paga in memoria che cresce; il registro la comprime in un foglio di
 taglia fissa.
 
-Una nota di servizio prima di proseguire, che riguarda il modo di scrivere il
-meccanismo, non il meccanismo.
-
-`````{tab} Elementare
-
-Nelle prossime sezioni ritroverai lo stesso foglio-registro raccontato in modo
-un po’ più asciutto, perché i gruppi di ricerca non usano tutti gli stessi
-accorgimenti di conto. Il meccanismo però non cambia di una virgola: si scrive,
-si somma, si rilegge. Se leggi solo questo livello, tira dritto.
-
-`````
-
-`````{tab} Superiore
-
-Katharopoulos tiene il normalizzatore $\mathbf{z}_t$: la lettura è una media pesata e
-$\mathbf{z}_t^\top \phi(\mathbf{q}_t)$ ne è il denominatore. Già i lavori sui *fast weight* di
-poco successivi lo abbandonano, giudicandolo instabile (quell'accumulatore può
-crescere senza controllo), e normalizzano invece chiavi e query trasformate; le
-varianti più recenti vi rinunciano del tutto, aggiungendo una *layer
-normalization* in uscita e, dove la transizione lo richiede (DeltaNet),
-riportando le key a norma unitaria. Impostazioni diverse, che è
-meglio non mescolare: nelle prossime sezioni terremo distinte le due scuole e,
-parlando delle architetture moderne, useremo la seconda, cioè feature map
-$\phi$ posta all'identità e nessun $\mathbf{z}_t$ nelle formule.
-
-`````
+Un'ultima cosa sul modo di scrivere il meccanismo, che non lo cambia di una
+virgola: Katharopoulos tiene il normalizzatore $\mathbf{z}_t$, e la lettura è
+una media pesata di cui $\mathbf{z}_t^\top \phi(\mathbf{q}_t)$ è il
+denominatore. Già i lavori sui *fast weight* di poco successivi lo abbandonano,
+giudicandolo instabile (quell'accumulatore può crescere senza controllo), e
+normalizzano invece chiavi e query trasformate; le varianti più recenti vi
+rinunciano del tutto, aggiungendo una *layer normalization* in uscita e, dove
+la transizione lo richiede (DeltaNet), riportando le key a norma unitaria. Sono
+impostazioni diverse, che è meglio non mescolare: nelle prossime sezioni
+teniamo distinte le due scuole e, parlando delle architetture moderne, usiamo
+la seconda, cioè feature map $\phi$ posta all'identità e nessun
+$\mathbf{z}_t$ nelle formule.
 
 ## Addestrare in parallelo, generare in ricorrenza
 
@@ -481,9 +469,9 @@ un altro: tenere il foglio piccolo e imparare a **scriverci meglio**.
 
 Il limite è di **capacità**, ed è una conseguenza della dimensione finita. Lo
 stato $\mathbf{S}$ è una matrice $d \times d$: in uno spazio di dimensione $d$ non
-esistono più di $d$ vettori mutuamente ortogonali. Se le key
-$\phi(\mathbf{k}_1), \dots$ fossero esattamente ortogonali, leggere con $\phi(\mathbf{q})$
-recupererebbe il value giusto pulito fino a $d$ associazioni; ma le key le
+esistono più di $d$ vettori mutuamente ortogonali. Se le key $\phi(\mathbf{k}_1), \dots$ fossero esattamente ortogonali e di
+norma uno, leggere con $\phi(\mathbf{q})$ recupererebbe il value giusto pulito
+fino a $d$ associazioni; ma le key le
 produce una proiezione lineare, non un'ortogonalizzazione, e con chiavi
 casuali il **crosstalk** (le briciole degli altri value che il retrieval
 raccoglie insieme a quello cercato) non compare a una soglia: cresce da subito

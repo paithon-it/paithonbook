@@ -3,8 +3,8 @@
 Quando pronunci la parola «casa», il microfono del telefono non registra
 quattro lettere: registra circa sedicimila numeri al secondo. Ogni numero è la
 pressione dell'aria misurata in un istante, si chiama **campione**, e messi in
-fila quei numeri raccontano come l'aria ha vibrato. Sedicimila non è un numero
-magico, è una scelta: bastano a rendere una voce senza sprecare spazio, e chi
+fila quei numeri raccontano come l'aria ha vibrato. Sedicimila è una scelta, non una legge: bastano a rendere una voce senza
+sprecare spazio, e chi
 registra musica ne usa quasi il triplo, perché lì servono anche gli acuti che
 nel parlato non ci sono.
 
@@ -146,8 +146,8 @@ frame è lo stesso per tutti e due. Basta farlo una volta e riusarlo. Mettendo
 insieme tutti i modi che condividono l'inizio, il lavoro non è più
 ventiquattro miliardi di conti: è riempire una tabella lunga cinquanta
 colonne, una per frame, e alta quanto la parola scritta con i vuoti in mezzo.
-Qualche centinaio di caselle in tutto, ed è lo stesso risparmio del navigatore
-di Viterbi che abbiamo visto nel capitolo sul linguaggio naturale.
+Qualche centinaio di caselle in tutto, ed è lo stesso risparmio del navigatore di Viterbi di
+{doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`.
 
 C'è però un prezzo, e fra qualche pagina conterà. La rete vota un frame alla
 volta, e ogni voto lo dà guardando il suono e nient'altro: non si rilegge mai
@@ -292,9 +292,7 @@ produce come sottoprodotto e che si può riordinare a posteriori.
 
 Il caso dei due frame si rifà in poche righe di codice, elencando i quattro
 percorsi e sommandoli, ed è il modo più rapido di convincersene: il percorso
-più votato vale 0,36 e non scrive niente, la lettera «A» vale 0,64. Chi non
-programma può saltare il riquadro senza perdere nulla, perché quei due numeri
-sono già qui.
+più votato vale 0,36 e non scrive niente, la lettera «A» vale 0,64. 
 
 ```python
 import itertools
@@ -334,8 +332,8 @@ for testo, p in sorted(totali.items(), key=lambda kv: -kv[1]):
 assert totali["A"] > totali[collassa(migliore)]
 ```
 
-Da qui in avanti, quando diremo che un sistema CTC «trascrive», intendiamo
-sempre una ricerca di questo tipo, non il simbolo più votato frame per frame.
+Da qui in avanti, quando diremo che un sistema CTC «trascrive», intendiamo una
+ricerca di questo tipo, non il simbolo più votato frame per frame.
 
 ## Ascoltare e attendere: i modelli con attenzione
 
@@ -472,9 +470,10 @@ spazio delle uscite; la *joint network* con la non linearità in mezzo è la
 forma che si è imposta dopo, ed è quella che si trova nelle librerie.
 
 Lo spazio degli allineamenti non è più una sequenza di $T$ etichette ma un
-reticolo $T \times U$: emettere un token muove di uno in verticale, emettere il
-vuoto muove di uno in orizzontale, e ogni cammino monotono dall'angolo in basso
-a sinistra a quello in alto a destra è un allineamento valido. La probabilità
+reticolo di $(T+1) \times (U+1)$ nodi: emettere un token muove di uno in
+verticale, emettere il vuoto muove di uno in orizzontale, e ogni cammino
+monotono da $(0,0)$ a $(T,U)$ è un allineamento valido, il che ne fa
+$\binom{T+U}{U}$. La probabilità
 della trascrizione è ancora la somma su tutti i cammini, calcolata con lo
 stesso forward-backward della CTC, e la loss è ancora
 $-\log p(y \mid \mathbf{X})$.
@@ -491,9 +490,9 @@ si trascrive mentre si ascolta.
 
 Non è un'architettura di nicchia: è quella su cui gira, dal 2019, la dettatura
 in tempo reale sui telefoni {cite}`he2019streaming`, dove la risposta deve
-arrivare mentre si parla e il modello deve stare dentro un dispositivo. Vale la
-pena tenerlo a mente fra qualche pagina, quando ci chiederemo a che cosa serva
-ancora, oggi, la vecchia catena a stadi.
+arrivare mentre si parla e il modello deve stare dentro un dispositivo.
+Conviene tenerlo a mente fra qualche pagina, quando ci chiederemo a che cosa
+serva ancora, oggi, la vecchia catena a stadi.
 
 ## Whisper e i Transformer end-to-end
 
@@ -553,15 +552,15 @@ speciali): uno dice in che lingua si sta parlando, un altro se il compito è
 trascrivere o tradurre.
 
 Quello che gli autori rivendicano non è che Whisper sbagli meno di tutti, ed è
-una distinzione che vale la pena tenere. Per confrontare i riconoscitori si
-usano dei **benchmark**, che sono prove d'esame standard: raccolte di
-registrazioni con accanto la trascrizione giusta, sempre le stesse per tutti.
-La grandezza che gli autori misurano è la robustezza *zero-shot*, cioè come se
-la cava Whisper su una prova su cui non si è mai allenato: ci va meglio di
-quanto la sua bravura altrove lascerebbe prevedere, e peggiora più lentamente
-degli altri man mano che si alza il rumore di fondo. Sull'audio pulito, invece,
-i modelli allenati apposta per quella prova gli restavano davanti. È una misura
-di *quanto si peggiora fuori casa*, non di quanto si è bravi.
+una distinzione da tenere. Per confrontare i riconoscitori si usano dei
+**benchmark**, che sono prove d'esame standard: raccolte di registrazioni con
+accanto la trascrizione giusta, sempre le stesse per tutti. La grandezza che
+gli autori misurano è la robustezza *zero-shot*, cioè come se la cava Whisper
+su una prova su cui non si è mai allenato: ci va meglio di quanto la sua
+bravura altrove lascerebbe prevedere, e peggiora più lentamente degli altri
+man mano che si alza il rumore di fondo. Sull'audio pulito, invece, i modelli
+allenati apposta per quella prova gli restavano davanti. È una misura di
+*quanto si peggiora fuori casa*, non di quanto si è bravi.
 
 E ha un fianco scoperto, che il paper dichiara. I dati vengono dal web, e sul
 web stanno anche i benchmark: se le frasi dell'esame erano già dentro il
@@ -608,11 +607,11 @@ a ogni passo, non basta: è la solita decodifica del percorso migliore, e in
 gergo si chiama *ingorda*. Gli autori usano al suo posto una ricerca a fascio
 a cinque ipotesi, e quando il testo prodotto insospettisce alzano la
 **temperatura**, la stessa manopola della sezione sui grandi modelli
-linguistici, nel capitolo sui Transformer.
+linguistici, nel {doc}`capitolo sui Transformer </Transformers/overview>`.
 
-Vale la pena dire come funziona questo sospetto, perché è ingegnoso e non
-serve nessuno che ascolti. Un campanello suona se il testo prodotto si
-ripete troppo, e per accorgersene basta comprimerlo: un testo che si ripete si
+Conviene dire come funziona questo sospetto, perché è ingegnoso e non serve
+nessuno che ascolti. Un campanello suona se il testo prodotto si ripete
+troppo, e per accorgersene basta comprimerlo: un testo che si ripete si
 comprime moltissimo, e se si comprime troppo qualcosa non va. L'altro suona se
 la rete stessa, guardando i voti che ha dato, risulta poco convinta di quello
 che ha appena scritto. Quando uno dei due suona si rifà il pezzo a temperatura

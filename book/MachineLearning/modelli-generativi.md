@@ -26,7 +26,8 @@ quanto è probabile che appartenga a ciascuna classe. Cambia da dove ci si arriv
 
 `````{tab} Elementare
 
-Immagina di dover riconoscere se una moneta trovata per terra è da uno o da due
+Una moneta trovata per terra, e in mano solo il peso e il diametro: da uno o
+da due
 euro, avendone in mano solo il peso e il diametro.
 
 **Prima strada, quella dei capitoli precedenti.** Prendi mille monete già
@@ -111,14 +112,14 @@ Ronald Fisher affronta il problema nel 1936, su dei fiori
 {cite}`fisher1936use`. Il botanico Edgar Anderson aveva misurato lunghezza e
 larghezza di petali e sepali di centocinquanta iris, cinquanta per ciascuna di
 tre specie; la domanda era se quelle quattro misure bastassero a distinguerle.
-Vale la pena riportare l'avvertenza che Fisher mette nel suo stesso articolo,
-perché quasi nessuno di quelli che riusano questi dati la conosce: due delle tre
-specie vengono dalla penisola di Gaspé, in Québec, mentre la terza,
-*Iris virginica*, «differisce dagli altri due campioni per non essere stata
-raccolta nella stessa colonia naturale», il che «potrebbe alterare parecchio sia
-le medie sia le loro variabilità». Fisher cercava la combinazione delle quattro
-che separasse al meglio le specie, e il metodo che ne uscì porta il suo nome. È
-lo stesso `iris` che il capitolo sull'interpretabilità darà in pasto a un
+Conviene riportare l'avvertenza che Fisher mette nel suo stesso articolo,
+perché quasi nessuno di quelli che riusano questi dati la conosce: due delle
+tre specie vengono dalla penisola di Gaspé, in Québec, mentre la terza, *Iris
+virginica*, «differisce dagli altri due campioni per non essere stata raccolta
+nella stessa colonia naturale», il che «potrebbe alterare parecchio sia le
+medie sia le loro variabilità». Fisher cercava la combinazione delle quattro
+che separasse al meglio le specie, e il metodo che ne uscì porta il suo nome.
+È lo stesso `iris` che il capitolo sull'interpretabilità darà in pasto a un
 albero, ed è probabilmente il dataset più riusato della storia della
 statistica.[^eugenics]
 
@@ -277,9 +278,9 @@ stessa forma, due classi        0.728 ±0.003  0.726 ±0.003  0.728 ±0.003
 forme diverse                   0.813 ±0.005  0.855 ±0.002  0.810 ±0.007
 ```
 
-La colonna del $\pm$ è quella che rende leggibile il resto, e non è un ornamento:
-è la deviazione standard fra venti addestramenti, cioè quanto quel numero balla
-se si ripete tutto. Nella prima riga i tre valori stanno dentro un $\pm 0{,}003$
+La colonna del $\pm$ è la deviazione standard fra venti addestramenti, cioè
+quanto quel numero balla se si ripete tutto: senza di lei il resto della
+tabella non si legge. Nella prima riga i tre valori stanno dentro un $\pm 0{,}003$
 l'uno dall'altro: sono lo **stesso** numero scritto tre volte, e la conclusione è
 che quando le classi hanno la stessa forma non c'è niente da guadagnare a
 imparare due forme (né a passare a un discriminativo). Nella seconda riga la QDA
@@ -479,12 +480,12 @@ parametro, e con così poco non impara; il naive Bayes ne stima anche di più
 
 La seconda colonna è la logistica **come la si usa oggi**, cioè col
 `penalty="l2"` che scikit-learn applica per default, ed è il motivo per cui
-questo esperimento vale la pena rifarlo invece di citarlo. Quel freno rimedia
-quasi tutto lo svantaggio: a $n = 20$ e $n = 40$ la logistica regolarizzata sta
-davanti al naive Bayes, e da $n = 80$ in poi le tre colonne si assottigliano fino
-a coincidere. Il fenomeno del 2001 è reale e si riproduce; ma il rimedio che gli
-si oppone oggi è acceso per impostazione predefinita, e chi confronta i due
-modelli con i default della libreria non lo vede.
+questo esperimento conviene rifarlo invece di citarlo. Quel freno rimedia
+quasi tutto lo svantaggio: a $n = 20$ e $n = 40$ la logistica regolarizzata
+sta davanti al naive Bayes, e da $n = 80$ in poi le tre colonne si
+assottigliano fino a coincidere. Il fenomeno del 2001 è reale e si riproduce;
+ma il rimedio che gli si oppone oggi è acceso per impostazione predefinita, e
+chi confronta i due modelli con i default della libreria non lo vede.
 
 Una precisazione onesta su questa tabella, perché è quella che le dà il suo
 limite. I dati qui sono stati fabbricati **a feature indipendenti**, cioè nel
@@ -543,8 +544,8 @@ semplicemente non capita. La **classificazione** dello stesso punto, invece,
 esce al $99{,}99\%$ di sicurezza, perché una volta scelto da che parte della
 retta si trova non c'è altro da dire.
 
-I due numeri vengono dallo stesso modello, addestrato una volta sola, e sono la
-ragione per cui vale la pena avere in casa un generativo: la sicurezza di un
+I due numeri vengono dallo stesso modello, addestrato una volta sola, e sono
+la ragione per cui conviene avere in casa un generativo: la sicurezza di un
 classificatore è sempre relativa alle classi che conosce, e da sola non
 distingue «è certamente una gazza» da «non ho idea di cosa sia, ma se devo
 scegliere dico gazza». La densità quella distinzione la fa.

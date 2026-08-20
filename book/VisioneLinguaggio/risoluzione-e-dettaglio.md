@@ -151,9 +151,9 @@ ridurre l'informazione persa nel sotto-campionamento.
 
 `````
 
-Il resto della sezione è la storia di tre risposte a questo vincolo. Nessuna lo
-cancella: tutte e tre lo **spostano** in un punto del sistema dove fa meno male,
-e vale la pena tenere d'occhio dove finisce il conto ogni volta.
+Il resto della sezione è la storia di tre risposte a questo vincolo. Nessuna
+lo cancella: tutte e tre lo **spostano** in un punto del sistema dove fa meno
+male, e conviene tenere d'occhio dove finisce il conto ogni volta.
 
 ## Prima risposta: tagliare l'immagine a riquadri
 

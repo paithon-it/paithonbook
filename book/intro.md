@@ -52,7 +52,8 @@ triangolo impossibile, sta nella {doc}`Prefazione </prefazione>`.
 :::
 
 :::{only} html
-Il comando per scegliere è in alto nella barra, <span class="pt-livello-inline"
+Da che parte stare lo decidi tu, pagina per pagina o una volta per tutte: il
+comando è in alto nella barra, <span class="pt-livello-inline"
 aria-hidden="true"><svg class="pt-livello__icona
 pt-livello__icona--elementare" viewBox="0 0 16 16" width="15"
 height="15"><rect x="1.6" y="7" width="5.2" height="6.4" rx="1.3"
@@ -94,7 +95,8 @@ Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa. Dov
 
 ## Il percorso
 
-{{ n_capitoli_lettere|capitalize }} capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM, generazione audio, produzione con l'MLOps). Se qui sotto trovi molti nomi che non ti dicono niente, è normale, ed è il punto: sono le cose che imparerai. I capitoli si leggono nell'ordine, e l'ordine è pensato per costruire un mattone alla volta, ognuno dando per acquisito quello prima; chi le basi già le ha salta dove gli pare.
+{{ n_capitoli_lettere|capitalize }} capitoli, dall'alfabeto (Python e matematica) alle frontiere (Transformer, modelli di diffusione, agenti LLM, generazione audio, produzione con l'MLOps). Se qui sotto trovi molti nomi che non ti dicono niente, sei nel posto giusto:
+è l'elenco di quello che saprai alla fine. I capitoli si leggono nell'ordine, e l'ordine è pensato per costruire un mattone alla volta, ognuno dando per acquisito quello prima; chi le basi già le ha salta dove gli pare.
 
 <div class="pt-chapters"> <a class="pt-card"
 href="Introduzione/overview.html"> <span class="pt-card-num"></span> <span
@@ -263,23 +265,32 @@ proseguire.</span> </a> </div>
 
 Il libro presenta due livelli di complessità: **Elementare** e **Superiore**:
 
-- *Elementare*: spiega i concetti nel modo più semplice e accessibile possibile, con analogie concrete e quotidiane. È ideale per chi è alle prime armi negli argomenti trattati nel libro.
+- *Elementare*: racconta il concetto con un'analogia di tutti i giorni, senza
+  dare niente per acquisito. Se l'argomento è nuovo, si parte da qui.
 
-- *Superiore*: approfondisce i concetti in modo più formale e dettagliato. Si presume che il lettore abbia una comprensione di base consolidata e sia pronto per esplorare aspetti più complessi.
+- *Superiore*: lo rifà con la notazione, le formule e i riferimenti. Presume
+  le basi, e arriva dove l'Elementare non può.
 
-Alternare la lettura tra questi due livelli può favorire una comprensione più profonda: si può leggere un capitolo tutto all'Elementare, tutto al Superiore, o costruire gradualmente la propria competenza passando dall'uno all'altro.
+Nessuno dei due è il riassunto dell'altro, e non c'è da sceglierne uno per
+sempre: si può leggere un capitolo tutto all'Elementare, uno tutto al
+Superiore, oppure lo stesso due volte, prima di qua e poi di là.
 
+:::{only} html
 **Come si sceglie.** Ogni concetto ha due schede, e si apre quella che si
-vuole. Ma se sai già da che parte vuoi stare, in alto nella barra (accanto
-alla ricerca e al chiaro/scuro), c'è un'icona a **due barrette**: la prima
-piena e la seconda vuota quando sei all'Elementare, entrambe piene quando
-passi al Superiore. Premendola imposti il livello di **tutto il libro** in un
-colpo, e la scelta resta salvata nel browser: la ritrovi al ritorno, capitolo
-dopo capitolo.
+vuole. L'icona a **due barrette** in alto nella barra, invece, imposta il
+livello di **tutto il libro** in un colpo, e la scelta resta salvata nel
+browser: la ritrovi al ritorno, capitolo dopo capitolo. Le due cose convivono,
+e l'interruttore decide solo da dove *parte* ogni pagina: se leggi
+all'Elementare e vuoi sbirciare una formula, sbirciala, due paragrafi più
+sotto sarai di nuovo all'Elementare.
+:::
 
-Le due cose convivono. L'interruttore decide da dove *parte* ogni pagina; aprire una singola scheda al livello opposto resta un'eccezione locale, che non contagia i paragrafi dopo. Se leggi all'Elementare e vuoi sbirciare una formula, sbirciala: due paragrafi più sotto sarai di nuovo all'Elementare.
+:::{only} latex
+Su carta le due schede si leggono una dopo l'altra: prima l'Elementare, poi la
+Superiore.
+:::
 
-Ad esempio, ecco la funzione ReLU nelle due modalità:
+Un esempio: la funzione ReLU, ai due livelli.
 
 `````{tab} Elementare
 
@@ -289,9 +300,9 @@ dà $x$». La $x$ è il numero che entra, $f(x)$ quello che esce.
 
 Immagina allora uno sportello che smista movimenti di denaro: entra una somma
 $x$ in Euro (€) e lo sportello lascia passare soltanto gli importi positivi. Se
-$x$ è positivo, esce $x$ tale e quale; se $x$ è negativo o zero, cioè un
-movimento che toglierebbe denaro invece di aggiungerne, non passa niente ed
-esce $0$. Tutto qui: la ReLU lascia passare quello che entra quando è positivo,
+$x$ è positivo, esce $x$ tale e quale; se $x$ è negativo, cioè un movimento
+che toglierebbe denaro invece di aggiungerne, non passa niente ed esce $0$, e
+lo stesso vale per un movimento nullo. Tutto qui: la ReLU lascia passare quello che entra quando è positivo,
 e blocca completamente il resto.
 
 Esempi:
@@ -342,7 +353,8 @@ In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il s
 
 ## Supporta il progetto
 
-Ogni progetto ha bisogno di supporto per crescere e migliorare. I progetti open source come questo si basano sul sostegno e l'entusiasmo della comunità. Se questo libro ti è stato utile o credi nel suo valore, ecco come puoi mostrarmi il tuo apprezzamento:
+Questo libro è gratuito e lo resterà. Se ti è servito, ecco come puoi darmi
+una mano:
 
 :::{only} html
 - Metti una ⭐ e condividi il progetto GitHub [Paithon Book](https://github.com/paithon-it/paithonbook)
@@ -350,8 +362,10 @@ Ogni progetto ha bisogno di supporto per crescere e migliorare. I progetti open 
     <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🔋"  data-font="Cookie" data-text="Ricarica la mia energia" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
 </span>
 
-- Aiutaci a scoprire errori e migliorare il progetto: selezionando un pezzo di testo in qualunque pagina compare un pulsante che apre una segnalazione (una *issue*) già compilata su GitHub, dove la correzione viene discussa e poi accolta.
-- Invia i tuoi feedback ✉ a *info@paithon.it*. Saranno utilizzati esclusivamente per migliorare e arricchire il libro.
+- Aiutaci a scoprire errori e migliorare il progetto: selezionando un pezzo di testo in qualunque pagina compare un pulsante che apre una segnalazione (una *issue*) già compilata su GitHub, dove la correzione viene discussa, e chi ha segnalato l'errore è citato nel
+commit che la applica.
+- Manda i tuoi commenti ✉ a *info@paithon.it*. Servono solo a migliorare il
+  libro.
 :::
 
 :::{only} latex

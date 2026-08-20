@@ -30,8 +30,8 @@ punto per punto, di quanto ci si è allontanati. La domanda di questo capitolo �
 proprio questa: come si insegna a una rete a **fabbricare dati nuovi e
 plausibili** quando non c'è niente con cui confrontarli.
 
-Una risposta il libro l'ha appena data, ed è quella del capitolo sui modelli
-latenti: si scrive una formula per la probabilità di un dato, si rinuncia a
+Una risposta il libro l'ha appena data, ed è quella del {doc}`capitolo sui modelli
+latenti </ModelliLatenti/overview>`: si scrive una formula per la probabilità di un dato, si rinuncia a
 calcolarla esattamente e si ottimizza quello che si riesce a calcolare. Questo
 capitolo prende la strada opposta, e conviene tenerlo a mente perché è la
 scelta che spiega tutto il resto: qui la probabilità non si scrive affatto, e
@@ -77,8 +77,8 @@ provengono si indica con $p_G$.
 
 ## Due reti in competizione
 
-L'intuizione di Goodfellow è tutta in una metafora che vale la pena tenere a
-mente per l'intero capitolo.
+L'intuizione di Goodfellow è tutta in una metafora da tenere a mente per
+l'intero capitolo.
 
 `````{tab} Elementare
 
@@ -212,9 +212,7 @@ famiglia StyleGAN di NVIDIA {cite}`karras2019style` alimenta siti come *This
 Person Does Not Exist*, dove ogni ricarica mostra un volto sintetico che a un
 primo sguardo non si distingue da una fotografia. Da qui arrivano anche i
 **deepfake** (volti sostituiti nei video) con tutto il loro carico di rischi
-per disinformazione e consenso, un tema su cui questo libro sceglie l'onestà
-più che l'entusiasmo. E
-arriva l’**arte generata**, con un ritratto prodotto da una GAN battuto
+per disinformazione e consenso. E arriva l’**arte generata**, con un ritratto prodotto da una GAN battuto
 all'asta da Christie's nel 2018: l'episodio, e la questione di chi ne sia
 l'autore, sono raccontati in chiusura di capitolo.
 
@@ -224,7 +222,7 @@ restaurare immagini e perfino di proporre molecole nuove (anche una molecola,
 per una macchina, è un disegno con le sue regolarità), ma anche di fabbricare
 falsi convincenti. Ragione in più per capirne bene il funzionamento.
 
-## Come è organizzato il capitolo
+## Il duello, e quello che ne è nato
 
 Dall'intuizione passiamo alla pratica. La sezione seguente smonta il
 meccanismo: che cosa entra e che cosa esce da ciascuna delle due reti, come si

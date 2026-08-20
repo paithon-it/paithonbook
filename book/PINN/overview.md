@@ -136,10 +136,12 @@ stesso, perché sa dire se una risposta è *sbagliata* anche quando nessuno sa
 dire quale sia quella buona. Ecco perché un'equazione può fare da maestro a
 una rete.
 
-A proporre questa mossa, nel 2019, sono Maziar Raissi, Paris Perdikaris e
+A rilanciare questa mossa, nel 2019, sono Maziar Raissi, Paris Perdikaris e
 George Karniadakis {cite}`raissi2019physics`, e il nome che le danno è quello
 in cima al capitolo: **Physics-Informed Neural Networks**, PINN, cioè reti
-neurali informate dalla fisica.
+neurali informate dalla fisica. L'idea però è più vecchia di loro, e la
+prossima sezione racconta da dove viene e perché ha dovuto aspettare
+vent'anni; è da qui che diventa praticabile.
 
 `````{tab} Elementare
 
@@ -339,7 +341,7 @@ solutore maturo impiega millisecondi, e a volte fallisce senza preavviso
 
 `````
 
-## Come è organizzato il capitolo
+## La legge dentro la loss, e i suoi limiti
 
 Dalla cornice al banco di lavoro. Nella prossima sezione costruiremo il metodo
 per intero, con una PINN scritta in PyTorch, e il banco di prova sarà una

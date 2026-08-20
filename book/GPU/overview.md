@@ -73,7 +73,7 @@ videogiocatori. Da allora hardware parallelo e deep learning non si sono più
 lasciati.
 
 Questo capitolo è, appunto, l'approfondimento «sotto il cofano» della sezione
-«Prestazioni e scala» del capitolo su PyTorch. Lì abbiamo imparato i *gesti*,
+«Prestazioni e scala» del {doc}`capitolo su PyTorch </PyTorch/overview>`. Lì abbiamo imparato i *gesti*,
 cioè le poche righe di codice da scrivere per usare una scheda: si spostano i
 dati dalla memoria del computer a quella della scheda; si fanno lavorare i
 conti su numeri scritti in metà spazio, che si leggono in metà tempo (si chiama
@@ -211,7 +211,7 @@ variazioni sullo stesso tema, fare più conti per ogni byte e tenere il byte il
 più vicino possibile ai core.
 `````
 
-## Come è organizzato il capitolo
+## Un gradino alla volta
 
 Le sei sezioni scendono, un gradino alla volta, dal modo in cui una GPU esegue
 il codice fino a come si addestrano le reti che non entrano in una scheda sola.

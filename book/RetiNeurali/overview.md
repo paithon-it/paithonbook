@@ -25,8 +25,8 @@ decidere*) e la trasforma in aritmetica.
 
 `````{tab} Elementare
 
-Immagina una giuria che deve dire "sì" o "no". Ogni giurato porta
-un'opinione, e non tutte pesano uguale: quella dell'esperto conta più di
+Una giuria deve dire "sì" o "no". Ogni giurato porta un'opinione, e non tutte
+pesano uguale: quella dell'esperto conta più di
 quella del distratto in fondo alla sala. Il presidente somma i voti, ciascuno
 moltiplicato per quanto ci fidiamo di chi lo esprime. Se il totale supera una
 certa soglia, il verdetto è "sì"; altrimenti "no". Un neurone artificiale è
@@ -194,8 +194,9 @@ aveva precursori (Paul Werbos lo aveva formulato nella tesi di dottorato del
 
 `````{tab} Elementare
 
-Immagina una catena di montaggio dove il prodotto finale esce difettoso.
-Backpropagation è il modo di distribuire la colpa all'indietro: parte dal
+Una catena di montaggio: il pezzo la percorre da un capo all'altro e alla fine
+esce difettoso. Backpropagation è il viaggio di ritorno, che parte dal difetto
+e risale la catena all'indietro distribuendo la colpa: parte dal
 difetto finale e risale la catena, assegnando a ogni stazione una quota di
 responsabilità. Chi ha contribuito di più all'errore riceve la correzione più
 grande. Ripetuto su migliaia di esempi, questo "attribuire la colpa e
@@ -276,12 +277,12 @@ neurone solo disegna una riga e nient'altro, quindi un confine chiuso gli è
 precluso comunque lo si addestri; due righe che si incrociano ritagliano invece
 uno spicchio, tre un triangolo, ed è il triangolo del secondo riquadro.
 
-Dal secondo al terzo, invece, non si guadagna niente di nuovo: si risparmia. Lo
-dice un teorema, che nella sua forma esatta sta qui sotto nel livello
-Superiore: a un contorno come quello del terzo riquadro ci si arriverebbe anche
-con un solo strato nascosto, purché di neuroni ce ne sia un numero abbastanza
-grande. Con più strati ne bastano molti meno, ed è il vero motivo per cui le
-reti si fanno profonde.
+Dal secondo al terzo, invece, non si guadagna niente di nuovo: si risparmia. A
+un contorno come quello del terzo riquadro ci si arriverebbe anche con un solo
+strato nascosto, purché di neuroni ce ne sia un numero abbastanza grande. Il
+punto è quel «abbastanza»: per certe forme diventa un numero fuori portata,
+mentre due o tre file di pochi neuroni bastano. È per questo che le reti si
+fanno profonde.
 
 `````{tab} Elementare
 
@@ -365,7 +366,7 @@ attivazioni derivabili come la sigmoide o la tangente iperbolica.
 
 `````
 
-## Come è organizzato questo capitolo
+## Il mattone, la piega, la correzione
 
 Da qui in avanti smontiamo l'MLP pezzo per pezzo, in tre sezioni.
 
@@ -382,7 +383,7 @@ direzioni). Chi ha le derivate nello zaino ci riconoscerà la
 regola della catena applicata con ordine, ma la parte principale è raccontata
 anche senza.
 
-Restano fuori due scelte pratiche, che riprende il capitolo sul deep learning:
+Restano fuori due scelte pratiche, che riprende il {doc}`capitolo sul deep learning </DeepLearning/overview>`:
 da dove far partire i pesi, e come impedire a una rete di imparare a memoria
 gli esempi che ha visto invece della regola che li governa (quando succede, sui
 casi nuovi sbaglia). È la cerniera del libro: tutto ciò che viene dopo (la

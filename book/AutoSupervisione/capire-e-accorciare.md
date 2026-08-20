@@ -176,8 +176,8 @@ in un programma di poche righe (il seme, la tabella, il ciclo), cioè in
 pochissimi bit per lettera; ma quel programma sa una cosa che nessun
 compressore, guardando il testo, può indovinare.
 
-La riga dell’**oracolo** serve a non attribuire all'apprendimento un merito che
-non è suo, ed è una riga aggiunta dopo aver sbagliato una volta. L'oracolo
+La riga dell’**oracolo** serve a non attribuire all'apprendimento un merito
+che non è suo. L'oracolo
 non impara niente: la tabella la conosce dall'inizio, e su questo testo spende
 $1{,}4398$. È già tre millesimi sopra il fondo, e quei tre millesimi non
 c'entrano niente con nessun modello: sono **fortuna del sorteggio**, cioè il
@@ -216,7 +216,7 @@ triplo, in cambio di nulla, perché nella lingua non c'è niente oltre la letter
 precedente. Qui i parametri liberi sono quarantotto, e la formula di prima ne
 prevederebbe $0{,}0021$: sovrastima più di prima, perché presuppone che ogni
 parametro abbia a disposizione tutti i dati, mentre qui ciascun contesto vede
-solo la propria fetta. È il rasoio di Occam del capitolo sul machine learning,
+solo la propria fetta. È il rasoio di Occam del {doc}`capitolo sul machine learning </MachineLearning/overview>`,
 la regola per cui a parità di risultato vince la spiegazione più semplice,
 misurato qui in bit su una riga di uscita: un modello più ricco del necessario
 si paga e non rende.
@@ -456,9 +456,7 @@ non dice perché un modello che impara a indovinare parole coperte finisca col
 saperne di biologia. La mossa che colma quel salto è tornata in circolazione
 con un intervento senza articolo dietro, *An Observation on Generalization*,
 tenuto da Ilya Sutskever al Simons Institute di Berkeley il 14 agosto 2023
-{cite}`sutskever2023observation`. L'idea è sua; quello che segue non è il
-resoconto di quell'ora, ma l'argomento rifatto con gli strumenti che le pagine
-precedenti hanno già messo in mano a chi legge.
+{cite}`sutskever2023observation`. L'idea è sua, e per seguirla bastano gli strumenti delle pagine precedenti.
 
 Il problema è questo. L'apprendimento supervisionato **ha** una teoria: se
 l'errore sull'insieme di addestramento è basso e gli esempi sono
@@ -613,9 +611,11 @@ $$
 O(\log K(X, Y)).
 $$
 
-Tutto ciò che si aggiunge a $\varepsilon$ è una costante che non cresce con i
-dati: la descrizione del compressore e il termine della regola della catena. È
-qui che il rimpianto sul congiunto, che si sa minimizzare addestrando, diventa
+Dei due termini che si aggiungono a $\varepsilon$ uno è una costante vera, la
+descrizione del compressore; l'altro, quello della regola della catena, cresce
+come il **logaritmo** dei dati. Nessuno dei due cresce quanto i dati stessi,
+ed è quello che serve: diviso per la lunghezza di $Y$, il sovrapprezzo tende a
+zero. È qui che il rimpianto sul congiunto, che si sa minimizzare addestrando, diventa
 rimpianto sul condizionale, che è quello che interessa; e qui il rimpianto
 prende la sua forma, $|C(Y \mid X)| - K(Y \mid X)$, cioè quanti bit in più del
 necessario si sono spesi per $Y$ avendo $X$ in mano.
@@ -631,9 +631,9 @@ si avvicinano al compressore di Kolmogorov, e quindi meno rimpianto hanno.
 
 ## Il rimpianto, che è la parte che regge tutto
 
-La parola tecnica dell'argomento è **rimpianto**, e vale la pena isolarla
-perché è quella che mette l'auto-supervisione alla pari col supervisionato, ed
-è anche la più fraintesa.
+La parola tecnica dell'argomento è **rimpianto**, e conviene isolarla perché è
+quella che mette l'auto-supervisione alla pari col supervisionato, ed è anche
+la più fraintesa.
 
 Il rimpianto non misura quanto sei bravo: misura **quanta parte del valore
 contenuto nei dati non etichettati ti sei lasciato sfuggire**. Avere rimpianto
@@ -719,9 +719,9 @@ rifinendola per intero si arriva al $99{,}0\%$, ma quello non è più un
 sondaggio: è addestramento con le etichette, e non dimostra la stessa cosa.)
 
 Sutskever lo presenta per quello che è, una prova di principio costosa e non un
-metodo pratico. Il modello che dà quel $96{,}3\%$ ha un miliardo e quattro di
-parametri e lavora sui 32 pixel per lato che CIFAR-10 ha di suo; il fratello
-maggiore, sei miliardi e otto di parametri su immagini da 64 pixel per lato,
+metodo pratico. Il modello che dà quel $96{,}3\%$ ha un miliardo e quattrocento milioni di parametri e lavora sui 32 pixel per
+lato che CIFAR-10 ha di suo; il fratello maggiore, sei miliardi e ottocento
+milioni di parametri su immagini da 64 pixel per lato,
 serve per ImageNet, dove il divario con i migliori metodi auto-supervisionati
 dell'epoca non venne colmato del tutto.
 
@@ -757,8 +757,8 @@ pre-addestramento.
 
 ## Le prove, e quanto valgono
 
-Fin qui la tesi. Dal 2023 esistono due misure che la mettono alla prova, e vale
-la pena guardarle da vicino perché dicono cose diverse.
+Fin qui la tesi. Dal 2023 esistono due misure che la mettono alla prova, e
+conviene guardarle da vicino perché dicono cose diverse.
 
 La prima chiede: **un modello di linguaggio, usato come compressore, quanto è
 bravo?** La risposta di un gruppo di DeepMind è: molto, e anche fuori dal
@@ -949,9 +949,8 @@ non è quanto, è **chi paga il vocabolario**.
 
 ## Dove la tesi si ferma
 
-Un capitolo di questo libro non si chiude su un'idea affascinante senza dire
-dove si rompe. Qui i punti sono sette, e conviene cominciare dai tre che non
-vengono dai critici, perché li mette in conto Sutskever stesso.
+Un'idea affascinante va chiusa dicendo dove si rompe. Qui i punti sono sette,
+e i primi tre non vengono dai critici: li mette in conto Sutskever stesso.
 
 **La teoria ignora il costo di calcolo**, ed è lui a chiamarla una debolezza
 pratica enorme: il conto è tutto in informazione e niente in tempo di
@@ -1018,17 +1017,17 @@ l'una il vocabolario dell'altra, e conviene tenere presente che quando due
 persone discutono se un modello sia intelligente, spesso stanno usando due
 metri diversi senza dirlo.
 
-Vale la pena aggiungere una cosa che nessuna delle due letture nega, ed è forse
-la conclusione più solida della pagina. Quanto ci si avvicini al fondo di una
+Conviene aggiungere una cosa che nessuna delle due letture nega, ed è forse la
+conclusione più solida della pagina. Quanto ci si avvicini al fondo di una
 sorgente dipende da chi comprime, e l'esperimento d'apertura lo ha misurato
 quattro volte sulla stessa lingua. Ma che un fondo ci sia, e che stia sotto la
 dimensione dei dati grezzi, non dipende da nessuno: lo dice la riga dei dati
-casuali, quel $100{,}8\%$, dove il fondo coincide con il grezzo e non c'è niente
-da guadagnare per nessuno. Se l'universo che ci circonda non fosse pieno di
-regolarità, saremmo tutti in quella riga lì, e nessuna intelligenza di nessun
-tipo sarebbe possibile. La comprimibilità, prima che una proprietà della mente
-che comprime, è una proprietà **del mondo**: che comprimere funzioni è, prima
-di tutto, un'informazione su dove abitiamo.
+casuali, quel $100{,}8\%$, dove il fondo coincide con il grezzo e non c'è
+niente da guadagnare per nessuno. Se l'universo che ci circonda non fosse
+pieno di regolarità, saremmo tutti in quella riga lì, e nessuna intelligenza
+di nessun tipo sarebbe possibile. La comprimibilità, prima che una proprietà
+della mente che comprime, è una proprietà **del mondo**: che comprimere
+funzioni è, prima di tutto, un'informazione su dove abitiamo.
 
 `````{tab} Elementare
 

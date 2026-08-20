@@ -62,7 +62,7 @@ problema.
 `````
 
 Verrebbe da pensare che sia facile, e la ragione l'abbiamo già vista nella
-sezione su DQN. Il Q-learning tira ogni tanto una mossa a caso per esplorare,
+{doc}`sezione su DQN <dqn>`. Il Q-learning tira ogni tanto una mossa a caso per esplorare,
 ma sui suoi appunti scrive sempre quanto vale la mossa *migliore*: si allena
 insomma su una strategia diversa da quella che sta giocando, ed è l’*off-policy*
 di allora. Se sa fare questo, dovrebbe saper imparare anche da partite giocate

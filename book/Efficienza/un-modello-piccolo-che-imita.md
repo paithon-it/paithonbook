@@ -241,13 +241,13 @@ stessa cosa. Lo studente col maestro arriva a un punto dal maestro stesso,
 avendo in mano duecentoquarantanove volte meno parametri e centoventi etichette
 invece di ottocentonovantotto.
 
-La riga di mezzo è quella che vale la pena aver misurato, perché **separa due
-cose che di solito si raccontano come una sola**. Con il maestro che commenta
+La riga di mezzo è quella che conviene aver misurato, perché **separa due cose
+che di solito si raccontano come una sola**. Con il maestro che commenta
 soltanto i centoventi esempi che lo studente ha già etichettati, si guadagnano
 **2,4 punti**: quello è il valore puro dei dubbi, cioè di sapere che un certo
 sette somigliava a un uno e non a un otto. Lasciando al maestro commentare
-anche gli altri settecentosettantotto, che lo studente non può usare perché non
-ne ha l’etichetta, se ne guadagnano altri **3,2**.
+anche gli altri settecentosettantotto, che lo studente non può usare perché
+non ne ha l’etichetta, se ne guadagnano altri **3,2**.
 
 Quindi la spiegazione bella («il maestro dice dieci cose per esempio invece di
 una») è vera e vale meno della metà del risultato. L’altra metà, la maggiore,
@@ -256,7 +256,7 @@ Le due cose insieme fanno la distillazione, e chi ne racconta solo la prima
 attribuisce a un meccanismo elegante un guadagno che viene soprattutto da un
 meccanismo banale.
 
-E vale la pena dire anche che cosa il conto **non** dimostra: non dimostra che
+E conviene dire anche che cosa il conto **non** dimostra: non dimostra che
 imitare sia meglio che imparare. Se allo studente si dessero tutte e
 ottocentonovantotto le etichette vere, il vantaggio si assottiglierebbe fino a
 sparire nel rumore. Chi vuole vederlo cambia un solo numero nel codice qui
@@ -310,8 +310,8 @@ sopra, `POCHI`, portandolo da 120 a `len(X)`.
 
 `````
 
-Le tre leve del capitolo finiscono qui, e hanno una cosa in comune che vale la
-pena dire adesso: agiscono tutte e tre **sul modello**. Ma un modello che ci
-sta in memoria non è ancora un modello che risponde in fretta, e la parte che
-segue spiega perché siano due domande diverse, e a quali capitoli il libro
-affidi la seconda.
+Le tre leve del capitolo finiscono qui, e hanno una cosa in comune da dire
+adesso: agiscono tutte e tre **sul modello**. Ma un modello che ci sta in
+memoria non è ancora un modello che risponde in fretta, e la parte che segue
+spiega perché siano due domande diverse, e a quali capitoli il libro affidi la
+seconda.

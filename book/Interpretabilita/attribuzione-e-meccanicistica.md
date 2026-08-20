@@ -328,10 +328,10 @@ danno attribuzioni diverse, e nessun assioma le ordina
 
 `````
 
-Questo metodo ha una particolarità che vale la pena rendere esplicita: **non
-si vede in un fotogramma**, perché il fotogramma è proprio il punto in cui il
-gradiente non dice niente. In {numref}`fig-gradienti-integrati` c'è il cammino,
-percorso a passi.
+Questo metodo ha una particolarità da rendere esplicita: **non si vede in un
+fotogramma**, perché il fotogramma è proprio il punto in cui il gradiente non
+dice niente. In {numref}`fig-gradienti-integrati` c'è il cammino, percorso a
+passi.
 
 ```{figure} ../figures/gradienti-integrati.svg
 :name: fig-gradienti-integrati
@@ -346,7 +346,8 @@ deve arrivare. La curva del disegno è quella di un neurone che satura, la stess
 forma della sigmoide, e i numeri sono calcolati su di essa.
 ```
 
-Due cose si leggono in {numref}`fig-gradienti-integrati` e non nella formula.
+Il disegno di {numref}`fig-gradienti-integrati` mostra due cose che il conto,
+da solo, non fa vedere.
 
 La prima è **quanto** la saturazione morda. Sulla curva della figura la
 pendenza (cioè di quanto salirebbe la fiducia della rete a spingere un pochino
@@ -528,7 +529,8 @@ sola stazione.
 
 Il problema è che, a ogni piano della pila, una parte dell'informazione non
 passa affatto dall'attenzione: prende una **scorciatoia** e scivola dritta al
-piano di sopra (sono le connessioni residuali del capitolo sui Transformer).
+piano di sopra (sono le connessioni residuali della
+{doc}`sezione sulla struttura del Transformer </Transformers/architettura>`).
 Quindi le quote di un singolo strato raccontano solo un pezzo del viaggio: per
 sapere quanto ogni parola d'ingresso ha influenzato il risultato in cima
 bisogna seguire l'intero percorso, scorciatoie comprese, piano dopo piano. Gli
@@ -727,19 +729,20 @@ prezzo è che nessuna ha più una direzione pulita, e infatti nessun neurone,
 guardato da solo, corrisponde più a un concetto.
 ```
 
-Come faccia la rete a cavarsela lo stesso, con cinque frecce e due soli assi, lo
-dice la condizione che tiene in piedi tutto: che ciascun concetto si accenda di
-rado, e quasi mai insieme agli altri. Vale la pena vedere perché, con dei numeri
-inventati. Se è acceso il solo concetto A, i due neuroni segnano $0{,}9$ e
-$0{,}4$, e quella coppia di numeri appartiene ad A e a nessun altro: il concetto
-si riconosce. Ma se A e B si accendono insieme, i loro contributi si sommano, e
-i due neuroni possono segnare $1{,}2$ e $1{,}1$, che è per esempio esattamente
-quello che segnerebbe il concetto C da solo. Chi legge non ha modo di distinguere
-i due casi. Quando le frecce sono ad angolo retto questo non succede, perché
-ciascuna muove un asse e lascia fermo l'altro; quando sono oblique succede, e
-l'unica difesa è che capiti di rado. Ecco perché smontare una rete è difficile più del previsto:
-la speranza naturale, un neurone un concetto, è vera solo nella metà sinistra
-della figura, e le reti vere stanno nella metà destra.
+Come faccia la rete a cavarsela lo stesso, con cinque frecce e due soli assi,
+lo dice la condizione che tiene in piedi tutto: che ciascun concetto si
+accenda di rado, e quasi mai insieme agli altri. Conviene vedere perché, con
+dei numeri inventati. Se è acceso il solo concetto A, i due neuroni segnano
+$0{,}9$ e $0{,}4$, e quella coppia di numeri appartiene ad A e a nessun altro:
+il concetto si riconosce. Ma se A e B si accendono insieme, i loro contributi
+si sommano, e i due neuroni possono segnare $1{,}2$ e $1{,}1$, che è per
+esempio esattamente quello che segnerebbe il concetto C da solo. Chi legge non
+ha modo di distinguere i due casi. Quando le frecce sono ad angolo retto
+questo non succede, perché ciascuna muove un asse e lascia fermo l'altro;
+quando sono oblique succede, e l'unica difesa è che capiti di rado. Ecco
+perché smontare una rete è difficile più del previsto: la speranza naturale,
+un neurone un concetto, è vera solo nella metà sinistra della figura, e le
+reti vere stanno nella metà destra.
 
 ```{figure} ../figures/interpretabilita-scatola-nera.svg
 :name: fig-sparse-autoencoder
@@ -774,9 +777,8 @@ scientifica e l'interpretabilità come strumento di controllo.
 
 Il quadro concettuale finisce qui. Quel che resta di questa pagina è di
 bottega: rifà coi numeri, e con poche righe di codice, i due metodi centrali
-del capitolo, gli Integrated Gradients e Grad-CAM. Chi non programma può
-saltare le due sezioni che seguono e andare direttamente al riquadro «Da
-ricordare» in fondo alla pagina: non si perde niente del ragionamento.
+del capitolo, gli Integrated Gradients e Grad-CAM. Restano i due conti veri, gli Integrated Gradients e Grad-CAM, rifatti con i
+numeri.
 
 ## Integrated Gradients coi numeri: un esempio eseguibile
 

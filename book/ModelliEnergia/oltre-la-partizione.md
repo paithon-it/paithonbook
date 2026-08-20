@@ -1,13 +1,11 @@
 # Oltre la partizione: tre modi di aggirare $Z$
 
-Nella sezione precedente è comparso, quasi di sfuggita, il personaggio che
-domina questo capitolo: la **funzione di partizione**, che il titolo qui sopra
-chiama con la lettera con cui la si indica sempre, $Z$ (che in italiano non è
-l'iniziale di niente: viene dal tedesco *Zustandssumme*, «somma su tutti gli
-stati»). È il conto di cui si diceva: la somma su *tutte* le configurazioni
-possibili. Vale la pena guardarla in faccia, perché è lei a dettare tutto ciò
-che segue, e perché il fatto che non si riesca a calcolarla non è una
-difficoltà tecnica fra le tante, è un muro.
+La macchina di Boltzmann ha lasciato in eredità $Z$, la **funzione di
+partizione**, che il titolo qui sopra chiama con la lettera con cui la si
+indica sempre: la somma su *tutte* le configurazioni possibili. Conviene
+guardarla in faccia, perché è lei a dettare tutto ciò che
+segue, e perché il fatto che non si riesca a calcolarla non è una difficoltà
+tecnica fra le tante, è un muro.
 
 Una rete di venticinque neuroni accesi o spenti, come quella della memoria
 associativa, ha trentatré milioni di configurazioni ($2^{25} = 33\,554\,432$),
@@ -194,7 +192,7 @@ La **dinamica di Langevin** genera una sequenza di stati
 
 $$
 \mathbf{x}_{k+1} = \mathbf{x}_k - \frac{\epsilon}{2}\, \nabla_{\mathbf{x}} E_\theta(\mathbf{x}_k) + \sqrt{\epsilon}\, \mathbf{z}_k,
-\qquad \mathbf{z}_k \sim \mathcal{N}(0, \mathbf{I}),
+\qquad \mathbf{z}_k \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
 dove $\epsilon > 0$ è il passo (un **tempo**, non una lunghezza) e
@@ -325,10 +323,10 @@ scala di gradini non è una rampa. Più i saltelli sono brevi, più la fotografi
 finale somiglia a quella vera; con saltelli di durata finita resta uno scarto
 che non dipende dalla sfortuna e che nessuna quantità di catene fa sparire.
 
-Per vederlo, una sola esecuzione non basta, e vale la pena spiegare perché.
-Con ventimila catene, due esecuzioni identiche in tutto tranne che nel
-sorteggio danno risultati che ballano di circa 0,003 su un bin, cioè quanto
-l'effetto che vogliamo misurare: il numero stampato qui sopra, da solo, non sa
+Per vederlo, una sola esecuzione non basta, e conviene spiegare perché. Con
+ventimila catene, due esecuzioni identiche in tutto tranne che nel sorteggio
+danno risultati che ballano di circa 0,003 su un bin, cioè quanto l'effetto
+che vogliamo misurare: il numero stampato qui sopra, da solo, non sa
 distinguere le due cose. Lo 0,006 della tabella, insomma, è la somma di un
 effetto vero e di una botta di fortuna, e non sappiamo quanto sia l'uno e
 quanto l'altra. I numeri che seguono servono a separarli, e saranno più
@@ -380,18 +378,20 @@ servono quattro volte le esecuzioni, e qui ce ne vorrebbero centinaia. Cambiare
 strumento costa molto meno. E un numero solo, per quanto stampato con quattro
 cifre, non dimostra niente.
 
-Vale la pena notare anche *perché* qui funziona così bene, per non trarne una
+Conviene notare anche *perché* qui funziona così bene, per non trarne una
 lezione sbagliata. La collinetta fra le due buche è alta un'unità di energia,
 e un'unità è esattamente la salita che le spintarelle casuali riescono a far
 fare a una pallina senza sforzarsi: barriere così si scavalcano di continuo, e
 le catene sono ventimila e indipendenti. Ma la difficoltà di superare una
 barriera non cresce in proporzione alla sua altezza, cresce molto più in
-fretta. Misurato sullo stesso paesaggio, con le stesse ventimila catene e lo
-stesso numero di passi, alzando la collinetta da uno a dieci gli scavalcamenti
-crollano di **oltre duemila volte**. Alzandola, o passando a
-mille dimensioni dove le valli sono separate da creste lunghissime,
-la stessa procedura darebbe una fotografia sbilanciata, e nessuno se ne
-accorgerebbe: in alta dimensione la colonna «esatto» non si può stampare.
+fretta. Misurato sullo stesso paesaggio, con le stesse ventimila catene e lo stesso
+numero di passi, alzando la collinetta da uno a dieci gli scavalcamenti
+crollano di **tre ordini di grandezza**: da qualche centinaio di migliaia a
+qualche centinaio. Quanto esattamente dipende da come si contano i passaggi e
+da dove si fanno partire le catene, ma il salto è quello. Alzandola, o passando a mille dimensioni
+dove le valli sono separate da creste lunghissime, la stessa procedura darebbe
+una fotografia sbilanciata, e nessuno se ne accorgerebbe: in alta dimensione
+la colonna «esatto» non si può stampare.
 
 ## Seconda via: imparare la pendenza, non la probabilità
 
@@ -406,7 +406,7 @@ bersaglio, sparisce.
 
 `````{tab} Elementare
 
-Immagina di dover descrivere un paesaggio a qualcuno che non lo vedrà mai.
+Un paesaggio si può descrivere in due modi a chi non lo vedrà mai.
 Puoi dirgli, per ogni punto, «qui c'è il 3% della pioggia», e per farlo devi
 aver misurato tutto il continente. Oppure puoi dirgli, per ogni punto, «da qui
 si scende verso nord-est, con questa pendenza». La seconda descrizione non
@@ -476,8 +476,8 @@ ovunque salta. Il secondo: quando il supporto si spezza in pezzi separati lo
 score smette di identificare la densità, perché due densità che differiscono
 di un fattore costante da una componente all'altra hanno lo stesso score. La
 seconda osservazione, si noti, non è nell'articolo del 2005: è arrivata quindici
-anni dopo, con il lavoro di Li K. Wenliang e Heishiro Kanagawa sulla cecità
-dei metodi a score alle componenti isolate, ed è la ragione per cui questi
+anni dopo, con il lavoro di Li K. Wenliang e Heishiro Kanagawa sulla cecità dei metodi a score alle componenti isolate
+{cite}`wenliang2020blindness`, ed è la ragione per cui questi
 metodi sbagliano i pesi di una miscela. Sotto le ipotesi del teorema
 {cite}`hyvarinen2005estimation`:
 
@@ -506,7 +506,7 @@ Il colpo di scena arriva nel 2011: Pascal Vincent dimostra che lo score
 matching su dati **perturbati con rumore gaussiano** equivale, a meno di
 costanti, ad addestrare un *denoising autoencoder*
 {cite}`vincent2011connection`. Con $\tilde{\mathbf{x}} = \mathbf{x} + \sigma \boldsymbol{\varepsilon}$ e
-$\boldsymbol{\varepsilon} \sim \mathcal{N}(0, \mathbf{I})$, dove $\sigma$ è qui la deviazione
+$\boldsymbol{\varepsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$, dove $\sigma$ è qui la deviazione
 standard del rumore e non la sigmoide di poco fa, e $\boldsymbol{\varepsilon}$
 è il rumore iniettato e non il passo $\epsilon$ della catena di Langevin
 (stessa lettera greca, due mestieri: qui è un vettore, e va in grassetto), il
@@ -558,18 +558,18 @@ problema vecchio di vent'anni: come dare forma a un paesaggio senza mai
 misurare il continente. I modelli di diffusione sono, in questa luce, modelli a
 energia addestrati sulla pendenza.
 
-Con una differenza tecnica che vale la pena dire per onestà. Un modello a
-energia impara l'altezza del paesaggio, e la pendenza si ricava da quella; un
-modello di diffusione impara direttamente la pendenza, una freccia per ogni
-punto, e non si preoccupa che esista davvero una superficie di cui quelle
-frecce siano la discesa. Sono due cose diverse, e a rigore niente garantisce
-che le frecce imparate siano la pendenza di qualcosa. Che sia possibile
-sbagliare si vede con quattro frecce: disponile lungo il bordo di un quadrato
-in modo che ognuna punti alla successiva, in tondo. Sembrano un pendio, ma
-seguendole si torna al punto di partenza dopo essere sempre scesi, e un
-paesaggio in cui si scende sempre tornando dove si era non esiste. In cambio
-l'addestramento è più stabile, e a chi genera immagini che il paesaggio esista
-davvero non è mai importato.
+Con una differenza tecnica da dire per onestà. Un modello a energia impara
+l'altezza del paesaggio, e la pendenza si ricava da quella; un modello di
+diffusione impara direttamente la pendenza, una freccia per ogni punto, e non
+si preoccupa che esista davvero una superficie di cui quelle frecce siano la
+discesa. Sono due cose diverse, e a rigore niente garantisce che le frecce
+imparate siano la pendenza di qualcosa. Che sia possibile sbagliare si vede
+con quattro frecce: disponile lungo il bordo di un quadrato in modo che ognuna
+punti alla successiva, in tondo. Sembrano un pendio, ma seguendole si torna al
+punto di partenza dopo essere sempre scesi, e un paesaggio in cui si scende
+sempre tornando dove si era non esiste. In cambio l'addestramento è più
+stabile, e a chi genera immagini che il paesaggio esista davvero non è mai
+importato.
 
 ## Terza via: cambiare la domanda, e chiederne una da sì o no
 

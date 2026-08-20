@@ -18,8 +18,8 @@ motori, e due secondi più tardi il lanciatore, ormai fuori assetto, si
 disintegrò e fu fatto esplodere dal sistema di autodistruzione
 {cite}`lions1996ariane`. Un errore di rappresentazione da centinaia di milioni
 di dollari. L'analisi numerica studia questi limiti e insegna a conviverci.
-Nel machine learning non è un dettaglio accademico: è la differenza tra un
-addestramento che converge e uno che produce `NaN`, che è la sigla con cui un
+Nel machine learning se ne accorge chiunque abbia visto un addestramento
+fermarsi su `NaN`, che è la sigla con cui un
 calcolatore segnala «questo non è un numero» (dall'inglese *not a number*) ed
 è ciò che resta quando un conto è andato a finire fuori strada, per esempio
 dividendo zero per zero.
@@ -70,7 +70,7 @@ scala sì.
 
 `````{tab} Elementare
 
-Pensa al display di una calcolatrice tascabile: può mostrare solo una decina
+Il display di una calcolatrice tascabile mostra solo una decina
 di cifre. Se le chiedi $1/3$ ti risponde $0{,}3333333$ e si ferma: le altre
 cifre le butta via. I computer fanno lo stesso, in binario, con un **budget**
 fisso di cifre per ogni numero.
@@ -95,7 +95,10 @@ dove $1+f$ è la **mantissa** (o *significando*: le cifre significative) ed $e$
 l’**esponente** (la scala). Di quel numero si memorizza solo la parte
 frazionaria $f$, con $0 \le f < 1$, perché l’$1$ davanti è implicito e non
 serve scriverlo: è la ragione per cui il formato `float32` spende 1 bit di
-segno, 8 di esponente e 23 per $f$, ma la precisione effettiva è di 24 bit ed
+segno, 8 di esponente e 23 per $f$, ma i bit scritti per la parte frazionaria sono 23, e da lì (non dai 24 del
+significando, che comprendono l'uno implicito) esce l'$\varepsilon$ di due
+righe più sotto: a $x=1$ l'esponente è nullo, quindi il numero rappresentabile
+successivo è esattamente $1+2^{-23}$. Ed
 è da lì che esce l’$\varepsilon = 2^{-23}$ di due righe più sotto. Il
 `float64` (doppia precisione) dà 52 bit a $f$. La granularità relativa è
 l’**epsilon macchina** $\varepsilon$: la
@@ -164,10 +167,11 @@ palesemente assurdo; in una rete produce una risposta plausibile e sbagliata,
 indistinguibile da una risposta giusta se non si conosce quella giusta. È il
 motivo per cui il tema ha un nome tutto suo, *corruzione silenziosa dei dati*,
 e per cui la robustezza di un sistema di ML ha due facce distinte. C'è quella
-ai **dati**, che a sua volta si sdoppia: il mondo può cambiare sotto il modello
-(è la *deriva*, e ne parla il capitolo sul machine learning) oppure qualcuno
-può sottoporgli apposta immagini costruite per ingannarlo (sono gli *esempi
-avversari*, e ne parla il capitolo sull'AI responsabile). E c'è quella
+ai **dati**, che a sua volta si sdoppia: il mondo può cambiare sotto il modello (è la *deriva*, e ne parla
+{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`) oppure
+qualcuno può sottoporgli apposta immagini costruite per ingannarlo (sono gli
+*esempi avversari*, e ne parla
+{doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>`). E c'è quella
 all’**hardware**, che non riguarda il modello ma il silicio su cui gira.
 ```
 
@@ -314,13 +318,13 @@ a seconda di *come* la si calcola.
 
 ## Lo stesso programma, due calcolatori, due risultati
 
-Questo libro ha un controllo che riesegue il codice delle sue pagine e
-confronta quello che stampa con quello che c’è scritto sotto. Sul computer
-dell’autore ha sempre detto che andava tutto bene. La prima volta che è
-girato sui calcolatori di GitHub, in quattro punti i numeri stampati non
-combaciavano: dove una pagina dichiarava $67{,}0\%$ ne usciva $66{,}5\%$, e
-dove un’altra dichiarava $5{,}551\cdot10^{-16}$ ne usciva
-$4{,}441\cdot10^{-16}$. Nessuno aveva toccato il codice, le librerie erano
+Stesso codice, stessi dati, stesso seme del generatore casuale, librerie alla
+stessa versione fino all'ultima cifra: due calcolatori diversi, e i numeri
+stampati non combaciano. Dove uno stampa $67{,}0\%$ l'altro stampa $66{,}5\%$;
+dove uno dà $5{,}551\cdot10^{-16}$ l'altro dà $4{,}441\cdot10^{-16}$. Quasi
+sempre la differenza resta in fondo, nella quindicesima o sedicesima cifra, e
+non se ne accorge nessuno. Ogni tanto arriva davanti, e allora conviene sapere
+da dove viene. Nessuno aveva toccato il codice, le librerie erano
 alla stessa versione fino all’ultima cifra, e il seme del
 generatore casuale era lo stesso.
 
@@ -416,12 +420,10 @@ per la stessa ragione conta anche il numero di thread, perché una riduzione
 parallela spezza la somma in tanti pezzi quanti sono gli esecutori.
 
 La scelta si può fissare dall’esterno, con `OPENBLAS_CORETYPE` per OpenBLAS e
-`ATEN_CPU_CAPABILITY` per le operazioni su CPU di PyTorch, e fissarla rimette
-d’accordo la parte di conto che passa da quelle due strade: è così che il
-residuo dell’aneddoto è tornato identico sulle due macchine.
+`ATEN_CPU_CAPABILITY` per le operazioni su CPU di PyTorch, e fissarla rimette d'accordo la parte di conto che passa da quelle due strade.
 
-Non basta però a garantire l’accordo in generale, e il seguito della storia
-vale più della prima parte. I prodotti fra matrici di PyTorch non passano da
+Non basta però a garantire l'accordo in generale, ed è la metà che conta di
+più. I prodotti fra matrici di PyTorch non passano da
 OpenBLAS ma da un’altra libreria ancora, che quelle variabili non toccano; e
 una terza macchina, con le stesse due variabili fissate, ha ricominciato a
 discostarsi nell’ultima cifra. La riproducibilità bit a bit fra calcolatori
@@ -436,9 +438,9 @@ Una differenza nella sedicesima cifra sembra irrilevante, e quasi sempre lo
 calcolo lungo: se su quei valori si fa una discesa del gradiente, cioè
 migliaia di passi in cui ognuno riparte da dove è arrivato il precedente, due
 traiettorie che partono a distanza $10^{-16}$ si separano, e alla fine la
-differenza non è più nell’ultima cifra ma nel primo decimale. Vengono da un
-calcolo di quel tipo i due numeri dell’aneddoto: $67{,}0\%$ e $66{,}5\%$ escono
-dallo stesso codice, con lo stesso seme, su due processori diversi.
+differenza non è più nell’ultima cifra ma nel primo decimale. Vengono da un calcolo di quel tipo i due numeri di poco fa: $67{,}0\%$ e
+$66{,}5\%$ escono dallo stesso codice, con lo stesso punto di partenza, su due
+processori diversi.
 
 Da qui tre abitudini che costano poco. Un numero che esce da un calcolo lungo
 si racconta con le cifre che reggono, non con tutte quelle che il calcolatore
@@ -451,7 +453,7 @@ su cui è girato il conto.
 
 ## Condizionamento: quanto un problema amplifica gli errori
 
-C'è una parola che riassume tutto quello che è successo finora, e vale la pena
+C'è una parola che riassume tutto quello che è successo finora, e conviene
 isolarla. Un problema è **ben condizionato** se piccole variazioni dell'input
 producono piccole variazioni dell'output; è **mal condizionato** se le
 amplifica a dismisura.

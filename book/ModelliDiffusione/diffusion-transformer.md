@@ -10,8 +10,7 @@ con il numero del passo, ma l'impalcatura (guardare da lontano e poi da vicino,
 con i ponti diretti fra le due viste) è rimasta quella del microscopio.
 
 Alla fine del 2022 William Peebles, allora dottorando a Berkeley, e Saining
-Xie, professore alla New York University, si fanno la domanda che a quel punto
-del libro dovrebbe suonare familiare: la U-Net serve *davvero*? O anche qui, come
+Xie, professore alla New York University, si fanno la domanda che a questo punto suona familiare: la U-Net serve *davvero*? O anche qui, come
 era successo nel 2017 per la traduzione con la caduta delle reti ricorrenti,
 vale il titolo di quel paper: *attention is all you need*
 {cite}`vaswani2017attention`? La loro risposta si chiama **DiT**, *Diffusion
@@ -33,7 +32,7 @@ Un Transformer, però, mangia sequenze: parole in fila, una dopo l'altra, che in
 gergo si chiamano **token**. Una scheda invece è una griglia di caselle. Come
 si dà in pasto una griglia a chi sa leggere solo in fila? La mossa è già nel
 nostro repertorio: è la stessa, identica, del Vision Transformer incontrato
-nel capitolo sui Transformer {cite}`dosovitskiy2021image`.
+nel {doc}`capitolo sui Transformer </Transformers/overview>` {cite}`dosovitskiy2021image`.
 
 `````{tab} Elementare
 
@@ -96,7 +95,10 @@ lunghezze di sequenza vale meno del 4% del totale: per blocco pesa $2N^2 d$
 contro i $12Nd^2$ delle proiezioni e dell'MLP, cioè un rapporto $N/(6d)$ che
 per DiT-XL/2, dove la larghezza è $d = 1152$, fa
 $256/(6 \cdot 1152) \approx 3{,}7\%$. È a risoluzioni
-molto maggiori che quel termine diventa il vincolo, ed è il tema del capitolo
+molto maggiori che quel termine diventa il vincolo, ed è il problema da cui
+parte il
+{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`, invece
+del capitolo
 sull'attenzione lineare. Da qui la nomenclatura del paper: quattro taglie
 (DiT-S, B, L, XL)
 per tre patch (/8, /4, /2), dodici modelli che, vedremo tra poco, sono il vero
@@ -200,7 +202,7 @@ di linguaggio (le regolarità con cui la qualità di un modello cresce al
 crescere della sua taglia, dei suoi dati e del calcolo speso)
 {cite}`kaplan2020scaling,hoffmann2022training`.
 
-Due parole sulle unità di misura, perché le tab qui sotto le useranno. Il
+Due parole sulle unità di misura, perché da qui in avanti torneranno spesso. Il
 lavoro si conta in **Gflops**, i miliardi di operazioni che costa far passare
 un'immagine dall'ingresso all'uscita; la grandezza si conta in **parametri**,
 cioè quanti numeri interni ha la rete; e la qualità delle immagini si misura
@@ -230,7 +232,7 @@ diffusion di Rombach e colleghi {cite}`rombach2022high`. La U-Net, dunque, non
 era essenziale. Il suo vantaggio di partenza (sapere già in fabbrica che i
 pixel vicini contano più di quelli lontani) si può comprare con dati e calcolo,
 e oltre una certa scala il Transformer cresce meglio. È la stessa storia già
-vista nel capitolo sui Transformer, dove le reti di visione classiche avevano
+vista nel {doc}`capitolo sui Transformer </Transformers/overview>`, dove le reti di visione classiche avevano
 ceduto il passo ai Vision Transformer, e adesso si ripete dentro la diffusione.
 
 `````{tab} Elementare
@@ -293,21 +295,21 @@ dal titolo programmatico: *Video generation models as world simulators*, cioè
 «i modelli che generano video come simulatori del mondo»
 {cite}`brooks2024video`.
 
-Sul piano dell'architettura quel rapporto è esplicito, e vale la pena riportare
+Sul piano dell'architettura quel rapporto è esplicito, e conviene riportare
 solo ciò che dichiara davvero, che è poco ma preciso. Sora «è un diffusion
 transformer». I video vengono compressi da una rete in schede, come le
 fotografie della sezione precedente, e le schede vengono tagliate in
-**spacetime patches**, tessere che si estendono nello spazio *e nel tempo*: non
-più un quadratino di immagine, ma un quadratino di immagine per un pezzetto di
-durata. Quelle tessere si mettono in fila e si dànno da leggere alla torre,
-esattamente come prima. L'addestramento avviene su video e immagini di durate,
-risoluzioni e proporzioni diverse. E la qualità cresce «sensibilmente» al
-crescere del lavoro speso ad addestrare: il confronto mostrato è fra lo stesso
-modello a cui si è fatto fare il lavoro base, poi quattro volte tanto, poi
-trentadue volte tanto, che è la regolarità del paragrafo qui sopra vista
-all'opera su un prodotto vero. È la ricetta DiT estesa di una dimensione: dove
-il Vision Transformer affettava un'immagine, qui si affetta un blocco di
-fotogrammi.
+**spacetime patches**, tessere che si estendono nello spazio *e nel tempo*:
+non più un quadratino di immagine, ma un quadratino di immagine per un
+pezzetto di durata. Quelle tessere si mettono in fila e si dànno da leggere
+alla torre, esattamente come prima. L'addestramento avviene su video e
+immagini di durate, risoluzioni e proporzioni diverse. E la qualità cresce
+«sensibilmente» al crescere del lavoro speso ad addestrare: il confronto
+mostrato è fra lo stesso modello a cui si è fatto fare il lavoro base, poi
+quattro volte tanto, poi trentadue volte tanto, che è la regolarità del
+paragrafo qui sopra vista all'opera su un prodotto vero. È la ricetta DiT
+estesa di una dimensione: dove il Vision Transformer affettava un'immagine,
+qui si affetta un blocco di fotogrammi.
 
 Va detto altrettanto chiaramente ciò che il rapporto *non* dice: quanti numeri
 interni abbia il modello, su quali dati sia stato addestrato, come sia fatto
@@ -331,14 +333,14 @@ Il 2024 è anche l'anno in cui la ricetta DiT arriva ai modelli di punta che
 disegnano su richiesta. Patrick Esser, Robin Rombach e il resto del gruppo di
 Stable Diffusion pubblicano il lavoro dietro **Stable Diffusion 3**
 {cite}`esser2024scaling`, presentato a ICML 2024 e premiato tra i migliori
-articoli della conferenza. Le novità sono tre, e vale la pena prenderle in
-ordine di profondità crescente.
+articoli della conferenza. Le novità sono tre, e conviene prenderle in ordine
+di profondità crescente.
 
 La prima è l'architettura, battezzata **MM-DiT** (*multimodal DiT*, cioè DiT a
 più modalità: il testo e l'immagine sono due modalità), e riguarda il rapporto
 fra le due. In Stable Diffusion il testo era un consulente esterno. La rete che lo
 leggeva era quella di **CLIP** {cite}`radford2021learning`, un modello del
-capitolo su visione e linguaggio addestrato a mettere in corrispondenza
+{doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>` addestrato a mettere in corrispondenza
 immagini e didascalie; trasformava la richiesta una volta per tutte in una fila
 di numeri, e da lì in poi la U-Net poteva soltanto
 *consultarlo*; l'informazione andava in un senso solo. In MM-DiT il testo e
@@ -453,8 +455,7 @@ questo il motivo per cui i modelli a rectified flow generano in pochissimi
 passi ciò che alla catena di rumore ne costava cinquanta con le scorciatoie e
 mille senza.
 
-Con un'onestà da mettere subito a verbale: le strade che la rete impara non
-escono mai perfettamente dritte. Il motivo è che le linee dritte tracciate in
+Le strade che la rete impara, però, non escono mai perfettamente dritte. Il motivo è che le linee dritte tracciate in
 addestramento sono milioni, una per ogni coppia (questo rumore, questa
 immagine), e molte di esse passano vicinissime le une alle altre andando in
 direzioni diverse. La rete, che in quel punto deve dare una risposta sola, dà
@@ -472,15 +473,15 @@ rumore con un’**interpolazione lineare**:
 
 $$
 \mathbf{x}_t = (1 - t)\,\mathbf{x}_0 + t\,\boldsymbol{\epsilon},
-\qquad \boldsymbol{\epsilon} \sim \mathcal{N}(0, \mathbf{I}),
+\qquad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
 dove $\mathbf{x}_0$ è un dato del training set (in Stable Diffusion 3, un latente)
 ed $\boldsymbol{\epsilon}$ il rumore gaussiano. Lungo questo segmento la velocità è
 costante: $\mathrm{d}\mathbf{x}_t/\mathrm{d}t = \boldsymbol{\epsilon} - \mathbf{x}_0$. Il campo appreso punta
 dunque *verso il rumore*, e la generazione lo percorre all'indietro: è per
-questo che nella scheda Elementare, che cammina nel verso della generazione, lo
-stesso numero compare col segno opposto. Il modello $\mathbf{v}_\theta(\mathbf{x}_t, t)$ viene
+questo che, camminando nel verso della generazione, lo stesso numero va letto
+col segno opposto. Il modello $\mathbf{v}_\theta(\mathbf{x}_t, t)$ viene
 addestrato a regredirla:
 
 $$
@@ -623,9 +624,9 @@ che
 predice qualcosa in più oltre al rumore, e nel modo di dire a ogni tessera
 dove si trova nella griglia. Ma non nella logica: quella sta tutta qui.
 
-## Il conto, e la lezione
+## Il conto, in due colonne
 
-Chiudiamo il capitolo con la stessa onestà con cui l'abbiamo aperto.
+
 Addestrare questi modelli è fuori dalla portata individuale, e la direzione è
 quella di un rincaro: già lo Stable Diffusion del 2022 chiedeva le
 centocinquantamila ore di calcolo che sappiamo, i suoi successori a miliardi di
@@ -641,7 +642,7 @@ computer da videogiochi, e il rectified flow ha reso la generazione più veloce,
 non più lenta. L'asimmetria vista per Stable Diffusion (addestrare è per pochi,
 usare è per molti) si è accentuata in entrambe le direzioni.
 
-E la lezione finale è quella che questo libro ripete dal primo capitolo. Nel
+Resta un fatto che questa storia ripete a ogni tappa. Nel
 2015 la diffusione nasce da un'analogia termodinamica; nel 2024 genera un
 minuto di video da una frase. In mezzo, nessun colpo di genio isolato, ma
 quattro mattoni presi da scaffali diversi. L'autoencoder variazionale è del
@@ -682,7 +683,7 @@ senza fermarci.
   calcolo.
 - **Sora** applica la stessa ricetta ai video, tagliando tessere che si
   estendono nello spazio *e nel tempo*. Se questo basti a dire che ha «capito»
-  il mondo è la domanda del capitolo sui World Model.
+  il mondo è la domanda del {doc}`capitolo sui World Model </WorldModels/overview>`.
 - **Stable Diffusion 3** fa tre cose: mette testo e immagine allo stesso
   tavolo invece che uno a consulenza dell'altro, dà all'archivista quattro
   volte più spazio per le sue schede, e sostituisce il sentiero tortuoso con

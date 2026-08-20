@@ -98,8 +98,8 @@ qualunque partita: anche da una giocata male, anche da una giocata da un altro
 molto tempo prima.
 
 E non divergeva per sfortuna, né perché qualcuno avesse sbagliato a tarare il
-passo di apprendimento (il *learning rate*: di quanto si spostano i pesi a ogni
-correzione). Prima dei due trucchi che lo hanno reso praticabile vale la pena
+passo di apprendimento (il *learning rate*: di quanto si spostano i pesi a
+ogni correzione). Prima dei due trucchi che lo hanno reso praticabile conviene
 capire da che cosa lo hanno salvato, perché è un risultato preciso e
 sorprendentemente pulito.
 
@@ -381,11 +381,11 @@ imparava una gamma così ampia di compiti partendo da input sensoriali grezzi.
 
 ## Il difetto che il massimo si porta dietro
 
-Nel bersaglio di DQN c'è un'operazione che sembra innocua e non lo è: **prendere
-il valore più alto**. Vale la pena capire perché gonfia le stime, sia perché è
-controintuitivo (prendere il massimo è proprio quello che si vuole fare), sia
-perché lo stesso difetto e la stessa cura torneranno, identici, nella sezione
-sul controllo continuo.
+Nel bersaglio di DQN c'è un'operazione che sembra innocua e non lo è:
+**prendere il valore più alto**. Conviene capire perché gonfia le stime, sia
+perché è controintuitivo (prendere il massimo è proprio quello che si vuole
+fare), sia perché lo stesso difetto e la stessa cura torneranno, identici,
+nella sezione sul controllo continuo.
 
 `````{tab} Elementare
 
@@ -472,8 +472,8 @@ sovrastima con una lieve **sottostima**.
 
 ## I limiti
 
-Molti confini di questo approccio hanno guidato la ricerca successiva, e vale
-la pena metterli in fila. Oltre alla sovrastima appena vista, ne restano tre.
+Molti confini di questo approccio hanno guidato la ricerca successiva, e
+conviene metterli in fila. Oltre alla sovrastima appena vista, ne restano tre.
 
 - **Fame di dati.** Servono decine di milioni di fotogrammi per gioco:
   l'equivalente di settimane di gioco ininterrotto. Un umano impara in pochi
@@ -541,7 +541,8 @@ la pena metterli in fila. Oltre alla sovrastima appena vista, ne restano tre.
   transizioni campionate a caso) e la **rete-target** (bersaglio congelato).
   Non rinunciano a nessuno dei tre anelli: ne attenuano due.
 - Il $\max$ nel bersaglio **sovrastima** perché il rumore incontra una funzione
-  convessa, non perché le stime siano distorte (Jensen, stretta solo su stime
+  convessa, non perché le stime siano distorte (Jensen; stretta solo se il
+  rumore può cambiare quale azione risulta la migliore, non su tutte le stime
   aleatorie):
   $\mathbb{E}[\max_a \hat Q] \ge \max_a \mathbb{E}[\hat Q]$. Il **Double DQN**
   fa scegliere l'azione a $\theta$ e valutarla a $\theta^{-}$: *riduce* il bias,

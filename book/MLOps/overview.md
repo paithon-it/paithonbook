@@ -170,7 +170,7 @@ mondo reale cambia. Un modello in produzione va **sorvegliato**, perché prima o
 poi i dati che incontra smettono di somigliare a quelli su cui è stato
 addestrato. Quello scivolamento lento ha un nome inglese che useremo sempre,
 *drift*, e vuol dire deriva: è la stessa cosa di cui parla la sezione «Quando i
-dati cambiano» del capitolo di Machine Learning, lì misurata con gli strumenti
+dati cambiano» del {doc}`capitolo di Machine Learning </MachineLearning/overview>`, lì misurata con gli strumenti
 della statistica, qui affrontata da chi il servizio lo deve tenere acceso.
 Quando succede, si torna all'inizio: nuovi dati, nuovo addestramento. Il
 percorso non è una linea, è un **anello**
@@ -262,14 +262,12 @@ durante la notte, un mucchio alla volta (in gergo un *batch*, e la parola
 tornerà spesso). Non sa dire se i dati di oggi somigliano ancora a quelli di
 ieri. Non tiene traccia di quale versione dei dati ha prodotto quali pesi, così
 che tra sei mesi si possa capire *perché* una predizione è quella. Non si
-riaddestra da solo quando il mondo cambia. Ognuna di queste mancanze è una
-sezione di questo capitolo.
+riaddestra da solo quando il mondo cambia. 
 
-## Come è organizzato il capitolo
+## L'anello, un attrezzo alla volta
 
 Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
-L'elenco è fitto di parole nuove: sono tutte spiegate, una per una, nella
-pagina che le introduce, e nessuna va saputa già adesso.
+
 
 - **Dal notebook alla produzione**, che cosa cambia quando si esce
   dall'ambiente di sperimentazione: riproducibilità, versionamento degli

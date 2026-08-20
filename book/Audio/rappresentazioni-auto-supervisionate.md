@@ -59,7 +59,7 @@ studio su una massa enorme di audio senza risposte, per imparare come è fatto i
 suono in generale; poi una breve rifinitura sul compito vero, con le poche
 etichette che si hanno. Il primo tempo si chiama **pre-addestramento**
 (*pretraining*), il secondo **rifinitura** (*fine-tuning*), e il paradigma non è
-nuovo: è lo stesso dei modelli linguistici del capitolo sui Transformer, e
+nuovo: è lo stesso dei modelli linguistici del {doc}`capitolo sui Transformer </Transformers/overview>`, e
 quello che nella visione artificiale si chiama *transfer learning*. Il lavoro
 pesante si fa una volta sola, e ogni compito successivo riparte da lì.
 
@@ -338,13 +338,13 @@ risorse su Librispeech {cite}`hsu2021hubert`.
 
 `````
 
-Vale la pena notare la parentela, perché i due si somigliano più di quanto
-sembri. Dentro sono fatti allo stesso modo, e il motore è identico: coprire dei
-pezzi di audio e costringere il modello a tirare fuori quello che c'era sotto.
-Cambia il **bersaglio**, cioè che cosa esattamente gli si chiede di indovinare.
-Uno gliela fa riconoscere in mezzo a dei distrattori, come in un test a
-crocette; l'altro gli chiede di dirne il nome, e i nomi possibili sono quelli
-dell'alfabeto provvisorio.
+Conviene notare la parentela, perché i due si somigliano più di quanto sembri.
+Dentro sono fatti allo stesso modo, e il motore è identico: coprire dei pezzi
+di audio e costringere il modello a tirare fuori quello che c'era sotto.
+Cambia il **bersaglio**, cioè che cosa esattamente gli si chiede di
+indovinare. Uno gliela fa riconoscere in mezzo a dei distrattori, come in un
+test a crocette; l'altro gli chiede di dirne il nome, e i nomi possibili sono
+quelli dell'alfabeto provvisorio.
 
 E cambia anche *quando* il bersaglio viene deciso. wav2vec 2.0 se lo costruisce
 mentre impara, con lo stesso addestramento che poi lo deve indovinare: l'elenco

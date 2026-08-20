@@ -9,8 +9,8 @@ ciascuna conta per capirla.
 
 Non è nato per fare il protagonista. Nel settembre del 2014 era un rattoppo,
 inventato per migliorare le traduzioni delle reti che leggevano il testo una
-parola alla volta (le **reti ricorrenti** del capitolo sul Natural Language
-Processing) {cite}`bahdanau2015neural`. Tre anni dopo il Transformer ci avrebbe
+parola alla volta (le **reti ricorrenti** del {doc}`capitolo sul Natural Language
+Processing </NaturalLanguageProcessing/overview>`) {cite}`bahdanau2015neural`. Tre anni dopo il Transformer ci avrebbe
 costruito sopra tutto il resto.
 
 ## L'idea: pesare le parole
@@ -175,7 +175,7 @@ $(3, 1, 0)$ fa $2\cdot3 + 0\cdot1 + 1\cdot0 = 6$, mentre contro $(0, 4, 0)$ fa
 $0 + 0 + 0 = 0$. Se le due liste hanno numeri grandi negli stessi posti la
 somma viene grande, e vuol dire che quell'etichetta risponde a quella ricerca;
 se i numeri grandi stanno in posti diversi la somma viene piccola. È
-l'operazione che il capitolo di matematica chiama *prodotto scalare*, ed è
+l'operazione che il {doc}`capitolo di matematica </Matematica/overview>` chiama *prodotto scalare*, ed è
 l'unico conto che l'attenzione fa davvero.
 
 Resta un ultimo passaggio, e va detto perché senza di esso i conti non
@@ -368,7 +368,8 @@ l'attenzione, con la sola differenza che qui l'archivio è un magazzino a parte
 invece della frase stessa. La seconda è che la struttura
 domanda-contro-archivio, con i fatti tenuti fuori dalla rete e consultati al
 momento, è esattamente la forma dei sistemi che cercano documenti prima di
-rispondere: si chiamano RAG e sono l'ultima sezione di questo capitolo.
+rispondere: si chiamano RAG, e li costruisce per intero la
+{doc}`sezione sul retrieval <rag>`.
 
 Sulle date conviene però essere precisi, perché la tentazione di raccontarla
 come una discendenza è forte e sarebbe falsa: l'attenzione per la traduzione è

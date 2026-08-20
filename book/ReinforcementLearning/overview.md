@@ -30,14 +30,14 @@ sempre lo stesso a ogni passo di attesa. Se per esempio ogni attesa lascia in
 piedi nove decimi, un premio di dieci punti che arriva una mossa più tardi ne
 vale nove, due mosse più tardi otto e un decimo, e così via.
 
-Serve anche a una cosa pratica, e questa vale la pena vederla coi numeri.
-Immagina una partita che non finisce mai e che paga dieci punti a ogni mossa,
-per sempre. Senza il taglio la somma cresce all'infinito e non vuol dire più
+Serve anche a una cosa pratica, e questa conviene vederla coi numeri. Immagina
+una partita che non finisce mai e che paga dieci punti a ogni mossa, per
+sempre. Senza il taglio la somma cresce all'infinito e non vuol dire più
 niente. Con il taglio la somma è $10 + 9 + 8{,}1 + 7{,}29 + \ldots$, e per
 quanto si vada avanti non arriva mai a $100$: ogni pezzo nuovo è nove decimi
 del precedente, e quello che resta da aggiungere si assottiglia più in fretta
 di quanto la somma cresca. Un totale infinito diventa così un numero
-maneggiabile. La sezione sulle funzioni valore lo scrive per bene.
+maneggiabile. La sezione {doc}`MDP e funzioni valore <mdp-valore>` lo scrive per bene.
 
 ```{figure} ../figures/rl-ciclo-interazione.svg
 :name: fig-rl-ciclo
@@ -68,8 +68,8 @@ attacca un punteggio a ogni situazione e si premia solo la *differenza* fra il
 punteggio di dove si arriva e quello di dove si era, così che un giro che torna
 al punto di partenza non frutti niente e nessuno possa guadagnare andando
 avanti e indietro. Tutti gli altri modi, che sono la maggior parte, la
-strategia migliore la spostano senza dirlo. Il capitolo di deep reinforcement
-learning ci torna per esteso, nella sezione su esplorazione e ricompensa.
+strategia migliore la spostano senza dirlo. Il {doc}`capitolo di deep reinforcement
+learning </DeepReinforcementLearning/overview>` ci torna per esteso, nella sezione su esplorazione e ricompensa.
 
 La regola con cui l'agente sceglie, situazione per situazione, si chiama
 **politica**, all'inglese **policy**. Le due parole indicano la stessa cosa e in
@@ -219,7 +219,7 @@ partendo dai soli pixel dello schermo e dal punteggio, senza sapere nulla delle
 regole. Le tre lettere del nome stanno per *Deep Q-Network*: la Q è il voto che
 l'agente dà a ogni mossa, ed è il filo di tutto questo capitolo; *network* è la
 rete neurale che quel voto lo indovina; *deep*, «profonda», è come si chiamano
-le reti a molti strati dei capitoli precedenti. Il capitolo prossimo lo smonta
+le reti a molti strati dei capitoli precedenti. La sezione {doc}`Deep Q-Network </DeepReinforcementLearning/dqn>` lo smonta
 pezzo per pezzo. E
 nel marzo 2016 **AlphaGo** batté 4-1 il campione Lee Sedol al Go, il gioco
 orientale in cui si posano pietre bianche e nere sugli incroci di una griglia:
@@ -227,7 +227,7 @@ era considerato fuori portata per le macchine perché le posizioni possibili
 sono troppe per elencarle (quante di preciso lo dice la sezione sulle funzioni
 valore), e molti davano quel risultato lontano un decennio.
 
-## Come è organizzato questo capitolo
+## Dalla leva sola al mondo che cambia
 
 Cominciamo da una versione del problema spogliata di tutto tranne il dilemma
 appena descritto: i **bandit a più braccia**, dove la situazione non cambia mai

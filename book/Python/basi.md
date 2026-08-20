@@ -4,10 +4,9 @@ Guido van Rossum progettò Python con un vincolo severo: la grammatica del
 linguaggio doveva stare in testa. Non centinaia di **parole chiave** (le parole
 che il linguaggio si tiene per sé, come `if`, `for` e `def`, e che quindi non
 puoi usare per altro), ma poche decine; non una regola speciale per ogni caso,
-ma una manciata di idee che si combinano. È per questo che si impara a *leggere* Python in un pomeriggio, e si
-passa poi il resto del tempo a imparare *cosa* dire, non *come* dirlo. Questa
-sezione è quel pomeriggio: i mattoni con cui è costruito tutto il resto del
-libro.
+ma una manciata di idee che si combinano. Le regole stanno in poche pagine; il resto del tempo si passa a decidere che
+cosa dire. Qui ci sono i mattoni: dare un nome a un valore, tenere insieme più
+valori, decidere, ripetere, impacchettare un pezzo di lavoro dietro un nome.
 
 ## Tipi fondamentali e variabili
 
@@ -152,7 +151,8 @@ che è esattamente il motivo per cui non va usato così).
 
 ## Le strutture dati di ogni giorno
 
-Quattro contenitori bastano per il 90% del lavoro: la **lista**, la **tupla**,
+Quattro contenitori coprono quasi tutto quello che si fa ogni giorno: la
+**lista**, la **tupla**,
 il **dizionario** e l’**insieme**. Nel codice si scrivono con i nomi inglesi
 (`list`, `tuple`, `dict`, `set`), e ciascuno si riconosce dalle parentesi che
 usa:
@@ -164,7 +164,7 @@ prezzi = {"pane": 1.2, "latte": 0.9}     # dict: coppie chiave: valore
 unici  = {3, 1, 4, 1}                    # set: il secondo 1 sparisce da solo
 ```
 
-Due cose da guardare da vicino. Nel dizionario ogni valore si trova cercando la
+Nel dizionario ogni valore si trova cercando la
 sua **chiave**, cioè la parola scritta prima dei due punti: `prezzi` non si
 interroga per posizione, ma per nome, come una rubrica. E nel set i valori
 scritti sono quattro mentre quelli che restano sono tre: mettere due volte lo
@@ -267,9 +267,9 @@ la differenza dei due numeri, e due fette scritte di seguito, `[0:3]` e
 sezione seguente, non sarà più così, ed è una delle differenze che fa più
 danni).
 
-In queste sei righe convivono due scritture diverse, e vale la pena
-separarle subito perché torneranno per tutto il libro. `len(unici)` è una
-funzione generica: si scrive il nome e le si passa fra parentesi la cosa su cui
+In queste sei righe convivono due scritture diverse, e conviene separarle
+subito perché torneranno per tutto il libro. `len(unici)` è una funzione
+generica: si scrive il nome e le si passa fra parentesi la cosa su cui
 lavorare. `numeri.append(9)` invece si legge da sinistra a destra come una
 frase, «alla lista `numeri`, aggiungi 9»: il punto vuol dire «di», prima del
 punto c'è la cosa (un oggetto, o una libreria intera) e dopo il punto qualcosa
@@ -595,12 +595,12 @@ tante. Ed è anche il motivo per cui i metodi ricevono `self` come primo
 argomento, che è il pezzo su cui stanno lavorando.
 
 Ogni pezzo uscito dallo stampo, nel gergo, si chiama **istanza** della classe.
-La parola da sola non dice niente, e vale la pena sapere perché: è ricalcata
+La parola da sola non dice niente, e conviene sapere perché: è ricalcata
 sull'inglese *instance*, che vuol dire «caso», «esemplare». In italiano
 un'istanza è la domanda che si presenta a un ufficio, e qui non c'entra
-niente. Leggila come «un esemplare concreto di quella classe» e il senso torna.
-La teniamo perché è la parola che troverai in ogni documentazione, in ogni
-corso e in ogni colloquio di lavoro, non perché sia una bella traduzione.
+niente. Leggila come «un esemplare concreto di quella classe» e il senso
+torna. La teniamo perché è la parola che troverai in ogni documentazione, in
+ogni corso e in ogni colloquio di lavoro, non perché sia una bella traduzione.
 
 ```python
 class Punto:
@@ -645,8 +645,8 @@ verrà.
 ## I decoratori: la `@` che troverai ovunque
 
 Più avanti nel libro incontrerai righe come `@torch.no_grad()` sopra la
-definizione di una funzione. Vale la pena sapere cosa fanno: la sintassi
-compare spesso e sembra magica solo finché non si guarda sotto.
+definizione di una funzione. Conviene sapere cosa fanno: la sintassi compare
+spesso e sembra magica solo finché non si guarda sotto.
 
 ```{figure} ../figures/decorator-property.svg
 :name: fig-decoratore
@@ -658,7 +658,8 @@ quello che cambia è che chi la chiama passa prima e dopo per il codice
 dell'involucro.
 ```
 
-Nella figura la scatola grande è l'involucro e quella piccola al centro è la
+In {numref}`fig-decoratore` la scatola grande è l'involucro e quella piccola
+al centro è la
 funzione di partenza, che resta intatta: la `@` non è una parola chiave
 speciale, è la scorciatoia con cui si dice «prendi questa funzione, passala a
 `qualcosa`, e tieni al suo posto ciò che torna».
@@ -857,8 +858,11 @@ avvolge un blocco). Molte API offrono entrambe le forme proprio per questo.
 
 ## Un lavoratore alla volta: il GIL
 
-C'è un fatto su Python che non si può non conoscere, perché spiega scelte che
-il libro farà più avanti senza spiegarle di nuovo. Riguarda che cosa succede
+Un computer di oggi ha quattro, otto, sedici nuclei di calcolo, e viene
+naturale pensare che per andare più in fretta basti dividere il lavoro fra
+loro. Con Python non funziona così, e la ragione ha tre lettere che conviene
+conoscere adesso, perché decide come si scrivono i programmi che caricano
+dati. Riguarda che cosa succede
 quando si prova a far fare più cose insieme allo stesso programma.
 
 `````{tab} Elementare
@@ -871,7 +875,8 @@ interpreter lock*, che si può tradurre come «il lucchetto dell'interprete».
 L'immagine giusta è una cucina professionale con un solo coltello. Puoi
 assumere quattro cuochi, ma il coltello è uno: mentre uno taglia, gli altri
 tre aspettano il loro turno. Assumerne altri non fa uscire i piatti più in
-fretta, anzi li rallenta un po’, perché il coltello va passato di mano.
+fretta: i piatti escono più o meno nello stesso tempo, perché il coltello va
+passato di mano e quel passaggio si mangia il poco che si guadagna.
 
 I cuochi, in un programma, si chiamano **thread**: sono le linee di lavoro che
 procedono in parallelo dentro lo stesso programma, e condividono tutto, come
@@ -945,21 +950,21 @@ Con la **PEP 703** il GIL sta diventando opzionale. CPython 3.13 ha introdotto
 una *build* sperimentale senza GIL (*free-threading*); con la **PEP 779**
 quella build passa da sperimentale a ufficialmente supportata in CPython 3.14,
 pur non essendo ancora quella predefinita, con un costo residuo che l'ultima
-misura ufficiale dà fra l'1% (macOS aarch64) e l'8% (Linux x86-64) sul codice a
-thread singolo: nel 3.13 era attorno al 40%, quasi tutto dovuto all'interprete
-adattivo disattivato in quella build. Farne il default è una terza fase
-annunciata ma non ancora datata. È materia in movimento: quel che resta vero,
-e che vale la pena portarsi via, è la **distinzione** fra lavoro che aspetta e
-lavoro che calcola, e il fatto che condividere memoria e condividere nuclei
-sono due problemi diversi.
+misura ufficiale dà fra l'1% (macOS aarch64) e l'8% (Linux x86-64) sul codice
+a thread singolo: nel 3.13 era attorno al 40%, quasi tutto dovuto
+all'interprete adattivo disattivato in quella build. Farne il default è una
+terza fase annunciata ma non ancora datata. È materia in movimento: quel che
+resta vero, e che conviene portarsi via, è la **distinzione** fra lavoro che
+aspetta e lavoro che calcola, e il fatto che condividere memoria e condividere
+nuclei sono due problemi diversi.
 ```
 
 `````
 
 Che i thread non aiutino a calcolare, e aiutino invece ad aspettare, si può
 vedere in una ventina di righe, ed è il tipo di misura che val la pena fare una
-volta con le proprie mani (l'ambiente per farlo è quello preparato nella prima
-sezione del capitolo). Non serve capire ogni riga del programma
+volta con le proprie mani (l'ambiente per farlo è quello preparato
+nell'{doc}`apertura del capitolo </Python/overview>`). Non serve capire ogni riga del programma
 che segue: quello che conta sono i numeri che stampa, e ognuno di essi è
 stampato due volte, perché i tempi da guardare sono due. Il **tempo di parete**
 è quello dell'orologio appeso al muro, cioè quanto si è aspettato; il **tempo
@@ -1045,15 +1050,16 @@ CPU, con 4 processi : parete 0.12 s
 
 I numeri assoluti dipendono dalla macchina, ma la grandezza da guardare è
 sempre la stessa: il **tempo di parete con quattro thread confrontato con
-quello in sequenza**. Sul lavoro di calcolo non scende (qui sale, da 0,26 a
-0,31, per il costo di passarsi il turno): i quattro thread non stanno lavorando
+quello in sequenza**. Sul lavoro di calcolo non scende: resta lì dov'era, e da
+un'esecuzione all'altra oscilla di qualche centesimo in su o in giù, perché
+passarsi il turno ha un costo dello stesso ordine del rumore della misura: i quattro thread non stanno lavorando
 in quattro, si stanno alternando, ed è esattamente ciò che significa GIL.
 Sull'attesa scende invece a un quarto, da un secondo tondo a 0,25, perché lì il
 lucchetto è posato e nessuno si ostacola. Con i processi accelera anche il
 calcolo, quanto lo permettono i nuclei disponibili. Tre confronti, e la regola
 resta in mente.
 
-**Una raccomandazione, perché altrimenti l'esperimento mente.** Va fatto su una
+Va fatto su una
 macchina che non stia facendo nient'altro, e il modo di accorgersi che non è
 così è guardare la prima riga: se il tempo di parete è molto più alto del tempo
 di CPU (qui sono uguali, 0,26 e 0,26), vuol dire che il programma ha passato la
@@ -1065,12 +1071,12 @@ di turno strappano al sistema operativo una fetta di processore più grande di
 quanta ne strappi uno.
 
 Il **tempo di CPU** stampato accanto serve a distinguere le due situazioni in
-cui la parete non scende, e va letto con una cautela che vale la pena dire:
-`process_time()` somma il lavoro di tutti i thread, quindi resta all'incirca
-uguale sia quando i thread si alternano sia quando lavorano davvero insieme,
-e da solo non dimostra nulla. Quello che dice è un'altra cosa, utile: se la
-parete non scende **e** la CPU è alta, si sta calcolando a turno (il caso del
-GIL); se la parete non scende e la CPU è quasi zero, si sta solo aspettando.
+cui la parete non scende, e va letto con una cautela da dire: `process_time()`
+somma il lavoro di tutti i thread, quindi resta all'incirca uguale sia quando
+i thread si alternano sia quando lavorano davvero insieme, e da solo non
+dimostra nulla. Quello che dice è un'altra cosa, utile: se la parete non
+scende **e** la CPU è alta, si sta calcolando a turno (il caso del GIL); se la
+parete non scende e la CPU è quasi zero, si sta solo aspettando.
 
 `````{tab} Elementare
 

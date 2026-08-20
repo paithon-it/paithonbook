@@ -160,10 +160,8 @@ dato viene dalla distribuzione su cui il modello è stato addestrato deve
 chiederlo con un metodo che risponda a *quella* domanda, e non prendere in
 prestito il numero che risponde a un'altra.
 
-Un'ultima cosa, che rende la storia meno amara. Un fallimento così è una
-buona notizia per chi legge il libro, e non per masochismo: è un esperimento
-piccolo, riproducibile, che ha smontato una convinzione diffusa e non
-verificata. La convinzione c'era da anni; per smontarla è bastato addestrare
+Un'ultima cosa, che rende la storia meno amara. La convinzione girava da anni,
+ed è bastato un esperimento piccolo e riproducibile a smontarla: addestrare
 tre modelli su una raccolta di fotografie e misurarli su un'altra.
 
 `````
@@ -246,13 +244,13 @@ traccia. Il *rectified flow* {cite}`liu2023rectified` sceglie come traiettorie
 le linee dritte, ed è quello che Stable Diffusion 3 usa, come racconta il
 capitolo precedente.
 
-Il cerchio si chiude con un'ironia che vale la pena registrare. La famiglia di
-questo capitolo esiste per una proprietà sola, la verosimiglianza esatta; il suo
-discendente più usato oggi ha vinto **buttandola via**, e tenendo solo la parte
-geometrica, il movimento. La proprietà, però, resta lì: un modello a flow
-matching, se qualcuno vuole pagare il conto dell'equazione differenziale, la
-verosimiglianza la sa ancora dare. È una rinuncia di comodo, non di struttura,
-ed è per questo che vale la pena sapere da dove viene la parola.
+Il cerchio si chiude con un'ironia da registrare. La famiglia di questo
+capitolo esiste per una proprietà sola, la verosimiglianza esatta; il suo
+discendente più usato oggi ha vinto **buttandola via**, e tenendo solo la
+parte geometrica, il movimento. La proprietà, però, resta lì: un modello a
+flow matching, se qualcuno vuole pagare il conto dell'equazione differenziale,
+la verosimiglianza la sa ancora dare. È una rinuncia di comodo, non di
+struttura, ed è per questo da sapere da dove viene la parola.
 
 `````{tab} Elementare
 

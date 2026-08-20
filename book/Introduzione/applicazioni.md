@@ -1,8 +1,9 @@
 # Robotica e AI
 
-La robotica e l'intelligenza artificiale vengono spesso confuse, e invece sono
-due mestieri diversi, anche se oggi lavorano quasi sempre insieme. Il modo più
-semplice per tenerli separati è pensare al corpo e alla mente: la robotica
+Un rover su Marte sceglie da solo dove mettere le ruote fra le rocce, un drone
+si rimette dritto in mezzo a una raffica, in un magazzino decine di carrelli
+si incrociano senza toccarsi. In tutti e tre i casi c'è un corpo che si muove
+e qualcosa che decide come muoverlo, e sono due mestieri diversi: la robotica
 costruisce il corpo, l'intelligenza artificiale prova a costruire la mente che
 lo comanda. Come nel corpo umano, poi, i due non si staccano mai: un robot
 moderno vede, riconosce e decide con tecniche che sono AI a tutti gli effetti.
@@ -25,10 +26,10 @@ definizione: chiede che la macchina faccia almeno una di tre cose, spostarsi,
 afferrare, oppure portare qualcosa in un punto preciso. Ne resta fuori la
 lavatrice, che pure sente (il carico, la temperatura) e agisce (apre la
 valvola, ferma il cestello). A noi qui interessa lo schema, sentire e agire,
-perché è quello con cui l'intelligenza artificiale ha a che fare; ma vale la
-pena ricordare che una lavatrice resta fuori anche dall'altra definizione,
-quella data nella pagina precedente: la regola che decide quando fermare il
-risciacquo l'ha scritta un tecnico, riga per riga.
+perché è quello con cui l'intelligenza artificiale ha a che fare; ma Una
+lavatrice resta fuori anche dall'altra definizione, quella data in {doc}`apertura di capitolo </Introduzione/overview>`: la regola
+che decide quando fermare il risciacquo l'ha scritta un
+tecnico, riga per riga.
 
 Esiste però un ponte fra i due mondi, ed è fatto di programmi che imparano per
 tentativi ed errori, incassando un «premio» ogni volta che fanno bene, un po’
@@ -69,9 +70,11 @@ Nel formalismo che svilupperemo nei due capitoli sul reinforcement learning:
 un **agente** osserva
 lo stato $s_t$ dell'ambiente, sceglie un'azione $a_t$ secondo una
 **politica** $\pi(a \mid s)$ e riceve una ricompensa $r_{t+1}$; l'obiettivo è
-trovare la politica che massimizza il ritorno atteso $\mathbb{E}\!\left[\sum_t
-\gamma^{\,t} r_{t+1}\right]$, dove $\gamma \in [0, 1)$ sconta le ricompense
-future. Per la robotica, con azioni continue (coppie ai motori), si usano i
+trovare la politica che massimizza il ritorno atteso
+$\mathbb{E}_{\pi}\!\left[\sum_{t=0}^{\infty} \gamma^{\,t} r_{t+1}\right]$,
+dove la media è presa sulle traiettorie che la politica $\pi$ genera e
+$\gamma \in [0, 1)$ sconta le ricompense future, il che è anche quello che
+rende finita una somma di infiniti termini. Per la robotica, con azioni continue (coppie ai motori), si usano i
 metodi a gradiente di policy e actor-critic; l'addestramento avviene in
 simulazione, con il passaggio al robot fisico (*sim-to-real*) come problema
 aperto. Tutti questi termini avranno il loro capitolo: qui basta la sagoma
@@ -79,7 +82,7 @@ del meccanismo.
 `````
 
 Di questa storia conviene fissare subito i nomi, perché torneranno per intero
-nei due capitoli sul reinforcement learning. Si chiama **agente** chi decide,
+nei due {doc}`capitoli sul reinforcement learning </ReinforcementLearning/overview>`. Si chiama **agente** chi decide,
 cioè il robot dell'esempio; **ambiente** tutto il resto con cui l'agente ha a
 che fare (il pavimento, la gravità, il cronometro che conta i secondi in
 piedi); **stato** la fotografia della situazione in cui l'agente si trova nel
@@ -119,7 +122,9 @@ vedono: rover marziani che scelgono da soli il percorso evitando le rocce,
 magazzini in cui flotte di carrelli autonomi si coordinano senza scontrarsi,
 droni che si stabilizzano da soli in mezzo alle raffiche.
 
-Le applicazioni crescono giorno dopo giorno, e sempre più spesso l'intelligenza
-artificiale sconfina in campi dove la ricerca sembrava arrivata a un punto
-morto. La pagina di chiusura del capitolo ne racconta tre, e il terzo è un
-problema di biologia rimasto aperto per mezzo secolo.
+Le applicazioni crescono giorno dopo giorno, e sempre più spesso
+l'intelligenza artificiale sconfina in campi dove la ricerca sembrava arrivata
+a un punto morto: raffreddare un capannone pieno di computer accesi, leggere
+un elettrocardiogramma, e un problema di biologia rimasto aperto per mezzo
+secolo. Sono i tre esempi da cui
+{doc}`si riparte </Introduzione/conclusione>`.

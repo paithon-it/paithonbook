@@ -5,8 +5,8 @@ immagini e stava conquistando il linguaggio, e la domanda era nell'aria: una
 rete al posto del confronto voce per voce farebbe meglio? Quel confronto, il
 prodotto scalare della sezione precedente, è pur sempre una regola di calcolo
 fissa, decisa a tavolino da chi ha scritto il modello, mentre una rete la
-regola se la cerca da sé. E può cercarla molto lontano: il capitolo sul Deep
-Learning racconta che una rete abbastanza grande sa imitare, con la precisione
+regola se la cerca da sé. E può cercarla molto lontano: il {doc}`capitolo sul Deep
+Learning </DeepLearning/overview>` racconta che una rete abbastanza grande sa imitare, con la precisione
 che si vuole, quasi qualunque legame fra un ingresso e un'uscita. Il paper che
 diede forma alla domanda è *Neural Collaborative Filtering*
 {cite}`he2017neural`, e la risposta è più interessante di un semplice «sì»: è
@@ -235,24 +235,24 @@ precedente ad avere resistito anche qui.
 
 `````
 
-La morale somiglia a quella del paragrafo su Rendle, e vale la pena metterle in
+La morale somiglia a quella del paragrafo su Rendle, e conviene metterle in
 fila. Una precisazione però conta, e di solito si salta: le due storie non
-pesano allo stesso modo come prova. La prima, il riesame del NCF, l'hanno fatta
-persone diverse da chi il metodo l'aveva proposto, ritarando con cura gli
-avversari e facendoli correre di nuovo. La seconda è il paper di LightGCN,
+pesano allo stesso modo come prova. La prima, il riesame del NCF, l'hanno
+fatta persone diverse da chi il metodo l'aveva proposto, ritarando con cura
+gli avversari e facendoli correre di nuovo. La seconda è il paper di LightGCN,
 cioè i suoi autori che riportano la propria vittoria: è quello che fa chiunque
-pubblichi, ed è proprio per questo che da sola pesa meno.
-Detto questo, la direzione è la stessa, ed è quella già incontrata: **più
-libertà non è gratis**. NCF mette una rete al posto del confronto voce per
-voce e non guadagna niente; LightGCN toglie la rete, tiene solo il camminare, e
-batte il modello più complicato da cui è stato ricavato. Camminare sul grafo, in
-fondo, è un modo di dire al modello una cosa
-che il confronto voce per voce non sa: *chi ha visto cose simili alle tue va
-ascoltato, anche a più di un passo di distanza*. Non è più potenza di calcolo:
-è un'ipotesi migliore su come è fatto il problema.
+pubblichi, ed è proprio per questo che da sola pesa meno. Detto questo, la
+direzione è la stessa, ed è quella già incontrata: **più libertà non è
+gratis**. NCF mette una rete al posto del confronto voce per voce e non
+guadagna niente; LightGCN toglie la rete, tiene solo il camminare, e batte il
+modello più complicato da cui è stato ricavato. Camminare sul grafo, in fondo,
+è un modo di dire al modello una cosa che il confronto voce per voce non sa:
+*chi ha visto cose simili alle tue va ascoltato, anche a più di un passo di
+distanza*. Non è più potenza di calcolo: è un'ipotesi migliore su come è fatto
+il problema.
 
 Il disegno dà anche una risposta parziale alla partenza a freddo, il muro
-contro cui la sezione precedente si era fermata, e quella risposta vale la pena
+contro cui la sezione precedente si era fermata, e quella risposta conviene
 guardarla bene: è una delle idee più eleganti del capitolo.
 
 Nella tabella, un film appena uscito è una riga vuota, e da una riga vuota non
@@ -584,7 +584,7 @@ storia dell'utente come una frase da continuare: prevedere la prossima
 interazione come si prevede la prossima parola. Le cose da portarsi via sono
 due: la storia recente pesa più di quella vecchia, e i modelli del linguaggio
 sanno già trattare le sequenze. Gli strumenti li avete
-già visti nei capitoli sul NLP e sui Transformer; qui cambia solo che al posto
+già visti nei {doc}`capitoli sul NLP </NaturalLanguageProcessing/overview>` e sui Transformer; qui cambia solo che al posto
 delle parole ci sono i titoli del catalogo.
 
 Non a caso il settore ha seguito la stessa parabola del NLP: prima le reti
@@ -688,7 +688,7 @@ lettori sono distanti fra loro, la seconda quanto ciascuno di loro incontra
 l'altra campana. Ed è la seconda a sorprendere. Resta però vero il meccanismo
 da cui è nata la paura di Pariser, il feedback loop già incontrato: il modello
 impara da dati che il modello stesso ha filtrato, come discusso nella sezione
-*Quando i dati cambiano* del capitolo di Machine Learning.
+{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`.
 
 Il punto critico non è la tecnica, è la metrica. Un sistema addestrato a
 massimizzare i minuti di visione imparerà, con perfetta onestà matematica, a

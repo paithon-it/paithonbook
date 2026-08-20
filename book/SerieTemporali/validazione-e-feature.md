@@ -9,12 +9,12 @@ prova, «sapeva» dove sarebbe andato il prezzo. Sul passato era un veggente;
 sul futuro, un ciarlatano.
 
 Questa è la trappola numero uno di chi lavora con le serie temporali, e ha un
-nome: **leakage**, la fuga di informazione dal futuro verso il passato. La
-sezione precedente ci ha dato il vocabolario delle serie: trend, stagionalità,
-autocorrelazione. Questa spiega come *valutare* onestamente una previsione e
-come *rappresentare* il tempo perché un normale modello tabellare (uno che vuole
-una tabella di righe, come la regressione o gli alberi) possa impararlo. Le
-colonne di quella tabella si chiamano **feature**, ed è la parola del titolo.
+nome: **leakage**, la fuga di informazione dal futuro verso il passato. Trend, stagionalità e autocorrelazione dicono che cos'è una serie. Restano due
+domande che decidono se una previsione vale qualcosa: come le si dà un voto
+senza barare col futuro, e come si rappresenta il tempo perché un normale
+modello tabellare (uno che vuole una tabella di righe, come la regressione o
+gli alberi) possa impararlo. Le colonne di quella tabella si chiamano
+**feature**.
 
 Il modo di valutare che vedremo si chiama **backtesting**, ed è esattamente
 quello che il nome dice: provare all'indietro. Si finge di essere in un giorno
@@ -23,7 +23,7 @@ quello che è successo davvero; poi si sposta in avanti quel giorno, e si rifà.
 
 ## Perché mescolare i dati è un errore
 
-Nel capitolo sul Machine Learning abbiamo costruito la validazione come un rito.
+Nel {doc}`capitolo sul Machine Learning </MachineLearning/overview>` abbiamo costruito la validazione come un rito.
 Gli esempi si dividono in tre mucchi: uno su cui il modello impara, uno su cui lo
 si mette a punto, uno su cui lo si esamina alla fine e che non si tocca mai
 prima. E prima di dividerli si mescolano, perché se arrivassero già in un ordine
@@ -131,8 +131,9 @@ dopo il training, sia a finestra espansa sia a finestra scorrevole.
 
 ## Misurare l'errore: dalle metriche note alle metriche scalate
 
-Con lo schema di validazione in mano, resta la domanda che il capitolo sul
-Machine Learning si poneva per i modelli tabellari: *con che numero* giudichiamo
+Con lo schema di validazione in mano, resta la domanda che la
+{doc}`sezione sulle metriche </MachineLearning/metriche>` si poneva per i
+modelli tabellari: *con che numero* giudichiamo
 una previsione? Il MAE e l'RMSE, già incontrati per la regressione, restano i
 mattoni di base, e la differenza fra i due sta tutta in come trattano gli
 sbagli grossi.
@@ -373,8 +374,8 @@ mentre c'è: un intervallo dichiarato all'80% ne copre meno dell'80%
 La seconda comodità è che si dà per buono che gli scarti si dispongano secondo
 la campana della statistica classica (la **gaussiana** del capitolo di
 matematica), mentre le serie vere di sorprese davvero grosse ne hanno di più.
-Questa seconda, a differenza della prima, non stringe le bande: le allarga o le
-stringe a seconda di quanto larghe le si chiede, e vale la pena vedere da dove
+Questa seconda, a differenza della prima, non stringe le bande: le allarga o
+le stringe a seconda di quanto larghe le si chiede, e conviene vedere da dove
 viene, perché è controintuitivo.
 
 Prendi due fenomeni che nel complesso si agitano uguale, ma uno dei due ogni
@@ -382,8 +383,9 @@ tanto fa un salto enorme. Quei pochi salti enormi, nel bilancio
 dell'agitazione, pesano tantissimo; e siccome il bilancio totale deve restare lo
 stesso, tutti gli altri giorni devono essere più tranquilli. I valori, cioè, si
 accalcano attorno al centro, qualcuno finisce lontanissimo, e a diradarsi sono
-le vie di mezzo. Il risultato è che una forbice stretta, quella all'80%, di
-valori ne raccoglie **più** dell'80% (in un caso tipico, l'85%), mentre una
+le vie di mezzo. Il risultato è che una forbice stretta, quella all'80%, di valori ne raccoglie **più** dell'80% (su una $t$ di Student a quattro gradi
+di libertà, che è la forma con cui si modellano di solito i rendimenti
+finanziari, l'85,6%), mentre una
 forbice larghissima, quella al 99%, ne raccoglie meno del 99% (attorno al 98%),
 perché i pochi mostri le passano oltre.
 
@@ -507,12 +509,12 @@ un pugno di esempi; il guadagno è che la regola torna vera anche al bordo.
 
 Quanto costa tenersele, quelle righe, dipende da quanto è lungo il training. Su
 una serie fortemente autocorrelata ($\phi = 0{,}9$) con $p=5$ ritardi, $w=10$ e
-$h=7$, cioè diciassette righe da purgare, la stima dell'errore esce ottimista
-di circa l’$1{,}7\%$ quando il training è di centoventi righe e **di qualche
-decimo di punto** quando è di quattrocento (confrontando, a parità di numero di
-righe, una finestra di addestramento che arriva al confine e una purgata; la
-cifra esatta dipende dalla lunghezza del blocco di test e da quale errore si
-guarda, quello quadratico o la sua radice). Il guasto si
+$h=7$, cioè diciassette righe da purgare, la stima dell'errore esce **ottimista di un
+paio di punti percentuali** quando il training è di centoventi righe, e
+l'effetto si riduce a qualche decimo quando è di quattrocento (confrontando, a
+parità di numero di righe, una finestra di addestramento che arriva al confine
+e una purgata; quanto esattamente dipende dalla lunghezza del blocco di test e
+da quale errore si guarda, quello quadratico o la sua radice). Il guasto si
 vede quando i dati sono pochi, cioè proprio quando si è più tentati di tenersele.
 
 L’**embargo**, che nella letteratura sul machine learning finanziario accompagna
@@ -627,13 +629,13 @@ stesso. Il naive semplice, cieco alla settimana, sta **sopra 5**: sbaglia cinque
 volte tanto. La morale non è che il naive stagionale sia bravo, è che su una
 serie stagionale il metro giusto è quello, e chi non lo batte non ha un modello.
 
-Vale la pena notare quanto la scelta del metro cambi il verdetto, perché è una
-scorciatoia che si incontra spesso: mettendo sotto la linea di frazione il naive
-a un passo invece che a sette, gli stessi due predittori escono a $0{,}34$ e
-$1{,}64$, e il primo sembrerebbe bravissimo. Non ha previsto meglio di prima: è cambiato il
-righello. È la lettura che rende la MASE preziosa e insieme la sua unica
-insidia: un numero senza unità dice al volo se un modello vale più della
-pigrizia, purché si dichiari **quale** pigrizia.
+Conviene notare quanto la scelta del metro cambi il verdetto, perché è una
+scorciatoia che si incontra spesso: mettendo sotto la linea di frazione il
+naive a un passo invece che a sette, gli stessi due predittori escono a
+$0{,}34$ e $1{,}64$, e il primo sembrerebbe bravissimo. Non ha previsto meglio
+di prima: è cambiato il righello. È la lettura che rende la MASE preziosa e
+insieme la sua unica insidia: un numero senza unità dice al volo se un modello
+vale più della pigrizia, purché si dichiari **quale** pigrizia.
 
 `````{tab} Elementare
 

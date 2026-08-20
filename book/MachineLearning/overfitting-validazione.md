@@ -182,8 +182,8 @@ quale dei due mali si ha davanti.
   scendendo: il modello ha imparato bene ciò che ha visto e generalizza meno. È
   **varianza**, e qui altri dati aiutano davvero.
 
-Sono poche righe di scikit-learn, e vale la pena eseguirle perché il verdetto
-è netto.
+Sono poche righe di scikit-learn, e conviene eseguirle perché il verdetto è
+netto.
 
 ```python
 import numpy as np
@@ -654,9 +654,9 @@ eleganza estetica: è ciò che permette di generalizzare.
 ## Quando la U non basta: la doppia discesa
 
 C'è un punto in cui il quadro appena disegnato entra in tensione con la
-pratica delle reti profonde, e vale la pena affrontarlo invece di ignorarlo. La
-curva a U di poco fa dice: oltre una certa complessità l'errore sui
-dati nuovi risale.
+pratica delle reti profonde, e conviene affrontarlo invece di ignorarlo. La
+curva a U di poco fa dice: oltre una certa complessità l'errore sui dati nuovi
+risale.
 
 Guardiamo allora una grande rete neurale che riconosce immagini (una rete è un
 modello fatto a strati, il protagonista dei prossimi capitoli). Ha milioni di
@@ -830,9 +830,9 @@ presente all'inizializzazione: si forma nelle prime fasi.
 bisogna addestrare la rete piena, più volte. Il valore è conoscitivo (dice
 qualcosa su cosa fa la sovraparametrizzazione) non computazionale. Per
 comprimere davvero si usano la potatura strutturata e la quantizzazione, che
-sono il mestiere del capitolo sull’efficienza.
+sono il mestiere del {doc}`capitolo sull'efficienza </Efficienza/overview>`.
 
-Il filo con la sezione precedente è comunque lo stesso: il numero di parametri
+Il filo con la doppia discesa è comunque lo stesso: il numero di parametri
 misura male la complessità. La doppia discesa lo mostra dall'esterno, guardando
 la curva d'errore; il biglietto vincente dall'interno, guardando cosa la rete
 usa davvero.
@@ -873,14 +873,14 @@ sezione.
 - Con pochi dati conviene la **cross-validation**: si divide in cinque blocchi
   e a turno uno fa da prova, come far correggere il compito a cinque professori
   invece che a uno. Contano la media dei cinque voti e quanto sono discordi.
-- Per frenare la memorizzazione si mette un **prezzo alla complessità**: il
-  modello può usare pesi grandi solo se ne vale la pena. Contando la spesa a
+- - Per frenare la memorizzazione si mette un **prezzo alla complessità**: il
+  modello può usare pesi grandi solo se ne conviene. Contando la spesa a
   valori assoluti alcuni pesi vanno esattamente a zero (le caratteristiche
   inutili spariscono), contandola a quadrati si rimpiccioliscono tutti.
-- Il principio antico è il **rasoio di Occam**: a parità di spiegazione dei
-  dati, vince la spiegazione più semplice. Con un'eccezione che vale la pena
-  conoscere, la **doppia discesa**: oltre il punto in cui il modello impara
-  tutto a memoria, ingrandirlo ancora torna a farlo funzionare meglio.
+- - Il principio antico è il **rasoio di Occam**: a parità di spiegazione dei
+  dati, vince la spiegazione più semplice. Con un'eccezione da conoscere, la
+  **doppia discesa**: oltre il punto in cui il modello impara tutto a memoria,
+  ingrandirlo ancora torna a farlo funzionare meglio.
 ```
 
 `````

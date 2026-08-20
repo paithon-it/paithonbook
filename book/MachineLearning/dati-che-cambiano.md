@@ -34,7 +34,7 @@ occhiali di allora. Questa sezione
 parla esattamente di questo: che cosa succede quando i dati che un modello
 incontra non somigliano più a quelli su cui è stato addestrato.
 
-## L'ipotesi nascosta di tutto il libro
+## L'ipotesi nascosta: che l'urna non cambi
 
 C'è un'assunzione che regge, in silenzio, ogni pagina scritta finora: che i
 dati di addestramento e i dati che il modello incontrerà dopo siano fatti
@@ -109,18 +109,16 @@ prossimo paragrafo.
 ## Tre modi in cui il mondo cambia
 
 Non tutti i cambiamenti sono uguali. Chi studia il fenomeno ne distingue tre
-famiglie
-{cite}`quinonero2009dataset`, e vale la pena impararle con esempi quotidiani,
-perché la diagnosi giusta suggerisce il rimedio giusto.
+famiglie {cite}`quinonero2009dataset`, e conviene impararle con esempi
+quotidiani, perché la diagnosi giusta suggerisce il rimedio giusto.
 {numref}`fig-distribution-shift` mostra il caso più semplice da visualizzare:
 i dati nuovi arrivano in una zona che l'addestramento ha quasi ignorato. Il
 grafico va letto in un modo nuovo rispetto a quelli visti finora, dove i punti
 erano esempi: qui sull'asse orizzontale c'è il valore di una caratteristica (i
-metri quadri, l'età, il numero di ricerche) e
-sulla verticale **quanto spesso** quel valore capita, così che dove la curva è
-alta ci sono tanti esempi e dove è schiacciata quasi nessuno. Due curve
-sfalsate vogliono dire che i valori frequenti ieri non sono quelli frequenti
-oggi.
+metri quadri, l'età, il numero di ricerche) e sulla verticale **quanto
+spesso** quel valore capita, così che dove la curva è alta ci sono tanti
+esempi e dove è schiacciata quasi nessuno. Due curve sfalsate vogliono dire
+che i valori frequenti ieri non sono quelli frequenti oggi.
 
 ```{figure} ../figures/distribution-shift.svg
 :name: fig-distribution-shift
@@ -319,18 +317,17 @@ tirando a indovinare, cioè che i due mucchi gli sembrano identici, e $1$ vuol
 dire che li separa senza sbagliare un colpo.
 
 Attenzione però a leggere il silenzio. Un'AUC vicina a $0{,}5$ dice che le due
-epoche sono indistinguibili **per lui**, che è una
-conclusione più debole di «va tutto bene», per due ragioni. La prima è che
-questo detective guarda soltanto le domande in arrivo, non le risposte: del
-cambio di regola, dove le domande restano le stesse e a cambiare è la risposta
-giusta, non può
+epoche sono indistinguibili **per lui**, che è una conclusione più debole di
+«va tutto bene», per due ragioni. La prima è che questo detective guarda
+soltanto le domande in arrivo, non le risposte: del cambio di regola, dove le
+domande restano le stesse e a cambiare è la risposta giusta, non può
 accorgersi per costruzione, ed è il caso più insidioso dei tre. La seconda è
-che un'AUC vicina a $0{,}5$ può anche voler dire che gli esempi nuovi
-sono ancora troppo pochi, o che la deriva sta in un intreccio fra più
+che un'AUC vicina a $0{,}5$ può anche voler dire che gli esempi nuovi sono
+ancora troppo pochi, o che la deriva sta in un intreccio fra più
 caratteristiche che quel detective, preso singolarmente, non coglie: non aver
-trovato non è aver dimostrato che non c'è niente. È uno strumento che vale la
-pena avere, purché letto per quello
-che è: un allarme quando suona, non un certificato quando tace.
+trovato non è aver dimostrato che non c'è niente. È uno strumento da avere,
+purché letto per quello che è: un allarme quando suona, non un certificato
+quando tace.
 
 ```python
 import numpy as np
@@ -391,7 +388,7 @@ restringendo il mondo a ciò che aveva già deciso: chi guarda un video di cucin
 ne riceve altri dieci di cucina e non scoprirà mai la musica, e chi si è visto
 negare un prestito non avrà mai modo di dimostrare che l'avrebbe restituito.
 Ci torneremo nel
-capitolo sui sistemi di raccomandazione, dove il circuito di retroazione non è
+{doc}`capitolo sui sistemi di raccomandazione </SistemiRaccomandazione/overview>`, dove il circuito di retroazione non è
 un effetto collaterale ma la struttura stessa del problema.
 
 `````{tab} Elementare

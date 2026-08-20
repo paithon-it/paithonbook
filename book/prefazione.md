@@ -9,11 +9,10 @@ Con il senno di poi è stata una fortuna. Quell'indice si fermava al deep
 reinforcement learning e prometteva codice in TensorFlow e Keras; la parola
 *Transformer* non compariva da nessuna parte, benché l'articolo che la
 introduce (*Attention Is All You Need*, di Vaswani e colleghi
-{cite}`vaswani2017attention`) avesse già più di due anni, e il capitolo sul
+{cite}`vaswani2017attention`) avesse ormai due anni, e il capitolo sul
 linguaggio naturale finiva alle reti ricorrenti. Se questi nomi non ti dicono
-niente, benissimo: sono esattamente le cose che imparerai. Non era una
-distrazione, era la faccia che questa materia aveva, vista da chi ci lavorava,
-in quel momento. Un libro stampato in quella forma avrebbe cominciato a
+niente, benissimo: sono esattamente le cose che imparerai. Era la faccia che
+questa materia aveva, in quel momento, vista da chi ci lavorava. Un libro stampato in quella forma avrebbe cominciato a
 invecchiare il giorno stesso in cui arrivava in libreria.
 
 Online il problema si pone in un altro modo. Un errore si corregge il giorno
@@ -23,11 +22,12 @@ non si potevano scrivere. Il codice, nel frattempo, è passato a PyTorch. Quello
 che non è cambiato è il motivo per cui il libro esiste.
 
 Quello che è cambiato, e molto, è il mondo intorno. Nel 2019 questa era una
-materia da addetti ai lavori. Oggi la usano tutti, e attorno si sono mossi
-interessi industriali e commerciali di ogni ordine di grandezza. È guardando
+materia da addetti ai lavori. Oggi ci parla chiunque abbia un telefono, e attorno si sono mossi interessi
+industriali e commerciali enormi. È guardando
 quel passaggio che ho capito perché valeva la pena riprendere il manoscritto.
 
-Nel 2021 un articolo molto discusso ha chiamato i modelli linguistici
+Nel 2021 un articolo molto discusso ha chiamato i modelli linguistici (i
+programmi che stanno dietro a ChatGPT e ai suoi parenti)
 **pappagalli stocastici** {cite}`bender2021dangers`: macchine che rimettono
 insieme pezzi di quello che hanno letto senza capire quello che dicono.
 L'espressione ha fatto il giro del mondo. E a un certo punto mi sono accorto
@@ -36,7 +36,9 @@ che, a forza di ripeterla, i pappagalli eravamo diventati noi.
 Succedeva in due modi, e si somigliavano. Usciva una notizia, e per settimane
 la stessa frase rimbalzava identica sui canali di chi commenta questa materia
 di mestiere, ripetuta da gente che alla fonte non era mai andata. Nelle aziende
-capitava la versione tecnica: si scaricava un modello da Hugging Face, lo si
+capitava la versione tecnica: si scaricava un modello già pronto da Hugging
+Face, il magazzino pubblico dove queste macchine si prendono e si condividono,
+lo si
 metteva in produzione perché lo stavano facendo tutti, e spesso nessuno apriva
 la licenza per vedere se quell'uso commerciale fosse permesso. Il gesto era lo
 stesso: ripetere una cosa senza sapere che cosa si stava dicendo.
@@ -53,8 +55,8 @@ costruito è andato a guardarci dentro mentre scriveva una poesia in rima
 {cite}`lindsey2025biology`, aspettandosi di vederlo procedere parola per
 parola e aggiustare la rima all'ultimo momento. Ha trovato il contrario. Prima
 ancora di cominciare il verso, il modello aveva già in testa le parole con cui
-poteva chiuderlo, e scriveva il verso per arrivarci; tolta quella scelta, ne
-scriveva un altro che finiva su una rima diversa. La riga con cui gli autori lo
+poteva chiuderlo, e scriveva il verso per arrivarci; tolta quella parola, riscriveva il verso per arrivare all'altra che aveva in
+mente, e cambiava la frase per farcela stare. La riga con cui gli autori lo
 riassumono è questa: anche se questi modelli sono addestrati a produrre una
 parola per volta, per farlo possono pensare su orizzonti molto più lunghi.
 Predire un token alla volta non vuol dire ragionare un token alla volta.
@@ -117,15 +119,15 @@ la racconterei a voce; un esempio ineccepibile che però non fa scattare niente
 si butta, anche se funziona; e una pagina che dice tutto il vero senza far
 capire niente torna alla domanda da cui era nata, e si ricomincia da lì.
 
-Il segno che vedi in copertina dice esattamente questo, e non per caso. È un
-**triangolo di Penrose**: tre lati che si reggono l'un l'altro in cerchio, e
+Il segno che il libro porta nel nome dice esattamente questo, e non per caso:
+la «a» di *paithon* è un **triangolo di Penrose**, tre lati che si reggono l'un l'altro in cerchio, e
 nessuno è il primo. Sono i tre passaggi appena descritti, chi scrive, chi cerca
 l'errore e chi decide, con l'ultimo che rimanda al primo.
 
 E poi c'è la seconda cosa che quel triangolo fa, che è la ragione per cui sta
-su questo libro e non su un altro: **è una figura impossibile**. Copri con una
-mano uno qualsiasi dei tre angoli e quello che resta è corretto, due travi che
-si incontrano ad angolo retto, una davanti e una dietro; si costruisce davvero,
+su questo libro e non su un altro: **è una figura impossibile**. Guarda uno qualsiasi dei tre angoli, coprendo con una mano tutto il resto:
+quello che resta scoperto è corretto, due travi che si incontrano ad angolo
+retto, una davanti e una dietro; si costruisce davvero,
 con dei pezzi di legno. Vale per tutti e tre, uno alla volta. L'impossibilità
 non sta in nessun angolo: sta nel fatto che le tre soluzioni locali non si
 possono avere tutte insieme, e per accorgersene bisogna smettere di guardare
@@ -138,16 +140,16 @@ com'è fatto, non quanto è lontano, e quella libertà che ti resta è un numero
 Dove due pezzi si sovrappongono, invece, il disegno ti obbliga, e fissa il
 rapporto fra le due distanze. Allora fai il giro e moltiplica i tre rapporti
 che hai raccolto: se viene uno la figura si costruisce, se viene qualunque
-altro numero no. Qui non viene uno. Ogni pezzo, preso da solo, corrisponde a un
-oggetto vero, e ci corrisponde nel senso più forte, quello che in matematica si
-chiama **isomorfismo**: dal disegno all'oggetto e ritorno, senza perdere
-niente. Di isomorfismi ce ne sono tre, tutti e tre perfetti, e il guasto non è
+altro numero no. Qui non viene uno. Ogni pezzo, preso da solo, corrisponde a un oggetto vero, e gli corrisponde in
+tutto tranne che nella distanza: forma, spigoli e angoli passano dal disegno
+all'oggetto e tornano indietro senza perdere niente, ed è quello che in
+matematica si chiama **isomorfismo**. Di isomorfismi ce ne sono tre, tutti e tre perfetti, e il guasto non è
 in nessuno dei tre: è che **non si compongono**.
 
 È il modo esatto in cui una macchina sbaglia su una materia tecnica. Ogni frase
 regge da sola, ogni numero è verificabile, e il montaggio è falso.
 
-Tutto questo è severo per una ragione precisa: un modello sbaglia con la
+Il metodo è severo per una ragione precisa: un modello sbaglia con la
 stessa sicurezza con cui dice il vero, e su una materia tecnica sbaglia proprio
 dove chi legge non ha modo di accorgersene. Non sbaglia il tono. Perde il
 fattore due davanti a una formula che per il resto è giusta; attribuisce al
@@ -170,10 +172,10 @@ correzioni diventeranno rare e poi rarissime. È la scommessa che questo libro
 fa su se stesso, e la si può verificare: {doc}`Aggiornamenti </aggiornamenti>`
 tiene il conto di ogni correzione, una per una.
 
-La responsabilità di quello che leggi è mia. E l'impegno a renderlo ogni volta
+La responsabilità di quello che leggi è mia. L'impegno a renderlo ogni volta
 più chiaro nasce da un fatto semplice.
 
-Perché è il non conoscere ciò che genera paura e alimenta false speranze; e per
+È il non conoscere che genera paura e alimenta false speranze, e per
 dissiparle non c'è altra strada che guardare dentro il cuore dell'intelligenza
 algoritmica.
 

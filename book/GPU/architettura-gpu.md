@@ -20,7 +20,7 @@ aprì quei chip a conti di ogni tipo, AlexNet vinse ImageNet nel 2012 su due
 schede da videogiocatori, e le due storie non si sono più separate: è il
 racconto con cui si è aperto il capitolo.
 
-Nella sezione «Prestazioni e scala» del capitolo su PyTorch abbiamo già
+Nella sezione «Prestazioni e scala» del {doc}`capitolo su PyTorch </PyTorch/overview>` abbiamo già
 incontrato l'immagine della GPU come squadra di operai semplici. Qui apriamo
 il cofano: com'è fatta dentro, e (soprattutto) *come esegue* il codice. Perché
 il segreto delle prestazioni non è che ogni operaio sia veloce (non lo è), ma

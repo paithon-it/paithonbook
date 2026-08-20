@@ -410,5 +410,5 @@ Fin qui la forma del modello l'abbiamo scelta noi, una per problema: una retta,
 un albero, un confine largo, un fascio di curve. Cambiava il problema e si
 cambiava attrezzo, mentre il modo di giudicarli restava sempre lo stesso, cioè
 dati tenuti da parte e un numero onesto alla fine. Quel modo va portato intatto
-nel capitolo sulle reti neurali, dove invece l'attrezzo è uno solo e prende la
-forma che serve impilando pezzi tutti uguali.
+in {doc}`Reti neurali </RetiNeurali/overview>`, dove invece l'attrezzo è uno
+solo e prende la forma che serve impilando pezzi tutti uguali.

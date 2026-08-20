@@ -261,10 +261,10 @@ bisogna capire quale delle mosse se la sia guadagnata. Con più agenti quella
 domanda si sdoppia, e non chiede più soltanto *quale mossa* ha prodotto il
 risultato, ma anche *quale agente*.
 
-Il terzo appoggio invece il libro non l'ha ancora posato: le **GAN** arrivano
-più avanti, e chi legge in ordine non le ha ancora incontrate. Le nominiamo lo
-stesso, perché sono l'esempio più puro della cosa che questo capitolo studia, e
-ogni volta che serviranno diremo per esteso quel che c'è da saperne.
+Il terzo arriva più avanti nel libro: sono le **GAN**, l'esempio più puro
+della cosa che questo capitolo studia, cioè due parti che si spingono a
+vicenda a migliorare. Ogni volta che serviranno diremo per esteso quel che c'è
+da saperne.
 
 `````{tab} Elementare
 

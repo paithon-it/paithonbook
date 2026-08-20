@@ -115,7 +115,7 @@ lasciar fuori) è una delle domande centrali del capitolo.
 ## Immaginare costa meno che provare
 
 La prima ragione per volere un world model è il conto della spesa, e il
-capitolo sul Deep Reinforcement Learning lo ha già pagato. Là il **DQN**
+{doc}`capitolo sul Deep Reinforcement Learning </DeepReinforcementLearning/overview>` lo ha già pagato. Là il **DQN**
 (*Deep Q-Network*, la rete che impara da sé quanto vale ogni mossa) arrivava al
 livello di un giocatore umano sui vecchi videogiochi Atari. Ci arrivava però
 dopo decine di milioni di fotogrammi per titolo, cioè settimane di gioco senza
@@ -259,7 +259,7 @@ JEPA, nel linguaggio del capitolo sui modelli a energia.
 
 `````
 
-## Come è organizzato il capitolo
+## Mondi in miniatura, e chi li abita
 
 Quattro tappe.
 
@@ -273,7 +273,8 @@ cosa alla volta portandosi dietro un riassunto di quel che ha già visto: le
 basta quel riassunto, e la strategia dell'agente (in gergo la sua *policy*) si
 allena lì dentro senza mai toccare il gioco vero.
 Quella linea di ricerca arriva ai **Dreamer** di Danijar Hafner e colleghi
-(2020–2023), che imparano quasi soltanto immaginando, fino a ottenere (primo
+(dal 2020, con l'ultima versione uscita su *Nature* nel 2025), che imparano
+quasi soltanto immaginando, fino a ottenere (primo
 algoritmo al mondo) un diamante in *Minecraft* senza dimostrazioni umane.
 
 Seconda tappa, la **via di LeCun**. Invece di immaginare il mondo puntino per
@@ -285,7 +286,7 @@ futuro, e la previsione avviene fra i due riassunti. Ce ne sono due versioni,
 I-JEPA per le immagini e V-JEPA per i video, e tutte e due lavorano nello
 **spazio delle rappresentazioni**, che è poi lo «spazio delle idee» del titolo
 di quella sezione: il posto in cui una scena è già diventata un riassunto e non
-è più un mosaico di puntini colorati. Qui il capitolo sui modelli a energia
+è più un mosaico di puntini colorati. Qui il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>`
 torna utile
 per intero, perché una JEPA è un modello a energia: la stessa idea del
 buttafuori che assegna un voto di compatibilità, e lo stesso pericolo, che le

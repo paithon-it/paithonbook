@@ -17,7 +17,10 @@ La filosofia è scritta in questo grandissimo libro che continuamente ci sta ape
 % dell'attribuzione diventerebbe il primo paragrafo della pagina, e
 % `scripts/genera-radice.py` la userebbe come descrizione in `llms.txt`.
 
-«Chiamala entropia: nessuno sa davvero che cosa sia, e in una discussione
+«Chiamala entropia, per due ragioni. La prima è che la tua funzione
+d'incertezza in meccanica statistica si chiama già così. La seconda, più
+importante, è che nessuno sa davvero che cosa sia l'entropia, quindi in una
+discussione
 partirai sempre in vantaggio.» Si racconta che il consiglio venisse da John von
 Neumann, e che a riceverlo fosse Claude Shannon, il quale nel 1948 aveva appena
 trovato il modo di misurare l'informazione e non sapeva come chiamare la
@@ -40,9 +43,8 @@ vocabolario che serve a noi, però, è corto. Per usare il machine learning non
 serve essere matematici, ma per *capirlo* serve riconoscere le poche idee
 matematiche che vi ritornano di continuo. Sono sorprendentemente poche.
 
-Il titolo dice «richiami» per tradizione editoriale, non perché tu debba già
-saperle: ogni idea qui dentro è ripresa da capo, e chi non le ha mai viste è
-esattamente il lettore per cui questo capitolo è scritto.
+Nessuna di queste idee è data per saputa: ognuna è ripresa da capo, e chi non
+le ha mai viste è esattamente il lettore per cui questo capitolo è scritto.
 
 ## Una foto, e tre lingue
 
@@ -84,12 +86,13 @@ dell'entropia di poco fa), e l’**analisi numerica**, che si occupa di ciò che
 succede ai numeri dentro una macchina capace di scrivere, per ogni numero, solo
 poche cifre.
 
-Questo capitolo non è un corso di matematica: è una cassetta degli attrezzi.
+Qui dentro non c'è tutta la matematica: ci sono gli attrezzi che i capitoli
+successivi useranno davvero, e nient'altro.
 Prendiamo solo gli strumenti che useremo davvero nei capitoli successivi, e li
 prendiamo due volte (una in modo intuitivo, una in modo formale), così che tu
 possa fermarti al livello che ti serve.
 
-## Come è organizzato il capitolo
+## Cinque attrezzi, una domanda ciascuno
 
 Sei sezioni, e ciascuna risponde a una domanda che si può fare a voce.
 
@@ -121,7 +124,10 @@ spesso è proprio il passaggio dall'intuizione alla formula (e ritorno) a far
 scattare la comprensione.
 
 ```{tip}
-Se un simbolo ti blocca, non saltarlo: cercalo nella tab *Elementare* della
+Se un simbolo ti blocca, non saltarlo. Quasi sempre dietro una formula
+intimidatoria si nasconde un'idea che sapresti spiegare a voce, e in queste
+pagine quell'idea è scritta accanto alla formula. Cercala nella spiegazione
+facile della
 sezione corrispondente. Quasi sempre dietro una formula intimidatoria si
 nasconde un'idea che sapresti spiegare a voce.
 ```

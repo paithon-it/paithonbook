@@ -19,8 +19,8 @@ dei compiti funziona meglio su esempi mai visti, che è quello che chiamiamo
 *generalizzazione*. Non è un trucco per risparmiare memoria: è il compito in più
 che insegna qualcosa al compito principale.
 
-Vale la pena affrontarla qui perché è una tecnica che il libro incontra
-dappertutto senza mai chiamarla per nome. Il rilevatore di oggetti che dice
+È una tecnica che si incontra dappertutto senza che quasi mai qualcuno la
+chiami per nome. Il rilevatore di oggetti che dice
 insieme che cosa c'è nella foto e in che punto si trova (la categoria e le
 quattro coordinate del riquadro che lo racchiude) fa multi-compito. La rete che
 da una sola fotografia di una strada stima insieme quanto è lontano ogni pixel
@@ -283,9 +283,8 @@ non c'entra niente, il cui bersaglio è puro caso e che nessuna rete può
 imparare.
 
 Poi si confrontano tre addestramenti sullo stesso identico tronco: senza
-ausiliario, con quello imparentato, con quello inutile. Il codice qui sotto è
-lungo, ma si può saltare senza perdere il filo: quello che conta sono i tre
-numeri che stampa, commentati subito dopo.
+ausiliario, con quello imparentato, con quello inutile. I tre numeri che il codice stampa sono la risposta, e li commentiamo subito
+dopo.
 
 ```python
 import torch
@@ -368,8 +367,8 @@ C'è una seconda cosa che quel $+25\%$ non dice, ed è la manopola che
 l'esperimento non tocca. Nel codice i due errori si sommano con peso uguale,
 cioè $\lambda_1 = \lambda_2 = 1$ (le $\lambda$ sono i pesi con cui i due compiti
 entrano nella somma): la scelta più innocente possibile, e anche la meno
-difendibile, visto che la sezione precedente ha detto che sono proprio quei pesi
-a comandare l'addestramento senza che nessuno l'abbia deciso. Rifacendo le
+difendibile, visto che poco fa si è detto che sono proprio quei pesi a comandare
+l'addestramento senza che nessuno l'abbia deciso. Rifacendo le
 stesse cinque prove con l'ausiliario pesato $\lambda = 0{,}1$ il danno scende a
 $+7\%$, e con $\lambda = 0{,}01$ a $+1{,}5\%$. Il trasferimento negativo,
 insomma, non è una proprietà della sola coppia di compiti: è una proprietà della
@@ -426,10 +425,10 @@ provandoli a coppie, più che deducendolo.
   con una rappresentazione condivisa: un **tronco** comune e una **testa** per
   compito (*condivisione dura*), oppure reti separate tenute vicine da una
   penalità (*condivisione morbida*).
-- Il guadagno ha tre sorgenti distinte: **più segnale** (soprattutto se il
+- - Il guadagno ha tre sorgenti distinte: **più segnale** (soprattutto se il
   compito principale ha poche etichette), un effetto di **regolarizzazione**
   (le scorciatoie che servono a un compito solo smettono di convenire) e un
-  effetto di **attenzione** (un compito indica alla rete cosa vale la pena
+  effetto di **attenzione** (un compito indica alla rete cosa conviene
   rappresentare).
 - L'argomento di Caruana è statistico: i compiti condividono un **bias
   induttivo**, e cercare l'ipotesi che li soddisfa tutti restringe lo spazio

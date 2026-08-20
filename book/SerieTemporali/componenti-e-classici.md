@@ -120,10 +120,9 @@ $$
 S^{\text{add}} = (20-45,\ 45-45,\ 80-45,\ 35-45) = (-25,\ 0,\ +35,\ -10).
 $$
 
-Questi scarti sommano a zero, e non è un caso: sono scarti *dalla media*, e per
-definizione di media quello che sta sopra pareggia esattamente quello che sta
-sotto. La **stagionalità moltiplicativa** è invece il rapporto rispetto al
-livello:
+Questi scarti sommano a zero: sono scarti *dalla media*, e per definizione di
+media quello che sta sopra pareggia esattamente quello che sta sotto. La
+**stagionalità moltiplicativa** è invece il rapporto rispetto al livello:
 
 $$
 S^{\text{mol}} = \left(\tfrac{20}{45},\ \tfrac{45}{45},\ \tfrac{80}{45},\ \tfrac{35}{45}\right)
@@ -146,8 +145,8 @@ scorsi, il residuo di quel trimestre sarebbe $82 - (45 + 35) = 2$.
 
 ## Stazionarietà e differenziazione
 
-L'introduzione al capitolo ha presentato la **stazionarietà** con l'immagine del
-fiume stabile. Detta per esteso: una serie è stazionaria quando il valore attorno
+L'{doc}`apertura del capitolo </SerieTemporali/overview>` ha presentato la
+**stazionarietà** con l'immagine del fiume stabile. Detta per esteso: una serie è stazionaria quando il valore attorno
 a cui balla, l'ampiezza con cui balla e il modo in cui due giorni si somigliano
 restano gli stessi lungo tutta la serie. L'ultimo punto è quello che conta, e va
 detto con precisione: due istanti si somigliano in base a **quanto** distano fra
@@ -759,8 +758,7 @@ pv = ljung_box(ARIMA(serie, order=(0, 0, 0)).fit().resid, 0, 0)
 print(f"\nLjung-Box su un modello vuoto (0,0,0): p = {pv:.1e}  ->  resta struttura")
 ```
 
-Il risultato è più istruttivo di quello che ci si aspetterebbe, ed è il motivo
-per cui vale la pena eseguirlo invece di raccontarlo.
+Il risultato è più istruttivo di quello che ci si aspetterebbe.
 
 Con **600 osservazioni l'AIC sbaglia**: sceglie un ARMA(1,1) invece del vero
 ARMA(2,1). Ma guarda i margini. Il secondo classificato è a $+0{,}4$ dal
@@ -1026,13 +1024,12 @@ che aggiungono un'interpretazione probabilistica e intervalli di previsione
 
 Verrebbe da pensare che, con le reti neurali che il capitolo affronta più
 avanti, questi modelli di mezzo secolo fa siano roba da manuale di storia. Non
-è così, e vale
-la pena dire perché con onestà. La prova più citata sono le **competizioni M**
-dell'introduzione al capitolo, quelle di Spyros Makridakis. Il verdetto,
-ripetuto edizione dopo edizione, è scomodo per gli entusiasti: i metodi
-statistici
-semplici (ARIMA, Holt-Winters, e loro medie) restano difficilissimi da
-battere, e per molti anni hanno superato reti neurali ben più complesse.
+è così, e conviene dire perché con onestà. La prova più citata sono le
+**competizioni M** dell'introduzione al capitolo, quelle di Spyros Makridakis.
+Il verdetto, ripetuto edizione dopo edizione, è scomodo per gli entusiasti: i
+metodi statistici semplici (ARIMA, Holt-Winters, e loro medie) restano
+difficilissimi da battere, e per molti anni hanno superato reti neurali ben
+più complesse.
 
 Le ragioni sono tre. La **robustezza**: un modello con pochi parametri ha poco
 spazio per rincorrere il rumore, e rincorrere il rumore è il modo migliore di
@@ -1058,7 +1055,7 @@ Stimare un AR(1) non richiede librerie sofisticate: è una regressione lineare d
 $x_t$ sul suo ritardo $x_{t-1}$, cioè si cerca la retta che passa il più vicino
 possibile a tutte le coppie (valore di ieri, valore di oggi). «Il più vicino
 possibile» in che senso: nel senso che rende minima la somma dei quadrati degli
-scarti, che è lo stesso criterio con cui il capitolo sul Machine Learning
+scarti, che è lo stesso criterio con cui il {doc}`capitolo sul Machine Learning </MachineLearning/overview>`
 sceglieva la retta che passa meglio in mezzo ai dati. In statistica quel
 criterio ha un nome, il metodo dei **minimi quadrati**. Generiamo una serie dal modello con una
 frazione $\phi$ nota e
@@ -1120,7 +1117,8 @@ quegli scarti restasse ancora una regolarità, ed è per questo che guardarli è
 passo che non si salta.
 
 La seconda: con cinquecento osservazioni la stima è buona, con cinquanta lo è
-molto meno. Questo giro dà $0{,}635$ contro un vero $0{,}6$, cioè un po’ alto,
+molto meno. Il conto qui sopra, a cinquecento, dà $0{,}635$ contro un vero $0{,}6$, cioè
+un po’ alto,
 ma una prova sola non dice niente sul metodo: dice cosa è capitato questa volta.
 È ripetendo l'esperimento tante volte che salta fuori il difetto vero, e il
 difetto vero punta dalla parte opposta: la media delle stime cade **sotto** il
@@ -1162,7 +1160,7 @@ capire, ARIMA e Holt-Winters per prevedere, ACF e PACF per diagnosticare. La
 sezione successiva affronta la domanda che finora abbiamo aggirato, cioè come si
 **valida** un modello di serie temporale senza barare col futuro. E poi come si
 trasformano le serie in colonne di una tabella, per darle in pasto ai modelli
-tabellari già incontrati nel capitolo sul Machine Learning.
+tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearning/overview>`.
 
 `````{tab} Elementare
 
@@ -1271,9 +1269,7 @@ tabellari già incontrati nel capitolo sul Machine Learning.
 
 `````
 
-[^senso-debole]: Questa nota si può saltare senza perdere niente del capitolo:
-    dà il nome tecnico, per chi lo incontrerà nei manuali. Quella del testo è la
-    stazionarietà detta *in senso debole*, e si chiama così perché
+[^senso-debole]: Quella del testo è la stazionarietà detta *in senso debole*, e si chiama così perché
     guarda solo la media, l'ampiezza delle oscillazioni e le somiglianze a due
     a due (e perché abbia senso chiederlo serve che quelle quantità esistano,
     cioè $\mathbb{E}[X_t^2] < \infty$). La versione forte chiede di più: che

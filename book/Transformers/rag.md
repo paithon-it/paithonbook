@@ -32,13 +32,13 @@ di ricerca, ma è nato ben prima del web, nelle biblioteche digitalizzate degli
 anni Sessanta e Settanta.
 
 Chi lo studia chiama quella richiesta una **query**, ed è la stessa parola che
-nel meccanismo di attenzione indicava la domanda che una parola pone alle altre:
-là si cercava una parola dentro una frase, qui un documento dentro un archivio,
-ma il gesto è identico. Si formula una domanda, la si confronta con tutto quello
-che potrebbe rispondere, si pesa quanto ciascuno risponde bene, e si tiene la
-miscela dei migliori. È il filo di tutta questa sezione, e vale la pena tenerlo
-in mano. La prima domanda però è di pura ingegneria: come si cerca in milioni
-di documenti *senza leggerli tutti* a ogni richiesta?
+nel meccanismo di attenzione indicava la domanda che una parola pone alle
+altre: là si cercava una parola dentro una frase, qui un documento dentro un
+archivio, ma il gesto è identico. Si formula una domanda, la si confronta con
+tutto quello che potrebbe rispondere, si pesa quanto ciascuno risponde bene, e
+si tiene la miscela dei migliori. È il filo di tutta questa sezione, e
+conviene tenerlo in mano. La prima domanda però è di pura ingegneria: come si
+cerca in milioni di documenti *senza leggerli tutti* a ogni richiesta?
 
 `````{tab} Elementare
 
@@ -146,18 +146,18 @@ di» è diventata una direzione.
 ```
 
 {numref}`fig-aritmetica-vettori` dice, in realtà, qualcosa di più forte di
-quanto serva qui: mostra che sulla mappa non solo le cose simili stanno vicine,
-ma le *relazioni* fra le cose diventano direzioni, tanto che si possono
-sommare e sottrarre. Per cercare basta la metà debole di questa proprietà, cioè
-la vicinanza; ma vale la pena vedere la metà forte, perché è la prova che
-quella mappa non è disposta a caso.
+quanto serva qui: mostra che sulla mappa non solo le cose simili stanno
+vicine, ma le *relazioni* fra le cose diventano direzioni, tanto che si
+possono sommare e sottrarre. Per cercare basta la metà debole di questa
+proprietà, cioè la vicinanza; ma conviene vedere la metà forte, perché è la
+prova che quella mappa non è disposta a caso.
 
-Nell'overview del capitolo sul NLP avevamo elencato i sinonimi tra le insidie
+Nell'overview del {doc}`capitolo sul NLP </NaturalLanguageProcessing/overview>` avevamo elencato i sinonimi tra le insidie
 della lingua: «auto», «macchina» e «vettura» indicano lo stesso oggetto. Ma
 per un indice invertito sono tre chiavi diverse: la query «manutenzione della
 vettura» non troverà mai il documento che parla solo di «tagliando dell'auto»,
 perché non condividono una sola parola. Il rimedio ha un nome, ed è quello che
-il capitolo sul NLP dà agli indirizzi su quella mappa: gli **embedding**.
+il {doc}`capitolo sul NLP </NaturalLanguageProcessing/overview>` dà agli indirizzi su quella mappa: gli **embedding**.
 
 `````{tab} Elementare
 
@@ -349,16 +349,16 @@ il contenuto.
 
 `````
 
-Vale la pena fissare il bilancio, senza hype. La RAG **mitiga** le
-allucinazioni (su ciò che sta nell'archivio, il modello non deve più
-inventare) ma **non le elimina**: un recupero sbagliato produce una risposta
-sbagliata con le fonti in bella vista. In cambio offre due cose che i pesi da
-soli non daranno mai: la **citabilità**, perché una risposta con la fonte si
-può verificare e una senza fonte no; e l’**aggiornabilità**, perché quando i
-documenti cambiano si reindicizza l'archivio, non si riaddestra il modello.
-Quando, nella prossima sezione, troverai «il recupero di fonti esterne» tra le
-mitigazioni del problema dell'affidabilità, saprai esattamente che cosa c'è
-dietro, e perché è una mitigazione, non una cura.
+Conviene fissare il bilancio, senza hype. La RAG **mitiga** le allucinazioni
+(su ciò che sta nell'archivio, il modello non deve più inventare) ma **non le
+elimina**: un recupero sbagliato produce una risposta sbagliata con le fonti
+in bella vista. In cambio offre due cose che i pesi da soli non daranno mai:
+la **citabilità**, perché una risposta con la fonte si può verificare e una
+senza fonte no; e l’**aggiornabilità**, perché quando i documenti cambiano si
+reindicizza l'archivio, non si riaddestra il modello. Quando, nella prossima
+sezione, troverai «il recupero di fonti esterne» tra le mitigazioni del
+problema dell'affidabilità, saprai esattamente che cosa c'è dietro, e perché è
+una mitigazione, non una cura.
 
 ## Un retriever denso in miniatura
 

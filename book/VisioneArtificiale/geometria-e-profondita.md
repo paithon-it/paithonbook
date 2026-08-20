@@ -17,7 +17,7 @@ Battistero vero; lo rimetti, torna il dipinto. Erano identici. La parte alta
 della tavoletta, dove ci sarebbe stato il cielo, era coperta d'argento brunito,
 così che nel riflesso si vedessero le nuvole vere che passavano.
 
-Quella tavoletta è il primo dispositivo della storia costruito per dimostrare
+Quella tavoletta è il primo esperimento noto costruito per dimostrare
 una legge geometrica: **un punto di vista, un foro, e il mondo tridimensionale
 si schiaccia su una superficie piatta in un modo prevedibile e calcolabile**.
 Vent'anni dopo Leon Battista Alberti ne scrisse le regole nel *De pictura*, e
@@ -474,8 +474,8 @@ contiene la punta, e non manca più niente.
 ```
 
 I due numeri sotto le finestrelle sono un conto vero, non un'illustrazione, e
-vale la pena leggerli piano perché nascondono una trappola. Il palo si sposta
-di **96 pixel in orizzontale**; la finestrella di sinistra, che vede solo un
+conviene leggerli piano perché nascondono una trappola. Il palo si sposta di
+**96 pixel in orizzontale**; la finestrella di sinistra, che vede solo un
 tratto di bordo, ne misura **85**, e per giunta in una direzione sbagliata,
 obliqua invece che orizzontale.
 
@@ -606,8 +606,8 @@ confusa, nove volte su dieci non ha sbagliato la rete: ha sbagliato le pose.
 
 Restava un fatto: da un'immagine sola la profondità è **matematicamente**
 indeterminata. Eppure noi la vediamo, guardando una fotografia con un occhio
-solo, e da qualche anno la vedono anche le reti. Vale la pena capire perché
-non è una contraddizione.
+solo, e da qualche anno la vedono anche le reti. Conviene capire perché non è
+una contraddizione.
 
 `````{tab} Elementare
 
@@ -663,7 +663,7 @@ multi-vista per correggerla.
 
 ## In pratica: la geometria si può verificare
 
-Il bello di questa sezione è che tutto ciò che afferma si può controllare con
+Tutto quello che si è detto fin qui si può controllare con
 un calcolo, senza addestrare niente. Costruiamo una scena finta di cui
 conosciamo le risposte, proiettiamola in due fotocamere e verifichiamo le due
 affermazioni centrali. La prima è quella del dito davanti al naso: se misuro di

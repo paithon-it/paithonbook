@@ -10,10 +10,9 @@ ordine diverso.
 
 Nella sezione precedente abbiamo costruito gli attrezzi: RNN, LSTM, GRU. In
 questa li mettiamo alla prova sul compito che più di ogni altro ha spinto
-avanti l'NLP: la traduzione automatica. È una storia che vale la pena seguire
-da vicino, perché è proprio qui, tra il 2014 e il 2017, che nasce il
-meccanismo di **attenzione**: il ponte diretto verso il capitolo sui
-Transformer.
+avanti l'NLP: la traduzione automatica. È una storia da seguire da vicino,
+perché è proprio qui, tra il 2014 e il 2017, che nasce il meccanismo di
+**attenzione**: il ponte diretto verso il {doc}`capitolo sui Transformer </Transformers/overview>`.
 
 ## Scommettere sulla prossima parola
 
@@ -537,7 +536,7 @@ apposta, infine un modello che non era stato pensato per questo.
 ```
 
 L'ultimo passaggio di {numref}`fig-paradigmi-traduzione` è il più singolare, e
-il libro lo incontrerà nel capitolo sui Transformer: la traduzione ha smesso di
+il libro lo incontrerà nel {doc}`capitolo sui Transformer </Transformers/overview>`: la traduzione ha smesso di
 essere un compito con un'architettura propria ed è diventata una delle cose
 che un modello generalista sa fare. Qui però siamo alla terza tappa, ed è
 quella che ha portato la traduzione neurale in produzione.
@@ -561,9 +560,9 @@ ma da esseri umani. Google mette delle persone bilingui davanti alla stessa
 frase tradotta dal vecchio sistema e dal nuovo, senza dire quale sia quale, e
 chiede di dare un voto a ciascuna; poi confronta i voti. Nel mucchio ci mette
 anche una traduzione fatta da un traduttore umano, che prende il voto più alto
-di tutti ed è il metro di riferimento. Il risultato: della distanza che
-separava il vecchio sistema dal traduttore umano, il nuovo ne recupera in media
-il 60 per cento sulle principali coppie di lingue. Per la prima volta le reti
+di tutti ed è il metro di riferimento. Il risultato: della distanza che separava il vecchio sistema dal traduttore umano, il nuovo
+ne recupera **almeno il 60 per cento** su tutte e sei le coppie misurate, e in
+media quasi il settanta. Per la prima volta le reti
 ricorrenti che abbiamo studiato traducono, ogni giorno, per centinaia di
 milioni di persone.
 

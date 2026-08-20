@@ -73,8 +73,8 @@ dimensionale, non solo quello completo.
 
 ## Che cosa garantisce davvero il punteggio dei metodi contrastivi
 
-C'è una lettura elegante dei metodi contrastivi che circola molto, e vale la
-pena esaminarla perché è vera a metà, e la metà che manca è istruttiva.
+C'è una lettura elegante dei metodi contrastivi che circola molto, e conviene
+esaminarla perché è vera a metà, e la metà che manca è istruttiva.
 
 La lettura è questa. Il punteggio con cui si addestrano quei metodi si chiama
 **InfoNCE** {cite}`oord2018representation`, e il nome dice già dove vuole

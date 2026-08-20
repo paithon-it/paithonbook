@@ -263,7 +263,7 @@ su una distribuzione di probabilità.
 
 Un servizio corretto può ancora essere troppo lento o troppo costoso. Le leve per
 accelerare l'inferenza sono diverse da quelle dell'addestramento, ma una radice è
-comune con il capitolo PyTorch: meno numeri da spostare, più velocità.
+comune con il {doc}`capitolo PyTorch </PyTorch/overview>`: meno numeri da spostare, più velocità.
 
 La prima leva è il **batching dinamico**, e qui la parola *batch* torna con un
 significato diverso da quello di poco fa: non è più il regime di chi macina
@@ -454,13 +454,14 @@ alle dieci, per sempre. Con il forno da cento, che ne fa centocinquanta contro
 sessanta, la fila si smaltisce e nessuno aspetta più di un'infornata. La singola
 infornata è più lenta, e ciononostante **tutti aspettano meno**.
 
-Ci sono quindi tre situazioni, non due, e vale la pena tenerle distinte. Finché
-il forno non sta dietro ai clienti, ingrandire l'infornata migliora tutto:
-sforna di più *e* fa aspettare meno. Quando il forno ha superato la richiesta,
-comincia il vero compromesso: allargare ancora fa sfornare qualcosa in più e fa
-aspettare qualcosa in più, e sta a chi decide capire se lo scambio conviene.
-Ancora oltre, nel tratto piatto della curva, il forno non sforna più niente in
-più e si continua solo ad aspettare: lì non si scambia niente, si perde e basta.
+Ci sono quindi tre situazioni, non due, e conviene tenerle distinte. Finché il
+forno non sta dietro ai clienti, ingrandire l'infornata migliora tutto: sforna
+di più *e* fa aspettare meno. Quando il forno ha superato la richiesta,
+comincia il vero compromesso: allargare ancora fa sfornare qualcosa in più e
+fa aspettare qualcosa in più, e sta a chi decide capire se lo scambio
+conviene. Ancora oltre, nel tratto piatto della curva, il forno non sforna più
+niente in più e si continua solo ad aspettare: lì non si scambia niente, si
+perde e basta.
 
 È anche la ragione per cui in un servizio molto sollecitato il batching dinamico
 non è un lusso: spesso è l'unica configurazione stabile.

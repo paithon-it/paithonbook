@@ -109,9 +109,7 @@ passaggio da un'onda di pressione ai numeri con cui lavora un modello. È un
 ponte che non serve solo qui: regge qualunque suono, e sarà il punto di
 partenza anche del capitolo sullo Speech Recognition che segue.
 
-I nomi delle campate, adesso, non diranno niente, ed è normale: la prossima
-sezione le monta una per una. Sono elencati qui solo perché si sappia quanto è
-lungo il ponte.
+
 
 - il **campionamento**, che trasforma l'onda continua in una sequenza di numeri,
   con il teorema di Nyquist a dettare quante misure al secondo servono;
@@ -243,10 +241,11 @@ neurali, ed è la ragione per cui la sezione che li tratta viene prima di
 quella sulla generazione: senza un buon alfabeto, non c'è nulla su cui
 scrivere.
 
-## Come è organizzato il capitolo
+## Dal suono alle feature, e ritorno
 
-Costruite le fondamenta, il capitolo procede in quattro tappe, dalla
-comprensione alla creazione.
+Dal riconoscere al creare la strada è una sola: dare un nome ai suoni,
+imparare com'è fatto il suono senza che nessuno lo spieghi, costruirne
+l'alfabeto, e infine scriverci sopra suono nuovo.
 
 - **Classificazione audio**: dare un nome ai suoni. Come si passa dallo
   spettrogramma a un'etichetta o a una lista di tag, dalle prime reti
@@ -281,7 +280,10 @@ sa maneggiare, che sia un'immagine tempo–frequenza o un alfabeto di token).
   ciascuno», e perfino «fammene sentire uno nuovo».
 - Il **punto di partenza** (come un suono diventa numeri, e i numeri
   un'immagine) lo costruisce la prossima sezione, *Dal suono alle feature*, e
-  vale per qualsiasi suono: dopo di lei nessuno lo rifà da capo.
+  vale per qualsiasi suono: è il punto da cui ripartono tutte le sezioni che
+  seguono, e il
+  {doc}`capitolo sul riconoscimento vocale </SpeechRecognition/overview>`
+  insieme a loro.
 - Il **filo conduttore**: se il suono si può scrivere con un alfabeto finito di
   simboli (i **token**), allora la stessa macchina che indovina la parola
   successiva di una frase può indovinare il pezzetto di suono successivo di un

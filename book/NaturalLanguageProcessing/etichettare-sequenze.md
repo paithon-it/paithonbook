@@ -50,8 +50,8 @@ categorie condiviso: è il contributo del progetto **Universal Dependencies**
 {cite}`nivre2016universal`, un'impresa collettiva di linguisti che prendono
 testi veri e ci scrivono sopra, parola per parola, l'analisi giusta (si dice
 che li **annotano**), sempre con gli stessi criteri e nella stessa notazione.
-Alla presentazione del 2016 le lingue erano 33, oggi sono oltre
-centocinquanta. Il nome parla di «dipendenze» e non di categorie perché il
+Alla presentazione del 2016 le lingue erano 33; da allora la raccolta è
+cresciuta di anno in anno e oggi ne conta diverse volte tante. Il nome parla di «dipendenze» e non di categorie perché il
 grosso di quel lavoro riguarda un piano più su, quello della struttura della
 frase, che è il tema della prossima sezione; le diciassette etichette sono le
 fondamenta su cui quella struttura si appoggia.
@@ -266,15 +266,15 @@ resa popolare è del 1989, lo firma Lawrence Rabiner {cite}`rabiner1989tutorial`
 e parla di riconoscimento del parlato: gli HMM hanno retto la trascrizione
 automatica per trent'anni, e li ritroveremo nel capitolo dedicato.
 
-Cambia solo il cast della recita, e vale la pena vedere come. Dietro la tenda
-non ci sono più le categorie grammaticali, ci sono i **suoni elementari** della
+Cambia solo il cast della recita, e conviene vedere come. Dietro la tenda non
+ci sono più le categorie grammaticali, ci sono i **suoni elementari** della
 lingua, quelli che distinguono «pane» da «cane»: loro sono gli attori. E in
 platea non arrivano parole, arriva il suono, che un programma taglia in
 fettine da pochi millesimi di secondo e riduce a un pugno di numeri per fetta,
 tipo «quanta energia c'è sui toni bassi, quanta sugli alti»: quelle sono le
-battute. Il resto è identico: si sente una fila di battute, si cerca la sfilata
-di attori che le spiega meglio, e a trovarla è lo stesso navigatore che vedremo
-fra poco.
+battute. Il resto è identico: si sente una fila di battute, si cerca la
+sfilata di attori che le spiega meglio, e a trovarla è lo stesso navigatore
+che vedremo fra poco.
 
 ## Viterbi, o l'arte di non provarle tutte
 
@@ -291,14 +291,14 @@ quelle prima ancora. È la stessa regola del patto di Markov, ed è il motivo pe
 cui questi modelli si dicono «a catena»: come in una catena, ogni anello tocca
 solo il precedente e il successivo.
 
-Vale la pena dire in che senso quella proprietà salva. Arrivato alla parola 12,
+Conviene dire in che senso quella proprietà salva. Arrivato alla parola 12,
 non ho bisogno di ricordare tutta la storia di come ci sono arrivato: mi basta
-sapere, per ciascuna delle 17 categorie possibili, qual era il modo migliore di
-arrivarci alla parola 11. Tutto il resto si può buttare, perché non
+sapere, per ciascuna delle 17 categorie possibili, qual era il modo migliore
+di arrivarci alla parola 11. Tutto il resto si può buttare, perché non
 influenzerà nulla di ciò che viene dopo. Questo modo di procedere (calcolare
-una volta sola ogni pezzo che servirà più volte, e tenerselo da parte invece di
-rifarlo) si chiama **programmazione dinamica**, e nel libro torna spesso: la
-griglia della distanza di edit, nella prima sezione, era la stessa idea.
+una volta sola ogni pezzo che servirà più volte, e tenerselo da parte invece
+di rifarlo) si chiama **programmazione dinamica**, e nel libro torna spesso:
+la griglia della distanza di edit, nella prima sezione, era la stessa idea.
 
 L'algoritmo che la applica qui porta il nome di Andrew Viterbi
 {cite}`viterbi1967error`, nato Andrea a Bergamo nel 1935 ed emigrato bambino

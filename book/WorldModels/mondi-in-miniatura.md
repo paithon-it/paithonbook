@@ -19,10 +19,10 @@ in grado di *risolvere* il compito: 906 punti di media su 100 piste, contro la
 soglia richiesta di 900. I punti sono quelli che il gioco stesso assegna (più
 strada percorsa, meno tempo speso), e i 900 non li hanno scelti gli autori
 dell'esperimento: la soglia arriva insieme all'ambiente di gioco, ed è quella
-che tutti adoperano proprio perché i risultati si possano confrontare. Vale la
-pena tenerlo a mente ogni volta che si legge «risolto» accanto a un numero: da
-qualche parte c'è qualcuno che ha deciso dove mettere l'asticella, e «risolto»
-vuol dire soltanto «al di sopra di quell'asticella lì».
+che tutti adoperano proprio perché i risultati si possano confrontare.
+Conviene tenerlo a mente ogni volta che si legge «risolto» accanto a un
+numero: da qualche parte c'è qualcuno che ha deciso dove mettere l'asticella,
+e «risolto» vuol dire soltanto «al di sopra di quell'asticella lì».
 
 L'idea di fondo è antica e molto umana. Quando attraversi la strada non
 ragioni sui fotoni che colpiscono la retina: consulti un modello mentale del
@@ -70,7 +70,7 @@ alla guida non servono i singoli fili d'erba, serve sapere dove curva la
 strada e dove sta l'auto. V è una rete addestrata a spremere ogni fotogramma in
 un codice di appena 32 numeri, quasi quattrocento volte meno; il suo nome
 tecnico è **autoencoder variazionale**, in sigla VAE, ed è la macchina che il
-capitolo sui modelli latenti deriva per intero {cite}`kingma2014auto`. Quel codice si
+{doc}`capitolo sui modelli latenti </ModelliLatenti/overview>` deriva per intero {cite}`kingma2014auto`. Quel codice si
 chiama $\mathbf{z}$, e
 la lettera è soltanto un nome (come la $x$ dell'incognita a scuola): da qui in
 avanti «$\mathbf{z}$» vuol dire «il riassunto in 32 numeri di quel che si vede adesso».
@@ -102,7 +102,7 @@ q_\phi(\mathbf{z} \mid \mathbf{x}) = \mathcal{N}\!\big(\mathbf{z};\, \boldsymbol
 \mathrm{diag}(\boldsymbol{\sigma}_\phi^2(\mathbf{x}))\big),
 \qquad
 \mathbf{z} = \boldsymbol{\mu}_\phi(\mathbf{x}) + \boldsymbol{\sigma}_\phi(\mathbf{x}) \odot \boldsymbol{\epsilon},
-\quad \boldsymbol{\epsilon} \sim \mathcal{N}(0, \mathbf{I}),
+\quad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
 dove $\boldsymbol{\mu}_\phi(\mathbf{x})$ e $\boldsymbol{\sigma}_\phi(\mathbf{x})$ sono media e deviazione standard
@@ -110,7 +110,7 @@ prodotte da una pila di convoluzioni con parametri $\phi$,
 $\mathbf{z} \in \mathbb{R}^{32}$ è il codice latente e la seconda uguaglianza è il
 *trucco della riparametrizzazione*, che rende campionabile e derivabile il
 passaggio. L'addestramento massimizza l'ELBO, ricostruzione più
-regolarizzazione KL verso la prior $\mathcal{N}(0, \mathbf{I})$, derivato nel
+regolarizzazione KL verso la prior $\mathcal{N}(\mathbf{0}, \mathbf{I})$, derivato nel
 capitolo sui modelli latenti; qui non lo rideriviamo.
 
 ```{figure} ../figures/vae-autoencoder-che-immaginano.svg
@@ -139,7 +139,7 @@ Un fotogramma compresso è una fotografia, non un film: non dice cosa
 succederà. Il secondo modulo impara la **dinamica**: dato il codice di adesso
 e l'azione scelta, quale sarà il codice di poi? M è una LSTM, la rete
 ricorrente con i *gate* (i cancelli che decidono cosa ricordare e cosa
-dimenticare) incontrata nel capitolo sul Natural Language Processing
+dimenticare) incontrata nel {doc}`capitolo sul Natural Language Processing </NaturalLanguageProcessing/overview>`
 {cite}`hochreiter1997long`. Solo che qui la «frase» da proseguire non è fatta
 di parole ma di codici $\mathbf{z}$: M vive nel piccolo mondo dei 32 numeri, senza mai
 toccare i pixel, perciò è veloce ed economica. Il riassunto che si porta dietro
@@ -416,8 +416,8 @@ lo scarto **peggiore fin lì** ha superato quello che si era deciso di
 tollerare: da lì in avanti il sogno non è più roba su cui allenare nessuno.
 ```
 
-Tre cose vale la pena notare in {numref}`fig-sogno-diverge`, e nessuna delle
-tre si vede in un fotogramma.
+Tre cose conviene notare in {numref}`fig-sogno-diverge`, e nessuna delle tre
+si vede in un fotogramma.
 
 La prima è che l'inizio è **identico**. Chi guardasse solo i primi passi
 concluderebbe che il modello è ottimo, ed è esattamente il modo in cui un
@@ -437,21 +437,21 @@ quantità onesta con cui giudicare un sogno: un modello che al passo 19 sembra
 tornato buono ha comunque già sbagliato di 0,43, e su quell'errore ci ha
 costruito sopra tutti i passi seguenti.
 
-La terza è che il numero di passi affidabili non è una proprietà del modello da
-solo: dipende da quanto scarto si è disposti a tollerare. Qui la tolleranza è
-0,25, e nei sedici passi che il sogno regge, fra il punto più alto e il più
+La terza è che il numero di passi affidabili non è una proprietà del modello
+da solo: dipende da quanto scarto si è disposti a tollerare. Qui la tolleranza
+è 0,25, e nei sedici passi che il sogno regge, fra il punto più alto e il più
 basso, l'altalena si sposta di poco più di cinque di quelle stesse
 unità.[^scala-altalena] Si sta accettando, insomma, uno scarto pari a un
 ventesimo scarso del movimento, che è una scelta e non una legge: chi
 accettasse il doppio di scarto si terrebbe cinque passi in più, ventuno invece
-di sedici. Dichiararla non è pignoleria: chi non dichiara la tolleranza non sta
-dichiarando neanche l’**orizzonte**, cioè fino a che punto il sogno vale la
-pena di essere ascoltato.
+di sedici. Dichiararla non è pignoleria: chi non dichiara la tolleranza non
+sta dichiarando neanche l’**orizzonte**, cioè fino a che punto il sogno
+conviene essere ascoltato.
 
 Una quarta cosa, infine, la figura non può mostrarla, ed è bene non dedurla da
 qui. *Quanto in fretta* lo scarto si apra non è una legge universale: dipende
-da quanto il sistema amplifica gli scossoni che riceve. Il capitolo sul Deep
-Reinforcement Learning lo scrive per bene, e mostra che su una dinamica
+da quanto il sistema amplifica gli scossoni che riceve. Il {doc}`capitolo sul Deep
+Reinforcement Learning </DeepReinforcementLearning/overview>` lo scrive per bene, e mostra che su una dinamica
 abbastanza mite lo scarto, invece di esplodere, si assesta.
 
 ## Dai sogni ai diamanti: la linea Dreamer
@@ -464,7 +464,7 @@ nello spazio dei codici, non in quello dei pixel. Una catena di passi generati
 uno dall'altro si chiama **rollout**, ed è esattamente il sogno di poco fa; la
 parola vale anche per le partite vere, quando si raccolgono una mossa alla
 volta. A imparare da quei rollout sono due reti che si danno il
-cambio, e le abbiamo incontrate nel capitolo sul Deep Reinforcement Learning:
+cambio, e le abbiamo incontrate nel {doc}`capitolo sul Deep Reinforcement Learning </DeepReinforcementLearning/overview>`:
 l’**attore**, che sceglie la mossa, e il **critico**, che stima quanto vale la
 situazione in cui l'attore si è cacciato, così che l'attore sappia subito se ha
 fatto bene invece di dover aspettare la fine della partita. DreamerV2 (2021) è
@@ -536,10 +536,9 @@ funzioni davvero.
 ## I tre moduli in PyTorch
 
 Chiudiamo con lo scheletro di V, M e C: poche righe, con le dimensioni di ogni
-pacchetto di numeri scritte nei commenti. Chi non programma può saltare fino al
-riquadro finale senza perdere il filo. Manca tutta la parte di addestramento
-(i tre moduli qui nascono con i pesi a caso e non imparano niente); quello che il codice mostra è il percorso
-dei dati, cioè chi passa che cosa a chi, ed è quello vero.
+pacchetto di numeri scritte nei commenti. Manca tutta la parte di addestramento: i tre moduli qui nascono con i pesi a
+caso e non imparano niente. Quello che il codice mostra è il percorso dei
+dati, cioè chi passa che cosa a chi, ed è quello vero.
 
 ```python
 import torch

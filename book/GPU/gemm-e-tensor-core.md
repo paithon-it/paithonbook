@@ -16,7 +16,7 @@ probabilmente il pezzo di codice più ottimizzato della storia
 dell'informatica: a ogni generazione di hardware qualcuno lo riscrive da capo
 per spremerne l'ultima goccia.
 
-Non è un caso. Nella sezione «Prestazioni e scala» del capitolo su PyTorch
+Non è un caso. Nella sezione «Prestazioni e scala» del {doc}`capitolo su PyTorch </PyTorch/overview>`
 abbiamo detto che una rete neurale, vista dall'hardware, è quasi soltanto una
 cosa: moltiplicazioni fra matrici. Da AlexNet {cite}`krizhevsky2012imagenet` in
 poi, il grosso dei conti di qualunque rete si riduce a quella. E la sezione «La
@@ -188,8 +188,7 @@ riuso si ricompra un piano più giù, ed è possibile per la ragione vista nella
 sezione sulla memoria, che il register file di un SM è il banco on-chip più
 capiente che ci sia.
 
-Ed è questa, più della gerarchia in sé, la morale che il capitolo si è
-guadagnato: **c'è un roofline per ogni livello della piramide**, ciascuno con
+Il fatto generale, più della gerarchia in sé, è questo: **c'è un roofline per ogni livello della piramide**, ciascuno con
 la sua banda e il suo ginocchio, e ogni livello di tiling esiste per superare
 il proprio. Quanto al tetto, l’$n/6$ della sezione precedente è un *ideale* che
 richiederebbe le tre matrici intere on-chip, e per fortuna non serve
@@ -316,9 +315,9 @@ precisione.
 ## L'altra strada: far scorrere i dati invece dei conti
 
 Il tiling e i tensor core sono la risposta della GPU a una domanda che si può
-affrontare anche in un modo completamente diverso, e vale la pena vederlo
-perché mette in prospettiva tutto il capitolo. La domanda è sempre quella: come
-si moltiplicano due matrici muovendo il meno possibile.
+affrontare anche in un modo completamente diverso, e conviene vederlo perché
+mette in prospettiva tutto il capitolo. La domanda è sempre quella: come si
+moltiplicano due matrici muovendo il meno possibile.
 
 `````{tab} Elementare
 
@@ -374,11 +373,11 @@ di una sola operazione: moltiplicare due ingressi, sommare il prodotto a un
 valore che gli arriva, e propagare ai vicini al ciclo successivo. Non c'è
 memoria condivisa, non c'è arbitraggio, non c'è un file di registri da
 indirizzare: il movimento dei dati è cablato nella topologia. Che cosa stia
-fermo e che cosa scorra, però, non è unico: è la scelta di **dataflow**, e
-cambia la macchina.
+fermo e che cosa scorra, però, non è unico: è la scelta di **dataflow**, e cambia la macchina. I nomi con cui queste
+scelte si chiamano oggi vengono dalla tassonomia di Chen, Emer e Sze
+{cite}`chen2016eyeriss`, non dagli array sistolici originali.
 
-Nella variante *output stationary*, quella classica di Kung, è il totale a
-restare nell'elemento (un accumulatore interno) mentre entrambi gli operandi
+Nella variante *output stationary* è il totale a restare nell'elemento (un accumulatore interno) mentre entrambi gli operandi
 scorrono. Nella variante *weight stationary*, che è quella adottata dagli
 acceleratori più noti, l'elemento non tiene un totale: tiene un **peso**,
 precaricato e fermo. Le attivazioni entrano da sinistra e attraversano le
@@ -413,7 +412,7 @@ della prima sezione, spostata di un livello.
 
 ## In pratica: forme «tonde» e mezza precisione
 
-Chiudiamo con un'onestà dovuta. Quasi certamente non scriverai mai a mano una
+ Quasi certamente non scriverai mai a mano una
 moltiplicazione fra matrici: esistono librerie che la fanno meglio di quanto
 potrebbe chiunque, sfruttando tessere a più livelli e tensor core in modi che
 cambiano a ogni generazione di schede. Sono quelle che PyTorch chiama sotto
@@ -444,7 +443,7 @@ davvero il cronometro, e che altrimenti sembrerebbero magia:
   veloce che hai.
 
 Tutte e due queste regole promettono un guadagno quasi gratuito, e tutte e due
-capita che non lo diano. Le ragioni sono due, e vale la pena conoscerle perché
+capita che non lo diano. Le ragioni sono due, e conviene conoscerle perché
 nessuna delle due riguarda la tessera, che è la cosa a cui si dà la colpa: le
 schede qui sotto le spiegano.
 

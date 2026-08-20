@@ -4,8 +4,8 @@ Novanta pesi su cento si possono buttare via e la rete continua a rispondere
 quasi come prima. Non è un modo di dire: più sotto è misurato, su una rete
 vera, con i numeri stampati dal programma.
 
-È la promessa più grande di tutto il capitolo, e questa sezione esiste
-soprattutto per raccontare che cosa succede quando si va a riscuoterla. Perché
+È la promessa più grande delle tre, e quello che succede quando la si va a
+riscuotere è meno allegro. Perché
 la rete alleggerita del novanta per cento, sul calcolatore, **non è più veloce
 in proporzione a quanto si è alleggerita**: nella migliore delle ipotesi va
 uguale.
@@ -27,8 +27,7 @@ tutto il resto. Non serve capire che cosa faccia ciascun collegamento: basta
 guardare quanto è grosso.
 
 Detta così sembra troppo facile, ed è troppo facile. Fatta e basta, la rete
-crolla: qui sotto, togliendo nove pesi su dieci, l’accuratezza passa da
-novantotto a trentotto per cento, cioè da «sbaglia una volta su cinquanta» a
+crolla: qui sotto, togliendo nove pesi su dieci, l'accuratezza passa da novantotto a trentanove per cento, cioè da «sbaglia una volta su cinquanta» a
 «sbaglia tre volte su cinque».
 
 Quello che la salva è un secondo tempo. Dopo aver tagliato **si riaddestra**,
@@ -234,12 +233,8 @@ duecentocinquantacinque milioni di quelle (il novantacinque per cento) sono
 moltiplicazioni per zero.
 
 Cronometrandolo si vede lo stesso: la matrice rada non va venti volte più
-veloce, va **uguale**. Il numero qui non lo trovi stampato, ed è una scelta:
-misurato a orologio dipende dalla macchina e da quanto è carica, e su questa ha
-oscillato fra 0,8 e 1,2 volte a seconda del momento; misurato a tempo di
-processore, che è la misura pulita, è 1,00. Un numero che tu non puoi rifare
-non si stampa. Quello che si può rifare, e che spiega tutto, è il conto qui
-sopra.
+veloce, va **uguale**. Un cronometro dipende dalla macchina e da quanto è
+occupata; il conto qui sopra no, e dice la stessa cosa.
 
 `````{tab} Elementare
 
@@ -323,7 +318,7 @@ di un modello: se alla fine mi resta una rete con un decimo dei pesi che
 funziona, perché ho dovuto addestrare quella grande? Perché non parto da quella
 piccola?
 
-La risposta sta nel capitolo sul machine learning, nella sezione
+La risposta sta nel {doc}`capitolo sul machine learning </MachineLearning/overview>`, nella sezione
 sull’overfitting: quella sottorete funziona **solo se la si riaddestra con i
 numeri di partenza che aveva**, e reinizializzandola a caso non impara
 altrettanto bene. Non era il collegamento a essere buono, era il collegamento
@@ -395,8 +390,8 @@ affare (un decimo dei pesi, un ottavo dei bit, poco più di un punto di
 accuratezza); ma dice la cosa che l’apertura prometteva, e cioè che il budget
 di errore non si spartisce a tavolino.
 
-E c’è un secondo insegnamento, che non era in programma. La prima volta che ho
-composto le due leve la rete è crollata all’otto per cento, cioè al livello di
+C'è però un guasto che si vede solo componendo le due leve, e non dà nessun
+errore: la rete crolla all'otto per cento, cioè al livello di
 chi tira a indovinare, e non per un errore che si accumulava: perché dopo la
 potatura **centottantotto gruppi di sessantaquattro pesi erano interamente
 zeri**, la scala di quei gruppi valeva zero, e dividere per zero riempiva la
@@ -425,7 +420,7 @@ basso, e in mezzo c’è un calcolatore che quella promessa non la sa incassare.
   tempo bisogna togliere i pesi **a blocchi** (un neurone intero, cioè una riga
   intera della griglia): allora la rete è davvero più piccola, ma si buttano
   via anche pesi utili che stavano nella riga sbagliata.
-- Il **biglietto della lotteria**, che il capitolo sul machine learning ha già
+- Il **biglietto della lotteria**, che il {doc}`capitolo sul machine learning </MachineLearning/overview>` ha già
   raccontato, dice qui una cosa sola: per sapere quali collegamenti tenere
   bisogna prima addestrare la rete grande. La potatura comprime un modello che
   esiste già, non insegna a farne uno piccolo.

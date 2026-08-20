@@ -72,7 +72,7 @@ senza saper dire se qui vale 105 o 205. Per fissare il livello servirebbe una
 misura vera, presa da qualche parte, ed è proprio quella che dentro l'arteria
 malata non si può prendere. Restano i dislivelli, ed è comunque moltissimo:
 sono loro a dire dove la parete è sollecitata di più. Ed è la vera ragione per
-cui vale la pena studiare le PINN: non tanto rifare quello che i **solutori
+cui conviene studiare le PINN: non tanto rifare quello che i **solutori
 classici** fanno già benissimo (il conto a passettini dell'apertura del
 capitolo, quello che avanza su una fitta rete di puntini), ma leggere il non
 misurabile a partire dal misurabile.
@@ -175,9 +175,9 @@ ottimizzatore = torch.optim.Adam(                      # ottimizzato insieme ai 
 
 ## Cosa sanno fare, per davvero
 
-Al di là dell'aneurisma, il filone ha prodotto applicazioni concrete. Vale la
-pena elencarle con onestà: dove le PINN portano un vantaggio reale, e dove
-sono ancora una promessa da verificare.
+Al di là dell'aneurisma, il filone ha prodotto applicazioni concrete. Conviene
+elencarle con onestà: dove le PINN portano un vantaggio reale, e dove sono
+ancora una promessa da verificare.
 
 **Fluidodinamica ed emodinamica**, cioè il moto dei fluidi in generale e del
 sangue in particolare. È il territorio d'elezione, quello di *Hidden Fluid
@@ -373,22 +373,20 @@ correggere.
 
 `````
 
-E poi c'è il confronto onesto con i solutori classici, che vale la pena
-ripetere senza sconti. Prendiamo un problema *standard*: equazione nota, forma
-regolare, nessun dato sperimentale da tenere insieme alla legge. Lì il conto a
+E poi c'è il confronto onesto con i solutori classici, da ripetere senza
+sconti. Prendiamo un problema *standard*: equazione nota, forma regolare,
+nessun dato sperimentale da tenere insieme alla legge. Lì il conto a
 passettini visto in apertura di capitolo, fatto bene, **vince quasi sempre**:
 è più rapido di centinaia o migliaia di volte, ed è più preciso. Ne esistono
-due versioni mature, e vale la pena avere i nomi: le **differenze finite**
-mettono i puntini in righe e colonne regolari, gli **elementi finiti**
-ritagliano la regione in tanti triangolini e sanno quindi seguire una forma
-qualsiasi.
+due versioni mature, e conviene avere i nomi: le **differenze finite** mettono
+i puntini in righe e colonne regolari, gli **elementi finiti** ritagliano la
+regione in tanti triangolini e sanno quindi seguire una forma qualsiasi.
 
 E il conto a passettini porta in dote qualcosa che a una rete addestrata manca
 del tutto: si dimostra, sotto ipotesi che si sanno controllare prima di
 partire, che infittendo i puntini l'errore scende, e pure di quanto. Di una
-rete addestrata non si sa dire niente del genere. Una PINN che impiega minuti
-dove un solutore maturo impiega millisecondi, e che ogni tanto fallisce senza
-preavviso, non è un progresso: è un passo indietro. Le PINN convengono in tre
+rete addestrata non si sa dire niente del genere. Una PINN che impiega minuti dove un solutore maturo impiega millisecondi, e
+che ogni tanto fallisce senza preavviso, è un passo indietro. Le PINN convengono in tre
 casi, e fuori di lì no: quando misure e leggi vanno usate insieme per
 rispondere alla stessa domanda; quando la risposta dipende da così tante
 grandezze che i puntini da mettere sarebbero più di quanti un calcolatore ne
@@ -509,7 +507,7 @@ andati a rifarlo **a parità di precisione**, chiedendo cioè ai due la stessa
 accuratezza e poi cronometrando, il vantaggio è sceso a **sette volte**
 {cite}`mcgreivy2024weak`, e per giunta con la rete su una scheda grafica
 contro un portatile. Sette volte è ancora un bel guadagno. Ma fra sette e
-mille c'è la differenza fra un miglioramento e una rivoluzione, e vale la pena
+mille c'è la differenza fra un miglioramento e una rivoluzione, e conviene
 sapere quale dei due si sta comprando.
 
 ## Congedo: far collaborare conoscenza e dati
@@ -615,6 +613,6 @@ capitolo per capitolo, era troppo vicino per vedersi.
 Le PINN chiudono la parte del libro che cambia dominio a ogni capitolo, grafi,
 cataloghi, serie storiche, equazioni della fisica, cioè la stessa matematica
 che si adatta di volta in volta alla forma dei dati. Da qui la
-domanda cambia. Il capitolo su MLOps non chiede più che cosa un modello riesca
+domanda cambia. Il {doc}`capitolo su MLOps </MLOps/overview>` non chiede più che cosa un modello riesca
 a imparare, ma che cosa gli succede il giorno dopo, quando smette di essere un
 esperimento e diventa un servizio che qualcuno usa davvero.

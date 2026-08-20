@@ -331,16 +331,16 @@ da $1{,}32$ a $3{,}30$, due punti scarsi. Il nodo 1, che valeva $1$, sale a
 $1{,}316$ perché è tirato in alto dal vicino 2; il nodo 4, che valeva $4$,
 scende a $3{,}225$ perché è tirato in basso dal 3.
 
-I due nodi di mezzo salgono invece tutti e due, e vale la pena non nasconderlo,
+I due nodi di mezzo salgono invece tutti e due, e conviene non nasconderlo,
 perché smonta una scorciatoia che verrebbe naturale: **questa non è la media
 dei vicini**. Se lo fosse, il nodo 3, che vale $3$ e sta fra un $2$ e un $4$,
 resterebbe a $3$; invece sale a $3{,}300$. La ragione è che i pesi di una riga
-non sommano a uno (in quella del nodo 3 fanno $1{,}07$), quindi ogni giro non è
-una media ma una somma pesata, che può alzare il livello generale. Quello che
-la GCN garantisce non è che ciascuno vada verso i suoi vicini a ogni singolo
-passo: è che, ripetendo, le differenze di partenza si consumino. Poco più
-avanti in questa sezione si vede succedere, giro dopo giro, su questi stessi
-quattro numeri.
+non sommano a uno (in quella del nodo 3 fanno $1{,}07$), quindi ogni giro non
+è una media ma una somma pesata, che può alzare il livello generale. Quello
+che la GCN garantisce non è che ciascuno vada verso i suoi vicini a ogni
+singolo passo: è che, ripetendo, le differenze di partenza si consumino. Poco
+più avanti in questa sezione si vede succedere, giro dopo giro, su questi
+stessi quattro numeri.
 
 ### Perché normalizzare così
 
@@ -426,9 +426,9 @@ numero piccolo di strati e si addestra come una qualunque rete profonda.
 ### Da dove viene la formula: le frequenze di un grafo
 
 Arrivati qui la domanda viene da sé: quella formula da dove esce? Nessuno l'ha
-inventata a tavolino: è quel che **resta** di un conto più grande, e vale la
-pena raccontare che conto sia. Rifarlo per intero vorrebbe strumenti che qui
-non servono; ma l'idea si dice a parole in mezza pagina, ed è un buon affare,
+inventata a tavolino: è quel che **resta** di un conto più grande, e conviene
+raccontare che conto sia. Rifarlo per intero vorrebbe strumenti che qui non
+servono; ma l'idea si dice a parole in mezza pagina, ed è un buon affare,
 perché in fondo c'è un premio: spiega da sola il difetto più famoso delle GNN.
 
 `````{tab} Elementare
@@ -446,11 +446,10 @@ quello di alta frequenza è una scacchiera, dove ogni vicino ha il segno
 opposto.
 
 Queste configurazioni, dalla più liscia alla più a scacchiera, hanno un nome
-proprio: si chiamano gli **autovettori del laplaciano** del grafo. Adesso il
-nome non serve a nulla, e non c'è niente da capirci sopra: vale la pena
-registrarlo soltanto perché nell'ultima sezione del capitolo tornerà a fare un
-mestiere che nessuno si aspetta, cioè dire a ogni nodo dove sta nel grafo,
-come i Transformer dicono a ogni parola dove sta nella frase.
+proprio: si chiamano gli **autovettori del laplaciano** del grafo. È il nome che si trova scritto ovunque, e vale la pena registrarlo perché
+nell'ultima sezione del capitolo torna a fare un mestiere che nessuno si
+aspetta: dire a ogni nodo dove sta nel grafo, come i Transformer dicono a ogni
+parola dove sta nella frase.
 
 Una volta stabilito questo si può copiare, di sana pianta, il mestiere di chi
 lavora sui suoni e sulle immagini: si prendono i numeri sui nodi e si scrivono
@@ -614,7 +613,7 @@ ottenuto: stanno in $[-1, 1]$, il più grande vale esattamente $1$, e il suo
 autovettore è $\tilde{\mathbf{D}}^{1/2}\mathbf{1}$, cioè la radice dei gradi.
 Uno strato GCN (a meno di $\mathbf{W}$ e della non linearità) è la
 moltiplicazione per $\hat{\mathbf{A}}$; $K$ strati sono $\hat{\mathbf{A}}^K$.
-Ma elevare a potenza una matrice moltiplica i suoi autovalori, e ogni
+Ma elevare alla $K$ una matrice eleva alla $K$ i suoi autovalori, e ogni
 autovalore di modulo minore di $1$ **svanisce**: dopo abbastanza strati
 sopravvive solo la componente lungo l'autovettore dominante, che è la stessa
 per tutti i nodi a meno del loro grado. (Vale su un grafo **connesso**: se le
@@ -633,10 +632,10 @@ i quattro nodi, che partivano da valori distinti, coincidono ormai nelle prime
 due cifre decimali. Il divario fra il più alto e il più basso è $3{,}4 \cdot
 10^{-3}$ e si stringe come la potenza $K$-esima del secondo autovalore,
 $0{,}729^K$: a cinquanta applicazioni vale $2{,}6 \cdot 10^{-7}$ e a cento
-$3{,}5 \cdot 10^{-14}$. Anche lì i quattro numeri restano diversi fra loro (in
-doppia precisione li separano ancora più di centocinquanta passi elementari,
-$155$ per la precisione), ma è
-una differenza che nessun modello può più usare: al passo successivo della
+$3{,}5 \cdot 10^{-14}$. Anche lì i quattro numeri restano diversi fra loro (in doppia precisione li separano ancora un centinaio scarso di passi
+elementari, il gradino minimo fra due numeri rappresentabili, e quanti
+esattamente dipende dall'ordine in cui si fanno le moltiplicazioni), ma è una
+differenza che nessun modello può più usare: al passo successivo della
 rete, moltiplicata per pesi dell'ordine dell'unità, resta quello che era.
 
 A rigore l'argomento vale per l'operatore lineare $\hat{\mathbf{A}}^K$, cioè

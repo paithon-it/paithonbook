@@ -305,13 +305,13 @@ hanno prodotto **esattamente** la stessa partizione sui punti in comune. Quando
 la struttura c'è e ha la forma che $k$-means si aspetta, misurarla è facile e
 ogni strumento la trova.
 
-Vale la pena guardare anche la riga $k = 2$, che è la trappola annunciata:
+Conviene guardare anche la riga $k = 2$, che è la trappola annunciata:
 stabilità $0{,}960$, quasi quanto quella del $k$ giusto. È qui che serve
 l'ultima colonna, ed è la ragione per cui c'è. A $k = 4$ la stabilità è
-$1{,}000$ con dispersione **zero**: venticinque prove su venticinque hanno dato
-lo stesso identico risultato. A $k = 2$ la stessa media di $0{,}960$ arriva da
-prove che ballano di $\pm 0{,}197$, cioè non è affatto un valore ripetibile: è
-quasi sempre un accordo pieno e ogni tanto un disaccordo totale.
+$1{,}000$ con dispersione **zero**: venticinque prove su venticinque hanno
+dato lo stesso identico risultato. A $k = 2$ la stessa media di $0{,}960$
+arriva da prove che ballano di $\pm 0{,}197$, cioè non è affatto un valore
+ripetibile: è quasi sempre un accordo pieno e ogni tanto un disaccordo totale.
 
 Il perché sta nella geometria. Quattro mucchi ai vertici di un quadrato si
 possono tagliare in due in **due** modi che costano esattamente uguale, in

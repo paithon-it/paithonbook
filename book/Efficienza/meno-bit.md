@@ -41,9 +41,8 @@ mangiano a vicenda.
 
 Una cosa però il passo la deve fare per forza, e da qui viene tutto il resto:
 deve **arrivare fino al numero più grande**. I gradini a disposizione sono in
-numero fisso (con quattro bit, per dire, sono sedici), quindi se il numero più
-grande vale tremila e i gradini sono sedici, il gradino non può essere più
-stretto di duecento: altrimenti la scala finisce prima di arrivarci, e quel
+numero fisso (con quattro bit, per dire, sono sedici), quindi se il numero più grande vale tremiladuecento e i gradini sono sedici,
+il gradino non può essere più stretto di duecento: altrimenti la scala finisce prima di arrivarci, e quel
 numero non si riesce proprio a scrivere. **È il più grande a decidere il passo
 per tutti**, e non è una scelta di chi arrotonda, è una conseguenza dell’avere
 un numero fisso di gradini.
@@ -134,7 +133,7 @@ Si prende una matrice di pesi, la si arrotonda a un certo numero di bit, e si
 guarda di quanto cambia **il risultato della moltiplicazione**, che è l’unica
 cosa che il resto della rete vedrà.
 
-Da qui in avanti il passo lo chiamerò con il suo nome tecnico, **scala**: è la
+Da qui in avanti il passo ha il suo nome tecnico, **scala**: è la
 stessa identica cosa, la larghezza di un gradino, e la parola serve perché
 adesso comincia a contare **chi la condivide**. Il conto si fa in due modi: con
 una scala sola per tutta la matrice, e con una scala ogni sessantaquattro
@@ -192,7 +191,7 @@ for bit in (8, 6, 4, 3):
 
 Otto bit costano l’uno per cento, e a sei bit si è ancora sotto il cinque: fin
 lì si può dire che arrotondare sia quasi gratis. **A quattro bit no**, ed è la
-riga che vale la pena guardare due volte.
+riga da guardare due volte.
 
 Quel diciotto e sette per cento conviene tradurlo, perché da solo non dice
 niente. È il rapporto fra la lunghezza del vettore degli errori e quella del

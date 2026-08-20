@@ -9,15 +9,15 @@ Beatles). Dentro c'è un'architettura di rete neurale nuova, il **Transformer**,
 che fa una scommessa radicale: per capire il linguaggio non servono né la
 ricorrenza delle RNN (leggere una parola alla volta, portandosi dietro un
 riassunto di quel che è venuto prima) né le convoluzioni (i filtri che scorrono
-su un testo o su un'immagine guardando solo i vicini, del capitolo sul deep
-learning); basta il meccanismo di **attenzione**, usato fino ad allora come
+su un testo o su un'immagine guardando solo i vicini, del {doc}`capitolo sul deep
+learning </DeepLearning/overview>`); basta il meccanismo di **attenzione**, usato fino ad allora come
 accessorio. La scommessa è vinta oltre ogni previsione: oggi il Transformer è la
 base di quasi tutti i grandi modelli linguistici, e quella «T» è la stessa che
 trovi nel nome di GPT e di ChatGPT.
 
 ## Il problema: leggere una frase tutta insieme
 
-I modelli che abbiamo incontrato nel capitolo sul Natural Language Processing
+I modelli che abbiamo incontrato nel {doc}`capitolo sul Natural Language Processing </NaturalLanguageProcessing/overview>`
 leggono il testo una parola alla volta, portandosi dietro un riassunto di quel
 che è venuto prima: sono le **reti ricorrenti** (in sigla RNN) e la loro
 versione più raffinata, quella con un taccuino su cui annotare e cancellare
@@ -56,7 +56,7 @@ hardware, non di architettura. Il prezzo è un costo quadratico nella lunghezza
 della sequenza, di cui parleremo nella sezione sui confronti.
 `````
 
-## Che cosa troverai in questo capitolo
+## Dal meccanismo ai modelli
 
 Una nota di metodo, prima dell'elenco. I Transformer sono importanti, ma non
 sono magia: sotto il cofano ci sono tabelle di numeri e operazioni che si fanno

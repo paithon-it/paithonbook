@@ -189,7 +189,7 @@ riscriverla da capo a ogni passo.
 
 Il dettaglio decisivo di {numref}`fig-cella-lstm` è la linea orizzontale che
 passa da sinistra a destra quasi indisturbata, ed è quella il taccuino. Perché
-sia decisiva richiede tre passaggi, e vale la pena farli.
+sia decisiva richiede tre passaggi, e conviene farli.
 
 **Primo: che cosa vuol dire «riscrivere il riassunto».** Fin qui l'abbiamo
 detto a parole, ma dentro il computer quel riassunto è una fila di numeri. E
@@ -330,7 +330,7 @@ class ClassificatoreSentiment(nn.Module):
         return self.out(h[:, -1])  # ultimo passo -> logit per CrossEntropyLoss
 ```
 
-Il ciclo di addestramento è quello che conosciamo dal capitolo su PyTorch. E
+Il ciclo di addestramento è quello che conosciamo dal {doc}`capitolo su PyTorch </PyTorch/overview>`. E
 provare, come si è detto, costa una parola: si scambia `nn.LSTM` con `nn.RNN` o
 con `nn.GRU` e si guarda quante risposte esatte escono. Su frasi lunghe LSTM e
 GRU battono quasi sempre la RNN semplice, e il perché lo abbiamo appena visto:

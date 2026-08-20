@@ -278,15 +278,16 @@ risposte giuste, e basta.
 
 Cinque epoche, e l'accuratezza sul test arriva attorno al **97–98%**:
 novantasette cifre su cento lette correttamente da $101\,770$ numeri che prima
-di partire erano casuali. Quanto ci vuole dipende molto dalla macchina, e vale
-la pena dirlo per non lasciare aspettative sbagliate: su una GPU sono decine di
-secondi, su una CPU normale si va sui minuti (su questa macchina, quattro core
-e nient'altro di speciale, sette minuti, con un $97{,}5\%$ alla quinta epoca).
+di partire erano casuali. Quanto ci vuole dipende molto dalla macchina, e
+conviene dirlo per non lasciare aspettative sbagliate: su una GPU sono decine
+di secondi, su una CPU normale si va sui minuti (su questa macchina, quattro
+core e nient'altro di speciale, sette minuti, con un $97{,}5\%$ alla quinta
+epoca).
 
 ## Studiare e dare l'esame: `train()` ed `eval()`
 
-Nel programma compaiono due chiamate su cui vale la pena fermarsi:
-`model.train()` e `model.eval()`, con il blocco `torch.no_grad()`.
+Nel programma compaiono due chiamate su cui conviene fermarsi: `model.train()`
+e `model.eval()`, con il blocco `torch.no_grad()`.
 
 `````{tab} Elementare
 La rete ha due modalità, come uno studente. Quando **studia**
@@ -425,8 +426,8 @@ con accanto il nome del pezzo a cui appartengono (in Python un elenco fatto
 così, dove a ogni nome corrisponde una cosa, si chiama *dizionario*). Dentro
 non ci sono solo i pesi imparati: ci sono anche i *buffer*, cioè i numeri che
 il modello si tiene da parte senza impararli, perché li ha misurati sui dati
-invece di ricavarli dall'errore. Ne incontreremo un caso nel capitolo sul deep
-learning; qui basta sapere che nel file finiscono anche quelli.
+invece di ricavarli dall'errore. Ne incontreremo un caso nel {doc}`capitolo sul deep
+learning </DeepLearning/overview>`; qui basta sapere che nel file finiscono anche quelli.
 
 Il motivo per cui non si salva l'oggetto intero è pratico. Salvare l'oggetto
 significherebbe mettere nel file anche la classe Python che lo descrive, e

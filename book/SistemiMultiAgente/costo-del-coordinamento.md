@@ -145,8 +145,7 @@ altro.
 
 `````
 
-Mettiamo dei numeri, scelti perché sono taglie plausibili e tonde, non perché
-qualcuno li abbia misurati: duemila token di istruzioni iniziali (due o tre
+Mettiamo delle taglie tonde: duemila token di istruzioni iniziali (due o tre
 pagine di regole, che ciascuno si rilegge sempre uguali a ogni turno), messaggi
 da cinquecento token l'uno (mezza paginetta), otto giri di parola a testa. Una
 colonna della tabella dice quanto è largo il testo che si ritrova davanti chi
@@ -200,14 +199,11 @@ perché non produce niente di visibile.
 C'è un secondo effetto, meno contabile e più insidioso. All'ultimo turno la
 finestra di chi parla contiene 18.000 token di conversazione già avvenuta, e
 l'informazione decisiva (una decisione presa al decimo turno, un vincolo
-enunciato al terzo) sta sepolta lì in mezzo. È la posizione peggiore: misurando
-dove finiscono le informazioni che un modello effettivamente usa, si scopre che
-quelle in cima e quelle in fondo pesano molto più di quelle nel mezzo, un po’
-come succede a chi impara una poesia e si ricorda benissimo la prima strofa e
-l'ultima. Il capitolo sugli **Agenti**, parlando di come si riempie quella
-finestra, chiama il difetto con il suo nome inglese, *lost in the middle*,
-perduto nel mezzo. La trascrizione condivisa non è solo cara: è anche il posto
-peggiore dove mettere qualcosa che deve essere ricordato.
+enunciato al terzo) sta sepolta lì in mezzo, che è la posizione peggiore: è il *lost in the
+middle* del {doc}`context engineering </Agenti/context-engineering>`, cioè il
+fatto misurato che un modello usa bene quello che legge in cima e in fondo e
+trascura quello che sta nel mezzo. Una trascrizione condivisa non è solo cara:
+è anche il posto peggiore dove mettere qualcosa che deve essere ricordato.
 
 ## Il tetto di Amdahl
 
@@ -360,10 +356,13 @@ parole cambiate se ne accorge otto: la fila di venti passaggi torna a riuscire
 otto volte su dieci, invece di tre. Non è un dettaglio organizzativo, è la
 differenza fra un sistema che funziona e uno che no.
 
-E anche un arbitro solo, messo a metà fila, serve: spezza i venti passaggi in due
-tronconi da dieci, e l'errore accumulato nel primo non entra nel secondo, perché
-lì la frase viene rimessa a posto. Il risultato torna a essere quello di una fila
-di dieci, sei volte su dieci invece di tre.
+E serve anche un arbitro solo, messo a metà fila: spezza i venti passaggi in
+due tronconi da dieci, e quello che si è rovinato nel primo non entra nel
+secondo, perché lì la frase viene rimessa a posto. Se quell'arbitro fosse
+infallibile la fila tornerebbe a riuscire come una fila di dieci, cioè sei
+volte su dieci invece di tre; con l'arbitro di prima, che di dieci errori ne
+prende otto, si arriva a poco più di cinque. Metà del guadagno di un arbitro a
+ogni passaggio, con un arbitro solo.
 
 `````
 
@@ -441,9 +440,9 @@ e non si lascia convincere da come gliela si racconta. E si noti che cosa non gl
 serve: non deve conoscere la risposta giusta, deve solo saper riconoscere una
 risposta che non sta in piedi. Sono cose come un programma di prova che si esegue
 e o passa o non passa, un conto che deve tornare, un modulo che deve avere tutte
-le caselle riempite. Nel capitolo sugli Agenti quel controllo si chiama
-**cancello di verifica** (in inglese *validation gate*), e il nome dice il
-mestiere: chi non è in regola non passa.
+le caselle riempite. Nel {doc}`capitolo su prompt, contesto e loop </IngegneriaLLM/overview>` quel
+controllo si chiama **cancello di verifica** (in inglese *validation gate*), e
+il nome dice il mestiere: chi non è in regola non passa.
 
 Quello che i conti di questa sezione aggiungono è la ragione per cui il cancello
 non è un lusso ma il pezzo portante. Senza, ogni passaggio in più toglie una
@@ -472,7 +471,7 @@ nome, e il conto è quello.
 **Secondo: serve un giudizio indipendente da chi ha prodotto.** Qui il valore
 aggiunto non è potenza di calcolo, è l'indipendenza: chi ha scritto il codice
 ha già deciso, mentre lo scriveva, che è giusto. Separare chi fa da chi
-controlla (nel capitolo sugli Agenti, *maker* e *checker*) serve esattamente a
+controlla (nel loop engineering, *maker* e *checker*) serve esattamente a
 questo, e il guadagno si può mettere in numeri.
 
 `````{tab} Elementare
@@ -622,10 +621,9 @@ un criterio che possa davvero applicare.
 
 ## La regola prudente
 
-Il capitolo sugli Agenti chiudeva con una formula che vale la pena rendere
-verificabile: si aggiunge un ruolo solo quando risolve un problema reale, cioè
-un problema che un agente da solo non risolveva. La versione operativa ha
-quattro clausole.
+Il capitolo sugli Agenti chiudeva con una formula da rendere verificabile: si
+aggiunge un ruolo solo quando risolve un problema reale, cioè un problema che
+un agente da solo non risolveva. La versione operativa ha quattro clausole.
 
 **Il problema deve essere documentato, non intuito.** Prima di aggiungere il
 critico bisogna poter esibire i casi in cui il solista sbagliava e il critico

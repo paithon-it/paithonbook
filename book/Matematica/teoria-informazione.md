@@ -162,13 +162,13 @@ delle ragioni per cui è lei l'oggetto su cui si costruisce.
 ## Confrontare distribuzioni: cross-entropia e divergenza KL
 
 Fin qui una sola sorgente e una sola tabella di probabilità. Ma nel machine
-learning ce ne sono sempre *due*, e vale la pena dire di quali si tratta. La
-prima descrive come vanno le cose davvero: quanto spesso, nel mondo, esce
-ciascuna risposta. Nessuno la conosce per intero (con la moneta truccata sì,
-perché l'abbiamo truccata noi; con le foto di gatti no), ma esiste, e la
-chiamiamo $p$. La seconda è quello che il **modello** crede: le probabilità che
-assegna lui, e che sono sbagliate finché non impara. La chiamiamo $q$. Serve un
-modo per misurare quanto la seconda sbaglia rispetto alla prima.
+learning ce ne sono sempre *due*, e conviene dire di quali si tratta. La prima
+descrive come vanno le cose davvero: quanto spesso, nel mondo, esce ciascuna
+risposta. Nessuno la conosce per intero (con la moneta truccata sì, perché
+l'abbiamo truccata noi; con le foto di gatti no), ma esiste, e la chiamiamo
+$p$. La seconda è quello che il **modello** crede: le probabilità che assegna
+lui, e che sono sbagliate finché non impara. La chiamiamo $q$. Serve un modo
+per misurare quanto la seconda sbaglia rispetto alla prima.
 
 ```{figure} ../figures/cross-entropy-kl-divergence.svg
 :name: fig-cross-entropia-kl
@@ -385,7 +385,8 @@ lettera indipendentemente dalle precedenti. Una lingua non è così: dopo una
 sono poche. Per una sorgente con memoria il limite vero è più basso, ed è la
 sorpresa media di ogni lettera **dato tutto ciò che la precede**.
 
-La differenza si tocca con mano, e si può rifare a casa: prendendo i file di
+La differenza si tocca con mano, e chiunque può rifare il conto su un testo
+che ha già. Prendendo i file di
 testo con cui questo libro è scritto (sei megabyte abbondanti) e contando
 soltanto quanto è frequente ciascun carattere, la sorpresa media viene circa
 $4{,}7$ bit a carattere. Poi si passa il tutto a `gzip`, che è il compressore
@@ -402,11 +403,11 @@ non morde più niente su un file già compresso, dove è già stata spremuta via
 
 Comprimere è l'arte del Morse portata al suo limite matematico: scorciatoie a
 ciò che è frequente. E qui si chiude il cerchio con il machine learning, in un
-passaggio che vale la pena fare per esteso. Un compressore ha bisogno di sapere
-che cosa è frequente, per dare a quello le scorciatoie. Un modello che predice
-bene sa esattamente questo, anzi qualcosa di più: sa che cosa è frequente
-*proprio lì*, dopo le parole appena lette. Chi ha un modello così può scrivere
-il messaggio in un modo diverso e più corto: invece del testo, le sorprese, e
+passaggio da fare per esteso. Un compressore ha bisogno di sapere che cosa è
+frequente, per dare a quello le scorciatoie. Un modello che predice bene sa
+esattamente questo, anzi qualcosa di più: sa che cosa è frequente *proprio
+lì*, dopo le parole appena lette. Chi ha un modello così può scrivere il
+messaggio in un modo diverso e più corto: invece del testo, le sorprese, e
 dove il modello indovina la sorpresa è quasi zero, quindi non c'è quasi niente
 da scrivere. Predire e comprimere, ci dice Shannon, sono in fondo la stessa
 cosa.

@@ -29,7 +29,7 @@ Il neural style transfer combina il *contenuto* di una foto (cosa c'è) con lo
 
 ## L'idea capovolta: si ottimizza l'immagine, non la rete
 
-In tutto il libro, finora, "addestrare" ha voluto dire una cosa sola: si
+Fin qui "addestrare" ha voluto dire una cosa sola: si
 correggono a piccoli passi i **pesi** della rete, cioè i numeri interni che
 decidono come si comporta, finché le sue risposte non migliorano. Il neural
 style transfer capovolge lo schema. La rete, una **VGG** (il nome viene dal
@@ -318,7 +318,7 @@ caso se ne possono generare quante se ne vuole.
 cioè al pezzo di codice che, saputo di quanto si è sbagliato, decide come
 muovere i pixel. Gli autori usavano L-BFGS, che su un problema come questo
 arriva in meno passi ma va richiamato in un modo tutto suo; noi usiamo Adam,
-che è lo stesso del ciclo di addestramento visto nel capitolo su PyTorch e
+che è lo stesso del ciclo di addestramento visto nel {doc}`capitolo su PyTorch </PyTorch/overview>` e
 funziona benissimo.
 
 **Un ritocco alla rete.** Gli autori, dove la VGG tiene solo il valore più

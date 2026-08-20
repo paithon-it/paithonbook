@@ -272,13 +272,13 @@ partite portate fino in fondo: 7330
 rapporto: 34.8 volte meno
 ```
 
-Stessa risposta, quasi trentacinque volte meno lavoro. E vale la pena
-insistere su «stessa risposta», perché è la cosa che rende la potatura diversa
-da tutti gli altri risparmi di questo capitolo: **non si è rinunciato a
-niente**. I rami non guardati erano rami di cui si era dimostrato, senza
-guardarli, che non potevano cambiare la conclusione.
+Stessa risposta, quasi trentacinque volte meno lavoro. E conviene insistere su
+«stessa risposta», perché è la cosa che rende la potatura diversa da tutti gli
+altri risparmi di questo capitolo: **non si è rinunciato a niente**. I rami
+non guardati erano rami di cui si era dimostrato, senza guardarli, che non
+potevano cambiare la conclusione.
 
-E l’ordine? La scheda dice che è tutto, e sul filetto si può misurare: basta
+E l'ordine? Sul filetto si può misurare: basta
 scandire le caselle in un ordine diverso, il che non cambia il gioco di una
 virgola.
 
@@ -337,9 +337,10 @@ venti ordini a caso: da 2603 a 13358
 ```
 
 Sei volte fra il migliore e il peggiore, **sullo stesso gioco, con lo stesso
-algoritmo e con la stessa risposta in fondo**. E l’ordine che vince non è
-casuale: mettere per primi il centro e gli angoli vuol dire provare per prime
-le caselle che nel filetto contano di più, cioè fare esattamente quello che un
+algoritmo e con la stessa risposta in fondo**. E l'ordine ragionato non è lontano dal migliore che si trovi a tentativi:
+mettere per primi il centro e gli angoli vuol dire provare per prime le
+caselle che nel filetto contano di più, e su venti ordini presi a caso uno
+solo fa meglio, cioè fare esattamente quello che un
 programma di scacchi fa quando ordina le mosse con una passata superficiale.
 Il conto della potatura, insomma, non si fa una volta per tutte: si fa
 sull’ordine che si è scelto.
@@ -386,7 +387,8 @@ conclude che sacrificare pedoni è una buona idea.
 Non è un errore di programmazione: è quello che succede quando si giudica il
 mondo a una distanza fissa. Il disastro non è stato evitato, è stato spinto
 appena oltre il punto in cui si smette di guardare, e in cambio si è pagato
-davvero. È il difetto che ogni lettore di questo capitolo dovrebbe portarsi
+davvero. E ricompare ben oltre gli scacchi, ogni volta che qualcuno decide guardando a
+una scadenza fissa: è il difetto da portarsi
 dietro, perché ricompare ogni volta che qualcuno ottimizza guardando a una
 scadenza fissa.
 

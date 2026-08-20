@@ -27,15 +27,16 @@ sparso nella memoria, e per raggiungerlo si segue un rimando per volta;
 nell'array i valori stanno di fila, e il processore può leggerli a blocchi.
 ```
 
-Quel che {numref}`fig-array-vs-lista` mostra è il motivo per cui l'array esiste:
-scorrere valori messi di fila è l'operazione per cui un processore è costruito,
-mentre inseguire un **rimando** alla volta (un rimando è un bigliettino che
-invece del numero porta scritto l'indirizzo in cui il numero si trova) è quella
-che gli riesce peggio. Vale la pena essere precisi su chi ne beneficia, perché è
-una confusione facile e la riprenderemo alla fine della pagina: la compattezza
-serve al motore interno di NumPy, che è scritto in **C** (un linguaggio molto
-più vicino alla macchina di Python, veloce da eseguire e scomodo da scrivere) e
-che attraversa l'array tutto insieme; non serve a un ciclo scritto in Python.
+Quel che {numref}`fig-array-vs-lista` mostra è il motivo per cui l'array
+esiste: scorrere valori messi di fila è l'operazione per cui un processore è
+costruito, mentre inseguire un **rimando** alla volta (un rimando è un
+bigliettino che invece del numero porta scritto l'indirizzo in cui il numero
+si trova) è quella che gli riesce peggio. Conviene essere precisi su chi ne
+beneficia, perché è una confusione facile e la riprenderemo alla fine della
+pagina: la compattezza serve al motore interno di NumPy, che è scritto in
+**C** (un linguaggio molto più vicino alla macchina di Python, veloce da
+eseguire e scomodo da scrivere) e che attraversa l'array tutto insieme; non
+serve a un ciclo scritto in Python.
 
 Una nota di passaggio, perché è la domanda che viene subito: in Python il `+`
 fra due liste non somma i numeri, attacca la seconda in coda alla prima
@@ -79,7 +80,8 @@ elemento-per-elemento sono delegate a cicli in C compilati e vettorizzati
 (istruzioni SIMD), che
 saltano l’*overhead* dell'interprete su ogni iterazione; l'algebra lineare
 vera e propria (i prodotti tra matrici) passa invece per librerie BLAS
-ottimizzate. È la differenza tra `float` scatolati sparsi nella heap e un
+ottimizzate. È la differenza fra un milione di numeri ciascuno impacchettato
+nel proprio oggetto, sparsi dove capita, e un
 array C nudo.
 
 `````
@@ -106,15 +108,17 @@ scrittura vista nella sezione sulle funzioni: dice quanto dev'essere grande il
 risultato. E «a campana» è la forma che si vede disegnando quanti numeri escono
 vicino a ciascun valore: quasi tutti vicino allo zero, sempre meno man mano che
 ci si allontana, in modo simmetrico. È la distribuzione più comune in natura e
-in statistica, e il capitolo di matematica la chiamerà con il suo nome.
+in statistica: si chiama **distribuzione normale**, o gaussiana, e la
+{doc}`sezione di probabilità e statistica </Matematica/probabilita-statistica>`
+le dedica la formula e il grafico.
 
-La prima riga contiene una parolina che vale la pena guardare: `as`. `import
-numpy as np` vuol dire «importa numpy e, qui dentro, chiamalo `np`»: è un
-soprannome, e da quel momento ogni strumento della libreria si scrive
-`np.qualcosa`. Il soprannome lo sceglie chi scrive (funzionerebbe anche
-`numpy.array(...)`, o `as npy`), ma `np` per NumPy, `pd` per Pandas e `plt` per
-Matplotlib sono convenzioni così universali che cambiarle rende il codice
-illeggibile agli altri.
+La prima riga contiene una parolina da guardare: `as`. `import numpy as np`
+vuol dire «importa numpy e, qui dentro, chiamalo `np`»: è un soprannome, e da
+quel momento ogni strumento della libreria si scrive `np.qualcosa`. Il
+soprannome lo sceglie chi scrive (funzionerebbe anche `numpy.array(...)`, o
+`as npy`), ma `np` per NumPy, `pd` per Pandas e `plt` per Matplotlib sono
+convenzioni così universali che cambiarle rende il codice illeggibile agli
+altri.
 
 Attenzione alle parentesi di `np.zeros((2, 3))`, che sono due: la funzione
 vuole *una sola* cosa, la forma dell'array, e la forma è una coppia
@@ -277,9 +281,9 @@ a + b                             # tabella 3x4, senza un solo for
 #        [13, 23, 33, 43]])
 ```
 
-Le quadre dentro le quadre di `b` non sono un vezzo: `[1, 2, 3]` sarebbe una
-*riga* di tre numeri, mentre `[[1], [2], [3]]` è fatto di tre righe da un
-numero ciascuna, cioè una **colonna**. Le parentesi esterne racchiudono la
+Guarda le quadre di `b`, che sono doppie: `[1, 2, 3]` sarebbe una *riga* di
+tre numeri, mentre `[[1], [2], [3]]` è fatto di tre righe da un numero
+ciascuna, cioè una **colonna**. Le parentesi esterne racchiudono la
 tabella, quelle interne una riga per volta.
 
 La regola pratica: se una delle due forme ha $1$ dove l'altra ha $n$, quel lato
@@ -292,7 +296,7 @@ non consuma memoria.
 
 Il broadcasting allinea le forme **da destra**. Due assi sono compatibili se
 sono uguali oppure se uno dei due vale $1$: quel lato viene esteso senza copia.
-Con $a$ di forma $(4,)$ e $b$ di forma $(3,1)$:
+Con $\mathbf{a}$ di forma $(4,)$ e $\mathbf{b}$ di forma $(3,1)$:
 
 $$
 (4,) \;\text{ con }\; (3,1) \;\longrightarrow\;
@@ -347,9 +351,7 @@ Le ultime due righe non sono Python: `%timeit` è un comando dei notebook (una
 *magic* di IPython) che cronometra un'istruzione ripetendola molte volte e
 riportando **media e deviazione standard** dei tempi (`mean ± std. dev.`),
 insieme al numero di ripetizioni. In un normale file `.py` non funziona: lì si
-usa il modulo `timeit` della libreria standard. Su una macchina condivisa la
-media è rumorosa e il minimo è una misura più onesta: `%timeit -o` restituisce
-l'oggetto del risultato, il cui campo `.best` è il tempo migliore.
+usa il modulo `timeit` della libreria standard. 
 
 `````{tab} Elementare
 
@@ -418,7 +420,8 @@ np.linalg.inv(A)       # inversa
 np.linalg.solve(A, v)  # risolve A z = v  (piu' stabile dell'inversa)
 ```
 
-Un'avvertenza che torna spesso: per risolvere un sistema $A z = v$ si usa
+Un'avvertenza che torna spesso: per risolvere un sistema
+$\mathbf{A}\mathbf{z} = \mathbf{v}$ si usa
 `np.linalg.solve`, non `inv(A) @ v`. Il primo è più preciso e più veloce;
 calcolare l'inversa esplicita è quasi sempre uno spreco. Con questi mattoni
 (array, broadcasting, vettorizzazione, algebra lineare), abbiamo il
@@ -444,7 +447,7 @@ di volte.
   ciclo sparisce.
 - Il segno `@` fa i prodotti fra vettori e matrici e `np.linalg` raccoglie il
   resto dell'algebra lineare: qui basta sapere che esistono e che ognuno di
-  quei conti è una riga sola, il significato arriva col capitolo di matematica.
+  quei conti è una riga sola, il significato arriva col {doc}`capitolo di matematica </Matematica/overview>`.
 ```
 
 `````

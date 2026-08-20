@@ -36,7 +36,7 @@ manuale di Molnar {cite}`molnar2022interpretable`.
 Alcuni modelli non hanno bisogno di essere spiegati: *sono* la loro
 spiegazione. L'esempio più puro è quello che risponde facendo una somma:
 prende ogni colonna, la moltiplica per un numero suo, e somma tutto. Sono i due
-modelli incontrati nel capitolo sul machine learning con i nomi di **regressione
+modelli incontrati nel {doc}`capitolo sul machine learning </MachineLearning/overview>` con i nomi di **regressione
 lineare** (quando la risposta è una quantità, un prezzo) e **regressione
 logistica** (quando è un sì o un no). Quei numeri, uno per colonna, si chiamano **pesi** (o, con la parola che
 si usa più spesso in statistica, **coefficienti**: sono la stessa cosa), e una
@@ -116,7 +116,7 @@ regolarizzazione Ridge/Lasso vista nel capitolo di machine learning).
 `````
 
 La trasparenza non finisce con i modelli lineari. Gli **alberi di decisione**,
-studiati nel capitolo sul machine learning, sono l'altro archetipo di «scatola
+studiati nel {doc}`capitolo sul machine learning </MachineLearning/overview>`, sono l'altro archetipo di «scatola
 bianca»: si parte dalla domanda in cima (che si chiama **radice**, perché
 l'albero si disegna capovolto, con le foglie in basso) e a ogni risposta si
 scende di un ramo, fino a una casella finale che porta la decisione (una
@@ -258,8 +258,8 @@ La differenza fra i due passi è di natura, non di ordine. Una classifica è un
 fatto misurabile: si misura, e viene quel che viene. La riga tratteggiata invece
 non la dice nessun dato, la decide una persona, e va giustificata con qualcosa
 d'altro: il costo di raccogliere una colonna, un vincolo di leggibilità, una
-prova che il modello ridotto non peggiora. La selezione delle feature la
-nominiamo una volta sola, qui: quello di cui parla la sezione è la classifica.
+prova che il modello ridotto non peggiora. Quello di cui parliamo da qui in avanti è la classifica, non la riga
+tratteggiata.
 
 Cominciamo dal modo più generale e più solido di costruirla. È un metodo che non
 guarda dentro il modello: lo tratta da scatola nera, gli passa dei casi e si
@@ -360,17 +360,17 @@ e per una colonna con tanti valori diversi le soglie fra cui scegliere sono
 tantissime.
 
 L'albero, dunque, mentre impara tiene già il conto di questi meriti. Basta
-sommarli, e la classifica è fatta senza fare nient'altro. Lo stesso vale per una **foresta casuale**, i cui alberi sono già stati
-incontrati in apertura di capitolo: sono centinaia, e ciascuno cresce su un
-campione diverso delle righe, estratto a sorte, e a seconda delle impostazioni
-anche su un sottoinsieme diverso delle colonne. Da lì il «casuale». Le loro
-risposte si mettono ai voti, e i meriti si sommano su tutti gli alberi. Questa misura
-si chiama, con la sigla inglese che si trova ovunque, **MDI** (*mean decrease
-in impurity*, cioè calo medio dell'impurità), ed è quella che nella sezione
-sugli alberi e gli insiemi di modelli del capitolo sul machine learning si
-leggeva da `feature_importances_`. È rapidissima, perché non c'è niente da
-calcolare dopo, ma va letta con prudenza, per due ragioni che vale la pena
-rendere esplicite.
+sommarli, e la classifica è fatta senza fare nient'altro. Lo stesso vale per
+una **foresta casuale**, i cui alberi sono già stati incontrati in apertura di
+capitolo: sono centinaia, e ciascuno cresce su un campione diverso delle
+righe, estratto a sorte, e a seconda delle impostazioni anche su un
+sottoinsieme diverso delle colonne. Da lì il «casuale». Le loro risposte si
+mettono ai voti, e i meriti si sommano su tutti gli alberi. Questa misura si
+chiama, con la sigla inglese che si trova ovunque, **MDI** (*mean decrease in
+impurity*, cioè calo medio dell'impurità), ed è quella che nella sezione sugli
+alberi e gli insiemi di modelli del capitolo sul machine learning si leggeva
+da `feature_importances_`. È rapidissima, perché non c'è niente da calcolare
+dopo, ma va letta con prudenza, per due ragioni da rendere esplicite.
 
 `````{tab} Elementare
 
@@ -678,8 +678,8 @@ Resta da spiegare perché `s3` e `s6` prendano un'impurità non trascurabile
 ragioni agiscono **insieme**, dentro lo stesso numero. Nelle 309 righe di
 addestramento `s3` e `s6` hanno 59 e 56 valori distinti: molti meno del rumore
 continuo, che ne ha 309, ma moltissimi di più di `sex`, che ne ha due.
-Cinquantotto soglie fra cui scegliere bastano perché una colonna senza alcun
-valore si guadagni comunque un merito, e lo si può misurare: rimescolando `s3`
+Cinquantotto soglie fra cui scegliere bastano perché una colonna inutile si
+guadagni comunque un po' di merito, e lo si può misurare: rimescolando `s3`
 e `s6` su tutte e 442 le righe, cioè cancellando ogni loro legame con la
 malattia e lasciandone intatta la distribuzione, l'impurità che ricevono scende
 soltanto a circa $0{,}036$ e $0{,}040$. Due terzi di quel merito, dunque, non

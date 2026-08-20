@@ -1,6 +1,6 @@
 # Conclusione
 
-Abbiamo iniziato il capitolo con una citazione e concludiamo allo stesso modo.
+
 
 Ogni tanto arriva una tecnologia che non risolve un problema, ma cambia il
 modo in cui si risolvono tutti gli altri: la macchina a vapore, l'elettricità,
@@ -48,16 +48,15 @@ arriva la rete. Il gruppo che l'ha costruita è quello dello stesso Andrew Ng
 citato qui sopra.
 
 Il terzo è AlphaFold, sempre di DeepMind, che ha imparato a prevedere la forma
-tridimensionale delle proteine {cite}`jumper2021highly`. Vale la pena dire
-perché fosse difficile: una proteina è una catena di amminoacidi, e quella
-catena si ripiega su se stessa fino ad assumere una forma tridimensionale
-precisa, che è poi ciò che decide la sua funzione. La sequenza si legge in
-laboratorio con relativa facilità; la forma in cui si ripiegherà, no, e capire
-come si passasse dall'una all'altra era un problema aperto da mezzo secolo.
-Conoscerla permette agli scienziati di comprendere il ruolo di una proteina
-all'interno del corpo, e di studiare le malattie che si ritiene siano causate
-da proteine «mal ripiegate», come l'Alzheimer, il Parkinson e la fibrosi
-cistica.
+tridimensionale delle proteine {cite}`jumper2021highly`. Conviene dire perché
+fosse difficile: una proteina è una catena di amminoacidi, e quella catena si
+ripiega su se stessa fino ad assumere una forma tridimensionale precisa, che è
+poi ciò che decide la sua funzione. La sequenza si legge in laboratorio con
+relativa facilità; la forma in cui si ripiegherà, no, e capire come si
+passasse dall'una all'altra era un problema aperto da mezzo secolo. Conoscerla
+permette agli scienziati di comprendere il ruolo di una proteina all'interno
+del corpo, e di studiare le malattie che si ritiene siano causate da proteine
+«mal ripiegate», come l'Alzheimer, il Parkinson e la fibrosi cistica.
 
 Un esempio che invece conviene togliere dall'elenco, perché lo si trova sempre
 dentro e non gli appartiene: i robot chirurgici che assistono il medico in sala
@@ -77,8 +76,8 @@ due dal non sapere che cosa ci sia dentro, e si curano nello stesso modo:
 andando a guardare. Elencare tutte le regole che un modello si è dato, è vero,
 non può farlo nessuno; ma si può misurare che cosa sbaglia e su quali casi, e
 si può coprire un pezzo alla volta della fotografia che gli si dà da guardare,
-per scoprire quale pezzo gli fa cambiare risposta. È un mestiere vero, e nel
-libro ha il suo capitolo, quello sull'interpretabilità. Non serve a concludere
+per scoprire quale pezzo gli fa cambiare risposta. È un mestiere vero, e ha il suo capitolo:
+{doc}`Interpretabilità </Interpretabilita/overview>`. Non serve a concludere
 che non c'è niente di cui preoccuparsi (qualche problema è reale, e a quelli è
 dedicato il capitolo sull'AI responsabile), ma a sapere quali.
 
@@ -129,10 +128,11 @@ bene, e da lì in avanti le reti neurali.
 - Quell'attesa **non è calcolabile**, perché è presa sui casi futuri: in
   pratica si ottimizza la media su un campione già raccolto. La distanza fra le
   due quantità è la differenza fra *ottimizzare* e *imparare*, ed è l'oggetto
-  del capitolo sul machine learning.
+  del {doc}`capitolo sul machine learning </MachineLearning/overview>`.
 - Le eccezioni sono istruttive: le GAN sostituiscono la minimizzazione con
   l'equilibrio di un gioco fra due reti, i metodi non parametrici (k-NN) non
-  hanno parametri da stimare. E la cornice ha una crepa nota, il *reward
+  hanno parametri da stimare per addestramento, perché al posto dei parametri
+  conservano i dati. E la cornice ha una crepa nota, il *reward
   hacking*: $J$ è il punteggio scritto da noi, non l'obiettivo vero.
 - Il formalismo del reinforcement learning, ripreso nei due capitoli che gli
   sono dedicati: un agente in uno stato $s_t$ sceglie $a_t$ secondo una policy

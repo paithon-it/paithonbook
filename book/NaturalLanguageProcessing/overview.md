@@ -15,8 +15,7 @@ abbiamo progettati noi perché ogni istruzione voglia dire una cosa sola,
 l'italiano e l'inglese no.
 
 Arriviamo qui dal deep reinforcement learning, che ci lascia una domanda in
-mano: come si scrive una ricompensa che dica davvero quel che vogliamo. La
-risposta che il libro darà, molto più avanti, non sarà un numero calcolato da un
+mano: come si scrive una ricompensa che dica davvero quel che vogliamo. La risposta, quando arriverà, non sarà un numero calcolato da un
 programma ma il giudizio di una persona che legge due frasi e dice quale
 preferisce. Prima però bisogna sapere che cos'è una frase, per una macchina, ed
 è quel che si fa da qui in poi.
@@ -92,8 +91,8 @@ continuo, e tre di loro avranno più avanti una sezione tutta per sé.
 
 Sono compiti diversi, e per decenni si sono risolti con programmi diversi: uno
 per lo spam, uno per la traduzione, uno per le entità. La storia recente li ha
-avvicinati fino quasi a unificarli, e vale la pena vedere come, perché sembra
-un gioco di prestigio e non lo è.
+avvicinati fino quasi a unificarli, e conviene vedere come, perché sembra un
+gioco di prestigio e non lo è.
 
 Il protagonista è un **modello**: un programma che non è stato scritto
 istruzione per istruzione, ma ricavato da una montagna di testo, e il cui
@@ -183,7 +182,7 @@ inserita a mano** in favore di rappresentazioni apprese direttamente dal testo.
 
 `````
 
-## Come è organizzato il capitolo
+## Dagli attrezzi alle reti
 
 Nelle sezioni seguenti seguiremo questa stessa parabola, ma da vicino. Ogni
 tappa ha un nome tecnico, e qui lo mettiamo fra parentesi solo perché lo si

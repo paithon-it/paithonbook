@@ -12,11 +12,9 @@ l'economia, per un altro filone dei suoi studi. Non poteva immaginare che questa
 sua formula sarebbe diventata, più di sessant'anni dopo, uno degli strumenti
 più usati per spiegare la singola decisione di una rete neurale.
 
-Questa è la seconda tappa del capitolo, e cambia scala. La sezione precedente
-rispondeva a una domanda **globale**: «su quali colonne dei dati (le
-**feature**) si regge il modello, *in media*?». Ma chi si vede negare un
-prestito non chiede una media: chiede «perché *la mia* domanda?». È una domanda
-**locale**, perché riguarda una risposta sola e non l'intero comportamento del
+Fin qui la domanda era **globale**: su quali colonne dei dati (le **feature**)
+si regge il modello, *in media*? Ma chi si vede negare un prestito non chiede
+una media: chiede «perché *la mia* domanda?». È una domanda **locale**, perché riguarda una risposta sola e non l'intero comportamento del
 modello. Qui vediamo i modi di risponderle: i tre attrezzi che si incontrano
 più spesso, **LIME**, **SHAP** e le spiegazioni **controfattuali**, e poi altre
 due forme di risposta, la regola e ciò che manca, che rispondono alla stessa
@@ -598,9 +596,9 @@ tutti i problemi di rappresentazione di LIME.
 ## Quel che manca: i negativi pertinenti
 
 I controfattuali chiedono che cosa cambiare. C'è una domanda gemella e
-asimmetrica che vale la pena distinguere, perché risponde a un dubbio diverso:
-non «che cosa devo cambiare», ma «che cosa, di ciò che **non** c'è, sta
-determinando la risposta».
+asimmetrica da distinguere, perché risponde a un dubbio diverso: non «che cosa
+devo cambiare», ma «che cosa, di ciò che **non** c'è, sta determinando la
+risposta».
 
 `````{tab} Elementare
 
@@ -669,13 +667,12 @@ programma che lo fa, ma chi non programma può saltarlo a piè pari: subito dopo
 il conto lo rifacciamo per intero a mano, con carta e penna, ed è quella la
 parte che conta.
 
-Per capire cosa c'è sotto conviene infatti rifare il conto **provando tutti gli
-ordini a uno a uno**,
-esattamente come si è fatto con 10, 30, 20 e 50 di qualche pagina fa. Stavolta
-però con tre colonne invece che due, il che cambia una cosa sola e vale la pena
-dirla subito: con due colonne gli ordini erano due, con tre diventano **sei**
-(la prima entrata si può scegliere in tre modi, la seconda nei due rimasti, la
-terza è obbligata: $3 \times 2 \times 1$).
+Per capire cosa c'è sotto conviene infatti rifare il conto **provando tutti
+gli ordini a uno a uno**, esattamente come si è fatto con 10, 30, 20 e 50 di
+qualche pagina fa. Stavolta però con tre colonne invece che due, il che cambia
+una cosa sola e conviene dirla subito: con due colonne gli ordini erano due,
+con tre diventano **sei** (la prima entrata si può scegliere in tre modi, la
+seconda nei due rimasti, la terza è obbligata: $3 \times 2 \times 1$).
 
 Il modellino su cui lo faremo è una formula inventata, con tre colonne che
 chiameremo $x_0$, $x_1$ e $x_2$: si numera da zero perché così fa Python, quindi
@@ -775,11 +772,11 @@ stampati dal programma, ottenuti senza programma. E la terza colonna, che nella
 formula non aveva un numero suo, prende comunque mezzo punto: se l'è guadagnato
 tutto nell'interazione.
 
-La terza proprietà usata è la **simmetria**, e vale la pena vedere dove è
-entrata: nel terzo pezzo, e solo lì. Dentro $x_0x_2$ le due colonne fanno
-esattamente lo stesso mestiere (nessuna delle due vale niente senza l'altra), e
-chi contribuisce allo stesso modo riceve lo stesso: da qui il mezzo punto a
-testa. Applicarla al conto **intero** sarebbe invece un errore, perché lì le due
+La terza proprietà usata è la **simmetria**, e conviene vedere dove è entrata:
+nel terzo pezzo, e solo lì. Dentro $x_0x_2$ le due colonne fanno esattamente
+lo stesso mestiere (nessuna delle due vale niente senza l'altra), e chi
+contribuisce allo stesso modo riceve lo stesso: da qui il mezzo punto a testa.
+Applicarla al conto **intero** sarebbe invece un errore, perché lì le due
 colonne non fanno affatto lo stesso mestiere, e infatti prendono $1{,}5$ e
 $0{,}5$. È l'additività a permettere di spezzare, ed è solo dopo aver spezzato
 che la simmetria si può usare, nel pezzo in cui vale.

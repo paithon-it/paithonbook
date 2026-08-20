@@ -45,12 +45,12 @@ Bruno a *Notting Hill* per la prima, quello di Carla a *Love Actually* per la
 seconda.
 ```
 
-Il disegno indica un vicino, non il vincitore di una classifica, e vale la pena
+Il disegno indica un vicino, non il vincitore di una classifica, e conviene
 dire perché. Applicando alla lettera il modo standard di misurare la
 somiglianza, davanti a Bruno finiscono in due: prima Dario, poi Anna. E Dario
-con Carla ha in comune **un film solo**, il che, come vedremo fra poco, basta a
-farlo sembrare un gemello perfetto. È il difetto che questa pagina smonta poco
-più avanti, e si vede già qui, su una griglia di venticinque caselle.
+con Carla ha in comune **un film solo**, il che, come vedremo fra poco, basta
+a farlo sembrare un gemello perfetto. È il difetto che questa pagina smonta
+poco più avanti, e si vede già qui, su una griglia di venticinque caselle.
 
 Il disegno però mente su una cosa, ed è la più importante: lì le celle piene
 sono la maggioranza. In un catalogo vero ognuno ha visto una frazione minuscola
@@ -90,7 +90,7 @@ tutte.
 Ogni utente $u$ è rappresentato dalla riga $\mathbf{r}_u$ della matrice dei
 voti, un vettore con una componente per film (quasi tutte mancanti). La
 somiglianza fra due utenti è la **similarità del coseno** incontrata nel
-capitolo sui richiami di matematica, sezione *Algebra lineare*, ristretta
+{doc}`sezione di algebra lineare </Matematica/algebra-lineare>`, ristretta
 all'insieme $\mathcal{I}_{uv}$ dei film votati da entrambi:
 
 $$
@@ -307,15 +307,16 @@ Attenzione a non promuovere questa frase a proprietà generale della
 raccomandazione, perché sull'implicito il metodo canonico fa l'opposto. Hu,
 Koren e Volinsky osservano che concentrarsi sul solo feedback raccolto
 lascerebbe in mano *soltanto* esempi positivi, e che il segnale negativo, tale
-e quale, sta proprio nelle celle mancanti {cite}`hu2008collaborative`. Il loro
-modello introduce allora due quantità distinte: una **preferenza**
-$p_{ui} = \mathbb{1}[r_{ui} > 0]$, che vale $1$ se un'interazione c'è stata, e
-una **confidenza** $c_{ui} = 1 + \alpha r_{ui}$, che dice quanto crediamo a
-quella preferenza (chi ha guardato una serie dieci volte è un caso più solido
-di chi l'ha aperta una sera). Si minimizza
+e quale, sta proprio nelle celle mancanti {cite}`hu2008collaborative`. Il loro modello introduce allora due quantità distinte, e per non far
+collidere le lettere chiamiamo $\pi_{ui}$ la prima: una **preferenza**
+$\pi_{ui} = \mathbb{1}[n_{ui} > 0]$, che vale $1$ se un'interazione c'è stata,
+e una **confidenza** $c_{ui} = 1 + \alpha\, n_{ui}$, che dice quanto crediamo
+a quella preferenza (chi ha guardato una serie dieci volte è un caso più solido
+di chi l'ha aperta una sera). Qui $n_{ui}$ non è un voto ma il conteggio delle
+interazioni, che è tutto ciò che il feedback implicito lascia. Si minimizza
 
 $$
-\sum_{u,i} c_{ui}\big(p_{ui} - \mathbf{p}_u^\top \mathbf{q}_i\big)^2
+\sum_{u,i} c_{ui}\big(\pi_{ui} - \mathbf{p}_u^\top \mathbf{q}_i\big)^2
 + \lambda \Big( \sum_u \lVert \mathbf{p}_u \rVert^2 + \sum_i \lVert \mathbf{q}_i \rVert^2 \Big),
 $$
 
@@ -430,7 +431,7 @@ ma è il tipo di dettaglio che su dati veri va guardato.
 L'addestramento è un normale ciclo PyTorch. A ogni giro completo sui voti, e un
 giro si chiama **epoca**, il modello prevede, si misura di quanto ha sbagliato
 e l'ottimizzatore ritocca le schede. La misura è l'errore quadratico medio, la
-**MSE** incontrata nel capitolo di Machine Learning. È lo stesso metro del
+**MSE** incontrata nel {doc}`sezione sulle metriche </MachineLearning/metriche>`. È lo stesso metro del
 Netflix Prize, meno l'ultimo passaggio: il RMSE della prima pagina del capitolo
 è la radice quadrata della MSE che vedremo stampata. Una MSE di $0{,}42$ vale
 quindi un errore di circa $0{,}65$ stelle, perché $\sqrt{0{,}42} \approx

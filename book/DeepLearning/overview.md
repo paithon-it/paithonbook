@@ -152,9 +152,9 @@ la gente caricava per farle vedere agli amici, e qualcuno si è accorto che
 potevano servire ad altro. L'aria è il **calcolo**: le schede grafiche (GPU), nate per i
 videogiochi, si sono rivelate perfette per i conti delle reti.
 
-La scintilla sono gli **algoritmi**, e vale la pena dire quali, perché tre
-accorgimenti precisi fanno la differenza fra la rete del 2012 e quelle che non
-imparavano.
+La scintilla sono gli **algoritmi**: tre accorgimenti precisi, ciascuno contro
+un guaio preciso, che fanno la differenza fra la rete del 2012 e quelle che
+non imparavano.
 
 Il primo riguarda la funzione che ogni neurone applica al numero che gli è
 uscito dai conti. Prima si usava una curva che schiaccia qualunque numero in un
@@ -302,9 +302,8 @@ espressiva. È più economico comporre trasformazioni che allargarne una sola.
 
 `````
 
-Questa gerarchia si legge anche nel codice. Una piccola rete convoluzionale
-scritta in PyTorch, la libreria del capitolo omonimo, è letteralmente una
-pila di strati che vanno dal semplice al complesso. Di che cosa faccia ciascuno
+Questa gerarchia si legge anche nel codice. Una piccola rete convoluzionale scritta in {doc}`PyTorch </PyTorch/overview>`
+è letteralmente una pila di strati che vanno dal semplice al complesso. Di che cosa faccia ciascuno
 di quegli strati parla la sezione seguente: qui conta solo vedere la pila.
 
 ```python

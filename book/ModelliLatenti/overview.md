@@ -135,8 +135,8 @@ p(\mathbf{x}) = \sum_{k=1}^{K} \pi_k\,
 \mathcal{N}(\mathbf{x};\, \boldsymbol{\mu}_k,\, \boldsymbol{\Sigma}_k)
 $$
 
-è multimodale pur essendo fatta di soli pezzi unimodali. È l’istogramma a due
-gobbe del livello Elementare, con $K = 2$.
+è multimodale pur essendo fatta di soli pezzi unimodali: con $K = 2$ è la
+densità a due gobbe che nasce da due sole campane, una per sacchetto.
 
 Il caso continuo generalizza in un modo che vale la pena vedere: se
 $p(\mathbf{z}) = \mathcal{N}(\mathbf{0}, \mathbf{I})$ e
@@ -236,7 +236,7 @@ sorteggiati spiegano il dato in modo pessimo: la media di mille numeri quasi
 nulli e di un numero grande dipende tutta da quell’uno, che quasi mai capita di
 pescare. La sezione centrale del capitolo lo misura invece di dirlo.
 
-## Che cosa manca al libro, e perché questo capitolo esiste
+## La stessa idea, dentro quattro macchine
 
 Questa idea il libro la mette al lavoro in **quattro** punti, e in nessuno dei
 quattro la spiega fino in fondo. Due sono già passati: quando trasforma il
@@ -293,7 +293,7 @@ accontentarsi convenga, è la storia della terza sezione.
   $p_\theta(\mathbf{x} \mid \mathbf{z}) = \mathcal{N}(\mathbf{x};
   f_\theta(\mathbf{z}), \sigma^2 \mathbf{I})$ si ottiene una **mistura infinita
   di gaussiane** con centri $f_\theta(\mathbf{z})$. La mistura di gaussiane
-  finita del capitolo sul machine learning è lo stesso oggetto con $\mathbf{z}$
+  finita del {doc}`capitolo sul machine learning </MachineLearning/overview>` è lo stesso oggetto con $\mathbf{z}$
   discreto; con $f_\theta$ lineare si ottiene la PCA probabilistica, e
   l’analisi fattoriale è la variante con una varianza di rumore per ciascuna
   componente osservata.
@@ -308,7 +308,7 @@ accontentarsi convenga, è la storia della terza sezione.
 
 `````
 
-## Come è organizzato il capitolo
+## Comprimere, ricostruire, usare
 
 Tre sezioni, e ciascuna toglie un pezzo al problema. La prima parte dalla
 strada più corta, l’**autoencoder**, cioè una rete che impara a comprimere e a
@@ -327,4 +327,4 @@ in cui questa macchina è al lavoro.
 
 Il capitolo che segue prende lo stesso problema, fabbricare dati nuovi e
 plausibili, e lo attacca dal lato opposto: butta via la probabilità e mette un
-giudice. Vale la pena arrivarci sapendo che cosa si sta buttando via.
+giudice. Conviene arrivarci sapendo che cosa si sta buttando via.

@@ -44,13 +44,13 @@ il nodo 3 ha **grado** 3 (che il grado coincida qui col numero che fa da nome
 al nodo è un caso).
 ```
 
-Nella didascalia sono già comparse le tre parole che ricorrono da qui alla fine
-del capitolo, e vale la pena non lasciarle lì: i nodi a cui un nodo è collegato
-sono i suoi **vicini**, tutti insieme sono il suo **vicinato**, e quanti sono è
-il suo **grado**. Una quarta parola riguarda le tabelle: una tabella di numeri,
-in matematica, si chiama **matrice**, quindi la tabella $\mathbf{A}$ è la
-matrice $\mathbf{A}$, e il libro userà l'una o l'altra parola
-indifferentemente.
+Nella didascalia sono già comparse le tre parole che ricorrono da qui alla
+fine del capitolo, e conviene non lasciarle lì: i nodi a cui un nodo è
+collegato sono i suoi **vicini**, tutti insieme sono il suo **vicinato**, e
+quanti sono è il suo **grado**. Una quarta parola riguarda le tabelle: una
+tabella di numeri, in matematica, si chiama **matrice**, quindi la tabella
+$\mathbf{A}$ è la matrice $\mathbf{A}$, e il libro userà l'una o l'altra
+parola indifferentemente.
 
 Sistemiamo adesso tre distinzioni che tornano di continuo.
 
@@ -243,7 +243,7 @@ esempio se una molecola è tossica.
 - **Livello-arco.** Si prevede se un arco esiste, o esisterà, tra due nodi: la
   **link prediction**. È il motore del «forse conosci…» di un social e del «chi
   ha comprato questo…» di un negozio online. È anche, alla lettera, la forma
-  del problema che il capitolo sui sistemi di raccomandazione
+  del problema che il {doc}`capitolo sui sistemi di raccomandazione </SistemiRaccomandazione/overview>`
   affronterà per intero: un grafo con gli utenti da una parte e i prodotti
   dall'altra, e consigliare un film vuol dire prevedere un arco che ancora non
   c'è.
@@ -291,9 +291,9 @@ reti neurali su grafo, induttive per costruzione {cite}`hamilton2020graph`.
 
 ## Un primo assaggio senza reti neurali: camminare a caso sul grafo
 
-Prima di tirare in ballo le reti neurali vale la pena vedere un'idea più
-semplice, che per qualche anno è stata il modo migliore che si conoscesse per
-descrivere i nodi di un grafo.
+Prima di tirare in ballo le reti neurali conviene vedere un'idea più semplice,
+che per qualche anno è stata il modo migliore che si conoscesse per descrivere
+i nodi di un grafo.
 
 L'obiettivo è quello di sempre: dare a ogni nodo una fila di qualche decina di
 numeri, fatta in modo che due nodi vicini nel grafo ricevano due file che si
@@ -411,10 +411,9 @@ guarda, un social network con un miliardo di persone no. A un certo punto il
 disegno smette di esistere e resta solo l'elenco, e allora il grafo bisogna
 **scriverlo**. Il modo standard è una tabella quadrata con una riga e una
 colonna per nodo, in cui ogni casella dice se i due nodi corrispondenti sono
-collegati. Quello che segue non è un argomento nuovo: è la figura di prima
-scritta in un altro modo, e costruirla è solo contare vicini e riportare i
-conti. Chi trova le tabelle ostiche può guardarle di sfuggita e tirare dritto:
-la sostanza è nelle righe di testo fra l'una e l'altra.
+collegati. Quello che segue non è un argomento nuovo: è la figura di prima scritta in un altro modo, e costruirla è solo contare
+vicini e riportare i conti. La sostanza sta nelle righe di testo fra una
+tabella e l'altra.
 
 I suoi archi sono: 1–2, 1–3, 2–3, 3–4 e 4–5. È un grafo non diretto e non
 pesato, quindi la matrice di adiacenza $\mathbf{A}$ è simmetrica e fatta di

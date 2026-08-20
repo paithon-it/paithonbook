@@ -243,6 +243,12 @@ termine di bias.
 
 ## Matrici: trasformazioni di interi insiemi di dati
 
+Un vettore descrive un appartamento; ma di appartamenti ce ne sono cento, e
+prima o poi bisogna metterli tutti insieme. Basta impilare le liste una sotto
+l'altra e viene fuori una tabella. Da lì nasce la seconda cosa che si fa con
+una tabella di numeri, meno ovvia della prima e molto più importante: non solo
+tenere fermi i dati, ma trasformarli.
+
 `````{tab} Elementare
 
 Una matrice è una tabella di numeri: righe e colonne. Ci serve per due cose.
@@ -293,9 +299,9 @@ $$
 $$
 
 (Il grassetto distingue l'oggetto intero dai suoi elementi: $\mathbf{A}$ è la
-matrice, $A_{ij}$ il numero che sta all'incrocio fra riga $i$ e colonna $j$.
-È la convenzione che il libro segue ovunque: maiuscolo grassetto per le
-matrici, minuscolo grassetto per i vettori, tondo per i numeri singoli.)
+matrice, $A_{ij}$ il numero che sta all'incrocio fra riga $i$ e colonna $j$;
+maiuscolo grassetto per le matrici, minuscolo grassetto per i vettori, tondo
+per i numeri singoli.)
 
 Il **prodotto tra matrici** $\mathbf{C} = \mathbf{A}\mathbf{B}$, con
 $\mathbf{A}\in\mathbb{R}^{m\times k}$ e $\mathbf{B}\in\mathbb{R}^{k\times n}$,
@@ -543,6 +549,11 @@ singolari, ed è il conto che rifà il capitolo sulle reti neurali.
 
 ## Norme: misurare lunghezze ed errori
 
+È la promessa lasciata in sospeso parlando del prodotto scalare: quanto è
+lunga una freccia. La risposta è più utile di quanto sembri, perché la stessa
+domanda, fatta alla freccia che va dalla risposta giusta alla risposta del
+modello, misura di quanto il modello ha sbagliato.
+
 `````{tab} Elementare
 
 La **norma** di un vettore è la sua "lunghezza". Per una freccia nel piano è
@@ -595,7 +606,8 @@ $$
 \lVert \hat{\mathbf{y}}^{(i)} - \mathbf{y}^{(i)} \rVert_2^2 .
 $$
 
-Qui $m$ è il numero di esempi (in questa pagina la stessa lettera contava le
+Qui $m$ è il numero di esempi (non le righe della matrice, che poco fa
+portavano la
 righe di una matrice: da qui in avanti, e nel resto del libro, conta gli
 esempi), $\mathbf{y}^{(i)}$ è l'uscita vera dell'esempio $i$-esimo e
 $\hat{\mathbf{y}}^{(i)}$ quella predetta dal modello.
@@ -616,14 +628,12 @@ di un vettore con sé stesso.
 ## In pratica, con NumPy
 
 In Python l'algebra lineare vive in **NumPy**, la cassetta di funzioni già
-pronte di cui parla il capitolo su Python (in gergo una cassetta così si chiama
+pronte di cui parla il {doc}`capitolo su Python </Python/overview>` (in gergo una cassetta così si chiama
 *libreria*). Qui basta il richiamo: le operazioni di sopra sono una riga
 ciascuna.
 
-Ogni sezione di questo capitolo si chiude con un blocco di codice come questo,
-e vale per tutti la stessa avvertenza: **chi non ha mai programmato può leggere
-solo i commenti**, cioè il testo dopo il cancelletto, e tirare dritto senza
-perdersi niente. Il codice serve a chi vuole rifare i conti da sé.
+Chi non ha mai programmato può leggere solo i commenti, cioè il testo dopo il
+cancelletto: dicono in italiano quello che ogni riga fa.
 
 ```python
 import numpy as np

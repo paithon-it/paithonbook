@@ -9,7 +9,7 @@ sala di controllo piena di spie e manometri. Lì l'immagine era servita a dire
 *perché* serve monitorare. Restava tutto il seguito: quali strumenti montare
 su quell'impianto, dove piazzare le spie, a che soglia farle scattare e cosa
 fare quando una si accende. È il mestiere di questa sezione: il lato operativo
-di un problema che nel capitolo di Machine Learning avevamo posto in termini
+di un problema che nel {doc}`capitolo di Machine Learning </MachineLearning/overview>` avevamo posto in termini
 statistici.
 
 Il guaio dei modelli, rispetto a un impianto industriale, è che quando si
@@ -117,14 +117,15 @@ in corso, mentre accade.
 Lo strumento l'abbiamo già incontrato: il **classificatore-detective**. Si
 addestra un modello a distinguere i dati di ieri da quelli di oggi, e si
 guarda quanto ci riesce. Il numero con cui si misura quanto ci riesce è
-l’**AUC**, incontrata nel capitolo sul machine learning parlando di metriche, e
+l’**AUC**, incontrata nel {doc}`capitolo sul machine learning </MachineLearning/overview>` parlando di metriche, e
 qui va letta così: vale $1$ quando il detective indovina sempre da quale dei
 due periodi viene un dato, e vale $0{,}5$ quando sta tirando a indovinare,
 perché fra due possibilità chi tira a caso ne azzecca la metà.
 
 Un'AUC vicina a $0{,}5$ dice quindi che i due periodi sono indistinguibili *per
-lui*. È una rassicurazione, non una prova: un cambiamento su una colonna che il
-detective non guarda gli passa sotto il naso. (Le colonne dei dati, nel gergo
+lui*. È una rassicurazione, non una prova: uno scostamento piccolo, o distribuito su molte colonne senza spiccare su
+nessuna, resta sotto il rumore di quel classificatore e non gli fa alzare
+l'AUC di un centesimo. (Le colonne dei dati, nel gergo
 di questo capitolo, sono le **feature**: è la parola che il codice più avanti
 userà, e vuol dire esattamente quello.)
 
@@ -347,8 +348,8 @@ volta, e più grande.)
 È lo scheletro di un sistema di monitoraggio reale, e la stessa funzione,
 girata a ogni ora sulla finestra scorrevole, produce una serie storica
 dell'indicatore di drift su cui si possono appendere gli allarmi. Ha però due
-semplificazioni didattiche che in un impianto vero si pagano care, e vale la
-pena nominarle proprio perché il codice è breve e viene copiato.
+semplificazioni didattiche che in un impianto vero si pagano care, e conviene
+nominarle proprio perché il codice è breve e viene copiato.
 
 La prima è il cancello: qui i test per singola *feature* girano **solo se**
 l'indicatore globale ha superato la soglia. Comodo da leggere, pericoloso da

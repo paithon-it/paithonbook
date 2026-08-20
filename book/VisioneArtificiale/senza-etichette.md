@@ -12,8 +12,7 @@ qualcuno a mano, una per una; l'elenco delle categorie utili cambia da un
 mestiere all'altro, e per moltissimi settori non esiste affatto. Le immagini
 *senza* etichetta, al contrario, sono praticamente infinite.
 
-Da questa asimmetria nasce la domanda di questa sezione: si può insegnare a una
-rete a descrivere bene un'immagine **senza che nessuno dica mai che cosa c'è
+Da questa asimmetria nasce la domanda: si può insegnare a una rete a descrivere bene un'immagine **senza che nessuno dica mai che cosa c'è
 nella foto**? Quella descrizione, la lista di numeri in cui la rete riassume
 un'immagine, si chiama la sua **rappresentazione**, ed è la cosa che vogliamo:
 il resto si costruisce sopra. La risposta è sì, e per arrivarci bisogna
@@ -34,7 +33,7 @@ Risolverlo non interessa a nessuno; interessa quello che il modello è costretto
 a capire per riuscirci, e che resta nell’**encoder** (la parte della rete che
 trasforma l'immagine nella sua lista di numeri, il riassunto interno di cui si
 diceva) quando il pretesto si butta via. È un'idea che il libro ritroverà in
-ogni campo: nel capitolo sui Transformer regge il pre-addestramento dei modelli
+ogni campo: nel {doc}`capitolo sui Transformer </Transformers/overview>` regge il pre-addestramento dei modelli
 di linguaggio, in quello sull'audio fa imparare a wav2vec 2.0 e a HuBERT la
 struttura del parlato da migliaia di ore mai trascritte.
 
@@ -121,10 +120,10 @@ La supervisione non viene dal linguaggio, viene dalla trasformazione.
 
 `````
 
-In PyTorch tutto questo sta in una decina di righe, e la parte che vale la pena
-guardare è **da dove esce la risposta giusta**: non la scrive nessuno, viene
-fuori soltanto dall'ordine in cui abbiamo impilato le viste. Se le prime $N$
-righe sono le viste A e le seconde $N$ sono le viste B nello stesso ordine, la
+In PyTorch tutto questo sta in una decina di righe, e la parte da guardare è
+**da dove esce la risposta giusta**: non la scrive nessuno, viene fuori
+soltanto dall'ordine in cui abbiamo impilato le viste. Se le prime $N$ righe
+sono le viste A e le seconde $N$ sono le viste B nello stesso ordine, la
 gemella della riga $i$ è la riga $i+N$, e questo il computer lo sa fare da sé.
 
 ```python
@@ -281,7 +280,7 @@ SimCLR arriva a batch da $4096$ immagini e per reggerli lavora su $128$
 acceleratori in parallelo, il che taglia fuori chiunque non abbia un centro di
 calcolo.
 
-Da qui la mossa che scioglie il nodo, e vale la pena dire subito che è arrivata
+Da qui la mossa che scioglie il nodo, e conviene dire subito che è arrivata
 **prima**: MoCo è di qualche mese anteriore a SimCLR, e non nasce come sua
 risposta ma come attacco allo stesso problema, già noto. La mossa è staccare
 l'una dall'altra due cose che fin qui erano la stessa, **quanti rivali il
@@ -343,8 +342,8 @@ mini-batch da $256$, la coda copre esattamente $256$ passi di addestramento).
 
 La copia lenta, quella che si aggiorna di un millesimo alla volta (si chiama
 **media mobile**) e che fa da riferimento senza mai prendere punteggio, è la
-stessa costruzione che il libro incontra nel capitolo sui world
-model. Qui tiene coerente un dizionario di negativi; fra poco servirà a farne
+stessa costruzione che il libro incontra nel {doc}`capitolo sui world
+model </WorldModels/overview>`. Qui tiene coerente un dizionario di negativi; fra poco servirà a farne
 del tutto a meno.
 
 ## Toglierli del tutto
@@ -745,7 +744,7 @@ Da qui il libro prosegue in due direzioni che chiudono il cerchio. Nel capitolo
 sui world model la JEPA porta la difficoltà in un posto ancora diverso: si
 maschera come nel MAE, ma si predice la **rappresentazione** della parte
 nascosta invece dei suoi pixel, e le augmentation artigianali spariscono del
-tutto. Nel capitolo su visione e linguaggio il gemello da ritrovare non è più
+tutto. Nel {doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>` il gemello da ritrovare non è più
 una seconda vista della stessa foto ma la sua **didascalia**: si mescolano sul
 tavolo le immagini e le frasi, e si chiede di riappaiarle. È lo stesso gioco,
 con lo stesso identico conto dietro, e cambia soltanto da dove viene il

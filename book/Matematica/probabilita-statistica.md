@@ -50,7 +50,10 @@ $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.
 
 ## Variabili aleatorie
 
-Spesso non ci interessa l'esito grezzo, ma un numero che gli associamo.
+Lanciare dieci monete e guardare come sono venute è una cosa; contare quante
+teste sono uscite è un'altra, ed è quasi sempre quella che interessa. Il salto
+è piccolo e cambia tutto: da un elenco di casi si passa a un numero, e sui
+numeri si possono fare medie, grafici, confronti.
 
 `````{tab} Elementare
 
@@ -290,7 +293,10 @@ che il default di PyTorch campiona da un'uniforme e non da una normale.)
 Il teorema dice **che** si converge, non **quanto in fretta**, e la seconda
 domanda ha una risposta separata. Una garanzia grossolana la dà la
 disuguaglianza di Berry–Esseen,
-$\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$ con $\rho_3 =
+$\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$, dove $F_n$ è la
+funzione di ripartizione della somma standardizzata, $\Phi$ quella della
+normale standard, $C$ una costante universale minore di mezzo che non dipende
+dalla distribuzione di partenza, e $\rho_3 =
 \mathbb{E}|X-\mu|^3$: la distanza cala come $1/\sqrt{n}$, e davanti c'è un
 momento terzo **assoluto**, che non sa distinguere una coda lunga da un lato
 sola da due code lunghe simmetriche. A separarle è lo sviluppo di Edgeworth, il
@@ -308,8 +314,8 @@ tutti, non il più ostile.
 
 `````
 
-Vale la pena vedere il teorema del limite centrale **succedere**, perché
-detto a parole sembra una promessa e guardato sembra un trucco.
+Conviene vedere il teorema del limite centrale **succedere**, perché detto a
+parole sembra una promessa e guardato sembra un trucco.
 
 ```{figure} ../figures/limite-centrale.gif
 :name: fig-limite-centrale
@@ -550,12 +556,13 @@ telecomunicazioni).
 Quel numero non piove dal cielo, e una regola pratica basta a rifarlo a mente,
 in due mosse. La prima: quando il modello è sul $50\%$, il margine in punti
 percentuali è circa $100/\sqrt{n}$, e con $n=500$ fa circa $4{,}5$ punti
-($\sqrt{500}$ è poco più di $22$). La seconda: un modello più bravo del $50\%$
-ha anche meno modo di variare (chi sbaglia raramente non può sbagliare in tanti
-modi diversi), quindi quel margine va ridotto, e di quanto lo dice un fattore
-che dipende solo dall'accuratezza. Vale $1$ al $50\%$, cioè non riduce niente;
-vale circa $0{,}8$ all’$80\%$, circa due terzi all’$87\%$, circa la metà al
-$93\%$. Ecco i tre punti: $4{,}5$ moltiplicato per due terzi fa $3$.
+($\sqrt{500}$ è poco più di $22$). La seconda: un modello più bravo del $50\%$ ha anche meno modo di variare (chi
+sbaglia raramente non può sbagliare in tanti modi diversi), quindi quel
+margine va ridotto. Il fattore di riduzione si calcola in un passaggio: si
+moltiplica l'accuratezza per la quota di errori, si fa la radice e si divide
+per $0{,}5$, che è quanto quel conto dà per un modello al $50\%$. All'$87\%$:
+$0{,}87 \times 0{,}13 = 0{,}113$, la cui radice è $0{,}34$, e $0{,}34$ diviso
+$0{,}5$ fa circa due terzi. All'$80\%$ viene $0{,}8$, al $93\%$ circa la metà. Ecco i tre punti: $4{,}5$ moltiplicato per due terzi fa $3$.
 
 Anche il «$95\%$» ha un significato preciso:
 non è la fiducia che riponiamo nel singolo numero, è la percentuale di volte
@@ -615,13 +622,13 @@ annegamenti non passa nessuna freccia: il legame che si misura nei dati è
 tutto riflesso di quello che ciascuno dei due ha con il caldo.
 ```
 
-Vale la pena notare cosa *non* c'è in {numref}`fig-confonditore`: la freccia
-fra $X$ e $Y$, cioè fra i gelati e gli annegamenti (nel disegno le due lettere
+Conviene notare cosa *non* c'è in {numref}`fig-confonditore`: la freccia fra
+$X$ e $Y$, cioè fra i gelati e gli annegamenti (nel disegno le due lettere
 stanno per le due grandezze che si misurano, e $Z$ per la causa comune). I
-dati da soli non la disegnano né la cancellano, perché
-correlazione e causalità lasciano sui numeri la stessa traccia. A distinguerle
-serve qualcosa che nei dati non c'è: un intervento (cambiare $X$ e guardare
-$Y$) oppure una conoscenza del dominio che dica quale freccia è plausibile.
+dati da soli non la disegnano né la cancellano, perché correlazione e
+causalità lasciano sui numeri la stessa traccia. A distinguerle serve qualcosa
+che nei dati non c'è: un intervento (cambiare $X$ e guardare $Y$) oppure una
+conoscenza del dominio che dica quale freccia è plausibile.
 
 `````{tab} Elementare
 
@@ -686,10 +693,10 @@ distribuzione; non basta per **decidere** un intervento.
 
 ### Tre gradini: vedere, fare, immaginare
 
-Le tre strutture appena elencate si sistemano dentro una cornice più larga, che
-vale la pena avere in testa perché rimette in fila cose che questo libro
-incontra in capitoli lontanissimi fra loro. La propone Judea Pearl, e la chiama
-**scala della causalità** {cite}`pearl2018book`.
+Le tre strutture appena elencate si sistemano dentro una cornice più larga, da
+avere in testa perché rimette in fila cose che questo libro incontra in
+capitoli lontanissimi fra loro. La propone Judea Pearl, e la chiama **scala
+della causalità** {cite}`pearl2018book`.
 
 `````{tab} Elementare
 
@@ -714,7 +721,8 @@ media, non cosa sarebbe successo a *lui*.
 
 I modelli addestrati sui dati stanno quasi tutti sul primo gradino, e ci stanno
 benissimo. Pearl lo dice con un'immagine che vale la pena riportare: «la
-civetta è un buon cacciatore senza capire perché il topo vada da A a B». La
+civetta può essere un buon cacciatore senza capire perché il topo vada sempre
+da A a B». La
 civetta ha visto migliaia di topi e sa dove sarà questo fra un secondo, il che
 le basta per prenderlo; delle ragioni per cui il topo si sposta non sa niente,
 e non le servono. Predire, insomma, non richiede capire. Il punto è sapere
@@ -756,8 +764,8 @@ grande sicurezza.
 
 `````
 
-Non è una gerarchia di merito, è una gerarchia di **cosa serve avere** per
-rispondere, e il libro la attraversa tutta. Sul primo gradino, quello di chi
+I tre gradini si distinguono per **che cosa serve avere** prima di poter
+rispondere, non per quanto siano nobili le domande. Sul primo gradino, quello di chi
 guarda i dati e conta, sta la gran parte di quello che leggeremo. Sul secondo,
 quello di chi il mondo lo tocca invece di limitarsi a guardarlo, stanno i
 **test A/B** (si mostrano due versioni di un prodotto a due gruppi di utenti
@@ -796,11 +804,13 @@ sorprendenti possibile*. Lancio una moneta 10 volte e vedo 7 teste: quale
 valore di $p$ (la probabilità che esca testa) spiega meglio quel che ho
 osservato?
 
-Il modo di rispondere è provarli tutti e tenere il migliore. Per ogni valore di
-$p$ si calcola quanto sarebbe probabile vedere proprio 7 teste su 10 (il conto
-esatto qui non lo facciamo: è quello che dà la probabilità di un certo numero
-di successi in un certo numero di prove, e in questo capitolo lo prendiamo per
-buono). I risultati sono questi. Se la moneta fosse equa, $p=0{,}5$, quella
+Il modo di rispondere è provarli tutti e tenere il migliore. Per ogni valore di $p$ si calcola quanto sarebbe probabile vedere proprio 7
+teste su 10. Il conto ha due pezzi. Il primo: una sequenza precisa, per dire
+TTTTTTTCCC, ha probabilità $p^7(1-p)^3$, cioè sette volte $p$ per tre volte
+$1-p$. Il secondo: di sequenze con sette teste ce ne sono $120$, tutte
+ugualmente probabili, quindi si moltiplica per $120$. Con $p=0{,}5$ viene $120 \cdot 0{,}5^{10} \approx 0{,}12$: possibile, non
+entusiasmante. Se fosse $p=0{,}6$ si salirebbe al $21\%$, con $p=0{,}7$ si
+arriverebbe al $27\%$, con $p=0{,}8$ si ridiscenderebbe al $20\%$. Se la moneta fosse equa, $p=0{,}5$, quella
 probabilità è circa il $12\%$: possibile, non entusiasmante. Se fosse $p=0{,}6$
 sale al $21\%$, se fosse $p=0{,}7$ arriva al $27\%$, e se fosse $p=0{,}8$
 ridiscende al $20\%$. Il massimo cade a $0{,}7$, cioè esattamente sulla

@@ -6,19 +6,19 @@ lavoro di dieci anni prima e ne approfittò per dire una cosa scomoda: «il
 machine learning è diventato alchimia».
 
 Non ce l'aveva con i risultati, che ci sono: ce l'aveva con le fondamenta.
-Facciamo funzionare le cose, disse, senza sapere davvero *perché* funzionino, e
-portò tre esempi. Uno era un problemino minuscolo su cui la discesa del
+Facciamo funzionare le cose, disse, senza sapere davvero *perché* funzionino,
+e portò tre esempi. Uno era un problemino minuscolo su cui la discesa del
 gradiente si pianta: non perché sia arrivata in fondo alla discesa, ma pur
-avendo ancora sotto i piedi un terreno in pendenza. Un altro era un ingrediente
-che a quel tempo tutti mettevano nelle reti (si chiama *batch normalization*, e
-il libro la incontrerà più avanti) di cui, a suo dire, «come disciplina non
-sappiamo quasi niente». Il terzo era la storia di un sistema che si era rotto
-senza che nessuno capisse perché: qualcuno aveva cambiato il modo di
-arrotondare i numeri dentro una libreria, e l'errore era passato da meno del
-25% a quasi il 99%. La spiegazione arrivò dopo, e vale la pena darla perché
-smentisce a metà l'aneddoto: quell'arrotondamento portava a uno un numero che
-doveva restare appena sotto, e da lì usciva una divisione per zero. Un difetto
-del programma, quindi, non del metodo.
+avendo ancora sotto i piedi un terreno in pendenza. Un altro era un
+ingrediente che a quel tempo tutti mettevano nelle reti (si chiama *batch
+normalization*, e il libro la incontrerà più avanti) di cui, a suo dire, «come
+disciplina non sappiamo quasi niente». Il terzo era la storia di un sistema
+che si era rotto senza che nessuno capisse perché: qualcuno aveva cambiato il
+modo di arrotondare i numeri dentro una libreria, e l'errore era passato da
+meno del 25% a quasi il 99%. La spiegazione arrivò dopo, e conviene darla
+perché smentisce a metà l'aneddoto: quell'arrotondamento portava a uno un
+numero che doveva restare appena sotto, e da lì usciva una divisione per zero.
+Un difetto del programma, quindi, non del metodo.
 
 Gli **iperparametri**, in quel discorso, non erano nominati nemmeno una volta.
 Ma se c'è un posto in cui l'alchimia si vede a occhio nudo sono loro: ricette
@@ -226,7 +226,7 @@ migliore col senno di poi.
 
 `````
 
-L’*early stopping* (che vedremo all'opera nel capitolo su PyTorch) è il caso
+L’*early stopping* (che vedremo all'opera nel {doc}`capitolo su PyTorch </PyTorch/overview>`) è il caso
 limite di questa idea: un torneo con un solo iscritto, che si ritira quando la
 validazione smette di migliorare.
 
@@ -295,8 +295,7 @@ sulla funzione ignota $f(\lambda)$ (l'errore di validazione della
 configurazione $\lambda$) aggiornata dopo ogni osservazione; il surrogato
 standard è il **processo gaussiano** {cite}`rasmussen2006gaussian`, che per
 ogni $\lambda$ fornisce una media $\mu(\lambda)$ e una deviazione standard
-$\sigma(\lambda)$: la stima e la sua incertezza. (Ai processi gaussiani è
-dedicata una sezione di questo capitolo.) La **funzione di acquisizione**
+$\sigma(\lambda)$: la stima e la sua incertezza. (Li racconta per esteso {doc}`Processi gaussiani <processi-gaussiani>`.) La **funzione di acquisizione**
 traduce stima e incertezza in una decisione; la più usata è l’*expected
 improvement*:
 

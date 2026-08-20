@@ -9,7 +9,7 @@ racconta con quattro immagini: un tavolo di persone che si passano i conti, un
 registro strappato a metà, una catena di montaggio e un manuale diviso in
 fascicoli.
 
-Prima però vale la pena vedere *perché* una scheda non basta, e vederlo con un
+Prima però conviene vedere *perché* una scheda non basta, e vederlo con un
 conto vero invece che a parole.
 
 Un modello come GPT-3 ha 175 miliardi di **parametri**: sono i numeri che la
@@ -24,7 +24,7 @@ non ci sono solo i pesi. C'è anche la contabilità di chi guida l'apprendimento
 cioè di chi a ogni passo decide di quanto spostare ciascun peso: quel «chi» si
 chiama **ottimizzatore**, e il più usato, **Adam** {cite}`kingma2015adam`, non
 guarda soltanto la correzione del momento, si tiene anche un po’ di memoria di
-come quel peso si è mosso di recente (il capitolo sul deep learning gli dedica
+come quel peso si è mosso di recente (il {doc}`capitolo sul deep learning </DeepLearning/overview>` gli dedica
 una sezione). Quella memoria va conservata numero per numero, per tutta la
 durata dell'addestramento. L'inventario completo, per **ogni** parametro, è
 questo:
@@ -53,7 +53,7 @@ H100, ha 80 GB di memoria: $2800 / 80 = 35$, ci vorrebbero trentacinque schede
 soltanto per *contenerlo*, prima ancora di parlare di velocità. Alcuni modelli
 non stanno in una GPU sola, né per memoria, né per tempo.
 
-Nella sezione «Prestazioni e scala» del capitolo su PyTorch abbiamo già visto
+Nella sezione «Prestazioni e scala» del {doc}`capitolo su PyTorch </PyTorch/overview>` abbiamo già visto
 la strategia più comune per usare più schede: il **parallelismo dati**, che in
 PyTorch si accende con una riga (`DistributedDataParallel`) e che lì era
 raccontato con l'analogia degli insegnanti che si spartiscono i compiti da
@@ -81,11 +81,11 @@ mazzetto di esempi che si guardano in una volta sola prima di aggiornare i
 pesi), calcola le proprie correzioni, e alla fine tutte si mettono d'accordo
 facendone la media. L'operazione con cui si mettono d'accordo si chiama
 **all-reduce**: ogni scheda mette dentro i propri numeri, si sommano, e alla
-fine tutte quante hanno in mano lo stesso risultato. Dopo la media, le repliche
-applicano lo stesso aggiornamento e restano perfettamente uguali. È il primo
-dei tre pannelli in {numref}`fig-parallelismo-strategie`, che vale la pena
-guardare adesso solo nella sua prima colonna: le altre due sono le strategie
-delle sezioni che seguono, e le si capisce meglio quando ci si arriva.
+fine tutte quante hanno in mano lo stesso risultato. Dopo la media, le
+repliche applicano lo stesso aggiornamento e restano perfettamente uguali. È
+il primo dei tre pannelli in {numref}`fig-parallelismo-strategie`, da guardare
+adesso solo nella sua prima colonna: le altre due sono le strategie delle
+sezioni che seguono, e le si capisce meglio quando ci si arriva.
 
 ```{figure} ../figures/parallelismo-strategie.svg
 :name: fig-parallelismo-strategie
@@ -437,16 +437,14 @@ il modello non è uno solo ma un mazzo di modelli specializzati fra cui un
 selettore smista ogni parola in arrivo: lì si mettono esperti diversi su schede
 diverse.
 
-Dietro tutta questa ingegneria c'è una tensione di fondo che vale la pena
-nominare: il **memory wall**, il muro della memoria. La dimensione dei modelli
-è cresciuta molto più in fretta della memoria che si riesce a mettere su una
-singola GPU: è per questo che *spartire* lo stato, e non solo replicarlo, è
-diventato inevitabile, e che FSDP è oggi la via pratica per addestrare modelli
-grandi su un numero ragionevole di schede.
+Dietro tutta questa ingegneria c'è una tensione di fondo da nominare: il
+**memory wall**, il muro della memoria. La dimensione dei modelli è cresciuta
+molto più in fretta della memoria che si riesce a mettere su una singola GPU:
+è per questo che *spartire* lo stato, e non solo replicarlo, è diventato
+inevitabile, e che FSDP è oggi la via pratica per addestrare modelli grandi su
+un numero ragionevole di schede.
 
-Un'ultima onestà, nello stesso spirito della sezione «Prestazioni e scala»:
-quasi nessun lettore di questo libro avrà un cluster su cui provare tutto
-questo, e va benissimo così. Ma le quattro strategie (spartire gli esempi,
+Addestrare su un cluster è la condizione di pochi, e va benissimo così. Ma le quattro strategie (spartire gli esempi,
 spartire i tabelloni, spartire gli strati, spartire lo stato) non sono folklore
 da datacenter: sono la mappa che spiega *come* nascono i modelli di cui
 leggiamo i nomi ogni settimana. E l'ultima, FSDP, è alla portata già di **due
@@ -536,5 +534,5 @@ piacciono certi conti e non altri, dove il tempo se ne va per davvero, e come
 un modello che non entrerebbe in nessuna scheda venga fatto stare in mille. È
 il motivo per cui oggi si possono impilare decine di strati senza aspettare
 mesi. Resta però la domanda a cui l'hardware non risponde, ed è quella del
-capitolo sul Deep Learning: la profondità, che adesso ci possiamo permettere,
+{doc}`capitolo sul Deep Learning </DeepLearning/overview>`: la profondità, che adesso ci possiamo permettere,
 che cosa ci fa guadagnare?

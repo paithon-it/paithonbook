@@ -139,7 +139,7 @@ scritta.
 riga, scriverla per centoventotto utenti insieme sta nell’ultima: i pesi si
 leggono una volta e servono a tutti. È il motivo per cui un servizio che
 risponde a molti costa, a testa, molto meno di uno che risponde a uno, e il
-capitolo su MLOps lo tratta parlando di come si gestiscono le richieste che
+{doc}`capitolo su MLOps </MLOps/overview>` lo tratta parlando di come si gestiscono le richieste che
 arrivano insieme e la memoria che ciascuna si porta dietro.
 
 **Indovinare avanti e farsi correggere.** Un modello piccolo butta giù qualche
@@ -147,7 +147,7 @@ parola di seguito, tirando a indovinare; il modello grande le controlla **tutte
 in una passata sola**, che è una passata da $k$ uguale a quanto è lunga la
 bozza invece che a uno. Se la bozza era giusta si sono scritte più parole al
 prezzo di una; se era sbagliata si è buttato via il tempo del modello piccolo,
-che è poco. È la **decodifica speculativa**, e sta nel capitolo su MLOps, nella
+che è poco. È la **decodifica speculativa**, e sta nel {doc}`capitolo su MLOps </MLOps/overview>`, nella
 sezione sugli LLM in produzione, con la figura che mostra la bozza accettata e
 il punto in cui il modello grande la taglia.
 
@@ -195,7 +195,7 @@ il punto in cui il modello grande la taglia.
   speculativa** alza $k$ verificando in parallelo una bozza prodotta da un
   modello più economico, senza cambiare la distribuzione di uscita.
 - Nessuna delle tre appartiene a questo capitolo, perché nessuna cambia il
-  modello. La cache la costruisce il capitolo sui Transformer, nella sezione
+  modello. La cache la costruisce il {doc}`capitolo sui Transformer </Transformers/overview>`, nella sezione
   sui grandi modelli linguistici; il raggruppamento delle richieste e la
   decodifica speculativa il capitolo su MLOps, nella sezione sugli LLM in
   produzione; e il modo di misurare separatamente i due regimi è ancora in
@@ -209,5 +209,5 @@ tecniche: è che ognuna delle tre leve **si paga**, e che il prezzo si conosce
 solo misurandolo sul proprio modello e sui propri dati. Arrotondare a otto bit
 costa l’uno per cento e a quattro molto di più; potare novanta pesi su cento
 costa un punto di accuratezza e non regala un millisecondo; imitare un maestro
-costa tutti gli errori del maestro. Un capitolo sull’efficienza che non dicesse
-i prezzi sarebbe un catalogo, e i cataloghi invecchiano.
+costa tutti gli errori del maestro. Nessuna delle tre è gratis, e il prezzo cambia da un modello all'altro: chi le
+adotta senza misurarlo sul proprio sta scegliendo alla cieca.

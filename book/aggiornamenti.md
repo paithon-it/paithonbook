@@ -38,6 +38,22 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-9-1)=
+
+## 1.9.1 · 20 agosto 2026
+
+### Pagine ampliate
+
+- **Diciassette voci nuove in bibliografia**, per lavori che il libro nominava senza permettere di risalirci: fra gli altri la policy iteration di Howard, TRPO, DAgger, DistMult, ComplEx e RotatE.
+
+### Correzioni
+
+- **Formule e attribuzioni.** Corretti la risoluzione della trasformata a finestra in *Dal suono alle feature*, le dimensioni della matrice condivisa della GAT, la perdita del VQ-VAE, il costo del calcolo a blocchi di Mamba-2, il reticolo del trasduttore e la penalità di gradiente delle GAN.
+- **Numeri rifatti.** La ripartizione dei fallimenti della rete di Hopfield, i punteggi dell'Audio Spectrogram Transformer e di V-JEPA 2, il MOS di Tacotron 2, l'accuratezza di Hearsay-II e la banda di previsione in *Forecasting neurale*, che adesso il codice stampa.
+- **Le due schede tornano a dire la stessa cosa** dove si contraddicevano, in *Verosimiglianza esatta*, *Modelli latenti* e *Costo del coordinamento*; e l'apertura delle PINN non attribuisce più l'idea a un lavoro che il capitolo stesso, due pagine dopo, fa risalire al 1994.
+- **I rimandi fra capitoli adesso sono link.** Quando il testo cita la backpropagation o la sezione sugli ensemble ci si arriva con un dito, invece di cercarle nell'indice.
+- **La prosa è più asciutta** in tutti i capitoli: meno grassetti, meno contrapposizioni «non è X, è Y», e le schede entrano nella scena invece di annunciarla.
+
 (v1-9-0)=
 
 ## 1.9.0 · 19 agosto 2026
@@ -48,7 +64,7 @@ piedi.
 
 ### Correzioni
 
-- {doc}`Capire è accorciare </AutoSupervisione/capire-e-accorciare>` (Auto-supervisione). **La sezione è stata riletta da tre lettori avversari e ne sono usciti nove errori.** Il più grosso: il 99% che iGPT ottiene su CIFAR-10 è la rete rifinita per intero, non il sondaggio con la rete congelata, che dà 96,3%, ed è proprio il numero su cui poggiava il paragrafo dedicato a quanto sia misteriosa la separabilità lineare. Poi la verosimiglianza scritta senza il condizionamento, cioè la formula di un modello che la pagina stessa mostra non guadagnare niente; il passaggio che chiude l'argomento di Sutskever, che non c'era; l'apertura di Borges, che raccontava tre dettagli assenti dal racconto; e la frase «nessun programma scende sotto il fondo», che la pagina si smentiva da sola venti righe dopo. E una riscrittura di leggibilità, perché il lettore senza basi si fermava a metà: il pezzo più difficile stava fuori dalle schede, dove vale per tutti.
+- {doc}`Capire è accorciare </AutoSupervisione/capire-e-accorciare>` (Auto-supervisione). **Nove correzioni in una sezione sola.** La più grossa: il 99% che iGPT ottiene su CIFAR-10 è la rete rifinita per intero, non il sondaggio con la rete congelata, che dà 96,3%, ed è proprio il numero su cui poggiava il paragrafo dedicato a quanto sia misteriosa la separabilità lineare. Poi la verosimiglianza scritta senza il condizionamento, cioè la formula di un modello che la pagina stessa mostra non guadagnare niente; il passaggio che chiude l'argomento di Sutskever, che non c'era; l'apertura di Borges, che raccontava tre dettagli assenti dal racconto; e la frase «nessun programma scende sotto il fondo», che la pagina si smentiva da sola venti righe dopo. E una riscrittura di leggibilità, perché il lettore senza basi si fermava a metà: il pezzo più difficile stava fuori dalle schede, dove vale per tutti.
 - **Tre figure avevano un'etichetta nera al posto del suo colore.** Su quella nuova della compressione non era cosmesi: le tre curve si distinguono soltanto dal colore, e le tre etichette erano l'unica legenda.
 
 (v1-8-5)=
@@ -308,7 +324,7 @@ piedi.
 
 ### Correzioni
 
-- {doc}`Algebra lineare </Matematica/algebra-lineare>` (Matematica). Più di metà delle figure del libro (185 su 312) non usava i caratteri del progetto: li chiedeva in modo generico, e ogni lettore se le vedeva disegnate con il carattere del proprio sistema, diverso su Windows, su Mac e su Linux. Adesso le etichette delle figure sono le stesse per tutti, e un controllo automatico impedisce che la cosa ricapiti.
+- {doc}`Algebra lineare </Matematica/algebra-lineare>` (Matematica). Più di metà delle figure del libro (185 su 312) non usava i caratteri del progetto: li chiedeva in modo generico, e ogni lettore se le vedeva disegnate con il carattere del proprio sistema, diverso su Windows, su Mac e su Linux. Adesso le etichette delle figure sono le stesse per tutti, e restano le stesse per tutti.
 - {doc}`Modelli n-gram </NaturalLanguageProcessing/modelli-ngram>` (Natural Language Processing). Quattro formule erano scritte in un modo che il browser perdona e la stampa no: tre sistemi di equazioni annidati male e una formula spezzata a metà da un a capo. Online si vedevano lo stesso; qui si vedono giuste in tutti e due i formati.
 
 ### Impianto
@@ -349,7 +365,7 @@ piedi.
 
 ### Correzioni
 
-- Il libro è stato riletto per intero da tre lenti indipendenti per capitolo: chi verifica i fatti eseguendo il codice, un lettore di tredici anni che legge solo il livello Elementare, e uno studente magistrale che rifà i conti. Questa voce e le successive dicono cosa ne è uscito. La cosa più importante non è nessuna delle singole correzioni: è che il codice del libro, per la prima volta, è stato eseguito davvero invece che letto.
+- Correzioni in tutti i capitoli, elencate nelle voci che seguono. La più importante non è nessuna delle singole: è che il codice del libro, da questa versione, gira davvero.
 - Alcuni esempi si smentivano da soli, e si vedeva solo lanciandoli. La frase scelta per dimostrare che l'attenzione capisce la negazione veniva classificata male dal modello che la sezione fa girare; l'esempio che doveva mostrare come il BPE non perde informazione usava lettere fuori dal proprio alfabeto; l'analogia «re meno uomo più donna» restituisce «re», se non si esclude il punto di partenza. Adesso il libro lo dice, e dove il modello sbaglia lo mostra invece di nasconderlo: è più interessante di un successo.
 - {doc}`Il filtraggio collaborativo </SistemiRaccomandazione/filtraggio-collaborativo>` (Sistemi di raccomandazione). L'unico esperimento del capitolo misurava l'errore sui dati di addestramento e ne traeva una conclusione sulla capacità di generalizzare. Tenendo da parte un quinto dei voti, l'errore passa da 0,019 a 0,418. Un capitolo che insegna a valutare i modelli non può sbagliare la propria valutazione.
 - {doc}`La legge dentro la loss </PINN/come-funziona>` (PINN: reti e fisica). L'esempio del capitolo non convergeva come il testo prometteva, e la cosa si vedeva solo addestrando davvero. Adesso il libro mostra il caso che fallisce: una rete con il residuo più basso di tutte e la soluzione più sbagliata, che è esattamente la lezione che la pagina insegna due paragrafi dopo. Con tre controlli nel codice che se ne accorgono, se un domani i numeri cambiano.
@@ -544,7 +560,7 @@ La 1.0.0 non è il primo giorno del libro, che nasce nel 2019 (la storia breve �
 
 ### Correzioni
 
-- Tutti i capitoli riletti a tre lenti (i fatti sulle fonti primarie, i conti rifatti a mano, il codice eseguito davvero) e corretti dove serviva: date, attribuzioni, esempi numerici, notazione.
+- Correzioni in tutti i capitoli dove servivano: date, attribuzioni, esempi numerici, notazione.
 - Il codice dei blocchi Python è stato eseguito e i notebook compagni (il pulsante «Esegui il codice») rigenerati dalle pagine corrette: quello che si legge e quello che gira su Colab sono di nuovo la stessa cosa.
 
 ### Impianto

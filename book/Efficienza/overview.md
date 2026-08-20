@@ -35,10 +35,9 @@ Prima di parlare di rimedi conviene guardare la malattia, e per una volta si
 guarda con un conto che si fa a mente.
 
 Un modello ha dei **parametri**, e un parametro è semplicemente un numero che
-la rete ha imparato e che va tenuto da qualche parte. Sono gli stessi che il
-libro chiama anche **pesi**, perché ciascuno dice quanto conta un collegamento
-fra due neuroni: tre parole, una cosa sola, e da qui in avanti le userò come
-sinonimi.
+la rete ha imparato e che va tenuto da qualche parte. Si chiamano anche **pesi**, perché ciascuno dice quanto conta un collegamento
+fra due neuroni: due parole, una cosa sola, e da qui in avanti valgono l'una
+per l'altra.
 
 Ogni numero costa spazio, e quanto costa lo dicono i **bit**, le cifre binarie
 con cui un calcolatore scrive tutto. Otto bit fanno un **byte**, quindi un
@@ -121,9 +120,9 @@ Transformer e quello su MLOps, che la costruiscono ciascuno per una ragione
 sua. L’ultima parte di questo capitolo dice quali sono, e perché stiano lì e
 non qui.
 
-## Dove sta questo capitolo
+## Tre piani, tre mestieri
 
-Il libro parla di efficienza in tre punti, e vale la pena distinguerli subito,
+Il libro parla di efficienza in tre punti, e conviene distinguerli subito,
 perché è facile andarli a cercare nel posto sbagliato.
 
 Il capitolo sulla **GPU** spiega l’hardware: com’è fatta la memoria di una

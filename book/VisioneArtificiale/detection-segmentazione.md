@@ -80,8 +80,8 @@ architetturale della detection.
 
 Storicamente i rilevatori si dividono in due famiglie, e la differenza è un
 classico compromesso tra **accuratezza e velocità**. Semplificando: gli uni
-guardano l'immagine due volte, prima per capire dove vale la pena guardare e
-poi per guardarci davvero; gli altri una volta sola.
+guardano l'immagine due volte, prima per capire dove conviene guardare e poi
+per guardarci davvero; gli altri una volta sola.
 
 ```{figure} ../figures/yolo-2016.svg
 :name: fig-yolo

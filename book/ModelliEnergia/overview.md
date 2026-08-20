@@ -26,10 +26,10 @@ calamita (da dove esca lo racconta la prima sezione), e quella
 parola porta con sé un'immagine comoda, le risposte buone come il fondo di una
 valle.
 
-Sarà così per tutto il capitolo: ogni volta che una parola arriva dalla fisica
-il testo lo dice, e dice che cosa significa qui. Sono quattro in tutto, e nel
-loro ordine di comparsa le altre tre sono **temperatura**, **partizione** e
-**spin**.
+Sarà così per tutto il capitolo: ogni volta che una parola arriva dalla
+fisica il testo la scioglie sul posto. La prima è quella appena sciolta,
+**energia**; le altre che contano sono **temperatura**, **partizione** e
+**spin**, e arrivano in quest'ordine.
 
 E c'è una ragione precisa per cui il fondo, e non la cima. Una pallina, nel
 mondo, cade: nei punti bassi ci va da sola, mentre in cima a un monte non ci
@@ -48,14 +48,15 @@ ed è il modo più economico che conosciamo per rispondere a una domanda senza
 essere costretti a rispondere, insieme, a tutte le altre.
 
 Quel «senza rispondere a tutte le altre» è il seguito diretto del capitolo
-precedente, e vale la pena dirlo perché i due si tengono per mano. Là abbiamo
+precedente, e conviene dirlo perché i due si tengono per mano. Là abbiamo
 visto la famiglia che la probabilità la restituisce esatta, e il prezzo che
 paga per riuscirci: chi mette i dati in fila è poi costretto a generarli un
-pezzetto alla volta, chi li deforma non può buttare via niente e quindi non può
-comprimere. In tutti e due i casi se n'è andata la libertà di dare alla rete la
-forma che si vuole. Qui si prende la strada opposta: si rinuncia in partenza a
-normalizzare, si tiene un voto e basta, e quella libertà torna indietro. Tutto
-il capitolo racconta come si vive senza la normalizzazione, e quanto costa.
+pezzetto alla volta, chi li deforma non può buttare via niente e quindi non
+può comprimere. In tutti e due i casi se n'è andata la libertà di dare alla
+rete la forma che si vuole. Qui si prende la strada opposta: si rinuncia in
+partenza a normalizzare, si tiene un voto e basta, e quella libertà torna
+indietro. Tutto il capitolo racconta come si vive senza la normalizzazione, e
+quanto costa.
 
 ## Un numero al posto di una probabilità
 
@@ -189,7 +190,7 @@ scende e quanto ripido. In inglese quella pendenza si chiama *score*, ed è la
 parola che si incontra nei loro articoli. Attraversare quella successione di
 paesaggi, dal più liscio al più dettagliato, *è* generare.
 
-Il capitolo sui world model racconta i modelli che, invece di ridisegnare il
+Il {doc}`capitolo sui world model </WorldModels/overview>` racconta i modelli che, invece di ridisegnare il
 mondo, ne confrontano due riassunti: si chiamano **JEPA** (*Joint-Embedding
 Predictive Architecture*). Anche loro sono energie mai trasformate in
 percentuali: giudicano quanto un pezzo di mondo osservato e uno da predire
@@ -204,7 +205,7 @@ modelli a energia» {cite}`lecun2022path`.
 Diffusione, JEPA, Hopfield moderne, il programma di LeCun: sembrano quattro
 argomenti distinti. Sono lo stesso, e questo capitolo lo guarda in faccia.
 
-## Come è organizzato il capitolo
+## Dal paesaggio all'energia
 
 Cinque tappe, in salita dolce. Si comincia da dove l'idea è nata: la **memoria
 associativa** di Hopfield {cite}`hopfield1982neural`, venticinque neuroni che
@@ -226,9 +227,7 @@ niente: arriva dal tedesco *Zustandssumme*, «somma su tutti gli stati», che è
 esattamente quello che quel conto fa.
 
 La terza tappa è quel muro. **Oltre la partizione** mette in fila le tre
-strade che l'hanno aggirato, e i nomi tecnici sono qui perché tu li riconosca
-quando torneranno, non perché tu li sappia già: ciascuna delle tre ha il suo
-pezzo di quella pagina. La prima manda esploratori a caso nel paesaggio e si
+strade che l'hanno aggirato. La prima manda esploratori a caso nel paesaggio e si
 accontenta di
 quello che riportano: è il campionamento, e la ricetta che si usa porta il
 nome di Langevin. La seconda rinuncia alle percentuali e impara soltanto la

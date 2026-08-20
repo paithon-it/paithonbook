@@ -1,9 +1,8 @@
 # Un vocabolario solo: fusione tardiva e fusione precoce
 
 Chiedi a un sistema come quello della sezione precedente di *disegnare* un
-gatto nero che salta su un muro, e ti risponderà con delle parole. Magari con
-delle ottime parole: la descrizione di un gatto nero che salta su un muro,
-scritta bene. Non è pigrizia e non è un rifiuto: è la forma dell'ultimo strato.
+gatto nero che salta su un muro, e ti risponderà con delle parole. Magari
+ottime parole: quella scena descritta benissimo. Non è pigrizia e non è un rifiuto: è la forma dell'ultimo strato.
 Qualunque cosa quel modello abbia capito guardando, per uscire deve passare da
 un unico collo di bottiglia: scegliere una voce da un elenco chiuso, il
 **vocabolario**. E in quell'elenco ci sono soltanto parole.
@@ -379,8 +378,8 @@ A questo punto la domanda diventa più precisa. La fusione precoce ci serviva
 per un motivo solo: rendere l'immagine qualcosa che il modello possa
 **emettere**, non solo leggere. Ma quel motivo richiede davvero che l'immagine
 sia fatta di simboli discreti? Di modi per generare un'immagine ne esiste un
-altro, che con i vocabolari non ha niente a che fare, e il capitolo sui modelli
-di diffusione lo costruirà per intero: si parte da un quadrato di puro rumore e
+altro, che con i vocabolari non ha niente a che fare, e il {doc}`capitolo sui modelli
+di diffusione </ModelliDiffusione/overview>` lo costruirà per intero: si parte da un quadrato di puro rumore e
 se ne toglie un velo alla volta, finché sotto i veli compare la figura.
 
 Transfusion {cite}`zhou2024transfusion` prende sul serio l'ipotesi: un solo

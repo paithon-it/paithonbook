@@ -132,13 +132,14 @@ modello).
 
 `````
 
-Vale la pena vedere Dyna al lavoro su un ambiente minuscolo. Il nome per esteso
-è **Dyna-Q**, con la $Q$ del Q-learning appiccicata in coda, perché i giudizi
-che va ad aggiornare sono proprio quelli: quanto vale ciascuna mossa in ciascuna
-casella. Il corridoio ha sei caselle: si parte a sinistra, l'obiettivo è la
-casella più a destra, e la ricompensa arriva solo entrando nell'obiettivo.
+Conviene vedere Dyna al lavoro su un ambiente minuscolo. Il nome per esteso è
+**Dyna-Q**, con la $Q$ del Q-learning appiccicata in coda, perché i giudizi
+che va ad aggiornare sono proprio quelli: quanto vale ciascuna mossa in
+ciascuna casella. Il corridoio ha sei caselle: si parte a sinistra,
+l'obiettivo è la casella più a destra, e la ricompensa arriva solo entrando
+nell'obiettivo.
 
-Prima però va scelto **che cosa guardare**, ed è la parte istruttiva. La
+Prima però va scelto **che cosa guardare**. La
 tentazione è guardare la strategia appresa e verificare che dica «vai sempre a
 destra»: solo che il corridoio è così facile che il Q-learning con la tabella,
 senza un solo ripasso, impara la stessa identica strategia. Sarebbe una misura che
@@ -377,7 +378,7 @@ qui: AlphaZero pianifica su un modello *fornito*, MuZero su un modello
 
 Le strade viste finora sono due. Dyna immagina un passo alla volta e con quello
 aggiusta i propri giudizi; MuZero, al momento di decidere, si ferma ed esplora
-un albero di continuazioni. Ce n'è una terza, che il capitolo sui World Model
+un albero di continuazioni. Ce n'è una terza, che il {doc}`capitolo sui World Model </WorldModels/overview>`
 racconta per esteso e che qui serve solo a completare il quadro: costruirsi un
 simulatore interno dell'ambiente (un **world model**) e allenare la strategia
 *interamente lì dentro*, senza mai fermarsi a pianificare.
@@ -474,7 +475,7 @@ difetti**. Se il modello sbaglia in modo sistematico (sopravvaluta una
 ricompensa, dimentica un ostacolo), l'ottimizzazione trova con precisione
 chirurgica proprio quelle crepe: emergono policy che incassano ritorni
 immaginari altissimi e falliscono nel mondo vero. È il *model exploitation*, e
-nel capitolo sui World Model se ne vede l'esempio da manuale: l'agente che,
+nel {doc}`capitolo sui World Model </WorldModels/overview>` se ne vede l'esempio da manuale: l'agente che,
 dentro il proprio sogno di *Doom*, scopre movimenti per cui i mostri «non
 sparano mai».
 

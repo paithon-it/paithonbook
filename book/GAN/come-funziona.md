@@ -45,7 +45,7 @@ $$
 \mathbf{z} \sim p_z(\mathbf{z}) \quad\longmapsto\quad \tilde{\mathbf{x}} = G(\mathbf{z}) .
 $$
 
-Il vettore $\mathbf{z}$ è campionato da un *prior* semplice, tipicamente $p_z=\mathcal{N}(0, \mathbf{I})$ o uniforme. $G$ definisce implicitamente una distribuzione $p_G$ sullo spazio dei dati: spingendo campioni di $\mathbf{z}$ attraverso la rete, otteniamo campioni di dati sintetici. L'obiettivo dell'addestramento è far convergere $p_G$ verso la distribuzione reale $p_{\text{dati}}$, senza mai scrivere esplicitamente la densità: da qui il nome di modello *generativo implicito*.
+Il vettore $\mathbf{z}$ è campionato da un *prior* semplice, tipicamente $p_z=\mathcal{N}(\mathbf{0}, \mathbf{I})$ o uniforme. $G$ definisce implicitamente una distribuzione $p_G$ sullo spazio dei dati: spingendo campioni di $\mathbf{z}$ attraverso la rete, otteniamo campioni di dati sintetici. L'obiettivo dell'addestramento è far convergere $p_G$ verso la distribuzione reale $p_{\text{dati}}$, senza mai scrivere esplicitamente la densità: da qui il nome di modello *generativo implicito*.
 
 `````
 
@@ -180,7 +180,9 @@ $$
 
 Qui $p_{\text{dati}}$ è la distribuzione dei dati reali, $p_z$ il prior del rumore, $D(\mathbf{x})$ la probabilità stimata di autenticità e $G(\mathbf{z})$ il campione generato. $D$ massimizza $V$ (vuole $D(\mathbf{x})$ grande sui reali e $1-D(G(\mathbf{z}))$ grande sui falsi); $G$ minimizza il secondo termine, l'unico che dipenda da lui (vuole $D(G(\mathbf{z}))\to 1$).
 
-La dimostrazione di Goodfellow sta in due passaggi, e conviene rifarli per intero: il secondo è quello che dice *che cosa* una GAN stia davvero minimizzando, ed è un risultato che si cita spesso e si deriva di rado. Prima però le ipotesi, che non sono innocue: le due reti hanno **capacità illimitata**, cioè $D$ è una funzione qualsiasi a valori in $[0,1]$ e non una rete con un numero finito di pesi, e le distribuzioni in gioco hanno densità.
+La dimostrazione di Goodfellow sta in due passaggi, e conviene rifarli per intero: il secondo è quello che dice *che cosa* una GAN stia davvero minimizzando, ed è un risultato che si cita spesso e si deriva di rado. Prima però le ipotesi, che non sono innocue: le due reti hanno **capacità illimitata**, cioè $D$ è una funzione qualsiasi a valori in $[0,1]$ e non una rete con un numero finito di pesi, e le distribuzioni in gioco hanno densità rispetto alla stessa misura. Su
+quest'ultima conviene tenere un dito: fra poco si vedrà che nel caso vero è
+proprio lei a cadere.
 
 **Primo passaggio: il discriminatore ottimo.** Fissato $G$, il secondo integrale si riscrive nello spazio dei dati invece che in quello del rumore, perché spingere $\mathbf{z}$ attraverso $G$ è esattamente ciò che definisce $p_G$:
 
@@ -256,11 +258,12 @@ contro quel generatore, e si calcola dalle due curve di sopra con una regola
 sola. In ogni punto si prende l'altezza della curva vera e la si divide per la
 somma delle due altezze: se lì cade solo roba vera il conto dà uno, se cade
 solo roba falsa dà zero, se le due curve sono alte uguali dà un mezzo. Da
-questa regola discende una cosa che vale la pena guardare da vicino: quel che
-conta in ogni punto è **quale delle due curve prevale, e di quanto**, non
-quanto sono distanti fra loro i due picchi. Dove le due curve sono alte uguali il verdetto sta a un mezzo, anche se
-lì di esempi ne cadono pochissimi; dove una prevale sull'altra il verdetto si
-allontana da un mezzo, anche se le due curve sono quasi sovrapposte.
+questa regola discende una cosa da guardare da vicino: quel che conta in ogni
+punto è **quale delle due curve prevale, e di quanto**, non quanto sono
+distanti fra loro i due picchi. Dove le due curve sono alte uguali il verdetto
+sta a un mezzo, anche se lì di esempi ne cadono pochissimi; dove una prevale
+sull'altra il verdetto si allontana da un mezzo, anche se le due curve sono
+quasi sovrapposte.
 
 `````{tab} Elementare
 
@@ -340,10 +343,9 @@ d'ora in avanti, quando parleremo di "loss", parleremo di queste. (Con una
 sorpresa in agguato: fra poco vedremo che una delle due righe, nel codice vero,
 è scritta in un modo che quel punteggio unico lo incrina. Per adesso teniamolo.)
 
-Il ciclo completo sta in una ventina di righe. Chi non legge Python può
-passare oltre senza rimetterci: le tre cose che contano sono spiegate subito
-sotto, e per seguirle bastano le poche paroline del codice che ricorrono nella
-spiegazione (`n`, `opt_G`, `opt_D`, `.detach()`).
+Il ciclo completo sta in una ventina di righe, e le tre cose che contano sono
+spiegate subito sotto: per seguirle bastano le poche paroline del codice che
+ricorrono nella spiegazione (`n`, `opt_G`, `opt_D`, `.detach()`).
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -508,8 +510,9 @@ si assottigliano fino a sparire (è ciò che in gergo si chiama «gradienti che
 svaniscono») e il falsario non sa più da che parte andare; altre volte
 diventano enormi e tutte diverse fra loro, e lo fanno barcollare invece di
 guidarlo. Anche il rimedio più fortunato fra quelli raccolti in fondo a questa
-pagina, il *gradient penalty*, riguarda l'elenco: è una multa all'esperto
-quando le sue spintarelle diventano troppo grandi. Mai il verdetto.
+pagina, il *gradient penalty*, riguarda l'elenco: è una multa all'esperto quando le
+sue spintarelle si allontanano da una taglia fissa, in su o in giù. Mai il
+verdetto.
 
 ### Gli altri due dettagli
 
@@ -582,9 +585,8 @@ può toccare i pesi dell'altra rete. Il `.detach()` nel passo di $D$ aggiunge un
 risparmio: stacca i campioni sintetici dal grafo di $G$, così il gradiente
 attraverso il generatore non viene nemmeno calcolato. In questo ciclo, senza
 `.detach()`, quel gradiente verrebbe calcolato, si depositerebbe in `.grad` e
-sarebbe poi azzerato da `opt_G.zero_grad()` prima di essere usato: il risultato
-numerico è identico (verificato: pesi finali di $G$ uguali bit a bit), ma su
-una rete grande si paga un passaggio all'indietro intero per niente. Attenzione
+sarebbe poi azzerato da `opt_G.zero_grad()` prima di essere usato: il risultato numerico è identico, pesi finali di $G$ compresi, ma su una rete
+grande si paga un passaggio all'indietro intero per niente. Attenzione
 però che l'innocuità dipende dall'ordine delle righe: in una variante che
 azzeri i gradienti in cima all'iterazione, o che legga `.grad` fra i due passi,
 `.detach()` torna necessario.
@@ -688,8 +690,12 @@ reti più difficili da addestrare, e tre problemi ricorrono.
   varietà così hanno supporti quasi certamente disgiunti (o intersecantisi in
   un insieme di misura nulla), un discriminatore perfetto esiste, e su supporti
   disgiunti la $\mathrm{JSD}$ vale $\log 2$ **qualunque** sia la distanza fra le
-  due distribuzioni. Il gradiente non è piccolo: è nullo, e resta nullo mentre
-  $G$ si avvicina. Alternare meglio i turni non lo risolve, ed è da qui che
+  due distribuzioni. Il gradiente non è piccolo: è nullo, e resta nullo mentre $G$ si avvicina. Ed
+  è qui che si chiude il cerchio con le ipotesi del teorema: il conto che dava
+  $2\,\mathrm{JSD}$ presupponeva due densità, e un generatore vero una densità
+  non ce l'ha. La caratterizzazione dell'ottimo resta vera; è il mondo in cui
+  vale a non essere quello dell'addestramento. Alternare meglio i turni non lo
+  risolve, ed è da qui che
   nasce l'idea di cambiare misura, cioè la Wasserstein GAN.
 - **Mode collapse.** $G$ mappa molti $\mathbf{z}$ diversi su una stessa uscita
   $\tilde{\mathbf{x}}$: $p_G$ collassa su pochi modi di $p_{\text{dati}}$. Sembra un
@@ -727,8 +733,7 @@ cinquantamila immagini) e soprattutto **non vede il mode collapse**: mille
 immagini bellissime e tutte uguali, se le si guarda una per volta, sembrano un
 successo.
 
-Questa è un'affermazione che conviene misurare invece di ripeterla, e si può
-fare. Si prende il ciclo scritto qui sopra, riga per riga, e gli si dà un
+Si può controllare, e su un caso in cui la risposta la conosciamo già. Si prende il ciclo scritto qui sopra, riga per riga, e gli si dà un
 compito minuscolo di cui conosciamo già la risposta.
 
 Il compito è questo: al posto delle immagini, quattromila punti su un foglio,
@@ -748,8 +753,8 @@ larga, perché uno che avesse imparato bene tutti e otto ne metterebbe in
 ciascuno un ottavo, cioè il dodici e mezzo per cento. Un mucchietto non coperto
 è quindi un mucchietto proprio abbandonato, non uno servito male.
 
-Il capoverso che segue serve solo a chi volesse rifare l'esperimento, e si può
-saltare senza perdere il filo. I mucchietti sono otto campane, di quelle
+Chi vuole rifare l'esperimento trova qui sotto le misure; chi no può saltare
+al risultato. I mucchietti sono otto campane, di quelle
 disegnate poco fa, con la larghezza (in gergo la *deviazione standard*) di
 $0{,}05$, disposte sui vertici di un ottagono di raggio $2$; il raggio
 dell'isolotto, $0{,}15$, è tre volte quella larghezza. Generatore e
@@ -757,7 +762,7 @@ discriminatore sono due reti con due strati nascosti da $128$ unità, con la
 funzione di attivazione detta *leaky ReLU* (quella che lascia passare anche i
 negativi, molto ridotti: $0{,}2$ volte il loro valore), e il falsario parte da
 **due** soli numeri casuali. Come allenatore si usa Adam, quello già visto nei
-capitoli su PyTorch, con correzioni di ampiezza $2\cdot 10^{-4}$: piccole, che
+{doc}`capitoli su PyTorch </PyTorch/overview>`, con correzioni di ampiezza $2\cdot 10^{-4}$: piccole, che
 è il modo di tenere a bada l'instabilità detta sopra. I gruppi sono da $256$
 esempi e i giri quattrocento, dove un giro vuol dire **una passata sull'intero
 insieme** dei quattromila punti, non un singolo gruppo: sono due dettagli che
@@ -777,9 +782,10 @@ suo numero è la metà.
 Quei due valori non sono un voto di promozione: sono il punto in cui il gioco
 è in parità. Quello che conta è **di quanto** ciascuna loss se ne allontana, e
 la cosa più comoda è tradurla nella domanda vera: quanto l'esperto crede vero
-un falso. A $0{,}69$ lo crede vero mezze volte su due, cioè non lo distingue
-affatto; a $0{,}81$ scende a poco più di quattro volte su dieci; a $1{,}27$ a
-meno di tre su dieci, e lì lo sta smascherando sette volte su dieci.
+un falso. A $0{,}69$ lo crede vero una volta su due, cioè non lo distingue affatto; a $0{,}81$ scende a poco più di quattro volte su dieci; a $1{,}27$ a meno di
+tre su dieci, e lì lo sta smascherando sette volte su dieci. (La conversione è
+$e^{-\mathcal{L}_G}$, che è una media di logaritmi riportata indietro: la
+frequenza vera sta un pelo più in alto, mai più in basso.)
 
 Il risultato più netto sta dentro un singolo addestramento, e si ripete in
 tutti e quattro (uno per seme, quattro addestramenti identici in tutto tranne
@@ -943,15 +949,15 @@ invariati, no.
 
 `````
 
-Vale la pena fissare un punto che tornerà: nessuna delle due giudica una
-singola immagine, giudicano un **insieme**. L'Inception Score guarda l'insieme
+Conviene fissare un punto che tornerà: nessuna delle due giudica una singola
+immagine, giudicano un **insieme**. L'Inception Score guarda l'insieme
 generato e basta, ed è il suo difetto; il FID lo confronta con l'insieme delle
 immagini vere. Ma il FID di una foto non esiste, e nemmeno il suo Inception
-Score. Ed è coerente con quello che una GAN cerca di fare,
-cioè avvicinare il mucchio delle immagini che genera a quello delle immagini
-vere: si valuta l'obiettivo dichiarato, non il singolo prodotto. Il FID sarà
-anche l'unità di misura con cui, nel capitolo sui modelli di diffusione, la
-nuova famiglia dimostrerà di aver superato le GAN.
+Score. Ed è coerente con quello che una GAN cerca di fare, cioè avvicinare il
+mucchio delle immagini che genera a quello delle immagini vere: si valuta
+l'obiettivo dichiarato, non il singolo prodotto. Il FID sarà anche l'unità di
+misura con cui, nel {doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`, la nuova famiglia
+dimostrerà di aver superato le GAN.
 
 ## Accorgimenti pratici (cenni)
 

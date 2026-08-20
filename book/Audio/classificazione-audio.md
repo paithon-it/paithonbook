@@ -27,7 +27,7 @@ feature](dal-suono-alle-feature.md): l'onda diventa una tabella con il tempo su
 un asse e le frequenze sull'altro, riletta come la sente un orecchio (lo
 **spettrogramma mel**). Da lì in avanti il suono non è più un suono, è
 un'immagine. E riconoscere un'immagine è il mestiere delle **reti
-convoluzionali**, in sigla CNN: la stessa macchina che nel capitolo di visione
+convoluzionali**, in sigla CNN: la stessa macchina che nel {doc}`capitolo di visione </VisioneArtificiale/overview>`
 riconosceva un gatto in una foto.
 
 `````{tab} Elementare
@@ -175,8 +175,9 @@ modello e il pre-addestramento della precisione di ogni singola annotazione.
 
 ## Quando l'attenzione arriva all'audio: l'AST
 
-Fino al 2021 la mappa era chiara: gli spettrogrammi si classificano con le reti
-convoluzionali, punto. Poi è arrivato l’**Audio Spectrogram Transformer** (AST)
+Fino al 2021 la mappa era chiara: gli spettrogrammi si classificano con una
+rete convoluzionale, al più con un po' di attenzione appiccicata sopra
+all'ultimo strato. Poi è arrivato l’**Audio Spectrogram Transformer** (AST)
 di Gong, Chung e Glass {cite}`gong2021ast`, e ha buttato via proprio quelle. Le
 convoluzioni sono i **filtri che scorrono**: piccole griglie di numeri, larghe
 pochi quadretti, che passano sull'immagine un pezzetto alla volta cercando
@@ -219,10 +220,9 @@ un embedding e trattata come un token, con un *positional embedding* per la
 posizione tempo–frequenza; da lì in poi è il consueto stack di
 *self-attention* del capitolo sui Transformer. Il vantaggio è il campo
 recettivo globale fin dal primo strato: ogni patch può pesare qualunque altra,
-mentre una CNN allarga la propria vista solo strato dopo strato. Sul benchmark
-AudioSet completo l'AST raggiunge una mAP di $0{,}459$ con un singolo modello
-($0{,}485$ in ensemble), superando le migliori CNN dell'epoca a parità di
-configurazione.
+mentre una CNN allarga la propria vista solo strato dopo strato. Sul benchmark AudioSet completo l'AST raggiunge una mAP di $0{,}459$ con un
+singolo modello ($0{,}485$ nell'ensemble più grande), contro lo $0{,}444$ del
+miglior ibrido CNN più attenzione dell'epoca a parità di protocollo.
 
 Onestà d'obbligo, la stessa del capitolo sui Transformer: rinunciare alla
 convoluzione significa rinunciare al suo *bias induttivo* di località, e quel
@@ -373,12 +373,12 @@ cioè quello che troviamo nella tabella a meno degli arrotondamenti ai bordi.
 Più il suono è acuto, più fitti sono quei passaggi: è tutto il legame fra questa
 misura e le frequenze.
 
-Il silenzio ha energia praticamente nulla, e sullo zcr c'è una cosa che vale la
-pena guardare: vale circa $0{,}5$, cioè **quanto quello del rumore**. Non è una
-stranezza, è come l'abbiamo costruito: il nostro «silenzio» è rumore anche lui,
-solo trecento volte più piccolo. In un fondo così ogni minuscolo sbalzo casuale
-attraversa lo zero, esattamente come fanno gli sbalzi grossi del rumore vero.
-Contare gli attraversamenti, da solo, non li distingue affatto.
+Il silenzio ha energia praticamente nulla, e sullo zcr c'è una cosa da
+guardare: vale circa $0{,}5$, cioè **quanto quello del rumore**. Non è una
+stranezza, è come l'abbiamo costruito: il nostro «silenzio» è rumore anche
+lui, solo trecento volte più piccolo. In un fondo così ogni minuscolo sbalzo
+casuale attraversa lo zero, esattamente come fanno gli sbalzi grossi del
+rumore vero. Contare gli attraversamenti, da solo, non li distingue affatto.
 
 E allora perché la regola funziona? Perché le due domande si fanno in un ordine
 preciso: prima l'energia, che manda il silenzio fuori gioco, e solo dopo lo zcr,

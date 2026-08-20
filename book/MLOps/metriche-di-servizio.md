@@ -28,7 +28,7 @@ servizio, *andare veloce*.
 ## Scomporre la latenza
 
 La generazione ha due fasi, molto diverse fra loro, e sono quelle incontrate
-nel capitolo sui Transformer parlando di KV cache.
+nel {doc}`capitolo sui Transformer </Transformers/overview>` parlando di KV cache.
 
 Nella prima il modello **legge la domanda**: tutte le parole insieme, in un
 colpo solo, prendendosi gli appunti che gli serviranno dopo (sono proprio gli
@@ -54,8 +54,9 @@ Nella generazione di testo è identico. La prima attesa si chiama **TTFT**
 compare la prima parola. La seconda si chiama **TPOT** (*time per output
 token*): la pausa **media** fra una parola e la successiva.
 
-Su quel «media» conviene fermarsi un istante, perché più avanti questa pagina
-dirà che le medie mentono, e non si vuole che sembri una contraddizione. La
+Su quel «media» conviene fermarsi un istante. Una media descrive bene un ritmo
+regolare, ed è per questo che il TPOT esiste; basta però una pausa fuori scala
+perché smetta di descrivere qualcosa. La
 media va benissimo per descrivere un ritmo *regolare*, ed è per questo che il
 TPOT esiste. Ma se in mezzo a duecento pause da un ventesimo di secondo ne
 capita una da due secondi, la media si sposta appena e il testo, sotto gli
@@ -336,18 +337,17 @@ $32{,}0 \times 0{,}494 = 15{,}8$, quasi il $15\%$ in meno di prima. Il numero
 che si guarda per abitudine dice che la seconda configurazione è migliore;
 quello che conta dice il contrario, e ha ragione lui.
 
-Un'avvertenza sulla provenienza di queste cifre: escono dalla simulazione di
-poche righe più avanti, non da una misura su un sistema vero. Servono a
-mostrare *che* throughput e goodput possono muoversi in direzioni opposte, non
-a dire di quanto succeda su un modello particolare. Nella simulazione, per
+Sono due configurazioni simulate, non due misure su un sistema vero, e servono
+a mostrare *che* throughput e goodput possono muoversi in direzioni opposte,
+non a dire di quanto succeda su un modello particolare. Nella simulazione, per
 giunta, allargare il mazzo peggiora l'attesa di tutti della stessa quantità,
 mentre in un sistema vero peggiora molto di più chi ha la sfortuna di accodarsi
 in fondo.
 
 C'è poi una grandezza che si misura per richiesta e non è un tempo: quanti
-token quella richiesta consuma. Vale la pena guardarla qui, perché è la stessa
-di cui parla tutta questa sezione, vista dal lato del conto invece che da
-quello dell'orologio.
+token quella richiesta consuma. Conviene guardarla qui, perché è la stessa di
+cui parla tutta questa sezione, vista dal lato del conto invece che da quello
+dell'orologio.
 
 ```{figure} ../figures/costo-per-forma-di-richiesta.svg
 :name: fig-costo-per-caso-uso
@@ -404,9 +404,11 @@ recuperare in venti archivi diversi, oppure venti programmi esterni a cui il
 modello chiede una cosa ciascuno (che ora, un cambio, un prezzo) prima di
 poter rispondere. Lì non si aspetta la media, si
 aspetta **la più lenta di tutte**, e basta che una sia finita nella coda perché
-l'intera risposta ci finisca. Se ciascuna ha l’$1\%$ di probabilità di essere
-lenta, la probabilità che almeno una delle venti lo sia è
-$1 - 0{,}99^{20} \approx 18\%$: si calcola la probabilità che vadano bene tutte
+l'intera risposta ci finisca. Se ciascuna ha l'$1\%$ di probabilità di essere lenta, e le venti sono lente
+per ragioni indipendenti, la probabilità che almeno una lo sia è
+$1 - 0{,}99^{20} \approx 18\%$; quando invece condividono la stessa scheda, la
+stessa rete o lo stesso scheduler la loro sfortuna arriva insieme, e il $18\%$
+è la stima ottimistica: si calcola la probabilità che vadano bene tutte
 e venti ($0{,}99$ moltiplicato per sé stesso venti volte, cioè circa l’$82\%$) e
 la si toglie da uno. Una p99 rassicurante sul singolo passo diventa un utente
 scontento su cinque sull'intera interazione, ed è l'argomento di Dean e Barroso
@@ -532,7 +534,7 @@ dichiaratamente pubblici, tipicamente l'istruzione di sistema del prodotto.
 Stessa disciplina per la correttezza. Gli appunti tenuti da parte valgono solo
 per chi li ha scritti, e dipendono da tre cose: da quale modello li ha
 calcolati, da quali eventuali pesi aggiuntivi lo stessero specializzando (la
-LoRA vista nel capitolo sui Transformer) e da con quante cifre i suoi numeri
+LoRA vista nel {doc}`capitolo sui Transformer </Transformers/overview>`) e da con quante cifre i suoi numeri
 erano scritti. Se il magazzino non tiene conto di tutte e tre, consegna a un
 modello gli appunti presi da un altro, e nessuno se ne accorge.
 
@@ -580,7 +582,7 @@ batch 16     20.0     18.5     92.5%     3.5%      297    285    486    530
 batch 64     32.0     15.8     49.4%    33.4%      457    429    729    893
 ```
 
-Le due colonne di percentuali contano cose diverse, e vale la pena tenerle
+Le due colonne di percentuali contano cose diverse, e conviene tenerle
 separate. `conformi` è la quota di richieste che rispettano **tutte e due** le
 promesse, quella sul primo token e quella sul ritmo; `TTFT>SLO` è la quota che
 sfora **solo la prima**. Per questo a mazzi da 64 si legge sia «una su tre

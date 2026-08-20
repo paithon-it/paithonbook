@@ -48,7 +48,11 @@ niente.
 Il conto di {numref}`fig-maledizione-dimensionalita` non è una curiosità
 geometrica: dice che in tante dimensioni **il centro si svuota** e tutto finisce
 in periferia. E siccome gli angoli di un cubo sono tanti e distanti fra loro,
-punti spinti tutti in periferia sono punti spinti tutti lontani gli uni dagli
+c'è poi un secondo fatto, che si vede meglio guardando le distanze invece dei
+volumi: la distanza fra due punti è una **somma** di $d$ scarti, e una somma
+di tanti addendi indipendenti cade quasi sempre attorno allo stesso valore. Le
+distanze fra tutte le coppie si assomigliano, e i punti finiscono tutti
+lontani gli uni dagli
 altri.
 
 Da qui la conseguenza che tocca ogni algoritmo basato sulle distanze. Se i punti
@@ -211,8 +215,8 @@ primi $k$ autovettori in colonna.
 
 `````
 
-Vale la pena vedere lo stesso meccanismo su un esempio minuscolo: quattro
-punti in due dimensioni, da proiettare su una sola.
+Conviene vedere lo stesso meccanismo su un esempio minuscolo: quattro punti in
+due dimensioni, da proiettare su una sola.
 
 `````{tab} Elementare
 
@@ -368,8 +372,8 @@ l'errore più comune che si fa con queste figure.
 
 `````{tab} Elementare
 
-Immagina di dover disegnare su un foglio la mappa delle amicizie di una
-scuola. Non ti interessa la distanza reale tra le case: ti interessa che chi è
+Su un foglio, la mappa delle amicizie di una scuola non si disegna con il
+righello. Non ti interessa la distanza reale tra le case: ti interessa che chi è
 amico finisca **vicino** sul foglio, e chi non si conosce finisca lontano.
 t-SNE e UMAP fanno questo con i dati: prendono punti che vivono in uno spazio
 con tante dimensioni e li dispongono in due, cercando di mettere accanto i
@@ -925,8 +929,8 @@ dura non è un metodo diverso, è la versione degenere di quella morbida, e la
 preferenza di k-means per gruppi sferici è scritta in quella $\mathbf{I}$. La
 seconda: essendo generativo, un GMM restituisce una **densità**, quindi serve
 anche a quello che il clustering non fa, cioè segnalare i punti improbabili.
-È uno dei rilevatori di anomalie di riferimento, e riaggancia il capitolo sui
-dati che cambiano.
+È uno dei rilevatori di anomalie di riferimento, e riaggancia
+{doc}`Quando i dati cambiano <dati-che-cambiano>`.
 
 Poiché il modello ha una verosimiglianza, il numero di componenti si sceglie
 con un criterio di informazione invece che a occhio. **BIC** e **AIC** sommano
@@ -940,15 +944,17 @@ della silhouette, che sono diagnostiche geometriche senza un modello sotto.
 
 `````
 
-Vale la pena imparare a riconoscere l'algoritmo EM, perché ricompare in tutto il
-libro e ogni volta sotto un altro nome. Lo schema è sempre lo stesso, e conviene
-tenerlo come sagoma: *quando la cosa che renderebbe facile la stima è proprio
-quella che non osservi, stimala e alterna*.
+Conviene imparare a riconoscere l'algoritmo EM, perché ricompare in tutto il
+libro e ogni volta sotto un altro nome. Lo schema è sempre lo stesso, e
+conviene tenerlo come sagoma: *quando la cosa che renderebbe facile la stima è
+proprio quella che non osservi, stimala e alterna*.
 
-Tre posti in cui lo si ritrova. Il primo è il capitolo sul riconoscimento
-vocale: i sistemi che per trent'anni hanno trascritto il parlato usavano proprio
-misture gaussiane come queste, e le addestravano con EM. Il secondo è il
-capitolo sui modi di spezzare un testo in pezzi da dare a un modello: anche lì
+Tre posti in cui lo si ritrova. Il primo è
+{doc}`Speech Recognition </SpeechRecognition/overview>`: i sistemi che per
+trent'anni hanno trascritto il parlato usavano proprio misture gaussiane come
+queste, e le addestravano con EM. Il secondo è
+{doc}`Come si spezza il testo </NaturalLanguageProcessing/tokenizzatori>`:
+anche lì
 c'è un metodo che sceglie i pezzi migliori senza sapere in anticipo come le
 parole vadano tagliate, e il motore è di nuovo EM. Il terzo arriva molto più
 avanti, ed è quello che rende questa sezione più importante di quanto sembri:

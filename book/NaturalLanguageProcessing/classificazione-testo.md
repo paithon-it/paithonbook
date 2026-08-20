@@ -28,8 +28,7 @@ giudice automatico, con gli attrezzi di oggi.
 
 ## Dare un'etichetta a un testo
 
-La classificazione è il primo dei compiti elencati nella panoramica del
-capitolo, e il più onnipresente: è spam o no? Questa recensione è positiva o
+La classificazione è il compito più onnipresente del NLP: e il più onnipresente: è spam o no? Questa recensione è positiva o
 negativa? In che lingua è scritto questo tweet? Questa email va allo
 sportello "reclami" o "fatturazione"? Chi ha scritto questo saggio? Il formato
 è sempre lo stesso: in ingresso un documento, in uscita una scelta tra poche
@@ -41,7 +40,7 @@ abbiamo imparato a trasformare un documento in un vettore di numeri: il
 il pezzo mancante: due modelli che, dato quel vettore, emettono il verdetto.
 Il primo, **Naive Bayes**, è il discendente diretto del metodo di Mosteller e
 Wallace; il secondo, la **regressione logistica**, l'abbiamo già incontrata
-nel capitolo sul machine learning e qui la mettiamo al lavoro sul testo. Il
+nel {doc}`capitolo sul machine learning </MachineLearning/overview>` e qui la mettiamo al lavoro sul testo. Il
 confronto tra i due, vedremo, insegna una distinzione che attraversa tutto il
 machine learning.
 
@@ -280,7 +279,7 @@ Naive Bayes conta le parole dentro ciascuna delle due etichette possibili
 tutti e due) e lascia che la regola di Bayes tiri le somme. C'è un'alternativa
 più diretta: imparare, per ogni parola, un **peso** che dica quanto spinge
 verso un'etichetta o l'altra, e sommare le spinte. Si chiama **regressione
-logistica**, il capitolo sul machine learning la presenta fra i modelli
+logistica**, il {doc}`capitolo sul machine learning </MachineLearning/overview>` la presenta fra i modelli
 supervisionati, e qui
 la mettiamo al lavoro sul testo.
 
@@ -452,9 +451,9 @@ nell'era dei Transformer.
 Come si misura un classificatore di testi? Con gli strumenti già costruiti nel
 capitolo sul machine learning: la matrice di confusione, la precision, la
 recall e la loro sintesi $F_1$. Le due parole inglesi sono quelle che si
-trovano ovunque, e vale la pena ridirle nel modo più corto possibile: di quello
-che il sistema ha segnalato, quanto era davvero da segnalare (**precision**)? E
-di quello che andava segnalato, quanto ne ha trovato (**recall**)? La prima
+trovano ovunque, e conviene ridirle nel modo più corto possibile: di quello
+che il sistema ha segnalato, quanto era davvero da segnalare (**precision**)?
+E di quello che andava segnalato, quanto ne ha trovato (**recall**)? La prima
 misura gli abbagli, la seconda le omissioni; $F_1$ è la loro sintesi in un
 numero solo.
 

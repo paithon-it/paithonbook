@@ -20,7 +20,7 @@ strumenti: dare le mani a un cervello. Ed è il primo mattone di ciò che
 chiamiamo **agente**: un modello che non si limita a rispondere, ma *osserva*,
 *decide* e *agisce*, in un ciclo, finché il compito non è chiuso.
 
-Costruiamo su terreno noto. Nel capitolo sui Transformer abbiamo visto tre
+Costruiamo su terreno noto. Nel {doc}`capitolo sui Transformer </Transformers/overview>` abbiamo visto tre
 cose. La prima è un modello che, letta una montagna di testo, impara a
 *completarlo*. La seconda è una fase di addestramento successiva, fatta di
 esempi di consegne già svolte, che lo rende capace di *eseguire* una richiesta
@@ -465,9 +465,9 @@ solida.
 
 `````
 
-Detta così, la riflessione sembra magica, e qui il libro deve al lettore un
-distinguo netto. L'auto-critica **non è** auto-correzione garantita, e tutto
-dipende da chi dice all'agente che ha sbagliato. La riflessione funziona bene
+Detta così, la riflessione sembra magica. Non lo è: l'auto-critica **non è**
+auto-correzione garantita, e tutto dipende da chi dice all'agente che ha
+sbagliato. La riflessione funziona bene
 quando esiste un segnale d'esito *affidabile ed esterno*: dei **test**
 scritti da qualcun altro che passano o falliscono (i test di progetto di
 SWE-bench sono l'esempio buono, perché nessuno li ha scritti per far contento
@@ -502,8 +502,8 @@ una stringa (cioè un pezzo di testo) come se fosse codice: comodissima e
 pericolosa, perché eseguirebbe *qualunque* cosa il modello scriva, non solo un
 conto. Al suo posto leggiamo l'espressione, la spezziamo nei suoi pezzi e la
 calcoliamo noi, accettando soltanto gli operatori che abbiamo messo in elenco;
-tutto il resto viene respinto con un messaggio che dice cosa non andava. Se
-questa parte non interessa si può scorrere: il cuore del capitolo è il blocco
+tutto il resto viene respinto con un messaggio che dice cosa non andava. Non è una precauzione da manuale: quello che il modello scrive va trattato
+come si tratta il testo di uno sconosciuto. Il cuore resta il blocco
 dopo.
 
 ```python
@@ -557,7 +557,7 @@ STRUMENTI = {"calcola": calcola, "cerca": cerca}
 Nell'archivio in fondo al blocco ci sono tre voci, e la prima è quella su cui
 verterà la domanda: *Attention Is All You Need* è il titolo dell'articolo
 scientifico (in gergo, un **paper**) che nel 2017 ha presentato i Transformer,
-l'architettura studiata nel capitolo sui Transformer.
+l'architettura studiata nel {doc}`capitolo sui Transformer </Transformers/overview>`.
 
 Il cuore dell'agente sono le altre due funzioni. La prima è `llm_finto`: legge
 la traccia e restituisce il pensiero e l'azione da fare (l'azione è due cose,
@@ -714,8 +714,8 @@ dei documenti.
   JSON Schema: `type`, `properties`, `required`); la capacità di sceglierlo e
   compilarne gli argomenti emerge dall'instruction tuning. **Toolformer**
   {cite}`schick2023toolformer` impara *da solo*, con auto-supervisione, dove
-  conviene chiamare un'API: tiene le chiamate che riducono la cross-entropia
-  **pesata** sui cinque token successivi. Non sa però comporre gli strumenti in
+  conviene chiamare un'API: tiene le chiamate che riducono la cross-entropia **pesata** sui cinque token
+  che seguono il punto della chiamata. Non sa però comporre gli strumenti in
   catena: è il salto che ReAct affronta.
 - **ReAct** {cite}`yao2023react` intreccia in un loop **Thought → Action →
   Observation**: le osservazioni àncorano il ragionamento a fatti reali e le

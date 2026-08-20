@@ -292,8 +292,8 @@ in una volta sola. Nessuna approssimazione: la stessa somma, fatta a rate.
 I foglietti però sono **due**, non uno, e il secondo è la parte meno ovvia. Nel
 calcolo vero i punteggi, prima di essere sommati, non vengono presi così come
 sono: si passa prima per un'operazione che li ingigantisce, e che ha una regola
-semplice, **ogni punto in più moltiplica per 2,7 circa**. Un punteggio di due
-punti più alto pesa quindi $2{,}7 \times 2{,}7$, quasi sette volte tanto; dieci
+semplice, **ogni punto in più moltiplica per 2,7 circa**. Un punteggio di due punti più alto pesa quindi $2{,}7 \times 2{,}7$, più di
+sette volte tanto; dieci
 punti più alto pesa ventiduemila volte tanto. Con punteggi anche moderatamente
 alti si arriva a numeri che il computer non riesce più a scrivere.
 
@@ -384,22 +384,21 @@ conserva quello che ha già letto per non rileggerlo da capo a ogni parola
 del confronto che vanno conservati entrambi).
 
 Quel taccuino cresce in proporzione alla lunghezza del testo, non al suo
-quadrato, ma è pesante, e il conto vale la pena di farlo con i numeri di un
+quadrato, ma è pesante, e il conto conviene di farlo con i numeri di un
 modello vero, uno da otto miliardi di numeri imparati. Ha trentadue strati e
 ognuno tiene il proprio taccuino; dentro ogni strato ci sono otto «teste» che
 leggono il testo in parallelo, e ognuna descrive una parola con 128 numeri; di
 ogni parola vanno conservate chiave e valore, quindi due volte tanto; e ogni
 numero occupa due byte. In tutto $2 \times 32 \times 8 \times 128 \times 2$
-byte, cioè $131\,072$ byte, che sono esattamente **128 KB** (un KB è 1024 byte)
-**per ogni parola letta**. Su centomila parole di contesto fanno **dodici
-gigabyte**, per una conversazione sola, su una scheda che di gigabyte ne ha
-ottanta. FlashAttention non lo tocca: è un altro
-mestiere, e lo raccontano la sezione sui modelli linguistici del capitolo sui
-Transformer e il capitolo su MLOps, dove si trovano anche le tecniche che quel
-problema lo affrontano davvero. Vale anche la pena dire, per onestà, che
-FlashAttention **non** riduce il numero di conti da fare, che resta
-proporzionale al quadrato della lunghezza: quello è il mestiere del capitolo
-sull'attenzione lineare.
+byte, cioè $131\,072$ byte, che sono esattamente **128 KB** (un KB è 1024
+byte) **per ogni parola letta**. Su centomila parole di contesto fanno
+**dodici gigabyte**, per una conversazione sola, su una scheda che di gigabyte
+ne ha ottanta. FlashAttention non lo tocca: è un altro mestiere, e lo
+raccontano la sezione sui modelli linguistici del {doc}`capitolo sui Transformer </Transformers/overview>` e
+il {doc}`capitolo su MLOps </MLOps/overview>`, dove si trovano anche le tecniche che quel problema lo
+affrontano davvero. Conviene dire, per onestà, che FlashAttention **non**
+riduce il numero di conti da fare, che resta proporzionale al quadrato della
+lunghezza: quello è il mestiere del capitolo sull'attenzione lineare.
 
 Onestà anche sul codice: quello che in queste pagine sta in un'idea semplice,
 nel codice

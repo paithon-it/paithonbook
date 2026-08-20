@@ -181,7 +181,7 @@ chi ricorda le regole del capitolo di richiami matematici riconoscerà che la
 derivata di $x^2 + 2x$ è $2x + 2$, che in $x = 3$ vale appunto $8$. In
 miniatura, è il meccanismo che addestra ogni rete neurale di questo libro.
 
-## Come è organizzato il capitolo
+## Che cosa si impara qui
 
 Due movimenti, dal mattone al mestiere.
 

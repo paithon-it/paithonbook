@@ -25,8 +25,8 @@ la stessa onestà: il deep learning non è un miglioramento automatico.
 ## Quando conviene il deep learning
 
 La domanda non è se una rete sappia imparare una serie temporale: sa farlo. La
-domanda è quando ne vale la pena, e la risposta dipende meno dall'architettura
-che dalla forma dei dati che si hanno davanti.
+domanda è quando ne conviene, e la risposta dipende meno dall'architettura che
+dalla forma dei dati che si hanno davanti.
 
 `````{tab} Elementare
 
@@ -139,15 +139,15 @@ ed è la ragione per cui su quelle serie perde contro un ARIMA banale.
 ## Reti ricorrenti per il forecasting
 
 Il primo strumento neurale per le sequenze lo abbiamo già costruito, nel
-capitolo sul *Natural Language Processing*: una rete che legge un pezzo per
-volta e si porta dietro un riassunto di quello che ha letto fin lì. Quel
+{doc}`capitolo sul Natural Language Processing </NaturalLanguageProcessing/overview>`:
+una rete che legge un pezzo per volta e si porta dietro un riassunto di quello che ha letto fin lì. Quel
 riassunto si chiama **stato nascosto**, ed è tutta la memoria che la rete ha.
 Le **reti ricorrenti** (RNN) funzionano così; la **LSTM** di Sepp Hochreiter e
 Jürgen Schmidhuber {cite}`hochreiter1997long` è la versione che a ogni passo
-decide anche che cosa di quel riassunto vale la pena tenere e che cosa buttare
-(sono i suoi **cancelli**). Lì il problema era il linguaggio, qui è una serie di
-numeri, ma il meccanismo è lo stesso: una serie temporale, in fondo, è una frase
-di numeri.
+decide anche che cosa di quel riassunto conviene tenere e che cosa buttare
+(sono i suoi **cancelli**). Lì il problema era il linguaggio, qui è una serie
+di numeri, ma il meccanismo è lo stesso: una serie temporale, in fondo, è una
+frase di numeri.
 
 `````{tab} Elementare
 
@@ -203,7 +203,7 @@ la ricorrenza. La prima risposta arriva, curiosamente, dalle convoluzioni.
 
 ## TCN: convoluzioni che guardano solo indietro
 
-Una **convoluzione** è l'operazione del capitolo sul Deep Learning: una piccola
+Una **convoluzione** è l'operazione del {doc}`capitolo sul Deep Learning </DeepLearning/overview>`: una piccola
 finestra che scorre sui dati e a ogni posizione fa sempre lo stesso conto,
 prendere i valori che ha sotto, pesarli e sommarli. Là scorreva su un'immagine,
 qui scorre su una fila di giorni. Il vantaggio, rispetto a una rete che legge un
@@ -290,13 +290,13 @@ parallelizzabile lungo il tempo: $O(1)$ passi sequenziali invece di $O(n)$.
 ## DeepAR: una rete per mille serie, e una distribuzione
 
 Torniamo al problema di Amazon con cui si è aperta la sezione. **DeepAR**
-{cite}`salinas2020deepar` è la risposta neurale, e porta due idee che vale la
-pena tenere distinte.
+{cite}`salinas2020deepar` è la risposta neurale, e porta due idee da tenere
+distinte.
 
 La prima è il modello **globale**, già discusso: una rete sola, addestrata su
 tutte le serie insieme, che legge un giorno per volta e si porta dietro il
-proprio riassunto del passato (è una LSTM, quella del capitolo sul Natural
-Language Processing). A ogni passo riceve due cose, il valore del giorno prima e
+proprio riassunto del passato (è una LSTM, quella del {doc}`capitolo sul Natural
+Language Processing </NaturalLanguageProcessing/overview>`). A ogni passo riceve due cose, il valore del giorno prima e
 le informazioni esterne di quel giorno: il calendario, il prezzo, una promozione
 già decisa. Sono le variabili **esogene** della sezione sui modelli classici, che
 in questa letteratura cambiano nome e si chiamano **covariate**.
@@ -396,24 +396,33 @@ for j in range(n_traj):
 # Dai campioni ricaviamo i quantili: la banda di previsione.
 q10, q50, q90 = np.percentile(traj, [10, 50, 90], axis=0)
 for h in range(orizzonte):
-    print(f"t+{h+1}:  mediana {q50[h]:5.2f}   banda 80% [{q10[h]:5.2f}, {q90[h]:5.2f}]")
+    print(f"t+{h+1}:  mediana {q50[h]:5.2f}   banda 80% [{q10[h]:5.2f}, {q90[h]:5.2f}]"
+          f"   larga {q90[h] - q10[h]:.3f}")
 ```
 
-Il programma stampa cinque righe, una per giorno previsto: la mediana delle
-ventimila storie generate e i due estremi della banda.
+```text
+t+1:  mediana 11.20   banda 80% [ 9.91, 12.47]   larga 2.556
+t+2:  mediana 10.73   banda 80% [ 9.22, 12.22]   larga 3.008
+t+3:  mediana 10.42   banda 80% [ 8.87, 12.02]   larga 3.149
+t+4:  mediana 10.25   banda 80% [ 8.68, 11.83]   larga 3.159
+t+5:  mediana 10.15   banda 80% [ 8.58, 11.74]   larga 3.166
+```
+
+Cinque righe, una per giorno previsto: la mediana delle ventimila storie
+generate e i due estremi della banda.
 
 Si vede la mediana rientrare verso la media di lungo periodo,
 che è la stessa della sezione sui classici, cioè il valore che passando per la
 regola resta uguale a sé stesso, $\mu = 4/(1-0{,}6) = 10$. E si vede la banda
-allargarsi: la distanza fra i suoi due estremi passa da $2{,}56$ a $3{,}00$ a
-$3{,}15$.
+allargarsi: la distanza fra i suoi due estremi, che il programma stampa in
+fondo a ogni riga, passa da $2{,}56$ a $3{,}01$ a $3{,}15$.
 
-Poi, dal terzo giorno in poi, la salita **si spegne**: $3{,}15$, $3{,}15$,
-$3{,}16$, e i tre giorni non si distinguono più fra loro. Attenzione a che cosa
-vuol dire: non che la banda si sia fermata di colpo, ma che quel che le resta da
-crescere è ormai una manciata di centesimi, e con ventimila storie anche il
-tremolio del sorteggio vale un paio di centesimi, quindi la crescita sparisce
-dentro il rumore. Sta arrivando al suo limite, che qui vale $3{,}20$, e al
+Poi, dal terzo giorno in poi, la salita **quasi si spegne**: $3{,}149$,
+$3{,}159$, $3{,}166$, cioè meno di un centesimo per volta. Ed è la ragione per
+cui la banda va stampata con tre decimali e non con due: arrotondata al
+centesimo, la crescita degli ultimi tre giorni sparirebbe, e si concluderebbe
+che si è fermata. Non si è fermata: quel che le resta da crescere è ormai una
+manciata di millesimi. Sta arrivando al suo limite, che qui vale $3{,}20$, e al
 quinto giorno ne ha già raggiunto il $99{,}7\%$.[^banda-limite]
 
 Ed è la parte più istruttiva del programmino. È il rovescio del rientro verso la
@@ -505,7 +514,7 @@ scrivono gli autori, i mattoni del deep learning si bastavano da soli
 
 ## Transformer per le serie, e un lineare che li imbarazza
 
-Nel capitolo sui Transformer il libro ha raccontato una rete che, invece di
+Nel {doc}`capitolo sui Transformer </Transformers/overview>` il libro ha raccontato una rete che, invece di
 leggere una sequenza un pezzo per volta, guarda tutti i pezzi in una volta sola
 e decide da sé a quali dare peso: quel «decidere a quali dare peso» è
 l’**attenzione**, e nel trattamento del linguaggio ha spazzato via le reti che
@@ -580,7 +589,8 @@ parte del lavoro che vale la pena portarsi via.
 temporale, rimescolare a caso le posizioni della finestra passata deve
 rovinarlo. Sui tassi di cambio le prestazioni dei metodi basati su Transformer
 **non si muovono** (lo scostamento medio è dell'ordine di un decimo di punto
-percentuale, e per uno dei tre è perfino in meglio) mentre lo stesso trattamento
+percentuale, e per due dei tre è perfino in meglio) mentre lo stesso
+trattamento
 fa perdere il 27% al modello lineare: lì il tempo lo sta usando la retta.
 
 Su ETTh1 il quadro è un altro, e va detto perché è la metà che si cita di meno:
@@ -594,7 +604,9 @@ quello che dichiara di misurare.
 *La seconda è la lunghezza della finestra passata.* Un modello che estrae
 relazioni temporali da una storia lunga deve migliorare quando gliene si dà di
 più. I Transformer, allungando la finestra, restano fermi o peggiorano; i
-modelli lineari, su quei dataset, migliorano ogni volta. Messe insieme, le due
+modelli lineari migliorano sulla maggior parte di quei dataset (non su tutti:
+sui tassi di cambio, dicono gli autori, la finestra lunga non aiuta nemmeno
+loro). Messe insieme, le due
 prove dicono che su quei banchi di prova l'attenzione non stava estraendo le
 relazioni temporali che dichiarava di estrarre, il che è una critica al
 **metodo di valutazione** prima che all'architettura.
@@ -812,11 +824,13 @@ confronto con la **linea di base** classica.
   backcast/forecast, ed è interpretabile quando la base è vincolata. Il suo
   contributo è di meccanismo: per battere gli ibridi statistico-neurali non
   serviva innestare statistica dentro la rete.
-- Sui Transformer per le serie, cautela: **DLinear** li eguaglia o supera su
-  nove dataset {cite}`zeng2023transformers`, e le due prove che lo spiegano
-  (su una serie mescolare l'ingresso non li scalfisce, e allungare la finestra
-  non li migliora mai) dicono che su quei banchi l'ordine temporale non era
-  quello che stavano sfruttando. Il **TFT**
+- Sui Transformer per le serie, cautela: la famiglia **LTSF-Linear** di Zeng e
+  colleghi (il lineare semplice e la sua variante con decomposizione,
+  **DLinear**) li eguaglia o supera su nove dataset
+  {cite}`zeng2023transformers`, e le due prove che lo spiegano, fatte sul
+  lineare semplice (su una serie mescolare l'ingresso non li scalfisce, e
+  allungare la finestra non li migliora), dicono che su quei banchi l'ordine
+  temporale non era quello che stavano sfruttando. Il **TFT**
   {cite}`lim2021temporal` resta utile per covariate multiple e interpretabilità,
   purché i suoi pesi di attenzione si leggano come indizio e non come prova
   {cite}`jain2019attention`. I **foundation model** come **Chronos**
@@ -828,8 +842,7 @@ confronto con la **linea di base** classica.
 
 In tutto il capitolo l'unica conoscenza a disposizione è stata la storia del
 fenomeno. Nessuno ha spiegato al modello perché la marea sale, e la marea si
-prevede lo stesso, finché le regolarità tengono. Il capitolo sulle PINN parte
-dal caso opposto, quello in cui la legge che governa il fenomeno si conosce
+prevede lo stesso, finché le regolarità tengono. Il {doc}`capitolo sulle PINN </PINN/overview>` parte dal caso opposto, quello in cui la legge che governa il fenomeno si conosce
 benissimo e a scarseggiare sono le misure.
 
 [^banda-limite]: I conti, per chi li vuole. Un AR(1) con $|\phi|<1$ ha

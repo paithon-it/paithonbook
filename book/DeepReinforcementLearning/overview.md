@@ -21,7 +21,7 @@ mondo diventa grande.
 
 Al suo posto arriva una rete neurale, ed è questa sostituzione che dà il nome al
 capitolo: *deep*, «profondo», è l'aggettivo che si usa per le reti fatte di
-molti strati sovrapposti, quelle del capitolo sul deep learning.
+molti strati sovrapposti, quelle del {doc}`capitolo sul deep learning </DeepLearning/overview>`.
 
 ## Quando la tabella diventa impossibile
 
@@ -187,7 +187,7 @@ la versione di *Nature* usava circa $50$ milioni di fotogrammi per titolo. La
 
 `````
 
-## Come è organizzato il capitolo
+## Una libertà in più, un contenimento in più
 
 Il percorso segue le domande, non gli acronimi: di ogni pezzo interessa *perché*
 esiste, cioè quale fragilità del pezzo precedente è venuto a curare.
@@ -199,7 +199,8 @@ copia congelata.
 Poi si cambia famiglia. Invece di dare un voto a ogni mossa e scegliere la
 migliore, si può imparare **direttamente a decidere**. Sono i metodi a
 *gradiente di policy*, e portano lontano: al giocatore si affianca un giudice
-che commenta ogni mossa; nasce l'algoritmo che oggi si prova per primo, PPO;
+che commenta ogni mossa; nasce l'algoritmo che oggi si prova per primo, quello che nella sezione
+seguente si chiamerà PPO;
 compare la ricerca ad albero che sta dietro ad AlphaGo. E in fondo a quella
 strada ci sono gli assistenti conversazionali, che oggi si addestrano proprio
 così.

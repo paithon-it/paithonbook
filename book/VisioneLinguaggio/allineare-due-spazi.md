@@ -310,7 +310,7 @@ con $\tau = 0{,}07$ ne costa circa un decimo.
 
 `````
 
-## Perché la temperatura e il batch non sono dettagli
+## La temperatura e il batch
 
 Quel confronto dice una cosa importante: la temperatura non è un parametro
 cosmetico, decide *quanto* piccole differenze di somiglianza diventino grandi
@@ -443,10 +443,9 @@ Le ultime righe rifanno i conti della tabella di poco fa: la stessa matrice, la
 stessa loss, solo la temperatura cambiata. Quei due numeri, $0{,}148$ e
 $1{,}082$, si possono così ritrovare invece che crederli sulla parola.
 
-Vale la pena notare che cosa *non* c'è: nessuna etichetta, nessun numero di
-classi, nessuna testa di classificazione. L'unica informazione supervisionata è
-l'ordine delle righe, cioè il fatto che la didascalia $i$ stava sotto
-l'immagine $i$.
+Cosa *non* c'è: nessuna etichetta, nessun numero di classi, nessuna testa di
+classificazione. L'unica informazione supervisionata è l'ordine delle righe,
+cioè il fatto che la didascalia $i$ stava sotto l'immagine $i$.
 
 ## Un solo spazio, due quartieri
 
@@ -467,8 +466,8 @@ vicina a una foto che non c'entra niente che alla frase che la descrive.
 Non è un guasto, e non impedisce al meccanismo di funzionare: sulle stesse
 ottanta immagini, con quel compito facile a dieci categorie, il classificatore
 scritto a parole (si scrivono le dieci categorie come dieci frasi e si tiene la
-più vicina: è il trucco della prossima sezione) indovina quasi nove volte su
-dieci. Funziona perché il
+più vicina, ed è il trucco che queste pagine costruiscono più avanti) indovina
+quasi nove volte su dieci. Funziona perché il
 confronto che conta non è mai «foto contro frase, in assoluto»: è sempre
 «questa foto, con quale delle dieci frasi va meglio?». Fra le frasi la
 graduatoria è giusta, ed è tutto quello che serve.
@@ -491,11 +490,10 @@ e la applica ai primi sbaglia tutte le volte.
 
 Il fenomeno ha un nome, **modality gap**, e una descrizione sistematica in Liang
 e colleghi {cite}`liang2022mind`, che trovano le due modalità immerse «a
-distanza di braccio» nello spazio che condividono. Il conto qui sotto è rifatto
-in casa, e vale la pena scrivere con che cosa, perché senza il protocollo un
-numero non si può controllare: `clip-vit-base-patch32`, ottanta fotografie di
-CIFAR-10 (otto per ciascuna delle dieci classi) e quaranta didascalie generiche,
-quattro per classe sullo stampo `a photo of a {classe}`. La distanza fra i due
+distanza di braccio» nello spazio che condividono. I numeri che seguono vengono da `clip-vit-base-patch32`, da ottanta fotografie
+di CIFAR-10 (otto per ciascuna delle dieci classi) e da quaranta didascalie
+generiche, quattro stampi diversi (del tipo `a photo of a {classe}`) applicati
+a ciascuna delle dieci classi. La distanza fra i due
 centroidi vale $\approx 1{,}1$ (gli embedding stanno sulla
 sfera unitaria, dove il massimo possibile è $2$); il coseno medio della coppia
 migliore è $\approx 0{,}27$ contro $\approx 0{,}76$ fra due immagini qualunque;
@@ -682,12 +680,16 @@ e senza un $b$
 inizializzato molto negativo (nel lavoro originale a $-10$) le prime iterazioni
 si consumerebbero tutte a correggerlo, invece che a imparare.[^siglip-segno]
 
-[^siglip-segno]: Chi va a controllare sull'articolo troverà l'equazione
-    stampata con il segno della similarità rovesciato rispetto a questa. La
-    forma scritta qui è quella dello pseudocodice degli autori e
-    dell'implementazione di riferimento, ed è l'unica compatibile con la
-    motivazione che loro stessi danno per $b = -10$, cioè che i negativi
-    partano a costo quasi nullo.
+[^siglip-segno]: Chi va a controllare sull'articolo troverà l'equazione stampata in un'altra forma,
+$\log\frac{1}{1+e^{z_{ij}(-t\,\langle \mathbf{I}_i, \mathbf{T}_j \rangle + b)}}$,
+che sviluppata dà
+$\log\sigma\big(z_{ij}(t\,\langle \mathbf{I}_i, \mathbf{T}_j \rangle - b)\big)$:
+a cambiare rispetto a questa è il segno del **bias**, non quello della
+similarità. La forma scritta
+qui è quella dello pseudocodice degli autori e dell'implementazione di
+riferimento, ed è l'unica compatibile con la motivazione che loro stessi danno
+per $b = -10$: con il segno dell'articolo una casella negativa partirebbe da
+un costo di circa dieci, con questo da un costo quasi nullo.
 
 `````
 
@@ -704,13 +706,13 @@ diversi; quello che non dipende dai numeri è la direzione, cioè che alla
 dimensione del batch viene tolto il ruolo di prerequisito. È lo stesso
 allineamento, ottenuto togliendo un vincolo invece di aggiungere un pezzo.
 
-Vale la pena registrare anche un risultato di metodo, arrivato negli stessi mesi
-di CLIP. ALIGN {cite}`jia2021scaling` ha addestrato le stesse due reti su oltre
-un miliardo di coppie prese dal web così com'è, senza i costosi passaggi di
-pulizia con cui di solito si prepara un archivio di immagini. Molte di quelle
-didascalie con la loro fotografia c'entrano poco o niente; il messaggio, che
-sono gli autori stessi a formulare, è che quando le coppie sono così tante la
-sciatteria di ciascuna pesa meno. Ripulire l'archivio non è un
+Conviene registrare anche un risultato di metodo, arrivato negli stessi mesi
+di CLIP. ALIGN {cite}`jia2021scaling` ha addestrato le stesse due reti su
+oltre un miliardo di coppie prese dal web così com'è, senza i costosi passaggi
+di pulizia con cui di solito si prepara un archivio di immagini. Molte di
+quelle didascalie con la loro fotografia c'entrano poco o niente; il
+messaggio, che sono gli autori stessi a formulare, è che quando le coppie sono
+così tante la sciatteria di ciascuna pesa meno. Ripulire l'archivio non è un
 prerequisito del metodo.
 
 ## Uno spazio allineato non è uno spazio che capisce

@@ -5,8 +5,8 @@ sbloccano il 90% delle capacità nascoste del modello», corsi che promettono di
 farti diventare *prompt engineer* in un weekend, immagini di istruzioni lunghe
 una pagina spacciate come formule alchemiche. È l'equivalente moderno delle
 parole magiche: si crede che esista *la* frase giusta, e che chi la conosce
-comandi la macchina. Vale la pena sgombrare il campo subito. Il prompt non è
-un incantesimo; è il **primo livello** con cui si programma un modello di
+comandi la macchina. Conviene sgombrare il campo subito. Il prompt non è un
+incantesimo; è il **primo livello** con cui si programma un modello di
 linguaggio: il più immediato, quello che vedi e scrivi nella casella della
 chat. Sopra di esso, come abbiamo anticipato aprendo questo capitolo, ci sono
 il contesto e il loop; ma è da qui che si comincia, perché è qui che nascono
@@ -274,10 +274,10 @@ Se voglio che etichetti frasi come positive o negative, gliene mostro qualcuna
 già etichettata:
 
 ```text
-Recensione: "Cibo ottimo, servizio lento." → Sentiment: neutro
-Recensione: "Mai più in questo posto." → Sentiment: negativo
-Recensione: "Esperienza fantastica, torneremo!" → Sentiment: positivo
-Recensione: "Prezzi alti ma ne vale la pena." → Sentiment:
+Recensione: "Cibo ottimo, servizio lento." → Sentiment: neutro Recensione:
+"Mai più in questo posto." → Sentiment: negativo Recensione: "Esperienza
+fantastica, torneremo!" → Sentiment: positivo Recensione: "Prezzi alti ma ne
+conviene." → Sentiment:
 ```
 
 Il modello, vedendo lo schema, completa l'ultima riga con «positivo». Nessuno
@@ -463,13 +463,11 @@ self-consistency compra affidabilità contro il rumore, non contro il bias.
 
 `````
 
-Lo spoglio dei voti si scrive in poche righe di Python, e vale la pena
-vederle per capire quanto sia poco «magica» la faccenda: si contano le
-risposte uguali e si tiene la più frequente, come si fa con le schede di
-un'elezione. La domanda posta alle cinque catene, nell'esempio, è «un'auto
-percorre 54 chilometri in 3 ore: quanti ne fa in un'ora?», e la risposta
-giusta è 18. Chi non legge il Python può saltare il blocco: la riga che conta
-è l'ultima, il risultato dello spoglio.
+Lo spoglio dei voti si scrive in poche righe di Python, e conviene vederle per
+capire quanto sia poco «magica» la faccenda: si contano le risposte uguali e
+si tiene la più frequente, come si fa con le schede di un'elezione. La domanda
+posta alle cinque catene, nell'esempio, è «un'auto percorre 54 chilometri in 3
+ore: quanti ne fa in un'ora?», e la risposta giusta è 18. La riga che conta è l'ultima, il risultato dello spoglio.
 
 ```python
 from collections import Counter
@@ -746,7 +744,7 @@ il loop, che affrontiamo nelle sezioni seguenti.
   sono esposte nelle interfacce di chat. E `T = 0` rende deterministica la
   regola di scelta, non il servizio {cite}`he2025nondeterminism`: un A/B fra
   prompt vuole più di una esecuzione per lato. La matematica del
-  decoding è nel capitolo sui Transformer.
+  decoding è nel {doc}`capitolo sui Transformer </Transformers/overview>`.
 - Gli **esempi** condizionano il modello senza addestrarlo (*in-context
   learning*, GPT-3 {cite}`brown2020language`): zero-shot, one-shot, few-shot.
 - Far **ragionare a voce alta** aiuta, ma **dove**: chain-of-thought

@@ -33,7 +33,7 @@ Non è solo una questione di soldi. C'è una seconda ragione per lasciare fermi 
 pesi che esistono già. Un modello di linguaggio riaddestrato su qualche milione
 di didascalie perde per strada una parte di quello che sapeva fare con il testo
 puro: impara una cosa nuova cancellandone una vecchia. È la **dimenticanza
-catastrofica**, che il capitolo sui Transformer incontra sui modelli
+catastrofica**, che il {doc}`capitolo sui Transformer </Transformers/overview>` incontra sui modelli
 multilingua. Congelare non è soltanto un risparmio: è una garanzia sul
 comportamento che si vuole conservare.
 
@@ -148,9 +148,9 @@ ottanta.
 Aprire un modello addestrato e infilarci dentro strati inizializzati a caso è
 però pericoloso: al primo passo quegli strati emettono rumore, il rumore si
 somma alle attivazioni costruite in mesi di addestramento, e il comportamento
-che si voleva conservare va in pezzi prima ancora di cominciare. La soluzione è
-più povera di quanto il problema faccia temere (sta tutta in un numero solo), e
-vale la pena guardarla da vicino.
+che si voleva conservare va in pezzi prima ancora di cominciare. La soluzione
+è più povera di quanto il problema faccia temere (sta tutta in un numero
+solo), e conviene guardarla da vicino.
 
 `````{tab} Elementare
 

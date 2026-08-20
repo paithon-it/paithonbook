@@ -1,7 +1,7 @@
 # Il suono come token: i codec neurali
 
-Nell'overview del capitolo abbiamo lanciato una promessa: se riuscissimo a
-trasformare un suono in una sequenza di simboli discreti (un «alfabeto sonoro»
+Una promessa era rimasta in sospeso: se si riuscisse a trasformare un suono in
+una sequenza di simboli discreti (un «alfabeto sonoro»
 finito) potremmo generarne di nuovo esattamente come un modello di linguaggio
 genera testo, un simbolo alla volta. Ma il testo quell'alfabeto ce l'ha già,
 regalato dalla lingua: ventuno lettere e via. L'audio no. È un'onda continua,
@@ -24,13 +24,14 @@ imparano, non si adattano ai dati.
 
 Un codec **neurale** ribalta l'approccio. Invece di scrivere le regole, le fa
 **imparare** a una rete. La struttura ha un nome, **autoencoder**, e una forma
-che vale la pena guardare: un **encoder** che stringe quello che entra fino a
-farlo diventare un pugno di numeri, e un **decoder** che da quel pugno di numeri
-cerca di ritirare fuori l'originale. I due si addestrano *insieme*, con un'unica
-regola: quello che esce deve somigliare a quello che è entrato. Questa forma non
-è del suono, è di qualunque cosa si voglia comprimere, ed è qui che il libro la
-monta: il capitolo sui modelli latenti la riprenderà per le immagini, e le
-aggiungerà l'unica cosa che le manca per servire anche a *generare*.
+da guardare: un **encoder** che stringe quello che entra fino a farlo
+diventare un pugno di numeri, e un **decoder** che da quel pugno di numeri
+cerca di ritirare fuori l'originale. I due si addestrano *insieme*, con
+un'unica regola: quello che esce deve somigliare a quello che è entrato.
+Questa forma non è del suono, è di qualunque cosa si voglia comprimere, ed è
+qui che il libro la monta: il {doc}`capitolo sui modelli latenti </ModelliLatenti/overview>` la riprenderà per
+le immagini, e le aggiungerà l'unica cosa che le manca per servire anche a
+*generare*.
 
 ```{figure} ../figures/autoencoder-comprimere-per-capire.svg
 :name: fig-autoencoder-clessidra
@@ -114,10 +115,11 @@ seguono.
 Il latente che esce dall'encoder è ancora fatto di numeri che possono valere
 qualunque cosa, e a noi serve un elenco finito di simboli, come le lettere:
 serve, dicono i matematici, passare dal **continuo** al **discreto**. Lo
-strumento che fa quel passaggio si chiama, all'inglese, **vector quantization**
-(VQ). L'hanno portato nelle reti neurali van den Oord, Vinyals e Kavukcuoglu
-nel 2017, con il **VQ-VAE** {cite}`oord2017neural`. L'idea è sorprendentemente
-semplice, e vale la pena vederla prima con un'immagine e poi con i numeri.
+strumento che fa quel passaggio si chiama, all'inglese, **vector
+quantization** (VQ). L'hanno portato nelle reti neurali van den Oord, Vinyals
+e Kavukcuoglu nel 2017, con il **VQ-VAE** {cite}`oord2017neural`. L'idea è
+sorprendentemente semplice, e conviene vederla prima con un'immagine e poi con
+i numeri.
 
 `````{tab} Elementare
 
@@ -163,21 +165,29 @@ Un dettaglio importante: l'operazione $\arg\min$ non è differenziabile, quindi
 il gradiente non attraverserebbe la quantizzazione. Il VQ-VAE
 {cite}`oord2017neural` lo aggira con lo **straight-through estimator** (il
 gradiente del decoder viene copiato tal quale sull'uscita dell'encoder, come se
-$q$ fosse l'identità) e con una *commitment loss* $\beta \lVert \mathbf{z} -
-\mathrm{sg}[\mathbf{e}_{k^\star}] \rVert^2$ che tiene i latenti vicini ai prototipi
-($\mathrm{sg}$ è lo *stop-gradient*). Resta il compromesso di fondo: un codebook
+$q$ fosse l'identità) e con due termini quadratici: il *codebook loss*
+$\lVert \mathrm{sg}[\mathbf{z}] - \mathbf{e}_{k^\star} \rVert^2$, che tira il
+prototipo scelto verso i latenti che l'hanno scelto, ed è l'unica cosa che fa
+imparare il codebook visto che l'$\arg\min$ non lascia passare gradiente, e la
+*commitment loss*
+$\beta \lVert \mathbf{z} - \mathrm{sg}[\mathbf{e}_{k^\star}] \rVert^2$, che
+tira i latenti verso i prototipi ($\mathrm{sg}$ è lo *stop-gradient*, e il
+verso della freccia sta tutto in quale dei due membri lo porta). Molte
+implementazioni sostituiscono il primo con una media mobile esponenziale, che
+è la stessa idea scritta in modo più stabile: è la regola alla k-means di cui
+si dice più avanti. Resta il compromesso di fondo: un codebook
 grande ($K$ alto) ricostruisce meglio ma costa più bit per token; uno piccolo
 comprime di più ma perde fedeltà.
 
 `````
 
-Vale la pena fare i conti a mano su un esempio minuscolo, perché il meccanismo è
-tutto qui. Prendiamo un codebook di appena **quattro** prototipi e, per poterli
-scrivere su una riga, immaginiamo che ogni pezzetto di suono sia descritto da
-due soli numeri invece che da centinaia. Una avvertenza prima di guardarli:
-dentro le parentesi tonde troverai virgole di due tipi, quelle che separano le
-due caselle e quelle dei decimali. Ogni parentesi contiene sempre **due**
-numeri, mai quattro.
+Conviene fare i conti a mano su un esempio minuscolo, perché il meccanismo è
+tutto qui. Prendiamo un codebook di appena **quattro** prototipi e, per
+poterli scrivere su una riga, immaginiamo che ogni pezzetto di suono sia
+descritto da due soli numeri invece che da centinaia. Una avvertenza prima di
+guardarli: dentro le parentesi tonde troverai virgole di due tipi, quelle che
+separano le due caselle e quelle dei decimali. Ogni parentesi contiene sempre
+**due** numeri, mai quattro.
 
 $$
 \mathbf{e}_1 = (0,0),\quad \mathbf{e}_2 = (1,0),\quad
@@ -220,10 +230,11 @@ scrivere l'audio in un alfabeto.
 C'è un problema, e lo si vede proprio nell'esempio. Sostituire
 $(0{,}8,\ 0{,}1)$ con $(1,0)$ è comodo ma **grossolano**: ci siamo persi lo
 scarto, cioè $0{,}2$ nella prima casella e $0{,}1$ nella seconda. Per l'audio,
-uno scarto del genere è la differenza tra una voce naturale e una voce metallica
-da citofono. La soluzione ovvia sarebbe allargare il codebook, mettendo più
-prototipi per avvicinarci di più. Ma allargare costa, e vale la pena guardare da
-vicino *quanto*, perché è tutta la ragione di quello che viene dopo.
+uno scarto del genere è la differenza tra una voce naturale e una voce
+metallica da citofono. La soluzione ovvia sarebbe allargare il codebook,
+mettendo più prototipi per avvicinarci di più. Ma allargare costa, e conviene
+guardare da vicino *quanto*, perché è tutta la ragione di quello che viene
+dopo.
 
 Serve prima la parola con cui si misura il costo. Un **bit** è una risposta
 sì/no. Con 3 bit, cioè tre risposte sì/no in fila, si distinguono
@@ -458,12 +469,11 @@ scala di laboratorio: nei codec veri i pezzetti hanno centinaia di numeri, gli
 elenchi migliaia di voci e gli stadi sono otto o più, ma la meccanica è
 precisamente questa, ed è quella che il codice qui sopra esegue.
 
-Un'onestà d'obbligo, prima di chiudere. Questo giocattolo usa elenchi *scritti a
-mano* da noi; nei codec veri i prototipi si **imparano** insieme all'encoder e
-al decoder. La regola con cui si imparano è semplice: ogni prototipo viene
+Gli elenchi qui sopra li abbiamo scritti noi; nei codec veri i prototipi si
+**imparano** insieme all'encoder e al decoder. La regola con cui si imparano è semplice: ogni prototipo viene
 spostato ogni tanto nel mezzo dei pezzetti che l'hanno scelto, così da
 rappresentarli meglio (è lo stesso meccanismo del **k-means**, l'algoritmo di
-raggruppamento del capitolo sul machine learning).
+raggruppamento del {doc}`capitolo sul machine learning </MachineLearning/overview>`).
 
 E quella regola porta con sé il guasto caratteristico di tutta la famiglia. Una
 voce che nessun pezzetto sceglie non viene mai spostata, quindi resta dov'è e

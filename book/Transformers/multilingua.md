@@ -133,18 +133,18 @@ cose simili finiscono in indirizzi vicini. Ebbene, «il gatto nero salta sul
 muro» e «the black cat jumps on the wall» finiscono nella stessa regione, pur
 essendo in due lingue di cui al modello nessuno ha mai raccontato l'esistenza.
 
-Vale la pena essere precisi su *quanto* vicine, perché il modo in cui la cosa
-si misura è più interessante dello slogan. I due quartieri, quello italiano e
-quello inglese, non sono sovrapposti: sono **affiancati e paralleli**. Fra l'uno
-e l'altro c'è uno spostamento, e lo si misura nel modo più elementare che ci
-sia: si prendono mille frasi italiane con accanto la loro traduzione inglese, si
-guarda di quanto ciascuna coppia è distanziata sulla mappa, e di tutti quegli
-scarti si fa la media. La scoperta è che quella media *funziona*: sommata a una
-frase italiana qualsiasi, anche una che nelle mille non c'era, porta proprio nel
-punto dove sta la sua traduzione inglese. Lo spostamento, cioè, dipende solo
-dalla **coppia di lingue** e non dalla frase. Non è dunque che le due frasi
-coincidano; è che le due lingue occupano due copie della stessa mappa, una
-accanto all'altra.
+Conviene essere precisi su *quanto* vicine, perché il modo in cui la cosa si
+misura è più interessante dello slogan. I due quartieri, quello italiano e
+quello inglese, non sono sovrapposti: sono **affiancati e paralleli**. Fra
+l'uno e l'altro c'è uno spostamento, e lo si misura nel modo più elementare
+che ci sia: si prendono mille frasi italiane con accanto la loro traduzione
+inglese, si guarda di quanto ciascuna coppia è distanziata sulla mappa, e di
+tutti quegli scarti si fa la media. La scoperta è che quella media *funziona*:
+sommata a una frase italiana qualsiasi, anche una che nelle mille non c'era,
+porta proprio nel punto dove sta la sua traduzione inglese. Lo spostamento,
+cioè, dipende solo dalla **coppia di lingue** e non dalla frase. Non è dunque
+che le due frasi coincidano; è che le due lingue occupano due copie della
+stessa mappa, una accanto all'altra.
 
 La conseguenza pratica arriva subito, e va enunciata con cura, perché lo
 spostamento appena descritto sembrerebbe mandarla all'aria. Se un programma
@@ -433,7 +433,7 @@ che a cento lingue insieme.
 
 ## Che cosa vuol dire, per l'italiano
 
-Vale la pena tirare le somme dal punto di vista di chi legge.
+Conviene tirare le somme dal punto di vista di chi legge.
 
 L'italiano sta in una posizione comoda ma non privilegiata: c'è in tutti i
 modelli multilingui, ha abbastanza testo perché il vocabolario condiviso gli
@@ -478,7 +478,7 @@ lingue si parlano.
   indovinarle convenga sbirciare nell'altra lingua; oppure dare a due lettori
   un mucchietto di frasi e il mucchietto mescolato delle loro traduzioni e
   chiedere di appaiarle, esattamente come si farà con immagini e didascalie nel
-  capitolo su visione e linguaggio.
+  {doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>`.
 - Il motivo pratico di tutto questo è **rifinire in inglese e usare in
   italiano**, senza un solo esempio etichettato in italiano. Due avvertenze:
   la rifinitura **consuma** l'allineamento (i pesi che si spostano per

@@ -27,8 +27,8 @@ che non è mai esistita. Non è la stessa foto che torna indietro: il sorteggio 
 partenza è diverso ogni volta, e da un pulviscolo diverso esce un'immagine
 diversa.
 
-Una parola sul vocabolario, perché il capitolo la userà molto. «Rumore» è il
-termine tecnico, ed è quello che vedrai nelle formule; quando raccontiamo la
+ Due parole sul vocabolario. «Rumore» è il termine tecnico, ed è quello che
+ compare nelle formule; quando raccontiamo la
 cosa a parole diremo anche **disturbo**, **pulviscolo**, **grana** o **sporco**,
 ma è sempre lui, e sempre la stessa quantità. E già che ci siamo: si chiamano
 modelli di **diffusione** proprio per la goccia d'inchiostro con cui si è
@@ -44,8 +44,7 @@ non uno, e nella prossima sezione si vedrà perché servono tutti e due). Il
 **ritorno** è l'unica cosa che si apprende, ed è una domanda sola: guardando un
 fotogramma sporco, *quanto rumore c'è qui sopra?*
 
-Su quella domanda conviene essere precisi subito, perché è il punto in cui il
-capitolo si può fraintendere. Alla rete non si chiede il pizzico dell'ultimo
+Su quella domanda conviene essere precisi subito. Alla rete non si chiede il pizzico dell'ultimo
 passo, ma **tutto il rumore accumulato** da quando la fotografia era pulita: la
 distanza fra il fotogramma che ha davanti e l'originale. E quello che la rete
 risponde non è un'immagine, è una mappa: per ogni punto del fotogramma, di
@@ -108,7 +107,7 @@ scorciatoia in forma chiusa:
 
 $$
 \mathbf{x}_t = \sqrt{\bar{\alpha}_t}\,\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon},
-\qquad \boldsymbol{\epsilon} \sim \mathcal{N}(0, \mathbf{I}),
+\qquad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
 dove $\bar{\alpha}_t = \prod_{s=1}^{t}(1-\beta_s)$ misura quanto segnale
@@ -182,10 +181,9 @@ i due si somigliano. Più è basso, meglio è.
 
 Il terzo atto arriva un anno dopo, e il titolo dice tutto: *Diffusion Models
 Beat GANs on Image Synthesis* {cite}`dhariwal2021diffusion`. La diffusione
-supera le GAN migliori in due modi. Nella qualità delle singole immagini, e
-nella **varietà** di quelle che sa produrre: una GAN, e lo vedremo fra poco,
-può affezionarsi a un pugno di soggetti e ripetere quelli, ed è il difetto
-attorno a cui ruotava il capitolo precedente.
+supera le GAN migliori in due modi. Nella qualità delle singole immagini, e nella **varietà** di quelle che sa
+produrre: una GAN può affezionarsi a un pugno di soggetti e ripetere sempre
+quelli, ed è il difetto raccontato per esteso in {doc}`GAN </GAN/overview>`.
 
 Poi c'è l'epilogo che non è più storia della ricerca ma storia e basta: il
 2022. Nel giro di pochi mesi OpenAI presenta DALL·E 2 (aprile), Google
@@ -224,13 +222,13 @@ di rovina fra i mille, si sorteggia il rumore, lo si stende sopra, e si ha una
 domanda («quanto rumore c'è qui sopra?») di cui si conosce già la risposta. Il
 sorteggio è diverso ogni volta, quindi la stessa fotografia allo stesso livello
 non dà mai due volte lo stesso esercizio, e gli esercizi non finiscono mai. Il
-ritorno diventa così un problema come quelli del capitolo sul machine
-learning: domande di cui si conosce già la risposta giusta, tante quante ne
+ritorno diventa così un problema come quelli del {doc}`capitolo sul machine
+learning </MachineLearning/overview>`: domande di cui si conosce già la risposta giusta, tante quante ne
 servono.
 
 Nel capitolo precedente avevamo lasciato le GAN con un annuncio: verso il 2021
-il primato generativo cambia mano. Quella promessa la manteniamo qui, e vale
-la pena dire subito *perché* il testimone è passato, e che cosa la diffusione
+il primato generativo cambia mano. Quella promessa la manteniamo qui, e
+conviene dire subito *perché* il testimone è passato, e che cosa la diffusione
 paga in cambio.
 
 `````{tab} Elementare
@@ -300,7 +298,7 @@ dentro una macchina che di suo non ne ha bisogno. L'impianto dei generatori di
 immagini arrivati al pubblico dal 2022 in poi, però, è questo e non quello, ed
 è la ragione per cui il resto del capitolo lo smonta pezzo per pezzo.
 
-## Come è organizzato il capitolo
+## Dal rumore all'immagine
 
 Tre tappe. Prima **come funziona davvero**: i due processi di DDPM
 {cite}`ho2020denoising` visti da vicino, come si dà un voto alla rete quando

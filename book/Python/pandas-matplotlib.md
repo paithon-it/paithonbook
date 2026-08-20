@@ -100,10 +100,9 @@ df.describe()    # statistiche riassuntive delle colonne numeriche
 Da qui in avanti `df` è questa tabella caricata da file, non più quella scritta
 a mano poche righe fa: il nome è lo stesso perché `df` (da *dataframe*) è il
 nome che quasi tutti danno alla tabella su cui stanno lavorando in quel
-momento. Nel notebook compagno di questo capitolo il file `vendite.csv` viene
-creato all'avvio con sei clienti e quattro colonne (nome, età, città, spesa), e
-un paio di caselle lasciate vuote di proposito; le righe che seguono girano su
-quello. Ecco che cosa risponde la prima:
+momento. La tabella su cui girano le righe che seguono ha sei clienti e
+quattro colonne (nome, età, città, spesa), con un paio di caselle lasciate
+vuote di proposito, perché i dati veri sono quasi sempre così. Ecco che cosa risponde la prima:
 
 ```text
     nome   eta   citta  spesa
@@ -117,9 +116,10 @@ quello. Ecco che cosa risponde la prima:
 Da leggere ci sono due cose oltre ai dati. La colonna senza intestazione a
 sinistra, con 0, 1, 2, 3, 4, è l’**indice**: le etichette di riga di cui si
 parlava poco fa, che qui pandas ha messo da sé perché il file non ne aveva. E
-quei due `NaN` sono le caselle vuote: torneranno più avanti in questa pagina, e sono il
-motivo per cui la colonna `eta`, che contiene numeri interi, viene mostrata con
-la virgola.
+quei due `NaN` sono le caselle vuote. Sono anche il motivo per cui l'età
+compare come 34.0 invece che come 34: una casella vuota non è un numero
+intero, e per tenerla in colonna insieme agli altri pandas passa tutta la
+colonna ai numeri con la virgola.
 
 Questi tre metodi sono il rituale d'apertura di ogni analisi. `head()` ti dice
 *che aspetto* hanno i dati; `info()` ti dice *quanti* sono e se ci sono buchi
@@ -211,7 +211,7 @@ qui dentro non c'è», e chiedere `df["citta"]` dopo un raggruppamento per citt�
 df.groupby("citta")["spesa"].mean()    # spesa media per città
 df.groupby("citta").agg(
     spesa_media=("spesa", "mean"),     # una colonna nuova, che chiamo io
-    clienti=("spesa", "count"),        # (da quale colonna, con quale conto)
+    clienti=("nome", "count"),         # (da quale colonna, con quale conto)
 )
 ```
 
@@ -275,9 +275,9 @@ butta anche i dati buoni della riga, il secondo inventa un valore plausibile,
 il terzo lo inventa con più cura.
 ```
 
-Vale la pena guardare {numref}`fig-dati-mancanti` ricordando che una casella
-vuota è essa stessa un'informazione. Se manca perché il sensore era spento, è
-un caso; se manca perché la domanda era imbarazzante, il fatto che manchi dice
+Conviene guardare {numref}`fig-dati-mancanti` ricordando che una casella vuota
+è essa stessa un'informazione. Se manca perché il sensore era spento, è un
+caso; se manca perché la domanda era imbarazzante, il fatto che manchi dice
 qualcosa, e riempirla con la media cancella proprio quel qualcosa.
 
 `````{tab} Elementare
@@ -342,32 +342,31 @@ applicata al test set, per non far trapelare informazione (*data leakage*).
 Verrebbe la tentazione di saltare direttamente al modello. È un errore, e c'è
 un esempio classico che lo dimostra meglio di mille parole. Nel 1973 lo
 statistico Francis Anscombe costruì quattro piccoli insiemi di dati che,
-misurati, si somigliano fino alla seconda cifra decimale. Hanno la stessa
-**media** di $x$ e di $y$ (il valore attorno a cui i dati si dispongono); la
-stessa **varianza**, cioè lo stesso sparpagliamento attorno a quella media
-(piccola se i valori sono tutti lì vicino, grande se sono sparsi); la stessa
-**correlazione**, $\approx 0{,}816$, che è un numero fra $-1$ e $1$ e dice
-quanto due grandezze crescono insieme ($0$ vuol dire che non si sa niente
-dell'una sapendo l'altra); e la stessa **retta di regressione**, cioè la retta
-che passa più vicino possibile a tutti i punti:
+misurati, si somigliano fino alla seconda cifra decimale. Hanno la stessa **media** di $x$ e di $y$: il valore attorno a cui i dati si
+dispongono. Hanno la stessa **varianza**, cioè lo stesso sparpagliamento
+attorno a quella media, piccola se i valori stanno tutti lì vicino, grande se
+sono sparsi. Hanno la stessa **correlazione**, $\approx 0{,}816$: un numero
+fra $-1$ e $1$ che dice quanto due grandezze crescono insieme, e che a zero
+vuol dire che sapere l'una non dice niente sull'altra. E hanno la stessa
+**retta di regressione**, la retta che passa più vicino possibile a tutti i
+punti:
 
 $$
 \hat{y} = 3 + 0{,}5\,x .
 $$
 
-Il cappuccio sopra la $y$ è la notazione, che ritroverai in tutto il libro, per
-«valore *previsto* dalla retta», da tenere distinto dal valore misurato
-davvero. Vale la pena fare il conto una volta, perché è la distinzione su cui
+Il cappuccio sopra la $y$ è la notazione, che ritroverai in tutto il libro,
+per «valore *previsto* dalla retta», da tenere distinto dal valore misurato
+davvero. Conviene fare il conto una volta, perché è la distinzione su cui
 poggia mezzo libro: nel primo insieme, dove $x$ vale $10$, la retta prevede
 $\hat{y} = 3 + 0{,}5 \cdot 10 = 8$, mentre il punto misurato in quel posto sta
 a $8{,}04$. La differenza fra i due, qui quattro centesimi, è l’**errore** su
 quel punto, ed è la quantità che ogni modello di questo libro cercherà di
 rendere piccola.
 
-Costruire quattro insiemi di dati che coincidono su tutte e quattro
-queste misure è un lavoro di precisione, ed è il punto: li fabbricò apposta lo
-statistico Francis Anscombe nel 1973 {cite}`anscombe1973graphs`, e sulla carta
-sono indistinguibili. Ma basta disegnarli ({numref}`fig-anscombe`) per scoprire
+Costruire quattro insiemi di dati che coincidono su tutte e quattro queste
+misure è un lavoro di precisione, ed è il punto: sono fabbricati apposta
+{cite}`anscombe1973graphs`, e sulla carta restano indistinguibili. Ma basta disegnarli ({numref}`fig-anscombe`) per scoprire
 che raccontano quattro storie completamente diverse.
 
 ```{figure} ../figures/quartetto-anscombe.svg
@@ -435,7 +434,7 @@ plt.show()
 l'altro sullo stesso foglio, con le etichette del primo appiccicate agli altri
 due. È il modo di dire «questo è finito». Quanto ai *bins* dell'istogramma,
 sono le barre in cui l'intervallo dei valori viene diviso: cambiarne il numero
-cambia il disegno, e vale la pena provarne due o tre, perché troppo poche
+cambia il disegno, e conviene provarne due o tre, perché troppo poche
 nascondono la forma e troppe la sbriciolano.
 
 Ecco infine la forma con gli oggetti presi per nome, che è quella che troverai

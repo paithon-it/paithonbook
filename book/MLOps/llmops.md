@@ -21,8 +21,7 @@ soprattutto. La prima: il modello, spesso, non lo addestri tu. Lo prendi già
 fatto (pesi aperti da ospitare, o un'API di terzi da interrogare) e il tuo
 lavoro è *adattarlo* e *servirlo*, non allenarlo da zero. La seconda: l'output
 non è più una classe o un numero, ma **testo aperto**, difficile da misurare
-quanto è difficile giudicare un tema di italiano. Questa sezione è la mappa di
-quel territorio; il suo nome, ormai, è **LLMOps**.
+quanto è difficile giudicare un tema di italiano. Quel territorio ha un nome, ormai: **LLMOps**.
 
 ## Che cosa cambia con gli LLM
 
@@ -37,7 +36,7 @@ problema è un altro viaggio, molto più corto ma molto più frequente: portare
 quei pesi **dalla memoria ai circuiti che fanno i conti**, e questo viaggio va
 rifatto per intero **a ogni singolo token**. Il modello scrive la risposta un
 token alla volta, e ogni token lo decide guardando tutti quelli già scritti (è
-il modo di generare, *autoregressivo*, studiato nel capitolo sui Transformer);
+il modo di generare, *autoregressivo*, studiato nel {doc}`capitolo sui Transformer </Transformers/overview>`);
 a ogni giro, tutti i miliardi di numeri devono ripassare dalla memoria ai
 circuiti. È lì che se ne va il tempo, ed è lì che se ne va la bolletta.
 
@@ -139,7 +138,7 @@ lunga per tenere fermi tutti gli altri.
 
 La seconda riguarda la memoria. Mentre scrive, il modello tiene degli appunti
 su ciò che ha già letto, per non doverlo rileggere da capo a ogni parola nuova:
-sono la **KV cache** incontrata nel capitolo sui Transformer. Ogni risposta in
+sono la **KV cache** incontrata nel {doc}`capitolo sui Transformer </Transformers/overview>`. Ogni risposta in
 corso porta con sé i propri appunti, e quegli appunti crescono a ogni token
 senza che si sappia fin dove. Chi gestisce la memoria si trova quindi davanti a
 una scelta scomoda: o riserva a ciascuno lo spazio del caso peggiore, e allora
@@ -437,8 +436,23 @@ La quantizzazione scrive gli stessi pesi con meno cifre. La **potatura**
 Quanto se ne possa buttare, e perché toglierne il novanta per cento non renda
 un modello dieci volte più veloce, li costruisce il capitolo sull'efficienza,
 insieme alla distinzione fra sparsità non strutturata e strutturata e agli
-schemi a densità fissa che l'hardware sa eseguire. Qui interessa la parte che
-di là non c'è, ed è quella che rende gli LLM un caso a sé.
+schemi a densità fissa che l'hardware sa eseguire. Qui interessa la parte che di là non c'è, ed è quella che rende gli LLM un
+caso a sé.
+
+`````{tab} Elementare
+
+Comprimere i numeri è come riscrivere gli stessi appunti con una grafia più
+piccola: ci sono ancora tutti. Potare è strappare delle pagine. Su una rete
+piccola si può strappare e poi rileggere tutto da capo per rimettere insieme
+il
+senso, ed è quello che si fa; su un modello da miliardi di numeri quella
+rilettura costerebbe quanto costruirlo, e nessuno la fa dopo un rilascio. Per
+questo qui si strappa molto meno, e si sceglie con cura: le pagine da togliere
+non sono quelle scritte più in piccolo, sono quelle su cui è passato meno
+lettore. Con questa cautela si arriva a buttarne circa metà senza danni
+evidenti; oltre, il conto si fa salato.
+
+`````
 
 `````{tab} Superiore
 

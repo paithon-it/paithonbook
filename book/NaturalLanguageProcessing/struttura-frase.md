@@ -250,7 +250,9 @@ aggiunge moltiplica gli alberi per un fattore che si può leggere dai numeri
 stessi: da 2 a 5 il fattore è due e mezzo, da 5 a 14 quasi tre, da 14 a 42 è
 tre esatto, da 42 a 132 poco più di tre. Il fattore, cioè, non è fisso: sale a
 ogni passo, e continua a salire avvicinandosi a quattro senza mai arrivarci.
-Bastano dunque nove complementi perché le analisi passino da due a sedicimila.
+Continuando: 429 con sei complementi, poi 1.430, 4.862, e con nove si arriva a
+16.796. Nove complementi in una frase sono tanti ma non impossibili, e le
+analisi grammaticalmente lecite sono già sedicimila.
 Il
 fenomeno ha un articolo di riferimento dal titolo tutto un programma, perché il
 titolo stesso è ambiguo: *Coping with syntactic ambiguity or how to put the

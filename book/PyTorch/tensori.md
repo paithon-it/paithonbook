@@ -11,8 +11,8 @@ significa capire il motore su cui gira tutto il deep learning moderno.
 
 ## Che cos'è un tensore
 
-Scalari, vettori e matrici li abbiamo già incontrati nel capitolo di algebra
-lineare: un numero solo, una fila di numeri, una tabella di numeri. Il tensore
+Scalari, vettori e matrici li abbiamo già incontrati nel {doc}`capitolo di algebra
+lineare </Matematica/overview>`: un numero solo, una fila di numeri, una tabella di numeri. Il tensore
 è semplicemente il passo successivo, la stessa idea portata avanti finché si
 vuole: si continua ad aggiungere direzioni lungo cui i numeri si estendono, e
 ciascuna di quelle direzioni si chiama **asse**.
@@ -73,9 +73,9 @@ soltanto la struttura dati: un array $n$-dimensionale con un `dtype` omogeneo
 ## Creare tensori e farci i conti
 
 Un tensore si può fabbricare in tre modi: scrivendo i numeri a mano in una
-lista Python, chiedendo a PyTorch di riempirlo lui (sono le funzioni che
-vedremo fra un attimo, `zeros`, `ones`, `randn`), oppure partendo da un array
-di **NumPy**, la libreria di calcolo numerico vista nel capitolo su Python. Con
+lista Python, chiedendo a PyTorch di riempirlo lui (`zeros`, `ones`, `randn`, fra un
+attimo), oppure partendo da un array di **NumPy**, la libreria di calcolo
+numerico del {doc}`capitolo su Python </Python/overview>`. Con
 quest'ultima PyTorch va d'accordo così bene che i due si passano i dati senza
 nemmeno ricopiarli.
 
@@ -374,7 +374,7 @@ capitolo: dalla prossima sezione non si farà che comporli.
   chiama **rank**, le lunghezze lungo gli assi sono la **shape**. Una foto a
   colori è una pila di tre tabelle, una per colore.
 - Ogni riga di conti viene eseguita **subito**, con i numeri già dentro, e le
-  regole sono quelle di NumPy, la libreria già vista nel capitolo su Python:
+  regole sono quelle di NumPy, la libreria già vista nel {doc}`capitolo su Python </Python/overview>`:
   sommare un numero a tutta una fila si scrive una volta sola.
 - Ogni tensore vive su un **dispositivo**, la CPU o la scheda grafica: i conti
   avvengono dove stanno i numeri, e il codice non cambia, cambia solo la

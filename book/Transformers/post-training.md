@@ -388,12 +388,12 @@ passi controllati per non destabilizzare la policy.
 
 `````
 
-Vale la pena fissare il punto d'incontro: aumentare la probabilità delle
-azioni che ricevono un giudizio positivo è la stessa meccanica che, nel
-capitolo sul Deep Reinforcement Learning, faceva vincere partite di
-Go; qui insegna a un modello di linguaggio a essere utile. La «mossa» è
-un'intera risposta, e il punteggio non viene dalle regole di un gioco ma da
-un modello addestrato a imitare i gusti di valutatori in carne e ossa.
+Conviene fissare il punto d'incontro: aumentare la probabilità delle azioni
+che ricevono un giudizio positivo è la stessa meccanica che, nel capitolo sul
+Deep Reinforcement Learning, faceva vincere partite di Go; qui insegna a un
+modello di linguaggio a essere utile. La «mossa» è un'intera risposta, e il
+punteggio non viene dalle regole di un gioco ma da un modello addestrato a
+imitare i gusti di valutatori in carne e ossa.
 
 ## DPO: imparare dalle preferenze senza il giudice
 
@@ -594,7 +594,7 @@ imparato niente da quel confronto, ed è la coppia su cui la correzione spinge d
 più.
 
 E il tirocinio sugli esempi svolti? Non merita codice nuovo: è il normale ciclo
-di addestramento del capitolo su PyTorch (si fa passare l'esempio nella rete,
+di addestramento del {doc}`capitolo su PyTorch </PyTorch/overview>` (si fa passare l'esempio nella rete,
 si misura di quanto ha sbagliato, si guarda in che direzione andavano spostati
 i numeri, li si sposta di un'inezia: `forward`, `loss`, `backward`, `step`),
 con una sola differenza: il conto dell'errore si fa **solo** sui pezzi della
@@ -683,8 +683,7 @@ epistemologia, oltre che buon gusto.
 
 ## Quel che il giudice non vede
 
-Chiudiamo con l'onestà che questo libro deve al lettore: il post-training
-migliora i modelli, ma non è una soluzione, e i suoi difetti hanno nomi
+Il post-training migliora i modelli, ma non è una soluzione, e i suoi difetti hanno nomi
 precisi.
 
 Il primo si chiama **reward hacking**, «imbrogliare il premio». Il giudice

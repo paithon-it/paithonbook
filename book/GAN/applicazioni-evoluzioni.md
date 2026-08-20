@@ -43,11 +43,11 @@ filtri di un classificatore qualsiasi; il generatore fa il percorso inverso, e
 parte da un pugno di numeri casuali per "gonfiarli" fino a un'immagine intera.
 
 Gonfiare come, se i numeri di partenza sono un centinaio e i puntini d'arrivo
-un milione? Il primo passaggio dispone quel centinaio di numeri in una griglia
+qualche migliaio? Il primo passaggio dispone quel centinaio di numeri in una griglia
 minuscola, $4\times4$, ma spessa: in ogni casella non un valore solo, bensì una
 pila di valori. Da lì in poi, a ogni passaggio la rete prende la griglia che ha
-in mano e ne restituisce una più larga, raddoppiando il lato: da $4\times4$ a
-$8\times8$, poi $16\times16$, e così via, mentre la pila si assottiglia. I puntini in più non sono copiati da nessuna parte,
+in mano e ne restituisce una più larga, raddoppiando il lato: da $4\times4$ a $8\times8$, poi $16\times16$, fino ai $64\times64$ che erano
+la taglia della DCGAN, mentre la pila si assottiglia. I puntini in più non sono copiati da nessuna parte,
 sono *decisi*: dove il vecchio puntino era uno solo, il passaggio successivo ne
 mette quattro, e quanto ciascuno dei quattro debba essere chiaro o scuro lo
 stabiliscono i filtri, che è esattamente ciò che la rete impara. Con questa
@@ -314,9 +314,10 @@ il modello stava **facendo il suo lavoro nel modo che l'impianto gli
 permetteva**. È la differenza fra il debug di un programma, dove qualcosa è
 scritto storto, e la diagnosi di un modello, dove di solito non c'è niente di
 storto e c'è invece un obiettivo che premia una strada che non avevamo
-previsto. Il libro ci torna nel capitolo sull'interpretabilità, ma la lezione è
-già tutta qui: quando un modello fa una cosa strana e ripetuta, la prima
-domanda non è «dov'è il bug» ma «che cosa ci sta guadagnando».
+previsto. Quando una rete fa una cosa strana e ripetuta, la domanda che paga non è dove
+sia il guasto, è che cosa ci stia guadagnando; il
+{doc}`capitolo sull'interpretabilità </Interpretabilita/overview>` ne fa un
+mestiere.
 ```
 
 Quel rimedio, e le altre due revisioni che lo stesso lavoro si porta dietro,
@@ -634,8 +635,8 @@ loro lo disegnano, ed è così che la generazione di immagini su richiesta è
 arrivata al grande pubblico. Stable Diffusion in più fa il lavoro di
 ripulitura non sull'immagine a grandezza naturale ma su una sua versione
 ridotta e compatta, che occupa molta meno memoria: è la ragione per cui gira
-anche su un computer di casa. Del meccanismo parleremo nel capitolo dedicato
-alla diffusione.
+anche su un computer di casa. Del meccanismo parla il
+{doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`.
 
 Le GAN non sono scomparse, e il motivo è la velocità: una GAN produce
 l'immagine in un colpo solo, un unico passaggio attraverso il generatore,

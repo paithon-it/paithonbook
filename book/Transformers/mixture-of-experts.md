@@ -26,8 +26,8 @@ essere pagabile.
 La domanda di questa sezione è se le due cose si possano separare. Esiste un
 modello **grande in conoscenza** e **piccolo in calcolo per token**? Si può
 comprare capacità senza comprare, nella stessa misura, aritmetica? La risposta
-è sì, ha un nome (*mixture of experts*, miscela di esperti) ed è
-l'architettura che oggi sta sotto buona parte dei modelli di frontiera. Come
+è sì, ha un nome (*mixture of experts*, miscela di esperti) ed è la ragione per cui capita di leggere due numeri di parametri per lo
+stesso modello. Come
 sempre, però, non è un pasto gratis: il conto non sparisce, cambia voce.
 
 ## Molti blocchi al posto di uno
@@ -167,13 +167,13 @@ conviene prendere l'abitudine di citarli sempre in coppia.
 
 ## Come sceglie lo smistatore
 
-Il router è il pezzo più semplice di tutta l'architettura, e vale la pena
-vederlo per intero perché è un conto solo. Prende la lista di numeri che
-rappresenta il token e ne deve ricavare $N$ punteggi, uno per esperto. Come? Si
-tiene in serbo, per ciascun esperto, una lista di numeri lunga uguale, e il
-punteggio di quell'esperto è il confronto fra le due liste: si moltiplicano
-numero per numero e si sommano i risultati, cioè lo stesso prodotto scalare con
-cui l'attenzione confronta una query e una key. Le $N$ liste, messe una sotto
+Il router è il pezzo più semplice di tutta l'architettura, e conviene vederlo
+per intero perché è un conto solo. Prende la lista di numeri che rappresenta
+il token e ne deve ricavare $N$ punteggi, uno per esperto. Come? Si tiene in
+serbo, per ciascun esperto, una lista di numeri lunga uguale, e il punteggio
+di quell'esperto è il confronto fra le due liste: si moltiplicano numero per
+numero e si sommano i risultati, cioè lo stesso prodotto scalare con cui
+l'attenzione confronta una query e una key. Le $N$ liste, messe una sotto
 l'altra, formano una tabella, e in gergo l'operazione si chiama uno *strato
 lineare*.
 

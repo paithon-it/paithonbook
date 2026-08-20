@@ -2,12 +2,12 @@
 
 Nell'Introduzione abbiamo incontrato ELIZA, il programma con cui Joseph
 Weizenbaum dimostrò (suo malgrado) quanto sia facile attribuire
-un'intelligenza a una macchina {cite}`weizenbaum1966eliza`. Vale la pena
-riaprire il cofano: dentro non c'era nessuna comprensione del linguaggio, ma
-un gioco di **pattern matching**, la ricerca di schemi nel testo. Se l'utente
-scriveva «mi sento triste», ELIZA agganciava lo schema «mi sento X» e
-riassemblava i pezzi in «Da quanto tempo ti senti X?», seguendo regole scritte
-a mano da Weizenbaum stesso. Tutto qui.
+un'intelligenza a una macchina {cite}`weizenbaum1966eliza`. Conviene riaprire
+il cofano: dentro non c'era nessuna comprensione del linguaggio, ma un gioco
+di **pattern matching**, la ricerca di schemi nel testo. Se l'utente scriveva
+«mi sento triste», ELIZA agganciava lo schema «mi sento X» e riassemblava i
+pezzi in «Da quanto tempo ti senti X?», seguendo regole scritte a mano da
+Weizenbaum stesso. Tutto qui.
 
 Prima delle reti neurali che occuperanno il resto del capitolo, l'NLP era in
 larga parte questo: schemi, regole, conteggi. Sarebbe però un errore liquidare
@@ -55,19 +55,18 @@ stare dentro i sistemi moderni.
 
 Il primo attrezzo risponde a una domanda concreta: come si cerca in un testo
 qualcosa che non è una parola precisa ma una *forma*? Tutte le date, tutti i
-CAP, tutti gli importi in euro. La risposta ha un nome intimidatorio,
-**espressioni regolari** (*regular expressions*, o *regex*): la descrizione di
+CAP, tutti gli importi in euro. La risposta si chiama **espressioni regolari** (*regular expressions*, o *regex*): la descrizione di
 una *forma* invece che di una parola, e la si scrive con una riga di simboli.
 
 Il nome è intimidatorio, e la storia è curiosa quanto basta a renderlo
 simpatico. Le espressioni regolari nascono negli anni Cinquanta, e non nascono
 per cercare nei testi: nascono per descrivere che cosa sa riconoscere una rete
 di neuroni artificiali. Il logico Stephen Kleene stava studiando i modellini
-matematici di neurone proposti nel 1943 da Warren McCulloch e Walter Pitts, gli
-stessi da cui parte il capitolo sulle reti neurali, e per dire quali sequenze
-di segnali una rete del genere sa distinguere si inventò questa notazione. Vale
-la pena fermarsi un secondo su questo: gli attrezzi «vecchi» e quelli «nuovi»
-di questo capitolo hanno lo stesso atto di nascita.
+matematici di neurone proposti nel 1943 da Warren McCulloch e Walter Pitts,
+gli stessi da cui parte il capitolo sulle reti neurali, e per dire quali
+sequenze di segnali una rete del genere sa distinguere si inventò questa
+notazione. Conviene fermarsi un secondo su questo: gli attrezzi «vecchi» e
+quelli «nuovi» di questo capitolo hanno lo stesso atto di nascita.
 
 A portarle dentro i programmi fu Ken Thompson, uno dei padri del sistema
 operativo Unix, alla fine degli anni Sessanta. Le mise in due programmi per
@@ -192,11 +191,10 @@ capitolo.
 ## Normalizzare il testo: decidere cosa è «la stessa parola»
 
 Il secondo attrezzo è meno appariscente ma altrettanto indispensabile, e parte
-da un fatto che vale la pena mettere a fuoco adesso, perché regge tutto il
-capitolo: **per un calcolatore ogni lettera è un numero**. Esiste una
-convenzione internazionale, Unicode, che assegna un numero a ogni carattere di
-ogni lingua del mondo, e confrontare due parole vuol dire confrontare due file
-di numeri.
+da un fatto da mettere a fuoco adesso, perché regge tutto il capitolo: **per
+un calcolatore ogni lettera è un numero**. Esiste una convenzione
+internazionale, Unicode, che assegna un numero a ogni carattere di ogni lingua
+del mondo, e confrontare due parole vuol dire confrontare due file di numeri.
 
 Da qui la pignoleria. Per una macchina `Muro`, `muro` e `MURO` sono tre parole
 diverse: la `M` maiuscola e la `m` minuscola hanno numeri diversi, punto. C'è
@@ -500,8 +498,8 @@ La griglia della distanza di edit, del resto, non corregge solo refusi. Con
 qualche ritocco (per esempio facendo costare più di 1 certe mosse) la stessa
 tabella mette in fila due sequenze di DNA in biologia, e ritrova le persone
 registrate due volte in un archivio, «Giovanni Rossi» contro «Givanni Rossi».
-E non abbiamo finito di incontrarla: tornerà nel capitolo sul riconoscimento
-vocale come metro di giudizio dei programmi che trascrivono il parlato. Lì le
+E non abbiamo finito di incontrarla: tornerà nel {doc}`capitolo sul riconoscimento
+vocale </SpeechRecognition/overview>` come metro di giudizio dei programmi che trascrivono il parlato. Lì le
 mosse non si contano più sulle lettere ma sulle parole, cioè quante parole un
 programma ha sbagliato, saltato o aggiunto rispetto a quello che era stato
 detto davvero; il rapporto fra queste e il totale è il **WER**, *word error

@@ -93,14 +93,13 @@ altri.
 ## Che cosa cambia rispetto alla programmazione dinamica
 
 **Programmazione dinamica** è il nome che Bellman diede al modo di procedere
-della sezione precedente (con lo scrivere programmi per il computer non c'entra
-niente: «programmazione», per lui, voleva dire pianificazione), quello che
-trova i valori girando e rigirando su tutte
-le caselle con la mappa in mano: da qui in avanti lo useremo come nome
-collettivo delle sue due ricette, l'iterazione dei valori e quella della
-pagella (*value iteration* e *policy iteration*). Vale la pena metterlo accanto
-a Monte Carlo, perché la differenza fra i due non è di efficienza ma di **che
-cosa serve sapere**.
+della sezione precedente (con lo scrivere programmi per il computer non
+c'entra niente: «programmazione», per lui, voleva dire pianificazione), quello
+che trova i valori girando e rigirando su tutte le caselle con la mappa in
+mano: da qui in avanti lo useremo come nome collettivo delle sue due ricette,
+l'iterazione dei valori e quella della pagella (*value iteration* e *policy
+iteration*). Conviene metterlo accanto a Monte Carlo, perché la differenza fra
+i due non è di efficienza ma di **che cosa serve sapere**.
 
 La programmazione dinamica guarda **un passo in avanti ma in tutte le
 direzioni**: per calcolare il valore di una casella tiene conto di tutte le
@@ -349,9 +348,8 @@ policy che **genera** i dati da quella che si sta **valutando**.
 
 ## Imparare da una policy e giudicarne un'altra
 
-Il concetto di questo paragrafo è fra i più riusati del libro: più avanti
-ricompare tre volte, e da lì in poi si dà per saputo. Conviene quindi
-prendercisi il tempo adesso.
+Ci sono due strategie in gioco: quella che vogliamo giudicare e quella che ha
+davvero giocato le partite che abbiamo in mano.
 
 Ci sono due strategie in gioco: quella che vogliamo giudicare e quella che ha
 davvero giocato le partite che abbiamo in mano. Se sono la stessa, cioè se si

@@ -22,7 +22,7 @@ reti.) È la scelta di design più caratteristica della libreria: il modello non
 si descrive in un elenco a parte da consegnare alla libreria, si *scrive* come
 una normale classe Python.
 
-Le classi le abbiamo viste nel capitolo su Python con l'immagine dello stampo
+Le classi le abbiamo viste nel {doc}`capitolo su Python </Python/overview>` con l'immagine dello stampo
 per biscotti: una classe è lo stampo, l'oggetto è il biscotto. *Ereditare*
 vuol dire partire da uno stampo che esiste già e aggiungergli qualcosa invece
 di intagliarne uno da zero: il nuovo stampo sa fare tutto quello che sapeva

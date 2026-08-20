@@ -32,11 +32,13 @@ riceve, si modifica e restituisce, senza salti. Entra un segnale, dentro c'è
 uno stato che cambia in continuazione, ed esce un altro segnale. Le tre
 grandezze sono legate da due regole, che dicono l'una come lo stato cambia da
 un istante al successivo e l'altra come si legge l'uscita a partire dallo
-stato. Ciascuna delle due mette in relazione una grandezza con la sua velocità
-di variazione, cioè con quanto sta cambiando in questo momento: quella velocità
-è la **derivata** incontrata nella sezione su analisi e ottimizzazione, e qui
-basta leggerla così. Regole di questa forma, in matematica, si chiamano
-**equazioni differenziali**.
+stato. La prima delle due mette in relazione lo stato con la sua velocità di
+variazione, cioè con quanto sta cambiando in questo momento: quella velocità è
+la **derivata** incontrata nella
+{doc}`sezione su analisi e ottimizzazione </Matematica/analisi-ottimizzazione>`,
+e qui basta leggerla così. La seconda è più semplice, e di derivate non ne ha
+dentro: dice come, dal valore dello stato, si ricava l'uscita. Regole della
+prima forma, in matematica, si chiamano **equazioni differenziali**.
 
 `````{tab} Elementare
 
@@ -116,11 +118,11 @@ Chiamiamo $\Delta$ la durata di un salto (il tempo che passa tra una misura e
 la successiva) e riscriviamo il sistema in modo che vada di stato in stato,
 invece di scivolare con continuità.
 
-C'è un punto su cui vale la pena essere espliciti, perché è una fonte comune di
+C'è un punto su cui conviene essere espliciti, perché è una fonte comune di
 confusione: **non esiste un solo modo di discretizzare**. Quello che succede
 *tra* una misura e l'altra non lo si è visto, e va indovinato; regole diverse
-lo indovinano in modi diversi, e i due modelli principali del capitolo ne usano
-due che non vanno scambiate.
+lo indovinano in modi diversi, e i due modelli principali del capitolo ne
+usano due che non vanno scambiate.
 
 Il modo più rapido di tenerle separate è pensarle come due figure
 geometriche: quella di S4 è un trapezio, quella di Mamba (l'altro protagonista
@@ -440,8 +442,8 @@ arriva dove l'attenzione non arrivava.
 
 S4 dimostrò che uno stato piccolo, ben costruito, poteva competere con
 l'attenzione sulle sequenze lunghe. Ma tra quel risultato e Mamba (il modello
-che porta gli SSM sul linguaggio in modo convincente) ci sono alcune tappe che
-vale la pena nominare, perché ognuna smonta un pezzo del problema.
+che porta gli SSM sul linguaggio in modo convincente) ci sono alcune tappe da
+nominare, perché ognuna smonta un pezzo del problema.
 
 `````{tab} Elementare
 

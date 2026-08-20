@@ -92,13 +92,13 @@ un **predictor** $g_\theta$ opera interamente lì:
 $$
 E(\mathbf{x}, \mathbf{y}, \mathbf{z}) = \big\lVert\, g_\theta(\mathbf{s}_x, \mathbf{z}) - \mathbf{s}_y \,\big\rVert_2^2,
 \qquad
-F(\mathbf{x}, \mathbf{y}) = \min_{\mathbf{z}} E(\mathbf{x}, \mathbf{y}, \mathbf{z}),
+\mathcal{E}(\mathbf{x}, \mathbf{y}) = \min_{\mathbf{z}} E(\mathbf{x}, \mathbf{y}, \mathbf{z}),
 $$
 
 dove $\mathbf{z}$ è una variabile latente che assorbe la molteplicità dei futuri
 (quale dei tanti esiti plausibili si è realizzato) e $\phi$, $\bar{\phi}$,
 $\theta$ sono i parametri dei due encoder e del predictor. L'energia della
-*coppia* è la seconda quantità, $F$: si sceglie la $\mathbf{z}$ che spiega meglio il
+*coppia* è la seconda quantità, $\mathcal{E}$: si sceglie la $\mathbf{z}$ che spiega meglio il
 futuro osservato, e quel minimo misura la compatibilità tra $\mathbf{x}$ e $\mathbf{y}$. Il
 collegamento con il capitolo sui modelli a energia è letterale: una JEPA **è** un
 modello a energia non normalizzato; la compatibilità tra presente e futuro è
@@ -110,7 +110,7 @@ Una precisazione, perché altrimenti quel $\min_{\mathbf{z}}$ resta un debito: $
 forma **generale** dello schema proposto nel 2022, non la ricetta che poi è
 stata implementata. I due sistemi che vedremo in questa sezione (I-JEPA per
 le immagini, V-JEPA per i video) istanziano il caso **senza latente**: il
-predictor è deterministico, $g_\theta(\mathbf{s}_x)$, quindi $F(\mathbf{x}, \mathbf{y}) = E(\mathbf{x}, \mathbf{y})$ e non
+predictor è deterministico, $g_\theta(\mathbf{s}_x)$, quindi $\mathcal{E}(\mathbf{x}, \mathbf{y}) = E(\mathbf{x}, \mathbf{y})$ e non
 c'è alcun minimo da calcolare, né in addestramento né a inferenza. Quel poco
 di «quale futuro» che serve è passato al predictor come informazione
 esplicita (i token posizionali che dicono *dove* prevedere), non inferito
@@ -165,7 +165,7 @@ nello stesso spazio, ed è lì che si possono confrontare.
 
 ## Il ritorno del collasso
 
-Chi ha letto il capitolo sui modelli a energia sa già dove si nasconde la
+Chi ha letto il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` sa già dove si nasconde la
 trappola, perché è la stessa del buttafuori pigro: quello che, dovendo dare a
 ogni coppia un voto di compatibilità (in quel capitolo il voto si chiama
 **energia**, e più è basso più le due cose stanno bene insieme), scopre che il
@@ -431,23 +431,23 @@ buffo di Something-Something-v2). Poi
 c'è un esame più difficile, l'anticipazione: guardando una cucina ripresa in
 soggettiva, indovinare che cosa farà la persona nel secondo che viene. Lì il
 modello può proporre cinque risposte e il punteggio conta quante volte quella
-giusta è fra le cinque (in gergo *recall@5*): si passa da 27,6 a 39,7 su cento,
-cioè da quasi tre volte su dieci a quattro. È un progresso grosso su un
+giusta è fra le cinque (in gergo *recall@5*): V-JEPA 2 ne azzecca 39,7 su cento, contro le 27,6 del
+miglior sistema precedente, che era grosso otto volte tanto. È un progresso grosso su un
 compito che resta largamente irrisolto, il che è già un buon motivo per
 diffidare di chi riassume queste cose con «ci riesce».
 
 Ma la parte concettualmente nuova è **V-JEPA 2-AC** (*action-conditioned*,
 condizionato sulle azioni), ed è la parte in cui il capitolo arriva finalmente
 a un robot vero. Il meccanismo è quello dell'inizio, montato sopra un braccio
-meccanico: si dà al robot un’**immagine-obiettivo** (la tazza sopra il piatto),
-il modello immagina l'effetto di centinaia di comandi possibili e sceglie
-quello il cui esito previsto è più vicino all'obiettivo. Poi lo esegue, guarda
-com'è andata e ricomincia da capo, un comando alla volta. Vale la pena notare
-la distanza dal progetto del 2022, dove l'agente immaginava intere sequenze di
-azioni prima di muoversi: il robot vero, per ora, ne immagina una sola per
-volta, e già così ci mette sedici secondi. Immaginare prima, muovere poi: è il
-cinema interiore dell'apertura del capitolo, e questa volta muove qualcosa di
-fisico.
+meccanico: si dà al robot un’**immagine-obiettivo** (la tazza sopra il
+piatto), il modello immagina l'effetto di centinaia di comandi possibili e
+sceglie quello il cui esito previsto è più vicino all'obiettivo. Poi lo
+esegue, guarda com'è andata e ricomincia da capo, un comando alla volta.
+Conviene notare la distanza dal progetto del 2022, dove l'agente immaginava
+intere sequenze di azioni prima di muoversi: il robot vero, per ora, ne
+immagina una sola per volta, e già così ci mette sedici secondi. Immaginare
+prima, muovere poi: è il cinema interiore dell'apertura del capitolo, e questa
+volta muove qualcosa di fisico.
 
 `````{tab} Elementare
 
@@ -511,8 +511,15 @@ letteralmente, il mondo fisico; non è il punto in cui la partita è vinta.
 
 ## Tre famiglie per imparare senza etichette
 
-Vale la pena fermarsi e mettere ordine, perché in questo libro abbiamo ormai
-incontrato tutti e tre i grandi modi di imparare senza annotatori umani.
+Fermiamoci a mettere ordine, perché a questo punto i tre grandi modi di
+imparare senza annotatori umani li abbiamo incontrati tutti. Una precisazione
+prima di cominciare, perché il libro queste famiglie le conta anche altrove e
+con un altro numero: qui il taglio è **dove avviene la previsione**, e dà tre
+famiglie; nel
+{doc}`capitolo sull'auto-supervisione </AutoSupervisione/famiglie>` il taglio
+è che cosa impedisce al modello di rispondere sempre la stessa cosa, e dà
+quattro famiglie. I due elenchi non si contraddicono: sono due assi, e ogni
+metodo ha una posizione su ciascuno.
 
 `````{tab} Elementare
 

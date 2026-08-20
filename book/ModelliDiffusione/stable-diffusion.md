@@ -25,14 +25,14 @@ La domanda di questa sezione è: che cosa lo rende possibile *tecnicamente*?
 Non un modello più grande: al contrario, uno più piccolo. Il segreto è un
 trasloco: la diffusione che conosciamo fa le valigie, lascia i pixel e si
 trasferisce in uno spazio compresso, decine di volte più piccolo, dove ogni
-passo di pulitura costa una frazione. Vale la pena dire subito in che moneta si
+passo di pulitura costa una frazione. Conviene dire subito in che moneta si
 paga, perché in tutta la sezione parleremo di costi: si paga in **conti da
 fare**, cioè in secondi di attesa e in memoria occupata sulla GPU. Meno numeri
 da elaborare, meno conti, meno attesa.
 
 Il traslocatore è una rete a sé, diversa da quella che toglie il rumore, e la
-conosciamo già: è il *variational autoencoder* del capitolo sui modelli
-latenti, dove è stato derivato per intero. Qui lo riprendiamo solo per quello
+conosciamo già: è il *variational autoencoder* del {doc}`capitolo sui modelli
+latenti </ModelliLatenti/overview>`, dove è stato derivato per intero. Qui lo riprendiamo solo per quello
 che serve al trasloco, cioè per il mestiere che gli si chiede in questa
 catena di montaggio, che non è quello per cui di solito lo si costruisce.
 
@@ -66,8 +66,8 @@ compatta che conserva il contenuto e scarta il dettaglio ricostruibile. La
 diffusione, poi, impara la **composizione** dentro quello spazio compatto, dove
 ogni passo costa decine di volte meno.
 
-Quello spazio compatto ha un nome, e il libro l'ha già battezzato parlando dei
-codec neurali nel capitolo sull'audio: si chiama **spazio latente**, cioè
+Quello spazio compatto ha un nome, ed è già comparso nella
+{doc}`sezione sui codec neurali </Audio/codec-neurali>`: si chiama **spazio latente**, cioè
 l'insieme dei riassunti che una rete si costruisce da sola, «latenti» perché
 nessuno le ha insegnato come farli e a guardarli non dicono niente. Là dentro
 c'era del suono, qui ci sono immagini; e cambia soprattutto che cosa ci si fa.
@@ -81,7 +81,7 @@ models*, e Stable Diffusion ne è il figlio famoso.
 Il pezzo che porta i mobili è il **variational autoencoder** (VAE) di Diederik
 Kingma e Max Welling {cite}`kingma2014auto`, del 2014, quindi più vecchio della
 diffusione moderna e persino delle GAN. Con lui viene anche la metafora del
-capitolo sui modelli latenti, che qui accompagna il resto del capitolo: la rete
+{doc}`capitolo sui modelli latenti </ModelliLatenti/overview>`, che qui accompagna il resto del capitolo: la rete
 che comprime è un **archivista** e la rappresentazione compatta che scrive è la
 sua **scheda**; la rete che ricostruisce è un **copista**, che dalla scheda
 ridipinge il quadro. Da qui in avanti «scheda» vorrà dire sempre e solo questo.
@@ -108,13 +108,12 @@ pallino nero il punto sorteggiato dentro quel margine. La scheda, quindi, è la
 coppia: il valore *e* il margine.)
 ```
 
-La {numref}`fig-vae` dà per scontata una cosa che vale la pena fissare. Una
-scheda è una lista di numeri, e come tale si può immaginare come un **punto su
-una mappa**, esattamente la mappa delle immagini
-possibili di poche pagine fa: schede simili sono punti vicini, e fra due punti
-c'è sempre tutto lo spazio in mezzo. È quello che permette di dire frasi come
-«una scheda a metà strada fra due che esistono», che con dei foglietti di carta
-non vorrebbero dire niente.
+La {numref}`fig-vae` dà per scontata una cosa da fissare. Una scheda è una
+lista di numeri, e come tale si può immaginare come un **punto su una mappa**,
+esattamente la mappa delle immagini possibili di poche pagine fa: schede
+simili sono punti vicini, e fra due punti c'è sempre tutto lo spazio in mezzo.
+È quello che permette di dire frasi come «una scheda a metà strada fra due che
+esistono», che con dei foglietti di carta non vorrebbero dire niente.
 
 Sulla mappa si rivede in un colpo d'occhio quello che il capitolo sui modelli
 latenti ha misurato. Un archivista senza margine di tolleranza comprime e
@@ -196,7 +195,7 @@ il **decoder** definisce $p_\psi(\mathbf{x} \mid \mathbf{z})$, la ricostruzione 
 dal codice (scriviamo $\psi$ per i suoi parametri perché in questo capitolo
 $\theta$ è già impegnato dalla rete di diffusione $\boldsymbol{\epsilon}_\theta$: sono due
 reti distinte, addestrate separatamente). Sul latente si
-impone un prior semplice, $p(\mathbf{z}) = \mathcal{N}(0, \mathbf{I})$. L'addestramento
+impone un prior semplice, $p(\mathbf{z}) = \mathcal{N}(\mathbf{0}, \mathbf{I})$. L'addestramento
 massimizza l’**ELBO** (*evidence lower bound*):
 
 $$
@@ -390,16 +389,16 @@ raccolte dal web).
 
 `````
 
-Vale la pena fissare l'asimmetria che ne risulta, e riguarda il lavoro da
-fare, non il prezzo da pagare a qualcuno. *Addestrare* Stable Diffusion è rimasto un mestiere da
-data center: la documentazione del modello dichiara centocinquantamila ore di
-calcolo su GPU professionali, cioè una macchina sola accesa per diciassette
-anni. *Usarlo*, grazie al trasloco nelle schede compresse, chiede alla GPU
-quattro gigabyte di memoria e qualche secondo di attesa. (Che siano quattro
-come i quattro del file scaricato è quasi un caso: quel file, caricato in
-memoria con numeri a metà precisione, di gigabyte ne occupa circa due, e gli
-altri due servono ai conti.) È il secondo di questi due conti, non il primo,
-ad aver cambiato chi può partecipare.
+Conviene fissare l'asimmetria che ne risulta, e riguarda il lavoro da fare,
+non il prezzo da pagare a qualcuno. *Addestrare* Stable Diffusion è rimasto un
+mestiere da data center: la documentazione del modello dichiara
+centocinquantamila ore di calcolo su GPU professionali, cioè una macchina sola
+accesa per diciassette anni. *Usarlo*, grazie al trasloco nelle schede
+compresse, chiede alla GPU quattro gigabyte di memoria e qualche secondo di
+attesa. (Che siano quattro come i quattro del file scaricato è quasi un caso:
+quel file, caricato in memoria con numeri a metà precisione, di gigabyte ne
+occupa circa due, e gli altri due servono ai conti.) È il secondo di questi
+due conti, non il primo, ad aver cambiato chi può partecipare.
 
 ## Due bussole: quanto dare retta alla richiesta
 
@@ -592,14 +591,14 @@ ragione sola: dice dove è andata a finire l'architettura. Le prime rifiniscono
 la ricetta senza cambiarla; poi la si ingrandisce, con una rete più capiente,
 due lettori di testo invece di uno e una risoluzione nativa doppia; infine, nel
 2024, si butta la U-Net e le si mette al posto un Transformer. Chi ha letto il
-capitolo sui Transformer se lo aspettava, perché la stessa sostituzione era già
+{doc}`capitolo sui Transformer </Transformers/overview>` se lo aspettava, perché la stessa sostituzione era già
 avvenuta nella traduzione e nella visione; ma che funzionasse anche qui non era
 affatto scontato, e come e perché sia successo è la storia della prossima
 sezione.
 
 ## Le domande che restano aperte
 
-Il capitolo sui Transformer si era chiuso elencando i problemi aperti dei
+Il {doc}`capitolo sui Transformer </Transformers/overview>` si era chiuso elencando i problemi aperti dei
 modelli di linguaggio, senza addolcirli. Qui i problemi sono paralleli e
 altrettanto strutturali, e sono tre.
 
@@ -614,7 +613,8 @@ didascalia: miliardi di voci, prese dove capitava. Dentro ci sono anche opere
 protette da diritto d'autore e fotografie di persone che non hanno mai
 acconsentito. Su questo si è aperto un contenzioso vero. All'inizio del 2023
 Getty Images ha citato in giudizio Stability AI, e un gruppo di artisti ha
-fatto causa a Stability AI, Midjourney e DeviantArt. Mentre scriviamo, le
+fatto causa a Stability AI, Midjourney e DeviantArt. A qualche anno dai primi
+depositi, le
 sentenze sono parziali e diverse da un paese all'altro, e la domanda di fondo,
 cioè se addestrare un modello su opere protette sia lecito, non ha ancora una
 risposta stabile.

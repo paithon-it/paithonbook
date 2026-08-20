@@ -245,25 +245,22 @@ invertendo sei caselle a caso (sei su venticinque, il 24%) e lascia che la
 rete si aggiusti da sé, una casella alla volta, finché nessuna vuole più
 cambiare.
 
-Vale la pena vedere che numero esce da quel «legare», perché è l'unico conto
-del capitolo che si fa a mente. Prendiamo la seconda e la terza casella della
+Conviene vedere che numero esce da quel «legare», perché è l'unico conto del
+capitolo che si fa a mente. Prendiamo la seconda e la terza casella della
 prima riga: nella T sono accese tutte e due, nella L sono spente tutte e due,
 nella X sono spente tutte e due. Vanno d'accordo tre volte su tre, e il loro
 legame vale $3/25 = 0{,}12$, il massimo che si possa avere con tre ricordi.
 Prendiamo invece la prima casella e la seconda della stessa riga: vanno
-d'accordo solo nella T (accese entrambe) e discordano nella L e nella X.
-Un accordo e due disaccordi fanno $1 - 1 - 1 = -1$; si divide per il numero di
+d'accordo solo nella T (accese entrambe) e discordano nella L e nella X. Un
+accordo e due disaccordi fanno $1 - 1 - 1 = -1$; si divide per il numero di
 caselle, venticinque, perché così i legami restano della stessa taglia anche
-se la griglia cresce, e viene $-0{,}04$: un legame debole e di segno contrario,
-che quelle due caselle
-tenderà a tenerle diverse. Tutti i legami della rete sono numeri così, e sono
-tutto ciò che la rete «sa».
+se la griglia cresce, e viene $-0{,}04$: un legame debole e di segno
+contrario, che quelle due caselle tenderà a tenerle diverse. Tutti i legami
+della rete sono numeri così, e sono tutto ciò che la rete «sa».
 
-Chi non programma può saltare direttamente al risultato stampato più sotto: il
-codice fa esattamente quello che si è appena detto, e non c'è niente, in
-quelle righe, che il paragrafo qui sopra non abbia già raccontato a parole
-(i commenti, invece, sono scritti nel vocabolario della scheda Superiore, e
-non c'è bisogno di leggerli).
+Il codice qui sotto fa esattamente questo: costruisce i legami, rovina una
+lettera invertendo sei caselle a caso e lascia che la rete si aggiusti da sé,
+una casella alla volta, finché nessuna vuole più cambiare.
 
 ```python
 import numpy as np
@@ -418,7 +415,7 @@ valesse cinque da una parte e meno due dall'altra, la casella che decide
 vedrebbe un costo e il totale ne conterebbe un altro, e la sua mossa potrebbe
 far salire l'energia pur sembrandole conveniente. E la casella scollegata da
 se stessa serve a che, mentre decide, la spinta che sente non dipenda dalla
-sua stessa posizione. La scheda Superiore mette in fila i tre passaggi.
+sua stessa posizione.
 
 Poi c'è l'onestà statistica, che qui è più istruttiva della riuscita. Quella
 stampa qui sopra viene da un unico sorteggio. Il 42 che compare nel codice è
@@ -426,26 +423,25 @@ il numero da cui parte il sorteggiatore: serve a far uscire sempre gli stessi
 numeri «a caso», così che chi esegue il codice veda la stessa stampa, e
 cambiandolo cambiano le sei caselle rovinate e cambia tutto il resto.
 Rovinando le tre lettere in trentamila modi diversi ciascuna, il recupero
-perfetto riesce il 92% delle volte. È più dell'86% annunciato nella scheda
-qui sopra, e non è una svista: quell'86% valeva per tre ricordi *presi a
-caso*, mentre T, L e X sono state scelte apposta, e più avanti in questa
-pagina si vede quanto quella scelta pesi.
+perfetto riesce il 92% delle volte: più dell'86% che si ottiene con tre
+ricordi *presi a caso*, perché T, L e X sono state scelte apposta, e più
+avanti in questa pagina si vede quanto quella scelta pesi.
 
 Nelle altre la rete si ferma altrove, e non sempre dove ci si aspetterebbe. Su
-dieci fallimenti, otto finiscono in una conca a metà strada fra due lettere,
-che nessuno ha mai memorizzato; uno nella lettera giusta ma con tutte le
-caselle invertite; e l'ultimo **in un'altra lettera**, che è la valle
-sbagliata di cui parla la scheda Elementare qui sopra.
+dieci fallimenti, quasi otto finiscono in una conca a metà strada fra due
+lettere, che nessuno ha mai memorizzato; poco più di uno in **un'altra
+lettera**; e il resto nell'immagine capovolta di un'altra lettera.
 
-La lettera capovolta è una valle inevitabile, e capire perché aiuta:
+Che le lettere capovolte compaiano è inevitabile, e capire perché aiuta:
 scambiando acceso e spento dappertutto, le caselle che andavano d'accordo
 continuano ad andarci, quindi ogni ricordo si porta dietro un gemello
-capovolto, profondo esattamente uguale. Viene allora da chiedersi perché la
-pallina non ci finisca metà delle volte. Perché è lontano: lo stato da cui si
-parte differisce dalla lettera in sei caselle su venticinque, e quindi dalla
-sua immagine capovolta in diciannove su venticinque. Il gemello è profondo
-uguale, ma sta dall'altra parte del mondo, e infatti raccoglie un fallimento
-su dieci e non cinque.
+capovolto, profondo esattamente uguale. Quello che non compare mai è il
+gemello della lettera *da cui si è partiti*: in novantamila prove non capita
+una volta sola, ed è troppo lontano perché capiti. Lo stato di partenza
+differisce dalla lettera in sei caselle su venticinque, e quindi dalla sua
+immagine capovolta in diciannove: la discesa non attraversa mezzo mondo. Il gemello è profondo uguale, ma sta
+dall'altra parte, e una discesa che si muove una casella per volta non ci
+arriva mai.
 
 E c'è un punto in cui questa rete è più fortunata di quanto la teoria le
 concederebbe. Le tre lettere non sono state pescate a caso: sono state scelte

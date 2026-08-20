@@ -1,9 +1,9 @@
 # Le tre cose che davamo per scontate
 
 Tutto quello che il capitolo ha costruito finora poggia su tre regali che
-nessuno ha mai messo per iscritto, perché sembravano ovvi. Vale la pena
-scriverli adesso, uno per riga, e poi toglierli uno alla volta: perché è
-togliendoli che si arriva a tutto il resto del libro.
+nessuno ha mai messo per iscritto, perché sembravano ovvi. Conviene scriverli
+adesso, uno per riga, e poi toglierli uno alla volta: perché è togliendoli che
+si arriva a tutto il resto del libro.
 
 **Le regole**: si possono interrogare quante volte si vuole. Prima di muovere
 davvero, il programma prova mille mosse nella sua testa e per ciascuna sa
@@ -32,7 +32,7 @@ funziona: nel 1997 il programma Deep Blue, che faceva esattamente questo e la
 potatura vista qui, giocò sei partite contro Garri Kasparov, che era il
 giocatore più forte del mondo, e ne uscì in vantaggio.
 
-Il Go è un altro gioco, e vale la pena dire com’è fatto perché in Italia lo si
+Il Go è un altro gioco, e conviene dire com’è fatto perché in Italia lo si
 vede di rado. Si gioca su una griglia grande, diciannove righe per diciannove,
 e i pezzi sono sassolini tutti uguali, bianchi e neri, che si posano sugli
 incroci e da lì non si muovono più. Non ci sono re, torri o alfieri: c’è solo
@@ -215,12 +215,12 @@ parlando dei modelli che scrivono una lunga brutta copia prima di rispondere.
 
 `````
 
-Vale la pena guardare i tre casi tutti insieme, perché messi in fila dicono una
+Conviene guardare i tre casi tutti insieme, perché messi in fila dicono una
 cosa che presa uno per uno non si vede: **non sono tre difficoltà, sono tre
 capitoli**. Senza il voto si arriva alla ricerca ad albero Monte Carlo; senza
-l’arrivo, all’ottimizzazione; senza le regole da interrogare, all’apprendimento
-per rinforzo. Un metodo di intelligenza artificiale, spesso, è il nome che
-diamo a un regalo che ci hanno tolto.
+l’arrivo, all’ottimizzazione; senza le regole da interrogare,
+all’apprendimento per rinforzo. Un metodo di intelligenza artificiale, spesso,
+è il nome che diamo a un regalo che ci hanno tolto.
 
 `````{tab} Elementare
 
@@ -257,7 +257,7 @@ diamo a un regalo che ci hanno tolto.
   campionaria ottenuta simulando partite fino in fondo, e si distribuiscono le
   simulazioni risolvendo un problema di esplorazione contro sfruttamento.
   È la ricerca ad albero Monte Carlo {cite}`coulom2006efficient,kocsis2006bandit`,
-  che il libro costruisce nel capitolo sul deep reinforcement learning.
+  che il libro costruisce nel {doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`.
 - Cade il **test di terminazione**: il problema diventa di ottimizzazione, non
   di ricerca di un cammino.
 - Cade il **modello interrogabile**: si entra nell’apprendimento per rinforzo.

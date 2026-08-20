@@ -23,9 +23,7 @@ in nessun archivio. Impara chi è **stato arrestato**, che è un'altra cosa. Se
 in un quartiere passano più pattuglie, lì risultano più reati anche quando non
 ce ne sono di più, e chi ci abita entra nello storico con più precedenti. Il
 modello legge quel registro e ne ricava una regolarità che sui dati è vera e
-sulle persone è ingiusta. Ci torneremo, perché la cosa è più profonda di quanto
-sembri. Più avanti in questo capitolo faremo dei conti per stabilire se un
-sistema è equo, e quei conti si faranno su registri come questo. Chi misura con
+sulle persone è ingiusta.  Chi misura con
 un metro storto ottiene numeri storti, per quanto impeccabile sia il conto che
 ci fa sopra.
 
@@ -48,9 +46,9 @@ nell'effetto.
 
 `````{tab} Elementare
 
-Immagina una bilancia tarata usando soltanto uomini adulti. Non è «cattiva»,
-non ha nulla di rotto: fa esattamente il suo mestiere. Ma se ci sale sopra un
-bambino segna un peso sbagliato, perché è stata calibrata su un mondo che il
+Una bilancia tarata soltanto su uomini adulti non ha nulla di rotto: fa
+esattamente il suo mestiere. Ma se ci sale sopra un bambino segna un peso
+sbagliato, perché è stata calibrata su un mondo che il
 bambino non lo prevedeva. Un modello di intelligenza artificiale funziona così:
 impara da esempi, e se gli esempi ritraggono soprattutto un certo tipo di
 persone, funzionerà bene su quelle e peggio su tutte le altre. Il
@@ -108,16 +106,16 @@ con un'unica definizione tecnica.
 In Europa la reazione a questi problemi è stata anche normativa, e ci riguarda
 da vicino. Nel marzo del 2023 il **Garante per la protezione dei dati
 personali** italiano è stato la prima autorità occidentale a fermare ChatGPT.
-Un'autorità non spegne un servizio per capriccio, quindi vale la pena dire
-perché. Contestava, in sostanza, quattro cose: che agli utenti non fosse stato
+Un'autorità non spegne un servizio per capriccio, quindi conviene dire perché.
+Contestava, in sostanza, quattro cose: che agli utenti non fosse stato
 spiegato quali dati venissero raccolti; che non ci fosse una ragione ammessa
-dalla legge per darli in pasto al modello mentre imparava (l’**addestramento**,
-che è la fase in cui il modello guarda gli esempi e da lì ricava le sue
-regolarità); che le risposte del sistema attribuissero alle persone fatti non
-corrispondenti al vero; e che non esistesse alcun controllo dell'età di chi lo
-usava. Il
-servizio tornò disponibile qualche settimana dopo, con una pagina che spiegava
-il trattamento dei dati e uno sbarramento sull'età.
+dalla legge per darli in pasto al modello mentre imparava
+(l’**addestramento**, che è la fase in cui il modello guarda gli esempi e da
+lì ricava le sue regolarità); che le risposte del sistema attribuissero alle
+persone fatti non corrispondenti al vero; e che non esistesse alcun controllo
+dell'età di chi lo usava. Il servizio tornò disponibile qualche settimana
+dopo, con una pagina che spiegava il trattamento dei dati e uno sbarramento
+sull'età.
 
 E soprattutto l'Unione Europea ha approvato nel 2024 il primo regolamento
 **orizzontale** al mondo sull'intelligenza artificiale, l’**AI Act**
@@ -229,7 +227,7 @@ Tre spostamenti quantitativi hanno reso il tema ineludibile.
 
 `````
 
-## Come è organizzato il capitolo
+## Quattro modi in cui un modello fa danno
 
 Il resto del capitolo procede lungo tre assi, dagli effetti più visibili a
 quelli più strutturali, e quello di mezzo prende due sezioni invece di una.
@@ -240,8 +238,9 @@ tecniche provano a ridurlo, senza illudersi che esista una cura definitiva.
 Per misurarlo non serve niente di nuovo: basta un rilevatore di fumo. Le cose
 che possono succedere sono quattro, e torneranno di continuo: c'era un
 incendio e ha suonato, c'era e non ha suonato, non c'era e ha suonato, non
-c'era e non ha suonato. Sono le quattro caselle di una tabella che nel
-capitolo di Machine Learning si chiama **matrice di confusione**. Qui la
+c'era e non ha suonato. Sono le quattro caselle di una tabella che
+{doc}`Valutare un modello </MachineLearning/metriche>` chiama **matrice di
+confusione**. Qui la
 differenza è una sola, ed è quella decisiva: la tabella si compila
 *separatamente per ogni gruppo di persone*, e poi si confrontano. Da lì escono
 i due numeri attorno a cui gira tutto il capitolo: quanti dei casi veri il

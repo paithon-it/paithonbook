@@ -229,7 +229,7 @@ polinomio di grado $\le q$, e che in ogni nodo è continua insieme alle derivate
 fino alla $(q-1)$-esima. Per $q = 3$ (il caso quasi universale) le condizioni di
 raccordo sono continuità di $f$, $f'$ e $f''$.
 
-Il caso $d=3$ non è scelto per comodità: è il listello. Schoenberg deriva la
+Il caso $q=3$ non è scelto per comodità: è il listello. Schoenberg deriva la
 definizione dalla meccanica dell'asta appoggiata, con una linearizzazione
 dichiarata (se la curva è quasi parallela all'asse $x$ si può trascurare $y'$, e
 la curvatura $1/R = y''/(1+y'^2)^{3/2}$ si riduce a $y''$), e conclude che la
@@ -260,20 +260,21 @@ che viene tutto il vantaggio sul polinomio globale, dove ogni base è diversa da
 zero ovunque: la matrice di disegno è a banda, il condizionamento non degenera
 al crescere di $K$, e un coefficiente sposta la curva solo nel suo pezzo di
 dominio. In scikit-learn è ciò che fa `SplineTransformer`, che trasforma una
-colonna in $K + q - 1$ colonne di B-spline valutate sui dati (attenzione: il
+colonna in $K + q + 1$ colonne di B-spline valutate sui dati, cioè i gradi di
+libertà contati sopra più uno per l'intercetta implicita (attenzione: il
 suo `n_knots` conta **anche** i due nodi di bordo, quindi con `n_knots=8` e
 grado 3 le colonne sono dieci); il modello lineare
 che gli si mette dopo resta un ordinario problema ai minimi quadrati.
 
 `````
 
-Un dettaglio pratico che vale la pena isolare, perché è il punto in cui il
-metodo mostra il suo carattere. La spline sposta il problema: non c'è più da
-scegliere un grado, c'è da scegliere **quanti paletti e dove**. Sul «dove»,
-l'uso è mettere i nodi ai quantili della variabile (più paletti dove ci sono più
-dati, che è dove si possono permettere); sul «quanti», è un iperparametro come
-gli altri, che si sceglie con la validazione incrociata della sezione apposita.
-Ma esiste anche una terza via, ed è quella che riporta al listello.
+Un dettaglio pratico da isolare, perché è il punto in cui il metodo mostra il
+suo carattere. La spline sposta il problema: non c'è più da scegliere un
+grado, c'è da scegliere **quanti paletti e dove**. Sul «dove», l'uso è mettere
+i nodi ai quantili della variabile (più paletti dove ci sono più dati, che è
+dove si possono permettere); sul «quanti», è un iperparametro come gli altri, che si sceglie con la validazione incrociata di
+{doc}`Overfitting e validazione <overfitting-validazione>`. Ma esiste
+anche una terza via, ed è quella che riporta al listello.
 
 ## La manopola che irrigidisce il legno
 
@@ -605,7 +606,7 @@ crolla. Prima di usarne uno conviene sapere quale ipotesi si sta firmando.
 ## Dove stanno, in pratica
 
 Le spline e i GAM occupano una posizione precisa fra i metodi di questo
-capitolo, e vale la pena fissarla, perché non è «un modello in più».
+capitolo, e conviene fissarla, perché non è «un modello in più».
 
 Sono la risposta giusta quando servono tre cose insieme: che l'effetto di una
 variabile sia **curvo** e non se ne conosca la forma; che quell'effetto vada

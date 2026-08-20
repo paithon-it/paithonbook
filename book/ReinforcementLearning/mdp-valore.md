@@ -35,13 +35,10 @@ punteggio che riceve: diciamo $+10$ quando raggiunge l'uscita e $-1$ per ogni
 passo, così impara a uscire *in fretta*. Il robot non conosce la mappa: la
 scopre muovendosi.
 
-Quei due numeri, come si diceva nella panoramica, li scegliamo noi: sono il modo
-di dire al robot che cosa vogliamo. Tienilo a mente, perché in questo capitolo
-di labirinti ne incontrerai tre, con regole diverse: questo, la griglia
-dell'animazione più avanti (dove l'uscita paga $+1$ e i passi non costano
-nulla) e la griglia del Q-learning nella sezione finale (uscita $+1$, una
-trappola $-1$, di nuovo passi gratis). Ogni volta lo diremo: sono tre mondi
-diversi, non lo stesso mondo che cambia idea.
+Quei due numeri, il $+10$ dell'uscita e il $-1$ del passo, li scegliamo noi:
+sono il modo di dire al robot che cosa vogliamo. Cambiandoli si cambia il
+problema, quindi ogni volta che comparirà un labirinto nuovo diremo che regole
+ha.
 
 `````
 
@@ -221,19 +218,18 @@ guardare.
 
 ## Un MDP in miniatura
 
-Vale la pena vedere tutti i pezzi in un solo disegno. La {numref}`fig-mdp`
-ritrae un mondo minuscolo con tre stati, che chiamiamo $s_0$, $s_1$ e $s_2$
-(sono soltanto nomi di caselle, e il disegno le mostra). Da $s_0$ l'agente può
+Conviene vedere tutti i pezzi in un solo disegno. La {numref}`fig-mdp` ritrae
+un mondo minuscolo con tre stati, che chiamiamo $s_0$, $s_1$ e $s_2$ (sono
+soltanto nomi di caselle, e il disegno le mostra). Da $s_0$ l'agente può
 salire verso $s_1$ oppure restare fermo; da $s_1$ può scendere verso
 l'obiettivo $s_2$ o tornare indietro. L'obiettivo si dice **terminale**, che
 vuol dire semplicemente che lì la partita finisce: arrivati, non si fa più
 niente e non si incassa più niente. Ogni freccia è un'azione ed è annotata con
-la ricompensa che paga: salire non costa nulla, restare o tornare fanno perdere
-un punto (nel disegno, $r = -1$), raggiungere l'obiettivo ne fa guadagnare dieci
-($r = +10$). Con $\gamma$ vicino a 1 la strategia
-migliore è intuibile a colpo d'occhio ($s_0 \to s_1 \to s_2$) ed è proprio quel
-"colpo d'occhio" che le funzioni valore rendono calcolabile in modo
-sistematico.
+la ricompensa che paga: salire non costa nulla, restare o tornare fanno
+perdere un punto (nel disegno, $r = -1$), raggiungere l'obiettivo ne fa
+guadagnare dieci ($r = +10$). Con $\gamma$ vicino a 1 la strategia migliore è
+intuibile a colpo d'occhio ($s_0 \to s_1 \to s_2$) ed è proprio quel "colpo
+d'occhio" che le funzioni valore rendono calcolabile in modo sistematico.
 
 ```{figure} ../figures/mdp-grafo.svg
 :name: fig-mdp
@@ -392,9 +388,11 @@ dove $V_k$ è la stima dei valori al passo $k$: è l'equazione di Bellman con un
 $\max$ sulle azioni al posto della media pesata dalla policy. Il punto fisso è
 l’**equazione di ottimalità di Bellman**,
 $V^*(s) = \max_a \sum_{s'} P(s'\mid s,a)\big[r(s,a) + \gamma\, V^*(s')\big]$,
-dove $V^*$ è il valore della migliore policy possibile. La convergenza è
-garantita: l'operatore di aggiornamento è una **contrazione** di fattore
-$\gamma$ nella norma del massimo (a ogni passo la distanza da $V^*$ si riduce
+dove $V^*$ è il valore della migliore policy possibile. Con $\gamma < 1$ la convergenza è garantita: l'operatore di aggiornamento è
+una **contrazione** di fattore $\gamma$ nella norma del massimo (nei compiti
+episodici con $\gamma = 1$ il fattore di contrazione sparisce, e la garanzia
+va ricomprata altrove: serve che ogni policy raggiunga con probabilità $1$ uno
+stato terminale) (a ogni passo la distanza da $V^*$ si riduce
 almeno di un fattore $\gamma$) quindi il punto fisso è unico e l'iterazione vi
 arriva da qualunque inizializzazione {cite}`bellman1957dynamic`
 {cite}`sutton2018reinforcement`. Estratto $V^*$, la policy ottima è quella
@@ -566,9 +564,9 @@ insieme, cammina.
 ## Policy iteration: valutare e migliorare, a turni
 
 La value iteration fonde due gesti in un unico aggiornamento: stimare quanto
-rendono gli stati e scegliere le azioni migliori. La **policy iteration** li
-separa e li alterna: prima *valuta* fino in fondo la policy corrente, poi la
-*migliora*, e ricomincia.
+rendono gli stati e scegliere le azioni migliori. La **policy iteration**, che si deve a Ronald Howard
+{cite}`howard1960dynamic`, li separa e li alterna: prima *valuta* fino in
+fondo la policy corrente, poi la *migliora*, e ricomincia.
 
 `````{tab} Elementare
 

@@ -67,10 +67,12 @@ Perché tante tappe, invece di andare dritti dal testo all'onda? Perché l'onda
 è lunghissima. Dentro un computer è la fila di **campioni** di cui parlavamo
 nella sezione precedente: la pressione dell'aria misurata a intervalli
 regolari, migliaia di volte al secondo. In **Tacotron 2**, il modello che
-vedremo fra poco, un secondo di parlato sono ventiquattromila campioni in
-fila. La stessa mezza frase, disegnata come immagine a bande, sta in ottanta
-colonne: una ogni dodici millesimi e mezzo di secondo, e siccome in un secondo
-di millesimi ce ne sono mille, mille diviso dodici e mezzo fa appunto ottanta.
+vedremo fra poco, un secondo di parlato sono ventiquattromila campioni in fila. Lo stesso
+secondo, disegnato come immagine a bande, sta in ottanta colonne: una ogni
+dodici millesimi e mezzo di secondo, e siccome in un secondo di millesimi ce
+ne sono mille, mille diviso dodici e mezzo fa appunto ottanta. (Anche le bande
+di ciascuna colonna sono ottanta: è una coincidenza dei numeri di Tacotron 2,
+non la stessa grandezza contata due volte.)
 
 Ventiquattromila contro ottanta: trecento volte meno. Attenzione a cosa dice
 davvero questo trecento. Non dice che l'immagine sia trecento volte più
@@ -105,9 +107,8 @@ le ambiguità: «1901» si legge «millenovecentouno» se è un anno, ma «uno n
 zero uno» se è un interno telefonico. E c'è di peggio: «ancora» si pronuncia
 *àncora* se è l'attrezzo della nave e *ancóra* se vuol dire «di nuovo»; sulla
 pagina sono identiche, e per scegliere bisogna capire che mestiere fa la
-parola nella frase. È lo stesso problema di analisi grammaticale che abbiamo
-incontrato nel capitolo sul linguaggio naturale, nella sezione
-sull'etichettatura delle parole.
+parola nella frase. È lo stesso problema di analisi grammaticale di
+{doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`.
 
 `````
 
@@ -351,8 +352,8 @@ autoregressiva senza modelli di allineamento esterni.
 ### Secondo stadio: il vocoder
 
 Il **vocoder** è il modello che prende l'immagine a bande e ne fabbrica l'onda
-vera e propria, quella che si può ascoltare. Il nome chiude un cerchio, e vale
-la pena raccontarlo: *vocoder* sta per *voice coder*, e ai Bell Labs indicava
+vera e propria, quella che si può ascoltare. Il nome chiude un cerchio, e
+conviene raccontarlo: *vocoder* sta per *voice coder*, e ai Bell Labs indicava
 la macchina con cui Homer Dudley faceva due cose opposte. Prima smontava una
 voce nelle sue poche misure essenziali, perché quelle poche misure occupano
 sul cavo del telefono molto meno spazio della voce intera e quindi costano
@@ -469,11 +470,11 @@ dell'ascoltatore $i$-esimo; si riporta con l'intervallo di confidenza al 95% e
 richiede un protocollo rigoroso (frasi fuori dal training, ascoltatori
 madrelingua, cuffie, campioni mescolati con parlato reale come ancoraggio). Le
 alternative sono i test di preferenza A/B e ABX. Due debolezze strutturali: il
-MOS è relativo al gruppo di ascoltatori e alle condizioni della prova, quindi
-i numeri di studi diversi non sono confrontabili (Tacotron 2 vale 4,53 nel
-paper che lo presenta e 3,70 in quello di FastSpeech 2, a tre anni di
-distanza e senza che il sistema sia cambiato: ottantatré centesimi di scarto
-sono la misura di quanto conti il protocollo), e nemmeno due numeri della
+MOS è relativo al gruppo di ascoltatori e alle condizioni della prova, quindi i numeri di studi diversi non sono confrontabili (nel paper di Tacotron
+2 il *parlato umano registrato* prende $4{,}58$, in quello di FastSpeech 2 tre
+anni dopo prende $4{,}30$, e a essere cambiato non è il parlato: ventotto
+centesimi di scarto su un riferimento identico sono la misura di quanto conti
+il protocollo), e nemmeno due numeri della
 stessa tabella si leggono per differenza se i loro intervalli di confidenza si
 sovrappongono, come succede fra Tacotron 2 e il parlato registrato; e le
 metriche oggettive
@@ -487,9 +488,11 @@ sistema TTS passa ancora dall'orecchio umano.
 ## La voce di chi? Cloni, truffe e consenso
 
 C'è un rovescio della medaglia, ed è bene guardarlo senza allarmismi ma senza
-sconti. Gli stessi modelli di questa sezione, addestrati sulla voce di una
-persona specifica (oggi bastano pochi minuti di registrazione, e i sistemi più
-recenti si accontentano di secondi) producono un **clone vocale**.
+sconti. Gli stessi modelli di questa sezione, addestrati sulla voce di una persona specifica producono un **clone vocale**.
+La quantità di registrazione che serve è crollata da ore a minuti da quando la
+voce non si riaddestra più ma si *condiziona*: un secondo modello ricava da un
+campione un vettore che descrive quel timbro, e il sintetizzatore lo riceve
+come riceve il testo.
 
 Le truffe sono già successe. Nel 2019 il *Wall Street Journal* raccontò
 questa: l'amministratore delegato di un'azienda energetica britannica riceve
@@ -555,18 +558,18 @@ sf.write("gatto.wav", onda[0].cpu().numpy(), vocoder.sample_rate)
 print(onda.shape, vocoder.sample_rate)  # es. torch.Size([1, ...]) e 22050
 ```
 
-Adesso apri `gatto.wav` e ascoltalo. Sono un paio di secondi, ed è il punto di
-tutta la sezione: nessuna descrizione scritta dice quello che dicono quei due
-secondi.
+:::{only} html
+Il file `gatto.wav` sono un paio di secondi di voce sintetica, e vanno
+ascoltati: nessuna descrizione scritta dice quello che dicono.
+:::
 
 Qualche parola sul codice. Un *bundle* è la confezione già pronta: i due
 modelli e i numeri che hanno imparato (i **pesi**), scaricati insieme. Quei
-pesi sono addestrati su una voce inglese, quindi dagli una frase italiana e la
-leggerà con un buffo accento anglofono: provaci, è la cosa più divertente
-della pagina.
+pesi sono addestrati su una voce inglese, quindi una frase italiana la leggerà
+con un buffo accento anglofono.
 
 Il numero stampato in fondo, 22.050, è quanti campioni al secondo ha questa
-voce, e qui vale la pena fermarsi un attimo, perché di numeri del genere il
+voce, e qui conviene fermarsi un attimo, perché di numeri del genere il
 capitolo ne ha già detti tre diversi: sedicimila per il microfono del telefono
 nel riconoscimento, ventiquattromila per Tacotron 2 nell'articolo che lo
 presenta, e adesso 22.050 per le registrazioni su cui questo modello è
@@ -587,7 +590,7 @@ il testo in voce. Messe in fila (ASR, un modello che decide cosa rispondere,
 TTS) sono lo scheletro di un assistente vocale: la catena che si mette in moto
 quando chiedi «che ore sono?» al telefono, e una voce sintetica ti risponde.
 
-Anche qui, il ripasso su due livelli.
+
 
 `````{tab} Elementare
 

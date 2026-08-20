@@ -38,8 +38,8 @@ un agente no, e la memoria disegnata al centro è esattamente ciò che li
 distingue: fra un giro e il successivo qualcosa resta.
 ```
 
-Vale la pena tenere {numref}`fig-ciclo-percezione-azione` come unità di misura
-per tutto quello che segue. Ogni partecipante a un protocollo è uno di questi
+Conviene tenere {numref}`fig-ciclo-percezione-azione` come unità di misura per
+tutto quello che segue. Ogni partecipante a un protocollo è uno di questi
 anelli, e i messaggi che si scambiano entrano dalla stazione «percezione» ed
 escono da quella «azione»: parlare, per un agente, è agire.
 
@@ -500,8 +500,8 @@ print(f"\nP(unanimita' su 9) = {unanimi:.3f}, "
 P(unanimita' su 9) = 0.441, di cui sbagliate 45.4%
 ```
 
-Riassunto in una riga: **fra agenti identici il voto non aumenta la
-correttezza, aumenta la **sicurezza con cui la risposta viene data**. Ed è
+Riassunto in una riga: fra agenti identici il voto non aumenta la correttezza,
+aumenta la **sicurezza con cui la risposta viene data**. Ed è
 l'esito peggiore possibile: un sistema che sbaglia e dà segno di essere incerto
 si può ancora recuperare, mentre uno che sbaglia esibendo nove firme in calce
 no.
@@ -520,14 +520,14 @@ non solo la strada che percorre, ed è anche il più caro da gestire.
 È esattamente il meccanismo della **self-consistency**
 {cite}`wang2023selfconsistency`: invece di tenersi l'unico ragionamento che il
 modello produce quando lo si costringe a scegliere sempre la parola più
-probabile, se ne fanno produrre molti diversi e si tiene la risposta finale che
-compare più spesso, buttando via i ragionamenti che ci hanno portato. Funziona,
-e funziona per la ragione che questa sezione ha appena messo in conto: variare
-il modo di generare rende gli errori **un po’ meno simili** fra loro. Vale la
-pena insistere su quel «un po’». Quei percorsi escono tutti dallo stesso
-modello, quindi la somiglianza si abbassa ma non arriva a zero, il tetto resta
-dov'era, e il guadagno reale è sempre inferiore a quello che il conto di
-Condorcet promette.
+probabile, se ne fanno produrre molti diversi e si tiene la risposta finale
+che compare più spesso, buttando via i ragionamenti che ci hanno portato.
+Funziona, e funziona per la ragione che questa sezione ha appena messo in
+conto: variare il modo di generare rende gli errori **un po’ meno simili** fra
+loro. Conviene insistere su quel «un po’». Quei percorsi escono tutti dallo
+stesso modello, quindi la somiglianza si abbassa ma non arriva a zero, il
+tetto resta dov'era, e il guadagno reale è sempre inferiore a quello che il
+conto di Condorcet promette.
 
 Ne discende la cosa pratica da fare, che è una sola e costa una serata. Invece
 di scegliere il numero di agenti a intuito, si prova con tre, con cinque, con
@@ -644,13 +644,8 @@ essere il comandante che ha dato ordini diversi ai due luogotenenti, oppure il
 collega che riferisce il falso. Dall'interno, le due situazioni sono
 indistinguibili, perché sono fatte esattamente degli stessi messaggi.
 
-E il «a voce» conta, perché è l'unica cosa che rende il bugiardo impunibile: se
-i messaggi fossero firmati in modo non falsificabile, il nostro generale
-mostrerebbe al collega il foglio con la firma del comandante e il bugiardo
-sarebbe smascherato in un colpo. Restiamo a voce, che è il caso duro.
-
-E il «a voce» conta, perché è l'unica cosa che rende il bugiardo impunibile: se
-i messaggi fossero firmati in modo non falsificabile, il nostro generale
+E il «a voce» conta, perché è l'unica cosa che rende il bugiardo impunibile:
+se i messaggi fossero firmati in modo non falsificabile, il nostro generale
 mostrerebbe al collega il foglio con la firma del comandante, e chi ha mentito
 salterebbe fuori in un colpo. Restiamo dunque a voce, che è il caso duro.
 
@@ -870,9 +865,7 @@ converge in silenzio sulla risposta sbagliata.
   quattro partecipanti, per due sette, per tre dieci, ed è dimostrato che con
   meno non si può. (È un teorema su traditori che possono anche mettersi
   d'accordo fra loro, quindi il conto non si trasferisce così com'è a una squadra
-  di agenti; quello che si trasferisce è la distinzione qui sotto.) (È un teorema su traditori che si mettono d'accordo fra loro,
-  quindi il conto non si trasferisce così com'è a una squadra di agenti; quello
-  che si trasferisce è la distinzione qui sotto.) Un agente **guasto** tace e lo si becca aspettando; uno
+  di agenti; quello che si trasferisce è la distinzione qui sotto.) Un agente **guasto** tace e lo si becca aspettando; uno
   **bugiardo** risponde in tempo, con garbo, e dice il falso, come un modello che
   produce una citazione inesistente con la stessa disinvoltura di quelle vere.
   Contro di lui aggiungere copie non serve a niente: serve un riscontro esterno,

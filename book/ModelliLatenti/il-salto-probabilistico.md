@@ -13,12 +13,12 @@ mai la regola che alla sezione precedente mancava, quella su dove vanno messe
 le schede, non bisogna aggiungerla: **cade fuori da sola** dal tentativo di
 rispondere.
 
-Il percorso è in quattro passi, e vale la pena averli in testa: il conto che non
+Il percorso è in quattro passi, e conviene averli in testa: il conto che non
 si può fare; il modo di aggirarlo chiedendo aiuto a chi sa dove guardare; la
 formula che ne esce, che si chiama **ELBO** (dall’inglese *evidence lower
-bound*, cioè «limite inferiore» di quel numero che non si sa calcolare) e che è
-appunto quella stima prudente, con due termini dai significati netti; e il trucco
-tecnico senza il quale niente di tutto questo si potrebbe addestrare.
+bound*, cioè «limite inferiore» di quel numero che non si sa calcolare) e che
+è appunto quella stima prudente, con due termini dai significati netti; e il
+trucco tecnico senza il quale niente di tutto questo si potrebbe addestrare.
 
 ## Il conto che non si può fare
 
@@ -161,13 +161,13 @@ Se il problema è che si pesca nel posto sbagliato, la soluzione è pescare nel
 posto giusto. E chi sa dov’è il posto giusto? Chi ha la cifra sotto gli occhi:
 l’archivista.
 
-Ecco allora la mossa, e vale la pena dirla prima in italiano che in formule.
+Ecco allora la mossa, e conviene dirla prima in italiano che in formule.
 Invece di sorteggiare schede alla cieca, chiediamo all’archivista di
-**proporre** lui le poche schede che valga la pena guardare per *questa* cifra.
-Poi correggiamo il conto per tenere conto del fatto che le schede non le
-abbiamo pescate a caso, ma ce le siamo fatte suggerire. È lo stesso mestiere
-che fa l’encoder della sezione precedente, con una differenza sola: non
-propone una scheda, propone **una zona**.
+**proporre** lui le poche schede che valga la pena guardare per *questa*
+cifra. Poi correggiamo il conto per tenere conto del fatto che le schede non
+le abbiamo pescate a caso, ma ce le siamo fatte suggerire. È lo stesso
+mestiere che fa l’encoder della sezione precedente, con una differenza sola:
+non propone una scheda, propone **una zona**.
 
 `````{tab} Elementare
 
@@ -238,10 +238,14 @@ probabilità condizionata, $p_\theta(\mathbf{z} \mid \mathbf{x}) =
 p_\theta(\mathbf{x}, \mathbf{z}) / p_\theta(\mathbf{x})$; e infine si
 moltiplica e si divide per $q_\phi(\mathbf{z} \mid \mathbf{x})$ dentro il
 logaritmo, spezzandolo poi in due. È quest’ultimo passaggio, non i primi due,
-a far comparire l’ELBO. (Perché le due divergenze restino finite serve che
-$p_\theta$ sia positiva ovunque lo sia $q_\phi$, cioè che l’archivista non
-proponga zone che il modello dichiara impossibili; con una gaussiana proposta
-contro un prior gaussiano la condizione è soddisfatta sempre.) I due addendi hanno un
+a far comparire l’ELBO. (Perché il secondo dei due addendi sia finito serve che
+$p_\theta(\mathbf{z} \mid \mathbf{x})$ sia positiva ovunque lo sia
+$q_\phi(\mathbf{z} \mid \mathbf{x})$, cioè che l’archivista non proponga zone
+che il modello dichiara impossibili. Qui la condizione è soddisfatta sempre,
+ma per due ragioni e non per una: la posterior vera è proporzionale a
+$p_\theta(\mathbf{x} \mid \mathbf{z})\, p(\mathbf{z})$, e con un prior
+gaussiano e una verosimiglianza positiva ovunque nessuno dei due fattori si
+annulla.) I due addendi hanno un
 nome: il primo è l’**ELBO** (*evidence lower bound*, limite inferiore
 dell’evidenza), il secondo è la divergenza di Kullback–Leibler fra la posterior
 approssimata e quella vera. Quindi
@@ -302,8 +306,8 @@ stessa identica cosa, e conviene tenerselo perché la parola compare dappertutto
 nei programmi come nei paper.
 
 Scritta tutta insieme, quella stima è compatta e opaca. Spezzata in due pezzi
-diventa la cosa che si programma, e quei due pezzi hanno un significato che
-vale la pena prendere sul serio.
+diventa la cosa che si programma, e quei due pezzi hanno un significato da
+prendere sul serio.
 
 `````{tab} Elementare
 
@@ -474,9 +478,10 @@ $$
 \qquad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
-dove $f$ è la funzione di cui si prende il valore atteso,
-$\boldsymbol{\mu}_\phi$ e $\boldsymbol{\sigma}_\phi$ sono le uscite
-dell’encoder e $\odot$ è il prodotto componente per componente. Adesso il
+dove $\boldsymbol{\mu}_\phi$ e $\boldsymbol{\sigma}_\phi$ sono le uscite
+dell’encoder, $\boldsymbol{\epsilon}$ è la sorgente di rumore e $\odot$ è il
+prodotto componente per componente ($f$, che compare nelle due scritture di
+poco fa, è la funzione di cui si prende il valore atteso). Adesso il
 valore atteso è rispetto a $p(\boldsymbol{\epsilon})$, che di $\phi$ non
 dipende, l’operatore di derivata entra, e un solo campione basta a dare uno
 stimatore non distorto del gradiente.
@@ -851,8 +856,7 @@ un difetto di implementazione, e la sezione su Stable Diffusion, nel capitolo
 sui modelli di diffusione, mostra come lo si aggiri in pratica invece di
 risolverlo.
 
-Una nota di onestà sul codice di questa sezione, perché il libro chiede di
-dichiarare le semplificazioni. La verosimiglianza usata è una Bernoulli per
+Una semplificazione va dichiarata. La verosimiglianza usata è una Bernoulli per
 pixel applicata a livelli di grigio continui, che è la ricetta consueta su
 questi dati e **non è una densità normalizzata** su $[0,1]$: il numero stampato
 come ELBO è quindi un ELBO rispetto a quel modello, non rispetto a una densità

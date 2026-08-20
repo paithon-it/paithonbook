@@ -29,7 +29,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Le basi di Python](https://book.paithon.it/main/Python/basi.html)
   - [NumPy](https://book.paithon.it/main/Python/numpy.html)
   - [Pandas e Matplotlib](https://book.paithon.it/main/Python/pandas-matplotlib.html)
-- [Matematica](https://book.paithon.it/main/Matematica/overview.html): «Chiamala entropia: nessuno sa davvero che cosa sia, e in una discussione partirai sempre in vantaggio.» Si racconta che il consiglio venisse da John von Neumann, e che a riceverlo fosse Claude…
+- [Matematica](https://book.paithon.it/main/Matematica/overview.html): «Chiamala entropia, per due ragioni. La prima è che la tua funzione d'incertezza in meccanica statistica si chiama già così.
   - [Algebra lineare](https://book.paithon.it/main/Matematica/algebra-lineare.html)
   - [Analisi e ottimizzazione](https://book.paithon.it/main/Matematica/analisi-ottimizzazione.html)
   - [Probabilità e statistica](https://book.paithon.it/main/Matematica/probabilita-statistica.html)
@@ -204,7 +204,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Come funziona la diffusione](https://book.paithon.it/main/ModelliDiffusione/come-funziona.html)
   - [Stable Diffusion](https://book.paithon.it/main/ModelliDiffusione/stable-diffusion.html)
   - [Diffusion Transformer (DiT)](https://book.paithon.it/main/ModelliDiffusione/diffusion-transformer.html)
-- [Verosimiglianza esatta](https://book.paithon.it/main/VerosimiglianzaEsatta/overview.html): Immagina di avere fra le mani il generatore di volti del capitolo sulle GAN, quello che sforna a ripetizione persone che non esistono, e di fargli una domanda diversa da tutte quelle che gli abbiamo…
+- [Verosimiglianza esatta](https://book.paithon.it/main/VerosimiglianzaEsatta/overview.html): Immagina di avere fra le mani il generatore di volti del , quello che sforna a ripetizione persone che non esistono, e di fargli una domanda diversa da tutte quelle che gli abbiamo fatto finora.
   - [Un pixel alla volta](https://book.paithon.it/main/VerosimiglianzaEsatta/pixel-per-pixel.html)
   - [I flussi normalizzanti](https://book.paithon.it/main/VerosimiglianzaEsatta/flussi.html)
   - [A che serve saperlo](https://book.paithon.it/main/VerosimiglianzaEsatta/a-che-serve.html)

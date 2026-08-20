@@ -75,10 +75,10 @@ della **precisione mista** {cite}`micikevicius2018mixed` è usare numeri da 16
 bit, cioè lunghi la metà, nei punti dove la precisione piena non serve, e
 tenere il `float32` dove invece è indispensabile.
 
-Perché scrivere numeri più corti faccia andare più veloce non è ovvio, e vale
-la pena dirlo prima di andare avanti: in una rete moderna il tempo se ne va
-soprattutto a **spostare** i numeri fra la memoria e le unità di calcolo, non a
-farci sopra i conti. Le unità di calcolo, per la maggior parte del tempo,
+Perché scrivere numeri più corti faccia andare più veloce non è ovvio, e
+conviene dirlo prima di andare avanti: in una rete moderna il tempo se ne va
+soprattutto a **spostare** i numeri fra la memoria e le unità di calcolo, non
+a farci sopra i conti. Le unità di calcolo, per la maggior parte del tempo,
 aspettano. Dimezzare la lunghezza dei numeri dimezza il traffico, e il tempo
 scende quasi come lui.
 
@@ -308,13 +308,14 @@ condivisa.
 Su CPU, con queste due precauzioni, i due numeri si equivalgono a meno del
 rumore di misura (qualche punto percentuale, in un senso o nell'altro), perché
 lì la coda non c'è: la CPU esegue e basta. Questa è la prova in bianco, quella
-che si fa apposta dove il fenomeno **non** deve comparire, e serve a dimostrare
-che la differenza che vedremo sulla GPU è del fenomeno e non del modo di
-misurare. Su una GPU, invece, la prima riga stampa un tempo assurdamente
-piccolo e la seconda quello vero. Vale la pena rifare questo esperimento su una
-scheda vera appena se ne ha una sottomano: se non la si ha, la presta gratis
-Google Colab, che è un servizio con cui si eseguono notebook dal browser su
-macchine altrui, purché si ricordi di chiedere l'acceleratore prima di partire.
+che si fa apposta dove il fenomeno **non** deve comparire, e serve a
+dimostrare che la differenza che vedremo sulla GPU è del fenomeno e non del
+modo di misurare. Su una GPU, invece, la prima riga stampa un tempo
+assurdamente piccolo e la seconda quello vero. Conviene rifare questo
+esperimento su una scheda vera appena se ne ha una sottomano: se non la si ha,
+la presta gratis Google Colab, che è un servizio con cui si eseguono notebook
+dal browser su macchine altrui, purché si ricordi di chiedere l'acceleratore
+prima di partire.
 
 ## Una riga per compilare: `torch.compile`
 
@@ -478,19 +479,20 @@ tanti contributi piccoli sommati fanno comunque un numero della misura giusta.
 Delle due, la prima è pensata per le reti in cui il segnale passa per intero,
 positivi e negativi trattati allo stesso modo; la seconda per la ReLU, che i
 negativi li schiaccia a zero e quindi ne lascia passare circa metà, e per
-compensare vuole pesi un po’ più grandi. Il capitolo sul deep
-learning ne darà la ragione per esteso; qui vediamo il gesto con cui si
+compensare vuole pesi un po’ più grandi. Il {doc}`capitolo sul deep
+learning </DeepLearning/overview>` ne darà la ragione per esteso; qui vediamo il gesto con cui si
 applicano.
 
-I default di PyTorch sono ragionevoli, e vale la pena sapere quali sono, perché
-si legge spesso che i framework moderni usino Xavier o He e per `nn.Linear` non
-è vero: il default è una variante uniforme ereditata dal vecchio Torch, che
+I default di PyTorch sono ragionevoli, e conviene sapere quali sono, perché si
+legge spesso che i framework moderni usino Xavier o He e per `nn.Linear` non è
+vero: il default è una variante uniforme ereditata dal vecchio Torch, che
 sorteggia i pesi fra $-1/\sqrt{d}$ e $+1/\sqrt{d}$, con $d$ il numero di
-ingressi. Sullo strato da mille ingressi dell'esempio di poco fa, $\sqrt{1000}$
-fa circa $31{,}6$, quindi i pesi nascono tutti fra $-0{,}032$ e $+0{,}032$:
-piccoli, come previsto. Quando si vuole il controllo esplicito, `torch.nn.init`
-offre le ricette pronte, con la solita convenzione dell'underscore finale per
-le operazioni che modificano sul posto, vista nella sezione sui tensori:
+ingressi. Sullo strato da mille ingressi dell'esempio di poco fa,
+$\sqrt{1000}$ fa circa $31{,}6$, quindi i pesi nascono tutti fra $-0{,}032$ e
+$+0{,}032$: piccoli, come previsto. Quando si vuole il controllo esplicito,
+`torch.nn.init` offre le ricette pronte, con la solita convenzione
+dell'underscore finale per le operazioni che modificano sul posto, vista nella
+sezione sui tensori:
 
 ```python
 from torch import nn
@@ -585,7 +587,7 @@ tenuta a regime.
   `DistributedDataParallel`, lanciato con `torchrun`; il training loop resta
   identico.
 - `nn.init` con `apply()` applica le inizializzazioni Xavier/He
-  (`kaiming_normal_`) che il capitolo sul deep learning motiverà.
+  (`kaiming_normal_`) che il {doc}`capitolo sul deep learning </DeepLearning/overview>` motiverà.
 - Su una macchina sola contano `batch_size`, `num_workers`, la precisione
   mista, e il cronometro prima di tutto: riscaldamento fuori dalla misura e
   minimo di più ripetizioni, non la prima.
@@ -594,6 +596,6 @@ tenuta a regime.
 
 Una riga, in tutto il capitolo, l'abbiamo usata senza aprirla: quella che
 sposta il modello e i dati sulla scheda grafica. Funziona, cambia i tempi di
-un addestramento, e finora non ha spiegato niente di sé. Il capitolo su GPU e
+un addestramento, e finora non ha spiegato niente di sé. Il {doc}`capitolo su GPU </GPU/overview>` e
 calcolo parallelo apre quella scatola, e da lì in poi «lento» smette di essere
 un'impressione e diventa qualcosa che si sa dove andare a cercare.

@@ -1,13 +1,14 @@
 # Panorama e limiti
 
 Abbiamo attraversato due capitoli (l'attenzione lineare e gli *state space
-model*) che sembravano raccontare storie diverse: uno partiva dai Transformer e
-toglieva all'attenzione il pezzo che la faceva costare tanto, l'altro dai
-sistemi dinamici continui e li misurava a intervalli. Eppure siamo arrivati, ogni volta, allo stesso posto. Vale la
-pena, ora che li abbiamo entrambi in mano, mettere i pezzi in fila e chiedersi
-cosa abbiamo davvero costruito, dove regge e dove no.
+model*) che sembravano raccontare storie diverse: uno partiva dai Transformer
+e toglieva all'attenzione il pezzo che la faceva costare tanto, l'altro dai
+sistemi dinamici continui e li misurava a intervalli. Eppure siamo arrivati,
+ogni volta, allo stesso posto. Conviene, ora che li abbiamo entrambi in mano,
+mettere i pezzi in fila e chiedersi cosa abbiamo davvero costruito, dove regge
+e dove no.
 
-Il punto di partenza era un difetto ben preciso. Nel capitolo sui Transformer,
+Il punto di partenza era un difetto ben preciso. Nel {doc}`capitolo sui Transformer </Transformers/overview>`,
 confrontandoli con le RNN, avevamo trovato il loro tallone d'Achille: far
 guardare ogni parola a tutte le altre costa in tempo e memoria **al quadrato**
 nella lunghezza della sequenza. Raddoppiare il testo quadruplica il lavoro. Da
@@ -24,12 +25,13 @@ inferenza un token alla volta a costo costante come una RNN.
 
 ## Un'unica famiglia
 
-Ricapitoliamo l'immagine con cui il capitolo precedente ha descritto questa
-memoria. Funziona come uno schedario: a ogni parola si archivia una
-voce nuova, formata da un’**etichetta** e da un **contenuto**, e per rileggere
-si presenta un'etichetta e si riceve indietro ciò che le assomiglia di più. Lo
-schedario ha un numero fisso di **cassetti**, sempre quello, e ogni voce nuova
-lascia un segno un po’ in tutti.
+Riprendiamo l'immagine del
+{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`. Quella
+memoria è un foglio-registro: a ogni parola ci si scrive una voce nuova,
+formata da un’**etichetta** e da un **contenuto**, e per rileggere si presenta
+un'etichetta e si riceve indietro ciò che le assomiglia di più. Il foglio ha
+un numero fisso di **caselle**, sempre quello, e ogni voce nuova lascia un
+segno un po’ in tutte.
 Prima di archiviare la voce nuova, però, quello che c'è già viene sbiadito un
 po’: è la **transizione**, ed è l'unica cosa su cui le architetture di questi
 due capitoli sono davvero diverse fra loro. Da RetNet a Mamba, cambia come e
@@ -43,11 +45,11 @@ rilegge le vecchie. Cambiare architettura non vuol dire cambiare macchina, ma
 girare tre manopole. La prima decide **quanto è grande** la memoria. La
 seconda decide **come sbiadisce** il passato quando arriva il presente: si può
 non sbiadire affatto, sbiadire tutto in blocco della stessa quantità, sbiadire
-cassetto per cassetto in modo diverso, oppure cancellare *di mira* solo la
+casella per casella in modo diverso, oppure cancellare *di mira* solo la
 vecchia voce che sta per essere riscritta. Quest'ultima non è il gradino sopra
 le altre, è un'altra cosa: sbiadire alleggerisce tutto senza guardare che cosa
 butta via, cancellare di mira tiene in ordine una voce sola. Non
-sbiadire affatto, però, non vuol dire tenere tutto: i cassetti restano quelli,
+sbiadire affatto, però, non vuol dire tenere tutto: le caselle restano quelle,
 le voci continuano ad ammucchiarsi una sopra l'altra, e più avanti in questa
 pagina vedremo che è il limite di fondo di tutta la famiglia. La terza manopola
 decide se queste scelte sono **fisse**, uguali
@@ -165,7 +167,9 @@ esatto*.
 
 `````{tab} Elementare
 
-La differenza è quella tra un quaderno di appunti e una biblioteca. L'attenzione
+La differenza è quella tra un quaderno di appunti e una biblioteca. Il
+quaderno è il foglio-registro di sempre, che qui conviene chiamare così perché
+lo mettiamo accanto a una biblioteca. L'attenzione
 piena dei Transformer è la biblioteca: conserva *ogni* parola letta, e quando le
 chiedi «cosa diceva esattamente quella frase a pagina 900?» va allo scaffale e la
 ripesca alla lettera. Il prezzo è doppio. Prima lo spazio: la biblioteca cresce
@@ -250,14 +254,16 @@ costo basso; gli archivisti intervengono nei pochi momenti in cui l'esattezza
 è decisiva. Le architetture ibride sono organizzate così: qualche strato che
 conserva tutto e ricorda alla lettera, il resto a memoria costante. Sono fatti
 così **Jamba** e **Samba**, e le versioni miste di architetture che abbiamo già
-incontrato. Non è un compromesso al ribasso, è la divisione dei compiti che
+incontrato. È una divisione dei compiti, non un compromesso al ribasso, ed è quella che
 oggi rende meglio.
 
 `````
 
 `````{tab} Superiore
 
-L'idea ricorre in tutti i lavori recenti, con dosaggi diversi. **Jamba**
+L'idea compare, con dosaggi diversi, in gruppi di ricerca che non si parlano
+fra loro, ed è questo più della singola misura a renderla interessante.
+**Jamba**
 (AI21 Labs, 2024) intervalla strati di attenzione e strati Mamba in una
 proporzione sbilanciata verso questi ultimi, aggiungendo esperti selettivi
 (*mixture-of-experts*), e regge contesti molto lunghi con una occupazione di
@@ -328,15 +334,14 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   alla volta con una memoria che non cresce mai.
 - **Tre manopole di progetto**: quanto è grande la memoria (la capacità
   grezza); **come sbiadisce il passato** quando arriva il presente (non
-  dimenticare nulla, sbiadire tutto in blocco, sbiadire cassetto per cassetto,
+  dimenticare nulla, sbiadire tutto in blocco, sbiadire casella per casella,
   oppure cancellare di mira la vecchia voce che sta per essere riscritta); e se
   queste scelte sono fisse per ogni parola oppure decise dalla parola stessa,
   che è ciò che compra il ragionamento basato sul contenuto. Sbiadire e
   cancellare di mira la vecchia voce non sono uno il perfezionamento
   dell'altro: fanno cose diverse, e c'è un'architettura che le usa tutt'e due
   insieme, il **Gated DeltaNet**. È DeltaNet con in più la manopola dello
-  sbiadire, quella che sbiadisce tutto in blocco; lo sbiadire cassetto per
-  cassetto, invece, resta fuori anche da lui.
+  sbiadire, quella che sbiadisce tutto in blocco; lo sbiadire casella per casella, invece, resta fuori anche da lui.
 - **La dualità** di Mamba-2 {cite}`dao2024mamba2` dimostra che uno *state space
   model* che sbiadisce tutto in blocco è esattamente un'attenzione lineare che
   guarda solo all'indietro: le due famiglie sono due viste della stessa cosa.

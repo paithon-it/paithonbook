@@ -10,16 +10,16 @@ sicuri alla fine. Thompson si chiede se il prezzo si possa ridurre spostando
 via via l'assegnazione verso il trattamento che sta andando meglio, senza per
 questo smettere di raccogliere prove sull'altro.
 
-Una risposta la diede lui stesso, e vale la pena anticiparla perché la storia
-ha un finale. Ogni paziente va assegnato tirando a sorte, ma con un dado
+Una risposta la diede lui stesso, e conviene anticiparla perché la storia ha
+un finale. Ogni paziente va assegnato tirando a sorte, ma con un dado
 truccato: il trattamento che ha più probabilità di essere il migliore esce più
 spesso. Quella probabilità non la si conosce, la si stima dalle prove raccolte
 fino a quel momento, e a ogni paziente in più il dado si ritrucca. Chi va
 meglio riceve più pazienti, ma nessuno viene scartato finché resta un dubbio.
 L'idea rimase quasi ignorata per decenni e porta il nome del suo autore,
 *Thompson sampling*; è una delle ricette usate oggi per mandare più visitatori
-alla versione di un sito che sta rendendo di più, cosa di cui si parla in fondo
-a questa sezione. Qui però prendiamo altre tre strade, più semplici da
+alla versione di un sito che sta rendendo di più, cosa di cui si parla in
+fondo a questa sezione. Qui però prendiamo altre tre strade, più semplici da
 raccontare e più facili da mettere in codice.
 
 È il **dilemma fra esplorare e sfruttare** annunciato nella panoramica del
@@ -175,8 +175,7 @@ per smentirla.
 
 Quanto costi si misura su un banco di prova, sempre lo stesso: è quello di
 Sutton e Barto {cite}`sutton2018reinforcement`, i due autori del manuale
-classico della materia. Il banco è il loro; le percentuali di questa sezione
-no, escono dal codice in fondo, che lo rifà da capo.
+classico della materia. Il banco di prova è il loro, ed è sempre lo stesso.
 
 `````{tab} Elementare
 
@@ -499,8 +498,7 @@ l'algoritmo indifferente all'origine della scala delle ricompense.
 
 ## Alla prova: duemila banchi da mille tiri
 
-I numeri citati qui sopra non sono copiati da nessuno, sono usciti dal codice
-che segue. Le prime quattro strategie (l'avida, quella che azzarda ogni tanto,
+Le prime quattro strategie (l'avida, quella che azzarda ogni tanto,
 l'ottimista e UCB) stanno in un blocco solo, perché fra loro cambiano in due
 punti soltanto: come scelgono la leva e da quale numero partono le stime. Le
 righe stampate sono sei e non quattro perché chi azzarda compare due volte, con
@@ -554,7 +552,7 @@ dieci, e sembra il peggiore dei rimedi. Ma sta ancora salendo. Esplorando una
 volta su cento impiega dieci volte più tempo a farsi un'idea di tutte le leve, e
 alla fine supera l'altro, che invece continuerà per sempre a buttare un tiro su
 dieci. Allungando la prova da mille a trentamila tiri (nel codice qui sopra è
-la costante `PASSI`), il sorpasso arriva attorno al decimillesimo tiro, e alla
+la costante `PASSI`), il sorpasso arriva poco prima del novemillesimo tiro, e alla
 fine chi azzarda una volta su cento sta al **91,6%** e chi azzarda una volta su
 dieci all’**89,0%**: le parti si sono invertite. La classifica dipende insomma
 da quanto è lunga la partita, e questa è una morale generale:
@@ -619,7 +617,7 @@ solito presuppongono di sì.
 **Esplorazione nei sistemi di raccomandazione.** Un catalogo ha continuamente
 oggetti nuovi, di cui nessuno sa nulla: mostrarli è esplorare, e non mostrarli
 mai garantisce che nessuno saprà mai se erano buoni. È il problema che il
-capitolo sui sistemi di raccomandazione, più avanti nel libro, chiamerà
+{doc}`capitolo sui sistemi di raccomandazione </SistemiRaccomandazione/overview>`, più avanti nel libro, chiamerà
 **partenza a freddo**. Là la domanda sarà come descrivere un oggetto di cui non
 si sa niente; qui è che cosa conviene fare mentre non si sa niente.
 

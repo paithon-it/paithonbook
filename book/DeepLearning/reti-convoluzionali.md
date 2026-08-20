@@ -18,8 +18,10 @@ bancari.
 ## Perché uno strato denso non basta
 
 Prima di costruire qualcosa di nuovo conviene capire perché il pezzo che
-abbiamo già, lo strato **denso** (il "completamente connesso" del capitolo
-sulle reti neurali), sulle immagini non funziona. Le ragioni sono due, e
+abbiamo già, lo strato in cui ogni neurone riceve tutti i numeri che escono dallo strato di
+sotto, quello con cui in {doc}`Reti neurali </RetiNeurali/overview>` erano
+fatte tutte le reti e che qui chiameremo strato **denso**, sulle immagini non
+funziona. Le ragioni sono due, e
 nessuna delle due è un dettaglio: il numero di pesi da imparare, che diventa
 ingestibile, e il fatto che una rete fatta così tratti la stessa forma come due
 cose diverse a seconda di *dove* si trova nell'immagine.
@@ -142,15 +144,16 @@ mappa risponde $-3$ quando cade sotto la colonna destra, $+3$ quando cade sotto
 la sinistra e $0$ quando cade sotto quella centrale, i cui pesi valgono zero.
 ```
 
-Vale la pena rifare i conti della {numref}`fig-convoluzione-animata`. Il filtro
-è fatto di tre righe uguali, ciascuna con i pesi $1$, $0$, $-1$; la barra vale
+Conviene rifare i conti della {numref}`fig-convoluzione-animata`. Il filtro è
+fatto di tre righe uguali, ciascuna con i pesi $1$, $0$, $-1$; la barra vale
 $1$ e lo sfondo $0$. Quando la barra finisce sotto la colonna destra del
 filtro, ogni riga contribuisce $-1$ e le tre righe insieme danno $-3$; quando
 finisce sotto la colonna sinistra, $+3$; quando è al centro, il peso che la
 moltiplica è $0$ e le altre due colonne vedono solo sfondo. Il filtro non
 misura quanto la barra è chiara: misura il **contrasto** tra il lato destro e
 il lato sinistro della propria finestra, e il segno dice da che parte sta il
-chiaro. È già un abbozzo di ciò che i primi strati di una CNN imparano da soli.
+chiaro. È già un abbozzo di ciò che i primi strati di una CNN imparano da
+soli.
 
 ## Campi recettivi locali e pesi condivisi
 
@@ -191,9 +194,8 @@ lo spazio delle ipotesi e quindi il rischio di overfitting.
 `````
 
 L'uscita di un filtro è una **feature map**: una mappa che segna, punto per
-punto, *dove* nell'immagine è presente il motivo cercato. Uno strato
-convoluzionale (in inglese *layer*, e nel libro le due parole si alternano)
-produce una pila di feature map, una per filtro; i primi strati imparano motivi
+punto, *dove* nell'immagine è presente il motivo cercato. Uno strato convoluzionale, in inglese *layer*, produce una pila di feature
+map, una per filtro; i primi strati imparano motivi
 elementari (bordi, angoli), i più profondi li combinano in parti sempre più
 astratte (occhi, ruote, volti).
 

@@ -46,6 +46,12 @@ toglierli di mezzo prima di rileggere:
              al posto della derivata prima, virgolette, lineette. Nessuno se ne
              accorge (Sphinx non avvisa, MathJax li disegna), e una campagna di
              ripulitura tipografica ne ha piazzati 36 in una volta sola
+  doppioni   la stessa frase scritta due volte nello stesso capoverso. Nasce
+             dalle riscritture: si sostituisce un pezzo di testo con uno nuovo
+             che riprende quello che diceva la frase dopo, e il capoverso
+             finisce per dirla due volte. Ne sono state trovate quattordici in
+             una passata sola, in nove capitoli, e nessuna l'ha vista un
+             controllo: la build non se ne accorge e il testo resta valido
   verso      rimandi che vanno dalla parte sbagliata: «come abbiamo visto»
              seguito da un capitolo che il lettore non ha ancora letto (e il
              contrario, «vedremo» verso un capitolo gia' letto). L'ordine di
@@ -272,7 +278,7 @@ def main():
     attivi = set(args.solo.split(",")) if args.solo else {
         "numref", "cite", "ref", "figure", "toc", "landing", "animazioni",
         "schede", "ricordare", "avanti", "palette", "clip", "ambiente",
-        "lineette", "stampa", "verso", "matematica"}
+        "lineette", "stampa", "verso", "matematica", "doppioni"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -871,6 +877,38 @@ def main():
                         problemi["segni di prosa dentro una formula"].append(
                             f"{f}:{n}  {ch}  {SEGNI[ch]}\n      {estratto}")
 
+    if "doppioni" in attivi:
+        # Due finestre di otto parole identiche a meno di novanta parole di
+        # distanza, dentro lo stesso capoverso di prosa: e' quasi sempre una
+        # frase incollata due volte da una riscrittura. Il codice e le formule
+        # restano fuori, che li' ripetersi e' normale.
+        for f, t in testi.items():
+            if f.endswith("aggiornamenti.md"):
+                continue
+            dentro = False
+            for blocco in re.split(r"\n\s*\n", t):
+                testa = blocco.lstrip()
+                # le recinzioni a 4+ backtick sono le schede `{tab}`, e il
+                # loro contenuto e' prosa: solo quelle a 3 aprono codice
+                if testa.startswith("```") and not testa.startswith("````"):
+                    dentro = not dentro
+                if dentro or testa.startswith((":", "|", "#", "$$", "```",
+                                               "-", "*", ">", "%")):
+                    continue
+                parole = " ".join(blocco.split()).split()
+                visti, gia = {}, False
+                for i in range(len(parole) - 7):
+                    chiave = " ".join(parole[i:i + 8]).lower()
+                    # una finestra con dentro codice o formule non e' prosa:
+                    # li' ripetersi e' normale e non dice niente
+                    if any(c in chiave for c in "`=#\\$"):
+                        continue
+                    if chiave in visti and i - visti[chiave] < 90 and not gia:
+                        problemi["frasi scritte due volte"].append(
+                            f"{f}  ->  «{chiave}…»")
+                        gia = True
+                    visti[chiave] = i
+
     if "verso" in attivi:
         # Il difetto piu' insidioso di questo libro non e' un fatto sbagliato:
         # e' una frase giusta messa nel verso sbagliato. «Come abbiamo visto»
@@ -1003,6 +1041,7 @@ def main():
               "capitoli senza figure animate (dichiarali in "
               "animazioni/senza-clip.toml, con la ragione)",
               "lineette scritte in ASCII (-- oppure - )",
+              "frasi scritte due volte",
               "«Da ricordare» fuori dalle schede",
               "clip piu' vecchie del loro sorgente",
               "ambiente delle clip cambiato",

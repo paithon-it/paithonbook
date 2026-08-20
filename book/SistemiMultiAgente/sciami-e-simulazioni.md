@@ -124,9 +124,8 @@ registra il traffico, registra il **merito**.
 
 `````
 
-L'accumulo è una delle poche cose del libro che un disegno fermo non riesce a
-mostrare: in un fotogramma solo non c'è niente da vedere, perché è proprio
-l'accumularsi a decidere. In {numref}`fig-formiche-feromone` ci sono sei giri
+L'accumulo si vede solo nel tempo: in un fotogramma solo non c'è niente da
+guardare, perché è proprio l'accumularsi a decidere. In {numref}`fig-formiche-feromone` ci sono sei giri
 della colonia sulle due strade, che cambiano spessore man mano che il feromone
 si deposita.
 
@@ -144,7 +143,7 @@ che ci si trova sopra, e si lascia feromone in proporzione a quanto è stato buo
 il giro. L'evaporazione qui non c'è ancora, arriva nel prossimo paragrafo.
 ```
 
-Due cose vale la pena guardare, e la seconda è quella che conta.
+Due cose conviene guardare, e la seconda è quella che conta.
 
 La prima è *dove* si muove di più. La quota di formiche sulla strada corta parte
 da cinquanta su cento e diventa, giro dopo giro, sessantasei, settantatré,
@@ -164,14 +163,14 @@ vanno a tappare.
 
 ## L'evaporazione è l'esplorazione
 
-Fin qui il meccanismo ha un difetto grosso, e vale la pena vederlo prima della
-cura, perché è lo stesso di molti sistemi che si alimentano da soli. Il feromone
-attira formiche, le formiche depositano feromone, il feromone attira altre
-formiche: è un cane che si morde la coda, e nel verso che rinforza. Lasciato a
-sé stesso non si assesta su niente, scappa via.
-La prima strada trovata per caso diventa la più battuta, la più battuta diventa
-l'unica, e la colonia si fossilizza su una soluzione che non ha nessun motivo di
-essere buona: nel gergo dell'articolo è il **comportamento di stagnazione**, la
+Fin qui il meccanismo ha un difetto grosso, e conviene vederlo prima della
+cura, perché è lo stesso di molti sistemi che si alimentano da soli. Il
+feromone attira formiche, le formiche depositano feromone, il feromone attira
+altre formiche: è un cane che si morde la coda, e nel verso che rinforza.
+Lasciato a sé stesso non si assesta su niente, scappa via. La prima strada
+trovata per caso diventa la più battuta, la più battuta diventa l'unica, e la
+colonia si fossilizza su una soluzione che non ha nessun motivo di essere
+buona: nel gergo dell'articolo è il **comportamento di stagnazione**, la
 situazione in cui tutte le formiche fanno lo stesso giro e nessuna cerca più
 niente.
 
@@ -510,27 +509,27 @@ confronto non esisterebbe, e la risposta trovata avrebbe esattamente lo stesso
 aspetto.
 
 Nel machine learning questa famiglia compare in due punti. Il primo è la
-**ricerca di architetture**, e conviene distinguere subito le due strade perché
-si confondono spesso. La rete base di EfficientNet, ricordata nel capitolo sul
-deep learning, viene da una ricerca automatica multi-obiettivo guidata dal
-**reinforcement learning**, non dall'evoluzione. L'evoluzione è l'altra strada
-principale, e il suo esemplare è AmoebaNet {cite}`real2019regularized`, dove le
-architetture **mutano** e le migliori sopravvivono, con una selezione a torneo
-che scarta anche le più vecchie. Vale la pena notare che quell'algoritmo il
-crossover non ce l'ha, ed è coerente con la scommessa dichiarata poche righe fa:
-in un'architettura i pezzi non sono separabili, perché un blocco che funziona
-bene in una rete può essere pessimo in un'altra, quindi la scommessa non
-reggerebbe e l'algoritmo si limita a non farla. Il secondo punto è ovunque
-l'obiettivo non sia derivabile: scegliere iperparametri discreti, potare una
-rete decidendo *quali* pezzi togliere, ottimizzare una pipeline di
-preelaborazione.
+**ricerca di architetture**, e conviene distinguere subito le due strade
+perché si confondono spesso. La rete base di EfficientNet, ricordata nel
+{doc}`capitolo sul deep learning </DeepLearning/overview>`, viene da una ricerca automatica multi-obiettivo
+guidata dal **reinforcement learning**, non dall'evoluzione. L'evoluzione è
+l'altra strada principale, e il suo esemplare è AmoebaNet
+{cite}`real2019regularized`, dove le architetture **mutano** e le migliori
+sopravvivono, con una selezione a torneo che scarta anche le più vecchie.
+Quell'algoritmo il crossover non ce l'ha, ed è coerente con la scommessa
+dichiarata poche righe fa: in un'architettura i pezzi non sono separabili,
+perché un blocco che funziona bene in una rete può essere pessimo in un'altra,
+quindi la scommessa non reggerebbe e l'algoritmo si limita a non farla. Il
+secondo punto è ovunque l'obiettivo non sia derivabile: scegliere
+iperparametri discreti, potare una rete decidendo *quali* pezzi togliere,
+ottimizzare una pipeline di preelaborazione.
 
 ## Perché non usare il gradiente
 
 Sia le formiche sia le particelle hanno una proprietà che va guardata in faccia:
 non usano mai la **derivata** della funzione da minimizzare, cioè la sua
 pendenza. Vedono solo il suo
-valore, in un punto alla volta. Il capitolo di matematica ha dedicato una
+valore, in un punto alla volta. Il {doc}`capitolo di matematica </Matematica/overview>` ha dedicato una
 sezione alla discesa del gradiente (scendere seguendo quella pendenza), che è
 il metodo con cui si addestra ogni
 rete di questo libro; qui abbiamo un'altra famiglia, e il confronto va fatto
@@ -696,16 +695,16 @@ giusta è al contrario: quante prove **perdono tutti e trenta** i biglietti? Il
 conto lo si fa una volta e dà poco più di una prova su cinque che va a segno,
 cioè sessantaquattro su trecento. Ne escono sessantasette.
 
-Vale la pena verificare che la storia sia davvero questa, e non un'altra che dà
+Conviene verificare che la storia sia davvero questa, e non un'altra che dà
 per caso lo stesso numero. Contiamo i sorteggi che avevano almeno un punto di
 partenza dentro la fossetta centrale: sono sessantasei, e riescono tutti e
 sessantasei. Le prove riuscite in tutto sono sessantasette, quindi una sola ce
 l'ha fatta partendo interamente da fuori. Nascere nel posto giusto, qui, è
-sempre bastato e quasi sempre è servito. La discesa con trenta ripartenze non ha
-imparato niente in più dello sciame: ha soltanto avuto trenta biglietti invece
-di uno. (E il suo risultato dipende da quanto sono lunghi i passi più di quanto
-dipenda dal metodo: raddoppiando la lunghezza del passo non arriva più al fondo
-vero in nessuna delle trecento prove.)
+sempre bastato e quasi sempre è servito. La discesa con trenta ripartenze non
+ha imparato niente in più dello sciame: ha soltanto avuto trenta biglietti
+invece di uno. (E il suo risultato dipende da quanto sono lunghi i passi più
+di quanto dipenda dal metodo: raddoppiando la lunghezza del passo non arriva
+più al fondo vero in nessuna delle trecento prove.)
 
 Un'ultima nota sui tre numeri in cima al programma, quelli che pesano le tre
 spinte (tirare dritto per dove stavo andando, tornare dove sono stato meglio io,
@@ -732,9 +731,9 @@ l'invito si propaga di bocca in bocca senza che nessuno lo instradi, e alla fine
 tredici agenti su venticinque ne sanno qualcosa e cinque si presentano.
 
 Non ripetiamo l'architettura, che è già stata descritta lì: flusso di
-osservazioni, recupero, riflessione, pianificazione. Vale la pena guardare da
-vicino il pezzo che regge tutto, e che è anche il più imitato senza capirlo: la
-**funzione di recupero a tre termini**. Risponde alla domanda di qualunque
+osservazioni, recupero, riflessione, pianificazione. Conviene guardare da
+vicino il pezzo che regge tutto, e che è anche il più imitato senza capirlo:
+la **funzione di recupero a tre termini**. Risponde alla domanda di qualunque
 memoria grande: fra diecimila ricordi, quali sono i pochi che vanno messi nel
 contesto **adesso**?
 

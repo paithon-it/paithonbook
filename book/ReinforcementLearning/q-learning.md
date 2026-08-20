@@ -199,7 +199,7 @@ lungimirante, vicino a $0$ = miope).
 Nient'altro. Nessuna rete neurale, nessuna delle macchinerie dei capitoli
 precedenti: solo una tabella di numeri che si aggiusta a ogni mossa.
 
-## Esplorare o sfruttare: la strategia ε-greedy
+## Esplorare o sfruttare: la strategia $\varepsilon$-greedy
 
 Se l'agente scegliesse sempre la mossa col voto più alto, resterebbe
 intrappolato nella prima strategia decente che trova, senza mai scoprire
@@ -209,7 +209,7 @@ scorciatoie migliori. Deve ogni tanto **esplorare**.
 
 È il dilemma del ristorante: torni sempre da quello che conosci e ti piace
 (**sfruttare**), o provi il nuovo che ha appena aperto e potrebbe essere una
-scoperta (**esplorare**)? La ricetta ε-greedy è semplice: nella grande
+scoperta (**esplorare**)? La ricetta $\varepsilon$-greedy è semplice: nella grande
 maggioranza dei casi vai sul sicuro, ma con una piccola probabilità (chiamata
 $\varepsilon$, epsilon, ad esempio il 10%) tiri un dado e provi una mossa a
 caso. All'inizio esplori molto; man mano che impari, riduci $\varepsilon$ e ti
@@ -219,7 +219,7 @@ affidi sempre più a ciò che sai.
 
 `````{tab} Superiore
 
-Data la tabella corrente, la politica ε-greedy sceglie
+Data la tabella corrente, la politica $\varepsilon$-greedy sceglie
 
 $$
 a =
@@ -274,8 +274,8 @@ compresa.
 Il risultato tipico si vede su un esperimento classico, che si chiama
 *cammino sul precipizio*: un corridoio di caselle il cui bordo inferiore è un
 burrone, con la partenza e l'arrivo alle due estremità. La strada più corta
-passa proprio sull'orlo, e un passo storto fa cadere di sotto. SARSA impara a
-tenersi una fila più in su, perdendo qualche passo ma non cadendo mai; il
+passa proprio sull'orlo, e un passo storto fa cadere di sotto. SARSA impara a salire fin sopra, lontano dal bordo, e ci arriva in qualche
+passo in più senza cadere mai; il
 Q-learning impara a camminare sull'orlo, perché "in teoria" non sbaglierebbe
 mai un passo, e ogni tanto ci casca davvero.
 
@@ -285,7 +285,7 @@ mai un passo, e ogni tanto ci casca davvero.
 
 SARSA è **on-policy**: nel target non compare il massimo, ma il valore
 dell'azione $a'$ realmente scelta nello stato $s'$ dalla stessa politica (ad
-esempio ε-greedy):
+esempio $\varepsilon$-greedy):
 
 $$
 Q(s,a) \leftarrow Q(s,a) + \alpha\,\big[\,r + \gamma\,Q(s',a') - Q(s,a)\,\big].
@@ -478,14 +478,14 @@ poi $0{,}875$, poi $0{,}9375$, e così via. Dopo
 cinquemila partite ci è arrivato così vicino che, alla seconda cifra, si legge
 $1{,}00$.
 
-Per le altre caselle succede la stessa cosa, con una complicazione in più che
-vale la pena nominare perché è tutto il capitolo in miniatura: il loro
-bersaglio non sta fermo. La casella accanto era partita rincorrendo $0{,}45$,
-cioè lo sconto per il $0{,}5$ che c'era allora; ma mentre lei ci correva
-dietro, quel $0{,}5$ è salito verso $1$, e quindi il bersaglio è salito verso
-$0{,}90$. Ogni casella insegue un numero che a sua volta sta salendo, e la fila
-si assesta dall'ultima all'indietro. I conti a mano di poco fa dicono da dove
-parte ciascun voto, la tabella qui sopra dice dove arriva.
+Per le altre caselle succede la stessa cosa, con una complicazione in più da
+nominare perché è tutto il capitolo in miniatura: il loro bersaglio non sta
+fermo. La casella accanto era partita rincorrendo $0{,}45$, cioè lo sconto per
+il $0{,}5$ che c'era allora; ma mentre lei ci correva dietro, quel $0{,}5$ è
+salito verso $1$, e quindi il bersaglio è salito verso $0{,}90$. Ogni casella
+insegue un numero che a sua volta sta salendo, e la fila si assesta
+dall'ultima all'indietro. I conti a mano di poco fa dicono da dove parte
+ciascun voto, la tabella qui sopra dice dove arriva.
 
 Tre note sul codice.
 
@@ -566,8 +566,7 @@ dall'altra parte: invece di chiedersi "che cosa succederà dopo questa casella",
 si tiene un elenco delle caselle appena attraversate, ciascuna con un ricordo
 che sfuma a ogni passo. Quel ricordo si chiama **traccia**, e quando arriva una
 sorpresa la si distribuisce a tutta la scia, tanto più forte quanto più recente
-è il passaggio. Che venga davvero lo stesso risultato non è ovvio ed è un conto
-da fare (sta nella scheda accanto); l'idea è che dare a ogni casella un
+è il passaggio. Che venga davvero lo stesso risultato non è ovvio ed è un conto da fare; l'idea è che dare a ogni casella un
 pezzetto di correzione alla volta, per tutta la partita, alla fine somma
 esattamente quanto le si sarebbe dato in un colpo solo guardando avanti. Il
 guadagno è che così non si aspetta mai la fine.
@@ -695,7 +694,7 @@ qualcosa che nessuno ha dimostrato che funzioni.
   un'altra.
 - Nella correzione ci sono due manopole: una decide quanto dare retta alla
   sorpresa dell'ultimo passo (piccola vuol dire passi cauti), l'altra quanto
-  pesa il futuro rispetto al premio immediato. E c'è la ricetta ε-greedy per il
+  pesa il futuro rispetto al premio immediato. E c'è la ricetta $\varepsilon$-greedy per il
   dilemma del ristorante: quasi sempre la mossa col voto più alto, ogni tanto
   una a caso per scoprire di meglio.
 - **SARSA** valuta le mosse mettendo in conto che ogni tanto esplorerà davvero
@@ -732,7 +731,7 @@ qualcosa che nessuno ha dimostrato che funzioni.
   $Q$ **tabellare**, ricompense limitate, visite infinite e passi che
   soddisfano Robbins-Monro.
 - Nella formula, $\alpha$ dosa la correzione e $\gamma$ pesa il futuro; la
-  strategia **ε-greedy** bilancia esplorazione e sfruttamento, e la condizione
+  strategia **$\varepsilon$-greedy** bilancia esplorazione e sfruttamento, e la condizione
   **GLIE** (visite infinite più policy greedy nel limite) è ciò che serve alla
   garanzia.
 - **SARSA** è la variante *on-policy* ($\gamma\,Q(s',a')$ al posto del massimo):

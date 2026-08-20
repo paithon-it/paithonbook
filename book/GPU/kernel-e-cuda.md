@@ -215,7 +215,9 @@ guardarlo lavorare, perché con la variabile d'ambiente `TRITON_INTERPRET=1`
 Triton esegue il kernel in un interprete sulla CPU, un thread per volta: con
 $a = 2$ e $b = 1$ da $3$ esce $7$ e da $-4$ esce $0$, cioè esattamente i numeri
 promessi qualche riga più su. E se si vuole vedere che cosa il compilatore ne
-fa, `triton.compile` lo traduce nel **PTX** (l'assembly delle GPU NVIDIA) per
+fa, `triton.compile` lo traduce nel **PTX** (la lingua intermedia in cui NVIDIA descrive un
+programma per GPU, che il driver traduce poi nelle istruzioni della scheda che
+si ha davanti) per
 un'architettura scelta a tavolino, `sm_90` per esempio, senza che
 quell'architettura sia presente. Vale la pena guardarci dentro, perché c'è la
 morale della sezione scritta in linguaggio macchina: la moltiplicazione e la
@@ -364,7 +366,7 @@ loro due tabelloni di numeri. È la prossima sezione.
 - **Fondere** più operazioni in un kernel solo vuol dire fare una telefonata al
   posto di tre e un viaggio al posto di tre: stesso risultato, molto meno
   tempo. È il grosso di quello che fa quella riga di `torch.compile` vista nel
-  capitolo su PyTorch.
+  {doc}`capitolo su PyTorch </PyTorch/overview>`.
 ```
 `````
 

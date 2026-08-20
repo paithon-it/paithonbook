@@ -8,8 +8,12 @@ Python, il gruppo comico inglese di cui è fan. La prima versione pubblica esce
 nel 1991. Nessuno, allora, poteva immaginare che trent'anni dopo quel
 passatempo sarebbe diventato la lingua franca dell'intelligenza artificiale:
 dalla rivoluzione del deep learning del 2012 fino ai grandi modelli
-linguistici di oggi, quasi ogni svolta recente dell'AI è nata come esperimento
-in Python, in Python è stata messa a punto e in Python è stata pubblicata.
+linguistici di oggi, la quasi totalità della ricerca recente si scrive, si
+mette a punto e si pubblica in Python. Non è sempre stato così: la rete che
+nel 2012 aprì la stagione del deep learning era scritta in C++ e CUDA, e il
+framework più usato negli anni subito dopo si programmava in Lua. Python vince
+quando arrivano Theano, Caffe e TensorFlow, e la partita si chiude nel 2016
+con PyTorch.
 
 Com'è successo? Python non è il linguaggio più veloce, né il più elegante in
 senso accademico. Ha vinto per altre ragioni.
@@ -83,9 +87,8 @@ qualcosa (un conto, il nome di una variabile) e premi Invio, lui te ne mostra
 il risultato di sua iniziativa, senza che tu glielo abbia chiesto: è fatto per
 conversare. In un programma salvato in un file, invece, quella stessa riga
 calcola e non dice niente, e per vedere il risultato bisogna chiederlo con
-`print`. Il codice di questo libro è scritto come lo si digiterebbe
-nell'interprete, ed è per questo che nei prossimi esempi troverai spesso righe
-che mostrano un valore senza `print` accanto.
+`print`. Gli esempi che seguono sono scritti come li si digiterebbe nell'interprete, ed
+è per questo che spesso una riga mostra un valore senza `print` accanto.
 
 Eseguendo `import this` compaiono i diciannove aforismi che Tim Peters
 codificò nel 1999.
@@ -103,8 +106,7 @@ e comunicare l'AI.
 La forza di Python nell'AI non è il linguaggio da solo, ma la torre di
 librerie costruite l'una sull'altra ({numref}`fig-stack-python`; in inglese si
 dice *stack*, e il nome torna spesso). Ognuna fa
-una cosa e la fa bene. Non serve ancora capire ogni termine di questo elenco:
-è la mappa del viaggio, e ogni territorio ha il suo capitolo più avanti.
+una cosa e la fa bene. 
 
 - **NumPy**: il fondamento. Introduce l’*array* N-dimensionale e rende
   l'algebra lineare veloce; quasi tutto il resto poggia su di lui.
@@ -121,9 +123,10 @@ una cosa e la fa bene. Non serve ancora capire ogni termine di questo elenco:
   questi dati) e `predict` (adesso prevedi). Imparato a usarne uno, li sai
   usare tutti, ed è quel che si intende con **API uniforme** (l'API di una
   libreria è l'insieme dei comandi con cui le si parla).
-- **PyTorch** (Facebook AI Research, 2016; oggi Meta), deep learning: reti
-  neurali, differenziazione automatica, addestramento su **GPU** (la scheda
-  grafica, che sa fare moltissimi conti tutti insieme). Qui la torre cambia
+- **PyTorch** (Facebook AI Research, 2016; oggi Meta), deep learning:
+  costruisce reti neurali e le addestra, calcolando da sé le correzioni da
+  fare ai numeri interni della rete ogni volta che sbaglia; lavora sulla
+  **GPU** (la scheda grafica, che sa fare moltissimi conti tutti insieme). Qui la torre cambia
   natura: PyTorch non è costruito su NumPy, ha un proprio motore di calcolo in
   C++, e con NumPy si scambia i dati senza copiarli. È la libreria attorno a
   cui è costruito il codice di questo libro; il suo concorrente storico è
@@ -188,7 +191,8 @@ che appare lì sotto. È il modo in cui gran parte del machine learning viene
 davvero insegnato e praticato, ed è il formato di questo libro.
 
 E se non vuoi installare nulla? **Google Colab** ti dà un notebook nel
-browser, gratuito, con GPU incluse: perfetto per addestrare un modello senza
+browser, gratuito, e spesso con una scheda grafica in prestito: abbastanza per
+addestrare un modello senza
 possedere un computer potente.
 
 `````
@@ -219,8 +223,10 @@ browser e un account Google.
 
 **Sul proprio computer.** Serve un **terminale**, cioè la finestra in cui si
 scrivono comandi al computer invece di cliccare: si chiama *Terminale* su macOS
-e Linux, *Prompt dei comandi* (o *PowerShell*) su Windows. Su Linux e macOS
-Python c'è già; su Windows si scarica da `python.org`, ricordando di spuntare
+e Linux, *Prompt dei comandi* (o *PowerShell*) su Windows. Su Linux Python c'è già. Su macOS no: `/usr/bin/python3` è un segnaposto che
+al primo uso propone di installare gli strumenti da sviluppatore di Xcode, e
+conviene accettare, oppure scaricare Python da `python.org` come su Windows.
+Su Windows si scarica da `python.org`, ricordando di spuntare
 «Add Python to PATH» durante l'installazione: è la casella che dice al
 terminale dove Python è stato messo, e senza di essa il comando qui sotto
 risponderà che non lo trova. Poi, quattro gesti:
@@ -246,8 +252,9 @@ programma non finisce più (capita: basta un ciclo scritto male) si ferma
 premendo `Ctrl+C`.
 
 **Le librerie** non arrivano con Python: si installano una volta con **`pip`**,
-il programma che va a prenderle in rete e le mette al posto giusto (il nome è
-già installato insieme a Python, si usa e basta). E conviene installarle dentro
+il programma che va a prenderle in rete e le mette al posto giusto. Arriva
+insieme a Python, e dentro l'ambiente virtuale di cui fra un attimo c'è
+sempre. E conviene installarle dentro
 un **ambiente virtuale**, cioè una cartella-scatola che tiene le librerie di
 *questo* progetto separate da quelle di tutti gli altri:
 
@@ -288,7 +295,7 @@ Per lavorare come si lavora davvero, `pip install jupyterlab` e poi
 `jupyter lab` aprono nel browser i notebook di cui sopra, questa volta sulla
 propria macchina.
 
-## Come è organizzato il capitolo
+## Che cosa si impara qui
 
 Nelle sezioni che seguono passiamo dalla teoria alla tastiera. L'ambiente è
 pronto: prendiamo confidenza con la sintassi di base

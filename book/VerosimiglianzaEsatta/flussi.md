@@ -44,9 +44,9 @@ diventato tre volte più largo, e la stessa quantità d'acqua su un tavolo tre
 volte più largo sta tre volte più bassa. La densità di arrivo non vale 1: vale
 un terzo.
 
-Questo è il punto che rende i flussi diversi da tutto il resto del capitolo. Se
-ci si dimentica quel fattore, quello che si ottiene non è una probabilità
-sbagliata: **non è una probabilità**, perché l'area sotto non fa più uno.
+Questo è il punto che rende i flussi diversi da tutto il resto del capitolo.
+Senza quel fattore l'area sotto la curva non fa più uno, e un numero la cui
+area non fa uno non è una probabilità.
 Verifichiamolo, perché è il genere di cosa che si capisce meglio vedendola.
 
 ```python
@@ -342,7 +342,7 @@ importa a questo capitolo: la densità del modello, integrata su tutto il piano,
 fa **uno**, e non perché qualcuno l'abbia normalizzata a mano. Fa uno perché il
 cambio di variabile lo garantisce, e togliendo il termine `logdet` dal codice
 non farebbe più uno. È esattamente la differenza fra questa famiglia e quella
-del capitolo sui modelli a energia, dove quel conto non si può fare e tutto il capitolo
+del {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>`, dove quel conto non si può fare e tutto il capitolo
 gira attorno a come evitarlo. Le ultime due vanno lette insieme, e dicono che
 il modello ha imparato dov'è la roba: sulle lune assegna circa $-1{,}3$, su
 punti presi a caso nel quadrato circa $-169$. Sono centosessantotto nat di
@@ -384,8 +384,8 @@ scritto nella definizione stessa della famiglia.
   farlo tornare indietro.
 - Chi deforma lo spazio deve pagare un **fattore di correzione**: la stessa
   acqua su un tavolo tre volte più largo sta tre volte più bassa. Senza quel
-  fattore, quello che esce non è una probabilità sbagliata: non è una
-  probabilità, perché l'area sotto non fa più uno. Nel primo blocco di codice
+  fattore l'area sotto la curva non fa più uno, e un numero la cui area non fa
+  uno non è una probabilità. Nel primo blocco di codice
   si vede: con il fattore l'area fa 1,000, senza farebbe 3.
 - Il fattore, in molte dimensioni, costa un'eternità da calcolare. Il trucco è
   costruire la macchina in modo che sia **già scritto**: metà delle coordinate

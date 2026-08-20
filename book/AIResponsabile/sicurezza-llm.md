@@ -35,8 +35,9 @@ filo **separato** da quello della voce. Da allora si può fischiare quanto si
 vuole nella cornetta: il fischio resta un suono, perché i comandi passano da
 un'altra parte.
 
-La sezione sulla privacy e la robustezza ha mostrato come si inganna la *vista*
-di una rete neurale, con manomissioni invisibili all'occhio. Questa affronta
+La sezione {doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>`
+ha mostrato come si inganna la *vista* di una rete neurale, con manomissioni
+invisibili all'occhio. Questa affronta
 la stessa domanda per i modelli di linguaggio, e il quadro cambia in due modi.
 Il primo: l'attacco non è un rumore impercettibile, è prosa che chiunque può
 leggere, e per scriverla non serve né conoscere il modello né saper fare i
@@ -254,7 +255,7 @@ il termine con cui in informatica si chiama un cancello vero: la regola che
 decide chi può fare cosa, scritta da qualche parte e verificabile da chiunque.
 
 L'obiezione ragionevole è: ma i modelli non sono addestrati apposta a
-rifiutare? Sì. Il modo, che il capitolo sui Transformer racconta per esteso,
+rifiutare? Sì. Il modo, che il {doc}`capitolo sui Transformer </Transformers/overview>` racconta per esteso,
 in sostanza è questo: gli si fanno vedere moltissime coppie di risposte con
 scritto quale delle due era migliore, finché non prende l'abitudine di
 produrre quelle {cite}`ouyang2022training`; oppure gli si fa imparare la
@@ -384,10 +385,9 @@ dove prima o poi il modello andrà a leggere da solo. L'hanno descritta e
 catalogata sulle applicazioni reali Kai Greshake, Sahar Abdelnabi e colleghi
 {cite}`greshake2023not`.
 
-Il collegamento è diretto con quella tecnica, vista nel capitolo sugli agenti,
-in cui il modello prima cerca dei documenti e poi risponde basandosi su quelli
-invece che sulla propria memoria (si chiama **RAG**, recupero più
-generazione). Lì serviva ad **ancorare** le risposte a fonti vere, ed era una
+Il collegamento è diretto con la {doc}`RAG </Transformers/rag>`, in cui il
+modello prima cerca dei documenti e poi risponde basandosi su quelli invece
+che sulla propria memoria. Lì serviva ad **ancorare** le risposte a fonti vere, ed era una
 difesa contro la tendenza dei modelli a inventare con sicurezza; lo stesso
 meccanismo, guardato dall'altro lato, è una porta d'ingresso: un archivio in
 cui chiunque può scrivere è un archivio da cui chiunque può parlare al
@@ -502,9 +502,9 @@ non un gradino superiore.
 
 **Difese nel prompt.** Delimitare i dati con marcatori, ripetere le istruzioni
 alla fine del contesto, chiedere al modello di ignorare eventuali comandi
-contenuti nei documenti. Sono buone pratiche, già raccomandate nel capitolo
-sull'ingegneria degli LLM per ragioni di chiarezza, e qualche effetto ce
-l'hanno: riducono le confusioni accidentali e alzano il costo dei tentativi
+contenuti nei documenti. Sono buone pratiche, già raccomandate in
+{doc}`Prompt, contesto e loop </IngegneriaLLM/overview>` per ragioni di
+chiarezza, e qualche effetto ce l'hanno: riducono le confusioni accidentali e alzano il costo dei tentativi
 banali. Ma il codice visto sopra ha mostrato perché non sono un confine: un
 delimitatore scritto nel canale è un dato come gli altri, e un'istruzione
 che chiede al modello di ignorare le istruzioni vive nello stesso posto di
@@ -514,13 +514,13 @@ raccontate come una protezione.
 **Classificatori a monte e a valle.** Un secondo modello, o un classificatore
 addestrato apposta, ispeziona ciò che entra e ciò che esce, e blocca quello che
 riconosce come tentativo di aggiramento, contenuto vietato, dato personale in
-uscita. È l'idea dei **guardrail** vista nel capitolo di MLOps, e il principio
+uscita. È l'idea dei **guardrail** vista nel {doc}`capitolo di MLOps </MLOps/overview>`, e il principio
 che la giustifica è quello classico della **difesa in profondità**: un secondo
 controllo, indipendente dal primo, fallisce per ragioni diverse. Attenzione
 però a che cosa vuol dire «indipendente»: se il filtro è a sua volta un modello
 di linguaggio addestrato in modo simile, eredita in buona parte le stesse
 debolezze, e due giudici che sbagliano allo stesso modo contano per uno (il
-capitolo sui sistemi multi-agente lo mette anche in formula). I costi vanno
+{doc}`capitolo sui sistemi multi-agente </SistemiMultiAgente/overview>` lo mette anche in formula). I costi vanno
 messi in conto: un'attesa aggiuntiva su ogni richiesta e blocchi ingiusti di
 lavoro legittimo, con la solita soglia da tarare.
 
@@ -610,11 +610,12 @@ negato *indipendentemente* da quanto fosse persuasivo il testo della pagina,
 perché la decisione non ha letto quel testo. Nel secondo lo stesso strumento è
 ammesso sotto conferma, perché dei tre ingredienti pericolosi ne manca uno.
 
-Il terzo scenario è quello che vale la pena guardare, perché è il punto in cui
-una difesa del genere si rompe più facilmente. Aprire l'allegato di un estraneo
-fa due cose insieme: porta testo non fidato dentro la conversazione, e non si
-può disfare (il mittente riceve la conferma di lettura e sa che qualcuno ha
-aperto). Per la seconda ragione il cancello chiede conferma prima di eseguirlo.
+Il terzo scenario è quello da guardare, perché è il punto in cui una difesa
+del genere si rompe più facilmente. Aprire l'allegato di un estraneo fa due
+cose insieme: porta testo non fidato dentro la conversazione, e non si può
+disfare (il mittente riceve la conferma di lettura e sa che qualcuno ha
+aperto). Per la seconda ragione il cancello chiede conferma prima di
+eseguirlo.
 
 E qui sta la trappola. «Conferma umana» non è un rifiuto: l'azione poi viene
 fatta, e quel testo entra lo stesso. Se il cancello segnasse «qui è entrata

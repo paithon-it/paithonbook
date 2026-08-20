@@ -63,9 +63,9 @@ acquisite) evitano per costruzione.
 
 ## Perché è difficile: la distanza fra pixel e significato
 
-Fra la griglia di numeri e la parola «gatto» c'è un salto che vale la pena
-misurare prima di provare a colmarlo, perché ogni tecnica delle prossime
-sezioni è la risposta a una voce precisa di questo elenco.
+Fra la griglia di numeri e la parola «gatto» c'è un salto da misurare prima di
+provare a colmarlo, perché ogni tecnica delle prossime sezioni è la risposta a
+una voce precisa di questo elenco.
 
 `````{tab} Elementare
 
@@ -107,8 +107,9 @@ Non è però una garanzia, e vale la pena capire perché. Fra uno strato e
 l'altro la rete rimpicciolisce la griglia: tiene un numero ogni due o ogni
 tre e butta via gli altri. Se l'immagine si sposta anche di un solo pixel, i
 numeri che sopravvivono non sono più gli stessi, e il riassunto che ne esce può
-cambiare. La lente è la stessa dappertutto; la risposta no. È un difetto
-misurato su reti vere, non un sospetto.
+cambiare. La lente è la stessa dappertutto; la risposta no. Basta spostare l'immagine di
+un pixel perché una rete convoluzionale cambi idea, e succede anche a quelle
+grandi.
 
 Le sette voci dell'elenco, quelle, restano tutte da affrontare. E c'è una
 sezione, più avanti in questo stesso capitolo, che è quell'elenco riletto come
@@ -281,7 +282,7 @@ banco di prova naturale per rilevamento e segmentazione. La lezione è netta e
 vale per tutto il deep learning: buoni dati, in grande quantità, contano quanto
 la buona architettura.
 
-## Come è organizzato il capitolo
+## Dalla classificazione alla geometria
 
 Il mattone fondamentale, la **convoluzione**, e le **reti convoluzionali** che
 ne sono fatte le abbiamo costruite nel capitolo precedente, insieme alle

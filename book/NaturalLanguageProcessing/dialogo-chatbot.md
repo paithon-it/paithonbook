@@ -201,7 +201,7 @@ ristorante ci ha mostrato essere una conversazione.
 
 La seconda famiglia nasce nel 1977 allo Xerox PARC, il laboratorio californiano
 in cui in quegli anni si inventava metà dell'informatica che usiamo oggi (il
-scrivania con le finestre sullo schermo, per dire, viene di lì). L'articolo lo
+la scrivania con le finestre sullo schermo, per dire, viene di lì). L'articolo lo
 firmano in sei, e sono sei fra i nomi più noti dell'intelligenza artificiale di
 allora: Bobrow, Kaplan, Kay, Norman, Thompson e Winograd
 {cite}`bobrow1977gus`. Il loro sistema si chiamava GUS, faceva l'agente di
@@ -397,9 +397,9 @@ Decidere è trovare la risposta giusta secondo un criterio che qualcuno ha già
 fissato: qual è la strada più corta, se questo conto torna, quale di questi
 mille documenti contiene una certa parola. È un'operazione di calcolo, e a una
 macchina si delega volentieri. Giudicare è un'altra cosa: stabilire se un
-ragazzo va bocciato, se una persona è pericolosa, se questa cura vale la pena
-per questo paziente. Lì non c'è nessun criterio scritto da nessuna parte: ci
-sono un'esperienza di vita e una responsabilità di cui qualcuno risponde. La
+ragazzo va bocciato, se una persona è pericolosa, se questa cura conviene per
+questo paziente. Lì non c'è nessun criterio scritto da nessuna parte: ci sono
+un'esperienza di vita e una responsabilità di cui qualcuno risponde. La
 domanda giusta, diceva Weizenbaum, non è cosa le macchine *possono* fare, ma
 cosa *dobbiamo* affidare loro.
 
@@ -464,7 +464,7 @@ capitolo intero: i **Transformer** ci aspettano alla prossima pagina.
   parola dopo aver letto milioni di dialoghi.
 - Chi impara a *continuare* i testi non sa ancora *rispondere*: serve una
   seconda scuola, fatta di esempi di buone risposte e di giudizi umani, ed è la
-  storia del capitolo sui Transformer.
+  storia del {doc}`capitolo sui Transformer </Transformers/overview>`.
 - **Il dettato e il tema**: un sistema a moduli si corregge come un dettato (la
   prenotazione è andata a buon fine, sì o no?), un chatbot aperto come un tema,
   e per il tema serve un giudice che legga. Costoso e un po’ soggettivo, ma non
@@ -489,7 +489,7 @@ capitolo intero: i **Transformer** ci aspettano alla prossima pagina.
   l'ossatura degli assistenti vocali), **generativi** (dal seq2seq agli LLM).
 - Un modello di linguaggio impara a *continuare* i testi; a *rispondere* lo
   si insegna col **post-training** (instruction tuning e RLHF
-  {cite}`ouyang2022training`), sviluppato nel capitolo sui Transformer.
+  {cite}`ouyang2022training`), sviluppato nel {doc}`capitolo sui Transformer </Transformers/overview>`.
 - Valutare il dialogo è difficile perché non esiste *la* risposta giusta:
   successo del compito per i sistemi a frame, **giudizi umani** per i chatbot
   aperti. Le metriche di sovrapposizione (BLEU {cite}`papineni2002bleu`) non

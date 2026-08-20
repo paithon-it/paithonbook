@@ -1,6 +1,6 @@
 # Un pixel alla volta
 
-Il libro sa già generare una cosa alla volta. Il capitolo sui Transformer
+Il libro sa già generare una cosa alla volta. Il {doc}`capitolo sui Transformer </Transformers/overview>`
 scrive testo una parola alla volta; quello sull'audio produce suono un token
 alla volta, e prima ancora, con WaveNet, un campione d'onda alla volta. La
 ricetta è sempre la stessa: si mette il dato in fila, si insegna alla rete a
@@ -38,7 +38,7 @@ uno, non un punteggio da normalizzare chissà come.
 
 ## Secondo: una convoluzione che guarda solo indietro
 
-Qui arriva l'ostacolo, e ha una forma precisa. Il capitolo sul deep learning ha
+Qui arriva l'ostacolo, e ha una forma precisa. Il {doc}`capitolo sul deep learning </DeepLearning/overview>` ha
 speso pagine per spiegare perché su un'immagine si usa una convoluzione e non
 uno strato denso: perché una convoluzione guarda un intorno, cioè i vicini di
 casa in **tutte** le direzioni. Ma «tutte le direzioni» qui è esattamente ciò

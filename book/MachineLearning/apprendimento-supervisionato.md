@@ -46,7 +46,7 @@ nessuno intendeva metterci.
 
 Di ogni appartamento teniamo tre numeri in fila (metri quadri, stanze, piano):
 un elenco ordinato di numeri si chiama **vettore**, ed è lo stesso oggetto del
-capitolo di algebra lineare. Lo scriviamo
+{doc}`capitolo di algebra lineare </Matematica/overview>`. Lo scriviamo
 $\mathbf{x}$, in grassetto minuscolo, proprio per ricordare che non è un numero
 solo. A ciascun appartamento associamo poi un'etichetta $y$ (il prezzo). Il
 "supervisore" è proprio quella $y$ nota: qualcuno, in passato, ha già
@@ -54,8 +54,7 @@ registrato la risposta giusta.
 
 ```{admonition} Una colonna è una direzione, un esempio è un punto
 :class: tip
-Vale la pena piantare qui un chiodo che regge mezzo capitolo, perché da qui in
-avanti il libro dà per scontato che ci sia.
+
 
 Prendi una tabella con due sole colonne: metri quadri e prezzo. Puoi disegnarla
 su un foglio a quadretti, con i metri quadri sull'asse orizzontale e il prezzo
@@ -335,8 +334,8 @@ due errori sparisce, si scambiano l'uno con l'altro. La cosa notevole è che
 per farlo non serve riaddestrare niente: il modello resta quello, cambia solo
 dove mettiamo il taglio.
 
-C'è poi una cosa che vale la pena sapere prima di scrivere la prima riga di
-codice, perché è una piccola sorpresa.
+C'è poi una cosa da sapere prima di scrivere la prima riga di codice, perché è
+una piccola sorpresa.
 
 `````{tab} Elementare
 
@@ -401,16 +400,16 @@ Il cerchio disegnato in {numref}`fig-knn` è tutta la scelta: allargandolo si
 interpellano vicini via via più lontani, e la risposta diventa più stabile
 (pochi voti strani non la ribaltano) ma anche più grossolana, perché smette di
 accorgersi delle particolarità di quel pezzetto di quartiere. Con $k=1$ il
-modello ripete pari pari il vicino più prossimo, **rumore** compreso. Vale la
-pena fermarsi su questa
-parola, perché da qui in avanti torna in ogni sezione: il rumore non ha niente
-a che fare con il suono, è tutto ciò che nei dati è accidente invece che
-regola. L'errore di chi ha misurato, la casa venduta a poco perché il
-proprietario aveva fretta, la giornata storta: cose che sono successe davvero e
-che non si ripeteranno. Con $k$ pari al numero di esempi, all'estremo opposto,
-votano tutti e il modello risponde sempre la stessa cosa, cioè la **classe**
-più frequente (d'ora in avanti «classe» è il nome tecnico di quelle che finora
-abbiamo chiamato categorie: spam e non spam sono due classi).
+modello ripete pari pari il vicino più prossimo, **rumore** compreso. Conviene
+fermarsi su questa parola, perché da qui in avanti torna in ogni sezione: il
+rumore non ha niente a che fare con il suono, è tutto ciò che nei dati è
+accidente invece che regola. L'errore di chi ha misurato, la casa venduta a
+poco perché il proprietario aveva fretta, la giornata storta: cose che sono
+successe davvero e che non si ripeteranno. Con $k$ pari al numero di esempi,
+all'estremo opposto, votano tutti e il modello risponde sempre la stessa cosa,
+cioè la **classe** più frequente (d'ora in avanti «classe» è il nome tecnico
+di quelle che finora abbiamo chiamato categorie: spam e non spam sono due
+classi).
 
 `````{tab} Elementare
 

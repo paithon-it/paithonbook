@@ -34,7 +34,7 @@ neurali su grafo** (*Graph Neural Networks*, GNN).
 ## Perché un capitolo dedicato
 
 Fin qui il libro ha lavorato su due forme di dato molto ordinate. Le reti
-convoluzionali del capitolo sul deep learning suppongono una **griglia**: i
+convoluzionali del {doc}`capitolo sul deep learning </DeepLearning/overview>` suppongono una **griglia**: i
 pixel di un'immagine hanno vicini fissi, sopra-sotto-destra-sinistra, sempre lo
 stesso numero. Le reti ricorrenti suppongono una **sequenza**: le parole di una
 frase arrivano in un ordine, una dopo l'altra. Sono ipotesi comode, e per
@@ -174,13 +174,13 @@ Convolutional Network* (GCN).
 
 `````
 
-L'idea non è nuova, e ha una storia in buona parte italiana che vale la pena
-datare bene. La prima forma è di fine anni Novanta, con i lavori di Alessandro
-Sperduti e Antonina Starita (1997) e di Paolo Frasconi, Marco Gori e Sperduti
-(1998); reggevano però soltanto grafi in cui, seguendo le frecce, non si torna
-mai al punto di partenza. Il primo modello che regge un grafo qualunque, giri
-chiusi compresi, è del gruppo di Siena di Franco Scarselli e Marco Gori,
-proposto a metà anni Duemila e pubblicato in forma estesa nel 2009
+L'idea non è nuova, e ha una storia in buona parte italiana da datare bene. La
+prima forma è di fine anni Novanta, con i lavori di Alessandro Sperduti e
+Antonina Starita (1997) e di Paolo Frasconi, Marco Gori e Sperduti (1998);
+reggevano però soltanto grafi in cui, seguendo le frecce, non si torna mai al
+punto di partenza. Il primo modello che regge un grafo qualunque, giri chiusi
+compresi, è del gruppo di Siena di Franco Scarselli e Marco Gori, proposto a
+metà anni Duemila e pubblicato in forma estesa nel 2009
 {cite}`scarselli2009graph`. Centrale, l'idea, lo è diventata solo nell'ultimo
 decennio, quando si è capito come farla girare in fretta anche su grafi enormi
 {cite}`hamilton2020graph`.
@@ -254,10 +254,7 @@ Il capitolo procede dal dato all'architettura.
 
 ## Tre fili che tornano
 
-Vale la pena legare esplicitamente questo capitolo a tre capitoli che il libro
-ha già percorso.
-
-Il primo è la **convoluzione**. Nel capitolo sul deep learning abbiamo visto
+Il primo è la **convoluzione**. Nel {doc}`capitolo sul deep learning </DeepLearning/overview>` abbiamo visto
 un filtro scorrere su una griglia di pixel, combinando ogni pixel con i suoi
 vicini. Il message passing è la stessa idea (combinare un elemento con i suoi
 vicini) liberata dal vincolo della griglia: i «vicini» non sono più i quattro
@@ -265,16 +262,15 @@ pixel adiacenti, ma i nodi collegati da un arco, in numero variabile. In questo
 senso la rete su grafo **generalizza** la rete convoluzionale, la CNN dei
 capitoli sulle immagini, a dati che una griglia non la formano.
 
-Su questo c'è un modo di guardare le cose che vale la pena conoscere, e si
-chiama *geometric deep learning* {cite}`bronstein2021geometric`. Parte da una
-domanda sola: che cosa si può fare a un dato senza cambiarne il significato?
-Un'immagine spostata di un pixel contiene sempre lo stesso gatto; un grafo con
-i nodi rinumerati è sempre lo stesso grafo. Queste trasformazioni che non
-cambiano la risposta si chiamano **simmetrie** del dato, e una volta elencate
-dicono come deve essere fatta la rete che ci lavora sopra. Da quel punto di
-vista reti convoluzionali, reti ricorrenti e reti su grafo non sono tre
-invenzioni separate: sono la stessa ricetta applicata a tre elenchi di
-simmetrie diversi.
+Su questo c'è un modo di guardare le cose da conoscere, e si chiama *geometric
+deep learning* {cite}`bronstein2021geometric`. Parte da una domanda sola: che
+cosa si può fare a un dato senza cambiarne il significato? Un'immagine
+spostata di un pixel contiene sempre lo stesso gatto; un grafo con i nodi
+rinumerati è sempre lo stesso grafo. Queste trasformazioni che non cambiano la
+risposta si chiamano **simmetrie** del dato, e una volta elencate dicono come
+deve essere fatta la rete che ci lavora sopra. Da quel punto di vista reti
+convoluzionali, reti ricorrenti e reti su grafo non sono tre invenzioni
+separate: sono la stessa ricetta applicata a tre elenchi di simmetrie diversi.
 
 Il secondo filo porta ai **sistemi di raccomandazione**. Lì il dato è, per sua
 natura, un grafo: da un lato gli utenti, dall'altro gli oggetti, e un arco

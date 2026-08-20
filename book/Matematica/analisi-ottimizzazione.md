@@ -1,13 +1,11 @@
 # Analisi e ottimizzazione: derivate e discesa del gradiente
 
-Immagina di dover scendere a valle nella nebbia più fitta, senza mappa e senza
-vedere a un metro di distanza. Un'informazione, però, ce l'hai sempre: la
+Nebbia fitta, nessuna mappa, e non si vede a un metro di distanza. Un'informazione, però, ce l'hai sempre: la
 pendenza del terreno sotto i piedi. Ti basta sentire da che parte scende, fare
 un passo in quella direzione, rimisurare e ripetere. Addestrare un modello è
 esattamente questo. La collina da scendere è la funzione che misura *quanto il
 modello sbaglia* (il **costo** o **loss**, che indichiamo con $\mathcal{L}$) e
-lo strumento che sente la pendenza sotto i piedi è la **derivata**. Questa
-sezione è la bussola promessa all'inizio del capitolo.
+lo strumento che sente la pendenza sotto i piedi è la **derivata**. 
 
 ## La derivata: la pendenza istante per istante
 
@@ -219,7 +217,12 @@ $D_\mathbf{u}\mathcal{L} = \nabla\mathcal{L}^\top\mathbf{u}$; per la
 disuguaglianza di Cauchy–Schwarz vale
 $|\nabla\mathcal{L}^\top\mathbf{u}| \le \lVert\nabla\mathcal{L}\rVert$, con
 uguaglianza se e solo se $\mathbf{u}$ è parallelo a $\nabla\mathcal{L}$. Da
-qui segue anche la perpendicolarità alle curve di livello: lungo una curva di
+la perpendicolarità alle curve di livello si ottiene invece con la regola
+della catena. Se $\gamma(t)$ è una curva che resta su una curva di livello,
+allora $\mathcal{L}(\gamma(t))$ è costante, quindi
+$\frac{d}{dt}\mathcal{L}(\gamma(t)) = \nabla\mathcal{L}^\top \gamma'(t) = 0$:
+il gradiente è ortogonale a ogni direzione tangente all'insieme di livello.
+Lungo una curva di
 livello $D_\mathbf{u}\mathcal{L}=0$, cioè
 $\nabla\mathcal{L}^\top\mathbf{u}=0$.
 

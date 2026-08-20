@@ -1,6 +1,7 @@
 # Modelli a verosimiglianza esatta
 
-Immagina di avere fra le mani il generatore di volti del capitolo sulle GAN,
+Immagina di avere fra le mani il generatore di volti del
+{doc}`capitolo sulle GAN </GAN/overview>`,
 quello che sforna a ripetizione persone che non esistono, e di fargli una
 domanda diversa da tutte quelle che gli abbiamo fatto finora. Non «fammi un
 volto», ma: prendi *questa* fotografia, guardala, e dimmi quanto è probabile.
@@ -16,9 +17,9 @@ lavoro, lungo e a parte.
 
 Questo capitolo racconta la terza risposta: la famiglia di modelli che quel
 numero lo restituisce **esatto**, con un solo passaggio della rete, perché è
-costruita apposta. La cosa vale la pena non per pignoleria, ma perché quel
-numero è la stessa cosa di tre mestieri diversi (comprimere, riconoscere ciò
-che è fuori posto, confrontare due modelli senza chiamare un giudice), ed è la
+costruita apposta. La cosa conviene non per pignoleria, ma perché quel numero
+è la stessa cosa di tre mestieri diversi (comprimere, riconoscere ciò che è
+fuori posto, confrontare due modelli senza chiamare un giudice), ed è la
 ragione per cui questa famiglia, che nella corsa alle immagini ha perso, non è
 affatto uscita di scena.
 
@@ -31,25 +32,27 @@ dall'altro capo, a modello ormai fissato: è il valore che quel modello assegna
 a un dato, letto come «quanto mi aspettavo di vedere una cosa così». Alta se il
 dato è di quelli su cui il modello avrebbe scommesso, bassa se lo coglie di
 sorpresa. Il nome è scomodo e il concetto no: è un voto, e a differenza
-dell'energia del capitolo sui modelli a energia è un voto **normalizzato**, cioè sommato su
+dell'energia del {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` è un voto **normalizzato**, cioè sommato su
 tutti i dati possibili fa esattamente uno.
 
 Quel «fa esattamente uno» è tutto il problema, ed è il filo che tiene insieme
 questo capitolo e il prossimo. Sommare su tutti i dati possibili non si può, e
-il capitolo sui modelli a energia mostrerà quanto quel conto sia fuori portata.
+il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` mostrerà quanto quel conto sia fuori portata.
 Le strade sono allora due: rinunciare alla normalizzazione e cavarsela lo
 stesso (è il capitolo sui modelli a energia), oppure **costruire il modello in modo che
 venga normalizzato da sé**, senza mai fare quel conto. È la strada di questo.
 
 ## La mappa
 
-Vale la pena disporre in ordine le famiglie che il libro ha incontrato, perché
-è la prima volta che le mettiamo tutte insieme, e l'asse su cui le ordiniamo è
-uno solo: **che rapporto ha il modello con la probabilità del dato**. È un
-taglio fra i tanti possibili, e va detto: altrove nel libro le stesse cose sono
-ordinate secondo altri assi (le quattro famiglie dell'auto-supervisione, per
-dire, si ordinano secondo che cosa impedisce la risposta vuota, che è tutta
-un'altra domanda). Qui contano solo tre risposte.
+I capitoli generativi del libro sono cinque, e per la prima volta li mettiamo
+tutti insieme: {doc}`modelli latenti </ModelliLatenti/overview>`,
+{doc}`GAN </GAN/overview>`, {doc}`diffusione </ModelliDiffusione/overview>`,
+questo e {doc}`modelli a energia </ModelliEnergia/overview>`. L'asse su cui li
+ordiniamo è uno solo: **che rapporto ha il modello con la probabilità del
+dato**. È un taglio fra i tanti possibili, e altrove nel libro le stesse cose
+sono ordinate secondo altri assi (le quattro famiglie dell'auto-supervisione si
+ordinano secondo che cosa impedisce la risposta vuota, che è tutta un'altra
+domanda). Qui contano solo tre risposte.
 
 **Non ce l'ha affatto.** Il modello sa produrre campioni e nient'altro; la
 probabilità non compare in nessuna delle sue formule. È il caso delle **GAN**:
@@ -61,7 +64,7 @@ no.
 
 **Ce l'ha approssimata.** Il modello ha di che parlare di probabilità, ma quel
 che ottimizza e quel che sa dire è un surrogato. I **VAE**, gli autoencoder
-variazionali del capitolo sui modelli latenti, danno un limite inferiore,
+variazionali del {doc}`capitolo sui modelli latenti </ModelliLatenti/overview>`, danno un limite inferiore,
 l'ELBO: si sa
 che il valore vero sta più in alto, non di quanto. I **modelli a energia**
 danno il voto a meno di una costante che nessuno conosce: bastano per dire
@@ -109,10 +112,13 @@ la ragione strutturale per cui ha perso.
   fare: «questa fotografia, quanto è probabile?». Non risponde male, non ha
   proprio lo sportello. Ha imparato a fabbricare, non a giudicare.
 - I modelli si mettono in fila secondo che cosa sanno dire di quel numero.
-  Alcuni **niente** (le GAN). Alcuni **qualcosa di approssimato**: i modelli
-  del capitolo sulla diffusione e quelli sull'energia sanno dire chi
-  è più plausibile fra due dati, non stampare una percentuale. E alcuni lo
-  sanno **esatto**, ed è la famiglia di questo capitolo.
+  Alcuni **niente** (le GAN). Alcuni **un numero prudente**: i modelli
+  latenti e quelli a diffusione danno un valore che sta di sicuro sotto a
+  quello vero, e per avere quello vero serve un secondo lavoro, lungo e a
+  parte. Alcuni **soltanto un confronto**: i modelli a energia sanno dire
+  quale di due dati è più plausibile, non stampare una percentuale, perché al
+  loro voto manca una costante che nessuno conosce. E alcuni lo sanno
+  **esatto**, ed è la famiglia di questo capitolo.
 - Le strade per saperlo esatto sono due. **A pezzi in fila**: si taglia il
   dato in pezzetti, si mette in fila e si moltiplicano le probabilità, come si
   fa da sempre con il testo. **Per deformazione**: si costruisce una macchina
@@ -151,7 +157,7 @@ la ragione strutturale per cui ha perso.
 
 `````
 
-## Come è organizzato il capitolo
+## Tre modi di scrivere una probabilità
 
 Due meccanismi e un bilancio. Prima gli **autoregressivi sulle immagini**: come
 si impone un ordine a una griglia di pixel, come si costringe una convoluzione

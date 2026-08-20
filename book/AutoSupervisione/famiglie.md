@@ -52,12 +52,12 @@ Anche questa il libro l'ha già fatta, nello stesso capitolo. Qui basta il posto
 nello schema: **il collasso lo impedisce un'asimmetria**, cioè una differenza
 costruttiva fra i due rami.
 
-È anche la famiglia di cui si capisce meno *perché* funzioni, e vale la pena
-dirlo perché è proprio da lì che nasce la terza: **funziona, e la spiegazione è
+È anche la famiglia di cui si capisce meno *perché* funzioni, e conviene dirlo
+perché è proprio da lì che nasce la terza: **funziona, e la spiegazione è
 arrivata dopo**, un pezzo alla volta e su modelli semplificati
-{cite}`tian2021understanding`. Chi non si accontenta di una proprietà che spunta
-fuori da sé mentre il modello si addestra ha una sola strada, ed è scrivere
-l'anti-collasso dentro la formula, dove si può leggere.
+{cite}`tian2021understanding`. Chi non si accontenta di una proprietà che
+spunta fuori da sé mentre il modello si addestra ha una sola strada, ed è
+scrivere l'anti-collasso dentro la formula, dove si può leggere.
 
 ## La terza: vincolare le statistiche
 
@@ -267,7 +267,7 @@ nemmeno una tentazione: descrivere tutte le immagini allo stesso modo rende
 impossibile ricostruirne una in particolare, e il punteggio se ne accorge subito.
 
 È la famiglia **generativa mascherata**, e il libro l'ha percorsa due volte: sul
-testo, nel capitolo sui Transformer, e sulle immagini, nel capitolo sulla
+testo, nel {doc}`capitolo sui Transformer </Transformers/overview>`, e sulle immagini, nel capitolo sulla
 visione. Il posto nello schema: **il collasso lo impedisce il compito stesso**,
 perché ricostruire un dato specifico richiede di averlo descritto in modo
 specifico.
@@ -275,24 +275,24 @@ specifico.
 Il prezzo, che le altre tre non pagano, è che il conto si fa sul dato grezzo:
 ricostruire i pixel vuol dire spendere capacità anche sul granello di polvere e
 sul riflesso, cioè su dettagli che nessuno potrebbe indovinare e che a nessuno
-interessano. È l'obiezione che porterà alla JEPA, nel capitolo sui world model.
+interessano. È l'obiezione che porterà alla JEPA, nel {doc}`capitolo sui world model </WorldModels/overview>`.
 
 ## Una rinuncia annunciata, e chi l'ha firmata
 
 C'è un filo che questo capitolo può finalmente chiudere, e che il libro aveva
 lasciato aperto.
 
-Nel capitolo sui modelli a energia compare l'elenco delle rinunce che Yann LeCun
+Nel {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` compare l'elenco delle rinunce che Yann LeCun
 ripete nelle sue conferenze, e la terza dice: abbandonare i metodi contrastivi
 in favore di quelli **regolarizzati**. Cioè, nel lessico di questa pagina:
 smettere di mostrare al modello dei controesempi da respingere, e costruirlo
 invece in modo che non possa dire di sì a tutto.
 
-I metodi regolarizzati sono la terza famiglia di questa sezione, e vale la pena
-guardare chi firma i due lavori: Barlow Twins e VICReg hanno **LeCun stesso fra
-gli autori**. La rinuncia e la sua attuazione sono la stessa persona, il che non
-la rende né più né meno vera, ma spiega perché quella riga della diapositiva non
-fosse una previsione generica.
+I metodi regolarizzati sono la terza famiglia di questa sezione, e conviene
+guardare chi firma i due lavori: Barlow Twins e VICReg hanno **LeCun stesso
+fra gli autori**. La rinuncia e la sua attuazione sono la stessa persona, il
+che non la rende né più né meno vera, ma spiega perché quella riga della
+diapositiva non fosse una previsione generica.
 
 Se la scommessa sia giusta resta una questione aperta, e il libro non ha motivo
 di chiuderla al posto della ricerca. L'argomento di chi ci scommette è che al
@@ -320,12 +320,12 @@ dentro il compito.
 
 ## Un avvertimento sulle tassonomie
 
-Questa non è **la** classificazione dei metodi auto-supervisionati: è una
-classificazione, e conviene dire quale, perché il libro ne usa anche un'altra e
-un lettore attento se ne accorgerebbe.
-
-Qui abbiamo tagliato secondo **che cosa impedisce la risposta vuota**, e ne sono
-uscite quattro famiglie. Nel capitolo sui world model si taglia invece secondo
+Le famiglie si possono contare in più di un modo, e conviene sapere quale si
+sta usando qui. Questa pagina taglia secondo **che cosa impedisce la risposta
+vuota**, ed è la colonna di mezzo della tabella; ne escono quattro famiglie.
+La colonna di destra, «dove sta la difficoltà», è invece l'asse che usa
+{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
+e non è un caso che coincida. Nel {doc}`capitolo sui world model </WorldModels/overview>` si taglia invece secondo
 **dove avviene la previsione**, cioè se il modello prova a rifare il dato
 (i pixel, i token) oppure il suo riassunto: da lì escono tre famiglie, e la
 terza, quella che predice nello spazio delle rappresentazioni, in questa pagina
@@ -407,7 +407,7 @@ da due lati.
   diagonale non deve tendere a uno in assoluto, ma al massimo che le
   trasformazioni consentono.
 - I metodi regolarizzati sono la **terza rinuncia** dell'elenco di LeCun
-  discusso nel capitolo sui modelli a energia, e Barlow Twins e VICReg hanno
+  discusso nel {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>`, e Barlow Twins e VICReg hanno
   LeCun fra gli autori. La scommessa è che sul video nessuna quantità di
   negativi basti; la questione è aperta.
 ```

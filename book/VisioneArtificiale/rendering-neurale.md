@@ -35,7 +35,7 @@ vuol dire che quel valore è definito in ogni punto dello spazio, come la
 temperatura dentro una stanza. L'idea è tanto semplice da sembrare ingenua, e
 ha riscritto un campo intero in un paio d'anni.
 
-## La scena non è un oggetto, è una funzione
+## Una scena che risponde a domande
 
 `````{tab} Elementare
 
@@ -108,8 +108,7 @@ il meccanismo, e non è una rete: è fisica ottocentesca, e per la precisione la
 legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
 nomi di Beer e Lambert e ha quasi due secoli.
 
-Una parola del titolo conviene tradurla subito, perché è il perno di tutto il
-resto. **Differenziabile** vuol dire che di ogni numero in gioco si può sempre
+**Differenziabile** è la parola su cui poggia tutto il resto. **Differenziabile** vuol dire che di ogni numero in gioco si può sempre
 chiedere: «se questo fosse un pochino più grande, il risultato finale come
 cambierebbe?», e la risposta non è un'opinione, si calcola. È la condizione che
 permette di partire da un pixel venuto male e risalire la catena all'indietro
@@ -466,13 +465,13 @@ stata sostituita, è diventata l'infrastruttura su cui il metodo poggia.
   essendo esplicito, sta un po’ meglio, ed è una delle ragioni della sua
   fortuna.
 
-Su una cosa vale la pena non lasciarsi trascinare: questi metodi **non
-capiscono** la scena. Non sanno che c'è una sedia, non sanno che il tavolo
-continua dietro il vaso, non sanno cosa succederebbe spingendolo. Sono
-un'interpolazione straordinariamente buona fra le fotografie che hanno visto.
-La differenza fra saper rigenerare le apparenze di un mondo e averne un
-modello è precisamente il tema del capitolo sui world model, e questi sistemi
-stanno tutti dalla parte delle apparenze.
+Su una cosa conviene non lasciarsi trascinare: questi metodi **non capiscono**
+la scena. Non sanno che c'è una sedia, non sanno che il tavolo continua dietro
+il vaso, non sanno cosa succederebbe spingendolo. Sono un'interpolazione
+straordinariamente buona fra le fotografie che hanno visto. La differenza fra
+saper rigenerare le apparenze di un mondo e averne un modello è precisamente
+il tema del {doc}`capitolo sui world model </WorldModels/overview>`, e questi sistemi stanno tutti dalla
+parte delle apparenze.
 
 ## In pratica: la composizione lungo un raggio
 
@@ -526,6 +525,8 @@ sempre un pochino, mai esattamente zero. Il conto lo si può rifare. La densità
 del campione è $60$ e il suo spessore $0{,}1$ metri, e il loro prodotto,
 $60 \times 0{,}1 = 6$, dice quante volte la luce viene tagliata. Ogni taglio la
 riduce a $0{,}368$ di quel che era, e sei tagli la riducono a $0{,}368$
+elevato alla sesta, cioè a $0{,}0025$: un quattrocentesimo. Detto altrimenti,
+$0{,}368$
 moltiplicato per sé stesso sei volte, che fa $0{,}0025$: un quattrocentesimo.
 Quello che passa.
 

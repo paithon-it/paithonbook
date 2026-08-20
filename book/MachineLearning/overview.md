@@ -15,9 +15,10 @@ adesso avvicinandolo a quello che vedeva **dopo**. Nessuno gli diceva chi
 avesse ragione: a fare da maestro era la propria stessa valutazione, presa un
 passo più avanti, dove si vede meglio. Ripetuto per tutta la partita e per
 tutte le partite, quel voto diventa un fiuto per le posizioni che portano bene.
-È il terzo dei tre modi di imparare, che questa pagina presenta poco più
-avanti, e la sua forma matura ha un nome che ritroveremo, apprendimento per
-differenze temporali.
+È il terzo dei tre modi di imparare che vedremo fra poco, e la sua forma
+matura si chiama apprendimento per differenze temporali: il nome torna in
+{doc}`Reinforcement Learning </ReinforcementLearning/overview>`, ed è lì che
+si vede per intero.
 
 In quell'articolo compare, tra le prime volte nella storia, l'espressione
 *machine learning*: la capacità di un calcolatore di migliorare a un compito
@@ -25,7 +26,7 @@ senza essere riprogrammato a mano.
 
 È un'idea che ribalta il modo consueto di pensare al software.
 
-Il capitolo di matematica si era chiuso sull'ultimo strato di un modello
+Il {doc}`capitolo di matematica </Matematica/overview>` si era chiuso sull'ultimo strato di un modello
 linguistico, cioè su un punto d'arrivo; con Samuel siamo al punto di partenza,
 e la strada fra i due è il resto del libro.
 
@@ -294,8 +295,7 @@ rivali.
 ```
 
 C'è un confine, e {numref}`fig-tabellari-vs-non-strutturati` lo disegna. È
-quello che la scena di prima ignora ogni volta, e vale la pena capire dove
-passa.
+quello che la scena di prima ignora ogni volta, e conviene capire dove passa.
 
 `````{tab} Elementare
 
@@ -342,8 +342,9 @@ Tre casi in cui il classico resta la scelta giusta:
 L'osservazione è stata messa alla prova sistematicamente: Grinsztajn, Oyallon e
 Varoquaux (NeurIPS 2022) {cite}`grinsztajn2022why` hanno confrontato modelli ad
 albero e reti neurali su decine di dataset tabulari, trovando che i primi
-restano superiori anche a parità di tuning, e con un budget di ricerca degli
-iperparametri molto minore.
+restano superiori anche a parità di ricerca degli iperparametri **sui dati di
+taglia media**, dell'ordine dei diecimila esempi, che è la scala su cui il
+confronto è stato fatto. Fuori da quella scala il confronto resta aperto.
 
 Le ragioni identificate sono strutturali, non contingenti:
 

@@ -18,7 +18,7 @@ scrivi dentro si chiama **contesto**. Larga quanto vuoi, resta finita.
 È il cuore di questo capitolo: con un modello di oggi non si programma
 scrivendo codice, si programma scrivendo il contesto. Il modello non si tocca
 e non si modifica; l'unica cosa su cui hai davvero le mani è il testo che gli
-metti davanti. Nel capitolo sui Transformer questa scoperta ha un nome
+metti davanti. Nel {doc}`capitolo sui Transformer </Transformers/overview>` questa scoperta ha un nome
 inglese, l’*in-context learning*, l'imparare dal contesto: gli descrivi il
 compito lì dentro, magari con due esempi, e lui lo esegue senza che nessuno
 abbia cambiato una virgola dentro di lui. È un modo di comandare un programma
@@ -100,7 +100,7 @@ un umano.
 
 `````
 
-La conseguenza pratica è netta, e la riprenderemo nel capitolo su MLOps: **il
+La conseguenza pratica è netta, e la riprenderemo nel {doc}`capitolo su MLOps </MLOps/overview>`: **il
 prompt è codice**. Quella riga d'istruzione che orienta il modello è fragile
 (una parola diversa cambia la risposta) e quindi va trattata come si tratta il
 software. Se ne tiene la **storia**, cioè si conserva ogni versione con la data
@@ -124,7 +124,7 @@ dire «quanti token».
 
 Il prezzo si paga in tre valute, e le conosciamo già. In **memoria**, perché
 il segnalibro che il modello si tiene per non rileggere ogni volta da capo (nel
-capitolo sui Transformer lo chiamavamo **KV cache**) cresce con la lunghezza
+{doc}`capitolo sui Transformer </Transformers/overview>` lo chiamavamo **KV cache**) cresce con la lunghezza
 del contesto. In **secondi di attesa**, perché più testo c'è, più tempo passa
 prima che compaia la risposta. E in **denaro**, perché un modello si paga a
 consumo, un tanto per ogni token che entra e per ogni token che esce: quel
@@ -255,7 +255,7 @@ ricordare è un token in meno per ragionare.
 
 `````
 
-Vale la pena insistere su dove sia la difficoltà, perché non è dove sembra.
+Conviene insistere su dove sia la difficoltà, perché non è dove sembra.
 Ricordare è facile: uno schedario si allarga quanto si vuole, e scriverci
 dentro non costa quasi niente. La difficoltà è a ogni singolo passo, quando
 bisogna decidere che cosa di tutto quel materiale merita di occupare la
@@ -311,9 +311,10 @@ Il secondo: i passaggi scelti vengono **riordinati**, e non semplicemente
 messi in ordine crescente di rilevanza. La curva di Liu e colleghi è una **U**,
 si legge bene all'inizio *e* alla fine, quindi disporre per rilevanza crescente
 ottimizzerebbe un estremo solo e regalerebbe l'altro, quello di apertura, al
-pezzo peggiore. La disposizione che segue la curva è a **V**: il più rilevante
-in fondo, appena sopra la domanda, il secondo in testa, e i meno rilevanti
-sepolti nel mezzo, dove costano meno perderli. Nelle librerie di RAG questo
+pezzo peggiore. La disposizione che segue la curva è a **V**: i due passaggi migliori ai due
+estremi, e i meno rilevanti sepolti nel mezzo, dove costano meno perderli.
+Quale dei due estremi meriti il migliore la curva non lo dice, e qui il più
+rilevante va in fondo, a ridosso della domanda, mentre il secondo va in testa. Nelle librerie di RAG questo
 riordino porta il nome di *long-context reorder*.
 
 Un'ultima nota di rigore, che non cambia il risultato ma cambia la regola.
@@ -476,7 +477,7 @@ forma nuova: la finestra è un budget, e ogni cosa che ci metti (istruzioni,
 esempi, memoria recuperata, o il pensiero stesso del modello) la paghi, e va
 messa dove rende di più.
 
-Sei punti per rileggere la sezione.
+
 
 `````{tab} Elementare
 

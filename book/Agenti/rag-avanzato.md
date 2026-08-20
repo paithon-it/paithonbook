@@ -8,7 +8,7 @@ leggendo invece che ricordando. Quei pezzi di testo li chiameremo
 frase o un paragrafo. Chi va a cercarli è il **cercatore** (in inglese
 *retriever*), chi poi scrive la risposta è il **generatore**.
 
-«Su cosa salta il gatto nero?». Nel capitolo sui Transformer, nella sezione
+«Su cosa salta il gatto nero?». Nel {doc}`capitolo sui Transformer </Transformers/overview>`, nella sezione
 «Cercare per rispondere», il nostro cercatore in miniatura aveva risposto quasi
 bene: al primo posto il passaggio giusto, «Il gatto nero salta sul muro del
 giardino». Ma al secondo posto si era intrufolato un impostore, «Il gatto dorme
@@ -31,12 +31,12 @@ raccolta di domande vere rivolte a un motore di ricerca
 {cite}`lewis2020retrieval`. Quel po’ che resta viene dalla memoria del
 modello, cioè da quello che gli era rimasto impresso in addestramento.
 
-Il numero si legge in due modi, e vale la pena tenerli tutti e due. In un
-senso è tanto: un sistema che sappia soltanto *ritagliare* la risposta dai
-documenti che ha davanti, senza poterla ricordare, in quei casi prende zero per
-forza. In un altro senso è pochissimo: nove volte su dieci, quando la ricerca
-manca il bersaglio, la risposta è persa. È abbastanza poco da fare del recupero
-il posto giusto dove intervenire.
+Il numero si legge in due modi, e conviene tenerli tutti e due. In un senso è
+tanto: un sistema che sappia soltanto *ritagliare* la risposta dai documenti
+che ha davanti, senza poterla ricordare, in quei casi prende zero per forza.
+In un altro senso è pochissimo: nove volte su dieci, quando la ricerca manca
+il bersaglio, la risposta è persa. È abbastanza poco da fare del recupero il
+posto giusto dove intervenire.
 
 La RAG di base, così come l'abbiamo costruita, faceva tre gesti: trasformava
 domanda e passaggi in punti su una mappa del significato, prendeva i pochi
@@ -160,8 +160,8 @@ mirate: *addestramento del cane*, *comportamento del cucciolo*, *comandi di
 base*. Con tre reti gettate in punti diversi, la probabilità di tirare su il
 libro giusto sale.
 
-C'è un trucco ancora più sorprendente, che a prima vista sembra assurdo, e si
-chiama **HyDE**, che sta per «documenti di risposta immaginati». Invece di
+C'è un trucco ancora più sorprendente, che a prima vista sembra assurdo, e si chiama **HyDE**, dalle iniziali inglesi di «documenti di risposta
+immaginati, messi sulla mappa». Invece di
 cercare con la *domanda*, cerchi con una **risposta inventata**. Chiedi al modello: «Scrivi tu, di getto, come *sarebbe* la
 risposta ideale» (anche se sbaglia qualche dettaglio) e poi cerchi i documenti
 veri che somigliano a quella risposta finta. Perché funziona? Perché una
@@ -291,9 +291,9 @@ il vicino esatto. È lo stesso mestiere del quartiere, dell'isolato e del
 numero civico.
 ```
 
-La seconda leva agisce a valle del recupero, e poggia su una distinzione che
-vale la pena rifare per intero, perché è il cuore di tutta la sezione. Ci sono
-due modi di far confrontare una domanda con un passaggio.
+La seconda leva agisce a valle del recupero, e poggia su una distinzione da
+rifare per intero, perché è il cuore di tutta la sezione. Ci sono due modi di
+far confrontare una domanda con un passaggio.
 
 Il primo è quello che abbiamo usato finora: si riassume il passaggio in un
 punto sulla mappa, si riassume la domanda in un altro punto, e si guarda
@@ -618,15 +618,15 @@ insieme.
 
 `````
 
-L'onestà, qui, è d'obbligo, ed è la stessa che abbiamo tenuto per tutto il
-libro. Ogni giro in più (una riscrittura, un riordino, una seconda tornata di
+Ogni giro in più (una riscrittura, un riordino, una seconda tornata di
 ricerca, una pausa in cui il modello si chiede se quello che ha trovato serve
 davvero) vuol dire far lavorare il modello un'altra volta. Ogni volta si paga:
 il modello sta da qualche parte su una macchina che consuma, e chi lo usa lo
 paga a consumo, un tanto per ogni pezzetto di testo che entra e che esce. Due
 voci, quindi, e crescono insieme: **latenza** e **denaro**. Un RAG agentico che
-fa cinque giri è cinque volte più lento e più caro di un recupero secco, e non
-sempre di qualità cinque volte migliore. La domanda ingegneristica non è
+fa cinque giri non costa cinque volte un recupero secco, ma di più, perché a
+ogni giro rientra nel conto anche tutto quello che i giri prima hanno già
+raccolto; e non è detto che la qualità cresca nella stessa misura. La domanda ingegneristica non è
 «quanti giri posso fare», ma «qual è il numero minimo di giri che risolve
 *questa* classe di domande»: sulle domande semplici, spesso, la risposta è
 zero.
@@ -704,7 +704,7 @@ delle fonti, né sull'onestà con cui sono state riassunte. La RAG avanzata alza
 il tetto del recupero e ripulisce la rosa dei candidati, ma non solleva mai
 chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
 
-Sei punti per ripercorrere la sezione più lunga del capitolo.
+
 
 `````{tab} Elementare
 
@@ -781,7 +781,7 @@ Sei punti per ripercorrere la sezione più lunga del capitolo.
   passaggi?), pertinenza della risposta, precision/recall del contesto.
   **RAGAS** {cite}`es2024ragas` stima le prime tre senza risposte di
   riferimento, con un LLM-giudice (la recall del contesto vuole una risposta
-  annotata) e con i bias dell’**LLM-as-a-judge** del capitolo su MLOps.
+  annotata) e con i bias dell’**LLM-as-a-judge** del {doc}`capitolo su MLOps </MLOps/overview>`.
 - Fedeltà **non è** verità: una risposta fedele a un documento sbagliato è
   sbagliata, e una citazione corretta non salva una risposta che travisa la
   fonte.

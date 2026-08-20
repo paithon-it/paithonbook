@@ -154,14 +154,13 @@ scommessa come le altre: il modello, arrivato a «muro», deve poter decidere se
 la frase finisce lì o continua, e senza un simbolo per «finisce lì» non
 saprebbe come dirlo.
 
-I conti che seguono si scrivono in una notazione che vale la pena decifrare una
-volta per tutte, perché ricorre in tutto il libro:
-$P(\text{gatto} \mid \text{il})$ si legge «la probabilità di
-*gatto*, **sapendo che** prima c'era *il*». La barretta verticale vuol dire
-«dato che», e separa la cosa su cui si scommette (a sinistra) da quello che si
-sa già (a destra). Tutto qui: è una frazione con un nome, e la frazione è
-proprio la pagina del quaderno, «quante volte questa parola ha seguito
-quell'altra, diviso quante volte quell'altra è comparsa».
+I conti che seguono si scrivono in una notazione da decifrare una volta per
+tutte, perché ricorre in tutto il libro: $P(\text{gatto} \mid \text{il})$ si
+legge «la probabilità di *gatto*, **sapendo che** prima c'era *il*». La
+barretta verticale vuol dire «dato che», e separa la cosa su cui si scommette
+(a sinistra) da quello che si sa già (a destra). Tutto qui: è una frazione con
+un nome, e la frazione è proprio la pagina del quaderno, «quante volte questa
+parola ha seguito quell'altra, diviso quante volte quell'altra è comparsa».
 
 - ogni frase comincia con «il»: $P(\text{il} \mid \langle s \rangle) = 3/3 = 1$;
 - «il» compare 4 volte, seguito 3 volte da «gatto» e 1 da «cane»:
@@ -553,7 +552,7 @@ cambia solo quanta memoria porta con sé lo scommettitore. Portata all'estremo
 Tutto ciò che serve è contare. Il codice che segue costruisce il bigramma sul
 corpus di tre frasi e non usa niente che non sia già dentro Python.
 
-Per chi il codice lo scavalca, ecco cosa fanno i quattro pezzi, nell'ordine. Il
+Il programma fa quattro cose, nell'ordine. Il
 primo è **il quaderno**: scorre le tre frasi coppia per coppia e tiene il conto
 di quante volte ogni parola ne segue un'altra. Il secondo sono **le due
 frazioni**, quella grezza e quella con il regalo di Laplace, che sono le stesse
@@ -643,24 +642,24 @@ posto di Python, sono i conti che Markov fece nel 1913.
 
 Sarebbe facile chiudere con «poi arrivarono le reti neurali e gli n-gram
 finirono in soffitta». Non è andata così, e l'onestà storica impone di dirlo.
-Contare è imbattibilmente *economico*, e vale la pena dire rispetto a che cosa.
+Contare è imbattibilmente *economico*, e conviene dire rispetto a che cosa.
 Addestrare una rete neurale vuol dire ripassare sugli stessi dati decine di
-volte, aggiustando ogni volta milioni di numeri con quel segnale di ritorno che
-si chiama gradiente, e per farlo in tempi umani serve una scheda grafica, una
-GPU. Costruire un n-gram vuol dire leggere il corpus **una volta sola** e
+volte, aggiustando ogni volta milioni di numeri con quel segnale di ritorno
+che si chiama gradiente, e per farlo in tempi umani serve una scheda grafica,
+una GPU. Costruire un n-gram vuol dire leggere il corpus **una volta sola** e
 riempire un quaderno; usarlo vuol dire aprire il quaderno alla pagina giusta.
-Nessuna scheda grafica, nessun gradiente, nessuna attesa.
-Nel 2006 Google distribuì i conteggi fino ai 5-grammi estratti da circa mille
-miliardi di parole di web: modelli giganteschi costruiti, in fondo, con la
-matita di Markov. Per anni la barra dei suggerimenti delle tastiere dei
-telefoni è stata proprio questo (un n-gram con smoothing, piccolo e veloce
-abbastanza da girare sul dispositivo) e solo di recente le reti neurali
-compatte l'hanno affiancata o sostituita. E nel riconoscimento vocale, come
-vedremo nel capitolo sullo Speech Recognition, un modello di linguaggio si
-fonde ancora col modello acustico per scegliere fra trascrizioni identiche
-all'orecchio («l'ago» o «lago») e per anni quel correttore silenzioso è stato
-un n-gram alla Kneser–Ney. Quando serve una probabilità *subito*, su hardware
-qualunque, contare resta un'ottima idea.
+Nessuna scheda grafica, nessun gradiente, nessuna attesa. Nel 2006 Google
+distribuì i conteggi fino ai 5-grammi estratti da circa mille miliardi di
+parole di web: modelli giganteschi costruiti, in fondo, con la matita di
+Markov. Per anni la barra dei suggerimenti delle tastiere dei telefoni è stata
+proprio questo (un n-gram con smoothing, piccolo e veloce abbastanza da girare
+sul dispositivo) e solo di recente le reti neurali compatte l'hanno affiancata
+o sostituita. E nel riconoscimento vocale, come vedremo nel capitolo sullo
+Speech Recognition, un modello di linguaggio si fonde ancora col modello
+acustico per scegliere fra trascrizioni identiche all'orecchio («l'ago» o
+«lago») e per anni quel correttore silenzioso è stato un n-gram alla
+Kneser–Ney. Quando serve una probabilità *subito*, su hardware qualunque,
+contare resta un'ottima idea.
 
 Ma il soffitto degli n-gram è quello che abbiamo toccato con mano: memoria
 corta per costruzione, e nessuna nozione del fatto che «gatto» e «micio» si

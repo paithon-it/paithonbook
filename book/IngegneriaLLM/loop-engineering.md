@@ -2,18 +2,18 @@
 
 Nei primi anni di questa tecnologia la domanda, in ogni squadra che provava a
 costruire qualcosa con un LLM, è stata sempre la stessa: qual è il prompt
-giusto? Si limava una
-frase, si aggiungeva un esempio, si spostava una parola, come chi cerca la
-combinazione di una cassaforte. Poi, tra chi con questi strumenti costruisce
-davvero, la domanda ha cominciato a spostarsi. Nel 2026 Boris Cherny, tra gli
-autori di Claude Code (un assistente di programmazione che non ha finestre né
-bottoni: gli si scrive e risponde, come si faceva con i computer prima che
-arrivassero i mouse), l'ha riassunta in una battuta: non fa quasi più prompt
-al modello, scrive **loop** (giri, cicli) che quei prompt li fanno per lui
-{cite}`cherny2026loops`. Non è una provocazione: è uno spostamento di leva. La
-cosa su cui vale la pena lavorare non è più il singolo messaggio, ma il
-**sistema di controllo** che attorno a quel messaggio decide quando parte,
-cosa gli si mette davanti, come si verifica il risultato e cosa succede dopo.
+giusto? Si limava una frase, si aggiungeva un esempio, si spostava una parola,
+come chi cerca la combinazione di una cassaforte. Poi, tra chi con questi
+strumenti costruisce davvero, la domanda ha cominciato a spostarsi. Nel 2026
+Boris Cherny, tra gli autori di Claude Code (un assistente di programmazione
+che non ha finestre né bottoni: gli si scrive e risponde, come si faceva con i
+computer prima che arrivassero i mouse), l'ha riassunta in una battuta: non fa
+quasi più prompt al modello, scrive **loop** (giri, cicli) che quei prompt li
+fanno per lui {cite}`cherny2026loops`. Non è una provocazione: è uno
+spostamento di leva. La cosa su cui conviene lavorare non è più il singolo
+messaggio, ma il **sistema di controllo** che attorno a quel messaggio decide
+quando parte, cosa gli si mette davanti, come si verifica il risultato e cosa
+succede dopo.
 
 Questa sezione sale così al terzo e più esterno dei cerchi da cui è partito il
 capitolo: dopo il **prompt** (il singolo messaggio) e il **contesto** (la
@@ -28,12 +28,13 @@ va costruito da
 chi ha intenzione di **restare l'ingegnere**, cioè di continuare a capire e a
 rispondere di quello che esce, non da chi vuole premere «vai» e andarsene.
 
-Una nota, perché qui le fonti sono diverse da quelle delle due sezioni
-precedenti: il vocabolario del loop engineering lo hanno scritto quasi tutto
-dei praticanti, gente che questi cicli li costruisce, non gruppi di ricerca
-che li misurano. Di quel racconto teniamo il **meccanismo**, che ha buone
-probabilità di durare più dei nomi; e dove un'affermazione è di mestiere e non
-misurata, lo diciamo.
+Il vocabolario del loop engineering lo hanno scritto quasi tutto dei
+praticanti, gente che questi cicli li costruisce, non gruppi di ricerca che li
+misurano; e lo hanno scritto **da pochi mesi**, tanto che nessuno di questi
+nomi ha ancora avuto il tempo di essere smentito o confermato. Di quel
+racconto qui interessa il **meccanismo**, che ha buone probabilità di durare
+più dei nomi: gli attrezzi si leggano come esempi di oggi, non come parti
+della materia.
 
 ## Il ciclo come unità di progetto
 
@@ -128,7 +129,7 @@ consegnato, chi non lo supera torna indietro con il motivo del rifiuto.
 ## I componenti di un loop
 
 Un capobottega non è un'idea astratta: è fatto di attrezzi concreti. Cobus
-Greyling {cite}`greyling2026loop` ne ha raccolto il repertorio, e vale la pena
+Greyling {cite}`greyling2026loop` ne ha raccolto il repertorio, e conviene
 scorrerlo, perché ogni voce risponde a un problema pratico che il ciclo
 esterno pone. Gli esempi vengono quasi tutti dal mondo di chi programma, che
 di questi loop è il primo cantiere; e di ogni voce diciamo prima a che cosa
@@ -302,11 +303,15 @@ raccolta di affermazioni da confrontare con una fonte per dire se reggono, è
 ReAct a passare davanti: 60,9 contro 56,3. Sono scarti piccoli, due punti nel
 primo caso e quasi cinque nel secondo, e la loro piccolezza è il risultato
 interessante: nessuno dei due metodi vince in assoluto, e quale sia il
-migliore dipende dal compito. Il risultato più alto, in tutti e due i casi,
-arriva infatti dai due usati in coppia, uno che parte e l'altro che subentra
-quando il primo si arena, con la catena di pensiero nella sua versione a più
-tentativi e voto di maggioranza vista nella sezione sul prompt: 35,1 sulle
-domande a più passaggi e 64,6 sulle affermazioni da verificare.
+migliore dipende dal compito. Il risultato più alto, in tutti e due i casi, arriva dai due usati in coppia,
+uno che parte e l'altro che subentra quando il primo si arena, con la catena
+di pensiero nella sua versione a più tentativi e voto di maggioranza vista
+nella sezione sul prompt; solo che a partire non è sempre lo stesso. Sulle
+domande a più passaggi conviene mandare avanti ReAct e chiamare in soccorso la
+catena di pensiero, e si arriva a 35,1; sulle affermazioni da verificare
+conviene l'ordine inverso, e si arriva a 64,6. Sono misure di un modello del
+2022, e come tutte le cifre di quel tipo invecchiano: quello che non invecchia
+è che l'ordine giusto lo detta il compito.
 
 Il secondo lavoro si chiama Reflexion {cite}`shinn2023reflexion`, e aggiunge
 il tassello mancante: dopo un fallimento l'agente **riflette a parole** sul

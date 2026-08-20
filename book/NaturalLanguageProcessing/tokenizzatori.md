@@ -29,7 +29,7 @@ caratteri. Le parole sconosciute spariscono per costruzione, perché ogni testo
 attorno ai cinque o sei caratteri, quindi contare a lettere invece che a parole
 allunga il testo di cinque volte. E la lunghezza si paga cara. Il motivo è un
 meccanismo che incontreremo fra qualche sezione, con la traduzione automatica,
-e per esteso nel capitolo sui Transformer: l’**attenzione**, cioè il modo in
+e per esteso nel {doc}`capitolo sui Transformer </Transformers/overview>`: l’**attenzione**, cioè il modo in
 cui un modello moderno guarda tutte le parole della frase insieme e decide
 quali contano davvero. Per farlo confronta ogni posizione con ogni altra, e
 quel conto cresce con il **quadrato** della lunghezza: raddoppiare le posizioni
@@ -49,7 +49,7 @@ spiega come si costruisce, concretamente, quell'elenco di pezzi.
 
 ## Il dilemma del vocabolario
 
-Prima di guardare gli algoritmi vale la pena capire che cosa stiamo cercando di
+Prima di guardare gli algoritmi conviene capire che cosa stiamo cercando di
 rendere migliore, perché la scelta della taglia del vocabolario non è un
 dettaglio: è un baratto fra due costi che tirano in direzioni opposte.
 
@@ -371,15 +371,15 @@ lettere che ci stanno dentro sono sette in tutto, `a b e o r s t`. Un
 tokenizzatore vero, prima di consegnare un pezzo, controlla di averlo nel
 vocabolario; e siccome quelle cinque lettere nel vocabolario non ci sono, al
 posto loro metterebbe cinque `<UNK>`, uno per ciascuna. Sette token, cinque dei
-quali buchi. Il programma della prossima pagina non lo fa soltanto perché
+quali buchi. Il programma qui sotto non lo fa, perché
 riapplica le fusioni alla cieca, senza mai chiedersi se i simboli rimasti siano
 noti: è un programma didattico, non un tokenizzatore di produzione.
 
-Il punto vero è quello, però, e vale la pena metterlo per iscritto.
-L'affermazione «con le sotto-parole non resta fuori niente» non è una proprietà
+Il punto vero è quello, però, e conviene metterlo per iscritto. L'affermazione
+«con le sotto-parole non resta fuori niente» non è una proprietà
 dell'algoritmo: è una **scommessa sull'alfabeto di partenza**. Si vince finché
-il corpus di addestramento conteneva ogni carattere che potrà mai arrivare. Con
-cinque parole la scommessa è persa in partenza; con un corpus vero è quasi
+il corpus di addestramento conteneva ogni carattere che potrà mai arrivare.
+Con cinque parole la scommessa è persa in partenza; con un corpus vero è quasi
 sempre vinta, e a tradirla bastano un ideogramma raro o un'emoji uscita l'anno
 scorso. È il buco che il livello dei byte, fra qualche pagina, chiuderà per
 costruzione e per sempre.
@@ -698,7 +698,7 @@ tokenizzatore.
 
 ## Quattro conseguenze che incontrerete davvero
 
-Fin qui la meccanica. Ma la ragione per cui vale la pena conoscerla è che il
+Fin qui la meccanica. Ma la ragione per cui conviene conoscerla è che il
 tokenizzatore, che sembra un dettaglio della preparazione dei dati, produce
 quattro effetti visibili a chiunque usi un modello di linguaggio, e nessuno
 dei quattro è una curiosità: sono tutti conseguenze dirette dell'algoritmo
@@ -755,8 +755,9 @@ E in che valuta si paga? In tre.
   programma che, dato un testo, scommette su come continua: è il tema di una
   sezione più avanti) fanno pagare un tanto a token. La stessa richiesta
   scritta in italiano costa dunque più della stessa richiesta in inglese, e di
-  quanto dipende dal tokenizzatore: nella frase della figura sono otto token
-  contro sei, cioè un terzo in più.
+  quanto dipende dal tokenizzatore: nella frase della figura, spezzata dal tokenizzatore di GPT-2, sono dodici
+  token contro sei, cioè il doppio (con tokenizzatori più recenti il rapporto
+  scende, ma il verso non cambia mai).
 - **In posti occupati.** Un modello può tenere davanti agli occhi solo una
   certa quantità di testo per volta, misurata anch'essa in token: è la sua
   **finestra di contesto**. Un documento che in inglese ci sta, in italiano può
@@ -812,15 +813,15 @@ fatta all'inizio e con calma.
 
 ## Un'idea che vale oltre il testo
 
-Vale la pena chiudere allargando lo sguardo. Tutto quello che avete letto
-serve a una cosa sola: costruire un **alfabeto discreto** su cui possa lavorare
-un modello che scrive un pezzo per volta, guardando quelli che ha già scritto
-(è ciò che si intende con *autoregressivo*). Discreto vuol dire fatto di pezzi
-separati e contabili, come le lettere di un alfabeto e non come le sfumature di
-un colore: un insieme finito di simboli in cui qualunque testo in ingresso si
-possa scrivere e da cui qualunque testo in uscita si possa ricomporre. Il testo
-quell'alfabeto ce l'aveva già mezzo pronto (i caratteri) e il lavoro è stato
-scegliere i raggruppamenti giusti.
+Conviene chiudere allargando lo sguardo. Tutto quello che avete letto serve a
+una cosa sola: costruire un **alfabeto discreto** su cui possa lavorare un
+modello che scrive un pezzo per volta, guardando quelli che ha già scritto (è
+ciò che si intende con *autoregressivo*). Discreto vuol dire fatto di pezzi
+separati e contabili, come le lettere di un alfabeto e non come le sfumature
+di un colore: un insieme finito di simboli in cui qualunque testo in ingresso
+si possa scrivere e da cui qualunque testo in uscita si possa ricomporre. Il
+testo quell'alfabeto ce l'aveva già mezzo pronto (i caratteri) e il lavoro è
+stato scegliere i raggruppamenti giusti.
 
 Altri segnali quell'alfabeto non ce l'hanno affatto. L'audio è un'onda
 continua, e per darlo in pasto allo stesso tipo di modello bisogna prima

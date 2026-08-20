@@ -1,4 +1,4 @@
-# I dati come cittadini di prima classe
+# I dati contano quanto il programma
 
 Apri il registro delle modifiche di un sistema che riconosce le frodi con la
 carta di credito, mentre è in funzione davanti a clienti veri. Il registro è
@@ -100,7 +100,7 @@ dell'ultimo mese», «quante volte ha comprato di notte»); e solo alla fine si
 **addestra**. È la *pipeline* annunciata nella pagina d'apertura: il dato entra
 da un capo, attraversa una stazione dopo l'altra e ne esce pronto. Ognuno di
 questi passaggi si scrive con gli attrezzi per maneggiare tabelle già visti nel
-capitolo su Python.
+{doc}`capitolo su Python </Python/overview>`.
 
 Il salto di qualità, però, non è tecnico: è organizzativo, e chiede due cose
 alla catena. Che sia **riproducibile**, cioè che rilanciandola sugli stessi
@@ -373,9 +373,8 @@ appena arrivato, ed è lì che il pavimento cede. In addestramento «alto» vole
 dire «più della media di tutti»; se la media la si rifà sul gruppetto appena
 arrivato, e quel gruppetto è fatto di soli importi alti, nessuno di loro è più
 sopra la media: sono tutti normali. Il modello smette di insospettirsi proprio
-del lotto più sospetto che gli sia mai capitato. Il codice qui sotto mette in
-scena le due versioni, la corretta e la bacata, e il paragrafo che lo segue
-racconta com'è andata a finire.
+del lotto più sospetto che gli sia mai capitato. Sotto ci sono le due versioni affiancate, la corretta e la bacata: la
+differenza è una riga sola.
 
 `````
 

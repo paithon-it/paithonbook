@@ -24,11 +24,11 @@ buone per ottenerne altre scattate come se l'auto fosse un po’ fuori centro
 lavoro in più non fosse un capriccio, ma la sola cosa che tenesse in piedi il
 furgone.
 
-L'imitazione è, in un certo senso, l'idea più ovvia di tutte, e per questo vale
-la pena capire bene perché non basta. Nei capitoli precedenti l'agente impara
+L'imitazione è, in un certo senso, l'idea più ovvia di tutte, e per questo
+conviene capire bene perché non basta. Nei capitoli precedenti l'agente impara
 da una ricompensa, e la ricompensa è la parte difficile: scriverla per una
-guida sicura o per una risposta utile è un problema aperto. Se però qualcuno sa
-già fare il compito, quel problema si può aggirare. Non gli si chiede di
+guida sicura o per una risposta utile è un problema aperto. Se però qualcuno
+sa già fare il compito, quel problema si può aggirare. Non gli si chiede di
 scrivere una funzione di ricompensa: gli si chiede di **fare vedere**.
 
 ## Clonare un comportamento è apprendimento supervisionato
@@ -170,7 +170,8 @@ fattore $T$ in più rispetto all'ideale $O(\epsilon T)$ è esattamente la
 composizione degli errori. Su orizzonti lunghi la differenza fra $T$ e $T^2$ è
 tutta la differenza fra un sistema che funziona e uno che no.
 
-**DAgger** (*Dataset Aggregation*) rimuove il termine in più con un'idea
+**DAgger** (*Dataset Aggregation*), proposto da Ross, Gordon e Bagnell nel
+2011 {cite}`ross2011reduction`, rimuove il termine in più con un'idea
 semplice: iterare. Si addestra una politica sulle dimostrazioni, la si
 **esegue** per raccogliere gli stati che *lei* visita, si chiede all'esperto
 l'azione corretta **su quegli stati**, si aggiunge tutto al dataset e si
@@ -394,13 +395,13 @@ cambiati **quali situazioni stanno nel mucchio degli esempi**.
 
 ### Che cosa questo esperimento dimostra, e che cosa no
 
-Le ultime righe del codice servono a non prendere lucciole per lanterne, e sono
-la parte più importante da leggere.
+Un numero solo, però, non basta: quel valore esce da una ripetizione sola, e
+la ripetizione dipende dal sorteggio interno.
 
 Primo, quel $74{,}6$ è **un seme**, cioè una singola ripetizione, quella che
 esce dal numero da cui è partito il sorteggio interno. Rifacendo tutto da capo
 con otto semi diversi, lo stato finale della clonazione dopo la folata ha
-mediana $322$ e va da $77$ a $472$: il numero del racconto sta perfino **sotto**
+mediana $322$ e va da $76$ a $473$: il numero del racconto sta perfino **sotto**
 il più mite degli otto, e la mediana è più di quattro volte più grande. La
 conclusione qualitativa non cambia di una virgola (la clonazione finisce fuori
 strada in tutti e otto i casi, finendo cento o mille volte più lontano

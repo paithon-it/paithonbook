@@ -153,7 +153,7 @@ tessere e le tratta come parole. Da lì in poi è lo stesso encoder del testo.
 ```
 
 Il passaggio mostrato in {numref}`fig-vit` è meno innocente di quanto sembri.
-Le reti per le immagini del capitolo sul deep learning (le *convoluzioni*, i
+Le reti per le immagini del {doc}`capitolo sul deep learning </DeepLearning/overview>` (le *convoluzioni*, i
 filtri che guardano un pezzetto di foto alla volta) hanno una regola scritta
 dentro: i puntini vicini fra loro sono imparentati, e vanno guardati insieme.
 Tagliare la foto in tessere e metterle in fila butta via quella regola, perché

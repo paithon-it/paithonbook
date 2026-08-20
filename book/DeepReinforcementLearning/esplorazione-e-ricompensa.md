@@ -30,7 +30,7 @@ inciamparci si fa a mente: se a ogni passo ci sono otto mosse possibili e una
 sola è quella giusta, azzeccarne dieci di fila vuol dire $8^{10}$, cioè una
 volta su un miliardo abbondante.
 
-Nel capitolo sul reinforcement learning abbiamo introdotto il dilemma
+Nel {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>` abbiamo introdotto il dilemma
 esplorazione–sfruttamento e la strategia detta
 $\varepsilon$-greedy: agire quasi sempre secondo la stima migliore, ma ogni
 tanto, con una piccola probabilità, scegliere a caso. Quella probabilità è la
@@ -80,8 +80,8 @@ ricompensa dell'ambiente un **bonus** che premia la novità.
 L'idea più intuitiva è anche la più vecchia, e nasce ai tempi in cui i giudizi
 stavano in una tabella {cite}`sutton2018reinforcement`. Se in una certa
 situazione l'agente si è trovato poche volte, di quella situazione sa poco, e
-allora vale la pena andarci. Basta tenere il conto di quante volte ci è passato
-e aggiungere alla ricompensa un premietto che scende man mano che quel conto
+allora conviene andarci. Basta tenere il conto di quante volte ci è passato e
+aggiungere alla ricompensa un premietto che scende man mano che quel conto
 sale.
 
 `````{tab} Elementare
@@ -304,12 +304,13 @@ optimizer.step()
 
 ## Un modo diverso di guardare la curiosità
 
-Prima di cambiare argomento vale la pena fermarsi su una cosa che, messa così,
-sembra ovvia e non lo è. In tutto quello che abbiamo visto finora la curiosità è
-un **premio in più**: c'era una ricompensa, ci siamo accorti che non bastava, e
-gliene abbiamo affiancata un'altra, fabbricata da noi. È una toppa che funziona
-benissimo, ma resta una toppa, e la frase di prima («non gli si è insegnata la
-curiosità: gliel'hanno pagata») lo dice meglio di qualunque commento.
+Prima di cambiare argomento conviene fermarsi su una cosa che, messa così,
+sembra ovvia e non lo è. In tutto quello che abbiamo visto finora la curiosità
+è un **premio in più**: c'era una ricompensa, ci siamo accorti che non
+bastava, e gliene abbiamo affiancata un'altra, fabbricata da noi. È una toppa
+che funziona benissimo, ma resta una toppa, e la frase di prima («non gli si è
+insegnata la curiosità: gliel'hanno pagata») lo dice meglio di qualunque
+commento.
 
 Esiste una lettura opposta, e chiarisce parecchio anche a chi non intende
 seguirla. Nel quadro dell’**inferenza attiva**, che nelle neuroscienze teoriche
@@ -317,7 +318,7 @@ descrive percezione e azione come un unico problema {cite}`parr2022active`,
 l'agente non massimizza una ricompensa: minimizza una grandezza (l’**energia
 libera attesa**) che tiene insieme due cose, quanto un'azione lo avvicina a ciò
 che preferisce e quanto gli farebbe **guadagnare informazione**. All'inferenza
-attiva il capitolo sui world model dedica una sezione, e il capitolo
+attiva il {doc}`capitolo sui world model </WorldModels/overview>` dedica una sezione, e il capitolo
 sull'auto-supervisione se ne serve per rispondere a un'obiezione sul rinforzo:
 qui ci interessa solo il riflesso che getta su questa pagina.
 

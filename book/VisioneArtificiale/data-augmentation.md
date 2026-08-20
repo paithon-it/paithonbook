@@ -9,8 +9,8 @@ possiamo girare noi l'oggetto al posto suo: prendere ogni fotografia del
 training set e mostrargliela specchiata, ritagliata, un po’ ruotata, più
 chiara o più scura. Si chiama **data augmentation** (letteralmente "aumento
 dei dati") ed è il modo più economico che esista per moltiplicare gli esempi
-senza raccoglierne di nuovi. Non è un'idea recente: nel capitolo sul deep
-learning abbiamo visto che già AlexNet, nel 2012, la usava in modo aggressivo
+senza raccoglierne di nuovi. Non è un'idea recente: nel {doc}`capitolo sul deep
+learning </DeepLearning/overview>` abbiamo visto che già AlexNet, nel 2012, la usava in modo aggressivo
 (ritagli casuali, riflessioni, perturbazioni di colore). Bastano i primi due,
 calcolano gli autori, per ricavare da ogni immagine oltre duemila varianti
 possibili {cite}`krizhevsky2012imagenet`, ed è una moltiplicazione, non una
@@ -169,7 +169,7 @@ il compito: per un classificatore di cifre o di cartelli stradali, il
 ## Perché funziona: un altro modo di mettere il freno
 
 Impedire a una rete di imparare a memoria è un problema vecchio, e il libro ci
-ha già messo mano due volte: nel capitolo sul machine learning penalizzando i
+ha già messo mano due volte: nel {doc}`capitolo sul machine learning </MachineLearning/overview>` penalizzando i
 modelli che si affidano troppo a pochi numeri grossi (la regolarizzazione
 $\ell_2$), in quello sul deep learning spegnendo a caso una parte della rete a
 ogni passo, il dropout {cite}`srivastava2014dropout`. Tutti questi freni si
@@ -281,7 +281,7 @@ Soprattutto, l'augmentation **non cura lo shift di dominio**. Se il modello è
 addestrato su foto diurne e in produzione arrivano riprese notturne, se il
 nuovo ospedale usa uno scanner diverso da quello del training set, nessuno
 specchio e nessun ritaglio colmerà quella distanza: è il problema dei *dati
-che cambiano* che abbiamo discusso nel capitolo sul machine learning, e la
+che cambiano* che abbiamo discusso nel {doc}`capitolo sul machine learning </MachineLearning/overview>`, e la
 risposta è raccogliere dati rappresentativi del dominio reale, non deformare
 quelli vecchi. Anzi, un'augmentation scelta male può peggiorare le cose,
 perché iniettare l'invarianza sbagliata significa insegnare alla rete una cosa

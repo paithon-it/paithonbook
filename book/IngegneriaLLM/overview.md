@@ -314,15 +314,15 @@ certe, in questo campo, sta vendendo qualcosa.
 
 `````
 
-Vale la pena ripetere l'avvertenza, perché il tono di questo capitolo dipende
-da lei. Non esistono ricette che garantiscano la risposta; esistono pratiche che
+Conviene ripetere l'avvertenza, perché il tono di questo capitolo dipende da
+lei. Non esistono ricette che garantiscano la risposta; esistono pratiche che
 *spostano le probabilità* nella direzione giusta, e si riconoscono perché sono
 misurabili e ripetibili. Tratteremo prompt, contesto e loop con questo
 spirito: niente formule magiche, molte euristiche oneste, e la costante
 consapevolezza dei limiti (la finestra finita, il costo, l'incertezza di fondo
 di un modello che *stima* la parola successiva e non la *sa*).
 
-## Come è organizzato il capitolo
+## Tre mestieri intorno allo stesso modello
 
 Il capitolo segue i tre cerchi, dal centro verso l'esterno.
 

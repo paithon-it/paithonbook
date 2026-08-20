@@ -29,9 +29,9 @@ cioè lasciare che il risultato buono viva soltanto nella memoria di una
 sessione che qualcuno prima o poi chiuderà.
 
 Fra quel notebook e un sistema che dà previsioni a persone vere, ogni giorno,
-senza sorprese, c'è quindi un abisso. Colmarlo è il mestiere dell’**MLOps**, e
-questa sezione è la mappa dell'abisso: che cosa cambia davvero quando si passa
-«dal mio computer» al mondo, e con quali attrezzi si attraversa.
+senza sorprese, c'è quindi un abisso. Colmarlo è il mestiere dell'**MLOps**. Che cosa cambia davvero, passando «dal
+mio computer» al mondo, e con quali attrezzi si attraversa: si comincia da
+qui.
 
 ## Il divario ricerca–produzione
 
@@ -124,7 +124,7 @@ fasi ricorrenti di un progetto di machine learning
 2. **Feature**, costruzione delle variabili di input a partire dai dati grezzi
    (*feature engineering*): la forma in cui il modello «vede» il mondo.
 3. **Training**: l'addestramento vero e proprio. È il ciclo di ottimizzazione
-   che abbiamo scritto a mano nel capitolo su PyTorch (si veda [Il training
+   che abbiamo scritto a mano nel {doc}`capitolo su PyTorch </PyTorch/overview>` (si veda [Il training
    loop](../PyTorch/addestramento.md)): qui è solo *una* delle fasi.
 4. **Valutazione**: la misura onesta delle prestazioni su dati mai visti, con
    la disciplina di train/validation/test già discussa nel capitolo sul

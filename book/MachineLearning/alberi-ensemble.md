@@ -267,8 +267,8 @@ il resto della sezione cerca di ottenere. Se i cinque modelli sbagliassero
 sugli stessi esempi e nello stesso modo, la media non correggerebbe niente:
 riprodurrebbe l'errore comune con più sicurezza di prima.
 
-Ci sono due strategie profondamente diverse per farlo, e conviene tenerle
-distinte fin da subito ({numref}`fig-bagging-vs-boosting`): il **bagging**
+Ci sono due strategie profondamente diverse per farlo, e vanno tenute distinte
+fin da subito ({numref}`fig-bagging-vs-boosting`): il **bagging**
 addestra i modelli *in parallelo*, indipendenti l'uno dall'altro, e ne fa la
 media; il **boosting** li addestra *in sequenza*, ognuno per correggere gli
 errori del precedente.
@@ -518,8 +518,9 @@ log-loss no, i due valori sono diversi, e la log-loss è il default di
 Nel mondo reale, due implementazioni del gradient boosting dominano le
 competizioni sui dati tabellari: **XGBoost** (Chen e Guestrin, 2016
 {cite}`chen2016xgboost`) e **LightGBM** (Ke e colleghi, 2017
-{cite}`ke2017lightgbm`). Non sono idee nuove, ma ingegnerizzazioni del gradient
-boosting molto più veloci e robuste, e vale la pena sapere perché vincono:
+{cite}`ke2017lightgbm`). Non sono idee nuove, ma ingegnerizzazioni del
+gradient boosting molto più veloci e robuste, e conviene sapere perché
+vincono:
 
 - **Regolarizzazione esplicita**. XGBoost aggiunge alla loss una penalità sulla
   complessità di ogni albero (numero di foglie, ampiezza dei valori nelle
@@ -669,8 +670,8 @@ peggiore del suo componente più bravo non contraddice affatto Krogh e Vedelsby.
 
 `````
 
-Vale la pena vedere che cosa succede davvero, perché il risultato non è quello
-che ci si aspetta. Nell'esperimento che segue i tre modelli di base sono una
+Conviene vedere che cosa succede davvero, perché il risultato non è quello che
+ci si aspetta. Nell'esperimento che segue i tre modelli di base sono una
 foresta casuale, un k-NN e un terzo che non abbiamo ancora incontrato, il
 **Bayes ingenuo**.
 
@@ -681,8 +682,11 @@ verdetti parziali moltiplicandoli fra loro, come se ogni colonna raccontasse una
 storia sua, senza rapporti con le altre. «Ingenuo» è proprio questo: le colonne
 di una tabella vera sono quasi sempre legate (reddito e quartiere non sono
 indipendenti), e fare finta di no è una semplificazione grossolana. È la ragione
-per cui qui sarà nettamente il più debole dei tre. Il capitolo sul linguaggio
-naturale lo riprende per esteso, dove invece funziona benissimo.
+per cui qui sarà nettamente il più debole dei tre. Lo riprende per esteso
+{doc}`Modelli generativi <modelli-generativi>`, più avanti in questo capitolo,
+e
+{doc}`Classificare il testo </NaturalLanguageProcessing/classificazione-testo>`
+lo mostra al lavoro sulle parole di un'email, dove invece funziona benissimo.
 
 ```python
 from sklearn.datasets import make_classification
@@ -836,8 +840,8 @@ foresta   accuratezza OOB      : 0.898
 le cinque colonne che contano di piu': [14  8 16 11  4]
 ```
 
-Le prime tre righe sono la ragione per cui questa sezione esiste: un albero solo
-si ferma a $0{,}796$, e gli stessi alberi messi a votare arrivano a $0{,}891$,
+Le prime tre righe dicono tutto: un albero solo si ferma a $0{,}796$, e gli
+stessi alberi messi a votare arrivano a $0{,}891$,
 messi in fila a $0{,}883$. Quasi dieci punti, senza cambiare famiglia di
 modelli. La quarta riga è il regalo dell'out-of-bag: una stima dell'errore
 ottenuta senza mettere da parte niente, che qui dà $0{,}898$ contro lo

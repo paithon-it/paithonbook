@@ -17,7 +17,7 @@ e lo fanno con gli attrezzi della sezione dedicata alla funzione di
 partizione, senza inventarne di nuovi {cite}`du2019implicit`.
 
 A calcolare l'altezza del paesaggio, cioè a dare il voto a ogni immagine, c'è
-una rete convoluzionale come quelle del capitolo sul deep learning: il
+una rete convoluzionale come quelle del {doc}`capitolo sul deep learning </DeepLearning/overview>`: il
 paesaggio non è disegnato da nessuna parte, esiste solo nel senso che quella
 rete, per ogni immagine che le si dà, sa dire quanto in alto sta. Le risposte
 sbagliate su cui alzare il terreno se le fabbrica il modello stesso, lasciando
@@ -66,7 +66,7 @@ numeri: uno per classe, tanto più alto quanto più la rete crede in quella
 classe. Di solito quei numeri si trasformano in percentuali che sommano a
 cento, si legge la classe vincente e il resto si butta via.
 
-E si butta via più di quel che sembra. Il passaggio alle percentuali guarda
+Si butta via più di quel che sembra. Il passaggio alle percentuali guarda
 solo le *differenze* fra i punteggi, non quanto sono grandi: i punteggi 8, 2,
 1 e i punteggi 9, 3, 2 danno esattamente le stesse percentuali (99,7%, 0,2%,
 0,1%), perché sono gli stessi numeri spostati tutti in su di uno. Ma i secondi
@@ -129,8 +129,7 @@ normale, è questione di gradienti e non di assenza: la softmax è invariante
 alla traslazione dei logit, quindi la cross-entropy **non vincola** il loro
 livello assoluto, che resta libero di andare dove capita. L'informazione è lì
 (tanto che il logsumexp di una rete addestrata alla maniera solita si usa così
-com'è per riconoscere il fuori distribuzione, come mostrano Weitang Liu e
-colleghi nel 2020); semplicemente nessuno le ha mai
+com'è per riconoscere il fuori distribuzione, come mostrano Weitang Liu e colleghi nel 2020 {cite}`liu2020energy`); semplicemente nessuno le ha mai
 chiesto di essere sensata. JEM (*Joint
 Energy-based Model*) gliela chiede, massimizzando la log-verosimiglianza
 congiunta nella forma
@@ -151,12 +150,11 @@ addestramento più fragile, che è il difetto ereditario di tutta la famiglia.
 ## I due ritorni non dichiarati
 
 Il primo lo abbiamo già incontrato nella sezione sulla funzione di partizione,
-e vale la pena ripeterlo perché è il ponte più solido di tutto il capitolo: **i
-modelli
-di diffusione sono modelli a energia che hanno smesso di dirlo**. Il compito
-con cui si addestrano è quello della seconda delle tre vie, quella che rinuncia
-alle percentuali e impara soltanto la pendenza: «indovina il rumore che ti ho
-aggiunto» {cite}`vincent2011connection`.
+e conviene ripeterlo perché è il ponte più solido di tutto il capitolo: **i
+modelli di diffusione sono modelli a energia che hanno smesso di dirlo**. Il
+compito con cui si addestrano è quello della seconda delle tre vie, quella che
+rinuncia alle percentuali e impara soltanto la pendenza: «indovina il rumore
+che ti ho aggiunto» {cite}`vincent2011connection`.
 
 Quello che imparano, però, non è la pendenza di un paesaggio solo. Un modello
 di diffusione parte da un'immagine di puro rumore e attraversa mille gradi di
@@ -194,27 +192,28 @@ resterebbe prigioniera nei dintorni di dove è caduta, per quanto la si scuota.
 Partire da quello liscio la porta prima nella regione giusta, dove le valli
 sono larghe e si passa da una all'altra, e solo dopo nei particolari.
 
-Resta una differenza con un modello a energia dichiarato, e conviene dirla per
-esteso perché è la stessa avvertenza della sezione sulla partizione. Un
+Resta una differenza con un modello a energia dichiarato. Un
 modello a energia impara l'altezza di ogni punto, e le frecce della discesa si
 ricavano da quella; un modello di diffusione impara direttamente le frecce, e
 niente garantisce che esista davvero un paesaggio di cui quelle frecce siano
 la pendenza (sono le quattro frecce in tondo lungo il bordo di un quadrato,
 che sembrano un pendio e non lo sono).
 
-Il secondo è più sorprendente, e chiude un cerchio con il capitolo sui
-Transformer, cioè con l'architettura su cui sono costruiti i modelli di
+Il secondo è più sorprendente, e chiude un cerchio con il
+{doc}`capitolo sui Transformer </Transformers/overview>`, cioè con
+l'architettura su cui sono costruiti i modelli di
 linguaggio. Le reti di Hopfield di oggi non sono quelle del 1982: i neuroni
 non sono più soltanto accesi o spenti, e soprattutto la formula dell'energia è
 stata riscritta.
 
 Il primo a riscriverla è Dmitry Krotov con lo stesso Hopfield, nel 2016
-{cite}`krotov2016dense`. Nella formula del 1982 due neuroni si influenzano
-attraverso il loro prodotto; loro alzano quel prodotto a una potenza, e più
-alta è la potenza più la memoria è capiente. Con l'esponente più basso della
-famiglia si ritrova la rete di sempre, in cui la capienza cresce in
-proporzione al numero di neuroni: raddoppiando i neuroni si raddoppiano i
-ricordi. Con l'esponente successivo cresce come il *quadrato* dei neuroni:
+{cite}`krotov2016dense`. Nella formula del 1982 ogni ricordo contribuisce all'energia con la sua
+somiglianza allo stato della rete, contata al quadrato; loro alzano quella
+somiglianza a una potenza più alta, e più alta è la potenza più la memoria è
+capiente. Con l'esponente due si ritrova la rete di sempre, in cui la capienza
+cresce in proporzione al numero di neuroni: raddoppiando i neuroni si
+raddoppiano i ricordi. Con l'esponente tre cresce come il *quadrato* dei
+neuroni:
 raddoppiandoli, i ricordi diventano quattro volte tanti.
 
 Mete Demircigil e colleghi, l'anno dopo, spingono la stessa idea fino in fondo
@@ -235,19 +234,19 @@ attenzione. La domanda che si fa alla memoria è quella che nell'attenzione si
 chiama *query*, i ricordi in archivio sono le *key*, e un passo di attenzione
 è un passo di discesa verso il ricordo più compatibile.
 
-«A meno di un passaggio» non è una formula di cortesia, e vale la pena
-spendere due righe, perché è il punto in cui la battuta del titolo va presa
-meno alla lettera di quanto si direbbe. L'identità vale a tre condizioni. La
-prima: che si faccia **un solo** passo di aggiornamento, invece di ripetere il
-passo fino in fondo come farebbe una rete di Hopfield normale. La seconda: che
-la temperatura della memoria, cioè quanto forte la si scuote, sia fissata
+«A meno di un passaggio» non è una formula di cortesia, e conviene spendere
+due righe, perché è il punto in cui la battuta del titolo va presa meno alla
+lettera di quanto si direbbe. L'identità vale a tre condizioni. La prima: che
+si faccia **un solo** passo di aggiornamento, invece di ripetere il passo fino
+in fondo come farebbe una rete di Hopfield normale. La seconda: che la
+temperatura della memoria, cioè quanto forte la si scuote, sia fissata
 esattamente al valore che i Transformer usano per dividere i loro punteggi
 prima di confrontarli, cioè la radice quadrata della lunghezza dei vettori in
-gioco. La terza: che quello che la memoria restituisce venga
-fatto passare per un'ultima moltiplicazione, la stessa che nell'attenzione
-trasforma i ricordi in ciò che poi viene davvero letto, e che si chiama
-*value*. I ricordi grezzi, nella corrispondenza, sono le key; i value sono
-quegli stessi ricordi dopo quella moltiplicazione.
+gioco. La terza: che quello che la memoria restituisce venga fatto passare per
+un'ultima moltiplicazione, la stessa che nell'attenzione trasforma i ricordi
+in ciò che poi viene davvero letto, e che si chiama *value*. I ricordi grezzi,
+nella corrispondenza, sono le key; i value sono quegli stessi ricordi dopo
+quella moltiplicazione.
 
 C'è poi un risultato che questo capitolo tiene volentieri, perché è più
 interessante della battuta. L'attenzione di un Transformer non è un blocco
@@ -264,11 +263,10 @@ sfumato, e più informativo, di «è un richiamo di memoria».
 ## Le quattro rinunce
 
 Chi ha seguito le conferenze di Yann LeCun degli ultimi anni conosce la sua
-slide delle raccomandazioni: quattro righe, ciascuna una rinuncia, ciascuna con
-la sua
-alternativa. Vale la pena metterle in fila, perché sono la mappa del programma
-di ricerca in cui questo capitolo si inserisce, e perché tre delle quattro
-toccano cose che il libro ha già trattato.
+slide delle raccomandazioni: quattro righe, ciascuna una rinuncia, ciascuna
+con la sua alternativa. Conviene metterle in fila, perché sono la mappa del
+programma di ricerca in cui questo capitolo si inserisce, e perché tre delle
+quattro toccano cose che il libro ha già trattato.
 
 ```{figure} ../figures/quattro-rinunce.svg
 :name: fig-quattro-rinunce
@@ -313,13 +311,13 @@ costruirsi un modello di come va il mondo e pianificare dentro quello,
 ricorrendo ai tentativi soltanto per correggere il modello (o il giudice che
 valuta le mosse) quando la previsione sbaglia.
 
-Il *perché* di quella riga non sta nella diapositiva, e vale la pena
-anticiparlo perché è un conto, non un'antipatia. Quando un sistema impara per
-tentativi, la correzione che riceve alla fine di un tentativo è una quantità
-sola: è andata bene oppure male. Quando impara guardando, la correzione è
-grande quanto il pezzo di mondo che stava provando a indovinare, e contata in
-bit è dell'ordine di centomila volte tanto. È l'argomento che LeCun riassume
-dicendo che l'apprendimento per rinforzo è la «ciliegina sulla torta»
+Il *perché* di quella riga non sta nella diapositiva, e conviene anticiparlo
+perché è un conto, non un'antipatia. Quando un sistema impara per tentativi,
+la correzione che riceve alla fine di un tentativo è una quantità sola: è
+andata bene oppure male. Quando impara guardando, la correzione è grande
+quanto il pezzo di mondo che stava provando a indovinare, e contata in bit è
+dell'ordine di centomila volte tanto. È l'argomento che LeCun riassume dicendo
+che l'apprendimento per rinforzo è la «ciliegina sulla torta»
 {cite}`lecun2016cake`, e il capitolo sull'auto-supervisione lo misura per
 intero, quel conto compreso, insieme alle obiezioni di chi non ci sta.
 
@@ -338,7 +336,7 @@ dettagli che nessuno potrebbe indovinare, la forma esatta di una foglia mossa
 dal vento, e che per prevedere il mondo convenga prevedere non i pixel ma il
 *riassunto* che la rete se ne fa. È una previsione sul futuro della ricerca, e
 come tutte le previsioni va tenuta distinta dai risultati che abbiamo in mano.
-Il capitolo sui world model la prende sul serio proprio perché la tratta così:
+Il {doc}`capitolo sui world model </WorldModels/overview>` la prende sul serio proprio perché la tratta così:
 come una scommessa argomentata, con i suoi risultati e i suoi limiti, non come
 una profezia.
 
@@ -409,7 +407,7 @@ una profezia.
 - Le **quattro rinunce** di LeCun {cite}`lecun2022path`: generativo →
   incorporamento congiunto, probabilistico → energia, contrastivo →
   regolarizzato, RL → controllo predittivo. La seconda è la tesi di questo
-  capitolo; la prima resta una scommessa, e il capitolo sui world model la
+  capitolo; la prima resta una scommessa, e il {doc}`capitolo sui world model </WorldModels/overview>` la
   discute per quello che è.
 ```
 `````

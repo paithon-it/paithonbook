@@ -124,9 +124,8 @@ Se il prodotto di tanti fattori decide se il segnale svanisce o esplode, il
 punto di partenza conta enormemente. Inizializzare i pesi con la scala
 sbagliata condanna la rete prima ancora del primo aggiornamento.
 
-Una parola, prima di proseguire, perché da qui in avanti cambia mestiere.
-**«Attivazione» indica due cose diverse**, in questo libro come in tutta la
-letteratura: la *funzione* che ogni neurone applica al proprio risultato (la
+Attenzione a una parola che da qui in avanti cambia mestiere. **«Attivazione»
+indica due cose diverse**: la *funzione* che ogni neurone applica al proprio risultato (la
 ReLU, la sigmoide) e i *numeri* che escono da uno strato dopo che quella
 funzione è stata applicata. «La derivata dell'attivazione» è la prima cosa;
 «normalizzare le attivazioni», che è ciò di cui parleremo tra poco, sono i
@@ -176,10 +175,9 @@ ogni neurone somma sempre al proprio risultato, e che dovrebbe partire da zero
 perché all'inizio non c'è nessuna ragione di preferire un verso all'altro;
 PyTorch invece lo estrae a caso come i pesi.
 
-Su una rete di pochi strati la differenza si assorbe e non la nota nessuno. Su
-una pila di quaranta il segnale di correzione che arriva al primo strato è più
-di dieci milioni di miliardi di volte più debole di quello che ci arriverebbe
-partendo da He: non è ancora zero, ma tanto vale. E su una pila di sessanta
+Su una rete di pochi strati la differenza si assorbe e non la nota nessuno. Su una pila di quaranta il segnale di correzione che arriva al primo strato è
+un milionesimo di miliardesimo di miliardesimo di quello che ci arriverebbe
+partendo da He, un numero che si scrive con diciassette zeri dopo la virgola: non è ancora zero, ma tanto vale. E su una pila di sessanta
 diventa zero per davvero, non per modo di dire: è un numero così piccolo che il
 computer non ha più cifre per scriverlo, e scrive zero. Scegliere
 l'inizializzazione è un passo del mestiere, non un dettaglio da lasciare alla
@@ -349,11 +347,10 @@ BN funziona è tuttora aperto.
 
 `````
 
-Adesso che il meccanismo è chiaro si può dire la cosa che di solito si dice
-troppo presto: **perché la batch normalization funzioni così bene non lo sa
-ancora nessuno con certezza.** Quello che fa è fuori discussione (sottrae la
-media, divide per la dispersione, e lascia alla rete due manopole per rimettere
-le cose a modo suo). Il perché no.
+**Perché la batch normalization funzioni così bene non lo sa ancora nessuno
+con certezza.** Quello che fa è fuori discussione: sottrae la media, divide per la
+dispersione, e lascia alla rete due manopole per rimettere le cose a modo suo.
+Il perché no.
 
 I suoi autori dicevano che serve a impedire alla distribuzione dei numeri di
 spostarsi sotto i piedi di ogni strato mentre la rete impara. Un lavoro
@@ -454,9 +451,8 @@ dice da che parte si scende. È il **panorama della loss**, e la rete ci si muov
 al buio: della pendenza nel punto in cui si trova sa tutto, del resto del
 paesaggio niente.
 
-Gli algoritmi che decidono come fare il passo si chiamano **optimizer**, e in
-italiano *ottimizzatori*: le due parole vogliono dire la stessa cosa e nel libro
-si alternano. La discesa del gradiente pura fa un passo proporzionale alla
+Gli algoritmi che decidono come fare il passo si chiamano **ottimizzatori**, o
+*optimizer*. La discesa del gradiente pura fa un passo proporzionale alla
 pendenza e basta. In una valle stretta e allungata questo significa rimbalzare
 da parete a parete invece di scivolare verso il fondo
 ({numref}`fig-momentum`).
@@ -558,8 +554,8 @@ C'è un punto in cui gli ottimizzatori incontrano la lotta contro
 l'overfitting: il parametro `weight_decay` di `torch.optim`, che serve a
 tenere i pesi piccoli. L'idea è che una rete costretta a lavorare con numeri
 modesti non può affidarsi a pochi valori enormi per imparare a memoria. Il
-nome però promette una cosa e il codice ne fa un'altra, e vale la pena
-disfare l'equivoco subito, perché è quello da cui nasce AdamW.
+nome però promette una cosa e il codice ne fa un'altra, e conviene disfare
+l'equivoco subito, perché è quello da cui nasce AdamW.
 
 `````{tab} Elementare
 

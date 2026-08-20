@@ -17,10 +17,10 @@ popolazione da un istante al successivo; e in ciascuna delle due compare
 l'altra, perché i predatori crescono se ci sono molte prede e le prede calano se
 ci sono molti predatori.
 
-La risposta al quesito di D'Ancona c'era, ma la cosa che vale la pena tenere è
-un'altra: quelle due popolazioni **non si fermano mai** su un valore di
-equilibrio, ci girano attorno all'infinito. Ognuna insegue l'altra, e l'altra
-nel frattempo si è spostata.
+La risposta al quesito di D'Ancona c'era, ma la cosa da tenere è un'altra:
+quelle due popolazioni **non si fermano mai** su un valore di equilibrio, ci
+girano attorno all'infinito. Ognuna insegue l'altra, e l'altra nel frattempo
+si è spostata.
 
 Tenete a mente quelle orbite, perché torneranno alla fine della sezione con
 altri nomi. Le sezioni precedenti hanno *progettato* il coordinamento:
@@ -488,17 +488,17 @@ arbitraria ne è il caso da manuale.
 
 C'è una terza ricetta, e il suo interesse è di metodo prima che tecnico.
 **MAPPO** {cite}`yu2022surprising` non inventa nulla: prende un algoritmo del
-capitolo sul deep reinforcement learning, quello che a ogni aggiornamento
+{doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`, quello che a ogni aggiornamento
 impedisce a un agente di cambiare troppo il proprio modo di giocare, lascia a
 ciascuno il suo attore che vede solo il proprio pezzo, e gli affianca **un
-critico solo per tutta la squadra**, che in allenamento guarda tutto. Il titolo
-del lavoro dichiara la sorpresa: un metodo semplice, con le manopole girate per
-bene, regge il confronto con architetture costruite apposta per il caso
-multi-agente. E sono manopole noiose: rimettere i punteggi su una scala comune,
-non insistere troppe volte sugli stessi dati prima di buttarli, spostarsi poco
-per volta. Vale la pena tenerlo accanto alla regola prudente del «Costo del
-coordinamento»: prima di credere che serva la macchina complicata, conviene
-misurare fin dove arriva quella semplice messa a punto per bene.
+critico solo per tutta la squadra**, che in allenamento guarda tutto. Il
+titolo del lavoro dichiara la sorpresa: un metodo semplice, con le manopole
+girate per bene, regge il confronto con architetture costruite apposta per il
+caso multi-agente. E sono manopole noiose: rimettere i punteggi su una scala
+comune, non insistere troppe volte sugli stessi dati prima di buttarli,
+spostarsi poco per volta. Conviene tenerlo accanto alla regola prudente del
+«Costo del coordinamento»: prima di credere che serva la macchina complicata,
+conviene misurare fin dove arriva quella semplice messa a punto per bene.
 
 ## L'avversario sei tu di ieri
 
@@ -537,7 +537,7 @@ perché l'avversario è forte quanto te, sempre, essendo te. Nessuno dei due vin
 troppo spesso, e le partite restano informative.
 
 È la linea che porta ad **AlphaGo** {cite}`silver2016mastering`, già raccontato
-nel capitolo sul deep reinforcement learning: una rete che sceglie la mossa,
+nel {doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`: una rete che sceglie la mossa,
 addestrata prima sulle partite dei giocatori umani e poi affinata giocando
 contro copie di sé, e una rete che dice chi sta vincendo, addestrata proprio
 sulle partite così generate. Le due lavorano dentro un terzo meccanismo, che
@@ -676,17 +676,18 @@ popolazione dopo 2000 generazioni: sasso=0.326 carta=0.335 forbici=0.339
 sfruttabilita' della popolazione:  +0.008
 ```
 
-Vale la pena leggere le quattro colonne una per una, perché ciascuna è una
+Conviene leggere le quattro colonne una per una, perché ciascuna è una
 lezione. La prima è la metrica che tutti guardano, ed è una linea piatta di
-vittorie: ogni generazione batte la precedente, sempre, per sempre. La seconda è
-la stessa storia dal lato scomodo: contro la versione di **due** generazioni
+vittorie: ogni generazione batte la precedente, sempre, per sempre. La seconda
+è la stessa storia dal lato scomodo: contro la versione di **due** generazioni
 prima si perde, sempre. La terza dice che contro l'insieme delle versioni
 passate il guadagno resta a zero, con qualche sussulto verso l'alto nelle
 generazioni in cui quell'insieme è sbilanciato. La quarta è la più severa: la
 **sfruttabilità** dell'agente corrente, cioè quanto ci ricava contro di lui il
 miglior avversario possibile (più è alta, più l'agente è facile da battere),
-resta al massimo a ogni generazione. Dopo sei generazioni il campione è fragile
-esattamente quanto il primo giorno, e la colonna dei progressi non lo dice.
+resta al massimo a ogni generazione. Dopo sei generazioni il campione è
+fragile esattamente quanto il primo giorno, e la colonna dei progressi non lo
+dice.
 
 Le ultime due righe mostrano l'alternativa. Allenandosi contro la media di tutte
 le versioni passate, invece che contro l'ultima, in duemila generazioni la
@@ -704,10 +705,8 @@ Ci sono gli agenti **principali**, quelli che devono battere tutti: si allenano
 contro la lega intera, ma non pescando gli avversari a caso, bensì incontrando
 più spesso quelli che li stanno battendo. Ci sono gli **sfruttatori**, che sono
 la parte controintuitiva: agenti pagati per *non* essere bravi in generale, e
-per specializzarsi invece in una singola strategia che umilia qualcun altro. Ne
-esistono di due tipi, quelli che vanno a caccia dei punti deboli dei campioni
-del momento e quelli che vanno a caccia dei punti deboli della lega nel suo
-insieme; e servono a far incontrare al campione una debolezza che da solo non
+per specializzarsi invece in una singola strategia che umilia qualcun altro. Ne esistono di due tipi: chi va a caccia dei punti deboli dei campioni del
+momento, e chi cerca invece quelli della lega nel suo insieme; e servono a far incontrare al campione una debolezza che da solo non
 incontrerebbe mai. E poi ci sono le versioni **congelate** di tutti costoro,
 che una volta entrate nella lega ci restano per sempre.
 

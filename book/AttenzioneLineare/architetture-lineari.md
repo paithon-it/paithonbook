@@ -142,11 +142,11 @@ temporali di durata diversa, dal contesto immediato a quello lontano.
 
 `````
 
-Vale la pena collocare RetNet nella famiglia che abbiamo costruito nella
-sezione precedente: è il primo dei tre gradini dello sbiadimento, quello in cui
-il ritmo con cui la memoria si scolora è **deciso una volta per tutte** quando
-il modello viene progettato, uguale per ogni parola e per ogni sua parte. È
-la forma più grossolana di oblio: efficace e a costo nullo, ma cieca al
+Conviene collocare RetNet nella famiglia che abbiamo costruito nella sezione
+precedente: è il primo dei tre gradini dello sbiadimento, quello in cui il
+ritmo con cui la memoria si scolora è **deciso una volta per tutte** quando il
+modello viene progettato, uguale per ogni parola e per ogni sua parte. È la
+forma più grossolana di oblio: efficace e a costo nullo, ma cieca al
 contenuto, perché sbiadisce con lo stesso ritmo una data e un intercalare. Gli
 altri due gradini, che abbiamo già incontrato, nascono proprio per superare
 questa cecità: **Mamba-2**, che il ritmo lo ricalcola a ogni parola guardando
@@ -259,14 +259,15 @@ fissa può fare (che resta confinato nella classe $\text{TC}^0$).
 
 `````
 
-RWKV ha una particolarità sociologica che vale la pena notare, in un campo
-dominato dai grandi laboratori: RWKV-4 è stata scalata fino a 14 miliardi di
-parametri, i numeri che il modello impara e che ne misurano la taglia (era la
-più grande rete ricorrente *densa* del suo tempo, cioè fra quelle che usano
-tutti i propri parametri a ogni parola), e il lavoro che presenta RWKV-7
-rilascia quattro modelli, da 190 milioni a 2,9 miliardi di parametri, con pesi
-aperti sotto licenza Apache 2.0, cioè scaricabili e riusabili da chiunque. È la dimostrazione che un'architettura
-competitiva può crescere fuori dai recinti industriali.
+RWKV ha una particolarità sociologica da notare, in un campo dominato dai
+grandi laboratori: RWKV-4 è stata scalata fino a 14 miliardi di parametri, i
+numeri che il modello impara e che ne misurano la taglia (era la più grande
+rete ricorrente *densa* del suo tempo, cioè fra quelle che usano tutti i
+propri parametri a ogni parola), e il lavoro che presenta RWKV-7 rilascia
+quattro modelli, da 190 milioni a 2,9 miliardi di parametri, con pesi aperti
+sotto licenza Apache 2.0, cioè scaricabili e riusabili da chiunque. È la
+dimostrazione che un'architettura competitiva può crescere fuori dai recinti
+industriali.
 
 ## xLSTM: il ritorno di Hochreiter
 

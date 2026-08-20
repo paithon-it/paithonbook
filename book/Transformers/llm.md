@@ -28,15 +28,15 @@ con la mano e indovina la parola dopo (in gergo: un Transformer
 *decoder-only*, addestrato a predire il token successivo). E abbiamo visto che
 GPT-3, arrivato a quella scala, sapeva eseguire un compito nuovo solo perché
 glielo si descriveva a parole, magari con due o tre esempi svolti, senza
-toccare un solo numero interno: si chiama capacità *few-shot*. Qui apriamo
-il cofano: da dove vengono i dati, perché "più grande" funziona in modo così
+toccare un solo numero interno: si chiama capacità *few-shot*. Qui apriamo il
+cofano: da dove vengono i dati, perché "più grande" funziona in modo così
 prevedibile da meritarsi delle *leggi*, come si sceglie concretamente la
 parola da scrivere, e quale accorgimento di ingegneria rende la generazione
-sostenibile. Tra il gioco di Shannon e GPT-3 c'è un gradino intermedio che
-vale la pena nominare: GPT-2 {cite}`radford2019language`, 1,5 miliardi di
-parametri addestrati nel 2019 su pagine web segnalate dagli utenti di Reddit,
-il cui titolo era già un manifesto: *i modelli di linguaggio sono studenti
-multitask senza supervisione*.
+sostenibile. Tra il gioco di Shannon e GPT-3 c'è un gradino intermedio da
+nominare: GPT-2 {cite}`radford2019language`, 1,5 miliardi di parametri
+addestrati nel 2019 su pagine web segnalate dagli utenti di Reddit, il cui
+titolo era già un manifesto: *i modelli di linguaggio sono studenti multitask
+senza supervisione*.
 
 ## Una biblioteca sterminata: il pretraining su scala web
 
@@ -143,8 +143,8 @@ miliardi di manopole), la **quantità di testo** su cui studia, e il **calcolo**
 {cite}`kaplan2020scaling` è che aumentando gli ingredienti **tutti insieme**
 l'errore cala in modo *prevedibile*: niente salti misteriosi, una curva liscia,
 come una ricetta che riesce sempre un po’ meglio se si raddoppia ogni
-ingrediente. Ma i miglioramenti sono lenti: ogni raddoppio del calcolo lima
-l'errore solo di qualche punto percentuale, il tre e mezzo per cento circa. La
+ingrediente. Ma i miglioramenti sono lenti: ogni raddoppio del calcolo lima l'errore solo di qualche punto percentuale,
+poco più del tre per cento. La
 seconda scoperta, del 2022
 {cite}`hoffmann2022training`, è che gli ingredienti vanno **bilanciati**: è
 inutile fare una torta con dieci uova e un cucchiaio di farina. La regola
@@ -209,9 +209,8 @@ regola prescriverebbe circa 3.500 miliardi di token, contro i 300 effettivi.
 :alt: "Due barre che ripartiscono lo stesso budget di calcolo in modo diverso. Gopher spende in 280 miliardi di parametri e 300 miliardi di token: molta capacità, poca esperienza. Chinchilla spende in 70 miliardi di parametri e 1.400 miliardi di token: meno capacità, molta più esperienza."
 :width: 90%
 
-Lo stesso budget, due modi di spenderlo. Chinchilla è quattro volte più
-piccolo di Gopher e ha letto quasi cinque volte di più: a parità di calcolo,
-vince il secondo.
+Lo stesso budget, due modi di spenderlo. Chinchilla è quattro volte più piccolo di Gopher e ha letto quasi cinque volte
+di più: a parità di calcolo, vince Chinchilla.
 ```
 
 Il confronto di {numref}`fig-chinchilla` è il motivo per cui «quanti
@@ -461,7 +460,7 @@ dopo, su un web che contiene testi e i loro riassunti.
 L'osservazione di {numref}`fig-gpt2-multitask` precede GPT-3 e ne spiega la
 premessa. Se il corpus è abbastanza vasto, contiene già esempi impliciti di
 quasi ogni compito linguistico, e un modello che lo prevede bene ha dovuto,
-per forza, imparare a farli. Vale la pena soffermarsi su quanto è strano. Per
+per forza, imparare a farli. Conviene soffermarsi su quanto è strano. Per
 tutto il libro, "adattare un modello" ha significato addestrarlo, cioè
 mostrargli esempi, misurare quanto sbaglia e spostargli i numeri interni
 un'inezia alla volta, per giorni. Qui no: il compito viene *descritto in

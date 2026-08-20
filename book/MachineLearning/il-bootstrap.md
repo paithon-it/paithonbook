@@ -23,12 +23,11 @@ un solo dato in più**.[^munch]
 
 ## Un numero da solo non dice quanto balla
 
-Ogni volta che questo capitolo ha stampato una cifra ne ha nascosta un'altra, e
-conviene vederlo su un caso qualunque. Mettiamo che un modello dia
-l’$87\%$ di accuratezza: sì, ma su *questo* test.
-Rifacendo la prova con altri trecento esempi, quanto verrebbe? $86\%$? $91\%$?
-La differenza fra i due casi decide se vale la pena mettere il modello in
-produzione, e il numero da solo non la dice.
+Ogni volta che questo capitolo ha stampato una cifra ne ha nascosta un'altra,
+e conviene vederlo su un caso qualunque. Mettiamo che un modello dia l’$87\%$
+di accuratezza: sì, ma su *questo* test. Rifacendo la prova con altri trecento
+esempi, quanto verrebbe? $86\%$? $91\%$? La differenza fra i due casi decide
+se conviene mettere il modello in produzione, e il numero da solo non la dice.
 
 `````{tab} Elementare
 
@@ -54,7 +53,11 @@ l'esperimento venti volte e guarda. Cioè, quasi sempre: non lo saprai.
 `````{tab} Superiore
 
 Il problema è quello classico dell'inferenza. Si osserva un campione
-$\mathbf{x} = (x_1, \dots, x_m)$ estratto da una distribuzione ignota $F$, si
+$\mathbf{x} = (x_1, \dots, x_m)$ estratto da una distribuzione ignota $F$ (due
+avvertenze sui simboli, che in questa sezione sola cambiano mestiere:
+$\mathbf{x}$ è qui l'intero campione e non le caratteristiche di un esempio, e
+$\theta$ è la quantità da stimare, non i parametri di un modello, perché è la
+notazione consolidata del bootstrap), si
 calcola una statistica $\hat{\theta} = s(\mathbf{x})$, e si vuole la
 **distribuzione campionaria** di $\hat{\theta}$, cioè come varierebbe
 ripetendo l'estrazione da $F$. Da lì si ricavano errore standard, intervalli di
@@ -76,7 +79,7 @@ invece funziona, e quel confronto è una delle ragioni per cui il metodo nasce.
 
 ## Il campione come mondo in miniatura
 
-L'idea di Efron sta in una riga, e vale la pena leggerla due volte perché è più
+L'idea di Efron sta in una riga, e conviene leggerla due volte perché è più
 audace di quanto sembri.
 
 `````{tab} Elementare
@@ -295,10 +298,10 @@ sistematicamente. Chi ha bisogno del numero preciso usa il $\mathrm{BCa}$; chi
 ha bisogno di sapere se una differenza è solida usa questo, che costa quattro
 righe.
 
-Vale la pena notare dove ci ha portati la prudenza: per giudicare una
-percentuale misurata abbiamo dovuto chiederci di quanto ballasse, e la risposta
-ha deciso il verdetto. È esattamente la domanda con cui la sezione si apre,
-applicata alla sezione stessa.
+Conviene notare dove ci ha portati la prudenza: per giudicare una percentuale
+misurata abbiamo dovuto chiederci di quanto ballasse, e la risposta ha deciso
+il verdetto. È esattamente la domanda con cui la sezione si apre, applicata
+alla sezione stessa.
 
 ## Dove si rompe, e perché è lo stesso conto del bagging
 
@@ -339,14 +342,15 @@ lato l'intervallo è murato, e dall'altro può solo saltare al secondo, al terzo
 quarto valore più grande. Non c'è niente da guardare, perché la statistica
 dipende da un dato solo.
 
-E le ultime due righe sono il pezzo che vale la pena portarsi via. Il $0{,}631$
+E le ultime due righe sono il pezzo che conviene portarsi via. Il $0{,}631$
 contato sui diecimila ricampionamenti e il $0{,}635$ che la formula dà per
-$m = 60$ sono lo stesso numero, ed è il **conto della sezione sugli ensemble**
+$m = 60$ sono lo stesso numero, ed è il conto di
+{doc}`Alberi e metodi ensemble <alberi-ensemble>`
 letto al contrario. Là si contavano gli esempi che restano **fuori** da un
-campione bootstrap, poco più di un terzo, e la notizia era buona: su quel terzo
-si misura l'errore gratis. Qui si contano gli altri, i due terzi che restano
-**dentro**, e la stessa notizia diventa la condanna del metodo, perché due
-ricampionamenti su tre contengono il massimo e quindi ridanno la stessa
+campione bootstrap, poco più di un terzo, e la notizia era buona: su quel
+terzo si misura l'errore gratis. Qui si contano gli altri, i due terzi che
+restano **dentro**, e la stessa notizia diventa la condanna del metodo, perché
+due ricampionamenti su tre contengono il massimo e quindi ridanno la stessa
 identica risposta. È la stessa proprietà, letta dai due lati: un numero non è
 mai buono o cattivo per conto suo, dipende da che cosa gli si chiede di
 reggere.
@@ -372,7 +376,7 @@ lo stesso e sembra buono.
   campione raccolto male dà un intervallo stretto attorno al numero sbagliato, e
   la strettezza è la parte pericolosa, perché somiglia alla precisione.
 
-## A che serve, in questo libro
+## A che serve, quando si valuta un modello
 
 Il posto in cui questo attrezzo torna utile subito è la valutazione dei modelli.
 Un'accuratezza dell’$87\%$ misurata su duecento esempi di test e una misurata su

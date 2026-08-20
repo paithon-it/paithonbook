@@ -19,7 +19,7 @@ Nei programmi che sembrano intelligenti, osservava, questa massima si compie
 alla perfezione: finché il meccanismo resta nascosto la macchina appare
 prodigiosa; appena qualcuno lo spiega, l'incanto si sgretola. E il meccanismo
 di ELIZA sta in poche righe. Il programma vero e proprio non imitava nessuno:
-era un motore che riconosceva **schemi**, cioè pezzi di frase fatti a stampo,
+era un motore che riconosceva **schemi**: pezzi di frase fatti a stampo,
 del tipo «mi sento ___» o «mia madre ___». La parte da recitare gliela
 assegnava un *copione*, un foglio di regole scritto a parte che si poteva
 cambiare senza toccare il programma. Il copione più celebre si chiamava DOCTOR
@@ -30,12 +30,11 @@ e alla parola «madre» rispondeva «mi parli della sua famiglia». Nessuna
 comprensione, e come memoria soltanto una pila di frasi già dette, messe da
 parte per essere ritirate fuori quando la conversazione si fermava.
 
-Quella separazione fra il motore e il foglio delle regole vale la pena
-notarla, perché è il primo passo della strada che percorreremo. Nel 1966 le
-regole le scriveva ancora una persona, a mano, una per una; ma stavano già
-fuori dal programma, come un testo che il programma legge. I capitoli che
-seguono raccontano che cosa succede quando quel foglio non lo scrive più
-nessuno.
+Quella separazione fra il motore e il foglio delle regole conviene notarla,
+perché è il primo passo della strada che percorreremo. Nel 1966 le regole le
+scriveva ancora una persona, a mano, una per una; ma stavano già fuori dal
+programma, come un testo che il programma legge. I capitoli che seguono
+raccontano che cosa succede quando quel foglio non lo scrive più nessuno.
 
 Eppure Weizenbaum voleva dimostrare esattamente il contrario di quello che
 ottenne: voleva far vedere quanto fosse superficiale la comunicazione fra uomo
@@ -52,13 +51,11 @@ dice *Artificial Intelligence*, e la sigla **AI** è quella che si legge
 dappertutto. Ogni anno la si perfeziona, e ogni anno sembra sfuggire un po’ di
 più a una definizione precisa.
 
-Sono le due domande da cui parte questo capitolo. La prima ha una risposta
-breve e deludente: no, non c'era niente di più. ELIZA era davvero soltanto una
-lista di istruzioni, e il resto di questa pagina serve a dire perché per certi
-altri programmi la stessa risposta non basti. La seconda ha bisogno di più
-spazio, e la troverai poco più avanti, quando avremo visto che cosa distingue
-un programma scritto riga per riga da uno che le sue regole se le trova da
-solo.
+La prima risposta è breve e deludente: no, non c'era niente di più. ELIZA era
+davvero soltanto una lista di istruzioni. Per certi altri programmi, però, la
+stessa risposta non basta, e la seconda domanda ha bisogno di più spazio: ci
+arriveremo dopo aver visto che cosa distingue un programma scritto riga per
+riga da uno che le sue regole se le trova da solo.
 
 ## Le origini dell'intelligenza artificiale
 
@@ -68,21 +65,20 @@ scienza che ci prova davvero, invece, è giovane: nasce nel decennio successivo
 alla Seconda Guerra Mondiale, quando per la prima volta ci sono delle macchine
 su cui provare.
 
-Nella vita di tutti i giorni è entrata **due volte**. Negli anni Dieci
-(il decennio 2010–2019) ci è entrata senza farsi notare, dentro il traduttore
+Nella vita di tutti i giorni è entrata **due volte**. Negli anni Dieci (il
+decennio 2010–2019) ci è entrata senza farsi notare, dentro il traduttore
 automatico, i suggerimenti di un negozio online, il riconoscimento dei volti
 nelle fotografie: la usavano tutti e quasi nessuno la chiamava per nome. Dal
 novembre 2022, con ChatGPT, è diventata invece qualcosa con cui si parla
-apposta, e in pochi mesi il nome lo conosceva chiunque. Vale la pena tenere
+apposta, e in pochi mesi il nome lo conosceva chiunque. Conviene tenere
 separati i due momenti, perché il salto che il pubblico ha percepito alla fine
 del 2022 era cominciato cinque anni prima, in un articolo del 2017 intitolato
-*Attention Is All You Need*, «l'attenzione è tutto ciò che serve»: da lì è nata
-la famiglia di modelli con cui oggi si conversa, e la incontreremo al momento
-giusto. Nel 2022,
-cioè, la tecnologia sotto il cofano non era nuova: era nuovo il posto in cui la
-incontravamo. Prima stava nascosta dentro servizi che facevano altro (traduci
-questa pagina, suggerisci un film), e nessuno ci parlava; da allora è diventata
-una casella bianca in cui si scrive, e che risponde.
+*Attention Is All You Need*, «l'attenzione è tutto ciò che serve»: da lì è nata la famiglia di programmi con cui oggi si conversa, e la
+incontreremo al momento giusto. Nel 2022, cioè, la tecnologia sotto il cofano non era nuova:
+era nuovo il posto in cui la incontravamo. Prima stava nascosta dentro servizi
+che facevano altro (traduci questa pagina, suggerisci un film), e nessuno ci
+parlava; da allora è diventata una casella bianca in cui si scrive, e che
+risponde.
 
 Ma torniamo all'inizio, che è più indietro di quanto sembri.
 
@@ -101,18 +97,19 @@ smette di essere decisiva {cite}`turing1950computing`.[^gioco-imitazione]
     tutti chiamano test di Turing è la lettura moderna, non l'esperimento
     originale.
 
-Vale la pena essere
-precisi su che cosa quel gioco misuri, perché il libro ci tornerà: misura se
-una conversazione regge, non se dall'altra parte qualcuno ha capito qualcosa.
-Che l'asticella sia più bassa di quanto sembri lo abbiamo appena visto con
-ELIZA, che di comprensione non ne aveva nessuna e riusciva lo stesso a
-commuovere le persone; ne riparleremo nel capitolo sul linguaggio naturale.
+Conviene essere precisi su che cosa quel gioco misuri, perché il libro ci
+tornerà: misura se una conversazione regge, non se dall'altra parte qualcuno
+ha capito qualcosa. Che l'asticella sia più bassa di quanto sembri lo abbiamo
+appena visto con ELIZA, che di comprensione non ne aveva nessuna e riusciva lo
+stesso a commuovere le persone; ne riparleremo in
+{doc}`Dialogo e chatbot </NaturalLanguageProcessing/dialogo-chatbot>`.
 
 Il termine *intelligenza artificiale* compare per la prima volta nel 1955,
 nella proposta con cui John McCarthy, Marvin Minsky, Nathaniel Rochester e
 Claude Shannon chiedevano i fondi per un seminario estivo al Dartmouth
-College; è quel seminario, nell'estate del 1956, a essere ricordato come l'atto
-di nascita ufficiale della disciplina. Il suo mestiere è rendere automatiche
+College; è quel seminario, nell'estate del 1956, a essere ricordato come
+l'atto di nascita ufficiale della disciplina. Il mestiere della nuova
+disciplina è rendere automatiche
 attività che fino a quel momento richiedevano una testa: riconoscere immagini,
 giocare a scacchi, dimostrare teoremi, guidare un'automobile. Tocca quindi
 potenzialmente ogni angolo del pensiero umano, ed è insieme uno dei campi più
@@ -136,42 +133,44 @@ sapere di uno specialista. Funzionavano nel ristretto, costavano moltissimo da
 aggiornare e non reggevano il mondo vero.
 
 Di questo secondo inverno si sentirà l'eco in tutto il libro, perché il modo di
-lavorare che gli è succeduto ne è il rovescio esatto, e fra due sezioni vedremo
-quale. Le **reti neurali** (i programmi ispirati alla forma del cervello, che
+lavorare che gli è succeduto ne è il rovescio esatto, e fra poco, quando
+parleremo di regole che nessuno scrive, si vedrà quale. Le **reti neurali** (i programmi ispirati alla forma del cervello, che
 sono il grosso di quello che incontreremo) hanno invece avuto un inverno tutto
-loro, che si apre nel 1969, con un libro che ne dimostrava i limiti, e si
-chiude nel 1986, quando si trova il modo di addestrarle sul serio. Viene prima
-degli altri due, dura molto di più, ed è una vicenda parallela: la racconta il
-capitolo dedicato a loro.
+loro, che comincia nel 1969 con un libro che ne dimostrava i limiti e si
+intreccia con l'inverno degli anni Settanta, perché i tagli seguiti al
+rapporto Lighthill colpirono tutto il campo. Si scioglie nel 1986, quando un
+articolo su *Nature* rende finalmente pratico un modo di addestrarle che
+qualcuno aveva già formulato dodici anni prima: la racconta per esteso il
+{doc}`capitolo sulle reti neurali </RetiNeurali/overview>`.
 
-Meno noto, e vale la pena saperlo, è che una delle auto che si guidavano da
-sole negli anni Novanta girava sulle strade italiane, su una Lancia Thema. A
-partire dal 1996, all'Università di Parma, un gruppo di ricercatori e ingegneri
-guidato da Alberto Broggi costruì ARGO. Vedeva con due telecamere in bianco e
-nero montate in coppia, come i nostri due occhi, e le sue decisioni le prendeva
-un computer di bordo del tutto ordinario per l'epoca, un Pentium 200 MMX: un
-processore incomparabilmente più lento di quello del telefono che oggi tieni in
-tasca. Sapeva sterzare da sola, restare al centro della corsia e accorgersi
-degli ostacoli davanti. Nel giugno 1998, nella prova «MilleMiglia in
-Automatico», percorse quasi 2.000 km di strade e autostrade italiane guidando
-in autonomia per oltre il 90% del tragitto.
+Meno noto, e conviene saperlo, è che una delle auto che si guidavano da sole
+negli anni Novanta girava sulle strade italiane, su una Lancia Thema. A
+partire dal 1996, all'Università di Parma, un gruppo di ricercatori e
+ingegneri guidato da Alberto Broggi costruì ARGO. Vedeva con due telecamere in
+bianco e nero montate in coppia, come i nostri due occhi, e le sue decisioni
+le prendeva un computer di bordo del tutto ordinario per l'epoca, un Pentium
+200 MMX: un processore incomparabilmente più lento di quello del telefono che
+oggi tieni in tasca. Sapeva sterzare da sola, restare al centro della corsia e
+accorgersi degli ostacoli davanti. Nel giugno 1998, nella prova «MilleMiglia
+in Automatico», percorse i circa 2.000 km della Mille Miglia su strade e autostrade italiane,
+guidando da sola per il 94% del tragitto.
 
 Il primato non è di essere arrivati per primi: negli stessi anni la VaMP di
 Ernst Dickmanns girava sulle autostrade europee e la Navlab 5 della Carnegie
 Mellon University, in Pennsylvania, attraversava gli Stati Uniti. Il primato è
-**come**: quelle macchine portavano armadi di elettronica costruita apposta,
-ARGO due telecamere e un personal computer, e dimostrò che per stare in corsia
+**come**: la VaMP portava armadi di elettronica costruita apposta, ARGO due
+telecamere e un personal computer da negozio, e dimostrò che per stare in corsia
 poteva bastare molto meno ferro di quanto tutti credessero.
 
 Nel 2010 il gruppo di Broggi è riuscito a far guidare autonomamente delle auto
 dall'Italia… alla Cina! La sfida si chiamava VIAC (VisLab Intercontinental
-Autonomous Challenge): quasi sedicimila chilometri da Parma a Shanghai, con due
-veicoli in marcia (più due di riserva) e una regola d'ingaggio che vale la pena
-dire, perché è la parte interessante. I due procedevano in fila: quello di
-testa apriva la strada e ogni tanto un umano interveniva, per scegliere il
-percorso o togliere le castagne dal fuoco; quello dietro seguiva il primo in
-completa autonomia. Non sedicimila chilometri senza nessuno al volante,
-dunque, ma qualcosa che nel 2010 era comunque senza precedenti.
+Autonomous Challenge): quasi sedicimila chilometri da Parma a Shanghai, con
+due veicoli in marcia (più due di riserva) e una regola d'ingaggio da dire,
+perché è la parte interessante. I due procedevano in fila: quello di testa
+apriva la strada e ogni tanto un umano interveniva, per scegliere il percorso
+o togliere le castagne dal fuoco; quello dietro seguiva il primo in completa
+autonomia. Non sedicimila chilometri senza nessuno al volante, dunque, ma
+qualcosa che nel 2010 era comunque senza precedenti.
 
 Torniamo indietro, però, e di parecchio: prima di Turing e dei calcolatori
 c'erano stati duemila anni di gente che pensava alle stesse
@@ -205,9 +204,8 @@ I filosofi hanno esplorato la maggior parte dei concetti riguardanti l'AI, ma
 il passaggio a una scienza vera e propria richiedeva qualcosa che i filosofi
 non davano. Una macchina non capisce le frasi, sa soltanto fare conti: perché
 un'idea le arrivi, bisogna prima ridurla a un calcolo, e nessuno l'aveva mai
-fatto per il ragionamento. La matematica a metà del '900 ereditava dal passato
-tutta una serie di strumenti buoni allo scopo: l'algebra, la probabilità, e poi tre
-discipline nate per far prendere decisioni alle macchine e alle organizzazioni.
+fatto per il ragionamento. A metà del Novecento la matematica aveva già in casa gli strumenti giusti,
+l'algebra e la probabilità, e tre discipline nate per far prendere decisioni.
 La **ricerca operativa** studia come scegliere il piano migliore quando le
 risorse sono poche (quali camion mandare su quali strade); la **teoria del
 controllo** come tenere un sistema sulla rotta voluta, correggendolo di
@@ -289,10 +287,10 @@ Le eccezioni si contano, e sono istruttive, perché sono i due modi in cui si
 può uscire dal quadro. Le GAN sostituiscono la minimizzazione di una funzione
 con l'equilibrio di un gioco fra due reti in competizione, e allora la loss
 smette di dire se le cose stanno andando bene; i metodi non parametrici come
-il k-NN non hanno una manopola da regolare per addestramento, perché al posto
-dei parametri conservano i dati stessi (è questo che significa «non
-parametrico»: non che non ci siano numeri da scegliere, ma che quanto il
-modello si porta dietro cresce con i dati anziché essere fissato in partenza). Va aggiunta una crepa che
+il k-NN non hanno una manopola da regolare per addestramento: al posto dei
+parametri conservano i dati stessi. «Non parametrico» significa questo, e non
+che non ci siano numeri da scegliere: significa che ciò che il modello si
+porta dietro cresce con i dati, invece di essere fissato in partenza. Va aggiunta una crepa che
 non è un'eccezione ma un limite della cornice, dichiarato dagli stessi autori
 che l'hanno resa canonica: $J$ è il punteggio che *scriviamo noi*, non quello
 che vogliamo davvero, e un sistema abbastanza bravo massimizza il primo anche
@@ -357,8 +355,8 @@ consecutivi (teorema di Lamé, 1844). È per questa efficienza (non solo per
 l'età) che l'idea di Euclide è ancora oggi nelle librerie standard di ogni
 linguaggio. Attenzione però a leggere bene la stima: quelli sono *passi*, e su
 numeri molto lunghi ogni passo costa una divisione fra interi grandi, il cui
-prezzo cresce quadraticamente nel numero di cifre: il tempo totale non è
-$O(\log)$, anche se i passi lo sono. È il motivo per cui le
+prezzo cresce quadraticamente nel numero di cifre: su due numeri di $n$ cifre
+il tempo totale cresce come $n^2$, anche se i passi restano logaritmici. È il motivo per cui le
 librerie non eseguono questo ciclo tale e quale, ma sue raffinature
 (l'algoritmo di Lehmer, in CPython).
 `````
@@ -385,7 +383,7 @@ ha capito come si fa e ne ha scritto i passi. Per duemila anni ogni algoritmo
 è stato così, e così è ancora la maggior parte dei programmi che usi ogni
 giorno: chi li ha scritti sapeva già che cosa dovevano fare, riga per riga.
 
-Il salto che rende necessario tutto il resto di questo libro sta qui. Serve
+Il salto sta qui, ed è quello che rende necessario tutto il resto. Serve
 prima una cosa che di solito si dà per scontata: per un computer una fotografia
 è un rettangolo di puntini, e ogni puntino (si chiama **pixel**) è una terna di
 numeri che dicono quanto rosso, quanto verde e quanto blu ci sono lì. Una foto
@@ -465,8 +463,9 @@ lo si spiega. I programmi di cui parla questo libro qualcosa di più ce
 l'hanno, ma è meno misterioso e più scomodo di quanto si immagini: nessuno ha
 scritto le regole che seguono, e quindi nessuno, nemmeno chi li ha costruiti,
 sa elencarle tutte. Da lì vengono sia i risultati sia i guai: dei modi per
-sbirciare comunque là dentro parla il capitolo sull'interpretabilità, dei danni
-che quei programmi possono fare quello sull'AI responsabile.
+sbirciare comunque là dentro parla
+{doc}`Interpretabilità </Interpretabilita/overview>`, dei danni che quei
+programmi possono fare {doc}`AI responsabile </AIResponsabile/overview>`.
 
 ## Perché proprio adesso
 
@@ -490,15 +489,15 @@ Google.
 Ed è in debito con Internet, che ha fatto molto più che diffondere articoli e
 video: ha reso raccoglibili i **dati** su cui i modelli si addestrano, dalle
 grandi collezioni di immagini già etichettate al testo del web. Dati, potenza
-di calcolo e algoritmi maturi sono i tre ingredienti, e il capitolo sul deep
-learning li conta uno per uno; quanto pesi ciascuno dei tre si può perfino
+di calcolo e algoritmi maturi sono i tre ingredienti, e il {doc}`capitolo sul deep
+learning </DeepLearning/overview>` li conta uno per uno; quanto pesi ciascuno dei tre si può perfino
 misurare, e lo fa il capitolo sui **Transformer**, che sono i modelli nati da
 quell'articolo del 2017 di cui si diceva all'inizio.
 
-Su che cosa siano quei dati vale la pena fermarsi, perché è la cosa che si
+Su che cosa siano quei dati conviene fermarsi, perché è la cosa che si
 fraintende più spesso. Il modo di dire corrente li chiama «il petrolio del
-nostro secolo», cioè un giacimento che qualcuno è andato a scavare. Non sono
-quello. Sono uno **scarto**. Non che nessuno li produca apposta: le fotografie
+nostro secolo», cioè un giacimento che qualcuno è andato a scavare. I dati
+sono piuttosto uno **scarto**. Non che nessuno li produca apposta: le fotografie
 con scritto accanto «gatto» le ha etichettate una persona, a mano, ed è un
 mestiere pagato. Ma quella è la fetta piccola, e costa cara proprio perché è
 l'eccezione. Il grosso non lo produce nessuno di proposito: lo lasciamo dietro
@@ -527,9 +526,8 @@ respiriamo, alla lettera, il rifiuto di qualcun altro.
 I dati stanno alle macchine come l'ossigeno sta a noi. Sono l'avanzo del nostro
 passaggio nel mondo digitale, prodotto senza volerlo e in quantità che nessuno
 ha deciso; e sopra quell'avanzo è cresciuta una cosa che di lì trae il proprio
-respiro. È la ragione per cui in questo libro i dati pesano quanto gli
-algoritmi: l'algoritmo è il polmone, i dati sono l'aria, e un polmone nel vuoto
-non è niente. E torna la domanda di questa sezione, «perché proprio adesso»:
+respiro. L'algoritmo è il polmone, i dati sono l'aria, e un polmone nel vuoto non è
+niente. E torna la domanda di questa sezione, «perché proprio adesso»:
 come l'ossigeno, i dati sono rimasti lì un pezzo prima che qualcosa imparasse a
 respirarli.
 

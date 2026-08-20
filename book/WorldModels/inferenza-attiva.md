@@ -10,7 +10,7 @@ Esiste un modo di guardare la faccenda in cui quella separazione non c'è, e i
 due mestieri sono lo stesso mestiere. Non nasce nell'informatica ma nelle
 neuroscienze teoriche, si chiama **inferenza attiva** e la sua trattazione
 d'insieme è un libro di Thomas Parr, Giovanni Pezzulo e Karl Friston
-{cite}`parr2022active`. Vale la pena dedicargli una sezione, non perché sia il
+{cite}`parr2022active`. Conviene dedicargli una sezione, non perché sia il
 modo in cui oggi si costruiscono i sistemi (non lo è, e più avanti lo diciamo
 senza giri di parole) ma perché risponde alla domanda del capitolo da
 un'angolatura che le due tappe precedenti non hanno: **a che cosa serve, in
@@ -287,11 +287,11 @@ posto, la fisica statistica, e i due conti in qualche punto si toccano; ma
 scambiarle porta fuori strada, e chi legge «energia libera» pensando al
 buttafuori si perde.
 
-Chi segue anche il livello Superiore ha un motivo in più per stare attento,
-perché la confusione ha un appiglio tipografico: nella sezione precedente,
-quella sulla JEPA, la lettera $F$ indica l'energia di una coppia (presente,
-futuro), mentre qui $F$ è l'energia libera variazionale. Stessa lettera, stesso
-capitolo, due grandezze senza parentela.
+La confusione ha anche un appiglio tipografico, ed è meglio toglierlo di
+mezzo: la sezione sulla JEPA scrive $\mathcal{E}$ per l'energia di una coppia
+(presente, futuro), e qui $F$ è l'energia libera variazionale. Due lettere
+diverse per due grandezze diverse, e non è un vezzo: sono le due «energie» che
+questo riquadro invita a non scambiare.
 ```
 
 ## Onestà sui limiti
@@ -310,7 +310,7 @@ quadro «non mira a rimpiazzare altri quadri di riferimento, come la psicologia
 comportamentale, la teoria delle decisioni e l'apprendimento per rinforzo»,
 piuttosto spera di comprenderli. Diverse cose che il libro ha già visto si
 riottengono infatti come casi particolari, e la sezione sull'esplorazione, nel
-capitolo sul deep reinforcement learning, ne mostra una.
+{doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`, ne mostra una.
 
 **Una cornice che spiega tutto va maneggiata con cura.** Una teoria che
 riconduce percezione, azione, apprendimento, attenzione e omeostasi allo stesso

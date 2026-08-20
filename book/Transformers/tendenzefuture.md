@@ -20,7 +20,7 @@ parla con ogni altra costa troppo sui testi lunghi, perché raddoppiando le
 parole le conversazioni quadruplicano, e questo spinge a cercare modi più
 economici di far comunicare le parti di un testo.
 
-Del primo cantiere vale la pena vedere da vicino il metodo più elegante, che si
+Del primo cantiere conviene vedere da vicino il metodo più elegante, che si
 chiama **distillazione**: si prende un modello grande e bravo, lo si mette a
 fare il maestro, e se ne addestra uno piccolo a imitarlo.
 
@@ -81,9 +81,9 @@ ritocco finale.
 
 ## Pensare più a lungo sulle cose difficili
 
-C'è un filone che vale la pena isolare, perché nasce da un'osservazione così
-semplice da sembrare ingenua e perché la sua storia insegna qualcosa su come
-procede questo campo.
+C'è un filone da isolare, perché nasce da un'osservazione così semplice da
+sembrare ingenua e perché la sua storia insegna qualcosa su come procede
+questo campo.
 
 `````{tab} Elementare
 
@@ -195,7 +195,7 @@ Un elenco onesto, da tenere accanto agli entusiasmi:
   fatti. Prudenza, qui, non è modestia di facciata: è il modo in cui si tratta
   un'affermazione che non si sa ancora come verificare.
 
-## Il posto dei Transformer in questo libro
+## Niente di nuovo, tutto in un ordine nuovo
 
 Con questo capitolo si chiude un tratto del percorso tecnico del libro: dai
 neuroni del percettrone all'attenzione, ogni pezzo dei Transformer è un

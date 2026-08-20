@@ -6,9 +6,11 @@ artificiale che impara a riconoscere forme dagli esempi. Il *New York Times*
 scrive che è l'embrione di un computer elettronico capace, un giorno, di
 camminare, parlare e riprodursi. Due anni dopo l'idea prende corpo in una
 macchina grande come un armadio, il *Mark I Perceptron*. Davanti c'è una
-griglia di quattrocento fotocellule, che è l'occhio. Dietro, il filo di ogni
-fotocellula finisce su una manopola, e girare quella manopola vuol dire
-cambiare quanto conta ciò che quella fotocellula vede. A girarle, ogni volta
+griglia di quattrocento fotocellule, che è l'occhio. Dietro non ci sono
+quattrocento manopole ma cinquecentododici: le fotocellule sono collegate a
+caso, con fili fissi, a un banco di unità intermedie, e regolabili sono le
+manopole di quelle. Girarne una vuol dire cambiare quanto conta il verdetto di
+un'unità, non di un singolo puntino di luce. A girarle, ogni volta
 che la macchina sbaglia, è un motorino: l'apprendimento, lì, era fatto di
 ferro. Il clamore era smisurato, e lo pagheremo caro qualche
 pagina più avanti. Ma sotto c'è un'idea sobria e duratura, che ancora oggi è il
@@ -107,7 +109,7 @@ conto della giornata di prima e vedi che non è cambiato niente:
 $0{,}3 \cdot 7 + 2 \cdot 1 - 2{,}5 = 1{,}6$, che è sopra zero, e l'ombrello lo
 prendi come prima.
 
-E adesso la cosa che vale la pena vedere con gli occhi, perché tutto il resto
+Adesso la cosa da vedere con gli occhi, perché tutto il resto
 del capitolo ci si appoggia. Prendi un foglio a quadretti e mettici i due
 indizi dell'ombrello, la nuvolosità in orizzontale e l'app in verticale: ogni
 giornata diventa un puntino. L'app ha due sole risposte, e anche quelle
@@ -179,8 +181,8 @@ perché così anche il bias si corregge con la regola degli altri pesi, che è
 quella della prossima pagina.
 ```
 
-La freccia di ritorno in {numref}`fig-neurone-con-retroazione` è, in miniatura,
-tutto ciò che questo libro chiamerà addestramento. Cambierà la funzione al
+La freccia di ritorno in {numref}`fig-neurone-con-retroazione` è, in
+miniatura, tutto ciò che si chiama addestramento. Cambierà la funzione al
 posto del gradino, cambierà il modo di calcolare la correzione, ma lo schema
 resta: si misura lo scarto dalla risposta attesa e lo si rimanda sui pesi.
 
@@ -271,9 +273,12 @@ iperpiano che li separa. Rosenblatt lo dimostra in *Principles of
 Neurodynamics* (1962) {cite}`rosenblatt1962principles`, non nell'articolo del
 1958 che presenta il modello. Il teorema dice di più di quanto sembri, nella
 forma che si deve a Novikoff {cite}`novikoff1962convergence`: il numero di
-correzioni è al più $(R/\gamma)^2$, dove $R = \max_i \lVert\mathbf{x}_i\rVert$ è
+correzioni, partendo da $\mathbf{w}=\mathbf{0}$, è al più $(R/\gamma)^2$, dove
+$R = \max_i \lVert\mathbf{x}_i\rVert$ è
 la norma massima degli esempi e $\gamma$ il margine **geometrico** del miglior
-separatore, cioè la distanza fra quell'iperpiano e il punto più vicino
+separatore, cioè quanto è largo il corridoio vuoto fra le due classi (la
+distanza dall'iperpiano al punto più vicino, misurata nello stesso spazio in
+cui si vive dopo aver assorbito il bias)
 ($\gamma = \min_i |\mathbf{w}^{*\top}\mathbf{x}_i|$ con
 $\lVert\mathbf{w}^*\rVert = 1$: senza quel vincolo il rapporto non sarebbe
 nemmeno un numero puro, perché basterebbe raddoppiare $\mathbf{w}^*$ per
@@ -285,13 +290,14 @@ quel limite **non compaiono né il numero di esempi né la dimensione**: quel ch
 conta è quanto è sottile il corridoio fra le due classi, e raddoppiare il
 dataset non raddoppia il lavoro. E non dice l'altra metà: l'iperpiano trovato è uno
 qualunque fra quelli che separano, senza alcuna garanzia di margine, che è
-esattamente la differenza con le SVM del capitolo precedente. Il seme
+esattamente la differenza con le
+{doc}`Support Vector Machine </MachineLearning/svm>`. Il seme
 dell'apprendimento moderno è già qui, anche se la discesa del gradiente su loss
 differenziabili verrà dopo.
 
 `````
 
-Tradotta in NumPy (la libreria di calcolo del capitolo su Python), la ricetta è
+Tradotta in NumPy (la libreria di calcolo del {doc}`capitolo su Python </Python/overview>`), la ricetta è
 quasi identica a come l'abbiamo raccontata:
 
 ```python
@@ -526,7 +532,7 @@ sigmoide: sono loro, insieme al percettrone multistrato (MLP) e all'algoritmo
 che lo addestra, la *backpropagation*, il tema delle prossime due sezioni.
 
 La {numref}`fig-xor-si-piega` fa vedere il passaggio per intero, ed è la
-risposta che aspettavamo da tre pagine: lo XOR risolto. Vale la pena capire il
+risposta che aspettavamo da tre pagine: lo XOR risolto. Conviene capire il
 trucco, perché è lo stesso di tutto il deep learning.
 
 I due neuroni del primo strato tracciano due righe parallele, e lasciano fra
@@ -572,10 +578,8 @@ finiti nello stesso posto, i due con uscita $0$ ai lati opposti, e lì il
 neurone di uscita li separa con una retta sola. I due neuroni nascosti sono
 scelti a mano, e le loro formule si leggono in fondo alla figura; i pesi del
 neurone d'uscita no, li trova la discesa del gradiente, il metodo di
-aggiustamento automatico di cui parla la sezione sulla backpropagation. Il
-programma che
-disegna la figura esegue poi la rete sui quattro ingressi e controlla che
-risponda $0, 1, 1, 0$.
+aggiustamento automatico di cui parla la sezione sulla backpropagation. Messi in fila i quattro ingressi, la rete risponde $0, 1, 1, 0$: lo XOR, per
+intero.
 ```
 
 `````{tab} Elementare

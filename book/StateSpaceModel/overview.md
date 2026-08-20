@@ -10,7 +10,7 @@ vasca, un suono, una sequenza di parole) in uno **stato** interno, e da quello
 prevedono il futuro. È la matematica dei filtri di Kalman che portarono
 l'Apollo sulla Luna. Che cosa ci fa in un libro sull'intelligenza artificiale?
 
-Ci fa che risolve il problema lasciato aperto dal capitolo sui Transformer.
+Ci fa che risolve il problema lasciato aperto dal {doc}`capitolo sui Transformer </Transformers/overview>`.
 Là, per capire una frase, ogni parola guarda tutte le altre: raddoppiare la
 lunghezza del testo **quadruplica** il lavoro, e su un testo molto lungo il
 conto diventa proibitivo. Serve una macchina che legga lungo restando veloce,
@@ -113,12 +113,12 @@ sopra, decidendo di volta in volta che cosa vale la pena scrivere.
 Il confronto di {numref}`fig-attenzione-vs-ssm` mostra anche dove sta il
 prezzo. Un riassunto di taglia fissa deve, prima o poi, dimenticare qualcosa.
 Il primo dei due fili che attraversano il capitolo è la **selettività** (il
-rombo sul lato destro della
-figura): decidere *cosa* scrivere nello stato, e cosa lasciar cadere, in
-funzione di ciò che sta arrivando. Vale la pena essere precisi su che cosa
-promette, perché è facile chiedere troppo alla selettività: cambia *come* si
-usa lo spazio del riassunto, non lo allarga. Il tetto di un riassunto di
-taglia fissa resta, ed è l'argomento dell'ultima sezione del capitolo.
+rombo sul lato destro della figura): decidere *cosa* scrivere nello stato, e
+cosa lasciar cadere, in funzione di ciò che sta arrivando. Conviene essere
+precisi su che cosa promette, perché è facile chiedere troppo alla
+selettività: cambia *come* si usa lo spazio del riassunto, non lo allarga. Il
+tetto di un riassunto di taglia fissa resta, ed è l'argomento dell'ultima
+sezione del capitolo.
 
 Il secondo filo è una parentela. Alla fine, con **Mamba-2**
 {cite}`dao2024mamba2`, vedremo che non è una somiglianza vaga: un *state space
@@ -135,7 +135,7 @@ rendendo il sistema *selettivo*, per dargli qualcosa che a S4 mancava: la
 capacità di scegliere, in base al contenuto, cosa ricordare e cosa dimenticare
 {cite}`gu2023mamba`.
 
-## Come è organizzato il capitolo
+## Dai sistemi dinamici a Mamba
 
 Quattro tappe, dall'idea di base alla frontiera.
 
@@ -162,7 +162,7 @@ architetture **ibride** che oggi mettono insieme il meglio delle due strade.
 ```{admonition} Da ricordare
 :class: important
 - Un **modello a spazio degli stati** (in sigla **SSM**) riassume tutto quello
-  che ha letto in una specie di taccuino di dimensione **sempre uguale**, e a
+  che ha letto in una specie di foglio di dimensione **sempre uguale**, e a
   ogni parola lo aggiorna. Sono le stesse equazioni con cui l'ingegneria
   descrive un termostato o la traiettoria di un razzo; **S4** {cite}`gu2022s4`
   le porta dentro una rete neurale, ed è il primo a riconoscere legami fra

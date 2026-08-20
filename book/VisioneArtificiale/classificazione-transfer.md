@@ -82,8 +82,7 @@ l'algoritmo: sono i **dati** e il **tempo**.
 
 L'idea del transfer learning è semplice: invece di ripartire da zero,
 prendiamo una rete già addestrata su un grande dataset (quasi sempre ImageNet)
-e la adattiamo al nostro compito. Funziona per una ragione precisa, che vale
-la pena capire.
+e la adattiamo al nostro compito. Funziona per una ragione precisa, da capire.
 
 `````{tab} Elementare
 
@@ -236,7 +235,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.fc.parameters(), lr=1e-3)
 ```
 
-L'addestramento è il **training loop** del capitolo su PyTorch, il ciclo che
+L'addestramento è il **training loop** del {doc}`capitolo su PyTorch </PyTorch/overview>`, il ciclo che
 mostra alla rete un mucchietto di immagini alla volta, guarda quanto ha
 sbagliato e sposta i suoi numeri un pochino nella direzione giusta. «Un
 pochino» quanto, lo decide un valore che si chiama *learning rate*, alla

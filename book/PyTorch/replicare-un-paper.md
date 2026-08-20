@@ -12,7 +12,7 @@ matrice, e la matrice ha una forma precisa.
 Quello che questa sezione insegna è un **metodo**, ed è la cosa più
 trasferibile che si possa imparare qui dentro. Il modello su cui lo mettiamo
 alla prova usa due strati che il libro spiegherà più avanti: la
-**convoluzione**, nel capitolo sul deep learning, e l’**attenzione
+**convoluzione**, nel {doc}`capitolo sul deep learning </DeepLearning/overview>`, e l’**attenzione
 multi-testa**, in quello sui Transformer.
 
 Non serve sapere che cosa facciano dentro. Contano come scatole di cui si
@@ -151,7 +151,7 @@ class IncorporazionePatch(nn.Module):
 ```
 
 La colonna di commenti a destra del `forward` è la terza mossa in atto, il
-metro da falegname, e vale la pena leggerla ad alta voce. `B` è il numero di
+metro da falegname, e conviene leggerla ad alta voce. `B` è il numero di
 immagini nel vassoio, e resta uguale per tutto il percorso. Si entra con
 $(B, 3, 224, 224)$, cioè immagini a tre colori da 224 pixel di lato. La
 convoluzione dà $(B, 768, 14, 14)$: la griglia si è ridotta a 14 per 14, che
@@ -216,7 +216,7 @@ esattamente il tipo di nota che fa fallire una replica.
 
 Le equazioni 2 e 3 descrivono il blocco che poi si ripete dodici volte, e in
 esse compaiono tre sigle e due parole che il libro spiegherà per esteso nel
-capitolo sui Transformer. Qui bastano una riga a testa. **MSA** è l'attenzione
+{doc}`capitolo sui Transformer </Transformers/overview>`. Qui bastano una riga a testa. **MSA** è l'attenzione
 multi-testa, cioè la scatola in cui i quadratini si guardano fra loro e ognuno
 raccoglie qualcosa dagli altri. **MLP** è una coppia di strati come quelli già
 visti, che lavora su ogni posizione per conto suo. **LN** è la
@@ -296,7 +296,7 @@ n_parametri = sum(p.numel() for p in modello.parameters() if p.requires_grad)
 print(f"{n_parametri:,}")                          # 85,797,120
 ```
 
-Il conto torna, e vale la pena rifarlo a mano una volta, perché è il tipo di
+Il conto torna, e conviene rifarlo a mano una volta, perché è il tipo di
 verifica che smaschera qualunque svista:
 
 Nella prima riga i due $768$ sono i due numeri diversi di cui si diceva poco
@@ -316,16 +316,16 @@ scelta degli autori). Che siano uguali resta una coincidenza.
 | **12 blocchi** | $12 \cdot 7\,087\,872$ | $85\,054\,464$ |
 | **Totale** | $590\,592 + 768 + 151\,296 + 85\,054\,464$ | $\mathbf{85\,797\,120}$ |
 
-Due righe hanno un fattore che sembra piovere dall'alto, e vale la pena
+Due righe hanno un fattore che sembra piovere dall'alto, e conviene
 scioglierlo perché il testo invita a rifare il conto a mano. Il **4**
-dell'attenzione conta quattro proiezioni della stessa forma
-$768 \times 768$ più bias: tre servono a produrre le tre versioni di ogni
-elemento della sequenza che l'attenzione mette in gioco, la quarta a
-ricomporre il risultato. Il **2** della LayerNorm è perché una
-normalizzazione, dopo aver riportato i numeri su una scala standard, li
-riscala di nuovo con due parametri imparati per canale, un moltiplicatore e
-uno spostamento: due numeri per ciascuno dei $768$ canali, e i normalizzatori
-per blocco sono due, da cui $2 \cdot 2 \cdot 768$.
+dell'attenzione conta quattro proiezioni della stessa forma $768 \times 768$
+più bias: tre servono a produrre le tre versioni di ogni elemento della
+sequenza che l'attenzione mette in gioco, la quarta a ricomporre il risultato.
+Il **2** della LayerNorm è perché una normalizzazione, dopo aver riportato i
+numeri su una scala standard, li riscala di nuovo con due parametri imparati
+per canale, un moltiplicatore e uno spostamento: due numeri per ciascuno dei
+$768$ canali, e i normalizzatori per blocco sono due, da cui
+$2 \cdot 2 \cdot 768$.
 
 Poco meno di $86$ milioni: è il numero che dichiara il paper. Il nostro conto,
 però, si è fermato prima di due pezzi finali, e sono quelli che ci mancano per
@@ -342,11 +342,10 @@ $$
 85\,797\,120 + 1\,536 + (768 \cdot 1000 + 1000) = 86\,567\,656,
 $$
 
-ed è esattamente il numero che quel modello riporta, fino all'ultima cifra.
-Vale la pena notare che il $+K$ in coda non è un dettaglio decorativo:
-scordarsi i mille bias della testa farebbe chiudere il conto mille parametri
-sotto, e in una verifica che si vanta di essere esatta all'unità mille
-parametri si vedono.
+ed è esattamente il numero che quel modello riporta, fino all'ultima cifra. Il
+$+K$ in coda non è un dettaglio decorativo: scordarsi i mille bias della testa
+farebbe chiudere il conto mille parametri sotto, e in una verifica che si
+vanta di essere esatta all'unità mille parametri si vedono.
 
 Se invece il nostro conteggio fosse uscito attorno ai $43$ milioni sapremmo,
 senza dover fare ipotesi, di aver usato sei blocchi invece di dodici; se fosse
@@ -377,7 +376,7 @@ spesso non lo è, e non per colpa di chi ci prova.
 
 Il ViT è un caso esemplare proprio in questo. La tesi dell'articolo è che
 l'architettura raggiunge o supera le reti convoluzionali (le **CNN**, la
-famiglia di modelli per immagini del capitolo sul deep learning) **solo dopo**
+famiglia di modelli per immagini del {doc}`capitolo sul deep learning </DeepLearning/overview>`) **solo dopo**
 essere stata addestrata una prima volta su quantità di dati enormi, e solo
 allora rifinita sul compito che interessa: è quello che si chiama
 *pre-addestramento*. Nel paper quelle quantità sono ImageNet-21k, o il
@@ -485,7 +484,7 @@ soprattutto **si annota anche quello che non ha funzionato**: è la metà che
 nessuno scrive, ed è l'unica che impedisce di riprovare fra due settimane la
 stessa cosa senza ricordarsene.
 
-Gli strumenti che tracciano gli esperimenti (nel capitolo su MLOps) rendono
+Gli strumenti che tracciano gli esperimenti (nel {doc}`capitolo su MLOps </MLOps/overview>`) rendono
 tutto questo cercabile e condivisibile, e non c'è ragione di non usarli. Ma
 registrano bene i **parametri** e i **numeri**, e non registrano l'unica cosa
 che non si può ricostruire dopo: **perché** si era provato. Quella va scritta a

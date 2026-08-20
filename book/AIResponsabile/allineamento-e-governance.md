@@ -1,7 +1,7 @@
 # Allineamento e governance: dai valori umani alle regole
 
 Nel dicembre 2016 alcuni ricercatori di OpenAI addestrano un agente a giocare
-a *CoastRunners*, una gara di motoscafi {cite}`openai2016faulty`. L'obiettivo
+a *CoastRunners*, una gara di motoscafi {cite}`clark2016faulty`. L'obiettivo
 dichiarato era semplice: vincere la corsa. Ma il punteggio del gioco non
 premiava l'arrivo: premiava il colpire una serie di bersagli disseminati lungo
 il percorso. L'agente lo
@@ -120,8 +120,8 @@ peggio, non solo giudicata peggio. **Secondo**: il giudice il merito lo vede,
 però ci somma un premio per la lunghezza, e quel premio non smette mai di
 crescere. Questa è la deformazione che i giudici automatici ereditano dalle
 persone da cui hanno imparato, che le risposte lunghe tendono a preferirle.
-**Terzo**: il difetto del giudice ce lo siamo messi noi, quindi non stiamo
-scoprendo che esiste.
+Il giudice, insomma, ha un debole per le risposte lunghe, e gliel'abbiamo dato
+noi.
 
 Quel che l'esperimento misura è un'altra cosa, e non è affatto ovvia: **quanto
 danno fa quel difetto al crescere della pressione con cui si ottimizza**. La
@@ -192,10 +192,9 @@ soltanto un pregio.
 È la legge di Goodhart in una tabella. Finché la pressione è bassa, il
 surrogato e l'obiettivo vero indicano quasi la stessa direzione. Alzandola, la
 ricerca del massimo si sposta proprio dove il giudice si sbaglia di più, e da
-lì in poi ogni punto guadagnato su di lui è pagato da chi legge. La lezione di
-progetto è scomoda e vale ben oltre questo giocattolo: **non è vero che
-ottimizzare di più sia meglio**, ed esiste una quantità di ottimizzazione oltre
-la quale il sistema peggiora mentre il suo punteggio migliora. Gli stessi conti
+lì in poi ogni punto guadagnato su di lui è pagato da chi legge. Oltre un certo punto, quindi, il sistema peggiora mentre il suo punteggio
+migliora. Non è vero che ottimizzare di più sia sempre meglio, ed è una cosa
+che vale ben oltre questo giocattolo. Gli stessi conti
 fatti sui giudici automatici veri, quelli addestrati sui giudizi delle persone,
 danno una tabella della stessa forma {cite}`gao2023scaling`.
 
@@ -414,8 +413,8 @@ tipo sono gli **attacchi**: qualcuno costruisce apposta l'input per far
 comportare male il modello. Con un gioco di ruolo astuto lo si convince ad
 aggirare le sue regole (*jailbreak*); oppure si nasconde un ordine dentro un
 testo che il modello deve solo leggere (una pagina web, una mail) e lui lo
-scambia per un comando legittimo (*prompt injection*), come racconta per
-esteso la sezione su come si attacca e si difende un modello di linguaggio.
+scambia per un comando legittimo (*prompt injection*), come racconta per esteso
+{doc}`Attaccare e difendere un LLM </AIResponsabile/sicurezza-llm>`.
 La differenza pratica conta: per gli errori
 onesti la difesa è verificare a valle; per gli attacchi è difendere un
 perimetro contro un avversario che ci prova apposta.

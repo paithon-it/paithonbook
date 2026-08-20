@@ -108,8 +108,8 @@ In pratica, scrivendo una pagina:
   capitolo nuovo, la domanda «qui il tempo è il contenuto?» va **posta e
   risposta**: se la risposta è no, si dichiara il capitolo in
   `animazioni/senza-clip.toml` scrivendo perché. Un capitolo a zero clip che
-  non compare là fa fallire il controllo, e non per pignoleria: è già successo
-  che nessuno se lo chiedesse per venticinque capitoli di fila;
+  non compare là fa fallire il controllo, e non per pignoleria: senza quella
+  riga la domanda si salta senza che nessuno se ne accorga;
 - **la firma visiva non si modifica da qui**: colori, tipografia, sfondo
   animato, regole di stampa e lo stile delle figure animate vivono in
   `book/_static/brand`, che è un submodule del design system condiviso col
@@ -161,8 +161,7 @@ tutta vera e restare illeggibile. Il traguardo è che uno se la legga di fila,
 senza fermarsi. Il metro è un buon articolo divulgativo, non una dispensa
 universitaria.
 
-Queste cinque cose sono **difetti**, non questioni di gusto, e una revisione
-che ha riletto tutto il libro le ha trovate ovunque:
+Queste cinque cose sono **difetti**, non questioni di gusto:
 
 - **il periodo lungo con tre subordinate**, che regge la dimostrazione e uccide
   la lettura. Una idea per frase: se una frase ha due «che» e un «il quale»,
@@ -171,8 +170,8 @@ che ha riletto tutto il libro le ha trovate ovunque:
   poi come si chiama: «una rete che passa messaggi ai vicini, il *message
   passing*», non il contrario;
 - **l'attacco di sezione più difficile del resto della pagina.** È il difetto
-  numero uno del libro: chi legge il livello Elementare non ha ancora difese, e
-  proprio lì gli si parla come al Superiore. Stessa cosa per le didascalie
+  che rompe più spesso la lettura: chi legge il livello Elementare non ha
+  ancora difese, e proprio lì gli si parla come al Superiore. Stessa cosa per le didascalie
   delle figure e i riquadri «Da ricordare», che spesso poggiano su un termine
   definito **solo** nella tab Superiore, cioè in un posto che quel lettore non
   aprirà mai;
@@ -187,12 +186,76 @@ Deep Learning) arriva chi non ha basi, ed è lì che si decide se continuerà a
 leggere.
 
 **Se correggi, rileggi.** Una correzione ne introduce di nuove più spesso di
-quanto sembri: rileggendo i capitoli corretti si sono trovati guasti creati
-dalla correzione stessa in sette casi su diciotto. Due accortezze che costano
-poco: cerca la tua correzione in **tutte e due le tab** (il libro dice ogni
-cosa due volte, e riparare solo il Superiore lascia l'errore dove fa più
-danno), e se rendi *precisa* una frase vaga apri prima la fonte, perché una
-frase precisa e sbagliata è peggio di una vaga e innocua.
+quanto sembri, e chi rilegge quello che ha appena corretto trova guasti che
+la correzione stessa ha creato. Due accortezze che costano poco: cerca la tua
+correzione in **tutte e due le tab** (il libro dice ogni cosa due volte, e
+riparare solo il Superiore lascia l'errore dove fa più danno), e se rendi
+*precisa* una frase vaga apri prima la fonte, perché una frase precisa e
+sbagliata è peggio di una vaga e innocua.
+
+## Quello che in una pagina non ci deve stare
+
+Un testo tecnico che si legge bene non è più semplice né più povero di
+analogie: **non marca tipograficamente il ritmo del proprio ragionamento**. Da
+lì questi tetti, che sono vincoli e non preferenze.
+
+- **Niente grassetto su una parola-funzione** (*non*, *solo*, *due*, *mai*,
+  *sempre*). Il grassetto presenta un termine al suo primo uso, una volta
+  sola, e non avvolge mai una frase intera.
+- **Al massimo due «non è X, è Y» per capitolo.** Contano anche le sorelle
+  corte: «non è un dettaglio», «non è un caso», «non è teoria». Usato una
+  volta è una scossa; ripetuto, diventa il ritmo di fondo della voce e smette
+  di segnalare qualcosa.
+- **Al massimo una scheda su dieci apre con «Immagina di…» o «Pensa a…».** Si
+  entra nella scena invece di ordinare al lettore di immaginarla.
+- **Niente formule di riempimento**: «vale la pena…», «conviene notare
+  che…», «va detto che…», «Misurato:». Premettono al fatto l'annuncio del
+  fatto. Non si sostituiscono con un'altra formula: si toglie il costrutto.
+- **Niente triadi di serie** («tre cose, e conviene tenerle distinte»). E una
+  lista a cui si torna si richiama per nome, mai per numero.
+- **Niente sentenza in grassetto seguita dalla sua spiegazione**: è la cadenza
+  di una diapositiva, non di un libro.
+
+**E il libro non parla di sé.** È la riga che conta più di tutte le altre
+messe insieme. Nel corpo del testo non devono comparire:
+
+- «questo libro», «questa pagina», «questa sezione», «più avanti in questa
+  pagina»;
+- i nomi dell'impianto editoriale, «la scheda Elementare», «la tab Superiore»,
+  «il testo comune». Ogni livello deve reggersi da solo, quindi nessuno dei
+  due può rimandare all'altro: chi legge solo l'Elementare non vedrà mai la
+  scheda accanto;
+- la cronaca della lavorazione: «misurato», «rifatto il conto», i controlli
+  automatici, la macchina su cui la prova è stata fatta. Che un numero sia
+  stato misurato lo si dimostra stampandolo;
+- i permessi al lettore: «si può saltare senza perdere il filo», «chi non
+  programma può scorrere». Si autoavverano, e ammettono che quel pezzo non si
+  è saputo giustificare;
+- le sezioni intitolate alla propria struttura. Annunciare il percorso va
+  bene; intitolare una sezione «Come è organizzato il capitolo» no.
+
+Fanno eccezione la Prefazione, la pagina di apertura e le Conclusioni, dove il
+libro ha diritto di presentarsi: e anche lì si parla della promessa al
+lettore, non del processo di redazione.
+
+**Un rimando si nomina e si linka.** Ogni volta che il testo cita un altro
+capitolo o un'altra sezione, quel riferimento va scritto come link MyST
+`{doc}` e deve nominare il bersaglio invece di indicarne la posizione: «la
+sezione sugli ensemble» non invecchia, «la sezione precedente» sì. Punta alla
+**sezione** e non all'apertura del capitolo, quando la cosa promessa sta in
+una sezione precisa; e «capitolo» si dice solo di un capitolo, perché chi
+legge «sezione» resta sulla pagina e chi legge «capitolo» va nell'indice.
+
+**E se togli un capoverso, guarda la cucitura.** Un capoverso spesso apre
+qualcosa che continua più sotto: un ordinale, un nome che scioglie, una lista.
+Togliendolo, quel seguito resta senza il suo principio, e il diff non lo
+mostra. Prima di cancellare, cerca che cosa quel capoverso *introduceva*, e
+apri il file per vedere che cosa resta attaccato sopra e sotto.
+
+L'altro difetto tipico di una riscrittura è la frase che ripete quella dopo,
+quando si sostituisce un pezzo con uno che anticipa il seguito. Il markdown
+resta valido e nessuno se ne accorge, quindi c'è un controllo:
+`python3 scripts/coerenza.py --solo doppioni`.
 
 ## Vedere le proprie modifiche
 

@@ -266,7 +266,7 @@ costo dello stato espanso in HBM.
 
 `````
 
-Vale la pena vedere, ridotta all'osso, la ricorrenza che lo scan calcola in
+Conviene vedere, ridotta all'osso, la ricorrenza che lo scan calcola in
 fretta. Il codice che segue si può leggere anche senza saper programmare: le
 prime righe dicono che cosa entra, e il ciclo `for` (che vuol dire «per ogni
 passo, ripeti quanto segue») è la vasca da bagno di inizio capitolo, quella in
@@ -296,8 +296,7 @@ def ssm_selettivo(x, A, B, C, delta):
 ```
 
 Il ciclo `for` è la forma ricorrente, quella dell'inferenza: costo e memoria
-costanti per token, un aggiornamento dopo l'altro. Ma il capitolo ha promesso
-due volte che quel ciclo si può evitare, e le promesse conviene verificarle.
+costanti per token, un aggiornamento dopo l'altro. Quel ciclo però si può evitare in due modi, e li proviamo tutti e due.
 
 La prima riguarda la sezione precedente: se le regole **non** cambiano da un
 passo all'altro, lo stesso risultato si ottiene con un filtro unico che scorre
@@ -329,7 +328,7 @@ print("ricorrenza vs convoluzione, scarto massimo:",
       (y_ric - y_conv).abs().max().item())
 ```
 
-La seconda promessa è quella di questa sezione: anche quando le regole
+Il secondo modo è quello di questa sezione: anche quando le regole
 cambiano a ogni passo, e il filtro unico non esiste più, il *parallel scan*
 calcola **esattamente lo stesso** vettore `y` del ciclo, raggruppando i passi
 invece di percorrerli in fila.
@@ -509,11 +508,7 @@ Mamba fu sottoposto, ICLR, nel 2024 lo respinse, con un rifiuto che fece
 discutere. Pochi mesi dopo un altro convegno, COLM, lo ha accettato e gli ha
 assegnato un premio come uno dei lavori migliori dell'anno.
 
-Il vaglio, quindi, c'è stato. E resta valido il motivo per cui in queste
-pagine i primati e le misure di velocità non li abbiamo riportati: come sempre
-nella
-ricerca recente, non tutto ciò che il primo articolo annuncia si regge intatto
-alla prova del tempo, mentre i meccanismi sì.
+Il vaglio, quindi, c'è stato.
 
 Di nodi aperti, però, ne restano due. Lo *scan* selettivo non sfruttava appieno
 le unità di calcolo matriciale delle GPU: un dettaglio ingegneristico che

@@ -354,9 +354,11 @@ correzioni). Il limite $\beta_t \to 0$ va invece letto con attenzione, perché
 $\beta_t$ compare **anche nel termine di scrittura**: la transizione si riduce
 sì al puro gate scalare $\alpha_t \mathbf{I}$, ma con la correzione si spegne anche la
 scrittura, e quel che resta è $\mathbf{S}_t = \alpha_t \mathbf{S}_{t-1}$, una memoria che decade
-a zero senza registrare più nulla. La riga «Mamba-2 / RetNet» della tabella
-qui sotto si ritrova assorbendo $\beta_t$ nel valore, cioè scrivendo
-$\tilde{\mathbf{v}}_t = \beta_t \mathbf{v}_t$. Gated DeltaNet vive nel mezzo: dimentica in fretta
+a zero senza registrare più nulla. La riga «Mamba-2 / RetNet» della tabella qui sotto, invece, non si ritrova
+come caso particolare: là il gate scalare la scrittura la fa a piena forza,
+mentre qui la forza di scrittura è la stessa manopola che comanda la
+correzione. Gated DeltaNet contiene la delta rule pura, non il decadimento
+scalare puro. Gated DeltaNet vive nel mezzo: dimentica in fretta
 ciò che non serve più *e* aggiusta con precisione ciò che tiene. La
 parallelizzazione lungo la sequenza si ottiene estendendo la stessa
 rappresentazione WY di DeltaNet, così che anche questa forma più ricca resti
@@ -366,11 +368,9 @@ addestrabile su contesti lunghi.
 
 ## Tutto è regressione online
 
-Fermiamoci a guardare cosa abbiamo costruito, perché qui il capitolo trova il
-suo climax concettuale. Accumulo, gate, delta rule, e la loro combinazione:
-sembrano trucchi diversi, ma sono lo **stesso gesto** visto da angolazioni
-diverse. E quel gesto ha un nome che conosciamo bene dal capitolo sul machine
-learning: è un passo di apprendimento.
+Accumulo, gate, delta rule e la loro combinazione sembrano trucchi diversi, e
+sono lo **stesso gesto** visto da angolazioni diverse. E quel gesto ha un nome che conosciamo bene dal {doc}`capitolo sul machine
+learning </MachineLearning/overview>`: è un passo di apprendimento.
 
 Il titolo della sezione lo dice con le parole di quel capitolo, e conviene
 scioglierle. **Regressione** è il mestiere di indovinare un numero a partire da

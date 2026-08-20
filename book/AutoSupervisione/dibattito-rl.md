@@ -2,24 +2,22 @@
 
 Nella torta della prima sezione l'apprendimento per rinforzo è la ciliegina. È
 un'immagine simpatica e una retrocessione severa: due capitoli di questo libro
-sono dedicati a una decorazione. Vale la pena prenderla sul serio, perché a dirlo
+sono dedicati a una decorazione. Conviene prenderla sul serio, perché a dirlo
 non sono degli estranei al campo, e perché l'argomento che ci sta sotto è
 esattamente quello della prima sezione: quanto è grande la correzione che il
 modello riceve.
 
-Una premessa di metodo, che qui conta più del solito. Questa sezione riporta
-posizioni di persone vive su una questione aperta. Non c'è un verdetto da dare, e
-il libro non ne dà uno: quello che può fare, e che prova a fare bene, è
-riportare ciascun argomento con il nome giusto attaccato. Come si vedrà, non è
-banale nemmeno quello.
+Una premessa, che qui conta più del solito: le posizioni che seguono sono di
+persone vive su una questione aperta, e ciascuna arriva con il nome giusto
+attaccato. Come si vedrà, non è banale nemmeno quello.
 
 ## L'argomento, in due mosse
 
 Le critiche che vengono mosse all'apprendimento per rinforzo «puro» sono quattro,
 e due di esse questo libro le ha già affrontate per esteso: il fatto che una
-ricompensa scritta male venga ottimizzata alla lettera (nel capitolo sul deep
-reinforcement learning e nella sezione sul post-addestramento, dentro il
-capitolo sui Transformer) e il fatto che
+ricompensa scritta male venga ottimizzata alla lettera (nel {doc}`capitolo sul deep
+reinforcement learning </DeepReinforcementLearning/overview>` e nella sezione sul post-addestramento, dentro il
+{doc}`capitolo sui Transformer </Transformers/overview>`) e il fatto che
 imparare per tentativi nel mondo costi un'enormità di esperienza rispetto a
 imparare dentro un modello del mondo (è la tesi del capitolo che segue questo).
 
@@ -106,7 +104,7 @@ quando la comprensione del mondo è già stata costruita altrove, e non va bene
 come modo di costruirla.
 
 Il libro ha già incontrato questa posizione, senza la sua motivazione. Nel
-capitolo sui modelli a energia c'è l'elenco delle quattro rinunce che LeCun
+{doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` c'è l'elenco delle quattro rinunce che LeCun
 ripete nelle sue conferenze, e la quarta dice: abbandonare l'apprendimento per
 rinforzo in favore del **controllo predittivo basato su modello**, cioè
 costruirsi un modello di come va il mondo, pianificare dentro quello, e ricorrere
@@ -181,10 +179,9 @@ campo abbia bisogno di qualcosa in più.
 
 ## Un'attribuzione da rimettere a posto
 
-C'è una tesi che circola attaccata al nome di Karpathy e che non è sua. La
-riportiamo perché è un caso di scuola, ed è lo stesso errore che questo libro
-elenca fra i propri difetti ricorrenti: attribuire una posizione a chi non l'ha
-espressa, perché il racconto suona plausibile.
+C'è una tesi che circola attaccata al nome di Karpathy e che non è sua. Merita di essere raccontata, perché l'errore che la fa circolare è di quelli
+comuni: si attribuisce una posizione a chi non l'ha mai espressa, solo perché
+il racconto suona plausibile.
 
 La tesi è questa: l'apprendimento per rinforzo applicato ai modelli linguistici
 non aggiungerebbe capacità nuove, si limiterebbe a **restringere e selezionare**
@@ -192,7 +189,7 @@ percorsi di ragionamento che il modello aveva già acquisito nel
 pre-addestramento.
 
 È una tesi tecnica precisa, ed è di Yang Yue e colleghi {cite}`yue2025rlvr`.
-Non è un'opinione, è una misura, e vale la pena dire come è fatta perché è la
+Non è un'opinione, è una misura, e conviene dire come è fatta perché è la
 parte interessante.
 
 `````{tab} Elementare
@@ -267,7 +264,7 @@ mentre si discuteva di ciliegine l'apprendimento per rinforzo ha fatto due cose
 grosse, e questo libro le racconta entrambe.
 
 La prima è che gli assistenti conversazionali che tutti usano sono rifiniti
-così. Il capitolo sui Transformer, nella sezione sul post-addestramento, mostra
+così. Il {doc}`capitolo sui Transformer </Transformers/overview>`, nella sezione sul post-addestramento, mostra
 il conto: un modello piccolo ma rifinito sulle preferenze umane batteva, nel
 giudizio delle persone, un modello più di cento volte più grande. Se il
 rinforzo è una ciliegina, è una ciliegina che ha cambiato il sapore della torta.
@@ -285,12 +282,12 @@ colleghi, e le due cose insieme dicono una terza cosa: l'addestramento sposta
 massa di probabilità verso strade che pagano, e questo è utilissimo **e** non è
 la stessa cosa che insegnare una strada nuova.
 
-C'è infine un argomento di prospettiva che vale la pena tenere presente. Le
-critiche di questa pagina riguardano il rinforzo **come unico maestro**, cioè
-l'idea di costruire un sistema per tentativi ed errori a partire da zero.
-Nessuno dei due critici propone questo: la ciliegina è una ciliegina perché
-viene **dopo**, su una torta già cotta. Criticare il rinforzo come unico maestro
-non è quindi criticarlo come rifinitura, e le due frasi si somigliano tanto che
+C'è infine un argomento di prospettiva da tenere presente. Le critiche di
+questa pagina riguardano il rinforzo **come unico maestro**, cioè l'idea di
+costruire un sistema per tentativi ed errori a partire da zero. Nessuno dei
+due critici propone questo: la ciliegina è una ciliegina perché viene
+**dopo**, su una torta già cotta. Criticare il rinforzo come unico maestro non
+è quindi criticarlo come rifinitura, e le due frasi si somigliano tanto che
 vengono scambiate di continuo.
 
 ## Cambiare la quantità, invece di arricchire il premio
@@ -379,7 +376,7 @@ Serve dunque a quello per cui l'abbiamo chiamato in causa: mostrare che la
 povertà del segnale non è una fatalità dell'imparare agendo, ma la conseguenza
 di *quale* quantità si è scelto di ottimizzare. E l'oggetto della discordia, a
 ben vedere, non è se il rinforzo serva, ma se basti a spiegare da dove venga la
-comprensione. Su quella domanda si apre il capitolo sui world model.
+comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </WorldModels/overview>`.
 
 `````{tab} Elementare
 
@@ -441,6 +438,6 @@ comprensione. Su quella domanda si apre il capitolo sui world model.
 Da questo capitolo si esce con un criterio più che con una risposta: prima di
 chiedersi se un modo di addestrare funzioni, conviene chiedersi quanta
 informazione porta il segnale su cui si regge, e a quante scelte quel poco va
-poi diviso. Nel capitolo sui world model il segnale resta la previsione, ma la
+poi diviso. Nel {doc}`capitolo sui world model </WorldModels/overview>` il segnale resta la previsione, ma la
 cosa da prevedere non è più la parte coperta di un dato, è quello che succede
 dopo nel mondo.

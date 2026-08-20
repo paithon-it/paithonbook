@@ -12,13 +12,13 @@ che Baran mette davanti al lettore non è quanti nodi servano: è che forma
 debbano avere.
 
 È la domanda di questa sezione. La precedente ha contato quanto costa una
-squadra di agenti, e in fondo a quel conto ha lasciato una frase che vale la
-pena riprendere: **la forma dello schema decide il ritmo con cui il costo
-cresce**. Se ognuno legge tutto quello che dicono gli altri, il conto sale molto
-più in fretta che se ognuno legge soltanto il proprio pezzo; e non di una
-quantità fissa, ma di un divario che si allarga man mano che la squadra cresce.
-Non cambia il modello, non cambia il numero dei partecipanti: cambia chi parla
-con chi.
+squadra di agenti, e in fondo a quel conto ha lasciato una frase da
+riprendere: **la forma dello schema decide il ritmo con cui il costo cresce**.
+Se ognuno legge tutto quello che dicono gli altri, il conto sale molto più in
+fretta che se ognuno legge soltanto il proprio pezzo; e non di una quantità
+fissa, ma di un divario che si allarga man mano che la squadra cresce. Non
+cambia il modello, non cambia il numero dei partecipanti: cambia chi parla con
+chi.
 
 Un avviso sulla parola, perché in questo capitolo ha due sensi e li ha vicini.
 Nell'apertura «topologica» qualificava la regola degli storni, quella che conta
@@ -112,7 +112,8 @@ rimozione taglia più coppie. In una rete di calcolatori $\ell(v)$ alto signific
 instradatore congestionato; in una squadra di agenti significa una finestra di
 contesto che deve contenere tutto ciò che transita, e questo è un limite più
 duro, perché la qualità della lettura degrada molto prima del limite dichiarato
-(è il *lost in the middle* del context engineering).
+(è il *lost in the middle* del
+{doc}`context engineering </Agenti/context-engineering>`).
 
 Va detto subito fin dove arriva questo vincolo, perché è facile prenderlo per
 una legge e non lo è: è la conseguenza di aver scelto la famiglia di grafi più
@@ -568,13 +569,14 @@ Il sistema si chiama **Hearsay-II**, è stato costruito alla Carnegie Mellon
 University dentro un programma quinquennale sulla comprensione del parlato
 finanziato dalla DARPA, e lo racconta un lungo articolo di rassegna del 1980
 su *ACM Computing Surveys* firmato da Lee Erman, Frederick Hayes-Roth, Victor
-Lesser e Raj Reddy {cite}`erman1980hearsay`. Doveva capire frasi dette a voce, di
-seguito e senza pause, per interrogare una raccolta di riassunti di articoli di
-informatica («*Which abstracts refer to theory of computation?*»), con un
-vocabolario di 1011 parole. Interpretava correttamente il 90% delle frasi di
-prova, e vale la pena sapere quante erano: ventitré, mai sentite prima dal
-sistema. Il novanta per cento di ventitré vuol dire ventuno frasi capite e due
-sbagliate: una percentuale su così pochi casi va letta sapendo questo.
+Lesser e Raj Reddy {cite}`erman1980hearsay`. Doveva capire frasi dette a voce,
+di seguito e senza pause, per interrogare una raccolta di riassunti di
+articoli di informatica («*Which abstracts refer to theory of computation?*»),
+con un vocabolario di 1011 parole. Sbagliava il senso di due frasi su ventitré, cioè ne interpretava
+correttamente il novantuno per cento; e conviene sapere che le frasi di prova
+erano appunto ventitré, mai sentite prima dal sistema: una percentuale su così
+pochi casi va letta sapendo questo. (Contando parola per parola invece che
+frase per frase, l'errore saliva al diciannove per cento.)
 
 `````{tab} Elementare
 
@@ -743,14 +745,14 @@ provare non aggiunge informazione, aggiunge una firma {cite}`cemri2025why`.
 
 ## Coordinarsi senza sapere con chi
 
-Vale la pena isolare ciò che lavagna e mercato hanno in comune, perché è il
-punto più profondo della sezione. Sono **i due modi di coordinarsi senza un
-grafo deciso in anticipo**, e risolvono lo stesso problema in modi speculari. Il
+Conviene isolare ciò che lavagna e mercato hanno in comune, perché è il punto
+più profondo della sezione. Sono **i due modi di coordinarsi senza un grafo
+deciso in anticipo**, e risolvono lo stesso problema in modi speculari. Il
 malinteso da togliere di mezzo subito è che rinuncino ai messaggi diretti: il
-contract net è fatto *soltanto* di messaggi diretti, quattro tipi in croce, e la
-{numref}`fig-multiagente-topologie` disegna le frecce che vanno dal banditore a
-ciascun offerente. A sparire non è il canale, è il progettista che stabilisce in
-anticipo chi scriverà a chi.
+contract net è fatto *soltanto* di messaggi diretti, quattro tipi in croce, e
+la {numref}`fig-multiagente-topologie` disegna le frecce che vanno dal
+banditore a ciascun offerente. A sparire non è il canale, è il progettista che
+stabilisce in anticipo chi scriverà a chi.
 
 La lavagna ci rinuncia togliendo il **destinatario**: nessuno scrive a nessuno,
 ognuno lascia una traccia in uno spazio comune e reagisce alle tracce che ci

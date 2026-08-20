@@ -2,13 +2,11 @@
 
 Il 15 febbraio 2024 OpenAI presenta Sora, un modello che da una descrizione
 testuale genera video fotorealistici fino a un minuto. Come sia fatto dentro
-l'ha già raccontato il capitolo sui Modelli di Diffusione; qui interessa che
+l'ha già raccontato il {doc}`capitolo sui Modelli di Diffusione </ModelliDiffusione/overview>`; qui interessa che
 cosa dimostra. Il rapporto che lo accompagna {cite}`brooks2024video` ha un
 titolo che è una tesi: *Video generation models as world simulators*, i modelli
-di generazione video come simulatori di mondo. È un documento aziendale con
-dimostrazioni scelte da chi le pubblica, non un articolo passato da revisione,
-e conviene dirlo qui perché è lo stesso cartello che fra poco appenderemo a
-Genie. La scommessa è dichiarata nell'ultima riga: continuare a scalare i
+di generazione video come simulatori di mondo. È un documento aziendale con dimostrazioni scelte da chi le pubblica, non un
+articolo passato da revisione. La scommessa è dichiarata nell'ultima riga: continuare a scalare i
 modelli video è «una strada promettente verso lo sviluppo di simulatori capaci
 del mondo fisico e digitale». A sostegno, il rapporto elenca capacità che
 dichiara *emerse* senza essere state programmate: coerenza tridimensionale
@@ -237,7 +235,7 @@ buone finché si resta nelle situazioni su cui la rete si è addestrata, fragili
 appena se ne esce (**fuori distribuzione** si dice appunto di tutto ciò che al
 momento dell'addestramento non c'era).
 
-È l'eco di una prudenza già incontrata nel capitolo sui Transformer, a
+È l'eco di una prudenza già incontrata nel {doc}`capitolo sui Transformer </Transformers/overview>`, a
 proposito di allucinazioni e comprensione: su che cosa i modelli capiscano
 davvero, il dibattito scientifico è tutt'altro che chiuso. Da una parte c'è
 chi, come LeCun, ritiene che serva un'architettura pensata apposta per
@@ -333,23 +331,21 @@ nuove, che è il forte delle menti biologiche, resta fragile. Manca la
 bambino la differenza la esplora da sé, rovesciando bicchieri apposta: vedere
 due cose che vanno sempre insieme è un conto, andarne a toccare una per vedere
 che ne è dell'altra è un altro. Nei modelli quella differenza è ancora poco
-marcata. E manca la **pianificazione a lungo
-orizzonte**: l'errore dei modelli si accumula passo dopo passo, ed è il difetto
-che il capitolo ha incontrato per primo, quando l'agente si allenava dentro una
-copia imprecisa del gioco (in gergo si chiama *model bias*, la piega
-sistematica del modello). I sogni dentro cui si può ancora pianificare sono
-**corti**: una quindicina di passi immaginati per i Dreamer, gli eredi del
-sogno di Ha e Schmidhuber, e un passo solo per il world model che guida il
-braccio robotico. I minuti di cui si parla per i simulatori generativi sono
-un'altra cosa: sono la lunghezza di un video da *guardare*, non di un piano da
-eseguire.
-Nessuna di queste lacune autorizza il
-catastrofismo («è tutto un trucco») né il trionfalismo («è fatta, questione di
-mesi»): autorizzano un cantiere. Se c'è una lezione nelle date di questo
-capitolo (un'idea del 1943 diventata un agente funzionante nel 2018, una rete
-del 1982 premiata con il Nobel nel 2024) è che le idee giuste maturano su
-tempi lunghi, e che saperle riconoscere prima degli altri è esattamente ciò
-per cui vale la pena studiarle.
+marcata. E manca la **pianificazione a lungo orizzonte**: l'errore dei modelli
+si accumula passo dopo passo, ed è il difetto che il capitolo ha incontrato
+per primo, quando l'agente si allenava dentro una copia imprecisa del gioco
+(in gergo si chiama *model bias*, la piega sistematica del modello). I sogni
+dentro cui si può ancora pianificare sono **corti**: una quindicina di passi
+immaginati per i Dreamer, gli eredi del sogno di Ha e Schmidhuber, e un passo
+solo per il world model che guida il braccio robotico. I minuti di cui si
+parla per i simulatori generativi sono un'altra cosa: sono la lunghezza di un
+video da *guardare*, non di un piano da eseguire. Nessuna di queste lacune
+autorizza il catastrofismo («è tutto un trucco») né il trionfalismo («è fatta,
+questione di mesi»): autorizzano un cantiere. Se c'è una lezione nelle date di
+questo capitolo (un'idea del 1943 diventata un agente funzionante nel 2018,
+una rete del 1982 premiata con il Nobel nel 2024) è che le idee giuste
+maturano su tempi lunghi, e che saperle riconoscere prima degli altri è
+esattamente ciò per cui conviene studiarle.
 
 `````{tab} Elementare
 

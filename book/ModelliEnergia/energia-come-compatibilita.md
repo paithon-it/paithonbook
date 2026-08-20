@@ -77,10 +77,8 @@ partizione **condizionata** $Z_\theta(\mathbf{x})$, l'integrale (o la somma) su
 *tutte* le risposte possibili: un parente stretto della $Z(\theta)$ della
 sezione precedente, ma non lo stesso oggetto, perché lì si integrava sui dati
 e qui sulle risposte. Quando $\mathcal{Y}$ è grande o continuo e ad alta
-dimensione ($y$
-= un'immagine, un video, una frase, e allora sarebbe più onesto scriverlo
-$\mathbf{y}$: il libro tiene $y$ tondo perché la stessa formula deve valere
-quando $y$ è un'etichetta), $Z_\theta(\mathbf{x})$ può addirittura non esistere,
+dimensione (una risposta che è un'immagine, un video, una frase),
+$Z_\theta(\mathbf{x})$ può addirittura non esistere,
 e quando esiste è intrattabile: è il muro
 della sezione precedente. La tesi del tutorial è che per decidere, ordinare o
 pianificare serve solo l’$\arg\min$, che di $Z$ non ha alcun bisogno:
@@ -90,9 +88,9 @@ computazionale.
 `````
 
 Due modelli che il capitolo ha già incontrato stanno dentro questa cornice, e
-vale la pena vedere come, perché i due casi sono diversi. La macchina di
-Boltzmann è quello facile: sull'energia si costruisce una probabilità, ed è
-proprio il caso da cui la cornice si libera.
+conviene vedere come, perché i due casi sono diversi. La macchina di Boltzmann
+è quello facile: sull'energia si costruisce una probabilità, ed è proprio il
+caso da cui la cornice si libera.
 
 La memoria di Hopfield è più sottile. Lì l'energia non giudica una coppia:
 guarda una cosa sola, la configurazione della rete. Il frammento rovinato che

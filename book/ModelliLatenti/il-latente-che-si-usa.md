@@ -50,9 +50,9 @@ l’aria della trovata: in certi casi **c’era già**, solo che nessuno l’ave
 chiamata così. Quando il metro con cui si giudica la copia porta dentro di sé
 una misura di quanto si è disposti a sbagliare un pixel, scegliere quella
 misura è già scegliere quanto pesi l’altra voce: chi sceglie il metro gira la
-manopola senza saperlo. Non vale sempre, e il metro usato in questo capitolo è
-uno di quelli che una manopola dentro non ce l’hanno; la scheda accanto dice
-esattamente quando.
+manopola senza saperlo. Non vale sempre. Il metro usato qui giudica ogni pixel come una scommessa fra
+bianco e nero, e una misura così quella manopola dentro non ce l'ha: bisogna
+metterla a mano, ed è quello che facciamo adesso.
 
 Il blocco qui sotto la gira su quattro tacche e guarda che cosa succede, invece
 di raccontarlo.
@@ -168,24 +168,25 @@ e due le parti, il che suggerisce una cosa importante: non esiste un valore
 «giusto» da trovare, c’è solo una scala su cui scegliere dove stare, e la
 scelta dipende da che cosa serve.
 
-**Le righe si spengono, e non a una per volta.** Già al valore standard, quello
-di tutta la sezione precedente, quattro delle otto righe della scheda portano
-zero nat: la rete ha scelto da sé di usarne quattro. Alzando la manopola ne
-resta una in meno, e alla tacca dopo cadono le ultime tre insieme. Chi si aspettava che il latente usasse tutto lo spazio disponibile ha
-un’informazione in più, e vale la pena tenerla: **la dimensione del latente non
-è quella che si dichiara**, è quella che la rete decide di pagare.
+**Le righe si spengono, e non a una per volta.** Già al valore standard,
+quello di tutta la sezione precedente, quattro delle otto righe della scheda
+portano zero nat: la rete ha scelto da sé di usarne quattro. Alzando la
+manopola ne resta una in meno, e alla tacca dopo cadono le ultime tre insieme.
+Chi si aspettava che il latente usasse tutto lo spazio disponibile ha
+un’informazione in più, e conviene tenerla: **la dimensione del latente non è
+quella che si dichiara**, è quella che la rete decide di pagare.
 
 **A quattro, l’archivista ha smesso di scrivere.** Costo zero su tutte le
 righe: è il collasso della posterior, arrivato non per sfortuna ma perché lo
 abbiamo comprato girando una manopola. E c’è una conferma indipendente, che
-viene da due sezioni fa: la ricostruzione a $\beta = 4$ vale **27,1 nat**, che è
-lo stesso costo di chi non guarda la cifra e dichiara per ogni pixel il grigio
-medio di tutte. Non è una coincidenza. A scheda vuota il copista non può fare
-altro che dipingere sempre la stessa cosa, e la cosa che gli conviene dipingere
-è proprio quella media: i due numeri **devono** coincidere. La prova del
-collasso, però, non è il 27,1, è la colonna del costo, che a quella tacca vale
-zero su tutte e otto le righe; il 27,1 è la conferma che arriva da fuori. E
-dice una cosa che vale la pena portarsi via: il collasso non è un modello
+viene da due sezioni fa: la ricostruzione a $\beta = 4$ vale **27,1 nat**, che
+è lo stesso costo di chi non guarda la cifra e dichiara per ogni pixel il
+grigio medio di tutte. Non è una coincidenza. A scheda vuota il copista non
+può fare altro che dipingere sempre la stessa cosa, e la cosa che gli conviene
+dipingere è proprio quella media: i due numeri **devono** coincidere. La prova
+del collasso, però, non è il 27,1, è la colonna del costo, che a quella tacca
+vale zero su tutte e otto le righe; il 27,1 è la conferma che arriva da fuori.
+E dice una cosa che conviene portarsi via: il collasso non è un modello
 brutto, è **nessun modello**.
 
 Il blocco che segue lo fa vedere nel modo più diretto, cioè provando a usare la
@@ -241,14 +242,14 @@ prima e l’ultima si contano **due** caratteri di differenza, uno nella terza
 riga e uno nella sesta, e a occhio non si vedono. La scheda non governa più
 niente.
 
-Con la manopola a uno, invece, succede qualcosa, e vale la pena guardarlo bene
-perché è il punto della sezione. A sinistra c’è uno zero, con il buco aperto in
-mezzo; spostandosi verso destra il buco si chiude, la figura si stringe e si
-sposta di lato, e l’ultima immagine non è più uno zero né si riesce a dire che
-cifra sia. Non è cambiata **una** cosa:
-sono cambiate insieme la forma del tratto, la posizione e l’identità della
-cifra. Quella riga della scheda non è «lo spessore» né «l’inclinazione»: è una
-direzione lungo la quale parecchie cose si muovono insieme.
+Con la manopola a uno, invece, succede qualcosa, e conviene guardarlo bene
+perché è il punto della sezione. A sinistra c’è uno zero, con il buco aperto
+in mezzo; spostandosi verso destra il buco si chiude, la figura si stringe e
+si sposta di lato, e l’ultima immagine non è più uno zero né si riesce a dire
+che cifra sia. Non è cambiata **una** cosa: sono cambiate insieme la forma del
+tratto, la posizione e l’identità della cifra. Quella riga della scheda non è
+«lo spessore» né «l’inclinazione»: è una direzione lungo la quale parecchie
+cose si muovono insieme.
 
 Ed è la regola, non l’eccezione. Chiamiamo **fattori** gli ingredienti di cui un
 dato è fatto e che si vorrebbero tenere separati: per un volto, la luce, quanto
@@ -350,19 +351,20 @@ sulla sequenza di simboli, ed è quel modello, non il VQ-VAE, a generare.
 
 `````
 
-## Dove il libro lo mette al lavoro
+## Quattro macchine, adesso che si sa come sono fatte
 
 Questo capitolo è nato per pagare un debito, e adesso si può fare il conto.
 Quattro punti del libro montano un modello a variabile latente. Due li abbiamo
 già attraversati, e là c’era una promessa al posto della derivazione; due
 arrivano dopo, e adesso possono darla per fatta.
 
-**Nel capitolo sull’audio**, per fabbricare un alfabeto del suono. Là la scheda
+**Nel {doc}`capitolo sull'audio </Audio/overview>`**, per fabbricare un
+alfabeto del suono. Là la scheda
 è fatta di simboli e non di numeri, cioè è il caso in cui il trucco delle
 correzioni della sezione precedente non si applica: è quello del paragrafo qui
 sopra.
 
-**Nel capitolo sul deep reinforcement learning**, dove si impara a decidere da
+**Nel {doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`**, dove si impara a decidere da
 partite già giocate senza poterne giocare di nuove, per l’uso più insolito dei
 quattro: là questa macchina non serve né a generare né a comprimere, serve a
 **recintare**. Le si danno in pasto le mosse che nei dati compaiono davvero, e
@@ -374,7 +376,7 @@ usato come guardiano.
 Gli altri due arrivano dopo, e da qui in avanti li si legge sapendo
 che cosa c’è dentro.
 
-**Nel capitolo sui modelli di diffusione**, per far stare un generatore di
+**Nel {doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`**, per far stare un generatore di
 immagini in un computer di casa. Là all’archivista non si chiede affatto di
 inventare: gli si chiede solo di rimpicciolire le immagini di quarantotto
 volte, così che il generatore vero e proprio possa lavorare su qualcosa di
@@ -384,9 +386,9 @@ piccolissima. È il caso in cui il difetto misurato in questo capitolo, lo
 scarto fra il vocabolario comune e l’insieme vero delle schede, non si risolve:
 si aggira, perché a decidere che cosa esce dalla scheda pensa un altro modello.
 
-**Nel capitolo sui mondi in miniatura**, quelli in cui un programma si allena
-immaginando invece che giocando, per spremere un fotogramma di videogioco in
-trentadue numeri. Là il punto è proprio la proprietà che questo capitolo ha
+**Nel {doc}`capitolo sui world model </WorldModels/overview>`**, i mondi in
+miniatura in cui un programma si allena immaginando invece che giocando, per
+spremere un fotogramma di videogioco in trentadue numeri. Là il punto è proprio la proprietà che questo capitolo ha
 misurato: se la mappa delle schede avesse buchi, la macchina che immagina il
 fotogramma successivo produrrebbe presto una scheda a cui non corrisponde
 nessuna immagine, e il sogno si spezzerebbe dopo pochi passi.

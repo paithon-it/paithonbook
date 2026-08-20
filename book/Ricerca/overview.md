@@ -106,8 +106,8 @@ costo non cresce con la profondità, **si moltiplica** a ogni livello.
 
 ## Perché l’albero esplode, e perché è il problema
 
-Vale la pena mettere dei numeri, perché è la differenza fra un problema
-difficile e un problema che non si affronta affatto.
+Conviene mettere dei numeri, perché è la differenza fra un problema difficile
+e un problema che non si affronta affatto.
 
 Negli scacchi, in una posizione tipica, le mosse legali sono circa
 trentacinque, e una partita dura in media una ottantina di mosse contando
@@ -144,12 +144,12 @@ Il numero di destra in {numref}`fig-albero-futuri` è il motivo per cui questo
 capitolo non parla mai di costruire l’albero: parla sempre di **quale pezzetto
 costruire**.
 
-## Dove sta questo capitolo, e dove finisce
+## Dall'albero dei futuri alle sue potature
 
-Il libro sta per entrare nella parte in cui una macchina non riconosce e non
-scrive: **decide**. E le cose da decidere si dividono secondo che cosa si sa
-del mondo, in un modo che vale la pena avere in testa fin da adesso, perché
-spiega l’ordine dei prossimi capitoli.
+Da qui in avanti una macchina non si limita a riconoscere quello che ha
+davanti: **decide** che cosa fare. E le cose da decidere si dividono secondo che cosa si sa
+del mondo, in un modo da avere in testa fin da adesso, perché spiega l’ordine
+dei prossimi capitoli.
 
 **Il mondo si conosce, ed è piccolo.** Si può passare in rassegna ogni
 situazione possibile e calcolare, per ciascuna, quanto vale: cioè segnare
@@ -167,7 +167,7 @@ paga: bisogna provare e vedere come va. È l’apprendimento per rinforzo, cioè
 punto in cui quel capitolo seguente va a finire, ed è la ragione per cui i due
 stanno uno accanto all’altro.
 
-## Come è organizzato il capitolo
+## Dall'albero dei futuri alle sue potature
 
 Tre sezioni. La prima è la ricerca in un mondo che non ha avversari, dove
 l’unico nemico è la dimensione: si comincia dal cercare a tentoni, si misura
@@ -227,7 +227,7 @@ il più grosso dei tre porta esattamente al capitolo dopo questo.
   {cite}`russell2020artificial`.
 - La ricerca è **pianificazione a modello noto**: si assume di poter
   interrogare la funzione di transizione quante volte si vuole, senza pagare
-  pegno. È l’ipotesi che il capitolo sul reinforcement learning toglierà.
+  pegno. È l’ipotesi che il {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>` toglierà.
 - Rispetto alla programmazione dinamica del capitolo seguente, che calcola il
   valore di **tutti** gli stati, qui si guarda in avanti dal solo stato
   corrente e si decide una mossa sola: è ricerca **locale nel tempo**, e si

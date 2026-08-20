@@ -15,14 +15,14 @@ sviluppatore in carne e ossa. È un compito che nessun completamento di testo,
 per quanto fluente, chiude in un colpo solo: bisogna trovare i file giusti,
 provare, sbagliare, rileggere il messaggio d'errore, correggere. I primi
 sistemi ci riuscivano in una **piccola frazione** dei casi, pochi punti
-percentuali. Un numero così basso non è una delusione, è la notizia: è la prima
-misura pubblica di quanto costi tenere insieme molte mosse di fila.
+percentuali. Un numero così basso non è una delusione, è la notizia: è la
+prima misura pubblica di quanto costi tenere insieme molte mosse di fila.
 Sull'affidabilità di quella misura, però, l'ultima sezione avrà qualcosa da
-ridire, e non è un dettaglio: si scoprirà che una parte di quei pochi successi
-non era stata guadagnata sul campo.
+ridire: si scoprirà che una parte di quei pochi successi non era stata
+guadagnata sul campo.
 
-Quel salto, però, non è il salto fra dire e fare. Il capitolo su visione e
-linguaggio si è appena chiuso su un modello che *fa*: se si tagliano i comandi
+Quel salto, però, non è il salto fra dire e fare. Il {doc}`capitolo su visione e
+linguaggio </VisioneLinguaggio/overview>` si è appena chiuso su un modello che *fa*: se si tagliano i comandi
 di un braccio robotico in gradini, muovere la mano diventa scrivere sette parole
 di fila, e la stessa macchina che compone frasi compone movimenti. Quel modello
 nel mondo ci mette le mani sul serio. Quello che non fa è decidere: l'obiettivo
@@ -50,7 +50,7 @@ un programma vero. È il mondo di SWE-bench, ed è il mondo di questo capitolo.
 
 Prima di andare avanti, mettiamo un paletto che vale per tutto il capitolo. Un
 **modello** è la rete che, dato un testo, ne predice la continuazione: quello
-che abbiamo studiato nel capitolo sui Transformer. Un **agente** è un
+che abbiamo studiato nel {doc}`capitolo sui Transformer </Transformers/overview>`. Un **agente** è un
 *sistema* costruito attorno a un modello: un programma che guarda l'ambiente,
 lascia che il modello decida la mossa successiva, la esegue davvero, osserva
 com'è andata e ricomincia. L’**ambiente** è tutto ciò su cui l'agente può
@@ -62,7 +62,7 @@ dedicato all'automobile.
 ## Dal completare testo all'agire
 
 Il primo passo di un modello fuori da se stesso è stato piccolo e si è visto
-nel capitolo sui Transformer: prima di rispondere, va a cercare qualcosa in un
+nel {doc}`capitolo sui Transformer </Transformers/overview>`: prima di rispondere, va a cercare qualcosa in un
 archivio di documenti e se lo rilegge. Quella mossa ha un nome, **RAG**, e il
 disegno qui sotto è lo schema con cui è stata presentata al mondo.
 
@@ -85,12 +85,12 @@ Il nome dice poco; quel che fa, invece, si dice in una riga: il modello
 conclude**. È già qualcosa che il completamento puro non sa fare, ed è il
 precedente diretto di tutto questo capitolo.
 
-Il «fuori di sé» va preso alla lettera, e vale la pena fermarsi un istante,
-perché è la frattura da cui nasce tutto il resto. Quello che un modello sa lo
-tiene in un enorme mucchio di numeri, fissati durante l'addestramento e non più
-modificabili: si chiamano i **pesi**, e sono la sua memoria di fabbrica. La RAG
-è la prima volta che una parte della conoscenza esce da lì e va a vivere in un
-archivio che si può correggere e aggiornare senza riaddestrare niente.
+Il «fuori di sé» va preso alla lettera, e conviene fermarsi un istante, perché
+è la frattura da cui nasce tutto il resto. Quello che un modello sa lo tiene
+in un enorme mucchio di numeri, fissati durante l'addestramento e non più
+modificabili: si chiamano i **pesi**, e sono la sua memoria di fabbrica. La
+RAG è la prima volta che una parte della conoscenza esce da lì e va a vivere
+in un archivio che si può correggere e aggiornare senza riaddestrare niente.
 
 Perché il completamento di testo, da solo, non basta? Perché rispondere è un
 atto unico e chiuso, mentre agire nel mondo è un processo: richiede più mosse
@@ -329,8 +329,8 @@ restano difficili.
 ## Un antenato: i chatbot a regole
 
 Vale la pena guardarsi indietro, perché l'idea di un sistema che percepisce,
-decide e agisce non nasce con gli LLM. Nel capitolo sul Natural Language
-Processing abbiamo incontrato i primi programmi capaci di sostenere una
+decide e agisce non nasce con gli LLM. Nel {doc}`capitolo sul Natural Language
+Processing </NaturalLanguageProcessing/overview>` abbiamo incontrato i primi programmi capaci di sostenere una
 conversazione, quelli che oggi chiamiamo **chatbot**.
 
 Il primo è **ELIZA**, che negli anni Sessanta rispondeva rigirando le parole
@@ -347,7 +347,7 @@ Erano già agenti, a modo loro. Avevano una percezione, cioè quello che arriva
 dall'esterno; avevano delle azioni, cioè le risposte da dare e la prenotazione
 da fare; e in mezzo avevano una regola che, vista la situazione, sceglieva la
 mossa successiva. Quella regola si chiama **politica** (in inglese *policy*),
-ed è la stessa parola del capitolo sul reinforcement learning, l'apprendimento
+ed è la stessa parola del {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`, l'apprendimento
 per tentativi e ricompense.
 
 `````{tab} Elementare
@@ -386,7 +386,7 @@ un po’ di quelle garanzie.
 
 `````
 
-## Come è organizzato il capitolo
+## Dal ciclo alla valutazione
 
 Le prossime quattro sezioni sviluppano, una alla volta, le parti che qui
 abbiamo solo montato insieme.
@@ -410,7 +410,7 @@ abbiamo solo montato insieme.
   avanti: il capitolo su **MLOps**, che è il mestiere di portare un modello dal
   laboratorio all'uso di tutti i giorni.
 
-Sei punti da portarsi via prima di andare avanti.
+
 
 `````{tab} Elementare
 
@@ -471,7 +471,7 @@ Sei punti da portarsi via prima di andare avanti.
   **in-context learning** rendono eseguibile «usa questo strumento». È però
   un'area giovane {cite}`xi2023rise`, e gli errori si accumulano lungo il
   loop.
-- I **chatbot a regole** del capitolo NLP (ELIZA, sistemi a frame) sono gli
+- I **chatbot a regole** del {doc}`capitolo NLP </NaturalLanguageProcessing/overview>` (ELIZA, sistemi a frame) sono gli
   antenati rigidi: l'agente LLM generalizza la stessa idea con un motore
   linguistico flessibile, guadagnando versatilità e perdendo prevedibilità.
 - Nel resto del capitolo: **tool use**, **RAG avanzato**, **context

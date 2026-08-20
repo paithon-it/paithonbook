@@ -13,16 +13,14 @@ declassava chi aveva studiato in due college per sole donne. Nessuno aveva
 scritto una regola contro le donne. La regola era stata *appresa*, letta nel
 passato dell'azienda e riproposta come profezia.
 
-Prima di procedere, una parola sul titolo. **Bias** è una parola inglese che in
-questo libro compare con tre significati diversi, e qui vuol dire
-*pregiudizio*: quello della storia di Amazon, un trattamento sistematicamente
+**Bias**, qui, vuol dire *pregiudizio*: quello della storia di Amazon, un trattamento sistematicamente
 peggiore riservato a un gruppo di persone. Basta questo per leggere la sezione.
 
 Gli altri due significati riguardano chi ha già letto i capitoli precedenti, e
 restano distinti: non è il bias del neurone (il termine $b$ che nel capitolo
 sulle reti neurali si somma ai pesi e sposta la soglia), e non è il bias del
 compromesso bias-varianza (l'errore sistematico di un modello troppo semplice,
-nel capitolo di Machine Learning). Il secondo in particolare è vicino
+nel {doc}`capitolo di Machine Learning </MachineLearning/overview>`). Il secondo in particolare è vicino
 abbastanza da confondere, e non lo è: un modello troppo semplice non per
 questo discrimina, e un modello che discrimina può essere complicato quanto si
 vuole.
@@ -821,9 +819,8 @@ quantifica cosa costa ciascuna, smaschera quelle che si escludono a vicenda.
 Poi si ferma, e la scelta va fatta in chiaro da qualcuno che se ne assume la
 responsabilità, invece che finire dentro una riga di codice che non legge
 nessuno. Con lo stesso spirito affronteremo, nelle sezioni successive, la
-privacy e la robustezza dei modelli; e chi vuole lo strumento che rende queste
-scelte ispezionabili lo trova nel capitolo sull'interpretabilità, che in questo
-libro viene appena prima.
+privacy e la robustezza dei modelli; e chi vuole lo strumento che rende queste scelte ispezionabili lo trova in
+{doc}`Interpretabilità </Interpretabilita/overview>`.
 
 `````{tab} Elementare
 
