@@ -258,16 +258,16 @@ stocastica, che su una rete profonda raggiunge un punto stazionario e non il
 minimo globale.
 
 Il perimetro di quella scrittura, però, va dichiarato, perché è più stretto del
-libro, e le eccezioni sono istruttive. **Le [GAN](../GAN/overview.md)** non ci
+libro, e le eccezioni sono istruttive. **Le GAN** non ci
 stanno: l'ottimizzazione simultanea di un gioco minimax non equivale a
 minimizzare una singola funzione, ed è la radice della loro instabilità. **Il
-[reinforcement
-learning](../ReinforcementLearning/overview.md)** non ci sta: la distribuzione
+reinforcement
+learning** non ci sta: la distribuzione
 dei dati dipende dalla politica che si sta cercando e l'obiettivo è
 massimizzare un ritorno atteso; perfino nella variante offline, dove un
 campione fisso di traiettorie esiste, l'obiettivo resta un ritorno e non una
 media su coppie. **I
-[modelli a energia](../ModelliEnergia/overview.md)** non ci stanno: la
+modelli a energia** non ci stanno: la
 verosimiglianza che vorrebbero massimizzare contiene una funzione di partizione
 che non si sa calcolare, e si ripiega su surrogati come lo score matching. E
 nemmeno sul versante classico la copertura è totale: $k$-means almeno un
@@ -340,12 +340,12 @@ insieme più di un tipo di dato, il testo con le immagini o col suono) e gli
 agenti. Erano le previsioni più prudenti che si potessero scrivere, e il tempo
 le ha superate comunque: tutte e tre sono entrate nel libro, nessuna
 nella forma prevista. La multimodalità ha un capitolo suo per la coppia che
-conta di più ([visione e
-linguaggio](../VisioneLinguaggio/overview.md)), mentre il suono e la voce di
+conta di più (visione e
+linguaggio), mentre il suono e la voce di
 capitoli ne hanno presi due per conto proprio; gli
-[agenti](../Agenti/overview.md) ne hanno uno, e altri due sono cresciuti
-accanto a quello ([prompt, contesto e loop](../IngegneriaLLM/overview.md) e i
-[sistemi multi-agente](../SistemiMultiAgente/overview.md)).
+agenti ne hanno uno, e altri due sono cresciuti
+accanto a quello (prompt, contesto e loop e i
+sistemi multi-agente).
 
 I modelli di fondazione, in compenso, hanno fatto una fine più curiosa: non
 sono diventati né un capitolo né una sezione. Si sono sciolti dentro quello sui
@@ -419,7 +419,7 @@ elettriche, le riserve d'acqua e quelle poche fabbriche. E sotto sotto la
 questione è politica prima che tecnica: chi ha i mezzi per pagare tutto
 questo?
 
-E una scommessa, una sola: i [modelli del mondo](../WorldModels/overview.md).
+E una scommessa, una sola: i modelli del mondo.
 Un modello normale impara che cosa viene di solito dopo che cosa; un modello
 del mondo prova a imparare le regole con cui una cosa ne fa succedere un'altra,
 e allora può immaginare come andrebbe a finire una mossa che non ha mai visto

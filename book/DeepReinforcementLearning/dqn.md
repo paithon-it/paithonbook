@@ -470,10 +470,84 @@ sovrastima con una lieve **sottostima**.
 
 `````
 
+## Ripassare ciò che sorprende, e giudicare la situazione prima delle mosse
+
+Sul telaio di DQN la ricerca ha montato una famiglia intera di migliorie. Due
+sono entrate nella pratica quasi quanto il Double DQN, e portano un'idea
+ciascuna: una cambia **che cosa si ripassa**, l'altra **come si scompone il
+voto**.
+
+`````{tab} Elementare
+
+Il quaderno degli appunti di prima si ripassa pescando a caso, e a caso vuol
+dire che un'esperienza banale vale quanto una sorprendente. Uno studente vero
+non fa così: ripassa più spesso le pagine dove l'ultimo compito è andato
+peggio. È il **replay con priorità**: ogni esperienza porta un segnalibro
+grande quanto l'errore che la rete ci ha fatto sopra l'ultima volta, la pesca
+premia i segnalibri grandi, e le esperienze appena vissute entrano col
+segnalibro al massimo, così nessuna finisce nel dimenticatoio prima di un
+primo ripasso. Il prezzo c'è: chi ripassa quasi soltanto le pagine dove
+sbaglia si fa un'idea storta del libro intero, e il rimedio è contare i
+ripassi pescati apposta un po' meno di quelli che sarebbero usciti a caso.
+
+L'altra idea spezza il voto in due domande: quanto è buona la situazione, e
+quanto aggiunge ciascuna mossa. Su un rettilineo vuoto guidare bene non
+dipende dalla piccola correzione che dai al volante: conta che il rettilineo è
+tranquillo, e lo sarà per chiunque. La rete **a due rami** impara le due cose
+separatamente e le ricompone solo alla fine: così il giudizio sulla situazione
+si affina a ogni passaggio, anche quando sulle singole mosse non c'è niente da
+imparare, ed è già pronto quando arriva la curva in cui le mosse tornano a
+contare.
+
+`````
+
+`````{tab} Superiore
+
+Il **prioritized experience replay** {cite}`schaul2016prioritized` sostituisce
+il campionamento uniforme dal buffer con
+
+$$
+P(i) \;\propto\; |\delta_i|^{\alpha},
+$$
+
+dove $\delta_i$ è l'ultimo errore TD misurato sulla transizione $i$ e
+$\alpha \ge 0$ dosa quanto la priorità morde ($\alpha = 0$ riporta
+all'uniforme); le transizioni nuove entrano con priorità massima. Il
+campionamento non uniforme distorce però la distribuzione degli aggiornamenti,
+e la correzione è un peso di *importance sampling*
+$w_i = \big(N\, P(i)\big)^{-\beta}$, normalizzato sul massimo del minibatch,
+con $\beta$ portato verso $1$ nel corso dell'addestramento, quando la
+correzione conta di più.
+
+La **dueling network** {cite}`wang2016dueling` spezza la testa della rete in
+due rami, il valore dello stato $V(s)$ e il vantaggio delle azioni $A(s,a)$,
+e li ricompone in
+
+$$
+Q(s,a) \;=\; V(s) + \Big(A(s,a) - \tfrac{1}{|\mathcal{A}|}
+\sum_{a'} A(s,a')\Big),
+$$
+
+dove la sottrazione della media rende identificabile la scomposizione: senza,
+una costante potrebbe passare da $V$ ad $A$ lasciando $Q$ identica. Il
+guadagno è che ogni aggiornamento allena $V$, qualunque azione contenga il
+minibatch: negli stati in cui le azioni più o meno si equivalgono, e in molti
+giochi sono tanti, la rete impara comunque qualcosa che servirà altrove.
+
+Con il Double DQN e altre tre migliorie (i ritorni a più passi, la stima di
+un'intera distribuzione di ritorni al posto della media, l'esplorazione
+tramite rumore nei pesi), questi due pezzi confluiscono in **Rainbow**
+{cite}`hessel2018rainbow`; l'ablazione di quel lavoro indica il replay con
+priorità e i ritorni a più passi come i componenti la cui rimozione costa di
+più all'insieme.
+
+`````
+
 ## I limiti
 
 Molti confini di questo approccio hanno guidato la ricerca successiva, e
-conviene metterli in fila. Oltre alla sovrastima appena vista, ne restano tre.
+conviene metterli in fila. Oltre alla sovrastima del massimo, che il Double
+DQN attenua e basta, ne restano tre.
 
 - **Fame di dati.** Servono decine di milioni di fotogrammi per gioco:
   l'equivalente di settimane di gioco ininterrotto. Un umano impara in pochi
@@ -519,6 +593,10 @@ conviene metterli in fila. Oltre alla sovrastima appena vista, ne restano tre.
   migliore. Il **Double DQN** attenua il difetto facendo dire *quale mossa*
   alla rete che impara e *quanto vale* alla copia congelata; non lo elimina,
   perché le due reti sono parenti strette.
+- Due migliorie con un'idea ciascuna: si ripassa più spesso ciò che ha
+  **sorpreso** (contando un po' meno i ripassi pescati apposta, per non farsi
+  un'idea storta), e si giudica la **situazione** separatamente dalle mosse,
+  così si impara anche dove le mosse non contano.
 - Il risultato storico del 2015: un solo programma, con le stesse manopole di
   regolazione, arriva al livello di un tester umano professionista su molti
   giochi Atari partendo dai soli pixel. Restano i limiti: servono quantità
@@ -547,6 +625,10 @@ conviene metterli in fila. Oltre alla sovrastima appena vista, ne restano tre.
   $\mathbb{E}[\max_a \hat Q] \ge \max_a \mathbb{E}[\hat Q]$. Il **Double DQN**
   fa scegliere l'azione a $\theta$ e valutarla a $\theta^{-}$: *riduce* il bias,
   non lo annulla, perché i due stimatori non sono indipendenti.
+- Il **prioritized replay** campiona con $P(i)\propto|\delta_i|^{\alpha}$ e
+  corregge il bias con pesi di importance sampling; la **dueling network**
+  ricompone $Q = V + (A - \bar A)$ e allena $V$ a ogni aggiornamento. Con
+  Double DQN e altre tre migliorie confluiscono in Rainbow.
 - Il risultato storico (Mnih et al., 2015): livello umano su molti giochi
   Atari partendo dai soli pixel. Restano limiti di efficienza, azioni discrete
   e ricompense rade.

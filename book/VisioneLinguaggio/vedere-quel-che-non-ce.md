@@ -303,8 +303,8 @@ senza aver guardato.
 
 `````{tab} Elementare
 
-Immagina un compito in classe di cui gira da mesi la fotocopia con le soluzioni.
-I voti alti non dicono più chi ha studiato: dicono chi ha visto la fotocopia. In
+Di un compito in classe gira da mesi la fotocopia con le soluzioni: i voti
+alti non dicono più chi ha studiato, dicono chi ha visto la fotocopia. In
 questo campo è successo, ed è documentato. Le prove con cui si misurano questi
 sistemi sono pubbliche, stanno sul web, e sul web questi sistemi si addestrano:
 domande e risposte finiscono nel materiale di studio insieme a tutto il resto.

@@ -38,6 +38,19 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-9-4)=
+
+## 1.9.4 · 20 agosto 2026
+
+### Pagine ampliate
+
+- {doc}`Deep Q-Network (DQN) </DeepReinforcementLearning/dqn>` (Deep Reinforcement Learning). **Il quaderno degli appunti ha imparato a ripassare ciò che sorprende.** Le due migliorie di DQN che mancavano hanno la loro sezione: il replay con priorità, che pesca più spesso le esperienze su cui la rete ha sbagliato di più (contando un po' meno i ripassi pescati apposta, per non farsi un'idea storta), e la rete a due rami, che giudica la situazione separatamente dalle mosse e impara anche dove le mosse non contano. Con le formule, le fonti, e la riga su Rainbow che le mette insieme.
+- {doc}`Prefazione </prefazione>`. **Il triangolo impossibile adesso si vede.** La prefazione chiede di guardare il segno del libro un angolo alla volta, coprendo il resto con una mano; accanto a quel passaggio ora c'è il disegno grande, gli stessi tre tracciati del logo, così la mano ha dove posarsi.
+
+### Correzioni
+
+- **Rifiniture di lettura.** Nelle conclusioni ogni capitolo citato è un link una volta sola, la prima; e in visione e linguaggio due aperture che chiedevano di immaginare la scena adesso ci entrano direttamente.
+
 (v1-9-3)=
 
 ## 1.9.3 · 20 agosto 2026

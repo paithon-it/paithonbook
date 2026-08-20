@@ -48,6 +48,36 @@
 
 versioni:
 
+- versione: "1.9.4"
+  data: 2026-08-20
+  voci:
+
+  - tipo: ampliato
+    pagina: DeepReinforcementLearning/dqn.md
+    testo: >
+      **Il quaderno degli appunti ha imparato a ripassare ciò che sorprende.**
+      Le due migliorie di DQN che mancavano hanno la loro sezione: il replay
+      con priorità, che pesca più spesso le esperienze su cui la rete ha
+      sbagliato di più (contando un po' meno i ripassi pescati apposta, per
+      non farsi un'idea storta), e la rete a due rami, che giudica la
+      situazione separatamente dalle mosse e impara anche dove le mosse non
+      contano. Con le formule, le fonti, e la riga su Rainbow che le mette
+      insieme.
+
+  - tipo: ampliato
+    pagina: prefazione.md
+    testo: >
+      **Il triangolo impossibile adesso si vede.** La prefazione chiede di
+      guardare il segno del libro un angolo alla volta, coprendo il resto con
+      una mano; accanto a quel passaggio ora c'è il disegno grande, gli stessi
+      tre tracciati del logo, così la mano ha dove posarsi.
+
+  - tipo: corretto
+    testo: >
+      **Rifiniture di lettura.** Nelle conclusioni ogni capitolo citato è un
+      link una volta sola, la prima; e in visione e linguaggio due aperture
+      che chiedevano di immaginare la scena adesso ci entrano direttamente.
+
 - versione: "1.9.3"
   data: 2026-08-20
   voci:

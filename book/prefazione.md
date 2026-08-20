@@ -133,7 +133,19 @@ nessuno è il primo. Sono i tre passaggi appena descritti, chi scrive, chi cerca
 l'errore e chi decide, con l'ultimo che rimanda al primo.
 
 E poi c'è la seconda cosa che quel triangolo fa, che è la ragione per cui sta
-su questo libro e non su un altro: è una figura impossibile. Guarda uno qualsiasi dei tre angoli, coprendo con una mano tutto il resto:
+su questo libro e non su un altro: è una figura impossibile.
+
+```{figure} figures/triangolo-di-penrose.svg
+:name: fig-triangolo-penrose
+:alt: Il triangolo di Penrose, tre travi colorate in terracotta, teal e ocra incastrate in un anello triangolare. Ogni angolo, guardato da solo coprendo il resto, mostra due travi che si incontrano in modo corretto; seguendo una trave per l'intero giro le tre giunzioni non si compongono, e l'oggetto non può esistere.
+:width: 52%
+
+Il segno del libro, per esteso. Ogni angolo, preso da solo, si costruisce
+davvero; è il giro intero a non chiudersi.
+```
+
+Guarda uno qualsiasi dei tre angoli ({numref}`fig-triangolo-penrose`),
+coprendo con una mano tutto il resto:
 quello che resta scoperto è corretto, due travi che si incontrano ad angolo
 retto, una davanti e una dietro; si costruisce davvero,
 con dei pezzi di legno. Vale per tutti e tre, uno alla volta. L'impossibilità

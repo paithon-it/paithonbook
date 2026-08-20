@@ -260,7 +260,7 @@ guardato.
 
 `````{tab} Elementare
 
-Immagina uno studente che ha letto migliaia di didascalie di fotografie. Gli
+Uno studente ha letto migliaia di didascalie di fotografie. Gli
 mostri una spiaggia e ti dice che c'è il mare, la sabbia e qualche ombrellone.
 Ha ragione quasi sempre, e non perché abbia guardato: perché nelle didascalie
 di spiaggia ci sono quasi sempre mare, sabbia e ombrelloni. Il giorno in cui
