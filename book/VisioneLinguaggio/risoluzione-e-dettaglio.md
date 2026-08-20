@@ -376,7 +376,8 @@ mentre la sua trascrizione ne costerebbe attorno al migliaio.
 
 Il passo successivo riguarda la ricerca. La RAG (cercare in un archivio i pezzi
 che servono e passarli al modello insieme alla domanda) l'abbiamo costruita
-nella sezione «Cercare per rispondere», e il capitolo sugli agenti la raffinerà
+nella {doc}`sezione «Cercare per rispondere» </Transformers/rag>` del capitolo
+sui Transformer, e il capitolo sugli agenti la raffinerà
 nella sezione sul RAG avanzato: non la rispieghiamo. Qui cambia una cosa sola, ma a
 monte di tutto: **che cosa si mette nell'indice**. L'indice è la copia
 riorganizzata dell'archivio su cui la ricerca lavora davvero. È come quello in
@@ -493,8 +494,6 @@ print(f"  l'encoder confronta {token(lato) ** 2 / coppie:.1f} volte meno coppie"
 print(f"  con pixel shuffle al modello di linguaggio arrivano {tot_ps} token")
 ```
 
-L'uscita è il riassunto numerico della sezione:
-
 ```text
      immagine   token   x token  x attenzione
   224 x 224       256        1x            1x
@@ -508,13 +507,16 @@ L'uscita è il riassunto numerico della sezione:
   con pixel shuffle al modello di linguaggio arrivano 1280 token
 ```
 
-Le tre righe della tabella sono il vincolo; le quattro sotto sono le due
+L'uscita è il riassunto numerico della sezione: le tre righe della tabella
+sono il vincolo, le quattro sotto sono le due
 contromisure. Il tiling compra un encoder che confronta $3{,}2$ volte meno
 coppie, e lo paga con mille token di ridondanza. Attenzione però a non leggere quel $3{,}2$ come un risparmio di lavoro. I
 confronti fra tessere sono solo una parte di quello che l'encoder fa: c'è anche
 il lavoro che spende su ogni tessera per conto suo, e quello cresce con il
 numero delle tessere e basta, quindi il taglio a riquadri, che di tessere ne
-aggiunge mille, lo peggiora. Messi insieme i due conti, il risparmio vero sta
+aggiunge mille, lo peggiora. Messi insieme i due conti (sono gli stessi due
+addendi della soglia $N > 6d$ di poco fa: i confronti fra tessere da una
+parte, il lavoro su ogni tessera dall'altra), il risparmio vero sta
 fra il 5% e il 20%, ed è tanto minore quanto più l'encoder è grosso. Il pixel shuffle, dal canto suo, riporta quei
 $5120$ token a $1280$, meno di un terzo di quanto vedrebbe l'immagine
 monolitica, cioè non tagliata a pezzi. Nessuna delle due ha toccato la prima

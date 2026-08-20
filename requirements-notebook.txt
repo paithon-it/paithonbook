@@ -61,6 +61,13 @@ torchinfo==1.8.0
 # portandosi dietro questa riga.
 xgboost==3.4.1
 
+# `ultralytics` serve al blocco `pt-lento` della famiglia YOLO in
+# `VisioneArtificiale/detection-segmentazione.md` (YOLO26 nano sulla foto di
+# prova inclusa nella libreria). Come gli altri `pt-lento` non entra nei
+# notebook ne' nella CI, e questa riga esiste perche' chi rimisura con
+# `--anche-lenti` trovi la versione con cui il blocco e' stato eseguito.
+ultralytics==8.4.123
+
 # `sentencepiece` non lo importa nessun blocco del libro, e serve lo stesso: e'
 # la dipendenza **opzionale** con cui `transformers` costruisce i tokenizzatori
 # della famiglia Marian (`Transformers/esempi.md`, la traduzione con OPUS-MT).

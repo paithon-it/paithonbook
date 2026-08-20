@@ -442,6 +442,23 @@ cinquantuno, cioè quasi il quattordici per cento in più di quanto sembrava di
 aver speso. È esattamente il tipo di sforamento che si scopre tardi, quando il
 modello tronca la risposta a metà.
 
+Alla selezione per sola rilevanza manca però un occhio: i passaggi più
+rilevanti per la stessa domanda tendono a somigliarsi fra loro, e un budget
+speso su due passaggi quasi uguali è mezzo budget. Il correttivo classico si
+chiama **maximal marginal relevance** (MMR) {cite}`carbonell1998use`: invece
+di prendere i passaggi in ordine di rilevanza, a ogni giro si sceglie quello
+che massimizza
+
+$$
+\lambda \,\mathrm{sim}(p, q) \;-\; (1-\lambda) \max_{p' \in S} \mathrm{sim}(p, p'),
+$$
+
+cioè la somiglianza con la domanda $q$ **meno** la somiglianza con il più
+vicino fra i passaggi $S$ già scelti, pesate da un $\lambda$ fra zero e uno.
+Il secondo termine compra la novità: un passaggio rilevantissimo ma fotocopia
+di uno già dentro perde il posto a favore di uno un po' meno rilevante che
+aggiunge qualcosa. Con $\lambda = 1$ si torna alla pura rilevanza.
+
 Sono poche decine di righe che non «capiscono» nulla, eppure incarnano tre
 scelte di progetto: cosa è obbligatorio, cosa entra per priorità, dove va il
 pezzo più importante. In un sistema reale la rilevanza non è un numero scritto

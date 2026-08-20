@@ -323,7 +323,30 @@ y = r + \gamma\Big(\min_{i=1,2} Q_{\phi'_i}(s', a') - \alpha \log
 $$
 
 che usa, come TD3, il minimo dei due critici e aggiunge il termine di entropia
-$-\alpha\log\pi_\theta$. La temperatura $\alpha$ non va fissata a mano: nella
+$-\alpha\log\pi_\theta$.
+
+L'attore, a sua volta, ha bisogno di far passare il gradiente **attraverso il
+campionamento** dell'azione, che da solo non lo lascia passare. La via è la
+**riparametrizzazione**: l'azione si scrive come funzione deterministica di un
+rumore esterno,
+
+$$
+a = \tanh\!\big(\boldsymbol{\mu}_\theta(s) +
+\boldsymbol{\sigma}_\theta(s) \odot \boldsymbol{\epsilon}\big),
+\qquad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
+$$
+
+così il caso sta tutto in $\boldsymbol{\epsilon}$ e il gradiente scorre lungo
+$\boldsymbol{\mu}_\theta$ e $\boldsymbol{\sigma}_\theta$; è il trucco che il
+libro ritroverà nei {doc}`modelli latenti </ModelliLatenti/overview>` per
+addestrare il VAE. La $\tanh$ schiaccia l'azione nell'intervallo ammesso, e
+non è gratis: cambia la densità, e nel $\log\pi_\theta$ va sottratto il
+termine di correzione $\sum_j \log\big(1-\tanh^2(u_j)\big)$, dove
+$\mathbf{u}$ è l'azione prima dello schiacciamento. Dimenticarlo è l'errore
+d'implementazione classico di SAC, e cade nel punto peggiore: falsa
+l'entropia, cioè proprio il termine che l'algoritmo esiste per dosare.
+
+La temperatura $\alpha$ non va fissata a mano: nella
 versione matura di SAC è **auto-regolata**, ricavata risolvendo un problema
 vincolato che chiede all'entropia media della policy di non scendere sotto un
 valore-obiettivo $\mathcal{H}_0$. Il risultato è un algoritmo robusto e

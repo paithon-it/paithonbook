@@ -98,11 +98,16 @@ $9! = 362\,880$ (il punto esclamativo si legge «fattoriale» e vuol dire
 $9 \times 8 \times 7 \times \ldots \times 1$: nove scelte per la prima casella,
 otto per la seconda, e così via). Di quelle disposizioni, però, solo la metà si
 può raggiungere facendo scorrere le tessere: **181.440**. La ragione è graziosa
-e si controlla su un foglio: ogni mossa scambia il buco con una tessera, cioè
-scambia due cose fra loro, e uno scambio inverte una proprietà della
-disposizione che i matematici chiamano parità. Due configurazioni di parità
-diversa non si possono quindi raggiungere l’una dall’altra, e le disposizioni
-si spaccano in due metà separate. Poche abbastanza da
+e si controlla su un foglio. Ogni mossa scambia il buco con una tessera, cioè
+scambia due cose fra loro, e a ogni scambio una proprietà della disposizione
+che i matematici chiamano parità si inverte, come un interruttore: pari,
+dispari, pari, dispari. Ma ogni mossa sposta anche il buco di una casella, e
+su una scacchiera colorata come quella della dama il buco cambierebbe colore a
+ogni passo: bianco, nero, bianco, nero. I due interruttori scattano insieme.
+Per riportare il buco dove stava (sul suo colore) servono quindi mosse in
+numero pari, cioè scambi in numero pari, e le disposizioni col buco al suo
+posto che chiederebbero un numero dispari di scambi non si raggiungono mai:
+sono esattamente la metà. Poche abbastanza da
 poterle guardare tutte, tante abbastanza da far vedere la differenza fra
 guardarle tutte e non guardarle.
 
@@ -192,8 +197,9 @@ quali strade portino là, non sai se ci sono sensi unici: sai solo in che
 direzione sta, e più o meno quanto è lontana in linea d’aria.
 
 Basta, ma non nel modo che viene in mente per primo. Prendere a ogni incrocio
-la strada che ti avvicina alla torre non va bene: arrivi, e arrivi per una
-strada più lunga del necessario, perché una volta imboccata una direzione non
+la strada che ti avvicina alla torre non va bene: quando va bene arrivi per una
+strada più lunga del necessario, e quando va male ti infili in un vicolo cieco
+puntando dritto alla torre, perché una volta imboccata una direzione non
 torni più a guardare le altre.
 
 Quello che si fa è tenere aperte più strade insieme. Su un foglio segni fin
@@ -246,7 +252,10 @@ tutto il guadagno, ma la memoria resta il vincolo che morde per primo. Sul
 rompicapo delle otto tessere non si vede; su quello delle quindici, che di
 posizioni ne ha dieci mila miliardi, sì, e la via d’uscita è sposare A\* con
 l’approfondimento iterativo della sezione precedente, tenendo un tetto sul
-valore di $f$ invece che sulla profondità.
+valore di $f$ invece che sulla profondità. È l’**IDA\*** di Richard Korf
+{cite}`korf1985depth`, ed è stato il primo metodo a trovare, dentro limiti di
+tempo e di memoria praticabili, soluzioni ottime di istanze del quindici
+generate a caso.
 
 La proprietà che serve a $h$ ha un nome: è **ammissibile** se non sovrastima
 mai, cioè se $h(n) \le h^*(n)$ per ogni $n$, dove $h^*(n)$ è il costo vero del
@@ -394,7 +403,9 @@ sola: se l’algoritmo quel secondo numero lo guarda oppure no.
 :width: 100%
 
 La stessa ricerca, sullo stesso rompicapo, senza e con la stima. La riga
-obliqua è la soluzione: per una posizione che sta sopra, i passi già fatti più
+obliqua è la soluzione, cioè la fila dei punti in cui passi fatti e passi
+stimati sommano a venti, quante sono le mosse della strada giusta: per una
+posizione che sta sopra, i passi già fatti più
 quelli stimati superano già la lunghezza della soluzione intera, e aprirla è
 tempo perso. Senza la stima la ricerca ci finisce di continuo; con la stima non
 ci mette piede, ed è proprio la garanzia che A\* dà.
@@ -408,7 +419,10 @@ quanto un’altra alla stessa distanza dalla partenza.
 
 E il confronto fra le due stime ha una regola sola, che si legge nella loro
 definizione: contare i passi è **sempre almeno quanto** contare le tessere
-fuori posto, perché una tessera fuori posto dista almeno un passo. Fra due euristiche consistenti, quella che dà sempre il numero più grande
+fuori posto, perché una tessera fuori posto dista almeno un passo. Tutte e due,
+poi, sono stime senza salti: da una mossa alla successiva cambiano al massimo
+di uno, ed è la proprietà che i matematici chiamano **consistenza**. Fra due
+euristiche consistenti, quella che dà sempre il numero più grande
 **domina** l'altra: A\* non apre mai più stati con la dominante che con
 l'altra, perché apre comunque tutti quelli per cui i passi fatti più la stima
 stanno sotto il costo della soluzione, e alzare la stima quell'insieme lo

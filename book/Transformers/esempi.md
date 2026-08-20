@@ -149,19 +149,19 @@ recensioni = [
 for r in recensioni:
     esiti = giudice(r)[0]                       # lista, ordinata per punteggio
     vincente = esiti[0]
-    coda = "  ".join(f"{e['label']} {e['score']:.2f}" for e in esiti[:3])
+    coda = "  ".join(f"{e['label']} {e['score']:.3f}" for e in esiti[:3])
     print(f"{r!r}\n   -> {vincente['label']}   [{coda}]")
 ```
 
 ```text
 'Mi è piaciuto moltissimo questo prodotto!'
-   -> 5 stars   [5 stars 0.64  4 stars 0.31  3 stars 0.04]
+   -> 5 stars   [5 stars 0.639  4 stars 0.314  3 stars 0.042]
 'Questo prodotto è stato una delusione totale.'
-   -> 1 star   [1 star 0.84  2 stars 0.15  3 stars 0.01]
+   -> 1 star   [1 star 0.840  2 stars 0.148  3 stars 0.011]
 'Non è affatto male.'
-   -> 2 stars   [2 stars 0.36  3 stars 0.34  1 star 0.23]
+   -> 2 stars   [2 stars 0.365  3 stars 0.336  1 star 0.227]
 'Non è male.'
-   -> 3 stars   [3 stars 0.47  4 stars 0.32  5 stars 0.13]
+   -> 3 stars   [3 stars 0.471  4 stars 0.318  5 stars 0.125]
 ```
 
 I numeri sono quelli usciti eseguendo davvero il blocco, e come per la
@@ -194,8 +194,8 @@ male» **due stelle su cinque**, cioè lo legge come una recensione scontenta,
 mentre a «non è male», la stessa frase senza l'avverbio, ne dà tre.
 
 Il bello è che ci è andato vicinissimo. Il modello non sceglie una risposta
-sola: dà un voto a tutte e cinque, e qui aveva messo le due stelle a 0,36 e le
-tre a 0,34. È in perfetto bilico, e cade dalla parte sbagliata per meno di tre
+sola: dà un voto a tutte e cinque, e qui aveva messo le due stelle a 0,365 e le
+tre a 0,336. È in perfetto bilico, e cade dalla parte sbagliata per meno di tre
 centesimi; è l'unica delle quattro frasi in cui i primi due posti sono così
 attaccati, e chi guardasse soltanto il vincitore non se ne accorgerebbe mai. È
 il motivo per cui il programma qui sopra stampa la graduatoria e non solo la

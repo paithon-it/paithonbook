@@ -330,6 +330,15 @@ cosiddetto
 *Pre-LN*, ed è lì che il cammino identità diventa davvero pulito (Xiong e
 colleghi {cite}`xiong2020layer` mostrano che senza questo spostamento serve un
 riscaldamento graduale del learning rate per addestrare stabilmente).
+
+Nei modelli linguistici recenti anche la normalizzazione stessa si è
+alleggerita: al posto della LayerNorm c'è quasi sempre la **RMSNorm**
+{cite}`zhang2019root`, che non sottrae la media e non ha bias. Divide il
+vettore per la sua radice quadratica media e lo riscala con un guadagno
+appreso,
+$\mathbf{x} \mapsto \boldsymbol{\gamma} \odot \mathbf{x}/\mathrm{RMS}(\mathbf{x})$
+con $\mathrm{RMS}(\mathbf{x}) = \sqrt{\tfrac{1}{d}\sum_i x_i^2}$: meno conti
+per strato, e in pratica la stessa stabilità.
 `````
 
 Scorciatoia e taratura sono la parte che nessuno racconta mai, e senza la quale

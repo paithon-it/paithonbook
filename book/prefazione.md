@@ -43,30 +43,35 @@ metteva in produzione perché lo stavano facendo tutti, e spesso nessuno apriva
 la licenza per vedere se quell'uso commerciale fosse permesso. Il gesto era lo
 stesso: ripetere una cosa senza sapere che cosa si stava dicendo.
 
-Non è un'impressione mia. Emily M. Bender, prima firma di quell'articolo, ha
+La conferma è arrivata da chi l'espressione l'aveva coniata. Emily M. Bender,
+prima firma di quell'articolo, ha
 passato cinque anni a guardare che fine faceva la sua espressione: all'inizio,
-racconta, la usava chi il paper l'aveva letto, e poi «la frase ha superato il
-paper» {cite}`bender2026unasked`. È il pappagallo che si descrive da solo.
+racconta, la usava chi l'articolo l'aveva letto, e poi «la frase ha superato
+l'articolo» {cite}`bender2026unasked`. È il pappagallo che si descrive da solo.
 
 Intanto, di quei modelli, la cosa che si ripeteva più spesso è che si
 limitano a indovinare una parola per volta. È vero, ma dice come il testo
-esce, non come viene deciso. Il gruppo che uno di questi modelli lo aveva
-costruito è andato a guardarci dentro mentre scriveva una poesia in rima
+esce, non come viene deciso. Anthropic, l'azienda che aveva costruito uno di
+questi modelli, è andata a guardarci dentro mentre il modello scriveva una
+poesia in rima
 {cite}`lindsey2025biology`, aspettandosi di vederlo procedere parola per
 parola e aggiustare la rima all'ultimo momento. Ha trovato il contrario. Prima
-ancora di cominciare il verso, il modello aveva già in testa le parole con cui
-poteva chiuderlo, e scriveva il verso per arrivarci; tolta quella parola, riscriveva il verso per arrivare all'altra che aveva in
-mente, e cambiava la frase per farcela stare. La riga con cui gli autori lo
-riassumono è questa: anche se questi modelli sono addestrati a produrre una
-parola per volta, per farlo possono pensare su orizzonti molto più lunghi.
-Predire un token alla volta non vuol dire ragionare un token alla volta.
+ancora di cominciare il verso, il modello aveva già in testa più parole con cui
+poteva chiuderlo, e scriveva il verso per arrivare alla prima; tolta quella,
+riscriveva il verso per arrivare all'altra che aveva in
+mente, e cambiava la frase per farcela stare. La riga con cui il gruppo lo ha
+raccontato al pubblico è questa: anche se questi modelli sono addestrati a
+produrre una
+parola per volta, per farlo possono pensare su orizzonti molto più lunghi
+{cite}`anthropic2025tracing`.
+Predire una parola alla volta non vuol dire ragionare una parola alla volta.
 
-Su questo Bender non sarebbe d'accordo, e conviene dirlo. L'obiezione che le
+Su questo Bender non sarebbe d'accordo. L'obiezione che le
 arriva puntuale, racconta, è sempre la stessa: i pappagalli stocastici
 andavano bene un tempo, ma adesso non più, perché è appena uscito un modello
 che fa una cosa che prima non faceva. Per lei non è nemmeno un'obiezione, dato
 che quella non era una previsione da superare ma «una descrizione, o una
-metafora» di come sono fatte quelle macchine. E il bersaglio della sua critica,
+metafora» di che cosa fanno quelle macchine. E il bersaglio della sua critica,
 aggiunge, non sono affatto i modelli: «quello che mi preoccupa sono le azioni
 delle persone», il furto dei dati, lo sfruttamento del lavoro, l'indifferenza
 per l'impatto ambientale, e «la sorprendente disponibilità di tanti a cedere il
@@ -84,34 +89,37 @@ stare. Il resto è presto detto: nessuna scorciatoia sulle cose difficili,
 nessun entusiasmo che il testo non sia in grado di giustificare, e le fonti
 sempre citate, così che tu possa andare ad approfondire.
 
-Lo scopo di questo libro è introdurre i concetti principali del machine
-learning, del deep learning e del reinforcement learning (che cosa siano lo
-dice il primo capitolo, in una riga per ciascuno, prima di dedicarci il
-resto), e fornire gli strumenti utili a costruire un applicativo intelligente,
+Lo scopo di questo libro è introdurre i concetti principali dell'intelligenza
+artificiale, dal machine learning al deep learning al reinforcement learning
+(che cosa siano lo dice l'{doc}`introduzione </Introduzione/overview>`, una
+definizione per ciascuno, prima di dedicarci il resto) fino ai capitoli che
+questi sistemi li portano in produzione e a quelli che ne discutono le
+conseguenze, e fornire gli strumenti utili a costruire un applicativo
+intelligente,
 a valutare un'idea, o semplicemente a riconoscere l'intelligenza artificiale
 nelle tecnologie di oggi e di domani.
 
-C'è poi una cosa da dire su **come** è scritto, perché riguarda chi legge.
+C'è poi una cosa da dire sul modo in cui è scritto, perché riguarda chi legge.
 Buona parte di queste pagine nasce lavorando con l'intelligenza artificiale: è
-lei a stendere, a cercare, a proporre. Questo libro è, alla lettera, **l'AI
-che spiega se stessa**.
+lei a stendere, a cercare, a proporre. Questo libro è, alla lettera, l'AI
+che spiega se stessa.
 
-E lo fa **due volte**, in tutti e due i sensi della parola. Il primo lo trovi
-in ogni capitolo, ed è quello di cui parlavo qui sopra: ogni concetto che
-conta è spiegato prima con un'immagine di tutti i giorni e poi con le formule.
-
-Il secondo senso riguarda la strada che il testo fa per arrivare fin qui.
-Quello che una AI ha scritto lo rilegge **un'altra AI**, che alla stesura non
-ha partecipato e ha un compito solo: cercare l'errore. Non riscrive per farlo
-suonare meglio; rifà i conti, riapre i paper citati, ripercorre le derivazioni
+E lo fa due volte, in due sensi diversi. Il primo è quello dei due livelli di
+lettura di cui parlavo qui sopra. Il secondo riguarda la strada che il testo fa
+per arrivare fin qui:
+quello che una AI ha scritto lo rilegge **un'altra AI**, che alla stesura non
+ha partecipato e ha un compito solo, cercare l'errore. Invece di riscrivere per
+farlo
+suonare meglio, rifà i conti, riapre gli articoli citati, ripercorre le
+derivazioni
 un passaggio alla volta ed esegue il codice invece di guardarlo. Chi ha scritto
 una cosa è l'ultimo a poterci trovare uno sbaglio, e questo vale per una
 macchina esattamente come per una persona.
 
 Solo dopo il testo arriva a me, e quello è il passaggio che decide che cosa
-resta. Non è una formalità, ed è la parte che al posto mio una macchina non sa
-fare: un modello punta ad avere ragione, un libro deve farsi capire, e non è
-la stessa cosa. La prima si misura sui fatti, la seconda si misura su una
+resta. È la parte che al posto mio una macchina non sa
+fare: un modello punta ad avere ragione, un libro deve farsi capire. La prima
+cosa si misura sui fatti, la seconda su una
 persona che prima non sapeva e adesso sa.
 
 Così una spiegazione esatta ma fredda si riscrive finché non somiglia a come
@@ -125,7 +133,7 @@ nessuno è il primo. Sono i tre passaggi appena descritti, chi scrive, chi cerca
 l'errore e chi decide, con l'ultimo che rimanda al primo.
 
 E poi c'è la seconda cosa che quel triangolo fa, che è la ragione per cui sta
-su questo libro e non su un altro: **è una figura impossibile**. Guarda uno qualsiasi dei tre angoli, coprendo con una mano tutto il resto:
+su questo libro e non su un altro: è una figura impossibile. Guarda uno qualsiasi dei tre angoli, coprendo con una mano tutto il resto:
 quello che resta scoperto è corretto, due travi che si incontrano ad angolo
 retto, una davanti e una dietro; si costruisce davvero,
 con dei pezzi di legno. Vale per tutti e tre, uno alla volta. L'impossibilità
@@ -134,26 +142,33 @@ possono avere tutte insieme, e per accorgersene bisogna smettere di guardare
 l'angolo e seguire una trave per l'intero giro.
 
 E non è un inganno dell'occhio: è un teorema, che Roger Penrose ha scritto in
-matematica trentatré anni dopo averlo disegnato con suo padre. Un foglio non
+matematica trentatré anni dopo averlo disegnato con suo padre
+{cite}`penrose1958impossible,penrose1991cohomology`. Un foglio non
 dice a che distanza stiano le cose che rappresenta: di un pezzo di figura sai
-com'è fatto, non quanto è lontano, e quella libertà che ti resta è un numero.
+com'è fatto, non quanto è lontano, e puoi immaginartelo vicino e piccolo
+oppure lontano e grande. Quella scelta che il foglio ti lascia è un numero.
 Dove due pezzi si sovrappongono, invece, il disegno ti obbliga, e fissa il
 rapporto fra le due distanze. Allora fai il giro e moltiplica i tre rapporti
-che hai raccolto: se viene uno la figura si costruisce, se viene qualunque
-altro numero no. Qui non viene uno. Ogni pezzo, preso da solo, corrisponde a un oggetto vero, e gli corrisponde in
+che hai raccolto: «il doppio» per «il doppio» per «un quarto» fa uno, e una
+figura così si costruisce; qualunque altro risultato dice di no. Qui non viene
+uno. Ogni pezzo, preso da solo, corrisponde a un oggetto vero, e gli corrisponde in
 tutto tranne che nella distanza: forma, spigoli e angoli passano dal disegno
 all'oggetto e tornano indietro senza perdere niente, ed è quello che in
-matematica si chiama **isomorfismo**. Di isomorfismi ce ne sono tre, tutti e tre perfetti, e il guasto non è
-in nessuno dei tre: è che **non si compongono**.
+matematica si chiama **isomorfismo**. Di isomorfismi ce ne sono tre, tutti e
+tre perfetti; il guasto sta solo nel loro giro, che non si chiude.
 
 È il modo esatto in cui una macchina sbaglia su una materia tecnica. Ogni frase
-regge da sola, ogni numero è verificabile, e il montaggio è falso.
+regge da sola, ogni numero è verificabile, e il montaggio è falso. Il
+triangolo sta sul libro per tutte e due le ragioni insieme: come giro dei tre
+mestieri che si reggono a vicenda, e come promemoria del guasto che quel giro
+esiste per prendere.
 
 Il metodo è severo per una ragione precisa: un modello sbaglia con la
 stessa sicurezza con cui dice il vero, e su una materia tecnica sbaglia proprio
-dove chi legge non ha modo di accorgersene. Non sbaglia il tono. Perde il
-fattore due davanti a una formula che per il resto è giusta; attribuisce al
-paper sbagliato un meccanismo, magari a quello più famoso invece che a quello
+dove chi legge non ha modo di accorgersene. Il tono, quello, non lo sbaglia
+mai. Dimentica un «per due» in una
+formula che per il resto è giusta; attribuisce
+un meccanismo all'articolo sbagliato, magari al più famoso invece che a quello
 che lo ha proposto; salta in una derivazione il passaggio da cui dipende tutto
 e la fa comunque tornare; racconta benissimo un aneddoto sbagliando l'unico
 dettaglio che ne faceva una lezione. Sono guasti che non si vedono rileggendo:
@@ -163,14 +178,15 @@ esecuzione il codice.
 Su una cosa questo libro scommette apertamente. Il testo che leggi oggi è il
 meglio che questo metodo sappia produrre adesso, non il meglio possibile:
 qualche errore è rimasto, e più di una pagina si potrà spiegare meglio di
-così. Ma un libro online non ha una tiratura da rincorrere con un foglietto di
-errata corrige: si riscrive dove sbaglia, il giorno in cui qualcuno se ne
+così. Ma un libro online non ha migliaia di copie già stampate da rincorrere
+con il foglietto degli errori: si riscrive dove sbaglia, il giorno in cui
+qualcuno se ne
 accorge. E gli strumenti con cui è scritto migliorano a loro volta, anno dopo
 anno. Se mantengono quello che promettono, ogni versione dovrebbe arrivare un
 po’ più completa e un po’ meno sbagliata della precedente, finché le
 correzioni diventeranno rare e poi rarissime. È la scommessa che questo libro
 fa su se stesso, e la si può verificare: {doc}`Aggiornamenti </aggiornamenti>`
-tiene il conto di ogni correzione, una per una.
+tiene il conto delle correzioni, versione per versione.
 
 La responsabilità di quello che leggi è mia. L'impegno a renderlo ogni volta
 più chiaro nasce da un fatto semplice.

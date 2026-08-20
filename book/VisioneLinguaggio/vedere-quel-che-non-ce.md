@@ -23,7 +23,7 @@ contenerlo.
 
 ## Un errore che non riguarda gli occhi
 
-L'overview del capitolo ha già dato un nome al fenomeno, **allucinazione
+L'apertura del capitolo ha già dato un nome al fenomeno, **allucinazione
 visiva**, e ne ha mostrato la radice nella funzione di costo, cioè nel
 punteggio dell'errore che l'addestramento fa scendere. Conviene scavare un
 poco più a fondo, perché la forma precisa dell'argomento dice anche dove si
@@ -93,7 +93,7 @@ massima verosimiglianza è già popolato di forchette inventate.
 `````
 
 La radice è esattamente quella delle allucinazioni testuali del capitolo sui
-Transformer, quelle «risposte sicure di sé e sbagliate» che il capitolo
+Transformer, quelle «risposte fluenti e sbagliate» che il capitolo
 sull'MLOps metterà fra i bersagli del monitoraggio. Con un'aggravante e
 un'attenuante. L'aggravante è che qui una fonte di verità c'era, allegata alla
 richiesta, e il modello l'ha ignorata. L'attenuante, se così si può chiamare, è
@@ -337,8 +337,10 @@ ottiene $43{,}6\%$ su un benchmark multimodale senza immagini, cioè $17{,}9$
 punti **sopra** il proprio modello di linguaggio di base, che è la firma della
 memorizzazione, non della deduzione. Da qui le due misure che gli autori
 propongono, il guadagno multimodale (quanto si perde togliendo l'immagine) e la
-fuga multimodale (quanto il sistema completo supera il proprio modello di
-linguaggio cieco).
+fuga multimodale (quanto il sistema completo, interrogato anche lui senza
+immagini, supera il proprio modello di
+linguaggio di base: se lo supera, il di più viene dai dati di addestramento
+multimodali, non dal guardare).
 
 Il caso è aggravante proprio per un protocollo come quello appena descritto,
 che poggia sulle annotazioni di un corpus fotografico pubblico, cioè su un
@@ -666,8 +668,8 @@ $$
 dove $k_1, \dots, k_7$ sono i token dei gradini delle sette componenti, $k_8$
 quello di fine episodio, $\mathbf{I}$ l'osservazione ed $\mathbf{x}$
 l'istruzione in lingua naturale. È la fattorizzazione autoregressiva dei
-grandi modelli linguistici, vista nel
-{doc}`capitolo sui Transformer </Transformers/overview>`, applicata a una
+grandi modelli linguistici, vista nella
+{doc}`pagina sui grandi modelli linguistici </Transformers/llm>`, applicata a una
 sequenza lunga otto, con la stessa cross-entropia
 come perdita. È l'impostazione di RT-2
 {cite}`brohan2023rt2`, che addestra il modello in **co-fine-tuning** su una
@@ -732,8 +734,8 @@ conviene elencarli, perché fra il video di una dimostrazione e un impianto che
 lavora ci sono tutti e tre.
 
 Il primo è la **frequenza**. Un modello da decine di miliardi di parametri emette
-fra uno e tre comandi al secondo, e sceso a qualche miliardo arriva a cinque o
-sei;
+fra uno e tre comandi al secondo, e sceso a qualche miliardo arriva a circa
+cinque;
 un controllore classico ne emette decine o centinaia. Finché il compito è
 afferrare e spostare va bene, per un movimento che deve
 reagire in fretta no, e non è un problema di ingegneria del software: è la

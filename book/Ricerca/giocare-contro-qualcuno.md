@@ -137,7 +137,9 @@ Lo zero è la patta, ed è la risposta giusta. Il numero sotto va letto con
 attenzione, perché è il conto che serve: non sono duecentocinquantacinquemila
 *posizioni diverse* (di quelle un gioco da nove caselle ne ha molte meno), sono
 duecentocinquantacinquemila **partite intere**, giocate una per una dalla prima
-mossa all’ultima. È l’albero dell’apertura del capitolo in miniatura: piccolo
+mossa all’ultima. Sono meno delle $9! = 362\,880$ sequenze con cui si possono
+riempire nove caselle, perché una partita si ferma appena qualcuno allinea tre
+simboli, anche a tabellone mezzo vuoto. È l’albero dell’apertura del capitolo in miniatura: piccolo
 abbastanza da srotolarlo tutto, e già abbastanza grande da far vedere il
 problema.
 
@@ -172,7 +174,9 @@ Risposta finale: la prima mossa, che vale 3. La stessa di prima. E ho guardato
 sette foglie su nove.
 
 Il gesto ha un nome che si spiega da sé: **potatura**, come i rami che si
-tagliano a un albero. E la frase che la produce è una sola, quella che si dice
+tagliano a un albero (per esteso, potatura *alfa-beta*, dai nomi dei due
+segnalibri con cui il programma ricorda quanto ciascuno dei due giocatori si è
+già garantito). E la frase che la produce è una sola, quella che si dice
 a se stessi guardando la seconda mossa: «questa strada è già peggio della
 migliore che ho trovato, non la guardo nemmeno».
 
@@ -323,25 +327,29 @@ for seme in range(20):
     random.Random(seme).shuffle(mescolato)
     a_caso.append(con_ordine(mescolato))
 
+ragionato = con_ordine([4,0,2,6,8,1,3,5,7])
 print(f"in ordine di casella (quello di prima): {con_ordine(range(9)):6d}")
-print(f"centro e angoli per primi:              {con_ordine([4,0,2,6,8,1,3,5,7]):6d}")
+print(f"centro e angoli per primi:              {ragionato:6d}")
 print(f"bordi per primi:                        {con_ordine([1,3,5,7,0,2,6,8,4]):6d}")
-print(f"venti ordini a caso: da {min(a_caso)} a {max(a_caso)}")
+print(f"venti ordini a caso: da {min(a_caso)} a {max(a_caso)}, "
+      f"e {sum(g < ragionato for g in a_caso)} su 20 batte il ragionato")
 ```
 
 ```text
 in ordine di casella (quello di prima):   7330
 centro e angoli per primi:                2893
 bordi per primi:                         17002
-venti ordini a caso: da 2603 a 13358
+venti ordini a caso: da 2603 a 13358, e 1 su 20 batte il ragionato
 ```
 
 Sei volte fra il migliore e il peggiore, **sullo stesso gioco, con lo stesso
-algoritmo e con la stessa risposta in fondo**. E l'ordine ragionato non è lontano dal migliore che si trovi a tentativi:
-mettere per primi il centro e gli angoli vuol dire provare per prime le
-caselle che nel filetto contano di più, e su venti ordini presi a caso uno
-solo fa meglio, cioè fare esattamente quello che un
-programma di scacchi fa quando ordina le mosse con una passata superficiale.
+algoritmo e con la stessa risposta in fondo**. E l'ordine ragionato non è
+lontano dal migliore che si trovi a tentativi: mettere per primi il centro e
+gli angoli vuol dire provare per prime le caselle che nel filetto contano di
+più, e dei venti ordini pescati a caso uno solo fa meglio, come il blocco
+stampa. I programmi di scacchi fanno la stessa scommessa in un altro modo:
+prima della ricerca vera ne fanno una corta, di poche mosse, e usano quel
+risultato per decidere in che ordine guardare.
 Il conto della potatura, insomma, non si fa una volta per tutte: si fa
 sull’ordine che si è scelto.
 
@@ -387,10 +395,8 @@ conclude che sacrificare pedoni è una buona idea.
 Non è un errore di programmazione: è quello che succede quando si giudica il
 mondo a una distanza fissa. Il disastro non è stato evitato, è stato spinto
 appena oltre il punto in cui si smette di guardare, e in cambio si è pagato
-davvero. E ricompare ben oltre gli scacchi, ogni volta che qualcuno decide guardando a
-una scadenza fissa: è il difetto da portarsi
-dietro, perché ricompare ogni volta che qualcuno ottimizza guardando a una
-scadenza fissa.
+davvero. Ed è il difetto da portarsi dietro, perché ricompare ben oltre gli
+scacchi, ogni volta che qualcuno ottimizza guardando a una scadenza fissa.
 
 `````
 

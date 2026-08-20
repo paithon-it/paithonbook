@@ -205,6 +205,23 @@ cambia). Le tre decisioni operative sono:
   molteplicità, non contro l'eccesso di potenza, che alle taglie di produzione
   è il problema dominante.
 
+  Il **PSI** (*Population Stability Index*), lo standard di fatto nel mondo
+  del credito, è una di quelle ampiezze. Si dividono i valori in fasce (di
+  solito i decili della finestra di riferimento) e si somma, fascia per
+  fascia,
+
+  $$
+  \mathrm{PSI} \;=\; \sum_i \,(q_i - p_i)\,\log\frac{q_i}{p_i},
+  $$
+
+  dove $p_i$ e $q_i$ sono le quote di riferimento e correnti nella fascia
+  $i$: una divergenza simmetrica fra le due ripartizioni, che la pratica
+  legge con soglie di mestiere (sotto $0{,}1$ quiete, oltre $0{,}25$ deriva
+  da guardare). E copre anche il caso a cui la KS non si applica, le colonne
+  **categoriche**: lì la stessa somma si fa con le categorie al posto delle
+  fasce, oppure si usa un test chi-quadro sulle frequenze, con la stessa
+  avvertenza di prima sull'eccesso di potenza.
+
 `````
 
 La deriva è una delle poche cose di questo libro che **in un fotogramma non si

@@ -107,8 +107,8 @@ token di un prompt) è un conteggio. I due embedding vivono così sulla sfera
 unitaria: il loro prodotto scalare $\langle \mathbf{I}_i, \mathbf{T}_j \rangle$ è esattamente il
 coseno dell'angolo fra i due, un numero in $[-1, 1]$.
 
-Il compito di pretesto è una classificazione a $N$ vie *definita dal batch
-stesso*: data l'immagine $i$, indovinare quale delle $N$ didascalie presenti sia
+Il compito di pretesto è una classificazione a $B$ vie *definita dal batch
+stesso*: data l'immagine $i$, indovinare quale delle $B$ didascalie presenti sia
 la sua. Non c'è alcuna ontologia fissata a priori, e il «vocabolario» delle
 descrizioni è aperto quanto la lingua. È un caso di apprendimento
 auto-supervisionato di famiglia **contrastiva**, quella che il capitolo sui
@@ -120,8 +120,8 @@ allontanando ciò che non va insieme.
 
 Adesso che il gioco è chiaro, il conto di {numref}`fig-clip-matrice` dice perché
 conti tanto la dimensione del **batch**, cioè quante coppie si mettono sul
-tavolo insieme a ogni passo di addestramento. Con $N$ coppie ogni riga porta una
-risposta giusta e $N - 1$ sbagliate: raddoppiare il batch raddoppia le
+tavolo insieme a ogni passo di addestramento. Con $B$ coppie ogni riga porta una
+risposta giusta e $B - 1$ sbagliate: raddoppiare il batch raddoppia le
 alternative sbagliate che ogni immagine deve scartare, e l'esame si fa più
 difficile. Quanto costi tenere il tavolo grande lo vediamo fra poco, perché è il
 vincolo che decide la forma di tutto il metodo.
@@ -131,8 +131,8 @@ vincolo che decide la forma di tutto il metodo.
 :alt: A sinistra due torri, l'encoder delle immagini e l'encoder del testo, che producono ciascuno un vettore normalizzato; le due frecce convergono in uno spazio condiviso rappresentato come una sfera unitaria su cui i due vettori sono vicini. A destra la matrice quattro per quattro delle similarità coseno del batch, con la diagonale piena di terracotta e i valori più alti, e tutte le altre celle chiare con valori bassi.
 :width: 85%
 
-Due encoder, una mappa sola. Le somiglianze di un gruppo di $N$ coppie formano
-una tabella $N \times N$: sulla diagonale gli abbinamenti giusti, in tutte le
+Due encoder, una mappa sola. Le somiglianze di un gruppo di $B$ coppie formano
+una tabella $B \times B$: sulla diagonale gli abbinamenti giusti, in tutte le
 altre caselle quelli sbagliati. Il disegno a sinistra è uno schema: quanto le due
 frecce siano davvero vicine lo misureremo più avanti, ed è meno di quel che
 sembra.
@@ -141,7 +141,7 @@ sembra.
 La {numref}`fig-vlm-contrastivo` mostra la struttura che ne esce, ed è tutta la
 sezione in un disegno. Le due reti (si chiamano **torri**, perché ciascuna è una
 pila di strati che lavora per conto suo) non si scambiano niente durante il
-calcolo, e si incontrano solo alla fine, in un prodotto scalare. Da un batch di $N$ coppie nasce una matrice $N \times N$ di
+calcolo, e si incontrano solo alla fine, in un prodotto scalare. Da un batch di $B$ coppie nasce una matrice $B \times B$ di
 similarità: sulla diagonale le coppie vere, ovunque altrove i **negativi**,
 cioè gli abbinamenti sbagliati che il caso ha messo insieme nello stesso batch.
 
@@ -183,25 +183,25 @@ il contrastive predictive coding {cite}`oord2018representation`:
 $$
 \mathcal{L}_{\text{InfoNCE}} = - \,\mathbb{E}\!\left[\,
 \log \frac{\exp\big(s(\mathbf{u}, \mathbf{v}^{+})/\tau\big)}
-{\sum_{k=1}^{N} \exp\big(s(\mathbf{u}, \mathbf{v}_k)/\tau\big)} \right],
+{\sum_{k=1}^{B} \exp\big(s(\mathbf{u}, \mathbf{v}_k)/\tau\big)} \right],
 $$
 
 dove $\mathbf{u}$ è l'ancora, $\mathbf{v}^{+}$ il suo positivo,
-$\mathbf{v}_1, \dots, \mathbf{v}_N$ l'insieme dei
-candidati (il positivo più $N-1$ negativi), $s(\cdot, \cdot)$ una misura di
+$\mathbf{v}_1, \dots, \mathbf{v}_B$ l'insieme dei
+candidati (il positivo più $B-1$ negativi), $s(\cdot, \cdot)$ una misura di
 compatibilità e $\tau > 0$ la **temperatura**. È, letteralmente, una
-cross-entropy su un problema di classificazione a $N$ vie in cui la classe
+cross-entropy su un problema di classificazione a $B$ vie in cui la classe
 corretta è «il positivo». (Nel testo originale la compatibilità è una funzione
 di punteggio qualsiasi; la $\tau$ esplicita è della variante su similarità
 coseno, quella che CLIP adotta, e che qui useremo sempre.)
 
-In CLIP l'ancora è un embedding di immagine, i candidati sono le $N$ didascalie
+In CLIP l'ancora è un embedding di immagine, i candidati sono le $B$ didascalie
 del batch e la compatibilità è il coseno. Per la direzione immagine → testo:
 
 $$
 \ell^{\,\mathrm{I}\to\mathrm{T}}_i = - \log
 \frac{\exp\big(\langle \mathbf{I}_i, \mathbf{T}_i \rangle / \tau\big)}
-{\sum_{j=1}^{N} \exp\big(\langle \mathbf{I}_i, \mathbf{T}_j \rangle / \tau\big)},
+{\sum_{j=1}^{B} \exp\big(\langle \mathbf{I}_i, \mathbf{T}_j \rangle / \tau\big)},
 $$
 
 e simmetricamente, scorrendo la colonna $i$ invece della riga $i$, per la
@@ -210,17 +210,18 @@ direzione testo → immagine:
 $$
 \ell^{\,\mathrm{T}\to\mathrm{I}}_i = - \log
 \frac{\exp\big(\langle \mathbf{I}_i, \mathbf{T}_i \rangle / \tau\big)}
-{\sum_{k=1}^{N} \exp\big(\langle \mathbf{I}_k, \mathbf{T}_i \rangle / \tau\big)}.
+{\sum_{k=1}^{B} \exp\big(\langle \mathbf{I}_k, \mathbf{T}_i \rangle / \tau\big)}.
 $$
 
 La loss finale è la media delle due:
 
 $$
-\mathcal{L} = \frac{1}{2N} \sum_{i=1}^{N}
+\mathcal{L} = \frac{1}{2B} \sum_{i=1}^{B}
 \Big( \ell^{\,\mathrm{I}\to\mathrm{T}}_i + \ell^{\,\mathrm{T}\to\mathrm{I}}_i \Big).
 $$
 
-Qui $N$ è la dimensione del batch, $\mathbf{I}_i$ e $\mathbf{T}_j$ gli embedding
+Qui $B$ è la dimensione del batch (la lettera $N$, in questo capitolo, conta
+già le tessere di un'immagine), $\mathbf{I}_i$ e $\mathbf{T}_j$ gli embedding
 normalizzati,
 $\langle \mathbf{I}_i, \mathbf{T}_j \rangle$ la loro similarità coseno e $\tau$ la temperatura. Si
 noti che il numeratore è lo stesso nelle due direzioni (la coppia vera $(i,i)$)
@@ -235,8 +236,10 @@ credibili.
 
 ## Quattro coppie, fatte a mano
 
-Conviene vedere i numeri, perché la temperatura fa una differenza che a parole
-non si apprezza. Prendiamo un batch minuscolo, $N = 4$: quattro immagini e le
+Adesso i numeri, perché la **temperatura**, la manopola che amplifica le
+differenze fra le somiglianze prima di trasformarle in percentuali, fa una
+differenza che a parole
+non si apprezza. Prendiamo un batch minuscolo, $B = 4$: quattro immagini e le
 loro quattro didascalie. Nella tabella qui sotto le righe $\mathbf{I}_1 \dots \mathbf{I}_4$ sono
 le quattro immagini, le colonne $\mathbf{T}_1 \dots \mathbf{T}_4$ le quattro didascalie, e ogni
 cella dice quanto quell'immagine e quella didascalia si somigliano, su una scala
@@ -341,7 +344,7 @@ poco impara poco. Indovinare fra trentamila è tutta un'altra cosa, e trentamila
 ingegneria, è la difficoltà dell'esame.
 
 Il mucchio grande, però, costa, e costa in un modo storto. Le caselle da
-riempire sono $N$ righe per $N$ colonne: se le coppie raddoppiano, le caselle
+riempire sono $B$ righe per $B$ colonne: se le coppie raddoppiano, le caselle
 diventano quattro volte tante, e vanno tenute tutte insieme sotto gli occhi,
 perché per dare le percentuali di una riga bisogna avere davanti la riga intera.
 Trentamila coppie in memoria a una macchina sola non ci stanno: il lavoro si
@@ -372,14 +375,14 @@ L'ottimizzazione, lasciata libera, va a sbattere contro il vincolo e ci resta; c
 servirà fra poco, quando si tratterà di capire perché due nuvole di punti non si
 avvicinano mai.
 
-Il secondo parametro strutturale è $N$. Il denominatore della InfoNCE somma sui
+Il secondo parametro strutturale è $B$. Il denominatore della InfoNCE somma sui
 candidati del batch: i negativi *sono* il batch, non un insieme costruito a
-parte. Con $N$ piccolo il compito è banale (la baseline casuale è $\log N$, e
-con $N = 4$ vale $1{,}39$) e il segnale di apprendimento è povero; al
-crescere di $N$ il compito diventa un ago in un pagliaio e il gradiente informa
+parte. Con $B$ piccolo il compito è banale (la baseline casuale è $\log B$, e
+con $B = 4$ vale $1{,}39$) e il segnale di apprendimento è povero; al
+crescere di $B$ il compito diventa un ago in un pagliaio e il gradiente informa
 molto di più. CLIP addestra con batch da $32\,768$ coppie, distribuiti su
 centinaia di GPU. Il prezzo è la struttura stessa della loss: la matrice di
-similarità è $N \times N$, il suo costo cresce con il quadrato del batch, e la
+similarità è $B \times B$, il suo costo cresce con il quadrato del batch, e la
 normalizzazione della softmax richiede che ogni riga veda *tutte* le colonne,
 quindi che gli embedding di tutti i dispositivi vengano radunati insieme a ogni
 passo. Torneremo su questo punto fra poco, perché è esattamente il vincolo che
@@ -390,7 +393,7 @@ una variante successiva scioglie.
 ## La loss in dieci righe
 
 Tradotta in PyTorch, tutta la sezione sta in una funzione. Gli embedding
-arrivano dai due encoder come due matrici $(N, d)$, cioè $N$ righe (una per
+arrivano dai due encoder come due matrici $(B, d)$, cioè $B$ righe (una per
 elemento del batch) lunghe $d$ numeri ciascuna; il resto è normalizzazione, un
 prodotto matriciale e due cross-entropy.
 
@@ -405,16 +408,16 @@ logit_scale = nn.Parameter(torch.tensor(1 / 0.07).log())
 
 
 def loss_contrastiva(emb_img, emb_txt, logit_scale):
-    """emb_img, emb_txt: due tensori (N, d), una riga per elemento del batch."""
+    """emb_img, emb_txt: due tensori (B, d), una riga per elemento del batch."""
     # 1. sulla sfera unitaria: il prodotto scalare diventa un coseno
     I = F.normalize(emb_img, dim=-1)
     T = F.normalize(emb_txt, dim=-1)
 
-    # 2. matrice N x N dei coseni, riscalata dalla temperatura (con il tetto)
+    # 2. matrice B x B dei coseni, riscalata dalla temperatura (con il tetto)
     scala = logit_scale.exp().clamp(max=100.0)
     logits = scala * (I @ T.t())
 
-    # 3. la risposta giusta e' sempre sulla diagonale: 0, 1, 2, ... N-1
+    # 3. la risposta giusta e' sempre sulla diagonale: 0, 1, 2, ... B-1
     bersagli = torch.arange(len(I), device=I.device)
 
     # 4. una cross-entropy sulle righe, una sulle colonne, e si media
@@ -459,7 +462,7 @@ quella che ci si aspetta.
 Prendiamo ottanta fotografie, otto per ciascuno di dieci soggetti (aerei,
 gatti, cavalli, navi e così via), più quaranta didascalie, diamole a un modello
 CLIP pubblico e misuriamo tutte le vicinanze. Viene fuori questo: una fotografia
-somiglia alla didascalia che il modello stesso sceglie per lei circa $0{,}27$, e
+somiglia alla didascalia che il modello stesso sceglie per lei circa $0{,}3$, e
 a una **qualunque altra fotografia** circa $0{,}76$. Cioè ogni foto è molto più
 vicina a una foto che non c'entra niente che alla frase che la descrive.
 
@@ -496,14 +499,17 @@ generiche, quattro stampi diversi (del tipo `a photo of a {classe}`) applicati
 a ciascuna delle dieci classi. La distanza fra i due
 centroidi vale $\approx 1{,}1$ (gli embedding stanno sulla
 sfera unitaria, dove il massimo possibile è $2$); il coseno medio della coppia
-migliore è $\approx 0{,}27$ contro $\approx 0{,}76$ fra due immagini qualunque;
+migliore è $\approx 0{,}3$ contro $\approx 0{,}76$ fra due immagini qualunque;
 e proiettando tutto sulla direzione che unisce i due centroidi le due nuvole non
 si sovrappongono per niente, tanto che una regressione logistica risponde
 «immagine o testo?» con accuratezza $1{,}000$ in validazione incrociata. Sulle
 stesse ottanta immagini, e con un solo prompt per classe, la classificazione
-zero-shot a dieci vie ne prende $0{,}875$: il divario non le impedisce di
+zero-shot a dieci vie ne prende circa nove su dieci: il divario non le
+impedisce di
 funzionare, ed è il punto.
-I decimali dipendono dalle scelte appena elencate, e in particolare quel
+Le cifre fini dipendono dalle scelte appena elencate (quali otto immagini per
+classe, quali stampi: nessun seme le fissa), ed è la ragione per cui qui si
+leggono arrotondate; e quel
 $0{,}76$ è alto perché le immagini di CIFAR-10 sono $32 \times 32$ e si
 somigliano fra loro più di quanto si somiglino fotografie a piena risoluzione:
 su queste il valore scende, senza che la forbice si chiuda. L'ampiezza del
@@ -635,7 +641,8 @@ casella come una domanda a sé, con risposta sì o no.
 
 Invece di «ecco l'immagine numero uno, quale delle quattro didascalie è la sua?»,
 a ogni casella della tabella si fa una domanda indipendente: «voi due andate
-insieme, sì o no?». Sedici domandine al posto di quattro interrogazioni.
+insieme, sì o no?». Sedici domandine al posto delle otto interrogazioni di
+prima, quattro sulle righe e quattro sulle colonne.
 
 Il guadagno è che per rispondere a una non serve sapere niente delle altre.
 Nessuno deve più radunare la riga intera, il lavoro si può spezzare in pezzi che
@@ -663,7 +670,7 @@ classificazione binaria, e la funzione che gli corrisponde non è la softmax ma 
 **sigmoide**:
 
 $$
-\mathcal{L}_{\text{sig}} = - \frac{1}{N} \sum_{i=1}^{N} \sum_{j=1}^{N}
+\mathcal{L}_{\text{sig}} = - \frac{1}{B} \sum_{i=1}^{B} \sum_{j=1}^{B}
 \log \sigma\!\Big( z_{ij} \big( t \, \langle \mathbf{I}_i, \mathbf{T}_j \rangle + b \big) \Big),
 \qquad
 z_{ij} = \begin{cases} +1 & i = j \\ -1 & i \neq j \end{cases}
@@ -672,10 +679,10 @@ $$
 dove $\sigma$ è la funzione logistica, $t$ il fattore di scala appreso (lo
 stesso ruolo di $1/\tau$, parametrizzato anche qui come esponenziale di un
 parametro libero), $b$ un bias appreso e $z_{ij}$ l'etichetta binaria della
-cella. Si noti la normalizzazione: la somma corre su tutte le $N^2$ celle, ma
-il divisore è $N$, così che la loss conti il costo per elemento del batch e non
+cella. Si noti la normalizzazione: la somma corre su tutte le $B^2$ celle, ma
+il divisore è $B$, così che la loss conti il costo per elemento del batch e non
 per cella. Il bias serve a un problema che la softmax non aveva: in un batch le
-celle negative sono $N^2 - N$ contro $N$ positive, uno sbilanciamento feroce,
+celle negative sono $B^2 - B$ contro $B$ positive, uno sbilanciamento feroce,
 e senza un $b$
 inizializzato molto negativo (nel lavoro originale a $-10$) le prime iterazioni
 si consumerebbero tutte a correggerlo, invece che a imparare.[^siglip-segno]
@@ -772,7 +779,8 @@ non era dell'architettura, era di quello che le si chiedeva di distinguere.
 
 Due precisazioni, per onestà. La prima è che quegli esempi, scelti a mano
 perché siano difficili, lo sono anche per altre ragioni (alcuni chiedono
-conoscenza del mondo, altri sono visivamente ostici), e quindi quel che misurano non è soltanto il
+conoscenza del mondo, altri sono visivamente ostici
+{cite}`diwan2022why`), e quindi quel che misurano non è soltanto il
 saper mettere insieme i pezzi di una frase (la **composizionalità**): è quello,
 più qualcos'altro. Il fenomeno è solido, la sua quantificazione esatta lo è
 meno. La seconda è che un limite parallelo viene
@@ -833,13 +841,13 @@ che sa solo leggere è la prossima sezione.
   sul web (quattrocento milioni per CLIP), nessuno le etichetta e nessuna lista
   di categorie viene decisa in anticipo.
 - La loss è una **InfoNCE simmetrica** {cite}`oord2018representation`:
-  embedding normalizzati, matrice $N \times N$ di coseni divisi per la
+  embedding normalizzati, matrice $B \times B$ di coseni divisi per la
   temperatura $\tau$, cross-entropy sulle righe e sulle colonne con la diagonale
   come risposta corretta.
-- $\tau$ e $N$ sono parte del metodo, non dell'implementazione: la temperatura
+- $\tau$ e $B$ sono parte del metodo, non dell'implementazione: la temperatura
   (appresa, e a fine addestramento appoggiata al tetto, $\tau = 0{,}01$) decide
   quanto la distribuzione è piccata, e i negativi vengono dal batch, quindi un
-  batch piccolo rende il compito troppo facile. A crescere con $N^2$ non è il
+  batch piccolo rende il compito troppo facile. A crescere con $B^2$ non è il
   calcolo, che accanto ai due encoder è trascurabile, ma la **memoria** della
   matrice e l’**all-gather** fra i dispositivi.
 - Le due modalità restano in **due regioni disgiunte** dello spazio condiviso, il

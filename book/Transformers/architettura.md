@@ -265,8 +265,19 @@ sparito dalla matrice. Da lì gli autori
 *relative*: è una congettura, e va detto che la loro stessa ablazione la
 indebolisce, perché con positional embedding **appresi** i risultati sono
 «quasi identici» (Tabella 3, riga E, dell'articolo). Molti modelli successivi
-usano invece encoding **appresi** (BERT) o codifiche relative più sofisticate
-(RoPE nei modelli recenti): il principio resta lo stesso: iniettare l'ordine, perché la self-attention da
+usano infatti encoding **appresi** (BERT); i modelli linguistici recenti usano
+quasi tutti la **RoPE** (*rotary position embedding*
+{cite}`su2024roformer`), che prende quell'identità sul serio e la promuove da
+congettura a costruzione. La RoPE non aggiunge niente all'embedding:
+**ruota** query e chiave, coppia di coordinate per coppia, di un angolo
+proporzionale alla posizione assoluta del token,
+$\mathbf{q}_m \mapsto \mathbf{R}_{m}\,\mathbf{q}_m$ e
+$\mathbf{k}_n \mapsto \mathbf{R}_{n}\,\mathbf{k}_n$; nel prodotto scalare le
+due rotazioni si compongono, $\mathbf{R}_m^\top \mathbf{R}_n =
+\mathbf{R}_{n-m}$, e ai punteggi di attenzione arriva soltanto la distanza
+$n-m$. Ogni vettore è ruotato secondo la posizione assoluta in cui sta,
+e l'attenzione vede solo le posizioni relative. Il principio, in ogni caso,
+resta lo stesso: iniettare l'ordine, perché la self-attention da
 sola è permutation-**equivariante**, cioè permutando i token in ingresso le
 uscite escono permutate allo stesso modo e la rappresentazione di ogni parola
 non dipende da dove sta.

@@ -545,9 +545,11 @@ adiacente. È una trasformazione monotona della **informazione mutua puntuale**
 (PMI): passando dalle frequenze assolute a quelle relative, il rapporto diventa
 $\frac{p(ab)}{p(a)\,p(b)}$ a meno di un fattore che dipende solo dalla taglia
 del corpus, quindi costante entro un singolo passo e ininfluente
-sull’$\arg\max$. Quel rapporto è l'esponenziale della PMI fra $a$ e $b$: vale
-$1$ quando i due simboli si incontrano esattamente come farebbero per caso, più
-di $1$ quando si attirano.
+sull’$\arg\max$. Quel rapporto è l'esponenziale della PMI fra $a$ e $b$, che
+per definizione è il suo logaritmo,
+$\mathrm{PMI}(a,b) = \log \frac{p(ab)}{p(a)\,p(b)}$: il rapporto vale
+$1$ (e la PMI zero) quando i due simboli si incontrano esattamente come
+farebbero per caso, più di $1$ quando si attirano.
 
 Sul corpus giocattolo dell'esempio svolto, al primo passo (frequenze dei simboli:
 `s` 50, `o` 44, `t` 14, `r` 14, `b` 11, `a` 8, `e` 5, su 146 caratteri):

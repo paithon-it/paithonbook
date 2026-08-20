@@ -30,7 +30,8 @@ Agli scacchi il voto si sa scrivere: quanti pezzi ho, quanto vale ciascuno, se
 il re è al riparo, come stanno i pedoni. È la somma della sezione precedente, e
 funziona: nel 1997 il programma Deep Blue, che faceva esattamente questo e la
 potatura vista qui, giocò sei partite contro Garri Kasparov, che era il
-giocatore più forte del mondo, e ne uscì in vantaggio.
+giocatore più forte del mondo, e ne uscì in vantaggio: tre e mezzo a due e
+mezzo, cioè due vittorie contro una e tre patte.
 
 Il Go è un altro gioco, e conviene dire com’è fatto perché in Italia lo si
 vede di rado. Si gioca su una griglia grande, diciannove righe per diciannove,
@@ -96,9 +97,10 @@ esplorare e sfruttare che il capitolo seguente introdurrà con i bandit a più
 braccia. Dare più prove a ciò che finora rende, senza smettere di provare ciò
 di cui si sa poco, e con una regola che quantifichi quel «senza smettere».
 
-Valutare una posizione giocando partite a caso non è un’idea del 2006: nel Go
-si faceva da più di dieci anni, ed è Coulom stesso a citare chi l’aveva fatto
-prima di lui. Quello che nasce in quegli anni è la **fusione** delle due cose,
+Valutare una posizione giocando partite a caso non è un’idea del 2006: il
+primo era stato Bernd Brügmann {cite}`brugmann1993monte`, che nel 1993, senza
+dare al programma nessuna conoscenza oltre alle regole, sul nove per nove
+aveva raggiunto la forza di un principiante, ed è Coulom stesso a citarlo. Quello che nasce in quegli anni è la **fusione** delle due cose,
 e nasce in due tempi. Prima l’albero che cresce **una simulazione alla volta**,
 con un modo di risalire i valori che comincia facendo la media e finisce
 facendo il minimax {cite}`coulom2006efficient`. Poi la regola che decide dove
@@ -129,7 +131,7 @@ palesemente perdente è tempo buttato.
 Il libro la costruisce per intero due capitoli più avanti, in quello che
 applica le reti profonde all’apprendimento per rinforzo (in inglese *deep
 reinforcement learning*, che è il nome con cui il capitolo si presenta), dove
-serve a raccontare come una rete e una ricerca si aiutino a vicenda. Qui
+serve a raccontare come una rete neurale e una ricerca si aiutino a vicenda. Qui
 interessa solo il suo posto in questa storia, che è preciso: nasce per
 rispondere al voto che manca, ed è la ragione per cui il Go, che alla ricerca
 classica aveva resistito per trent’anni, ha cominciato a cedere.
@@ -217,9 +219,10 @@ parlando dei modelli che scrivono una lunga brutta copia prima di rispondere.
 
 Conviene guardare i tre casi tutti insieme, perché messi in fila dicono una
 cosa che presa uno per uno non si vede: **non sono tre difficoltà, sono tre
-capitoli**. Senza il voto si arriva alla ricerca ad albero Monte Carlo; senza
-l’arrivo, all’ottimizzazione; senza le regole da interrogare,
-all’apprendimento per rinforzo. Un metodo di intelligenza artificiale, spesso,
+destinazioni**. Senza il voto si arriva alla ricerca ad albero Monte Carlo;
+senza l’arrivo si finisce nell’ottimizzazione, quella della discesa del
+gradiente dei richiami di matematica e degli sciami; senza le regole da
+interrogare, all’apprendimento per rinforzo. Un metodo di intelligenza artificiale, spesso,
 è il nome che diamo a un regalo che ci hanno tolto.
 
 `````{tab} Elementare

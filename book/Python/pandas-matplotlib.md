@@ -85,7 +85,22 @@ degli array grezzi.
 Nella realtà i dati non li digiti a mano: li carichi. Il formato più comune è
 il **CSV** (un semplice file di testo con i valori separati da virgole, il
 formato in cui quasi ogni programma sa esportare una tabella) e la funzione
-`read_csv` lo legge in una riga, riconoscendo da sola tipi e intestazioni.
+`read_csv` lo legge in una riga, riconoscendo da sola tipi e intestazioni. Un
+avviso da tastiera italiana: il CSV che Excel produce qui da noi usa spesso il
+punto e virgola come separatore e la virgola per i decimali, e si legge
+dichiarandolo, `read_csv("file.csv", sep=";", decimal=",")`.
+
+Un file su cui provare ce lo fabbrichiamo al volo, così ogni numero che segue
+si può rifare:
+
+```python
+pd.DataFrame({
+    "nome":  ["Ada", "Bruno", "Carla", "Dario", "Elena", "Furio"],
+    "eta":   [34, None, 41, 36, 52, 23],
+    "citta": ["Milano", "Torino", "Milano", "Napoli", "Milano", "Torino"],
+    "spesa": [120.5, 89.0, 240.0, None, 310.0, 74.9],
+}).to_csv("vendite.csv", index=False)
+```
 
 ```python
 df = pd.read_csv("vendite.csv")   # il file va cercato dove sta girando il
@@ -204,8 +219,10 @@ a dimenticare: dopo un `groupby` la colonna di raggruppamento non è più una
 colonna, è l'indice. Da lì in poi ci si riferisce a una riga con la sua
 etichetta e non con il valore di una colonna, e questo spiega gran parte dei
 `KeyError` che seguono: `KeyError` è l'errore con cui Python dice «questo nome
-qui dentro non c'è», e chiedere `df["citta"]` dopo un raggruppamento per città
-è il modo più rapido di provocarlo.
+qui dentro non c'è», e chiedere la colonna `"citta"` al **risultato** di un
+raggruppamento per città
+è il modo più rapido di provocarlo (sulla tabella originale, che il
+raggruppamento non tocca, la colonna c'è ancora).
 
 ```python
 df.groupby("citta")["spesa"].mean()    # spesa media per città
@@ -225,7 +242,9 @@ Il secondo esempio calcola due riassunti in una volta e dà a ciascuno il nome
 che si vuole: a sinistra dell'uguale il nome della colonna che uscirà, a destra
 la coppia «da quale colonna prendere i valori, che conto farci sopra».
 
-Eseguendole sulla nostra tabella, Napoli risponde `NaN`: il suo unico cliente
+Eseguendole sulla nostra tabella, Napoli risponde `NaN`. Le funzioni di
+riassunto di pandas saltano le caselle vuote: una colonna con due numeri e un
+buco fa la media dei due. Ma il suo unico cliente
 ha la spesa mancante, e una media senza nemmeno un valore da mediare non
 esiste. È il primo incontro con le caselle vuote, ed è il tema di cui parliamo
 qui sotto.
@@ -254,7 +273,8 @@ dove $n_g$ è la numerosità del gruppo. Oltre a `mean` sono disponibili
 `sum`, `count`, `std`, `min`, `max`, `median` e funzioni arbitrarie via
 `agg`/`apply`. Il metodo `agg` con argomenti nominati (*named aggregation*)
 produce colonne dal nome esplicito, rendendo il risultato pronto per un
-report o per un ulteriore `merge`.
+report o per un incrocio con un'altra tabella (il `merge`, il parente pandas
+della `JOIN` dei database).
 
 `````
 

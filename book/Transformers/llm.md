@@ -430,8 +430,10 @@ modello da 7 miliardi di parametri con $L = 32$ e $d_{\text{model}} = 4096$,
 in precisione a 16 bit, sono $2 \times 32 \times 4096 \times 2$ byte
 $\approx 0{,}5$ MB per token: una finestra di 4.096 token occupa circa 2 GB
 *per ogni sequenza nel batch*, da sommare ai ~14 GB dei pesi. È il motivo per
-cui varianti come la *multi-query* e la *grouped-query attention* (molte teste
-per le query, poche per key e value) sono diventate standard nei modelli
+cui varianti come la *multi-query attention* (una sola testa per chiavi e
+valori, condivisa da tutte le teste delle query) e la *grouped-query
+attention* (un piccolo gruppo di teste invece di una sola) sono diventate
+standard nei modelli
 recenti: riducono proprio la cache. E spiega un'asimmetria che si nota usando
 i servizi commerciali: elaborare il prompt (il *prefill*, parallelo) e
 generare i token (la *decodifica*, sequenziale e affamata di memoria) hanno

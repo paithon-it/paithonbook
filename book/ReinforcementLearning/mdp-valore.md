@@ -331,8 +331,24 @@ V^\pi(s) = \sum_{a} \pi(a\mid s) \sum_{s'} P(s'\mid s,a)
 \big[\,r(s,a) + \gamma\, V^\pi(s')\,\big].
 $$
 
-È un sistema di equazioni lineari: una relazione di consistenza fra il valore
-di uno stato e quello dei suoi successori. Da qui partono tutti gli algoritmi
+La gemella per $Q^\pi$ si ottiene con la stessa spezzatura, fissando la prima
+azione:
+
+$$
+Q^\pi(s,a) = \sum_{s'} P(s'\mid s,a)
+\Big[\,r(s,a) + \gamma \sum_{a'} \pi(a'\mid s')\, Q^\pi(s',a')\,\Big].
+$$
+
+Dentro le parentesi quadre c'è il gradino successivo, pesato con le
+probabilità con cui $\pi$ sceglie: campionare quel gradino invece di sommarlo
+(uno stato $s'$ consegnato dall'ambiente, un'azione $a'$ pescata da $\pi$) è
+esattamente l'aggiornamento di SARSA, che arriva nella
+{doc}`pagina su Q-learning e differenze temporali
+</ReinforcementLearning/q-learning>`.
+
+Sono sistemi di equazioni lineari: relazioni di consistenza fra il valore
+di uno stato (o di una coppia stato-azione) e quello dei successori. Da qui
+partono tutti gli algoritmi
 che incontreremo: a cominciare dalla *value iteration* e dalla *policy
 iteration* qui sotto, fino al *Q-learning* con cui il capitolo si chiude.
 

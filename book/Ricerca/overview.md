@@ -11,8 +11,10 @@ Gioca una situazione sola, e non è l’inizio della partita ma la sua coda,
 quella che negli scacchi si chiama **finale**: da una parte re e torre,
 dall’altra il re avversario e nient’altro. Ma lo gioca contro chiunque, da
 qualunque posizione, e il matto **lo dà sempre**. Non lo dà in fretta: ci mette
-più mosse del necessario, a volte tante da sforare le cinquanta oltre le quali
-il regolamento degli scacchi dichiara patta. E non è questo il punto. Il punto
+più mosse del necessario, a volte tante che un arbitro, contando le cinquanta
+oltre le quali il regolamento dichiara patta, avrebbe già fermato la partita;
+la macchina il regolamento non lo conosce, e al matto arriva lo stesso. E non è
+questo il punto. Il punto
 è come fa.
 
 E come fa è la cosa che a noi serve: **non pensa avanti**. Non immagina le
@@ -65,8 +67,9 @@ Lo **stato** è come stanno adesso le tessere. Le **mosse** sono le tessere che
 in questo momento confinano con la casella vuota, e sono due, tre o quattro a
 seconda di dove il buco si trova. Lo **stato di fine** è i numeri in ordine.
 
-Adesso disegna. In cima metti la situazione di partenza. Sotto, tre caselle,
-una per ciascuna mossa che puoi fare. Sotto ciascuna di quelle, altre due o
+Adesso disegna. In cima metti la situazione di partenza. Sotto, una casella
+per ciascuna mossa che puoi fare: mettiamo che siano tre. Sotto ciascuna di
+quelle, altre due o
 tre. Dopo quattro righe hai già un centinaio di disegnini, e non sei arrivato
 da nessuna parte: la soluzione, per questo rompicapo, sta venti mosse più in
 basso.
@@ -144,7 +147,7 @@ Il numero di destra in {numref}`fig-albero-futuri` è il motivo per cui questo
 capitolo non parla mai di costruire l’albero: parla sempre di **quale pezzetto
 costruire**.
 
-## Dall'albero dei futuri alle sue potature
+## Che cosa si sa del mondo
 
 Da qui in avanti una macchina non si limita a riconoscere quello che ha
 davanti: **decide** che cosa fare. E le cose da decidere si dividono secondo che cosa si sa
@@ -152,8 +155,9 @@ del mondo, in un modo da avere in testa fin da adesso, perché spiega l’ordine
 dei prossimi capitoli.
 
 **Il mondo si conosce, ed è piccolo.** Si può passare in rassegna ogni
-situazione possibile e calcolare, per ciascuna, quanto vale: cioè segnare
-accanto a ogni casella del labirinto quanto conviene trovarcisi. È quello che
+situazione possibile e calcolare, per ciascuna, quanto vale: se il mondo è un
+labirinto, segnare
+accanto a ogni casella quanto conviene trovarcisi. È quello che
 fa il capitolo seguente nella sua prima metà, e un labirinto ha poche caselle,
 quindi si possono guardare tutte.
 
@@ -169,7 +173,7 @@ stanno uno accanto all’altro.
 
 ## Dall'albero dei futuri alle sue potature
 
-Tre sezioni. La prima è la ricerca in un mondo che non ha avversari, dove
+La strada, da qui, è in tre tappe. La prima è la ricerca in un mondo che non ha avversari, dove
 l’unico nemico è la dimensione: si comincia dal cercare a tentoni, si misura
 quanto costa, e si introduce l’unica cosa che cambia davvero le proporzioni,
 cioè una **stima di quanto manca** alla fine. Ne esce un algoritmo del 1968 che

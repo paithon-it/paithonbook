@@ -552,7 +552,7 @@ dieci, e sembra il peggiore dei rimedi. Ma sta ancora salendo. Esplorando una
 volta su cento impiega dieci volte più tempo a farsi un'idea di tutte le leve, e
 alla fine supera l'altro, che invece continuerà per sempre a buttare un tiro su
 dieci. Allungando la prova da mille a trentamila tiri (nel codice qui sopra è
-la costante `PASSI`), il sorpasso arriva poco prima del novemillesimo tiro, e alla
+la costante `PASSI`), il sorpasso arriva passato il novemillesimo tiro, e alla
 fine chi azzarda una volta su cento sta al **91,6%** e chi azzarda una volta su
 dieci all’**89,0%**: le parti si sono invertite. La classifica dipende insomma
 da quanto è lunga la partita, e questa è una morale generale:

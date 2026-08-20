@@ -343,8 +343,36 @@ Un embedding è una funzione che associa a ogni token un vettore **denso**
 $\mathbf{v} \in \mathbb{R}^{d}$ con $d$ piccolo (tipicamente $100$–$300$),
 appreso dai dati. **word2vec** {cite}`mikolov2013efficient` addestra una rete
 poco profonda a predire il contesto data la parola (*skip-gram*) o viceversa
-(*CBOW*); **GloVe** {cite}`pennington2014glove` fattorizza invece la matrice
-globale di co-occorrenza. Da $\mathbb{R}^{|V|}$ sparso si passa a
+(*CBOW*). Nello skip-gram l'obiettivo è massimizzare, su ogni coppia
+parola-vicina $(w, c)$ del corpus, la probabilità
+$p(c \mid w) = \mathrm{softmax}(\mathbf{u}_c^\top \mathbf{v}_w)$, dove
+$\mathbf{v}$ e $\mathbf{u}$ sono i vettori della parola come centro e come
+contesto. Quella softmax corre però su tutto il vocabolario, e in pratica la
+si sostituisce con il **negative sampling** {cite}`mikolov2013distributed`:
+per ogni coppia vera si pescano $k$ parole a caso dal corpus e si addestra un
+classificatore binario a distinguere la vicina vera dalle intruse,
+massimizzando
+
+$$
+\log \sigma(\mathbf{u}_c^\top \mathbf{v}_w)
++ \sum_{i=1}^{k}
+\log \sigma(-\mathbf{u}_{c_i}^\top \mathbf{v}_w),
+$$
+
+con $\sigma$ la sigmoide e $c_1, \dots, c_k$ le intruse pescate. **GloVe**
+{cite}`pennington2014glove` fattorizza invece la matrice
+globale di co-occorrenza $\mathbf{X}$, minimizzando
+
+$$
+\sum_{i,j} f(X_{ij})\,
+\big(\mathbf{v}_i^\top \tilde{\mathbf{v}}_j + b_i + \tilde{b}_j
+- \log X_{ij}\big)^2,
+$$
+
+dove $X_{ij}$ conta quante volte la parola $j$ compare vicino alla parola $i$
+e la funzione di pesatura $f$ cresce fino a un tetto e poi resta piatta: così
+le coppie mai viste non contano niente ($f(0)=0$) e quelle frequentissime non
+dominano il conto. Da $\mathbb{R}^{|V|}$ sparso si passa a
 $\mathbb{R}^{d}$ denso: meno dimensioni, ma cariche di struttura semantica.
 
 `````

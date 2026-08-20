@@ -124,6 +124,29 @@ $$
 dove $G_t=\sum_{k\ge t}\gamma^{\,k-t} r_k$ è il ritorno osservato a partire dal
 passo $t$.
 
+La derivazione sta in tre passaggi, e vederli toglie al risultato l'aria di
+magia: un gradiente che dipende dall'ambiente, calcolato senza conoscere
+l'ambiente. Il primo è l'identità della log-derivata,
+$\nabla_\theta p_\theta = p_\theta\, \nabla_\theta \log p_\theta$, con cui
+
+$$
+\nabla_\theta\, \mathbb{E}_{\tau \sim p_\theta}\big[R(\tau)\big]
+= \mathbb{E}_{\tau \sim p_\theta}\big[\nabla_\theta \log p_\theta(\tau)\,
+R(\tau)\big],
+$$
+
+dove $\tau$ è la traiettoria intera e $R(\tau)$ il suo ritorno. Il secondo è
+che la probabilità della traiettoria si fattorizza,
+$p_\theta(\tau) = p(s_0) \prod_t \pi_\theta(a_t \mid s_t)\,
+P(s_{t+1} \mid s_t, a_t)$, e nel logaritmo i fattori dell'ambiente diventano
+addendi che di $\theta$ non sanno niente: derivando spariscono, ed è il
+passaggio in cui l'ambiente esce di scena,
+$\nabla_\theta \log p_\theta(\tau) = \sum_t \nabla_\theta \log
+\pi_\theta(a_t \mid s_t)$. Il terzo è la causalità: l'azione al passo $t$ non
+può cambiare le ricompense già incassate, i prodotti con le ricompense passate
+hanno aspettazione nulla, e a ciascun addendo resta agganciato solo il ritorno
+da lì in avanti, $G_t$.
+
 L'enunciato vale sotto le ipotesi consuete ($\pi_\theta$ differenziabile in
 $\theta$, ritorni limitati, distribuzione stazionaria degli stati ben definita)
 e sotto una in più, che conviene tenere a mente perché tornerà fra poche pagine:
@@ -244,7 +267,16 @@ Il vantaggio scritto sopra è la scelta più economica del compromesso, cioè
 l'errore TD a **un passo**: poca varianza e parecchio bias. All'altro estremo
 c'è il ritorno completo di REINFORCE, che è non distorto e ballerino. Fra i due
 non c'è un salto ma una famiglia continua, governata da un parametro $\lambda$
-che dice quanti passi guardare avanti prima di affidarsi al critico: è la
+che dice quanti passi guardare avanti prima di affidarsi al critico: detto
+$\delta_t = r_t + \gamma V_\phi(s_{t+1}) - V_\phi(s_t)$ l'errore TD di un
+passo, la stima del vantaggio è
+
+$$
+\hat{A}_t \;=\; \sum_{l \ge 0} (\gamma\lambda)^l\, \delta_{t+l},
+$$
+
+che con $\lambda = 0$ si riduce al solo $\delta_t$ e con $\lambda = 1$ torna
+al ritorno completo meno la baseline. È la
 *generalized advantage estimation* {cite}`schulman2016high`, ed è quella che si
 usa in pratica dentro PPO. Attore e critico si addestrano insieme: il critico
 affina le sue stime, l'attore le usa come segnale.

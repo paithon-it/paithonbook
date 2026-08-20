@@ -11,8 +11,10 @@ dalla rivoluzione del deep learning del 2012 fino ai grandi modelli
 linguistici di oggi, la quasi totalità della ricerca recente si scrive, si
 mette a punto e si pubblica in Python. Non è sempre stato così: la rete che
 nel 2012 aprì la stagione del deep learning era scritta in C++ e CUDA, e il
-framework più usato negli anni subito dopo si programmava in Lua. Python vince
-quando arrivano Theano, Caffe e TensorFlow, e la partita si chiude nel 2016
+framework dei laboratori di punta, negli anni subito dopo, si programmava in
+Lua. Python però aveva già Theano, nato in ambito accademico prima di quella
+rivoluzione, e vince quando accanto a Theano arrivano Caffe e poi TensorFlow;
+la partita si chiude nel 2016
 con PyTorch.
 
 Com'è successo? Python non è il linguaggio più veloce, né il più elegante in
@@ -43,7 +45,7 @@ dire scrivere una riga in cima al programma, `import numpy`, per dire a Python
 «da qui in poi voglio usare anche questa»: da quel momento tutti gli strumenti
 della libreria sono a disposizione. La libreria deve però essere già presente
 sul computer, e installarla è un gesto a parte, che si fa una volta sola: come
-si fa lo vediamo poco più avanti, in questa stessa pagina.
+si fa lo vediamo fra poco.
 
 `````
 
@@ -188,7 +190,7 @@ con cui puoi conversare. Un passo avanti è il **notebook Jupyter**: un
 quaderno digitale fatto di celle, dove testo, codice, grafici e formule
 convivono nella stessa pagina. Scrivi una cella, la esegui, guardi il grafico
 che appare lì sotto. È il modo in cui gran parte del machine learning viene
-davvero insegnato e praticato, ed è il formato di questo libro.
+davvero insegnato e praticato.
 
 E se non vuoi installare nulla? **Google Colab** ti dà un notebook nel
 browser, gratuito, e spesso con una scheda grafica in prestito: abbastanza per
@@ -252,9 +254,9 @@ programma non finisce più (capita: basta un ciclo scritto male) si ferma
 premendo `Ctrl+C`.
 
 **Le librerie** non arrivano con Python: si installano una volta con **`pip`**,
-il programma che va a prenderle in rete e le mette al posto giusto. Arriva
-insieme a Python, e dentro l'ambiente virtuale di cui fra un attimo c'è
-sempre. E conviene installarle dentro
+il programma che va a prenderle in rete e le mette al posto giusto (dentro
+l'ambiente virtuale di cui fra un attimo, `pip` c'è sempre). E conviene
+installarle dentro
 un **ambiente virtuale**, cioè una cartella-scatola che tiene le librerie di
 *questo* progetto separate da quelle di tutti gli altri:
 
@@ -263,6 +265,14 @@ python3 -m venv .venv           # crea la scatola dentro la cartella del progett
 source .venv/bin/activate       # la apre (su Windows: .venv\Scripts\activate)
 pip install numpy pandas matplotlib scikit-learn
 ```
+
+Se il primo comando si ferma lamentando che manca `ensurepip`, sei quasi
+certamente su Debian o Ubuntu, dove il Python di sistema viaggia senza il
+pezzo che crea le scatole: si rimedia una volta per tutte con
+`sudo apt install python3-venv`. Quando hai finito di lavorare nella scatola
+si esce con `deactivate`. E se in un tutorial incontri altri gestori di
+ambienti (conda, uv), nessuna sorpresa: fanno lo stesso mestiere, e qui si usa
+la coppia `venv` più `pip` perché basta per tutto il percorso.
 
 Due parole sui comandi. Il `-m` vuol dire «esegui il modulo che si chiama
 così», ed è il modo di lanciare uno strumento che viaggia dentro Python invece

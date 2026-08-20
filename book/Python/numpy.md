@@ -303,7 +303,7 @@ $$
 (1,4) \;\text{ con }\; (3,1) \;\longrightarrow\; (3,4).
 $$
 
-L'asse mancante di $a$ viene inserito a sinistra come $1$, poi ogni asse-$1$ è
+L'asse mancante di $\mathbf{a}$ viene inserito a sinistra come $1$, poi ogni asse-$1$ è
 trasmesso lungo l'altra dimensione. Il risultato è equivalente a
 $C_{ij}=a_j+b_i$ ma è calcolato in C, senza materializzare le copie: gli stride
 del lato "trasmesso" sono posti a $0$, così lo stesso dato viene riletto più
@@ -338,7 +338,8 @@ import numpy as np
 x = np.random.default_rng(0).random(1_000_000)
 
 def raddoppia_loop(v):          # la versione "a mano"
-    out = np.empty_like(v)
+    out = np.empty_like(v)      # empty non azzera: dentro c'e' spazzatura,
+                                # e tocca al ciclo riempirla tutta
     for i in range(len(v)):
         out[i] = 2 * v[i]
     return out
@@ -374,13 +375,12 @@ di tipo, allocazione di oggetti e dispatch dinamico. La forma vettorizzata
 sposta il ciclo dentro codice C compilato che opera su memoria contigua, con
 buona località di cache e, dove disponibile, vettorizzazione SIMD.
 
-Vale la pena essere espliciti su quale dei due fattori pesa, perché la
-conclusione sbagliata è a portata di mano: il guadagno non viene dal
+Su quale dei due fattori pesi, la conclusione sbagliata è a portata di mano:
+il guadagno non viene dal
 *contenitore*, viene dalla sparizione del ciclo. La prova è misurabile e va nel
 verso opposto all'intuizione: **lo stesso** ciclo Python, che legge un elemento
-per volta e scrive in una lista, costa circa il triplo se a leggerlo è un
-`ndarray` invece di una lista (sul milione di elementi qui sopra, dell'ordine
-di $90$ ms contro $30$ di tempo di CPU; l'unica cosa che cambia fra le due
+per volta e scrive in una lista, è sensibilmente più lento se a leggerlo è un
+`ndarray` invece di una lista (l'unica cosa che cambia fra le due
 misure è il contenitore letto). La ragione è che ogni `v[i]` deve *incartare*
 il numero grezzo in un oggetto `np.float64`, mentre nella lista quell'oggetto
 esiste già. La

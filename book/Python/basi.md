@@ -1,7 +1,7 @@
 # Le basi di Python
 
-Guido van Rossum progettò Python con un vincolo severo: la grammatica del
-linguaggio doveva stare in testa. Non centinaia di **parole chiave** (le parole
+Python è disegnato attorno a un vincolo severo: la grammatica del
+linguaggio deve stare in testa. Non centinaia di **parole chiave** (le parole
 che il linguaggio si tiene per sé, come `if`, `for` e `def`, e che quindi non
 puoi usare per altro), ma poche decine; non una regola speciale per ogni caso,
 ma una manciata di idee che si combinano. Le regole stanno in poche pagine; il resto del tempo si passa a decidere che
@@ -16,7 +16,7 @@ il segno `=`, che qui non significa «è uguale a» come in matematica, ma
 «attacca il nome di sinistra al valore di destra», come si attacca
 un'etichetta: `eta = 34` si legge «da adesso `eta` vale 34». (Per *chiedere* se
 due cose sono uguali serve il
-doppio uguale, `==`, che incontreremo fra poche pagine.) Ogni valore appartiene
+doppio uguale, `==`, che incontreremo più sotto.) Ogni valore appartiene
 a una famiglia, il suo **tipo**: numeri, testo, vero-o-falso. La comodità è che
 il tipo non lo devi dichiarare tu: Python guarda il valore e lo riconosce da
 sé.
@@ -68,7 +68,7 @@ type(nome)           # -> <class 'str'>
 ```
 
 La risposta nomina una *classe*, che è il nome tecnico di una famiglia di
-valori (le classi sono l'ultima sezione di questa pagina): per ora si legge
+valori (un assaggio di classi arriva più sotto): per ora si legge
 «è un `float`».
 
 Un'ultima cosa sulle stringhe, che userai in ogni pagina di questo libro: le
@@ -951,7 +951,7 @@ una *build* sperimentale senza GIL (*free-threading*); con la **PEP 779**
 quella build passa da sperimentale a ufficialmente supportata in CPython 3.14,
 pur non essendo ancora quella predefinita, con un costo residuo che l'ultima
 misura ufficiale dà fra l'1% (macOS aarch64) e l'8% (Linux x86-64) sul codice
-a thread singolo: nel 3.13 era attorno al 40%, quasi tutto dovuto
+a thread singolo: nel 3.13 era attorno al 40%, il grosso dovuto
 all'interprete adattivo disattivato in quella build. Farne il default è una
 terza fase annunciata ma non ancora datata. È materia in movimento: quel che
 resta vero, e che conviene portarsi via, è la **distinzione** fra lavoro che
@@ -962,10 +962,10 @@ nuclei sono due problemi diversi.
 `````
 
 Che i thread non aiutino a calcolare, e aiutino invece ad aspettare, si può
-vedere in una ventina di righe, ed è il tipo di misura che val la pena fare una
-volta con le proprie mani (l'ambiente per farlo è quello preparato
-nell'{doc}`apertura del capitolo </Python/overview>`). Non serve capire ogni riga del programma
-che segue: quello che conta sono i numeri che stampa, e ognuno di essi è
+vedere in una ventina di righe, con una misura da fare una volta con le
+proprie mani (l'ambiente per farlo è quello preparato
+nell'{doc}`apertura del capitolo </Python/overview>`). Il programma che segue
+stampa i numeri che contano, e ognuno di essi è
 stampato due volte, perché i tempi da guardare sono due. Il **tempo di parete**
 è quello dell'orologio appeso al muro, cioè quanto si è aspettato; il **tempo
 di CPU** è quanto lavoro ha fatto davvero il processore, sommato su tutti i
@@ -1021,6 +1021,7 @@ t0 = time.perf_counter()
 # modulo importabile e il codice che avvia i processi va protetto da
 # `if __name__ == "__main__":`. Senza quella riga il figlio riesegue anche
 # l'avvio, e i processi si moltiplicano finché la macchina non cede.
+# Cosi' com'e', con "fork", questo blocco gira su Linux e su Colab.
 ctx = mp.get_context("fork")
 coda = ctx.Queue()
 processi = [ctx.Process(target=lavoratore, args=(n, coda)) for n in CPU]
@@ -1064,11 +1065,12 @@ macchina che non stia facendo nient'altro, e il modo di accorgersi che non è
 così è guardare la prima riga: se il tempo di parete è molto più alto del tempo
 di CPU (qui sono uguali, 0,26 e 0,26), vuol dire che il programma ha passato la
 maggior parte del tempo in coda dietro a qualcun altro, e le misure che seguono
-non parlano più del GIL. Sotto carico, anzi, si vede il risultato opposto: i
-quattro thread finiscono *prima* di quello solo, non perché lavorino in
-parallelo (il tempo di CPU resta identico) ma perché quattro thread in attesa
-di turno strappano al sistema operativo una fetta di processore più grande di
-quanta ne strappi uno.
+non parlano più del GIL. Sotto carico pesante può perfino capitare il
+risultato opposto, i
+quattro thread che finiscono *prima* di quello solo: non lavorano in
+parallelo (il tempo di CPU resta identico), ma con quattro candidati pronti in
+coda capita più spesso che almeno uno di loro abbia il turno. È un effetto
+instabile, e un motivo in più per misurare a macchina scarica.
 
 Il **tempo di CPU** stampato accanto serve a distinguere le due situazioni in
 cui la parete non scende, e va letto con una cautela da dire: `process_time()`

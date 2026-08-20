@@ -292,8 +292,9 @@ collegarli, fonderli, pagare il conto della risoluzione, e infine controllare
 che il sistema abbia davvero guardato.
 
 - **Allineare due spazi**: due reti separate imparano a segnare una foto e la
-  sua didascalia vicine sulla stessa mappa, ed è l'addestramento contrastivo di
-  CLIP {cite}`radford2021learning`. Da lì viene fuori, come effetto collaterale,
+  sua didascalia vicine sulla stessa mappa, ed è l'addestramento *contrastivo*
+  di CLIP {cite}`radford2021learning`: si impara per contrasto, avvicinando le
+  coppie giuste e allontanando le sbagliate. Da lì viene fuori, come effetto collaterale,
   un classificatore che si scrive a parole.
 - **Innestare gli occhi**: il raccordo fra un encoder visivo e un modello di
   linguaggio lasciato fermo. Di raccordi ne sono stati provati tre, e ha vinto

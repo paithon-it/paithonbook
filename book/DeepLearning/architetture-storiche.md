@@ -55,7 +55,7 @@ locale, condivisione dei pesi (da cui l'equivarianza alla traslazione) e
 sottocampionamento, che aggiunge una tolleranza approssimata a spostamenti e
 piccole deformazioni.
 
-Vale la pena notare un dettaglio che ritorna: lo strato convoluzionale C3 non
+Un dettaglio che ritorna: lo strato convoluzionale C3 non
 collega ogni mappa in uscita a tutte quelle in ingresso, ma segue una tabella
 di connessione **sparsa**, scritta a mano. LeCun ne dà due ragioni, e la prima
 è economica: tenere il numero di connessioni entro limiti ragionevoli (la

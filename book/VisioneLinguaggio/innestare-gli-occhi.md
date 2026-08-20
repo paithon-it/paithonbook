@@ -33,8 +33,8 @@ Non è solo una questione di soldi. C'è una seconda ragione per lasciare fermi 
 pesi che esistono già. Un modello di linguaggio riaddestrato su qualche milione
 di didascalie perde per strada una parte di quello che sapeva fare con il testo
 puro: impara una cosa nuova cancellandone una vecchia. È la **dimenticanza
-catastrofica**, che il {doc}`capitolo sui Transformer </Transformers/overview>` incontra sui modelli
-multilingua. Congelare non è soltanto un risparmio: è una garanzia sul
+catastrofica**, già incontrata dal vivo nella {doc}`pagina sui modelli
+multilingua </Transformers/multilingua>`. Congelare non è soltanto un risparmio: è una garanzia sul
 comportamento che si vuole conservare.
 
 ## Che cosa deve fare, di preciso, il pezzo in mezzo

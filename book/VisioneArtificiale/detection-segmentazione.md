@@ -165,6 +165,13 @@ il rettangolo: prende la cornice verticale, che gli somiglia già, e la aggiusta
 giusta è molto più facile che disegnarne una dal nulla, e la rete impara
 proprio questo: piccole correzioni, più il nome di ciò che c'è dentro.
 
+Il confronto con il quadro, però, il corniciaio può farlo solo in bottega, sui
+quadri di prova di cui conosce già la cornice giusta: è lì che impara quale
+formato scegliere e di quanto ritoccarlo. Davanti a un quadro nuovo la cornice
+giusta non la conosce nessuno, e infatti la rete ritocca tutte le sue cornici,
+dicendo per ciascuna quanto è sicura che lì dentro ci sia qualcosa: alla fine
+restano solo le più convinte.
+
 `````
 
 `````{tab} Superiore
@@ -184,7 +191,14 @@ $$
 dove $(x_a, y_a, w_a, h_a)$ sono centro e dimensioni dell'ancora e
 $(x, y, w, h)$ quelli del riquadro da raggiungere; in addestramento ogni
 oggetto è assegnato alle ancore che meglio lo ricoprono (la sovrapposizione
-si misura con la IoU, protagonista della prossima sezione). È il meccanismo
+si misura con la IoU, protagonista della prossima sezione). Quel confronto
+appartiene al solo addestramento, quando i riquadri veri ci sono: le ancore
+che ricoprono bene un oggetto diventano positive e imparano classe e offset
+verso di lui, le altre fanno da sfondo. In inferenza non c'è nessun riquadro
+vero da ricoprire: la rete produce punteggi e offset per tutte le ancore, ogni
+ancora corretta diventa un candidato, e la IoU ricompare solo alla fine,
+misurata fra i candidati stessi, per sfoltire i doppioni sullo stesso oggetto.
+È il meccanismo
 della *Region Proposal Network* di Faster R-CNN {cite}`ren2015faster`, che
 usa $k=9$ ancore per posizione (3 scale × 3 proporzioni), e di SSD
 {cite}`liu2016ssd`, che le chiama *default boxes* e le distribuisce su mappe
@@ -305,6 +319,65 @@ dell'addestramento i doppioni non li produce più. Spariscono così sia le
 cornici di partenza sia la fase di pulizia. Il prezzo, storicamente, è stato
 che l'addestramento impiega molto più tempo a stabilizzarsi su un risultato
 buono.
+
+## La famiglia YOLO: le impalcature tolte una alla volta
+
+Dieci anni di rilevamento si possono ripassare seguendo una famiglia sola. Il
+primo YOLO {cite}`redmon2016you` aveva la griglia e nient'altro: niente ancore,
+una passata sola, riquadri grossolani e gli oggetti piccoli persi quando si
+affollano nella stessa cella. Le versioni successive adottano, uno per uno, gli
+attrezzi del mestiere. YOLOv2 {cite}`redmon2017yolo9000` porta dentro le
+ancore, e invece di disegnarle a mano le ricava dai dati, raggruppando i
+riquadri veri del dataset per trovare le forme che ricorrono davvero. YOLOv3
+{cite}`redmon2018yolov3` predice su tre griglie a risoluzione diversa, così
+anche l'oggetto piccolo trova una griglia abbastanza fitta da vederlo, e al
+posto della softmax mette tanti classificatori indipendenti, uno per classe,
+perché la stessa figura può essere insieme «persona» e «pedone».
+
+Poi la famiglia cambia natura. Dal 2020 le versioni nuove sono software,
+mantenuto dalla società Ultralytics {cite}`jocher2026ultralytics`, e la storia
+si legge nei registri delle versioni invece che negli articoli. YOLOv5 arriva
+così, libreria PyTorch senza paper; YOLOv8, nel 2023, toglie le ancore,
+predicendo direttamente centro e distanze dai bordi come i rilevatori
+*anchor-free* incontrati a proposito delle ancore; e YOLO26, all'inizio del
+2026, toglie anche la NMS, punendo i doppioni durante l'addestramento con la
+stessa idea dell'abbinamento uno a uno di DETR, così quello che la rete produce
+è già il risultato finale. Le due impalcature del mestiere, le ancore e la
+pulizia dei doppioni, la famiglia le ha prima usate e poi tolte tutte e due;
+restano la griglia, la passata unica e il nome.
+
+Provare l'ultima versione costa cinque righe. La libreria si installa con
+`pip install ultralytics`, scarica i pesi alla prima esecuzione e porta con sé
+una foto di prova: un minibus elettrico e, sul marciapiede, quattro figure, due
+intere e due tagliate dai bordi della foto.
+
+```{code-block} python
+:class: pt-lento
+
+# pip install ultralytics; alla prima esecuzione scarica 5 MB di pesi.
+from ultralytics import YOLO, ASSETS
+
+modello = YOLO("yolo26n.pt")            # "n" come nano, la taglia più piccola
+[esito] = modello(ASSETS / "bus.jpg", verbose=False)
+for riquadro in esito.boxes:
+    nome = esito.names[int(riquadro.cls)]
+    print(f"{nome:10s} confidenza {float(riquadro.conf):.2f}")
+```
+
+```text
+bus        confidenza 0.92
+person     confidenza 0.91
+person     confidenza 0.91
+person     confidenza 0.87
+person     confidenza 0.53
+```
+
+Cinque oggetti, nessuna pulizia dopo: i riquadri escono così dalla rete. Le due
+persone intere valgono 0,91; quella di schiena sul bordo destro 0,87; e la
+0,53 è la figura di cui la foto mostra soltanto una spalla, sul bordo sinistro:
+mezza persona, mezzo sì. I pesi stanno sul server di chi pubblica il modello, e
+se un giorno li riaddestrano le cifre esatte possono cambiare, mentre la
+lettura resta la stessa, con la confidenza che cala dove calerebbe la nostra.
 
 ## Segmentare: dal riquadro alla sagoma
 

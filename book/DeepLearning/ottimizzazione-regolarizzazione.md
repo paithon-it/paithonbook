@@ -603,16 +603,42 @@ perché il termine $\lambda\theta$ entra nel buffer della velocità e si accumul
 come farebbe un gradiente qualunque: la penalità non agisce più una volta per
 passo, ma con la coda di tutti i passi precedenti.
 
-Il conto, col protocollo perché si possa rifare: un parametro solo che parte da
-$\theta_0 = 1$, gradiente identicamente nullo (così si misura la sola penalità),
-$\eta = 0{,}1$, $\lambda = 0{,}05$, quaranta passi di `torch.optim.SGD`. Senza
-momentum, `weight_decay=0.05` lascia $0{,}8183$, che è esattamente
-$(1-\eta\lambda)^{40}$, e il decadimento applicato a mano fuori
-dall'ottimizzatore lascia lo stesso identico $0{,}8183$. Con `momentum=0.9` il
-decadimento a mano non cambia di una cifra, resta $0{,}8183$, mentre
-`weight_decay` porta il peso a $0{,}0606$: **tredici volte più piccolo**, senza
-che nessuno abbia toccato $\lambda$. È una differenza che conta, perché l'SGD
-che si usa davvero è quello con il momentum.
+Il conto si fa con un parametro solo che parte da $\theta_0 = 1$ e gradiente
+identicamente nullo, così a muovere il peso resta la sola penalità:
+$\eta = 0{,}1$, $\lambda = 0{,}05$, quaranta passi.
+
+```python
+import torch
+
+def dopo_40_passi(momentum, weight_decay=0.0, a_mano=False):
+    p = torch.nn.Parameter(torch.tensor([1.0]))
+    opt = torch.optim.SGD([p], lr=0.1, momentum=momentum, weight_decay=weight_decay)
+    for _ in range(40):
+        opt.zero_grad(); p.grad = torch.zeros_like(p)   # gradiente nullo
+        opt.step()
+        if a_mano:                # il decadimento vero, fuori dall'ottimizzatore
+            with torch.no_grad(): p.mul_(1 - 0.1 * 0.05)    # 1 - eta*lambda
+    return p.item()
+
+print(f"weight_decay, senza momentum: {dopo_40_passi(0.0, weight_decay=0.05):.4f}")
+print(f"a mano,       senza momentum: {dopo_40_passi(0.0, a_mano=True):.4f}")
+print(f"a mano,       momentum 0,9:   {dopo_40_passi(0.9, a_mano=True):.4f}")
+print(f"weight_decay, momentum 0,9:   {dopo_40_passi(0.9, weight_decay=0.05):.4f}")
+```
+
+```text
+weight_decay, senza momentum: 0.8183
+a mano,       senza momentum: 0.8183
+a mano,       momentum 0,9:   0.8183
+weight_decay, momentum 0,9:   0.0606
+```
+
+Senza momentum le due strade lasciano lo stesso identico $0{,}8183$, che è
+esattamente $(1-\eta\lambda)^{40}$. Col momentum il decadimento a mano non
+cambia di una cifra, mentre `weight_decay` porta il peso a $0{,}0606$:
+**tredici volte e mezzo più piccolo**, senza che nessuno abbia toccato
+$\lambda$. È una differenza che conta, perché l'SGD che si usa davvero è quello
+con il momentum.
 
 Con i passi adattivi di Adam la questione cambia natura, e non nel senso che il
 decadimento si indebolisce: il termine $\lambda\theta$ finisce **dentro** la
@@ -622,14 +648,29 @@ la disomogeneità, non la debolezza. **AdamW** {cite}`loshchilov2019decoupled`
 lo *disaccoppia* dall'aggiornamento adattivo, applicandolo direttamente ai
 pesi.
 
-Su *come* lo applichi conviene essere precisi, perché l'articolo e il codice
-non dicono la stessa cosa. Nell'articolo il decadimento è $\theta \leftarrow
+Su *come* lo applichi, l'articolo e il codice non dicono la stessa cosa.
+Nell'articolo il decadimento è $\theta \leftarrow
 \theta(1-\lambda)$, indipendente dal learning rate; `torch.optim.AdamW` esegue
 invece `param.mul_(1 - lr * weight_decay)`, cioè $\theta \leftarrow
-\theta(1-\eta\lambda)$, **lo stesso identico fattore** dell'L2 di SGD. Il conto:
-con $\eta=0{,}5$, $\lambda=0{,}1$ e gradiente nullo, un passo porta un peso da
-$1{,}0$ a $0{,}95$ sia con `SGD(weight_decay=0.1)` sia con `AdamW`; con `Adam`
-lo porta a $0{,}50$. Quello, e non un fattore dieci fra le due formule, è ciò
+\theta(1-\eta\lambda)$, **lo stesso identico fattore** dell'L2 di SGD. Il
+conto, con $\eta=0{,}5$, $\lambda=0{,}1$ e gradiente nullo:
+
+```python
+for Opt in (torch.optim.SGD, torch.optim.AdamW, torch.optim.Adam):
+    p = torch.nn.Parameter(torch.tensor([1.0]))
+    opt = Opt([p], lr=0.5, weight_decay=0.1)
+    opt.zero_grad(); p.grad = torch.zeros_like(p); opt.step()
+    print(f"{Opt.__name__:5s} dopo un passo: {p.item():.2f}")
+```
+
+```text
+SGD   dopo un passo: 0.95
+AdamW dopo un passo: 0.95
+Adam  dopo un passo: 0.50
+```
+
+Un passo porta il peso allo stesso $0{,}95$ con `SGD` e con `AdamW`, e a
+$0{,}50$ con `Adam`. Quello, e non un fattore dieci fra le due formule, è ciò
 che AdamW corregge: non la scala del decadimento, ma il fatto che passi dalla
 bilancia adattiva.
 

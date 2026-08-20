@@ -38,6 +38,24 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-9-3)=
+
+## 1.9.3 · 20 agosto 2026
+
+### Pagine ampliate
+
+- **Le formule che il testo usava senza averle mai scritte adesso ci sono**: l'equazione di Bellman per Q (quella di cui SARSA è il campionamento), la rotazione della RoPE e la RMSNorm, l'obiettivo di word2vec col negative sampling e la pesatura di GloVe, la derivazione del gradiente di policy con la GAE, la riparametrizzazione di SAC con la correzione della tanh, la MMR per la ridondanza dei passaggi recuperati e il PSI per la deriva, colonne categoriche comprese.
+- {doc}`Detection e segmentazione </VisioneArtificiale/detection-segmentazione>` (Visione artificiale). **Le ancore dicono in chiaro che il confronto col riquadro vero esiste solo in addestramento**, mentre in inferenza la IoU ricompare soltanto fra le predizioni, nella pulizia dei doppioni. E la famiglia YOLO ha il suo racconto, dalla griglia nuda del 2016 al modello del 2026 che la pulizia non la fa più: con cinque righe di codice da provare, e le confidenze uscite davvero dal modello.
+
+### Correzioni
+
+- {doc}`Prefazione </prefazione>`. **La rilettura avversaria è arrivata alle pagine che mancavano**: la prefazione, le conclusioni e i capitoli su Python, sulla ricerca e su visione e linguaggio. Nella prefazione la riga di Anthropic sulla poesia in rima adesso cita il resoconto in cui sta davvero, il teorema di Penrose ha le sue due voci in bibliografia (il disegno del 1958 col padre, la matematica del 1991), e il giro dei tre rapporti si fa con numeri veri.
+- {doc}`Conclusioni </Conclusioni/overview>`. **Il ripasso finale fotografa il libro com'è oggi.** Le famiglie generative sono cinque come nella mappa del libro, i capitoli nati quest'estate sono nominati e linkati, AlphaGo porta al capitolo che lo racconta, i due livelli dicono la stessa cosa sugli errori che si accumulano in un agente (sbagliare tutti insieme è l'estremo buono, non il cattivo), e i riquadri da ricordare stanno prima del congedo, così il libro chiude salutando.
+- {doc}`Esplorare lo spazio </Ricerca/esplorare-lo-spazio>` (Ricerca e pianificazione). **La parità dell'otto-tessere dimostrava il contrario di quel che affermava**: se ogni mossa inverte la parità, le disposizioni di parità diversa si raggiungono eccome. L'argomento vero ha due interruttori che scattano insieme, e ora c'è. IDA* e Monte Carlo Go hanno i nomi di chi li ha proposti, Deep Blue il suo punteggio, e la potatura il suo nome completo anche per chi legge il livello Elementare.
+- {doc}`Python </Python/overview>`. **Su Ubuntu il primo comando dell'ambiente virtuale si fermava**, e la pagina non lo diceva: ora dice del pezzo che manca, di come si esce dalla scatola e degli altri gestori che si incontrano nei tutorial. La storia dei framework rispetta le date (Theano esisteva prima di AlexNet), e la tabella delle vendite adesso la fabbrica la pagina stessa, così ogni numero si può rifare.
+- {doc}`Allineare due spazi </VisioneLinguaggio/allineare-due-spazi>` (Visione e linguaggio). **I numeri del divario fra i due quartieri si leggono alla precisione che il protocollo sostiene**, e il testo dichiara perché; la lettera del batch ha smesso di fare due mestieri, i rimandi atterrano sulle sezioni che contengono la cosa promessa, e le sedici domandine di SigLIP hanno preso il posto di otto interrogazioni, non di quattro.
+- **I numeri commentati escono da blocchi che stanno nelle pagine**: il conto del weight decay si stampa da sé, il sorpasso dei banditi arriva dove la misura lo mette (passato il novemillesimo tiro), il giudice di recensioni stampa i tre decimali che il testo discute, e l'ordine ragionato della potatura dichiara quante volte venti ordini a caso lo battono: una.
+
 (v1-9-2)=
 
 ## 1.9.2 · 20 agosto 2026

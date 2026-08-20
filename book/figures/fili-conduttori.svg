@@ -54,7 +54,7 @@
   <circle cx="612" cy="168" r="4"   fill="#B5532C"/>
   <rect class="pill" x="40" y="152" width="178" height="32" rx="6" stroke="#B5532C" stroke-width="2.2"/>
   <text class="pilltx" x="129" y="173" text-anchor="middle">Dati</text>
-  <text class="role" x="625" y="172">il carburante</text>
+  <text class="role" x="625" y="172">l'aria che respirano</text>
 
   <!-- Filo 2: Rappresentazioni (teal) -->
   <line x1="232" y1="210" x2="612" y2="210" stroke="#2D5A5C" stroke-width="2.8"/>
