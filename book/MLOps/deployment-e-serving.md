@@ -34,7 +34,7 @@ bolletta. I regimi fondamentali sono tre.
 
 `````{tab} Elementare
 
-Pensa a un forno.
+Il forno di un panificio li fa tutti e tre.
 
 C'è il pane **in blocco**: di notte, quando il negozio è chiuso, il fornaio
 prepara in un colpo solo tutto il pane che servirà l'indomani. Nessuno aspetta
@@ -468,10 +468,10 @@ non è un lusso: spesso è l'unica configurazione stabile.
 
 `````{tab} Elementare
 
-Immagina la coda alla posta, e conta davvero. Su cento clienti, ottanta escono
-dall'ufficio due minuti dopo esserci entrati, quindici ci mettono dieci minuti
-e cinque restano impantanati quaranta minuti: sono tempi porta a porta, fila
-compresa, che è esattamente quello che vive chi aspetta. L'attesa media è
+Alla posta, su cento clienti, ottanta escono dall’ufficio due minuti dopo
+esserci entrati, quindici ci mettono dieci minuti e cinque restano impantanati
+quaranta minuti: sono tempi porta a porta, fila compresa, che è esattamente
+quello che vive chi aspetta. L’attesa media è
 $(80 \times 2 + 15 \times 10 + 5 \times 40)/100 = 5{,}1$ minuti, cioè circa
 cinque. Ma **cinque minuti non li aspetta nessuno**: chi entra alla posta
 aspetta due minuti, o dieci, o quaranta. La media è un numero che non descrive

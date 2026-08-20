@@ -373,13 +373,13 @@ sola: scendere sotto il livello della parola.
 
 `````{tab} Elementare
 
-Immagina di scomporre ogni parola in mattoncini di poche lettere che si
+La mossa è scomporre ogni parola in mattoncini di poche lettere che si
 sovrappongono. Prendiamo *gatto* e scriviamoci accanto due segnacci, uno
 all'inizio e uno alla fine, per ricordarci dove la parola comincia e dove
 finisce: `<gatto>`. Ora la si affetta a gruppi di tre caratteri, spostandosi di
 uno per volta: `<ga`, `gat`, `att`, `tto`, `to>`. (Tre non è sacro: nella
-pratica si tengono insieme le fette da tre fino a sei lettere, così da
-prendere sia le sillabe sia le desinenze intere.)
+pratica si tengono insieme le fette da tre fino a sei lettere, così da prendere
+sia le sillabe sia le desinenze intere.)
 
 Ogni mattoncino ha il proprio vettore, e il vettore di *gatto* è semplicemente
 la **somma** dei vettori dei suoi mattoncini. Sommare due file di numeri vuol

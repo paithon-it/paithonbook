@@ -41,8 +41,8 @@ gioco sta nel far girare molto il secondo pagando poco il primo.
 
 `````{tab} Elementare
 
-Immagina due allievi che imparano a guidare. Il primo impara solo
-schiantandosi: prova una manovra sull'auto vera, se va male paga il danno, e
+Due allievi imparano a guidare. Il primo impara solo schiantandosi: prova una
+manovra sull'auto vera, se va male paga il danno, e
 solo così capisce che non andava fatta. Il secondo, dopo qualche giro, si è
 costruito in testa un piccolo simulatore della macchina («se sterzo così a
 questa velocità, il posteriore scappa») e le manovre pericolose le prova lì

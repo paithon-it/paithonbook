@@ -35,8 +35,8 @@ Con le serie temporali quel rimescolare, che altrove è igiene, qui è veleno.
 
 `````{tab} Elementare
 
-Immagina di allenare uno studente a prevedere il meteo. Gli dai in mano i dati
-di tutto l'anno mescolati a caso: alcuni giorni per esercitarsi, altri per
+Alleni uno studente a prevedere il meteo. Gli dai in mano i dati di tutto
+l'anno mescolati a caso: alcuni giorni per esercitarsi, altri per
 l'esame. Ma tra i giorni d'esame c'è il 3 marzo, e tra quelli d'esercizio il 4 e
 il 5 marzo. Lo studente, «esercitandosi» sul 4 e 5, ha di fatto sbirciato cosa
 c'era intorno al 3: la sua previsione del 3 marzo sembrerà miracolosa, ma solo

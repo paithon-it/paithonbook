@@ -122,18 +122,19 @@ model = nn.Sequential(
 ```
 
 `````{tab} Elementare
-Immagina una catena di montaggio: ogni stazione riceve il pezzo dalla
-precedente, ci lavora sopra e lo passa alla successiva. `nn.Sequential`
-descrive la rete esattamente così: elenchi le stazioni nell'ordine in cui il
-dato le attraversa, e i collegamenti si fanno da soli. Nota che qui anche la
-ReLU è una "stazione" della catena (`nn.ReLU()`): nella catena di montaggio
-ogni passaggio, filtri compresi, deve avere il suo posto in fila.
+Un autolavaggio a tunnel: l'auto entra da un capo, incontra il prelavaggio, le
+spazzole, il risciacquo, la cera e l'asciugatura, sempre in quest'ordine, e ne
+esce dall'altro capo. `nn.Sequential` descrive la rete esattamente così:
+elenchi i passaggi nell'ordine in cui il dato li attraversa, e i collegamenti
+si fanno da soli. Nota che qui anche la ReLU è un passaggio del tunnel
+(`nn.ReLU()`): l'asciugatura non lava niente, ma sta in fila come tutti gli
+altri passaggi, e senza di lei quello che esce non è la stessa cosa.
 
 Quale delle due scritture usare? Questa, finché la rete è una fila. Si torna
 alla classe il giorno in cui la fila non basta più, cioè quando il dato deve
-prendere due strade e ricongiungersi dopo, o saltare qualche stazione: cose
-che in una lista non si scrivono, e in `forward` sì, perché lì sono normali
-variabili Python.
+prendere due strade e ricongiungersi dopo, o saltare un passaggio: un tunnel a
+corsia unica non lo sa fare, e un elenco non lo sa scrivere; in `forward` sì,
+perché lì sono normali variabili Python.
 `````
 
 `````{tab} Superiore

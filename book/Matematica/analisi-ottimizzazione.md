@@ -21,8 +21,9 @@ quanto cambia l'uscita?*
 
 `````{tab} Elementare
 
-Pensa al tachimetro di un'auto. La posizione cambia nel tempo, e la velocità
-è "quanto in fretta" cambia: è la derivata della posizione.
+La posizione di un'auto cambia nel tempo, e la velocità è "quanto in fretta"
+cambia. Il tachimetro, quindi, sta già mostrando una derivata: la derivata
+della posizione.
 
 Sul grafico si vede ancora meglio. Appoggia un righello alla curva in un
 punto e giralo finché, lì attorno, righello e curva si sovrappongono: quella è
@@ -265,9 +266,9 @@ chiama *backpropagation*, cioè «propagazione all'indietro».
 
 `````{tab} Elementare
 
-Immagina tre ingranaggi: A muove B, B muove C. Se B gira due volte più in
-fretta di A, e C una volta e mezza più in fretta di B, allora C gira rispetto
-ad A di $2 \times 1{,}5 = 3$ volte. Gli effetti lungo la catena si
+Tre ingranaggi in fila: A muove B, B muove C. Se B gira due volte più in fretta
+di A, e C una volta e mezza più in fretta di B, allora C gira rispetto ad A di
+$2 \times 1{,}5 = 3$ volte. Gli effetti lungo la catena si
 **moltiplicano**.
 
 E un ingranaggio è una derivata travestita, perché «quanti giri fa B per ogni

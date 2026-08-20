@@ -89,9 +89,9 @@ quanto, nel software tradizionale, cambierebbe riscrivere una funzione.
 
 `````{tab} Elementare
 
-Pensa a un collaboratore bravissimo e velocissimo, che ha letto mezza
-biblioteca, ma che è appena arrivato e non sa nulla del *tuo* lavoro. Puoi
-anche mandarlo a un corso di formazione, ma è una faccenda lunga e costosa, e
+Un collaboratore bravissimo e velocissimo, che ha letto mezza biblioteca, è
+appena arrivato e non sa nulla del *tuo* lavoro. Puoi anche mandarlo a un
+corso di formazione, ma è una faccenda lunga e costosa, e
 la vedremo fra poco. Quello che puoi fare subito, ogni giorno, gratis, è
 **parlargli bene**. Se gli dici «occupati dei clienti» otterrai una cosa; se
 gli lasci un foglio con il ruolo, tre esempi di risposte giuste e il tono da

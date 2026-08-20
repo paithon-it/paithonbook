@@ -222,7 +222,7 @@ unico schema tutti i tipi di relazione tra parole. La soluzione del
 Transformer è farne parecchie in parallelo.
 
 `````{tab} Elementare
-Immagina più lettori della stessa frase, ognuno con un evidenziatore di
+Sulla stessa frase lavorano più lettori, ognuno con un evidenziatore di
 colore diverso e una fissazione diversa: uno segna chi fa l'azione, un altro le
 parentele di significato ("nero" e "gatto" vanno insieme perché uno è il colore
 dell'altro), un altro ancora chi sta vicino a chi nella frase.

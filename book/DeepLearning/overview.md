@@ -89,10 +89,10 @@ intermedi, l'oggetto intero riconosciuto dagli ultimi strati.
 
 `````{tab} Elementare
 
-Immagina di costruire con i mattoncini. Prima metti insieme i pezzi più
-piccoli: tratti dritti, curve, angoli. Poi combini quei tratti in parti
-riconoscibili: due cerchi diventano occhi, due triangoli diventano orecchie.
-Alla fine le parti si assemblano in un gatto intero.
+Davanti a una scatola di mattoncini, cominci dai pezzi più piccoli: tratti
+dritti, curve, angoli. Poi combini quei tratti in parti riconoscibili: due
+cerchi diventano occhi, due triangoli diventano orecchie. Alla fine le parti si
+assemblano in un gatto intero.
 
 La rete fa esattamente questo, ma senza che nessuno gliel'abbia insegnato:
 nessuno le dice "questo è un occhio". Impara da sola che, per riconoscere i
@@ -139,7 +139,7 @@ nome del primo dei suoi autori, Alex Krizhevsky.
 
 `````{tab} Elementare
 
-Pensa a un fuoco. Ti serve la legna, l'aria e una scintilla: se manca anche
+Per accendere un fuoco servono la legna, l'aria e una scintilla: se manca anche
 uno solo dei tre, non parte. Il deep learning è rimasto "spento" per anni non
 perché mancasse l'idea, ma perché mancava la combustione completa.
 

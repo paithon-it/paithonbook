@@ -184,9 +184,9 @@ scrivere audio.
 
 `````{tab} Elementare
 
-Pensa a come è fatto un testo: una manciata di lettere, un alfabeto finito, e
-con quelle poche decine di simboli si scrive qualsiasi cosa. Un modello di
-linguaggio ha imparato proprio questo: dato un pezzo di frase, indovinare il
+Un testo è fatto di una manciata di lettere, un alfabeto finito, e con quelle
+poche decine di simboli si scrive qualsiasi cosa. Un modello di linguaggio ha
+imparato proprio questo: dato un pezzo di frase, indovinare il
 simbolo successivo, lettera dopo lettera, parola dopo parola.
 
 L'idea è di dare al suono lo stesso trattamento: ritagliarlo in tanti

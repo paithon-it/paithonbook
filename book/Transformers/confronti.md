@@ -99,7 +99,7 @@ Il Transformer non è gratis, e il suo tallone d'Achille è proprio il gesto
 che lo definisce: far guardare ogni parola a tutte le altre.
 
 `````{tab} Elementare
-Pensa a una riunione dove ognuno deve parlare con ognuno. In quattro, le coppie
+In una riunione di quattro persone ognuno deve parlare con ognuno, e le coppie
 possibili sono sei: le puoi contare con le dita (io con te, io con lui, io con
 lei, tu con lui, tu con lei, lui con lei). La regola per non contarle a mano è
 semplice: ognuno parla con tutti tranne sé stesso, quindi $4 \times 3 = 12$,

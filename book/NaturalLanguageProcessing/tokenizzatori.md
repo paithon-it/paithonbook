@@ -55,13 +55,12 @@ dettaglio: è un baratto fra due costi che tirano in direzioni opposte.
 
 `````{tab} Elementare
 
-Immaginate di dover preparare una scatola di mattoncini per costruire
-qualunque parola italiana. Se mettete nella scatola solo le ventuno lettere
-dell'alfabeto, potete costruire tutto, ma ogni parola richiede cinque o sei
-pezzi e ci mettete un'eternità. Se invece mettete un pezzo già fatto per ogni
-parola del dizionario, costruite in un colpo solo, ma la scatola diventa
-enorme e comunque, il giorno che vi serve un cognome o una parola inventata,
-non c'è.
+Quanti pezzi diversi servono, in una scatola di mattoncini, per costruire
+qualunque parola italiana? Con le sole ventuno lettere dell'alfabeto si
+costruisce tutto, ma ogni parola richiede cinque o sei pezzi e ci vuole
+un’eternità. Con un pezzo già fatto per ogni parola del dizionario si
+costruisce in un colpo solo, ma la scatola diventa enorme e comunque, il giorno
+che serve un cognome o una parola inventata, non c'è.
 
 La soluzione è una scatola mista: i pezzi grandi per le cose che ricorrono
 (*rosso*, *casa*, *-mente*, *-zione*) e le lettere singole come riserva per

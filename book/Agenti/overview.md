@@ -107,11 +107,11 @@ sotto questo nome fin da subito.
 
 `````{tab} Elementare
 
-Pensa alla differenza tra un consulente e un assistente. Il **consulente** ti
-dà consigli a parole: «per andare a Milano ti conviene il treno delle 9, poi
-prenota un hotel in centro». Ottimo, ma il lavoro resta tutto a te: sei tu che
-apri il sito, digiti le date, paghi. L’**assistente**, invece, le cose le
-*fa*: telefona, prenota, compila il modulo, ti mette in mano il biglietto. La
+Un **consulente** ti dà consigli a parole: «per andare a Milano ti conviene il
+treno delle 9, poi prenota un hotel in centro». Ottimo, ma il lavoro resta
+tutto a te: sei tu che apri il sito, digiti le date, paghi. L’**assistente**,
+invece, le cose le *fa*: telefona, prenota, compila il modulo, ti mette in
+mano il biglietto. La
 stessa testa, ma con le mani.
 
 Un agente è il salto dal consulente all'assistente. Il modello continua a

@@ -196,7 +196,7 @@ E l’**ottimizzazione** è il motore che rende tutto questo possibile: apprende
 significa cercare i parametri che minimizzano un errore.
 
 `````{tab} Elementare
-Immagina di regolare le manopole di un vecchio mixer audio per far suonare bene
+Su un vecchio mixer audio regoli le manopole per far suonare bene
 una canzone. Giri un po’ una manopola, ascolti se è migliorato, correggi.
 Addestrare un modello è la stessa cosa, con milioni di manopole: a ogni passo
 il modello guarda quanto ha sbagliato e sposta ciascuna manopola nella

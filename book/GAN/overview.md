@@ -82,8 +82,8 @@ l'intero capitolo.
 
 `````{tab} Elementare
 
-Immagina un **falsario** che dipinge quadri contraffatti e un **esperto
-d'arte** che deve dire quali sono autentici e quali falsi. All'inizio il
+Un **falsario** dipinge quadri contraffatti; un **esperto
+d'arte** deve dire quali sono autentici e quali falsi. All'inizio il
 falsario è maldestro e l'esperto lo smaschera senza sforzo. Ma ogni volta che
 viene scoperto, il falsario impara qualcosa e migliora; e l'esperto, di fronte
 a falsi sempre più raffinati, affina il proprio occhio. È una corsa agli
@@ -152,7 +152,7 @@ due ha un tabellone suo su cui segnare punti per conto proprio.
 
 `````{tab} Elementare
 
-Pensa a un tiro alla fune: il discriminatore tira da una parte (vuole avere
+È un tiro alla fune: il discriminatore tira da una parte (vuole avere
 sempre ragione), il generatore tira dall'altra (vuole ingannarlo), e la corda è
 una sola, cioè il terreno che guadagna uno lo perde l'altro. L'immagine serve
 per questo, e conviene fermarla qui: in un tiro alla fune, quando nessuno dei

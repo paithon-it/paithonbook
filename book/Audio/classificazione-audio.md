@@ -32,9 +32,9 @@ riconosceva un gatto in una foto.
 
 `````{tab} Elementare
 
-Pensa allo spettrogramma come a una **radiografia del suono**: una lastra dove
-ogni rumore lascia una sagoma riconoscibile. Un fischio è una riga sottile e
-netta che sale; una vocale è fatta di bande orizzontali parallele; un vetro che
+Lo spettrogramma è una **radiografia del suono**: una lastra dove ogni rumore
+lascia una sagoma riconoscibile. Un fischio è una riga sottile e netta che
+sale; una vocale è fatta di bande orizzontali parallele; un vetro che
 si rompe è uno schizzo verticale improvviso, pieno di frequenze alte tutte
 insieme. Il medico impara a leggere le lastre a forza di vederne; una rete
 neurale fa lo stesso, mostrandole migliaia di spettrogrammi già etichettati
@@ -89,11 +89,11 @@ il vento. Sono due problemi diversi.
 
 `````{tab} Elementare
 
-Immagina due tipi di domanda. La prima è a crocetta unica: «di questi tre
-strumenti, quale senti?»; la risposta è una sola, e le probabilità dei
-candidati si fanno concorrenza, se sale una scende un'altra. La seconda è una
-lista della spesa: «segna *tutti* i suoni presenti in questa registrazione», e
-qui possono essere veri contemporaneamente il traffico, una voce e un cane,
+«Di questi tre strumenti, quale senti?» è una domanda a crocetta unica: la
+risposta è una sola, e le probabilità dei candidati si fanno concorrenza, se
+sale una scende un’altra. Un secondo tipo di domanda è la lista della spesa:
+«segna *tutti* i suoni presenti in questa registrazione», e qui possono
+essere veri contemporaneamente il traffico, una voce e un cane,
 senza togliersi spazio a vicenda. Il primo caso si chiama classificazione a
 **etichetta singola**, il secondo **tagging** multi-etichetta. E c'è un terzo
 livello, ancora più fine: non solo *quali* suoni, ma *quando* ciascuno inizia

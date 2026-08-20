@@ -48,6 +48,36 @@
 
 versioni:
 
+- versione: "1.9.2"
+  data: 2026-08-20
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Il libro sapeva una metafora sola, e cominciava sempre allo stesso
+      modo.** Una scheda «Elementare» su cinque apriva con «Immagina di»: presa
+      una per una era una buona apertura, ma chi legge di fila incontrava lo
+      stesso invito ogni cinque pagine, e a quel punto non è più un gancio, è
+      un tizio che si schiarisce la voce. Adesso sono una su dodici, e nessun
+      capitolo ne ha più del quindici per cento. Nessuna analogia è stata
+      tolta: è cambiato il modo di entrarci, perché entrare nella scena è più
+      forte che chiedere il permesso di immaginarla. «Immagina» è rimasto dove
+      è il verbo esatto, cioè dove si chiede davvero di figurarsi qualcosa che
+      non si può vedere: uno spazio a dodicimila dimensioni, una lingua senza
+      alfabeto, sedicimila puntini in un secondo di suono.
+
+  - tipo: corretto
+    testo: >
+      **E sotto c'era la catena di montaggio.** Tolta la cornice, è venuto
+      fuori che la stessa immagine apriva sette spiegazioni in cinque capitoli
+      diversi, tre con le stesse identiche parole. Dove regge fino in fondo
+      resta (in *GPU* è il filo di tutto il capitolo, e la catena percorsa
+      all'indietro è il modo migliore di raccontare come una rete impara dai
+      propri errori); dove era solo un modo di dire «una cosa dopo l'altra» ha
+      lasciato il posto a un'immagine scelta per quel passaggio: una filiera
+      del latte dove il controllo scarta un lotto intero, un autolavaggio a
+      tunnel, una fila di specchietti che rimbalza un raggio laser.
+
 - versione: "1.9.1"
   data: 2026-08-20
   voci:

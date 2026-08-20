@@ -33,14 +33,14 @@ e somme tutti uguali fra loro e, soprattutto, tutti indipendenti: nessuno di
 essi ha bisogno del risultato di un altro.
 
 `````{tab} Elementare
-Immagina due squadre a cui affidare un lavoro. La prima è la CPU: otto operai
+Le squadre a cui affidarlo sono due. La prima è la CPU: otto operai
 straordinariamente qualificati, capaci di qualunque compito complicato
 (decisioni, eccezioni, lavori sempre diversi). La seconda è la GPU: decine di
 migliaia di manovali che sanno fare solo operazioni elementari, ma tutti
 insieme, nello stesso istante. Se il lavoro è "prendi questi due numeri,
 moltiplicali, somma il risultato" ripetuto milioni di volte, la squadra dei
-manovali stravince: non serve intelligenza, serve manodopera. E le reti
-neurali sono esattamente quel lavoro.
+manovali stravince: non serve intelligenza, serve manodopera. E le reti neurali
+sono esattamente quel lavoro.
 
 Un esempio con i numeri. Uno strato che collega 1000 neuroni ad altri 1000:
 ciascuno dei mille di destra deve raccogliere un contributo da ciascuno dei

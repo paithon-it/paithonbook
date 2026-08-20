@@ -90,8 +90,8 @@ rende pensabile trattarle nello stesso Transformer.
 
 `````{tab} Elementare
 
-Immagina un mosaicista con un magazzino di tessere. Non ha tutti i colori del
-mondo: ha un catalogo di 8.192 tessere diverse, ognuna con il suo numero. Per
+Un catalogo di 8.192 tessere diverse, ognuna con il suo numero: è tutto quello
+che il mosaicista ha in magazzino, e non sono tutti i colori del mondo. Per
 riprodurre una fotografia la divide in quadratini di 16 pixel per lato, e per
 ogni quadratino sceglie dal catalogo la tessera che gli somiglia di più. Alla
 fine, invece della fotografia, ha una lista di numeri di catalogo: uno per
@@ -168,9 +168,9 @@ casi.
 
 `````{tab} Elementare
 
-Pensa a una redazione. Nella prima, il fotografo e chi scrive lavorano in stanze
-separate: il fotografo guarda le sue immagini, passa a chi scrive quello che ha
-visto, ed esce di scena. Che gli passi un foglietto riassunto o il fascicolo
+Nella prima redazione il fotografo e chi scrive lavorano in stanze separate:
+il fotografo guarda le sue immagini, passa a chi scrive quello che ha visto,
+ed esce di scena. Che gli passi un foglietto riassunto o il fascicolo
 intero della sezione precedente, qui non cambia niente: quel che conta è che chi
 riceve fa un mestiere solo, mettere in fila delle parole. Il prodotto è sempre e
 soltanto un testo: da quella redazione non esce mai una fotografia, perché chi

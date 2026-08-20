@@ -25,11 +25,11 @@ registro di esperienze già accadute {cite}`sutton2018reinforcement`.
 
 `````{tab} Elementare
 
-Pensa alla differenza tra imparare a cucinare ai fornelli e imparare studiando
-i quaderni di ricette di tua nonna. Nel primo caso assaggi, aggiusti il sale,
-rifai il piatto: ogni tentativo ti dà un riscontro nuovo. Nel secondo hai solo
-un archivio chiuso (quello che lei ha cucinato negli anni, con gli esiti) e da
-lì devi tirar fuori la ricetta migliore, senza poter provare nulla di persona.
+Ai fornelli si impara assaggiando: aggiusti il sale, rifai il piatto, e ogni
+tentativo ti dà un riscontro nuovo. Sui quaderni di ricette di tua nonna no: hai
+solo un archivio chiuso (quello che lei ha cucinato negli anni, con gli esiti) e
+da lì devi tirar fuori la ricetta migliore, senza poter provare nulla di
+persona.
 
 L'RL offline è la seconda situazione. Qualcuno, in passato, ha agito
 nell'ambiente seguendo una sua strategia (un medico, un guidatore, un vecchio

@@ -151,9 +151,9 @@ sola variante «azzecca» le parole del documento giusto, quel documento entra.
 
 `````{tab} Elementare
 
-Immagina di chiedere a un bibliotecario: «Ha qualcosa sul cane?». Se prende la
-richiesta alla lettera cercherà la parola «cane» e ti porterà un romanzo dal
-titolo *Il cane di terracotta*, che con i cani non c'entra nulla. Un
+«Ha qualcosa sul cane?». Se il bibliotecario prende la richiesta alla lettera
+cercherà la parola «cane» e ti porterà un romanzo dal titolo *Il cane di
+terracotta*, che con i cani non c'entra nulla. Un
 bibliotecario esperto invece ti interroga un attimo e capisce cosa cerchi
 davvero («l'educazione del cucciolo») e allora fa non una, ma tre ricerche
 mirate: *addestramento del cane*, *comportamento del cucciolo*, *comandi di

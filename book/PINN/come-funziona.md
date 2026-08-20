@@ -50,8 +50,8 @@ L'idea si capisce meglio raccontandola come un compito in classe.
 
 `````{tab} Elementare
 
-Immagina uno studente alle prese con un compito insolito: disegnare, su un
-foglio a quadretti, la curva di una molla che oscilla, cioè di quanto il corpo
+Uno studente è alle prese con un compito insolito: disegnare, su un foglio a
+quadretti, la curva di una molla che oscilla, cioè di quanto il corpo
 appeso è spostato dalla sua posizione di riposo, istante per istante. Il tempo
 scorre verso destra; sopra la riga di mezzo il corpo è più in alto del riposo,
 sotto è più in basso, e la riga di mezzo è il riposo. Nessuna tabella di

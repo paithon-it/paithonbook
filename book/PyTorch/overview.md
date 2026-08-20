@@ -101,12 +101,12 @@ nel motore di calcolo scritto in C++ e da lì sull'hardware disponibile.
 ```
 
 `````{tab} Elementare
-Pensa a un ristorante. La sala (il menu, il cameriere che prende l'ordine) è
-Python: accogliente, flessibile, parla la tua lingua. La cucina è scritta in
-C++: quando ordini "moltiplica queste due matrici", il piatto viene preparato
-da cuochi velocissimi (routine di calcolo compilate) che sfruttano tutti i
-fuochi disponibili, dalla CPU alla scheda grafica. Tu non entri mai in cucina:
-ordini in Python, e la velocità è quella della cucina, non della sala.
+In un ristorante la sala (il menu, il cameriere che prende l'ordine) è Python:
+accogliente, flessibile, parla la tua lingua. La cucina è scritta in C++:
+quando ordini "moltiplica queste due matrici", il piatto viene preparato da
+cuochi velocissimi (routine di calcolo compilate) che sfruttano tutti i fuochi
+disponibili, dalla CPU alla scheda grafica. Tu non entri mai in cucina: ordini
+in Python, e la velocità è quella della cucina, non della sala.
 `````
 
 `````{tab} Superiore

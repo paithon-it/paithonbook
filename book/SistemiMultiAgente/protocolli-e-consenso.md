@@ -45,9 +45,9 @@ escono da quella «azione»: parlare, per un agente, è agire.
 
 `````{tab} Elementare
 
-Immagina tre biglietti attaccati al frigorifero. Sul primo c'è scritto «il
-latte è finito». Sul secondo «compra il latte». Sul terzo «il latte lo prendo
-io tornando». Parlano tutti e tre della stessa cosa, con quasi le stesse
+Al frigorifero sono attaccati tre biglietti. Sul primo c’è scritto «il latte è
+finito». Sul secondo «compra il latte». Sul terzo «il latte lo prendo io
+tornando». Parlano tutti e tre della stessa cosa, con quasi le stesse
 parole, ma fanno tre mestieri diversi: il primo dà una notizia, il secondo
 scarica un compito su chi legge, il terzo se lo prende chi ha scritto.
 

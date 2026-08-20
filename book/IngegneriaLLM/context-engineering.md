@@ -56,8 +56,8 @@ scientifica, e come tale la usiamo.
 
 `````{tab} Elementare
 
-Pensa a come si costruisce qualcosa di vivo. Alla base ci sono gli **atomi**,
-i pezzi più piccoli: una singola regola, «rispondi in italiano». Metti insieme
+Qualcosa di vivo si costruisce a strati. Alla base ci sono gli **atomi**, i
+pezzi più piccoli: una singola regola, «rispondi in italiano». Metti insieme
 più atomi e ottieni una **molecola**: l'istruzione più due o tre esempi che
 mostrano cosa intendi. Un gradino sopra ci sono le **cellule**, e quello che
 si aggiunge è la memoria: il sistema si ricorda chi sei da un messaggio

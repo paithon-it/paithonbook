@@ -44,14 +44,14 @@ l'avevano prodotto.
 
 `````{tab} Elementare
 
-Pensa alla differenza tra cucinare un piatto una sera per gli amici e metterlo
-nel menu di un ristorante. La prima volta puoi assaggiare, aggiustare di sale a
-occhio, ripetere se viene male: nessuno ti cronometra. Nel menu è un altro
-mestiere. Il piatto deve venire *identico* la centesima e la cinquecentesima
-volta; deve uscire dalla cucina in otto minuti, non in tre ore; deve reggere il
-sabato sera con la sala piena; e se il fornitore cambia i pomodori, qualcuno se
-ne deve accorgere prima che se ne accorga il cliente. Il notebook è la cena tra
-amici. La produzione è il servizio in sala, tutte le sere, per anni.
+Una sera cucini un piatto per gli amici. Puoi assaggiare, aggiustare di sale a
+occhio, ripetere se viene male: nessuno ti cronometra. Metterlo nel menu di un
+ristorante è un altro mestiere. Il piatto deve venire *identico* la centesima e
+la cinquecentesima volta; deve uscire dalla cucina in otto minuti, non in tre
+ore; deve reggere il sabato sera con la sala piena; e se il fornitore cambia i
+pomodori, qualcuno se ne deve accorgere prima che se ne accorga il cliente. Il
+notebook è la cena tra amici. La produzione è il servizio in sala, tutte le
+sere, per anni.
 
 `````
 

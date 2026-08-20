@@ -58,13 +58,13 @@ con un difetto che non perdona.
 
 `````{tab} Elementare
 
-Pensa a una macchina del caffè professionale con quattro regolazioni:
-macinatura, temperatura, pressione, tempo di estrazione. Cinque livelli
-ciascuna. Per assaggiare tutte le combinazioni servono
-$5 \times 5 \times 5 \times 5 = 625$ caffè. E siccome un solo assaggio può
-ingannare (magari quella tazzina è venuta bene per caso), ogni combinazione va
-provata cinque volte: è la cross-validation della sezione su overfitting e
-validazione, che divide i dati in cinque blocchi e fa girare il blocco di prova. Quindi
+Una macchina del caffè professionale ha quattro regolazioni (macinatura,
+temperatura, pressione, tempo di estrazione) e cinque livelli per ciascuna. Per
+assaggiare tutte le combinazioni servono $5 \times 5 \times 5 \times 5 = 625$
+caffè. E siccome un solo assaggio può ingannare (magari quella tazzina è venuta
+bene per caso), ogni combinazione va provata cinque volte: è la
+cross-validation della sezione su overfitting e validazione, che divide i dati
+in cinque blocchi e fa girare il blocco di prova. Quindi
 $625 \times 5 = 3\,125$ caffè.
 
 Se ogni «caffè» è un addestramento da due minuti, sono
@@ -270,21 +270,21 @@ porta il nome del reverendo Thomas Bayes.
 
 `````{tab} Elementare
 
-Pensa a un geologo che cerca l'acqua potendo scavare pochi pozzi, perché ogni
-trivellazione costa cara. Dopo tre pozzi non sceglie il quarto a caso: disegna
-una mappa ("qui l'acqua c'era a dieci metri, là il terreno era secco"),
-completa di zone d'ombra dove non sa ancora nulla. Il quarto pozzo lo piazza
-dove la *promessa* è massima: un po’ dove la mappa dice bene (sfruttare ciò
-che sa), un po’ dove la mappa è bianca (esplorare ciò che ignora).
-L'ottimizzazione bayesiana funziona così: dopo ogni addestramento aggiorna la
-sua mappa del punteggio e sceglie la combinazione successiva chiedendosi *di
-quanto mi aspetto di battere il mio record, se provo qui?* La domanda ha un
-nome, **miglioramento atteso** (*expected improvement*), ed è una domanda sola
-che tiene insieme le due esigenze. La risposta è alta dove la mappa promette
-bene, e anche dove la mappa è bianca, perché lì il record potrebbe essere
-battuto di parecchio. Ed è bassa, cioè quasi zero, dove il terreno è stato già
-scavato e si è rivelato secco: là non c'è più niente da sapere e niente da
-sperare, e il metodo smette di andarci senza che nessuno glielo debba dire.
+Ogni trivellazione costa cara, e il geologo che cerca l'acqua può scavare pochi
+pozzi. Dopo tre pozzi non sceglie il quarto a caso: disegna una mappa ("qui
+l'acqua c'era a dieci metri, là il terreno era secco"), completa di zone
+d'ombra dove non sa ancora nulla. Il quarto pozzo lo piazza dove la *promessa*
+è massima: un po’ dove la mappa dice bene (sfruttare ciò che sa), un po’ dove
+la mappa è bianca (esplorare ciò che ignora). L'ottimizzazione bayesiana
+funziona così: dopo ogni addestramento aggiorna la sua mappa del punteggio e
+sceglie la combinazione successiva chiedendosi *di quanto mi aspetto di battere
+il mio record, se provo qui?* La domanda ha un nome, **miglioramento atteso**
+(*expected improvement*), ed è una domanda sola che tiene insieme le due
+esigenze. La risposta è alta dove la mappa promette bene, e anche dove la mappa
+è bianca, perché lì il record potrebbe essere battuto di parecchio. Ed è bassa,
+cioè quasi zero, dove il terreno è stato già scavato e si è rivelato secco: là
+non c'è più niente da sapere e niente da sperare, e il metodo smette di andarci
+senza che nessuno glielo debba dire.
 
 `````
 

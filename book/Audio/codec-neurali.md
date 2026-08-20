@@ -70,9 +70,9 @@ sezione, e li ritroveremo.
 
 `````{tab} Elementare
 
-Immagina due modi di rimpicciolire una valigia. Il primo è avere una lista di
-regole stampata sul coperchio: «togli sempre il beauty-case, arrotola le
-magliette, lascia a casa il terzo paio di scarpe». Vale per tutti, non cambia
+Una valigia si può rimpicciolire in due modi. Il primo è una lista di regole
+stampata sul coperchio: «togli sempre il beauty-case, arrotola le magliette,
+lascia a casa il terzo paio di scarpe». Vale per tutti, non cambia
 mai: è l'MP3. Il secondo modo è imparare *facendo*, viaggio dopo viaggio: provi
 a chiudere la valigia, vedi cosa si è sgualcito all'arrivo, e la prossima volta
 sistemi meglio proprio quelle cose. Dopo mille viaggi hai un tuo metodo, cucito
@@ -123,8 +123,8 @@ i numeri.
 
 `````{tab} Elementare
 
-Pensa a una fotografia con milioni di sfumature di colore e a una tavolozza
-fissa di, diciamo, 16 colori. Per ogni pixel della foto scegli il colore della
+Sedici colori bastano per una fotografia che ne aveva milioni. Prendi una
+tavolozza fissa di sedici e, per ogni pixel della foto, scegli il colore della
 tavolozza che gli somiglia di più e lo sostituisci: la foto diventa un po’ più
 «a blocchi», ma la riconosci ancora. E adesso il colpo di genio: invece di
 salvare per ogni pixel i suoi tre numeri di colore, salvi **un solo numero**

@@ -61,7 +61,7 @@ lavoro.
 
 `````{tab} Elementare
 
-Immagina un tavolo con quattro fotografie e, in disordine, quattro didascalie
+Su un tavolo ci sono quattro fotografie e, in disordine, quattro didascalie
 ritagliate dal giornale. Nessuno ti dice che cosa raffigurano le foto: ti si
 chiede solo di appaiarle. Il gioco sembra più povero di «riconosci il soggetto»,
 e invece chiede la stessa cosa per vie traverse, perché per appaiare bene devi

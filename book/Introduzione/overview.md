@@ -223,7 +223,7 @@ agiscono «nel modo migliore possibile», e per questo l'idea merita un momento
 di attenzione: tornerà in ogni capitolo del libro.
 
 `````{tab} Elementare
-Immagina un robot aspirapolvere a cui assegni un punteggio: $+1$ per ogni
+A un robot aspirapolvere assegni un punteggio: $+1$ per ogni
 briciola raccolta, $-1$ per ogni urto contro un mobile. Se in un giro di
 salotto raccoglie $30$ briciole e sbatte $5$ volte, totalizza $30 - 5 = 25$
 punti. Quel numero è la sua funzione obiettivo: non gli spieghiamo *come*

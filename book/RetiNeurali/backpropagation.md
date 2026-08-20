@@ -28,13 +28,12 @@ combina con i propri pesi e lo passa avanti.
 
 `````{tab} Elementare
 
-Immagina una catena di montaggio. Alla prima postazione arrivano i dati grezzi
-(per esempio i pixel di una foto). Ogni postazione ha una fila di "manopole"
-(i **pesi**) con cui mescola ciò che riceve, poi fa passare il risultato nel
+In una catena di montaggio, alla prima postazione arrivano i dati grezzi (per
+esempio i pixel di una foto). Ogni postazione ha una fila di "manopole" (i
+**pesi**) con cui mescola ciò che riceve, poi fa passare il risultato nel
 passaggio della sezione precedente (la funzione di attivazione, la "piega") e
-lo consegna alla
-postazione successiva. L'ultima postazione affaccia il prodotto finito: la
-previsione della rete, per esempio "gatto: 0,92".
+lo consegna alla postazione successiva. L'ultima postazione affaccia il
+prodotto finito: la previsione della rete, per esempio "gatto: 0,92".
 
 Nessuna postazione vede l'intero problema: ognuna trasforma solo un pezzetto e
 lo passa avanti. Questo scorrere in avanti, dai dati alla risposta, è il
@@ -180,12 +179,12 @@ risale la rete e raggiunge anche i primi strati.
 
 `````{tab} Elementare
 
-Pensa a una catena di responsabilità. L'errore nasce all'uscita, ma non è
-"colpa" solo dell'ultimo strato: viene ereditato da quello prima, e da quello
-prima ancora, fino all'inizio. La backpropagation parte dal fondo e chiede a
-ogni strato: "quanto hai contribuito tu a questo errore?". La risposta di uno
-strato serve a calcolare quella dello strato precedente, come un rimprovero
-che si passa all'indietro lungo la fila ({numref}`fig-forward-backward`).
+L'errore nasce all'uscita, ma non è "colpa" solo dell'ultimo strato: viene
+ereditato da quello prima, e da quello prima ancora, fino all'inizio. È una
+catena di responsabilità. La backpropagation parte dal fondo e chiede a ogni
+strato: "quanto hai contribuito tu a questo errore?". La risposta di uno strato
+serve a calcolare quella dello strato precedente, come un rimprovero che si
+passa all'indietro lungo la fila ({numref}`fig-forward-backward`).
 
 Un esempio in piccolo, con i numeri di prima: la rete prevede 170.000 € per la
 casa che ne vale 200.000. Attenzione a una cosa: a tornare indietro non sono i

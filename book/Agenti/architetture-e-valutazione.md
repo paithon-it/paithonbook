@@ -36,10 +36,11 @@ un piano di sotto-compiti, poi eseguirli. Questo modo di procedere si chiama
 
 `````{tab} Elementare
 
-Pensa a come si fa la spesa. Un modo è entrare al supermercato e decidere
-scaffale per scaffale, guardandoti intorno: prendo la pasta, ah già mi serviva
-anche il latte, torno indietro… Funziona per due o tre cose, ma per una spesa
-grossa giri a vuoto, dimentichi metà roba e ti ritrovi tre volte davanti al
+Ci sono due modi di fare la spesa. Il primo è entrare al supermercato e
+decidere scaffale per scaffale, guardandoti intorno: prendo la pasta, ah già
+mi serviva anche il latte, torno indietro… Funziona per due o tre cose, ma per
+una spesa grossa giri a vuoto, dimentichi metà roba e ti ritrovi tre volte
+davanti al
 banco frigo. L'altro modo è scrivere **la lista prima di entrare**: la dividi
 per reparto, e dentro segui l'ordine senza pensarci. Fai meno strada, non
 dimentichi niente.

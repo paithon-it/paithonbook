@@ -37,9 +37,9 @@ ordina o si estrae una colonna.
 
 `````{tab} Elementare
 
-Immagina un foglio Excel. Ogni colonna ha un'intestazione ("età", "città",
-"acquisti") e ogni riga è un cliente. Un DataFrame è esattamente questo, ma
-invece di cliccare con il mouse dai istruzioni a parole:
+Un DataFrame è un foglio Excel fatto di codice. Ogni colonna ha un'intestazione
+("età", "città", "acquisti") e ogni riga è un cliente; solo che invece di
+cliccare con il mouse dai istruzioni a parole:
 
 ```python
 import pandas as pd

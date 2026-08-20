@@ -285,13 +285,13 @@ la mettiamo al lavoro sul testo.
 
 `````{tab} Elementare
 
-Immagina una bilancia a due piatti: ogni parola della recensione butta un
-pesetto sul piatto "positivo" o su quello "negativo", e i pesetti non li
-decidiamo noi; li impara il modello dagli esempi etichettati, aggiustandoli un
-po’ alla volta finché i verdetti tornano. Dopo l'addestramento potremmo
-trovare, per dire: «splendido» +2,0, «sorprende» +1,5, «noia» −2,2,
-«delusione» −2,5. La frase «un film splendido, che sorprende» totalizza
-$2{,}0 + 1{,}5 = 3{,}5$ sul piatto positivo.
+Una bilancia a due piatti, uno "positivo" e uno "negativo": ogni parola della
+recensione ci butta sopra un pesetto. I pesetti non li decidiamo noi; li impara
+il modello dagli esempi etichettati, aggiustandoli un po’ alla volta finché i
+verdetti tornano. Dopo l'addestramento potremmo trovare, per dire: «splendido»
++2,0, «sorprende» +1,5, «noia» −2,2, «delusione» −2,5. La frase «un film
+splendido, che sorprende» totalizza $2{,}0 + 1{,}5 = 3{,}5$ sul piatto
+positivo.
 
 Resta da tradurre quel 3,5 in una probabilità, e a farlo è una regola fissa,
 sempre la stessa, che si chiama **sigmoide** (la curva a S del capitolo sul
@@ -347,10 +347,11 @@ concettuali del machine learning.
 
 `````{tab} Elementare
 
-Pensa a due periti chiamati a distinguere i quadri di due pittori. Il primo
-studia *tutto* di ciascun pittore (tavolozza, pennellate, soggetti) fino a
-saperne quasi imitare lo stile; davanti a un quadro nuovo si chiede: "quale
-dei due è più capace di aver prodotto proprio questo?". È l'approccio
+Due periti devono attribuire lo stesso quadro a uno di due pittori, e ci
+arrivano per strade opposte. Il primo studia *tutto* di ciascun pittore
+(tavolozza, pennellate, soggetti) fino a saperne quasi imitare lo stile;
+davanti a un quadro nuovo si chiede: "quale dei due è più capace di aver
+prodotto proprio questo?". È l'approccio
 **generativo**, ed è Naive Bayes: impara com'è fatto un documento tipico di
 ogni classe. Il secondo perito non sa dipingere e non gli interessa: ha
 imparato solo i *dettagli che distinguono* (quella piega del panneggio, quel

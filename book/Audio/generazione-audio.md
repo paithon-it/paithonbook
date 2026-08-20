@@ -94,9 +94,9 @@ conservato con la stessa cura di un colpo forte.
 
 `````{tab} Elementare
 
-Immagina di misurare le altezze dell'onda con un righello a tacche. Se le
-tacche sono tutte alla stessa distanza, i suoni forti ne hanno d'avanzo e i
-sussurri finiscono schiacciati fra una tacca e l'altra: arrotondati male,
+Le altezze dell’onda si misurano con un righello a tacche. Se le tacche sono
+tutte alla stessa distanza, i suoni forti ne hanno d'avanzo e i sussurri
+finiscono schiacciati fra una tacca e l'altra: arrotondati male,
 escono dal disegno coperti da un fruscio. Il trucco della $\mu$-law è spostare
 le tacche: fitte dove il suono è debole, più rade dove è forte, così ogni
 suono viene arrotondato con la cura che merita. Su una nota che sfuma fino

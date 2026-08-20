@@ -402,7 +402,7 @@ Seguiamo il percorso di {numref}`fig-blocco-mamba` dal basso verso l'alto.
 
 `````{tab} Elementare
 
-Immagina una piccola catena di montaggio. Il pezzo grezzo (il token) entra e
+Il blocco è una piccola catena di montaggio. Il pezzo grezzo (il token) entra e
 viene subito **sdoppiato** in due copie che seguono strade diverse. La copia
 principale passa per tre stazioni: prima una che le fa dare un'occhiata ai
 pochi vicini immediati (una convoluzione locale), poi un ammorbidimento

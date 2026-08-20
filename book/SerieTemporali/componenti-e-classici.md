@@ -32,13 +32,13 @@ irregolare, che oscilla attorno allo zero.
 
 `````{tab} Elementare
 
-Pensa alla bolletta della luce. Dentro quel numero ci sono tre cose diverse.
-C'è una **parte fissa**, il canone, che cambia poco e semmai cresce piano di
-anno in anno: è il *trend*, la direzione di fondo. C'è una **parte
-stagionale**: d'estate il condizionatore, d'inverno le luci accese di più (un
-su e giù che torna uguale ogni anno). E poi c'è l’**imprevisto**: il mese che
-sei stato in ferie e hai consumato meno, l'amico ospite che ha lasciato tutto
-acceso; piccoli scarti che non seguono nessuna regola. È il *residuo*.
+Dentro la bolletta della luce ci sono tre cose diverse. C'è una **parte
+fissa**, il canone, che cambia poco e semmai cresce piano di anno in anno: è il
+*trend*, la direzione di fondo. C'è una **parte stagionale**: d'estate il
+condizionatore, d'inverno le luci accese di più (un su e giù che torna uguale
+ogni anno). E poi c'è l’**imprevisto**: il mese che sei stato in ferie e hai
+consumato meno, l'amico ospite che ha lasciato tutto acceso; piccoli scarti che
+non seguono nessuna regola. È il *residuo*.
 
 Scomporre una serie vuol dire fare esattamente questo: guardare la bolletta e
 dire «di questi 90 euro, 60 sono il canone di base, 25 sono la stagione calda,
@@ -411,9 +411,9 @@ d'ora in avanti «media mobile», da sola, indica il modello.
 
 `````{tab} Elementare
 
-Pensa a un urto imprevisto: una gita scolastica che svuota la gelateria, uno
-sciopero che blocca i voli. L'effetto non si esaurisce il giorno stesso: si fa
-sentire ancora domani, un po’ meno dopodomani, e poi svanisce. Un modello a
+Una gita scolastica svuota la gelateria; uno sciopero blocca i voli. L'effetto
+di un urto imprevisto non si esaurisce il giorno stesso: si fa sentire ancora
+domani, un po’ meno dopodomani, e poi svanisce. Un modello a
 media mobile dice proprio questo: il valore di oggi è il livello normale, più
 la sorpresa di oggi, più l'eco delle sorprese degli ultimi giorni. L'eco di
 solito si smorza, ma non è obbligata a farlo: quanto pesa ciascun giorno passato

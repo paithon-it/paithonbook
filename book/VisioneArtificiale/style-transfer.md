@@ -40,12 +40,12 @@ alla volta, sono i **pixel dell'immagine**.
 
 `````{tab} Elementare
 
-Immagina un critico d'arte dal giudizio infallibile ma immobile: non cambia
-mai idea, sa solo valutare. Gli mostri una tela e lui ti dice due cose: quanto
-la scena somiglia ancora alla tua foto, e quanto la pennellata somiglia a
-quella del quadro che vuoi imitare. Tu ritocchi la tela un pochino, gliela
-rimostri, ritocchi ancora: centinaia di volte, sempre nella direzione che
-migliora i suoi due giudizi. Alla fine la tela è la tua foto, ma dipinta.
+Un critico d'arte dal giudizio infallibile ma immobile: non cambia mai idea, sa
+solo valutare. Gli mostri una tela e lui ti dice due cose: quanto la scena
+somiglia ancora alla tua foto, e quanto la pennellata somiglia a quella del
+quadro che vuoi imitare. Tu ritocchi la tela un pochino, gliela rimostri,
+ritocchi ancora: centinaia di volte, sempre nella direzione che migliora i suoi
+due giudizi. Alla fine la tela è la tua foto, ma dipinta.
 
 Una domanda che viene naturale: da che cosa si parte, la prima volta? Da quello
 che si vuole, ed è una scelta che conta. Si può partire dalla foto stessa, e
@@ -104,13 +104,13 @@ stile vivono in posti diversi, e quindi si possono **separare** e ricombinare.
 
 `````{tab} Elementare
 
-Pensa a un quadro come a due cose sovrapposte: il **soggetto** (una notte, un
+In un quadro ci sono due cose sovrapposte: il **soggetto** (una notte, un
 paese, un cipresso) e la **mano del pittore** (la tavolozza dei colori, lo
 spessore e la direzione delle pennellate, il ritmo delle texture). Riconosci
-uno van Gogh da tre centimetri quadrati di cielo, senza sapere cosa
-rappresenta il quadro: quella è la mano, non il soggetto. È come la grafia di
-un amico: la riconosci su qualunque parola, perché non dipende da *cosa*
-scrive ma da *come* scrive.
+uno van Gogh da tre centimetri quadrati di cielo, senza sapere cosa rappresenta
+il quadro: quella è la mano, non il soggetto. È come la grafia di un amico: la
+riconosci su qualunque parola, perché non dipende da *cosa* scrive ma da *come*
+scrive.
 
 Nella rete succede lo stesso. Il "cosa c'è" abita negli strati profondi, quelli
 che si accendono sugli oggetti e sulla loro disposizione.

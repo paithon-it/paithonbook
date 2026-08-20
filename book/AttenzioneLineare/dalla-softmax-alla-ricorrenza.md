@@ -193,7 +193,7 @@ reti che i Transformer avevano mandato in pensione.
 
 `````{tab} Elementare
 
-Pensa alla differenza fra due modi di prendere appunti a una riunione lunga.
+A una riunione lunga si prendono appunti in due modi.
 
 Il primo è la KV cache dei Transformer: ogni volta che qualcuno parla,
 aggiungi uno scontrino alla pila. Non butti via niente, e questo è comodo (hai
@@ -315,8 +315,8 @@ in questa pagina.
 
 `````{tab} Elementare
 
-Immagina la differenza fra studiare un libro che hai già tutto in mano e
-raccontare a voce una storia che stai inventando adesso.
+Studiare un libro che hai già tutto in mano è un mestiere; raccontare a voce
+una storia che stai inventando adesso è un altro.
 
 Nel primo caso (è l'addestramento, quando il modello impara) il testo esiste
 già per intero: puoi aprirlo a metà, dare un capitolo a testa a dieci persone e

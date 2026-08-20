@@ -39,7 +39,7 @@ prevedibili è una condanna.
 
 `````{tab} Elementare
 
-Immagina di allenare un cane. Un approccio è compilare una tabella mentale che
+Un cane si può allenare in due modi. Uno è compilare una tabella mentale che
 assegna a ogni situazione un "punteggio di bontà" per ciascun comportamento
 possibile, e poi far scegliere al cane il comportamento col punteggio più alto.
 L'altro approccio, più diretto, è modellare la *tendenza* del cane: rendere più
@@ -180,11 +180,11 @@ con la situazione successiva e la ricompensa.
 
 `````{tab} Elementare
 
-Immagina due ruoli. L’**attore** è chi gioca: decide le mosse. Il **critico**
-è un allenatore a bordo campo che, mossa dopo mossa, mormora "meglio del
-previsto" oppure "peggio del previsto". L'attore non deve più aspettare la fine
-della partita per sapere com'è andata: riceve un giudizio immediato a ogni
-passo e corregge subito la rotta. Impara più in fretta e in modo più stabile.
+L’**attore** è chi gioca: decide le mosse. Il **critico** è un allenatore a
+bordo campo che, mossa dopo mossa, mormora "meglio del previsto" oppure "peggio
+del previsto". L'attore non deve più aspettare la fine della partita per sapere
+com'è andata: riceve un giudizio immediato a ogni passo e corregge subito la
+rotta. Impara più in fretta e in modo più stabile.
 
 Attore e critico non sono due persone, naturalmente: sono due reti neurali, che
 si allenano insieme sulla stessa partita. Una impara a decidere, l'altra impara

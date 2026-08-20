@@ -25,12 +25,13 @@ nessuna parte: non è stata persa, non c'è proprio.
 
 `````{tab} Elementare
 
-Immagina una biblioteca da riordinare. Un bibliotecario dispone i libri per
-genere, un altro per epoca, un terzo per lingua. Tre scaffalature diverse, tre
-raggruppamenti, e nessuno dei tre ha sbagliato: hanno risposto a domande diverse.
+Una biblioteca da riordinare, e tre bibliotecari: uno dispone i libri per
+genere, uno per epoca, uno per lingua. Tre scaffalature diverse, tre
+raggruppamenti, e nessuno dei tre ha sbagliato: hanno risposto a domande
+diverse.
 
-Ora immagina di dover giudicare il loro lavoro, e distingui bene i due casi in
-cui ti puoi trovare.
+Ora tocca a te giudicare il loro lavoro, e i casi in cui ti puoi trovare sono
+due, molto diversi fra loro.
 
 **Primo caso: qualcuno ha già la risposta.** Sai che i libri andavano divisi per
 genere, e vuoi sapere quanto la scaffalatura che hai davanti somiglia a quella

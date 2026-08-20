@@ -32,10 +32,10 @@ tre compiti si può davvero affrontare.
 
 `````{tab} Elementare
 
-Immagina di cerchiare con un pennarello ogni oggetto interessante in una foto
-e di scrivergli accanto un nome: "auto", "cane", "semaforo". Ogni cerchio è in
-realtà un rettangolo (lo chiamiamo **bounding box**, la "cornice") e ogni nome
-è la classe. Un rilevatore fa esattamente questo, ma in automatico e per molti
+Prendi un pennarello, cerchia in una foto ogni oggetto interessante e scrivigli
+accanto un nome: "auto", "cane", "semaforo". Ogni cerchio è in realtà un
+rettangolo (lo chiamiamo **bounding box**, la "cornice") e ogni nome è la
+classe. Un rilevatore fa esattamente questo, ma in automatico e per molti
 oggetti insieme. Per ciascuno deve indovinare due cose alla volta: *dove*
 tracciare la cornice e *cosa* c'è dentro.
 
@@ -154,17 +154,16 @@ il pedone, quella alta e stretta (terracotta) è già quasi giusta.
 
 `````{tab} Elementare
 
-Pensa a un corniciaio. Non costruisce una cornice su misura per ogni quadro
-che entra in bottega: tiene pronti alcuni formati standard (verticale per i
-ritratti, orizzontale per i paesaggi, quadrato) e poi ritocca quello che ci va
-più vicino. Le ancore funzionano allo stesso modo. In ogni punto dell'immagine
-la rete ha a disposizione qualche cornice predefinita, di taglie e proporzioni
+Un corniciaio non costruisce una cornice su misura per ogni quadro che entra in
+bottega: tiene pronti alcuni formati standard (verticale per i ritratti,
+orizzontale per i paesaggi, quadrato) e poi ritocca quello che ci va più
+vicino. Le ancore funzionano allo stesso modo. In ogni punto dell'immagine la
+rete ha a disposizione qualche cornice predefinita, di taglie e proporzioni
 diverse ({numref}`fig-anchor-boxes`). Davanti a un pedone non deve inventarsi
-il rettangolo: prende la cornice verticale, che gli somiglia già, e la
-aggiusta ("spostati un po’ a sinistra, allungati un pelo"). Correggere una
-cornice quasi giusta è molto più facile che disegnarne una dal nulla, e la
-rete impara proprio questo: piccole correzioni, più il nome di ciò che c'è
-dentro.
+il rettangolo: prende la cornice verticale, che gli somiglia già, e la aggiusta
+("spostati un po’ a sinistra, allungati un pelo"). Correggere una cornice quasi
+giusta è molto più facile che disegnarne una dal nulla, e la rete impara
+proprio questo: piccole correzioni, più il nome di ciò che c'è dentro.
 
 `````
 

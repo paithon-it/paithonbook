@@ -63,15 +63,14 @@ non è il calcolo: è il **movimento dei dati** (la stessa lezione della
 gerarchia di memoria e del roofline delle sezioni precedenti).
 
 `````{tab} Elementare
-Immagina di dover confrontare ogni parola di un testo con ogni altra parola.
-Con mille parole, sono un milione di confronti: una tabella di mille righe per
-mille colonne. Fin qui, tanti conti ma niente di drammatico. Il guaio è *dove*
-metti quella tabella. È troppo grande per il tavolo di lavoro veloce, il
-ripiano accanto ai calcolatori, quindi la GPU la scrive nel magazzino lontano
-e poi deve tornare a prenderla per fare il secondo passo (le percentuali),
-riscrivere anche quelle, e tornare *di nuovo* per il terzo (la media). Quattro
-viaggi al magazzino per una tabella enorme che, alla fine, non serviva nemmeno
-tenere: era solo un passaggio intermedio.
+Mille parole, ognuna confrontata con ogni altra, fanno un milione di confronti:
+una tabella di mille righe per mille colonne. Fin qui, tanti conti ma niente di
+drammatico. Il guaio è *dove* metti quella tabella. È troppo grande per il
+tavolo di lavoro veloce, il ripiano accanto ai calcolatori, quindi la GPU la
+scrive nel magazzino lontano e poi deve tornare a prenderla per fare il secondo
+passo (le percentuali), riscrivere anche quelle, e tornare *di nuovo* per il
+terzo (la media). Quattro viaggi al magazzino per una tabella enorme che, alla
+fine, non serviva nemmeno tenere: era solo un passaggio intermedio.
 
 È come dover tenere la sfoglia in un capannone lontano perché sul tavolo non ci
 sta, e correre fin là a ogni operazione: una volta per portarcela, una per
@@ -450,7 +449,8 @@ I kernel più veloci di oggi portano questa idea ancora più in là. Restando al
 livello concettuale (niente istruzioni di basso livello) le leve sono tre.
 
 `````{tab} Elementare
-Pensa a una catena di montaggio ben organizzata. Le tre leve, nell'ordine.
+Sono le tre mosse di una catena di montaggio ben organizzata, e le vediamo in
+quest’ordine.
 
 **La prima: andare a prendere i pezzi mentre si lavora.** Nelle GPU più
 recenti, mentre un gruppo di operai lavora sui pezzi che ha già sul banco, un

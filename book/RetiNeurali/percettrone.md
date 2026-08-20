@@ -44,9 +44,9 @@ contributi e aggiunge il bias $b$, la funzione di attivazione decide l'uscita.
 
 `````{tab} Elementare
 
-Immagina di decidere se uscire di casa con l'ombrello. Guardi due indizi:
-quanto è nuvoloso e cosa dice l'app del meteo. Dai a ciascun indizio un peso
-(l'app conta più del colore del cielo) e fai una somma: indizio per il suo
+Stai per uscire di casa e devi decidere se prendere l'ombrello. Guardi due
+indizi: quanto è nuvoloso e cosa dice l'app del meteo. Dai a ciascun indizio un
+peso (l'app conta più del colore del cielo) e fai una somma: indizio per il suo
 peso, il tutto sommato. Il bias è la tua indole di partenza: un pessimista
 parte già orientato verso il "sì, prendilo". Se il totale supera una soglia,
 esci con l'ombrello.

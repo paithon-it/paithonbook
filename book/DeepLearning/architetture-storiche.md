@@ -37,12 +37,11 @@ esercizio da laboratorio. **LeNet-5** {cite}`lecun1998gradient` è quella arriva
 più matura della serie, ed è la versione che si studia ancora oggi.
 
 `````{tab} Elementare
-Immagina una piccola lente che scorre sull'immagine di una cifra, un pezzetto
-alla volta, cercando tratti semplici: un bordo, una curva, un angolo. Poi una
-seconda lente combina questi tratti in forme più grandi, finché la rete decide
-quale numero da 0 a 9 sta guardando. LeNet-5 fa esattamente questo, e ha
-imparato a leggere le cifre scritte a mano meglio di qualsiasi programma
-scritto a regole.
+Una piccola lente scorre sull'immagine di una cifra, un pezzetto alla volta,
+cercando tratti semplici: un bordo, una curva, un angolo. Poi una seconda lente
+combina questi tratti in forme più grandi, finché la rete decide quale numero
+da 0 a 9 sta guardando. LeNet-5 fa esattamente questo, e ha imparato a leggere
+le cifre scritte a mano meglio di qualsiasi programma scritto a regole.
 `````
 
 `````{tab} Superiore

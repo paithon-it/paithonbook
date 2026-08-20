@@ -36,8 +36,8 @@ le due strade portano allo stesso posto.
 
 `````{tab} Elementare
 
-Immagina di dover seguire il livello dell'acqua in una vasca mentre entra ed esce
-di continuo. Non ti serve ricordare ogni singola goccia: ti basta un numero, il
+Segui il livello dell'acqua in una vasca mentre entra ed esce di continuo.
+Non ti serve ricordare ogni singola goccia: ti basta un numero, il
 livello attuale, che riassume tutta la storia. A ogni istante il livello di prima,
 più quello che è entrato, meno quello che è uscito, ti dà il livello nuovo. Quel
 numero che si porta dietro il passato è lo **stato**; la regola che lo aggiorna è

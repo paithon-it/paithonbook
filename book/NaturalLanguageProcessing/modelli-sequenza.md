@@ -60,13 +60,13 @@ copie del disegno sono tre momenti diversi, non tre pezzi diversi di rete.
 
 `````{tab} Elementare
 
-Immagina di leggere un libro tenendo accanto un foglietto su cui scrivi, riga
-dopo riga, un riassunto di ciò che è successo finora. Per ogni nuova frase fai
-sempre lo stesso gesto: guardi la frase, guardi il foglietto, e riscrivi il
-foglietto aggiornato. Il foglietto è lo **stato nascosto**; il gesto che
-ripeti è la cella della RNN. È «la stessa mano» che lavora a ogni riga, per
-questo la rete ha bisogno di pochi parametri anche per testi lunghissimi: non
-impara un gesto diverso per ogni parola, ne impara uno solo e lo riusa.
+Un foglietto accanto al libro, su cui scrivi riga dopo riga un riassunto di ciò
+che è successo finora. Per ogni nuova frase fai sempre lo stesso gesto: guardi
+la frase, guardi il foglietto, e riscrivi il foglietto aggiornato. Il foglietto
+è lo **stato nascosto**; il gesto che ripeti è la cella della RNN. È «la stessa
+mano» che lavora a ogni riga, per questo la rete ha bisogno di pochi parametri
+anche per testi lunghissimi: non impara un gesto diverso per ogni parola, ne
+impara uno solo e lo riusa.
 
 `````
 

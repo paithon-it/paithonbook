@@ -30,11 +30,11 @@ dalla forma dei dati che si hanno davanti.
 
 `````{tab} Elementare
 
-Immagina un unico negozio di quartiere. La sua storia di vendite è corta e
-ballerina, e un modello troppo sofisticato ci si perde: con tanti numeri da
-regolare e pochi giorni su cui regolarli, finisce per imparare a memoria anche
-gli sbalzi capitati per caso, che domani non si ripeteranno. Un buon vecchio
-ARIMA fa altrettanto bene con molta meno fatica. Ora immagina una **catena** con
+Un unico negozio di quartiere ha una storia di vendite corta e ballerina, e un
+modello troppo sofisticato ci si perde: con tanti numeri da regolare e pochi
+giorni su cui regolarli, finisce per imparare a memoria anche gli sbalzi
+capitati per caso, che domani non si ripeteranno. Un buon vecchio ARIMA fa
+altrettanto bene con molta meno fatica. Ora prendi una **catena** con
 diecimila negozi. Molti pattern sono condivisi: il picco del sabato, il crollo
 di Ferragosto, l'effetto di una promozione. Una rete neurale può impararli
 *una volta sola* guardando tutti i negozi insieme, e poi applicarli anche al

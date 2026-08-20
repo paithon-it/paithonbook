@@ -286,7 +286,7 @@ dare per scontata proprio la decisione che ha causato tutto il resto.
 
 `````{tab} Elementare
 
-Pensa a dividere una torta «in modo giusto». Fette identiche per tutti? Fette
+Devi dividere una torta «in modo giusto». Fette identiche per tutti? Fette
 proporzionali a quanto ciascuno ha contribuito a comprarla? Di più a chi ha
 più fame? Sono tre idee di giustizia ragionevoli, e portano a tagli diversi:
 nessun coltello, per quanto affilato, sceglie da solo quale sia quella

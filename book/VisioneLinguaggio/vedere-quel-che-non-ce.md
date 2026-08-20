@@ -31,9 +31,9 @@ può intervenire.
 
 `````{tab} Elementare
 
-Pensa alla tastiera del telefono, quella che dopo «a domani e buona» propone
-«serata». Non sa che cosa stai per dire: sa come vanno a finire le frasi, e
-sbaglia così di rado che smettiamo di accorgercene. Un modello che descrive una
+La tastiera del telefono, dopo «a domani e buona», propone «serata». Non sa
+che cosa stai per dire: sa come vanno a finire le frasi, e sbaglia così di
+rado che smettiamo di accorgercene. Un modello che descrive una
 fotografia fa esattamente quel mestiere, con una differenza sola: fra i
 suggerimenti che gli arrivano c'è anche l'immagine. L'immagine però è un
 suggerimento, non un padrone; se è sfocata, se l'angolo del tavolo è tagliato
@@ -361,9 +361,9 @@ avrebbe permesso di rispondere non è arrivata affatto.
 
 `````{tab} Elementare
 
-Immagina di dover distinguere due pacchi usando soltanto una bilancia. Uno è
-pieno di libri, l'altro di piume, e sulla bilancia segnano quasi uguale: due
-chili tondi il primo, due chili e un grammo il secondo. Quel grammo la bilancia
+Devi distinguere due pacchi e hai soltanto una bilancia. Uno è pieno di libri,
+l’altro di piume, e sulla bilancia segnano quasi uguale: due chili tondi il
+primo, due chili e un grammo il secondo. Quel grammo la bilancia
 lo scrive, ma è così poco che chi legge il numero lo arrotonda via senza
 pensarci, e nessuno gli ha mai insegnato che proprio lì stava la risposta. Se poi
 gli chiedi «in quale pacco ci sono i libri?», dovrà tirare a indovinare, e tirerà

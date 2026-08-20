@@ -296,7 +296,7 @@ modello, dichiarata prima ancora di guardare i dati.
 
 `````{tab} Elementare
 
-Immagina di dover sistemare la vetrina di una libreria per un cliente
+Sistemi la vetrina di una libreria per un cliente
 abituale. Non conosci i suoi voti, ma sai cosa ha comprato. La regola di BPR è
 tutta qui: *ciò che ha scelto deve stare più in alto di ciò che ha ignorato*.
 A ogni passo peschi una coppia (un libro che ha comprato, uno a caso tra i
@@ -607,7 +607,7 @@ stadi**, e li descrissero pubblicamente gli ingegneri di YouTube nel 2016
 
 `````{tab} Elementare
 
-Immagina un concorso con un milione di iscritti e una giuria di dieci persone.
+Un concorso ha un milione di iscritti e una giuria di dieci persone.
 Nessuna giuria può ascoltare un milione di candidati: si fa una scrematura
 rapidissima e grossolana, che da un milione ne tiene qualche centinaio, e poi
 la giuria vera ascolta solo quelli. Chi consiglia i video fa la stessa cosa, e

@@ -42,10 +42,10 @@ dopo l'altro nel tempo, e che in quell'ordine vanno letti.
 
 `````{tab} Elementare
 
-Immagina un diario in cui ogni riga porta una data: il peso segnato ogni
-mattina, la temperatura misurata ogni ora, il numero di scontrini di un
-negozio giorno per giorno. Una **serie temporale** è esattamente questo: una
-fila di numeri con accanto un orologio.
+Un diario in cui ogni riga porta una data: il peso segnato ogni mattina, la
+temperatura misurata ogni ora, il numero di scontrini di un negozio giorno per
+giorno. Una **serie temporale** è esattamente questo: una fila di numeri con
+accanto un orologio.
 
 La differenza con gli altri dati del libro è sottile ma decisiva. Quando
 abbiamo parlato di apprendimento supervisionato (riconoscere gatti, filtrare
@@ -265,9 +265,9 @@ i metodi statistici classici, quelli della prossima sezione.
 
 `````{tab} Elementare
 
-Pensa a un fiume. Se la sua portata oscilla sempre attorno allo stesso valore
-medio, con piene e magre di ampiezza costante, il fiume è «stabile»: chi lo
-studia oggi può usare le stesse regole di chi lo studiava vent'anni fa. Le cose
+Un fiume la cui portata oscilla sempre attorno allo stesso valore medio, con
+piene e magre di ampiezza costante, è un fiume «stabile»: chi lo studia oggi
+può usare le stesse regole di chi lo studiava vent'anni fa. Le cose
 che devono restare ferme sono tre: il valore attorno a cui la portata balla,
 l'ampiezza con cui balla, e il modo in cui due giorni si somigliano, che deve
 dipendere da **quanto** distano fra loro e non da **quando** cadono nel

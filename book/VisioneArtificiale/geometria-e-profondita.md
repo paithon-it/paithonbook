@@ -43,11 +43,11 @@ Cominciamo da come un punto del mondo diventa un pixel.
 
 `````{tab} Elementare
 
-Immagina una scatola chiusa con un foro piccolissimo su una faccia e un foglio
-sulla faccia opposta. La luce che parte da un punto della scena può entrare
-solo passando per il foro, e da lì colpisce il foglio in **un solo posto**.
-Ogni punto del mondo, quindi, ha il suo pixel: è per questo che la foto
-assomiglia alla scena.
+Una scatola chiusa ha un foro piccolissimo su una faccia e un foglio sulla
+faccia opposta. La luce che parte da un punto della scena può entrare solo
+passando per il foro, e da lì colpisce il foglio in **un solo posto**. Ogni
+punto del mondo, quindi, ha il suo pixel: è per questo che la foto assomiglia
+alla scena.
 
 Il guaio è che la freccia funziona in un senso solo. Un punto del mondo dà un
 pixel, ma un pixel non dà un punto del mondo: tutti i punti allineati con il

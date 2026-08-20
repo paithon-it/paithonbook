@@ -194,16 +194,18 @@ aveva precursori (Paul Werbos lo aveva formulato nella tesi di dottorato del
 
 `````{tab} Elementare
 
-Una catena di montaggio: il pezzo la percorre da un capo all'altro e alla fine
-esce difettoso. Backpropagation è il viaggio di ritorno, che parte dal difetto
-e risale la catena all'indietro distribuendo la colpa: parte dal
-difetto finale e risale la catena, assegnando a ogni stazione una quota di
-responsabilità. Chi ha contribuito di più all'errore riceve la correzione più
-grande. Ripetuto su migliaia di esempi, questo "attribuire la colpa e
-correggere" fa sì che anche gli operai in mezzo alla catena imparino il loro
-mestiere. Quegli operai in mezzo hanno un nome: si chiamano neuroni
-**nascosti**, e "nascosto" vuol dire soltanto che non si affacciano né
-sull'ingresso né sull'uscita.
+Una fila di specchietti rimbalza il raggio di un puntatore laser fino a un
+segno sul muro, e il punto luminoso cade due dita più in là. Quale specchietto
+è storto? Guardandoli uno per uno non si capisce: l'inclinazione giusta di
+quelli in mezzo non l'ha scritta nessuno, e l'unica cosa che si vede è dove
+finisce il raggio. La backpropagation è il viaggio di ritorno: parte dal punto
+sbagliato, risale la fila e per ogni specchietto calcola di quanto sposterebbe
+il punto se lo si girasse un pochino. Chi lo sposta di più riceve la correzione
+più grande, chi quasi non conta resta quasi fermo. Ripetuto su migliaia di
+esempi, questo tornare indietro e correggere fa sì che anche i neuroni in mezzo
+alla fila, quelli di cui nessuno ha mai scritto la risposta giusta, imparino il
+loro mestiere. Hanno un nome: si chiamano neuroni **nascosti**, e "nascosto"
+vuol dire soltanto che non si affacciano né sull'ingresso né sull'uscita.
 
 `````
 

@@ -21,7 +21,7 @@ stima che già si ha della situazione in cui si è finiti.
 
 `````{tab} Elementare
 
-Pensa a stimare quanto dura un viaggio in auto. Parti dicendo "due ore". Dopo
+Stai stimando quanto dura un viaggio in auto. Parti dicendo "due ore". Dopo
 mezz'ora sei più avanti del previsto, e il navigatore dice che ne manca "un'ora
 e dieci". Non hai aspettato di arrivare per correggere la tua previsione: hai
 usato una **stima più recente** per aggiustare quella vecchia.

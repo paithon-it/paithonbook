@@ -365,9 +365,9 @@ rinuncia anche a quello, e cambia il verbo. Gli individui non si muovono: si
 
 `````{tab} Elementare
 
-Immagina di dover riempire uno zaino scegliendo fra venti oggetti, ognuno con
-un peso e un valore, senza superare il limite di carico. Non c'è nessuna
-pendenza da seguire: le soluzioni non sono punti su una collina, sono elenchi
+Devi riempire uno zaino scegliendo fra venti oggetti, ognuno con un peso e un
+valore, senza superare il limite di carico. Non c'è nessuna pendenza da
+seguire: le soluzioni non sono punti su una collina, sono elenchi
 di sì e no, e non esiste un «poco più a destra».
 
 Un algoritmo genetico parte da una popolazione di zaini riempiti a caso, quasi

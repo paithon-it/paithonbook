@@ -304,7 +304,7 @@ reinforcement learning.
 
 `````{tab} Elementare
 
-Pensa a un ristorante che vuole perfezionare un piatto. Assumere un critico
+Un ristorante vuole perfezionare un piatto. Assumere un critico
 che *descriva a parole* il piatto perfetto è impossibile; far assaggiare due
 versioni e chiedere «quale preferisci?» è facilissimo. Si procede così:
 l'assaggiatore confronta centinaia di coppie di piatti, e da tutti quei

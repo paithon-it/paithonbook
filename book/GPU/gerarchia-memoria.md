@@ -52,16 +52,17 @@ dal chip (*off-chip*), ed è per questo che raggiungerli costa tanto.
 ```
 
 `````{tab} Elementare
-Pensa a dove tieni le cose mentre lavori a una scrivania. Quello che hai
-letteralmente in mano, la penna che stai usando, è a distanza zero: sono i
-**registri**, privatissimi di ogni singolo lavoratore, velocissimi ma capaci di
-tenere appena un pugno di numeri alla volta. Sul piano della scrivania tieni i
-fogli del momento: è la **shared memory**, la «memoria condivisa», un ripiano
-piccolo (ci sta l'equivalente di qualche decina di pagine) ma in comune con
-tutta la squadra che siede a quel tavolo. Accanto ad essa, sullo stesso piano,
-c'è un portacarte in cui finisce da sé quello che hai usato di recente, nel
-caso serva ancora: è la **cache L1**. Il cassetto grande della scrivania è la
-**cache L2**, più capiente e in comune con gli altri tavoli.
+Su una scrivania le cose non stanno tutte alla stessa distanza da te, e non è
+un caso. Quello che hai letteralmente in mano, la penna che stai usando, è a
+distanza zero: sono i **registri**, privatissimi di ogni singolo lavoratore,
+velocissimi ma capaci di tenere appena un pugno di numeri alla volta. Sul piano
+della scrivania tieni i fogli del momento: è la **shared memory**, la «memoria
+condivisa», un ripiano piccolo (ci sta l'equivalente di qualche decina di
+pagine) ma in comune con tutta la squadra che siede a quel tavolo. Accanto ad
+essa, sullo stesso piano, c'è un portacarte in cui finisce da sé quello che hai
+usato di recente, nel caso serva ancora: è la **cache L1**. Il cassetto grande
+della scrivania è la **cache L2**, più capiente e in comune con gli altri
+tavoli.
 
 («Cache», parola inglese che si pronuncia *cash*, vuol dire nascondiglio,
 riserva: è un ripostiglio vicino in cui il computer tiene le cose che ha appena
@@ -160,17 +161,16 @@ accessi, dal verbo *coalescere*, che si dice di due gocce quando diventano una
 sola.
 
 `````{tab} Elementare
-Immagina un fattorino che deve consegnare 32 pacchi, e un furgone che ne carica
-otto per volta. C'è però una regola del deposito, ed è la regola che rende
-questo esempio vero: **il furgone può scaricare in una via sola**, e per
-cambiare via deve tornare a caricare. Se i 32 indirizzi sono tutti sulla stessa
-via, uno dopo l'altro, gli bastano dunque **quattro** giri, e a ogni giro
-scarica il furgone pieno: otto pacchi, otto consegne. Se invece i 32 indirizzi
-sono sparsi ai quattro angoli della città, ogni giro consegna un pacco solo e
-riporta indietro sette posti vuoti: servono **32** giri per consegnare
-esattamente gli stessi 32 pacchi. Il lavoro utile è identico, i viaggi sono
-32 invece di 4: **otto volte tanto**, e l'otto viene da qui, dai posti del
-furgone.
+Un fattorino ha 32 pacchi da consegnare e un furgone che ne carica otto per
+volta. C'è però una regola del deposito, ed è la regola che rende questo
+esempio vero: **il furgone può scaricare in una via sola**, e per cambiare via
+deve tornare a caricare. Se i 32 indirizzi sono tutti sulla stessa via, uno
+dopo l'altro, gli bastano dunque **quattro** giri, e a ogni giro scarica il
+furgone pieno: otto pacchi, otto consegne. Se invece i 32 indirizzi sono sparsi
+ai quattro angoli della città, ogni giro consegna un pacco solo e riporta
+indietro sette posti vuoti: servono **32** giri per consegnare esattamente gli
+stessi 32 pacchi. Il lavoro utile è identico, i viaggi sono 32 invece di 4:
+**otto volte tanto**, e l'otto viene da qui, dai posti del furgone.
 
 La memoria di una GPU funziona proprio così, e nessuno dei due numeri è
 inventato. Il plotone è da 32 perché così è fatta la GPU, e il furgone porta
@@ -222,8 +222,8 @@ qualcuno in più. Va molte volte più veloce soltanto perché muove molti meno
 byte.
 
 `````{tab} Elementare
-Immagina una squadra che deve consultare lo stesso manuale decine di volte. La
-mossa sciocca è che ognuno, ogni volta, corra in magazzino a prendere una
+Una squadra consulta lo stesso manuale decine di volte, e ha due modi di farlo.
+La mossa sciocca è che ognuno, ogni volta, corra in magazzino a prendere una
 copia, la legga e la riporti. La mossa intelligente è portare *una* copia sul
 tavolo comune all'inizio, e lasciare che tutti la consultino lì, a portata di
 mano, per tutto il tempo. Il viaggio in magazzino (la lettura dalla memoria
@@ -320,13 +320,13 @@ sposta l'operazione verso destra.
 ```
 
 `````{tab} Elementare
-Pensa a una cucina. La velocità con cui servi i piatti dipende da due cose:
-quanto sono bravi i cuochi (il calcolo) e quanto in fretta arrivano gli
-ingredienti dal magazzino (la banda). Se una ricetta richiede pochissima
-preparazione ma tantissimi ingredienti (tipo «apri mille scatolette e svuotale
-in una ciotola»), i cuochi finiscono in un attimo e stanno fermi ad aspettare
-il prossimo carico: sei limitato dal *magazzino*. Se invece la ricetta lavora
-a lungo su pochi ingredienti (un brodo che sobbolle per ore), gli ingredienti
+In una cucina la velocità con cui servi i piatti dipende da due cose: quanto
+sono bravi i cuochi (il calcolo) e quanto in fretta arrivano gli ingredienti
+dal magazzino (la banda). Se una ricetta richiede pochissima preparazione ma
+tantissimi ingredienti (tipo «apri mille scatolette e svuotale in una
+ciotola»), i cuochi finiscono in un attimo e stanno fermi ad aspettare il
+prossimo carico: sei limitato dal *magazzino*. Se invece la ricetta lavora a
+lungo su pochi ingredienti (un brodo che sobbolle per ore), gli ingredienti
 bastano e avanzano, e a contare è solo la bravura dei cuochi: sei limitato dai
 *cuochi*. Sono le due parole del paragrafo qui sopra: limitato dal magazzino si
 dice *memory-bound*, limitato dai cuochi *compute-bound*, e da qui in avanti il

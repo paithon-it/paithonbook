@@ -62,11 +62,11 @@ encoder normale, due trasformazioni scelte bene e batch abbastanza grandi.
 
 `````{tab} Elementare
 
-Immagina di ritagliare da una stessa fotografia due francobolli: uno prende il
-muso del gatto, l'altro la coda e un pezzo di muro. Fai lo stesso con altre
-novantanove fotografie e mescoli tutti i duecento ritagli sul tavolo. Il gioco
-è: per ogni ritaglio, ritrovare il suo gemello, cioè l'altro pezzo che veniva
-dalla stessa foto.
+Ritaglia da una stessa fotografia due francobolli: uno prende il muso del
+gatto, l'altro la coda e un pezzo di muro. Fai lo stesso con altre novantanove
+fotografie e mescola tutti i duecento ritagli sul tavolo. Il gioco è: per ogni
+ritaglio, ritrovare il suo gemello, cioè l'altro pezzo che veniva dalla stessa
+foto.
 
 Nessuno ha dovuto dire che nella foto c'era un gatto: la risposta giusta la
 conosciamo per costruzione, perché i due ritagli li abbiamo fatti noi. Eppure

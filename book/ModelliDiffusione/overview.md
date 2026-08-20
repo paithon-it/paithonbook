@@ -54,7 +54,7 @@ prossima sezione.
 
 `````{tab} Elementare
 
-Immagina di rovinare una fotografia in mille passi: al passo 10 si nota
+Prendi una fotografia e rovinala in mille passi: al passo 10 si nota
 appena una grana fine, al passo 500 le forme si indovinano a fatica, al
 passo 1.000 è rumore puro, come un televisore senza segnale. Questo è il verso
 facile: lo fa un dado, non serve intelligenza.

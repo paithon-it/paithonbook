@@ -79,7 +79,7 @@ gli autori stessi a dichiararlo {cite}`zbontar2021barlow`.
 
 `````{tab} Elementare
 
-Immagina di dover descrivere ogni fotografia riempiendo una scheda con otto
+Ogni fotografia va descritta riempiendo una scheda con otto
 caselle. Le caselle non hanno un significato deciso da noi: è il modello a
 scoprire che cosa metterci.
 

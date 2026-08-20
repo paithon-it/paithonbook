@@ -97,8 +97,8 @@ esempio che con una formula.
 
 `````{tab} Elementare
 
-Immagina di imparare a guidare guardando un pilota bravissimo. Bravissimo vuol
-dire che non esce mai dalla corsia. Quindi in tutte le ore di registrazione che
+Impari a guidare guardando un pilota bravissimo. Bravissimo vuol dire che non
+esce mai dalla corsia. Quindi in tutte le ore di registrazione che
 hai, l'auto è **sempre al centro della strada**: non c'è un solo fotogramma in
 cui sia storta e vada raddrizzata, perché a lui non è mai successo.
 

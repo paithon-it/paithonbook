@@ -389,9 +389,9 @@ nella sezione sul controllo continuo.
 
 `````{tab} Elementare
 
-Immagina di dover scegliere fra otto mosse, e di avere per ciascuna un voto
-approssimativo: giusto *in media*, ma sporcato ogni volta da un errore in più o
-in meno. Tu prendi sempre il voto più alto. Ora, il voto più alto degli otto non
+Otto mosse da cui scegliere, e per ciascuna un voto approssimativo: giusto *in
+media*, ma sporcato ogni volta da un errore in più o in meno. Tu prendi sempre
+il voto più alto. Ora, il voto più alto degli otto non
 è quasi mai quello della mossa davvero migliore: è quello della mossa a cui
 l'errore ha dato la spinta verso l'alto più grande. Fra otto misure sbagliate a
 caso, la più alta è quasi sempre una misura fortunata.

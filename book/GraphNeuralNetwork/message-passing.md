@@ -47,7 +47,7 @@ recettivo**) cresce dai vicini diretti ai vicini dei vicini.
 
 `````{tab} Elementare
 
-Pensa a ogni nodo come a una persona con una scheda su cui scrive «chi sono».
+Ogni nodo è una persona con una scheda su cui scrive «chi sono».
 Sulla scheda non c'è una frase: c'è una **fila di numeri**, uno per ogni
 caratteristica, come le tre caselline accanto a ogni nodo nella figura della
 sezione «Il mondo come grafo» (14 anni, 2 sport, 300 messaggi al giorno). Vale

@@ -56,7 +56,7 @@ la stessa identica cosa per il modello: token in fila.
 
 `````{tab} Elementare
 
-Pensa a dettare una lettera al telefono a qualcuno che la batte a macchina.
+Detti una lettera al telefono a qualcuno che la batte a macchina.
 Dici le parole della lettera, ma dici anche «virgola», «punto e a capo»: cioè
 mescoli, nella stessa voce, il **testo** e le **istruzioni su come scriverlo**.
 Funziona finché il testo non contiene quelle parole. Se devi dettare la frase

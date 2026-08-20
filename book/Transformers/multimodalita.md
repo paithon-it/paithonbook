@@ -36,8 +36,9 @@ per imparare a scrivere. La scheda qui sotto racconta chi sono i due, e conviene
 leggerla prima di tornare alla figura.
 
 `````{tab} Elementare
-Immagina tre studenti con tre metodi diversi. **GPT** studia coprendo con la
-mano il resto della pagina: legge "Il gatto nero salta sul..." e prova a
+Tre studenti si preparano allo stesso esame in tre modi diversi. **GPT**
+studia coprendo con la mano il resto della pagina: legge "Il gatto nero salta
+sul..." e prova a
 indovinare la parola dopo, milioni di volte (così diventa bravissimo a
 *continuare* un testo, cioè a scrivere). **BERT** studia con gli esercizi a
 buchi: riceve "Il gatto ___ salta sul muro" e indovina la parola mancante

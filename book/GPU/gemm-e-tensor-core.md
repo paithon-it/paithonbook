@@ -250,14 +250,14 @@ quel qualcuno non è più il generico CUDA core, ma un'unità costruita apposta
 per il prodotto tra matrici: il **tensor core**.
 
 `````{tab} Elementare
-Immagina un ragioniere che deve compilare una piccola tabellina, quattro righe
-per quattro colonne. Cella per cella, a mano, è un lavoro noioso: sono sedici
-celle, e ognuna è una somma di quattro prodotti, quindi in tutto sessantaquattro
-moltiplicazioni. Ora immagina un timbro speciale che stampa la tabellina intera
-in un colpo solo: appoggi, premi, fatto. Il tensor core è quel timbro. Là dove
-una postazione di calcolo normale fa una moltiplicazione per ogni battito del
-metronomo del chip (il clock dell'inizio del capitolo, che batte più di un
-miliardo di volte al secondo), il tensor core ne fa **sessantaquattro**.
+Un ragioniere compila a mano una tabellina di quattro righe per quattro
+colonne. Cella per cella è un lavoro noioso: sono sedici celle, e ognuna è una
+somma di quattro prodotti, quindi in tutto sessantaquattro moltiplicazioni. Poi
+gli arriva un timbro speciale, che stampa la tabellina intera in un colpo solo:
+lo appoggia, preme, fatto. Il tensor core è quel timbro. Là dove una postazione
+di calcolo normale fa una moltiplicazione per ogni battito del metronomo del
+chip (il clock dell'inizio del capitolo, che batte più di un miliardo di volte
+al secondo), il tensor core ne fa **sessantaquattro**.
 
 Il guadagno sull'intera scheda però non è di sessantaquattro volte, ed è un
 conto che si fa in testa. Sulla scheda che li ha introdotti i timbri erano uno

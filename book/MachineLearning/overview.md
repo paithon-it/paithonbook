@@ -37,11 +37,11 @@ alla programmazione di sempre.
 
 `````{tab} Elementare
 
-Immagina di dover costruire un filtro antispam. Con la programmazione classica
-ti siedi e **scrivi tu le regole**: "se l'email contiene la parola *vincita*,
-segnala come spam", "se il mittente è sconosciuto, sospetta". Ogni regola la
-pensi, la scrivi, la correggi a mano. Funziona finché gli spammer non cambiano
-trucco, e allora ricominci da capo.
+Con la programmazione di sempre, le regole di un filtro antispam **le scrivi
+tu**: "se l'email contiene la parola *vincita*, segnala come spam", "se il
+mittente è sconosciuto, sospetta". Ogni regola la pensi, la scrivi, la correggi
+a mano. Funziona finché gli spammer non cambiano trucco, e allora ricominci da
+capo.
 
 Il machine learning fa il contrario. Tu non scrivi le regole: raccogli
 **migliaia di email già etichettate** come "spam" o "non spam" e le dai in
@@ -134,10 +134,10 @@ lunga il modo più usato in pratica.
 
 `````{tab} Elementare
 
-Pensa a uno studente che studia con le soluzioni a fianco degli esercizi. Per
-ogni esercizio vede sia il problema sia la risposta corretta, e col tempo
-impara a rispondere da solo a esercizi nuovi. Le "soluzioni a fianco" sono le
-etichette: senza di esse, questo tipo di apprendimento non funziona.
+A fianco di ogni esercizio c'è la soluzione. Chi studia così vede sia il
+problema sia la risposta corretta, e col tempo impara a rispondere da solo a
+esercizi nuovi. Le "soluzioni a fianco" sono le etichette: senza di esse,
+questo tipo di apprendimento non funziona.
 
 `````
 

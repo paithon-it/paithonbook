@@ -69,7 +69,7 @@ grafo è ostico da dare in pasto a una rete neurale ordinaria, per tre motivi.
 
 `````{tab} Elementare
 
-Immagina di dover elencare gli invitati a una cena e chi è amico di chi. In
+Elenchi gli invitati a una cena e chi è amico di chi. In
 che **ordine** scrivi i nomi? Non c'è un ordine giusto: Anna prima o dopo
 Bruno è indifferente, l'importante è *chi conosce chi*. Se una rete neurale
 si accorgesse dell'ordine in cui le passi i nomi, imparerebbe una sciocchezza,
@@ -133,7 +133,7 @@ un modo di far parlare i nodi fra loro.
 
 `````{tab} Elementare
 
-Pensa a come ti fai un'idea di una persona che non conosci: guardi le
+Di una persona che non conosci ti fai un’idea guardando le
 compagnie che frequenta. «Dimmi con chi vai e ti dirò chi sei.» Una rete su
 grafo fa esattamente questo, a giri. All'inizio ogni nodo sa solo di sé; poi,
 a ogni giro, ciascun nodo **guarda i suoi vicini**, raccoglie quello che sanno

@@ -62,7 +62,7 @@ moltiplica.
 
 `````{tab} Elementare
 
-Pensa al registro come a una lavagna su cui l'inchiostro sbiadisce. A ogni
+Sul registro l'inchiostro sbiadisce, come su una lavagna. A ogni
 passo tutte le voci si affievoliscono un po’: quelle appena scritte sono nitide,
 quelle vecchie quasi invisibili. Se il fattore di sbiadimento è $0{,}9$, dopo
 dieci passi una voce vale $0{,}9^{10} \approx 0{,}35$ di quanto valeva: circa

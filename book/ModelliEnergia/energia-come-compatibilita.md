@@ -23,7 +23,7 @@ cornice molto più larga di quel che sembra, e contiene una liberazione.
 
 `````{tab} Elementare
 
-Pensa a un buttafuori davanti a una festa a coppie. Il suo mestiere è
+A una festa a coppie c’è un buttafuori. Il suo mestiere è
 giudicare la coppia che ha davanti: questi due stanno bene insieme, passano;
 questi due no. Nota che cosa *non* gli serve: non deve conoscere tutte le
 persone della città, né compilare una classifica completa di tutti gli

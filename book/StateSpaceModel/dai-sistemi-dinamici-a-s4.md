@@ -42,7 +42,7 @@ prima forma, in matematica, si chiamano **equazioni differenziali**.
 
 `````{tab} Elementare
 
-Pensa a una vasca da bagno con il rubinetto aperto e lo scarico non del tutto
+Una vasca da bagno, con il rubinetto aperto e lo scarico non del tutto
 chiuso. Il *livello dell'acqua* è lo stato: riassume tutta la storia passata
 di quanto hai aperto il rubinetto, senza bisogno di ricordarla minuto per
 minuto. Il rubinetto è l'ingresso: quando lo apri di più, il livello sale. Lo

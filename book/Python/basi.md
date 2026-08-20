@@ -105,7 +105,7 @@ f"accuratezza: {0.8723:.1%}"     # -> 'accuratezza: 87.2%'  una cifra, in percen
 
 `````{tab} Elementare
 
-Pensa a una variabile come a un’**etichetta adesiva** che attacchi a un valore.
+Una variabile è un’**etichetta adesiva** attaccata a un valore.
 `nome = "Ada"` vuol dire "d'ora in poi l'etichetta `nome` sta su questa
 stringa". La cosa comoda è che puoi spostare l'etichetta su un valore di tipo
 diverso quando vuoi:

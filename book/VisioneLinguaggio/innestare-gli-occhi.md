@@ -382,10 +382,10 @@ cosa dell'immagine conta, **prima** di sapere quale sarà la domanda.
 
 `````{tab} Elementare
 
-Pensa a un collega che ti prepara le carte per una riunione. Nella versione
-efficiente ti legge un fascicolo di quaranta pagine e ti consegna dieci righe di
-riassunto: veloce, comodo, quasi sempre sufficiente. Nella versione inefficiente
-ti mette il fascicolo intero sulla scrivania e ti lascia sfogliarlo.
+Un collega ti prepara le carte per una riunione. Nella versione efficiente ti
+legge un fascicolo di quaranta pagine e ti consegna dieci righe di riassunto:
+veloce, comodo, quasi sempre sufficiente. Nella versione inefficiente ti mette
+il fascicolo intero sulla scrivania e ti lascia sfogliarlo.
 
 Finché in riunione ti chiedono quello che il collega si aspettava, il riassunto
 vince a mani basse. Il giorno in cui qualcuno chiede il numero scritto in una

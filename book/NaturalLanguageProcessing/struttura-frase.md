@@ -37,8 +37,8 @@ sintagma *verbale* quello che ha un verbo («salta sul muro»), e sintagma
 
 `````{tab} Elementare
 
-Pensa a un trasloco: non porti in strada le forchette una per una, le chiudi
-in una scatola ed è la scatola che viaggia. La frase funziona uguale, e si
+Le forchette, in un trasloco, non si portano in strada una per una: si chiudono
+in una scatola, ed è la scatola che viaggia. La frase funziona uguale, e si
 riconosce quali parole viaggiano insieme con due prove da fare a orecchio.
 
 Prova di **sostituzione**: se un gruppo di parole si può rimpiazzare con una

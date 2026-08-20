@@ -25,7 +25,7 @@ niente in partenza), e deve costruire un dato che sembri autentico.
 
 `````{tab} Elementare
 
-Pensa a $G$ come a un artigiano bendato: bendato perché i quadri autentici non
+$G$ è un artigiano bendato: bendato perché i quadri autentici non
 li vedrà mai, nemmeno uno, e fra poco vedremo che è una scelta di progetto e
 non una dimenticanza. Gli consegni una manciata di numeri estratti a caso (il
 rumore): è la sua materia prima, sempre diversa. Da quei numeri deve modellare

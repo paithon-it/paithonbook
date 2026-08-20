@@ -78,12 +78,12 @@ quello che trovi (`p`)».
 
 `````{tab} Elementare
 
-Pensa a una caccia al tesoro dove l'indizio non dice «trova la parola 95125»
-ma «trova cinque cifre di fila». Un'espressione regolare è esattamente questo:
-la *descrizione di uno schema*, invece di una parola esatta. «Cinque cifre di
-fila» trova tutti i CAP d'Italia; «una o due cifre, una barra, una o due
-cifre, una barra, quattro cifre» trova tutte le date scritte come 3/7/2026;
-«la radice *gatt-* seguita da una vocale» trova *gatto*, *gatta*, *gatti* e
+In una caccia al tesoro l'indizio non dice «trova la parola 95125», dice «trova
+cinque cifre di fila». Un'espressione regolare è esattamente questo: la
+*descrizione di uno schema*, invece di una parola esatta. «Cinque cifre di
+fila» trova tutti i CAP d'Italia; «una o due cifre, una barra, una o due cifre,
+una barra, quattro cifre» trova tutte le date scritte come 3/7/2026; «la radice
+*gatt-* seguita da una vocale» trova *gatto*, *gatta*, *gatti* e
 *gatte* in un colpo solo.
 
 È la funzione Trova del tuo editor di testi, ma con i superpoteri: invece di
@@ -211,15 +211,15 @@ scelta si chiama **normalizzazione**.
 
 `````{tab} Elementare
 
-Immagina di riordinare la dispensa: prima di contare i barattoli devi decidere
-cosa va nello stesso barattolo. I fusilli integrali e i fusilli normali sono
-«pasta» o due cose diverse? Dipende da cosa vuoi cucinare. Con le parole è
-uguale, e le mosse tipiche sono tre. Primo: tutto minuscolo, così *Muro* a
-inizio frase e *muro* in mezzo finiscono nello stesso barattolo. Secondo:
-togliere le **stopword**, le parole-colla come *il*, *di*, *che*, *e*; sono
-dappertutto e proprio per questo non dicono nulla sull'argomento del testo.
-Terzo, il più delicato: raggruppare le forme della stessa parola. *Andavamo*,
-*andiamo* e *andrò* sono tutte facce del verbo *andare*.
+I fusilli integrali e i fusilli normali sono «pasta» o due cose diverse?
+Dipende da cosa vuoi cucinare, e finché non lo hai deciso non puoi nemmeno
+contare i barattoli della dispensa. Con le parole è uguale, e le mosse tipiche
+sono tre. Primo: tutto minuscolo, così *Muro* a inizio frase e *muro* in mezzo
+finiscono nello stesso barattolo. Secondo: togliere le **stopword**, le
+parole-colla come *il*, *di*, *che*, *e*; sono dappertutto e proprio per questo
+non dicono nulla sull'argomento del testo. Terzo, il più delicato: raggruppare
+le forme della stessa parola. *Andavamo*, *andiamo* e *andrò* sono tutte facce
+del verbo *andare*.
 
 Per quest'ultima mossa ci sono due attrezzi. Lo **stemming** lavora di
 forbici: taglia la coda delle parole secondo regole fisse, veloce ma

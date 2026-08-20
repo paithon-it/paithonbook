@@ -300,7 +300,7 @@ esigenze.
 
 `````{tab} Elementare
 
-Pensa alla vecchia LSTM come a un magazziniere con un unico scaffale e tre
+La vecchia LSTM è un magazziniere con un unico scaffale e tre
 interruttori: uno per buttare via, uno per riporre, uno per mostrare cosa c'è.
 Ha funzionato per anni, ma lo scaffale è piccolo e gli interruttori sono
 timidi. Timidi in un senso preciso: sono manopole che non arrivano mai al

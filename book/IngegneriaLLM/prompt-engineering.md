@@ -30,12 +30,12 @@ utili da distinguere.
 
 `````{tab} Elementare
 
-Pensa a come si affida un compito a qualcuno per iscritto. C'è **l'ordine**
-(«traduci in inglese questa frase»): dice cosa fare. C'è **lo sfondo** che serve
-per farlo bene («è il messaggio di un cliente arrabbiato, mantieni un tono
-formale»). C'è **il materiale** su cui lavorare (la frase da
-tradurre): il dato d'ingresso. E c'è **il segnale di via** («Traduzione:»), il
-punto in cui lasci la penna al modello perché continui da lì. Quattro pezzi:
+«Traduci in inglese questa frase»: questo è **l’ordine**, e dice cosa fare.
+Poi c’è **lo sfondo** che serve per farlo bene («è il messaggio di un cliente
+arrabbiato, mantieni un tono formale»). C'è **il materiale** su cui lavorare
+(la frase da tradurre): il dato d'ingresso. E c'è **il segnale di via**
+(«Traduzione:»), il punto in cui lasci la penna al modello perché continui da
+lì. Quattro pezzi:
 cosa fare, con quale sfondo, su cosa, e dove attaccare a scrivere. Un buon
 prompt li tiene distinti invece di impastarli in un'unica frase confusa.
 

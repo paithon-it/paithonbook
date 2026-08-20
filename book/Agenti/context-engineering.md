@@ -170,9 +170,9 @@ mezzo**.
 
 `````{tab} Elementare
 
-Pensa alla tua scrivania: ci sta solo un certo numero di fogli davanti a te,
-oltre quelli finiscono nel cassetto e li dimentichi. Ma c'è un secondo
-effetto, più sottile, che chiunque abbia studiato conosce: di una pila di
+Sulla tua scrivania ci sta solo un certo numero di fogli davanti a te: oltre
+quelli finiscono nel cassetto e li dimentichi. Ma c'è un secondo effetto, più
+sottile, che chiunque abbia studiato conosce: di una pila di
 fogli, l'occhio cade sul **primo** e sull’**ultimo**. Quelli in mezzo li
 sfogli distrattamente. Se metti l'informazione che conta proprio lì (impilata
 al centro, tra decine di altre carte), rischi di non «vederla» nemmeno se ce

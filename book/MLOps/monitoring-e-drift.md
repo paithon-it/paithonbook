@@ -28,8 +28,8 @@ importante, perché ciascuno risponde a una domanda diversa e ha tempi diversi.
 
 `````{tab} Elementare
 
-Pensa al cruscotto della tua auto: ha tre famiglie di indicatori, e ti dicono
-cose diverse.
+Il cruscotto di un’auto ha tre famiglie di indicatori, e ti dicono cose
+diverse.
 
 Il **primo quadrante** sono le spie di base: motore acceso, temperatura,
 livello della benzina. Ti dicono se la macchina *funziona come macchina*: si

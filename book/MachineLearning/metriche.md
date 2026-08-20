@@ -30,7 +30,7 @@ una frode è positiva. Il malato è il caso positivo e il sano è il negativo, e
 
 `````{tab} Elementare
 
-Pensa a un rilevatore di fumo. Ci sono quattro cose che può succedere:
+Un rilevatore di fumo ha quattro esiti possibili, due giusti e due sbagliati:
 
 - c'è un incendio e l'allarme suona → **vero positivo** (VP): giusto;
 - non c'è incendio ma l'allarme suona → **falso positivo** (FP): falso allarme;

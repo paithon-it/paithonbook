@@ -43,7 +43,7 @@ Le due misure di base cadono esattamente su questa frattura.
 
 `````{tab} Elementare
 
-Pensa a un menù degustazione. Due cose diverse ti fanno impazientire, e non
+Che cosa ti fa spazientire, in un menù degustazione? Due cose diverse, e non
 vanno confuse: **quanto aspetti la prima portata** (sei seduto davanti a un
 tavolo vuoto e non succede niente) e **ogni quanto arrivano le portate dopo**
 (se si susseguono a ritmo la serata scorre, se fra una e l'altra passano venti
@@ -136,10 +136,10 @@ resto.
 
 `````{tab} Elementare
 
-Immagina una fotocopiatrice industriale che, per stampare anche una sola
-pagina, deve prima scaldarsi per un minuto. Con duemila pagine da copiare quel
-minuto si spalma su duemila fogli e non lo noti; con una pagina sola aspetti un
-minuto per un foglio, e la macchina passa quasi tutto il tempo a scaldarsi.
+Una fotocopiatrice industriale, per stampare anche una sola pagina, deve prima
+scaldarsi per un minuto. Con duemila pagine da copiare quel minuto si spalma su
+duemila fogli e non lo noti; con una pagina sola aspetti un minuto per un
+foglio, e la macchina passa quasi tutto il tempo a scaldarsi.
 
 Il prefill è il primo caso: il modello legge tutte le parole del prompt in una
 volta, quindi «scaldare la macchina» (portare i miliardi di numeri del modello

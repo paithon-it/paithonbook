@@ -46,13 +46,12 @@ nel mio notebook» e «funziona per migliaia di persone, ogni giorno, per anni»
 
 `````{tab} Elementare
 
-Pensa a un ristorante. Il cuoco che inventa un piatto memorabile ha fatto una
-cosa difficilissima e necessaria, ma non ha ancora aperto il ristorante. Per
-servire quel piatto a cento clienti a sera servono una cucina attrezzata, un
-magazzino con le forniture che non finiscono, camerieri, un sistema per
-prendere le comande, l'igiene a norma, i conti che tornano. Se il freezer si
-rompe o il fornitore non consegna, il piatto più buono del mondo non arriva al
-tavolo.
+Un cuoco inventa un piatto memorabile: ha fatto una cosa difficilissima e
+necessaria, ma non ha ancora aperto il ristorante. Per servire quel piatto a
+cento clienti a sera servono una cucina attrezzata, un magazzino con le
+forniture che non finiscono, camerieri, un sistema per prendere le comande,
+l'igiene a norma, i conti che tornano. Se il freezer si rompe o il fornitore
+non consegna, il piatto più buono del mondo non arriva al tavolo.
 
 Il modello addestrato è il piatto: la ricetta funziona. MLOps è tutto il resto
 del ristorante. E come in un ristorante, il grosso dei guai non viene dalla

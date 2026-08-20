@@ -39,8 +39,9 @@ quanto si sbiadisce, e chi lo decide.
 
 `````{tab} Elementare
 
-Immagina un unico apparecchio con poche manopole. Il corpo della macchina è
-sempre lo stesso: una memoria che a ogni parola scrive una nuova voce e ne
+Le architetture di questi due capitoli sono un apparecchio solo, con poche
+manopole. Il corpo della macchina è sempre lo stesso: una memoria che a ogni
+parola scrive una nuova voce e ne
 rilegge le vecchie. Cambiare architettura non vuol dire cambiare macchina, ma
 girare tre manopole. La prima decide **quanto è grande** la memoria. La
 seconda decide **come sbiadisce** il passato quando arriva il presente: si può

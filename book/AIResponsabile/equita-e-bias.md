@@ -530,7 +530,7 @@ prodotte.
 
 `````{tab} Elementare
 
-Pensa a una gara di corsa in cui un gruppo parte più indietro. Puoi intervenire
+In una gara di corsa un gruppo parte più indietro. Puoi intervenire
 in tre momenti. **Prima** della gara, sistemando la linea di partenza: correggi
 i dati, dando più peso agli esempi dei gruppi di cui ce ne sono pochi, o
 raccogliendone altri. **Durante** la gara, cambiando le regole: al modello si

@@ -28,7 +28,7 @@ questo giro.
 
 `````{tab} Elementare
 
-Pensa a un piccolo robot in un labirinto a caselle. Lo *stato* è la casella in
+Un piccolo robot si muove in un labirinto a caselle. Lo *stato* è la casella in
 cui si trova; le *azioni* sono i movimenti possibili (su, giù, destra,
 sinistra); la *transizione* è dove finisce dopo la mossa; la *ricompensa* è il
 punteggio che riceve: diciamo $+10$ quando raggiunge l'uscita e $-1$ per ogni

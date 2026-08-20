@@ -58,9 +58,9 @@ serio, ce ne sono **due, annidati**, e che sono cose diverse.
 
 `````{tab} Elementare
 
-Immagina un artigiano al banco. Il suo ciclo di lavoro è stretto: guarda il
-pezzo, decide la prossima mossa, la fa, guarda di nuovo; avanti così finché
-l'oggetto è finito. Questo è il ciclo *interno*, quello dentro la sua testa e
+Un artigiano al banco ha un ciclo di lavoro stretto: guarda il pezzo, decide
+la prossima mossa, la fa, guarda di nuovo; avanti così finché l'oggetto è
+finito. Questo è il ciclo *interno*, quello dentro la sua testa e
 le sue mani, e dura quanto dura un lavoro.
 
 Ma sopra l'artigiano c'è il **capobottega**. Lui non intaglia: decide *quando*

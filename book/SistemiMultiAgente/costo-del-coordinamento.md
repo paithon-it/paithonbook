@@ -50,9 +50,9 @@ l'intelligenza dei partecipanti.
 
 `````{tab} Elementare
 
-Pensa a una chat di gruppo in cui, per regola, prima di scrivere un messaggio
-devi rileggere *tutta* la conversazione dall'inizio. Il primo che parla legge
-un messaggio (l'enunciato del compito). Il secondo ne legge due. Il decimo ne
+In una chat di gruppo vale una regola: prima di scrivere un messaggio devi
+rileggere *tutta* la conversazione dall’inizio. Il primo che parla legge un
+messaggio (l'enunciato del compito). Il secondo ne legge due. Il decimo ne
 legge dieci. Il trentaduesimo ne legge trentadue. Nessuno ha scritto messaggi
 più lunghi degli altri, eppure la fatica totale di lettura non cresce come il
 numero di interventi: cresce molto più in fretta, perché ogni messaggio nuovo

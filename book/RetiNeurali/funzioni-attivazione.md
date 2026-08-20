@@ -354,11 +354,11 @@ trasformi in percentuali che sommano a $100$. È la **softmax**.
 
 `````{tab} Elementare
 
-Immagina che la rete debba decidere tra "gatto", "cane" e "volpe" e produca
-tre punteggi grezzi, per esempio $2{,}0$, $1{,}0$, $0{,}1$. La softmax li
-converte in tre percentuali che sommano a $100\%$ (qui $66\%$, $24\%$, $10\%$)
-esaltando il punteggio più alto ma senza mai azzerare del tutto gli altri. Il
-risultato si legge come "quanto la rete è convinta di ciascuna classe".
+La rete deve decidere tra "gatto", "cane" e "volpe", e produce tre punteggi
+grezzi, per esempio $2{,}0$, $1{,}0$, $0{,}1$. La softmax li converte in tre
+percentuali che sommano a $100\%$ (qui $66\%$, $24\%$, $10\%$) esaltando il
+punteggio più alto ma senza mai azzerare del tutto gli altri. Il risultato si
+legge come "quanto la rete è convinta di ciascuna classe".
 
 Non è una semplice divisione, e se provi a farla ti accorgi che i conti non
 tornano: $2$ diviso $3{,}1$ farebbe $64{,}5\%$, non $66\%$. Il passaggio in più

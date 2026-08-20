@@ -79,7 +79,7 @@ imparati, i suoi **parametri**: è di gran lunga il più pesante dei tre moduli.
 
 `````{tab} Elementare
 
-Immagina di dover descrivere la schermata di gioco a un amico al telefono. Non
+Descrivi la schermata di gioco a un amico al telefono. Non
 gli detti i 4.096 puntini uno per uno, ciascuno con i suoi tre numeri di
 colore: dici «curva a sinistra, auto
 al centro, erba sui bordi» (poche informazioni, quelle giuste). Il VAE fa lo
@@ -149,7 +149,7 @@ meno di un decimo di quelli di V.
 
 `````{tab} Elementare
 
-Pensa a un'amica che ha giocato mille partite. Le descrivi la situazione in
+Un’amica ha giocato mille partite. Le descrivi la situazione in
 una frase («sono a metà curva, sto accelerando») e lei ti dice come prosegue:
 «esci largo verso l'erba». Non le serve *vedere* lo schermo: le basta il
 riassunto, perché la fisica del gioco ce l'ha in testa. Una sfumatura conta:
@@ -224,7 +224,7 @@ basta un riflesso. Tutta l'intelligenza sta nel modello, non nel controllore.
 
 `````{tab} Elementare
 
-Pensa al banco di un fonico: una fila di manopole, ciascuna che alza o abbassa
+Al banco di un fonico c’è una fila di manopole, ciascuna che alza o abbassa
 un ingresso, e in uscita tre soli comandi. Gli ingressi, qui, sono i 288 numeri
 che descrivono la situazione (che cosa si vede adesso, che cosa si ricorda di
 prima), ogni manopola dice quanto ciascuno di quei numeri deve contare, e i tre

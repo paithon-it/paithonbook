@@ -20,11 +20,11 @@ parole che contiene.
 
 `````{tab} Elementare
 
-Pensa a una persona che ascolta una registrazione e la trascrive a mano.
-Riceve un flusso continuo di suono (alti, bassi, pause) e produce una riga di
-parole scritte. Il riconoscitore vocale fa esattamente questo: in ingresso
-l'onda sonora catturata dal microfono, in uscita del testo. Attenzione:
-nessuna *comprensione* del significato, per ora. Solo il passaggio dal suono
+Ascolti una registrazione e la trascrivi a mano: ricevi un flusso continuo di
+suono (alti, bassi, pause) e produci una riga di parole scritte. Il
+riconoscitore vocale fa esattamente questo: in ingresso l'onda sonora
+catturata dal microfono, in uscita del testo. Attenzione: nessuna
+*comprensione* del significato, per ora. Solo il passaggio dal suono
 alle lettere giuste.
 
 `````

@@ -86,15 +86,15 @@ e la adattiamo al nostro compito. Funziona per una ragione precisa, da capire.
 
 `````{tab} Elementare
 
-Pensa a un cuoco che ha passato anni a imparare le tecniche di base: tagliare,
-soffriggere, montare, impastare. Se domani deve preparare un piatto che non ha
-mai fatto, non ricomincia da capo: quelle tecniche gli servono comunque, deve
-solo imparare la ricetta nuova. Una CNN funziona allo stesso modo. I suoi
-primi strati imparano le "tecniche di base" della visione (riconoscere bordi,
-angoli, trame, colori) che valgono per qualunque immagine. Solo gli ultimi
-strati imparano la "ricetta" specifica di ImageNet, cioè distinguere un
-pastore tedesco da un labrador. Riusiamo le tecniche di base e riscriviamo
-soltanto la ricetta.
+Un cuoco ha passato anni a imparare le tecniche di base: tagliare, soffriggere,
+montare, impastare. Se domani deve preparare un piatto che non ha mai fatto,
+non ricomincia da capo: quelle tecniche gli servono comunque, deve solo
+imparare la ricetta nuova. Una CNN funziona allo stesso modo. I suoi primi
+strati imparano le "tecniche di base" della visione (riconoscere bordi, angoli,
+trame, colori) che valgono per qualunque immagine. Solo gli ultimi strati
+imparano la "ricetta" specifica di ImageNet, cioè distinguere un pastore
+tedesco da un labrador. Riusiamo le tecniche di base e riscriviamo soltanto la
+ricetta.
 
 E non è un modo di dire: qualcuno è andato a guardare. Si possono disegnare i
 filtri che una rete si è costruita da sola, e nei primi strati escono sempre

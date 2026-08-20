@@ -39,21 +39,21 @@ spesso significa sacrificare l'altro.
 
 `````{tab} Elementare
 
-Immagina di dover consegnare dei pacchi. La lepre è velocissima: prende un
-pacco, sfreccia, lo consegna, torna indietro, ne prende un altro. Se hai *un*
-pacco urgente, la lepre è imbattibile. Ma se ne hai diecimila, quella corsa
-avanti e indietro non basta più. Il formicaio funziona all'opposto: ogni
+Una lepre e un formicaio devono consegnare dei pacchi. La lepre è velocissima:
+prende un pacco, sfreccia, lo consegna, torna indietro, ne prende un altro. Se
+hai *un* pacco urgente, la lepre è imbattibile. Ma se ne hai diecimila, quella
+corsa avanti e indietro non basta più. Il formicaio funziona all'opposto: ogni
 formica è lenta, ma sono migliaia e partono tutte insieme. Il primo pacco
 arriverà un po’ più tardi che con la lepre (nessuna formica è veloce) ma nello
 stesso tempo ne arrivano diecimila. La lepre ha la **latenza** più bassa (il
 singolo pacco arriva prestissimo), il formicaio il **throughput** più alto
-(nella giornata ne arrivano molti di più): sono le due parole del paragrafo
-qui sopra, ed è così che il capitolo le userà. La CPU è la lepre: pochi
-processori potentissimi, pensati per finire in fretta il singolo compito. La
-GPU è il formicaio: tante unità lente, pensate per smaltire una montagna di
-compiti tutti insieme. Per aprire un file o rispondere a un clic vuoi la
-lepre; per fare i sessantaquattro milioni di moltiplicazioni tutte uguali di un
-solo strato di una rete (è il conto fatto all'inizio del capitolo), vuoi il
+(nella giornata ne arrivano molti di più): sono le due parole del paragrafo qui
+sopra, ed è così che il capitolo le userà. La CPU è la lepre: pochi processori
+potentissimi, pensati per finire in fretta il singolo compito. La GPU è il
+formicaio: tante unità lente, pensate per smaltire una montagna di compiti
+tutti insieme. Per aprire un file o rispondere a un clic vuoi la lepre; per
+fare i sessantaquattro milioni di moltiplicazioni tutte uguali di un solo
+strato di una rete (è il conto fatto all'inizio del capitolo), vuoi il
 formicaio.
 
 `````
@@ -155,20 +155,20 @@ che la {numref}`fig-gpu-esecuzione` li metta in fila.
 
 `````{tab} Elementare
 
-Pensa a un grande censimento da svolgere in una città. Il **thread** è il
-singolo rilevatore, che si occupa di *una* casa. Per non impazzire, i
-rilevatori si organizzano in **squadre** (i «blocchi»): quelli di una squadra
-lavorano nello stesso quartiere, si passano informazioni e si coordinano tra
-loro. Tutte le squadre insieme formano l’**operazione cittadina** (la
-«griglia»), che copre l'intera città. Il capo del censimento non dà ordini a
-ogni singolo rilevatore: dice «voglio una griglia di 100 squadre da 256
-rilevatori l'una», e lascia che l'organizzazione si dispieghi da sola. C'è poi
-un dettaglio che viene dall'hardware: dentro ogni squadra i rilevatori
-marciano in **plotoni da 32**, che ricevono l'ordine tutti nello stesso
-istante. Una squadra da 256 rilevatori, quindi, sono otto plotoni, e i conti
-tornano sempre così: le squadre si scelgono di una taglia che sia un multiplo
-di 32, altrimenti l'ultimo plotone parte mezzo vuoto. Ricordati quel 32, perché
-è il battito del cuore della GPU.
+In una città si fa il censimento, e bisogna bussare a tutte le porte. Il
+**thread** è il singolo rilevatore, che si occupa di *una* casa. Per non
+impazzire, i rilevatori si organizzano in **squadre** (i «blocchi»): quelli di
+una squadra lavorano nello stesso quartiere, si passano informazioni e si
+coordinano tra loro. Tutte le squadre insieme formano l’**operazione
+cittadina** (la «griglia»), che copre l'intera città. Il capo del censimento
+non dà ordini a ogni singolo rilevatore: dice «voglio una griglia di 100
+squadre da 256 rilevatori l'una», e lascia che l'organizzazione si dispieghi da
+sola. C'è poi un dettaglio che viene dall'hardware: dentro ogni squadra i
+rilevatori marciano in **plotoni da 32**, che ricevono l'ordine tutti nello
+stesso istante. Una squadra da 256 rilevatori, quindi, sono otto plotoni, e i
+conti tornano sempre così: le squadre si scelgono di una taglia che sia un
+multiplo di 32, altrimenti l'ultimo plotone parte mezzo vuoto. Ricordati quel
+32, perché è il battito del cuore della GPU.
 
 `````
 

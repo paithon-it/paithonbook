@@ -128,12 +128,15 @@ di due corse su piste di lunghezza diversa.
 
 `````{tab} Elementare
 
-Pensa a una catena di montaggio: la materia prima entra da un'estremità e a
-ogni stazione subisce una lavorazione precisa, sempre la stessa, nell'ordine
-giusto. Se un operaio salta un passaggio o li fa in ordine diverso, il pezzo
-finale esce sbagliato. Una pipeline di dati è questo: stazioni collegate, ognuna
-con un compito, che trasformano il dato grezzo in dato pronto senza che nessuno
-intervenga a mano ogni volta.
+Il latte che arriva in bottiglia ha attraversato una filiera: la cisterna lo
+raccoglie dalle stalle, il laboratorio ne analizza un campione, la
+pastorizzazione lo tiene alla temperatura giusta per il tempo giusto, e solo
+alla fine si imbottiglia. Nessuno di quei passaggi si salta, e l'ordine non è
+un dettaglio: se il campione si analizzasse in fondo, un carico guasto lo si
+scoprirebbe quando è già nelle bottiglie di tutti, mentre analizzato all'inizio
+quel carico si scarta e non entra. Una pipeline di dati è questo: passaggi
+collegati, ognuno con un compito e con il suo controllo, che trasformano il
+dato grezzo in dato pronto senza che nessuno intervenga a mano ogni volta.
 
 Il pericolo ha un nome pittoresco: la **pipeline jungle**, la «giungla di
 tubature». Nasce così: qualcuno aggiunge di fretta uno script per sistemare un
@@ -178,11 +181,11 @@ scelta sbagliata.
 
 `````{tab} Elementare
 
-Immagina un archivio di ottanta informazioni per ogni cliente, e un milione di
-clienti. Puoi conservarlo in due modi. **Per riga**, cioè una scheda per
-cliente con tutte le sue ottanta voci in fila: è il CSV, ed è comodo se ti
-serve tutta la scheda di un cliente. Oppure **per colonna**, cioè un elenco di
-tutte le età, poi un elenco di tutte le città, e così via.
+Ottanta informazioni per ogni cliente, un milione di clienti: un archivio così
+si conserva in due modi. **Per riga**, cioè una scheda per cliente con tutte le
+sue ottanta voci in fila: è il CSV, ed è comodo se ti serve tutta la scheda di
+un cliente. Oppure **per colonna**, cioè un elenco di tutte le età, poi un
+elenco di tutte le città, e così via.
 
 Quale conviene dipende da cosa fai. E quello che si fa per addestrare un
 modello è sempre lo stesso: leggere **tre colonne su ottanta**, per tutti. Con
@@ -597,9 +600,9 @@ questo: dargli un contratto, e farlo rispettare.
   quella di un documento condiviso, senza duplicare montagne di file: si passa
   il dataset in un tritatutto che ne ricava un codicino, e si conserva quello.
   Se cambia anche un pixel, il codicino cambia del tutto.
-- Una **pipeline** è una catena di montaggio per i dati: stazioni collegate,
-  ognuna con un compito, sempre nello stesso ordine, senza ritocchi a mano che
-  non lascino traccia. Altrimenti diventa una giungla di tubature che nessuno
+- Una **pipeline** è una filiera per i dati: passaggi collegati, ognuno con un
+  compito e con il suo controllo, sempre nello stesso ordine, senza ritocchi a
+  mano che non lascino traccia. Altrimenti diventa una giungla di tubature che nessuno
   sa più dove portino.
 - Il **formato** in cui i dati aspettano fra una stazione e l'altra non è un
   dettaglio: l'archivio **per colonna** (**Parquet**) legge solo le poche voci

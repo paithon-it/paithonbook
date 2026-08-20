@@ -307,11 +307,11 @@ dove non può stare: *«I can't see without my reading ___»* completato con
 
 `````{tab} Elementare
 
-Pensa a due conoscenti. Il primo compare in mille foto, ma sempre alla
-stessa festa: inseparabile dal padrone di casa, mai visto altrove. Il
-secondo compare in cento foto, ma di cento feste diverse. Chi è più
-probabile incontrare a una festa *nuova*? Il secondo, ovviamente: il primo è
-frequente, ma non va da nessuna parte senza il suo amico.
+Due conoscenti. Il primo compare in mille foto, ma sempre alla stessa festa:
+inseparabile dal padrone di casa, mai visto altrove. Il secondo compare in
+cento foto, ma di cento feste diverse. Chi è più probabile incontrare a una
+festa *nuova*? Il secondo, ovviamente: il primo è frequente, ma non va da
+nessuna parte senza il suo amico.
 
 Da qui il rimedio proposto nel 1995 da Reinhard Kneser e Hermann Ney, che è
 tutto in una riga: quando devi ripiegare sulla parola singola, non chiederti

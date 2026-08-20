@@ -290,12 +290,12 @@ numeri quasi uguali.
 
 `````{tab} Elementare
 
-Immagina di misurare il peso di un capitano *con la sua barca* ($80\,000$ kg)
-e della sola barca ($79\,930$ kg), ciascuno accurato al chilo. La differenza
-(il peso del capitano) è $70$ kg, ma l'incertezza di un chilo su ciascuna
-misura ora pesa tantissimo *in proporzione*. Le cifre affidabili si sono
-"cancellate" e resta soprattutto rumore. In pratica: evita di calcolare una
-quantità piccola come differenza di due quantità grandi.
+Si pesa un capitano *con la sua barca* ($80\,000$ kg), poi si pesa la sola
+barca ($79\,930$ kg), ciascuna misura accurata al chilo. La differenza (il peso
+del capitano) è $70$ kg, ma l'incertezza di un chilo su ciascuna misura ora
+pesa tantissimo *in proporzione*. Le cifre affidabili si sono "cancellate" e
+resta soprattutto rumore. In pratica: evita di calcolare una quantità piccola
+come differenza di due quantità grandi.
 
 `````
 

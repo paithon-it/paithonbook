@@ -78,9 +78,9 @@ in mano l'esecuzione, solo la richiesta.
 
 `````{tab} Elementare
 
-Immagina un dirigente competente ma con una regola personale: non fa mai i
-conti a mano e non si fida della propria memoria per i dettagli. Sulla
-scrivania ha una calcolatrice, un telefono e uno schedario. Quando gli chiedi
+Un dirigente competente ha una regola personale: non fa mai i conti a mano e
+non si fida della propria memoria per i dettagli. Sulla scrivania ha una
+calcolatrice, un telefono e uno schedario. Quando gli chiedi
 «quanto fa il totale della commessa?» non azzarda una cifra: prende la
 calcolatrice. Quando gli chiedi «qual è l'indirizzo del cliente?» apre lo
 schedario. La sua bravura non sta nel *sapere* tutto, ma nel **capire quale
@@ -337,8 +337,8 @@ l'osservazione a tenerlo attaccato a qualcosa di vero.
 
 `````{tab} Elementare
 
-Pensa a un detective che indaga a voce alta. Non spara subito il colpevole:
-alterna ragionamenti e verifiche. «*Penso*: la vittima è stata vista l'ultima
+Un detective indaga a voce alta. Non spara subito il colpevole: alterna
+ragionamenti e verifiche. «*Penso*: la vittima è stata vista l'ultima
 volta al porto, quindi conviene controllare i registri delle navi. *Controllo*
 i registri… *Scopro* che quella notte è salpato un solo mercantile. *Penso*:
 allora mi interessa chi era a bordo. *Controllo* la lista dell'equipaggio…».

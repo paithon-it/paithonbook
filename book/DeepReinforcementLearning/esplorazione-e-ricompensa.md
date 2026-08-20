@@ -44,8 +44,8 @@ inventato per andare oltre.
 
 `````{tab} Elementare
 
-Immagina di esplorare una città enorme tirando un dado a ogni incrocio per
-decidere dove girare. Andrai avanti e indietro nello stesso quartiere per ore:
+Esplori una città enorme tirando un dado a ogni incrocio per decidere dove
+girare. Andrai avanti e indietro nello stesso quartiere per ore:
 il caso non ha memoria, non sa quali strade hai già battuto e quali no. Per
 raggiungere un vicolo che sta a dieci svolte precise da qui, la probabilità di
 azzeccarle tutte tirando a sorte è minuscola.
@@ -197,7 +197,7 @@ studiato quella risposta, e sbaglia parecchio.
 
 `````{tab} Elementare
 
-Pensa a un bambino che gioca. Nessuno gli dà punti: eppure esplora
+Un bambino che gioca non prende punti da nessuno, eppure esplora
 instancabilmente, attratto da ciò che non riesce a prevedere. Spinge un
 bicchiere oltre il bordo del tavolo perché non sa ancora cosa succederà; una
 volta imparato che cade e si rompe, quel gesto smette di interessarlo e ne

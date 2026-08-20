@@ -78,10 +78,10 @@ scelta, quella del suono no.
 
 `````{tab} Elementare
 
-Pensa a una ruota che gira ripresa da una telecamera. Se scatti troppe poche
-foto, nel video la ruota sembra girare al contrario, o ferma: è l'effetto che
-vediamo sulle ruote delle auto nei film. Con il suono succede la stessa cosa, e
-la battuta finale è altrettanto strana. Un fischio troppo acuto per il numero di
+Nei film le ruote delle auto ogni tanto sembrano girare al contrario, o stare
+ferme: capita perché la telecamera scatta troppe poche foto al secondo per
+tenere il passo del giro. Con il suono succede la stessa cosa, e la battuta
+finale è altrettanto strana. Un fischio troppo acuto per il numero di
 misure che stiamo prendendo non sparisce: si **traveste**, e torna indietro più
 grave di quanto era, come una nota che nessuno ha mai suonato.
 

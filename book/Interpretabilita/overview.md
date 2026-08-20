@@ -217,7 +217,7 @@ ordine e ci accompagneranno per tutto il capitolo.
 
 `````{tab} Elementare
 
-Pensa a tre domande da porre a ogni metodo di spiegazione.
+A ogni metodo di spiegazione conviene fare tre domande.
 
 - **Il modello si legge da sé, o va spiegato dopo?** Alcuni modelli decidono
   con una catena di domande sì/no («il reddito supera i 30 000? se sì, l'età
@@ -398,7 +398,7 @@ falso insieme.
 
 `````{tab} Elementare
 
-Pensa a un telecronista che spiega perché un calciatore ha tirato in quel modo:
+Un telecronista spiega perché un calciatore ha tirato in quel modo:
 «ha visto il portiere spostarsi». Suona sensato, sta guardando la stessa partita
 che guardi tu, ma non è stato nella testa del calciatore, che magari è solo
 scivolato. La spiegazione è *credibile* e *falsa* insieme, e il telecronista

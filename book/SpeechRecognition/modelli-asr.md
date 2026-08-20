@@ -356,9 +356,9 @@ questa sezione: «attendere» traduce l'inglese *attend*, che non vuol dire
 aspettare ma «fare attenzione a».
 
 `````{tab} Elementare
-Pensa a un interprete: prima ascolta l'intera frase, poi la ridice parola per
-parola. Mentre pronuncia ogni parola, la sua attenzione torna al punto giusto
-di ciò che ha sentito. Il modello fa lo stesso: genera un carattere, si
+Un interprete prima ascolta l’intera frase, poi la ridice parola per parola.
+Mentre pronuncia ogni parola, la sua attenzione torna al punto giusto di ciò
+che ha sentito. Il modello fa lo stesso: genera un carattere, si
 «riguarda» la porzione di audio più rilevante, genera il prossimo.
 
 Due conseguenze, e conviene fissarle perché tornano più avanti. La prima è che
@@ -425,11 +425,11 @@ conosceva meglio di chiunque.
 
 `````{tab} Elementare
 
-Pensa a uno stenografo che scrive sotto dettatura. Non aspetta la fine del
-discorso come l'interprete: scrive mentre ascolta, e non torna mai indietro sul
-nastro. Però ha sotto gli occhi il foglio, cioè quello che ha appena scritto, e
-quel foglio lo aiuta: se ha scritto «buon», la parola dopo sarà più
-probabilmente «giorno» che «gnorno».
+E se si scrivesse mentre l’altro parla? È il mestiere dello stenografo sotto
+dettatura: non aspetta la fine del discorso come l’interprete, scrive mentre
+ascolta, e non torna mai indietro sul nastro. Però ha sotto gli occhi il
+foglio, cioè quello che ha appena scritto, e quel foglio lo aiuta: se ha
+scritto «buon», la parola dopo sarà più probabilmente «giorno» che «gnorno».
 
 Il trasduttore è questo. A ogni istante ha due mosse possibili: scrivere un
 carattere (e allora rilegge il foglio aggiornato, ma resta fermo sull'audio) o

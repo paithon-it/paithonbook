@@ -44,8 +44,8 @@ quel nodo smette di funzionare. Ogni topologia è un compromesso fra loro.
 
 `````{tab} Elementare
 
-Immagina venti persone che devono organizzare una festa, e fatti tre domande
-sul modo in cui si sono organizzate.
+Venti persone devono mettere in piedi una festa. Fatti tre domande sul modo in
+cui si sono organizzate.
 
 La prima: **per quante mani passa una notizia** prima di arrivare a tutti? Se
 c'è un organizzatore che chiama uno per uno, due passaggi bastano sempre. Se
@@ -580,10 +580,9 @@ frase per frase, l'errore saliva al diciannove per cento.)
 
 `````{tab} Elementare
 
-Pensa alla lavagna di una sala operativa, quella con sopra tutto quello che si
-sa finora, scritto a mano e cancellabile. Chi entra non chiede a nessuno il
-permesso di parlare: guarda la lavagna, vede se sa aggiungere qualcosa, scrive,
-esce. Il meteorologo scrive che il vento gira; il tecnico legge quella riga e
+In una sala operativa la lavagna tiene tutto quello che si sa finora, scritto
+a mano e cancellabile. Chi entra non chiede a nessuno il permesso di parlare:
+guarda la lavagna, vede se sa aggiungere qualcosa, scrive, esce. Il meteorologo scrive che il vento gira; il tecnico legge quella riga e
 corregge una stima che aveva scritto lui mezz'ora prima; nessuno dei due sa
 dell'esistenza dell'altro.
 

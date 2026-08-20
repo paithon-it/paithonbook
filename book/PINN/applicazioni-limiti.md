@@ -84,8 +84,8 @@ distinguere due modi opposti di usare un'equazione.
 
 `````{tab} Elementare
 
-Immagina un forno di cui conosci tutto: la ricetta, la temperatura, i minuti.
-Da lì puoi prevedere com'è la torta prima ancora di aprirlo: quanto sarà
+Di un forno conosci tutto: la ricetta, la temperatura, i minuti. Da lì puoi
+prevedere com'è la torta prima ancora di aprirlo: quanto sarà
 gonfia, quanto dorata. Questo è il problema **diretto**: dalla regola completa
 alla conseguenza. È il caffè che si raffredda della sezione d'apertura del
 capitolo: nota la legge, si ricostruisce la curva.
@@ -411,10 +411,9 @@ sbarra, e si riaddestra da capo.
 
 `````{tab} Elementare
 
-Pensa alla differenza tra risolvere *un* esercizio e imparare il *metodo*. Uno
-studente che ha risolto un problema di fisica sa la risposta a quel problema;
-uno che ha imparato il metodo li risolve tutti, anche quelli che non ha mai
-visto, senza rifare la fatica ogni volta.
+Chi ha risolto un problema di fisica sa la risposta a quel problema; chi ha
+imparato il *metodo* li risolve tutti, anche quelli che non ha mai visto, senza
+rifare la fatica ogni volta.
 
 C'è una famiglia di reti che fa la seconda cosa. Invece di imparare *la
 soluzione* di un problema, imparano il procedimento che porta dalla domanda

@@ -58,18 +58,18 @@ fondamenta su cui quella struttura si appoggia.
 
 `````{tab} Elementare
 
-Pensa alle categorie grammaticali come ai *mestieri* delle parole: il nome
-indica cose e persone, il verbo racconta azioni, l'articolo fa strada al nome.
-Il punto delicato è che molte parole fanno due mestieri, e cambiano divisa
-senza avvisare: «porta» è un oggetto in «la porta cigola» e un'azione in
-«Maria porta il pane»; «ancora» è un pezzo di nave se la pronunci *àncora* e
-un avverbio se la pronunci *ancóra*. Sulla pagina le due «ancora» sono
-identiche: solo le parole intorno rivelano quale hai davanti. Etichettare le
-parti del discorso è proprio questo: guardare il contesto e decidere, parola
-per parola, quale mestiere è in servizio. I linguisti del progetto Universal
-Dependencies hanno stilato una lista di 17 mestieri che funziona per
-l'italiano come per il finlandese o il giapponese: una specie di stele di
-Rosetta della grammatica.
+«Porta» è un oggetto in «la porta cigola» e un’azione in «Maria porta il pane»:
+la stessa parola, due mestieri diversi. Le categorie grammaticali sono appunto
+i *mestieri* delle parole (il nome indica cose e persone, il verbo racconta
+azioni, l'articolo fa strada al nome), e il punto delicato è che molte ne fanno
+due, cambiando divisa senza avvisare: «ancora» è un pezzo di nave se la
+pronunci *àncora* e un avverbio se la pronunci *ancóra*. Sulla pagina le due
+«ancora» sono identiche: solo le parole intorno rivelano quale hai davanti.
+Etichettare le parti del discorso è proprio questo: guardare il contesto e
+decidere, parola per parola, quale mestiere è in servizio. I linguisti del
+progetto Universal Dependencies hanno stilato una lista di 17 mestieri che
+funziona per l'italiano come per il finlandese o il giapponese: una specie di
+stele di Rosetta della grammatica.
 
 `````
 
@@ -151,10 +151,10 @@ leggibile per conto suo.
 
 `````{tab} Elementare
 
-Immagina di lavorare con degli evidenziatori colorati: giallo per le persone,
-azzurro per i luoghi, verde per le date. Il problema è dettare al telefono,
-parola per parola, dove passa l'evidenziatore, e con quale regola? Ne bastano
-tre per parola: «qui **comincio** un'evidenziatura gialla», «qui la
+Tre evidenziatori colorati: giallo per le persone, azzurro per i luoghi, verde
+per le date. Il problema è dettare al telefono, parola per parola, dove passa
+l'evidenziatore, e con quale regola? Ne bastano tre per parola: «qui
+**comincio** un'evidenziatura gialla», «qui la
 **continuo**», «qui la penna è **sollevata**». Sulla frase di Fermi: *Enrico*
 = comincio-giallo, *Fermi* = continuo, *nacque, a* = penna su, *Roma* =
 comincio-azzurro, *nel* = penna su, *1901* = comincio-verde. La distinzione
@@ -360,14 +360,14 @@ all'indietro lungo la strada in terracotta.
 
 `````{tab} Elementare
 
-Pensa a un navigatore che deve attraversare tre incroci (le tre parole),
-scegliendo a ogni incrocio una corsia (la categoria). Il suo segreto è duplice.
-Primo: a ogni incrocio, per ogni corsia, conserva **solo il modo migliore di
-arrivarci** e butta via gli altri, perché se due strade sbucano nella stessa
-corsia dello stesso incrocio, da lì in avanti hanno davanti esattamente le
-stesse possibilità, e la più lenta non potrà mai più recuperare. Secondo: ogni
-volta che tiene una strada, si segna su un foglietto **da dove veniva**, così
-alla fine potrà ricostruire il percorso a ritroso.
+Un navigatore attraversa tre incroci (le tre parole) e a ogni incrocio sceglie
+una corsia (la categoria). Il suo segreto è duplice. Primo: a ogni incrocio,
+per ogni corsia, conserva **solo il modo migliore di arrivarci** e butta via
+gli altri, perché se due strade sbucano nella stessa corsia dello stesso
+incrocio, da lì in avanti hanno davanti esattamente le stesse possibilità, e la
+più lenta non potrà mai più recuperare. Secondo: ogni volta che tiene una
+strada, si segna su un foglietto **da dove veniva**, così alla fine potrà
+ricostruire il percorso a ritroso.
 
 Seguiamolo sui numeri della figura.
 

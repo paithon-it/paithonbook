@@ -182,16 +182,16 @@ ai calcolatori costa tempo. Le migliaia di core sono
 la parte facile; tenerle rifornite è l'ingegneria vera.
 
 `````{tab} Elementare
-Immagina un cuoco fulmineo che potrebbe sfornare cento piatti al minuto, se
-solo avesse gli ingredienti sotto mano. Ma la dispensa è in fondo a un lungo
-corridoio, e per ogni piatto qualcuno deve andare a prendere ciò che serve e
-riportarlo indietro. Il cuoco, per quanto veloce, passa la giornata ad
-aspettare: non è lento lui, è lento il *rifornimento*. Una GPU è spesso così
-(una bestia affamata più che un mostro di calcolo) e quasi tutte le tecniche
-di questo capitolo servono a una cosa sola: fare più conti con ogni carico di
-ingredienti prima di rimandare qualcuno in dispensa. La sezione sulla memoria
-racconta com'è fatta questa «dispensa» e perché la sua velocità di consegna
-(la *banda*) decide il destino di tanti programmi.
+Un cuoco fulmineo potrebbe sfornare cento piatti al minuto, se solo avesse gli
+ingredienti sotto mano. Ma la dispensa è in fondo a un lungo corridoio, e per
+ogni piatto qualcuno deve andare a prendere ciò che serve e riportarlo
+indietro. Il cuoco, per quanto veloce, passa la giornata ad aspettare: non è
+lento lui, è lento il *rifornimento*. Una GPU è spesso così (una bestia
+affamata più che un mostro di calcolo) e quasi tutte le tecniche di questo
+capitolo servono a una cosa sola: fare più conti con ogni carico di ingredienti
+prima di rimandare qualcuno in dispensa. La sezione sulla memoria racconta
+com'è fatta questa «dispensa» e perché la sua velocità di consegna (la *banda*)
+decide il destino di tanti programmi.
 `````
 
 `````{tab} Superiore
