@@ -36,13 +36,26 @@ via. Sono percentuali scritte come frazioni di uno, quindi `0.82` si legge
 tutta la lista si ottiene esattamente $1$. Vince l'etichetta con il numero più
 alto.
 
+Come fa la rete ad avere le lenti giuste? Le si mostrano foto di cui
+l'etichetta si conosce già, e di tutta la lista delle probabilità se ne guarda
+una voce sola: quella dell'etichetta vera. Un `0.82` lì sopra costa poco, un
+`0.11` costa molto, e a ogni foto la rete corregge di pochissimo tutto quello
+che ha dentro, dalla prima lente all'ultimo strato, per far salire quella
+voce. Ripetuto su milioni di foto, questo è l'addestramento.
+
+Quello che la rete ha dentro non è distribuito alla pari. L'ultimo strato,
+quello che trasforma la lista in probabilità, in una rete moderna tiene pochi
+numeri; nelle prime reti di questo genere era il contrario. In AlexNet
+novantasei numeri su cento stavano nel finale, e cambiare il finale voleva dire
+rifare quasi tutta la rete.
+
 `````
 
 `````{tab} Superiore
 
 L'input è un tensore $\mathbf{X} \in \mathbb{R}^{C\times H\times W}$ (canali,
-altezza, larghezza: l'ordine *channels-first* di PyTorch, lo stesso dell'inizio
-del capitolo). Una successione di blocchi convoluzione + non linearità + pooling
+altezza, larghezza: l'ordine *channels-first* di PyTorch). Una successione di
+blocchi convoluzione + non linearità + pooling
 lo trasforma in una *feature map* sempre più piccola nello spazio ma più ricca
 in profondità. Nelle architetture moderne un *global average pooling* la riduce
 a un vettore $\mathbf{z}\in\mathbb{R}^d$ (le reti della prima generazione,
@@ -56,10 +69,12 @@ $$
 \hat{y}_k = \frac{e^{\mathbf{w}_k^\top \mathbf{z}+b_k}}{\sum_{j=1}^{K} e^{\mathbf{w}_j^\top \mathbf{z}+b_j}} .
 $$
 
-Qui $\hat{y}_k$ è la probabilità stimata della classe $k$ e $\mathbf{w}_k$ è la
-riga di pesi ad essa associata. L'addestramento minimizza la *cross-entropy*
-$\mathcal{L} = -\sum_k y_k \log \hat{y}_k$ ottimizzando tutti i parametri
-$\theta$ della rete.
+Qui $\hat{y}_k$ è la probabilità stimata della classe $k$, $\mathbf{w}_k$ è la
+riga di pesi ad essa associata e $b_k$ il suo termine costante.
+L'addestramento minimizza la *cross-entropy*
+$\mathcal{L} = -\sum_k y_k \log \hat{y}_k$, dove $y_k$ vale 1 sulla classe vera
+e 0 sulle altre (resta quindi il solo termine $-\log \hat{y}_{\text{vera}}$),
+ottimizzando tutti i parametri $\theta$ della rete.
 
 `````
 
@@ -173,7 +188,23 @@ pezzi meccanici. Rende di più, ma vuole più foto e va fatto con cautela.
 La cautela serve perché una rete non ha un cassetto dei ricordi separato: tutto
 quello che sa sta in quegli stessi numeri, e riaddestrarla vuol dire
 spostarli. Se li si sposta di poco, si aggiusta; se li si sposta di molto, si
-cancella quello che c'era prima e si ricomincia da capo senza accorgersene.
+cancella quello che c'era prima e si ricomincia da capo senza accorgersene. Per
+questo il fine-tuning si fa con spostamenti cento volte più piccoli di quelli
+con cui si allena la testa.
+
+E la base congelata riserva una sorpresa: continua a cambiare da sola. Dentro
+ci sono delle centraline che, prima di passare i numeri allo strato dopo, li
+rimettono in scala su quanto erano chiare e variegate le foto viste fin lì,
+come la macchina fotografica che regola da sé la luce sulla media di quello che
+ha inquadrato. Quella media è un appunto della rete, non una delle sue
+manopole, e si aggiorna da sola ogni volta che una foto attraversa la rete,
+anche dopo che le manopole sono state bloccate tutte. Chi si ferma lì manda
+dentro le proprie mille lastre e si ritrova, senza essersene accorto, una base
+tarata sulle lastre: la testa impara inseguendo un bersaglio che si sposta, e i
+numeri di stamattina non sono confrontabili con quelli di ieri. Perché la base
+resti ferma davvero bisogna dire anche a quelle centraline di smettere di
+prendere appunti; lo si dice pure quando si sbloccano gli ultimi strati, perché
+una media presa su poche foto alla volta salta da un gruppetto all'altro.
 
 `````
 
@@ -223,7 +254,7 @@ for p in model.parameters():
     p.requires_grad_(False)
 
 # ...e anche i BatchNorm, che altrimenti continuerebbero a cambiare da soli:
-# il perche' e' nella tab Superiore. Da ripetere dopo ogni model.train().
+# le statistiche sono buffer, non parametri. Da ripetere dopo model.train().
 for m in model.modules():
     if isinstance(m, nn.BatchNorm2d):
         m.eval()
@@ -283,10 +314,12 @@ bello del transfer learning.
   nuova: i primi strati (le tecniche di base) valgono per qualunque
   fotografia, gli ultimi (la ricetta) no, e sono quelli da rifare.
 - Due modi di procedere. **Bloccare** tutta la base e allenare solo la punta:
-  veloce, e basta poco materiale. Oppure **sbloccare anche gli ultimi strati**
-  della base e ritoccarli a passi piccolissimi: rende di più, ma vuole più
-  foto e più cautela, perché a passi grandi la rete dimentica quello che
-  sapeva.
+  veloce, e basta poco materiale; bloccarla davvero però vuol dire due cose e
+  non una, fermare le manopole e dire anche alle centraline che rimettono in
+  scala i numeri di smettere di prendere appunti. Oppure **sbloccare anche gli
+  ultimi strati** della base e ritoccarli a passi piccolissimi: rende di più,
+  ma vuole più foto e più cautela, perché a passi grandi la rete dimentica
+  quello che sapeva.
 ```
 
 `````

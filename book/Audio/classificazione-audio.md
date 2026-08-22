@@ -43,11 +43,19 @@ sorprendente è che non serve inventare un metodo nuovo: è lo *stesso* tipo di
 rete che riconosce i gatti nelle foto, perché ormai il suono, per lei, *è* una
 foto.
 
-E c'è un regalo in più, che viene proprio da quella somiglianza. Una rete che ha
-già passato mesi a guardare fotografie ha imparato a riconoscere bordi, macchie,
-righe, motivi che si ripetono: roba che sulla lastra sonora c'è eccome. Allora
-non si riparte da zero. Si prende quella rete e le si fanno vedere
-spettrogrammi finché non si riabitua, e in poco tempo diventa brava anche lì.
+Una cosa però il medico la sa, e la rete no: sulla lastra spostarsi a destra e
+spostarsi in alto non sono la stessa cosa. La stessa macchia più a destra è lo
+stesso latrato mezzo secondo dopo; più in alto è un suono più acuto, cioè
+un'altra vocale, un'altra nota, un altro strumento. La rete invece cerca le
+sagome dappertutto allo stesso modo, in basso come in alto: se la cava lo
+stesso, perché le sagome che contano sono piccole, ma quell'idea, presa alla
+lettera, è falsa.
+
+E c'è un regalo in più, che viene proprio da quella somiglianza con le foto. Una
+rete che ha già passato mesi a guardare fotografie ha imparato a riconoscere
+bordi, macchie, righe, motivi che si ripetono: roba che sulla lastra sonora c'è
+eccome. Allora non si riparte da zero: le si fanno vedere spettrogrammi finché
+non si riabitua, e in poco tempo diventa brava anche lì.
 
 `````
 
@@ -72,8 +80,8 @@ mezzo secondo dopo; lungo la frequenza no, perché su una scala quasi
 logaritmica traslare in su è **trasporre**, e la trasposizione cambia la vocale,
 la nota, lo strumento. Funziona lo stesso perché i motivi utili restano locali,
 ma è un bias solo approssimato: da qui la pratica di non fare pooling globale
-sull'asse delle frequenze, e la scelta dell'AST (poche righe più sotto) di dare
-a ogni patch un embedding della sua posizione *in frequenza*, che sarebbe
+sull'asse delle frequenze, e la scelta dell'Audio Spectrogram Transformer di
+dare a ogni patch un embedding della sua posizione *in frequenza*, che sarebbe
 superfluo se quell'asse fosse davvero simmetrico. Anche il
 **transfer learning** si trasporta di peso: si parte spesso da una rete
 pre-addestrata su ImageNet e si rifinisce sugli spettrogrammi, replicando il
@@ -91,24 +99,22 @@ il vento. Sono due problemi diversi.
 
 «Di questi tre strumenti, quale senti?» è una domanda a crocetta unica: la
 risposta è una sola, e le probabilità dei candidati si fanno concorrenza, se
-sale una scende un’altra. Un secondo tipo di domanda è la lista della spesa:
-«segna *tutti* i suoni presenti in questa registrazione», e qui possono
-essere veri contemporaneamente il traffico, una voce e un cane,
-senza togliersi spazio a vicenda. Il primo caso si chiama classificazione a
-**etichetta singola**, il secondo **tagging** multi-etichetta. E c'è un terzo
-livello, ancora più fine: non solo *quali* suoni, ma *quando* ciascuno inizia
-e finisce, come sottotitolare i rumori di un film. Questo si chiama
-rilevamento degli eventi sonori.
+sale una scende un’altra. Poi c'è la lista della spesa: «segna *tutti* i suoni
+presenti in questa registrazione», e qui possono essere veri contemporaneamente
+il traffico, una voce e un cane, senza togliersi spazio a vicenda. La crocetta
+si chiama classificazione a **etichetta singola**, la lista della spesa
+**tagging** multi-etichetta. E si può chiedere ancora di più: non solo *quali*
+suoni, ma *quando* ciascuno inizia e finisce, come sottotitolare i rumori di un
+film. Questo si chiama rilevamento degli eventi sonori.
 
 `````
 
 `````{tab} Superiore
 
 Nella classificazione a **etichetta singola** le classi sono mutuamente
-esclusive: si usa una **softmax** sulle $C$ classi (la stessa $C$ dell'overview
-del capitolo) e la cross-entropia, come in
-visione. La softmax normalizza a somma 1, imponendo la competizione tra le
-alternative.
+esclusive: si usa una **softmax** sulle $C$ classi (le stesse $C$ classi
+dell'apertura del capitolo) e la cross-entropia, come in visione. La softmax
+normalizza a somma 1, imponendo la competizione tra le alternative.
 
 Nel **tagging multi-etichetta** ogni classe è invece una domanda sì/no
 indipendente. Si sostituisce la softmax con una **sigmoide** su ciascuna delle
@@ -150,6 +156,11 @@ secondi *c'è* un cane, ma non in quale secondo abbaia. Poche certezze precise,
 ma tantissimi esempi: è un baratto che, con le reti profonde, conviene quasi
 sempre.
 
+Il catalogo però non si riempie in modo uniforme. La musica e il parlato
+compaiono ovunque; il verso di un uccello raro sta in un centinaio di frammenti
+su due milioni. E il modello lo si giudica categoria per categoria, facendo poi
+la media dei voti, quindi quelle caselle quasi vuote pesano quanto la musica.
+
 `````
 
 `````{tab} Superiore
@@ -163,7 +174,7 @@ di classificazione standard su cui si confrontano i modelli, e quando si citano
 quei due numeri la fonte è la pagina del dataset, non il paper. Le etichette sono
 **deboli** (*weak labels*): indicano la presenza di un suono nella clip, senza
 localizzazione temporale, ed essendo multi-etichetta si prestano naturalmente
-al setup sigmoide + BCE visto sopra. La metrica di riferimento non è
+alla coppia sigmoide + BCE. La metrica di riferimento non è
 l'accuratezza (inadatta a un problema multi-etichetta e sbilanciato) ma la
 **mean Average Precision** (mAP), la media, sulle classi, dell'area sotto la
 curva precisione–richiamo. Un dataset grande e debolmente etichettato sposta
@@ -199,8 +210,8 @@ la sua eco, lontani sulla lastra, si guardano direttamente.
 Torna il trucco con cui il Transformer ha imparato a guardare le foto. Si taglia
 l'immagine in tante tessere quadrate, le si mette in fila come le parole di una
 frase, e poi ogni tessera guarda tutte le altre e decide quali le interessano.
-Quel «guardare le altre e scegliere» è ciò che in questo libro si chiama
-**attenzione**, e lo abbiamo incontrato con il [Vision
+Quel «guardare le altre e scegliere» si chiama **attenzione**, e lo abbiamo
+incontrato con il [Vision
 Transformer](../Transformers/multimodalita.md).
 
 L'AST fa la stessa identica cosa sulla radiografia del suono: taglia lo
@@ -257,28 +268,26 @@ ne ricaveremo due caratteristiche elementari, finestra per finestra.
 
 `````{tab} Elementare
 
-Prima una parola che tornerà in ogni riga: **finestra**. Non guardiamo mai il
-suono tutto insieme, lo tagliamo a fettine di qualche centesimo di secondo e
-misuriamo dentro ciascuna. Una fettina è una finestra, e le misure si rifanno da
-capo per ognuna.
+Il suono non si guarda mai tutto insieme. Lo si taglia a fettine di qualche
+centesimo di secondo e si misura dentro ciascuna: una fettina si chiama
+**finestra**, e le misure si rifanno da capo per ognuna.
 
 Le misure sono due, semplicissime. La prima è l’**energia**: quanto è «forte» il
 suono in quella finestra (grande quando l'onda oscilla ampia, quasi zero nel
-silenzio). La seconda è lo **zero-crossing rate**, che nella tabella qui sotto
-troverai abbreviato in `zcr`: quanto spesso l'onda attraversa lo zero, cioè
-passa dal positivo al negativo. Non è un conteggio ma una frazione, e per questo
-esce sempre fra 0 e 1: vale $0{,}5$ se metà delle coppie di campioni vicini
+silenzio). La seconda è quanto spesso l'onda attraversa lo zero, cioè passa dal
+positivo al negativo: si chiama **zero-crossing rate**, in sigla `zcr`. Non è un
+conteggio ma una frazione, e per questo esce sempre fra 0 e 1: vale $0{,}5$ se
+metà delle coppie di campioni vicini
 cambia segno, quasi $0$ se non cambia quasi mai. Un tono basso e pieno
 oscilla lentamente e attraversa lo zero *poche* volte; un sibilo o un rumore,
 fatto di frequenze alte, lo attraversa *tantissime* volte: è la differenza tra
 una «ooo» profonda e una «sss» sibilante.
 
 Con queste due sole misure distinguiamo già tre situazioni, purché le si guardi
-**in ordine**. Prima l'energia: se è quasi zero c'è **silenzio**, e non serve
-chiedere altro. Se invece del suono c'è, allora si guarda quante volte l'onda
-attraversa lo zero: pochi attraversamenti vuol dire **tono**, tantissimi vuol
-dire **rumore**. L'ordine non è un dettaglio, come si vedrà fra poco guardando i
-numeri veri.
+in un ordine preciso. Prima l'energia: se è quasi zero c'è **silenzio**, e non
+serve chiedere altro. Se invece del suono c'è, allora si guarda quante volte
+l'onda attraversa lo zero: pochi attraversamenti vuol dire **tono**, tantissimi
+vuol dire **rumore**.
 
 `````
 
@@ -409,7 +418,9 @@ imparano da soli, invece di riceverle scritte a mano.
   riconoscerlo è un problema di **immagini**: la stessa rete che distingue un
   gatto da un cane in una foto distingue un vetro rotto da un clacson in una
   lastra sonora, e può perfino partire da quello che ha già imparato sulle
-  foto.
+  foto. Con un'avvertenza: sulla lastra spostare una sagoma a destra è lo stesso
+  suono più tardi, spostarla in alto è un suono diverso, e la rete quella
+  differenza non la conosce.
 - Ci sono due domande diverse, e non vanno confuse. «Quale di questi suoni è?»
   è a **crocetta unica**, e le risposte si fanno concorrenza. «Quali suoni ci
   sono qui dentro?» è una **lista della spesa**, e possono essere veri tutti

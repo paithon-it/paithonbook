@@ -41,7 +41,7 @@ mettiamo dipende, spesso in
 modo drammatico, la qualità del risultato. Nella sezione su overfitting e
 validazione abbiamo già stabilito *dove* giudicare queste scelte: sul
 validation set, o meglio in cross-validation, mai sul test. Resta la domanda
-che occupa questa sezione: **come esplorare** lo spazio delle combinazioni.
+difficile: **come esplorare** lo spazio delle combinazioni.
 Girare le manopole a mano finché "funziona" è l'alchimia di cui parlava
 Rahimi; farlo per bene è un problema di ricerca (nel senso letterale di
 *search*) con i suoi algoritmi, i suoi conti e le sue trappole.
@@ -58,9 +58,10 @@ con un difetto che non perdona.
 
 `````{tab} Elementare
 
-Una macchina del caffè professionale ha quattro regolazioni (macinatura,
-temperatura, pressione, tempo di estrazione) e cinque livelli per ciascuna. Per
-assaggiare tutte le combinazioni servono $5 \times 5 \times 5 \times 5 = 625$
+Chi regola una macchina del caffè professionale ha davanti quattro manopole
+(macinatura, temperatura, pressione, tempo di estrazione), ognuna con cinque
+livelli. Per assaggiare tutte le combinazioni servono
+$5 \times 5 \times 5 \times 5 = 625$
 caffè. E siccome un solo assaggio può ingannare (magari quella tazzina è venuta
 bene per caso), ogni combinazione va provata cinque volte: è la
 cross-validation della sezione su overfitting e validazione, che divide i dati
@@ -74,6 +75,22 @@ combinazioni si moltiplicano ancora per cinque e i giorni diventano quasi
 ventidue. È
 l’**esplosione combinatoria**: ogni manopola in più *moltiplica* le
 prove, non le somma.
+
+Anche i cinque livelli si scelgono uno per uno. Per il tempo di estrazione
+bastano passi uguali (venti, venticinque, trenta, trentacinque, quaranta
+secondi). Per la macinatura serve un altro passo, e si procede dimezzando,
+dalla grana del sale grosso a quella della farina: un millimetro, mezzo, un
+quarto, un ottavo, un sedicesimo. A passi uguali di un quarto di millimetro
+i livelli sarebbero invece uno, tre quarti, mezzo, un quarto e zero: quattro
+assaggi nella parte grossa, e fra il quarto di millimetro e la farina nemmeno
+uno.
+
+Il conto si legge anche al contrario. Se il pomeriggio basta per venticinque
+combinazioni, e ognuna si porta dietro i suoi cinque assaggi, con due manopole
+restano cinque livelli per ciascuna, che è una prova seria; con quattro
+manopole restano poco più di due livelli a testa, cioè il minimo, il massimo e
+niente in mezzo. La griglia dà il meglio quando le manopole da girare sono una
+o due.
 
 `````
 
@@ -124,15 +141,30 @@ campana.
 
 `````{tab} Elementare
 
-Immagina una vecchia radio con due manopole: la sintonia e il volume. La
-stazione la trovi solo girando la sintonia; il volume, ai fini della ricerca,
-non conta nulla. Hai diritto a nove tentativi. Se li disponi in una griglia
-$3 \times 3$, di frequenze ne provi in realtà **tre**: ogni colonna ripete la
-stessa sintonia a tre volumi diversi, cioè due tentativi su tre sono buttati.
-Nove tentativi a caso, invece, toccano nove frequenze **tutte diverse**, e la
-probabilità di cascare vicino alla stazione giusta sale parecchio. Il bello è
-che non serve sapere in anticipo quale manopola conti: il caso esplora bene
-*tutte* le dimensioni contemporaneamente.
+Su una vecchia radio la stazione si trova girando la sintonia; il volume, per
+trovarla, non conta nulla. Hai nove tentativi. Se li disponi in una griglia
+$3 \times 3$, di frequenze ne provi tre soltanto: ogni colonna ripete la stessa
+sintonia a tre volumi diversi, e due tentativi su tre sono buttati. Nove
+tentativi a caso toccano nove frequenze tutte diverse, e non serve sapere in
+anticipo quale manopola conti, perché il sorteggio gira tutte le manopole
+insieme.
+
+Con più tentativi il conto si fa esatto. Se la stazione si sente su un
+ventesimo della scala, un tentativo a caso la manca diciannove volte su venti;
+ma se i tentativi sono sessanta, la probabilità di mancarla tutte le volte
+scende sotto il cinque per cento, e novantacinque volte su cento almeno uno
+cade dentro. E il conto resta lo stesso con due manopole e con venti.
+
+Tutto però dipende da quanto è larga la stazione. Se si sente su un centesimo
+di scala invece che su un ventesimo, gli stessi sessanta tentativi la trovano
+meno di una volta su due, e nessun sorteggio rimedia: il caso premia chi cerca
+qualcosa di abbastanza largo da essere incontrato per sbaglio.
+
+Conta anche come si sorteggia. Con una manopola che lavora per divisioni, come
+la macinatura del caffè, si tira a sorte prima la fascia (i millesimi, i
+centesimi, i decimi) e poi il punto dentro la fascia. Sorteggiando alla cieca
+un numero fra un millesimo e uno, novantanove volte su cento esce qualcosa
+sopra il centesimo, e le grane fini non le prova nessuno.
 
 `````
 
@@ -144,10 +176,12 @@ effective dimensionality*), una griglia di $N$ punti ne proietta appena
 $N^{1/d}$ distinti su ciascun asse, mentre $N$ punti casuali ne proiettano $N$
 {cite}`bergstra2012random`. C'è anche una garanzia indipendente da $d$: se
 esiste una regione "buona" che copre il 5% del volume dello spazio di ricerca,
-la probabilità che $n$ estrazioni indipendenti la manchino tutte è
-$(1-0{,}05)^n = 0{,}95^n$; quindi la probabilità di centrarla **almeno una
-volta** è il complementare, $1 - 0{,}95^n$, che per $n = 60$ vale $0{,}954$:
+la probabilità che $N$ estrazioni indipendenti la manchino tutte è
+$(1-0{,}05)^N = 0{,}95^N$; quindi la probabilità di centrarla **almeno una
+volta** è il complementare, $1 - 0{,}95^N$, che per $N = 60$ vale $0{,}954$:
 sessanta prove la centrano con il 95% di confidenza, in qualunque dimensione.
+Se la regione buona copre l'1% del volume, le stesse sessanta prove la centrano
+con probabilità $1 - 0{,}99^{60} = 0{,}453$.
 (Vale *se* una tale regione esiste ed è così larga: è un'ipotesi sul problema,
 non una promessa.) In pratica contano anche le distribuzioni: per i parametri
 di scala si campiona in **log-uniforme**, cioè uniforme sull'esponente, così
@@ -166,7 +200,7 @@ salvati. Come un torneo a eliminazione diretta. (Il nome tecnico è
 *multi-fidelity*, cioè «a più livelli di fedeltà»: la prova breve è una versione
 poco fedele di quella vera.)
 
-L'unità di misura di tutta questa sezione è l’**epoca**: una passata completa
+L'unità di misura, da qui in avanti, è l’**epoca**: una passata completa
 sull'insieme di addestramento, cioè il modello che ha visto una volta ciascuno
 dei suoi esempi. Un addestramento serio ne fa decine o centinaia, e il costo di
 una ricerca si conta in epoche esattamente come il costo di un viaggio si conta
@@ -188,11 +222,18 @@ $1 \times 81$. Fanno 81 epoche per turno, e i turni sono cinque: 405 epoche in
 tutto. Addestrare fino in fondo tutte e 81 le candidate ne costerebbe
 $81 \times 81 = 6\,561$, sedici volte tanto.
 
-C'è però un rischio: eliminare i "diesel", le
-configurazioni che partono piano ma finirebbero forte. Hyperband copre il
-rischio organizzando più tornei con regole diverse: alcuni spietati
-(tantissimi iscritti, primo turno brevissimo), altri clementi (pochi iscritti,
-tanto tempo a testa fin dall'inizio).
+C'è però un rischio, e nel torneo si vede bene: la giocatrice che ha bisogno di
+un set per scaldarsi perde il primo turno e torna a casa, anche se sulla
+distanza le avrebbe battute tutte. Le combinazioni di manopole si comportano
+allo stesso modo: certe partono piano e finirebbero forte, i "diesel", e un
+primo turno di una sola epoca le manda fuori proprio per questo. Hyperband
+copre il rischio
+organizzando più tornei con regole diverse: alcuni spietati (tantissimi
+iscritti, primo turno brevissimo), altri clementi (pochi iscritti, tanto tempo
+a testa fin dall'inizio). Quale sia il regolamento giusto non lo sa nessuno in
+anticipo. Provarli tutti costa qualche torneo invece di uno, e in cambio il
+vincitore è quasi quello che avrebbe dato il torneo giusto, scelto col senno di
+poi.
 
 `````
 
@@ -270,21 +311,35 @@ porta il nome del reverendo Thomas Bayes.
 
 `````{tab} Elementare
 
-Ogni trivellazione costa cara, e il geologo che cerca l'acqua può scavare pochi
-pozzi. Dopo tre pozzi non sceglie il quarto a caso: disegna una mappa ("qui
-l'acqua c'era a dieci metri, là il terreno era secco"), completa di zone
-d'ombra dove non sa ancora nulla. Il quarto pozzo lo piazza dove la *promessa*
+Tre pozzi scavati, e il quarto dove? Non a caso: ogni trivellazione costa cara,
+il geologo che cerca l'acqua può permettersene poche, e prima di scegliere
+disegna una mappa ("qui l'acqua c'era a dieci metri, là il terreno era secco"),
+completa di zone d'ombra dove non sa ancora nulla. Il quarto pozzo lo piazza
+dove la *promessa*
 è massima: un po’ dove la mappa dice bene (sfruttare ciò che sa), un po’ dove
-la mappa è bianca (esplorare ciò che ignora). L'ottimizzazione bayesiana
-funziona così: dopo ogni addestramento aggiorna la sua mappa del punteggio e
-sceglie la combinazione successiva chiedendosi *di quanto mi aspetto di battere
-il mio record, se provo qui?* La domanda ha un nome, **miglioramento atteso**
-(*expected improvement*), ed è una domanda sola che tiene insieme le due
-esigenze. La risposta è alta dove la mappa promette bene, e anche dove la mappa
+la mappa è bianca (esplorare ciò che ignora). Cercare quel punto sulla carta
+costa qualche ora di matita, e la carta si fruga tutta prima di montare la
+sonda.
+
+L'ottimizzazione bayesiana funziona così: dopo ogni addestramento aggiorna la
+sua mappa del punteggio e sceglie la combinazione successiva chiedendosi *di
+quanto mi aspetto di battere il mio record, se provo qui?* La domanda ha un
+nome, **miglioramento atteso** (*expected improvement*), ed è una domanda sola
+che tiene insieme le due esigenze. Un pozzo peggiore del migliore già scavato
+non conta come una perdita: nel conto vale zero, perché il record resta quello
+di prima. La risposta è alta dove la mappa promette bene, e anche dove la mappa
 è bianca, perché lì il record potrebbe essere battuto di parecchio. Ed è bassa,
 cioè quasi zero, dove il terreno è stato già scavato e si è rivelato secco: là
 non c'è più niente da sapere e niente da sperare, e il metodo smette di andarci
 senza che nessuno glielo debba dire.
+
+La mappa però resta una scommessa, e sul campo si vede dove cede. Serve un
+pozzo alla volta, perché la carta si aggiorna solo quando l'acqua si vede, e
+mandare dieci squadre insieme vuol dire che nove scavano su una carta vecchia.
+E la mappa è disegnata credendo che il sottosuolo cambi con dolcezza, poco per
+volta da un punto al vicino. Se sotto c'è una faglia, a due passi dal pozzo
+buono il terreno è secco, e la carta continuerà a promettere acqua dove non ce
+n'è.
 
 `````
 
@@ -420,14 +475,24 @@ La terza avvertenza è la più subdola.
 
 `````{tab} Elementare
 
-Se mille persone lanciano una moneta dieci volte, qualcuna farà nove teste:
-non è una maga, è la più fortunata di mille. Lo stesso vale per le
-configurazioni: il punteggio di validazione della vincitrice di una ricerca
-con centinaia di prove è in parte merito e in parte fortuna, e tende a essere
-**troppo ottimista**. Più a lungo cerchi, più il validation set si consuma:
-proprio come il test set che avevamo giurato di non sbirciare. Il rimedio è lo
-stesso di sempre: il numero da raccontare al mondo si misura una sola volta,
-alla fine, sul test rimasto intatto.
+Se mille persone lanciano una moneta dieci volte, una decina di loro farà nove
+teste. Nessuna di quelle dieci ha un dono: sono le più fortunate di mille. Lo
+stesso vale per le configurazioni: il punteggio di validazione della vincitrice
+di una ricerca con centinaia di prove è in parte merito e in parte fortuna, e
+tende a essere **troppo ottimista**. Più a lungo cerchi, più il validation set
+si consuma: proprio come il test set che avevamo giurato di non sbirciare. Il
+rimedio è lo stesso di sempre: il numero da raccontare al mondo si misura una
+sola volta, alla fine, sul test rimasto intatto.
+
+Due mosse costano poco. Una è raccontare, accanto al punteggio della
+vincitrice, quanto quel punteggio cambia da un blocco all'altro dei cinque: un
+primo posto vinto per un soffio, con cinque numeri molto diversi fra loro, è un
+primo posto di rumore. L'altra serve quando il giudizio riguarda il modo
+di scegliere e non la singola configurazione: la ricerca si rifà da capo cinque
+volte, su cinque spezzoni diversi di dati, e ogni vincitrice viene misurata
+sullo spezzone che la sua ricerca non ha mai visto. Cinque giri esterni, con
+cinque prove ciascuno, fanno venticinque addestramenti dove prima ne bastavano
+cinque, e sconti non ce ne sono.
 
 `````
 

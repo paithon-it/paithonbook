@@ -83,7 +83,7 @@ l'informazione cumulata fino a $x$.
 `````
 
 La stessa curva si può disegnare in due modi, e conviene saperli riconoscere
-tutti e due, perché nel resto del libro compaiono entrambi.
+tutti e due, perché ritorneranno entrambi.
 
 ```{figure} ../figures/variabili-aleatorie-momenti-percentili.svg
 :name: fig-densita-percentili
@@ -166,6 +166,16 @@ standard**, ed è la forma leggibile delle due: dice che rispetto al centro
 $3{,}5$ i risultati si sparpagliano tipicamente di un punto e mezzo o due, che
 guardando le facce di un dado è proprio quello che ci si aspetta.
 
+Sul dado il conto fila liscio perché le facce e le loro probabilità si
+conoscono in partenza, centro compreso. Sui dati veri il centro non lo conosce
+nessuno: lo si ricava dagli stessi numeri di cui poi si misura lo
+sparpagliamento, e così la misura esce un po’ più piccola del giusto. Tre
+freccette su un bersaglio: se come centro prendi il punto di mezzo dei tuoi
+tre tiri, quel punto insegue i tiri, e gli scarti misurati da lì vengono, nel
+complesso, più corti di quelli dal centro vero del bersaglio. Il rimedio è
+dividere la somma degli scarti al quadrato per uno in meno, per due invece che
+per tre: con pochi dati la differenza si sente, con migliaia sparisce.
+
 `````
 
 `````{tab} Superiore
@@ -184,7 +194,7 @@ che useremo di continuo. Per il dado:
 $\mathbb{E}[X^2]=\tfrac{91}{6}\approx 15{,}17$, quindi
 $\mathrm{Var}(X)=15{,}17-3{,}5^2\approx 2{,}92$ e $\sigma\approx 1{,}71$.
 
-**Una distinzione che il resto del libro dà per fatta.** $\mathrm{Var}(X)$ è
+**Una distinzione che d'ora in poi è data per fatta.** $\mathrm{Var}(X)$ è
 una proprietà della *distribuzione*, e nei conti di sopra la si calcola perché
 la distribuzione è nota. Sui dati veri non lo è: la si **stima** da un
 campione $x_1,\dots,x_n$, ed è un'altra cosa, che si scrive $s^2$ e non
@@ -374,7 +384,7 @@ rovesciato: osserviamo un effetto e vogliamo risalire alla causa. È il regno di
 
 `````{tab} Elementare
 
-Immagina un test per una malattia rara, che colpisce $1$ persona su $100$. Il
+Un test cerca una malattia rara, che colpisce $1$ persona su $100$. Il
 test è buono: individua il $99\%$ dei malati e sbaglia solo nel $5\%$ dei sani. Ti
 arriva un risultato **positivo**: quanto devi preoccuparti? L'istinto dice
 "molto", ma i conti dicono altro. Su $10\,000$ persone, $100$ sono malate (e $99$
@@ -534,45 +544,59 @@ corretta.
 
 `````{tab} Elementare
 
-L'accuratezza sul test set non è *la* prestazione del modello: è una **stima**
-della prestazione vera, calcolata su un **campione**, cioè su un gruppo
-limitato di casi pescati dal mucchio di tutti quelli possibili. Il numero che
-interessa davvero (quanto il modello risponderebbe bene su tutti i casi
-possibili) non lo conosceremo mai.
+Un istituto intervista mille persone e trova il candidato A al $47{,}2\%$.
+Nessun giornale serio pubblica quel numero da solo, perché accanto ci va il
+margine d'errore, e con mille intervistati quel $47{,}2\%$ vuol dire «da
+qualche parte fra il $44\%$ e il $50\%$». L'istituto non ha contato i voti di
+tutti. Ne ha presi mille a caso, cioè un **campione**, e da quelli ha ricavato
+una stima del numero vero, che si saprà solo la sera dello spoglio.
 
-L'analogia giusta è il sondaggio elettorale. Nessun istituto serio titola "il
-candidato A è al $47{,}2\%$" senza il margine d'errore: con mille intervistati
-quel numero significa "da qualche parte fra il $44\%$ e il $50\%$". Valutare un
-modello su $500$ esempi è come sondare $500$ elettori.
+Provare un modello su $500$ esempi è sondare $500$ elettori. L’$87\%$ di
+risposte esatte del modello nuovo è il suo sondaggio, e l'elezione (come se la
+caverebbe su tutti i casi possibili) nessuno la vedrà mai.
 
-Con $500$ esempi e un'accuratezza dell’$87\%$, il margine al $95\%$ è di circa
-**$\pm 3$ punti**: la stima onesta è "fra l’$84\%$ e il $90\%$". Il modello
-vecchio sta fra l’$83{,}8\%$ e l’$89{,}8\%$. I due intervalli si sovrappongono
-quasi per intero: quel miglioramento non è distinguibile dal **rumore**, che è
-il nome che si dà alla parte di un risultato dovuta al caso e non al merito
-(niente a che vedere con i suoni: è un'immagine presa dalle
-telecomunicazioni).
-
-Quel numero non piove dal cielo, e una regola pratica basta a rifarlo a mente,
-in due mosse. La prima: quando il modello è sul $50\%$, il margine in punti
-percentuali è circa $100/\sqrt{n}$, e con $n=500$ fa circa $4{,}5$ punti
-($\sqrt{500}$ è poco più di $22$). La seconda: un modello più bravo del $50\%$ ha anche meno modo di variare (chi
-sbaglia raramente non può sbagliare in tanti modi diversi), quindi quel
-margine va ridotto. Il fattore di riduzione si calcola in un passaggio: si
-moltiplica l'accuratezza per la quota di errori, si fa la radice e si divide
-per $0{,}5$, che è quanto quel conto dà per un modello al $50\%$. All'$87\%$:
+Il margine, un sondaggista se lo calcola a mente in due mosse. La prima vale
+per un candidato al $50\%$, dove gli intervistati sono più divisi e la stima
+balla di più, e dà circa $100/\sqrt{n}$ punti percentuali con $n$ intervistati;
+$\sqrt{500}$ è poco più di $22$, quindi circa $4{,}5$ punti. La seconda
+accorcia quel numero, perché un candidato lontano dal $50\%$ fa ballare meno la
+stima (quando quasi tutti la pensano allo stesso modo, due campioni diversi si
+somigliano). Si moltiplica la quota per la quota opposta, si fa la radice e si
+divide per $0{,}5$, che è quanto lo stesso conto dà al $50\%$. All’$87\%$:
 $0{,}87 \times 0{,}13 = 0{,}113$, la cui radice è $0{,}34$, e $0{,}34$ diviso
-$0{,}5$ fa circa due terzi. All'$80\%$ viene $0{,}8$, al $93\%$ circa la metà. Ecco i tre punti: $4{,}5$ moltiplicato per due terzi fa $3$.
+$0{,}5$ fa circa due terzi. All’$80\%$ viene $0{,}8$, al $93\%$ circa la metà.
+Quindi $4{,}5$ punti moltiplicati per due terzi, e il margine è di tre punti.
 
-Anche il «$95\%$» ha un significato preciso:
-non è la fiducia che riponiamo nel singolo numero, è la percentuale di volte
-in cui una procedura del genere, ripetuta su tanti campioni diversi, contiene
-davvero il valore giusto. Una volta su venti sbaglia, e questo è messo in
-conto.
+Ecco la stima onesta del modello nuovo, fra l’$84\%$ e il $90\%$. Quella del
+modello vecchio va dall’$83{,}8\%$ all’$89{,}8\%$. I due intervalli si
+sovrappongono quasi per intero, e quei quattro decimi di punto di vantaggio
+sono **rumore**, il nome che si dà alla parte di un risultato che viene dal
+caso e non dal merito.
 
-Il margine si stringe solo aumentando gli esempi, e lentamente, perché a
-comandare è la radice quadrata: servono $5\,000$ esempi per scendere a circa
-$\pm 1$ punto, $50\,000$ per arrivare a $\pm 0{,}3$.
+Il conto con la radice vale per i sondaggi normali. In un paesino di poche
+decine di elettori, o quando un candidato è dato al $99\%$ o all’$1\%$,
+sbaglia, e chi fa sondaggi passa a formule fatte apposta.
+
+Anche il $95\%$ stampato accanto al margine parla dell'istituto e non della
+singola tornata di telefonate. Il risultato dell'urna è già deciso, e o sta
+dentro quel margine o non ci sta. Il $95\%$ conta quante volte l'istituto ci
+prende lavorando così: di venti sondaggi, diciannove contengono il valore vero
+e uno lo manca, e quale sia lo sbagliato non lo dice nessuno. Quella volta su
+venti è messa in conto.
+
+Per stringere il margine si intervista più gente, e ne serve molta, perché
+sotto c'è una radice quadrata. Un test set di $5\,000$ esempi porta a circa
+$\pm 1$ punto, uno di $50\,000$ a $\pm 0{,}3$.
+
+Quando due candidati restano a pari merito, l'istituto torna dalle stesse
+persone e chiede a ciascuna quale dei due preferisce. Chi li apprezza entrambi,
+o non sopporta né l'uno né l'altro, non sposta niente, e la partita si gioca su
+chi li divide. Due modelli provati sugli stessi $500$ esempi rispondono uguale
+quasi ovunque, e a dividerli sono gli esempi in cui uno risponde giusto e
+l'altro no. Se quei casi si spartiscono quasi a metà, il pari merito è
+confermato. Se uno la spunta quasi sempre, il vantaggio è reale anche con i
+margini sovrapposti, perché due margini messi a confronto sono prudenti per
+costruzione e qualche differenza vera la lasciano in ombra.
 
 `````
 
@@ -597,7 +621,7 @@ proprietà del metodo, non di questo singolo risultato.
 
 Due avvertenze pratiche. L'intervallo di Wald è inaffidabile con $n$ piccolo o
 $\hat{p}$ vicino a $0$ o $1$: lì si usano Wilson o Clopper–Pearson. E quando si
-confrontano **due** modelli sullo stesso test set gli errori sono appaiati: il
+confrontano due modelli sullo stesso test set gli errori sono appaiati: il
 test corretto è quello di McNemar sui disaccordi, non il confronto fra due
 intervalli, che è conservativo e può nascondere differenze reali.
 
@@ -622,7 +646,7 @@ annegamenti non passa nessuna freccia: il legame che si misura nei dati è
 tutto riflesso di quello che ciascuno dei due ha con il caldo.
 ```
 
-Conviene notare cosa *non* c'è in {numref}`fig-confonditore`: la freccia fra
+In {numref}`fig-confonditore` conta soprattutto ciò che *non* c'è: la freccia fra
 $X$ e $Y$, cioè fra i gelati e gli annegamenti (nel disegno le due lettere
 stanno per le due grandezze che si misurano, e $Z$ per la causa comune). I
 dati da soli non la disegnano né la cancellano, perché correlazione e
@@ -645,10 +669,17 @@ ufficio: potrebbero viaggiare insieme, o semplicemente prendere lo stesso treno
 perché abitano nello stesso quartiere.
 
 Il caldo dell'esempio si chiama **confondente**: una causa comune che spiega
-entrambi gli effetti. Il guaio è che noi il caldo lo sospettiamo per buon
-senso; un modello no. Impara la scorciatoia che funziona sui dati che ha visto
-e la usa finché il mondo non cambia: poi sbaglia, e sbaglia in modo
-inspiegabile.
+entrambi gli effetti. Accanto alla causa comune vivono altre due strutture. La
+**catena** è un legame vero che fa scalo: il caldo fa venire sete, la sete fa
+vendere bibite; la causalità c'è, ma passa per un anello intermedio. Il
+**collider** nasce quando si sceglie chi guardare: fra i ristoranti che
+sopravvivono, quelli nei vicoli senza passaggio cucinano meglio della media,
+perché lì resta aperto solo chi cucina davvero bene. Fra tutti i ristoranti
+quel legame non esiste; lo ha creato la selezione dei sopravvissuti.
+
+Il guaio è che noi il caldo lo sospettiamo per buon senso; un modello no.
+Impara la scorciatoia che funziona sui dati che ha visto e la usa finché il
+mondo non cambia: poi sbaglia, e sbaglia in modo inspiegabile.
 
 `````
 
@@ -694,8 +725,8 @@ distribuzione; non basta per **decidere** un intervento.
 ### Tre gradini: vedere, fare, immaginare
 
 Le tre strutture appena elencate si sistemano dentro una cornice più larga, da
-avere in testa perché rimette in fila cose che questo libro incontra in
-capitoli lontanissimi fra loro. La propone Judea Pearl, e la chiama **scala
+avere in testa perché rimette in fila cose che tornano in capitoli
+lontanissimi fra loro. La propone Judea Pearl, e la chiama **scala
 della causalità** {cite}`pearl2018book`.
 
 `````{tab} Elementare
@@ -720,9 +751,8 @@ Non basta nemmeno l'esperimento, perché l'esperimento dice cosa succede in
 media, non cosa sarebbe successo a *lui*.
 
 I modelli addestrati sui dati stanno quasi tutti sul primo gradino, e ci stanno
-benissimo. Pearl lo dice con un'immagine che vale la pena riportare: «la
-civetta può essere un buon cacciatore senza capire perché il topo vada sempre
-da A a B». La
+benissimo. Pearl lo dice con un'immagine: «la civetta può essere un buon
+cacciatore senza capire perché il topo vada sempre da A a B». La
 civetta ha visto migliaia di topi e sa dove sarà questo fra un secondo, il che
 le basta per prenderlo; delle ragioni per cui il topo si sposta non sa niente,
 e non le servono. Predire, insomma, non richiede capire. Il punto è sapere
@@ -738,7 +768,7 @@ sanno esprimere.
 
 1. **Associazione**: $P(y \mid x)$, cioè condizionare. È tutto ciò che si
    ottiene osservando, e include correlazione, regressione e ogni modello
-   predittivo di questo libro.
+   puramente predittivo.
 2. **Intervento**: $P(y \mid do(x))$, dove l'operatore $do$ denota
    l'imposizione di $X = x$ dall'esterno, che nel grafo causale corrisponde a
    **recidere tutti gli archi entranti** in $X$. In generale
@@ -810,16 +840,13 @@ TTTTTTTCCC, ha probabilità $p^7(1-p)^3$, cioè sette volte $p$ per tre volte
 $1-p$. Il secondo: di sequenze con sette teste ce ne sono $120$, tutte
 ugualmente probabili, quindi si moltiplica per $120$. Con $p=0{,}5$ viene $120 \cdot 0{,}5^{10} \approx 0{,}12$: possibile, non
 entusiasmante. Se fosse $p=0{,}6$ si salirebbe al $21\%$, con $p=0{,}7$ si
-arriverebbe al $27\%$, con $p=0{,}8$ si ridiscenderebbe al $20\%$. Se la moneta fosse equa, $p=0{,}5$, quella
-probabilità è circa il $12\%$: possibile, non entusiasmante. Se fosse $p=0{,}6$
-sale al $21\%$, se fosse $p=0{,}7$ arriva al $27\%$, e se fosse $p=0{,}8$
-ridiscende al $20\%$. Il massimo cade a $0{,}7$, cioè esattamente sulla
+arriverebbe al $27\%$, con $p=0{,}8$ si ridiscenderebbe al $20\%$. Il massimo
+cade a $0{,}7$, cioè esattamente sulla
 proporzione osservata, ed è questo che si intende quando si dice che $0{,}7$ è
 il valore «che rende l'osservazione più probabile».
 
 Quel «quanto è probabile l'osservazione, se il parametro valesse così» ha un
-nome, ed è il nome che compare nel titolo di questa sezione, nella figura e
-nel riquadro finale: si chiama **verosimiglianza**. La curva della figura è
+nome: si chiama **verosimiglianza**. La curva della figura è
 proprio questa: per ogni valore di $p$ sull'asse orizzontale, quanto sarebbe
 verosimile ciò che ho visto.
 
@@ -859,7 +886,7 @@ $y \mid x \sim \mathcal{N}(\hat{y},\sigma^2)$
 con varianza fissa, massimizzare la log-verosimiglianza equivale a
 **minimizzare l'errore quadratico medio**; sotto ipotesi di
 Bernoulli/categoriche equivale a minimizzare la **cross-entropy**. Le loss
-$\mathcal{L}$ che incontreremo nel resto del libro non sono scelte arbitrarie:
+$\mathcal{L}$ che incontreremo più avanti non sono scelte arbitrarie:
 sono verosimiglianze travestite.
 
 `````

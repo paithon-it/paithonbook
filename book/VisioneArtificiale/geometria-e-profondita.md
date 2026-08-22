@@ -49,7 +49,7 @@ passando per il foro, e da lì colpisce il foglio in **un solo posto**. Ogni
 punto del mondo, quindi, ha il suo pixel: è per questo che la foto assomiglia
 alla scena.
 
-Il guaio è che la freccia funziona in un senso solo. Un punto del mondo dà un
+Il guaio è che il legame funziona in un senso solo. Un punto del mondo dà un
 pixel, ma un pixel non dà un punto del mondo: tutti i punti allineati con il
 foro, il vicino e quello dieci metri più in là, colpiscono lo stesso identico
 posto sul foglio. È il motivo per cui nelle foto ricordo si può "reggere" la
@@ -58,7 +58,9 @@ di vista dell'obiettivo sono allineate, e la foto non conosce la differenza.
 
 Un oggetto piccolo e vicino e uno grande e lontano fanno lo stesso pixel. La
 distanza non è nascosta nell'immagine, è **andata perduta** nel momento dello
-scatto. Riconquistarla è tutto il mestiere di questa sezione.
+scatto. Per riaverla bisogna rimetterla da fuori, e ci sono tre modi: guardare
+la scena da un secondo punto, muoversi e guardare come le cose scorrono, o
+mettere in campo quello che già si sa di com'è fatto il mondo.
 
 `````
 
@@ -100,8 +102,8 @@ soprattutto verso i bordi e si modella con pochi coefficienti radiali e
 tangenziali. La seconda riguarda i valori dei pixel: quello che il file
 contiene non è proporzionale alla luce entrata, perché in mezzo c'è una
 codifica **gamma** (grossolanamente $I_{\text{file}} \approx I_{\text{luce}}
-^{1/2{,}2}$ per sRGB). Ha una conseguenza pratica che vale oltre questo
-capitolo: mediare, sfocare o comporre immagini sui valori codificati è
+^{1/2{,}2}$ per sRGB). Ha una conseguenza pratica che va ben oltre la
+geometria: mediare, sfocare o comporre immagini sui valori codificati è
 sbagliato in senso fisico, e va fatto dopo averli riportati in scala lineare
 {cite}`szeliski2022computer`.
 
@@ -137,20 +139,34 @@ fai in un secondo. Un programma no: per lui le due immagini sono due griglie
 di numeri, e i numeri sono cambiati tutti, perché è cambiato il punto di
 vista, la luce, forse l'ora del giorno.
 
-La soluzione trovata negli anni Ottanta e Novanta è in due tempi. Primo:
-scegliere solo i punti **facili da ritrovare**. Una zona di cielo azzurro è
-inutile, perché tutte le sue parti si somigliano; uno spigolo è ottimo, perché
-è diverso da tutto ciò che ha intorno in ogni direzione. Secondo: descrivere
-ogni punto scelto con una piccola scheda segnaletica, costruita in modo da non
-cambiare se l'immagine viene ingrandita, ruotata o schiarita. Poi si
-confrontano le schede.
+La soluzione trovata negli anni Ottanta e Novanta mette insieme tre mestieri.
+Il primo è scegliere i punti **facili da ritrovare**, e non tutti lo sono allo
+stesso modo. Un pezzetto di cielo azzurro non serve a niente, perché tutte le
+sue parti si somigliano, e nella seconda foto un pezzetto di cielo vale
+l'altro. Il bordo di un tetto va meglio, ma solo a metà: se il pezzetto che
+stai guardando scivola in su o in giù te ne accorgi subito, perché il bordo
+esce dall'inquadratura; se scivola lungo il tetto non te ne accorgi affatto,
+perché in quella direzione il bordo è uguale a sé stesso. Uno spigolo, dove due
+bordi si incontrano, è quello buono: da qualunque parte lo si sposti, qualcosa
+cambia.
 
-Rimane un problema: qualche accoppiamento sarà sbagliato, e basta un errore
-grosso per rovinare un calcolo fatto sulla media. Il rimedio si chiama
-**consenso**: invece di usare tutti i dati, si prendono a caso pochissimi
-punti, si calcola la risposta che darebbero, e si contano quanti altri sono
-d'accordo. Si ripete centinaia di volte e si tiene l'ipotesi con più
-sostenitori. Chi sbaglia non ha compagni, e resta fuori da solo.
+Il secondo mestiere è descrivere ogni punto scelto con una piccola scheda
+segnaletica, costruita in modo da non cambiare se l'immagine viene ingrandita,
+ruotata o schiarita. Poi si confrontano le schede.
+
+Il terzo è buttare via gli accoppiamenti sbagliati, che ci saranno di sicuro;
+basta un errore grosso per rovinare un calcolo fatto sulla media. Il rimedio si
+chiama **consenso**: invece di usare tutti i dati, si prende a caso il numero
+minimo di punti che basta a tirar fuori una risposta, si guarda che risposta
+danno, e si contano quanti altri punti sono d'accordo, entro uno scarto deciso
+prima. Si ripete centinaia di volte e si tiene l'ipotesi con più sostenitori.
+Chi sbaglia non ha compagni, e resta fuori da solo.
+
+Quel «numero minimo» va preso alla lettera, perché un punto in più da estrarre
+si paga caro. Se metà degli accoppiamenti è sbagliata, un gruppetto di sette
+punti presi a caso è tutto buono una volta su centoventotto; uno di otto, una
+volta su duecentocinquantasei. Stessa fiducia nel risultato, il doppio dei
+tentativi.
 
 `````
 
@@ -158,7 +174,7 @@ sostenitori. Chi sbaglia non ha compagni, e resta fuori da solo.
 
 I tre pezzi hanno nomi precisi ed età ben definita.
 
-Il **rilevatore**: il rivelatore di angoli di Harris e Stephens (1988) valuta
+Il **rilevatore**: quello di angoli proposto da Harris e Stephens (1988) valuta
 la matrice di autocorrelazione dei gradienti in un intorno,
 
 $$
@@ -200,14 +216,14 @@ costa il doppio dei campioni necessari.
 
 `````
 
-Vale la pena fermarsi un istante su questo passaggio, perché dice qualcosa sul
-resto del libro. Trovare punti facili da ritrovare, descriverli con una scheda
-che non cambia se l'immagine cambia, buttare via gli accoppiamenti sbagliati:
-sono tre pezzi di ingegneria umana raffinatissima, frutto di vent'anni di
-lavoro, e sono esattamente quelli che le reti hanno reso in gran parte
-superflui. All'inizio del capitolo si diceva che le regole per riconoscere si
-sono smesse di scrivere a mano e si sono cominciate a far imparare: ecco,
-**questo** è ciò che si è smesso di scrivere a mano.
+Questo passaggio dice qualcosa che va oltre la geometria. Trovare punti facili
+da ritrovare, descriverli con una scheda che non cambia se l'immagine cambia,
+buttare via gli accoppiamenti sbagliati: sono tre pezzi di ingegneria umana
+raffinatissima, frutto di vent'anni di lavoro, e sono esattamente quelli che le
+reti hanno reso in gran parte superflui. All'inizio del capitolo si diceva che
+le regole per riconoscere si sono smesse di scrivere a mano e si sono
+cominciate a far imparare: ecco, **questo** è ciò che si è smesso di scrivere a
+mano.
 
 Ma il confronto va guardato anche dall'altro lato, ed è la parte che sorprende.
 La geometria è rimasta dov'era. Le formule che legano due fotografie della
@@ -240,24 +256,24 @@ destra cadono in posti diversi, e allineati.
 
 `````{tab} Elementare
 
-Guarda {numref}`fig-vincolo-epipolare`. Hai scelto un pixel nella foto di
-sinistra. Sappiamo che il punto del mondo che l'ha prodotto sta da qualche
-parte lungo un raggio: potrebbe essere a due metri o a venti, la foto non lo
-dice. Adesso però immagina di guardare quel raggio dalla seconda fotocamera.
+In {numref}`fig-vincolo-epipolare` hai scelto un pixel nella foto di sinistra.
+Sappiamo che il punto del mondo che l'ha prodotto sta da qualche parte lungo un
+raggio: potrebbe essere a due metri o a venti, la foto non lo dice. Adesso però
+immagina di guardare quel raggio dalla seconda fotocamera.
 
-Un raggio è una retta nello spazio, e **la foto di una retta è sempre una
-retta**. Non è ovvio, e vale la pena convincersene: la prospettiva rimpicciolisce
-le cose lontane e fa convergere i binari, quindi qualcuno si aspetterebbe che
+Un raggio è una retta nello spazio, e la foto di una retta è sempre una retta.
+Non è ovvio: la prospettiva rimpicciolisce le cose lontane e fa
+convergere i binari, quindi qualcuno si aspetterebbe che
 incurvi anche questa. Non lo fa, perché tutti i punti della retta e il foro
 della seconda fotocamera stanno su uno stesso piano, e un piano taglia il
 piano della pellicola lungo una retta. La prospettiva schiaccia le distanze,
 non piega le rette.
 
 Quindi: il punto che cerchi nella seconda foto, qualunque sia la profondità
-vera, **sta su una retta ben precisa**, che si può calcolare in anticipo
-conoscendo solo la posizione reciproca delle due fotocamere. Quella retta ha un
-nome che tornerà: si chiama **retta epipolare**, e l’*epipolo* da cui prende il
-nome è il punto in cui ciascuna fotocamera vedrebbe l'altra. Non devi cercare in
+vera, sta su una retta ben precisa, che si può calcolare in anticipo
+conoscendo solo la posizione reciproca delle due fotocamere. Quella retta si
+chiama **retta epipolare**, e l’*epipolo* da cui prende il nome è il punto in
+cui ciascuna fotocamera vedrebbe l'altra. Non devi cercare in
 tutta l'immagine, devi cercare lungo una riga.
 
 È il passaggio che rende praticabile tutto il resto. Milioni di candidati
@@ -275,12 +291,15 @@ passano per uno stesso punto, l’**epipolo**, che è la proiezione dell'altro
 centro ottico e può cadere fuori dall'immagine. Va all'infinito quando è la
 **base**, cioè il segmento che unisce i due centri ottici, a essere parallela
 al piano immagine: è il caso della coppia stereo affiancata, ed è il motivo per
-cui la rettificazione del paragrafo seguente consiste proprio nel mandare gli
-epipoli all'infinito. Non c'entrano gli assi ottici: due fotocamere con assi
-perfettamente paralleli che si muovono *in avanti* hanno l'epipolo dentro
-l'immagine, nel punto da cui la scena sembra espandersi (è il caso di ogni
-telecamera montata su un'auto), e due fotocamere con assi divergenti ma base
-laterale ce l'hanno all'infinito.
+cui rettificare una coppia consiste proprio nel mandare gli
+epipoli all'infinito. Non c'entra il parallelismo fra gli assi ottici: due
+fotocamere con assi perfettamente paralleli che si muovono *in avanti* hanno
+l'epipolo dentro l'immagine, nel punto da cui la scena sembra espandersi (è il
+caso di ogni telecamera montata su un'auto). La condizione va poi verificata su
+un'immagine alla volta, perché i piani immagine sono due: ruotando verso
+l'interno una sola delle due fotocamere, con la base laterale di prima, il suo
+piano smette di essere parallelo alla base e il suo epipolo torna a distanza
+finita, mentre l'altro resta all'infinito.
 
 In coordinate normalizzate, con fotocamere calibrate, il vincolo si scrive con
 la **matrice essenziale** $\mathbf{E} = [\mathbf{t}]_\times \mathbf{R}$,
@@ -334,14 +353,19 @@ chiama **disparità**, e la sua misura è la misura della distanza. Vicino,
 salto grande; lontano, salto piccolo; infinitamente lontano, nessun salto.
 
 La relazione è un'inversa, non una proporzione: raddoppiando la distanza il
-salto si dimezza. Con la telecamera che useremo fra poco, per esempio, un
-oggetto a un metro salta $210$ pixel, a due metri $105$, a quattro metri
-$52{,}5$, a otto metri poco più di $26$. Ha due conseguenze che si toccano con
-mano. La prima è che
-la stereo è **precisa da vicino e vaga da lontano**: a due metri qualche
+salto si dimezza. Su una telecamera con trenta centimetri fra i due obiettivi,
+un oggetto a un metro salta $210$ pixel, a due metri $105$, a quattro metri
+$52{,}5$, a otto metri poco più di $26$. Il primo di questi numeri dipende
+anche da quanto l'obiettivo ingrandisce; il dimezzarsi a ogni raddoppio, invece,
+vale sempre.
+
+Ha due conseguenze che si toccano con mano. La prima è che
+la stereo è precisa da vicino e vaga da lontano: a due metri qualche
 pixel di disparità in più o in meno cambia poco, a cinquanta metri cambia
-tutto. La seconda è che allontanare le due telecamere aumenta i salti e quindi
-la precisione, ma restringe la zona che entrambe vedono. È il compromesso che
+tutto. La seconda riguarda le leve su cui si può agire, e sono due: allontanare
+le telecamere fra loro ingrandisce i salti e quindi la precisione, ma restringe
+la zona che entrambe vedono; e lo stesso fa lo zoom, che ingrandisce i salti e
+insieme rimpicciolisce la porzione di mondo inquadrata. È il compromesso che
 decide come si costruisce una telecamera stereo, e il motivo per cui i nostri
 occhi distano sei centimetri e non uno o trenta.
 
@@ -349,6 +373,15 @@ E c'è un caso in cui il metodo fallisce del tutto: un muro bianco. Se lungo la
 riga da esplorare tutti i pixel si somigliano, non c'è modo di dire quale
 corrisponda a quale. La geometria ha fatto il suo dovere riducendo la ricerca
 a una retta; su quella retta, però, ci vuole qualcosa da riconoscere.
+
+Chi vuole la distanza di ogni singolo pixel se la cava aggiungendo qualcosa che
+la geometria non contiene: la scommessa che le superfici siano per lo più
+lisce, cioè che due pixel vicini stiano quasi sempre più o meno alla stessa
+distanza. Il muro bianco viene riempito così, tirando dentro le distanze
+misurate sui suoi bordi, dove qualcosa da riconoscere c'era. È una scommessa
+che di solito paga, e che a volte fa danni: davanti a una vetrata, o al bordo di
+un tavolo che si affaccia sul vuoto, smussa in una rampa dolce un salto che
+nella realtà è netto.
 
 `````
 
@@ -413,12 +446,21 @@ come il salto fra i due occhi, dice qualcosa sulla distanza, e infatti si
 chiama **parallasse**. È così che stimiamo la profondità di una scena
 muovendo la testa, con un occhio solo.
 
-C'è un limite curioso, e si chiama problema dell'apertura. Guarda un palo che
-si muove attraverso un tubo di cartone stretto: vedi solo un bordo verticale
-che scivola, e **non puoi dire** se il palo va di lato o anche in diagonale,
-perché scivolando lungo sé stesso non produce alcun cambiamento visibile.
-Guardando un pezzo di bordo, il movimento lungo il bordo è invisibile. Serve
-uno spigolo, o serve mettere insieme quello che dicono le zone vicine.
+Per misurare quello scorrimento bisogna ritrovare, nel fotogramma dopo, il
+pezzo di scena che nel primo aveva un certo colore. Sotto c'è una promessa: che
+lo stesso pezzo di scena si presenti con lo stesso colore da un fotogramma al
+successivo. Il mondo di solito la mantiene; quando la rompe, il conto va a
+sbattere. Una nuvola copre il sole: la piazza si scurisce tutta insieme, non si
+è mosso niente, e il calcolo vede movimento dappertutto. Fa lo stesso effetto
+l'ombra di una persona che scivola su un muro fermo.
+
+C'è poi un limite curioso, e si chiama problema dell'apertura. Punta un tubo di
+cartone stretto verso un palo che si muove: dentro il tubo si vede solo un
+bordo che scivola, e da lì non si può dire se il palo va di lato o anche in
+diagonale, perché scivolando lungo sé stesso non produce alcun cambiamento
+visibile. Guardando un pezzo di bordo, il movimento lungo il bordo è
+invisibile. Serve uno spigolo, o serve mettere insieme quello che dicono le
+zone vicine.
 
 `````
 
@@ -430,10 +472,13 @@ $I(x, y, t) = I(x + \delta x,\, y + \delta y,\, t + \delta t)$. Sviluppando al
 primo ordine si ottiene l'equazione del flusso ottico
 
 $$
-I_x u + I_y v + I_t = 0,
+I_x \dot{x} + I_y \dot{y} + I_t = 0,
 $$
 
-con $(u, v)$ il flusso incognito. È **un'equazione in due incognite** per ogni
+dove $(\dot{x}, \dot{y})$ è il flusso incognito, cioè la velocità con cui
+l'immagine del punto scorre sul sensore, e $I_x, I_y, I_t$ sono le derivate
+dell'immagine nelle due direzioni e nel tempo. È **un'equazione in due
+incognite** per ogni
 pixel: da qui il problema dell'apertura, in forma algebrica. Solo la
 componente del flusso parallela al gradiente è determinata.
 
@@ -501,9 +546,10 @@ scivolare attraverso il secondo.
 `````{tab} Elementare
 
 Da dove escono l'85 e il 45, se il movimento è di 96? Dall'inclinazione del
-palo, che nel disegno è di 62 gradi. La regola è quella dei triangoli
-rettangoli, e la si può prendere così com'è: il pezzo che sopravvive è
-$96 \times 0{,}883 = 85$, il pezzo che si perde è $96 \times 0{,}469 = 45$, e i
+palo, che nel disegno è di 62 gradi. Sono le proporzioni di un triangolo
+rettangolo: il pezzo che sopravvive è
+$96 \times 0{,}883$, quasi $85$; il pezzo che si perde è
+$96 \times 0{,}469$, poco più di $45$; e i
 due fattori dipendono soltanto da quanto il palo è inclinato. Un palo verticale
 li avrebbe $1$ e $0$ (il movimento orizzontale si misurerebbe tutto); un palo
 orizzontale $0$ e $1$ (non se ne misurerebbe niente).
@@ -548,8 +594,17 @@ Si fa a tentativi organizzati: si parte da due foto, si stima una soluzione
 approssimata, si aggiungono le altre una alla volta, e ogni tanto si aggiusta
 tutto insieme minimizzando un unico errore, la distanza fra dove ogni punto
 **appare** nelle foto e dove il modello attuale dice che dovrebbe apparire.
-Quando quella distanza è piccola per tutti i punti in tutte le foto, la
+Un punto, quasi sempre, in molte delle foto non si vede proprio, e il conto
+tiene in considerazione soltanto quelle in cui c'è. Quando la distanza è
+piccola per ogni punto, in ognuna delle foto che lo contengono, la
 ricostruzione è coerente.
+
+L'ordine in cui si procede ha una ragione. L'aggiustamento sa solo scendere:
+prende la sistemazione che ha fra le mani e la ritocca finché ogni altro
+ritocco peggiora le cose. Partendo da una disposizione a caso si finisce in una
+sistemazione tutta sbagliata da cui nessun ritocco fa uscire, con le fotocamere
+messe dove non erano e i punti piazzati di conseguenza, a dar loro ragione. Le
+due foto iniziali servono a partire già abbastanza vicini alla risposta giusta.
 
 Quando lo stesso calcolo si fa in tempo reale, mentre il dispositivo si muove,
 si chiama **SLAM**, sigla di *simultaneous localization and mapping*, cioè
@@ -565,12 +620,13 @@ Il criterio è l’**errore di riproiezione**: dati i parametri delle fotocamere
 $\{\mathbf{K}_j, \mathbf{R}_j, \mathbf{t}_j\}$ e i punti $\{\mathbf{p}_i\}$,
 
 $$
-\min \; \sum_{i,j} v_{ij} \,\big\| \, \mathbf{u}_{ij} - \pi(\mathbf{K}_j,
+\min \; \sum_{i,j} m_{ij} \,\big\| \, \mathbf{u}_{ij} - \pi(\mathbf{K}_j,
 \mathbf{R}_j, \mathbf{t}_j, \mathbf{p}_i) \, \big\|^2 ,
 $$
 
 dove $\pi$ è la proiezione, $\mathbf{u}_{ij}$ è dove il punto $i$ è stato
-*osservato* nell'immagine $j$, e $v_{ij}$ vale 1 se quell'osservazione esiste.
+*osservato* nell'immagine $j$, e $m_{ij}$ vale 1 se quell'osservazione esiste e
+0 altrimenti.
 La minimizzazione congiunta si chiama **bundle adjustment** e si risolve con
 Levenberg-Marquardt sfruttando la struttura sparsa del problema: ogni punto
 compare in poche immagini, quindi la matrice normale è a blocchi e si può
@@ -589,7 +645,7 @@ calibrazione l'ambiguità è molto più larga: si ottiene una ricostruzione
 come guardare il palazzo attraverso una deformazione prospettica arbitraria.
 Per riportarla a una forma metrica bisogna stimare gli intrinseci a
 posteriori, ed è quello che si chiama **auto-calibrazione**: un'altra ragione
-per cui vale la pena calibrare prima.
+per calibrare prima.
 
 `````
 
@@ -625,8 +681,9 @@ può ingannare. Una fotografia di una fotografia viene letta come una scena
 vera, e un plastico ben fatto viene letto come un palazzo.
 
 C'è poi un limite che non è un difetto ma una legge: la **scala** resta
-sconosciuta. La rete può dire con precisione che quell'auto è due volte più
-lontana di quell'albero, e non può dire se siano a dieci metri o a cento.
+sconosciuta. La rete mette la scena in fila dal vicino al lontano, e dice senza
+esitare che l'auto sta più indietro dell'albero; se siano a dieci metri o a
+cento non lo dice, e nemmeno di quante volte l'una sia più lontana dell'altro.
 Nessun indizio nell'immagine lo contiene.
 
 `````
@@ -652,7 +709,7 @@ gradienti provenienti da sorgenti non commensurabili
 non etichettato, usando un modello maestro per pseudo-etichettare milioni di
 immagini {cite}`yang2024depth`.
 
-Il quadro utile per il libro è questo: la geometria dà **vincoli esatti ma
+Il quadro che ne esce è questo: la geometria dà **vincoli esatti ma
 insufficienti**, l'apprendimento dà **un prior sufficiente ma fallibile**, e i
 sistemi che funzionano davvero usano entrambi. Uno stereo appreso mantiene la
 ricerca lungo la retta epipolare e impara solo la parte ambigua; una pipeline

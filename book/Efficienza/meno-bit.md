@@ -20,40 +20,47 @@ sola, e da lì viene tutto il resto della sezione.
 
 `````{tab} Elementare
 
-Arrotondare vuol dire scegliere un **passo** e ammettere solo i multipli di
-quel passo. Se il passo è cinquanta centesimi, i prezzi ammessi sono 1,00 e
-1,50 e 2,00 e così via, e ogni prezzo vero si sposta al più vicino: al massimo
-di venticinque centesimi, in su o in giù.
+Un pacco di riso da 1,29 lo segni 1,50, e una confezione d’acqua da 3,60 la
+segni 3,50: il **passo** che ti sei dato è mezzo euro, e ammetti solo i suoi
+multipli. Ogni prezzo scivola su quello più vicino, quindi sbagli al massimo
+venticinque centesimi, metà passo: venticinque sul riso da poco più di un euro,
+venticinque su una bottiglia di champagne da cento.
 
-Due cose vanno notate, perché sono tutto il meccanismo.
-
-La prima: **l’errore massimo è metà passo**, sempre, e non dipende da quanto
-sono grandi i numeri. Se il passo è cinquanta centesimi, sbagli al più
-venticinque centesimi sia su un prezzo da un euro sia su uno da cento.
-
-La seconda: gli errori sono **in su e in giù senza un motivo**, quindi
-sommandone tanti si compensano in parte. Se arrotondi trenta prodotti e ogni
-volta sbagli al più venticinque centesimi, il totale non sbaglia di sette euro
-e mezzo: sbaglia molto meno, perché metà delle volte sei andato in su e metà in
-giù. Questa è la ragione per cui la faccenda funziona: le reti neurali non
-usano un peso alla volta, ne sommano centinaia, e nella somma gli errori si
+Su trenta prodotti arrotondi in su e in giù senza una regola, così il peggio
+possibile, sette euro e mezzo, non ti capita mai: il totale sbaglia attorno al
+mezzo euro. E cresce piano. Per far diventare l’errore dieci volte tanto non
+bastano dieci prodotti, ce ne vogliono cento. Una rete neurale non usa mai un
+peso alla volta, ne somma centinaia, ed è nella somma che gli arrotondamenti si
 mangiano a vicenda.
 
-Una cosa però il passo la deve fare per forza, e da qui viene tutto il resto:
-deve **arrivare fino al numero più grande**. I gradini a disposizione sono in
-numero fisso (con quattro bit, per dire, sono sedici), quindi se il numero più grande vale tremiladuecento e i gradini sono sedici,
-il gradino non può essere più stretto di duecento: altrimenti la scala finisce prima di arrivarci, e quel
-numero non si riesce proprio a scrivere. **È il più grande a decidere il passo
-per tutti**, e non è una scelta di chi arrotonda, è una conseguenza dell’avere
-un numero fisso di gradini.
+Regge finché il totale è grosso. Nella lista però ci sono anche i resi, che
+tolgono invece di aggiungere. Trenta importi da una decina di euro fanno
+trecento euro, e mezzo euro non lo nota nessuno. Con metà resi paghi quaranta
+euro, e il mezzo euro comincia a vedersi. Con i resi che coprono quasi tutta la
+spesa paghi un euro, e l’errore, rimasto identico, vale metà di quello che
+paghi. L’arrotondamento è lo stesso di prima; a essersi ristretto è il totale.
+In una rete succede uguale quando i numeri che somma si elidono quasi tutti: il
+risultato esce piccolo e l’errore ci pesa sopra.
 
-E adesso il punto di rottura, perché è dove l’analogia guadagna il pane e dove
-sta metà di questa sezione. Immagina un carrello con trenta prodotti da pochi
-euro e **un solo prodotto da tremila euro**. Il passo deve arrivare a tremila,
-quindi diventa enorme, e tutti gli altri prezzi arrotondano a zero: il tuo
-conto a mente dice tremila euro, e la spesa vera ne faceva tremilasettanta. Il
-prodotto caro non è un errore, è un prodotto vero. È il passo comune a essere
-sbagliato.
+Il passo però non lo scegli tu fino in fondo. Quattro bit sono sedici importi in
+tutto, e otto se ne vanno sotto lo zero per i resi, perché un reso da mille euro
+è lontano dallo zero quanto una spesa da mille: dallo zero in su ne restano
+sette. Se il prodotto più caro costa tremilacinquecento euro il gradino vale
+cinquecento, e più stretto non può essere, o la scala finisce prima della cima e
+quel prezzo non lo sai proprio scrivere. È il più caro a decidere il passo di
+tutti gli altri.
+
+Quando nel carrello non c’è nemmeno un reso, gli otto gradini sotto lo zero
+restano vuoti e metà scala non serve a niente. Allora la sposti tutta da una
+parte e ti segni quale gradino vale zero: i gradini utili passano da sette a
+quindici senza aggiungere un bit. In cambio quel gradino, quello dello zero, te
+lo devi ricordare e portare dietro.
+
+E adesso il carrello che rompe tutto: trenta prodotti da pochi euro e, sotto, un
+televisore da tremila. Il passo deve arrivare fin lassù, quindi diventa enorme e
+tutta la spesa piccola arrotonda a zero. Il conto che hai in testa dice tremila
+euro tondi, alla cassa ne paghi tremilasettanta. Il televisore costa quello che
+costa ed è al suo posto; a essere sbagliato è il passo, che vale per tutti.
 
 `````
 
@@ -61,8 +68,8 @@ sbagliato.
 
 Quantizzare a $b$ bit vuol dire rappresentare un insieme di numeri reali con
 un numero fisso di livelli interi, che con la scala presa dal massimo sono
-$2^b - 1$ (quindici a quattro bit, misurato: il livello più negativo non viene
-mai raggiunto, perché la scala è tarata proprio sul valore assoluto più
+$2^b - 1$ (quindici a quattro bit: il livello più negativo non viene mai
+raggiunto, perché la scala è tarata proprio sul valore assoluto più
 grande). La forma più usata è **simmetrica**: si fissa una
 **scala** $s$ e si pone
 
@@ -73,13 +80,12 @@ $$
 
 L’errore di arrotondamento su ciascun peso è limitato da
 $|w - \hat{w}| \le s/2$, e non dipende da $w$: è una proprietà del passo, non del
-numero. (Il codice più sotto tronca $q$ all’intervallo rappresentabile per
-prudenza, ma con la scala presa dal massimo quel troncamento **non scatta
-mai**, verificato su tutti i numeri di bit provati: serve soltanto se la scala
-viene da altro, per esempio da una calibrazione fatta su dati diversi.)
+numero. (Troncare $q$ all’intervallo rappresentabile è una prudenza che con la
+scala presa dal massimo non scatta mai: serve soltanto se la scala viene da
+altro, per esempio da una calibrazione fatta su dati diversi.)
 
 Quello che conta però non è l’errore sul peso, è l’errore sull’uscita. Per un
-prodotto scalare $z = \sum_i w_i x_i$ l’errore è $\sum_i (\hat{w}_i - w_i) x_i$,
+prodotto scalare $\sum_i w_i x_i$ l’errore è $\sum_i (\hat{w}_i - w_i) x_i$,
 una somma di $n$ termini che, se gli arrotondamenti sono approssimativamente
 indipendenti e a media nulla, cresce come $\sqrt{n}$.
 
@@ -104,8 +110,8 @@ Il punto delicato è la definizione della scala, perché $s$ è fissata dal
 **massimo in valore assoluto** del gruppo di numeri che condividono la scala. Un
 singolo elemento molto più grande degli altri allarga $s$ per tutti, e ogni
 altro elemento del gruppo perde risoluzione in proporzione. Il rimedio non è
-mai «arrotondare meglio»: è **cambiare chi condivide la scala**, che è il
-contenuto dei due paragrafi qui sotto.
+mai «arrotondare meglio»: è **cambiare chi condivide la scala**, restringendo
+il gruppo oppure tenendone fuori i pochi elementi anomali.
 
 Questa è la forma **simmetrica**, che dà per scontato che i numeri stiano
 attorno allo zero. Dove non è così (le uscite di una ReLU, per dire, sono tutte
@@ -117,8 +123,9 @@ $$
 \hat{w} = s\,(q - z), \qquad q = \mathrm{round}(w/s) + z .
 $$
 
-Il meccanismo è lo stesso e il passo lo detta sempre l’elemento più grande del
-gruppo; cambia solo che il gruppo può stare tutto da una parte. È la forma con
+Il meccanismo è lo stesso e il passo lo dettano sempre gli estremi del gruppo
+(nella forma simmetrica basta il più grande in valore assoluto, qui servono
+tutti e due); cambia solo che il gruppo può stare tutto da una parte. È la forma con
 cui il capitolo su MLOps parla di `int8` in produzione
 {cite}`jacob2018quantization`, e da qui in avanti si resta sulla simmetrica,
 che ha una formula in meno.
@@ -275,22 +282,37 @@ linguistici {cite}`dettmers2022llmint8`.
 
 `````{tab} Elementare
 
-Vale la pena fermarsi su che cosa questo esperimento dica e che cosa non dica.
-
-Dice una cosa sola, ed è che il danno non era distribuito. Non è che ogni
-numero fosse un po’ sbagliato: erano tre a stare larghissimi, e per colpa loro
-tutti gli altri sono stati schiacciati. La prova è che togliendo dal gruppo
-soltanto quei tre l’errore crolla di trentasei volte: se il danno fosse stato
-sparso, spostarne tre su cinquecentododici non avrebbe cambiato niente.
+L’esperimento dice una cosa sola, ed è che il danno non era distribuito. Il
+guasto non stava un po’ dentro ogni numero: erano tre a stare larghissimi, e
+per colpa loro tutti gli altri sono stati schiacciati. La prova è che togliendo
+dal gruppo soltanto quei tre l’errore crolla di trentasei volte: se il danno
+fosse stato sparso, spostarne tre su cinquecentododici non avrebbe cambiato
+niente.
 
 E non dice che il problema si risolva sempre così. Funziona perché le
 componenti enormi sono **poche**: se fossero tante non ci sarebbe niente da
-mettere da parte, e si tornerebbe al passo grosso per tutti. Nel codice qui
-sopra sono elencate a mano per far stare l’esperimento in dieci righe, ma nei
-modelli veri **non si elencano**: si guarda ogni fila di numeri appena arriva e
-si mette da parte tutto quello che supera una soglia. Le posizioni tendono a
-essere sempre le stesse, ed è questo a rendere il rimedio economico; ma è una
-tendenza osservata, non una lista fissa da cui si parte.
+mettere da parte, e si tornerebbe al passo grosso per tutti. Qui le tre erano
+note in partenza, ma nei modelli veri non si elencano: si guarda ogni fila di
+numeri appena arriva e si mette da parte tutto quello che supera una soglia. Le
+posizioni tendono a essere sempre le stesse, ed è questo a rendere il rimedio
+economico; ma è una tendenza osservata, non una lista fissa da cui si parte.
+
+Il rimedio completo ha due metà, e la prima si è già vista: stringere il gruppo
+che condivide il passo, una scala ogni sessantaquattro numeri invece di una
+sola per tutti. Tenere fuori dal gruppo le poche componenti larghe è la
+seconda.
+
+Sotto gli otto bit non bastano nemmeno le due insieme, e i metodi che reggono
+cambiano il gesto dell’arrotondare. Uno arrotonda un prezzo alla volta e tiene
+il conto di quanto ha sbagliato: se il primo prezzo l’ha tirato su di venti
+centesimi, quei venti centesimi li toglie a un prodotto che deve ancora
+arrotondare, scegliendo quello a cui la correzione dà meno fastidio, così alla
+fine il totale torna. L’altro guarda le quantità. Un prodotto che compri in
+cinquanta copie, sbagliato di venti centesimi al pezzo, ti sposta il conto di
+dieci euro; lo stesso errore su un prodotto comprato una volta sola sposta
+venti centesimi. Allora al prezzo del prodotto da cinquanta copie si dà una
+scala tutta sua, a gradini fini, e si arrotonda largo il resto. Tutti e due
+guardano che cosa quel numero combina nel conto, e non soltanto quanto vale.
 
 `````
 
@@ -303,11 +325,10 @@ modo consistente fra token e fra ingressi {cite}`dettmers2022llmint8`. Poiché l
 scala di quantizzazione è fissata dal massimo, quelle dimensioni comprimono
 tutte le altre in pochi livelli.
 
-Il metodo che ne è nato ha **due** parti, e la prima è esattamente la tesi di
-questa pagina: si abbandona la scala unica e se ne tiene una **per ogni
-prodotto interno**, cioè si stringe al massimo il gruppo che condivide il
-passo. La seconda è la decomposizione a precisione mista, che tratta
-separatamente i due sottospazi:
+Il metodo che ne è nato ha due parti. La prima è la stretta sulla granularità:
+si abbandona la scala unica e se ne tiene una **per ogni prodotto interno**,
+cioè si stringe al massimo il gruppo che condivide il passo. La seconda è la
+decomposizione a precisione mista, che tratta separatamente i due sottospazi:
 
 $$
 \mathbf{X}\mathbf{W}^{\top} =
@@ -342,23 +363,26 @@ C’è un’ultima distinzione, ed è quella che separa due mestieri.
 
 `````{tab} Elementare
 
-Tutto quello che si è visto finora si fa **a modello già addestrato**: si
-prende una rete che esiste, si arrotondano i suoi numeri, si misura quanto si è
-perso. È il modo economico, si fa in minuti, e per otto bit basta quasi sempre.
+Tutto quello che si è visto finora si fa a modello già addestrato: si prende
+una rete che esiste, si arrotondano i suoi numeri, si misura quanto si è perso.
+È il modo economico, si fa in minuti, e per otto bit basta quasi sempre.
 
-L’altro modo è dire alla rete, **mentre impara**, che alla fine i suoi pesi
-verranno arrotondati. Così durante l’addestramento la rete si accorge di quando
-un peso sta in bilico fra due gradini e si sposta da sola dove l’arrotondamento
-le fa meno male. Costa un addestramento intero, e per questo si fa solo quando
-si scende in basso coi bit e la prima strada non regge.
+L’altro modo è dire alla rete, mentre impara, che alla fine i suoi pesi
+verranno arrotondati: come un negozio che sa già che la cassa accetta soltanto
+i mezzi euro, e i prezzi li sceglie di conseguenza invece di lasciarli a due e
+novantasette. La rete tiene i numeri precisi da una parte e fa i conti con
+quelli arrotondati, e così si accorge di quando un peso sta in bilico fra due
+gradini e lo sposta dove l’arrotondamento gli fa meno male. Costa un
+addestramento intero, e per questo si fa solo quando si scende in basso coi bit
+e arrotondare a cose fatte non regge.
 
-C’è una difficoltà che vale la pena nominare perché è graziosa: arrotondare è
-un’operazione a gradini, e una funzione a gradini è **piatta** dappertutto
-tranne che nei salti. Una rete impara seguendo la pendenza, e sul piano di un
-gradino non c’è nessuna pendenza da seguire: il segnale d’apprendimento
-morirebbe subito. Il
-rimedio è una piccola finzione, cioè fare i conti in avanti con i valori
-arrotondati e all’indietro **far finta che l’arrotondamento non ci sia**. Non è
+C’è una difficoltà, ed è graziosa: arrotondare è un’operazione a gradini, e una
+funzione a gradini è **piatta** dappertutto tranne che nei salti. Una rete
+impara seguendo la pendenza, e sul piano di un gradino non c’è nessuna pendenza
+da seguire: il segnale d’apprendimento morirebbe subito. Il rimedio è una
+piccola finzione: si fanno i conti in avanti con i valori arrotondati e
+all’indietro si fa finta che l’arrotondamento non ci sia. Fanno eccezione i
+numeri finiti fuori dalla scala, ai quali il segnale non arriva proprio. Non è
 matematicamente pulito, e funziona.
 
 `````

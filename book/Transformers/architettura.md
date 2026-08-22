@@ -97,6 +97,16 @@ quando impara a produrre la quarta parola può guardare solo le prime tre, altri
 "imparerebbe" a copiare la quarta dalla soluzione, e il giorno in cui la
 soluzione non c'è (cioè sempre, una volta finito lo studio) non saprebbe fare
 nulla.
+
+Una parola alla volta vuol dire proprio una. A ogni passo la macchina
+distribuisce la propria fiducia su tutte le parole che conosce, decine di
+migliaia, un po' a questa e un po' a quella; poi da quell'elenco ne prende una
+sola. È la parola presa a rientrare al passo dopo, in coda a quelle già
+scritte, perché l'ingresso è fatto per parole e un elenco di fiducie non ci
+passerebbe. Durante lo studio la parola che rientra è quella vera della
+soluzione, e non quella che la macchina avrebbe detto: così un inciampo alla
+terza parola non le fa sbagliare anche tutto il resto della frase. Il futuro,
+quello, resta coperto come prima.
 `````
 
 `````{tab} Superiore
@@ -114,7 +124,7 @@ Anche il decoder ha $L = 6$ strati, ma con tre sotto-strati ciascuno:
 In generazione il decoder produce un token alla volta: a valle della pila, una
 proiezione lineare sul vocabolario (nel paper con i pesi legati a quelli
 dell'embedding, §3.4) e una softmax danno la distribuzione del token
-successivo. Da quella distribuzione si sceglie **un** token, ed è il suo
+successivo. Da quella distribuzione si sceglie un token, ed è il suo
 embedding a rientrare come input al passo dopo: non la distribuzione, che è un
 vettore di $|\mathcal{V}|$ probabilità e non ha modo di entrare in un ingresso
 fatto per un token. Come si sceglie (il più probabile, uno estratto a sorte, o
@@ -210,18 +220,29 @@ di qualunque frase.
 
 `````{tab} Elementare
 Il posto numerato, dunque, c'è, ma il numero non è scritto in cifre: è scritto
-con le lancette di cui parla la figura qui sopra. La sostanza però è quella del
-teatro: stessa parola, poltrona diversa, e la rete può accorgersi che l'ordine
-conta. Vale la pena notare quanto sia sbrigativo il modo in cui la firma viene
-consegnata: non si aggiunge un pezzo in fondo alla lista della parola, si
-**somma** numero per numero alla lista che c'è già. Parola e posizione finiscono
-mescolate negli stessi numeri, e alla rete tocca imparare a distinguerle.
+con le lancette. La sostanza però è quella del teatro: stessa parola, poltrona
+diversa, e la rete può accorgersi che l'ordine conta. Il modo in cui la firma
+viene consegnata è sbrigativo: non si aggiunge un pezzo in fondo alla lista
+della parola, si **somma** numero per numero alla lista che c'è già. Parola e
+posizione finiscono mescolate negli stessi numeri, e alla rete tocca imparare a
+distinguerle.
 
-Nel 2017 quelle firme erano calcolate a tavolino, con una formula scritta a
-mano prima di cominciare: il modello non le impara, se le trova già pronte. I
-modelli venuti dopo fanno diversamente (alcuni gliele fanno imparare, altri
-scrivono direttamente quanto due parole sono distanti invece di dove stanno),
-ma il posto numerato, in una forma o nell'altra, serve a tutti.
+Le lancette hanno poi una comodità che un contatore non ha. Andare avanti di
+tre parole è sempre lo stesso gesto, in qualunque punto della frase lo si
+faccia: ogni lancetta scatta di un suo angolo fisso, quella veloce di parecchio,
+quella lenta di pochissimo, e quanto scatta dipende dal tre e non da dove si era
+prima. Chi legge le firme ha quindi un modo di riconoscere «tre parole più in
+là» che funziona uguale all'inizio e alla fine della frase; col contatore
+diviso per la lunghezza, invece, tre parole più in là valgono mezzo passo in
+una frase di sei parole e mezzo centesimo in una di seicento.
+
+Nel 2017 quelle firme erano calcolate a tavolino, con una formula scritta a mano
+prima di cominciare: il modello non le impara, se le trova già pronte. Che la
+comodità delle lancette gli serva davvero resta però un sospetto, e sono stati
+gli autori stessi a incrinarlo: hanno provato a lasciare che il modello si
+costruisse le firme da solo, e le traduzioni sono venute quasi uguali. Infatti i modelli venuti dopo hanno preso strade diverse (chi le fa
+imparare, chi scrive direttamente quanto due parole sono distanti invece di dove
+stanno), ma il posto numerato, in una forma o nell'altra, serve a tutti.
 `````
 
 `````{tab} Superiore
@@ -236,7 +257,7 @@ $$
 \omega_i = 10000^{-2i/d_{\text{model}}}
 $$
 
-dove $\text{pos}$ è la posizione del token e $i$ **non** indicizza le
+dove $\text{pos}$ è la posizione del token e $i$ *non* indicizza le
 coordinate ma le **coppie** di coordinate, cioè le frequenze: $i$ va da $0$ a
 $d_{\text{model}}/2 - 1$, e ogni $i$ riempie le due coordinate $2i$ e $2i+1$
 con un seno e un coseno della stessa frequenza $\omega_i$. È il punto in cui si
@@ -249,8 +270,8 @@ una trasformazione lineare di quella di $\text{pos}$ **con una matrice che
 dipende solo da $k$**. La clausola in grassetto è tutto il contenuto: che due
 vettori siano legati da *qualche* matrice è vero sempre e non dice niente; che
 la matrice sia la stessa per ogni $\text{pos}$ è ciò che rende la distanza
-relativa una cosa rappresentabile. Ed è una riga di trigonometria, quindi vale
-la pena scriverla: dalle formule di addizione,
+relativa una cosa rappresentabile. Ed è una riga di trigonometria: dalle
+formule di addizione,
 
 $$
 \begin{pmatrix} \sin((\text{pos}+k)\,\omega_i) \\ \cos((\text{pos}+k)\,\omega_i) \end{pmatrix}
@@ -262,7 +283,7 @@ $$
 cioè una rotazione di angolo $k\omega_i$ su ciascuna coppia, e $\text{pos}$ è
 sparito dalla matrice. Da lì gli autori
 *ipotizzarono* che la rete potesse rappresentare facilmente le distanze
-*relative*: è una congettura, e va detto che la loro stessa ablazione la
+*relative*: è una congettura, e la loro stessa ablazione la
 indebolisce, perché con positional embedding **appresi** i risultati sono
 «quasi identici» (Tabella 3, riga E, dell'articolo). Molti modelli successivi
 usano infatti encoding **appresi** (BERT); i modelli linguistici recenti usano
@@ -291,39 +312,45 @@ vuol dire soltanto «rete che va in avanti», cioè senza cappi né ritorni:
 i numeri entrano da una parte ed escono dall'altra.
 
 `````{tab} Elementare
-Dopo ogni "riunione" di attenzione (dove le parole si scambiano informazioni),
-c'è un momento di lavoro individuale: ogni parola, per conto suo, rielabora
-quello che ha appena sentito. È una piccola rete di neuroni come quelle del
-capitolo sulle reti neurali, identica per tutte le parole, e quello che fa è
-semplice da dire, in tre mosse. Prima la lista di numeri della parola viene
-fatta passare per una tabella che ne restituisce una **quattro volte più
-lunga**: i numeri in più non sono inventati, sono altrettante miscele diverse
-di quelli di partenza, e servono a mettere in evidenza combinazioni che nella
-lista corta stavano schiacciate insieme. Poi si azzerano tutti i valori
-negativi (non si tolgono, si mettono a zero: la lista resta lunga uguale), ed è
-il solo momento in cui questa parte della rete fa una scelta invece di una
-miscela. Infine una seconda tabella la riporta alla lunghezza di partenza,
-tenendo di quel materiale largo solo quello che serve. Riunione, lavoro
-individuale, riunione, lavoro individuale: la torre del Transformer è tutta
-qui.
+La riunione finisce e ognuno torna alla propria scrivania. Lì, da solo, rimette
+in ordine quello che ha appena sentito, e lo fa in tre gesti, con due moduli
+prestampati che sono gli stessi per tutti. Primo: la nota uscita dalla riunione,
+512 righe di numeri, viene ricopiata su un modulo quattro volte più lungo, 2.048
+righe. Ogni riga in più è una miscela diversa di quelle di partenza, e fa venire
+fuori una combinazione che nella nota corta stava schiacciata insieme alle
+altre. Secondo: si ripassa il foglio e si mette a zero ogni riga venuta
+negativa. La riga resta dov'è, con uno zero sopra, e il foglio resta lungo
+uguale; è l'unico momento in cui alla scrivania si sceglie invece di mescolare.
+Terzo: un secondo modulo riporta il foglio alla lunghezza della nota di
+partenza, e di tutto quel materiale largo tiene solo quello che serve al piano
+di sopra. Riunione, scrivania, riunione, scrivania: la torre è tutta qui.
 
-Una cosa sorprendente, che tornerà utile più avanti: è il momento di lavoro
-individuale, non la riunione, a contenere la maggior parte di quello che il
-modello ha imparato. Contando i numeri che la rete regola mentre impara (si
+Quello che il modello ha imparato sta scritto nei numeri stampati sui moduli (si
 chiamano **parametri**, ed è quello che si conta quando si dice «un modello da
-sette miliardi»), in un piano della torre che legge due terzi stanno nel lavoro
-individuale e solo un terzo nell'attenzione.
+sette miliardi»). In un piano della torre che legge, due terzi di quei numeri
+stanno sui moduli della scrivania e un terzo su quelli della riunione.
 
-Il conto è alla portata. L'attenzione usa quattro tabelle grandi uguali: una per
-la query, una per la key, una per il value, una per rimettere insieme le
-risposte delle otto teste. Il lavoro individuale ne usa due sole, ma ciascuna
-quattro volte più grande, perché è quella che allarga e quella che ricomprime:
-sono otto tabelle della prima taglia. Otto contro quattro, due terzi contro un
-terzo. (Nei piani della torre che scrive di attenzioni ce ne sono due, la sua e
-la consultazione dell'altra torre, quindi lì si va a otto contro otto e la quota
-scende a metà; ma i grandi modelli linguistici di oggi tengono solo la torre che
-scrive **senza** consultare nessuno, e tornano ai due terzi.) La parte
-concettualmente più semplice è anche quella dove il modello tiene la roba.
+Il conto è alla portata. La riunione usa quattro moduli grandi uguali: uno per
+la query, uno per la key, uno per il value, uno per rimettere insieme le
+risposte degli otto lettori. La scrivania ne usa due soli, ma ciascuno quattro
+volte più grande, perché uno allarga e l'altro ricomprime: sono otto moduli
+della prima taglia. Otto contro quattro, due terzi contro un terzo. Nei piani
+della torre che scrive le riunioni sono due, la propria e la consultazione
+dell'altra torre, quindi lì si va a otto contro otto e la quota scende a metà;
+ma i grandi modelli linguistici di oggi tengono solo la torre che scrive e non
+consultano nessuno, e tornano ai due terzi. Il gesto più semplice della torre è
+anche quello dove il modello tiene quello che sa.
+
+Tre gesti e due moduli: questo è il piano del 2017, e i modelli di oggi lo hanno
+ritoccato in due punti. Le righe negative ora si scoloriscono invece di sparire
+di colpo: quanto più erano negative, tanto più si avvicinano allo zero. E i
+moduli sono passati da due a tre. Accanto al foglio lungo se ne compila un
+secondo della stessa lunghezza, che riga per riga dice quanto quella riga conta,
+una seconda scelta accanto a quella sui negativi. Perché il totale dei numeri
+stampati non cresca, l'allargamento si accorcia da quattro volte a poco meno di
+tre: tre moduli così fanno di nuovo otto, e il conto di prima resta in piedi.
+Stessi numeri da regolare, stesso studio, e il modello riesce meglio: è la
+ragione per cui alla scrivania oggi si compilano tre fogli.
 `````
 
 `````{tab} Superiore

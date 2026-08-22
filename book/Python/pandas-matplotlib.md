@@ -58,6 +58,13 @@ insieme formano la tabella. Il vantaggio
 rispetto a Excel è che ogni operazione è ripetibile e documentata: la scrivi
 una volta e la riesegui su un milione di righe senza cambiare nulla.
 
+L'altra differenza da Excel sta nelle etichette di riga. Pandas ragiona con
+quelle: se accosti due elenchi di clienti scritti in ordine diverso, le righe
+si appaiano per etichetta, come quando si confrontano due registri cercando lo
+stesso nome su entrambi. E se un nome compare in un registro solo, nella
+casella accanto resta un buco, non il dato di un altro cliente: un buco si
+vede subito, uno scambio di persona no.
+
 `````
 
 `````{tab} Superiore
@@ -65,9 +72,9 @@ una volta e la riesegui su un milione di righe senza cambiare nulla.
 Un `DataFrame` è una collezione di `Series` allineate su un `Index` comune.
 Ogni colonna ha un proprio `dtype` omogeneo (`int64`, `float64`, `str`,
 `category`, `datetime64`), il che permette a Pandas di appoggiarsi a NumPy per
-le operazioni vettoriali colonna per colonna. Sul dtype del testo vale la pena
-una precisazione, perché è cambiato di recente e la rete è piena di materiale
-che dice il contrario: da **pandas 3.0** una colonna di testo ha dtype `str`,
+le operazioni vettoriali colonna per colonna. Il dtype del testo è cambiato di
+recente, e la rete è piena di materiale che descrive ancora quello vecchio: da
+**pandas 3.0** una colonna di testo ha dtype `str`,
 sostenuto da Arrow quando `pyarrow` è installato, ed è molto più compatto e
 veloce del vecchio `object`, in cui ogni cella era un oggetto Python a sé.
 `object` esiste ancora, ma è diventato il dtype delle colonne che mescolano
@@ -168,6 +175,13 @@ Puoi combinarne più d'una con `&` ("e") e `|` ("o"):
 df[(df["eta"] > 30) & (df["citta"] == "Milano")]
 ```
 
+Il colino però non svuota la pentola: quello che passa finisce in una ciotola
+a parte, e la pentola resta com'era. Il filtro fa lo stesso. La tabella
+filtrata è una copia, e correggerne i valori non cambia la tabella di
+partenza; il programma non si ferma, e il gesto riesce sul recipiente
+sbagliato. Per scrivere sulla tabella originale c'è un attrezzo apposta,
+`.loc`, che sceglie le righe e le cambia lì dove stanno.
+
 `````
 
 `````{tab} Superiore
@@ -185,7 +199,7 @@ Da qui la regola che evita l'errore più frequente del mestiere: per *leggere*
 va bene qualunque forma, per **scrivere** si usa `.loc`. `df[df["eta"] > 30]`
 è un oggetto nuovo, quindi `df[df["eta"] > 30]["spesa"] = 0` modifica quello e
 lascia `df` com'era. Pandas 3 lo segnala con un `ChainedAssignmentError` che,
-malgrado il nome, è un **avviso e non un'eccezione**: il programma non si
+malgrado il nome, è un avviso e non un'eccezione: il programma non si
 ferma, tira dritto, e la modifica che credevi di aver fatto semplicemente non
 c'è. In uno script che filtra gli avvisi, o in un notebook con mille righe di
 output, il gesto sbagliato passa in silenzio, ed è questo che lo rende
@@ -193,7 +207,7 @@ l'errore più frequente del mestiere. La
 forma che funziona è una sola, `df.loc[df["eta"] > 30, "spesa"] = 0`, perché
 seleziona e assegna in un passo solo. Nota per chi cerca in rete: con il
 Copy-on-Write, predefinito da pandas 3, il vecchio `SettingWithCopyWarning` non
-esiste più e la copia non scrive **mai** sull'originale, quindi il classico
+esiste più e la copia non scrive mai sull'originale, quindi il classico
 «a volte funziona» dei tutorial di due anni fa non descrive più niente.
 
 `````
@@ -316,6 +330,11 @@ scartarli; se manca il 40% di una colonna, buttarla via distruggerebbe
 informazione, e conviene riempire. Non esiste una risposta valida sempre:
 dipende da *perché* quel dato manca.
 
+Riempire ha comunque un prezzo: mettere in tanti buchi lo stesso numero rende
+i dati più uniformi del vero. In una classe dove agli assenti di un compito si
+assegna il voto medio dei presenti, la media non cambia, ma i voti sembrano
+più simili fra loro di quanto siano.
+
 Il terzo pannello di {numref}`fig-dati-mancanti` mostra una via più raffinata:
 invece di mettere lo stesso valore dappertutto, si *indovina* quello che manca
 guardando le altre colonne della stessa riga (conoscendo età e città di un
@@ -329,7 +348,7 @@ in due mucchi: uno con cui il modello impara e uno, tenuto da parte e mai
 guardato, con cui alla fine lo si giudica. È l'unico modo di sapere se ha
 imparato davvero o se ha soltanto imparato a memoria gli esempi che gli
 abbiamo dato. E allora anche la mediana con cui riempi i buchi va calcolata
-**solo sul primo mucchio**: se la calcoli su tutti i dati, un pezzetto di
+solo sul primo mucchio: se la calcoli su tutti i dati, un pezzetto di
 quello che il modello dovrà indovinare gli è già passato sotto gli occhi, e il
 voto d'esame diventa più alto di quanto meriti. Il nome tecnico di questo
 guaio, che ritroverai spesso, è *data leakage*.
@@ -352,7 +371,7 @@ solo dalle covariate e non dalla risposta. L'imputazione con media o mediana
 è semplice ma comprime la varianza e ignora le correlazioni tra variabili;
 alternative più fedeli sono l'imputazione tramite modello (es. $k$-NN o
 regressione, `sklearn.impute.KNNImputer`) o l'imputazione multipla.
-Regola d'oro: qualsiasi imputazione va **stimata solo sul training set** e poi
+Regola d'oro: qualsiasi imputazione va stimata solo sul training set e poi
 applicata al test set, per non far trapelare informazione (*data leakage*).
 
 `````

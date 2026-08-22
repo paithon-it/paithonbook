@@ -64,15 +64,19 @@ risposta, e solo alla fine la richiesta dell'utente.
 
 `````{tab} Elementare
 
-Immagina di affidare un compito a un nuovo collega. Puoi buttargli lì un
-ordine di corsa («rispondi ai reclami») e sperare bene: farà del suo meglio,
-ma a modo suo, e non ti stupire se sbaglia tono o inventa una regola. Oppure
-gli lasci un **briefing scritto**: «sei l'assistente dell'assistenza; rispondi
-in modo cortese e conciso; non promettere mai rimborsi oltre i 30 giorni; ecco
-tre esempi di reclami con la risposta giusta accanto; scrivi sempre nel
-formato: saluto, soluzione, firma». Stesso collega, risultati incomparabili.
-Il briefing non è una parola magica: è un documento di lavoro, e come ogni
-documento si scrive, si rilegge, si corregge quando qualcosa non va.
+Un collega nuovo arriva il lunedì e gli affidi i reclami dei clienti. Puoi
+buttargli lì un ordine di corsa («rispondi ai reclami») e sperare bene: farà
+del suo meglio, ma a modo suo, e non ti stupire se sbaglia tono o inventa una
+regola. Oppure gli lasci un **briefing scritto**, che resta sulla scrivania e
+vale per ogni reclamo che arriva: «sei l'assistente dell'assistenza; rispondi
+in modo cortese e conciso; non promettere rimborsi oltre i 30 giorni; ecco tre
+reclami già evasi, con la risposta giusta accanto; scrivi sempre nel formato:
+saluto, soluzione, firma». L'ultima riga serve a chi maneggia la risposta dopo
+di lui, perché quel foglio finisce in archivio, dove la firma si cerca sempre
+allo stesso posto, e uno composto a modo proprio lì si inceppa. Stesso collega,
+nessun corso di formazione, risultati incomparabili. Il briefing è un documento
+di lavoro, e come ogni documento si scrive, si rilegge, si corregge quando
+qualcosa non va.
 
 `````
 
@@ -171,12 +175,14 @@ mezzo**.
 `````{tab} Elementare
 
 Sulla tua scrivania ci sta solo un certo numero di fogli davanti a te: oltre
-quelli finiscono nel cassetto e li dimentichi. Ma c'è un secondo effetto, più
+quelli finiscono nel cassetto e li dimentichi. C'è poi un secondo effetto, più
 sottile, che chiunque abbia studiato conosce: di una pila di
 fogli, l'occhio cade sul **primo** e sull’**ultimo**. Quelli in mezzo li
-sfogli distrattamente. Se metti l'informazione che conta proprio lì (impilata
-al centro, tra decine di altre carte), rischi di non «vederla» nemmeno se ce
-l'hai sotto il naso. Vale per te alla scrivania e, sorprendentemente, vale
+sfogli distrattamente, e più la pila cresce più quel centro si allarga. Se
+metti l'informazione che conta proprio lì, rischi di non «vederla» nemmeno se
+ce l'hai sotto il naso: rispondi come se quel foglio non l'avessi mai avuto, e
+certe volte peggio, come se le carte scorse in fretta ti avessero confuso
+invece di aiutarti. Vale per te alla scrivania e, sorprendentemente, vale
 anche per il modello: il posto peggiore dove mettere la cosa importante è il
 centro di un contesto lungo.
 
@@ -212,10 +218,10 @@ una **memoria a lungo termine**, e per forza deve stare *fuori* dal contesto.
 
 `````{tab} Elementare
 
-È la differenza tra ciò che tieni a mente e ciò che ti appunti su un taccuino.
 A mente tieni giusto le poche cose che ti servono *ora*: è veloce, ma ci sta
-poco e svanisce. Il taccuino invece contiene tutto quello che hai annotato nel
-tempo: non lo leggi tutto insieme, lo apri alla pagina giusta quando ti serve.
+poco e svanisce. Su un taccuino invece finisce tutto quello che hai annotato
+nel tempo: non lo leggi tutto insieme, lo apri alla pagina giusta quando ti
+serve.
 
 Un agente fa lo stesso. Nel breve termine usa un **foglio di brutta** dentro
 la finestra: ci scrive i risultati intermedi, i conti a metà, gli appunti del
@@ -277,16 +283,17 @@ essere opinioni e diventano righe che qualcuno esegue.
 `````{tab} Elementare
 
 È come fare la valigia con un limite di peso. Alcune cose non si discutono,
-documenti, biglietti: entrano comunque. Per il resto, con lo spazio che
-avanza, metti prima l'indispensabile, poi il molto utile, e ciò che resta
-fuori resta fuori. Se qualcosa quasi ci sta, a volte lo porti a metà, sapendo
-che è un compromesso zoppo: mezzo maglione non tiene caldo, e come vedremo
-anche mezzo passaggio di testo non afferma niente. E se sai che chi la aprirà
-guarderà per prima cosa quello che sta sopra e quello che sta sotto, mentre
-quello sepolto in mezzo rischia di non vederlo, le cose che contano le metti
-ai due estremi. Il context builder fa la valigia del modello: gli obbligatori
-dentro, il resto per priorità fino a esaurire il budget, e il più prezioso
-mai nel mezzo.
+documenti, biglietti: entrano comunque. Per il resto non provi tutte le
+combinazioni possibili di ciò che entra e ciò che no, sono troppe e il taxi è
+sotto; scendi per ordine finché lo spazio dura, prima l'indispensabile, poi il
+molto utile, e fra due cose che servono uguale quella che pesa meno. Ciò che
+resta fuori resta fuori. Se qualcosa quasi ci sta, a volte lo porti a metà,
+sapendo che è un compromesso zoppo: mezzo maglione non tiene caldo, e mezza
+frase non dice niente. E se sai che chi la aprirà guarderà per prima cosa
+quello che sta sopra e quello che sta sotto, mentre quello sepolto in mezzo
+rischia di non vederlo, le cose che contano le metti ai due estremi. Il context
+builder fa la valigia del modello: gli obbligatori dentro, il resto per
+priorità fino a esaurire il budget, e il più prezioso mai nel mezzo.
 
 `````
 
@@ -301,11 +308,10 @@ soluzione esatta è combinatoria; in pratica si usa un'euristica **greedy**
 due raffinamenti che vengono diritti dalle sezioni precedenti.
 
 Il primo: l'ultimo passaggio che sfora viene **troncato** per riempire lo
-spazio residuo invece di essere buttato del tutto. Va detto che è un
-raffinamento discutibile, e conviene saperlo: un troncamento a metà frase
-occupa token e restituisce un frammento che non afferma niente, quindi spesso
-conviene tagliare a confine di frase, e scartare il passaggio se non ne resta
-almeno una intera.
+spazio residuo invece di essere buttato del tutto. Il raffinamento è
+discutibile: un troncamento a metà frase occupa token e restituisce un
+frammento che non afferma niente, quindi spesso conviene tagliare a confine di
+frase, e scartare il passaggio se non ne resta almeno una intera.
 
 Il secondo: i passaggi scelti vengono **riordinati**, e non semplicemente
 messi in ordine crescente di rilevanza. La curva di Liu e colleghi è una **U**,

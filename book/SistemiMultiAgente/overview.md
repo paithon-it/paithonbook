@@ -79,11 +79,10 @@ peggiore.
 Con la regola **topologica** ogni storno guarda i suoi sette vicini più
 prossimi, dovunque siano, e sette restano: stanno solo un po’ più lontano.
 
-Quanto più lontano? Meno di quanto verrebbe da dire, e vale la pena farlo
-vedere con dei cubetti, perché è il punto su cui poggia tutto il resto. Una
-scatola larga due metri, per due, per due contiene otto metri cubi. Per
-contenerne il doppio, sedici, **non** serve una scatola larga il doppio: quella
-ne conterrebbe sessantaquattro, cioè otto volte tanto, perché allargando il lato
+Quanto più lontano? Meno di quanto verrebbe da dire. Una scatola larga due
+metri, per due, per due contiene otto metri cubi. Per contenerne il doppio,
+sedici, non serve una scatola larga il doppio: quella ne conterrebbe
+sessantaquattro, cioè otto volte tanto, perché allargando il lato
 si allargano insieme le tre direzioni. Proviamo allora ad allargare di poco.
 Portiamo il lato da due metri a due e mezzo, un quarto in più: due e mezzo per
 due e mezzo per due e mezzo fa quindici metri cubi e sei, e i sedici che
@@ -198,23 +197,22 @@ sono costruiti tutti allo stesso modo.
 
 `````{tab} Elementare
 
-Tre colleghi rispondono a una domanda difficile e ognuno, da solo, ci prende
-sette volte su dieci. Decidendo a maggioranza il gruppo ci prende quasi otto
-volte su dieci (78%), e con nove colleghi il 90%: perché il gruppo sbagli
-servono almeno due errori insieme, che sono più rari di uno. Da dove esca
-esattamente quel 78 lo vedremo elencando i casi uno per uno nella
+Tre colleghi devono rispondere sì o no a una domanda difficile, e ognuno, da
+solo, ci prende sette volte su dieci. Decidendo a maggioranza il gruppo ci
+prende quasi otto volte su dieci (78%), e con nove colleghi il 90%: perché il
+gruppo sbagli servono almeno due errori insieme, che sono più rari di uno. Da
+dove esca esattamente quel 78 lo vedremo elencando i casi uno per uno nella
 sezione «Protocolli e consenso» (il 90 esce allo stesso modo, con molti più
-casi da elencare): è un conto che si fa a mano e vale la pena
-rifarlo, ma per adesso basta il senso.
+casi da elencare): è un conto da foglio e matita, ma per adesso basta il senso.
 
 Il conto però vale solo se i tre sbagliano in modo *diverso*. Se hanno studiato
 sugli stessi appunti sbagliati sbagliano insieme, la maggioranza conferma
-l'errore invece di correggerlo e il gruppo resta al 70% del singolo: tre
-stipendi per il risultato di uno. E se ciascuno ci prende quattro volte su
-dieci, votare *peggiora* le cose: tre danno il 35%, nove il 27%. Il voto
-amplifica la tendenza di fondo, qualunque sia. (Anche questi due numeri escono
-dall'elenco dei casi di cui sopra: è lo stesso conto, fatto partendo da quattro
-volte su dieci invece che da sette.)
+l'errore invece di correggerlo e il gruppo ci prende sette volte su dieci come
+ciascuno di loro: tre stipendi per il risultato di uno. E se ciascuno ci prende
+quattro volte su dieci, votare *peggiora* le cose: tre danno il 35%, nove il
+27%. Il voto amplifica la tendenza di fondo, qualunque sia. (Anche questi due
+numeri escono dallo stesso elenco di casi, rifatto partendo da quattro volte su
+dieci invece che da sette.)
 
 `````
 
@@ -272,10 +270,11 @@ Più avanti nel libro incontrerai due reti che si allenano l'una contro l'altra:
 una fabbrica immagini false, l'altra cerca di smascherarle. Si chiamano GAN, e
 di loro qui basta sapere come finisce la partita. Addestrare un programma, di
 solito, somiglia a cercare il punto più basso di una valle nella nebbia: si
-scende, e quando non si scende più si è arrivati. Qui no, perché la discesa di
-uno è la salita dell'altro e un fondo non c'è. Quello che si può sperare è un
-**pareggio**, cioè il momento in cui a nessuno dei due conviene più cambiare
-mossa, perché a qualunque mossa l'altro saprebbe rispondere.
+scende, e quando non si scende più si è arrivati. Qui no, perché ogni passo
+avanti di uno rende più difficile il mestiere dell'altro, e una valle sola non
+c'è. Quello che si può sperare è un **pareggio**, cioè il momento in cui a
+nessuno dei due conviene più cambiare mossa, perché a qualunque mossa l'altro
+saprebbe rispondere.
 
 Un sistema multi-agente allarga quella struttura: i giocatori possono essere
 dieci, e non sono per forza nemici. E imparare diventa più difficile, perché un

@@ -59,6 +59,13 @@ biglietto. Tenerlo scritto sul biglietto, invece di lasciarlo indovinare a chi
 legge, è l'unica cosa che permette a fine giornata di dire se qualcuno ha
 mancato a qualcosa.
 
+Ci sono anche due modi diversi di sbagliare. «Il latte è finito» scritto mentre
+in frigo c'è un litro pieno ha torto sul merito. «Compra il latte» attaccato al
+frigorifero di un vicino non ha niente di falso, e però non vale: quel vicino
+non ti doveva la spesa, e domani nessuno può rimproverargli niente. Il biglietto
+falso lo smaschera chi apre il frigorifero; quello che non vale lo vede chi
+guarda a quale frigorifero è appeso.
+
 `````
 
 `````{tab} Superiore
@@ -243,13 +250,14 @@ sistemi di agenti salta sempre.
 
 `````{tab} Elementare
 
-Tre persone rispondono a una domanda difficile e ciascuna, da sola, ci prende
-sette volte su dieci. Facciamo il conto su mille domande, elencando tutti i casi
-possibili.
+Tre persone rispondono a una domanda difficile con due sole risposte possibili,
+e ciascuna, da sola, ci prende sette volte su dieci. Facciamo il conto su mille
+domande, elencando tutti i casi possibili.
 
 Che ci prendano **tutte e tre** capita sette volte su dieci, per sette su dieci,
 per sette su dieci: sette per sette per sette fa trecentoquarantatré, quindi
-trecentoquarantatré domande su mille.
+trecentoquarantatré domande su mille. Moltiplicare così ha senso finché le tre
+persone non sbagliano tutte sulle stesse domande.
 
 Che ne azzecchino **due su tre** capita in tre modi diversi, a seconda di chi
 dei tre sbaglia, e ciascun modo vale sette per sette per tre, cioè
@@ -268,8 +276,8 @@ servono **almeno due errori insieme**, e due errori insieme sono più rari di un
 
 Con cinque persone servirebbero tre errori insieme, e il gruppo sale a
 ottantaquattro volte su cento; con nove ne servirebbero cinque, e si arriva a
-novanta. Sono lo stesso identico conto con più casi da elencare: a un certo
-punto conviene lasciarli fare a un programma, ed è quello che facciamo fra poco.
+novanta. Sono lo stesso identico conto con più casi da elencare, e a quel punto
+conviene farli elencare a un programma.
 
 E attenzione al verso, perché è la prima delle due condizioni. Se ciascuno ci
 prende **meno** della metà delle volte il conto si ribalta: con tre persone che
@@ -297,11 +305,10 @@ l'estremo inferiore della somma è la più piccola maggioranza stretta (per $n$
 dispari, $(n+1)/2$; si prende $n$ dispari proprio per non dover arbitrare i
 pareggi).
 
-L'ipotesi delle due sole alternative non è cosmetica, e vale la pena
-tenerla presente per il seguito: le risposte di un agente non sono binarie, e
-con molte alternative la formula smette di dare l'accuratezza della maggioranza
-e ne diventa un limite inferiore, perché i voti sbagliati si disperdono invece
-di sommarsi su un'unica risposta falsa.
+L'ipotesi delle due sole alternative pesa sul seguito: le risposte di un agente
+non sono binarie, e con molte alternative la formula smette di dare
+l'accuratezza della maggioranza e ne diventa un limite inferiore, perché i voti
+sbagliati si disperdono invece di sommarsi su un'unica risposta falsa.
 
 Il teorema ha due parti: per $p > 1/2$ la successione $P_n$, letta
 sui valori dispari di $n$, è crescente e tende a $1$; per $p < 1/2$ è
@@ -314,7 +321,7 @@ Con $p = 0{,}7$: $P_3 = 0{,}784$, $P_5 = 0{,}837$, $P_9 = 0{,}901$,
 $P_{21} = 0{,}974$. La convergenza è reale ma lenta, con rendimenti
 decrescenti marcati: i primi due votanti aggiunti comprano otto punti
 ($0{,}700 \to 0{,}784$), i dodici che portano da nove a ventuno ne comprano
-sette ($0{,}901 \to 0{,}974$). Vale la pena confrontare questa curva con il
+sette ($0{,}901 \to 0{,}974$). Questa curva va confrontata con il
 costo, che l'apertura del capitolo ha mostrato crescere come il quadrato
 quando tutti leggono tutto: il voto è il caso migliore per il multi-agente
 proprio perché i votanti non si parlano, e quindi il costo resta lineare in
@@ -433,8 +440,8 @@ $\rho = 0{,}2$ ne valgono cinque. Il numero va preso per quello che è, un
 ordine di grandezza: il conto è esatto per la varianza della media, mentre
 l'accuratezza della maggioranza su voti binari non è determinata dalla sola
 correlazione a coppie (due meccanismi di correlazione con la stessa $\rho$
-possono dare curve $P_n$ diverse, e il modello a trappole qui sopra è appunto
-un meccanismo particolare). Il messaggio qualitativo però non cambia: la curva
+possono dare curve $P_n$ diverse, e il modello a trappole è appunto un
+meccanismo particolare). Il messaggio qualitativo però non cambia: la curva
 si appiattisce. È la stessa aritmetica che governa gli
 *ensemble* nel capitolo di machine learning, dove il guadagno del bagging viene
 dalla decorrelazione e non dal numero di alberi. La conseguenza per chi
@@ -442,7 +449,7 @@ progetta è una sola: finché $\rho$ non si misura, il numero di agenti che si
 pagano dice poco sul numero di giudizi indipendenti che si ottengono, e la
 curva reale sta sotto quella di Condorcet.
 
-Peggiora se si guarda l'unanimità. Nel modello sopra, con $n = 9$, la
+Peggiora se si guarda l'unanimità. Nel modello a trappole, con $n = 9$, la
 probabilità che tutti concordino è $\lambda + (1-\lambda)p_0^9 = 0{,}441$: il
 primo addendo sono le trappole, il secondo il caso in cui, fuori dalle
 trappole, tutti e nove abbiano ragione (si trascura la coincidenza di nove
@@ -554,15 +561,15 @@ rispondere in un controllo che il giudice sa fare.
 
 `````{tab} Elementare
 
-Pensa a un processo. Il giudice non ha svolto le indagini, non ha visitato la
-scena, non ha interrogato i testimoni: da solo non arriverebbe mai alla
+In un processo il giudice non ha svolto le indagini, non ha visitato la scena,
+non ha interrogato i testimoni: da solo non arriverebbe mai alla
 verità. Eppure decide, e il sistema funziona perché non deve *ricostruire*
 niente: deve solo accorgersi di quando un ragionamento non sta in piedi. Ci
 sono due parti che hanno interesse opposto, e ciascuna ha tutte le ragioni per
 mettere in evidenza la falla dell'altra.
 
 Ecco il punto che rende il meccanismo forte: se uno dei due mente, all'altro
-conviene puntare il dito **esattamente** sul punto della bugia. E controllare
+conviene puntare il dito esattamente sul punto della bugia. E controllare
 un solo punto è alla portata di chiunque, anche di chi non avrebbe saputo
 ricostruire l'intera storia. Il giudice non deve essere più bravo dei
 dibattenti: deve solo saper valutare l'ultimo passaggio contestato.
@@ -572,6 +579,12 @@ il giudice riconosce un argomento fallace da uno valido. Se si lascia
 convincere dal più sicuro di sé, dal più fluente, da chi usa le parole
 difficili, allora il dibattito non premia chi ha ragione: premia chi è più
 persuasivo, che è una qualità diversa e a volte opposta.
+
+Il guaio peggiore però non riguarda il giudice. Se accusa e difesa hanno
+studiato sugli stessi libri e credono tutte e due alla stessa cosa falsa, quella
+cosa in aula non la nomina nessuno: non viene contestata, il giudice non la
+sente mai, e il verdetto si gioca su tutto il resto. Il processo porta alla luce
+i disaccordi che ci sono; quelli che non ci sono non li inventa.
 
 `````
 

@@ -191,30 +191,33 @@ insieme.
 
 `````{tab} Elementare
 
-Il punto cieco merita un'immagine, perché è il genere di guasto che nessuno si
-aspetta e che salta fuori solo misurando.
+Una parola coperta in mezzo a una pagina, e il permesso di leggere tutto quello
+che viene prima: il gioco è indovinarla. Il permesso ce l'hai, ma gli occhiali
+che ti hanno dato hanno una fessura storta. Sulla riga che stai leggendo vedi
+indietro fin dove arriva la lente; sulle righe di sopra ti fermi prima verso
+destra, e il pezzo che ti sfugge è più lungo proprio sulla riga appena
+sopra la tua, quella che ti servirebbe di più. Lenti più spesse allungano la
+portata; la forma della fessura resta quella, e quelle parole nessuno te le
+aveva vietate.
 
-Immagina di dover indovinare una parola coperta in un testo, con il permesso di
-leggere tutto quello che viene prima. Il permesso ce l'hai, ma gli occhiali che
-ti hanno dato hanno una fessura di forma sbagliata: leggi benissimo tutta la
-colonna a sinistra, leggi le righe di sopra ma solo fino a un certo punto verso
-destra, e più sali più il pezzo di destra ti sfugge. Nessuno ti sta impedendo
-di leggerlo: sono gli occhiali, cioè lo strumento con cui guardi, e cambiare
-occhiali più spessi non serve, perché la fessura ha quella forma a
-prescindere.
+Sono due difetti diversi. Con sei strati la rete non arriva lontano abbastanza:
+è miopia, e si cura con la profondità. Con ventiquattro la portata basta e
+restano fuori sempre gli stessi sei pixel: il punto cieco. Lì la profondità non
+serve più a niente, perché il limite sta nella **forma** dello strumento, e si
+sposta soltanto cambiando quella. La riparazione del 2016 è mettere due
+finestre al posto di una: una guarda tutte le righe di sopra per intero,
+l'altra la riga corrente da sinistra.
 
-Sono due difetti diversi, e la tabella li separa. Con sei strati la rete non
-arriva lontano abbastanza: è miopia, e si cura con la profondità. Con
-ventiquattro strati la miopia è passata e restano sempre gli stessi sei pixel:
-quello non è più un limite di potenza, è un limite di **forma**, e si cura
-soltanto cambiando la forma dello strumento. È esattamente ciò che il lavoro
-del 2016 fa, mettendo due finestre invece di una: una che guarda tutte le
-righe di sopra per intero e una che guarda la riga corrente da sinistra.
+Conta anche il modo di rispondere. Nel gioco la risposta è una parola, e fra
+due parole non ce n'è una più vicina dell'altra. La rete invece sceglie fra 256
+gradazioni di grigio, che stanno su una scala: il 128 e il 129 sono vicini di
+casa. Chi le tratta come 256 nomi di un elenco butta via quello che sa già; chi
+risponde con una curva sulla scala impara prima e indovina meglio.
 
-La lezione vale ben oltre le immagini, ed è una di quelle che tornano: quando
-un modello non arriva a un risultato, la prima domanda non è «quanto lo devo
-fare più grande», è «c'è qualcosa che questa architettura non può fare in linea
-di principio?». Nel primo caso si spende calcolo, nel secondo lo si butta.
+Vale ben oltre le immagini: quando un modello non arriva a un risultato, prima
+di ingrandirlo si guarda se quell'architettura possa arrivarci in linea di
+principio. Ingrandire un modello miope serve; ingrandire un modello cieco è
+calcolo buttato.
 
 `````
 
@@ -227,8 +230,9 @@ $$
 p(\mathbf{x}) = \prod_{i=1}^{n^2} p\big(x_i \mid x_1, \dots, x_{i-1}\big),
 $$
 
-con $x_i$ l’$i$-esimo pixel in ordine di scansione (e, sui colori, i tre canali
-ordinati dentro ciascun pixel). Ogni fattore è una categorica su 256 livelli,
+con $x_i$ l’$i$-esimo pixel in ordine di scansione su un'immagine $n \times n$
+(e, sui colori, i tre canali ordinati dentro ciascun pixel). Ogni fattore è una
+categorica su 256 livelli,
 quindi normalizzata per costruzione: $\log p(\mathbf{x})$ è **esatta** e si
 ottiene in un solo passaggio in avanti, perché durante l'addestramento tutti i
 contesti sono disponibili insieme (*teacher forcing*). È l'asimmetria

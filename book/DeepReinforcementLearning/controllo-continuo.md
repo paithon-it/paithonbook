@@ -44,6 +44,13 @@ un *attore* che, guardando la situazione, propone direttamente la forza da
 applicare. Il giudice non deve più scandagliare infinite possibilità: deve solo
 dire all'attore se la mossa proposta è buona e in che direzione ritoccarla.
 
+E c'è una seconda pretesa, che con il menu non c'entra: le prove già fatte non
+si buttano. Ogni mossa tentata, con quello che ne è venuto, finisce su un
+quaderno, e da lì la si ripesca per imparare ancora, molto tempo dopo, quando
+l'attore ha già cambiato modo di giocare. Per un robot vero, dove ogni
+tentativo consuma cinghie e ingranaggi, è quello che rende la faccenda
+praticabile.
+
 `````
 
 `````{tab} Superiore
@@ -91,21 +98,32 @@ azioni che il critico premia di più.
 
 `````{tab} Elementare
 
-Come fa l'attore a "sapere" in che direzione muovere la forza? Immagina il
-critico come un paesaggio di colline: per ogni azione possibile c'è
-un'altezza, il suo valore. L'attore sta in un punto e vuole salire. Il
-critico, oltre a dirgli l'altezza, gli indica la *pendenza*: "da qui,
-spingendo un filo di più sul secondo giunto, sali". L'attore fa un
-passettino in quella direzione. Ripetuto tante volte, l'attore scivola verso
-la cima (cioè verso l'azione di valore massimo) senza mai dover provare tutte
-le azioni una per una. È la differenza tra cercare la vetta a tentoni e
-seguire la bussola della pendenza.
+Come fa l'attore a "sapere" in che direzione muovere la forza? Il critico è un
+paesaggio di colline: per ogni azione possibile c'è un'altezza, il suo valore.
+L'attore sta in un punto e vuole salire. Il critico, oltre a dirgli l'altezza,
+gli indica la *pendenza*: "da qui, spingendo un filo di più sul secondo giunto,
+sali". L'attore fa un passettino in quella direzione. Ripetuto tante volte,
+arriva in cima alla collina su cui si trova, e ci arriva senza aver mai dovuto
+provare tutte le azioni una per una. È la differenza tra cercare la vetta a
+tentoni e seguire la bussola della pendenza.
+
+La bussola, però, dice da che parte si sale da qui, non dove sta la vetta più
+alta del paesaggio. Se una collina più alta comincia dall'altra parte della
+valle, salendo non ci si arriva: per raggiungerla bisognerebbe prima scendere,
+e la pendenza dice sempre di salire.
 
 Per non restare fermo su ciò che già conosce, l'attore aggiunge alle sue azioni
 un po’ di **rumore** casuale: piccole spinte imprevedibili che lo fanno provare
 varianti nuove. È l'equivalente continuo del "ogni tanto tira a caso invece di
 prendere la mossa migliore" con cui il Q-learning del capitolo precedente
 esplorava.
+
+Le pendenze, poi, l'attore non le misura dove passa adesso: le misura nei punti
+pescati dal quaderno, cioè dove era finito quando giocava in un altro modo. Il
+conto fatto fino in fondo vorrebbe le pendenze dei posti di oggi; si usano
+quelle di ieri perché sono già scritte, e in cambio ci si accontenta di una
+direzione buona invece che esatta. Funziona bene, ma nessun conto lo
+garantisce: è una scelta pratica.
 
 `````
 
@@ -209,13 +227,12 @@ usata nel calcolo del voto di riferimento, così che azioni quasi identiche
 ricevano voti quasi identici. Impedisce all'attore di aggrapparsi a un picco
 stretto e probabilmente illusorio del critico.
 
-Va detto anche su che cosa questi tre trucchi non promettono niente. Dei due
-difetti elencati poco fa attaccano il primo, l'ottimismo dei voti, e lo
-attaccano in due: i due giudici e i bersagli sfumati. L'attore che parla di meno
-cura invece un difetto in più, che nell'elenco non c'era, cioè l'attore che
-insegue giudizi ancora acerbi. Sul secondo difetto, la sensibilità alle manopole,
-TD3 non dice nulla: l'addestramento è meno nervoso e quindi se ne soffre meno,
-ma il problema è ancora tutto lì.
+Dei due problemi di DDPG, i tre trucchi attaccano l'ottimismo dei voti, e lo
+attaccano in due: i due giudici e i bersagli sfumati. L'attore che parla di
+meno cura un problema che nell'elenco non c'era, cioè l'attore che insegue
+giudizi ancora acerbi. Sulla sensibilità alle manopole, invece, TD3 non
+promette niente: l'addestramento è meno nervoso e quindi se ne soffre meno, ma
+il guaio è ancora tutto lì.
 
 `````
 
@@ -226,11 +243,11 @@ addestrati sullo stesso bersaglio, costruito con il *minimo* delle due reti
 target:
 
 $$
-y = r + \gamma \min_{i=1,2} Q_{\phi'_i}\!\big(s', \tilde a'\big).
+y = r + \gamma \min_{i=1,2} Q_{\phi'_i}\!\big(s', \tilde a'\big),
 $$
 
-dove $\tilde a'$ è l'azione dell'attore target *sfumata dal rumore*, che il
-punto (c) qui sotto definisce.
+dove $\tilde a'$ è l'azione dell'attore target *sfumata dal rumore*, definita
+poco più sotto dal *target policy smoothing*.
 
 Prendere il minimo introduce un bias *pessimista* che compensa la sovrastima:
 poiché l'errore che si propaga è il più piccolo dei due, il valore tende a non
@@ -254,9 +271,9 @@ dove $\sigma$ è l'ampiezza del rumore e $c$ la soglia oltre la quale viene
 troncato (nel paper $\sigma = 0{,}2$ e $c = 0{,}5$), così che il bersaglio sia
 liscio rispetto all'azione: previene lo
 sfruttamento, da parte dell'attore, di picchi acuti ed erronei nella superficie
-del critico. Dei due difetti elencati sopra, TD3 attacca frontalmente **il
-primo**, la sovrastima, con il clipped double-Q e il target smoothing; il *delayed
-policy update* cura un difetto che sopra non era in elenco e va aggiunto, cioè
+del critico. Dei due problemi di DDPG, TD3 attacca frontalmente la sovrastima,
+con il clipped double-Q e il target smoothing; il *delayed policy update* cura
+un problema che nell'elenco non c'era e va aggiunto, cioè
 l'attore che insegue stime ancora immature. Sull'ipersensibilità agli
 iperparametri, invece, TD3 non promette nulla: ne attenua i sintomi perché
 l'addestramento è meno nervoso, non perché il problema sia risolto. Il valore
@@ -285,15 +302,38 @@ mediocre, non se ne accorgerà più, perché ha smesso di provare alternative.
 SAC cambia la regola del gioco. All'agente non chiede soltanto "massimizza il
 premio", ma "massimizza il premio *restando il più imprevedibile possibile*".
 A parità di ricompensa attesa, preferisce la condotta più varia, quella che
-mantiene aperte più opzioni. Immagina di andare al lavoro sempre per la stessa
-strada perché "funziona": non scoprirai mai la scorciatoia. Un pendolare che
-ogni tanto cambia percorso, senza perdere troppo tempo, resta pronto a cogliere
-la via migliore quando si presenta. Questa preferenza per la varietà si
+mantiene aperte più opzioni. Chi va al lavoro sempre per la stessa strada,
+perché quella "funziona", la scorciatoia non la scopre. Un pendolare che ogni
+tanto cambia percorso, senza perdere troppo tempo, resta pronto a cogliere la
+via migliore quando si presenta. Questa preferenza per la varietà si
 regola con una manopola, la "temperatura": alta, l'agente esplora molto; bassa,
 si concentra sul premio. Il nome viene dalla fisica, e l'immagine è quella
 giusta: più la temperatura è alta, più le cose si agitano e si mescolano; più è
-bassa, più tutto si posa in un'unica configurazione. SAC di solito gira quella
-manopola da solo, adattandola durante l'addestramento.
+bassa, più tutto si posa in un'unica configurazione.
+
+La manopola, di solito, non la gira una persona. Si fissa all'inizio quanta
+varietà si pretende, un minimo sotto il quale non si vuole scendere, e poi la
+manopola si muove da sé per tenere la promessa: se le scelte dell'agente si
+stanno restringendo, sale; se l'agente sta girovagando più di quanto la
+promessa chieda, scende, e il premio torna a contare di più.
+
+Resta un intoppo pratico, e riguarda il modo in cui l'attore viene corretto.
+Quello di DDPG si faceva indicare la direzione e spostava di un passettino la
+mossa; il pendolare, invece, la strada del giorno la tira a sorte, e due
+giornate identiche gli danno percorsi diversi. Chiedersi "sarebbe andata meglio
+allungando un po’ la deviazione?" non ha risposta, perché fra una giornata e
+l'altra è cambiata anche la sorte. Il rimedio è tenere il caso fuori dalla regola: il pendolare
+pesca prima un numero da un sacchetto, poi applica la sua regola a quel numero
+e ne ricava il percorso del giorno. Con il numero tenuto fermo la domanda ha
+una risposta, e la regola si può ritoccare nella direzione giusta.
+
+C'è poi un tetto alla deviazione: oltre un certo giro si arriva tardi, e la
+regola riporta dentro il tetto qualunque numero le venga passato. Riportare
+dentro ammucchia: due numeri molto diversi, se sono tutti e due grandi, danno
+quasi lo stesso giro largo. Chi allora conta la varietà sui numeri pescati,
+invece che sui percorsi davvero fatti, si crede più imprevedibile di quanto
+sia, e gira la manopola della temperatura leggendo un numero falso. È lo
+sbaglio che guasta proprio la cosa per cui SAC è stato inventato.
 
 `````
 
@@ -337,9 +377,9 @@ a = \tanh\!\big(\boldsymbol{\mu}_\theta(s) +
 $$
 
 così il caso sta tutto in $\boldsymbol{\epsilon}$ e il gradiente scorre lungo
-$\boldsymbol{\mu}_\theta$ e $\boldsymbol{\sigma}_\theta$; è il trucco che il
-libro ritroverà nei {doc}`modelli latenti </ModelliLatenti/overview>` per
-addestrare il VAE. La $\tanh$ schiaccia l'azione nell'intervallo ammesso, e
+$\boldsymbol{\mu}_\theta$ e $\boldsymbol{\sigma}_\theta$; è lo stesso trucco con
+cui si addestra il VAE nei {doc}`modelli latenti </ModelliLatenti/overview>`.
+La $\tanh$ schiaccia l'azione nell'intervallo ammesso, e
 non è gratis: cambia la densità, e nel $\log\pi_\theta$ va sottratto il
 termine di correzione $\sum_j \log\big(1-\tanh^2(u_j)\big)$, dove
 $\mathbf{u}$ è l'azione prima dello schiacciamento. Dimenticarlo è l'errore
@@ -455,15 +495,17 @@ che porta un robot a muoversi nel mondo.
   come chi sale una collina con la bussola invece che a tentoni; riusa il
   quaderno delle esperienze passate e le copie congelate delle reti ereditate
   da DQN, ed esplora aggiungendo un po’ di rumore casuale alle proprie mosse.
-- DDPG è nervoso e si lascia illudere dai voti troppo alti. **TD3** lo
-  corregge con tre accorgimenti: due giudici invece di uno, e ci si regola sul
+- DDPG è nervoso e si lascia illudere dai voti troppo alti. **TD3** aggiunge
+  tre accorgimenti: due giudici invece di uno, e ci si regola sul
   più prudente; l'attore cambia strategia una volta ogni due aggiornamenti dei
   giudici; il voto di riferimento viene sfumato con un pizzico di rumore, così
-  l'attore non si aggrappa a un picco stretto e probabilmente illusorio.
+  l'attore non si aggrappa a un picco stretto e probabilmente illusorio. I
+  voti si gonfiano meno; il nervosismo resta.
 - **SAC** cambia l'obiettivo del gioco: non solo il massimo premio, ma il
   massimo premio *restando il più imprevedibile possibile*, come il pendolare
   che ogni tanto cambia strada e per questo scopre la scorciatoia. Quanto
-  contare la varietà è una manopola, che di solito l'algoritmo gira da sé.
+  contare la varietà è una manopola, che di solito l'algoritmo gira da sé per
+  tenere una promessa di varietà minima fissata all'inizio.
 - Riusare le esperienze già vissute fa imparare con molti meno tentativi
   (decisivo quando ogni prova consuma un robot vero), ma rende l'addestramento
   più delicato da tarare rispetto a PPO. E resta lo scarto fra simulatore e
@@ -481,12 +523,13 @@ che porta un robot a muoversi nel mondo.
 - **DDPG** addestra l'attore deterministico con il *deterministic policy
   gradient* (il gradiente del critico rispetto all'azione), riusando replay
   buffer e reti target ereditati da DQN; esplora aggiungendo rumore all'azione.
-- **TD3** corregge la sovrastima e l'instabilità di DDPG con tre accorgimenti:
-  *twin critics* (minimo dei due $Q$), *delayed policy updates* e *target policy
-  smoothing*.
+- **TD3** attenua la sovrastima di DDPG con tre accorgimenti: *twin critics*
+  (minimo dei due $Q$), *delayed policy updates* e *target policy smoothing*;
+  sull'ipersensibilità agli iperparametri non promette nulla.
 - **SAC** adotta un attore stocastico e l'obiettivo di **massima entropia**
-  (premio + entropia, con temperatura $\alpha$ spesso auto-regolata): esplora
-  meglio ed è robusto e campione-efficiente.
+  (premio + entropia, con temperatura $\alpha$ spesso auto-regolata su un
+  vincolo di entropia media minima): esplora meglio ed è robusto e
+  campione-efficiente.
 - Off-policy significa **efficienza nei campioni** ma minore **stabilità** di
   PPO; e resta il **sim-to-real gap**, lo scarto tra simulazione e mondo fisico.
 ```

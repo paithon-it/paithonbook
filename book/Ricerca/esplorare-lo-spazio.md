@@ -42,7 +42,25 @@ se un corridoio prosegue e prosegue senza mai finire né chiudersi, tu lo segui
 e basta: non hai nessun motivo per tornare indietro, non ci torni mai, e il
 filo che ti stavi srotolando dietro cresce con te.
 
-Nessuna delle due sa niente di dove sia l’uscita. E il difetto vero è quello,
+Lo stesso ti capita se quel corridoio gira in tondo e ti riporta a un bivio
+dove eri già stato: il filo non te lo dice, e tu ci giri dentro per sempre.
+Contro i giri in tondo basta un gesso: segni ogni bivio dove metti piede, e
+appena ritrovi un segno torni indietro. L’uscita, se c’è, adesso la trovi; solo
+che i segni te li devi ricordare tutti, e la memoria che il filo ti faceva
+risparmiare hai ricominciato a pagarla.
+
+Le due strategie si possono anche sposare. Giri col filo, ma con un tetto:
+dieci metri, non uno di più, e se l’uscita non salta fuori torni all’inizio e
+rifai tutto con venti, poi con trenta. Rifare ogni volta i primi metri sembra
+uno spreco, e non lo è, perché i bivi vicini all’inizio sono pochissimi
+rispetto a quelli lontani: se da ogni bivio partono dieci corridoi, ogni giro
+costa dieci volte quello prima, e tutti i giri già fatti messi insieme valgono
+poco più di un decimo dell’ultimo. Rifarli, in tutto, costa circa l’undici per
+cento di lavoro in più. In cambio ti tieni la memoria del filo e la garanzia
+dell’acqua: l’uscita che trovi è la più vicina, perché a ogni giro ti sei
+fermato al tetto.
+
+Nessuna di queste sa niente di dove sia l’uscita. E il difetto vero è quello,
 non la memoria: cercano dappertutto con lo stesso impegno, anche nella
 direzione opposta a dove bisogna andare.
 
@@ -191,42 +209,51 @@ che serve davvero.
 
 `````{tab} Elementare
 
-Cerchi la casa di un amico in una città che non conosci, e sai una cosa sola:
-che la sua casa è vicino a una torre che dal tuo incrocio si vede. Non sai
-quali strade portino là, non sai se ci sono sensi unici: sai solo in che
-direzione sta, e più o meno quanto è lontana in linea d’aria.
+In una città che non conosci c’è la casa di un amico, e sai solo che sta vicino
+a una torre che dal tuo incrocio si vede. Quali strade ci portino non lo sai,
+né se sono a senso unico. Sai la direzione, e i metri in linea d’aria.
 
-Basta, ma non nel modo che viene in mente per primo. Prendere a ogni incrocio
-la strada che ti avvicina alla torre non va bene: quando va bene arrivi per una
-strada più lunga del necessario, e quando va male ti infili in un vicolo cieco
-puntando dritto alla torre, perché una volta imboccata una direzione non
-torni più a guardare le altre.
+Puntare alla torre a ogni incrocio non funziona. Quando va bene arrivi per un
+giro più lungo del necessario; quando va male finisci davanti a un muro con la
+torre dietro, e le altre strade le hai lasciate al primo bivio.
 
-Quello che si fa è tenere aperte più strade insieme. Su un foglio segni fin
-dove sei arrivato lungo ciascuna, e accanto a ogni punto scrivi **due** numeri:
-quanti passi hai già fatto per arrivarci, e quanti te ne mancano in linea
-d’aria. Poi allunghi di un passo sempre la strada per cui la **somma** dei due
-è più piccola.
+Allora tiri fuori un foglio e tieni aperte più strade insieme. Accanto a ogni
+punto raggiunto scrivi i passi che ti è costato arrivarci e i metri che restano
+in linea d’aria. Poi allunghi di un passo la strada con la **somma** più
+piccola, e solo quella.
 
-La somma, non uno dei due, ed è tutto lì. Chi guarda solo quanti passi mancano
-si butta nella prima direzione promettente e non torna più; chi guarda solo
-quanti ne ha già fatti si allarga in tondo in tutte le direzioni, come l’acqua
-del labirinto. Guardando la somma, la maggior parte dei quartieri della città
-non la apri nemmeno, perché stanno dalla parte opposta, e insieme non ti lasci
-sfuggire la strada corta che partiva male.
+La somma, non uno dei due numeri. Coi soli passi fatti ti allargheresti in
+tondo come l’acqua del labirinto; coi soli metri che restano ricadresti nel
+muro di prima. Con la somma i quartieri dalla parte opposta restano bianchi sul
+foglio, e la strada corta che partiva male non ti sfugge.
 
-Quella distanza in linea d’aria è la **stima**, e ha una proprietà che vale la
-pena notare adesso perché fra poco sarà tutto: **è sempre minore o uguale alla
-strada vera**. Le strade girano, la linea d’aria no. Non capita mai che la
-linea d’aria dica «due chilometri» dove la strada ne fa uno e mezzo.
+Una riga del foglio tocca la casa dell’amico, e tu non ti fermi. Aspetti che
+venga il suo turno, cioè che sia la sua somma la più piccola. Chi si ferma alla
+prima strada che arriva porta a casa quella, e più giù nel foglio ce n’era una
+più corta.
 
-E adesso il punto di rottura, perché è qui che l’analogia guadagna il pane.
-Immagina una stima che invece **esagera**: dice «da lì sono dieci chilometri»
-dove in realtà ce ne sono due. Che succede? Che quella strada la scarti, perché
-te ne sembra un’altra migliore, e finisci per arrivare da un’altra parte. Non
-te ne accorgi nemmeno: arrivi, la strada c’è, ed è più lunga del necessario.
-Una stima che sbaglia per difetto costa tempo; una che sbaglia per eccesso
-costa la risposta giusta.
+Certe volte capiti su un incrocio già scritto, con meno passi della volta
+prima. Cancelli il numero vecchio, e quell’incrocio torna in gioco. Su uno già
+allungato non succede mai, perché un passo camminato accorcia la linea d’aria
+al massimo di un passo, mai di colpo. Quando tocca a un incrocio, ci sei già
+arrivato per la strada più corta.
+
+Il conto lo paga il foglio, dove ogni incrocio aperto finisce e non esce più.
+Per una città basta, per le strade di un paese intero servirebbe un magazzino.
+Allora lasci il foglio, riprendi il filo del labirinto e ti dai un tetto di
+venti chilometri: torni indietro appena la somma lo supera, e se la casa non
+salta fuori alzi il tetto e riparti da capo. La strada che trovi resta la più
+corta.
+
+Quei metri in linea d’aria sono la **stima**, e non sono mai più dei metri
+veri. Le strade girano, la linea d’aria no, e non capita che dica «due
+chilometri» dove la strada ne fa uno e mezzo.
+
+Adesso uno al bar ti dice dieci chilometri dove ce ne sono due. La somma di
+quella strada diventa pessima, non la allunghi più, e all’amico ci arrivi da
+un’altra parte. Nemmeno te ne accorgi: sei arrivato, la strada c’era, ed era
+più lunga del necessario. Sbagliare per difetto costa tempo, sbagliare per
+eccesso costa la strada giusta.
 
 `````
 
@@ -243,16 +270,15 @@ dove $g(n)$ è il costo del cammino trovato finora dalla partenza a $n$ e $f(n)$
 è quindi la stima del costo totale del miglior cammino che passa per $n$.
 Espandere sempre il nodo con $f$ minimo è l’algoritmo **A\***, di Hart, Nilsson
 e Raphael {cite}`hart1968formal`. Con $h \equiv 0$ si riduce alla ricerca a
-costo uniforme, cioè al blocco qui sopra.
+costo uniforme, cioè al caso con la stima a zero.
 
-Va detto subito quanto costa, perché la tabella di prima non lo dice e la
-risposta è scomoda: A\* **tiene in memoria tutti i nodi generati**, esattamente
-come la ricerca in ampiezza. Riduce enormemente quanti ne genera, e questo è
-tutto il guadagno, ma la memoria resta il vincolo che morde per primo. Sul
-rompicapo delle otto tessere non si vede; su quello delle quindici, che di
-posizioni ne ha dieci mila miliardi, sì, e la via d’uscita è sposare A\* con
-l’approfondimento iterativo della sezione precedente, tenendo un tetto sul
-valore di $f$ invece che sulla profondità. È l’**IDA\*** di Richard Korf
+Il prezzo, che la tabella di prima non dice, è scomodo: A\* **tiene in memoria
+tutti i nodi generati**, esattamente come la ricerca in ampiezza. Riduce
+enormemente quanti ne genera, e questo è tutto il guadagno, ma la memoria resta
+il vincolo che morde per primo. Sul rompicapo delle otto tessere non si vede;
+su quello delle quindici, che di posizioni ne ha diecimila miliardi, sì, e la
+via d’uscita è sposare A\* con l’approfondimento iterativo, tenendo un tetto
+sul valore di $f$ invece che sulla profondità. È l’**IDA\*** di Richard Korf
 {cite}`korf1985depth`, ed è stato il primo metodo a trovare, dentro limiti di
 tempo e di memoria praticabili, soluzioni ottime di istanze del quindici
 generate a caso.
@@ -276,12 +302,12 @@ costo ottimo e quindi inferiore a quello della soluzione peggiore che stiamo per
 restituire. Ma allora A\* avrebbe estratto $n$ prima, perché estrae sempre il
 minimo. È la contraddizione che dimostra il risultato.
 
-Il «primo non ancora espanso» non è un ornamento: appartenere al cammino ottimo
-non basta, bisogna esserci **arrivati lungo di esso**, e solo per il primo dei
-non espansi questo è garantito dal predecessore.
+Il «primo non ancora espanso» porta tutto il peso dell’argomento: appartenere
+al cammino ottimo non basta, bisogna esserci **arrivati lungo di esso**, e solo
+per il primo dei non espansi questo è garantito dal predecessore.
 
-L’argomento ha però una condizione che vale la pena rendere esplicita, perché
-è il punto in cui si sbaglia: presuppone di poter **tornare su uno stato già
+L’argomento ha però una condizione che resta implicita, ed è il punto in cui
+si sbaglia: presuppone di poter **tornare su uno stato già
 aperto** se salta fuori una strada più corta per arrivarci. Il codice qui sopra
 lo fa (è la riga che riscrive `costo[t]` e rimette lo stato in coda); una
 versione che marchiasse gli stati come «fatti» e non ci tornasse più potrebbe,
@@ -299,19 +325,19 @@ $$
 che è una disuguaglianza triangolare: la stima da qui non può superare il costo
 di un passo più la stima da lì. Ogni euristica consistente **che valga zero
 sugli stati finali** è anche ammissibile, e non viceversa; la condizione sugli
-stati finali non è pignoleria, perché $h \equiv 5$ soddisfa la disuguaglianza
+stati finali serve davvero, perché $h \equiv 5$ soddisfa la disuguaglianza
 triangolare su qualunque grafo a costi non negativi e ammissibile non è.
 
 In cambio la consistenza dà una cosa pratica, ed è esattamente quella che manca
 sopra: i valori di $f$ non diminuiscono mai lungo un cammino, quindi la prima
 volta che uno stato viene **estratto dalla frontiera** ci si sta arrivando in
-modo ottimo, e allora marcarlo come fatto e non tornarci più è lecito. Va detto
-con quelle parole lì: **estratto**, non raggiunto. Uno stato si può *generare*
+modo ottimo, e allora marcarlo come fatto e non tornarci più è lecito. La
+parola esatta è **estratto**, non raggiunto. Uno stato si può *generare*
 per una strada pessima molto prima di generarlo per quella buona (succede anche
-con $h \equiv 0$, che è consistente ed è l’euristica del primo blocco di questa
-pagina), e chiudere uno stato alla prima *generazione* può restituire soluzioni
-peggiori dell'ottimo, e basta che succeda una volta perché la garanzia non ci
-sia più. La riga del codice qui sopra che riscrive `costo[t]`
+con $h \equiv 0$, che è consistente ed è l’euristica della ricerca a costo
+uniforme), e chiudere uno stato alla prima *generazione* può restituire
+soluzioni peggiori dell'ottimo, e basta che succeda una volta perché la
+garanzia non ci sia più. La riga del codice qui sopra che riscrive `costo[t]`
 esiste esattamente per questo, e se la frase valesse alla prima generazione
 quella riga sarebbe codice morto.
 
@@ -435,10 +461,16 @@ euristica vuol dire cercare la stima più alta che non superi mai il vero.
 :class: important
 - Cercare **a tentoni** si può fare in due modi: allagando il labirinto un
   metro alla volta (si trova la strada più corta, e si consuma una memoria
-  enorme) oppure seguendo un corridoio fino in fondo con un filo dietro (la
-  memoria basta sempre, la strada trovata può essere assurda).
-- Il difetto vero di tutti e due non è la memoria: è che **cercano
-  dappertutto con lo stesso impegno**, anche dalla parte sbagliata.
+  enorme) oppure seguendo un corridoio fino in fondo con un filo dietro (il
+  filo costa pochissimo, la strada trovata può essere assurda, e dove i
+  corridoi girano in tondo non si esce più finché non si segnano i bivi già
+  visti, cioè finché non si ricomincia a pagare la memoria risparmiata).
+- I due si sposano girando col filo, ma con un tetto che si alza a ogni giro.
+  Rifare ogni volta i primi metri costa poco, perché i bivi vicini all’inizio
+  sono pochissimi rispetto a quelli lontani, e in cambio si tengono la memoria
+  del filo e la garanzia dell’acqua.
+- Il difetto vero del cercare a tentoni non è la memoria: è che si cerca
+  dappertutto con lo stesso impegno, anche dalla parte sbagliata.
 - La cosa che cambia le proporzioni è una **stima di quanto manca**: la
   distanza in linea d’aria dalla torre vicino a casa dell’amico. Non dice
   quale strada prendere, dice solo da che parte guardare per primo.
@@ -449,9 +481,9 @@ euristica vuol dire cercare la stima più alta che non superi mai il vero.
   un problema con meno regole non può mai costare più di quello vero (al
   massimo costa uguale), quindi la sua soluzione è automaticamente una stima
   che non esagera.
-- Misurato sul rompicapo delle otto tessere: senza stima 48.389 posizioni
-  guardate, con la stima grossolana 3.666, con quella fine 282. E la risposta
-  è la stessa tutte e tre le volte, venti mosse.
+- Sul rompicapo delle otto tessere: senza stima 48.389 posizioni guardate, con
+  la stima grossolana 3.666, con quella fine 282. E la risposta è la stessa
+  tutte e tre le volte, venti mosse.
 ```
 
 `````
@@ -469,8 +501,9 @@ euristica vuol dire cercare la stima più alta che non superi mai il vero.
   minimo. Con $h$ **ammissibile** ($h \le h^*$, cioè ottimista) restituisce una
   soluzione di costo minimo; con $h$ **consistente**
   ($h(n) \le c(n,a,n') + h(n')$, disuguaglianza triangolare) i valori di $f$
-  non decrescono lungo un cammino e ogni stato si raggiunge in modo ottimo la
-  prima volta.
+  non decrescono lungo un cammino e ogni stato viene **estratto** dalla
+  frontiera in modo ottimo la prima volta (estratto, non generato: per una
+  strada pessima lo si genera anche molto prima).
 - Le euristiche ammissibili si costruiscono **rilassando** il problema: il
   costo esatto di un problema con vincoli in meno è un limite inferiore a
   quello del problema vero, quindi è ammissibile per costruzione. Le due del
@@ -481,9 +514,10 @@ euristica vuol dire cercare la stima più alta che non superi mai il vero.
   dell’altra (con l’eccezione dei nodi a $f = C^*$, dove decide il criterio con
   cui si rompono i pari). L’ipotesi è la consistenza e non la sola
   ammissibilità, perché la dimostrazione passa per «ogni nodo con
-  $f(n) < C^*$ viene certamente espanso», che vale sotto consistenza. Misurato: 48.389 nodi con
-  $h \equiv 0$, 3.666 con le tessere fuori posto, 282 con la distanza a
-  isolati, a parità di soluzione ottima (20 mosse).
+  $f(n) < C^*$ viene certamente espanso», che vale sotto consistenza. Sul
+  rompicapo delle otto tessere: 48.389 nodi con $h \equiv 0$, 3.666 con le
+  tessere fuori posto, 282 con la distanza a isolati, a parità di soluzione
+  ottima (20 mosse).
 ```
 
 `````

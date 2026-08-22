@@ -43,16 +43,21 @@ filtri di un classificatore qualsiasi; il generatore fa il percorso inverso, e
 parte da un pugno di numeri casuali per "gonfiarli" fino a un'immagine intera.
 
 Gonfiare come, se i numeri di partenza sono un centinaio e i puntini d'arrivo
-qualche migliaio? Il primo passaggio dispone quel centinaio di numeri in una griglia
-minuscola, $4\times4$, ma spessa: in ogni casella non un valore solo, bensì una
-pila di valori. Da lì in poi, a ogni passaggio la rete prende la griglia che ha
-in mano e ne restituisce una più larga, raddoppiando il lato: da $4\times4$ a $8\times8$, poi $16\times16$, fino ai $64\times64$ che erano
-la taglia della DCGAN, mentre la pila si assottiglia. I puntini in più non sono copiati da nessuna parte,
-sono *decisi*: dove il vecchio puntino era uno solo, il passaggio successivo ne
-mette quattro, e quanto ciascuno dei quattro debba essere chiaro o scuro lo
-stabiliscono i filtri, che è esattamente ciò che la rete impara. Con questa
-architettura le immagini smettono di essere macchie e cominciano ad avere
-bordi netti e coerenza.
+qualche migliaio? Il primo passaggio dispone quel centinaio di numeri in una
+griglia minuscola, $4\times4$, ma spessa: in ogni casella non un valore solo,
+bensì una pila di valori. Da lì in poi ogni passaggio raddoppia il lato: da
+$4\times4$ a $8\times8$, poi $16\times16$, fino ai $64\times64$ che erano la
+taglia della DCGAN, mentre la pila si assottiglia. I puntini in più non sono
+copiati da nessuna parte, sono *decisi*: dove il vecchio puntino era uno solo,
+il passaggio successivo ne mette quattro, e quanto ciascuno debba essere chiaro
+o scuro lo dicono i filtri. Con questa architettura le immagini smettono di
+essere macchie e cominciano ad avere bordi netti e coerenza.
+
+E su quel pugno di numeri di partenza si possono fare i conti. Si prendono i
+numeri che hanno fatto tre uomini con gli occhiali, si tolgono quelli di tre
+uomini senza, si aggiungono quelli di tre donne: esce una donna con gli
+occhiali. Con un esemplare solo per gruppo il conto salta, perché «occhiali»
+sta in una zona di quei numeri e non in un punto preciso.
 `````
 
 `````{tab} Superiore
@@ -118,27 +123,31 @@ impianto per farsi guidare, non per disegnare meglio.
 StyleGAN non "disegna" il volto tutto in una volta: lo costruisce a livelli,
 dal grossolano al fine. Gli strati iniziali decidono posa e forma del viso,
 quelli intermedi i lineamenti, quelli finali dettagli come lentiggini e
-ciocche di capelli. A ogni livello inietta uno "stile", e la parola merita di
-essere sciolta: uno stile, qui, è una fila di manopole, una manciata di numeri
-che invece di essere fissata una volta per tutte all'ingresso viene consegnata
-al singolo livello e decide come quel livello lavorerà. Cambiando le manopole
-dei primi livelli cambia la posa; cambiando quelle degli ultimi cambiano le
-lentiggini. Per questo si possono mescolare tratti di volti diversi (la
-struttura di uno, il colore di pelle di un altro) come un fotomontaggio
-impossibile ma perfettamente coerente: basta prendere le manopole dei primi
-livelli da un volto e quelle degli ultimi da un altro.
+ciocche di capelli. A ogni livello consegna uno "stile", che è una fila di
+manopole: una manciata di numeri che invece di stare tutta all'ingresso arriva
+al singolo livello e decide come quel livello lavorerà. Le manopole non escono
+grezze dai numeri casuali di partenza: fra i due c'è una piccola rete che li
+traduce, e serve a sbrogliarli, perché nel mazzo grezzo posa, età e taglio di
+capelli sono aggrovigliati, e girando una manopola se ne muovono tre.
 
-Una cosa StyleGAN però non l'ha inventata, e conviene dirla perché è quella che
-si nota per prima: le immagini grandi come una fotografia vera erano già state
-conquistate l'anno prima dal modello da cui parte, la **Progressive GAN**, che
-aveva imparato a far crescere le due reti un pezzo alla volta, dalle immagini
-piccole a quelle grandi. StyleGAN eredita quella scala e ci aggiunge il
+Cambiando le manopole dei primi livelli cambia la posa; cambiando quelle degli
+ultimi cambiano le lentiggini. Per questo si mescolano tratti di volti diversi:
+le manopole dei primi livelli da un volto, quelle degli ultimi da un altro, e
+viene fuori un fotomontaggio impossibile e perfettamente coerente. Un pizzico
+di casualità, poi, non passa dalle manopole: entra dritto a ogni livello e
+decide i dettagli che nessuno sceglie, dove cada una ciocca e come si posi la
+grana della pelle. Stesse manopole e casualità diversa danno la stessa persona
+appena spettinata.
+
+Una cosa StyleGAN non l'ha inventata, ed è quella che si nota per prima: le
+immagini grandi come una fotografia vera erano state conquistate l'anno prima
+dal modello da cui parte, la **Progressive GAN**, che faceva crescere le due
+reti un pezzo alla volta. StyleGAN eredita quella scala e ci aggiunge il
 controllo.
 
 Che poi il risultato sia una fotografia e non un disegno non dipende dai
-livelli: dipende, come sempre in questo capitolo, dall'esperto, che è stato
-allenato su fotografie vere e boccia tutto ciò che non lo sembra. I livelli
-danno il *controllo*, il duello dà il realismo.
+livelli: dipende dall'esperto, allenato su fotografie vere, che boccia tutto
+ciò che non lo sembra. I livelli danno il *controllo*, il duello dà il realismo.
 `````
 
 `````{tab} Superiore
@@ -149,9 +158,9 @@ La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla **Prog
 
 ## Sotto il cofano: crescere, modulare, e la goccia
 
-Le tre righe qui sopra nominano tre meccanismi e non ne aprono nessuno: come si
+Tre meccanismi sono stati nominati e non aperti: come si
 fanno crescere due reti, che cosa vuol dire «consegnare una manopola a un
-livello», e che cos'era quel difetto che StyleGAN2 ha tolto. Valgono la pena
+livello», e che cos'era la macchia a goccia che StyleGAN2 ha fatto sparire. Valgono la pena
 tutti e tre, perché sono meccanismi e non risultati: la crescita per gradini è
 l'esempio più limpido di un'idea che torna ogni volta che un addestramento è
 troppo grosso per essere affrontato tutto insieme (e che qui, si vedrà, verrà
@@ -184,11 +193,10 @@ dell'esperto. Nessuno dei due si sveglia una mattina in un mondo diverso.
 
 `````{tab} Elementare
 
-Serve un'immagine per capire perché il gradino è delicato, e quella giusta è
-una lezione di disegno. Un maestro che insegna a copiare un volto non fa
-cominciare dalle ciglia: fa tracciare l'ovale, poi la posizione degli occhi,
-poi i lineamenti, e i dettagli per ultimi. Se si comincia dalle ciglia si
-sbaglia tutto, perché non c'è ancora una faccia su cui metterle.
+Un maestro che insegna a copiare un volto non fa cominciare dalle ciglia: fa
+tracciare l'ovale, poi la posizione degli occhi, poi i lineamenti, e i dettagli
+per ultimi. Se si comincia dalle ciglia si sbaglia tutto, perché non c'è ancora
+una faccia su cui metterle.
 
 La crescita per gradini fa esattamente questo con due allievi che si
 controllano a vicenda. E la dissolvenza è la cortesia di non cambiare foglio di
@@ -198,9 +206,9 @@ accorge, e continua a giudicare.
 
 Nel paper ci sono altri tre accorgimenti, e li nominiamo perché sono il genere
 di cosa che non si trova sui manuali e fa la differenza fra un addestramento
-che regge e uno che no. Il primo: si fa in modo che tutte le manopole della
-rete rispondano con la stessa prontezza, perché altrimenti alcune si girano in
-fretta e altre restano indietro, e chi resta indietro rallenta tutti. Il
+che regge e uno che no. Il primo: si fa in modo che tutti i pesi della
+rete rispondano con la stessa prontezza, perché altrimenti alcuni si aggiustano
+in fretta e altri restano indietro, e chi resta indietro rallenta tutti. Il
 secondo: dentro il falsario, dopo ogni passaggio, i numeri vengono riportati a
 una taglia standard, perché in una gara a chi urla più forte tendono a
 gonfiarsi da soli. Il terzo: si mostra all'esperto **quanto si assomigliano fra
@@ -331,15 +339,17 @@ tenere in piedi un addestramento che nel frattempo si era imparato a tenere in
 piedi in altri modi, e in cambio faceva un danno: inchiodava i dettagli a
 posizioni fisse sul foglio. Nei volti che si muovono si vedeva benissimo,
 perché i denti restavano orientati verso l'obiettivo invece di seguire la
-testa.
+testa. Al posto dei gradini, dentro ciascuna rete si aprono delle scorciatoie
+che portano il segnale da un livello all'uscita senza passare per tutti gli
+altri, e le due reti non prendono lo stesso genere di scorciatoia.
 
 La seconda è una regola nuova che chiede al falsario di **camminare a passo
-costante**: spostarsi di un tanto nella manciata di numeri di partenza deve
-cambiare l'immagine di un tanto, né di più né di meno, dovunque ci si trovi.
+costante**: spostare le manopole di un tanto deve cambiare l'immagine di un
+tanto, né di più né di meno, dovunque ci si trovi.
 Serve a fare immagini migliori, e regala un mestiere in più: un falsario che
 cammina a passo costante è molto più facile da percorrere **al contrario**,
-cioè da usare per scoprire quali numeri di partenza produrrebbero una
-fotografia che abbiamo già in mano.
+cioè da usare per scoprire quali manopole produrrebbero una fotografia che
+abbiamo già in mano, e quindi per dire se un volto l'ha fatto lui.
 
 `````
 
@@ -402,17 +412,19 @@ $\mathbf{w}$ di una proiezione casuale dell'immagine, e si penalizza la loro
 distanza da una costante:
 
 $$
-\mathbb{E}_{\mathbf{w},\, \mathbf{y} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})}
-\Big( \big\lVert \mathbf{J}_{\mathbf{w}}^{\top} \mathbf{y} \big\rVert_2 - a \Big)^2,
+\mathbb{E}_{\mathbf{w},\, \mathbf{u} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})}
+\Big( \big\lVert \mathbf{J}_{\mathbf{w}}^{\top} \mathbf{u} \big\rVert_2 - a \Big)^2,
 \qquad
 \mathbf{J}_{\mathbf{w}} = \frac{\partial g(\mathbf{w})}{\partial \mathbf{w}},
 $$
 
-dove $g$ è il generatore e $a$ non è un iperparametro ma una media mobile
+dove $g$ è il generatore, $\mathbf{u}$ è l'immagine di rumore gaussiano su cui
+si proietta (il paper la chiama $\mathbf{y}$, lettera che qui è già lo stile) e
+$a$ non è un iperparametro ma una media mobile
 esponenziale delle lunghezze osservate, cioè un bersaglio che il termine si
 sceglie da solo strada facendo. Lo Jacobiano non si calcola mai per esteso:
-basta l'identità $\mathbf{J}_{\mathbf{w}}^{\top}\mathbf{y} =
-\nabla_{\mathbf{w}}\big(g(\mathbf{w}) \cdot \mathbf{y}\big)$, che è una normale
+basta l'identità $\mathbf{J}_{\mathbf{w}}^{\top}\mathbf{u} =
+\nabla_{\mathbf{w}}\big(g(\mathbf{w}) \cdot \mathbf{u}\big)$, che è una normale
 retropropagazione. È un vincolo di buon condizionamento della mappa
 latente-immagine, e ha un effetto collaterale utile dichiarato dagli autori: i
 generatori così regolarizzati sono molto più facili da **invertire**, cioè da
@@ -444,6 +456,8 @@ ritradurre deve riportare al punto di partenza.
 CycleGAN impara a trasformare foto in quadri di Monet (e viceversa) senza mai vedere una foto e il suo quadro corrispondente: gli bastano due mucchi separati, tante foto e tanti Monet. Il trucco è il vincolo di andata e ritorno ({numref}`fig-cyclegan`): se prendo una foto, la converto in "stile Monet" e poi la riconverto in foto, devo ritrovare la foto di partenza.
 
 Detta così, la regola sembra avere una scappatoia grande come una casa: al traduttore converrebbe **non cambiare niente**, restituire la foto tale e quale e vincere senza fatica. Non gli conviene, perché il vincolo di andata e ritorno non gioca da solo: dall'altra parte c'è sempre un esperto, uno per dominio, addestrato a distinguere i veri Monet dai finti Monet. Chi non dipinge viene smascherato da lui. Le due regole si tengono a vicenda: l'esperto obbliga a cambiare stile, il ciclo obbliga a non stravolgere il contenuto.
+
+Resta una scappatoia più fine, e i falsari la trovano. Si può dipingere un Monet vero e nasconderci dentro la foto, in una trama di puntini troppo debole perché l'occhio la veda: al ritorno il compagno rilegge la trama e ricostruisce la foto identica. L'esperto è contento e il giro si chiude, ma nessuno ha promesso che nel quadro ci siano gli stessi alberi della foto. Un andata e ritorno perfetto non dimostra che il soggetto abbia fatto il viaggio.
 `````
 
 `````{tab} Superiore
@@ -528,32 +542,34 @@ generare un'immagine è, alla lettera, scrivere una frase di 256 parole.
 
 `````{tab} Elementare
 
-Immagina di dover dettare un quadro al telefono, e di avere davanti un catalogo
-di mille tessere di mosaico numerate. Il quadro lo copri con una griglia di
+Un quadro si può dettare al telefono, se chi ascolta ha lo stesso catalogo che
+hai tu: mille tessere di mosaico numerate. Il quadro lo copri con una griglia di
 sedici caselle per lato, per ogni casella scegli la tessera del catalogo che le
 somiglia di più, e detti i numeri: duecentocinquantasei numeri, e dall'altra
 parte qualcuno rimonta il quadro. Il catalogo è l'alfabeto, i numeri sono la
 frase.
 
-Fatto questo, succede la cosa interessante. Chi rimonta il quadro non ha bisogno
-che i numeri arrivino da un quadro vero: se qualcuno gliene inventa una fila
-plausibile, lui la rimonta lo stesso. E inventare file plausibili di simboli è
-esattamente il mestiere che sappiamo far fare a una macchina, quella che
-completa le frasi. Un'immagine nuova diventa allora una frase nuova.
+Chi rimonta il quadro non ha bisogno che i numeri vengano da un quadro vero: se
+qualcuno gliene inventa una fila plausibile, lui la rimonta lo stesso. E
+inventare file plausibili di simboli è il mestiere della macchina che completa
+le frasi. Un'immagine nuova diventa una frase nuova.
 
 Il catalogo però va fatto bene, e qui torna il duello. Se le tessere si scelgono
 soltanto col criterio «somiglia», il catalogo si riempie di tessere sbiadite:
 davanti a un dubbio la scelta più prudente è sempre il grigio medio, che
 somiglia un po’ a tutto e non è niente. Mettendo un esperto a bocciare le
-ricostruzioni molli, le tessere restano nette. È lo stesso mestiere che l'esperto
-fa in tutto il capitolo, ma stavolta il suo prodotto non è un'immagine: è un
-alfabeto.
+ricostruzioni molli, le tessere restano nette. È il mestiere di sempre, ma
+stavolta il prodotto dell'esperto non è un'immagine: è un alfabeto.
 
-Con un'avvertenza che questo libro ripete: il catalogo è **un soffitto**. Ciò
-che nessuna delle mille tessere sa dire, nessuno lo recupera più a valle, per
-quanto bravo sia chi scrive le frasi. E per le immagini grandi la fila
-tornerebbe lunga, quindi si lavora a finestra, generando un pezzo per volta e
-facendo scorrere la finestra: cuce bene, ma è un rimedio, non una soluzione.
+Un'avvertenza: il catalogo è **un soffitto**. Ciò che nessuna delle mille
+tessere sa dire, nessuno lo recupera più a valle, per quanto bravo sia chi
+scrive le frasi. E le tessere devono restare grosse: se ciascuna coprisse un
+pezzetto minuscolo, quei duecentocinquantasei numeri basterebbero per un angolo
+del quadro, e chi rimonta si ritroverebbe con due mezze facce che non si
+guardano. Per i quadri grandi si detta a finestra, un riquadro per volta:
+funziona finché il quadro è fatto di roba che si somiglia dappertutto, un prato
+o una città; su una figura al centro bisogna dire anche in che punto si sta
+lavorando.
 
 `````
 
@@ -696,11 +712,15 @@ duello, e conviene ripassarle così.
   errore: era il falsario che si fabbricava un picco enorme per contrabbandare,
   attraverso quella taratura, un'informazione che la taratura gli toglieva.
   StyleGAN2 la fa sparire tarando i **pesi** invece del segnale, cioè con un
-  controllo che l'immagine non la guarda.
+  controllo che l'immagine non la guarda; e con la stessa revisione mette da
+  parte anche la crescita per gradini, sostituita da scorciatoie che portano il
+  segnale da un livello all'uscita.
 - **pix2pix** e **CycleGAN** traducono un'immagine in un'altra (schizzo in
   foto, foto in Monet); la seconda ci riesce senza coppie di immagini
   corrispondenti, grazie alla regola dell'andata e ritorno, che però va tenuta
-  insieme all'esperto: da sola si lascia aggirare.
+  insieme all'esperto: da sola si lascia aggirare. E nemmeno insieme garantisce
+  il soggetto, perché il falsario può nascondere la foto dentro il quadro, in una
+  trama che l'occhio non vede, e ritrovarsela al ritorno.
 - **VQ-GAN** cambia lo scopo del duello: l'esperto non serve più a fare
   immagini, serve a fabbricare un **alfabeto**. Un'immagine diventa una fila di
   256 simboli presi da un catalogo di mille, e da lì generarne una nuova è
@@ -734,8 +754,8 @@ duello, e conviene ripassarle così.
   minibatch standard deviation.
 - **StyleGAN2** {cite}`karras2020analyzing` diagnostica gli artefatti a goccia
   come contrabbando di segnale attraverso l'instance normalization, e li elimina
-  con **modulazione e demodulazione dei pesi**: la rinormalizzazione avviene su
-  $w$ sotto ipotesi statistiche, mai sulle attivazioni vere, quindi non offre
+  con **modulazione e demodulazione dei pesi**: la rinormalizzazione agisce sui
+  filtri sotto ipotesi statistiche, mai sulle attivazioni vere, quindi non offre
   un canale nascosto. Con essa cade anche la crescita progressiva, sostituita
   da una coppia asimmetrica (*skip* nel generatore, connessioni **residue** nel
   discriminatore), e arriva la *path length regularization*, che spinge un

@@ -35,8 +35,18 @@ traffico di memoria.
 Il punto da tenere a mente è uno solo, ed è una questione di conteggio: se le
 parole sono mille e ognuna va confrontata con tutte, i confronti sono un
 milione. Con diecimila parole diventano cento milioni. La tabella di quei
-confronti è l'oggetto ingombrante di tutta questa sezione: nessuno la vuole,
-serve solo di passaggio, e proprio per questo scriverla è uno spreco.
+confronti è l'oggetto ingombrante di tutta la storia: nessuno la vuole, serve
+solo di passaggio, e proprio per questo scriverla è uno spreco.
+
+Sui punteggi c'è una precauzione da prendere prima di trasformarli in
+percentuali. Il punteggio di somiglianza fra due parole si costruisce mettendo
+a confronto tutti i numeri che le descrivono, e quei numeri sono decine: più ce
+ne sono, più i punteggi finiscono lontani gli uni dagli altri. Se la distanza
+cresce troppo, le percentuali vanno tutte alla parola in testa e alle altre
+resta zero, cioè il confronto smette di dire qualcosa. Per questo i punteggi si
+rimpiccioliscono tutti nella stessa misura prima di distribuire le percentuali:
+una divisione sola, uguale per tutti, che lascia intatta la graduatoria di chi
+somiglia a chi e tiene i numeri in una scala maneggevole.
 `````
 
 `````{tab} Superiore
@@ -51,8 +61,8 @@ $\mathbf{K}$ le *key* e quelle di $\mathbf{V}$ i *value*; $d_k$ è la
 dimensione delle key, e la
 divisione per $\sqrt{d_k}$ tiene i punteggi in una scala in cui la softmax non
 satura. Le due matrici $N \times N$ che compaiono qui dentro, i punteggi e le
-loro versioni normalizzate, sono ciò di cui parleremo per il resto della
-sezione.
+loro versioni normalizzate, sono le responsabili del costo: due intermedi che
+nessuno vuole come risultato, e che pure vanno scritti per intero.
 `````
 
 ## Il problema è la memoria, non i conti
@@ -77,6 +87,19 @@ sta, e correre fin là a ogni operazione: una volta per portarcela, una per
 andarla a riprendere e tagliarla, una per riportarci i pezzi, una per andarli
 a riprendere e infornarli. Il tempo non se ne va nel taglio: se ne va nella
 corsa.
+
+Quanto se ne va si può contare, ed è il conto che decide tutto il resto. Il
+confronto fra due parole non è un colpo d'occhio: si fa numero per numero, e i
+numeri sono una sessantina per parte, quindi ogni casella della tabella costa
+poco più di cento conti. Quella casella, però, è un numero solo, due byte da
+portare in capannone: sono una sessantina di conti per ogni byte spostato,
+mentre il pareggio (il punto in cui il lavoro al tavolo dura quanto la corsa)
+con le macchine di oggi sta oltre i centocinquanta. Anche il confronto, che è
+la parte laboriosa, tiene occupato chi lavora sì e no quattro decimi del tempo;
+il resto lo passa ad aspettare. Ed è per questo che non basta sbrigare due
+lavorazioni in un viaggio solo, portandosi dietro il mattarello insieme al
+coltello: la sfoglia in capannone ci va comunque, e comunque la corsa dura più
+del lavoro. L'unica mossa che paga è non portarcela mai.
 `````
 
 `````{tab} Superiore
@@ -87,15 +110,15 @@ pesi $\mathbf{P} = \text{softmax}(\mathbf{S})$. Il calcolo è $O(N^2 d_k)$ FLOP,
 ma il dato che uccide le prestazioni è la **memoria**: $\mathbf{S}$ e
 $\mathbf{P}$ occupano $O(N^2)$ byte e
 vengono scritte e rilette dalla HBM più volte (produci $\mathbf{S}$, la rileggi
-per la softmax, rileggi $\mathbf{P}$ per il prodotto con $\mathbf{V}$). Un
-numero concreto: con
+per la softmax, scrivi $\mathbf{P}$, la rileggi per il prodotto con
+$\mathbf{V}$). Un numero concreto: con
 $N = 8192$, una sola matrice $\mathbf{S}$ ha $N^2 \approx 67$ milioni di
 elementi; in
 `float16` (2 byte) sono circa $134$ MB (*per testa, per strato*). La memoria
 cresce quadraticamente, e con essa il traffico verso la HBM.
 
-Sul roofline questa è l'operazione tipicamente **memory-bound**, e vale la pena
-mettere l'imputato giusto al banco, perché la spiegazione che si legge più
+Sul roofline questa è l'operazione tipicamente **memory-bound**, e al banco va
+messo l'imputato giusto, perché la spiegazione che si legge più
 spesso (i due matmul sarebbero compute-bound, e a rovinare tutto sarebbe la
 softmax in mezzo) è sbagliata di suo. Un matmul che produce un'uscita
 $N \times N$ ha intensità limitata dalla propria **dimensione interna**, che
@@ -109,8 +132,8 @@ sotto il ginocchio di entrambe le schede.
 
 Le operazioni della softmax in mezzo (gli esponenziali, le riduzioni per riga,
 le scritture e riletture della matrice $N \times N$) hanno intensità quasi
-nulla e dimezzano ancora il conto. Vale la pena farlo per esteso, perché è un
-bilancio che si rifà in due righe. Sempre con $N = 8192$ e $d_k = 64$ in
+nulla e dimezzano ancora il conto. Il bilancio si rifà in due righe. Sempre
+con $N = 8192$ e $d_k = 64$ in
 `float16`: i conti sono i $2N^2 d_k$ del primo matmul più gli altrettanti del
 secondo, più una manciata di operazioni per elemento della softmax, in tutto
 circa $17{,}5$ GFLOP; i byte sono quattro passaggi della matrice $N \times N$
@@ -167,6 +190,16 @@ non viene mai scritta per intero da nessuna parte: esiste un blocchetto alla
 volta, e sparisce appena hai finito di usarlo. Meno viaggi al magazzino, stesso
 identico risultato.
 
+Quanto grande è un blocchetto? Quanto ci sta sul tavolo insieme alla manciata
+di parole ferme, e non un dito di più: la misura la decide il tavolo, non il
+testo. E i viaggi non spariscono. Per ogni nuova manciata di parole da
+elaborare, tutto il resto del testo deve sfilare daccapo, quindi il viavai
+continua a crescere con il quadrato della lunghezza, come prima. Quello che
+cambia è che ogni carico, una volta arrivato, serve per tutte le parole ferme
+sul tavolo invece che per una sola: con le taglie in uso oggi i viaggi si
+dividono per un numero fra sei e venti, e su un lavoro che passava la vita ad
+aspettare è tantissimo.
+
 Il prezzo si paga più tardi, ed è giusto dirlo subito. Quando la rete impara,
 dopo aver letto il testo in avanti rifà la strada all'indietro per capire quali
 numeri correggere, e in quel secondo passaggio le servirebbero proprio i
@@ -175,10 +208,11 @@ quindi, in cambio di molti viaggi in meno. È un baratto che conviene, perché i
 conti sono la cosa che una GPU fa quasi gratis e i viaggi sono quella che le
 costa.
 
-Resta un'insidia da risolvere, ed è la più bella di questa sezione: come fai a
+Resta un'insidia da risolvere, ed è la più bella di tutta la storia: come fai a
 calcolare delle *percentuali* se non hai ancora visto tutti i punteggi? Per
 fare una percentuale ti serve il totale, e il totale lo conosci solo alla fine.
-La risposta è la *online softmax* del prossimo passaggio.
+La risposta si chiama *online softmax*, e sta nel modo in cui si tiene il conto
+strada facendo.
 `````
 
 `````{tab} Superiore
@@ -207,7 +241,7 @@ extra**
 scende così da $O(N^2)$ a $O(N)$: da scrivere restano solo l'output e le
 statistiche di riga.
 
-Sui FLOP, invece, va detta una cosa che si sente ripetere al contrario. In
+Sui FLOP, invece, si sente ripetere il contrario di quello che succede. In
 avanti i conti sono quelli di prima, a meno del riscalamento dell'accumulatore
 a ogni blocco (ed è proprio quel di più, non-matmul, che FlashAttention-2 andrà
 a limitare). All'indietro no: non avendo salvato $\mathbf{S}$ e $\mathbf{P}$,
@@ -229,8 +263,8 @@ invece di conservarle. Conviene per una ragione precisa: i FLOP ricomprati sono
 matmul, cioè la cosa che i tensor core fanno a costo quasi nullo, mentre i byte
 risparmiati sono accessi alla HBM, cioè la risorsa scarsa. È la stessa mossa
 che si ritroverà nel pipeline parallelism della prossima sezione, e che il
-capitolo sui modelli a spazio di stati usa per Mamba: vale la pena riconoscerla
-sotto i tre nomi diversi.
+capitolo sui modelli a spazio di stati usa per Mamba: tre nomi diversi per la
+stessa mossa.
 
 Anche il traffico verso la HBM crolla: il paper lo conta in
 $\Theta(N^2 d_k^2 / M)$ accessi, dove $M$ è la taglia della memoria on-chip,
@@ -253,9 +287,8 @@ punteggi un pezzo per volta, e qui entra la online softmax.
 
 Il perno di tutto è calcolare le percentuali vedendo i punteggi **a blocchi**,
 senza mai averli tutti sotto gli occhi insieme, e ottenendo comunque il
-risultato esatto. Bastano due numeri di riepilogo, che la scheda Elementare
-racconta come due foglietti e il conto qui sotto chiama $m$ (il punteggio più
-alto visto finora) e $l$ (il totale accumulato finora). In
+risultato esatto. Bastano due numeri di riepilogo: $m$, il punteggio più alto
+visto finora, e $l$, il totale accumulato finora. In
 {numref}`fig-flash-attention-blocchi` si vedono aggiornarsi blocco dopo blocco,
 insieme alla cosa che conta di più: le celle fuori dalla finestra restano
 vuote, perché quella tabella non viene mai scritta da nessuna parte.
@@ -288,7 +321,7 @@ dividi ciascun sacco per 100 e hai le percentuali (10%, 30%, 20%, 40%), che
 sono esattamente quelle che avresti ottenuto stendendo tutti i sacchi per terra
 in una volta sola. Nessuna approssimazione: la stessa somma, fatta a rate.
 
-I foglietti però sono **due**, non uno, e il secondo è la parte meno ovvia. Nel
+I foglietti però sono due, non uno, e il secondo è la parte meno ovvia. Nel
 calcolo vero i punteggi, prima di essere sommati, non vengono presi così come
 sono: si passa prima per un'operazione che li ingigantisce, e che ha una regola
 semplice, **ogni punto in più moltiplica per 2,7 circa**. Un punteggio di due punti più alto pesa quindi $2{,}7 \times 2{,}7$, più di
@@ -306,9 +339,17 @@ mucchietto salta fuori un punteggio più alto del record, il totale accumulato
 era espresso rispetto al vecchio record e va riespresso rispetto al nuovo. Ed è
 qui che quel «2,7 a punto» torna utile: se il record sale di un punto, tutto
 quello che si era già messo da parte va diviso per 2,7, cioè moltiplicato per
-0,37. Una moltiplicazione sola, si aggiorna il foglietto e si tira avanti. Alla
-fine si divide per il totale, e i pesi che vengono fuori sono *esattamente*
-quelli del calcolo fatto in un colpo unico.
+0,37. Una moltiplicazione sola, si aggiorna il foglietto e si tira avanti.
+
+Manca il pezzo che poi ci si porta a casa, perché i punteggi non servono per
+sé: servono a dosare. Ogni sacco contiene una farina diversa, e quello che si
+vuole alla fine è la miscela in cui ciascuna entra in proporzione al proprio
+peso. Anche la miscela si compone a rate, un mucchietto per volta, con le dosi
+annotate rispetto al record del momento; e quando il record sale, la
+conversione non riguarda solo il totale sul foglietto, riguarda anche le dosi
+già annotate, con la stessa moltiplicazione per 0,37. All'ultimo mucchietto la
+miscela si divide per il totale, ed è *esattamente* quella che darebbe il
+calcolo fatto in un colpo unico.
 `````
 
 `````{tab} Superiore
@@ -347,10 +388,8 @@ l^{\text{new}} = e^{\,m - m^{\text{new}}}\, l + \!\sum_{i \in \text{blocco}}\! e
 \mathbf{o}^{\text{new}} = e^{\,m - m^{\text{new}}}\, \mathbf{o} + \!\sum_{i \in \text{blocco}}\! e^{\,s_i - m^{\text{new}}}\, \mathbf{v}_i,
 $$
 
-dove $\mathbf{o}$ è la riga di uscita accumulata (la somma pesata dei
-$\mathbf{v}_i$, cioè un vettore, e per questo minuscolo grassetto: la $O$
-maiuscola in queste pagine è già presa dalla notazione della complessità) e il
-fattore
+dove $\mathbf{o}$ è la riga di uscita accumulata, cioè la somma pesata dei
+$\mathbf{v}_i$ (un vettore, quindi minuscolo grassetto), e il fattore
 $e^{\,m - m^{\text{new}}}$ corregge ciò che avevamo già sommato quando compare un
 massimo nuovo; alla fine si divide, $\mathbf{o} \leftarrow \mathbf{o}/l$. Tutto
 qui: due scalari di stato per riga, e la matrice $N \times N$ non viene mai

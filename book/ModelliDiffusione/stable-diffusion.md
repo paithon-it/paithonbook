@@ -131,56 +131,48 @@ caso.
 
 `````{tab} Elementare
 
-L'archivista del museo è quello del capitolo sui modelli latenti, ed è la
-stessa clessidra che il capitolo sull'audio usava per comprimere il suono, con
-due mestieri al
-posto delle due metà: per ogni quadro l'archivista scrive una scheda molto più
-piccola dell'originale, e il copista deve *ridipingere* il quadro leggendo solo
-quella. Se la copia somiglia all'originale la scheda conteneva l'essenziale, e i
-due si allenano insieme perché una scheda è buona o cattiva solo rispetto a chi
-la deve leggere.
+L'archivista del museo è la clessidra dei modelli latenti, la stessa che nei
+codec neurali comprimeva il suono, qui con due mestieri al posto delle due
+metà: per ogni quadro l'archivista scrive una scheda molto più piccola
+dell'originale, e il copista deve *ridipingere* il quadro leggendo solo quella.
+Se la copia somiglia all'originale la scheda conteneva l'essenziale, e i due si
+allenano insieme perché una scheda è buona o cattiva solo rispetto a chi la
+deve leggere.
 
 Dopo milioni di prove su milioni di quadri, l'archivista ha imparato da solo
 che cosa annotare (soggetto, composizione, colori dominanti) e che cosa
 lasciar perdere: la grana della tela, le singole pennellate dello sfondo. Non
-perché il copista se le ricordi, ma perché se le **inventa**, e a nessuno
-importa che siano proprio quelle: una grana di tela vale l'altra, e nessuno va
-a controllarla filo per filo.
+perché il copista se le ricordi, ma perché se le **inventa**, e una grana di
+tela vale l'altra.
 
 Nei numeri di Stable Diffusion: il quadro è fatto di 786.432 valori, la scheda
-di 16.384, quarantotto volte meno. E quel 16.384 non è un numero magico ma una
-scelta di progetto: la scheda è una griglia di 64 caselle per lato invece delle
-512 dell'immagine (otto volte meno per lato) con quattro numeri per casella, e
-$64 \times 64 \times 4$ fa appunto 16.384. I quattro numeri, a differenza dei
-tre dell'immagine, non hanno un significato leggibile: non sono rosso, verde e
-blu, sono quattro coordinate che l'archivista si è scelto da solo e che nessuno
-gli ha insegnato. Guardarli non dice niente a un essere umano; al copista sì.
+di 16.384, quarantotto volte meno. Quel 16.384 esce da una scelta di progetto:
+la scheda è una griglia di 64 caselle per lato invece delle 512 dell'immagine
+(otto volte meno per lato) con quattro numeri per casella, e
+$64 \times 64 \times 4$ fa appunto 16.384.
 
-Va detta anche l'altra metà, perché il capitolo ci tornerà: **la compressione
-distrugge**, e quello che l'archivista non ha annotato non lo recupera più
-nessuno, per quanto bravo sia chi lavora dopo di lui. La scheda è il soffitto
-della qualità finale. Quattro numeri per casella bastano per un gatto su un
-muro e non bastano per una scritta leggibile, per un volto in secondo piano o
-per una mano con cinque dita: se il copista si inventa la grana della tela
-nessuno se ne accorge, se si inventa le lettere di un'insegna se ne accorgono
-tutti. È una delle ragioni (non l'unica) dei difetti tipici della prima
-generazione di questi modelli, che sono sempre difetti di dettaglio fine.
-Alzare quel soffitto è una delle cose che i successori hanno fatto.
+La compressione però distrugge, e quello che l'archivista non ha annotato non
+lo recupera più nessuno: la scheda è il soffitto della qualità finale. Quattro
+numeri per casella bastano per un gatto su un muro e non bastano per una
+scritta leggibile, per un volto in secondo piano o per una mano con cinque
+dita: se il copista si inventa la grana della tela nessuno se ne accorge, se si
+inventa le lettere di un'insegna se ne accorgono tutti. I successori hanno
+alzato quel soffitto mettendo più numeri per casella.
 
 E il «variational» del nome, che in italiano diremmo «variazionale»? Sta in due
-regole che tengono l'archivio in ordine. Primo: la scheda non inchioda il
-quadro a un punto esatto ma descrive una *nuvola di possibilità* («un gatto
-nero più o meno così»), cosicché quadri quasi uguali abbiano schede quasi
-uguali. Secondo: le schede devono stare tutte raccolte attorno a uno stesso
-centro, invece di sparpagliarsi dove capita, e questo serve a sapere **dove
-pescare**. Se so che l'archivio sta lì attorno posso inventarmi un punto senza
-finire fuori dal mondo dei quadri possibili, e il copista deve saperne
-dipingere un quadro sensato anche se quel punto non l'ha mai scritto nessuno.
-Sembrano
-pignolerie, ma sono esattamente ciò che serve alla diffusione: il restauratore
-lavorerà *dentro* questo archivio, e ogni punto in cui mette piede (compresi i
-mille punti sorteggiati del suo viaggio) deve corrispondere a un'immagine
-possibile.
+regole che tengono l'archivio in ordine: la scheda descrive una *nuvola di
+possibilità* («un gatto nero più o meno così») invece di inchiodare il quadro a
+un punto esatto, e tutte le schede stanno raccolte attorno a uno stesso centro,
+così si sa in che zona cercarle.
+
+Sapere la zona non vuol dire che tutta la zona sia coperta. La regola del
+centro tira una scheda per volta, e non promette che le schede messe insieme
+riempiano davvero quella zona: chi pescasse là dentro a occhi chiusi finirebbe
+volentieri in una parte dove non ne è mai arrivata nessuna, e da un punto così
+il copista tira fuori una macchia. In Stable Diffusion il problema si aggira
+lasciandolo lì, perché all'archivista non si chiede di inventare quadri per
+conto suo: su quale scheda fermarsi lo decide il restauratore, che arriva dopo
+e non pesca a caso.
 
 `````
 
@@ -289,10 +281,16 @@ di addestramento nella sua scheda; d'ora in poi si lavora solo su schede.
 **Seconda**: il restauratore della sezione precedente fa esattamente il suo
 solito mestiere (sporca di rumore, impara a indicare il disturbo) ma su schede
 da 16.384 numeri invece che su quadri da 786.432, come restaurare cartoline
-anziché affreschi. Ogni giro di domanda e risposta costa decine di volte meno.
-Non esattamente quarantotto volte meno, e il motivo è che la rete che lavora
-sulle schede non è quella dei quadri rimpicciolita, è una rete progettata
-apposta e con i suoi numeri.
+anziché affreschi. Ogni giro di domanda e risposta costa decine di volte meno,
+non proprio quarantotto, perché la rete delle schede è progettata apposta e non
+è quella dei quadri rimpicciolita.
+
+Le schede, però, vanno convertite prima di finire sul tavolo del restauratore:
+si moltiplicano tutte per uno stesso numero fisso, 0,18215, poco meno di un
+quinto. Il restauratore dosa lo sporco su fogli di una certa ampiezza, e
+dall'archivio le schede escono con numeri cinque volte e mezzo più grandi: chi
+salta la conversione gli dà fogli su cui quella stessa dose si vede appena, e
+lo manda ad allenarsi su un problema più facile del vero.
 
 **Terza**: mentre pulisce, il restauratore tiene sul tavolo la commissione
 scritta dal cliente («un gatto nero che salta sul muro, in acquerello») e a
@@ -300,9 +298,9 @@ ogni pennellata le dà un'occhiata, soffermandosi sulle parole che servono in
 quel momento: «nero» quando decide i toni, «acquerello» quando decide il
 tratto. È la stessa occhiata selettiva dell'interprete della traduzione
 automatica, ritrovata poi nei Transformer: lì collegava due lingue, qui
-collega parole e immagine. (Quella commissione, nel gergo di tutti i giorni,
-si chiama **prompt**, ed è la frase che si scrive nella casella di un
-generatore di immagini. Da qui in avanti useremo le due parole come sinonimi.)
+collega parole e immagine. (Quella commissione si chiama **prompt**: è la frase
+che si scrive nella casella di un generatore di immagini, e le due parole
+valgono l'una per l'altra.)
 **Quarta**: finita la pulitura, la scheda passa al copista, che ridipinge il
 quadro a piena risoluzione.
 
@@ -420,41 +418,42 @@ commissione viene *nascosta*. Così impara due mestieri insieme: disegnare
 «quello che dice il testo» quando le ha.
 
 In generazione, allora, a ogni passo puoi porre la domanda due volte e
-ottenere due risposte. È il cartello della salita della sezione precedente,
-quello che indica in che direzione ritoccare l'immagine per renderla più
-credibile, che si sdoppia: un cartello dice «per una figura credibile in
-generale, va’ di là», l'altro dice «per una figura credibile *e che rispetta
-la richiesta*, va’ di là». Chiamiamole le due bussole, tenendo a mente che non
-sono bussole vere: non indicano il nord tutte e due, ognuna indica la sua
-direzione, e le due direzioni non coincidono.
+ottenere due risposte, al prezzo di fare il lavoro due volte. È il cartello
+della salita della sezione precedente, quello che indica in che direzione
+ritoccare l'immagine per renderla più credibile, che si sdoppia: uno dice «per
+una figura credibile, va’ di là», l'altro «per una figura credibile *e che
+rispetta la richiesta*, va’ di là». Chiamiamole le due bussole, tenendo a mente
+che ognuna indica la sua direzione, e le due direzioni non coincidono.
 
 Le due direzioni sono quasi uguali, e la piccola differenza fra loro è tutto
-quello che il testo ha da dire. Facciamo finta di essere su una cartina: la
-prima bussola dice «nord», la seconda dice «nord, un pelo verso est». Quel
-«pelo verso est» è il contributo della richiesta. Seguire semplicemente la
-seconda bussola si può, ed è quello che si faceva prima: il guaio è che
-l'indicazione del testo, nel totale, pesa pochissimo. La rete tira soprattutto
+quello che il testo ha da dire. La prima bussola dice «nord», la seconda dice
+«nord, un pelo verso est»: quel «pelo verso est» è il contributo della
+richiesta. Seguire la seconda bussola e basta è quello che si faceva prima, e
+l'indicazione del testo nel totale pesa pochissimo. La rete tira soprattutto
 verso «un'immagine credibile», e «acquerello» è una spintarella dentro quella
-spinta grossa: si perde per strada, e il gatto viene a olio. Il colpo di genio
-è prendere quel pelo verso est e
-moltiplicarlo: non un passo, ma sette passi e mezzo verso est, e poi camminare
-verso nord-est-est. Sette e mezzo non è una figura retorica, è il numero che
-Stable Diffusion usa di serie, e si chiama il **peso della guida**, $w$.
+spinta grossa, che si perde per strada: il gatto viene a olio. Il colpo di
+genio è prendere quel pelo verso est e moltiplicarlo: non un passo, ma sette
+passi e mezzo verso est, e poi camminare verso nord-est-est. Sette e mezzo è il
+numero che Stable Diffusion usa di serie, e si chiama il **peso della guida**,
+$w$.
 
-A $w = 1$ non si esagera niente: si cammina nella direzione della seconda
-bussola e basta, ed è il caso in cui il gatto viene a olio. Scendendo verso
+A $w = 1$ non si esagera niente, ed è il gatto a olio di prima. Scendendo verso
 quel valore il modello va più a briglia sciolta, con immagini varie e richiesta
 presa alla leggera; salendo, ubbidisce di più e inventa di meno. Esagerando
 davvero, ben oltre il 7 e mezzo, l'immagine viene «sovracotta»: colori saturi,
 contrasti duri, composizioni tutte uguali.
 
-Resta da spiegare il nome. Un **classificatore** è una rete che guarda
-un'immagine e dice che cosa contiene («questo è un gatto»), e il metodo che
-veniva prima faceva proprio così: addestrava un classificatore a parte e lo
-usava per tirare la generazione verso la categoria voluta. Costoso, e un pezzo
-in più da mantenere. Ho e Salimans ottengono lo stesso effetto senza costruire
-nessun classificatore, usando due risposte della rete che c'è già: da qui
-*classifier-free*, «senza classificatore».
+E il sette e mezzo da dove viene? Da quanto le immagini piacciono a chi le
+guarda. Chi misura invece quanto somigliano alle fotografie vere trova il punto
+migliore molto più in basso: già a sette e mezzo la somiglianza è peggiorata, e
+lo scambio si accetta perché il risultato piace di più.
+
+Resta il nome. Un **classificatore** è una rete che guarda un'immagine e dice
+che cosa contiene («questo è un gatto»), e il metodo di prima ne addestrava uno
+a parte per tirare la generazione verso la categoria voluta: costoso, e un
+pezzo in più da mantenere. Ho e Salimans ottengono lo stesso effetto con due
+risposte della rete che c'è già, da qui *classifier-free*, «senza
+classificatore».
 
 I **negative prompt** sono la stessa idea usata al contrario: al posto della
 bussola «qualunque cosa» ne metti una che punta verso ciò che *non* vuoi
@@ -641,7 +640,10 @@ tecnica.
   allenano insieme, e la prova che la scheda è buona è che la copia somigli
   all'originale. La trovata dell'archivista è non scrivere un valore esatto ma
   un valore *con un margine*, così che schede vicine diventino immagini simili
-  e l'archivio non abbia buchi.
+  e attorno a ogni scheda ci sia una zona intera che il copista sa leggere.
+  Non che l'archivio sia coperto tutto: a pescare a caso si finisce dove
+  nessuna scheda è mai arrivata, ed è il restauratore, non il sorteggio, a
+  decidere su quale fermarsi.
 - Quello che l'archivista non annota è **perso per sempre**: la scheda è il
   soffitto della qualità finale, e nessuna bravura di chi viene dopo lo alza. È
   una delle ragioni per cui i primi modelli di questa famiglia sbagliavano

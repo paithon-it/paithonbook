@@ -111,14 +111,23 @@ Un **consulente** ti dà consigli a parole: «per andare a Milano ti conviene il
 treno delle 9, poi prenota un hotel in centro». Ottimo, ma il lavoro resta
 tutto a te: sei tu che apri il sito, digiti le date, paghi. L’**assistente**,
 invece, le cose le *fa*: telefona, prenota, compila il modulo, ti mette in
-mano il biglietto. La
-stessa testa, ma con le mani.
+mano il biglietto. La stessa testa, ma con le mani.
 
 Un agente è il salto dal consulente all'assistente. Il modello continua a
 essere il cervello (sa *cosa* andrebbe fatto) ma attorno gli mettiamo delle
 mani (gli strumenti) e un metodo di lavoro: fai una mossa, guarda com'è
-andata, decidi la prossima. È la differenza tra chi ti spiega la ricetta e chi
-ti cucina la cena.
+andata, decidi la prossima.
+
+Quel metodo si regge su un taccuino. L'assistente ci scrive tutto: ho
+telefonato all'albergo, era pieno; ho provato quello accanto, ha una stanza
+libera. Prima di ogni telefonata rilegge il taccuino dall'inizio, perché è lì
+che sa a che punto è arrivato. E si ferma in due casi: quando ti mette il
+biglietto in mano, oppure quando le telefonate diventano troppe e torna da te
+a mani vuote invece di andare avanti all'infinito.
+
+Se lavora male non lo rimandi a scuola: gli spieghi come vuoi che lavori
+(«prima il preventivo, poi la prenotazione») e il giorno dopo si comporta in
+un altro modo. Quello che sa non è cambiato di una virgola.
 
 `````
 
@@ -218,18 +227,27 @@ domanda, detta in gergo, è come faccia un modello a *chiamare una funzione*.
 `````{tab} Elementare
 
 Il trucco è che il modello non esegue niente: **scrive un bigliettino
-d'ordine**. Immagina un cuoco chiuso in cucina che non può uscire in sala:
-quando gli serve qualcosa scrive un ordine su un foglietto («portami due
-uova») e lo passa a un cameriere. Il cameriere va, prende le uova, torna e le
-posa sul bancone. Il cuoco non è mai uscito dalla cucina, ma le uova sono
-arrivate.
+d'ordine**. Un cuoco chiuso in cucina non può uscire in sala: quando gli serve
+qualcosa scrive un ordine su un foglietto («portami due uova») e lo passa a un
+cameriere. Il cameriere va, prende le uova, torna e le posa sul bancone. Il
+cuoco non è mai uscito dalla cucina, ma le uova sono arrivate.
+
+Il cuoco però non ordina quello che gli passa per la testa: sulla parete c'è
+un cartello con le cose che si possono chiedere e come si scrivono («uova,
+quante»). Un foglietto scritto fuori da quel cartello il cameriere non lo
+capisce, e torna a mani vuote.
 
 Con un agente succede lo stesso. Il modello, invece delle uova, scrive
-«cerca_sul_web(previsioni Roma domani)». Non è lui a navigare: il programma
+«cerca_sul_web(previsioni Roma domani)», e il cartello sulla parete è l'elenco
+degli strumenti che gli abbiamo descritto. Non è lui a navigare: il programma
 che gli sta attorno legge quel foglietto, esegue davvero la ricerca e gli
 riporta i risultati, che il modello ritrova nel contesto al giro dopo, come il
-cuoco ritrova le uova sul bancone. Le mani sono di qualcun altro; al modello
-resta il mestiere di decidere *cosa* ordinare.
+cuoco ritrova le uova sul bancone.
+
+Chi esce in sala decide anche che cosa non fare: se sul foglietto c'è «svuota
+la cassa», il cameriere resta fermo, perché le chiavi ce le ha lui. E il
+bancone ha una misura: foglietti e piatti consegnati restano lì tutti, e a
+fine serata non c'è più posto per appoggiare niente.
 
 `````
 
@@ -288,8 +306,15 @@ Gli LLM di oggi hanno imparato, durante l'addestramento, a *seguire
 istruzioni* scritte come le scriveresti a una persona: «hai a disposizione una
 ricerca web; usala quando ti serve un'informazione che non conosci». Non devi
 più programmare ogni caso: descrivi lo strumento e l'obiettivo, e il modello
-capisce da sé quando ha senso usarlo. È questa comprensione delle consegne
-(non una nuova capacità di calcolo) ad aver reso possibili gli agenti.
+capisce da sé quando ha senso usarlo.
+
+C'è dell'altro. Un commesso che sa già il mestiere, il primo giorno in un
+negozio nuovo, lo metti al lavoro con mezza pagina di istruzioni sul bancone:
+«se chiedono una taglia che non c'è, guarda nel magazzino di sotto», e sotto
+un caso capitato ieri con la sua soluzione. Legge, e lavora così da subito.
+Nessun corso, nessun apprendistato: quelle righe sono bastate. Con il modello
+vale uguale, e in quelle righe c'è tutto quello che farà. Sono state loro a
+rendere possibili gli agenti, non una macchina più potente.
 
 `````
 
@@ -328,8 +353,8 @@ restano difficili.
 
 ## Un antenato: i chatbot a regole
 
-Vale la pena guardarsi indietro, perché l'idea di un sistema che percepisce,
-decide e agisce non nasce con gli LLM. Nel {doc}`capitolo sul Natural Language
+L'idea di un sistema che percepisce, decide e agisce non nasce con gli LLM.
+Nel {doc}`capitolo sul Natural Language
 Processing </NaturalLanguageProcessing/overview>` abbiamo incontrato i primi programmi capaci di sostenere una
 conversazione, quelli che oggi chiamiamo **chatbot**.
 
@@ -353,16 +378,24 @@ per tentativi e ricompense.
 `````{tab} Elementare
 
 Il limite di quei sistemi era la **rigidità**. Un assistente a moduli sa fare
-benissimo ciò che è previsto (prenota un volo, imposta una sveglia) ma un
-millimetro fuori dai suoi moduli cade nel vuoto: non c'è nessuna casella da
-riempire, e lui non sa che pesci prendere. Ogni comportamento era stato
-scritto a mano da un programmatore, uno per uno.
+benissimo ciò che è previsto: chiede dove, quando, quanti, e a modulo pieno
+prenota. «Vorrei il finestrino, ma solo se il viaggio dura più di tre ore» non
+ha nessuna casella dove entrare, e lui resta lì senza sapere che pesci
+prendere: ogni comportamento gliel'aveva scritto un programmatore, uno per uno.
 
-L'agente basato su LLM generalizza quella stessa idea (percepire, decidere,
-agire) ma sostituisce le regole scritte a mano con un motore linguistico
-flessibile, capace di affrontare anche richieste che nessuno aveva previsto.
-Il guadagno è la versatilità; il prezzo, come vedremo, è che diventa più
-difficile prevedere e controllare esattamente cosa farà.
+Quelle caselle però davano qualcosa in cambio. Inventare non poteva, perché
+fuori dalle caselle non c'era dove scrivere; se qualcosa andava storto si
+vedeva quale era rimasta vuota; e alla fine il biglietto c'era o non c'era,
+quindi sapevi se aveva funzionato.
+
+Al posto delle regole scritte a mano arriva un impiegato che capisce le
+parole. Il mestiere resta lo stesso (ascolta, decide, fa) e il finestrino dopo
+le tre ore lo capisce, insieme a mille richieste che nessuno aveva previsto.
+Il prezzo è che ti dice «fatto» con la stessa faccia sicura quando ha
+prenotato e quando ha capito male, e sulla stessa richiesta, due volte di
+fila, può comportarsi in due modi diversi. Per questo i due modi di lavorare
+convivono ancora: lo si lascia parlare libero con il cliente, e prima di
+pagare gli si fa comunque riempire il modulo, casella per casella.
 
 `````
 
@@ -432,10 +465,11 @@ abbiamo solo montato insieme.
   modello scrive il bigliettino d'ordine; il programma che gli sta attorno lo
   esegue.
 - Gli agenti nascono **adesso** perché i modelli hanno imparato a capire una
-  consegna scritta a parole: basta descrivere lo strumento e l'obiettivo,
-  invece di programmare ogni caso. È però un campo giovane {cite}`xi2023rise`,
-  e i piccoli errori si sommano lungo il ciclo: nove mosse giuste su dieci
-  vogliono dire arrivare in fondo a dieci mosse poco più di una volta su tre.
+  consegna scritta a parole: basta descrivere lo strumento e l'obiettivo, e
+  mostrare un caso già risolto, invece di programmare ogni caso. È però un
+  campo giovane {cite}`xi2023rise`, e i piccoli errori si sommano lungo il
+  ciclo: nove mosse giuste su dieci vogliono dire arrivare in fondo a dieci
+  mosse poco più di una volta su tre.
 - I **chatbot a regole** del capitolo sul linguaggio (ELIZA, i sistemi a
   modulo) sono gli antenati rigidi: bravissimi dentro il previsto, muti fuori.
   L'agente guadagna versatilità e perde prevedibilità: è uno scambio, non un

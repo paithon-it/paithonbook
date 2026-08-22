@@ -61,54 +61,55 @@ ovunque nel machine learning.
 `````{tab} Elementare
 
 Le tre "solite sospette" sono le **potenze**, l’**esponenziale** e il
-**logaritmo**. Le prime le conosci già: la parabola $x^2$, cioè «il numero
-moltiplicato per sé stesso», è la forma dell'errore quadratico, quello che si
-minimizza quando il modello deve prevedere un numero. Le altre due meritano
-una presentazione, perché ritornano in tre sezioni di questo capitolo e poi in
-mezzo libro.
+**logaritmo**. La prima famiglia la conosci già. La parabola $x^2$, cioè «il
+numero moltiplicato per sé stesso», è la forma dell'errore quadratico, quello
+che si minimizza quando il modello deve prevedere un numero. Le altre due
+stanno dentro un libretto di risparmio.
 
-**Il logaritmo è la domanda inversa dell'elevamento a potenza.** Se
-l'elevamento chiede «quanto fa $2^3$, cioè $2\times2\times2$?» (risposta:
-$8$), il logaritmo chiede la stessa cosa dall'altro capo: «quanti $2$ devo
-moltiplicare fra loro per arrivare a $8$?», e la risposta è $3$. Si scrive
-$\log_2 8 = 3$, e quel $2$ in basso si chiama *base*. Con la base $10$ è
-ancora più immediato: $\log_{10} 1000 = 3$, perché $1000$ è
-$10\times10\times10$. Due
-cose lo rendono prezioso, e sono le sole che servono qui. La prima: **schiaccia
-i numeri enormi**. Fra $1000$ e $1\,000\,000$ ci sono novecentonovantanovemila
-unità di differenza, ma fra i loro logaritmi ce ne sono tre: è il motivo per
-cui le scale dei terremoti e del volume sonoro sono logaritmiche, e per cui
-sono comode quando i numeri in gioco vanno da un milionesimo a un miliardo. La
-seconda: **trasforma le moltiplicazioni in somme**, perché moltiplicare due
-potenze vuol dire sommarne gli esponenti. Moltiplicare fra loro mille
-probabilità piccolissime dà un numero che nessun calcolatore riesce a
-scrivere; sommare i loro logaritmi no, e il risultato è lo stesso a meno di
-tradurlo indietro.
+Cento euro sul libretto, e ogni anno il capitale raddoppia. Dopo tre anni ce
+ne sono ottocento, cioè $2\times2\times2 = 2^3 = 8$ volte il capitale. Il
+logaritmo parte dall'altro capo: quanti raddoppi servono per arrivare a otto
+volte tanto? Tre, e si scrive $\log_2 8 = 3$; quel $2$ in basso, il fattore
+che si ripete, si chiama *base*. Un libretto che decuplica ogni anno va da
+cento euro a centomila negli stessi tre anni, e $\log_{10} 1000 = 3$ perché
+$1000$ è $10\times10\times10$.
 
-**L'esponenziale è il logaritmo letto al contrario**, e $e^x$ è il caso
-particolare che si usa quasi sempre. Quel simbolo $e$ non è una variabile: è
-un numero fisso, $e \approx 2{,}718$, come $\pi$ vale $3{,}14$. Vale la pena
-sapere da dove salta fuori, perché non è arbitrario: fra tutte le curve di
-crescita, $e^x$ è quella che in ogni punto **cresce esattamente quanto vale**.
-Se in un certo istante vale $5$, sta salendo con pendenza $5$; quando vale
-$10$, sale il doppio più in fretta. Da qui viene la proprietà per cui la si
-usa: in intervalli di tempo uguali una crescita così non aggiunge ogni volta
-la stessa quantità, la **moltiplica** ogni volta per lo stesso fattore. È il
-comportamento degli interessi composti, della crescita di una popolazione e,
-letto al contrario, del decadimento di una sostanza. Nel libro compare dentro due funzioni che incontrerai presto, la
-**sigmoide** e la **softmax**: due ricette che prendono i punteggi grezzi
-sputati da un modello (numeri qualsiasi, anche negativi) e li rimettono in
-riga come probabilità, cioè numeri fra zero e uno che sommati fanno uno. Il
-logaritmo, dal canto suo, compare nella **cross-entropy**, la funzione di
-costo con cui si addestrano i classificatori, di cui parla per esteso la
-sezione sulla teoria dell'informazione.
+Contare i raddoppi invece dei soldi schiaccia i numeri enormi. Fra un libretto
+da $1000$ euro e uno da $1\,000\,000$ ci sono novecentonovantanovemila euro di
+differenza, fra i loro logaritmi ce ne sono tre. E trasforma le
+moltiplicazioni in somme, perché moltiplicare due potenze vuol dire sommarne
+gli esponenti: tre anni di raddoppio e poi altri quattro moltiplicano il
+capitale per $8$ e per $16$ ($128$ in tutto), mentre i raddoppi si sommano,
+$3+4=7$. Un libretto che ogni giorno perde metà di quello che ha, dopo mille
+giorni tiene una cifra con trecento zeri dopo la virgola; un modello che
+moltiplica fra loro mille probabilità piccolissime ci arriva anche prima, e il
+calcolatore quel numero lo arrotonda a zero. I mille logaritmi invece si
+sommano, e il risultato è lo stesso a meno di tradurlo indietro.
 
-Restano le derivate. Non si dimostrano qui, si prendono da una tabella, come
-si prende la formula dell'area del cerchio: la pendenza di $x^2$ è $2x$ (nel
-punto $x=3$ la parabola sale con pendenza $6$), e quella di $e^x$ è di nuovo
-$e^x$, che è poi la proprietà appena raccontata detta in simboli. È anche il
-motivo per cui l'esponenziale rende i conti sopportabili: derivandola, resta
-identica a sé stessa.
+L'esponenziale è il logaritmo letto al contrario, e nasce da una regola sola
+cambiata sul libretto: gli interessi maturano in ogni istante invece che una
+volta l'anno, sempre in proporzione a quanto c'è già sul conto. Cento euro al
+cento per cento annuo, così, diventano circa $271{,}83$ invece di duecento,
+cioè $100$ per $e \approx 2{,}718$. Quel simbolo indica sempre lo stesso numero,
+come $\pi$ vale $3{,}14$, e la curva $e^x$ che ne viene fuori in ogni punto
+cresce esattamente quanto vale: con $5$ sul conto gli interessi maturano al
+ritmo di $5$, con $10$ al ritmo doppio. Fuori dal libretto l'esponenziale sta
+dentro la **sigmoide** e la **softmax**, due ricette che rimettono in riga i
+punteggi grezzi sputati da un modello (numeri qualsiasi, anche negativi) come
+probabilità fra zero e uno che sommate fanno uno. Il logaritmo, dal canto suo,
+compare nella **cross-entropy**, il costo con cui si addestrano i
+classificatori, di cui parla per esteso la sezione sulla teoria
+dell'informazione.
+
+Restano le pendenze, che si prendono da una tabella come si prende la formula
+dell'area del cerchio, senza dimostrarle. La pendenza di $x^2$ è $2x$, quindi
+nel punto $x=3$ la parabola sale con pendenza $6$. Quella di $e^x$ è di nuovo
+$e^x$, che è la regola del libretto detta in simboli, ed è il motivo per cui
+l'esponenziale rende i conti sopportabili: derivandola, resta identica a sé
+stessa. E la pendenza del **logaritmo naturale**, quello che ha per base
+proprio $e$, è «uno diviso il numero a cui si è arrivati»: su un conto da
+$1000$ euro un euro in più sposta il conteggio di un millesimo, che è lo
+schiacciamento dei numeri enormi visto dal lato della pendenza.
 
 `````
 
@@ -122,7 +123,7 @@ $$
 \frac{d}{dx}\,\ln x = \frac{1}{x}.
 $$
 
-Non è un caso che ricorrano proprio queste: l'errore quadratico medio è una
+Ricorrono proprio queste tre per una ragione: l'errore quadratico medio è una
 potenza, la sigmoide $\sigma(x)=1/(1+e^{-x})$ e la softmax sono costruite
 sull'esponenziale, la log-verosimiglianza e la cross-entropy sul logaritmo.
 La stabilità di $e^x$ sotto derivazione è ciò che rende quei conti trattabili.
@@ -179,6 +180,14 @@ fila tutte queste pendenze e ottieni il **gradiente**: un vettore che punta
 nella direzione in cui il costo cresce più in fretta (la salita più ripida).
 Per *scendere*, ci basta andare nel verso opposto.
 
+«Più ripida» rispetto a che cosa? Confrontare le direzioni presuppone passi
+della stessa lunghezza, misurati alla maniera ovvia: un metro è un metro, in
+qualunque direzione lo si faccia. Se però verso nord si affonda nella neve e
+verso est corre un sentiero battuto, i passi non costano tutti uguali, e la
+direzione che fa scendere di più a parità di fatica non coincide con quella
+della pendenza pura. Il gradiente vince finché i passi si misurano tutti allo
+stesso modo; cambiando il metro, cambia il vincitore.
+
 `````
 
 `````{tab} Superiore
@@ -197,15 +206,16 @@ $$
 
 ```{admonition} Una convenzione, dichiarata una volta per tutte
 :class: note
-Il libro adotta il **layout al denominatore**: la derivata di uno scalare
-rispetto a un oggetto ha **sempre la stessa forma di quell'oggetto**. Il
+Da qui in avanti vale il **layout al denominatore**: la derivata di uno
+scalare
+rispetto a un oggetto ha sempre la stessa forma di quell'oggetto. Il
 gradiente rispetto a un vettore è quindi un vettore colonna, e
 $\partial\mathcal{L}/\partial\mathbf{W}$ è una matrice $m\times n$ come
-$\mathbf{W}$. Non è pedanteria: è la differenza fra
+$\mathbf{W}$. La posta in gioco è la differenza fra
 $\boldsymbol{\delta}\mathbf{a}^\top$ e $\mathbf{a}\boldsymbol{\delta}^\top$,
 cioè fra un aggiornamento dei pesi che ha le dimensioni giuste e uno che non
 si può nemmeno scrivere. Il capitolo sulle reti neurali e quello su PyTorch
-compongono catene di derivate: è la stessa convenzione, e il lettore che le
+compongono catene di derivate con questa convenzione, e chi le
 rifà a mano deve poterle attaccare senza trasposte a sorpresa.
 ```
 
@@ -217,23 +227,21 @@ $\mathbf{u}$ (la **derivata direzionale**) è
 $D_\mathbf{u}\mathcal{L} = \nabla\mathcal{L}^\top\mathbf{u}$; per la
 disuguaglianza di Cauchy–Schwarz vale
 $|\nabla\mathcal{L}^\top\mathbf{u}| \le \lVert\nabla\mathcal{L}\rVert$, con
-uguaglianza se e solo se $\mathbf{u}$ è parallelo a $\nabla\mathcal{L}$. Da
-la perpendicolarità alle curve di livello si ottiene invece con la regola
+uguaglianza se e solo se $\mathbf{u}$ è parallelo a $\nabla\mathcal{L}$. La
+perpendicolarità alle curve di livello si ottiene invece con la regola
 della catena. Se $\gamma(t)$ è una curva che resta su una curva di livello,
 allora $\mathcal{L}(\gamma(t))$ è costante, quindi
 $\frac{d}{dt}\mathcal{L}(\gamma(t)) = \nabla\mathcal{L}^\top \gamma'(t) = 0$:
 il gradiente è ortogonale a ogni direzione tangente all'insieme di livello.
-Lungo una curva di
-livello $D_\mathbf{u}\mathcal{L}=0$, cioè
-$\nabla\mathcal{L}^\top\mathbf{u}=0$.
 
-Un'avvertenza che tornerà utile fra poche righe: quel primato è relativo alla
+Un'avvertenza: quel primato è relativo alla
 **norma euclidea**. «Il passo di lunghezza fissata che fa scendere di più»
 dipende da come si misura la lunghezza di un passo, e cambiando metrica cambia
-la direzione più ripida. Non è un cavillo: è precisamente ciò che fanno Adam,
+la direzione più ripida. Adam,
 riscalando ogni coordinata, e i metodi del secondo ordine, misurando i passi
-con la curvatura. Il gradiente non è *la* direzione migliore in assoluto, è la
-migliore secondo un metro particolare.
+con la curvatura, fanno precisamente questo: adottano un altro metro, e con
+esso un'altra discesa. Il gradiente è la
+direzione migliore secondo il metro euclideo, e secondo quello soltanto.
 
 `````
 
@@ -420,10 +428,22 @@ c'è modo di distinguerlo, dall'esterno, da un problema difficile.
 Dipende dal paesaggio. Se è una scodella liscia, con un'unica valle, non ci
 sono conche secondarie in cui restare intrappolati: da qualunque punto si
 parta si scende verso quell'unico fondo, purché il passo non sia troppo lungo.
-È il caso **convesso**, il più comodo. Se invece è una catena montuosa piena
+È il caso **convesso**, il più comodo. Due guasti restano possibili anche
+qui. Se lontano dal centro le pareti si impennano
+sempre di più, partire troppo in alto rovina tutto: il passo si allunga dove
+è più ripido, quindi il primo balzo scavalca l'intera conca e atterra sul
+fianco opposto, ancora più su. Da lì il balzo dopo è più lungo ancora, e ogni
+rimbalzo allontana dal fondo. Quanto sia «troppo lungo» un passo, insomma,
+dipende anche da dove si parte. E la discesa deve avere un fondo: una rampa
+che scende per sempre, spianandosi senza mai finire, si percorre in eterno
+senza arrivare da nessuna parte.
+
+Se invece il paesaggio è una catena montuosa piena
 di conche, si può finire intrappolati in una conca che non è la più profonda:
 un **minimo locale**, un
-buon posto ma non il migliore.
+buon posto ma non il migliore. Nei paesaggi delle reti grandi, però,
+abbondano conche profonde quasi quanto la più profonda, e fermarsi in una di
+loro dà ottimi risultati.
 
 `````
 
@@ -436,7 +456,7 @@ per cui il segmento sta *sulla* curva). Per una funzione convessa ogni minimo
 locale è anche globale: nessuna conca secondaria in cui restare intrappolati.
 
 La convergenza della discesa del gradiente, però, richiede due ipotesi in più,
-e vale la pena enunciarle perché senza di esse l'affermazione è falsa. La
+e senza di esse l'affermazione è falsa. La
 prima è che il gradiente sia **lipschitziano** di costante $L$ (cioè che la
 curvatura sia limitata da $L$), e allora ogni passo fisso $\eta < 2/L$ va
 bene. La seconda è che **il minimo esista**. Nessuna delle due è gratis:
@@ -445,8 +465,9 @@ $\eta$ fissato la discesa diverge se si parte abbastanza lontano (la soglia è
 $|x_0| > 1/\sqrt{2\eta}$: con $\eta=10^{-9}$ basta partire da $x_0 = 23\,000$);
 e $f(x)=e^x$ è convessa con gradiente sempre positivo e nessun minimo, quindi
 la discesa scende per sempre senza convergere a niente. Anche restando dentro
-le ipotesi, un passo troppo lungo diverge in una scodella perfetta, come
-mostrerà tra poco l'esperimento con `eta = 1.1`.
+le ipotesi, un passo troppo lungo diverge in una scodella perfetta: su
+$\mathcal{L}(\theta)=(\theta-3)^2$ basta $\eta > 1$ perché ogni passo
+allontani dal minimo, oscillando da un fianco all'altro.
 
 Le loss del deep learning, poi, sono quasi sempre **non convesse**: nessuna
 garanzia. La buona

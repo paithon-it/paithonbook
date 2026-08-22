@@ -57,36 +57,36 @@ prossima sezione.
 Prendi una fotografia e rovinala in mille passi: al passo 10 si nota
 appena una grana fine, al passo 500 le forme si indovinano a fatica, al
 passo 1.000 è rumore puro, come un televisore senza segnale. Questo è il verso
-facile: lo fa un dado, non serve intelligenza.
+facile: lo fa un dado, non serve intelligenza. Mille passi e non tre, perché
+ciascuno sia minuscolo: una foto ridotta a pulviscolo in un colpo solo non la
+rimette a posto nessuno, mentre fra due fotogrammi vicini c'è pochissima
+strada da rifare.
 
 Ora la parte furba. Non chiediamo alla rete l'impossibile («da questo pulviscolo
 tira fuori una foto») ma una cosa umile: «ecco il fotogramma 500: dimmi quanto
 sporco c'è qui sopra, punto per punto». È il mestiere di un restauratore
 paziente, che non ridipinge il quadro ma sa dire dov'è lo sporco e quanto è
-spesso. Ed è un compito facile da imparare, perché durante l'addestramento la
-risposta esatta la conosciamo: lo sporco l'abbiamo messo noi, e sappiamo
-esattamente com'era fatto.
+spesso. Di fotogrammi così ne serve una montagna per allenarla, da ogni foto
+dell'archivio e da ogni livello di rovina, e nessuno li prepara rovinando la
+foto cinquecento volte di seguito: la dose di sporco che spetta al passo 500 si
+sa calcolare in anticipo e si stende in un gesto solo. La risposta esatta la
+conosciamo sempre: lo sporco l'abbiamo messo noi.
 
 Per **generare** un'immagine nuova si parte dalla fine: si sorteggia del
 pulviscolo nuovo (dado alla mano, come per rovinare la foto, solo che qui
 sotto non c'è nessuna foto) e si ripete mille volte il giro di domanda e
 risposta, dal passo 1.000 al passo 1. A ogni passo emerge qualcosa (una massa
 scura, una sagoma, un gatto) e all'ultimo fotogramma c'è un'immagine che non
-esisteva da nessuna parte: la rete ha imparato che aspetto ha il mondo, e il
-pulviscolo di partenza, sempre diverso, decide quale immagine del mondo verrà
-fuori.
+esisteva da nessuna parte: la rete ha imparato che aspetto ha il mondo.
 
-Una cosa, però, va detta subito, perché è il punto in cui quasi tutti i racconti
-di questa storia sbagliano. Verrebbe da immaginare che a ogni giro si sollevi un
-velo di sporco, e che dopo mille veli il quadro sia pulito. Non è così: a ogni
-giro se ne toglie pochissimo, e se ne getta sopra dell'altro, sorteggiato di
-nuovo. Una delle due ragioni per cui l'immagine emerge lo stesso si può dire
-subito: quel poco che si toglie è **mirato** (ogni giro spinge il quadro un
-pochino più verso una figura sensata) mentre quello che si getta è
-**sorteggiato**, e mille sorteggi si disfano fra loro invece di sommarsi. È una
-gara fra tante spintine tutte concordi e tante spintone che si contraddicono, e
-a mille ripetizioni vincono le concordi. La seconda ragione, che è quella meno
-raccontata, richiede i numeri, e ce li prendiamo nella prossima sezione.
+Verrebbe da immaginare che a ogni giro si sollevi un velo di sporco, e che dopo
+mille veli il quadro sia pulito. Non è così: a ogni giro se ne toglie
+pochissimo, e se ne getta sopra dell'altro, sorteggiato di nuovo. Una delle due
+ragioni per cui l'immagine emerge lo stesso: quel poco che si toglie è
+**mirato** (ogni giro spinge il quadro un pochino più verso una figura sensata),
+quello che si getta è **sorteggiato**, e mille spintine tutte concordi si
+sommano mentre mille spintoni a casaccio si disfano fra loro. La seconda
+ragione richiede i numeri, e ce li prendiamo nella prossima sezione.
 
 `````
 
@@ -110,16 +110,17 @@ $$
 \qquad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
-dove $\bar{\alpha}_t = \prod_{s=1}^{t}(1-\beta_s)$ misura quanto segnale
-originale sopravvive al passo $t$: si campiona $\mathbf{x}_t$ direttamente da $\mathbf{x}_0$,
+dove $\bar{\alpha}_t = \prod_{s=1}^{t}(1-\beta_s)$, la cui radice
+$\sqrt{\bar{\alpha}_t}$ è la frazione di segnale originale sopravvissuta al
+passo $t$: si campiona $\mathbf{x}_t$ direttamente da $\mathbf{x}_0$,
 senza percorrere la catena; per $t \to T$, $\bar{\alpha}_t \to 0$ e $\mathbf{x}_T$ è
 rumore puro.
 
 Il risultato che rende tutto possibile viene dall'analisi dei processi di
 diffusione: se i passi $\beta_t$ sono piccoli, anche il processo inverso
-$q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ è approssimativamente gaussiano. Non è un risultato del
-deep learning ed è molto più vecchio di tutto ciò di cui parla questo
-capitolo: lo si deve a William Feller, che lo pubblica nel 1949
+$q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ è approssimativamente gaussiano. Non viene
+dal deep learning e lo precede di decenni: lo si deve a William Feller, che lo
+pubblica nel 1949
 {cite}`feller1949theory`; Sohl-Dickstein e colleghi lo riprendono e ci
 costruiscono sopra il modello {cite}`sohl2015deep`.
 Ha quindi senso modellare il processo inverso con una gaussiana
@@ -127,7 +128,7 @@ parametrizzata da una rete,
 $p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$, con parametri appresi $\theta$. Il contributo
 di DDPM {cite}`ho2020denoising` è una parametrizzazione che riduce ogni cosa
 a una regressione: la rete $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ predice il rumore
-$\boldsymbol{\epsilon}$ della forma chiusa qui sopra, cioè quello **accumulato** da
+$\boldsymbol{\epsilon}$ della scorciatoia in forma chiusa, cioè quello **accumulato** da
 $\mathbf{x}_0$ a $\mathbf{x}_t$ e non l'incremento del solo passo $t$, con la loss
 
 $$

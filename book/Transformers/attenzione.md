@@ -70,42 +70,44 @@ perché è quello su cui si capiscono i conti; il secondo torna in fondo a quest
 pagina, quando encoder e decoder si incontrano.
 
 `````{tab} Elementare
-Prendi la frase che accompagna tutto questo libro: "Il gatto nero salta sul
-muro". Il modello sta
-elaborando la parola "salta" e si chiede: chi salta? Come un lettore con
-l'evidenziatore, ripassa la frase e assegna a ogni parola un'intensità di
+Prendi la frase "Il gatto nero salta sul muro". Il modello sta elaborando la
+parola "salta" e si chiede: chi salta? Come un lettore con l'evidenziatore,
+ripassa la frase e assegna a ogni parola un'intensità di
 colore: "gatto" fluorescente (è il soggetto!), "muro" un colore medio (è la
 destinazione), "il" e "sul" quasi trasparenti. Poi costruisce il significato
 di "salta" *in questa frase* mescolando le informazioni di tutte le parole,
 ma in proporzione all'evidenziatura: tanta parte di "gatto", un po’ di
 "muro", pochissimo del resto.
 
-Le intensità sono numeri veri, e vale la pena vederli almeno una volta. Per
-"salta" potrebbero venire così: gatto 0,52, muro 0,24, salta 0,10, nero 0,06,
-sul 0,05, il 0,03. Sono sei numeri, uno per ogni parola della frase, e c'è
-anche "salta" stessa, perché ogni parola guarda anche sé. Sommano a 1, ed è una
+Le intensità sono numeri veri, e per "salta" potrebbero venire così: gatto
+0,52, muro 0,24, salta 0,10, nero 0,06, sul 0,05, il 0,03. Sono sei numeri, uno
+per ogni parola della frase, e c'è anche "salta" stessa, perché ogni parola
+guarda anche sé. Sommano a 1, ed è una
 regola fissa: l'attenzione distribuisce sempre esattamente una unità di colore,
 quindi dare di più a "gatto" vuol dire togliere a qualcun altro. «Mescolare in
 quella proporzione» significa allora prendere il 52% della lista di numeri di
 "gatto", il 24% di quella di "muro", e così via, e sommare il tutto: quello che
 ne esce è "salta" in questa frase e in nessun'altra.
 
-Quei numeri non li decide un programmatore: li impara la rete durante
-l'addestramento, cioè provando e correggendosi su miliardi di frasi. Ogni volta
-che il risultato non è quello giusto (una traduzione sbagliata, la parola
-successiva sbagliata), i numeri vengono ritoccati un pochino nella direzione che
-avrebbe fatto sbagliare di meno: è lo stesso provare-e-correggere del capitolo
-sulle reti neurali. E quando il gioco lo fa ogni parola verso tutte le altre e
-non solo "salta", siamo nella self-attention di poco fa: l'intera frase che si
-rilegge da sé.
+Quei numeri non stanno scritti da nessuna parte, e nessun programmatore li
+ha battuti a tastiera: escono dalla frase, e da un'altra frase ne uscirebbero
+altri. Quello che la rete impara durante l'addestramento è il criterio con cui
+il colore va assegnato; le intensità le ricalcola daccapo ogni volta che le
+arriva una frase nuova. E il criterio lo impara provando e correggendosi su
+miliardi di frasi: ogni volta che il risultato non è quello giusto (una
+traduzione sbagliata, la parola successiva sbagliata), viene ritoccato un
+pochino nella direzione che avrebbe fatto sbagliare di meno, con lo stesso
+provare-e-correggere del capitolo sulle reti neurali. E quando il gioco lo fa
+ogni parola verso tutte le altre e non solo "salta", siamo nella self-attention
+di poco fa: l'intera frase che si rilegge da sé, tutte le parole nello stesso
+momento.
 `````
 
 `````{tab} Superiore
 Ogni parola (più precisamente ogni *token*, come vedremo) è rappresentata da
 un vettore. Da ciascun vettore la rete ricava tre proiezioni con matrici
-apprese: una **query** $\mathbf{Q}$ ("che cosa sto cercando?"), una **key**
-$\mathbf{K}$ ("che cosa offro come etichetta?") e un **value** $\mathbf{V}$
-("che informazione porto?").
+apprese: una **query** ("che cosa sto cercando?"), una **key** ("che cosa
+offro come etichetta?") e un **value** ("che informazione porto?").
 L'affinità tra la parola che elabora e ogni altra è il prodotto scalare
 query·key (la stessa misura di somiglianza tra vettori vista in *Algebra
 lineare*) e la **Scaled Dot-Product Attention** la trasforma in pesi:
@@ -121,7 +123,7 @@ la dimensione delle key. La softmax (già incontrata nel capitolo sulle reti
 neurali) normalizza le affinità in pesi che sommano a 1; la divisione per
 $\sqrt{d_k}$ evita che, al crescere della dimensione, i prodotti scalari
 diventino così grandi da saturare la softmax e azzerarne i gradienti. Il conto
-sta in due righe, e vale la pena farle perché è lì che stanno le ipotesi.
+sta in due righe, ed è lì che stanno le ipotesi.
 Supponiamo che le componenti $q_i$ e $k_i$ siano a media nulla, varianza
 unitaria, indipendenti fra loro e indipendenti al variare di $i$. Allora ogni
 addendo del prodotto scalare ha varianza
@@ -225,7 +227,11 @@ Transformer è farne parecchie in parallelo.
 Sulla stessa frase lavorano più lettori, ognuno con un evidenziatore di
 colore diverso e una fissazione diversa: uno segna chi fa l'azione, un altro le
 parentele di significato ("nero" e "gatto" vanno insieme perché uno è il colore
-dell'altro), un altro ancora chi sta vicino a chi nella frase.
+dell'altro), un altro ancora chi sta vicino a chi nella frase. Ognuno si
+costruisce le sue tre versioni di ogni parola, la ricerca, l'etichetta e
+l'informazione da consegnare, con tabelle di numeri tutte sue: è da lì che
+nasce la differenza fra un lettore e l'altro, perché su tabelle diverse la
+stessa frase si evidenzia in modo diverso.
 
 Ogni lettore consegna la sua versione arricchita della parola, e a questo punto
 di liste ce ne sono otto invece di una. Come si torna a una sola? Il trucco è
@@ -241,6 +247,12 @@ Ogni lettore si chiama, per ragioni che nessuno ricorda più, una "**testa**" di
 attenzione, e il Transformer originale ne usa otto. Perché otto e non nove?
 Perché funzionava: è una scelta provata sul campo, non una legge di natura, e i
 modelli che sono venuti dopo usano numeri diversi.
+
+Le fissazioni, poi, vengono fuori dall'addestramento come tutto il resto:
+nessuno assegna un compito a un lettore piuttosto che a un altro. Chi è andato
+a guardare dentro le teste di un modello già addestrato ne ha trovate alcune
+con un mestiere riconoscibile e altre senza niente di preciso, e la divisione
+dei compiti si vede solo in parte.
 `````
 
 `````{tab} Superiore
@@ -282,31 +294,45 @@ Impilarli, però, non è gratis, e ogni blocco porta con sé due accorgimenti ch
 servono soltanto a rendere la pila addestrabile.
 
 `````{tab} Elementare
-Il primo è una **scorciatoia**: la lista di numeri che entra in un blocco viene
-anche fatta passare *intatta* accanto al blocco, e sommata numero per numero a
-quella che esce. Serve a due cose, e la seconda è meno ovvia. All'andata, tiene
-aperta una strada diretta perché l'informazione arrivi in cima senza
-sfilacciarsi in mezzo a decine di blocchi. Al ritorno, serve alla correzione:
-quando la rete scopre di aver sbagliato, il segnale che dice «di quanto e in
-che direzione ritoccare» deve tornare indietro fino ai primi blocchi. Tornando
-indietro, però, quel segnale attraversa a ritroso gli stessi conti dell'andata,
-e a ogni blocco viene moltiplicato per i numeri di quel blocco, che di solito
-sono un po’ minori di uno. Se ogni blocco lo riduce a nove decimi, dopo
-cinquanta blocchi ne resta lo $0{,}5\%$: praticamente niente, e i primi blocchi
-smettono di imparare. La scorciatoia è la strada che il segnale può fare senza
-subire nessuna di quelle moltiplicazioni. Come un corrimano lungo una scala
-ripida: anche se un gradino è scivoloso, chi sale e chi scende hanno sempre una
-presa solida.
+A ogni piano del palazzo la lista di numeri entra nelle stanze, passa per i
+conti e ne esce cambiata. Accanto alle stanze corre una scala dritta, con un
+corrimano che va da cima a fondo: lungo quella scala la stessa lista sale
+intatta, senza entrare da nessuna parte, e in cima al piano si somma numero per
+numero a quella uscita dalle stanze. La strada di lato è la **scorciatoia**.
 
-Il secondo accorgimento è una **taratura**. I numeri, blocco dopo blocco,
-tendono a scappare via: qui diventano tutti enormi, là tutti minuscoli, e una
-rete con addosso valori fuori misura non impara più. Allora dopo ogni blocco si
-riscrive la lista in modo che i suoi numeri abbiano sempre la stessa media e la
-stessa dispersione: si sottrae a tutti la loro media, così il centro cade
-sullo zero, e poi si dividono tutti per quanto sono sparpagliati, così la
-larghezza è sempre quella. È come tarare la bilancia prima di ogni pesata: non
-cambia che cosa si sta pesando, garantisce solo che il numero letto sia sulla
-stessa scala di tutti gli altri.
+Chi sale la usa per arrivare in alto senza sfilacciarsi per via. Serve però
+soprattutto a chi scende. Quando la rete scopre di aver sbagliato, dall'ultimo
+piano parte un messaggio che dice di quanto e in che direzione ritoccare i
+conti, e quel messaggio deve arrivare fino ai primi piani. Se passa per le
+stanze, a ogni piano viene moltiplicato per i numeri di quel piano, che di
+solito sono un po’ minori di uno. Nove decimi a ogni piano: dopo cinquanta piani
+ne resta lo $0{,}5\%$, cioè quasi niente, e i piani bassi smettono di imparare.
+Sulla scala il messaggio scende senza toccare i conti, e in fondo arriva ancora
+leggibile.
+
+Su ogni pianerottolo c'è una bilancia, ed è il secondo accorgimento: la
+**taratura**. Piano dopo piano i numeri scappano via, qui tutti enormi, là tutti
+minuscoli, e una rete con addosso valori fuori misura non impara più. Allora la
+lista viene rimessa in riga: si sottrae a tutti la loro media, così il centro
+cade sullo zero, e poi si dividono tutti per quanto sono sparpagliati, così la
+larghezza è sempre quella. La bilancia non cambia che cosa si sta pesando: mette
+solo il numero letto sulla stessa scala di tutti gli altri. Accanto c'è una
+manopola, imparata durante l'addestramento, con cui la rete riallarga o
+restringe la scala dove le conviene.
+
+Nel palazzo del 2017 la bilancia sta sul pianerottolo della scala, subito dopo
+il punto in cui le due liste si sommano: chi scende deve attraversarla a ogni
+piano, e il corrimano non è sgombro fino in fondo. Lo si vedeva
+dall'addestramento, che partiva storto: bisognava cominciare con ritocchi
+piccolissimi e allargarli pian piano, altrimenti la pila andava fuori giri alle
+prime correzioni. I modelli venuti dopo hanno portato la bilancia all'ingresso
+delle stanze, la scala è tornata libera da cima a fondo, e quella partenza in
+punta di piedi si è potuta togliere.
+
+La pesata, intanto, si è fatta più spiccia. Nei modelli linguistici di oggi la
+media non la si toglie nemmeno: si divide e basta per la grandezza tipica dei
+numeri della lista, e poi si gira la manopola. Un conto in meno a ogni piano, e
+la pila sta ferma lo stesso.
 `````
 
 `````{tab} Superiore
@@ -372,7 +398,7 @@ che permettevano di concatenare due fatti per rispondere a una domanda che
 nessuno dei due risolveva da solo. E siccome adesso ogni fatto contribuisce un
 po’, la rete può imparare da sola quali contano, senza che glielo si dica.
 
-Due cose da portarsi via. La prima è che quella graduatoria sui fatti **è**
+Due cose da portarsi via. La prima è che quella graduatoria sui fatti *è*
 l'attenzione, con la sola differenza che qui l'archivio è un magazzino a parte
 invece della frase stessa. La seconda è che la struttura
 domanda-contro-archivio, con i fatti tenuti fuori dalla rete e consultati al
@@ -397,18 +423,21 @@ non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nom
 - L’**attenzione** rilegge la frase con un evidenziatore: per capire una
   parola, guarda tutte le altre, dà a ciascuna un'intensità di colore e ne
   mescola le informazioni in quella proporzione.
-- Le intensità le decide la frase, non un programmatore: la rete le impara
-  provando e correggendosi su miliardi di esempi. Quando è ogni parola a
-  guardare tutte le altre, si chiama **self-attention**.
+- Le intensità le decide la frase, non un programmatore: quello che la rete
+  impara, provando e correggendosi su miliardi di esempi, è il criterio con cui
+  il colore va assegnato, e le intensità le ricalcola su ogni frase nuova.
+  Quando è ogni parola a guardare tutte le altre, si chiama **self-attention**.
 - Per giocare, ogni parola si presenta in tre versioni: la **query** (la
   domanda che fa), la **key** (l'etichetta con cui si fa trovare) e il
   **value** (l'informazione che consegna).
 - Di evidenziatori se ne passano otto in parallelo, ognuno attento a un tipo di
   legame diverso: sono le **teste** di attenzione.
 - Attorno a ogni blocco ci sono una **scorciatoia** (l'informazione passa anche
-  di lato, intatta, e la correzione degli errori trova sempre una presa per
-  tornare indietro) e una **taratura** (i numeri riportati su una scala
-  standard). Senza di loro le torri alte non si addestrano.
+  di lato, intatta, e la correzione degli errori trova una presa per tornare
+  indietro) e una **taratura** (i numeri riportati su una scala standard).
+  Senza di loro le torri alte non si addestrano; e conta dove la taratura si
+  infila, perché nel montaggio del 2017 stava sul percorso della scorciatoia, e
+  i modelli venuti dopo l'hanno spostata all'ingresso del blocco.
 ```
 `````
 
@@ -421,7 +450,9 @@ non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nom
   dipendenza della varianza da $d_k$, sotto l'ipotesi di componenti
   indipendenti a media nulla e varianza unitaria).
 - Nella **self-attention** ogni parola guarda tutte le altre; i pesi non sono
-  fissati a mano ma appresi.
+  fissati a mano né memorizzati: si ricalcolano su ogni sequenza, e ciò che
+  l'addestramento apprende sono le proiezioni $\mathbf{W}^Q$, $\mathbf{W}^K$,
+  $\mathbf{W}^V$ che li producono.
 - La **Multi-Head Attention** esegue più attenzioni in parallelo ($h = 8$ nel
   modello originale), ciascuna libera di specializzarsi su relazioni diverse.
 - **Residual connection** e **layer normalization** tengono addestrabili le

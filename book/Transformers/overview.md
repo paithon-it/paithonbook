@@ -24,28 +24,40 @@ versione più raffinata, quella con un taccuino su cui annotare e cancellare
 (le **LSTM**). Funziona, ma con due difetti strutturali.
 
 `````{tab} Elementare
-Immagina di leggere un romanzo attraverso una fessura che mostra una parola
-alla volta, dovendo tenere tutto il resto a memoria. Dopo dieci pagine, quanto
-ricordi della prima? È il problema delle reti ricorrenti: sui testi lunghi il
-ricordo dell'inizio sbiadisce. E c'è un secondo problema: se puoi leggere solo
+Un romanzo letto attraverso una fessura che scopre una parola alla volta, con
+tutto il resto da tenere a memoria: dopo dieci pagine, quanto ricordi della
+prima? È il problema delle reti ricorrenti: sui testi lunghi il ricordo
+dell'inizio sbiadisce. Il taccuino su cui annoti quello che conta aiuta, ma ha
+una pagina sola: a ogni parola nuova la riscrivi, e di quel che c'era
+all'inizio resta sempre meno. E c'è un secondo problema: se puoi leggere solo
 una parola alla volta, non puoi farti aiutare; cento amici non leggono un
 libro più in fretta di te se il libro va comunque letto in fila.
 
-Il Transformer rompe la fessura: guarda **tutta la frase insieme**, e per ogni
+Il Transformer rompe la fessura: guarda tutta la frase insieme, e per ogni
 parola decide a quali altre parole prestare attenzione. In "Il gatto nero
 salta sul muro", mentre elabora "salta" può guardare direttamente "gatto" (chi
 è che salta?) senza passare per un riassunto sbiadito. E siccome ogni parola
 viene elaborata insieme alle altre, il lavoro si può dividere: i cento amici
-servono, eccome.
+servono, eccome. È soprattutto questo ad aver fatto crescere i modelli fino
+alle dimensioni di oggi: leggersi una biblioteca intera diventa una faccenda
+di quanti amici riesci a chiamare.
+
+Dividere il lavoro però non lo fa sparire, e il conto sta nelle coppie. Ogni
+parola guarda ogni altra, quindi dieci parole fanno cento sguardi e cento
+parole ne fanno diecimila: raddoppiare la frase quadruplica il lavoro. Su una
+frase nessuno se ne accorge. Su un romanzo intero è la voce di spesa che
+comanda tutte le altre, ed è una delle ragioni per cui a questi modelli si
+mette un limite su quanto testo possono tenere davanti agli occhi in una
+volta.
 `````
 
 `````{tab} Superiore
-Nelle RNN l'informazione tra due parole distanti $n$ posizioni attraversa
-$O(n)$ passaggi di stato: il segnale si degrada (gradiente che svanisce, come
-visto nel capitolo sulle reti neurali) e le dipendenze lunghe si perdono,
-problema che LSTM e GRU mitigano ma non eliminano. Inoltre la ricorrenza è
-intrinsecamente **sequenziale**: il passo $t$ richiede il passo $t-1$, e
-l'hardware parallelo (le GPU) resta sottoutilizzato in addestramento.
+Nelle RNN l'informazione che va dalla prima all'ultima parola di una sequenza
+lunga $n$ attraversa $O(n)$ passaggi di stato: il segnale si degrada (gradiente
+che svanisce, come visto nel capitolo sulle reti neurali) e le dipendenze
+lunghe si perdono, problema che LSTM e GRU mitigano ma non eliminano. Inoltre
+la ricorrenza è intrinsecamente **sequenziale**: il passo $t$ richiede il passo
+$t-1$, e l'hardware parallelo (le GPU) resta sottoutilizzato in addestramento.
 
 Nel Transformer la **self-attention** collega ogni coppia di posizioni in un
 solo passo, lunghezza di cammino $O(1)$, e l'elaborazione di tutte le
@@ -98,6 +110,10 @@ sguardo alle **tendenze**, con i limiti, che non mancano.
   **parallelizzazione**: le parole si elaborano tutte insieme invece che in
   fila, e i cento amici di prima servono davvero, perché è quello che permette
   di addestrare questi modelli su macchine con migliaia di processori.
+- Il conto si paga sulle coppie: ogni parola guarda ogni altra, quindi
+  raddoppiare la lunghezza del testo quadruplica il lavoro. È una delle ragioni
+  per cui a questi modelli si mette un limite su quanto testo possono tenere
+  davanti agli occhi in una volta.
 - Proprio perché regge dati e macchine sempre più grandi è diventato la base
   dei grandi modelli linguistici: quella «T» è la stessa di GPT, BERT e
   ChatGPT.

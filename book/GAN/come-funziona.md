@@ -31,9 +31,11 @@ non una dimenticanza. Gli consegni una manciata di numeri estratti a caso (il
 rumore): è la sua materia prima, sempre diversa. Da quei numeri deve modellare
 qualcosa di sensato, per esempio l'immagine di un volto. All'inizio produce
 macchie informi. Con l'allenamento impara a trasformare quei numeri casuali in
-volti sempre più plausibili. Il punto è che numeri casuali diversi in ingresso
-danno volti diversi in uscita: è così che $G$ genera *varietà*, non una sola
-immagine ripetuta.
+volti sempre più plausibili. Numeri casuali diversi in ingresso danno volti
+diversi in uscita: è così che $G$ genera *varietà*, non una sola immagine
+ripetuta. Di volti però non tiene nessun registro: sa fabbricarne uno, non sa
+dire quanto un volto sia probabile. E alla fine lo si giudica in blocco: i
+volti che sforna, tutti insieme, devono somigliare al mucchio di quelli veri.
 
 `````
 
@@ -55,9 +57,9 @@ Il discriminatore fa il mestiere opposto, e più familiare: è un classificatore
 
 `````{tab} Elementare
 
-$D$ è l'esperto d'arte. Riceve un dato, a volte vero (pescato dal **dataset**,
-il mucchio di esempi autentici che abbiamo raccolto), a
-volte falso (sfornato da $G$), e deve rispondere a una sola domanda: *è
+Davanti a $D$, l'esperto d'arte, passano dei quadri, tanti veri (pescati dal
+**dataset**, il mucchio di esempi autentici che abbiamo raccolto) quanti falsi
+(sfornati da $G$), e su ciascuno deve rispondere a una sola domanda: *è
 autentico?* La sua risposta è un numero tra $0$ e $1$, una specie di livello
 di fiducia: vicino a $1$ significa "sono quasi certo che sia reale", vicino a
 $0$ significa "quasi certo che sia un falso". Il suo mestiere è non farsi
@@ -158,13 +160,21 @@ arrivano.
 
 `````{tab} Elementare
 
-Immagina un punteggio unico del gioco. L'esperto guadagna punti ogni volta
-che indovina; il falsario "vince" ogni volta che gli fa perdere punti. Quello
-che è un bene per uno è un male per l'altro: è un gioco a somma zero.
-Non esiste un traguardo fisso da raggiungere: esiste un *equilibrio*, il punto
-in cui nessuno dei due riesce più a migliorare a spese dell'altro. Lì il
-falsario è così bravo che l'esperto, per quanto si sforzi, può solo tirare
-a indovinare.
+I punti si segnano tutti sullo stesso tabellone. L'esperto ne guadagna ogni
+volta che indovina, sui quadri autentici come sui falsi; il falsario guadagna
+ogni volta che gliene fa perdere. Quello che è un bene per uno è un male per l'altro: è un gioco a
+somma zero.
+
+Metà tabellone, però, il falsario non lo tocca. Sui quadri autentici l'esperto
+se la vede da solo, e l'unica cosa in suo potere è come vengono i propri:
+gioca sul suo mezzo tabellone e basta.
+
+Il gioco cerca un *equilibrio*: il punto in cui nessuno dei due riesce più a
+migliorare a spese dell'altro. Lì il falsario è così bravo che
+l'esperto, per quanto si sforzi, può solo tirare a indovinare, cinquanta e
+cinquanta su ogni quadro. Vale per un esperto ideale, uno a cui è concesso
+qualunque criterio e una pazienza infinita; quello vero è una rete con un
+numero finito di pesi, e all'ideale ci somiglia soltanto fin dove ci arriva.
 
 `````
 
@@ -193,14 +203,14 @@ V(D,G) = \int p_{\text{dati}}(\mathbf{x})\log D(\mathbf{x})\,d\mathbf{x}
        + p_G(\mathbf{x})\log\big(1-D(\mathbf{x})\big) \Big]\,d\mathbf{x}.
 $$
 
-Ed è qui che serve l'ipotesi di capacità illimitata: poiché $D$ non ha vincoli, l'integrale si massimizza massimizzando l'integrando **punto per punto**, cioè scegliendo per ogni $\mathbf{x}$ separatamente il numero $y = D(\mathbf{x}) \in [0,1]$ che rende massima $a\log y + b\log(1-y)$, con $a = p_{\text{dati}}(\mathbf{x})$ e $b = p_G(\mathbf{x})$. Derivando in $y$:
+Ed è qui che serve l'ipotesi di capacità illimitata: poiché $D$ non ha vincoli, l'integrale si massimizza massimizzando l'integrando **punto per punto**, cioè scegliendo per ogni $\mathbf{x}$ separatamente il numero $u = D(\mathbf{x}) \in [0,1]$ che rende massima $a\log u + b\log(1-u)$, con $a = p_{\text{dati}}(\mathbf{x})$ e $b = p_G(\mathbf{x})$. Derivando in $u$:
 
 $$
-\frac{d}{dy}\big[a\log y + b\log(1-y)\big] = \frac{a}{y} - \frac{b}{1-y} = 0
-\;\Longleftrightarrow\; a(1-y) = b\,y \;\Longleftrightarrow\; y = \frac{a}{a+b},
+\frac{d}{du}\big[a\log u + b\log(1-u)\big] = \frac{a}{u} - \frac{b}{1-u} = 0
+\;\Longleftrightarrow\; a(1-u) = b\,u \;\Longleftrightarrow\; u = \frac{a}{a+b},
 $$
 
-e la derivata seconda $-a/y^2 - b/(1-y)^2$ è negativa, quindi quel punto è un massimo e non un minimo. Da cui
+e la derivata seconda $-a/u^2 - b/(1-u)^2$ è negativa, quindi quel punto è un massimo e non un minimo. Da cui
 
 $$
 D^*(\mathbf{x}) = \frac{p_{\text{dati}}(\mathbf{x})}{p_{\text{dati}}(\mathbf{x}) + p_G(\mathbf{x})},
@@ -305,8 +315,7 @@ $-0{,}42$, $-0{,}29$ nelle prime sei tappe (il picco dei dati veri sta
 nell'origine), e alla settima non esiste più, perché le due densità coincidono
 ovunque. Due gaussiane di varianza diversa si incrociano in realtà in due
 punti, e il secondo cade attorno a $x \simeq 2{,}1$: là però entrambe le
-densità sono dell'ordine di $10^{-4}$, cioè fuori dal tratto disegnato, per la
-ragione che si dice qui sotto.
+densità sono dell'ordine di $10^{-4}$, cioè fuori dal tratto disegnato.
 
 Il **massimo di $D^*$**, cioè la fiducia dell'esperto nel suo terreno migliore:
 $0{,}93$, $0{,}90$, $0{,}87$, $0{,}82$, $0{,}74$, $0{,}64$, $0{,}50$. Il
@@ -336,7 +345,7 @@ aggiusta dentro una rete, e tenerli fermi è il «congelamento» di cui fra poco
 vedremo che cosa lo garantisce.
 
 Nel codice, il punteggio unico del gioco si spezza in due conti dell'errore,
-uno per rete: sono le due **loss** che si vedono qui sotto, `loss_D` e
+uno per rete: sono le due **loss** del ciclo, `loss_D` e
 `loss_G`. Non sono due giochi diversi: sono le due facce dello stesso
 punteggio, ciascuna scritta dal punto di vista di chi la deve far scendere; e
 d'ora in avanti, quando parleremo di "loss", parleremo di queste. (Con una
@@ -395,9 +404,9 @@ che cosa impara il falsario? Se ciò che torna indietro fosse il verdetto
 ("falso"), non imparerebbe niente di utile: saprebbe di aver sbagliato, e
 basta. Ma il ritorno non è il verdetto.
 
-Torniamo un momento su una cosa detta in apertura di pagina: per una macchina
-un quadro *è* un elenco di numeri, uno per puntino, che dice quanto quel
-puntino è chiaro o scuro. Dipingere vuol dire scegliere quei numeri.
+Per una macchina un quadro *è* un elenco di numeri, uno per puntino, che dice
+quanto quel puntino è chiaro o scuro. Dipingere vuol dire scegliere quei
+numeri.
 
 L'esperto, allora, è fatto in modo che gli si possa chiedere qualcosa di più
 fine di un giudizio, e cioè, per ogni singolo puntino del quadro: *se questo
@@ -414,13 +423,12 @@ come cambierebbe il *suo* giudizio, e a lui il giudizio serve per smascherare.
 Il falsario prende la sua risposta e **la percorre al contrario**. Dove
 l'esperto dice «se questo puntino fosse più chiaro mi insospettirei di più», il
 falsario lo scurisce. Non riceve un consiglio dal nemico: riceve una mappa del
-nemico, e la usa contro di lui. Il duello è tutto qui, e il resto sono
-dettagli.
+nemico, e la usa contro di lui.
 
 Quell'elenco ha un nome, ed è la parola che si legge nelle figure e in ogni
-manuale: si chiama **gradiente**. Dove il libro dice «i gradienti tornano
-indietro dal discriminatore al generatore», intende esattamente questo:
-l'elenco delle spintarelle, una per puntino, da percorrere al rovescio.
+manuale: si chiama **gradiente**. «I gradienti tornano indietro dal
+discriminatore al generatore» vuol dire esattamente questo: l'elenco delle
+spintarelle, una per puntino, da percorrere al rovescio.
 
 Ed è anche la risposta alla domanda gemella: perché l'esperto dev'essere una
 rete, e non una persona o un elenco di regole? Una persona darebbe lo stesso
@@ -445,6 +453,13 @@ schiarisca quel puntino di $3$: allora girare quel peso di un'unità fa salire
 il giudizio di $2 \times 3 = 6$. Il falsario ha ottenuto quello che gli
 serviva, «di quanto conviene girare questo peso», ed è un conto in cui l'esperto
 ha messo il primo fattore e lui il secondo.
+
+C'è una condizione nascosta, gemella di quella sull'esperto: il falsario deve
+dipingere, non scegliere. Il colore si stende un filo di più o un filo di meno,
+e il suo mezzo conto ha senso; con parole prese da un elenco, invece, un
+ritocco minuscolo a un peso o cambia la parola o non cambia niente, e quel
+secondo fattore non esiste più. Per questo le GAN sul testo sono sempre state
+faticose.
 
 `````
 
@@ -518,8 +533,7 @@ verdetto.
 
 `````{tab} Elementare
 
-Una nota di lettura prima dei due dettagli che restano, e non è uno dei tre
-punti: la riga con la `n`. I dati non si danno
+Prima dei due dettagli, la riga con la `n`. I dati non si danno
 in pasto alla rete uno per volta ma a gruppetti, e l'ultimo gruppo di ogni giro
 può risultare più corto degli altri (se gli esempi sono $1000$ e i gruppi da
 $64$, l'ultimo ne contiene $40$). La `n` conta quanti esempi ci sono davvero nel
@@ -532,16 +546,19 @@ per il falsario, `opt_D` per l'esperto). Non sono due personaggi nuovi della
 storia, sono la mano del falsario e la mano dell'esperto: prendono le
 correzioni calcolate e le applicano. Il punto è che sono due, e che ciascuno
 conosce soltanto i pesi della propria rete: è questo, e nient'altro, a
-garantire che ciascuno dei due impari solo nel proprio turno. È il "congelamento" descritto sopra, e non è un trucco: è il modo in cui
-i due allenatori sono stati messi su fin dall'inizio.
+garantire che ciascuno dei due impari solo nel proprio turno. È il
+«congelamento» dei pesi, ed è il modo in cui i due allenatori sono stati messi
+su fin dall'inizio.
 
 Chi programma in PyTorch si aspetterebbe qui la parola `.detach()`, che
 compare nel codice quando si allena l'esperto sui falsi, e a cui quel merito
 viene spesso attribuito. Non è suo: dice soltanto di non calcolare
 nemmeno la correzione per il falsario, dato che in quel turno verrebbe comunque
 buttata via. Non serve a tenere separati i due allenamenti (a quello bastano i
-due allenatori), serve a non sprecare lavoro; su reti grandi il risparmio è
-però notevole.
+due allenatori), serve a non sprecare lavoro, e su reti grandi il risparmio è
+notevole. Regge finché le righe del ciclo stanno in quest'ordine: cambiandolo,
+quel lavoro sprecato smetterebbe di essere innocuo e `.detach()` tornerebbe
+indispensabile.
 
 Secondo dettaglio: nel suo turno, il falsario misura il proprio errore come
 se i suoi falsi *dovessero* risultare autentici, e impara da quanto il verdetto
@@ -569,11 +586,10 @@ proprie probabilità, ed è un passo avanti enorme. Stesso ritocco, stesso
 esperto: cambia solo quale delle due domande gli si fa, e la seconda continua a
 distinguere anche laggiù in fondo, dove la prima ha smesso.
 
-Conviene aggiungere subito che, a rigore, non è più lo stesso gioco. Il
-falsario non sta più cercando di far scendere il punteggio che l'esperto fa
-salire: ne insegue uno suo, e il tabellone unico di cui si è parlato sopra non
-basta più a raccontare tutti e due i giocatori. Il trucco è già suggerito nell'articolo
-del 2014; il prezzo lo vedremo fra poco.
+A rigore non è più lo stesso gioco. Il falsario non sta più cercando di far
+scendere il punteggio che l'esperto fa salire: ne insegue uno suo, e il
+tabellone unico non basta più a raccontare tutti e due i giocatori. Il trucco è
+già suggerito nell'articolo del 2014; il prezzo lo vedremo fra poco.
 
 `````
 
@@ -648,18 +664,26 @@ reti più difficili da addestrare, e tre problemi ricorrono.
   uno, l'altro peggiora, e il punteggio oscilla invece di stabilizzarsi.
   All'inizio del capitolo avevamo detto che i due "si perfezionano a vicenda",
   ed è ancora vero: la differenza sta in quanto è grossa la correzione che
-  ciascuno si applica a ogni turno. Quanto grossa può essere non lo decide il
-  gioco: è una misura che si fissa prima di cominciare, e la sceglie chi
-  addestra. Finché ciascuno insegue l'altro con
-  ritocchi piccoli, ogni miglioramento resta acquisito e l'equilibrio si sposta
-  un poco alla volta; se le correzioni sono troppo grosse, ognuna disfa la
-  precedente e nessuno dei due consolida niente. Due lottatori che si
-  sbilanciano a vicenda invece di allenarsi. Ed è qui che si paga il prezzo
+  ciascuno si applica a ogni turno, e quanto grossa lo fissa chi addestra prima
+  di cominciare. Con ritocchi piccoli ogni miglioramento resta acquisito e
+  l'equilibrio si sposta un poco alla volta; con correzioni troppo grosse
+  ognuna disfa la precedente e nessuno dei due consolida niente, due lottatori
+  che si sbilanciano a vicenda invece di allenarsi. Ed è qui che si paga il prezzo
   annunciato poco fa: la domanda «quanto manca perché il quadro passi per
   vero?» tiene viva la correzione anche quando il falsario è pessimo, ma quando
   l'esperto è molto più bravo di lui risponde ogni volta «moltissimo», e
   correzioni tutte grandi e tutte diverse fra loro lo fanno oscillare invece di
   guidarlo.
+
+  E c'è un guasto che col dosaggio non c'entra. Il falsario parte da una
+  manciata di numeri, e un quadro di puntini ne ha milioni: tutto quello che sa
+  produrre sta su una superficie sottilissima dentro il mondo dei quadri
+  possibili, e i quadri veri stanno fuori di lì. All'esperto basta allora un
+  dettaglio che nessun falso ha mai, e li boccia tutti con la stessa sicurezza,
+  che il falso sia venuto quasi bene o malissimo: la domanda «è autentico?» non
+  registra più i progressi del falsario, e alternare meglio i turni non ci mette
+  rimedio. Per uscirne bisogna cambiare mestiere all'esperto, e chiedergli
+  quanto distano i due mucchi di quadri, quello dei veri e quello dei falsi.
 - **Mode collapse.** Il falsario scopre *un solo* falso che inganna sempre
   l'esperto e si limita a rifarlo. Risultato: $G$ genera sempre la stessa
   immagine (o pochissime varianti), buttando via tutta la varietà dei dati
@@ -667,13 +691,12 @@ reti più difficili da addestrare, e tre problemi ricorrono.
   vedere sempre lo stesso quadro: il fatto è che li guarda **uno per volta**, e
   uno per volta quel falso è convincente. Per smascherare la ripetizione
   bisognerebbe fargli guardare un gruppo intero in blocco, ed è uno degli
-  accorgimenti raccolti in fondo a questa pagina.
-- **Mancata convergenza.** I primi due sono guasti che si vedono. Questo è più
-  insidioso, perché da fuori non sembra un guasto: il duello continua a girare
-  regolarmente e non arriva mai da nessuna parte. Le immagini cambiano a ogni
-  turno, non peggiorano e non migliorano, e non esiste un momento in cui si
-  possa dire «ecco, è finito». Le due reti si girano intorno, e si potrebbe
-  andare avanti all'infinito.
+  accorgimenti che si sono messi a punto per rimediare.
+- **Mancata convergenza.** L'instabilità e il mode collapse si vedono. Questo è
+  più insidioso, perché da fuori non sembra un guasto: il duello continua a
+  girare regolarmente e non arriva mai da nessuna parte. Le immagini cambiano a
+  ogni turno, non peggiorano e non migliorano, e non esiste un momento in cui
+  si possa dire «ecco, è finito».
 
 `````
 
@@ -733,7 +756,7 @@ cinquantamila immagini) e soprattutto **non vede il mode collapse**: mille
 immagini bellissime e tutte uguali, se le si guarda una per volta, sembrano un
 successo.
 
-Si può controllare, e su un caso in cui la risposta la conosciamo già. Si prende il ciclo scritto qui sopra, riga per riga, e gli si dà un
+Si può controllare. Si prende quel ciclo, riga per riga, e gli si dà un
 compito minuscolo di cui conosciamo già la risposta.
 
 Il compito è questo: al posto delle immagini, quattromila punti su un foglio,
@@ -753,8 +776,7 @@ larga, perché uno che avesse imparato bene tutti e otto ne metterebbe in
 ciascuno un ottavo, cioè il dodici e mezzo per cento. Un mucchietto non coperto
 è quindi un mucchietto proprio abbandonato, non uno servito male.
 
-Chi vuole rifare l'esperimento trova qui sotto le misure; chi no può saltare
-al risultato. I mucchietti sono otto campane, di quelle
+I mucchietti sono otto campane, di quelle
 disegnate poco fa, con la larghezza (in gergo la *deviazione standard*) di
 $0{,}05$, disposte sui vertici di un ottagono di raggio $2$; il raggio
 dell'isolotto, $0{,}15$, è tre volte quella larghezza. Generatore e
@@ -854,8 +876,8 @@ l'immagine senza ancora nominarla, ed è quella che qui interessa: invece di
 chiedere al giudice come si chiama l'oggetto, gli si sbircia dentro e ci si
 prende quei numeri.
 
-Da lì al disegno di una nuvola il passo è breve, e vale la pena farlo piano.
-Immagina che quei numeri siano due soltanto: allora ogni immagine diventa un
+Da lì al disegno di una nuvola il passo è breve. Immagina che quei numeri
+siano due soltanto: allora ogni immagine diventa un
 punto su un foglio, come una città su una cartina, e mille immagini fanno
 mille punti. Immagini che si somigliano finiscono vicine, immagini diverse
 lontane, e l'insieme dei punti forma una macchia con una sua posizione e una
@@ -871,10 +893,10 @@ le due nuvole, e più è **basso**, meglio è. (Le tre lettere stanno per *Fréc
 Inception Distance*: Inception è il nome del giudice, la distanza è quella fra
 le due nuvole, e Fréchet è il matematico che ha definito il modo di misurarla.)
 
-Con un'avvertenza che conviene mettere subito accanto all'ultima frase: di una
-nuvola il conto guarda soltanto dove sta il suo centro e quanto è larga.
-Immagina allora due arcipelaghi con lo stesso centro e la stessa larghezza ma
-fatti in modo diverso: due isole lontane da una parte, un'unica macchia
+Con un'avvertenza da mettere subito accanto a quel «più è basso, meglio è»: di
+una nuvola il conto guarda soltanto dove sta il suo centro e quanto è larga.
+Due arcipelaghi, allora, con lo stesso centro e la stessa larghezza ma fatti in
+modo diverso: due isole lontane da una parte, un'unica macchia
 uniforme che le copre entrambe dall'altra. Per questo conto sono la stessa
 cosa, e non lo sono affatto: il secondo ha perso i due gruppi e ha riempito di
 roba proprio il vuoto che li separava. Un generatore che schiaccia la varietà
@@ -896,8 +918,8 @@ $$
 dove $p(y\mid \mathbf{x})$ è la distribuzione sulle classi che il classificatore assegna
 al campione $\mathbf{x}$ e $p(y) = \mathbb{E}_{\mathbf{x}\sim p_G}[p(y\mid \mathbf{x})]$ è la marginale
 sull'intero insieme generato. La divergenza KL è grande quando la prima è
-concentrata (campione riconoscibile) e la seconda è piatta (insieme vario): le
-due richieste della tab precedente, in una formula. Si valuta tipicamente su
+concentrata (campione riconoscibile) e la seconda è piatta (insieme vario):
+nitidezza e varietà in una formula sola. Si valuta tipicamente su
 decine di migliaia di campioni. I limiti sono noti: non usa mai $p_{\text{dati}}$,
 è cieco alla varietà *dentro* una classe, e dipende dalle mille classi di
 ImageNet, il che lo rende poco sensato fuori dalle immagini naturali.
@@ -1087,7 +1109,8 @@ precedente: ed è la storia della prossima sezione.
   un **vettore** nello spazio dei dati, non il verdetto scalare; la regola della
   catena lo compone con $\partial \tilde{\mathbf{x}} / \partial \theta_G$. Ne segue un
   requisito di progetto: $D$ dev'essere derivabile rispetto al proprio ingresso,
-  ed è la ragione per cui sui dati discreti la catena si spezza.
+  o si spezza il primo fattore. Sui dati discreti a mancare è invece il secondo,
+  perché una sequenza di simboli campionati non si deriva rispetto a $\theta_G$.
 - Condividono un'unica **funzione di valore minimax**: $G$ la minimizza, $D$ la
   massimizza; l'obiettivo ideale ha minimo in $p_G = p_{\text{dati}}$, e lì il
   discriminatore ottimo vale $D^*(\mathbf{x})=\tfrac12$ sul supporto dei dati. La

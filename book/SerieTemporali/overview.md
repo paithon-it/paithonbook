@@ -54,6 +54,11 @@ piacere senza perdere nulla, l'ordine non contava. Con una serie temporale non
 puoi. La temperatura di oggi somiglia a quella di ieri; se mescoli le date,
 distruggi proprio l'informazione che ti serve. L'ordine *è* il dato.
 
+E c'è una seconda differenza. Le palline uscivano tutte dallo stesso sacchetto,
+oggi come l'anno scorso; il negozio del diario invece cambia mentre lo guardi:
+apre una filiale, gli mettono un concorrente di fronte, e da lì in poi gli
+scontrini seguono un'altra regola.
+
 `````
 
 `````{tab} Superiore
@@ -101,32 +106,37 @@ cambiano la difficoltà, e conviene guardarle una per volta.
 
 `````{tab} Elementare
 
-Il primo asse riguarda **quante cose** guardiamo insieme. Se prevedi solo la
-temperatura di domani osservando le temperature passate, la serie è
-**univariata**: una sola grandezza che scorre. Ma spesso conviene guardarne
-tante insieme (temperatura, umidità, pressione), perché si aiutano a vicenda:
-è il caso **multivariato**.
+Il primo asse riguarda **quante cose** guardiamo insieme. Prevedere la
+temperatura di domani dalle sole temperature passate è il caso **univariato**:
+una sola grandezza che scorre. Spesso conviene guardarne tante insieme
+(temperatura, umidità, pressione), perché si aiutano a vicenda, ed è il caso
+**multivariato**.
 
-Il secondo asse riguarda **quanto lontano** guardiamo. Prevedere solo il
-prossimo valore (domani) è un *passo singolo*; prevedere l'intera settimana
-che verrà è *a più passi*. E qui c'è una trappola quotidiana: le previsioni
-del tempo a un giorno ci azzeccano quasi sempre, quelle a dieci giorni molto
-meno. La ragione è semplice: fra oggi e il giorno che vuoi prevedere devono
-succedere tutte le cose intermedie, e nessuno le ha ancora viste. Più giorni ci
-metti in mezzo, più incertezza si somma.
+Il secondo asse riguarda **quanto lontano** guardiamo. Prevedere il valore di
+domani è un *passo singolo*; prevedere l'intera settimana che verrà è *a più
+passi*.
 
-Ma non all'infinito, e questo dipende da com'è fatto il fenomeno. Alcuni hanno
-un valore di riposo verso cui tornano sempre, e la temperatura di una città è
-uno di quelli: per quanto lontano tu guardi, marzo non se ne andrà mai a cento
-gradi. Metti che a marzo, un anno con l'altro, si stia fra i 10 e i 18 gradi:
-prevedere il marzo di fra dieci anni vuol dire dire esattamente quello, fra 10 e
-18. L'incertezza è cresciuta fino a lì e poi si è fermata, perché a quel punto
-si è già ignoranti quanto si può essere, e aspettare altri dieci anni non
-peggiora niente.
+Per arrivare a domenica ci sono due strade. Una: prevedi lunedì, tratti il
+lunedì previsto come se l'avessi misurato, e da lì vai a martedì, e così fino in
+fondo. Costa poco, e se su lunedì hai sbagliato di due gradi quei due gradi
+entrano nel conto di martedì e ci restano fino a domenica. L'altra: un metodo
+apposta per domenica, che guarda solo i giorni veri. Costa un metodo per ogni
+giorno della settimana, e non si porta dietro i propri errori.
 
-Altri fenomeni un valore di riposo non ce l'hanno, e il prezzo di un'azione in
-borsa è l'esempio classico: dopo un crollo riparte da dove è arrivato, e il
-livello di prima non lo rincorre. Lì l'incertezza cresce e basta.
+Nemmeno il metodo fatto apposta, però, indovina domenica come indovina lunedì:
+fra oggi e domenica devono succedere sei giorni che nessuno ha visto, e ognuno
+aggiunge la sua incertezza. Le previsioni del tempo a un giorno ci azzeccano
+quasi sempre, quelle a dieci molto meno.
+
+Ma l'incertezza non cresce all'infinito. La temperatura di una città torna
+verso un suo valore di riposo: marzo non se ne andrà mai a cento gradi. Se a
+marzo, un anno con l'altro, si sta fra i 10 e i 18 gradi, prevedere il marzo di
+fra dieci anni vuol dire esattamente quello: fra 10 e 18, e l'incertezza si
+ferma lì. Più ignoranti di così non si diventa.
+
+Il prezzo di un'azione un valore di riposo non ce l'ha: dopo un crollo riparte
+da dove è arrivato, e il livello di prima non lo rincorre. Lì l'incertezza
+cresce e basta.
 
 `````
 
@@ -148,12 +158,12 @@ previsione **diretta** (un modello per ciascun orizzonte) e quella **ricorsiva**
 (un modello one-step riapplicato, alimentando le proprie previsioni come input),
 
 $$
-\hat{x}_{T+k} = f(x_1, \dots, x_T, \hat{x}_{T+1}, \dots, \hat{x}_{T+k-1}),
+\hat{x}_{T+j} = f(x_1, \dots, x_T, \hat{x}_{T+1}, \dots, \hat{x}_{T+j-1}),
 $$
 
-dove $h$ è l'orizzonte e $k$ il passo corrente. La ricorsiva è economica ma
-soffre di **error compounding**: l'errore al passo $k$ entra nell'input del
-passo $k+1$ e si propaga. Con un modello stimato, o non lineare, questo aggiunge
+dove $j$ è il passo corrente e va da $1$ a $h$. La ricorsiva è economica ma
+soffre di **error compounding**: l'errore al passo $j$ entra nell'input del
+passo $j+1$ e si propaga. Con un modello stimato, o non lineare, questo aggiunge
 una **distorsione** che la strategia diretta non ha, perché reiniettare una
 previsione puntuale in una ricorsione non lineare non restituisce la media
 della distribuzione vera ($\mathbb{E}[f(X)] \neq f(\mathbb{E}[X])$): è la
@@ -265,22 +275,33 @@ i metodi statistici classici, quelli della prossima sezione.
 
 `````{tab} Elementare
 
-Un fiume la cui portata oscilla sempre attorno allo stesso valore medio, con
-piene e magre di ampiezza costante, è un fiume «stabile»: chi lo studia oggi
-può usare le stesse regole di chi lo studiava vent'anni fa. Le cose
-che devono restare ferme sono tre: il valore attorno a cui la portata balla,
-l'ampiezza con cui balla, e il modo in cui due giorni si somigliano, che deve
-dipendere da **quanto** distano fra loro e non da **quando** cadono nel
+Un fiume la cui portata oscilla attorno allo stesso valore medio, con piene e
+magre di ampiezza costante, è un fiume «stabile»: chi lo studia oggi può usare
+le stesse regole di chi lo studiava vent'anni fa. Devono restare fermi il
+valore attorno a cui la portata balla, l'ampiezza con cui balla, e il modo in
+cui due giorni si somigliano, che dipende da **quanto** distano fra loro e non
+da **quando** cadono nel
 calendario (due giorni di fila si somigliano uguale, che siano di marzo o di
 settembre). Questa stabilità è ciò che i tecnici chiamano **stazionarietà**.
 
 Molte serie vere non sono così. Il prezzo di una casa cresce di decennio in
 decennio (la media sale: c'è una **tendenza**), i consumi di gelato salgono
-ogni estate e calano ogni inverno (la **stagionalità**), e ogni tanto succede
-qualcosa che cambia le regole di colpo, una crisi, una pandemia, una nuova
-tecnologia: un **cambio di regime**. Buona parte del lavoro consiste nel
-togliere tendenza e stagionalità per riportare la serie a qualcosa di stabile,
-su cui i modelli sappiano ragionare.
+ogni estate e calano ogni inverno (la **stagionalità**), e ogni tanto una crisi
+o una pandemia cambia le regole di colpo: un **cambio di regime**. Buona parte
+del lavoro consiste nel togliere tendenza e stagionalità, per riportare la
+serie a qualcosa di stabile.
+
+Ma per togliere una salita i gesti sono due, e non sono intercambiabili. Se il
+fiume sale lungo una linea regolare, tiri la linea e tieni di ogni giorno
+quanto stava sopra o sotto. Se invece ogni piena gli lascia il letto un po’ più
+alto per sempre, una linea da tirare non c'è: lasci perdere il livello e guardi
+di quanto è cambiato da ieri. Sul fiume delle piene la linea non basta: il
+letto continua a spostarsi sotto.
+
+Quale dei due casi hai davanti lo dicono delle prove sui dati, da leggere in
+coppia perché fanno domande opposte. Che il fiume sia stabile, però, non lo
+certificano: come un esame trova la malattia e non dichiara la salute, dicono
+solo se l'acqua misurata dà motivi per credere di no.
 
 `````
 
@@ -315,8 +336,8 @@ $\nabla x_t = x_t - x_{t-1}$, ed è la «I» (*integrated*) dell'ARIMA
 attorno a una retta) si stima la retta e si tengono i residui. La sezione
 seguente mostra perché scambiare le due non è affatto neutro. Per decidere
 esistono test appositi, ADF e KPSS, che hanno ipotesi nulle **opposte** e vanno
-letti insieme; li usa, al suo primo passo, la procedura della sezione
-seguente. Nessuno dei due, però,
+letti insieme; li usa, al suo primo passo, la procedura in tre tempi di Box e
+Jenkins. Nessuno dei due, però,
 «dimostra» la stazionarietà, esattamente come nessuna diagnostica dimostra che
 un modello sia giusto: dicono soltanto se i dati contengono prove contro di
 essa.
@@ -426,9 +447,11 @@ troppo si misura, e la sezione sulla validazione mostra come.
 - I compiti principali sono **forecasting** (uni/multivariato, a passo singolo o
   a più passi), classificazione di serie, rilevamento di anomalie e imputazione.
   Nel multi-step l'incertezza cresce con l'orizzonte perché si sommano le
-  varianze delle $h$ innovazioni non ancora osservate; l’*error compounding*
-  della strategia ricorsiva è un fenomeno **distinto**, e riguarda la
-  distorsione che la reiniezione introduce con modelli stimati o non lineari.
+  varianze delle $h$ innovazioni non ancora osservate, e su un processo
+  stazionario quella somma converge, cioè la banda smette di allargarsi;
+  l’*error compounding* della strategia ricorsiva è un fenomeno **distinto**, e
+  riguarda la distorsione che la reiniezione introduce con modelli stimati o
+  non lineari.
 - Ciò che rende il problema difficile è la rottura dell'indipendenza:
   **autocorrelazione**, **non stazionarietà** (tendenza, stagionalità),
   **cambi di regime**. Un processo è **stazionario in senso debole** se media e

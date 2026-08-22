@@ -64,13 +64,12 @@ in modo diverso ed è su quella differenza che gira l'intero capitolo.
 
 `````{tab} Elementare
 
-Il primo è l’**addestramento**, che
-si fa una volta sola: il testo esiste già tutto, e il modello lo attraversa per
-imparare. Il secondo è la **generazione**, quando il modello è in uso e scrive parola
-per parola un testo che non esiste ancora (nel libro la trovi chiamata
-anche *inferenza*, che è il nome tecnico dello stesso momento). Le due cose
-costano in modo diverso, e un modello può essere bravo in una e disastroso
-nell'altra.
+Il primo è l’**addestramento**, che si fa una volta sola: il testo esiste già
+tutto, e il modello lo attraversa per imparare. Il secondo è la
+**generazione**, quando il modello è in uso e scrive parola per parola un testo
+che non esiste ancora (si chiama anche *inferenza*, che è il nome tecnico dello
+stesso momento). Le due cose costano in modo diverso, e un modello può essere
+bravo in una e disastroso nell'altra.
 
 Le due grandi famiglie di modelli per sequenze hanno infatti un pregio e un
 difetto speculari. I Transformer si addestrano in fretta, perché guardano
@@ -78,14 +77,19 @@ tutta la frase in una volta e sfruttano a pieno le schede grafiche; ma per
 farlo devono tenere tutto sott'occhio, e più il testo è lungo più questo
 costa: in fretta diventa insostenibile. Le vecchie reti ricorrenti fanno il
 contrario: leggono una parola alla volta portandosi dietro un riassunto di
-dimensione fissa, quindi quando generano costano poco e non si spaventano
-davanti a testi lunghissimi; ma proprio perché procedono in fila, addestrarle
-è lento.
+dimensione fissa, quindi quando generano costano poco, e il conto da fare per
+ogni parola resta lo stesso anche dopo mille pagine; ma proprio perché
+procedono in fila, addestrarle è lento.
 
-Il sogno è avere le due cose insieme: la **velocità di addestramento** dei
-Transformer e il **basso costo in generazione** delle reti ricorrenti. È
-esattamente ciò che promette l'attenzione lineare, e con lei tutta la famiglia
-di modelli di questo capitolo.
+Il sogno è avere le due cose insieme: la velocità di addestramento dei
+Transformer e il basso costo in generazione delle reti ricorrenti. Sembra
+una richiesta contraddittoria, perché guardare tutto in una volta e procedere
+in fila sono due modi opposti di lavorare. La via d'uscita sta nel fatto che si
+tratta di uno stesso conto, e uno stesso conto si può fare in due maniere.
+Tutto insieme, ed è così che il modello impara; una parola alla volta, ed è
+così che il modello scrive. Il risultato che ne esce è lo stesso. È ciò che
+promette l'attenzione lineare, e con lei tutta la famiglia di modelli di questo
+capitolo.
 
 `````
 
@@ -122,22 +126,29 @@ scheletro, non come invenzioni scollegate.
 
 `````{tab} Elementare
 
-Il riassunto non è un testo: è una **tabella di numeri**, righe e colonne,
-sempre della stessa taglia (in matematica una tabella così si chiama
-*matrice*, e la parola tornerà spesso).
+Chiamarlo riassunto fa pensare a un foglio con delle frasi sopra. È invece una
+**tabella di numeri**, righe e colonne, sempre della stessa taglia (in
+matematica una tabella così si chiama *matrice*, e la parola tornerà spesso).
 
-Che una tabella di numeri possa contenere delle parole suona strano, e vale la
-pena chiarirlo qui perché regge tutto il resto: dentro un modello una parola
-non è una parola, è una fila di qualche centinaio di numeri (le posizioni di
-quella fila si chiamano *canali*). Etichetta e informazione sono due file di
-numeri anche loro, ricavate dalla parola. Quindi «scrivere nel riassunto» vuol
-dire sommare dei numeri alle caselle, e «rileggerlo» vuol dire rifare dei
-conti.
+Che una tabella di numeri possa contenere delle parole suona strano, e su
+questo regge tutto il resto: dentro un modello una parola non è una parola, è
+una fila di qualche centinaio di numeri (le posizioni di quella fila si
+chiamano *canali*). Etichetta e informazione sono due file di numeri anche
+loro, ricavate dalla parola. Quindi «scrivere nel riassunto» vuol dire sommare
+dei numeri alle caselle, e «rileggerlo» vuol dire rifare dei conti.
 
 Ogni parola che passa deposita così un'associazione, «a questa etichetta
 corrisponde questa informazione», che si somma a quello che c'è già scritto
 invece di aggiungere una riga nuova. Ecco perché la memoria non cresce: a
 cambiare sono i numeri dentro le caselle, non il numero di caselle.
+
+Il passaggio da una parola alla successiva è fatto di due gesti. Uno decide
+che fine fanno i numeri già scritti: possono restare com'erano, possono
+affievolirsi tutti un poco, oppure si può tornare su un'associazione sbagliata
+e correggerla. L'altro deposita l'associazione della parola appena letta. Il
+modo di depositare è quasi lo stesso in tutti i modelli di questa famiglia; il
+modo di trattare quello che c'era già cambia parecchio, e cambiarlo vuol dire
+cambiare modello.
 
 `````
 

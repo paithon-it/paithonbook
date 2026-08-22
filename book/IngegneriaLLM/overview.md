@@ -100,8 +100,10 @@ cervello, solo parole diverse. E nota il dettaglio del foglio, perché tornerà
 per tutto il capitolo: quei tre esempi già svolti sono la cosa che lo aiuta di
 più, e lui non ha imparato niente, li ha soltanto letti. Ecco cosa vuol dire
 «programmare a parole»: non si cambia la persona, si cambia ciò che le si
-dice. E siccome le parole giuste fanno un lavoro giusto e quelle sbagliate un
-disastro, sceglierle diventa un mestiere.
+dice. Una cosa il foglio non te la dà: la stessa risposta due volte.
+Ridaglielo domani e avrai qualcosa di simile, non la copia di oggi, come
+succede con chiunque. E siccome le parole giuste fanno un lavoro giusto e
+quelle sbagliate un disastro, sceglierle diventa un mestiere.
 
 `````
 
@@ -196,14 +198,20 @@ e che nella finestra non ci sta. Progettare questo ciclo è il livello più este
 
 `````{tab} Elementare
 
-Un'immagine per tenerli insieme. Il **prompt** è la singola domanda che fai a un
-esperto: «mi consigli un vino per il pesce?». Il **contesto** è tutto ciò che
-l'esperto ha davanti mentre risponde: il menù, la lista dei vini in cantina, il
-fatto che gli hai detto di avere un budget, la bottiglia che hai apprezzato la
-volta scorsa. Il **loop** è la conversazione intera che ne segue: lui propone,
-tu assaggi, storci il naso, lui riparte tenendo conto di com'è andata, e così
-via fino a trovare la bottiglia giusta. Domanda dentro il tavolo apparecchiato,
-il tavolo dentro la serata: ogni cerchio contiene quello prima.
+Sei al ristorante e chiedi al sommelier: «mi consigli un vino per il pesce?».
+Quella domanda è il **prompt**. Il **contesto** è tutto ciò che lui ha davanti
+mentre risponde: il menù, la lista dei vini in cantina, il budget che gli hai
+dichiarato, la bottiglia che hai apprezzato la volta scorsa. Il **loop** è la
+serata intera: lui propone, tu assaggi, storci il naso, lui riparte da lì, e
+così via fino alla bottiglia giusta.
+
+Il tavolo però è piccolo, e dopo tre giri è pieno di bicchieri. Il sommelier
+bravo sparecchia, e prima di sparecchiare segna sul taccuino la riga che
+conta: «il Verdicchio no, troppo secco». Al quarto giro rilegge il taccuino,
+non il tavolo. Chi invece si limita a limare il modo di porre la domanda, e
+non sparecchia né annota niente, alla quarta bottiglia ti riporta il
+Verdicchio: la domanda era perfetta, la serata no. Domanda dentro il tavolo
+apparecchiato, il tavolo dentro la serata: ogni cerchio contiene quello prima.
 
 `````
 
@@ -276,17 +284,22 @@ ha già percorso altrove, e qui ci basta sapere quando si imboccano.
 
 `````{tab} Elementare
 
-La differenza tra un incantesimo e un mestiere sta in tre parole:
-**vincoli**, **misura**, **versioni**. Un incantesimo lo pronunci e speri; un
-mestiere fa i conti con dei limiti (nella finestra ci sta solo una certa
-quantità di testo, e più ne metti più paghi), controlla se ha funzionato (provi,
-guardi i risultati, tieni quello che va meglio) e tiene traccia di cosa ha
-cambiato (così, se oggi le risposte peggiorano, sai che è stata la modifica di
-ieri). Chi lavora bene con gli LLM non «indovina la frase»: prova, misura,
-corregge. È noioso come tutta l'ingegneria, ed è per questo che funziona.
+Il foglio del collaboratore si riscrive ogni giorno, ed è lì che si vede la
+differenza fra un incantesimo e un mestiere. L'incantesimo lo pronunci e
+speri.
 
-Una cosa però va detta subito, ed è un'avvertenza che vale per tutto il
-capitolo: è un mestiere nato ieri. Non ci sono leggi, ci sono regole del
+Il mestiere lavora dentro dei **vincoli**: sul foglio ci sta solo una certa
+quantità di roba, e ogni riga in più è tempo che lui impiega a leggerla, cioè
+denaro. Poi c'è la **misura**. Tieni da parte venti richieste vere, di quelle
+che arrivano davvero; prima di adottare il foglio nuovo lo provi su quelle
+venti, e sulle stesse venti riprovi anche il vecchio. Vince quello che sbaglia
+meno a parità di righe. Venti diverse a ogni prova non si potrebbero
+confrontare, e una sola non direbbe niente. Restano le **versioni**: i fogli
+vecchi si datano e si tengono nel cassetto, così quando il giovedì le risposte
+peggiorano sai che il colpevole è il foglio di mercoledì.
+
+È noioso come tutta l'ingegneria, ed è per questo che funziona. Con
+un'avvertenza: è un mestiere nato ieri. Non ci sono leggi, ci sono regole del
 pollice che spesso funzionano e ogni tanto no. Chi ti promette la frase che
 funziona sempre ti sta vendendo qualcosa.
 

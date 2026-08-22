@@ -67,8 +67,8 @@ ottantaquattro numeri con ottantaquattro numeri esattamente come se ne
 sommavano tre con tre. Prendi una fotografia in bianco e nero di ventotto
 puntini per ventotto: ogni puntino, che si chiama **pixel**, per il calcolatore
 è un numero, e dice quanto quel punto è chiaro o scuro. Mettendoli in fila una
-riga dopo l'altra viene una lista di $28 \times 28 = 784$ numeri, ed è
-l'esempio che ritorna spesso in questo libro. Quando si dirà
+riga dopo l'altra viene una lista di $28 \times 28 = 784$ numeri, ed è un
+esempio che tornerà spesso. Quando si dirà
 «direzione» in uno spazio a 784 dimensioni, la cosa da tenere in mente non è
 un'immagine ma questa: le operazioni sono le stesse, e le parole «vicino»,
 «lontano», «dalla stessa parte» continuano a voler dire qualcosa perché si
@@ -138,81 +138,56 @@ numero.
 
 `````{tab} Elementare
 
-Prendi due vettori e chiediti: *puntano più o meno nella stessa direzione?*
-Il prodotto scalare risponde con un numero solo. Lo calcoli moltiplicando le
-componenti che occupano lo stesso posto e sommando tutto:
+Alla cassa del supermercato si incontrano due liste. Nel carrello ci sono 4
+chili di patate e 2 vaschette di fragole; le patate stanno a 1 euro al chilo e
+le fragole a 3 euro l'una. La cassa moltiplica ogni quantità per il suo prezzo
+e somma, $4\cdot 1 + 2\cdot 3 = 4 + 6 = 10$ euro. Quel conto è il **prodotto
+scalare** delle due liste $\mathbf{a}=(4,2)$ e $\mathbf{b}=(1,3)$, e in
+generale si scrive
 
 $$
 \mathbf{a} \cdot \mathbf{b} = a_1 b_1 + a_2 b_2 + \dots + a_n b_n .
 $$
 
-I numerini in basso sono solo un modo di dire «il posto»: $a_1$ è il primo
-numero della lista $\mathbf{a}$, $a_2$ il secondo, e $n$ è quanti sono in
-tutto. La riga, letta a voce, dice: *primo per primo, più secondo per secondo,
-e così via fino alla fine*.
+I numerini in basso dicono il posto nella fila. $a_1$ è la prima voce dello
+scontrino, $a_2$ la seconda, $n$ quante sono in tutto. Letta a voce, la riga
+dice *primo per primo, più secondo per secondo, e così via fino alla fine*. Con
+mille voci nel carrello le moltiplicazioni da sommare diventano mille, e
+qualsiasi totale pesato che tu abbia mai fatto era uno di questi. Mille
+quantità e mille prezzi entrano, e ne esce un numero solo, che in matematica si
+chiama *scalare* e dà il nome all'operazione: la spesa intera in una cifra,
+confrontabile con quella di domenica scorsa.
 
-Per esempio, con $\mathbf{a}=(4,2)$ e $\mathbf{b}=(1,3)$:
+Le stesse due liste, disegnate come frecce, rispondono a un'altra domanda.
+Puntano dalla stessa parte? La strada dritta davanti a te è $\mathbf{b}$; il
+bastone piantato obliquo all'inizio della strada è $\mathbf{a}$, e il sole è a
+picco ({numref}`fig-prodotto-scalare`). L'ombra sull'asfalto è la parte di
+bastone che va dove va la strada, e il prodotto scalare è la sua lunghezza
+moltiplicata per quella della strada. Se il bastone pende anche di lato l'ombra
+cade di sbieco, e nel conto entra soltanto quanto ne avanza lungo la
+carreggiata.
 
-$$
-\mathbf{a} \cdot \mathbf{b} = 4\cdot 1 + 2\cdot 3 = 4 + 6 = 10 .
-$$
+Bastone quasi sdraiato sulla strada, ombra lunga, numero grande e positivo.
+Dritto in piedi, ombra ridotta a un punto, zero. Inclinato all'indietro, ombra
+dall'altra parte, e allora la sua lunghezza la contiamo col segno meno, perché
+il segno dice da che lato l'ombra è caduta. Tre pendenze, tre verdetti:
+concordi, indifferenti, opposti.
 
-Un'immagine quotidiana: **lo scontrino della spesa**. Un vettore contiene le
-quantità (2 chili di pane, 1 litro di latte), l'altro i prezzi al chilo o al
-litro; il prodotto scalare è il totale da pagare. Qualsiasi "totale pesato"
-che hai mai calcolato era un prodotto scalare sotto mentite spoglie. Con mille
-dimensioni invece di due non cambia niente: le moltiplicazioni da sommare
-diventano mille.
+Allunga la strada di un chilometro e il totale cresce, senza che il bastone si
+sia mosso di un grado, perché quel numero mescola le due lunghezze con
+l'accordo. Il segno invece non si muove, comunque si allunghino strada e
+bastone.
 
-Il nome viene dall'esito. La somma di due vettori restituisce un vettore,
-questa operazione restituisce uno *scalare*, un numero singolo. È una
-compressione radicale (da duemila numeri a uno) e proprio per questo è
-preziosa: condensa la relazione fra due oggetti complicati in una cifra
-confrontabile.
-
-**Perché quel numero dice qualcosa sulla direzione?** Serve un'immagine
-geometrica ({numref}`fig-prodotto-scalare`). Immagina il vettore $\mathbf{b}$
-come una strada dritta, e il vettore $\mathbf{a}$ come un bastone piantato
-obliquo all'inizio della strada, col sole a picco. Il bastone proietta un'ombra
-sull'asfalto: quell'ombra è la parte di $\mathbf{a}$ che va nella stessa
-direzione della strada. Il
-prodotto scalare è la lunghezza dell'ombra moltiplicata per la lunghezza della
-strada. (Se il bastone pende anche di lato, l'ombra non cade più tutta sulla
-carreggiata ma un po’ di sbieco: quel che conta è solo quanto ne avanza *lungo*
-la strada, e il pezzo di traverso non entra nel conto. È la stessa cosa che
-facciamo quando diciamo che di un viaggio verso sud-est «tanti chilometri sono
-verso sud».)
-
-Se il bastone è quasi sdraiato lungo la strada, l'ombra è lunga e il risultato
-è **grande e positivo**. Se è perpendicolare, l'ombra si riduce a un punto:
-**zero**. Se punta all'indietro, l'ombra cade sull'altro lato del bastone, e
-allora contiamo la sua lunghezza col segno meno, perché quel che ci interessa
-non è quanto è lunga l'ombra ma da che parte cade: il numero diventa
-**negativo**. Tre casi, tre verdetti: concordi, indifferenti, opposti.
-
-Attenzione a non chiedere all'immagine più di quel che dà. Il prodotto scalare
-dipende da due cose insieme: da **quanto** i due vettori sono lunghi e da
-**quanto sono d'accordo**. Allungando la strada il totale cresce, senza che
-nessuno abbia cambiato direzione. Il segno, invece, dipende solo dall'accordo,
-e resta lo stesso comunque si allunghino le due frecce.
-
-Quando si vogliono confrontare *solo* le direzioni, allora, si divide il
-prodotto scalare per le lunghezze delle due frecce. È la stessa mossa che si fa
-in classe per passare da un punteggio a una percentuale: si divide per il
-massimo possibile, così quello che resta non dipende più da quanto era grande
-il totale. Qui il massimo possibile è proprio il prodotto delle due lunghezze
-(lo si tocca quando le frecce puntano esattamente nella stessa direzione), e
-dividere per quello lascia solo l'accordo.
-
-Quanto è lunga una freccia lo si calcola col teorema di Pitagora, ed è la
-**norma** di cui parla l'ultima sezione di questa pagina; qui basta il
-risultato. Con $\mathbf{a}=(4,2)$ e $\mathbf{b}=(1,3)$, che sono le due liste
-di poco fa, le lunghezze valgono $\sqrt{4^2+2^2}=\sqrt{20}\approx 4{,}47$ e
+Per confrontare le sole pendenze si divide il prodotto scalare per le due
+lunghezze, cioè per il massimo che potrebbe raggiungere, quello che si tocca
+col bastone sdraiato esattamente lungo la strada. La lunghezza di una freccia
+la dà il teorema di Pitagora, si chiama **norma** e avrà più avanti una sezione
+tutta sua. Le nostre due frecce misurano
+$\sqrt{4^2+2^2}=\sqrt{20}\approx 4{,}47$ e
 $\sqrt{1^2+3^2}=\sqrt{10}\approx 3{,}16$; il prodotto scalare faceva $10$, e
-diviso per le due lunghezze dà $10 / (4{,}47 \cdot 3{,}16) \approx 0{,}71$.
-Quel numero sta fra $-1$ e $1$ e non cambia se si allungano le frecce: è il
-coseno della figura, cioè l'accordo puro fra le due direzioni, ed è la
-quantità che nel resto del libro si chiama **similarità del coseno**.
+$10 / (4{,}47 \cdot 3{,}16) \approx 0{,}71$. Quel numero sta fra $-1$ e $1$,
+non cambia se allunghi bastone e strada, ed è il coseno dell'angolo fra le due
+frecce, l'accordo puro fra le direzioni, la **similarità del coseno**.
 
 `````
 
@@ -254,7 +229,7 @@ tenere fermi i dati, ma trasformarli.
 Una matrice è una tabella di numeri: righe e colonne. Ci serve per due cose.
 Primo, **impilare tanti esempi**: se ho 100 appartamenti descritti da 3 numeri
 ciascuno, ottengo una tabella $100\times 3$. Secondo, **trasformare** i dati,
-ed è qui che vale la pena rallentare, perché «moltiplicare una lista di numeri
+ed è qui che serve rallentare, perché «moltiplicare una lista di numeri
 per una tabella di numeri» sembra un'operazione misteriosa e non lo è: è il
 prodotto scalare di poco fa, ripetuto una volta per ogni riga della tabella.
 
@@ -284,6 +259,15 @@ moltiplicare i dati per una matrice, e lo si può ripetere: la lista che esce
 può entrare in un'altra tabella. È così che ogni strato di una rete neurale
 "riscrive" ciò che riceve prima di passarlo allo strato dopo, e i pesi delle
 righe sono esattamente ciò che l'addestramento va a regolare.
+
+Il conto appena fatto porta con sé due avvertenze. Ogni riga di pesi deve
+avere un numero per ciascuna voce dell'appartamento, né uno di più né uno di
+meno: una riga scritta per quattro voci non si combina con una lista di tre,
+come uno scontrino con un prezzo a cui non corrisponde nessuna quantità, e il
+totale non si chiude. E quando le tabelle si mettono in fila, l'ordine conta:
+passare i dati prima in una tabella e poi nell'altra, o al contrario, dà quasi
+sempre risultati diversi, come vestirsi (le calze prima delle scarpe funziona,
+nell'ordine inverso no).
 
 `````
 
@@ -372,65 +356,55 @@ e $1$ i suoi **autovalori**.
 
 `````{tab} Elementare
 
-L'analogia più onesta è la **venatura del legno**. Una tavola si comporta in
-modo diverso a seconda della direzione: lungo la venatura si spacca con niente,
-di traverso resiste. E la venatura appartiene alla tavola: è una proprietà di
-quel pezzo di legno, decisa dall'albero molto prima che qualcuno lo lavorasse,
-e non cambia a seconda di dove provi a colpire. Quello che cambia, a seconda di
-dove provi, è soltanto *come risponde*.
+Una tavola di legno si spacca con niente lungo la venatura, e resiste di
+traverso. Le venature stanno nella tavola, decise dall'albero molto prima che
+qualcuno la segasse, e non si spostano a seconda di dove batti. A cambiare è
+soltanto *come* la tavola risponde.
 
 La matrice è la tavola, e la freccia a cui la applichiamo è il punto in cui
-provi. Le direzioni buone sono già dentro la tabella di numeri, una volta per
-tutte; la freccia non le crea, le incontra o non le incontra. Gli autovettori
-sono le venature di una matrice: le direzioni lungo cui la trasformazione
-agisce nel modo più semplice possibile.
+batti. Le venature di una matrice si chiamano autovettori e stanno nella
+tabella di numeri una volta per tutte. Lungo una venatura la trasformazione si
+riduce a moltiplicare la freccia per un numero, e lo stirare di qua e il
+comprimere di là spariscono. La freccia può allungarsi, accorciarsi, perfino
+ribaltarsi, ma dalla sua retta non esce.
 
-Semplice quanto? Applicare la matrice a un vettore che sta su una venatura
-equivale a moltiplicarlo per un numero. Tutta la complessità del gesto (stira
-di qua, comprime di là) lungo quella direzione collassa in una
-moltiplicazione. Il vettore può allungarsi, accorciarsi, perfino ribaltarsi,
-ma **non lascia la sua retta** ({numref}`fig-autovettori`).
+Quel fattore di allungamento si chiama autovalore e si scrive con la lettera
+greca $\lambda$ (si legge «lambda»). Un $\lambda$ sopra $1$ allunga tutto ciò
+che punta di lì, e in {numref}`fig-autovettori` una venatura ha $\lambda = 3$
+e triplica, mentre l'altra ha $\lambda = 1$ e lascia le frecce come le trova.
+Fra $0$ e $1$ le accorcia. Sotto zero le volta dall'altra parte, tanto più
+lunghe quanto più grande è quel numero preso senza il segno.
 
-Quel fattore di allungamento ha un nome e un simbolo: si chiama **autovalore**
-e si scrive con la lettera greca $\lambda$ (si legge «lambda»). Nella figura
-di sopra $\lambda$ vale $3$ per una delle due venature e $1$ per l'altra.
-Sapere quanto vale è una specie di oroscopo per quella direzione:
+Certe tavole una venatura non ce l'hanno. Una tabella può far girare tutte le
+frecce dello stesso angolo, come le lancette di un orologio, e allora nessuna
+resta sulla propria retta e sul foglio non c'è niente da indicare. I conti una
+risposta la danno lo stesso, con numeri di un'altra specie che qui non servono.
+Le tabelle che il machine learning incontra più spesso sono venate, e con le
+venature perpendicolari fra loro.
 
-- $\lambda > 1$: tutto ciò che punta di lì viene **amplificato**;
-- $\lambda = 1$: resta **identico**, è il caso della seconda venatura del
-  disegno;
-- $0 < \lambda < 1$: viene **attenuato**, cioè accorciato;
-- $\lambda < 0$: viene **ribaltato** dalla parte opposta, e per giunta
-  allungato o accorciato a seconda di quanto quel numero sia grande in valore
-  assoluto.
+Il guaio comincia con cento tavole tagliate dallo stesso tronco, venate tutte
+uguali, che il colpo attraversa una dopo l'altra, come un segnale che ripassa
+cento volte per lo stesso strato. Gli allungamenti si moltiplicano fra loro. Un
+$1{,}1$ ripetuto cento volte fa $13\,781$, un $0{,}9$ fa $0{,}000027$, numeri
+enormi da un capo e indistinguibili da zero dall'altro.
 
-Il punto diventa serio quando è **sempre la stessa** matrice ad applicarsi
-cento volte, come a un segnale che ripassa cento volte per lo stesso strato.
-L'effetto si accumula: $\lambda$ moltiplicato per sé stesso cento volte. Un
-$1{,}1$ diventa $13\,781$, un $0{,}9$ diventa $0{,}000027$. Da un capo si
-finisce con numeri enormi, dall'altro con numeri indistinguibili da zero.
+Una rete profonda è una pila di cento tavole incollate una sull'altra, che è
+poi il modo in cui si fa il compensato. All'andata il colpo entra dalla prima e
+attraversa tutta la pila, in fondo si guarda quanto il pezzo è venuto storto, e
+la correzione risale tavola per tavola dicendo a ognuna come dovrà essere
+venata la prossima volta. Quel messaggio di ritorno si chiama *gradiente*, ed è
+l'argomento della prossima sezione. Moltiplicato a ogni tavola per poco più di
+uno, alla prima arriva gonfiato a dismisura; per poco meno di uno non ci arriva
+affatto. In gergo i gradienti esplodono o svaniscono, ed è fra le prime cose
+che si guardano quando un addestramento smette di migliorare.
 
-E perché sia un guaio bisogna anticipare una cosa sola sulle prossime pagine.
-Addestrare un modello è un viaggio di andata e ritorno: all'andata i numeri
-attraversano gli strati e ne esce una risposta, al ritorno la correzione rifà
-la stessa strada al contrario, dall'ultimo strato fino al primo, per dire a
-ogni manopola di quanto girare. Quel segnale di ritorno si chiama *gradiente*,
-ed è l'argomento della prossima sezione. Se lungo il percorso viene
-moltiplicato cento volte per un numero poco più grande di uno arriva ai primi
-strati gonfiato a dismisura; se il numero è poco più piccolo di uno arriva
-ridotto a zero. In gergo si dice che «i gradienti esplodono o svaniscono», ed è
-una delle prime cose che si vanno a guardare quando un addestramento smette di
-migliorare.
-
-Una cautela conviene portarsela dietro fin d'ora, perché è il punto in cui
-questa immagine viene usata più spesso a sproposito. In una rete profonda la
-matrice non è sempre la stessa: ogni strato ha la sua, e quello che si accumula
-non è un solo $\lambda$ elevato a cento, ma il prodotto di cento allungamenti
-diversi. Da tenere a mente, quindi, è l'idea, non il numero: gli effetti si
-moltiplicano lungo la catena, e basta poco perché cento moltiplicazioni portino
-lontanissimo. Quale numero vada guardato davvero, invece, non è l'autovalore di
-una singola matrice, ed è un conto che il capitolo sulle reti neurali rifà per
-esteso.
+Le cento tavole, però, non hanno la stessa venatura, ed è qui che l'immagine
+viene usata a sproposito più spesso. Ogni strato ha la sua matrice, e quello
+che si accumula non è un solo $\lambda$ elevato a cento ma il prodotto di cento
+allungamenti diversi. Resta vera l'idea generale, che in una catena lunga basta
+poco perché cento moltiplicazioni portino lontanissimo; il numero da guardare
+non è l'autovalore di una singola matrice, ed è un conto che il capitolo sulle
+reti neurali rifà per esteso.
 
 `````
 
@@ -485,7 +459,7 @@ possano ordinare per quanta varianza catturano.
 
 **La decomposizione ai valori singolari.** Il teorema spettrale chiede la
 simmetria, e quindi anche la quadratura. Esiste una decomposizione che non
-chiede niente, e nel resto del libro serve più spesso: ogni matrice
+chiede niente, e che servirà più spesso: ogni matrice
 $\mathbf{A}\in\mathbb{R}^{m\times n}$, rettangolare o quadrata, singolare o
 no, si scrive come
 
@@ -510,8 +484,8 @@ coincidono, ma non sono nemmeno estranee: il prodotto dei moduli è lo stesso
 (entrambe le famiglie danno $|\det\mathbf{A}|$) e soprattutto
 $\sigma_{\max}\ge|\lambda|_{\max}$, cioè l'allungamento massimo non è mai
 inferiore al **modulo** dell'autovalore più grande. È una
-disuguaglianza che può essere larghissima, e fra poche righe si vedrà che
-proprio in quella distanza sta il fenomeno più interessante. Tornerà nella sezione
+disuguaglianza che può essere larghissima, e proprio in quella distanza sta
+il fenomeno più interessante. Tornerà nella sezione
 di analisi numerica (dove il numero di condizionamento è il rapporto
 $\sigma_{\max}/\sigma_{\min}$), nel capitolo sulle reti neurali (la
 "grandezza" di una Jacobiana) e in quello sui sistemi di raccomandazione
@@ -519,7 +493,7 @@ $\sigma_{\max}/\sigma_{\min}$), nel capitolo sulle reti neurali (la
 
 L'iterazione chiarisce il resto: $\mathbf{A}^k\mathbf{v} =
 \lambda^k\mathbf{v}$, quindi il comportamento asintotico di un sistema che
-applica **sempre la stessa** matrice è governato dall'autovalore di modulo
+applica *sempre la stessa* matrice è governato dall'autovalore di modulo
 massimo (il *raggio spettrale* $\rho(\mathbf{A})$). Se $\rho(\mathbf{A})<1$
 ogni vettore collassa a zero; se $\rho(\mathbf{A})>1$ diverge ogni vettore
 generico, cioè con componente non nulla lungo l'autodirezione dominante. Lo
@@ -530,11 +504,11 @@ che l'autovalore $1$ sia semplice e dominante, e l'ordinamento delle pagine è
 il suo autovettore, l'unica direzione che la trasformazione lascia esattamente
 com'è.
 
-Diciamo subito dove questo argomento **non** arriva, perché è il
+Diciamo subito dove questo argomento non arriva, perché è il
 punto in cui viene applicato più spesso a sproposito. Il gradiente che
 attraversa una rete profonda non è $\mathbf{A}^k$: è un prodotto di matrici
 **diverse** (le Jacobiane dei singoli strati), e gli autovalori di un prodotto
-non hanno alcun rapporto con gli autovalori dei fattori. Di più: anche con una
+non si ricavano dagli autovalori dei fattori. Di più: anche con una
 sola matrice, $\rho(\mathbf{A})<1$ garantisce soltanto il comportamento
 *asintotico*. Per $\mathbf{A} = \begin{pmatrix}0{,}9 & 100\\ 0 &
 0{,}9\end{pmatrix}$, che ha $\rho = 0{,}9$, un vettore unitario arriva a norma
@@ -560,7 +534,7 @@ La **norma** di un vettore è la sua "lunghezza". Per una freccia nel piano è
 il buon vecchio teorema di Pitagora: radice quadrata della somma dei quadrati
 delle componenti. La freccia $(3, 4)$, per esempio, è lunga
 $\sqrt{3^2 + 4^2} = \sqrt{25} = 5$. Ci serve soprattutto per misurare
-**quanto un modello sbaglia**: se la risposta giusta è un vettore e la
+quanto un modello sbaglia: se la risposta giusta è un vettore e la
 previsione è un altro vettore, si fa la loro differenza (quella voce per
 voce di poco fa) e se ne misura la lunghezza. Quel numero è l'errore.
 
@@ -568,6 +542,14 @@ La stessa mossa dà anche la **distanza** fra due vettori qualsiasi: quanto
 sono lontani due punti è la lunghezza della freccia che va dall'uno all'altro,
 cioè la norma della loro differenza. È il conto che si fa ogni volta che si
 dice che due parole, due canzoni o due clienti "si somigliano".
+
+Un'ultima avvertenza sui conti veri. Al posto della lunghezza si usa quasi
+sempre il suo quadrato, cioè la lunghezza moltiplicata per sé stessa, perché
+toglie la radice di mezzo e i conti vengono più comodi. Il quadrato però
+cambia la scala: un errore lungo $5$ pesa $25$, uno lungo $10$ pesa $100$,
+quindi un errore doppio pesa quattro volte tanto. Comodo, finché lo si tiene
+a mente: quel numero non è più una distanza, e gli errori grandi contano
+molto più che in proporzione.
 
 `````
 
@@ -584,8 +566,7 @@ Accanto a essa usiamo spesso la norma $\ell_1$ (somma dei valori assoluti,
 $\lVert\mathbf{x}\rVert_1=\sum_i |x_i|$), che nella regolarizzazione promuove
 soluzioni *sparse*.
 
-Da una norma si ricava una **distanza**, ed è il ponte che il resto del libro
-dà per costruito:
+Da una norma si ricava una **distanza**:
 
 $$
 d(\mathbf{x},\mathbf{y}) = \lVert \mathbf{x}-\mathbf{y}\rVert_2 .
@@ -606,10 +587,8 @@ $$
 \lVert \hat{\mathbf{y}}^{(i)} - \mathbf{y}^{(i)} \rVert_2^2 .
 $$
 
-Qui $m$ è il numero di esempi (non le righe della matrice, che poco fa
-portavano la
-righe di una matrice: da qui in avanti, e nel resto del libro, conta gli
-esempi), $\mathbf{y}^{(i)}$ è l'uscita vera dell'esempio $i$-esimo e
+Qui $m$ è il numero di esempi (poco sopra la stessa lettera contava le righe
+di una matrice), $\mathbf{y}^{(i)}$ è l'uscita vera dell'esempio $i$-esimo e
 $\hat{\mathbf{y}}^{(i)}$ quella predetta dal modello.
 
 (Scritta così la media è sui soli $m$ esempi. Con uscite vettoriali le

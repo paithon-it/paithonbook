@@ -58,12 +58,19 @@ trascrive una riunione: sente parole e scrive parole, il senso sta tutto lì.
 Il secondo è il **fonico** di un teatro, che a occhi chiusi riconosce ogni
 cosa dal suono: «quello è un violino, quello un clacson in strada, là fuori
 sta arrivando un temporale». Non trascrive niente (non ci sono parole da
-trascrivere) eppure capisce benissimo cosa sta succedendo.
+trascrivere) eppure capisce benissimo cosa sta succedendo, e sul copione segna
+il secondo in cui il tuono comincia e quello in cui smette, perché la battuta
+va detta subito dopo.
 
-Se il riconoscimento vocale ci rende bravi come la stenografa, questo capitolo
-ci insegna il mestiere del fonico: dare un nome ai suoni, elencare tutto ciò che
-si sente in una scena, e perfino *inventarne* di nuovi. Sono compiti diversi, su
-suoni diversi, e per la maggior parte non c'entrano niente con la voce.
+I due lavorano con le stesse orecchie. Quello che cambia è il foglio su cui
+finisce l'ascolto: righe di dialogo per l'una, nomi di suoni e istanti per
+l'altro.
+
+Il riconoscimento vocale ci rende bravi come la stenografa. Il mestiere del
+fonico è un altro: dare un nome ai suoni, elencare tutto ciò che si sente in
+una scena, dire quando ciascuno comincia e finisce, e perfino *inventarne* di
+nuovi. Sono compiti diversi, su suoni diversi, e per la maggior parte non
+c'entrano niente con la voce.
 
 `````
 
@@ -109,7 +116,7 @@ passaggio da un'onda di pressione ai numeri con cui lavora un modello. È un
 ponte che non serve solo qui: regge qualunque suono, e sarà il punto di
 partenza anche del capitolo sullo Speech Recognition che segue.
 
-
+I pezzi del ponte sono questi:
 
 - il **campionamento**, che trasforma l'onda continua in una sequenza di numeri,
   con il teorema di Nyquist a dettare quante misure al secondo servono;
@@ -189,13 +196,19 @@ poche decine di simboli si scrive qualsiasi cosa. Un modello di linguaggio ha
 imparato proprio questo: dato un pezzo di frase, indovinare il
 simbolo successivo, lettera dopo lettera, parola dopo parola.
 
-L'idea è di dare al suono lo stesso trattamento: ritagliarlo in tanti
-**pezzetti** e assegnare a ciascuno un simbolo da un «alfabeto sonoro» finito,
-costruito apposta. Un simbolo del genere è esattamente quello che abbiamo
-chiamato **token** guardando il disegno qui sopra: sta a un pezzetto di suono
-come una lettera sta a una parola scritta. Una volta fatto questo, un brano
-musicale diventa una
-*frase* scritta in quell'alfabeto, e generare musica nuova diventa la stessa
+Al suono si può dare lo stesso trattamento, e gli ornitologi lo fanno da
+sempre a mano: sul taccuino il canto appena sentito diventa «tsii-tsii-tsiuu»,
+perché fra le sillabe che si sanno scrivere si prende ogni volta quella che
+somiglia di più. Il canto vero non era esattamente quello, e la differenza
+resta fuori dal taccuino; con tre sole sillabe a disposizione, tutti gli
+uccelli del bosco finirebbero per cantare uguale.
+
+Un modello fa lo stesso su qualunque suono, con un «alfabeto sonoro» tutto
+suo, costruito apposta: ritaglia il suono in **pezzetti** e a ciascuno dà il
+nome del pezzetto-campione più vicino. Quel nome è un token, e sta a un
+pezzetto di suono come una lettera sta a una parola scritta. Da lì un brano
+musicale diventa una *frase* scritta in quell'alfabeto, e generare musica nuova
+diventa la stessa
 cosa che generare testo nuovo: indovina il pezzetto successivo, poi il
 prossimo, poi il prossimo. La macchina che scrive romanzi impara a comporre
 melodie, senza cambiare mestiere.
@@ -206,21 +219,21 @@ melodie, senza cambiare mestiere.
 
 Il passaggio chiave è la **quantizzazione**: sostituire la rappresentazione
 continua dell'audio con una sequenza di indici discreti presi da un
-*vocabolario* appreso (un *codebook* di vettori prototipo). Un breve segmento
-di segnale viene mappato sul vettore del codebook più vicino, e di esso si
-tiene solo l'indice intero: un **token**. L'audio diventa così
-$z = (z_1, \dots, z_L)$ con $z_i \in \{1, \dots, K\}$, esattamente la forma di
-un testo tokenizzato.
+*vocabolario* appreso (un *codebook* di $K$ vettori prototipo). Un breve
+segmento di segnale viene mappato sul vettore del codebook più vicino, e di
+esso si tiene solo l'indice intero: un **token**. L'audio diventa così una
+fila di $L$ interi, $\mathbf{k} = (k_1, \dots, k_L)$ con
+$k_i \in \{1, \dots, K\}$, esattamente la forma di un testo tokenizzato.
 
 Da lì il collegamento con i modelli linguistici è diretto: un Transformer
 autoregressivo può modellare
 
 $$
-P(z) = \prod_{i=1}^{L} P(z_i \mid z_1, \dots, z_{i-1}),
+P(\mathbf{k}) = \prod_{i=1}^{L} P(k_i \mid k_1, \dots, k_{i-1}),
 $$
 
-dove $z_i$ è il token audio in posizione $i$ e ogni fattore è una softmax sul
-codebook di dimensione $K$: la stessa fattorizzazione, parola per parola, del
+dove $k_i$ è il token audio in posizione $i$ e ogni fattore è una softmax sulle
+$K$ voci del codebook: la stessa fattorizzazione, parola per parola, del
 capitolo sui Transformer, con i token audio al posto delle parole. È la
 ricetta dietro sistemi come AudioLM e MusicLM: prima si impara un *alfabeto*
 del suono, poi ci si scrive sopra con un modello di linguaggio. Le due

@@ -41,10 +41,20 @@ opposto). O prendi la cifra 6 e capovolgila: ottieni un 9. Una scritta ruotata
 di novanta gradi smette di essere leggibile. La stessa mossa che per i gatti è
 un regalo, per i cartelli o per le cifre è un sabotaggio: la trasformazione
 giusta dipende dal *compito*, non dall'immagine.
+
+C'è un secondo modo di sbagliare, e stavolta la risposta giusta non cambia
+affatto. Una foto di strada scattata storta di cinque gradi è ancora una foto
+di strada, e di scatti storti così ne capitano tutti i giorni. Girala di
+novanta gradi. Resta una strada, con la sua etichetta intatta, ma i pedoni
+vengono sdraiati sul marciapiede, e una telecamera montata su un palo non
+riprenderà mai una scena simile. Allenarsi su foto del genere è tempo speso su
+un mondo che non esiste. Quindi le domande da farsi sono due, una
+sull'etichetta e una sul mondo. La risposta cambia? E la foto che ne esce
+potrebbe capitare davvero?
 `````
 
 `````{tab} Superiore
-Sia $(\mathbf{x}, y)$ una coppia immagine–etichetta. Una trasformazione $T$ è
+Sia $(\mathbf{x}, y)$ una coppia immagine-etichetta. Una trasformazione $T$ è
 ammessa per il compito se la coppia $(T(\mathbf{x}), y)$ è ancora un esempio
 plausibile della stessa distribuzione: l'etichetta resta valida e l'immagine trasformata
 somiglia a qualcosa che il modello potrà davvero incontrare. L'insieme delle
@@ -102,6 +112,14 @@ ripetiamo. Il validation set, in mezzo ai due, è la simulazione che si fa la
 settimana prima: serve a noi per decidere che cosa cambiare, quindi anche lui
 va lasciato uguale a sé stesso, altrimenti non si capisce se a migliorare sia
 stato il modello o il caso.
+
+Al compito in classe un'eccezione c'è, e regge perché è decisa prima.
+L'insegnante prepara tre versioni della stessa prova, le annuncia, le fa fare a
+tutta la classe e mette in pagella la media dei tre voti. Ripetibile lo è,
+perché le tre versioni restano quelle, ed equa pure, perché nessuno ne riceve
+una diversa dagli altri; e la media di tre prove misura un po’ meglio di una
+sola, qualche decimo di voto. Costa il triplo del tempo, e un voto ottenuto
+così si confronta solo con altri voti ottenuti allo stesso modo.
 `````
 
 `````{tab} Superiore
@@ -177,13 +195,13 @@ chiamano **regolarizzazioni**, e l'augmentation è uno di loro, con una
 differenza: agisce sui dati invece che sulla rete.
 
 `````{tab} Elementare
-Uno studente che rifà cento volte lo stesso identico esercizio finisce per
-ricordare il risultato, non il metodo. Se invece i numeri cambiano un po’ ogni
-volta, memorizzare non serve più a niente: l'unico modo di rispondere bene è
-capire la regola. L'augmentation fa questo alla rete: le rende impossibile
-"fotografare" il training set, perché il training set non è mai due volte lo
-stesso. Ciò che sopravvive a specchi, ritagli e cambi di luce è proprio quello
-che vogliamo: l'idea di gatto, non i pixel di *quel* gatto.
+Torniamo ai compiti a casa, e chiediamoci perché l'insegnante cambi i numeri
+ogni volta. Cento ripetizioni dell'esercizio identico si imparano a memoria;
+se i numeri cambiano, memorizzare non serve più a niente e l'unico modo di
+rispondere bene è capire la regola. L'augmentation fa questo alla rete: le
+rende impossibile "fotografare" il training set, perché il training set non è
+mai due volte lo stesso. Ciò che sopravvive a specchi, ritagli e cambi di luce
+è proprio quello che vogliamo: l'idea di gatto, non i pixel di *quel* gatto.
 `````
 
 `````{tab} Superiore
@@ -223,17 +241,23 @@ preciso. Una rete addestrata solo su risposte secche («questo è un gatto,
 punto») impara a essere sicurissima sempre, anche quando non ha capito niente,
 perché il gioco premia soltanto chi si sbilancia. Chiedendole ogni tanto una
 risposta a metà la si costringe a essere sicura solo dove ha davvero visto
-qualcosa. **Cutout** è ancora più semplice: si copre un rettangolo a caso
-della foto, come con un post-it. Se la rete riconosceva i gatti solo dalle
-orecchie, con il post-it sulle orecchie dovrà imparare anche zampe e coda.
-Infine, invece di scegliere a mano le trasformazioni, si può lasciare che sia
-un algoritmo a cercare la combinazione migliore per il nostro archivio di
-foto: ne prova tante per davvero, addestra ogni volta un modello, guarda quale
-combinazione gli fa prendere il voto più alto a un esame di prova, e tiene
+qualcosa. Quanto mescolare lo decide una manopola, e la si tiene bassa. Il 70
+contro 30 è già una dose generosa, e il più delle volte esce qualcosa di molto
+più sbilanciato, una diapositiva quasi piena e l'altra appena un'ombra; il
+mezzo e mezzo capita di rado. **Cutout** è ancora più semplice: si copre un
+rettangolo a caso della foto, come con un post-it. Se la rete riconosceva i
+gatti solo dalle orecchie, con il post-it sulle orecchie dovrà imparare anche
+zampe e coda. Infine, invece di scegliere a mano le trasformazioni, si può
+lasciare che sia un algoritmo a cercare la combinazione migliore per il nostro
+archivio di foto: ne prova tante per davvero, addestra ogni volta un modello,
+guarda quale combinazione gli fa prendere il voto più alto a un esame di
+prova, e tiene
 quella. È l'idea delle *policy apprese* (una *policy*, qui, è semplicemente la
 lista delle trasformazioni scelte, con quanto forte applicarle). Costa
 carissimo, ed è per questo che quasi nessuno la ricerca da sé: si scaricano le
-combinazioni già trovate da chi aveva le macchine per cercarle.
+combinazioni già trovate da chi aveva le macchine per cercarle. Poi si è visto
+che bastano due manopole, quante trasformazioni pescare e quanto forti
+applicarle, e provarle tutte è alla portata di chiunque.
 `````
 
 `````{tab} Superiore
@@ -295,9 +319,10 @@ ipotesi, come sempre, si risponde.
 ```{admonition} Da ricordare
 :class: important
 - L'augmentation fabbrica varianti di ogni foto (specchiata, ritagliata,
-  ruotata, più chiara) e le conta come esempi nuovi. La regola è una sola:
-  **la risposta giusta non deve cambiare**. Lo specchio va bene per i gatti,
-  rovina i cartelli stradali e trasforma un 6 in un 9.
+  ruotata, più chiara) e le conta come esempi nuovi. Le domande da farsi sono
+  due: **la risposta giusta non deve cambiare** (lo specchio va bene per i
+  gatti, rovina i cartelli stradali e trasforma un 6 in un 9), e la foto che ne
+  esce dev'essere una foto che potrebbe capitare davvero.
 - Si applica **solo alle foto su cui la rete si allena**, e cambia a ogni
   passaggio. Sulle foto d'esame si fanno solo operazioni che danno sempre lo
   stesso risultato, altrimenti il voto non misura più niente.
@@ -320,8 +345,10 @@ ipotesi, come sempre, si risponde.
 ```{admonition} Da ricordare
 :class: important
 - L'augmentation genera varianti di ogni immagine con trasformazioni che
-  **preservano l'etichetta**: quali siano dipende dal compito (lo specchio va
-  bene per i gatti, non per cartelli o cifre).
+  **preservano l'etichetta** e restano plausibili nel dominio: quali siano
+  dipende dal compito (lo specchio va bene per i gatti, non per cartelli o
+  cifre), e conta anche l'intensità (5 gradi di rotazione su una foto di
+  strada sì, 90 no).
 - Si applica **solo al training set**, al volo, a ogni epoca; su validation e
   test solo operazioni deterministiche (resize, crop centrale, normalize).
 - È una **regolarizzazione**: allarga il supporto della distribuzione

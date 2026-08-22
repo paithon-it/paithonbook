@@ -18,7 +18,7 @@ che gli storici avevano già notato: Hamilton preferiva *while*, Madison
 contesi risultarono tutti di Madison: un verdetto oggi condiviso dagli storici
 {cite}`mosteller1964inference`.
 
-Vale la pena fermarsi su cosa è successo: un problema da archivisti è stato
+Quello che è successo ha un nome: un problema da archivisti è stato
 risolto trasformandolo in un problema di **classificazione di testi**
 (assegnare a ogni documento un'etichetta, "Hamilton" o "Madison", sulla base
 delle parole che contiene). E lo strumento matematico non era un ritrovato
@@ -28,11 +28,11 @@ giudice automatico, con gli attrezzi di oggi.
 
 ## Dare un'etichetta a un testo
 
-La classificazione è il compito più onnipresente del NLP: e il più onnipresente: è spam o no? Questa recensione è positiva o
-negativa? In che lingua è scritto questo tweet? Questa email va allo
-sportello "reclami" o "fatturazione"? Chi ha scritto questo saggio? Il formato
-è sempre lo stesso: in ingresso un documento, in uscita una scelta tra poche
-etichette prefissate.
+La classificazione è il compito più onnipresente del NLP: è spam o no? Questa
+recensione è positiva o negativa? In che lingua è scritto questo tweet? Questa
+email va allo sportello "reclami" o "fatturazione"? Chi ha scritto questo
+saggio? Il formato è sempre lo stesso: in ingresso un documento, in uscita una
+scelta tra poche etichette prefissate.
 
 Gli ingredienti li abbiamo già. Nella sezione sulla rappresentazione del testo
 abbiamo imparato a trasformare un documento in un vettore di numeri: il
@@ -77,60 +77,54 @@ motivo per cui questo capitolo va avanti.
 
 `````{tab} Elementare
 
-Il conto che segue ha un nome, **regola di Bayes**, e serve a una cosa sola:
-girare una domanda. Noi vorremmo sapere «quant'è probabile che questa email sia
-spam, visto che dentro c'è scritto "gratis"?», ma dall'archivio sappiamo
-contare solo l'opposto, «fra le email che *erano* spam, quante contenevano
-"gratis"?». La regola di Bayes dice come passare dalla seconda alla prima, e in
-cambio chiede una sola informazione in più: quanto sono frequenti le spam in
-generale. È il teorema del Settecento che risolse i Federalist Papers, e lo
-useremo senza nemmeno scriverlo.
+Sul tavolo dieci email già lette, in due pile: quattro sono spam, sei legittime.
+Ne arriva una nuova che dice «gratis» e «offerta», e va messa su una delle due.
 
-Costruiamo dunque un mini-filtro antispam con carta e penna. Nel nostro
-archivio ci sono 10 email già lette: 4 sono spam, 6 legittime. Contiamo due
-parole sospette:
+L'archivio risponde solo alla domanda rovesciata. Nella pila delle spam
+«gratis» compare in 3 email su 4 e «offerta» in 2 su 4; fra le legittime, una su
+sei per ciascuna. Ma serve il contrario: questa email che dice «gratis», quanto
+rischia di essere spam? A girare la domanda c'è la **regola di Bayes**, il
+teorema del Settecento che ha sciolto i Federalist Papers, e in cambio vuole
+sapere solo quanto sono frequenti le spam in generale (qui 4 su 10).
 
-- «gratis» compare in 3 delle 4 spam, e in 1 delle 6 legittime;
-- «offerta» compare in 2 delle 4 spam, e in 1 delle 6 legittime.
+Ogni pila raccoglie allora i suoi voti e li moltiplica. Due monete sul tavolo
+danno testa tutte e due le volte una volta su quattro, cioè una su due *per* una
+su due; sommando verrebbe la certezza, che è assurda. Due cose che devono
+capitare insieme si moltiplicano, e qui sono che l'email dica «gratis» e che
+dica «offerta».
 
-Arriva una nuova email che contiene sia «gratis» sia «offerta». Ogni ipotesi
-raccoglie i suoi voti, moltiplicandoli. Perché moltiplicare e non sommare? Per
-la stessa ragione per cui, lanciando due monete, la probabilità di fare testa
-tutte e due le volte è una su due **per** una su due, cioè una su quattro, e
-non una su due più una su due (che darebbe la certezza, il che è assurdo). Due
-cose che devono capitare insieme si moltiplicano, e qui le cose che devono
-capitare insieme sono «l'email contiene *gratis*» e «l'email contiene
-*offerta*». Ecco i due conti:
+- pila delle spam: la quota di spam nell'archivio, per la frequenza di «gratis»
+  fra le spam, per quella di «offerta»:
+  $0{,}4 \times 0{,}75 \times 0{,}5 = 0{,}15$;
+- pila delle legittime: 0,6 per 1/6 per 1/6, circa 0,017.
 
-- **voto per "spam"**: la quota di spam nell'archivio (4 su 10, cioè 0,4)
-  per la frequenza di «gratis» nelle spam (3 su 4, cioè 0,75) per quella di
-  «offerta» (2 su 4, cioè 0,5): $0{,}4 \times 0{,}75 \times 0{,}5 = 0{,}15$;
-- **voto per "legittima"**: 0,6 per 1/6 per 1/6, che fa circa 0,017.
+Vince la prima, e di parecchio: 0,15 è quasi nove volte 0,017. I due punteggi
+diventano probabilità solo quando li si rapporta al totale, come i voti di
+un'elezione a due candidati: $0{,}15 \div (0{,}15 + 0{,}017) = 0{,}90$, cioè il
+90 per cento di probabilità che sia spam. E l'ingenuità si vede sul tavolo:
+«gratis» e «offerta» arrivano quasi sempre in coppia, e votano da estranee.
 
-Vince lo spam, 0,15 contro 0,017, e per dire di quanto basta guardare che 0,15
-è quasi nove volte 0,017. Se invece la volete in percentuale, il passaggio è
-uno solo: si mette il punteggio del vincitore sopra la somma dei due punteggi,
-$0{,}15 \div (0{,}15 + 0{,}017) = 0{,}90$, cioè il 90 per cento di probabilità
-che sia spam. (Quei due numeri non sono probabilità già pronte: sono due
-punteggi, e diventano probabilità solo quando li si rapporta al totale, come si
-fa con i voti di un'elezione a due candidati.)
+Una parola della nuova email mai vista nella pila delle spam vale zero, e uno
+zero moltiplicato spegne l'intera pila per colpa di una parola sola. Si regala
+allora un conteggio a tutte le parole, così nessuna resta a secco; il regalo si
+paga, perché chi aggiunge 1 sopra deve aggiungere sotto il numero dei regali
+distribuiti. È la regola del +1 di Laplace, e torna presto con i conti per
+esteso.
 
-Nota l'ingenuità: «gratis» e «offerta» viaggiano spesso insieme, ma qui ognuna
-vota come se non conoscesse l'altra. E nota un difetto da riparare: se una
-parola della nuova email non fosse *mai* comparsa nelle spam dell'archivio, il
-suo voto sarebbe zero, e moltiplicando per zero l'intera ipotesi crollerebbe
-per colpa di una parola sola. Il rimedio è quasi comico nella sua semplicità:
-si regala **un conteggio in più a tutte le parole**, così nessuna resta a zero.
-Attenzione che il regalo si paga: se aggiungo 1 sopra a tutti, per non
-sballare i conti devo aggiungere sotto il numero di regali distribuiti. È la
-"regola del +1" di Laplace, e la ritroveremo presto con i conti per esteso.
+Le email vere hanno trecento parole, e trecento frazioni moltiplicate una dopo
+l'altra danno un numero con centinaia di zeri dopo la virgola: sotto una certa
+piccolezza il calcolatore non ha più modo di scriverlo e lo arrotonda a zero, e
+allora le due pile valgono zero e non vince nessuno. Si smette dunque di
+scrivere le frazioni e si segnano i loro zeri: una su mille ne fa tre, una su
+cento due, e il prodotto (una su centomila) è la somma, tre più due. Le
+moltiplicazioni diventano addizioni, i numeri restano di taglia normale, e vince
+la stessa pila di prima, perché chi aveva meno zeri era anche la più grande.
+Contare gli zeri è il modo casalingo di dire *logaritmo*.
 
-Un'ultima avvertenza, per non restare spiazzati fra due pagine. Qui abbiamo
-contato *in quante email* una parola compare (3 spam su 4). C'è un secondo modo
-di contare, altrettanto legittimo e più diffuso: quante volte la parola compare
-in tutto, sul totale delle parole di quella classe. È quello che userà il
-programma di `scikit-learn` più avanti. L'idea non cambia di una virgola, i
-decimali sì.
+Sul tavolo si è contato *in quante email* una parola compare (3 spam su 4); si
+può anche contare quante volte compare in tutto, sul totale delle parole della
+pila, ed è il modo più diffuso, quello del programma di `scikit-learn` che
+arriva più avanti. L'idea non cambia di una virgola, i decimali sì.
 
 `````
 
@@ -186,12 +180,13 @@ si ottiene il Naive Bayes **multinomiale**, quello che il codice qui sotto
 usa (`MultinomialNB`) e quello adatto quando conta *quante volte* una
 parola compare. Esiste anche la variante di **Bernoulli**, in cui $P(w \mid c)$
 è la frazione di **documenti** della classe che contengono $w$, e ogni parola
-del vocabolario porta un contributo anche quando è assente. È lo stimatore con
-cui è stato svolto il filtro a mano dell'altro livello («gratis» in 3 spam su
-4, non 3 occorrenze su tutti i token delle spam): due ricette diverse, e i
-numeri di un conto non si ottengono con la formula dell'altro. La variante di
-Bernoulli è preferibile quando interessa la presenza e non la quantità (testi
-molto corti, vocabolari piccoli) e in `scikit-learn` si chiama `BernoulliNB`.
+del vocabolario porta un contributo anche quando è assente. È lo stimatore che
+si ottiene contando in quante email della classe una parola compare («gratis»
+in 3 spam su 4) e non quante occorrenze ha sul totale dei token delle spam: due
+ricette diverse, e i numeri di un conto non si ottengono con la formula
+dell'altro. La variante di Bernoulli è preferibile quando interessa la presenza
+e non la quantità (testi molto corti, vocabolari piccoli) e in `scikit-learn`
+si chiama `BernoulliNB`.
 
 `````
 
@@ -270,7 +265,7 @@ print(modello.predict_proba(nuove))    # probabilita' per classe
 Otto esempi sono pochi per qualunque conclusione seria, ma la meccanica è
 tutta qui: conteggi in ingresso, regola di Bayes in mezzo, verdetto in
 uscita. Al posto di `CountVectorizer` si può usare il `TfidfVectorizer` già
-visto nella sezione precedente.
+visto nella sezione sulla rappresentazione del testo.
 
 ## La regressione logistica: pesare gli indizi
 
@@ -293,8 +288,22 @@ verdetti tornano. Dopo l'addestramento potremmo trovare, per dire: «splendido»
 splendido, che sorprende» totalizza $2{,}0 + 1{,}5 = 3{,}5$ sul piatto
 positivo.
 
-Resta da tradurre quel 3,5 in una probabilità, e a farlo è una regola fissa,
-sempre la stessa, che si chiama **sigmoide** (la curva a S del capitolo sul
+La bilancia non parte sempre in piano. C'è un pesetto fisso, appoggiato su un
+piatto prima ancora di leggere la recensione. Se nell'archivio le stroncature
+fossero il doppio delle recensioni entusiaste, l'ago partirebbe già inclinato
+verso il negativo, e alle parole toccherebbe spingere più forte per
+raddrizzarlo. Con entusiaste e stroncature in parità l'ago parte in piano, e il
+totale è la somma dei soli pesetti delle parole, come nel conto qui sopra.
+
+C'è poi una regola che tiene i pesetti moderati, e serve soprattutto contro le
+parole rare. Una parola comparsa in una recensione sola, entusiasta, se la
+lasciassimo fare si prenderebbe un peso enorme, e da quel momento basterebbe
+lei a decidere il verdetto, sulla fede di un caso solo. La regola le impedisce
+di crescere troppo, a meno che siano molti esempi a chiederlo.
+
+Resta da tradurre in una probabilità il totale dei pesetti, il 3,5 del nostro
+esempio, e a farlo è una regola fissa, sempre la stessa, che si chiama
+**sigmoide** (la curva a S del capitolo sul
 machine learning): manda lo zero esattamente a metà, cioè a 0,5, spinge i
 punteggi positivi verso 1 e quelli negativi verso 0, senza mai arrivare né
 all'uno né all'altro. Più il punteggio è alto, più il risultato si avvicina a
@@ -306,6 +315,12 @@ etichette possibili sono più di due (per esempio lo sportello giusto fra
 reclami, fatturazione e informazioni) al posto della sigmoide c'è la sua
 sorella maggiore, la **softmax**: un punteggio per ogni etichetta, e i
 punteggi trasformati in probabilità che sommano a uno.
+
+Sul piatto, poi, non finiscono per forza soltanto parole. Ci si può mettere
+quanto è lunga la recensione, quanti punti esclamativi ha, quante coppie di
+parole vicine ricorrono, quante parole compaiono in una lista di parole belle e
+brutte preparata prima. La bilancia non chiede che cosa misuri un pesetto:
+guarda gli esempi e impara quanto vale.
 
 `````
 
@@ -360,9 +375,16 @@ direttamente il confine tra le classi. La differenza si vede sugli indizi
 fotocopia: se «gratis» e «offerta» compaiono quasi sempre insieme, per Naive
 Bayes sono due voti pieni (conta due volte lo stesso indizio), mentre la
 bilancia della regressione logistica se ne accorge durante l'addestramento e
-divide il peso tra le due. In compenso il primo perito impara anche da
-pochissimi quadri, mentre il secondo ha bisogno di più esempi per capire quali
-dettagli contano davvero.
+divide il peso tra le due.
+
+Quel doppio conteggio si sente nel modo in cui il primo perito parla. Si
+dichiara sicurissimo, «è lui, non c'è dubbio», mentre gli indizi davvero
+diversi erano meno di quanti ne ha contati. Il nome che tira
+fuori di solito è ancora quello giusto; la sicurezza con cui lo dice, no. E la
+differenza conta quando dalla sicurezza dipende che cosa si fa dopo, firmare
+l'attribuzione o chiamare un terzo perito. In compenso il primo perito impara
+anche da pochissimi quadri, mentre il secondo ha bisogno di più esempi per
+capire quali dettagli contano davvero.
 
 `````
 
@@ -391,7 +413,7 @@ con dati scarsi, l'ingenuo resta un avversario dignitoso.
 
 La bilancia a due piatti, tradotta in PyTorch, sta in tre righe: un peso per
 parola, un ciclo che li aggiusta, un verdetto. Prima di guardarla, la traduzione
-dei tre nomi che compaiono nel programma. `nn.Linear` **è** la bilancia: un
+dei tre nomi che compaiono nel programma. `nn.Linear` *è* la bilancia: un
 peso per parola più una costante che sposta l'ago (il *bias*). Il ciclo `for` è
 l'addestramento, cioè trecento passaggi sugli stessi otto esempi, in ciascuno
 dei quali i pesi si spostano un pochino nella direzione che fa sbagliare di
@@ -516,13 +538,28 @@ Un lessico di sentiment è un dizionario dei giudizi: «splendido» +1, «pessim
 −1, migliaia di voci. Per stimare il tono di un testo basta contare: più
 parole positive che negative, verdetto positivo. Il fascino è che non serve
 *nessun* esempio etichettato (niente archivio di recensioni già giudicate) e
-il verdetto si spiega da solo, parola per parola. I limiti però sono seri. Il
-contesto: «imprevedibile» è un complimento per la trama di un film e un'accusa
-per i freni di un'auto, ma nel dizionario ha un solo segno. E la negazione:
-«non è affatto male» è un complimento, eppure è fatto soltanto di parole che
+il verdetto si spiega da solo, parola per parola.
+
+Migliaia di voci, però, nessuno le scrive a una a una. Si parte da una manciata
+di parole di segno ovvio e si lascia parlare la lingua: chi scrive «elegante e
+X» quasi sempre sta accostando due parole dello stesso segno, chi scrive
+«elegante ma X» due parole di segno opposto. Basta leggere abbastanza testo per
+raccogliere così migliaia di parole nuove con il loro segno, senza che nessuno
+le abbia giudicate a mano.
+
+Un dizionario del genere, oggi, di rado emette il verdetto per conto suo:
+quante parole positive e quante negative ha trovato diventano due pesetti che
+salgono sulla bilancia insieme a tutti gli altri, e sono un aiuto vero quando
+di recensioni già giudicate ce ne sono poche.
+
+I limiti però sono seri. Il contesto: «imprevedibile» è un complimento per la
+trama di un film e un'accusa per i freni di un'auto, ma nel dizionario ha un
+solo segno. L'ironia: «complimenti davvero», scritto sotto il racconto di un
+disastro, in un elenco di parole conta come una lode. E la negazione: «non è
+affatto male» è un complimento, eppure è fatto soltanto di parole che
 un elenco di quel genere marchia come negative o neutre, «non» e «male» in
 testa. È lo stesso esempio che ritroveremo nel capitolo sui Transformer, e
-conviene anticipare come va a finire. Un conteggio di parole isolate quella
+va a finire così. Un conteggio di parole isolate quella
 frase non la può prendere, per costruzione: presa una per una, nessuna di
 quelle parole è un elogio, e il senso sta tutto in come stanno insieme. Un
 modello che legge la frase intera con l'attenzione invece potrebbe, perché ha
@@ -541,7 +578,7 @@ categorie tra cui positivo/negativo. Le voci si costruiscono a mano o in modo
 semi-supervisionato: si parte da pochi semi di polarità nota e la si propaga
 alle parole che co-occorrono in congiunzioni rivelatrici ("bello e X"
 suggerisce X positivo, "bello ma X" il contrario) o che risiedono vicine nello
-spazio degli embedding della sezione precedente. In un sistema moderno il
+spazio degli word embedding. In un sistema moderno il
 lessico raramente decide da solo: i suoi conteggi entrano come feature in una
 regressione logistica, dove convivono con i pesi appresi; un innesto utile
 soprattutto quando i dati etichettati del dominio sono pochi. Restano i limiti

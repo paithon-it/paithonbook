@@ -41,6 +41,14 @@ questa mossa». A quel punto il problema di reinforcement learning è sparito, e
 al suo posto c'è un normalissimo problema di apprendimento supervisionato:
 l'ingresso è la situazione, l'uscita da indovinare è la mossa dell'esperto.
 
+Chi impara viene messo davanti a una situazione dell'elenco e propone la sua
+mossa: si guarda di quanto ha mancato quella dell'esperto e lo si corregge un
+poco, così che la volta dopo sia più vicino. Poi la situazione seguente, e
+tutte le altre, molte volte di fila, finché lo scarto medio non è quasi zero.
+Che la mossa sia una scelta fra poche (frenare, sterzare, tirare dritto) o un
+numero da regolare (di quanti gradi girare il volante) cambia solo il modo di
+misurare lo scarto, non l'impianto.
+
 Si chiama **clonazione comportamentale**, ed è tanto semplice che il libro l'ha
 già usata due volte senza chiamarla così. Il primo AlphaGo, prima di giocare
 contro sé stesso, aveva imparato a proporre mosse guardando
@@ -49,13 +57,18 @@ dell'addestramento di un assistente
 conversazionale è esattamente questa: si raccolgono risposte scritte da persone
 e si insegna al modello a scriverne di simili.
 
-I pregi sono seri e vanno detti. È **stabile**, perché è addestramento
+I pregi sono seri. È stabile, perché è addestramento
 supervisionato ordinario: nessuno dei tormenti visti fin qui nei metodi che
 imparano dei voti, cioè il bersaglio che si sposta mentre lo insegui e i voti
 che crescono senza fermarsi della triade fatale.
-È **efficiente**, perché ogni dimostrazione insegna qualcosa subito, mentre un
-agente che esplora butta via migliaia di tentativi. Ed è **sicura**, perché non
+È efficiente, perché ogni dimostrazione insegna qualcosa subito, mentre un
+agente che esplora butta via migliaia di tentativi. Ed è sicura, perché non
 serve far provare al sistema mosse a caso nel mondo vero.
+
+C'è però una condizione che nessuno scrive, perché sembra ovvia: che le
+situazioni da affrontare domani siano quelle dell'elenco di oggi. A sceglierle
+non è il mondo. Dove ci si trova un istante dopo dipende dalla mossa appena
+fatta, e le mosse di chi ha imparato non sono quelle dell'esperto.
 
 `````
 
@@ -74,13 +87,14 @@ azioni continue. Non compaiono ricompense, non compare l'equazione di Bellman,
 non compare il bootstrapping: è **regressione o classificazione**, con tutto
 ciò che ne consegue in termini di stabilità e di strumenti già noti.
 
-Il libro l'ha già incontrata in tre punti, e conviene riconoscerla. Nella
+La stessa mossa compare in tre punti del libro, e conviene riconoscerla. Nella
 sezione sui metodi a gradiente di policy, la rete di policy di AlphaGo è
 pre-addestrata in modo supervisionato su partite umane prima del *self-play*.
 Nel post-addestramento dei modelli linguistici, la fase di *supervised
 fine-tuning* che precede l'RLHF è clonazione comportamentale su dimostrazioni
-scritte da persone. E nella prossima sezione, la componente supervisionata del
-Decision Transformer è la stessa cosa, condizionata sul ritorno desiderato.
+scritte da persone. E nella {doc}`sezione sull'RL offline <offline-rl>`, la
+componente supervisionata del Decision Transformer è la stessa cosa,
+condizionata sul ritorno desiderato.
 
 L'assunzione nascosta, che è tutto il problema, è quella di ogni apprendimento
 supervisionato: **dati indipendenti e identicamente distribuiti**. Qui non lo
@@ -97,57 +111,54 @@ esempio che con una formula.
 
 `````{tab} Elementare
 
-Impari a guidare guardando un pilota bravissimo. Bravissimo vuol dire che non
-esce mai dalla corsia. Quindi in tutte le ore di registrazione che
-hai, l'auto è **sempre al centro della strada**: non c'è un solo fotogramma in
-cui sia storta e vada raddrizzata, perché a lui non è mai successo.
+Impari a guidare guardando un pilota bravissimo, uno che non esce mai dalla
+corsia. In tutte le ore registrate l'auto sta al centro della strada: non c'è
+un fotogramma in cui sia storta e vada raddrizzata.
 
-Poi guidi tu. Al primo dosso ti sposti di venti centimetri, ed è pochissimo. Ma
-quella situazione, «auto leggermente storta», tu non l'hai mai vista, e non hai
-idea di cosa si faccia. Fai qualcosa di plausibile e sbagliato, e ti sposti di
-quaranta. Adesso sei ancora più lontano da tutto ciò che conosci, e sbagli di
-più. Dopo dieci secondi sei nel fosso.
+Poi guidi tu. Al primo dosso ti sposti di venti centimetri, pochissimo. Quella
+scena non l'hai mai vista: fai qualcosa di plausibile e sbagliato, e sei a
+quaranta. Il posto lo conosci ancora meno, e sbagli di più. Dopo dieci secondi
+sei nel fosso.
 
-Il punto che vale la pena assorbire è **quanto sia controintuitivo**: il tuo
-errore per singola decisione era minuscolo, e misurato sulle registrazioni del
-pilota risulterebbe quasi zero. Il guaio non è la grandezza dell'errore, è che
-ogni errore ti porta in un posto dove sei più ignorante, e quindi sbagli di
-più. **L'errore non si somma, si compone.**
+Eppure ogni tua sterzata, accanto a quelle del pilota, sbagliava di pochissimo.
+A fregarti è dove ti lascia ogni sbaglio: un pezzo di strada che conosci meno,
+dove il prossimo sarà più grosso. Su una curva sola non te ne accorgi; su
+un'ora di autostrada è la differenza fra arrivare e uscire di strada.
 
-Ed ecco il paradosso: più l'esperto è bravo, peggio è. Un maestro perfetto non
-sbaglia mai, quindi non si trova mai nella condizione di dover rimediare,
-quindi non ti insegna mai a rimediare. È la sola cosa che ti servirà davvero.
+Più il maestro è bravo, peggio è: chi non sbaglia mai non si trova mai a
+rimediare, e non ti fa vedere l'unica cosa che ti servirà. Uno scarso peggiora
+tutto, perché ti mostra come si finisce storti e intanto gli copi i vizi. Serve
+il pilota bravo messo nei guai.
 
-Attenzione però a dove porta il paradosso, perché la conclusione ovvia è
-sbagliata: non conviene affatto un maestro scarso. Un maestro scarso ti mostra
-sì come si finisce storti, ma ti insegna anche le sue cattive abitudini, e tu le
-copi tutte. Quello che serve è un maestro bravo *messo nei guai*, cioè che
-mostri come si esce da situazioni in cui, di suo, non finirebbe mai.
+Allora lo fai salire accanto a te, e guidi tu. Dove ti impianti gli chiedi che
+cosa avrebbe fatto lì, e la sua risposta va nel quaderno con le registrazioni
+vecchie. Giro dopo giro il quaderno si riempie delle strade che percorri tu, e
+si smette quando non finisci più in posti nuovi. Si chiama **DAgger**, da
+*Dataset Aggregation*, «accumulare dati». Delle tue versioni uscite dai giri
+non tieni l'ultima per forza: le provi su un percorso mai fatto e tieni la
+migliore. Il conto lo paghi in ore del pilota, che deve stare lì a rispondere:
+la scatola delle vecchie cassette non basta più.
 
-Il rimedio, una volta capito il problema, si scrive da sé: non basta far
-vedere. Bisogna **lasciar provare l'allievo, guardare dove finisce, e chiedere
-al maestro cosa avrebbe fatto lì**. Le situazioni che contano sono quelle in
-cui va a cacciarsi l'allievo, non quelle in cui passava il maestro.
+Oltre un certo punto non serve. Finché le ruote sono sull'asfalto, storte
+quanto vuoi, lui sa raddrizzare, e uno sbaglio isolato costa poco e si paga
+subito. Se la sbandata ti pianta contro il guard rail, puoi averlo seduto
+accanto quanto vuoi: da un'auto ferma fra i rottami non c'è sterzata che
+riporti in corsia. Il quaderno si riempie delle situazioni giuste, e nessuno
+promette che da lì si torni indietro.
 
-Quel rimedio ha un nome, **DAgger**, e lo si incontrerà da qui in poi con quello.
-Viene da *Dataset Aggregation*, cioè «accumulare dati», perché a ogni giro
-l'archivio si allarga con le situazioni nuove in cui l'allievo è andato a
-finire, etichettate dal maestro. Ha un costo, ed è chiaro anche detto così: il
-maestro deve essere lì, disponibile a rispondere, e non basta più una scatola di
-vecchie registrazioni.
-
-C'è poi una strada del tutto diversa, che aggredisce lo stesso problema
-dall'altro capo. Invece di copiare *che cosa fa* il maestro, si prova a capire
-*che cosa sta cercando di ottenere*: si impara il premio, non la strategia. Si
-chiama **apprendimento per rinforzo inverso**, e «inverso» perché di solito si
-parte da un premio e se ne ricava un comportamento, mentre qui si fa il
-percorso contrario.
-
-Costa di più, e in cambio regge meglio se il mondo cambia un poco, perché
-descrive l'obiettivo invece delle reazioni. Ha però un difetto suo, e non
-piccolo: guardando soltanto il comportamento, di obiettivi che lo
-spiegherebbero altrettanto bene ce n'è un'infinità, e dal solo comportamento
-non c'è modo di scegliere fra loro.
+C'è poi chi il pilota lo guarda dall'altro capo: invece di copiargli le mani si
+chiede che cosa voglia ottenere. Si chiama **apprendimento per rinforzo
+inverso**, «inverso» perché di solito da un premio si ricava un modo di
+guidare, e qui si va nel verso opposto. Costa di più e regge meglio se la
+strada cambia un poco: un obiettivo lo porti altrove, una collezione di
+reazioni no. Il difetto è che di obiettivi che spiegano quella guida ce n'è
+un'infinità. Il più sfacciato non chiede niente: se ogni viaggio vale zero, il
+pilota è perfetto insieme a chiunque altro. Nemmeno pretendere di più basta.
+Chiedi che tutti i viaggi possibili restino nello stesso ordine, dal migliore
+al peggiore, e ne sopravvivono ancora infiniti: quelli che ripetono la stessa
+cosa in un'altra unità di misura, come contare in euro invece che in centesimi,
+e quelli che seminano premi lungo la strada che a fine viaggio si annullano fra
+loro. Guardando solo come guida, sceglierne uno non si può.
 
 `````
 
@@ -156,15 +167,15 @@ non c'è modo di scegliere fra loro.
 Formalmente, la clonazione minimizza l'errore sotto la distribuzione di stati
 $d_{\pi^\star}$ indotta dall'esperto, mentre al momento dell'uso l'agente vive
 sotto $d_{\hat\pi}$, indotta da sé stesso. È uno **spostamento di
-distribuzione**, con la particolarità di essere **causato dal modello stesso**:
+distribuzione**, con la particolarità di essere causato dal modello stesso:
 non è il mondo che cambia, è la politica che si porta in una regione che non
 conosce, e più sbaglia più ci si porta.
 
 Il risultato che inquadra il problema è di Ross e Bagnell
-{cite}`ross2010efficient`, e vale la pena
-attribuirlo a loro perché il lavoro che tutti citano, quello del 2011, lo
-riprende come premessa. Se la politica appresa ha un tasso d'errore $\epsilon$
-sotto la distribuzione dell'esperto, su un orizzonte $T$ il costo aggiuntivo
+{cite}`ross2010efficient`, e l'attribuzione conta perché il lavoro che tutti
+citano, quello del 2011, lo riprende come premessa. Se la politica appresa ha
+un tasso d'errore $\epsilon$ sotto la distribuzione dell'esperto, e il costo di
+un singolo passo è limitato, su un orizzonte $T$ il costo aggiuntivo
 della clonazione comportamentale cresce in generale come $O(\epsilon T^2)$: il
 fattore $T$ in più rispetto all'ideale $O(\epsilon T)$ è esattamente la
 composizione degli errori. Su orizzonti lunghi la differenza fra $T$ e $T^2$ è
@@ -173,54 +184,56 @@ tutta la differenza fra un sistema che funziona e uno che no.
 **DAgger** (*Dataset Aggregation*), proposto da Ross, Gordon e Bagnell nel
 2011 {cite}`ross2011reduction`, rimuove il termine in più con un'idea
 semplice: iterare. Si addestra una politica sulle dimostrazioni, la si
-**esegue** per raccogliere gli stati che *lei* visita, si chiede all'esperto
-l'azione corretta **su quegli stati**, si aggiunge tutto al dataset e si
+esegue per raccogliere gli stati che *lei* visita, si chiede all'esperto
+l'azione corretta su quegli stati, si aggiunge tutto al dataset e si
 riaddestra. Ripetendo, la distribuzione di addestramento converge a quella
-d'uso, e la garanzia torna lineare in $T$ **a certe condizioni**, che sono
+d'uso, e la garanzia torna lineare in $T$ a certe condizioni, che sono
 nascoste in una costante e in un pedice e vanno tirate fuori tutte e due. Il
 bound, dopo $N$ giri, è
 
 $$
-J(\hat\pi) \;\le\; J(\pi^\star) + u\,T\,\epsilon_N + O(1),
+C(\hat\pi) \;\le\; C(\pi^\star) + u\,T\,\epsilon_N + O(1),
 $$
 
-dove $J$ è qui il **costo** atteso di una politica sull'orizzonte $T$, e non il
-ritorno da massimizzare delle sezioni precedenti: il verso della disuguaglianza
-è quello di un danno da contenere, e infatti $J(\hat\pi)$ sta a sinistra.
-Quanto a $\epsilon_N$, **non** è il tasso d'errore del paragrafo precedente: è
+dove $C$ è il **costo** atteso di una politica sull'orizzonte $T$, cioè un
+danno da contenere e non un ritorno da massimizzare: per questo $C(\hat\pi)$
+sta a sinistra della disuguaglianza (nel lavoro originale è chiamato $J$).
+Quanto a $\epsilon_N$, non è l'$\epsilon$ misurato sotto la distribuzione
+dell'esperto: è
 l'errore della migliore politica *col senno di poi*, misurato sulla media di
 tutte le distribuzioni di stati accumulate nei $N$ giri. Che quel numero sia
 piccolo non è gratis: lo garantisce il fatto che i giri si comportino come un
 algoritmo *no-regret*, e servono $N$ dell'ordine di $u\,T$ perché il resto sia
-davvero $O(1)$. La garanzia, poi, vale per **una** delle politiche prodotte lungo
-la sequenza, non necessariamente per l'ultima, ed è il motivo per cui in pratica
-si tiene la migliore su un insieme di validazione.
+davvero $O(1)$. La garanzia, poi, copre la migliore delle politiche prodotte
+lungo la sequenza e non necessariamente l'ultima, ed è il motivo per cui in
+pratica si sceglie su un insieme di validazione quale tenere.
 
 Quanto a $u$, misura di quanto un singolo errore può peggiorare il
 costo-per-andare dell'esperto. Nei compiti **recuperabili** $u$ è $O(1)$ e la
 garanzia è
 effettivamente lineare; ma se un errore porta in uno stato da cui non si torna
-(il fosso della metafora di due paragrafi fa) $u$ può crescere come $T$, e si
-torna al quadrato. Conviene tenere l'ipotesi in mente leggendo l'esperimento di
-questa sezione, perché lì è **soddisfatta**, e non per caso: il sistema lasciato
-a sé diverge, ma il controllore esperto lo riporta verso lo zero da qualunque
-punto (moltiplica lo scarto per $0{,}85$ a ogni passo), quindi un errore isolato
-costa una quantità limitata e indipendente dall'orizzonte. È per questo che tre
-giri di DAgger bastano a tornare al livello del maestro. Dove invece il fosso è
+(l'auto ribaltata nel fosso, che nessuna sterzata riporta in corsia) $u$ può
+crescere come $T$, e si
+torna al quadrato. L'ipotesi va tenuta in mente davanti a un caso concreto:
+uno scarto che, lasciato a sé, cresce a ogni passo, e un controllore esperto
+che lo riporta verso lo zero da qualunque punto, moltiplicandolo per
+$0{,}85$ ogni volta. Lì l'ipotesi è soddisfatta, e non per caso: un errore
+isolato costa una quantità limitata e indipendente dall'orizzonte, e pochi giri
+di DAgger bastano a tornare al livello dell'esperto. Dove invece il fosso è
 un fosso vero, DAgger raccoglie comunque gli stati giusti, ma non promette che
 da lì si possa tornare.
 
-Il prezzo, poi, è che serve un esperto **interrogabile durante
-l'addestramento**, non solo un archivio di registrazioni: e nella maggior parte
+Il prezzo, poi, è che serve un esperto interrogabile durante
+l'addestramento, non solo un archivio di registrazioni: e nella maggior parte
 dei casi pratici quell'esperto è una persona, il che sposta il costo dai dati al
 tempo umano.
 
-Vale la pena distinguere la clonazione da un parente che risolve lo stesso
-problema in un altro modo. Nell’**apprendimento per rinforzo inverso** non si
+La clonazione ha un parente che risolve lo stesso problema in un altro modo, e
+i due si tengono distinti. Nell’**apprendimento per rinforzo inverso** non si
 impara la politica, si impara la **ricompensa** che rende ottimo il
 comportamento osservato, e poi la si ottimizza con i metodi dei capitoli
 precedenti. È più costoso, ed è più robusto per una ragione precisa: una
-ricompensa è una descrizione **compatta e trasferibile** dell'obiettivo, mentre
+ricompensa è una descrizione compatta e trasferibile dell'obiettivo, mentre
 una politica è una tabella di reazioni valida solo dove è stata vista. Se
 l'ambiente cambia un po’, la ricompensa regge e la politica no. È lo stesso
 motivo per cui l'RLHF non si ferma alla fase supervisionata: il modello di
@@ -228,7 +241,7 @@ ricompensa addestrato sulle preferenze è, di fatto, una ricompensa inferita da
 comportamento umano.
 
 Il difetto strutturale, però, gli sta accanto fin dal lavoro che ne dà i primi
-algoritmi {cite}`ng2000algorithms`, e va detto: l'RL inverso, nella sua forma
+algoritmi {cite}`ng2000algorithms`: l'RL inverso, nella sua forma
 nuda, è **mal posto**. Infinite funzioni di ricompensa rendono ottimo lo stesso
 comportamento osservato, a cominciare da quella identicamente nulla, sotto la
 quale ogni politica è ottima: l'insieme delle ricompense compatibili con una
@@ -460,7 +473,9 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
   finire, e chiedere al maestro cosa avrebbe fatto *lì*. Non cambia il modello e
   non cambia il modo di allenarlo: cambia quali situazioni finiscono nel mucchio
   degli esempi. Il prezzo è che serve un maestro disponibile a rispondere, non
-  soltanto un archivio di registrazioni.
+  soltanto un archivio di registrazioni; e funziona finché dallo sbaglio si può
+  tornare, perché dall'auto finita contro il guard rail non riporta indietro
+  nessuno.
 - C'è un'altra strada: invece della strategia, imparare la **ricompensa**, cioè
   che cosa l'esperto stesse cercando di ottenere. Costa di più e regge meglio se
   il mondo cambia un po’, perché descrive l'obiettivo e non solo le reazioni. Ha

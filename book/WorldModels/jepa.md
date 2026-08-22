@@ -74,6 +74,12 @@ sovrappongono. La proposta di LeCun: non prevedere la foto, prevedere il
 nello **spazio delle idee**, dove i mille futuri diversi nei dettagli
 diventano un futuro solo, quello che conta.
 
+Un futuro solo, però, non sempre basta. La mano l'hai allungata: se il
+bicchiere lo prendi al volo, il succo giusto diventa un altro, e non per una
+scheggia in più o in meno. Nel disegno del 2022 c'è una manopola apposta per
+scegliere quale dei due esiti raccontare; nei sistemi costruiti finora quella
+manopola non c'è, e la risposta resta una sola.
+
 `````
 
 `````{tab} Superiore
@@ -103,13 +109,13 @@ futuro osservato, e quel minimo misura la compatibilità tra $\mathbf{x}$ e $\ma
 collegamento con il capitolo sui modelli a energia è letterale: una JEPA **è** un
 modello a energia non normalizzato; la compatibilità tra presente e futuro è
 l'errore di predizione nello spazio latente, l'inferenza è la solita
-$\arg\min$ (qui, il minimo su $z$), e della funzione di partizione non c'è
-alcun bisogno.
+$\arg\min$ (qui, il minimo su $\mathbf{z}$), e della funzione di partizione non
+c'è alcun bisogno.
 
 Una precisazione, perché altrimenti quel $\min_{\mathbf{z}}$ resta un debito: $\mathbf{z}$ è la
 forma **generale** dello schema proposto nel 2022, non la ricetta che poi è
-stata implementata. I due sistemi che vedremo in questa sezione (I-JEPA per
-le immagini, V-JEPA per i video) istanziano il caso **senza latente**: il
+stata implementata. I due sistemi costruiti da Meta (I-JEPA per le immagini,
+V-JEPA per i video) istanziano il caso **senza latente**: il
 predictor è deterministico, $g_\theta(\mathbf{s}_x)$, quindi $\mathcal{E}(\mathbf{x}, \mathbf{y}) = E(\mathbf{x}, \mathbf{y})$ e non
 c'è alcun minimo da calcolare, né in addestramento né a inferenza. Quel poco
 di «quale futuro» che serve è passato al predictor come informazione
@@ -188,13 +194,12 @@ concreta è un'altra, più semplice e più sottile.
 
 `````{tab} Elementare
 
-Immagina un allievo e un insegnante. L'allievo guarda la parte visibile della
-foto e prova a *descrivere* che cosa c'è nella parte coperta; l'insegnante,
-che vede la foto intera, scrive la descrizione giusta; il voto misura quanto
-le due descrizioni combaciano. Se allievo e insegnante potessero mettersi
-d'accordo, la truffa sarebbe immediata: rispondere entrambi, sempre, «boh»
-(descrizioni identiche, voti perfetti, e nessuno dei due che abbia mai
-guardato la foto). Il trucco che rompe la truffa è togliere all'insegnante
+L'allievo guarda la parte visibile della foto e prova a *descrivere* che cosa
+c'è nella parte coperta; l'insegnante, che vede la foto intera, scrive la
+descrizione giusta; il voto misura quanto le due descrizioni combaciano. Se
+allievo e insegnante potessero mettersi d'accordo, la truffa sarebbe
+immediata: rispondere entrambi, sempre, «boh» (descrizioni identiche, voti
+perfetti, e nessuno dei due che abbia mai guardato la foto). Il trucco che rompe la truffa è togliere all'insegnante
 ogni voce in capitolo: le lamentele sul voto non lo raggiungono mai. In gergo
 si dice che non riceve *gradiente*, cioè quella spinta a correggersi che dopo
 ogni voto torna indietro nella rete e le ritocca i numeri. Non potendo
@@ -209,10 +214,11 @@ parti su mille: se un numero dell'allievo passa da 10 a 20, quello
 dell'insegnante non salta a 20, diventa 10,04, cioè copre quattro millesimi
 dei dieci di divario. Per raggiungerlo davvero gli servono centinaia di passi,
 e nel frattempo il bersaglio cambia idea solo al ritmo a cui l'allievo migliora
-*davvero*. Delle due accortezze, quella che impedisce la truffa è la prima; la
-lentezza serve a rendere l'esercizio stabile, e alla fine della sezione lo
-misuriamo. È una soluzione empirica (perché funzioni così bene è ancora
-oggetto di studio) ma funziona.
+*davvero*; verso la fine il dosaggio scende a zero, e l'insegnante non cambia
+più idea affatto. Delle due accortezze, quella che impedisce la truffa è
+l'insegnante senza voce in capitolo; la lentezza serve a rendere l'esercizio
+stabile, e, a toglierla, la truffa non ricomincia. È una soluzione empirica
+(perché funzioni così bene è ancora oggetto di studio) ma funziona.
 
 `````
 
@@ -239,8 +245,8 @@ mai attraverso il ramo del target, che è puro riferimento. Dei due, il muro
 contro il collasso è lo **stop-gradient**: è quello che impedisce la discesa
 coordinata dei due encoder verso la costante, perché il bersaglio insegue e non
 può contrattare. L'EMA aggiunge lentezza e stabilità al bersaglio, ed è
-un'ottima cosa nei sistemi veri, ma non è lei a reggere il muro: nel giocattolo
-in fondo a questa sezione, toglierla e tenere il solo stop-gradient non produce
+un'ottima cosa nei sistemi veri, ma non è lei a reggere il muro: nella
+mini-JEPA in PyTorch, toglierla e tenere il solo stop-gradient non produce
 alcun collasso (la varietà delle rappresentazioni, anzi, sale da 1,0 a 1,6). È
 comunque la stessa scoperta empirica che aveva sorpreso la comunità con BYOL
 nel 2020 {cite}`grill2020bootstrap`: niente coppie negative, niente termini
@@ -286,10 +292,10 @@ servono i trucchi artigianali con cui di solito si addestrano questi sistemi
 da chi progetta). Basta l'indovinello. E i risultati danno ragione alla
 scommessa: con appena l'1% delle etichette di ImageNet (una dozzina di foto
 etichettate per categoria) I-JEPA classifica meglio dei metodi che
-ricostruiscono i pixel, e ci arriva con molto meno calcolo. Su quel risparmio
-conviene essere precisi, perché è facile capirlo al contrario: non è che ogni
-ripasso costi meno (costa anzi un pelo di più, c'è una rete in più da far
-girare), è che di ripassi ne servono cinque volte meno.
+ricostruiscono i pixel, e ci arriva con molto meno calcolo. Quel risparmio è
+facile capirlo al contrario: non è che ogni ripasso costi meno (costa anzi un
+pelo di più, c'è una rete in più da far girare), è che di ripassi ne servono
+cinque volte meno.
 
 `````
 
@@ -298,8 +304,9 @@ girare), è che di ripassi ne servono cinque volte meno.
 L'encoder di contesto (un ViT) elabora solo le patch visibili del blocco di
 contesto; un **predictor** (un ViT più stretto) riceve $\mathbf{s}_x$ e, per ciascuno
 dei $M = 4$ blocchi bersaglio, token posizionali che indicano *dove*
-prevedere; la loss è la distanza $L_2$ media tra le rappresentazioni predette
-e quelle prodotte dall'encoder target:
+prevedere; la loss è la media sugli $M$ blocchi delle distanze $L_2$ al
+quadrato fra le rappresentazioni predette e quelle prodotte dall'encoder
+target:
 
 $$
 \mathcal{L} = \frac{1}{M} \sum_{i=1}^{M} \sum_{j \in B_i}
@@ -322,16 +329,18 @@ di iBOT (lì con un ViT-B/16, che è un modello molto più piccolo), e il
 pre-addestramento del ViT-H/14 richiede meno di 1200 ore-GPU (meno di 72 ore su
 16 A100), oltre dieci volte meno di MAE a parità di architettura.
 
-Il risparmio, però, non viene da dove sembra, e sbagliarne l'attribuzione
-significherebbe insegnare al lettore un meccanismo che non c'è. Calcolare i
-bersagli nello spazio delle rappresentazioni **aggiunge** costo, perché c'è un
-secondo encoder da mandare avanti a ogni passo: il paper misura circa il **7%
-in più per iterazione**. Quel che risparmia è il *numero* di iterazioni, di
-circa cinque volte (300 epoche di pre-addestramento contro le 1600 di MAE). Il
-fattore dieci nasce dal rapporto fra ricette complete, non da un costo unitario
-più basso; e la tesi giusta, che è anche la più interessante, suona così:
-predire rappresentazioni non rende più economico ogni passo, rende necessari
-molti meno passi.
+Il risparmio, però, non viene da dove sembra. Calcolare i bersagli nello
+spazio delle rappresentazioni, invece che nei pixel, **aggiunge** costo,
+perché c'è un secondo encoder da mandare avanti a ogni passo: il paper misura
+circa il **7% in più per iterazione**. Quel che risparmia è il *numero* di
+iterazioni, di circa cinque volte (300 epoche di pre-addestramento contro le
+1600 di MAE). Cinque volte meno passi non bastano però a fare un fattore
+dieci: quel rapporto confronta due addestramenti interi, che oltre alle epoche
+differiscono in ciò che sta attorno al backbone (un predictor fra embedding da
+una parte, un decoder di pixel dall'altra), non due costi per iterazione. La
+tesi giusta, che è anche la più interessante, suona così: spostare il
+bersaglio nello spazio delle rappresentazioni non rende più economico il
+singolo passo, rende necessari molti meno passi.
 
 `````
 
@@ -355,35 +364,34 @@ si misura conta quanto il risultato.
 `````{tab} Elementare
 
 Come si controlla che cosa ha imparato un modello a cui nessuno ha insegnato
-niente? Si fa così. Prima si **congela** la rete, cioè si smette di
-addestrarla e la si blocca com'è, perché altrimenti non si saprebbe più che
-cosa sapeva *prima* dell'esame. Poi le si mette sopra un esaminatore,
-addestrato a parte, che riceve soltanto i riassunti prodotti dalla rete
-congelata e deve rispondere a una domanda utile: «che cosa sta facendo la
-persona in questo video, nuota, suona, versa da bere?». Se l'esaminatore ci
-riesce, vuol dire che l'informazione, nei riassunti, c'era.
+niente? Prima si **congela** la rete, cioè la si blocca com'è e non la si
+addestra più, perché altrimenti non si saprebbe più che cosa sapeva *prima*
+dell'esame. Poi le si mette sopra un esaminatore, addestrato a parte, che
+riceve soltanto i riassunti e deve rispondere a una domanda utile: «che cosa
+sta facendo la persona in questo video?». Se ci riesce, l'informazione nei
+riassunti c'era.
 
-Le collezioni di video su cui si dà l'esame hanno un nome e sono sempre le
-stesse, così che i risultati di gruppi diversi si possano confrontare: una
-collezione del genere si chiama **banco di prova** (in inglese *benchmark*).
-Qui i banchi sono due. Il primo chiede di riconoscere che cosa succede nella
-scena: chi nuota, chi suona, chi taglia le verdure. Il secondo, ed è quello che
-conta di più, è costruito apposta per misurare la comprensione del *movimento*
-e non dell'aspetto: lì non basta riconoscere gli oggetti, bisogna distinguere
+Le collezioni di video su cui si dà l'esame sono sempre le stesse per tutti,
+così che i risultati di gruppi diversi si confrontino: si chiamano **banchi di
+prova** (in inglese *benchmark*), e qui sono due. Uno chiede di riconoscere
+che cosa succede nella scena: chi nuota, chi suona, chi taglia le verdure.
+L'altro, ed è quello che conta di più, misura la comprensione del *movimento*
+e non dell'aspetto: non basta riconoscere gli oggetti, bisogna distinguere
 «spingere qualcosa da sinistra a destra» da «spingere qualcosa da destra a
 sinistra», che sono la stessa scena al contrario. V-JEPA se la cava bene su
-tutti e due: otto risposte giuste su dieci sul primo, sette su dieci sul
-secondo.
+tutti e due: otto risposte giuste su dieci sulla scena, sette su dieci sul
+movimento.
 
-Un'avvertenza onesta, però, e vale per tutti gli esami fatti così: più
-l'esaminatore è bravo, meno si capisce di chi sia il merito. Se è un
-programmino, quel che risponde lo ha trovato bell'e pronto nei riassunti; se è
-a sua volta una rete capace, una parte del lavoro potrebbe averla fatta lui.
-E qui l'esaminatore un programmino non è: è una piccola rete addestrata
-apposta, che nella versione successiva del sistema cresce ancora. Quindi quel
-«sette su dieci» dice quanto l'informazione sul movimento sia **facile da
-tirare fuori** dai riassunti, che non è la stessa cosa che dire che il modello
-«ha capito».
+Un'avvertenza, però, e vale per tutti gli esami fatti così: più l'esaminatore
+è bravo, meno si capisce di chi sia il merito. Se è un programmino, quel che
+risponde lo ha trovato bell'e pronto nei riassunti; se è una rete capace, una
+parte del lavoro può averla fatta lui. E qui l'esaminatore un programmino non
+è: è una piccola rete addestrata apposta, che nella versione successiva del
+sistema cresce ancora. Quindi quel «sette su dieci» dice quanto l'informazione
+sul movimento sia **facile da tirare fuori** dai riassunti, che non è la
+stessa cosa che dire che il modello «ha capito». Il confronto fra sistemi
+regge lo stesso, purché l'esaminatore sia identico per tutti: il punteggio si
+dà insieme al nome di chi ha corretto.
 
 `````
 
@@ -451,16 +459,18 @@ volta muove qualcosa di fisico.
 
 `````{tab} Elementare
 
-E come impara, questo robot? Non gli si mostra come si fa. Gli si fanno
-guardare delle registrazioni di bracci robotici al lavoro: una sessantina
-d'ore, prese da una raccolta pubblica che chiunque può scaricare (una raccolta
+A questo robot nessuno mostra come si fa. Gli si fanno guardare delle
+registrazioni di bracci robotici al lavoro: una sessantina d'ore, prese da
+una raccolta pubblica che chiunque può scaricare (una raccolta
 di dati fatta apposta per addestrare si chiama **dataset**). Le registrazioni
 dicono anche come si è mosso il braccio istante per istante, perché è
 un'informazione che la macchina scrive da sé mentre lavora. Quel che nessuno ha
 annotato è tutto il resto: che compito si stesse svolgendo, se sia riuscito, se
 chi guidava fosse bravo. Quei video vengono descritti come «non etichettati», e
 vuol dire esattamente questo: manca il giudizio su che cosa si stesse facendo e
-su come è andata, non l'informazione sui movimenti.
+su come è andata, non l'informazione sui movimenti. Il pezzo che guarda i
+video resta com'era, con quello che aveva imparato da internet: si addestra
+soltanto il pezzo che immagina l'effetto di un comando.
 
 Poi lo si mette in due laboratori che non aveva mai visto, davanti a oggetti che
 non aveva mai visto, senza un solo minuto di pratica lì dentro. Si chiama
@@ -470,25 +480,28 @@ Qui però serve la cifra, non l'aggettivo, perché «riesce» dice troppo.
 Raggiungere un punto gli riesce sempre. Posare un oggetto dove va, circa tre
 volte su quattro. Afferrare una tazza, due volte su tre. Afferrare una
 scatola, una volta su quattro. E per ogni singolo gesto il robot passa
-**sedici secondi** a immaginare le alternative prima di muovere un dito. È un
-inizio notevole; non è un maggiordomo.
+**sedici secondi** a immaginare, perché non prova un comando alla volta: ne
+sorteggia ottocento, tiene i dieci il cui esito finisce più vicino
+all'obiettivo, e sorteggia gli ottocento del giro dopo tutti attorno a quei
+dieci. Dieci giri, ottomila futuri immaginati per muovere un dito. È un inizio
+notevole; non è un maggiordomo.
 
 `````
 
 `````{tab} Superiore
 
 Sopra l'encoder congelato viene addestrato un predictor **condizionato sulle
-azioni**, usando meno di 62 ore di video del dataset pubblico DROID. Sulla
-parola «non etichettati», che il paper usa e che è facilissimo fraintendere,
-conviene essere precisi, perché le azioni ci sono eccome e sono l'ingrediente
-su cui poggia tutta la variante AC: il predictor riceve mappe di feature, stato
+azioni**, usando meno di 62 ore di video del dataset pubblico DROID. La parola
+«non etichettati» che il paper usa è facilissima da fraintendere, perché le
+azioni ci sono eccome e sono l'ingrediente su cui poggia tutta la variante
+AC: il predictor riceve mappe di feature, stato
 dell'end-effector (posizione, tre angoli di Eulero, apertura della pinza) e
 azioni, interlacciati nel tempo, con l'azione definita come la variazione dello
 stato dell'end-effector fra fotogrammi adiacenti. *Unlabeled*, nel paper, vuol
 dire un'altra cosa, dichiarata a chiare lettere: nessun meta-dato su
 ricompensa, su quale compito fosse in corso, o su se il tentativo sia riuscito.
-È una distinzione che tornerà utile nella sezione seguente, perché Genie le
-azioni davvero non ce le ha e deve inferirsele.
+È una distinzione che tornerà utile davanti a Genie, che le azioni davvero non
+ce le ha e deve inferirsele.
 
 La pianificazione è controllo predittivo a orizzonte recedente: si ottimizza
 una sequenza di azioni su un orizzonte $T$, se ne esegue soltanto la prima, si
@@ -536,10 +549,10 @@ ogni immagine alla sua descrizione
 e la allontana dalle altre. Il terzo (la via JEPA) studia **prevedendo il
 riassunto**: copre un pezzo e, invece di ricopiarlo, ne prevede la
 *descrizione*, confrontandola con quella di una copia lenta di sé. Non è una
-classifica: il primo metodo ha vinto nel linguaggio, il secondo ha unito
-immagini e parole, il terzo scommette sul futuro e sul video. Sono tre
-risposte diverse alla stessa domanda: che cosa, di ciò che manca, vale la pena
-prevedere?
+classifica: ricopiare con i buchi ha vinto nel linguaggio, il gioco delle
+coppie ha unito immagini e parole, prevedere il riassunto scommette sul futuro
+e sul video. Sono tre risposte diverse alla stessa domanda: di ciò che manca,
+che cosa serve davvero prevedere?
 
 `````
 
@@ -722,9 +735,10 @@ ingegneria; la logica è tutta in queste righe.
   disegnare *una* foto finisce per disegnare la media sfocata di tutte. La
   proposta è prevedere il succo, non la foto.
 - Il pericolo di prevedere il succo è che allievo e insegnante si accordino
-  per rispondere sempre «boh»: si chiama **collasso**. Il rimedio è che
-  l'insegnante sia una copia lenta dell'allievo e non riceva mai lamentele sul
-  voto: non potendo contrattare, non può accordarsi al ribasso.
+  per rispondere sempre «boh»: si chiama **collasso**. A impedirlo è una cosa
+  sola, che l'insegnante non riceva mai lamentele sul voto: non potendo
+  contrattare, non può accordarsi al ribasso. Che sia anche una copia lenta
+  dell'allievo serve a rendere l'esercizio stabile, non a fermare la truffa.
 - La prova sulle immagini è il gioco della cartolina strappata: si coprono
   quattro rettangoli **grandi** e si chiede di *descriverli*, non di
   ridisegnarli. Funziona, e impara con molto meno calcolo dei metodi che
@@ -739,8 +753,8 @@ ingegneria; la logica è tutta in queste righe.
   gli costa sedici secondi di calcolo.
 - Tre modi di studiare senza professore, e sono tre studenti diversi:
   **ricopiare con i buchi**, il **gioco delle coppie**, **prevedere il
-  riassunto**. Il terzo è quello di cui parla questa sezione, ed è il più
-  giovane dei tre. La prossima sezione va a sentire l'altra campana.
+  riassunto**. Prevedere il riassunto è la via JEPA, ed è la più giovane
+  delle tre. La prossima sezione va a sentire l'altra campana.
 ```
 
 `````
@@ -768,8 +782,9 @@ ingegneria; la logica è tutta in queste righe.
   rappresentazioni di quattro blocchi mascherati dal contesto; niente
   augmentation artigianali; con l'1% delle etichette di ImageNet batte i
   metodi a ricostruzione di pixel (73,3% contro 71,5% di MAE) con oltre
-  dieci volte meno calcolo, che però viene dalle iterazioni cinque volte meno
-  numerose e non dal costo per iterazione, che è il 7% più alto.
+  dieci volte meno calcolo. Non per un costo unitario più basso: il singolo
+  passo costa il 7% in più, i passi sono cinque volte meno, e il fattore
+  dieci confronta due addestramenti interi, non due iterazioni.
 - **V-JEPA** {cite}`bardes2024revisiting` porta lo schema al video (maschere
   a tubo estese su tutta la clip); **V-JEPA 2** {cite}`assran2025vjepa`
   scala a oltre un milione di ore di video e, con meno di 62 ore di video

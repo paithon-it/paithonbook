@@ -69,8 +69,9 @@ concentrata in una regione la cui massa sotto il prior decade
 esponenzialmente con $L$: la somma è dominata da pochissimi termini, e la sua
 varianza relativa cresce con la stessa legge.
 
-Due conseguenze si vedono nel blocco qui sotto. La prima: in scala logaritmica
-la stima è **distorta verso il basso**, perché $\log$ è concava e la
+Due conseguenze si misurano su un caso in cui $p_\theta(\mathbf{x})$ si
+conosce in forma chiusa. La prima: in scala logaritmica la stima è **distorta
+verso il basso**, perché $\log$ è concava e la
 disuguaglianza di Jensen impone
 $\mathbb{E}[\log \hat{p}] \le \log \mathbb{E}[\hat{p}] = \log p_\theta(\mathbf{x})$.
 La seconda: la quota che il campione più grosso si prende sul totale è la
@@ -176,42 +177,31 @@ aprire l’elenco del telefono a caso e chiamare: in una città grande non la
 trovi mai. Il metodo sensato è chiedere a qualcuno che la conosce «in che
 quartiere abita?», andare lì, e cercare in quel quartiere.
 
-Il consiglio del conoscente è utile, e cercando solo dove ha detto lui non si
-perde niente: il conto si corregge apposta per il fatto che si è guardato in
-una fetta sola, e resta giusto. Quello che ne esce, però, non è la probabilità
-vera: è una **stima prudente**, cioè un numero che sta sicuramente sotto a
-quello giusto.
+Cercando solo dove ha detto lui non si perde niente: il conto si corregge
+apposta per il fatto che si è guardato in una fetta sola, e resta giusto. (Un
+quartiere che in quella città non esiste manderebbe all’aria tutto, e per
+fortuna non capita.) Quello che ne esce, però, non è la probabilità vera: è una
+**stima prudente**, cioè un numero che sta sicuramente sotto a quello giusto.
 
-Perché sotto e non sopra? Non per via della fetta, ma per **l’ordine in cui si
-fanno due operazioni**, e conviene vederlo una volta con i numeri, perché torna
-spesso.
+Perché sotto e non sopra? Non per via della fetta, ma per l’ordine di due
+operazioni. I numeri in gioco sono minuscoli, e per maneggiarli si
+**schiacciano**, cioè di ciascuno si tiene solo l’ordine di grandezza. Prendi 1
+e 100: la media è 50,5, ma schiacciati diventano 0 e 2, la cui media è 1, cioè
+10. Il 100, che nella media si prendeva quasi tutto, schiacciato non pesa quasi
+niente. Il conto che sappiamo fare è quello schiacciato; il valore vero è
+l’altro, e sta sempre più in alto.
 
-I numeri in gioco sono minuscoli, e per maneggiarli si **schiacciano**, cioè al
-posto di ciascuno si tiene solo il suo ordine di grandezza. Prendi 1 e 100. Fai
-prima la media: viene 50,5. Adesso l’altro ordine: schiaccia prima, mettendo al
-posto di ciascuno quanti zeri ha, cioè 0 e 2; la media dei due schiacciati è 1,
-che riportato indietro vuol dire 10. Dieci contro cinquanta: schiacciare prima
-dà sempre meno, e si capisce perché. Lo schiacciamento porta il 100 a 2 e l’1 a
-0, cioè comprime una distanza di novantanove in una distanza di due; e il 100,
-che nella media si prendeva quasi tutto, dopo non pesa quasi più di niente.
+Il divario fra la stima e il vero dipende da una cosa sola, da quanto il
+consiglio era buono: se il conoscente sapeva davvero il quartiere, il divario
+è quasi zero; se ha tirato a indovinare, è grande.
 
-Il conto che sappiamo fare, e che poi si potrà pure addestrare, è quello
-nell’ordine schiaccia-e-poi-media; il valore vero è l’altro. Da qui il verso, e
-per la quantità che stiamo definendo vale sempre. (Sul singolo numero che una
-esecuzione stampa resta il ballo del sorteggio, come nella tabella di poco fa.)
-
-E il divario fra la stima e il vero dipende da una cosa sola, da quanto il
-consiglio era buono: se il conoscente sapeva davvero il quartiere, il divario è
-quasi zero; se ha tirato a indovinare, è grande.
-
-Qui c’è il regalo, e vale la pena fermarcisi perché è la ragione per cui tutto
-questo funziona. Noi vorremmo due cose: un modello che spieghi bene i dati, e
-un archivista che sappia dire dove guardare. Spingendo in alto la stima
-prudente si lavora **su tutte e due insieme**, perché quel numero sale sia
-quando il modello migliora, sia quando il consiglio dell’archivista si fa più
-preciso. Una sola cosa da spingere in alto, due mestieri che imparano. (Che
-salgano davvero tutti e due, e non uno a spese dell’altro, è quasi sempre vero
-e non sempre: fra poco lo diciamo per bene.)
+Qui c’è il regalo, ed è la ragione per cui tutto questo funziona. Noi vorremmo
+due cose: un modello che spieghi bene i dati, e un archivista che sappia dire
+dove guardare. Spingendo in alto la stima prudente si lavora su tutte e due
+insieme, perché quel numero sale sia quando il modello migliora, sia quando il
+consiglio dell’archivista si fa più preciso. Una sola cosa da spingere in alto,
+due mestieri che imparano. (Che salgano davvero tutti e due, e non uno a spese
+dell’altro, è quasi sempre vero e non sempre.)
 
 `````
 
@@ -317,9 +307,9 @@ Il conto si spezza in due voci, e sono le due voci di una spesa.
 precedente, nient’altro che il vecchio «la copia somiglia all’originale?».
 
 **Seconda voce: quanto costa scrivere la scheda.** Qui c’è la novità, ed è la
-regola che mancava. Immagina che archivista e copista si siano messi d’accordo
-in anticipo su un **vocabolario comune**: un modo standard di descrivere un
-quadro, che vale per tutti i quadri e non è stato adattato a nessuno. Quando
+regola che mancava. Archivista e copista si sono messi d’accordo in anticipo su
+un **vocabolario comune**: un modo standard di descrivere un quadro, che vale
+per tutti i quadri e non è stato adattato a nessuno. Quando
 l’archivista scrive una scheda, paga solo per quello che si discosta da quel
 vocabolario. Descrivere un quadro come «uno dei soliti» non costa niente;
 descriverlo nel dettaglio, con precisione al millimetro, costa molto.
@@ -335,18 +325,18 @@ ogni quadro non è descritto da un punto ma da un alone, gli aloni di quadri
 diversi si toccano, sulla mappa non restano zone vuote, e una scheda inventata
 cade dentro l’alone di qualcuno.
 
-C’è una seconda conseguenza, e conviene averla in mente perché più avanti si
-vedrà in una figura. Il vocabolario comune è uno solo e sta in un posto solo:
-quindi pagare poco non vuol dire soltanto essere vaghi, vuol dire anche **stare
-lì attorno**. Le schede si raccolgono tutte nella stessa zona, che è poi la
-zona in cui si andrà a pescare, ed è per questo che pescare funziona.
+C’è una seconda conseguenza, meno ovvia. Il vocabolario comune è uno solo e sta
+in un posto solo: quindi pagare poco non vuol dire soltanto essere vaghi, vuol
+dire anche **stare lì attorno**. Le schede si raccolgono tutte nella stessa
+zona, che è poi la zona in cui si andrà a pescare, ed è per questo che pescare
+funziona.
 
 Il punto di rottura c’è, e va detto: se il vocabolario comune è troppo povero,
 o se il copista è troppo bravo a cavarsela da solo, all’archivista conviene non
 scrivere niente. Costo zero, e il copista dipinge sempre lo stesso quadro
 medio. Succede davvero, si chiama **collasso della posterior** (cioè: la zona
 proposta dall’archivista è collassata sul vocabolario comune, e non dice più
-niente sul singolo quadro), e ne riparliamo in fondo alla sezione.
+niente sul singolo quadro).
 
 `````
 
@@ -437,11 +427,10 @@ quanto è larga la zona». Il caso è finito fuori, in un pezzo che non dipende 
 niente di ciò che vogliamo aggiustare, e la strada per le correzioni resta
 aperta.
 
-C’è anche un altro modo di rispondere alla domanda, e conviene sapere che
-esiste perché fra poco lo misuriamo: invece di seguire dove va la freccetta, si
-tiene conto di **quanto era probabile che finisse proprio lì**. Funziona, non
-imbroglia, e si usa quando gli scarti non si possono decidere prima. Ma la mano
-trema molto di più, e quanto di più lo dicono i numeri qui sotto.
+C’è anche un altro modo di rispondere alla domanda: invece di seguire dove va
+la freccetta, si tiene conto di **quanto era probabile che finisse proprio
+lì**. Funziona, non imbroglia, e si usa quando gli scarti non si possono
+decidere prima. Ma la mano trema molto di più, e la differenza si misura.
 
 Il punto di rottura, che serve alla sezione seguente: il trucco degli scarti
 decisi prima si può fare **solo** se la zona è una di quelle che si spostano e
@@ -468,9 +457,9 @@ riparametrizzazione**, proposto indipendentemente da Kingma e Welling
 {cite}`kingma2014auto` e da Rezende, Mohamed e Wierstra
 {cite}`rezende2014stochastic`, riscrive la variabile aleatoria come funzione
 derivabile di una sorgente di rumore che di $\phi$ non sa niente (e non furono
-due soli: la monografia di Kingma e Welling {cite}`kingma2019introduction`
-segnala un terzo lavoro dello stesso anno, che applica la stessa riscrittura
-alla stima dei parametri invece che al latente):
+i primi: la monografia di Kingma e Welling {cite}`kingma2019introduction`
+segnala un lavoro precedente che aveva usato la stessa riscrittura per
+apprendere i parametri di una famiglia esponenziale invece che il latente):
 
 $$
 \mathbf{z} = \boldsymbol{\mu}_\phi(\mathbf{x})
@@ -480,13 +469,13 @@ $$
 
 dove $\boldsymbol{\mu}_\phi$ e $\boldsymbol{\sigma}_\phi$ sono le uscite
 dell’encoder, $\boldsymbol{\epsilon}$ è la sorgente di rumore e $\odot$ è il
-prodotto componente per componente ($f$, che compare nelle due scritture di
-poco fa, è la funzione di cui si prende il valore atteso). Adesso il
-valore atteso è rispetto a $p(\boldsymbol{\epsilon})$, che di $\phi$ non
+prodotto componente per componente ($f$, nella disuguaglianza, è la funzione di
+cui si prende il valore atteso). Adesso il valore atteso è rispetto a
+$p(\boldsymbol{\epsilon})$, che di $\phi$ non
 dipende, l’operatore di derivata entra, e un solo campione basta a dare uno
 stimatore non distorto del gradiente.
 
-Le due scritture qui sopra sono per $f$ che **non dipende** da $\phi$, mentre
+Quella disuguaglianza è scritta per un $f$ che di $\phi$ non dipende, mentre
 nell’ELBO l’integrando contiene $-\log q_\phi(\mathbf{z} \mid \mathbf{x})$, che
 da $\phi$ dipende eccome. Il conto completo ha allora un addendo in più, e
 quell’addendo ha **media nulla**, perché è
@@ -502,7 +491,7 @@ $\nabla_\phi \mathbb{E}_{q_\phi}[f] = \mathbb{E}_{q_\phi}[f(\mathbf{z})\,
 policy di REINFORCE incontrato nel capitolo sul deep reinforcement learning.
 Anche quello è non distorto, e ha il vantaggio decisivo di funzionare su
 variabili discrete, dove la riparametrizzazione non si applica. Paga in
-varianza, e il blocco qui sotto misura quanto.
+varianza, e quel prezzo si misura.
 
 `````
 
@@ -861,11 +850,10 @@ pixel applicata a livelli di grigio continui, che è la ricetta consueta su
 questi dati e **non è una densità normalizzata** su $[0,1]$: il numero stampato
 come ELBO è quindi un ELBO rispetto a quel modello, non rispetto a una densità
 propria. La correzione esiste, si chiama Bernoulli continua
-{cite}`loaizaganem2019continuous`, e non è una pignoleria: i suoi autori
-misurano che applicarla cambia i punteggi **e** rende i campioni più nitidi,
-cioè tocca proprio una delle due cose che questa sezione guarda. Il confronto
-fra clessidra e VAE regge lo stesso, perché i due sono addestrati con la
-medesima verosimiglianza; il valore assoluto dei nat, no.
+{cite}`loaizaganem2019continuous`: i suoi autori misurano che applicarla cambia
+i punteggi **e** rende i campioni più nitidi, cioè tocca proprio la sfocatura.
+Il confronto fra clessidra e VAE regge lo stesso, perché i due sono addestrati
+con la medesima verosimiglianza; il valore assoluto dei nat, no.
 
 `````
 
@@ -889,7 +877,7 @@ Qual è, lo dice la sezione seguente.
 - Si chiede allora all’archivista, che il dato ce l’ha sotto gli occhi, dove
   conviene guardare. Ne esce una **stima prudente**, sicuramente più bassa del
   vero, e il divario è esattamente quanto il consiglio è impreciso. Spingerla
-  in alto migliora insieme il modello e il consiglio.
+  in alto migliora, quasi sempre, il modello e il consiglio insieme.
 - La stima ha due voci: quanto male si ricostruisce, e **quanto costa scrivere
   la scheda** rispetto a un vocabolario comune deciso prima. La seconda voce è
   ciò che riempie i buchi.

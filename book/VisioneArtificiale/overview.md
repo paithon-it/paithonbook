@@ -25,21 +25,39 @@ macchina possa manipolare, e quel qualcosa è una griglia.
 
 `````{tab} Elementare
 
-Immagina una foto come un enorme foglio a quadretti. Ogni quadretto è un
+Una foto, per il computer, è un enorme foglio a quadretti. Ogni quadretto è un
 **pixel**, e dentro ci sta un numero che dice quanto quel puntino è chiaro o
 scuro: $0$ è nero pieno, $255$ è bianco pieno, e i valori in mezzo sono le
 sfumature di grigio. Il $255$ non è un capriccio: il computer conta a gruppi di
 otto interruttori acceso-spento, e ogni interruttore raddoppia le combinazioni
 possibili, cioè $2 \times 2 \times 2 \times 2 \times 2 \times 2 \times 2 \times
 2 = 2^8 = 256$. Contando anche lo zero, i valori vanno da $0$ a $255$. Una foto
-in bianco e nero, per il computer, è tutta qui: una tabella di numeri fra $0$
-e $255$.
+in bianco e nero è tutta qui: una tabella di numeri fra $0$ e $255$.
 
 Se la foto è a colori, ogni quadretto non ha più un numero solo ma tre, quanto
 rosso, quanto verde, quanto blu (il famoso **RGB**), che mescolati ricreano
-ogni tinta. Un'immagine, insomma, è una griglia di numeri. Tutto il lavoro
-della visione artificiale consiste nel trovare, dentro quella griglia, delle
-regolarità che corrispondano a ciò che noi chiamiamo "un gatto".
+ogni tinta.
+
+La scala da $0$ a $255$ è un'unità di misura come i gradi o i centimetri, e si
+può cambiare senza toccare la foto: dividendo ogni numero per $255$ gli stessi
+quadretti diventano valori fra $0$ e $1$, e il grigio di mezzo, $128$, diventa
+poco più di $0{,}5$. È il cambio di scala che si fa quasi sempre prima di dare
+le immagini a una rete, come si converte in euro un conto pieno di valute
+diverse.
+
+Il foglio, però, è grande. Una fotina di $224$ quadretti per lato, la taglia con
+cui si lavora di solito, ne conta $224 \times 224 = 50\,176$; a colori sono tre
+numeri per quadretto, cioè $150\,528$ numeri per un'immagine che sullo schermo
+occupa quanto un francobollo. Viene la tentazione di prenderli e metterli tutti
+in fila, uno dopo l'altro, come una lunghissima lista della spesa. Il danno si
+vede subito: nella fila il quadretto sopra e quello sotto finiscono a centinaia
+di posti di distanza, e sparisce l'unica cosa che li teneva insieme, cioè che
+erano attaccati, e che quindi appartenevano probabilmente allo stesso bordo,
+allo stesso pelo, allo stesso occhio. I numeri ci sono ancora tutti; quello che
+non c'è più è chi sta accanto a chi.
+
+Trovare dentro quella griglia le regolarità che corrispondono a ciò che noi
+chiamiamo "un gatto": tutto il lavoro della visione artificiale è qui.
 
 `````
 
@@ -54,7 +72,7 @@ standardizza a media nulla e varianza unitaria.
 
 Le dimensioni crescono in fretta: una modesta immagine
 $3 \times 224 \times 224$ (la taglia d'ingresso classica delle reti addestrate
-su ImageNet) è un vettore di $150\,528$ numeri. Trattarla come un vettore
+su ImageNet) porta $150\,528$ numeri. Trattarla come un vettore
 piatto, ignorando che i pixel vicini sono correlati, è proprio l'errore che le
 reti convoluzionali (costruite nel capitolo precedente, e qui date per
 acquisite) evitano per costruzione.
@@ -69,55 +87,70 @@ una voce precisa di questo elenco.
 
 `````{tab} Elementare
 
-Il problema non è che i numeri siano tanti. È che **lo stesso gatto produce
-griglie di numeri completamente diverse**, e due gatti diversi possono
-produrne di molto simili. Sette modi in cui questo accade.
+Sulla vetrina del bar c'è l'avviso di un gatto siamese smarrito: la foto, e un
+numero da chiamare. Tanti numeri, da soli, non spaventano nessuno: un computer
+li macina. Il guaio è che lo stesso gatto produce griglie di numeri
+completamente diverse, e due gatti diversi possono produrne di molto simili.
+Nel pomeriggio ne arrivano sette.
 
-**Punto di vista.** Lo stesso animale visto di fronte, di lato o dall'alto non
-ha un solo pixel in comune con sé stesso.
+**Punto di vista.** Uno è preso dal balcone: schiena e coda, mentre sull'avviso
+il gatto è di fronte. Le due griglie non hanno un quadretto in comune.
 
-**Scala.** Vicino occupa tutta l'immagine, lontano una manciata di pixel.
+**Scala.** In un altro l'animale è in fondo alla strada, una manciata di
+quadretti; sull'avviso ne riempie migliaia.
 
-**Deformazione.** Un gatto è un oggetto morbido: accucciato, in salto o
-disteso è la stessa cosa con una forma diversa.
+**Deformazione.** In un terzo è accucciato sotto una macchina: un animale
+morbido, che in salto o disteso resta lo stesso con un'altra forma.
 
-**Occlusione.** Metà del gatto è dietro il divano, e la rete deve rispondere
-lo stesso.
+**Occlusione.** In uno metà gatto sta dietro un divano, e la risposta deve
+arrivare lo stesso.
 
-**Illuminazione.** In controluce i valori dei pixel si ribaltano; al tramonto
-tutta la scena vira all'arancione.
+**Illuminazione.** Uno è in controluce, e i valori dei quadretti si ribaltano;
+al tramonto sarebbero virati tutti all'arancione.
 
-**Sfondo confuso.** Un gatto tigrato su un tappeto a righe: i confini che noi
-vediamo senza pensarci il computer li deve inferire.
+**Sfondo confuso.** In un altro un tigrato sta su un tappeto a righe: i confini
+che noi vediamo senza pensarci vanno indovinati numero per numero.
 
-**Variazione dentro la classe.** Un siamese e un persiano condividono
-l'etichetta e quasi nient'altro.
+**Variazione dentro la classe.** L'ultimo ritrae un persiano bianco: col
+siamese dell'avviso condivide l'etichetta e quasi nient'altro.
 
-Tieni a mente l'elenco, perché tornerà voce per voce. E nota che una
-variazione, la più elementare di tutte, nell'elenco non compare nemmeno:
-*dove* sta il gatto dentro l'inquadratura. Manca perché la risposta è già nel
-modo in cui la rete è fatta dentro, cioè nella sua **architettura**, e in
-particolare nella convoluzione del capitolo precedente: fa passare
-sull'immagine una lente piccola (il **filtro**), sempre la stessa, un
-quadretto alla volta, dall'angolo in alto a sinistra fino in fondo. Siccome la
-lente è la stessa dappertutto, quello che la rete impara a riconoscere in un
+Al telefono le foto non le guarda nessuno: ci sono solo i numeri. Si
+sovrappongono i due fogli a quadretti e si sommano le differenze quadretto per
+quadretto: ne esce un numero che dice quanto le due foto sono lontane. C'è
+anche una scatola di scatti già etichettati, e la regola più ovvia che esista è
+pescare il più vicino e copiarne l'etichetta. Sui numeri grezzi quella regola
+sbaglia in tutt'e due i versi: lo stesso gatto in controluce e al sole risulta
+lontanissimo da sé, mentre un gatto e un cane fotografati nella stessa stanza
+con la stessa luce risultano vicini. Quel conto misura le luci e gli sfondi,
+non i soggetti.
+
+Fra i sette manca la variazione più elementare di tutte: *dove* sta il gatto
+nell'inquadratura. Manca perché la risposta è già nel modo in cui la rete è
+fatta dentro, la sua **architettura**, e in particolare nella convoluzione: sul
+foglio a quadretti passa una lente piccola, il **filtro**, sempre la stessa, un
+quadretto alla volta, dall'angolo in alto a sinistra fino in fondo. La lente
+non sa in che punto si trova, quindi quello che impara a riconoscere in un
 angolo lo riconosce anche nell'altro, ed è già moltissimo.
 
-Non è però una garanzia, e vale la pena capire perché. Fra uno strato e
-l'altro la rete rimpicciolisce la griglia: tiene un numero ogni due o ogni
-tre e butta via gli altri. Se l'immagine si sposta anche di un solo pixel, i
-numeri che sopravvivono non sono più gli stessi, e il riassunto che ne esce può
-cambiare. La lente è la stessa dappertutto; la risposta no. Basta spostare l'immagine di
-un pixel perché una rete convoluzionale cambi idea, e succede anche a quelle
-grandi.
+Fra uno strato e l'altro, però, la rete ricopia il foglio più piccolo: tiene un
+numero ogni due o ogni tre e butta via gli altri. Basta che il gatto sia
+inquadrato un quadretto più a destra perché i numeri sopravvissuti siano altri
+e la risposta cambi. La lente è la stessa dappertutto; la risposta no: un solo
+pixel di spostamento fa cambiare idea anche alle reti convoluzionali grandi.
 
-Le sette voci dell'elenco, quelle, restano tutte da affrontare. E c'è una
-sezione, più avanti in questo stesso capitolo, che è quell'elenco riletto come
-un elenco di cose da fare: moltiplicare le foto che si hanno deformandole, e si
-chiama **data augmentation**. Ruotare contro il punto di vista, ritagliare
-contro la scala, cancellare rettangoli contro l'occlusione, alterare la
-luminosità contro l'illuminazione. Non è un insieme di trucchi: è un modo di
-dire alla rete quali cambiamenti **non** devono cambiare la risposta.
+Chi addestra la rete rilegge i sette scatti come una lista di cose da fare: di
+foto del gatto ne ha poche e ne fabbrica centinaia, ruotando (contro il punto
+di vista), ritagliando (contro la scala), coprendo un rettangolo a caso (contro
+l'occlusione), schiarendo e scurendo (contro l'illuminazione). Moltiplicare le
+foto deformandole si chiama **data augmentation**: ogni gesto risponde a una
+voce, e insieme dicono alla rete quali cambiamenti devono lasciare la risposta
+dov'era.
+
+Lo stesso gesto porta fino a imparare da foto che nessuno ha etichettato. Si
+ritagliano due pezzi dello stesso scatto, la testa e una zampa, e si pretende
+dalla rete la stessa risposta per tutti e due, senza dirle mai che cosa
+raffigurano. Chi sceglie quali cambiamenti non devono contare sta scegliendo,
+in quel momento, che cosa la rete imparerà a guardare.
 
 `````
 
@@ -136,8 +169,8 @@ limitata, cambi fotometrici, occlusioni parziali) e allo stesso tempo
 molto più piccole, nella metrica dei pixel, delle variazioni da ignorare. Due
 immagini della stessa classe possono avere distanza euclidea maggiore di due
 immagini di classi diverse: è il motivo per cui un classificatore a vicini più
-prossimi sui pixel grezzi funziona male, e il paragrafo qui sotto sui filtri
-disegnati a mano racconta il primo tentativo di rimediare.
+prossimi sui pixel grezzi funziona male, e il primo tentativo di rimediare
+furono i filtri disegnati a mano.
 
 Le invarianze si ottengono in tre modi, che il resto del capitolo percorre
 tutti. **Per architettura**: la condivisione dei pesi della convoluzione dà
@@ -151,8 +184,8 @@ alle trasformazioni che deve ignorare, ed è un modo di iniettare
 un'invarianza senza cablarla nell'architettura. **Per addestramento**:
 l'apprendimento auto-supervisionato costruisce il compito proprio a partire
 dalla scelta di quali trasformazioni debbano lasciare invariata la
-rappresentazione, e lì la scelta delle trasformazioni **è** la definizione del
-problema.
+rappresentazione, e lì la scelta delle trasformazioni coincide con la
+definizione del problema.
 
 `````
 
@@ -189,6 +222,21 @@ singolo oggetto pixel per pixel (segmentazione di istanza).
 - **Segmentazione di istanza**: come sopra, ma i due gatti diventano due
   oggetti distinti, con colori diversi. È il compito più fine: separa non solo
   le categorie, ma i singoli individui.
+
+Il riquadro del rilevamento non viene mai esatto al pixel, e per dire se è
+buono si mettono a confronto due rettangoli: quello disegnato dalla macchina e
+quello che avrebbe disegnato una persona. Si misura la parte in comune e la si
+divide per la parte coperta in tutto. Rettangoli identici danno $1$, rettangoli
+che non si toccano danno $0$; e se la macchina copre metà del riquadro giusto e
+sborda altrettanto, in comune c'è mezzo riquadro mentre la superficie coperta
+in tutto è un riquadro e mezzo, quindi $0{,}5$ diviso $1{,}5$, cioè un terzo.
+Sotto una soglia che si fissa in partenza, il riquadro conta come sbagliato.
+
+Più la risposta è fine, più costa prepararla, e a pagare è chi prepara gli
+esempi. Scrivere "gatto" sotto una foto sono pochi secondi; ritagliarne la
+sagoma esatta, pixel per pixel, sono minuti, e per una foto sola. È la ragione
+per cui di foto con una parola sotto ne esistono a milioni, e di sagome
+ritagliate molte meno.
 
 `````
 
@@ -233,15 +281,23 @@ scrivi tu la regola per trovarlo.
 
 L'idea era che un esperto progettasse a mano dei "rilevatori": una formula per
 scovare i bordi (dove il colore cambia bruscamente è probabile ci sia un
-contorno), un'altra per le forme, un'altra per gli angoli. Funzionava, ma solo
-fino a un certo punto: ogni nuovo problema richiedeva nuove regole cucite a
-mano, e la realtà (luci, ombre, angolazioni) è troppo varia per essere
-ingabbiata in istruzioni fisse.
+contorno), un'altra per le forme, un'altra per gli angoli. Quei rilevatori non
+decidevano niente da soli: passavano la foto al setaccio e ne tiravano fuori
+una scheda di misure (tanti bordi verticali qui, tanti obliqui là), e a dire
+"gatto" oppure "non gatto" ci pensava un secondo programma, addestrato su
+esempi già etichettati. Imparare dagli esempi si faceva già, insomma; si
+imparava però soltanto l'ultimo passo, e il setaccio restava quello che
+l'esperto aveva costruito a mano.
 
-La svolta è stata capovolgere il ragionamento: invece di dire alla macchina
+Funzionava, ma solo fino a un certo punto: ogni nuovo problema richiedeva nuove
+regole cucite a mano, e la realtà (luci, ombre, angolazioni) è troppo varia per
+essere ingabbiata in istruzioni fisse.
+
+La svolta è stata spostare il confine fra ciò che si scrive a mano e ciò che si
+impara, perché anche il setaccio si può imparare. Invece di dire alla macchina
 *come* riconoscere un gatto, le mostriamo migliaia di gatti e lasciamo che sia
-lei a costruirsi i rilevatori giusti. Le "regole" non le scrive più l'ingegnere:
-emergono dai dati.
+lei a costruirsi i rilevatori giusti. Le "regole" non le scrive più
+l'ingegnere: emergono dai dati.
 
 `````
 

@@ -68,18 +68,16 @@ Quattro volte gli interventi, quasi **quindici** volte le righe lette. E il
 quindici non arriva tutto insieme: si arriva a trentadue interventi passando per
 sedici, dove le righe lette sono centotrentasei, cioè quasi quattro volte
 trentasei; e da centotrentasei a cinquecentoventotto è di nuovo quasi quattro
-volte. Ecco tutto il problema in una riga: **a ogni raddoppio degli interventi
-le righe da leggere si quadruplicano**, perché ogni nuovo intervento non solo si
-scrive, ma va anche riletto da tutti quelli che parleranno dopo.
+volte. Ecco tutto il problema: a ogni raddoppio degli interventi le righe da
+leggere si quadruplicano.
 
-Fra poco, in tabella, lo stesso passaggio comparirà con un numero più mite,
-quasi dieci invece di quasi quindici, e non è una svista. Il quindici che
-abbiamo appena calcolato conta solo le righe di conversazione, mentre il conto
-vero comprende anche un pezzo fisso: le istruzioni di partenza, che ciascuno si
-rilegge a ogni turno sempre uguali e che non si allungano mai. Sommare una parte
-che sta ferma a una che si gonfia in fretta fa crescere il totale più
-lentamente di quanto cresca la parte che si gonfia. Quindici è la crescita del
-pezzo che si gonfia; dieci quella del conto intero.
+Il conto per intero dà un numero più mite, quasi dieci volte invece di quasi
+quindici, e non è una svista. Il quindici conta le sole righe di conversazione,
+e in cima alla chat c'è anche un cartello fisso: il regolamento, con scritto chi
+fa che cosa, che ciascuno si rilegge a ogni turno sempre uguale e che non si
+allunga mai. Una parte ferma sommata a una che si gonfia fa crescere il totale
+più lentamente di quanto cresca la parte che si gonfia. Quindici è la crescita
+del pezzo che si gonfia, dieci quella del totale.
 
 `````
 
@@ -116,8 +114,8 @@ cumulativa** di una trascrizione che si allunga, ed è quadratico nei turni
 anche per un solista che lavori da solo abbastanza a lungo. Stessa forma,
 meccanismo diverso.
 
-Vale la pena guardare l'altro regime possibile, il *broadcast*, dove a ogni giro
-tutti leggono e tutti scrivono insieme invece che a turno. Ciascuno legge
+L'altro regime possibile è il *broadcast*, dove a ogni giro tutti leggono e
+tutti scrivono insieme invece che a turno. Ciascuno legge
 l'enunciato del compito e la trascrizione dei giri già chiusi, che cresce di
 $N\bar{m}$ a giro, per un totale di
 
@@ -128,7 +126,7 @@ $$
 
 cioè lo **stesso ordine** $O(\bar{m}N^2R^2)$ **con la stessa costante di testa**:
 lo sconto sta in un termine di grado inferiore, e quindi si vede sui numeri
-piccoli e sparisce al crescere dei turni. Con i numeri di questa sezione
+piccoli e sparisce al crescere dei turni. Con quattro agenti e otto giri a testa
 ($N = 4$, $R = 8$) fa $304.000$ token contro i
 $328.000$ del turno a turno, il 7% in meno; a $R = 64$ il rapporto è già
 $0{,}99$. Resta sotto uno per
@@ -223,29 +221,33 @@ hanno finito. Piano e sintesi sono la strozzatura all'ingresso e all'uscita.
 
 `````{tab} Elementare
 
-Immagina di dover consegnare un rapporto in dieci ore di lavoro. Tre di quelle
-ore non si dividono con nessuno: un'ora per decidere la scaletta (finché non
-c'è, nessuno può scrivere il proprio capitolo) e due ore alla fine per
-rileggere tutto insieme, uniformare il tono e togliere le ripetizioni. Le
-altre sette sono i capitoli, e quelle sì che si spartiscono. Il rapporto da
-consegnare, si intende, resta sempre quello: non è che assumendo gente lo si
-allunga.
+Un rapporto da consegnare costa dieci ore di lavoro. Tre di quelle ore non si
+dividono con nessuno: un'ora per decidere la scaletta (finché non c'è, nessuno
+può scrivere il proprio capitolo) e due ore alla fine per rileggere tutto
+insieme e uniformare il tono. Le altre sette sono i capitoli, e quelle sì che
+si spartiscono. Il rapporto, si intende, resta sempre quello: non è che
+assumendo gente lo si allunga.
 
 Con quattro persone le sette ore di scrittura diventano un'ora e tre quarti, e
-il lavoro dura tre ore più un'ora e tre quarti: quattro ore e tre quarti. Per
-sapere quante volte si è andati più veloci si divide il tempo di partenza per
-quello di arrivo, dieci diviso quattro e tre quarti: poco più di **due volte**,
-non quattro.
+il lavoro dura tre ore più un'ora e tre quarti: quattro ore e tre quarti.
+Quante volte si è andati più veloci lo dice dieci diviso quattro e tre quarti:
+poco più di **due volte**, non quattro.
 
-Con otto persone la scrittura scende a poco meno di un'ora e il lavoro dura tre
-ore e cinquantadue minuti e mezzo: dieci diviso quello fa poco più di **due
-volte e mezzo**.
-I quattro assunti in più hanno comprato mezza volta di velocità; i primi quattro
-ne avevano comprata una intera. E con mille? Le sette ore di scrittura svaniscono
-quasi del tutto, ma le tre di scaletta e rilettura restano lì: quel rapporto non
-si chiuderà mai in meno di tre ore, e dieci diviso tre fa **tre volte e un
-terzo**. Quello è il tetto, non lo si tocca nemmeno con un milione di persone, e
-nessun numero di collaboratori farà mai quel rapporto in due ore.
+Con otto persone la scrittura scende a poco meno di un'ora e il lavoro dura
+tre ore e cinquantadue minuti e mezzo: poco più di **due volte e mezzo**. I
+quattro assunti in più hanno comprato mezza volta di velocità; i primi quattro
+ne avevano comprata una intera. E per quanta gente si assuma, le tre ore di
+scaletta e rilettura restano lì: sotto le tre ore quel rapporto non scende,
+cioè più di **tre volte e un terzo** non si va nemmeno con un milione di
+persone.
+
+A quel tetto, poi, non ci si arriva, perché fin qui chi arriva non costava
+niente a chi c'era già. Invece va messo al corrente, fa domande, aspetta
+risposte: mettiamo dodici minuti tolti al gruppo per ogni arrivo. Allora i
+quattro chiudono in cinque ore e ventuno, gli otto in cinque ore e sedici, e i
+sedici in sei ore e ventisei, cioè peggio dei quattro. Molto prima del tetto c'è
+un numero di collaboratori oltre il quale assumere allunga il lavoro invece di
+accorciarlo: qui è sei, e le sei chiudono in cinque ore e dieci.
 
 `````
 
@@ -276,11 +278,11 @@ verso il tetto è di quelle che si spengono in fretta:
 
 Per arrivare al $90\%$ del tetto servono $N = 21$ agenti; per arrivare al
 tetto, infiniti. Ma questa curva è un **limite superiore ottimistico**, perché
-assume che coordinare non costi nulla, e il conto dei token qui sopra ha
+assume che coordinare non costi nulla, e il conto dei token ha
 appena mostrato che costa. Se si aggiunge una penale di coordinamento lineare,
 cioè un tempo $\kappa(N-1)$ che ogni agente in più impone a tutti gli altri, il
 tempo diventa $s + (1-s)/N + \kappa(N-1)$ e la curva non si limita ad
-appiattirsi: **torna giù**. Il massimo si trova annullando la derivata,
+appiattirsi: **torna giù**, e l'ottimo si trova annullando la derivata,
 
 $$
 N^{*} \;=\; \sqrt{\frac{1-s}{\kappa}},
@@ -294,7 +296,7 @@ l'accelerazione massima è $1{,}94\times$ (contro un tetto di Amdahl di
 $3{,}33$), e a sedici agenti si è già scesi a $1{,}55\times$, peggio che con
 quattro. Il ginocchio della curva, non il tetto, è il numero che conta. E la
 penale lineare è l'ipotesi generosa: se il coordinamento cresce come il
-quadrato degli agenti, come suggerisce il conto dei token qui sopra, il
+quadrato degli agenti, come suggerisce il conto dei token, il
 ginocchio si sposta ancora più a sinistra.
 
 `````
@@ -314,9 +316,9 @@ ed è guardare che cosa succede in tutti e due nel passare **dalle stesse quattr
 alle stesse otto** persone. Da una parte si guadagna mezza volta di velocità.
 Dall'altra il conto sale da dieci a trentaquattro volte quello di un solista.
 Nessuna aritmetica sensata approva quella spesa. E quella mezza volta è ancora
-la stima **generosa**, perché il conto delle dieci ore fa finta che coordinarsi
-non costi niente: tenendo conto anche del tempo che ogni nuovo arrivato fa
-perdere agli altri, gli otto non guadagnano quasi più nulla rispetto ai quattro.
+la stima **generosa**, perché è il guadagno che si otterrebbe se coordinarsi non
+costasse niente: contando anche il tempo che ogni nuovo arrivato fa perdere agli
+altri, gli otto non guadagnano quasi più nulla rispetto ai quattro.
 
 Il caso opposto esiste, ed è quello in cui i partecipanti sono centinaia,
 elementari, e coordinarli non costa quasi niente: sono gli sciami, e hanno una
@@ -334,35 +336,36 @@ fondo devono riuscire **tutti**.
 
 È il gioco del telefono senza fili. Ogni bambino ripete alla persona accanto
 quello che ha sentito, e supponiamo che sia bravissimo: novantacinque volte su
-cento ripete la frase esatta, e solo una volta su venti cambia una parola.
-Sembra una squadra affidabilissima.
+cento ripete la frase esatta. Sembra una squadra affidabilissima.
 
-Fai il conto e la sorpresa arriva subito. Perché la frase arrivi intatta in fondo
-devono andare bene *tutti* i passaggi, uno dopo l'altro, e allora bisogna
-moltiplicare fra loro tanti novantacinque-su-cento quanti sono i passaggi. Con
-dieci passaggi si scende a sessanta volte su cento; con venti a trentasei, cioè
-poco più di tre volte su dieci. Nessuno è diventato meno bravo: è la fila che si
-è allungata.
+Perché la frase arrivi intatta in fondo devono andare bene *tutti* i passaggi,
+uno dopo l'altro, e allora bisogna moltiplicare fra loro tanti
+novantacinque-su-cento quanti sono i passaggi. Con dieci passaggi si scende a
+sessanta volte su cento; con venti a trentasei, cioè poco più di tre volte su
+dieci. Nessuno è diventato meno bravo: è la fila che si è allungata.
 
-Girando il conto dall'altro verso si trova la cosa scoraggiante. Perché una fila
-di venti passaggi riesca nove volte su dieci, ogni bambino dovrebbe sbagliare
-meno di sei volte su mille: nessun sistema reale ci arriva, sui compiti in cui
-non c'è una risposta sola già prevista.
+Girato dall'altro verso, il conto scoraggia. Perché una fila di venti passaggi
+riesca nove volte su dieci, ogni bambino dovrebbe sbagliare meno di sei volte
+su mille: nessun sistema reale ci arriva, sui compiti in cui non c'è una
+risposta sola già prevista.
 
 Ora però mettiamo un arbitro **a ogni passaggio**: uno che, senza sapere qual è
 la frase giusta, sa dire se quella che ha appena sentito sta in piedi, e in caso
 contrario fa ripetere. Non deve nemmeno essere infallibile. Diciamo che di dieci
 parole cambiate se ne accorge otto: la fila di venti passaggi torna a riuscire
-otto volte su dieci, invece di tre. Non è un dettaglio organizzativo, è la
-differenza fra un sistema che funziona e uno che no.
+otto volte su dieci, invece di tre.
 
-E serve anche un arbitro solo, messo a metà fila: spezza i venti passaggi in
-due tronconi da dieci, e quello che si è rovinato nel primo non entra nel
-secondo, perché lì la frase viene rimessa a posto. Se quell'arbitro fosse
-infallibile la fila tornerebbe a riuscire come una fila di dieci, cioè sei
-volte su dieci invece di tre; con l'arbitro di prima, che di dieci errori ne
-prende otto, si arriva a poco più di cinque. Metà del guadagno di un arbitro a
-ogni passaggio, con un arbitro solo.
+Ne basta anche uno solo, messo a metà fila: quello che si è rovinato nei primi
+dieci passaggi lì viene rimesso a posto e non entra negli altri dieci, e la fila
+riesce poco più di cinque volte su dieci invece di tre. Metà del guadagno, con
+un arbitro solo.
+
+Due cose, però, l'arbitro non le aggiusta. Uno che dicesse «ripeti» a chiunque
+non lascerebbe passare nessun errore e non farebbe arrivare in fondo neanche una
+frase giusta: quanto vale un arbitro si vede anche da quante volte ferma chi
+aveva ragione. E il bambino a cui fai ripetere spesso ripete lo stesso sbaglio,
+perché la parola l'aveva sentita male fin dall'inizio; il guadagno vero è un po'
+meno di quello che il conto promette.
 
 `````
 
@@ -423,12 +426,12 @@ degenere che **rifiuta tutto**, il quale non verifica niente. Alla formula manca
 il tasso di falso allarme, $P(\text{rifiuto} \mid \text{passo corretto})$: sotto
 l'ipotesi appena dichiarata, che il passo intercettato venga rifatto, ogni falso
 allarme è un passo rifatto per niente, ed è quel numero, non $r$, a dire quanto
-costa il ponteggio. Un verificatore si prezza con due cifre, e la sezione «Come
-falliscono» qui sotto guarda per lo più quella sbagliata, cioè il critico che
+costa il ponteggio. Un verificatore si prezza con due cifre, e i cataloghi dei
+fallimenti reali guardano per lo più quella sbagliata, cioè il critico che
 approva troppo, mentre il critico che boccia troppo è altrettanto reale e non
 compare mai nel conto. La seconda avvertenza: il calcolo presuppone che il
-controllo sia indipendente da chi produce (è il punto in cui un autocontrollo
-non vale nulla, ci torniamo fra poco). La terza: i ritentativi dopo un rifiuto
+controllo sia indipendente da chi produce, ed è il punto in cui un autocontrollo
+non vale nulla. La terza: i ritentativi dopo un rifiuto
 non sono indipendenti fra loro, perché un modello che sbaglia tende a rifare lo
 stesso ragionamento; contarli come prove indipendenti sovrastima il guadagno.
 
@@ -476,7 +479,7 @@ questo, e il guadagno si può mettere in numeri.
 
 `````{tab} Elementare
 
-È la differenza fra rileggersi il proprio tema e farlo rileggere a un compagno.
+Rileggersi il proprio tema non serve quanto farlo rileggere a un compagno.
 Rileggendoti, gli errori che non hai visto mentre scrivevi continui a non
 vederli: sono proprio quelli su cui, scrivendo, avevi già deciso che andavano
 bene. Un compagno che non sa che cosa avevi in testa li vede.
@@ -533,6 +536,16 @@ abbandonata al terzo turno resta scritta lì, e al ventesimo turno tira ancora
 la risposta dalla sua parte. Dare a ogni agente una finestra pulita sul suo
 pezzo non è un modo di avere più cervelli: è un modo di avere scrivanie
 separate.
+
+Che costano anche meno. Nella chat di gruppo ognuno rilegge le carte di tutti, e
+il tempo di lettura si accumula; qui nessuno apre la pratica dell'altro, e
+quattro scrivanie costano quattro volte una scrivania sola, non dieci. Ogni pila
+resta più bassa, e quello che serve non finisce sepolto in mezzo agli altri
+fogli.
+
+Si paga da un'altra parte. Chi sta a una scrivania non sa che cosa è successo
+all'altra, e le poche cose che devono passare di là vanno scelte a mano, una per
+una. Quello che nessuno porta di là, l'altro non lo saprà mai.
 
 `````
 
@@ -675,13 +688,15 @@ solista non chiudeva.
   anche le istruzioni di partenza, la crescita è un po’ più mite ma resta
   spaventosa: quattro agenti per otto giri leggono 328.000 token contro i 34.000
   di un solista, cioè **quasi dieci volte**, non quattro.
-- La parte di lavoro che **non si può dividere** mette un tetto (è la **legge di
-  Amdahl**, il tetto di questa sezione). Se su dieci ore di rapporto tre
-  servono a decidere la scaletta e a rileggere alla fine, nessun numero di
-  collaboratori chiude quel rapporto in meno di tre ore: più veloci di tre volte
-  e un terzo non si va. E siccome ogni collaboratore in più fa perdere tempo
-  anche agli altri, il guadagno che si compra assumendo si assottiglia in fretta:
-  passando da quattro persone a otto si guadagna meno di un'ora su dieci.
+- La parte di lavoro che **non si può dividere** mette un tetto: è la **legge di
+  Amdahl**. Se su dieci ore di rapporto tre servono a decidere la scaletta e a
+  rileggere alla fine, nessun numero di collaboratori chiude quel rapporto in
+  meno di tre ore, e più veloci di tre volte e un terzo non si va. Anche quel
+  poco, poi, si assottiglia in fretta: da quattro persone a otto si guadagna meno
+  di un'ora su dieci. E a quel tetto non ci si arriva nemmeno, perché ogni
+  collaboratore in più fa perdere tempo anche agli altri: contando anche quello,
+  gli otto guadagnano pochi minuti sui quattro, e oltre la sesta persona assumere
+  allunga il lavoro invece di accorciarlo.
 - Gli errori si **moltiplicano**, non si mediano: è il telefono senza fili. Con
   partecipanti che riferiscono bene novantacinque volte su cento, dieci passaggi
   lasciano la frase intatta sei volte su dieci e venti passaggi poco più di tre.

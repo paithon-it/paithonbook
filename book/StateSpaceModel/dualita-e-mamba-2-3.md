@@ -23,9 +23,9 @@ della loro potenza. Lo scan di Mamba-1 fa conti del primo tipo, e quel reparto
 lo lascia quasi spento.
 
 L'intuizione di Mamba-2, di Tri Dao e Albert Gu {cite}`dao2024mamba2`, è insieme
-teorica e pratica, ed è la ragione per cui questa sezione chiude il cerchio del
-capitolo. Teorica: gli State Space Model e l'attenzione non sono due famiglie
-distinte, ma **due viste della stessa cosa**. Pratica: da quella equivalenza
+teorica e pratica, ed è quella che chiude il cerchio del capitolo. Teorica: gli
+State Space Model e l'attenzione non sono due famiglie distinte, ma **due viste
+della stessa cosa**. Pratica: da quella equivalenza
 discende un algoritmo che si scrive come una sequenza di moltiplicazioni di
 matrici, cioè che riporta il calcolo proprio sul reparto dove sta quasi tutta
 la potenza della scheda.
@@ -49,25 +49,38 @@ arriva all'attenzione.
 
 `````{tab} Elementare
 
-Abbiamo già visto una dualità, in questo capitolo e nel precedente: la stessa
-funzione calcolabile «passo dopo passo» (ricorrente) oppure «tutta insieme»
-(convoluzione o attenzione). Qui la dualità è più profonda e riguarda due
-oggetti che avevamo trattato come parenti lontani.
+Una dualità l'abbiamo già incontrata: la stessa funzione calcolata «passo dopo
+passo» (ricorrente) oppure «tutta insieme» (convoluzione o attenzione). Quella
+che arriva adesso è più profonda, e riguarda due oggetti che avevamo trattato
+come parenti lontani.
 
-Immagina due dialetti che si sono sviluppati in valli diverse e che, messi a
-confronto, risultano essere la stessa lingua. Da una parte gli State Space
-Model, nati dalla teoria del controllo, con il loro stato che evolve nel tempo.
-Dall'altra l'attenzione, nata dalla traduzione automatica, con la sua tabella
-che confronta ogni parola con ogni altra. Mamba-2 dimostra che i due dialetti
-coincidono, a una condizione: che si prenda la versione più semplice del
-riassunto, quella in cui tutte le sue caselle sbiadiscono alla stessa velocità
-invece che ognuna alla propria. Allora sono le stesse frasi, dette in due modi.
-Non «si assomigliano»: sono la stessa identica operazione, scritta con simboli
-diversi.
+In due valli vicine si parlano quelli che tutti danno per due dialetti
+diversi. Di qua si dice «uno stato che evolve nel tempo», ed è la lingua degli
+State Space Model, venuta dalla teoria del controllo. Di là si dice «una
+tabella che confronta ogni parola con ogni altra», ed è la lingua
+dell'attenzione, venuta dalla traduzione automatica. Mamba-2 mette i due
+vocabolari uno accanto all'altro, e per ogni parola dell'uno trova quella
+dell'altro. L'etichetta sotto cui una parola viene archiviata nel foglio, di
+là si chiama chiave; l'informazione archiviata si chiama valore; la domanda
+con cui più tardi la si va a ripescare si chiama query; e il numero che a ogni
+passo fa sbiadire il foglio dice, di là, quanto una parola vecchia conta
+ancora adesso. Alla fine del confronto non restano due lingue, ma una sola
+scritta con due alfabeti.
 
-E se sono la stessa operazione, si può calcolare in due modi: passo dopo passo,
-come un SSM, oppure formando una grande tabella di confronti, come l'attenzione.
-Il secondo modo è quello che le GPU adorano.
+Il vocabolario combacia a una condizione, ed è la rinuncia che Mamba-2 accetta:
+si prende la versione più semplice del foglio, quella in cui tutte le sue
+caselle sbiadiscono alla stessa velocità invece che ognuna alla propria. Con
+una velocità diversa per ogni casella, di là mancherebbe la parola per dirlo,
+e la frase resterebbe intraducibile.
+
+Tradotta la frase, lo stesso conto si fa in due modi: passo dopo passo,
+aggiornando il foglio una parola per volta, oppure tutto insieme, formando la
+grande tabella dei confronti. La tabella non si riempie tutta, però. La metà
+che confronterebbe una parola con quelle che vengono dopo di lei resta a zero,
+perché nessuno può leggere il futuro; e ogni confronto che resta viene
+moltiplicato per quanto del ricordo è sopravvissuto da lì fin qui, così le
+parole lontane pesano meno di quelle vicine. Il secondo modo è quello che le
+GPU adorano.
 
 `````
 
@@ -174,9 +187,9 @@ moltiplicazione di matrici.
 
 `````{tab} Elementare
 
-Immagina un'officina con un attrezzo formidabile ma specializzato: una pressa
-che stampa lastre intere in un colpo solo, purché il pezzo abbia una certa
-forma. Finché lavori a mano, pezzo per pezzo, la pressa resta ferma e tu vai
+Un'officina ha un attrezzo formidabile e specializzato: una pressa che stampa
+una lastra intera in un colpo solo, purché il pezzo abbia una certa forma.
+Finché lavori a mano, pezzo per pezzo, la pressa resta ferma e tu vai
 lentissimo. Se accetti di dare ai pezzi quella forma standard, puoi usarla, e
 vai molto più veloce.
 
@@ -187,12 +200,21 @@ rinuncia di Mamba-2 dà ai conti la «forma standard» che la pressa accetta: il
 modello lavora a corsie (ogni corsia ha il suo pezzo di memoria), e invece di
 lasciare che ogni corsia dimentichi a modo suo, si chiede a un intero gruppo di
 corsie di dimenticare tutte alla stessa velocità. Basta questo, e il calcolo di
-tutto il gruppo diventa una sola moltiplicazione di tabelle invece di tante
-operazioni minute: la pressa si accende. In più, potendo permettersi una
-memoria più capiente senza pagarla in velocità, Mamba-2 allarga il foglio di
-ogni corsia (da una manciata di numeri a diverse decine o centinaia) e
-organizza le corsie in gruppi, che chiama **teste**, esattamente come
-l'attenzione.
+tutto il gruppo diventa un prodotto fra tabelle: la pressa si accende.
+
+La pressa, intanto, non toglie lavoro: batte tutta la lastra in una volta,
+comprese le zone dove non c'era niente da stampare, e di colpi ne dà anche più
+di quanti ne avresti dati tu andando a mano. Va più veloce lo stesso, perché li
+dà tutti insieme e tutti uguali, senza fermarsi a cercare il pezzo dopo.
+Quello che cambia è la forma del lavoro, ed è la forma che la macchina
+digerisce.
+
+In più, potendo permettersi una memoria più capiente senza pagarla in velocità,
+Mamba-2 allarga il foglio di ogni corsia (da una manciata di caselle a diverse
+decine o centinaia) e organizza le corsie in gruppi, che chiama **teste**,
+esattamente come l'attenzione. Con più caselle il foglio tiene separate più
+voci: se ne scrivono tante senza che si pestino i piedi, e a rileggerle si
+ripesca quella giusta invece di una via di mezzo fra due.
 
 Un'avvertenza, la stessa del capitolo precedente: la grande tabella dei
 confronti non si forma mai per intero, perché su un testo lungo sarebbe di
@@ -274,23 +296,25 @@ intervalli, e bisogna indovinare cosa succede *tra* un campione e l'altro. Il
 punto delicato è quanta parte di ciò che entra in quel tratto finisce nella
 memoria. Torniamo al rubinetto: più a lungo lo tieni aperto e più forte lo
 apri, più acqua entra, e la quantità è la superficie della figura che ha per
-base la durata del tratto e per altezza l'apertura. Mamba-1 usa una sola
-altezza, l'apertura del campione che sta leggendo: quella figura è un
+base la durata del tratto e per altezza l'apertura. Mamba-1 e Mamba-2 usano una
+sola altezza, l'apertura del campione che stanno leggendo: quella figura è un
 **rettangolo**, ed è il conto sbrigativo, il valore di adesso moltiplicato per
 la durata, come se fosse stato quello per tutto il tratto. Rapido, ma con un
 errore che a ogni passo si accumula.
 
 Mamba-3 rifà lo stesso conto a **trapezi**, cioè guardando tutte e due le
 aperture, quella di adesso e quella del campione precedente: si tira un
-segmento fra i due valori e si misura la superficie che gli sta sotto. E c'è una
-furbizia in più, tipica di questo capitolo: quanto contano i due estremi non è
-deciso una
+segmento fra i due valori e si misura la superficie che gli sta sotto. Con una
+correzione che la vasca impone da sé: l'acqua entrata all'inizio del tratto ha
+avuto tutto il tratto per defluire dallo scarico, quindi di quella si conta
+soltanto la parte ancora dentro. E c'è una furbizia in più, la mossa di sempre
+di Mamba: quanto contano i due estremi non è deciso una
 volta per tutte a metà e metà, lo decide il modello a ogni passo, in base a ciò
 che legge (il trapezio della geometria, quello che fa la media, è il caso
-particolare in cui i due estremi pesano uguale). Le due cose, però, tirano da
-parti opposte: il conto è davvero più preciso solo se i due estremi pesano
-quasi uguale, e lasciato libero il modello preferisce sbilanciarli. Gli autori
-hanno provato a obbligarlo a stare vicino alla metà, e i risultati sono
+particolare in cui i due estremi pesano uguale). Precisione e libertà, però,
+tirano da parti opposte: il conto è davvero più preciso solo se i due estremi
+pesano quasi uguale, e lasciato libero il modello preferisce sbilanciarli. Gli
+autori hanno provato a obbligarlo a stare vicino alla metà, e i risultati sono
 peggiorati: quello che si guadagna non è tanto un errore più piccolo, è una
 regola più ricca, che il modello dosa come gli conviene. La conseguenza pratica
 è curiosa: Mamba-1 e Mamba-2 avevano
@@ -394,10 +418,11 @@ il paper documenta un netto miglioramento sui compiti di **state tracking**.
 
 Il legame con i Transformer è preciso. Il paper mostra che l'SSM complesso con
 discretizzazione trapezoidale equivale a un **RoPE data-dipendente** applicato
-alle matrici $\mathbf{B}$ e $\mathbf{C}$. RoPE (la *Rotary Position Embedding* che avevamo solo
-nominato nel capitolo sui Transformer, tra le codifiche posizionali relative
-più recenti) inietta la posizione ruotando query e key di un angolo
-proporzionale all'indice del token. Qui accade lo stesso, con due differenze:
+alle matrici $\mathbf{B}$ e $\mathbf{C}$. RoPE (la *Rotary Position Embedding*
+vista nel capitolo sui Transformer) inietta la posizione ruotando query e key
+di un angolo proporzionale all'indice del token, e nel prodotto scalare le due
+rotazioni si compongono, così che ai punteggi arrivi solo la distanza fra le
+posizioni. Qui accade lo stesso, con due differenze:
 le rotazioni si applicano alle controparti SSM di key e query ($\mathbf{B}$ e $\mathbf{C}$), e
 l'angolo non dipende solo dalla posizione ma dai **dati**, perché il passo
 $\Delta$ è selettivo. È l'ennesimo ponte tra le due famiglie: la codifica
@@ -410,9 +435,9 @@ La terza novità è più ingegneristica.
 
 `````{tab} Elementare
 
-Finora ogni corsia del modello teneva un foglio tutto suo, e i fogli non
-si parlavano. Mamba-3 fa condividere a più corsie un
-foglio comune, più capiente. Il vantaggio sta nel modo di lavorare delle
+Ogni corsia del modello tiene un foglio tutto suo, e i fogli non si parlano fra
+loro. Mamba-3 ne mette invece uno solo, più capiente, in comune fra più corsie.
+Il vantaggio sta nel modo di lavorare delle
 schede grafiche: andare a prendere i dati in memoria costa più che farci i
 conti sopra, quindi conviene, a ogni viaggio, portare a casa più lavoro utile.
 Con il foglio condiviso ogni lettura serve più corsie in un colpo solo, e il
@@ -542,9 +567,10 @@ al costo lineare.
   strade, dall'attenzione e dai sistemi dinamici, arrivano allo stesso posto.
 - La restrizione $\mathbf{A} = a\mathbf{I}$ (diagonale tutta uguale, mentre
   Mamba-1 aveva valori distinti) rende il calcolo pura **moltiplicazione di
-  matrici**, con costo $O(L\,N\,(Q+P))$ a blocchi di lunghezza $Q$: non meno
-  operazioni della ricorrenza pura, ma operazioni che stanno sui tensor core.
-  Ne seguono la struttura **multi-head** e uno stato molto più grande (da
+  matrici**, con costo $O(L\,Q\,(N+P) + L\,N\,P)$ a blocchi di lunghezza $Q$:
+  non meno operazioni della ricorrenza pura, ma operazioni che stanno sui
+  tensor core. Ne seguono la struttura **multi-head** e uno stato molto più
+  grande (da
   $N=16$ a $64$–$256$ e oltre).
 - **Mamba-3** (Lahoti et al., ICLR 2026, Oral) raffina la dinamica con tre mosse:
   discretizzazione **esponenziale-trapezoidale** (combinazione convessa degli

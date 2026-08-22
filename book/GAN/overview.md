@@ -53,11 +53,12 @@ distingue da una richiesta all'altra. È da lì che viene la varietà: numeri
 diversi in ingresso, gatti diversi in uscita.
 
 Che debbano essere **a sorte**, e non scelti da noi in fila (1, 2, 3…), è una
-faccenda diversa. La ragione è che durante l'addestramento la rete si allena su
-numeri tirati a sorte, e impara a cavarsela in tutte le zone da cui possono
-uscire. Se poi, a cose fatte, le dessimo numeri scelti da noi, la porteremmo
-sempre nelle stesse zone e ci ritroveremmo sempre gli stessi gatti: il sorteggio
-è ciò che tiene la promessa fatta in addestramento.
+faccenda diversa. Durante l'addestramento alla rete arrivano solo numeri usciti
+da quella tombola, e lei impara a cavarsela nella zona da cui escono. Numeri
+scelti a mano cadono quasi sempre lontano da quella zona, in un territorio dove
+la rete non è mai stata, e quello che ne esce non ha nessuna ragione di
+somigliare a un gatto. Il sorteggio è un patto preso in addestramento, e va
+rispettato anche dopo.
 
 `````
 
@@ -154,10 +155,9 @@ due ha un tabellone suo su cui segnare punti per conto proprio.
 
 È un tiro alla fune: il discriminatore tira da una parte (vuole avere
 sempre ragione), il generatore tira dall'altra (vuole ingannarlo), e la corda è
-una sola, cioè il terreno che guadagna uno lo perde l'altro. L'immagine serve
-per questo, e conviene fermarla qui: in un tiro alla fune, quando nessuno dei
-due si sposta più vuol dire che non sta succedendo niente, mentre qui il
-pareggio è il traguardo.
+una sola. L'immagine però va fermata qui: in un tiro alla fune, quando nessuno
+dei due si sposta più non sta succedendo niente, mentre fra falsario ed esperto
+il pareggio è il traguardo.
 
 Perché il pareggio arriva quando il falsario è diventato bravissimo. Se i suoi
 quadri sono indistinguibili da quelli veri, l'esperto non ha più niente su cui
@@ -174,9 +174,11 @@ anche dei quadri autentici, ed è su quelli che viene corretto. È lui il punto
 in cui la realtà entra nel gioco, e finché quel punto c'è, l'unico modo che il
 falsario ha di ingannarlo stabilmente è somigliare davvero ai quadri veri.
 
-Resta il caso opposto, quello in cui l'esperto prende troppo vantaggio e il
-falsario non riesce più a stargli dietro. È un problema concreto, e anche
-quello lo affronta la sezione seguente.
+Quel pareggio è delicato, e si rompe in due modi. L'esperto può prendere troppo
+vantaggio, e allora il falsario non ha più modo di stargli dietro. Oppure il
+falsario trova un quadro che passa sempre e da lì in poi dipinge quello e
+basta: l'inganno riesce, ma la varietà sparisce. Sono problemi concreti, e
+tornano nella stessa sezione.
 
 `````
 

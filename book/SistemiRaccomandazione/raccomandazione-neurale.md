@@ -50,6 +50,15 @@ voce per voce non vede (l'equivalente di «ama i documentari, *ma solo se*
 durano meno di un'ora»), perché nessuno le impone di trattare le voci a
 coppie.
 
+Per trovarsi la regola da sé, però, il giudice nuovo ha bisogno di vedere
+tantissime coppie già giudicate, e ne ha viste pochissime: la tabella da cui
+impara è quasi tutta vuota. C'è anche una versione che tiene
+tutti e due i modi di leggere le schede, il confronto voce per voce e la rete,
+e li fa decidere insieme: ognuno però si porta le sue schede, così ogni utente
+e ogni film ne hanno due invece di una, e il paragone con la fattorizzazione
+non è più alla pari, perché da quella parte i numeri da imparare sono il
+doppio.
+
 `````
 
 `````{tab} Superiore
@@ -153,9 +162,9 @@ chiama **grafo**.)
 La tabella utenti per film si può disegnare invece che tabulare. Metti tutti
 gli utenti in una colonna di pallini a sinistra, tutti i film in una colonna a
 destra, e tira una linea ogni volta che qualcuno ha visto qualcosa. I pallini
-sono i *nodi* e le linee gli *archi*: sono le parole tecniche, quelle del
-capitolo precedente sui grafi, e le ritroverete ovunque; qui però continueremo
-a dire pallini e linee, che si vedono meglio. Non hai
+sono i *nodi* e le linee gli *archi*, le parole del capitolo sulle reti
+neurali su grafo; qui continueremo a dire pallini e linee, che si vedono
+meglio. Non hai
 aggiunto né tolto niente: è lo stesso dato, disegnato. Ma adesso si vede una
 cosa che nella tabella era nascosta, e cioè che **raccomandare vuol dire
 indovinare le linee che ancora non ci sono**.
@@ -173,8 +182,11 @@ grafo permette di raccogliere quel segnale lontano; la tabella no, perché lì i
 passi non si vedono.
 
 Camminare così ha un nome, **propagazione**: a ogni passo ogni pallino si
-riscrive mescolando ciò che gli arriva dai pallini a cui è collegato, e dopo
-tre o quattro passi ha in pancia anche notizie che vengono da lontano. E c'è un
+riscrive mescolando ciò che gli arriva dai pallini a cui è collegato, ma non
+tutto allo stesso volume, perché chi è collegato a mezzo catalogo parla più
+piano e un film visto da tutti conta poco per ognuno dei suoi spettatori. Dopo
+tre o quattro passi ogni pallino ha in pancia anche notizie che vengono da
+lontano. E c'è un
 modello del 2020, **LightGCN**, famoso proprio perché non fa altro: niente rete
 neurale sopra, solo il camminare, ripetuto qualche volta e rimesso insieme alla
 fine. È nato per sottrazione: qualcuno ha preso un modello che faceva di più e
@@ -273,10 +285,9 @@ rende disponibile tutto l'armamentario delle reti su grafo. Il caso più
 noto, **PinSage** {cite}`ying2018graph`, è raccontato nel capitolo sulle reti
 neurali su grafo, insieme al campionamento dei vicini che lo rende praticabile
 a scala web. Leggere la raccomandazione come link prediction non è però *la
-definizione* del problema, ed è bene non prenderla per tale: più avanti in
-questa pagina due paragrafi ne mostrano i limiti da due lati diversi, perché un
-disegno di pallini e linee non ha un orologio, e i sistemi che girano davvero
-restano organizzati intorno al confronto fra due schede.
+definizione* del problema, ed è bene non prenderla per tale: un disegno di
+pallini e linee non ha un orologio, e i sistemi che girano davvero restano
+organizzati intorno al confronto fra due schede.
 
 ## Imparare a ordinare: BPR
 
@@ -307,19 +318,23 @@ confronti a coppie produce una classifica personale senza che nessuno abbia
 mai dato un voto. Nota la finezza: non serve decidere *quanto* gli piace ogni
 libro; serve solo che l'ordine sia giusto.
 
-Una domanda onesta, a questo punto, ed è la prima che viene in mente: e se il
+Una domanda onesta, a questo punto: e se il
 libro pescato a caso era proprio uno che gli sarebbe piaciuto, e che non ha
 comprato solo perché non l'ha mai visto? Succede, e per un istante lo stiamo
 spingendo giù per sbaglio. Il gioco regge lo stesso, per due motivi. Il primo è
 che su un catalogo grande capita di rado, e più il catalogo è grande più capita
-di rado (nel codice qui sotto un libro che quel cliente ha già comprato non
-viene mai pescato come ignorato; un libro che gli sarebbe piaciuto e che non ha
-mai visto sì, e non c'è modo di accorgersene). Il secondo, che conta di più:
+di rado (un libro che quel cliente ha già comprato non finisce mai fra gli
+ignorati, quello si riconosce; uno che gli sarebbe piaciuto e che non ha mai
+visto sì, e non c'è modo di accorgersene). Il secondo, che conta di più:
 ogni singolo
 confronto sposta la vetrina di pochissimo, quindi dopo milioni di confronti
 resta impressa la regolarità, non lo sbaglio di uno di essi. È il motivo per
 cui questo metodo vuole tantissimi confronti approssimativi e non pochi giudizi
 precisi.
+
+E c'è un momento in cui il gioco smette di insegnare: a vetrina quasi a posto i
+libri pescati a caso stanno già tutti sotto, e da un confronto già vinto non si
+impara niente. Da lì in poi i confronti bisogna sceglierli, non pescarli.
 
 `````
 
@@ -459,50 +474,48 @@ tutti i trucchi funziona finché si ricorda che è un trucco.
 
 `````{tab} Elementare
 
-Supponi che i titoli nascosti fossero 6, che il sistema ti mostri 10 consigli,
-e che 3 di quei 10 fossero fra i nascosti. La **precision@10** (la chiocciola
-si legge «sui primi dieci») è la frazione di consigli azzeccati:
-$3/10 = 0{,}3$. Il **recall@10** misura invece quanti dei 6 nascosti ne ha
-ritrovati: $3/6 = 0{,}5$. Le
-due metriche tirano in direzioni opposte: sparare consigli a raffica alza il
-recall e affonda la precision.
+I titoli nascosti sono 6, il sistema ne mostra 10, e 3 di quei 10 stanno fra i
+nascosti. La **precision@10** (la chiocciola si legge «sui primi dieci») è la
+frazione di consigli azzeccati: $3/10 = 0{,}3$. Il **recall@10** misura invece
+quanti dei 6 nascosti ne ha ritrovati: $3/6 = 0{,}5$. Le due metriche tirano in
+direzioni opposte: sparare consigli a raffica alza il recall e affonda la
+precision.
 
 C'è però un dettaglio che entrambe ignorano: *dove* stanno i colpi
 azzeccati. Un successo al primo posto vale più di uno al decimo, perché al
 decimo posto forse non arrivi mai. La **NDCG** è la metrica che ne tiene
 conto: premia le classifiche che mettono i titoli giusti in cima, come un
-giornale che sceglie bene la prima pagina. Il nome non vuol dire niente in
-italiano, sono le iniziali di quattro parole inglesi: è un'etichetta, non una
-sigla da decifrare. Quanto premia, in cifre: un titolo giusto al primo posto
+giornale che sceglie bene la prima pagina. Quanto premia, in cifre: un titolo
+giusto al primo posto
 vale $1$, lo stesso titolo al secondo posto vale $0{,}63$, al decimo $0{,}29$.
 Lo sconto cala sempre più piano man mano che si scende: fra il primo e il
 secondo posto c'è più differenza ($0{,}37$) che fra il quinto e il decimo
 ($0{,}10$).
 
 I punti si sommano, e poi si dividono per il punteggio della classifica
-perfetta, quella che avrebbe messo i titoli giusti tutti in testa. Così il
-risultato sta sempre fra $0$ e $1$, e diventa confrontabile fra persone
-diverse: chi ha sei titoli nascosti raccoglierebbe più punti di chi ne ha due
-solo perché ne ha di più, e dividere per il massimo che ciascuno poteva
-raggiungere toglie di mezzo quel vantaggio.
+perfetta, quella che avrebbe messo i titoli giusti tutti in testa: così il
+risultato sta sempre fra $0$ e $1$ ed è confrontabile fra persone diverse, che
+altrimenti chi ha sei titoli nascosti raccoglierebbe più punti di chi ne ha due
+solo perché ne ha di più.
 
 Finiamo l'esempio di prima. I 3 titoli azzeccati stiano ai posti 1, 4 e 7:
 valgono $1 + 0{,}43 + 0{,}33 = 1{,}76$. La classifica perfetta avrebbe messo
 tutti e 6 i nascosti in cima, dal primo al sesto posto, per un totale di
 $3{,}30$. La **NDCG@10** è $1{,}76 / 3{,}30 = 0{,}53$.
 
-E nascondere si può fare in più modi, che non sono affatto equivalenti.
-Si può togliere un pezzo di storia **a caso**, che è comodo e imbroglia: il
-modello finisce per addestrarsi anche su cose successe *dopo* quelle su cui
-viene interrogato, e nella vita vera il futuro non è disponibile. Si può
-nascondere **l'ultima cosa** che ciascuno ha guardato, che è più onesto. Oppure
-si può **tagliare a una data**: tutto quello che è successo prima serve per
-imparare, tutto quello che viene dopo per giudicare. L'ultimo è il più severo,
-ed è l'unico che somiglia alla situazione vera, perché fa comparire anche le
-persone che a quella data erano appena arrivate e di cui non si sapeva nulla,
-che sono proprio quelle su cui si sbaglia di più. Cambiando modo di nascondere,
-la classifica dei metodi può ribaltarsi: ecco perché «su che cosa si misura»
-viene prima del metro.
+E nascondere si può fare in più modi, che non sono equivalenti. Togliere un
+pezzo di storia **a caso** è comodo e imbroglia: il modello si addestra anche
+su cose successe *dopo* quelle su cui viene interrogato, e nella vita vera il
+futuro non è disponibile. Nascondere **l'ultima cosa** che ciascuno ha guardato
+è più onesto. **Tagliare a una data** è il più severo, e l'unico che somiglia
+alla situazione vera: fa comparire anche chi a quella data era appena arrivato,
+cioè proprio le persone su cui si sbaglia di più. Cambiando modo di nascondere,
+la classifica dei metodi può ribaltarsi. E c'è una seconda decisione che
+nessuno dichiara: contro quanti titoli deve farsi largo quello nascosto.
+Batterne cento presi a caso è tutt'altra impresa che batterne un milione, e i
+due risultati si chiamano allo stesso modo. Contare su cento gonfia il
+punteggio, e non lo gonfia allo stesso modo per tutti: anche qui l'ordine fra
+due sistemi può rovesciarsi.
 
 `````
 
@@ -536,7 +549,8 @@ item rilevante per utente, che è il caso del protocollo *leave-one-out* con cui
 è valutato NCF, la recall@k degenera nella *hit rate* HR@k ed è con quel nome
 che la si trova nei paper; la metrica naturale diventa allora la **MRR**
 (*mean reciprocal rank*), $\frac{1}{|\mathcal{U}|}\sum_u 1/\mathrm{rank}_u$,
-che il capitolo non usa ma che il lettore incontrerà.
+cioè la media dell'inverso della posizione in cui è finito l'unico item
+giusto.
 
 Tutte queste metriche si mediano sugli utenti; e tutte ereditano il difetto
 della valutazione offline: misurano il recupero di interazioni passate,
@@ -560,10 +574,11 @@ banale classifica dei più popolari può rovesciarsi, in buona parte proprio per
 via di quegli utenti freddi.
 
 **Su quanti candidati.** Seconda decisione tacita, e stessa morale. La
-definizione data qui suppone di ordinare l'intero catalogo non interagito, e
-ordinarlo tutto costa: molti lavori mettono in classifica l'item di test contro
-poche decine o centinaia di negativi campionati (è, alla lettera, il protocollo
-con cui sono prodotti i numeri di NCF: 100 negativi per utente). Le due
+precision, la recall e la NDCG, così definite, suppongono di ordinare l'intero
+catalogo non interagito, e ordinarlo tutto costa: molti lavori mettono in
+classifica l'item di test contro poche decine o centinaia di negativi
+campionati (è, alla lettera, il protocollo con cui sono prodotti i numeri di
+NCF: 100 negativi per utente). Le due
 quantità portano lo stesso nome e non sono confrontabili, perché battere cento
 concorrenti è molto più facile che batterne un milione. Il guaio peggiore però
 è un altro: il gonfiamento **non è uguale per tutti i modelli**,
@@ -615,10 +630,14 @@ la fa da capo ogni volta che apri l'app, in una frazione di secondo.
 
 **Il primo tempo** (nel gergo, il primo *stadio*) è la scrematura, e deve
 essere velocissima, quindi il lavoro grosso è già stato fatto la notte prima:
-per ogni titolo del catalogo la scheda di numeri è già lì, calcolata e messa
-nello scaffale di cui si parlava più su. Quando arrivi tu, si calcola solo la
-*tua* scheda, tenendo conto anche di quello che hai guardato oggi, e poi si
-cerca sullo scaffale quali schede di titoli le somigliano di più. Questa
+per ogni titolo del catalogo la scheda di numeri è già lì, calcolata e messa in
+uno scaffale ordinato. Conta da che cosa è fatta, quella scheda: se la si
+ricava guardando il titolo (di che parla, chi l'ha girato) allora ce l'ha anche
+un film uscito stanotte; se invece è solo un numero cresciuto a forza di
+visioni, un film che nessuno ha ancora guardato resta senza. Quando arrivi tu,
+si calcola solo la *tua* scheda, tenendo conto anche di quello che hai
+guardato oggi, e poi si cerca sullo scaffale quali schede di titoli le
+somigliano di più. Questa
 ricerca è **approssimata** nel senso che non le guarda tutte: sullo scaffale le
 schede che si somigliano stanno vicine, e questo permette di scartare interi
 ripiani senza aprirli. Ogni tanto ci si perde per strada un titolo buono, e in
@@ -647,7 +666,7 @@ dall'efficienza. Il secondo stadio, il *ranking*, applica ai soli sopravvissuti
 un modello ricco quanto si vuole, con centinaia di feature di contesto (ora,
 dispositivo, storia recente).
 
-Vale la pena separare le attribuzioni, perché la letteratura le confonde
+Le attribuzioni vanno separate, perché la letteratura le confonde
 spesso. Covington et al. 2016 descrivono i **due stadi** e il recupero per
 prodotto scalare con vicini approssimati, e in quel paper il modello di
 candidate generation è una rete sola, sull'utente: i vettori dei video sono i
@@ -657,7 +676,7 @@ del bias di campionamento che la rende addestrabile su cataloghi enormi, si
 afferma negli anni successivi {cite}`yi2019sampling`. La differenza non è
 terminologica: una torre che legge le *feature* dell'item sa dare un embedding
 anche a un item mai visto, un peso appreso per identificativo no, ed è
-esattamente la partenza a freddo di cui il capitolo si occupa a lungo.
+esattamente la partenza a freddo.
 
 `````
 
@@ -743,8 +762,9 @@ smettere di prendere la vetrina per il catalogo.
   quanto in alto li ha messi (**NDCG**), come un giornale che sceglie bene la
   prima pagina. Ma prima ancora conta **su che cosa** si misura: si nasconde
   una parte di ciò che l'utente ha davvero guardato e si controlla se il
-  modello la ritrova. Cambiare il modo di nascondere può ribaltare la
-  classifica dei metodi, ed è la parte più fragile del mestiere.
+  modello la ritrova. Ribaltano la classifica dei metodi sia il modo di
+  nascondere, sia il numero di titoli contro cui il nascosto deve farsi largo,
+  ed è la parte più fragile del mestiere.
 - I sistemi veri lavorano in **due tempi**: un primo filtro rapido e grossolano
   che da milioni di titoli ne tiene qualche centinaio, poi un giudizio accurato
   sui soli superstiti.

@@ -39,6 +39,13 @@ e non ha nessun motivo di produrne otto. Il difetto salta fuori dopo, quando que
 riassunto lo si vuole usare per un compito diverso da quello per cui è stato
 addestrato, e le direzioni mancanti erano proprio quelle che servivano.
 
+Contro questo guasto serve la regola della varietà, quella che chiede che le
+otto caselle dicano otto cose diverse; e va chiesta nel modo giusto. Pretendere
+che ogni casella si muova abbastanza da una foto all'altra non basta: due
+caselle incollate insieme si muovono tutte e due, e il controllo passa. Il
+guasto lo vede solo chi le guarda a due a due, e fa pagare ogni coppia che dice
+la stessa cosa.
+
 `````
 
 `````{tab} Superiore
@@ -59,15 +66,18 @@ $r$. Una misura riassuntiva comoda è la **dimensione effettiva**, per esempio
 $\big(\sum_i \lambda_i\big)^2 / \sum_i \lambda_i^2$ con $\lambda_i$ gli
 autovalori, che vale $D$ se lo spettro è piatto e crolla se è concentrato.
 
-Il punto pratico è che la perdita del pretesto **non lo vede**: un obiettivo
+Il punto pratico è che la perdita del pretesto non lo vede: un obiettivo
 risolvibile in $r$ direzioni non ha alcun incentivo a usarne $D$. Ed è
-esattamente la ragione per cui la famiglia della riduzione di ridondanza mette
-il vincolo dove lo mette: il termine di varianza di VICReg agisce su **ogni
-singola coordinata**, quello fuori diagonale di Barlow Twins su **ogni coppia**
-di coordinate. Uno spettro concentrato, del resto, non è altro che una
-covarianza di rango deficiente, cioè coordinate fortemente dipendenti fra loro:
-è lì che quei termini mordono, ed è per questo che combattono anche il regime
-dimensionale, non solo quello completo.
+esattamente la ragione per cui la famiglia della riduzione di ridondanza scrive
+più di un vincolo. Uno spettro concentrato non è altro che una covarianza di
+rango deficiente, cioè coordinate fortemente dipendenti fra loro, e una
+condizione **coordinata per coordinata** non basta a escluderlo: il termine di
+varianza di VICReg tiene la deviazione standard di ogni coordinata sopra una
+soglia, e due coordinate identiche la superano tutte e due pur portando una
+direzione sola. Sul regime dimensionale mordono i termini che guardano le
+**coppie**, cioè la fuori diagonale della cross-correlazione di Barlow Twins e
+il termine di covarianza di VICReg; il regime costante lo fermano gli altri due,
+la varianza e la diagonale. Due tipi di vincolo per due collassi diversi.
 
 `````
 
@@ -91,17 +101,26 @@ del perché quei metodi funzionano.
 Il legame c'è, ma ha un tetto, e il tetto dipende da una cosa che non c'entra
 niente con quanto il modello ha capito: **quanti rivali ci sono nel gruppo**.
 
-L'idea è semplice se si pensa a che cosa stiamo chiedendo. Il compito è
-ritrovare il gemello in mezzo a $N$ candidati. Anche riuscendoci sempre, quanto
-abbiamo dimostrato di sapere? Abbiamo dimostrato di saper scegliere fra $N$
-cose, che è quanto basta per vincere **quel** gioco e non un briciolo di più. Se
-i candidati sono otto, il massimo che quel gioco può certificare è la capacità
-di distinguere fra otto; se il modello ne sapesse mille volte tanto, il gioco
-non se ne accorgerebbe, perché ha finito le domande da fare.
+Il compito è ritrovare il gemello in mezzo a $N$ candidati. Anche riuscendoci
+sempre, quanto abbiamo dimostrato di sapere? Abbiamo dimostrato di saper
+scegliere fra $N$ cose, che è quanto basta per vincere **quel** gioco e non un
+briciolo di più. Se i candidati sono otto, il massimo che quel gioco può
+certificare è la capacità di distinguere fra otto; se il modello ne sapesse
+mille volte tanto, il gioco non se ne accorgerebbe, perché ha finito le domande
+da fare.
 
-Il programma qui sotto lo mostra con un modello che indovina **sempre**, cioè al
-meglio delle possibilità: il numero certificato cresce col numero dei rivali e
-si ferma lì, sempre e solo lì.
+Con un modello che indovina sempre, cioè al meglio delle sue possibilità, il
+numero certificato cresce col numero dei rivali e si ferma lì, sempre e solo lì.
+Allargare il gruppo alza il tetto e costa: ecco perché in questi metodi i gruppi
+si fanno enormi.
+
+E se il segreto stesse davvero nell'informazione, chi quel gioco non lo gioca
+affatto dovrebbe cavarsela male. Invece se la cava benissimo: far indovinare a
+una rete che cosa dice l'altra, o chiedere che le otto caselle dicano otto cose
+diverse, sono modi che di informazione non parlano mai, e i riassunti che ne
+escono sono ottimi. Quello che i metodi riusciti hanno in comune è un'altra
+coppia di cose: la stessa risposta pretesa sulle due viste della stessa foto, e
+una regola che chiude la strada alla risposta vuota.
 
 `````
 
@@ -121,9 +140,9 @@ certificata non supera $\log N$. Se l'informazione mutua vera è molto maggiore
 (e fra due viste della stessa immagine ad alta risoluzione lo è di parecchio),
 il limite non dice più niente di interessante: è vero e inservibile.
 
-Ne seguono due conseguenze che vale la pena tenere separate. La prima è
-tecnica: la dimensione del batch entra nella *garanzia*, non solo nel costo,
-il che spiega perché in questi metodi $N$ conti tanto. La seconda è di
+Ne seguono due conseguenze, da tenere separate. La prima è tecnica: la
+dimensione del batch entra nella *garanzia*, non solo nel costo, il che spiega
+perché in questi metodi $N$ conti tanto. La seconda è di
 interpretazione, ed è la più importante: **la massimizzazione dell'informazione
 mutua non può essere la spiegazione del successo di questi metodi**. Se lo
 fosse, metodi che l'informazione mutua non la stimano affatto non dovrebbero
@@ -203,7 +222,14 @@ misura quasi sempre sulla stessa cosa, cioè «che oggetto c'è in questa foto»
 una domanda sola, e un riassunto può essere bravissimo a rispondere a quella e
 inservibile per le altre.
 
-La prova che conta di più è infatti un'altra, e costa di più: **cambiare
+Accanto a quell'esame ne stanno due che costano poco e dicono cose diverse fra
+loro. Uno non studia niente: guarda a quali riassunti già visti somiglia quello
+nuovo, e ripete la risposta dei vicini senza aggiustare un solo numero. L'altro
+non fa domande: conta quante caselle della scheda dicono davvero qualcosa di
+proprio, e se sono poche il guaio si vede lì, senza aspettare che a rivelarlo
+sia un compito vero.
+
+La prova che conta di più è un'altra, e costa di più: **cambiare
 compito**. Prendere quel riassunto e usarlo come base per qualcosa che non
 somiglia all'esame, per esempio per dire *dove* si trovano le cose invece che
 *che cosa* sono. Lì saltano fuori i riassunti che avevano imparato a rispondere
@@ -226,9 +252,9 @@ alcun parametro e quindi non può nemmeno rimediare a una geometria scomoda: è
 una sonda ancora più spartana, e per questo informativa in modo diverso.
 
 La seconda sono le misure che guardano la **geometria** invece della resa: lo
-spettro della covarianza e la dimensione effettiva della sezione precedente, che
-diagnosticano il collasso dimensionale prima che si manifesti come perdita di
-prestazioni a valle.
+spettro della covarianza e la dimensione effettiva, che diagnosticano il
+collasso dimensionale prima che si manifesti come perdita di prestazioni a
+valle.
 
 La terza, e la più severa, è il **trasferimento a compiti strutturalmente
 diversi**: rilevamento e segmentazione chiedono una rappresentazione che resti
@@ -261,14 +287,15 @@ vero, e non ci sarebbe stato bisogno di inventarne uno finto.
   solo lungo poche direzioni, come otto manopole di cui sei incollate insieme.
   Il punteggio del gioco non se ne accorge, perché se il gioco si vince con tre
   direzioni tre bastano.
-- È per questo che i metodi che vincolano le statistiche mettono il vincolo
-  **coordinata per coordinata**: combattono la seconda forma, non solo la prima.
+- Contro la seconda forma non basta chiedere che ogni casella si muova: due
+  caselle incollate insieme si muovono tutte e due e il controllo passa. Serve
+  una richiesta sulle **coppie** di caselle, che faccia pagare ogni coppia che
+  dice la stessa cosa.
 - Sull'idea che i metodi contrastivi funzionino perché «massimizzano
   l'informazione»: il legame c'è ma ha un **tetto**, e il tetto dipende da quanti
-  rivali ci sono nel gruppo, non da quanto il modello ha capito. Il programma di
-  questa pagina lo fa vedere con un modello che indovina sempre: con
-  quattromila rivali si certificano **dodici bit**, cioè appena più dei dieci
-  che porta una singola etichetta.
+  rivali ci sono nel gruppo, non da quanto il modello ha capito. Con un modello
+  che indovina sempre, quattromila rivali certificano **dodici bit**, cioè
+  appena più dei dieci che porta una singola etichetta.
 - Quindi quella non è la spiegazione: metodi che di informazione non parlano
   affatto funzionano benissimo lo stesso.
 - Per misurare c'è l’**esame con le mani legate**, il sondaggio lineare. Ma
@@ -289,9 +316,12 @@ vero, e non ci sarebbe stato bisogno di inventarne uno finto.
   dimensione effettiva $(\sum_i \lambda_i)^2 / \sum_i \lambda_i^2$) e **la
   perdita del pretesto non lo vede**, perché un obiettivo risolvibile in $r$
   direzioni non ne richiede $D$.
-- Il termine di varianza di **VICReg** (una coordinata alla volta) e quello
-  fuori diagonale di **Barlow Twins** (una coppia di coordinate alla volta)
-  agiscono proprio su questo regime, non solo su quello completo.
+- Sul regime dimensionale mordono i termini che guardano le **coppie** di
+  coordinate, la fuori diagonale della cross-correlazione di Barlow Twins e il
+  termine di covarianza di VICReg; il regime costante lo fermano la varianza e
+  la diagonale. Una condizione coordinata per coordinata non basta: due
+  coordinate identiche superano tutte e due la soglia sulla deviazione standard
+  e insieme portano una direzione sola.
 - **InfoNCE e informazione mutua**:
   $I(\mathbf{x};\mathbf{y}) \ge \log N - \mathcal{L}_{\text{NCE}}$
   {cite}`oord2018representation`, quindi il limite è **saturato da $\log N$**:

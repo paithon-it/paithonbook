@@ -3,17 +3,12 @@
 Un modello deve diagnosticare una malattia rara, presente in una persona su
 cento. Il modello più pigro del mondo, quello che risponde sempre «sano»,
 indovina il 99% delle volte: un voto quasi perfetto, e non ha riconosciuto un
-solo malato. È il caso da tenere in mente per tutta questa pagina, perché dice
-in due righe che cosa può andare storto quando si sceglie male il modo di dare
-un voto a un modello: si finisce per premiare l'obiettivo sbagliato. Come si
-misura davvero, allora, se un modello è bravo?
+solo malato. È il caso da tenere in mente, perché dice in due righe che cosa
+può andare storto quando si sceglie male il modo di dare un voto a un modello:
+si finisce per premiare l'obiettivo sbagliato. L'accuratezza, da sola, ci ha
+ingannati, e per capire *dove* un modello sbaglia serve uno strumento più fine.
 
-Partiamo da un caso che mette in guardia. Immagina un modello che deve
-diagnosticare una malattia rara, presente in 1 persona su 100. Un modello
-pigro che risponde sempre "sano" indovina il 99% delle volte. Il 99%: un voto
-quasi perfetto. Eppure quel modello non ha riconosciuto un solo malato: è del
-tutto inutile. L'accuratezza, da sola, ci ha ingannati. Per capire *dove* un
-modello sbaglia serve uno strumento più fine.
+Come si misura davvero, allora, se un modello è bravo?
 
 ## La matrice di confusione
 
@@ -45,8 +40,11 @@ modello ha azzeccato (VP e VN) e, soprattutto, *in che modo* ha sbagliato
 Da questi quattro numeri si ricava tutto il resto. Il primo e più ovvio è
 l’**accuratezza**: la quota di volte in cui il modello ha risposto giusto,
 cioè i due casi buoni (VP e VN) divisi per il totale delle risposte. Cento
-allarmi, novantanove giusti: accuratezza del 99%. Tieni d'occhio questo numero,
-perché le prossime righe servono a diffidarne.
+allarmi, novantanove giusti: accuratezza del 99%. Il conto regge anche quando
+le risposte in gioco sono più di due (silenzio, fumo di padella, incendio
+vero): la tabellina cresce, e l'accuratezza resta le risposte giuste divise per
+tutte. Tieni d'occhio questo numero, perché è anche il più facile da prendere
+per buono a torto.
 
 `````
 
@@ -66,8 +64,7 @@ Il numeratore è la diagonale della matrice, il denominatore il totale. Per
 problemi con più di due classi la matrice diventa $K \times K$ e l'accuratezza
 resta la somma della diagonale sul totale; le metriche che seguono, invece,
 sono definite sul caso **binario** e per estenderle a $K$ classi bisogna
-scegliere come mediarle, questione tutt'altro che innocua a cui è dedicato un
-paragrafo più avanti.
+scegliere come mediarle, questione tutt'altro che innocua.
 
 `````
 
@@ -117,30 +114,49 @@ domande distinte.
 
 `````{tab} Elementare
 
-- La **precision** risponde: *"quando il modello dice positivo, quanto spesso
-  ci azzecca?"* Se il filtro antispam sposta 10 email nel cestino e 8 erano
-  davvero spam, la precision è $8/10$.
-- La **recall** (o *sensibilità*) risponde: *"di tutti i casi positivi
-  esistenti, quanti ne ha trovati?"* Se ci sono 20 malati e il modello ne
-  individua 15, la recall è $15/20$.
+Il filtro antispam sposta dieci email nel cestino, e otto erano davvero spam.
+Otto su dieci è la sua **precision**: quando dice positivo, quanto spesso ci
+azzecca. La **recall** (o *sensibilità*) guarda l'altra metà della storia,
+cioè quanti dei positivi che esistono riesce a pescare. Su venti malati ne
+individua quindici, e la recall è $15/20$.
 
-Sono due modi opposti di sbagliare, e c'è quasi sempre un compromesso.
-Per non lasciarsi scappare nessun malato basta diventare sospettosi e segnalare
-al minimo dubbio: la recall sale, perché ormai li si prende quasi tutti, ma
-fra i segnalati finiscono anche parecchi sani, e la precision scende. Al
-contrario, segnalando solo i casi lampanti si azzecca quasi sempre (precision
-alta) ma parecchi malati passano inosservati (recall bassa). Non sono due
-qualità che si migliorano insieme: sono i due piatti di una bilancia, e più
-avanti vedremo che a spostarla basta un numero.
+Il medico che non vuole lasciarsene scappare nessuno diventa sospettoso e
+segnala al minimo dubbio. Ormai li prende quasi tutti e la recall sale, ma fra
+i segnalati finiscono anche parecchi sani, e la precision scende. Il collega
+che manda a fare gli esami solo i casi lampanti fa il percorso opposto, e ci
+azzecca quasi sempre, mentre parecchi malati escono dall'ambulatorio senza che
+nessuno si sia accorto di niente. Sono i due piatti di una bilancia, e a
+spostarla basta un numero.
 
-Per questo si usa spesso la **F1**, un voto unico che riassume le due e resta
-alto solo quando *entrambe* sono alte. Attenzione a quali due: vanno prese la
-precision e la recall **dello stesso modello sugli stessi dati**, non due
-numeri pescati da due tabelle diverse come i due esempi qui sopra, che sono di
-un filtro antispam e di un medico. Se un unico modello avesse precision
-$0{,}9$ e recall $0{,}4$, la sua F1 varrebbe $0{,}55$: non $0{,}65$, che è la
-media dei due, ma molto più vicina al peggiore. Se una delle due crollasse a $0{,}1$, la F1 crollerebbe con lei anche con
-l'altra al massimo.
+La **F1** è il voto unico che tiene conto di tutti e due i piatti, e resta
+alto solo quando lo sono entrambi. I due numeri devono uscire dallo stesso
+modello sulle stesse prove, e l'otto su dieci del cestino e il quindici su
+venti dell'ambulatorio vengono da macchine diverse e non si mescolano.
+Prendiamo un filtro prudente, che azzecca nove volte su dieci quando cestina
+ma di spam ne pesca solo quattro su dieci, cioè precision $0{,}9$ e recall
+$0{,}4$. La sua F1 vale $0{,}55$. Non $0{,}65$, che è la media dei due, ma
+molto più vicina al piatto peggiore. Se la recall crollasse a $0{,}1$, la F1
+crollerebbe con lei anche con la precision al massimo.
+
+Il voto si può anche sbilanciare apposta, dichiarando quante volte un malato
+mancato pesa più di un falso allarme. Da quel momento premia chi non se ne
+lascia scappare nessuno, e qualche esame fatto per niente non basta più ad
+abbassarlo.
+
+Con più di due risposte in gioco c'è una decisione da prendere prima del voto,
+e pesa più di quanto sembri. Un rilevatore a tre risposte passa cento notti in
+casa: novantaquattro volte non succede niente, tre volte c'è del fumo di
+padella, tre volte un incendio vero, e lui dice sempre «niente». Alla risposta
+«niente» tocca un voto altissimo, $0{,}97$, perché delle novantaquattro notti
+tranquille non se ne lascia sfuggire una e la dà a sproposito soltanto nelle
+sei rimanenti. Alle altre due tocca zero, dato che non le nomina mai. Chi fa
+la media dei tre voti ottiene $0{,}32$. Chi butta tutte le risposte in un
+mucchio solo e dà un voto al mucchio ottiene $0{,}94$, che è poi la
+percentuale di notti indovinate, cioè l'accuratezza, rientrata dalla finestra
+proprio nella misura scelta per non farsene ingannare. Chi pesa i tre voti per
+quanto spesso ciascuna risposta capita ottiene $0{,}91$, di nuovo a un soffio
+dall'accuratezza. Stesso apparecchio, stesse cento notti; cambia solo come si
+è deciso di fare la somma.
 
 `````
 
@@ -165,20 +181,20 @@ $F_1$. Quando i due errori non hanno lo stesso costo si usa la versione
 generale, che sposta il peso da una parte:
 
 $$
-F_\beta = (1+\beta^2)\,\frac{P\,R}{\beta^2 P + R},
+F_\beta = (1+\beta^2)\,\frac{\text{precision}\cdot\text{recall}}
+{\beta^2\,\text{precision} + \text{recall}},
 $$
 
-dove $P$ è la precision, $R$ la recall e $\beta$ la manopola che decide a quale
+dove $\beta$ è la manopola che decide a quale
 delle due si tiene di più. Attenzione a quanto sposta: nella formula la recall
 entra con $\beta^2$, e questo va letto sapendo di che peso si parla. Nella
 media armonica il termine della recall vale $\beta^2$ volte quello della
 precision: partendo da precision e recall uguali, con $\beta = 2$ un punto di
 recall in più vale quattro punti di precision. La formulazione tradizionale di
-van Rijsbergen dice invece che $\beta$ è il rapporto $R/P$ al quale i due
-errori pesano uguale, e in quel senso $\beta = 2$ vuol dire «recall due volte
-più importante». Stesso $\beta$, due letture, e conviene dichiarare quale si
-sta usando; per $\beta = 1$ coincidono e si ritrova la $F_1$. Per $\beta = 1$ si ritrova la
-$F_1$.
+van Rijsbergen dice invece che $\beta$ è il rapporto fra recall e precision al
+quale i due errori pesano uguale, e in quel senso $\beta = 2$ vuol dire «recall
+due volte più importante». Stesso $\beta$, due letture, e conviene dichiarare
+quale si sta usando; per $\beta = 1$ coincidono e si ritrova la $F_1$.
 
 **Con più di due classi va scelta una media, e la scelta è tutto.** Le formule
 qui sopra presuppongono una classe «positiva»: con $K$ classi si calcolano
@@ -200,7 +216,7 @@ Quanto importi si vede su un caso minimo: tre classi in proporzione
 $94/3/3$ e un modello che risponde sempre la classe frequente, quindi le due
 rare non le trova mai. Accuratezza $0{,}940$,
 micro-$F_1$ $0{,}940$ (identica), weighted-$F_1$ $0{,}911$, macro-$F_1$
-$0{,}323$. Fra la prima e l'ultima ci sono sessanta punti, ed è lo stesso
+$0{,}323$. Fra l'accuratezza e la macro ci sono sessanta punti, ed è lo stesso
 modello: cambia solo la domanda che si è deciso di fargli.
 
 `````
@@ -240,7 +256,7 @@ fissare una.
 
 `````{tab} Elementare
 
-Immagina di spostare lentamente la soglia dal più basso al più alto, cioè da
+Sposta lentamente la soglia dal più basso al più alto, cioè da
 sospettosissimo (segnalo tutto, anche col $10\%$ di probabilità) a fiducioso
 (segnalo solo se sono quasi certo).
 Per ogni posizione segni due numeri, ed entrambi sono **quote**, non conteggi:
@@ -259,6 +275,18 @@ $0{,}5$ non è il minimo ma il punteggio di chi risponde a caso: sotto quella
 linea si può scendere, e vuol dire che il modello ha invertito le due classi
 (uno che prende $0{,}2$, letto al contrario, ne vale $0{,}8$). Il pregio
 dell'AUC è che non dipende dalla soglia scelta.
+
+C'è un secondo modo di leggere quel numero, ed è il più maneggevole: pesca a
+caso un malato e a caso un sano, e guarda a quale dei due il modello ha dato il
+sospetto più alto. L'AUC è la quota di coppie in cui vince il malato, con una
+regola in più per i pari merito, che valgono mezza vittoria. I pari merito non
+sono una rarità: un modello che risponde soltanto «sì» o «no», senza sfumature,
+ne produce di continuo. Uno che segnala il $70\%$ dei malati e il $20\%$ dei sani
+vince le coppie in cui il malato ha il «sì» e il sano il «no», che sono
+$0{,}7 \times 0{,}8 = 0{,}56$, poco più della metà; le coppie pari (tutti e due
+«sì», o tutti e due «no») sono un altro $0{,}38$, e la loro metà porta il conto
+a $0{,}75$. Chi si dimenticasse i pari merito si fermerebbe a $0{,}56$ e
+darebbe del bugiardo al calcolatore.
 
 `````
 
@@ -326,39 +354,58 @@ quest'ordine, perché è l'ordine che va dalla più economica alla più invasiva
 
 `````{tab} Elementare
 
-**Cambiare metrica** è gratis ed è il primo passo: la **recall** e la **F1**
-che abbiamo appena visto, e soprattutto la curva **precision-recall**. È la
-cugina della ROC: si costruisce allo stesso modo, spostando la soglia e
-segnando due numeri, ma i due numeri sono la recall e la precision invece dei
-due tassi di prima. Con sbilanciamenti
-estremi dice di più, e il motivo è che la ROC misura i falsi allarmi in
-rapporto a *tutti* i sani, che sono novantanove su cento: mille falsi allarmi
-su centomila sani sembrano una quisquilia, e sulla ROC lo sono, mentre per chi
-deve poi controllarli a mano sono un disastro. La precision, che li conta
-rispetto ai soli casi segnalati, quel disastro lo fa vedere.
+Sul tavolo di chi dà la caccia alle frodi arrivano ogni mattina le operazioni
+che il modello ha segnalato, e vanno aperte a una a una.
 
-**Spostare la soglia.** Il classificatore produce una probabilità, e quel
-$0{,}5$ non ha niente di sacro. Abbassarlo a $0{,}2$ significa «segnala
-anche i casi dubbi»: la recall sale, la precision scende. La soglia giusta
-dipende da quanto costa un falso allarme rispetto a un caso mancato: una
-decisione di business, non di statistica.
+La prima leva costa zero e cambia solo il voto: al posto dell'accuratezza, la
+recall, la F1 e soprattutto la curva **precision-recall**, che si costruisce
+come la ROC spostando la soglia, ma i due numeri segnati sono la recall e la
+precision. Con sbilanciamenti estremi dice di più, e si capisce guardando quel
+tavolo. La ROC conta i falsi allarmi in rapporto a tutti i conti tranquilli,
+che sono novantanove su cento, e mille segnalazioni a vuoto su centomila le
+sembrano una quisquilia; sul tavolo sono mille pratiche da aprire a mano. La
+precision le conta rispetto alle sole operazioni segnalate, e il disastro si
+vede.
 
-**Pesare le classi.** Quasi tutti i modelli accettano un peso per classe.
-Ricordiamo che addestrare vuol dire far scendere un numero, quello che conta
-quanto il modello sbaglia: dire che un errore sulla classe rara conta cento
-volte tanto cambia quel conteggio, e quindi cambia direttamente cosa al modello
-conviene fare. In scikit-learn è
-`class_weight="balanced"`, ed è spesso la prima cosa da provare.
+Poi c'è la soglia. Il modello non risponde «frode» o «niente», dà una
+probabilità, e quel $0{,}5$ da cui si parte per abitudine non ha niente di
+sacro. Portarlo a $0{,}2$ vuol dire segnalare anche i casi dubbi, e allora il
+tavolo si riempie, la recall sale e la precision scende. Dove metterlo dipende
+da quanto costa una pratica aperta per niente rispetto a una frode che passa,
+ed è una decisione di chi dirige la banca, non dello statistico. E il conto si
+fa davvero. Se una frode mancata costa cento volte un falso allarme, la soglia
+scende attorno a un sospetto su cento ($0{,}01$), lontanissima dal mezzo di
+partenza. Regge finché rispondere giusto non costa e non rende niente, e allo
+sportello non è mai così, perché un prestito concesso a chi poi restituisce
+rende, e la visita fatta a un sano si paga comunque. Allora nel conto entra
+anche la differenza fra il guadagno di chi azzecca e la perdita di chi
+sbaglia.
 
-Solo come quarta mossa si interviene sui **dati**. L’*oversampling* aumenta il
-numero di
-esempi rari: o duplicandoli, o inventandone di nuovi ma verosimili. La ricetta
-più nota si chiama **SMOTE** (è il nome di un metodo, non di un programma): per
-fabbricare un nuovo caso raro prende due casi rari che si somigliano e ne
-costruisce uno a metà strada, come se fra due pazienti di 40 e 50 anni si
-inventasse un paziente di 45 con tutti i valori a metà (si dice *interpolare*).
-L’*undersampling* fa il contrario: scarta esempi della classe frequente, e così
-butta via informazione.
+La terza leva è il peso delle classi. Addestrare vuol dire far scendere un
+numero, quello che conta quanto il modello sbaglia. Dire che una frode mancata
+conta cento volte tanto cambia quel conteggio, e con esso cosa al modello
+conviene fare. In scikit-learn si scrive `class_weight="balanced"`, ed è
+spesso la prima cosa da provare. Il prezzo lo pagano le percentuali che il
+modello annuncia, gonfiate tutte insieme: dove diceva «quattro su cento»
+arriva a «venticinque su cento», e le frodi nel frattempo non sono aumentate.
+Chi le legge come probabilità vere si sbaglia, e lo stesso gonfiaggio, tale e
+quale, arriva anche duplicando i casi rari.
+
+Solo come quarta mossa si toccano i dati. L’*oversampling* aumenta il numero
+di esempi rari, duplicandoli oppure inventandone di nuovi ma verosimili. La
+ricetta più nota si chiama **SMOTE** (è il nome di un metodo, non di un
+programma): per fabbricare una frode nuova ne prende due che si somigliano e
+ne costruisce una intermedia, come se fra due clienti di 40 e 50 anni ne
+spuntasse uno di 45, con gli altri valori a metà strada (si dice
+*interpolare*). L’*undersampling* fa il contrario, scarta operazioni della
+classe frequente e butta via informazione.
+
+Sui casi fabbricati c'è un ordine da rispettare, o si rovina tutto il resto.
+Si aggiungono dopo aver messo da parte le operazioni con cui si darà il voto,
+mai prima. Altrimenti le copie di una stessa frode finiscono metà fra gli
+esercizi e metà fra le domande d'esame, e all'esame il modello ritrova facce
+già viste e prende un voto che non ha meritato. Il guasto non lascia tracce,
+perché i conti tornano, e tornano troppo belli.
 
 `````
 
@@ -390,7 +437,7 @@ pareggiare le due classi: le due correzioni
 sono indistinguibili. Se servono probabilità calibrate (per una soglia basata
 sui costi, o per combinarle con altre stime) va ricalibrato in ogni caso; in
 alternativa si lascia il modello sbilanciato com'è e si sposta la **soglia**
-secondo i costi, che è il conto del paragrafo qui sotto.
+secondo i costi.
 
 Infine il criterio decisionale corretto quando i costi sono noti: non "massimizza
 F1" ma minimizza il costo atteso. Con $c_{\text{FN}}$ e $c_{\text{FP}}$ i costi
@@ -495,37 +542,46 @@ sono categorie, ma **in fila**.
 
 `````{tab} Elementare
 
-Nella sezione sull'apprendimento supervisionato l’**ordinalità** era comparsa
-come proprietà di una colonna *in ingresso*: la classe energetica di una casa,
-i cui valori stanno in fila ma senza una distanza fra loro. Qui è la cosa da
-**predire** a essere ordinata, e cambia quale errore conta.
+La risposta giusta è «30-40». Il modello dice «40-50» e ha sbagliato di poco;
+dice «over 70» e ha scambiato una ragazza per sua nonna. Fra una fascia e
+l'altra, però, non c'è una distanza scritta da nessuna parte, e si sa solo chi
+viene prima e chi dopo.
 
-Se il modello deve stimare la fascia d'età e la risposta giusta è «30-40»,
-rispondere «40-50» è uno sbaglio piccolo e rispondere «over 70» è uno sbaglio
-grosso. L'accuratezza secca non lo sa: per lei sono due errori identici, e un
-modello che sbaglia sempre di una fascia sembra pessimo quanto uno che spara a
-caso. Peggio, se si sceglie il modello con l'accuratezza, si può finire per
-preferire proprio quello che sbaglia di più. Con cinque fasce d'età, prendiamo
-due modelli: il primo sbaglia sempre, ma sempre di una fascia sola (dice
-«40-50» quando è «30-40»); il secondo azzecca una volta su cinque e nelle altre
-quattro spara la fascia più lontana possibile. Accuratezza: zero il primo,
-$0{,}20$ il secondo. Scegliendo con l'accuratezza si prende il secondo, che è
-palesemente il peggiore: uno sbaglia di un anno di distanza, l'altro scambia i
-ventenni per gli ottantenni.
+L'accuratezza non vede niente di tutto questo, e conta i due sbagli come
+identici. E c'è di peggio, perché chi sceglie il modello guardando lei può
+finire per preferire proprio quello che sbaglia di più. Con cinque fasce
+d'età, mettiamo alla prova due modelli. Il primo sbaglia sempre, ma sempre di
+una fascia sola, e dice «40-50» quando è «30-40». Il secondo azzecca una volta
+su cinque, e nelle altre quattro spara la fascia più lontana che c'è.
+Accuratezza zero il primo, $0{,}20$ il secondo, e chi sceglie con
+l'accuratezza si porta a casa il secondo. Uno scivola nella fascia accanto,
+l'altro scambia i ventenni per gli ottantenni.
 
-Due rimedi, a seconda di quanto si vuole essere precisi. Il più semplice è
-contare giusta anche la risposta **adiacente**, dicendo esplicitamente che si
-sta misurando così. Il più solido è usare una misura che **pesa gli errori in
-base a quanto sono lontani** (il nome da cercare è *kappa di Cohen pesato*), e
-che quindi punisce lo scambio fra due fasce
-vicine molto meno di quello fra la prima e l'ultima.
+Ci sono due modi di rimediare, a seconda di quanto si vuole essere precisi. Il
+più semplice conta giusta anche la risposta adiacente, e chi lo usa deve dirlo
+in chiaro, perché quel confine a una fascia di distanza lo ha scelto lui. Il
+più solido pesa ogni errore per quanto è lontano (il nome da cercare è *kappa
+di Cohen pesato*), e allora lo scambio fra due fasce vicine costa molto meno
+di quello fra la prima e l'ultima.
 
-C'è poi una strada diversa dalle due, che invece di cambiare la misura cambia
-il problema: se le classi hanno un ordine, si può
-predire un numero e poi tagliarlo in fasce, trattandolo come una regressione.
-Funziona bene quando le fasce sono davvero equidistanti, e male quando non lo
-sono (fra «lieve» e «moderato» può esserci molta meno distanza che fra
-«moderato» e «grave»).
+Quel voto ha un'abitudine da conoscere prima di fidarsene, e si vede portando
+lo stesso modello in due sale d'attesa diverse. Il modello sposta la risposta
+di una fascia una volta su cinque, in su o in giù a caso, e quando gli
+toccherebbe uscire dalla scala lascia la persona dov'è. Nella prima sala le
+tre fasce sono ugualmente affollate, e prende $0{,}90$. Nella seconda
+novantotto persone su cento stanno nella prima fascia, e con le stesse
+identiche mosse prende $0{,}47$. A cambiare è stata la sala d'attesa. Serve a
+confrontare due modelli sulle stesse persone, e non due sistemi che lavorano
+su popolazioni diverse.
+
+C'è poi una strada che lascia stare la misura e cambia il problema. Se le
+fasce stanno in fila si può predire un numero, gli anni, e poi tagliarlo in
+fasce, trattandolo come una regressione. Funziona bene quando le fasce sono
+davvero equidistanti, e male quando non lo sono, come fra «lieve» e
+«moderato», dove può esserci molta meno distanza che fra «moderato» e «grave».
+Il rimedio è non decidere a tavolino dove tagliare. I punti di taglio li
+sceglie il modello guardando i dati, e allora può accorgersi che fra due fasce
+c'è pochissimo spazio e fra altre due moltissimo.
 
 `````
 
@@ -575,8 +631,8 @@ ordinale**: invece di $K$ probabilità indipendenti si stima una variabile
 latente continua e $K-1$ soglie, e la probabilità cumulata
 $P(y \leq k) = \sigma(\tau_k - f(\mathbf{x}))$ è monotona per costruzione, dove
 $f(\mathbf{x})$ è la variabile latente stimata, $\tau_1 < \dots < \tau_{K-1}$
-sono le soglie apprese (un'altra cosa dalla soglia di decisione $\tau^\star$ di
-poche pagine fa) e $\sigma$ è la sigmoide. Il
+sono le soglie apprese (un'altra cosa dalla soglia di decisione $\tau^\star$
+dei costi) e $\sigma$ è la sigmoide. Il
 vantaggio pratico rispetto alla regressione seguita da arrotondamento è che le
 soglie sono **apprese** invece che imposte equidistanti, quindi il modello può
 scoprire che fra due classi c'è poco spazio e fra altre due molto.

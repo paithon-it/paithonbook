@@ -7,7 +7,7 @@ con le cinque parole. Ha fuso per
 prima la coppia `ss` perché la `s` è una lettera comunissima e le doppie
 italiane sono ovunque: la coppia è frequente soprattutto perché i suoi pezzi
 lo sono. Ma "frequente" e "significativo" non sono la stessa cosa. In quel
-corpus la `a` compare **solo** dopo la `b`: `ba` è una coppia rara in assoluto
+corpus la `a` compare *solo* dopo la `b`: `ba` è una coppia rara in assoluto
 (8 occorrenze contro 25), ma è una coppia che non capita mai per caso.
 
 Da qui il criterio alternativo di **WordPiece**, introdotto da Mike Schuster e
@@ -19,19 +19,18 @@ riempire il vocabolario. Cambia solo *quale* coppia si sceglie.
 
 `````{tab} Elementare
 
-Immaginate di spulciare un giornale contando quali parole compaiono vicine.
-Trovate spesso «di» seguito da «un»: capita in continuazione, ma non vuol dire
-niente, capita perché entrambe sono parole comunissime. Trovate anche «acqua»
-seguito da «minerale»: molto più raro in assoluto, eppure ogni volta che
-leggete «minerale» prima c'era «acqua». La seconda coppia dice qualcosa; la
-prima è rumore di fondo.
+In un giornale, «di» seguito da «un» capita in continuazione e non vuol dire
+niente: capita perché entrambe sono parole comunissime. «Acqua» seguito da
+«minerale» è molto più raro in assoluto, eppure ogni volta che leggete
+«minerale» prima c'era «acqua». La seconda coppia dice qualcosa; la prima è
+rumore di fondo.
 
 WordPiece fa esattamente questa distinzione. Invece di chiedersi «quante volte
-questi due pezzi si trovano attaccati?», si chiede: «si trovano attaccati **più
-di quanto ci si aspetterebbe** se si fossero incontrati per caso?». Il conto è
-semplice: si prende quante volte la coppia compare e la si divide per quanto
-sono comuni i due pezzi presi singolarmente. Un pezzo che è dappertutto viene
-penalizzato, e le sue coppie devono essere davvero frequenti per vincere.
+questi due pezzi si trovano attaccati?», si chiede: «si trovano attaccati più
+di quanto capiterebbe per caso?». Il conto è semplice: si prende quante volte
+la coppia compare e la si divide per quanto sono comuni i due pezzi presi
+singolarmente. Un pezzo che è dappertutto viene penalizzato, e le sue coppie
+devono essere davvero frequenti per vincere.
 
 Nel nostro corpus di cinque parole, con questo criterio, la prima fusione non è
 più `ss` ma `ba`, e il conto si può rifare a mano con due divisioni. Nei 146
@@ -40,8 +39,20 @@ caratteri del corpus la `s` compare 50 volte e la coppia `ss` 25: il punteggio �
 `ba` 8: il punteggio è 8 diviso (11 per 8), cioè circa 0,09, nove volte tanto.
 La `s` è talmente diffusa che le sue coppie non stupiscono nessuno, mentre la
 `a`, che si presenta sempre e solo dopo la `b`, è una compagnia troppo fedele
-per essere una coincidenza. In una frase: BPE premia ciò che **ricorre**,
-WordPiece premia ciò che **sta insieme per una ragione**.
+per essere una coincidenza. BPE premia ciò che ricorre, WordPiece premia ciò
+che sta insieme per una ragione.
+
+Questa divisione, però, non guarda quanto lavoro farà la fusione. Tornate al
+giornale e mettiamo che «acqua» compaia 40 volte e «minerale» 12, sempre
+preceduto da «acqua»: il punteggio della coppia è 12 diviso (40 per 12), cioè
+0,025. Adesso prendete due parole che in tutto il giornale compaiono due volte
+ciascuna, sempre una di seguito all'altra, come il nome e il cognome di un tale
+che il giornale nomina in due righe e mai più: il punteggio è 2 diviso (2 per
+2), cioè 0,5, venti volte tanto. Vincono loro, e incollarle accorcia il giornale
+in due punti invece che in dodici. Il criterio misura quanto una coppia è
+sorprendente, non quante volte tornerà utile, e giudica come se dovesse servire
+una volta sola. Nel corpus delle cinque parole si vede già in piccolo: `et`, che
+compare 5 volte, passa davanti a `ro`, che ne compare 14.
 
 `````
 
@@ -125,40 +136,52 @@ grezzo di caratteri** in cui lo spazio è un carattere come gli altri.
 
 `````{tab} Elementare
 
-Il trucco è quasi banale, e per questo bello. Prima di tokenizzare, ogni
-spazio viene sostituito da un simbolo visibile, `▁` (una barretta bassa, non
-un trattino di sottolineatura), e attaccato alla parola che segue. La frase
-«il gatto nero» diventa la stringa `▁il▁gatto▁nero`, senza più spazi veri: una
-collana ininterrotta di simboli, su cui si può far girare BPE esattamente come
-prima. In giapponese, dove gli spazi non ci sono, non cambia nulla: il flusso
-era già ininterrotto.
+In una collana non ci sono vuoti, e «il gatto nero» ci entra così: al posto di
+ogni spazio va una perlina segnaposto, `▁` (una barretta bassa, non un trattino
+di sottolineatura), attaccata alla parola che comincia. Viene `▁il▁gatto▁nero`,
+una fila ininterrotta su cui BPE gira come prima. In giapponese, dove gli spazi
+non ci sono, non cambia niente: la fila era già così.
 
-Il guadagno più prezioso arriva in uscita. Per ricostruire il testo da una
-lista di token non serve nessuna regola («metti uno spazio prima di *gatto* ma
-non prima della virgola, e nemmeno dopo l'apostrofo»): basta incollare i pezzi
-e ritrasformare ogni `▁` in uno spazio. Si riottiene il testo di partenza
-**identico**, apostrofi e punteggiatura compresi (identico, cioè, a come lo si
-era normalizzato all'inizio: se si è deciso di uniformare certi caratteri, quel
-passo resta). Sembra un dettaglio da manutentori, e invece è la differenza fra
-un sistema che restituisce il testo com'era e uno che lo restituisce quasi
-com'era.
+Per riavere la frase basta riaccostare i pezzi e rimettere uno spazio dove c'è
+la barretta, senza regole su dove ci va e dove no (prima di *gatto* sì, prima
+della virgola no, dopo l'apostrofo nemmeno). La frase torna com'era e non quasi
+com'era, apostrofi e punteggiatura compresi: uguale a come la si era uniformata
+prima di infilare, se quel passaggio si è fatto.
 
-Resta un ultimo buco. Anche lavorando sui caratteri, i caratteri sono tanti:
-Unicode ne definisce oltre centomila, e nessun corpus li contiene tutti. Un
-ideogramma raro, un simbolo matematico, un'emoji nuova, e siamo di nuovo al
-punto di partenza con un `<UNK>` in mano. È lo stesso buco che avevamo
-intravisto con `rossellini`: se una lettera non era nel corpus di partenza,
-niente la rappresenta.
+I pezzi con cui si compone la collana si possono anche scegliere al rovescio di
+BPE. Nel cassetto ce ne sono migliaia di pronti, spezzoni già infilati, tutti i
+frammenti che nel testo ricorrono un po', e non si chiude: allora se ne mette
+via uno alla volta, si rifanno le collane della giornata senza di lui, e quello
+di cui non si sente la mancanza si butta. Poi si rifà il giro, finché il
+cassetto si chiude. Quanto serva ciascuno si scopre solo usandolo: si infila, si
+segna quali sono serviti, si corregge la stima e si ricomincia, finché non
+cambia più niente.
 
-La soluzione è scendere ancora di un piano: sotto i caratteri ci sono i
-**byte**, quelli con cui si è aperta la sezione, e i byte sono 256. Ed è qui
-che sta tutta la differenza: non sono 256 *nel corpus*, sono 256 *e basta*, e
-non li ha scelti nessuno guardando dei testi. Qualunque cosa esista o
-esisterà, sul computer è una sequenza di quei 256 mattoncini: un ideogramma ne
-occuperà tre, un'emoji quattro, ma saranno sempre e solo quelli. Partendo da
-lì, il vocabolario di base copre tutto per costruzione, la scommessa
-sull'alfabeto non c'è più, e la parola «sconosciuto» esce definitivamente dal
-dizionario.
+Davanti a una parola nuova, con il cassetto ripulito non si ripetono gli
+incollaggi nell'ordine in cui sono stati scoperti: si cerca il modo migliore di
+coprirla con gli spezzoni rimasti. Ogni modo ha il suo punteggio, quindi si può
+prendere apposta il secondo migliore, e il modello vede la stessa parola
+composta in modi diversi senza affezionarsi a uno solo.
+
+Resta un buco. Gli spezzoni sono fatti delle lettere già viste, e le lettere del
+mondo sono oltre centomila: nessun corpus le contiene tutte. Un ideogramma raro,
+un simbolo matematico, un'emoji uscita ieri, e in mano resta un `<UNK>`, lo
+stesso buco intravisto con `rossellini`.
+
+Guardate una perlina più da vicino: anche quella che sembra una lettera è
+l'incastro di perline più piccole, e queste hanno un nome, **byte**. Ne esistono
+256 tipi, tante quante le file di otto caselle da zero o uno con cui un computer
+scrive qualunque cosa: non 256 nei testi che si sono visti, 256 e basta, e non
+le ha scelte nessuno. Un ideogramma ne occupa tre, un'emoji quattro, ma sempre
+di quelle. Il cassetto di partenza copre tutto per costruzione, e «sconosciuto»
+esce dal dizionario.
+
+C'è un prezzo, e si paga sulla lunghezza della collana. Una lettera accentata
+sono due perline, un ideogramma tre, un'emoji quattro; se quelle sequenze non
+ricorrono abbastanza da meritarsi uno spezzone loro, vanno infilate una alla
+volta, e un solo ideogramma giapponese può costare più pezzi di un'intera parola
+inglese. Il conto arriva alle lingue che nel mucchio di testo di partenza
+c'erano poco.
 
 `````
 
@@ -176,11 +199,11 @@ decodifica è la concatenazione dei token seguita dalla sostituzione inversa, e
 vale l'identità
 
 $$
-\mathrm{decode}\bigl(\mathrm{encode}(\mathrm{norm}(x))\bigr)
-= \mathrm{norm}(x),
+\mathrm{decode}\bigl(\mathrm{encode}(\mathrm{norm}(s))\bigr)
+= \mathrm{norm}(s),
 $$
 
-dove $x$ è il testo grezzo e $\mathrm{norm}$ la normalizzazione scelta. È la
+dove $s$ è il testo grezzo e $\mathrm{norm}$ la normalizzazione scelta. È la
 proprietà che gli autori chiamano tokenizzazione *lossless*, e che nelle
 pipeline basate su tokenizzatori dipendenti dalla lingua non è garantita,
 perché la detokenizzazione è lì una collezione di regole ad hoc.
@@ -188,7 +211,7 @@ perché la detokenizzazione è lì una collezione di regole ad hoc.
 Il secondo piano è l'algoritmo di costruzione del vocabolario, dove
 SentencePiece offre BPE e in alternativa il modello **unigram**
 {cite}`kudo2018subword`, che procede al contrario: si parte da un vocabolario
-candidato ampio e lo si **pota**. Fissato $V$, il modello è lo stesso
+candidato ampio $V$ e lo si **pota**. A $V$ fissato, il modello è lo stesso
 unigramma già incontrato con WordPiece, cioè assegna a una segmentazione
 $x = (x_1,\dots,x_\ell)$ di una stringa la probabilità $P(x) = \prod_i p(x_i)$,
 ma qui la verosimiglianza di una stringa $s$ è la somma su tutte le
@@ -237,8 +260,8 @@ sequenze numeriche comuni sul web (gli anni recenti, i numeri tondi, `100`,
 `000`, le cifre singole) si guadagnano un token tutto loro; quelle rare no.
 
 Il guaio si vede con due numeri quasi uguali. Su un corpus in cui `2024` è
-frequentissimo e `2025` meno, il primo può uscire come **un token solo** e il
-secondo come **due**, `20` e `25`. Due numeri della stessa lunghezza, tagliati
+frequentissimo e `2025` meno, il primo può uscire come *un token solo* e il
+secondo come *due*, `20` e `25`. Due numeri della stessa lunghezza, tagliati
 in modo diverso, e la cifra `2` che nel primo caso sta dentro un pezzo unico e
 nel secondo apre il pezzo `20`. Adesso pensate a come si fa una somma in
 colonna a scuola: si incolonnano le unità sotto le unità, le decine sotto le

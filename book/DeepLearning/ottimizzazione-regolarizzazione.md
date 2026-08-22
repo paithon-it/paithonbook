@@ -63,10 +63,10 @@ ancora sistemati nessuno. È la ragione per cui la sezione continua.
 
 `````{tab} Elementare
 
-Immagina di fotocopiare un foglio scritto a matita, e poi di fotocopiare la
-fotocopia, e poi la fotocopia della fotocopia. A ogni giro il grigio sbiadisce.
-Se a ogni passaggio ne resta un decimo, dopo dieci copie di quello che c'era
-scritto è rimasto un decimo di miliardesimo: un foglio bianco.
+Un foglio scritto a matita, fotocopiato. Poi si fotocopia la fotocopia, e poi
+la fotocopia di quella. A ogni giro il grigio sbiadisce. Se a ogni passaggio ne
+resta un decimo, dopo dieci copie di quello che c'era scritto è rimasto un
+decimo di miliardesimo: un foglio bianco.
 
 È ciò che succede al segnale di correzione che, dall'uscita della rete, deve
 tornare fino ai primi strati: attraversando molti livelli si assottiglia fino a
@@ -74,6 +74,14 @@ sparire. Gli strati vicini all'ingresso non ricevono quasi nessuna indicazione
 su come cambiare, e di fatto smettono di imparare. Il difetto opposto è pari e
 contrario: se ogni passaggio *ingrandisce* invece di sbiadire, dopo poche
 copie il segnale esplode in numeri enormi e l'addestramento va in tilt.
+
+Quanto grigio sopravvive a un passaggio dipende da com'è fatto il neurone che
+lo lascia passare, e cambiare quello è il primo rimedio. La curva a S non ne
+restituisce mai più di un quarto, nemmeno nel suo punto migliore: cinque
+passaggi e si è già sotto il millesimo. La ReLU, che lascia passare i positivi
+come sono, lo restituisce tutto dove il neurone è acceso, e lì il grigio non si
+consuma. Contro il difetto opposto la mossa è un'altra: si fissa un tetto, e il
+segnale che lo supera viene riportato lì prima di proseguire.
 
 `````
 
@@ -102,7 +110,7 @@ perché il prodotto di matrici non commuta. Se i fattori hanno modulo tipico
 minore di $1$, il prodotto tende a $0$ esponenzialmente in $L$ (**vanishing
 gradient**); se maggiore di $1$, diverge (**exploding gradient**).
 
-Una nota sul simbolo, perché in questa sezione lavora troppo. $\sigma$ qui è
+Una nota sul simbolo, perché fa più di un mestiere. $\sigma$ qui è
 l’**attivazione generica**, qualunque essa sia, e non la sigmoide, che ne è
 solo un caso particolare e che viene sempre nominata per esteso; più avanti,
 nella batch normalization, $\sigma_{\mathcal{B}}$ sarà invece una deviazione
@@ -153,35 +161,47 @@ primo passaggio.
 
 `````{tab} Elementare
 
-L'idea è tenere costante il "volume" del segnale (l'ampiezza che la curva del
-disegno qui sopra chiama varianza) mentre attraversa gli strati: né più forte
-né più debole. La regola è semplice: più ingressi somma un neurone, più piccoli
-devono essere i suoi pesi iniziali, così che la somma non gli scappi di mano.
+Cento persone in una stanza, e ognuna ripete ad alta voce quello che sente
+dalla stanza prima. Le stanze sono in fila, e dall'ultima torna indietro un
+grido: giusto, o sbagliato. Il volume deve restare quello che è: se ogni stanza
+alza un poco, in fondo si urla; se abbassa un poco, in fondo c'è silenzio. Quel
+volume, per i numeri che escono da uno strato, si chiama varianza.
 
-Le ricette collaudate sono due, e si distinguono per quale attivazione hanno in
-mente. **Xavier/Glorot** (un nome solo scritto in due modi: Xavier è il nome di
-battesimo di Glorot) è tarata sulle curve che scendono sotto lo zero tanto
-quanto salgono sopra: la più usata è la stessa curva a S della sigmoide, ma
-centrata sullo zero, fra $-1$ e $+1$, e si chiama *tanh*. **He** è tarata sulla
-ReLU: siccome la ReLU azzera i numeri negativi, cioè butta via metà di quello
-che riceve, i pesi partono più grandi per compensare.
+Quattro voci a pieni polmoni arrivano al doppio di una sola, perché i volumi si
+sommano e il volume è l'ampiezza moltiplicata per sé stessa. Chi ne ascolta
+cento e le ripete tutte deve quindi tenersi a un decimo: cento voci a un decimo
+fanno una voce a volume pieno. Il volume di partenza di ciascuno è uno diviso
+il numero di voci che gli arrivano.
 
-Si legge spesso che ormai una delle due è l'impostazione predefinita e che non
-serve toccarla: attenzione, perché non è così. Uno strato creato in PyTorch
-senza dire niente non nasce con i pesi di He: ne ha con una varianza sei volte
-più piccola, per una scelta ereditata dalle prime versioni della libreria e mai
-più cambiata. E nemmeno con i **bias** a zero: il bias è quel numero fisso che
-ogni neurone somma sempre al proprio risultato, e che dovrebbe partire da zero
-perché all'inizio non c'è nessuna ragione di preferire un verso all'altro;
-PyTorch invece lo estrae a caso come i pesi.
+Da lì partono le due ricette collaudate. **Glorot** (o Xavier, dal nome di
+battesimo dell'autore) nota che nella fila si viaggia in due versi: il
+messaggio scende, il grido di correzione risale. Tenerlo fermo all'andata vuol
+dire sbagliarlo al ritorno, e allora si divide per la media fra le voci che uno
+ascolta e quelle a cui parla. Vale dove le voci scendono sotto lo zero quanto
+salgono sopra: la curva a S della sigmoide spostata fra $-1$ e $+1$, la *tanh*.
 
-Su una rete di pochi strati la differenza si assorbe e non la nota nessuno. Su una pila di quaranta il segnale di correzione che arriva al primo strato è
-un milionesimo di miliardesimo di miliardesimo di quello che ci arriverebbe
-partendo da He, un numero che si scrive con diciassette zeri dopo la virgola: non è ancora zero, ma tanto vale. E su una pila di sessanta
-diventa zero per davvero, non per modo di dire: è un numero così piccolo che il
-computer non ha più cifre per scriverlo, e scrive zero. Scegliere
-l'inizializzazione è un passo del mestiere, non un dettaglio da lasciare alla
-libreria.
+**He** ha in mente una stanza dove metà delle voci non riparte, che è quello
+che fa la ReLU: sotto zero zittisce tutto. Delle cento ne ripartono cinquanta,
+quindi chi parla si regola su cinquanta e comincia al doppio del volume. Di
+quanti lo ascoltino non si occupa.
+
+Uno strato creato in PyTorch senza dire niente non segue nessuna delle due: la
+stanza parte con un volume sei volte più basso di He, e nessuno parte in
+silenzio. Il **bias** è il numero fisso che ogni neurone somma a quello che ha
+sentito, dovrebbe valere zero all'inizio, perché non c'è ancora ragione di
+preferire un verso, e PyTorch lo sorteggia come i pesi.
+
+Una fila di poche stanze perdona tutto. Quaranta no. Il grido che torna alla
+prima vale ancora quattro decimi con i pesi alla He; con quelli di PyTorch
+comincia con diciassette zeri dopo la virgola, decine di milioni di miliardi di
+volte più fioco. Non è ancora silenzio, ma tanto vale. A sessanta stanze lo
+diventa: il calcolatore non ha più cifre per scrivere un numero così piccolo, e
+scrive zero. Che a quaranta arrivi ancora qualcosa lo si deve a quei bias
+sorteggiati: un brusio che ognuno aggiunge comunque, anche senza sentire
+niente, ed è la sola cosa che tiene vivo il messaggio mentre i pesi lo
+spengono. Azzerandoli, con i pesi lasciati come sono, il silenzio pieno arriva
+già alla quarantesima stanza. Il volume di partenza lo sceglie chi costruisce
+la rete, prima che faccia un solo passo.
 
 `````
 
@@ -293,6 +313,14 @@ correzione dei pesi) più aggressivi e ha un lieve effetto di regolarizzazione
 (cioè frena l'imparare a memoria), perché ogni gruppetto ha statistiche un po’
 diverse dal precedente e quella variabilità fa da rumore utile.
 
+Quando la rete smette di allenarsi e va a lavorare, però, il gruppetto non c'è
+più: le domande arrivano una alla volta, e una media calcolata su un esempio
+solo non vuol dire niente. Per questo, mentre si allena, la rete si tiene da
+parte una media e un'ampiezza che aggiorna a ogni passo, pesando un poco il
+gruppetto appena visto e molto tutti quelli di prima. A lavoro finito usa
+quelle, sempre le stesse, e la risposta a una domanda non dipende più da chi le
+capita accanto nel gruppo.
+
 `````
 
 `````{tab} Superiore
@@ -398,6 +426,15 @@ raddoppiano i neuroni che li producono. Non succede, perché il conto è già st
 pareggiato prima: durante l'allenamento, quando metà dei neuroni è spenta, i
 sopravvissuti vengono raddoppiati sul posto, così la somma che esce ha la taglia
 giusta fin da subito. A rete piena non resta niente da aggiustare.
+
+Spegnere neuroni a caso e batch normalization non vanno d'accordo sullo stesso
+strato, e la ragione sta proprio nelle taglie. La seconda misura media e
+ampiezza su una rete a cui manca ogni volta metà dei neuroni, e quel continuo
+accendersi e spegnersi allarga i numeri di suo. Il giorno in cui la rete lavora
+ci sono tutti, quel rimescolio sparisce, e i numeri arrivano più stretti di come
+erano stati misurati, mentre la scala messa da parte è rimasta quella larga. La
+rete risponde peggio di quanto farebbe con una tecnica sola, e per questo di
+solito se ne sceglie una.
 
 `````
 
@@ -715,11 +752,10 @@ paesaggio che si muove, è che se ne sta attraversando un pezzo nuovo.
 
 `````{tab} Elementare
 
-Il passo giusto non è lo stesso all'inizio e alla fine. All'inizio conviene
-grande: la rete è lontana da qualunque soluzione decente e serve coprire
-strada. Alla fine conviene piccolo, altrimenti si continua a scavalcare il
-punto in cui ci si voleva fermare, come chi cerca di infilare la chiave nella
-toppa muovendo la mano dieci centimetri per volta.
+All'inizio conviene un passo grande: la rete è lontana da qualunque soluzione
+decente e serve coprire strada. Alla fine conviene piccolo, altrimenti si
+continua a scavalcare il punto in cui ci si voleva fermare, come chi cerca di
+infilare la chiave nella toppa muovendo la mano dieci centimetri per volta.
 
 La ricetta che regola il passo mentre l'addestramento procede si chiama
 **schedule** (è l'inglese per "programma"). Ce ne sono diverse e si assomigliano
@@ -782,23 +818,29 @@ decadimento.
 Sembra un capriccio, e ha una ragione precisa. Gli ottimizzatori moderni non
 usano il gradiente grezzo: lo confrontano con una media di quelli visti finora,
 per capire quanto quel gradiente sia affidabile e quanto grande fare il passo.
-Ma **all'inizio quella media è fatta di due o tre numeri**, quindi è rumorosa,
-e la stima può risultare sballata di parecchio.
+All'inizio quella media è fatta di due o tre numeri, quindi è rumorosa, e la
+stima può risultare sballata di parecchio.
 
 Il guaio è che i primi passi sono anche i più pericolosi: la rete è ancora
 disordinata, e un passo troppo lungo in una direzione sbagliata può portarla in
 una regione da cui non si riprende: i neuroni finiti tutti nel tratto piatto
 della propria curva, dove non reagiscono più a niente, oppure i pesi diventati
-enormi. Partire piano è un modo di **non prendere decisioni importanti mentre
-si è ignoranti**: si fanno passetti finché le statistiche non si assestano, e
-poi si va.
+enormi. Partire piano è un modo di non prendere decisioni importanti mentre si
+è ignoranti: si fanno passetti finché le statistiche non si assestano, e poi si
+va.
+
+Una ragione sola però non basta a spiegarlo. Il warmup fa bene anche a chi il
+passo su misura non lo taglia affatto, cioè alla pallina che si limita a
+rotolare con la sua inerzia: lì di stime da aspettare non ce n'è nessuna, e il
+vantaggio si vede lo stesso. Che cosa esattamente ripari è ancora in
+discussione, mentre che convenga farlo non lo discute nessuno.
 
 `````
 
 `````{tab} Superiore
 
 Adam normalizza il gradiente per la radice della stima del secondo momento,
-$\hat{\mathbf{s}}_t$ nella notazione fissata qui sopra (Kingma e Ba, e con loro
+$\hat{\mathbf{s}}_t$ nella notazione adottata per gli ottimizzatori (Kingma e Ba, e con loro
 buona parte della letteratura, chiamano $\mathbf{m}_t$ il primo momento e
 $\mathbf{v}_t$ il secondo). Nei primi passi quella stima è calcolata su
 pochissimi campioni ed è ad alta varianza, quindi il rapporto
@@ -868,9 +910,10 @@ ciclo di addestramento.
   pallina che rotola e un passo su misura per ogni peso. **AdamW** se si
   vogliono anche tenere piccoli i pesi.
 - La lunghezza del passo non resta la stessa per tutto l'addestramento: prima
-  **sale** da quasi zero (è il *warmup*: non si prendono decisioni importanti
-  mentre si è ignoranti), poi **cala** man mano che ci si avvicina, di solito
-  lungo la curva del coseno.
+  **sale** da quasi zero (è il *warmup*: passetti piccoli finché la rete è
+  ancora disordinata; che convenga non lo discute nessuno, che cosa ripari
+  esattamente sì), poi **cala** man mano che ci si avvicina, di solito lungo la
+  curva del coseno.
 ```
 `````
 
@@ -889,10 +932,11 @@ ciclo di addestramento.
   la quale coincide col decadimento vero solo per l'SGD senza momentum); un
   **learning rate schedule** che decade nel tempo rifinisce la convergenza.
 - Lo schedule comincia però **salendo**: il **warmup** porta il learning rate
-  da quasi zero a $\eta_0$ nei primi passi, quando le statistiche dei
-  momenti di Adam sono stimate su pochissimi campioni e il passo effettivo ha
-  varianza altissima, proprio mentre la rete è più fragile. Poi si decade, di
-  norma a coseno.
+  da quasi zero a $\eta_0$ nei primi passi, i più fragili. La diagnosi più
+  citata è la varianza altissima del passo effettivo di Adam, i cui momenti
+  all'inizio sono stimati su pochissimi campioni; è però contestata, e il
+  warmup giova anche a SGD con momentum, che di stime adattive non ne ha. Poi
+  si decade, di norma a coseno.
 ```
 `````
 

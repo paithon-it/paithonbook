@@ -9,8 +9,8 @@ scala di grigi, ciascuna una cifra da $0$ a $9$, divise in 60.000 esempi di
 addestramento e 10.000 di test {cite}`lecun1998gradient`. Da allora MNIST è il
 "*Hello, world!*" del deep learning: piccolo abbastanza da addestrarsi in
 pochi secondi, ricco abbastanza da mostrare tutto il ciclo di vita di un
-modello. In questa sezione costruiamo il modello che leggerà quelle cifre;
-nella prossima lo addestreremo.
+modello. Qui costruiamo il modello che leggerà quelle cifre; addestrarlo viene
+subito dopo.
 
 ## `nn.Module`: il mattone di ogni rete
 
@@ -68,28 +68,50 @@ print(model)          # elenca i pezzi che compongono il modello
 ```
 
 `````{tab} Elementare
-Due metodi, due domande. In `__init__` rispondi a "**di quali pezzi è fatta**
-la rete?": qui uno strato che srotola l'immagine, uno nascosto da 128 neuroni
-e uno d'uscita da 10. I 784 in ingresso sono obbligati ($28 \times 28$, i pixel
+Due metodi, due domande. In `__init__` si dice di quali pezzi è fatta la rete:
+qui uno strato che srotola l'immagine, uno nascosto da 128 neuroni e uno
+d'uscita da 10. I 784 in ingresso sono obbligati ($28 \times 28$, i pixel
 dell'immagine) e i 10 in uscita pure (le cifre da 0 a 9); il 128 nel mezzo no,
 l'abbiamo scelto noi. Un valore più grande dà una rete più capiente e più
 lenta, uno più piccolo il contrario: si prova, e come si sceglie è l'argomento
-della sezione sul [flusso di lavoro](flusso-di-lavoro.md). In `forward`
-rispondi a "**che strada fanno i dati**?": entra l'immagine, viene srotolata,
-passa per lo strato nascosto e poi per la ReLU (che è un filtro semplicissimo:
-lascia passare i numeri positivi e schiaccia a zero i negativi), ed esce come
-10 punteggi, uno per cifra. Tutto qui: il resto (tenere traccia dei pesi,
-calcolare i gradienti) lo fa `nn.Module` per conto tuo. E siccome `forward` è
-normale Python, puoi metterci un `print` per sbirciare, o un `if` per cambiare
-strada: il modello è codice che gira, non una descrizione da consegnare a
-qualcun altro.
+della sezione sul [flusso di lavoro](flusso-di-lavoro.md).
+
+Scrivere un pezzo come `self.qualcosa` lo fa entrare da solo nell'inventario
+della rete. È quell'inventario che l'addestramento andrà a regolare, e basta
+una riga per salvarlo tutto su un file o per spostarlo tutto insieme sulla
+scheda grafica. Un pezzo tenuto da parte in una lista normale invece
+funziona benissimo quando i dati ci passano attraverso, ma nell'inventario non
+compare: nessuno lo addestra, nessuno lo salva, e resta com'era appena creato.
+
+In `forward` si dice che strada fanno i dati: entra l'immagine, viene
+srotolata, passa per lo strato nascosto e poi per la ReLU (che è un filtro
+semplicissimo: lascia passare i numeri positivi e schiaccia a zero i
+negativi), ed esce come 10 punteggi, uno per cifra. Dentro lo strato non
+succede niente di misterioso: ogni neurone guarda tutti i numeri che gli
+arrivano, li somma dopo aver moltiplicato ciascuno per un numero suo, e al
+totale ne aggiunge un altro. Il filtro non sta dentro lo strato: lo si applica
+a parte, ai numeri che dallo strato escono. Chi arriva da altre librerie se lo
+aspetta appiccicato allo strato, e qui deve mettercelo lui.
+
+Tutto il resto (tenere il conto dei pesi, calcolare i gradienti) lo fa
+`nn.Module`. E siccome `forward` è normale Python, ci si può mettere un
+`print` per sbirciare o un `if` per cambiare strada: il modello è codice che
+gira, non una descrizione da consegnare a qualcun altro. Una cautela sola: per
+far passare i dati si scrive `model(x)`, non `model.forward(x)`. Le due righe
+sembrano la stessa cosa e danno lo stesso risultato, ma la seconda salta i
+controlli che la libreria aggancia intorno al passaggio; non arriva nessun
+errore, e la differenza si scopre più tardi, quando uno strumento che si
+appoggiava a quei controlli resta muto.
 `````
 
 `````{tab} Superiore
 `nn.Module` fornisce la contabilità dei **parametri**: ogni attributo che sia
 a sua volta un modulo (o un `nn.Parameter`) viene registrato automaticamente,
-e `model.parameters()` restituisce l'iteratore su tutti i tensori addestrabili
-(quello che passeremo all'ottimizzatore). `nn.Linear(d, u)` realizza la
+e `model.parameters()` restituisce l'iteratore su tutti i parametri
+registrati, anche su quelli con `requires_grad=False` (è quello che passeremo
+all'ottimizzatore). Ciò che invece finisce in una lista Python ordinaria non
+viene registrato: il `forward` lo usa lo stesso, ma resta fuori da
+`parameters()` e dallo `state_dict()`. `nn.Linear(d, u)` realizza la
 trasformazione affine
 
 $$
@@ -221,29 +243,47 @@ partenza, e su due sole immagini oscilla fra $2$ e $2{,}5$: è la media su
 tante immagini che si assesta.)
 
 `````{tab} Elementare
-La **MSE** (errore quadratico medio) serve quando la risposta è un numero, il
-prezzo di una casa, la temperatura di domani: misura la distanza tra
-predizione e verità, ed eleva al quadrato per punire di più gli errori grossi.
-Con i numeri: sbagliare di $2$ costa $4$, sbagliare di $10$ costa $100$. Un
-errore cinque volte più grande non ne vale cinque, ne vale venticinque, e il
-modello lo sente.
+Un perito passa la mattina in due appartamenti e su ogni scheda scrive tre
+numeri, il prezzo, le spese annue e i giorni che ci vorranno a vendere. Mesi
+dopo si sa com'è andata, e l'agenzia gli manda il conto: ogni numero mancato si
+paga al quadrato. Sbagliare di $2$ costa $4$, sbagliare di $10$ costa $100$. Un
+errore cinque volte più grande non ne vale cinque, ne vale venticinque. È la
+**MSE** (errore quadratico medio), la misura per quando la risposta è un
+numero, un prezzo o la temperatura di domani.
 
-La **cross-entropy** serve quando la risposta è una scelta, quale cifra, quale
-animale: guarda quanta fiducia il modello ha dato alla risposta giusta, e lo
-punisce tanto più quanto era sicuro di quella sbagliata. Anche qui con i
-numeri: se alla cifra giusta ha dato il 90% di fiducia paga $0{,}11$, se le ha
-dato il 10% (cioè ha tirato a indovinare) paga $2{,}3$, e se le ha dato l'1%
-paga $4{,}6$. La penalità non cresce in proporzione: precipita verso l'alto man
-mano che il modello esclude la risposta vera.
+Sulle due schede ci sono sei numeri, quindi sei multe. Sbagliati tutti di $2$,
+sono sei multe da $4$ e la media è $4$, perché l'agenzia divide per le multe
+uscite e non per gli appartamenti visitati. Un ufficio che somma le tre multe
+di ogni scheda ($12$) e divide per le due schede arriva a $12$, tre volte
+tanto, tante volte quanti sono i numeri chiesti per appartamento, sugli stessi
+identici errori. Con un numero solo per scheda i due conti coincidono e la
+differenza non si vede. Il perito più bravo resta il più bravo in tutti e due i
+casi; cambia quanto pesa la multa, cioè quanto lo spinge a correggere il tiro.
+Chi aveva tarato quella correzione su un conto e passa all'altro se la ritrova
+tre volte più lunga, o tre volte più corta, secondo il verso in cui ha
+cambiato.
 
-Un dettaglio pratico che sorprende chiunque inizi: alla `CrossEntropyLoss` di
-PyTorch si danno i punteggi grezzi (i *logit*, che è il nome tecnico di quei
-numeri prima che diventino probabilità), **non** le probabilità; la
-trasformazione la fa lei, al suo interno. Il motivo, in breve, è che fare i due
-conti insieme è più preciso che farli uno dopo l'altro: con probabilità
-piccolissime il secondo passaggio perderebbe cifre per strada. Conseguenza da
-tenere a mente: nel modello la softmax **non ci va**, e metterla lì è uno degli
-errori silenziosi più comuni.
+Un piano più sotto un'impiegata legge le cifre scritte a mano sui moduli.
+Invece di scommettere tutto su una cifra sola, distribuisce la fiducia su tutte
+e dieci, e paga secondo quanta ne aveva data a quella vera. Alla cifra vera il
+90%, e la multa è $0{,}11$; il 10%, cioè fiducia in parti uguali su tutte e
+dieci, tirando a indovinare, e la multa è $2{,}3$; l'1%, e la multa è $4{,}6$.
+La penalità non cresce in proporzione, precipita verso l'alto man mano che
+l'impiegata esclude la risposta vera. È la **cross-entropy**, la misura per
+quando la risposta è una scelta fra categorie, quale cifra o quale animale. Di
+multa ce n'è una per modulo, e con dieci moduli in una volta esce la media di
+quelle dieci.
+
+Sul foglio l'impiegata scrive punteggi grezzi, un $3$ marcato e un $8$ debole.
+A farne percentuali ci pensa la cassa, nello stesso momento in cui calcola la
+multa, e i due conti insieme escono più precisi che uno dopo l'altro, perché
+con percentuali piccolissime il secondo passaggio perde cifre per strada. Anche
+`nn.CrossEntropyLoss` vuole i punteggi grezzi (i *logit*, il nome tecnico di
+quei numeri prima che diventino probabilità) e la trasformazione la fa lei, al
+suo interno. Nel modello la softmax non ci va, e metterla è uno degli errori
+silenziosi più comuni. Se allo sportello serve dire quanto l'impiegata è
+sicura, le percentuali si ricavano dai punteggi in un passaggio a parte, che
+serve a leggere il risultato e non ad addestrare.
 `````
 
 `````{tab} Superiore
@@ -274,10 +314,11 @@ $$
 dove qui $k$ e $j$ scorrono le $K$ classi, non gli esempi. Sul batch il modulo
 restituisce la **media** di questi termini sugli $N$ esempi
 (`reduction='mean'`, il default): è il "numero solo" del codice qui sopra, e
-qui la media è davvero per esempio, perché di termini ce n'è uno per esempio. Applicarla ai logit, e non a probabilità già normalizzate, non è un
+qui la media è davvero per esempio, perché di termini ce n'è uno per esempio.
+Applicarla ai logit, e non a probabilità già normalizzate, non è un
 capriccio: il calcolo congiunto del logaritmo e della softmax è numericamente
 più stabile (evita underflow con il *log-sum-exp trick*), e per questo
-l'ultimo strato del modello **non** deve avere la softmax. Se servono le
+l'ultimo strato del modello non deve avere la softmax. Se servono le
 probabilità (per leggere l'output, non per addestrare), si applica
 `torch.softmax(logits, dim=1)` a valle. Con etichette intere il target ha
 shape $(N,)$ e dtype `int64`, non serve il one-hot.

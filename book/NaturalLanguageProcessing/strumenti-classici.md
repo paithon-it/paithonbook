@@ -104,6 +104,20 @@ dentro le frasi, che sono la stessa cosa fatta di parole: «il gatto che dorme
 sul divano che ho comprato quando…». Per quelle serviranno gli attrezzi delle
 prossime sezioni.
 
+Lo schema è una cosa, l'attrezzo che lo esegue un'altra. La passata unica
+appena descritta è quella di `grep`, una lettura sola dall'inizio alla fine, e
+il tempo cresce come la lunghezza del testo. Altri programmi lavorano
+per tentativi: provano una strada, e se non porta da nessuna parte tornano al
+bivio e ne provano un'altra. In cambio offrono qualcosa in più, per esempio
+chiedere che un pezzo di testo si ripeta identico più avanti, ed è proprio quel
+di più a costringerli ai tentativi. Quasi sempre finiscono comunque in un
+lampo. Ma basta uno schema ambiguo, di quelli che chiedono «gruppi di una o più
+lettere» dove le lettere sono tutte uguali, e le strade da provare si
+moltiplicano. Tre lettere di fila si spezzano in gruppi in quattro modi, e ogni
+lettera in più raddoppia il conto. Su una riga di poche decine di caratteri il
+programma si pianta, e chi mette un'espressione regolare su un modulo aperto al
+pubblico deve saperlo, perché quella riga gliela scrive uno sconosciuto.
+
 `````
 
 `````{tab} Superiore
@@ -213,21 +227,40 @@ scelta si chiama **normalizzazione**.
 
 I fusilli integrali e i fusilli normali sono «pasta» o due cose diverse?
 Dipende da cosa vuoi cucinare, e finché non lo hai deciso non puoi nemmeno
-contare i barattoli della dispensa. Con le parole è uguale, e le mosse tipiche
-sono tre. Primo: tutto minuscolo, così *Muro* a inizio frase e *muro* in mezzo
-finiscono nello stesso barattolo. Secondo: togliere le **stopword**, le
-parole-colla come *il*, *di*, *che*, *e*; sono dappertutto e proprio per questo
-non dicono nulla sull'argomento del testo. Terzo, il più delicato: raggruppare
-le forme della stessa parola. *Andavamo*, *andiamo* e *andrò* sono tutte facce
-del verbo *andare*.
+contare i barattoli della dispensa. Con le parole si fa la stessa scelta, e
+riguarda quali varianti vanno nello stesso barattolo.
+
+Il minuscolo mette insieme *Muro* a inizio frase e *muro* in mezzo. Poi si
+uniforma il modo in cui le lettere stanno in memoria. Le due scritture di
+*perché*, quella con la *é* intera e quella con l'accento appoggiato sopra,
+sono due confezioni identiche sullo scaffale con due codici a barre diversi:
+senza questa mossa la cassa le batte come due prodotti. Via anche la
+punteggiatura e le **stopword**, le parole-colla come *il*, *di*, *che*, *e*,
+che stanno dappertutto e proprio per questo non dicono nulla sull'argomento del
+testo. Resta la mossa più delicata, raggruppare le forme della stessa parola.
+*Andavamo*, *andiamo* e *andrò* sono tutte facce del verbo *andare*.
 
 Per quest'ultima mossa ci sono due attrezzi. Lo **stemming** lavora di
-forbici: taglia la coda delle parole secondo regole fisse, veloce ma
-grossolano; a volte da *andavamo* esce un moncone come *andavam*, che non è
-nemmeno una parola. La **lemmatizzazione** lavora di dizionario: cerca la
-forma base, il **lemma**, e da *andavamo* ricava proprio *andare*, come
-farebbe chiunque consulti un vocabolario. Più precisa, ma più lenta e più
-difficile da costruire.
+forbici, e taglia la coda delle parole secondo regole fisse, sempre alla stessa
+misura. È rapidissimo, e su *gatto*, *gatta* e *gatti* fa centro, perché da
+tutti e tre resta *gatt*. Sui verbi irregolari invece cade proprio dove
+serviva. Le forbici più usate per l'italiano riducono *andavamo* ad *andavam*,
+*andiamo* ad *andiam* e *andare* ad *andar*, mentre su *andrò* non trovano
+nemmeno una coda da tagliare. Quattro etichette diverse, quattro barattoli, e
+il verbo che si voleva raccogliere resta sparpagliato come prima.
+
+La **lemmatizzazione** lavora di vocabolario, risale alla forma base (il
+**lemma**) e da *andavamo* ricava davvero *andare*. Il vocabolario da solo però
+non basta, e lo sa chiunque ne abbia aperto uno. *Porta* può essere quella di
+casa, oppure quello che fa chi porta la spesa, e per decidere quale delle due
+bisogna leggere le parole intorno. Più precisa, dunque, ma più lenta e molto
+più faticosa da costruire.
+
+Raggruppare ha comunque un prezzo, e in dispensa si vede meglio che sulla
+pagina. Chi cerca «pasta» adesso trova ogni cosa, ed era lo scopo; chi cercava
+proprio i fusilli integrali non li distingue più dagli altri. Nel testo
+funziona uguale, si trova di più e si distingue di meno. In italiano, dove un
+verbo ha decine di forme, il baratto conviene quasi sempre.
 
 `````
 
@@ -260,7 +293,7 @@ programma fa tre cose in fila: uniforma le codifiche (è la prima riga, quella
 che risolve il caso del `perché` scritto in due modi: `NFKC` è il nome della
 regola che sceglie sempre la versione a un carattere solo), manda tutto in
 minuscolo, butta via la punteggiatura e le parole-colla. Nella terza riga,
-`[^\w\s]` si legge «tutto ciò che **non** è né una lettera o cifra (`\w`) né
+`[^\w\s]` si legge «tutto ciò che *non* è né una lettera o cifra (`\w`) né
 uno spazio (`\s`)»: il `^` dentro le parentesi quadre rovescia l'elenco, e
 quindi quel pezzo di schema aggancia esattamente la punteggiatura.
 
@@ -312,31 +345,29 @@ finisce per fare fortuna in un altro.
 
 `````{tab} Elementare
 
-La distanza di edit è un gioco: quante mosse servono, al minimo, per
-trasformare una parola in un'altra? Le mosse permesse sono tre: **sostituire**
-una lettera, **cancellarne** una, **inserirne** una. Ogni mossa costa 1.
+Sul tavolo cinque tessere formano *carta*, e bisogna arrivare a *casa*. I gesti
+permessi sono tre: cambiare una tessera con un'altra (una sostituzione),
+toglierne una (una cancellazione), infilarne una nuova (un inserimento). Ogni
+gesto vale una mossa, vince chi ne fa meno, e il numero di mosse della strada
+più corta è la distanza di edit fra le due parole.
 
-Da *casa* a *cosa*: sostituisci la prima *a* con una *o*, una mossa sola,
-distanza 1. Da *carta* a *casa* servono invece due mosse: cancella la *r*
-(*carta* → *cata*), poi sostituisci la *t* con una *s* (*cata* → *casa*).
-Distanza 2, e puoi provare quanto vuoi, con meno di due mosse non ce la fai:
-le parole hanno lunghezze diverse (quindi almeno una cancellazione è
-obbligatoria) e una cancellazione da sola non basta mai a far combaciare il
-resto.
+Da *casa* a *cosa* basta girare la prima *a* in *o*, distanza 1. Da *carta* a
+*casa* le mosse sono due: via la *r* (*carta* → *cata*), poi *t* → *s* (*cata*
+→ *casa*). Con una sola non ce la fate per quanto proviate, perché le tessere
+sono in numero diverso: una va tolta per forza, e tolta quella il resto ancora
+non combacia.
 
-Ecco il senso della misura: più piccola è la distanza, più le parole si
-somigliano. «Gatot» dista 2 da «gatto» ma 5 da «divano», e le cinque mosse si
-possono contare: *gatot* → *digatot* (due inserimenti, la *d* e la *i*) →
-*divatot* (sostituisci la *g* con una *v*) → *divanot* (sostituisci la *t* con
-una *n*) → *divano* (cancella la *t* finale). Per questo il correttore
-scommette su «gatto».
+Più corta è la strada, più le due parole si somigliano. *Gatot* dista 2 da
+*gatto* e 5 da *divano*: una *d* e una *i* davanti (*digatot*), *g* → *v*
+(*divatot*), *t* → *n* (*divanot*), via la *t* finale (*divano*). Per questo il
+correttore del telefono scommette su *gatto*.
 
-Ma attenzione: quella che abbiamo appena contato è *una* strada da cinque
-mosse, e nessuno ci ha ancora garantito che sia la più corta. È l'unica
-difficoltà vera di questo gioco. Per due parole di quattro lettere si fa a
-occhio; per due parole lunghe le strade sono troppe. Il computer allora disegna
-una griglia, con una parola in orizzontale e l'altra in verticale, e in ogni
-casella scrive quante mosse servono per arrivare fin lì:
+Ma quella da cinque è *una* strada, e che sia la più corta nessuno l'ha ancora
+promesso: è l'unica difficoltà del gioco. Su quattro lettere si vede a occhio,
+su parole lunghe le strade sono troppe. Serve allora un foglio a quadretti,
+*muro* lungo il bordo di sinistra e *mare* lungo quello di sopra. Ogni casella
+riguarda solo l'inizio delle due parole, quello letto fino a quella riga e fino
+a quella colonna, e dice quante mosse servono per passare dall'uno all'altro:
 
 |   | (niente) | m | a | r | e |
 |---|---|---|---|---|---|
@@ -346,28 +377,25 @@ casella scrive quante mosse servono per arrivare fin lì:
 | **r** | 3 | 2 | 2 | 1 | 2 |
 | **o** | 4 | 3 | 3 | 2 | **2** |
 
-La prima riga e la prima colonna sono facili: per passare da niente a *m*,
-*ma*, *mar*, *mare* servono 1, 2, 3, 4 inserimenti. Ogni altra casella si
-riempie guardando le tre vicine, quella sopra, quella a sinistra e quella in
-diagonale in alto a sinistra: si prende la più piccola delle tre e si aggiunge
-1. C'è un solo sconto: se la lettera in cima alla colonna e quella all'inizio
-della riga sono la stessa, si copia la diagonale senza pagare niente, perché
-quelle due lettere già combaciano e non c'è nessuna mossa da fare.
+Prima riga e prima colonna sono regalate: per andare da niente a *m*, *ma*,
+*mar*, *mare* si infilano 1, 2, 3, 4 tessere. Ogni altra casella guarda le tre
+vicine, e ciascuna è un gesto: da quella di sopra si arriva togliendo l'ultima
+tessera di sinistra, da quella a sinistra infilando l'ultima di sopra, da
+quella in diagonale accoppiandole. Si prende la vicina più piccola, si paga 1,
+e lo sconto è uno solo: se l'ultima tessera di sinistra e l'ultima di sopra
+portano la stessa lettera si ricopia la diagonale senza pagare niente, perché
+quelle due tessere già combaciano.
 
-Facciamone una insieme, la casella della riga *u* e della colonna *a*. Sopra
-c'è 1, a sinistra c'è 1, in diagonale c'è 0. La *u* e la *a* sono lettere
-diverse, quindi niente sconto: prendo la più piccola delle tre, cioè 0, e
-aggiungo 1. Fa **1**, ed è il numero che vedete nella tabella. Provatene
-un'altra e vedrete che il meccanismo è sempre questo.
+Facciamone una insieme, riga *u* e colonna *a*. Sopra c'è 1, a sinistra 1, in
+diagonale 0. La *u* e la *a* sono lettere diverse, niente sconto, quindi si
+prende 0 e si aggiunge 1: fa 1, il numero che sta nella casella. Provatene
+un'altra, il meccanismo è sempre questo.
 
-Arrivati in fondo a destra si legge la risposta, **2**: da *muro* a *mare*
-bastano due sostituzioni, *u* → *a* e *o* → *e*. E adesso il punto delicato di
-prima, quello del minimo. La griglia lo garantisce perché ogni casella prende
-il **minimo** delle tre vicine, e quelle tre sono le uniche vie per arrivarci:
-l'ultima lettera o si cancella (arrivo da sopra), o si inserisce (arrivo da
-sinistra), o si mette in coppia con l'altra (arrivo dalla diagonale). Non c'è
-una quarta strada, quindi non c'è scorciatoia che possa sfuggire, e il conto si
-fa in un lampo anche su parole lunghe.
+In fondo a destra c'è la risposta, 2: da *muro* a *mare* si girano due tessere,
+*u* → *a* e *o* → *e*. Ed è davvero il minimo, perché ogni casella ha scelto il
+più economico fra i tre gesti, e un quarto modo di arrivarci non esiste:
+nessuna scorciatoia può sfuggire. Il foglio si riempie in un lampo anche su
+parole lunghe.
 
 `````
 
@@ -519,8 +547,9 @@ in Jurafsky e Martin {cite}`jurafsky2026speech`.
 - ELIZA, `grep`, il modulo che vi dice che l'email non è valida: cercare
   schemi è l'NLP «a regole», ed è ancora ovunque nel lavoro di ripulire i dati.
 - **Normalizzare** vuol dire decidere che cosa contare come «la stessa
-  parola»: tutto minuscolo, via le parole-colla, e le forme di uno stesso
-  verbo raggruppate. Lo **stemming** lavora di forbici (taglia la coda), la
+  parola»: tutto minuscolo, codifiche uniformi, via le parole-colla, e le
+  forme di uno stesso verbo raggruppate. Lo **stemming** lavora di forbici
+  (taglia la coda, e sui verbi irregolari il paradigma resta sparpagliato), la
   **lemmatizzazione** di dizionario (*andavamo* → *andare*).
 - Si normalizza con decisione quando si *conta*, ed è quello che faremo nella
   prossima sezione (motori di ricerca, sacchetto di parole). I modelli neurali

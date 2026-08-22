@@ -52,7 +52,7 @@ dice** la risposta con cui il modello si corregge. Non quanto è giusta: quanto
 
 `````{tab} Elementare
 
-Immagina tre modi di imparare a riconoscere gli uccelli.
+Ci sono tre modi di imparare a riconoscere gli uccelli.
 
 Nel primo, qualcuno ti mostra una fotografia e ti dice una parola:
 «cardellino». Hai imparato qualcosa, ma quella parola è tutto quello che hai
@@ -68,12 +68,14 @@ ti dice qualcosa.
 
 Nel terzo, giri tutto il giorno in un bosco a osservare uccelli e la sera
 qualcuno ti dice: «oggi hai fatto bene». Punto. È stata una giornata intera, e
-di ritorno hai avuto una frase sola, che vale per tutto. Quali degli sguardi che
-hai dato erano quelli buoni? Nessuno te lo dice.
+di ritorno hai avuto una frase sola, che vale per tutto. Fosse durata un'ora, o
+una settimana, la frase sarebbe stata comunque una. Quali degli sguardi che hai
+dato erano quelli buoni? Nessuno te lo dice.
 
-Il terzo modo è l'apprendimento per rinforzo. Il primo è quello
-supervisionato. Il secondo è quello di cui parla questo capitolo, ed è il solo
-in cui la correzione che ricevi è **grande quanto la cosa che stai guardando**.
+La fotografia con la sua parola è l'apprendimento supervisionato. La giornata
+nel bosco è l'apprendimento per rinforzo. Il buco da riempire è
+l'auto-supervisione, ed è il solo dei tre in cui la correzione che ricevi è
+**grande quanto la cosa che stai guardando**.
 
 `````
 
@@ -169,11 +171,17 @@ questa pagina prometterebbe più di quanto può mantenere.
 Quei numeri dicono **quanto è grande la risposta giusta**, non quanto il
 modello ne ha capito. Sono il diametro del tubo, non l'acqua che ci passa.
 
-Un modello può ricevere una metà di fotografia da indovinare e cavarne pochissimo,
-per esempio sfumando tutto e accontentandosi di una macchia del colore giusto:
-la risposta era grande, quello che ha imparato è piccolo. E all'opposto, un
-solo «hai sbagliato» detto al momento giusto può insegnare più di mille foto
-etichettate male.
+E il diametro è già generoso. Il conto tratta ogni dettaglio della metà coperta
+come una sorpresa, e sorprese non sono: se il ramo si vede per un tratto,
+l'altro tratto lo disegni senza pensarci, e da quel pezzo non hai imparato
+niente.
+
+Anche dove la sorpresa c'è, chi riempie il buco può cavarne pochissimo: sfuma
+tutto, azzecca una macchia del colore giusto e passa oltre. La risposta era
+grande, quello che ha imparato è piccolo. E all'opposto, un solo «hai
+sbagliato» detto al momento giusto può insegnare più di mille foto etichettate
+male; solo che il momento giusto è la parte difficile, perché nel bosco quella
+frase arriva la sera, quando gli sguardi da correggere sono ormai centinaia.
 
 Il confronto regge sui rapporti grossi, quelli da dieci volte in su, e sulla
 tendenza; non sui decimali. E va usato per quello: dice dove c'è **spazio** per
@@ -187,9 +195,10 @@ Tre precisazioni, e sono tutte nella stessa direzione.
 
 La prima: $\log_2 K$ è l'entropia della distribuzione **uniforme**, cioè un
 massimo. Le etichette reali non sono uniformi e i token nemmeno: l'entropia
-condizionata di un token dato il contesto è molto minore di $\log_2 V$, ed è
-proprio ciò che un buon modello linguistico abbassa. Quindi i numeri della
-tabella sono tetti, e il tetto vero è più basso.
+condizionata di un token dato il contesto è molto minore di $\log_2 V$, ed è il
+limite verso cui un buon modello linguistico spinge la propria perdita, senza
+poterlo scendere. Quindi i numeri della tabella sono tetti, e il tetto vero è
+più basso.
 
 La seconda: l'informazione del bersaglio è un limite superiore
 sull'informazione che il gradiente può trasportare, non una misura di ciò che
@@ -202,7 +211,7 @@ La terza, ed è quella che il dibattito sul rinforzo userà: la povertà del
 segnale nel rinforzo non è solo una questione di quantità. Un bit per episodio
 va anche **assegnato**, cioè distribuito fra i passi che hanno contribuito, e
 quel problema (l'assegnazione del credito) è duro in modo indipendente dal
-numero di bit. L'ultima sezione di questo capitolo lo prende di petto.
+numero di bit.
 
 `````
 
@@ -325,10 +334,10 @@ libro si limita a riportare gli argomenti con i loro nomi giusti.
   correzione** che il modello riceve. Una parola sola («cardellino») per una
   fotografia intera; oppure mezza fotografia da ricostruire, cioè migliaia di
   dettagli; oppure un «bravo» a fine giornata, che vale per tutta la giornata.
-- Fra il secondo modo e il primo ci sono quattro zeri di differenza, e fra il
-  secondo e il terzo ce ne sono cinque. Il primo e il terzo, invece, distano
-  appena dieci volte: il conto è in questa pagina, fatto da un programma che si
-  può rilanciare.
+- Fra la mezza fotografia da ricostruire e la parola scritta sotto la foto ci
+  sono quattro zeri di differenza, e fra la mezza fotografia e il «bravo» di
+  fine giornata ce ne sono cinque. La parola e il «bravo», invece, distano
+  appena dieci volte, e il conto lo fa un programma che si può rilanciare.
 - Attenzione a non chiedere troppo a quei numeri: dicono quanto è **grande** la
   risposta, non quanto il modello ne ha capito. Sono il diametro del tubo, non
   l'acqua che ci passa.

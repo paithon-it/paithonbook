@@ -249,9 +249,9 @@ dell'analista di serie temporali, l’**ACF** e la **PACF**.
 
 `````{tab} Elementare
 
-Immagina di confrontare la serie con una sua copia fatta scivolare indietro nel
-tempo di un passo, di due, di tre. Ogni volta ti chiedi: quanto si somigliano?
-La risposta, passo per passo, è la **funzione di autocorrelazione** (ACF): un
+Ricopia la serie su un foglio trasparente e fai scivolare la copia indietro di
+un giorno: quanto si somigliano, le due? Poi di due giorni, poi di tre. La
+risposta, passo per passo, è la **funzione di autocorrelazione** (ACF): un
 grafico a barre che dice quanto oggi assomiglia a ieri, all'altro ieri, e così
 via. Se le barre restano alte a lungo, la serie ha una memoria lunga.
 
@@ -263,12 +263,16 @@ che passa attraverso ieri e l'altro ieri. È la differenza fra «il nonno somigl
 al nipote» e «il nonno somiglia al nipote al netto del padre».
 
 Si guardano in coppia, perché nessuno dei due da solo dice tutto, e insieme
-dicono una cosa in più: il **punto in cui le barre si schiacciano di colpo**
-segna fin dove arriva la memoria. Di memorie, fra poco, ne incontreremo due, e
-ciascuna lascia la firma su un grafico diverso: se a schiacciarsi di colpo è la
-PACF, la serie si ricorda i **valori** passati; se è l'ACF, si ricorda gli
-**urti** passati. Con una riserva che verrà detta per esteso: sulle serie vere
-le due firme si sovrappongono, e questo modo di leggerle funziona molto meno di
+dicono una cosa in più: il punto in cui le barre si schiacciano di colpo segna
+fin dove arriva la memoria. Schiacciarsi vuol dire rientrare nella fascia
+sottile attorno allo zero dove cadono le barre di una serie che memoria non ne
+ha; e una barra sola che sporge non è la firma di niente, perché su venti barre
+capita più spesso che no che una sporga per caso. Di memorie, fra poco, ne
+incontreremo due, e ciascuna lascia la firma su un grafico diverso: se a
+schiacciarsi di colpo è la PACF, la serie si ricorda i **valori** passati; se è
+l'ACF, si ricorda gli **urti** passati. Con una riserva che verrà detta per
+esteso: sulle serie vere le due firme si sovrappongono, e questo modo di
+leggerle funziona molto meno di
 quanto i manuali lascino sperare.
 
 `````
@@ -291,7 +295,10 @@ perché hanno firme complementari: un processo **AR($p$)** ha PACF che si
 **annulla** dopo il ritardo $p$ e ACF che decade gradualmente; un processo
 **MA($q$)** ha ACF che si **annulla** dopo il ritardo $q$ e PACF che decade.
 Leggere dove le barre «cadono nel rumore» suggerisce gli ordini $p$ e $q$ da
-provare {cite}`box2015time`.
+provare {cite}`box2015time`. Vale però sui processi puri: quando le due memorie
+convivono, cioè su un ARMA, nessuna delle due funzioni si annulla e la lettura
+non decide niente, ed è la ragione per cui in pratica gli ordini si scelgono
+stimando una griglia di modelli invece che guardando un grafico.
 
 «Nel rumore» ha una definizione precisa: dentro la banda
 $\pm z_{1-\alpha/2}/\sqrt{n}$, cioè $\pm 1{,}96/\sqrt{n}$ al 95%, che è
@@ -415,28 +422,31 @@ Una gita scolastica svuota la gelateria; uno sciopero blocca i voli. L'effetto
 di un urto imprevisto non si esaurisce il giorno stesso: si fa sentire ancora
 domani, un po’ meno dopodomani, e poi svanisce. Un modello a
 media mobile dice proprio questo: il valore di oggi è il livello normale, più
-la sorpresa di oggi, più l'eco delle sorprese degli ultimi giorni. L'eco di
-solito si smorza, ma non è obbligata a farlo: quanto pesa ciascun giorno passato
-è un numero che si legge dai dati, e può benissimo venir fuori che l'urto di tre
-giorni fa conta più di quello di ieri.
+la sorpresa di oggi, più l'eco delle sorprese degli ultimi giorni. Quanto pesa
+ciascun giorno passato è un numero che si legge dai dati, non una regola fissa.
+
+Le sorprese però nessuno le misura: nel registro della gelateria ci sono gli
+incassi, e la sorpresa di ieri si ricava all'indietro, per differenza fra quello
+che ci si aspettava e quello che è arrivato. Il conto all'indietro riesce finché
+i pesi restano dentro certi limiti; fuori da quelli il modello è scritto bene,
+ma alle sorprese non si risale, e senza quelle non prevede niente.
 
 Le due memorie si possono usare insieme: quella dei valori (l'AR appena visto)
 e quella degli urti (il MA). E siccome le serie vere quasi mai stanno ferme
 attorno a un valore, prima si raddrizza la serie e poi si modella ciò che
-resta. Raddrizzare, qui, vuol dire il trucco già incontrato, sostituire ogni
-valore con la variazione rispetto al giorno prima, che è la cura giusta quando
-la serie cammina alla cieca; se invece oscilla attorno a una retta, la cura è
-togliere la retta, e la sezione lo ha appena detto. Il tutto insieme si chiama
-**ARIMA**, il modello di punta di Box e Jenkins, e la sigla è la somma dei tre
-pezzi: **AR** la memoria dei valori, **I** (*integrated*) il raddrizzamento,
-**MA** la memoria degli urti. Dietro non ci sono che tre conteggi, quanti
-valori passati guardare, quante volte raddrizzare la serie, per quanti giorni
-far durare l'eco degli urti, e i manuali li scrivono in quest'ordine fra
-parentesi, ARIMA($p,d,q$). Se c'è anche una stagionalità, si rifà lo stesso
-gioco sul calendario (dicembre si confronta con lo scorso dicembre): è la
-variante **SARIMA**, dove la S sta per *seasonal*, stagionale. Le sigle piene
-di lettere e numeri che si incontrano nei manuali non sono che questi conteggi
-messi in fila.
+resta. Raddrizzare, qui, vuol dire il trucco già incontrato per le serie che
+camminano alla cieca: sostituire ogni valore con la variazione rispetto al
+giorno prima. (Quando invece la serie oscilla attorno a una retta, la retta si
+toglie prima, fuori dal modello.) Il tutto insieme si chiama **ARIMA**, il
+modello di punta di Box e Jenkins, e la sigla è
+la somma dei tre pezzi: **AR** la memoria dei valori, **I** (*integrated*) il
+raddrizzamento, **MA** la memoria degli urti. Dietro non ci sono che tre
+conteggi, quanti valori passati guardare, quante volte raddrizzare la serie,
+per quanti giorni far durare l'eco degli urti, e i manuali li scrivono in
+quest'ordine fra parentesi, ARIMA($p,d,q$). Se c'è anche una stagionalità, si
+rifà lo stesso gioco sul calendario (dicembre si confronta con lo scorso
+dicembre): è la
+variante **SARIMA**, dove la S sta per *seasonal*, stagionale.
 
 `````
 
@@ -501,14 +511,16 @@ più piccolo al SARIMA più carico di lettere.
 
 `````{tab} Elementare
 
-**Primo tempo: raddrizzare la serie.** È il lavoro della sezione di poco fa:
-togliere la retta se una retta c'è, oppure sostituire ogni valore con la
-variazione rispetto al giorno prima se la serie cammina alla cieca. Da qui esce
-già uno dei tre conteggi, quello di mezzo, che dice quante volte si è
+**Primo tempo: raddrizzare la serie.** Si toglie la retta se una retta c'è,
+oppure si sostituisce ogni valore con la variazione rispetto al giorno prima se
+la serie cammina alla cieca. Per decidere se la serie è già a posto ci sono due
+esami, e vanno letti insieme: partono da sospetti opposti, e lo stesso responso
+che nell'uno vuol dire «è a posto», nell'altro vuol dire il contrario. Da qui
+esce già uno dei tre conteggi, quello di mezzo, che dice quante volte si è
 raddrizzato.
 
 **Secondo tempo: scegliere gli altri due.** La ricetta dei manuali dice di
-leggere i due grafici a barre di poco fa, l'ACF e la PACF, e dedurli da lì.
+leggere i due grafici a barre, l'ACF e la PACF, e dedurli da lì.
 Funziona sui casi da libro di testo, e sulle serie vere quasi mai: quando ci
 sono insieme la memoria dei valori e quella degli urti, entrambi i grafici
 scendono lentamente e non si legge niente.
@@ -517,9 +529,10 @@ Allora si fa la cosa onesta: **si provano tutte le combinazioni** entro un
 limite ragionevole. Sono una manciata di modelli e il computer li stima tutti in
 qualche secondo. Poi si sceglie con un criterio che tiene conto di due cose
 insieme: quanto bene il modello spiega i dati, e quanti numeri ha dovuto
-inventarsi per riuscirci. Il secondo pezzo non è pignoleria: aggiungere numeri
-migliora sempre l'aderenza ai dati che si hanno sotto gli occhi, quindi senza
-una penalità si finirebbe per scegliere ogni volta il modello più grosso, che è
+inventarsi per riuscirci. Il secondo pezzo conta quanto il primo: aggiungere
+numeri migliora sempre l'aderenza ai dati che si hanno sotto gli occhi, quindi
+senza una penalità si finirebbe per scegliere ogni volta il modello più grosso,
+che è
 il modo classico di imparare a memoria invece che imparare la regola.
 
 **Terzo tempo: guardare quello che resta.** Fatta la scelta non si è finito, e
@@ -528,11 +541,12 @@ modello è *utile*.
 Un modello buono ha spremuto dalla serie tutta la regolarità che c'era, quindi
 ciò che avanza, la differenza fra previsto e osservato, deve essere
 indistinguibile dal caso. Se in quello che avanza si vede ancora una
-regolarità, vuol dire che il modello se l'è lasciata sfuggire, e va cambiato.
+regolarità, vuol dire che il modello se l'è lasciata sfuggire, e va cambiato. E
+se non si vede niente si è imparato meno di quanto sembri: vuol dire che con
+questi dati nessuna regolarità è saltata fuori, non che non ce ne siano.
 
-C'è un modo elegante di dirlo: **il modello sbagliato lo si riconosce dai suoi
-errori, non dalle sue previsioni**. Le previsioni sembrano sempre plausibili;
-gli errori, se guardati, confessano.
+Il modello sbagliato lo si riconosce dai suoi errori, non dalle sue previsioni.
+Le previsioni sembrano sempre plausibili; gli errori, se guardati, confessano.
 
 `````
 
@@ -653,15 +667,16 @@ non con $\ell$ {cite}`hyndman2021forecasting`: i parametri già spesi per far
 aderire il modello ai dati non contano come prove d'innocenza. Ometterlo è la
 scorciatoia più diffusa della materia (le librerie lasciano fare, perché il
 parametro va passato a mano) ed è **sempre ottimista**: gonfia il $p$-value, e
-cioè fa sembrare adeguati modelli che lo sono meno. Sull'esempio della prossima
-sottosezione la differenza fra le due letture è fra $0{,}71$ e $0{,}51$.
+cioè fa sembrare adeguati modelli che lo sono meno. Sull'ARMA scelto con
+seicento osservazioni la differenza fra le due letture è fra $0{,}71$ e
+$0{,}51$.
 
 Attenzione anche al verso, perché è controintuitivo: qui **si spera di non
 rifiutare**. Un $p$-value alto significa «non c'è evidenza di struttura
 residua», cioè il modello va bene; un $p$-value basso significa che qualcosa è
 rimasto fuori. È il verso opposto a quello dell'ADF del passo 1.
 
-Vale la pena essere precisi su cosa questo dimostra e cosa no. Non rifiutare
+Non rifiutare
 l'ipotesi nulla **non prova** che i residui siano rumore bianco: prova solo che
 il test, con quei dati, non ha trovato prove del contrario. È la stessa
 asimmetria di ogni test d'ipotesi, e la ragione per cui la diagnostica non
@@ -833,9 +848,9 @@ festa, il prezzo di listino). Quelle si chiamano variabili **esogene**, cioè
 sommano a quello che la serie già spiega da sola. La sigla diventa SARIMAX, e
 la X finale sta proprio per quelle variabili esterne.
 
-C'è una trappola che si scopre sempre troppo tardi, e vale la pena saperla
-prima. Per prevedere le vendite di domani con il meteo, ti serve il meteo **di
-domani**, che non hai. Quindi o è una cosa che si conosce in anticipo per
+C'è una trappola che si scopre sempre troppo tardi. Per prevedere le vendite di
+domani con il meteo, ti serve il meteo **di domani**, che non hai. Quindi o è
+una cosa che si conosce in anticipo per
 costruzione (il calendario, i giorni di chiusura, una promozione già decisa),
 oppure va prevista a sua volta, e allora nella previsione finale entrano due
 errori invece di uno. Le variabili esogene che aiutano davvero sono quasi
@@ -848,10 +863,10 @@ da quello delle altre. È il modello VAR, e la V sta per «vettoriale», che qui
 vuol dire solo che al posto di un numero per volta il modello tratta una fila
 di numeri per volta, una casella per ciascuna serie.
 
-Il VAR però conviene a una condizione che non va data per scontata: che quelle
-serie **si aiutino davvero** a prevedersi. Se non lo fanno, il modello resta
-lecito, ma non sta comprando niente con tutti i parametri che costa, e tanto
-vale prevedere le serie una per una.
+Il VAR conviene a una condizione: che quelle serie **si aiutino davvero** a
+prevedersi. Se non lo fanno, il modello resta lecito, ma non compra previsioni
+migliori, e quei parametri, che crescono col quadrato del numero di serie, li
+paghi lo stesso.
 
 Esiste un test per verificarlo, e prende il nome dall'economista Clive Granger.
 Il nome, però, è la cosa più sbagliata che ha: si dice «causalità di Granger»,
@@ -954,6 +969,13 @@ meno, la settimana scorsa ancora meno, e così via a scendere. A ogni passo
 indietro il peso si riduce di una stessa frazione, come un ricordo che sbiadisce
 sempre allo stesso ritmo: nitido ieri, sfocato la settimana scorsa, quasi niente
 un anno fa.
+
+Il conto non chiede di tenere il registro di tutti i giorni passati: basta un
+numero, la stima di ieri, che ogni sera si sposta un poco verso quello che è
+appena successo. Quanto poco lo decide una manopola. Girata tutta da un lato, il
+metodo insegue ogni sussulto e dimentica in fretta; tutta dall'altro, è lento a
+cambiare idea. Messa a 30 su 100, la manopola dà a ieri un peso di 30,
+all'altro ieri di 21, al giorno prima di quasi 15, e così a scendere.
 
 La versione base tiene conto solo del **livello** (dove sta la serie ora). Ma se
 la serie sale con costanza, ti serve anche una stima di *quanto* sale: aggiungi
@@ -1117,13 +1139,16 @@ quegli scarti restasse ancora una regolarità, ed è per questo che guardarli è
 passo che non si salta.
 
 La seconda: con cinquecento osservazioni la stima è buona, con cinquanta lo è
-molto meno. Il conto qui sopra, a cinquecento, dà $0{,}635$ contro un vero $0{,}6$, cioè
-un po’ alto,
-ma una prova sola non dice niente sul metodo: dice cosa è capitato questa volta.
+molto meno. La prova con cinquecento dà $0{,}635$ contro un vero $0{,}6$, cioè
+un po’ alto, ma una prova sola non dice niente sul metodo: dice cosa è capitato
+questa volta.
 È ripetendo l'esperimento tante volte che salta fuori il difetto vero, e il
 difetto vero punta dalla parte opposta: la media delle stime cade **sotto** il
-valore vero, e ci cade tanto più quanto la serie è corta. Molte serie reali sono
-corte, e vale la pena saperlo prima di fidarsi del numero.
+valore vero, e ci cade tanto più quanto la serie è corta. Il colpevole è il modo
+stesso di fare il conto: il valore di ieri, quello che facciamo da guida, porta
+già dentro la scossa di ieri. Guida e scossa non sono estranee, e la retta che
+ne esce viene un filo più piatta di quella vera. Molte serie reali sono corte, e
+chi legge quel numero deve saperlo.
 
 `````
 
@@ -1132,7 +1157,7 @@ corte, e vale la pena saperlo prima di fidarsi del numero.
 Due precisazioni, perché il numero è giusto ma il metodo ha un limite che va
 detto proprio nel regime in cui vive gran parte delle serie reali.
 
-La prima: l'avvertimento della scheda su SARIMAX («una regressione lineare
+La prima: l'avvertimento sul SARIMAX («una regressione lineare
 ordinaria su dati temporali dà coefficienti con errori standard sbagliati») qui
 non morde, perché in un AR(1) ben specificato l'errore è rumore bianco per
 costruzione, ed è quando l'errore ha struttura che gli errori standard ordinari
@@ -1186,10 +1211,10 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
   (la funzione di autocorrelazione), quanto oggi assomiglia ai giorni passati, e
   la **PACF** (l'autocorrelazione parziale), quanto ci assomiglia al netto degli
   effetti a catena (il nonno e il nipote, scontato il padre). Si leggono in
-  coppia, perché nessuno dei due da solo dice tutto: quello dei valori passati
-  si riconosce dalla PACF che si schiaccia di colpo, quello degli urti dall'ACF
-  che si schiaccia di colpo, e dove si schiaccia è lì che finisce la memoria di
-  quel tipo.
+  coppia, perché nessuno dei due da solo dice tutto: quando la memoria è di un
+  tipo solo, quella dei valori passati si riconosce dalla PACF che si schiaccia
+  di colpo, quella degli urti dall'ACF che si schiaccia di colpo, e dove si
+  schiaccia è lì che quella memoria finisce.
 - Ci sono due memorie. Quella dei **valori** passati (l'autoregressione: domani
   somiglia a oggi, con un rientro verso la media) e quella degli **urti**
   passati (la media mobile: lo sciopero si fa sentire ancora domani, meno
@@ -1238,10 +1263,11 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
   **detrendizzare** contro un trend **deterministico**. Scambiarle
   sovradifferenzia, cioè lascia $\rho_1 = -0{,}5$ e varianza doppia, con
   $\theta$ inchiodato sul bordo dell'invertibilità. Si testa con ADF e KPSS, che
-  hanno ipotesi nulle **opposte**. **ACF** e **PACF** diagnosticano gli ordini:
-  la PACF si annulla dopo il ritardo $p$ di un AR, l'ACF dopo il ritardo $q$ di
-  un MA, e «annullarsi» vuol dire cadere dentro $\pm 1{,}96/\sqrt{n}$, che è una
-  banda **puntuale**.
+  hanno ipotesi nulle **opposte**. **ACF** e **PACF** diagnosticano gli ordini
+  sui processi **puri**: la PACF si annulla dopo il ritardo $p$ di un AR, l'ACF
+  dopo il ritardo $q$ di un MA, e «annullarsi» vuol dire cadere dentro
+  $\pm 1{,}96/\sqrt{n}$, che è una banda **puntuale**; su un ARMA non si annulla
+  nessuna delle due, e gli ordini si scelgono con una griglia.
 - **AR($p$)** spiega il valore con i $p$ passati; **MA($q$)** con i $q$ errori
   passati; **ARIMA($p,d,q$)** unisce i due sulla serie differenziata $d$ volte,
   e **SARIMA** aggiunge i termini stagionali al ritardo $m$ {cite}`box2015time`.
@@ -1255,9 +1281,11 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
   trasformazioni non entrano nella griglia.
 - **SARIMAX** aggiunge variabili **esogene** (una regressione il cui errore ha
   a sua volta struttura temporale), al prezzo di doverne conoscere i valori
-  futuri. **VAR($p$)** modella $N$ serie insieme, con $pN^2$ parametri, ed è
-  utile solo se le serie si aiutano a vicenda: lo verifica il test di
-  **Granger**, che è un test di **esclusione** sui ritardi incrociati, non di
+  futuri. **VAR($p$)** modella $N$ serie insieme, con $pN^2$ parametri: se i
+  **ritardi incrociati** non aiutano, il modello resta lecito (e con innovazioni
+  correlate contemporaneamente aggiunge ancora qualcosa), ma quei parametri si
+  pagano lo stesso. Che i ritardi incrociati servano lo dice il test di
+  **Granger**, che è un test di **esclusione** su quei coefficienti, non di
   validità del modello, e che misura **precedenza predittiva**, non causalità.
 - Il **lisciamento esponenziale** pesa il passato con pesi che **decadono
   esponenzialmente**: SES (solo livello), Holt (livello + trend), Holt-Winters

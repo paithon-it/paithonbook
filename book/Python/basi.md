@@ -44,8 +44,8 @@ il nome di **mutabilità**, ed è all'origine di parecchi errori dei primi
 giorni. Una stringa non si può cambiare: si può solo fabbricarne una nuova a
 partire da quella vecchia, che resta intatta. Una lista invece si cambia sul
 posto, e chi la stava guardando da un altro nome vede il cambiamento. Detta
-così sembra una sottigliezza; è invece la ragione per cui, più avanti in questa
-pagina, una funzione riuscirà a modificare la lista che le passi e non la
+così sembra una sottigliezza; è invece la ragione per cui, quando arriveremo
+alle funzioni, ne vedrai una modificare la lista che le passi e non la
 stringa.
 
 ```python
@@ -119,6 +119,14 @@ Nessuna cerimonia, nessuna dichiarazione anticipata: assegni e vai. Questo modo
 di fare ha un nome, *tipizzazione dinamica*, e vuol dire soltanto che il tipo lo
 decide il valore, non una dichiarazione scritta da te. È una delle ragioni per
 cui Python è veloce da scrivere.
+
+E niente impedisce di mettere due etichette sullo stesso valore: `b = a`
+attacca il secondo nome alla stessa cosa a cui è attaccato il primo, senza
+fabbricare niente di nuovo. Con i numeri la differenza non si sente; con una
+lista si sente eccome, perché la lista si cambia sul posto: se `a` è `[1, 2]`
+e dopo `b = a` scrivi `b.append(3)`, anche `a` adesso è `[1, 2, 3]`. La lista
+è una sola, con due etichette attaccate sopra, e chi la guarda da `a` vede
+quello che è successo passando da `b`.
 
 `````
 
@@ -446,7 +454,7 @@ saluta(saluto="Salve", nome="Ada")   # -> "Salve, Ada!"
 
 `````{tab} Elementare
 
-Immagina una funzione come una **macchinetta**: dentro metti gli ingredienti
+Una funzione lavora come una **macchinetta**: dentro metti gli ingredienti
 (gli argomenti), esce un risultato. `area_rettangolo` prende base e altezza,
 restituisce l'area.
 
@@ -455,10 +463,9 @@ Il **valore di default** è un ingrediente preimpostato: `saluto="Ciao"` signifi
 lasciar decidere alla funzione, oppure passare il tuo saluto.
 
 C'è però un punto in cui l'immagine della macchinetta inganna, ed è la
-mutabilità annunciata all'inizio della pagina. Una macchinetta vera non tocca
-gli ingredienti che le hai dato; una funzione Python, se l'ingrediente è una
-**lista**, può modificartela per davvero, perché la lista che riceve non è una
-copia, è la tua.
+mutabilità. Una macchinetta vera non tocca gli ingredienti che le hai dato;
+una funzione Python, se l'ingrediente è una lista, può modificartela per
+davvero, perché la lista che riceve non è una copia, è la tua.
 
 ```python
 def aggiungi_zero(fila):
@@ -614,16 +621,19 @@ imparare a leggere in Python, perché la si incontra più spesso di qualunque
 altra.
 
 E si può fare di meglio che schiantarsi: mettere un **paracadute** attorno
-alla riga che può cadere. Si scrive `try:` («prova»), e sotto, con
-`except:` («se è andata male»), che cosa fare invece. Il paracadute si mette
-attorno alla riga fragile, non attorno al programma intero: un paracadute che
-copre tutto nasconde anche gli errori che avresti voluto vedere.
+alla riga che può cadere. Si scrive `try:` («prova»), e sotto, con `except`
+(«se è andata male»), che cosa fare invece, nominando l'incidente che ci si
+aspetta: `except KeyError:` si legge «se la chiave non c'era». Il paracadute si
+mette attorno alla riga fragile, non attorno al programma intero, e si apre per
+quell'incidente e per quello solo: un paracadute che copre tutto nasconde anche
+gli errori che avresti voluto vedere.
 
 `````
 
 `````{tab} Superiore
 
-Il costrutto è `try`/`except`, e la regola d'oro è catturare **poco**:
+Il paracadute, in codice, è il costrutto `try`/`except`, e la regola d'oro è
+catturare **poco**:
 
 - si dichiara sempre *quale* eccezione si sta aspettando (`except KeyError:`),
   perché un `except:` nudo prende qualunque cosa, compreso il `Ctrl+C` con cui
@@ -635,7 +645,7 @@ Il costrutto è `try`/`except`, e la regola d'oro è catturare **poco**:
 - i rami facoltativi: `else` gira solo se il `try` è filato liscio, `finally`
   gira **comunque**, ed è il posto delle pulizie (chiudere un file, rilasciare
   una risorsa). Il mestiere di `finally` è esattamente quello che il
-  costrutto `with`, più sotto, automatizza.
+  costrutto `with` automatizza.
 
 Lo stile che ne esce ha un nome, **EAFP** (*easier to ask forgiveness than
 permission*): si prova e si gestisce il fallimento, invece di controllare
@@ -764,14 +774,14 @@ speciale, è la scorciatoia con cui si dice «prendi questa funzione, passala a
 
 `````{tab} Elementare
 
-Questa è la parte più tosta della pagina, e conviene affrontarla in tre passi
-invece che in uno. Se il terzo non scende subito, non è un problema: si va
-avanti e si torna qui quando in PyTorch comparirà la prima `@`.
+Al banco all'ingresso di un laboratorio c'è un custode con un cronometro. Chi
+vuole parlare con la ricercatrice della stanza in fondo passa di lì: il custode
+fa partire il cronometro, lo lascia entrare e all'uscita segna quanto è durata
+la visita. La ricercatrice lavora come sempre e del cronometro non sa niente.
 
-**Primo passo: una funzione è un valore come gli altri.** Fin qui abbiamo
-sempre *chiamato* le funzioni, mettendo le parentesi dopo il nome. Ma il nome
-da solo, senza parentesi, è a sua volta un valore: lo puoi assegnare, e lo puoi
-passare a qualcun altro esattamente come passeresti un numero.
+Il banco si regge su due fatti che in Python valgono per tutte le funzioni. Il
+nome di una funzione è la targa sulla porta: le parentesi sono il bussare, e
+una targa si stacca e si riappende altrove senza che la stanza cambi.
 
 ```python
 def buongiorno():
@@ -781,10 +791,10 @@ copia = buongiorno    # nessuna parentesi: non la chiamo, le do un secondo nome
 copia()               # -> 'Buongiorno!'   chiamare 'copia' chiama 'buongiorno'
 ```
 
-**Secondo passo: una funzione può fabbricarne un'altra.** Se una funzione può
-essere passata in giro, allora può anche essere il *risultato* di un'altra
-funzione. E la funzione fabbricata si ricorda di ciò che c'era attorno a lei
-quando è nata:
+L'altro fatto: un banco si costruisce su ordinazione, e l'ordinazione se la
+ricorda per sempre. Chiedine uno tarato sul 3 e triplica tutto quello che gli
+passa davanti, anche quando l'officina ha chiuso da un pezzo: il cinque che
+entra esce quindici.
 
 ```python
 def moltiplicatore(n):        # fabbrica funzioni, non numeri
@@ -796,11 +806,8 @@ triplica = moltiplicatore(3)  # ora 'triplica' e' una funzione
 triplica(5)                   # -> 15
 ```
 
-**Terzo passo: il decoratore.** È esattamente il meccanismo del secondo passo,
-con l'unica differenza che ciò che la funzione-fabbrica riceve è a sua volta
-una funzione. L'analogia è la cover del telefono: il telefono resta identico,
-ma tutto ciò che gli arriva passa prima dalla cover, che può aggiungere
-qualcosa senza che il telefono ne sappia niente.
+Il custode col cronometro esce dalla stessa officina, e stavolta l'ordinazione
+è una porta invece che un numero.
 
 ```python
 import time
@@ -821,22 +828,21 @@ def addestra():
 addestra()        # stampa il tempo (circa 0.30 s), poi restituisce 'fatto'
 ```
 
-Due cose spiegano la forma strana di questo codice. L'involucro è scritto
-*dentro* `cronometra` perché deve ricordarsi quale funzione sta avvolgendo, e
-lo può fare solo se nasce lì; e `cronometra` restituisce l'involucro senza
-chiamarlo (`return involucro`, senza parentesi) perché il suo compito è
-consegnare la funzione nuova, non eseguirla.
+Il banco, nel codice, si chiama `involucro`, e sta dentro `cronometra` perché
+è lì che gli viene detta la porta: solo nascendo lì se la ricorda. E
+`cronometra` finisce con
+`return involucro`, senza parentesi: consegna il banco senza farci passare
+nessuno.
 
-La riga `@cronometra` non è sintassi magica: è una scorciatoia per
-`addestra = cronometra(addestra)`, cioè «prendi questa funzione, dalla a
-`cronometra`, e da qui in poi chiama «addestra» quello che ne torna». Tutto
-qui.
+La riga `@cronometra` è la targa nuova, e vale
+`addestra = cronometra(addestra)`: da quel momento chi cerca `addestra` trova
+il banco. Dietro c'è ancora la funzione di prima, che dorme i suoi tre decimi
+di secondo e risponde `"fatto"`, mentre sul foglio del custode finisce 0.30.
 
-Quando in PyTorch vedrai `@torch.no_grad()`, saprai leggerlo: quella funzione
-viene avvolta in qualcosa che, per la durata della chiamata, spegne il calcolo
-dei **gradienti** (le quantità con cui una rete neurale impara: le vedremo nei
-capitoli sulle reti, e spegnerle serve quando la rete non deve più imparare ma
-solo rispondere).
+`@torch.no_grad()` mette al banco un custode di un altro mestiere: per la
+durata della visita tiene spento il calcolo dei **gradienti**, le quantità con
+cui una rete neurale impara, e all'uscita lo riaccende. Serve quando la rete
+deve solo rispondere e non più imparare.
 
 `````
 
@@ -965,10 +971,8 @@ quando si prova a far fare più cose insieme allo stesso programma.
 
 `````{tab} Elementare
 
-Un computer moderno ha molti nuclei di calcolo, e viene naturale pensare che
-per andare più veloci basti dividere il lavoro fra loro. In Python la cosa non
-funziona come ci si aspetta, e la ragione ha un nome: il **GIL**, il *global
-interpreter lock*, che si può tradurre come «il lucchetto dell'interprete».
+Le tre lettere sono **GIL**, *global interpreter lock*: «il lucchetto
+dell'interprete».
 
 L'immagine giusta è una cucina professionale con un solo coltello. Puoi
 assumere quattro cuochi, ma il coltello è uno: mentre uno taglia, gli altri
@@ -995,11 +999,11 @@ avviano una volta sola e si tengono, invece di crearne uno per ogni pezzetto di
 lavoro.
 
 E c'è un'ultima cosa, che è il motivo per cui in pratica il problema si sente
-molto meno di quanto questa spiegazione faccia temere: quando il conto vero
-avviene dentro NumPy o PyTorch, quelle librerie **posano il coltello** prima di
-mettersi a calcolare, perché il calcolo lo fanno in C e non hanno bisogno
-dell'interprete. Nel codice che conta per questo libro, insomma, il lucchetto è
-aperto quasi sempre.
+molto meno di quanto la cucina con un coltello solo faccia temere: quando il
+conto vero avviene dentro NumPy o PyTorch, quelle librerie **posano il
+coltello** prima di mettersi a calcolare, perché il calcolo lo fanno in C e
+non hanno bisogno dell'interprete. Nel codice che addestra modelli e macina
+numeri, insomma, il lucchetto è aperto quasi sempre.
 
 `````
 

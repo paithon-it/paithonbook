@@ -79,6 +79,21 @@ fotografie e mescola tutti i duecento ritagli sul tavolo. Il gioco è: per ogni
 ritaglio, ritrovare il suo gemello, cioè l'altro pezzo che veniva dalla stessa
 foto.
 
+Per confrontarli non li tieni affiancati: di ogni ritaglio scrivi una
+descrizione, e per giocare ne usi soltanto un estratto di poche parole. Il
+punteggio si fa sull'estratto. Un estratto così corto impara in fretta a
+lasciar fuori quello che al gioco non serve, per esempio da che punto della
+foto viene il pezzo, visto che il gemello viene sempre da un punto diverso.
+Per questo, finita la partita, quello che si tiene è la descrizione intera: a
+un'altra domanda, per dire «dov'è il gatto», le cose lasciate fuori possono
+servire.
+
+Resta da decidere quanto sei severo nel dire «questi due si somigliano». Se
+accetti solo somiglianze quasi perfette, gli unici rivali che contano davvero
+sono i due o tre che al gemello assomigliano moltissimo, e la partita si gioca
+contro di loro. Se sei di manica larga, tutti gli altri ritagli pesano un
+pochino e nessuno pesa davvero.
+
 Nessuno ha dovuto dire che nella foto c'era un gatto: la risposta giusta la
 conosciamo per costruzione, perché i due ritagli li abbiamo fatti noi. Eppure
 per vincere bisogna capire parecchio: che muso e coda appartengono allo stesso
@@ -121,11 +136,14 @@ $$
 $$
 
 dove $\mathbf{z}_i$ e $\mathbf{z}_j$ sono le proiezioni delle due viste della stessa immagine,
-$\mathrm{sim}$ è la similarità coseno, $\tau > 0$ la temperatura e la somma al
-denominatore corre sulle altre $2N-1$ viste del batch, che fanno da
-**negativi**. La perdita totale è la media di $\ell_{i,j}$ su tutte le $2N$
-coppie ordinate. È la stessa InfoNCE che il libro usa per allineare immagini e
-didascalie, con una differenza sostanziale: là il positivo è la didascalia
+$\mathrm{sim}$ è la similarità coseno e $\tau > 0$ la temperatura, che regola
+quanto il denominatore sia dominato dai termini più simili all'ancora: al
+calare di $\tau$ pesano quasi soltanto i rivali che al gemello assomigliano di
+più. La somma corre sulle altre $2N-1$ viste del batch, cioè la gemella
+$\mathbf{z}_j$ e le $2N-2$ che fanno da **negativi**. La perdita totale è la
+media di $\ell_{i,j}$ su tutte le $2N$ coppie ordinate. È la stessa InfoNCE che
+il libro usa per allineare immagini e didascalie, con una differenza
+sostanziale: là il positivo è la didascalia
 scritta da una persona, qui è una seconda copia deformata della stessa immagine.
 La supervisione non viene dal linguaggio, viene dalla trasformazione.
 
@@ -183,9 +201,8 @@ senza capire *niente* di quello che raffigurano.
 È il tipo di scorciatoia che rovina un pretesto: il modello vince il gioco e non
 impara nulla di utile. Il rimedio è togliergli l'indizio, cambiando il colore
 dei due ritagli in modo indipendente, uno più caldo e uno più freddo. A quel
-punto la tinta non è più una prova, e l'unica informazione rimasta per
-riconoscere il gemello è quella che volevamo fin dall'inizio: la forma delle
-cose.
+punto la tinta non basta più a decidere, e per ritrovare il gemello resta
+soprattutto quello che volevamo fin dall'inizio: la forma delle cose.
 
 `````
 
@@ -300,8 +317,8 @@ negativi devono essere per forza i compagni di batch?
 
 `````{tab} Elementare
 
-Immagina di dover riconoscere il ritaglio gemello non fra i duecento che hai sul
-tavolo adesso, ma fra tutti quelli visti nell'ultima ora, tenuti in una scatola
+Il gemello non lo cerchi più fra i duecento ritagli che hai sul tavolo
+adesso, ma fra tutti quelli visti nell'ultima ora, tenuti in una scatola
 che funziona come una coda: ogni volta che ne arrivano di nuovi li metti sopra e
 butti via i più vecchi, così resta grande sempre uguale, comunque sia grande il
 mazzo che guardi in una volta sola.
@@ -319,12 +336,9 @@ scatola resti confrontabile.
 `````{tab} Superiore
 
 **MoCo** {cite}`he2020momentum` riformula l'apprendimento contrastivo come la
-costruzione di un **dizionario dinamico**. Una nota sulle date, perché l'ordine
-in cui questa sezione presenta i metodi è logico e non cronologico: MoCo esce in
-preprint nel novembre 2019 e SimCLR nel febbraio 2020, quindi la coda non è una
-risposta a SimCLR ma una soluzione indipendente al medesimo problema, che allora
-si poneva rispetto ai *memory bank* della generazione precedente.
-La vista-ancora passa in un encoder
+costruzione di un **dizionario dinamico**. Il preprint è del novembre 2019,
+quello di SimCLR del febbraio 2020: il termine di paragone di allora erano i
+*memory bank* della generazione precedente. La vista-ancora passa in un encoder
 $f_{\theta_q}$ che produce la *query* $\mathbf{q}$; le altre viste passano in un secondo
 encoder $f_{\theta_k}$ che produce le *chiavi*, accumulate in una **coda** FIFO
 di dimensione fissa (nel lavoro originale $K = 65\,536$ elementi): a ogni passo
@@ -474,48 +488,46 @@ nuovo la copia lenta dello studente. Da qui il nome, DINO
 
 `````{tab} Elementare
 
-Cambia la forma del compito. L'insegnante non compila più una scheda libera:
-sceglie fra un elenco fisso di caselle (sessantacinquemila, nel lavoro
-originale: il numero è una scelta di progetto, e conviene che sia grande
-perché il modello possa fare distinzioni fini) e
-distribuisce la sua fiducia fra quelle («70% la casella 4012, 20% la 891, il
-resto sparso»). Le caselle non significano niente in partenza, nessuno ha detto
-che cosa sono: è il modello a decidere, addestrandosi, che cosa finisce dove.
-L'allievo vede un ritaglio diverso e deve produrre la stessa ripartizione.
+Stesso banco, stessa foto, due ritagli diversi. Cambia il foglio: al posto della
+riga scritta a mano c'è un modulo prestampato con sessantacinquemila caselle, e
+l'insegnante ci ripartisce sopra la fiducia che ha («70% la casella 4012, 20% la
+891, il resto sparso»). Che cosa sia la 4012 non l'ha stabilito nessuno: lo
+decide lui, mettendoci dentro sempre le stesse cose. All'allievo tocca un modulo
+identico, un altro ritaglio, e la consegna di riempirlo uguale.
 
-Restano due modi di barare, e a ciascuno corrisponde una contromisura. Vediamoli
-con tre caselle invece di sessantacinquemila, che il conto si segue a mente.
+I due ritagli non sono alla pari: all'insegnante ne tocca sempre uno grande, che
+copre più di metà della foto, all'allievo capitano anche ritagli minuscoli. Da
+un pezzetto di pelo deve indovinare le percentuali di chi aveva davanti mezzo
+cane.
 
-Il primo modo è mettere sempre tutto nella stessa casella: se l'insegnante
-risponde «100% la prima» su qualunque immagine, indovinare è banale e nessuno
-dei due ha guardato niente. La contromisura è tenere il conto di quanto
-l'insegnante ha usato ciascuna casella finora e **togliere quella media** prima
-di leggere la risposta. Se la prima casella se la gioca sempre lui, il conto
-medio la penalizza: dove diceva «$0{,}9$, $0{,}05$, $0{,}05$», tolta la media
-$(0{,}9,\ 0{,}05,\ 0{,}05)$ resta $(0,\ 0,\ 0)$, cioè nessuna informazione, e
-quella strada smette di pagare.
+Un modulo così si riempie anche senza guardare, in due modi opposti, e a
+ciascuno tocca una guardia. Con tre caselle invece di sessantacinquemila il
+conto si segue a mente.
 
-Il secondo modo è l'opposto, e nasce proprio dalla cura: spalmare la fiducia in
-parti uguali, «33% ciascuna», che è un altro modo di non dire niente. La
-contromisura è rendere la risposta dell'insegnante **più decisa**, allargando le
-differenze fra le caselle prima di passarla all'allievo: dove lui aveva
-$(0{,}40,\ 0{,}35,\ 0{,}25)$, quello che arriva all'allievo è più vicino a
-$(0{,}49,\ 0{,}35,\ 0{,}15)$, con la prima casella salita, l'ultima scesa e il
-distacco fra le due più che raddoppiato. Le due correzioni tirano in direzioni
-opposte e si tengono a vicenda.
+Il primo trucco è segnare sempre la stessa casella. Con «100% la prima» su
+qualunque foto l'allievo indovina a occhi chiusi, e nessuno dei due ha guardato
+niente. La guardia è un registro di quanto l'insegnante ha usato ciascuna
+casella finora, e quella media gli si toglie dal modulo prima che il foglio
+passi all'allievo: dove aveva scritto $(0{,}9,\ 0{,}05,\ 0{,}05)$, tolta la
+media $(0{,}9,\ 0{,}05,\ 0{,}05)$ resta $(0,\ 0,\ 0)$, un foglio che non dice
+niente, e la scorciatoia smette di pagare.
 
-E c'è un fenomeno che vale la pena raccontare, il più sorprendente di questa
-storia. Una famiglia di reti che il libro incontrerà nel capitolo sui
-Transformer lavora dividendo l'immagine in tessere e decidendo, a ogni
-passaggio, quanto guardare ciascuna: quella decisione è un numero per tessera,
-e siccome è un numero si può colorare, ottenendo una specie di mappa di calore
-di dove la rete stava guardando. Se si disegna quella mappa per una rete
-addestrata con questo gioco, ci si vedono comparire i **contorni degli
-oggetti**: la sagoma del cane staccata dallo sfondo, con una precisione che
-nessuno ha chiesto. Nel materiale di addestramento non c'era una sola immagine
-ritagliata a mano, e il perché è comprensibile: fra un ritaglio e l'altro
-l'unica cosa che resta uguale è il soggetto, mai lo sfondo, quindi al gioco
-conviene imparare a isolarlo.
+Il secondo trucco nasce dalla guardia stessa: spalmare la fiducia in parti
+uguali, «33% ciascuna», dove nessuna casella dice più delle altre. Contro questo
+c'è una seconda mano sul foglio, che prima della consegna allarga le differenze.
+Dove l'insegnante aveva messo $(0{,}40,\ 0{,}35,\ 0{,}25)$, all'allievo arriva
+qualcosa di più vicino a $(0{,}49,\ 0{,}35,\ 0{,}15)$: prima casella salita,
+ultima scesa, distacco fra le due più che raddoppiato. Le due mani tirano in
+direzioni opposte e si tengono a vicenda.
+
+E poi succede una cosa che nessuno aveva chiesto. L'allievo, dentro, taglia la
+foto in tessere e a ogni passaggio decide quanto guardare ciascuna (sono le reti
+chiamate Transformer): è un numero per tessera, e un numero si può colorare.
+Colorata la foto di un allievo cresciuto a questo gioco, ci si vedono comparire
+i contorni degli oggetti, la sagoma del cane staccata dallo sfondo. Ritagliare a
+mano gli oggetti, nel materiale di addestramento, non l'aveva fatto nessuno. Fra
+un ritaglio e l'altro l'unica cosa che resta uguale è il soggetto, mai lo
+sfondo: per riempire il modulo come il compagno conviene imparare a isolarlo.
 
 `````
 
@@ -545,12 +557,12 @@ oppongono l'una all'altra. Il **centering** sottrae un vettore $\mathbf{c}$,
 aggiornato come media mobile della media del batch,
 
 $$
-\mathbf{c} \;\leftarrow\; m\, \mathbf{c} + (1 - m)\,
+\mathbf{c} \;\leftarrow\; m_c\, \mathbf{c} + (1 - m_c)\,
 \frac{1}{N}\sum_{i=1}^{N} g_{\theta_t}(\mathbf{x}_i),
 $$
 
-dove $N$ è, come sopra, la dimensione del batch e $m$ un coefficiente di media
-mobile: il
+dove $N$ è, come sopra, la dimensione del batch e $m_c$ il coefficiente di
+media mobile del centro: il
 centro insegue la risposta media dell'insegnante e impedisce che una coordinata
 domini per tutte le immagini. Da solo, però, spinge verso la distribuzione
 uniforme. Lo **sharpening** fa l'opposto: la temperatura dell'insegnante è
@@ -604,6 +616,12 @@ l'unico che si tiene: il piccolo si butta via, perché serviva solo a definire
 il compito. Nascondere tanto rende l'esercizio più difficile *e* più
 economico, cosa che quasi mai capita.
 
+Un prezzo però c'è, ed è nella richiesta stessa di ridisegnare i pixel. Sotto
+le tessere coperte non c'è soltanto la zampa del cane: ci sono anche il
+pulviscolo sul vetro e il riflesso della lampada, che nessuno saprebbe
+indovinare e che non dicono niente su che cosa raffigura la foto. Il modello
+spende una parte della sua capacità anche lì.
+
 `````
 
 `````{tab} Superiore
@@ -620,13 +638,13 @@ definire il compito.
 
 Le due proprietà si sostengono a vicenda. La ridondanza spaziale del segnale
 implica che con una frazione mascherata bassa il compito sia risolvibile per
-estrapolazione locale, senza alcuna rappresentazione semantica; per lo stesso
+interpolazione locale, senza alcuna rappresentazione semantica; per lo stesso
 motivo il testo, discreto e denso di informazione, si accontenta del 15% di BERT
 {cite}`devlin2019bert`, e il parlato sta nel mezzo (wav2vec 2.0 maschera circa
 la metà dei tratti). E poiché l'encoder elabora solo il 25% dei token, il costo
 del passaggio in avanti scende **all'incirca in proporzione**, e appena di più.
-Vale la pena essere precisi, perché il quadratico dell'attenzione fa spesso dire
-più di quanto sia vero: in un blocco Transformer quasi tutte le moltiplicazioni
+Il quadratico dell'attenzione fa spesso dire più di quanto sia vero: in un
+blocco Transformer quasi tutte le moltiplicazioni
 (proiezioni $\mathbf{Q}$, $\mathbf{K}$, $\mathbf{V}$, proiezione d'uscita, MLP) sono **lineari** in $N$, e
 solo il prodotto $N \times N$ fra query e chiavi è quadratico. È quest'ultimo, e
 soltanto lui, a scendere a un sedicesimo passando da $N$ a $N/4$; ma alle taglie
@@ -669,8 +687,8 @@ mani legate. Si prende l'encoder e lo si blocca: da qui in poi non impara più
 nulla. Poi gli si affianca un giudice fatto apposta debole: un classificatore
 così semplice che da solo non saprebbe riconoscere niente, perché tutto quello
 che sa fare è tracciare una linea dritta fra i riassunti che l'encoder produce
-(i gatti di qua, i cani di là), aiutandosi con le etichette di un piccolo
-dataset di prova. Se un giudice così sprovveduto supera l'esame, il merito non
+(i gatti di qua, i cani di là), aiutandosi con le etichette di un insieme di
+foto di prova. Se un giudice così sprovveduto supera l'esame, il merito non
 può essere suo: vuol dire che nei riassunti dell'encoder gatti e cani erano
 **già** separati. La debolezza del giudice è la garanzia dell'esame.
 
@@ -693,8 +711,8 @@ l'informazione era **già dentro** la rappresentazione, e in una forma
 direttamente utilizzabile, perché il classificatore lineare non ha nessuna
 capacità di costruirla da sé. La debolezza dello strumento è il suo pregio.
 
-Va detto con altrettanta chiarezza che il sondaggio misura una cosa precisa, la
-**separabilità lineare**, non tutta l'informazione presente. Un encoder può
+Il sondaggio però misura una cosa precisa, la **separabilità lineare**, non
+tutta l'informazione presente. Un encoder può
 codificare il contenuto di un'immagine in una forma che va letta con una
 funzione non lineare, e la sonda lo penalizzerebbe: infatti i metodi
 generativi come il MAE tendono a fare peggio sotto sonda lineare che sotto

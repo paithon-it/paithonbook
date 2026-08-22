@@ -36,7 +36,9 @@ livello della benzina. Ti dicono se la macchina *funziona come macchina*: si
 accende, non fuma, risponde all'acceleratore. Per un modello è la stessa cosa:
 il servizio è vivo? Risponde in fretta? Ogni tanto va in errore? Queste spie
 si accendono in un istante e non hanno bisogno di sapere niente di *dove* stai
-andando.
+andando. E «in fretta» non si misura sulla media: una macchina che parte al
+primo colpo novantanove volte su cento, e alla centesima ti pianta in mezzo
+all'incrocio, in media parte benissimo.
 
 Il **secondo quadrante** ti dice come stai guidando *adesso*: che tipo di
 strada è, quante curve, quanto vai piano. Per un modello: che tipo di
@@ -51,6 +53,11 @@ volevi andare. Per un modello è la qualità vera: aveva ragione? E la risposta
 giusta (l'utente ha davvero cliccato, il paziente era davvero malato) spesso
 arriva con giorni o settimane di ritardo. A volte non arriva mai.
 
+Il secondo quadrante si muove mentre sei ancora in strada e puoi accostare; il
+terzo parla a viaggio finito. Per questo le spie di mezzo contano più di
+quanto sembrino: sono le sole che si accendono quando puoi ancora fare
+qualcosa.
+
 `````
 
 `````{tab} Superiore
@@ -61,7 +68,7 @@ e per latenza {cite}`breck2017ml`.
 1. **Metriche di sistema** (salute del servizio). Sono le stesse dell'ingegneria
    dei sistemi distribuiti: **latenza** (di norma i percentili, $p_{50}$ e
    soprattutto $p_{99}$, non la media, che nasconde le code lente), **tasso di
-   errore** (risposte $5xx$, eccezioni, timeout), **throughput** e **uptime**.
+   errore** (risposte 5xx, eccezioni, timeout), **throughput** e **uptime**.
    Non dicono nulla sulla *correttezza* delle predizioni, ma sono disponibili in
    tempo reale e sono la prima cosa che si rompe.
 
@@ -85,9 +92,9 @@ e per latenza {cite}`breck2017ml`.
 
 `````
 
-I quadranti due e tre sono i controlli già abbozzati nella sezione «Quando i
+I livelli due e tre sono i controlli già abbozzati nella sezione «Quando i
 dati cambiano» (che cosa entra, che cosa esce, quanto si sbaglia), qui resi più
-precisi. Il quadrante uno invece è nuovo, ed è lo strato più prosaico e più
+precisi. Il livello uno invece è nuovo, ed è lo strato più prosaico e più
 spesso dimenticato di tutti. Un modello può servire predizioni perfette e restare
 inutile: perché risponde in tre secondi quando l'utente ne aspetta uno, o
 perché va in errore su un input malformato che nessuno aveva previsto. La
@@ -144,10 +151,19 @@ dice a nessuno che cosa fare.
 
 Il detective è come il metal detector all'aeroporto: non deve sapere *che
 cosa* porti in valigia, gli basta accorgersi che qualcosa è diverso dal solito
-e far scattare un bip. Ma un metal detector va tarato con giudizio. Se è
-troppo sensibile suona per la fibbia della cintura di tutti, e dopo il decimo
-falso allarme le guardie smettono di dargli retta, che è il modo peggiore di
-fallire. Se è troppo sordo lascia passare il coltello. Tararlo bene significa
+e far scattare un bip.
+
+«Il solito» però va scelto, e poi va scelto con che cosa confrontarlo. Da una
+parte si tiene ferma una settimana in cui non era successo niente: quello è il
+metro. Dall'altra c'è chi sta passando adesso, e lì si decide quanto indietro
+guardare: con gli ultimi dieci passeggeri basta una comitiva di sciatori con
+gli scarponi e sembra cambiato il mondo; con l'ultimo mese, quando l'allarme
+suona, chi doveva passare è già passato.
+
+Poi il metal detector va tarato con giudizio. Se è troppo sensibile suona per
+la fibbia della cintura di tutti, e dopo il decimo falso allarme le guardie
+smettono di dargli retta, che è il modo peggiore di fallire. Se è troppo sordo
+lascia passare il coltello. Tararlo bene significa
 scegliere la soglia giusta: abbastanza alta da non suonare per ogni respiro
 del mondo, abbastanza bassa da non perdere il cambiamento vero. E quando
 suona, serve una seconda ispezione che dica *dove* (quale tasca, quale
@@ -158,7 +174,7 @@ decidere.
 
 `````{tab} Superiore
 
-In notazione, le tre famiglie richiamate qui sopra sono il *covariate shift*
+In notazione, le tre famiglie sono il *covariate shift*
 ($P(X)$ che cambia, con $P(y \mid X)$ invariata), il *label shift* ($P(y)$ che
 cambia, con $P(X \mid y)$ invariata) e il *concept shift* ($P(y \mid X)$ che
 cambia). Le tre decisioni operative sono:
@@ -189,9 +205,9 @@ cambia). Le tre decisioni operative sono:
   *feature* nella finestra di riferimento e in quella corrente. Un'alternativa
   diffusa, basata sugli istogrammi, è il *Population Stability Index*.
 
-  Sul criterio di allarme conviene essere espliciti, perché il riflesso
-  abituale qui è quello sbagliato. Alle taglie di una finestra di produzione
-  (migliaia di record) il KS ha una potenza enorme e rifiuta l'ipotesi nulla su
+  Sul criterio di allarme il riflesso abituale è quello sbagliato. Alle taglie
+  di una finestra di produzione (migliaia di record) il KS ha una potenza
+  enorme e rifiuta l'ipotesi nulla su
   scostamenti che nessun modello sente: uno spostamento di due decimi di
   deviazione standard, su $n = 2000$ per finestra, dà tipicamente
   $p \sim 10^{-7}$, e il rifiuto arriva su ogni finestra simulata. Il problema
@@ -211,10 +227,10 @@ cambia). Le tre decisioni operative sono:
   fascia,
 
   $$
-  \mathrm{PSI} \;=\; \sum_i \,(q_i - p_i)\,\log\frac{q_i}{p_i},
+  \mathrm{PSI} \;=\; \sum_i \,(q_i - r_i)\,\log\frac{q_i}{r_i},
   $$
 
-  dove $p_i$ e $q_i$ sono le quote di riferimento e correnti nella fascia
+  dove $r_i$ e $q_i$ sono le quote di riferimento e correnti nella fascia
   $i$: una divergenza simmetrica fra le due ripartizioni, che la pratica
   legge con soglie di mestiere (sotto $0{,}1$ quiete, oltre $0{,}25$ deriva
   da guardare). E copre anche il caso a cui la KS non si applica, le colonne
@@ -293,9 +309,9 @@ soltanto l'ampiezza del segmento.
 
 `````{tab} Superiore
 
-L'altro numero è il **$p$-value**, e il paragrafo sull'eccesso di potenza qui
-sopra si vede su questa figura in un caso solo. Il valore critico al cinque per
-cento, che per finestre di uguale taglia vale circa $1{,}36\sqrt{2/n}$, a
+L'altro numero è il **$p$-value**, e l'eccesso di potenza si legge sui sei mesi
+della deriva in un caso solo. Il valore critico al cinque per cento, che per
+finestre di uguale taglia vale circa $1{,}36\sqrt{2/n}$, a
 $n = 2000$ scende a $0{,}043$: meno della metà della soglia di ampiezza
 disegnata, e già sotto il $D$ del **mese 1**, che vale $0{,}060$. Cioè il test
 rifiuta quando l'occhio non vede ancora niente.
@@ -431,13 +447,14 @@ ogni volta che si accende una spia: costoso, e spesso inutile.
 
 C'è poi una scelta di fondo su *quando* rimettere mano al modello. Un'officina
 può fare due cose: il tagliando **a scadenza fissa** (ogni diecimila chilometri,
-che tu abbia problemi o no) oppure l'intervento **solo quando qualcosa si guasta**.
-La prima è prevedibile e semplice; la seconda risparmia lavoro ma richiede spie
-affidabili. I sistemi reali quasi sempre fanno entrambe.
+che tu abbia problemi o no) oppure l'intervento a chiamata, quando qualcosa si
+guasta. Il tagliando è prevedibile e semplice, ma quello che si rompe il giorno
+dopo resta rotto fino al prossimo; la chiamata risparmia lavoro e vale quanto
+valgono le spie. I sistemi reali quasi sempre fanno entrambe.
 
-E c'è una trappola che riguarda proprio il riaddestramento fatto in automatico,
-ed è più insidiosa di quanto sembri. Un modello che decide che cosa mostrare
-alle persone decide, con quello, anche che cosa potranno mai cliccare; un
+E c'è una trappola che riguarda proprio il riaddestramento fatto in automatico.
+Un modello che decide che cosa mostrare alle persone decide, con quello, anche
+che cosa potranno mai cliccare; un
 sistema che nega un prestito non saprà mai se quel cliente avrebbe restituito i
 soldi. I dati di domani, insomma, sono in parte una conseguenza delle scelte
 che il modello sta facendo oggi. Riaddestrarlo su quei dati non lo corregge: gli
@@ -464,10 +481,10 @@ Sul *quando* riaddestrare, due strategie {cite}`shankar2022operationalizing`:
 
 Il punto delicato è l’**automazione** del retraining, che è il sogno di ogni
 *pipeline* MLOps ma nasconde una trappola già incontrata: il **feedback
-loop**. Se le predizioni del modello concorrono a generare i dati futuri, un
+loop**. Se le predizioni del modello concorrono a generare i dati futuri (un
 sistema di credito che nega prestiti non vedrà mai come sarebbero andati quei
-clienti; un sistema di raccomandazione raccoglie clic solo su ciò che ha
-deciso di mostrare, allora riaddestrare *automaticamente* su quei dati non
+clienti, un sistema di raccomandazione raccoglie clic solo su ciò che ha
+deciso di mostrare), riaddestrare *automaticamente* su quei dati non
 corregge il modello: ne **amplifica** i bias, cementandoli a ogni ciclo
 {cite}`huyen2022designing`. È la stessa dinamica che aveva ingannato Google
 Flu Trends, dove era anche il motore di ricerca, aggiornandosi, a cambiare i
@@ -498,14 +515,13 @@ serve ciascuno, perché non rispondono alla stessa domanda.
 
 `````{tab} Elementare
 
-Immagina di aver inventato un piatto nuovo per il tuo ristorante. Non lo metti nel
-menù di colpo per tutti, rischiando di rovinare la serata a duecento clienti se
-qualcosa non va. Fai una cosa più furba, in tre possibili modi.
+Hai inventato un piatto nuovo per il tuo ristorante. Non lo metti nel menù di
+colpo per tutti: se qualcosa non va, hai rovinato la serata a duecento
+clienti. Fai una cosa più furba, in tre modi.
 
-Il primo: lo **cucini in parallelo** senza servirlo (il cuoco prepara il
-piatto nuovo insieme a quello vecchio, tu lo assaggi in cucina e confronti, ma
-al tavolo arriva ancora il vecchio). Nessun cliente corre rischi. Si chiama
-*shadow*, cioè «in ombra».
+Il primo: lo **cucini in parallelo** senza servirlo (il cuoco lo prepara
+insieme al vecchio, tu lo assaggi in cucina, al tavolo arriva ancora il
+vecchio). Nessun cliente corre rischi. Si chiama *shadow*, cioè «in ombra».
 
 Il secondo: lo **fai assaggiare a pochi tavoli**. Lo metti nel piatto di due
 tavoli su cento, tieni d'occhio le loro facce, e se funziona allarghi a dieci, a
@@ -514,17 +530,19 @@ cinquanta, a tutti; se storcono il naso, lo ritiri e nessun danno è fatto. È i
 lo sentiva lui per primo.
 
 Il terzo: **due metà della sala**, stesso momento, piatto vecchio a una metà e
-nuovo all'altra, e a fine serata conti chi ha lasciato il piatto pulito. Così sai
-davvero se il nuovo è meglio, e non te lo sei immaginato. È il test *A/B*.
+nuovo all'altra, e a fine serata conti chi ha lasciato il piatto pulito. Chi va
+in quale metà lo tira a sorte il cameriere, se no stai confrontando i tavoli
+alla finestra con quelli vicino alla cucina. E se il piatto nuovo torna
+indietro sei volte su cento invece di sette, una serata sola non basta a
+distinguere sei da sette. È il test *A/B*.
 
-E adesso il pezzo che conta, cioè *quando* si usa quale. I primi due rispondono
-a una domanda sola, «il piatto nuovo fa danni?»: l'ombra la si usa quando non ci
-si fida affatto e non si vuole rischiare un cliente, i pochi tavoli quando ci si
-fida abbastanza da servirlo ma si vuole poter tornare indietro subito. Il terzo
-risponde a una domanda completamente diversa, «il piatto nuovo è *migliore*?»,
-ed è l'unico che può rispondere, perché è l'unico in cui due gruppi di persone
-vere mangiano due piatti diversi nello stesso momento. Di solito si fanno tutti
-e tre in fila, in quest'ordine.
+E *quando* si usa quale? I primi due rispondono a una domanda sola, «il piatto
+nuovo fa danni?»: l'ombra quando non ci si fida affatto, i pochi tavoli quando
+ci si fida abbastanza da servirlo ma si vuole poter tornare indietro subito. Il
+terzo risponde a un'altra domanda, «il piatto nuovo è *migliore*?», ed è
+l'unico che può rispondere,
+perché solo lì due gruppi di persone vere mangiano due piatti diversi nello
+stesso momento. Di solito si fanno tutti e tre in fila, in quest'ordine.
 
 `````
 

@@ -25,19 +25,27 @@ più una tabella di conteggi, ma una rete ricorrente con la sua memoria.
 
 `````{tab} Elementare
 
-Facciamo il gioco a voce: «Il gatto nero salta sul…». La maggior parte delle
+«Il gatto nero salta sul…»: detto a voce, la maggior parte delle
 persone completa con «muro», qualcuno con «tetto» o «divano», nessuno con
 «marmellata». Un modello di linguaggio fa esattamente questa scommessa, ma con
 i numeri: «muro» 35%, «tetto» 25%, «divano» 10%, e giù fino a briciole di
 probabilità per le parole assurde. (Le tre percentuali sono inventate qui per
-far vedere l'idea: in un modello vero escono dai conteggi, come nella sezione
-sugli *n-gram*.) Come misurare se scommette bene? Con la
+far vedere l'idea: in un modello vero le calcola la rete, che si è aggiustata
+i conti leggendo montagne di testo.) E per giudicare una frase intera si fa lo
+stesso gioco parola per parola: si scommette sulla prima, poi sulla seconda
+sapendo la prima, poi sulla terza sapendo le prime due, fino in fondo. Quanto
+la frase suona giusta lo dicono tutte quelle scommesse messe insieme.
+
+Come misurare se scommette bene? Con la
 **perplessità**, che abbiamo incontrato nei richiami di matematica e già
 usata come pagella per gli *n-gram*: dice *come se* il modello, a ogni
 parola, tirasse un dado con un
 certo numero di facce. Perplessità 20 = incerto come un dado a 20 facce;
 perplessità 5 = quasi sicuro, il dado ha solo 5 facce. Più bassa, meglio è: il
-modello ha capito la lingua abbastanza da restringere le alternative.
+modello ha capito la lingua abbastanza da restringere le alternative. Agli
+estremi, chi indovina sempre ha un dado a una faccia sola e perplessità 1;
+chi tira a caso fra le cinquantamila parole che conosce ha un dado da
+cinquantamila facce, e perplessità cinquantamila.
 
 `````
 
@@ -195,17 +203,43 @@ Gli altri esistono, sono già stati calcolati, e vengono buttati via.
 
 `````{tab} Elementare
 
-Immagina un interprete a un convegno che non può prendere appunti: ascolta
+All'interprete del convegno togliamo il blocco per gli appunti: ascolta
 l'intervento intero, lo tiene tutto a memoria e solo alla fine lo ripete in
 italiano. L'encoder è l'ascolto, il vettore di contesto è ciò che gli resta in
-testa, il decoder è la resa in italiano. Nel paper di Google c'è un dettaglio
-curioso: dare all'encoder la frase sorgente **al contrario** («muro sul salta
-nero gatto Il») migliorava nettamente le traduzioni. Perché? Così l’*inizio*
-della frase (la prima cosa che il decoder deve tradurre) viene letto per
-*ultimo*, ed è il ricordo più fresco. Un trucco che rivela il difetto di
-fondo: se la qualità dipende da quale parola è stata ascoltata più di recente,
-la memoria unica è troppo stretta. Sulle frasi brevi regge; su un discorso
-lungo l'interprete arranca, perché tutto non entra in un solo ricordo.
+testa, il decoder è la resa in italiano. Nell'articolo di Google c'è un
+dettaglio curioso: dare all'encoder la frase di partenza **al contrario**
+(«muro sul salta nero gatto Il») migliorava nettamente le traduzioni. Perché?
+Così l’*inizio* della frase (la prima cosa che il decoder deve tradurre) viene
+letto per *ultimo*, ed è il ricordo più fresco. Un trucco che rivela il
+difetto di fondo: se la qualità dipende da quale parola è stata ascoltata più
+di recente, la memoria unica è troppo stretta. Sulle frasi brevi regge; su un
+discorso lungo l'interprete arranca, perché tutto non entra in un solo
+ricordo.
+
+«Migliorava nettamente» qualcuno l'ha dovuto misurare, e il modo assomiglia
+alla correzione di un compito di traduzione. Accanto alla versione della
+macchina si mette quella di un traduttore in carne e ossa, e si guarda quanto
+si somigliano. Non contano solo le parole singole che coincidono, ma anche le
+coppie, le terne e le quaterne di parole consecutive, perché è lì che si vede
+se anche l'ordine è giusto. Un conteggio così si lascerebbe imbrogliare in due
+modi, e il metro si difende da tutti e due. Chi scrivesse «il il il il»
+avrebbe quattro parole su quattro presenti nella versione umana, e allora ogni
+parola vale al massimo il numero di volte che compare davvero là dentro, e le
+ripetizioni in più non contano niente. Chi consegnasse due parole sole, scelte
+bene, avrebbe tutto giusto senza aver tradotto, e allora una traduzione più
+corta di quella di riferimento paga una penalità, tanto più pesante quanto più
+è corta.
+Questo metro si chiama **BLEU**, ed è quello con cui la traduzione automatica
+ha fatto i conti per vent'anni.
+
+Resta un metro grezzo, e ha due punti ciechi. Va usato su un pacco intero di
+frasi e non su una sola, perché su una frase corta basta una quaterna che
+manca per mandare il voto a zero. E non riconosce le parafrasi, quindi una
+traduzione giusta che sceglie sinonimi diversi da quelli del traduttore umano
+prende comunque un voto basso. Con questo metro, nel 2014, cinque di queste
+reti messe insieme superano di poco il sistema statistico preso come termine
+di paragone, e restano sotto ai sistemi migliori dell'anno. La traduzione
+neurale non ha ancora vinto; ha fatto vedere che può.
 
 `````
 
@@ -261,7 +295,7 @@ $33{,}3$ è il sistema di *riferimento*, non lo stato dell'arte, che su quel
 compito stava a $37{,}0$; la rete pura non lo raggiunge, e ci si avvicina
 ($36{,}5$) solo quando la si usa per riordinare le mille ipotesi prodotte dal
 sistema statistico. Nel 2014 il neurale non ha ancora vinto: la data del
-sorpasso è il 2016, ed è la storia con cui si chiude questa sezione. L'aneddoto
+sorpasso è il 2016. L'aneddoto
 dell'inversione è invece documentato
 nei numeri: invertire l'ordine delle parole sorgente fa scendere la
 perplessità di test da $5{,}8$ a $4{,}7$ e salire il BLEU da $25{,}9$ a
@@ -435,44 +469,50 @@ non lo tira fuori mai continua a scrivere finché qualcuno non lo interrompe.)
 
 `````{tab} Elementare
 
-Facciamo i conti su un esempio piccolo, in cui per comodità facciamo finta che
-le parole in gioco siano pochissime. Il decoder deve iniziare la traduzione e
-propone: «A» con probabilità 0,50, «The» con 0,40. La strategia greedy sceglie
-«A» e non torna più indietro.
+Un vocabolario da cinquantamila parole apre cinquantamila strade a ogni passo,
+e dopo dieci passi le frasi che si possono comporre sono un numero di
+quarantasette cifre; nessun calcolatore le percorrerà mai tutte per tenere la
+migliore. La frase si costruisce un pezzo alla volta, come un cammino deciso
+bivio per bivio, e la sola domanda è quanto guardare avanti prima di
+impegnarsi.
 
-Ma guardiamo un passo più in là. Il punteggio di una frase intera è il
-**prodotto** delle probabilità incontrate lungo la strada, per la stessa
-ragione per cui si moltiplicavano i voti del filtro antispam: sono cose che
-devono capitare tutte insieme, e due cose che devono capitare insieme si
-moltiplicano. Allora: dopo «A», la parola «black» ha probabilità 0,30, quindi
-la coppia «A black» vale 0,50 × 0,30 = 0,15; dopo «The», invece, «black» ha
-probabilità 0,60, e «The black» vale 0,40 × 0,60 = 0,24. La strada che partiva
-peggio è arrivata
-meglio! La **beam search** («ricerca a fascio») rimedia tenendo aperte le
-poche strade più promettenti invece di una sola. Quante, lo si decide prima, e
-quel numero lo si chiama $k$: con $k=2$ si conservano sia «A» sia «The», al
-passo dopo si scopre che «The black» è in testa, e si prosegue fino a «The
-black cat…». È come sciogliere un dubbio al bivio non scegliendo subito, ma
-facendo qualche passo lungo entrambe le strade prima di decidere. Le strade
-scartate lungo il cammino si dicono **potate**, come i rami di un albero, ed è
-il motivo per cui questi disegni si fanno a forma di albero: dal tronco
-partono tutte le continuazioni possibili, e a ogni passo se ne tagliano quasi
-tutte.
+Al primo bivio ci sono due cartelli, e per comodità facciamo finta che siano
+gli unici. «A» promette 0,50, «The» promette 0,40. Chi ha fretta prende «A» e
+non torna più indietro.
 
-C'è però un difetto da correggere, e si vede proprio dai numeri dell'esempio.
-Le probabilità sono numeri minori di uno, e moltiplicandone due si ottiene
-sempre qualcosa di più piccolo di ciascuna: 0,50 diventa 0,15 al secondo passo
-e 0,12 al terzo. Quindi ogni parola in più fa scendere il punteggio, sempre,
-anche quando la frase sta andando benissimo. Lasciata a sé, la ricerca
-preferirebbe sistematicamente le traduzioni corte, e finirebbe per troncare le
-frasi a metà.
+Il primo cartello però non decide da solo. Una strada vale il prodotto di tutti
+i numeri incontrati lungo il cammino, perché sono cose che devono capitare
+tutte insieme, come i voti che si moltiplicavano nel filtro antispam. Al bivio
+dopo «A», «black» promette 0,30, e la strada «A black» vale
+0,50 × 0,30 = 0,15. Dopo «The», «black» promette 0,60, e «The black» vale
+0,40 × 0,60 = 0,24. La strada partita peggio è arrivata meglio.
 
-Si rimedia mettendo tutte le strade sullo stesso metro prima di confrontarle:
-invece del punteggio complessivo si guarda **quanto vale in media una singola
-parola** di quella strada. Una frase di dieci parole e una di tre diventano
-così paragonabili, perché di ciascuna si guarda la qualità per parola e non il
-totale. La correzione si chiama **penalità di lunghezza**, e serve a togliere
-alle frasi brevi un vantaggio che non si sono guadagnate.
+Chi non vuole cadere nella trappola manda avanti più esploratori invece di uno,
+e la mossa si chiama **beam search**, «ricerca a fascio». Quanti mandarne si
+decide prima, e quel numero si chiama $k$: con $k=2$ restano in piedi sia «A»
+sia «The», al bivio successivo si scopre che «The black» è in testa, e si
+prosegue di lì fino a «The black cat…». Le strade lasciate cadere per via si
+dicono potate, come i rami di un albero, perché dal tronco parte ogni
+continuazione possibile e a ogni bivio se ne tagliano quasi tutte.
+
+C'è un difetto, e si vede dai numeri dei cartelli. Sono tutti minori di uno,
+quindi ogni moltiplicazione rimpicciolisce il punteggio. Da 0,50 si scende a
+0,15 al secondo bivio e a 0,12 al terzo. Un cammino lungo scende sempre, anche quando sta
+andando benissimo. Chi confronta i totali sceglie allora la strada più corta, e
+la traduzione esce troncata a metà.
+
+Si rimedia mettendo i cammini sullo stesso metro, e si guarda quanto vale in
+media un singolo passo invece del totale. Un cammino di dieci parole e uno di
+tre diventano così confrontabili. Questa correzione si chiama **penalità di
+lunghezza**, e toglie alle frasi brevi un vantaggio che non si sono
+guadagnate.
+
+Resta da decidere quanti esploratori mandare. Con uno solo si torna alla fretta
+del primo bivio. Con due, o con dieci, la strada migliore in assoluto può
+restare fuori lo stesso: se parte da un cartello che sembrava mediocre, è stata
+abbandonata lì, e nessuno torna indietro a riprenderla. Ogni esploratore in più
+riduce il rischio e costa, perché è un cammino da seguire fino in fondo. In
+traduzione ne bastano quasi sempre una manciata, e non più di una decina.
 
 `````
 

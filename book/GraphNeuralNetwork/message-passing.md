@@ -50,20 +50,19 @@ recettivo**) cresce dai vicini diretti ai vicini dei vicini.
 Ogni nodo è una persona con una scheda su cui scrive «chi sono».
 Sulla scheda non c'è una frase: c'è una **fila di numeri**, uno per ogni
 caratteristica, come le tre caselline accanto a ogni nodo nella figura della
-sezione «Il mondo come grafo» (14 anni, 2 sport, 300 messaggi al giorno). Vale
-la pena fissarlo adesso, perché è quello che viaggia lungo gli archi per tutto
-il capitolo: il messaggio non è un testo, è una fila di numeri.
+sezione «Il mondo come grafo» (14 anni, 2 sport, 300 messaggi al giorno). È
+quella fila di numeri a viaggiare lungo gli archi.
 
-A ogni giro un nodo fa tre cose, sempre nell'ordine. **Primo**, ascolta: ogni
-amico gli passa un bigliettino con sopra la propria fila di numeri (sono i
-*messaggi*). **Secondo**, mette insieme i bigliettini in un unico riassunto, e
-siccome sono file di numeri «mettere insieme» vuol dire fare i conti casella
-per casella: gli anni con gli anni, gli sport con gli sport. E qui c'è un
-dettaglio importante: il riassunto non deve dipendere dall'ordine in cui
-arrivano i bigliettini, perché tra amici non c'è un «primo» e un «ultimo». Un
-riassunto che va bene è la **somma**, o la **media**: cambi l'ordine degli
-addendi e il totale non cambia. **Terzo**, aggiorna la propria scheda mettendo
-insieme il riassunto degli amici e quello che già sapeva di sé.
+A ogni giro un nodo fa tre cose, sempre nello stesso ordine. Prima ascolta, e
+ogni amico gli passa un bigliettino con sopra la propria fila di numeri (sono
+i *messaggi*). Poi riassume, e siccome i bigliettini sono file di numeri
+«riassumere» vuol dire fare i conti casella per casella, gli anni con gli
+anni, gli sport con gli sport. Il riassunto non deve dipendere dall'ordine in
+cui arrivano i bigliettini, perché tra amici non c'è un «primo» e un «ultimo»,
+e la **somma** va bene proprio per questo: cambi l'ordine degli addendi e il
+totale non cambia. Va bene anche la **media**. Infine aggiorna la propria
+scheda, mettendo insieme il riassunto degli amici e quello che già sapeva di
+sé.
 
 Fatto questo per tutti i nodi, il giro è finito e se ne può fare un altro. È
 lo stesso identico meccanismo per ogni persona della rete: nessuno ha una
@@ -71,6 +70,10 @@ regola speciale. Proprio come nella convoluzione delle immagini, dove lo
 stesso piccolo filtro scorre su tutti i pixel: solo che qui i «vicini» non
 sono i quattro pixel accanto, ma gli amici sul grafo, che possono essere due o
 dieci.
+
+E se la domanda riguarda la comitiva intera invece della singola persona,
+finiti i giri si mettono insieme le schede di tutti, di nuovo in un modo che
+non guarda l'ordine.
 
 `````
 
@@ -106,11 +109,11 @@ $M_k \colon \mathbb{R}^{d_{k-1}} \times \mathbb{R}^{d_{k-1}} \times
 $U_k \colon \mathbb{R}^{d_{k-1}} \times \mathbb{R}^{d_m} \to \mathbb{R}^{d_k}$.
 Il $\bigoplus$ opera **componente per componente** su un numero variabile di
 vettori tutti della stessa lunghezza $d_m$ e ne restituisce uno solo, sempre di
-lunghezza $d_m$: è per questo che l'ordine dei vicini non conta e che il grado
-variabile non rompe le dimensioni. (Attenzione al simbolo: qui $\bigoplus$ è
-l'aggregazione, mentre nel resto del libro $\oplus$ indica la concatenazione,
-che in questo capitolo si scrive $\|$.) Dopo $K$ passi,
-per un compito sull'intero grafo si applica una funzione di lettura
+lunghezza $d_m$: è per questo che il grado variabile non rompe le dimensioni.
+(Attenzione al simbolo: qui $\bigoplus$ è l'aggregazione, mentre nel resto del
+libro $\oplus$ indica la concatenazione, che in questo capitolo si scrive
+$\|$.) Dopo $K$ passi, per un compito sull'intero grafo si applica una funzione
+di lettura
 ($\mathrm{READOUT}$), anch'essa invariante alla permutazione,
 $\hat{y}_G = R\big(\{\, \mathbf{h}_v^{(K)} : v \in V \,\}\big)$.
 
@@ -172,9 +175,8 @@ passaparola, per l'intera rete, in una riga.
 
 Resta la coda della formula, quella con l'ondina e gli esponenti: è soltanto il
 modo compatto di scrivere «i pesi da mettere sui collegamenti», e dice quel che
-si è appena detto a parole. Non c'è niente da leggerci dentro. Adesso quei pesi
-li vediamo all'opera su un grafo di quattro nodi, e subito dopo si dirà perché
-sono fatti così.
+si è appena detto a parole. Adesso quei pesi li vediamo all'opera su un grafo
+di quattro nodi, e subito dopo si dirà perché sono fatti così.
 
 `````
 
@@ -338,9 +340,9 @@ resterebbe a $3$; invece sale a $3{,}300$. La ragione è che i pesi di una riga
 non sommano a uno (in quella del nodo 3 fanno $1{,}07$), quindi ogni giro non
 è una media ma una somma pesata, che può alzare il livello generale. Quello
 che la GCN garantisce non è che ciascuno vada verso i suoi vicini a ogni
-singolo passo: è che, ripetendo, le differenze di partenza si consumino. Poco
-più avanti in questa sezione si vede succedere, giro dopo giro, su questi
-stessi quattro numeri.
+singolo passo: è che, ripetendo, le differenze di partenza si consumino. Il
+livellamento si vedrà succedere, giro dopo giro, su questi stessi quattro
+numeri.
 
 ### Perché normalizzare così
 
@@ -350,20 +352,29 @@ basta i bigliettini dei vicini?
 
 `````{tab} Elementare
 
-Immagina un riassunto fatto sommando e basta, senza dividere niente. Un nodo
-con dieci amici riceve dieci bigliettini e li somma: un numerone. Un nodo con
-due amici ottiene un numero piccolo. Dopo qualche giro, i nodi «popolari» hanno
-valori enormi e quelli isolati valori minuscoli: non perché contino di più, ma
-solo perché hanno più connessioni. La rete finirebbe per confondere «essere
+Un riassunto fatto sommando e basta, senza dividere niente. Un nodo con dieci
+amici riceve dieci bigliettini e li somma: un numerone. Un nodo con due amici
+ottiene un numero piccolo. Dopo qualche giro, i nodi «popolari» hanno valori
+enormi e quelli isolati valori minuscoli, non perché contino di più, ma solo
+perché hanno più connessioni. La rete finirebbe per confondere «essere
 importante» con «avere tanti amici».
 
-La divisione rimette tutti sulla stessa scala, e lo spirito è quello di una
-**media** invece di una somma: dieci opinioni o due, quello che conta è il
-tenore, non il numero. Non è una media esatta, per la ragione appena vista (i
-pesi di una riga non fanno precisamente uno), ma il mestiere che svolge è
-quello. In più, il messaggio di un amico molto popolare pesa un po’ meno,
-perché la sua attenzione è «spalmata» su tanti: proprio come il consiglio di
-chi conosce mezzo mondo vale un filo meno di quello dell'amico che hai solo tu.
+La divisione rimette tutti sulla stessa scala: dieci opinioni o due, quello
+che conta è il tenore e non il numero.
+
+Dividere, però, si può in due modi. Nel primo chi ascolta divide per il numero
+dei propri amici, e fa la media di quello che ha sentito. Nel secondo il peso
+di ogni collegamento si spartisce fra le due estremità, un po’ chi parla e un
+po’ chi ascolta: il messaggio di un amico molto popolare arriva più leggero,
+perché la sua attenzione è «spalmata» su tanti, come il consiglio di chi
+conosce mezzo mondo vale un filo meno di quello dell'amico che hai solo tu.
+
+Sulla scala i due modi si equivalgono, quindi la scelta si gioca altrove. La
+GCN prende il secondo perché quel che passa fra due amici
+pesa uguale nei due versi, mentre con la media lo stesso collegamento conta di
+più quando il popolare parla al solitario che nel verso opposto. Sembra
+eleganza, e invece è la simmetria che tiene in piedi il conto da cui la formula
+è uscita.
 
 `````
 
@@ -398,8 +409,8 @@ autovalori in $[0,2]$, alla forma
 $\tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-1/2}$ con
 $\tilde{\mathbf{D}}$ calcolata su $\tilde{\mathbf{A}}$, cappi inclusi.
 Attenzione a non leggerci più di quanto ci sia: scala stabile non vuol dire
-informazione conservata, e poco più avanti in questa stessa pagina vedremo che
-tutto ciò che non giace lungo l'autovettore dominante svanisce comunque.
+informazione conservata, perché tutto ciò che non giace lungo l'autovettore
+dominante svanisce comunque.
 
 Quel che distingue davvero la forma simmetrica è la **simmetria** stessa:
 $\hat{\mathbf{A}}$ è autoaggiunta, quindi ha autovalori reali e una base di
@@ -433,39 +444,40 @@ perché in fondo c'è un premio: spiega da sola il difetto più famoso delle GNN
 
 `````{tab} Elementare
 
-Su un'immagine c'è una parola che descrive quanto in fretta le cose cambiano da
-un punto al punto accanto, e quella parola è **frequenza**: bassa vuol dire
-zone di colore che cambiano piano, alta vuol dire dettagli fitti e bordi netti.
-Un filtro che «sfoca» toglie le alte e tiene le basse.
+Su un'immagine, quanto in fretta le cose cambiano da un punto al punto accanto
+si chiama **frequenza**: bassa vuol dire zone di colore che cambiano piano,
+alta vuol dire dettagli fitti e bordi netti. Un filtro che «sfoca» toglie le
+alte e tiene le basse.
 
 Su un grafo la stessa parola ha un senso preciso, e basta cambiare che cosa si
-guarda: una configurazione di numeri sui nodi è a **bassa frequenza** se nodi
+guarda. Una configurazione di numeri sui nodi è a **bassa frequenza** se nodi
 collegati portano valori simili, ad **alta frequenza** se lungo ogni arco il
-valore salta. Il caso estremo di bassa frequenza è «tutti lo stesso numero»;
-quello di alta frequenza è una scacchiera, dove ogni vicino ha il segno
-opposto.
+valore salta: al minimo tutti lo stesso numero, al massimo una scacchiera, dove
+ogni vicino ha il segno opposto.
 
 Queste configurazioni, dalla più liscia alla più a scacchiera, hanno un nome
-proprio: si chiamano gli **autovettori del laplaciano** del grafo. È il nome che si trova scritto ovunque, e vale la pena registrarlo perché
-nell'ultima sezione del capitolo torna a fare un mestiere che nessuno si
-aspetta: dire a ogni nodo dove sta nel grafo, come i Transformer dicono a ogni
-parola dove sta nella frase.
+proprio: si chiamano gli **autovettori del laplaciano** del grafo. È un nome da
+registrare, perché nell'ultima sezione del capitolo torna a fare un mestiere
+che nessuno si aspetta: dire a ogni nodo dove sta nel grafo, come i Transformer
+dicono a ogni parola dove sta nella frase.
 
-Una volta stabilito questo si può copiare, di sana pianta, il mestiere di chi
-lavora sui suoni e sulle immagini: si prendono i numeri sui nodi e si scrivono
-come somma di quelle configurazioni, dalla più liscia alla più a scacchiera; si
-decide quanto tenere di ciascuna, alzando le une e abbassando le altre; e si
-rimette tutto insieme. È esattamente ciò che i primi lavori sulle reti
-convoluzionali su grafo hanno fatto, e il computer ci metteva un tempo
-proibitivo: per scrivere quelle configurazioni bisogna prima calcolarle, e su
-un grafo grande è un lavoro immane.
+Da qui si può copiare il mestiere di chi lavora sui suoni e sulle immagini: si
+scrivono i numeri sui nodi come somma di quelle configurazioni, si decide
+quanto tenere di ciascuna alzando le une e abbassando le altre, e si rimette
+tutto insieme. È ciò che i primi lavori sulle reti convoluzionali su grafo
+hanno fatto, e il computer ci metteva un tempo proibitivo: per scrivere quelle
+configurazioni bisogna prima calcolarle, e su un grafo grande è un lavoro
+immane. E c'era un secondo guaio: alzare o abbassare una configurazione tocca
+in un colpo tutto il grafo, mentre il passaparola vuole sentire soltanto i
+vicini.
 
-La GCN è quello che resta dopo aver tagliato tutto il superfluo, e quel che
-resta è un filtro che **attenua le alte frequenze**, cioè che smussa le
-differenze fra vicini.
+La GCN è quello che resta dopo aver tagliato tutto il superfluo, e il taglio
+rimedia a tutti e due i guai: niente più calcolo immane, e quel che resta
+arriva a un salto per volta, come il passaparola. È un filtro che **attenua le
+alte frequenze**, cioè che smussa le differenze fra vicini.
 
-Tieni a mente questa frase, perché nei prossimi paragrafi torna con un'aria
-molto meno amichevole.
+Una frase da tenere a mente, questa, perché torna presto con un'aria molto meno
+amichevole.
 
 `````
 
@@ -494,8 +506,8 @@ piccolo varia poco fra nodi collegati, uno con $\lambda$ grande alterna. Su un
 autovettore di norma unitaria questa quantità *è* l'autovalore stesso, perché
 coincide con il **quoziente di Rayleigh**
 $R(\mathbf{x}) = \mathbf{x}^\top \mathbf{L} \mathbf{x} / \mathbf{x}^\top \mathbf{x}$:
-la forma quadratica e il quoziente sono due oggetti distinti, e vale la pena
-non confonderli, ma su $\lVert \mathbf{x} \rVert = 1$ dicono la stessa cosa, ed
+la forma quadratica e il quoziente sono due oggetti distinti, da non
+confondere, ma su $\lVert \mathbf{x} \rVert = 1$ dicono la stessa cosa, ed
 è il quoziente (con il principio di minimax) a caratterizzare gli autovalori
 come minimi della variazione. Su una griglia regolare gli autovettori del
 laplaciano sono seni e coseni, e questa costruzione si riduce alla trasformata
@@ -524,7 +536,7 @@ g_\theta(\boldsymbol{\Lambda}) \approx \sum_{k=0}^{K} \theta_k\, T_k(\tilde{\bol
 $$
 
 con $T_k(x) = 2x\,T_{k-1}(x) - T_{k-2}(x)$, $T_0 = 1$, $T_1 = x$. Il guadagno è
-doppio e vale la pena vederlo bene. Primo, poiché
+doppio. Primo, poiché
 $\mathbf{U} f(\boldsymbol{\Lambda}) \mathbf{U}^\top = f(\mathbf{L})$ per
 qualunque polinomio $f$, gli autovettori spariscono dal conto: restano prodotti
 fra la matrice sparsa $\mathbf{L}$ e un vettore, cioè $O(|E|)$ invece di
@@ -566,9 +578,9 @@ I cappi, per inciso, non riscalano soltanto: rendono il grafo non bipartito e
 staccano il fondo dello spettro da $-1$ (su una catena di otto nodi il minimo
 passa da $-1$ a $-0{,}30$, su un ciclo di otto da $-1$ a $-0{,}33$), cioè
 **smorzano la componente a frequenza più alta**
-{cite}`wu2019simplifying`. È già il filtro passa-basso della prossima
-sottosezione, comparso mentre credevamo di stare solo mettendo in sicurezza i
-numeri.
+{cite}`wu2019simplifying`. È già il filtro passa-basso che, applicato molte
+volte, appiattisce i nodi uno sull'altro, ed è comparso mentre credevamo di
+stare solo mettendo in sicurezza i numeri.
 
 `````
 
@@ -581,9 +593,8 @@ differenze fra vicini. Ogni giro di bigliettini ne cancella un po’; e se i gir
 sono tanti? Le differenze finiscono.
 
 Si vede sulla catena di quattro nodi di poco fa, quella che partiva da 1, 2, 3
-e 4. Rifacendo il giro più volte, e sempre senza la ricetta di riscrittura né
-il ritocco finale (che qui restano a riposo, come nel conto di prima), i
-quattro valori vanno così:
+e 4. Rifacendo il giro più volte, sempre con la ricetta di riscrittura e il
+ritocco finale a riposo, i quattro valori vanno così:
 
 | dopo | nodo 1 | nodo 2 | nodo 3 | nodo 4 |
 |---|---|---|---|---|
@@ -598,11 +609,15 @@ differenze di partenza non è rimasto niente, e i due valori diversi che si
 vedono ancora ($2{,}2$ e $2{,}7$) non dicono chi era il nodo: dicono soltanto
 quanti vicini ha, uno i due di bordo e due i due interni.
 
-Non serve nessun conto sofisticato per capire il perché. Se a ogni giro ognuno
-si rimescola con i vicini, e i vicini fanno lo stesso con i loro, dopo un po’
-nessuno ha più niente di suo: è la classe in cui tutti copiano un po’ dal
-compagno di banco, e dopo un'ora i compiti si somigliano tutti e non si capisce
-più chi la lezione la sapeva davvero.
+Il perché si vede a occhio. Se a ogni giro ognuno si rimescola con i vicini, e
+i vicini fanno lo stesso con i loro, dopo un po’ nessuno ha più niente di suo:
+è la classe in cui tutti copiano un po’ dal compagno di banco, e dopo un'ora i
+compiti si somigliano tutti e non si capisce più chi la lezione la sapeva
+davvero. Due classi in aule separate si livellano però ciascuna per conto suo:
+la copiatura non passa i muri, e i due gruppi restano diversi. E la ricetta di
+riscrittura, lasciata a riposo qui, non è una difesa sicura: con numeri grandi
+tiene in vita qualche differenza, con numeri piccoli il livellamento arriva lo
+stesso.
 
 `````
 
@@ -623,7 +638,7 @@ scuola, perché un batch di molecole in PyTorch Geometric *è* un unico grafo
 sconnesso, una componente per molecola, e l'oversmoothing non le mescola fra
 loro.)
 
-Sulla catena di quattro nodi del conto qui sopra, con
+Sulla catena di quattro nodi, con
 $\mathbf{X} = (1,2,3,4)^\top$, i quattro autovalori di $\hat{\mathbf{A}}$
 valgono $1$, $0{,}729$, $0{,}167$ e $-0{,}229$. Applicando $\hat{\mathbf{A}}$
 venti volte a $\mathbf{X}$, il rapporto fra il valore di ogni nodo e la radice
@@ -664,9 +679,9 @@ appunto quando gli strati sono più d'uno.
 
 `````{tab} Elementare
 
-Torniamo alla catena $1 - 2 - 3 - 4$ e mettiamoci nei panni del nodo 1. Al
-primo giro parla col nodo 2, il suo unico vicino. Ma attenzione: nello stesso
-giro, anche il nodo 2 ha parlato col nodo 3. Così, al **secondo** giro, quando
+Nella catena $1 - 2 - 3 - 4$ il nodo 1 ha un vicino solo, il nodo 2, e al primo
+giro parla soltanto con lui. Ma nello stesso giro anche il nodo 2 ha parlato col
+nodo 3. Così, al **secondo** giro, quando
 il nodo 1 riascolta il nodo 2, dentro il nodo 2 c'è già un pezzo di nodo 3.
 Senza essersi mai «visti» direttamente, l'informazione del nodo 3 è arrivata al
 nodo 1 in due passi. Al terzo giro arriverebbe anche quella del nodo 4.
@@ -677,6 +692,10 @@ suo *campo recettivo* cresce con la profondità. Sul grafo vale la stessa legge,
 contata in **salti**: con $K$ strati, ogni nodo raccoglie informazione da tutto
 ciò che sta entro $K$ passi da lui. La striscia in basso nella
 {numref}`fig-message-passing` mostra proprio questo salto da uno a due.
+
+Quanti giri servono, allora? Tanti quanti i passi che separano un nodo
+dall'informazione che gli serve, e di solito sono pochi: se ognuno ha una
+decina di amici, in due giri se ne sono già sentiti un centinaio.
 
 `````
 
@@ -734,10 +753,12 @@ La particolarità è che conosciamo l'argomento di **pochissimi** articoli (nell
 versione standard di Cora appena 20 per categoria, 140 nodi in tutto su 2700) e
 vogliamo indovinare quello di tutti gli altri. Come si fa con così poche
 risposte in mano? Sfruttando i collegamenti: un articolo tende a citare
-articoli del suo stesso campo. Il message passing fa scorrere le poche
-etichette note lungo le citazioni, contagiando i vicini. È come indovinare gli
-hobby di una comitiva conoscendone solo alcuni: chi frequenta i patiti di
-scacchi, probabilmente gioca a scacchi anche lui.
+articoli del suo stesso campo. Lungo le citazioni scorrono le parole degli
+articoli, e dopo due giri ogni articolo porta addosso anche un po’ di quelli
+che cita; le venti risposte per categoria servono a insegnare alla rete che
+cosa cercare in quel miscuglio. È come indovinare gli hobby di una comitiva
+conoscendone solo alcuni: chi frequenta i patiti di scacchi, probabilmente
+gioca a scacchi anche lui.
 
 Il trucco è che, pur pagando solo gli errori sui 140 articoli di cui sappiamo
 la risposta, per rispondere su quei 140 la rete ha dovuto far girare
@@ -875,8 +896,9 @@ porta scritto sopra un verbo.
   poi una ricetta di riscrittura uguale per tutti i nodi (sono i numeri che la
   rete impara) e un ritocco finale non lineare.
 - I bigliettini si **pesano** invece di sommarli e basta: chi ha tanti vicini
-  non deve coprire la voce degli altri, un po’ come fare una media invece di un
-  totale. Serve anche a tenere i valori sulla stessa scala giro dopo giro.
+  non deve coprire la voce degli altri, e il peso di ogni collegamento si
+  spartisce fra chi parla e chi ascolta, secondo quanti vicini ha ciascuno dei
+  due. Serve anche a tenere i valori sulla stessa scala giro dopo giro.
 - Anche su un grafo si può parlare di **frequenze**: bassa se nodi collegati
   portano valori simili, alta se lungo ogni collegamento il valore salta. Un
   giro di GCN è un filtro che attenua le alte, cioè smussa le differenze fra

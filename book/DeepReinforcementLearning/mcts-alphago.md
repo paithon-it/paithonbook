@@ -22,37 +22,51 @@ che segue è il seguito di quella frase.
 
 `````{tab} Elementare
 
-Il problema è che le continuazioni sono troppe. Agli scacchi, dopo tre mosse a
-testa, i seguiti sono milioni; nel Go, molti di più. Esaminarle tutte è
-impossibile, quindi bisogna guardare a fondo **solo dove conviene**. Ma per
-sapere dove conviene bisognerebbe aver già guardato. È lo stesso dilemma delle
-slot machine del capitolo precedente (i «bandit a più braccia», che si chiamano
-così perché una slot machine è un bandito con una leva sola, e lì di leve ce ne
-sono tante): tirare quella che finora ha pagato meglio, o provarne una di cui si
-sa poco?
+Una fila di leve, e dietro ognuna una stanza con un'altra fila di leve. Si tira,
+si passa di là, si tira ancora, e si va avanti finché una porta dà sull'uscita,
+dove si scopre di aver vinto o perso. Le strade sono troppe: agli scacchi, dopo
+tre mosse a testa, i seguiti sono milioni, e nel Go molti di più. Conviene andare
+a fondo solo dove rende, ma per sapere dove rende bisognerebbe esserci già stati.
+È il dilemma delle slot machine, i «bandit a più braccia» (una slot machine è un
+bandito con una leva sola, e qui di leve ce ne sono tante), che si ripresenta in
+ogni stanza.
 
-MCTS lo risolve costruendo un albero delle possibilità **a poco a poco**,
-ripetendo migliaia di volte lo stesso giro di quattro mosse:
+Chi esplora si porta un blocchetto di foglietti. Ne appende uno accanto a ogni
+leva che prova, e ci tiene due numeri: quante volte l'ha tirata, e come è andata
+in media da lì in avanti. Poi torna all'ingresso e ricomincia, migliaia di volte.
 
-1. **Selezione.** Si scende dall'inizio seguendo, a ogni bivio, la mossa che
-   ha il punteggio migliore, dove «migliore» mette insieme quanto ha reso
-   finora e quanto poco è stata provata.
-2. **Espansione.** Quando si arriva a un bivio con una mossa mai tentata, si
-   aggiunge quel ramo all'albero.
-3. **Simulazione.** Da lì si tira dritto fino alla fine della partita, in fretta
-   e alla buona (nella versione originale, a caso), solo per farsi un'idea
-   grezza di come va a finire.
-4. **Risalita.** Il risultato torna indietro lungo la strada percorsa, e ogni
-   nodo attraversato aggiorna la propria media e il proprio conteggio.
+Ogni giro sono quattro gesti. Finché trova foglietti, sceglie la leva che mette
+d'accordo il buon rendimento e le poche tacche, ed è la **selezione**; quanto
+pesi la curiosità rispetto al rendimento è una manopola, e si regola prima di
+cominciare. Alla prima leva senza foglietto gliene appende uno bianco, ed è
+l'**espansione**. Da lì tira a casaccio e in fretta fino all'uscita, solo per
+vedere come va a finire, ed è la **simulazione**. Poi rifà la strada al contrario
+e segna l'esito su ogni foglietto incontrato, ed è la **risalita**. Le stanze
+sono a turno, una sua e una di chi gioca contro, e per l'altro una vincita è una
+perdita: sui suoi foglietti lo stesso esito si segna al rovescio.
 
-Il bello è che l'albero cresce **storto, e di proposito**: profondissimo sulle
-linee promettenti, largo appena un dito su quelle che non convincono. Nessuno
-gli ha detto quali fossero: lo ha scoperto giocandoci.
+Dopo qualche migliaio di giri le stanze non risultano battute allo stesso modo, e
+di proposito: certi corridoi hanno foglietti fitti per venti stanze di fila,
+altri una tacca sola sulla prima leva. Nessuno gli ha detto quali corridoi
+fossero buoni; lo ha scoperto camminandoci.
 
-E la mossa da fare, alla fine, non è quella con la media migliore: è quella
-**più visitata**. Sembra strano, ed è più solido: una media alta può venire da
-due prove fortunate, mentre un ramo visitato mille volte ha resistito a mille
-occasioni di essere abbandonato.
+Alla fine si tira per davvero la leva con più tacche, e non quella con la media
+migliore. Una media alta può venire da due colpi fortunati; una leva tirata mille
+volte ha resistito a mille occasioni di essere abbandonata.
+
+Con un consiglio si arriva prima. All'ingresso c'è chi conosce il posto e segna,
+a occhio, le due o tre leve da provare per prime; i primi giri seguono quei segni
+invece di trattare tutte le leve alla pari. Poi il consiglio si diluisce da sé
+man mano che le tacche si accumulano: dopo mille tiri su una leva, quello che ha
+reso davvero pesa più di qualunque impressione a prima vista.
+
+C'è un caso in cui tutto si impianta: la leva che porta al premio grosso ma le
+prime tre volte, per sfortuna, non dà niente. Il foglietto dice tre tacche e tre
+volte male, quindi la leva scivola in fondo alla lista, e per riportarla su
+servono moltissimi altri giri. Continuando all'infinito salta fuori davvero, ma
+«all'infinito» può voler dire un numero di giri che nessuno ha il tempo di fare.
+La leva più tirata è la più solida fra quelle guardate, e delle stanze in cui non
+si è mai entrati non si sa niente.
 
 `````
 
@@ -69,8 +83,9 @@ a^\star = \arg\max_a \left[\, Q(s,a) + c \sqrt{\frac{\ln N(s)}{N(s,a)}}
 \,\right],
 $$
 
-dove $N(s)$ è il numero di visite al nodo, $N(s,a)$ quelle al figlio, e
-$Q(s,a) = W(s,a)/N(s,a)$ la media dei ritorni osservati passando di lì. È
+dove $N(s)$ è il numero di visite al nodo, $N(s,a)$ quelle al figlio,
+$Q(s,a) = W(s,a)/N(s,a)$ la media dei ritorni osservati passando di lì e
+$c>0$ la costante che decide quanto pesa il secondo termine. È
 **letteralmente UCB1**, la formula della sezione sui bandit, applicata a ogni
 bivio: stesso ottimismo di fronte all'incertezza, stesso decadimento
 logaritmico. Il contributo di UCT è mostrare che applicandola ricorsivamente
@@ -85,7 +100,9 @@ garanzia vera. In pratica funziona; in teoria funziona alla lunga.
 
 La risalita aggiorna $N$ e $W$ lungo il cammino; nei giochi a due giocatori il
 ritorno si alterna di segno a ogni livello, perché ciò che è buono per me è
-cattivo per l'avversario.
+cattivo per l'avversario. A ricerca finita, alla radice si gioca l'azione più
+visitata e non quella con $Q(s,a)$ massimo: un conteggio è meno sensibile di
+una media alla manciata di ritorni fortunati che l'ha gonfiata.
 
 **AlphaGo e i suoi successori cambiano due dei quattro passi**, ed è lì che
 entrano le reti. Il termine di esplorazione diventa **PUCT**, pesato da una
@@ -97,10 +114,13 @@ U(s,a) = c_{\text{puct}}\, P(s,a)\,
 $$
 
 così che la ricerca guardi per prime le mosse che la rete considera plausibili
-invece di trattarle tutte alla pari.
+invece di trattarle tutte alla pari; $c_{\text{puct}}$ ha qui il ruolo che $c$
+aveva in UCT. La probabilità a priori pesa soprattutto all'inizio: il
+denominatore $1 + N(s,a)$ ne diluisce il contributo man mano che le visite vere
+si accumulano, e da lì in poi a decidere è $Q(s,a)$.
 
 Il secondo cambiamento riguarda la valutazione della foglia, e avviene in **due
-tappe**, che vale la pena non confondere. AlphaGo (2016) non butta via la
+tappe** da non confondere. AlphaGo (2016) non butta via la
 simulazione casuale: le **affianca** la rete di valore e media i due giudizi in
 parti uguali,
 

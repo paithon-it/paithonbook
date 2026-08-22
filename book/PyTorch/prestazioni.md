@@ -50,6 +50,14 @@ strato*, a ogni passo dell'addestramento. Sono conti che una CPU macina in
 fila, uno dopo l'altro, mentre una scheda grafica li fa a migliaia nello stesso
 istante, perché era nata per fare esattamente questo con i pixel dei
 videogiochi.
+
+C'è un modo di sprecare i manovali, ed è il più comune di tutti. Basta
+lasciarli senza materiale. Mille braccia ferme in attesa che arrivi il camion
+valgono quanto un operaio solo, e un camion che fa mille viaggi con un mattone
+per volta è molto peggio di uno che ne porta un bancale. La strada che arriva
+al cantiere, poi, è stretta rispetto al piazzale, e per buona parte della
+giornata quello che decide quanti muri si tirano su è quanto materiale riesce
+ad arrivare, non quante braccia ci sono ad aspettarlo.
 `````
 
 `````{tab} Superiore
@@ -101,12 +109,24 @@ Il rimedio è una lente d'ingrandimento: prima di calcolare i gradienti si
 moltiplica la loss per un fattore grande, così anche i gradienti minuscoli
 restano visibili; subito prima di aggiornare i pesi, si divide per lo stesso
 fattore e tutto torna alla scala giusta. In PyTorch la lente si chiama
-`GradScaler` e il fattore non lo devi scegliere tu: lo alza finché può e lo
-abbassa appena qualcosa va storto. Vedendo i valori che sceglie salterà
+`GradScaler`, e il fattore non lo devi scegliere tu. Lo raddoppia finché tutto
+fila, e quando ha ingrandito troppo, cioè quando qualche numero esce dai
+margini del foglio, butta via quel giro di correzioni e riprende con la metà
+dell'ingrandimento. Vedendo i valori che sceglie salterà
 all'occhio che sono sempre potenze di due ($65\,536$ è il più comune, cioè
 $2^{16}$), e c'è una ragione: moltiplicare per una potenza di due sposta un
 numero in virgola mobile senza alterarne nemmeno una cifra. La lente
 ingrandisce e non sporca.
+
+Corti però non sono tutti i numeri. Chi pesa segna man mano su un quaderno, e
+il totale sul quaderno lo tiene con tutte le cifre. Se sul quaderno c'è
+$0{,}512$ e la correzione del giro vale $0{,}0002$, tre cifre non bastano a
+farla entrare, e il totale segna ancora $0{,}512$; con tutte le cifre la
+correzione entra e si somma alle altre. Diecimila correzioni di quella misura
+spostano il totale di due unità intere, oppure non lo spostano affatto, e la
+differenza sta tutta in quante cifre il quaderno tiene. Per questo le
+pesate si fanno sbrigative e la contabilità no, e i pesi della rete restano
+lunghi anche mentre i conti di passaggio viaggiano corti.
 `````
 
 `````{tab} Superiore
@@ -229,10 +249,22 @@ confronti assurdi, del tipo «PyTorch è mille volte più veloce di NumPy»: non
 veloce, è che non ha ancora fatto niente.
 
 Per misurare sul serio bisogna dire esplicitamente «fermati qui finché la GPU
-non ha finito». Vale anche al contrario, quando si legge un risultato: se una
-riga sembra lentissima, spesso non è lei a essere lenta, è la prima che ha
-avuto bisogno del risultato e ha dovuto aspettare tutta la coda accumulata
-prima.
+non ha finito», e lo si dice due volte, una prima di far partire il cronometro,
+perché nella coda può esserci ancora il lavoro di poco fa, e una alla fine,
+prima di leggere il tempo. Vale anche al contrario, quando si legge un
+risultato: se una riga sembra lentissima, spesso non è lei a essere lenta, è la
+prima che ha avuto bisogno del risultato e ha dovuto aspettare tutta la coda
+accumulata prima.
+
+La coda però è anche un'occasione. Il vassoio di esempi successivo può mettersi
+in viaggio verso la scheda mentre quella sta ancora lavorando su quello di
+adesso, e il viaggio finisce per non costare niente, perché avviene nel
+frattempo. C'è una condizione, che si dimentica quasi sempre. Il vassoio deve
+stare in un punto fisso, non su uno scaffale che ogni tanto viene riordinato;
+se qualcuno nel frattempo lo ha spostato, chi va a prenderlo deve prima
+cercarlo, e allora il viaggio comincia quando la scheda è già ferma ad
+aspettare. Chiedere la partenza anticipata senza la sua condizione non fa
+guadagnare niente.
 
 `````
 
@@ -340,6 +372,15 @@ veloci. Conviene quindi quando lo stesso piatto va cucinato migliaia di volte
 (un addestramento lungo su un modello grande) e non conviene per un assaggio:
 su un esperimento di due minuti il tempo di compilazione mangia tutto il
 guadagno.
+
+E il piano vale finché il servizio resta quello. Cambiano la pentola o il
+numero di coperti, e la ricetta studiata non torna più, così il cuoco si
+rimette a leggere da capo e paga di nuovo lo studio. Per accorgersene in tempo,
+prima di ogni piatto dà un'occhiata di controllo, e anche quell'occhiata costa.
+Su un piatto da due ingredienti costa più di quanto la riorganizzazione faccia
+risparmiare, e allora la cucina organizzata resta più lenta di quella
+disordinata anche dopo il primo giro. Si può finire in perdita e restarci,
+altro che pareggiare.
 `````
 
 `````{tab} Superiore
@@ -390,28 +431,37 @@ più", "qui l'errore è meno grave". A fine pila i tre si riuniscono, fanno la
 **media** delle proposte e la applicano tutti e tre, identica, alla propria
 fotocopia. Risultato: hanno corretto in un terzo del tempo, e le tre griglie
 sono ancora perfettamente uguali, come se avesse corretto una persona sola, ma
-tre volte più in fretta. Le GPU fanno lo stesso: ognuna elabora la sua fetta
-di esempi, poi tutte mettono in comune i gradienti, ne fanno la media e si
-aggiornano allo stesso modo. La riunione ha un nome tecnico, *all-reduce*, e
+tre volte più in fretta.
+
+Le pile però devono essere uguali, e per questo si contano prima. Se uno ne
+corregge centocinquanta e un altro cinquanta, la media delle tre proposte pesa
+i cinquanta compiti quanto i centocinquanta, e la griglia che ne esce non è
+quella che sarebbe uscita correggendo tutta la pila di seguito. Ogni ritocco,
+poi, nasce ora da trecento compiti e non dai cento che vede un correttore da
+solo, quindi il caso ci mette meno del suo e lo si può fare un po’ più deciso.
+
+Le GPU fanno lo stesso: ognuna elabora la sua fetta di esempi, poi tutte
+mettono in comune i gradienti, ne fanno la media e si aggiornano allo stesso
+modo. La riunione ha un nome tecnico, *all-reduce*, e
 un costo: se gli insegnanti passano più tempo a riunirsi che a correggere, il
 gioco non vale la candela.
 `````
 
 `````{tab} Superiore
-Con $K$ repliche e il batch spartito in fette, ogni replica $k$ calcola
-$\nabla_\theta \mathcal{L}_k$ sulla propria fetta; l’**all-reduce** calcola
+Con $R$ repliche e il batch spartito in fette, ogni replica $r$ calcola
+$\nabla_\theta \mathcal{L}_r$ sulla propria fetta; l’**all-reduce** calcola
 
 $$
-\nabla_\theta \mathcal{L} = \frac{1}{K} \sum_{k=1}^{K} \nabla_\theta \mathcal{L}_k,
+\nabla_\theta \mathcal{L} = \frac{1}{R} \sum_{r=1}^{R} \nabla_\theta \mathcal{L}_r,
 $$
 
-dove $\mathcal{L}_k$ è la loss media sulla fetta della replica $k$. Se le
+dove $\mathcal{L}_r$ è la loss media sulla fetta della replica $r$. Se le
 fette hanno la stessa dimensione, questa media è esattamente il gradiente
 sull'intero batch: matematicamente non cambia nulla, cambia solo chi fa i
 conti. Lo standard è `DistributedDataParallel` (DDP): un processo per GPU,
 comunicazione NCCL, e l'all-reduce eseguito *durante* il backward, a pacchetti
 (bucket), così che comunicazione e calcolo si sovrappongano. Il batch efficace
-diventa $K$ volte quello per replica: al crescere di $K$ va spesso ritoccato
+diventa $R$ volte quello per replica: al crescere di $R$ va spesso ritoccato
 il learning rate. Il vecchio `DataParallel` (processo unico, multi-thread)
 sopravvive nei tutorial ma è sconsigliato dalla documentazione stessa: il GIL
 di Python (un thread alla volta esegue bytecode, come si è visto nel capitolo

@@ -22,20 +22,21 @@ manopola.
 
 `````{tab} Elementare
 
-Girare la manopola vuol dire dire all’archivista: «sii **ancora più**
-sintetico». Con la manopola a uno siamo al patto della sezione precedente; a
+Girare la manopola vuol dire chiedere all’archivista di essere ancora più
+sintetico. Con la manopola a uno siamo al patto della sezione precedente; a
 due gli si dice che ogni riga scritta costa il doppio; a quattro, il quadruplo.
+Un tetto e un prezzo, per lui, sono lo stesso ordine: invece di scrivergli sul
+contratto «non più di tre righe», si alza il prezzo della riga finché di righe
+ne scrive tre, e la manopola è quel prezzo.
 
 L’idea è che un archivista sotto pressione debba mettersi in ordine. Se le
 righe costano care, gli conviene spenderle bene: usare una riga sola per la
 luce, una sola per l’inclinazione, invece di spargere ogni cosa un po’
-dappertutto. Chi ha soldi contati compra l’essenziale, e l’essenziale, in un
-quadro, sono i pochi ingredienti da cui il quadro è fatto.
+dappertutto.
 
-Il modo in cui l’archivista obbedisce è uno solo, e conviene averlo chiaro
-prima di guardare i numeri: **spegne righe**. Non le accorcia tutte un po’,
-lascia cadere per intero quelle che gli rendono meno, e concentra su quelle che
-restano. Fin qui è proprio il mestiere che gli abbiamo chiesto.
+Il modo in cui obbedisce è uno solo: **spegne righe**. Non le accorcia tutte
+un po’, lascia cadere per intero quelle che gli rendono meno, e concentra su
+quelle che restano. Fin qui è proprio il mestiere che gli abbiamo chiesto.
 
 Ma quel mestiere ha un punto in cui si rovescia, ed è lo stesso di cui la
 sezione precedente aveva già avvertito. A un archivista a cui la scrittura
@@ -45,17 +46,15 @@ un po’, e alla fine consegna schede vuote. A quel punto il copista dipinge sem
 stesso quadro, che è la media di tutti quelli che ha visto, e cambiare i numeri
 della scheda non cambia più niente perché non c’è più niente da cambiare.
 
-C’è una cosa che conviene sapere prima di girarla, perché toglie alla manopola
-l’aria della trovata: in certi casi **c’era già**, solo che nessuno l’aveva
-chiamata così. Quando il metro con cui si giudica la copia porta dentro di sé
-una misura di quanto si è disposti a sbagliare un pixel, scegliere quella
-misura è già scegliere quanto pesi l’altra voce: chi sceglie il metro gira la
-manopola senza saperlo. Non vale sempre. Il metro usato qui giudica ogni pixel come una scommessa fra
-bianco e nero, e una misura così quella manopola dentro non ce l'ha: bisogna
-metterla a mano, ed è quello che facciamo adesso.
-
-Il blocco qui sotto la gira su quattro tacche e guarda che cosa succede, invece
-di raccontarlo.
+In certi casi, poi, la manopola c’era già, senza che nessuno l’avesse chiamata
+così, il che le toglie l’aria della trovata. Quando il metro con cui si giudica
+la copia porta dentro di sé quanto si è disposti a sbagliare un pixel,
+scegliere quel metro è già scegliere quanto pesi l’altra voce: chi lo sceglie
+gira la manopola senza saperlo. Vale finché quella tolleranza la fissiamo noi;
+se a deciderla è l’archivista, la manopola gratis non c’è più. E il metro usato
+qui giudica ogni pixel come una scommessa fra bianco e nero, e una misura così
+quella manopola dentro non ce l’ha: bisogna metterla a mano. È quello che
+facciamo adesso, girandola su quattro tacche.
 
 `````
 
@@ -74,8 +73,8 @@ $$
 dove $\beta > 0$ pesa il costo di descrizione. Con $\beta = 1$ si torna
 all’ELBO. Gli autori lo ricavano come lagrangiana di un problema vincolato,
 «massimizza la ricostruzione con $D_{\mathrm{KL}} \le \varepsilon$», e $\beta$
-è il moltiplicatore: sotto quella luce la manopola non è un’aggiunta, è il
-prezzo ombra di un vincolo di capacità sul canale latente.
+è il moltiplicatore: sotto quella luce la manopola diventa il prezzo ombra di
+un vincolo di capacità sul canale latente.
 
 Due osservazioni che tolgono al parametro l’aria di magia. La prima: $\beta$ era
 **già lì**, nascosto nella scelta della verosimiglianza. Con un decoder
@@ -96,7 +95,7 @@ Ogni componente con $D_{\mathrm{KL}}$ vicino a zero è una componente che
 l’encoder ha rinunciato a usare, e in cui $q_\phi(z_j \mid \mathbf{x}) \approx
 p(z_j)$: è il collasso della posterior della sezione precedente, che qui compare
 non come guasto ma come strumento di selezione. Fra strumento e guasto passa la
-posizione della manopola, e il blocco che segue misura dove.
+posizione della manopola, e l’esperimento sulle quattro tacche misura dove.
 
 `````
 
@@ -289,24 +288,26 @@ comprare **spazio sulla scheda**, non un modo di comprare significato.
 
 C’è un’altra cosa che si può chiedere alla scheda, ed è la più conseguente di
 tutte per il resto del libro: che invece di numeri porti **simboli**, presi da
-un elenco finito deciso in anticipo.
+un elenco finito di cui decidiamo in anticipo soltanto quanto sia lungo.
 
 `````{tab} Elementare
 
 Fin qui l’archivista scriveva numeri, cioè poteva mettere sulla scheda
-qualunque sfumatura. Adesso gli si dà un prontuario: un elenco di
-milleventiquattro descrizioni-tipo, che è il numero che il libro usa davvero
-per il suono, e gli si dice di scegliere fra quelle. La
-scheda smette di essere una fila di misure e diventa una fila di **numeri di
-catalogo**.
+qualunque sfumatura. Adesso gli si dà un prontuario da riempire:
+milleventiquattro caselle, che è il numero che il libro usa davvero per il
+suono. Le caselle gliele contiamo noi; a riempirle, con le descrizioni-tipo che
+tornano più spesso nei quadri, pensa lui. E da lì in poi non descrive più
+niente: guarda il quadro, cerca la casella che gli somiglia di più, e scrive
+quel numero. La scheda smette di essere una fila di misure e diventa una fila
+di **numeri di catalogo**. E la manopola non fa più presa: una casella costa
+quanto le altre, quindi la scheda costa uguale comunque la si scriva.
 
 Il guadagno è enorme, e il libro lo ha già incassato due volte. Una fila di
-numeri di catalogo è, alla lettera, un testo: è una sequenza di simboli presi da
-un alfabeto finito, esattamente come una frase è una sequenza di parole prese da
-un vocabolario. E su una cosa fatta così si può mettere al lavoro tutta la
-macchina che il libro ha costruito per il linguaggio, quella che indovina il
-simbolo dopo. È il modo in cui una macchina genera musica, e il modo in cui
-genera parlato.
+numeri di catalogo è, alla lettera, un testo: simboli in fila presi da un
+alfabeto finito, come le parole di una frase sono prese da un vocabolario. E su
+una cosa fatta così si può mettere al lavoro tutta la macchina che il libro ha
+costruito per il linguaggio, quella che indovina il simbolo dopo. È il modo in
+cui una macchina genera musica, e il modo in cui genera parlato.
 
 C’è però un ostacolo, ed è esattamente quello che la sezione precedente aveva
 annunciato. Il trucco per far tornare indietro le correzioni funzionava perché
@@ -317,7 +318,6 @@ idea, e il libro l’ha già raccontata parlando di come si comprime il suono: l
 si trova nel capitolo sull’audio, nella sezione sui codec neurali, e torna nel
 capitolo sulle **GAN**, le reti che si sfidano, dove la stessa idea serve per
 le immagini.
-Qui basta sapere **perché** serve, e il perché è quello appena detto.
 
 `````
 
@@ -341,7 +341,7 @@ della sezione precedente, che si applica ma paga in varianza; un
 per wav2vec 2.0; e lo **straight-through estimator**, cioè copiare all’indietro
 il gradiente saltando la quantizzazione, che è la scelta di VQ-VAE.
 
-Vale la pena notare che cosa resta dell’ELBO. Con prior uniforme sugli indici e
+Dell’ELBO, poi, resta poco. Con prior uniforme sugli indici e
 posterior deterministica il termine di divergenza vale $\log K$, cioè è una
 costante: c’è, ma non ha gradiente e non partecipa all’ottimizzazione. Quello
 che si minimizza davvero è la ricostruzione più due termini che nell’ELBO non
@@ -398,9 +398,9 @@ nessuna immagine, e il sogno si spezzerebbe dopo pochi passi.
 ```{admonition} Da ricordare
 :class: important
 - Si può mettere una **manopola** sul costo della scheda e chiedere
-  all’archivista di essere ancora più sintetico. Il baratto è monotono: la
-  scheda costa meno e la copia peggiora, e non esiste una tacca in cui si
-  guadagna da tutte e due le parti.
+  all’archivista di essere ancora più sintetico. Sulle quattro tacche provate il
+  baratto va sempre nella stessa direzione: la scheda costa meno e la copia
+  peggiora, e su nessuna si guadagna da tutte e due le parti.
 - Girando la manopola le righe della scheda **si spengono**, a una a una o a
   gruppi: già al valore normale, quattro righe su otto portano zero. La
   dimensione del latente non è quella che si dichiara, è quella che la rete

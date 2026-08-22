@@ -36,9 +36,10 @@ ha pesato.
 sul modello intero; la seconda è **locale**, su una singola risposta. Un
 modello può essere troppo intricato per capirlo tutto in un colpo, eppure
 restare semplice *attorno a un punto*: come una strada di montagna piena di
-curve che, guardata da vicino su pochi metri, sembra dritta. È su questa idea
-(«complicato ovunque, semplice qui accanto») che si reggono i metodi di questa
-sezione.
+curve che, guardata da vicino su pochi metri, sembra dritta. Quel pezzo dritto
+vale lì e basta: dieci tornanti più avanti non descrive più niente, e nessuno
+gli chiede di farlo. È su questa idea («complicato ovunque, semplice qui
+accanto») che si reggono gli attrezzi per rispondere a Maria.
 
 `````
 
@@ -74,40 +75,43 @@ faremo solo delle domande, come si fa con una scatola chiusa.
 
 `````{tab} Elementare
 
-Immagina di voler capire come il modello decide sul caso di Maria. LIME fa
-così: fabbrica tante pratiche finte, **casi-fantasma** con dentro numeri
-plausibili (redditi, debiti, età presi da altri clienti o tirati a sorte), e per
-ciascuna chiede al modello cosa risponderebbe. Ottiene una nuvola di esempi
-inventati, ognuno con la risposta che il modello gli darebbe.
+Per capire come il modello ha deciso sul caso di Maria, LIME fabbrica tante
+pratiche finte, **casi-fantasma** con dentro numeri plausibili (redditi, debiti,
+età presi da altri clienti o tirati a sorte), e per ciascuna chiede al modello
+cosa risponderebbe. Ne esce una nuvola di casi inventati.
 
-A questo punto, su quella nuvola, costruisce un modello **semplice e
-leggibile**, del tipo che abbiamo visto nella sezione precedente: quello che
-risponde facendo una somma, tanti punti per il reddito, tanti per i debiti,
-tanti per l'anzianità di lavoro. Cerca cioè i numeri che fanno somigliare la
-somma alle risposte della nuvola.
+Su quella nuvola costruisce un modello **semplice e
+leggibile**, quello che risponde facendo una somma: tanti punti per il reddito,
+tanti per i debiti, tanti per l'anzianità di lavoro. Cerca i numeri che fanno
+somigliare la somma alle risposte della nuvola, e la tiene corta: fra due somme
+che vanno ugualmente bene si prende quella con meno voci.
 
 C'è però una regola in più, ed è quella che fa tutto il lavoro: nel conto, i
 fantasmi più simili alla pratica vera di Maria **contano di più**, quelli
-lontani quasi niente. Un conto in cui ogni voce entra con un'importanza sua si
-dice **pesato**, e nel caso di LIME il peso è la somiglianza con Maria. Qui sta il «solo qui vicino», e vale la pena sottolineare **dove** sta: nel
-conteggio, non nella fabbrica. I fantasmi nascono sparsi un po’ dappertutto, ed
-è soltanto quando si tirano le somme che quelli lontani vengono messi a tacere.
+lontani quasi niente. Un conto così, in cui ogni voce entra con un'importanza
+sua, si dice **pesato**. Qui sta il «solo qui vicino», e sta nel conteggio, non
+nella fabbrica: i fantasmi
+nascono sparsi un po’ dappertutto, ed è soltanto quando si tirano le somme che
+quelli lontani vengono messi a tacere. Più caselle ha la pratica, però, meno
+fantasmi le somigliano davvero, e il conto finisce per reggersi su una manciata
+di casi.
 
 I numeri di quella somma *sono* la spiegazione: «il reddito basso ha spinto
 verso il no di tanto, i debiti di tanto, l'anzianità di lavoro ha spinto un po’
-verso il sì». Un ultimo modo di vederla: se il modello vero è una strada di
-montagna, LIME appoggia un righello sull'asfalto nel punto in cui ti trovi. Il
-righello non racconta la strada, ma della salita sotto i tuoi piedi ti dice
-tutto.
+verso il sì». Se il modello vero è una strada di montagna, LIME appoggia un
+righello sull'asfalto nel punto in cui ti trovi. Il righello non racconta la
+strada, ma della salita sotto i tuoi piedi ti dice tutto. Quanto prenderlo lungo
+lo decidi tu, e si sbaglia in due modi: lungo, scavalca un tornante e dà una
+pendenza media che sotto i piedi non ha nessuno; cortissimo, si appoggia a due
+sassi, e basta che uno sia storto per farlo pendere.
 
 Un avvertimento, però, prima di fidarsene troppo. Di scelte, in tutto questo, ce
 ne sono parecchie, e nessuna la suggeriscono i dati: quanti fantasmi fabbricare,
-quanto in fretta il loro peso deve calare allontanandosi da Maria (cioè quanto
-largo prendere il «qui vicino»), e, se al posto della pratica di Maria c'è una
-fotografia, in quali pezzi spezzettarla prima di spegnerli a turno. Ognuna di
-quelle scelte sposta i numeri della spiegazione. In più i fantasmi sono
-fabbricati a caso, quindi rilanciando LIME sullo stesso identico caso si
-ottengono numeri un po’ diversi: si dice che il metodo è **instabile**.
+quanto largo prendere il «qui vicino», e, se al posto della pratica di Maria c'è
+una fotografia, in quali pezzi spezzettarla prima di spegnerli a turno. Ognuna di
+quelle scelte sposta i numeri della spiegazione. In più i fantasmi si fabbricano
+a caso, quindi rilanciando LIME sullo stesso caso escono numeri un po’ diversi:
+si dice che il metodo è **instabile**.
 
 `````
 
@@ -222,7 +226,7 @@ sia così, perché guadagnare tanto conta poco se non hai mai dimostrato di sape
 pagare, e aver sempre pagato conta poco se guadagni una miseria. Le due cose si
 rinforzano a vicenda, e un guadagno che nasce così si chiama **interazione**. È
 il caso in cui la domanda «quanto vale ciascuna?» smette di avere una risposta
-ovvia, e tornerà in fondo alla sezione.
+ovvia.
 
 Con due colonne gli ordini possibili sono due, prima il reddito, oppure prima i
 pagamenti:
@@ -254,8 +258,7 @@ i contributi, e siccome non c'è ragione di preferirne uno, si tengono tutti e s
 fa la media. È esattamente l'idea di equità di Shapley.
 
 Le quattro proprietà con cui Shapley aveva fissato il suo modo di dividere sono
-cose ovvie come quella che abbiamo appena visto tornare, e conviene chiamarle
-per nome perché il resto del capitolo le usa.
+cose ovvie come quella appena vista tornare, e ognuna ha il suo nome.
 
 - Che il conto torni senza avanzi, come qui $25 + 15 = 50 - 10$, si chiama
   **efficienza**.
@@ -268,19 +271,22 @@ per nome perché il resto del capitolo le usa.
   chiama **giocatore nullo**. Sembra una banalità e invece torna comoda: quando
   in un conto c'è una colonna che non c'entra, la si può togliere di mezzo e
   fare i conti sulle altre.
-- E poi c'è l’**additività**, che è la meno intuitiva delle quattro e la più
-  utile, quindi vale un esempio. Immagina che il punteggio di un cliente sia la
-  somma di due pagelle separate, una sulla sua situazione economica e una sulla
-  sua storia di pagamenti, ciascuna con le sue regole. L'additività dice questo:
-  il merito che una colonna prende sul punteggio totale è la somma dei meriti
-  che prende su ciascuna delle due pagelle, calcolati separatamente. In altre
-  parole, un conto complicato lo si può spezzare in pezzi, fare i conti sui
-  pezzi e sommare. Alla fine della sezione lo faremo davvero, e sarà quello a
-  rendere leggibile un risultato altrimenti misterioso.
+- E poi c'è l’**additività**, la meno intuitiva delle quattro e la più utile. Il
+  punteggio di un cliente potrebbe essere la somma di due pagelle separate, una
+  sulla situazione economica e una sulla storia dei pagamenti, ciascuna con le
+  sue regole. L'additività dice che il merito di una colonna sul punteggio
+  totale è la somma dei meriti che prende su ciascuna pagella, calcolati
+  separatamente: un conto complicato lo si spezza in pezzi, si fanno i conti sui
+  pezzi e si sommano i risultati. È quello che tiene in piedi i conti sui modelli
+  fatti di tanti pezzi, come quelli in cui la risposta finale mette insieme
+  quella di centinaia di alberi di decisione.
 
 Sono quattro richieste che nessuno discuterebbe, e la cosa notevole (il motivo
 per cui questa formula del 1953 è ancora qui) è che c'è un solo modo di dividere
-il merito che le soddisfa tutte e quattro insieme.
+il merito che le soddisfa tutte e quattro insieme. Uno solo, però, a partire dai
+numeri che si hanno in mano: che cosa risponde il modello quando una colonna non
+gliela si fa sapere resta una scelta di chi fa il conto, e nessuna delle quattro
+richieste dice quale sia quella giusta.
 
 `````
 
@@ -307,7 +313,8 @@ soddisfa quattro assiomi:
   I contributi sommano esattamente allo scarto della predizione dal valore base:
   niente si crea, niente si perde.
 - **Simmetria**: se due feature danno lo stesso contributo a ogni coalizione
-  ($v(S \cup \{i\}) = v(S \cup \{j\})$ per ogni $S$), allora $\phi_i = \phi_j$.
+  ($v(S \cup \{i\}) = v(S \cup \{j\})$ per ogni $S$ che non contiene né $i$
+  né $j$), allora $\phi_i = \phi_j$.
 - **Giocatore nullo** (*dummy*): una feature che non cambia mai il valore
   ($v(S \cup \{i\}) = v(S)$ per ogni $S$) riceve $\phi_i = 0$.
 - **Additività**: i valori di Shapley di una somma di modelli sono la somma
@@ -358,12 +365,11 @@ usati per spiegare una decisione dall'esterno, a modello già addestrato.
 SHAP non cambia la definizione: restituisce ancora i contributi «equi» di
 Shapley. Cambia il *come* li ottiene, con due scorciatoie a seconda del modello.
 
-Se il modello è una scatola chiusa qualunque, si usa **KernelSHAP**, che prova
-solo alcuni dei gruppi invece di tutti, scelti a caso, e dai pochi provati
-ricostruisce i meriti di tutti. Il ricostruire è di nuovo un conto pesato, come
-quello di LIME; la differenza è che qui i pesi non sono scelti a occhio, li dà
-la formula di Shapley, ed è questo che garantisce di stare puntando ai numeri
-giusti.
+Se il modello è una scatola chiusa qualunque, si usa **KernelSHAP**, che prova a
+caso solo alcuni dei gruppi e da quelli ricostruisce i meriti di tutti. Il
+ricostruire è di nuovo un conto pesato, come quello di LIME, ma i pesi non sono
+scelti a occhio: li dà la formula di Shapley, ed è questo che garantisce di
+puntare ai numeri giusti.
 
 Se invece il modello è fatto di alberi di decisione, quelli a catena di domande
 sì/no della sezione precedente, si usa **TreeSHAP**, che sfrutta la forma
@@ -371,13 +377,22 @@ dell'albero per calcolare i meriti **esatti** senza provare niente a caso.
 Esatti, s'intende, rispetto al modo che si è scelto per «spegnere» una colonna:
 quella resta una scelta anche qui.
 
-Il risultato più leggibile è il grafico **a cascata** della
+E c'è un caso in cui quella scelta si vede tutta. Nella pratica di Maria due
+caselle dicono quasi la stessa cosa, lo stipendio al mese e quello all'anno, e
+il modello ne guarda una sola. Spegnendo una casella per volta si finisce per
+chiedere al modello che cosa direbbe di chi guadagna mille euro al mese e
+centomila all'anno, un cliente che non esiste; e il merito va tutto alla casella
+guardata, zero all'altra, che per Maria diceva la stessa identica cosa.
+
+In cambio, una garanzia: se il modello cambia e una colonna pesa di più in ogni
+combinazione, il suo merito non può scendere.
+
+Il risultato si legge nel grafico **a cascata** della
 {numref}`fig-shap-contributi`: si parte dalla risposta base e si impilano i
-contributi, uno per riga. Quelli che **alzano** la risposta sono barre che vanno
-verso destra, in terracotta (il rosso mattone); quelli che la **abbassano**
-tornano verso sinistra, in teal (il verde-azzurro scuro). Si arriva così alla
-risposta per *questo* cliente, e una singola immagine racconta, voce per voce,
-perché il modello ha deciso così.
+contributi, uno per riga. Chi alza la risposta va verso destra, in terracotta
+(il rosso mattone); chi la abbassa torna verso sinistra, in teal (il
+verde-azzurro scuro). In fondo c'è la risposta per *questo* cliente, spiegata
+voce per voce.
 
 `````
 
@@ -390,7 +405,7 @@ ai minimi quadrati converge ai valori di Shapley; è la scelta di pesi che
 distingue SHAP da LIME, i cui pesi euristici non hanno questa garanzia.
 
 A pesi giusti, però, resta da calcolare la funzione valore, e lì la garanzia si
-assottiglia in un modo che vale la pena dichiarare. KernelSHAP approssima
+assottiglia. KernelSHAP approssima
 $v(S) = \mathbb{E}\big[f(\mathbf{x}) \mid \mathbf{x}_S\big]$ con l'attesa
 **marginale**, sostituendo le feature assenti con valori pescati da un insieme
 di riferimento: è l'ipotesi di **indipendenza fra le feature**, dichiarata da
@@ -475,6 +490,15 @@ di cambiare l'età non ha senso, perché non è una leva su cui puoi agire. Il b
 controfattuale è il consiglio minimo, concreto e onesto che ti mette dalla parte
 giusta della decisione.
 
+«Minimo» però va misurato voce per voce: mille euro sul reddito di un anno sono
+un'inezia, mille euro sulla rata del mese sono un'altra storia. E conta quante
+caselle si toccano: una cosa sola da cambiare la si cambia, dodici insieme no.
+
+La stessa ricerca serve anche a chi ha l'intenzione opposta. Trovare il ritocco
+più piccolo che ribalta la risposta di un modello è quello che fa chi vuole
+imbrogliarlo; la differenza sta in cosa se ne fa, perché lui quel ritocco lo
+nasconde, mentre il controfattuale lo scrive nero su bianco e te lo consegna.
+
 `````
 
 `````{tab} Superiore
@@ -501,7 +525,7 @@ vincolo e, sotto quel vincolo, si minimizzi la distanza. Estensioni successive
 aggiungono vincoli di **plausibilità** (restare sul supporto dei dati) e di
 **azionabilità** (non modificare feature immutabili come l'età o l'etnia).
 
-C'è un parallelo tecnico che vale la pena rendere esplicito. Cercare la
+C'è poi un parallelo tecnico esatto. Cercare la
 perturbazione minima di $\mathbf{x}_0$ che cambia l'uscita del modello è, formalmente,
 lo stesso problema degli **esempi avversari**: le impercettibili modifiche
 d'input che ingannano una rete, studiate da Goodfellow, Shlens e Szegedy
@@ -528,32 +552,31 @@ La regola di cui parliamo suona così:
 > state rate non pagate, questo modello dice sì, qualunque cosa facciano le
 > altre colonne.»
 
-Una regola così si chiama **anchor**, àncora, e la differenza con LIME non è
-di stile, è di sostanza. LIME dice quanto ogni feature ha pesato *in questo
-caso*; un anchor dice **fin dove** la risposta resta la stessa. La prima è una
-descrizione, la seconda è una promessa
-verificabile: si può prendere la regola, cercare altri casi che la
-soddisfano, e controllare se il modello risponde davvero sempre allo stesso
-modo.
+Una regola così si chiama **anchor**, àncora, e cambia il tipo di risposta.
+LIME dice quanto ogni feature ha pesato *in questo caso*; un anchor dice **fin
+dove** la risposta resta la stessa, e questa è una promessa verificabile: si
+prende la regola, si cercano altri casi che la soddisfano, e si controlla se il
+modello risponde davvero sempre allo stesso modo.
 
-Da qui le due misure che accompagnano ogni anchor, e conviene guardarle con dei
-numeri in mano. La **precisione** dice quanto spesso la regola azzecca la
-risposta del modello: se su cento clienti che soddisfano la regola il modello
+Da qui le due misure che accompagnano ogni anchor, con dei numeri in mano. La
+**precisione** dice quanto spesso la regola azzecca la risposta del modello: se su cento clienti che soddisfano la regola il modello
 dice sì a novantasette, la precisione è del 97%. La **copertura** dice su
 quanti clienti la regola si applica: se su diecimila clienti duemila hanno
 reddito sopra 30 000 e nessuna rata non pagata, la copertura è del 20%.
 
-Le due tirano in direzioni opposte, ed è ovvio perché: più condizioni si
-aggiungono, più la regola diventa infallibile e meno gente ci ricade sotto. Una
-regola con dieci condizioni sarà quasi sempre esatta e varrà quasi per nessuno;
-una con una condizione sola varrà per molti e sbaglierà spesso. Un buon anchor è
-la regola più corta che tiene la precisione richiesta.
+Le due tirano in direzioni opposte: più condizioni si aggiungono, più la regola
+diventa infallibile e meno gente ci ricade sotto. Dieci condizioni: quasi sempre
+esatta, e buona quasi per nessuno. Una condizione sola: buona per molti, e
+sbaglia spesso. Un buon anchor è quello che vale per più gente possibile senza
+scendere sotto la precisione richiesta, e di solito è anche il più corto. Su una
+fotografia la faccenda si complica: prima ancora di scrivere una regola bisogna
+decidere che cosa sia una condizione, cioè tornare a spezzettare l'immagine come
+fa LIME.
 
-E quanto debba essere alta quella precisione non lo dicono i dati: lo decide chi
-usa lo strumento, e di solito la si fissa molto in alto, per esempio al 95%.
-Attenzione a che cosa promette quel 95%: promette che la regola descrive bene
-**il modello**, non che il modello abbia ragione. Un anchor precisissimo su un
-modello sbagliato descrive perfettamente uno sbaglio.
+E quanto alta debba essere quella precisione non lo dicono i dati: lo decide chi
+usa lo strumento, di solito molto in alto, per esempio al 95%. Quel 95% promette
+che la regola descrive bene **il modello**, non che il modello abbia ragione: un
+anchor precisissimo su un modello sbagliato descrive perfettamente uno sbaglio.
 
 `````
 
@@ -602,10 +625,9 @@ risposta».
 
 `````{tab} Elementare
 
-Cambiamo per un attimo mestiere al modello, perché su questo l'esempio si vede
-meglio. Immagina un modello che guarda una cifra scritta a mano, di quelle sulle
-buste da lettera, e deve dire quale cifra è. Su una certa immagine risponde
-$3$. Due domande diverse.
+Cambiamo per un attimo mestiere al modello. Questo guarda una cifra scritta a
+mano, di quelle sulle buste da lettera, e deve dire quale cifra è; su una certa
+immagine risponde $3$. Due domande diverse.
 
 La prima: quali tratti dell'immagine **bastano** perché resti un $3$? Se si
 cancella tutto il resto e restano solo quelli, la risposta non cambia. Sono i
@@ -614,11 +636,15 @@ cancella tutto il resto e restano solo quelli, la risposta non cambia. Sono i
 La seconda: quale tratto, se ci **fosse**, la farebbe diventare un $8$? Un
 piccolo arco a sinistra, che chiuda le due pance. Quel tratto è un **negativo
 pertinente**: non c'è nell'immagine, e la sua assenza è parte del motivo per
-cui la risposta è $3$ e non $8$.
+cui la risposta è $3$ e non $8$. È la domanda del controfattuale («che cosa
+avrebbe cambiato la risposta?»), fatta però solo su ciò che si può aggiungere.
+E il tratto si cerca fra quelli che una mano scriverebbe davvero: trenta pixel
+accesi a caso qua e là ribaltano la risposta lo stesso, ma nessuno li
+riconoscerebbe come un otto.
 
 È la differenza fra dire «è un tre per via di questi tratti» e «è un tre e non
-un otto perché manca questo». La seconda è il modo in cui le persone spiegano
-davvero le cose, e in medicina è la forma standard del ragionamento: un medico
+un otto perché manca questo». La seconda frase è il modo in cui le persone
+spiegano davvero le cose, e in medicina è la forma standard del ragionamento: un medico
 che esclude l'influenza non lo fa solo per quello che il paziente ha, lo fa
 anche per quello che non ha (febbre alta sì, ma nessun dolore muscolare e
 nessuna tosse). Una diagnosi si regge tanto sui sintomi presenti quanto su

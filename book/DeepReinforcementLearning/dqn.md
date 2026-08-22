@@ -31,18 +31,19 @@ mettiamo al suo posto una rete neurale**.
 
 `````{tab} Elementare
 
-Immagina un enorme schedario in cui, per ogni possibile schermata di gioco,
-c'è un cartellino con scritto quanto vale ciascuna mossa. Impossibile
-compilarlo: le schermate sono infinite. Allora sostituisci lo schedario con un
-*esperto* che guarda la schermata e, a colpo d'occhio, ti dice il valore di
-ogni mossa: anche per schermate che non ha mai visto prima, perché ha imparato
-a riconoscere le somiglianze. Quell'esperto è la rete neurale.
+Uno schedario, un cartellino per ogni possibile schermata di gioco, e su
+ciascun cartellino quanto vale ciascuna mossa. Compilarlo non si può: di
+schermate ce ne sono più di quante se ne riesca a contare, e finiremmo i
+cartellini molto prima. Al posto dello schedario si mette allora un *esperto*
+che guarda la schermata e dice il valore di tutte le mosse insieme, in un colpo
+solo, senza passarle in rassegna una per volta. E lo fa anche per schermate che
+non ha mai visto prima, perché ha imparato a riconoscere le somiglianze.
+Quell'esperto è la rete neurale.
 
-Vale la pena fissare una parola che tornerà spesso. Dentro la rete ci sono dei
-numeri, qualche milione, che decidono come una schermata si trasforma in un
-voto: si chiamano **pesi**, e sono le uniche cose che cambiano mentre la rete
-impara. Addestrare la rete vuol dire ritoccarli, un pochino alla volta, finché i
-voti non diventano sensati.
+Dentro la rete ci sono dei numeri, qualche milione, che decidono come una
+schermata si trasforma in un voto: si chiamano **pesi**, e sono le uniche cose
+che cambiano mentre la rete impara. Addestrare la rete vuol dire ritoccarli, un
+pochino alla volta, finché i voti non diventano sensati.
 
 `````
 
@@ -56,7 +57,7 @@ Q(s, a; \theta) \approx Q^{*}(s, a).
 $$
 
 La rete prende in ingresso lo stato $s$ (i pixel) e restituisce in uscita un
-vettore con un valore $Q$ per **ciascuna** azione ammissibile: non serve una
+vettore con un valore $Q$ per ciascuna azione ammissibile: non serve una
 passata per azione. È un *function approximator*: generalizza a stati mai
 visti, sfruttando la struttura condivisa delle immagini invece di memorizzare
 ogni caso singolarmente.
@@ -105,67 +106,56 @@ sorprendentemente pulito.
 
 `````{tab} Elementare
 
-Ci sono tre ingredienti in gioco, ognuno dei quali, preso da solo, è
-innocuo e anzi utile.
+Al cabinato c'è un tale col taccuino: guarda giocare e per ogni schermata
+segna quanto promette bene. Ha tre abitudini.
 
-Il primo è l’**approssimazione**: una rete al posto della tabella, cioè
-sacrificare la precisione su ogni singolo stato in cambio della capacità di
-generalizzare. Il secondo è il **bootstrapping**: aggiornare una stima usando
-un'altra stima invece di aspettare la fine della partita, ed è la mossa che
-distingue le differenze temporali (il **TD** del capitolo precedente, che
-aggiornano subito) dai metodi **Monte Carlo**, che aspettano il fischio finale e
-solo allora tirano le somme (si chiamano così, come il casinò, perché è il nome
-che i matematici danno ai metodi che fanno i conti lasciando andare le cose a
-sorte e guardando com'è finita). Il terzo è l’**off-policy**, quello di poco fa:
-giocare in un modo e imparare un altro modo.
+Non tiene un foglio per ogni schermata, giudica a somiglianza: ci rimette in
+precisione sulla singola, e in cambio ha un voto anche per quelle che non ha
+mai visto. È l'**approssimazione**.
 
-La sintesi, che si deve a Richard Sutton e Andrew Barto (i due autori del
-manuale classico di questa materia), è che con due qualunque di questi tre
-l'instabilità si può evitare. **Tutti e tre insieme no**: la combinazione può
-divergere, cioè i valori possono crescere senza limite invece di assestarsi. La
-chiamano **triade fatale**.
+Non aspetta la fine della partita. Una mossa gli frutta $1$ punto, valuta $7$
+la schermata in cui si ritrova, e scrive subito i due numeri messi insieme,
+circa $8$: quello è il **bersaglio** verso cui correggerà. Aggiustare un voto
+con un altro voto si chiama **bootstrapping**, e separa le differenze
+temporali del capitolo precedente, il TD, dai metodi Monte Carlo, che
+aspettano il fischio finale per tirare le somme (il nome viene dal casinò: i
+matematici lo danno ai conti che lasciano le cose a sorte e guardano com'è
+finita).
 
-La parte inquietante è che per vederla non serve un ambiente difficile: serve
-il contrario, e questo è tutto il punto. L'esempio classico si chiama
-**controesempio di Baird**, dal nome di chi lo costruì, e più facile di così un
-compito non si può fare: sette situazioni, e in nessuna si guadagna mai niente.
-La risposta giusta è «tutto vale zero», il sistema saprebbe scriverla alla
-perfezione (e non serve nemmeno una rete profonda: bastano una manciata di pesi
-e la più semplice delle reti), e ciononostante quei pesi, invece di posarsi
-sullo zero, cominciano a
-crescere e non smettono più. Se il metodo sbaglia il problema più semplice del
-mondo, il guasto non è nel problema.
+Guarda partite giocate a casaccio e scrive i voti come se al posto di quel
+giocatore ci fosse un campione: l'off-policy di poco fa.
 
-Perché succede, in una frase. Ogni correzione punta verso un numero, il
-**bersaglio**: il voto che, secondo i conti del momento, quella mossa dovrebbe
-avere. Si ottiene sommando due cose, la ricompensa appena incassata e il
-giudizio sulla situazione in cui si è finiti. Se ho fatto una mossa che mi ha
-fruttato $1$ punto e la situazione in cui mi trovo adesso la valuto $7$, il
-bersaglio è quei due numeri messi assieme, cioè circa $8$: ed è lì che vorrò
-spostare il voto di quella mossa.
+Ognuna di queste abitudini, da sola, è utile, e anche a coppie il taccuino
+resta sensato. Tutte e tre insieme no: i voti possono crescere senza fermarsi.
+Richard Sutton e Andrew Barto, che hanno scritto il manuale classico della
+materia, la chiamano **triade fatale**.
 
-Ora, quando la rete corregge il proprio
-giudizio su una situazione, la correzione si allarga da sé a tutte le
-situazioni che le somigliano: è il prezzo della generalizzazione, e in
-condizioni normali è un vantaggio. Ma il bersaglio verso cui la correzione
-punta è a sua volta il giudizio su una situazione vicina, cioè una di quelle che
-la correzione ha appena spostato. Ogni ritocco muove il bersaglio che serviva a
-deciderlo, e il ritocco successivo parte da un bersaglio già mosso.
+Per vederla non serve un gioco difficile, serve il contrario. Il più facile
+del mondo lo costruì Baird, e da lui si chiama **controesempio di Baird**:
+sette schermate, e non si guadagna mai un punto. Zero dappertutto è la
+risposta giusta, e il taccuino la scriverebbe alla perfezione, con una
+manciata di numeri e il modo più elementare di darli. Quei numeri, invece di
+posarsi sullo zero, crescono e non smettono più. Se il metodo sbaglia il
+problema più semplice del mondo, il guasto non è nel problema.
 
-L'off-policy toglie l'ultima protezione, e conviene vedere quale. Una rete non
-si corregge una volta sola: si corregge su un mucchio di esempi, e quanto una
-situazione compare spesso in quel mucchio, tanto peso ha nel risultato.
+Il tale ritocca il voto di una schermata, e per somiglianza si spostano da sé
+anche le vicine: di solito è il suo vantaggio. Ma il bersaglio da cui era
+partito è il voto di una vicina, uno di quelli che ha appena mosso. Ogni
+ritocco sposta il bersaglio che l'aveva deciso, e il seguente parte da un
+bersaglio già mosso.
 
-Immagina allora un agente che si allena solo sulle situazioni in cui capita
-davvero, giocando la strategia che sta imparando. Le situazioni frequenti
-peseranno molto e quelle rare poco, che è giusto, perché sono le frequenti a
-decidere come andrà a finire. Con quel bilanciamento il rimpallo di poco fa si
-smorza da sé, ed è un risultato dimostrato.
-
-Ma l'off-policy fa proprio saltare quel bilanciamento: l'agente si allena su
-partite giocate in un altro modo, quindi certe situazioni le vede molto più
-spesso di quanto le incontrerebbe davvero, e altre quasi mai. Si corregge con
-forza dove non gli serve, e quel che ne esce può crescere invece di posarsi.
+Restava una protezione, e la toglie la terza abitudine. Il tale non corregge
+una schermata per volta: rivede un mucchio di schermate insieme, e quelle che
+nel mucchio tornano spesso tirano il taccuino più delle altre. Dalle partite
+che giocherebbe lui il mucchio uscirebbe nelle proporzioni vere, e siccome
+sono le schermate frequenti a decidere come va a finire, il rimpallo si
+smorzerebbe da sé. È dimostrato, però, solo per il modo più elementare di dare
+i voti, moltiplicare per un numero ogni cosa che si vede e sommare: per i
+giudizi profondi nessuno c'è riuscito, e in casi noti i voti scappano anche
+giocando le proprie partite. Il suo mucchio, poi, viene da partite giocate in
+un altro modo: certe schermate gli passano davanti molto più spesso di quanto
+capiterebbero, altre quasi mai. Corregge con forza dove non gli serve, e i
+voti salgono invece di posarsi.
 
 `````
 
@@ -212,9 +202,9 @@ dell'episodio) e in efficienza di dati. All’**off-policy** si può, sostituend
 il Q-learning con Sarsa, e si perde la possibilità di imparare da un archivio
 di esperienze altrui, che è però proprio la premessa del replay buffer.
 
-DQN non rinuncia a nessuno dei tre. Fa un'altra cosa: **rende gli ultimi due
-meno velenosi**, il che spiega perché i due accorgimenti che seguono siano
-esattamente due e non uno o tre.
+DQN non rinuncia a nessuno dei tre. Fa un'altra cosa: rende meno velenosi il
+bootstrapping e l'off-policy, il che spiega perché i due accorgimenti che
+seguono siano esattamente due e non uno o tre.
 
 `````
 
@@ -398,13 +388,16 @@ caso, la più alta è quasi sempre una misura fortunata.
 
 Prendere il massimo di stime rumorose, insomma, non restituisce il massimo dei
 valori veri: restituisce qualcosa di sistematicamente più grande. Il conto si
-può anche fare. Immagina che le otto mosse valgano tutte esattamente $5$, e che
-ogni voto sbagli di una quantità qualsiasi fra $-1$ e $+1$, in su come in giù,
-senza preferenze. Fra otto errori pescati così, il più grande sta quasi sempre
-vicino al bordo alto: in media vale $+0{,}78$, non $0$. Quindi il voto più alto
-degli otto, in media, non vale $5$: vale $5{,}78$. (Il conto esatto si fa con un
-po’ di probabilità, ma si può anche solo simulare, e viene lo stesso.) E il
-guaio è che quel numero gonfiato diventa il bersaglio
+può anche fare. Le otto mosse valgono tutte esattamente $5$, e ogni voto sbaglia
+di una quantità qualsiasi fra $-1$ e $+1$, in su come in giù, senza preferenze.
+Fra otto errori pescati così, il più grande sta quasi sempre vicino al bordo
+alto: in media vale $+0{,}78$, non $0$. Quindi il voto più alto degli otto, in
+media, non vale $5$: vale $5{,}78$. Quanto si gonfia dipende da due cose: da
+quante sono le mosse fra cui si sceglie, e da quanto sono sballati i voti. Con
+due mosse sole, e gli stessi errori di prima, la gonfiatura scende da $0{,}78$ a
+$0{,}33$; con otto mosse ma errori larghi il doppio, sale a $1{,}56$. (I conti
+esatti si fanno con un po’ di probabilità, ma si possono anche solo simulare, e
+vengono gli stessi.) E il guaio è che il voto gonfiato diventa il bersaglio
 dell'aggiornamento successivo, quindi la gonfiatura non resta dov'era: si
 tramanda.
 
@@ -420,7 +413,9 @@ non far esplodere l'addestramento.
 
 Attenua, però, non guarisce. Le due reti non sono estranee fra loro: una è la
 copia dell'altra di qualche passo prima, e quella parentela lascia passare buona
-parte della gonfiatura.
+parte della gonfiatura. E quando le mosse non valgono davvero tutte uguale, il
+correttivo tende a esagerare dalla parte opposta: i voti escono un filo bassi
+invece che alti.
 
 `````
 
@@ -483,8 +478,9 @@ Il quaderno degli appunti di prima si ripassa pescando a caso, e a caso vuol
 dire che un'esperienza banale vale quanto una sorprendente. Uno studente vero
 non fa così: ripassa più spesso le pagine dove l'ultimo compito è andato
 peggio. È il **replay con priorità**: ogni esperienza porta un segnalibro
-grande quanto l'errore che la rete ci ha fatto sopra l'ultima volta, la pesca
-premia i segnalibri grandi, e le esperienze appena vissute entrano col
+grande quanto l'errore che la rete ci ha fatto sopra l'ultima volta, e la pesca
+premia i segnalibri grandi. Quanto li premi è una manopola: portata a zero, si
+torna alla pesca a caso di prima. Le esperienze appena vissute entrano col
 segnalibro al massimo, così nessuna finisce nel dimenticatoio prima di un
 primo ripasso. Il prezzo c'è: chi ripassa quasi soltanto le pagine dove
 sbaglia si fa un'idea storta del libro intero, e il rimedio è contare i
@@ -494,10 +490,15 @@ L'altra idea spezza il voto in due domande: quanto è buona la situazione, e
 quanto aggiunge ciascuna mossa. Su un rettilineo vuoto guidare bene non
 dipende dalla piccola correzione che dai al volante: conta che il rettilineo è
 tranquillo, e lo sarà per chiunque. La rete **a due rami** impara le due cose
-separatamente e le ricompone solo alla fine: così il giudizio sulla situazione
-si affina a ogni passaggio, anche quando sulle singole mosse non c'è niente da
-imparare, ed è già pronto quando arriva la curva in cui le mosse tornano a
-contare.
+separatamente e le rimette insieme alla fine, sommandole. Sommare, però, lascia
+una libertà di troppo: "la strada vale 10 e la sterzata non aggiunge niente" e
+"la strada vale 7 e la sterzata aggiunge 3" fanno lo stesso voto, e niente dice
+quale delle due divisioni sia quella buona. Serve un patto, ed è questo: i
+contributi delle mosse devono compensarsi fra loro, tanto in su quanto in giù,
+e quello che avanza è il giudizio sulla situazione. Con i due rami che imparano
+separatamente, quel giudizio si affina a ogni passaggio, anche quando sulle
+singole mosse non c'è niente da imparare, ed è già pronto quando arriva la curva
+in cui le mosse tornano a contare.
 
 `````
 
@@ -515,9 +516,10 @@ $\alpha \ge 0$ dosa quanto la priorità morde ($\alpha = 0$ riporta
 all'uniforme); le transizioni nuove entrano con priorità massima. Il
 campionamento non uniforme distorce però la distribuzione degli aggiornamenti,
 e la correzione è un peso di *importance sampling*
-$w_i = \big(N\, P(i)\big)^{-\beta}$, normalizzato sul massimo del minibatch,
-con $\beta$ portato verso $1$ nel corso dell'addestramento, quando la
-correzione conta di più.
+$w_i = \big(N\, P(i)\big)^{-\beta}$, dove $N$ è il numero di transizioni in
+memoria; il peso si normalizza sul massimo del minibatch, e $\beta$ viene
+portato verso $1$ nel corso dell'addestramento, quando la correzione conta di
+più.
 
 La **dueling network** {cite}`wang2016dueling` spezza la testa della rete in
 due rami, il valore dello stato $V(s)$ e il vantaggio delle azioni $A(s,a)$,
@@ -528,8 +530,9 @@ Q(s,a) \;=\; V(s) + \Big(A(s,a) - \tfrac{1}{|\mathcal{A}|}
 \sum_{a'} A(s,a')\Big),
 $$
 
-dove la sottrazione della media rende identificabile la scomposizione: senza,
-una costante potrebbe passare da $V$ ad $A$ lasciando $Q$ identica. Il
+dove $|\mathcal{A}|$ è il numero di azioni e la sottrazione della media rende
+identificabile la scomposizione: senza, una costante potrebbe passare da $V$ ad
+$A$ lasciando $Q$ identica. Il
 guadagno è che ogni aggiornamento allena $V$, qualunque azione contenga il
 minibatch: negli stati in cui le azioni più o meno si equivalgono, e in molti
 giochi sono tanti, la rete impara comunque qualcosa che servirà altrove.

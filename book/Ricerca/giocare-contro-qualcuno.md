@@ -27,25 +27,32 @@ Ho tre mosse. Se gioco la prima, lui può rispondere in tre modi, che portano a
 Se gioco la terza, portano a 14, 5 e 2.
 
 Adesso l’istinto sbagliato: «gioco la terza, che porta a 14». No. Il 14 non lo
-sceglierei io, lo sceglierebbe **lui**, e lui vuole il numero più piccolo:
-davanti alla mia terza mossa risponderebbe con il 2. Quindi la mia terza mossa
-non vale 14, vale 2.
+sceglierei io, lo sceglierebbe lui, e lui vuole il numero più piccolo: davanti
+alla mia terza mossa risponderebbe con il 2. Quindi la mia terza mossa non vale
+14, vale 2.
 
 Rifacciamo il conto come va fatto, dal basso. La prima mossa vale il minimo fra
-3, 12 e 8, cioè **3**. La seconda vale il minimo fra 2, 4 e 6, cioè **2**. La
-terza vale il minimo fra 14, 5 e 2, cioè **2**. E adesso tocca a me, che voglio
-il massimo: fra 3, 2 e 2 scelgo il **3**, cioè la prima mossa.
+3, 12 e 8, cioè 3. La seconda vale il minimo fra 2, 4 e 6, cioè 2. La terza
+vale il minimo fra 14, 5 e 2, cioè 2. E adesso tocca a me, che voglio il
+massimo: fra 3, 2 e 2 scelgo il 3, cioè la prima mossa.
 
-Il gesto è tutto qui, e si chiama ragionare all’indietro: **il valore di una
-posizione non è quello che ci si vede sopra, è quello che ci si vede in fondo,
-supponendo che da lì in poi giochino bene tutti e due**. E si costruisce
+Il gesto è tutto qui, e si chiama ragionare all’indietro: il valore di una
+posizione è quello che si ottiene giocando fino in fondo, supponendo che da lì
+in avanti giochino bene tutti e due. Il numero più alto che si vede sotto non
+c’entra niente, perché a sceglierlo non sono io. E il conto si costruisce
 partendo dalle foglie e risalendo, un livello alla volta, alternando «prendi il
 massimo» e «prendi il minimo».
 
-Il punto di rottura, che l’ultima parte di questa sezione andrà a raccogliere:
-tutto questo presuppone di **arrivare in fondo**. Nel nostro alberello la
-partita finiva dopo due mosse e il punteggio era scritto. In una partita vera il fondo non si raggiunge mai, e
-quello che si fa al suo posto è il resto della sezione.
+Il conto dà per scontato che lui giochi sempre la risposta migliore. Contro
+qualcuno che si distrae, la terza mossa potrebbe fruttare davvero 14, e quel 14
+il conto non lo mette nemmeno sul tavolo: si tiene il 3 sicuro. Chi ragiona
+così gioca contro il migliore avversario possibile, anche quando dall’altra
+parte c’è un principiante che gli regalerebbe la partita.
+
+E dà per scontato di arrivare in fondo. Nel nostro alberello la partita finiva
+dopo due mosse e il punteggio era scritto. In un gioco vero il fondo resta
+fuori portata: se ogni mossa ne apre trenta e si guardano dieci mosse per
+parte, le partite da srotolare sono un numero di trenta cifre.
 
 `````
 
@@ -68,23 +75,22 @@ $$
 
 dove $u(s)$ è l’**utilità** dello stato terminale letta dal punto di vista di
 chi massimizza, $\mathcal{A}(s)$ le mosse legali e $\mathrm{ris}(s,a)$ lo stato che ne
-segue. Il valore così definito è quello che si ottiene **se entrambi giocano in
-modo ottimo** da lì alla fine, ed è un’ipotesi forte che vale la pena tenere
-presente: contro un avversario che sbaglia, minimax non è la strategia che
-sfrutta di più i suoi errori.
+segue. Il valore così definito è quello che si ottiene se entrambi giocano in
+modo ottimo da lì alla fine, ed è un’ipotesi forte: contro un avversario che
+sbaglia, minimax non è la strategia che ne sfrutta di più gli errori, perché
+sceglie sempre la mossa che regge alla risposta migliore e non quella che
+guadagna di più dalla risposta probabile.
 
 L’algoritmo è una visita in profondità che scende fino alle foglie e risale
-combinando. Costa $O(b^m)$ in tempo, con $m$ la profondità dell’albero, e
-$O(bm)$ in memoria. Su un gioco vero è impraticabile per lo stesso conto
+combinando. Costa $O(b^m)$ in tempo, con $b$ il numero di mosse legali per
+posizione e $m$ la profondità dell’albero, e $O(bm)$ in memoria. Su un gioco vero è impraticabile per lo stesso conto
 dell’apertura del capitolo: agli scacchi $35^{80}$.
 
-Va notato che minimax **non è un’euristica e non è un’approssimazione**: dato
-l’albero completo, il valore che restituisce è esatto. Tutto ciò che segue in
-questa sezione serve a non costruire quell’albero, e si divide in due mestieri
-distinti che conviene non confondere: **calcolare lo stesso valore guardando
-meno** (la potatura, che non perde niente) e **calcolare un valore diverso
-perché quello vero è fuori portata** (la funzione di valutazione, che perde
-eccome).
+Minimax non è un’euristica e non approssima niente: dato l’albero completo, il
+valore che restituisce è esatto. Evitare di costruire quell’albero si può fare
+in due modi, e confonderli costa caro: calcolare lo stesso valore guardando
+meno (la potatura, che non perde niente) e calcolare un valore diverso perché
+quello vero è fuori portata (la funzione di valutazione, che perde eccome).
 
 `````
 
@@ -196,9 +202,9 @@ due valori: $\alpha$, il migliore che chi massimizza si è già assicurato lungo
 il cammino corrente, e $\beta$, il migliore per chi minimizza. La regola è
 simmetrica: in un nodo di massimo si interrompe l’esplorazione dei figli non
 appena il valore corrente arriva a $\beta$ o lo supera; in un nodo di minimo,
-non appena scende ad $\alpha$ o sotto. Sono le due righe `if v >= beta` e
-`if v <= alfa` del codice più sotto, e la parità conta: con la disuguaglianza
-stretta il taglio scatterebbe meno spesso e il conteggio cambierebbe.
+non appena scende ad $\alpha$ o sotto. Sono le due condizioni `v >= beta` e
+`v <= alfa`, e la parità conta: con la disuguaglianza stretta il taglio
+scatterebbe meno spesso, e il risparmio si ridurrebbe di parecchio.
 
 La correttezza si vede con un conto di tre righe sull’albero d’esempio, quello
 con foglie $3, 12, 8$ sotto la prima mossa, $2, 4, 6$ sotto la seconda e
@@ -366,37 +372,51 @@ del punteggio vero. È qui che la ricerca smette di essere esatta.
 
 `````{tab} Elementare
 
-Un giocatore di scacchi, guardando una posizione a metà partita, sa dire in
-pochi secondi chi sta meglio: guarda quanti pezzi ha lui e quanti ne ha
-l’avversario (e non tutti valgono uguale: una torre vale più di un alfiere),
-guarda se il re è al riparo o esposto, se i pedoni si difendono a vicenda, chi
-tiene le caselle in mezzo alla scacchiera, che sono quelle da cui si raggiunge
-tutto il resto in fretta. Non è un calcolo, è un giudizio, ed è approssimativo:
-due maestri possono valutare la stessa posizione in modo diverso.
+Cinque secondi bastano a un giocatore di club per dire chi sta meglio a metà
+partita. Conta i pezzi, e una torre vale più di un alfiere; guarda il re, al
+riparo o allo scoperto, i pedoni che si difendono a vicenda, chi tiene le
+caselle in mezzo, da cui si arriva ovunque in fretta. Resta un giudizio, e due
+maestri sulla stessa posizione dicono cose diverse.
 
-Il programma fa la stessa cosa, ma con una formula, e la formula è meno
-misteriosa di quel che sembra: è una somma. Si dà un peso a ciascuna di quelle
-cose (tanti punti per ogni pezzo, secondo quanto vale; qualche punto per il re
-al sicuro; qualche punto per ogni casella centrale controllata), si sommano e
-viene fuori un numero. Il ragionamento allora diventa: guardo avanti quattro,
-sei, dieci mosse, e alle posizioni a cui arrivo do quel voto invece di
-continuare. Poi ragiono all’indietro come prima, ma partendo da quei voti
-invece che dai punteggi veri.
+Il programma si siede sulla stessa sedia con un foglietto di conti. Tanti punti
+per ogni pezzo secondo quanto vale, qualche punto per il re al sicuro, qualche
+punto per ogni casella centrale che tiene. Somma, e il totale è il suo voto.
+Guarda avanti quattro mosse, o sei, o dieci, e dove si ferma scrive quel voto
+invece di tirare avanti; poi ragiona all’indietro da quei voti, non dai
+punteggi veri.
 
-Il difetto di questa mossa è preciso, ha un nome ed è **l’effetto orizzonte**.
-Immagina una posizione in cui il mio alfiere è spacciato: qualunque cosa io
-faccia, fra sei mosse me lo prendono. Se io guardo avanti solo cinque mosse,
-quella perdita non la vedo. E allora scopro una cosa terribile: se do qualche
-scacco inutile al suo re, sacrificando un pedone per volta, la cattura
-dell’alfiere si sposta a sette mosse, a otto, a nove, cioè **oltre il mio
-orizzonte**. Il programma guarda, non vede più la perdita dell’alfiere, e
-conclude che sacrificare pedoni è una buona idea.
+Un foglietto del genere deve compilarsi in un attimo, perché di posizioni ne
+passano milioni. A partita finita deve dire quello che dice il risultato, vinta
+o persa senza sfumature. E chi esce col voto più alto deve vincere più spesso,
+unica ragione per fidarsene.
 
-Non è un errore di programmazione: è quello che succede quando si giudica il
-mondo a una distanza fissa. Il disastro non è stato evitato, è stato spinto
-appena oltre il punto in cui si smette di guardare, e in cambio si è pagato
-davvero. Ed è il difetto da portarsi dietro, perché ricompare ben oltre gli
-scacchi, ogni volta che qualcuno ottimizza guardando a una scadenza fissa.
+Una finta però il foglietto la fa. Conta i pezzi su una riga e i pedoni su
+un’altra, come se ciascuno se ne stesse per conto suo. Un alfiere chiuso dietro
+i propri pedoni non va da nessuna parte e in partita vale poco, ma sul
+foglietto vale quanto uno libero. Grossa com’è, la finta si accetta, perché un
+voto grossolano che arriva subito serve più di un voto giusto che non arriva
+mai.
+
+Fermarsi sempre alla stessa distanza ha un costo con un nome: **l’effetto
+orizzonte**. Il mio alfiere è spacciato, comunque giochi fra sei mosse me lo
+prendono, e io guardo avanti cinque mosse, così quella perdita per me non
+esiste. Do allora due scacchi inutili al suo re, regalando un pedone per volta,
+e la cattura slitta a sette mosse, a otto, a nove, fuori dal mio orizzonte.
+Riguardo, l’alfiere è salvo, e concludo che regalare pedoni sia un’ottima idea.
+Nessuno ha sbagliato a programmare: capita a chiunque giudichi il mondo a una
+scadenza fissa, ben oltre gli scacchi. Il disastro sta ancora là, appena oltre
+il punto in cui smetto di guardare, e i pedoni li ho pagati davvero.
+
+Un rimedio a metà lo conosce ogni giocatore. Se dove arrivo i pezzi si stanno
+ancora mangiando a vicenda, lì non mi fermo. Tiro avanti finché le acque non si
+calmano, e solo allora compilo il foglietto. L’orizzonte si sposta dove fa meno
+danni; sparire non sparisce.
+
+E c’è fatica da non rifare. Muovo cavallo e poi alfiere, oppure alfiere e poi
+cavallo: la scacchiera davanti è la stessa, e ricompilare il foglietto è tempo
+buttato. Tengo da parte ogni posizione già giudicata col suo voto, e me lo
+riprendo quando la stessa scacchiera ricapita per un’altra strada. Agli scacchi
+tanto basta per scendere due volte più a fondo nello stesso tempo.
 
 `````
 
@@ -406,19 +426,18 @@ Si sostituisce l’utilità terminale $u(s)$ con una **valutazione** $\mathrm{ev
 e il test di terminazione con un **test di taglio**, ottenendo il minimax
 euristico
 
-dove $d$ è la profondità a cui si è scesi (attenzione: **non** è il $d$ della
-sezione precedente, che era la profondità della soluzione; qui è un contatore
-della ricorsione) e il **taglio** scatta quando $d$ raggiunge il limite fissato
-o la posizione è comunque terminale.
-
 $$
 \mathrm{h\text{-}minimax}(s, d) =
 \begin{cases}
 \mathrm{ev}(s) & \text{se il taglio scatta in } (s,d),\\[2pt]
 \max_a \mathrm{h\text{-}minimax}(\mathrm{ris}(s,a),\, d+1) & \text{se tocca a chi massimizza},\\[2pt]
-\min_a \mathrm{h\text{-}minimax}(\mathrm{ris}(s,a),\, d+1) & \text{se tocca a chi minimizza}.
+\min_a \mathrm{h\text{-}minimax}(\mathrm{ris}(s,a),\, d+1) & \text{se tocca a chi minimizza},
 \end{cases}
 $$
+
+dove $d$ conta i livelli già scesi lungo la ricorsione (vale zero alla radice e
+cresce di uno a ogni mossa giocata), e il taglio scatta quando $d$ arriva al
+limite fissato o la posizione è comunque terminale.
 
 Perché $\mathrm{ev}$ sia utile deve concordare con $u$ sugli stati terminali,
 essere calcolabile in fretta, e correlare con la probabilità di vittoria. In
@@ -427,8 +446,8 @@ che assume implicitamente che i loro contributi siano indipendenti: un’ipotesi
 falsa (il valore di un alfiere dipende da com’è la struttura pedonale) e utile
 lo stesso.
 
-Due complicazioni che i programmi seri devono affrontare, e che vale la pena
-nominare perché sono i punti in cui la teoria pulita si sporca:
+Due complicazioni che i programmi seri devono affrontare, e sono i punti in cui
+la teoria pulita si sporca:
 
 - **l’effetto orizzonte**, cioè la tendenza a preferire mosse che rimandano un
   danno inevitabile oltre la profondità di taglio, pagandolo con un danno
@@ -486,7 +505,8 @@ chiama effetto orizzonte.
   profondità e si **giudica a occhio** la posizione. Questo sì che costa, e il
   prezzo si chiama **effetto orizzonte**: il disastro che sta un passo oltre
   l’ultimo che si è guardato non si vede, e conviene perfino spingercelo
-  pagando qualcosa.
+  pagando qualcosa. Il rimedio è non fermarsi dove i pezzi si stanno ancora
+  mangiando: l’orizzonte si sposta dove fa meno danni, e sparire non sparisce.
 ```
 
 `````

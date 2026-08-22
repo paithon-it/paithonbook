@@ -7,11 +7,10 @@ Qualunque cosa quel modello abbia capito guardando, per uscire deve passare da
 un unico collo di bottiglia: scegliere una voce da un elenco chiuso, il
 **vocabolario**. E in quell'elenco ci sono soltanto parole.
 
-Vale la pena guardarla in faccia, questa asimmetria, perché non è un dettaglio
-di implementazione. Detta in una riga: il sistema ha un occhio in ingresso e una
-bocca in uscita, e nessuna mano. L'immagine entra, e serve a scegliere le parole;
-ma fra le cose che il modello sa produrre ci sono solo parole, perché solo di
-parole è fatto l'elenco da cui pesca.
+L'asimmetria è strutturale, e detta in una riga suona così: il sistema ha un
+occhio in ingresso e una bocca in uscita, e nessuna mano. L'immagine entra, e
+serve a scegliere le parole; ma fra le cose che il modello sa produrre ci sono
+solo parole, perché solo di parole è fatto l'elenco da cui pesca.
 
 `````{tab} Elementare
 
@@ -20,7 +19,7 @@ natura diversa. Da una parte quello che ha già scritto e la fotografia, che gli
 servono per decidere; dall'altra l'elenco da cui deve pescare, e in
 quell'elenco ci sono soltanto parole. La fotografia sta dalla parte di chi
 decide, non da quella delle cose che si possono pescare: è una **condizione**,
-non una voce del catalogo.
+non una voce dell'elenco.
 
 `````
 
@@ -99,18 +98,19 @@ quadratino, letti riga per riga come si legge una pagina.
 
 Facciamo il conto su una foto di 512 pixel per lato. I quadratini sono 32 per
 riga e 32 per colonna, in tutto 1.024, e altrettanti sono i numeri della lista.
-Per scrivere un numero di catalogo fra 1 e 8.192 bastano 13 cifre di quelle che
-usa un calcolatore, che sono soltanto 0 e 1: con tredici di quelle cifre si
-contano infatti $2^{13} = 8.192$ cose diverse. Tredici cifre per 1.024
-quadratini fanno 13.312 cifre in tutto; e siccome otto di quelle cifre fanno un
-byte, sono poco più di 1,6 kilobyte. La fotografia grezza, invece, ha 512 per
-512 puntini e ciascuno porta tre numeri (rosso, verde e blu) da otto cifre
-l'uno, cioè un byte per numero: $512 \times 512 \times 3 = 786.432$ byte, 786
-kilobyte. Circa 470 volte meno. E il punto non è il risparmio (per
-quello esistono già i formati di compressione), è che adesso l'immagine è una
-**lista di simboli presi da un elenco fisso**, esattamente come una frase è una
-lista di parole prese da un dizionario. Da qui in poi, per una macchina che
-completa sequenze, disegnare e scrivere sono lo stesso mestiere.
+Per scrivere un numero fra 1 e 8.192 bastano 13 cifre di quelle che usa un
+calcolatore, che sono soltanto 0 e 1: con tredici di quelle cifre si contano
+$2^{13}$, cioè 8.192 cose diverse. Tredici cifre per 1.024 quadratini fanno
+13.312 cifre in tutto; e siccome otto di quelle cifre fanno un byte, sono poco
+più di 1,6 kilobyte. La fotografia grezza, invece, ha 512 per 512 puntini e
+ciascuno porta tre numeri (rosso, verde e blu) da un byte l'uno:
+$512 \times 512 \times 3 = 786.432$ byte, 786 kilobyte. Circa 470 volte meno. E
+la lista è lunga uguale per qualunque foto: 1.024 numeri per un muro bianco
+come per una folla in piazza, quanto diverse centinaia di parole in fila. Il
+risparmio però conta poco (per quello esistono già i formati di compressione):
+quel che conta è che adesso l'immagine è una **lista di simboli presi da un
+elenco fisso**, esattamente come una frase è una lista di parole prese da un
+dizionario.
 
 Due cose sono andate perse per strada. La tessera scelta non è quasi mai
 identica al quadratino originale, è la più vicina che c'era in magazzino, e la
@@ -163,12 +163,11 @@ Con i token visivi in mano possiamo dare alle due parole del titolo un
 significato preciso. La differenza fra fusione **tardiva** e fusione
 **precoce** non è quanta informazione si scambiano immagine e testo: è quanto
 presto cominciano a scambiarsela, e se a maneggiarle sia un pezzo solo di rete
-o due pezzi diversi, cresciuti separati. Le due redazioni qui sotto sono i due
-casi.
+o due pezzi diversi, cresciuti separati.
 
 `````{tab} Elementare
 
-Nella prima redazione il fotografo e chi scrive lavorano in stanze separate:
+In una prima redazione il fotografo e chi scrive lavorano in stanze separate:
 il fotografo guarda le sue immagini, passa a chi scrive quello che ha visto,
 ed esce di scena. Che gli passi un foglietto riassunto o il fascicolo
 intero della sezione precedente, qui non cambia niente: quel che conta è che chi
@@ -194,11 +193,10 @@ insieme, con la stessa testa.
 
 `````{tab} Superiore
 
-L'overview contava tre profondità di fusione; qui ne bastano due, perché ai
-fini di questa sezione i connettori (la via che l'overview chiamava
-*intermedia*) ricadono dal lato tardivo: i pesi che elaborano le due modalità
-restano quelli di due modelli pre-addestrati per conto proprio, e lo strato di
-uscita produce soltanto token di testo.
+Le profondità di fusione sono tre, ma qui ne bastano due: i connettori, la via
+*intermedia*, ricadono dal lato tardivo, perché i pesi che elaborano le due
+modalità restano quelli di due modelli pre-addestrati per conto proprio, e lo
+strato di uscita produce soltanto token di testo.
 
 **Fusione tardiva.** Due encoder addestrati separatamente producono
 rappresentazioni che si incontrano vicino all'uscita. Nel caso estremo,
@@ -275,13 +273,15 @@ fetta importante del calcolo è già stata spesa.
 
 `````{tab} Elementare
 
-Immagina due cantanti che condividono un solo microfono e un solo amplificatore
-con una sola manopola del volume. Il primo canta piano, il secondo forte. Per
-farsi sentire, il primo alza un po’ la voce; allora il secondo, per non essere
-coperto, alza la sua; e il primo di nuovo. Nessuno dei due sta facendo niente
-di sbagliato, ciascuno sta solo cercando di farsi sentire, ma il livello sale e
-sale, e a un certo punto l'amplificatore non ce la fa più: quel che esce
-dall'altoparlante non è più musica, è un fischio.
+Due cantanti si dividono un microfono e un amplificatore, con una manopola del
+volume sola. Quel che arriva in fondo alla sala è chi dei due sta sopra
+all'altro: alzarli tutti e due insieme non cambia niente. Il primo canta piano,
+il secondo forte. Per farsi sentire, il primo alza un po’ la voce; allora il
+secondo, per non essere coperto, alza la sua; e il primo di nuovo. Nessuno dei
+due sta facendo niente di sbagliato, ciascuno cerca solo di farsi sentire, ma
+il livello sale e sale, e a un certo punto l'amplificatore non ce la fa più:
+quel che esce dall'altoparlante si impasta e gracchia, e la canzone non si
+riconosce.
 
 Nel modello a fusione precoce i due cantanti sono le due **modalità**, cioè
 l'immagine e il testo, e l'amplificatore condiviso sono i pesi. Testo e immagini
@@ -292,11 +292,14 @@ Passano però per gli stessi pesi, e ciascuna, per contare qualcosa nel
 risultato, tende a farsi un po’ più grossa. I numeri interni crescono, lentamente, per milioni
 di passi; e poiché sono memorizzati con una precisione finita, prima o poi si
 esce dall'intervallo in cui quei numeri hanno ancora un senso, e
-l'addestramento salta. La cura è quella che userebbe un fonico: mettere un
-limitatore esattamente nel punto in cui il segnale entra
-nell'amplificatore, così che nessuno dei due possa alzare la voce oltre una
-certa soglia. Nessuno perde il diritto di parola, si toglie solo la possibilità
-di urlare.
+l'addestramento salta.
+
+La cura è quella di un fonico: dei limitatori, in tre punti diversi. Uno dove
+il segnale entra nell'amplificatore. Uno a ogni passaggio della catena, prima
+che quel che il passaggio aggiunge si sommi a quel che gli è arrivato. E uno in
+fondo, sul livello che va all'altoparlante, che tiene fermo il totale senza
+toccare l'equilibrio fra le due voci. Nessuno perde il diritto di parola, si
+toglie solo la possibilità di urlare.
 
 `````
 
@@ -304,9 +307,10 @@ di urlare.
 
 Il meccanismo documentato nel lavoro su Chameleon {cite}`chameleon2024mixed`
 parte da una proprietà innocua della softmax: è invariante per traslazione,
-$\mathrm{softmax}(\mathbf{z}) = \mathrm{softmax}(\mathbf{z} + c)$, e quindi il suo risultato non
-dice nulla sul livello assoluto dei logit. Con pesi condivisi fra modalità
-dalle statistiche diverse, ciascuna può allora «competere» con l'altra alzando
+$\mathrm{softmax}(\boldsymbol{\ell}) = \mathrm{softmax}(\boldsymbol{\ell} + c)$,
+dove $\boldsymbol{\ell}$ è il vettore dei logit e $c$ uno stesso numero sommato
+a tutti; il suo risultato non dice nulla sul loro livello assoluto. Con pesi
+condivisi fra modalità dalle statistiche diverse, ciascuna può allora «competere» con l'altra alzando
 un po’ la norma delle proprie attivazioni, senza che la funzione di perdita se
 ne accorga. Le norme di query e chiavi crescono, con esse i logit
 $\mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ che entrano nella softmax dell'attenzione, e quando quei
@@ -328,7 +332,7 @@ $$
 
 dove $\mathrm{LN}$ è la layer normalization, $d_k$ la dimensione delle chiavi e
 $\mathbf{V}$ sono qui i valori dell'attenzione (il grassetto li distingue dal
-vocabolario $V$ di poco fa):
+vocabolario $V$ del modello):
 i logit dell'attenzione smettono di dipendere dalla scala delle attivazioni, e
 la loro crescita è limitata alla sorgente. Il secondo riguarda **dove** stanno
 le normalizzazioni nel blocco. Nella disposizione *pre-norm* usuale il flusso
@@ -350,7 +354,7 @@ della softmax, cioè la somma degli esponenziali dei logit: non tocca le
 probabilità, che dal livello assoluto non dipendono, ma toglie al modello la
 libertà di farlo crescere.
 
-Vale la pena isolare la lezione generale, che va oltre la multimodalità: quando
+La lezione generale va oltre la multimodalità: quando
 più sorgenti eterogenee condividono gli stessi parametri, la competizione fra
 di esse si scarica sulle **norme**, e la stabilità va difesa esattamente dove
 quelle norme entrano in una softmax, che della loro crescita non si accorge
@@ -408,6 +412,13 @@ pezzi di un'immagine, dentro quel blocco tutti guardano tutti, avanti e
 indietro, perché non c'è un verso di lettura da rispettare: è la stessa
 obiezione che avevamo lasciato in sospeso quando abbiamo dovuto decidere,
 arbitrariamente, di leggere il mosaico riga per riga.
+
+Quando nel foglio arriva il punto in cui ci vuole un disegno, chi scrive posa
+la penna, apre un riquadro, lo abbozza e lo rifinisce guardando quel che ha
+scritto fin lì, poi lo chiude e riprende a scrivere dalla riga dopo. Le due
+tecniche non stanno in due teste separate: a scrivere e a dipingere si allena
+la stessa mano, e a essere diversi sono soltanto gli attrezzi, la penna e il
+pennello.
 
 Il vantaggio pratico si vede subito: siccome l'immagine non viene mai
 arrotondata a un catalogo di tessere, il dettaglio fine non viene buttato via
@@ -573,8 +584,9 @@ meno.
   un'immagine.
 - Il conto della seconda strada è doppio: bisogna rifare tutta la formazione da
   capo, e i **due cantanti con un solo amplificatore** alzano la voce a turno
-  finché l'impianto fischia. Si cura mettendo un limitatore dove il segnale entra
-  nell'amplificatore, cioè togliendo a tutti la possibilità di urlare.
+  finché quel che esce si impasta e gracchia. Si cura con dei limitatori in tre
+  punti della catena, cioè togliendo a tutti la possibilità di urlare senza
+  toccare l'equilibrio fra le voci.
 - **Arrotondare butta via**: la tessera scelta a catalogo non è mai identica al
   quadratino vero, e la differenza non torna più. Il primo a sparire è il
   dettaglio sottile, cioè il testo scritto dentro una fotografia.
@@ -611,8 +623,9 @@ meno.
   zero, e con pesi condivisi fra modalità dalle statistiche diverse le **norme
   crescono**, finché i logit dell'attenzione escono dall'intervallo in cui
   l'aritmetica a precisione ridotta ha ancora senso. Si difende normalizzando
-  query e chiavi prima del prodotto scalare e spostando le normalizzazioni a
-  valle dei sotto-strati.
+  query e chiavi prima del prodotto scalare, spostando le normalizzazioni a
+  valle dei sotto-strati e frenando con un termine di perdita la deriva dei
+  logit finali.
 - **Quantizzare butta via**: ogni patch di $16 \times 16$ pixel diventa uno fra
   8.192 simboli, e il dettaglio fine (il testo dentro una foto) è il primo a
   sparire.

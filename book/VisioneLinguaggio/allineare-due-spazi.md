@@ -92,13 +92,14 @@ dell'ultimo token. Le uscite vengono **normalizzate**,
 $$
 \mathbf{I}_i = \frac{f_{\text{img}}(\tilde{\mathbf{I}}_i)}{\lVert f_{\text{img}}(\tilde{\mathbf{I}}_i) \rVert_2},
 \qquad
-\mathbf{T}_j = \frac{f_{\text{txt}}(\mathbf{t}_j)}{\lVert f_{\text{txt}}(\mathbf{t}_j) \rVert_2},
+\mathbf{T}_j = \frac{f_{\text{txt}}(\tilde{\mathbf{T}}_j)}{\lVert f_{\text{txt}}(\tilde{\mathbf{T}}_j) \rVert_2},
 $$
 
 dove $\tilde{\mathbf{I}}_i$ è l'immagine $i$-esima del batch (il tensore grezzo,
-quello che l'overview chiamava $\mathbf{I}$), $\mathbf{t}_j$ la didascalia
-$j$-esima e $\mathbf{I}_i, \mathbf{T}_j \in \mathbb{R}^d$ i due embedding.
-Adottiamo per questa sezione la notazione del paper di CLIP, in cui $\mathbf{I}$
+quello che l'overview chiamava $\mathbf{I}$), $\tilde{\mathbf{T}}_j$ la sequenza
+di token della didascalia $j$-esima e
+$\mathbf{I}_i, \mathbf{T}_j \in \mathbb{R}^d$ i due embedding.
+La notazione è quella del paper di CLIP, in cui $\mathbf{I}$
 e $\mathbf{T}$ denotano gli embedding normalizzati e non i dati grezzi: da qui
 in poi $\mathbf{I}_i$ è un vettore, non un reticolo di pixel. Anche il grassetto
 va letto, perché porta l'altra metà dell'informazione: $\mathbf{T}_j$ è un
@@ -165,6 +166,11 @@ risposta giusta è sempre la prima cella, quella sulla diagonale. Il costo
 misura quanto la risposta giusta è stata considerata probabile: se il modello
 le dà il 90% di fiducia paga pochissimo, se le dà il 25% (come tirando a caso
 fra quattro) paga parecchio.
+
+I quattro numeri sono percentuali di fiducia e insieme fanno cento, quindi
+quello che manca alla didascalia giusta se l'è preso qualcun altro, e quasi
+sempre è la didascalia sbagliata che le somiglia di più. È su quella che il
+modello lavora, mentre le due che non c'entravano niente le lascia stare.
 
 Poi si rifà lo stesso identico esame guardando le **colonne**: «ecco la
 didascalia numero uno, quale delle quattro immagini descrive?». Le due
@@ -240,8 +246,9 @@ Adesso i numeri, perché la **temperatura**, la manopola che amplifica le
 differenze fra le somiglianze prima di trasformarle in percentuali, fa una
 differenza che a parole
 non si apprezza. Prendiamo un batch minuscolo, $B = 4$: quattro immagini e le
-loro quattro didascalie. Nella tabella qui sotto le righe $\mathbf{I}_1 \dots \mathbf{I}_4$ sono
-le quattro immagini, le colonne $\mathbf{T}_1 \dots \mathbf{T}_4$ le quattro didascalie, e ogni
+loro quattro didascalie. Nella tabella delle somiglianze le righe
+$\mathbf{I}_1 \dots \mathbf{I}_4$ sono le quattro immagini, le colonne
+$\mathbf{T}_1 \dots \mathbf{T}_4$ le quattro didascalie, e ogni
 cella dice quanto quell'immagine e quella didascalia si somigliano, su una scala
 che va da $-1$ (agli antipodi) a $+1$ (nello stesso punto esatto); in
 grassetto le quattro coppie vere. I valori sono plausibili per un modello a
@@ -257,7 +264,7 @@ $0{,}15$):
 
 `````{tab} Elementare
 
-Guarda la prima riga: la coppia giusta somiglia $0{,}30$, la migliore delle
+Nella prima riga la coppia giusta somiglia $0{,}30$, la migliore delle
 sbagliate $0{,}10$. Differenze piccole, e il mestiere della **temperatura** è
 decidere quanto pesano: è una manopola che amplifica le differenze fra i
 punteggi prima di trasformarli in percentuali di fiducia, ed è girata
@@ -328,20 +335,23 @@ nettamente davanti alle altre o appena appaiata, il voto cambia pochissimo, e
 allora non hai nessun motivo di allargare quel vantaggio. Un esaminatore severo
 (temperatura bassa) amplifica ogni differenza: essere appena davanti vale molto,
 essere appena dietro costa moltissimo, e il modello viene spinto ad allargare il
-margine. È per questo che nei conti di prima lo stesso identico compito costava
+margine. Nei conti di prima lo stesso identico compito costava
 $0{,}15$ con l'esaminatore severo, che quel piccolo vantaggio l'ha visto e
 premiato, e $1{,}08$ con quello mite, che non se n'è nemmeno accorto.
 
-La cosa curiosa è che questa severità non la sceglie chi progetta: è un numero
-che il modello **impara** insieme a tutto il resto, come i pesi. E siccome
-abbassarla fa scendere il costo da sola, senza che il modello abbia imparato
-niente, le si mette un fondo oltre il quale non può andare, altrimenti
-l'addestramento si accontenterebbe di quello. E c'è un
-secondo ingrediente altrettanto poco appariscente: quante didascalie sbagliate
-ci sono nel mucchio. Indovinare fra quattro è facile, e un modello che sbaglia
-poco impara poco. Indovinare fra trentamila è tutta un'altra cosa, e trentamila
-è esattamente l'ordine di grandezza che CLIP usa: il batch non è una scelta di
-ingegneria, è la difficoltà dell'esame.
+Questa severità non la sceglie chi progetta: è un numero che il modello
+**impara** insieme a tutto il resto, come i pesi. E siccome abbassarla fa
+scendere il costo da sola, senza che il modello abbia imparato niente, le si
+mette un fondo sotto il quale non può andare. CLIP parte da $0{,}07$ e finisce
+l'addestramento appoggiato a quel fondo, a $0{,}01$, sette volte più severo di
+come era partito. Lasciato libero, l'esaminatore diventa il più duro che il
+regolamento gli consente.
+
+C'è poi un secondo ingrediente altrettanto poco appariscente: quante didascalie
+sbagliate ci sono nel mucchio. Indovinare fra quattro è facile, e un modello che
+sbaglia poco impara poco. Indovinare fra trentamila è tutta un'altra cosa, e
+trentamila è esattamente l'ordine di grandezza che CLIP usa: quanto è grande il
+mucchio decide la difficoltà dell'esame.
 
 Il mucchio grande, però, costa, e costa in un modo storto. Le caselle da
 riempire sono $B$ righe per $B$ colonne: se le coppie raddoppiano, le caselle
@@ -351,7 +361,7 @@ Trentamila coppie in memoria a una macchina sola non ci stanno: il lavoro si
 spezza fra centinaia di schede grafiche, e a ogni passo i pezzi vanno radunati e
 poi ridistribuiti. La difficoltà dell'esame cresce del doppio, l'ingombro per
 prepararlo di quattro volte, ed è questa forbice a rendere cari i mucchi molto
-grandi. È anche il nodo che l'ultima parte della sezione scioglierà.
+grandi.
 
 `````
 
@@ -367,9 +377,9 @@ gradiente: nel lavoro originale il tetto è motivato proprio dall'instabilità
 osservata in addestramento). L'effetto di $\tau$ sulla distribuzione dei pesi è
 quello visto nei conti: al calare della temperatura la softmax si fa più
 **piccata** e la penalità si concentra sui negativi difficili, quelli con
-coseno vicino a quello del positivo. Vale la pena aggiungere dove il parametro
-va a finire, perché il $0{,}07$ è un punto di partenza e non un regime di
-esercizio: nel modello pubblicato la scala appresa sta **appoggiata al tetto**,
+coseno vicino a quello del positivo. Il $0{,}07$ è un punto di partenza e non
+un regime di esercizio: nel modello pubblicato la scala appresa sta
+**appoggiata al tetto**,
 cioè $\tau = 1/100 = 0{,}01$, sette volte più piccata di come è partita.
 L'ottimizzazione, lasciata libera, va a sbattere contro il vincolo e ci resta; ci
 servirà fra poco, quando si tratterà di capire perché due nuvole di punti non si
@@ -442,7 +452,7 @@ for tau in (0.07, 0.5):
 # tau = 0.5: loss simmetrica = 1.082
 ```
 
-Le ultime righe rifanno i conti della tabella di poco fa: la stessa matrice, la
+Le ultime righe rifanno i conti della tabella delle somiglianze: la stessa matrice, la
 stessa loss, solo la temperatura cambiata. Quei due numeri, $0{,}148$ e
 $1{,}082$, si possono così ritrovare invece che crederli sulla parola.
 
@@ -461,31 +471,36 @@ quella che ci si aspetta.
 
 Prendiamo ottanta fotografie, otto per ciascuno di dieci soggetti (aerei,
 gatti, cavalli, navi e così via), più quaranta didascalie, diamole a un modello
-CLIP pubblico e misuriamo tutte le vicinanze. Viene fuori questo: una fotografia
-somiglia alla didascalia che il modello stesso sceglie per lei circa $0{,}3$, e
-a una **qualunque altra fotografia** circa $0{,}76$. Cioè ogni foto è molto più
-vicina a una foto che non c'entra niente che alla frase che la descrive.
+CLIP pubblico e misuriamo tutte le vicinanze. Una fotografia somiglia alla
+didascalia che il modello stesso sceglie per lei circa $0{,}3$, e a una
+fotografia qualunque, che con lei non c'entra niente, circa $0{,}76$. Ogni foto
+è molto più vicina a una foto estranea che alla frase che la descrive.
 
-Non è un guasto, e non impedisce al meccanismo di funzionare: sulle stesse
-ottanta immagini, con quel compito facile a dieci categorie, il classificatore
-scritto a parole (si scrivono le dieci categorie come dieci frasi e si tiene la
-più vicina, ed è il trucco che queste pagine costruiscono più avanti) indovina
-quasi nove volte su dieci. Funziona perché il
-confronto che conta non è mai «foto contro frase, in assoluto»: è sempre
-«questa foto, con quale delle dieci frasi va meglio?». Fra le frasi la
+Non è un guasto, e il meccanismo funziona lo stesso: sulle stesse ottanta
+immagini il classificatore scritto a parole (le dieci categorie diventano dieci
+frasi, e si tiene la più vicina) indovina quasi nove volte su dieci. Funziona
+perché il confronto che conta non è mai «foto contro frase, in assoluto»: è
+sempre «questa foto, con quale delle dieci frasi va meglio?». Fra le frasi la
 graduatoria è giusta, ed è tutto quello che serve.
 
 La mappa, insomma, è una sola, ma ci sono due quartieri: le fotografie da una
 parte, le frasi dall'altra, e i due gruppi non si toccano mai. Basta una riga
 tracciata una volta sola per dire di ogni punto, senza sbagliarne nemmeno uno su
 centoventi, se è una foto o una frase. L'addestramento non ha mai chiesto ai due
-quartieri di mescolarsi: ha chiesto che, **dentro** al quartiere delle frasi,
-quella giusta stesse davanti a tutte le altre. E quello lo ottiene benissimo.
+quartieri di mescolarsi: ha chiesto che, nel quartiere delle frasi e soltanto
+lì, quella giusta stesse davanti a tutte le altre. E quello lo ottiene
+benissimo.
 
-Ne segue una regola pratica che vale la pena ricordare: il numero di somiglianza
-fra una foto e una frase non si confronta con quello fra due foto. Sono due
-righelli con lo zero in posti diversi, e chi fissa una soglia guardando i secondi
-e la applica ai primi sbaglia tutte le volte.
+I due quartieri, per giunta, erano separati fin dal primo giorno. Due reti
+appena costruite scrivono già in angoli diversi della mappa, prima ancora di
+essere addestrate, e niente le obbliga poi a traslocare. Anzi, con l'esaminatore
+severo di CLIP, spostare a mano un quartiere sopra l'altro fa salire il costo,
+non scendere.
+
+Ne segue una regola pratica: il numero di somiglianza fra una foto e una frase
+non si confronta con quello fra due foto. Sono due righelli con lo zero in posti
+diversi, e chi fissa una soglia guardando i secondi e la applica ai primi
+sbaglia tutte le volte.
 
 `````
 
@@ -549,34 +564,35 @@ niente. Scrivi tre frasi: «una foto di un gatto», «una foto di un cane», «u
 foto di un tram». Le passi all'encoder di testo, che ti dà tre file di numeri.
 Passi la tua immagine all'encoder di immagini, che te ne dà una. Guardi a quale
 delle tre è più vicina, cioè calcoli quel numero fra $-1$ e $+1$ tre volte e
-tieni la volta in cui è più alto, e hai la risposta. Se domani ti serve anche «una foto di un
-vaporetto», aggiungi una riga di testo: il tuo classificatore è cresciuto di
+tieni il più alto. Se domani ti serve anche «una foto di un
+vaporetto», aggiungi una riga di testo: il classificatore è cresciuto di
 una classe in un secondo, senza una sola immagine di vaporetto.
 
-Questo si chiama **zero-shot**, «a zero esempi», e non è una funzione in più
-che qualcuno ha aggiunto: è la stessa identica operazione di prima, l'abbinare,
-usata con didascalie che ti sei scritto da solo. Il fenomeno che ha colpito
-tutti nel 2021 è che il classificatore scritto a parole, senza aver visto
-nemmeno una delle immagini etichettate di ImageNet (sono 1,28 milioni), ci
-prendeva quanto la ResNet-50 che su quelle immagini si era addestrata.
+Questo si chiama **zero-shot**, «a zero esempi», ed è la stessa identica
+operazione di prima, l'abbinare, usata con didascalie che ti sei scritto da
+solo. Le tre file di numeri sono i pesi del classificatore, e di solito i pesi
+si stimano a poco a poco su migliaia di foto etichettate; qui li scrive
+l'encoder di testo, leggendo una frase. Il fenomeno
+che ha colpito tutti nel 2021 è che il classificatore scritto a parole, senza
+aver visto nemmeno una delle immagini etichettate di ImageNet (sono 1,28
+milioni), ci prendeva quanto la ResNet-50 che su quelle immagini si era
+addestrata.
 
-C'è però una stranezza da conoscere: **come** scrivi la frase cambia il
-risultato. «Una foto di un gatto» funziona meglio della sola parola «gatto», e
-la ragione è che il modello ha imparato dalle didascalie del web, che sono
-frasi, non parole isolate; presentargli una parola secca è come parlargli in una
-lingua un po’ diversa da quella su cui si è allenato. E poi c'è l'ambiguità:
-«gru» da sola può essere l'uccello o la macchina da cantiere, mentre «una foto
-di una gru, l'uccello» chiude la questione. Sistemare la frase vale, su ImageNet, poco più
-di un punto di risposte giuste in più.
+C'è però una stranezza: il risultato cambia a seconda di come scrivi la frase.
+«Una foto di un gatto» funziona meglio della sola parola «gatto», perché il
+modello ha imparato dalle didascalie del web, che sono frasi: una parola secca
+gli arriva in una lingua un po’ diversa da quella su cui si è allenato. E poi
+c'è l'ambiguità. «Gru» da sola può essere l'uccello o la macchina da cantiere,
+mentre «una foto di una gru, l'uccello» chiude la questione. Sistemare la frase
+vale, su ImageNet, poco più di un punto di risposte giuste in più.
 
-Il secondo trucco sta nel non fidarsi di una formulazione sola.
-Della stessa classe si scrivono ottanta frasi diverse («una foto di un gatto»,
-«un primo piano di un gatto», «una foto sfocata di un gatto»), si fa la media
-delle ottanta file di numeri e si usa quella: le stranezze di ciascuna
-formulazione si annullano a vicenda e resta quello che le ottanta hanno in
-comune, cioè il concetto. Vale altri tre punti e mezzo, e non costa niente,
-perché la media si fa una volta sola e prima di guardare qualunque fotografia.
-Non è un dettaglio da rifinitura.
+L'altro accorgimento sta nel non fidarsi di una formulazione sola. Della stessa
+classe si scrivono ottanta frasi diverse («una foto di un gatto», «un primo
+piano di un gatto», «una foto sfocata di un gatto»), si fa la media delle
+ottanta file di numeri e si usa quella: le stranezze di ciascuna si annullano a
+vicenda e resta quello che le ottanta hanno in comune, il concetto. Vale altri
+tre punti e mezzo, e non costa niente, perché la media si fa una volta sola e
+prima di guardare qualunque fotografia.
 
 `````
 

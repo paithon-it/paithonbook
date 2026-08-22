@@ -74,33 +74,34 @@ nasce dal fatto che il primo dei due non lo si osserva mai.
 `````{tab} Elementare
 
 Nel cassetto ci sono due sacchetti di biglie. In uno le biglie sono piccole,
-sui 12 millimetri, con qualche variazione da una all’altra; nell’altro sono
-grandi, sui 20 millimetri, sempre con la sua variazione. Tu peschi a occhi
-chiusi: prima scegli un sacchetto, poi peschi una biglia da lì, e misuri solo
-la biglia. Quale sacchetto fosse, non lo guardi mai e non lo scrivi da nessuna
-parte.
+sui 12 millimetri, con un paio di millimetri di variazione da una all’altra;
+nell’altro sono grandi, sui 20 millimetri, sempre con la sua variazione. Tu
+peschi a occhi chiusi: prima una monetina decide il sacchetto, poi peschi una
+biglia da lì, e misuri solo la biglia. Quale sacchetto fosse, non lo guardi mai
+e non lo scrivi da nessuna parte.
 
 Fai mille pescate e disegni l’istogramma delle misure, cioè il grafico che
-mette le misure in fila su una riga e dice, per ciascuna, quante biglie ci sono
-cadute. Non viene una gobba sola: ne vengono due, una intorno a 12 e una
-intorno a 20, e in mezzo un avvallamento. Eppure dentro ciascun sacchetto le misure erano la cosa più
+dice, per ogni misura, quante biglie ci sono cadute. Non viene una gobba sola:
+ne vengono due, una intorno a 12 e una intorno a 20, e in mezzo un
+avvallamento. Eppure dentro ciascun sacchetto le misure erano la cosa più
 semplice del mondo, una gobba e basta. La forma complicata (due gobbe) non l’ha
 messa nessuno: è comparsa perché una parte della storia, cioè quale sacchetto,
 è rimasta nascosta.
 
-E adesso il punto che vale per tutto il capitolo. Se qualcuno ti dicesse a ogni
-pescata da quale sacchetto viene la biglia, il conto sarebbe una banalità:
-guardi il sacchetto, sai la sua gobba, hai finito. Il conto diventa difficile
-**esattamente** perché quel dato manca. Non è un dettaglio tecnico: è la fonte
-di tutte le difficoltà che seguiranno, ed è anche la ragione per cui la mossa
-paga.
+Se qualcuno ti dicesse a ogni pescata da quale sacchetto viene la biglia, il
+conto sarebbe una banalità: guardi il sacchetto, sai la sua gobba, hai finito.
+Il conto diventa difficile proprio perché quel dato manca. Tutto quello che
+segue nasce da lì, ed è anche la ragione per cui la mossa paga.
 
-Due avvertenze, per non portarsi dietro l’immagine sbagliata. La prima: nei
-casi che ci interessano i sacchetti non sono due, sono infiniti, uno per ogni
-sfumatura possibile; è la differenza fra scegliere fra due scatole e scegliere
-un punto su un righello. La seconda, più importante: nessuno ti ha detto che i
-sacchetti esistono. Sei tu a supporli, perché supponendoli i conti tornano più
-semplici, ed è una scommessa che può anche non pagare.
+Nei casi che ci interessano i sacchetti non sono due, sono infiniti: al posto
+delle due scatole c’è un righello, si sorteggia un punto qualunque, e una
+regola dice attorno a che misura stanno le biglie del sacchetto che sta lì.
+
+E i sacchetti nessuno te li ha mostrati. Torna ai due del cassetto e cambiali
+di poco, 12 e 14 millimetri con la stessa variazione: l’istogramma fa una gobba
+sola, e a guardarla non diresti mai che i sacchetti erano due. Sei tu a
+supporli, perché supponendoli i conti tornano più semplici, ed è una scommessa
+che può anche non pagare.
 
 `````
 
@@ -135,10 +136,14 @@ p(\mathbf{x}) = \sum_{k=1}^{K} \pi_k\,
 \mathcal{N}(\mathbf{x};\, \boldsymbol{\mu}_k,\, \boldsymbol{\Sigma}_k)
 $$
 
-è multimodale pur essendo fatta di soli pezzi unimodali: con $K = 2$ è la
-densità a due gobbe che nasce da due sole campane, una per sacchetto.
+può essere multimodale pur essendo fatta di soli pezzi unimodali: con $K = 2$ è
+la densità a due gobbe che nasce da due sole campane, una per sacchetto. Le
+gobbe però non sono garantite, e la soglia si calcola: due componenti di ugual
+peso e ugual larghezza ne danno due soltanto se i centri distano più di due
+deviazioni standard, e sotto quella soglia la densità torna a una gobba sola
+pur restando una mistura.
 
-Il caso continuo generalizza in un modo che vale la pena vedere: se
+Il caso continuo generalizza la stessa costruzione: se
 $p(\mathbf{z}) = \mathcal{N}(\mathbf{0}, \mathbf{I})$ e
 $p_\theta(\mathbf{x} \mid \mathbf{z}) = \mathcal{N}\big(\mathbf{x};\,
 f_\theta(\mathbf{z}),\, \sigma^2 \mathbf{I}\big)$, dove $f_\theta$ è una rete
@@ -152,19 +157,19 @@ descrivere una distribuzione che non si saprebbe scrivere in nessun altro modo.
 Con $f_\theta$ **lineare** il modello diventa la PCA probabilistica, la cui
 soluzione a massima verosimiglianza individua il **sottospazio** generato dalle
 prime $L$ componenti principali e non le singole direzioni (con $f_\theta$
-lineare, cioè $f_\theta(\mathbf{z}) = \mathbf{W}\mathbf{z}$, la matrice
-$\mathbf{W}$ è determinata a meno di una rotazione), e nel limite
-$\sigma^2 \to 0$ la
-codifica si riduce alla proiezione ortogonale, cioè alla PCA della sezione su
+lineare, cioè $f_\theta(\mathbf{z}) = \mathbf{W}\mathbf{z}$ e $\mathbf{z}$ di
+dimensione $L$, la matrice $\mathbf{W}$ è determinata a meno di una rotazione),
+e nel limite $\sigma^2 \to 0$ la codifica si riduce alla proiezione
+ortogonale, cioè alla PCA della sezione su
 riduzione e clustering. Cambiando l’ipotesi sul rumore, da una sola varianza
 per tutte le componenti osservate a una varianza per ciascuna, si ottiene
 l’**analisi fattoriale**, che è esattamente il modello di Spearman: un fattore
 comune a tutte le prove più uno scarto proprio di ciascuna, e nel lavoro del
 1904 quello scarto è già misurato prova per prova (per le materie classiche
 sta al fattore comune come 1 sta a 99, per la matematica come 26 a 74). Stessa
-struttura di questo capitolo, con una moltiplicazione di matrici al posto della
-rete. Più tardi sono venute la forma a più fattori e la sua stima a massima
-verosimiglianza, non l’idea.
+struttura, con una moltiplicazione di matrici al posto della rete. Più tardi
+sono venute la forma a più fattori e la sua stima a massima verosimiglianza,
+non l’idea.
 
 `````
 
@@ -268,8 +273,9 @@ accontentarsi convenga, è la storia della terza sezione.
   non si vede**: prima si sorteggia una causa nascosta, poi da quella si
   sorteggia il dato. La cosa nascosta si chiama **variabile latente**.
 - Il guadagno è che **pezzi semplici danno un risultato complicato**: due
-  sacchetti con una gobba ciascuno producono un istogramma a due gobbe, e
-  nessuno ha dovuto scrivere la forma a due gobbe.
+  sacchetti con una gobba ciascuno, se le misure tipiche dei due sono abbastanza
+  lontane, producono un istogramma a due gobbe, e nessuno ha dovuto scrivere la
+  forma a due gobbe.
 - Il prezzo è che per sapere quanto è probabile un dato bisogna **considerare
   tutte le cause nascoste possibili**, e quando sono tante quel conto non si
   fa. Non si fa nemmeno tirando a sorte, perché quasi tutte le cause

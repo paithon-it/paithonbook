@@ -235,9 +235,16 @@ parte dell'intelligenza artificiale moderna, sotto sotto, funziona così: si
 sceglie un numero da massimizzare (o un errore da rendere minimo) e si lascia
 che sia la macchina a scoprire come.
 
-Conviene sapere subito dov'è la crepa, però, perché ci accompagnerà per tutto
-il libro: quel punteggio lo scriviamo noi, e non è mai *esattamente* la cosa
-che vogliamo. Un aspirapolvere pagato a briciole raccolte, se è abbastanza
+Un giro solo, però, dice poco. Il robot vale per come pulirà le stanze che
+deve ancora vedere: il salotto coi mobili spostati, la casa di un amico. Quei
+giri futuri non si possono misurare oggi: si misurano i giri già fatti, si
+allena il robot su quelli e si spera che le stanze che verranno somiglino a
+quelle già viste. Quanta fiducia meriti quella speranza è la domanda al
+centro del capitolo sul machine learning.
+
+C'è poi una crepa, e ci accompagnerà per tutto il libro: quel punteggio lo
+scriviamo noi, e non è mai *esattamente* la cosa che vogliamo. Un
+aspirapolvere pagato a briciole raccolte, se è abbastanza
 bravo, può scoprire che gli conviene rovesciare il cestino e raccoglierle una
 seconda volta. Ha fatto il punteggio più alto e ha sporcato il salotto: ha
 obbedito alla lettera tradendo l'intenzione. Il fenomeno ha un nome, *reward
@@ -332,8 +339,18 @@ elenchi di divisori, niente tentativi: due divisioni e hai finito. E se il
 resto viene zero già alla prima, va bene lo stesso, hai solo finito prima:
 $12$ diviso $6$ dà resto $0$, e il MCD è $6$.
 
-Il bello è che il metodo non peggiora quando i numeri crescono: per due numeri
-lunghi cento cifre bastano qualche centinaio di divisioni, mentre provare i
+Perché il trucco funziona lo racconta il pavimento. Dal rettangolo di
+$12 \times 8$ ritaglia il quadrato più grande che ci sta, $8 \times 8$: avanza
+una striscia di $8 \times 4$, e la larghezza della striscia è proprio il resto
+della divisione. Una piastrella che copre senza tagli il pavimento intero
+copre senza tagli anche la striscia, e viceversa: quindi cercare la piastrella
+più grande per $12$ e $8$, o cercarla per $8$ e $4$, è lo stesso problema,
+solo più piccolo. Dalla striscia ritaglia poi due quadrati di $4 \times 4$:
+non avanza niente, e quando non avanza niente il lato del quadrato è la
+piastrella cercata.
+
+Il bello è che le divisioni restano poche anche quando i numeri crescono: per
+due numeri lunghi cento cifre ne bastano qualche centinaio, mentre provare i
 divisori uno per uno, come si fa a scuola, ne chiederebbe fino a un $1$ seguito
 da cento zeri. Per darti la misura di quanto sia grande quel numero: gli atomi
 dell'intero universo osservabile si stimano intorno a un $1$ seguito da

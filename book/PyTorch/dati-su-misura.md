@@ -128,12 +128,33 @@ verrà eseguita milioni di volte). Il terzo metodo, `__init__`, nessuno ce lo
 chiede: è la nostra preparazione, quella che avviene una volta sola prima di
 cominciare, dove si elencano i file o si legge il foglio con le etichette.
 
+La seconda domanda chiede un numero preciso, e questo apre una possibilità. Un
+magazzino con gli scaffali numerati consegna il 137 senza toccare i
+centotrentasei che vengono prima, così i pezzi si possono chiedere nell'ordine
+che si vuole, per esempio in un ordine sorteggiato daccapo a ogni giro: è così
+che i dati vengono mescolati.
+
+Certi dati però non stanno su uno scaffale, arrivano come un nastro che
+scorre, e da un nastro si prende quello che passa: chiedere il 137 non
+significa niente, perché per arrivarci bisogna aver lasciato passare tutti
+quelli davanti. Chi lavora così mescola come può, tenendo da parte un cesto di
+qualche centinaio di pezzi e pescando lì dentro, e l'ordine si rompe almeno
+dentro il cesto.
+
 La regola pratica sta tutta in questa divisione del lavoro: **in `__init__` le
 cose pesanti, in `__getitem__` le cose leggere**. Se in `__init__` carichi in
 memoria tutte le immagini, un dataset da 200 GB non parte nemmeno; se in
 `__getitem__` riapri un file CSV di 300 MB per leggere una riga,
 l'addestramento diventa lentissimo, e la GPU, che aspetta i dati, resterà
 ferma a girarsi i pollici.
+
+Una cosa in `__init__` non ci va comunque: un archivio già aperto, o un
+collegamento a una banca dati già stabilito. La preparazione la fa una persona
+sola, e quando le richieste vengono poi smistate a più aiutanti, ognuno si
+ritrova in mano la copia di una chiave che apparteneva a un altro: la porta
+non si apre, e il lavoro muore con un errore che sembra venire da tutt'altra
+parte. Il collegamento si stabilisce alla prima richiesta, e lo stabilisce chi
+quella richiesta la sta servendo.
 `````
 
 `````{tab} Superiore
@@ -190,32 +211,46 @@ test_tf = transforms.Compose([
 ```
 
 `````{tab} Elementare
-La differenza tra le due liste è la regola d'oro di tutta la faccenda:
-**si moltiplica solo in addestramento**. Ruotare, specchiare, schiarire le
-foto di allenamento serve a insegnare al modello che un gatto capovolto è
-ancora un gatto. Farlo durante l'esame significherebbe invece dare a ogni
-studente domande diverse e a caso: il voto non sarebbe più confrontabile, né
-con quello di ieri né con quello di un altro modello.
+All'esame le domande sono uguali per tutti. Specchiare, ritagliare e schiarire
+le fotografie serve mentre si studia, e insegna al modello che un gatto
+capovolto è ancora un gatto. Farlo durante la prova vorrebbe dire sorteggiare
+domande diverse per ogni studente, e un voto così non si confronta con niente,
+né con quello di ieri né con quello di un altro.
 
-E la `Normalize`? Sposta i numeri in modo che si distribuiscano attorno allo
-zero, ed è così che le reti imparano meglio. È la stessa comodità per cui, per
-raccontare com'è andata una verifica, si dice «due sopra la media» e «uno
-sotto» invece di elencare i voti: i numeri diventano piccoli, e la differenza
-fra un compagno e l'altro si vede a colpo d'occhio invece di essere nascosta
-dentro cifre che si somigliano tutte.
+Un professore che racconta com'è andata la verifica non elenca ventidue voti,
+dice «due sopra la media» e «uno sotto». I numeri diventano piccoli, e la
+differenza fra un compagno e l'altro si vede a colpo d'occhio invece di restare
+nascosta dentro cifre che si somigliano tutte. `Normalize` fa lo stesso ai
+colori, e le reti da numeri raccolti attorno allo zero imparano meglio.
 
-I numeri della riga sono sei perché sono due per colore: la media dei valori di
-quel colore, e una misura di quanto quei valori si sparpagliano attorno alla
-media (si chiama **deviazione standard**). Da dove vengono lo dice il commento:
-sono le statistiche di **ImageNet**, la grande raccolta pubblica di fotografie
+La media da sola non basta, e si vede con due materie. In italiano i voti
+stanno quasi tutti fra 5 e 7, in matematica vanno dal 2 al 10, e un 8 nella
+prima non è la stessa impresa di un 8 nella seconda. Allora lo scarto dalla
+media si divide per quanto quei voti si sparpagliano di solito, e lo
+sparpagliamento si chiama **deviazione standard**. Con media 6 e sparpagliamento
+1 quell'8 diventa 2, con media 6 e sparpagliamento 4 diventa 0,5.
+
+Le materie di `Normalize` sono i colori. Per il rosso, il verde e il blu tiene
+una media e uno sparpagliamento a testa, ed ecco perché i numeri della riga sono
+sei, due per colore. Al rosso più acceso, che dopo la conversione vale 1, toglie
+0,485 e divide per 0,229: viene circa 2,2. Al nero, che vale 0, viene circa 2,1
+sotto zero. Il rosso prima andava da 0 a 1, adesso si distende da 2,1 sotto zero
+a 2,2 sopra.
+
+La media di classe si fa sui voti, non sui compiti. Finché sono fogli si possono
+ricopiare, accorciare, riscrivere, ma nessuno ne fa la media. Ruotare,
+ritagliare e schiarire sono cose che si fanno a una fotografia; togliere una
+media e dividere per un numero sono cose che si fanno a dei numeri. Prima la
+foto, poi la conversione in numeri, e solo dopo la sottrazione, perché le ultime
+due al contrario non funzionano proprio.
+
+I sei numeri vengono da **ImageNet**, la grande raccolta pubblica di fotografie
 etichettate su cui, dal 2012 in poi, si è misurata la visione artificiale.
-
-E qui c'è una domanda legittima: perché usare i numeri di ImageNet su delle
-foto di pizza? Perché è quello che si fa quasi sempre, cioè non partire da zero
-ma da un modello già addestrato su ImageNet, che quei numeri se li aspetta,
-perché sono quelli con cui gli sono state date le immagini quando ha imparato.
-Chi invece addestra davvero da zero se li calcola sulle proprie foto, e viene
-meglio: come si fa è scritto in fondo a questa sezione.
+Perché la scala di ImageNet su delle foto di pizza? Perché quasi nessuno parte
+da zero: si prende un modello che ha già studiato là, e lui quella scala se
+l'aspetta, come uno studente che ha imparato in decimi e si trova davanti i
+giudizi a lettere. Chi parte davvero da zero i sei numeri se li calcola sulle
+proprie foto, la prima volta che le scorre tutte.
 `````
 
 `````{tab} Superiore
@@ -271,9 +306,15 @@ lo dà alla GPU, aspetta, prepara il prossimo, e la GPU, che è la parte cara
 della macchina, resta ferma metà del tempo. Con quattro o otto aiutanti i
 vassoi successivi sono già pronti quando servono.
 
+Quanti ne tengono pronti ciascuno? Due, se non si dice altro. Con otto
+aiutanti sono sedici vassoi apparecchiati in giro per la cucina, più quello in
+uso: se i vassoi sono grandi, il piano di lavoro si riempie prima che la
+cucina abbia fame, e la macchina resta senza memoria per una ragione che con
+la scheda grafica non c'entra niente.
+
 `pin_memory` è il piano d'appoggio accanto al passavivande: i dati vengono
 messi in una zona di memoria da cui la GPU può prenderli senza passaggi
-intermedi.
+intermedi, e mentre li sta prendendo la cucina può già lavorare al resto.
 
 `drop_last` butta via l'ultimo vassoio se è mezzo vuoto: con duemila esempi e
 vassoi da 32, l'ultimo ne ha 16, e ci sono tipi di strato che dai numeri del
@@ -283,11 +324,23 @@ statistiche vengono storte. Il capitolo sul deep learning dirà quali.
 `persistent_workers` dice di non licenziare gli aiutanti alla fine di ogni
 giro per riassumerli subito dopo: se prepararsi costa loro qualche secondo,
 quei secondi si pagano una volta invece che a ogni epoca. E `shuffle=True`
-mescola il mazzo prima di ogni giro, così la rete non impara l'ordine.
+mescola il mazzo prima di ogni giro, così la rete non impara l'ordine. Chi
+preferisce pescare a modo suo (dando più probabilità agli esempi rari, per
+esempio) passa il proprio modo di pescare e toglie `shuffle`: o l'uno o
+l'altro, e chiedendoli tutti e due si ottiene un errore subito.
 
-Un avvertimento: `num_workers` alto **non è sempre meglio**. Ogni aiutante è
-un processo vero, con la sua memoria; oltre il numero di core della macchina
-si litiga soltanto. Il modo di scegliere è misurare, non indovinare.
+Un avvertimento sul numero: alzare `num_workers` non paga oltre un certo
+punto. Ogni aiutante è un processo vero, con la sua memoria; oltre il numero
+di core della macchina si litiga soltanto. Il modo di scegliere è misurare,
+non indovinare.
+
+E un tranello che colpisce su Windows e macOS, dove ogni aiutante che si
+presenta al lavoro rilegge da capo il foglio delle istruzioni. Se sul foglio,
+in mezzo alle altre righe, c'è scritto «assumi otto aiutanti», ognuno ne
+assume altri otto, e la cucina si riempie di gente finché la macchina non si
+arrende. Il rimedio è mettere le righe che avviano il lavoro sotto
+`if __name__ == "__main__":`, che è il modo di dire «questo pezzo lo esegue
+soltanto chi ha lanciato il programma, non chi arriva dopo».
 `````
 
 `````{tab} Superiore
@@ -450,6 +503,15 @@ La regola è: **si divide per gruppo, non per esempio**. Tutti i dati di un
 paziente stanno o di qua o di là. E se i dati hanno una data, si divide per
 data: si addestra sul passato e si valuta sul futuro, perché è così che
 funzionerà davvero.
+
+C'è un secondo modo di sbirciare, più difficile da vedere perché non sposta
+nemmeno una fotografia. Prima di dare i numeri alla rete si guarda com'è fatta
+la collezione (quanto è chiara in media, quanto variano i colori) per rimettere
+tutto sulla stessa scala. Se per calcolare quelle misure si guarda anche il
+mucchio d'esame, un pezzetto delle foto d'esame è già entrato nelle decisioni
+prese prima dell'esame. Le misure si prendono sul mucchio d'addestramento e si
+applicano tali e quali all'altro. Il regalo che ci si fa è piccolo, e basta a
+far sembrare vincente un metodo che non lo è.
 `````
 
 `````{tab} Superiore
@@ -522,7 +584,8 @@ leggono in blocco (`.npy`, WebDataset, LMDB) invece di milioni di piccoli file;
 spostare le trasformazioni pesanti sulla GPU (`torchvision.transforms.v2`
 lavora su batch di tensori, quindi anche su device).
 
-Sul terzo vale la pena essere precisi. Su una collezione grande il costo
+Il rimedio dei file impacchettati guadagna per una ragione precisa. Su una
+collezione grande il costo
 dominante non è decodificare i file, è **aprirli**: ogni `open()` è una
 chiamata di sistema e un accesso ai metadati del filesystem, e un milione di
 file piccoli produce un milione di accessi minuscoli e sparsi, che è lo schema

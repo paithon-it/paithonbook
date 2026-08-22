@@ -92,11 +92,14 @@ fretta quella degli appunti di servizio (fattore $0{,}5$, dimezza a ogni
 passo). È la differenza tra abbassare le luci di tutta la stanza e regolare
 ogni lampada singolarmente.
 
-Le zone, poi, non sono zone a caso: sono i *canali*, cioè le posizioni della
-fila di numeri con cui il modello scrive ogni parola, e c'è un interruttore per
-ciascuna. Il modello che lo fa si chiama **GLA**, cioè attenzione lineare con
-gli interruttori (in inglese *gated linear attention*): la troverai citata
-anche più avanti, ed è semplicemente questo.
+Le zone, poi, non sono zone a caso. Anche l'etichetta è una fila di numeri, e
+le posizioni di quella fila si chiamano *canali*: c'è un interruttore per
+ciascun canale dell'etichetta, e ognuno sbiadisce per conto suo la parte di
+lavagna scritta sotto quel canale. Neanche questi interruttori li gira una
+persona: il modello li ricalcola a ogni parola, come faceva col fattore unico
+buono per tutta la lavagna, solo che adesso ne ricalcola una fila intera
+invece di uno solo. Il modello che lo fa si chiama **GLA**, cioè attenzione
+lineare con gli interruttori (in inglese *gated linear attention*).
 
 `````
 
@@ -146,7 +149,9 @@ bottiglia stretto, dimensione 16) seguita da una sigmoide, così da generare $d$
 gate distinti senza far esplodere il numero di parametri; la sigmoide è poi
 elevata a $1/\tau$ con $\tau = 16$, una *temperatura* che spinge i gate verso
 1, cioè verso l'oblio lento, che è la molla di tutto il meccanismo:
-$\boldsymbol{\alpha}_t = \sigma\big(\mathbf{x}_t \mathbf{W}^1_\alpha \mathbf{W}^2_\alpha + \mathbf{b}_\alpha\big)^{1/\tau}$. La
+$\boldsymbol{\alpha}_t = \sigma\big(\mathbf{W}^2_\alpha \mathbf{W}^1_\alpha \mathbf{x}_t + \mathbf{b}_\alpha\big)^{1/\tau}$, con
+$\mathbf{W}^1_\alpha$ che porta da $d$ a 16 e $\mathbf{W}^2_\alpha$ che
+riporta a $d$. La
 gerarchia è chiara: scalare fisso (RetNet) $\to$ scalare data-dipendente
 (Mamba-2) $\to$ diagonale data-dipendente (GLA), dal più grossolano al più
 selettivo.
@@ -177,42 +182,45 @@ tanto vale insegnarle a farlo con criterio.
 
 `````{tab} Elementare
 
-Torniamo alla rubrica. L'accumulo puro è chi, ogni volta che scopre un numero
-di telefono, lo scrive sopra a quello che c'era senza nemmeno guardarlo: anche
-se quel contatto era già in rubrica, magari con un numero sbagliato. Le due
-scritte si sovrappongono, e chi consulta la rubrica si sente rispondere un
-miscuglio del numero vecchio e di quello nuovo, in cui non si riconosce più né
-l'uno né l'altro.
+Un numero di telefono nuovo, e due modi di annotarlo. Il primo è scriverlo
+sopra a quello che c'era senza nemmeno guardare. Se quel contatto era già in
+rubrica, magari con un numero sbagliato, le due scritte si sovrappongono, e chi
+consulta la rubrica si sente rispondere un miscuglio in cui non si riconosce
+più né il numero vecchio né quello nuovo.
 
-La **delta rule** fa la cosa sensata: prima di scrivere, *cerca il contatto* e
-legge il numero attualmente memorizzato. Poi scrive soltanto la
-**correzione**: la differenza tra quello giusto e quello che c'era. Un esempio
-con i numeri: alla voce «Mario» la memoria oggi risponde $7$, ma il valore
-giusto è $10$; l'errore è $10 - 7 = 3$. Con un «passo di correzione» pari a
-metà (nelle formule questa manopola si chiama *beta*, e si scrive $\beta$)
-scrivo solo $0{,}5 \times 3 = 1{,}5$, e la memoria passa a rispondere $8{,}5$:
-si avvicina alla verità senza cancellare tutto di colpo. La manopola dosa
-quanto dare retta all'errore: al massimo, $\beta = 1$, **sovrascrivo** del
-tutto (la memoria risponde $10$); a zero **ignoro** e lascio $7$. È esattamente
-come si corregge un tiro: non riparti da zero, aggiusti in proporzione a quanto
-hai sbagliato.
+Il secondo modo è quello di chi prima cerca il contatto e legge quello che c'è.
+Alla voce «Mario» la rubrica oggi risponde $7$, e il numero giusto è $10$. La
+differenza è $10 - 7 = 3$, e si annota soltanto quella. Quanta annotarne lo
+decide una manopola, che nelle formule si chiama *beta* e si scrive $\beta$.
+Girata a metà scrivo $0{,}5 \times 3 = 1{,}5$, e da lì in avanti alla voce
+«Mario» la rubrica risponde $8{,}5$, più vicina alla verità senza aver
+cancellato niente di colpo. Girata al massimo, con $\beta = 1$, il numero
+vecchio sparisce e resta il $10$. Girata a zero resta il $7$. Annotare soltanto
+la differenza si chiama **delta rule**, ed è il gesto di chi corregge un tiro,
+spostandosi di quanto ha sbagliato invece di ripartire da capo.
 
-Due modi di dire la stessa cosa, e conviene fissarlo perché più avanti la
-tabella userà l'altro: scrivere la differenza, oppure cancellare la vecchia
-risposta e rimetterne una nuova, danno lo stesso numero. Togliere metà del $7$
-e metterci metà del $10$ fa $3{,}5 + 5 = 8{,}5$, cioè quello di prima. Quanto
-si cancella e quanto si scrive li decide la stessa manopola.
+Il massimo, però, è davvero il massimo solo se tutte le etichette sono calcate
+con la stessa forza. Se «Mario» fosse scritto col pennarello, il doppio delle
+altre voci, la manopola al massimo correggerebbe il doppio dell'errore. Dal $7$
+arriverei a $13$, e da lì sbaglierei di $3$ dall'altra parte, quindi al giro
+dopo tornerei a $7$, avanti e indietro per sempre senza fermarmi mai sul $10$,
+come il tiratore che esagera ogni correzione e la manda ogni volta dall'altra
+parte del bersaglio. Chi tiene una rubrica così ripassa prima tutte le
+etichette a una misura sola.
 
-Da qui una conseguenza che tornerà utile fra poco: girata a zero, la manopola
-non spegne solo la correzione, spegne la scrittura. Se non scrivo la
-differenza, non scrivo niente, e la memoria resta com'era.
+Lo stesso gesto si può fare in un altro ordine, e il numero che ne esce è
+identico. Invece di annotare la differenza, cancello metà del $7$ e ci scrivo
+metà del $10$, e resta $3{,}5 + 5 = 8{,}5$, cioè il valore di prima. Quanto
+cancellare e quanto riscrivere li comanda la stessa manopola. Ecco perché a
+zero la pagina resta com'era. Quello che si scrive *è* la correzione, e senza
+differenza da annotare non c'è proprio nulla da scrivere.
 
-Correggere in proporzione all'errore è una vecchia idea dell'ingegneria: la
-formularono Widrow e Hoff nel 1960, per una macchina che imparava aggiustandosi
-da sé. Come il fattore di sbiadimento di poco fa, la manopola non la gira una
-persona: il modello la calcola da sé a ogni parola, in base a quello che sta
-leggendo, e a essere stato appreso durante l'addestramento è il modo di
-calcolarla.
+La manopola non la gira una persona. Il modello la calcola da sé a ogni parola,
+in base a quello che sta leggendo, e come per il fattore di sbiadimento a
+essere stato appreso durante l'addestramento è il modo di ricalcolarla.
+Correggere in proporzione all'errore è una vecchia idea dell'ingegneria, e la
+misero in formula Widrow e Hoff nel 1960, per una macchina che imparava
+aggiustandosi da sé.
 
 `````
 
@@ -323,12 +331,12 @@ correzione tiene in ordine le voci che restano, e serve perché quello che c'è
 scritto sia giusto. Se si smette di passare lo straccio, resta la sola
 correzione: le voci sono precise, ma la lavagna a un certo punto si riempie. Se
 si smette di correggere, resta il solo straccio, e questa è la parte
-sorprendente: non si torna al registro che sommava e basta, si ottiene una
-lavagna che sbiadisce e non scrive più niente: è la conseguenza vista con
-Mario, dove la manopola girata a zero spegneva la correzione e con lei la
-scrittura, perché quel che si scrive *è* la correzione. Insieme, invece, i due
-gesti fanno il mestiere per intero: buttare via in fretta ciò che non serve e
-tenere in ordine ciò che si conserva.
+sorprendente: non si ottiene la lavagna che sbiadisce e ci somma sopra le voci
+nuove, si ottiene una lavagna che sbiadisce e non scrive più niente. È la
+conseguenza vista con Mario: la manopola girata a zero spegneva la correzione
+e con lei la scrittura, perché quel che si scrive *è* la correzione. Insieme,
+invece, i due gesti fanno il mestiere per intero: buttare via in fretta ciò che
+non serve e tenere in ordine ciò che si conserva.
 
 `````
 
@@ -347,19 +355,19 @@ dove i due parametri hanno ruoli distinti e leggibili a colpo d'occhio:
   Mamba-2): il *decadimento globale*, che alleggerisce l'intera memoria a ogni
   passo;
 - $\beta_t \in (0,1)$ è la **forza di scrittura** della delta rule: quanto
-  correggere la chiave corrente, come nella sezione precedente.
+  correggere la chiave corrente, esattamente come in DeltaNet.
 
 Con $\alpha_t \to 1$ si ritrova la pura delta rule (nessun oblio, sole
 correzioni). Il limite $\beta_t \to 0$ va invece letto con attenzione, perché
 $\beta_t$ compare **anche nel termine di scrittura**: la transizione si riduce
 sì al puro gate scalare $\alpha_t \mathbf{I}$, ma con la correzione si spegne anche la
 scrittura, e quel che resta è $\mathbf{S}_t = \alpha_t \mathbf{S}_{t-1}$, una memoria che decade
-a zero senza registrare più nulla. La riga «Mamba-2 / RetNet» della tabella qui sotto, invece, non si ritrova
-come caso particolare: là il gate scalare la scrittura la fa a piena forza,
-mentre qui la forza di scrittura è la stessa manopola che comanda la
-correzione. Gated DeltaNet contiene la delta rule pura, non il decadimento
-scalare puro. Gated DeltaNet vive nel mezzo: dimentica in fretta
-ciò che non serve più *e* aggiusta con precisione ciò che tiene. La
+a zero senza registrare più nulla. Il decadimento scalare puro di RetNet e
+Mamba-2, invece, non si ritrova come caso particolare: là il gate scalare
+accompagna una scrittura a piena forza, mentre qui la forza di scrittura è la
+stessa manopola che comanda la correzione. Gated DeltaNet contiene la delta
+rule pura, non il decadimento scalare puro, e vive nel mezzo: dimentica in
+fretta ciò che non serve più *e* aggiusta con precisione ciò che tiene. La
 parallelizzazione lungo la sequenza si ottiene estendendo la stessa
 rappresentazione WY di DeltaNet, così che anche questa forma più ricca resti
 addestrabile su contesti lunghi.
@@ -399,6 +407,21 @@ assomigliava a correggere un tiro:
 non *assomiglia* a imparare, è imparare, nell'unico modo in cui una macchina
 lo fa, cioè guardare di quanto ha sbagliato e spostarsi un po’ in quella
 direzione.
+
+Anche le altre due mosse sono quel passo, fatto con meno cura. Sommare alla
+cieca è il passo di chi non guarda l'errore: scrive l'informazione nuova come
+se sotto quell'etichetta non ci fosse ancora niente. Dà lo stesso risultato
+del passo fatto bene soltanto quando valgono insieme due condizioni:
+l'etichetta di adesso non somiglia a nessuna di quelle già in rubrica, e la
+manopola è girata al massimo. Basta che ne manchi una perché i due modi si
+separino subito: con la manopola a metà, alla prima parola la rubrica scrive
+la metà di quello che avrebbe scritto la somma alla cieca. Sbiadire, poi, è la
+cautela di chi impara di continuo e non si ferma mai: a ogni passo tira un po’
+verso lo zero tutto quello che ha imparato finora, così che i conti vecchi non
+si accumulino senza fine, e di quanto tirare decide parola per parola.
+
+Sommare, correggere, sbiadire: sono tre modi di fare lo stesso passo, e a
+cambiare è soltanto quanta cura ci si mette.
 
 `````
 
@@ -479,7 +502,7 @@ di ieri, dal più semplice al più raffinato.
 | Attenzione lineare | La tiene tutta, intatta, e ci somma sopra la voce nuova. |
 | Mamba-2 / RetNet | La sbiadisce tutta allo stesso ritmo, poi ci somma sopra la voce nuova. I due si dividono proprio sul ritmo: RetNet lo fissa una volta per tutte, Mamba-2 lo ricalcola a ogni parola. |
 | GLA | La sbiadisce **zona per zona**, ogni zona al suo ritmo, poi ci somma sopra la voce nuova. |
-| DeltaNet | Non la sbiadisce, ma prima di scrivere **sbianchetta la vecchia voce** proprio dell'etichetta che sta per riscrivere, tanto quanto dice la manopola, e ci scrive sopra la correzione. |
+| DeltaNet | Non la sbiadisce, ma prima di scrivere **sbianchetta la vecchia voce** proprio dell'etichetta che sta per riscrivere, tanto quanto dice la manopola, e al suo posto scrive la nuova, nella stessa misura. |
 | Gated DeltaNet | Le due cose insieme: sbiadisce tutto, e in più cancella e riscrive la voce di turno. |
 
 Cinque righe, una storia sola: **cambia soltanto la prima mossa**, quella che
@@ -487,8 +510,8 @@ decide che cosa resta di ciò che si era scritto prima. Tutto il resto (la
 memoria che non cresce mai, la voce che si somma sotto la sua etichetta, il
 fatto che il modello si alleni tutto in una volta e poi scriva una parola alla
 volta) è identico in tutte e cinque, con una sola differenza di contorno: nelle
-due righe che correggono, quel che si somma sotto l'etichetta è la correzione,
-e la manopola la dosa.
+due righe che correggono, quel che si scrive sotto l'etichetta lo dosa la
+manopola.
 
 `````
 
@@ -531,11 +554,11 @@ chiamano *dualità* quella doppia scrittura.
   fa spazio da sola (con un fattore di $0{,}9$, dopo dieci passi una voce vale
   circa un terzo). Si può sbiadire tutto allo stesso ritmo, fissato una volta per
   tutte; oppure decidere il ritmo parola per parola, guardando cosa si sta
-  leggendo; oppure sbiadire **zona per zona** della lavagna, tenendo nitida la
-  zona con le cose che serviranno ancora e cancellando in fretta quella degli
-  appunti di servizio. Sono i tre gradini che vanno dal più grossolano al più
-  selettivo, ed è la differenza tra abbassare le luci di tutta la stanza e
-  regolare ogni lampada singolarmente.
+  leggendo; oppure sbiadire **zona per zona** della lavagna, e anche qui parola
+  per parola, tenendo nitida la zona con le cose che serviranno ancora e
+  cancellando in fretta quella degli appunti di servizio. Sono i tre gradini che
+  vanno dal più grossolano al più selettivo, ed è la differenza tra abbassare le
+  luci di tutta la stanza e regolare ogni lampada singolarmente.
 - **Correggere**: prima di scrivere si consulta la rubrica, si legge la risposta
   che dà oggi e si annota soltanto la differenza rispetto a quella giusta, dosata
   da una manopola. Girata al massimo, la voce viene sovrascritta; a zero, resta
@@ -550,12 +573,13 @@ chiamano *dualità* quella doppia scrittura.
   aggiusta una voce per volta ma non svuota nulla. Insieme dimenticano in fretta
   ciò che non serve *e* aggiustano con precisione ciò che tengono.
 - Il filo che unisce tutto: ogni ricorrenza di questo capitolo è **un passo di
-  apprendimento fatto al volo** (la «regressione online» del titolo qui sopra),
-  un token alla volta, sullo stesso identico compito, «data questa chiave,
-  rispondi con questo valore»: è la retta di best fit aggiustata di continuo
-  invece che calcolata in blocco. Correggere è il passo fatto bene, perché prima
-  guarda l'errore; sommare alla cieca va bene solo finché le etichette non si
-  assomigliano fra loro; sbiadire serve a non far gonfiare la memoria
+  apprendimento fatto al volo**, cioè una **regressione online**, un token alla
+  volta, sullo stesso identico compito, «data questa chiave, rispondi con questo
+  valore»: è la retta di best fit aggiustata di continuo invece che calcolata in
+  blocco. Correggere è il passo fatto bene, perché prima guarda l'errore;
+  sommare alla cieca dà lo stesso risultato solo quando valgono insieme due
+  condizioni, che l'etichetta nuova non somigli a nessuna già scritta *e* che la
+  manopola sia girata al massimo; sbiadire serve a non far gonfiare la memoria
   all'infinito.
 - A cambiare, da un'architettura all'altra, è **solo il modo in cui la memoria di
   ieri sopravvive a oggi**: tenerla intatta, sbiadirla tutta allo stesso ritmo,
@@ -587,13 +611,14 @@ chiamano *dualità* quella doppia scrittura.
   modo globale, $\beta_t$ corregge in modo mirato (dimentica in fretta *e*
   aggiusta con precisione).
 - Il filo che unisce tutto: ogni ricorrenza di questo capitolo è **un passo di
-  apprendimento fatto al volo** (la «regressione online» del titolo qui sopra),
-  un token alla volta, sullo stesso identico compito, «data questa chiave,
-  rispondi con questo valore». La delta rule è il
+  apprendimento fatto al volo**, cioè una **regressione online**, un token alla
+  volta, sullo stesso identico compito, «data questa chiave, rispondi con questo
+  valore». La delta rule è il
   passo fatto bene, perché prima guarda l'errore e poi corregge; l'accumulo
-  puro scrive alla cieca, senza controllare cosa c'era già, e va bene solo
-  finché le chiavi non si assomigliano fra loro; il gate serve a non far
-  gonfiare la memoria all'infinito.
+  puro scrive alla cieca, senza controllare cosa c'era già, e ritrova lo stesso
+  passo solo se le chiavi sono mutuamente ortogonali *e* la scrittura è a piena
+  forza ($\beta_t = 1$); il gate serve a non far gonfiare la memoria
+  all'infinito.
 - A cambiare, da un'architettura all'altra, è **solo la transizione di stato**
   ($\mathbf{I} \to \alpha_t \mathbf{I} \to \operatorname{Diag}(\boldsymbol{\alpha}_t) \to
   \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top

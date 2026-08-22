@@ -29,11 +29,24 @@ combina con i propri pesi e lo passa avanti.
 `````{tab} Elementare
 
 In una catena di montaggio, alla prima postazione arrivano i dati grezzi (per
-esempio i pixel di una foto). Ogni postazione ha una fila di "manopole" (i
+esempio i pixel di una foto). Ogni postazione ha un pannello di "manopole" (i
 **pesi**) con cui mescola ciò che riceve, poi fa passare il risultato nel
 passaggio della sezione precedente (la funzione di attivazione, la "piega") e
-lo consegna alla postazione successiva. L'ultima postazione affaccia il
-prodotto finito: la previsione della rete, per esempio "gatto: 0,92".
+lo consegna alla postazione successiva.
+
+Di manopole ce n'è una per ogni coppia formata da un pezzo che entra e un pezzo
+che esce, così ogni uscita ha la sua manopola su ciascuno degli ingressi. Una postazione che riceve dieci pezzi e ne consegna
+tre ne ha trenta. Ogni uscita porta in più un valore di partenza tutto suo, che
+la postazione aggiunge comunque, anche quando ciò che le arriva è zero: è lo
+zero regolabile di una bilancia, e sposta in su o in giù tutto quello che esce
+da lì.
+
+L'ultima postazione affaccia il prodotto finito: la previsione della rete, per
+esempio "gatto: 0,92". La sua rifinitura è diversa da quella delle altre,
+perché diverso è ciò che deve consegnare. Se la risposta è una scelta fra più
+nomi, l'ultimo passaggio trasforma i punteggi in percentuali che sommano a uno;
+se la risposta è una quantità, un prezzo per esempio, lascia passare il numero
+com'è.
 
 Nessuna postazione vede l'intero problema: ognuna trasforma solo un pezzetto e
 lo passa avanti. Questo scorrere in avanti, dai dati alla risposta, è il
@@ -65,7 +78,7 @@ prodotto matrice-vettore già incontrato in algebra lineare, "avvolto" in una
 non linearità.
 
 Conviene fissare subito anche le **forme**, che non sono contabilità: sono ciò
-che rende verificabile a mano ogni formula di questa sezione, a partire dalla
+che rende verificabile a mano ogni formula che segue, a partire dalla
 trasposta che comparirà nel passaggio all'indietro. Se lo strato $l$ ha $n_l$
 neuroni, allora
 
@@ -97,11 +110,43 @@ Mettiamo che la rete debba stimare il prezzo di una casa: la casa vale davvero
 ne prevede 170.000, quindi l'errore è di 30.000. Poi quell'errore si eleva al
 quadrato: $30.000 \times 30.000 = 900$ milioni. Perché al quadrato? Per punire
 di più gli sbagli grossi, e si vede subito confrontando due casi: sbagliare di
-60.000, cioè il doppio, dà $3.600$ milioni, cioè **quattro** volte tanto.
+60.000, cioè il doppio, dà $3.600$ milioni, cioè quattro volte tanto.
 Raddoppiare l'errore ne quadruplica il costo, e la rete impara a evitare le
-cantonate prima delle imprecisioni. Più la previsione è vicina al vero, più la
-loss è piccola; se fossero identiche, la loss sarebbe zero. Tutto
+cantonate prima delle imprecisioni. La cifra in sé conta poco: se tutte le
+penalità si dimezzassero, resterebbe identico quale sbaglio costa più di quale,
+e la rete andrebbe a finire nello stesso posto.
+
+Più la previsione è vicina al vero, più la loss è piccola; se fossero
+identiche, la loss sarebbe zero. E le case non sono una sola: la penalità si
+calcola su tante case, una alla volta, e poi se ne prende la media. È
+quella media a dipendere dalle manopole, perché sono loro a decidere le
+risposte: girarle cambia le previsioni, e quindi cambia il numero. Tutto
 l'addestramento è una caccia a quel numero più basso.
+
+Quando la risposta non è un prezzo ma un sì o un no (gatto oppure non gatto),
+il conto cambia forma. La rete dichiara quanto ci crede, un numero fra zero e
+uno, e quel numero non nasce così: dentro c'è un punteggio, alto quanto si
+vuole, che viene poi schiacciato dentro l'intervallo fra zero e uno. Lo
+schiacciamento non è uniforme. Con il punteggio a metà strada il numero
+dichiarato è 0,5, e una piccola spinta al punteggio lo muove di un quarto di
+quella spinta; con il numero dichiarato già a 0,99 la stessa spinta lo muove
+venticinque volte meno, perché sopra l'uno non c'è spazio dove andare.
+
+Proviamo allora a contare la penalità al quadrato, come per le case, e
+guardiamo che spinta a correggersi ne esce. È il prodotto di due cose: quanto
+il numero dichiarato era lontano dalla verità, e di quanto quel numero si
+sposta quando il punteggio si sposta. Chi ha dichiarato 0,99 mentre la verità
+era zero è lontano 0,99, ma il suo numero si muove di appena 0,01: la spinta
+vale 0,0099. Chi ha dichiarato 0,5, cioè non si è sbilanciato, è lontano la
+metà, ma il suo numero si muove di 0,25: la spinta vale 0,125, più di dodici
+volte tanto. Chi ha torto marcio si corregge meno di chi era soltanto incerto,
+ed è l'ultima cosa che si vorrebbe.
+
+Ecco perché, quando la risposta è una scelta fra nomi, la penalità si conta in
+un altro modo, la **cross-entropia**: è fatta apposta perché il fattore dello
+schiacciamento si semplifichi e sparisca dal conto. Resta soltanto la
+lontananza dalla verità, 0,99 contro 0,5, e chi sbaglia di più riceve la spinta
+più forte.
 
 `````
 
@@ -179,46 +224,54 @@ risale la rete e raggiunge anche i primi strati.
 
 `````{tab} Elementare
 
-L'errore nasce all'uscita, ma non è "colpa" solo dell'ultimo strato: viene
-ereditato da quello prima, e da quello prima ancora, fino all'inizio. È una
-catena di responsabilità. La backpropagation parte dal fondo e chiede a ogni
-strato: "quanto hai contribuito tu a questo errore?". La risposta di uno strato
-serve a calcolare quella dello strato precedente, come un rimprovero che si
-passa all'indietro lungo la fila ({numref}`fig-forward-backward`).
+La catena di montaggio ha consegnato la sua stima, 170.000 € per una casa che
+ne vale 200.000. Adesso il reclamo torna indietro lungo la linea, dall'ultima
+postazione verso la prima, e a ogni tappa qualcuno deve dire quanta parte di
+quello scarto è sua ({numref}`fig-forward-backward`).
 
-Un esempio in piccolo, con i numeri di prima: la rete prevede 170.000 € per la
-casa che ne vale 200.000. Attenzione a una cosa: a tornare indietro non sono i
-900 milioni. Il quadrato serve a decidere quanto conta uno sbaglio rispetto a
-un altro, ma quello che si distribuisce all'indietro è di quanto la risposta
-era lontana, con il suo segno. I 30.000 € di errore vengono ripartiti tra i neuroni
-dell'ultimo strato in proporzione a quanto ciascuno ha pesato sulla risposta:
-chi ha contribuito con un peso grande eredita una colpa grande, chi ha
-contribuito poco quasi niente. Se i neuroni fossero due, uno con peso $2$ e uno
-con peso $1$, al primo toccherebbe il doppio del secondo: 60.000 contro 30.000.
-Che la somma sia più grande dei 30.000 di partenza non è un errore di conto: la
-colpa non è una torta da spartire, è una quantità che si moltiplica per il peso
-del filo, e un filo che conta molto la amplifica. Poi ogni neurone gira la propria quota di colpa ai
-neuroni dello strato prima, con lo stesso criterio, fino all'ingresso.
+Sul foglio non ci sono i 900 milioni della penalità. Il quadrato serviva a
+decidere quale sbaglio conta più di quale, mentre a risalire la linea è lo
+scarto vero, 30.000 €, e il suo segno dice che la stima era bassa. All'ultima
+postazione lavorano in due, uno con la manopola su 2 e l'altro su 1, e al primo
+tocca il doppio del rimprovero, 60.000 contro 30.000. Che sommati superino i 30.000 di
+partenza è normale, perché la colpa non si spartisce come una torta, viaggia
+lungo un filo e si moltiplica per la manopola che incontra.
 
-E adesso la cosa da vedere, perché è quella che rende la faccenda praticabile:
-**ripartire in proporzione vuol dire moltiplicare**. La quota che tocca a un
-neurone è la colpa che gli arriva dallo strato dopo, moltiplicata per il peso
-del filo che li unisce. Quindi, di strato in strato, la colpa non viene
-ricalcolata da capo: si porta dietro un fattore in più, poi un altro, poi un
-altro ancora. Un fattore per il peso, e uno per la pendenza della funzione di
-attivazione, che è la moltiplicazione di cui parlava la sezione precedente.
-Ecco perché un giro solo all'indietro basta per tutta la rete: è un prodotto
-che si allunga, e allungarlo di un pezzo costa una moltiplicazione.
+Ogni addetto passa poi la sua quota a chi lo riforniva, moltiplicata per la
+manopola del filo e per la pendenza della piega attraversata. Chi sta in mezzo
+riforniva parecchi addetti a valle, quindi di rimproveri ne riceve uno per
+ciascuno, e li somma. Così il foglio arriva fino alla prima postazione. Tutto
+questo per una casa sola: a gruppetti, il giro si rifà per ciascuna e a ognuno
+spetta la media.
 
-Un'ultima cosa, perché finora abbiamo parlato di neuroni e la correzione tocca
-ai pesi: la colpa di un neurone si scarica sui fili che ci arrivano, e a
-ciascuno tocca in proporzione a quanto quel filo ha portato in quell'esempio.
-Alla fine ogni singolo peso ha in mano la sua quota di colpa, e quella quota
-non dice solo *quanto*, dice anche *da che parte*, perché ha un segno. Nel
-nostro caso la rete ha previsto **troppo poco**: allora un peso che spingeva la
-risposta verso l'alto va alzato, uno che la tirava verso il basso va abbassato.
-Se la rete avesse previsto troppo, tutto al contrario. E questo è quanto:
-sapere di quanto e da che parte è tutto ciò che serve. Spostare i pesi di conseguenza è il passo successivo.
+Nessuno rifà i conti da capo, ed è questo che rende la faccenda praticabile. La
+colpa che arriva si porta dietro due fattori in più a ogni postazione, la
+manopola e la piega, e allungare un prodotto di un pezzo costa una
+moltiplicazione, quindi un giro solo all'indietro serve tutta la linea.
+
+Si potrebbe fare il contrario, girare una manopola di un pelo e rimandare
+avanti tutto per vedere di quanto cambia la stima. Dà la risposta giusta, e
+costa una linea intera per ogni manopola: un milione di manopole, un milione di
+giri. All'indietro si parte dall'unico numero che c'è alla fine, e un giro solo
+consegna la quota di tutti. Conviene entrare dalla parte dove le cose sono
+poche.
+
+Il ritorno si paga in spazio. Per dare a un filo la sua quota bisogna sapere
+che pezzo aveva portato all'andata, quindi niente si butta e i pezzi restano
+sullo scaffale finché il reclamo non passa a prenderseli. Gli scaffali crescono
+con il numero delle postazioni e con quante case si mandano avanti in una
+volta, e con tante case occupano più posto delle manopole stesse. Se lo spazio
+finisce se ne svuota qualcuno, e quel tratto di andata si rifà al volo quando
+il reclamo ci arriva, spendendo tempo per risparmiare spazio.
+
+Il rimprovero arriva agli addetti, ma a doversi correggere sono le manopole.
+Ciascuna ne prende in proporzione a quanto il suo filo aveva portato per quella
+casa. Lo zero regolabile della bilancia, che si aggiunge comunque, prende la
+quota intera senza moltiplicarla per niente, perché contribuisce sempre nella
+stessa misura. E la quota ha il suo segno. La stima era bassa, quindi le
+manopole che spingevano il numero in su vanno alzate e quelle che lo tiravano
+in giù abbassate; con una stima troppo alta, il contrario. Di quanto e da che
+parte: basta questo, e girare le manopole è il gesto dopo.
 
 `````
 
@@ -292,9 +345,10 @@ presuppone quindi un'attivazione applicata componente per componente. La
 softmax, cioè la $\varphi$ tipica della classificazione, non lo è (ogni
 uscita dipende da tutti i logit), ma accoppiata alla cross-entropia il conto
 si semplifica in due righe. La derivata della softmax è
-$\partial\hat{y}_k/\partial z_i = \hat{y}_k(\delta_{ki}-\hat{y}_i)$, e
-mettendola nella cross-entropia $\mathcal{L}=-\sum_k y_k\log\hat{y}_k$ i
-termini si accorciano:
+$\partial\hat{y}_k/\partial z_i = \hat{y}_k\left(\mathbb{1}[k=i]-\hat{y}_i\right)$,
+dove l'indicatore $\mathbb{1}[k=i]$ vale $1$ quando i due indici coincidono e
+$0$ altrimenti; mettendola nella cross-entropia
+$\mathcal{L}=-\sum_k y_k\log\hat{y}_k$ i termini si accorciano:
 $\partial\mathcal{L}/\partial z_i = \hat{y}_i \sum_k y_k - y_i$, cioè
 $\hat{y}_i - y_i$, perché l'etichetta è one-hot e la somma vale $1$. Il
 termine d'uscita diventa quindi
@@ -361,8 +415,6 @@ l'immagine del prodotto che si allunga, che è la stessa cosa.
 
 ## Aggiornare i pesi: discesa del gradiente e learning rate
 
-
-
 La "colpa" di un peso e la sua **pendenza** sono la stessa identica cosa. La
 quota di colpa di un peso dice di quanto cambierebbe l'errore se muovessi quel
 peso di pochissimo. Ed è la definizione di pendenza data nella sezione
@@ -398,13 +450,22 @@ nella direzione più ripida verso il basso. Ripeti, passo dopo passo.
 
 Quanto è lungo il passo lo decidono due cose insieme: la pendenza che senti
 sotto i piedi, e un moltiplicatore fisso che scegli tu, il **learning rate**
-(di solito un numero piccolo, $0{,}01$ o $0{,}001$; nel codice in fondo alla
-sezione è il `lr=0.01`). La pendenza è quella che accorcia i passi da sola
-vicino al fondo, come nella figura qui sopra; il moltiplicatore è la manopola
-che hai in mano. Con un
-moltiplicatore troppo grande scavalchi la valle e rimbalzi avanti e indietro;
-con uno troppo piccolo scendi lentissimo. Trovare un buon moltiplicatore è metà
-del mestiere.
+(di solito un numero piccolo, $0{,}01$ o $0{,}001$). La pendenza è quella che
+accorcia i passi da sola vicino al fondo, come nella figura qui sopra; il
+moltiplicatore è la manopola che hai in mano. Con un
+moltiplicatore troppo grande scavalchi la valle e rimbalzi avanti e indietro
+senza arrivare mai; con uno troppo piccolo scendi lentissimo, e rischi di
+fermarti nel primo avvallamento che incontri credendolo il fondo, con i passi
+ormai troppo corti per uscirne. Trovare un buon moltiplicatore è metà del
+mestiere.
+
+Quel moltiplicatore non deve restare lo stesso per tutta la discesa, e nemmeno
+essere identico in ogni direzione. Chi
+scende può tenere conto dello slancio, allungando la falcata quando gli ultimi
+passi andavano tutti dalla stessa parte, e può usare un moltiplicatore diverso
+per ciascuna direzione, corto dove il terreno cambia bruscamente e lungo dove
+scende regolare. Il gesto sotto resta quello: senti la pendenza, fai un passo,
+ripeti.
 
 `````
 
@@ -427,9 +488,9 @@ resta questo.
 
 `````
 
-C'è un rovescio della medaglia, e sta proprio nella cosa più comoda: che i
-passi si accorcino da soli. Che i passi si accorcino da soli, come in
-{numref}`fig-discesa-passi`, è comodo e insieme un problema. Comodo perché
+C'è un rovescio della medaglia, e sta proprio nella cosa più comoda. Che i
+passi si accorcino da soli, come in {numref}`fig-discesa-passi`, è comodo e
+insieme un problema. Comodo perché
 l'algoritmo rallenta da sé arrivando a destinazione, senza che nessuno glielo
 dica. Problema perché rallenta altrettanto sui tratti piatti che *non* sono il
 fondo: quelli in cui il terreno si stende in piano pur essendo ancora in
@@ -533,10 +594,33 @@ cinquanta volte per $0{,}9$ lascia cinque millesimi di quello che c'era
 lo fa diventare centodiciassette volte tanto. In mezzo, fra $0{,}9$ e $1{,}1$,
 c'è tutta la differenza fra una rete che impara e una che non parte.
 
+I due guasti però si somigliano meno di quanto quei due conti lascino credere,
+e la ragione è che il messaggio porta più di una parola alla volta: ogni
+passaggio ne tratta ciascuna a modo suo, alzandone qualcuna e abbassandone
+altre. Se un passaggio le abbassa tutte quante, e così fa quello dopo, e quello
+dopo ancora, allora in fondo non arriva niente, ed è garantito. Ma un passaggio
+che ne alza qualcuna non garantisce nulla, perché il passaggio successivo può
+abbassare proprio quelle e alzare le altre. Mettiamo in fila trenta passaggi
+che raddoppiano una parola e dividono per dieci l'altra, a turno: ogni parola
+finisce raddoppiata quindici volte e divisa per dieci altre quindici, e
+dividere per dieci vince. Di quello che c'era resta poco più di tre
+centomiliardesimi, cioè un bisbiglio, benché a ogni passaggio qualcosa venisse
+raddoppiato.
+
+Per essere certi della valanga servirebbe che ogni passaggio alzasse tutte le
+parole, nessuna esclusa, e nelle reti che usano la **ReLU** (la piega della
+sezione precedente, quella che azzera tutto ciò che arriva negativo) non
+capita mai: a ogni strato una parte dei neuroni è spenta, e quello che passa di
+lì viene azzerato invece che alzato. Ne basta uno spento perché la certezza
+salti. Lo svanire, allora, si può
+prevedere e prevenire, scegliendo com'è fatta la rete e da dove partono i pesi;
+l'esplodere si vede solo quando accade, e allora lo si tampona: si misura
+quanto è forte il messaggio che sta tornando indietro e, se supera una soglia,
+lo si abbassa prima di passarlo.
+
 Le reti profonde vanno quindi progettate perché il messaggio arrivi integro fino
-in fondo, e un rimedio lo conosci già: è la **ReLU** della sezione precedente,
-che dal lato positivo non appiattisce il segnale e quindi non lo indebolisce a
-ogni passaggio. Gli altri (da dove far partire i pesi, le scorciatoie che
+in fondo, e un rimedio lo conosci già: è la ReLU stessa, che dal lato positivo
+non appiattisce il segnale e quindi non lo indebolisce a ogni passaggio. Gli altri (da dove far partire i pesi, le scorciatoie che
 saltano gli strati) sono il mestiere del capitolo sul deep learning.
 
 `````
@@ -570,8 +654,8 @@ $\lVert\prod_l \mathbf{J}^{[l]}\,\mathbf{v}\rVert \ge \prod_l
 \sigma_{\min}(\mathbf{J}^{[l]})\,
 \lVert\mathbf{v}\rVert$ e non c'è scampo.
 
-Solo che quella garanzia, proprio nelle reti di cui parla questo capitolo, non
-scatta mai. La Jacobiana di uno strato ReLU azzera le righe delle unità spente,
+Solo che quella garanzia, sulle reti fatte con la ReLU, non
+scatta mai. La Jacobiana di uno strato del genere azzera le righe delle unità spente,
 e ne basta **una** perché $\sigma_{\min}$ valga esattamente zero: in uno strato
 da $64$ unità con ingressi casuali le spente sono decine, e il prodotto si
 ritrova $\sigma_{\min}=0$ per costruzione. La condizione è sufficiente e non
@@ -595,12 +679,12 @@ aver reso addestrabili reti da centinaia di strati.
 ## In pratica, con PyTorch
 
 Nella pratica non scriviamo la backpropagation a mano: la fanno le librerie,
-con la differenziazione automatica nominata in apertura di sezione (in PyTorch
+con la differenziazione automatica di Linnainmaa e Werbos (in PyTorch
 si chiama *autograd*). A noi restano tre dichiarazioni e un ciclo. Le
 dichiarazioni sono: com'è fatta la rete, con quale loss misurare l'errore, e
 con quale regola spostare i pesi una volta note le colpe (quella regola si
 chiama **ottimizzatore**, e qui è la discesa del gradiente di poco fa). Il
-ciclo è il respiro descritto in questa sezione, ripetuto.
+ciclo è il respiro dell'andata e del ritorno, ripetuto.
 
 Il problema qui è il riconoscimento delle cifre scritte a mano, il classico
 esercizio di prima prova: ogni immagine è un quadrato di $28\times 28$ pixel in

@@ -47,14 +47,29 @@ formica è lenta, ma sono migliaia e partono tutte insieme. Il primo pacco
 arriverà un po’ più tardi che con la lepre (nessuna formica è veloce) ma nello
 stesso tempo ne arrivano diecimila. La lepre ha la **latenza** più bassa (il
 singolo pacco arriva prestissimo), il formicaio il **throughput** più alto
-(nella giornata ne arrivano molti di più): sono le due parole del paragrafo qui
-sopra, ed è così che il capitolo le userà. La CPU è la lepre: pochi processori
-potentissimi, pensati per finire in fretta il singolo compito. La GPU è il
-formicaio: tante unità lente, pensate per smaltire una montagna di compiti
-tutti insieme. Per aprire un file o rispondere a un clic vuoi la lepre; per
-fare i sessantaquattro milioni di moltiplicazioni tutte uguali di un solo
-strato di una rete (è il conto fatto all'inizio del capitolo), vuoi il
-formicaio.
+(nella giornata ne arrivano molti di più).
+
+Perché allora non si tengono diecimila lepri? Perché una lepre costa. Le
+servono le gambe lunghe, la memoria di tutte le scorciatoie, una borsa di
+attrezzi per quando la strada è chiusa: roba da portarsi dietro e da nutrire.
+Una formica non ha niente di tutto questo, e proprio per questo nello stesso
+formicaio ce ne stanno migliaia. Lo spazio è quello, e si spende in un modo o
+nell'altro: o poche lepri attrezzate, o una folla di operaie spoglie che sanno
+fare una cosa sola.
+
+C'è un secondo guadagno, e si vede quando qualcosa va storto. Una formica che
+trova una pozzanghera si ferma ad aspettare che scoli, ma nessuno la aspetta:
+le altre le passano avanti, la fila continua, e a sera i pacchi consegnati sono
+più o meno gli stessi. Il tempo perso da quella formica c'è tutto, ma nel conto
+della giornata non si vede. La lepre davanti alla stessa pozzanghera tira
+fuori i suoi attrezzi e prova a passare lo stesso; quando non le riesce, si
+ferma la consegna, perché di lepri ce n'è una.
+
+La CPU è la lepre: pochi processori potentissimi, pensati per finire in fretta
+il singolo compito. La GPU è il formicaio: tante unità lente, pensate per
+smaltire una montagna di compiti tutti insieme. Per aprire un file o rispondere
+a un clic vuoi la lepre; per fare i sessantaquattro milioni di moltiplicazioni
+tutte uguali di un solo strato di una rete, vuoi il formicaio.
 
 `````
 
@@ -150,8 +165,7 @@ decine di migliaia di istruzioni diverse? La risposta di CUDA
 {cite}`nickolls2008scalable` è organizzarli su tre livelli, come si organizza
 un'operazione che coinvolge molta gente: l'operazione intera, le squadre in cui
 è divisa, i singoli. I loro nomi tecnici sono **griglia**, **blocco** e
-**thread**, e la scheda Elementare qui sotto li racconta con un esempio prima
-che la {numref}`fig-gpu-esecuzione` li metta in fila.
+**thread**, e la {numref}`fig-gpu-esecuzione` li mette in fila.
 
 `````{tab} Elementare
 
@@ -163,7 +177,22 @@ coordinano tra loro. Tutte le squadre insieme formano l’**operazione
 cittadina** (la «griglia»), che copre l'intera città. Il capo del censimento
 non dà ordini a ogni singolo rilevatore: dice «voglio una griglia di 100
 squadre da 256 rilevatori l'una», e lascia che l'organizzazione si dispieghi da
-sola. C'è poi un dettaglio che viene dall'hardware: dentro ogni squadra i
+sola.
+
+Dove appoggiarsi, però, le squadre non lo scelgono. C'è chi le assegna a un
+ufficio di zona, e la squadra assegnata a un ufficio resta lì fino a
+rilevazione finita: è lì che tiene le sue carte e si ritrova a confrontarle.
+Gli uffici aperti sono quelli che sono, e in ognuno ci sta qualche squadra per
+volta, non di più: se gli uffici sono venti e le squadre cento, parte chi ci sta
+e le altre aspettano che si liberi posto. Il capo non ha bisogno di saperlo: lo
+stesso ordine («100 squadre da 256») funziona in un paese con due uffici e in
+una metropoli che ne ha centoventi, e a cambiare è quanto ci si mette, non il
+piano. Sulle organizzazioni più recenti
+c'è mezzo gradino in più: due o tre squadre finite in uffici confinanti possono
+guardare le carte l'una dell'altra, cosa che con un ufficio dall'altra parte
+della città non si può fare.
+
+C'è poi un dettaglio che viene dall'hardware: dentro ogni squadra i
 rilevatori marciano in **plotoni da 32**, che ricevono l'ordine tutti nello
 stesso istante. Una squadra da 256 rilevatori, quindi, sono otto plotoni, e i
 conti tornano sempre così: le squadre si scelgono di una taglia che sia un
@@ -176,8 +205,8 @@ multiplo di 32, altrimenti l'ultimo plotone parte mezzo vuoto. Ricordati quel
 
 Il modello di programmazione CUDA espone tre livelli:
 
-- **thread**: l'unità elementare, esegue il *kernel* (il programma della GPU,
-  argomento della prossima sezione) su un proprio pezzo di dato;
+- **thread**: l'unità elementare, esegue il *kernel* (il programma che la GPU
+  manda in esecuzione) su un proprio pezzo di dato;
 - **block** (o *CTA*, Cooperative Thread Array): un gruppo di thread che
   condividono la shared memory dell'SM e possono sincronizzarsi tra loro;
 - **grid**: l'insieme di tutti i blocchi lanciati per un kernel.
@@ -185,9 +214,8 @@ Il modello di programmazione CUDA espone tre livelli:
 Dalle GPU **Hopper** in poi (compute capability 9.0) fra griglia e blocco c'è
 un quarto livello, facoltativo: il **thread block cluster**, un gruppetto di
 blocchi che l'hardware garantisce residenti su SM vicini e che possono leggere
-e scrivere la shared memory l'uno dell'altro (*distributed shared memory*). Non
-è un dettaglio esotico: è il livello su cui poggiano le tecniche di
-FlashAttention di oggi, che la sezione dedicata riprende in fondo.
+e scrivere la shared memory l'uno dell'altro (*distributed shared memory*). È
+il livello su cui poggiano le tecniche di FlashAttention di oggi.
 
 Il programmatore sceglie forma e dimensione di griglia e blocchi al momento del
 lancio; l'hardware assegna ciascun blocco a uno SM e lo tiene lì fino alla fine.
@@ -197,8 +225,8 @@ SM si libera. Questo rende un programma CUDA **scalabile in modo trasparente**:
 lo stesso codice gira su una GPU con 20 SM o con 120, distribuendo gli stessi
 blocchi su più o meno officine, senza cambiare una riga.
 
-Sotto il blocco c'è un quarto livello, che il programmatore non specifica ma non
-può ignorare: l'hardware esegue i thread di un blocco in **warp** da 32. Un
+Sotto il blocco c'è un livello ulteriore, che il programmatore non specifica ma
+non può ignorare: l'hardware esegue i thread di un blocco in **warp** da 32. Un
 blocco da 256 thread è, fisicamente, 8 warp. Il warp è l'unità di
 *schedulazione*: il warp scheduler non muove un thread alla volta, muove un
 warp intero.
@@ -242,23 +270,31 @@ ricordato anche se è arbitrario.
 
 `````{tab} Elementare
 
-Torniamo al plotone da 32. Il sergente grida un solo ordine («fai un passo
-avanti!») e tutti e trentadue lo eseguono insieme, ciascuno sul proprio pezzo
-di strada. Un solo ordine, trentadue esecuzioni: è efficientissimo, finché
-tutti devono fare la stessa cosa.
+Un ordine, trentadue esecuzioni. Il sergente grida «fai un passo avanti!» e
+tutti e trentadue lo eseguono insieme, ciascuno sul proprio pezzo di strada. È
+efficientissimo, finché tutti devono fare la stessa cosa.
 
 Il guaio nasce a un bivio. In ogni programma esistono istruzioni della forma
 «*se* è vero questo fai una cosa, *altrimenti* fanne un'altra»: sono quelle che
-gli fanno prendere strade diverse a seconda dei dati, e senza di esse un
-programma non saprebbe fare niente di interessante. Immagina allora l'ordine
-«se il tuo numero è pari vai a destra, se è dispari vai a sinistra». Il plotone
-non può separarsi: il sergente dà *un* ordine alla volta. Allora fa marciare a
+fanno prendere al programma strade diverse a seconda dei dati, e senza di esse
+non saprebbe fare niente di interessante. Arriva allora l'ordine «se il tuo
+numero è pari vai a destra, se è dispari vai a sinistra». Il sergente ne può
+gridare uno per volta, e ogni ordine vale solo per quelli che nomina: fa marciare a
 destra i pari mentre i dispari stanno fermi ad aspettare; poi fa marciare a
 sinistra i dispari mentre i pari aspettano. I due gruppi hanno percorso strade
-diverse, ma in fila invece che insieme, impiegando il doppio del tempo. Morale:
-sulla GPU i bivi in cui i 32 compagni di plotone prendono strade diverse
-costano cari, e il codice più veloce è quello in cui tutti fanno la stessa
-mossa.
+diverse, ma in fila invece che insieme, impiegando il doppio del tempo. E se il
+bivio fosse così fine da mandare ognuno dei trentadue da una parte sua, si
+andrebbe avanti uno alla volta: trentadue turni per un passo solo.
+
+Ognuno intanto tiene il segno di dove è arrivato lungo la propria strada, e due
+che si trovano in punti diversi possono anche scambiarsi una parola e
+aspettarsi a un incrocio. Quello che nessuno può fare è marciare su due ordini
+diversi nello stesso istante: gli ordini escono uno per volta, e chi non è
+nominato sta fermo.
+
+Morale: sulla GPU i bivi in cui i 32 compagni di plotone prendono strade
+diverse costano cari, e il codice più veloce è quello in cui tutti fanno la
+stessa mossa.
 
 `````
 
@@ -312,40 +348,43 @@ la sua potenza sarebbe sprecata. La mossa che la salva non è aspettare meno, ma
 
 `````{tab} Elementare
 
-Torniamo in cucina, ma con i ruoli chiari: stavolta il cuoco non è la GPU
-intera, è il caposquadra di *una sola* officina, e le pentole sono i plotoni da
-32 che ha in carico.
+Dieci pentole sui fornelli, e un cuoco solo a girarci intorno. Quel cuoco è il
+caposquadra di una sola officina, e ogni pentola è un plotone da 32.
 
-Immagina dunque un cuoco che gestisce dieci pentole sui fornelli invece di una.
-La pasta della prima deve bollire dieci minuti: un cuoco con una pentola sola
+La pasta della prima deve bollire dieci minuti, e un cuoco con una pentola sola
 se ne starebbe lì a fissare l'acqua. Il nostro invece, mentre la prima bolle,
-gira a mescolare la seconda, assaggia la terza, impiatta la quarta. Quando
-torna alla prima, i dieci minuti sono passati «gratis», coperti dal lavoro
-sulle altre. La GPU fa esattamente questo con i warp. Mentre un warp aspetta
-un dato dalla memoria, il suo scheduler mette al lavoro un altro warp già
-pronto, e poi un altro ancora. L'attesa del singolo non si accorcia: si
-*nasconde* dietro il lavoro degli altri. Ma questo funziona a una condizione:
-che di pentole sul fuoco ce ne siano abbastanza. Se il cuoco ne avesse solo
-due, passerebbe comunque gran parte del tempo a fissare l'acqua.
+mescola la seconda, assaggia la terza, impiatta la quarta. Quando torna alla
+prima, i dieci minuti sono passati «gratis», coperti dal lavoro sulle altre.
+L'attesa c'è stata tutta, e nel conto della serata non si vede. Ma bastano due
+pentole sul fuoco invece di dieci, e il cuoco torna a fissare l'acqua.
 
-Quante pentole ha sul fuoco un'officina in un dato momento, in rapporto a
-quante potrebbe averne, è proprio la parola del titolo: si chiama
-**occupancy**, che in italiano suonerebbe «riempimento», e tenerla decente vuol
-dire tenere il caposquadra sempre con qualcosa da fare.
+Quante pentole ha sul fuoco un'officina, in rapporto a quante potrebbe averne,
+si chiama **occupancy**, che in italiano suonerebbe «riempimento».
 
-Una precisazione, che è anche la cosa più utile da portarsi dietro. Il vero
-obiettivo non è avere tante pentole: è che nel corridoio fra la cucina e la
-dispensa ci sia sempre roba in viaggio, perché è quello il collo di bottiglia.
-E la roba in viaggio si conta. Dieci pentole che chiedono un cucchiaio per
-volta mettono in strada dieci cucchiai; due pentole che chiedono una cassa da
-cinque cucchiai l'una ne mettono in strada dieci anche loro. Corridoio
-ugualmente pieno, con cinque volte meno pentole.
+Girare da una pentola all'altra non costa niente, e c'è una ragione. Ogni
+pentola ha il suo tagliere fuori sul ripiano, col coltello e gli ingredienti
+già pronti, e il cuoco non li toglie mai, così si sposta e trova tutto dov'era.
+Dove invece si sparecchia a ogni cambio, mettere via e rimettere fuori costa
+più della mescolata. Quel ripiano è il taccuino dell'officina, dove ogni
+plotone tiene i numeri con cui sta lavorando finché non ha finito. Ecco perché
+in una GPU è grande fuori misura.
 
-Detto in termini di GPU: si arriva allo stesso risultato con tanti plotoni che
-chiedono un numero a testa, oppure con pochi plotoni che a ogni richiesta si
-fanno portare un blocco di numeri. Tenere alta l'occupancy resta il modo più
-semplice per riuscirci, e un'occupancy bassissima è quasi sempre un guaio; ma
-se un plotone chiede tanto per volta, ne bastano meno.
+Il ripiano però è largo quel tanto, ed è lui a decidere quante pentole stiano
+sul fuoco. Una ricetta ingombrante, che pretende mezzo ripiano per sé, lascia
+posto a due o tre pentole; una ricetta sobria ne fa stare dieci. Vale allo
+stesso modo per il pezzo di tavolo comune che ogni squadra si tiene occupato.
+Chi cucina se ne accorge da un sintomo strano: cambi una riga della ricetta, e
+all'improvviso i fornelli si svuotano.
+
+Il conto vero non si fa ai fornelli. Si fa nel corridoio fra la cucina e la
+dispensa, dove si forma la coda, e la roba in viaggio si conta. Dieci pentole
+che chiedono un cucchiaio per volta mettono in strada dieci cucchiai. Due
+pentole che chiedono una cassa da cinque cucchiai l'una ne mettono in strada
+dieci anche loro, e il corridoio è pieno uguale con cinque volte meno pentole.
+Riempire i fornelli resta il modo più semplice per riempire il corridoio, e
+un'officina con due pentole accese spreca il suo cuoco; ma a chi si fa portare
+una cassa per volta, o rimacina quello che ha già sul tagliere, di pentole ne
+bastano poche.
 
 `````
 
@@ -410,7 +449,7 @@ prossima sezione.
 - Il sergente dà **un ordine solo** a tutto il plotone. Efficientissimo finché
   tutti fanno la stessa mossa; a un bivio («se pari a destra, se dispari a
   sinistra») il plotone si divide e le due strade si percorrono una dopo
-  l'altra, in doppio del tempo. Nel codice per GPU i «se... allora...» che
+  l'altra, nel doppio del tempo. Nel codice per GPU i «se... allora...» che
   dividono i compagni di plotone costano cari.
 - L'attesa non si accorcia, si **nasconde**: come il cuoco con dieci pentole,
   il caposquadra manda avanti un altro plotone mentre il primo aspetta i dati.

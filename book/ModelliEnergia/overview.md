@@ -119,25 +119,28 @@ somma da chiudere, nessun totale da rispettare: solo un paesaggio.
 
 `````{tab} Elementare
 
-Immagina una carta geografica in rilievo, con valli e montagne. Ogni punto
-della carta è una risposta possibile alla tua domanda: una faccia, una frase,
-il fotogramma che verrà. L'altezza di quel punto *è* l'energia di cui sopra, e
-dice quanto la risposta è insensata: le risposte buone stanno nelle valli,
-quelle assurde in cima ai monti. Da qui in avanti, ogni volta che leggi
-«energia», puoi leggere «altezza sulla carta»: sono la stessa cosa.
-Rispondere significa lasciar rotolare una pallina e guardare dove si ferma;
-imparare significa scavare il paesaggio finché le valli non stanno nei punti
-giusti.
+Passa un dito su una carta geografica in rilievo e senti le valli e le cime.
+Ogni punto di quella carta è una risposta possibile alla tua domanda: una
+faccia, una frase, il fotogramma che verrà. L'altezza del punto è la sua
+energia, e dice quanto la risposta è insensata: le risposte buone stanno nelle
+valli, quelle assurde in cima ai monti. Energia e altezza sulla carta sono la
+stessa cosa. Rispondere significa lasciar rotolare una pallina e guardare dove
+si ferma; imparare significa scavare il paesaggio finché le valli non stanno
+nei punti giusti.
 
-Il vantaggio si vede confrontandolo con l'altro modo di fare, quello delle
-probabilità. Se ti chiedessi «quante probabilità ci sono che dietro l'angolo
-ci sia un gatto?» e volessi una percentuale onesta, dovrei aver messo in
-conto tutto quello che *non* è un gatto: cani, biciclette, cassonetti,
-qualunque cosa esista. È il prezzo del cento per cento: per dire «70%» su una
-cosa devi aver pesato tutte le altre. Se invece ti chiedo soltanto «gatto o
-cassonetto, quale delle due torna di più?», ti basta confrontare due altezze
-sulla carta. Il paesaggio non ti obbliga mai a fare il giro del mondo per
-rispondere a una domanda locale.
+Le percentuali, dalla carta, si ricavano. Scuotila e lascia girare la pallina
+per un'ora. Tocca un po' tutti i punti, ma in quelli bassi si trattiene molto
+più a lungo che in cima, e quel «molto più a lungo» è una percentuale. Altezze e
+frequenze dicono la stessa cosa in due lingue. La traduzione, però, si paga. Se
+ti chiedessi «quante probabilità ci sono che dietro l'angolo ci sia un gatto?»
+e volessi una percentuale onesta, dovrei aver messo in conto tutto quello che
+un gatto non è: cani, biciclette, cassonetti, qualunque cosa esista. È il
+prezzo del cento per cento: per dire «70%» su una cosa devi aver pesato tutte
+le altre, e una carta grande così nessuno riesce a misurarla tutta.
+
+Se invece ti chiedo soltanto «gatto o cassonetto, quale delle due torna di
+più?», ti basta confrontare due altezze sulla carta. Il paesaggio non ti
+obbliga mai a fare il giro del mondo per rispondere a una domanda locale.
 
 `````
 
@@ -256,8 +259,9 @@ un programma di ricerca, non un verdetto.
   alta se è assurda. Rispondere significa lasciar rotolare una pallina e
   guardare in che valle si ferma; imparare significa scavare le valli nei
   punti giusti.
-- Le percentuali costano care: per dire onestamente «70% gatto» bisogna aver
-  pesato tutto quello che gatto non è. Il paesaggio non lo chiede mai: per
+- Altezze e percentuali dicono la stessa cosa in due lingue, ma la traduzione
+  costa cara, perché per dire onestamente «70% gatto» bisogna aver pesato
+  tutto quello che gatto non è. Il paesaggio non lo chiede mai: per
   sapere quale di due risposte torna di più bastano due altezze messe a
   confronto. Quel conto di tutto il resto del mondo, che nessuno riesce a
   fare, si chiama **funzione di partizione**, ed è l'ostacolo contro cui si

@@ -70,26 +70,40 @@ tutti gli esperti; ogni token ne attraversa soltanto $k$.
 
 `````{tab} Elementare
 
-Immagina la redazione di un giornale. Nella versione «densa» c'è un solo
-redattore, bravissimo in tutto, che rilegge e sistema ogni articolo che passa:
-cronaca, sport, economia, cucina. Funziona, ma per farlo bene quel redattore
-deve sapere tutto, e più cose deve sapere più tempo gli serve su ogni pezzo.
+In una redazione «densa» c'è un solo redattore, bravissimo in tutto, che
+rilegge e sistema ogni articolo che passa: cronaca, sport, economia, cucina.
+Funziona, ma per farlo bene quel redattore deve sapere tutto, e più cose deve
+sapere più tempo gli serve su ogni pezzo.
 
-La versione a esperti assume trenta redattori, ciascuno con la sua
-specialità, e mette all'ingresso uno smistatore che legge le prime righe e
-passa il pezzo a quello che c'entra di più (o ai due che c'entrano di più, se
-si vuole una seconda opinione). Un articolo sul mercato dei calciatori va allo
-sportivo; uno sul restauro di un affresco va all'esperto d'arte. La redazione
-nel suo insieme sa molte più cose di prima, perché sono trenta teste invece di
-una; ma il lavoro su *un* articolo non è cambiato, perché a occuparsene è
-sempre uno solo, o due. Il giornale è grande, il lavoro sul singolo pezzo
-resta piccolo.
+La versione a esperti ne assume otto, ciascuno con la sua specialità, e mette
+all'ingresso uno smistatore che legge le prime righe e passa il pezzo a quello
+che c'entra di più (o ai due che c'entrano di più, se si vuole una seconda
+opinione). Un articolo sul mercato dei calciatori va allo sportivo; uno sul
+restauro di un affresco va all'esperto d'arte. La redazione nel suo insieme sa
+molte più cose di prima, perché sono otto teste invece di una, mentre il
+lavoro su *un* articolo resta quello di sempre, perché a occuparsene è uno
+solo, o due. Lo smistatore, nel conto, non pesa: è una persona sola con un
+elenco di nomi.
 
-Tutta la mixture of experts è qui: separare quanto il modello **sa** da quanto
-**fatica** a ogni parola. Con un avvertimento che vale la pena anticipare
-subito, perché è il punto dove l'analogia dice la verità: i trenta redattori
-lo stipendio lo prendono tutti, anche quelli che oggi non hanno scritto una
-riga. La redazione costa trenta; il singolo articolo costa due.
+Una parte del lavoro, però, non si moltiplica. Ogni pezzo passa comunque per
+la riunione del mattino, dove tutti si dicono quello che sanno, e di riunione
+ce n'è una sola: si sono moltiplicati i tavoli di rilettura, non la sala.
+Diamo un prezzo alle due cose, così si vede: se la sala riunioni vale uno, un
+tavolo di rilettura vale due. La redazione di prima valeva tre, un tavolo più
+la sala. Quella nuova ha otto tavoli, cioè sedici, più la sala: diciassette.
+Quasi sei volte, e non otto come parrebbe a contare i soli tavoli.
+
+E un singolo pezzo quanto costa? Se lo rilegge un redattore solo, un tavolo
+più la sala: tre, esattamente quanto costava prima, con otto specialisti in
+casa al posto di un tuttologo. Se lo rileggono in due si arriva a cinque, una
+volta e mezza abbondante; per tornare a tre si assumono redattori a mezzo
+servizio, così che due di loro costino quanto il tuttologo.
+
+Separare quanto la redazione **sa** da quanto **fatica** su ogni pezzo: la
+miscela di esperti è tutta qui. Il prezzo si vede in busta paga, e non lo
+sconta nessuno: gli otto lo stipendio lo prendono tutti, anche quelli che oggi
+non hanno scritto una riga. La redazione costa diciassette; il pezzo, quando
+lo rilegge un redattore solo, costa tre.
 
 `````
 
@@ -208,12 +222,21 @@ più il 38% di quella dell'esperto 3. Il token ha attraversato due reti su
 quattro, e le altre due sono rimaste ferme: nessun calcolo, nessun costo.
 
 Un dettaglio che sembra un cavillo e invece conta: la softmax si applica
-**dopo** il taglio, non prima. Applicata a tutti e quattro (stessa ricetta, ma
+*dopo* il taglio, non prima. Applicata a tutti e quattro (stessa ricetta, ma
 dividendo per la somma di quattro numeri invece che di due) darebbe $0{,}53$,
 $0{,}12$, $0{,}32$ e $0{,}03$, e i due scelti insieme farebbero solo $0{,}85$:
 buttare via il resto lascerebbe l'uscita sistematicamente più piccola del
 dovuto. Rinormalizzando sui soli scelti, il cento per cento viene sempre
 distribuito.
+
+Quanto costa scegliere? Poco o niente. Un punteggio è il confronto fra due
+liste di numeri, e di confronti ne servono quattro, uno per esperto; la rete
+di un esperto, in un modello vero, di conti ne fa milioni. Il router può
+permettersi di dare un voto a tutti proprio perché il voto costa così poco.
+
+C'è poi una variante che, prima di tagliare, aggiunge a ogni punteggio un
+pizzico di casualità: ogni tanto entra un esperto che sarebbe rimasto fuori
+per un soffio. Serve a non lasciare fermi sempre gli stessi.
 
 `````
 
@@ -252,19 +275,20 @@ G(\mathbf{x})_3 = \frac{e^{1{,}5}}{e^{2{,}0} + e^{1{,}5}} = 0{,}378 .
 $$
 
 Il costo del router è $O(N\,d_{\text{model}})$ per token, contro
-$O(k\,d_{\text{model}}\,d_{\text{ff}})$ degli esperti: con i valori della sezione
-precedente, $32\,768$ moltiplicazioni contro i $134$ milioni di un solo
-esperto. Il meccanismo di selezione è, in termini di calcolo, gratis.
+$O(k\,d_{\text{model}}\,d_{\text{ff}})$ degli esperti: con $N = 8$,
+$d_{\text{model}} = 4096$ e $d_{\text{ff}} = 16384$, sono $32\,768$
+moltiplicazioni contro i $134$ milioni di un solo esperto. Il meccanismo di
+selezione è, in termini di calcolo, gratis.
 
 Una variante del lavoro del 2017 merita una riga: il **noisy top-k gating**,
 che somma ai punteggi un rumore gaussiano di ampiezza appresa prima di
 prendere i $k$ migliori. Serve al bilanciamento del carico, cioè a dare ogni
-tanto una possibilità a un esperto che il router non avrebbe scelto: la
-sezione sul collasso, qui sotto, spiega perché sia una precauzione necessaria.
+tanto una possibilità a un esperto che il router non avrebbe scelto, ed è una
+precauzione contro la tendenza del router a servirsi sempre dai soliti pochi.
 
 `````
 
-C'è un punto sottile e importante, e vale per entrambi i livelli di lettura.
+C'è un punto sottile e importante.
 La scelta dei $k$ esperti è **discreta**: si ordina, si taglia, e un taglio non
 ha vie di mezzo, perché un esperto è dentro o è fuori, mai «dentro per il tre
 per cento in più». Il modo in cui una rete impara, invece, è tutto fatto di vie
@@ -299,28 +323,42 @@ bug di implementazione, è la dinamica naturale del sistema.
 
 `````{tab} Elementare
 
-Torniamo in redazione. All'inizio i trenta redattori valgono più o meno
+Torniamo in redazione. All'inizio gli otto redattori valgono più o meno
 uguale, e lo smistatore assegna i pezzi un po’ a caso. Per puro effetto del
-sorteggio, però, il redattore numero 7 ne riceve qualcuno in più. Scrivendo di
-più migliora; migliorando, lo smistatore impara che mandare i pezzi a lui dà
-buoni risultati; e allora gliene manda ancora di più. Dopo un mese il 7 e altri
-due lavorano diciotto ore al giorno, ventisette colleghi non hanno mai toccato
-un articolo, e siccome non ne hanno mai toccato uno non hanno imparato niente:
-non potranno mai diventare bravi abbastanza da meritarsene uno.
+sorteggio il numero 7 ne riceve qualcuno in più. Scrivendo di più migliora;
+migliorando, lo smistatore impara che i pezzi mandati a lui vengono bene; e
+allora gliene manda ancora. Dopo un mese il 7 e altri due lavorano diciotto
+ore al giorno, e cinque colleghi non hanno mai toccato un articolo. Siccome
+non ne hanno mai toccato uno non hanno imparato niente, e non diventeranno
+mai bravi abbastanza da meritarsene uno. Il circolo si stringe da solo: il
+giornale paga otto stipendi per tre redattori, e la ragione per cui li aveva
+assunti in otto è svanita.
 
-È un circolo che si rinforza da solo, e finisce nel modo peggiore: il giornale
-paga trenta stipendi per tre redattori. Nel modello è identico: si è pagata
-memoria per parametri che non imparano nulla, e il vantaggio dell'architettura
-svanisce.
+La cura è amministrativa. A fine mese il direttore guarda un numero solo,
+quanto il giornale ha sbagliato, e tutto il suo mestiere è farlo scendere. Da
+adesso a quel numero si aggiunge una seconda voce, che sale quando il lavoro
+è sbilanciato: oltre agli articoli scritti bene, il direttore vuole che il
+lavoro giri. La seconda voce pesa un centesimo della prima, il valore con cui
+è stata proposta: poco abbastanza perché al giornale convenga pagarla quando
+specializzarsi rende davvero, tanto abbastanza da non poterla ignorare.
 
-La cura non è furba, è amministrativa. Un modello, mentre impara, ha davanti un
-numero solo che dice quanto ha sbagliato, e tutto il suo mestiere è farlo
-scendere: chiamiamola la sua pagella. Bene, a quella pagella si aggiunge una
-seconda voce che **punisce lo sbilanciamento**: oltre a chiedergli di predire
-bene la parola successiva, gli si chiede di distribuire il lavoro. Il peso della
-seconda voce, nel lavoro che l'ha introdotta, è un centesimo di quello della
-prima; abbastanza poco perché il modello possa pagarla volentieri quando
-specializzarsi conviene davvero, abbastanza perché non possa ignorarla.
+Il direttore la calcola così. Per ogni redattore segna due numeri: quanti
+pezzi gli sono arrivati davvero, e quanto lo smistatore lo gradisce in media,
+cioè il voto che gli dà anche nei casi in cui poi il pezzo va a un altro.
+Moltiplica i due numeri, redattore per redattore, e somma gli otto prodotti.
+Se ciascuno riceve un ottavo dei pezzi ed è gradito un ottavo, la somma vale
+un ottavo; se uno solo prende tutti i pezzi ed è l'unico gradito, vale uno,
+otto volte tanto. Poi moltiplica per il numero dei redattori, così il mese
+equo vale uno tanto in una redazione da otto quanto in una da cento. Più il
+lavoro si concentra, più la voce sale. Spinge, però, senza garantire: ci sono
+redazioni storte in cui il conto non se ne accorge.
+
+E la stangata arriva dove può arrivare. I pezzi consegnati o sono cinque o
+sono sei, e non si ritoccano di un'inezia; il gradimento sì. Allora si taglia
+il favore di ciascuno in proporzione ai pezzi che ha ricevuto: chi ne ha
+presi tanti se lo vede tagliare di parecchio, chi non ne ha preso nessuno non
+viene toccato, e risale da solo, perché i gradimenti sono proporzioni e
+devono comunque sommare a cento.
 
 `````
 
@@ -445,52 +483,49 @@ token successivo potrebbe chiederli.
 
 `````{tab} Elementare
 
-I trenta redattori dello stipendio lo prendono tutti, e a tutti serve una
-scrivania. Se stanno in un unico ufficio grande, l'ufficio deve essere trenta
-volte più grande. E se non ci sta, bisogna distribuirli in edifici diversi
-sparsi per la città: a quel punto lavorare su un pezzo costa poco, ma
-*consegnarlo* costa tanto, perché ogni articolo deve attraversare la città per
-arrivare al suo specialista e poi tornare indietro per andare in stampa.
+Otto stipendi, otto scrivanie. Anche i redattori fermi occupano il loro
+posto, e la sala riunioni resta lì per tutti: l'ufficio deve essere quasi sei
+volte quello di prima. Se non ci sta, i redattori vanno distribuiti in sedi
+diverse sparse per la città, e allora lavorare su un pezzo costa poco ma
+*consegnarlo* costa tanto: ogni articolo attraversa la città per arrivare al
+suo specialista, e la riattraversa per andare in stampa.
 
-E gli edifici sparsi per la città non sono una metafora esagerata. Un modello di
-questa taglia in un computer solo non ci sta: lo si spezza fra decine o
-centinaia di **schede grafiche**, i processori specializzati nel fare tanti
-conti insieme, e gli esperti finiscono su schede diverse. Il calcolo
-risparmiato si ritrova allora, in buona parte, come **traffico**: i token
-viaggiano verso la scheda che ospita il loro esperto e tornano indietro, due
-volte per ogni piano. E c'è un effetto collaterale del collasso di cui sopra:
-se il carico è sbilanciato, la scheda affollata fa aspettare tutte le altre,
-che restano ferme a guardare. Il bilanciamento, insomma, non serve solo alla
-qualità del modello: serve a non pagare venti schede per farne lavorare tre.
+Le sedi sparse per la città sono vere. Un modello di questa taglia in un
+computer solo non ci sta: lo si spezza fra decine o centinaia di **schede
+grafiche**, i processori specializzati nel fare tanti conti insieme, e gli
+esperti finiscono su schede diverse. Il lavoro risparmiato torna allora come
+**traffico**, due traversate della città per ogni piano, andata e ritorno.
 
-Quando poi il modello **scrive**, il problema è ancora più netto, e conviene
-dirlo per esteso perché è controintuitivo. Il tempo che ci mette a produrre una
-parola non se ne va a fare i conti: se ne va ad **andare a prendere** dalla
-memoria i numeri con cui fare i conti. Il perché è che una scheda grafica è
-fatta apposta per moltiplicare: ha migliaia di calcolatori affiancati, e quando
-un numero le arriva in mano se lo sbriga in un attimo. Ma quel numero deve
-arrivarci, e la strada che lo porta dalla memoria ai calcolatori è una sola e
-stretta. È la differenza fra una cucina con venti cuochi e una porta di
-servizio: i cuochi non sono mai il problema, il problema è far entrare la spesa.
-E un modello sparso, quando scrive, sta risparmiando proprio sui cuochi.
+I furgoni, poi, non si possono caricare la sera prima. Quanti pezzi tocchino
+a ciascuna sede lo decide lo smistatore la mattina stessa, un articolo alla
+volta, e finché i furgoni sono per strada le sedi stanno ferme ad aspettare.
+Se il lavoro è sbilanciato, la sede affollata fa aspettare tutte le altre,
+che hanno finito da un pezzo. Tenere il carico pari serve a far uscire un
+buon giornale, e serve anche a non pagare venti sedi per farne lavorare tre.
 
-Se poi quel risparmio si senta o no dipende da **quante richieste ci sono in
-volo insieme**, ed è il punto in cui la faccenda si fa interessante. Con una
-richiesta alla volta, i pochi esperti scelti sono davvero gli unici da andare a
-prendere, la porta di servizio deve far passare molto meno del totale, e la
-sparsità è un vantaggio pieno. Ma se le richieste sono centinaia, ciascuna
-sceglie esperti suoi, e alla fine si finisce per doverli portare dentro quasi
-tutti: la porta di servizio torna a essere quella di un modello da trentasei
-miliardi. Siccome servire tante richieste insieme è proprio ciò che rende
-sostenibile far girare un modello grande, i due obiettivi tirano in direzioni
-opposte, e non c'è un modo di averli tutti e due.
+Quando poi il giornale scrive, il tempo se ne va in un posto che nessuno
+guarda. Le scrivanie di una sede sono migliaia e vanno velocissime, perché
+sono fatte apposta per quello; ma la roba con cui si scrive sta in faldoni
+giù in archivio, e dall'archivio alle scrivanie c'è un montacarichi solo. Le
+penne aspettano i faldoni, e la giornata se ne va tutta in quell'attesa. E un
+giornale a esperti, quando scrive, sta risparmiando proprio sulle penne.
+
+Che il risparmio si senta dipende da quanti articoli sono in lavorazione
+insieme. Uno alla volta, i due faldoni degli specialisti scelti sono gli
+unici da tirare su: il montacarichi fa pochi viaggi e il vantaggio si sente
+per intero. Centinaia insieme, ciascuno chiama i suoi, e su per il
+montacarichi finiscono per passare quasi tutti i faldoni: la fatica torna
+quella dell'archivio intero, tutti e trentasei i miliardi. Siccome è proprio
+lavorando a centinaia di articoli insieme che il giornale sta in piedi, le
+due cose tirano in direzioni opposte, e non c'è modo di averle tutte e due.
 
 `````
 
 `````{tab} Superiore
 
-Il conto in memoria è immediato. Il modello sparso della prima sezione, in
-precisione a 16 bit, occupa $36{,}5 \times 2 \approx 73$ GB di soli pesi,
+Il conto in memoria è immediato. Il modello sparso da $36{,}5$ miliardi di
+parametri, in precisione a 16 bit, occupa $36{,}5 \times 2 \approx 73$ GB di
+soli pesi,
 contro i $12{,}9$ GB del modello denso che gli costa la stessa aritmetica per
 token. Quasi sei volte la memoria per lo stesso calcolo: il baratto è
 esplicito.
@@ -613,10 +648,8 @@ inaccettabile su scala; ma la struttura è quella, e si legge. Manca però anche
 una cosa che non è un'ottimizzazione, ed è bene dirlo forte perché è la sola
 che riguarda la **correttezza**: non c'è la loss di bilanciamento. Chi prendesse
 questo strato e lo addestrasse così com'è otterrebbe, puntualmente, il collasso
-descritto due sezioni sopra. Calcolarla sarebbe questione di poche righe a
-partire da `indici` e `punteggi`, che il `forward` ha già in mano. Chi legge al
-livello Elementare può saltare i due blocchi di codice e riprendere dal conto
-che li segue, che è in italiano e non chiede di saper leggere Python.
+del router. Calcolarla sarebbe questione di poche righe a
+partire da `indici` e `punteggi`, che il `forward` ha già in mano.
 
 ```python
 import torch

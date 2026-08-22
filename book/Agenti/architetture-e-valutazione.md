@@ -46,7 +46,7 @@ per reparto, e dentro segui l'ordine senza pensarci. Fai meno strada, non
 dimentichi niente.
 
 Un agente che pianifica fa la seconda cosa. Prima di toccare qualunque
-strumento, si ferma e scrive il piano: «per sistemare questo bug devo (1),
+strumento, si ferma e scrive il piano: «per sistemare questo bug devo (1)
 trovare dove nasce l'errore, (2) capire la causa, (3) scrivere la correzione,
 (4) far girare i test». Poi esegue i punti uno per uno. Il vantaggio è la
 visione d'insieme; il rischio è che la lista, scritta al buio prima di
@@ -224,10 +224,14 @@ bibliotecario che, quando l'agente deve decidere qualcosa, gli tiri fuori dal
 quaderno *solo le pagine che contano adesso*.
 
 E come sceglie quali pagine? Con tre criteri di buon senso. Quanto è
-**recente** il ricordo (ciò che è successo un'ora fa pesa più di ieri); quanto
-è **importante** (una festa conta più di una colazione qualsiasi); e quanto
-**c'entra** con la situazione di adesso (se sto pensando alla festa, ripesco i
-ricordi sulla festa). Ogni tanto, poi, l'agente si ferma e **riflette**:
+**recente** il ricordo (ciò che è successo un'ora fa pesa più di ieri, e una
+pagina appena ripescata resta in cima); quanto è **importante** (una festa
+conta più di una colazione qualsiasi); e quanto **c'entra** con la situazione
+di adesso (se sto pensando alla festa, ripesco i ricordi sulla festa). Il
+bibliotecario non guarda un criterio solo: dà tre voti e porta le pagine con
+il totale più alto. Un appunto di una settimana fa, importante e in tema,
+batte così la nota di stamattina che non c'entra niente.
+Ogni tanto, poi, l'agente si ferma e **riflette**:
 rilegge gli ultimi appunti e ne ricava una conclusione più alta («a Maria
 piace organizzare eventi») che riscrive nel quaderno come un nuovo ricordo. Da
 questi pensieri più maturi nascono i suoi piani. Ricordare, ripescare,
@@ -314,9 +318,7 @@ in alcun modo da uno che riesce sempre.
 
 Come giudichi uno chef? Non dal singolo piatto assaggiato di sfuggita. Lo
 giudichi dal **servizio di un'intera serata**: gli ordini sono usciti giusti?
-quanti sono tornati indietro? il tavolo otto ha aspettato un'ora? La domanda
-non è «questo piatto è buono» ma «quante volte, su tutti gli ordini della sera,
-ha portato in tavola esattamente ciò che era stato chiesto».
+quanti sono tornati indietro? il tavolo otto ha aspettato un'ora?
 
 Con un agente è lo stesso. Non basta guardare la risposta finale di *una*
 prova: gli si danno tanti compiti e si conta la frazione portata a termine
@@ -325,7 +327,19 @@ cucina, non solo i piatti in uscita: se un piatto è venuto bene per puro caso,
 in mezzo a un caos di padelle bruciate, non è un successo su cui contare
 domani. Per questo si ispeziona anche **come** l'agente ci è arrivato (la
 traiettoria) e quanto è costato in tempo e fatica. Risultato giusto, strada
-pulita, conto ragionevole: tre cose diverse, tutte da misurare.
+pulita e conto ragionevole non sono la stessa cosa, e si guardano uno per uno.
+
+Guardare la cucina non vuol dire pretendere che ogni gesto avvicini il piatto.
+Il cuoco che butta la salsa impazzita e la rifà da capo ha fatto la cosa
+giusta, anche se sembra un passo indietro. Il segnale brutto è un altro: la
+stessa salsa rimestata per dieci minuti, o tre viaggi in dispensa per la
+stessa cosa.
+
+Più passaggi ha un piatto, più diventa un affare rischioso. Uno da dieci
+passaggi, con un passaggio su dieci che va storto, fila liscio dall'inizio
+alla fine poco più di una volta su tre. Qualche intoppo si recupera, come la
+salsa rifatta; ma l'ultimo passaggio pesa quanto il primo, e chi rovescia il
+vassoio sulla soglia della sala aveva fatto tutto bene fino a lì.
 
 `````
 
@@ -338,15 +352,15 @@ della traiettoria** (*trajectory evaluation*) guarda la sequenza di azioni:
 erano quelle giuste? quante non hanno prodotto informazione nuova? e quando
 l'agente è finito in un vicolo cieco, se n'è accorto e ne è uscito? Va evitata
 la tentazione di chiedere che *ogni* passo avvicini all'obiettivo: sarebbe un
-criterio di progresso **monotono**, e punirebbe esattamente il comportamento
-maturo che questo capitolo raccomanda, cioè il re-planning quando un
-sotto-obiettivo fallisce, il tornare indietro dai rami che non promettono del
-Tree of Thoughts, il tentativo fallito che Reflexion usa per orientare il
-successivo. Il fallimento tipico di un loop non è il passo che allontana: è il
-passo che si ripete. Un agente può poi azzeccare la risposta per la strada
-sbagliata (giusto per caso) o sbagliarla dopo una traiettoria impeccabile
-(l'ultimo passo va storto): guardare solo il risultato finale confonde questi
-casi, e per capire davvero *dove* un agente rompe serve la traccia.
+criterio di progresso **monotono**, e punirebbe esattamente le mosse mature di
+un agente, cioè il re-planning quando un sotto-obiettivo fallisce, il tornare
+indietro dai rami che non promettono del Tree of Thoughts, il tentativo
+fallito che Reflexion usa per orientare il successivo. Il fallimento tipico di
+un loop non è il passo che allontana: è il passo che si ripete. Un agente può
+poi azzeccare la risposta per la strada sbagliata (giusto per caso) o
+sbagliarla dopo una traiettoria impeccabile (l'ultimo passo va storto):
+guardare solo il risultato finale confonde questi casi, e per capire davvero
+*dove* un agente rompe serve la traccia.
 
 Sotto tutto c'è la fragilità dei **compiti lunghi**, già incontrata:
 l'accumulo di errori. Un modellino illustrativo: se a ogni passo la
@@ -577,10 +591,11 @@ esattamente con gli strumenti di questa sezione.
   solo quando risolve un problema vero.
 - La **memoria che dura** non è tenere tutto sott'occhio: è un diario tenuto
   fuori, da cui si ripesca solo la pagina che conta adesso. Gli agenti di
-  Smallville {cite}`park2023generative` la ripescano con tre criteri (quanto è
-  **recente** il ricordo, quanto è **importante**, quanto **c'entra** con la
-  situazione di adesso) e ogni tanto si fermano a **riflettere**, ricavando
-  dagli appunti una conclusione più alta che riscrivono nel diario.
+  Smallville {cite}`park2023generative` la ripescano con tre criteri sommati
+  insieme (quanto è **recente** il ricordo, quanto è **importante**, quanto
+  **c'entra** con la situazione di adesso), e ogni tanto si fermano a
+  **riflettere**, ricavando dagli appunti una conclusione più alta che
+  riscrivono nel diario.
 - **Dare un voto** a un agente è più duro che darlo a un classificatore: non
   c'è una risposta unica, il compito è fatto di molti passi e l'ambiente cambia
   sotto i piedi. Servono il **tasso di successo**, uno sguardo alla **strada**

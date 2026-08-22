@@ -42,10 +42,28 @@ Queste regole sono vincolanti. Le tre che contano più delle altre:
 1. **Due livelli.** Ogni concetto-chiave si spiega su *Elementare* e
    *Superiore* con le tab. L'Elementare deve superare il "test
    dell'ombrellone": comprensibile a uno studente di liceo, letto di fila.
-2. **Ogni livello si regge da solo.** Le tab non sono sincronizzate e il
-   lettore ha un interruttore globale: qualcuno attraverserà tutto il libro
-   senza vedere mai l'altro livello. Il Superiore non è l'Elementare con più
-   formule, e l'Elementare non è il Superiore tagliato.
+2. **Ogni livello si regge da solo, e i due sono la stessa struttura.** Le tab
+   non sono sincronizzate e il lettore ha un interruttore globale: qualcuno
+   attraverserà tutto il libro senza vedere mai l'altro livello. Il Superiore
+   non è l'Elementare con più formule, e l'Elementare non è il Superiore
+   tagliato: sono due presentazioni della stessa struttura. Prima di chiudere
+   una coppia di tab, elenca le *mosse* del Superiore (la scelta di scala, il
+   vincolo, l'ottimizzazione, la garanzia, il caso in cui il metodo si rompe)
+   e controlla che ciascuna abbia il suo gesto nella scena dell'Elementare: un
+   esempio calzante che illustra il risultato senza rifare le mosse descrive
+   un altro algoritmo. **E il controllo va fatto anche al contrario**, perché
+   «isomorfismo» vuol dire corrispondenza biunivoca: capoverso per capoverso
+   dell'Elementare, a quale mossa del Superiore corrisponde? Un capoverso che
+   non corrisponde a niente non arricchisce la scheda, la gonfia, e a forza di
+   aggiungerne la scena evapora: quello che resta è il Superiore detto in
+   parole piane, che per il suo lettore è inutile. Se dopo aver scritto non
+   c'è più niente di concreto (una persona che fa un gesto, un oggetto, un
+   luogo) che *porti* la spiegazione, la scheda è da rifare; e una formula
+   elementare col suo esempio numerico sta dentro la scena, non è un residuo
+   del Superiore, quindi non si toglie per accorciare. Chi passa
+   dall'Elementare al Superiore non deve
+   disimparare niente; l'Elementare può omettere, non può dire una cosa che il
+   Superiore dovrà correggere.
 3. **Ogni affermazione fattuale è verificata su fonti primarie** (paper,
    documentazione ufficiale) e citata in `book/references.bib`. Il codice
    Python va eseguito, non immaginato.
@@ -67,6 +85,16 @@ In pratica, scrivendo una pagina:
   `````
   ``````
 
+- **fra un'Elementare e la sua Superiore non va niente**, nemmeno una riga di
+  commento che sembra utile. Separate da un capoverso smettono di essere una
+  coppia: diventano due gruppi da una linguetta ciascuno, e una linguetta sola
+  non si può chiudere, quindi il livello Superiore resta aperto anche a chi ha
+  scelto Elementare. Nel sorgente si legge benissimo, e per questo scappa. Se
+  hai qualcosa da dire, va dopo la chiusura della Superiore. Vale anche il caso
+  opposto: due coppie che si toccano la build le fonde in una fila di quattro
+  linguette, e serve del testo comune in mezzo. Tutti e due li vede
+  `python3 scripts/coerenza.py --solo schede`.
+
 - **niente lineette** (`—`): non sono nello stile del libro. Un inciso che si
   potrebbe togliere va fra parentesi, un concetto racchiuso dentro la frase
   fra virgole, una spiegazione dopo i due punti, due proposizioni che si
@@ -85,7 +113,17 @@ In pratica, scrivendo una pagina:
   indici in minuscolo tondo ($x_i$, $n$); poi $\hat{y}$ per le predizioni,
   $\mathcal{L}$ per la loss, $\theta$ per i parametri. Il grassetto non è un
   vezzo tipografico: dice che l'oggetto ha più di una componente, e distingue
-  un vettore da uno scalare;
+  un vettore da uno scalare. E quando hai scritto la spiegazione dei simboli,
+  **rileggila coprendo la formula**: la frase che glossa una formula giusta
+  può dire un'altra cosa, e chi legge crede alla prosa, che è quella che
+  capisce. «$\gamma = 1/(2\sigma^2)$, quindi $\gamma$ è l'inverso del quadrato
+  della larghezza» si smentisce da solo a due parole di distanza, e il rimedio
+  è una preposizione: *va come* l'inverso del quadrato, non *è*;
+- **il verso di una metrica** si dice per ciascuna. Metriche in fila sotto un
+  verbo solo («premiano i gruppi compatti») fanno credere che si leggano tutte
+  allo stesso modo; se una si minimizza e le altre si massimizzano, chi cerca
+  il valore più alto sceglie il risultato peggiore seguendo la pagina alla
+  lettera;
 - **codice**: Python idiomatico ed eseguibile, commenti in italiano e brevi.
   Il framework di deep learning del libro è **PyTorch**: niente
   Keras/TensorFlow, che possono comparire solo come citazione storica o
@@ -193,6 +231,13 @@ riparare solo il Superiore lascia l'errore dove fa più danno), e se rendi
 *precisa* una frase vaga apri prima la fonte, perché una frase precisa e
 sbagliata è peggio di una vaga e innocua.
 
+E cerca la tua correzione anche nel riquadro **«Da ricordare»** in fondo alla
+pagina. È il posto dove le correzioni si dimenticano più spesso, perché è un
+riassunto e sembra staccato dal punto che hai toccato, mentre in realtà ripete
+le affermazioni delle schede quasi parola per parola. Riparata la scheda e non
+il riquadro, non resta un errore in un angolo: è la pagina che si contraddice
+da sola a dieci righe di distanza.
+
 ## Quello che in una pagina non ci deve stare
 
 Un testo tecnico che si legge bene non è più semplice né più povero di
@@ -220,7 +265,10 @@ lì questi tetti, che sono vincoli e non preferenze.
 messe insieme. Nel corpo del testo non devono comparire:
 
 - «questo libro», «questa pagina», «questa sezione», «più avanti in questa
-  pagina»;
+  pagina»; e la variante che sfugge perché non nomina il libro ma indica la
+  propria impaginazione, «il conto qui sotto», «la tabella qui sopra», «il
+  paragrafo che segue». Un rimescolamento le rende false in silenzio, e nel PDF
+  il sopra e il sotto non cadono dove cadono in HTML: si nomina la cosa;
 - i nomi dell'impianto editoriale, «la scheda Elementare», «la tab Superiore»,
   «il testo comune». Ogni livello deve reggersi da solo, quindi nessuno dei
   due può rimandare all'altro: chi legge solo l'Elementare non vedrà mai la

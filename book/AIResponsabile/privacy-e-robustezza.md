@@ -36,7 +36,7 @@ scritte addosso due date, e sono due per una ragione: la legge
 regola sono stati concessi due anni di tempo. È una distinzione da tenere a
 mente per tutte le leggi di cui parla questo capitolo.
 
-Due sue idee servono a leggere il resto di questa sezione. La prima è che per
+Due sue idee servono più avanti. La prima è che per
 trattare i dati di qualcuno bisogna
 avere una **base giuridica**, cioè una ragione fra quelle che la legge ammette
 (il consenso della persona, l'esecuzione di un contratto, oppure il *legittimo
@@ -75,9 +75,9 @@ dentro un modello addestrato, quel modello resta com'è.
 
 `````{tab} Elementare
 
-Immagina uno studente che, invece di capire la materia, impari il libro a
-memoria. All'esame, se gli capita una domanda vista in aula, non ragiona:
-recita la pagina. Molti modelli fanno qualcosa di simile con gli esempi rari o
+Uno studente che invece di capire la materia impara il libro a memoria,
+all'esame non ragiona: se gli capita una domanda vista in aula, recita la
+pagina. Molti modelli fanno qualcosa di simile con gli esempi rari o
 ripetuti: non ne colgono la regola, li imparano di sbieco così come sono. Due
 guai ne seguono. Il primo: dando al modello l'inizio di una frase che c'era
 nei dati, questo può completarla *identica*; se in quei dati c'era il tuo
@@ -87,6 +87,10 @@ addestramento, osservando che il modello è stranamente sicuro proprio sui suoi
 esempi. È come capire che uno studente ha già visto un compito perché lo
 svolge troppo in fretta e senza esitazioni. Sapere «Tizio era nel dataset
 dell'ospedale» può essere di per sé un'informazione sensibile.
+
+E più memoria ha lo studente, più pagine recita: i modelli grandi si portano
+dentro parola per parola molto più dei piccoli, e a una frase basta comparire
+una manciata di volte per restare impressa.
 
 `````
 
@@ -289,6 +293,12 @@ modello impara comunque la tendenza generale (la spingono tutti nella stessa
 direzione) ma il segno particolare di ciascuno si perde nel rumore. Si paga in
 accuratezza, com'è giusto: la privacy non è mai gratis.
 
+Quanto rumore mettere lo decide la stessa manopola di prima, e qui ogni passo
+ne consuma un pezzetto: i passi sono migliaia, e alla fine del conto la
+protezione rimasta è spesso molto più fiacca di quella che il nome fa
+immaginare. Per questo «qui c'è la privacy differenziale» dice poco finché non
+si dice dove la manopola è stata girata.
+
 `````
 
 `````{tab} Superiore
@@ -325,16 +335,16 @@ architettura senza privacy ($98{,}3\%$), e la qualità cala via via che si
 stringe $\varepsilon$ ($95\%$ a $\varepsilon = 2$, $90\%$ a
 $\varepsilon = 0{,}5$).
 
-Vale però la pena leggere quel $\varepsilon \approx 8$ con la scala costruita
-sopra, perché è il punto in cui la privacy differenziale smette di essere una
-garanzia e diventa una casella spuntata. Il fattore in gioco non è più
-$e^{0{,}5} \approx 1{,}65$: è $e^{8} \approx 3000$. Formalmente, la presenza di
-una singola persona può moltiplicare per tremila la plausibilità di un esito, il
-che come promessa vale poco più di un rito. Non è un difetto del lavoro di
-Abadi, che è esplicito sui suoi numeri; è la cosa da sapere quando si legge
-«questo sistema usa la privacy differenziale» senza il valore accanto, perché i
-budget dei sistemi in produzione stanno spesso lì o sopra. Più privacy, meno
-accuratezza: la manopola è sempre la stessa, e va guardato dove è girata.
+Quel $\varepsilon \approx 8$ è il punto in cui la privacy differenziale smette
+di essere una garanzia e diventa una casella spuntata. Il fattore in gioco non
+è più $e^{0{,}5} \approx 1{,}65$: è $e^{8} \approx 3000$. Formalmente, la
+presenza di una singola persona può moltiplicare per tremila la plausibilità
+di un esito, il che come promessa vale poco più di un rito. Non è un difetto
+del lavoro di Abadi, che è esplicito sui suoi numeri; è la cosa da sapere
+quando si legge «questo sistema usa la privacy differenziale» senza il valore
+accanto, perché i budget dei sistemi in produzione stanno spesso lì o sopra.
+Più privacy, meno accuratezza: la manopola è sempre la stessa, e va guardato
+dove è girata.
 
 `````
 
@@ -355,8 +365,16 @@ verso del viaggio: invece di portare i dati al modello, porta il **modello ai
 dati**. Il server manda a ogni ospedale una copia del modello; ognuno lo
 allena un po’ sui propri pazienti, in casa; poi rispedisce indietro non i
 dati, ma solo il modello aggiornato: cosa ha *imparato*, non cosa ha *visto*.
-Il server fonde insieme tutte le versioni in un modello migliore e ricomincia.
-Le cartelle non lasciano mai l'ospedale.
+Il server fonde insieme le versioni in un modello migliore, contando di più
+quelle degli ospedali con più pazienti, e ricomincia. Le cartelle non lasciano
+mai l'ospedale.
+
+Quel «cosa ha imparato», però, non è muto come sembra: dal modello che torna
+al server si riesce a volte a risalire ai pazienti che lo hanno allenato. Per
+questo prima di consegnarlo lo si sporca con un pizzico di caso, la moneta di
+prima, e il server viene costruito in modo da vedere soltanto la somma di tutti
+gli ospedali, mai il pacco di uno. Tenere i dati a casa abbassa il rischio, non
+lo cancella.
 
 `````
 
@@ -439,17 +457,17 @@ panda resta un panda.
 `````{tab} Superiore
 
 Un avviso sui simboli, prima delle formule. In letteratura il raggio della
-perturbazione ammessa si scrive $\varepsilon$: la **stessa lettera** che qui
-sopra era il budget di privacy differenziale, perché sono le notazioni standard
-di due campi diversi che in un libro come questo finiscono nella stessa pagina.
-Qui la perturbazione la chiamiamo $\rho$, perché la $\varepsilon$ della privacy
+perturbazione ammessa si scrive $\varepsilon$, la **stessa lettera** del budget
+di privacy differenziale: sono le notazioni standard di due campi diversi, e si
+incontrano appena privacy e robustezza si raccontano di seguito.
+Il raggio lo chiamiamo $\rho$, perché la $\varepsilon$ della privacy
 è dentro il nome delle sue definizioni ($\varepsilon$-DP) e rinominare quella
 sarebbe peggio. Con $\delta$ l'incrocio si ripete e il rimedio cambia: la
 perturbazione è un **vettore** e si scrive $\boldsymbol{\delta}$, mentre il
 margine della $(\varepsilon,\delta)$-DP è uno scalare e resta tondo. Dietro le
 due soluzioni c'è una regola sola: si rinomina ciò che si può rinominare senza
 rompere un nome proprio, e dove non si può si usa la forma dei simboli. In un
-articolo sugli esempi avversari la $\rho$ di queste pagine si chiamerà
+articolo sugli esempi avversari quella $\rho$ si chiamerà
 $\varepsilon$.
 
 Il metodo si chiama **Fast Gradient Sign Method** (FGSM). Fissati i pesi
@@ -528,12 +546,14 @@ quasi sempre per lo stesso motivo: non fermavano l'avversario, gli rendevano
 solo difficile capire da che parte spingere. Quando qualcuno ha trovato il modo
 di capirlo lo stesso sono cadute quasi tutte: di nove difese presentate a un
 convegno del 2018, sette si reggevano su quel trucco, e sei sono state bucate
-del tutto. È una *corsa agli armamenti*, e va detto
-con onestà: al momento non esiste una difesa definitiva. L'unica garanzia
-solida viene dalla **robustezza certificata**, che non promette «nessuno
-passerà» ma dimostra, con un teorema, che *dentro un raggio preciso* attorno a
-un'immagine nessuna manomissione può cambiare la risposta: un perimetro
-piccolo ma sicuro.
+del tutto. È una *corsa agli armamenti*, e al momento non esiste una difesa
+definitiva. L'unica garanzia solida viene dalla **robustezza certificata**, che
+non promette «nessuno passerà» ma dimostra, con un teorema, che *dentro un
+raggio preciso* attorno a un'immagine nessuna manomissione può cambiare la
+risposta. Il raggio è piccolo, e il modo più usato per ottenerlo si paga due
+volte: ogni tanto la macchina non se la sente e preferisce tacere, e la
+garanzia vale salvo una piccola probabilità di errore, che sceglie chi
+certifica. Resta molto più di «finora nessuno c'è riuscito».
 
 E c'è un secondo modo di attaccare, che non prende di mira il modello finito ma
 i suoi compiti di scuola. Chi riesce a infilare esempi propri nei dati con cui
@@ -548,9 +568,9 @@ modello è stato costruito, e non solo quanti ne sono stati usati.
 
 `````{tab} Superiore
 
-Prima delle difese, una parola sul **modello di minaccia**, perché l'intera
-trattazione precedente vive dentro la palla $\ell_\infty$ e conviene sapere
-perché. Quel perimetro non descrive l'avversario: descrive ciò che è comodo
+Prima delle difese, una parola sul **modello di minaccia**, perché attacchi e
+formule fin qui vivono tutti dentro la palla $\ell_\infty$.
+Quel perimetro non descrive l'avversario: descrive ciò che è comodo
 trattare, perché è differenziabile, proiettabile e quindi ottimizzabile. Le
 perturbazioni che contano nel mondo non hanno norma $\ell_p$ piccola: una
 rotazione, un ritaglio, un'ombra, un adesivo su un segnale stradale, una frase
@@ -626,35 +646,39 @@ il brano con parole proprie diluisce l'eccesso fino a cancellarlo.
 
 `````{tab} Elementare
 
-Il trucco delle due liste ha un terzo difetto, ed è il più profondo, perché non
-dipende da chi attacca ma dal testo stesso. Funziona solo dove il modello
-aveva davvero una scelta. Se sta scrivendo qualcosa di quasi obbligato (il
-seguito di «Barack» è «Obama», e non c'è alternativa) allora o rispetta il
-sorteggio e scrive una sciocchezza, o scrive la parola giusta e non lascia
-traccia. Sul testo pieno di scelte, come un racconto, la marca si nasconde
-benissimo; su codice sorgente, citazioni, elenchi di numeri, quasi per niente.
+C'è un limite più profondo del testo corto e della riscrittura, e non dipende
+da chi attacca ma dal testo stesso: il trucco delle due liste funziona solo
+dove il modello aveva davvero una scelta. Se sta scrivendo qualcosa di quasi
+obbligato (il seguito di «Barack» è «Obama», e non c'è alternativa) allora o
+rispetta il sorteggio e scrive una sciocchezza, o scrive la parola giusta e
+non lascia traccia. Sul testo pieno di scelte, come un racconto, la marca si
+nasconde benissimo; su codice sorgente, citazioni, elenchi di numeri, quasi
+per niente.
 
-Sulle **immagini** l'idea è la stessa ma i mezzi cambiano. La filigrana nascosta
-altera il contenuto in modo impercettibile ma riconoscibile da chi possiede la
-chiave: modifica di pochissimo migliaia di pixel secondo uno schema segreto, e
-lo fa in modo che l'occhio non noti nulla mentre un rilevatore che conosce lo
-schema ritrova il segno anche dopo una compressione moderata. SynthID di Google
-DeepMind applica questa idea a immagini, audio e video.
+Sulle **immagini** l'idea è la stessa e cambiano i mezzi: la filigrana nascosta
+sposta di pochissimo migliaia di pixel secondo uno schema segreto, così che
+l'occhio non veda niente e un rilevatore che conosce lo schema ritrovi il segno
+anche dopo una compressione moderata. SynthID di Google DeepMind fa questo su
+immagini, audio e video.
 
 La **provenienza dichiarata** fa l'opposto: invece di nascondere, allega. Lo
-standard **C2PA** attacca al file una scheda, *firmata crittograficamente*, con
-scritto chi l'ha creato, con quale strumento e come è stato modificato. La
-domanda ovvia è: e chi mi impedisce di scrivermela io, una scheda così, e
-attaccarla a un video falso dicendo che l'ha girato una televisione? La
-risposta sta in quel «firmata»: la scheda porta un sigillo che solo chi possiede
-una certa chiave segreta può produrre, e che chiunque può controllare senza
-possederla. Se il sigillo non torna, la scheda è falsa e si vede subito.
+standard **C2PA** attacca al file un cartellino con scritto chi l'ha creato,
+con quale strumento e come è stato modificato. E chi impedisce di scriverselo
+da sé, un cartellino così, e appiccicarlo a un video falso dicendo che l'ha
+girato una televisione? Un sigillo, che solo chi possiede una certa chiave
+segreta sa produrre e chiunque può controllare senza possederla. Se il sigillo
+non torna, il cartellino è falso e si vede subito.
 
-La differenza pratica è netta, e si tiene a mente così: **la filigrana
-nascosta sopravvive a una foto dello schermo, la scheda allegata no**, perché
-una foto dello schermo copia i pixel e butta via tutto il resto. In compenso la
-scheda racconta una storia ricca, mentre la filigrana dice solo «sono
-artificiale».
+La differenza si vede tutta con una foto dello schermo: porta via il
+cartellino e lascia la filigrana, un po’ consumata, perché copia i pixel e
+butta il resto. In compenso il cartellino racconta una storia, la filigrana
+dice soltanto «sono artificiale».
+
+Né la filigrana né il cartellino chiudono la porta. Chi ha tempo riscrive il
+testo con altre parole, ritaglia e ricomprime l'immagine finché il segno non si
+legge più, e il cartellino lo stacca in un secondo. Quello che si compra è il
+prezzo: far passare per autentico un contenuto fabbricato smette di essere
+gratis.
 
 `````
 
@@ -671,11 +695,10 @@ rilevabile. Il rilevatore non deve conoscere il testo originale né avere access
 al modello: gli basta ricalcolare le liste e fare un test d'ipotesi
 (Kirchenbauer e colleghi {cite}`kirchenbauer2023watermark`).
 
-Che il seme dipenda dal solo token precedente non è un dettaglio implementativo:
-è **la** ragione della fragilità alla riscrittura di cui si parla fra poco,
-perché cambiare una parola invalida la lista di quella successiva.
+Che il seme dipenda dal solo token precedente spiega la fragilità alla
+riscrittura: cambiare una parola invalida la lista di quella successiva.
 
-E c'è un limite più strutturale degli altri due, perché non dipende
+E c'è un limite più strutturale, perché non dipende
 dall'attaccante ma dal testo: la marca si può nascondere soltanto dove il
 modello aveva davvero una scelta, cioè dove l'entropia della distribuzione sul
 token successivo è alta. Su testo a bassa entropia (codice, citazioni,

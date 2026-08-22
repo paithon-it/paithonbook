@@ -81,8 +81,8 @@ sola {cite}`hyndman2021forecasting`.
 
 `````{tab} Elementare
 
-L'idea è rifare più volte lo stesso gioco onesto (allena sul prima, prova sul
-dopo) spostando ogni volta il confine in avanti. Ci sono due modi.
+Si rifà più volte lo stesso gioco onesto (allena sul prima, prova sul dopo),
+spostando ogni volta il confine in avanti. Ci sono due modi.
 
 Con la **finestra espansa** (*expanding*), a ogni giro tieni tutto il passato
 disponibile e lo allunghi: prima usi i primi due mesi per prevedere il terzo, poi
@@ -101,15 +101,15 @@ come mostra la {numref}`fig-walk-forward-validazione`.
 
 `````{tab} Superiore
 
-Sia la serie $y_1, \dots, y_n$. In questa sezione la indichiamo con $y$
-anziché con $x$: la serie diventa il *target* di un problema supervisionato,
+Sia la serie $y_1, \dots, y_n$. La lettera è $y$ e non $x$ perché la serie
+diventa il *target* di un problema supervisionato,
 e le previsioni si scrivono $\hat{y}$, come nel resto del libro. Fissato un
 training minimo e un orizzonte $h$, il
 walk-forward produce una sequenza di coppie $(\text{train}, \text{test})$ in cui
 il blocco di test cade sempre dopo il blocco di train. Nella variante
 **espansa** l’$i$-esima iterazione addestra su $y_1, \dots, y_{t_i}$ e valuta su
 $y_{t_i+1}, \dots, y_{t_i+h}$, con $t_i$ crescente; nella variante **scorrevole**
-il training è $y_{t_i-w+1}, \dots, y_{t_i}$, con ampiezza $w$ costante. L'errore
+il training è $y_{t_i-v+1}, \dots, y_{t_i}$, con ampiezza $v$ costante. L'errore
 finale è la media degli errori sui blocchi di test, e la
 {numref}`fig-walk-forward-validazione` mostra le due varianti una sopra
 l'altra. Rispetto al singolo train/test split, questa procedura usa più
@@ -169,34 +169,33 @@ Il primo tentativo è misurare l'errore in **percentuale**: sbagliare di 500 su
 medio. Comoda da spiegare, ma con due difetti seri. Se il valore vero è
 **zero** (un giorno senza vendite), si divide per zero e la metrica esplode.
 Ed è **asimmetrica**: prevedere troppo alto o troppo basso non costa uguale.
-La ragione si vede con un conto: se il valore vero è 100 e prevedi 0, hai
-sbagliato del 100%, ed è il massimo che puoi sbagliare per difetto, perché sotto
-lo zero non si va. Se prevedi 1000, hai sbagliato del 900%, e non c'è nessun
-tetto. Sbagliare per eccesso costa quindi molto di più, e alla lunga la metrica
-premia i modelli timidi, quelli che sottostimano sempre.
+Col valore vero a 100, se prevedi 0 hai sbagliato del 100%, ed è il massimo che
+puoi sbagliare per difetto, perché sotto lo zero non si va. Se prevedi 1000,
+hai sbagliato del 900%, e non c'è nessun tetto. Sbagliare per eccesso costa
+quindi di più, e alla lunga la metrica premia i modelli timidi.
 
 La strada che funziona è un'altra: invece di guardare l'errore in sé, si guarda
-**quante volte è più grande** dell'errore di qualcuno che non fa niente di
+quante volte è più grande dell'errore di qualcuno che non fa niente di
 intelligente. Se il tuo modello sbaglia in media di 4 gradi e chi si limita a
 copiare il giorno prima ne sbaglia 8, il tuo numero è $4/8 = 0{,}5$. È la
 **MASE**, sigla inglese per «errore assoluto medio scalato», e *scalato* vuol
 dire proprio questo: diviso per il metro di qualcun altro. Se viene 1 sbagli
 quanto lui, se viene $0{,}5$ sbagli la metà, se viene 2 il doppio: un numero
-solo, senza unità di misura, leggibile a colpo d'occhio.
+solo, senza unità di misura. Perché ci sia un metro, però, la serie deve
+muoversi: su una che si ripete sempre identica chi copia non sbaglia mai, e non
+resta più niente per cui dividere.
 
-Due avvertenze, e sono i due modi in cui la si sbaglia. La prima: chi copia può
-copiare ieri, oppure lo stesso giorno della settimana scorsa se la serie ha un
-ritmo settimanale. Sono due pigrizie diverse, il numero che ne esce è diverso, e
-va detto sempre quale delle due si è messa al paragone.
+Due modi di sbagliarla. Uno è tacere quale pigrizia si è messa al paragone: chi
+copia può copiare ieri, oppure lo stesso giorno della settimana scorsa se la
+serie ha un ritmo settimanale, e il numero che ne esce è diverso.
 
-La seconda: **non è un duello alla pari**, per quanto «di quanto sbaglio rispetto
-a lui» faccia pensare di sì. Chi copia viene fatto correre sul percorso più
-facile che c'è, cioè prevedere un solo giorno avanti, mentre il tuo modello
-magari ne sta prevedendo dodici. Sbagliare
-quanto lui, allora, non vuol dire pareggiare: su dodici giorni avanti è un
-ottimo risultato, su un giorno solo sarebbe mediocre. Quel numero sotto la linea
-di frazione serve a togliere di mezzo l'unità di misura, non a fare da
-avversario.
+L'altro è credere che sia una gara alla pari. Chi copia corre su un altro
+tratto: lo si fa girare sulla strada già percorsa, quella su cui ti sei
+allenato, e ogni volta gli si chiede solo il giorno dopo, mentre tu magari ne
+stai prevedendo dodici. Sbagliare quanto lui, allora, non vuol dire
+pareggiare: su dodici giorni avanti è un ottimo risultato, su un giorno solo
+sarebbe mediocre. Quel numero sotto la linea di frazione serve a togliere di
+mezzo l'unità di misura, non a fare da avversario.
 
 `````
 
@@ -264,7 +263,7 @@ modello con MASE $0{,}9$ su un orizzonte a dodici passi non ha battuto nessuno,
 ha sbagliato il 90% di quanto sbaglia a un passo chi copia; il che su dodici
 passi è ottimo e su un passo sarebbe mediocre. Se si vuole davvero il duello, il
 naive va fatto correre sullo **stesso** test e sullo **stesso** orizzonte, ed è
-quello che fanno le linee di base qui sotto.
+quello che si fa con le linee di base ingenue.
 
 Quando la previsione non è un singolo numero ma una **distribuzione** (un
 intervallo, o un insieme di quantili), si usa la
@@ -302,8 +301,7 @@ questo che vuol dire «punteggio proprio»).
 La formulazione canonica della materia è «massimizzare la finezza **sotto
 vincolo** di calibrazione», e la calibrazione si controlla a parte, ed è facile:
 si conta quante volte il valore osservato cade dentro la banda all'80% e si
-guarda se fa l'80%. La macchina per farlo è il walk-forward di questa stessa
-sezione.
+guarda se fa l'80%. La macchina per farlo è il walk-forward.
 
 `````
 
@@ -432,17 +430,18 @@ essere il solito problema tabellare che sappiamo già risolvere.
 
 `````{tab} Elementare
 
-Il trucco è dare in pasto al modello, per ogni giorno, un riassunto del suo
-recente passato. I mattoni sono quattro.
+Una riga per ogni giorno, con sopra il riassunto del suo recente passato e una
+domanda sola: quanto venderò fra una settimana? I mattoni del riassunto sono
+quattro.
 
 I **lag**: i valori di ieri, dell'altroieri, di una settimana fa. Sono la
 memoria grezza della serie: spesso «quanto ho venduto ieri» è già un'ottima
 indicazione su oggi.
 
 Le **finestre mobili**: media e deviazione degli ultimi 7 o 30 giorni. La media
-cattura il livello recente lisciando il rumore; la deviazione (quella standard,
-la misura di quanto i valori si sparpagliano attorno alla loro media, del
-capitolo di matematica) dice quanto la serie è stata mossa di recente.
+cattura il livello recente lisciando il rumore; la deviazione (quella standard
+del capitolo di matematica, che misura quanto i valori si sparpagliano attorno
+alla loro media) dice quanto la serie è stata mossa di recente.
 
 L’**encoding del tempo**, cioè trasformare la data in numeri: dal calendario
 ricaviamo il giorno della settimana, il mese, se è un giorno festivo. Sono le
@@ -451,14 +450,21 @@ novembre.
 
 I **termini di Fourier**. Per dire al modello a che punto del ciclo annuale
 siamo si potrebbe mettere una colonna per ciascuno dei 365 giorni, con un $1$
-sul giorno giusto e $0$ su tutti gli altri: funziona, ma sono 365 colonne per
-un'informazione sola. C'è un modo molto più compatto, ed è lo stesso di quando,
+sul giorno giusto e $0$ sugli altri: funziona, ma sono 365 colonne per
+un'informazione sola. C'è un modo più compatto, lo stesso di quando,
 nel capitolo sull'audio, un accordo al pianoforte veniva scomposto nelle poche
 note che lo compongono: una curva che si ripete si
-descrive con poche onde regolari sovrapposte. Quelle onde, in matematica, si
-chiamano seno e coseno (sono le due curve ondulate di base, quelle che salgono e
-scendono all'infinito sempre uguali a sé stesse), e bastano due o tre coppie per
-disegnare quasi ogni stagionalità liscia.
+descrive con poche onde regolari sovrapposte. Quelle onde si chiamano seno e
+coseno, salgono e scendono all'infinito sempre uguali a sé stesse, e bastano due
+o tre coppie per disegnare quasi ogni stagionalità liscia.
+
+Un guaio resta sul confine fra i giorni d'allenamento e quelli di prova. Le
+ultime righe d'allenamento chiedono di una settimana che cade già di là; e la
+prima riga di prova, per fare le sue medie, guarda indietro a giorni di qua. Si
+buttano via le ultime righe d'allenamento, tante quanti i giorni d'anticipo più
+la lunghezza della finestra: con una settimana d'anticipo e medie a sette
+giorni, quattordici righe, un pugno di esempi in cambio di un confine pulito.
+L'operazione si chiama **purga**.
 
 `````
 
@@ -485,14 +491,14 @@ Il target della riga $t$ è $y_{t+h}$ per l'orizzonte $h$ desiderato. A quel
 punto qualunque regressore tabellare (dai modelli lineari al gradient
 boosting) diventa un modello di forecasting.
 
-Il divieto vale anche per le **trasformazioni**, ed è la fuga con cui si apre
-questa sezione: media, deviazione, minimo e massimo usati per scalare le colonne
-vanno stimati **sul solo training** di quel giro e poi applicati al test, mai
+Il divieto vale anche per le **trasformazioni**: media, deviazione, minimo e
+massimo usati per scalare le colonne vanno stimati **sul solo training** di
+quel giro e poi applicati al test, mai
 calcolati sull'intera serie. Uno `StandardScaler` messo prima dello split è
 esattamente l'analista con la curva liscia come una pista da sci.
 
-E attenzione a dove cade il taglio, perché qui la regola «netta» enunciata in
-apertura di sezione si viola da sé, al bordo. Se si divide train e test
+E attenzione a dove cade il taglio, perché la regola «netta» del confine
+temporale si viola da sé, al bordo. Se si divide train e test
 guardando l'istante $t$ delle **feature**, le ultime $h$ righe di training
 hanno un bersaglio $y_{t+h}$ che sta già dentro il periodo di test, e le
 finestre mobili di ampiezza $w$ allungano la sovrapposizione di altri $w$ passi.
@@ -518,9 +524,9 @@ da quale errore si guarda, quello quadratico o la sua radice). Il guasto si
 vede quando i dati sono pochi, cioè proprio quando si è più tentati di tenersele.
 
 L’**embargo**, che nella letteratura sul machine learning finanziario accompagna
-sempre la purga, qui invece **non serve**, e vale la pena dirlo perché i due
-viaggiano in coppia e chi li importa entrambi butta via dati per difendersi da
-una minaccia che non c'è. L'embargo mette una zona morta anche *dopo* il blocco
+sempre la purga, qui invece non serve: i due viaggiano in coppia, e chi li
+importa entrambi butta via dati per difendersi da una minaccia che non c'è.
+L'embargo mette una zona morta anche *dopo* il blocco
 di test, e serve quando un blocco di addestramento viene dopo un blocco di prova
 nel tempo, come nelle validazioni incrociate combinatorie in cui i fold si
 alternano lungo la serie. Nella validazione a origine mobile il training è
@@ -545,11 +551,14 @@ sbagli il primo passo, l'errore si trascina e si **accumula** lungo la catena.
 
 La strategia **diretta** allena un modello *diverso* per ogni orizzonte: uno per
 «tra un giorno», uno per «tra sette giorni». Ogni previsione è indipendente e non
-eredita gli errori altrui, ma addestrare tanti modelli costa.
+eredita gli errori altrui, ma addestrare tanti modelli costa, e nessuno di loro
+sa che cosa hanno risposto gli altri: le previsioni, messe in fila, possono
+raccontare storie che non stanno insieme.
 
 La strategia **multi-output** usa un unico modello che sputa fuori tutti i passi
-futuri in un colpo solo, tutti i trenta giorni insieme invece che uno per volta:
-è la via naturale per le reti neurali, che possono avere molte uscite.
+futuri in un colpo solo, tutti i trenta giorni insieme invece che uno per volta,
+e proprio perché escono insieme il modello può legare un giorno all'altro: è la
+via naturale per le reti neurali, che possono avere molte uscite.
 
 `````
 
@@ -656,9 +665,10 @@ vale più della pigrizia, purché si dichiari **quale** pigrizia.
   PIL e disastroso per la temperatura) non si possono confrontare fra serie
   diverse. Quella che si può è la **MASE**: dice di quanto sbagli rispetto a chi
   copia e basta. Se viene 1 sbagli quanto lui, se viene $0{,}5$ sbagli la metà.
-  Non è però un duello alla pari, perché chi copia viene fatto correre a un passo
-  solo: sbagliare quanto lui prevedendo dodici giorni avanti è tutt'altra impresa
-  che sbagliare quanto lui prevedendo domani. E va detto **quale** pigrizia si è
+  Non è però un duello alla pari: chi copia viene fatto correre a un passo solo,
+  e sulla strada già percorsa, quella su cui ti sei allenato. Sbagliare quanto
+  lui prevedendo dodici giorni avanti è tutt'altra impresa che sbagliare quanto
+  lui prevedendo domani. E va detto **quale** pigrizia si è
   messa al denominatore: su una serie con un ciclo settimanale il paragone giusto
   è con chi copia la settimana scorsa, non con chi copia ieri, e cambiando
   paragone cambia il verdetto.

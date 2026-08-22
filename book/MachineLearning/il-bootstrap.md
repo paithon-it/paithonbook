@@ -35,18 +35,30 @@ Per alcune quantità la risposta esiste da due secoli. Se la stima è una
 **media**, la statistica ha una formula che dice di quanto ci si può aspettare
 che balli: si prende quanto sono sparpagliati i dati e si divide per la radice
 di quanti sono. È il motivo per cui un sondaggio su mille persone dichiara un
-margine di errore, e il giornalista può scriverlo senza rifare il sondaggio.
+margine di poco più di tre punti, e il giornalista può scriverlo senza rifare il
+sondaggio.
 
-Il problema è che quella formula vale per la media e per poco altro. Delle
-quantità che interessano davvero in questo capitolo non ne copre quasi nessuna:
-la **mediana** degli stipendi (che è più onesta della media, perché non si fa
+Il problema è che quella formula vale per la media e per poco altro. Restano
+scoperte quasi tutte le quantità che si vogliono misurare davvero: la
+**mediana** degli stipendi (che è più onesta della media, perché non si fa
 trascinare da tre amministratori delegati), l’**accuratezza** di un modello, il
 rapporto fra due grandezze, la differenza fra le prestazioni di due modelli
 messi a confronto. Per tutte queste, la formula o non esiste, o esiste sotto
 ipotesi che i dati veri non rispettano.
 
-Fino al 1979 la risposta onesta era: se vuoi sapere quanto balla, rifai
-l'esperimento venti volte e guarda. Cioè, quasi sempre: non lo saprai.
+Un attrezzo prima del 1979 c'era, e si chiama jackknife: togli un dato dal
+mucchio, rifai il conto senza di lui, rimettilo a posto e passa al successivo,
+fino all'ultimo. Quanto i risultati si allontanano fra loro dice quanto la stima
+balla, e sulla media va bene. Sulla mediana no, e la ragione si vede a occhio:
+sessanta stipendi in fila hanno la mediana al centro, togliendone uno il centro
+scivola di un posto e mai di più, così il risultato è sempre uno dei due numeri
+che stavano in mezzo. Sessanta prove che ridanno due soli valori fanno sembrare
+la mediana molto più ferma di quanto sia, ed è proprio la mediana quella su cui
+si voleva una risposta.
+
+Per lei, e per le altre quantità scoperte, la risposta onesta era: se vuoi
+sapere quanto balla, rifai l'indagine venti volte e guarda. Cioè, quasi sempre:
+non lo saprai.
 
 `````
 
@@ -54,10 +66,9 @@ l'esperimento venti volte e guarda. Cioè, quasi sempre: non lo saprai.
 
 Il problema è quello classico dell'inferenza. Si osserva un campione
 $\mathbf{x} = (x_1, \dots, x_m)$ estratto da una distribuzione ignota $F$ (due
-avvertenze sui simboli, che in questa sezione sola cambiano mestiere:
-$\mathbf{x}$ è qui l'intero campione e non le caratteristiche di un esempio, e
-$\theta$ è la quantità da stimare, non i parametri di un modello, perché è la
-notazione consolidata del bootstrap), si
+avvertenze sui simboli, che nella notazione consolidata del bootstrap cambiano
+mestiere: $\mathbf{x}$ è l'intero campione e non le caratteristiche di un
+esempio, e $\theta$ è la quantità da stimare, non i parametri di un modello), si
 calcola una statistica $\hat{\theta} = s(\mathbf{x})$, e si vuole la
 **distribuzione campionaria** di $\hat{\theta}$, cioè come varierebbe
 ripetendo l'estrazione da $F$. Da lì si ricavano errore standard, intervalli di
@@ -104,9 +115,12 @@ si ricomincia: mille volte, o diecimila, che costano solo tempo di
 calcolatore.
 
 Alla fine hai un mucchio di mediane. Non vengono da indagini vere, ma il modo in
-cui si sparpagliano è una stima onesta di come si sparpaglierebbero quelle
-vere. E
-questo lo puoi fare stasera, con i dati che hai già.
+cui si sparpagliano è una stima onesta di come si sparpaglierebbero quelle vere.
+Dal mucchio esce anche l'intervallo, cioè i due estremi da scrivere accanto alla
+stima: metti le mille mediane in fila dalla più piccola alla più grande, scarta
+le venticinque più basse e le venticinque più alte, e i due valori rimasti ai
+bordi sono l'intervallo che promette di contenere la mediana vera novantacinque
+volte su cento. E questo lo puoi fare stasera, con i dati che hai già.
 
 Il punto in cui l'analogia si rompe, e va detto perché è il punto in cui il
 metodo si rompe davvero: **la fotografia non può mostrare quello che non
@@ -144,8 +158,8 @@ $$
 \bigl(\hat\theta^{*}_{b} - \bar{\theta^{*}}\bigr)^2},
 $$
 
-e l'intervallo **percentile** al livello $1-2\alpha$ sono i quantili empirici
-$[\hat\theta^{*}_{(\alpha)},\, \hat\theta^{*}_{(1-\alpha)}]$.
+e l'intervallo **percentile** al livello $1-2\alpha$ è la coppia di quantili
+empirici $[\hat\theta^{*}_{(\alpha)},\, \hat\theta^{*}_{(1-\alpha)}]$.
 
 Due avvertenze. La prima: $B$ non è la taglia del campione, è il numero di
 simulazioni, e l'unico costo è di calcolo; $B = 200$ basta per un errore
@@ -153,8 +167,8 @@ standard, per i quantili di un intervallo ne servono almeno $1000$ e $10\,000$
 non fanno male. La seconda: l'intervallo percentile è il più semplice e non il
 migliore. È corretto al primo ordine, e con statistiche distorte o asimmetriche
 sotto-copre; le versioni $\mathrm{BCa}$ (*bias-corrected and accelerated*) e
-$t$-bootstrap correggono, al prezzo di più conti. Il paragrafo qui sotto misura
-di quanto.
+$t$-bootstrap correggono, al prezzo di più conti. Su dati simulati, dove il
+valore vero si conosce, la sotto-copertura si può misurare.
 
 `````
 
@@ -298,10 +312,9 @@ sistematicamente. Chi ha bisogno del numero preciso usa il $\mathrm{BCa}$; chi
 ha bisogno di sapere se una differenza è solida usa questo, che costa quattro
 righe.
 
-Conviene notare dove ci ha portati la prudenza: per giudicare una percentuale
+La prudenza ci ha portati in un posto preciso: per giudicare una percentuale
 misurata abbiamo dovuto chiederci di quanto ballasse, e la risposta ha deciso
-il verdetto. È esattamente la domanda con cui la sezione si apre, applicata
-alla sezione stessa.
+il verdetto. È la domanda da cui siamo partiti, applicata a noi stessi.
 
 ## Dove si rompe, e perché è lo stesso conto del bagging
 
@@ -428,7 +441,7 @@ da mezzo punto su un test da mille esempi sono, quasi sempre, la stessa cosa.
   **percentile** = quantili empirici. $B \approx 200$ per un errore standard,
   $\ge 1000$ per i quantili.
 - Il percentile è corretto **al primo ordine** e sotto-copre con statistiche
-  distorte o asimmetriche. Misurato qui: $94{,}27\%$ contro il $95\%$ nominale
+  distorte o asimmetriche: $94{,}27\%$ contro il $95\%$ nominale
   su $4000$ prove, con intervallo Monte Carlo $[93{,}56;\ 94{,}99]$ che
   **esclude** il valore nominale per un centesimo di punto. Il verdetto dipende
   dalla seconda cifra decimale, che va quindi stampata. $\mathrm{BCa}$ e

@@ -67,16 +67,25 @@ Lo **stato** è come stanno adesso le tessere. Le **mosse** sono le tessere che
 in questo momento confinano con la casella vuota, e sono due, tre o quattro a
 seconda di dove il buco si trova. Lo **stato di fine** è i numeri in ordine.
 
-Adesso disegna. In cima metti la situazione di partenza. Sotto, una casella
-per ciascuna mossa che puoi fare: mettiamo che siano tre. Sotto ciascuna di
-quelle, altre due o
-tre. Dopo quattro righe hai già un centinaio di disegnini, e non sei arrivato
-da nessuna parte: la soluzione, per questo rompicapo, sta venti mosse più in
-basso.
+Adesso disegna, su un foglio e senza toccare il rompicapo: come restano le
+tessere dopo una mossa lo sai in anticipo, senza farla, e lo sai per tutte le
+mosse che vuoi. In cima metti la situazione di partenza. Sotto, una casella
+per ciascuna mossa che puoi fare: mettiamo che siano tre, e che restino tre a
+ogni riga. La
+riga dopo ne ha nove, quella dopo ancora ventisette, la quarta ottantuno. Dopo
+quattro righe hai disegnato centoventi caselle e non sei arrivato da nessuna
+parte: la soluzione, per questo rompicapo, sta venti mosse più in basso.
 
-Quel disegno è l’albero, e la cosa da portarsi via è che **non lo si costruisce
-mai tutto**. Si costruisce un pezzetto, si guarda, si decide da che parte
-continuare a costruirlo. Tutto il capitolo è su come si sceglie quel pezzetto.
+E parecchie di quelle caselle sono lo stesso rompicapo disegnato due volte.
+Fai scivolare il 7 nel buco, poi rimettilo dov’era: le tessere stanno come
+stavano. Sul foglio però sono due caselle lontane fra loro, e sotto a
+ciascuna ricominci da capo a disegnare tutto quello che viene dopo. Le
+situazioni davvero diverse in cui il rompicapo può trovarsi sono tante, ma sono
+un numero fisso. Le caselle sul foglio no: ogni situazione ne prende una per
+ogni strada che ci arriva, e di strade se ne possono inventare quante si vuole.
+
+Quel disegno è l’albero, e non lo si costruisce mai tutto. Se ne costruisce un
+pezzetto, si guarda, si decide da che parte continuare.
 
 `````
 
@@ -102,8 +111,8 @@ cioè quante mosse ci sono in media in uno stato, e la **profondità**, che
 conviene distinguere in due: $d$ è quella a cui sta la soluzione, $m$ quella
 massima dell’albero. Un albero completo fino a profondità $d$ ha circa $b^d$
 nodi, e
-questo è l’unico conto del capitolo che valga davvero la pena ricordare: il
-costo non cresce con la profondità, **si moltiplica** a ogni livello.
+questo è l’unico conto del capitolo da ricordare: il costo non si somma di
+livello in livello, **si moltiplica**.
 
 `````
 
@@ -137,8 +146,8 @@ ramo è già peggio di uno che si conosce).
 :alt: "Un albero disegnato con pallini e linee, la radice in alto e i rami che scendono. A sinistra, una etichetta per ciascuna riga: «adesso» accanto al pallino solo in cima, «dopo una mossa» accanto ai tre della riga sotto, «dopo due mosse» accanto ai nove della riga seguente, «dopo tre mosse» accanto ai ventisette dell’ultima, che sono più piccoli e collegati con linee tratteggiate. Sotto, la scritta «e così via». A destra una colonna intestata «quanti sono» riporta 1, 3, 9, 27 e la nota «per tre a ogni riga»; in fondo, in terracotta, «dopo venti mosse 3.486.784.401, dieci cifre, con tre mosse sole»."
 :width: 92%
 
-Tre mosse per stato sono poche, e bastano. Il numero a destra non cresce
-scendendo: si moltiplica per tre a ogni riga, e dopo venti righe è un numero
+Tre mosse per stato sono poche, e bastano. Il numero a destra non aumenta di
+tre a ogni riga: si moltiplica per tre, e dopo venti righe è un numero
 con dieci cifre. Con le trentacinque mosse degli scacchi e ottanta righe, le
 cifre diventano centoventiquattro.
 ```
@@ -204,9 +213,11 @@ il più grosso dei tre porta esattamente al capitolo dopo questo.
   giocava era abbastanza piccolo da avere una regola.
 - Per i problemi che una regola non ce l’hanno bisogna **immaginare i futuri**:
   da dove sono adesso, che cosa succede se faccio questa mossa, e poi quella, e
-  poi quell’altra. I futuri immaginati formano un **albero**.
-- L’albero **esplode**, e non per poco: il numero di futuri non cresce mano a
-  mano che si guarda più avanti, si **moltiplica** a ogni passo. Per gli
+  poi quell’altra. I futuri immaginati formano un **albero**, in cui la stessa
+  situazione ricompare in tanti punti diversi, uno per ogni strada che ci
+  arriva.
+- L’albero **esplode**, e non per poco: guardando un passo più avanti il numero
+  di futuri non aumenta di un po’, si **moltiplica**. Per gli
   scacchi si arriva a un numero di centoventiquattro cifre, cioè più di quaranta
   cifre in più di quante ne servano per contare gli atomi dell’universo.
 - Quindi l’albero non si costruisce mai tutto. Tutto il capitolo è su come si

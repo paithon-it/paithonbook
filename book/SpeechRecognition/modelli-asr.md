@@ -36,12 +36,21 @@ lunghezza molto diversa, e nessuno ci dice quale frame corrisponde a quale
 lettera.
 
 `````{tab} Elementare
-Immagina di dover sottotitolare un video a orecchio, senza conoscere i tempi.
-Chi parla lento, chi veloce; una vocale tenuta a lungo («caaasa») occupa molti
-fotogrammi ma resta una sola lettera; tra una parola e l'altra ci sono pause e
-respiri che non vanno scritti. Sai *cosa* è stato detto, ma non *quando*
-comincia e finisce ogni suono. Questo è l'allineamento: appaiare i tanti
-pezzetti di audio ai pochi caratteri del testo.
+Sottotitolare un video a orecchio, senza avere i tempi. Chi parla lento, chi
+veloce; una vocale tenuta a lungo («caaasa») occupa molti fotogrammi ma resta
+una sola lettera; tra una parola e l'altra ci sono pause e respiri che non
+vanno scritti. Sai *cosa* è stato detto, ma non *quando* comincia e finisce
+ogni suono. Questo è l'allineamento: appaiare i tanti pezzetti di audio ai
+pochi caratteri del testo.
+
+Una cosa però la sai già: si va nello stesso verso. Il video scorre, il testo
+scorre con lui, e quello che si sente prima è anche scritto prima; non capita
+mai di dover risalire il nastro per un suono che arriva dopo.
+
+I tempi si potrebbero anche segnare a mano, cronometro alla mano, suono per
+suono: su un video si fa, su milioni di ore di registrazioni non lo farà
+nessuno. Restano le due cose che costa poco avere, la registrazione e la sua
+trascrizione, e da quelle due i tempi bisogna tirarli fuori da sé.
 `````
 
 `````{tab} Superiore
@@ -109,17 +118,15 @@ fare due sei è un sesto per un sesto, cioè uno su trentasei.
 
 Sette voti moltiplicati fra loro danno un numero piccolo, quindi mettiamo che
 il primo allineamento valga il 3% e il secondo il 2% (sono numeri inventati
-per l'esempio; poco più avanti rifaremo il conto per intero, su un caso
-piccolo abbastanza da starci tutto). Tutti e due, ripuliti, danno «PALLA»:
-quindi finora «PALLA» vale il 5%, più di quanto valga ciascuno da solo. Dico
+per l'esempio). Tutti e due, ripuliti, danno «PALLA»: quindi finora «PALLA»
+vale il 5%, più di quanto valga ciascuno da solo. Dico
 «finora» perché di modi che danno «PALLA» ce ne sono altri, e vanno sommati
 anche quelli. Ecco cosa vuol dire «sommare gli allineamenti».
 
 La CTC non sceglie dunque *un* allineamento giusto e non chiede alla rete di
 indovinarlo: li considera tutti insieme, somma le probabilità di quelli che
 danno la trascrizione corretta, e spinge la rete ad alzare quel totale. Come
-lo alzi (spostando i voti su un modo o sull'altro) sono affari suoi. Nota il
-trucco del vuoto: senza il ∅ in mezzo, le due «L» si fonderebbero in una sola.
+lo alzi (spostando i voti su un modo o sull'altro) sono affari suoi.
 
 Gli allineamenti sono tanti anche per una parola di cinque lettere, e quanti
 siano non è una magia: si contano, e il conto si può rifare a mano. Il più
@@ -149,8 +156,8 @@ colonne, una per frame, e alta quanto la parola scritta con i vuoti in mezzo.
 Qualche centinaio di caselle in tutto, ed è lo stesso risparmio del navigatore di Viterbi di
 {doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`.
 
-C'è però un prezzo, e fra qualche pagina conterà. La rete vota un frame alla
-volta, e ogni voto lo dà guardando il suono e nient'altro: non si rilegge mai
+C'è però un prezzo. La rete vota un frame alla volta, e ogni voto lo dà
+guardando il suono e nient'altro: non si rilegge mai
 quello che ha già scritto. Non sa, cioè, che dopo «c-a-n» in italiano viene
 molto più facilmente una «e» che una «q». È un'ignoranza che le costerà cara, e
 a cui qualcun altro dovrà rimediare al posto suo.
@@ -361,9 +368,15 @@ Mentre pronuncia ogni parola, la sua attenzione torna al punto giusto di ciò
 che ha sentito. Il modello fa lo stesso: genera un carattere, si
 «riguarda» la porzione di audio più rilevante, genera il prossimo.
 
-Due conseguenze, e conviene fissarle perché tornano più avanti. La prima è che
-l'interprete, per cominciare, deve aver ascoltato la frase fino in fondo: un
-modello così non può scrivere mentre uno sta ancora parlando. La seconda è che
+E l'interprete non riparte da zero a ogni parola: tiene il filo di quello che
+ha appena detto, e dopo «i bambini» dirà «giocano», non «gioca». Da questo
+rileggersi il modello ricava gratis un orecchio per la lingua, che nessuno gli
+ha insegnato: sa come continuano le frasi, e ci si appoggia quando il suono è
+confuso.
+
+L'interprete, però, paga due prezzi. Il primo è che, per cominciare, deve
+aver ascoltato la frase fino in fondo: un modello così non può scrivere
+mentre uno sta ancora parlando. Il secondo è che
 niente gli impedisce di sbagliare punto. Può riguardare un pezzo di audio che
 ha già tradotto, o saltarne uno del tutto, e allora ripete una sillaba o si
 mangia una parola; nei casi peggiori si impunta e ripete la stessa cosa
@@ -437,6 +450,11 @@ passare al frame successivo senza scrivere niente. Alternando le due mosse
 copre tutto l'audio e produce tutto il testo, senza mai tornare indietro e
 senza mai dimenticare quello che ha già messo giù.
 
+Quando scrivere e quando spostarsi non gliel'ha detto nessuno. I ritmi
+possibili sono moltissimi, come i modi di etichettare i frame nella CTC, e in
+addestramento contano tutti insieme: quello che si spinge in alto è il totale,
+non un ritmo in particolare.
+
 Restando fermo sull'audio, in teoria, potrebbe scrivere all'infinito: a
 fermarlo non c'è una regola, c'è il fatto che dopo aver scritto quello che
 quel pezzo di suono conteneva il vuoto diventa la mossa più votata, e allora
@@ -444,10 +462,9 @@ si sposta. Se un modello mal addestrato si incaponisce a scrivere, infatti,
 esce proprio quello: una parola ripetuta finché qualcuno non stacca la spina.
 
 E quel foglio, quello che lo stenografo si rilegge, dentro il trasduttore è
-una rete a sé, con un nome che vale la pena ricordare perché torna fra due
-pagine: la *prediction network*, «la rete che prevede», il cui unico mestiere
-è guardare le lettere già scritte e dire cosa ci si aspetta dopo. È la cosa
-che alla CTC manca del tutto.
+una rete a sé: la *prediction network*, «la rete che prevede», il cui unico
+mestiere è guardare le lettere già scritte e dire cosa ci si aspetta dopo. È
+la cosa che alla CTC manca del tutto.
 
 `````
 
@@ -459,11 +476,11 @@ $\mathbf{g}_u$ dai soli token già emessi $y_{<u}$, e una piccola *joint
 network* che fonde le due e proietta sul vocabolario esteso col vuoto,
 
 $$
-p(k \mid t, u) =
+p(s \mid t, u) =
 \mathrm{softmax}\big(\mathbf{W}\,\phi(\mathbf{h}_t + \mathbf{g}_u)\big),
 $$
 
-dove $k$ è il simbolo candidato, $\phi$ una non linearità (di solito una
+dove $s$ è il simbolo candidato, $\phi$ una non linearità (di solito una
 tangente iperbolica) e $\mathbf{W}$ la proiezione sul vocabolario. Nella
 formulazione originale del 2012 le due reti si sommavano direttamente nello
 spazio delle uscite; la *joint network* con la non linearità in mezzo è la
@@ -693,8 +710,7 @@ il 33%.
 Trovare quei due errori a occhio è facile su sei parole e impossibile su
 seicento, perché le combinazioni sono tante e ne vogliamo il numero **minimo**.
 Il conto ha un nome, **distanza di Levenshtein**, e si fa riempiendo una
-tabella (chi non programma può saltare il riquadro: il conto è quello appena
-fatto a mano).
+tabella.
 
 ```python
 import numpy as np

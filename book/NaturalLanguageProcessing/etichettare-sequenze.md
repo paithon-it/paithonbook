@@ -61,15 +61,24 @@ fondamenta su cui quella struttura si appoggia.
 «Porta» è un oggetto in «la porta cigola» e un’azione in «Maria porta il pane»:
 la stessa parola, due mestieri diversi. Le categorie grammaticali sono appunto
 i *mestieri* delle parole (il nome indica cose e persone, il verbo racconta
-azioni, l'articolo fa strada al nome), e il punto delicato è che molte ne fanno
-due, cambiando divisa senza avvisare: «ancora» è un pezzo di nave se la
+azioni, l'articolo fa strada al nome), e il punto delicato è che alcune ne
+fanno due, cambiando divisa senza avvisare: «ancora» è un pezzo di nave se la
 pronunci *àncora* e un avverbio se la pronunci *ancóra*. Sulla pagina le due
 «ancora» sono identiche: solo le parole intorno rivelano quale hai davanti.
 Etichettare le parti del discorso è proprio questo: guardare il contesto e
-decidere, parola per parola, quale mestiere è in servizio. I linguisti del
-progetto Universal Dependencies hanno stilato una lista di 17 mestieri che
-funziona per l'italiano come per il finlandese o il giapponese: una specie di
-stele di Rosetta della grammatica.
+decidere, parola per parola, quale mestiere è in servizio.
+
+Le parole a doppio mestiere sono poche: apri il vocabolario a caso e quasi
+ogni voce ne ha uno solo. Sono però quelle che tornano di continuo («porta»,
+«ancora», «la»), e in una frase qualsiasi ne incontri più d'una.
+
+I linguisti del progetto Universal Dependencies hanno stilato una lista di 17
+mestieri che funziona per l'italiano come per il finlandese o il giapponese:
+una specie di stele di Rosetta della grammatica. La lista sta ferma mentre la
+lingua si muove, e il motivo sta in come sono fatti i mestieri. Alcuni assumono
+di continuo: «googlare» è un verbo nato l'altro ieri, e nomi nuovi ne arrivano
+ogni settimana. Altri hanno chiuso le assunzioni da secoli, e nessuno si mette
+a inventare un articolo. Cambiano le parole, non l'elenco dei mestieri.
 
 `````
 
@@ -152,16 +161,22 @@ leggibile per conto suo.
 `````{tab} Elementare
 
 Tre evidenziatori colorati: giallo per le persone, azzurro per i luoghi, verde
-per le date. Il problema è dettare al telefono, parola per parola, dove passa
-l'evidenziatore, e con quale regola? Ne bastano tre per parola: «qui
-**comincio** un'evidenziatura gialla», «qui la
-**continuo**», «qui la penna è **sollevata**». Sulla frase di Fermi: *Enrico*
-= comincio-giallo, *Fermi* = continuo, *nacque, a* = penna su, *Roma* =
-comincio-azzurro, *nel* = penna su, *1901* = comincio-verde. La distinzione
-tra «comincio» e «continuo» sembra pignola ma è preziosa: in «il faccia a
-faccia Mattarella Macron», due «comincio-giallo» di fila dicono che le persone
-sono *due*; un «comincio» seguito da un «continuo» direbbe che è una sola, un
-improbabile signor Mattarella Macron.
+per le date. La penna però ce l'ha una persona all'altro capo del telefono, e
+tu devi dettarle dove passa, parola per parola. Bastano tre segnali: «qui
+**comincio** un'evidenziatura gialla», «qui la **continuo**», «qui la penna è
+**sollevata**». Sulla frase di Fermi: *Enrico* = comincio-giallo, *Fermi* =
+continuo-giallo, *nacque, a* = penna su, *Roma* = comincio-azzurro, *nel* =
+penna su, *1901* = comincio-verde.
+
+La distinzione tra «comincio» e «continuo» sembra pignola ma è preziosa: in
+«il faccia a faccia Mattarella Macron», due «comincio-giallo» di fila dicono
+che le persone sono *due*; un «comincio» seguito da un «continuo» direbbe che
+è una sola, un improbabile signor Mattarella Macron.
+
+Comincio e continuo si portano dietro il colore, e così le combinazioni
+diverse diventano sette: due per ciascuno dei tre evidenziatori, più la penna
+sollevata, che è una sola perché fuori dalle evidenziature il colore non c'è.
+Con un quarto evidenziatore sarebbero nove: due per colore, più uno.
 
 `````
 
@@ -180,8 +195,8 @@ La marca `B` è ciò che rende lo schema invertibile: senza di essa due entità
 adiacenti dello stesso tipo si fonderebbero in una. La sequenza `B-PER B-PER`
 codifica due persone consecutive; `B-PER I-PER` una sola entità di due token.
 
-Vale la pena distinguere due varianti che vengono spesso confuse, perché la
-differenza è proprio su quel punto. Nello schema originale del 1995 (oggi
+Due varianti vengono spesso confuse, e la differenza cade proprio su quel
+punto. Nello schema originale del 1995 (oggi
 chiamato **IOB1**) la `B` era parsimoniosa: compariva **solo** quando un
 segmento ne seguiva immediatamente un altro dello stesso tipo, cioè solo dove
 serviva davvero a separarli. Sotto IOB1 la frase di Fermi si etichetta
@@ -215,10 +230,11 @@ parole, eppure sono loro a governare quali parole compaiono e in che ordine.
 
 `````{tab} Elementare
 
-Immagina una recita dietro una tenda: tu, in platea, non vedi gli attori,
-senti solo le battute. Gli attori sono le *categorie grammaticali*, che si
-passano la scena secondo abitudini precise (dopo l'ARTICOLO entra quasi sempre
-il NOME, diciamo 7 volte su 10, e raramente il VERBO), e ognuna ha il suo
+La tenda del palcoscenico resta chiusa per tutta la recita, e in platea
+arrivano solo le battute degli attori. Gli attori sono le *categorie
+grammaticali*, che si passano la scena secondo abitudini precise (dopo
+l'ARTICOLO entra quasi sempre il NOME, diciamo 7 volte su 10, e raramente il
+VERBO), e ognuna ha il suo
 copione di parole tipiche (quando è in scena l'ARTICOLO senti «la», «il»,
 «un»…). Un HMM è questo teatro: due libretti di abitudini (*chi passa la scena
 a chi* e *chi dice che cosa*) imparati contando su migliaia di frasi già
@@ -360,62 +376,66 @@ all'indietro lungo la strada in terracotta.
 
 `````{tab} Elementare
 
-Un navigatore attraversa tre incroci (le tre parole) e a ogni incrocio sceglie
-una corsia (la categoria). Il suo segreto è duplice. Primo: a ogni incrocio,
-per ogni corsia, conserva **solo il modo migliore di arrivarci** e butta via
-gli altri, perché se due strade sbucano nella stessa corsia dello stesso
-incrocio, da lì in avanti hanno davanti esattamente le stesse possibilità, e la
-più lenta non potrà mai più recuperare. Secondo: ogni volta che tiene una
-strada, si segna su un foglietto **da dove veniva**, così alla fine potrà
-ricostruire il percorso a ritroso.
+Un navigatore attraversa tre incroci, uno per parola, e a ogni incrocio sceglie
+fra tre corsie, una per categoria.
 
-Seguiamolo sui numeri della figura.
+A «la» ne è aperta una sola, perché soltanto l’articolo sa dire «la». Il
+navigatore ci entra con $0{,}6 \times 0{,}5 = 0{,}30$: sei frasi su dieci
+cominciano con un articolo, e una volta su due l’articolo di turno è «la».
 
-**«la»**: solo `DET` sa dire «la», quindi c'è una sola casella viva. Vale
-$0{,}6 \times 0{,}5 = 0{,}30$, cioè la probabilità che la frase cominci con un
-articolo (0,6) per la probabilità che quell'articolo sia proprio «la» (0,5).
+A «porta» le corsie aperte sono due, il nome e il verbo. Nel nome si entra con
+$0{,}30 \times 0{,}7 \times 0{,}2 = 0{,}042$, cioè il punteggio di prima, per le
+sette volte su dieci in cui dopo un articolo arriva un nome, per le due su dieci
+in cui quel nome è «porta». Nel verbo, stesso conto,
+$0{,}30 \times 0{,}2 \times 0{,}2 = 0{,}012$. La parola non sposta niente, 0,2 e
+0,2: a sbilanciare è la strada che ci porta, quello 0,7 contro 0,2.
 
-**«porta»**: due caselle possibili. Arrivare a `NOME` vale $0{,}30 \times 0{,}7
-\times 0{,}2 = 0{,}042$, cioè quanto valeva la casella di prima, per la
-probabilità che dopo un articolo venga un nome, per la probabilità che quel
-nome sia «porta». Arrivare a `VERBO` vale con lo stesso conto $0{,}30 \times
-0{,}2 \times 0{,}2 = 0{,}012$. La parola era in perfetto pareggio (0,2 e 0,2):
-a sbilanciare è stata la grammatica, quello 0,7 contro 0,2; dopo un articolo ci
-si aspetta un nome.
+A «cigola» apre solo il verbo, ma ci si entra da due parti. Il navigatore
+confronta prima e moltiplica dopo, perché l’ultimo tratto è lo stesso per tutte
+e due e non cambia la classifica: dal nome $0{,}042 \times 0{,}5 = 0{,}021$,
+dal verbo $0{,}012 \times 0{,}2 = 0{,}0024$. Tiene la prima e butta l’altra per
+sempre: da lì in avanti le due strade hanno davanti le stesse identiche
+possibilità, e quella entrata con meno punteggio non recupera più. Poi
+moltiplica per lo $0{,}3$ con cui un verbo dice «cigola», e l’incrocio chiude a
+$0{,}0063$.
 
-**«cigola»**: solo `VERBO` può dirla, ma ci si arriva da due strade. Qui
-conviene fare il confronto prima e la moltiplicazione finale dopo, perché il
-fattore che manca è lo stesso per tutte e due e non cambia la classifica: da
-`NOME` si arriva con $0{,}042 \times 0{,}5 = 0{,}021$, da `VERBO` con $0{,}012
-\times 0{,}2 = 0{,}0024$. Vince la prima; adesso si moltiplica per la
-probabilità che il verbo dica «cigola» ($\times\, 0{,}3$) e la casella chiude a
-$0{,}0063$. Ora il navigatore rilegge i foglietti all'indietro: `VERBO` ←
-`NOME` ← `DET`. Ecco l'etichettatura: *la*/articolo *porta*/nome
-*cigola*/verbo.
+A ogni strada tenuta il navigatore si era segnato su un foglietto da dove
+veniva. Adesso rilegge i foglietti all’indietro: verbo ← nome ← articolo. La
+frase esce così: *la*/articolo *porta*/nome *cigola*/verbo.
 
-Qui i cammini erano una manciata; con 17 categorie e 20 parole sarebbero quei
-quattro milioni di miliardi di miliardi di poco fa, ma gli *incroci* restano
-appena 17 × 20 = 340. Il
-navigatore fa un pugno di moltiplicazioni per incrocio e trova comunque,
-garantito, il percorso migliore in assoluto.
+Tre parole e tre corsie si contano sulle dita. Con 17 categorie e 20 parole i
+percorsi interi sarebbero quei quattro milioni di miliardi di miliardi, ma gli
+incroci restano 20, con 17 corsie ciascuno: 17 × 20 = 340 in tutto. Un pugno di
+moltiplicazioni per corsia, e il percorso migliore in assoluto salta fuori
+comunque, garantito.
+
+Sulle frasi lunghe il foglietto si guasta. Ogni incrocio moltiplica per un
+numero minore di uno, e il punteggio si assottiglia in fretta: 0,30, poi 0,042,
+poi 0,0063, e dopo la virgola gli zeri si accumulano. Le caselle del foglietto
+però sono un numero fisso, come le cifre di un calcolatore, e dopo qualche
+decina di incroci non ci resta che zero: due percorsi diversi finiscono segnati
+con lo stesso zero, e la gara non si può più giudicare. Il rimedio è cambiare
+unità di misura. Invece di moltiplicare i punteggi si contano gli zeri, che a
+ogni incrocio si sommano tranquillamente; alla fine vince il percorso che ne ha
+di meno.
 
 `````
 
 `````{tab} Superiore
 
-Definiamo $v_t(s)$ come la probabilità del miglior cammino che arriva allo
-stato $s$ dopo aver generato le prime $t$ parole. L'algoritmo di Viterbi la
+Definiamo $v_i(s)$ come la probabilità del miglior cammino che arriva allo
+stato $s$ dopo aver generato le prime $i$ parole. L'algoritmo di Viterbi la
 calcola per ricorrenza:
 
 $$
 v_1(s) = \pi_s \, P(w_1 \mid s),
 \qquad
-v_t(s) = \max_{s'} \big[\, v_{t-1}(s')\, P(s \mid s') \,\big]\, P(w_t \mid s),
+v_i(s) = \max_{s'} \big[\, v_{i-1}(s')\, P(s \mid s') \,\big]\, P(w_i \mid s),
 $$
 
 dove $\pi_s$ è la probabilità iniziale dello stato $s$ e $s'$ scorre su
 tutti gli stati al passo precedente; un **retropuntatore**
-$\psi_t(s) = \arg\max_{s'} v_{t-1}(s')\, P(s \mid s')$ memorizza da dove
+$\psi_i(s) = \arg\max_{s'} v_{i-1}(s')\, P(s \mid s')$ memorizza da dove
 proviene il massimo. Sul modello giocattolo la tabella dei massimi è:
 
 | stato | «la» | «porta» | «cigola» |
@@ -427,8 +447,9 @@ proviene il massimo. Sul modello giocattolo la tabella dei massimi è:
 Al termine si prende lo stato finale con $v_n$ massimo (qui `VERBO`, con
 $0{,}0063$) e si segue $\psi$ a ritroso: `DET` → `NOME` → `VERBO`. Il cammino
 alternativo completo `DET` → `VERBO` → `VERBO` vale
-$0{,}012 \times 0{,}2 \times 0{,}3 = 0{,}00072$: quasi nove volte meno. Il
-costo è $O(n\,T^2)$ (per ogni parola, per ogni stato, un massimo su $T$
+$0{,}012 \times 0{,}2 \times 0{,}3 = 0{,}00072$: quasi nove volte meno. Detto
+$T$ il numero di etichette possibili, il costo è $O(n\,T^2)$ (per ognuna delle
+$n$ parole, per ognuno dei $T$ stati, un massimo su $T$
 predecessori) contro gli $O(T^n)$ cammini della forza bruta: con $T = 17$ e
 $n = 20$, poche migliaia di operazioni al posto di $10^{24}$, e con la
 garanzia dell'ottimo globale; a differenza della *beam search* della sezione
@@ -581,15 +602,21 @@ se coincidono sia i confini del segmento sia il tipo. Dette $C$ le entità
 corrette, $\hat{E}$ quelle predette ed $E$ quelle di riferimento:
 
 $$
-P = \frac{|C|}{|\hat{E}|},
+\text{precisione} = \frac{|C|}{|\hat{E}|},
 \qquad
-R = \frac{|C|}{|E|},
-\qquad
-F_1 = \frac{2PR}{P + R},
+\text{richiamo} = \frac{|C|}{|E|},
 $$
 
-dove $P$ (precisione) misura quanto ci si può fidare di ciò che il sistema
-estrae e $R$ (richiamo) quanta parte del dovuto viene trovata. La severità
+dove la precisione misura quanto ci si può fidare di ciò che il sistema
+estrae e il richiamo quanta parte del dovuto viene trovata. Il voto unico è la
+loro media armonica,
+
+$$
+F_1 = 2\cdot\frac{\text{precisione}\cdot\text{richiamo}}
+{\text{precisione}+\text{richiamo}} .
+$$
+
+La severità
 dell'exact match è motivata dall'uso a valle: un'entità dai confini
 sbagliati inquina qualunque base di conoscenza la riceva. L'accuratezza per
 token, dominata dall'etichetta `O`, qui non discrimina nulla: il sistema

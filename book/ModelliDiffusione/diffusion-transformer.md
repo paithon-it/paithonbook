@@ -39,9 +39,8 @@ nel {doc}`capitolo sui Transformer </Transformers/overview>` {cite}`dosovitskiy2
 La scheda dell'archivista è la stessa cosa della sezione precedente, solo più
 piccola: DiT viene addestrato su fotografie di lato dimezzato rispetto a quelle
 di prima, quindi la scheda ha 32 caselle per lato invece di 64. In ogni casella
-ci sono quattro numeri, come già là: sono i quattro valori con cui l'archivista
-descrive quel pezzetto di quadro, e quanti siano è una scelta di progetto (con
-più numeri per casella la scheda descrive meglio, e pesa di più).
+ci sono quattro numeri, come già là: i quattro valori con cui l'archivista
+descrive quel pezzetto di quadro.
 
 Il Vision Transformer ci ha insegnato il trucco per trasformare una griglia in
 una frase: tagliarla in **tessere**, come un mosaico, e mettere le tessere in
@@ -49,12 +48,15 @@ fila come se fossero parole. Qui le tessere sono quadratini di 2 caselle per
 lato, quindi ne vengono $32 : 2 = 16$ per lato e $16 \times 16 = 256$ in tutto:
 una "frase" di 256 parole. Con un'accortezza: mettendo le tessere in fila si
 perderebbe l'informazione su dove stavano nella griglia, e allora a ciascuna si
-appiccica un'etichetta che dice da che riga e da che colonna viene.
+appiccica un'etichetta che dice da che riga e da che colonna viene. Quanto
+grosse tagliare le tessere è una scelta: a 4 caselle per lato le parole
+sarebbero 64 invece di 256, e leggerle costerebbe quattro volte meno. È la
+manopola con cui si decide quanto far lavorare la torre.
 
 Da qui in poi il lavoro lo conosciamo dal capitolo sui Transformer: la torre di
-lettori, con i suoi piani (in gergo si chiamano **blocchi**, ed è il nome che
-compare nel codice più avanti). I lettori sono le tessere: a ogni piano ce n'è
-uno per tessera, duecentocinquantasei in fila, e ciascuno tiene i suoi appunti,
+lettori, con i suoi piani (in gergo si chiamano **blocchi**). I lettori sono le
+tessere: a ogni piano ce n'è uno per tessera, duecentocinquantasei in fila, e
+ciascuno tiene i suoi appunti,
 una lista di numeri lunga sempre uguale. A ogni piano, ogni tessera guarda
 *tutte* le altre (per capire quanto rumore c'è sull'orecchio del gatto aiuta guardare
 anche la tessera con la coda, dall'altra parte della scheda) e poi rielabora
@@ -97,10 +99,8 @@ per DiT-XL/2, dove la larghezza è $d = 1152$, fa
 $256/(6 \cdot 1152) \approx 3{,}7\%$. È a risoluzioni
 molto maggiori che quel termine diventa il vincolo, ed è il problema da cui
 parte il
-{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`, invece
-del capitolo
-sull'attenzione lineare. Da qui la nomenclatura del paper: quattro taglie
-(DiT-S, B, L, XL)
+{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`. Da qui
+la nomenclatura del paper: quattro taglie (DiT-S, B, L, XL)
 per tre patch (/8, /4, /2), dodici modelli che, vedremo tra poco, sono il vero
 esperimento del lavoro.
 
@@ -130,8 +130,8 @@ parte, che vedremo fra poco.
 
 `````{tab} Elementare
 
-Immagina che la torre di lettori abbia una regia, collegata con l'auricolare a
-ogni piano. La regia non suggerisce parole: dà istruzioni di *regolazione*. A
+La torre di lettori ha una regia, collegata con l'auricolare a ogni piano. La
+regia non suggerisce parole: dà istruzioni di *regolazione*. A
 ogni piano dice quanto alzare o abbassare il volume di ciò che passa, come
 spostarne il tono, e soprattutto **quanto di quel piano deve finire nel
 risultato**. Quest'ultima manopola misura l'intervento del piano, non il
@@ -209,7 +209,7 @@ cioè quanti numeri interni ha la rete; e la qualità delle immagini si misura
 con il FID incontrato all'apertura del capitolo, che confronta il mucchio delle
 immagini generate con il mucchio di quelle vere.
 
-Va detto subito che cosa questo **non** significa, perché è il passo che si fa
+Va detto subito che cosa questo non significa, perché è il passo che si fa
 più facilmente ed è sbagliato: non significa che l'architettura non conti più.
 Lo stesso lavoro contiene anche delle *ablazioni* (gli esperimenti in cui si
 cambia un pezzo solo e si guarda che effetto fa) sul modo di far entrare il
@@ -237,16 +237,14 @@ ceduto il passo ai Vision Transformer, e adesso si ripete dentro la diffusione.
 
 `````{tab} Elementare
 
-Ed è un risultato prezioso proprio perché è **prevedibile**: se so quanto
-miglioro raddoppiando il lavoro, so anche se vale la pena raddoppiarlo, prima
-di spendere i soldi. Ecco come ci si arriva.
+Un risultato prezioso proprio perché **prevedibile**: se so quanto
+miglioro raddoppiando il lavoro, so anche se conviene raddoppiarlo, prima di
+spendere i soldi.
 
-Immagina di costruire dodici torri di lettori, tutte con lo stesso mestiere ma
-di taglie diverse. Ci sono quattro misure di torre, dalla più piccola alla più
-grande, e una torre più grande vuol dire più piani e appunti più lunghi; e ci
-sono tre modi di tagliare il mosaico, in tessere grandi, medie o piccole, e più
-le tessere sono piccole più sono i lettori seduti a ogni piano. Quattro per tre
-fa dodici.
+Dodici torri di lettori, tutte con lo stesso mestiere ma di taglie diverse.
+Le misure di torre sono quattro, e più grande è la torre più sono i piani e più
+lunghi gli appunti; i modi di tagliare il mosaico sono tre, e più piccole sono
+le tessere più sono i lettori seduti a ogni piano. Quattro per tre fa dodici.
 
 Ora mettile in fila non per quanto sono grandi, ma per **quanto lavoro fanno**:
 quante operazioni servono a far passare un'immagine dall'ingresso all'uscita.
@@ -255,20 +253,23 @@ In quell'ordine, i risultati migliorano quasi in linea retta. E la sorpresa non
 come** quel lavoro è stato speso. Una torre alta e stretta e una bassa e larga,
 se fanno la stessa quantità di lavoro, arrivano più o meno allo stesso punto.
 Le tre cose che puoi girare (i piani, la lunghezza degli appunti, la misura
-delle tessere) diventano una sola: il totale del lavoro.
+delle tessere) diventano una sola davanti al risultato, e restano tre davanti
+al calcolatore: una torre alta e una larga non gli chiedono la stessa memoria
+né la stessa attesa. Si gira allora la manopola che la propria macchina regge
+meglio, tanto a decidere il risultato sarà il totale.
 
 Detta così sembra la fine dell'ingegneria, e non lo è. Nella stessa ricerca si
 vede che *a parità di lavoro* il modo di dare le istruzioni alla torre (la
-regia con l'auricolare di qualche pagina fa, contro le alternative scartate)
-cambia parecchio il risultato. Le due cose convivono: scelto un buon
+regia con l'auricolare, contro le alternative scartate) cambia parecchio il
+risultato. Le due cose convivono: scelto un buon
 modo di costruire la torre, da lì in poi conta quanto la fai lavorare.
 
 `````
 
 `````{tab} Superiore
 
-Vale la pena delimitare l'affermazione, perché è il tipo di regolarità che si
-generalizza troppo in fretta. La correlazione fra Gflops e qualità è misurata
+L'affermazione va delimitata, perché è il tipo di regolarità che si generalizza
+troppo in fretta. La correlazione fra Gflops e qualità è misurata
 su **una sola famiglia** (i dodici DiT), su **un solo compito** (generazione
 condizionata alla classe), a **un solo budget di addestramento** e **senza
 guidance**. La cifra titolare del lavoro, invece, è ottenuta *con* la
@@ -370,6 +371,11 @@ disegno, e regolarsi. Ciascuna delle due file conserva un mestiere proprio (chi
 legge parole e chi legge tessere non fa lo stesso lavoro, e ha strumenti suoi),
 ma si parlano da pari.
 
+La regia con l'auricolare non se ne va: a ogni piano continua a dire a che
+punto della pulitura siamo e che aria generale deve avere il quadro. A cambiare
+mestiere sono le parole della richiesta, che da istruzione arrivata da fuori
+diventano lettori al tavolo.
+
 `````
 
 `````{tab} Superiore
@@ -426,17 +432,18 @@ chiedere la direzione.
 
 `````{tab} Elementare
 
-Il restauratore di questo capitolo va dal rumore all'immagine per mille
-tappe brevi, con tanto di scossoni, e la strada che percorre serpeggia: la
-direzione da prendere cambia continuamente, perché a ogni tappa la rete
-ridecide guardando quello che ha davanti, e quello che ha davanti è appena
-cambiato per via del rimescolamento. Per questo le tappe devono essere tante e
-corte: chi tiene la direzione per troppo tempo esce di strada.
+Il restauratore va dal rumore all'immagine per mille tappe brevi, e la strada
+che percorre serpeggia: la direzione da prendere cambia continuamente, perché
+il sentiero che la catena di rumore ha tracciato all'andata curva da sé, e il
+rimescolamento a ogni tappa lo scuote ancora. Per questo le tappe devono essere
+tante e corte: chi tiene la direzione per troppo tempo esce di strada.
 
 L'idea nuova è quasi insolente: perché seguire una strada tortuosa? Prendi la
 scheda tutta rumore e la scheda dell'immagine finita, traccia una **linea
 dritta** tra le due, e insegna alla rete una sola cosa: in ogni punto della
-linea, *in che direzione si cammina*.
+linea, *in che direzione si cammina*. La lezione è facile da preparare, perché
+la risposta giusta la sappiamo già: la linea l'abbiamo tracciata noi, e la sua
+direzione è sempre la stessa.
 
 Facciamo i conti su un numero solo. Non un pixel, che qui non si tocca: uno
 dei quattro numeri di una casella della scheda, su una scala che per comodità
@@ -444,21 +451,19 @@ prendiamo da 0 a 1. Nella scheda tutta rumore vale 0,2; nella scheda
 dell'immagine finita vale 0,8. A metà strada vale la media: 0,5. La marcia,
 quindi, va sempre in su, e di
 quanto lo dice la differenza fra i due estremi: $0{,}8 - 0{,}2 = 0{,}6$ da
-guadagnare in tutto. Se decidiamo di farlo in dieci tappe (dieci è una scelta
-nostra, per l'esempio), ogni tappa sale sempre della stessa quantità,
-$0{,}6 : 10 = 0{,}06$. Nessuna sorpresa lungo la strada, perché la strada è
-dritta.
+guadagnare in tutto. Se decidiamo di farlo in dieci tappe, ogni tappa sale
+sempre della stessa quantità, $0{,}6 : 10 = 0{,}06$. Nessuna sorpresa lungo la
+strada, perché la strada è dritta.
 
 Su una strada così non serve fermarsi cinquanta volte a ricontrollare la
-mappa: ne bastano una ventina, o meno, perché la direzione non cambia mai. È
-questo il motivo per cui i modelli a rectified flow generano in pochissimi
-passi ciò che alla catena di rumore ne costava cinquanta con le scorciatoie e
-mille senza.
+mappa: ne bastano una ventina, o meno. È questo il motivo per cui i modelli a
+rectified flow generano in pochissimi passi ciò che alla catena di rumore ne
+costava cinquanta con le scorciatoie e mille senza.
 
-Le strade che la rete impara, però, non escono mai perfettamente dritte. Il motivo è che le linee dritte tracciate in
-addestramento sono milioni, una per ogni coppia (questo rumore, questa
-immagine), e molte di esse passano vicinissime le une alle altre andando in
-direzioni diverse. La rete, che in quel punto deve dare una risposta sola, dà
+Le strade che la rete impara, però, non escono mai perfettamente dritte. Le
+linee tracciate in addestramento sono milioni, una per ogni coppia (questo
+rumore, questa immagine), e molte passano vicinissime le une alle altre andando
+in direzioni diverse. La rete, che in quel punto deve dare una risposta sola, dà
 la media, e la media di direzioni diverse non è nessuna delle direzioni di
 partenza. Qualche controllo lungo il percorso serve quindi ancora, ma è la
 differenza fra un tornante di montagna e una provinciale con qualche curva.
@@ -495,7 +500,7 @@ struttura da "regressione con bersaglio noto" della loss di DDPM, con la
 velocità al posto del rumore. Per generare si integra l'ODE
 $\mathrm{d}\mathbf{x}/\mathrm{d}t = \mathbf{v}_\theta(\mathbf{x}, t)$ da $t = 1$ (rumore) a $t = 0$, per
 esempio con passi di Eulero: niente termine stocastico, come già nel
-campionatore DDIM incontrato in questo capitolo, ma qui il campo dell'ODE è
+campionatore DDIM, ma qui il campo dell'ODE è
 appreso direttamente, non ricavato a posteriori da un predittore di rumore.
 
 Perché bastano meno passi? Il campo appreso in un punto è la media delle

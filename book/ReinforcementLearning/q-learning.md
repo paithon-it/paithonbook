@@ -26,7 +26,7 @@ mezz'ora sei più avanti del previsto, e il navigatore dice che ne manca "un'ora
 e dieci". Non hai aspettato di arrivare per correggere la tua previsione: hai
 usato una **stima più recente** per aggiustare quella vecchia.
 
-Il conto vale la pena farlo per bene, perché è tutto il metodo. La previsione
+Il conto è tutto il metodo, quindi va fatto per bene. La previsione
 vecchia diceva due ore, cioè centoventi minuti. La stima nuova è fatta di due
 pezzi, quello che è già successo più quello che ancora manca: trenta minuti
 percorsi, più settanta che restano, fa cento minuti. La differenza è di venti
@@ -39,6 +39,12 @@ conta.) Il TD learning fa esattamente
 questo, correggendo un pezzetto alla volta. E si noti che il primo dei due
 pezzi, quello che è già successo, è l'unico dato vero della faccenda: è quello
 che tiene la correzione ancorata alla realtà invece che a un'altra opinione.
+
+L'altro pezzo, i settanta minuti che mancano, resta un'opinione, e se è
+sbagliata la correzione tira dalla parte sbagliata: col cantiere trenta
+chilometri più avanti, che il navigatore non conosce, la previsione scende
+proprio mentre dovrebbe salire. Su una strada mai fatta capita spesso, ed è il
+prezzo di non aspettare l'arrivo per correggere.
 
 `````
 
@@ -74,22 +80,21 @@ da Chris Watkins nel 1989, forse l'algoritmo più celebre del campo.
 
 `````{tab} Elementare
 
-Immagina una grande tabella: una riga per ogni situazione in cui puoi
-trovarti, una colonna per ogni mossa possibile. In ciascuna casella scrivi un
-voto che dice "quanto conviene fare questa mossa in questa situazione". Quel
-voto, nelle formule, si chiama $Q$, e da lì viene il nome dell'algoritmo.
-Perché proprio quella lettera non lo dice nessuno con certezza: la usò Watkins
-nella sua tesi ed è rimasta; torna comoda da ricordare come l'iniziale di
-*quality*, la qualità di una mossa, anche se il nome ufficiale della cosa è
-«funzione azione-valore». All'inizio i voti sono tutti a zero: l'agente non sa
-nulla.
+Una grande tabella: una riga per ogni situazione in cui l'agente può trovarsi,
+una colonna per ogni mossa possibile. In ciascuna casella un voto, che dice
+quanto conviene fare quella mossa in quella situazione. Quel voto, nelle
+formule, si chiama $Q$, e da lì viene il nome dell'algoritmo. Perché proprio
+quella lettera non lo dice nessuno con certezza: la usò Watkins nella sua tesi
+ed è rimasta; torna comoda da ricordare come l'iniziale di *quality*, la
+qualità di una mossa, anche se il nome ufficiale della cosa è «funzione
+azione-valore». All'inizio i voti sono tutti a zero: l'agente non sa nulla.
 Giocando e ricevendo ricompense, corregge i voti. Alla fine, per agire bene,
 gli basta guardare la riga della situazione corrente e scegliere la mossa col
 voto più alto.
 
 La parte sorprendente: l'agente può muoversi anche a casaccio, sbagliando di
-proposito per esplorare, e **imparare comunque quali sarebbero le mosse
-migliori**. Impara una cosa mentre ne fa un'altra. Per questo si dice
+proposito per esplorare, e imparare comunque quali sarebbero le mosse
+migliori. Impara una cosa mentre ne fa un'altra. Per questo si dice
 *off-policy*, cioè "fuori dalla propria strategia".
 
 Il trucco sta in una parola sola della formula, e la si vedrà fra poco: quando
@@ -97,6 +102,22 @@ l'agente corregge il voto di una mossa, guarda dove è finito e prende il voto
 della **migliore** fra le mosse possibili da lì, non di quella che poi farà
 davvero. Quindi anche se subito dopo tira un dado e sbaglia apposta, il conto
 che ha appena scritto parlava di un giocatore che non sbaglia.
+
+Giocando abbastanza a lungo i voti finiscono al posto giusto, e c'è una
+dimostrazione che lo garantisce. In cambio pone delle condizioni. Una è che
+ogni casella della tabella venga provata tante volte, non una o due: una riga
+provata due volte porta un numero che vale quanto un sorteggio. Un'altra è che
+la tabella si possa scrivere per intero, riga per riga.
+
+Prendere sempre il voto più alto, però, ha un difetto suo. In una riga dove
+tutte e quattro le mosse valgono davvero zero, i voti scritti ballano un po’
+per caso: mettiamo $-0{,}2$, $+0{,}1$, $-0{,}3$, $+0{,}3$. Il più alto è
+$+0{,}3$, cioè più di quanto la riga valga davvero. Succede in tutte le righe,
+e sempre nello stesso verso, verso l'alto: il massimo di quattro numeri
+sballati è quello che ha sbagliato dalla parte generosa. L'agente si fa così
+un'idea un po’ troppo rosea delle proprie mosse. Per rimediare servono due
+tabelle invece di una, una per scegliere la mossa e l'altra per darle il voto,
+così che la fortuna che ha gonfiato la prima non gonfi anche la seconda.
 
 `````
 
@@ -215,6 +236,20 @@ $\varepsilon$, epsilon, ad esempio il 10%) tiri un dado e provi una mossa a
 caso. All'inizio esplori molto; man mano che impari, riduci $\varepsilon$ e ti
 affidi sempre più a ciò che sai.
 
+Quanto in fretta lo riduci cambia tutto, e si vede con un conto. Trenta cene
+al mese, e parti con una novità su dieci: tre ristoranti nuovi il primo mese.
+Se poi dimezzi la quota ogni mese passi a una e mezza, poi a tre quarti, e
+sommando tutti i mesi da qui all'eternità arrivi a sei. Sei ristoranti nuovi
+in tutta la vita: quello che non hai provato entro allora non lo proverai mai,
+e se era il migliore della città non lo saprai. Se invece dividi la quota per
+il numero dei mesi passati (metà il secondo mese, un terzo il terzo, un
+decimo il decimo), le novità diventano sedici in dieci anni e ventitré in un
+secolo: rallenti senza mai fermarti, e aspettando abbastanza ogni ristorante
+prima o poi ti capita. È la seconda ricetta a tenere in piedi la promessa dei
+voti che si assestano al posto giusto, perché quella promessa chiede che ogni
+casella venga provata tante volte. La prima si usa lo stesso, perché porta
+prima a risultati decenti, sapendo che cosa si lascia indietro.
+
 `````
 
 `````{tab} Superiore
@@ -271,6 +306,10 @@ tenendo conto che, di tanto in tanto, esplorerà davvero e potrebbe sbagliare.
 Impara il valore della politica che **effettivamente segue**, esplorazione
 compresa.
 
+Il cambio è di un pezzo solo. Quando corregge il voto di una mossa, SARSA
+guarda dove è finito e prende il voto della mossa che farà davvero, dado
+compreso, al posto del voto della migliore di quella riga.
+
 Il risultato tipico si vede su un esperimento classico, che si chiama
 *cammino sul precipizio*: un corridoio di caselle il cui bordo inferiore è un
 burrone, con la partenza e l'arrivo alle due estremità. La strada più corta
@@ -278,6 +317,18 @@ passa proprio sull'orlo, e un passo storto fa cadere di sotto. SARSA impara a sa
 passo in più senza cadere mai; il
 Q-learning impara a camminare sull'orlo, perché "in teoria" non sbaglierebbe
 mai un passo, e ogni tanto ci casca davvero.
+
+I conti della scena dicono perché la prudenza paga. Ogni passo costa un punto
+e la caduta ne costa cento: la strada alta aggiunge quattro passi a partita, e
+quei quattro punti si ripagano da soli se si finisce di sotto anche una volta
+sola ogni venticinque partite. Con il dado tirato una volta ogni dieci mosse, e
+una decina di caselle affacciate sul vuoto da attraversare, ci si finisce
+quasi in una partita su quattro.
+
+Se il dado sparisce, sparisce anche la differenza. Un agente che non esplora
+più non ha modo di fare il passo storto, l'orlo torna a essere la strada
+migliore per davvero, e i due finiscono per imparare la stessa cosa: la
+prudenza di SARSA diventa allora qualche passo buttato via.
 
 `````
 
@@ -341,13 +392,13 @@ dell'ultima mossa passa da $0$ a $0{,}5$.
 
 Alla casella che veniva prima tocca solo una partita dopo, e conviene capire
 perché: quando l'agente ci è passato, in questa partita, il voto della casella
-d'arrivo era ancora zero, e correggere verso zero non muove niente. Adesso
-invece il $0{,}5$ c'è, e alla prossima partita servirà. Da lì la mossa non paga
-niente, ma porta in una casella la cui riga contiene ormai una mossa da $0{,}5$
-(i voti stanno sulle mosse, e quello che conta qui è il migliore della riga):
-scontato, vale $0{,}9 \times 0{,}5 = 0{,}45$. La sorpresa è di nuovo positiva
-(si aspettava $0$, la prospettiva vale $0{,}45$) e dandole retta a metà il voto
-diventa $0{,}225$.
+in cui è finito era ancora zero, e correggere verso zero non muove niente.
+Adesso invece il $0{,}5$ c'è, e alla prossima partita servirà. Da lì la mossa
+non paga niente, ma porta in una casella la cui riga contiene ormai una mossa
+da $0{,}5$ (i voti stanno sulle mosse, e quello che conta qui è il migliore
+della riga): scontato, vale $0{,}9 \times 0{,}5 = 0{,}45$. La sorpresa è di
+nuovo positiva (si aspettava $0$, la prospettiva vale $0{,}45$) e dandole
+retta a metà il voto diventa $0{,}225$.
 
 Nota che tutti e due i conti funzionano perché qui muoversi non costa nulla:
 nel labirinto della sezione sugli MDP, dove ogni passo faceva perdere un punto,
@@ -530,9 +581,9 @@ poli. Non lo è: fra i due c'è un continuo, e si attraversa con una manopola.
 
 `````{tab} Elementare
 
-La domanda è: **quanti passi guardo prima di fidarmi della mia stima?** Uno
-solo (e allora ho il TD), tutti fino alla fine (e allora ho Monte Carlo),
-oppure tre, o dieci.
+La domanda è: quanti passi guardare prima di fidarsi della propria stima? Uno
+solo, e allora è il TD; tutti quelli che restano fino alla fine, e allora è
+Monte Carlo; oppure tre, o dieci.
 
 Guardare pochi passi dà una correzione stabile ma quasi sempre un po’
 sbagliata, perché si appoggia a una stima che, quando si è appena cominciato a

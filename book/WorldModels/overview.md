@@ -61,12 +61,20 @@ pezzo ragioni così: «se sposto la torre lì, lui la mangia con l'alfiere...
 allora no», e la mossa cattiva muore nella tua testa, senza costarti la
 partita. Quando parcheggi, giri il volante e *vedi già* l'arco che il paraurti
 disegnerà: se l'auto immaginata finisce sul marciapiede, correggi prima che ci
-finisca quella vera. E alla domanda «cosa succede se lascio il bicchiere?»
-rispondi senza bisogno di lasciarlo: nella tua testa il bicchiere è già caduto
-e già in mille pezzi. Il modello del mondo è questo cinema interiore in cui il
-futuro si prova a costo zero. Non è perfetto (la manovra immaginata a volte
-finisce comunque con una strisciata) ma ogni volta che la realtà ti smentisce,
-il cinema interiore si aggiorna e la prossima previsione è un po’ migliore.
+finisca quella vera.
+
+Guarda però che cosa ti serve, per prevedere quell'arco. Del cortile ti arriva
+un'immagine, quella che passa dal finestrino, e di quell'immagine tieni tre
+cose (dove finisce il muro, quanto spazio resta, dov'è appoggiata la bici); il
+colore delle persiane lo butti via, che per la manovra non conta niente. E da
+un'occhiata sola non sapresti dire se quella bici è ferma o ti sta arrivando
+addosso: lo sai perché la stai seguendo da qualche secondo, e quel filo che
+tieni mentre guardi conta quanto l'immagine.
+
+Il modello del mondo è questo cinema interiore in cui il futuro si prova a
+costo zero. Non è perfetto (la manovra immaginata a volte finisce comunque con
+una strisciata) ma ogni volta che la realtà ti smentisce, il cinema interiore
+si aggiorna e la prossima previsione è un po’ migliore.
 
 `````
 
@@ -127,20 +135,27 @@ per davvero, quelli **model-based** provano nella propria immaginazione.
 
 `````{tab} Elementare
 
-Pensa a come si formano i piloti di linea. Nessuna compagnia fa esercitare le
-emergenze (un motore in fiamme, una raffica in atterraggio) su un aereo vero:
-si usa il simulatore, dove un errore non costa niente e la stessa situazione
-si può ripetere cento volte in un pomeriggio. Il DQN di quel capitolo è un
-allievo senza simulatore: ogni cosa che impara la impara schiantandosi per
-davvero, e per questo gli servono quelle decine di milioni di fotogrammi:
-partite su partite, una dietro l'altra, per settimane. Tu no: dopo qualche
-pallina persa a
+Nessuna compagnia aerea fa esercitare le emergenze (un motore in fiamme, una
+raffica in atterraggio) su un aereo vero: si usa il simulatore, dove un errore
+non costa niente e la stessa situazione si può ripetere cento volte in un
+pomeriggio. Il DQN di quel capitolo è un allievo senza simulatore: ogni cosa
+che impara la impara schiantandosi per davvero, e per questo gli servono quelle
+decine di milioni di fotogrammi, partite su partite per settimane. Tu no: dopo
+qualche pallina persa a
 *Breakout* hai già in testa un piccolo *Breakout* tascabile
 («se la racchetta è qui e la pallina scende lì, la manco») e le mosse le
 ripassi lì dentro, gratis. Chi possiede un simulatore interno spreme da ogni
-esperienza vera decine di esperienze immaginate. L'unico rischio è fidarsi di
-un simulatore sbagliato: se il tuo *Breakout* mentale è impreciso, ti alleni a
-vincere un gioco che non esiste.
+esperienza vera decine di esperienze immaginate.
+
+Il prezzo si paga quando il simulatore è impreciso, e si paga a rate. Il
+*Breakout* tascabile sbaglia di poco: dopo un rimbalzo la pallina immaginata è
+quasi dove sarà davvero, dopo cinque rimbalzi quel «quasi» è mezzo schermo, e
+la racchetta che avevi preparato aspetta nel posto sbagliato. Non tutti gli
+sbagli si allargano così: l'aereo del simulatore, se lo lasci andare, torna in
+assetto da solo, e lì lo scarto si riassorbe invece di crescere. Il guaio
+peggiore è un altro: se nel tuo *Breakout* mentale il muro ha un buco che nel
+gioco vero non c'è, ti alleni a infilarci la pallina e diventi bravissimo a un
+gioco che non esiste.
 
 `````
 
@@ -219,7 +234,9 @@ parola alla volta senza poter mai rileggere. Ogni parola è una scommessa
 basata sulle precedenti; se una scommessa introduce uno sbaglio (un
 personaggio che cambia nome, un bicchiere che cade verso l'alto) le parole
 dopo costruiscono sopra lo sbaglio, e più la storia è lunga più è probabile
-che deragli. Soprattutto, dice LeCun, a un sistema così manca il cinema
+che deragli. Mettiamo che vada storta una parola su cento: dopo cinquecento
+parole, di cento racconti così ne resta in piedi meno di uno.
+Soprattutto, dice LeCun, a un sistema simile manca il cinema
 interiore del gatto: non immagina la scena, non prova le alternative nella
 testa, non ha mai visto un bicchiere cadere; ha solo letto miliardi di frasi e
 sceglie la parola più plausibile dopo le altre. Attenzione, però: questa è una
@@ -227,7 +244,9 @@ sceglie la parola più plausibile dopo le altre. Attenzione, però: questa è un
 ricercatori rispondono che per indovinare bene la parola successiva in tutti i
 testi del mondo bisogna, in qualche misura, aver imparato molto del mondo che
 quei testi descrivono, e fanno notare che intanto i modelli continuano a
-migliorare. Su questo c'è perfino un esperimento pensato per decidere la
+migliorare. E che rileggere, un po', quei programmi lo fanno: capita che si
+accorgano dello sbaglio e lo aggiustino nella frase dopo, e allora la catena
+non si spezza. Su questo c'è perfino un esperimento pensato per decidere la
 questione con i dati invece che con gli slogan, condotto su un gioco da tavolo:
 lo raccontiamo per intero nell'ultima sezione del capitolo, perché è la prova
 più pulita che il dibattito abbia prodotto. Chi ha ragione si vedrà; questo
@@ -241,7 +260,8 @@ Un LLM autoregressivo {cite}`brown2020language` fattorizza la probabilità di
 una sequenza come $P(w_1, \dots, w_n) = \prod_{t=1}^{n} P(w_t \mid w_{<t})$ e
 genera campionando un token alla volta. L'argomento che LeCun ripete nei
 seminari è di natura moltiplicativa: se a ogni token la probabilità di uscire
-dall'insieme delle continuazioni accettabili è $\epsilon$, e l'errore non è
+dall'insieme delle continuazioni accettabili è $\epsilon$, sempre la stessa e
+indipendente da quanto è già stato scritto, e se l'errore non è
 recuperabile, la probabilità che una sequenza di $n$ token resti accettabile
 decade come $(1-\epsilon)^n$: con $\epsilon = 0{,}01$ e $n = 500$ ne resta
 appena $0{,}99^{500} \approx 0{,}007$, meno dell'1%. Le obiezioni colpiscono
@@ -323,7 +343,8 @@ intero l'esperimento sul gioco da tavolo promesso poco fa.
   programmi che imparano a giocare senza simulatore servono settimane di
   *Breakout* giocato senza mai fermarsi, a te bastano pochi minuti), ma ha un
   prezzo: se il simulatore è impreciso ci si allena a vincere un gioco che non
-  esiste, e l'imprecisione si somma quanto più lontano si prova a guardare.
+  esiste, e in un mondo che non si rimette in assetto da sé l'imprecisione si
+  somma quanto più lontano si prova a guardare.
 - Il **senso comune** non è un elenco di fatti, è un repertorio di previsioni
   (le cose non sostenute cadono, quel che è nascosto continua a esistere) che
   i bambini costruiscono guardando. Nessuno etichetta niente: il maestro è il
@@ -368,7 +389,8 @@ intero l'esperimento sul gioco da tavolo promesso poco fa.
 - **Model-free** prova nel mondo, **model-based** prova nell'immaginazione: il
   secondo promette enorme efficienza nei campioni (DQN: decine di milioni di
   fotogrammi; un umano: minuti), al prezzo del *model bias*; l'errore del
-  modello si accumula lungo l'orizzonte.
+  modello si accumula lungo l'orizzonte, tanto più in fretta quanto più la
+  dinamica amplifica le perturbazioni.
 - Il **senso comune** è un repertorio di previsioni (fisica intuitiva) che i
   bambini costruiscono guardando, senza etichette: apprendimento
   auto-supervisionato, dove il bersaglio è il futuro stesso.

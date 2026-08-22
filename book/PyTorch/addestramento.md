@@ -101,6 +101,18 @@ conseguenza il tuo modo di rispondere, un poco alla volta (passo 5). Poi passi
 al mazzetto successivo, e quando hai ripassato l'intero mazzo una volta, hai
 completato quella che si chiama un’**epoca**. Ripetuto per migliaia di carte
 ed epoche, questo giro è tutto ciò che serve a una rete per imparare.
+
+Gli appunti del giro prima non si cancellano riga per riga: si toglie il foglio
+e se ne prende uno pulito. Chi lo va a cercare dopo si aspetta di trovarlo
+bianco, e sul tavolo non c'è più niente, quindi il momento buono per leggerlo è
+subito dopo averlo scritto.
+
+Il foglio si cambia a ogni giro, con un'eccezione sola. Se sul tavolo ci stanno
+otto carte per volta e la correzione la vuoi decidere su trentadue, fai quattro
+mazzetti da otto e scrivi gli appunti di tutti e quattro sullo stesso foglio,
+uno sotto l'altro; correggi una volta, alla fine, e solo allora cambi foglio.
+Chi cambia foglio a ogni mazzetto si corregge su otto carte credendo di averne
+guardate trentadue, il ripasso fila liscio uguale e non arriva nessun avviso.
 `````
 
 `````{tab} Superiore
@@ -171,13 +183,25 @@ memoria regge, e si guadagna solo velocità.
 
 `````{tab} Elementare
 Il `Dataset` è la dispensa: sa quanti esempi ci sono e sa consegnarti
-l'esempio numero $i$ quando glielo chiedi. Il `DataLoader` è il cameriere che
-apparecchia: pesca dalla dispensa, **mescola** l'ordine a ogni giro (così la
-rete non impara la sequenza a memoria, come uno studente che ripassa sempre le
-carte nello stesso ordine) e porta in tavola vassoi da 64 esempi alla volta.
+l'esempio numero $i$ quando glielo chiedi. Altro non gli si chiede, e per
+questo la dispensa può essere quasi qualunque cosa, una cartella di
+fotografie, un foglio di calcolo, un archivio su un altro computer. Il
+`DataLoader` è il cameriere che apparecchia: pesca dalla dispensa,
+**mescola** l'ordine a ogni giro (così la rete non impara la sequenza a
+memoria, come uno studente che ripassa sempre le carte nello stesso ordine) e
+porta in tavola vassoi da 64 esempi alla volta. Se il servizio non tiene il
+passo della cucina, si mettono più camerieri.
+
 Perché proprio a vassoi? Un esempio alla volta è uno spreco, la GPU resta
 ferma ad aspettare; tutti insieme non entrano in memoria. Il mini-batch è la
-via di mezzo che tiene la cucina sempre piena.
+via di mezzo che tiene la cucina sempre piena. E un vassoio dice quasi quello
+che direbbe il dataset intero. Assaggiare un cucchiaio dice quanto sale c'è in
+tutta la pentola, con la risposta giusta in media e un po’ di scarto da un
+cucchiaio all'altro. Allo stesso modo sessantaquattro esempi indicano la
+direzione in cui correggersi quasi come la indicherebbero tutti e sessantamila,
+e sbandano un poco a ogni giro. Lo sbandamento costa in precisione, e in cambio
+scuote la discesa quel tanto che basta a non farla fermare al primo
+avvallamento.
 `````
 
 `````{tab} Superiore
@@ -295,11 +319,29 @@ La rete ha due modalità, come uno studente. Quando **studia**
 esempio coprirsi a caso qualche appunto per non adagiarsi (il *dropout*, che
 vedremo nel [capitolo sul deep
 learning](../DeepLearning/ottimizzazione-regolarizzazione.md)). Quando **dà
-l'esame** (`model.eval()`) i
-trucchi si spengono: risponde e basta, al meglio di quel che sa. E
-`torch.no_grad()` dice al registratore dei gradienti di spegnersi: durante
+l'esame** (`model.eval()`) quel trucco si spegne: risponde e basta, al meglio
+di quel che sa.
+
+Non tutto si spegne, però. Certi pezzi hanno bisogno di sapere quanto sono
+grandi di solito i numeri che ricevono, per rimetterli in scala prima di
+passarli avanti (è la *batch norm*, di cui parla lo stesso capitolo).
+Studiando prendono quella misura sul mazzetto che hanno davanti;
+all'esame usano la media che si sono annotati durante il ripasso. Rimettere in
+scala lo fanno in tutti e due i casi, e a cambiare è soltanto da dove viene il
+metro.
+
+Da qui una stranezza che altrimenti non si spiegherebbe. All'esame una carta
+sola basta, perché il metro è già annotato. Durante lo studio quella stessa
+carta sola blocca tutto, perché da una misura sola non si capisce quanto le
+cose varino, e il programma si ferma e lo dice invece di tirare a indovinare.
+
+E `torch.no_grad()` dice al registratore dei gradienti di spegnersi: durante
 l'esame non si prende appunti per migliorare, si risponde soltanto, e senza il
-registratore acceso tutto è più veloce e leggero.
+registratore acceso tutto è più veloce e leggero. I due gesti sono distinti, e
+nessuno dei due sostituisce l'altro: spegnere il registratore lascia accesi i
+trucchi dello studio, e dichiarare l'esame lascia acceso il registratore. Chi
+ne fa uno solo o riempie fogli che nessuno leggerà, o dà l'esame con qualche
+appunto ancora coperto.
 `````
 
 `````{tab} Superiore
@@ -390,14 +432,18 @@ mentre quella dell'addestramento continua a scendere: da lì in avanti il
 modello non sta più imparando, sta imparando **a memoria**, ed è
 l’**overfitting** incontrato nel capitolo sul machine learning. La mossa giusta
 è fermarsi nel punto più basso della validazione, e tenere da parte la copia
-del modello salvata in quel momento.
+del modello salvata in quel momento. La distanza fra le due curve è la spia da
+guardare: finché resta stretta il ripasso serve a qualcosa, e quando si allarga
+il modello sta lavorando per i compiti a casa e non per l'esame. Fermarsi è il
+rimedio più immediato. L'altro è rendergli lo studio un po’ più difficile
+mentre impara, e lo racconta il capitolo sul deep learning.
 
 Nel programma di poco fa niente di tutto questo c'è: cinque epoche e via,
 perché su MNIST cinque epoche non bastano a mandare a memoria sessantamila
 immagini. Aggiungerlo però costa poco, ed è un `if`: a ogni epoca si guarda il
 numero della validazione, se è il migliore finora si salva una copia del
-modello, e se non migliora per un po’ di epoche di fila si esce dal ciclo. Come
-si salva una copia è l'argomento delle prossime righe.
+modello, e se non migliora per un po’ di epoche di fila si esce dal ciclo.
+Salvare quella copia è una riga sola, e conta molto che cosa ci si mette dentro.
 `````
 
 `````{tab} Superiore
@@ -405,13 +451,13 @@ Nel loop esplicito la diagnosi si scrive da sé: si ritaglia un set di
 validazione (ad esempio con
 `torch.utils.data.random_split(train_data, [55000, 5000])`), a fine epoca si
 misura $\mathcal{L}_{\text{val}}$, e l’*early stopping* è un `if`: se la
-validazione non migliora da $k$ epoche (la *patience*), si esce dal ciclo e si
-ricaricano i pesi dell'epoca migliore, salvati via via con `torch.save`. Ciò
-che Keras offriva come callback preconfezionate, in PyTorch sono sei righe di
-controllo di flusso, in cambio, nessun limite: fermarsi su una metrica
-composta o salvare solo a condizioni particolari sono varianti banali dello
-stesso `if`. Riprendere da checkpoint no, ed è la trappola della sezione
-seguente: vuole anche lo stato dell'ottimizzatore. Il divario
+validazione non migliora per un numero fissato di epoche (la *patience*), si
+esce dal ciclo e si ricaricano i pesi dell'epoca migliore, salvati via via con
+`torch.save`. Ciò che Keras offriva come callback preconfezionate, in PyTorch
+sono sei righe di controllo di flusso; in cambio, nessun limite: fermarsi su
+una metrica composta o salvare solo a condizioni particolari sono varianti
+banali dello stesso `if`. Riprendere da checkpoint no, ed è la trappola del
+salvataggio: vuole anche lo stato dell'ottimizzatore. Il divario
 $\mathcal{L}_{\text{val}} - \mathcal{L}_{\text{train}}$ resta la bussola: se
 si allarga, servono i freni (regolarizzazione L2 via `weight_decay`
 dell'ottimizzatore, `nn.Dropout`) che approfondiremo nel capitolo sul deep
@@ -463,27 +509,30 @@ Il file con i soli pesi serve a **usare** il modello: lo ricarichi, gli dai
 un'immagine, ti risponde. Non serve a **riprendere** l'addestramento dal punto
 in cui l'avevi interrotto.
 
-La ragione è che l'ottimizzatore, mentre corregge i pesi, si costruisce una
-memoria di come si sono mossi finora: è proprio quella memoria che gli permette
-di dare a ciascun peso il passo giusto, e in particolare di **accorciarlo** man
-mano che ci si avvicina. Ricaricare i pesi e ripartire con un ottimizzatore
+La ragione è che Adam, mentre corregge i pesi, si costruisce una memoria di
+come si sono mossi finora, ed è quella memoria che gli permette di dare a
+ciascun peso il passo giusto, e in particolare di accorciarlo man mano che ci
+si avvicina. SGD, il più spartano dei due, quella memoria non ce l'ha, e con
+lui la ripresa cambia poco. Ricaricare i pesi e ripartire con un ottimizzatore
 appena creato è come rimettere qualcuno alla guida nel punto esatto in cui lo
 avevi lasciato, ma senza dirgli che sta arrivando in curva: la posizione è
 giusta, la velocità no, ed è troppa.
 
-Misurato, e la direzione è quella che sorprende: dopo una ripresa fatta così il
-primo passo non è timido, è il **più lungo** che quella manopola consenta,
-perché un ottimizzatore appena nato non ha ancora nessun motivo per moderarsi.
-La corsa non interrotta, alla stessa altezza, ne avrebbe fatto uno molto più
-corto. Di quanto più corto dipende dal problema; che sia più corto, sempre.
+La direzione sorprende: dopo una ripresa fatta così il primo passo è il più
+lungo che quella manopola consenta, perché un ottimizzatore appena nato non ha
+ancora nessun motivo per moderarsi. La corsa non interrotta, alla stessa
+altezza, ne avrebbe fatto uno molto più corto. Di quanto più corto dipende dal
+problema; che sia più corto, sempre.
 
 Il rimedio costa una riga: nel file si mette anche lo stato
-dell'ottimizzatore, e al ritorno lo si ricarica.
+dell'ottimizzatore, e al ritorno lo si ricarica. Lo stesso vale per qualunque
+altro pezzo del programma che tenga il conto di quello che è successo finora,
+perché un file per riprendere è un fascicolo, con dentro più di una cosa.
 `````
 
 `````{tab} Superiore
-Con SGD nudo la questione è marginale; con `optim.Adam`, che è il default
-raccomandato all'inizio della sezione, i momenti $m$ e $v$ *sono* stato, e
+Con SGD nudo la questione è marginale; con `optim.Adam`, quello del programma
+su MNIST, i momenti $m$ e $v$ *sono* stato, e
 ripartire senza di essi non riprende la stessa traiettoria. La parte
 strutturale, quella che vale su qualunque problema, è questa: la correzione
 del bias riparte da $t = 1$, e a $t = 1$ il rapporto

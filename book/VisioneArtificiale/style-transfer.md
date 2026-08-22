@@ -113,7 +113,12 @@ riconosci su qualunque parola, perché non dipende da *cosa* scrive ma da *come*
 scrive.
 
 Nella rete succede lo stesso. Il "cosa c'è" abita negli strati profondi, quelli
-che si accendono sugli oggetti e sulla loro disposizione.
+che si accendono sugli oggetti e sulla loro disposizione. Lassù la rete
+registra che c'è una casa con un albero a destra, e non di che colore sia ogni
+singolo puntino. Due tele possono avere un colore diverso in ogni punto e
+accendere gli stessi rilevatori profondi. Sul contenuto il critico si accontenta
+di quella somiglianza, ed è la ragione per cui una foto si può ridipingere da
+cima a fondo senza che la scena vada perduta.
 
 Il "come è dipinto" abita invece in una domanda diversa, e conviene arrivarci
 per gradi. Prendi uno dei primi strati: dentro ci sono qualche decina o
@@ -127,11 +132,11 @@ Adesso la domanda: *quali di questi rilevatori si accendono insieme, negli
 stessi punti del quadro?* Nella *Notte stellata* «curva stretta» e «blu scuro»
 si accendono quasi sempre nello stesso posto, perché van Gogh disegna le
 spirali col blu; «riga obliqua» e «giallo» pure. Si prendono allora tutte le
-coppie possibili di rilevatori e si conta, per ciascuna, quanto spesso i due si
-accendono insieme, **senza segnarsi dove**. Quella tabella di conteggi è la
-carta d'identità della mano del pittore: dice quali ingredienti vanno assieme e
-non dice niente su dove stiano, ed è esattamente per questo che si può
-appiccicare a un'altra scena.
+coppie possibili di rilevatori e si conta, per ciascuna, quanto spesso e con
+quanta forza i due si accendono insieme, **senza segnarsi dove**. Quella
+tabella di conteggi è la carta d'identità della mano del pittore: dice quali
+ingredienti vanno assieme e non dice niente su dove stiano, ed è esattamente
+per questo che si può appiccicare a un'altra scena.
 
 `````
 
@@ -185,20 +190,32 @@ decidono a quale delle due voci dare più importanza.
 $\alpha$ e $\beta$ sono due manopole. Con $\alpha$ alto comanda il giudice del
 contenuto: la foto resta quasi intatta, con una leggera patina pittorica. Con
 $\beta$ alto comanda il giudice dello stile: le pennellate prendono il
-sopravvento e la scena scivola verso l'astratto.
+sopravvento, e oltre un certo punto della casa non resta niente di
+riconoscibile.
 
-In pratica allo stile si dà molto più peso, per esempio $\alpha = 1$ contro
-$\beta = 1000$, e la ragione non è che lo stile sia più importante: è che i due
-giudizi si misurano in unità diverse. Uno confronta attivazioni, l'altro
-conteggi di coppie, e i loro numeri nascono di taglia diversa, come confrontare
-metri e chilometri. I due pesi servono prima di tutto a rimetterli sulla stessa
-scala. Trovare poi l'equilibrio giusto è questione di gusto, letteralmente: si
-prova e si guarda il risultato.
+Il giudice dello stile, poi, non è uno solo. Guardare una tela col naso
+attaccato o dall'altra parte della stanza sono due esami diversi. Da vicino si
+vedono i granelli di colore, a un passo le singole pennellate, da lontano le
+volute larghe che attraversano il cielo. Si compila allora una tabella di
+conteggi per ciascuna di queste distanze, si confronta ognuna con la tabella
+corrispondente del quadro e si sommano gli scarti, dando a ogni distanza il suo
+peso. Uno stile copiato a una distanza sola si riconosce subito, perché o le
+pennellate sono giuste e il ritmo grande del cielo non c'è, o il ritmo c'è e la
+materia resta liscia come una stampa.
 
-Attenzione però a un tranello: quel mille non è un numero universale. Se si
-cambia il modo di fare i conti dei due giudizi, cambia anche il rapporto che
-li mette in pari, e il codice della prossima sezione li conta in un altro modo,
-per cui lì lo stesso equilibrio si ottiene con un $\beta$ molto più grande. Un
+I voti dei due giudici nascono di taglia diversa. Uno confronta scene, l'altro
+tabelle di conteggi, e i loro numeri stanno su scale lontane come metri e
+chilometri; le manopole servono prima di tutto a rimetterli in pari. In pratica
+allo stile tocca il numero molto più grande, per esempio $\alpha = 1$ contro
+$\beta = 1000$. Il voto dello stile arriva minuscolo, e quel mille lo rialza
+fino a farsi sentire accanto all'altro. Trovato l'ordine di grandezza,
+l'equilibrio fine è questione di gusto, letteralmente: si prova e si guarda il
+risultato.
+
+Attenzione però a un tranello: quel mille non è un numero universale. Basta
+cambiare la ricetta con cui i due voti si calcolano e cambia anche il rapporto
+che li mette in pari, perché un conto che restituisce voti più piccoli chiede
+un $\beta$ molto più grande per arrivare allo stesso equilibrio. Un
 numero del genere va sempre riletto insieme alla ricetta che lo accompagna, e
 mai copiato da solo.
 
@@ -229,9 +246,9 @@ stile allo strato $l$, $w_l$ è il peso dello strato e il fattore
 $1/(4 N_l^2 M_l^2)$ normalizza rispetto a numero di canali e posizioni. Usare
 più strati cattura lo stile a più scale: dai granelli di colore alle volute
 larghe. Nel paper il rapporto $\alpha/\beta$ è dell'ordine di $10^{-3}$–$10^{-4}$,
-ma quel numero è solidale con **questa** normalizzazione: cambiandola cambia
-il rapporto utile, ed è il motivo per cui il codice della prossima sezione, che
-normalizza in un altro modo, usa un $\beta$ di tutt'altra taglia.
+ma quel numero è solidale con la normalizzazione appena scritta: cambiandola
+cambia il rapporto utile, e un'implementazione che normalizza le Gram in un
+altro modo chiede un $\beta$ di tutt'altra taglia.
 
 `````
 
@@ -363,9 +380,10 @@ Neckar.
   imparato a vedere) non cambia mai idea, e a essere ritoccata centinaia di
   volte è la **tela**, cioè l'immagine stessa.
 - Il **contenuto** (*cosa* c'è: la casa, il cipresso) si legge negli strati
-  profondi della rete; lo **stile** (*come* è dipinto) sta nel conteggio di
-  quali motivi elementari compaiono insieme, la carta d'identità della mano del
-  pittore, che non dipende da dove quei motivi si trovino nell'immagine.
+  profondi della rete; lo **stile** (*come* è dipinto) sta in quali motivi
+  elementari si accendono insieme, e con quanta forza: è la carta d'identità
+  della mano del pittore, e non dipende da dove quei motivi si trovino
+  nell'immagine.
 - Il giudizio da migliorare somma due voci, fedeltà al soggetto e fedeltà alla
   pennellata, pesate da due manopole: alzando quella dello stile le pennellate
   prendono il sopravvento, alzando quella del contenuto la foto resta quasi

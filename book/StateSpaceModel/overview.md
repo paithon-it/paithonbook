@@ -36,30 +36,51 @@ le due strade portano allo stesso posto.
 
 `````{tab} Elementare
 
-Segui il livello dell'acqua in una vasca mentre entra ed esce di continuo.
-Non ti serve ricordare ogni singola goccia: ti basta un numero, il
-livello attuale, che riassume tutta la storia. A ogni istante il livello di prima,
-più quello che è entrato, meno quello che è uscito, ti dà il livello nuovo. Quel
-numero che si porta dietro il passato è lo **stato**; la regola che lo aggiorna è
-il modello.
+Segui il livello dell'acqua in una vasca mentre entra ed esce di continuo. Non
+ti serve ricordare ogni singola goccia, ti basta un numero, quanta acqua c'è
+adesso. Quel numero si porta dietro tutta la storia, ed è lo stato.
 
-Uno *state space model* fa esattamente questo con una sequenza: mantiene uno
-stato di dimensione fissa che riassume tutto ciò che ha letto finora, e lo
-aggiorna a ogni passo. È lo stesso spirito della rete ricorrente vista nel
-capitolo sul linguaggio, ma qui la regola di aggiornamento nasce da una teoria
-matematica precisa, quella dei sistemi che evolvono nel tempo, e questo, come
-vedremo, fa una grande differenza sulla memoria a lungo termine.
+Le cose che lo muovono restano sempre le stesse. Dal rubinetto entra acqua e
+il livello sale. Dallo scarico socchiuso ne esce, e più acqua c'è più in
+fretta cala, così di quello che c'era ogni minuto ne resta una frazione. Sul
+fianco della vasca un galleggiante muove un ago su una scala graduata, e quello
+che l'ago segna è la tua risposta a chi chiede. Che cosa entra, quanto resta di
+ciò che c'era, che cosa se ne legge, e la regola non ha altri pezzi.
 
-C'è poi una proprietà che tornerà in ogni pagina del capitolo, e conviene
-prenderla subito. Finché la regola di aggiornamento **resta la stessa a ogni
-passo**, lo stesso calcolo si può fare in due modi: «passo dopo passo», una
-parola alla volta, oppure «tutto insieme», facendo scorrere sull'intera
-sequenza un unico **filtro**: una fila di pesi che dice quanto conta ciò che si
-è letto, a seconda di quanto tempo fa lo si è letto. Sono la stessa identica
-cosa vista da due lati, e questa è la **doppia natura** di cui parleremo: si
-addestra il modello nel secondo modo, che è veloce perché fa tutti i conti in
-una volta, e lo si usa nel primo, che è economico perché a ogni parola gli
-basta il riassunto di prima.
+Metti che dal rubinetto entrino due litri al minuto e che lo scarico porti via
+ogni minuto metà dell'acqua che trova. Parti da vasca vuota e segui l'ago:
+zero, due, tre (metà di due, più i due che entrano), 3,5, 3,75, 3,875. Il
+livello sale sempre più piano e si assesta sui quattro litri. Ogni getto
+intanto sbiadisce, e di quello entrato cinque minuti fa resta un
+trentaduesimo, di quello di mezz'ora fa meno di un miliardesimo.
+
+Resta da scegliere ogni quanto guardare. L'acqua scorre senza interruzione, tu
+l'ago lo segni una volta al minuto, e fra una segnatura e l'altra ricostruisci
+quel che è successo. Segnando spesso cambia poco, e la ricostruzione è quasi
+esatta. Segnando di rado può passare in mezzo un getto intero che non hai
+visto, e quello che ricostruisci esce grossolano.
+
+Uno *state space model* fa questo con una sequenza. Dove la vasca ha un
+livello solo, il modello ne tiene qualche decina, vasche affiancate che salgono
+e calano insieme a ogni parola in arrivo; quante siano si decide prima di
+aprire il rubinetto e non cambia più, per lungo che sia il testo. È lo stesso
+spirito della rete ricorrente vista nel capitolo sul linguaggio, con rubinetto,
+scarico e ago presi dai sistemi che evolvono nel tempo.
+
+Proprio perché la regola non cambia mai, a quel 3,875 ci si arriva per due
+strade. Passo dopo passo, dal livello di prima a quello di adesso, una parola
+alla volta. Oppure tutto insieme, sommando i getti entrati fin qui, ciascuno
+sbiadito secondo quanto tempo fa è entrato: 2 + 1 + 0,5 + 0,25 + 0,125 fa lo
+stesso numero. Quella fila di sbiadimenti è un **filtro** che si fa scorrere
+in un colpo solo sull'intera sequenza. Sono la stessa identica cosa vista da
+due lati, ed è la **doppia natura**. Si addestra il modello nel secondo modo,
+veloce perché fa tutti i conti in una volta, e lo si usa nel primo, economico
+perché a ogni parola gli basta il riassunto di prima.
+
+Tutto questo sta in piedi finché nessuno tocca il rubinetto e lo scarico. Se
+qualcuno stesse alla vasca a girarli minuto per minuto, regolandoli in base
+all'acqua in arrivo, non ci sarebbe più una sola fila di sbiadimenti buona per
+l'intera storia, e resterebbe il passo dopo passo.
 
 `````
 
@@ -75,7 +96,9 @@ $$
 La matrice $\mathbf{A}$ governa la dinamica interna (come lo stato evolve da solo), $\mathbf{B}$
 come l'ingresso vi entra, $\mathbf{C}$ come se ne legge l'uscita. Per usarlo su una
 sequenza discreta lo si **discretizza** con un passo $\Delta$, ottenendo una
-ricorrenza $\mathbf{h}_t = \bar{\mathbf{A}}\, \mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$. E qui sta la ricchezza:
+ricorrenza $\mathbf{h}_t = \bar{\mathbf{A}}\, \mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$, dove $x_t$ è l'ingresso
+campionato al passo $t$ e $\bar{\mathbf{A}}, \bar{\mathbf{B}}$ sono le versioni discrete di $\mathbf{A}$
+e $\mathbf{B}$. E qui sta la ricchezza:
 finché i parametri sono costanti nel tempo, questa ricorrenza ha una **doppia
 natura**; si può calcolare passo per passo come una RNN (inferenza a costo
 costante) oppure tutta in una volta come una **convoluzione** (addestramento

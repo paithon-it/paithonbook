@@ -52,43 +52,45 @@ dal chip (*off-chip*), ed è per questo che raggiungerli costa tanto.
 ```
 
 `````{tab} Elementare
-Su una scrivania le cose non stanno tutte alla stessa distanza da te, e non è
-un caso. Quello che hai letteralmente in mano, la penna che stai usando, è a
-distanza zero: sono i **registri**, privatissimi di ogni singolo lavoratore,
-velocissimi ma capaci di tenere appena un pugno di numeri alla volta. Sul piano
-della scrivania tieni i fogli del momento: è la **shared memory**, la «memoria
-condivisa», un ripiano piccolo (ci sta l'equivalente di qualche decina di
-pagine) ma in comune con tutta la squadra che siede a quel tavolo. Accanto ad
-essa, sullo stesso piano, c'è un portacarte in cui finisce da sé quello che hai
-usato di recente, nel caso serva ancora: è la **cache L1**. Il cassetto grande
-della scrivania è la **cache L2**, più capiente e in comune con gli altri
-tavoli.
+La penna che hai in mano è a distanza zero: la usi senza pensarci. Sono i
+**registri**, e ciascuno ha i suoi, che nessun altro può toccare: velocissimi,
+e ci sta appena un pugno di numeri.
 
-(«Cache», parola inglese che si pronuncia *cash*, vuol dire nascondiglio,
-riserva: è un ripostiglio vicino in cui il computer tiene le cose che ha appena
-usato, sperando di doverle riusare presto. La L sta per *level*, livello, e il
-numero dice quanto è vicino a chi lavora.)
+Sul piano della scrivania c'è un ripiano in comune con tutta la squadra che
+siede al tavolo. Ci sta l'equivalente di qualche decina di pagine, e un
+separatore lo divide in due. Da una parte ci metti tu i fogli del momento, e
+scegli quali tenere e per quanto: è la **shared memory**, la memoria condivisa.
+Dall'altra parte finisce da sé, senza che nessuno lo decida, quello che hai
+usato di recente, nel caso serva ancora: è la **cache L1** (si pronuncia
+*cash*, e in inglese vuol dire ripostiglio). Il separatore si sposta, lo spazio
+no: la parte che scegli tu si allarga rubando all'altra.
 
-Poi c'è l'armadio dall'altra parte della stanza, la **memoria globale**: ci sta
-*tutto* il progetto, ma ogni volta devi alzarti e attraversare la stanza. È
-quella che i tecnici chiamano **HBM**, tre lettere che stanno per «memoria a
-banda larga», cioè costruita apposta per consegnare tantissimi byte al secondo,
-ed è il «magazzino» di cui parlano tutte le analogie di questo capitolo. E
-infine, in un altro edificio, c'è il **deposito**: la memoria del computer, di
-là dal cavo che collega CPU e GPU (il cavo si chiama **PCIe**). Enorme, ma
-raggiungerlo è una spedizione, e infatti è il posto da cui i dati si portano
-via una volta sola, all'inizio.
+Il cassetto grande sotto il tavolo è la **cache L2**: stesso mestiere un numero
+più in là, più capiente e in comune con gli altri tavoli. In fondo alla stanza
+c'è l'armadio, il magazzino della squadra: ci sta *tutto* il progetto, ma ogni volta ti tocca alzarti e
+attraversare la stanza. È la **memoria globale**, che i tecnici chiamano
+**HBM**, tre lettere per «memoria a banda larga», costruita apposta per
+consegnare tantissimi byte al secondo. E in un altro edificio c'è il deposito,
+la memoria del computer, di là dal cavo che collega CPU e GPU (il cavo si
+chiama **PCIe**): enorme, e andarci è una spedizione, tanto che la roba di là
+la si va a prendere una volta sola, all'inizio.
 
-Vale la pena avere in testa le proporzioni, perché sono la ragione di tutto il
-resto del capitolo. Se prendere in mano la penna che hai già fra le dita costa
-un secondo, cercare fra i fogli sul piano della scrivania ne costa una ventina,
+A quel tavolo lavorano più di mille persone. Le penne sono minuscole una per
+una, ma tutte insieme sono più roba di quanta ne stia sul ripiano: il pugno di
+numeri è quello che tocca al singolo, non quanto ce n'è in tutto. E chi ha
+bisogno di più penne di quante gliene stiano in mano non le perde: quelle di
+troppo finiscono sul ripiano, dove rubano posto alla squadra e vanno riprese
+ogni volta. Caricarsi di penne oltre un certo punto peggiora le cose invece di
+migliorarle.
+
+Contano le proporzioni, più dei nomi. Se prendere la penna che hai già fra le
+dita costa un secondo, cercare fra i fogli sul piano ne costa una ventina,
 aprire il cassetto grande un paio di centinaia, attraversare la stanza fino
 all'armadio cinquecento, e mandare qualcuno al deposito dell'altro edificio è
-una gita che dura un'ora. Non è una differenza del doppio: fra la penna e il
-deposito ci sono migliaia di volte. Per questo il
-mestiere di chi programma le GPU somiglia a quello di chi organizza bene la
-scrivania: tenere vicino ciò che serve adesso, e attraversare la stanza il meno
-possibile.
+una gita che dura un'ora. Fra la penna e il deposito ci sono migliaia di volte,
+non il doppio. Chi programma una GPU fa lo stesso mestiere di chi si tiene in
+ordine la scrivania: vicino quello che serve adesso, e in giro per la stanza il
+meno possibile.
 `````
 
 `````{tab} Superiore
@@ -222,17 +224,44 @@ qualcuno in più. Va molte volte più veloce soltanto perché muove molti meno
 byte.
 
 `````{tab} Elementare
-Una squadra consulta lo stesso manuale decine di volte, e ha due modi di farlo.
-La mossa sciocca è che ognuno, ogni volta, corra in magazzino a prendere una
-copia, la legga e la riporti. La mossa intelligente è portare *una* copia sul
-tavolo comune all'inizio, e lasciare che tutti la consultino lì, a portata di
-mano, per tutto il tempo. Il viaggio in magazzino (la lettura dalla memoria
-lontana) si paga una volta sola invece di decine. Questo «carica una volta,
-riusa in tanti» è il segreto di quasi tutti i **kernel** veloci (un kernel è il
-programmino che gira sulla GPU, quello che tutti i lavoratori eseguono insieme
-ciascuno sul proprio pezzo di dato: gli è dedicata la prossima sezione), e sarà
-il cuore di quella in cui vedremo come si moltiplicano due tabelloni di numeri
-sul serio.
+Lo stesso manuale, consultato decine di volte da tutta la squadra: i modi di
+farlo sono due. La mossa sciocca è che ognuno, ogni volta, corra in magazzino
+a prendere una copia, la legga e la riporti. La mossa intelligente è portare
+*una* copia sul tavolo comune all'inizio, e lasciare che tutti la consultino
+lì, a portata di mano, per tutto il tempo. Il viaggio in magazzino (la lettura
+dalla memoria lontana) si paga una volta sola invece di decine: trenta
+consultazioni e un viaggio, cioè un trentesimo della strada. Il tavolo comune,
+poi, non si riempie da sé, e qui sta il suo vantaggio: qualcuno sceglie che
+cosa metterci e quando toglierlo per far posto al pezzo dopo. Questo «carica
+una volta, riusa in tanti» è il segreto di quasi tutti i **kernel** veloci (un
+kernel è il programmino che gira sulla GPU, quello che tutti i lavoratori
+eseguono insieme ciascuno sul proprio pezzo di dato: gli è dedicata la
+prossima sezione), e sarà il cuore di quella in cui vedremo come si
+moltiplicano due tabelloni di numeri sul serio.
+
+Il tavolo comune ha però una regola sua, e a ignorarla si perde per strada
+quello che si era appena guadagnato. Il piano è uno scaffale con trentadue
+caselle, e le pagine ci vanno a giro: la prima nella prima casella, la seconda
+nella seconda, fino alla
+trentaduesima, poi si ricomincia. Una casella la può aprire una persona alla
+volta. Se i trentadue della squadra chiedono pagine che stanno in trentadue
+caselle diverse, si servono tutti nello stesso istante. Se invece chiedono
+pagine diverse che stanno nella stessa casella, devono fare la fila: in due,
+due turni; in trentadue sulla stessa casella, trentadue turni, e del vantaggio
+di avere il manuale sul tavolo resta poco (i tecnici la chiamano *bank
+conflict*: le caselle, dentro una GPU, si chiamano banchi). Un caso non
+costa niente: quando tutti vogliono la *stessa* pagina, uno la legge ad alta
+voce e la sentono tutti insieme.
+
+Se la squadra legge di seguito, riga per riga, la fila non si forma: pagine
+vicine stanno in caselle vicine. Si forma quando si legge una tabella per
+colonne, e ogni riga della tabella è larga esattamente trentadue pagine: allora
+una colonna intera cade tutta nella stessa casella, e servono trentadue turni
+per una lettura sola. Il rimedio sembra uno scherzo e funziona: si lascia una
+casella vuota in fondo a ogni riga, larghezza trentatré invece di trentadue.
+Ogni riga slitta di uno, la colonna si sparpaglia su tutte le caselle, la fila
+sparisce. Si butta via un trentatreesimo dello scaffale e si guadagna un
+fattore trentadue.
 `````
 
 `````{tab} Superiore
@@ -320,43 +349,43 @@ sposta l'operazione verso destra.
 ```
 
 `````{tab} Elementare
-In una cucina la velocità con cui servi i piatti dipende da due cose: quanto
-sono bravi i cuochi (il calcolo) e quanto in fretta arrivano gli ingredienti
-dal magazzino (la banda). Se una ricetta richiede pochissima preparazione ma
-tantissimi ingredienti (tipo «apri mille scatolette e svuotale in una
-ciotola»), i cuochi finiscono in un attimo e stanno fermi ad aspettare il
-prossimo carico: sei limitato dal *magazzino*. Se invece la ricetta lavora a
-lungo su pochi ingredienti (un brodo che sobbolle per ore), gli ingredienti
-bastano e avanzano, e a contare è solo la bravura dei cuochi: sei limitato dai
-*cuochi*. Sono le due parole del paragrafo qui sopra: limitato dal magazzino si
-dice *memory-bound*, limitato dai cuochi *compute-bound*, e da qui in avanti il
-capitolo le userà così.
+In cucina la velocità con cui escono i piatti dipende da due cose: quanto sono
+bravi i cuochi e quanto in fretta arrivano gli ingredienti dal magazzino. I
+cuochi sono le unità che fanno i conti, il magazzino è la memoria grande della
+scheda, e la velocità dei piatti è quella del più lento dei due.
 
-(È la stessa cucina delle altre sezioni, con i ruoli di sempre: il magazzino è
-la memoria grande della scheda, i cuochi sono le unità che fanno i conti.)
+Una ricetta che chiede pochissima preparazione e tantissimi ingredienti (apri
+mille scatolette e svuotale in una ciotola) lascia i cuochi fermi ad aspettare
+il carico dopo: sei limitato dal magazzino, e si dice *memory-bound*. Un brodo
+che sobbolle per ore lavora a lungo su pochi ingredienti: la roba basta e
+avanza, e a contare è solo la mano dei cuochi, cioè si è *compute-bound*.
 
 Il roofline è il grafico che dice, per ogni ricetta, da quale delle due parti
-sei bloccato, e per leggerlo basta una misura: **quanti conti fai per ogni byte
-che ti sei fatto portare**. Due ricette agli estremi, e tutti e due i conti si
-possono rifare. Sommare due lunghe liste di numeri: per ogni somma la GPU deve
-farsi portare i due addendi e riportare indietro il risultato, cioè tre numeri
-da quattro byte l'uno, dodici byte per *un* conto. Un dodicesimo di conto per
-byte: pochissimo, sei nel magazzino fino al collo. Moltiplicare due tabelloni
-da quattromila numeri di lato: i numeri da portare sono i tre tabelloni, 48
-milioni in tutto, cioè 192 milioni di byte; i conti da fare sono 128 miliardi
-(per ciascuna delle 16 milioni di caselle del risultato, quattromila
-moltiplicazioni e altrettante somme). Dividendo, quasi settecento conti per
-ogni byte, e a quel punto il magazzino non è più il problema.
+sei bloccato, e per leggerlo basta una misura: quanti conti fai per ogni byte
+che ti sei fatto portare. Prendi due lunghe liste di numeri da sommare. Per
+ogni somma il fattorino porta i due addendi e riporta indietro il risultato:
+tre numeri da quattro byte l'uno, dodici byte per *un* conto. Un dodicesimo di
+conto per byte, e sei nel magazzino fino al collo.
 
-In mezzo c'è il valore di pareggio. Su una scheda di qualche anno fa sta
-intorno ai dieci conti per byte: sotto sei bloccato dal magazzino, sopra dai
-cuochi. Ma è un valore che si sposta, e sempre nella stessa direzione: accendi
-le unità costruite apposta per moltiplicare due tabelloni (i *tensor core*
-della sezione sul GEMM) e sale oltre i centocinquanta, perché i cuochi sono
-diventati sedici volte più svelti mentre il magazzino consegna alla stessa
-velocità di prima. Da qui la cura, per chi sta sotto: fare *più conti con gli stessi
-ingredienti* prima di rimandarli indietro, che è esattamente ciò che fa la
-fusione dei kernel vista nella sezione «Prestazioni e scala».
+Adesso due tabelloni da quattromila numeri di lato, da moltiplicare. Il
+fattorino porta i tre tabelloni, 48 milioni di numeri, cioè 192 milioni di
+byte. I cuochi, per ciascuna delle 16 milioni di caselle del risultato, fanno
+quattromila moltiplicazioni e altrettante somme: 128 miliardi di conti.
+Dividendo, quasi settecento conti per ogni byte portato, e il magazzino smette
+di essere il problema. Quel settecento però suppone che ogni ingrediente entri
+in cucina una volta sola, cioè che tutta la roba stia sul tavolo accanto ai
+cuochi mentre lavorano. Per tabelloni di quella taglia sul tavolo non ci sta, e
+qualche viaggio in più si fa comunque: settecento è il massimo sperabile, e la
+cucina vera resta un po’ sotto.
+
+In mezzo c'è il pareggio, che su una scheda di qualche anno fa sta intorno ai
+dieci conti per byte: sotto comanda il magazzino, sopra comandano i cuochi. È
+un numero che si sposta, e sempre nella stessa direzione. Accendi le unità
+costruite apposta per moltiplicare due tabelloni, i *tensor core*, e il
+pareggio sale oltre i centocinquanta: i cuochi sono diventati sedici volte più
+svelti, mentre il magazzino consegna alla stessa velocità di prima. Da qui la
+cura, per chi sta sotto: fare più conti con gli stessi ingredienti prima di
+rimandarli indietro.
 `````
 
 `````{tab} Superiore

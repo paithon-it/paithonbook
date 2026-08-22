@@ -9,9 +9,9 @@ quanta elettricità consuma.
 La domanda è entrata nel dibattito tecnico nel 2019, quando Strubell, Ganesh e
 McCallum hanno provato a mettere un numero sull'addestramento di un modello di
 linguaggio {cite}`strubell2019energy`. I loro numeri sono stati poi discussi e
-corretti, e va detto subito: **le cifre di questa materia invecchiano in
-fretta**, perché dipendono dall'hardware di quell'anno, dal centro dati e
-perfino dall'ora del giorno. Quello che non invecchia è la catena che porta da
+corretti, e **le cifre di questa materia invecchiano in fretta**, perché
+dipendono dall'hardware di quell'anno, dal centro dati e perfino dall'ora del
+giorno. Quello che non invecchia è la catena che porta da
 un'operazione aritmetica a un grammo di anidride carbonica, e sono i suoi
 anelli da conoscere, perché ognuno è una leva.
 
@@ -26,32 +26,37 @@ contatore.
 
 `````{tab} Elementare
 
-Intuitivamente, l'energia se ne va nei conti: più moltiplicazioni, più
-corrente. È sbagliato, ed è sbagliato di parecchio.
+L'energia se ne va nei conti: più moltiplicazioni, più corrente. Il contatore,
+quasi sempre, dice un'altra cosa.
 
 I due numeri veri li ha misurati un ingegnere di Stanford, Mark Horowitz, e
-sono facili da tenere a mente. Fare un conto dentro il processore (una moltiplicazione e la somma che la
-segue) costa **circa 5**. Andare a **prendere** un numero nella memoria che sta fuori
-dal chip costa **circa 640**, cioè più di cento volte tanto: e i numeri da
-prendere sono due, quindi la spesa vera del viaggio è più di duecento volte
-quella del conto. L'unità in cui sono misurati non conta (è il picojoule, una
-quantità di energia talmente piccola che non ha senso immaginarla): conta il
-rapporto fra i due.
+sono facili da tenere a mente. Fare un conto dentro il processore (una
+moltiplicazione e la somma che la segue) costa **circa 5**. Andare a prendere
+un numero nella memoria che sta fuori dal chip costa **circa 640**, più di
+cento volte tanto. L'unità non conta (è il picojoule, troppo piccolo perché
+immaginarlo abbia senso): conta il rapporto fra i due.
 
 Il motivo è fisico, non informatico. Portare un numero da fuori a dentro il
 chip vuol dire far cambiare stato a lunghissime piste di rame, e ogni
-cambiamento di stato costa corrente. Fare un conto su un numero che è già
-dentro, invece, muove pochissimo rame.
+cambiamento di stato costa corrente. Un numero già dentro si tocca quasi
+gratis: di rame ne muove pochissimo.
 
-Ed è la stessa identica frase del capitolo sulle GPU, «il collo di bottiglia non
-sono i conti, sono i byte», che là valeva per il tempo e qui vale per la
-corrente. Le due ottimizzazioni coincidono, ed è per questo che tutte le
-tecniche di quel capitolo (lavorare a
-piccoli blocchi tenuti vicino al processore, fare più operazioni in un
-passaggio solo invece di andare e tornare dalla memoria a ogni passo, far
-scorrere il dato fra unità vicine invece che dentro e fuori) sono in fondo la
-stessa tecnica: **ridurre i viaggi**. E ridurre i viaggi vuol dire insieme
-andare più veloci e consumare meno.
+Dai due prezzi, però, non segue ancora chi si prende la bolletta. Il chip è un
+tavolo di lavoro e la memoria di fuori l'armadio in fondo alla stanza, come nel
+capitolo sulle GPU: chi attraversa la stanza per copiare un numero solo passa
+la giornata in piedi, chi torna con un foglio da cui ricava trecento conti non
+si accorge nemmeno del tragitto. Dividendo i due prezzi si trova la soglia, ed
+è attorno ai **centotrenta conti** per ogni numero preso da fuori: sotto, la
+corrente se ne va nei viaggi; sopra, se ne va nei conti.
+
+Generare una parola alla volta sta molto sotto la soglia: il calcolatore
+rilegge tutti i pesi del modello per una parola sola. Lì tagliare i viaggi vale
+tutto, ed è il mestiere delle tecniche di quel capitolo: tenere i dati vicino
+al processore, fare più cose in un passaggio solo invece di andare e tornare.
+«Il collo di bottiglia non sono i conti, sono i byte» là valeva per il tempo e
+qui vale per la corrente: andare più veloci e consumare meno sono la stessa
+cosa. L'addestramento e la lettura di un prompt lungo stanno sopra la soglia, e
+lì limare i viaggi sposta poco.
 
 `````
 
@@ -60,11 +65,11 @@ andare più veloci e consumare meno.
 Le misure di riferimento vengono da un'unica tabella: l'energia per operazione
 in un nodo tecnologico a 45 nm, compilata da Horowitz e resa nota dalla sua
 relazione sul problema energetico del calcolo {cite}`horowitz2014computing`.
-Vale la pena sapere che quella tabella circola in più versioni, e che la più
-citata non è quella della relazione ma la sua ripresa nella letteratura
-successiva sulle reti compresse: i singoli valori differiscono un poco (la
-moltiplicazione in virgola mobile a 32 bit è data ora $3{,}7$ ora $4$
-picojoule, la lettura dalla DRAM ora $640$ picojoule ora qualche nanojoule),
+Quella tabella circola in più versioni, e la più citata non è quella della
+relazione ma la sua ripresa nella letteratura successiva sulle reti compresse:
+i singoli valori differiscono un poco (la moltiplicazione in virgola mobile a
+32 bit è data ora $3{,}7$ ora $4$ picojoule, la lettura dalla DRAM ora $640$
+picojoule ora qualche nanojoule),
 mentre i **rapporti** non differiscono affatto, ed è quello che conta qui. Chi
 rifà i conti con l'altra versione trova il pareggio a sessantacinque FLOP per
 byte invece che a settanta: la morale non cambia, ma il numero sì, e conviene
@@ -120,55 +125,43 @@ Il secondo anello esce dal silicio ed entra nell'edificio.
 
 `````{tab} Elementare
 
-Un centro dati non consuma solo quello che consumano i calcolatori. Consuma
-anche il condizionamento che porta via il calore, i gruppi di continuità (le
-batterie che tengono tutto acceso quando manca la corrente, e che per restare
-cariche consumano di continuo), le perdite negli alimentatori. La misura di
-quanto pesa questo contorno ha un nome in sigla, **PUE** (l'iniziale di tre
-parole inglesi che vogliono dire «con che efficienza si usa la corrente»), ed è
-un rapporto: quanta elettricità entra nell'edificio diviso quanta ne arriva
-davvero ai calcolatori. Un PUE di $1$ sarebbe la perfezione, cioè zero
-sprechi, ed è impossibile; una struttura moderna sta attorno a $1{,}1$–$1{,}3$,
-cioè spende il dieci o il trenta per cento in più; una vecchia può superare il
-$2$, cioè per ogni watt di calcolo ne brucia un altro per raffreddarlo.
+Entra corrente in un centro dati, e nei calcolatori non finisce tutta: ne
+prendono il condizionamento, le batterie che tengono acceso quando la corrente
+salta, gli alimentatori. Quel contorno ha un nome, **PUE**, ed è un rapporto:
+la bolletta dell'edificio diviso la corrente arrivata davvero alle macchine.
+Una struttura moderna sta fra 1,1 e 1,3; una vecchia supera il 2, e per ogni
+watt di calcolo ne brucia un altro per raffreddarlo.
 
-Poi c'è il terzo passaggio, ed è quello che sfugge di più: **la stessa
-elettricità non inquina uguale dappertutto**. Un kilowattora (l'unità con cui
-si compra l'elettricità, quella che si legge sulla bolletta di casa) prodotto
-dove la rete è idroelettrica o nucleare porta con sé qualche decina di grammi
-di anidride carbonica; lo stesso kilowattora, dove si brucia carbone, ne porta
-qualche centinaio: più di dieci volte tanto. E non cambia solo da paese a paese:
-cambia da un'ora all'altra, perché di notte, o quando non c'è vento, la rete
-accende centrali diverse.
+Il rapporto, però, è la media di tutto l'edificio su tutto l'anno. Spegni il
+tuo addestramento per una notte: la bolletta cala di quello che consumavano le
+tue macchine e di poco altro, perché le luci, le batterie e la ventilazione
+restavano accese comunque. Chi si addebita anche il venti per cento di contorno
+si fa il conto più caro del vero: il rapporto serve per l'ordine di grandezza,
+non per dire quale di due lavori sulla stessa macchina è costato meno.
 
-La conseguenza è concreta e un po’ sorprendente: **lo stesso addestramento,
-identico, cambia impronta a seconda di dove e quando lo si fa girare**. Da qui
-l'idea di spostare i lavori che possono aspettare verso le ore e i luoghi in
-cui la rete è pulita.
+La stessa elettricità, poi, non inquina uguale dappertutto. Un kilowattora
+prodotto dove la rete è idroelettrica o nucleare porta con sé qualche decina di
+grammi di anidride carbonica; dove si brucia carbone, qualche centinaio. E
+cambia da un'ora all'altra, perché di notte, o senza vento, la rete accende
+centrali diverse.
 
-Un gruppo di ricerca di Google, guidato da David Patterson, ha messo un numero accanto a quattro decisioni diverse, e i numeri non si
-somigliano: sono quattro ampiezze, non una classifica, e le prime due si
-sovrappongono.
+I tre pezzi (la corrente delle macchine, il contorno dell'edificio, quanto
+sporca è la rete) si moltiplicano fra loro, non si sommano: dimezzare il
+consumo o spostare il lavoro su una rete che sporca la metà fanno lo stesso
+effetto sul conto finale.
 
-Al primo posto c'è **quale modello si sceglie**. Alcuni modelli, per rispondere,
-si accendono tutti quanti; altri sono costruiti a scomparti, e per ogni domanda
-un piccolo selettore ne sveglia due o tre lasciando spenti tutti gli altri.
-Sono grandi uguale, ma consumano come la parte che accendono, e fra i due casi,
-a parità di qualità delle risposte, ci possono stare dieci volte.
+E non pesano uguale. Un gruppo di ricerca di Google, guidato da David
+Patterson, ha messo un numero accanto a quattro decisioni. Conta di più **quale
+modello**: fra uno che per rispondere si accende tutto e uno a scomparti, che
+ne sveglia due o tre e lascia spenti gli altri, a parità di risposte ci possono
+stare dieci volte. Le sta vicino **dove** si esegue, cioè su quale rete, che
+sposta le emissioni da cinque a dieci volte anche restando nello stesso paese.
+Più sotto **su che macchina** (una fatta apposta rende da due a cinque volte
+più di una generica) e **in che edificio** (da 1,4 a 2 volte, ed è il
+raffreddamento di poco fa).
 
-Al secondo posto c'è **dove si esegue**, cioè in quale rete elettrica, che
-sposta le emissioni da cinque a dieci volte anche restando nello stesso paese e
-nella stessa azienda.
-
-Più sotto le altre due, e sono quelle a cui di solito si pensa per prime:
-**che macchina si usa** (una fatta apposta per il machine learning rende da due
-a cinque volte più di una generica) e **quanto è ben progettato l'edificio**,
-dove uno costruito bene consuma da 1,4 a 2 volte meno di uno qualunque, ed è
-il conto del raffreddamento di cui si parlava poco fa.
-
-Quei numeri sono misure fatte su macchine del 2021 e come tutte le misure hanno
-una scadenza. Quello che regge è l'ordine: le decisioni prese al tavolo da
-disegno (quanto modello serve, e dove farlo girare) contano più di qualunque
+Sono misure del 2021 e scadono come tutte le misure. Quello che regge è
+l'ordine: quanto modello serve e dove farlo girare contano più di qualunque
 limatura del programma.
 
 `````
@@ -276,12 +269,12 @@ fra gli impianti industriali più energivori che esistano, per trasportare il
 prodotto. Si chiama **carbonio incorporato**, ed è la parte dell'impronta che
 un dispositivo si porta dietro dalla nascita.
 
-Quanto pesi dipende da una cosa sola: **per quale frazione della sua vita quel
-chip lavora davvero**. Una scheda da centro dati (un *acceleratore*, cioè un
-chip costruito apposta per fare i conti del machine learning e nient'altro)
-macina calcoli ventiquattr'ore al giorno per cinque anni: consumando così
-tanto e così a lungo, quello che ha speso per nascere diventa una briciola del
-totale.
+Quanto pesi dipende da due cose: **per quale frazione della sua vita quel chip
+lavora davvero**, e per quanti anni quella vita dura. Una scheda da centro dati
+(un *acceleratore*, cioè un chip costruito apposta per fare i conti del machine
+learning e nient'altro) macina calcoli ventiquattr'ore al giorno per cinque
+anni: consumando così tanto e così a lungo, quello che ha speso per nascere
+diventa una briciola del totale.
 
 Un oggetto che si accende di rado sta all'estremo opposto. Un sensore che si
 sveglia due volte al giorno lavora per una frazione minuscola del tempo in cui
@@ -289,18 +282,23 @@ esiste, e quindi consuma pochissimo: la parte grossa della sua impronta è stata
 fissata in fabbrica, prima che qualcuno lo accendesse, e non c'è modo di
 recuperarla.
 
-Da cui una conclusione poco intuitiva: per gli oggetti piccoli e poco usati, la
-scelta ambientale più efficace non è renderli più efficienti, è **tenerli in
-servizio più a lungo**.
+Da cui due strade opposte. Nel centro dati la scheda vecchia conviene
+cambiarla appena ne esce una che fa gli stessi conti con meno corrente: quasi
+tutto il suo conto è la corrente che berrà da domani, e fabbricare quella nuova
+si ripaga in fretta. Con il sensore va al rovescio: sostituirlo vuol dire
+pagare da capo la fabbrica per risparmiare briciole, e la scelta ambientale che
+conta diventa **tenerlo in servizio più a lungo**, perché un programma che
+continua a girare sul dispositivo vecchio è un dispositivo nuovo che non si
+costruisce.
 
 `````
 
 `````{tab} Superiore
 
 Si distingue fra carbonio **operativo** (quello del conto di poco fa,
-$E \times \text{PUE} \times I$) e carbonio **incorporato**, cioè le emissioni
-di fabbricazione, trasporto e smaltimento, che si ammortizzano sulla vita utile
-del dispositivo. Il conto complessivo è
+$E_{\text{IT}} \times \text{PUE} \times I_{\text{rete}}$) e carbonio
+**incorporato**, cioè le emissioni di fabbricazione, trasporto e smaltimento,
+che si ammortizzano sulla vita utile del dispositivo. Il conto complessivo è
 
 $$
 C_{\text{totale}} = C_{\text{operativo}}(t) + C_{\text{incorporato}} \cdot
@@ -309,8 +307,9 @@ $$
 
 dove $t$ è il tempo trascorso in servizio e $T_{\text{vita}}$ la vita utile
 attesa del dispositivo, cioè su quanto tempo il carbonio di fabbricazione va
-spalmato. Il rapporto fra i due termini dipende interamente dal **fattore di
-utilizzo**.
+spalmato. Il rapporto fra i due termini, a utilizzo costante, non dipende da
+$t$, che si semplifica: si gioca sul **fattore di utilizzo** e su quanto è
+lunga quella vita utile.
 Un acceleratore da centro dati con utilizzo alto e vita di qualche anno è
 dominato dall'operativo; un dispositivo *edge* con utilizzo dell'ordine
 dell'uno per cento è dominato dall'incorporato.
@@ -371,18 +370,23 @@ molto.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- L'energia non se ne va nei conti ma nel **movimento dei dati**: fare una
-  moltiplicazione costa pochissimo, andare a prendere i due numeri nella
-  memoria esterna costa centinaia di volte tanto. È la stessa frase del
-  capitolo sulle GPU (il collo di bottiglia non sono i conti, sono i byte)
-  riletta con la bolletta in mano: andare più veloci e consumare meno sono la
-  stessa cosa.
+- Prendere un numero dalla memoria esterna costa più di cento volte una
+  moltiplicazione, ma da quel prezzo non segue ancora dove finisca la bolletta:
+  dipende da **quanti conti si fanno per ogni numero preso**, e la soglia sta
+  attorno ai centotrenta. Generare una parola alla volta ci sta molto sotto, e
+  lì la corrente se ne va nei viaggi: è la stessa frase del capitolo sulle GPU
+  (il collo di bottiglia non sono i conti, sono i byte) riletta con la bolletta
+  in mano, cioè andare più veloci e consumare meno sono la stessa cosa.
+  Leggere un prompt lungo e addestrare stanno invece sopra la soglia, e lì
+  limare i viaggi sposta poco.
 - L'impronta finale è il prodotto di **tre fattori**: l'energia che consumano i
   calcolatori, il sovrapprezzo dell'edificio (raffreddamento e perdite: un
   edificio moderno aggiunge dal dieci al trenta per cento, uno vecchio può
   arrivare a raddoppiare il conto) e quanto sporca è l'elettricità di quella
   rete, che cambia di dieci volte fra un luogo e l'altro e di alcune volte fra
-  un'ora e l'altra della stessa rete.
+  un'ora e l'altra della stessa rete. Il sovrapprezzo però è la media di tutto
+  l'edificio su tutto l'anno: addebitarlo per intero a un singolo lavoro fa il
+  conto più caro del vero.
 - **Rispondere costa più che addestrare**, quando il modello resta in servizio
   a lungo: rimpicciolirlo, servire più richieste in una volta sola e riusare
   ciò che è già stato calcolato sono leve ambientali oltre che economiche.

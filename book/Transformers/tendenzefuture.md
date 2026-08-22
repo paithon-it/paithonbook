@@ -44,37 +44,47 @@ imparare quali cose si somigliano è metà del mestiere.
 
 `````{tab} Elementare
 Gli altri modi di rimpicciolire un modello sono due, e li costruisce il
-capitolo sull’efficienza, che vale la pena rileggere prima di crederli facili.
-Il primo è scrivere ogni numero con meno cifre; il secondo è togliere di mezzo
-i numeri che contano poco. Detti così sembrano gratis, e non lo sono: là si
-misura che arrotondare a quattro bit, senza altri accorgimenti, sposta di quasi
-un quinto quello che esce da uno strato, e che una rete a cui si tolgono nove
-pesi su dieci smette di funzionare finché non la si riaddestra.
+capitolo sull’efficienza. Il primo è scrivere ogni numero con meno cifre; il
+secondo è togliere di mezzo i numeri che contano poco. Detti così sembrano
+gratis, e non lo sono. Là il prezzo è contato: arrotondare a quattro bit, senza
+altri accorgimenti, sposta di quasi un quinto quello che esce da uno strato, e
+una rete a cui si tolgono nove pesi su dieci smette di funzionare finché non la
+si riaddestra.
+
+C'è poi una strada che non rimpicciolisce niente. Il modello resta grosso, ma
+per ogni parola ne accende un pezzo solo, come una redazione che manda
+l'articolo di sport a chi si occupa di sport invece di farlo rileggere a tutti
+quanti. Sa quello che sanno tutti i suoi redattori, e su ogni articolo spende
+quanto ne spende uno.
 
 Sul contesto lungo la ricerca prova invece a far comunicare le parole senza
-convocarle tutte insieme, e i due filoni più promettenti hanno un capitolo
-ciascuno subito dopo questo. Sul fronte dei sensi si costruiscono mappe del
-significato condivise, dove una foto di gatto e la parola «gatto» cadono nello
-stesso punto. E c'è un cantiere in più, che dieci anni fa nessuno avrebbe messo
-in un elenco di ricerca: rendere questi modelli **utili e non dannosi**, cioè
-il post-training della sezione precedente, che nel frattempo è diventato una
-disciplina a sé.
+convocarle tutte insieme, e le due strade più promettenti sono l'attenzione
+lineare e i modelli a spazio di stato, che hanno un capitolo ciascuna. Una
+terza non tocca il meccanismo e cambia il modo di eseguirlo, tenendo in memoria
+meno roba per volta. Sul fronte dei sensi si costruiscono mappe del significato
+condivise, dove una foto di gatto e la parola «gatto» cadono nello stesso
+punto. Ci si arriva mostrando al modello milioni di immagini con la didascalia
+che le accompagna, e chiedendogli di tenere vicine le coppie giuste e lontane
+quelle sbagliate. E c'è un cantiere in più, che dieci anni fa nessuno avrebbe
+messo in un elenco di ricerca: rendere questi modelli utili e non dannosi, cioè
+il post-training, che nel frattempo è diventato una disciplina a sé.
 `````
 
 `````{tab} Superiore
 Sul fronte dell'efficienza, e per il meccanismo si rimanda al capitolo che gli
 è dedicato: **distillazione** (un modello piccolo addestrato a imitare le
 uscite di uno grande), **quantizzazione** (pesi a 8 o 4 bit invece che a 32,
-dove sotto gli otto la perdita smette di essere trascurabile e servono metodi
+dove a quattro bit la perdita smette di essere trascurabile e servono metodi
 che facciano più che arrotondare), **pruning**, e architetture
 *mixture-of-experts* che attivano solo una frazione dei parametri per ogni
 token. Sul fronte del contesto lungo: attenzioni sparse e lineari,
 ottimizzazioni di memoria come FlashAttention, e gli *state space model*
 (Mamba); a questi ultimi, e alle attenzioni lineari, sono dedicati i due
 capitoli che seguono. Sul fronte multimodale: spazi di rappresentazione
-condivisi tra testo, immagini e audio, con il transfer learning contrastivo
-alla CLIP come collante. A cui si aggiunge il filone dell’**allineamento**:
-tecniche (come il fine-tuning con feedback umano) per rendere i modelli più
+condivisi tra testo, immagini e audio, con l'addestramento contrastivo su
+coppie immagine-didascalia alla CLIP come collante. A cui si aggiunge il filone
+dell’**allineamento**: tecniche (come il fine-tuning con feedback umano) per
+rendere i modelli più
 utili e meno dannosi, che è oggi un'area di ricerca a pieno titolo, non un
 ritocco finale.
 `````
@@ -87,35 +97,47 @@ questo campo.
 
 `````{tab} Elementare
 
-Un Transformer fa **sempre lo stesso numero di passaggi**. Che gli si chieda
-quanto fa due più due o di sbrogliare un ragionamento in dieci mosse, il testo
-attraversa esattamente gli stessi strati, e quindi riceve la stessa quantità di
-calcolo. Detta così suona strana, perché non è affatto come funzioniamo noi:
-sulle cose facili rispondiamo a colpo, sulle difficili ci fermiamo a pensare.
+Sessanta piani, e l'ascensore ferma a tutti. La domanda sale in un vassoio, un
+bigliettino per parola, a ogni piano qualcuno ci mette mano, e dal tetto esce
+la risposta. «Quanto fa due più due» fa il viaggio intero, e un rompicapo da
+dieci mosse pure. Noi no: sulle cose facili rispondiamo di getto, sulle
+difficili ci fermiamo a pensare.
 
-L'idea, allora, è di lasciare che il modello decida **quanto pensare**, e nel
-2018 qualcuno ci provò con una mossa che risolve il problema alla radice. Il
-guaio è che i piani della torre sono sei, o sessanta, ma comunque un numero
-deciso in anticipo: sono pezzi diversi l'uno dall'altro, quindi non se ne può
-usare qualcuno in più. E se invece il piano fosse **uno solo**, sempre lo
-stesso, riapplicato più volte di fila? Allora il numero di volte non sarebbe
-più scritto nell'architettura, e si potrebbe decidere caso per caso: due giri
-per una domanda facile, venti per una difficile. In più, a ogni giro ogni
-parola può dire «io ho finito» e smettere, mentre le altre continuano a
-girare.
+Nel 2018 qualcuno provò a rifare il palazzo. Le sessanta stanze sono tutte
+diverse, e un paio in più non si aggiungono: quel numero è murato. E se la
+stanza fosse una sola, e ci si rientrasse? I giri li deciderebbe la domanda:
+due per «due più due», venti per il rompicapo. A ogni giro un bigliettino può
+dire «io ho finito», e resta lì com'è mentre gli altri continuano.
 
-All'epoca non prese piede, e la ragione è soprattutto una: un piano solo
-riapplicato molte volte costa, in ore di computer, quanto una pila di piani
-diversi, perché il lavoro è lo stesso, ma di numeri da imparare ne ha molti di
-meno, quindi a parità di conto impara meno cose. Nel frattempo la strada
-dell'ingrandire funzionava benissimo, e nessuno aveva un buon motivo per
-complicarsi la vita. L'idea è tornata attuale adesso, per una strada
-inaspettata: i modelli che «ragionano» prima di
-rispondere fanno, in fondo, la stessa cosa, cioè spendere più calcolo sulle
-domande difficili. Solo che lo fanno **scrivendo** il ragionamento, un passo
-alla volta in parole, invece di girare più volte dentro sé stessi in silenzio.
-Quale delle due strade sia la migliore è una questione aperta: la prima è più
-economica, la seconda si può leggere.
+Nei muri della stanza non è scritto nessun massimo, e sulle frasi lunghe si
+vede: davanti a una più lunga di tutte quelle viste in addestramento si fanno
+due giri in più, invece di fermarsi in cima perché il palazzo finisce.
+
+Manca un pezzo. Un bigliettino che può fermarsi non ha motivo di farlo, girare
+è gratis e un giro in più non fa danno. Perciò all'ingresso si paga un
+pedaggio, piccolo, a ogni giro: si paga finché la domanda lo merita, poi si
+smette.
+
+Sulla porta c'è una promessa più grossa: con questa stanza si calcola tutto ciò
+che è calcolabile. È vera, e sotto ha una riga che quasi nessuno legge: giri
+quanti ne servono, senza tetto. A quella condizione ce la fa anche il palazzo
+di sessanta piani, se la risposta che esce dal tetto la si rimette al
+pianterreno quante volte si vuole, e si conta senza mai arrotondare. A decidere
+è quanti giri si concedono, più della forma dell'edificio.
+
+La stanza sola non prese piede: farci sessanta giri costa le stesse ore di
+sessanta stanze, perché il lavoro è lo stesso, ma i mobili da scegliere sono
+quelli di una stanza sola, e con la stessa spesa si impara meno. Intanto
+tirare su palazzi più alti funzionava benissimo.
+
+È tornata da una strada inattesa. Anche i modelli che «ragionano» prima di
+rispondere spendono di più sulle domande difficili, solo che invece di girare
+in silenzio a porta chiusa scrivono i passaggi su un foglio, una riga alla
+volta. Ogni riga va prodotta e poi riletta, quindi costa; in compenso si
+insegna meglio, di quaderni coi passaggi svolti in mezzo ne esistono a
+montagne. Quale strada convenga resta aperto: la porta chiusa costa meno, il
+foglio lascia una traccia da leggere. Che la traccia racconti quello che è
+successo davvero nella stanza, però, non è detto.
 
 `````
 
@@ -138,8 +160,8 @@ continuano a essere aggiornate, e una penalità sul numero di passi (il *ponder
 cost*) impedisce di pensare all'infinito. Il calcolo diventa così
 **condizionato all'ingresso** invece che fissato dall'architettura.
 
-Vale la pena essere precisi su un punto che il titolo lascia intuire, e
-altrettanto precisi su quanto quel punto sia solido. Gli autori dimostrano che
+C'è un punto che il titolo lascia intuire, e va detto con precisione, insieme a
+quanto sia solido. Gli autori dimostrano che
 legare i pesi e iterare rende il modello **Turing-completo**, ma la loro stessa
 formulazione lo dice **sotto certe ipotesi**, e l'ipotesi che porta il peso è
 la solita: un numero di passi non limitato a priori. Il ragionamento è che un
@@ -152,8 +174,9 @@ risultato opposto: Pérez, Barceló e Marinković {cite}`perez2021attention`
 dimostrano che il Transformer
 encoder-decoder è Turing-completo, con precisione aritmetica arbitraria e un
 numero **illimitato di passi di decodifica**. E quell'ultima ipotesi è
-esattamente la generazione autoregressiva, cioè la seconda strada di cui parla
-il paragrafo qui sotto. Le due prove non si contraddicono, cambiano le ipotesi;
+esattamente la generazione autoregressiva, cioè la strada che percorrono oggi i
+modelli lasciati scrivere finché serve. Le due prove non si contraddicono,
+cambiano le ipotesi;
 ma la morale da portarsi via è che «quanti passi può fare» conta più di «come
 sono legati i pesi», e che una frase secca sull'espressività di
 un'architettura, senza le sue ipotesi accanto, è quasi sempre una frase
@@ -227,7 +250,8 @@ legge.
   finito» e fermarsi. Allora non prese piede, e l'idea è tornata attuale dalla
   parte opposta: i modelli che ragionano spendono più calcolo sulle difficili
   **scrivendo** i passi invece di girare in silenzio. La prima strada costa
-  meno, la seconda si può leggere.
+  meno, la seconda lascia una traccia da leggere, che però non è detto racconti
+  quello che è successo davvero.
 - I limiti sono strutturali: costi concentrati, bias dei dati, e il fatto che
   un modello che sceglie ogni volta la continuazione più probabile non ha modo
   di distinguere il probabile dal vero. Su che cosa questi modelli
@@ -257,8 +281,8 @@ legge.
   limitato a priori.
 - Lo stesso filone è tornato dalla porta opposta: invece di iterare in
   silenzio dentro la pila, i modelli che ragionano allungano la **generazione**
-  e scrivono i passi. Si paga in token prodotti, si guadagna che il
-  ragionamento resta leggibile.
+  e scrivono i passi. Si paga in token prodotti, si guadagna una traccia
+  leggibile, che però non è necessariamente fedele al calcolo svolto.
 - Limiti aperti: il costo quadratico $O(n^2)$ dell'attenzione piena e
   l'archivio degli appunti che cresce a ogni token generato (la *KV cache*);
   costi concentrati e bias dei dati; e lo scarto fra massimizzare la

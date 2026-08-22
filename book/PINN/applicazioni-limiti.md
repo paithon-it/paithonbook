@@ -85,20 +85,29 @@ distinguere due modi opposti di usare un'equazione.
 `````{tab} Elementare
 
 Di un forno conosci tutto: la ricetta, la temperatura, i minuti. Da lì puoi
-prevedere com'è la torta prima ancora di aprirlo: quanto sarà
-gonfia, quanto dorata. Questo è il problema **diretto**: dalla regola completa
-alla conseguenza. È il caffè che si raffredda della sezione d'apertura del
-capitolo: nota la legge, si ricostruisce la curva.
+prevedere com'è la torta prima ancora di aprirlo: quanto sarà gonfia, quanto
+dorata. Cinque gradi in più e viene appena più scura, senza sorprese. Questo è
+il problema **diretto**, dalla regola completa alla conseguenza. È il caffè
+che si raffredda: nota la legge, si ricostruisce la curva.
 
 Il problema **inverso** cammina all'indietro. Non conosci la ricetta: assaggi
 la torta e provi a indovinare le dosi. Quanto zucchero? Quanto lievito? Hai il
 risultato e cerchi la causa che l'ha prodotto. È incomparabilmente più
-difficile (tante ricette diverse possono dare torte simili) ma è quasi sempre
-la domanda che interessa davvero: dalla curva del corpo che si raffredda, a
-che ora è avvenuto il decesso? Dal filmato del tracciante, quanto preme il
-sangue sulla parete? La PINN affronta l'inverso con naturalezza disarmante: la dose ignota
-diventa una manopola in più da girare durante l'addestramento, finché fisica e
-osservazioni non vanno d'accordo.
+difficile. Tante ricette diverse danno torte che al palato si somigliano, e in
+mano hai una fetta sola, magari con il bordo un po' bruciato. Sbagli di poco
+l'assaggio e la dose che ne ricavi sbaglia di molto: un pizzico di sale che
+non avevi sentito, e ti convinci che il lievito fosse il doppio.
+
+Eppure è quasi sempre la domanda che interessa davvero: dalla curva del corpo
+che si raffredda, a che ora è avvenuto il decesso? Dal filmato del tracciante,
+quanto preme il sangue sulla parete? La PINN affronta l'inverso con
+naturalezza disarmante: la dose ignota diventa una manopola in più da girare
+durante l'addestramento, finché fisica e osservazioni non vanno d'accordo.
+
+Indovinare le dosi da un assaggio, del resto, non l'ha inventato la rete. Al
+calcolatore lo si fa da decenni con altri metodi, spesso spendendo meno. Della
+PINN conta che il modo di procedere resta lo stesso, qualunque assaggio
+capiti in mano.
 
 `````
 
@@ -235,36 +244,39 @@ Il primo motivo è che la loss è un **tiro alla fune**.
 
 `````{tab} Elementare
 
-Ricordi la loss della PINN: due termini sommati, uno che tira verso la fisica
-e uno che tira verso quello che si sa già, cioè le misure e il punto di
-partenza. È letteralmente un tiro alla fune, con due squadre alle estremità
-della corda. E c'è una manopola che decide quanto è forte una delle due
-squadre: è quel 100 che nella sezione precedente moltiplicava il termine della
-partenza.
+Nella loss della PINN i termini sono due: uno tira verso la fisica, l'altro
+verso quello che si sa già, cioè le misure e il punto di partenza. Due
+squadre, una per capo della corda. E c'è una manopola che decide quanto è
+forte una delle due squadre: è quel 100 che sulla molla moltiplicava il
+termine della partenza.
 
 Se la giri troppo da una parte, la fisica vince e la rete produce una curva
-liscia e regolare che però ignora le misure; se la giri troppo dall'altra, la
-rete si incolla alle misure sporche e se ne infischia della legge. La
-soluzione buona sta dove le due forze si bilanciano, ma trovare quel punto è
-un'arte, non una formula: nessuna ricetta universale dice quale sia il valore
-giusto. Si prova, si sbaglia, si riprova. Sulla molla della sezione precedente
-l'abbiamo fatto: con la manopola su 1 la curva finiva lontana dalla risposta,
-con la manopola su 100 molto più vicina, e il solo modo di saperlo era che lì,
-per una volta, la risposta la conoscevamo.
+liscia che però ignora le misure; se la giri troppo dall'altra, la rete si
+incolla alle misure sporche e se ne infischia della legge. La soluzione buona
+sta dove le due forze si bilanciano, e trovare quel punto è un'arte: si prova
+e si riprova, nessuna ricetta dice il valore giusto. Sulla molla l'abbiamo
+fatto: con la manopola su 1 la curva finiva lontana dalla risposta, con 100
+molto più vicina, e il solo modo di saperlo era che lì la risposta la
+conoscevamo.
 
 E no, non si può lasciarla girare all'addestramento come si fa con la
 rigidezza della molla nel problema inverso, anche se la parola «manopola» è la
 stessa. L'addestramento gira le manopole nella direzione che abbassa il
-punteggio; se gli si desse in mano anche questa, la porterebbe subito a zero,
-perché azzerare una delle due squadre è il modo più rapido di far scendere il
-totale. Le manopole che decidono *come si dà il voto* non possono essere
-girate da chi il voto lo sta prendendo.
+punteggio, e questa la porterebbe subito a zero, perché azzerare una delle due
+squadre è il modo più rapido di far scendere il totale. Chi prende il voto non
+decide come si dà il voto.
 
-Una nota di lettura, per quando si incontrerà una di queste formule scritte da
-altri. Alla manopola si dà per nome una lettera greca, «lambda», e chi scrive
-la mette davanti all'una o all'altra squadra a seconda di quale gli sembra
-debole. Non cambia niente: a contare è solo il rapporto fra le due forze, e
-raddoppiare una squadra o dimezzare l'altra è la stessa cosa.
+Nelle formule scritte da altri quella manopola porta per nome la lettera greca
+«lambda», e la si trova davanti all'una o all'altra squadra: a contare è il
+rapporto fra le due forze.
+
+Poi c'è un guaio che nessuna posizione della manopola sistema. La squadra
+della fisica tira in base a quanto la curva si piega, e il piegamento cambia
+moltissimo per uno spostamento minimo. Un capello, e la sua forza raddoppia.
+Con un avversario che strattona così non c'è passo che vada bene, e si avanza
+al rallentatore o non si avanza affatto. Un rimedio che funziona è cominciare
+da una legge addolcita e irrigidirla poco alla volta, mentre la curva si
+sistema.
 
 `````
 
@@ -314,9 +326,22 @@ fretta la forma d'insieme, aggiunge i particolari fini con enorme lentezza.
 Per molti problemi va benissimo. Ma certe soluzioni fisiche *sono* fatte di
 increspature rapide: l'aria attorno a un aereo supersonico, che cambia di
 colpo nello spazio di pochi centimetri; l'acqua di un fiume in piena, tutta
-vortici piccoli; il bordo netto fra due masse d'aria che avanza. Lì la rete
-arranca proprio dove servirebbe precisa, e le mancano esattamente i dettagli
-che contano.
+vortici piccoli; il bordo fra due masse d'aria che avanza, dove la temperatura
+cambia tutta nello spazio di pochi chilometri. Lì la rete arranca proprio dove
+servirebbe precisa, e le mancano esattamente i dettagli che contano.
+
+Su un bordo tagliato col coltello succede qualcosa di peggio. Il voto che dice
+al pittore se sta migliorando si dà misurando di quanto cambia il colore da un
+punto a quello accanto, e su un salto netto quella domanda non ha risposta. La
+lentezza non c'entra più: lì il voto non vuol dire niente, e ne servirebbe un
+altro, dato su una macchia intera invece che su un punto.
+
+C'è poi il quadro lunghissimo, una giornata intera dipinta su una parete.
+Nessuno obbliga il pittore a partire da sinistra e ad andare in ordine: ritocca
+un pezzo qua e uno là, ogni tratto guardato da vicino sta in piedi, ma l'alba
+che gli avevano dato non arriva mai in fondo alla parete. Viene fuori una
+giornata piatta e senza ore, che passa tutti i controlli da vicino ed è
+sbagliata guardata intera.
 
 `````
 
@@ -412,17 +437,27 @@ sbarra, e si riaddestra da capo.
 `````{tab} Elementare
 
 Chi ha risolto un problema di fisica sa la risposta a quel problema; chi ha
-imparato il *metodo* li risolve tutti, anche quelli che non ha mai visto, senza
-rifare la fatica ogni volta.
+imparato il *metodo* risolve anche quelli che non ha mai visto, purché
+somiglino a quelli su cui si è esercitato, e senza rifare la fatica ogni
+volta.
 
-C'è una famiglia di reti che fa la seconda cosa. Invece di imparare *la
+C'è una famiglia di reti che impara il metodo. Invece di imparare *la
 soluzione* di un problema, imparano il procedimento che porta dalla domanda
-alla risposta: dammi una qualsiasi temperatura di partenza, una qualsiasi
-forma del contenitore, e ti restituisco la curva giusta, subito, senza
-riaddestrare nulla. Hai imparato il mestiere, non il singolo compito, ed è
-riusabile all'infinito. Quelle reti si chiamano **operatori neurali**, dove
-«operatore» è il nome che i matematici danno appunto a un procedimento che
-prende una cosa intera e ne restituisce un'altra intera.
+alla risposta: dammi una temperatura di partenza qualsiasi, una forma del
+contenitore qualsiasi, e ti restituisco subito la curva, senza riaddestrare
+niente. È un'approssimazione, buona ma non esatta, e arriva in un istante. Hai
+imparato il mestiere, non il singolo compito, ed è riusabile all'infinito.
+
+Il mestiere ha i suoi confini, come li ha quello di una persona. Chi si è
+allenato sulle sbarre di ferro che si scaldano non sa per questo come si
+raffredda una stanza, e la rete portata fuori dal suo terreno risponde lo
+stesso, con la stessa sicurezza, e risponde male. Una rete abbastanza grande
+da imparare quel mestiere esiste di sicuro, lo dice un teorema; quanto grande
+debba essere, il teorema non lo dice.
+
+Quelle reti si chiamano **operatori neurali**, dove «operatore» è il nome che
+i matematici danno appunto a un procedimento che prende una cosa intera e ne
+restituisce un'altra intera.
 
 `````
 
@@ -553,16 +588,21 @@ capitolo per capitolo, era troppo vicino per vedersi.
   di mappe del tempo passato.
 - Limiti, senza sconti {cite}`krishnapriyan2021characterizing`: il metodo
   fallisce anche su problemi facili; la manopola che bilancia le due squadre
-  del tiro alla fune va trovata a mano provando; la rete impara in fretta le
-  forme d'insieme e arranca sui dettagli fini (il pittore che lascia le foglie
-  per ultime). E soprattutto, come si è visto sulla molla, **un punteggio
-  basso non vuol dire risposta giusta**.
+  del tiro alla fune va trovata a mano provando, e resta un guaio che nessuna
+  posizione della manopola sistema, perché la squadra della fisica strattona a
+  ogni passo (si rimedia partendo da una legge addolcita, da irrigidire poco
+  alla volta); la rete impara in fretta le forme d'insieme e arranca sui
+  dettagli fini (il pittore che lascia le foglie per ultime). E soprattutto,
+  come si è visto sulla molla, **un punteggio basso non vuol dire risposta
+  giusta**.
 - Sui problemi ordinari il conto a passettini di sempre vince quasi sempre,
   in velocità e in garanzie. Le PINN si affiancano, non sostituiscono.
 - Il passo successivo sono reti che imparano **il metodo invece del singolo
   compito**: una volta addestrate rispondono a qualunque situazione simile
-  senza rifare la fatica. È il motivo per cui certe previsioni meteo escono in
-  secondi anziché in ore.
+  senza rifare la fatica, con una risposta approssimata ma buona, ed è il
+  motivo per cui certe previsioni meteo escono in secondi anziché in ore.
+  Fuori dal terreno su cui si sono allenate, però, rispondono lo stesso, con
+  la stessa sicurezza, e sbagliano.
 - I confronti di velocità che si leggono in giro vanno però verificati, e la
   storia più istruttiva non riguarda il meteo ma il problema di prova su cui
   quella famiglia si è fatta conoscere: dichiarato mille volte più rapido del

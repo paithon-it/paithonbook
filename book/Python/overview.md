@@ -47,6 +47,12 @@ della libreria sono a disposizione. La libreria deve però essere già presente
 sul computer, e installarla è un gesto a parte, che si fa una volta sola: come
 si fa lo vediamo fra poco.
 
+Sui calcoli pesanti, da solo, Python è lento; quei calcoli però non li fa
+quasi mai lui. Le librerie importanti sono scritte in linguaggi più veloci ma
+più faticosi da usare, e Python fa il capocantiere, quello che legge il
+progetto e dà gli ordini alle squadre. Tu scrivi la riga chiara; il muro lo
+tira su chi ha gli attrezzi per farlo in fretta.
+
 `````
 
 `````{tab} Superiore
@@ -191,6 +197,13 @@ quaderno digitale fatto di celle, dove testo, codice, grafici e formule
 convivono nella stessa pagina. Scrivi una cella, la esegui, guardi il grafico
 che appare lì sotto. È il modo in cui gran parte del machine learning viene
 davvero insegnato e praticato.
+
+Le celle però condividono la memoria: quello che una ha calcolato resta a
+disposizione delle altre. La comodità ha un tranello. Se esegui le celle in un
+ordine diverso da come stanno sulla pagina, il quaderno segue l'ordine dei
+tuoi clic, non quello delle righe, e può mostrare un risultato che, rileggendo
+la pagina, non torna. Il rimedio, quando succede, è rieseguire tutto da capo,
+dall'alto in basso.
 
 E se non vuoi installare nulla? **Google Colab** ti dà un notebook nel
 browser, gratuito, e spesso con una scheda grafica in prestito: abbastanza per

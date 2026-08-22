@@ -27,10 +27,32 @@ coperti. Se apparecchi per uno, scendi una volta lo stesso, e quella fatica se
 la prende un coperto solo. E se ti tocca scendere una volta per ogni coperto,
 passi la giornata sulle scale e in cucina non fai niente.
 
+Sulle scale o ai fornelli, dove ti si ferma la giornata lo decide il paragone
+fra due tempi tuoi: quanti coperti apparecchieresti nel tempo di un viaggio, e
+quanti coperti ti dà davvero un viaggio. Se nel tempo di un viaggio ne
+apparecchi cento e da ogni viaggio ne esce uno, comandano le scale. Se da un
+viaggio ne escono duecento, mentre apparecchi c’è tutto il tempo per il viaggio
+dopo, e a comandare tornano le mani. Quel confine dipende dalla casa, e con
+scale più corte, o mani più lente, si sposta.
+
 Un calcolatore fa esattamente questo. I pesi del modello stanno «in cantina»,
 cioè nella memoria, e per farci un conto qualunque bisogna portarli su. Sono
 tanti (in un modello vero, gigabyte) e il viaggio costa uguale che li si usi
 per una cosa sola o per duecento insieme.
+
+Le casse però non pesano per forza così. Scrivere ogni peso con metà delle
+cifre è una cantina in cui ogni cassa pesa la metà. In braccio ne stanno due, i
+viaggi si dimezzano, e gli stessi coperti escono da metà scale, quindi il
+rapporto fra coperti e viaggi raddoppia. Ecco perché togliere bit ai pesi non
+serve soltanto a farli entrare in cantina. Finché a tenerti fermo sono le
+scale, fa anche arrivare la cena prima.
+
+Dalla cantina, poi, non salgono solo le casse. Ogni coperto ha la sua roba
+(piatto, bicchiere, posate), e quella cresce col numero dei coperti. Per un
+coperto o quattro non si sente. Per duecentocinquantasei aggiunge un ottavo al
+carico, e da ogni viaggio escono meno coperti di quanti il conto pulito ne
+prometta. Il conto tiene finché i coperti sono pochi rispetto a quanto pesano
+le casse.
 
 Quindi la domanda che decide tutto non è quanti conti ci sono da fare, è
 **quanti conti si riescono a fare per ogni viaggio in cantina**. La tabella qui

@@ -78,21 +78,27 @@ in mano l'esecuzione, solo la richiesta.
 
 `````{tab} Elementare
 
-Un dirigente competente ha una regola personale: non fa mai i conti a mano e
-non si fida della propria memoria per i dettagli. Sulla scrivania ha una
-calcolatrice, un telefono e uno schedario. Quando gli chiedi
-«quanto fa il totale della commessa?» non azzarda una cifra: prende la
-calcolatrice. Quando gli chiedi «qual è l'indirizzo del cliente?» apre lo
-schedario. La sua bravura non sta nel *sapere* tutto, ma nel **capire quale
-attrezzo serve** e nell'usarlo bene.
+Sulla scrivania di un dirigente competente non c'è nessun attrezzo: c'è un
+blocco di moduli. La calcolatrice, il telefono e lo schedario stanno nella
+stanza accanto, dove lavora la sua assistente. Alla domanda «quanto fa il
+totale della commessa?» lui non azzarda una cifra e non si alza a fare il
+conto: riempie un modulo, lo passa di là, e aspetta. Il foglio con il risultato
+torna sulla scrivania, fra le carte che rilegge prima di decidere.
 
-Il tool use è esattamente questo. Al modello diamo un elenco di attrezzi,
-ognuno con un'etichetta che dice a cosa serve: «calcolatrice: fa i conti
-esatti», «motore di ricerca: trova pagine aggiornate», «archivio: cerca un
-dato». Quando arriva una domanda, il modello non prova a rispondere di
-pancia: sceglie l'attrezzo giusto, scrive cosa infilarci dentro, aspetta il
-risultato e lo usa. Un modello che sa dire «questo non lo so a memoria, ma so
-*chi* lo sa» è più affidabile di uno che indovina sempre.
+Il tool use è questo giro. Al modello diamo un blocco di moduli, uno per
+attrezzo, e ognuno dice tre cose: come si chiama («calcolatrice»), a che cosa
+serve («fa i conti esatti») e quali caselle riempire perché la richiesta si
+possa eseguire («il conto da fare»). La riga che dice a che cosa serve è quella
+su cui il modello sceglie: un modulo intestato «pratiche varie» non lo prende
+in mano nessuno, perché non si capisce quando servirebbe. E se nessuna casella
+è marcata come indispensabile, tocca indovinare quali riempire, e di là arriva
+una richiesta che non si può eseguire.
+
+Chi sta di là non esegue a occhi chiusi: legge il modulo, e se manca un dato o
+se la cosa chiesta non è nell'elenco torna indietro senza aver fatto niente. Il
+modello non tiene mai in mano un attrezzo: tutto quello che fa è scrivere.
+Compilare bene quei moduli, del resto, si impara vedendone tanti già compilati
+bene.
 
 `````
 
@@ -125,7 +131,7 @@ righe che il modello decide cosa scrivere, e uno schema che non dice cosa è
 obbligatorio glielo lascia indovinare. Il nome della
 chiave che lo contiene invece cambia da un fornitore all'altro
 (`parameters`, `input_schema`, `inputSchema`); la forma dello schema no, ed è
-quella che vale la pena ricordare.
+quella che conta.
 
 La descrizione non è decorazione: è il testo su cui il modello ragiona per
 decidere *se* e *quando* invocare lo strumento, ed è quindi parte del prompt a
@@ -214,23 +220,29 @@ differenza fra le due difficoltà è il voto che Toolformer dà alla chiamata.
 `````{tab} Elementare
 
 Come impara un bambino a usare la calcolatrice? Provando. Fa un conto a mente,
-controlla con la calcolatrice, e nota che nei conti lunghi la calcolatrice ci
-azzecca dove lui sbaglia: così, la volta dopo, per i conti lunghi la prende
-subito. Toolformer fa qualcosa di simile con se stesso, ma con un'unica prova
-a disposizione, perché non ha un foglio delle soluzioni da confrontare.
+controlla con la macchina, e nei conti lunghi scopre che la macchina ci azzecca
+dove lui sbaglia: la volta dopo, per i conti lunghi, la prende subito.
+Toolformer si allena così su se stesso, e il compito su cui si corregge è un
+testo già scritto da altri, di cui conosce ogni parola.
 
-Prende una montagna di testo già scritto e, qua e là, prova a infilare una
-chiamata a uno strumento. Poi si chiede: **con il risultato dell'attrezzo
-davanti, il resto della frase mi viene più facile?** Prendi «quattrocento su
-millequattrocento, cioè il 29%»: se in mezzo qualcuno ha messo il risultato
-della divisione, «0,29», scrivere «29%» subito dopo diventa quasi obbligato; se
-non c'è, bisogna tirare a indovinare. Quel salto di facilità è la prova che
-l'attrezzo serviva lì.
+Prende quel testo e, qua e là, prova a infilarci dentro la chiamata a uno
+strumento (per scriverla gli bastano due o tre esempi già fatti). Poi si copre
+il seguito e prova a indovinarlo due volte: una con il risultato dell'attrezzo
+davanti agli occhi, una senza. Prendi «quattrocento su millequattrocento, cioè
+il 29%»: con «0,29» scritto in mezzo, «29%» viene quasi da sé; senza, è un tiro
+a indovinare. Se il salto di facilità è grosso, l'attrezzo lì serviva; se è
+piccolo, non conta.
 
-Le chiamate che superano la prova le tiene, le altre le butta. Alla fine si è
-fabbricato da solo un quaderno di esercizi («qui conveniva la calcolatrice»,
-«qui conveniva la ricerca») e ci studia sopra. Nessun insegnante gli ha detto
-dove mettere gli attrezzi: l'ha scoperto misurando quanto lo aiutavano.
+Due cautele tengono onesta la misura. Prova anche a infilare la chiamata
+lasciando vuoto il posto del risultato: se le parole dopo diventano facili lo
+stesso, ad aiutare non era il numero. E guarda vicino, cioè le parole
+che vengono subito dopo, non tutto il resto del foglio.
+
+Le chiamate promosse le tiene, le altre le butta, e sul quaderno di esercizi
+che ne esce ci studia sopra. Nessun insegnante gli ha detto dove mettere gli
+attrezzi: l'ha scoperto misurando quanto lo aiutavano. Un attrezzo alla volta,
+però: cercare un numero da qualche parte e poi usarlo nel conto, quello non lo
+impara.
 
 `````
 
@@ -245,35 +257,37 @@ inserito nel contesto, **riduce la cross-entropia pesata** sui token
 immediatamente successivi, rispetto al non chiamare o a un risultato inutile:
 
 $$
-L_i^{\text{con}} < L_i^{\text{senza}} - \tau,
+\mathcal{L}_i^{\text{con}} < \mathcal{L}_i^{\text{senza}} - \tau,
 \qquad
-L_i = -\sum_{j \ge i} w_{j-i}\, \log p(x_j \mid \dots),
+\mathcal{L}_i = -\sum_{j \ge i} w_{j-i}\, \log p(x_j \mid \dots),
 $$
 
-dove $L_i^{\text{con}}$ e $L_i^{\text{senza}}$ sono la perdita futura con e
-senza la chiamata inserita in posizione $i$ ($L_i^{\text{senza}}$ è il
-**minimo** fra il non chiamare affatto e il chiamare senza ottenere nulla di
-utile), $\tau$ è una soglia di utilità, e i pesi $w_t$ calano linearmente
-fino ad **annullarsi dopo cinque token**. Il dettaglio dei pesi non è
-pignoleria: dice che ciò che si misura è se la chiamata aiuta a scrivere la
-frase in corso, non il resto del documento, ed è la ragione per cui il filtro
-non annega nel rumore. Le chiamate che superano il filtro diventano un dataset
-aumentato, e il modello ci viene messo a punto sopra con il consueto obiettivo
+dove $\mathcal{L}_i^{\text{con}}$ e $\mathcal{L}_i^{\text{senza}}$ sono la
+perdita futura con e senza la chiamata inserita in posizione $i$
+($\mathcal{L}_i^{\text{senza}}$ è il **minimo** fra il non chiamare affatto e
+il chiamare senza ottenere nulla di utile), $x_j$ sono i token che nel testo
+originale seguono quel punto e $p(x_j \mid \dots)$ la probabilità che il
+modello assegna loro, $\tau$ è una soglia di utilità, e i pesi $w_{j-i}$
+dipendono solo dalla distanza dal punto della chiamata: calano linearmente
+fino ad **annullarsi dopo cinque token**. Quei pesi dicono una cosa precisa:
+ciò che si misura è se la chiamata aiuta a scrivere la frase in corso, non il
+resto del documento, ed è la ragione per cui il filtro non annega nel rumore.
+Le chiamate che superano il filtro diventano un dataset aumentato, e il
+modello ci viene messo a punto sopra con il consueto obiettivo
 auto-supervisionato. Il risultato è un modello che, a inferenza, decide *da
 sé* quando emettere una chiamata, perché ha imparato che in quei punti la
 chiamata paga in termini di predizione. Il criterio è puramente interno
 («l'attrezzo mi aiuta a continuare il testo?») e non richiede alcuna etichetta
 umana su dove usarlo.
 
-Vale la pena chiudere con il limite che gli autori dichiarano, perché è
-esattamente il confine di questa sezione. Toolformer decide *dove* chiamare,
+Gli autori dichiarano un limite preciso, ed è il confine fra usare uno
+strumento e condurre un compito. Toolformer decide *dove* chiamare,
 non *come* comporre: non sa usare gli strumenti in **catena** (l'uscita di uno
 come ingresso di un altro) né in modo **interattivo** (raffinare la richiesta
 guardando il risultato), ed è ciò che serve a un agente. È il salto che
-affronta il pattern delle prossime pagine, e conviene dire subito che non gli
-è succeduto: quel pattern è dell'ottobre 2022, Toolformer del febbraio
-successivo. Non sono due tappe di una scala, sono due risposte a due domande
-diverse.
+affronta ReAct, che però non gli è succeduto: ReAct è dell'ottobre 2022,
+Toolformer del febbraio successivo. Non sono due tappe di una scala, sono due
+risposte a due domande diverse.
 
 `````
 
@@ -351,14 +365,17 @@ controllasse a caso, senza ragionare, si perderebbe tra mille indizi inutili.
 ReAct fa fare al modello tutti e due i mestieri: pensa per decidere dove
 guardare, guarda per correggere ciò che pensa.
 
-Non è però un guadagno gratis, e conviene saperlo subito. Un detective che si
-è imposto di controllare ogni intuizione prima di proseguire fa meno voli di
-fantasia, ma finisce anche per pensare di meno: la mossa dopo gliela suggerisce
-sempre l'ultimo documento che ha letto, e le catene di ragionamento lunghe, che
-faceva quando ragionava e basta, smette di farle. Si aggiunge poi un modo di
-fallire che prima non c'era: il registro che va a consultare può non dirgli
-niente di utile, e a quel punto è fermo, mentre chi ragionava per conto proprio
-almeno un'ipotesi la produceva.
+Il guadagno però si paga. Un detective che controlla ogni intuizione prima di
+proseguire fa meno voli di fantasia, e finisce anche per pensare di meno: la
+mossa dopo gliela detta l'ultimo documento che ha letto, e le catene lunghe di
+ragionamento smette di farle. E c'è un modo di fallire che prima non aveva: il
+registro può non dirgli niente di utile, e lì resta fermo, mentre chi ragionava
+per conto proprio almeno un'ipotesi la produceva.
+
+Un'ultima cosa, su quel parlare a voce alta. Il ragionamento che il detective
+recita suona convincente, ma resta un racconto, e certe volte è costruito dopo,
+per far quadrare una mossa presa d'istinto. Le cose su cui contare sono i
+registri che ha davvero aperto e quello che c'era scritto dentro.
 
 `````
 
@@ -424,10 +441,9 @@ sotto gli occhi.
 
 `````{tab} Elementare
 
-È ciò che fa un buon studente dopo un compito andato male. Non si limita a
-riprovare identico: rilegge l'errore e se lo dice a parole, «ho sbagliato
-perché ho applicato la formula prima di convertire le unità; la prossima volta
-converto per prima cosa». Quella frase, appuntata a margine, alla prova
+Un buon studente, dopo un compito andato male, non riprova identico: rilegge
+l'errore e se lo dice a parole, «ho sbagliato perché ho applicato la formula
+prima di convertire le unità; la prossima volta converto per prima cosa». Quella frase, appuntata a margine, alla prova
 successiva vale più di mille esercizi ripetuti a testa bassa, perché indirizza
 il tentativo nuovo lontano dallo stesso scoglio.
 
@@ -437,6 +453,10 @@ fallisce, il modello genera una piccola auto-critica in linguaggio naturale
 tentativo seguente. Non cambia un solo peso della rete: cambia solo ciò che il
 modello *legge* prima di riprovare. Eppure spesso basta, perché l'errore che
 prima era invisibile ora è scritto nero su bianco all'inizio della pagina.
+
+Il voto, intanto, lo mette il professore, che segna gli errori in rosso e non
+ha interesse a essere gentile. Uno studente che si corregge il compito da solo
+si dà il visto proprio dove ha sbagliato.
 
 `````
 
@@ -448,20 +468,19 @@ di aggiornare i parametri con un gradiente, il segnale di rinforzo è
 compito; un *valutatore* che assegna un esito al tentativo (una ricompensa, il
 superamento o meno di test, il raggiungimento dell'obiettivo); e un *modulo di
 auto-riflessione* che, letta la traccia fallita e il suo esito, produce una
-critica verbale; «l'azione X non ha dato il risultato atteso, conviene provare
+critica verbale: «l'azione X non ha dato il risultato atteso, conviene provare
 Y». Questa critica finisce in una **memoria episodica** che viene anteposta al
 contesto del tentativo successivo. Sui compiti di programmazione gli autori
 misurano un guadagno netto di *pass@1*: iterare sull'auto-critica, senza
 toccare i pesi, recupera una fetta consistente dei casi inizialmente falliti.
 
-Su quel guadagno conviene però leggere la lettera piccola, perché riguarda il
-distinguo che chiude questa sezione. Il *valutatore* che dice «hai sbagliato»
-non è, in quegli esperimenti di programmazione, un giudice esterno: è una
+La lettera piccola di quel guadagno riguarda chi fa il giudice. Il
+*valutatore* che dice «hai sbagliato» non è, in quegli esperimenti di
+programmazione, un giudice esterno: è una
 batteria di test **generata dal modello stesso**, e gli autori dichiarano che
 può promuovere una soluzione sbagliata (tutti i test passano su un programma
-errato) o bocciarne una giusta. È un segnale d'esito, ma auto-prodotto: sta
-dalla parte scivolosa della riga che stiamo per tracciare, non da quella
-solida.
+errato) o bocciarne una giusta. È un segnale d'esito, ma auto-prodotto: il
+caso in cui l'auto-critica ha meno di solido su cui appoggiarsi.
 
 `````
 
@@ -668,13 +687,13 @@ dei documenti.
 :class: important
 - Un modello da solo è murato: non sa l'ora, sbaglia i conti lunghi, ignora
   quello che è successo dopo il suo addestramento. Il **tool use** gli dà le
-  mani: invece di rispondere di pancia, scrive per uno strumento quello che
-  nella sezione di apertura era il **bigliettino d'ordine** del cuoco; il
-  programma che gli sta attorno lo esegue e gli riporta il risultato, che il
-  modello ritrova davanti al giro dopo.
-- Ogni strumento si presenta con una scheda: come si chiama, a cosa serve, e
+  mani: invece di rispondere di pancia, scrive per uno strumento il
+  **bigliettino d'ordine** che il cuoco passava al cameriere; il programma che
+  gli sta attorno lo esegue e gli riporta il risultato, che il modello ritrova
+  davanti al giro dopo.
+- Ogni strumento si presenta con un modulo: come si chiama, a cosa serve, e
   cosa bisogna infilarci dentro perché funzioni. Il modello impara a scegliere
-  l'attrezzo giusto e a riempirlo bene. **Toolformer**
+  l'attrezzo giusto e a riempire bene il modulo. **Toolformer**
   {cite}`schick2023toolformer` lo impara perfino **da solo**, come il bambino
   che scopre quando gli conviene la calcolatrice: prova a infilare una chiamata
   qua e là e tiene quelle che lo aiutano a indovinare meglio le parole

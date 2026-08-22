@@ -25,23 +25,30 @@ cornice molto più larga di quel che sembra, e contiene una liberazione.
 
 A una festa a coppie c’è un buttafuori. Il suo mestiere è
 giudicare la coppia che ha davanti: questi due stanno bene insieme, passano;
-questi due no. Nota che cosa *non* gli serve: non deve conoscere tutte le
-persone della città, né compilare una classifica completa di tutti gli
-abbinamenti possibili con le percentuali esatte che sommano a cento. Gli basta
-un giudizio di compatibilità, coppia per coppia. Un modello a energia è questo
-buttafuori: dare la *probabilità* di ogni risposta possibile (come fanno i
-modelli probabilistici) è un lavoro immane, perché per dire «70%» su una
-risposta devi aver messo in conto *tutte* le altre; dire «questa coppia sì,
-quella no» è enormemente più economico, e per moltissimi compiti basta e
-avanza.
+questi due no. Non gli serve conoscere tutte le persone della città, né
+compilare la classifica di tutti gli abbinamenti possibili con le percentuali
+esatte che sommano a cento. Gli basta un giudizio, coppia per coppia. Un
+modello a energia è questo buttafuori: dare la *probabilità* di ogni risposta
+possibile, come fanno i modelli probabilistici, è un lavoro immane, perché per
+dire «70%» su una risposta devi aver messo in conto tutte le altre; dire
+«questa coppia sì, quella no» è enormemente più economico, e per moltissimi
+compiti basta e avanza.
 
-C'è però un pericolo, e ha un nome preciso: il **collasso**. Immagina il
-buttafuori pigro che ha scoperto la scorciatoia perfetta: dire sempre sì.
-Chiunque si presenti, passa. Nessuna coppia si lamenta mai, e il suo giudizio
-non vale più niente. Se durante l'addestramento premi il modello solo quando
-dà energia bassa alle coppie giuste, la soluzione più comoda è dare energia
-bassa *a tutto*. I rimedi sono due, e li vedremo fra poco: si può istruire il
-buttafuori, oppure cambiargli la porta.
+Rispondere è un altro mestiere. Portagli una persona sola e chiedigli con
+chi dovrebbe entrare: adesso deve scorrere la fila e tenersi il migliore che
+ha visto. Un giudizio costa poco, mille giudizi costano mille volte tanto, e
+quando i candidati sono tutte le frasi possibili la fila non finisce mai. In
+fondo non ci arriva nessuno. Quello che ti consegna è il migliore fra quelli
+che ha guardato, e nessuno può giurare che più indietro non ce ne fosse uno
+più adatto. Il risparmio sulle percentuali è vero; la fila, però, si paga.
+
+C'è poi un pericolo, e ha un nome preciso: il **collasso**. Il buttafuori pigro
+ha scoperto la scorciatoia perfetta: dire sempre sì. Chiunque si presenti,
+passa. Nessuna coppia si lamenta mai, e il suo giudizio non vale più niente. Se
+durante l'addestramento premi il modello solo quando dà energia bassa alle
+coppie giuste, la soluzione più comoda è dare energia bassa a tutto. I rimedi
+sono due, e li vedremo fra poco: si può istruire il buttafuori, oppure
+cambiargli la porta.
 
 `````
 
@@ -108,8 +115,9 @@ essere il fondovalle più basso di tutti oppure no.
 
 ## Il collasso, e le due famiglie di rimedi
 
-Il collasso, il buttafuori che dice sempre sì, conviene guardarlo da vicino
-partendo da come si addestra un modello, perché è lì che si previene. Gli si
+Il collasso, cioè l'energia bassa dappertutto e il sì a qualunque cosa,
+conviene guardarlo da vicino partendo da come si addestra un modello, perché è
+lì che si previene. Gli si
 mostra una coppia, si guarda che voto le dà, e si ritocca il modello perché
 quel voto somigli di più a quello che volevamo. La regola con cui si decide
 «di quanto ha sbagliato» è una scelta, e di regole possibili ce ne sono

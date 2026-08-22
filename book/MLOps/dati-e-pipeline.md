@@ -50,13 +50,21 @@ citando quel codice chiunque ritrova *esattamente* quei dati, non una loro
 versione simile.
 
 Il trucco per farlo senza duplicare montagne di file è un'impronta digitale.
-Immagina di passare l'intero dataset in un tritatutto che ne ricava un codice
-corto (poche decine di caratteri) con una proprietà magica: se cambi anche un
-solo pixel, il codice cambia del tutto; se il dataset è identico, il codice è
-identico. Così, invece di conservare cento copie dei dati dentro il progetto,
-conservi solo i cartellini, e i dati veri stanno una volta sola in un
-magazzino a parte. Il progetto dice «mi servono i dati con il cartellino
-`a3f8…`», e il magazzino li consegna.
+L'intero dataset passa in un tritatutto che ne ricava un codice corto (poche
+decine di caratteri) con una proprietà preziosa: se cambi anche un solo pixel,
+il codice cambia del tutto; se il dataset è identico, il codice è identico.
+Così, invece di conservare cento copie dei dati dentro il progetto, conservi
+solo i cartellini, e i dati veri stanno una volta sola in un magazzino a parte.
+Il progetto dice «mi servono i dati con il cartellino `a3f8…`», e il magazzino
+li consegna. Quando arrivano, li ripassi nel tritatutto: se il codice che ne
+esce è quello scritto sul cartellino, per strada non si è rotto niente.
+
+Niente si corregge sul posto: chi cambia i dati ne deposita una versione nuova,
+con un cartellino nuovo, e la vecchia resta dov'era, così un lavoro di sei mesi
+fa ritrova i dati che aveva usato. E sul modello finito si scrive di quali
+cartellini è fatto, quelli dei dati e quello del programma: mesi dopo, quando
+qualcuno chiede da dove viene una certa risposta, si risale all'indietro fino
+al dato di partenza.
 
 `````
 
@@ -138,13 +146,20 @@ quel carico si scarta e non entra. Una pipeline di dati è questo: passaggi
 collegati, ognuno con un compito e con il suo controllo, che trasformano il
 dato grezzo in dato pronto senza che nessuno intervenga a mano ogni volta.
 
+A far partire i reparti non c'è una persona che va a memoria: c'è un quadro
+comandi. Sa che l'analisi viene prima della pastorizzazione, manda avanti
+insieme i reparti che non si intralciano, e se una macchina si pianta la fa
+ripartire. Ogni reparto lascia poi il suo prodotto in una vasca con la data
+sopra, e ripassare lo stesso latte nello stesso reparto dà sempre lo stesso
+latte: così, quando cambia solo l'etichetta delle bottiglie, si riparte dalla
+vasca del pastorizzato invece che dalle stalle.
+
 Il pericolo ha un nome pittoresco: la **pipeline jungle**, la «giungla di
 tubature». Nasce così: qualcuno aggiunge di fretta uno script per sistemare un
 caso particolare, poi un altro sopra il primo per rattoppare un nuovo problema,
 e mesi dopo nessuno capisce più quale tubo alimenta quale, né cosa succede se ne
 tocchi uno. La cura non è un attrezzo magico ma una disciplina: passaggi
-piccoli, dichiarati, ognuno ripetibile da solo, e nessuna trasformazione «a
-mano» che non lasci traccia.
+piccoli, dichiarati, e nessuna trasformazione «a mano» che non lasci traccia.
 
 `````
 
@@ -190,39 +205,37 @@ elenco di tutte le città, e così via.
 Quale conviene dipende da cosa fai. E quello che si fa per addestrare un
 modello è sempre lo stesso: leggere **tre colonne su ottanta**, per tutti. Con
 l'archivio per riga devi attraversare l'intero milione di schede e scartare il
-$96\%$ di ciò che leggi (77 voci buttate ogni 80). Non è pigrizia di chi ha
-scritto il programma: un disco non consegna un valore alla volta, consegna
-blocchi interi, e le tre voci che ti servono sono sparse dentro un milione di
-schede, una qui e una là. Prenderle senza prendere anche il resto è
-impossibile. Con l'archivio per colonna, invece, i tre elenchi che ti servono
-stanno già tutti insieme: li prendi e il resto non lo tocchi nemmeno.
+$96\%$ di ciò che leggi (77 voci buttate ogni 80): il disco consegna blocchi
+interi, e le tre voci che ti servono stanno sparse una qui e una là. Con
+l'archivio per colonna i tre elenchi stanno già tutti insieme: li prendi e il
+resto non lo tocchi nemmeno.
 
-C'è un secondo guadagno, meno ovvio e spesso più grosso: **valori simili stanno
-vicini**. In una colonna di città ci sono migliaia di «Milano» di fila, in una
-di date ci sono numeri che crescono di poco alla volta. Roba del genere si
-comprime benissimo, mentre in una scheda per riga ogni valore è circondato da
-valori di natura diversa e la compressione ha poco da mordere.
+Ogni elenco, poi, è spezzato in cassetti, con scritto fuori il valore più
+piccolo e il più grande che contengono: chi cerca le spese sopra i mille euro
+salta i cassetti che si fermano a cento, senza aprirli.
+
+C'è un secondo guadagno, meno ovvio. Nella colonna delle città ci sono
+migliaia di «Milano» di fila, e allora «Milano» si scrive una volta sola e poi
+ci si rimanda con un numerino; nella scheda per riga ogni valore è circondato
+da valori di natura diversa, e non c'è niente da riconoscere.
+
+Da solo, però, l'archivio riconosce soltanto i valori ripetuti. Una colonna di
+orari che crescono di pochi secondi alla volta sembrerebbe il caso più facile
+del mondo (si scrive il primo e poi gli scattini) e invece se la cava male: di
+orari uguali non ce n'è quasi nessuno. Quel risparmio bisogna chiederlo
+apposta, e chi non lo sa se lo perde.
 
 Il formato per colonna più usato si chiama **Parquet**, e in più tiene i tipi
 delle colonne (che il CSV non ha: per lui è tutto testo, ed è il motivo per cui
 un codice postale che comincia per zero si trasforma in un numero e perde lo
 zero).
 
-Poi c'è **Arrow**, che risolve un problema diverso: non come i dati stanno sul
-disco, ma come stanno **in memoria**. Sono due posti diversi dentro un
-computer: il disco è l'armadio, dove le cose restano anche a macchina spenta;
-la memoria è il tavolo su cui le tiri fuori per lavorarci, molto più veloce e
-molto più piccolo.
-
-Il guaio è che ogni programma, sul suo tavolo, dispone i dati a modo proprio.
-Quando due programmi si passano una tabella, il primo deve quindi riscriverla
-nella forma che il secondo capisce, e su una tabella grande quella traduzione
-costa più del lavoro vero. Arrow è l'accordo che toglie di mezzo il problema:
-se tutti e due dispongono i dati alla stessa maniera, non c'è niente da
-riscrivere. Il secondo programma guarda direttamente lo stesso pezzo di tavolo
-del primo, e il passaggio non costa nulla. È il motivo per cui questo accordo,
-che nessuno nomina mai, sta sotto strumenti che sembrano non avere niente in
-comune, compresi quelli con cui si maneggiano le tabelle in Python.
+Poi c'è **Arrow**, che non riguarda il disco ma la memoria: il disco è
+l'armadio dove le cose restano anche a macchina spenta, la memoria è il tavolo
+su cui le tiri fuori per lavorarci. Sul tavolo ogni programma dispone i dati a
+modo suo, e passarne una a un altro vuol dire riscriverla tutta; Arrow è
+l'accordo di disporli tutti alla stessa maniera, e il passaggio non costa più
+niente.
 
 `````
 
@@ -241,8 +254,8 @@ di ML, dove si leggono poche colonne di tabelle larghe, è la voce dominante.
 per contenuto, il che abilita codifiche specializzate (dizionario per le
 categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
 timestamp) prima ancora della compressione generica. Rispetto al CSV
-equivalente il guadagno è di **qualche volta**, e a decidere quante è proprio
-la prima di quelle codifiche. I numeri che seguono sono misurati qui, su
+equivalente il guadagno è di **qualche volta**, e a decidere quante è la
+codifica a dizionario. I numeri che seguono sono misurati qui, su
 tabelle da duecentomila righe, confrontando il `.csv` e il `.parquet` scritti
 da Pandas con le impostazioni di serie. Sei colonne di categorie con sei valori
 distinti (nomi di città) stanno in un file **diciotto volte** più piccolo,
@@ -280,8 +293,8 @@ valore è l'eliminazione della **serializzazione** ai confini: due processi, o
 due librerie in linguaggi diversi, che parlano Arrow si scambiano una tabella
 senza copiarla né convertirla. È la ragione per cui lo stesso formato compare
 sotto motori che non si somigliano affatto, ed è anche ciò che sta sotto il
-tipo stringa di Pandas. Vale la pena provarlo, perché è cambiato di recente e
-in silenzio: dalla versione 3 le colonne di testo hanno un tipo dedicato,
+tipo stringa di Pandas, cambiato di recente e in silenzio: dalla versione 3 le
+colonne di testo hanno un tipo dedicato,
 appoggiato ad Arrow quando PyArrow è installato, e quella differenza (con il
 vecchio `object` di NumPy era sostanziale) non è più un'opzione da attivare, è
 il comportamento normale della libreria.
@@ -308,18 +321,26 @@ chiama **feature store** {cite}`huyen2022designing`.
 
 `````{tab} Elementare
 
-Immagina una grande cucina con venti cuochi. Se ognuno si prepara il soffritto a
-modo suo, ogni piatto esce leggermente diverso e nessuno sa più perché. La
-soluzione è una **dispensa comune**: il soffritto lo prepara un reparto solo,
-sempre con la stessa ricetta, e tutti i cuochi lo prendono già pronto da lì. Il
-piatto di oggi è identico a quello di ieri, e un cuoco nuovo non deve reinventare
-nulla.
+In una cucina con venti cuochi, se ognuno si prepara il soffritto a modo suo,
+ogni piatto esce leggermente diverso e nessuno sa più perché. La soluzione è
+una **dispensa comune**: il soffritto lo prepara un reparto solo, sempre con la
+stessa ricetta, e tutti i cuochi lo prendono già pronto da lì. Il piatto di
+oggi è identico a quello di ieri, e un cuoco nuovo non deve reinventare nulla.
 
-Il feature store è quella dispensa. Le feature si definiscono una volta, in un
-posto solo, e sia chi addestra il modello sia chi lo manda in produzione le
-prende dallo stesso scaffale, con la garanzia che siano *le stesse* e
-*fresche*, cioè aggiornate. In più, una feature preparata bene la riusano
-dieci modelli diversi: si cucina una volta, si serve a tutti.
+Il feature store è quella dispensa, e ha due scaffali. In cantina c'è tutto lo
+storico, barattolo per barattolo con la data sopra, ed è da lì che si pesca a
+piene mani per far imparare un modello. Sul banco, a portata di mano, c'è
+soltanto il barattolo di oggi: chi è ai fornelli con il cliente che aspetta non
+può scendere in cantina. La ricetta però è una sola, e riempie tutti e due.
+
+Un barattolo, poi, va preso dal giorno giusto. Per rifare il piatto di un
+martedì di tre mesi fa serve il soffritto di quel martedì: chi prende quello di
+oggi ottiene un piatto migliore di quello che era uscito davvero, perché ci ha
+messo dentro qualcosa che quel giorno non c'era ancora. Assaggia, conclude che
+la ricetta è ottima, e in servizio scopre di no.
+
+E una feature preparata bene la riusano dieci modelli diversi: si cucina una
+volta, si serve a tutti.
 
 `````
 
@@ -366,18 +387,20 @@ sembrano plausibili, e il risultato è semplicemente sbagliato.
 
 Il caso da manuale è la **normalizzazione**, il gesto con cui si porta ogni
 variabile su una scala confrontabile prima di darla al modello. Invece del
-valore grezzo, al modello si dice quanto quel valore sta sopra o sotto la
-media di tutti gli altri: così un importo in euro e un'età in anni diventano
-paragonabili. La media va calcolata una volta sola, sui dati di addestramento,
-e poi congelata: fa parte del modello quanto i pesi.
+valore grezzo, al modello si dice di quanto quel valore sta sopra o sotto la
+media degli altri, e quel «di quanto» si conta in sbalzi abituali, cioè in
+quanto i valori ballano di solito attorno alla media: così un importo in euro e
+un'età in anni diventano paragonabili. La media e lo sbalzo abituale si
+calcolano una volta sola, sui dati di addestramento, e poi si congelano: fanno
+parte del modello quanto i pesi.
 
-In produzione, per una svista, qualcuno la ricalcola sul *singolo lotto*
+In produzione, per una svista, qualcuno li ricalcola sul *singolo lotto*
 appena arrivato, ed è lì che il pavimento cede. In addestramento «alto» voleva
 dire «più della media di tutti»; se la media la si rifà sul gruppetto appena
 arrivato, e quel gruppetto è fatto di soli importi alti, nessuno di loro è più
 sopra la media: sono tutti normali. Il modello smette di insospettirsi proprio
-del lotto più sospetto che gli sia mai capitato. Sotto ci sono le due versioni affiancate, la corretta e la bacata: la
-differenza è una riga sola.
+del lotto più sospetto che gli sia mai capitato. Fra il programma giusto e
+quello bacato la differenza è una riga sola.
 
 `````
 
@@ -388,8 +411,8 @@ dove $\mu$ e $\sigma$ sono media e deviazione standard. La regola vincolante è
 che $\mu$ e $\sigma$ siano **statistiche del training**, stimate una volta e
 *congelate*: fanno parte del modello tanto quanto i pesi. Usarle in
 addestramento e ricalcolarle in produzione su un altro campione viola
-l'ipotesi sotto cui il modello è stato ottimizzato. Nel codice qui sotto la
-versione corretta applica $\mu,\sigma$ del training; quella bacata ricalcola
+l'ipotesi sotto cui il modello è stato ottimizzato. La versione corretta
+applica $\mu,\sigma$ del training; quella bacata ricalcola
 $\mu_{\text{batch}},\sigma_{\text{batch}}$ sul lotto corrente, azzerandone di
 fatto la media: un batch anomalo (tutto di importi alti) viene ricondotto a
 zero e il modello non lo riconosce più come anomalo.
@@ -479,10 +502,10 @@ attese, e del tipo giusto (un'età è un numero, non la parola «trenta»)? Il
 negativo)? I **valori mancanti**: quante caselle sono vuote, e possiamo
 permettercelo? Le **distribuzioni**: i numeri di oggi somigliano a quelli di
 ieri, come valore tipico e come quanto sono sparpagliati, e le categorie
-arrivano nelle stesse proporzioni? Le prime tre si controllano su ogni singola
-scheda (in gergo un *record*, ed è la parola che userà il codice qui sotto);
-l'ultima solo guardando tante schede insieme, perché una scheda da sola non ha
-una media.
+arrivano nelle stesse proporzioni? Schema, range e caselle vuote si controllano
+su ogni singola scheda (in gergo un *record*), e costano pochissimo; le
+distribuzioni solo guardando tante schede insieme, perché una scheda da sola
+non ha una media.
 
 `````
 
@@ -494,7 +517,7 @@ sistema di ML: include test sullo schema delle feature, sui loro intervalli e
 sul fatto che ogni feature apporti davvero valore. Conviene distinguere due
 livelli. I controlli **puntuali** (tipo, obbligatorietà, intervallo, assenza
 di `NaN`) si applicano a ogni record isolato e sono economici: sono quelli che
-implementiamo qui sotto. I controlli **distribuzionali** (la media di una
+il codice mette in pratica. I controlli **distribuzionali** (la media di una
 feature è slittata? la proporzione di una categoria è raddoppiata?) richiedono
 di confrontare un lotto con una *baseline* di riferimento, ed è qui che la
 validazione statica sfuma nel **monitoraggio** del *dataset shift*
@@ -607,8 +630,9 @@ questo: dargli un contratto, e farlo rispettare.
 - Il **formato** in cui i dati aspettano fra una stazione e l'altra non è un
   dettaglio: l'archivio **per colonna** (**Parquet**) legge solo le poche voci
   che servono invece di attraversare tutte le schede, e si comprime molto
-  meglio perché mette vicini valori che si somigliano. Il CSV va bene per
-  passare una tabella a una persona, non per il resto.
+  meglio perché in una colonna lo stesso valore si ripete, e un valore ripetuto
+  si scrive una volta sola. Il CSV va bene per passare una tabella a una
+  persona, non per il resto.
 - Il bug più costoso del mestiere è calcolare una stessa informazione in un
   modo mentre si impara e in un modo appena diverso mentre si risponde: nessun
   errore compare a schermo, solo predizioni sbagliate. La cura è definirla in

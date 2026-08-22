@@ -65,12 +65,11 @@ scoprire dopo.
 
 `````{tab} Elementare
 
-Prendiamo un modello che stima il prezzo di una casa come somma di
-contributi: tanti euro per ogni metro quadro, tanti per ogni stanza, un bonus
-o un malus per il quartiere. Ogni peso è un'etichetta col prezzo appesa a una
-caratteristica, «$+2\,000$ € al metro quadro», e si legge senza sforzo. Per
-capire perché il modello ha risposto $210\,000$ € non serve nessuno strumento
-esterno: basta leggere la ricevuta, voce per voce.
+Un modello che stima il prezzo di una casa può rispondere come una ricevuta:
+tanti euro per ogni metro quadro, tanti per ogni stanza, un bonus o un malus
+per il quartiere. Ogni peso è un cartellino col prezzo appeso a una
+caratteristica, «$+2\,000$ € al metro quadro», e i $210\,000$ € della risposta
+si leggono voce per voce.
 
 | voce | quanto | peso | contributo |
 |---|---|---|---|
@@ -79,16 +78,27 @@ esterno: basta leggere la ricevuta, voce per voce.
 | quartiere | centro | $+6\,000$ € | $+6\,000$ € |
 | **totale** | | | **$210\,000$ €** |
 
-Ecco: quella tabella *è* il modello. Non c'è un altro posto in cui guardare, e
-se il prezzo non ci convince sappiamo esattamente con quale riga prendercela.
+Quella tabella *è* il modello: non c'è un altro posto in cui guardare, e un
+metro quadro in più fa salire il totale di $2\,000$ €, senza che nessuna altra
+riga si muova.
+
+Confrontare due cartellini fra loro è un'altra faccenda. La stanza dice
+$8\,000$ e il metro quadro $2\,000$, e sembrerebbe che le stanze pesino quattro
+volte tanto; ma una stanza non è un metro quadro, e voci misurate in unità
+diverse non si mettono in fila. E dove due voci vanno sempre insieme la
+ricevuta si può riscrivere: le case grandi hanno più stanze, quindi il
+cartellino del metro quadro può scendere di 100 € e quello della stanza salire
+di $3\,000$ €, e il totale resta $210\,000$ €. Il prezzo finale regge; quale
+delle due righe se lo meriti, non lo dice più nessuno.
 
 Vale lo stesso per la regressione logistica, che al posto di una quantità dà
 una probabilità: non «sì» o «no» secchi, ma «questo cliente restituirà il
-prestito con probabilità del 65%», e poi sta a chi la usa decidere sopra quale
-soglia il sì è sì. Anche lì i pesi si leggono uno per uno: un peso positivo
-spinge verso il sì, uno negativo verso il no, e più è grande più spinge. Un modello così si può stampare su
-mezza pagina e discutere con chi non ha mai visto una formula. È questo che
-intendiamo per *trasparente*: la regola di decisione è alla luce del sole.
+prestito con probabilità del 65%». La somma delle voci non è ancora quella
+probabilità: un totale può venire enorme o negativo, mentre una probabilità sta
+fra zero e uno, e un ultimo passaggio lo schiaccia dentro quell'intervallo. I
+pesi si leggono comunque uno per uno, e il segno dice da che parte tira
+ciascuno, verso il sì o verso il no. Un modello così si stampa su mezza pagina
+e si discute con chi non ha mai visto una formula.
 
 `````
 
@@ -101,8 +111,9 @@ unitario di $x_j$ sposta la predizione di esattamente $w_j$. Nella regressione
 logistica $\hat{y} = \sigma(\mathbf{w}^\top \mathbf{x} + b)$
 l'interpretazione passa alle *log-odds*: $w_j$ è la variazione del logaritmo
 del rapporto di probabilità
-$\log\frac{p}{1-p}$ per un incremento unitario di $x_j$, cosicché $e^{w_j}$ è
-il fattore moltiplicativo sull’*odds ratio*.
+$\log\frac{p}{1-p}$ per un incremento unitario di $x_j$, cosicché $e^{w_j}$
+moltiplica l’*odds* $p/(1-p)$ ed è quindi l’*odds ratio* fra il dopo e il
+prima dell'incremento.
 
 Due avvertenze rendono onesta questa lettura. Primo, i coefficienti sono
 confrontabili tra loro solo se le feature sono **standardizzate** (stessa
@@ -177,9 +188,10 @@ l'identità in regressione, il logit in classificazione. È $g$ il
 «generalizzato» del nome, ed è ciò che rende il modello utilizzabile fuori dal
 caso di una risposta continua: senza di essa la somma additiva vivrebbe su
 tutta la retta reale anche quando la quantità da prevedere è una probabilità.
-Nel caso logit ogni $f_j$ si legge come contributo alle *log-odds*, esattamente
-come il $w_j$ della regressione logistica, ma variabile con $x_j$ invece che
-costante {cite}`hastie1986generalized`. L'additività è ciò che conserva la
+Nel caso logit ogni $f_j$ si legge come contributo alle *log-odds*, come il
+termine $w_j x_j$ della regressione logistica, con la differenza che l'effetto
+di un'unità in più cambia lungo la scala di $x_j$ invece di restare $w_j$
+{cite}`hastie1986generalized`. L'additività è ciò che conserva la
 leggibilità: nessun termine di interazione, quindi ogni curva si può guardare
 da sola.
 
@@ -198,13 +210,18 @@ in parte.
 Della sostanza si è già detto nell'apertura del capitolo, sui fiori: su tanti
 problemi a righe e colonne un modello trasparente ben costruito arriva
 vicinissimo, a volte alla pari, con la scatola nera, mentre su immagini, testo e
-suoni le reti profonde vincono senza rivali.
+suoni le reti profonde vincono senza rivali. La differenza sta nel materiale. In
+una tabella clinica le colonne hanno già un senso, l'età è l'età e la pressione
+è la pressione; in una fotografia ci sono soltanto milioni di puntini colorati,
+e prima di riconoscere un gatto il modello deve scoprire da solo che cosa
+guardare.
 
-Quello che qui vale la pena aggiungere è il consiglio pratico che ne segue, ed è
-di buon senso: parti dal modello trasparente e **misura** quanto perdi davvero
-passando a uno più complicato, invece di darlo per scontato. Se la differenza è
-minima, la chiarezza è un guadagno netto, e lo è soprattutto dove una decisione
-sbagliata ha un costo umano.
+Ne segue un consiglio pratico, di buon senso: parti dal modello trasparente e
+**misura** quanto perdi davvero passando a uno più complicato, invece di darlo
+per scontato. Se la differenza è minima, la chiarezza è un guadagno netto, e lo
+è soprattutto dove una decisione sbagliata ha un costo umano. E quando la
+scatola nera serve per davvero, gli attrezzi che la interrogano da fuori danno
+una stima di come si comporta, non la regola con cui decide.
 
 `````
 
@@ -225,9 +242,8 @@ Ne discende una gerarchia metodologica: preferire un modello intrinsecamente
 interpretabile quando le prestazioni sono comparabili, e riservare gli
 strumenti *post-hoc* (importanza delle feature, PDP, e i metodi locali che
 vedremo più avanti nel capitolo) ai casi in cui la scatola nera è davvero
-necessaria. Gli strumenti post-hoc, va detto subito, spiegano il modello
-*dall'esterno* e sono approssimazioni: non sostituiscono la trasparenza di
-progetto.
+necessaria. Gli strumenti post-hoc spiegano il modello *dall'esterno* e sono
+approssimazioni: non sostituiscono la trasparenza di progetto.
 
 `````
 
@@ -277,25 +293,33 @@ L'idea è quasi impertinente: se una colonna conta davvero, allora
 prevede se un cliente restituirà un prestito, e mettiamolo alla prova su 100
 clienti mai visti: indovina 90 volte su 100. Ora prendiamo una colonna sola
 (il reddito) e ne **rimescoliamo** i valori tra i 100 clienti: ognuno si
-ritrova il reddito di qualcun altro. Tutto il resto è intatto, ma quella colonna
-adesso contiene numeri che con la persona non c'entrano più niente: è diventata
-**rumore**, che è il modo in cui si chiamano dei dati che non portano
-informazione. Riproviamo il modello: ora indovina solo 72 volte.
-Ha perso 18 punti *solo* perché gli abbiamo scombinato il reddito: segno che
-ci si appoggiava molto. L'importanza del reddito è quel calo,
-$90\% - 72\% = 18$ punti.
+ritrova il reddito di qualcun altro. Il resto è intatto, ma quella colonna
+adesso porta numeri che con la persona non c'entrano niente: è diventata
+**rumore**, cioè dati che non portano informazione. Riproviamo il modello: ora
+indovina solo 72 volte. Ha perso 18 punti *solo* perché gli abbiamo scombinato
+il reddito, segno che ci si appoggiava molto, e quel calo, $90\% - 72\% = 18$
+punti, è l'importanza del reddito.
 
 Rifacciamo lo stesso gioco con una colonna che non c'entra nulla, il colore
 preferito: rimescolandola, il modello continua a indovinare 90 volte. Calo
 zero, importanza zero. Poiché il rimescolamento è casuale, lo si ripete
 qualche volta e si fa la media, per non farsi ingannare da un mescolamento
-fortunato. Il bello è che questo trucco funziona con *qualsiasi* modello,
-perché tutto quello che serve è potergli fare delle domande e sentire le
-risposte.
+fortunato. Il bello è che il trucco funziona con *qualsiasi* modello: basta
+potergli fare delle domande e sentire le risposte.
 
 Rimescolare i valori di una colonna, in matematica, si dice **permutarli**: da
 qui il nome con cui il metodo si trova nelle librerie, *permutation
 importance*.
+
+C'è un caso in cui quel calo va letto con attenzione, ed è quando due colonne
+dicono quasi la stessa cosa. Se la tabella tiene anche quanto il cliente versa
+ogni mese sul conto, rimescolare il reddito non fa danni: il modello legge
+l'altra colonna e il calo resta piccolo. Quel numero basso è vero se la domanda
+è di che cosa il modello ha bisogno, perché gli basta una delle due colonne;
+inganna chi ci legge quanta informazione porti il reddito, che ne porta eccome.
+Il rovescio è che rimescolando si fabbricano clienti impossibili, un ventenne
+con la pensione di un ex dirigente: su gente mai vista il modello risponde come
+capita, il calo si gonfia, e quella colonna sembra contare più del vero.
 
 `````
 
@@ -334,10 +358,13 @@ combinazioni irrealistiche (un'altezza da adulto con un peso da bambino) su
 cui il modello viene interrogato fuori dal supporto dei dati, e l'errore così
 gonfiato può *sovrastimare* l'importanza delle feature coinvolte
 {cite}`hooker2021unrestricted`: la stessa patologia di estrapolazione che
-ritroveremo nel PDP. I due guasti non si possono correggere insieme, e la
-ragione è quella vista in apertura di capitolo: servono due domande diverse.
-Il primo va evitato da chi chiede «di che cosa ha bisogno *questo modello*»,
-il secondo da chi chiede «quanta informazione porta *questa colonna*».
+ritroveremo nel PDP. I due guasti non si correggono insieme: permutare $x_j$
+*dentro* gruppi di righe simili (permutazione condizionata) toglie di mezzo le
+combinazioni irrealistiche, ma accentua la sottostima, perché a ciascuna delle
+due colonne gemelle resta soltanto l'informazione che aggiunge all'altra. E la
+sottostima pesa su chi chiede «quanta informazione porta *questa colonna*»; a
+chi chiede «di che cosa ha bisogno *questo modello*» quel valore basso risponde
+il vero, ed è la forcella vista in apertura di capitolo.
 
 `````
 
@@ -385,16 +412,15 @@ provare.
 
 Il risultato è che l'importanza da impurità tende a **gonfiare** le feature
 continue o con molte categorie e a **sminuire** quelle a pochi valori: un
-difetto strutturale, non del singolo insieme di dati. Lo vedremo con i nostri
-occhi più avanti in questa stessa pagina, dando in pasto al modello due colonne
-di puro rumore,
-una con tanti valori e una con due soli: valgono zero tutte e due, e questa
-misura ne premia una sette volte più dell'altra.
+difetto strutturale, non del singolo insieme di dati. Due colonne di puro
+rumore date in pasto al modello, una con tanti valori e una con due soli, lo
+mettono in chiaro: valgono zero tutte e due, e questa misura ne premia una
+sette volte più dell'altra.
 
-E c'è una seconda ragione, indipendente dalla prima, che conviene tenere a
-mente perché fra poco servirà. Questi meriti l'albero se li accredita **mentre
-impara**, cioè sugli stessi esempi da cui sta imparando. Ma su quegli esempi un
-taglio sembra sempre utile, anche quando ha soltanto imparato a memoria una
+C'è poi un guasto di natura diversa. Questi meriti l'albero se li accredita
+**mentre impara**, cioè sugli stessi esempi da cui sta imparando. Ma su quegli
+esempi un taglio sembra sempre utile, anche quando ha soltanto imparato a
+memoria una
 particolarità di quei dati che non si ripeterà altrove (si dice che il modello
 **sovradatta**). Il merito resta accreditato lo stesso. Il rimescolamento, che
 si può misurare su esempi che il modello non ha mai visto, di questo problema
@@ -495,19 +521,19 @@ Per la feature $j$, la **partial dependence** è l'attesa della predizione
 marginalizzando sulle altre feature $\mathbf{X}_{-j}$, stimata sul dataset come
 
 $$
-\mathrm{PD}_j(v) = \frac{1}{m}\sum_{i=1}^{m} f\!\big(v,\, \mathbf{X}_{-j}^{(i)}\big),
+\mathrm{PD}_j(v) = \frac{1}{m}\sum_{i=1}^{m} f\!\big(v,\, \mathbf{x}_{-j}^{(i)}\big),
 $$
 
 dove si fissa $x_j = v$ e si mediano le predizioni su tutti gli esempi
 {cite}`friedman2001greedy`. La curva **ICE** è la stessa quantità *prima* di
-mediare: $f(v, \mathbf{X}_{-j}^{(i)})$ per il singolo esempio $i$
+mediare: $f(v, \mathbf{x}_{-j}^{(i)})$ per il singolo esempio $i$
 {cite}`goldstein2015peeking`. Il PDP
 è dunque la media verticale del fascio di ICE; quando le curve ICE si
 sventagliano, un effetto medio piatto maschera **interazioni** o eterogeneità.
 
 Il difetto profondo del PDP è l’**estrapolazione con feature correlate**:
 fissare $x_j = v$ mentre si tengono i valori reali di $\mathbf{X}_{-j}$ genera punti
-$(v, \mathbf{X}_{-j}^{(i)})$ implausibili (altezza 2 m con peso 50 kg) su cui il
+$(v, \mathbf{x}_{-j}^{(i)})$ implausibili (altezza 2 m con peso 50 kg) su cui il
 modello viene interrogato fuori dal supporto dei dati, producendo curve
 fuorvianti. L’**Accumulated Local Effects** (ALE) di Apley e Zhu
 {cite}`apley2020visualizing`
@@ -515,8 +541,8 @@ corregge il tiro: invece di marginalizzare su tutta la distribuzione, media le
 *differenze* di predizione entro piccoli intervalli di $x_j$, usando la
 distribuzione **condizionata** e restando così nelle regioni densamente
 popolate. È la scelta da preferire quando le feature sono marcatamente
-correlate. Vale la pena notare che la scelta fra i due non è fra un metodo
-giusto e uno sbagliato, ma è di nuovo la forcella dell'apertura: il PDP
+correlate. La scelta fra i due non è fra un metodo giusto e uno sbagliato, ma
+è di nuovo la forcella dell'apertura: il PDP
 marginale risponde a «che cosa farebbe *questo modello* se gli riscrivessi una
 colonna», l'ALE condizionato a «come si comporta la predizione lungo i dati che
 esistono davvero».

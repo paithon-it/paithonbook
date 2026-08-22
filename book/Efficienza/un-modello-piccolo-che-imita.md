@@ -22,48 +22,48 @@ dubbi compresi.
 
 `````{tab} Elementare
 
-Un modello che riconosce cifre non restituisce «7». Restituisce dieci numeri,
-uno per cifra, che dicono quanto ci crede: qualcosa come «sono quasi certo che
-sia un 7; se proprio dovessi sbagliarmi direi 1; che sia un 8 è
-inconcepibile».
+Un maestro che corregge da trent’anni, se glielo si chiede, dice quanto
+scommetterebbe su ciascuna delle dieci cifre, quasi tutto sul sette, un pochino
+sull’uno, niente sull’otto. Il guaio è che glielo si deve chiedere. Lasciato
+fare taglia corto, «sette», con una sicurezza da 0,9999, e i ripensamenti
+restano un borbottio che nessuno sente.
 
-Il guaio è che un modello grande e ben addestrato è **troppo sicuro di sé**:
-alla fine dice 0,9999 sul 7 e praticamente zero su tutto il resto. Le
-informazioni interessanti (che l’1 fosse il secondo candidato e l’8 no)
-ci sono ancora, ma sono nascoste in cifre così piccole che nessuno le sente.
+Allora gli si mette davanti una manopola, e più la si alza più lui si dilunga.
+A uno parla come sempre. A sei, quel «0,9999 e nove zeri» diventa «0,7 sul
+sette, 0,15 sull’uno, 0,001 sull’otto», il sette resta il primo e affiora la
+forma del dubbio, come le ombre di una fotografia troppo contrastata quando le
+si schiarisce. Girata a fondo rovina tutto, perché ogni cifra gli sembra
+plausibile e non si capisce più quale avesse scelto. La manopola si chiama
+**temperatura**.
 
-Il rimedio è ammorbidire, e l’immagine giusta è una fotografia troppo
-contrastata: il soggetto è bianco accecante e tutto il resto è nero pesto, e
-nel nero i dettagli ci sono ma non si vedono. Schiarendo le ombre il soggetto
-resta il più chiaro di tutti, e intanto nel buio ricompare quello che c’era.
-Qui è lo stesso: da «0,9999 e nove zeri» si passa a qualcosa come «0,7 sul 7,
-0,15 sull’1, 0,001 sull’8» (sono i numeri che si ottengono schiarendo di sei
-volte: quanto si schiarisce è una manopola, e fra poco ha un nome). Il 7 resta
-il primo, e adesso si vede anche la forma del dubbio.
+Dall’altra parte del banco il modello piccolo, lo studente, impara a
+correggere. Ascolta due voci, il registro (dove qualcuno ha scritto la risposta
+giusta) e i commenti del maestro, pesate sette parti al maestro e tre al
+registro. Anche questa è una manopola, perché meno ci si fida del maestro più
+peso torna al registro.
 
-Questo ammorbidimento ha una manopola, e nel codice qui sotto si chiama
-**temperatura**: più la si alza, più la lista si appiattisce. A uno la
-fotografia è quella di partenza; sopra, le ombre si schiariscono; portandola
-troppo in alto si perde anche il soggetto, perché tutte le cifre finiscono per
-sembrare ugualmente probabili.
+La prima manopola però è una sola, e alza pure lo studente. Si dilunga anche
+lui, le due risposte si somigliano di più, e la correzione che gli arriva si fa
+fiacca. Proprio mentre gli si mostrano le sfumature, gli si abbassa la voce. La
+si rimette dov’era moltiplicandola per il quadrato della manopola, a sei per
+trentasei. Quel conto è esatto solo con la manopola girata a fondo, e alle
+posizioni vere rende più di quanto la correzione avesse perso, così lo studente
+ascolta il maestro oltre le sette parti su dieci assegnate. Regge, perché la
+proporzione la si ritocca guardando come vanno le cose, ma chi crede di averla
+messa a sette contro tre ha in mano un numero che non racconta quello che
+succede in classe.
 
-E qui c’è la prima delle due cose che vale la pena portarsi via. Lo studente
-che impara dalle risposte giuste impara **una cosa per esempio**: che quel
-disegno lì è un 7. Lo studente che impara dai dubbi del maestro impara **dieci
-cose per esempio**: quanto quel disegno assomiglia a ciascuna delle dieci
-cifre. Non è che il maestro spieghi meglio, è che dice molte più cose ogni
-volta che apre bocca.
+Un compito che torna col solo voto insegna una cosa, che quel disegno è un
+sette. Col commento del maestro ne insegna dieci, quanto somiglia a ciascuna
+delle dieci cifre.
 
-La seconda è meno elegante e conta di più, e la misura più sotto la separa
-dalla prima. Il maestro può parlare **anche degli esempi di cui nessuno ha
-scritto la risposta**: gli si mettono davanti e lui li commenta, e quei
-commenti valgono per lo studente esattamente come gli altri. Le etichette
-costano, i dati grezzi no, e questo è il motivo per cui la distillazione si usa
-più di quanto la si spieghi.
+Il guadagno grosso però è meno elegante, e sta nella pila dei compiti che in
+fondo all’aula nessuno ha mai corretto. Il maestro li commenta uno per uno, e
+allo studente quei commenti valgono quanto gli altri. Correggere costa, i fogli
+no, ed è per questo che la distillazione si usa più di quanto la si spieghi.
 
-Il punto di rottura è netto e va detto: **lo studente eredita anche gli errori
-del maestro**. Se il maestro è convinto che una certa 4 malfatta sia un 9, lo
-studente impara quella convinzione, e la impara meglio di quanto imparerebbe la
+Se il maestro è convinto che una certa quattro malfatta sia un nove, lo
+studente impara la convinzione, e la impara meglio di quanto imparerebbe la
 risposta giusta, perché gliela sente ripetere con tutte le sue sfumature. Un
 maestro sbagliato è peggio di nessun maestro.
 
@@ -97,10 +97,10 @@ morbida del maestro e quella dello studente, calcolate alla stessa temperatura.
 
 Nel codice qui sotto $\alpha = 0{,}7$ e $T = 4$.
 
-Il fattore $T^2$ non è cosmetico, e vale la pena vedere da dove viene perché è
-più fragile di come lo si racconta. Derivando la divergenza rispetto ai logit
-dello studente si ottiene $\partial C/\partial z_i = (q_i - p_i)/T$, cioè **un
-solo** $1/T$. Il secondo compare linearizzando $q_i - p_i$, e quella
+Il fattore $T^2$ non è cosmetico, e la sua derivazione è più fragile di come la
+si racconta. Derivando la divergenza rispetto ai logit dello studente si
+ottiene $\partial \mathrm{KL}/\partial z^s_i = (p^s_i - p^t_i)/T$, cioè un solo
+$1/T$. Il secondo compare linearizzando $p^s_i - p^t_i$, e quella
 linearizzazione vale a **temperatura alta rispetto ai logit**: è il regime in
 cui il lavoro originale la ricava, e in quel regime moltiplicare per $T^2$
 mantiene il termine morbido sulla scala di quello duro, così si può cambiare
@@ -109,12 +109,12 @@ $T$ senza riaggiustare $\alpha$.
 Fuori da quel regime il compenso è approssimativo, e conviene saperlo perché il
 regime buono è più lontano di quanto sembri. Misurato sul maestro che il codice
 qui sotto addestra (logit con scarto tipico intorno a undici), l’esponente
-locale di $\|\nabla\| \propto T^{-\alpha}$ vale $1{,}05$ fra $T=1$ e $T=2$,
-$1{,}09$ fra $2$ e $4$, e arriva a $2$ soltanto oltre $T=16$. A $T=4$, cioè
-alla temperatura che il codice usa, moltiplicare per $T^2$ **sovracompensa di
-circa tre volte e mezzo**. Non è un guasto (il risultato dell’esperimento è
-buono lo stesso, e $\alpha$ assorbe il resto), è il genere di dettaglio che
-distingue una ricetta applicata da una capita.
+locale $\kappa$ di $\|\nabla\| \propto T^{-\kappa}$ vale $1{,}05$ fra $T=1$ e
+$T=2$, $1{,}09$ fra $2$ e $4$, e arriva a $2$ soltanto oltre $T=16$. A $T=4$,
+cioè alla temperatura che il codice usa, moltiplicare per $T^2$
+**sovracompensa di circa tre volte e mezzo**. Non è un guasto (il risultato
+dell’esperimento è buono lo stesso, e $\alpha$ assorbe il resto), è il genere
+di dettaglio che distingue una ricetta applicata da una capita.
 
 Vale la pena essere precisi su **dove stia il guadagno**, perché è il punto in
 cui la spiegazione divulgativa si allontana dalla letteratura. L’argomento

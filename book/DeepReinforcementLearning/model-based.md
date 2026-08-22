@@ -6,9 +6,10 @@ giocato migliaia di partite: ne bastano due o tre perché la testa cominci a
 fare da sola una cosa preziosa (*provare le mosse prima di farle*). «Se scarto
 questa carta lui pesca e chiude… allora no.» La mossa cattiva muore
 nell'immaginazione, senza costarti la partita. È questa la differenza, ancora
-oggi imbarazzante, fra un essere umano e un agente come il DQN di tre sezioni
-fa: a noi bastano pochi minuti per capire *Breakout* (il gioco dei mattoncini da
-abbattere con una pallina), all'agente servono decine di milioni di fotogrammi.
+oggi imbarazzante, fra un essere umano e un agente come il
+{doc}`DQN <dqn>`: a noi bastano pochi minuti per capire *Breakout* (il gioco
+dei mattoncini da abbattere con una pallina), all'agente servono decine di
+milioni di fotogrammi.
 La parola tecnica per questa distanza è **sample efficiency**, l'efficienza nei
 campioni (quanta esperienza serve per imparare) ed è il problema che questa
 sezione affronta di petto.
@@ -56,6 +57,12 @@ perché da esso spreme decine di prove immaginate. Il rischio, altrettanto
 ovvio, è di fidarsi di un simulatore sbagliato: se nella sua testa le curve
 sono più dolci che in strada, si allena a guidare un'auto che non esiste.
 
+E c'è un guaio più insidioso del semplice sbagliare. Il secondo allievo non
+prova manovre a caso, cerca la più veloce; se nella sua testa una certa curva si
+tiene a novanta all'ora, sarà proprio quella la manovra che ripete e affina,
+cioè la manovra costruita sopra l'errore. Nell'immaginazione fa il giro record.
+In strada, a quella curva, esce fuori.
+
 `````
 
 `````{tab} Superiore
@@ -76,9 +83,9 @@ nel modello, ne genera molte simulate. Il prezzo ha un nome preciso, **model
 bias**: il modello $\hat p_\psi$ non è la dinamica vera, e l'errore di
 predizione si propaga lungo l'orizzonte. Peggio, una policy ottimizzata *dentro*
 il modello impara a sfruttarne i difetti (*model exploitation*), incassando
-ritorni immaginari che l'ambiente reale non paga. L'intera storia di questa
-sezione è il racconto di come si è negoziato questo compromesso: quanta fiducia
-concedere al modello.
+ritorni immaginari che l'ambiente reale non paga. La storia del model-based,
+dagli anni novanta a oggi, è il racconto di come si è negoziato questo
+compromesso: quanta fiducia concedere al modello.
 
 `````
 
@@ -94,17 +101,26 @@ quanto lungimirante: mentre l'agente gioca, impara *contemporaneamente* due cose
 
 `````{tab} Elementare
 
-Pensa a uno studente che, dopo aver fatto un esercizio di matematica in
-classe, la sera lo rifà a mente altre venti volte, variando i numeri. Non ha
-bisogno di tornare a scuola: gli basta ricordare *come funzionano* i conti (la
-sua regola appresa) per generarsi esercizi nuovi e allenarsi su quelli. Dyna
-fa esattamente questo. Ogni volta che l'agente compie una mossa vera, impara
-due cose: aggiusta le sue valutazioni in base a com'è andata, *e* si annota la
-transizione («da qui, con questa mossa, sono finito lì e ho preso questa
-ricompensa»). Poi, prima della mossa successiva, si concede qualche «ripasso»:
-pesca a caso alcune transizioni già annotate e riaggiusta le valutazioni anche
-su quelle, come se le stesse rivivendo. Una mossa vera, tanti ripassi
-immaginati: la ricompensa si propaga all'indietro molto più in fretta.
+Una pedalata, venti ripassi a mente. È così che un fattorino nuovo di zona
+impara la strada giusta pedalando molto meno di quanto sembri.
+
+Gira in bicicletta con un taccuino, e a ogni svolta si scrive una riga: «da
+piazza del Mercato, girando a destra, si finisce in via Corta». Il giorno in cui
+trova il portone che cercava si scrive anche quello: «in fondo a via Corta, il
+portone». La sera, a casa, non fa un metro di strada: apre il taccuino, pesca
+righe a caso e su ciascuna rifà lo stesso ragionamento che farebbe sul posto. In
+fondo a via Corta c'è il portone, quindi via Corta è una buona strada; e da
+piazza del Mercato, girando a destra, si arriva in via Corta, quindi anche
+quella svolta è buona. La notizia del portone risale il taccuino all'indietro,
+riga dopo riga, con la bicicletta ferma in cortile.
+
+Dyna fa questo. Ogni volta che l'agente compie una mossa vera, impara due cose:
+aggiusta le sue valutazioni in base a com'è andata, *e* si annota la transizione
+(«da qui, con questa mossa, sono finito lì e ho preso questa ricompensa»). Poi,
+prima della mossa successiva, si concede una ventina di «ripassi»: pesca a caso
+alcune transizioni già annotate e riaggiusta le valutazioni anche su quelle, con
+lo stesso conto che farebbe sull'esperienza vera. Le mosse vere restano poche, i
+ripassi sono tanti, e la ricompensa si propaga all'indietro molto più in fretta.
 
 `````
 
@@ -261,7 +277,8 @@ in equilibrio sulla scodella rovesciata, dove ogni passaggio ingrandisce lo
 scarto invece di smorzarlo: bastano pochi passi e il sogno non ha più niente a
 che vedere con la realtà.
 
-Morale: le previsioni utili sono quelle a breve. La cura è disarmante nella sua
+Morale: in quale dei due mondi ti trovi quasi mai lo sai, quindi le previsioni
+su cui puoi contare sono quelle a breve. La cura è disarmante nella sua
 semplicità, e nel 2019 trova la formulazione che farà scuola, un algoritmo che
 si chiama **MBPO** («ottimizzare la strategia basandosi su un modello»): invece
 di far partire i sogni dall'inizio della partita e
@@ -328,10 +345,11 @@ prestigio: pianifica in profondità *senza conoscere le regole del gioco*.
 
 `````{tab} Elementare
 
-MuZero è l'erede di AlphaZero, l'algoritmo che nella sezione sui gradienti di
-policy abbiamo visto padroneggiare Go, scacchi e shogi partendo dalle sole
-regole. Ma ad AlphaZero le regole erano *date*: sapeva con esattezza, per ogni
-mossa, quale posizione ne sarebbe seguita. MuZero no: se le costruisce da solo
+MuZero è l'erede di AlphaZero, l'algoritmo che nella
+{doc}`sezione sulla ricerca ad albero Monte Carlo <mcts-alphago>` abbiamo visto
+padroneggiare Go, scacchi e shogi partendo dalle sole regole. Ma ad AlphaZero
+le regole erano *date*: sapeva con esattezza, per ogni mossa, quale posizione
+ne sarebbe seguita. MuZero no: se le costruisce da solo
 guardando le partite, e (dettaglio cruciale) non si fa un modello che
 ridisegna la scacchiera pezzo per pezzo, ma solo un modello «da stratega».
 Immagina un maestro che ragiona per sensazioni: non visualizza ogni pedone
@@ -351,14 +369,14 @@ end-to-end:
 $$
 s^0 = h_\psi(o_{\le t}), \qquad
 (s^{k+1}, \hat r^{k+1}) = g_\psi(s^k, a^k), \qquad
-(\hat p^k, \hat v^k) = f_\psi(s^k).
+(\hat \pi^k, \hat v^k) = f_\psi(s^k).
 $$
 
 La *rappresentazione* $h_\psi$ codifica le osservazioni passate $o_{\le t}$ in
 uno stato latente iniziale $s^0$; la *dinamica* $g_\psi$, dato lo stato
 latente $s^k$ e un'azione ipotetica $a^k$, predice il latente successivo
 $s^{k+1}$ e la ricompensa $\hat r^{k+1}$; la *predizione* $f_\psi$ ne ricava
-una policy $\hat p^k$ e un valore $\hat v^k$. Punto decisivo: $s^k$ **non** è
+una policy $\hat \pi^k$ e un valore $\hat v^k$. Punto decisivo: $s^k$ non è
 addestrato a ricostruire l'osservazione. Non c'è alcuna pressione a
 rappresentare i pixel; il latente deve solo contenere ciò che serve a predire
 *policy, valore e ricompensa*: le tre quantità utili alla pianificazione. Su
@@ -399,10 +417,18 @@ riassunto che serve a decidere, e in gergo quel riassunto si chiama **latente**.
 
 È il pilota che, la sera prima della gara, ripassa il circuito a occhi chiusi,
 curva per curva. Non consuma benzina, non rischia incidenti: la pista ce l'ha
-in testa, e lì dentro può girare quante volte vuole. Gli algoritmi della
+in testa, e lì dentro può ripassarla quante volte vuole. Gli algoritmi della
 famiglia **Dreamer** fanno questo: si costruiscono un modello del gioco e poi
 addestrano il pilota *solo dentro il sogno*, riportandolo nel mondo vero già
-allenato. La linea di ricerca nasce dai «mondi in miniatura» di Ha e
+allenato.
+
+Il ripasso, però, non è mai il giro intero. Il pilota riparte da un punto della
+pista in cui è passato davvero nel pomeriggio e tira avanti per un tratto breve,
+la curva e l'uscita; poi ricomincia da un altro punto vero. Più a lungo si va
+avanti a occhi chiusi, più la pista che si ha in testa si scosta da quella su
+cui si correrà.
+
+La linea di ricerca nasce dai «mondi in miniatura» di Ha e
 Schmidhuber {cite}`ha2018world` (l'agente che imparava a schivare palle di
 fuoco esercitandosi nel proprio sogno) e arriva a **DreamerV3** di Danijar
 Hafner e colleghi

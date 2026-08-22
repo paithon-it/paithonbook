@@ -25,56 +25,45 @@ chiusa.
 `````{tab} Elementare
 
 Il paesaggio, con tutte le risposte possibili messe una accanto all'altra, è
-grande come un continente: da qui in avanti lo chiameremo così. E immaginiamo
-che ci piova sopra. L'acqua scende e si raccoglie in basso, quindi le valli si
+grande come un continente: da qui in avanti lo chiameremo così. E su quel
+continente piove. L'acqua scende e si raccoglie in basso, quindi le valli si
 riempiono e le cime restano asciutte; e quanta acqua raccolga una valle dipende
 da due cose, da quanto è profonda e da quanto è larga, esattamente come nel
 mondo vero. Un pozzo strettissimo può essere profondo e raccogliere poco; una
 conca larga e poco profonda può raccogliere molto.
 
-La pioggia raccolta, allora, è la probabilità. Da qui una distinzione che
-conviene tenere a mente per tutto il capitolo: il punto **più basso** è la
-singola risposta più plausibile, ma la valle **più bagnata** è la famiglia di
-risposte in cui il modello scommette più probabilità, e le due cose possono
-stare in due posti diversi. Quando si cerca una risposta sola si va al punto
-più basso; quando si vogliono risposte varie, come per generare immagini, si
-pesca dalla pioggia.
+La pioggia raccolta, allora, è la probabilità: il punto **più basso** è la
+singola risposta più plausibile, la valle **più bagnata** è la famiglia di
+risposte su cui il modello scommette di più, e le due cose possono stare in
+posti diversi. Chi cerca una risposta sola va al punto più basso; chi le vuole
+varie, come quando si generano immagini, pesca dalla pioggia.
 
-Per dire quanto è *alta* una valle rispetto a un'altra non serve nulla di
-speciale: si guardano le due altezze e si confrontano. Per dire invece che una
-valle raccoglie «il 30% di tutta la pioggia che cade sul continente» bisogna
-aver misurato l'intero continente, valle per valle. La funzione di partizione è
-quella misura: è ciò
+Per dire quanto è *alta* una valle rispetto a un'altra si guardano le due
+altezze e si confrontano. Per dire invece che una valle raccoglie «il 30% di
+tutta la pioggia che cade sul continente» bisogna aver misurato l'intero
+continente, valle per valle. La funzione di partizione è quella misura: è ciò
 che trasforma un'altezza in una percentuale.
 
-E qui verrebbe da chiedersi perché mai dovremmo misurarlo. La risposta è che
-imparare, per un modello a energia, sono **due** gesti e non uno: abbassare il
-paesaggio dove stanno i dati veri, e alzarlo dove il modello si immagina roba
-che non esiste. Il primo è facile, i dati ce li abbiamo in mano. Il secondo
-no: per sapere che cosa il modello si immagina bisogna prima fargli produrre
-qualcosa, e produrlo *nelle proporzioni giuste* sembra richiedere di conoscere
-il continente intero.
+E perché mai dovremmo misurarlo? Perché imparare, per un modello a energia,
+sono **due** gesti e non uno: scavare il paesaggio dove stanno i dati veri, e
+rialzarlo dove il modello si immagina roba che non esiste. Il primo è facile, i
+dati ce li abbiamo in mano. Il secondo no: per sapere che cosa il modello si
+immagina bisogna prima fargli produrre qualcosa, e produrlo *nelle proporzioni
+giuste* sembra richiedere di conoscere il continente intero. E i gesti sono due
+per forza: se ci si limitasse a scavare, il modello troverebbe subito la
+scorciatoia, cioè abbassare tutto dappertutto e dire di sì a qualunque cosa gli
+si presenti. L'alzare è il gesto che costa, ed è il motivo per cui la misura
+del continente continua a ripresentarsi.
 
-Che i gesti siano due, e non uno, non è un dettaglio: se ci si limitasse ad
-abbassare, il modello troverebbe subito la scorciatoia, cioè abbassare tutto
-dappertutto e dire di sì a qualunque cosa gli si presenti. L'alzare è il gesto
-che costa, ed è il motivo per cui la misura del continente continua a
-ripresentarsi. E quel «sembra richiedere» di due righe fa è la parola su cui
-gira il resto della sezione: la prima delle tre strade sta tutta nell'aver
-scoperto che non è vero.
-
-Il problema è che il continente, qui, è grande quanto tutte le immagini
-possibili. Non lo si percorre. E allora si può fare una di tre cose.
-*Campionarlo* (mandare esploratori a caso e accontentarsi di quello che
-riportano). *Evitarlo* (smettere di descrivere il paesaggio con le percentuali
-e descriverlo con le pendenze, che sono una descrizione locale e non chiedono
-nessuna misura d'insieme). Oppure *aggirarlo con un trucco*:
-sostituire la domanda «quanto è probabile questo?» con «questo viene dai dati
-o l'ho inventato io?», che è una domanda da rispondere sì o no, e per le
-domande sì o no sappiamo addestrare un classificatore da trent'anni.
-
-Le tre strade esistono tutte e tre, hanno tutte e tre un nome, e la seconda è
-quella che nel giro di un decennio ha prodotto i modelli di diffusione.
+Il continente è grande quanto tutte le immagini possibili, e non lo si
+percorre. Restano tre mosse. *Campionarlo*: mandare esploratori a caso e
+accontentarsi di quello che riportano. *Evitarlo*: descrivere il paesaggio con
+le pendenze invece che con le percentuali, che è una descrizione locale e non
+chiede nessuna misura d'insieme. Oppure *aggirarlo*: sostituire la domanda
+«quanto è probabile questo?» con «questo viene dai dati o l'ho inventato io?»,
+che è una domanda da sì o no, e a rispondere sì o no sappiamo addestrare un
+classificatore da trent'anni. La prima delle tre sta tutta nell'aver scoperto
+che quel «sembra richiedere» era di troppo.
 
 `````
 
@@ -146,16 +135,15 @@ la regola più usata porta il nome del fisico francese Paul Langevin, che nel
 polline sull'acqua sotto gli urti delle molecole. È quasi uno slogan:
 **scendere lungo la pendenza dell'energia, con addosso un po’ di rumore**. E
 «rumore», qui, non ha niente a che fare con i suoni: vuol dire una spintarella
-a caso, diversa a ogni passo, che non si sa da che parte arriverà. In questa
-pagina la parola avrà anche un secondo mestiere, e quando succederà il testo lo
-dirà.
+a caso, diversa a ogni passo, che non si sa da che parte arriverà. Più avanti
+la parola prenderà anche un secondo mestiere.
 
 `````{tab} Elementare
 
 Una pallina che rotola in discesa finisce nel fondovalle più vicino e lì si
-ferma: è la dinamica di Hopfield, e produce sempre la stessa risposta. Ora
-immagina la stessa pallina su un tavolo che vibra: continua a scendere,
-perché la pendenza c'è ancora, ma i sussulti la fanno anche risalire un po’,
+ferma: è la dinamica di Hopfield, e produce sempre la stessa risposta. La
+stessa pallina su un tavolo che vibra, invece, continua a scendere, perché
+la pendenza c'è ancora, ma i sussulti la fanno anche risalire un po’,
 uscire dalle conche, passare da una valle all'altra. Se la guardi per molto
 tempo e segni dove si trova, scoprirai che passa **più tempo dove il
 paesaggio è basso** e pochissimo sulle cime: la frequenza con cui visita
@@ -201,8 +189,8 @@ $k \to \infty$, con $\epsilon \to 0$ e $k\epsilon \to \infty$ (il passo si
 accorcia, ma il tempo totale percorso dalla catena deve crescere senza
 limite), la distribuzione di $\mathbf{x}_k$ converge a
 $p_\theta \propto e^{-E_\theta}$. Il teorema vuole però anche delle ipotesi
-sul paesaggio, e vale la pena enunciarle perché l'esempio qui sotto ne viola
-una: $\nabla_{\mathbf{x}} E_\theta$ globalmente lipschitziano, o almeno una
+sul paesaggio, e l'esempio a doppia buca ne viola una:
+$\nabla_{\mathbf{x}} E_\theta$ globalmente lipschitziano, o almeno una
 condizione di dissipatività che tenga la catena al finito. Con
 $E(x) = (x^2-1)^2$ il gradiente cresce come $x^3$, non è lipschitziano, e a
 passo fissato la ricorsione **diverge** oltre una soglia:
@@ -210,8 +198,9 @@ $|1 - 2\epsilon(x^2-1)| > 1$, cioè $|x| > \sqrt{1 + 1/\epsilon}$, che a
 $\epsilon = 0{,}01$ vale $10{,}05$ (verificato: da $10{,}00$ la catena torna
 in una buca, da $10{,}05$ esplode in nove passi). Non si vede mai, perché
 lassù la densità vale $e^{-9800}$, ma è una divergenza vera e non
-un'approssimazione: quella catena, a rigore, è transiente. A passo fissato, com'è nel codice qui sotto
-e nella pratica degli EBM, la catena si assesta poi su una distribuzione
+un'approssimazione: quella catena, a rigore, è transiente. A passo fissato,
+come nel codice della doppia buca e nella pratica degli EBM, la catena si
+assesta poi su una distribuzione
 leggermente distorta, con un errore dell'ordine di $\epsilon$: lo
 eliminerebbe un test di accettazione alla Metropolis (la variante MALA), a
 cui di solito si rinuncia in cambio della semplicità. Si noti che compare
@@ -227,9 +216,10 @@ discesa dimezzato ($\epsilon/2$) più un rumore di deviazione standard
 $\sqrt{\epsilon}$. Il $\tfrac12$ e la radice non sono scelte di gusto: sono
 ciò che rende la ricorsione la discretizzazione di Eulero–Maruyama della
 diffusione $d\mathbf{x} = -\tfrac12 \nabla_{\mathbf{x}} E_\theta\, dt + d\mathbf{W}$,
-che ha $p_\theta$ come misura invariante. Le due ampiezze **non si
-confrontano fra loro**: hanno dimensioni diverse ($[\text{tempo}]^{1/2}$ e
-$[\text{tempo}]$), e su un intervallo di tempo fissato i due contributi
+che ha $p_\theta$ come misura invariante. Le due ampiezze non si
+confrontano fra loro: hanno dimensioni diverse (la discesa va come
+$[\text{tempo}]$, il rumore come $[\text{tempo}]^{1/2}$), e su un intervallo
+di tempo fissato i due contributi
 restano dello stesso ordine, che è precisamente il motivo per cui il limite
 continuo esiste. Quello che in Welling e Teh diventa trascurabile al
 decrescere del passo è un'altra cosa ancora: il rumore del **gradiente su
@@ -251,12 +241,12 @@ Ci mette sopra ventimila palline (nel codice si chiamano `catene`, che è il
 nome tecnico di poco fa), le fa vibrare con la ricetta di Langevin e alla fine
 guarda dove si sono distribuite, senza aver mai calcolato $Z$. Poi, per pura
 verifica, $Z$ la calcola: in un paesaggio a una sola dimensione si può, ed è
-l'unico modo per sapere se il campionamento ha detto il vero. Chi non
-programma può saltare alla tabella: la colonna «campioni» dice dove sono
-finite le palline, la colonna «esatto» dove sarebbero dovute finire. Ogni riga
-raccoglie le palline finite in un tratto di paesaggio, per esempio fra $-0,5$
-e $+0,5$; un tratto così, in gergo, si chiama **bin**, e la parola torna
-qualche volta in questa pagina.
+l'unico modo per sapere se il campionamento ha detto il vero. Nella tabella
+che ne esce, la colonna «campioni» dice dove sono finite le palline e la
+colonna «esatto» dove sarebbero dovute finire. Ogni riga raccoglie le palline
+finite in un tratto di paesaggio, per esempio fra $-0,5$ e $+0,5$; un tratto
+così, in gergo, si chiama **bin**, ed è la parola che tornerà nei conti che
+seguono.
 
 ```python
 import numpy as np
@@ -406,34 +396,40 @@ bersaglio, sparisce.
 
 `````{tab} Elementare
 
-Un paesaggio si può descrivere in due modi a chi non lo vedrà mai.
+A chi non lo vedrà mai, un paesaggio si può descrivere in due modi.
 Puoi dirgli, per ogni punto, «qui c'è il 3% della pioggia», e per farlo devi
-aver misurato tutto il continente. Oppure puoi dirgli, per ogni punto, «da qui
-si scende verso nord-est, con questa pendenza». La seconda descrizione non
-richiede di conoscere il continente: è tutta locale. Eppure basta a
-ricostruire la forma del paesaggio, tutta tranne una cosa: a che altezza sta
-il paesaggio nel suo insieme. E quella, per produrre risposte, non serve.
+aver misurato tutto il continente. Oppure «da qui si scende verso nord-est, con
+questa pendenza»: una descrizione tutta locale, che non chiede di conoscere il
+continente. Eppure basta a ricostruire la forma del paesaggio, tutta tranne una
+cosa: a che altezza sta nel suo insieme. E quella, per produrre risposte, non
+serve.
 
 C'è però un punto cieco, e non è quello. Se il continente è fatto di due regioni
 separate da un deserto dove non piove mai, le pendenze dicono benissimo com'è
-fatta ciascuna delle due e non dicono **quanta pioggia tocchi all'una rispetto
-all'altra**: per confrontarle bisognerebbe camminare dall'una all'altra, e di
-strada non ce n'è. Un modello che mette metà della sua probabilità sulla prima
-regione e uno che ce ne mette un decimo hanno le stesse identiche pendenze, e
-chi impara solo quelle non ha modo di distinguerli. Quando i dati stanno in
-gruppi ben separati, che è il caso normale, è lì che questi metodi sbagliano le
+fatta ciascuna e non dicono quanta pioggia tocchi all'una rispetto all'altra:
+per confrontarle bisognerebbe camminare dall'una all'altra, e di strada non ce
+n'è. Un modello che dà metà della pioggia alla prima regione e uno che gliene
+dà un decimo disegnano le stesse identiche pendenze. Quando i dati stanno in gruppi ben
+separati, che è il caso normale, è lì che questi metodi sbagliano le
 proporzioni.
 
-Attenzione a non immaginare due carte diverse: è sempre la stessa, guardata da
-sopra o da sotto. L'altezza è l'energia, e dove l'energia è bassa la
-probabilità è alta, quindi il paesaggio della probabilità è il paesaggio
-dell'energia messo a testa in giù, con le stesse valli diventate colline. La
-sua pendenza ha un nome tecnico, **score**, ed è la stessa parola che compare
-nel capitolo sui modelli di diffusione. Non è una
-coincidenza: è la stessa cosa. Insegnare a una rete la pendenza in ogni punto,
-invece della percentuale, è ciò che rende addestrabile un generatore di
-immagini, e ciò che ha tolto di mezzo, per quella strada, il problema della
-normalizzazione.
+La carta è sempre quella, guardata da sopra o da sotto: l'altezza è l'energia,
+e dove il paesaggio scende la pioggia aumenta. La sua pendenza ha un nome
+tecnico, **score**, la stessa parola del capitolo sui modelli di diffusione, e
+per la stessa ragione.
+
+Il conto arriva al momento di disegnare la carta. In ogni punto va controllato
+di quanto la pendenza cambia facendo un passo, e il controllo va rifatto in
+ogni direzione: su una collina le direzioni indipendenti sono due, nel
+paesaggio di una fotografia sono un milione, e il rilievo non finisce più.
+
+La scappatoia è sporcare apposta. Si prende un punto vero, gli si dà una
+spintarella a caso e si chiede da che parte è arrivato: chi indovina la
+spintarella sta dicendo da che parte si scende, e gli è bastata una misura. Il
+prezzo è che la carta descrive il paesaggio come si vede dopo la spinta, coi
+dettagli fini smussati. Più corta la spinta, più fedele la carta, e una spinta
+ci deve essere: per questo i generatori di immagini non ne usano una sola, ma
+una scala di spinte.
 
 `````
 
@@ -441,7 +437,7 @@ normalizzazione.
 
 Lo **score** di una densità è $s(\mathbf{x}) = \nabla_{\mathbf{x}} \log p(\mathbf{x})$ (la lettera $s$ qui
 non ha niente a che vedere con lo stato della rete delle sezioni precedenti:
-cambia mestiere, e in questa sezione vale questo). Per un modello a energia,
+cambia mestiere). Per un modello a energia,
 
 $$
 \nabla_{\mathbf{x}} \log p_\theta(\mathbf{x}) = -\nabla_{\mathbf{x}} E_\theta(\mathbf{x}),
@@ -459,7 +455,7 @@ $$
 
 che a prima vista è inservibile (lo score dei dati non lo conosciamo) ma che
 un'integrazione per parti trasforma in una quantità calcolabile su un
-campione. Le ipotesi vale la pena scriverle, perché non sono formalità.
+campione. Le ipotesi contano.
 L'integrazione per parti richiede regolarità, $p_{\text{dati}}$
 differenziabile e un decadimento all'infinito
 ($p_{\text{dati}}(\mathbf{x})\, \nabla_{\mathbf{x}} \log p_\theta(\mathbf{x})
@@ -491,8 +487,8 @@ $$
 dove $\nabla_{\mathbf{x}}^2$ è la matrice hessiana rispetto a $\mathbf{x}$ e la costante,
 che vale $\tfrac{1}{2}\mathbb{E}\lVert\nabla_{\mathbf{x}} \log
 p_{\text{dati}}\rVert^2$, non
-dipende da $\theta$ {cite}`hyvarinen2005estimation`. Vale la pena nominarla,
-perché è lei a dire *perché* $J$ è un obiettivo sensato: essendo la prima
+dipende da $\theta$ {cite}`hyvarinen2005estimation`. È lei a dire *perché*
+$J$ è un obiettivo sensato: essendo la prima
 forma una media di norme al quadrato, $J \ge 0$, e $J = 0$ se e solo se i due
 score coincidono quasi ovunque. Niente $Z$, niente
 catene di Markov: solo derivate del modello. Il costo si è spostato sulla
@@ -586,21 +582,33 @@ ovunque è **NCE**.
 
 Invece di chiedere al modello «quanto è probabile questa immagine?», gli si
 chiede: «questa l'ho presa dal mondo o l'ho fabbricata io?». Si mescolano
-esempi veri e finti (questi ultimi generati da una sorgente di rumore di cui
-sappiamo tutto) e si addestra il modello a smistarli. Per riuscirci, il
-modello deve implicitamente sapere quanto ogni esempio è tipico dei dati: la
-conoscenza che serviva sta tutta lì dentro, ma è arrivata rispondendo a una
-domanda facile.
+esempi veri e finti (fabbricati da una sorgente di rumore di cui sappiamo
+tutto) e si addestra il modello a smistarli. Per riuscirci, il modello deve
+implicitamente sapere quanto ogni esempio è tipico dei dati: la conoscenza che
+serviva sta tutta lì dentro, ma è arrivata rispondendo a una domanda facile.
 
-Se suona familiare, è perché lo è. È la stessa mossa di una delle due reti
-delle GAN, quella a cui tocca dire se l'immagine che ha davanti viene dal
-mondo o l'ha fabbricata l'altra rete. Ed è la stessa mossa con cui si insegna
-a un computer a rappresentare con dei numeri le parole di una lingua o i nodi
-di un grafo: gli si mostrano accostamenti veri e accostamenti inventati, e gli
-si chiede di distinguerli. Per le parole sono i *word embedding* del capitolo
-sul natural language processing; nel capitolo sulle Graph Neural Network, più
-avanti nel libro, la stessa mossa si ritroverà col suo nome inglese, *negative
-sampling*. La famiglia è più larga di quanto il nome lasci pensare.
+Per smistare serve anche l'asticella: quanto tipica deve essere un'immagine
+perché la si dichiari vera. Quel livello è la misura del continente, e qui
+diventa una manopola come tutte le altre, girata finché lo smistamento torna.
+Con la domanda sulle probabilità quella manopola non si poteva girare: chi
+rispondeva poteva dichiarare tutto sempre più probabile, e per smentirlo
+bisognava aver sommato il continente. Smistando si tradisce al primo giro,
+perché a furia di alzare comincia a chiamare veri anche i finti.
+
+Il gioco però vale quanto la fabbrica dei finti. Se sforna macchie grigie e i
+veri sono fotografie, smistare è banale: il modello impara a riconoscere il
+grigio e nient'altro. E dove la fabbrica non arriva mai non c'è confronto: lì
+il modello dice quello che vuole.
+
+La stessa mossa la fa una delle due reti delle GAN, quella a cui tocca dire se
+l'immagine che ha davanti viene dal mondo o l'ha fabbricata l'altra rete. Ed è
+la stessa con cui si insegna a un computer a dare dei numeri alle parole di una
+lingua o ai nodi di un grafo: gli si mostrano accostamenti veri e accostamenti
+inventati, e gli si chiede di distinguerli. Per le parole sono i *word
+embedding* del capitolo sul natural language processing; nel capitolo sulle
+Graph Neural Network, più avanti nel libro, la stessa mossa si ritroverà col
+suo nome inglese, *negative sampling*. La famiglia è più larga di quanto il
+nome lasci pensare.
 
 `````
 
@@ -633,8 +641,8 @@ $\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - c$ impara anche $c$, perch�
 classificatore la costante *serve* per calibrarsi. Con la massima
 verosimiglianza la stessa mossa non è semplicemente inutile, è **impossibile**:
 lasciando $c$ libero, la verosimiglianza si fa crescere quanto si vuole
-mandando $c \to -\infty$, cioè dichiarando il modello sempre più
-«concentrato», e il problema non ha soluzione. È il vincolo di
+mandando $c \to -\infty$, cioè dichiarando una densità sempre più alta in
+ogni punto, e il problema non ha soluzione. È il vincolo di
 normalizzazione a impedirlo, ed è esattamente ciò a cui NCE rinuncia
 {cite}`gutmann2010noise`.
 

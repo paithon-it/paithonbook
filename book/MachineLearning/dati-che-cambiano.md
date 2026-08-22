@@ -30,9 +30,9 @@ da sé: più suggerimenti, più ricerche sull'influenza; e siccome il modello
 contava proprio quelle ricerche, più malati stimati. Intanto i giornali
 parlavano di epidemia e la gente cercava per curiosità, non per febbre. Il
 modello, tarato sul mondo del 2008, continuava a leggere il presente con gli
-occhiali di allora. Questa sezione
-parla esattamente di questo: che cosa succede quando i dati che un modello
-incontra non somigliano più a quelli su cui è stato addestrato.
+occhiali di allora. Ed è esattamente questo il punto: che cosa succede quando i
+dati che un modello incontra non somigliano più a quelli su cui è stato
+addestrato.
 
 ## L'ipotesi nascosta: che l'urna non cambi
 
@@ -61,12 +61,23 @@ pescata ieri non dice più nulla sull'urna di oggi. È quello che è successo a
 Google Flu Trends: l'urna (il modo in cui la gente usa un motore di ricerca)
 era cambiata, e nessuno aveva avvisato il modello.
 
-Una parola su questa urna, perché nel resto della sezione compare col suo nome
-tecnico. La **distribuzione** di una cosa è, semplicemente, il resoconto di
-quanto spesso ciascun valore capita: le palline rosse al 30% e le altre al 70%
-*sono* la distribuzione dei colori in quell'urna. Quando più avanti si legge
-«la distribuzione degli input è cambiata», vuol dire esattamente «l'urna non è
-più quella».
+C'è una condizione in più, e riguarda il momento in cui si decide la domanda.
+«Quante rosse?» stabilito prima di pescare, e la manciata risponde per l'urna.
+Stabilito dopo, no. Chi pesca cento palline e poi va a cercare, fra mille
+domande possibili, quella che su quelle cento torna meglio (le rosse escono a
+coppie, la quarta e la nona sono gialle) ha ritagliato la domanda addosso alla
+manciata, e sull'urna intera quella domanda non dice niente. È l'overfitting
+visto dal lato dell'urna, e ci si difende allo stesso modo, tenendo corto
+l'elenco delle domande che ci si concede prima di pescare.
+
+Una parola su questa urna, che ha anche un nome tecnico. La **distribuzione**
+di una cosa è, semplicemente, il resoconto di quanto spesso ciascun valore
+capita: le palline rosse al 30% e le altre al 70% *sono* la distribuzione dei
+colori in quell'urna. «La distribuzione degli input è cambiata» vuol dire
+esattamente «l'urna non è più quella». E un'urna si cambia in più di un modo,
+mettendoci dentro palline diverse, oppure cambiando quanto spesso la risposta
+giusta è una o l'altra, oppure cambiando quello che il colore di una pallina
+significa.
 
 `````
 
@@ -101,8 +112,8 @@ $$
 
 dove $P(X)$ è la distribuzione degli input, $P(y)$ quella delle etichette e
 $P(y \mid X)$ la relazione input–etichetta che il modello cerca di apprendere.
-Ognuno dei tre fattori può cambiare per conto suo, ed è la tassonomia del
-prossimo paragrafo.
+Ognuno dei tre fattori può cambiare per conto suo, e a ciascuno corrisponde
+una famiglia di shift.
 
 `````
 
@@ -138,7 +149,10 @@ visti.
 addestrata su foto scattate d'estate, viene usata d'inverno: luce bassa, rami
 spogli, neve sullo sfondo. Le foto che arrivano sono diverse da quelle viste a
 lezione, ma attenzione: un abete resta un abete. La *regola* che collega foto
-e risposta non è cambiata; è cambiato il tipo di foto che arriva.
+e risposta non è cambiata; è cambiato il tipo di foto che arriva. Davanti a un
+ramo spoglio nella neve una risposta la dà lo stesso, e la dà su un caso che
+d'estate non poteva capitarle, allungando quello che sa oltre il punto in cui
+l'ha imparato.
 
 **Cambiano le proporzioni delle risposte** (*label shift*). Un modello aiuta a
 diagnosticare una malattia che, quando è stato addestrato, colpiva una persona
@@ -158,8 +172,17 @@ sono venti volte tanti.
 Le stesse parole ("offerta", "clicca qui", "solo per oggi") che nel 2005
 gridavano truffa, oggi arrivano da negozi legittimi; e intanto i truffatori
 hanno imparato a scrivere come una banca. Qui non cambiano solo le domande:
-cambia la *risposta giusta alla stessa domanda*. È il caso più insidioso,
+cambia la *risposta giusta alla stessa domanda*. Allo spam sono serviti anni;
+altrove la regola cambia da un giorno all'altro, come quando una legge nuova
+stabilisce che cosa conta come transazione sospetta. È il caso più insidioso,
 perché nessuna quantità di dati vecchi può insegnare una regola nuova.
+
+Nel mondo vero i tre cambiamenti non arrivano in fila e ben separati.
+L'inverno porta insieme foto più scure e più abeti che margherite, cioè
+domande diverse e proporzioni diverse in una volta sola. E capire quale dei
+tre pesi di più, guardando i soli dati in arrivo, è difficile: per sapere se
+l'app ha sbagliato bisogna che qualcuno guardi la foto e dica che pianta era,
+e quel qualcuno arriva tardi, o non arriva affatto.
 
 `````
 
@@ -171,8 +194,8 @@ tre famiglie canoniche sono {cite}`quinonero2009dataset`:
 - **Covariate shift**: cambia $P(X)$, resta invariata $P(y \mid X)$. Le foto
   invernali hanno una distribuzione diversa da quelle estive, ma la mappa
   immagine $\to$ specie è la stessa. È il caso della figura: il modello è
-  accurato dove $p_{\text{train}}(x)$ è densa, e viene interrogato dove è
-  quasi nulla (di fatto, un’**estrapolazione**).
+  accurato dove $p_{\text{train}}(\mathbf{x})$ è densa, e viene interrogato
+  dove è quasi nulla (di fatto, un’**estrapolazione**).
 - **Label shift** (o *prior probability shift*): cambia $P(y)$, resta
   invariata $P(X \mid y)$. La malattia si presenta come prima, ma la sua
   prevalenza è diversa. Un classificatore bayesiano tarato sul *prior* vecchio
@@ -258,18 +281,48 @@ tre:
 
 `````{tab} Elementare
 
-Un modello in produzione è come la bilancia del mercato: per legge va
+Un modello in produzione è come la bilancia del mercato, che per legge va
 **ritarata periodicamente**, perché con l'uso e il tempo si starano tutte, ed
 è meglio accorgersene prima del cliente. In pratica si tengono d'occhio tre
-cose. Primo: gli ingressi somigliano ancora a quelli di ieri? Se un filtro
-antispam riceveva email lunghe in media 80 parole e ora ne arrivano da 200, è
-un campanello. Secondo: le uscite. Se ieri segnalava come spam il 20% dei
-messaggi e oggi il 45%, qualcosa è cambiato: nel mondo o nel modello. Terzo:
-appena si scopre la risposta giusta (l'utente ha ripescato l'email dal
-cestino?), confrontarla con la predizione. E un buon sistema dovrebbe anche
-saper **passare la mano**: davanti a un caso che non somiglia a nulla di già
-visto, meglio dire "non lo so, decida un umano" che sparare una risposta
-sicura e sbagliata.
+cose. Gli ingressi, per cominciare. Se un filtro antispam riceveva email
+lunghe in media 80 parole e ora ne arrivano da 200, è un campanello. Poi le
+uscite. Se ieri segnalava come spam il 20% dei messaggi e oggi il 45%,
+qualcosa è cambiato, nel mondo o nel modello. Infine gli errori veri, appena
+si scopre la risposta giusta (l'utente ha ripescato l'email dal cestino?).
+
+Sui conti si può fare un aggiustamento, ed è quello che gli istituti di
+sondaggi fanno da sempre. Il campione di mille persone ne contiene 50 sotto i
+trent'anni, il 5%, mentre nel paese quella fascia pesa il 20%, quattro volte
+tanto. Allora ogni giovane intervistato viene contato quattro volte (20
+diviso 5), e chi viene da una fascia sovrarappresentata conta meno di una
+persona intera. Nessuno torna
+a bussare a nessuna porta, cambia solo il peso che ogni risposta ha nella
+media finale, e il totale torna a somigliare al paese invece che al campione.
+Lo stesso conto ripara il caso della malattia diventata comune, dove i malati
+erano uno su mille e adesso sono uno su cinquanta: ogni malato del vecchio
+mucchio di esempi conta venti volte.
+
+La ripesatura ripara un guasto solo, quello di aver intervistato le persone
+sbagliate. Se nel frattempo la gente ha cambiato idea, i giovani del campione
+hanno detto quello che pensavano allora, e moltiplicare per quattro una
+risposta vecchia dà una risposta vecchia quattro volte.
+
+E se sotto i trent'anni non è stato intervistato nessuno, non c'è peso che
+tenga, perché qualunque numero moltiplicato per zero fa zero. Di quella fascia
+il sondaggio non sa niente, e nessun conto può inventare le interviste che non
+sono state fatte.
+
+Il caso che inganna di più sta in mezzo. Se sotto i trent'anni ne sono
+capitati due invece di cinquanta, quei due devono valere per il 20% del paese
+e contano cento volte ciascuno; basta che uno dei due cambi idea perché un
+partito perda dieci punti. Il conto resta giusto, e il risultato balla. E le
+fasce quasi vuote si moltiplicano appena si ripesa per più cose insieme, età e
+regione e titolo di studio e reddito, perché più le caselle sono strette e
+meno gente ci finisce dentro.
+
+Da qui viene anche il permesso di **passare la mano**. Davanti a un caso che
+non somiglia a nulla di già visto, meglio dire "non lo so, decida un umano"
+che sparare una risposta sicura e sbagliata.
 
 `````
 

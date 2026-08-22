@@ -147,34 +147,33 @@ spazio a metà di una risposta.
 
 `````{tab} Elementare
 
-Immagina un ristorante affollato con una sola sala. Il modo ingenuo di gestire
-i tavoli fa due errori. Il primo: per ogni comitiva prenoti *in anticipo* un
-tavolone lungo, nel caso arrivino altri amici; così mezza sala resta occupata
-da sedie vuote «per sicurezza», e la gente in coda alla porta se ne va. Il
-secondo: aspetti che un tavolo si liberi *del tutto* prima di far accomodare
-qualcuno di nuovo, e intanto le sedie già libere restano inutilizzate.
+Una sala sola, cinquanta coperti, la fila alla porta. Il modo ingenuo di
+gestirla fa due errori. Il primo: a ogni comitiva si riserva in anticipo un
+tavolone lungo, nel caso arrivino altri amici, e due sedie su tre restano vuote
+«per sicurezza» mentre la gente in fila se ne va. Il secondo: prima di far
+accomodare qualcuno si aspetta che un tavolo si liberi del tutto, e intanto le
+sedie già libere non le usa nessuno.
 
-Un buon maître fa il contrario. Non riserva tavoloni: sistema gli ospiti su
-piccoli gruppi di sedie sparsi dove c'è posto, e tiene un foglietto con
-scritto chi siede dove; così nessuna sedia resta vuota «nel caso». E appena
-una sedia si libera, ci fa accomodare subito la prossima persona in fila,
-senza aspettare che se ne vada l'intera comitiva. Più coperti nella stessa
-sala significano più clienti serviti nella stessa serata: esattamente ciò che
-permette a un LLM di rispondere a migliaia di persone con lo stesso hardware.
+Un buon maître fa il contrario, e le sue due mosse portano i nomi con cui si
+parla di questa faccenda dappertutto.
 
-Le due mosse del maître hanno un nome, e vale la pena impararli perché sono le
-due parole con cui si parla di questa cosa dappertutto.
+Tavoloni non ne riserva. Sistema gli ospiti su gruppetti di sedie sparsi dove
+c'è posto, tutti della stessa misura, e tiene un foglietto con scritto chi
+siede dove; le sedie vuote scendono a meno di una su venticinque. È la
+**PagedAttention**: gli appunti di ogni conversazione non stanno più in un
+blocco unico prenotato in anticipo, ma in tanti pezzetti sparsi, e un indice
+dice quali pezzetti sono di chi.
 
-Rimpiazzare ogni sedia appena si libera, invece di aspettare che il tavolo si
-svuoti del tutto, è il **continuous batching**, il mazzo continuo, e sta nella
-figura qui sopra contrapposto al batching statico.
+E appena una sedia si libera ci fa accomodare la prossima persona in fila,
+senza aspettare che se ne vada l'intera comitiva, ed è il **continuous
+batching**, il mazzo continuo.
 
-Sistemare gli ospiti su piccoli gruppi di sedie sparsi dove c'è posto, con un
-foglietto che tiene il conto di chi siede dove, è la **PagedAttention**: gli
-appunti di ogni conversazione non stanno più in un blocco unico prenotato in
-anticipo, ma in tanti pezzetti tutti della stessa misura, sparsi dove capita,
-e un indice dice quali pezzetti appartengono a chi. Così non si riserva niente
-«nel caso», e nella stessa memoria ci stanno molte più conversazioni.
+Più coperti nella stessa sala vogliono dire più clienti serviti nella stessa
+serata, ed è ciò che permette a un LLM di rispondere a migliaia di persone con
+lo stesso hardware. Un prezzo però c'è, e lo paga chi è già seduto, perché con
+la sala piena il cameriere ha più tavoli da servire e il piatto arriva un po'
+più tardi. Dove mettere l'ago dipende dal locale, visto che una mensa vuole
+coperti e un ristorante vuole il piatto puntuale.
 
 `````
 
@@ -236,31 +235,30 @@ a quello della generazione normale. Cambia il tempo, non il testo.
 
 `````{tab} Elementare
 
-Il collo di bottiglia della generazione non è quanti calcoli fa la GPU, è
-quanta memoria deve leggere. Per produrre *un solo* token il modello carica
-dalla memoria tutti i suoi pesi, li usa per una manciata di moltiplicazioni e
-li scarta. È come accendere un forno industriale per cuocere un biscotto: il
-costo dominante è portare il forno a temperatura, non cuocere.
+Un revisore esperto non manda in stampa una riga senza aver ricontrollato il
+manuale di stile, settecento pagine, e se le rilegge da capo ogni volta.
+Controllare una riga o quattro gli costa quasi uguale, perché il tempo se ne va
+nel manuale. Vale lo stesso per il modello, che per scrivere una parola si
+rilegge tutti i suoi numeri e con quella rilettura potrebbe controllarne
+quattro.
 
-Da qui l'osservazione decisiva: **far passare i pesi per controllare un token o
-quattro costa quasi lo stesso**. Generarli in fila costa un giro del modello
-ciascuno; controllarli tutti insieme, un giro solo.
+Accanto al revisore siede uno stagista veloce, che il manuale non lo apre.
+Butta giù quattro righe in avanti tirando a indovinare, e ci prende spesso,
+perché scrivere non è difficile dappertutto: dopo «la capitale della Francia
+è» viene «Parigi», e a sbagliare si fa fatica. Sui pochi punti che contano (un
+numero, una svolta del discorso) invece sbaglia. Lo stagista è un secondo
+modello, piccolo e rapido, il **modello bozza**; il revisore è quello grande.
 
-La seconda osservazione riguarda il linguaggio: scrivere non è uniformemente
-difficile. Dopo «il gatto si è arrampicato sull’» la parola «albero» è quasi
-obbligata; dopo «la capitale della Francia è» segue «Parigi». Solo alcuni
-punti (una scelta di argomento, un numero, una svolta del ragionamento)
-richiedono davvero tutta la potenza del modello grande.
+Il revisore legge le quattro proposte in un colpo, con una rilettura sola del
+manuale. Tiene quelle su cui è d'accordo e, alla prima che non gli va, butta il
+resto e scrive lui la riga giusta. Quello che esce porta la sua firma parola
+per parola, e senza il suo assenso non passa niente.
 
-Lo speculative decoding sfrutta le due cose insieme. Un **modello bozza**,
-piccolo e veloce, butta giù qualche token in avanti tirando a indovinare. Il
-**modello grande** li verifica tutti in una passata sola: accetta il prefisso
-su cui è d'accordo e, alla prima divergenza, scarta il resto e corregge lui.
-
-L'analogia è il correttore di bozze: uno stagista scrive in fretta, il
-revisore esperto legge un paragrafo intero in un colpo e si ferma al primo
-errore, riscrivendo da lì. Se lo stagista è decente si va molto più veloce; se
-sbaglia sempre, si torna al ritmo del revisore: mai peggio.
+Se lo stagista ne azzecca tre su quattro, escono quattro righe nel tempo di
+una. Se sbaglia quasi sempre si va più piano che senza di lui, perché il
+revisore riscrive tutto e per giunta ha aspettato le bozze. E se ha già la
+scrivania piena di lavoro suo non stava aspettando nessuno: le proposte dello
+stagista non gli fanno guadagnare niente.
 
 `````
 
@@ -270,13 +268,15 @@ Il metodo è dovuto a Leviathan, Kalman e Matias di Google Research
 {cite}`leviathan2023fast` e, indipendentemente, a Chen e colleghi di DeepMind
 {cite}`chen2023accelerating`. Il passo è:
 
-1. il modello bozza $q$ genera $\gamma$ token in autoregressione;
-2. il modello target $p$ valuta le $\gamma+1$ posizioni **in parallelo**, in
-   una sola passata, il costo è quello di un forward, non di $\gamma$;
+1. il modello bozza $p_{\text{b}}$ genera $\gamma$ token in autoregressione;
+2. il modello target $p_{\text{t}}$ valuta le $\gamma+1$ posizioni **in
+   parallelo**, in una sola passata, il costo è quello di un forward, non di
+   $\gamma$;
 3. ogni token proposto $x_i$ è accettato con probabilità
-   $\min\!\bigl(1,\ p(x_i)/q(x_i)\bigr)$; al primo rifiuto si campiona un token
-   correttivo dalla distribuzione residua normalizzata
-   $\bigl[p(x)-q(x)\bigr]_+$ e si scarta la coda.
+   $\min\!\bigl(1,\ p_{\text{t}}(x_i)/p_{\text{b}}(x_i)\bigr)$; al primo
+   rifiuto si campiona un token correttivo dalla distribuzione residua
+   normalizzata $\bigl[p_{\text{t}}(x)-p_{\text{b}}(x)\bigr]_+$ e si scarta
+   la coda.
 
 Questa regola di accettazione-rifiuto è ciò che rende il metodo **esatto**: la
 distribuzione dei token emessi è identica a quella del solo modello target.
@@ -358,19 +358,27 @@ l'unica che cambia la vita è la quarta.
 
 `````{tab} Elementare
 
-Comprimere i pesi è come preparare un trasloco: la maggior parte delle cose la
-schiacci in scatoloni fitti fitti e risparmi un mucchio di spazio. Ma c'è una
-regola che chi ha traslocato conosce: alcuni oggetti sono fragili e
-*importanti* (i bicchieri buoni, il vaso della nonna) e se li pigi come gli
-altri li rompi, e hai rovinato tutto il trasloco per due centimetri di spazio.
+In un trasloco quasi tutto si schiaccia in scatoloni fitti fitti, e si
+risparmia un mucchio di spazio. Quasi tutto. I bicchieri buoni e il vaso della
+nonna, pigiati come il resto, si rompono, e hai rovinato il trasloco per due
+centimetri di spazio.
 
-Con gli LLM succede una cosa sorprendentemente simile. Fra i miliardi di numeri
-del modello, una manciata è «fragile e portante»: se li arrotondi come tutti
-gli altri, la qualità crolla. I metodi buoni di compressione fanno proprio come
-un buon traslocatore: schiacciano senza pietà la massa dei numeri ordinari, ma
-individuano i pochi delicati e li avvolgono con cura, tenendoli più precisi.
-Così il modello diventa quattro volte più leggero e resta quasi identico a
-prima.
+Fra i miliardi di numeri di un modello succede lo stesso. Una manciata è
+fragile e portante, e arrotondarla come le altre fa crollare la qualità.
+Riconoscerla è il difficile, perché non si vede dalla stazza. Conta quanta roba
+ci passa sopra, come sul tavolo di cucina, piccolo e usato tutti i giorni.
+
+Poi ognuno ha il suo modo di proteggere i pochi delicati. C'è chi li tiene in
+una scatola a parte, senza schiacciarli. C'è chi li imbottisce prima e poi li
+pigia insieme agli altri, e occupano poco lo stesso. E c'è chi schiaccia un
+oggetto per volta, risistemando dopo ognuno quelli che restano, così
+l'ammaccatura non si accumula tutta sull'ultimo.
+
+Il guadagno non arriva a quattro volte esatte, e la colpa è delle etichette.
+Ogni scatolone ne porta una che dice come è stato chiuso, e occupa spazio anche
+lei. Scatoloni più piccoli vogliono dire etichette più fitte, quindi meno
+spazio guadagnato e meno roba rotta, e si resta poco sotto le quattro volte.
+All'arrivo le scatole delicate si aprono per controllare.
 
 `````
 
@@ -521,19 +529,28 @@ una verifica.
 
 `````{tab} Elementare
 
-Chi corregge il tema, se non c'è una sola risposta esatta? A scuola lo fa un
-insegnante, che legge, soppesa, dà un voto. Ma un insegnante costa tempo, e di
-temi da correggere ne arrivano migliaia al minuto. La scorciatoia è affidare la
-correzione a un altro modello: uno studente molto bravo promosso a esaminatore,
-che legge la risposta e le dà un voto in un lampo, a costo quasi nullo.
+Chi corregge il tema, se non c'è una risposta esatta? A scuola lo fa un
+insegnante, che legge, soppesa e dà un voto. Ma di temi da correggere ne
+arrivano migliaia al minuto, e un insegnante costa tempo. La scorciatoia è
+promuovere a esaminatore uno studente molto bravo, che legge e dà il voto in un
+lampo, a costo quasi nullo.
 
-Funziona, ma con difetti da tenere a mente, perché questo esaminatore ha le
-sue manie. Tende a dare il voto più alto al **primo** tema che legge, a parità
-di tutto il resto, solo perché viene prima. E premia il tema più **lungo e
-prolisso**, scambiando l'abbondanza di parole per competenza, anche quando una
-risposta breve e centrata sarebbe migliore. Non è un giudice imparziale: è un
-correttore rapido ed economico con dei pregiudizi sistematici; comodissimo,
-purché si sappia di quali difetti soffre e non lo si prenda per oro colato.
+Il suo voto vale qualcosa? Messo a scegliere il migliore fra due temi, va
+d'accordo con un insegnante in carne e ossa più di quattro volte su cinque, che
+è quanto due insegnanti vanno d'accordo fra loro. Per quello che costa, è un
+ottimo affare.
+
+Ha però le sue manie, sempre le stesse. A parità di tutto il resto dà il voto
+più alto al tema che ha letto per primo. Premia il tema lungo, scambiando
+l'abbondanza di parole per competenza, anche quando una risposta breve e
+centrata sarebbe migliore. E apprezza chi scrive come scrive lui. Contro la
+mania dell'ordine un rimedio parziale c'è: dargli i due temi anche nell'ordine
+opposto e fare la media. Le altre restano.
+
+Il guaio grosso arriva se la classe capisce come ragiona l'esaminatore. Da quel
+momento tutti scrivono lungo, e per primi quando possono: i voti salgono e i
+temi peggiorano. Quel voto serve a tenere d'occhio la classe, non a decidere
+che cosa si insegna.
 
 `````
 
@@ -619,8 +636,9 @@ capitolo a sé, quello sugli **Agenti**, che abbiamo già percorso.
   via una parte. Ma alcuni numeri sono fragili e portanti, come i bicchieri
   buoni in un trasloco, e vanno trattati a parte.
 - **Giudicare un testo aperto** non ha una risposta esatta: si usa un altro
-  modello come esaminatore, comodo ed economico, sapendo che ha dei
-  pregiudizi (premia chi risponde per primo e chi scrive di più).
+  modello come esaminatore, comodo ed economico, sapendo che ha sempre le
+  stesse manie (premia il tema che ha letto per primo, quello più lungo e chi
+  scrive come lui).
 - Quello che qui si conserva versione per versione non sono i pesi, che spesso
   arrivano già fatti: è **l'istruzione con cui si parla al modello**, che è
   fragile come il codice e come il codice va provata prima di sostituirla.

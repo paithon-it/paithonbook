@@ -62,13 +62,22 @@ un’eternità. Con un pezzo già fatto per ogni parola del dizionario si
 costruisce in un colpo solo, ma la scatola diventa enorme e comunque, il giorno
 che serve un cognome o una parola inventata, non c'è.
 
+Una scatola enorme, poi, si paga in due modi. Ogni pezzo vuole il suo
+scomparto, e chi costruisce deve tenere a mente che cosa c'è in ciascuno: mille
+scomparti, mille cose da ricordare; centomila scomparti, centomila. E per
+scegliere il pezzo da mettere adesso si passa in rassegna la scatola intera,
+quindi con dieci volte gli scomparti ci vuole dieci volte il tempo.
+
 La soluzione è una scatola mista: i pezzi grandi per le cose che ricorrono
 (*rosso*, *casa*, *-mente*, *-zione*) e le lettere singole come riserva per
-tutto il resto. Il problema diventa allora: quali pezzi grandi conviene
-tenere, dato che lo spazio nella scatola è limitato? La risposta di tutti gli
-algoritmi che vedremo è la stessa in spirito: **teniamo i pezzi che fanno
-risparmiare di più**, cioè quelli che ricorrono spesso. E il modo per
-scoprirli è guardare un mucchio di testo e contare.
+tutto il resto. Quanti scomparti ci siano non lo decide l'algoritmo: il numero
+si fissa prima di cominciare, qualche decina di migliaia di solito, e chi deve
+cavarsela in venti lingue lo alza, perché ogni lingua porta i suoi pezzi. Il
+problema diventa allora: quali pezzi grandi conviene tenere, dato che gli
+scomparti sono contati? La risposta di tutti gli algoritmi che vedremo è la
+stessa in spirito: si tengono i pezzi che fanno risparmiare di più, cioè quelli
+che ricorrono spesso. E il modo per scoprirli è guardare un mucchio di testo e
+contare.
 
 `````
 
@@ -94,10 +103,11 @@ Inoltre la softmax finale corre su $|V|$ classi, e il suo costo cresce
 linearmente con la taglia.
 
 Le taglie usate in pratica (da qualche decina di migliaia a qualche centinaio
-di migliaia di token) stanno dove queste due curve si incontrano, e la scelta
-si sposta verso l'alto quando il modello deve coprire molte lingue. Nessun
-algoritmo di questa sezione *sceglie* $|V|$: è un iperparametro, e ciascuno si
-limita a riempire i posti disponibili nel modo che ritiene migliore.
+di migliaia di token) stanno nella fascia in cui nessuno dei due costi domina
+l'altro, e la scelta si sposta verso l'alto quando il modello deve coprire
+molte lingue. Nessuno di questi algoritmi *sceglie* $|V|$: è un iperparametro,
+e ciascuno si limita a riempire i posti disponibili nel modo che ritiene
+migliore.
 
 `````
 
@@ -155,12 +165,20 @@ Il meccanismo si racconta in quattro righe.
 
 1. Spezzate tutte le parole del corpus nelle loro lettere. Il vocabolario di
    partenza sono le lettere, e basta.
-2. Guardate tutto il corpus e contate **quali due simboli vicini compaiono
-   insieme più spesso**. In italiano sarà qualcosa come `ss`, o `ch`, o `zi`.
-3. Incollateli in un simbolo nuovo, che da adesso conta come un pezzo solo, e
-   segnatevi la fusione su un elenco.
-4. Tornate al punto 2, e ripetete finché il vocabolario è grande quanto
-   volete.
+2. Guardate tutto il corpus e contate quali due simboli vicini compaiono
+   insieme più spesso. Su un testo italiano vero vincono coppie banali e
+   frequentissime, `re` o `to`.
+3. Incollateli in un simbolo nuovo, dappertutto dove compaiono: da adesso
+   quello conta come un pezzo solo, e la fusione va segnata su un elenco.
+4. Tornate a contare, e ripetete finché il vocabolario è grande quanto volete.
+   I giri da fare sono la taglia della scatola meno le lettere con cui si è
+   partiti: una scatola da 30.000 pezzi, con 100 lettere iniziali, vuole
+   29.900 fusioni.
+
+Contare è la parte lenta: a ogni giro si rilegge tutto il testo da capo, e i
+giri sono migliaia. Chi ha fretta si tiene annotato in quali punti ogni coppia
+compare, e dopo una fusione aggiorna solo quelli che sono cambiati. In un modo
+o nell'altro è un lavoro che si fa una volta sola.
 
 Alla fine avete due cose: un elenco di pezzi (il vocabolario) e, soprattutto,
 l’**elenco ordinato delle fusioni**. Il secondo è più importante del primo,
@@ -168,10 +186,13 @@ perché è la ricetta. Per tokenizzare una parola nuova non serve cercarla da
 nessuna parte: la si spezza in lettere e le si riapplicano le stesse fusioni,
 nello stesso ordine in cui erano state imparate. Se la parola contiene pezzi
 familiari, si ricompongono da soli; se non ne contiene nessuno, resta una fila
-di lettere. In nessun caso resta fuori, **purché la scatola contenga davvero
-tutte le lettere che potranno arrivare**: è un «purché» che pesa più di quanto
-sembri, e alla fine della sezione vedremo come lo si toglie di mezzo per
-sempre.
+di lettere. Ripassare l'elenco intero per ogni parola sarebbe uno spreco,
+perché le stesse poche parole tornano di continuo: il risultato si scrive
+accanto alla parola la prima volta, e dalla seconda in poi si legge e basta.
+
+Fuori non resta niente, purché la scatola contenga davvero tutte le lettere che
+potranno arrivare: è un «purché» che pesa più di quanto sembri, e più avanti
+vedremo come lo si toglie di mezzo per sempre.
 
 `````
 
@@ -197,8 +218,8 @@ coppia $(\Sigma, M)$.
 
 La codifica di una stringa mai vista è il **replay** della lista: si parte dai
 caratteri e si applicano $m_1, \dots, m_k$ in quest'ordine. L'ordine è
-sostanziale, non convenzionale: una fusione tardiva può operare solo su
-simboli prodotti da quelle precedenti, e invertirne due dà in generale una
+sostanziale, non convenzionale: una fusione tardiva può agire su simboli che
+solo le precedenti sanno produrre, e invertirne due dà in generale una
 segmentazione diversa. La procedura è deterministica e priva di ricerca: BPE
 non cerca la segmentazione ottima di una parola, ma quella che le sue fusioni
 producono, il che è una proprietà da tenere a mente quando i risultati
@@ -328,8 +349,8 @@ quattro: `ss` si applica (`b a ss e t t o`), `sso` no (dopo la doppia s c'è
 una e), `ro` no, `rosso` no.
 
 Fermarsi a quattro fusioni sarebbe però un vocabolario ridicolo: lasciamo
-correre l'algoritmo fino a dieci, che è quello che fa il programma della
-prossima pagina. Le sei che si aggiungono sono, in ordine, `a`+`sso` → `asso`,
+correre l'algoritmo fino a dieci, che è quello che fa il programma qui sotto.
+Le sei che si aggiungono sono, in ordine, `a`+`sso` → `asso`,
 `b`+`asso` → `basso`, `t`+`o` → `to`, `t`+`to` → `tto`, `e`+`tto` → `etto`,
 `ro`+`ss` → `ross`. Con queste in mano, `bassetto` esce così:
 

@@ -49,30 +49,41 @@ Il disegno indica un vicino, non il vincitore di una classifica, e conviene
 dire perché. Applicando alla lettera il modo standard di misurare la
 somiglianza, davanti a Bruno finiscono in due: prima Dario, poi Anna. E Dario
 con Carla ha in comune **un film solo**, il che, come vedremo fra poco, basta
-a farlo sembrare un gemello perfetto. È il difetto che questa pagina smonta
-poco più avanti, e si vede già qui, su una griglia di venticinque caselle.
+a farlo sembrare un gemello perfetto. Il difetto si vede già qui, su una
+griglia di venticinque caselle.
 
 Il disegno però mente su una cosa, ed è la più importante: lì le celle piene
 sono la maggioranza. In un catalogo vero ognuno ha visto una frazione minuscola
 dei titoli, quindi due persone qualsiasi hanno pochissimi film in comune su cui
 misurare la somiglianza. Quel vuoto è la difficoltà vera del mestiere, e da lì
 nasce il bisogno di riassumere ogni persona e ogni film in una scheda di pochi
-numeri, che è il resto di questa pagina.
+numeri, che è la mossa della fattorizzazione.
 
 `````{tab} Elementare
 
-**Da utente a utente.** Per consigliare un film a Carla, cerco i suoi
-"gemelli di gusto": le persone che hanno dato voti simili ai suoi sugli
-stessi film. Se Bruno e Carla concordano su tutto ciò che entrambi hanno
-visto, e Bruno ha dato 2 stelle a *Notting Hill*, che Carla non ha visto,
-prevedo che anche Carla gli darà circa 2. È la stima del disegno qui sopra.
+**Da utente a utente.** Per consigliare *Notting Hill* a Carla cerco i suoi
+"gemelli di gusto": le persone che le hanno dato voti simili sui film che
+entrambi hanno visto. I film che uno dei due non ha visto restano fuori dal
+conto: una casella vuota dice «non l'ho visto», non «non mi è piaciuto».
 
-Con più vicini faccio una media pesata, in cui i gemelli quasi perfetti pesano
-più dei sosia approssimativi. Diciamo che Bruno somiglia a Carla con un peso di
-$0{,}9$ e ha dato 2, ed Elena le somiglia molto meno, peso $0{,}2$, e ha dato
-4. La previsione non è la media dei due voti, che sarebbe 3: è
+Di gemelli ce n'è più d'uno e non li ascolto tutti: prendo i pochi più
+somiglianti fra quelli che il film l'hanno visto, e faccio la media dei loro
+voti, pesata in modo che i gemelli quasi perfetti contino più dei sosia
+approssimativi. Bruno somiglia a Carla con un peso di $0{,}9$ e ha dato 2,
+Elena le somiglia molto
+meno, peso $0{,}2$, e ha dato 4. La previsione non è la media dei due voti, che
+sarebbe 3: è
 $(0{,}9 \cdot 2 + 0{,}2 \cdot 4) / (0{,}9 + 0{,}2) \approx 2{,}4$ (per la
 precisione $2{,}36$), cioè quasi il voto di Bruno.
+
+Restano due ritocchi, e senza di quelli il conto sbaglia in modo prevedibile.
+Il peso di un vicino si sconta in base a quanti film ha in comune con Carla:
+Dario, che ne ha uno solo, non può contare quanto chi ne ha cinquanta, e sotto
+una manciata conviene rispondere che non si sa. E i voti si rimettono sullo
+stesso metro prima di
+mediarli, perché c'è chi dà 5 a tutto e chi non supera mai il 3: un 2 da chi di
+media dà 4 è una stroncatura, un 3 da chi di media dà 2 è un elogio, e nella
+media entrano questi scarti, riportati alla fine sul metro di Carla.
 
 **Da oggetto a oggetto.** Si può ribaltare il punto di vista: invece di
 cercare utenti simili, cerco *film* simili; dove "simili" non significa stesso
@@ -116,8 +127,9 @@ $$
 
 dove $\mathcal{N}_i(u)$ è il vicinato di $u$, cioè i pochi utenti (tipicamente
 qualche decina) più simili a $u$ fra quelli che hanno votato $i$, e $r_{vi}$ è
-il voto del vicino $v$. La lettera $k$ la teniamo libera: da qui alla fine del
-capitolo indica il numero di fattori latenti, che è tutt'altro conteggio.
+il voto del vicino $v$. Il vicinato non lo chiamiamo $k$, come farebbe la
+tradizione dei $k$ vicini più prossimi: quella lettera serve qui al numero di
+fattori latenti, che è tutt'altro conteggio.
 
 C'è un guasto in agguato in questa formula, e non è quello che si direbbe. Con
 $|\mathcal{I}_{uv}| = 0$ la similarità non è definita e i due utenti
@@ -221,54 +233,48 @@ combacino.
 
 `````{tab} Elementare
 
-Immagina di descrivere ogni film con poche "manopole": quanto è commedia e
-quanto dramma, quanto è mainstream e quanto di nicchia, quanto punta
-sull'azione. E di descrivere ogni persona con le *stesse* manopole: quanto le
-piace la commedia, quanto cerca la nicchia, e così via. La previsione diventa
-un confronto tra le due schede. Se Anna ha «commedia $0{,}9$, azione $0{,}1$»
-e un film ha «commedia $0{,}8$, azione $0{,}2$», l'affinità si calcola voce
-per voce: $0{,}9 \cdot 0{,}8 + 0{,}1 \cdot 0{,}2 = 0{,}74$. Con un film
-d'azione puro («commedia $0{,}1$, azione $0{,}9$»), verrebbe
-$0{,}9 \cdot 0{,}1 + 0{,}1 \cdot 0{,}9 = 0{,}18$. Il primo numero è più di
-quattro volte il secondo, ed è così che si leggono: uno accanto all'altro,
-perché il punteggio da solo non vuol dire niente. (Qui i numeri stanno fra $0$
-e $1$ per rendere l'esempio leggibile, ma non è una regola: nel programma di
-poco più avanti le manopole vengono anche negative. Un valore negativo sulla
-manopola «commedia» dice che quella persona la commedia la evita, e in quel
-caso il conto con un film pieno di commedia viene negativo: un consiglio da
-non fare.)
+Ogni film si può descrivere con poche "manopole": quanto è commedia e quanto
+dramma, quanto è mainstream e quanto di nicchia, quanto punta sull'azione. E
+ogni persona con le *stesse* manopole. La previsione diventa un confronto fra
+le due schede, voce per voce. Anna ha «commedia $0{,}9$, azione $0{,}1$», un
+film ha «commedia $0{,}8$, azione $0{,}2$»: l'affinità è
+$0{,}9 \cdot 0{,}8 + 0{,}1 \cdot 0{,}2 = 0{,}74$. Con un film d'azione puro
+(«commedia $0{,}1$, azione $0{,}9$») verrebbe
+$0{,}9 \cdot 0{,}1 + 0{,}1 \cdot 0{,}9 = 0{,}18$, e il primo è più di quattro
+volte il secondo.
 
-Ed è qui che si capisce **perché conviene**, cioè perché questa strada batte
-quella dei gemelli di gusto. Con i vicini, per confrontare due persone bisogna
-trovare i film che hanno visto entrambe, e in una tabella quasi vuota sono
-pochi o nessuno. Con le schede il confronto non passa più di lì: due persone si
-confrontano guardando due liste corte di numeri, dieci o venti voci, che
-esistono sempre, anche se quelle due persone non hanno un solo film in comune.
-La tabella larga diecimila colonne diventa una scheda lunga venti, e il vuoto
-smette di essere un ostacolo.
+Al confronto si aggiungono due correzioni che con i gusti non c'entrano, quanto
+quella persona vota alto o basso in generale e quanto quel film è apprezzato in
+generale, e si parte dal voto medio del sito. Tolto di mezzo il facile, alle
+manopole resta l'incontro fra quella persona e quel film.
 
-Il colpo di scena è che le manopole **non le sceglie nessuno**. Non c'è un
-esperto che etichetta i film: l'algoritmo riceve solo la tabella dei voti e
-cerca da solo i numeri da mettere nelle schede, in modo che i voti già noti
-tornino. I tratti che emergono (andandoli a guardare dopo, somigliano spesso a
-"commedia/dramma" o "mainstream/nicchia") sono per questo detti
-**fattori latenti**: nascosti nei dati, mai dichiarati da nessuno.
+E qui questa strada batte quella dei gemelli di gusto: la scheda c'è sempre,
+anche per due persone che non hanno nessun film in comune, e la tabella larga
+diecimila colonne diventa una scheda lunga venti.
 
-Due cose da portarsi via, prima di andare avanti.
+Il colpo di scena è che le manopole non le sceglie nessuno. Non c'è un esperto
+che etichetta i film: l'algoritmo riceve solo la tabella dei voti e cerca da sé
+i numeri da mettere nelle schede, in modo che i voti già dati tornino. E non
+sono numeri fra $0$ e $1$ come nell'esempio: vengono anche negativi, e una
+«commedia» negativa dice che quella persona la commedia la evita. I tratti che
+ne escono (a guardarli dopo, somigliano spesso a "commedia/dramma" o
+"mainstream/nicchia") sono per questo detti **fattori latenti**: nascosti nei
+dati, mai dichiarati da nessuno. Ed è anche il motivo per cui l'app non sa
+dirti perché ti consiglia un titolo: la ragione vera è un mucchietto di numeri
+senza nome.
 
-La prima riguarda le caselle vuote della tabella. La tentazione, per far
-tornare i conti, sarebbe di riempirle con degli zeri, e sarebbe un disastro:
-su una scala che parte da 1, uno zero direbbe «peggio del peggio», mentre una
-casella vuota dice «non lo so», che è un'altra cosa. L'algoritmo infatti non
-le guarda affatto: cerca le manopole che fanno tornare i voti *che ci sono*, e
-sulle celle vuote si limita, alla fine, a dire il numero che ne viene fuori.
+E le caselle vuote? Riempirle di zeri sarebbe un disastro: su una scala che
+parte da 1, uno zero direbbe «peggio del peggio», mentre una casella vuota dice
+«non lo so». L'algoritmo infatti non le guarda: cerca le manopole che fanno
+tornare i voti *che ci sono*, e sulle vuote dice alla fine il numero che ne
+viene fuori.
 
-La seconda riguarda te. Se le manopole non le ha scelte nessuno e non hanno un
-nome, allora quando l'app ti mette davanti un titolo **non è in grado di dirti
-perché**: la ragione vera è un mucchietto di numeri senza nome che somigliano
-ai tuoi. Non te lo nasconde, proprio non ce l'ha. Le spiegazioni che leggi
-(«perché hai guardato X») sono ricostruzioni fatte dopo, plausibili e
-qualche volta giuste, ma non sono il motivo per cui quel titolo è arrivato lì.
+Questo finché la gente vota. Dove nessuno vota, e si sa soltanto che cosa uno
+ha aperto e quante volte, il vuoto cambia mestiere: diventa l'unico segnale
+negativo, perché tutto quello che si è raccolto è positivo. Allora la tabella
+si riempie tutta, e a ogni casella si affianca quanto ci si crede: chi ha
+rivisto una serie dieci volte è un sì solido, chi non l'ha mai aperta un no
+debolissimo, perché magari nessuno gliel'ha proposta.
 
 `````
 
@@ -339,8 +345,8 @@ e diventa obbligato quando ogni cella conta, come appunto sull'implicito. In
 nessuno dei due casi si arriva a un minimo globale: il problema è convesso in
 $\mathbf{P}$ e in $\mathbf{Q}$ *separatamente* (che è precisamente ciò che rende
 sensato alternare) ma non nei due insieme, e dove si finisce dipende anche da
-dove si è partiti. È lo stesso motivo per cui, poco più avanti, un utente senza
-interazioni resterà fermo alla sua inizializzazione casuale.
+dove si è partiti. È lo stesso motivo per cui un utente senza interazioni
+resterà fermo alla sua inizializzazione casuale.
 
 `````
 
@@ -448,15 +454,20 @@ riga che gira ne fa una leggermente diversa.
 
 Il freno, come lo descrivono i libri, dovrebbe tirare verso lo zero soltanto i
 numeri delle schede, cioè quelli che il modello si sta inventando. La riga che
-gira davvero fa una cosa un po’ diversa: stringe verso lo zero **tutti** i
-numeri del modello, a ogni passo, senza guardare chi sono. Fra questi c'è anche
-quello che tiene la media dei voti di tutto il sito (nel codice si chiama
-`mu`). Quello non andrebbe frenato affatto, perché non sta inventando niente,
-sta constatando un fatto, e tirarlo verso lo zero vuol dire spingerlo a dire il
-falso. Su un esempio piccolo come questo la differenza non si vede nei
-risultati. Vale però la pena saperlo: fra la ricetta scritta sui libri e le
-righe che girano davvero c'è quasi sempre un piccolo scarto, e chi scrive il
-codice è l'unico che può accorgersene.
+gira davvero fa una cosa un po’ diversa, e non in un modo solo. Stringe verso
+lo zero tutti i numeri del modello, a ogni passo, senza guardare chi sono, e
+senza risparmiare le schede che in quel momento non sta nemmeno usando. Fra
+questi numeri c'è anche quello che tiene la media dei voti di tutto il sito
+(nel codice si chiama `mu`), e quello non andrebbe frenato affatto: non sta
+inventando niente, sta constatando un fatto, e tirarlo verso lo zero vuol dire
+spingerlo a dire il falso. E la forza con cui tira non è nemmeno quella scritta
+nella ricetta, perché passa per lo stesso meccanismo con cui l'ottimizzatore
+decide la lunghezza dei propri passi, e per strada viene riscalata.
+
+Su un esempio piccolo come questo la differenza non si vede nei risultati. Fra
+la ricetta scritta sui libri e le righe che girano davvero c'è però quasi
+sempre un piccolo scarto, e chi scrive il codice è l'unico che può
+accorgersene.
 
 `````
 
@@ -504,10 +515,7 @@ epoca 20 · MSE visti 0.043 · MSE tenuti da parte 0.549 · banale 0.997
 epoca 30 · MSE visti 0.019 · MSE tenuti da parte 0.418 · banale 0.997
 ```
 
-Vale la pena leggerli con calma, perché il numero che salta all'occhio non è
-quello che conta.
-
-Quello che salta all'occhio è il primo: sui voti già visti l'errore crolla a
+Il numero che salta all'occhio è il primo: sui voti già visti l'errore crolla a
 $0{,}019$, cioè praticamente a zero. Da solo non dimostra niente. Contiamo
 quanti numeri il modello ha da regolare: una scheda per ciascuno dei 300 utenti
 e una per ciascuno dei 200 film, otto voci l'una (l'otto è la `k=8` del codice,
@@ -527,9 +535,9 @@ peggio** di quello che si legge sui voti già visti. Le due cose insieme sono la
 misura onesta. Il modello ha imparato qualcosa di vero, perché $0{,}42$ è meno
 della metà di $0{,}997$; anche se, essendo errori al quadrato, in stelle il
 vantaggio si assottiglia, $0{,}65$ contro $1{,}00$. E insieme ha memorizzato
-parecchio. Un capitolo che insegna a valutare i sistemi di raccomandazione non
-può permettersi di guardare solo il primo numero, ed è la ragione per cui il
-codice qui sopra mette da parte il 20% dei voti prima ancora di cominciare.
+parecchio. Chi valuta un sistema di raccomandazione guardando il solo errore
+sui voti già visti si sta raccontando una favola, ed è la ragione per cui il
+20% dei voti viene messo da parte prima ancora di cominciare.
 
 Una nota sul freno, già che i numeri ci sono. A `weight_decay=1e-4`, cioè
 $0{,}0001$, non sta frenando quasi nulla, e lo si vede: se frenasse, l'errore
@@ -563,20 +571,32 @@ nessun raffinamento del modello le elimina davvero.
 **La partenza a freddo.** Il nuovo iscritto è un perfetto sconosciuto: il
 libraio che consiglia in base agli acquisti passati, con chi non ha mai
 comprato nulla, è muto. Lo stesso vale per un film appena uscito: finché
-nessuno lo vota, non somiglia a niente e nessun sistema collaborativo può
-consigliarlo. È il problema della **partenza a freddo** (in inglese *cold
-start*, ed è il nome con cui lo troverete scritto quasi ovunque), e spiega
-perché le piattaforme ti tempestano di domande all'iscrizione («scegli tre
-titoli che ti piacciono»): stanno comprando a poco prezzo le prime celle della
-tua riga. Finché quelle celle non ci sono, la cosa più sensata da fare è anche
-la più banale: mostrarti i titoli che piacciono a tutti. Non è una resa, è la
-miglior risposta possibile a chi non si conosce.
+nessuno lo vota non somiglia a niente, e nessun sistema collaborativo può
+consigliarlo. Servirebbe sapere che film è, genere, attori, trama, ed è
+l'unica cosa che il collaborativo non guarda. È il
+problema della **partenza a freddo** (in inglese *cold start*, ed è il nome con
+cui lo troverete scritto quasi ovunque), e spiega perché le piattaforme ti
+tempestano di domande all'iscrizione («scegli tre titoli che ti piacciono»):
+stanno comprando a poco prezzo le prime celle della tua riga.
+
+Finché quelle celle non ci sono, la scheda di chi è appena arrivato è un
+mucchietto di numeri a caso, e dal confronto non esce niente di personale:
+resta soltanto quanto quel film piace in generale, cioè una classifica identica
+per chiunque. Tanto vale sceglierla apposta, e mostrare i titoli che piacciono
+a tutti.
 
 **La dittatura della popolarità.** I film con moltissimi voti entrano nei conti
 di tutti, vengono consigliati spesso, e così raccolgono altri voti: i
 ricchi diventano più ricchi. Il capolavoro di nicchia con dodici voti
 entusiasti resta invisibile: proprio il titolo che il tuo amico cinefilo, lui
-sì, ti avrebbe messo in mano.
+sì, ti avrebbe messo in mano. Rimediare si può, forzando la lista a fare posto
+ai titoli poco visti, e si paga: qualche consiglio azzeccato in meno fra quelli
+che avresti guardato comunque. Quanto pagarne lo decide chi progetta.
+
+E la popolarità ha un rovescio: consigliare a tutti i titoli più visti, senza
+sapere niente di nessuno, è un avversario che parecchi sistemi sofisticati non
+riescono a battere. Chi ne presenta uno nuovo e non lo mette accanto a quella
+lista salta la domanda più semplice.
 
 `````
 
@@ -590,9 +610,13 @@ dai metadati (genere, cast, descrizione, per gli item) o da questionari e dati
 demografici (per gli utenti), oppure strategie di esplorazione che raccolgono
 interazioni mirate nei primi giorni di vita. Nell'attesa che una di queste
 faccia effetto, il ripiego standard è la classifica dei titoli più popolari, ed
-è meglio di quanto suoni: su un utente di cui non si sa nulla, una
-fattorizzazione con embedding all'inizializzazione produce un ordinamento
-casuale, e la popolarità la batte largamente.
+è meno rozzo di quanto suoni. Su un utente di cui non si sa nulla il termine
+$\mathbf{p}_u^\top \mathbf{q}_i$ è rumore attorno allo zero, e ciò che resta in
+piedi del modello è $\mu + b_i$: un ordinamento per gradimento medio del
+titolo, uguale per tutti. Il sistema una classifica non personalizzata la sta
+già servendo, quindi tanto vale sceglierla apposta e sceglierla robusta,
+perché $b_i$ stimato su una manciata di voti è esposto allo stesso guasto
+della similarità su due film in comune.
 
 **Bias di popolarità.** La distribuzione delle interazioni è a coda lunga, e
 l'obiettivo di minimizzare l'errore medio concentra la capacità del modello
@@ -604,13 +628,12 @@ diversità nella lista finale) comprano equità nella coda pagando qualche punto
 di accuratezza in testa. È un compromesso da scegliere, non un difetto da
 correggere una volta per tutte.
 
-E conviene tenere presente il rovescio, perché in questo capitolo la popolarità
-compare quasi solo come patologia. Raccomandare i titoli più popolari, senza
-alcuna personalizzazione e con zero parametri appresi, è anche una **baseline
-difficile da battere**: è la prima riga che un revisore serio cerca in fondo a
-una tabella di confronto, e la ragione per cui la cerca è che molti metodi
-pubblicati non la battono. Quando lo fanno, il margine dice quanto vale
-davvero la personalizzazione; senza quella riga, non lo dice niente.
+La popolarità però non è solo una patologia. Raccomandare i titoli più
+popolari, senza alcuna personalizzazione e con zero parametri appresi, è anche
+una **baseline difficile da battere**: è la prima riga che un revisore serio
+cerca in fondo a una tabella di confronto, e la ragione per cui la cerca è che
+molti metodi pubblicati non la battono. Quando lo fanno, il margine dice quanto
+vale davvero la personalizzazione; senza quella riga, non lo dice niente.
 
 `````
 
@@ -635,7 +658,10 @@ Prima però, il riepilogo.
   l'algoritmo dai soli voti già dati (le celle vuote sono incognite, non zeri),
   con un freno che dovrebbe impedirgli di imparare quei voti a memoria, e che
   va tarato: qui è così largo che non stringe quasi nulla, e a memoria ne
-  impara parecchi.
+  impara parecchi. Il «solo i voti già dati» però vale finché la gente vota:
+  dove si sa soltanto che cosa uno ha aperto, il vuoto smette di essere
+  un'incognita e diventa l'unico segnale negativo, con accanto quanto ci si
+  crede.
 - In PyTorch sono due tabelle di schede e un confronto voce per voce: poche
   righe, la stessa idea che ha vinto il Netflix Prize.
 - L'errore va guardato **sui voti messi da parte**, non su quelli con cui il
@@ -647,7 +673,8 @@ Prima però, il riepilogo.
   e nell'attesa la cosa migliore da fare è mostrare i titoli che piacciono a
   tutti); i titoli già molto votati si consigliano da soli, e il capolavoro di
   nicchia con dodici voti entusiasti resta invisibile (**dittatura della
-  popolarità**).
+  popolarità**). La popolarità però fa due mestieri: è la patologia, ed è anche
+  l'avversario che parecchi sistemi sofisticati non riescono a battere.
 ```
 
 `````
@@ -668,11 +695,12 @@ Prima però, il riepilogo.
   righe, la stessa idea che ha vinto il Netflix Prize. Con quasi un parametro
   per voto, però, l'MSE di addestramento non è una misura: qui $0{,}019$ sui
   voti visti contro $0{,}42$ su quelli tenuti da parte.
-- Limiti strutturali: **partenza a freddo** (*cold start*: nessuna
-  interazione, nessun consiglio;
-  ripiego standard, la popolarità) e **bias di popolarità** (la coda lunga
-  resta invisibile). La popolarità è insieme la patologia e la baseline che
-  molti metodi pubblicati non battono.
+- Limiti strutturali: **partenza a freddo** (*cold start*: senza interazioni
+  il termine personalizzato è rumore e resta $\mu + b_i$, cioè una classifica
+  per gradimento medio uguale per tutti; tanto vale sceglierla apposta, e
+  sceglierla robusta) e **bias di popolarità** (la coda lunga resta
+  invisibile). La popolarità è insieme la patologia e la baseline che molti
+  metodi pubblicati non battono.
 ```
 
 `````

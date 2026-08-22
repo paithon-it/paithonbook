@@ -63,45 +63,48 @@ nessuno se n'era accorto {cite}`grathwohl2020your`.
 
 Una rete che classifica immagini produce, per ogni immagine, un pugno di
 numeri: uno per classe, tanto più alto quanto più la rete crede in quella
-classe. Di solito quei numeri si trasformano in percentuali che sommano a
-cento, si legge la classe vincente e il resto si butta via.
+classe. Di solito si trasformano in percentuali che sommano a cento, si legge
+la classe vincente e il resto si butta via.
 
-Si butta via più di quel che sembra. Il passaggio alle percentuali guarda
-solo le *differenze* fra i punteggi, non quanto sono grandi: i punteggi 8, 2,
-1 e i punteggi 9, 3, 2 danno esattamente le stesse percentuali (99,7%, 0,2%,
-0,1%), perché sono gli stessi numeri spostati tutti in su di uno. Ma i secondi
-sono più forti dei primi, e quella forza si perde per strada.
+Si butta via più di quel che sembra. Le percentuali guardano solo le
+*differenze* fra i punteggi, non quanto sono grandi: 8, 2, 1 e 9, 3, 2 danno
+le stesse percentuali (99,7%, 0,2%, 0,1%), perché sono gli stessi numeri
+spostati tutti in su di uno. Ma i secondi sono più forti dei primi, e quella
+forza si perde per strada.
 
-Recuperarla costa poco. La ricetta è: si prende il punteggio più alto e gli si
-aggiunge una correzione che dipende da quanto gli altri gli stanno vicino, e
-che vale tanto meno quanto più sono staccati. Con 8, 2, 1 gli altri due sono
-lontanissimi e la correzione è quasi zero: viene 8,003, cioè il massimo tale e
-quale. Con 8, 7, 7 gli altri due sono a un passo e la correzione conta: viene
-8,55. Tre voci che gridano insieme fanno più chiasso di una sola.
-Chiamiamolo «quanto forte grida questa immagine».
+Recuperarla costa poco: si prende il punteggio più alto e gli si aggiunge una
+correzione che dipende da quanto gli altri gli stanno vicino. Con 8, 2, 1 gli
+altri due sono lontanissimi e la correzione è quasi zero: viene 8,003, cioè il
+massimo tale e quale. Con 8, 7, 7 sono a un passo e la correzione conta: viene
+8,55. Tre voci che gridano insieme fanno più chiasso di una sola. Chiamiamolo
+«quanto forte grida questa immagine».
 
-Perché dovrebbe dirci se l'immagine è *tipica*? Perché la rete quei punteggi
-li ha imparati sulle immagini vere, e davanti a quelle grida forte. Davanti a
-qualcosa che non ha mai visto, invece, nessuna delle sue classi si accende
-davvero, e i punteggi restano fiacchi tutti quanti. Il grido misura dunque quanto
-l'immagine somiglia a ciò che la rete conosce, e non quale classe sia. E
-siccome nel nostro paesaggio le cose sensate stanno *in basso*, l'energia è
-quel grido con il segno cambiato: chi grida forte sta in fondo a una valle,
-chi non grida sta in cima.
+Perché dovrebbe dirci se l'immagine è *tipica*? La rete quei punteggi li ha
+imparati sulle immagini vere, e davanti a quelle grida forte; davanti a
+qualcosa che non ha mai visto, nessuna classe si accende e i punteggi restano
+fiacchi tutti quanti. Il grido finisce così per dire quanto l'immagine
+somiglia a ciò che la rete conosce, e non quale classe sia. Nessuno però
+gliel'aveva chiesto: l'addestramento guardava le differenze, e il volume è
+cresciuto da sé. E siccome nel nostro paesaggio le cose sensate stanno in
+basso, l'energia è quel grido con il segno cambiato: chi grida forte sta in
+fondo a una valle, chi non grida sta in cima.
 
-Il seguito è la parte interessante. Addestrando la stessa rete a fare bene
-tutte e due le cose (riconoscere la classe *e* dare energia bassa alle
-immagini plausibili) si ottiene un classificatore che sbaglia con più
-prudenza: quando è incerto lo dice, riconosce di trovarsi davanti a qualcosa
-che non ha mai visto, ed è più difficile da ingannare con immagini manipolate.
-La misura di quanto una cosa è plausibile, che sembrava un lusso per generare,
-si rivela utile per non prendere abbagli.
+Una cosa al grido non si può chiedere: che probabilità ha questa immagine di
+esistere. Dire quale di due immagini grida più forte funziona sempre; una
+probabilità vera vuole la somma del paesaggio intero, e certi paesaggi
+scendono senza fine, senza avere una somma. Che quello di una rete qualunque
+non sia di quelli, nessuno lo promette.
 
-Il conto però va chiuso, perché una contropartita c'è. Il secondo mestiere si
-insegna con le palline che rotolano della prima delle tre vie, e quelle ogni
-tanto scappano: chiedere le due cose insieme rende l'addestramento fragile, e va
-messo in preventivo. È il difetto di famiglia di tutti i modelli a energia di
-questo capitolo, non di questo in particolare.
+Addestrando la stessa rete a fare bene tutte e due le cose (riconoscere la
+classe, e insieme dare energia bassa alle immagini plausibili) si ottiene un
+classificatore che sbaglia con più prudenza: quando è incerto lo dice,
+riconosce le cose che non ha mai visto ed è più difficile da ingannare con
+immagini manipolate.
+
+Il secondo mestiere si insegna facendo rotolare palline giù per il paesaggio,
+come nella via del campionamento, e quelle ogni tanto scappano: chiedere le
+due cose insieme rende l'addestramento fragile. È il difetto di famiglia dei
+modelli a energia, non di questo in particolare.
 
 `````
 
@@ -122,11 +125,11 @@ $$
 
 dove $\operatorname{logsumexp}_y f[y] = \log \sum_y e^{f[y]}$ è il massimo
 «ammorbidito» dei logit (vale sempre almeno quanto il più grande, e un po’ di
-più quando anche gli altri sono grandi), da cui l'energia marginale
+più quando anche gli altri gli stanno vicino), da cui l'energia marginale
 $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$
 {cite}`grathwohl2020your`. Perché non la si veda mai, in un classificatore
 normale, è questione di gradienti e non di assenza: la softmax è invariante
-alla traslazione dei logit, quindi la cross-entropy **non vincola** il loro
+alla traslazione dei logit, quindi la cross-entropy non vincola il loro
 livello assoluto, che resta libero di andare dove capita. L'informazione è lì
 (tanto che il logsumexp di una rete addestrata alla maniera solita si usa così
 com'è per riconoscere il fuori distribuzione, come mostrano Weitang Liu e colleghi nel 2020 {cite}`liu2020energy`); semplicemente nessuno le ha mai
@@ -136,8 +139,8 @@ congiunta nella forma
 $\log p_\theta(\mathbf{x}, y) = \log p_\theta(y \mid \mathbf{x}) + \log p_\theta(\mathbf{x})$: il primo
 termine è la solita cross-entropy cambiata di segno, il secondo è un EBM
 addestrato con Langevin
-e serbatoio, come in {cite}`du2019implicit`. Da notare, in un capitolo che ha
-dedicato una sezione a $Z$: quel $Z(\theta)$ esiste solo se
+e serbatoio, come in {cite}`du2019implicit`. Resta una riserva sulla funzione di
+partizione: quel $Z(\theta)$ esiste solo se
 $\int \sum_y e^{f_\theta(\mathbf{x})[y]}\, d\mathbf{x}$ converge, che per una rete
 convoluzionale qualunque nessuno garantisce. La lettura «un classificatore è
 un'energia» è sempre vera; la densità che ne segue, sotto condizione. Il risultato riportato è un
@@ -349,10 +352,10 @@ una profezia.
   cosa: cercare il punto più basso, con vincoli diversi.
 - Un **classificatore è già un modello a energia** senza saperlo: dal più alto
   dei punteggi che dà alle classi, corretto un poco verso l'alto quando anche
-  gli altri sono alti, si ottiene quanto quell'immagine è plausibile, non
-  quale classe sia. Addestrarlo a fare bene anche questo lo
-  rende più prudente: dice quando è incerto, riconosce le cose mai viste ed è
-  più difficile da ingannare.
+  gli altri gli stanno vicino, si ottiene quanto quell'immagine è plausibile,
+  non quale classe sia. Addestrarlo a fare bene anche questo lo rende più
+  prudente: dice quando è incerto, riconosce le cose mai viste ed è più
+  difficile da ingannare.
 - I **modelli di diffusione** sono modelli a energia che non lo dichiarano:
   imparano la pendenza di un paesaggio per ogni grado di sporco, e generare
   un'immagine è scendere, con addosso il rumore, lungo quella fila di

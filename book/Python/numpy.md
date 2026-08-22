@@ -9,9 +9,9 @@ introduce. Quella struttura è l’**array N-dimensionale**, l’`ndarray`: una
 griglia di numeri che può essere una semplice fila, una tabella, o una pila di
 tabelle. Capirlo bene è il prerequisito pratico a tutto il resto del libro: è
 il ponte tra la matematica dei vettori e delle matrici e il codice che
-addestra i modelli. Quanto a *vettorizzato*, che sta nel titolo, è la parola
-che questa pagina spiega a metà strada: per ora vuol dire fare un conto su un
-blocco intero di numeri in una volta sola, invece che su un numero per volta.
+addestra i modelli. Quanto a *vettorizzato*, che sta nel titolo: per ora vuol
+dire fare un conto su un blocco intero di numeri in una volta sola, invece che
+su un numero per volta; la spiegazione piena arriva più sotto.
 
 ## L'ndarray: perché non basta una lista
 
@@ -57,6 +57,12 @@ stanno **uno accanto all'altro** in un blocco compatto di memoria. Perde la
 libertà di mescolare tipi diversi, ma in cambio le operazioni sui numeri
 diventano corte da scrivere e molto più veloci da eseguire.
 
+Insieme al blocco viene il passo con cui percorrerlo. Per leggere una colonna
+di una tabella non serve spostare nessun numero: si cammina sugli stessi
+valori a passi più lunghi, saltando quelli in mezzo. Così prendere una colonna
+o una fetta non costruisce niente di nuovo: cambia solo il percorso sul blocco
+che c'è già.
+
 `````
 
 `````{tab} Superiore
@@ -69,9 +75,9 @@ ricavano dalla forma, l'array è **contiguo** (in ordine C per righe, in ordine
 Fortran per colonne) e un ciclo in C può scorrerlo di fila; la contiguità è
 quindi una proprietà del modo in cui l'array guarda il buffer, non una sua
 definizione, ed è verificabile con `.flags` (`C_CONTIGUOUS`, `F_CONTIGUOUS`).
-La distinzione conta: `M[:, 0]`, una delle selezioni di questa pagina, è un
-`ndarray` perfettamente legittimo e **non** contiguo, e `M.T` è F-contigua ma
-non C-contigua. Questa struttura permette due cose.
+La distinzione conta: una colonna estratta da una matrice, `M[:, 0]`, è un
+`ndarray` perfettamente legittimo e non contiguo, e la trasposta `M.T` è
+F-contigua ma non C-contigua. Questa struttura permette due cose.
 Primo: slice e trasposizione sono sempre *viste*, ricalcoli di stride a costo
 zero senza copia dei dati (ed è proprio perché la contiguità non è garantita
 che gli stride esistono); `reshape` è una vista quando la disposizione in
@@ -267,10 +273,10 @@ $(3\times 4)$. Nessun dato viene davvero copiato in memoria.
 
 `````{tab} Elementare
 
-Immagina una tabella da riempire: hai i prezzi base di 4 prodotti (una riga) e 3
-sovrapprezzi regionali (una colonna). Vuoi tutte le combinazioni. Invece di un
-doppio ciclo, allinei riga e colonna e NumPy ripete l'una lungo le righe e
-l'altra lungo le colonne, calcolando la griglia intera:
+Una tabella da riempire: i prezzi base di 4 prodotti (una riga), i
+sovrapprezzi di 3 regioni (una colonna), e servono tutte le combinazioni.
+Invece di un doppio ciclo, allinei riga e colonna e NumPy ripete l'una lungo
+le righe e l'altra lungo le colonne, calcolando la griglia intera:
 
 ```python
 a = np.array([10, 20, 30, 40])    # riga: 4 prezzi base
@@ -289,6 +295,11 @@ tabella, quelle interne una riga per volta.
 La regola pratica: se una delle due forme ha $1$ dove l'altra ha $n$, quel lato
 viene "steso" a $n$. Il ripetersi è solo apparente: serve a far tornare i conti,
 non consuma memoria.
+
+E se scrivessi anche i sovrapprezzi in riga, tre numeri di fila contro
+quattro? NumPy si fermerebbe con un errore, e ha ragione lui: nessuno dei due
+lati vale $1$, quindi non c'è niente da stendere, e nessuno ha deciso quale
+sovrapprezzo vada con quale prezzo.
 
 `````
 
@@ -361,7 +372,10 @@ la seconda strada è tipicamente **centinaia di volte più veloce**. La ragione
 non è che i numeri stanno vicini: è che nel secondo caso il ciclo **sparisce**.
 Il ciclo Python paga un piccolo pedaggio a ogni giro, un milione di volte;
 `2 * x` è una sola richiesta, e a scorrere il blocco è il motore in C, che quel
-pedaggio non lo paga. La regola d'oro con NumPy: *se stai scrivendo un `for` su
+pedaggio non lo paga. Vale anche il rovescio: se il ciclo lo scrivi comunque,
+farlo passare su un array invece che su una lista lo rallenta, perché a ogni
+giro l'array deve chiudere il numero in una scatola che nella lista esisteva
+già. La regola d'oro con NumPy: *se stai scrivendo un `for` su
 un array, quasi sempre esiste un modo per non scriverlo*.
 
 `````
@@ -379,8 +393,8 @@ Su quale dei due fattori pesi, la conclusione sbagliata è a portata di mano:
 il guadagno non viene dal
 *contenitore*, viene dalla sparizione del ciclo. La prova è misurabile e va nel
 verso opposto all'intuizione: **lo stesso** ciclo Python, che legge un elemento
-per volta e scrive in una lista, è sensibilmente più lento se a leggerlo è un
-`ndarray` invece di una lista (l'unica cosa che cambia fra le due
+per volta e scrive in una lista, è sensibilmente più lento se legge da un
+`ndarray` invece che da una lista (l'unica cosa che cambia fra le due
 misure è il contenitore letto). La ragione è che ogni `v[i]` deve *incartare*
 il numero grezzo in un oggetto `np.float64`, mentre nella lista quell'oggetto
 esiste già. La

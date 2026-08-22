@@ -9,25 +9,36 @@ che le ha rese celebri: il **kernel trick**.
 
 `````{tab} Elementare
 
-Prendi il bersaglio: cerchio interno di una classe, anello esterno dell'altra.
-Sul foglio, piatto, nessuna retta li separa. Ma immagina di *sollevare* ogni
-punto in aria di un'altezza pari a quanto è lontano dal centro: i punti del
-cerchio interno, vicini al centro, restano bassi; quelli dell'anello, lontani,
-salgono in alto. Ora le due classi stanno a quote diverse, e un semplice
-*piano orizzontale* (una lastra di vetro infilata a mezz'aria) le separa
-nettamente. Non abbiamo cambiato i punti: li abbiamo guardati in uno spazio
-con una dimensione in più, e lì il problema è diventato lineare.
+Solleva in aria i punti del bersaglio, e dai a ciascuno un'altezza pari alla
+sua distanza dal centro moltiplicata per sé stessa: chi dista un passo sale di
+un gradino, chi ne dista tre sale di nove. I punti del cerchio interno, vicini
+al centro, restano in basso; quelli dell'anello, lontani, si ritrovano molto
+più su. Ora le due classi stanno a
+quote diverse, e una lastra di vetro orizzontale infilata a mezz'aria le
+divide nettamente. I punti non sono cambiati: li abbiamo guardati in uno
+spazio con una dimensione in più, e lì il confine torna dritto.
 
-Il guaio è che sollevare i punti costa. Nei casi utili le dimensioni da
-aggiungere non sono una ma migliaia, a volte infinite, e nessun calcolatore
-può reggerle. E qui sta il trucco: il passo precedente ci ha lasciato una
-frontiera che si calcola **usando soltanto le ombre a due a due**, cioè un
-numero per ogni coppia di punti. Se sappiamo produrre direttamente quei numeri
-*come sarebbero dopo il sollevamento*, il sollevamento non serve più farlo.
+Il guaio è che sollevare i punti costa. Nei casi utili le altezze da aggiungere
+non sono una ma migliaia, a volte infinite, e nessun calcolatore le regge. Qui
+sta il trucco. La strada più larga si calcola usando soltanto le ombre a due a
+due, un numero per ogni coppia di punti, e le coordinate non compaiono in
+nessun altro posto. Se sappiamo produrre direttamente quei numeri *come
+sarebbero dopo il sollevamento*, il sollevamento non serve più farlo.
 
-La regola che li produce si chiama **kernel**, ed è tutto ciò che serve. Si
-sceglie il kernel, e lo spazio sollevato resta un'idea: non lo si costruisce
-mai.
+La regola che li produce si chiama **kernel**. Si sceglie il kernel, e lo
+spazio sollevato resta un'idea: non lo si costruisce mai.
+
+Non ogni regola inventata a tavolino, però, è un kernel, e il motivo si vede
+guardando quei numeri a due a due. Il primo requisito è ovvio: quanto A vede B
+e quanto B vede A devono essere lo stesso numero. Il secondo lo è meno, e riguarda le
+terne. Scrivi che A e B si vedono quasi come sé stessi, e così B e C, ma che A
+e C non si vedono per niente: hai chiesto qualcosa che nessuna disposizione di
+punti, in nessuno spazio, può realizzare, come pretendere che il bar sia a due
+passi da casa, casa a due passi dalla scuola, e la scuola a dieci chilometri
+dal bar. Il fastidio è che nessuno protesta: il calcolatore macina lo stesso e
+restituisce un confine, che però non è il più largo di niente. Per questo i
+kernel non si inventano a piacere, e chi ne prova uno nuovo controlla prima
+che una disposizione capace di produrre quei numeri esista davvero.
 
 `````
 
@@ -75,8 +86,8 @@ $$
 dove $d$ è il grado del polinomio, $c \ge 0$ un termine costante e $\gamma > 0$
 il parametro di ampiezza del kernel gaussiano, che **stringe** la campana al
 crescere. La larghezza è la deviazione standard equivalente $\sigma$, e vale
-$\sigma = 1/\sqrt{2\gamma}$, cioè $\gamma = 1/(2\sigma^2)$: $\gamma$ è quindi
-l'inverso del *quadrato* della larghezza, e per dimezzare la campana va
+$\sigma = 1/\sqrt{2\gamma}$, cioè $\gamma = 1/(2\sigma^2)$: $\gamma$ va quindi
+come l'inverso del *quadrato* della larghezza, e per dimezzare la campana va
 quadruplicato, non raddoppiato. $\gamma$ grande, campana stretta. Il kernel RBF
 corrisponde a uno spazio $\phi$ di dimensione *infinita*: sarebbe impossibile
 da costruire, eppure $k$ si calcola in una riga.
@@ -119,8 +130,7 @@ perché è il **raggio d'influenza** di ogni punto.
 
 `````{tab} Elementare
 
-Il kernel RBF si racconta meglio con i lampioni. Pensa a ogni punto come a un
-lampione acceso di notte: illumina bene chi
+Ogni punto è un lampione acceso di notte: illumina bene chi
 gli sta accanto, sempre meno chi si allontana, per niente chi è lontano, e il
 numero che il kernel restituisce per due punti è quanta luce dell'uno arriva
 all'altro. Sta fra $0$ e $1$, e vale $1$ solo per il lampione stesso.
@@ -128,18 +138,22 @@ all'altro. Sta fra $0$ e $1$, e vale $1$ solo per il lampione stesso.
 Chiamiamo *portata* del lampione la distanza alla quale la
 luce è scesa a poco più di un terzo, cioè a $0{,}37$: mettiamo un metro e mezzo.
 Chi sta a un metro e mezzo si vede ancora. E chi sta al doppio, a tre metri?
-Non riceve la metà della luce, e nemmeno un terzo. Il motivo è che a decidere
-non è la distanza ma il suo **quadrato**, e raddoppiando la distanza il
-quadrato si moltiplica per quattro: è come se quel lampione, per lui, fosse
+Non riceve la metà della luce, e nemmeno un terzo. A decidere è il quadrato
+della distanza, e raddoppiando la distanza il quadrato si moltiplica per
+quattro: è come se quel lampione, per lui, fosse
 lontano quattro portate invece di una. La luce che gli arriva è quindi $0{,}37$
 elevato alla quarta, cioè circa $0{,}018$: meno di due
 centesimi, praticamente buio. Ecco perché il raggio d'influenza di un punto
 finisce così bruscamente.
 
-La manopola $\gamma$ decide quanto è stretto il cono di luce, ed è la portata
-**al contrario**: $\gamma$ grande, luce corta, e la frontiera viene frastagliata
-perché ogni punto comanda solo nel suo cortile (rischio di imparare il rumore);
-$\gamma$ piccolo, luce lunga, e la frontiera esce morbida.
+La manopola $\gamma$ regola quanto lontano arriva la luce, e lo fa al rovescio
+e al quadrato: moltiplicare la manopola per quattro dimezza la portata, mentre
+raddoppiarla la accorcia di meno di un terzo. $\gamma$ grande, luce corta, e la
+frontiera viene frastagliata perché ogni punto comanda solo nel suo cortile
+(rischio di imparare il rumore); $\gamma$ piccolo, luce lunga, e la frontiera
+esce morbida. Ancora più lunga e i lampioni si sovrappongono tutti: la piazza
+resta illuminata in modo uniforme, e la luce che arriva non dice più in che
+punto della piazza ci si trova.
 
 `````
 
@@ -175,12 +189,24 @@ possibile*.
 
 `````{tab} Elementare
 
-Invece di penalizzare ogni piccolo scarto tra previsione e valore vero (come
-fa la regressione lineare classica) la SVR disegna un «tubo» di tolleranza
-attorno alla curva: finché un punto ci sta dentro, l'errore conta *zero*.
-Vengono penalizzati solo i punti che sporgono dal tubo, e solo per quanto
-sporgono. È un modo indulgente di adattare i dati: non insegue le piccole
-oscillazioni, si preoccupa solo degli scostamenti seri.
+La previsione diceva ventuno gradi e mezzo, il termometro segna ventuno e
+quattro: nessuno chiama sbaglio quel decimo. La SVR ragiona così. Invece di
+penalizzare ogni piccolo scarto tra previsione e valore vero (come fa la
+regressione lineare classica) disegna attorno alla linea un «tubo» di
+tolleranza, come un tratto di pennarello grosso al posto di una riga di
+matita: finché un punto sta dentro il tratto, l'errore conta zero. Pagano solo
+i punti che sporgono, e solo per quanto sporgono.
+
+Le manopole nuove sono due, e fanno mestieri diversi. La prima è la grossezza
+del pennarello, cioè quanto scarto si accetta di chiamare zero. La seconda è quanto si tiene ai punti rimasti fuori: girata verso il
+severo, la linea si torce pur di raccogliere anche quelli; girata verso
+l'indulgente, resta semplice e li lascia sporgere. E il tratto non deve
+restare dritto: con lo stesso sollevamento del bersaglio può curvare quanto
+serve, e resta il medesimo tubo.
+
+Il pennarello troppo grosso è il modo in cui la faccenda si guasta. Se il
+tratto copre già tutti i punti, qualunque linea passi di lì va bene, e la più
+comoda è quella piatta, che risponde lo stesso numero a qualunque domanda.
 
 `````
 
@@ -216,17 +242,30 @@ finta sicurezza.
 
 `````{tab} Elementare
 
-Immagina di aver visto migliaia di transazioni oneste con la carta di credito
-e nemmeno una frode. Non puoi addestrare un classificatore «onesto contro
-frode»: la seconda classe non ce l'hai. La **one-class SVM** ribalta il
-problema: impara a disegnare, attorno ai dati normali, il «recinto» più
-stretto che li racchiude tutti. Da quel momento, ogni nuova transazione che
-cade *fuori* dal recinto è sospetta: non perché somigli a una frode nota, ma
-perché non somiglia a nulla di normale. Una manopola, $\nu$, dice più o meno
-quale frazione di dati ci aspettiamo che finisca fuori (le anomalie
-tollerate). Serve per rilevare frodi, guasti di macchinari, intrusioni
-informatiche, difetti in una linea di produzione: ovunque gli esempi «anomali»
-siano rari o non ancora visti.
+Migliaia di transazioni oneste con la carta di credito, e nemmeno una frode:
+un classificatore «onesto contro frode» non si può neanche cominciare, perché
+la seconda classe non c'è. La **one-class SVM** cambia domanda. Sulla mappa
+disegnata dal kernel, dove le transazioni che si somigliano finiscono vicine,
+quelle oneste formano un paese, e tutt'intorno c'è campagna vuota: il posto in
+cui non si somiglia a niente e a nessuno. Il metodo tira una staccionata fra
+il paese e la campagna, e la spinge il più lontano possibile dalla campagna,
+finché appoggia contro le case di frontiera. Ecco perché il recinto viene
+stretto: è premuto contro il paese dalla parte del vuoto.
+
+Una manopola, $\nu$, dice quante case si accetta di lasciare fuori: al massimo
+quella frazione. È un permesso che conviene dare, perché una sola casa isolata
+in mezzo ai campi costringerebbe la staccionata ad allargarsi per chilometri.
+E la stessa frazione dice quante case, come minimo, finiranno appoggiate alla
+staccionata o fuori: sono quelle che la reggono, e togliere dalla mappa tutte
+le altre non la sposterebbe di un metro.
+
+Da lì in avanti ogni transazione nuova che cade *fuori* dal recinto è
+sospetta: non perché somigli a una frode nota, ma perché non somiglia a nulla
+di normale. Serve dove le cose da riconoscere sono rare, o non sono ancora
+capitate. C'è un modo in cui sbaglia: se il paese cresce e si costruiscono
+case nuove più in là, tutte legittime, la vecchia staccionata le segnala una
+per una. Non sa che cosa sia una frode; sa soltanto dov'era il paese il giorno
+in cui l'ha guardato.
 
 `````
 
@@ -360,8 +399,9 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
   positiva (Mercer). Kernel principali: lineare, polinomiale, RBF, dove
   $\gamma$ **stringe** la campana al crescere ($\gamma = 1/(2\sigma^2)$).
 - La **SVR** regredisce con un tubo $\epsilon$-insensitive; la **one-class SVM**
-  ($\nu$ = frazione di anomalie attese) impara la regione dei dati normali per
-  la **novelty/anomaly detection**, senza vedere esempi anomali.
+  impara la regione dei dati normali per la **novelty/anomaly detection**, senza
+  vedere esempi anomali, e il suo $\nu$ è un limite *superiore* alla frazione di
+  anomalie e *inferiore* a quella dei vettori di supporto.
 - In pratica: **standardizzare sempre** le feature; il costo $O(m^2)$–$O(m^3)$
   sconsiglia la SVM con kernel oltre le decine di migliaia di esempi.
 ```

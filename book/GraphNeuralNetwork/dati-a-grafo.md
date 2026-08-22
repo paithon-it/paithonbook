@@ -86,7 +86,7 @@ cosa sola: fila di numeri, vettore, rappresentazione. **Vettore** è come si
 chiama l'oggetto: una fila di numeri, punto. La **rappresentazione** di un
 nodo, la parola dell'introduzione, è il vettore che
 in un certo momento descrive quel nodo: all'inizio sono proprio le caselline
-qui sopra, dopo un giro di ascolto sarà qualcos'altro. Non sono due oggetti
+accanto ai nodi, dopo un giro di ascolto sarà qualcos'altro. Non sono due oggetti
 diversi: è lo stesso oggetto, chiamato una volta col suo nome e una volta col
 suo mestiere.
 
@@ -258,11 +258,11 @@ distinzione che più di ogni altra separa i metodi antichi da quelli moderni.
 
 `````{tab} Elementare
 
-Immagina di dover indovinare l'argomento di ogni articolo in una biblioteca
-collegata da citazioni. In un caso hai già davanti *tutti* gli articoli, con le
-loro citazioni: di alcuni conosci l'argomento, di altri no, e devi solo
-riempire i buchi. Questo si dice modo **transduttivo**: il grafo è uno solo,
-fissato, e non arriverà mai nessun articolo nuovo.
+Una biblioteca di articoli scientifici, in cui ogni articolo ne cita altri, e
+il tuo compito è indovinare l'argomento di ciascuno. In un caso hai già davanti
+*tutti* gli articoli, con le loro citazioni: di alcuni conosci l'argomento, di
+altri no, e devi solo riempire i buchi. Questo si dice modo **transduttivo**:
+il grafo è uno solo, fissato, e non arriverà mai nessun articolo nuovo.
 
 In un altro caso, invece, vuoi imparare una regola che funzioni anche su
 articoli che *non hai ancora visto*, o addirittura su un'altra biblioteca. È
@@ -497,18 +497,25 @@ ha detto che non lo sono.
 
 `````{tab} Elementare
 
-Ricapitoliamo a parole, che è tutto quello che serve portarsi via. La tabella
-quadrata è il grafo scritto: nella casella dove la riga del nodo 2 incrocia la
-colonna del nodo 3 c'è un $1$ se i due sono collegati e uno $0$ se non lo sono.
-Il **grado** di un nodo, cioè quanti vicini ha, non va calcolato: si legge,
-contando gli $1$ nella sua riga.
+La tabella quadrata è il grafo scritto: nella casella dove la riga del nodo 2
+incrocia la colonna del nodo 3 c'è un $1$ se i due sono collegati e uno $0$ se
+non lo sono. Il **grado** di un nodo, cioè quanti vicini ha, non va calcolato:
+si legge, contando gli $1$ nella sua riga.
 
 E aggiungere «i cappi» vuol dire mettere un $1$ anche là dove una riga incrocia
 la propria colonna, cioè dichiarare ogni nodo vicino di sé stesso: un vicino in
 più a testa, ed ecco perché i gradi salgono tutti di uno.
 
-L'ultima cosa da portarsi via è quella del riquadro qui sopra: se ai nodi si
-cambiano i nomi, la tabella cambia da cima a fondo e il grafo no.
+Quei gradi servono subito. Quando ogni nodo ascolterà i suoi vicini, il nodo 3
+ne ha quattro contando sé stesso e il nodo 5 ne ha due. Se ciascuno sommasse
+tutto quello che gli arriva, il nodo 3 si ritroverebbe con un mucchio doppio
+per il solo fatto di avere più conoscenze. In una riunione funziona uguale, chi
+si porta dietro venti amici copre chi ne ha due. Il rimedio è abbassare la voce
+in proporzione, guardando tutte e due le parti dell'arco, quanti vicini ha chi
+parla e quanti ne ha chi ascolta.
+
+E l'ultima cosa da portarsi via è la più importante. Se ai nodi si cambiano i
+nomi, la tabella cambia da cima a fondo e il grafo no.
 
 `````
 

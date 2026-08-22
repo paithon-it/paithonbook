@@ -20,16 +20,30 @@ Tokenizzare vuol dire affettare la frase. La ricetta più intuitiva è
 "spezza a ogni spazio": *"Il gatto nero salta sul muro"* diventa la lista
 `["Il", "gatto", "nero", "salta", "sul", "muro"]`. Sei parole, sei token.
 
-L'elenco di tutti i pezzi che il sistema conosce si chiama **vocabolario**, e
-conviene fissare la parola adesso perché tornerà a ogni pagina: è la scatola
-dei mattoncini disponibili, e niente che non ci sia dentro può essere
+L'elenco di tutti i pezzi che il sistema conosce si chiama **vocabolario**: è la
+scatola dei mattoncini disponibili, e niente che non ci sia dentro può essere
 rappresentato.
 
-Non sempre basta spezzare agli spazi. La parola *tokenizzazione* è rara:
-conviene spezzarla in pezzi più piccoli e frequenti, come `token` +
-`izzazione`, che il modello ha già visto tante volte altrove. Così anche una
-parola mai incontrata prima si ricostruisce dai suoi mattoncini, senza doverla
-avere nel vocabolario per intero.
+Riempire la scatola di parole intere non funziona. Le parole di una lingua non
+finiscono mai: la scatola diventa enorme e resta comunque incompleta, e la prima
+parola che manca lascia il sistema muto.
+
+I posti nella scatola si contano allora in partenza, qualche decina di migliaia,
+e si riempiono così. All'inizio ci si mette una lettera per posto: con le sole
+lettere si scrive qualunque parola, anche se ci vogliono molti pezzi. Poi si
+guarda un mucchio di testo e si cerca la coppia di pezzi vicini che ricorre più
+spesso. Se `i` e `z` capitano attaccati un'infinità di volte, tanto vale
+incollarli e tenere `iz` come pezzo unico: costa un posto solo e ne fa
+risparmiare uno in ogni parola che lo contiene. La mossa si ripete finché i
+posti finiscono. (Su quale coppia incollare i sistemi si dividono: c'è chi
+prende la più frequente e chi quella che rende il testo più facile da indovinare
+pezzo per pezzo.)
+
+Alla fine nella scatola convivono pezzi di ogni taglia. Le parole comunissime,
+*il* e *sul*, ci stanno per intero; *tokenizzazione* è rara e non ci sta, quindi
+si scrive come `token` + `izzazione`, due pezzi visti tante volte altrove. E una
+parola mai incontrata, un cognome o una sigla, si scrive lo stesso, al peggio
+lettera per lettera: la scatola non resta mai senza pezzi.
 
 `````
 
@@ -84,17 +98,16 @@ perché almeno non mente.
 
 `````{tab} Elementare
 
-Immagina una lunghissima pulsantiera con un interruttore per ogni parola del
-vocabolario. Per rappresentare *gatto* accendi solo il suo interruttore e
-lasci spenti tutti gli altri.
+Una lunghissima pulsantiera, con un interruttore per ogni parola del
+vocabolario. Per rappresentare *gatto* accendi il suo interruttore e lasci
+spenti tutti gli altri.
 
 Scrivi ora $1$ per «acceso» e $0$ per «spento», e leggi la pulsantiera da
 sinistra a destra: quello che ottieni è una lunga fila di numeri,
 `0 0 1 0 0 ... 0`. Una fila di numeri presa nel suo ordine si chiama
-**vettore**, e conviene fissarlo adesso perché la parola tornerà in ogni pagina
-di questo capitolo: un vettore è questo, una fila di numeri, niente di più
-misterioso. Quello di *gatto* è lungo quanto il vocabolario ed è tutto zeri
-tranne un singolo $1$.
+**vettore**, e dentro quella parola non c'è niente di più misterioso di così.
+Quello di *gatto* è lungo quanto il vocabolario ed è tutto zeri tranne un
+singolo $1$.
 
 Funziona, ma è uno spreco e, soprattutto, è cieco al significato. Per questa
 codifica *gatto* e *felino* sono lontani esattamente quanto *gatto* e
@@ -157,46 +170,48 @@ C'è però un problema: articoli e preposizioni come *il* o *di* compaiono
 ovunque, e proprio per questo dicono poco su *cosa* parla il testo. Parole rare
 come *retina* o *sinapsi* sono molto più rivelatrici.
 
-Il peso **TF-IDF** corregge lo squilibrio moltiplicando fra loro due numeri,
-che sono poi le due metà della sigla. Il primo (*term frequency*, la frequenza
-del termine) è quante volte la parola compare **in questo documento**: più ci
-compare, più conta. Il secondo (*inverse document frequency*, la frequenza
-documentale rovesciata) guarda **in quanti documenti** della raccolta la parola
-compare, e premia quelle che ne occupano pochi.
+Il peso **TF-IDF** corregge lo squilibrio moltiplicando fra loro due numeri, che
+sono poi le due metà della sigla. La frequenza nel documento (*term frequency*)
+è quante volte la parola compare nel testo che stiamo rappresentando: più ci
+compare, più conta. La rarità nella raccolta (*inverse document frequency*, la
+frequenza documentale rovesciata) guarda in quanti documenti la parola compare,
+e premia quelle che ne occupano pochi.
 
-Il conto del secondo si fa così: si divide il numero totale di documenti per il
-numero di quelli in cui la parola compare, e del risultato si prende il
-logaritmo, che è solo un modo di schiacciare i numeri grandi perché non
-prendano il sopravvento. Su una raccolta di **mille** documenti: *il* compare
-in tutti e mille, mille diviso mille fa 1, e il logaritmo di 1 è zero. Il
-secondo voto di *il* è zero, e zero per qualunque cosa fa zero: *il* sparisce,
-che è esattamente quello che volevamo. *Sinapsi* compare in **due** documenti,
-mille diviso due fa cinquecento, e il logaritmo di cinquecento è circa 6,2.
-Sopravvive, e pesa.
+La rarità si calcola così: si divide il numero totale di documenti per il numero
+di quelli in cui la parola compare, e del risultato si prende il logaritmo, che
+è solo un modo di schiacciare i numeri grandi perché non prendano il
+sopravvento. Su una raccolta di mille documenti: *il* compare in tutti e mille,
+mille diviso mille fa 1, e il logaritmo di 1 è zero. La rarità di *il* vale
+zero, e zero per qualunque cosa fa zero: *il* sparisce, che è esattamente quello
+che volevamo. *Sinapsi* compare in due documenti, mille diviso due fa
+cinquecento, e il logaritmo di cinquecento è circa 6,2. Sopravvive, e pesa.
 
-Il prodotto dei due voti gonfia dunque le parole rare e informative e sgonfia
-quelle comuni a tutti: stessa pulsantiera, manopole tarate meglio.
+Il prodotto dei due numeri gonfia dunque le parole rare e informative e sgonfia
+quelle comuni a tutti: stessa pulsantiera, manopole tarate meglio. Una cosa però
+non cambia: le caselle restano mute fra loro, come gli interruttori di prima. Un
+testo che parla di *gatti* e uno che parla di *felini* non hanno una sola
+casella in comune, e per il conteggio non si somigliano per niente.
 
 `````
 
 `````{tab} Superiore
 
 Il *bag-of-words* rappresenta un documento $d$ con il vettore dei conteggi
-$\in \mathbb{R}^{|V|}$. Il peso **TF-IDF** (*Term Frequency – Inverse
-Document Frequency*) di un termine $t$ è
+$\in \mathbb{R}^{|V|}$. Il peso **TF-IDF** (*Term Frequency-Inverse Document
+Frequency*) di un termine $t$ è
 
 $$
 \text{tfidf}(t, d) = \text{tf}(t, d)\cdot \log\frac{N}{\text{df}(t)} ,
 $$
 
 dove $\text{tf}(t,d)$ è la frequenza di $t$ in $d$, $N$ il numero totale di
-documenti, $\text{df}(t)$ il numero di documenti che contengono $t$ e il logaritmo è quello **naturale** (la base cambia solo un fattore di scala
-comune a tutti i termini). È la forma da manuale: la variante che
-`scikit-learn` calcola davvero, e i decimali che ne escono, arrivano fra due
-pagine. Il
-fattore logaritmico penalizza i termini onnipresenti (df alto). Restano due
-limiti strutturali: i vettori sono ancora sparsi e $|V|$-dimensionali, e
-nessuna relazione lega parole diverse tra loro.
+documenti, $\text{df}(t)$ il numero di documenti che contengono $t$, e il
+logaritmo è quello **naturale** (la base cambia solo un fattore di scala comune
+a tutti i termini). Il fattore logaritmico penalizza i termini onnipresenti
+(df alto) fino ad azzerare chi compare ovunque: se $\text{df}(t) = N$ allora
+$\log(N/N) = 0$. Questa è la forma da manuale, e le librerie ne calcolano
+varianti lisciate. Restano due limiti strutturali: i vettori sono ancora sparsi
+e $|V|$-dimensionali, e nessuna relazione lega parole diverse tra loro.
 
 `````
 
@@ -219,8 +234,9 @@ print(X.toarray())                  # pesi TF-IDF per ciascun documento
 ```
 
 I numeri che compaiono a schermo non sono però quelli del TF-IDF «da
-manuale»: la libreria ne usa una variante, per ragioni pratiche. La sostanza
-non cambia (le parole rare pesano più di quelle comuni), i decimali sì.
+manuale»: la libreria ne usa una variante, per ragioni pratiche. Il verso resta
+quello, le parole rare pesano più di quelle comuni; i numeri no, e su una
+raccolta piccola la differenza si vede.
 
 `````{tab} Elementare
 
@@ -231,14 +247,18 @@ c'è nel vocabolario ma in nessun testo) la divisione non si potrebbe fare:
 la libreria aggiunge $1$ sopra e sotto e il problema sparisce. La seconda è
 mettere sulla stessa scala documenti di lunghezza diversa, così che un testo
 lungo non risulti più «pesante» solo perché contiene più parole; a conti fatti
-ogni documento viene riportato a una misura comune, come si fa con le
-percentuali.
+ogni documento viene riportato alla stessa misura complessiva, e a contare sono
+le proporzioni fra le sue parole, non quante ne ha.
 
-C'è un effetto collaterale, e conviene saperlo perché altrimenti i numeri a
+C'è un effetto collaterale, ed è meglio conoscerlo perché altrimenti i numeri a
 schermo sorprendono. Con la ricetta da manuale una parola presente in *tutti* i
-documenti prendeva zero e spariva; con la variante della libreria non sparisce
-del tutto, si porta dietro un po’ di peso. Poco male: quello che conta è che le
-parole rare ne abbiano di più.
+documenti prendeva zero e spariva; con la variante della libreria le resta
+addosso un peso, e su una raccolta piccola quel peso è tutt'altro che poco. Nei
+due testi dell'esempio *il* esce con $0{,}318$ e *gatto* con $0{,}447$:
+l'articolo che sta in tutti e due i testi pesa circa sette decimi della parola
+che compare in uno solo. La distanza fra i due si allarga man mano che la
+raccolta cresce, perché la parola che sta dappertutto resta ferma dov'è mentre
+quella rara sale.
 
 `````
 
@@ -285,9 +305,9 @@ parola: gli si fa vedere in quali compagnie compare, milioni di volte, e il
 vettore è il riassunto di quelle compagnie.
 ```
 
-Conviene notare cosa quella procedura **non** usa: nessun dizionario, nessun
-elenco di significati, nessuna persona che spieghi qualcosa. Serve solo del
-testo qualsiasi, e questa è la ragione del suo successo. Il testo qualsiasi è
+Quella procedura non usa nessun dizionario, nessun elenco di significati,
+nessuna persona che spieghi qualcosa. Serve solo del testo qualsiasi, e questa
+è la ragione del suo successo. Il testo qualsiasi è
 gratis e infinito; un archivio di testi con le spiegazioni scritte a mano da
 esperti (in gergo si dice che è **annotato**) costa mesi di lavoro di persone
 vere ed è sempre piccolo. Il mucchio di testi su cui un programma si addestra
@@ -322,18 +342,28 @@ La similarità del coseno guarda proprio le direzioni delle due frecce, e
 ignora quanto sono lunghe. Non è una distanza in metri: è un numero fra $-1$ e
 $+1$. Vale $+1$ quando le due frecce puntano esattamente dalla stessa parte,
 $0$ quando sono perpendicolari, cioè non hanno niente da spartire, $-1$ quando
-puntano in versi opposti. Ogni volta che più avanti leggerete «coseno
-$0{,}88$», leggete «si somigliano molto»; dove leggerete «coseno $-0{,}26$»,
-leggete «non c'entrano niente l'uno con l'altra». (Nella pratica il caso $-1$
-fra due parole quasi non si vede: i valori negativi che si incontrano davvero
-sono piccoli, e vogliono dire «estranei», non «contrari».)
+puntano in versi opposti. Un «coseno $0{,}88$» si legge «si somigliano molto»;
+un «coseno $-0{,}26$» si legge «non c'entrano niente l'uno con l'altra».
+(Nella pratica il caso $-1$ fra due parole quasi non si vede: i valori negativi
+che si incontrano davvero sono piccoli, e vogliono dire «estranei», non
+«contrari».)
 
 I due programmi che hanno reso comuni questi vettori portano nomi che si
-incontrano ovunque, e vale la pena presentarli qui perché fra poco li useremo
-come termine di paragone: **word2vec**, del 2013, che è quello della finestra
-scorrevole appena descritta, e **GloVe**, del 2014, che arriva allo stesso
-risultato per un'altra strada, contando una volta per tutte quali parole
-compaiono vicino a quali e poi cercando i numeri che spiegano quei conteggi.
+incontrano ovunque. **word2vec**, del 2013, è quello che lavora con la finestra
+scorrevole. Chiedergli a ogni finestra «quale delle centomila parole del
+vocabolario stava lì accanto?» costerebbe però una fortuna, e allora gli si
+chiede molto meno: accanto alla vicina vera si pescano a caso cinque o dieci
+parole qualsiasi dal testo, e il modello deve solo separare quella che c'era
+davvero dalle intruse. Una domanda piccola, ripetuta miliardi di volte.
+
+**GloVe**, del 2014, arriva allo stesso risultato per un'altra strada: conta una
+volta per tutte quante volte ogni parola compare vicino a ogni altra, e poi
+cerca i numeri che spiegano quei conteggi. Due estremi vanno tenuti a bada. Le
+coppie che non si sono mai viste non hanno niente da insegnare, e restano fuori
+dal conto invece di pesare come una somiglianza mancata. Le coppie che
+contengono una parola come *di* si contano a milioni, e da sole coprirebbero la
+voce a tutte le altre: oltre un certo tetto il loro peso smette di crescere, per
+quanto salga il conteggio.
 
 `````
 
@@ -412,12 +442,16 @@ sia le sillabe sia le desinenze intere.)
 Ogni mattoncino ha il proprio vettore, e il vettore di *gatto* è semplicemente
 la **somma** dei vettori dei suoi mattoncini. Sommare due file di numeri vuol
 dire sommarle casella per casella: `(3, 4)` più `(1, 2)` fa `(4, 6)`, e basta.
+Fra i mattoncini di *gatto* c'è anche `<gatto>` per intero, che è un pezzo come
+gli altri e per una parola comune è il più informativo di tutti.
 
 I vantaggi sono due, e concreti. Primo: *gatto*, *gatta* e *gattino*
 condividono i pezzi `gat` e `att`, quindi i loro vettori nascono già simili
-(prezioso in una lingua di desinenze come la nostra). Secondo: anche una
-parola mai vista prima ha comunque i suoi mattoncini, e quindi un vettore:
-nessuna parola resta più senza rappresentazione.
+(prezioso in una lingua di desinenze come la nostra). Secondo: di una parola mai
+vista prima manca il mattoncino della parola intera, che nessuno ha avuto
+occasione di imparare, ma le fette da tre, quattro, cinque lettere ci sono
+tutte, e sommando quelle un vettore esce lo stesso. Nessuna parola resta più
+senza rappresentazione.
 
 `````
 
@@ -468,12 +502,12 @@ applichi a *donna*, dove atterri? Molto vicino a *regina*.
 
 Quella freccia si scrive con una sottrazione, ed è l'unico passaggio da
 digerire. Provalo su due numeri soli, che si disegnano sul quaderno. Se *uomo*
-sta in `(1, 1)` e *re* sta in `(3, 4)`, la freccia che porta dal primo al
-secondo è «due a destra e tre in su»: e infatti `(3, 4)` meno `(1, 1)`, fatto
-casella per casella, dà `(2, 3)`. È tutto qui: sottrarre due file di numeri dà
-la freccia che porta dalla seconda alla prima. Applicarla a *donna* vuol dire
-sommargliela: se *donna* sta in `(1, 5)`, atterro in `(3, 8)`, e se lì vicino
-c'è *regina* il gioco è fatto. In formula:
+sta in `(1, 1)` e *re* sta in `(3, 4)`, la freccia che porta da *uomo* a *re* è
+«due a destra e tre in su»: e infatti `(3, 4)` meno `(1, 1)`, fatto casella per
+casella, dà `(2, 3)`. La regola sta tutta qui: si sottrae il punto di partenza
+dal punto di arrivo, e quel che resta è la freccia che va dall'uno all'altro.
+Applicarla a *donna* vuol dire sommargliela: se *donna* sta in `(1, 5)`, atterro
+in `(3, 8)`, e se lì vicino c'è *regina* il gioco è fatto. In formula:
 *re − uomo + donna ≈ regina*. I quattro punti disegnano un parallelogramma, e
 questo è il segno che il modello ha catturato da solo il concetto di "regalità"
 e quello di "genere", senza che nessuno glieli abbia mai spiegati.
@@ -488,6 +522,12 @@ queste analogie **tolgono dalla gara le tre parole della domanda**, e solo così
 la risposta che esce è quella famosa. L'analogia geometrica esiste davvero,
 insomma, ma è più tenue di come la si disegna, e il parallelogramma della
 figura è un'idealizzazione.
+
+E le frecce portano con sé anche quello che non vorremmo. I numeri vengono da
+testi scritti da persone, e le associazioni che stavano in quei testi ci
+finiscono dentro tali e quali. Fatta la stessa domanda con *medico* al posto di
+*re*, la risposta che il programma dà per *donna* è *infermiera*. Il conto non
+ha sbagliato niente: ha restituito quello che nei testi c'era.
 
 `````
 
@@ -554,76 +594,55 @@ non è altrettanto ovvio.
 
 `````{tab} Elementare
 
-La prima idea che viene in mente è anche la più ragionevole: prendere i vettori
-delle parole della frase e farne la media. Funziona sorprendentemente bene come
-punto di partenza, e ha due difetti che si vedono subito.
+Diecimila moduli di reclamo in uno scatolone, e bisogna trovare i due che
+dicono la stessa cosa.
 
-Il primo è che **l'ordine sparisce**. «Il cane morde l'uomo» e «l'uomo morde il
-cane» contengono le stesse parole, quindi hanno la stessa media, quindi per la
-macchina sono la stessa frase. Il secondo è che le parole piccole pesano quanto
-le altre, e certe parole piccole ribaltano tutto: «il film mi è piaciuto» e «il
-film non mi è piaciuto» differiscono per un «non» che nella media si perde.
+L'impiegata riassume ogni modulo con una fila di numeri e confronta le file. La
+media dei numeri già pronti di ogni parola, come primo tentativo, regge
+sorprendentemente bene, e si rompe in due punti. Mescolate, le parole perdono
+l'ordine, e «il cane morde l'uomo» e «l'uomo morde il cane» diventano lo
+stesso riassunto. E le parole piccole pesano quanto le altre, così fra «il
+film mi è piaciuto» e «il film non mi è piaciuto» il «non» annega.
 
-Con i Transformer il problema sembra risolto, perché quei modelli l'ordine lo
-tengono. **BERT** è uno di quei modelli, uscito nel 2018, ed è il primo che ci
-converrà chiamare per nome: un programma addestrato a leggere frasi a cui è
-stata cancellata qualche parola e a indovinare quali fossero. Da
-quell'esercizio, ripetuto su miliardi di frasi, esce qualcosa che si può
-riutilizzare per compiti diversissimi senza rifare tutto da capo, ed è il
-motivo per cui BERT tornerà altre volte in questo capitolo.
+Si fa aiutare da un lettore che l'ordine lo tiene, della famiglia dei
+Transformer. Si chiama **BERT**, è del 2018, e ha passato miliardi di frasi su
+due esercizi: indovinare le parole che gli avevano cancellato, e dire se due
+frasi stessero davvero una dopo l'altra. Quell'allenamento si riusa per compiti
+diversissimi senza rifare tutto. Ma nessuno gli ha mai chiesto quanto due
+moduli vogliano dire la stessa cosa, e infatti lo giudica male: quello che si
+vuole da uno spazio bisogna insegnarglielo.
 
-Ma c'è una sorpresa: **un BERT preso così com'è dà vettori di frase
-mediocri**. Il motivo è semplice e vale la pena farci caso, perché è una
-lezione generale: BERT è stato addestrato a indovinare parole mancanti, non a
-mettere vicine due frasi che vogliono dire la stessa cosa. Nessuno gli ha mai
-chiesto di farlo, e infatti non lo fa bene. Se vuoi che uno spazio abbia una
-certa proprietà, quella proprietà devi addestrarla.
+Gliela insegna tre moduli per volta: uno di riferimento, l'**ancora**, uno che
+dice la stessa cosa, uno che parla d'altro. Chiede solo che l'ancora finisca
+più vicina al primo che al secondo, e non di un soffio, ma di uno scarto minimo
+deciso in partenza, il margine; dove vadano i tre non lo dice. Le terne che
+rispettano già il margine non hanno più niente da insegnare, e le mette da
+parte. Su milioni di terne lo spazio si riordina da sé, e «vicino» diventa
+«stesso argomento».
 
-Da qui l'idea, che è vecchia e bellissima: invece di insegnare al modello
-*che cosa* è una frase, gli si insegna **quali frasi vanno vicine**. Gli si
-mostrano tre frasi per volta. La prima si chiama **ancora**, ed è quella di
-riferimento. La seconda vuol dire la stessa cosa dell'ancora. La terza parla
-d'altro. Poi si chiede una cosa sola: fa’ in modo che l'ancora finisca più
-vicina alla seconda che alla terza. Nessuno dice *dove* metterle: si chiede
-solo che una distanza sia minore dell'altra. Ripetuto su milioni di terne, lo
-spazio si riorganizza da sé, e alla fine «vicino» significa «di argomento
-simile».
+Il lettore dev'essere lo stesso per tutti e tre i moduli, e la rete si dice
+**siamese** per questo: tre riassuntori diversi darebbero numeri non
+confrontabili. E le
+terne non si preparano una per una. Sul tavolo vanno mille coppie «reclamo e
+suo gemello», e per ognuna i moduli delle altre novecentonovantanove fanno da
+lontani: quasi mille, senza cercarne uno.
 
-La rete che fa questo lavoro si chiama **siamese** perché è una sola rete usata
-tre volte: la stessa identica, con gli stessi numeri dentro, applicata
-all'ancora, alla frase simile e a quella diversa. È essenziale che sia la
-stessa, altrimenti i vettori finirebbero in spazi diversi e confrontarli non
-vorrebbe dire niente.
+Lo scatolone, adesso: quasi cinquanta milioni di coppie (ognuna con ognuna,
+$10\,000 \times 9\,999$ diviso $2$). Passare a BERT le due frasi attaccate,
+così che le legga come un testo solo, dà il giudizio migliore, ma vale per
+quella coppia sola. Cinquanta milioni di letture sono circa 65 ore,
+cronometrate nel 2019 su una GPU da laboratorio dagli autori di
+**Sentence-BERT**. Riassumere una volta sola le diecimila frasi costa cinque
+secondi, e i cinquanta milioni di confronti fra file già pronte un centesimo di
+secondo. È la differenza fra un'idea e un prodotto.
 
-Il guadagno pratico è enorme, e gli autori di questo metodo, che si chiama
-**Sentence-BERT**, lo hanno misurato. Immagina di avere diecimila frasi e di
-voler trovare le due che si somigliano di più. Le coppie da esaminare sono
-quasi **cinquanta milioni** (ognuna con ognuna: $10\,000 \times 9\,999$ diviso
-$2$). Ci sono due modi.
-
-Il primo è dare in pasto a un BERT le due frasi **attaccate una all'altra**, e
-lasciare che le legga insieme, come si legge una domanda con la sua risposta:
-si ottiene un giudizio ottimo, ma bisogna rifarlo da capo per ogni coppia,
-perché il giudizio riguarda quella coppia lì e non si può riciclare. Cinquanta
-milioni di letture di BERT sono, misurate dagli autori nel 2019 su una scheda
-grafica da laboratorio, circa **65 ore**.
-
-Il secondo è calcolare una volta sola il vettore di ciascuna delle diecimila
-frasi (diecimila letture, non cinquanta milioni) e poi confrontare i vettori a
-due a due. Le diecimila letture costano **cinque secondi**, e i cinquanta milioni di
-confronti che seguono, essendo conticini fra file di numeri già pronte, un
-centesimo di secondo. È la differenza fra un'idea e un
-prodotto.
-
-Un'ultima avvertenza, perché è il punto in cui si sbaglia più spesso. Tutto
-questo insegna allo spazio a dire «queste due frasi **si somigliano**». Non è
-la stessa cosa che dire «questa frase **risponde** a quella». «Chi ha scritto
-la Divina Commedia?» e «Dante Alighieri la compose fra il 1304 e il 1321» non
-si somigliano affatto: non condividono nemmeno una parola. Chi costruisce un
-motore di ricerca addestra allora **due reti separate**, una che legge le
-domande e una che legge i testi, e le allena insieme perché una domanda e la
-sua risposta finiscano vicine. Cambia il compito, cambiano gli esempi, cambia
-lo spazio.
+Quello che l'impiegata ha insegnato, però, è «questi due si somigliano», non
+«questo risponde a quello». «Chi ha scritto la Divina Commedia?» e «Dante
+Alighieri la compose fra il 1304 e il 1321» non hanno una parola in comune.
+Allo sportello delle domande servono allora due lettori distinti, uno per le
+domande e uno per i testi, allenati insieme perché una domanda e la sua
+risposta finiscano vicine. Cambia il compito, cambiano gli esempi, cambia lo
+spazio.
 
 `````
 
@@ -660,11 +679,12 @@ embedding di ancora, positivo e negativo, e chiede una disuguaglianza
 **relativa**:
 
 $$
-\mathcal{L} = \max\big(0,\; m + d(\mathbf{a}, \mathbf{p}) - d(\mathbf{a}, \mathbf{n})\big),
+\mathcal{L} = \max\big(0,\; m + \mathrm{dist}(\mathbf{a}, \mathbf{p})
+- \mathrm{dist}(\mathbf{a}, \mathbf{n})\big),
 $$
 
-dove $d(\cdot,\cdot)$ è una distanza fra due embedding (di solito l'euclidea, o
-$1-\cos$) e $m > 0$ è il margine di poco fa: cioè «il positivo deve stare più
+dove $\mathrm{dist}(\cdot,\cdot)$ è una distanza fra due embedding (di solito
+l'euclidea, o $1-\cos$) e $m > 0$ è il margine di poco fa: cioè «il positivo deve stare più
 vicino del negativo, e di almeno $m$». È più robusta della contrastive perché
 non impone distanze assolute, che sarebbero arbitrarie, ma solo un ordinamento.
 

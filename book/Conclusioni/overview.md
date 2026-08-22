@@ -114,6 +114,12 @@ learning è degli anni Cinquanta, cioè di quando i calcolatori occupavano una
 stanza. Quello che è successo dopo il 2012 non è che qualcuno abbia inventato
 quelle idee: è che finalmente c'erano i dati e le macchine per farle
 funzionare.
+
+Altre invece sono giovanissime: le due reti che si sfidano sono del 2014, e gli
+agenti e i modelli del mondo hanno preso velocità in questi ultimi anni. Nel
+terzo tratto stanno fianco a fianco, come vicini di casa, mentre nella storia
+sono nonni e nipoti: l'ordine in cui li si legge segue le domande del libro,
+non il calendario.
 `````
 
 `````{tab} Superiore
@@ -128,8 +134,8 @@ pubblicarla nel 1952 e la raccoglie nel libro del 1957
 prendono velocità dal 2020 in poi (attenzione lineare e modelli a spazio di
 stati, gli agenti, i modelli del mondo).
 
-Nemmeno l'ordine dell'indice è cronologico, e vale la pena dirlo perché
-l'indice è la mappa che il lettore ha sotto gli occhi: il reinforcement
+Nemmeno l'ordine dell'indice è cronologico, e l'indice è la mappa che il
+lettore ha sotto gli occhi: il reinforcement
 learning è una parte a sé, collocata prima del linguaggio e dei Transformer.
 L'indice segue le domande, non le date. Gli ordini in gioco, quindi, sono tre e
 non due: quello dell'indice, quello di questo ripasso (che raggruppa per
@@ -184,11 +190,22 @@ learning ha cambiato più di ogni altra.
 `````{tab} Elementare
 Per decenni, per far riconoscere un gatto a un computer, un esperto doveva
 spiegargli a mano cosa guardare: i baffi, le orecchie a punta, la forma degli
-occhi. Il salto del deep learning è stato smettere di suggerire. Diamo alla
-rete milioni di foto e la lasciamo *scoprire da sola* quali dettagli contano.
-Impara a vedere prima i bordi, poi le forme, poi interi oggetti: una gerarchia
-che nessuno le ha imposto. Questa capacità di costruirsi le proprie "lenti"
-per guardare i dati è ciò che chiamiamo rappresentazione appresa.
+occhi. Il salto del deep learning è stato smettere di dettare quella lista.
+Diamo alla rete milioni di foto e la lasciamo *scoprire da sola* quali dettagli
+contano. Impara a vedere prima i bordi, poi le forme, poi interi oggetti: una
+gerarchia che nessuno le ha imposto. Questa capacità di costruirsi le proprie
+"lenti" per guardare i dati è ciò che chiamiamo rappresentazione appresa.
+
+Le lenti mettono anche in ordine. Attraverso di esse, due foto di gatti
+finiscono vicine anche se una è in giardino e l'altra sul divano, e un camion
+finisce lontano da tutte e due. Le stesse lenti servono poi per un lavoro che
+non era il loro, distinguere le razze dei cani, senza ricominciare da capo.
+
+L'esperto però non è uscito di scena, ha cambiato mestiere: non scrive più la
+lista dei dettagli, costruisce l'apparecchio in cui le lenti andranno montate.
+Che un gatto resti un gatto in qualunque angolo della foto compaia lo decide
+lui, e quella decisione sta nella forma dell'apparecchio: vale già prima che la
+rete abbia visto una sola immagine, e vale qualunque lente le venga poi.
 `````
 
 `````{tab} Superiore
@@ -213,7 +230,7 @@ l'ottimizzazione cominciasse.
 `````
 
 E l’**ottimizzazione** è il motore che rende tutto questo possibile: apprendere
-significa cercare i parametri che minimizzano un errore.
+significa, quasi sempre, cercare i parametri che minimizzano un errore.
 
 `````{tab} Elementare
 Su un vecchio mixer audio regoli le manopole per far suonare bene
@@ -230,6 +247,18 @@ milioni di tentativi. Quel conto è il gradiente, e il modo di ottenerlo in una
 passata sola è la [retropropagazione](../RetiNeurali/backpropagation.md), che
 sta nel capitolo sulle reti neurali. Senza, niente di tutto questo sarebbe
 possibile.
+
+Dove ci si ferma non è il suono più bello che quel mixer sappia fare: è un
+punto in cui ogni piccolo giro peggiora le cose. Con le manopole messe in
+tutt'altro modo potrebbe uscire qualcosa di meglio, e nessuno andrà a
+cercarlo.
+
+E non tutti imparano al mixer. Ci sono modelli che lavorano in coppia, uno che
+inventa e uno che smaschera, e quello che cercano è un equilibrio fra i due
+invece di un errore sempre più basso. Ce ne sono che gli esempi devono
+andarseli a prendere agendo, e allora il materiale su cui si esercitano cambia
+mentre imparano. Tutti però cercano il meglio secondo una misura: cambia la
+misura, non la ricerca.
 `````
 
 `````{tab} Superiore
@@ -642,7 +671,15 @@ questo a volte inventa con perfetta sicurezza fatti falsi: le chiamiamo
 *allucinazioni*. E siccome impara da testi scritti da noi, assorbe anche i
 nostri pregiudizi: se i dati riflettono discriminazioni, il modello le ripete, e
 a volte le rafforza, perché puntare sempre sulla risposta più frequente fa
-sparire le eccezioni. Uno strumento potente non è uno strumento neutrale.
+sparire le eccezioni.
+
+I pregiudizi non si riparano tutti allo stesso modo. Se di qualcuno nei dati ci
+sono quattro fotografie invece di quattromila, altre fotografie rimettono le
+cose a posto. Se invece i dati ritraggono con precisione un mondo che quel
+qualcuno lo tiene fuori dalla porta, raccoglierne altri conferma soltanto
+quello che c'è: lì la cosa da cambiare è che cosa stiamo chiedendo al modello
+di indovinare. Uno strumento potente non è uno strumento neutrale, e quello che
+ti dice lo verifichi tu.
 `````
 
 `````{tab} Superiore
@@ -751,8 +788,9 @@ mandacelo: i pulsanti che compaiono servono esattamente a questo.
 :class: important
 - Tutto il libro poggia su tre idee ricorrenti: i **dati** (nessun modello sa
   più di ciò che ha visto), le **rappresentazioni apprese** (le "lenti" che la
-  rete si costruisce da sola, invece di farsele suggerire) e
-  l’**ottimizzazione** (le manopole del mixer, regolate un pochino alla volta).
+  rete si costruisce da sola, dentro un apparecchio che l'esperto disegna
+  ancora a mano) e l’**ottimizzazione** (le manopole del mixer, regolate un
+  pochino alla volta).
 - Addestrare vuol dire quasi sempre la stessa cosa: misurare quanto il modello
   ha sbagliato e spostare ogni manopola nella direzione che riduce l'errore,
   finché non c'è più molto da guadagnare. Qualche famiglia ci arriva per

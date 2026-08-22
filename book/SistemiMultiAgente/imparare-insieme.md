@@ -109,7 +109,7 @@ compreso quello che gli altri stanno per fare.
 
 `````{tab} Elementare
 
-Immagina una squadra di soccorso in un capannone pieno di fumo, senza radio.
+Una squadra di soccorso entra in un capannone pieno di fumo, senza radio.
 Ciascuno vede tre metri davanti a sé e nient'altro, e non può chiedere niente a
 nessuno. Tutto quello che la squadra farà deve essere deciso **prima** di
 entrare, e deve essere un piano completo: non «vai a destra», ma «se davanti a
@@ -245,10 +245,10 @@ $$
 $$
 
 e sotto quelle ipotesi si degrada come la radice del numero di compagni: con
-nove compagni (dieci agenti in tutto) il segnale utile è **un terzo** di quello
-che sarebbe stato da soli, e con cento compagni un decimo. Il modello additivo
-è, si noti, il caso *facile*, quello in cui il credito sarebbe in linea di
-principio separabile: già lì lo stimatore ingenuo affoga, e nei casi in cui i
+nove compagni (dieci agenti in tutto) il segnale utile vale un terzo del rumore
+che lo copre, e con cento compagni un decimo. Il modello additivo è, si noti,
+il caso *facile*, quello in cui il credito sarebbe in linea di principio
+separabile: già lì lo stimatore ingenuo affoga, e nei casi in cui i
 contributi si intrecciano non va meglio. È il **passeggero a scrocco** in
 forma di gradiente, e la cosa da notare è che nessuno bara: il problema non è
 la disonestà di un agente, è che l'informazione che distinguerebbe l'utile dal
@@ -345,13 +345,17 @@ voto dato sapendo che cosa hanno fatto *tutti* non scade appena gli altri
 cambiano abitudini: le loro abitudini non gli servivano, gli servivano le loro
 mosse, e quelle gliele abbiamo messe sul tavolo.
 
-Molto meno, però, non vuol dire fermo, e la differenza va detta perché è quella
-che spiega tutti i puntelli che vengono dopo. Il critico sa che cosa hanno fatto
+Molto meno, però, non vuol dire fermo. Il critico sa che cosa hanno fatto
 tutti **adesso**, ma il voto che deve dare riguarda come andrà a finire, e come
 andrà a finire dipende da come giocheranno gli altri da qui in poi. Se quelli
 migliorano, lo stesso identico istante di gioco merita un voto diverso. Il
 terreno resta molto più fermo di prima, il che basta a far funzionare la cosa in
 pratica e non basta a garantirla.
+
+C'è poi un limite di taglia: il critico deve farsi un'idea di ogni combinazione
+di mosse, e le combinazioni si moltiplicano a ogni giocatore in più. Con una
+squadra si fa; con mille droni non c'è stagione abbastanza lunga per vederle
+tutte.
 
 La seconda ricetta serve quando la ricompensa è una sola per tutta la squadra.
 Si impara un voto per ogni giocatore e una regola per comporli nel voto di
@@ -434,8 +438,9 @@ costruzione». Da cui la conseguenza già enunciata in apertura di sezione, che
 qui va ribadita perché è facile crederla revocata: **le garanzie di convergenza
 del reinforcement learning a un agente solo, qui, non valgono**. Il Q-learning
 converge perché itera un operatore di Bellman fisso; qui l'operatore si muove
-insieme alle policy altrui, e per gli algoritmi di questa sezione una dimostrazione analoga non
-c'è. Funzionano in pratica, che è un'affermazione diversa e va tenuta distinta.
+insieme alle policy altrui, e per gli algoritmi CTDE una dimostrazione analoga
+non c'è. Funzionano in pratica, che è un'affermazione diversa e va tenuta
+distinta.
 
 I costi sono due e vanno detti. Il primo: l'ingresso del critico cresce
 linearmente in $N$, ma quello che deve coprire è lo spazio delle azioni
@@ -747,15 +752,15 @@ quanto li spieghi la teoria delle reti.
 
 `````{tab} Elementare
 
-Il traguardo, per cominciare, non è un traguardo. In tutto il resto del libro
-addestrare vuol dire scendere: c'è una valle, si cerca il fondo, e quando ci si
-è arrivati si è finito. Qui un fondo non c'è, perché la discesa di uno è la
-salita dell'altro. Quello che si può sperare è un **pareggio**, cioè la
-situazione in cui a nessuno dei due conviene più cambiare mossa da solo.
+Il traguardo, per cominciare, non è un traguardo. Addestrare, di solito, vuol
+dire scendere: c'è una valle, si cerca il fondo, e quando ci si è arrivati si è
+finito. Qui una valle sola non c'è, perché ogni passo avanti di uno rende più
+difficile il mestiere dell'altro. Quello che si può sperare è un **pareggio**,
+cioè la situazione in cui a nessuno dei due conviene più cambiare mossa da solo.
 
 Da lì si capiscono i due modi in cui l'addestramento di una GAN va storto, e
-sono i due che questa sezione ha già raccontato con altri nomi. Per raccontarli
-chiamiamo le due reti come si chiamano di solito quando si spiega una GAN: il
+sono due vecchie conoscenze sotto altro nome. Per raccontarli chiamiamo le due
+reti come si chiamano di solito quando si spiega una GAN: il
 **falsario** è quello che fabbrica i falsi, il **poliziotto** è quello che cerca
 di riconoscerli.
 
@@ -918,7 +923,9 @@ la domenica.
 - La ricetta che funziona è **CTDE**: informazione privilegiata in allenamento,
   occhi veri in partita. L'allenatore ha la ripresa dall'alto e il terzino, la
   domenica, ha solo il proprio sguardo. Un critico che conosce le mosse di tutti
-  dà giudizi che non scadono quando i compagni cambiano abitudini
+  dà giudizi che scadono molto più lentamente quando i compagni cambiano
+  abitudini, ma non smettono di scadere, perché come andrà a finire dipende
+  ancora da come giocheranno gli altri da qui in poi
   {cite}`lowe2017multi`; e se la ricompensa è una sola, si impara un voto per
   giocatore più una regola per comporli, con il vincolo che alzare il proprio
   voto non possa far scendere quello di squadra {cite}`rashid2018qmix`, così

@@ -127,24 +127,42 @@ storia dell'AI il limite non è stato capire cosa fare, ma poterlo calcolare.
 
 `````{tab} Elementare
 Puoi affidare un lavoro a un genio solitario, capace di risolvere in fretta
-qualunque problema difficile, oppure a una folla di persone comuni, ognuna
-capace di fare solo un conticino elementare ma tutte insieme, nello stesso
-momento. Per un problema che cambia di continuo (decisioni, eccezioni,
-imprevisti), vince il genio: è la CPU. Ma per una montagna di conti **tutti
-dello stesso tipo** (la stessa moltiplicazione, ripetuta su numeri diversi) e
-indipendenti fra loro, vince la folla, perché non serve intelligenza, serve
-manodopera.
+qualunque problema difficile, oppure spendere la stessa cifra in una folla di
+persone comuni, ognuna capace di fare solo un conticino elementare ma tutte
+insieme, nello stesso momento. Il budget è quello, e la scelta è secca: pochi
+bravissimi, o moltissimi lenti.
+
+Per un problema che cambia di continuo (decisioni, eccezioni, imprevisti),
+vince il genio: è la CPU. Per una montagna di conti dello stesso tipo (la
+stessa moltiplicazione, ripetuta su numeri diversi) e indipendenti fra loro
+vince la folla, perché non serve intelligenza, serve manodopera.
+
+C'è un secondo guadagno, meno ovvio, e riguarda i tempi morti. In mezzo alla
+folla capita spesso di restare fermi: uno aspetta il foglio di numeri che gli
+devono portare, e quel foglio arriva quando arriva. Il caposquadra non sta a
+guardarlo, dà il lavoro a un altro tavolo che il suo foglio ce l'ha già.
+L'attesa del singolo dura esattamente quanto durava prima, e intanto la sala
+lavora lo stesso. Con il genio da solo, invece, mentre lui aspetta si ferma
+tutto.
+
+La scommessa si può perdere, e si perde in un caso preciso: quando il lavoro è
+una catena, e ogni passo ha bisogno del risultato del passo che lo precede.
+Allora una persona lavora e tutte le altre la guardano, mentre il genio
+avrebbe già finito da un pezzo. La folla conviene se c'è davvero da fare la
+stessa cosa migliaia di volte insieme.
 
 Una rete neurale è fatta esattamente di quella montagna, e il conto si può
 fare. Prendi uno strato solo, di quelli che hanno mille numeri in ingresso e
-mille in uscita: ogni numero in uscita nasce da mille moltiplicazioni, quindi
-lo strato ne chiede un milione. Adesso dagli non un esempio ma un mazzetto di
-sessantaquattro (il *mini-batch*, cioè quello che la rete guarda in una volta
-sola prima di correggersi) e i conti diventano sessantaquattro milioni, per un
-solo strato di una rete piccola, e tutti fatti nello stesso modo. È il lavoro
-perfetto per la folla. La GPU è quella folla, e la sezione sull'architettura
-entra nel dettaglio di come è organizzata, in squadre che si coprono i tempi
-morti a vicenda.
+mille in uscita: ogni numero in uscita nasce da mille moltiplicazioni, e
+ognuna si porta dietro la somma che la accumula, quindi lo strato chiede un
+milione di moltiplicazioni e un milione di somme. Adesso dagli non un esempio
+ma un mazzetto di sessantaquattro (il *mini-batch*, cioè quello che la rete
+guarda in una volta sola prima di correggersi) e i conti diventano
+centoventotto milioni, per un solo strato di una rete piccola, tutti fatti
+nello stesso modo e nessuno che debba aspettare il risultato di un altro. È il
+lavoro perfetto per la folla. La GPU è quella folla, e la sezione
+sull'architettura racconta come è organizzata davvero, in squadre che si danno
+il cambio proprio per coprire i tempi morti.
 `````
 
 `````{tab} Superiore
@@ -182,16 +200,32 @@ ai calcolatori costa tempo. Le migliaia di core sono
 la parte facile; tenerle rifornite è l'ingegneria vera.
 
 `````{tab} Elementare
-Un cuoco fulmineo potrebbe sfornare cento piatti al minuto, se solo avesse gli
-ingredienti sotto mano. Ma la dispensa è in fondo a un lungo corridoio, e per
-ogni piatto qualcuno deve andare a prendere ciò che serve e riportarlo
-indietro. Il cuoco, per quanto veloce, passa la giornata ad aspettare: non è
-lento lui, è lento il *rifornimento*. Una GPU è spesso così (una bestia
-affamata più che un mostro di calcolo) e quasi tutte le tecniche di questo
-capitolo servono a una cosa sola: fare più conti con ogni carico di ingredienti
-prima di rimandare qualcuno in dispensa. La sezione sulla memoria racconta
-com'è fatta questa «dispensa» e perché la sua velocità di consegna (la *banda*)
-decide il destino di tanti programmi.
+Cento piatti al minuto: un cuoco fulmineo ci arriverebbe, se solo avesse gli
+ingredienti sotto mano. Sotto mano però ce ne stanno pochissimi: sul tagliere
+ci sta quello che serve per un piatto, sul tavolo che divide con la squadra
+quello per una decina, e tutto il resto sta nella dispensa in fondo a un lungo
+corridoio, dove qualcuno deve andare e tornare per ogni cassetta. Più un posto
+è vicino, meno ci sta, e nessuna cucina è mai riuscita a rompere questo patto.
+
+Andare e tornare prende tempo, e intanto il cuoco aspetta. L'attesa, presa da
+sola, si può coprire: mentre uno aspetta la sua cassetta, il tavolo accanto
+lavora su quella che ha già ricevuto, e la cucina non si ferma. Il corridoio è
+un'altra faccenda. Di lì passa un numero fisso di cassette al minuto, per
+quanti fattorini ci si mettano, e se i cuochi ne vorrebbero di più è il
+corridoio a decidere la velocità della cucina: i cuochi stanno fermi anche se
+sono i più bravi del mondo. Quel numero di cassette al minuto è la **banda**
+della memoria, ed è il muro contro cui vanno a sbattere tanti programmi. Una
+GPU è spesso così, una bestia affamata più che un mostro di calcolo.
+
+Da qui la domanda che conta, ricetta per ricetta: quanti piatti escono da una
+cassetta? Sciacquare le verdure e impiattarle fa un piatto per cassetta, e i
+cuochi passano la giornata ad aspettare il corridoio. Un ragù che cuoce due ore
+su una cassetta sola è l'estremo opposto: le cassette arrivano molto prima che
+servano, e a decidere la velocità sono i cuochi. Quasi tutte le tecniche che
+seguono servono a portare le ricette dalla parte del ragù: fare più piatti con
+ogni cassetta prima di rimandare qualcuno in dispensa, e tenere le cassette
+vicino a chi cucina. La sezione sulla memoria misura questa cucina piano per
+piano.
 `````
 
 `````{tab} Superiore

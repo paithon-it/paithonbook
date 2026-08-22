@@ -15,7 +15,7 @@ ancora oggi, **entropia**, lo stesso della termodinamica: è il nome
 dell'aneddoto raccontato in apertura di capitolo, quello che von Neumann
 avrebbe suggerito a Shannon. Qui lo riempiamo di contenuto, perché ci riguarda
 da vicino: il punteggio d'errore con cui addestreremo quasi tutti
-i **classificatori** di questo libro (cioè i modelli che devono scegliere fra
+i **classificatori** (cioè i modelli che devono scegliere fra
 alternative: gatto o cane, spam o no) discende in linea diretta da
 quell'articolo del 1948, e si chiama *cross-entropy*.
 
@@ -28,46 +28,45 @@ porta tanta più informazione quanto più è *improbabile*.
 
 Il telegiornale non apre mai con "domani il sole sorgerà": è certo, quindi non
 è una notizia. Apre con la nevicata a Palermo, proprio perché è rara.
-L'informazione, insomma, è **sorpresa**: un evento scontato ne porta poca, un
-evento raro ne porta molta.
+L'informazione è **sorpresa**: un evento scontato ne porta poca, un evento raro
+ne porta molta.
 
-Shannon trasformò l'intuizione in un numero. L'esito di una moneta equa (testa
-o croce, 50 e 50) vale esattamente **1 bit**: è la sorpresa di una domanda
-secca con due risposte ugualmente possibili.
+Shannon trasformò l'intuizione in un numero, e il gioco delle venti domande fa
+vedere come. Uno pensa a un oggetto, l'altro può chiedere solo cose con
+risposta sì o no. Chi gioca bene sceglie domande che dimezzano ogni volta le
+possibilità rimaste, e in venti mosse arriva a distinguere più di un milione di
+oggetti, perché $2^{20} \approx 1{,}05$ milioni. Chi gioca male ("è un
+carciofo?", "è un trapano?") non esaurisce nemmeno il contenuto di un cassetto.
+Una domanda ben posta è l'unità di misura della sorpresa, e si chiama bit.
 
-Se l'idea di "misurare in domande" sembra astratta, pensa al gioco delle
-**venti domande**: uno pensa a un oggetto, l'altro può chiedere solo cose con
-risposta sì o no. Giocando bene (ogni domanda dimezza le possibilità rimaste)
-venti domande bastano a distinguere fra più di un milione di oggetti, perché
-$2^{20} \approx 1{,}05$ milioni. Giocando male ("è un carciofo?", "è un
-trapano?") non bastano nemmeno per il contenuto di un cassetto. Un bit è
-esattamente una domanda ben posta, e l'entropia conterà quante ne servono in
-media.
+Il bit è l'esponente del due. Due alternative fanno $1$ bit perché $2^1 = 2$;
+quattro ne fanno $2$ perché $2^2 = 4$; otto ne fanno $3$. L'esito di una moneta
+equa (testa o croce, 50 e 50) vale quindi esattamente 1 bit: una domanda secca,
+e la risposta è trovata.
 
-Da qui esce il conto per tutti gli altri casi, e vale la pena farlo una volta
-perché altrimenti i numeri di questa sezione sembrano piovere dal cielo. **Il
-bit è l'esponente del due.** Due alternative fanno $1$ bit perché $2^1 = 2$;
-quattro ne fanno $2$ perché $2^2 = 4$; otto ne fanno $3$. Con sei facce di un
-dado siamo in mezzo fra quattro e otto, quindi fra $2$ e $3$ bit: il numero
-esatto è quello che elevando $2$ dà $6$, cioè circa $2{,}585$. Ecco i «2,6 bit»
-del dado: non è che servano due domande e mezzo, è che *in media*, su tante
-partite, una strategia ottima ne consuma poco più di due e mezzo.
+Due monete lanciate insieme danno quattro esiti, cioè due domande: le
+possibilità si moltiplicano, le domande si sommano. Un bit di sorpresa più un
+bit di sorpresa fanno due bit, e questo vale per qualunque coppia di eventi che
+non si influenzano a vicenda.
 
-Lo stesso conto vale per gli esiti singoli di una moneta sbilanciata, con una
-sola avvertenza: al posto del numero di alternative si mette **uno diviso la
-probabilità**. Una moneta truccata dà testa $9$ volte su $10$: la testa è
-"un'alternativa su $1/0{,}9 = 1{,}11$", quindi vale pochissimo, $0{,}15$ bit.
-Ce lo aspettavamo già. La croce invece è "una su $1/0{,}1 = 10$", cioè quanto
-un dado a dieci facce, e vale $3{,}32$ bit: rara, e perciò molto informativa.
-Sono i due numeri che torneranno fra poco.
+Un dado onesto ha sei facce, e sei sta in mezzo fra quattro e otto: fra $2$ e
+$3$ bit. Il numero esatto è l'esponente che elevando $2$ dà $6$, cioè circa
+$2{,}585$. In una partita singola nessuno fa due domande e mezzo; su tante
+partite, invece, una strategia ottima ne consuma *in media* poco più di due e
+mezzo, e sono i «2,6 bit» del dado.
 
-Trovare quei due esponenti richiede una calcolatrice, e va benissimo prenderli
-come sono; verificarli invece si può a mano, andando nel verso facile, cioè
-elevando il due. Se $0{,}15$ è giusto, allora $2^{0{,}15}$ deve fare $1{,}11$,
-e infatti fa $1{,}11$. Se $3{,}32$ è giusto, $2^{3{,}32}$ deve fare $10$: sta
-fra $2^3 = 8$ e $2^4 = 16$, e viene $9{,}98$. (Che un due si possa elevare a un
-esponente con la virgola non è ovvio, ed è spiegato più avanti in questa stessa
-sezione, dov'è la prima volta che serve davvero.)
+Con una moneta sbilanciata il conto è lo stesso, con un'avvertenza: al posto
+del numero di alternative si mette uno diviso la probabilità. Una moneta
+truccata dà testa $9$ volte su $10$. La testa è "un'alternativa su
+$1/0{,}9 = 1{,}11$", cioè quasi nessuna domanda, $0{,}15$ bit, e ce lo
+aspettavamo. La croce è "una su $1/0{,}1 = 10$", cioè quanto un dado a dieci
+facce, e vale $3{,}32$ bit: rara, e perciò molto informativa.
+
+Quei due esponenti li dà una calcolatrice, ma controllarli si può a mano,
+andando nel verso facile, cioè elevando il due. Se
+$0{,}15$ è giusto, $2^{0{,}15}$ deve fare $1{,}11$, e infatti fa $1{,}11$. Se
+$3{,}32$ è giusto, $2^{3{,}32}$ deve fare $10$: sta fra $2^3 = 8$ e
+$2^4 = 16$, e viene $9{,}99$.
 
 `````
 
@@ -257,7 +256,7 @@ matematico, per quanto la si usi come misura di dissimilarità.
 
 ## Il ponte con l'apprendimento
 
-Ed ecco il motivo per cui questa sezione sta in un libro di machine learning.
+Ed ecco il motivo per cui l'entropia sta in un libro di machine learning.
 
 `````{tab} Elementare
 
@@ -269,6 +268,15 @@ correzione energica. Addestrare significa girare le manopole dei parametri per
 rendere la risposta giusta sempre meno sorprendente. La "punizione" media è
 esattamente la cross-entropia dell'analogia del Morse: il modello smette di
 sprecare quando il suo codice (le sue probabilità) combacia con la realtà.
+
+Smettere di sprecare, però, non vuol dire arrivare a costo zero: anche col
+codice giusto i telegrammi hanno una lunghezza. Se una foto sfocata può essere
+gatto o cane, nessuna manopola rende certa la risposta; quella sorpresa che
+resta è l'incertezza dei dati stessi, e la paga anche il modello perfetto. La
+stessa manovra ha infine un terzo nome: scegliere i parametri sotto i quali
+gli esempi raccolti risultano i più plausibili. Sorprendersi poco della
+risposta giusta e trovare plausibile quello che è successo sono la stessa
+regolazione delle manopole, vista da due lati.
 
 `````
 
@@ -284,8 +292,8 @@ $$
 e $H(p)$ non dipende da $\theta$: il minimo teorico della loss non è zero ma
 l'entropia dei dati, la loro incertezza irriducibile.
 
-Attenzione però a **quale** $p$, perché il libro (come tutti) usa lo stesso
-simbolo per due cose. Se $p$ è la distribuzione condizionata vera del
+Attenzione però a **quale** $p$, perché lo stesso simbolo (qui come
+dappertutto) copre due cose diverse. Se $p$ è la distribuzione condizionata vera del
 processo che genera i dati, il pavimento è $H(p) > 0$ e nessun modello scende
 sotto. Se invece $p$ è il bersaglio empirico di un singolo esempio, cioè
 «questa immagine è un gatto» con probabilità $1$ e tutto il resto a zero,

@@ -33,29 +33,44 @@ del numero in posizione 7 dell'array, e così via.
 Il kernel, dunque, si scrive per uno e si lancia su tutti. «Lanciare», qui, è
 il verbo tecnico: si passa alla GPU il programmino e le si dice su quanti
 esecutori farlo partire. Quell'insieme di esecutori è la **griglia** (in
-inglese *grid*) della sezione precedente, cioè l'operazione intera, tutte le
+inglese *grid*) vista nell'architettura, cioè l'operazione intera, tutte le
 squadre messe insieme. Ognuno esegue lo stesso codice su dati diversi, e per
 sapere *su quali*, comincia col ricavare il proprio numero.
 
 `````{tab} Elementare
 
-Immagina di dover consegnare a mano un milione di volantini, uno per cassetta
-della posta, e di avere a disposizione un esercito. Non scrivi un milione di
-ordini diversi. Ne scrivi **uno solo**, che vale per tutti: «guarda il numero
-cucito sulla tua divisa, va’ alla cassetta con quel numero, infila il
-volantino». Poi lo leggi ad alta voce una volta, e l'intero esercito parte. Il
-soldato numero 0 va alla cassetta 0, il soldato numero 999.999 alla cassetta
-999.999, tutti insieme. L'ordine è identico per ognuno; l'unica cosa che cambia
-è quel numero, che ciascuno ricava da sé per capire di quale cassetta
-occuparsi. E lo ricava proprio come farebbe un esercito vero: sulla divisa non
-c'è scritto «999.999», c'è scritto a quale squadra appartiene e che posto
-occupa in fila, e da quei due il soldato si calcola il proprio numero. È la
-figura qui sotto.
+Un milione di volantini da consegnare a mano, uno per cassetta della posta, e
+un esercito a disposizione. Non scrivi un milione di ordini diversi. Ne scrivi
+uno solo, che vale per tutti: «guarda il numero cucito sulla tua divisa, va’
+alla cassetta con quel numero, infila il volantino». Poi lo leggi ad alta voce
+una volta, e l'intero esercito parte. Il soldato numero 0 va alla cassetta 0,
+il soldato numero 999.999 alla cassetta 999.999, tutti insieme. L'ordine è
+identico per ognuno; l'unica cosa che cambia è quel numero, che ciascuno ricava
+da sé per capire di quale cassetta occuparsi.
+
+E lo ricava come farebbe un esercito vero. Sulla divisa non c'è scritto
+«999.999»: c'è scritto a quale squadra appartiene e che posto occupa in fila.
+Le squadre sono tutte della stessa misura, e quanto siano grandi lo sa ognuno.
+Da queste tre cose il conto viene da sé: quante squadre ho davanti,
+moltiplicato per quante persone stanno in una squadra, più il posto che occupo
+io. Squadre da quattro, e si conta partendo da zero: chi sta al posto 2 della
+squadra 1 ha davanti una squadra intera, cioè quattro cassette, e da lì conta
+altri due posti, quindi la sua è la cassetta 6. È la figura qui sotto.
 
 Un kernel è esattamente quell'ordine unico: una manciata di righe, scritte
 pensando a *un* esecutore, che la GPU fa eseguire in parallelo a un'intera
 folla. La riga «calcola il tuo numero» è la più importante di tutte: senza, i
 soldati si accalcherebbero tutti sulla stessa cassetta.
+
+All'ordine manca ancora una riga, e serve perché le squadre sono tutte uguali
+mentre il numero delle cassette non si lascia dividere così docilmente. Dieci
+cassette e squadre da quattro: due squadre ne coprono otto, per le ultime due
+ne serve una terza, e così partono dodici persone per dieci cassette. Le due
+che avanzano andrebbero a cercare la cassetta 10 e la cassetta 11, che nel
+palazzo non ci sono; e chi non trova la propria cassetta lascia comunque il
+volantino da qualche parte, sotto una porta o nella buca del vicino, cioè dove
+non andava. Perciò l'ordine finisce così: «se il tuo numero supera l'ultima
+cassetta, fermati e non consegnare».
 
 `````
 
@@ -135,9 +150,7 @@ capitolo sulle reti neurali, e la catena moltiplica-somma-ReLU ricorre ovunque
 nelle reti. Che cosa calcola il kernel, insomma, lo abbiamo appena detto senza
 simboli; il codice si può anche solo guardare da lontano, cogliendone la taglia:
 il kernel vero e proprio sono le sette righe di conti in alto, il resto è il
-modo di lanciarlo. La scheda Elementare qui sotto spiega proprio perché un kernel
-Triton riesca a stare in così poche righe; la lettura riga per riga sta nella
-scheda Superiore.
+modo di lanciarlo.
 
 ```python
 import torch
@@ -167,18 +180,32 @@ def fused_relu(x, a, b):
 
 `````{tab} Elementare
 
-C'è una differenza di *taglia* rispetto all'esercito di prima, e vale la pena
-notarla. Con CUDA (il modo di programmare le GPU aperto da NVIDIA, quello di
-cui parlava l'apertura del capitolo) l'ordine si dà al singolo soldato, che si
-occupa di una cassetta sola. In Triton lo si dà a un'intera **squadra**: «voi
-della seconda squadra, occupatevi delle cassette dalla 1024 alla 2047». (Le
-squadre qui sono da 1024, ed è la riga `BLOCK_SIZE=1024` del codice: si sceglie
-un multiplo di 32 perché i lavoratori marciano in plotoni da 32, e una squadra
-di taglia diversa lascerebbe l'ultimo plotone mezzo vuoto.) Come
-le mille e passa persone si spartiscano il lavoro dentro la squadra non è più
-affar tuo: lo decide Triton, che sa come tenere occupati i lavoratori della GPU
-meglio di quanto faresti a mano. Tu ragioni a squadre; il **compilatore**, cioè
-il programma che traduce quello che scrivi in istruzioni per la macchina,
+C'è una differenza di *taglia* rispetto all'esercito di prima. Con CUDA (il
+modo di programmare le GPU aperto da NVIDIA) l'ordine si dà al singolo soldato,
+che si occupa di una cassetta sola. In Triton lo si dà a un'intera **squadra**:
+«voi della seconda squadra, occupatevi delle cassette dalla 1024 alla 2047».
+Le squadre qui sono da 1024, molto più grandi delle quattro persone di poco fa,
+ed è la riga `BLOCK_SIZE=1024` del codice.
+
+La misura della squadra non si sceglie a piacere. Dev'essere un multiplo di 32,
+perché i lavoratori marciano in plotoni da 32 e una squadra di taglia diversa
+lascerebbe l'ultimo plotone mezzo vuoto. Quale multiplo di 32, invece, non si sa
+a tavolino: dipende dalla scheda che si ha davanti e dal conto che le si sta
+chiedendo, e il modo di trovarlo è provarne qualcuno e cronometrare. Quel numero
+però va scritto nell'ordine prima che l'ordine parta, non deciso per strada: chi
+traduce l'ordine vuole saperlo in anticipo, così prepara istruzioni tagliate
+apposta per squadre di quella taglia.
+
+Poi si conta quante squadre servono, e come sempre qualcuno avanza. Un milione
+di cassette in squadre da 1024 fa 976 squadre piene e un resto di 576 cassette:
+si mandano 977 squadre, e nell'ultima 448 persone restano senza cassetta. Per
+loro vale la riga di prima, chi supera l'ultima cassetta si ferma, ed è la riga
+del codice che marca quali indici sono buoni.
+
+Come le mille e passa persone si spartiscano il lavoro dentro la squadra non è
+più affar tuo: lo decide Triton, che sa come tenere occupati i lavoratori della
+GPU meglio di quanto faresti a mano. Tu ragioni a squadre; il **compilatore**,
+cioè il programma che traduce quello che scrivi in istruzioni per la macchina,
 scende ai dettagli. È per questo che un kernel Triton sta in dieci righe di
 Python leggibile invece che in una pagina di C.
 
@@ -219,12 +246,11 @@ fa, `triton.compile` lo traduce nel **PTX** (la lingua intermedia in cui NVIDIA 
 programma per GPU, che il driver traduce poi nelle istruzioni della scheda che
 si ha davanti) per
 un'architettura scelta a tavolino, `sm_90` per esempio, senza che
-quell'architettura sia presente. Vale la pena guardarci dentro, perché c'è la
-morale della sezione scritta in linguaggio macchina: la moltiplicazione e la
-somma non compaiono come istruzioni separate, al loro posto c'è una sola
-`fma.rn.f32` (*fused multiply-add*), la fusione già avvenuta dentro una singola
-istruzione. Quello per cui una GPU vera serve davvero è misurare quanto va
-veloce, non sapere che cosa calcola.
+quell'architettura sia presente. Lì dentro il risultato si legge in linguaggio
+macchina: la moltiplicazione e la somma non compaiono come istruzioni separate,
+al loro posto c'è una sola `fma.rn.f32` (*fused multiply-add*), cioè la fusione
+già avvenuta dentro una singola istruzione. Quello per cui una GPU vera serve
+davvero è misurare quanto va veloce, non sapere che cosa calcola.
 
 `````
 
@@ -242,7 +268,7 @@ ha un prezzo.
 Ogni volta che lanci un kernel è come fare una telefonata per piazzare un
 ordine: c'è un costo fisso di «comporre il numero e spiegarsi» che paghi
 uguale, che l'ordine sia grande o minuscolo. Scrivere `relu(a * x + b)` in
-modo ingenuo sono **tre** telefonate: una per la moltiplicazione, una per la
+modo ingenuo sono tre telefonate: una per la moltiplicazione, una per la
 somma, una per la ReLU. E c'è di peggio del costo delle chiamate. A ogni
 telefonata, l'intero array viene tirato su dalla memoria, gli si fa un solo,
 misero conticino, e lo si rispedisce indietro, per poi ritirarlo su di nuovo
@@ -251,6 +277,19 @@ per fare un lavoro che si poteva fare in un viaggio solo. **Fondere** i kernel
 vuol dire proprio questo: una telefonata sola, i dati salgono una volta, si
 fanno tutti e tre i conti mentre sono lì a portata di mano, e si riscrive una
 volta.
+
+Quanto si guadagni dipende dal rapporto fra il trasporto e il lavoro, e qui il
+rapporto è impietoso: su ogni numero c'è da fare una moltiplicazione, una somma
+e un confronto con lo zero, tre gesti che durano molto meno del viaggio che li
+ha portati a destinazione. Con i viaggi che scendono da tre a uno, il tempo
+scende quasi nella stessa proporzione. Se invece su ogni numero ci fosse
+mezz'ora di conti da fare, le telefonate e i viaggi sarebbero un rumore di
+fondo, e fondere non cambierebbe niente di misurabile. Si guadagna dove il
+trasporto pesa più del conto, ed è il caso di quasi tutto quello che una rete
+fa sui numeri uno per uno. Portata all'estremo, poi, la cura si esaurisce da
+sé: a forza di togliere viaggi si arriva al punto in cui il trasporto smette di
+essere il freno e a comandare il tempo comincia a essere il conto, e da lì in
+poi fondere ancora non rende più niente.
 
 `````
 
@@ -292,11 +331,11 @@ visto: una telefonata e un viaggio in memoria per ogni riga.
 La seconda strada è quella che si accende con la riga `torch.compile`: invece
 di telefonare un ordine alla volta, consegni la lista intera. PyTorch se la
 legge tutta *prima* di cominciare, riconosce le voci che si possono chiedere in
-un colpo solo e le riscrive da sé come un ordine unico, che è esattamente il
-lavoro di fusione di questa sezione. Le richieste davvero impegnative restano
-affidate agli specialisti (kernel scritti a mano dal costruttore della GPU);
-tutto il contorno di operazioni piccole viene accorpato. Meno telefonate, meno
-viaggi, stesso identico risultato.
+un colpo solo e le riscrive da sé come un ordine unico: fonde le telefonate al
+posto tuo, senza che tu debba scrivere niente. Le richieste davvero
+impegnative restano affidate agli specialisti (kernel scritti a mano dal
+costruttore della GPU); tutto il contorno di operazioni piccole viene
+accorpato. Meno telefonate, meno viaggi, stesso identico risultato.
 
 `````
 

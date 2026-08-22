@@ -26,7 +26,7 @@ definizione: chiede che la macchina faccia almeno una di tre cose, spostarsi,
 afferrare, oppure portare qualcosa in un punto preciso. Ne resta fuori la
 lavatrice, che pure sente (il carico, la temperatura) e agisce (apre la
 valvola, ferma il cestello). A noi qui interessa lo schema, sentire e agire,
-perché è quello con cui l'intelligenza artificiale ha a che fare; ma Una
+perché è quello con cui l'intelligenza artificiale ha a che fare; ma una
 lavatrice resta fuori anche dall'altra definizione, quella data in {doc}`apertura di capitolo </Introduzione/overview>`: la regola
 che decide quando fermare il risciacquo l'ha scritta un
 tecnico, riga per riga.
@@ -42,27 +42,42 @@ stesso con le reti a molti strati. Ne parleremo per esteso nei due capitoli
 dedicati all'uno e all'altro.
 
 `````{tab} Elementare
-Prendi un robot che deve imparare a camminare. Nessun ingegnere gli spiega come
-piegare le ginocchia: si stabilisce solo la regola del gioco, per esempio *un
-punto per ogni secondo in cui resti in piedi*. Ai primi tentativi crolla quasi
-subito: $2$ punti, poi $3$, poi di nuovo $2$.
+Un robot deve imparare a camminare, e nessun ingegnere gli spiega come piegare
+le ginocchia: si stabilisce solo la regola del gioco, per esempio *un punto per
+ogni secondo in cui resti in piedi*. Ai primi tentativi crolla quasi subito:
+$2$ punti, poi $3$, poi di nuovo $2$.
 
 Ogni tentativo, però, lascia una traccia: il robot si segna che cosa ha fatto e
-quanti punti ne ha ricavato. E le mosse non le sceglie a colpo sicuro, le
-sorteggia, come tirando dei dadi: all'inizio i dadi sono onesti e ogni mossa ha
-la stessa probabilità di uscire. Dopo ogni prova il programma li ritocca di
-pochissimo, e questo è il punto in cui l'imparare succede: rende un po’ più
-facile l'uscita delle mosse comparse nelle prove andate bene, un po’ più
-difficile quella delle mosse comparse nelle prove andate male. Ripeti migliaia
-di volte e i dadi si sbilanciano sempre di più verso il camminare; il punteggio
-sale a $10$, poi a $50$, poi a $500$.
+quanti punti ne ha ricavato. Nel farsi i conti dà più peso ai punti vicini nel
+tempo; uno che arriverà fra molto conta un po’ meno, e i lontanissimi quasi
+niente. Così anche una camminata che non finisse mai varrebbe, nei suoi conti,
+un totale preciso, e due modi di camminare si possono sempre confrontare.
+
+Le mosse non le sceglie a colpo sicuro, le sorteggia, come tirando dei dadi. Di
+dadi ne tiene uno per ogni situazione in cui il corpo può trovarsi (sbilanciato
+in avanti, piegato su un ginocchio, in equilibrio), e a ogni istante tira
+quello che corrisponde a com'è messo in quel momento. All'inizio tutti i dadi
+sono onesti e ogni mossa ha la stessa probabilità di uscire. Dopo ogni prova il
+programma li ritocca di pochissimo, e questo è il punto in cui l'imparare
+succede: sui dadi tirati nelle prove andate bene rende un po’ più facile
+l'uscita delle mosse fatte, sui dadi tirati nelle prove andate male un po’ più
+difficile. Ripeti migliaia di volte e i dadi si sbilanciano sempre di più verso
+il camminare; il punteggio sale a $10$, poi a $50$, poi a $500$.
 
 Assomiglia al gioco «acqua-fuochino», con due differenze che sono poi tutta la
 difficoltà del problema. La prima: nel gioco c'è una persona che sa già dov'è
 l'oggetto nascosto, qui non c'è nessuno che sappia come si cammina. La seconda:
-il «fuochino» non arriva mentre ti muovi, arriva alla fine del giro, ed è un
-numero solo, che dice quanto è andata bene in tutto e non quale passo fosse
-quello buono.
+il «fuochino» non giudica i passi uno per uno. Il totale del giro racconta
+quanto è andata bene la prova in tutto, ma fra le centinaia di tiri di dadi non
+segna quale abbia tenuto il robot in piedi e quale l'abbia fatto cadere.
+
+Restano le migliaia di cadute, che il robot vero non potrebbe permettersi: si
+sfascerebbe alla decima. Al posto suo cade una copia dentro una simulazione al
+computer, una specie di videogioco fedele del suo corpo. È lì che il gioco si
+può rompere: il pavimento vero è un filo più scivoloso di quello simulato, i
+motori veri rispondono con un soffio di ritardo, e la camminata che nella copia
+era perfetta inciampa appena tocca il mondo. Portare quel che ha imparato dal
+videogioco al metallo, senza perderlo per strada, resta un problema aperto.
 `````
 
 `````{tab} Superiore

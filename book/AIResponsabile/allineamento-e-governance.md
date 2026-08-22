@@ -40,9 +40,8 @@ lo stesso guaio prende il nome di **reward hacking**, «imbrogliare col premio»
 
 La formula da tenere a mente è questa: quando ottimizzi un **surrogato** del
 tuo vero obiettivo, prima o poi ottieni il surrogato e perdi l'obiettivo.
-Surrogato, o *proxy*, sono le due parole con cui il testo chiamerà d'ora in
-poi la stessa cosa che il genio della lampada spiega qui sotto: una
-**imitazione** di ciò che volevamo davvero, un numero che gli somiglia
+Surrogato, o *proxy*, sono le due parole con cui d'ora in poi si chiamerà una
+**imitazione** di ciò che volevamo davvero: un numero che gli somiglia
 abbastanza da poterlo misurare, e che proprio per questo non è la cosa vera.
 Il punteggio del videogioco era il surrogato di «vinci la gara».
 
@@ -72,13 +71,23 @@ accorgiamo guardando il punteggio, che nel frattempo sale.
 È la vecchia storia del genio della lampada. Chiedi «rendimi l'uomo più ricco
 del mondo» e ti ritrovi solo su un pianeta deserto: tecnicamente sei il più
 ricco, perché non c'è nessun altro. Il genio ha esaudito le tue *parole*, non il
-tuo *desiderio*. Un modello ottimizza esattamente il numero che gli diciamo di
-far salire, con la stessa fedeltà cieca del genio: se quel numero è una buona
-imitazione di ciò che vogliamo, ottimo; ma nessuna imitazione è perfetta, e il
-modello è bravissimo a scovare i punti in cui il numero sale *senza* che le cose
-migliorino davvero. Non è cattiveria, e non è nemmeno un errore di
-programmazione: è che «di’ esattamente cosa vuoi» è, con un sistema abbastanza
-capace, molto più difficile di quanto sembri.
+tuo *desiderio*. Con un modello succede lo stesso: noi gli diamo un numero da
+far salire, e lui lo fa salire. Se quel numero è una buona imitazione di ciò che
+vogliamo, ottimo; ma nessuna imitazione è perfetta, e il modello è bravissimo a
+scovare i punti in cui il numero sale *senza* che le cose migliorino davvero.
+
+Poi c'è un secondo scivolone, e quello il genio non lo fa. Un ragazzo assunto a
+raccogliere mele viene pagato per ogni mela matura: il conto è giusto, da
+imbrogliare non c'è niente. Solo che nei filari dove ha imparato erano mature
+tutte, e lui si è fatto la regola più comoda, staccare quello che arriva a mano.
+Nel filare nuovo, dove metà sono acerbe, continua a staccare tutto. La sua
+regola e la nostra si somigliavano finché si somigliavano i filari. Anche un
+modello impara dai casi che gli capitano, e quale regola si sia fatto lo
+scopriamo il giorno in cui gliene arriva uno diverso.
+
+Non è cattiveria, e non è nemmeno un errore di programmazione: con un sistema
+abbastanza capace, dire esattamente che cosa si vuole è difficile, e ottenere
+che sia proprio quello a essere imparato è un secondo mestiere.
 
 `````
 
@@ -231,10 +240,12 @@ il modello che parla a prendere voti alti da quel giudice.
 
 C'è un particolare importante in quest'ultimo passo: gli si mette un guinzaglio.
 Mentre impara a piacere al giudice, il modello viene tenuto vicino a com'era
-prima, e non gli si lascia cambiare troppo. La ragione è esattamente quella
-della tabella di poco fa: se lo si lasciasse ottimizzare senza freni, andrebbe a
-cercare i punti in cui il giudice si sbaglia. Il guinzaglio è la difesa contro
-il problema che abbiamo appena misurato.
+prima, e non gli si lascia cambiare troppo. La ragione è quella che i mille
+candidati hanno mostrato: lasciato libero di spremere il voto, andrebbe a
+cercare i punti in cui il giudice si sbaglia. E il guinzaglio è anche
+un'ammissione: il giudice resta un'imitazione del metro vero. Se lo fosse
+davvero, non ci sarebbe ragione di trattenere il modello dal piacergli il più
+possibile.
 
 `````
 
@@ -252,7 +263,7 @@ un surrogato: se fosse
 l'obiettivo vero, non ci sarebbe ragione di impedire di ottimizzarlo fino in
 fondo.
 
-Vale la pena notare che InstructGPT non è il primo lavoro a portare l'RLHF sul
+InstructGPT non è il primo lavoro a portare l'RLHF sul
 linguaggio: l'avevano già fatto Ziegler e colleghi nel 2019, sullo stile e sul
 riassunto, e Stiennon e colleghi nel 2020, sul solo riassunto. InstructGPT è il
 primo a farlo per il *seguire istruzioni*, che è la capacità da cui dipende
@@ -319,10 +330,18 @@ un altro modello. Prima si scrive una piccola **costituzione**: un elenco di
 principi in linguaggio semplice, tipo «scegli la risposta meno dannosa e più
 onesta». Poi si chiede al modello di *criticare e riscrivere* le proprie
 risposte alla luce di quei principi, e infine di *confrontare* coppie di
-risposte dicendo quale rispetta meglio la costituzione. I confronti li produce
+risposte dicendo quale rispetta meglio la costituzione. Il modello che ne esce
+si chiude di meno: quando dice di no, dice anche perché. I confronti li produce
 l'AI, non più l'umano; all'umano resta il compito più alto e più raro:
 scrivere bene i principi. Non è che l'umano sparisca: cambia mestiere, da
 etichettatore a legislatore.
+
+E il mestiere nuovo si porta dietro un limite del vecchio. Da mille confronti
+esce un voto solo: se su una domanda delicata tre valutatori su cinque
+preferiscono la risposta prudente e due la risposta schietta, il giudice impara
+quella dei tre, e i due finiscono dentro la media. I principi fanno la stessa
+cosa alla luce del sole: una riga sola per tutti, e chi la pensa diversamente
+non ci si ritrova.
 
 `````
 
@@ -331,7 +350,7 @@ etichettatore a legislatore.
 Il nucleo comune di RLHF, DPO e del metodo che segue è un **dataset di
 preferenze** $\mathcal{D} = \{(x, y_w, y_l)\}$: per un prompt $x$, una risposta
 preferita $y_w$ e una scartata $y_l$. La probabilità di preferenza si modella
-di norma alla Bradley–Terry,
+di norma alla Bradley-Terry,
 
 $$
 P(y_w \succ y_l \mid x) = \sigma\big(r(x, y_w) - r(x, y_l)\big),
@@ -339,9 +358,9 @@ $$
 
 dove $\sigma$ è la sigmoide e $r$ un punteggio scalare (esplicito nel reward
 model dell'RLHF, implicito in $\beta \log \frac{\pi_\theta}{\pi_{\text{ref}}}$
-nella DPO). Vale la pena rendersi conto di che cosa quel «di norma» porta con
-sé, perché è l'ipotesi su cui poggia anche l'equivalenza fra DPO e RLHF citata
-sopra: Bradley-Terry assume che esista **un unico punteggio scalare** da cui
+nella DPO). Quel «di norma» porta con sé un'ipotesi, ed è la stessa su cui
+poggia l'equivalenza fra DPO e RLHF:
+Bradley-Terry assume che esista **un unico punteggio scalare** da cui
 tutte le preferenze discendono, quindi che siano transitive e omogenee fra
 annotatori. Preferenze intransitive, o popolazioni con valori diversi, non sono
 rappresentabili in quel modello e vengono compresse nella media.
@@ -419,13 +438,22 @@ La differenza pratica conta: per gli errori
 onesti la difesa è verificare a valle; per gli attacchi è difendere un
 perimetro contro un avversario che ci prova apposta.
 
+L'attacco cambia peso quando al modello si dà da fare e non solo da dire. Se
+legge la posta e può anche rispondere, l'ordine nascosto dentro una mail che
+riceve diventa una mail che parte: il danno smette di essere una frase
+sbagliata. Resta poi una cosa che
+nessuna correzione toglie: le stesse capacità che rendono un modello utile a un
+chimico o a un programmatore lo rendono utile a chi vuole nuocere. Nel modello
+non c'è niente da aggiustare, e la partita si gioca su chi può metterci le
+mani: si chiama **uso duale**.
+
 `````
 
 `````{tab} Superiore
 
 Le allucinazioni sono un limite **intrinseco** dei modelli generativi:
 campionano da $P(\text{testo})$, non da un archivio di fatti verificati, e la
-fluidità non è correlata alla verità. Nessun prompt le azzera; si mitigano con
+fluidità non è una prova di verità. Nessun prompt le azzera; si mitigano con
 recupero da fonti (RAG), richiesta di citazioni e verifica esterna. Jailbreak
 e **prompt injection** sono invece problemi **avversari**: sfruttano il fatto
 che la gerarchia *system > user* è morbida e che il modello non distingue in
@@ -471,11 +499,20 @@ fanno passare sopra camion carichi, lo si sottopone a vibrazioni, si cerca
 due modi complementari. Il **red-teaming** è una squadra il cui unico compito
 è comportarsi da avversario: inventare le domande più insidiose, i trucchi, i
 giri di parole, per trovare dove il modello sbaglia (meglio scoprirlo in
-laboratorio che sui giornali). Le **evals** (da *evaluation*) sono invece
-esami standardizzati: liste di prove ripetibili con un voto finale, così da
-misurare se una nuova versione è più o meno sicura della precedente. Il
-red-teaming cerca la falla nuova; le evals controllano che le vecchie non
-tornino.
+laboratorio che sui giornali); e una parte di quel lavoro la squadra la gira a
+un altro modello, istruito a inventare trabocchetti a migliaia. Le **evals** (da
+*evaluation*) sono invece esami standardizzati: liste di prove ripetibili con un
+voto finale, così da misurare se una nuova versione è più o meno sicura della
+precedente. Il red-teaming cerca la falla nuova; le evals controllano che le
+vecchie non tornino.
+
+Un esame superato, però, dice meno di quel che sembra. Se le domande girano in
+anticipo, e con i modelli
+capita, perché le prove finiscono nel materiale su cui hanno studiato, il voto
+sale senza che sia migliorato niente: per questo qualche prova si tiene da
+parte e non si pubblica. E un ponte che ha passato le prove ha passato quelle
+prove: se al vento di traverso non ha pensato nessuno, del vento di traverso
+non si sa ancora niente.
 
 `````
 
@@ -487,8 +524,9 @@ che sondano capacità pericolose, jailbreak, fughe di dati) o
 **evals** sono suite di benchmark riproducibili; si distinguono quelle di
 *capacità* (cosa il modello sa fare) da quelle di *sicurezza* (tossicità,
 rifiuto di richieste illecite, resistenza ai jailbreak, propensione alle
-allucinazioni), spesso riassunte in metriche come l’*attack success rate* o il
-tasso di rifiuto appropriato. Due avvertenze di metodo, entrambe corollari di
+allucinazioni), spesso riassunte in metriche che si leggono in versi opposti:
+l’*attack success rate*, la quota di attacchi andati a segno, che si vuole
+**basso**, e il tasso di rifiuto appropriato, che si vuole **alto**. Due avvertenze di metodo, entrambe corollari di
 Goodhart. Primo: un benchmark è un proxy, e ottimizzare *per* il benchmark
 (magari perché finito nei dati di addestramento) gonfia il punteggio senza
 migliorare la sicurezza reale, per questo contano i *test adversariali tenuti
@@ -531,9 +569,8 @@ possono fare. L’**AI Act** europeo applica la stessa idea all'intelligenza
 artificiale: guarda anzitutto al **rischio** di ogni suo impiego, più che alla
 tecnologia in astratto, e lo dispone su una piramide a quattro gradini.
 
-In cima, il rischio *inaccettabile*: pochi usi semplicemente **vietati**. Vale
-la pena sapere quali sono, perché due riguardano la vita di chiunque vada a
-scuola o lavori.
+In cima, il rischio *inaccettabile*: pochi usi semplicemente **vietati**. Due
+riguardano la vita di chiunque vada a scuola o lavori.
 
 - Dare a ogni cittadino un **punteggio sociale**: un voto unico attaccato a
   ogni persona, calcolato dal suo comportamento in un ambito, che poi decide
@@ -552,7 +589,7 @@ scuola o lavori.
   preciso (cioè senza cercare una persona in particolare), per costruire
   archivi che servono poi a riconoscere la gente dal viso. Riconoscere qualcuno
   da una caratteristica del suo corpo, il volto, la voce, le impronte, si dice
-  **biometrico**, e la parola torna qui sotto.
+  **biometrico**.
 - **Prevedere chi commetterà un reato** basandosi soltanto sul profilo di una
   persona (dove vive, che tratti ha) invece che su fatti concreti: è il parente
   stretto del software da cui questo capitolo è partito.
@@ -574,8 +611,8 @@ chi viene assunto, chi ottiene un prestito, un dispositivo medico, l'ammissione
 a una scuola. Questi usi sono permessi, ma prima di andare sul mercato bisogna
 avere una documentazione tecnica in ordine, tenere il registro di quello che il
 sistema decide, garantire che una persona in carne e ossa possa intervenire e
-farsi certificare da fuori. Sembrano adempimenti da ufficio; alla fine di
-questa sezione si vedrà a chi servono davvero.
+farsi certificare da fuori. Sembrano adempimenti da ufficio, finché non tocca a
+te sentirti dire di no da una macchina.
 
 Più giù, il *rischio limitato*: basta la **trasparenza**, cioè avvisare le
 persone («stai parlando con un'AI», «questo video è generato»). In fondo, il
@@ -589,15 +626,17 @@ In nessuno, ed è il punto in cui la piramide non basta più. Un modello
 buono-per-tutto non ha un impiego suo, ce l'hanno le cose che ci si
 costruiscono sopra; per questo il regolamento gli dedica un capitolo a parte,
 con obblighi che riguardano chi lo fabbrica invece di chi lo usa, e obblighi in
-più per i pochi più grossi di tutti.
+più per i pochi più grossi di tutti. Grossi come? Si guarda quanto calcolo è
+servito a costruirli, e di quello che ci si fa non si guarda niente: su quel
+gradino la legge smette di misurare l'uso e misura la potenza.
 
 `````
 
 `````{tab} Superiore
 
 L’**AI Act** {cite}`euaiact2024`, entrato in vigore nell'agosto 2024, struttura
-gli obblighi su quattro livelli di rischio. I numeri di articolo che seguono
-valgono la pena: sono la sola cosa che permette a chi legge di andare a
+gli obblighi su quattro livelli di rischio. I numeri di articolo sono la sola
+cosa che permette a chi legge di andare a
 verificare, e sono anche la parte più stabile del testo. Stabile non vuol dire
 immobile: il regolamento è già stato emendato una volta, nel luglio del 2026
 (il regolamento (UE) 2026/1744, il *digital omnibus*), che ha allungato
@@ -681,7 +720,7 @@ sistema automatico) sono la parte che riguarda chi quelle decisioni le
 subisce: senza traccia scritta e senza un umano responsabile, un reclamo non
 ha nemmeno un posto dove essere depositato. Chi vuole tirare il filo trova la
 parte tecnica della stessa domanda, poter dire *perché* il sistema ha deciso
-così, nel capitolo sull'interpretabilità, che in questo libro viene appena
+così, nel capitolo sull'interpretabilità, che viene appena
 prima.
 
 Dietro le regole c'è poi un dibattito che va reso esplicito, perché divide
@@ -693,7 +732,7 @@ capitolo) e teme che l'attenzione ai rischi lontani distolga risorse da
 ingiustizie che colpiscono persone reali *oggi*. Dall'altro chi punta sui
 **rischi catastrofici futuri** di sistemi molto più capaci di quelli attuali,
 e sostiene che prevenirli richieda cominciare adesso. Non è una disputa che
-questo libro può chiudere; ma è onesto notare che non sono alternative: un
+si possa chiudere adesso; ma è onesto notare che non sono alternative: un
 ponte va progettato sia contro le crepe di oggi sia contro il terremoto che
 forse verrà, e le due cose competono per lo stesso budget di attenzione.
 
@@ -744,7 +783,9 @@ noi.
 - L’**AI Act** europeo regola in base a quanto un uso può ferire: pochissimi usi
   vietati del tutto (fra cui riconoscere le emozioni degli studenti a scuola),
   alcuni sorvegliati, alcuni con l'obbligo di dire «stai parlando con un'AI», e
-  tutto il resto libero.
+  tutto il resto libero. Con i modelli buoni-per-tutto, che un impiego proprio
+  non ce l'hanno, il criterio cambia: per i più grossi si guarda quanto calcolo
+  è servito a costruirli, e di quello che ci si fa non si guarda niente.
 - Nessuna soluzione definitiva: strumenti per orientare, non garanzie. **A quali
   valori** allineare un sistema è una domanda che tocca a noi, non a un
   teorema.

@@ -33,12 +33,19 @@ L'unità elementare è una frasetta di tre parole:
 > (Torino, si-trova-in, Piemonte) · (Torino, attraversata-da, Po) ·
 > (Po, sfocia-in, Adriatico)
 
-Soggetto, relazione, oggetto. Si chiama **tripla**, e migliaia di triple messe
-insieme formano un grafo in cui i nodi sono cose (persone, luoghi, film,
-proteine, prodotti) e gli archi sono fatti. Le cose, d'ora in poi, si chiamano
-**entità**: è la parola che userà il resto della sezione, e vuol dire soltanto
-questo. Nodi di specie diverse, archi di specie diverse: un grafo
-**eterogeneo**.
+Soggetto, relazione, oggetto, in quest'ordine: «Piemonte si-trova-in Torino»
+sarebbe un altro arco, e falso. La frasetta si chiama **tripla**, e migliaia di
+triple messe insieme formano un grafo in cui i nodi sono cose (persone, luoghi,
+film, proteine, prodotti) e gli archi sono fatti. Le cose si chiamano
+**entità**, e la parola vuol dire soltanto questo. Nodi di specie diverse,
+archi di specie diverse: un grafo **eterogeneo**.
+
+Sopra le triple sta di solito un regolamento: Torino è una città, una città è
+un luogo abitato, un luogo abitato è un luogo; e «sindaco-di» parte da una
+persona e arriva a un luogo abitato. Serve a buttare fuori le triple che
+sgarrano (nessuno è sindaco di un fiume) e a leggere fatti che nessuno ha
+scritto: se Torino è una città allora è un luogo, e quell'arco non c'è bisogno
+di scriverlo.
 
 C'è poi una differenza che sembra filosofica e invece decide come si progetta
 tutto il resto. In un knowledge graph, un arco che non c'è vuol dire **«non lo
@@ -46,11 +53,11 @@ so»**, non «è falso». Nessuno ha scritto tutti i fatti veri del mondo, e
 nessuno mai lo farà: l'assenza di (Torino, gemellata-con, Salt Lake City) non è
 una smentita, è un silenzio.
 
-Sembra un dettaglio da logici, e invece è il motivo per cui, poco più avanti,
-non si potrà addestrare un modello nel modo consueto. Per imparare a distinguere
-il vero dal falso a un modello servono esempi delle due specie; qui gli esempi
-di fatti veri abbondano, e di fatti falsi non ce n'è nemmeno uno, perché
-nessuno si mette a scrivere le cose che non sono successe.
+Sembra un dettaglio da logici, e invece è il motivo per cui un modello, qui,
+non si può addestrare nel modo consueto. Per imparare a distinguere il vero dal
+falso a un modello servono esempi delle due specie; qui gli esempi di fatti
+veri abbondano, e di fatti falsi non ce n'è nemmeno uno, perché nessuno si
+mette a scrivere le cose che non sono successe.
 
 `````
 
@@ -114,83 +121,85 @@ vere.
 
 Un grafo di fatti si può interrogare come un database, e per molte domande è la
 cosa giusta. Ma per prevedere i fatti **mancanti** serve trasformarlo in numeri,
-e qui succede una cosa che al lettore di questo libro suonerà familiare.
+e qui succede una cosa che suonerà familiare.
 
 `````{tab} Elementare
 
-Nel capitolo sul linguaggio si è visto che a ogni parola si può assegnare una
-fila di numeri, e che quella fila si può immaginare come un **punto**, come una
-città su una mappa: solo che invece di due coordinate ne ha qualche decina.
-Parole di significato simile finiscono vicine.
+Nel capitolo sul linguaggio ogni parola era diventata una fila di numeri, cioè
+un **punto** su una mappa, come una città, e le parole di significato simile
+finivano vicine. Avevano un senso anche gli spostamenti. Quello che separa
+«uomo» da «donna» separa più o meno anche «re» da «regina». Le relazioni
+diventano **frecce** sulla mappa.
 
-E lì era emersa una proprietà curiosa: hanno un senso anche gli *spostamenti*
-da un punto all'altro. Lo spostamento che separa «uomo» da «donna» è più o meno
-lo stesso che separa «re» da «regina», tanto che partendo da «re», togliendo lo
-spostamento «uomo» e aggiungendo lo spostamento «donna», si atterra vicino a
-«regina». Le relazioni di significato, insomma, diventano **frecce** sulla
-mappa.
+Qui la stessa idea diventa l'obiettivo. Ogni entità è un punto, ogni relazione
+è una freccia, sempre la stessa per tutte le coppie che lega. Per ogni fatto
+vero, partire dal soggetto e seguire la freccia deve portare vicino
+all'oggetto: da «Roma», con «capitale-di», si atterra vicino a «Italia»; la
+stessa freccia, da «Parigi», porta vicino a «Francia».
 
-L'idea di base per i knowledge graph è la stessa, presa sul serio e fatta
-diventare l'obiettivo dell'addestramento invece di un effetto collaterale.
-Ogni entità è un punto nello spazio. Ogni **relazione è una freccia**, sempre
-la stessa per tutte le coppie che quella relazione lega. Si chiede che, per
-ogni fatto vero, partire dal soggetto e seguire la freccia della relazione
-faccia arrivare vicino all'oggetto: dal punto «Roma», seguendo la freccia
-«capitale-di», si deve atterrare vicino al punto «Italia»; la stessa freccia,
-da «Parigi», deve portare vicino a «Francia».
+Prevedere un fatto mancante diventa un calcolo: prendi «Lisbona», applica la
+freccia «capitale-di», guarda quale entità è più vicina al punto in cui sei
+arrivato.
 
-Fatto questo, prevedere un fatto mancante diventa un calcolo: prendi
-«Lisbona», applica la freccia «capitale-di», guarda quale entità è più vicina
-al punto in cui sei arrivato.
+Qui si paga il debito degli esempi falsi che non esistono. Per sistemare punti
+e frecce bisogna poter dire al modello «questo sì e quest'altro no», e i «no»
+non ce li ha nessuno: ce li fabbrichiamo guastando i fatti veri. Da (Roma,
+capitale-di, Italia), sostituendo una delle due estremità con un'entità pescata
+a caso, esce (Roma, capitale-di, Portogallo), che quasi certamente è falsa.
+Chiediamo che il fatto vero cada più vicino del suo gemello guastato, e non per
+un pelo: di uno scarto fissato in partenza.
 
-Qui si paga il debito lasciato in sospeso all'inizio, quello degli esempi
-falsi che non esistono. Per sistemare punti e frecce bisogna poter dire al
-modello «questo sì e quest'altro no», e i «no» non ce li ha nessuno. La
-soluzione è tanto sfacciata quanto efficace: **ce li fabbrichiamo guastando i
-fatti veri**. Si prende (Roma, capitale-di, Italia), si sostituisce una delle
-due estremità con un'entità pescata a caso, e viene fuori (Roma, capitale-di,
-Portogallo), che quasi certamente è falsa. Chiediamo allora che il fatto vero
-finisca più vicino del suo gemello guastato, e tanto basta.
+Una scorciatoia però il modello la trova da solo: allargare la mappa. Se tutti
+i punti si allontanano fra loro, il pelo di vantaggio che il fatto vero aveva
+già diventa da sé lo scarto richiesto, senza che una freccia sia stata puntata
+meglio. Per questo, a ogni passata, i punti vengono rimessi tutti alla stessa
+distanza dal centro.
 
-Restano però due problemi, e sono geometrici prima ancora che informatici,
-perché nascono da com'è fatta una freccia. Il primo: una freccia porta da un
-punto a **un solo** punto. Ma «ha-recitato-in» lega un attore a decine di film:
-la stessa freccia dovrebbe arrivare in decine di posti diversi, e non può.
+Restano tre fatti che una freccia non sa raccontare. Il primo: una freccia
+porta da un punto a un punto e basta, mentre «ha-recitato-in» lega un attore a
+decine di film, e il modello se la cava ammucchiando quei film nello stesso
+punto, dove diventano indistinguibili.
 
-Il secondo è più insidioso, e riguarda le relazioni che si ereditano lungo la
-catena. Se sei antenato di mio nonno, sei antenato anche mio; se un pezzo è
-parte di un motore e il motore è parte di un'automobile, quel pezzo è parte
-dell'automobile. Qui la stessa freccia deve valere tanto per un passo quanto
-per due, e nessuna freccia lo fa, tranne una: prova con una freccia che sposta
-di tre, e farla due volte sposta di sei, che non è tre. L'unico numero per cui
-due passi e un passo portano nello stesso posto è **zero**, cioè la freccia che
-non sposta niente. La relazione si annulla, e con lei ogni possibilità di
-prevederla.
+Il secondo riguarda le relazioni che valgono nei due sensi. L'Italia «confina-con»
+la Francia, e la Francia con l'Italia: la stessa freccia dovrebbe portare di là
+e riportare indietro, e l'unica che ci riesce è quella lunga zero, che lascia i
+due paesi nello stesso punto.
 
-Dal primo problema è nata una lunga discendenza di modelli, che sostituiscono
-la freccia con qualcosa di più flessibile (una moltiplicazione, una rotazione),
-e ognuno rimedia a un caso e ne rompe un altro. Il secondo problema non lo
-risolve nessuno di loro. Per le relazioni che si ereditano servono modelli in
-cui un'entità non è un punto ma una regione, capace di **contenerne** un'altra,
-il che è un modo molto più naturale di dire «è un caso particolare di».
+Il terzo riguarda le relazioni che si ereditano lungo la catena: se sei antenato di
+mio nonno sei antenato anche mio. La stessa freccia deve valere tanto per un
+passo quanto per due, e una che sposta di tre, fatta due volte, sposta di sei;
+di nuovo regge soltanto la freccia lunga zero. Incatenare frecce *diverse*,
+invece, funziona benissimo: «fratello-di» seguita da «madre-di» dà «zio-di», e
+basta sommare le due frecce. Il conto non torna quando i tre anelli della
+catena sono la stessa relazione.
 
-C'è infine una via del tutto diversa, ed è quella che questo capitolo ha
-costruito per intero: portare il **passaparola** delle sezioni precedenti su
-questo grafo. La difficoltà nuova è che qui gli archi non sono tutti uguali, e
-un bigliettino che arriva lungo un «è nato a» non va letto come uno che arriva
-lungo un «ha diretto». La risposta è semplice: una ricetta di riscrittura
-diversa per ogni tipo di arco. Il vantaggio rispetto ai punti e alle frecce è
-lo stesso di tutto il capitolo, cioè che la fila di numeri di un'entità non è
-più imparata a memoria, si **calcola** da quel che le sta intorno.
+Da quei guai è nata una lunga discendenza di modelli, che al posto della
+freccia mettono una moltiplicazione o una rotazione: ognuno rimedia a un caso e
+ne rompe un altro, e la rotazione è quella che ne rimette in piedi di più. Per
+l'ereditarietà lungo la catena, che resta fuori anche di lì, servono modelli in
+cui un'entità diventa una regione capace di contenerne un'altra, che è un modo
+molto più naturale di dire «è un caso particolare di».
+
+C'è infine una via del tutto diversa: portare su un grafo di fatti il
+**passaparola** fra vicini. Qui gli archi non sono tutti uguali, e un
+bigliettino che arriva lungo un «è nato a» non va letto come uno che arriva
+lungo un «ha diretto»: serve una ricetta di riscrittura per ogni tipo di arco,
+e con mille tipi ne servirebbero mille, che per non pagarle tutte si preparano
+mescolando poche ricette di base. In cambio la fila di numeri di un'entità si
+calcola da quel che le sta intorno, invece di impararla a memoria. Con un
+limite: se l'entità non porta con sé niente di proprio, il punto di partenza
+resta imparato a memoria come prima, e di un'entità appena arrivata non si
+calcola niente.
 
 `````
 
 `````{tab} Superiore
 
-Un avviso di notazione, perché qui il capitolo cambia alfabeto: in questa
-sezione $\mathbf{h}$, $\mathbf{r}$ e $\mathbf{t}$ sono la **testa**, la
-**relazione** e la **coda** di una tripla, non gli stati nascosti
-$\mathbf{h}_v^{(k)}$ delle sezioni sul message passing.
+Un avviso di notazione, perché l'alfabeto cambia: nelle formule di TransE
+$\mathbf{h}$, $\mathbf{r}$ e $\mathbf{t}$ sono la **testa**, la **relazione** e
+la **coda** di una tripla. Gli stati nascosti del message passing tornano con
+R-GCN, e si riconoscono dal pedice del nodo e dall'apice dello strato
+($\mathbf{h}_v^{(l)}$).
 
 **TransE** {cite}`bordes2013translating` rappresenta ogni entità con un vettore
 $\mathbf{e} \in \mathbb{R}^d$ e ogni relazione con un vettore
@@ -201,10 +210,11 @@ $$
 \mathbf{h} + \mathbf{r} \approx \mathbf{t} .
 $$
 
-La funzione di punteggio è la distanza, $f(h,r,t) = -\lVert \mathbf{h} +
-\mathbf{r} - \mathbf{t} \rVert$, e si addestra con una *margin ranking loss*
-che chiede alle triple vere di stare a distanza minore delle triple false di
-almeno un margine $\gamma$:
+La funzione di punteggio è la distanza cambiata di segno,
+$f(h,r,t) = -\lVert \mathbf{h} + \mathbf{r} - \mathbf{t} \rVert$, in modo che
+un punteggio alto significhi tripla plausibile, e si addestra con una *margin
+ranking loss* che chiede alle triple vere di stare a distanza minore delle
+triple false di almeno un margine $\gamma$:
 
 $$
 \mathcal{L} = \sum_{(h,r,t) \in \mathcal{G}} \; \sum_{(h',r,t') \in S'_{(h,r,t)}}
@@ -250,17 +260,19 @@ $\mathbf{r} \approx \mathbf{0}$.
 
 Il seguito della famiglia sistema altre caselle, e conviene dire quali, perché
 non è la transitività. I modelli **bilineari** come DistMult sono simmetrici
-per costruzione, e quindi perdono l'antisimmetria che TransE aveva; la loro
-estensione ai numeri complessi, **ComplEx**, la recupera ma perde la
-composizione; **RotatE** sostituisce la traslazione con una rotazione nel piano
-complesso e le tiene insieme tutte e quattro. La transitività però resta fuori
-anche di lì, per lo stesso motivo algebrico: se una rotazione applicata due
-volte deve dare sé stessa, e ha modulo uno, allora è l'identità, e la relazione
-torna a non spostare niente. A reggere le gerarchie servono famiglie di altro
-tipo, che rappresentano un'entità non come un punto ma come un oggetto capace
-di **contenerne** un altro (ordini parziali, scatole, spazi iperbolici).
+per costruzione, e quindi perdono l'antisimmetria e l'inversione che TransE
+aveva; la loro estensione ai numeri complessi, **ComplEx**, le recupera
+entrambe, ma la composizione, in quella stessa tassonomia, resta fuori tanto da
+DistMult quanto da ComplEx; **RotatE** sostituisce la traslazione con una
+rotazione nel piano complesso e le tiene insieme tutte e quattro. La
+transitività però resta fuori anche di lì, per lo stesso motivo algebrico: se
+una rotazione applicata due volte deve dare sé stessa, e ha modulo uno, allora
+è l'identità, e la relazione torna a non spostare niente. A reggere le
+gerarchie servono famiglie di altro tipo, che rappresentano un'entità non come
+un punto ma come un oggetto capace di **contenerne** un altro (ordini parziali,
+scatole, spazi iperbolici).
 
-Poi c'è la via che questo capitolo ha costruito. **R-GCN**
+Poi c'è la via del message passing. **R-GCN**
 {cite}`schlichtkrull2018modeling` porta il message passing sui grafi
 eterogenei con una mossa diretta: una matrice di pesi **per ogni tipo di
 relazione**,
@@ -382,8 +394,10 @@ prezzo di costruirlo.
   però che nessuno di loro risolva proprio quest'ultimo caso.
 - L'altra via è portare il **passaparola** delle sezioni precedenti su questo
   grafo, usando una ricetta di riscrittura diversa per ogni tipo di arco: così
-  la fila di numeri di un'entità non si impara a memoria, si calcola da quel
-  che le sta intorno.
+  la fila di numeri di un'entità si calcola da quel che le sta intorno invece
+  di impararla a memoria, purché l'entità porti con sé qualcosa di proprio da
+  cui partire. Se non lo porta, il punto di partenza resta imparato a memoria
+  come prima, e un'entità mai vista resta fuori.
 - Il vantaggio che resta, e per cui si paga la manutenzione, non è
   sapere i fatti (per quello ci sono i modelli di linguaggio): è **mettere
   insieme** più fatti in catena, mostrare il **percorso** che ha prodotto la
@@ -414,8 +428,9 @@ prezzo di costruirlo.
   relazioni uno-a-molti, le simmetriche e le riflessive; la **composizione**
   invece la regge ($\mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2$), ed è il suo caso
   particolare, la **transitività**, a forzare $\mathbf{r} \approx \mathbf{0}$.
-  Da lì la discendenza (DistMult perde l'antisimmetria, ComplEx la recupera e
-  perde la composizione, RotatE le tiene tutte), che però la transitività non
+  Da lì la discendenza (DistMult perde antisimmetria e inversione; ComplEx le
+  recupera entrambe, ma la composizione resta fuori tanto da DistMult quanto da
+  ComplEx; RotatE le tiene tutte e quattro), che però la transitività non
   la risolve: per le gerarchie servono rappresentazioni che contengono invece
   di spostare (ordini, scatole, spazi iperbolici).
 - **R-GCN** {cite}`schlichtkrull2018modeling` porta il message passing sul

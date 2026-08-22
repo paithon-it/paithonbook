@@ -31,13 +31,25 @@ farebbe una persona.
 
 `````{tab} Elementare
 
-Immagina di dover scrivere su un quaderno un giudizio ("questa mossa è buona"
-oppure "è pessima") per **ogni possibile immagine** che può comparire sullo
-schermo. Ma le immagini possibili sono praticamente infinite: basta che la
-pallina si sposti di un pixel e la figura è già diversa, e quindi ti servirebbe
-una nuova riga sul quaderno. Non ci sono abbastanza quaderni al mondo. La
-tabella, che nel labirinto bastava, qui è semplicemente impossibile da
-riempire e da conservare.
+La tabella del labirinto era un quaderno con una riga per casella, e dentro ogni
+riga un voto per ciascuna mossa. Davanti a un televisore servirebbe una riga per
+ogni schermata che il gioco può mostrare.
+
+Lo schermo, ridotto al minimo che serve per giocare, è una griglia di 84
+quadretti per lato, poco più di settemila in tutto, e ogni quadretto può avere
+una qualsiasi di 256 sfumature di grigio. Le schermate diverse che ne vengono
+fuori sono un numero di quasi diciassettemila cifre. Gli atomi dell'universo
+sono un 1 seguito da ottanta zeri: se ogni atomo tenesse un quaderno da un
+miliardo di righe, l'elenco non sarebbe nemmeno cominciato.
+
+Il guaio non finisce con la carta. Per scrivere il voto di una riga bisogna aver
+giocato quella schermata almeno una volta, e basta che la pallina si sposti di
+un quadretto perché la schermata sia un'altra, con la sua riga da riempire. Otto
+ore al giorno per cinquant'anni fanno scorrere una trentina di miliardi di
+schermate, che su quell'elenco non si vedono.
+
+Il modo di dare i voti regge. A cedere è il quaderno, cioè l'idea di tenere una
+riga per ciascuna schermata.
 
 `````
 
@@ -50,8 +62,8 @@ $$
 |\mathcal{S}| = 256^{\,84\times 84} = 256^{7056}
 $$
 
-stati possibili: un numero con migliaia di cifre, incommensurabilmente più
-grande degli atomi dell'universo osservabile ($\sim 10^{80}$). Una $Q$-table
+stati possibili: un numero di quasi diciassettemila cifre, incommensurabilmente
+più grande degli atomi dell'universo osservabile ($\sim 10^{80}$). Una $Q$-table
 richiederebbe una cella per ciascuno stato $s$ e azione $a$: né la memoria né i
 dati per visitarli tutti esisteranno mai. Il problema non è l'algoritmo, è la
 **rappresentazione**: enumerare gli stati non scala.
@@ -89,6 +101,27 @@ sceglie la mossa col voto più alto. Il bello è che questo occhio, avendo visto
 tante partite, sa dare un voto sensato anche a una schermata **mai vista
 prima**, perché assomiglia ad altre che conosce. È la differenza fra imparare a
 memoria e capire.
+
+Come impara a votare? Giocando, e correggendosi da solo. Dà un voto a una mossa,
+la fa, e guarda che cosa succede: i punti che arrivano subito, più il voto
+migliore che dà alla schermata che si trova davanti dopo. Quel secondo pezzo
+conta meno del primo, perché è roba che deve ancora arrivare; di quanto meno, lo
+si stabilisce una volta per tutte.
+
+L'occhio aveva dato 8 a "vai a destra". Si fa la mossa: arriva 1 punto, e sulla
+schermata che compare, la mossa migliore prende 5. Contando quel 5 al novanta per
+cento, il voto giusto era 1 + 4,5 = 5,5, e l'8 era ottimista di due punti e
+mezzo. Quei due punti e mezzo sono l'errore, e l'occhio si corregge per ridurlo;
+gli scarti grossi pesano più che in proporzione, quindi sono i primi a essere
+sistemati. Uno scarto isolato non basta a smuoverlo: conta la media su tante
+mosse giocate.
+
+Il voto sulla schermata successiva, poi, non lo chiede a sé stesso di adesso: lo
+chiede a una sua copia di qualche tempo prima, messa da parte e lasciata com'era.
+
+C'è anche una seconda strada, e il capitolo le percorre tutt'e due. Invece di
+dare un voto a ogni mossa e prendere il più alto, si allena direttamente la mano
+che sceglie, e la si sposta verso le mosse che nelle partite hanno reso di più.
 
 `````
 

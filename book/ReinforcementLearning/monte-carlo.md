@@ -38,12 +38,27 @@ I metodi **Monte Carlo** fanno questo, e la parola difficile non nasconde
 niente di più. L'agente gioca una partita dall'inizio alla fine, poi torna
 indietro con la matita e, per ogni situazione attraversata, si annota quanto
 ha raccolto **da lì in avanti**. Ripetuto molte volte, quel quaderno di
-annotazioni diventa la stima del valore di ogni situazione: basta fare la
-media di tutte le righe che parlano della stessa casella.
+annotazioni diventa la stima del valore di ogni situazione: si fa la media
+delle righe che parlano della stessa casella.
 
-Nessuna mappa, nessuna formula sull'ambiente: solo partite giocate e una
-media. Il prezzo è dichiarato subito: bisogna arrivare **alla fine** della
-partita prima di poter scrivere qualsiasi cosa.
+Una partita però può ripassare due volte per la stessa casella, e allora
+lascia due righe. Si tengono tutte e due, o si tiene solo la prima? Tenerle
+tutte sfrutta ogni riga scritta. In cambio le partite che
+girano in tondo lasciano molte righe a testa, e proprio per questo finiscono
+per pesare più delle altre: finché le partite sono poche, i due conti non
+danno lo stesso numero.
+
+Quanto ci si può fidare di una media dipende da quante partite ci sono
+dietro, e il conto è meno generoso di quanto si spererebbe: per dimezzare
+l'oscillazione servono quattro volte le partite. Con cento partite il numero
+balla ancora parecchio, e per farlo ballare la metà ce ne vogliono
+quattrocento, non duecento.
+
+Sul quaderno non finisce mai una stima: ogni riga è il conto dei punti che
+quella partita ha davvero portato a casa. Nessuna mappa, nessuna formula
+sull'ambiente: solo partite giocate e una media. Il prezzo è dichiarato
+subito: bisogna arrivare **alla fine** della partita prima di poter scrivere
+qualsiasi cosa.
 
 `````
 
@@ -77,9 +92,9 @@ in anticipo, ed è correlato con il numeratore, perché un episodio che passa
 molte volte per lo stesso stato contribuisce molte righe, e quelle righe non
 sono un campione qualunque dei ritorni possibili. È il classico
 stimatore-rapporto, dove l'attesa del rapporto non è il rapporto delle attese;
-di quanto e in che verso sbagli dipende dal problema, e il conto di poco più
-avanti, dove la variante a ogni visita dà un numero più alto dell'altra, ne è un
-esempio e non una regola. La distorsione svanisce al crescere degli episodi, e
+di quanto e in che verso sbagli dipende dal problema, e il conto sulle tre
+partite, dove la variante a ogni visita dà un numero più alto dell'altra, ne è
+un esempio e non una regola. La distorsione svanisce al crescere degli episodi, e
 la variante si estende meglio all'approssimazione di funzione
 {cite}`sutton2018reinforcement`.
 
@@ -200,8 +215,7 @@ compresi, e si chiama *a ogni visita*: per $s_0$ i numeri diventano cinque
 ($9 + 7{,}1 + 9 + 6{,}39 + 9 = 40{,}49$, diviso $5$ fa $8{,}098$) e per $s_1$
 quattro ($10 + 10 + 7{,}1 + 10 = 37{,}1$, diviso $4$ fa $9{,}275$). Da qui in
 avanti li scriveremo arrotondati alla seconda cifra, $7{,}50$ e $9{,}03$ da una
-parte, $8{,}10$ e $9{,}28$ dall'altra, ma i numeri veri sono questi, e sono
-quelli che stampa il codice più sotto.
+parte, $8{,}10$ e $9{,}28$ dall'altra, ma i numeri veri sono questi.
 
 `````
 
@@ -321,6 +335,23 @@ esplorare e sfruttare che la sezione sulle leve aveva isolato in apertura di
 capitolo, e qui si presenta nella forma più cruda: senza esplorazione, il
 metodo semplicemente non vede i dati che gli servirebbero.
 
+Ci sono due modi di tenere aperte le altre mosse. Uno è cominciare ogni
+partita da una situazione e da una mossa sorteggiate, così che prima o poi
+tocchi a tutte le combinazioni: negli scacchi si può fare, basta disporre i
+pezzi come si vuole, mentre su un'automobile o su un impianto no, perché la
+giornata comincia dove comincia e non la si può apparecchiare. L'altro
+funziona dappertutto: tenere da parte una quota di mosse tirate a sorte, nove
+volte su dieci la mossa che il quaderno dice migliore e una volta su dieci una
+qualunque, anche quella che sembra sciocca.
+
+Quella quota si paga, e il conto va detto subito. Un giocatore che una mossa
+su dieci la tira a sorte non giocherà mai la partita perfetta: arriva al
+meglio fra i giocatori che ogni tanto tirano a sorte, e quel meglio sta sotto
+al meglio in assoluto. Smettere di sorteggiare per giocare perfetto lo
+riporterebbe al punto di partenza, cieco su tutto quello che non prova. Una
+via d'uscita c'è: farsi portare le partite da qualcuno che tira a sorte, e
+usarle per giudicare un giocatore che invece non tira mai.
+
 `````
 
 `````{tab} Superiore
@@ -341,15 +372,12 @@ improvement theorem* continua a valere ristretto a questa classe, quindi
 l'alternanza valuta-migliora converge, ma converge alla migliore policy
 $\varepsilon$-soft, non alla migliore in assoluto {cite}`sutton2018reinforcement`.
 
-La rinuncia è reale, e la via d'uscita è il paragrafo seguente: separare la
-policy che **genera** i dati da quella che si sta **valutando**.
+La rinuncia è reale, e la via d'uscita è separare la policy che **genera** i
+dati da quella che si sta **valutando**.
 
 `````
 
 ## Imparare da una policy e giudicarne un'altra
-
-Ci sono due strategie in gioco: quella che vogliamo giudicare e quella che ha
-davvero giocato le partite che abbiamo in mano.
 
 Ci sono due strategie in gioco: quella che vogliamo giudicare e quella che ha
 davvero giocato le partite che abbiamo in mano. Se sono la stessa, cioè se si
@@ -362,39 +390,48 @@ versione precedente di sé stessi.
 
 `````{tab} Elementare
 
-Il problema è che i dati raccontano la storia sbagliata. Se il giocatore che
-ha lasciato le partite era prudente e la strategia che vuoi giudicare è
-audace, le partite audaci nell'archivio sono poche, e mediarle tutte allo
-stesso modo darebbe un giudizio sulla prudenza, non sull'audacia.
+Cento fogli di partita su uno scaffale, tutti dello stesso socio del circolo,
+uno che non rischia mai. Vuoi sapere come se la caverebbe uno spericolato, che
+lì non ha mai giocato: le sue partite in quell'archivio sono pochissime, e la
+media dei cento fogli dà il voto al prudente.
 
-Il rimedio è **pesare** le partite invece di contarle tutte uguali (in inglese
-si chiama *importance sampling*, e il nome vuol dire proprio questo: campionare
-tenendo conto di quanto ogni caso conta). Una partita che la strategia audace
-avrebbe giocato spesso e che il prudente ha giocato di rado vale molto, perché
-è rara e informativa; una partita tipica del prudente e che l'audace non
-farebbe mai vale poco o niente. Il peso è semplicemente il
-rapporto fra quanto era probabile quella sequenza di mosse per l'una e per
-l'altra.
+Allora si va foglio per foglio, scrivendo accanto a ognuno quanto conta. Vale
+molto la partita che lo spericolato avrebbe giocato spesso e il prudente quasi
+mai, rara e istruttiva; vale poco o niente quella tipica del prudente, che
+l'altro non farebbe mai. Quel numero è il **peso**, il rapporto fra quanto era
+probabile quella sequenza di mosse per l'uno e per l'altro (in inglese
+*importance sampling*: si campiona tenendo conto di quanto ogni caso conta). Una
+mossa che il prudente non ha mai provato non lascia fogli, e nessun peso li
+inventa.
 
-Una condizione però serve, ed è di buon senso: l'archivio deve **contenere**
-tutto ciò che la strategia da giudicare potrebbe fare. Se l'audace giocherebbe
-una mossa che il prudente non ha mai provato nemmeno una volta, di quella mossa
-non si può dire nulla, e nessun peso può inventare i dati mancanti.
+Sul foglio non c'è solo quello che i giocatori decidono: il dado che rotola, la
+carta che esce, l'avversario che sbaglia sono capitati una volta sola, identici
+per tutti e due, e nella frazione stanno sopra e sotto e si cancellano. Nel peso
+resta la sola parte scelta, e per questo non serve sapere niente di come
+funziona il gioco.
 
-Quanto pesano davvero quei pesi si vede con un conto piccolo. Poniamo che il
-prudente scelga fra due mosse tirando una monetina, e che l'audace sappia
-sempre quale vuole. Prendiamo una partita di tre mosse in cui la monetina ha
-indovinato per caso tutte e tre le volte la mossa dell'audace. L'audace quella
-partita l'avrebbe giocata **sempre**, cioè una volta su una; il prudente ci è
-arrivato per fortuna, e la sua fortuna vale una volta su due a ogni mossa, cioè
-$\frac12 \times \frac12 \times \frac12 = \frac18$, una volta su otto. Il peso è
-il rapporto fra le due: $1$ diviso $\frac18$ fa $8$, e quindi quella partita
-conta **otto volte tanto**. Se
-invece a un certo punto la monetina ha scelto una mossa che l'audace non
-farebbe mai, da lì in avanti quella partita non dice più niente sull'audace, e
-il suo peso va a zero. Ecco il difetto, in due righe: bastano poche mosse
-perché i pesi diventino minuscoli o enormi, ed è il motivo per cui giudicare le
-partite di un altro funziona bene su partite corte e traballa su quelle lunghe.
+Prendi un foglio di tre mosse. Il prudente sceglieva fra due mosse tirando una
+monetina, lo spericolato sa sempre quale vuole, e la monetina ha indovinato la
+sua tutte e tre le volte. Lui quella partita l'avrebbe giocata sempre, una volta
+su una; il prudente ci è arrivato per fortuna, una volta su due a ogni mossa,
+cioè $\frac12 \times \frac12 \times \frac12 = \frac18$, una volta su otto. Il
+peso è $1$ diviso $\frac18$, cioè $8$: quel foglio conta otto volte tanto.
+
+Se a metà foglio la monetina ha scelto una mossa che lo spericolato non farebbe
+mai, il peso va a zero, e a perderci è il pezzo scritto prima: quelle righe
+contano anche i punti presi dopo la mossa storta, che lui non avrebbe mai visto.
+Il seguito si salva: la mossa storta è alle spalle, e da lì si riprende a
+contare. Bastano poche mosse perché i pesi diventino minuscoli o enormi, ed è
+il guaio del metodo: sui fogli corti riesce, su quelli lunghi traballa.
+
+I pesi ballano, e allora conta anche come fai la media. Su dieci fogli uno pesa
+otto e nove pesano zero. Somma i punti pesati e dividi per dieci, cioè per i
+fogli che hai in mano: il voto esce tutto da quell'unico foglio, e col peso a
+mille invece che a otto verrebbe cento volte i punti di quella partita. Dividi
+per la somma dei pesi, otto in tutto, e il voto cade per forza fra il punteggio
+peggiore e il migliore che hai letto. Il primo modo azzecca in media il valore
+giusto, ma solo con moltissimi fogli; il secondo lo sbaglia un po’ e non
+impazzisce mai, ed è quello che si sceglie quasi sempre.
 
 `````
 
@@ -450,7 +487,7 @@ In pratica si preferisce quasi sempre il pesato
 {cite}`sutton2018reinforcement`.
 
 Un esempio piccolo rende concreto il numero. Supponiamo che $b$ scelga fra due
-azioni tirando una moneta ($b = 0{,}5$ per entrambe) e che $\pi$ sia
+azioni tirando una moneta ($b(a\mid s) = 0{,}5$ per entrambe) e che $\pi$ sia
 deterministica. Una partita di tre mosse in cui $b$ ha per caso scelto ogni
 volta l'azione che anche $\pi$ avrebbe scelto ha peso
 
@@ -460,8 +497,10 @@ $$
 
 Per $\pi$ quella traiettoria è otto volte più probabile che per $b$, e quindi
 conta otto volte tanto. Se invece a un certo punto $b$ ha scelto un'azione che
-$\pi$ non sceglierebbe mai, il fattore diventa $0$ e l'intera partita, da
-quell'istante in poi, esce dal conto. Si vede subito anche il difetto: bastano
+$\pi$ non sceglierebbe mai, ogni prodotto che contiene quella mossa vale $0$:
+escono dal conto le visite che la precedono, mentre quelle successive
+continuano a pesare, perché il loro prodotto comincia più tardi. Si vede subito
+anche il difetto: bastano
 poche mosse perché i pesi diventino minuscoli o enormi, ed è il motivo per cui
 l'off-policy su traiettorie lunghe è fragile.
 
@@ -579,9 +618,10 @@ dedicata a lei.
   la strategia da giudicare potrebbe fare.
 - I pesi però sono fragili: bastano poche mosse perché diventino minuscoli o
   enormi (tre mosse tirate a sorte e indovinate pesano già otto volte tanto, e
-  una sola mossa che la strategia da giudicare non farebbe mai manda a zero
-  tutto il resto della partita). Giudicare le partite di un altro funziona
-  bene sulle partite corte, e diventa traballante su quelle lunghe.
+  una sola mossa che la strategia da giudicare non farebbe mai cancella dal
+  conto tutto il tratto di partita che la precede). Giudicare le partite di un
+  altro funziona bene sulle partite corte, e diventa traballante su quelle
+  lunghe.
 ```
 
 `````

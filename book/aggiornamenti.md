@@ -38,6 +38,18 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-10-1)=
+
+## 1.10.1 · 22 agosto 2026
+
+### Correzioni
+
+- **I due livelli raccontano la stessa struttura, in tutto il libro.** Una rilettura di tutte le coppie di schede ha rimesso nella scena del livello elementare le mosse che stavano soltanto in quello superiore: la condizione che fa valere una garanzia, il caso in cui un metodo si rompe, il conto che il testo commenta. Dove l'esempio illustrava il risultato senza rifare i passaggi, adesso li rifà.
+- **Errori di merito, trovati rieseguendo i conti.** Il Davies-Bouldin si minimizza, e stava in fila con due indici che si massimizzano; la perplessità scende quando la frase diventa più prevedibile, non sale; la proiezione di un vettore su un altro non è il prodotto scalare; per una convoluzione il costo per pixel è esattamente il numero dei pesi; e il `top_p` sceglie quanta parte della classifica resta in gara, non quanti candidati.
+- **Ipotesi che mancavano accanto alle formule.** Una mistura di due gaussiane fa due gobbe solo se i centri distano più di due deviazioni standard; la simmetria di Shapley chiede meno di quanto il testo dichiarasse; nelle reti su grafo l'equivarianza vuole anche l'indipendenza dall'ordine dei vicini, non i soli pesi condivisi; e la catena degli errori di un modello linguistico presuppone che ogni passo rischi quanto gli altri.
+- {doc}`AI responsabile </AIResponsabile/overview>`. **Il paradosso dell'equità si legge per intero anche al primo livello.** Nel caso COMPAS le due parti avevano ragione tutte e due, e il conflitto nasce dalle frequenze diverse nei due gruppi: nessun programma scritto meglio le mette d'accordo. La scena del tribunale adesso arriva fin lì, invece di fermarsi al primo conto.
+- **Una lettera, un mestiere.** Decine di simboli che ne facevano due nella stessa pagina sono stati rinominati: la sequenza di token e il vettore continuo da cui nasce, la latenza e la durata, il modello bozza e l'intero quantizzato, la precisione e la probabilità.
+
 (v1-10-0)=
 
 ## 1.10.0 · 20 agosto 2026

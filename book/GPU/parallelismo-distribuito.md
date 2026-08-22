@@ -105,30 +105,49 @@ nome preciso.
 
 `````{tab} Elementare
 
-Immagina le schede disposte in cerchio, come persone attorno a un tavolo,
-ognuna con la propria lista di numeri da sommare a quella delle altre. Invece
-di gridare tutti verso una persona sola (che non riuscirebbe mai a stare dietro
-a tutti) ciascuno parla **solo col vicino di destra**: gli passa un pezzetto
-della somma parziale, riceve un pezzetto dal vicino di sinistra, e così via
-finché il giro non si chiude. A quel punto ciascuno ha finito **un pezzo** del
-totale, non il totale intero: perché tutti abbiano tutto se ne fa un secondo
-giro, uguale al primo, in cui i pezzi già finiti si passano di mano in mano.
-Due giri, quindi, non uno: chi vuole tenere il conto di quanti dati si
-spediscono deve ricordarsi di contarli due volte.
+Otto persone attorno a un tavolo, una per scheda, ognuna con la propria lista
+di numeri. Alla fine il totale deve stare in mano a tutti.
 
-Il bello è che nessuno è mai sovraccarico, e che aggiungere gente non peggiora
-le cose. Il motivo si vede con un conto in testa: se le persone raddoppiano, la
-lista viene tagliata in pezzetti che sono la metà, e ciascuno ne passa il
-doppio; il numero di passaggi cresce, la quantità di roba che ciascuno spedisce
-resta quella. Con quattro persone o con quaranta, ogni scheda manda in giro
-all'incirca due volte la propria lista, e non di più.
+Il modo ovvio è dettare le liste a una persona sola, che somma e ridetta il
+risultato agli altri. Quella persona diventa un imbuto. Più gente siede al
+tavolo, più roba le arriva addosso, e gli altri aspettano il proprio turno di
+parola.
 
-Questa danza si chiama *ring all-reduce* ed è il motivo per cui il
-parallelismo dati regge bene su tante schede. Il limite è un altro, e nasce
-dalla parola «copia»: nell'analogia, oltre ai numeri da sommare, ciascuno ha
-davanti a sé anche una copia intera del manuale con cui lavora, cioè il
-modello. Finché è un opuscolo va bene. Quando diventa un elenco telefonico da
-mille pagine, non c'è tasca che tenga.
+L'altra via non ha nessuno al centro. Le persone si dispongono in cerchio e
+ciascuna parla solo col vicino di destra. Gli passa un pezzetto di somma,
+riceve un pezzetto da sinistra, lo somma al proprio e lo manda avanti. Chiuso
+il giro, ognuno ha finito un pezzo solo del totale, e allora se ne fa un
+secondo, uguale al primo, in cui i pezzi già pronti girano finché tutti li
+hanno tutti. Due giri, non uno, e ogni passaggio è roba spedita.
+
+Nessuno però è mai sovraccarico. In quattro, ciascuno taglia la propria lista
+in quattro pezzetti e nei due giri ne spedisce tre più tre: sei quarti, cioè
+1,5 volte la lista intera. In otto, sette più sette, 1,75 volte. In quaranta,
+trentanove più trentanove, 1,95 volte. Raddoppiando il tavolo i pezzetti si
+dimezzano mentre i passaggi raddoppiano, e le due cose si annullano. Chiunque
+sieda al tavolo manda in giro poco meno di due volte la propria lista, mai di
+più. I pezzetti poi partono appena sono pronti, mentre si sta ancora sommando
+il resto, e il tempo del giro si nasconde dentro il tempo del conto.
+
+A pagare è il giro in sé. In quaranta il foglio cambia di mano quasi ottanta
+volte, e prima di ogni consegna c'è l'attimo in cui uno alza la testa e cerca
+il vicino. Al tavolo da otto quell'attimo non si nota. In quaranta pesa più
+della roba spedita, e il cerchio si scioglie. Le persone si dispongono ad
+albero, ognuna riceve da due e passa a una sola, e le mani da attraversare
+diventano una manciata invece di ottanta.
+
+Un difetto il cerchio se lo porta dietro sempre, e va al passo del più lento.
+Se uno si alza a rispondere al telefono, chi viene dopo resta col foglio in
+mano e dietro si ferma tutta la fila. La persona sola al centro questo difetto
+non ce l'ha, perché chi arriva tardi consegna tardi e intanto gli altri vanno
+avanti. Con qualcuno molto più lento degli altri, o che ogni tanto si alza,
+tenere una persona al centro ha ancora senso.
+
+Questa danza si chiama *ring all-reduce*, ed è il motivo per cui il
+parallelismo dati regge bene su tante schede. Il limite arriva da un'altra
+parola, «copia». Oltre alla lista da sommare, ciascuno tiene davanti a sé il
+manuale intero con cui lavora, cioè il modello. Finché è un opuscolo va bene.
+Quando diventa un elenco telefonico da mille pagine, non c'è tasca che tenga.
 
 `````
 
@@ -146,8 +165,8 @@ proprio quella latenza, proporzionale a $K$, il motivo per cui a molti nodi
 NCCL abbandona l'anello per schemi ad albero (*double binary tree*), che la
 contengono senza sacrificare la banda.
 
-Vale la pena dire da che cosa l'anello ha preso il posto, perché il confronto
-spiega la sua fortuna. Lo schema precedente era il **parameter server**
+L'anello ha preso il posto di un altro schema, e il confronto spiega la sua
+fortuna. Quello di prima era il **parameter server**
 {cite}`li2014parameterserver`: uno o
 più nodi dedicati custodiscono i pesi, tutti gli altri ci mandano i gradienti e
 ne rileggono i pesi aggiornati. È semplice, sopporta bene i lavoratori lenti
@@ -188,20 +207,33 @@ calcola la propria fetta del risultato. È il secondo pannello di
 
 Due contabili devono sommare le colonne di un registro gigantesco. Copiare
 l'intero registro a entrambi sarebbe uno spreco: meglio strapparlo a metà per
-il lungo, le prime colonne a uno e le ultime all'altro. Ciascuno somma la sua
-metà, in parallelo, e poi i due si scambiano i risultati parziali per rimetterli
-insieme. Nessuno dei due ha mai avuto l'intero registro in mano: sta metà in
-una testa e metà nell'altra. È così che si fa girare uno strato che, intero,
-non entrerebbe in una scheda sola.
+il lungo, le prime colonne a uno e le ultime all'altro. Le ricevute da
+riportare restano le stesse per tutti e due, e ognuno le ha tutte sotto gli
+occhi: quello che cambia è la metà di registro in cui ciascuno le scrive.
+Ciascuno somma la sua metà, in parallelo, e poi i due si scambiano i risultati
+parziali per rimetterli insieme. Nessuno dei due ha mai avuto l'intero registro
+in mano: sta metà in una testa e metà nell'altra. È così che si fa girare uno
+strato che, intero, non entrerebbe in una scheda sola.
 
-Il punto delicato è che quello scambio non avviene una volta sola alla fine. Il
-totale di ogni pagina serve per cominciare la pagina dopo, quindi i due
-contabili devono fermarsi, mettere insieme i pezzi e ripartire **a ogni
-pagina**: e un modello di pagine ne ha decine, una per strato. Finché i due
-sono seduti allo stesso tavolo, passarsi un foglio non costa quasi niente. Se
-sono in due edifici diversi, quel fermarsi continuo diventa la voce di spesa
-principale. Per questo tagliare i tabelloni conviene solo fra schede vicine,
-unite da una linea diretta velocissima.
+Il verso dello strappo non si sceglie a caso. Prima di riportare un totale alla
+pagina dopo si passa sulle voci una per una, per applicare uno sconto: col
+registro strappato per il lungo, quel ritocco ciascuno lo fa sulle proprie voci
+senza chiedere niente all'altro, e per rimettere insieme i conti i due si
+fermano una volta sola per pagina. Strappato per il verso sbagliato,
+dovrebbero riunire i pezzi prima dello sconto e ridividerli dopo: due soste al
+posto di una, con gli stessi conti da fare.
+
+Quella sosta, poi, non arriva una volta sola alla fine. Il totale di ogni
+pagina serve per cominciare la pagina dopo, quindi i due contabili devono
+fermarsi, mettere insieme i pezzi e ripartire **a ogni pagina**: e un modello
+di pagine ne ha decine, una per strato. E nessuno dei due, nel frattempo, può
+portarsi avanti con altro lavoro: quello che deve scrivere dipende proprio dal
+foglio in arrivo.
+
+Finché i due sono seduti allo stesso tavolo, passarsi un foglio non costa quasi
+niente. Se sono in due edifici diversi, quel fermarsi continuo diventa la voce
+di spesa principale. Per questo tagliare i tabelloni conviene solo fra schede
+vicine, unite da una linea diretta velocissima.
 
 `````
 
@@ -248,17 +280,17 @@ pannello di {numref}`fig-parallelismo-strategie`. È l'idea di **GPipe**
 
 `````{tab} Elementare
 
-È una catena di montaggio. La prima postazione monta il telaio, lo passa alla
-seconda che aggiunge il motore, poi alla terza per la carrozzeria. C'è però un
-problema evidente: se in fabbrica entra **una sola** automobile, mentre la
-prima postazione lavora le altre due stanno con le mani in mano, e quando
-l'auto arriva in fondo la prima è già ferma. Tre operai, ma quasi sempre uno
-solo lavora. Il rimedio è non mandare un'auto sola, ma un flusso continuo:
-appena la prima postazione ha finito il telaio di un'auto e l'ha passato
-avanti, comincia subito quello dell'auto successiva. Presto tutte e tre le
-postazioni lavorano insieme, ciascuna su un'auto diversa. Nel modello le
-«auto» sono pezzetti del mazzetto di esempi, i **micro-batch**, che si fanno
-scorrere lungo gli strati.
+È una catena di montaggio. La prima postazione monta il telaio, la seconda
+aggiunge il motore, la terza la carrozzeria, la quarta vernicia e collauda.
+C'è però un problema evidente: se in fabbrica entra **una sola** automobile,
+mentre la prima postazione lavora le altre tre stanno con le mani in mano, e
+quando l'auto arriva in fondo la prima è ferma da un pezzo. Quattro operai, ma
+a ogni istante ne lavora uno. Il rimedio è non mandare un'auto sola, ma un
+flusso continuo: appena la prima postazione ha finito il telaio di un'auto e
+l'ha passato avanti, comincia subito quello dell'auto successiva. Presto tutte
+e quattro le postazioni lavorano insieme, ciascuna su un'auto diversa. Nel
+modello le «auto» sono pezzetti del mazzetto di esempi, i **micro-batch**, che
+si fanno scorrere lungo gli strati.
 
 Il tempo iniziale in cui le postazioni si riempiono, e quello finale in cui si
 svuotano, è tempo sprecato. Ha un nome che viene dal disegno con cui si
@@ -268,6 +300,23 @@ due sacche vuote, e quelle sacche si chiamano **bolla**. Quanto costa la bolla
 si conta: con quattro postazioni e una macchina sola se ne va in fumo il 75%
 del tempo, con trentadue macchine in fila si scende sotto il 9%. Più
 micro-batch si mandano di seguito, più la bolla si assottiglia.
+
+Assottigliarla costa, e costa in due modi. Le auto non si possono
+rimpicciolire all'infinito: sotto una certa taglia ogni postazione passa più
+tempo ad attrezzarsi che a lavorare. E ogni auto in viaggio lascia dietro di sé
+appunti da conservare, perché a fine corsa la fila si ripercorre all'indietro:
+è il ripasso con cui il modello impara dai propri errori, e per farlo ciascuna
+postazione deve rivedere il lavoro che ha fatto all'andata. Tenere tutti gli
+appunti di tutte le auto in viaggio riempirebbe il magazzino. Se ne tiene
+allora uno solo per auto, il foglio che passa da una postazione all'altra; il
+resto si butta, e al ritorno ogni postazione rifà i propri conti da capo per
+ritrovare quel che le serve. Rifare un conto costa tempo, tenerlo da parte
+costa spazio: quando
+a mancare è lo spazio, si sceglie di rifarlo.
+
+Fra una postazione e l'altra, comunque, passa solo l'auto a metà montaggio, non
+il magazzino dei pezzi. È poca roba, e per questo le postazioni possono anche
+stare in capannoni diversi, collegati da una strada normale.
 
 `````
 
@@ -297,8 +346,8 @@ secondo contributo dell'articolo accanto ai micro-batch, quello che abbassa il
 picco di memoria da «tutte le attivazioni di tutti gli strati» a «quelle di uno
 stadio solo, per un micro-batch solo». È lo stesso baratto calcolo-per-memoria
 del *gradient checkpointing* e della sezione precedente su FlashAttention: la
-stessa mossa, sotto tre nomi diversi. Vale infine la pena sapere che i sistemi
-di oggi non usano più lo scheduling di GPipe ma quello **1F1B** (un `forward` e
+stessa mossa, sotto tre nomi diversi. I sistemi di oggi, infine, non usano più
+lo scheduling di GPipe ma quello **1F1B** (un `forward` e
 un `backward` alternati, da PipeDream e Megatron), che a parità di bolla tiene
 in volo $p$ micro-batch invece di $m$, e quindi ne conserva anche meno.
 
@@ -330,18 +379,42 @@ questa famiglia di tecniche.
 
 `````{tab} Elementare
 
-Torniamo agli insegnanti che correggono i compiti. Nel parallelismo dati
-ognuno teneva in tasca una fotocopia *completa* della griglia di valutazione:
-comodo, ma se la griglia è un tomo di mille pagine, tenerne una copia intera a
-testa è uno spreco enorme di zaini. L'alternativa: se gli insegnanti sono otto,
-si strappa il tomo in otto fascicoli e ognuno ne porta uno solo. Quando arriva
-la domanda la cui regola sta a pagina 700, l'insegnante che non ce l'ha la
-chiede al collega che tiene quel fascicolo, se la fa fotocopiare *giusto per
-quella correzione*, e appena finito butta la fotocopia. Un po’ più di viavai tra
-colleghi, in cambio di zaini otto volte più leggeri. È così che modelli enormi
-riescono a girare su GPU «normali»: nessuna scheda tiene mai il modello intero,
-solo la sua fetta, radunando i pezzi che servono un attimo prima di usarli e
-liberandoli subito dopo.
+Torniamo agli insegnanti che correggono i compiti. Nello zaino ciascuno porta
+tre cose: la griglia di valutazione, cioè le regole con cui si corregge; il
+foglio delle correzioni appena fatte; e un quadernetto in cui tiene nota di
+com'è andata ogni domanda nelle ultime settimane, che serve a decidere quanto
+pesare la correzione di oggi. Nel parallelismo dati ognuno teneva in tasca una
+fotocopia *completa* di tutte e tre. Comodo, ma se la griglia è un tomo di
+mille pagine, tenerne una copia intera a testa è uno spreco enorme di zaini.
+
+Si strappa, allora, e si strappa in tre tempi. Prima il quadernetto: se gli
+insegnanti sono otto se ne tiene un ottavo a testa, e nessuno se ne accorge,
+perché quelle pagine ognuno le guarda soltanto per le domande che gli toccano.
+Poi il foglio delle correzioni, stessa storia. Questi due strappi non
+aggiungono un solo viaggio fra colleghi: quello che a fine turno girava attorno
+al tavolo continua a girare uguale, e intanto lo zaino si è già alleggerito.
+Non c'è ragione di rinunciarci.
+
+Il terzo strappo è quello che si paga, ed è anche quello che serve davvero: si
+strappa la griglia. Otto fascicoli, uno per insegnante. Quando arriva la
+domanda la cui regola sta a pagina 700, l'insegnante che non ce l'ha la chiede
+al collega che tiene quel fascicolo, se la fa fotocopiare *giusto per quella
+correzione*, e appena finito butta la fotocopia. Adesso i viaggi aumentano:
+dove prima se ne facevano due se ne fanno tre, una volta e mezza. In cambio lo
+zaino pesa otto volte meno. E i fascicoli vanno tagliati sottili: farsi
+fotocopiare mezzo tomo per una domanda sola tornerebbe a riempire il banco, e
+il guadagno sparirebbe.
+
+Quel viaggio in più quasi non si sente, perché la richiesta si fa in
+anticipo: mentre si corregge la domanda di adesso si chiede già il fascicolo
+della prossima, e la fotocopia arriva mentre la penna è ancora sul foglio. Il
+conto cambia se il collega sta in un altro edificio: allora chiedere in
+anticipo non basta a coprire il viaggio, si finisce di correggere e si resta lì
+ad aspettare.
+
+È così che modelli enormi riescono a girare su GPU «normali»: nessuna scheda
+tiene mai il modello intero, solo la sua fetta, radunando i pezzi che servono
+un attimo prima di usarli e liberandoli subito dopo.
 
 `````
 
@@ -357,15 +430,18 @@ temporaneamente i pesi completi; subito dopo l'uso, la GPU li *ri-spartisce*
 (scarta i pezzi non suoi), liberando memoria; nel `backward` la stessa cosa
 avviene per i gradienti, ridistribuiti con un *reduce-scatter*.
 
-Sul prezzo in comunicazione va detta la cosa che di solito si dà per scontata
-al contrario: i **primi due stadi sono gratis**. Spartire gli stati
+Sul prezzo in comunicazione la sorpresa sta in cima all'elenco: i **primi due
+stadi sono gratis**. Spartire gli stati
 dell'ottimizzatore e i gradienti «incurs no additional communication» rispetto
 al parallelismo dati puro, scrive l'articolo, a fronte di un risparmio di
 memoria fino a otto volte. Non c'è quindi un motivo
 per non accenderli. A pagare è solo il terzo stadio, quello di FSDP, e paga una
-cifra precisa: $1{,}5\times$ la comunicazione del parallelismo dati, perché
-all'all-reduce dei gradienti si aggiungono gli all-gather dei parametri in
-avanti e all'indietro. Anche così è quasi sempre un buon affare, perché quella
+cifra precisa: $1{,}5\times$ la comunicazione del parallelismo dati. Il conto
+sta in tre passaggi contro due: l'all-reduce dei gradienti ne vale due (un
+reduce-scatter e un all-gather) e qui si riduce al solo reduce-scatter, perché
+a ogni GPU serve soltanto la fetta di gradiente che le compete; in cambio i
+parametri vanno radunati con un all-gather nel `forward` e con un altro nel
+`backward`. Anche così è quasi sempre un buon affare, perché quella
 comunicazione si sovrappone al calcolo. In codice, FSDP somiglia molto a DDP:
 si lancia con `torchrun` e il training loop resta identico.
 
@@ -409,11 +485,11 @@ dentro un tabellone, lungo la fila degli strati) l'uso ha chiamato la
 combinazione **3D parallelism**, come i tre assi di uno spazio.
 
 A decidere quale strategia va dove c'è una domanda sola: **quanto spesso le
-schede devono fermarsi a parlarsi**. Prima però va detta la cosa che rende
-quella domanda sensata, perché è la stessa mossa dell'occupancy vista
-all'inizio del capitolo: mandare dati e fare conti sono due attività distinte e
-possono avvenire *insieme*, quindi una comunicazione che parte mentre la scheda
-sta ancora calcolando non si paga quasi. Si paga invece quella che obbliga
+schede devono fermarsi a parlarsi**. Quella domanda ha senso per la stessa
+ragione dell'occupancy vista all'inizio del capitolo: mandare dati e fare conti
+sono due attività distinte e possono avvenire *insieme*, quindi una
+comunicazione che parte mentre la scheda sta ancora calcolando non si paga
+quasi. Si paga invece quella che obbliga
 tutti a incrociare le braccia finché non è finita.
 
 Da qui la distribuzione. Il tensor parallelism sta **dentro** ogni nodo: a ogni
@@ -469,9 +545,9 @@ entra, è da lì che si comincia.
   attorno al tavolo (uno per completare i pezzi, uno per distribuirli), così che
   nessuna faccia da imbuto. Il limite sta nella parola «copia»: ogni scheda deve
   tenere in tasca l'elenco telefonico intero.
-- **Tagliare le matrici per il lungo** (i paragrafi qui sopra la chiamano con il
-  nome inglese, *tensor parallelism*, perché una traduzione italiana non ha mai
-  preso piede) {cite}`shoeybi2019megatron`: è il registro strappato a metà, ogni
+- **Tagliare le matrici per il lungo** (in inglese *tensor parallelism*, perché
+  una traduzione italiana non ha mai preso piede)
+  {cite}`shoeybi2019megatron`: è il registro strappato a metà, ogni
   scheda tiene mezzo tabellone di numeri, calcola la sua parte e poi si scambia i
   risultati parziali con le altre. Le schede però devono parlarsi a ogni strato e
   aspettarsi a vicenda, quindi conviene solo fra schede vicine, unite da una

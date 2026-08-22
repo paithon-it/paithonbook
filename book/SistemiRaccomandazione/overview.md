@@ -106,9 +106,11 @@ di quanto sembri.
 `````{tab} Elementare
 
 Il **feedback esplicito** è quando dichiari il tuo giudizio: le cinque stelle
-su un film, il pollice in su, la recensione. È chiaro ma raro: quasi nessuno
-vota. Pensa a te stesso: quante cose hai guardato o comprato quest'anno, e
-quante ne hai *recensite*?
+su un film, il pollice in su, la recensione. È chiaro ma raro: quante cose hai
+guardato o comprato quest'anno, e quante ne hai *recensite*? E quelle poche
+stelle arrivano quasi tutte dallo stesso posto: un film lo voti dopo averlo
+scelto, e l'avevi scelto perché pensavi ti sarebbe piaciuto. Chi legge quei
+voti legge il parere di gente che partiva ben disposta.
 
 Il **feedback implicito** è tutto ciò che fai senza pensare di stare
 giudicando: i click, gli acquisti, i minuti di visione, i brani saltati dopo
@@ -118,7 +120,8 @@ cronologia rivela le serie poliziesche. Ha però un difetto: è ambiguo. Un
 click non è una promozione (magari il film ti ha deluso), e un film ignorato
 non è una bocciatura: forse non l'hai mai visto passare. Nei sistemi veri è
 l'implicito a farla da padrone, perché ce n'è tantissimo; ma proprio perché è
-ambiguo va maneggiato con più cautela.
+ambiguo va maneggiato con più cautela. E cambia la domanda: senza stelle da
+prevedere, resta da decidere quale titolo mettere in cima alla vetrina.
 
 `````
 
@@ -184,13 +187,21 @@ La terza è la più insidiosa: **il sistema influenza i dati che raccoglie**.
 
 `````{tab} Elementare
 
-Immagina un cameriere che consiglia sempre gli stessi tre piatti. Dopo un
-mese, i piatti più ordinati del ristorante saranno... quei tre. Se il
-ristoratore guardasse le ordinazioni per capire cosa piace ai clienti,
-concluderebbe che i tre piatti sono i favoriti, ma è una profezia che si
-autoavvera: i clienti hanno scelto nel menù che il cameriere ha proposto. I
-sistemi di raccomandazione vivono in questo cerchio: ciò che mostri determina
-ciò che viene cliccato, e ciò che viene cliccato determina ciò che mostrerai.
+Un cameriere consiglia sempre gli stessi tre piatti. Dopo un mese, i piatti più
+ordinati del ristorante saranno... quei tre. Se il ristoratore guardasse le
+ordinazioni per capire cosa piace ai clienti, concluderebbe che i tre piatti
+sono i favoriti, ma è una profezia che si autoavvera: i clienti hanno scelto
+dentro il menù che il cameriere ha proposto, e le ordinazioni del mese gli
+danno una ragione in più per riproporli. I sistemi di raccomandazione vivono in
+questo cerchio: ciò che mostri determina ciò che viene cliccato, e ciò che
+viene cliccato determina ciò che mostrerai.
+
+Uscirne si può, ma ogni strada ha un prezzo. Per sapere com'è il quarto piatto
+bisogna portarlo a qualcuno che non l'ha chiesto, e quel qualcuno cenerà peggio
+perché il locale aveva bisogno di saperlo. Oppure si aggiustano i conti a
+tavolino, contando di più le ordinazioni dei piatti che il cameriere proponeva
+di rado: al tavolo non cambia niente, ma bisogna sapere quante volte ciascun
+piatto è stato proposto, e quel registro nessuno lo tiene da sé.
 
 `````
 
@@ -253,7 +264,9 @@ smette di essere un consiglio.
 - **Il sistema si fabbrica da solo i dati con cui impara**: mostra quello che
   ha scelto lui, e ciò che mostra è ciò che verrà cliccato. È il cameriere che
   consiglia sempre gli stessi tre piatti, ed è il problema che questo capitolo
-  si porta dietro fino all'ultima riga.
+  si porta dietro fino all'ultima riga. Uscirne si può, ma non gratis: per
+  sapere com'è il quarto piatto bisogna portarlo a qualcuno che non l'ha
+  chiesto.
 ```
 
 `````

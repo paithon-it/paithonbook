@@ -40,22 +40,22 @@ di Ferragosto, l'effetto di una promozione. Una rete neurale può impararli
 *una volta sola* guardando tutti i negozi insieme, e poi applicarli anche al
 negozio aperto il mese scorso, che da solo non avrebbe abbastanza storia.
 
-Il deep learning conviene quando ricorrono quattro condizioni: hai **tante
-serie collegate** fra loro; le relazioni sono **non lineari** (una promozione
-raddoppia le vendite solo sotto una certa soglia di prezzo); ci sono **fattori
-esterni** che aiutano a prevedere (meteo, festività, prezzo); e vuoi non un
-singolo numero ma una **stima dell'incertezza**. Se invece hai una sola serie,
-pulita e lunga, i classici restano spesso la scelta migliore, e comunque la
-prima da provare.
+Il deep learning conviene quando ricorrono quattro condizioni, e la catena le
+ha tutte: **tante serie collegate** fra loro; relazioni **non lineari** (una
+promozione raddoppia le vendite solo sotto una certa soglia di prezzo);
+**fattori esterni** che aiutano a prevedere (meteo, festività, prezzo); e il
+bisogno di una **stima dell'incertezza** invece di un numero solo, perché chi
+ordina la merce deve sapere di quanto rischia di sbagliare. Se invece hai una
+sola serie, pulita e lunga, i classici restano spesso la scelta migliore, e
+comunque la prima da provare.
 
 Le famiglie, però, non sono due. I metodi classici e le reti provano a
-indovinare, ciascuno a modo suo, la **regola** con cui un giorno genera il
-successivo; ce n'è una terza che sta in mezzo e che vale la pena conoscere prima
-di passare alle reti, perché su moltissimi problemi aziendali basta. Fa una cosa
-diversa da tutte e due: prende il calendario e ci
-disegna sopra una curva, sommando pezzi che si possono guardare uno per uno. Una
-tendenza di fondo, che è una linea spezzata (una retta che ogni tanto cambia
-pendenza, come una strada che sale e a un certo punto sale meno). Una o più
+indovinare, ciascuno a modo suo, la regola con cui un giorno genera il
+successivo; una terza sta in mezzo, e su moltissimi problemi aziendali basta.
+Prende il calendario e ci disegna sopra una curva, sommando pezzi che si
+possono guardare uno per uno. Una tendenza di fondo, che è una linea spezzata
+(una retta che ogni tanto cambia pendenza, come una strada che sale e a un
+certo punto sale meno: dove cambiarla lo decide guardando i dati). Una o più
 stagionalità, disegnate con le poche onde regolari (seno e coseno) che la
 sezione sulle feature ha appena introdotto, e possono essercene due
 sovrapposte, la settimana lavorativa e il ciclo annuale insieme. E gli effetti
@@ -64,14 +64,15 @@ delle **festività**, che sono strappi su date dichiarate a mano.
 Il programma più usato di questa famiglia si chiama **Prophet** ed è stato
 pubblicato nel 2018 da due ricercatori di Facebook, Sean Taylor e Benjamin
 Letham {cite}`taylor2018forecasting`. La sua fortuna si spiega in fretta: si
-costruisce sui dati in un attimo, non si rompe se mancano dei giorni o se c'è un
-valore assurdo, e ogni pezzo si può mostrare a chi non fa questo mestiere.
+costruisce sui dati in un attimo, e ogni pezzo si può mostrare a chi non fa
+questo mestiere.
 
-C'è però una differenza di fondo dalle altre due famiglie, e conviene tenerla a
-mente perché spiega insieme il pregio e il limite: qui **il valore di domani non
-dipende dal valore di oggi**. Dipende solo dalla data. È una curva tirata sui
-punti, non una catena di giorni che si tengono per mano. Per questo i buchi non
-rompono niente (non c'è nessuna catena da interrompere), e per questo su una
+C'è però una differenza di fondo dalle altre due famiglie, e spiega insieme il
+pregio e il limite: qui il valore di domani non dipende dal valore di oggi.
+Dipende solo dalla data. È una curva tirata sui
+punti, non una catena di giorni che si tengono per mano. Per questo i buchi nei
+dati e i valori assurdi non rompono niente (non c'è nessuna catena da
+interrompere), e per questo su una
 serie in cui oggi somiglia molto a ieri il metodo butta via proprio
 l'informazione più preziosa, e perde contro un ARIMA banale.
 
@@ -96,7 +97,7 @@ stima puntuale.
 
 L'onestà impone il rovescio della medaglia. Con **poche** serie o serie
 **corte** il regime dati non regge la varianza di un modello ad alta capacità,
-e i metodi statistici (robusti, frugali, interpretabili), tengono il campo,
+e i metodi statistici (robusti, frugali, interpretabili) tengono il campo,
 come mostrano ripetutamente le competizioni M discusse nell'introduzione al
 capitolo. La regola resta quella: si batte prima la linea di base classica,
 poi si tira in ballo la rete.
@@ -111,13 +112,13 @@ y(t) = g(t) + s(t) + h(t) + \varepsilon_t ,
 $$
 
 con $g$ una tendenza lineare **a tratti**, i cui punti di svolta sono stimati
-dai dati (è la notazione dell'articolo, e vale per questo paragrafo: il
-$g_\theta$ di DeepAR, più avanti, è un'altra cosa); $s$ una somma di **serie di
+dai dati (è la notazione dell'articolo: questa $g$ non ha niente a che vedere
+con il $g_\theta$ di DeepAR); $s$ una somma di **serie di
 Fourier troncate** a $K$ armoniche (le stesse colonne $\sin(2\pi kt/m)$ e
 $\cos(2\pi kt/m)$ della sezione sulle feature, il che permette di sovrapporre
 più periodi e di regolare la flessibilità scegliendo $K$); $h$ gli effetti
-puntuali su date dichiarate (è la notazione dell'articolo: qui $h(t)$ è una
-funzione del tempo, non l'orizzonte di previsione che il capitolo chiama $h$);
+puntuali su date dichiarate (è la notazione dell'articolo: $h(t)$ è una
+funzione del tempo, non l'orizzonte di previsione che $h$ indica altrove);
 e $\varepsilon_t$ il residuo. Il modello è scritto in forma bayesiana, ma di
 norma la stima si ferma al **massimo a posteriori** invece di campionare
 l'intera distribuzione. Anche gli intervalli non vengono da una formula chiusa:
@@ -162,10 +163,9 @@ catena, rimettendole dentro le sue stesse previsioni: è la strategia
 
 Il secondo: una prima rete legge tutta la storia e ne fa un riassunto, una
 seconda srotola da quel riassunto l'intera settimana futura in un colpo solo. È
-lo stesso schema con cui si traduce una frase, ed è proprio da lì che nel
-trattamento del linguaggio è nata l'idea che vedremo più avanti in questa
-sezione: lasciare che il modello decida da sé a quali pezzi del passato dare
-peso.
+lo stesso schema con cui si traduce una frase, ed è proprio da lì che, nel
+trattamento del linguaggio, è nata l'idea di lasciare che il modello decida da
+sé a quali pezzi del passato dare peso.
 
 Ci sono però due guai, e nel forecasting pesano più che altrove. Il primo è che
 la memoria di queste reti **si consuma**: più il passato è lontano, meno ne
@@ -239,15 +239,19 @@ raccolga $2^3 = 8$: quanto passato arriva a un singolo nodo di uscita si chiama
 
 `````{tab} Elementare
 
-Pensa di ripercorrere un diario, ma con una regola: puoi guardare solo le pagine
-*già scritte*, mai quelle future. Questa è la causalità. Per abbracciare mesi di
-diario senza rileggere ogni singolo giorno, procedi a salti sempre più larghi:
-il primo strato guarda ieri e oggi, il secondo salta di due giorni, il terzo di
-quattro, il quarto di otto. In pochi salti che raddoppiano hai coperto una
-finestra lunghissima. È la **dilatazione**: raddoppiando l'ampiezza a ogni
-strato, quattro strati vedono sedici giorni indietro, dieci ne vedono più di
-mille. Il tutto senza ricorrenza: ogni istante si calcola in parallelo agli
-altri, così l'addestramento vola sulle GPU invece di procedere in fila.
+Dieci strati bastano per tenere d'occhio più di mille giorni di diario, e
+nessuno di essi sbircia una pagina non ancora scritta. Guardare soltanto
+all'indietro è la causalità. Coprire tanti giorni con pochi strati, invece, è
+questione di salti che si allargano: il primo strato guarda ieri e oggi, il
+secondo salta di due giorni, il terzo di quattro, il quarto di otto. Quattro
+strati arrivano così a sedici giorni indietro, dieci a più di mille. È la
+**dilatazione**.
+
+Uno strato non riscrive il diario da capo: si tiene accanto la pagina com'era e
+ci annota soltanto quello che ha da aggiungere, e anche una pila alta di strati
+resta facile da correggere. Il tutto senza ricorrenza: ogni istante si calcola
+in parallelo agli altri, e l'addestramento vola sulle GPU invece di procedere
+in fila.
 
 `````
 
@@ -274,8 +278,8 @@ ha $r = 8$, come in figura; con $k=3$ e $L=6$ si arriva a $r = 127$ istanti.
 La formula vale per **una** convoluzione per livello, che è la forma del codice
 più avanti; l'implementazione originale di Bai e colleghi ne mette **due** per
 blocco residuo, e allora il campo recettivo raddoppia,
-$1 + 2(k-1)(2^L-1)$, cioè quel $127$ diventa $253$. Chi dimensiona una TCN vera
-con la formula sbagliata la sottodimensiona di un fattore due.
+$1 + 2(k-1)(2^L-1)$, cioè quel $127$ diventa $253$. Chi applica la formula
+sbagliata a una TCN vera ne sottostima il campo recettivo di un fattore due.
 
 In pratica ogni blocco aggiunge una **connessione residua** (nello spirito
 delle ResNet) per addestrare pile profonde senza che il gradiente svanisca.
@@ -310,16 +314,23 @@ statistica, si chiama **distribuzione**.
 Un bollettino serio non dice «domani piove»: dice «70% di probabilità di
 pioggia». DeepAR fa lo stesso con le vendite. A ogni passo, invece di sputare
 una cifra, descrive un **ventaglio di futuri plausibili**: il valore più
-probabile e quanto ci si può discostare. Per prevedere una settimana intera,
-la rete «tira i dadi» tante volte (genera migliaia di storie possibili, e in
-ciascuna il valore appena tirato diventa il punto di partenza del tiro
-successivo) e poi legge il ventaglio. Il valore che sta esattamente in mezzo,
-con metà delle storie sotto e metà sopra, si chiama **mediana**, ed è la
-previsione; e si scarta il 10% delle storie più basse e il 10% delle più alte,
-così quello che resta in mezzo è la **banda di incertezza**, dentro cui cadono
-otto storie su dieci. Questo modo di procedere, tira un valore e ripartici, ha
-un nome che ricorrerà fra poco: **campionamento ancestrale**. È il filo rosso
-del capitolo: una previsione seria è un numero *con la sua incertezza*.
+probabile e quanto ci si può discostare. E un bollettino così si giudica in un
+modo solo, da quanta probabilità aveva dato a quello che poi è successo
+davvero: alzare quel punteggio, su tutte le serie insieme, è tutto
+l'addestramento della rete. E ogni serie, prima di entrare, passa dalla
+bilancia: la si divide per la propria media, e alla fine la previsione si
+rimoltiplica per quella. Senza, il prodotto da trentamila pezzi al giorno
+coprirebbe quello da tre, e la rete imparerebbe soltanto dal più grande.
+
+Per prevedere una settimana intera, la rete «tira i dadi» tante volte (genera
+migliaia di storie possibili, e in ciascuna il valore appena tirato diventa il
+punto di partenza del tiro successivo) e poi legge il ventaglio. Il valore che
+sta esattamente in mezzo, con metà delle storie sotto e metà sopra, si chiama
+**mediana**, ed è la previsione; e si scarta il 10% delle storie più basse e il
+10% delle più alte, così quello che resta in mezzo è la **banda di
+incertezza**, dentro cui cadono otto storie su dieci. Questo modo di procedere,
+tira un valore e ripartici, ha un nome: **campionamento ancestrale**. Una
+previsione seria è un numero *con la sua incertezza*.
 
 `````
 
@@ -329,8 +340,8 @@ A ogni passo la rete emette i **parametri** $\boldsymbol{\lambda}_t$ di una
 distribuzione di verosimiglianza $p(x_t \mid \boldsymbol{\lambda}_t)$: una
 gaussiana, e allora $\boldsymbol{\lambda}_t=(\mu_t,\sigma_t)$, per dati reali;
 una **binomiale negativa** per conteggi non negativi (come le vendite). È in
-grassetto perché ha più di una componente, e in questa sezione soltanto non è il
-coefficiente di penalità del resto del libro. La loss è la log-verosimiglianza
+grassetto perché ha più di una componente; la stessa lettera altrove nel libro
+è il coefficiente di penalità, qui no. La loss è la log-verosimiglianza
 cambiata di segno, sommata su tutte le serie,
 
 $$
@@ -460,18 +471,20 @@ sua eleganza sta in un'idea di contabilità: il **doppio residuo**.
 
 `````{tab} Elementare
 
-Immagina di spiegare una serie a strati, come si pela una cipolla. Il primo
-blocco guarda la finestra passata e produce due cose: una **ricostruzione** di
+Una serie si spiega a strati, come si pela una cipolla. Il primo blocco guarda
+la finestra passata e produce due cose: una **ricostruzione** di
 ciò che ha capito del passato (il *backcast*) e un pezzo di **previsione** del
 futuro (il *forecast*). A questo punto si *sottrae* la ricostruzione dal
 passato: ciò che resta è quello che il primo blocco non ha saputo spiegare, e
 passa al secondo blocco, che ripete il gioco su quel residuo. Blocco dopo
 blocco, ogni strato spiega un pezzo in più; le previsioni parziali si
-**sommano** a formare quella finale. Il bello: si possono dedicare alcuni
-blocchi a catturare la *tendenza* di fondo e altri la *stagionalità*, e allora
-la rete non solo
-prevede, ma **mostra** quanto della previsione è tendenza e quanto è ciclo
-(cosa rara per una rete neurale).
+**sommano** a formare quella finale.
+
+Il bello viene quando a qualche blocco si lega la mano. A uno si concede di
+disegnare soltanto curve dolci, e finisce per occuparsi della tendenza di
+fondo; a un altro soltanto onde che si ripetono, e finisce sui cicli. Così la
+rete non solo prevede, ma **mostra** quanto della previsione è tendenza e
+quanto è ciclo (cosa rara per una rete neurale).
 
 `````
 
@@ -547,18 +560,22 @@ sui banchi di prova più usati, fu spiazzante: dei modelli **lineari**
 semplicissimi, poco più di una retta tirata sui dati, battevano quei Transformer
 sofisticati. Ne provarono più d'uno: il più elaborato della famiglia separa
 prima la serie in tendenza e stagionalità e poi tira una retta su ciascuna delle
-due, e lo chiamarono **DLinear**; il più semplice è una retta e basta, ed è
-quello a cui si riferiscono le prove qui sotto.
+due, e lo chiamarono **DLinear**; il più semplice è una retta e basta.
 
-E non si fermarono al risultato. Fecero una prova che vale più della classifica:
-presero i giorni passati da dare in pasto al modello e li **mescolarono**, in
-ordine sparso. Un modello che usa davvero l'ordine del tempo, così, dovrebbe
-crollare. Su una delle serie provate, i cambi fra valute, i Transformer non se
-ne accorsero per niente, mentre la retta peggiorò di un quarto: lì il tempo lo
-stava usando lei, e i Transformer stavano facendo qualcos'altro. Su altre
-serie, invece, mescolare fa male a tutti quanti. Che è già una lezione: quanto
-un modello usi l'ordine del tempo non è una sua proprietà fissa, e si scopre
-solo misurandola, su ogni banco di prova.
+E non si fermarono al risultato. Con la retta più semplice fecero due prove che
+valgono più della classifica. Nella prima mescolarono l'ingresso: presero i
+giorni passati da dare in pasto al modello e li rimisero in ordine sparso. Un
+modello che usa davvero l'ordine del tempo, così, dovrebbe crollare. Sui cambi
+fra valute i Transformer non se ne accorsero per niente, mentre la retta
+peggiorò di un quarto: lì il tempo lo stava usando lei. Su altre serie, invece,
+mescolare fa male a tutti quanti. Che è già una lezione: quanto un modello usi
+l'ordine del tempo non è una sua proprietà fissa, e si scopre misurandola,
+banco di prova per banco di prova.
+
+Nella seconda allungarono il passato da leggere. Chi tira fuori qualcosa da una
+storia lunga dovrebbe prevedere meglio quando gliene si dà di più; i
+Transformer, con la finestra più lunga, restavano fermi o peggioravano, mentre
+la retta migliorava quasi dappertutto.
 
 La morale non è «i Transformer non servono», ma qualcosa di più prezioso: la
 complessità non è mai un vantaggio gratuito. Prima di celebrare un modello
@@ -577,13 +594,11 @@ modelli lineari: il più semplice è una singola mappa
 $\hat{\mathbf{x}}_{t+1:t+h} = \mathbf{W}\,\mathbf{x}_{t-w+1:t}$, e la
 variante **DLinear** decompone prima la serie in trend e stagionalità e applica
 una mappa a ciascuna componente. Su nove dataset di forecasting a lungo
-orizzonte quella famiglia eguaglia o supera i Transformer dedicati. Le prove che
-seguono usano il modello lineare semplice, ed è a quello che si riferiscono i
-numeri.
+orizzonte quella famiglia eguaglia o supera i Transformer dedicati.
 
 Il verdetto da solo sarebbe una classifica, e le classifiche invecchiano. Quello
-che non invecchia sono le due prove con cui gli autori lo spiegano, ed è la
-parte del lavoro che vale la pena portarsi via.
+che non invecchia sono le due prove con cui gli autori lo spiegano, fatte con il
+modello lineare semplice, ed è a quello che si riferiscono i numeri.
 
 *La prima è il mescolamento dell'ingresso.* Se un modello usa davvero l'ordine
 temporale, rimescolare a caso le posizioni della finestra passata deve
@@ -645,8 +660,14 @@ qualche migliaio di simboli e si stabilisce che ciascuno copre una fettina di
 valori, così «$23{,}7$ gradi» diventa, mettiamo, il simbolo numero $1372$;
 a quel punto una serie è una frase, e prevedere il seguito è completare la
 frase, che è esattamente il mestiere per cui i modelli linguistici sono già
-fatti. Promettente, ma è un campo giovane: non batte sempre i metodi su misura,
-né i vecchi classici.
+fatti. E siccome una frase si può finire in molti modi, il modello ne scrive
+tante e legge il ventaglio che ne viene: anche qui la previsione arriva con la
+sua incertezza.
+
+Promettente, ma è un campo giovane: non batte sempre i metodi su misura, né i
+vecchi classici. E quando lo si mette alla prova su una serie, resta il sospetto
+che quella serie fosse già fra i milioni che ha letto: chi ha già visto il
+compito non sta improvvisando.
 
 `````
 

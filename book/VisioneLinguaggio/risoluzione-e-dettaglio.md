@@ -43,6 +43,10 @@ confronti: raddoppiare il lato di una fotografia moltiplica per sedici il lavoro
 dell'attenzione, e raddoppiarlo ancora (da $448$ a $896$) lo moltiplica per
 altri sedici, duecentocinquantasei volte il conto di partenza.
 
+Il prezzo che si paga per primo, però, sono i posti. Una frase ne ha un numero
+finito, e 1024 tessere ne occupano 1024: alle parole della domanda e della
+risposta restano quelli che avanzano.
+
 È il motivo per cui non esiste la risposta «e allora aumentiamo la risoluzione».
 La si aumenta, ma sapendo cosa si compra e a che prezzo.
 
@@ -93,11 +97,11 @@ quella che sparisce per prima.
 
 `````{tab} Elementare
 
-Facciamo il conto su un foglio A4, alto 297 millimetri. Se lo riduciamo a 224
-puntini di altezza, ogni millimetro di carta diventa **tre quarti di puntino**
-($224 : 297 = 0{,}75$). Una maiuscola stampata in un libro come questo è alta
-circa due millimetri, quindi ne occupa uno e mezzo, e un puntino e mezzo non
-contiene una lettera: contiene una macchia grigia.
+Un foglio A4 è alto 297 millimetri. Ridotto a 224 puntini di altezza, ogni
+millimetro di carta diventa **tre quarti di puntino**
+($224 : 297 = 0{,}75$). Una maiuscola stampata in un romanzo è alta circa due
+millimetri, quindi ne occupa uno e mezzo, e un puntino e mezzo non contiene una
+lettera: contiene una macchia grigia.
 
 Guardiamola dall'altro verso. Se un millimetro vale tre quarti di puntino, un
 puntino vale un millimetro e un terzo, e la tessera del mosaico, che è larga 14
@@ -108,9 +112,9 @@ attraverso un vetro smerigliato.
 
 Se invece la pagina la diamo alta 1024 puntini, ogni millimetro vale tre puntini
 e mezzo: la maiuscola ne occupa sette e una tessera copre quattro millimetri di
-carta, quanto è alta una riga di testo. Adesso qualcosa da leggere c'è. Il compito ha deciso la risoluzione, e nessuna
-astuzia di architettura può cambiare il fatto che dove non ci sono puntini non
-c'è informazione.
+carta, quanto è alta una riga di testo. Adesso qualcosa da leggere c'è. Il
+compito ha deciso la risoluzione, e nessuna astuzia di architettura può cambiare
+il fatto che dove non ci sono puntini non c'è informazione.
 
 `````
 
@@ -171,17 +175,22 @@ dire «tagliare a piastrelle», e si trova anche sotto il nome *any-resolution*.
 Devi fotografare un quadro grande con una macchina che inquadra solo un
 quadratino. Fai così: scatti sei foto ravvicinate, una per ogni pezzo del
 quadro, poi fai un passo indietro e ne scatti una settima che prende tutto, con
-molto meno dettaglio ma completa. Chi riceve le sette foto ha il dettaglio (le sei
-ravvicinate) e sa anche come stanno insieme (la settima). Il pregio è che non
-hai comprato una macchina nuova, ed è per questo che il taglio a riquadri ha
-vinto: si aggiunge sopra un encoder già addestrato senza toccarlo.
+molto meno dettaglio ma completa. Chi le riceve ha il dettaglio nelle prime sei
+e vede dalla settima come stanno insieme. Il pregio è che non hai comprato una
+macchina nuova, ed è per questo che il taglio a riquadri ha vinto: si aggiunge
+sopra un encoder già addestrato senza toccarlo. E un quadro lungo e basso lo
+copri con una fila di scatti, uno alto e stretto con una colonna, senza doverlo
+schiacciare in un quadrato.
 
 Il difetto lo indovini pensando a una figura a cavallo fra due pezzi. Nelle sei
 foto ravvicinate non c'è mai per intero: mezza faccia in una e mezza nell'altra,
 e chi guarda deve rimetterle insieme senza essere sicuro che appartengano alla
-stessa cosa. L'unico posto dove si vede tutta è la settima foto, quella senza dettaglio.
-Il taglio è arbitrario, non segue i confini degli oggetti, e questa
-arbitrarietà è il prezzo del metodo.
+stessa cosa. Intera si vede solo nella settima, quella senza dettaglio. Il
+taglio cade dove capita, non segue i confini degli oggetti.
+
+Poi resta la pila. Sette foto invece di una, e la settima ripete quello che le
+altre hanno già preso: da guardare ce ne sono comunque sette. Il conto si è
+spostato dalla macchina fotografica al mucchio di foto.
 
 `````
 
@@ -211,8 +220,8 @@ cioè $5 \cdot 1024^2 \approx 5{,}2$ milioni di coppie, $3{,}2$ volte meno.
 
 Quel $3{,}2$, però, conta le **coppie di attenzione**, non i FLOP dell'encoder, e
 a questi valori di $N$ le due cose non coincidono affatto. La soglia $N > 6d$
-calcolata poco sopra dice che con $4096$ token e $d$ dell'ordine del migliaio
-siamo ancora *sotto*: l'attenzione è meno della metà del blocco, e il tiling
+fra il termine quadratico e quello lineare dice che con $4096$ token e $d$
+dell'ordine del migliaio siamo ancora *sotto*: l'attenzione è meno della metà del blocco, e il tiling
 taglia la parte piccola del conto mentre manda nel feed-forward $5120$ token
 invece di $4096$, cioè paga di più sul termine che domina. Rifacendo il conto per
 intero con la stessa contabilità di prima ($24Nd^2 + 4N^2d$ per strato), il
@@ -256,7 +265,7 @@ c'è un modo che butta via subito e uno che rimanda il conto.
 
 `````{tab} Elementare
 
-Hai quattro barattoli di tempera, uno per colore, e devi liberare tre ripiani.
+Quattro barattoli di tempera, uno per colore, e tre ripiani da liberare.
 
 Primo modo: versi i quattro colori in un barattolo solo e mescoli. Occupi un
 ripiano invece di quattro, e quel che ne esce è davvero la media dei quattro; ma
@@ -272,10 +281,13 @@ puntini»: il nome è più oscuro della cosa): quattro tessere adiacenti diventa
 un pezzo solo, che porta con sé tutti e quattro i contenuti, uno di fianco
 all'altro. L'informazione si è spostata dai *posti* al *contenuto di ogni posto*.
 
-Una precisazione onesta, però. La cassetta, prima di entrare nel modello di
-linguaggio, deve passare per una fessura larga sempre uguale: i posti in fila
-sono tutti della stessa taglia, e in quella taglia adesso devono starci quattro
-tessere invece di una. Il rimescolamento in sé non perde niente; la fessura sì.
+La cassetta, però, prima di entrare nel modello di linguaggio deve passare per
+una fessura larga sempre uguale: i posti in fila sono tutti della stessa taglia,
+e in quella taglia adesso devono starci quattro tessere invece di una. Il
+rimescolamento in sé non perde niente; la fessura sì. Con una differenza dal
+barattolo mescolato: là il marrone viene deciso in partenza e sempre allo stesso
+modo, qui chi spinge la cassetta nella fessura ha imparato a furia di prove come
+piegarne il contenuto per perdere il meno possibile.
 
 `````
 
@@ -344,13 +356,16 @@ ha dovuto decidere: in che ordine si leggono due colonne affiancate? Dove
 finisce una cella della tabella? E il grafico, che non è fatto di parole, come
 si ribatte? (Di solito non si ribatte: sparisce, e con lui il numero stampato di
 fianco a una delle sue colonne, che nessuno saprebbe più a quale colonna
-attribuire.) Decisioni prese al buio, senza
-sapere che domanda arriverà, e una volta per tutte.
+attribuire.) Decisioni prese al buio, senza sapere che domanda arriverà, e una
+volta per tutte: chi legge la trascrizione l'originale non ce l'ha più, e se il
+dattilografo ha battuto 8 dove c'era 3, quel 3 non torna.
 
 La fotocopia non decide niente: tiene la pagina com'è, con le colonne al loro
 posto e il timbro storto in fondo. Per anni non è stata un'alternativa, perché
 una macchina sapeva cercare solo fra le parole e in una fotocopia di parole
-cercabili non ce ne sono. Un modello che *vede* toglie l'obbligo.
+cercabili non ce ne sono. Un modello che *vede* toglie l'obbligo. Il prezzo lo
+paga lo schedario: una pagina fotocopiata prende il posto di qualche pagina
+ribattuta.
 
 `````
 
@@ -407,6 +422,12 @@ cercarsi il pezzo di pagina che le somiglia di più, ed è quello il pezzo che f
 punteggio. In cambio l'archivio occupa molto più spazio: è il prezzo di non aver
 buttato via niente.
 
+Una cosa però si perde per strada, ed è il codice esatto. «Errore E-52», un
+numero di protocollo, un IBAN: o si trovano alla lettera o non servono a niente,
+e una ricerca per somiglianza restituisce quello che somiglia. Per quelli il
+vecchio elenco di parole resta imbattibile, quindi si tengono tutti e due gli
+archivi invece di sostituirne uno con l'altro.
+
 `````
 
 `````{tab} Superiore
@@ -421,14 +442,17 @@ parametri che guarda la pagina a $448 \times 448$). Il secondo è
 l’**interazione tardiva** di ColBERT {cite}`khattab2020colbert`, che il capitolo
 sugli agenti riprenderà in versione testuale: invece di collassare la pagina in
 un vettore solo si conservano tutti i vettori e il punteggio si compone in
-fondo,
+fondo. Ridotta anche la domanda a una matrice
+$\mathbf{Q} \in \mathbb{R}^{n_q \times k}$, una riga per token,
 
 $$
-s(q, d) = \sum_{i \in q} \max_{j \in d} \; E(q_i)^{\top} E(d_j),
+s(\mathbf{Q}, \mathbf{D}) = \sum_{i=1}^{n_q} \; \max_{1 \le j \le n_d}
+\; \mathbf{q}_i^{\top} \mathbf{d}_j,
 $$
 
-dove $q_i$ è l’$i$-esimo token della domanda, $d_j$ la $j$-esima **patch** della
-pagina ed $E(\cdot)$ il rispettivo embedding. La differenza rispetto al caso
+dove $\mathbf{q}_i$ è l’embedding dell’$i$-esimo token della domanda e
+$\mathbf{d}_j$ quello della $j$-esima **patch** della pagina, cioè la riga $j$
+di $\mathbf{D}$. La differenza rispetto al caso
 testuale è tutta nel secondo indice: il massimo non corre più sui token di un
 passaggio trascritto, ma sulle regioni dell'immagine, e un token della domanda
 si aggancia alla zona di pagina che gli corrisponde, parola, cella di tabella o
@@ -515,7 +539,7 @@ confronti fra tessere sono solo una parte di quello che l'encoder fa: c'è anche
 il lavoro che spende su ogni tessera per conto suo, e quello cresce con il
 numero delle tessere e basta, quindi il taglio a riquadri, che di tessere ne
 aggiunge mille, lo peggiora. Messi insieme i due conti (sono gli stessi due
-addendi della soglia $N > 6d$ di poco fa: i confronti fra tessere da una
+addendi della soglia $N > 6d$: i confronti fra tessere da una
 parte, il lavoro su ogni tessera dall'altra), il risparmio vero sta
 fra il 5% e il 20%, ed è tanto minore quanto più l'encoder è grosso. Il pixel shuffle, dal canto suo, riporta quei
 $5120$ token a $1280$, meno di un terzo di quanto vedrebbe l'immagine
@@ -575,7 +599,9 @@ confortante.
   ordine si leggono le colonne, che fare delle tabelle e dei grafici, e lo decide
   prima di sapere che domanda arriverà. Un modello che vede la pagina toglie
   l'obbligo, e si può perfino cercare fra le fotocopie invece che fra le
-  trascrizioni, al prezzo di un archivio molto più grosso.
+  trascrizioni, al prezzo di un archivio molto più grosso e del vecchio elenco di
+  parole da tenere accanto, perché un codice esatto o si trova alla lettera o non
+  serve a niente.
 - Nessuna delle tre risposte cancella il costo: lo spostano. Chi progetta sceglie
   se pagarlo in posto occupato, in quanta roba deve stare dentro ogni tessera, o
   in spazio su disco.

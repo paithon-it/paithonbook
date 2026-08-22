@@ -49,32 +49,35 @@ mentale, che però sbiadisce in fretta: alla fine di un paragrafo lungo,
 l'inizio è quasi svanito. Le **LSTM** aggiungono un taccuino con delle regole:
 cosa annotare, cosa cancellare, cosa rileggere (la memoria dura molto di più,
 al prezzo di un meccanismo più complicato). Le **GRU** sono il taccuino
-semplificato: regole più snelle, quasi la stessa resa. Il **Transformer**
-cambia gioco: niente riassunto e niente taccuino, il testo resta tutto
-sott'occhio e ogni parola può andare a rileggersi qualunque altra. La memoria
-non sbiadisce perché non c'è nulla da ricordare: basta guardare.
+semplificato: regole più snelle, quasi la stessa resa. Taccuino o no, però, si
+legge sempre una parola alla volta, e la parola dopo aspetta che sia finita
+quella prima. Il **Transformer** cambia gioco: niente riassunto e niente
+taccuino, il testo resta tutto sott'occhio e ogni parola può andare a
+rileggersi qualunque altra. La memoria non sbiadisce perché non c'è nulla da
+ricordare: basta guardare.
 
 Due precisazioni, perché il «qualunque altra» va preso con le pinze. La prima:
 vale per la torre che **legge** (l'encoder); quella che **scrive** (il decoder)
-ha la regola ferrea della sezione precedente, non si sbircia avanti, e guarda
-solo all'indietro.
+ha una regola ferrea, non si sbircia avanti, e guarda solo all'indietro.
 
-La seconda riguarda la velocità, ed è il vero motivo per cui il Transformer ha
-vinto. Se le parole si guardano tutte insieme invece che in fila, il lavoro si
-può spartire fra migliaia di processori che macinano in parallelo: sono i
-«cento amici» del capitolo, quelli che con un libro da leggere in fila non
-servivano a niente e qui invece servono eccome. Attenzione però a quando:
-succede **mentre il modello studia**, cioè quando ha davanti tutto il testo e
-può lavorarci sopra in una volta sola. Quando poi scrive, le parole gli escono
-comunque una alla volta, perché per scegliere la prossima deve sapere quale ha
-appena scritto: lì i cento amici tornano a girarsi i pollici, e infatti generare
-resta lento.
+La seconda riguarda la velocità. Da sola non spiega la vittoria, perché il
+taccuino delle LSTM allungava già la memoria: quello che nessuna macchina di
+prima sapeva fare era mettere tante mani sullo stesso testo. Se le parole
+si guardano tutte insieme invece che in fila, il lavoro si può spartire fra
+migliaia di processori che macinano in parallelo: sono i «cento amici» di
+prima, quelli che con un libro da leggere in fila non servivano a niente e qui
+invece servono eccome. Attenzione però a quando: succede mentre il modello
+**studia**, cioè quando ha davanti tutto il
+testo e può lavorarci sopra in una volta sola. Quando poi scrive, le parole
+gli escono comunque una alla volta, perché per scegliere la prossima deve
+sapere quale ha appena scritto: lì i cento amici tornano a girarsi i pollici,
+e infatti generare resta lento.
 `````
 
 `````{tab} Superiore
 Le **RNN** mantengono uno stato
 $\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$: la dipendenza tra
-posizioni distanti $n$ passi attraversa $n$ applicazioni di $f$, e il
+posizioni distanti $m$ passi attraversa $m$ applicazioni di $f$, e il
 gradiente retropropagato si attenua o esplode esponenzialmente (il *vanishing
 / exploding gradient* del capitolo sulle reti neurali). Le **LSTM**
 {cite}`hochreiter1997long` introducono una cella di memoria regolata da tre
@@ -88,9 +91,9 @@ Il Transformer porta la lunghezza del cammino tra due posizioni qualsiasi a
 $O(1)$ (ogni coppia è collegata direttamente dalla self-attention) e rende
 l'addestramento parallelo sull'intera sequenza. È questa combinazione
 (dipendenze lunghe *e* parallelismo) che le architetture ricorrenti non
-potevano offrire insieme. Con un'avvertenza che vale la pena mettere subito: il
-parallelismo è un vantaggio soprattutto **in addestramento**, perché in
-inferenza la generazione autoregressiva resta sequenziale, un token alla volta.
+potevano offrire insieme. Il parallelismo, però, è un vantaggio soprattutto
+**in addestramento**, perché in inferenza la generazione autoregressiva resta
+sequenziale, un token alla volta.
 `````
 
 ## Il conto da pagare: l'attenzione costa quadratica
@@ -99,37 +102,57 @@ Il Transformer non è gratis, e il suo tallone d'Achille è proprio il gesto
 che lo definisce: far guardare ogni parola a tutte le altre.
 
 `````{tab} Elementare
-In una riunione di quattro persone ognuno deve parlare con ognuno, e le coppie
-possibili sono sei: le puoi contare con le dita (io con te, io con lui, io con
-lei, tu con lui, tu con lei, lui con lei). La regola per non contarle a mano è
-semplice: ognuno parla con tutti tranne sé stesso, quindi $4 \times 3 = 12$,
-ma così ogni conversazione è stata contata due volte, e $12 : 2 = 6$. In otto
-diventano $8 \times 7 : 2 = 28$; in mille, $1000 \times 999 : 2 = 499\,500$,
-quasi mezzo milione. **Raddoppiare i partecipanti quadruplica circa le
-chiacchiere**: è la crescita "al quadrato".
+Quattro persone in una stanza, e ognuno deve parlare con ognuno: io con te, io
+con lui, io con lei, tu con lui, tu con lei, lui con lei. Sei coppie, contate
+con le dita. Senza dita: $4 \times 3 = 12$, ognuno con tutti tranne sé, e
+$12 : 2 = 6$ perché ogni coppia è finita nel conto due volte. In otto,
+$8 \times 7 : 2 = 28$; in mille, $1000 \times 999 : 2 = 499\,500$, quasi mezzo
+milione. Raddoppiando i presenti le chiacchiere quadruplicano, o quasi, ed è
+la crescita al quadrato.
 
-Per il Transformer le parole sono i partecipanti, con due differenze da poco:
-ogni parola guarda anche sé stessa, e chi guarda chi conta separatamente nei
-due versi (che "salta" guardi "gatto" è un conto, che "gatto" guardi "salta" è
-un altro). Quindi in quattro i confronti non sono sei ma $4 \times 4 = 16$. La
-crescita però è la stessa, ed è quella che interessa: una frase è una riunione
-veloce, un libro intero è un'assemblea oceanica che nessun computer regge
-volentieri. Le reti ricorrenti, che leggono in fila, non hanno questo
-problema: il loro costo cresce di pari passo con la lunghezza, non al
-quadrato.
+Per un Transformer i presenti sono le parole, con due usanze: si parla anche da
+soli, e ascoltare non conta come farsi ascoltare (che "salta" guardi "gatto" è
+un conto, il rovescio un altro). In quattro i confronti diventano
+$4 \times 4 = 16$, con la stessa crescita di prima. Una frase è una riunione
+svelta, un libro un'assemblea oceanica che nessun computer regge volentieri. Le
+reti ricorrenti, che leggono in fila, il problema non ce l'hanno: un presente
+in più è un turno in più.
 
-Ecco perché tanta ricerca lavora su come far parlare le parole senza convocare
-sempre l'assemblea plenaria, e i modi sono tre. Il primo è **decidere in
-anticipo chi parla con chi**: ognuno con i vicini di posto, più qualche
-partecipante scelto che parla con tutti e fa da ponte. Il secondo è **lasciare
-che siano i dati a dirlo**: si osserva che quasi tutta l'attenzione di una
-parola finisce comunque su pochissime altre, e allora si cerca un modo di
-trovare in fretta quelle poche invece di provarle tutte. Il terzo non tocca la
-lista degli invitati, la butta via: invece di calcolare tutti i confronti e poi
-scartarne la maggior parte, riordina i conti in modo che i confronti non
-vengano mai fatti uno per uno. Costa una rinuncia (il modo in cui i punteggi
-diventano intensità va cambiato) e ha un capitolo suo, quello sull'attenzione
-lineare.
+Poi c'è il tabellone, una casella per ogni scambio: sedici in quattro, un
+milione in mille. Il tempo alla peggio lo si aspetta; il tabellone o sta nella
+stanza o non ci sta, ed è lui a decidere quanto testo un modello si tiene
+davanti. Di qui i tre modi di far parlare tutti senza convocare la plenaria.
+
+Il primo fissa il programma prima di entrare: ognuno con i vicini di posto,
+qualche coppia sorteggiata per accorciare le distanze, pochi che parlano con
+tutti e fanno da ponte. Si arriva ancora dove arrivava la plenaria, e lo si
+dimostra; a reggere la dimostrazione sono i ponti, non i vicini. Ma i ponti
+sono pochi e in un giro non ripetono tutto a tutti: quello che la plenaria
+sbrigava in una volta vuole più giri, e i giri crescono con i presenti. Si
+risparmia in larghezza e si paga in altezza.
+
+Il secondo lascia decidere alla sala. Ognuno ha da dire qualcosa a pochissimi,
+e le altre conversazioni si tengono lo stesso a vuoto: lì il lavoro si spreca.
+All'ingresso, allora, i presenti vanno a tavoli per affinità e parlano con chi
+si ritrovano accanto. Il tavolo giusto si trova solo se chi cerca e chi va
+trovato portano lo stesso cartellino, ed è una rinuncia, perché in plenaria
+cercare e farsi trovare erano due mestieri distinti; chi ci ha provato non ha
+visto la riunione riuscire peggio. E i tavoli sbagliano: due che avevano da
+dirsi qualcosa finiscono separati, e nessuno se ne accorge. Si rimescola più
+volte con criteri diversi, così l'occasione persa a un giro si recupera al
+successivo, ma nessuno promette che non ne resti fuori una.
+
+Gli stessi organizzatori risparmiano sui verbali. Di ogni giro se ne tiene uno,
+perché a riunione finita bisogna tornarci sopra per capire che cosa ha
+funzionato, e più giri più verbali. Se un giro si può ripercorrere a ritroso,
+il verbale si butta e si riscrive rifacendo i conti: spazio risparmiato, fatica
+in più, un baratto che in questo mestiere torna di continuo.
+
+Il terzo butta la lista degli invitati invece di sfoltirla: i conti si
+riordinano perché le coppie non si formino mai una per una, invece di
+calcolarle tutte e scartarne poi quasi tutte. Costa una rinuncia (il modo in
+cui i punteggi diventano intensità va cambiato) e ha un capitolo suo, quello
+sull'attenzione lineare.
 `````
 
 `````{tab} Superiore
@@ -145,9 +168,9 @@ approssimazioni a rango basso o kernel (Linformer, Performer), e
 ottimizzazioni esatte ma efficienti in memoria come FlashAttention, che
 riorganizza il calcolo per sfruttare la gerarchia di memoria delle GPU.
 
-Vale la pena dire da dove viene il primo di quei rimedi, perché è un cambio di
-punto di vista più che un trucco. La matrice di attenzione è la matrice di
-adiacenza di un **grafo completo** sui token, e ridurne il costo è un problema
+L'attenzione sparsa nasce da un cambio di punto di vista, più che da un trucco
+di calcolo. La matrice di attenzione è la matrice di adiacenza di un
+**grafo completo** sui token, e ridurne il costo è un problema
 di **sparsificazione di grafi**. Longformer {cite}`beltagy2020longformer`
 toglie archi tenendo una finestra scorrevole attorno a ogni token, qualche
 finestra dilatata per allargare la portata, e un pugno di **token globali**
@@ -160,12 +183,12 @@ mondo» alla Watts-Strogatz), archi **casuali** alla Erdős-Rényi e token
 globali, e dimostra che il modello risultante resta un approssimatore
 universale di funzioni su sequenze.
 
-Su quel teorema conviene mettere le ipotesi accanto, che è la regola che questo
-libro si dà e che è facile dimenticare proprio davanti ai risultati che fanno
-comodo. Vale per le funzioni **continue su un dominio limitato**; e vale per
+Quel teorema va letto con le sue ipotesi accanto, che è facile dimenticare
+proprio davanti ai risultati che fanno comodo. Vale per le funzioni
+**continue su un dominio limitato**; e vale per
 qualunque schema sparso **che contenga i token globali**, cioè sono loro a
 portare il teorema, non la finestra. Soprattutto, gli stessi autori dimostrano
-il rovescio nella stessa pagina: esiste un compito che l'attenzione piena
+il rovescio nello stesso lavoro: esiste un compito che l'attenzione piena
 risolve in un numero costante di strati e che **qualunque** attenzione sparsa
 con un numero di archi proporzionale a $n$ costringe a una profondità che
 cresce con $n$. «Universale» vuol dire che ci si arriva, non che ci si arriva
@@ -247,8 +270,9 @@ partita del decennio, non necessariamente il campionato eterno.
   però soprattutto **mentre studia**: quando scrive, le parole gli escono lo
   stesso una alla volta.
 - Il prezzo è la riunione dove ognuno parla con ognuno: raddoppiando i
-  partecipanti le chiacchiere quadruplicano. Da qui il limite alla lunghezza
-  del testo che un modello riesce a tenere davanti.
+  partecipanti le chiacchiere quadruplicano. E ogni conversazione va segnata su
+  un foglio, con una casella per ciascuna: è lo spazio di quel foglio, più
+  ancora del tempo, a decidere quanto testo un modello riesce a tenere davanti.
 - Per spendere meno si tolgono conversazioni, e i modi sono tre: decidere
   **in anticipo** chi parla con chi (ognuno con i vicini, più qualche
   partecipante che parla con tutti), lasciare che siano **i dati** a dire quali

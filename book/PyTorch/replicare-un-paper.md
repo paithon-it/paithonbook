@@ -44,6 +44,19 @@ falegname: se una misura non torna, l'errore è lì, non tre pezzi più avanti.
 **Quattro: conta i pezzi alla fine.** Se il paper dice che il modello ha 86
 milioni di parametri e il tuo ne ha 40, hai saltato qualcosa. È la verifica più
 potente di tutte, e non richiede di addestrare nulla.
+
+Poi, prima di dichiararlo finito, una spinta. Un mobile può stare in piedi con
+un ripiano soltanto appoggiato: da fuori sembra montato, e cede al primo peso.
+Si scuote il fianco e si guarda che cosa si muove insieme al resto; quello che
+resta fermo non è avvitato a niente. Sul modello il gesto è lo stesso: si dà un
+colpo solo, dall'uscita, e si guarda se è arrivato fino a ogni singolo pezzo.
+Quelli che non l'hanno sentito non impareranno mai niente, perché la correzione
+non li raggiunge. Senza la spinta, il ripiano appoggiato si scopre dopo tre
+giorni di addestramento che non porta da nessuna parte.
+
+Finché le misure e il conto dei pezzi non tornano, e la spinta non arriva a
+tutti, chiedersi se il modello vada bene quanto nella fotografia è prematuro.
+Da lì in poi comincia la parte difficile.
 `````
 
 `````{tab} Superiore
@@ -164,29 +177,53 @@ modello si porterà dietro identica per tutti e dodici i blocchi che seguono.
 Nel codice le righe da guardare sono due: la convoluzione e il token di classe.
 
 `````{tab} Elementare
-**La convoluzione.** Del pezzo di codice `nn.Conv2d` basta sapere, per ora,
-questo: fa scorrere una finestrella sull'immagine e a ogni posizione produce un
-pugno di numeri a partire dai pixel che ci stanno dentro. Due manopole ne
-governano il movimento: quanto è grande la finestra (`kernel_size`) e di quanto
-si sposta a ogni scatto (`stride`). Il capitolo sul deep learning spiegherà
-perché questa operazione sia il modo giusto di guardare un'immagine; qui serve
-solo il movimento.
+**La convoluzione.** Una mascherina di cartone con un buco quadrato, appoggiata
+sopra la foto. Dai pixel che si vedono nel buco esce un pugno di numeri, poi la
+mascherina scatta più in là e si ricomincia. `nn.Conv2d` fa questo, e ha due
+manopole: quanto è largo il buco (`kernel_size`) e di quanto scatta ogni volta
+(`stride`).
 
-Il paper dice "si taglia l'immagine in quadratini e si proietta ciascuno". La
-traduzione letterale sarebbe: taglia, impila, applica uno strato lineare (tre
-operazioni). Ma una convoluzione con la finestra grande esattamente quanto il
-passo fa già questo: scorre di sedici pixel alla volta con una finestra di
-sedici, quindi guarda ogni quadratino una volta e nessun pixel due volte. Una
-riga invece di tre, e più veloce. Accorgersi che
-due descrizioni diverse sono la stessa operazione è metà del mestiere di chi
-replica un paper.
+Il paper chiede di tagliare l'immagine in quadratini e di proiettare ciascuno.
+Alla lettera sono tre gesti: ritagliare, impilare, moltiplicare la pila. Con un
+buco largo sedici pixel e uno scatto pure di sedici il gesto è uno solo. La
+mascherina si sposta di quanto è larga, quindi ogni quadratino passa sotto una
+volta e nessun pixel due volte.
 
-**Il token di classe.** È un vettore in più, premesso ai 196 quadratini, che
-non contiene nessun pezzo di immagine: è un foglio bianco. Attraversando la
-rete, quel foglio raccoglie informazione da tutti gli altri, e alla fine è lì
-che si va a leggere la risposta: un po’ come il verbale di una riunione, che
-non è uno dei partecipanti ma è dove finisce il senso di quello che si sono
-detti.
+E i conti sono gli stessi. Stessi numeri da imparare, stessi prodotti,
+sistemati in due ordini diversi, e per passare dall'uno all'altro basta
+riordinarli. Cambia il lavoro attorno. Chi ritaglia stacca tutti e 196 i
+quadratini e li mette da parte, cioè si ritrova sul tavolo una seconda foto
+fatta a pezzi grande quanto la prima, e solo dopo moltiplica; la mascherina li
+legge dove stanno. Un gesto invece di tre, e più veloce.
+
+Quella pila pesa quanto la foto finché la mascherina scatta di quanto è larga.
+Chi la fa scattare di otto pixel con un buco da sedici ritrova lo stesso pixel
+dentro più ritagli, e la pila diventa 3,7 volte la foto.
+
+**Il token di classe.** Sopra la pila dei 196 ritagli si mette un foglio che di
+immagine non ha niente. È lo stesso per ogni foto che arriva sul tavolo, e
+quello che ci sta scritto lo decide l'addestramento, come per un peso qualunque
+della rete. Attraversando la rete quel foglio raccoglie qualcosa da tutti gli
+altri, e alla fine la risposta si legge lì, come nel verbale di una riunione,
+che tiene il senso di quello che i partecipanti si sono detti senza essere uno
+di loro.
+
+Anche i cartellini delle posizioni si imparano allo stesso modo. Ai 197 posti
+della fila (i 196 ritagli più il foglio) ne è attaccato uno ciascuno, che dice
+da che punto della foto veniva il quadratino. Sono 197 perché i posti sono 197,
+e quel legame presenta il conto più tardi. Chi dà foto da 384 pixel a un
+modello addestrato su foto da 224 si ritrova sul tavolo 576 quadratini (24 per
+riga invece di 14) e 197 cartellini in mano. Stamparne di nuovi, vuoti,
+butterebbe via quello che il modello aveva imparato sulle posizioni, quindi si
+prendono quelli che ci sono e si stirano sulla griglia più grande.
+
+Al foglio c'è un'alternativa. Niente foglio in cima, e alla fine si fa la media
+di quello che hanno detto i 196 ritagli. Funziona altrettanto bene a un patto,
+scritto in fondo al paper e non nel testo principale: bisogna cambiare
+la lunghezza dei passi con cui il modello si corregge mentre impara (il
+*learning rate*). Con i passi di prima va peggio, e chi quella riga non l'ha
+letta conclude che l'alternativa non funzioni, mentre ha soltanto lasciato i
+passi com'erano.
 `````
 
 `````{tab} Superiore
@@ -197,7 +234,12 @@ posizione non sovrapposta, il prodotto scalare tra la finestra e ciascuno dei
 $D$ filtri: gli stessi $P^2C \cdot D$ moltiplicatori, riorganizzati. È
 identica anche nei parametri (basta un `reshape` per passare da una forma
 all'altra), ma delegata a un kernel ottimizzato invece che a `unfold` seguito
-da `nn.Linear`, che materializza un tensore intermedio molto più grande.
+da `nn.Linear`. Con patch non sovrapposte `unfold` non duplica nessun pixel: il
+tensore che materializza ha esattamente tanti elementi quanti l'immagine di
+partenza ($B \cdot P^2C \cdot N = B \cdot C \cdot 224^2$), e quello che si
+risparmia è la copia, non un'esplosione di memoria. L'esplosione arriva quando
+il passo è minore della finestra, dove lo stesso pixel cade in più finestre:
+con $P = 16$ e passo $8$ l'intermedio è già $3{,}7$ volte l'immagine.
 
 **Token di classe e posizioni.** Entrambi sono `nn.Parameter`, cioè imparati:
 $\mathbf{x}_{\text{class}}$ è la sonda da cui l'equazione 4 legge l'uscita, e
@@ -414,23 +456,37 @@ Quando invece i numeri dovrebbero tornare e non tornano, la lista dei sospetti
 7. **Il caso**: il seme, e quanti semi sono stati provati.
 
 `````{tab} Elementare
-Di questa lista, i primi due punti spiegano da soli la maggior parte dei casi.
-Il primo perché la preparazione dei dati è quasi sempre raccontata di fretta,
-in mezza riga d'appendice, mentre cambia il risultato molto più di
-un'architettura. Il secondo perché il learning rate quasi mai è un numero
-fisso: sale piano all'inizio (il *riscaldamento*) e poi scende lungo
-l'addestramento, e chi legge solo il valore di picco sta copiando un terzo
-dell'informazione.
+Fra questi sospetti, due spiegano da soli la maggior parte dei casi: i dati con
+le loro trasformazioni, e il programma del learning rate. La preparazione dei
+dati è quasi sempre raccontata di fretta, in mezza riga d'appendice, mentre
+sposta il risultato molto più di un'architettura. E il learning rate quasi mai
+è un numero fisso: sale piano all'inizio (il *riscaldamento*) e poi scende
+lungo l'addestramento, quindi chi legge solo il valore di picco sta copiando un
+terzo dell'informazione.
 
-C'è poi una regola che salva molte replicazioni: **se hai una GPU sola e il
-paper ne usava otto, non stai addestrando lo stesso modello**. Il numero di
-esempi visti a ogni aggiornamento è diverso, e con esso il rumore del
-gradiente. Si rimedia accumulando i gradienti per più batch prima di
-aggiornare: un modo di fingere un batch grande su una macchina piccola.
+Quel valore di picco, poi, è tarato sul vassoio che gli autori avevano sotto
+mano. Se hai una GPU sola e il paper ne usava otto, il vassoio è molto più
+piccolo, la direzione in cui il modello si corregge viene da molti meno esempi,
+e lo stesso passo lungo di prima si dà quasi alla cieca. Le strade sono due:
+accorciare il passo, oppure accumulare le correzioni di più vassoi piccoli e
+muoversi una volta sola, che è un modo di fingere un vassoio grande su una
+macchina piccola. Il trucco imita bene, non alla perfezione: certi strati si
+tarano sulla media di quello che hanno davanti, e davanti hanno ancora il
+vassoio piccolo. Chi addestra a quelle scale sceglie allora strati che
+rimettono in scala ogni esempio per conto suo, come la LayerNorm.
+
+Restano due sviste che, mentre succedono, non danno nessun segnale. Una
+riguarda i freni: quello che tira di continuo i pesi verso lo zero (il *weight
+decay*) va messo sulla gran parte dei pezzi, ma non su quelli che servono
+soltanto a rimettere i numeri in scala, e frenare anche loro non rompe niente,
+costa qualche punto alla fine. L'altra è il righello: se il paper riporta il
+risultato migliore fra molte prove, o la media di più ritagli della stessa foto
+di prova, e tu riporti l'ultimo numero che ti è uscito, una parte della
+differenza viene da come si misura e non dal modello.
 `````
 
 `````{tab} Superiore
-Sui due punti principali, in dettaglio.
+In dettaglio, i punti su cui una replica si perde più spesso.
 
 **Programma del learning rate.** La forma quasi universale è warmup lineare
 per $T_w$ passi seguito da decadimento a coseno fino a zero. Il valore di
@@ -516,6 +572,9 @@ qualunque articolo che dichiari un'architettura e dei numeri.
   uscita.
 - Il conteggio dei pezzi è la verifica più potente e costa trenta secondi: se
   l'articolo dice 86 milioni e a te ne escono 43, ne hai montata metà.
+- E prima di dichiararlo finito, una **spinta**: un colpo dall'uscita, e si
+  guarda se arriva fino a ogni pezzo. Quelli che restano fermi non sono
+  avvitati a niente, e non impareranno mai.
 - Riprodurre **il montaggio** è quasi sempre possibile; riprodurre **i
   risultati** spesso no, perché mancano i dati o metà delle istruzioni. Dirlo
   è parte del lavoro, non un'ammissione di sconfitta.

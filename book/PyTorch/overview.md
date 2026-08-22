@@ -40,6 +40,25 @@ la consegnavi al motore ed eseguivi, e se qualcosa andava storto capirlo era
 un'impresa. PyTorch funziona come il navigatore: ogni riga di codice viene
 eseguita **subito**, puoi fermarti a guardare i numeri in qualunque punto, e
 correggere è facile come in qualsiasi programma Python.
+
+Col navigatore acceso il viaggio cambia forma mentre lo fai. Piove, e prendi la
+statale. Il traffico è fermo, ed esci un'uscita prima. Le commissioni oggi sono
+tre invece di una, e il giro si allunga di conseguenza. Le decisioni si
+prendono all'incrocio, con quello che si vede da lì, e un modello scritto in
+PyTorch decide allo stesso modo: una riga che dice "se il valore è negativo,
+prendi l'altra strada", un giro di calcoli che si ripete due volte oggi e sette
+domani perché la frase da leggere è più lunga. Con l'itinerario stampato, quel
+giro andava previsto tutto in anticipo, sul foglio.
+
+Quella comodità si paga. Chi tiene in mano il foglio conosce tutto il tragitto
+prima di muoversi, e se lo può studiare a tavolino: accorpare due commissioni
+che stanno nella stessa via, tagliare il giro largo, fare benzina nell'unico
+punto in cui costa meno. Il navigatore quella vista d'insieme non ce l'ha,
+perché decide un incrocio alla volta, e per anni i programmi scritti così hanno
+girato un po' più lenti di quelli descritti tutti in anticipo. Poi i navigatori
+hanno imparato il mestiere: quando si accorgono che il tragitto è sempre
+quello, se lo studiano una volta sola e da lì in avanti lo percorrono di
+filato. PyTorch lo fa dal 2023, e buona parte di quel ritardo se n'è andata.
 `````
 
 `````{tab} Superiore
@@ -103,10 +122,27 @@ nel motore di calcolo scritto in C++ e da lì sull'hardware disponibile.
 `````{tab} Elementare
 In un ristorante la sala (il menu, il cameriere che prende l'ordine) è Python:
 accogliente, flessibile, parla la tua lingua. La cucina è scritta in C++:
-quando ordini "moltiplica queste due matrici", il piatto viene preparato da
-cuochi velocissimi (routine di calcolo compilate) che sfruttano tutti i fuochi
-disponibili, dalla CPU alla scheda grafica. Tu non entri mai in cucina: ordini
-in Python, e la velocità è quella della cucina, non della sala.
+quando ordini "moltiplica queste due matrici", il piatto lo preparano cuochi
+velocissimi, cioè routine di calcolo già compilate. Tu non entri mai in cucina:
+ordini in Python, e la velocità è quella della cucina.
+
+La cucina tiene anche il registro delle comande, in ordine di arrivo. Serve a
+ripercorrere all'indietro tutto quello che è stato fatto, ed è il gesto su cui
+si regge l'apprendimento di una rete.
+
+Le postazioni poi sono più d'una, e sullo stesso piatto non lavorano insieme.
+Il fornello di casa fa bene qualunque cosa, un piatto alla volta: è la CPU. La
+griglia grande sforna in una passata sola una montagna di piatti identici: è la
+scheda grafica. A decidere c'è il capocuoco, che guarda dove stanno già gli
+ingredienti di quell'ordine e manda lì la comanda, perché trascinare le casse
+da una postazione all'altra costa tempo. Se le casse sono alla griglia e
+l'ordine arriva al fornello, il piatto non parte proprio: prima qualcuno deve
+spostarle, e a dirglielo sei tu.
+
+Che la velocità sia quella della cucina vale finché l'ordine è grosso. Chiedi
+un chicco di riso alla volta e la griglia resta ferma: il tempo se ne va tutto
+nel cameriere che fa avanti e indietro con foglietti da una riga. Per questo in
+PyTorch si lavora su blocchi interi di numeri, e non su un numero per volta.
 `````
 
 `````{tab} Superiore
@@ -230,7 +266,8 @@ consultarla.
   correggerlo in un normale programma Python.
 - Python è la sala del ristorante; la cucina è scritta in un linguaggio più
   veloce e sta sotto, invisibile. Tu ordini in Python, la velocità è quella
-  della cucina.
+  della cucina, ma solo se l'ordine è grosso: un chicco di riso alla volta e
+  il tempo se ne va tutto nel portare le comande.
 - È lo strumento con cui oggi si fa quasi tutta la ricerca. Non è l'unico:
   imparato questo, gli altri si leggono senza fatica, perché le idee (numeri
   in scatole, strati, gradienti) sono le stesse.

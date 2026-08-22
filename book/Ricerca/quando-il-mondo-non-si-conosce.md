@@ -60,13 +60,28 @@ rifallo. Poi rifallo mille volte. Alla fine non hai un giudizio, hai un
 conteggio: da questa posizione, tirando a caso, ho vinto (mettiamo)
 seicentotrenta volte su mille.
 
+A caso, ma con un divieto: non si posa un sassolino dentro un buco circondato
+tutto da sassolini propri. È una mossa che nessun giocatore farebbe, perché
+riempie con le proprie mani il territorio che stava tenendo. E senza quel
+divieto due giocatori che tirano a caso continuano a disfare quello che hanno
+appena costruito, la partita non finisce, e mille partite che non finiscono
+non contano niente.
+
 Detta così sembra assurdo, perché nessuna di quelle mille partite somiglia a
 una partita vera: sono mosse a caso, giocate malissimo da tutti e due. Ed è
-proprio questo il punto, e vale la pena capirlo bene: giocate malissimo **da
-tutti e due**. Se una posizione è davvero buona per me, resta buona anche in
-un mondo in cui giochiamo tutti a caso, perché il vantaggio non dipende dalla
-mia bravura. Il conteggio non misura come andrebbe la partita: misura quanto
-la posizione è *comoda*, e per scegliere una mossa spesso basta.
+proprio questo il punto: giocate malissimo da tutti e due. Se una posizione è
+davvero buona per me, resta buona anche in un mondo in cui giochiamo tutti a
+caso, perché il vantaggio non dipende dalla mia bravura. Il conteggio non
+misura come andrebbe la partita: misura quanto la posizione è *comoda*, e per
+scegliere una mossa spesso basta.
+
+Le partite da tirare, poi, non sono infinite, e servono a scegliere fra le
+mosse che potrei fare adesso: mille per ciascuna sarebbero troppe. Allora se
+ne dà qualcuna a tutte, si guarda quali stanno rendendo, e le prove successive
+vanno soprattutto lì; qualcuna però resta sempre per le mosse provate poco,
+perché tre partite andate male possono essere solo sfortuna. E ogni partita
+nuova si assegna così, una per volta, seguendo una regola sempre uguale invece
+che a occhio.
 
 Il punto di rottura c’è ed è serio: questo funziona nei giochi in cui una
 posizione buona resta buona anche giocando male. Ci sono giochi in cui non è
@@ -97,10 +112,11 @@ esplorare e sfruttare che il capitolo seguente introdurrà con i bandit a più
 braccia. Dare più prove a ciò che finora rende, senza smettere di provare ciò
 di cui si sa poco, e con una regola che quantifichi quel «senza smettere».
 
-Valutare una posizione giocando partite a caso non è un’idea del 2006: il
-primo era stato Bernd Brügmann {cite}`brugmann1993monte`, che nel 1993, senza
-dare al programma nessuna conoscenza oltre alle regole, sul nove per nove
-aveva raggiunto la forza di un principiante, ed è Coulom stesso a citarlo. Quello che nasce in quegli anni è la **fusione** delle due cose,
+Valutare una posizione giocando partite a caso non è un’idea del 2006, e nel
+Go ci era arrivato per primo Bernd Brügmann {cite}`brugmann1993monte`, che nel
+1993, senza dare al programma nessuna conoscenza oltre alle regole, sul nove
+per nove aveva raggiunto la forza di un principiante, ed è Coulom stesso a
+citarlo. Quello che nasce in quegli anni è la **fusione** delle due cose,
 e nasce in due tempi. Prima l’albero che cresce **una simulazione alla volta**,
 con un modo di risalire i valori che comincia facendo la media e finisce
 facendo il minimax {cite}`coulom2006efficient`. Poi la regola che decide dove
@@ -111,11 +127,10 @@ quanto poco lo si è provato) applicata a ogni nodo dell’albero
 convergenza, dimostrate però per una classe circoscritta di problemi e non in
 generale.
 
-Vale la pena registrare anche il limite, perché è quello che il metodo si porta
-dietro: la stima campionaria è tanto più informativa quanto più il valore di
-una posizione è **robusto rispetto alla qualità del gioco**. Nei domini in cui
-il valore dipende da una singola linea forzata, le simulazioni casuali sono
-rumore puro.
+C’è un limite, e il metodo se lo porta dietro: la stima campionaria è tanto
+più informativa quanto più il valore di una posizione è **robusto rispetto
+alla qualità del gioco**. Nei domini in cui il valore dipende da una singola
+linea forzata, le simulazioni casuali sono rumore puro.
 
 `````
 
@@ -175,15 +190,23 @@ dove porta. Puoi solo farla per davvero, e guardare che cosa succede. E se era
 una mossa disastrosa, il disastro te lo tieni: non c’è nessun «rimetto la torre
 dov’era».
 
-Sparisce tutto quello che il capitolo ha costruito. Non c’è albero da
-esplorare, perché per costruire l’albero bisognerebbe sapere dove portano le
+Sparisce, di colpo, tutto quello che il capitolo ha costruito. Non c’è albero
+da esplorare, perché per costruire l’albero bisognerebbe sapere dove portano le
 mosse. Non c’è potatura, perché non ci sono rami. Non c’è nemmeno il modo di
 guardare avanti di un passo.
 
-Quello che resta è una cosa sola: provare, vedere com’è andata, e **ricordarsi**
-com’è andata. Chi ha fatto una mossa mille volte in situazioni simili sa, senza
-conoscere le regole, che di solito finisce bene. Non ha una mappa: ha
-un’esperienza.
+Quello che resta, all’inizio, è una cosa sola: provare, vedere com’è andata, e
+**ricordarsi** com’è andata. Chi ha fatto una mossa mille volte in situazioni
+simili sa, senza conoscere le regole, che di solito finisce bene. Non ha una
+mappa: ha un’esperienza.
+
+Dopo abbastanza partite, però, il regolamento comincia a intravedersi: se ogni
+volta che fai quella cosa succede quell’altra, ti sei scritto una regola tua.
+E allora torni a provare le mosse nella testa come facevi prima, ma su un
+regolamento indovinato al posto di quello vero. Di una mossa o due funziona
+bene. Se ne incateni dieci, ogni pezzo storto si somma a quelli di prima, e il
+finale che ti figuri non ha più molto a che fare con quello che succederà
+davvero al tavolo.
 
 Ed è esattamente quello che si impara a fare da qui in poi.
 
@@ -209,9 +232,9 @@ cieca e diventa quella di AlphaGo e dei suoi successori
 {cite}`silver2016mastering`. E se il modello non c’è affatto, restano i metodi
 del capitolo seguente.
 
-Resta un punto di contatto che vale la pena nominare adesso, perché il libro ci
-tornerà alla fine: anche a modello ignoto, **pensare prima di rispondere paga**.
-Il calcolo speso al momento della risposta invece che durante l’addestramento è
+Resta un punto di contatto, e il libro ci tornerà alla fine: anche a modello
+ignoto, **pensare prima di rispondere paga**. Il calcolo speso al momento
+della risposta invece che durante l’addestramento è
 una forma di ricerca, e il capitolo sui Transformer lo tratterà per esteso
 parlando dei modelli che scrivono una lunga brutta copia prima di rispondere.
 
@@ -235,16 +258,20 @@ interrogare, all’apprendimento per rinforzo. Un metodo di intelligenza artific
   dare a una posizione di mezzo.
 - Se manca **il voto** (è il caso del Go, dove nessuno è mai riuscito a
   scriverlo), lo si sostituisce con un conteggio: da qui, gioca mille partite a
-  caso e guarda quante ne vinci. Funziona nei giochi in cui una posizione comoda
-  resta comoda anche giocando male, e non funziona dove esiste una sola
-  continuazione che salva.
+  caso e guarda quante ne vinci. Le partite non si spartiscono in parti uguali
+  fra le mosse candidate: ne va di più a quelle che stanno rendendo, e qualcuna
+  resta sempre per quelle provate poco. Funziona nei giochi in cui una
+  posizione comoda resta comoda anche giocando male, e non funziona dove esiste
+  una sola continuazione che salva.
 - Se manca **l’arrivo**, la ricerca smette di cercare una strada e si mette a
   migliorare quello che ha, fermandosi quando scade il tempo, come si fa
   sistemando i mobili in una stanza.
-- Se mancano **le regole** da interrogare, casca tutto: non c’è albero, non c’è
-  potatura, non c’è niente da guardare avanti. Resta solo provare per davvero e
-  ricordarsi com’è andata, e questo ha un nome: **apprendimento per
-  rinforzo**.
+- Se mancano **le regole** da interrogare, all’inizio casca tutto: non c’è
+  albero, non c’è potatura, non c’è niente da guardare avanti. Resta provare
+  per davvero e ricordarsi com’è andata, e questo ha un nome: **apprendimento
+  per rinforzo**. Poi il regolamento comincia a intravedersi, e si torna a
+  provare le mosse nella testa su quello indovinato: di una mossa o due
+  funziona, di dieci incatenate ogni pezzo storto si somma a quelli di prima.
 ```
 
 `````

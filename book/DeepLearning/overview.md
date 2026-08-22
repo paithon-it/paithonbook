@@ -29,10 +29,24 @@ le caratteristiche scelte da un umano. Solo dopo il modello impara a
 distinguere i gatti dai cani.
 
 Il deep learning fa un patto diverso: gli dai i pixel grezzi e lascia che sia
-la rete, addestrandosi, a inventarsi da sola gli ingredienti giusti. È come la
-differenza tra un cuoco a cui porti le verdure già tagliate e uno a cui porti
-la verdura intera: il secondo impara a tagliarla esattamente nel modo che serve
-al piatto.
+la rete, addestrandosi, a inventarsi da sola gli ingredienti giusti.
+
+In cucina la differenza si vede bene. Al primo cuoco le verdure arrivano già
+tagliate da un fornitore, sempre allo stesso modo, cubetti da un centimetro,
+perché così si è deciso una volta per tutte. Il cuoco cucina, manda il piatto
+in sala, e il cliente gli fa sapere quanto ci è andato vicino. Quel giudizio
+arriva fino ai fornelli e non oltre, perché il fornitore continua a tagliare
+come sempre anche se il piatto torna indietro dieci sere di fila. E se il
+coltello ha buttato via la parte buona, la punta degli asparagi finita nello
+scarto, alla cottura non resta niente da recuperare.
+
+Al secondo cuoco arriva la verdura intera. Il giudizio del cliente risale
+all'indietro tutta la catena, dalla sala ai fornelli e dai fornelli al
+tagliere, e la sera dopo cambiano insieme la cottura e il taglio. Nessuno gli
+ha detto che gli asparagi vanno tagliati in diagonale; ci arriva perché così i
+piatti tornano indietro meno spesso. Il taglio ha smesso di essere una regola
+fissa decisa da qualcun altro ed è diventato una parte del mestiere che si
+impara.
 
 `````
 
@@ -40,7 +54,7 @@ al piatto.
 
 In una pipeline classica di visione artificiale un estrattore fisso e
 progettato a mano (SIFT, HOG, filtri di Gabor) mappa l'immagine in un vettore
-di feature $\phi(\mathbf{X})$, su cui un classificatore $g$ viene addestrato.
+di feature $\phi(\mathbf{X})$, su cui un classificatore $h$ viene addestrato.
 L'estrattore $\phi$ è congelato: non impara nulla dai dati.
 
 Una rete profonda è invece una composizione di trasformazioni parametriche
@@ -49,10 +63,13 @@ $$
 f_\theta = f_L \circ f_{L-1} \circ \dots \circ f_1 ,
 $$
 
-dove tipicamente $f_\ell(\mathbf{Z}) = \sigma(\mathbf{W}_\ell \mathbf{Z} + \mathbf{b}_\ell)$ ha i suoi pesi
-$\mathbf{W}_\ell$ (ma incontreremo anche strati di altra forma, come il pooling), e
-tutti i parametri $\theta$ vengono ottimizzati insieme minimizzando la loss
-$\mathcal{L}$ per retropropagazione (*end-to-end*). L'estrazione delle feature
+dove $L$ è il numero di strati e tipicamente
+$f_\ell(\mathbf{Z}) = \sigma(\mathbf{W}_\ell \mathbf{Z} + \mathbf{b}_\ell)$, con la matrice di pesi
+$\mathbf{W}_\ell$, il vettore di bias $\mathbf{b}_\ell$ e la non linearità $\sigma$ applicata
+elemento per elemento (ma incontreremo anche strati di altra forma, come il
+pooling). Tutti i parametri $\theta$, dal primo strato all'ultimo, vengono
+ottimizzati insieme minimizzando la loss $\mathcal{L}$ per retropropagazione
+(*end-to-end*). L'estrazione delle feature
 non è più a monte e fissa: è parte del modello e viene appresa. È ciò che si
 chiama *representation learning*.
 
@@ -94,10 +111,23 @@ dritti, curve, angoli. Poi combini quei tratti in parti riconoscibili: due
 cerchi diventano occhi, due triangoli diventano orecchie. Alla fine le parti si
 assemblano in un gatto intero.
 
+Man mano che si sale, ogni pezzo copre più tavolo. Un tratto dritto sta in un
+dito di spazio, l'orecchio che mette insieme due triangoli prende mezzo palmo,
+il gatto finito occupa tutto il tavolino. Nessuno ha allargato niente apposta,
+la superficie cresce da sé, perché ogni pezzo raccoglie pezzi che a loro volta
+ne avevano già raccolti.
+
 La rete fa esattamente questo, ma senza che nessuno gliel'abbia insegnato:
 nessuno le dice "questo è un occhio". Impara da sola che, per riconoscere i
 gatti nelle foto, conviene prima trovare i bordi, poi comporli in parti, poi
 comporre le parti in animali.
+
+I pezzi dei primi assemblaggi, però, non sanno di gatto. Tratti dritti, curve e
+angoli servono identici a chi vuole costruire un cane, una moto o una casa;
+sono le orecchie a punta a valere solo per i gatti. Per questo chi ha passato
+mesi a costruire gatti non ricomincia dalla scatola quando gli chiedono una
+moto. Tiene i pezzi piccoli così come sono, rifà gli ultimi assemblaggi, e in
+un pomeriggio ha finito.
 
 `````
 
@@ -139,44 +169,50 @@ nome del primo dei suoi autori, Alex Krizhevsky.
 
 `````{tab} Elementare
 
-Per accendere un fuoco servono la legna, l'aria e una scintilla: se manca anche
-uno solo dei tre, non parte. Il deep learning è rimasto "spento" per anni non
-perché mancasse l'idea, ma perché mancava la combustione completa.
+Per accendere un fuoco servono la legna, l'aria e una scintilla: se manca uno
+solo dei tre, non parte. Il deep learning aveva l'idea da decenni ed è rimasto
+spento lo stesso.
 
-La legna sono i **dati**: milioni di immagini **etichettate**, cioè fotografie
-accanto a cui qualcuno ha scritto a mano che cosa c'è dentro. Prima di Internet
-non esistevano, perché raccoglierle e descriverle una per una era un lavoro
-fuori portata. Attenzione a una cosa, però, perché l'Introduzione ci ha
-insistito: quella legna nessuno è andato a tagliarla apposta. Erano le foto che
-la gente caricava per farle vedere agli amici, e qualcuno si è accorto che
-potevano servire ad altro. L'aria è il **calcolo**: le schede grafiche (GPU), nate per i
-videogiochi, si sono rivelate perfette per i conti delle reti.
+La legna sono i **dati**: milioni di fotografie **etichettate**, cioè con
+scritto accanto, a mano, che cosa c'è dentro. Ne servono milioni perché AlexNet
+aveva sessanta milioni di numeri da regolare, e a regolarli sono le foto, una
+dopo l'altra. Prima di Internet quella catasta non esisteva: descrivere una per
+una milioni di immagini era un lavoro fuori portata.
 
-La scintilla sono gli **algoritmi**: tre accorgimenti precisi, ciascuno contro
-un guaio preciso, che fanno la differenza fra la rete del 2012 e quelle che
-non imparavano.
+L'aria è il **calcolo**. Le schede grafiche (GPU) sono nate per i videogiochi e
+si sono rivelate perfette per i conti di una rete: un videogioco chiede la
+stessa moltiplicazione su un milione di punti dello schermo nello stesso
+istante, una rete la chiede su milioni di pesi. La scheda non vede la
+differenza e le sbriga in un colpo solo. AlexNet ha bruciato la sua legna su
+due schede da videogiocatore.
 
-Il primo riguarda la funzione che ogni neurone applica al numero che gli è
-uscito dai conti. Prima si usava una curva che schiaccia qualunque numero in un
-intervallo stretto: grande o piccolo che fosse, quello che ne usciva era sempre
-più o meno uguale, e la rete non aveva più modo di accorgersi della differenza.
-Al suo posto si adotta una regola molto più semplice: i numeri positivi passano
-come sono, i negativi diventano zero. Se entra 5 esce 5, se entra $-3$ esce 0.
-Si chiama **ReLU**.
+La scintilla sono gli **algoritmi**. Una scintilla su legna buona può benissimo
+spegnersi, ed è quello che succedeva: reti profonde che non imparavano. A farla
+attaccare sono tre accorgimenti, ciascuno contro un guaio preciso.
 
-Il secondo combatte il guaio peggiore di una rete: impararsi a memoria le
-fotografie dell'addestramento. Sembrerebbe un pregio, e invece è il modo più
-sicuro di fallire, perché una rete che le ricorda a mente va benissimo su quelle
-e male su tutte le altre, che sono poi le uniche che conteranno. Il rimedio è
-spegnere a caso, a ogni passata sulle fotografie, una parte dei neuroni: se un
-neurone potrebbe non esserci al giro dopo, gli altri non possono appoggiarsi
-solo a lui, e la rete è costretta a distribuire quello che sa invece di
-depositarlo tutto in un punto (**dropout**).
+Il primo guaio sta nella funzione che ogni neurone applica al numero uscito dai
+suoi conti. Era una curva che fa da rubinetto strozzato: giri quanto vuoi,
+l'acqua che esce è sempre quella. Numero grande o numero piccolo, quello che
+passava era più o meno uguale, e la rete non poteva accorgersi della
+differenza. C'è di peggio. La correzione torna indietro dall'ultimo strato
+verso il primo e attraversa uno di quei rubinetti a ogni strato che risale;
+ognuno ne lascia passare una frazione, e ai primi strati non arrivava quasi
+niente. Il rimedio è un rubinetto che o è chiuso o è spalancato: i numeri
+positivi passano come sono, i negativi diventano zero. Se entra 5 esce 5, se
+entra $-3$ esce 0. Si chiama **ReLU**.
 
-Il terzo è moltiplicare gli esempi ritagliando e specchiando le fotografie che
-già si hanno, per dare alla rete più materiale senza doverne etichettare altre
-(**data augmentation**). Nel 2012, per la prima volta, i tre elementi c'erano
-tutti.
+Il secondo guaio è che la rete si impara a memoria le fotografie
+dell'addestramento. Sembrerebbe un pregio, ed è il modo più sicuro di fallire:
+chi ripete a memoria i compiti dell'anno scorso va benissimo su quelli e male
+sul compito di domani, che è l'unico che conta. Il rimedio è spegnere a caso
+una parte dei neuroni a ogni passata sulle fotografie: se al giro dopo un
+neurone può mancare, gli altri non si appoggiano solo a lui, e quello che la
+rete sa finisce distribuito invece che depositato in un punto (**dropout**).
+
+Il terzo guaio è che le foto etichettate costano. Allora si ritagliano e si
+specchiano quelle che già ci sono, e da ognuna ne escono molte senza doverne
+etichettare altre (**data augmentation**). Nel 2012, per la prima volta, la
+legna, l'aria e la scintilla ci sono tutte insieme.
 
 `````
 
@@ -189,8 +225,8 @@ addestramento distribuite su 1000 categorie. Nel 2012 **AlexNet** (Krizhevsky,
 Sutskever, Hinton) vince proprio la ILSVRC portando l'errore *top-5* dal 26,2%
 del miglior metodo classico al 15,3%. Il confronto va letto per quello che è:
 il 15,3% è il punteggio della sottomissione, che media le predizioni di sette
-reti; la singola rete descritta nell'articolo, quella di cui parliamo qui, si
-ferma al 18,2%, e anche così il salto è senza precedenti.
+reti; la singola rete descritta nell'articolo si ferma al 18,2%, e anche così
+il salto è senza precedenti.
 
 I tre ingredienti, in numeri:
 
@@ -234,10 +270,16 @@ Se una rete "piatta" e larga sa già imitare tutto, perché impilare tanti strat
 `````{tab} Elementare
 
 Il teorema dice che *in teoria* un solo strato basta. Ma "in teoria" nasconde
-una fregatura: quel singolo strato potrebbe aver bisogno di un numero enorme,
-impraticabile, di neuroni.
+due fregature. Una sta nel prezzo: quel singolo strato potrebbe aver bisogno di
+un numero enorme, impraticabile, di neuroni. L'altra sta nel verbo che il
+teorema usa, "esiste". Garantisce che una rete buona ci sia da qualche parte,
+non che qualcuno la sappia trovare. A cercarla è l'addestramento, che parte da
+numeri buttati a caso e li corregge un poco alla volta guardando gli esempi,
+e sapere che il traguardo c'è non dice da che parte muoversi per raggiungerlo,
+né quante foto bisognerà guardare per arrivarci.
 
-Quello che manca alla rete piatta è la possibilità di **costruire sopra**. In
+Il prezzo alto ha una ragione precisa. Quello che manca alla rete piatta è la
+possibilità di **costruire sopra**. In
 una rete a un solo strato ogni neurone guarda i pixel grezzi e nient'altro:
 nessuno può partire da una forma che un altro ha già trovato per comporla con
 una seconda. Un occhio va descritto ogni volta a partire dai pixel, e le
@@ -354,10 +396,11 @@ precedente: la stessa scala dai bordi agli oggetti della
   Nel 2012 c'erano tutte e tre, e alla gara di ImageNet vinse AlexNet.
   (La ReLU è la regola più semplice possibile: i numeri positivi passano come
   sono, i negativi diventano zero.)
-- Uno strato solo, se lo si facesse enorme, in teoria basterebbe. Ma la
-  profondità arriva allo stesso risultato con molti meno neuroni, perché ogni
-  strato può **costruire sopra** quello che ha trovato il precedente, invece di
-  descrivere ogni forma a partire dai pixel.
+- Uno strato solo, se lo si facesse enorme, in teoria basterebbe: il teorema
+  però dice che una rete così *esiste*, non che l'addestramento la sappia
+  trovare. E la profondità arriva allo stesso risultato con molti meno neuroni,
+  perché ogni strato può **costruire sopra** quello che ha trovato il
+  precedente, invece di descrivere ogni forma a partire dai pixel.
 ```
 `````
 

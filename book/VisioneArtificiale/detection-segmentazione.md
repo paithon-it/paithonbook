@@ -36,17 +36,34 @@ Prendi un pennarello, cerchia in una foto ogni oggetto interessante e scrivigli
 accanto un nome: "auto", "cane", "semaforo". Ogni cerchio è in realtà un
 rettangolo (lo chiamiamo **bounding box**, la "cornice") e ogni nome è la
 classe. Un rilevatore fa esattamente questo, ma in automatico e per molti
-oggetti insieme. Per ciascuno deve indovinare due cose alla volta: *dove*
-tracciare la cornice e *cosa* c'è dentro.
+oggetti insieme. Per ciascuno indovina tre cose alla volta: *dove* tracciare la
+cornice, *cosa* c'è dentro e *quanto ci crede*, cioè un numero fra 0 e 1 con
+cui dichiara la sua sicurezza che lì dentro qualcosa ci sia davvero.
+
+Il terzo numero serve perché nessuno gli ha detto quante cornici disegnare. In
+una foto di strada gli oggetti possono essere due o quaranta, e prima di
+guardare non lo sa. Allora tiene pronte tantissime cornici sparse su tutta la
+foto e le riempie tutte, sapendo che per la stragrande maggioranza la risposta
+giusta è "qui non c'è niente".
+
+Chi lo corregge, mentre impara, somma tre penalità: la cornice storta, il nome
+sbagliato, la sicurezza fuori posto. E non pesano uguale, perché il rapporto si
+sceglie prima di cominciare: in uno dei primi rilevatori era di dieci a uno fra
+una cornice storta attorno a un oggetto vero e un pizzico di sicurezza
+dichiarato su un pezzo di asfalto vuoto. I pezzi di asfalto vuoto sono
+migliaia, e se contassero quanto gli altri il rilevatore imparerebbe la
+scorciatoia più comoda del mondo, cioè rispondere "niente" dappertutto e avere
+quasi sempre ragione.
 
 `````
 
 `````{tab} Superiore
 
 Per ogni oggetto la rete predice un vettore
-$(x, y, w, h, c, p)$: le coordinate del centro e le dimensioni del riquadro,
-la classe $c$ e una confidenza $p \in [0,1]$ che stima se nel riquadro c'è
-davvero un oggetto. L'addestramento minimizza una loss composita che somma un
+$(x, y, w, h, c, p_{\text{obj}})$: le coordinate del centro e le dimensioni del
+riquadro, la classe $c$ e una confidenza $p_{\text{obj}} \in [0,1]$ che stima
+se nel riquadro c'è davvero un oggetto. L'addestramento minimizza una loss
+composita che somma un
 termine di **localizzazione** (errore sulle coordinate, tipicamente
 *smooth L1* o una IoU-loss), un termine di **classificazione** (cross-entropy
 sulla classe) e un termine di **objectness** che supervisiona la confidenza,
@@ -108,12 +125,27 @@ disposizione.
 I rilevatori **a due stadi** lavorano come un revisore scrupoloso: prima
 propongono un po’ di zone "sospette" dove *potrebbe* esserci qualcosa, poi
 guardano con calma dentro ognuna per decidere cosa sia e correggere la cornice.
-Più precisi, ma più lenti.
+Più lenti, e per anni i più precisi.
 
 I rilevatori **a uno stadio** fanno tutto in un colpo solo: un'unica passata
-sull'immagine sputa fuori direttamente cornici ed etichette. Meno precisi sui
-casi difficili, ma abbastanza rapidi da lavorare in tempo reale su un video,
-ed è per questo che si chiama YOLO, *You Only Look Once*.
+sull'immagine sputa fuori direttamente cornici ed etichette. A lungo sono stati
+meno precisi sui casi difficili, ma abbastanza rapidi da lavorare in tempo
+reale su un video, ed è per questo che si chiama YOLO, *You Only Look Once*.
+
+La ragione di quella minore precisione sta in un conto. Chi guarda una volta
+sola deve dare una risposta per ogni casella dell'immagine, e le caselle
+con dentro un oggetto sono una manciata contro decine di migliaia di asfalto,
+cielo e muro. Alla correzione arrivano così diecimila risposte quasi tutte
+uguali e quasi tutte facili: sommate, seppelliscono le poche difficili, e il
+rilevatore impara benissimo a dire "niente" e molto peggio tutto il resto.
+Abbassare in blocco il peso di tutte le risposte vuote, come si faceva
+all'inizio, aiuta e non basta: fra quelle vuote ce ne sono migliaia di ovvie e
+qualcuna insidiosa, e un peso unico le tratta allo stesso modo. Il rimedio,
+trovato nel 2017, cambia il modo di correggere invece dell'architettura: una
+risposta facile, di quelle su cui il rilevatore ha già ragione ed è pure sicuro,
+conta quasi zero, e a decidere la lezione restano i pochi casi su cui sta
+ancora sbagliando. Da lì lo svantaggio in precisione si è in gran parte chiuso,
+e fra le due famiglie è rimasta soprattutto la differenza di velocità.
 
 `````
 
@@ -160,10 +192,18 @@ orizzontale per i paesaggi, quadrato) e poi ritocca quello che ci va più
 vicino. Le ancore funzionano allo stesso modo. In ogni punto dell'immagine la
 rete ha a disposizione qualche cornice predefinita, di taglie e proporzioni
 diverse ({numref}`fig-anchor-boxes`). Davanti a un pedone non deve inventarsi
-il rettangolo: prende la cornice verticale, che gli somiglia già, e la aggiusta
-("spostati un po’ a sinistra, allungati un pelo"). Correggere una cornice quasi
-giusta è molto più facile che disegnarne una dal nulla, e la rete impara
-proprio questo: piccole correzioni, più il nome di ciò che c'è dentro.
+il rettangolo: prende la cornice verticale, che gli somiglia già, e la aggiusta.
+Correggere una cornice quasi giusta è molto più facile che disegnarne una dal
+nulla, e la rete impara proprio questo: piccole correzioni, più il nome di ciò
+che c'è dentro.
+
+Le correzioni si dicono in frazioni della cornice stessa, mai in centimetri:
+"spostati a destra di un decimo della tua larghezza, allungati di un quinto".
+Detta così, la stessa istruzione va bene per la cornicetta del passerotto in
+fondo al prato e per quella del camion in primo piano. Detta in centimetri, tre
+centimetri manderebbero la cornice del passerotto lontano dal passerotto e
+quella del camion appena appena, e la rete dovrebbe imparare un ritocco diverso
+per ogni taglia.
 
 Il confronto con il quadro, però, il corniciaio può farlo solo in bottega, sui
 quadri di prova di cui conosce già la cornice giusta: è lì che impara quale
@@ -226,42 +266,52 @@ reale (teal): è l'area di **intersezione** divisa per l'area di **unione**.
 
 `````{tab} Elementare
 
-Prendi la cornice predetta e quella giusta e chiediti: *quanto si
-sovrappongono?* La IoU misura proprio questo. Si guarda l'area in comune (la
-sovrapposizione) e la si divide per l'area totale coperta dalle due cornici
-messe insieme ({numref}`fig-iou`). Il risultato va da 0 a 1: **1** significa
-cornici perfettamente combacianti, **0** che non si toccano nemmeno. Un
-esempio con i quadretti: se le due cornici ne condividono 30 e, messe insieme,
-ne coprono 60, la IoU è $30/60 = 0{,}5$. Di solito si dice che una predizione
-è "giusta" proprio se la IoU supera **0,5**: metà o più di sovrapposizione.
-Quel mezzo però non è una legge di natura, è una convenzione, e alzarla a 0,7
-o a 0,9 può cambiare la classifica fra due rilevatori: uno che indovina sempre
-la categoria ma disegna cornici approssimative peggiora molto più in fretta di
-uno preciso. Per questo i confronti seri non ne usano una sola: rifanno il
-conto con dieci soglie, da 0,5 a 0,95, e fanno la media dei dieci risultati.
-Così nessuno può vincere scegliendosi il metro su misura.
+Chi corregge appoggia sulla foto del cane un foglio trasparente con la cornice
+giusta, e lo confronta con la cornice che il rilevatore ha tracciato. Non
+combaciano mai. La foto è stampata su carta a quadretti, e allora la somiglianza
+si misura contando: i quadretti coperti da tutte e due, divisi per quelli
+coperti da almeno una ({numref}`fig-iou`). Trenta in comune, sessanta in tutto:
+$30/60 = 0{,}5$. Il conto si chiama IoU e dà sempre un numero fra 0 e 1, dove 1
+vuol dire cornici sovrapposte quadretto per quadretto e 0 cornici che non si
+toccano nemmeno.
 
-Da qui si ricava il voto complessivo di un rilevatore, la **mAP**. Si parte
-dalla domanda più semplice che si possa fare a un rilevatore: di tutte le
-cornici che ha disegnato, quante erano giuste? Quella frazione si chiama
-**precisione** ed è il mattone di tutto. Il problema è che dipende da quanto il
-rilevatore è prudente: se disegna una cornice sola, quella di cui è
-sicurissimo, la sua precisione è alta ma si è perso quasi tutto; se ne disegna
-mille, le trova tutte ma ne sbaglia moltissime. Allora non si guarda un valore
-solo: si fa disegnare al rilevatore le sue cornici in ordine di sicurezza e si
-misura la precisione **ogni volta che ne esce una giusta** (dopo la prima
-cornice giusta, dopo la seconda, dopo la terza). Poi si sommano quelle misure e
-si divide per **quanti oggetti c'erano davvero** nelle foto, non per quante
-cornici il rilevatore ha disegnato: così ogni oggetto che non ha mai cerchiato
-pesa come uno zero, ed è questo a punire il rilevatore troppo prudente. Quel
-numero, che tiene conto insieme di quanto è preciso e di quanto è coraggioso, è
-il voto su **una** categoria.
+Il correttore deve stabilire a che punto una cornice vale come buona. La regola
+solita è la metà: da 0,5 in su passa. Quella metà l'ha fissata una convenzione,
+e sposta i verdetti. Portandola a 0,7 o a 0,9 la classifica fra due rilevatori
+può ribaltarsi, perché chi azzecca sempre il nome ma disegna cornici
+approssimative crolla molto più in fretta di chi le disegna precise. Nelle gare
+serie il correttore rifà quindi il conto con dieci soglie, da 0,5 a 0,95, e fa
+la media dei dieci verdetti: nessuno si presenta col metro tagliato su misura.
 
-Poi si fa la media di quei voti **sulle categorie**, e questa è la seconda
-media, quella che dà la «m» di *mean*. Il risultato è un numero fra 0 e 1 che
-riassume in un colpo solo quanto spesso il rilevatore azzecca insieme la cornice
-e il nome. Più è alto, meglio è, ed è il numero con cui due rilevatori si
-confrontano senza doverli guardare foto per foto.
+Nella foto accanto i cani sono tre, e il rilevatore consegna cinque cornici in
+fila, dalla più sicura alla meno sicura. Il correttore le prende in
+quest'ordine. Una cornice passa se copre abbastanza un cane che nessuna cornice
+precedente si è già presa, e da quel momento quel cane è suo: una seconda
+cornice sullo stesso animale, per quanto ben piazzata, va nella pila degli
+errori. Dopo ogni cornice giusta il correttore si ferma e conta quante ne ha
+viste giuste su quante ne ha guardate. Quella frazione è la **precisione**.
+
+Sono giuste la prima e le ultime due, quindi le fermate sono tre: 1 su 1, cioè
+1; poi 2 su 4, cioè 0,50; poi 3 su 5, cioè 0,60. I tre numeri ballano, perché
+ogni cornice sbagliata li tira giù e la giusta che viene dopo li rialza, su e
+giù come i denti di una sega. Prima di sommarli il correttore li appiattisce, e
+la regola sta in una riga: al posto del numero di quel momento si prende il più
+alto fra quello e tutti quelli che vengono dopo. I tre diventano 1, 0,60 e
+0,60. Un altro correttore, in un'altra stanza, arriva agli stessi tre, ed è per
+questo che si appiattisce.
+
+La somma fa 2,20, e si divide per tre, cioè per i cani che c'erano davvero, non
+per le cinque cornici disegnate: 0,73. Il cane che nessuna cornice ha cerchiato
+non aggiunge niente alla somma e resta comunque nel divisore. Chi disegna una
+cornice sola, la più sicura di tutte, tiene la precisione altissima e porta a
+casa un voto basso; chi ne disegna mille li cerchia tutti e tre e paga a ogni
+fermata gli errori che ha lasciato dietro. Quel 0,73 è il voto sui cani.
+
+Poi si rifà tutto sulle auto, sui semafori, sulle biciclette, e si fa la media
+di quei voti. È la seconda media, quella che dà la «m» di *mean* alla **mAP**.
+Ne esce un numero fra 0 e 1: più è alto, più spesso il rilevatore azzecca
+insieme la cornice e il nome, ed è il numero con cui due rilevatori si
+confrontano.
 
 `````
 
@@ -420,6 +470,13 @@ La segmentazione **di istanza** fa un passo in più: separa anche gli individui.
 Pedone-1 e pedone-2 ricevono maschere distinte. È come colorare dentro le linee,
 ma tenendo ogni personaggio con la sua tinta.
 
+Il modo più diffuso di ottenerla riusa il rilevatore. Prima si cerchia ogni
+pedone con la sua cornice, come per il rilevamento; poi, dentro ogni cornice e
+soltanto lì, si decide pixel per pixel chi è pedone e chi è marciapiede rimasto
+dentro il rettangolo. Le cornici tengono separati gli individui, la
+colorazione rifinisce la sagoma, e siccome ogni cornice arriva già con il suo
+nome, di ciascun pedone escono insieme cornice, nome e contorno.
+
 `````
 
 `````{tab} Superiore
@@ -472,7 +529,7 @@ $2 \times 2$ della mappa grande.
 
 `````{tab} Elementare
 
-Immagina una mappa piccola, $2 \times 2$, con quattro numeri:
+Una mappa piccola, $2 \times 2$, con quattro numeri:
 
 $$
 \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}
@@ -498,14 +555,29 @@ $$
 
 L'1 ha stampato un blocchetto di 1, il 4 un blocchetto di 4. Con passo 1,
 invece, i colpi si sarebbero sovrapposti e nelle caselle condivise i valori si
-sarebbero sommati. Non è un dettaglio da poco: quando le sovrapposizioni non
-sono uguali dappertutto, certe caselle ricevono due colpi e le loro vicine uno
-solo, e nell'immagine finale compare una trama regolare a quadretti che nella
-scena non c'era.
+sarebbero sommati. Le sovrapposizioni disuguali lasciano il segno: certe caselle
+ricevono due colpi e le loro vicine uno solo, e nell'immagine finale compare una
+trama regolare a quadretti che nella scena non c'era.
+
+C'è poi una cosa che la timbratura non può sapere. La mappa $2 \times 2$ di
+partenza l'ha prodotta la discesa, che aveva riassunto una tela più grande
+prendendone le caselle a due a due. Ma una tela di quattro caselle di lato e una
+di cinque si riducono tutte e due a quella stessa mappa: della quinta casella,
+spaiata, la discesa non sa che fare e la lascia fuori. Il riassunto non ricorda
+da quale delle due veniva, e timbrando si risale sempre alla più piccola. Chi
+mette in fila una discesa e una risalita si ritrova per questo, ogni tanto, le
+due metà della clessidra sfalsate di una casella, e deve dire a mano quale
+delle due taglie voleva.
 
 Con questo timbro banale abbiamo solo ingrandito la mappa; il punto è che i
 numeri sul timbro non sono fissi, la rete li **impara**. Può scoprire timbri che
 sfumano i bordi e ricostruiscono i dettagli molto meglio di un semplice zoom.
+Può però anche fare il contrario, e imparare timbri che la trama a quadretti la
+disegnano da soli, anche quando i colpi cadono ordinati e ogni casella ne riceve
+lo stesso numero. Sistemare il passo, quindi, non mette al riparo, e molte reti
+recenti scelgono una via più prudente: ingrandire la mappa in un modo fisso,
+ricopiando ogni casella o sfumando fra una casella e la vicina, e passarci sopra
+una convoluzione ordinaria, di quelle che non ingrandiscono.
 
 `````
 
@@ -520,14 +592,15 @@ $$
 dove $i$ è il lato della mappa in ingresso, $k$ quello del kernel, $s$ lo
 stride e $p$ il padding. Nell'esempio della figura $i=2$, $k=2$, $s=2$,
 $p=0$, quindi $o = 2 \cdot 1 + 2 - 0 = 4$. La formula assume dilatazione 1 e
-`output_padding` nullo, e vale la pena capire perché quel parametro esista: la
+`output_padding` nullo, e quel parametro esiste per una ragione precisa: la
 convoluzione diretta manda taglie di ingresso diverse nella stessa uscita (con
 $k=3$, $s=2$, $p=1$ sia un $7$ sia un $8$ diventano $4$), quindi la risalita
 non è univoca e la formula dà solo la più piccola delle partenze possibili. Chi
 la applica a una U-Net vera e trova le due metà della clessidra disallineate
 di un pixel ha trovato questo. Il nome viene dall'algebra: se si
 srotola l'input in un vettore, una convoluzione è la moltiplicazione per una
-matrice sparsa $C$; la trasposta moltiplica per $C^\top$, che riporta il
+matrice sparsa $\mathbf{C}$; la trasposta moltiplica per $\mathbf{C}^\top$, che
+riporta il
 vettore alla dimensione di partenza. È la stessa operazione con cui la
 backpropagation propaga il gradiente attraverso uno strato convoluzionale: il
 *forward* della trasposta è il *backward* della convoluzione. Per questo il
@@ -579,8 +652,10 @@ la traiettoria è chiara: dal *cosa*, al *dove*, fino al contorno esatto.
   disegna una cornice e ci scrive accanto il nome.
 - Due modi di farlo: **in due tempi** (prima si segnano le zone sospette, poi
   si guarda con calma dentro ognuna) o **in un colpo solo** (una passata sola
-  sull'immagine sputa fuori cornici e nomi). Il primo è più preciso, il secondo
-  abbastanza rapido da stare dietro a un video.
+  sull'immagine sputa fuori cornici e nomi). Il primo è nato più preciso, il
+  secondo abbastanza rapido da stare dietro a un video; poi è cambiato il modo
+  di correggere e in precisione si sono quasi raggiunti, così che a separarli
+  resta soprattutto la velocità.
 - Nessuno disegna le cornici dal nulla: come un corniciaio, la rete tiene
   pronti alcuni **formati standard** in ogni punto dell'immagine e si limita a
   ritoccare quello che ci va più vicino.
@@ -609,10 +684,12 @@ la traiettoria è chiara: dal *cosa*, al *dove*, fino al contorno esatto.
 :class: important
 - L’**object detection** predice per ogni oggetto un **riquadro** e una
   **classe** insieme.
-- Due famiglie: **due stadi** (R-CNN, Faster R-CNN) più accurate, **uno
-  stadio** (YOLO, SSD) più veloci (un compromesso accuratezza/velocità); e una
-  terza via, i rilevatori a **predizione di insieme** (DETR), che con
-  l'abbinamento bipartito eliminano per costruzione sia le ancore sia l'NMS.
+- Due famiglie: **due stadi** (R-CNN, Faster R-CNN) storicamente più accurate,
+  **uno stadio** (YOLO, SSD) più veloci; la *focal loss* ha in gran parte
+  sanato lo squilibrio oggetto/sfondo che costava quel divario, lasciando la
+  velocità come differenza principale. E una terza via, i rilevatori a
+  **predizione di insieme** (DETR), che con l'abbinamento bipartito eliminano
+  per costruzione sia le ancore sia l'NMS.
 - Le **anchor box** danno alla rete riquadri di partenza a più scale e
   proporzioni: si predicono piccoli **offset**, non riquadri dal nulla.
 - La **IoU** misura la sovrapposizione riquadro-realtà, non un tasso di errore;

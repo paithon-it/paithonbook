@@ -43,19 +43,38 @@ Le architetture di questi due capitoli sono un apparecchio solo, con poche
 manopole. Il corpo della macchina è sempre lo stesso: una memoria che a ogni
 parola scrive una nuova voce e ne
 rilegge le vecchie. Cambiare architettura non vuol dire cambiare macchina, ma
-girare tre manopole. La prima decide **quanto è grande** la memoria. La
-seconda decide **come sbiadisce** il passato quando arriva il presente: si può
-non sbiadire affatto, sbiadire tutto in blocco della stessa quantità, sbiadire
-casella per casella in modo diverso, oppure cancellare *di mira* solo la
-vecchia voce che sta per essere riscritta. Quest'ultima non è il gradino sopra
-le altre, è un'altra cosa: sbiadire alleggerisce tutto senza guardare che cosa
-butta via, cancellare di mira tiene in ordine una voce sola. Non
+girare tre manopole, e ognuna si paga con qualcosa.
+
+La prima decide **quanto è grande** la memoria. Più caselle vuol dire più voci
+che ci stanno senza pestarsi i piedi. Il conto arriva a ogni parola: le caselle
+si toccano tutte, una per una, sia per scrivere sia per rileggere, quindi un
+foglio più capiente è anche un foglio più lento.
+
+La seconda decide **come sbiadisce** il passato quando arriva il presente: si
+può non sbiadire affatto, sbiadire tutto in blocco della stessa quantità,
+sbiadire casella per casella in modo diverso, oppure cancellare *di mira* solo
+la vecchia voce che sta per essere riscritta. Quest'ultima posizione sta su un
+altro asse rispetto alle prime: sbiadire alleggerisce tutto senza guardare che
+cosa butta via, cancellare di mira tiene in ordine una voce sola. Non
 sbiadire affatto, però, non vuol dire tenere tutto: le caselle restano quelle,
-le voci continuano ad ammucchiarsi una sopra l'altra, e più avanti in questa
-pagina vedremo che è il limite di fondo di tutta la famiglia. La terza manopola
-decide se queste scelte sono **fisse**, uguali
+le voci continuano ad ammucchiarsi una sopra l'altra, e più se ne ammucchiano
+meno pulita torna ciascuna. Anche questa manopola ha il suo prezzo. Con una
+regola di sbiadire semplice, uguale per tutte le caselle, l'apparecchio sbriga
+la pagina intera in una volta sola; più la regola guarda al dettaglio della
+singola voce, più quel lavoro in blocco diventa difficile da organizzare, e si
+finisce per procedere a pezzi piccoli. Quello che si compra in cambio è un
+registro tenuto in ordine, e riletture che tornano più precise.
+
+La terza manopola decide se queste scelte sono **fisse**, uguali
 per ogni parola, o se invece è la parola stessa a deciderle, momento per
-momento. RetNet, GLA, DeltaNet, Mamba: sono lo stesso apparecchio con le
+momento. Una regola fissa sbiadisce allo stesso modo la data che servirà fra
+trecento pagine e l'intercalare che non serve a nessuno, perché guarda soltanto
+a quanto tempo è passato. Se decide la parola, la data si tiene intatta e
+l'intercalare cade subito: si dimentica in base a quello che si legge. Anche
+questo si paga: la scelta va rifatta a ogni parola, e non si può più
+preparare una volta sola all'inizio.
+
+RetNet, GLA, DeltaNet, Mamba: sono lo stesso apparecchio con le
 manopole in posizioni diverse. Nomi e sigle diversi per un solo schema. E le
 posizioni si combinano: c'è chi gira insieme la manopola dello sbiadire in
 blocco e quella del cancellare di mira, e si chiama **Gated DeltaNet**.
@@ -168,10 +187,10 @@ esatto*.
 
 `````{tab} Elementare
 
-La differenza è quella tra un quaderno di appunti e una biblioteca. Il
-quaderno è il foglio-registro di sempre, che qui conviene chiamare così perché
-lo mettiamo accanto a una biblioteca. L'attenzione
-piena dei Transformer è la biblioteca: conserva *ogni* parola letta, e quando le
+Un quaderno di appunti da una parte, una biblioteca dall'altra: la differenza è
+tutta lì. Il quaderno è il foglio-registro di sempre, che cambia nome per stare
+accanto alla biblioteca. L'attenzione piena dei Transformer è la biblioteca:
+conserva *ogni* parola letta, e quando le
 chiedi «cosa diceva esattamente quella frase a pagina 900?» va allo scaffale e la
 ripesca alla lettera. Il prezzo è doppio. Prima lo spazio: la biblioteca cresce
 senza fine, un ripiano per ogni pagina. Poi, e conta di più, il lavoro: ogni
@@ -184,7 +203,9 @@ taglia fissa. A ogni pagina che leggi aggiorni i tuoi appunti: riassumi,
 sovrascrivi, cancelli il vecchio per far posto al nuovo. E non è che a un certo
 punto il quaderno si riempia e smetta di funzionare: peggiora da subito, un
 pochino a ogni pagina, e a un certo punto quel pochino è diventato troppo per
-la domanda che gli stai facendo. Il quaderno costa
+la domanda che gli stai facendo. Quando le voci ammucchiate sono più o meno
+tante quante le caselle, quello che rileggi è per metà la voce che cercavi e
+per metà le briciole di tutte le altre. Il quaderno costa
 pochissimo: resta sempre dello stesso spessore per quante pagine tu legga. Ma
 proprio perché non cresce, non può contenere tutto: se dopo mille pagine ti
 chiedo di **citare a memoria** una frase precisa di pagina 900, il quaderno ti
@@ -192,8 +213,16 @@ dà il senso generale, non le parole esatte. Le hai riassunte, non trascritte.
 Che sia proprio così lo si misura con due prove fatte apposta: nascondere una
 frase in un testo lunghissimo e chiedere di ripescarla alla lettera (è *l'ago
 nel pagliaio*), oppure riempire la memoria di centinaia di coppie nome-numero e
-chiedere a bruciapelo il numero di un nome qualsiasi. Questo è il compromesso: memoria che costa poco e non cresce, in cambio della
-rinuncia al ricordo alla lettera di ogni singolo dettaglio.
+chiedere a bruciapelo il numero di un nome qualsiasi.
+
+Non tutti i quaderni si tengono allo stesso modo, e si vede: chi cancella la
+voce vecchia prima di metterci la nuova, invece di lasciare che le scritte si
+sovrappongano, tiene nello stesso quaderno molta più roba leggibile. Ma sposta
+più in là la pagina che lo manda
+in crisi, non la toglie: lo spessore è quello, e prima o poi arriva la domanda
+a cui il quaderno non sa rispondere. Questo è il compromesso: memoria che costa
+poco e non cresce, in cambio della rinuncia al ricordo alla lettera di ogni
+singolo dettaglio.
 
 `````
 
@@ -204,7 +233,7 @@ d}$ ha un numero finito di gradi di libertà: come osservato già nel lavoro sui
 *fast weight programmer* {cite}`schlag2021linear`, in dimensione $d$ non
 esistono più di $d$ direzioni mutuamente ortogonali. Attenzione a come si legge
 questo limite, perché la lettura sbagliata è la più comoda: l'interferenza fra
-associazioni **non compare oltre una soglia**. Come si è visto nel capitolo
+associazioni non aspetta una soglia per comparire. Come si è visto nel capitolo
 precedente, con chiavi casuali il *crosstalk* cresce da subito, come
 $\sqrt{N/d}$ nel numero $N$ di coppie scritte (in questa formula, e solo qui,
 $N$ conta le coppie: non è la dimensione dello stato di un SSM, che nel resto
@@ -246,17 +275,27 @@ smisurato pesa poco sul totale.
 
 `````{tab} Elementare
 
-È la logica di una squadra ben assortita. In un'inchiesta giornalistica non
-metti solo archivisti né solo cronisti: tieni pochi archivisti (quelli che
-sanno ripescare il documento esatto quando serve la citazione precisa) e molti
-cronisti veloci che tengono il filo del racconto senza rileggersi ogni volta
-tutto l'archivio. La stragrande maggioranza del lavoro la fanno i cronisti, a
-costo basso; gli archivisti intervengono nei pochi momenti in cui l'esattezza
-è decisiva. Le architetture ibride sono organizzate così: qualche strato che
-conserva tutto e ricorda alla lettera, il resto a memoria costante. Sono fatti
-così **Jamba** e **Samba**, e le versioni miste di architetture che abbiamo già
-incontrato. È una divisione dei compiti, non un compromesso al ribasso, ed è quella che
-oggi rende meglio.
+In un'inchiesta giornalistica non metti solo archivisti né solo cronisti:
+tieni pochi archivisti (quelli che sanno ripescare il documento esatto quando
+serve la citazione precisa) e molti cronisti veloci che tengono il filo del
+racconto senza rileggersi ogni volta tutto l'archivio. È la logica di una
+squadra ben assortita. La stragrande maggioranza del lavoro la fanno i
+cronisti, a costo basso; gli archivisti intervengono nei pochi momenti in cui
+l'esattezza è decisiva. Le architetture ibride sono organizzate così: qualche
+strato che conserva tutto e ricorda alla lettera, il resto a memoria costante.
+Sono fatti così **Jamba** e **Samba**, e le versioni miste di architetture che
+abbiamo già incontrato. La divisione si può fare anche per tempo, ed è la
+ricetta di Samba:
+gli archivisti seguono alla lettera soltanto i giorni appena passati, e del
+lungo periodo si fidano del riassunto dei cronisti.
+
+Due cose, però, la squadra mista non le fa sparire. Il lavoro degli archivisti
+non è abolito, solo ridotto a pochi: se l'inchiesta diventa sterminata, quei
+pochi tornano a passare le giornate a confrontare carte con carte, ed è di
+nuovo la spesa che si voleva evitare. E sulla citazione alla lettera una
+redazione di soli archivisti resta più precisa: la squadra mista le arriva
+vicino, a una frazione del prezzo. Le due figure sono brave in cose diverse, ed
+è tutto quello che serve perché convenga tenerle insieme.
 
 `````
 

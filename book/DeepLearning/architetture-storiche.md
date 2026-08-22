@@ -38,10 +38,18 @@ più matura della serie, ed è la versione che si studia ancora oggi.
 
 `````{tab} Elementare
 Una piccola lente scorre sull'immagine di una cifra, un pezzetto alla volta,
-cercando tratti semplici: un bordo, una curva, un angolo. Poi una seconda lente
-combina questi tratti in forme più grandi, finché la rete decide quale numero
-da 0 a 9 sta guardando. LeNet-5 fa esattamente questo, e ha imparato a leggere
-le cifre scritte a mano meglio di qualsiasi programma scritto a regole.
+cercando tratti semplici: un bordo, una curva, un angolo. È la stessa lente in
+ogni punto del foglio, e questo cambia il conto: c'è da impararne una sola,
+invece di una diversa per ogni posizione.
+
+Dopo ogni passata la rete riassume. Divide il risultato in quadretti e di
+ciascuno tiene un numero solo: resta scritto che il tratto c'era, si perde dove
+stava di preciso. Una cifra scritta un po' più in alto, o un po' più storta,
+lascia allora la stessa traccia. Poi una seconda lente combina questi tratti in
+forme più grandi, finché la rete decide quale numero da 0 a 9 sta guardando.
+
+LeNet-5 fa esattamente questo, e ha imparato a leggere le cifre scritte a mano
+meglio di qualsiasi programma scritto a regole.
 `````
 
 `````{tab} Superiore
@@ -79,7 +87,7 @@ preliminare su un archivio di immagini dieci volte più grande. La singola rete
 descritta nell'articolo, quella di cui parlano i prossimi paragrafi, si ferma al
 18,2%. Anche così il salto è tale che fu il momento in cui il resto del campo
 capì che il deep learning funzionava. (La stessa distinzione fra la rete e la
-squadra tornerà con ResNet, più avanti in questa sezione.)
+squadra tornerà con ResNet.)
 
 ```{figure} ../figures/alexnet-2012.svg
 :name: fig-alexnet
@@ -107,15 +115,28 @@ vede nella **forma** dell'architettura, e non sarà l'ultima.
 
 `````{tab} Elementare
 AlexNet è, in fondo, una LeNet cresciuta: molti più strati, molte più
-"lenti", e per la prima volta addestrata su schede grafiche (le **GPU**, le
-schede nate per far girare i videogiochi) invece che su normali processori.
+"lenti", e l'addestramento su schede grafiche (le **GPU**, le schede nate per
+far girare i videogiochi) invece che su normali processori.
 
-In più ha qualche accorgimento nuovo per non "imparare a memoria" le fotografie
+Cambia anche il modo in cui ogni neurone decide quanto accendersi. La regola
+vecchia schiacciava i valori grandi verso un tetto, e una volta appiccicati al
+tetto si somigliavano tutti: la rete non capiva più in che verso correggersi, e
+imparava pianissimo. La regola nuova è sbrigativa: sotto lo zero spegne, sopra
+lo zero lascia passare il numero com'è. Niente tetto, nessuna zona piatta,
+addestramento molto più rapido.
+
+Ci sono poi due accorgimenti per non "imparare a memoria" le fotografie
 dell'addestramento. Impararle a memoria sembrerebbe un pregio e invece è il
 guaio peggiore: una rete che le ricorda a mente va benissimo su quelle e male su
-tutte le altre, che sono poi le uniche che conteranno. Con più muscoli e quegli
-accorgimenti, AlexNet ha imparato a distinguere migliaia di oggetti diversi in
-fotografie vere, sfocate e disordinate come quelle che scattiamo tutti i giorni.
+tutte le altre, che sono poi le uniche che conteranno. Uno dei due spegne a caso
+una parte dei neuroni a ogni passata, così nessuno può contare sempre sugli
+stessi compagni per dare la sua risposta. L'altro non mostra mai la stessa
+fotografia due volte uguale: la ritaglia in un punto diverso, la specchia, le
+sposta un po' i colori.
+
+Con più muscoli e quegli accorgimenti, AlexNet ha imparato a distinguere
+migliaia di oggetti diversi in fotografie vere, sfocate e disordinate come
+quelle che scattiamo tutti i giorni.
 `````
 
 `````{tab} Superiore
@@ -215,6 +236,13 @@ sono più passaggi in cui può succedere qualcosa di interessante; e i numeri da
 imparare sono meno, perché due quadratini da tre per tre hanno diciotto caselle
 e uno da cinque per cinque ne ha venticinque. È il principio del mattoncino
 Lego: pochi pezzi uguali, combinati in tanti strati.
+
+Il risparmio riguarda le lenti, e il peso di VGG sta altrove. In fondo alla rete
+resta l'enorme ufficio di neuroni che decide la categoria, quello che NiN aveva
+appena mostrato come togliere: lì dentro stanno quasi nove decimi dei
+centotrentotto milioni di numeri che VGG deve imparare, cioè più del doppio di
+quanti ne aveva AlexNet. I mattoncini piccoli danno la profondità, e la
+profondità costa poco; il finale no.
 `````
 
 `````{tab} Superiore
@@ -225,8 +253,8 @@ $25C^2$ pesi, due filtri $3\times 3$ solo $2\cdot 9C^2 = 18C^2$. VGG-16 e
 VGG-19 spingono la profondità a 16–19 strati e diventano il punto di
 riferimento per il *transfer learning* degli anni successivi.
 
-Il campo recettivo si conta con una regola sola, che vale la pena scrivere
-perché serve ogni volta che si progetta una pila di strati:
+Il campo recettivo si conta con una regola sola, che serve ogni volta che si
+progetta una pila di strati:
 
 $$
 r_\ell = r_{\ell-1} + (k_\ell - 1)\prod_{i<\ell} s_i ,
@@ -258,9 +286,19 @@ di NiN.
 `````{tab} Elementare
 Quanto è grande la cosa che stiamo cercando? Un dettaglio minuscolo o un
 oggetto che riempie l'inquadratura? Inception non sceglie: guarda lo stesso
-punto contemporaneamente con lenti di misure diverse e poi mette insieme tutto
-ciò che ha visto. Come avere occhiali per vicino e per lontano nello stesso
-istante.
+punto contemporaneamente con lenti di misure diverse, e poi tiene tutti i
+risultati, uno accanto all'altro. Come avere occhiali per vicino e per lontano
+nello stesso istante.
+
+Guardare con tutte le lenti insieme, però, costerebbe caro. Una lente deve
+leggere tutte le opinioni raccolte in quel punto, e in mezzo alla rete le
+opinioni sono centinaia: i numeri da imparare sono le caselle del quadratino
+per le opinioni in entrata per quelle in uscita, e la lente grande ha molte più
+caselle. Davanti a ogni lente grande, allora, il modulo mette la lente di NiN,
+quella che guarda un solo punto: prima riassume le opinioni, poi la lente grande
+legge il riassunto. Nel primo modulo di GoogLeNet la lente da cinque per cinque
+avrebbe $192$ opinioni da leggere, il riassunto gliene passa $16$, e per quel
+ramo i numeri da imparare scendono da $153\,600$ a $15\,872$.
 `````
 
 `````{tab} Superiore
@@ -338,6 +376,24 @@ più danni.
 Perché prima li facesse, quei danni, non è del tutto chiaro nemmeno oggi. Quello
 che si sa è che la soluzione buona esisteva anche nella rete profonda, e che la
 rete non riusciva a trovarla: la scorciatoia gliela mette a portata di mano.
+
+La somma, però, chiede una condizione: che i due pezzi abbiano la stessa forma,
+tanti numeri di qua quanti di là, disposti allo stesso modo. Finché il blocco
+restituisce quello che ha ricevuto, il conto torna. Ogni tanto la rete cambia
+formato (raddoppia le opinioni raccolte in ogni punto, oppure rimpicciolisce le
+mappe), e lì i due pezzi hanno misure diverse: sommarli non viene male, non
+viene proprio. La scorciatoia allora non porta più l'input intatto ma una sua
+versione riadattata, che di numeri da imparare ne ha anche lei. Ed è lì che il
+«se non serve correggere nulla, non si guasta niente» smette di valere: in quel
+punto lasciar passare tutto liscio non è gratis.
+
+Nelle reti più profonde cambia anche l'interno del blocco. Con 256 opinioni per
+punto, due lenti da tre per tre in fila costano più di un milione di numeri da
+imparare. Il blocco allora riassume prima le opinioni a 64, con la lente che
+guarda un solo punto, fa il lavoro vero su quelle poche e alla fine le riporta a
+256: stessa forma in uscita, diciassette volte meno numeri. È per questo che una
+rete di centocinquantadue strati ha meno della metà dei numeri da imparare di
+VGG, che di strati ne ha sedici.
 `````
 
 `````{tab} Superiore
@@ -434,9 +490,12 @@ prima*, messo semplicemente uno accanto all'altro
 messaggio ha sotto gli occhi l'intera conversazione: nessuna informazione va
 riassunta o ricostruita, basta consultarla. E proprio perché può contare su
 tutto il lavoro già fatto, ogni strato aggiunge poco di suo (poche mappe nuove
-per volta) e la rete resta sorprendentemente snella. Il rovescio della
-medaglia è lo stesso delle chat: la cronologia cresce, e tenerla tutta aperta
-occupa parecchia memoria.
+per volta) e la rete resta sorprendentemente snella. Due mappe si possono
+affiancare solo se hanno la stessa misura, quindi la conversazione non prosegue
+all'infinito: ogni tanto la rete la chiude, rimpicciolisce tutte le mappe e ne
+comincia una nuova. Il rovescio della medaglia è lo stesso delle chat: la
+cronologia cresce, ogni strato se ne tiene una copia sua, e la memoria occupata
+sale molto più in fretta del numero di strati.
 `````
 
 `````{tab} Superiore
@@ -500,9 +559,11 @@ ha il suo peso, e quei tre elenchi si moltiplicano fra loro:
 $9 \times 64 \times 128$. Separando, due dei tre si **sommano** invece di
 moltiplicarsi: $9 \times 64$, più $64 \times 128$.
 
-È il tipo di risparmio che non si ottiene tagliando qualcosa, ma accorgendosi
-che si stava pagando due volte. Su questo mattone sono costruite quasi tutte le
-reti che girano sui telefoni.
+Qualcosa si perde, però. Le combinazioni che mescolavano in un colpo solo il
+posto nel quadratino e l'opinione di partenza adesso vanno ottenute in due
+tempi, e in due tempi non vengono tutte uguali. All'atto pratico erano quasi
+tutte ripetizioni, e l'accuratezza ne risente pochissimo. Su questo mattone sono
+costruite quasi tutte le reti che girano sui telefoni.
 `````
 
 `````{tab} Superiore
@@ -691,26 +752,36 @@ arriva, ed è una lezione che vale ancora oggi, dai Transformer in poi.
   alla volta, sempre la stessa in ogni punto, e impara a leggere le cifre
   scritte a mano.
 - **AlexNet** (2012): la stessa idea cresciuta (molti più strati, molte più
-  lenti), addestrata su schede grafiche e con qualche trucco per non imparare
-  a memoria; nel 2012 vince ImageNet e convince tutti.
+  lenti), addestrata su schede grafiche, con la regola sbrigativa che sotto lo
+  zero spegne e sopra lascia passare il numero com'è (la **ReLU**) e con due
+  accorgimenti per non imparare a memoria: spegnere neuroni a caso a ogni
+  passata, e non mostrare mai la stessa fotografia due volte uguale. Nel 2012
+  vince ImageNet e convince tutti.
 - **NiN** (2013): una lente che guarda un solo punto ma legge tutte le
   opinioni raccolte lì e le fonde; e un finale che, invece di un enorme
   ufficio di neuroni, tiene una mappa per categoria e premia la più accesa.
 - **VGG** (2014): il principio del mattoncino Lego, tante lenti piccole e
-  uguali impilate una dopo l'altra al posto di poche lenti grandi.
+  uguali impilate una dopo l'altra al posto di poche lenti grandi. Il risparmio
+  però riguarda le lenti: quasi nove decimi dei suoi centotrentotto milioni di
+  numeri stanno nell'enorme ufficio di neuroni con cui la rete chiude, quello
+  che NiN aveva appena mostrato come togliere.
 - **Inception/GoogLeNet** (2014): guardare lo stesso punto con lenti di misure
   diverse nello stesso istante, tenendo basso il conto grazie alla lente che
   guarda un punto solo.
 - **ResNet** (2015): la scorciatoia che porta l'input intatto fino all'uscita,
   dove viene ri-sommato; al blocco resta da imparare solo la correzione, e
-  così si addestrano reti di centinaia di strati.
+  così si addestrano reti di centinaia di strati. Dove la rete cambia formato i
+  due pezzi non si sommano, e la scorciatoia porta una versione riadattata
+  dell'input, con numeri da imparare anche lei.
 - **DenseNet** (2017): non una scorciatoia ma tutte, come una chat di gruppo
   in cui ogni strato ha sotto gli occhi l'intera conversazione (pochi pesi,
   molta memoria).
 - La **convoluzione separabile** (MobileNet, 2017) smette di fare due lavori
   insieme: prima guarda intorno un canale per volta, poi mette d'accordo i
-  canali con la lente che guarda un punto solo. Stessa forma in uscita, quasi
-  nove volte meno pesi: è il mattone delle reti che stanno in un telefono.
+  canali con la lente che guarda un punto solo. Stessa forma in uscita e poco
+  più di otto volte meno pesi (nove volte è il tetto, e ci si avvicina solo con
+  moltissime opinioni in uscita): è il mattone delle reti che stanno in un
+  telefono.
 - Dopo l'artigianato, il metodo: EfficientNet fa crescere insieme profondità,
   larghezza e dimensione delle immagini come gli ingredienti di una torta; e
   la ricerca automatica delle architetture disegna la rete al posto nostro.

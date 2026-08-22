@@ -222,38 +222,43 @@ viste.
 
 `````{tab} Elementare
 
-Il rimedio più semplice l'abbiamo già incontrato nel filtro antispam: la
-«regola del +1» di Laplace (eccolo, il vecchio amico promesso). Si regala un
-conteggio a ogni coppia possibile, così nessuna resta a zero. Nel nostro
-corpus il vocabolario ha 12 simboli (11 parole più il segnale di fine frase),
-e i due numeri della frazione cambiano tutti e due. Prendiamo «cane nero», mai
-vista. Sopra, al posto dello 0, va l'unico conteggio regalato: 1. Sotto vanno
-le volte in cui «cane» è comparso (una sola) più i 12 regali che abbiamo appena
-distribuito: $1 + 12 = 13$. La probabilità passa quindi da 0 a $1/13$, circa
-0,08: piccola, ma viva.
+La pagina del quaderno intestata a «cane» ha una riga sola. Dopo «cane» è
+venuto «guarda», una volta. Le altre undici righe sono bianche, e una riga
+bianca vale zero.
 
-Il regalo però lo pagano i ricchi, e lo pagano caro. «Gatto» dopo «il» valeva
-$3/4 = 0{,}75$; adesso sopra c'è $3 + 1$ e sotto ci sono le 4 volte in cui «il»
-è comparso più i 12 regali, cioè $(3+1)/(4+12) = 4/16 = 0{,}25$. Il piatto si
-divide fra tutte le 12 continuazioni possibili, dieci delle quali sono coppie
-inventate, mai viste davvero. Con un vocabolario vero, di decine di migliaia di
-parole, il +1 diventa una patrimoniale che ridistribuisce quasi tutto ai
-fantasmi.
+Il rimedio più semplice l'abbiamo già incontrato nel filtro antispam, la
+«regola del +1» di Laplace, che passa sul quaderno e segna un trattino su ogni
+riga, anche sulle bianche. Le righe sono dodici, le undici parole del corpus
+più il segnale di fine frase. Per «cane nero», sopra, al posto dello zero va
+il trattino appena regalato: 1. Sotto vanno le volte in cui «cane» è comparso
+(una sola) più i 12 trattini appena distribuiti, cioè $1 + 12 = 13$. «Nero
+dopo cane» passa da 0 a $1/13$, circa 0,08. Piccola, ma viva.
 
-L'idea migliore è un'altra: quando la coppia non s'è mai vista, invece di
-inventare un conteggio, **ripiega** su una domanda più facile. Non sai niente
-di «nero dopo cane»? Allora chiedi soltanto quanto è comune «nero» in
-generale, senza guardare che cosa c'era prima.
+Il regalo lo pagano i ricchi. La pagina di «il» dava «gatto» a
+$3/4 = 0{,}75$; adesso sopra c'è $3 + 1$ e sotto ci sono le 4 comparse di «il»
+più i 12 trattini, cioè $(3+1)/(4+12) = 4/16 = 0{,}25$. La fiducia di quella
+pagina è un piatto solo, e ora si divide fra dodici righe, dieci delle quali
+sono rimaste sempre bianche. Con un vocabolario vero, decine di migliaia di
+righe per pagina, il +1 porta quasi tutto il piatto ai fantasmi. Un trattino
+più magro, mezzo o un decimo, ne fa scivolare meno; ma lo fa scivolare sempre
+in parti uguali su ogni riga bianca.
 
-Meglio ancora: non aspettare di essere in difficoltà, e **mescola** sempre i
-due giudizi, un po’ di coppia e un po’ di parola singola. È come chiedere
-consiglio a due persone diverse su chi verrà alla festa. La prima ha visto
-tantissime feste come questa, ma proprio *questa* non l'ha mai vista, e quando
-non l'ha vista non sa dire niente: è il giudizio della coppia, preciso quando
-c'è e muto quando manca. La seconda non guarda mai la situazione, si limita a
-dirti chi di solito va alle feste: è il giudizio della parola singola, sempre
-disponibile e sempre generico. Si sentono tutte e due e si fa una media,
-dando alla prima più peso quando ha qualcosa da dire.
+Il quaderno però non è uno. Accanto a quello delle coppie ce n'è un altro, più
+povero e più pieno, che segna soltanto quanto è comune ogni parola, senza
+guardare che cosa la precedeva. Quando la riga della coppia è bianca si chiude
+il primo e si apre il secondo, dove la domanda è più facile: quanto è comune
+«nero». Anche questa risposta va pagata, perché il piatto deve
+restare intero. Invece di regalare un trattino a chiunque, si trattiene un
+poco da ogni coppia vista, e quel mucchietto è tutto ciò che si spartisce fra
+le righe mancanti.
+
+Meglio ancora, non aspettare la riga bianca. Si tengono aperti tutti e due i
+quaderni a ogni parola e si fa la media dei due giudizi. Il primo è preciso
+quando la riga c'è e muto quando manca; il secondo risponde sempre, e risponde
+generico. Alla media si dà più peso al primo quando ha qualcosa da dire, e con
+le terne di parole i quaderni da tenere aperti diventano tre. Quanto peso non
+lo si decide a occhio. Si mettono da parte alcune frasi, senza segnarle nel
+quaderno, e si tiene il dosaggio che ne indovina meglio il seguito.
 
 `````
 
@@ -320,6 +325,14 @@ tutto in una riga: quando devi ripiegare sulla parola singola, non chiederti
 riempitivi di buchi nuovi valgono poco. Una parola vista dopo cento parole
 diverse, invece, è una buona scommessa quasi ovunque.
 
+Il mucchietto messo da parte ha adesso una misura e una destinazione. Da ogni
+coppia vista si trattengono circa tre quarti di conteggio, sempre quelli. Chi
+ne aveva molti quasi non se ne accorge, chi ne aveva uno solo ne perde tre
+quarti, ed è giusto, perché una coppia vista una volta sola poteva essere un
+caso. Poi si spartisce in proporzione alle feste girate, così che chi era
+frequente ma sempre allo stesso posto non ne prenda quasi niente. Il piatto
+resta intero, cambia soltanto come lo si divide.
+
 `````
 
 `````{tab} Superiore
@@ -377,7 +390,9 @@ $1 \times 0{,}75 \times \frac{2}{3} \times 0{,}5 \times 1 \times 0{,}5 \times
 1 = 0{,}125$, cioè un ottavo. Sono sette fattori, uno per ogni scommessa: le
 sei parole della frase più la chiusura, che è una scommessa anche lei (il
 modello deve decidere che la frase finisce lì). L'apertura invece non si conta,
-perché il segnale di inizio non lo indovina nessuno: c'è e basta.
+perché il segnale di inizio non lo indovina nessuno: c'è e basta. Contarla
+sarebbe come mettere in pagella un esame che passano tutti, e il voto
+migliorerebbe senza che nessuno abbia studiato di più.
 
 **Seconda mossa: capovolgere.** Uno diviso un ottavo fa 8. Capovolgere serve a
 rimettere le cose nel verso in cui le vogliamo leggere: più la frase era
@@ -409,14 +424,17 @@ geometrica: è la stessa quantità $2^H$ della teoria dell'informazione, con $H$
 la cross-entropia media per token, solo riscritta.
 
 Un avvertimento sul conto di $N$, perché è il punto esatto in cui si sbaglia.
-Se le frasi si incorniciano con `<s>` e `</s>`, come qui, allora anche `</s>` è
-una scommessa e va contato fra gli $N$; `<s>` invece no, perché non lo si
-predice mai. Sulla frase di sei parole qui sotto gli $N$ sono quindi **sette**,
-non sei, ed è la convenzione di Jurafsky e Martin {cite}`jurafsky2026speech`
-oltre che quella del codice a fine sezione. La ragione di escludere `<s>` è che
-al marcatore di fine frase segue il marcatore di inizio con probabilità quasi
-1: contare quella transizione fittizia gonfierebbe artificialmente il
-punteggio.
+Con le frasi incorniciate fra `<s>` e `</s>`, anche `</s>` è una scommessa e va
+contato fra gli $N$; `<s>` invece no, perché non lo si predice mai: è il
+contesto da cui parte la prima scommessa. Su «il gatto nero salta sul muro» gli
+$N$ sono quindi **sette**, non sei, ed è la convenzione di Jurafsky e Martin
+{cite}`jurafsky2026speech` oltre che quella del codice a fine sezione. Contare
+anche `<s>` sbaglierebbe nel verso che meno ci si aspetta. Incatenando le
+frasi, dopo `</s>` viene `<s>` con probabilità quasi 1, quindi si aggiungerebbe
+un fattore che lascia il prodotto dov'è e un token che porta $N$ a otto. La
+radice si fa di grado più alto e la perplessità cala, cioè migliora, e sulla
+frase di prima si passerebbe da $8^{1/7} \approx 1{,}35$ a
+$8^{1/8} \approx 1{,}30$ a parità di scommesse.
 
 `````
 

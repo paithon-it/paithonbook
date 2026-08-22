@@ -62,12 +62,18 @@ vince perché la si percorre più spesso, e la si percorre più spesso perché �
 corta: è il tempo a fare la misura al posto di un cervello.
 
 Le formiche del computer fanno la stessa cosa con una scorciatoia. Invece di
-lasciare sempre la stessa quantità di traccia e aspettare che sia il tempo a
-contare i passaggi, fanno un giro solo per volta e alla fine lasciano una
-quantità di traccia **tanto maggiore quanto più corto è stato il giro**: chi ha
-fatto il giro lungo il doppio ne lascia la metà. Il risultato è lo stesso, il
-doppio di traccia sulla strada corta, ma arriva in un colpo invece che a forza
-di passaggi. Ed è la versione che useremo da qui in poi, figura compresa.
+lasciare sempre la stessa quantità e aspettare che sia il tempo a contare i
+passaggi, fanno un giro per volta e alla fine lasciano traccia tanto maggiore
+quanto più corto è stato il giro: chi ha fatto il giro lungo il doppio ne lascia
+la metà. Il doppio di traccia sulla strada corta arriva così in un colpo,
+invece che a forza di passaggi.
+
+E la formica del computer non è cieca del tutto. Fra due strade che spariscono
+dietro l'angolo non c'è niente da vedere, ma quando il giro è fra molte città, a
+ogni tappa guarda anche quale città è più vicina, e pesa quello che vede contro
+quello che le altre hanno lasciato per terra: col solo naso andrebbe sempre
+dalla più vicina, senza ascoltare nessuno; con la sola traccia saprebbe tutto
+delle altre e niente del terreno.
 
 `````
 
@@ -178,20 +184,29 @@ La cura è una sola parola: il feromone **evapora**.
 
 `````{tab} Elementare
 
-Immagina che ogni sera metà del feromone se ne vada da solo. Una strada che
-continua a essere usata non se ne accorge, perché ogni giorno riceve un
-deposito nuovo. Una strada che è stata la migliore per un po’ e poi non lo è
-più si sbiadisce in fretta: partendo da cento, in cinque sere passa a cinquanta,
-venticinque, dodici e mezzo, poco più di sei, poco più di tre. Dopo una
-settimana è sotto l'uno per cento, come se non fosse mai esistita, e le formiche
-tornano a provarci altrove.
+Ogni sera metà del feromone se ne va da solo. Una strada che continua a essere
+usata non se ne accorge, perché ogni giorno riceve un deposito nuovo. Una
+strada che è stata la migliore per un po’ e poi non lo è più si sbiadisce in
+fretta: partendo da cento, in cinque sere passa a cinquanta, venticinque,
+dodici e mezzo, poco più di sei, poco più di tre. Dopo una settimana è sotto
+l'uno per cento, come se non fosse mai esistita, e le formiche tornano a
+provarci altrove.
 
-Detta così sembra una perdita, ed è invece la cosa più preziosa dell'algoritmo.
-Senza evaporazione la memoria del gruppo è definitiva: la prima strada scoperta
-per caso resta la più marcata per sempre, e nessuna formica avrà mai occasione
-di scoprire quella dietro l'angolo. Con l'evaporazione la memoria è un ricordo
-che va tenuto vivo per restare. Il gruppo dimentica, e dimenticando continua a
-guardarsi attorno.
+Metà per sera fissa anche la taglia della memoria. Una strada battuta tutti i
+giorni non cresce all'infinito: si assesta sul doppio di quello che ci si lascia
+in una giornata, e lì quel che arriva la sera pareggia quel che se n'è andato. E
+il gruppo si ricorda in pratica gli ultimi due giorni: il deposito di ieri pesa
+la metà di quello di oggi, quello di tre sere fa un ottavo.
+
+Detta così sembra una perdita, ed è invece la cosa più preziosa
+dell'algoritmo. Senza evaporazione la memoria del gruppo è definitiva: la
+prima strada scoperta per caso resta la più marcata per sempre, e nessuna
+formica avrà mai occasione di scoprire quella dietro l'angolo. All'estremo
+opposto, se ogni sera sparisse tutto quello che c'era prima, la mattina
+resterebbe soltanto il segno del giorno appena finito: niente si accumula più,
+e la colonia ricomincia ogni volta quasi da capo. A metà per sera la memoria è
+un ricordo che va tenuto vivo per restare. Il gruppo dimentica, e dimenticando
+continua a guardarsi attorno.
 
 `````
 
@@ -303,17 +318,20 @@ ha la mappa.
 
 Ciascuno si ricorda una cosa sola: il punto più basso in cui *lui* è passato. E
 ne sente una sola: il punto più basso in cui è passato *qualcuno*, gridato a
-tutti. A ogni passo tira un po’ verso il proprio ricordo, un po’ verso quello
-del gruppo, e un po’ tira dritto per dove stava già andando, perché ha una sua
-velocità e non si ferma di colpo.
+tutti. A ogni passo tira un po’ verso il proprio ricordo e un po’ verso quello
+del gruppo, e quanto sia quel «po’» lo decide il caso: certe volte il richiamo lo
+porta appena oltre il punto, certe volte lo lascia a mezza strada, e in media lo
+porta proprio lì. E un po’ tira dritto per dove stava già andando, perché ha una
+sua velocità e non si ferma di colpo.
 
 Quest'ultima cosa sembra un dettaglio ed è quella che fa funzionare tutto. Se
-uno andasse solo dove è tirato, arriverebbe al punto migliore conosciuto e si
-fermerebbe lì, insieme a tutti gli altri; ma siccome arriva lanciato, lo
-supera, va a guardare un po’ più in là, e ogni tanto scopre che più in là si
-scende ancora. Gli autori hanno provato a togliere questa inerzia e il metodo ha
-smesso di trovare i punti più bassi: quelli buoni non stanno dove il gruppo sta
-già puntando, stanno appena oltre.
+uno andasse solo dove è tirato, si poserebbe sul punto migliore conosciuto
+insieme a tutti gli altri: più gli si avvicina, più corto diventa il richiamo,
+finché non lo muove più. Ma siccome arriva lanciato, lo supera, va a guardare
+un po’ più in là, e ogni tanto scopre che più in là si scende ancora. Gli
+autori hanno provato a togliere questa inerzia e il metodo ha smesso di
+trovare i punti più bassi: quelli buoni non stanno dove il gruppo sta già
+puntando, stanno appena oltre.
 
 `````
 
@@ -366,9 +384,9 @@ rinuncia anche a quello, e cambia il verbo. Gli individui non si muovono: si
 `````{tab} Elementare
 
 Devi riempire uno zaino scegliendo fra venti oggetti, ognuno con un peso e un
-valore, senza superare il limite di carico. Non c'è nessuna pendenza da
-seguire: le soluzioni non sono punti su una collina, sono elenchi
-di sì e no, e non esiste un «poco più a destra».
+valore, senza superare il limite di carico. Qui non c'è nessuna pendenza da
+seguire: una soluzione è un elenco di sì e no, e un elenco non ha un «poco più a
+destra».
 
 Un algoritmo genetico parte da una popolazione di zaini riempiti a caso, quasi
 tutti mediocri, e ripete tre gesti che vengono dalla biologia.
@@ -376,8 +394,8 @@ tutti mediocri, e ripete tre gesti che vengono dalla biologia.
 **Selezione.** Chi vale di più ha più probabilità di fare figli. Il modo più
 semplice è il torneo: si pescano due individui a caso e passa il migliore.
 
-**Incrocio.** Da due genitori si fa un figlio prendendo la prima metà
-dell'elenco dall'uno e la seconda dall'altro. È il gesto che le formiche e le
+**Incrocio.** Da due genitori si fa un figlio prendendo il primo pezzo
+dell'elenco dall'uno e il resto dall'altro. È il gesto che le formiche e le
 particelle non hanno: loro si spostano, questi si mescolano.
 
 **Mutazione.** Ogni tanto, a caso, si ribalta una scelta: un oggetto che c'era
@@ -385,13 +403,22 @@ esce, uno che non c'era entra. Serve a non restare prigionieri del materiale
 genetico di partenza, ed è la stessa funzione dell'evaporazione nelle formiche
 e dell'inerzia nelle particelle.
 
-L'incrocio nasconde una scommessa, e conviene dirla, perché è il punto in cui
-questi algoritmi funzionano o falliscono: **si sta assumendo che una buona
-soluzione sia fatta di buoni pezzi**, e che i pezzi di due soluzioni decenti,
-mescolati, possano darne una migliore. Sullo zaino l'assunzione regge (un buon
-sottoinsieme di oggetti resta buono accanto a un altro). Su un problema dove
-il valore dipende da tutte le scelte insieme, e spezzare l'elenco a metà
-distrugge il senso di entrambe le metà, l'incrocio è solo rumore costoso.
+Più una cautela che dalla biologia non viene: il migliore di ogni generazione
+passa alla successiva così com'è. Senza, la generazione nuova può venire
+peggiore della vecchia, perché incrocio e mutazione rompono anche quello che
+funzionava.
+
+Una popolazione, poi, permette di chiedere un'altra cosa ancora: non un solo
+zaino migliore, ma tutta la fila dei compromessi, il più prezioso per ogni peso
+che sei disposto a portare.
+
+L'incrocio nasconde una scommessa, ed è il punto in cui questi algoritmi
+funzionano o falliscono: si assume che una buona soluzione sia fatta di buoni
+pezzi, e che i pezzi di due soluzioni decenti, mescolati, possano darne una
+migliore. Sullo zaino regge (un buon gruppo di oggetti resta buono accanto a
+un altro). Dove il valore dipende da tutte le scelte insieme, e spezzare
+l'elenco distrugge il senso di tutte e due le metà, l'incrocio è solo rumore
+costoso.
 
 `````
 
@@ -553,13 +580,23 @@ l'ordine in cui visitare venti città, o quale macchinario assegnare a quale
 lavorazione, non esiste nessuna direzione in cui muoversi di un millimetro, ed
 esiste solo provare.
 
+C'è però una ragione per cui quel «moltissimi» diventa «impossibile» appena le
+cose da decidere sono tante. Chi sente la pendenza la sente in tutte le
+direzioni insieme: che siano due o un milione, un piede appoggiato gli dice per
+ognuna se si sale o se si scende. Chi non la sente le deve provare a una a una,
+e con un milione di direzioni gli servono almeno un milione di passi solo per
+sapere da che parte andare: la giornata finisce prima.
+
+E dove vince non promette niente. Quando si ferma, non sa dire se quello è il
+punto più basso della valle o soltanto il più basso che ha visto.
+
 `````
 
 `````{tab} Superiore
 
-I metodi di questa sezione sono **senza derivate**: interrogano la funzione
-obiettivo come una scatola nera e non ne richiedono né differenziabilità né
-continuità. Il loro dominio proprio è dove il gradiente non c'è, non si calcola
+Formiche, sciami e algoritmi genetici sono metodi **senza derivate**:
+interrogano la funzione obiettivo come una scatola nera e non ne richiedono né
+differenziabilità né continuità. Il loro dominio proprio è dove il gradiente non c'è, non si calcola
 o non informa: funzioni non differenziabili, spazi **combinatori** (il commesso
 viaggiatore non ha un gradiente: ha permutazioni), valutazioni **rumorose** o
 prodotte da una simulazione, e paesaggi molto multimodali dove il gradiente è
@@ -741,18 +778,17 @@ contesto **adesso**?
 
 Tre criteri, e nessuno dei tre basta da solo. Quanto è **recente** il ricordo,
 quanto è **importante**, e quanto **c'entra** con quello che sto facendo. Chi
-usa solo il primo si ricorda l'ultima cosa successa; chi usa solo il secondo si
-ripete addosso sempre lo stesso trauma; chi usa solo il terzo pesca frasi che
-somigliano alla domanda ma sono di sei mesi fa.
+guarda solo l'orologio si ricorda l'ultima cosa successa; chi guarda solo
+l'importanza si ripete addosso sempre lo stesso trauma; chi guarda solo
+l'attinenza pesca frasi che somigliano alla domanda ma sono di sei mesi fa.
 
 Prima di sommarli bisogna però saperli misurare, e la **freschezza** si misura
 così: ogni ora che passa il ricordo perde mezzo punto percentuale di freschezza,
 sempre lo stesso mezzo punto su quello che gli era rimasto (quindi cala in
 fretta all'inizio e poi sempre più piano). L'orologio, però, non parte da quando
 il ricordo è nato: parte dall'ultima volta che è stato ripescato, e così un fatto
-di sei mesi fa a cui hai ripensato ieri è fresco. Partendo da uno, dopo un'ora
-resta 0,995; dopo cinquanta ore 0,78; dopo duecento ore 0,37, cioè poco più di
-un terzo.
+di sei mesi fa a cui hai ripensato ieri è fresco. Partendo da uno, dopo
+cinquanta ore resta 0,78 e dopo duecento 0,37.
 
 Il guaio è sommare i tre criteri, perché sono misurati in unità diverse.
 L'importanza è un voto da 1 a 10 che l'agente si dà da sé; gli altri due sono
@@ -764,9 +800,9 @@ numeri fra zero e uno. Facciamo il conto su tre ricordi in gara:
 | B: di duecento ore fa, drammatico | 0,367 | 8 | 0,44 | 8,81 |
 | C: di cinquanta ore fa, così così | 0,778 | 5 | 0,60 | 6,38 |
 
-Sommandoli così vince B, poi C, poi A: cioè esattamente l'ordine
-dell'importanza, e gli altri due criteri non hanno contato niente. Ovvio: un
-voto che va da 1 a 10 schiaccia due numeri che vanno da 0 a 1.
+Sommandoli così vince B, poi C, poi A: esattamente l'ordine dell'importanza, e
+gli altri due criteri non hanno contato niente. Un voto da 1 a 10 schiaccia due
+numeri fra 0 e 1.
 
 La cura è mettere le tre colonne sulla stessa scala prima di sommarle. In ogni
 colonna, il migliore dei tre prende 1, il peggiore prende 0, e quello di mezzo
@@ -780,10 +816,14 @@ due terzi scarsi della distanza fra i due e prende 0,65.
 | B | 0 | 1 | 0 | **1,00** |
 | C | 0,65 | 0,40 | 0,42 | **1,47** |
 
-La classifica si è **rovesciata**: adesso vince A, il ricordo appena successo e
-attinente, e il drammatico e vecchio finisce ultimo. Non è un dettaglio
-tecnico: è la differenza fra un agente che ragiona su quello che sta succedendo
-e uno ossessionato dal proprio passato più intenso.
+La classifica si è rovesciata: adesso vince A, il ricordo appena successo e
+attinente, e il drammatico e vecchio finisce ultimo. È la differenza fra un
+agente che ragiona su quello che sta succedendo e uno ossessionato dal proprio
+passato più intenso.
+
+E questi voti dipendono dai concorrenti. Chi prende 1 lo prende perché è il
+migliore dei tre in gara, non perché valga 1 in assoluto: lo stesso ricordo, in
+un'altra terna, ne uscirebbe con un punteggio diverso.
 
 `````
 

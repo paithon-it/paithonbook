@@ -53,11 +53,10 @@ non conosciamo la forma esplicita) e mai più ampliato: non c'è alcuna nuova
 interazione con l'ambiente durante l'addestramento. L'obiettivo resta quello
 consueto (trovare una policy $\pi$ che massimizzi il ritorno atteso scontato
 $\mathbb{E}\big[\sum_t \gamma^t r_t\big]$) ma va raggiunto *dentro il
-supporto* di $\mathcal{D}$. La differenza con il setting online non è
-cosmetica: il Q-learning e i metodi a gradiente di policy dei capitoli
-precedenti presuppongono di poter *provare* le proprie ipotesi, e sono le
-prove a correggere le stime sbagliate. Togliere le prove cambia la natura del
-problema.
+supporto* di $\mathcal{D}$. Il setting online concede qualcosa che qui manca:
+il Q-learning e i metodi a gradiente di policy visti fin qui presuppongono di
+poter *provare* le proprie ipotesi, e sono le prove a correggere le stime
+sbagliate. Togliere le prove cambia la natura del problema.
 
 `````
 
@@ -247,21 +246,41 @@ cerca di far scendere (la *loss*, la misura di quanto la rete sta sbagliando).
 
 `````{tab} Elementare
 
-Immagina un critico gastronomico prudente. La regola che si dà è semplice: «di
-ogni piatto che non ho mai assaggiato, do per scontato che sia mediocre; di
-quelli documentati nei quaderni, mi fido di ciò che c'è scritto». In questo modo
-nessun piatto sconosciuto potrà mai battere, sulla carta, un piatto ben
-documentato: il critico non correrà mai dietro a una fantasia.
+Un critico gastronomico prudente si dà una regola: dei piatti documentati nei
+quaderni si fida di ciò che c'è scritto, di quelli che non ha mai assaggiato dà
+per scontato il peggio. Il pessimismo però non lo distribuisce a caso. Va a
+cercare i piatti mai provati che sulla carta gli sembrano più promettenti: sono
+quelli che rischiano di trascinarlo in una serata storta, e sono quelli che
+ritocca all'ingiù.
 
-CQL insegna esattamente questa prudenza alla rete dei voti. Una rete non impara
-in un colpo solo: si corregge migliaia di volte, un pochino per volta, e a ogni
-correzione CQL aggiunge due spinte. **Abbassa** i voti delle mosse che nel
-diario non compaiono, e **alza** quelli delle mosse che ci sono davvero. Il
-risultato è un
-sistema di voti *conservativo* (pessimista su tutto ciò che non ha visto) che
-difficilmente si fa abbagliare dall'ignoto. Perde forse qualche occasione
-buona ma nascosta; in cambio non si getta mai in un burrone che non ha mai
-esplorato.
+CQL insegna questa prudenza alla rete dei voti. Una rete non impara in un colpo
+solo: si corregge migliaia di volte, un pochino per volta, e a ogni correzione
+CQL aggiunge due spinte. Abbassa i voti delle mosse che nel diario non
+compaiono, e alza quelli delle mosse che ci sono davvero. Ne esce un sistema di
+voti *conservativo*, pessimista su tutto ciò che non ha visto.
+
+Quanto forte spinge è una manopola, e la si gira a mano. Girata poco, la
+prudenza resta un'inclinazione: un piatto mai assaggiato che il critico si
+figura strepitoso può ancora finire in cima alla lista. Girata a fondo, tutto
+ciò che non è documentato sprofonda, e allora il critico dai quaderni non esce
+più, nemmeno quando fuori ci sarebbe di meglio.
+
+La promessa che si riesce a dimostrare, poi, è più modesta della regola.
+Prendi una serata e i piatti che il critico ordinerebbe: il voto medio che dà a
+quel gruppo non supera mai quello che la serata renderà davvero, se si fa come
+dice lui. Un singolo piatto dentro il gruppo può ancora essere sopravvalutato,
+e può ancora battere un piatto documentato. La garanzia è sulla media, non su
+ogni riga della lista.
+
+E vale a due condizioni. La prima è che la manopola sia girata abbastanza, e
+quanto basti dipende da quanto ciascun piatto è documentato: uno cucinato una
+volta sola dà un voto malfermo e chiede una spinta all'ingiù più robusta di uno
+cucinato cento volte. La seconda è che il critico tenga un rigo separato per
+ogni piatto e lo giudichi per conto suo. Un critico vero non fa così: giudica
+per somiglianza, e allora la spinta che abbassa un piatto immaginato scivola
+addosso a tutti quelli che gli somigliano, compresi quelli scritti nei
+quaderni. La prudenza continua a funzionare in pratica; la dimostrazione, lì,
+non la segue più.
 
 `````
 
@@ -328,6 +347,14 @@ fantasia: chiede «nelle serate come questa, quanto hanno reso le ricette
 *migliori* fra quelle davvero provate?». È come giudicare il potenziale di una
 cucina dai suoi piatti più riusciti, senza fantasticare su menù mai esistiti.
 
+I due numeri si calcolano uno dall'altro. Il voto di una ricetta tiene conto
+del metro della situazione in cui ti lascia; il metro di una situazione esce
+dai voti delle ricette provate lì. Aggiornarli insieme, nello stesso istante,
+dà due conti che si rincorrono e non si posano più. Il rimedio è tenere sul
+tavolo una copia dei voti stampata poco prima e ricalcolare il metro leggendo
+quella: serve qualcosa di fermo a cui appoggiarsi, e chi salta l'accorgimento
+si ritrova con un metodo che non impara niente.
+
 Con quel metro («il meglio di ciò che è stato fatto qui») si rileggono poi le
 pagine del diario: le mosse che hanno reso più del solito nella loro
 situazione vengono imitate di più, le altre di meno. Dall'inizio alla fine,
@@ -367,7 +394,7 @@ ritardata**, come la rete-target di DQN. Senza, le due regressioni si
 inseguirebbero a vicenda senza niente di fermo a cui aggrapparsi, ed è il punto
 esatto in cui una reimplementazione di IQL smette di funzionare. Il target di
 $\mathcal{L}_Q$
-usa $V(s')$, **non** un massimo su azioni arbitrarie: ecco perché nessuna azione
+usa $V(s')$, non un massimo su azioni arbitrarie: ecco perché nessuna azione
 OOD viene mai valutata. La policy si estrae infine per *advantage-weighted
 regression*, imitando le azioni del dataset pesate per il loro vantaggio
 $Q(s,a)-V(s)$.
@@ -412,8 +439,15 @@ qui alla fine*. In addestramento questo numero è noto (basta sommare le
 ricompense future). Al momento di giocare davvero, gli si mette in bocca un
 obiettivo ambizioso («da qui voglio fare cento punti») e il modello, per
 coerenza con tutte le partite viste, produce le mosse che *tipicamente portano
-a cento punti*. Non calcola alcun valore: racconta la partita che vorresti, e
-la recita.
+a cento punti*. A ogni mossa il traguardo si aggiorna da sé: incassati venti
+punti, da lì in avanti la richiesta diventa ottanta. Non calcola alcun valore:
+racconta la partita che vorresti, e la recita.
+
+Le mosse le sa imitare, le situazioni no. Se una mossa storta lo porta in una
+posizione che nei diari non compare, una mossa la produce lo stesso, ma sta
+rispondendo a una domanda che non ha mai visto; e siccome la posizione dopo
+dipende da quella risposta, lo scarto si allarga a ogni passo invece di
+rientrare.
 
 `````
 
@@ -435,7 +469,7 @@ modo autoregressivo l'azione $a_t$ condizionando sui token precedenti, cioè su
 return desiderato, stati e azioni fino a $s_t$. L'addestramento è puramente
 **supervisionato**: minimizza l'errore (cross-entropy per azioni discrete, MSE
 per continue) tra l'azione predetta e quella nel dataset. È clonazione
-comportamentale, nel senso della sezione precedente, con in più il
+comportamentale, cioè imitazione delle azioni osservate, con in più il
 condizionamento sul ritorno desiderato. Non compaiono né
 equazione di Bellman, né bootstrapping, né operatore $\max$, e quindi neppure
 la sovrastima delle azioni OOD che affligge il Q-learning offline. In cambio
@@ -512,8 +546,9 @@ possiamo fidarci di ciò che non abbiamo mai visto?
 - **BCQ** costruisce un recinto: valuta solo le mosse plausibili secondo
   l'archivio, generate imitando chi i dati li ha raccolti. **CQL** non vieta
   nulla, insegna prudenza: abbassa i voti di ciò che non è mai stato provato e
-  alza quelli di ciò che è documentato, così l'ignoto non batte mai sulla
-  carta il conosciuto. **IQL** toglie proprio l'occasione di sbagliare: chiede
+  alza quelli di ciò che è documentato. La garanzia che se ne ricava è sulla
+  media delle mosse che poi sceglierà, non su ogni singolo voto: uno gonfiato
+  può ancora scapparci. **IQL** toglie proprio l'occasione di sbagliare: chiede
   solo quanto hanno reso, in situazioni come questa, le mosse migliori fra
   quelle davvero fatte, e non nomina mai un'azione fuori dal diario.
 - Il **Decision Transformer** cambia domanda: tratta la partita come una frase
@@ -542,7 +577,7 @@ possiamo fidarci di ciò che non abbiamo mai visto?
   generativo del dataset; **CQL** aggiunge un termine conservativo che abbassa i
   $Q$ delle azioni OOD e alza quelli nel dataset, ottenendo un limite inferiore
   del valore {cite}`kumar2020conservative`; **IQL** stima $V$ per regressione
-  expectile e non interroga **mai** azioni fuori dai dati
+  expectile e non interroga mai azioni fuori dai dati
   {cite}`kostrikov2022offline`.
 - Il **Decision Transformer** riformula l'RL come modellazione di sequenze:
   condiziona sul *return-to-go* desiderato e predice l'azione con un Transformer,

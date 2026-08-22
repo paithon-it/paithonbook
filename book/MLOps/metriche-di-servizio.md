@@ -54,24 +54,22 @@ Nella generazione di testo è identico. La prima attesa si chiama **TTFT**
 compare la prima parola. La seconda si chiama **TPOT** (*time per output
 token*): la pausa **media** fra una parola e la successiva.
 
-Su quel «media» conviene fermarsi un istante. Una media descrive bene un ritmo
-regolare, ed è per questo che il TPOT esiste; basta però una pausa fuori scala
-perché smetta di descrivere qualcosa. La
-media va benissimo per descrivere un ritmo *regolare*, ed è per questo che il
-TPOT esiste. Ma se in mezzo a duecento pause da un ventesimo di secondo ne
-capita una da due secondi, la media si sposta appena e il testo, sotto gli
-occhi, si è piantato in mezzo a una frase. Quindi accanto al TPOT si sorveglia
-sempre anche **la pausa più lunga** di quella risposta: è lei che il lettore
-ricorda.
+Una media descrive bene un ritmo regolare, ed è per questo che il TPOT esiste.
+Ma se in mezzo a duecento pause da 20 millisecondi ne capita una da due
+secondi, la media sale a 30 e continua a sembrare un ritmo comodo, mentre il
+testo, sotto gli occhi, si è piantato in mezzo a una frase. Quindi accanto al
+TPOT si sorveglia sempre anche **la pausa più lunga** di quella risposta: è lei
+che il lettore ricorda.
 
-Mettiamoci dei numeri, e teniamo a mente che un token è un pezzetto di parola
-(più corto di una parola: ci torniamo fra poco con il conto esatto). TTFT di
-350 millisecondi, TPOT di 25 millisecondi, risposta lunga 200 token, cioè un
-centinaio di parole. Il primo token arriva dopo 0,350 secondi; poi ne
-mancano 199, uno ogni 0,025 secondi, cioè 4,975 secondi. In tutto **5,325
-secondi**. E il testo scorre sotto gli occhi a uno diviso 0,025 secondi (i 25
-millisecondi riscritti in secondi, che è il passaggio che si dimentica), cioè
-**40 token al secondo**.
+Mettiamoci dei numeri, e teniamo a mente che un token è un pezzetto di parola,
+più corto di una parola intera. TTFT di 350 millisecondi, TPOT di 25
+millisecondi, risposta lunga 200 token, cioè un centinaio di parole. Il primo
+token arriva dopo 0,350 secondi; poi ne mancano 199, uno ogni 0,025 secondi,
+cioè 4,975 secondi. In tutto **5,325 secondi**. E il testo scorre sotto gli
+occhi a uno diviso 0,025 secondi (i 25 millisecondi riscritti in secondi, che è
+il passaggio che si dimentica), cioè **40 token al secondo**. Dividere invece i
+200 token per i 5,325 secondi dà 37,6: un terzo numero, che spalma l'attesa
+iniziale su tutta la risposta e non racconta nessun momento della cena.
 
 `````
 
@@ -144,12 +142,20 @@ foglio, e la macchina passa quasi tutto il tempo a scaldarsi.
 Il prefill è il primo caso: il modello legge tutte le parole del prompt in una
 volta, quindi «scaldare la macchina» (portare i miliardi di numeri del modello
 dalla memoria ai circuiti di calcolo) è ripagato da un mucchio di lavoro utile.
+Un prompt doppio richiede all'incirca il doppio del tempo, ed è per questo che
+l'attesa della prima parola cresce con la lunghezza di quello che hai scritto.
+
 Il decode è il secondo: per una parola sola bisogna rileggere tutto il modello,
-e i circuiti restano quasi fermi ad aspettare. Sono due lavori che non
-convivono bene sulla stessa macchina nello stesso momento: se, mentre venti
-persone ricevono la risposta parola per parola, arriva qualcuno con un prompt
-lunghissimo, la fotocopiatrice si dedica a quello e gli altri vedono il testo
-bloccarsi a metà frase. Un singhiozzo.
+e i circuiti restano quasi fermi ad aspettare. L'unico modo di far fruttare
+quel riscaldamento è raccogliere le pagine di sessantaquattro clienti diversi e
+stamparle nello stesso giro, una per ciascuno: il minuto si divide per
+sessantaquattro. È il **mazzo**: le richieste che il servizio manda avanti in
+un giro solo.
+
+Sono due lavori che non convivono bene sulla stessa macchina nello stesso
+momento: se, mentre venti persone ricevono la risposta parola per parola,
+arriva qualcuno con un prompt lunghissimo, la fotocopiatrice si dedica a quello
+e gli altri vedono il testo bloccarsi a metà frase. Un singhiozzo.
 
 `````
 
@@ -208,20 +214,28 @@ più tardi, ma nessuno resta fermo a lungo. Applicato ai modelli si chiama
 **chunked prefill**: il prompt lungo viene spezzato in pezzi, e fra un pezzo e
 l'altro si infilano i passi di generazione di tutti gli altri.
 
+Quanti articoli passare per volta è la manopola da girare, e gira in due sensi.
+Cinquanta alla volta: il carrello se ne va presto, chi ha in mano il pane
+aspetta di più. Tre alla volta: tutti scorrono, ma la cassiera a ogni ripresa
+deve ritrovare il punto in cui era rimasta nel carrello, e a furia di
+ricominciare ci mette più che a farlo di seguito.
+
 Il secondo è più radicale: **due reparti separati**. Un gruppo di macchine legge
 solo i prompt, un altro genera solo le risposte, ciascuno organizzato per il
 proprio mestiere. È la **disaggregazione**, e il prezzo è che gli appunti presi
 leggendo (la KV cache) vanno trasferiti dal primo reparto al secondo, il che
-costa tempo e cavi veloci.
+costa tempo e cavi veloci. Due reparti vogliono poi lavoro per tutti e due: se
+in tutta la giornata passano tre clienti restano mezzi vuoti, e sarebbe bastata
+una cassa sola.
 
 `````
 
 `````{tab} Superiore
 
 Il **chunked prefill** {cite}`agrawal2024taming` sostituisce lo scheduling per
-richiesta con uno scheduling a **budget di token per iterazione**: un prefill di
-$P$ token è spezzato in $\lceil P/c \rceil$ pezzi di dimensione $c$, e a ogni
-iterazione lo scheduler compone un batch con un pezzo di prefill più tutte le
+richiesta con uno scheduling a **budget di token per iterazione**: un prefill
+lungo $L$ token è spezzato in $\lceil L/c \rceil$ pezzi di dimensione $c$, e a
+ogni iterazione lo scheduler compone un batch con un pezzo di prefill più tutte le
 sequenze in decode pronte. L'idea nasce in Sarathi, che accosta i *chunked
 prefill* a decodifiche «a rimorchio» (*piggybacked*); Sarathi-Serve battezza
 *stall-free batching* lo scheduling che ne risulta, quello che non sospende mai
@@ -278,6 +292,12 @@ e due le promesse. Se ne servi venti al secondo e solo l’$85\%$ è a posto, il
 goodput è $20 \times 0{,}85 = 17$: ne hai servite venti e ne hai contentate
 diciassette.
 
+C'è però un modo di passare l'esame senza meritarlo. Al cliente a cui le
+portate arrivano tutte puntuali tranne una, che tarda mezz'ora, la pausa media
+viene ancora buona: il registro lo segna fra i contenti, mentre lui di quella
+sera si ricorda solo la mezz'ora. Per questo, dove la scorrevolezza conta, nella
+promessa si mette la pausa più lunga al posto di quella media.
+
 La differenza non è filosofica: allargare il batch (servire
 più richieste nello stesso mazzo) fa quasi sempre salire il throughput,
 perché la GPU lavora su più cose insieme. E, una volta che il sistema sta già
@@ -291,10 +311,11 @@ e se ne accontentano meno.
 `````{tab} Superiore
 
 Siano $\tau_{\text{f}}$ e $\tau_{\text{p}}$ le soglie dichiarate per TTFT e
-TPOT, e $R$ le richieste completate in una finestra di durata $T$. Il goodput è
+TPOT, e $R$ le richieste completate in una finestra di durata $\Delta t$. Il
+goodput è
 
 $$
-G = \frac{1}{T}\sum_{i=1}^{R}
+G = \frac{1}{\Delta t}\sum_{i=1}^{R}
 \mathbb{1}\!\left[\text{TTFT}_i \le \tau_{\text{f}}
 \ \wedge\ \text{TPOT}_i \le \tau_{\text{p}}\right],
 $$
@@ -308,8 +329,8 @@ l'utente l'abbia vista bloccarsi a metà frase. La stessa costruzione con
 $\max_i \text{ITL}$ al posto del TPOT dà un goodput più severo e più aderente
 all'esperienza, ed è quello che si sorveglia quando la fluidità conta. Il
 throughput è la stessa somma senza l'indicatore,
-$R/T$: il goodput è dunque il throughput moltiplicato per la frazione conforme,
-e non può mai superarlo. Nella pianificazione della capacità se ne usa la
+$R/\Delta t$: il goodput è dunque il throughput moltiplicato per la frazione
+conforme, e non può mai superarlo. Nella pianificazione della capacità se ne usa la
 variante duale, quella con cui il termine si è diffuso nella letteratura sul
 serving degli LLM {cite}`zhong2024distserve`: il **massimo tasso di richieste al
 secondo per GPU** che mantiene la conformità sopra una quota fissata (per
@@ -325,8 +346,8 @@ spettacolare senza che nessun utente veda il testo scorrere più in fretta.
 
 `````
 
-Vale la pena vederlo su due configurazioni dello stesso sistema, con le
-promesse fissate a 500 ms sul TTFT e 50 ms sul TPOT.
+Si vede su due configurazioni dello stesso sistema, con le promesse fissate a
+500 ms sul TTFT e 50 ms sul TPOT.
 
 La prima serve mazzi da 16 richieste: ne smaltisce 20,0 al secondo e ne tiene
 il 92,5% dentro entrambe le promesse, quindi il goodput è
@@ -435,7 +456,7 @@ servizio in rosso.
 
 Vale poi, a maggior ragione, il caso che qui non si vede e che in produzione
 capita: **una media che migliora mentre la p95 o la p99 peggiorano è un
-peggioramento**, da trattare come un guasto. È il primo dei tre quadranti del
+peggioramento**, da trattare come un guasto. È il primo dei tre livelli del
 cruscotto di
 «Sorvegliare un modello vivo» (quello che dice se il servizio è vivo e risponde
 in fretta, prima ancora di chiedersi se risponde *bene*), declinato sulle due
@@ -450,37 +471,38 @@ sono indipendenti fra loro**, cominciano quasi tutte allo stesso modo.
 
 `````{tab} Elementare
 
-Pensa a uno studio notarile dove ogni atto comincia con le stesse quattro pagine
-di premesse, e solo dalla quinta si parla del caso. Un copista che ricopiasse
-ogni atto da capo riscriverebbe quelle pagine centinaia di volte: basta tenerne
-una copia pronta e ricopiare solo il seguito.
+Ogni atto di uno studio notarile comincia con le stesse quattro pagine di
+premesse, e solo dalla quinta si parla del caso. Un copista che ricopiasse ogni
+atto da capo riscriverebbe quelle pagine centinaia di volte: basta tenerne una
+copia pronta e ricopiare solo il seguito.
 
-Nei sistemi che servono modelli generativi succede esattamente questo, e tre
-casi coprono quasi tutto il traffico. L'istruzione di sistema (le righe che
-spiegano al modello come comportarsi) è identica per tutti gli utenti. Un
-documento allegato su cui si fanno dieci domande è lo stesso dieci volte. E
-soprattutto una conversazione: al decimo turno il prompt è tutta la
-conversazione più l'ultima domanda, e i primi nove turni li abbiamo già letti
+Nei sistemi che servono modelli generativi tre casi coprono quasi tutto il
+traffico. L'istruzione di sistema (le righe che spiegano al modello come
+comportarsi) è identica per tutti. Un documento allegato su cui si fanno dieci
+domande è lo stesso dieci volte. E una conversazione, al decimo turno, rimanda
+i nove turni precedenti più l'ultima domanda: quei nove li abbiamo già letti
 nove volte.
 
 Gli appunti che il modello prende su un pezzo di testo dipendono solo da quel
 pezzo e da ciò che lo precede: se l'inizio è identico, gli appunti sull'inizio
-sono identici. I conti della conversazione lo dicono meglio di ogni argomento.
-Riprendiamo i 250 token per turno della figura di poco fa (la domanda più la
-risposta), così che al primo turno il modello ne legga 250, al secondo 500, al
-terzo 750 e via salendo. In dieci turni, rileggere tutto ogni volta costa
+sono identici. Identico segno per segno, però: cambiata una virgola nella prima
+pagina, da lì in poi il copista ricomincia a scrivere.
+
+Riprendiamo i 250 token per turno (la domanda più la risposta): al primo turno
+il modello ne legge 250, al secondo 500, al terzo 750 e via salendo. In dieci
+turni, rileggere tutto ogni volta costa
 $250 \times (1+2+\dots+10) = 13\,750$ token di lettura; riusare gli appunti
 significa leggerne 250 per turno, cioè $250 \times 10 = 2\,500$ in tutto,
-cinque volte e mezzo di meno. Sono i novemila token della figura di poco fa,
-visti dall'altra parte: quel numero era il conto senza riuso, e il riuso lo
-taglia di altrettanto. (Il risparmio è di **lavoro**, cioè di tempo e di
-memoria; quanto di quel lavoro risparmiato finisca poi sulla fattura dipende da
-chi vende il servizio, e non è materia di questa pagina.) E il risparmio cresce
-con la lunghezza della
-conversazione, perché la somma $1+2+\dots+n$ vale $n(n+1)/2$: il rapporto fra
-le due letture è quindi $(n+1)/2$, che non dipende da quanto pesa un turno e
-che a dieci turni fa cinque e mezzo, a venti dieci e mezzo. Più lunga è la
-conversazione, più conviene.
+cinque volte e mezzo di meno. Sono i novemila token della conversazione a otto
+turni, visti dall'altra parte. Il risparmio è di **lavoro**: attesa e memoria.
+Quanto ne arrivi sulla fattura lo decide chi vende il servizio. E più la
+conversazione va avanti più conviene, perché la somma $1+2+\dots+n$ vale
+$n(n+1)/2$: il rapporto fra le due letture è $(n+1)/2$, che a dieci turni fa
+cinque e mezzo e a venti dieci e mezzo.
+
+Lo scaffale delle copie pronte ha però una capienza, e quando si riempie si
+buttano via i fascicoli che nessuno chiede da più tempo. Chi torna dopo un'ora
+trova il suo atto da ricopiare da capo.
 
 `````
 
@@ -511,9 +533,9 @@ table allo stesso blocco fisico e incrementare un contatore, la stessa idea di
 rende la condivisione sistematica **fra richieste diverse nel tempo**, non solo
 fra sequenze compresenti nello stesso batch. L'effetto sul TTFT è quasi
 proporzionale alla frazione di prompt trovata in cache, e in una conversazione
-di $n$ turni da $m$ token ciascuno (il prompt del turno $k$ è lungo $k\,m$) il
-prefill totale (dove $n$ è il numero di turni e $m$ i token che ciascuno
-aggiunge) scende da $m\,n(n+1)/2$ a $m\,n$: da quadratico a lineare nei turni,
+di $n$ turni, ciascuno dei quali aggiunge $m$ token (il prompt del turno $k$ è
+quindi lungo $k\,m$), il prefill totale
+scende da $m\,n(n+1)/2$ a $m\,n$: da quadratico a lineare nei turni,
 con un risparmio di un fattore $(n+1)/2$.
 
 `````

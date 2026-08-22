@@ -72,9 +72,8 @@ per queste due organizzazioni e per tutte quelle in cui, fra due persone
 qualsiasi, esiste **una strada sola**: un solo giro di telefonate che porta da
 me a te. Se si accetta di dare a ciascuno una o due telefonate in più, in modo
 che le strade fra due persone diventino parecchie, il baratto smette di essere
-obbligato e si possono comprare tutte e tre le cose insieme. Alla fine di questa
-sezione lo vedremo con i numeri, ed è la ragione per cui Baran ha disegnato tre
-reti e non due.
+obbligato e si possono comprare tutte e tre le cose insieme. I numeri lo
+confermano, ed è la ragione per cui Baran ha disegnato tre reti e non due.
 
 `````
 
@@ -115,12 +114,11 @@ duro, perché la qualità della lettura degrada molto prima del limite dichiarat
 (è il *lost in the middle* del
 {doc}`context engineering </Agenti/context-engineering>`).
 
-Va detto subito fin dove arriva questo vincolo, perché è facile prenderlo per
-una legge e non lo è: è la conseguenza di aver scelto la famiglia di grafi più
-povera di archi che esista. Non discende dalle definizioni di
+Il vincolo arriva meno lontano di quanto sembri, ed è facile scambiarlo per una
+legge: è la conseguenza di aver scelto la famiglia di grafi più povera di archi
+che esista. Non discende dalle definizioni di
 $\mathrm{diam}$, $\Delta$ e $\ell$, discende da $|E| = N-1$. Concedendo qualche arco
-in più il baratto si scioglie, e questa sezione ci torna sopra quando avrà la
-tabella davanti.
+in più il baratto si scioglie, come mostra il conto sull'ipercubo $Q_4$.
 
 `````
 
@@ -163,13 +161,23 @@ il controllo che sbarra la strada.
 
 È il capo cantiere. Legge il progetto, dice al muratore di fare la parete e
 all'elettricista di passare i cavi, e alla fine controlla che le due cose
-combacino. I due non si parlano: se serve una modifica, passa da lui.
+combacino. I due non si parlano: se serve una modifica passa da lui, e nessuno
+dei due perde tempo dietro al lavoro dell'altro.
 
 Il vantaggio è che, quando qualcosa non torna, c'è una persona sola a cui
 chiedere cosa sta succedendo. Lo svantaggio è che tutto passa da quella
 persona, e la sua giornata ha ventiquattro ore come quella degli altri. Con
 tre operai funziona benissimo. Con trenta, il capo cantiere passa la giornata
-ad ascoltare rapporti e non gli resta tempo per decidere; e se si ammala, il
+ad ascoltare rapporti e non gli resta tempo per decidere.
+
+Il rimedio sta nel modo in cui gli si parla. Niente racconti: un modulo di tre
+righe, che cosa è fatto, che cosa manca, che cosa serve. Otto minuti di
+chiacchiere a testa, con trenta operai, sono quattro ore di giornata; un minuto
+e mezzo a testa sono quarantacinque minuti, cioè quello che gli costerebbero
+cinque o sei operai lasciati liberi di raccontare. E i trenta hanno lavorato
+come prima.
+
+Resta la cosa che nessun modulo ripara: se il capo cantiere si ammala, il
 cantiere non rallenta, si ferma.
 
 `````
@@ -221,10 +229,9 @@ Quello che paga, invece, è brutale.
 
 `````{tab} Elementare
 
-È il telefono senza fili della sezione precedente, con una differenza sola: qui
-i bambini in fila non stanno giocando, stanno lavorando. Il primo raccoglie i
-dati e li passa al secondo, il secondo li analizza e passa al terzo, il terzo
-scrive il rapporto. E come nel gioco, **nessuno ha visto l'originale** tranne il
+I bambini del telefono senza fili, questa volta, non stanno giocando, stanno
+lavorando. Il primo raccoglie i dati e li passa al secondo, il secondo li
+analizza e passa al terzo, il terzo scrive il rapporto. E come nel gioco, **nessuno ha visto l'originale** tranne il
 primo.
 
 Da lì viene tutto il resto. Se al secondo passaggio qualcuno capisce male una
@@ -288,34 +295,36 @@ di ramificazione**: le quattro parole servono da qui alla fine della sezione.
 
 `````{tab} Elementare
 
-Catena e gerarchia sembrano due cose diverse, e invece sono la stessa forma con
-un parametro diverso. In tutte e due, fra due qualsiasi partecipanti esiste una
-strada sola: niente scorciatoie, niente giri alternativi. Quello che cambia è
-quante persone riferiscono a ciascuno. Nella catena una, e allora la fila si
-allunga senza fine: quindici agenti sono quattordici passaggi. Nella gerarchia
-due, o cinque, o dieci, e allora la fila si accorcia di colpo, perché a ogni
-livello il gruppo si moltiplica invece di allungarsi.
+Fila e organigramma sono la stessa forma con un numero diverso. In tutte e due,
+fra due partecipanti qualsiasi c'è una strada sola. Quello che cambia è quante
+persone riferiscono a ciascuno. Nella fila una, e allora si allunga senza fine:
+quindici agenti, quattordici passaggi. Nell'organigramma due, o cinque, o dieci,
+e la fila si accorcia di colpo, perché a ogni livello il gruppo si moltiplica.
 
-Facciamo il conto con due sottoposti a testa. Il capo supremo è uno; sotto di
-lui due; sotto quei due, quattro; sotto i quattro, otto: uno più due più quattro
-più otto fa quindici, ed è tutto l'organigramma in quattro file. Adesso prendi
-uno dei sottoposti dell'ultima fila e mandalo a parlare con un altro dell'altra
-metà: deve salire tre gradini fino al capo supremo e riscenderne altri tre.
-Sei passaggi invece di quattordici, con le stesse quindici persone.
+Il conto, con due sottoposti a testa. Il capo supremo è uno; sotto di lui due;
+sotto quei due, quattro; sotto i quattro, otto: uno più due più quattro più otto
+fa quindici, ed è tutto l'organigramma in quattro file. Adesso manda uno
+dell'ultima fila a parlare con un altro dell'altra metà: deve salire tre gradini
+fino al capo supremo e riscenderne tre. Sei passaggi invece di quattordici, con
+le stesse quindici persone.
 
 Il prezzo lo conosce chiunque abbia lavorato in un'azienda grande. A ogni
-livello qualcuno **riassume**: il capo squadra non riporta al direttore tutto
-quello che gli hanno detto i suoi, riporta l'essenziale. Riassumere è
-un'operazione che perde, sempre, e perde tre volte se i livelli sono tre. Il
-conto grossolano: se a ogni passaggio verso l'alto sopravvive l'ottanta per
-cento di ciò che contava, dopo tre passaggi in cima arriva l'ottanta per cento
-dell'ottanta per cento dell'ottanta per cento, cioè poco più della metà,
-cinquantuno su cento. E chi sta in cima non sa che cosa manca: il riassunto
-sembra completo, è per questo che è un riassunto.
+livello qualcuno **riassume**: il capo squadra riporta al direttore
+l'essenziale, e l'essenziale lo sceglie lui. Se a ogni passaggio verso l'alto
+sopravvive l'ottanta per cento di ciò che contava, con tre passaggi in cima
+arriva l'ottanta per cento dell'ottanta per cento dell'ottanta per cento,
+cinquantuno su cento. Il riassunto però sembra completo, è per questo che è un
+riassunto, e chi sta in cima non sa che cosa manca.
 
-C'è un secondo prezzo, meno visibile. Quando il risultato finale è sbagliato,
-capire *dove* lo sia diventa difficile: la responsabilità si è diluita lungo la
-scala, e ogni livello può dire in buona fede di aver fatto la sua parte.
+Da qui una regola che sorprende: pochi livelli e larghi. Ogni livello in meno è
+un riassunto in meno, e i riassunti si moltiplicano fra loro. Al limite il capo
+supremo prende quattordici sottoposti diretti: un riassunto solo, ottanta su
+cento invece di cinquantuno, ma quel capo è di nuovo il capo cantiere che passa la
+giornata ad ascoltare. Si allarga finché la sua giornata regge.
+
+E quando il risultato finale è sbagliato, capire *dove* lo sia diventa
+difficile: la responsabilità si è diluita lungo la scala, e ogni livello può
+dire in buona fede di aver fatto la sua parte.
 
 `````
 
@@ -348,12 +357,13 @@ $\lambda^{D}$. Il punto non è il valore preciso (nessuno sa misurare $\lambda$
 su un riassunto in linguaggio naturale) ma la forma: la perdita è
 **esponenziale nella profondità**, mentre il guadagno sul diametro è
 logaritmico. Preso da solo, questo modello spingerebbe $b$ all'assurdo: con
-$b = N-1$ e $D = 1$ si è ricostruita la stella, che la pagina precedente ha
-appena dichiarato insostenibile. Il termine che manca è il carico del singolo
-supervisore, la finestra $c_0 + b\,\bar{m}$ vista per la stella, che cresce
-linearmente in $b$: l'ottimo bilancia la perdita esponenziale in $D$ contro
-quel carico lineare, e la regola operativa che ne esce è alzare $b$ **finché
-la finestra di ciascun supervisore regge**, e abbassare $D$ di conseguenza.
+$b = N-1$ e $D = 1$ si è ricostruita la stella, con il collo di bottiglia e il
+punto singolo di rottura che la rendono insostenibile oltre una certa taglia. Il
+termine che manca è il carico del singolo supervisore, la finestra
+$c_0 + b\,\bar{m}$ vista per la stella, che cresce linearmente in $b$: l'ottimo
+bilancia la perdita esponenziale in $D$ contro quel carico lineare, e la regola
+operativa che ne esce è alzare $b$ **finché la finestra di ciascun supervisore
+regge**, e abbassare $D$ di conseguenza.
 È il contrario di ciò che suggerisce l'istinto organizzativo.
 
 Il secondo costo è formale quanto il primo: la gerarchia rende difficile
@@ -520,8 +530,8 @@ e diviso due fa **trentadue**. Più del doppio, ed è tutto lì il segreto.
 
 Non è un caso fortunato: in uno schema abbastanza regolare nessuno sta più al
 centro degli altri, quindi il traffico si distribuisce da sé, e con più strade
-fra ogni coppia togliere qualcuno non spezza niente. Il baratto a tre di poche
-pagine fa era **il prezzo di chi vuole spendere pochi fili**, non una legge:
+fra ogni coppia togliere qualcuno non spezza niente. Il baratto fra le tre
+grandezze era **il prezzo di chi vuole spendere pochi fili**, non una legge:
 vale perché fra due partecipanti c'è una strada sola, e chi sta su quella strada
 la porta tutta.
 
@@ -589,13 +599,22 @@ dell'esistenza dell'altro.
 Il pregio è che si può aggiungere uno specialista nuovo senza avvisare nessuno:
 se sa leggere la lavagna e scriverci sopra, è dentro, e nessuno degli altri va
 modificato. È il contrario del capo cantiere, che va aggiornato ogni volta che
-arriva un operaio.
+arriva un operaio e che, a differenza di un muro, ha una giornata sola da
+spendere.
 
 I difetti sono i due che chiunque abbia visto una lavagna vera conosce. Il
 primo è la ressa: in due che scrivono nello stesso punto nello stesso momento
-si danno fastidio, e serve una regola su chi va prima. Il secondo è che,
-guardandola a fine giornata, **non si sa più chi ha scritto cosa**: c'è un
+si danno fastidio, e serve una regola su chi va prima. La regola non guarda i
+gradi: scrive per primo chi in quel momento ha da aggiungere la cosa che serve
+di più, e lo si decide riga per riga. Il secondo difetto è che, guardandola a
+fine giornata, **non si sa più chi ha scritto cosa**: c'è un
 risultato, e se è sbagliato non si sa da quale mano sia uscito l'errore.
+
+Non tutto passa dal muro. I conti che uno fa per arrivare alla sua riga restano
+sul suo taccuino: trascriverne ogni passaggio intermedio lo rallenterebbe e
+basta, e certe volte gli impedirebbe di arrivarci. E se il lavoro è sempre lo
+stesso e l'ordine si conosce già, radunarsi a ogni giro per decidere chi scrive
+è tempo tolto al lavoro: lì serve una fila con i compiti assegnati.
 
 `````
 
@@ -672,8 +691,8 @@ banditore dice: «serve questo lavoro; possono rispondere solo quelli che hanno
 il tal requisito; nella risposta scrivetemi queste cose; c'è tempo fino a
 giovedì». Chi si sente in grado risponde con un'offerta. Il banditore le
 confronta e assegna a chi gli sembra più adatto. E il quarto, quello che ci si
-dimentica sempre, è che chi ha preso il lavoro alla fine deve **riferire**: se
-non lo fa, il banditore non ha modo di sapere se il compito è stato svolto.
+dimentica sempre: chi ha preso il lavoro alla fine deve **riferire**, altrimenti
+il banditore non sa nemmeno se è stato svolto.
 
 La cosa elegante è che la scelta la fanno **in due**. Il banditore sceglie fra
 chi si è offerto, ma prima ancora ciascuno ha scelto se offrirsi e per quale
@@ -690,7 +709,9 @@ quello che ti promette di finire in due giorni a metà prezzo, e poi non lo fa.
 Nelle gare vere ha perfino un nome, l’**offerta anomala**, ed è quella che chi
 bandisce deve controllare prima di assegnare. Un modello di linguaggio a cui si
 chiede «sei in grado di fare questo?» tende a rispondere di sì, e allora la gara
-premia chi si stima meglio, non chi lavora meglio.
+premia chi si stima meglio, non chi lavora meglio. Contro le promesse il rimedio
+è chiedere qualcosa di guardabile: un pezzo di lavoro già fatto su un campione,
+e la memoria di come è andata l'ultima volta con lui.
 
 `````
 

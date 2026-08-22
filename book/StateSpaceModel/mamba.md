@@ -45,25 +45,42 @@ e va guardata in faccia: se le regole cambiano a ogni parola, il sistema non è
 più invariante nel tempo. E un sistema che cambia regola strada facendo non ha
 un filtro unico: la forma «tutto insieme», che era il segreto
 dell'addestramento veloce di S4, semplicemente non è più applicabile. Bisognerà
-procurarsi un'altra strada per lavorare in parallelo, e sarà lo *scan* di cui
-parliamo qui sotto. Ma prima il guadagno, che ripaga il sacrificio.
+procurarsi un'altra strada per lavorare in parallelo, e sarà lo *scan*. Ma
+prima il guadagno, che ripaga il sacrificio.
 
 `````{tab} Elementare
 
-Immagina un buttafuori all'ingresso di un locale. Un SSM invariante nel tempo è
-un tornello: chiunque arrivi, stesso trattamento, stessa spinta in avanti. Il
-buttafuori di Mamba, invece, **guarda in faccia** chi passa e decide sul momento:
-questo lo faccio entrare e me lo segno, quest'altro lo lascio perdere, di
-quest'altro ancora mi dimentico subito. La regola non è scritta una volta per
-tutte: cambia a ogni persona, in base a chi è.
+All'ingresso di un locale ci sono due modi di far entrare la gente. Uno è il
+tornello: chiunque arrivi, stesso trattamento, stessa spinta in avanti. L'altro
+è un **buttafuori** che guarda in faccia chi ha davanti e decide sul momento.
+Un SSM invariante nel tempo è il tornello; Mamba è il buttafuori. Quanto di una
+persona gli resta in testa, e quanto di ciò che ha in testa tira fuori al
+momento giusto, cambia da una faccia all'altra.
+
+Una cosa però il buttafuori non la cambia mai, ed è la velocità con cui i suoi
+ricordi sbiadiscono: chi è entrato tempo fa gli si annebbia sempre allo stesso
+ritmo. Quello che decide, faccia per faccia, è quanto tempo lasciar passare
+prima di occuparsi del prossimo. È la manopola che regola quanto in fretta il
+sistema dimentica, e Mamba la gira a ogni parola. Quando se la prende comoda,
+chi ha davanti gli si stampa bene in testa e le facce di prima gli sbiadiscono
+parecchio; se fa passare qualcuno in un lampo, quello non lascia traccia e la
+sua testa resta com'era. Con la sola manopola del tempo ottiene tutte e due le
+cose che gli servono: «di questo mi ricorderò» e «questo non l'ho nemmeno
+visto».
 
 Perché ci interessa? Perché apre la porta a un tipo di ragionamento che un
 tornello non potrà mai fare: quello che dipende dal **contenuto**. Prendi il
 gioco del «copia solo le parole in maiuscolo» in mezzo a un fiume di parole
 minuscole: serve decidere, parola per parola, se questa va tenuta o buttata. Un
 sistema che tratta tutti i token allo stesso modo fallisce; uno che sa scegliere,
-no. È la differenza tra un metal detector regolato una volta all'aeroporto e una
-guardia attenta che valuta caso per caso.
+no.
+
+Il prezzo si vede sulla fila fuori. Un tornello lo si regola la mattina, a
+locale vuoto: una regolazione sola, buona per tutti quelli che arriveranno,
+tanto che la fila si potrebbe smaltire a blocchi. Le decisioni del buttafuori
+non esistono prima che la persona gli sia arrivata davanti: non c'è nessuna
+regolazione da preparare in anticipo, e le facce vanno guardate una per una,
+nell'ordine in cui si presentano.
 
 `````
 
@@ -146,9 +163,8 @@ decina di turni. È il compromesso tipico del calcolo parallelo, dove si
 accettano più conti in cambio di meno attesa.
 
 Ogni turno tiene occupati migliaia di core della GPU: quelli generici, però,
-non le sue unità dedicate a moltiplicare matrici, e in fondo alla pagina
-vedremo che è un problema. La convoluzione se n'è andata, ma il parallelismo
-resta.
+non le sue unità dedicate a moltiplicare matrici, e più avanti si vedrà che è
+un problema. La convoluzione se n'è andata, ma il parallelismo resta.
 
 La {numref}`fig-scan-parallelo` mette le due strade sullo stesso orologio.
 
@@ -173,44 +189,52 @@ sta la parte «hardware-aware».
 
 `````{tab} Elementare
 
-Prima lo *scan*, che è la parola inglese per «passata»: il modo di svolgere in
-fretta un conto che sembra doversi fare in fila. Immagina una classe che deve
-sommare mille numeri scritti alla lavagna. Un solo ragazzo che parte dal primo
-e va avanti fa quasi mille addizioni, una dopo l'altra: nessuno può aiutarlo,
-perché per fare la sua somma deve aspettare quella di prima. Se invece i
-ragazzi si mettono in coppia, e ogni coppia somma i suoi due numeri, in un
-colpo solo i mille numeri diventano cinquecento; poi cinquecento diventano
-duecentocinquanta, e così via. Dopo dieci giri si è arrivati in fondo, perché
+Mille numeri alla lavagna, e una classe che deve sommarli. Un ragazzo solo
+parte dal primo e va avanti, quasi mille addizioni una dopo l'altra, e nessuno
+può aiutarlo, perché per fare la somma di adesso deve aspettare quella di
+prima. La classe invece si mette in coppia, ogni coppia somma i suoi due
+numeri, e i mille diventano cinquecento in un colpo solo, poi
+duecentocinquanta, e così via, finché dopo dieci giri si è in fondo, perché
 dimezzando mille dieci volte si arriva a uno. Di addizioni se ne fanno più o
-meno quante prima, qualcuna in più secondo come si raggruppa, ma il tempo di
-attesa crolla, perché a ogni giro lavorano tutti insieme. (Una differenza con
-la classe c'è: al modello non serve solo il totale finale, ma il totale fino a
-ciascuna posizione. È il conto della figura qui sopra, e si raggruppa allo
-stesso modo.) La ricorrenza di Mamba si può svolgere così: non è una
-somma, ma si comporta come una somma, nel senso che si può cominciare a
-raggruppare i passi da dove si vuole. Ed è per questo che perdere la forma
-«tutto insieme» non è la catastrofe che sembrava.
+meno quante prima, qualcuna in più oppure nemmeno una, secondo come i ragazzi
+si raggruppano. A crollare è l'attesa, perché a ogni giro lavorano tutti
+insieme.
 
-Poi l’*hardware*. Pensa a un contabile che deve tenere la somma corrente di una
-lunghissima lista di movimenti. Ha due posti dove lavorare: un foglietto sulla
-scrivania, piccolo ma a portata di mano, e un archivio in cantina, enorme ma
-lontano (ogni discesa in cantina costa tempo). Il modo stupido è scendere in
-archivio a ogni riga, per depositare e riprendere il totale. Il modo furbo è tenere il
-foglietto sulla scrivania: ci scrivi sopra la somma corrente, la aggiorni
-movimento dopo movimento senza mai muoverti, e scendi in cantina una volta
-sola alla fine, per archiviare il totale.
+Alla lavagna, al posto dei numeri, la catena dei passi di Mamba mette
+istruzioni, e ognuna dice due cose, del totale che hai tieni questa parte e
+aggiungici questo. Due istruzioni una dietro l'altra si fondono in una sola,
+dello stesso identico tipo. «Tieni metà e aggiungi 4», poi «tieni un decimo e
+aggiungi 1», è come dire in un colpo solo «tieni un ventesimo e aggiungi 1,4»,
+perché metà di un decimo è un ventesimo, e del 4 aggiunto prima sopravvive un
+decimo, cioè 0,4, che sommato a 1 fa 1,4. Tanto basta per mettersi a coppie
+come la classe. Due istruzioni diventano una, quella si accoppia con la
+vicina, e dopo una decina di giri il conto è fatto.
+
+C'è però una libertà che i ragazzi si prendono e le istruzioni no. Sommando,
+l'ordine non conta, 3 più 5 fa quanto 5 più 3. Le due istruzioni di prima,
+scambiate, danno un altro risultato, perché «tieni un decimo e aggiungi 1»
+seguito da «tieni metà e aggiungi 4» porta, partendo da zero, a 4,5 invece che
+a 1,4. Raggruppare quanto si vuole, scambiare mai, perché l'ordine delle
+istruzioni è l'ordine delle parole della frase. E non serve solo il totale
+finale, serve la somma fino a ciascun numero della lavagna, e quelle escono
+per strada, un giro dopo l'altro.
+
+Un contabile tiene la somma corrente di una lunghissima lista di movimenti. Ha
+un foglietto sulla scrivania, piccolo ma a portata di mano, e un archivio in
+cantina, enorme ma lontano, e ogni discesa costa tempo. Scendere in archivio a
+ogni riga, per depositare e riprendere il totale, è il modo stupido. Il modo
+furbo è tenere la somma sul foglietto, aggiornarla movimento dopo movimento
+senza mai alzarsi, e scendere in cantina una volta sola alla fine.
 
 Mamba fa esattamente questo. Il foglietto veloce è la memoria interna della
-scheda grafica, l'archivio lontano è la sua memoria principale. Attenzione a
-non confonderli con il riassunto del modello: qui si parla della scrivania su
-cui la scheda fa i suoi conti, non di ciò che il modello ricorda del testo. Il
-modello carica una
-volta i parametri, svolge tutta la ricorrenza sul «foglietto» e riporta in
-archivio solo il risultato, senza mai scrivere in cantina gli ingombranti
-stati intermedi. E c'è un secondo trucco da contabile parsimonioso: quei
-totali intermedi, se servono di nuovo per correggere i conti (la fase di
-addestramento all'indietro), non li conserva (li **ricalcola** al volo, perché
-rifare la somma costa meno che tenere in archivio migliaia di fogli).
+scheda grafica, l'archivio lontano è la sua memoria principale, e sul
+foglietto ci stanno i conti della scheda, non il riassunto che il modello si
+fa del testo. I parametri li carica una volta, svolge tutta la catena sul
+foglietto e riporta in archivio soltanto il risultato, mentre i totali
+intermedi, che sono migliaia e ingombranti, in cantina non ci scendono mai.
+Quando poi servono di nuovo, per correggere i conti (è la parte all'indietro
+dell'addestramento), il contabile non li ripesca, li rifà, perché rifare una
+somma costa meno che tenere in archivio migliaia di fogli.
 
 `````
 
@@ -233,9 +257,9 @@ proprietà a permettere di riassociare l'albero dello scan. Non è invece
 commutativo, e non potrebbe esserlo: l'ordine dei fattori è l'ordine della
 sequenza.
 
-Delle due versioni classiche dello scan conviene tenere presente la differenza,
-perché più avanti ne scriveremo una sola. Detta $L$ la lunghezza della
-sequenza, quella **a raddoppio** compone a ogni turno le posizioni distanti
+Le versioni classiche dello scan sono due, e differiscono nel lavoro, non
+nella profondità. Detta $L$ la lunghezza della sequenza, quella **a
+raddoppio** compone a ogni turno le posizioni distanti
 prima 1, poi 2, poi 4: raggiunge la profondità $O(\log L)$, ma con un lavoro
 $O(L\log L)$, cioè qualche operazione più del necessario. Quella di
 **Blelloch**, con una passata che sale e una che scende, ha la stessa
@@ -298,7 +322,7 @@ def ssm_selettivo(x, A, B, C, delta):
 Il ciclo `for` è la forma ricorrente, quella dell'inferenza: costo e memoria
 costanti per token, un aggiornamento dopo l'altro. Quel ciclo però si può evitare in due modi, e li proviamo tutti e due.
 
-La prima riguarda la sezione precedente: se le regole **non** cambiano da un
+Il primo riguarda la sezione precedente: se le regole **non** cambiano da un
 passo all'altro, lo stesso risultato si ottiene con un filtro unico che scorre
 sulla sequenza. Congeliamo allora i tre parametri che dipendevano dal token,
 costruiamo quel filtro e confrontiamo.
@@ -328,10 +352,9 @@ print("ricorrenza vs convoluzione, scarto massimo:",
       (y_ric - y_conv).abs().max().item())
 ```
 
-Il secondo modo è quello di questa sezione: anche quando le regole
-cambiano a ogni passo, e il filtro unico non esiste più, il *parallel scan*
-calcola **esattamente lo stesso** vettore `y` del ciclo, raggruppando i passi
-invece di percorrerli in fila.
+Il secondo è il *parallel scan*: anche quando le regole cambiano a ogni passo,
+e il filtro unico non esiste più, calcola **esattamente lo stesso** vettore `y`
+del ciclo, raggruppando i passi invece di percorrerli in fila.
 
 ```python
 def scan_parallelo(a, b):
@@ -405,8 +428,9 @@ Seguiamo il percorso di {numref}`fig-blocco-mamba` dal basso verso l'alto.
 Il blocco è una piccola catena di montaggio. Il pezzo grezzo (il token) entra e
 viene subito **sdoppiato** in due copie che seguono strade diverse. La copia
 principale passa per tre stazioni: prima una che le fa dare un'occhiata ai
-pochi vicini immediati (una convoluzione locale), poi un ammorbidimento
-(l'attivazione), poi il cuore selettivo che decide cosa ricordare del lungo
+pochi pezzi appena passati, mai a quelli che devono ancora arrivare (una
+convoluzione locale), poi un ammorbidimento (l'attivazione), poi il cuore
+selettivo che decide cosa ricordare del lungo
 passato. La seconda copia prende una scorciatoia con un solo ammorbidimento e
 diventa una specie di **rubinetto**: alla fine i due rami si reincontrano e il
 rubinetto regola quanto del ramo principale lasciar passare, moltiplicandoli
@@ -432,9 +456,9 @@ Detta $\mathbf{u}$ l'attivazione in ingresso al blocco, il flusso è:
 3. **Attivazione SiLU**: si applica $\mathrm{SiLU}(x) = x\,\sigma(x)$ (nota anche
    come *Swish*), la parente liscia della ReLU incontrata tra le funzioni di
    attivazione, dove $\sigma$ è la sigmoide.
-4. **SSM selettivo (S6)**: il ramo attraversa il nucleo selettivo descritto in
-   apertura di sezione, con $\mathbf{B}_t, \mathbf{C}_t, \Delta_t$ generati
-   dall'input e calcolato via parallel scan.
+4. **SSM selettivo (S6)**: il ramo attraversa il nucleo selettivo, con
+   $\mathbf{B}_t, \mathbf{C}_t, \Delta_t$ generati dall'input e calcolato via
+   parallel scan.
 5. **Gating moltiplicativo**: l'uscita dell'SSM viene moltiplicata elemento per
    elemento dal ramo parallelo passato per SiLU, $\mathbf{y} \odot \mathrm{SiLU}(\mathbf{z})$. È il
    *gate* che regola, canale per canale, quanto dell'uscita ricorrente lasciar
@@ -459,9 +483,9 @@ cosa se ne ricava?
 
 Due cose, soprattutto. La prima è **il lavoro che non esplode quando il testo
 si allunga**: mentre un Transformer, per raddoppiare la lunghezza, quadruplica
-il lavoro, Mamba lo raddoppia soltanto. È questo, e nient'altro, che si intende
-quando in queste pagine si legge «costo **lineare**»: il lavoro cresce di pari
-passo con la lunghezza. Nella generazione parola per parola il vantaggio si
+il lavoro, Mamba lo raddoppia soltanto. È questo, e nient'altro, che si
+intende con «costo **lineare**»: il lavoro cresce di pari passo con la
+lunghezza. Nella generazione parola per parola il vantaggio si
 sente, perché a ogni parola nuova il modello non deve rileggersi tutto quello
 che ha scritto finora: gli basta il suo riassunto, che è sempre della stessa
 misura.
@@ -540,9 +564,10 @@ stessa cosa.
   scende in cantina a ogni riga, e i risultati intermedi che gli serviranno
   dopo li **rifà** invece di conservarli.
 - Il **blocco Mamba** è un'unica stazione, ripetuta decine di volte: il pezzo
-  si sdoppia, una copia passa per la lavorazione lunga (uno sguardo ai vicini,
-  un ammorbidimento, il cuore selettivo), l'altra fa da valvola, e alla fine
-  le due si moltiplicano. Niente attenzione, nessun altro tipo di stazione.
+  si sdoppia, una copia passa per la lavorazione lunga (uno sguardo ai pezzi
+  appena passati, mai a quelli che devono ancora arrivare; un ammorbidimento;
+  il cuore selettivo), l'altra fa da valvola, e alla fine le due si
+  moltiplicano. Niente attenzione, nessun altro tipo di stazione.
 - Cosa se ne ricava: **il lavoro cresce di pari passo con la lunghezza** (testo
   doppio, lavoro doppio, non quadruplo), la memoria durante la generazione non
   cresce mai, e si reggono sequenze dell'ordine del milione di passi, misurate

@@ -89,9 +89,19 @@ restituisce una risposta. È la stessa scrittura dei tasti di una calcolatrice
 (dài un numero a «radice quadrata» e ottieni un risultato), solo che qui quello
 che entra è un elenco di numeri e la regola è tutta da trovare. Il cappello su
 $\hat{y}$ ricorda che è una *previsione*, non la verità: è la migliore ipotesi
-del modello. Imparare significa scegliere la $f$ che sbaglia il meno possibile
-sugli esempi che già conosciamo, sperando che se la cavi bene anche su quelli
-nuovi.
+del modello.
+
+Per dire quanto vale una regola servono due conti, e non sono lo stesso conto.
+Il primo guarda un esempio alla volta e dice quanto quella singola risposta è
+sbagliata. Il secondo mette insieme tutti i primi e ne fa la media, come il
+voto di un compito che nasce dai punteggi delle sue domande. Con dieci esempi
+ci sono dieci errori singoli e un solo numero riassuntivo, con diecimila
+esempi diecimila e uno. I due servono in momenti diversi: l'errore singolo
+dice dove la regola sta sbagliando, la media dice se nel suo insieme sta
+migliorando. E capiterà, più avanti, di calcolare quella media su una manciata
+di esempi per volta invece che su tutti. Imparare significa scegliere la $f$
+che rende quella media più piccola che si può sugli esempi già noti, sperando
+che se la cavi bene anche su quelli nuovi.
 
 `````
 
@@ -106,10 +116,10 @@ $$
 
 e cerchiamo una funzione $f:\mathcal{X}\to\mathcal{Y}$ che approssimi la
 relazione ignota tra ingressi e uscite, con $\hat{y}=f(\mathbf{x})$. La qualità
-di $f$ si misura con una **funzione di costo** (o *loss*), e conviene
-distinguere subito i due oggetti che portano quel nome: $\ell$ è il costo di
-**una** predizione, $\mathcal{L}$ è quello sull'intero insieme, cioè la media
-dei primi. L'addestramento è il problema di ottimizzazione
+di $f$ si misura con una **funzione di costo** (o *loss*), e i due oggetti che
+portano quel nome vanno tenuti distinti: $\ell$ è il costo di **una**
+predizione, $\mathcal{L}$ è quello sull'intero insieme, cioè la media dei
+primi. L'addestramento è il problema di ottimizzazione
 
 $$
 \theta^\star = \arg\min_{\theta}\ \mathcal{L}(\theta),
@@ -163,64 +173,81 @@ tornerà spessissimo con questo significato.
 
 `````{tab} Elementare
 
-Con una sola caratteristica (i metri quadri) la regola è una **retta**:
+Guardando i soli metri quadri, l'agente se la cava con una regola sola:
+duemila euro al metro quadro più cinquantamila di partenza. Un appartamento di
+$80$ m² viene $2\,000 \cdot 80 + 50\,000 = 210\,000$ €. Con le lettere, quella
+regola è una **retta**:
 
 $$
 \hat{y} = w\,x + b
 $$
 
-Qui $w$ è la pendenza (di quanto sale il prezzo per ogni metro quadro in più) e
-$b$ è il punto di partenza. Un esempio con i numeri: se ogni metro quadro vale
-$w = 2\,000$ € e il punto di partenza è $b = 50\,000$ €, un appartamento di
-$80$ m² viene stimato $\hat{y} = 2\,000 \cdot 80 + 50\,000 = 210\,000$ €. Fra
-tutte le rette possibili scegliamo quella che passa "più in mezzo" ai punti:
-la *retta di best fit* (l'espressione inglese vuol dire «che si adatta
-meglio», e in italiano si dice anche retta di regressione).
+dove $w$ è la pendenza (quanto sale il prezzo per ogni metro quadro in più) e
+$b$ il punto di partenza. Di rette ce ne sono infinite, e vogliamo quella che
+passa più in mezzo alle case già vendute, la *retta di best fit*
+(l'espressione inglese vuol dire «che si adatta meglio», e in italiano si dice
+anche retta di regressione).
 
-Come misuriamo quanto è buona? Guardiamo, per ogni casa, di quanto il prezzo
-previsto manca quello vero. Con la retta di prima e tre case: una di $80$ m²
-venduta a $210\,000$ € (previsto $210\,000$, errore zero); una di $60$ m²
-venduta a $160\,000$ € (previsto $170\,000$, sbagliamo di $+10\,000$); una di
-$100$ m² venduta a $260\,000$ € (previsto $250\,000$, sbagliamo di
-$-10\,000$). Se sommassimo gli scarti così come sono, il $+10\,000$ e il
-$-10\,000$ si cancellerebbero a vicenda e il totale verrebbe zero: la retta
-sembrerebbe perfetta, e non lo è. Per questo prima li **eleviamo al quadrato**,
-che li rende tutti positivi, e poi facciamo la media. Contando in migliaia di
-euro, i tre scarti sono $0$, $+10$ e $-10$; al quadrato diventano $0$, $100$ e
-$100$; la loro media è $(0 + 100 + 100)/3 \approx 67$. Attenzione a non leggerlo
-come una cifra in euro: avendo elevato al quadrato, quel $67$ è in *migliaia di
-euro al quadrato*, e serve solo per confrontare una retta con un'altra. Più è
-piccolo, migliore è la retta.
+Se questa valga lo dice l'archivio. Gli $80$ m² sono andati proprio a
+$210\,000$ €, scarto zero; un $60$ m² è stato venduto a $160\,000$ € e la
+regola ne chiede $170\,000$, diecimila di troppo; un $100$ m² è andato a
+$260\,000$ € e la regola ne chiede $250\,000$, diecimila in meno. Sommati come
+stanno, il $+10\,000$ e il $-10\,000$ si cancellano, il totale viene zero e la
+regola sembra perfetta dopo aver mancato due case su tre. Allora gli scarti si
+elevano al quadrato, che li rende tutti positivi, e se ne fa la media: in
+migliaia di euro sono $0$, $+10$ e $-10$, al quadrato $0$, $100$ e $100$, e la
+media è $(0 + 100 + 100)/3 \approx 67$. Avendo elevato al quadrato, quel $67$
+non è in euro ma in migliaia di euro al quadrato, e serve solo a dire quale
+retta batte quale, e più è piccolo, migliore è la retta. Il quadrato fa anche
+un secondo mestiere, voluto: uno scarto doppio pesa quattro volte tanto ($10$
+al quadrato fa $100$, $20$ ne fa $400$), e quel conto preferisce la retta che
+sbaglia poco su molte case a quella che le azzecca quasi tutte e prende un
+abbaglio su una.
 
-Resta la domanda vera: **come la troviamo**, visto che di rette ce ne sono
-infinite e provarle tutte è impossibile? Non a caso, e nemmeno a tentativi
-ciechi. Si parte da una retta qualsiasi e la si aggiusta a piccoli passi.
-Immagina di essere su un fianco di collina in mezzo alla nebbia e di voler
-scendere: non vedi il fondovalle, ma con un piede senti da che parte il terreno
-scende, e fai un passo in quella direzione. Poi rifai la stessa cosa da dove sei
-arrivato, e così via, finché il terreno non è più in discesa da nessuna parte.
+Provarle tutte non si può, e allora se ne prende una qualsiasi e la si
+aggiusta a piccoli passi, come chi scende da un fianco di collina nella
+nebbia: il fondovalle non si vede, ma il piede sente da che parte cala il
+terreno, si fa un passo di là, poi un altro da lì, finché non c'è più discesa.
+La collina è l'errore, la coppia $(w, b)$ è la posizione sul fianco, e
+l'altezza del terreno è quanto quella retta sbaglia sulle case dell'archivio.
+Camminare vuol dire cambiare $w$ e $b$, scendere vuol dire sbagliare meno. Il
+piede, qui, si risparmia: l'errore è scritto in una formula, e da una formula
+la pendenza si calcola stando fermi, come l'inclinazione di una rampa dalle
+sue misure. La direzione di massima discesa si chiama **gradiente**, e la
+camminata che ripete il passo **discesa del gradiente**. La lunghezza del
+passo la decidiamo noi, e cambia tutto, perché una corta ci mette un'eternità
+e una lunga scavalca il fondovalle e rimbalza da un fianco all'altro. Si
+chiama **learning rate** (il *tasso di apprendimento*), e a come si sceglie è
+dedicata una sezione intera.
 
-Qui la collina è l'errore. Ricordi che due numeri sono un punto su un foglio?
-Vale anche adesso, con la differenza che i due numeri non descrivono una casa
-ma il modello: la coppia $(w, b)$ è la nostra posizione sul fianco della
-collina, e l'altezza del terreno in quel punto è quanto la retta corrispondente
-sbaglia. Cambiare $w$ e $b$ vuol dire camminare, e scendere vuol dire
-sbagliare meno. E il piede che tasta il terreno? È il pezzo che la matematica
-sa fare da sola: l'errore, a differenza di una collina vera, è scritto in una
-formula, e da una formula si può *calcolare* la pendenza in un punto senza
-muovere un passo, come si calcola l'inclinazione di una rampa conoscendone la
-misura invece di salirci sopra. Quella direzione di massima discesa si chiama
-**gradiente**, e la procedura che ripete il
-passo si chiama **discesa del gradiente**. Quanto è lungo il passo lo decidiamo
-noi, e non è un dettaglio: passi troppo corti impiegano un'eternità, passi
-troppo lunghi scavalcano il fondovalle e rimbalzano da un fianco all'altro.
-Quella lunghezza ha un nome che tornerà spesso, **learning rate** (il *tasso di
-apprendimento*), e ci sarà una sezione intera dedicata a come si sceglie.
+Nella nebbia ci si ferma nella prima conca, senza sapere mai che dietro il
+crinale ce n'era una più profonda. Con la media degli scarti al quadrato non
+capita, perché quella collina ha la forma di una scodella, con un fondo solo,
+e da qualunque retta si parta si finisce lì. La garanzia riguarda la retta e
+non ogni modello, e le reti neurali che incontreremo camminano su terreni
+molto più accidentati. Per una retta, poi, si può anche non camminare, perché
+un conto diretto dà i pesi migliori in un colpo solo, e finché i dati stanno
+comodi si usa quello. Con milioni di case e centinaia di colonne quel conto
+costa più della passeggiata, e si torna a scendere a piccoli passi.
 
-È il motore di quasi tutto l'apprendimento del libro, reti neurali comprese, e
-la ragione per cui in questo capitolo si insiste tanto sulla parola «errore»:
-l'errore non serve solo a dare un voto al modello, serve a dirgli da che parte
-andare.
+Un guasto, però, la nebbia non lo spiega. In archivio la superficie è finita
+due volte, in metri quadri da una fonte e in centimetri quadrati da un'altra,
+e il fondo della scodella si allunga in un fondovalle piatto. Duemila euro al
+metro quadro e niente all'altra colonna, oppure mille euro al metro quadro e
+dieci centesimi al centimetro quadrato, su ogni casa danno lo stesso identico
+prezzo (su una casa di $80$ m², $160\,000$ € in tutti e due i modi). Chi
+cammina si ferma dove capita lungo quel fondo, due colleghi partiti da punti
+diversi arrivano a due regole diverse, e il conto diretto si inceppa, perché
+gli chiediamo il punto più basso e di punti più bassi ce n'è una fila intera.
+I prezzi restano buoni, ma i pesi non si possono più leggere, e la frase «i
+metri quadri contano duemila euro» perde senso. Stessa storia quando le
+colonne sono più delle case in archivio, con tante manopole e poche vendite da
+rispettare.
+
+Quella passeggiata a piccoli passi è il motore di quasi tutto l'apprendimento
+che incontreremo, reti neurali comprese, ed è la ragione per cui la parola
+«errore» torna a ogni passaggio: non dà solo un voto alla regola, le dice da
+che parte andare.
 
 `````
 
@@ -285,10 +312,21 @@ probabilità del lancio di un dado, ma la sicurezza del modello. $0{,}9$ vuol
 dire «ci scommetterei»; $0{,}52$ vuol dire «non ne ho idea, ma se proprio devo
 dico sì».
 
+Restano da trovare i pesi, e si cerca ancora il punto più basso di una
+collina, ma l'altezza del terreno adesso si misura in un altro modo: conta
+quanto il modello è sicuro della risposta sbagliata. Dare $0{,}6$ a un'email
+che spam non era costa poco, darle $0{,}99$ costa cinque volte tanto, e chi
+dicesse «sicuro al cento per cento» sbagliando pagherebbe un prezzo senza
+fondo. Il cambio serve anche a chi cammina nella nebbia. Misurare l'errore come
+si faceva per la retta, con la media degli scarti al quadrato, farebbe prendere
+a questa collina gobbe e ripiani, e la discesa si fermerebbe dove il terreno è
+piatto per caso; con la sicurezza sbagliata la scodella dal fondo solo torna, e
+si arriva sempre in fondo.
+
 E la risposta secca, quando serve? La si ottiene con una terza mossa che
 facciamo noi, non il modello: si fissa un valore di taglio, per abitudine
-$0{,}5$, e si risponde «sì» sopra e «no» sotto. Il paragrafo che segue la
-figura è tutto su quel taglio, perché è meno innocente di quanto sembri.
+$0{,}5$, e si risponde «sì» sopra e «no» sotto. Dove mettere quel taglio è una
+decisione con conseguenze, meno innocente di quanto sembri.
 
 `````
 
@@ -340,29 +378,34 @@ una piccola sorpresa.
 `````{tab} Elementare
 
 Quando in scikit-learn si scrive `LogisticRegression()` e basta, non si ottiene
-la regressione logistica «pura» descritta qui sopra. La libreria ci aggiunge di
+la regressione logistica «pura», quella fatta di punteggio, schiacciamento e
+nient'altro. La libreria ci aggiunge di
 suo un **freno**, cioè quel prezzo alla complessità che vedremo nella prossima
 sezione: senza dire niente, tiene i pesi più piccoli di quanto sarebbero.
 
-Non è un capriccio, ed è quasi sempre un bene. Immagina di avere dati così
-facili che una linea li separa alla perfezione: il modello, per prendere pieni
+Non è un capriccio, ed è quasi sempre un bene. Con dati così
+facili che una linea li separa alla perfezione, il modello, per prendere pieni
 voti, non deve solo azzeccare le risposte, deve anche essere *sicuro*, e per
 essere più sicuro gli basta ingigantire i pesi. Un punteggio di $10$ dà una
 probabilità del $99{,}99\%$, uno di $100$ ne dà una ancora più vicina a $1$: non
 c'è mai un motivo per fermarsi, e senza freno i pesi crescono all'infinito. Il
 freno è ciò che dice «basta così».
 
-È comunque il tipo di dettaglio
-che va saputo, perché il modello che gira non è quello scritto nel libro di
-testo, e chi confronta i due numeri senza saperlo pensa di aver sbagliato i
-conti.
+Il freno si vede nei numeri. Su quattro punti messi in modo che una linea li
+separi senza incertezze, il peso che esce con le impostazioni di fabbrica vale
+circa $1$, e chiedendo di togliere il freno diventa quasi nove volte tanto,
+mentre il confine fra le due classi resta esattamente dov'era. La manopola, poi, ha un
+verso che confonde, perché il numero da scrivere dice quanto freno si toglie:
+più è grande, meno freno c'è. È comunque il tipo di dettaglio
+che va saputo, perché il modello che gira non è quello della definizione, e chi
+confronta quei due pesi senza saperlo pensa di aver sbagliato i conti.
 
 `````
 
 `````{tab} Superiore
 
-Va detto che cosa gira davvero quando si scrive `LogisticRegression()`, perché
-non è la stima di massima verosimiglianza: scikit-learn aggiunge di suo una
+Quello che gira davvero quando si scrive `LogisticRegression()` non è la stima
+di massima verosimiglianza: scikit-learn aggiunge di suo una
 penalità $\ell_2$ sui
 pesi, di intensità `C=1.0` (in quella parametrizzazione $C$ è l’*inverso* della
 forza del freno, come nelle SVM). Il modello che esce, quindi, minimizza la
@@ -413,13 +456,34 @@ classi).
 
 `````{tab} Elementare
 
-L'idea dei **k-nearest neighbors** è quasi banale, e proprio per questo istruttiva:
-per classificare una casa nuova, cerca le $k$ case più simili tra quelle che
-già conosci e lascia che *votino*. Se i $5$ vicini più prossimi sono per lo più
-"quartiere costoso", lo sarà anche lei. Non c'è addestramento vero e proprio:
+Per classificare una casa nuova si cercano le $k$ case più simili fra quelle
+che già si conoscono, e le si lascia *votare*. Se i $5$ vicini più prossimi
+stanno per lo più in "quartiere costoso", ci starà anche lei. Se la domanda
+invece è un prezzo, al posto del voto si fa la media dei prezzi di quei $5$,
+che è la stessa mossa con una risposta di tipo diverso.
+
+Non c'è addestramento vero e proprio:
 il modello tiene in memoria tutti gli esempi e decide solo al momento della
 domanda. Per questo si dice **non parametrico**: non riassume i dati in pochi
-numeri, li usa tutti.
+numeri, li usa tutti. Il lavoro non sparisce, si sposta. Ogni volta che arriva
+una casa nuova bisogna confrontarla con tutte quelle in archivio, e ogni
+confronto va fatto colonna per colonna. Con centomila case e venti colonne sono
+due milioni di operazioni per una sola risposta, da rifare da capo alla domanda
+successiva.
+
+E «simili» va deciso con attenzione, perché la somiglianza si calcola sommando
+gli scarti di tutte le colonne, e le colonne non hanno la stessa taglia. Una
+casa da $100$ m² con tre stanze, e due case che si contendono il posto di
+vicina. La prima ha $108$ m² e una stanza sola, la seconda $115$ m² e tre
+stanze. Sommando gli
+scarti così come sono, $8$ metri quadri contro $2$ stanze, vince la prima, e il
+numero di stanze non conta quasi niente, perché la superficie si muove fra $40$
+e $200$ mentre le stanze stanno fra $1$ e $5$. Rimettendo le due colonne sulla
+stessa taglia, cioè contando ogni scarto in rapporto all'intervallo che la sua
+colonna copre ($8$ su $160$ fa un ventesimo, $2$ su $4$ fa metà), l'ordine si
+rovescia, e la vicina diventa la seconda, quella con lo stesso numero di
+stanze. Chi fa votare i vicini senza questa precauzione lascia decidere tutto
+alla colonna con i numeri più grandi.
 
 `````
 
@@ -432,10 +496,10 @@ vicini. In classificazione si assegna la classe di maggioranza; in regressione
 si fa la media dei loro $y^{(i)}$. Non esiste una fase di ottimizzazione: il
 costo si sposta interamente sulla previsione, ed è $O(mn)$ per query nella
 versione ingenua, non $O(m)$: le distanze da calcolare sono $m$, una per
-esempio, ma ciascuna costa $n$ operazioni, una per colonna. Vale la pena
-notare quel fattore $n$, perché il numero di colonne non pesa solo sul conto:
-è la quantità che decide se il metodo funziona, e la sezione su riduzione e
-clustering la mette al centro. Il valore di $k$ regola il compromesso: $k$
+esempio, ma ciascuna costa $n$ operazioni, una per colonna. Quel fattore $n$
+conta due volte, perché il numero di colonne pesa sul costo e decide anche se
+il metodo funziona, e la sezione su riduzione e
+clustering lo mette al centro. Il valore di $k$ regola il compromesso: $k$
 piccolo segue il rumore,
 $k$ grande liscia troppo. La distanza euclidea, inoltre, impone di
 normalizzare le feature, altrimenti quella con la scala più ampia domina il
@@ -446,8 +510,9 @@ Due raffinamenti sono già in scikit-learn. Il **voto pesato**
 a tutti e $k$ lo stesso peso. Le **strutture di indicizzazione** (KD-tree,
 ball-tree) partizionano lo spazio in anticipo e abbattono il numero di distanze
 da calcolare, da $m$ a circa $\log m$. Proprio quegli indici, però, smettono di
-essere utili oltre poche decine di dimensioni, per la ragione dell'avvertenza
-qui sotto.
+essere utili oltre poche decine di dimensioni, dove le distanze fra i punti si
+assomigliano tutte e il partizionamento non riesce più a escludere nessuna
+regione.
 
 `````
 

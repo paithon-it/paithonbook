@@ -44,32 +44,47 @@ cose che nessuna delle frasi, presa da sola, contiene.
 
 `````{tab} Elementare
 
-Rileggiamo la telefonata pezzo per pezzo. Primo: i **turni**. I due parlano
-uno alla volta, senza pestarsi la voce, e il cambio avviene in una frazione di
-secondo: nessuno dice «passo» come alla radio, eppure entrambi sanno sempre di
-chi è il turno.
+Il ristoratore del Da Mario risponde al telefono tutta la sera e non ci pensa
+mai. Eppure ogni telefonata gli chiede quattro lavori insieme.
 
-Secondo: **dire è fare**. «Vorrei prenotare un tavolo» non descrive il mondo:
-lo *cambia*; dopo quella frase esiste una richiesta che prima non c'era. Allo
-stesso modo, «Sai l'ora?» non è una domanda sul tuo orologio: chi risponde
-solo «sì» e tira dritto ha capito le parole ma non la mossa.
+Il primo è spartirsi la parola, i **turni**. Parlano uno alla volta senza
+pestarsi la voce, e nessuno dice «passo» come alla radio. Fra una battuta e
+l'altra passano circa due decimi di secondo, troppo pochi per pensare una
+risposta da zero. Il ristoratore la prepara mentre il cliente parla ancora, e
+la fa partire appena lo sente arrivare in fondo. Il difficile è capire dov'è il
+fondo. «Quattro», un attimo di silenzio, «Se possibile all'aperto». Quel
+silenzio sta in mezzo al turno del cliente, e chi ci infilasse la sua battuta
+gli parlerebbe sopra, perdendo il tavolo fuori.
 
-Terzo: le **conferme**. Quel «Mh-mh» non aggiunge informazione: dice «ti sto
-seguendo, continua». E la penultima battuta («Un tavolo per quattro, domani
-alle otto, all'aperto») è una ricevuta letta ad alta voce: il ristoratore
-rigioca ciò che ha capito, e il silenzio-assenso del cliente la controfirma.
-Senza questi segnali la conversazione si sfalda.
+Il secondo è muovere qualcosa con le parole. «Vorrei prenotare un tavolo per
+domani» cambia il mondo mentre lo dice: prima non c'era nessuna richiesta per
+domani sera, dopo c'è. E ogni battuta fa una mossa diversa. «Buonasera» saluta,
+«Quanti siete?» chiede, «Quattro» informa, «lo prendiamo» impegna il cliente a
+farsi trovare lì domani alle otto. La forma della frase inganna. «Avete un
+tavolo per domani sera?» è costruita come una domanda da sì o no, e il
+ristoratore che rispondesse «Sì» e restasse zitto avrebbe capito tutte le
+parole e sbagliato la mossa.
 
-Quarto: i **sottintesi**. «All'aperto *ne* è rimasto uno»: ne... di che? Di
-tavoli all'aperto, ma nessuno lo ripete, il filo del discorso lo regge. «*Lo*
-prendiamo»: lo, quel tavolo lì. È l’**anafora** di cui si diceva all'inizio del
-capitolo: le parole piccole pescano il significato in quello che è già stato
-detto. (Nulla a che vedere con l'anafora delle poesie, quella figura retorica
-che ripete la stessa parola in testa a più versi: stesso nome, due mestieri
-lontanissimi.) Qui però c'è un salto in più rispetto all'inizio del capitolo:
-là il significato stava nella stessa frase, qui sta in una **battuta
-precedente**, pronunciata da un'altra persona. Morale: per dialogare non basta
-capire l'ultima frase, bisogna ricordare la partita.
+Il terzo è controllare di essersi capiti. Quel «Mh-mh» non aggiunge niente alla
+prenotazione, dice «ti sto seguendo, continua». Dieci secondi di ristoratore
+muto sul registro, e il cliente chiede «pronto? mi sente?». Poi rilegge la
+ricevuta, un tavolo per quattro domani alle otto all'aperto, il cliente non lo
+corregge, e la prenotazione diventa cosa di tutti e due. Ma confermare troppo
+costa caro. Uno che ripetesse ogni parola («Quattro? Quattro. All'aperto?
+All'aperto. Domani? Domani.») raddoppierebbe la telefonata, e a metà gli si
+riattacca il telefono in faccia. Chi sa il mestiere ha già deciso che cosa
+confermare, il numero, il giorno e l'ora, e lascia stare il resto. Meno di così
+il cliente non si fida, più di così si spazientisce.
+
+Il quarto è capire quello che nessuno dice. «Quanti siete?» «Quattro». Una
+parola, e al ristoratore basta, perché entrambi danno per scontato che l'altro
+dica quanto serve e non meno. Se poi al tavolo si presentassero in sei, quel
+«Quattro» suonerebbe come uno sgarbo, anche se nessuno aveva promesso niente. E
+le parole più corte pescano all'indietro. «All'aperto *ne* è rimasto uno»: ne
+di che? Di tavoli all'aperto, che nessuno ripete perché il filo del discorso li
+tiene. «*Lo* prendiamo», cioè quel tavolo lì, quello delle otto. Sono anafore,
+e pescano in una battuta di prima, detta dall'altra persona. Quando riattacca,
+il ristoratore ha in testa la partita intera, costruita una battuta alla volta.
 
 `````
 
@@ -200,8 +215,8 @@ ristorante ci ha mostrato essere una conversazione.
 ### Il modulo da riempire: i sistemi a frame
 
 La seconda famiglia nasce nel 1977 allo Xerox PARC, il laboratorio californiano
-in cui in quegli anni si inventava metà dell'informatica che usiamo oggi (il
-la scrivania con le finestre sullo schermo, per dire, viene di lì). L'articolo lo
+in cui in quegli anni si inventava metà dell'informatica che usiamo oggi (la
+scrivania con le finestre sullo schermo, per dire, viene di lì). L'articolo lo
 firmano in sei, e sono sei fra i nomi più noti dell'intelligenza artificiale di
 allora: Bobrow, Kaplan, Kay, Norman, Thompson e Winograd
 {cite}`bobrow1977gus`. Il loro sistema si chiamava GUS, faceva l'agente di
@@ -213,22 +228,36 @@ dopo è ancora l'ossatura degli assistenti vocali.
 
 `````{tab} Elementare
 
-Pensate a uno sportello pubblico. L'impiegato ha davanti un modulo (in inglese
-*frame*, ed è la parola che dà il nome a tutta la famiglia) con delle caselle:
-*dove*, *quando*, *quanti*, *a che nome*. La conversazione gli serve a
-riempirle, e questo spiega tutto il suo comportamento: fa domande solo per le
-caselle ancora vuote, e se in una battuta sola dite «un tavolo per quattro
-domani alle otto» ne riempie tre in un colpo senza richiederle. Alla fine
-rilegge il modulo per conferma, e la pratica parte.
+Allo sportello l'impiegato ha davanti un modulo (in inglese *frame*, ed è la
+parola che dà il nome a tutta la famiglia) con delle caselle: *dove*,
+*quando*, *quanti*, *a che nome*. La conversazione gli serve a riempirle, e
+questo spiega tutto il suo comportamento: fa domande solo per le caselle
+ancora vuote, e se in una battuta sola dite «un tavolo per quattro domani alle
+otto» ne riempie tre in un colpo senza richiederle, anche in un ordine diverso
+da quello del foglio. Ogni casella accetta solo certe cose, e questo gli
+semplifica la vita: dove c'è scritto quanti si mette un numero, dove c'è
+scritto quando si mette un giorno, e «domani» è un giorno buono. Il modulo è
+anche la sua memoria: a metà conversazione, quello che gli avete detto sta
+scritto lì. Il ristoratore della telefonata lavorava così, e la penultima
+battuta era lui che si rileggeva le caselle a voce alta. Quando l'ultima è
+piena, la pratica parte.
 
 Un assistente vocale fa la stessa identica cosa, con moduli invisibili. «Che
 tempo fa domani a Roma?»: l'assistente riconosce *quale* modulo tirare fuori
 (previsioni meteo, non sveglie né musica) e compila le caselle, luogo: Roma;
 giorno: domani. Se dite solo «che tempo fa?», la casella del luogo la riempie
-con la vostra posizione o ve la chiede: «Per quale città?». Per questo gli
+con la vostra posizione o ve la chiede: «Per quale città?».
+
+Un impiegato così non inventa: quando una casella è vuota la chiede, e non se
+la riempie da sé. Se qualcosa esce storto si vede subito dove, perché a
+sbagliare è una casella e la casella si rilegge. E a fine giornata le pratiche
+chiuse si contano. Sono tre buone ragioni per tenerselo, ed è per queste che il
+modulo è sopravvissuto a tutto quello che è venuto dopo. Il prezzo si paga
+appena si esce dalle caselle: alla domanda «secondo lei si sta meglio dentro o
+fuori?» una persona improvvisa una risposta, chi va avanti a caselle resta
+zitto, perché quella risposta non ha una casella dove andare. Per questo gli
 assistenti vocali sono bravissimi dentro i loro moduli (meteo, timer,
-chiamate) e cadono nel vuoto un millimetro fuori: là non c'è nessuna casella
-da riempire.
+chiamate) e cadono nel vuoto un millimetro fuori.
 
 `````
 
@@ -242,7 +271,7 @@ anche fuori ordine (*iniziativa mista*), azione a modulo completo. GUS gestiva
 già date relative, ellissi e semplici anafore: nel 1977.
 
 L'erede moderno è l'architettura a **stato di dialogo**, una catena di
-componenti in gran parte già costruita in questo capitolo:
+componenti costruita in gran parte con gli attrezzi del capitolo:
 
 1. **NLU**: classificazione dell’**intento** (un classificatore di testo come
    quelli visti per il sentiment) e **slot filling**, cioè etichettatura di
@@ -275,10 +304,16 @@ e in inglese, botte e risposte.
 Ricordate la tastiera del telefono che indovina la parola dopo? Immaginatela
 ingrandita fino a scrivere non la prossima parola ma l'intera prossima
 *battuta*, dopo aver letto milioni di dialoghi veri, per esempio i sottotitoli
-dei film. Funziona, ed è già sorprendente. Ma se insegni a un modello a dare
-*la risposta più probabile*, impara le risposte che vanno bene ovunque («Non
-lo so», «Va bene», «Dipende»), le più probabili proprio perché compatibili con
-tutto: l'interlocutore più evasivo del mondo.
+dei film. E ingrandita anche dal lato dell'ascolto: prima di scrivere si
+rilegge tutta la conversazione, dalla prima battuta all'ultima, perché la
+risposta giusta dipende da quello che è stato detto venti righe fa. Funziona,
+ed è già sorprendente. Ma se insegni a un modello a dare *la risposta più
+probabile*, impara le risposte che vanno bene ovunque («Non lo so», «Va bene»,
+«Dipende»), le più probabili proprio perché compatibili con tutto:
+l'interlocutore più evasivo del mondo. Un rimedio c'è: invece della risposta
+più probabile in assoluto si cerca quella che sta bene con questa battuta e
+stonerebbe con qualunque altra. «Non lo so» sta bene dappertutto, e con quel
+metro perde.
 
 E c'è un problema più profondo: un modello che ha imparato a *continuare* i
 testi non è ancora un buon interlocutore. Se scrivo «come si toglie una
@@ -331,23 +366,40 @@ il testo giusto: conti gli errori ed è fatta. Il tema no: due temi da dieci
 possono essere completamente diversi, e nessun righello li misura; serve un
 giudice che li legga.
 
-Con i sistemi a modulo si può ancora correggere come un dettato: la
-prenotazione è andata a buon fine, sì o no? Quante battute ci sono volute?
-Sono numeri, e si contano. Con i chatbot aperti resta il tema: si fanno
+Con i sistemi a modulo si può ancora correggere come un dettato. La
+prenotazione è andata a buon fine, sì o no? Le caselle sono giuste una per
+una, o il tavolo è finito per cinque persone invece che per quattro? Quante
+battute ci sono volute, e quante volte il cliente ha dovuto ripetersi? Le
+prenotazioni riuscite e le caselle giuste si vogliono tante, le battute e le
+ripetizioni poche, e per ricavarne un voto solo bisogna decidere quanto pesa
+una battuta in più rispetto a una casella sbagliata. Quel peso non si indovina
+a tavolino: si chiede a chi ha prenotato quanto è rimasto contento, e si
+guarda che cosa lo aveva fatto arrabbiare.
+
+Con i chatbot aperti resta il tema. Contare le parole in comune con una
+risposta modello dice pochissimo: due risposte ottime alla stessa domanda
+possono non averne nemmeno una. E non basta guardare se l'italiano fila, dato
+che un tema può essere scritto benissimo e non dire niente. Allora si fanno
 conversare con persone in carne e ossa, e si chiede ai giudici di votare: le
 risposte filavano? stavano in piedi da un capo all'altro? veniva voglia di
-continuare? Costoso, lento, un po’ soggettivo: ma a oggi non c'è metro
-migliore del giudizio umano su una cosa fatta per gli umani.
+continuare? Spesso, invece del voto, si mettono due conversazioni a fianco e
+si chiede quale delle due è migliore, che è una domanda a cui si risponde
+meglio. Costoso, lento, un po’ soggettivo: ma a oggi non c'è metro
+migliore del giudizio umano su una cosa fatta per gli umani. Da qualche anno i
+temi si fanno correggere anche a un'altra macchina, che costa pochissimo e non
+si stanca; il suo difetto però si conosce, e tende a dare il voto più alto al
+tema più lungo.
 
 `````
 
 `````{tab} Superiore
 
-Per i sistemi *task-oriented* la valutazione è ancorata al compito: tasso di
-successo, accuratezza degli slot, efficienza (numero di turni, correzioni).
-Il framework PARADISE (Walker et al., 1997) combina successo del compito e
-costi del dialogo in un'unica funzione di qualità, stimata sui giudizi di
-soddisfazione degli utenti.
+Per i sistemi *task-oriented* la valutazione è ancorata al compito, e le
+grandezze si leggono in due versi opposti: tasso di successo e accuratezza
+degli slot si vogliono alti, i costi del dialogo (numero di turni, correzioni,
+richieste ripetute) bassi. Il framework PARADISE (Walker et al., 1997) combina
+successo del compito e costi in un'unica funzione di qualità, dove i costi
+entrano col segno meno, stimata sui giudizi di soddisfazione degli utenti.
 
 Per i chatbot aperti le metriche ereditate dalla traduzione falliscono: la
 sovrapposizione con una risposta di riferimento (BLEU {cite}`papineni2002bleu`

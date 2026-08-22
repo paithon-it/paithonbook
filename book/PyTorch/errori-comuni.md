@@ -52,26 +52,45 @@ numeri e ne produce 10, uno per cifra. Traduzione del messaggio: sono arrivate
 lo strato nascosto, quello che avrebbe dovuto portarle da $784$ a $128$.
 
 `````{tab} Elementare
-Pensa ai tensori come a scatole con un'etichetta che dice quante cose
-contengono e come sono disposte. Un'operazione tra due scatole richiede che le
-etichette combacino su un certo lato, esattamente come due tubi che si
-avvitano solo se hanno lo stesso diametro. Le cause sono sempre di tre tipi.
+Un tensore porta addosso un'etichetta che dice quante cose contiene e come sono
+disposte. $(3, 224, 224)$ è un'immagine, tre tavole di $224 \times 224$ numeri.
+Due pezzi si agganciano solo se le etichette combaciano sul lato giusto, come
+due tubi che si avvitano solo se hanno lo stesso diametro. Le cause ricorrenti
+hanno un nome ciascuna.
 
-**Manca l'appiattimento.** Un'immagine è una scatola $(3, 224, 224)$; uno
-strato `nn.Linear` vuole una lista piatta di numeri. Serve un `nn.Flatten()`
-in mezzo, che srotola l'immagine in un unico vettore lungo.
+**Manca l'appiattimento.** Uno strato `nn.Linear` legge un numero solo
+dell'etichetta, l'ultimo, e degli altri non si occupa. Davanti a
+$(3, 224, 224)$ guarda il $224$ finale: se ne aspettava un altro si ferma, e se
+per caso aspettava proprio $224$ va perfino peggio, perché il conto lo fa e
+nessuno protesta, riga per riga invece che sull'immagine intera. Serve un
+`nn.Flatten()` in mezzo, che srotola ogni immagine in un'unica fila di
+$3 \times 224 \times 224 = 150\,528$ numeri e lascia stare il mucchietto,
+perché srotola le immagini una per una senza impastarle fra loro. Lo strato che
+viene dopo va allora costruito per accettarne $150\,528$.
 
 **Due strati non si parlano.** L'uscita di uno strato deve essere l'ingresso
 del successivo: se il primo produce $128$ numeri, il secondo deve aspettarsene
-$128$, non $256$. È un errore di battitura più che di concetto, ma capita ogni
-volta che si cambia una dimensione e ci si dimentica di aggiornare la riga
-sotto.
+$128$, non $256$. Quando quel numero l'abbiamo scritto noi si tratta di un
+refuso, e si corregge guardando la riga sopra. Spesso però non lo si conosce
+affatto, perché esce da una catena di passaggi che lo cambiano ognuno un po’:
+in quel caso c'è `nn.LazyLinear`, che il diametro del tubo se lo misura da sé
+la prima volta che gli passa qualcosa, e su quella misura si costruisce
+addosso il pezzo. Comodo mentre si prova; nella versione definitiva quel numero
+è meglio scriverlo.
 
-**Manca la dimensione del gruppo.** Il modello si aspetta *un mucchietto* di
+**Manca la dimensione del gruppo.** Il modello si aspetta un mucchietto di
 esempi, anche quando l'esempio è uno solo. Un'immagine singola va da
 $(3, 224, 224)$ a $(1, 3, 224, 224)$, con `x.unsqueeze(dim=0)`, cioè "un
 mucchietto che contiene un'immagine". È l'inciampo classico del momento in cui
-si prova il modello su una foto scaricata al volo.
+si prova il modello su una foto scaricata al volo. Il gesto contrario ha una
+trappola: `x.squeeze()`, senza dire quale lato, toglie tutti i lati che valgono
+uno, e su un mucchietto da un esempio solo porta via anche quello, riportando
+l'immagine com'era prima. Il lato si indica sempre, con `x.squeeze(dim=...)`,
+così quello del mucchietto resta dov'è.
+
+Per trovare il punto in cui la fila si spezza non serve indovinare: si fanno
+stampare le etichette a ogni passaggio, e la prima coppia che non combacia è
+quella da riparare.
 `````
 
 `````{tab} Superiore
@@ -146,6 +165,17 @@ servono tutti e due i gesti, `.float() / 255`, e il secondo si dimentica
 spesso, con l'effetto di dare alla rete numeri fino a $255$ volte più grandi di
 quelli che si aspetta.
 
+C'è una seconda coppia che non si incontra, e stavolta sono due decimali. I
+numeri con la virgola si scrivono in tagli diversi, uno fine e uno più corto,
+e strumenti diversi non scelgono lo stesso: un foglio di dati letto con NumPy,
+la libreria con cui in Python si fanno i conti, arriva nel taglio fine, mentre
+i pesi della rete sono scritti in quello corto. Dentro uno strato i due tagli
+non si incontrano e la libreria si ferma, anche se i numeri sono giusti e sono
+decimali tutti e due. È il caso che fa perdere più tempo, perché la riga da
+guardare sta fuori da PyTorch, molte righe più su, dove i dati sono stati
+letti. Il rimedio è lo stesso gesto di prima, `.float()`, scritto subito dopo
+la lettura.
+
 Il secondo messaggio è il caso opposto e riguarda le **etichette**. Alla
 `CrossEntropyLoss` le classi vere si danno come numeri interi (la classe $3$,
 non $3{,}0$), perché sono nomi, non quantità. Passare $3{,}0$ produce
@@ -212,9 +242,10 @@ Il terzo errore è il più banale nella diagnosi e il più fastidioso da
 prevenire: due tensori che devono incontrarsi abitano in due memorie diverse.
 
 `````{tab} Elementare
-La CPU e la GPU hanno ciascuna la propria memoria, e non si vedono tra loro:
-sono due stanze separate. Un'operazione richiede che entrambi i pezzi siano
-nella stessa stanza, e il trasloco va chiesto esplicitamente con `.to(device)`.
+Sono due stanze separate, e da una non si vede che cosa c'è nell'altra: la CPU
+ha la sua memoria, la GPU la sua. Un'operazione richiede che entrambi i pezzi
+siano nella stessa stanza, e il trasloco va chiesto esplicitamente con
+`.to(device)`.
 
 Il caso classico è aver spostato il modello e dimenticato i dati:
 
@@ -237,6 +268,28 @@ se quella copia non la si mette da nessuna parte va persa. Ecco perché nel
 codice sopra c'è `X = X.to(device)` e non `X.to(device)` e basta: la seconda
 forma è una riga che sembra funzionare e non fa nulla, e non dà nessun errore
 finché il tensore non arriva al modello.
+
+L'altro caso, quello che sfugge quasi sempre, riguarda un pezzo che nasce
+dentro il modello mentre lavora. Una riga come `torch.ones(...)` lo fabbrica
+nella stanza della CPU, perché nessuno le ha detto dove farlo, e il modello che
+sta di là se lo trova davanti come qualcuno entrato dalla porta sbagliata. Il
+rimedio è guardare dove sta un dato che si ha già in mano, invece di scrivere
+il nome della stanza dentro il modello: `torch.ones(..., device=x.device)`
+fabbrica il pezzo dove serve, qualunque stanza sia.
+
+E le cose che appartengono al modello (una tabella di riferimento, una media da
+sottrarre) vanno dichiarate sue con `self.register_buffer("nome", tensore)`.
+Così traslocano insieme a lui e, quando il modello si salva su disco, partono
+con lui. Un tensore lasciato lì come una variabile qualsiasi resta indietro in
+tutti e due i casi, e il guasto salta fuori il giorno in cui si passa alla GPU.
+
+Anche il viaggio di ritorno vuole il suo trasloco. Un risultato calcolato di là
+si porta dietro la catena dei conti che l'hanno prodotto, che la libreria tiene
+da parte perché le servirà per correggere i pesi, e così com'è non lo si
+consegna agli attrezzi che fanno i grafici. Prima lo si stacca da quella
+catena, poi lo si riporta nella stanza della CPU, e a quel punto è un numero
+come gli altri. In codice sono i tre gesti di
+`tensore.detach().cpu().numpy()`.
 `````
 
 `````{tab} Superiore
@@ -444,24 +497,38 @@ non indicare più una direzione stabile.
 
 `````{tab} Elementare
 
-La regoletta operativa, in ordine di ciò che conviene provare.
+La regoletta operativa, una forma di curva alla volta.
 
-Curva piatta come un tavolo: è un bug, cercalo nel ciclo di addestramento
-prima di toccare qualsiasi iperparametro. Curva che scende appena: alza il
-learning rate (di un fattore tre, non del dieci per cento) e, se non basta,
-ingrandisci il modello. Curva che salta: abbassa il learning rate (di un
-fattore tre) o aumenta la dimensione del batch, che è l'altro modo di rendere
-meno rumoroso il gradiente. Divario che si allarga: servono i freni, cioè
-qualcosa che renda la vita più difficile al modello mentre studia (deformare
-un po’ gli esempi a ogni giro, spegnergli a caso qualche neurone) oppure, più
-semplicemente, fermarsi prima.
+Curva piatta come un tavolo: c'è un errore nel codice, e va cercato nel ciclo
+di addestramento prima di toccare qualunque manopola. Se scende appena, allunga
+il passo (moltiplicandolo per tre, non alzandolo del dieci per cento, perché la
+misura giusta può stare mille volte più in là) e, quando non basta, ingrandisci
+il modello. Se cala in fretta all'inizio e poi si pianta su un valore mediocre,
+il passo resta troppo lungo per infilarsi nel punto più basso, e va accorciato.
+Se il divario fra le due si allarga servono i freni, cioè qualcosa che renda la
+vita più difficile al modello mentre studia (deformare un po’ gli esempi a ogni
+giro, spegnergli a caso qualche neurone) oppure, più semplicemente, fermarsi
+prima.
 
-E un collaudo che vale i cinque minuti che costa, da fare **prima** di lanciare
-l'addestramento vero: prendi un solo mucchietto di esempi, una decina, e
-addestra su quello finché la loss non arriva quasi a zero. Se un modello non
-riesce a imparare a memoria dieci esempi, non c'è iperparametro che lo salverà
-su cinquantamila: c'è un errore da qualche parte, e lo stai cercando nel posto
-sbagliato.
+La curva che salta, invece, ha due cause che si somigliano e non si curano allo
+stesso modo. O il passo è troppo lungo e il modello scavalca il punto più basso
+a ogni giro, oppure i mucchietti sono troppo piccoli, e con pochi esempi alla
+volta la direzione che il modello ricava è una media presa male, che traballa
+da un giro all'altro. Distinguerle costa una prova sola: raddoppia il
+mucchietto e riguarda le curve. Se il tremolio si calma era la media presa
+male, e per dimezzarlo servono quattro volte più esempi a giro. Se invece le
+curve saltano identiche la colpa è del passo, e allora ingrandire i mucchietti
+non serve a niente, perché si paga il conto senza vedere niente in cambio.
+
+E un collaudo che vale i cinque minuti che costa, da fare prima di lanciare
+l'addestramento vero. Prendi un solo mucchietto di esempi, una decina, togli i
+freni se ne hai messi, e addestra su quello finché la loss non arriva quasi a
+zero. Dieci esempi qualunque modello li manda a memoria, quindi se il tuo non
+ci riesce le manopole non c'entrano, e su cinquantamila esempi c'entreranno
+ancora meno: si è rotto qualcosa lungo la catena, e i posti dove guardare sono
+pochi. Le etichette non corrispondono più agli esempi a cui erano attaccate;
+una trasformazione ha rovinato i dati per strada; il conto dell'errore si fa
+sulla cosa sbagliata; oppure la correzione non arriva fino a tutti i pesi.
 
 `````
 

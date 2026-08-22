@@ -282,7 +282,7 @@ somigliano: stessa lunghezza, stessa aria di disordine, e in tutti e due le
 dieci cifre compaiono all'incirca lo stesso numero di volte. Se li giudichi
 guardandoli, sono la stessa cosa.
 
-Adesso però prova a **dettarli al telefono a qualcuno che ha un calcolatore**.
+Adesso però prova a dettarli al telefono a qualcuno che ha un calcolatore.
 Per il primo foglio bastano poche parole: «stampa il primo milione di cifre di
 pi greco», e c'è una ricetta di qualche riga che le produce tutte. Per il
 secondo non c'è niente di meglio che leggergliele una per una: nessuna ricetta
@@ -290,35 +290,37 @@ corta le produce, perché non c'è nessuna ragione per cui la cifra dopo debba
 essere proprio quella.
 
 La lunghezza della **dettatura più corta possibile** è la misura che serve, e
-ha un nome, quello del matematico russo che è uno dei tre ad averci pensato:
-**complessità di Kolmogorov**. Dice quanto quel foglio è davvero complicato, e
-non quanto sembra: il primo foglio è semplicissimo e sembra caotico, il secondo
-è caotico e basta. E dice
-anche una cosa scomoda: un foglio di cifre a caso è, in questo senso, la cosa
-più *complessa* che esista, perché per descriverlo non si può fare di meglio
-che ricopiarlo. Complesso non vuol dire interessante.
+ha il nome del matematico russo che è uno dei tre ad averci pensato:
+**complessità di Kolmogorov**. Dice quanto quel foglio è complicato davvero,
+non quanto sembra: il primo è semplicissimo e sembra caotico, il secondo è
+caotico e basta. Con una conseguenza scomoda: un foglio di cifre a caso è la
+cosa più *complessa* che esista, perché per descriverlo non si può fare di
+meglio che ricopiarlo. Complesso non vuol dire interessante.
 
-Due obiezioni vengono subito, e tutte e due hanno una risposta corta.
+E la misura sta sul foglio, non sull'urna. Se per combinazione dall'urna esce
+un milione di zeri, quel foglio si detta in tre parole pur essendo uscito a
+caso: quanto sorprende una sorgente in media e quanto è lungo dettare un suo
+foglio preciso sono due conti diversi, che danno quasi lo stesso numero solo
+quando la sorgente è semplice.
 
-La prima: dipenderà dal calcolatore che ha il tuo amico. Sì, ma di pochissimo:
+Due obiezioni, con la loro risposta corta.
+
+Il calcolatore dell'amico: la misura dipenderà da quello. Sì, ma di pochissimo:
 se il suo parla un'altra lingua, gli detti prima le istruzioni per capire la
-mia, e quelle sono sempre le stesse, comunque sia lungo il foglio. Su un foglio
-grande quella premessa non conta niente.
+mia, e quelle sono sempre le stesse, comunque sia lungo il foglio.
 
-La seconda: e un programma di compressione, allora? Anche quello vale come
-dettatura, però bisogna dettare **due** cose, il file compresso e il programma
-che lo apre, se no dall'altra parte nessuno ricostruisce niente. Ecco perché
-nessun compressore può battere la dettatura più corta: è già lui una dettatura,
-solo con il conto fatto per intero.
+Il programma di compressione: vale anche lui come dettatura, però bisogna
+dettare due cose, il file compresso e il programma che lo apre, se no
+dall'altra parte nessuno ricostruisce niente. Ecco perché nessun compressore
+può battere la dettatura più corta: è già lui una dettatura, solo con il conto
+fatto per intero.
 
-C'è però una fregatura, ed è un teorema: **quella lunghezza non si può
-calcolare**. Non è che sia difficile, o che serva un calcolatore più
-grosso: non esiste, e non può esistere, un programma che presa una stringa
-qualsiasi dica qual è la ricetta più corta che la produce. La ragione, in
-sostanza, è che per essere sicuri di aver trovato la ricetta più corta bisogna
-provarle tutte, e certe ricette non finiscono mai. Quindi il fondo c'è, ma non
-è una procedura: è un metro contro cui misurarsi sapendo che non lo si
-raggiungerà mai.
+C'è però una fregatura, ed è un teorema: quella lunghezza non si può
+calcolare. Non serve un calcolatore più grosso: un programma che, preso un
+foglio qualsiasi, dica qual è la ricetta più corta che lo produce non esiste e
+non può esistere. Per esserne sicuri bisognerebbe provarle tutte, e certe
+ricette non finiscono mai. Quindi il fondo c'è, ma non è una procedura: è un
+metro contro cui misurarsi sapendo che non lo si raggiungerà mai.
 
 `````
 
@@ -394,9 +396,9 @@ Sono da tenere distinti, infine, $K(x)$ e la **quantità di struttura** di $x$:
 una stringa casuale ha $K$ massimo e struttura nulla. $K(x)$ da sola non dice
 **dove** passa il confine fra la regola e il rumore; a separarli è la lunghezza
 minima in **due parti**, ed è il mestiere della funzione di struttura di
-Kolmogorov. Non è un'osservazione oziosa: il criterio pratico che arriva fra
-poche righe, MDL, è esattamente un codice in due parti, ed è per quello che
-serve a scegliere un modello mentre $K$ da sola non servirebbe.
+Kolmogorov. Non è un'osservazione oziosa: MDL, il criterio pratico che ne
+discende, è esattamente un codice in due parti, ed è per quello che serve a
+scegliere un modello mentre $K$ da sola non servirebbe.
 
 `````
 
@@ -502,45 +504,46 @@ toglie l'artificio, e la parte notevole è che **contiene** la prima.
 
 `````{tab} Elementare
 
-L'idea è quella del bagaglio.
+Si parte domani, e le valigie da fare sono due. Nella prima ci va un mucchio di
+roba qualsiasi, tantissima, che in sé non ti interessa; nella seconda la cosa
+che ti serve davvero, ed è poca.
 
-Devi partire, e hai due valigie da fare. Nella prima ci va un mucchio di roba
-qualsiasi, tantissima, che in sé non ti interessa; nella seconda la cosa che ti
-serve davvero, ed è poca. Puoi farle in due modi: due valigie separate, oppure
-una sola con dentro tutto.
+Se le fai insieme, in un bagaglio solo, quello che serviva a tutte e due (il
+caricabatterie, il dentifricio, l'adattatore della spina) lo porti una volta
+invece che due, e il bagaglio unico pesa meno della somma dei due. Se le due
+valigie non avevano niente in comune, pesa esattamente quanto i due separati, e
+non hai perso niente a provare.
 
-Se ne fai una sola, e fra la roba della prima c'è qualcosa che serviva anche
-alla seconda (il caricabatterie, il dentifricio, l'adattatore della spina),
-quella cosa la porti **una volta invece che due**: il bagaglio unico pesa meno
-della somma dei due. Se invece le due valigie non avevano niente in comune,
-pesa esattamente quanto i due separati, e non hai perso niente a provare.
+Lo stesso peso si conta anche in un altro ordine: la prima valigia fatta da
+sola, più quel che resta da aggiungere per la seconda quando la prima è già
+chiusa. Se la seconda non aggiunge niente, viaggia gratis. I due conti danno lo
+stesso risultato, a parte i pochi grammi che costa ricontrollare che cosa c'è
+già dentro: e quei grammi non raddoppiano se raddoppia la roba.
 
-C'è un altro modo di dire la stessa cosa, ed è quello che servirà fra poco:
-fare la valigia unica costa quanto fare la prima da sola, più quel che resta da
-aggiungere per la seconda **una volta che la prima è già fatta**. Se la seconda
-non aggiunge niente, viaggia gratis.
+Il secondo ordine però nessuno lo sa eseguire: quando chiudi il bagaglio non
+sai ancora che cosa ti chiederanno all'arrivo, e «quel che resta da aggiungere»
+non lo puoi preparare per conto suo. Sai fare l'altro: mettere dentro tutto e
+farlo pesare il meno possibile.
 
 Ecco: la roba tanta e in sé inutile è il testo di internet, la cosa poca che
 serve davvero è il compito a cui tieni, e fare un bagaglio solo è il
-pre-addestramento. Non è una scommessa azzardata, è una scommessa che nel
-peggiore dei casi va in pari. Quanto ci guadagni è esattamente quanto la prima
-valigia conteneva già della seconda, e questo non lo decidi tu: lo decide il
-mondo, cioè se davvero il testo scritto dalle persone contiene qualcosa della
-biologia.
+pre-addestramento. È una scommessa che nel peggiore dei casi va in pari. Quanto
+ci guadagni è quanto la prima valigia conteneva già della seconda, e non lo
+decidi tu: lo decide il mondo, cioè se davvero il testo scritto dalle persone
+contiene qualcosa della biologia.
 
 E c'è un secondo pezzo. Chi fa la valigia, qui, non è una persona che ragiona:
 è la discesa del gradiente, il metodo con cui una rete aggiusta a piccoli passi
-i propri pesi. Una rete con i suoi pesi è, in piccolo, una macchina
-programmabile: la stessa rete, con pesi diversi, esegue procedimenti diversi, e
-i pesi sono quindi il suo programma. Addestrarla è come cercare, fra i tanti
-modi possibili di fare quella valigia, quello che occupa meno spazio. È una
-ricerca cieca e limitata, ma è una ricerca fra programmi, e questo basta a far
-entrare in gioco tutto quello che questa pagina ha detto sulle ricette corte.
+i propri pesi. La stessa rete, con pesi diversi, esegue procedimenti diversi: i
+pesi sono il suo programma, e lei la macchina che lo esegue. Addestrarla è come
+cercare, fra i tanti modi possibili di fare quella valigia, quello che occupa
+meno spazio. È una ricerca cieca e limitata, ma è una ricerca fra programmi, e
+tutto quello che si è detto sulle ricette corte torna a valere.
 
 E qui c'è, secondo Sutskever, una ragione per cui le reti grandi funzionano
-meglio che non ha niente a che vedere con l'avere più memoria: una rete più
-grande è come qualcuno che sa provare più modi di fare la valigia, quindi si
-avvicina di più a quello ideale, quello che nessuno può battere.
+meglio, e non ha niente a che vedere con l'avere più memoria: una rete più
+grande prova più modi di fare la valigia, quindi si avvicina di più a quello
+ideale, che nessuno può battere.
 
 `````
 
@@ -593,9 +596,8 @@ $$
 che per il teorema di codifica di sorgente **è** la lunghezza del file
 compresso: la perdita che si minimizza addestrando e la lunghezza di
 descrizione sono lo stesso numero, ed è la ragione per cui qui si scrivono con
-la stessa lettera. (In tutta questa sezione $L(\cdot)$ è una lunghezza in bit,
-non la dimensione di un latente, e $X$ e $Y$ sono stringhe, non matrici: restano
-tonde.)
+la stessa lettera. ($L(\cdot)$ è qui una lunghezza in bit, non la dimensione
+di un latente; e $X$ e $Y$ sono stringhe, non matrici: restano tonde.)
 
 Il passaggio che chiude l'argomento va scritto per esteso, perché dalla regola
 della catena non segue da solo: minimizzare $K(X,Y)$ non dice **come** il
@@ -836,35 +838,39 @@ modo drammatico.
 
 `````{tab} Elementare
 
-Pensiamo a un dizionario di abbreviazioni.
-
-Se io e te concordiamo un dizionario in cui «AS» sta per «apprendimento
-auto-supervisionato», i miei messaggi diventano molto più corti. Ma il
-dizionario qualcuno te lo deve dare, e se il dizionario è più grosso di tutti i
-messaggi che ci scriveremo in vita nostra, allora nel complesso ho fatto
-crescere le cose, non le ho accorciate.
+Io e te concordiamo un dizionario di abbreviazioni: «AS» sta per «apprendimento
+auto-supervisionato», e via così. I miei messaggi diventano molto più corti. Ma
+il dizionario qualcuno te lo deve dare, e se è più grosso di tutti i messaggi
+che ci scriveremo in vita nostra, nel complesso ho fatto crescere le cose
+invece di accorciarle.
 
 È esattamente la posizione del modello da settanta miliardi di parametri. Ogni
 parametro è un numero, e per scriverlo servono almeno due byte: settanta
 miliardi di numeri fanno centoquaranta miliardi di byte, cioè centoquaranta
 gigabyte. Per scrivere il gigabyte di Wikipedia in ottantatré megabyte devi
 prima consegnare quel dizionario lì. Contando tutto, quel modello non ha
-compresso Wikipedia: l'ha fatta diventare **centoquaranta volte più grossa**.
+compresso Wikipedia: l'ha fatta diventare centoquaranta volte più grossa.
 
-C'è però un secondo modo di fare i conti, ed è quello onesto per chi impara.
-Ha un nome che serve fra poco, **codice prequenziale**, e vuol dire questo:
-invece di consegnare il dizionario, lo si **costruisce strada facendo**. Io ti
-mando il primo pezzo di messaggio senza abbreviazioni, tu lo leggi, e a quel
-punto tutti e due abbiamo visto le stesse parole e possiamo ricavarne le stesse
-abbreviazioni, ciascuno per conto suo. Poi io mando il pezzo dopo, già
-abbreviato. Nessun dizionario viaggia mai, eppure alla fine ce l'abbiamo tutti
-e due uguale, e il prezzo di averlo costruito sta dentro i primi pezzi, che
-erano più lunghi.
+C'è però un secondo modo di fare i conti, onesto con chi impara: invece di
+consegnare il dizionario, lo si costruisce strada facendo. Si chiama
+**codice prequenziale**, e funziona così. Io ti mando il primo pezzo di
+messaggio senza abbreviazioni, tu lo leggi, e a quel punto tutti e due abbiamo
+visto le stesse parole e possiamo ricavarne le stesse abbreviazioni, ciascuno
+per conto suo. Poi io mando il pezzo dopo, già abbreviato. Nessun dizionario
+viaggia mai, eppure alla fine ce l'abbiamo tutti e due uguale, e il prezzo di
+averlo costruito sta dentro i primi pezzi, che erano più lunghi.
 
-È lo stesso conto dell'esperimento a inizio pagina, dove il modello di ordine 1
-spendeva quattro decimillesimi di bit in più di chi la regola la sapeva già.
-Quei quattro decimillesimi erano il dizionario, e nessuno l'ha spedito: se lo
-sono fabbricato tutti e due leggendo.
+Un'abbreviazione paga solo se indovina parole che nel messaggio devono ancora
+arrivare: quelle ritagliate sulle righe già lette non accorciano niente. Per
+questo all'inizio si va anche in perdita, e più il dizionario è capiente più si
+perde: dopo tre righe uno se lo riempie di sigle che non torneranno mai più, e
+quei primi pezzi costano più che scrivere tutto per esteso. Il debito si ripaga
+dopo, se il messaggio è abbastanza lungo.
+
+È lo stesso conto della lingua a quattro lettere, dove il modello che guardava
+la lettera precedente spendeva quattro decimillesimi di bit in più di chi la
+regola la sapeva già. Quei quattro decimillesimi erano il dizionario, e nessuno
+l'ha spedito: se lo sono fabbricato tutti e due leggendo.
 
 `````
 
@@ -884,7 +890,7 @@ riaddestramento $1 = t_0 < t_1 < \dots < t_S = n$, la lunghezza è
 
 $$
 L_{\text{preq}}(y_{1:n} \mid x_{1:n}) \;=\; t_1 \log_2 |\mathcal{Y}| \;-\;
-\sum_{s=0}^{S-1} \log_2 p_{\hat\theta_{t_s}}
+\sum_{s=1}^{S-1} \log_2 p_{\hat\theta_{t_s}}
 \bigl(y_{t_s+1:t_{s+1}} \mid x_{t_s+1:t_{s+1}}\bigr),
 $$
 
@@ -895,7 +901,7 @@ cieca il primo blocco, quando ancora non si è addestrato niente
 sui dati che ha già ricevuto e ottiene gli stessi parametri: nulla va
 trasmesso, e il costo dell'apprendimento è pagato dai primi blocchi, quando il
 modello è ancora ignorante. (Nell'articolo quel numero di etichette si scrive
-$K$: qui no, perché in questa pagina $K$ è già la complessità di Kolmogorov.)
+$K$: qui no, perché $K$ è già la complessità di Kolmogorov.)
 
 I numeri di quell'articolo sono la smentita più netta dell'idea che una rete
 con troppi parametri non possa comprimere. Su CIFAR-10, codificando le
@@ -1042,10 +1048,9 @@ funzioni è, prima di tutto, un'informazione su dove abitiamo.
   da lì.
 - Per ogni sorgente esiste un **fondo**: nessun compressore, in media, può
   spendere meno di così, e ci arriva solo chi ha capito com'è fatta la
-  sorgente. Nell'esperimento di questa pagina il modello che guarda la lettera
-  precedente ci arriva; quello
-  che conta solo le frequenze non guadagna niente, e due compressori veri come
-  `zlib` e `lzma` restano a metà strada.
+  sorgente. Nella lingua a quattro lettere ci arriva il modello che guarda la
+  lettera precedente; quello che conta solo le frequenze non guadagna niente, e
+  due compressori veri come `zlib` e `lzma` restano a metà strada.
 - Un modello **più complicato del necessario paga e non rende**: quello che
   ricorda due lettere invece di una fa peggio di quello che ne ricorda una. È
   il rasoio di Occam, misurato in bit.
@@ -1091,7 +1096,7 @@ funzioni è, prima di tutto, un'informazione su dove abitiamo.
   {cite}`wallace1968information` sono la forma praticabile dello stesso
   criterio: si minimizza $L(\theta) + L(x \mid \theta)$ su una famiglia di
   modelli invece che su una macchina universale. È il rasoio di Occam reso
-  operativo, e l'esperimento della pagina lo mostra: il modello di ordine 2
+  operativo, e la lingua a quattro lettere lo mostra: il modello di ordine 2
   spende $1{,}4411$ contro $1{,}4402$ dell'ordine 1, perché ha sedici contesti
   da stimare e nessuna struttura in più da catturare.
 - **L'argomento di Sutskever** {cite}`sutskever2023observation` in due mosse. La

@@ -203,15 +203,25 @@ def esegui(codici: list[str]) -> tuple[list[str], str]:
     nullo, che nessun blocco del libro stampa: cosi' l'uscita si spezza per
     blocco senza doverla indovinare.
     """
+    # Ogni blocco si scrive in un file VERO e si compila con quel percorso,
+    # invece di passare la stringa a `compile` con un nome finto. Costa una
+    # scrittura su disco e serve a chi risale al proprio sorgente: il
+    # `@triton.jit` di `GPU/kernel-e-cuda.md` chiama `inspect.getsource`, che da
+    # una stringa non ha niente da leggere, e falliva con «@jit functions should
+    # be defined in a Python file» pur girando benissimo da file. Il guasto era
+    # dello strumento, non della pagina, e si vedeva solo dichiarando un'uscita
+    # in quel capitolo. In piu' i traceback adesso puntano a righe leggibili.
     driver = (
-        "import json, sys\n"
+        "import json, sys, pathlib\n"
         f"SEG = {SEGNALE!r}\n"
         "blocchi = json.load(open(sys.argv[1]))\n"
         "spazio = {'__name__': '__main__'}\n"
         "for i, codice in enumerate(blocchi, 1):\n"
+        "    f = pathlib.Path(f'blocco_{i}.py')\n"
+        "    f.write_text(codice)\n"
         "    print(SEG, end='')\n"
         "    try:\n"
-        "        exec(compile(codice, f'<blocco {i}>', 'exec'), spazio)\n"
+        "        exec(compile(codice, str(f.resolve()), 'exec'), spazio)\n"
         "    except BaseException as e:\n"
         "        sys.stdout.flush()\n"
         "        print(f'\\nROTTO {i} {type(e).__name__}: {e}', file=sys.stderr)\n"

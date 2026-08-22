@@ -19,21 +19,39 @@ mille non cambierebbero nulla.
 
 `````{tab} Elementare
 
-Immagina una catena di macchinette, ognuna delle quali "moltiplica per un
-numero". La prima moltiplica per $2$, la seconda per $3$. Metterle in fila non
-crea niente di nuovo: equivale a una sola macchinetta che moltiplica per $6$.
-Puoi impilarne quante vuoi, alla fine resta *una regola proporzionale*.
+Una catena di macchinette, ognuna delle quali "moltiplica per un numero". La
+prima moltiplica per $2$, la seconda per $3$. Metterle in fila non crea niente
+di nuovo: equivale a una sola macchinetta che moltiplica per $6$. Se ne
+impilano quante se ne vuole, alla fine resta *una regola proporzionale*.
 
-Una rete fatta solo di strati così, per quanto profonda, non è più potente del
-singolo neurone della sezione precedente: per dividere i casi in due gruppi sa
-tracciare una riga dritta e nient'altro. Non imparerà mai una spirale, una
-lettera scritta a mano, il tono di una frase. Serve, tra uno strato e l'altro,
-una "piega": una funzione che *storce* i numeri in modo non proporzionale. È
-lei che dà alla rete la libertà di disegnare curve. Non una qualunque, però:
-se la piega è a sua volta fatta di sole moltiplicazioni e somme, come elevare
-al quadrato, mettere mille neuroni in uno strato non fa disegnare niente di
-più che metterne dieci. Le pieghe che incontreremo qui sotto non hanno quel
-difetto.
+Una rete fatta solo di strati così, per quanto profonda, non è più potente di
+un neurone solo: per dividere i casi in due gruppi sa tracciare una riga
+dritta e nient'altro. Non imparerà mai una spirale, una lettera scritta a
+mano, il tono di una frase. Serve, tra uno strato e l'altro, una "piega": una
+funzione che *storce* i numeri in modo non proporzionale. È lei che dà alla
+rete la libertà di disegnare curve.
+
+Non una piega qualunque, però. Uno strato è fatto di macchinette affiancate
+invece che in fila: lavorano tutte sullo stesso numero, e quello che hanno
+prodotto si somma. Allargare lo strato vuol dire affiancarne di più.
+Prendiamo come piega "eleva al quadrato", che si ottiene solo moltiplicando e
+sommando, e chiediamo allo strato di ricalcare la curva di $x^3$ fra $-1$ e
+$1$, quella che scende, si raddrizza e risale. Dieci macchinette sbagliano in
+media di quindici centesimi, su una curva i cui valori stanno fra $-1$ e $1$.
+Ottocento sbagliano di quindici centesimi, gli stessi. Sommare parabole non
+porta oltre la parabola, e di quanto la miglior parabola resti lontana da
+quella curva si sa fare il conto prima ancora di provare: quei quindici
+centesimi sono il muro contro cui la larghezza si ferma. Con una piega che non
+si ottenga moltiplicando e sommando, invece, allargare rende davvero: dieci
+macchinette scendono a tre centesimi di scarto,
+cinque volte sotto il muro, e ottocento a poco più di un millesimo, cento
+volte sotto.
+
+Con una piega di quelle buone, e abbastanza macchinette affiancate, ci si
+avvicina quanto si vuole a qualunque curva tracciata senza staccare la matita.
+La garanzia è dimostrata, e dice una cosa sola: uno strato che ci riesce
+esiste. Quanto largo debba essere non lo dice, e per una curva che dipende da
+molte grandezze insieme il numero di macchinette esplode.
 
 `````
 
@@ -71,7 +89,7 @@ raccoglie e $d$ il bias d'uscita: comunque si scelgano quei parametri resta un
 polinomio di grado $2$, e aggiungere neuroni non servirebbe a
 niente. Provato ai minimi quadrati su $x^3$ in $[-1,1]$ (duemila punti
 equispaziati, uno strato nascosto, Adam per quattromila passi con
-$\eta = 10^{-2}$), dieci neuroni e ottocento danno lo **stesso** errore,
+$\eta = 10^{-2}$), dieci neuroni e ottocento danno lo stesso errore,
 $0{,}1514$ tutti e due, e quell'errore si sa già quanto vale senza addestrare
 niente. La miglior approssimazione di $x^3$ con un polinomio di grado
 al più $2$, in media quadratica su $[-1,1]$, è $\tfrac{3}{5}x$ (è la proiezione
@@ -177,6 +195,21 @@ pendenza vera vale meno di tre millesimi in $-6$ e quasi sette in $-5$, e i
 quattro millesimi letti sulla tabella stanno in mezzo. Il messaggio che risale
 la rete viene moltiplicato per un numero così, e si spegne.
 
+Le code sono la parte peggiore, ma non sono tutto il problema. Un quarto è il
+massimo che la sigmoide concede: nel suo punto migliore, lo zero, il messaggio
+che la attraversa esce ridotto a un quarto, e ovunque altro esce ridotto di
+più. Dieci strati uno dietro l'altro, ciascuno con il suo quarto, e di quello
+che era partito resta un milionesimo.
+
+Il rimedio che viene in mente per primo, alzare i pesi per compensare, non
+funziona. Pesi più grandi ingrandiscono i numeri che entrano nella funzione, e
+ingrandirli li spinge proprio verso le code, dove la curva è ancora più
+piatta. Su una rete di venti strati, moltiplicando per quattro tutti i pesi,
+la parte di messaggio che sopravvive a ogni strato sale da $0{,}24$ a $0{,}6$.
+Si guadagna qualcosa, e non basta: $0{,}6$ moltiplicato venti volte per sé
+stesso vale meno di un decimillesimo. Il messaggio si spegne comunque, solo un
+po’ più in là.
+
 `````
 
 `````{tab} Superiore
@@ -201,8 +234,8 @@ reti profonde gli strati vicini all'ingresso smettono di ricevere segnale e non
 apprendono. A ciò si aggiunge che l'uscita non è centrata nello zero (sempre
 positiva), il che rallenta la convergenza della discesa del gradiente.
 
-La via d'uscita che viene in mente per prima non funziona, e vale la pena
-chiudere la porta: non si rimedia alzando i pesi per compensare il fattore
+La via d'uscita che viene in mente per prima non funziona, e la porta va
+chiusa subito: non si rimedia alzando i pesi per compensare il fattore
 $1/4$. Pesi più grandi spingono $z$ nelle code, dove $\sigma'$ è ancora più
 piccola, e i due effetti si mangiano a vicenda. In una rete di venti strati da
 $128$ unità, pesi estratti con l'inizializzazione di Glorot, ingressi normali
@@ -225,16 +258,22 @@ sta a cavallo dello zero invece che tutta sopra.
 
 `````{tab} Elementare
 
-La `tanh` schiaccia i numeri tra $-1$ e $+1$, con lo zero che resta zero. La
-differenza con la sigmoide è che ora l'uscita può essere anche negativa: in
-media i valori si bilanciano attorno allo zero, e questo aiuta la rete a
-imparare un po’ più in fretta. Il motivo, in breve: con la sigmoide tutte le
+Un numero molto negativo esce quasi $-1$, uno molto positivo quasi $+1$, e lo
+zero resta zero. La differenza con la sigmoide è che ora l'uscita può essere
+anche negativa: in media i valori si bilanciano attorno allo zero, e questo
+aiuta la rete a imparare un po’ più in fretta. Il motivo, in breve: con la sigmoide tutte le
 uscite sono positive, e allora le correzioni dei pesi di uno stesso neurone
 tendono ad andare tutte nella stessa direzione insieme, il che fa zigzagare la
 discesa invece di farla andare dritta. Con lo zero al centro le uscite si
-bilanciano, e la strada si raddrizza. Resta però lo stesso tallone d'Achille: agli
-estremi la curva si appiattisce e il messaggio che risale la rete svanisce di
-nuovo.
+bilanciano, e la strada si raddrizza.
+
+C'è un secondo guadagno, e si misura come prima. Spostandosi di uno, da $0$ a
+$1$, l'uscita sale da $0$ a $0{,}76$: settantasei centesimi, contro i ventitré
+della sigmoide. Nel punto migliore la pendenza vera vale $1$ tondo, quattro
+volte quella della sigmoide, e un messaggio moltiplicato per uno arriva
+dall'altra parte intero. Resta però lo stesso tallone d'Achille: agli estremi
+la curva si appiattisce, da $2$ a $3$ l'uscita si muove di tre centesimi
+appena, e lì il messaggio che risale la rete svanisce di nuovo.
 
 `````
 
@@ -265,8 +304,8 @@ a zero. Nessun conto complicato e, dal lato positivo, nessuna zona piatta.
 
 La ReLU (*Rectified Linear Unit*) fa una cosa sola: se l'ingresso è positivo lo
 restituisce identico, se è negativo o zero restituisce zero. È uno sportello
-che lascia passare i versamenti e blocca i prelievi (è l'esempio con cui si
-blocca i prelievi: entra $10$, esce $10$; entra $-3$, esce $0$.
+che lascia passare i versamenti e blocca i prelievi: entra $10$, esce $10$;
+entra $-3$, esce $0$.
 
 Perché ha sbloccato le reti profonde? Perché dal lato positivo la curva è una
 riga inclinata: la sua pendenza è sempre $1$, non si appiattisce mai. Si misura
@@ -276,19 +315,30 @@ quanto vicino, la pendenza vale sempre $1$. Il
 messaggio che risale la rete, moltiplicato per $1$, resta quello di prima; non
 si smorza a ogni passaggio come faceva con la sigmoide, e arriva quindi fino ai
 primi strati anche in una rete che ne ha decine. Ed è velocissima da calcolare:
-un confronto con lo zero.
+un confronto con lo zero. Lo sportello chiuso si fa sentire anche più avanti:
+in qualunque momento buona parte dei numeri esce a zero, e lo strato
+successivo riceve poche voci accese invece di tutte.
 
-C'è un rischio, e conviene capirne il motivo perché a prima vista sembra una
-maledizione. Se un neurone finisce nella zona negativa per **tutti** gli
+Un punto solo fa eccezione, lo zero esatto: lì la curva fa un angolo, piatta
+da una parte e inclinata dall'altra, e non esiste una pendenza sola che valga
+per tutte e due. Chi la misura prendendo un pezzetto a sinistra e uno a destra
+ottiene $0{,}5$, la media dei due lati; il calcolatore, che una risposta deve
+pur darla, risponde zero per convenzione. Nessuno dei due sbaglia, e la
+faccenda non ha conseguenze, perché un numero esattamente zero, con tutti i
+decimali in gioco, non capita quasi mai.
+
+C'è un rischio. Se un neurone finisce nella zona negativa per *tutti* gli
 esempi (cioè per tutti i dati con cui la rete viene addestrata), la sua uscita
-è sempre zero, e allora anche la pendenza che sente è
-sempre zero: nessuna indicazione, nessuna correzione, i suoi pesi restano
-fermi. È il neurone "morto". Non è del tutto senza ritorno, perché i neuroni che stanno **prima** di lui
-continuano a cambiare e possono cominciare a mandargli numeri diversi; a meno
-che non sia lui il primo della fila, e allora davanti ha solo i dati, che non
-cambiano mai, e da lì non si esce; ma da solo non si tira fuori. La **Leaky ReLU**
-previene il problema lasciando filtrare una piccola pendenza anche per i valori
-negativi, così un po’ di indicazione arriva sempre.
+è sempre zero, e allora anche la pendenza che sente è sempre zero: nessuna
+indicazione, nessuna correzione, i suoi pesi restano fermi. È il neurone
+"morto", e il nome è più drammatico di quello che gli capita davvero. Da solo
+non si tira fuori, ma i neuroni che stanno davanti a lui continuano a
+cambiare, e possono cominciare a mandargli numeri diversi e risvegliarlo senza
+che un suo peso si sia mosso di un millimetro. Senza ritorno è un caso soltanto: il
+neurone del primo strato, che davanti ha i dati, e i dati non cambiano mai. La
+**Leaky ReLU** previene il problema lasciando filtrare una pendenza piccola
+(un centesimo) anche per i valori negativi, così un po’ di indicazione arriva
+sempre.
 
 `````
 
@@ -368,14 +418,14 @@ Elevarlo a $2$ vuol dire $e \times e$; elevarlo a $0{,}1$ a mente non si fa, ma
 la calcolatrice sì, con il tasto `exp`, che riempie anche i buchi fra un
 esponente intero e il successivo. Ecco i risultati: $2{,}0$ diventa $7{,}39$,
 $1{,}0$ diventa $2{,}72$ (cioè $e$ stesso) e $0{,}1$ diventa $1{,}11$. Sommano
-$11{,}21$, e adesso sì che si divide: $7{,}39 / 11{,}21 = 66\%$. È quel primo
+$11{,}22$, e adesso sì che si divide: $7{,}39 / 11{,}22 = 66\%$. È quel primo
 ingrandimento a esaltare il punteggio più alto, ed è anche il motivo per cui
 nessuna percentuale arriva mai a zero tondo.
 
 Perché proprio $e$ e non, che so, $10$? Con $10$ funzionerebbe lo stesso,
 verrebbero solo percentuali più sbilanciate verso il punteggio più alto. La
-ragione della scelta è che con $e$ le pendenze, che sono il pane della sezione
-successiva, vengono semplicissime.
+ragione della scelta è che con $e$ le pendenze, quelle con cui la rete si
+corregge, vengono semplicissime.
 
 `````
 
@@ -446,7 +496,11 @@ def softmax(z):
     e = np.exp(z)
     return e / e.sum(axis=-1, keepdims=True)    # una riga per esempio
 
-print(softmax(np.array([2.0, 1.0, 0.1])))  # -> [0.65900114 0.24243297 0.09856589]
+print(softmax(np.array([2.0, 1.0, 0.1])))
+```
+
+```text
+[0.65900114 0.24243297 0.09856589]
 ```
 
 In PyTorch (il framework che incontreremo nel prossimo capitolo) non serve

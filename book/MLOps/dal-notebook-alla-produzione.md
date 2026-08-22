@@ -49,9 +49,14 @@ occhio, ripetere se viene male: nessuno ti cronometra. Metterlo nel menu di un
 ristorante è un altro mestiere. Il piatto deve venire *identico* la centesima e
 la cinquecentesima volta; deve uscire dalla cucina in otto minuti, non in tre
 ore; deve reggere il sabato sera con la sala piena; e se il fornitore cambia i
-pomodori, qualcuno se ne deve accorgere prima che se ne accorga il cliente. Il
-notebook è la cena tra amici. La produzione è il servizio in sala, tutte le
-sere, per anni.
+pomodori, qualcuno se ne deve accorgere prima che se ne accorga il cliente. I
+fogli delle ricette poi si tengono tutti, non l'ultimo soltanto: quando il
+piatto di questa settimana piace meno di quello di un mese fa, si ripesca il
+foglio di allora e si torna a com'era. Provare varianti in fretta, controllare
+ogni fornitura prima di usarla e tenere in ordine il raccoglitore si contendono
+le stesse ore, e la sera in cui la sala è piena una delle tre si salta: quale,
+lo decide chi conduce la cucina. Il notebook è la cena tra amici. La produzione
+è il servizio in sala, tutte le sere, per anni.
 
 `````
 
@@ -178,9 +183,13 @@ libreria di marca diversa, o della stessa marca ma di un altro anno, cuoce in
 modo un po’ diverso.
 
 E la torta si conserva anche lei, non solo la ricetta: rifarla identica costa
-ore di forno, e chi la deve mangiare non può aspettarle. Le cose da tenere
-sotto chiave, allora, sono **codice, dati e modello**, con il forno (le
-librerie) come quarta condizione da non dimenticare.
+ore di forno, e chi la deve mangiare non può aspettarle. Da tenere sotto
+chiave, allora, sono **codice, dati e modello**, con il forno (le librerie)
+come condizione da non dimenticare. Nel quaderno delle ricette, però, non ci
+stanno i sacchi di farina né le torte: chi ce li forzasse dentro avrebbe un
+quaderno che non si sfoglia più. Sul quaderno va il cartellino, quel sacco lì,
+di quel lotto; la roba vera sta in dispensa e in freezer. Chi scrive «farina» e
+basta, un anno dopo la torta non la sa più rifare.
 
 `````
 
@@ -289,24 +298,27 @@ grafici, ma l'idea non dipende da nessuno di loro e sta in poche righe.
 
 `````{tab} Elementare
 
-Il problema è banale, e chiunque abbia provato e riprovato qualcosa lo
-riconosce. Cambi un'impostazione, riprovi, va meglio. Ne cambi un'altra,
-riprovi, va peggio. Dopo cento giri hai un numero buono in mano e non sai più a
-quale combinazione appartenga: rifarlo a memoria non funziona, perché le prove
-si somigliano tutte.
+Cambi un'impostazione, riprovi, va meglio. Ne cambi un'altra, riprovi, va
+peggio. Dopo cento giri hai un numero buono in mano e non sai più a quale
+combinazione appartenga: rifarlo a memoria non funziona, perché le prove si
+somigliano tutte.
 
 La cura non è un attrezzo, è un'abitudine. Prima di lanciare una prova, scrivere
 da qualche parte che cosa si è impostato; a prova finita, scrivere com'è andata.
 «Da qualche parte» vuol dire in un posto che sopravviva alla chiusura del
 programma, non in una cella del notebook.
 
-Serve poi un modo per dare a ogni combinazione un **nome corto e sempre
-uguale**, così che riprovando la stessa identica combinazione si ritrovi lo
-stesso nome e ci si accorga di stare rifacendo una prova già fatta. Il modo è
-un tritatutto: si passa l'elenco delle impostazioni in un procedimento che ne
-ricava un codice corto, identico se l'elenco è identico e completamente diverso
-appena una cifra cambia. È lo stesso attrezzo con cui la prossima pagina
-metterà un cartellino a un intero archivio di dati.
+Serve poi un modo per dare a ogni combinazione un nome corto e sempre uguale,
+così da accorgersi di stare rifacendo una prova già fatta. Il modo è un
+tritatutto: si passa dentro l'elenco delle impostazioni e ne esce un codice
+corto, completamente diverso appena una cifra cambia. Le impostazioni si
+mettono in fila in ordine alfabetico prima di buttarle dentro, così chi le ha
+scritte in un ordine e chi in un altro ottiene lo stesso codice. Per il resto,
+però, il tritatutto è letterale: legge quello che c'è scritto, non quello
+che si intendeva. «5» e «5,0» sono lo stesso numero di giri e danno due codici
+diversi, quindi i numeri vanno scritti sempre allo stesso modo, o si rifà una
+prova credendo che sia nuova. È lo stesso attrezzo che serve a mettere un
+cartellino a un intero archivio di dati.
 
 `````
 
@@ -316,12 +328,12 @@ Il cuore è un’**impronta** della configurazione: si serializza il dizionario
 degli iperparametri in una forma canonica e se ne prende un hash, così da
 riconoscere quando stiamo ripetendo un esperimento già fatto. `sort_keys=True`
 è ciò che rende irrilevante l'ordine in cui le chiavi sono state scritte, ed è
-la proprietà che l'esempio qui sotto dimostra.
+la proprietà che l'esempio dimostra.
 
-Vale la pena essere precisi su *quanto* quell'impronta è stabile, perché la
-promessa larga («stessa configurazione, stesso identificativo») non è quella
-che il codice consegna. `json.dumps` conserva la **rappresentazione** dei
-valori, non il loro valore numerico: `epoche=5` ed `epoche=5.0` danno due
+La promessa larga («stessa configurazione, stesso identificativo») non è però
+quella che il codice consegna: la stabilità di quell'impronta ha un perimetro
+stretto. `json.dumps` conserva la **rappresentazione** dei valori, non il loro
+valore numerico: `epoche=5` ed `epoche=5.0` danno due
 impronte diverse pur essendo lo stesso esperimento, una tupla e una lista si
 serializzano uguali e quindi collidono, e un valore non serializzabile (un
 `torch.dtype`, una classe) solleva un'eccezione. In un impianto vero i valori
@@ -369,10 +381,10 @@ print(run_a)            # e4d5dc4d91ef
 print(run_a == run_b)   # True: l'impronta non dipende dall'ordine delle chiavi
 ```
 
-Le manopole che si scelgono prima di lanciare una prova hanno un nome, e nel
-codice qui sopra compare: sono gli **iperparametri**, cioè i numeri che decide
-una persona e che il modello non impara da sé (quanti esempi per volta, con che
-velocità imparare, per quanti giri).
+Le manopole che si scelgono prima di lanciare una prova hanno un nome: sono
+gli **iperparametri**, cioè i numeri che decide una persona e che il modello
+non impara da sé (quanti esempi per volta, con che velocità imparare, per
+quanti giri).
 
 Il registro, poi, è una semplice rubrica in memoria, che si salva su disco in un
 file di testo: nulla di magico. Il valore non sta nella tecnologia ma nella
@@ -396,21 +408,26 @@ salti qualche fondamenta, e per un po’ la casa sta in piedi. Ma ogni
 scorciatoia è un prestito: prima o poi va restituito, con gli interessi, sotto
 forma di crepe da riparare. Lo stesso gruppo, un anno prima, aveva intitolato
 un articolo così: il machine learning è «la carta di credito ad alto tasso del
-debito tecnico». Fa spendere pochissimo oggi e il conto arriva salatissimo
-dopo. Oggi basta un notebook e qualche riga scritta di fretta per collegare fra
-loro i pezzi già pronti che si sono messi insieme: righe che non fanno niente
-di intelligente, servono solo a far combaciare l'uscita di un pezzo con
-l'ingresso del successivo, come il nastro adesivo che tiene su un impianto. Si
-scrivono in un pomeriggio, poi vanno mantenute per anni, e intanto diventano
-tantissime.
+debito tecnico». Oggi basta un notebook e qualche riga scritta di fretta per
+collegare fra loro i pezzi già pronti che si sono messi insieme: righe che non
+fanno niente di intelligente, servono solo a far combaciare l'uscita di un
+pezzo con l'ingresso del successivo, come il nastro adesivo che tiene su un
+impianto. Si scrivono in un pomeriggio, poi vanno mantenute per anni, e intanto
+diventano tantissime: tubi aggiunti uno sopra l'altro, con rubinetti che
+nessuno sa più a che cosa servano e che nessuno osa chiudere.
 
-E c'è un motivo più profondo, che è quello visto nella pagina d'apertura: un
-modello dipende dai **dati**, non solo dal codice, e dentro un modello nulla è
-separato da nulla. Basta cambiare una delle informazioni che gli si danno in
-pasto perché il modello rifaccia i suoi equilibri e sposti le risposte anche
-dove nessuno se lo aspettava. Cambiare *qualsiasi* cosa può cambiare *tutto*. E
-i dati, a differenza del codice, cambiano da soli, senza che nessuno tocchi una
-riga.
+E c'è un motivo più profondo: un modello dipende dai **dati**, non solo dal
+codice, e dentro un modello nulla è separato da nulla. Basta cambiare una delle
+informazioni che gli si danno in pasto perché il modello rifaccia i suoi
+equilibri e sposti le risposte anche dove nessuno se lo aspettava. Cambiare
+*qualsiasi* cosa può cambiare *tutto*. E i dati, a differenza del codice,
+cambiano da soli, senza che nessuno tocchi una riga.
+
+Chi compra una casa così manda un perito, e il perito non fa la media delle
+stanze: guarda quella messa peggio. Muri perfetti e impianto elettrico fuori
+norma fanno una casa fuori norma. E il sopralluogo non si fa una volta sola a
+lavori finiti: si rifà a ogni modifica, e a farlo è una macchina che non si
+stanca.
 
 `````
 
@@ -497,7 +514,8 @@ contare.
   dinamico rinuncia a dare) da quella **statistica**, che è quella che serve.
 - L’**experiment tracking** registra iperparametri, metriche e artefatti di ogni
   run: un'impronta della configurazione, stabile rispetto all'ordine delle
-  chiavi, basta a riconoscere gli esperimenti già fatti.
+  chiavi, riconosce la stessa configurazione riscritta in un altro ordine, non
+  ogni duplicato (`epoche=5` ed `epoche=5.0` danno due impronte diverse).
 - Il ML accumula **debito tecnico** in fretta {cite}`sculley2015hidden` (glue
   code, pipeline jungle, dipendenze dai dati); la maturità si misura con rubriche
   come la **ML Test Score** {cite}`breck2017ml` e si automatizza con la CD4ML

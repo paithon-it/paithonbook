@@ -24,7 +24,14 @@ toglierli di mezzo prima di rileggere:
              pensato» e «non ce lo siamo chiesti» da fuori si somigliano);
              e capitoli oltre il tetto di 10
   schede     gruppi di tab contigui, che `sphinx-inline-tabs` FONDE in un
-             gruppo solo con quattro linguette (si vede solo in build)
+             gruppo solo con quattro linguette; e il difetto speculare, una
+             coppia SPEZZATA da un capoverso, che diventa due gruppi da una
+             linguetta e lascia la Superiore visibile a chi legge in
+             Elementare (tutti e due si vedono solo in build)
+  simboli    una lettera che riceve DUE GLOSSE diverse nello stesso capitolo
+             («$x$ e' il ...» detto in due modi): o e' una collisione, e la
+             medicina e' rinominare, o e' la stessa cosa spiegata due volte
+             (solo elenco: distinguerle richiede di leggere)
   ricordare  riquadri «Da ricordare» FUORI dalle schede, mentre
              `aggiornamenti.md` promette al lettore che sono sui due livelli
              (solo elenco: fuori dalle schede non e' di per se' un difetto)
@@ -277,7 +284,7 @@ def main():
     args = ap.parse_args()
     attivi = set(args.solo.split(",")) if args.solo else {
         "numref", "cite", "ref", "figure", "toc", "landing", "animazioni",
-        "schede", "ricordare", "avanti", "palette", "clip", "ambiente",
+        "schede", "ricordare", "simboli", "avanti", "palette", "clip", "ambiente",
         "lineette", "stampa", "verso", "matematica", "doppioni"}
 
     testi = sorgenti()
@@ -441,6 +448,103 @@ def main():
                     j += 1
                 i = j + 1
             resoconto()
+
+        # E il difetto speculare, che nessuno cercava perche' nel sorgente si
+        # legge benissimo: una Elementare e la sua Superiore separate da un
+        # capoverso di prosa. Sono due gruppi da UNA linguetta, non una coppia:
+        # la Superiore resta visibile a chi ha messo l'interruttore globale su
+        # Elementare, e l'interruttore non puo' nasconderla perche' nel suo
+        # gruppo non ha un'alternativa. Il sorgente non protesta, la build
+        # nemmeno, e si vede solo contando le linguette nell'HTML. Al 20 agosto
+        # 2026 ce n'era una sola in 217 file, prodotta da una riscrittura che
+        # aveva infilato la prosa in mezzo: cioe' e' un guasto da revisione, e
+        # arriva proprio quando qualcuno rimette mano a una pagina gia' buona.
+        for f, t in testi.items():
+            if not f.endswith(".md"):
+                continue
+            righe = t.split("\n")
+            apertura, chiusura = None, None
+            for i, riga in enumerate(righe):
+                m = apre.match(riga)
+                if m:
+                    livello = m.group(2).lower()
+                    if livello.startswith("element"):
+                        apertura, chiusura = m.group(1), None
+                    elif livello.startswith("superior") and chiusura is not None:
+                        prosa = [x for x in righe[chiusura + 1:i] if x.strip()]
+                        if prosa:
+                            problemi["coppia di schede spezzata da prosa"].append(
+                                f"{f}:{i + 1}  ->  {len(prosa)} righe fra "
+                                f"Elementare e Superiore: {prosa[0][:60]}")
+                        apertura = None
+                    continue
+                if apertura and riga.rstrip() == apertura:
+                    chiusura = i
+
+    if "schede" in attivi:
+        # La lunghezza di una scheda Elementare non e' un difetto di per se',
+        # ed e' per questo che qui si elenca e basta. Ma e' la deriva che la
+        # campagna dell'isomorfismo ha prodotto senza che nessuno la vedesse:
+        # riparando un buco si aggiunge un capoverso, il capoverso e' giusto, e
+        # dopo undici ondate la mediana era passata da 195 a 282 parole e le
+        # schede oltre le 300 erano raddoppiate. Oltre una certa lunghezza la
+        # scena evapora e resta un elenco di condizioni in parole piane, che e'
+        # una Superiore tradotta: il livello Elementare a quel punto non fa piu'
+        # il mestiere per cui esiste (il test dell'ombrellone). Il numero non
+        # decide, ma dice dove guardare.
+        TETTO = 400
+        for f, testo in testi.items():
+            if not f.endswith(".md"):
+                continue
+            corpo, dentro, inizio = [], False, 0
+            for n, riga in enumerate(testo.split("\n"), 1):
+                m = re.match(r"^(`{4,})\{tab\}\s*(\S+)", riga)
+                if m:
+                    dentro = m.group(2).lower().startswith("element")
+                    corpo, inizio = [], n
+                    continue
+                if re.match(r"^`{4,}\s*$", riga):
+                    parole = len(" ".join(corpo).split())
+                    if dentro and parole > TETTO:
+                        problemi["schede Elementari molto lunghe (da rileggere)"].append(
+                            f"{f}:{inizio}  ->  {parole} parole")
+                    dentro = False
+                    continue
+                if dentro:
+                    corpo.append(riga)
+
+    if "simboli" in attivi:
+        # Una lettera fa un mestiere solo per capitolo, e la medicina e'
+        # rinominare, non avvertire. Il difetto e' il secondo per frequenza fra
+        # quelli che una campagna di rilettura integrale ha trovato (dieci
+        # capitoli su venti tornate), e nasce naturale: due sottocampi usano la
+        # stessa lettera per convenzione, il capitolo li mette nella stessa
+        # pagina, e nessuno dei due autori sta sbagliando.
+        #
+        # Non si cercano le occorrenze, che sono migliaia: si cercano le
+        # GLOSSE. Il libro introduce un simbolo scrivendo «$x$ e' il ...», e se
+        # nello stesso capitolo lo stesso simbolo riceve due glosse diverse,
+        # o e' una collisione o e' la stessa cosa detta due volte. Elenca e
+        # basta, perche' distinguere le due richiede di leggere: al 22 agosto
+        # 2026 dava ventisei righe, circa meta' collisioni vere (tau
+        # traiettoria contro temperatura, G generatore contro gradiente, d
+        # grado del polinomio contro numero di dimensioni).
+        glossa = re.compile(
+            r"\$\\?([A-Za-z]|\\[a-zA-Z]+)(?:_\{?\w+\}?)?\$\s*(?:è|e')\s+"
+            r"((?:il|la|lo|l'|un|una|uno|i|le|gli)\s+\w+(?:\s+\w+)?)", re.I)
+        per_capitolo: dict = defaultdict(lambda: defaultdict(set))
+        for f, testo in testi.items():
+            if not f.endswith(".md") or "/" not in f:
+                continue
+            capitolo = f.split("/")[0]
+            for m in glossa.finditer(testo):
+                per_capitolo[capitolo][m.group(1)].add(m.group(2).lower().strip())
+        for capitolo, simboli in sorted(per_capitolo.items()):
+            for simbolo, glosse in sorted(simboli.items()):
+                if len(glosse) >= 2:
+                    problemi["una lettera con due glosse nello stesso capitolo"].append(
+                        f"{capitolo}: ${simbolo}$  ->  "
+                        + " | ".join(sorted(glosse)[:3]))
 
     if "ricordare" in attivi:
         # `book/aggiornamenti.md` promette al lettore, nero su bianco: «Ogni
@@ -1036,6 +1140,8 @@ def main():
               "schede della landing fuori ordine",
               "numero scritto a mano nella scheda",
               "schede contigue, che la build fonde",
+              "coppia di schede spezzata da prosa",
+              "schede Elementari molto lunghe (da rileggere)",
               "capitoli oltre il tetto di 10 clip",
               "clip fuori dalla tabella del README",
               "capitoli senza figure animate (dichiarali in "
@@ -1043,6 +1149,7 @@ def main():
               "lineette scritte in ASCII (-- oppure - )",
               "frasi scritte due volte",
               "«Da ricordare» fuori dalle schede",
+              "una lettera con due glosse nello stesso capitolo",
               "clip piu' vecchie del loro sorgente",
               "ambiente delle clip cambiato",
               "lineette dentro le figure",
@@ -1059,7 +1166,9 @@ def main():
               "rimandi in avanti (da leggere)"]
     # Assi che elencano e basta: dicono cosa guardare, non cosa e' rotto, e
     # quindi non fanno fallire niente.
-    solo_elenco = {"rimandi in avanti (da leggere)",
+    solo_elenco = {"schede Elementari molto lunghe (da rileggere)",
+                   "una lettera con due glosse nello stesso capitolo",
+                   "rimandi in avanti (da leggere)",
                    "colori fuori palette (decisione del repo brand)",
                    "«Da ricordare» fuori dalle schede"}
     totale = 0

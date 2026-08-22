@@ -33,10 +33,16 @@ si chiama *vocoder*). Ma la sua origine è qui.
 
 `````{tab} Elementare
 
-Immagina di disegnare un'onda sonora su carta millimetrata, puntino per
-puntino, da sinistra a destra. Ogni puntino è l'altezza dell'onda in
-quell'istante; per decidere dove metterlo guardi tutti quelli che hai già
-segnato, così la curva resta coerente. WaveNet fa esattamente questo, ma i
+Un'onda sonora si può disegnare su carta millimetrata, puntino per puntino, da
+sinistra a destra. Ogni puntino è l'altezza dell'onda in quell'istante, e per
+decidere dove metterlo guardi indietro, ai puntini che hai già segnato, così la
+curva resta coerente. Riguardarli tutti a uno a uno sarebbe impossibile: dai
+un'occhiata all'ultimo puntino, una a quello di due posti prima, una a quello di
+quattro, e la distanza raddoppia ogni volta, così dopo una dozzina di occhiate
+sei indietro di un decimo di secondo. Avanti non guardi mai, perché avanti il foglio
+è bianco.
+
+WaveNet fa esattamente questo, ma i
 puntini da mettere sono **sedicimila al secondo**: tanti quante sono le
 misure al secondo con cui si tratta di solito la voce (i $16\,000$ della prima
 sezione). Disegnare un minuto di musica vuol dire
@@ -77,7 +83,7 @@ fitta su tutta la finestra. Resta però il limite strutturale
 dell'autoregressione *sui campioni grezzi*: la generazione richiede $T$ passi
 sequenziali, sedicimila per ogni secondo a $16$ kHz. Nulla di
 parallelizzabile in inferenza, ed è precisamente il collo di bottiglia che la
-via dei token, qui sotto, aggira.
+generazione per token aggira.
 
 `````
 
@@ -94,18 +100,17 @@ conservato con la stessa cura di un colpo forte.
 
 `````{tab} Elementare
 
-Le altezze dell’onda si misurano con un righello a tacche. Se le tacche sono
-tutte alla stessa distanza, i suoni forti ne hanno d'avanzo e i sussurri
-finiscono schiacciati fra una tacca e l'altra: arrotondati male,
-escono dal disegno coperti da un fruscio. Il trucco della $\mu$-law è spostare
-le tacche: fitte dove il suono è debole, più rade dove è forte, così ogni
-suono viene arrotondato con la cura che merita. Su una nota che sfuma fino
-quasi al silenzio, il righello con le tacche spostate restituisce l'onda quasi
-intatta proprio nelle code più delicate, dove quello a tacche uguali la affoga
-nel fruscio.
+Un sussurro, su un righello a tacche tutte uguali, non trova posto: l'altezza
+dell'onda finisce schiacciata fra una tacca e l'altra, arrotondata male, e dal
+disegno esce coperta da un fruscio. I suoni forti, al contrario, di tacche ne
+hanno d'avanzo. Il trucco della $\mu$-law è spostarle: fitte dove il suono è
+debole, più rade dove è forte, così ogni suono viene arrotondato con la cura
+che merita. Su una nota che sfuma fino quasi al silenzio, il righello con le
+tacche spostate restituisce l'onda quasi intatta proprio nelle code più
+delicate, dove quello a tacche uguali la affoga nel fruscio.
 
-E c'è un rovescio della medaglia che vale la pena guardare, perché insegna
-qualcosa sulle misure. Le tacche larghe che la $\mu$-law lascia sui picchi
+Il rovescio della medaglia insegna qualcosa sulle misure. Le tacche larghe
+che la $\mu$-law lascia sui picchi
 fanno sì che, sul singolo errore più grosso di tutto il brano, il righello a
 tacche uguali sia **cinque volte migliore**. Una misura peggiora di cinque
 volte, e il suono migliora lo stesso: perché quell'errore più grosso capita
@@ -270,9 +275,9 @@ pezzo e uno che ne porti il suono.
 
 `````{tab} Elementare
 
-Prova a immaginare come un musicista scrive un brano. Prima abbozza la
-struttura: la melodia, l'andamento, dove sale e dove scende (lo scheletro che
-tiene insieme il pezzo dall'inizio alla fine). Solo dopo riempie quello
+Un musicista che scrive un brano abbozza prima la struttura: la melodia,
+l'andamento, dove sale e dove scende (lo scheletro che tiene insieme il pezzo
+dall'inizio alla fine). Solo dopo riempie quello
 scheletro di *suono vero*: il timbro del pianoforte, il riverbero della sala,
 il modo in cui una nota si spegne. Sono due lavori diversi, e conviene farli
 in quest'ordine, perché se parti dal timbro senza una struttura ti perdi in
@@ -309,17 +314,20 @@ $$
 p(\text{audio}) \;\approx\;
 \underbrace{\prod_{t} p\!\left(s_t \mid s_{<t}\right)}_{\text{struttura}}
 \;\cdot\;
-\underbrace{\prod_{t} p\!\left(y_t \mid y_{<t},\, s\right)}_{\text{suono}},
+\underbrace{\prod_{t} p\!\left(a_t \mid a_{<t},\, \mathbf{s}\right)}_{\text{suono}},
 $$
 
-dove $s = (s_1, s_2, \dots)$ sono i token semantici e $y = (y_1, y_2, \dots)$
+dove $\mathbf{s} = (s_1, s_2, \dots)$ sono i token semantici e
+$\mathbf{a} = (a_1, a_2, \dots)$
 gli acustici: un primo Transformer genera l'intera sequenza semantica
-$s$ (la struttura), un secondo genera quella acustica $y$ *condizionata* su
-$s$ (il suono). Nel paper la fase acustica è a sua volta spezzata in due lungo
+$\mathbf{s}$ (la struttura), un secondo genera quella acustica $\mathbf{a}$
+*condizionata* su
+$\mathbf{s}$ (il suono). Nel paper la fase acustica è a sua volta spezzata in due lungo
 i livelli della RVQ, uno stadio *grossolano* sui primi codebook e uno *fine*
-sui restanti: tre Transformer in cascata in tutto. E va notato che l'indice
-$t$ scorre su due griglie diverse: token semantici e acustici hanno frequenze
-di frame differenti, quindi le sequenze $s$ e $y$ non sono allineate una a
+sui restanti: tre Transformer in cascata in tutto. L'indice
+$t$ scorre però su due griglie diverse: token semantici e acustici hanno frequenze
+di frame differenti, quindi le sequenze $\mathbf{s}$ e $\mathbf{a}$ non sono
+allineate una a
 una. Perché separare? Perché i due obiettivi tirano in direzioni
 opposte. Predire direttamente i token acustici darebbe fedeltà ma, senza una
 guida a lungo termine, la generazione perde il filo dopo pochi secondi;
@@ -639,9 +647,11 @@ pesa $8{,}5$ GB per ogni strato della rete: in una scheda grafica non ci sta,
 quindi non si fa. Huang e colleghi si accorgono che il foglio grande non serve
 tenerlo: lo si ricava da uno molto più piccolo, facendo scorrere le sue righe,
 ognuna di una casella in più della precedente. Il conto scende a $4{,}2$ MB,
-circa duemila volte meno, e il risultato è identico. Con quella memoria
-liberata il modello arriva a brani di un minuto, attorno ai duemila simboli,
-con i temi che tornano davvero.
+circa duemila volte meno, e il risultato è identico. Un foglio grande resta, ed
+è un altro: quello su cui il modello mette a confronto ogni simbolo con ogni
+altro, e non lo risparmia nessuna delle due strade. La fila, quindi, non
+si può allungare a piacere. Ma con la memoria liberata il modello arriva a brani
+di un minuto, attorno ai duemila simboli, con i temi che tornano davvero.
 
 `````
 
@@ -730,9 +740,10 @@ più che altrove, le regole del gioco sono ancora tutte da scrivere.
 ```{admonition} Da ricordare
 :class: important
 - **WaveNet** {cite}`oord2016wavenet` (2016) disegna l'onda puntino per
-  puntino, come su carta millimetrata, guardando ogni volta tutti i puntini già
-  messi. Suona benissimo, ma i puntini sono più di sedicimila al secondo e vanno
-  in fila uno dopo l'altro: il difetto non è la qualità, è il ritmo del pennino.
+  puntino, come su carta millimetrata, guardando indietro a occhiate sempre più
+  distanti. Suona benissimo, ma i puntini sono più di sedicimila al secondo e
+  vanno in fila uno dopo l'altro: il difetto non è la qualità, è il ritmo del
+  pennino.
 - Per farceli stare in $256$ possibilità ciascuno (cioè in un **byte**) si
   sposta il **righello**: tacche fitte dove il suono è debole, più rade dove è
   forte, così anche i sussurri vengono arrotondati con cura. Curiosamente il

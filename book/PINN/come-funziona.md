@@ -50,32 +50,32 @@ L'idea si capisce meglio raccontandola come un compito in classe.
 
 `````{tab} Elementare
 
-Uno studente è alle prese con un compito insolito: disegnare, su un foglio a
+Uno studente ha un compito insolito: disegnare, su un foglio a
 quadretti, la curva di una molla che oscilla, cioè di quanto il corpo
 appeso è spostato dalla sua posizione di riposo, istante per istante. Il tempo
-scorre verso destra; sopra la riga di mezzo il corpo è più in alto del riposo,
-sotto è più in basso, e la riga di mezzo è il riposo. Nessuna tabella di
-valori da copiare. Solo tre vincoli:
+scorre verso destra; la riga di mezzo è il riposo, sopra il corpo è più in
+alto, sotto più in basso. Nessuna tabella di valori da copiare. Solo tre
+vincoli:
 
 1. la curva deve **partire dal punto giusto** (la molla è stata tirata fino
    a una certa altezza);
 2. deve partire **in piano**, cioè con pendenza zero (il corpo è stato
-   lasciato andare da fermo, e se all'inizio non si muove la curva all'inizio
-   non sale né scende);
+   lasciato andare da fermo: se non si muove, la curva non sale né scende);
 3. in **ogni punto del foglio** deve rispettare la regola della molla: quanto
    la curva piega in quel punto dev'essere coerente con quanto è alta e con
-   quanto sta scendendo nello stesso punto («coerente» vuol dire che c'è una
-   formula che lega le tre cose, e fra poche pagine la scriveremo con i numeri
-   veri).
+   quanto sta scendendo lì («coerente» vuol dire che c'è una formula che lega
+   le tre cose, e la scriveremo con i numeri veri).
 
 Il professore corregge in modo semplice e spietato: controlla la partenza, poi
 punta il dito su una manciata di istanti e lì verifica la regola; ogni
-violazione costa punti. Quegli istanti li ha sorteggiati una volta sola,
-all'inizio, e da lì in poi controlla sempre quelli, il che sembra un dettaglio
-da bidello e sarà invece la chiave di tutta la sezione. Lo studente ritocca la
-curva e
+violazione costa punti. La partenza però la pesa a parte, e molto di più: da
+sola vale più di tutte le altre violazioni messe insieme, perché è un istante
+contro un foglio intero. Quegli
+istanti li ha sorteggiati una volta sola, all'inizio, e da lì in poi controlla
+sempre quelli: sembra un dettaglio da bidello, e sarà la chiave di tutto. Lo
+studente ritocca la curva e
 riconsegna, ancora e ancora, finché i punti persi non si riducono a
-briciole. Si noti la stranezza: *nessuno dei due conosce la soluzione*. Il
+briciole. E qui sta la stranezza: *nessuno dei due conosce la soluzione*. Il
 professore sa solo verificare la regola. Eppure alla fine la curva giusta
 salta fuori, perché tra tutte le curve possibili quella vera è l'unica che
 parte così *e* rispetta la regola dappertutto. Una PINN è esattamente questo
@@ -83,10 +83,9 @@ studente: la curva è la rete, i punti persi sono la loss, e gli istanti su cui
 il professore punta il dito si chiamano **punti di collocazione**.
 
 Su quel «dappertutto» conviene tenere un dito, perché è la parola su cui si
-gioca tutto il resto della sezione. La curva vera rispetta la regola in ogni
-singolo punto del foglio; il professore, invece, la controlla in una manciata
-di punti soltanto. Sono due cose diverse, e fra poche pagine ci costeranno
-care.
+gioca tutto. La curva vera rispetta la regola in ogni singolo punto del
+foglio; il professore la controlla in una manciata di punti soltanto. Sono due
+cose diverse, e ci costeranno care.
 
 `````
 
@@ -127,8 +126,9 @@ Un dettaglio che sembra pedante e non lo è: il termine di fisica, da solo,
 ha un minimo banale, perché la funzione $u \equiv 0$ risolve l'equazione
 omogenea con residuo nullo ovunque. Il termine sulle condizioni iniziali
 serve dunque a **selezionare**, dentro la famiglia delle soluzioni
-dell'equazione (per una lineare del secondo ordine come quella della prossima
-sezione, uno spazio a due dimensioni), proprio la nostra: senza di esso nulla
+dell'equazione (per una lineare del secondo ordine come quella della molla che
+ci farà da banco di prova, uno spazio a due dimensioni), proprio la nostra:
+senza di esso nulla
 distingue la traiettoria che parte da $u(0)=1$ da quella che se ne sta ferma
 a zero.
 Attenzione però a non promettere troppo: nemmeno con quel termine il
@@ -158,11 +158,14 @@ ramo *possono* essere di ordini di grandezza più grandi di quelli del termine
 sulle condizioni iniziali. Succede sulle PDE con operatori di ordine alto e
 condizioni campionate su una superficie, ed è lo squilibrio che Wang, Teng e
 Perdikaris documentano, correggendolo con pesi ristimati durante
-l'addestramento {cite}`wang2021understanding`. Sul problema di questa sezione,
-però, il divario misurato è molto più modesto. All'inizializzazione, cioè nel
+l'addestramento {cite}`wang2021understanding`. Sull'oscillatore che ci fa da
+banco di prova, però, il divario misurato è molto più modesto.
+All'inizializzazione, cioè nel
 momento in cui $\lambda_0$ va scelto, il rapporto fra le ampiezze medie dei
-gradienti dei due rami (la media di $|\partial \mathcal{L} / \partial \theta|$
-su tutti i pesi, sui semi da 0 a 19) ha mediana $2{,}4$, e in quattro semi su
+gradienti dei due rami (la media di
+$|\partial \mathcal{L}_{\text{fisica}} / \partial \theta|$ su tutti i pesi,
+contro la stessa media per il termine sulle condizioni iniziali preso senza
+$\lambda_0$, sui semi da 0 a 19) ha mediana $2{,}4$, e in quattro semi su
 venti è addirittura rovesciato. Su una ODE del secondo ordine con due scalari
 imposti al tempo zero, «ordini di grandezza» sarebbe una parola grossa.
 
@@ -252,34 +255,37 @@ molla: $m = 1$, $c = 0{,}4$, $k = 4$.
 
 `````{tab} Elementare
 
-Prima di leggere l'equazione, saldiamo i due vocabolari, perché sono lo stesso
-vocabolario. La curva sul foglio *è* il movimento del corpo appeso: la sua
+Prima di leggere l'equazione, saldiamo i due vocabolari. La curva sul foglio
+*è* il movimento del corpo appeso: la sua
 pendenza è la **velocità** (quanto in fretta il corpo si sposta) e la sua
-curvatura è l’**accelerazione** (quanto in fretta cambia quella velocità). Un
-nome viene dal disegno, l'altro dalla fisica, e l'oggetto è lo stesso. È il
+curvatura è l’**accelerazione** (quanto in fretta cambia quella velocità).
+Due nomi diversi, un oggetto solo. È il
 motivo per cui una regola sul moto di un corpo si può far rispettare a una
 linea tracciata su un foglio.
 
 Adesso l'equazione si legge come una regola di buon senso. Portiamo a destra
-tutto tranne il primo pezzo; la massa vale 1, quindi non si vede, e resta:
+tutto tranne il primo pezzo; la massa vale 1 e non si vede, e resta:
 *accelerazione* $= -4 \times$ *posizione* $- 0{,}4 \times$ *velocità*. Due
 forze, cioè. La molla richiama sempre verso il centro, tanto più forte quanto
 più sei lontano, ed è il fattore 4; l'attrito frena sempre, tanto più quanto
 più vai veloce, ed è il fattore 0,4. I due segni meno dicono che tutte e due
-lavorano contro il movimento. Facciamo il conto a mano sull'istante iniziale:
+tirano all'indietro: la molla contro lo spostamento, l'attrito contro il
+movimento. Il conto a mano sull'istante iniziale:
 posizione 1, velocità 0, quindi accelerazione
 $= -4 \cdot 1 - 0{,}4 \cdot 0 = -4$, e il corpo parte richiamato con decisione
 verso il centro.
 
-Il film completo lo conosce chiunque abbia giocato con una molla: il corpo
-oscilla su e giù, e ogni oscillazione è un po’ più bassa della precedente,
-perché l'attrito ruba energia a ogni passaggio. Con i nostri tre numeri
+Il film lo conosce chiunque abbia giocato con una molla: il corpo
+oscilla su e giù, e ogni oscillazione è più bassa della precedente,
+perché l'attrito ruba energia a ogni passaggio. A dieci volte quell'attrito
+il corpo tornerebbe piano al centro e lì si fermerebbe, senza un solo
+rimbalzo. Con i nostri tre numeri, invece,
 un'oscillazione completa dura **3,16 secondi**, e dopo 10 secondi l'ampiezza
 (l'altezza del rimbalzo, misurata dalla posizione di riposo) è scesa al
 **13,5%** di quella di partenza.
 
-Nessuno dei due valori è stato misurato in laboratorio: escono dai tre numeri
-della molla, e a grandi linee si capisce anche da dove. La durata di
+Nessuno dei due valori viene da un laboratorio: escono dai tre numeri
+della molla, e si capisce da dove. La durata di
 un'oscillazione la decide la rigidezza rispetto alla massa: qui il rapporto è
 4, la sua radice è 2, e da lì viene un giro completo ogni $2\pi/2 \approx
 3{,}14$ secondi, che l'attrito rallenta appena fino a 3,16. Il calo, invece,
@@ -323,7 +329,7 @@ $$
 
 Verifica dei conti: $u(0) = 1 \cdot (1 + 0) = 1$; derivando,
 $u'(0) = -\gamma \cdot 1 + \omega_d \cdot \gamma/\omega_d = -0{,}2 + 0{,}2
-= 0$. Tornano entrambe. Il periodo è $T = 2\pi/\omega_d \approx 3{,}16$ e
+= 0$. Tornano entrambe. Il periodo vale $2\pi/\omega_d \approx 3{,}16$ e
 l'inviluppo $e^{-0{,}2 t}$ vale $e^{-2} \approx 0{,}135$ per $t = 10$: in
 tre oscillazioni abbondanti l'ampiezza cala al 13,5% di quella iniziale.
 Questa formula sarà la pagella con cui giudicheremo la PINN.
@@ -350,12 +356,13 @@ perché un tratto dritto non piega, e negli angoli, dove piegherebbe, la
 curvatura non si riesce nemmeno a calcolare. Ma la regola della molla parla
 proprio di curvatura, che ne è anzi il termine principale: con una curva a
 spezzata il professore non vedrebbe più il pezzo più importante della regola,
-e qualunque disegno gli sembrerebbe corretto. Serve dunque una funzioncina che
+e darebbe voti alti a curve che con la molla non c'entrano niente. Serve
+dunque una funzioncina che
 pieghi dolcemente dappertutto, senza angoli. Quella che si usa è una S
 sdraiata e centrata nello zero: viene su da sinistra dove è quasi piatta, si
 impenna passando per il centro e torna a spianarsi a destra, e in nessun punto
-ha uno spigolo. Si chiama **tanh** e nel programma della prossima pagina
-compare come `nn.Tanh()`. Nel resto del deep learning la ReLU l'aveva mandata
+ha uno spigolo. Si chiama **tanh** e nel programma si scrive
+`nn.Tanh()`. Nel resto del deep learning la ReLU l'aveva mandata
 in pensione; qui si prende la rivincita.
 
 `````
@@ -367,7 +374,7 @@ La ReLU è fatta di due semirette: una rete di sole ReLU calcola una funzione
 seconda è zero quasi ovunque** ("quasi" perché nei punti di piega non esiste
 affatto, e sono un insieme di misura nulla). Ma nel nostro residuo compare
 $u''$: per una rete ReLU sarebbe identicamente nullo, e il termine principale
-dell'equazione diventerebbe invisibile alla loss. Vale la pena provarlo, e il
+dell'equazione diventerebbe invisibile alla loss. E il
 modo in cui fallisce merita una riga: chiedendo a autograd la derivata seconda
 di una rete ReLU non si ottiene un errore né un `None`, si ottengono zeri, e
 insieme a essi è nullo anche il gradiente di $(u'')^2$ rispetto a *tutti* i
@@ -823,8 +830,8 @@ regola, non ha nulla da eccepire. L'unica cosa che distingue quel foglio da
 quello giusto è la partenza, ed è un punto solo contro una curva intera.
 
 E c'è il trucco in più, quello che spiega i due punteggi così diversi.
-Ricordi il «dappertutto» di qualche pagina fa, quello su cui avevamo chiesto
-di tenere un dito? Ecco il conto. Il professore non controlla dappertutto:
+Ricordi il «dappertutto» su cui avevamo chiesto di tenere un dito? Ecco il
+conto. Il professore non controlla dappertutto:
 controlla duecento istanti, sempre gli stessi. Lo studente lo ha capito, e ha
 imparato a stare in riga *esattamente lì*.
 
@@ -832,17 +839,19 @@ E adesso guardiamo che cosa fa **in mezzo**, perché c'è da restare a bocca
 aperta. Due dei suoi punti di controllo cadono a 1,205 e a 1,415 secondi: fra
 loro corrono due decimi di secondo, un buco quattro volte più largo del
 solito, perché quei punti sono stati sorteggiati e il caso li ha lasciati
-radi lì. In quel buco la curva sprofonda fino a $-0{,}57$ e risale, tutto
-dentro quei due decimi di secondo. Non è un sussulto impercettibile: è un
-tuffo profondo più di mezzo foglio, che comincia e finisce fra due controlli.
-Proprio perché è così stretto, lì la curva **piega** in modo mostruoso, e la
-regola della molla parla soprattutto di quanto la curva piega. Se il
-professore ci mettesse il dito, quel compito verrebbe stracciato.
+radi lì. La curva arriva lì scendendo, tocca il fondo a $-0{,}57$ e in quei
+due decimi di secondo risale fino a sfiorare lo zero, dove resta per tutto il
+tempo che avanza: mezzo foglio risalito di scatto fra un controllo e l'altro.
+È lo strappo con cui smette di oscillare. Proprio perché è così stretto, lì la
+curva **piega** in modo mostruoso, e la regola della molla parla soprattutto
+di quanto la curva piega. Se il professore ci mettesse il dito, quel compito
+verrebbe stracciato.
 
 Il professore lì non ci mette il dito. Sul suo registro il compito è quasi
 perfetto; il disegno è sbagliato due volte, perché è piatto dove dovrebbe
-oscillare e perché fa un tuffo dove nessuno guarda. Non è furbizia di
-nessuno: è che l'unico modo che ha di prendere voti è stare in riga dove si
+oscillare e perché per diventare piatto ha dato uno strappo dove nessuno
+guarda. Non è furbizia di
+nessuno: l'unico modo che ha di prendere voti è stare in riga dove si
 guarda, e nulla in quel punteggio gli chiede di comportarsi anche altrove.
 
 `````
@@ -863,19 +872,22 @@ nel dominio e nulla obbliga la rete a propagare in avanti nel tempo
 l'informazione della partenza.
 
 Il secondo è il **campionamento finito**, ed è il posto in cui si tocca con
-mano l'avvertenza della scheda d'apertura: fra un punto di collocazione e il
+mano l'avvertenza di poco fa: fra un punto di collocazione e il
 successivo la regolarità della rete non le impedisce affatto di oscillare.
 Qui infatti oscilla: misurato su una griglia da
-200 000 istanti, il residuo di questa rete tocca un massimo di $6{,}6 \cdot
-10^2$ a $t = 1{,}263$, con un picco largo $0{,}02$ secondi a metà altezza. I
+200 000 istanti, il residuo puntuale $|r_\theta|$ tocca un massimo di
+$6{,}6 \cdot 10^2$ a $t = 1{,}263$, con un picco largo $0{,}02$ secondi a
+metà altezza. I
 due punti di collocazione che se lo trovano in mezzo stanno a $1{,}205$ e a
 $1{,}415$: fra loro corrono $0{,}21$ secondi, quattro volte il passo medio del
 campione. **Il picco sta nel buco fra due punti di controllo, ed è largo un
-decimo di quel buco.** E non è un'increspatura invisibile nella soluzione: su
-quello stesso intervallo $u_\theta$ passa da $-0{,}006$ a $-0{,}565$ e
-ritorna, un'escursione di $0{,}56$ interamente contenuta fra due istanti in
-cui la rete non viene interrogata. Fuori di lì la rete è davvero piatta: per
-$t > 2$ resta entro $1{,}2 \cdot 10^{-2}$ dallo zero. Una rete `tanh` con tre
+decimo di quel buco.** E non è un'increspatura invisibile nella soluzione:
+dentro quello stesso intervallo $u_\theta$ tocca il fondo a $-0{,}565$ e
+risale a $-0{,}007$, un salto di $0{,}56$ compiuto per intero fra due istanti
+in cui la rete non viene interrogata. È lì che la rete abbandona la discesa e
+passa alla piattezza che terrà fino alla fine. Fuori di lì è davvero
+piatta: per
+$t > 2$ resta entro $1{,}3 \cdot 10^{-2}$ dallo zero. Una rete `tanh` con tre
 strati da 32 neuroni ha abbastanza capacità per infilare una guglia dove non
 viene interrogata, e duecento punti su dieci secondi non bastano a
 impedirglielo. La regolarità
@@ -957,8 +969,8 @@ caffè, la curva la sa calcolare; ma la calcola su una griglia di istanti, e i
 valori in mezzo li ricostruisce interpolando fra quelli che ha in mano (i
 solutori maturi lo fanno bene, non tirando una retta fra due puntini). La PINN
 invece restituisce una **funzione**: chiedile il valore a $3{,}7$ secondi, o
-in qualunque altro punto, e risponde, perché la soluzione ormai abita dentro
-la rete.
+quanto sta salendo lì, o le due cose in qualunque altro punto, e risponde,
+perché la soluzione ormai abita dentro la rete.
 
 Su questo problemino il
 conto a passettini vince su tutta la linea: qualche centesimo di secondo
@@ -971,8 +983,8 @@ e va riaddestrata da capo. Il vantaggio della PINN è altrove, e comincia dove
 dati e legge vanno mescolati, come vedremo tra un attimo.
 
 [^tolleranze]: Quei cinque centomiliardesimi non sono un numero di targa: a un
-    solutore si dice quanta precisione si vuole, e vale la pena dichiarare
-    quanta gliene abbiamo chiesta. Il conto è fatto con `solve_ivp` di SciPy
+    solutore si dice quanta precisione si vuole, e la nostra è questa. Il
+    conto è fatto con `solve_ivp` di SciPy
     stringendo **entrambe** le tolleranze, la relativa (`rtol=1e-10`) e
     l'assoluta (`atol=1e-12`); lasciando l'assoluta al valore di default lo
     scarto sale a $1{,}7 \cdot 10^{-6}$, più di quattro ordini di grandezza
@@ -1145,7 +1157,8 @@ PINN» non vuol dire «meglio di tutti».
   quello che succede ai bordi). Alla partenza si dà più peso, perché quando
   altro non c'è è l'unico ancoraggio. Se invece ci sono misure sparse lungo
   tutto l'intervallo, sono loro l'ancoraggio, e prendono il posto della
-  partenza (è quello che succede nel problema inverso qui sopra).
+  partenza (è quello che succede quando la rigidezza della molla è ignota e a
+  fare da ancoraggio sono le venticinque misure del sensore).
 - **La curva dev'essere liscia**: se è fatta di segmenti dritti incollati
   uno dopo l'altro, come quelli che escono dalla ReLU, non ha curvatura da
   nessuna parte, e il professore non vedrebbe più il pezzo più importante
@@ -1177,9 +1190,10 @@ PINN» non vuol dire «meglio di tutti».
   risposta.
 - Non è unire i puntini (nel problema diretto di puntini non ce n'è nessuno)
   e non è un conto fatto a passettini su una griglia di istanti: quello che
-  resta alla fine è una **curva intera**, che risponde a qualunque istante le
-  si chieda, anche a 3,7 secondi, anche in mezzo a due punti qualsiasi, senza
-  tabelle da interpolare.
+  resta alla fine è una **curva intera**, e le si chiede il valore a 3,7
+  secondi, o quanto sta salendo lì, in qualunque punto si voglia. Il valore in
+  mezzo a due istanti calcolati lo dà bene anche un solutore maturo; l'essere
+  una curva liscia, con le sue pendenze, resta della rete.
 - **Problema inverso**: se un pezzo della regola manca (quanto è rigida la
   molla), diventa una manopola in più che l'addestramento gira insieme alla
   curva, bastano poche misure rumorose. È la mossa che rende uniche le PINN.

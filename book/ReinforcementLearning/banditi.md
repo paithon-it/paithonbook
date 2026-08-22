@@ -40,56 +40,52 @@ guadagnare.
 
 `````{tab} Elementare
 
-Hai dieci leve davanti. Ognuna, quando la tiri, ti dà un punteggio che cambia
-ogni volta: alcune leve sono in media generose, altre in media avare, ma
-nessuna è costante e tu non sai quali siano quali. Hai mille tiri. Non sono
-soldi, sono punti, e possono benissimo essere negativi; e non esiste la scelta
-di non giocare, la domanda non è *se* tirare ma *quale* leva tirare.
+Dieci leve in fila, mille tiri da spendere. Ogni leva paga un punteggio diverso
+a ogni tiro: qualcuna in media è generosa, qualcuna avara, e quali siano non lo
+sai. Sono punti e non denaro, e possono venire negativi. Andarsene non si può:
+la domanda non è *se* tirare, ma *quale* leva tirare.
 
-Questo è il senso del titolo. Nella panoramica lo **stato** era quello che
-l'agente vede del mondo in questo istante, la schermata del videogioco; qui la
-schermata è sempre la stessa, sono sempre quelle dieci leve, e non cambia mai
-per nulla di quello che fai. Un solo stato, appunto.
+Quello che vedi del mondo in un istante si chiama **stato**: in un videogioco è
+la schermata e cambia a ogni mossa, qui è quella fila di dieci leve e non cambia
+mai, qualunque cosa tu faccia. Un solo stato.
 
-Tutto ciò che puoi fare è tenere un quaderno: per ogni leva, la media di quanto
-ti ha reso finora. Quella media è la tua **stima**. All'inizio è pessima
-perché si basa su un tiro o due; con l'uso migliora.
-
-Il quaderno si aggiorna senza rifare la somma da capo, con una regola che vale
-la pena guardare in faccia perché ritorna dappertutto in questo libro. Dentro
-c'è un numero che decidiamo noi, fra zero e uno, e che dice quanta retta dare
-alla novità: lo chiameremo il **passo**.
+Ti resta il quaderno, una pagina per leva, e sopra una riga sola: la media di
+quanto quella leva ha reso finora, la tua **stima**. Dopo due tiri non vale
+niente, a furia di tirare migliora. A ogni tiro la sposti invece di rifare la
+somma da capo: quanto hai appena incassato meno quanto c'era scritto è la
+sorpresa, e tu ne correggi una frazione, scelta da te fra zero e uno, che si
+chiama **passo**.
 
 > stima nuova = stima vecchia + passo × (quello che ho appena visto − stima vecchia)
 
-Cioè: sposto la stima verso la sorpresa, e di quanto lo decide il passo. Con un
-passo di zero non mi muovo mai, con un passo di uno butto via tutto il vecchio
-e credo solo all'ultimo tiro.
+Passo a zero, la matita non si muove mai; passo a uno, cancelli tutto e riscrivi
+l'ultimo tiro. Quella riga la ritroverai in ogni metodo che impara qualcosa.
 
-Se il passo è "uno diviso il numero di volte che ho tirato questa leva", si
-ottiene esattamente la media di tutti i tiri, e conviene vederlo su due numeri
-invece di crederci sulla parola. Parto da $0$ e tiro due volte, incassando
-prima $4$ e poi $6$. Primo tiro: il passo è $1/1 = 1$, la stima diventa
-$0 + 1 \times (4 - 0) = 4$. Secondo tiro: il passo è $1/2$, la stima diventa
-$4 + 0{,}5 \times (6 - 4) = 5$, che è precisamente la media fra $4$ e $6$.
-Funziona così a ogni tiro: il passo che si accorcia è quello che tiene in
-equilibrio le vecchie osservazioni con la nuova.
-
-Se invece il passo lo tengo **fisso**, le osservazioni recenti pesano di più e
-quelle vecchie svaniscono piano piano. Anche questo si vede sugli stessi due
-numeri, con il passo fermo a un mezzo e partendo sempre da $0$. Incasso $4$: la
-stima diventa $0 + 0{,}5 \times (4 - 0) = 2$. Incasso $6$: la stima diventa
+Terza leva, pagina che parte da $0$, due incassi: $4$ e poi $6$. Accorcia il
+passo a ogni tiro, cioè "uno diviso le volte che ho tirato questa leva", e la
+riga ti dà la media di tutti i tiri: passo $1/1 = 1$, scrivi
+$0 + 1 \times (4 - 0) = 4$; passo $1/2$, scrivi
+$4 + 0{,}5 \times (6 - 4) = 5$, appunto la media fra $4$ e $6$. Tieni invece la
+matita ferma a un mezzo, stessa pagina e stessi incassi: dopo il $4$ scrivi
+$0 + 0{,}5 \times (4 - 0) = 2$, dopo il $6$ scrivi
 $2 + 0{,}5 \times (6 - 2) = 4$.
 
-Quel $4$ non è la media di $4$ e $6$, che sarebbe $5$, e vale la pena
-smontarlo: metà arriva dal $6$ appena visto ($0{,}5 \times 6 = 3$), un quarto
-dal $4$ di prima ($0{,}25 \times 4 = 1$), e l'ultimo quarto è ancora lo zero da
-cui sono partito, che infatti non porta niente ma occupa il suo posto. Sono le
-due cose che il passo fisso fa sempre: l'ultimo tiro pesa il doppio del
-penultimo, e tutto quello che sta dietro (compreso il numero di partenza, che
-non è un'osservazione ma solo un punto da cui cominciare) si dimezza a ogni
-tiro nuovo, finché non conta più niente. È quello che serve se le leve cambiano
-carattere nel tempo, cosa che nel mondo reale succede sempre.
+Quel $4$ non è la media, che sarebbe $5$. Metà viene dal $6$ appena visto
+($0{,}5 \times 6 = 3$), un quarto dal $4$ di prima ($0{,}25 \times 4 = 1$), e
+l'ultimo quarto è lo zero della prima riga, che occupa il posto senza portare
+niente. A ogni tiro il passato sbiadisce della stessa frazione (a un mezzo il
+peso di un vecchio tiro si dimezza, con un passo più corto cala più adagio), e
+con lui sbiadisce quello zero, che nessuna leva ha mai pagato. Ti serve quando
+le leve cambiano carattere mentre giochi, e fuori dal casinò succede sempre.
+
+Alla lunga i due modi si separano. Col passo che si accorcia ogni tiro sposta la
+riga meno del precedente, e la pagina finisce per fermarsi sul valore vero della
+leva. Col passo fermo l'ultimo tiro pesa sempre uguale, e la riga balla attorno
+al valore vero anche se la leva non è cambiata di una virgola. Al passo chiedi
+due cose: portare la pagina lontano dallo zero di partenza, e accorciarsi tanto
+in fretta da smettere di rincorrere la fortuna di un tiro solo. Uno diviso il
+numero di tiri le fa tutt'e due, il passo fermo solo la prima, e per questo
+insegue per sempre, che è precisamente quello che gli chiedi.
 
 `````
 
@@ -102,7 +98,7 @@ distribuzione delle ricompense non dipende da cosa è successo prima. Un bandit
 è, se si vuole, un MDP con un solo stato.
 
 Un avvertimento sugli indici, perché è una trappola classica e cade proprio
-qui. In questa sezione la ricompensa dell'azione $A_t$ si indicizza $R_t$,
+qui. Dove lo stato manca, la ricompensa dell'azione $A_t$ si indicizza $R_t$,
 perché non c'è uno stato successivo di cui tenere il passo; dalla prossima
 sezione in poi, dove lo stato c'è, la stessa ricompensa si scriverà $R_{t+1}$,
 come nella panoramica. È la convenzione di Sutton e Barto ed è comoda da
@@ -128,7 +124,7 @@ $$
 Q_{n+1} = Q_n + \frac{1}{n}\big(R_n - Q_n\big).
 $$
 
-È la forma canonica di ogni regola di apprendimento di questo libro:
+È la forma canonica di tutte le regole di apprendimento che seguiranno:
 *stima $\leftarrow$ stima $+$ passo $\cdot$ errore*. La ritroveremo identica
 nel TD, dove l'errore è l'errore temporale, e imparentata nella discesa del
 gradiente, dove il passo è il learning rate.
@@ -144,10 +140,9 @@ geometricamente all'indietro. Non converge (continua a inseguire), ed è
 esattamente ciò che serve quando il problema è **non stazionario**, cioè quando
 $q_*(a)$ cambia nel tempo. Il caso stazionario è l'eccezione, non la regola.
 
-Il criterio che distingue i due casi vale la pena scriverlo, perché è lo stesso
-che tornerà a chiedere la garanzia di convergenza del Q-learning. Una successione
-di passi $\alpha_n$ porta la stima al valore vero se soddisfa le **condizioni di
-Robbins-Monro**
+Il criterio che distingue i due casi è lo stesso che tornerà a chiedere la
+garanzia di convergenza del Q-learning. Una successione di passi $\alpha_n$
+porta la stima al valore vero se soddisfa le **condizioni di Robbins-Monro**
 
 $$
 \sum_{n=1}^{\infty} \alpha_n = \infty,
@@ -155,7 +150,7 @@ $$
 \sum_{n=1}^{\infty} \alpha_n^2 < \infty :
 $$
 
-la prima chiede che i passi restino abbastanza grandi da poter raggiungere
+la prima chiede che i passi restino abbastanza grandi da lasciarsi alle spalle
 qualunque punto di partenza, la seconda che si accorcino abbastanza in fretta da
 smettere di rincorrere il rumore. Il passo $1/n$ le soddisfa entrambe
 ($\sum 1/n$ diverge, $\sum 1/n^2$ converge); un passo costante $\alpha$ soddisfa
@@ -198,6 +193,11 @@ l'esperimento sì, perché quei valori li ha sorteggiati lui. È il vantaggio di
 un banco di prova su una vera macchinetta da casinò, e serve esattamente a
 questo: dare un voto. Ultimi cento tiri e non tutti e mille, perché all'inizio
 sbagliare è inevitabile: quel che interessa è che cosa ha imparato alla fine.
+
+Quel voto, però, dice dove sei arrivato e non quanto ti è costato arrivarci. Due
+strategie che negli ultimi cento tiri azzeccano la leva migliore altrettanto
+spesso possono aver buttato per strada quantità di punti molto diverse, e il
+voto le mette pari lo stesso.
 
 `````
 
@@ -261,11 +261,10 @@ la stima salta di colpo sul numero appena visto, e su quella leva l'ottimismo è
 finito. Resta il giro forzato sulle altre nove, e infatti anche così si arriva
 al **71,3%**, quasi il doppio del 36,7% dell'agente avido. Una parte del
 guadagno però se n'è andata, e conviene misurarla invece di dirla a occhio. Con
-il passo fisso si arriva all’**86,6%**, il risultato migliore fra le strategie
-di questa sezione, cioè quasi cinquanta punti sopra l'avido
-($86{,}6 - 36{,}7 = 49{,}9$); con la media se ne guadagnano trentaquattro e
-mezzo ($71{,}3 - 36{,}7 = 34{,}6$). Quindici punti su cinquanta sono rimasti
-sul tavolo, quasi un terzo.
+il passo fisso si arriva all’**86,6%**, quasi cinquanta punti sopra l'avido
+($86{,}6 - 36{,}7 = 49{,}9$), e su mille tiri nessun'altra farà meglio; con la
+media se ne guadagnano trentaquattro e mezzo ($71{,}3 - 36{,}7 = 34{,}6$). Quindici
+punti su cinquanta sono rimasti sul tavolo, quasi un terzo.
 
 `````
 
@@ -282,9 +281,10 @@ media campionaria $Q_2 = Q_1 + \frac{1}{1}(R_1 - Q_1) = R_1$: la stima **è** la
 prima ricompensa osservata, e l'ottimismo su quella leva evapora in un colpo
 solo. Resta l'ottimismo sulle altre nove, che impone comunque un giro completo,
 e infatti si arriva al **71,3%** contro il **36,7%** dell'avido puro: circa il
-69% del divario fra l'avido e la migliore strategia della sezione. Il termine di
-paragone corretto per l'ottimismo è quello, non $\varepsilon$-greedy; resta però
-che con la media campionaria il risultato finisce sotto l'80,2% della leva a
+69% del divario fra l'avido e l’86,6% che lo stesso ottimismo raggiunge con il
+passo costante. Il termine di paragone corretto per l'ottimismo è l'avido, non
+$\varepsilon$-greedy; resta però che con la media campionaria il risultato
+finisce sotto l'80,2% della leva a
 caso una volta ogni dieci, mentre con $\alpha = 0{,}1$ costante l'ottimismo si
 consuma abbastanza lentamente da arrivare all’**86,6%**.
 
@@ -333,6 +333,29 @@ Sul solito banco di prova UCB azzecca la leva migliore l’**85,9%** delle volte
 praticamente quanto l'ottimismo iniziale, e nettamente meglio della leva a caso
 una volta ogni dieci.
 
+Quel punteggio lascia fuori il costo del viaggio. A fine partita, confronta
+quello che hai incassato con quello che avresti incassato sapendo dalla prima
+mossa qual è la leva migliore: la differenza è il **rimpianto**. A zero non può
+andare, perché per sapere che una leva è scarsa bisogna tirarla, e per esserne
+sicuri bisogna tirarla più di una volta.
+
+Il rimpianto di UCB cresce sempre più adagio: i primi cento tiri se ne portano
+via un bel pezzo, i secondi cento molto meno, e più la partita va avanti più di
+rado si sbaglia. Chi tira a caso una volta ogni dieci paga invece la stessa
+cifra ogni cento tiri per sempre, e il suo conto cresce in linea retta; su una
+partita lunga la distanza fra i due diventa enorme. Il fatto notevole è che più
+adagio di così non si può andare: nessuna strategia che debba funzionare su
+qualunque fila di macchinette paga meno. Chi promette di pagare meno ha deciso
+in anticipo, e tirare sempre la terza leva costa zero quando la terza è la
+migliore e una fortuna in tutti gli altri casi.
+
+Tutto questo però regge finché ha senso tenere il conto dei tiri di ogni leva.
+Se le leve cambiano carattere mentre giochi, i conti accumulati dall'inizio
+parlano di un mondo che non c'è più. E se al posto di dieci leve ci fossero
+milioni di situazioni tutte diverse, la domanda «quante volte ho già provato
+questa» resterebbe senza risposta: nessuna capiterebbe due volte, il bonus
+verrebbe identico per tutte, e non distinguerebbe più niente.
+
 `````
 
 `````{tab} Superiore
@@ -373,8 +396,8 @@ Fischer {cite}`auer2002finite` mostrano che UCB1 raggiunge quella crescita
 logaritmica con una garanzia valida a ogni istante finito, non solo
 asintoticamente; resta però sopra la costante ottima di Lai e Robbins (la
 raggiungono varianti più fini, come KL-UCB), e il teorema assume ricompense
-limitate, un'ipotesi che il banco di prova gaussiano di queste pagine, a
-rigore, non rispetta.
+limitate, un'ipotesi che il banco di prova gaussiano a dieci leve, a rigore, non
+rispetta.
 
 Per confronto, $\varepsilon$-greedy con $\varepsilon$ costante ha rimpianto
 **lineare** in $T$, perché continua a sbagliare una frazione fissa delle volte
@@ -411,22 +434,26 @@ ogni leva tanto più spesso quanto più alto è il suo voto.
 
 Dai voti alle probabilità si passa così: si confrontano i dieci voti fra loro,
 e ciascuna leva viene tirata tanto più spesso quanto più il suo voto **supera**
-gli altri. Non conta il posto in classifica, contano i distacchi, e vale la
-pena vedere quanto in fretta crescono. Con dieci voti tutti uguali si tira del
-tutto a caso, una leva su dieci. Se una leva prende un punto di vantaggio su
-tutte le altre, viene tirata circa una volta su quattro. Con due punti di
-vantaggio siamo già a quasi una volta su due, e con tre a più di due volte su
-tre: pochi punti di distacco bastano a prendersi quasi tutti i tiri.
+gli altri. Non conta il posto in classifica, contano i distacchi. Con dieci voti
+tutti uguali si tira del tutto a caso, una leva su dieci. Se una leva prende un
+punto di vantaggio su tutte le altre, viene tirata quasi una volta su quattro.
+Con due punti di vantaggio siamo già a quasi una volta su due, e con tre a più
+di due volte su tre: pochi punti di distacco bastano a prendersi quasi tutti i
+tiri.
 
-C'è però una cosa da mettere subito in chiaro, perché è tutto il punto del
-paragrafo che segue: non conta il voto in sé, conta **quanto è più alto degli
-altri**. Alzare tutti i voti della stessa quantità non cambia niente, come in
-una classifica a punti: se do un punto in più a tutti, l'ordine e i distacchi
-restano identici.
+Ne viene che alzare tutti i voti della stessa quantità non cambia niente. È come
+in una classifica a punti: se do un punto in più a tutti, l'ordine e i distacchi
+restano identici, e ogni leva continua a essere tirata quanto prima.
 
 La regola di aggiornamento è di buon senso: se la ricompensa appena incassata è
 **migliore della media** di quelle ricevute finora, alzo il voto della leva che
 ho tirato e abbasso quello di tutte le altre; se è peggiore, faccio l'opposto.
+
+Di quanto lo alzo dipende da quanto quella leva veniva già tirata: se era già la
+favorita il ritocco è minimo, se era una che non si tirava quasi mai è grande. E
+quello che quella leva guadagna lo perdono esattamente le altre, spartito fra
+loro in proporzione a quanto venivano tirate, sicché il totale dei dieci voti
+resta sempre lo stesso.
 
 Quel confronto con la media è il pezzo importante e si chiama **termine di
 riferimento** (in inglese *baseline*, ed è il nome che si legge nel codice).
@@ -474,9 +501,9 @@ dove $\bar{R}_t$ è la media delle ricompense incassate **prima** di $t$, cioè
 la **baseline** (è quello che fa anche il codice più sotto, che aggiorna la
 media dopo averla usata).
 
-Vale la pena riconoscere che cosa si sta guardando: è **REINFORCE con
-baseline**, il metodo a gradiente di policy del capitolo sul deep
-reinforcement learning, nel caso degenere di un solo stato. La stessa
+Quello che si sta guardando ha già un nome: è **REINFORCE con baseline**, il
+metodo a gradiente di policy del capitolo sul deep reinforcement learning, nel
+caso degenere di un solo stato. La stessa
 struttura (una distribuzione parametrica sulle azioni, un aggiornamento
 proporzionale alla ricompensa scostata da un riferimento) che là si scriverà
 come $\nabla_\theta \log \pi_\theta(a\mid s)\,\hat{A}_t$, con il vantaggio
@@ -707,7 +734,7 @@ prossima sezione.
   scelte ottime sul banco di prova standard); $\varepsilon$-greedy lo risolve
   quasi a costo zero (80,2%) ma esplora **a casaccio**, e il suo $\varepsilon$
   va scelto guardando l'orizzonte: con $0{,}01$ il sorpasso su $0{,}1$ arriva
-  attorno al decimillesimo tiro.
+  passato il novemillesimo tiro.
 - **Valori iniziali ottimisti** (86,6%, con passo fisso; 71,3% con la media
   campionaria, contro il 36,7% dell'avido puro): esplorazione quasi gratis,
   ma si esaurisce e non serve sui problemi non stazionari. **UCB** (85,9%):

@@ -56,22 +56,27 @@ riconoscimento facciale allenato per lo più su volti chiari sbaglia di più sui
 volti scuri: gli altri quasi non li ha visti.
 
 Quello della bilancia è il primo dei due modi in cui il guasto entra. Nel caso
-del tribunale è in gioco il secondo, e i due non vanno confusi, perché è
-confonderli che porta fuori strada. Lì i dati sugli imputati
-neri non mancavano affatto: erano tanti. Il problema è che dicevano un'altra
-cosa da quella che sembrava. Nel registro non c'è scritto «ha commesso un
-reato», c'è scritto «è stato arrestato», e chi viene arrestato dipende anche da
-dove passano le pattuglie. È come giudicare quali quartieri sono più rumorosi
-contando le segnalazioni al comune: misuri anche, e forse soprattutto, chi ha
-l'abitudine di segnalare. Non serve un programmatore in malafede: basta uno
-specchio, e uno specchio storto. Il modello riflette il mondo che gli abbiamo
-dato da guardare, difetti compresi.
+del tribunale è in gioco il secondo, e confonderli porta fuori strada. Lì i
+dati sugli imputati neri non mancavano affatto: erano tanti. Il problema è che
+dicevano un'altra cosa da quella che sembrava. Nel registro non c'è scritto
+«ha commesso un reato», c'è scritto «è stato arrestato», e chi viene arrestato
+dipende anche da dove passano le pattuglie. È come giudicare quali quartieri
+sono più rumorosi contando le segnalazioni al comune: misuri anche, e forse
+soprattutto, chi ha l'abitudine di segnalare. Non serve un programmatore in
+malafede: basta uno specchio storto, e il modello riflette il mondo che gli
+abbiamo dato da guardare, difetti compresi.
+
+Chi vendeva il software rispose con un conto suo, e tornava anche quello: fra
+gli imputati che avevano ricevuto lo stesso punteggio, quelli riarrestati
+davvero erano in proporzione gli stessi, neri o bianchi. Due conti giusti che
+si contraddicono, e nessuno dei due è truccato: se nei due gruppi il riarresto
+non capita con la stessa frequenza, le due pretese non possono valere insieme,
+e nessun codice migliore le riconcilia.
 
 `````
 
 `````{tab} Superiore
 
-Vale la pena mettere in fila i numeri, perché la loro precisione è il punto.
 In *Gender Shades* il tasso di errore nella classificazione del genere passava
 dallo $0{,}8\%$ per gli uomini dalla pelle chiara fino al $34{,}7\%$ per le
 donne dalla pelle scura {cite}`buolamwini2018gender`: un divario di oltre
@@ -98,8 +103,8 @@ Due avvertenze, che la sezione sull'equità svilupperà. La prima: «parità del
 valore predittivo» non è sinonimo di «calibrazione», e i teoremi che si citano
 in questa materia sono tre e dicono cose diverse. La seconda: quei tassi di
 base sono tassi di **riarresto**, non di reato, cioè le grandezze già toccate
-dal bias di misura di cui sopra. Qui basti notare che «equo» non è una parola
-con un'unica definizione tecnica.
+dal bias di misura del registro degli arresti. «Equo» non è una parola con
+un'unica definizione tecnica.
 
 `````
 
@@ -198,11 +203,16 @@ una pizza. Se la stessa ricetta sbagliata viene stampata e servita in
 diecimila mense nello stesso giorno, il piccolo errore è diventato un disastro.
 Con i modelli succede questo: uno solo, addestrato una volta, viene poi usato
 milioni di volte. Un difettuccio che su un singolo caso passerebbe inosservato,
-moltiplicato su tutta la popolazione, diventa un'ingiustizia su larga scala. In
-più, a differenza di un impiegato a cui puoi chiedere «perché mi hai detto di
-no?», molti modelli non sanno spiegarsi: sono scatole che restituiscono un sì o
-un no, e basta. Potenza, diffusione capillare e opacità, tutte e tre insieme:
-ecco perché il problema è diventato urgente proprio adesso.
+moltiplicato su tutta la popolazione, diventa un'ingiustizia su larga scala.
+E la ricetta delle mense non l'ha scritta un cuoco: è uscita da diecimila cene
+guardate una per una. Chi guarda così tanto raccoglie anche le abitudini che
+col piatto non c'entrano: se in quelle cene il pesce lo ordinavano quasi solo
+gli anziani, nella ricetta il pesce resta legato all'età di chi mangia, e quel
+legame finisce nel piatto di tutti. In più, a differenza di un impiegato a cui
+puoi chiedere «perché mi hai detto di no?», molti modelli non sanno spiegarsi:
+sono scatole che restituiscono un sì o un no, e basta. Potenza, diffusione
+capillare e opacità, tutte e tre insieme: ecco perché il problema è diventato
+urgente proprio adesso.
 
 `````
 
@@ -290,7 +300,9 @@ Devi dividere una torta «in modo giusto». Fette identiche per tutti? Fette
 proporzionali a quanto ciascuno ha contribuito a comprarla? Di più a chi ha
 più fame? Sono tre idee di giustizia ragionevoli, e portano a tagli diversi:
 nessun coltello, per quanto affilato, sceglie da solo quale sia quella
-corretta.
+corretta. I tagli si separano perché le persone al tavolo sono diverse: se
+avessero contribuito tutte uguale e avessero la stessa fame, i tre tagli
+coinciderebbero e non ci sarebbe niente da scegliere.
 
 Con i modelli è identico, e la sezione sull'equità farà i conti che lo
 mostrano. Possiamo pretendere che il modello **sbagli allo stesso modo** su
@@ -298,9 +310,11 @@ ogni gruppo, oppure che il suo «sì» **valga lo stesso** per tutti, cioè che
 quando dice sì ci prenda ugualmente spesso in ogni gruppo. Sono due richieste
 sensate, e le vorremmo tutte e due; ma se una certa cosa, nei dati, capita più
 spesso in un gruppo che nell'altro, le due richieste litigano e una va lasciata
-andare. Quale, è una decisione che spetta alle persone e non alla matematica:
-la tecnica dice quali compromessi esistono, sceglierli resta un atto di
-responsabilità umana.
+andare. E quel «capita più spesso» è a sua volta un conteggio: lo si legge in
+un registro, e un registro può essere storto come quello degli arresti. Quale
+richiesta lasciare andare è una decisione che spetta alle persone e non alla
+matematica: la tecnica dice quali compromessi esistono, sceglierli resta un
+atto di responsabilità umana.
 
 `````
 
@@ -320,9 +334,9 @@ somigliano e che vengono regolarmente confusi con esso.
 La scelta di *quale* criterio privilegiare non discende dai dati: è normativa.
 La statistica delimita lo spazio delle opzioni e ne espone i costi; qual è il
 compromesso «giusto» è una domanda di valori, che va posta esplicitamente e non
-nascosta dentro una funzione obiettivo. E, come si è visto sopra, nemmeno le
-premesse del conflitto sono neutrali: i tassi di base che rendono il teorema
-mordente sono misure, e una misura può essere a sua volta distorta.
+nascosta dentro una funzione obiettivo. E nemmeno le premesse del conflitto
+sono neutrali: i tassi di base che rendono il teorema mordente sono misure, e
+una misura può essere a sua volta distorta.
 
 `````
 

@@ -73,6 +73,11 @@ artigiano bravissimo senza capobottega lavora finché lo guardi; con un buon
 capobottega lavora anche di notte, e quello che consegna è già stato
 controllato.
 
+Finito un pezzo, l'artigiano se ne va, e al banco la mattina dopo ne siede un
+altro, riposato e senza un ricordo di ieri. Quello che deve sapere sta sul
+registro, e glielo mette davanti il capobottega. La memoria della bottega sta
+lì, non nella testa di chi intaglia.
+
 Nella bottega, l'artigiano e il capobottega sono tutti e due dei programmi. Tu
 sei il proprietario: non stai al banco e non fai i turni, ma decidi quanta
 corda dare al capobottega, e la bottega resta tua, compreso quello che ne
@@ -84,8 +89,7 @@ esce.
 
 Il **loop interno** è il ciclo dell'agente visto negli Agenti: *osserva →
 ragiona → agisci*, con lo stato che vive nella finestra di contesto ed è
-effimero (finita la conversazione, svanisce). Lo diamo per acquisito e non lo
-riespandiamo qui.
+effimero (finita la conversazione, svanisce).
 
 Il **loop esterno** è ciò che il loop engineering progetta, e ha proprietà che
 il loop interno non ha:
@@ -186,26 +190,26 @@ denaro. Eppure quasi sempre ripaga. (I due ruoli, in inglese, si chiamano
 
 `````{tab} Elementare
 
-Pensa a uno scrittore e a un redattore. Lo scrittore butta giù il pezzo; il
-redattore lo legge, segna cosa non va e lo rimanda indietro. Potresti chiedere
-allo scrittore di rileggersi da solo, ma tutti sappiamo com'è: l'autore è il
-peggior giudice del proprio testo, perché legge quello che *voleva* scrivere,
-non quello che ha scritto. Tenere due ruoli separati serve proprio a questo:
-il controllore arriva senza aver visto la fatica di chi ha prodotto, e giudica
-il risultato per quello che è. Nel loop, il *maker* scrive, il *checker*
-controlla, e sono due «persone» diverse: due agenti con teste separate.
+Lo scrittore butta giù il pezzo; il redattore lo legge, segna cosa non va e lo
+rimanda indietro. Potresti chiedere allo scrittore di rileggersi da solo, ma
+tutti sappiamo com'è: l'autore è il peggior giudice del proprio testo, perché
+legge quello che *voleva* scrivere, non quello che ha scritto. Tenere due ruoli
+separati serve proprio a questo: il controllore arriva senza aver visto la
+fatica di chi ha prodotto, e giudica il risultato per quello che è. Nel loop,
+il *maker* scrive, il *checker* controlla, e sono due «persone» diverse: due
+agenti separati, ciascuno con le sue istruzioni e il suo foglio davanti.
 
 Qui è lecito obiettare: se sono due copie dello stesso modello, che senso ha?
 Uno pensa come l'altro. La risposta è che la differenza non sta nella testa,
 sta in quello che ciascuno ha davanti. Il primo ha davanti il compito e tutta
 la strada che ha fatto per svolgerlo; il secondo ha davanti solo il risultato
-e i criteri con cui giudicarlo, e non sa nemmeno di chi sia. Non è un
-dettaglio: è stato misurato che un modello, messo a giudicare, tende a
-preferire il testo che ha scritto lui, e lo preferisce di più quanto meglio lo
-riconosce come proprio. Toglierglielo di mezzo cambia il verdetto. Restano
-naturalmente i punti ciechi comuni: quello che il modello non sa vedere non lo
-vede nemmeno da controllore, ed è per questo che sopra il controllore c'è
-sempre un cancello che non è un modello.
+e i criteri con cui giudicarlo, e non sa nemmeno di chi sia. Lo hanno misurato.
+Un modello, messo a giudicare, tende a preferire il testo che ha scritto lui,
+e lo preferisce di più quanto meglio lo riconosce come proprio. Toglierglielo
+di mezzo cambia il verdetto. Restano naturalmente i punti ciechi comuni:
+quello che il modello non sa vedere non lo vede nemmeno da controllore, ed è
+per questo che sopra il controllore c'è sempre un cancello che non è un
+modello.
 
 `````
 
@@ -322,12 +326,15 @@ al tentativo dopo. È esattamente la stazione «rifletti» del nostro ciclo.
 
 Il cancello è come un tornello alla metropolitana: o il biglietto è valido e
 passi, o non lo è e resti fuori. Non c'è un tornello che ti fa passare «a
-metà». Quando resti fuori, però, non è finita: leggi *perché* (biglietto
-scaduto, importo sbagliato), rimedi e riprovi. Un buon loop fa così. Prova,
-sbatte contro il cancello, **legge il motivo del rifiuto** (proprio come uno
-studente che rilegge le correzioni in rosso prima di riscrivere il tema) e
-riprova con quel motivo in mano. Ripete finché passa o finché ha esaurito i
-tentativi che gli hai concesso.
+metà», e non c'è modo di convincerlo. Puoi essere sicurissimo del tuo
+biglietto, la sbarra resta ferma lo stesso. Quando resti fuori, però, non è
+finita: leggi *perché* (biglietto scaduto, importo sbagliato), rimedi e
+riprovi. Un buon loop fa così. Prova, sbatte contro il cancello, **legge il
+motivo del rifiuto** (proprio come uno studente che rilegge le correzioni in
+rosso prima di riscrivere il tema) e riprova con quel motivo in mano. Ripete
+finché passa o finché ha esaurito i tentativi che gli hai concesso, e quel
+tetto serve: senza, chi non ne viene fuori resta al tornello fino a domattina
+a comprare biglietti nuovi, e i biglietti li paghi tu.
 
 `````
 
@@ -506,14 +513,18 @@ giorno.
 `````{tab} Elementare
 
 Nessuno dà a un nuovo assunto le chiavi dell'azienda il primo giorno. La prima
-settimana scrive solo **relazioni** che tu leggi: osserva e riferisce, decidi
-tu. Guadagnata un po’ di fiducia, può **proporre correzioni** che tu approvi
-prima che partano: ecco il secondo cancello promesso all'inizio della sezione,
-quello che non è un controllo automatico ma una persona che guarda e dà il via
-libera. Solo dopo, e solo per cose di cui ti fidi, il nuovo assunto lavora **da
-solo, anche di notte**. Con i loop è identico: si concede autonomia a
-scaglioni, non tutta subito. Chi consegna le chiavi il primo giorno non sta
-risparmiando tempo: sta preparando il disastro che dovrà poi ripulire.
+settimana scrive solo **relazioni** che tu leggi. Lui osserva e riferisce, a
+muovere le cose sei tu. Poi può **proporre correzioni**, che però passano dalle
+tue mani prima di partire, ed ecco il secondo cancello, quello tenuto da una
+persona invece che da un programma. Il grado dopo si guadagna sui numeri:
+quante delle sue proposte erano buone, quante hai dovuto rifarle. Quando
+rileggere tutto quello che propone comincia a costarti più degli sbagli che
+ogni tanto ti passerebbero sotto il naso, allora lavora **da solo, anche di
+notte**: dentro un elenco scritto di quello che può toccare, e con qualcuno
+che ogni tanto guarda come sta andando. Per le cose che non si possono disfare
+(un bonifico partito, un archivio cancellato) viene a chiedere comunque, anche
+dopo dieci anni di servizio. Con i loop è identico: l'autonomia si concede a
+scaglioni, e le chiavi consegnate il primo giorno sono un disastro rimandato.
 
 `````
 
@@ -593,11 +604,12 @@ una frase, va sorvegliato mentre lavora.
   è un lusso.
 - **L'autonomia si concede a scaglioni**, come a un nuovo assunto: prima solo
   relazioni da leggere, poi proposte da approvare, e solo alla fine, e solo
-  dentro confini scritti, il permesso di fare da sé.
+  dentro confini scritti, il permesso di fare da sé. Per le cose che non si
+  possono disfare, la conferma di una persona si chiede sempre.
 - Tre cose da tenere d'occhio: un ciclo produce più roba di quanta se ne
-  riesca a leggere (e il conto arriva), amplifica il giudizio buono **e**
-  quello cattivo, e costa: gira mentre non lo guardi, e la bolletta arriva
-  lo stesso.
+  riesca a leggere (e il conto arriva), amplifica tanto il giudizio buono
+  quanto quello cattivo, e costa: gira mentre non lo guardi, e la bolletta
+  arriva lo stesso.
 ```
 
 `````

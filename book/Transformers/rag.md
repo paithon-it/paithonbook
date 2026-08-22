@@ -42,30 +42,46 @@ cerca in milioni di documenti *senza leggerli tutti* a ogni richiesta?
 
 `````{tab} Elementare
 
-La risposta ce l'hai già in casa: è l’**indice analitico** in fondo ai
-manuali. Se in un testo di biologia di seicento pagine cerchi «fotosintesi»,
-non sfogli il libro: vai in fondo, trovi *fotosintesi → pp. 214, 380* e salti
-dritto lì. Qualcuno ha fatto il lavoro una volta sola (leggere tutto e
-annotare dove compare ogni parola), perché tu non debba rifarlo a ogni
-ricerca.
+In fondo al manuale di biologia, dopo seicento pagine, c'è l’**indice
+analitico**. Cerchi «fotosintesi» e non sfogli niente: leggi *fotosintesi →
+pp. 214, 380* e salti dritto lì. Qualcuno ha letto tutto una volta sola e ha
+annotato dove compare ogni parola, perché tu non debba rifarlo a ogni ricerca.
 
-L’**indice invertito** dei motori di ricerca è la stessa idea in scala: per
-*ogni* parola, la lista di *tutti* i documenti che la contengono. Alla query
-«gatto muro» il motore prende le due liste, le interseca, e ottiene i
-documenti che contengono entrambe le parole, senza aprirne nessuno.
+Lo stesso schedario per un'intera biblioteca è l’**indice invertito** dei
+motori di ricerca: una scheda per ogni parola, e sotto la lista di tutti i
+libri che la contengono. Alla domanda «gatto muro» tiri fuori due schede,
+confronti le due liste e tieni i titoli che compaiono in tutte e due. Non hai
+aperto un libro.
 
-Restano magari mille documenti: quali mostrare per primi? Serve dare
-un'importanza diversa alle parole della domanda, e la regola più antica è che
-le parole **rare** contano di più: «muro» dice molto di più di «il», che sta
-dappertutto. (Una nota per non confondersi: nei libri questa importanza si
-chiama «peso», che è la stessa parola usata per i numeri che una rete impara.
-Sono due cose diverse chiamate uguale, e capita spesso.) E il buon senso
-aggiunge due correzioni.
-Primo: se «gatto» compare dieci volte, il documento non è dieci volte più
-pertinente di uno in cui compare una volta; dopo un po’ il tema è chiaro, le
-ripetizioni in più aggiungono briciole. Secondo: un documento lunghissimo
-contiene quasi ogni parola per forza di cose, quindi la lunghezza va messa in
-conto, altrimenti vincono sempre i documenti-fiume.
+Restano mille titoli. Quale apri per primo? Le schede lo dicono già in parte:
+quella di «muro» è sottile, quella di «il» è spessa un dito e ci sta dentro
+mezza biblioteca. Una parola che sta dappertutto non distingue niente: le
+parole rare contano di più.
+
+Poi apri un titolo e conti. «Gatto» ci compare dieci volte, ma il libro non è
+dieci volte più pertinente di uno che lo nomina una volta sola: dopo un po’ il
+tema è chiaro e le menzioni in più aggiungono briciole. Con la taratura più
+diffusa una menzione vale un punto e dieci ne valgono meno di due; per quanto
+si insista non si arriva a due e mezzo, perché c'è un tetto e si tocca presto.
+
+Sullo scaffale accanto c'è l'enciclopedia in dodici volumi, che contiene
+«gatto» e «muro» per forza di cose, come contiene quasi ogni parola. Se la
+mole non si sconta, in cima ai risultati ci finisce sempre lei. Chi compila lo
+schedario ha allora due manopole, quanto scontare le ripetizioni e quanto
+pesare la lunghezza, e le gira finché i risultati non lo convincono.
+
+Sullo scaffale dei ricettari il conto della rarità si rompe. La scheda di
+«cucchiaio» tira dentro quasi ogni ricetta, e una parola che sta in più della
+metà dei libri, col conto scritto nel modo più diretto, finisce per valere
+meno di zero: contenerla fa scendere il punteggio invece di lasciarlo dov'è.
+Chi cerca «cucchiaio di burro» si vedrebbe passare davanti proprio le ricette
+in cui il cucchiaio non compare. Nei sistemi veri il conto si ferma prima
+dello zero: una parola diffusissima vale pochissimo, mai meno di niente.
+
+E come si sa se lo schedario funziona? Si prepara un elenco di domande di cui
+si conosce già la pagina giusta, e si guardano due numeri: quante delle prime
+dieci risposte sono davvero utili (più sono, meglio è) e a che posto arriva la
+prima buona (più è in alto, meglio è).
 
 `````
 
@@ -87,9 +103,9 @@ $$
 {\mathrm{tf}(t, d) + k_1\!\left(1 - b + b\,\dfrac{|d|}{\bar{\ell}}\right)},
 $$
 
-dove $q$ è la query e $d$ il documento; $\mathrm{tf}(t,d)$ è la frequenza del
-termine $t$ in $d$ e $\mathrm{idf}(t)$ la sua rarità nella collezione, in
-versione levigata,
+dove $q$ è la query e $d$ il documento; $\mathrm{tf}(t,d)$ è il numero di
+occorrenze del termine $t$ in $d$ e $\mathrm{idf}(t)$ la sua rarità nella
+collezione, in versione levigata,
 $\mathrm{idf}(t) = \log\frac{N - \mathrm{df}(t) + 0{,}5}{\mathrm{df}(t) + 0{,}5}$,
 con $N$ documenti totali e $\mathrm{df}(t)$ quelli contenenti $t$; $|d|$ è la
 lunghezza del documento e $\bar{\ell}$ la lunghezza media nella collezione;
@@ -161,7 +177,7 @@ il {doc}`capitolo sul NLP </NaturalLanguageProcessing/overview>` dà agli indiri
 
 `````{tab} Elementare
 
-Pensa alla differenza tra il catalogo di una biblioteca e un libraio esperto.
+Il catalogo di una biblioteca e un libraio esperto non trovano le stesse cose.
 Il catalogo trova solo ciò che combacia con le parole della tua richiesta. Il
 libraio ha letto tutto: gli chiedi «qualcosa sull'educazione del cucciolo» e
 ti mette in mano *Come allenare il tuo cane* (nessuna parola in comune, tema
@@ -187,10 +203,10 @@ in una sola, tenendo in cima quello che compare in alto in entrambe.
 L'architettura standard è il **bi-encoder**, cioè la struttura siamese
 descritta in *Rappresentare il testo* applicata a due tipi di ingresso
 diversi: due encoder Transformer (o uno
-condiviso), $E_q$ per le query ed $E_p$ per i passaggi, producono vettori in
-$\mathbb{R}^d$, e la rilevanza fra una query $q$ e un passaggio $p$ è il
+condiviso), $E_q$ per le query ed $E_z$ per i passaggi, producono vettori in
+$\mathbb{R}^d$, e la rilevanza fra una query $q$ e un passaggio $z$ è il
 prodotto scalare
-$\mathrm{sim}(q, p) = E_q(q)^\top E_p(p)$, che coincide con la **similarità
+$\mathrm{sim}(q, z) = E_q(q)^\top E_z(z)$, che coincide con la **similarità
 del coseno**, già incontrata in *Algebra lineare*, quando i vettori sono
 normalizzati. Il vantaggio computazionale è decisivo: gli embedding dei
 passaggi si calcolano **una volta sola**, offline; a query time restano una
@@ -231,14 +247,18 @@ analisi della domanda, batté i campioni umani del quiz *Jeopardy!*.
 
 `````{tab} Elementare
 
-Ci sono due modi di rispondere avendo il testo sotto gli occhi, e li conosci
-dai compiti in classe. Il primo è l’**evidenziatore**: la risposta è già
+Ci sono due modi di rispondere avendo il testo sotto gli occhi. Il primo è
+l’**evidenziatore**: la risposta è già
 scritta nel brano, basta sottolinearla. «Su cosa salta il gatto nero?»: il
 brano dice «il gatto nero salta sul muro», evidenzi «sul muro», fine. È il QA
 **estrattivo**. Il secondo è la **penna**: la risposta va composta con parole
 tue, magari cucendo insieme più punti del testo. È il QA **generativo**, più
 flessibile, ma con la libertà arriva il rischio: chi scrive di suo può anche
 scrivere cose che nel testo non ci sono.
+
+C'è poi il caso in cui il brano non lo dà nessuno: la domanda arriva nuda, e la
+prima mossa è andarsi a cercare le pagine giuste. Trovate quelle, si torna a
+scegliere fra evidenziatore e penna.
 
 `````
 
@@ -256,8 +276,8 @@ quello che misura (trovare uno span in *un* paragrafo già dato, non rispondere
 a domande nel mondo). Il QA **generativo** rimuove il vincolo dello span: un
 modello seq2seq (o un decoder autoregressivo) *scrive* la risposta,
 condizionata su domanda e contesto. E il QA **a dominio aperto** rimuove anche
-il paragrafo dato: prima trova i passaggi in una collezione, poi rispondi, che
-è esattamente la catena retrieval + lettura di questa sezione.
+il paragrafo dato: prima si recuperano i passaggi da una collezione, poi si
+legge quel che si è trovato, ed è la catena su cui poggia la RAG.
 
 `````
 
@@ -289,20 +309,29 @@ nell'archivio (aggiornabile), la competenza linguistica nel modello.
 È lo studente all'esame a libro aperto, addestrato a usarlo bene. Arriva la
 domanda; lo studente non si fida della memoria: apre l'indice, trova le due
 pagine giuste, le tiene sotto gli occhi e scrive la risposta *da lì*,
-annotando a margine «pag. 214». I vantaggi sono concreti. Primo: la risposta è
-**controllabile**; chi corregge può andare a pagina 214 e verificare, cosa
-impossibile con una risposta recitata a memoria. Secondo: il sapere è
-**aggiornabile**, se esce l'edizione nuova del libro, basta sostituirla sullo
-scaffale; nessuno deve rimandare lo studente a scuola. Nei sistemi reali è la
+annotando a margine «pag. 214». Le altre seicento pagine non le apre nemmeno,
+perché l'indice dice che non c'entrano; e fra le due che ha davanti dà più
+retta a quella che l'indice segnalava con più decisione. I vantaggi sono
+concreti. La risposta è **controllabile**: chi corregge può andare a pagina 214
+e verificare, cosa impossibile con una risposta recitata a memoria. E il sapere
+è **aggiornabile**: se esce l'edizione nuova del libro basta sostituirla sullo
+scaffale, e nessuno deve rimandare lo studente a scuola. Nei sistemi reali è la
 differenza tra aggiornare un archivio stanotte e riaddestrare un modello per
 settimane.
 
-Ma il libro aperto non rende infallibili. Se lo studente apre la pagina
-*sbagliata* (perché l'indice l'ha ingannato o la domanda era ambigua),
-scriverà una risposta sbagliata con tanto di citazione in bella vista, più
-convincente proprio perché ha la fonte a margine. La RAG **sposta** il
-problema dalla memoria alla ricerca: è un ottimo affare, perché la ricerca si
-può ispezionare e migliorare, ma non è una garanzia di verità.
+Ma il libro aperto non rende infallibili, e le cose vanno storte in tre punti
+diversi. Lo studente può aprire la pagina *sbagliata*, perché l'indice l'ha
+ingannato o perché la domanda era ambigua: allora scrive una risposta sbagliata
+con tanto di citazione in bella vista, più convincente proprio perché ha la
+fonte a margine. Può non trovare affatto la pagina che serviva: quello che non
+ha davanti non entrerà nella risposta presa dal libro, e se lo scrive lo scrive
+a memoria senza dichiararlo, cioè è tornato di nascosto all'esame a libro
+chiuso. E può avere la pagina giusta sotto gli occhi e scrivere altro, o
+piegarne il senso: «pag. 214» resta una citazione esatta, e la frase sopra non
+è quello che a pagina 214 c'è scritto. Spostare il problema dalla memoria alla
+ricerca resta un ottimo affare, perché una ricerca si può ispezionare e
+migliorare; ma il problema non sparisce, e un pezzo resta dov'era, nella penna
+di chi scrive.
 
 `````
 
@@ -371,8 +400,8 @@ casa, di automobili, di cucina), al posto delle centinaia di coordinate opache
 che produrrebbe un modello vero. Tutto il resto è identico a un sistema in
 funzione.
 
-Due righe per chi legge al livello Elementare e vuole comunque capire i numeri
-che escono. Ogni passaggio è un punto sulla mappa, e un punto sulla mappa si
+Due righe per capire i numeri che escono. Ogni passaggio è un punto sulla
+mappa, e un punto sulla mappa si
 può guardare anche come una freccia che parte dall'origine e arriva lì: la
 **similarità del coseno** misura quanto due di quelle frecce puntano nella
 stessa direzione. Dà $1$ quando la direzione è identica, $0$ quando le due non

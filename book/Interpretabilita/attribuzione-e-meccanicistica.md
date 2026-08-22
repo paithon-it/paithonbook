@@ -58,20 +58,24 @@ ed è così che la si trova nei programmi): l'hanno proposta Simonyan, Vedaldi e
 
 `````{tab} Elementare
 
-Immagina di avere una foto e di volerti chiedere: quali pixel, se li toccassi
-appena, cambierebbero di più il verdetto della rete? Se sposti di un nulla il
-pixel del muso e la fiducia in «cane» crolla, quel pixel è *importante*. Se
-tocchi un pixel dello sfondo e non succede niente, quello non conta. La mappa
-di salienza è esattamente questa: un'immagine in bianco e nero, delle stesse
+Quali pixel, toccati appena, cambierebbero il verdetto della rete? Sposta di un
+nulla il pixel del muso e la fiducia in «cane» crolla: quel pixel è
+*importante*. Tocca un pixel dello sfondo e non succede niente: quello non
+conta. La mappa di salienza è questa, un'immagine in bianco e nero delle stesse
 dimensioni della foto, che si accende dove un piccolo ritocco farebbe la
 differenza più grande.
 
-È come cercare i punti fragili di un castello di carte: dai un colpetto qua e
-là e guardi cosa fa tremare tutta la struttura. Il difetto è che due pixel
-vicini, che a occhio nostro fanno parte della stessa cosa, possono rispondere in
-modo molto diverso: uno fa tremare tutto, quello accanto niente. La mappa risulta
-allora piena di puntini sparsi (si dice che è **rumorosa**, come una radio male
-sintonizzata), e la forma dell'oggetto si intravede appena.
+È come cercare i punti fragili di un castello di carte: dai un colpetto qua e là
+e guardi che cosa fa tremare tutta la struttura. Il difetto più visibile è che
+due pixel vicini, che a occhio nostro fanno parte della stessa cosa, possono
+rispondere in modo molto diverso: uno fa tremare tutto, quello accanto niente.
+La mappa risulta allora piena di puntini sparsi (si dice che è **rumorosa**,
+come una radio male sintonizzata), e la forma dell'oggetto si intravede appena.
+
+Il secondo difetto è meno visibile. Il colpetto dice quanto è fragile *questo*
+castello, così com'è messo adesso: sposta una carta e i punti fragili non sono
+più gli stessi. La mappa vale per la foto che hai davanti, non per le foto di
+cane in generale.
 
 `````
 
@@ -88,8 +92,8 @@ $$
 calcolato con una singola *backpropagation* fino allo strato di input anziché
 fermarsi ai pesi. L'idea è una **linearizzazione locale**: nell'intorno di
 $\mathbf{X}$,
-$S_c(\mathbf{X} + \boldsymbol{\delta}) \approx S_c(\mathbf{X}) +
-\big(\partial S_c/\partial \mathbf{X}\big)^\top \boldsymbol{\delta}$,
+$S_c(\mathbf{X} + \boldsymbol{\Delta}) \approx S_c(\mathbf{X}) +
+\sum_{i,j} \big(\partial S_c/\partial X_{ij}\big)\, \Delta_{ij}$,
 quindi le componenti del gradiente di modulo maggiore individuano i pixel la cui
 piccola variazione altera di più il punteggio. Per un'immagine a colori si
 prende in genere il massimo del modulo sui tre canali RGB.
@@ -129,10 +133,12 @@ della foto.
 E adesso il passaggio: il gradiente si può puntare anche su quei faretti, non
 solo sui pixel. La domanda diventa «se questo faretto si accendesse un po’ di
 più, di quanto salirebbe la fiducia nella risposta?». Grad-CAM chiede questo, e
-poi accende ciascun faretto in proporzione alla risposta che ha avuto. Se stiamo spiegando la risposta
-«cane», i faretti sul muso e sulle orecchie pesano tanto, quelli sull'erba
-pesano zero. Sovrapposti alla foto, danno una macchia calda (una *heatmap*)
-che dice, letteralmente, *dove* la rete ha guardato per dire «cane». È
+poi accende ciascun faretto in proporzione alla risposta che ha avuto. Se
+stiamo spiegando la risposta «cane», i faretti sul muso e sulle orecchie pesano
+tanto, quelli sull'erba pesano zero. Sovrapposti alla foto, danno una macchia
+calda (una *heatmap*) che dice, letteralmente, *dove* la rete ha guardato per
+dire «cane». Dove invece i faretti tirano dall'altra parte, verso una risposta
+diversa, la macchia resta fredda: tiene le prove a favore, non quelle contro. È
 grossolana (la risoluzione è quella dell'ultimo strato, non dei pixel), ma è
 pulita e onesta: nel caso dell'husky, la macchia calda finirebbe proprio sulla
 neve, smascherando l'inganno.
@@ -142,13 +148,13 @@ neve, smascherando l'inganno.
 `````{tab} Superiore
 
 Sia $\mathbf{A}^k \in \mathbb{R}^{u \times v}$ la $k$-esima *feature map*
-dell'ultimo strato convoluzionale e $y^c$ il punteggio della classe $c$.
+dell'ultimo strato convoluzionale e $S_c$ il punteggio della classe $c$.
 Grad-CAM procede in due mosse. Prima calcola un peso per ogni mappa, mediando
 spazialmente il gradiente della classe rispetto a quella mappa:
 
 $$
 \alpha_k^c = \frac{1}{Z} \sum_{i}\sum_{j}
-   \frac{\partial y^c}{\partial A^k_{ij}},
+   \frac{\partial S_c}{\partial A^k_{ij}},
 $$
 
 dove $A^k_{ij}$ è il valore della mappa nella posizione $(i,j)$ e $Z = u\,v$ è
@@ -219,15 +225,15 @@ l'unica differenza che c'è fra l'immagine e la baseline.
 
 `````{tab} Elementare
 
-Invece di misurare la pendenza solo nel punto di arrivo, immagina di percorrere
-la strada che va dalla baseline, l'immagine tutta nera, fino all'immagine vera,
-mescolandole a poco a poco. La strada si divide in tappe uguali, mettiamo otto,
-e ogni tappa **copre un pezzetto di strada**, un ottavo per la precisione: è una
-cosa da tenere a mente, perché fra due pagine tornerà. A ogni tappa ti chiedi di
-quanto cambierebbe la fiducia della rete se toccassi appena quel pixel, e alla
-fine fai la media delle otto risposte. Così, anche se all'arrivo la rete è satura
-e non reagisce più, hai comunque registrato la sua reazione lungo tutta la
-salita, quando reagiva eccome.
+Invece di misurare la pendenza solo nel punto di arrivo, percorri la strada che
+va dalla baseline, l'immagine tutta nera, fino all'immagine vera, mescolandole
+a poco a poco. La strada si divide in tappe uguali, mettiamo otto, e ogni tappa
+**copre un pezzetto di strada**, un ottavo per la precisione: è una cosa da
+tenere a mente. A ogni tappa ti chiedi di quanto cambierebbe la fiducia della
+rete se toccassi appena quel pixel, e alla fine fai la media delle otto
+risposte. Così, anche se all'arrivo la rete è satura e non reagisce più, hai
+comunque registrato la sua reazione lungo tutta la salita, quando reagiva
+eccome.
 
 Resta un ultimo passo, e c'è una ragione per farlo. Quella media dice quanto la
 rete reagisce a *un ritocco* di quel pixel; a noi serve quanto ha contato il
@@ -236,19 +242,17 @@ vero. Quindi si moltiplica la media per quella strada: un pixel che è passato d
 nero a bianco pieno l'ha fatta tutta e si prende tutto; uno che è rimasto quasi
 nero ne ha fatta pochissima e si prende quasi niente.
 
-Fare la media di otto numeri e poi moltiplicarla per tutta la strada, si noti, è
-la stessa identica cosa che **sommare** otto contributi, ciascuno la pendenza di
-una tappa moltiplicata per il suo pezzetto di strada. Media o somma, dunque, è
-solo un modo diverso di dire lo stesso conto, e più avanti si troveranno tutte
-e due le parole.
+Fare la media di otto numeri e poi moltiplicarla per tutta la strada è la stessa
+identica cosa che **sommare** otto contributi, ciascuno la pendenza di una tappa
+moltiplicata per il suo pezzetto di strada. Media o somma, dunque, sono due modi
+di dire lo stesso conto.
 
 E il conto torna, che è la proprietà bella di questo metodo: se sommi
 le attribuzioni di tutti i pixel ottieni esattamente *quanto* la fiducia della
 rete è cambiata fra l'immagine nera e quella vera. Niente si perde e niente si
-inventa. Quella proprietà ha un nome che tornerà spesso nelle prossime pagine, e
-conviene tenerlo a mente: si chiama **completezza**. È come dividere il conto di
-una cena tra i commensali in modo che la somma delle quote faccia, al centesimo,
-il totale sullo scontrino.
+inventa. Quella proprietà ha un nome: si chiama **completezza**. È come dividere
+il conto di una cena tra i commensali in modo che la somma delle quote faccia, al
+centesimo, il totale sullo scontrino.
 
 Sull'analogia della cena, però, c'è una domanda scomoda da fare subito: il
 conto torna, ma torna **a partire da dove?** Il punto di partenza, quell'immagine
@@ -301,29 +305,29 @@ $$
 
 La completezza implica la sensibilità e conferisce alle attribuzioni un
 significato preciso: ciascuna è la *quota* di quel salto di punteggio imputabile
-a quella componente. È l'assioma che verificheremo numericamente più avanti.
+a quella componente.
 
-Va detto però che cosa la completezza **non** garantisce, perché è il punto in
-cui il metodo si presta a essere letto per più di quel che promette: essa vale
-per **qualunque** baseline. Gli assiomi vincolano come si ripartisce il salto
-$f(\mathbf{x}) - f(\mathbf{x}')$, non da dove il salto parte, e la scelta di
-$\mathbf{x}'$ resta il grado di libertà principale del metodo. Due conseguenze
-concrete. La prima è che il
+C'è però un limite, ed è il punto in cui il metodo si presta a essere letto per
+più di quel che promette: la completezza vale per **qualunque** baseline. Gli
+assiomi vincolano come si ripartisce il salto $f(\mathbf{x}) - f(\mathbf{x}')$,
+non da dove il salto parte, e la scelta di $\mathbf{x}'$ resta il grado di
+libertà principale del metodo. Due conseguenze concrete. La prima è che il
 fattore $(x_i - x'_i)$ davanti all'integrale **azzera per costruzione**
 l'attribuzione di ogni componente che coincide con la baseline: con la baseline
 nera ogni pixel nero riceve esattamente zero, per definizione e non per misura,
 mentre in una radiografia o in una foto notturna il nero non è affatto assenza
-di informazione. La seconda è che cambiando baseline le attribuzioni cambiano di
-grandezza e perfino di **segno**, mentre la somma continua a tornare: sulla
-funzione giocattolo dell'esempio in fondo alla sezione, spostando la baseline da
-$(0,0)$ a $(2,0)$ l'attribuzione della componente con il peso maggiore passa da
+di informazione. La seconda è che cambiando baseline le attribuzioni cambiano
+di grandezza e perfino di **segno**, mentre la somma continua a tornare: sulla
+funzione giocattolo $f(\mathbf{x}) = \tanh(\mathbf{w}^\top \mathbf{x})$ con
+$\mathbf{w} = (2,-1)$ e $\mathbf{x} = (2,1)$, spostando la baseline da $(0,0)$
+a $(2,0)$ l'attribuzione della componente con il peso maggiore passa da
 $1{,}327$ a esattamente $0$, e con la baseline $(-1,2)$ la seconda componente
 prende segno positivo invece che negativo; in tutti e tre i casi la completezza
-è verificata al quarto decimale. Gli autori chiedono infatti che la baseline sia
-scelta e **verificata**: deve rappresentare un'assenza di segnale, e su di essa
-il punteggio della classe dev'essere quasi nullo. Le alternative d'uso comune
-(rumore gaussiano, immagine sfocata, media del dataset, media su più baseline)
-danno attribuzioni diverse, e nessun assioma le ordina
+è verificata al quarto decimale. Gli autori chiedono infatti che la baseline
+sia scelta e **verificata**: deve rappresentare un'assenza di segnale, e su di
+essa il punteggio della classe dev'essere quasi nullo. Le alternative d'uso
+comune (rumore gaussiano, immagine sfocata, media del dataset, media su più
+baseline) danno attribuzioni diverse, e nessun assioma le ordina
 {cite}`sturmfels2020baselines`.
 
 `````
@@ -403,14 +407,15 @@ non ciò che la rete *pensa*.
 La seconda obiezione è più radicale ed è arrivata da un esperimento tanto
 semplice quanto crudele. Prendi una rete addestrata, produci la sua mappa, poi
 **cancella quello che ha imparato**: randomizza i pesi, strato per strato, e
-rifai la mappa. Se la mappa fosse una spiegazione del modello, dovrebbe
-disintegrarsi, perché il modello non c'è più. Per diversi metodi popolari, la
-mappa cambia pochissimo, e resta riconoscibile come una sagoma dell'oggetto.
+rifai la mappa. Oppure la riaddestri su etichette mescolate a caso, così che
+non le resti da imparare altro che rumore. Se la mappa fosse una spiegazione
+del modello, dovrebbe disintegrarsi, perché il modello non c'è più. Per diversi
+metodi popolari, la mappa cambia pochissimo, e resta riconoscibile come una
+sagoma dell'oggetto.
 
-Chi passa e chi no, dei metodi visti qui, va detto senza sconti, perché il test
-non li boccia tutti. I colpetti pixel per pixel e i faretti di Grad-CAM
-reagiscono, e il test lo superano. A fallirlo del tutto sono due metodi che qui
-non abbiamo incontrato, *Guided BackProp* e *Guided Grad-CAM*: sono due
+Il test però non li boccia tutti. I colpetti pixel per pixel e i faretti di
+Grad-CAM reagiscono, e il test lo superano. A fallirlo del tutto sono due
+metodi non ancora incontrati, *Guided BackProp* e *Guided Grad-CAM*: sono due
 raffinamenti costruiti sopra i primi due, con qualche accorgimento in più per
 avere mappe visivamente più nitide, e proprio quegli accorgimenti sono ciò che
 li rende ciechi al modello. Le loro mappe restano riconoscibili anche su una
@@ -426,12 +431,12 @@ Quindi quando la reazione media si riduce a un guazzabuglio senza senso, a
 restare in piedi nel prodotto è soprattutto la foto. A occhio si continua a
 «vedere il cane» anche quando la rete non sa più niente.
 
-La conclusione è spiacevole e va detta, con la precisazione di prima: per i
-metodi bocciati e per quelli in mezzo, la mappa stava in buona parte descrivendo
-l’**immagine** e non la rete. Somigliava al risultato di un programmino che
-segna i bordi degli oggetti in una foto, uno di quelli che esistono da
-cinquant'anni e non hanno bisogno di imparare niente; e siccome i bordi di una
-foto di cane disegnano un cane, la mappa sembrava sensata.
+La conclusione è spiacevole: per i metodi bocciati e per quelli in mezzo, la
+mappa stava in buona parte descrivendo l’**immagine** e non la rete. Somigliava
+al risultato di un programmino che segna i bordi degli oggetti in una foto, uno
+di quelli che esistono da cinquant'anni e non hanno bisogno di imparare niente;
+e siccome i bordi di una foto di cane disegnano un cane, la mappa sembrava
+sensata.
 
 `````
 
@@ -458,13 +463,14 @@ sulle etichette vere.
 Un metodo che superi i test deve cambiare drasticamente in entrambi i casi.
 Diversi metodi molto usati non lo fanno, e le loro mappe restano visivamente
 simili all'originale: si comportano, per usare l'espressione degli autori, come
-un rilevatore di bordi indipendente dal modello. Vale la pena nominarli, perché
-è l'informazione operativa. A **fallire** sono **Guided BackProp** e **Guided
-Grad-CAM**, invarianti ai pesi degli strati alti e quindi riconoscibili anche a
-rete randomizzata. A **passare** sono il gradiente semplice e Grad-CAM, quest'ultimo con la
-precisazione che gli autori mettono per esteso: è sensibile ai pesi quando la
-randomizzazione è *a valle* dell'ultimo strato convoluzionale, cioè su quella
-parte della rete che Grad-CAM attraversa per calcolare i suoi gradienti.
+un rilevatore di bordi indipendente dal modello. Quali siano è l'informazione
+operativa. A **fallire** sono **Guided BackProp** e **Guided Grad-CAM**,
+invarianti ai pesi degli strati alti e quindi riconoscibili anche a rete
+randomizzata. A **passare** sono il gradiente semplice e Grad-CAM, quest'ultimo
+con la precisazione che gli autori mettono per esteso: è sensibile ai pesi
+quando la randomizzazione è *a valle* dell'ultimo strato convoluzionale, cioè
+su quella parte della rete che Grad-CAM attraversa per calcolare i suoi
+gradienti.
 
 In mezzo stanno i metodi che moltiplicano il gradiente per l'ingresso, cioè
 **gradient $\odot$ input** e gli **Integrated Gradients**. Qui gli autori
@@ -472,11 +478,11 @@ osservano che le mappe cambiano, e cambiano perfino di segno, ma che la
 struttura dell'ingresso resta chiaramente prevalente nelle maschere: chi
 moltiplica per l'ingresso, quando il gradiente si fa rumoroso, finisce per
 restituire soprattutto l'ingresso. È il caso più insidioso, perché il metodo
-*è* sensibile al modello e nondimeno l'occhio continua a riconoscere l'oggetto. Il punto metodologico è quello, ed è quello
-che vale la pena portarsi via: **la plausibilità visiva di una spiegazione non è
-una prova della sua fedeltà**, e un occhio umano non distingue le due cose. Un
-metodo di attribuzione va sottoposto a un test che possa farlo fallire,
-esattamente come un modello.
+*è* sensibile al modello e nondimeno l'occhio continua a riconoscere l'oggetto.
+Il punto metodologico da portarsi via è questo: **la plausibilità visiva di una
+spiegazione non è una prova della sua fedeltà**, e un occhio umano non
+distingue le due cose. Un metodo di attribuzione va sottoposto a un test che
+possa farlo fallire, esattamente come un modello.
 
 `````
 
@@ -539,12 +545,14 @@ strumenti che fanno questo conto si chiamano **attention rollout** e
 più sensata di quella del singolo strato.
 
 C'è infine un attrezzo complementare, il **probing** (sondaggio): per scoprire
-se a un certo piano della rete è scritta una data informazione (per esempio,
-se una parola è un nome o un verbo), si prova a leggerla da lì con lo
-strumento più semplice che c'è, un piccolo classificatore addestrato apposta.
-Se ci riesce, l'informazione a quel piano c'è; se fallisce, non c'è, o non è
-scritta in modo semplice. Con un'avvertenza: uno strumento di lettura troppo
-bravo rischia di indovinare da sé ciò che doveva soltanto leggere.
+se a un certo piano della rete è scritta una data informazione (per esempio, se
+una parola è un nome o un verbo), si prova a leggerla da lì con lo strumento
+più semplice che c'è, un piccolo classificatore addestrato apposta. Se ci
+riesce, l'informazione a quel piano c'è; se fallisce, non c'è, o non è scritta
+in modo semplice. Con un'avvertenza: uno strumento di lettura troppo bravo
+rischia di indovinare da sé ciò che doveva soltanto leggere. Per accorgersene
+gli si dà da leggere un'informazione che non c'è, cioè etichette tirate a caso:
+se riesce lo stesso, non stava leggendo, stava indovinando.
 
 `````
 
@@ -563,12 +571,14 @@ di attenzione di ogni strato mescolandola con l'identità, che rappresenta
 appunto il passaggio diretto,
 
 $$
-\mathbf{A}^{(l)} = \tfrac{1}{2} \mathbf{W}^{(l)}_{\text{att}}
+\mathbf{R}^{(l)} = \tfrac{1}{2} \mathbf{W}^{(l)}_{\text{att}}
    + \tfrac{1}{2} \mathbf{I} ,
 $$
 
-e si moltiplicano gli strati fra loro per ottenere quanto di ogni token di
-ingresso è finito in ogni posizione all'altezza voluta. È l’**attention
+dove $\mathbf{W}^{(l)}_{\text{att}}$ è la matrice di attenzione grezza dello
+strato $l$, $\mathbf{I}$ l'identità e $\mathbf{R}^{(l)}$ la matrice corretta.
+Si moltiplicano poi le $\mathbf{R}^{(l)}$ fra loro per ottenere quanto di ogni
+token di ingresso è finito in ogni posizione all'altezza voluta. È l’**attention
 rollout**. La variante *attention flow* tratta la stessa struttura come un
 grafo orientato aciclico e calcola il flusso massimo dal token di ingresso a
 quello di arrivo, che è più costoso e tiene conto dei colli di bottiglia lungo
@@ -625,14 +635,14 @@ po’ per il colore verde, e diventa illeggibile.
 Il nome tecnico di questa faccenda è **sovrapposizione**, e viene dal modo in
 cui la si disegna: non come scatole, ma come frecce su un foglio. Immagina un
 foglio in cui **ogni asse è un neurone**: il primo asse è quanto si accende il
-neurone 1, il secondo quanto si accende il neurone 2. Un concetto diventa allora
-una freccia, e la sua direzione dice in quale mescolanza dei due neuroni quel
-concetto è scritto. Se «gatto» stesse tutto e solo nel neurone 1, la sua freccia
-punterebbe dritta lungo il primo asse, in perfetto accordo con quel neurone e
-senza niente in comune con l'altro. Quando invece i concetti sono più dei
-neuroni, ciascuno deve prendersi una freccia obliqua, che si sovrappone in parte
-a quelle degli altri: da lì il nome. È l'immagine di
-{numref}`fig-superposizione`, ed è disegnata qualche riga più sotto.
+neurone 1, il secondo quanto si accende il neurone 2. Un concetto diventa
+allora una freccia, e la sua direzione dice in quale mescolanza dei due neuroni
+quel concetto è scritto. Se «gatto» stesse tutto e solo nel neurone 1, la sua
+freccia punterebbe dritta lungo il primo asse, in perfetto accordo con quel
+neurone e senza niente in comune con l'altro. Quando invece i concetti sono più
+dei neuroni, ciascuno deve prendersi una freccia obliqua, che si sovrappone in
+parte a quelle degli altri: da lì il nome. È l'immagine di
+{numref}`fig-superposizione`.
 
 Una tecnica recente prova a ri-sistemare gli scatoloni. Prende le
 **attivazioni** di uno strato (la fotografia di ciò che la rete ha in mente lì
@@ -648,17 +658,17 @@ ragionamento. Riscrivere tutto potendo accendere pochissime caselle è una
 richiesta severa, e il ragionamento sta tutto nel prezzo di una casella
 confusa. Una casella non è solo un interruttore: quando si accende, aggiunge
 alla ricostruzione un contributo sempre uguale, la sua impronta. Se una casella
-si occupasse di tre cose diverse, quella unica impronta dovrebbe andare bene per
-tutte e tre, e non può: per rimettere a posto la ricostruzione bisognerebbe
+si occupasse di tre cose diverse, quella unica impronta dovrebbe andare bene
+per tutte e tre, e non può: per rimettere a posto la ricostruzione bisognerebbe
 accendere altre caselle di correzione, cioè spendere di più proprio dove il
 conto va tenuto basso. Una casella che si occupa di una cosa sola, invece,
 quella cosa la ricostruisce da sé. Il posto abbondante serve appunto perché ce
 ne sia una per ogni cosa, senza doverle mescolare, e la rarità serve perché
-così, su ogni esempio, se ne accendono davvero poche. E si noti che questa è la stessa idea della rete, rovesciata: la rete
-sovrappone i concetti perché ha poco spazio e li può sovrapporre proprio perché
-sono rari; lo sparse autoencoder li separa dando spazio in abbondanza e
-sfruttando la stessa rarità. Che poi il risultato sia davvero una casella per
-concetto, però, è un'altra questione.
+così, su ogni esempio, se ne accendono davvero poche. Questa è la stessa idea
+della rete, rovesciata: la rete sovrappone i concetti perché ha poco spazio e
+li può sovrapporre proprio perché sono rari; lo sparse autoencoder li separa
+dando spazio in abbondanza e sfruttando la stessa rarità. Che poi il risultato
+sia davvero una casella per concetto, però, è un'altra questione.
 
 Il campo è giovane e va raccontato per quello che è. La tecnica ha retto la
 prova della scala, e si applica ormai a modelli linguistici veri, non a
@@ -695,22 +705,22 @@ attive per esempio. Le feature così estratte risultano in buona parte
 sono: il giudizio di valutatori umani (o di un modello usato come valutatore)
 su un campione di feature, non una proprietà dimostrata.
 
-Il campo è nascente e va preso con l'onestà che si deve alle frontiere, ma vale
-la pena dire **dove** stia oggi la frontiera, perché non è dove si tende a
-metterla. La prova della **scala** la tecnica l'ha superata: Templeton e
-colleghi {cite}`templeton2024scaling` hanno addestrato autoencoder sparsi fino
-a decine di milioni di feature sulle attivazioni interne di un modello
-linguistico di produzione, non di un giocattolo di laboratorio. Quella che non
-ha superato è la prova dell’**affidabilità**: Chanin e colleghi, nel 2024, hanno
-documentato modi sistematici in cui un latente apparentemente monosemantico non
-si accende proprio dove dovrebbe, perché un latente più specifico ne ha
-assorbito i casi (lo chiamano *feature absorption*), e che il fenomeno non si
-risolve cambiando la dimensione del dizionario o il grado di sparsità
-{cite}`chanin2024absorption`. La sovrapposizione resta una spiegazione teorica solida del
-*perché* i neuroni siano illeggibili; che gli sparse autoencoder siano *la*
-cura è ancora un programma di ricerca, non un risultato acquisito. E nessuno,
-in ogni caso, ha ancora «letto» un modello di grande scala per intero. La posta
-in gioco, però, è alta, e ne parliamo fra poco.
+Il campo è nascente e va preso con l'onestà che si deve alle frontiere. La
+frontiera, però, oggi non passa dove si tende a metterla. La prova della
+**scala** la tecnica l'ha superata: Templeton e colleghi
+{cite}`templeton2024scaling` hanno addestrato autoencoder sparsi fino a decine
+di milioni di feature sulle attivazioni interne di un modello linguistico di
+produzione, non di un giocattolo di laboratorio. Quella che non ha superato è
+la prova dell’**affidabilità**: Chanin e colleghi, nel 2024, hanno documentato
+modi sistematici in cui un latente apparentemente monosemantico non si accende
+proprio dove dovrebbe, perché un latente più specifico ne ha assorbito i casi
+(lo chiamano *feature absorption*), e che il fenomeno non si risolve cambiando
+la dimensione del dizionario o il grado di sparsità
+{cite}`chanin2024absorption`. La sovrapposizione resta una spiegazione teorica
+solida del *perché* i neuroni siano illeggibili; che gli sparse autoencoder
+siano *la* cura è ancora un programma di ricerca, non un risultato acquisito. E
+nessuno, in ogni caso, ha ancora «letto» un modello di grande scala per intero.
+La posta in gioco, però, è alta.
 
 `````
 
@@ -775,10 +785,8 @@ accorgersene *prima* che si manifestino: è il ponte, che riprenderemo nel
 capitolo sull'AI responsabile, tra l'interpretabilità come curiosità
 scientifica e l'interpretabilità come strumento di controllo.
 
-Il quadro concettuale finisce qui. Quel che resta di questa pagina è di
-bottega: rifà coi numeri, e con poche righe di codice, i due metodi centrali
-del capitolo, gli Integrated Gradients e Grad-CAM. Restano i due conti veri, gli Integrated Gradients e Grad-CAM, rifatti con i
-numeri.
+Il quadro concettuale finisce qui. Restano i due conti veri, gli Integrated
+Gradients e Grad-CAM, rifatti con i numeri e con poche righe di codice.
 
 ## Integrated Gradients coi numeri: un esempio eseguibile
 

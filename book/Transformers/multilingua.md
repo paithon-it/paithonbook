@@ -31,44 +31,41 @@ speciale.
 
 `````{tab} Elementare
 
-Prendi BERT, quello degli esercizi a buchi della sezione precedente, e invece
-di dargli da leggere la Wikipedia inglese dagli da leggere cento Wikipedia
-insieme. Non gli dici in che lingua è la frase che sta leggendo. Non gli dai
-un elenco delle lingue. Non gli fai vedere nemmeno una traduzione. Gli chiedi
-sempre e solo di indovinare le parole coperte, in un pentolone dove ogni
-tanto la frase è in italiano, ogni tanto in turco, ogni tanto in coreano.
+Cento Wikipedia versate in un pentolone solo e mescolate. Da lì si tira su una
+frase alla volta, con qualche parola coperta, e il modello deve indovinare che
+cosa c'è sotto. È l'esercizio a buchi di BERT, e cambia solo il pentolone.
+Nessuno gli dice in che lingua è la frase. Nessuno gli dà l'elenco delle
+lingue. Nessuno gli fa vedere una traduzione, mai. Ogni tanto sale l'italiano,
+ogni tanto il turco, ogni tanto il coreano, e il compito non cambia mai.
 
-Una cosa sola cambia davvero, ed è la scatola dei mattoncini. Prima di dare un
-testo a un modello lo si spezza in pezzi (i *token*), e l'elenco dei pezzi
-ammessi si decide una volta per tutte, all'inizio, con un programma che scorre
-i testi e tiene i frammenti che tornano più spesso. Qui quel programma li conta
-su cento lingue insieme invece che su una, e il risultato è **un elenco solo
-per tutte**: molti pezzi finiscono per essere condivisi, come i numeri, i nomi
-propri, le radici latine e greche, i prefissi che l'italiano e lo spagnolo
-hanno in comune.
+Prima però qualcuno prepara la scatola dei mattoncini. I pezzi ammessi (i
+*token*) si scelgono all'inizio, una volta per tutte, contando quali frammenti
+tornano più spesso nei testi. Qui il conto si fa su cento lingue insieme
+invece che su una, e la scatola che ne esce è una sola per tutte, circa
+centoventimila pezzi, dentro cui deve stare anche il curdo.
 
-Resta un problema di dosi. Chiamiamo «turno» una frase estratta dal calderone e
-data in pasto al modello: l'addestramento è fatto di miliardi di turni, e ogni
-turno tocca a una lingua sola. Se le frasi si estraggono a caso, in proporzione
-a quante ce ne sono, l'inglese sommerge tutto e le lingue piccole spariscono:
-fra la Wikipedia inglese e quella in curdo il divario è di ordini di grandezza,
-cioè non di qualche volta ma di centinaia di volte. Allora si bara sulle
-proporzioni, e si bara in modo controllato: alle lingue piccole si danno più
-turni di quanti gliene spetterebbero, e a quelle grandi meno, con una manopola
-che dice quanto appiattire. Girata a fondo, tutte le lingue avrebbero lo stesso
-numero di turni; lasciata ferma, ognuna avrebbe i turni che le toccano. La si
-mette in mezzo, e la formula che traduce la posizione della manopola in numeri
-sta nella scheda accanto.
+Resta il problema delle dosi. Ogni mestolata è un **turno**, e tocca a una
+lingua sola; di turni ce ne sono miliardi. Versate in proporzione ai testi che
+esistono, l'inglese sommerge tutto, perché fra la sua Wikipedia e quella in
+curdo il divario è di centinaia di volte, e in miliardi di mestolate il curdo
+non salirebbe quasi mai. Allora si bara sulle dosi, e si bara in modo
+controllato, aggiungendone alle lingue piccole e togliendone alle grandi, con
+una manopola che dice quanto appiattire. Girata a fondo, ogni lingua ha lo
+stesso numero di turni, il curdo quanti l'inglese. Lasciata ferma, ognuna ha i
+turni che le spettano. La si mette in mezzo.
 
-Quanto in mezzo, non c'è un accordo. Il primo modello multilingue costruito
-così (si chiama **mBERT**, e legge centoquattro Wikipedia) la gira poco: una
-lingua che vale l'uno per cento dei testi si ritrova quasi il quattro per cento
-dei turni, cioè quasi quattro volte i suoi. I modelli venuti dopo, che
-puntavano di più sulle lingue rare, la girano molto di più: la stessa lingua
-arriva al venti per cento, venti volte i suoi. E la manopola conta, perché è quella che decide se
-al curdo, quando si compila l'elenco dei mattoncini, toccheranno pezzi di parola
-sensati o solo lettere sciolte; ma ogni turno regalato a una lingua rara è un
-turno tolto a una comune, e su dove metterla si litiga.
+Quanto in mezzo, non c'è accordo. Un pentolone con due sole lingue, cento
+frasi in tutto, novantanove inglesi e una curda. **mBERT**, il primo modello
+costruito così, che legge centoquattro Wikipedia, gira poco la manopola, e i
+turni diventano novantasei e quattro. La lingua piccola sale a galla quasi
+quattro volte più di quanto le spetti. I modelli venuti dopo, che puntavano di
+più sulle lingue rare, la girano molto di più, e si arriva a ottanta e venti,
+venti volte.
+
+Dalla manopola dipende anche che cosa entra nella scatola. Il curdo deve
+comparire abbastanza da meritarsi pezzi di parola sensati; se compare poco,
+gli toccano lettere sciolte. E ogni turno regalato a una lingua rara è un
+turno tolto a una comune, ed è lì che si litiga.
 
 `````
 
@@ -158,8 +155,8 @@ quartiere**: separa l'italiano dall'inglese molto meno di quanto una recensione
 arrabbiata sia separata da una entusiasta. Il confine imparato in inglese, se
 lo si appoggia sul quartiere italiano, cade quindi ancora al posto giusto. Che
 poi non ci cada perfettamente è vero, ed è la ragione per cui il trasferimento
-funziona bene ma non benissimo: l'ultima sezione di questa pagina misura quanto
-si perde.
+funziona bene ma non benissimo: quanto si perda dipende da quali sono le due
+lingue, e si misura.
 
 `````{tab} Elementare
 
@@ -174,6 +171,14 @@ azzerando **di proposito** la sovrapposizione (rinominando i pezzi di una
 lingua in modo che non ne condivida più nemmeno uno), il trasferimento è calato
 appena. Il ponteggio, evidentemente, non era quello.
 
+C'è anche la prova presa dall'altro capo. Si parte da un modello che ha letto
+soltanto inglese e si congela tutto quello che ha imparato, tranne il primo
+passaggio, quello che trasforma i mattoncini in numeri; quel primo passaggio lo
+si rifà da capo con i mattoncini di una lingua nuova, rimettendo il modello a
+fare gli esercizi a buchi in quella lingua. Il trasferimento avviene lo stesso.
+Quel che una lingua ha di suo sta all'ingresso; quello che passa da una lingua
+all'altra è tutto il resto, cioè proprio la parte che nessuno ha toccato.
+
 L'altra spiegazione è meno intuitiva e più affascinante: il modello ha una
 capacità limitata e cento lingue da imparare, e la strada più economica per
 riuscirci non è memorizzarle una per una, è **accorgersi che si somigliano** e
@@ -183,12 +188,19 @@ ne abbia.
 
 Un indizio a favore viene dallo smontare il modello pezzo per pezzo. Un
 modello, ricordiamolo, è una torre di piani uguali, e a ogni piano lavorano in
-parallelo otto lettori con l'evidenziatore (le *teste* di attenzione della
-seconda sezione). Si può togliere roba nell'una o nell'altra direzione, e i due
+parallelo diversi lettori con l'evidenziatore (le *teste* di attenzione). Si
+può togliere roba nell'una o nell'altra direzione, e i due
 tagli non si equivalgono: lasciando un lettore solo per piano il
 trasferimento fra lingue tiene ancora, mentre togliendo piani crolla. È la
 **profondità** a costruire il pezzo di rappresentazione che le lingue hanno in
 comune, non l'ampiezza.
+
+Che a lavorare sia la profondità non vuol dire però che più si sale meglio è.
+Si può fermare la frase a ogni piano, e chiedere proprio lì di ritrovare la sua
+traduzione in mezzo a tante altre frasi inglesi: le risposte giuste sono più
+numerose ai piani di mezzo. In cima ogni lingua torna a farsi riconoscere per
+quello che è, e la somiglianza si perde per strada. Il punto della torre in cui
+le lingue si assomigliano di più sta nel mezzo, non sul tetto.
 
 Detto onestamente: la questione è ancora aperta, e chi vi dice di sapere
 esattamente perché mBERT funzioni sta semplificando.
@@ -197,7 +209,7 @@ esattamente perché mBERT funzioni sta semplificando.
 
 `````{tab} Superiore
 
-Le prove sono di tre tipi, e vale la pena distinguerle perché portano in
+Le prove sono di tre tipi, e conviene distinguerle perché portano in
 direzioni diverse.
 
 **Sovrapposizione di vocabolario.** Che la sovrapposizione dei sottotoken
@@ -230,15 +242,15 @@ trasferisce è tutto il resto, cioè proprio la parte che nessuno ha toccato.
 
 **Architettura.** Ciò che conta è la **profondità**, non il numero di teste
 {cite}`karthikeyan2020cross`: il trasferimento resta accettabile perfino con una
-testa sola, mentre crolla con poche layer. Anche il numero totale di parametri
+testa sola, mentre crolla con pochi strati. Anche il numero totale di parametri
 conta meno del numero di strati.
 
 **Capacità.** L'argomento più curioso è che mBERT trasferirebbe **perché** è
 piccolo: la capacità limitata, spartita fra cento lingue, lo costringe a
 condividere strutture invece di tenere cento modelli separati in un modello
 solo. Se fosse vero, l'allineamento non sarebbe una virtù del metodo ma una
-conseguenza della scarsità, e la sezione finale mostrerà che questa lettura ha
-un rovescio molto concreto.
+conseguenza della scarsità; e la scarsità ha un rovescio molto concreto, la
+maledizione della multilingualità.
 
 Un dato che mette d'accordo tutti: l'allineamento non è uniforme lungo la
 pila. Cercando, per una frase in una lingua, la sua traduzione fra molte
@@ -267,18 +279,39 @@ parole in tutte e due. A quel punto, per indovinare la parola coperta in
 italiano, al modello conviene sbirciare nell'inglese, e viceversa. Non gli si
 dice «queste due sono la stessa cosa»: gli si rende conveniente scoprirlo.
 
-La seconda strada lavora su frasi intere e ha una forma che ritroverai più
-avanti, in un capitolo che parla di tutt'altro. Si prendono due modelli
-separati, uno che legge solo italiano e uno che legge solo inglese, e si chiede
-loro questo: dato un mucchietto di frasi da una parte e il mucchietto mescolato
-delle loro traduzioni dall'altra, **appaiale**. Immaginalo come una griglia, le
-frasi italiane sulle righe e
-quelle inglesi sulle colonne: in ogni casella si scrive quanto quelle due si
-somigliano, e si allena il modello a far venire i numeri grossi sulla diagonale
-(dove ogni frase incontra la sua traduzione) e piccoli dappertutto altrove. È la
-stessa identica griglia che disegnerà il capitolo su visione e linguaggio, dove
-al posto di italiano e inglese ci sono immagini e didascalie. Il meccanismo non
-cambia di una virgola.
+Il prezzo è che le frasi appaiate bisogna averle. Fra l'italiano e
+l'inglese ce ne sono a milioni, e lo stesso vale per qualche decina di altre
+coppie di lingue; per tutte le altre non ce n'è quasi nessuna, e sono proprio
+quelle che avrebbero più bisogno d'aiuto. Da qui la scelta opposta, che pure
+funziona: niente frasi appaiate, e al loro posto molto più testo qualunque, non
+le sole Wikipedia ma quello che si trova in giro per il web. Con abbastanza roba
+da leggere le lingue si mettono vicine da sole, e il vantaggio di mostrargli le
+frasi accoppiate si assottiglia.
+
+La seconda strada lavora su frasi intere, e la sua forma tornerà più avanti in
+un capitolo che parla di tutt'altro. Ogni frase viene letta per conto suo, senza
+che chi la legge veda mai l'altra lingua, e ridotta al suo indirizzo sulla
+mappa: il confronto avviene fra gli indirizzi, non fra le frasi. Si dà da una
+parte un mucchietto di frasi italiane e dall'altra il mucchietto mescolato delle
+loro traduzioni, e si chiede: **appaiale**. La griglia ha le frasi italiane
+sulle righe e quelle inglesi sulle colonne, e in ogni casella si scrive quanto i
+due indirizzi si somigliano; il modello viene allenato a far venire i numeri
+grossi sulla diagonale (dove ogni frase incontra la sua traduzione) e piccoli
+dappertutto altrove.
+
+Il mucchietto conviene grosso, e la griglia dice perché. Con dieci frasi per
+parte le caselle sono cento: dieci sono gli appaiamenti giusti, novanta quelli
+sbagliati da respingere. Con cento frasi per parte le caselle diventano
+diecimila, e gli appaiamenti sbagliati novemilanovecento. Gli esempi di che cosa
+non va appaiato crescono molto più in fretta delle traduzioni che si sono dovute
+procurare, e non costano niente.
+
+È la stessa griglia che disegnerà il capitolo su visione e linguaggio, dove al
+posto dell'italiano e dell'inglese ci sono le immagini e le loro didascalie:
+cambia il materiale che si appaia, la griglia è quella. Da un caso all'altro
+cambia semmai la severità, cioè quanto nettamente la casella giusta deve
+vincere. Nel caso delle traduzioni non le basta prendere il numero più alto
+della sua riga: deve prenderlo con un certo scarto su tutte le altre.
 
 `````
 
@@ -399,11 +432,22 @@ ad aggiungere lingue si arriva a un punto in cui lo spazio manca a tutti, e da
 lì in poi ogni lingua in più peggiora un po’ tutte le altre, compresa quella
 che si voleva aiutare.
 
-Non è un difetto da correggere: è una coperta corta. L'unico modo per
-aggiungere lingue senza perderci è ingrandire il modello. Ed è lo stesso
-argomento, girato, di quello che spiegava perché l'allineamento emerge:
-condividere è economico finché la scarsità costringe a condividere, e diventa
-un impaccio quando quello che serviva era distinguere.
+E lo spazio se lo contendono anche cose diverse fra loro. Allungare l'elenco dei
+mattoncini dà pezzi più sensati alle lingue piccole, ma ogni mattoncino in più
+occupa un posto nello stesso modello, e quel posto lo toglie a tutto il resto;
+girare la manopola delle dosi verso le lingue rare le aiuta e sottrae turni alle
+comuni. Una regolazione giusta in assoluto non esiste; esiste quella giusta
+rispetto alle lingue che interessano.
+
+Nessuno ha sbagliato niente: la coperta è corta. L'unico modo di aggiungere
+lingue senza perderci niente è ingrandire il modello, e il resto sono rimedi
+parziali. I due migliori: fare un modello per una famiglia di lingue vicine, che
+ha molto meno da spartire, e mettere una lingua che ha già un buon modello tutto
+suo a fare da maestra a quello multilingue, che copiandole le risposte recupera
+un pezzo del divario. Ed è lo stesso argomento, girato, di quello che
+spiegava perché l'allineamento emerge: condividere è economico finché la
+scarsità costringe a condividere, e diventa un impaccio quando quello che
+serviva era distinguere.
 
 `````
 
@@ -475,15 +519,18 @@ lingue si parlano.
   memoria di quanta ne abbia.
 - Lo si può anche chiedere apertamente, in due modi: coprire parole in una
   frase **e** nella sua traduzione messe una dopo l'altra, così che per
-  indovinarle convenga sbirciare nell'altra lingua; oppure dare a due lettori
-  un mucchietto di frasi e il mucchietto mescolato delle loro traduzioni e
-  chiedere di appaiarle, esattamente come si farà con immagini e didascalie nel
+  indovinarle convenga sbirciare nell'altra lingua; oppure ridurre ogni frase,
+  letta per conto suo, al suo indirizzo sulla mappa, e chiedere di appaiare un
+  mucchietto di frasi con il mucchietto mescolato delle loro traduzioni,
+  esattamente come si farà con immagini e didascalie nel
   {doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>`.
 - Il motivo pratico di tutto questo è **rifinire in inglese e usare in
   italiano**, senza un solo esempio etichettato in italiano. Due avvertenze:
   la rifinitura **consuma** l'allineamento (i pesi che si spostano per
   imparare il compito sono gli stessi che tenevano vicine le lingue), e il
-  salto riesce meglio fra lingue costruite allo stesso modo.
+  salto non riesce uguale in tutte le direzioni: quel che conta non è che le
+  due lingue si somiglino, è partire da una lingua che mette le parole
+  nell'ordine dell'italiano e dell'inglese.
 - La **maledizione della multilingualità**: lo spazio è una coperta corta.
   Oltre un certo numero di lingue, ognuna in più peggiora un po’ tutte le
   altre, e l'unico rimedio pieno è un modello più grande.
@@ -503,13 +550,14 @@ lingue si parlano.
   e c'è chi sostiene che il modello allinei perché la capacità limitata lo
   costringe a condividere.
 - Lo si può chiedere esplicitamente: **TLM** maschera coppie di frasi
-  parallele; la via a **doppio encoder** allinea frasi intere con la stessa
-  loss contrastiva di CLIP, dove al posto di (immagine, didascalia) c'è
-  (frase, traduzione).
+  parallele; la via a **doppio encoder** allinea frasi intere con una loss
+  contrastiva della stessa forma di quella che userà CLIP, dove al posto di
+  (immagine, didascalia) c'è (frase, traduzione).
 - Il **zero-shot cross-lingual transfer** (rifinire in inglese, usare in
   italiano) è la ragione pratica di tutto questo. Attenzione: il fine-tuning
-  **erode** l'allineamento, e il trasferimento è più facile fra lingue con la
-  stessa struttura sintattica.
+  **erode** l'allineamento, e il trasferimento non è simmetrico: conta più
+  l'ordine delle parole della lingua di partenza (SVO) della somiglianza fra
+  le due.
 - La **maledizione della multilingualità**: a capacità fissa, oltre un certo
   numero di lingue ognuna in più peggiora tutte le altre. È un vincolo di
   capacità, e l'unico rimedio pieno è un modello più grande.

@@ -61,9 +61,16 @@ guardarli tutti a ogni giro è impraticabile. E se ne bastasse un **campione**?
 GraphSAGE, a ogni strato, non prende tutti i vicini ma ne pesca a caso un
 numero fisso (diciamo venticinque) e mescola solo quelli. È come farsi un'idea
 di un quartiere non intervistando tutti gli abitanti, ma un campione a sorte:
-molto più economico, e quasi altrettanto informativo. Nel pannello di sinistra
-della {numref}`fig-gnn-graphsage-gat` i tre vicini pieni sono quelli
-campionati; gli altri, questo giro, restano fuori.
+molto più economico. Nel pannello di sinistra della
+{numref}`fig-gnn-graphsage-gat` i tre vicini pieni sono quelli campionati; gli
+altri, questo giro, restano fuori.
+
+Un sondaggio a campione, però, non dà due volte lo stesso numero: rifallo
+domani con altre venticinque porte e il risultato si sposta. Per una media va
+benissimo, perché gli scarti si compensano. Per un record no: il reddito più
+alto del quartiere, chiesto a venticinque porte su diecimila, esce quasi sempre
+più basso del vero. Perciò, quando c'è tempo di bussare a tutte le porte, si
+bussa a tutte.
 
 `````
 
@@ -188,7 +195,7 @@ quanto contavano. La GAT fa la stessa cosa, ma l'evidenziatore lo passa sui
 democratica: prima decide, vicino per vicino, *quanto* pesarlo (dà a ognuno un
 voto tra 0 e 1, e i voti sommano a 1) e poi fa la media *pesata* con quei voti,
 cioè moltiplica ogni bigliettino per il voto del suo mittente prima di
-sommarli, così chi ha preso il voto più alto conta di più nel totale.
+sommarli.
 
 Un esempio con i numeri veri. Un nodo con tre vicini distribuisce quattro
 voti, uno per vicino e uno per sé stesso, e vanno così:
@@ -202,12 +209,12 @@ li impara la rete, come ogni altro parametro. Nel pannello di destra della
 attenzione: un vicino, quello con l'arco più grosso, si prende la fetta più
 grande; gli altri contano meno.
 
-C'è un ponte esplicito da tenere a mente. L'attenzione dei Transformer fa
-guardare ogni parola a tutte le altre della frase: è, in fondo, attenzione su un
-grafo *completo*, dove ogni parola è collegata a ogni altra. La GAT è la stessa
-identica idea, ma su un grafo *qualunque*: ogni nodo guarda solo i vicini a cui
-è davvero collegato. Detta al contrario: la self-attention è una GAT sul grafo
-in cui tutti sono vicini di tutti.
+L'attenzione dei Transformer fa guardare ogni parola a tutte le altre della
+frase: è, in fondo, attenzione su un grafo *completo*, dove ogni parola è
+collegata a ogni altra. La GAT rifà la stessa mossa su un grafo *qualunque*,
+dove ogni nodo guarda solo i vicini a cui è davvero collegato. Il conto con cui
+si assegnano i voti non è lo stesso nei due casi, ma il gesto sì: un voto a
+testa, e poi la media pesata.
 
 `````
 
@@ -241,9 +248,9 @@ $\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij} = 1$.
 Rispetto alla *scaled dot-product attention* dei Transformer l'ossatura «pesi
 softmax, media pesata» è la stessa, ma due cose cambiano. Cambia il modo di
 calcolare il punteggio (qui una piccola rete con $\mathbf{a}$ e la
-$\mathrm{LeakyReLU}$, lì il prodotto scalare query·key riscalato per
-$1/\sqrt{d_k}$, che è la ragione del nome *scaled*). E cambia il fatto che
-nella GAT **non esiste una proiezione separata per i *value***: la stessa
+$\mathrm{LeakyReLU}$, lì il prodotto scalare query·key diviso per la radice
+della dimensione delle chiavi, che è la ragione del nome *scaled*). E cambia il
+fatto che nella GAT **non esiste una proiezione separata per i *value***: la stessa
 $\mathbf{W}$ fa due mestieri, costruisce il punteggio e produce il vettore che
 poi viene mediato, mentre il Transformer tiene $\mathbf{W}_Q$, $\mathbf{W}_K$ e
 $\mathbf{W}_V$ distinte.
@@ -267,7 +274,7 @@ $$
 I quattro pesi sommano a $1$ come devono: il primo vicino domina
 l'aggregazione (poco più della metà), il terzo è quasi ignorato, e un quinto
 del nuovo stato se lo prende il nodo stesso. Come nei Transformer, si
-usano più **teste** in parallelo (*multi-head*): $K$ meccanismi di attenzione
+usano più **teste** in parallelo (*multi-head*): $H$ meccanismi di attenzione
 indipendenti, i cui risultati si concatenano negli strati intermedi e si
 mediano nello strato finale; così il modello può pesare i vicini secondo
 criteri diversi contemporaneamente.
@@ -306,28 +313,36 @@ distinguere fra loro.
 
 `````{tab} Elementare
 
-Immagina di aver dato un voto a ogni giocatore di una squadra e di volere ora
-un unico numero per la squadra intera. Le strade ovvie sono tre: **sommare**
-tutti i voti, farne la **media**, o prendere il **massimo** (il voto del
-migliore). Sono esattamente le tre ricette del readout: somma, media, massimo
-dei vettori dei nodi. Semplici, e (nota) tutte e tre indifferenti all'ordine
-in cui elenchi i giocatori, che è proprio ciò che ci serve su un grafo.
+Undici voti, uno per giocatore, e ne serve uno solo per la squadra intera. Le
+strade ovvie sono tre. **Sommare** tutti i voti, farne la **media**,
+oppure prendere il **massimo**, cioè il voto del migliore. Sono le tre ricette
+del readout, e tutte e tre hanno la proprietà che su un grafo serve: il
+risultato non cambia se i giocatori li elenchi in un altro ordine.
 
-Sembrano equivalenti, ma non lo sono, e la differenza è più profonda di quanto
-sembri. La media e il massimo **dimenticano quanti** sono i nodi; la somma no.
+Sembrano equivalenti, e non lo sono. Media e massimo dimenticano quanti sono i
+nodi; la somma se lo ricorda.
 
 L'esempio più pulito sono due molecole i cui atomi, agli occhi della rete,
 portano tutti lo stesso valore, diciamo $7$: solo che una molecola ne ha tre e
 l'altra sei. Sono molecole diverse, e possono comportarsi in modo diverso. La
-**somma** dà $21$ nella prima e $42$ nella seconda, e le distingue. La **media**
-dà $7$ in tutt'e due, il **massimo** pure: le confondono. Contare, a volte, è
-tutto.
+somma dà $21$ nella prima e $42$ nella seconda, e le distingue. La media dà $7$
+in tutt'e due, il massimo pure: le confondono. Contare, a volte, è tutto.
+
+Nemmeno la somma però arriva dappertutto, e il muro si tocca presto. Prendi un
+anello di sei atomi e, accanto, due triangoli da tre atomi ciascuno.
+Nell'anello come nei triangoli ogni atomo ha esattamente due vicini, i vicini
+di quei vicini ne hanno due a testa, e così via: il passaparola racconta a ogni
+atomo la stessa identica storia. Tutti finiscono con lo stesso valore, e sei
+numeri uguali sommati danno lo stesso totale di qua e di là. Nessuna rete che
+funzioni a passaparola, per quanti giri faccia, separa quelle due molecole.
 
 `````
 
 `````{tab} Superiore
 
-Il readout aggrega l'insieme $\{\mathbf{h}_v^{(K)} : v \in V\}$ in un unico
+Il readout aggrega il multinsieme $\{\mathbf{h}_v^{(K)} : v \in V\}$ dei vettori
+dei nodi (multinsieme e non insieme: due nodi con lo stesso vettore contano due
+volte) in un unico
 vettore $\mathbf{h}_G \in \mathbb{R}^{d_K}$ con un'operazione invariante a
 permutazione, che quindi accetta un numero variabile di vettori e ne
 restituisce sempre uno solo della stessa lunghezza; tipicamente
@@ -465,30 +480,33 @@ d'insieme è quella di Wu e colleghi {cite}`wu2021comprehensive`.
 
 `````{tab} Elementare
 
-Il difetto più curioso è che **impilare troppi strati peggiora le cose**. Con
+Il difetto più curioso è che impilare troppi strati peggiora le cose. Con
 uno strato ogni nodo ascolta i vicini; con due, anche i vicini dei vicini; ma
-continuando così, dopo un po’ *tutti* finiscono per ascoltare *tutti*, e le
-rappresentazioni dei nodi si assomigliano sempre di più fino a diventare
-indistinguibili, come una voce che, passando di bocca in bocca per tutto il
-paese, si uniforma in un unico mormorio. Si chiama **oversmoothing**,
+continuando così, dopo un po’ *tutti* finiscono per ascoltare *tutti*, e i nodi
+si somigliano sempre più, come una voce che, passando di bocca in bocca per
+tutto il paese, si uniforma in un unico mormorio. Si chiama **oversmoothing**,
 «levigatura eccessiva»: a furia di mediare con i vicini, si cancellano le
 differenze che volevamo cogliere. Ecco perché, in pratica, le GNN restano
-**basse**: due, tre, quattro strati, di rado di più. È l'opposto delle reti
-per immagini, dove si arriva a centinaia di strati.
+**basse**: due, tre, quattro strati, di rado di più. Per scendere più giù
+servono scorciatoie che portino avanti anche lo stato vecchio, prese dalle reti
+per immagini (che di strati ne impilano centinaia): con quelle si arriva pure a
+cinquanta strati, ma resta l'eccezione.
 
-Un secondo problema è opposto e complementare, e riguarda l'informazione che
-sta **lontana**, a molti passi di distanza. Il guaio è di capienza. Allargando
+Un secondo problema è opposto, e riguarda l'informazione che sta **lontana**, a
+molti passi di distanza. Il guaio è di capienza. Allargando
 il giro di un passo, i nodi che devono farsi sentire raddoppiano, triplicano,
 decuplicano; ma la fila di numeri su cui il nodo scrive quel che ha sentito ha
 sempre la stessa lunghezza. E c'è di peggio: se due parti del grafo sono unite
 da un solo arco, tutto quello che l'una ha da dire all'altra deve passare da
 lì. Un imbuto, e più lontano si va più si stringe. Questo schiacciamento
-dell'informazione lontana si chiama **over-squashing**.
+dell'informazione lontana si chiama **over-squashing**. Ed è una tenaglia: per
+sentire chi sta lontano servirebbero più giri, e più giri sono proprio quelli
+che spengono le differenze.
 
 Si aggiungono la fatica di girare su grafi da miliardi di archi, e il fatto che
 quasi tutte le GNN danno per scontato che i nodi collegati si somiglino (gli
-amici hanno gusti simili): quando è il contrario, cioè nelle reti dove chi è
-connesso è *diverso*, rendono molto meno.
+amici hanno gusti simili). Dove vale il contrario, e chi è connesso è
+*diverso*, rendono meno di un modello che il grafo non lo guarda affatto.
 
 `````
 
@@ -542,9 +560,8 @@ Viene naturale chiedersi cosa succeda a togliere quel vincolo e a lasciar
 parlare tutti con tutti. La risposta arriva dall'altro capo del libro, ed è
 meno lieta di come la si racconta di solito.
 
-Dei quattro limiti appena elencati ne tocca due, e ne guarisce uno solo:
-conviene sapere subito quale. Guarisce
-l’**over-squashing**, perché se ogni nodo parla con ogni altro non c'è più
+Toglierlo tocca due di quei quattro limiti, e ne guarisce uno solo: conviene
+sapere subito quale. Guarisce l’**over-squashing**, perché se ogni nodo parla con ogni altro non c'è più
 niente da far transitare per strade strette. Non guarisce l’**oversmoothing**,
 anzi. L'oversmoothing non nasce dalla distanza fra i nodi, ma dal fatto che a
 ogni giro si fa una media con i vicini; e se i vicini diventano tutti, la media
@@ -553,42 +570,42 @@ insomma, sul secondo limite **peggiora** le cose.
 
 `````{tab} Elementare
 
-L'introduzione al capitolo ha stabilito che l'attenzione dei Transformer è, di
-fatto, message passing su un **grafo completo**: ogni parola parla con tutte le
-altre. Se è così, la strada per un grafo è ovvia: mettiamoci un Transformer
-sopra e lasciamo che ogni nodo parli con ogni altro, senza aspettare che il
-messaggio faccia tutto il giro lungo gli archi.
+L'attenzione dei Transformer è, di fatto, passaparola su un **grafo completo**:
+ogni parola parla con tutte le altre. Allora la strada per un grafo è ovvia:
+mettiamoci un Transformer sopra, e ogni nodo parlerà con ogni altro senza
+aspettare che il messaggio faccia il giro lungo gli archi.
 
-C'è però un guaio che si vede subito: **se tutti parlano con tutti, il grafo
-non conta più niente**. Un Transformer applicato all'elenco dei nodi darebbe
-lo stesso risultato se gli archi fossero altri, o se non ce ne fosse nessuno.
-Abbiamo tolto il problema e con esso l'informazione.
+Il prezzo si vede al primo conto: con un milione di nodi i messaggi da
+calcolare a ogni giro sono mille miliardi, un milione per un milione. Per una
+molecola da cinquanta atomi va benissimo; per una rete sociale, no.
 
-Ed è lo stesso identico problema che i Transformer avevano con le frasi:
-l'attenzione non sa in che ordine stiano le parole, e la soluzione fu dare a
-ogni posizione una firma numerica costruita con delle onde. Qui serve
-l'equivalente: **dare a ogni nodo una firma che dica dove sta nel grafo**, e
-poi lasciar parlare tutti con tutti.
+E c'è un guaio peggiore: se tutti parlano con tutti, il grafo non conta più
+niente. Davanti al solo elenco dei nodi un Transformer dà lo stesso risultato
+con qualunque insieme di archi, e anche senza nessun arco: via gli imbuti, e
+via con essi l'informazione. Ai Transformer era già successo con le frasi,
+dove l'attenzione non sa in che ordine stiano le parole: là si rimediò dando a
+ogni posizione una firma fatta di onde. Qui serve una firma che dica a ogni
+nodo dove sta nel grafo.
 
-E adesso viene la parte bella, che questo capitolo ha già preparato senza
-dirlo. Quelle firme esistono, e le abbiamo già incontrate: sono le
-configurazioni di numeri sui nodi che nella sezione sul message passing abbiamo
-chiamato le **frequenze** del grafo, dalla più liscia (tutti lo stesso numero)
-alla più a scacchiera, e che là avevano preso il loro nome proprio di
-**autovettori del laplaciano**. La prima firma dice grossomodo «da che parte
-del grafo stai»; quelle dopo lo dicono con un dettaglio via via più fine. È
-questo il modo per dare a ogni nodo una posizione senza inventarsela: gliela dà
-la forma del grafo.
+Quelle firme esistono già: sono le configurazioni di numeri sui nodi che nella
+sezione sul message passing abbiamo chiamato le frequenze del grafo, dalla più
+liscia (tutti lo stesso numero) alla più a scacchiera, e il cui nome proprio è
+**autovettori del laplaciano**. La prima dice grossomodo «da che parte del
+grafo stai», le successive con dettaglio via via più fine. Nessuno se le
+inventa: gliele dà la forma del grafo.
 
-E su una fila di nodi, cioè sul grafo più semplice che esista, quelle
-configurazioni sono **onde**, ordinate dalla più lenta alla più rapida: proprio
-come le onde con cui i Transformer segnano la posizione delle parole in una
-frase. Qui però conviene non tirare la corda più di quanto regga: sono onde
-**imparentate, non le stesse onde**. Le due famiglie si costruiscono in modi
-diversi e nessuna delle due si ottiene dall'altra. Quel che è vero, ed è già
-molto, è che la stessa idea (segnare una posizione con onde di frequenza
-crescente) qui non va scelta a mano, esce dalla forma del grafo, e funziona su
-un grafo qualunque invece che soltanto su una fila.
+Su una fila di nodi, il grafo più semplice che esista, quelle configurazioni
+sono onde, dalla più lenta alla più rapida: come le onde con cui i Transformer
+segnano la posizione delle parole. Imparentate, però, non le stesse: si
+costruiscono in modi diversi, e nessuna si ottiene dall'altra. Resta l'idea, ed
+è già molta: segnare una posizione con onde di frequenza crescente, qui senza
+sceglierle a mano e su un grafo qualunque.
+
+Il grafo si può ridare anche in un secondo modo, senza firmare i nodi: si dice
+all'attenzione quanti passi separano due nodi, e le si fa scontare la distanza.
+Oggi si tengono insieme le due cose, il passaparola fra vicini per quel che
+succede vicino e l'attenzione di tutti con tutti per quel che arriva da
+lontano: il vicinato non era un difetto da togliere, era un aiuto.
 
 `````
 
@@ -620,15 +637,17 @@ Il problema da risolvere è che l'attenzione piena **non prende $\mathbf{A}$ in
 ingresso**: la sua uscita è funzione del solo multinsieme delle feature dei
 nodi, ed è quindi la stessa qualunque siano gli archi, o se non ce ne fosse
 nessuno. Senza informazione aggiuntiva il modello non distingue un anello da
-una stella. Vale la pena non attribuirlo all'invarianza alle permutazioni, che
-è un'altra cosa e che questo capitolo ha passato due sezioni a presentare come
-la proprietà *desiderabile*: anche una GNN è equivariante alle permutazioni, e
-non è affatto cieca alla topologia. Sono due simmetrie diverse. La GNN è
-equivariante rispetto al gruppo che permuta $(\mathbf{A}, \mathbf{X})$
-**insieme**; il Transformer nudo è invariante rispetto a un gruppo molto più
-grande, che permuta $\mathbf{X}$ e ignora $\mathbf{A}$. Non è un difetto di
-simmetria, è un'informazione che non entra, e la si deve reiniettare: le due
-strade sono quelle che il capitolo sui Transformer già conosce.
+una stella. Attribuirlo all'invarianza alle permutazioni sarebbe un errore:
+quella è un'altra cosa, ed è la proprietà *desiderabile* di cui si è parlato
+finora. Anche una GNN è equivariante alle permutazioni, e non è affatto cieca
+alla topologia. Sono due simmetrie diverse. La GNN è equivariante rispetto alle
+permutazioni che riordinano $(\mathbf{A}, \mathbf{X})$ **insieme**; il
+Transformer nudo lo è rispetto a quelle che riordinano $\mathbf{X}$ **da
+solo**, qualunque cosa faccia $\mathbf{A}$, ed è una simmetria molto più
+grande: pretenderla costringe la funzione a ignorare $\mathbf{A}$. Non è un
+difetto di simmetria, è un'informazione che non entra, e la si deve
+reiniettare: le due strade sono quelle che il capitolo sui Transformer già
+conosce.
 
 La prima è una **codifica posizionale**: si calcolano i primi $k$ autovettori
 non banali del laplaciano normalizzato
@@ -800,8 +819,9 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
 - La **GAT** passa l'evidenziatore sui vicini: prima decide, vicino per vicino,
   quanto pesarlo (a ognuno un voto tra 0 e 1, e i voti sommano a 1), poi fa la
   media pesata con quei voti, che non scrive nessuno a mano ma impara la rete. È
-  la stessa attenzione dei Transformer, dove però ogni parola guarda tutte le
-  altre: qui ogni nodo guarda solo i vicini a cui è davvero collegato.
+  il gesto dell'attenzione dei Transformer, con un conto diverso per assegnare i
+  voti; e là ogni parola guarda tutte le altre, qui ogni nodo guarda solo i
+  vicini a cui è davvero collegato.
 - Per un verdetto sull’**intero grafo** («questa molecola è tossica?») i valori
   di tutti i nodi vanno ridotti a uno solo, come si ricava il voto di una squadra
   dai voti dei giocatori: sommandoli, mediandoli o prendendo il massimo. La
@@ -809,7 +829,9 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
   nodi: se gli atomi di due molecole portano tutti lo stesso valore, ma una
   molecola ne ha tre e l'altra sei, la somma dà il triplo di quel valore nella
   prima e il sestuplo nella seconda, mentre la media e il massimo danno lo stesso
-  risultato per entrambe e le confondono.
+  risultato per entrambe e le confondono. Nemmeno la somma però arriva
+  dappertutto: un anello di sei atomi e due triangoli separati restano
+  indistinguibili per qualunque rete a passaparola.
 - Applicazioni reali: farmaci (**halicin**, 2020), raccomandazione (**PinSage**
   di Pinterest, 2018), rilevamento frodi, tempi di percorrenza in **Google Maps**
   (DeepMind, 2020–21), simulazioni di fluidi e previsioni meteo.
@@ -846,8 +868,10 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
   (max), LSTM.
 - La **GAT** pesa i vicini con l’**attenzione**: coefficienti $\alpha_{ij}$
   appresi e normalizzati con softmax sul vicinato ($\sum_j \alpha_{ij}=1$), con
-  più teste in parallelo. È la self-attention dei Transformer su un grafo
-  qualunque anziché completo.
+  più teste in parallelo. Ha l'ossatura della self-attention dei Transformer
+  (pesi softmax, media pesata) su un grafo qualunque anziché completo, ma
+  calcola il punteggio con una piccola rete e non tiene una proiezione separata
+  per i *value*.
 - I compiti a **livello di grafo** richiedono un **readout** (somma, media,
   massimo). La **somma** è la più espressiva perché conserva la molteplicità dei
   vicini: **GIN** la usa per eguagliare il test **1-WL** di

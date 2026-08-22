@@ -34,29 +34,42 @@ discorso da qui in poi.
 `````{tab} Elementare
 Un notebook è una cucina di prova: assaggi, aggiungi, ributti, tieni tre
 pentole sul fuoco. È lo strumento giusto per capire se un'idea funziona,
-proprio perché non ti obbliga a essere ordinato. Uno script è invece la ricetta
-scritta: chiunque la legga ottiene lo stesso piatto, nello stesso ordine,
-senza doverti chiedere niente.
+proprio perché non ti obbliga a essere ordinato. Quello che non resta è la
+pentola. Nella pagina salvata ci sono i piatti riusciti e i numerini che dicono
+in che ordine hai acceso i fornelli l'ultima volta; non che cosa bolliva
+dentro, e nemmeno le prove che nel frattempo hai buttato via. Uno script è
+invece la ricetta scritta: chiunque la legga ottiene lo stesso piatto, nello
+stesso ordine, senza doverti chiedere niente.
 
 Il segnale che è arrivato il momento di passare dall'uno all'altro è sempre lo
-stesso: **quando cominci a rilanciare la stessa cosa cambiando un numero**.
+stesso: quando cominci a rilanciare la stessa cosa cambiando un numero.
 Cinque prove con cinque learning rate diversi, fatte modificando a mano una
 cella, sono cinque esecuzioni di cui domani non ricorderai la differenza. Le
 stesse cinque prove lanciate da terminale con `--lr 0.01`, `--lr 0.001` e così
 via restano scritte nella cronologia del terminale: sono un esperimento, non
 un ricordo.
+
+E una ricetta scritta si maneggia in modi che una cucina non permette. Metti
+accanto quella di ieri e quella di oggi, e in una riga vedi che cosa è
+cambiato, il sale da cinque grammi a otto; due fotografie della cucina a fine
+serata non te lo direbbero mai, e il file del notebook, che si porta dentro
+anche tutto quello che è uscito dal forno, somiglia più alle fotografie che
+alla ricetta. La ricetta puoi consegnarla a qualcuno che la esegue ogni mattina
+alle sei senza che tu sia lì. E puoi provare un passaggio solo, la salsa, senza
+cucinare tutta la cena, perché quel passaggio sta scritto per conto suo.
 `````
 
 `````{tab} Superiore
 La differenza sostanziale è tra **stato implicito** e **stato esplicito**. Nel
-notebook lo stato vive nel kernel: l'ordine di esecuzione delle celle è
-invisibile nel documento salvato, quindi il codice non determina il risultato
+notebook lo stato vive nel kernel: il documento salvato registra per ogni cella
+il numero della sua ultima esecuzione, non la storia delle esecuzioni né le
+celle nel frattempo cancellate, quindi il codice non determina il risultato
 (condizione che rende impossibile la riproducibilità). Uno script ha un unico
 punto d'ingresso, un ordine totale delle istruzioni, e tutto ciò che varia
 passa dagli argomenti della riga di comando: input, output e parametri sono
 dichiarati.
 
-Ne discendono tre proprietà che il notebook non può avere: si mette sotto
+Ne discendono tre proprietà che nello script vengono gratis: si mette sotto
 controllo di versione in modo leggibile (il `.ipynb` è un JSON con dentro gli
 output, e un `diff` è illeggibile); si mette in una pipeline di CI o in uno
 scheduler; e si testa, perché ogni funzione è importabile da un test senza
@@ -219,7 +232,7 @@ python train.py --dati dati/ --epoche 20 --lr 0.0001 --unita-nascoste 256
 
 `````{tab} Elementare
 La riga `if __name__ == "__main__":` è la più misteriosa del blocco e ha una
-spiegazione semplice: dice «esegui `main()` **solo** se qualcuno ha lanciato
+spiegazione semplice: dice «esegui `main()` soltanto se qualcuno ha lanciato
 questo file direttamente, non se un altro file è venuto a prendersi qualcosa da
 qui». Senza, aprire `train.py` da un altro programma per riusarne una funzione
 farebbe partire un intero addestramento senza che nessuno l'abbia chiesto.
@@ -231,13 +244,29 @@ quella riga, ognuno rileggendolo farebbe ripartire l'addestramento, e ogni
 addestramento farebbe nascere altri aiutanti, all'infinito. Python se ne accorge
 e blocca tutto con un errore.
 
+Le manopole da terminale bastano finché sono una manciata. Quando diventano
+quaranta, con degli incastri (se il modello è questo, quell'altra manopola non
+vuol dire niente) e con valori che cambiano da un computer all'altro, la riga
+da scrivere diventa lunga un metro. Allora si scrivono tutte su un foglio, un
+file di configurazione, che si tiene insieme al codice. E il foglio ricorda
+meglio. La cronologia del terminale è di quella macchina e di quell'utente, e
+con l'uso si accorcia da sé, mentre il foglio resta lì e chiunque lo può
+rileggere.
+
 L'ultima riga di `main()` salva. E salva più dei soli pesi: insieme a quelli
 finiscono nel file i nomi delle classi, tutte le manopole con cui è stato
 lanciato l'esperimento, e la memoria dell'ottimizzatore vista nella sezione sul
 [training loop](addestramento.md). È il gesto che distingue un modello utile da
 un file misterioso: fra sei mesi quel `.pt`, da solo, non direbbe né che cosa
-predice, né come è stato ottenuto, né da dove ripartire. Il codice della
-funzione che lo scrive sta poche righe più sotto, subito dopo queste schede.
+predice, né come è stato ottenuto, né da dove ripartire.
+
+Nel file, però, ci vanno numeri e parole e nient'altro. Un biglietto scritto in
+chiaro lo legge chiunque lo trovi. Un congegno, per dire quello che sa, deve
+prima essere messo in funzione, e chi lo riceve deve fidarsi di chi gliel'ha
+spedito. PyTorch, da qualche versione, quando apre un file di questi
+accetta i numeri e le parole e si ferma davanti al resto, a meno che tu non gli
+dichiari per iscritto che di quel file ti fidi. Le manopole quindi finiscono lì
+dentro come un semplice elenco di nomi e valori.
 `````
 
 `````{tab} Superiore
@@ -245,9 +274,8 @@ funzione che lo scrive sta poche righe più sotto, subito dopo queste schede.
 Quando la configurazione cresce (decine di parametri, combinazioni annidate,
 varianti per ambiente), si passa a un sistema di configurazione a file (`YAML`
 più `dataclass`, oppure Hydra), che rende l'intera configurazione un artefatto
-versionabile invece di una stringa nella cronologia della shell. È esattamente
-la nozione di *tre artefatti da versionare* (codice, dati, configurazione)
-discussa in [dal notebook alla
+versionabile invece di una stringa nella cronologia della shell, da conservare
+accanto a codice, dati e modello come in [dal notebook alla
 produzione](../MLOps/dal-notebook-alla-produzione.md).
 
 Da PyTorch 2.6 `torch.load` usa `weights_only=True` come default, quindi un
@@ -338,6 +366,37 @@ il seme fisso so che il merito è del learning rate. Non serve a dire che il
 modello è buono: un risultato ottenuto con un solo seme fortunato non è un
 risultato. Per quello si ripete l'esperimento con tre o cinque semi diversi e si
 riporta la media, e magari anche quanto ballano i valori.
+
+C'è poi una cosa che il seme non compra: le ultime cifre. Una somma lunga,
+fatta in ordini diversi, dà totali diversi, e non serve sbagliare niente,
+basta che a ogni passaggio si arrotondi. Un conto in banca tiene i centesimi, e
+matura quattro decimi di centesimo di interessi al giorno. Accreditati giorno
+per giorno, spariscono ogni volta nell'arrotondamento, e dopo un anno il saldo è
+quello di partenza; sommati prima fra loro fanno un euro e quarantasei, e il
+saldo si muove. Stessi numeri, ordine diverso, totale diverso.
+
+Una scheda grafica lavora proprio così, spezzando la somma fra migliaia di
+calcoli che corrono nello stesso momento e consegnano appena hanno finito, e
+chi consegna per primo non è sempre lo stesso. Le differenze sono nelle ultime
+cifre, molto più piccole di quelle del conto in banca; ma le somme di un
+addestramento sono milioni, e alla fine due esecuzioni dello stesso codice, con
+lo stesso seme e sulla stessa macchina, non danno più lo stesso numero fino
+all'ultima cifra.
+
+Si può pretendere che le somme si facciano sempre nello stesso ordine, e si può
+proibire alla macchina di provare ogni volta due modi di fare la stessa
+moltiplicazione per tenersi il più veloce (quale dei due vinca dipende da com'è
+messa la scheda quella sera, e provarli rende soltanto se poi lo stesso calcolo
+si ripete mille volte identico). Allora i numeri tornano uguali fino
+all'ultima cifra, e si paga. Di qualche operazione la versione ordinata non
+esiste e il programma si ferma dicendolo; il resto va più piano. È un prezzo
+che si accetta quando si dà la caccia a un errore e serve sapere che fra due
+esecuzioni è cambiata soltanto la cosa che si è cambiata.
+
+Un ultimo avviso agli aiutanti che preparano i vassoi. Ognuno ha bisogno di un
+punto da cui leggere la sequenza, e a ciascuno va detto quale. Senza, possono
+ritrovarsi tutti sulla stessa riga e servire vassoi con le stesse identiche
+variazioni, oppure ripartire ogni sera da un punto diverso.
 `````
 
 `````{tab} Superiore
@@ -353,15 +412,15 @@ torch.backends.cudnn.benchmark = False     # niente autotuning degli algoritmi
 # e, per cuBLAS, la variabile d'ambiente CUBLAS_WORKSPACE_CONFIG=:4096:8
 ```
 
-`cudnn.benchmark = True` (il default consigliato per le prestazioni) prova più
-algoritmi di convoluzione e sceglie il più veloce per quella forma di input: è
-ottimo quando le forme sono costanti, controproducente quando cambiano di
-continuo, e non deterministico in entrambi i casi. Anche i `DataLoader` con
-più worker richiedono attenzione: si passa un `generator` con seme fisso e si
-definisce `worker_init_fn` per fissare il seme di ciascun processo. In
-pratica, nella ricerca si punta alla riproducibilità *statistica* (stessa
-distribuzione di risultati su più semi) e si riserva il determinismo bit-a-bit
-ai casi in cui serve davvero, come il debugging di una regressione.
+`cudnn.benchmark = True` (spento di default, si accende per le prestazioni)
+prova più algoritmi di convoluzione e sceglie il più veloce per quella forma
+di input: è ottimo quando le forme sono costanti, controproducente quando
+cambiano di continuo, e non deterministico in entrambi i casi. Anche i
+`DataLoader` con più worker richiedono attenzione: si passa un `generator` con
+seme fisso e si definisce `worker_init_fn` per fissare il seme di ciascun
+processo. In pratica, nella ricerca si punta alla riproducibilità *statistica*
+(stessa distribuzione di risultati su più semi) e si riserva il determinismo
+bit-a-bit ai casi in cui serve davvero, come il debugging di una regressione.
 `````
 
 ## Quando *non* modularizzare

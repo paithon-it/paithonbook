@@ -97,35 +97,37 @@ Il determinante si capisce in un disegno.
 
 Prendi un quadratino disegnato sul tavolo, di lato uno, e applicagli la
 trasformazione. Il quadratino diventa un'altra figura: magari un rettangolo
-allungato, magari un rombo storto. Il determinante è **quante volte l'area è
-cambiata**: due se la figura è diventata grande il doppio, un mezzo se è
-diventata la metà. In tre dimensioni sarebbe il volume, in mille dimensioni
-sarebbe una cosa che nessuno riesce a immaginare ma il conto è lo stesso.
+allungato, magari un rombo storto. Il determinante conta quante volte l'area è
+cambiata: due se è diventata grande il doppio, un mezzo se è diventata la metà.
+Quando la figura si ribalta, come allo specchio, il numero esce col meno
+davanti, e del meno non ce ne facciamo niente. In tre dimensioni è il volume, e
+in mille il conto è lo stesso.
+
+E se il quadratino passa per due trasformazioni in fila, le variazioni si
+moltiplicano: un'area che triplica e poi raddoppia è cresciuta sei volte.
 
 La regola dei flussi si legge allora in italiano, senza formule: *la
 probabilità di una fotografia è la probabilità del punto dove la fotografia
 finisce, moltiplicata per quanto la macchina ha stirato lo spazio lì attorno*.
 
-Il «moltiplicata» sorprende, e conviene fermarcisi un attimo, perché è il punto
-in cui tutti si sbagliano. Qui la macchina lavora nel verso che porta le
-fotografie sulla gaussiana. Se prende un pezzetto piccolo dello spazio delle
-fotografie e lo stira su una zona grande della gaussiana, quel pezzetto si è
-preso tutta la probabilità di una zona grande e la tiene in poco posto: le
-fotografie che ci stanno dentro sono molto probabili. Se invece lo schiaccia in
-un puntino, si accontenta della probabilità di un puntino, e lì dentro le
+Il «moltiplicata» sorprende, ed è il punto in cui tutti si sbagliano. La
+macchina lavora nel verso che porta le fotografie sulla gaussiana. Se prende un
+pezzetto piccolo di fotografie e lo stira su una zona grande della gaussiana,
+quel pezzetto si porta a casa tutta l'acqua di quella zona e la tiene in poco
+posto: lì l'acqua è alta, e quelle fotografie sono probabili. Se invece lo
+schiaccia in un puntino, si accontenta dell'acqua di un puntino, e lì le
 fotografie sono rare.
 
-Nel verso opposto, quello con cui si generano le immagini, la macchina è
-l'inversa e la regola si capovolge insieme a lei: là si divide, e una zona che
-la macchina di generazione schiaccia raccoglie tanti punti in poco posto, cioè
-diventa probabile. È la stessa cosa detta dall'altra parte.
+Nel verso della generazione la macchina è l'inversa, e la regola si capovolge
+con lei: là si divide, e una zona schiacciata diventa probabile. Chi gira nei
+due sensi però non butta via niente per strada: quello che perde all'andata, al
+ritorno dovrebbe indovinarlo.
 
-E adesso il guaio, che è tutto pratico. Calcolare un determinante costa, e
-costa tantissimo: per una tabella di mille righe per mille colonne il conto
-generale richiede all'incirca un miliardo di operazioni, e va rifatto **per
-ogni immagine e a ogni passo dell'addestramento**. Mille righe per mille
-colonne è una figurina di 32 pixel per lato in bianco e nero. Su una
-fotografia vera non se ne parla nemmeno.
+E adesso il guaio. Calcolare un determinante costa, e costa tantissimo: per una
+tabella di mille righe per mille colonne il conto generale richiede all'incirca
+un miliardo di operazioni, e va rifatto **per ogni immagine e a ogni passo
+dell'addestramento**. Mille righe per mille colonne è una figurina di 32 pixel
+per lato in bianco e nero. Su una fotografia vera non se ne parla nemmeno.
 
 `````
 
@@ -179,8 +181,8 @@ L'idea è del 2014, di NICE {cite}`dinh2015nice`, dove però la seconda metà
 veniva soltanto traslata e non scalata: una traslazione non cambia i volumi,
 quindi lì il fattore di correzione valeva uno tondo e non c'era niente da
 calcolare. La scala, che è quella che rende il fattore interessante, arriva con
-RealNVP {cite}`dinh2017density`, ed è la forma che si usa oggi e che sta nel
-codice qui sotto.
+RealNVP {cite}`dinh2017density`, ed è la forma che si usa oggi e che il flusso
+sulle due lune mette in pratica.
 
 Tre proprietà cadono tutte insieme, ed è per questo che la ricetta ha vinto.
 
@@ -385,8 +387,8 @@ scritto nella definizione stessa della famiglia.
 - Chi deforma lo spazio deve pagare un **fattore di correzione**: la stessa
   acqua su un tavolo tre volte più largo sta tre volte più bassa. Senza quel
   fattore l'area sotto la curva non fa più uno, e un numero la cui area non fa
-  uno non è una probabilità. Nel primo blocco di codice
-  si vede: con il fattore l'area fa 1,000, senza farebbe 3.
+  uno non è una probabilità. Il conto sul tavolo allargato di tre volte lo
+  mostra: con il fattore l'area fa 1,000, senza farebbe 3.
 - Il fattore, in molte dimensioni, costa un'eternità da calcolare. Il trucco è
   costruire la macchina in modo che sia **già scritto**: metà delle coordinate
   passano intatte, l'altra metà viene scalata e traslata in base alla prima. E

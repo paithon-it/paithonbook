@@ -68,6 +68,25 @@ mano» che lavora a ogni riga, per questo la rete ha bisogno di pochi parametri
 anche per testi lunghissimi: non impara un gesto diverso per ogni parola, ne
 impara uno solo e lo riusa.
 
+Quello che consegni però è un'altra cosa. A ogni riga, appena hai aggiornato il
+foglietto, ci butti sopra un occhio e dici la tua, quale parola verrà o di che
+cosa parla la frase. Quella è la risposta, e la ricavi dal foglietto con un
+secondo gesto, più corto del primo. Il foglietto resta un appunto privato.
+
+E la mano come impara a fare meglio? Ogni tanto ti fermi, confronti le risposte
+che hai dato con quello che il libro diceva davvero, e ripercorri le righe
+all'indietro per capire in quale punto il gesto ti ha portato fuori strada.
+Ripercorrerle tutte vorrebbe dire tenere mille righe sotto gli occhi insieme, e
+sul tavolo non ci stanno. Allora si lavora a blocchi di trenta righe. Correggi
+la mano guardando quelle trenta, poi riparti dal foglietto così com'è, senza
+più tornare su come ci sei arrivato.
+
+Il prezzo di questa scorciatoia è chiaro, ed è meglio saperlo. Il foglietto
+continua a viaggiare in avanti e si porta dietro tutto quello che c'è scritto;
+è la correzione a fermarsi al confine fra un blocco e il successivo. Così la
+mano non impara mai a legare una cosa di riga cinque con una di riga sessanta,
+perché quando c'è da correggere quel legame riga cinque non è più sul tavolo.
+
 `````
 
 `````{tab} Superiore
@@ -104,9 +123,9 @@ gradiente non attraversa mai il confine, quindi **la rete non può imparare
 dipendenze più lunghe del blocco**. Lo stato in avanti sì, continua a
 propagarsi e a portare informazione; è il segnale di apprendimento che si
 ferma. Quando si legge che una ricorrente «fatica sulle dipendenze lunghe»,
-una parte del problema è matematica (il gradiente che svanisce, di cui parliamo
-qui sotto) e una parte è questa, cioè una scelta di ingegneria presa per far
-entrare l'addestramento in memoria.
+una parte del problema è matematica, ed è il gradiente che svanisce; una parte
+è questa, cioè una scelta di ingegneria presa per far entrare l'addestramento
+in memoria.
 
 `````
 
@@ -122,10 +141,25 @@ più la memoria si sbiadisce.
 
 Torniamo al foglietto dei riassunti. A ogni riga lo riscrivi, e ogni riscrittura
 perde un pochino dei dettagli vecchi per far posto a quelli nuovi. Dopo cento
-riscritture, di cosa succedeva a pagina uno non resta quasi nulla. Le RNN
-soffrono esattamente di questo: le informazioni lontane nel tempo svaniscono,
-e il modello «dimentica» ciò di cui avrebbe ancora bisogno. È il problema delle
+riscritture, di cosa succedeva a pagina uno non resta quasi nulla.
+
+Alla correzione va anche peggio. Per capire dove la mano ha sbagliato devi
+risalire le righe una per una, e a ogni riga la correzione ripassa attraverso
+la stessa riscrittura che all'andata aveva già smorzato i dettagli vecchi; si
+accorcia un pochino, poi ancora, poi ancora. Bastano poche decine di righe
+risalite e quando arriva in cima non sposta più niente. La mano si aggiusta
+benissimo su quello che è appena successo, mentre su quello che è lontano non
+riceve nessuna indicazione.
+
+Le RNN soffrono esattamente di questo doppio smorzamento, e il modello finisce
+per «dimenticare» ciò di cui avrebbe ancora bisogno. È il problema delle
 **dipendenze a lungo termine**.
+
+Ogni tanto capita il rovescio. Un gesto che a ogni riga ingrandisce invece di
+smorzare fa crescere la correzione mentre risale, finché quello che arriva in
+cima è uno strattone che scompone la mano invece di aggiustarla. Perché succeda
+serve un gesto che ingrandisce, ma non basta che ingrandisca: dipende anche da
+come le righe si compongono fra loro.
 
 `````
 
@@ -237,29 +271,40 @@ annotare a margine.
 
 `````{tab} Elementare
 
-Immagina che il foglietto dei riassunti abbia ora tre interruttori. Il primo
-decide quanto del vecchio riassunto **dimenticare**; il secondo quanto della
-nuova frase **annotare**; il terzo quanto del riassunto **mostrare** in uscita
-al passo successivo. Sono i **gate** (cancelli). Grazie a loro un'informazione
-importante («stiamo parlando di *chiavi*, plurale») può restare intatta per
-molte righe, finché serve, senza essere sovrascritta. La rete impara da sola
-quando aprire e chiudere ogni interruttore.
+Sul tavolo adesso ci sono due fogli. Il foglietto dei riassunti è quello di
+prima, e a ogni riga lo riscrivi da capo. Accanto c'è il taccuino, e sul
+taccuino non si riscrive niente. Ci aggiungi una riga, ne cancelli una, e tutto
+il resto resta dov'è.
+
+A regolare il traffico ci sono tre manopole, che si chiamano **gate**
+(cancelli). La prima decide quanto di ciò che sta sul taccuino tenere e quanto
+dimenticarne. Per la seconda prepari prima l'appunto per esteso, la frase che
+scriveresti se dovessi scrivere tutto, e poi la manopola decide quanta parte
+annotarne davvero. La terza decide quanto del taccuino mostrare sul foglietto.
+Il taccuino fa da archivio, il foglietto è quello che si tiene sott'occhio per
+rispondere e per leggere la riga dopo.
+
+Le manopole si girano poco per volta, come il rubinetto dell'acqua. Di quanto
+girarle lo decidi riga per riga, guardando la riga nuova e il foglietto, e a
+deciderlo bene la rete ci arriva da sé. Se una cosa serve ancora («stiamo
+parlando di *chiavi*, plurale»), la prima manopola resta spalancata, dal
+taccuino non si cancella niente, e quella riga arriva intatta cento righe più
+in là.
 
 Una curiosità che dice qualcosa su come si fa ricerca: nella prima versione, del
-1997, gli interruttori erano due, annota e mostra. Il terzo, quello che
-dimentica, sembrava superfluo (perché mai insegnare a una memoria a
-cancellarsi?) e fu aggiunto solo tre anni dopo, quando ci si accorse che su un
-testo che non finisce mai il foglietto si riempie e non c'è più spazio per
-niente di nuovo. Saper dimenticare, si scoprì, è parte del saper ricordare.
+1997, le manopole erano due, annota e mostra. Quella che dimentica sembrava
+superflua (perché mai insegnare a una memoria a cancellarsi?) e fu aggiunta solo
+tre anni dopo, quando ci si accorse che su un testo che non finisce mai il
+taccuino si riempie e non c'è più spazio per niente di nuovo. Saper dimenticare,
+si scoprì, è parte del saper ricordare.
 
 Esiste anche una versione più snella della stessa idea, proposta nel 2014 da
 Kyunghyun Cho e colleghi e chiamata **GRU** (*Gated Recurrent Unit*, «unità
-ricorrente con i cancelli»: il nome descrive esattamente quello che è). Gli
-interruttori sono due invece di tre, e il taccuino protetto non è separato dal
-foglietto dei riassunti, è lo stesso foglio. Meno pezzi, meno numeri da
-imparare, e nella maggior parte dei casi risultati paragonabili. Nel resto
-della sezione le due sigle compaiono spesso appaiate, LSTM e GRU: sono due
-tagli dello stesso vestito.
+ricorrente con i cancelli»: il nome descrive esattamente quello che è). Le
+manopole sono due invece di tre, e il taccuino non è separato dal foglietto dei
+riassunti, è lo stesso foglio. Meno pezzi, meno numeri da imparare, e spesso
+risultati altrettanto buoni. Le due sigle compaiono quasi sempre appaiate, LSTM
+e GRU: sono due tagli dello stesso vestito.
 
 `````
 
@@ -341,7 +386,7 @@ il foglietto riscritto da capo no.
 
 LSTM e GRU hanno dominato l'NLP per quasi un decennio: traduzione automatica,
 riconoscimento vocale, generazione di testo. Ma restava un limite strutturale,
-non di memoria ma di **calcolo**.
+questa volta nel **calcolo**.
 
 `````{tab} Elementare
 
@@ -357,6 +402,12 @@ conto difficile: è brava a fare *migliaia di conti facili tutti insieme*.
 Metterle davanti una rete ricorrente è come una catena di montaggio con una
 postazione sola: per quanti operai tu abbia, devono aspettare il proprio turno,
 e la fila non si accorcia.
+
+La fila lunga si paga anche in un altro modo. Per legare quello che c'è alla
+riga cento con quello che c'era alla riga uno, la correzione deve risalire
+tutte le righe di mezzo, una per una. Le manopole tengono la strada aperta
+molto meglio di un foglio riscritto da capo, ma cento passaggi restano cento
+passaggi, e imparare un legame così lontano resta difficile.
 
 `````
 
@@ -402,20 +453,24 @@ corrente poca.
   È sempre la stessa mano a riscriverlo, e per questo la rete resta piccola
   anche su testi lunghissimi.
 - Ogni riscrittura però perde un pochino del vecchio, e dopo cento righe di
-  pagina uno non resta quasi niente: sono le **dipendenze lontane** che si
-  dissolvono.
-- La **LSTM** aggiunge al foglietto tre interruttori (dimentica, annota,
-  mostra) e un taccuino protetto che non viene riscritto da capo a ogni passo,
-  solo ritoccato: così un'informazione può restare intatta finché serve.
-  Curiosamente l'interruttore che *dimentica* è arrivato tre anni dopo gli
-  altri due, ed è il più importante quando il testo non finisce mai. La **GRU**
-  è la stessa idea in versione più snella, due interruttori invece di tre e un
-  foglio solo invece di due.
-- Il limite che resta non è di memoria ma di **tempo**: una rete ricorrente
-  legge in fila, e per fare il passo cento deve aver fatto il novantanove. È
-  una catena di montaggio con una postazione sola, e non c'è computer che la
-  possa mandare più veloce. È il collo di bottiglia che i **Transformer**
-  toglieranno di mezzo.
+  pagina uno non resta quasi niente; e la correzione, mentre risale le righe
+  all'indietro, si accorcia a ogni passaggio finché in cima non sposta più
+  niente. Sono le **dipendenze lontane** che si dissolvono.
+- La **LSTM** affianca al foglietto un taccuino protetto, che non viene
+  riscritto da capo a ogni passo ma solo ritoccato, e tre manopole che decidono
+  quanto del taccuino dimenticare, quanta parte dell'appunto annotarci e quanto
+  mostrarne sul foglietto: così un'informazione può restare intatta finché
+  serve. Si girano poco per volta, come il rubinetto dell'acqua.
+  Curiosamente quella che *dimentica* è arrivata tre anni dopo le altre due, ed
+  è la più importante quando il testo non finisce mai. La **GRU** è la stessa
+  idea in versione più snella, due manopole invece di tre e un foglio solo
+  invece di due.
+- Il limite che resta è di **tempo**: una rete ricorrente legge in fila, e per
+  fare il passo cento deve aver fatto il novantanove. È una catena di montaggio
+  con una postazione sola, e non c'è computer che la possa mandare più veloce.
+  La fila lunga si paga due volte, perché per legare la riga cento con la riga
+  uno la correzione deve risalire tutte quelle di mezzo. È il collo di
+  bottiglia che i **Transformer** toglieranno di mezzo.
 ```
 `````
 

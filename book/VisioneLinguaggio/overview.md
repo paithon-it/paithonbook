@@ -110,6 +110,13 @@ Sembra poco, ed è invece il passaggio che apre la porta: dal momento in cui
 un'immagine è una fila di pezzi, come le parole di una frase, tutto ciò che
 sappiamo fare con le frasi si può provare anche con le foto.
 
+Il taglio butta via una cosa. I programmi che guardavano le foto prima del
+mosaico avevano una regola scritta dentro: due puntini attaccati raccontano
+quasi sempre la stessa cosa, un pezzo di pelo o un pezzo di muro. Alle tessere
+in fila quella regola nessuno la dice, e la rete se la ricava da sola guardando
+mosaici a milioni. Con poche foto in mano perde il confronto con i programmi
+di prima; con centinaia di milioni lo vince.
+
 Il prezzo si paga sul numero di tessere, e non in proporzione. Per capire ogni
 tessera il modello la confronta con tutte le altre: con 196 tessere i confronti
 sono $196 \times 196$, poco meno di quarantamila. Adesso raddoppiamo il lato
@@ -175,27 +182,33 @@ sempre cosa un sistema sa fare e cosa gli costa.
 
 `````{tab} Elementare
 
-Per tenerle a mente, pensa a due persone che devono lavorare insieme e non
-parlano la stessa lingua.
+Come lavorano insieme due persone che non parlano la stessa lingua? Se la
+cavano in tre modi diversi.
 
-Nel primo caso non si parlano affatto: hanno però imparato, ciascuno per conto
-suo, a segnare quel che hanno in mano su una stessa **mappa**, vicino se le due
-cose si somigliano e lontano se non c'entrano niente. Nessuno dei due sa che cosa
-abbia scritto l'altro, ma i segni si possono confrontare con un righello, e tanto
-basta per ritrovare le cose («quale di queste diecimila foto è il gatto nero sul
-muro?»). Per fare conversazione, no.
+Il primo modo fa a meno delle parole. I due non si parlano affatto: hanno però
+imparato, ciascuno per conto suo, a segnare quel che hanno in mano su una
+stessa **mappa**, vicino se le due cose si somigliano e lontano se non
+c'entrano niente. Nessuno dei due sa che cosa abbia scritto l'altro, ma i
+segni restano lì e si misurano con un righello, e tanto basta per ritrovare le
+cose («quale di queste diecimila foto è il gatto nero sul muro?»). Per fare
+conversazione, no.
 
-Nel secondo c'è un interprete che sussurra: la prima persona guarda, e passa
-alla seconda, in forma comprensibile, quello che ha visto. Chi parla resta uno
-solo, e non cambia mestiere: continua a parlare come ha sempre fatto, e tutto il
-lavoro sta nell'insegnare all'interprete a sussurrargli bene.
+Il secondo è un interprete che sussurra: la prima persona guarda, e passa alla
+seconda, in forma comprensibile, quello che ha visto. Chi parla resta uno solo,
+e non cambia mestiere: continua a parlare come ha sempre fatto, e tutto il
+lavoro sta nell'insegnare all'interprete a sussurrargli bene. Costa poco,
+perché nessuno dei due ricomincia da capo.
 
-Nel terzo si insegna a tutti e due la stessa lingua fin dall'inizio: niente più
-da tradurre, in compenso nessuno dei due può portarsi dietro quello che aveva
-imparato prima, e la scuola va rifatta da capo per entrambi.
+Il terzo è una lingua sola, insegnata a tutti e due dall'inizio. Niente più da
+tradurre, e con quelle parole si compone di tutto: una frase, e allo stesso
+modo un disegno. In compenso nessuno dei due si porta dietro quello che aveva
+imparato prima, e la scuola va rifatta da capo. E la lingua nuova ha un
+dizionario di parole contate: quel che si vede va detto con la parola più
+vicina che c'è, e la sfumatura che sta fra due parole va perduta.
 
-Nessuno dei tre ha vinto: il primo cerca, il secondo conversa, il terzo
-produce, cioè sa tirar fuori anche un'immagine e non soltanto parole.
+La mappa serve a cercare, l'interprete a conversare, la lingua sola a produrre.
+Nessuna delle tre ha vinto, e capita spesso di trovare l'interprete e la lingua
+sola mescolati insieme.
 
 `````
 

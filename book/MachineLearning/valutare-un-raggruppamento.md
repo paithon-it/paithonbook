@@ -25,47 +25,50 @@ nessuna parte: non è stata persa, non c'è proprio.
 
 `````{tab} Elementare
 
-Una biblioteca da riordinare, e tre bibliotecari: uno dispone i libri per
-genere, uno per epoca, uno per lingua. Tre scaffalature diverse, tre
-raggruppamenti, e nessuno dei tre ha sbagliato: hanno risposto a domande
-diverse.
+Una biblioteca da riordinare, e tre bibliotecari: uno mette i libri per genere,
+uno per epoca, uno per lingua. Tre scaffalature, e nessuno ha sbagliato: hanno
+risposto a domande diverse. Tocca a te dare un voto, e dipende tutto da una
+cosa: se qualcuno, in quella stanza, ha già la risposta.
 
-Ora tocca a te giudicare il loro lavoro, e i casi in cui ti puoi trovare sono
-due, molto diversi fra loro.
+A volte ce l'ha: sai che i libri andavano divisi per genere, e vuoi vedere
+quanto la scaffalatura davanti a te somiglia a quella giusta. Gli indici che
+servono guardano fuori dagli scaffali, verso una verità nota, e si chiamano
+**esterni**. Succede spesso e senza barare: l'etichetta c'è, resta in tasca
+durante il lavoro ed esce solo per il voto.
 
-**Primo caso: qualcuno ha già la risposta.** Sai che i libri andavano divisi per
-genere, e vuoi sapere quanto la scaffalatura che hai davanti somiglia a quella
-giusta. Qui c'è qualcosa da confrontare, e gli indici che servono si chiamano
-**esterni** perché guardano fuori dal raggruppamento, verso una verità nota.
-Succede più spesso di quanto si creda, e non perché qualcuno bari: capita ogni
-volta che si prova un algoritmo su dati di cui l'etichetta esiste, tenendola
-nascosta durante il lavoro e tirandola fuori solo per il voto.
+Girano per sigla, e la sigla non dice niente. Il più vecchio guarda i libri due
+a due: peschi il Calvino e l'Ovidio e chiedi a tutte e due le scaffalature la
+stessa cosa, insieme o separati? Se rispondono uguale quella coppia è un
+accordo, e la frazione di coppie in accordo è l'indice di **Rand**. Prova a
+barare: due bibliotecari che tirano i libri sui ripiani senza leggerne i titoli
+vanno d'accordo su moltissime coppie, perché due libri fra mille finiscono quasi
+sempre separati da entrambi, e separare per il Rand è già accordo. Di qui la
+correzione: si toglie in partenza l'accordo che due sorteggi si prenderebbero
+comunque, e resta l’**ARI** (*Adjusted Rand Index*, indice di Rand aggiustato).
 
-Di indici esterni ne girano due, e conviene sapere come si chiamano perché si
-trovano scritti così dappertutto, sigla e basta. L'**ARI** (*Adjusted Rand
-Index*, indice di Rand aggiustato) guarda i libri **a due a due**: per ogni
-coppia si chiede se le due scaffalature li hanno messi insieme, o separati, o se
-sono in disaccordo, e tiene il conto. L'**NMI** fa la stessa domanda dal versante
-dell'informazione: sapendo su che ripiano sta un libro nella prima scaffalatura,
-quanto si è già indovinato di dove sta nella seconda. Tutti e due valgono $1$ per
-due scaffalature identiche e $0$ per due che non c'entrano niente, e nessuno dei
-due si lascia ingannare dai nomi dei ripiani, perché il «ripiano 1» di uno e il
-«ripiano 1» dell'altro non hanno niente a che vedere.
+L’**NMI** entra da un'altra porta: sapendo dove sta il Calvino nella prima
+scaffalatura, quanto hai già indovinato della seconda. Tutti e due valgono $1$
+su due scaffalature identiche. Sul lavoro tirato a caso l'ARI dà zero, costruito
+apposta per darlo; l'NMI ci va vicino, e con ripiani molto fitti si tiene ancora
+qualcosa, tanto che ne gira una versione corretta allo stesso modo. Le targhette
+non li ingannano: il «ripiano 1» di un bibliotecario e quello di un altro non
+hanno niente a che vedere.
 
-**Secondo caso, quello vero: nessuno ha la risposta.** Sono clienti, o cellule,
-o documenti, e a raggrupparli si è per la prima volta. Qui non si può misurare
-la somiglianza con niente, e tutto quello che si può fare è guardare la
-scaffalatura in sé: i libri sullo stesso ripiano si somigliano fra loro? I
-ripiani sono ben distinti l'uno dall'altro? Gli indici che fanno questo si
-chiamano **interni**, e il più noto è la **silhouette**, già incontrata nella
-sezione precedente: per ogni punto chiede se sta più vicino ai compagni del suo
-gruppo che agli estranei del gruppo accanto, e poi fa la media su tutti.
+Il caso vero è l'altro: la risposta non ce l'ha nessuno. Sono clienti, o
+cellule, o documenti, e li si raggruppa per la prima volta. Resta solo lo
+scaffale da guardare: i libri di uno stesso ripiano si somigliano fra loro? I
+ripiani si distinguono l'uno dall'altro? Un indice che si accontenta di questo
+si dice **interno**. Il più noto è la **silhouette**, già incontrata nella
+sezione precedente: per ogni libro guarda se ha più vicini i compagni di ripiano
+o gli estranei del ripiano accanto, e poi fa la media.
 
-C'è però una trappola, e conviene saperla prima di aver preso una decisione
-sbagliata: un indice interno non misura se il raggruppamento è **giusto**.
-Misura se è **compatto e ben separato**, che è un'altra cosa. Se i gruppi veri
-hanno forme strane, un indice interno preferisce la risposta sbagliata, e lo fa
-con convinzione. Il conto qui sotto lo mostra sul caso più semplice possibile.
+Il guaio è che la silhouette premia sempre lo stesso tipo di scaffale, il
+mucchio tondo e ben distanziato. Certe famiglie di libri sono invece una fila:
+ogni volume somiglia al successivo, il primo e l'ultimo per niente, e in un
+punto quella fila sfiora quella di un'altra famiglia. Il libro che sta lì ha più
+vicino il primo estraneo che mezza parentela sua, e la silhouette lo dà per mal
+collocato: con lui boccia una scaffalatura che aveva ragione. Messa a giudicare
+due criteri diversi premia quello che le somiglia, e lo fa con convinzione.
 
 `````
 
@@ -89,9 +92,10 @@ il **Calinski–Harabasz** {cite}`calinski1974dendrite`, rapporto fra la
 dispersione fra i gruppi e quella dentro i gruppi, e il **Davies–Bouldin**
 {cite}`davies1979cluster`, media della peggior somiglianza fra coppie di gruppi.
 
-La cosa da tenere presente è che tutti e tre presuppongono una nozione di
-«buono» che è **geometrica e centrata**: sono massimizzati da gruppi compatti,
-convessi e ben spaziati. Su geometrie non convesse non misurano la qualità della
+Tutti e tre presuppongono una nozione di «buono» che è **geometrica e
+centrata**: premiano i gruppi compatti, convessi e ben spaziati, salendo la
+silhouette e il Calinski–Harabasz, scendendo il Davies–Bouldin, che dei tre è il
+solo da minimizzare. Su geometrie non convesse non misurano la qualità della
 partizione, misurano quanto la partizione somiglia a quella che produrrebbe
 $k$-means. Sono, in altre parole, indici allineati con l'ipotesi di un
 particolare algoritmo, e usarli per scegliere fra algoritmi con ipotesi diverse
@@ -104,11 +108,12 @@ frazione su cui le due partizioni sono d'accordo (stessa coppia insieme in
 entrambe, o separata in entrambe),
 
 $$
-\mathrm{RI} = \frac{u + s}{\binom{m}{2}},
+\mathrm{RI} = \frac{n_{\text{ins}} + n_{\text{sep}}}{\binom{m}{2}},
 $$
 
-con $u$ le coppie **unite** in entrambe e $s$ quelle **separate** in entrambe
-(le lettere $a$ e $b$ sono già occupate dalla silhouette qui sopra). Ha un
+con $n_{\text{ins}}$ le coppie tenute **insieme** da entrambe e $n_{\text{sep}}$
+quelle **separate** da entrambe (le lettere $a$, $b$ e $s$ sono già occupate
+dalla silhouette qui sopra). Ha un
 difetto grave: **non vale zero sul caso nullo**, e la linea di base non è
 nemmeno una costante: dipende da quanti gruppi hanno le due partizioni. Due
 etichettature casuali concordano infatti su tutte le coppie che entrambe
@@ -221,23 +226,29 @@ basta. C'è una terza via, e non misura la qualità: misura la **riproducibilit�
 `````{tab} Elementare
 
 L'idea è quella del bibliotecario messo alla prova due volte. Dagli metà dei
-libri, presi a caso, e fagli fare gli scaffali. Poi dagli un'altra metà, presa a
-caso a parte, e faglieli rifare. Se il criterio che sta usando è davvero nei
-libri, i due lavori diranno la stessa cosa sui libri capitati in tutte e due le
-mani. Se invece si sta inventando le categorie, i due lavori saranno diversi.
+libri, presi a caso, digli quanti ripiani usare e fagli fare gli scaffali. Poi
+dagli un'altra metà, pescata a parte, e faglieli rifare con lo stesso numero di
+ripiani. Una parte dei libri gli è capitata in mano tutte e due le volte, ed è
+su quelli che si guarda. Se il criterio che sta usando è davvero nei libri, le
+due volte li ha sistemati allo stesso modo. Se invece si sta inventando le
+categorie, i due lavori saranno diversi. Quanto vanno d'accordo lo dice l'ARI,
+il conto a coppie, che di mestiere confronta due scaffalature.
 
-Questo si può fare senza sapere niente della risposta giusta, e serve soprattutto
-a decidere **quanti gruppi** cercare: il numero di gruppi buono è quello che
-regge alla prova, mentre uno sbagliato produce partizioni che cambiano ogni
-volta che si cambiano i dati. Il ricampionamento è quello del bootstrap della
-sezione apposita, usato qui per una domanda diversa.
+Una prova sola dice poco, perché due metà possono andare d'accordo per fortuna.
+Si rifà da capo con altre metà, molte volte, e si guarda com'è andata
+nell'insieme. Tutto questo si può fare senza sapere niente della risposta
+giusta, e serve soprattutto a decidere **quanti gruppi** cercare, cioè quanti
+ripiani chiedere: il numero buono è quello che regge alla prova, mentre uno
+sbagliato produce scaffalature che cambiano ogni volta che cambiano i libri.
+Rifare il conto su un'altra pescata è la mossa del bootstrap, qui al servizio di
+un'altra domanda.
 
 Attenzione a una trappola, che si vedrà nella tabella qui sotto: dividere in
 **pochissimi** gruppi regge quasi sempre, anche quando è la risposta sbagliata,
-perché un taglio grossolano viene uguale comunque. Il modo di accorgersene è
-guardare non solo quanto le prove vanno d'accordo **in media**, ma anche se
-vanno d'accordo **sempre**. La prova serve dunque a **scartare** i numeri che
-non tengono, non a incoronare il più stabile.
+perché un taglio grossolano viene quasi sempre uguale. Il modo di accorgersene è
+guardare non solo quanto le prove vanno d'accordo in media, ma anche se vanno
+d'accordo tutte le volte. La prova serve dunque a **scartare** i numeri che non
+tengono, non a incoronare il più stabile.
 
 `````
 
@@ -252,8 +263,9 @@ dà $\mathrm{stab}(k)$, e si sceglie il $k$ che la massimizza.
 
 Il criterio ha una nota da conoscere prima di usarlo, ed è visibile nella
 tabella qui sotto: i valori **piccoli** di $k$ sono stabili quasi per
-costruzione, perché una bipartizione grossolana di dati ben separati esce sempre
-uguale. La stabilità va quindi letta come un vincolo (scarta i $k$ instabili),
+costruzione, perché una bipartizione grossolana di dati ben separati esce quasi
+sempre uguale. La stabilità va quindi letta come un vincolo (scarta i $k$
+instabili),
 non come una funzione da massimizzare alla cieca.
 
 `````
@@ -441,12 +453,12 @@ Che è, poi, la storia di Plutone: alla fine si vota.
   $\mathbf{X}$ e le etichette assegnate, e premiano coesione e separazione. Sono
   allineati a un'ipotesi geometrica **convessa**: su geometrie non convesse
   misurano la somiglianza con la partizione di $k$-means, non la qualità.
-  Misurato: sulle due lune la silhouette dà $0{,}486$ a $k$-means e $0{,}331$ a
-  DBSCAN, mentre ARI e NMI di DBSCAN valgono $1{,}000$.
+  Sulle due lune la silhouette dà $0{,}486$ a $k$-means e $0{,}331$ a DBSCAN,
+  mentre ARI e NMI di DBSCAN valgono $1{,}000$.
 - Indici **esterni** (ARI, NMI/AMI): confrontano con una partizione nota, sono
   invarianti alla permutazione delle etichette e ragionano sulle **coppie** di
-  punti. L'indice di Rand grezzo non è corretto per il caso: misurato,
-  $\mathrm{RI} = 0{,}500$ su etichette casuali contro $\mathrm{ARI} = 0{,}0000$.
+  punti. L'indice di Rand grezzo non è corretto per il caso: su etichette
+  casuali dà $\mathrm{RI} = 0{,}500$ contro $\mathrm{ARI} = 0{,}0000$.
 - **Stabilità**: due sottocampioni, due adattamenti a $k$ gruppi, accordo
   misurato con l'ARI sull'intersezione. Criterio applicabile senza etichette; da
   usare per **scartare** i $k$ instabili, perché i $k$ piccoli sono stabili quasi

@@ -13,8 +13,8 @@ lastra, le stazioni da attraversare sono sempre quelle.
 ## Sei stazioni, sempre le stesse
 
 La {numref}`fig-flusso-pytorch` le mette in fila. Conviene guardarla una volta
-per intero: è la mappa non solo di questa sezione, ma di tutto quello che si
-fa quando si addestra un modello.
+per intero: è la mappa di tutto quello che si fa quando si addestra un
+modello.
 
 ```{figure} ../figures/flusso-di-lavoro-pytorch.svg
 :name: fig-flusso-pytorch
@@ -39,17 +39,26 @@ si dimentica di pianificare, e la riprende per esteso il
 di tenere in piedi modelli che qualcuno usa davvero.
 
 `````{tab} Elementare
-È lo stesso ordine con cui si prepara una ricetta nuova. Prima decidi che
-piatto vuoi (la stazione 1), poi controlli che cosa hai in dispensa (2). Solo
-allora scegli il procedimento (3) e cucini (4). Poi (ed è il passaggio che
-distingue chi cucina bene) **assaggi** (5), e l'assaggio non lo fai sul
-cucchiaio che hai già leccato: usi una porzione che non hai ancora toccato,
-altrimenti ti convinci che sia buono solo perché lo hai fatto tu. Se manca
-sale, torni indietro e cambi *una cosa sola*, altrimenti al secondo assaggio
-non saprai se è merito del sale o del tempo di cottura. E alla fine il piatto
-lo porti in tavola (6), che è il momento in cui scopri se piace anche a chi non
-l'ha cucinato: la sola prova che conta, e l'unica che quasi nessuno mette in
-conto quando comincia.
+Una ricetta nuova si prepara con le stesse mosse, nello stesso ordine. Prima
+decidi che piatto vuoi (la stazione 1), poi controlli che cosa hai in dispensa
+(2). Solo allora scegli il procedimento (3), e con esso due cose che si
+dimenticano sempre: che cosa vorrà dire «venuto bene» (salato al punto
+giusto? cotto al punto giusto?) e di quanto aggiusterai per volta, un pizzico
+o mezza manciata.
+Poi cucini (4). Poi (ed è il passaggio che distingue chi cucina bene)
+**assaggi** (5), e l'assaggio non lo fai sul cucchiaio che hai già leccato: usi
+una porzione che non hai ancora toccato, altrimenti ti convinci che sia buono
+solo perché lo hai fatto tu. Se manca sale, torni indietro e cambi *una cosa
+sola*, altrimenti al secondo assaggio non saprai se è merito del sale o del
+tempo di cottura.
+
+In questo andirivieni c'è una trappola, e la conosce chiunque abbia cucinato a
+lungo la stessa cosa: a forza di assaggiare e correggere il palato si abitua, e
+dopo il quinto cucchiaio il sale che c'è non lo senti più. Gli assaggi si
+consumano man mano che li usi per decidere. Ecco perché conta il momento in cui
+il piatto va in tavola (6): chi lo mangia non ha cucinato, il suo giudizio è
+l'unico rimasto intatto, e lo hai una volta sola, perché se lo chiami in cucina
+a metà cottura e correggi su quello che ti ha detto hai consumato anche lui.
 `````
 
 `````{tab} Superiore
@@ -74,7 +83,7 @@ verificare a colpo d'occhio se il modello l'ha trovata. Costruiamo dei dati
 con una formula nota (una retta di pendenza $0{,}7$ e intercetta $0{,}3$) e
 poi buttiamo via la formula, lasciando al modello solo i punti.
 
-Vale la pena fermarsi un attimo su quei due nomi, perché è il punto migliore
+Quei due nomi meritano una sosta, perché è il punto migliore
 di tutto il capitolo per capire che cosa sia davvero un peso. La **pendenza**
 di una retta è quanto la retta sale ogni volta che ci si sposta di uno verso
 destra; l’**intercetta** è l'altezza a cui la retta taglia l'asse verticale, il
@@ -210,17 +219,39 @@ sull'ottimo mentre gli sta girando attorno. Col $199$ i due piedi si vedono
 tutti e due, ed è la verità.
 
 `````{tab} Elementare
-La `L1Loss` è la scelta più leggibile che ci sia: è la **distanza media** tra
-quello che il modello dice e quello che dovrebbe dire. Se stampa $0{,}05$ e
-stiamo predicendo dei prezzi in euro, il modello sbaglia in media di cinque
-centesimi. Un numero che si può raccontare a chiunque, senza spiegare che cosa
-sia un quadrato di un errore.
+La `L1Loss` conta gli sbagli così come sono: è la **distanza media** tra quello
+che il modello dice e quello che dovrebbe dire. Se stampa $0{,}05$ e stiamo
+predicendo dei prezzi in euro, il modello sbaglia in media di cinque centesimi,
+un numero che si può raccontare a chiunque.
 
-Il numero da guardare è quello di destra, misurato sui dieci punti messi da
-parte: è l'unico preso su domande mai viste. E qui va detto che stiamo
-prendendo la stessa scorciatoia della sezione precedente, guardandolo sei volte
-durante la corsa: su un problema truccato come questo è innocuo, perché non
-stiamo decidendo niente in base a quel numero, lo stiamo solo guardando
+C'è un altro modo di sommarli, e la scelta fra i due cambia quello che il
+modello impara. Il secondo moltiplica ogni sbaglio per sé stesso: sbagliare il
+doppio conta quattro volte, sbagliare dieci volte tanto conta cento volte (è
+l'errore al quadrato, quello di `nn.MSELoss`). Dieci case stimate: nove
+sbagliate di mille euro e una di diecimila. Sommando gli euro, la casa storta
+pesa diecimila contro novemila, poco più di tutte le altre insieme. Coi
+quadrati pesa undici volte tutte le altre insieme.
+
+Comanda chi grida più forte. Coi quadrati il modello passa la giornata a
+inseguire quell'unica casa, che magari è un prezzo battuto male nel listino, e
+peggiora sulle altre nove; sommando gli euro la ignora quasi. Il rovescio c'è
+ed è serio: se quella casa è vera (una villa in mezzo ai monolocali), la misura
+che la ignora ti lascia un modello che sulle ville sbaglierà sempre.
+
+La misura al quadrato, in compenso, frena: la spinta a correggere si
+ammorbidisce man mano che ci si avvicina al prezzo giusto, quindi il ballo fra
+i due valori non ci sarebbe. La via di mezzo si chiama `nn.SmoothL1Loss`:
+quadrati per gli sbagli piccoli, euro contati come sono per quelli grossi, così
+frena vicino al bersaglio senza farsi trascinare dalla villa. Nel nostro
+problema truccato la scelta cambia pochissimo: i punti stanno esattamente sulla
+retta, non c'è nessuna villa da domare, e quel po’ di ballo è tutto l'errore
+che rimane.
+
+Torniamo ai due numeri stampati a ogni riga. Quello da guardare è il secondo,
+misurato sui dieci punti messi da parte: è l'unico preso su domande mai viste.
+Guardandolo sei volte durante la corsa stiamo prendendo la stessa scorciatoia
+della sezione precedente: su un problema truccato come questo è innocua, perché
+non stiamo decidendo niente in base a quel numero, lo stiamo solo guardando
 scendere. In un progetto vero quel ruolo lo farebbe un terzo mucchio, la
 validazione, e il test resterebbe chiuso fino alla fine.
 `````
@@ -264,35 +295,43 @@ principianti nascono da una riga sbagliata qui.
 | Multi-etichetta ($K$ sì/no) | `nn.Linear(d, K)` | `nn.BCEWithLogitsLoss` | `torch.sigmoid` |
 
 `````{tab} Elementare
-Le quattro righe sono i quattro tipi di domanda che si possono fare a un
-modello. **Quanto?** (un prezzo, una temperatura): l'ultimo strato dà un numero
-solo e lo si legge com'è; nel gergo questo caso si chiama **regressione**, ed è
-quello del nostro esempio con la retta. **Sì o no?** (è spam, non è spam): un numero solo,
-che poi va schiacciato fra zero e uno per leggerlo come probabilità, ed è ciò
-che fa la `sigmoid`. **Quale, fra tanti?** (quale cifra, quale animale): tanti
-numeri quante sono le categorie, e vince il più alto. **Quali, fra tanti?** (la
-foto contiene un cane *e* un prato *e* una palla): di nuovo tanti numeri, ma
-ognuno è un sì/no per conto suo, e più di uno può essere sì. È quello che si
-chiama *multi-etichetta*, e la differenza con la riga di sopra è tutta lì: là
-si sceglie una risposta, qui se ne accendono quante se ne vuole.
+Su un banco di smistamento postale, della stessa busta si possono chiedere
+quattro cose diverse. Quanto pesa? Un numero solo, letto com'è: è la
+regressione, il caso dell'esempio con la retta. È pubblicità, sì o no? Ancora
+un numero solo, che la `sigmoid` schiaccia fra zero e uno perché lo si legga
+come probabilità. Quale, fra i dieci reparti? Un numero per reparto, e vince il
+più alto. Quali bollini, fra i dieci: fragile, urgente, da firmare? Un numero
+per bollino, ma stavolta ognuno è un sì o un no per conto suo. Fra i reparti se
+ne sceglie uno, di bollini se ne accendono quanti se ne vuole: è il caso
+*multi-etichetta*.
 
-La riga da leggere con più attenzione è la terza. Quando le classi sono più di
-due, il modello non dà probabilità: dà dei **punteggi grezzi**, uno per classe,
-che possono essere negativi o enormi. Quei punteggi hanno un nome, ed è la
-sillaba che si trova nei nomi delle funzioni: si chiamano **logit**, ed è per
-questo che la funzione di perdita per il sì/no si chiama
-`BCEWithLogitsLoss`, cioè «con i logit». La funzione di perdita se li aspetta
-proprio così: è lei a trasformarli in probabilità, al suo interno.
+Il punteggio che lo smistatore scrive sulla busta può uscire meno tre come più
+quaranta: nessuno gli ha chiesto una percentuale. Quei punteggi grezzi si
+chiamano **logit**, ed è la sillaba che si ritrova nei nomi delle funzioni:
+`BCEWithLogitsLoss`, la perdita del sì o no, vuol dire «con i logit». Li
+vuole grezzi, ed è lei a convertirli in probabilità, al suo interno.
 
-L'ultima colonna della tabella non contraddice questo, e vale la pena essere
-espliciti perché è il punto dove ci si incarta. La `softmax` va usata **dopo**,
-sul risultato, quando si vuole leggere una probabilità da mostrare a qualcuno;
-non va messa **dentro** il modello, come ultimo strato. Sono due righe di
-codice che si assomigliano e fanno cose opposte: la prima è una lettura e non
-tocca l'addestramento, la seconda fa applicare la trasformazione due volte, una
-dal modello e una dalla loss. Il risultato è un modello che impara male senza
-dare nessun errore: nessun messaggio rosso, solo numeri che non migliorano. È
-il bug più silenzioso di tutti.
+Tenerli grezzi serve anche a non perdere gli sbagli grossi. Un meno ottocento,
+messo in percentuale, diventa un numero così piccolo che la macchina finisce le
+cifre e scrive zero tondo. E da uno zero non si sa più né di quanto lo
+smistatore abbia sbagliato né da che parte correggerlo.
+
+La probabilità serve eccome, ma dopo: la `softmax` si applica sul risultato,
+quando il numero lo deve leggere una persona. Messa dentro il modello, come
+ultimo strato, consegna alla funzione di perdita dei punteggi già convertiti,
+che lei converte una seconda volta. Le due righe di codice si assomigliano e
+fanno cose opposte: la prima non tocca l'addestramento, la seconda fa imparare
+male il modello senza dare nessun errore. Niente messaggio rosso, solo numeri
+che non migliorano: è il guasto più silenzioso di tutti.
+
+Resta una manopola, che serve appena si esce dagli esempi: le risposte quasi
+mai sono in pari. Su mille buste, novecentonovanta lettere vere e dieci
+pubblicità. Lo smistatore trova subito la furbizia: dire sempre «lettera vera»,
+sbagliare dieci volte su mille e portare a casa un risultato che sulla carta
+sembra ottimo, mentre la pubblicità passa tutta. Alla funzione di perdita si
+può dire quanto pesa ciascuna risposta: se una pubblicità lasciata passare
+costa quanto novantanove lettere vere buttate, i due mucchi tornano in pari e
+alla furbizia non conviene più.
 `````
 
 `````{tab} Superiore
@@ -304,8 +343,10 @@ l'underflow di $\log(\hat{y})$ quando $\hat{y} \to 0$. Le versioni "nude"
 già avvenuta, ma nel dubbio si usa sempre la variante con i logit. Due note di
 forma dei tensori: `BCEWithLogitsLoss` vuole target `float32` della stessa
 shape dei logit, tipicamente si applica `squeeze()` all'uscita
-$(N,1) \to (N,)$; `CrossEntropyLoss` vuole logit $(N,K)$ e target interi
-$(N,)$ di dtype `int64`, **non** one-hot. Per classi molto sbilanciate,
+$(N,1) \to (N,)$; `CrossEntropyLoss` vuole logit $(N,K)$ e target $(N,)$ di
+dtype `int64`, cioè gli indici di classe, e un one-hot di interi solleva un
+errore (la forma $(N,K)$ passa solo in `float`, dove è letta come
+distribuzione di probabilità sulle classi). Per classi molto sbilanciate,
 entrambe accettano un peso per classe (`weight`, o `pos_weight` per la
 binaria), che rialza il contributo della classe rara.
 `````
@@ -320,40 +361,52 @@ non si sa quale delle cinque abbia funzionato, quindi non si sa nemmeno quale
 spingere ancora.
 
 `````{tab} Elementare
-La regola è quella dell'idraulico: **una chiave alla volta**. E c'è un ordine
-sensato in cui provare, dal più efficace al più illusorio.
+Un rubinetto che gocciola non si aggiusta smontando tutto il bagno:
+l'idraulico chiude l'acqua, cambia una guarnizione, riapre e guarda. Una
+chiave alla volta, partendo da quello che si rompe più spesso. Sul modello le
+chiavi sono sei, dalla più efficace alla più illusoria.
 
-1. **Più dati, o dati migliori.** È quasi sempre la leva più potente, e quasi
-   sempre la più noiosa. Mille esempi in più valgono di solito più di
-   qualunque astuzia architetturale.
-2. **Addestrare più a lungo**, tenendo d'occhio l'errore sulla validazione, la
-   simulazione d'esame vista nella sezione precedente: se ricomincia a salire,
-   si è passato il momento di fermarsi.
-3. **Un modello più capiente**: più strati, più unità per strato. Ma solo dopo
-   essersi accertati che il modello piccolo non ce la faccia davvero, e che il
-   problema non siano invece i dati: un modello grande su dati sbagliati impara
-   soltanto a memoria le cose sbagliate.
-4. **Il learning rate**, cioè il passo. Tra tutti i numeri regolabili è quello
-   che conta di più: cambiarlo per un fattore dieci in su o in giù spesso fa la
-   differenza tra un modello che impara e uno che non parte.
-5. **I freni**: tutto ciò che rende la vita un po’ più difficile al modello
-   mentre studia, apposta perché non si limiti a memorizzare (i nomi che
-   incontrerai sono *dropout* e *weight decay*, e li spiega il capitolo sul
-   deep learning). Si mettono solo se la distanza fra l'errore in addestramento
-   e quello in validazione si sta allargando.
-6. **Cambiare del tutto approccio**: un'altra architettura, o partire da un
-   modello già addestrato da altri; il *transfer learning* del [capitolo sulla
+1. Più dati, o dati migliori: la leva più potente, e la più noiosa. Mille
+   esempi in più valgono di solito più di qualunque astuzia architetturale.
+2. Addestrare più a lungo, con un occhio all'errore sulla validazione, la
+   simulazione d'esame: se ricomincia a salire, il momento di fermarsi è
+   passato.
+3. Un modello più capiente, più strati e più unità. Ma solo dopo aver
+   verificato che il piccolo non ce la faccia davvero: su dati sbagliati, uno
+   grande impara a memoria le cose sbagliate.
+4. Il passo, cioè il learning rate. Delle due manopole della doccia è quella
+   della temperatura: con la portata si convive, il punto giusto è uno solo e
+   stretto, e spostarlo di un fattore dieci in su o in giù separa un modello
+   che impara da uno che non parte. Si trova girando piano verso il caldo
+   finché non scotta e tornando un filo indietro: una corsa breve in cui il
+   passo cresce a ogni giro, e si prende il valore poco prima che l'errore si
+   impenni.
+5. I freni, che rendono la vita più difficile al modello mentre studia,
+   apposta perché non si limiti a memorizzare (*dropout* e *weight decay*,
+   spiegati nel capitolo sul deep learning). Si mettono solo se la distanza fra
+   l'errore in addestramento e quello in validazione si allarga.
+6. Cambiare strada: un'altra architettura, o un modello già addestrato da
+   altri, il *transfer learning* del [capitolo sulla
    visione](../VisioneArtificiale/classificazione-transfer.md).
 
-E prima di ogni prova: fissa il seme casuale, annota che cosa hai cambiato,
-tieni il risultato. Un quaderno di laboratorio, letteralmente.
+L'idraulico scrive sul foglio dell'intervento che cosa ha toccato. E prima di
+ogni prova: fissa il seme casuale, annota che cosa hai cambiato, tieni il
+risultato. Un quaderno di laboratorio, letteralmente.
 
-C'è però un controllo che viene **prima** di tutti e sei, e che costa cinque
-minuti: prendi due mucchietti di esempi, una ventina in tutto, e addestra su
-quelli finché l'errore non è quasi zero. Mandare a memoria venti esempi è alla
-portata di qualunque rete, e se la tua non ci riesce non c'è manopola che la
-salvi su cinquantamila: c'è un errore da qualche parte nel codice, e stai
-girando le manopole sbagliate.
+Una chiave alla volta vale finché a girarle sei tu. Quando le prove le lanci in
+blocco e vai a dormire, i valori conviene sorteggiarli a caso invece di
+disporli in una griglia ordinata. Con due manopole e nove prove la griglia
+prova tre valori per manopola in tutte le combinazioni: della temperatura ne
+avrai viste tre sole. Nove tiri a caso te ne fanno vedere nove, ed è tutta lì
+la differenza.
+
+Un controllo però viene prima di tutti e sei, e costa cinque minuti:
+l'idraulico apre il rubinetto e guarda se l'acqua arriva, perché se non arriva
+la guarnizione non c'entra. Il rubinetto, per un modello, sono due mucchietti
+di esempi, una ventina in tutto: si addestra su quelli finché l'errore non è
+quasi zero. Venti li manda a memoria qualunque rete, e se la tua non ci riesce
+non c'è manopola che la salvi su cinquantamila: c'è un errore nel codice, e
+stai girando le manopole sbagliate.
 `````
 
 `````{tab} Superiore
@@ -367,7 +420,7 @@ sensibilità così sbilanciate questo cambia tutto. La seconda è il *learning
 rate range test*: si fa crescere $\eta$ esponenzialmente per poche centinaia
 di iterazioni e si sceglie il valore poco prima che la loss esploda.
 
-C'è poi una diagnosi da fare **prima** di tutto il resto: verificare che il
+C'è poi una diagnosi che viene prima di tutto il resto: verificare che il
 modello riesca a fare *overfitting* su un campione minuscolo (due o tre
 batch). Se non riesce a mandare a memoria dieci esempi, il problema non sono
 gli iperparametri: è un bug (target disallineati, loss sbagliata, gradienti

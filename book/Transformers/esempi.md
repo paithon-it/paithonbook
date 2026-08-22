@@ -51,7 +51,7 @@ quello che gli hai dato.
 `````
 
 `````{tab} Superiore
-In codice, usando un modello encoder–decoder pre-addestrato della famiglia
+In codice, usando un modello encoder-decoder pre-addestrato della famiglia
 OPUS-MT (Università di Helsinki) via Hugging Face:
 
 ```{code-block} python
@@ -79,9 +79,10 @@ Il gatto si siede sul tappetino.
 Il gatto si siede sulla riva del fiume.
 ```
 
-La seconda frase è la disambiguazione lessicale in atto: nessun dizionario
-traduce «bank» con «riva», e il modello ci arriva perché la rappresentazione di
-quel token è stata costruita pesando anche «river».
+La seconda frase è la disambiguazione lessicale in atto: un dizionario elenca
+tutti e due i significati di «bank» e lascia la scelta a chi legge, mentre qui
+la compie il modello, perché la rappresentazione di quel token è stata
+costruita pesando anche «river».
 
 Le tre righe di lavoro sono i tre passaggi visti nei capitoli precedenti, qui
 scritti in chiaro: **tokenizzazione** (la frase diventa una sequenza di id di
@@ -119,11 +120,19 @@ sono dentro. Aziende e ricercatori lo usano per misurare l'umore di migliaia di
 recensioni o commenti in pochi secondi: un lavoro che a mano richiederebbe
 settimane.
 
+Le stelle possibili sono cinque, e la macchina non ne indica una soltanto: ha
+cento gettoni di fiducia, li sparpaglia sulle cinque caselle e poi annuncia la
+casella dove ne ha messi di più. Ottanta gettoni su una casella e venti sparsi
+altrove, oppure due caselle in testa a pochi gettoni una dall'altra: l'annuncio
+esce identico, un nome di casella e nient'altro, mentre le due situazioni non
+si somigliano. Chiedere la fila completa, casella per casella, distingue la
+macchina sicura da quella in bilico.
+
 Le frasi facili però le indovinano tutti, ed è sulle altre che si capisce quanto
 un modello abbia davvero capito. Il caso classico in italiano è il complimento
 detto negando il contrario, "non è affatto male": nessuna delle tre parole è un
-elogio, eppure la frase lo è. Il paragrafo che chiude questa sezione racconta
-come se la cava il modello che stiamo usando, e la risposta è: male.
+elogio, eppure la frase lo è. Lì il modello sbaglia, e sbaglia per un soffio:
+la casella accanto, quella più benevola, resta indietro di pochi gettoni.
 `````
 
 `````{tab} Superiore
@@ -164,25 +173,24 @@ for r in recensioni:
    -> 3 stars   [3 stars 0.471  4 stars 0.318  5 stars 0.125]
 ```
 
-I numeri sono quelli usciti eseguendo davvero il blocco, e come per la
-traduzione qui sopra i pesi stanno su un server di altri e possono cambiare:
-i pesi di questo modello stanno sul server di chi lo pubblica: se un giorno lo
+I pesi di questo modello stanno sul server di chi lo pubblica: se un giorno lo
 riaddestrano, le cifre esatte possono cambiare, mentre la graduatoria e il
 fenomeno che segue restano.
 
 Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
 classificazione usa la rappresentazione del token speciale `[CLS]` passata a
 una testa lineare (architettura solo-encoder, senza generazione). Le prime due
-righe sono quelle che ci si aspetta; la terza è quella che il paragrafo dopo le
-schede analizza, ed è il motivo per cui il codice stampa la graduatoria e non
-solo la vincente. I valori esatti sono $0{,}365$ a due stelle e $0{,}336$ a
-tre: uno scarto di ventinove millesimi, l'unico delle quattro righe in cui le
-prime due classi si toccano così. È il caso in cui riportare solo l’`argmax`
-nasconde tutto quello che c'è da sapere, ed è per questo che `top_k=None` non è
-un dettaglio di comodo: senza, la pagina non potrebbe dimostrare quello che sta
-per dire.
+righe sono quelle che ci si aspetta; la terza no, ed è il motivo per cui il
+codice stampa la graduatoria e non solo la vincente. I valori esatti sono
+$0{,}365$ a due stelle e $0{,}336$ a tre: uno scarto di ventinove millesimi,
+l'unico delle quattro righe in cui le prime due classi si toccano così. Il solo
+`argmax` direbbe «2 stars» e si fermerebbe lì, indistinguibile dai verdetti
+delle altre tre righe, dove la seconda classe resta indietro di centocinquanta
+millesimi o più: `top_k=None` tiene visibile la differenza fra un verdetto
+comodo e uno in bilico.
 
-Si noti quindi la **confidenza**: un classificatore serio si valuta con le
+Il punteggio della classe vincente è la **confidenza** del modello, e da solo
+non dice niente sulla qualità del classificatore: quella si valuta con le
 metriche del capitolo sul machine learning (accuratezza, precision/recall), e su
 domini diversi da quello di addestramento (ironia, sarcasmo, gergo) le
 prestazioni calano sensibilmente.

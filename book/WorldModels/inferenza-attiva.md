@@ -43,26 +43,31 @@ Qui arriva l'idea che dà il nome alla sezione.
 
 Ti sei fatto un'idea di come sarà la stanza in cui stai per entrare: luce
 accesa, sedia al suo posto. Apri la porta ed è buio. La previsione e la realtà
-non combaciano, e tu hai **due modi** di rimettere le cose a posto.
+non combaciano, e tu hai due modi di rimettere le cose a posto.
 
 Il primo è cambiare idea: «ah, evidentemente qualcuno ha spento la luce». Non
 hai toccato niente, hai aggiornato quello che credi. Questo si chiama
 **percepire**.
 
 Il secondo è cambiare la stanza: allunghi la mano e accendi la luce. Adesso il
-mondo assomiglia a quello che ti aspettavi. Questo si chiama **agire**.
+mondo assomiglia a quello che ti aspettavi, e la tua idea di partenza torna ad
+avere ragione. Questo si chiama **agire**.
 
 Sono due strade diverse verso lo stesso risultato, cioè eliminare lo scarto fra
 quello che ti aspettavi e quello che trovi. E la tesi dell'inferenza attiva è
 che siano davvero **la stessa operazione**, fatta in due direzioni: percepire
 piega le tue idee verso il mondo, agire piega il mondo verso le tue idee.
 
-C'è un terzo modo, ed è quello che interessa a chi arriva dal capitolo
-sull'auto-supervisione: **imparare**. Se le sorprese si ripetono, non basta più aggiustare
-l'idea di oggi, conviene cambiare il modello che quelle idee le produce. Gli
-autori dicono una cosa che vale la pena riportare per intero, perché è più forte
-di quanto sembri: imparare «non è fondamentalmente diverso dal percepire,
-opera semplicemente su una scala di tempo più lenta».
+Quanto sia strana davvero quella stanza al buio, però, non lo sai: quello che
+senti è il tuo sconcerto, e lo sconcerto è sempre almeno quanto la stranezza
+vera, mai meno. Trovata la spiegazione giusta lo sconcerto cala, e si ferma
+contro quel fondo di stranezza che la scena ha comunque. Quel che resta in mezzo
+è quanto la tua spiegazione dista dalla migliore che il buio consente.
+
+C'è un terzo modo: **imparare**. Se le sorprese si ripetono, non basta più
+aggiustare l'idea di oggi, conviene cambiare il modello che quelle idee le
+produce. Gli autori lo dicono così: imparare «non è fondamentalmente diverso dal
+percepire, opera semplicemente su una scala di tempo più lenta».
 
 Detto altrimenti: qui non esiste una fase di addestramento separata dall'uso.
 C'è una cosa sola che va avanti sempre, a tre velocità diverse.
@@ -101,20 +106,19 @@ stessa quantità:
   autori descrivono come non fondamentalmente diverso dalla percezione, «opera
   semplicemente su una scala di tempo più lenta».
 
-Sul secondo punto serve una precisazione, perché è quella che il resto della
-sezione userà. Scegliere un'azione istante per istante minimizza $F$; scegliere
-fra **politiche**, cioè fra corsi d'azione estesi nel tempo, richiede una
-seconda grandezza, l’**energia libera attesa** $G(\pi)$, dove «attesa» sta per
-il fatto che le osservazioni future non ci sono ancora e vanno messe in conto
-per come ce le si aspetta. Gli autori insistono che le due sono «matematicamente
-collegate ma con ruoli distinti e complementari»: $F$ resta la quantità
-minimizzata nel tempo, e $G$ entra dentro il modello generativo come **priore
-sulle politiche** (grosso modo: una politica è probabile a priori nella misura
-in cui promette $F$ bassa in futuro) {cite}`parr2022active`. A $G$ è dedicata
-una sezione di questa pagina, poco più avanti.
+Sull'azione serve una precisazione. Scegliere un gesto istante per istante
+minimizza $F$; scegliere fra **politiche**, cioè fra corsi d'azione estesi nel
+tempo, richiede una seconda grandezza, l’**energia libera attesa** $G(\pi)$,
+dove «attesa» sta per il fatto che le osservazioni future non ci sono ancora e
+vanno messe in conto per come ce le si aspetta. Gli autori insistono che le due
+sono «matematicamente collegate ma con ruoli distinti e complementari»: $F$
+resta la quantità minimizzata nel tempo, e $G$ entra dentro il modello
+generativo come **priore sulle politiche** (grosso modo: una politica è
+probabile a priori nella misura in cui promette $F$ bassa in futuro)
+{cite}`parr2022active`.
 
-Notare infine che minimizzare la sorpresa equivale a **massimizzare l'evidenza**
-del modello: sono la stessa espressione col segno cambiato. Un agente che si
+Minimizzare la sorpresa equivale infine a **massimizzare l'evidenza** del
+modello: sono la stessa espressione col segno cambiato. Un agente che si
 comporta bene, in questo linguaggio, è un agente che raccoglie prove a favore di
 sé stesso.
 
@@ -129,11 +133,16 @@ risposta chiarisce il meccanismo meglio di qualunque formula.
 
 `````{tab} Elementare
 
-La risposta è che **la sorpresa non si misura rispetto a quello che capita, ma
-rispetto a quello che sei**.
+La risposta è che la sorpresa non si misura rispetto a quello che capita, ma
+rispetto a quello che sei.
 
-Il modello di una creatura non è una fotocopia del mondo: si porta dentro anche
-le condizioni in cui quella creatura deve trovarsi per continuare a esistere.
+Il modello di una creatura non è una fotocopia del mondo: chi avesse in testa
+solo una fotocopia descriverebbe la corrente e si lascerebbe portare. Il modello
+si porta dentro anche le condizioni in cui quella creatura deve trovarsi per
+continuare a esistere. Nessuno ha scritto al pesce, su un foglio a parte, un
+premio per l'acqua: il pesce si aspetta l'acqua, e se la aspetta un po' più di
+quanto i fatti gli garantiscano. Da quel po' di ottimismo viene la nuotata.
+
 Per un pesce, «essere all'asciutto» è la cosa più sorprendente che possa
 capitargli, e nessuna quantità di immobilità gliela risparmia: al contrario, se
 resta immobile fuori dall'acqua la sorpresa cresce fino alla fine.
@@ -150,8 +159,8 @@ comprarsi da bere (che è psicologia) e mettere l'aria condizionata in una citt�
 intera (che è una faccenda collettiva). E soprattutto è **cercare l'ombra prima
 di surriscaldarsi**, che è l'esempio a cui tengono di più, perché lì il
 correttivo arriva *prima* del guaio. Lo stesso imperativo, insomma, soddisfatto
-con un anticipo sempre maggiore, e per anticipare serve proprio la cosa di cui
-parla questo capitolo, un modello di quel che succederà.
+con un anticipo sempre maggiore, e per anticipare serve un modello di quel che
+succederà.
 
 `````
 
@@ -162,14 +171,14 @@ di ricompensa affiancata al modello: le condizioni preferite sono i **priori**
 del modello generativo stesso, cioè la distribuzione delle osservazioni che
 l'agente si aspetta di incontrare in quanto agente di quel tipo.
 
-Ne segue una proprietà che gli autori sottolineano e che vale la pena non
-perdere: il modello generativo **non può limitarsi a imitare la dinamica
-esterna**, altrimenti l'agente si limiterebbe a seguirla passivamente. Deve
-anche specificare le regioni di stati che deve visitare per continuare a
-esistere, il che equivale ad assumere implicitamente che le proprie osservazioni
-preferite siano più probabili di quanto siano. Gli autori lo chiamano un
-**bias di ottimismo**, ed è necessario: è la differenza fra un modello che
-descrive il mondo e un modello che prescrive un comportamento.
+Ne segue una proprietà che gli autori sottolineano: il modello generativo **non
+può limitarsi a imitare la dinamica esterna**, altrimenti l'agente si
+limiterebbe a seguirla passivamente. Deve anche specificare le regioni di stati
+che deve visitare per continuare a esistere, il che equivale ad assumere
+implicitamente che le proprie osservazioni preferite siano più probabili di
+quanto siano. Gli autori lo chiamano un **bias di ottimismo**, ed è necessario:
+è la differenza fra un modello che descrive il mondo e un modello che prescrive
+un comportamento.
 
 È anche il punto in cui questa cornice si separa nettamente dai world model
 delle sezioni precedenti. Là il modello stima $p_\theta(s_{t+1} \mid s_t, a_t)$
@@ -190,7 +199,7 @@ sezione sull'esplorazione del deep reinforcement learning.
 
 `````{tab} Elementare
 
-Un agente così, prima di muoversi, misura ogni mossa **due volte**.
+Un agente così, prima di muoversi, misura ogni mossa due volte.
 
 La prima misura è quella che ci si aspetta: quanto quella mossa lo porta verso
 le condizioni in cui vuole trovarsi. È il valore di **ottenere**.
@@ -202,12 +211,19 @@ una che avvicina la meta a occhi chiusi.
 
 L'esempio è degli autori. Uno vuole un caffè e conosce due bar, uno aperto nei
 giorni feriali e uno nel fine settimana, ma non sa che giorno è. La prima cosa
-che fa non è andare a un bar: è guardare il calendario. Il capitolo
-sull'auto-supervisione lo racconta per esteso, e qui non lo ripetiamo.
+che fa non è andare a un bar: è guardare il calendario, che non porta un passo
+verso il caffè ma apre la porta del bar giusto. Quel che le due misure pesano,
+insomma, non è il passo per sé ma la strada che apre. Il capitolo
+sull'auto-supervisione lo racconta per esteso.
 
-Il punto che interessa qui è che quelle due misure non sono due voti da mettere
-d'accordo: sono **le due metà di un voto solo**, che l'agente cerca di rendere
-più alto possibile. Non c'è nessuna manopola da girare per decidere quanta
+Lo stesso conto fa evitare i posti da cui si vede male. Un vicolo e una
+piazza possono essere ugualmente vicini al bar, ma dal vicolo non si capisce
+nemmeno se la saracinesca è alzata: chi si infila lì resta nel dubbio comunque
+si giri, e il dubbio era la cosa che stava cercando di togliersi.
+
+Il punto che conta è che quelle due misure non sono due voti da mettere
+d'accordo: sono le due metà di un voto solo, che l'agente cerca di rendere più
+alto possibile. Non c'è nessuna manopola da girare per decidere quanta
 curiosità concedere, perché la curiosità non è stata aggiunta: era lì
 dall'inizio, dentro quel voto.
 
@@ -336,23 +352,30 @@ posto, in questo libro, in cui compare un obiettivo fatto esattamente così.
 
 Nel capitolo sui Transformer, quando si racconta come un modello di linguaggio
 viene rifinito sulle preferenze delle persone, salta fuori una regola che lì
-viene chiamata la regola d'oro appesa in cucina: **insegui pure il voto più
-alto, ma non allontanarti troppo dalla ricetta di partenza**. Serve perché il
-giudice che dà i voti è un'imitazione e ha punti ciechi, e un cuoco lasciato
-libero finirebbe per cucinare per il giudice invece che per chi mangia.
+viene chiamata la regola d'oro appesa in cucina: «insegui pure il voto più alto,
+ma non allontanarti troppo dalla ricetta di partenza». Serve perché il giudice
+che dà i voti è un'imitazione e ha punti ciechi, e un cuoco lasciato libero
+finirebbe per cucinare per il giudice invece che per chi mangia.
 
 La somiglianza salta all'occhio: anche lì l'obiettivo è fatto di due pezzi,
 «ottieni quello che vuoi» più «resta vicino a com'eri». E non è soltanto una
-somiglianza. Quella regola pratica, nata nei laboratori che rifiniscono i
-modelli di linguaggio, è **lo stesso conto** che si fa qui, scritto con altre
-lettere: l'hanno verificato tre ricercatori in un articolo del 2022
+somiglianza. Quella regola pratica è **lo stesso conto** che si fa qui, scritto
+con altre lettere: l'hanno verificato tre ricercatori in un articolo del 2022
 {cite}`korbak2022rl`, e uno dei tre studia proprio l'inferenza attiva.
 
-Fermiamoci un secondo su che cosa vuol dire. La regola della cucina sembrava una
-toppa: un accorgimento pratico contro un guaio pratico. Si scopre invece che era
-la forma giusta fin dall'inizio, e che il pezzo «resta vicino a com'eri» non è
-una precauzione ma **metà della definizione** del problema. È il genere di
-guadagno che una teoria può dare anche a chi non la adotta.
+La regola della cucina sembrava una toppa: un accorgimento pratico contro un
+guaio pratico. Si scopre invece che era la forma giusta fin dall'inizio, e che
+il pezzo «resta vicino a com'eri» non è una precauzione ma **metà della
+definizione** del problema. È il genere di guadagno che una teoria può dare
+anche a chi non la adotta.
+
+I pezzi, però, non fanno lo stesso mestiere di qua e di là. La ricetta di
+partenza non è quello che il cuoco vuole: quello gliel'ha scritto il giudice su
+un foglio a parte, e la ricetta è soltanto il punto da cui si è messo a
+cucinare. Il pesce quel foglio non ce l'ha, e l'acqua a cui deve restare vicino
+è già tutto quello che vuole. La ricetta, in cambio, tiene in cucina anche i
+piatti che al giudice nessuno ha mai chiesto: è per questo che il cuoco non
+finisce a servire sempre lo stesso.
 
 `````
 
@@ -366,9 +389,8 @@ $$
 
 cioè la ricompensa stimata meno la divergenza dalla policy di partenza; nel
 controllo KL si minimizza un costo che somma il costo di stato e la divergenza
-da una distribuzione di riferimento. La struttura è la stessa, ma qui la
-somiglianza si stringe fino all'identità, e conviene farlo per esteso perché
-costa tre righe.
+da una distribuzione di riferimento. La struttura è la stessa, e in tre righe la
+somiglianza si stringe fino all'identità.
 
 A prompt $x$ fissato, poniamo
 $\tilde{P}(y) = \pi_{\text{ref}}(y \mid x)\,e^{\,r_\phi(x, y)/\beta}$ e
@@ -449,11 +471,11 @@ cercare, ed è quasi sempre la parte che decide che cosa il sistema diventerà.
   che si desidera sta nello stesso posto in cui sta quello che ci si aspetta.
 - La regola d'oro della cucina, quella con cui si rifiniscono i modelli di
   linguaggio («insegui il voto, ma non allontanarti dalla ricetta di partenza»),
-  non è una toppa: è **lo stesso conto** di questa sezione scritto con altre
+  non è una toppa: è **lo stesso conto** dell'energia libera scritto con altre
   lettere, e qualcuno l'ha dimostrato nel 2022.
-- Attenzione a non prendere questa sezione per il seguito delle altre: è una
-  teoria di come funzionano gli esseri viventi, non il modo in cui oggi si
-  costruiscono i programmi che giocano o generano video.
+- Attenzione a non prendere l'inferenza attiva per il seguito delle tappe
+  precedenti: è una teoria di come funzionano gli esseri viventi, non il modo
+  in cui oggi si costruiscono i programmi che giocano o generano video.
 ```
 
 `````

@@ -87,8 +87,7 @@ Formalmente disponiamo di un grande insieme di audio non etichettato
 $\mathcal{D}_U$ (decine di migliaia di ore) e di un piccolo insieme
 etichettato $\mathcal{D}_L = \{(\mathbf{x}^{(i)}, \mathbf{y}^{(i)})\}$, con
 $|\mathcal{D}_L| \ll |\mathcal{D}_U|$ (il simbolo $\mathcal{L}$ resta
-riservato, come nel resto del libro, alle funzioni di perdita che incontreremo
-tra poco). Il pretraining ottimizza su $\mathcal{D}_U$
+riservato alle funzioni di perdita). Il pretraining ottimizza su $\mathcal{D}_U$
 un obiettivo che non richiede $\mathbf{y}$, un **pretesto** (*pretext task*)
 costruito dai dati stessi, per apprendere un encoder $f_\theta$ che mappa la
 forma d'onda in rappresentazioni contestuali. Il fine-tuning aggiunge sopra
@@ -132,25 +131,29 @@ audio, ne **copre** dei pezzetti, e chiede al modello di indovinare che cosa
 c'era sotto.
 
 Ma con un aiuto, perché inventare il suono esatto da zero sarebbe un'impresa
-disperata. Il modello ha davanti un piccolo elenco di pezzetti-tipo, una specie
-di alfabeto sonoro che si è costruito lui stesso: ognuno di quei pezzetti-tipo
-si chiama **unità**. Sotto la parte coperta c'è una di quelle unità, e il gioco
-è indovinare **quale**: gli si mette davanti quella giusta insieme a qualche
-unità sbagliata (i «distrattori») e deve solo riconoscerla. È un test a risposta
-multipla, e per rispondere bene l'orecchio è costretto a capire come è fatto il
-parlato.
+disperata. Il modello ha davanti un piccolo elenco di pezzetti-tipo che si è
+costruito lui stesso, una specie di alfabeto sonoro: ognuno si chiama
+**unità**. Sotto la parte coperta c'è una di quelle unità, e il gioco è
+indovinare **quale**: gli si mette davanti quella giusta insieme a qualche
+unità sbagliata (i «distrattori») e deve solo riconoscerla. È un test a
+risposta multipla, e per rispondere bene l'orecchio è costretto a capire come
+è fatto il parlato.
 
-La cosa notevole è quanto rende. Dopo aver ascoltato in questo modo decine di
-migliaia di ore di audio senza etichette, a wav2vec 2.0 bastano appena **dieci
-minuti** di parlato trascritto per imparare a riconoscere la voce con una
-qualità che, solo pochi anni prima, richiedeva centinaia di ore.
+Una regola tiene in piedi il gioco: le lettere di quell'alfabeto vanno usate
+tutte. Se il modello se la cavasse con tre, appiccicate a qualunque suono, sotto
+la parte coperta e fra i distrattori finirebbe sempre la stessa cosa, e da un
+test con tutte le risposte uguali non si impara niente.
 
-Quel numero, però, quasi sempre viene raccontato a metà, e la metà che manca è
-importante. Il modello che ha imparato ad ascoltare non ci arriva da solo:
-accanto a lui lavora un secondo modello, che non ascolta niente e sa soltanto
-com'è fatta la lingua, e che scarta le parole improbabili. Il risultato è della
-coppia. Ascoltare montagne di audio risolve il problema di quante trascrizioni
-servono; non insegna l'italiano.
+Dopo aver ascoltato in questo modo decine di migliaia di ore di audio senza
+etichette, a wav2vec 2.0 bastano appena **dieci minuti** di parlato trascritto
+per imparare a riconoscere la voce con una qualità che, solo pochi anni prima,
+richiedeva centinaia di ore.
+
+Quel numero però viene raccontato a metà. Il modello che ha imparato ad
+ascoltare non ci arriva da solo: accanto a lui lavora un secondo modello, che
+non ascolta niente, sa soltanto com'è fatta la lingua e scarta le parole
+improbabili. Il risultato è della coppia. Ascoltare montagne di audio risolve
+il problema di quante trascrizioni servono; non insegna l'italiano.
 
 `````
 
@@ -177,8 +180,7 @@ distanza. $\mathbf{z}_t$ viene proiettato su una griglia di $G \times V$
 logit perturbati con rumore di Gumbel e temperatura $\tau$; all'indietro si usa
 lo *straight-through*, che rende derivabile una scelta discreta. La differenza
 non è di dettaglio: senza logit non ci sarebbe niente da regolarizzare, ed è
-proprio la ragione per cui serve il termine di diversità di cui si dice tra
-poco.
+proprio la ragione per cui serve il termine di diversità.
 
 L'obiettivo è **contrastivo**. Per ogni passo mascherato $t$, dato il vettore
 contestuale $\mathbf{c}_t$, il modello deve riconoscere la vera unità quantizzata
@@ -206,8 +208,8 @@ di dati etichettati e 53.000 ore non etichettate in pre-addestramento
 Quel numero però va letto per intero, perché è la cifra più citata del paper ed
 è quasi sempre citata male: è ottenuto **decodificando con un modello di lingua
 Transformer**. Il solo modello acustico, nella stessa configurazione, sta a
-$40{,}2/38{,}7$ (la tabella in appendice che smonta il contributo della
-decodifica, e che vale la pena aprire); con un modello di lingua a 4-grammi si passa
+$40{,}2/38{,}7$ (la tabella in appendice del paper smonta il contributo della
+decodifica); con un modello di lingua a 4-grammi si passa
 a $6{,}6/10{,}3$, e solo con quello Transformer si arriva a $4{,}8/8{,}2$. Fra il
 primo e l'ultimo l'errore si divide per otto sul test pulito e per quasi cinque
 su quello difficile. Il pre-addestramento risolve il problema
@@ -294,21 +296,22 @@ come BERT predice la parola mascherata.
 
 `````{tab} Elementare
 
-Immagina di dover imparare a scrivere una lingua di cui nessuno conosce
-l'alfabeto. Cosa fai? Te ne inventi uno provvisorio: raggruppi i suoni che ti
-sembrano simili e dai a ogni gruppo un simbolo («suono numero 1», «suono
-numero 2») anche se sono etichette rozze, inventate da te. Poi giochi al
+Come si scrive una lingua che non ha alfabeto? Te ne inventi uno provvisorio:
+raggruppi i suoni che ti sembrano simili e dai a ogni gruppo un simbolo («suono
+numero 1», «suono numero 2»), etichette rozze, inventate da te. Poi giochi al
 solito gioco della parola coperta: nascondi dei tratti di audio e ti alleni a
-indovinare *quale simbolo* c'era sotto. Il bello arriva dopo: una volta che il
-modello ha imparato un po’, i suoi raggruppamenti diventano più sensati di
-quelli di partenza, e allora rifai l'alfabeto usando i suoi (più fine del
-primo) e ricominci. Un ciclo che si affina da solo, come uno schizzo ripassato
-più volte a matita finché il disegno emerge.
+indovinare *quale simbolo* c'era sotto. Il bello arriva dopo: quando ti sei
+fatto l'orecchio, i tuoi raggruppamenti diventano più sensati di quelli di
+partenza, e allora rifai l'alfabeto con quelli e ricominci. Un ciclo che si
+affina da solo, come uno schizzo ripassato più volte a matita finché il disegno
+emerge.
 
-Il trucco furbo è che l'alfabeto *non deve essere perfetto*: deve solo essere
-**coerente**, cioè assegnare lo stesso simbolo a suoni davvero simili. Anche se
-i nomi dei gruppi sono arbitrari, imparare a predirli costringe comunque il
-modello a capire la struttura del suono.
+Non serve che l'alfabeto sia giusto: serve che sia **coerente**, cioè che dia
+lo stesso simbolo a suoni davvero simili. Se la stessa «sss» finisse ora sotto
+un simbolo ora sotto un altro, a caso, ti alleneresti a indovinare
+l'imprevedibile e non ne verrebbe fuori niente. Quando invece i gruppi tengono,
+azzeccare il simbolo coperto costringe a capire come è fatto il suono, anche se
+quei nomi te li sei inventati tu.
 
 `````
 
@@ -318,14 +321,13 @@ HuBERT alterna due passi. **Passo di clustering** (offline): si estraggono
 feature dall'audio e le si raggruppa con un semplice **k-means**, ottenendo
 per ogni frame un'etichetta discreta $u_t \in \{1, \dots, V\}$, l’«unità
 nascosta», dove $V$ è il numero di cluster, cioè la taglia dell'inventario
-discreto: lo stesso ruolo del $V = 320$ di wav2vec 2.0. La lettera è diversa
-apposta rispetto a $\mathbf{z}_t$: qui
-$u_t$ è un **intero**, un nome di gruppo, mentre lo $\mathbf{z}_t$ di wav2vec 2.0 poche
-righe sopra è un **vettore** di numeri reali. È la differenza di fondo fra i due
-metodi, e conviene vederla nei simboli. Nella prima iterazione le feature sono
-banali MFCC; nelle
-successive si usano le rappresentazioni interne del HuBERT già addestrato, che
-danno cluster via via migliori. **Passo di predizione mascherata**: si
+discreto: lo stesso ruolo che $V$ ha in wav2vec 2.0, dove conta le voci di un
+singolo codebook. La lettera è diversa apposta rispetto a $\mathbf{z}_t$: qui
+$u_t$ è un **intero**, un nome di gruppo, mentre lo $\mathbf{z}_t$ di wav2vec
+2.0 è un **vettore** di numeri reali. È la differenza di fondo fra i due
+metodi, e si vede nei simboli. Nella prima iterazione le feature sono banali
+MFCC; nelle successive si usano le rappresentazioni interne del HuBERT già
+addestrato, che danno cluster via via migliori. **Passo di predizione mascherata**: si
 maschera un sottoinsieme $M$ di frame e si addestra il modello, alla BERT, a
 predire le pseudo-etichette dei frame mascherati:
 

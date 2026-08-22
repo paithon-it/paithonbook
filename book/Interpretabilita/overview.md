@@ -52,7 +52,7 @@ Il problema è che un modello non ci dice, di suo, *perché* decide come decide.
 È una **scatola nera**: entra una fotografia, esce una risposta, e in mezzo non
 si vede niente.
 
-Vale la pena fermarsi un momento su quel «in mezzo», perché di solito un
+Quel «in mezzo» merita un momento, perché di solito un
 computer fa quello che qualcuno gli ha scritto di fare, e verrebbe da dire:
 apriamo il programma e leggiamo cosa c'è scritto. Qui non funziona, e la
 ragione è che le regole di questo programma non le ha scritte nessuno. Il
@@ -100,22 +100,26 @@ singola risposta, e non si fa con gli stessi attrezzi.
 
 `````{tab} Elementare
 
-Immagina un professore che dà sempre voti giusti ma non spiega mai come li
-assegna. Finché i voti sono corretti ti fidi; ma il giorno che ne prendi uno
-che ti sembra ingiusto, senza una spiegazione non puoi né capire dove hai
-sbagliato né difenderti. E adesso il colpo di scena: quel professore i compiti
-non li legge, guarda la calligrafia. Nella sua classe, per caso, i più bravi
-scrivono anche più ordinato, e lui quella regola lì l'ha imparata bene: finché
-la classe è quella, i voti tornano davvero. È il cavallo Hans in cattedra:
-risposte «giuste» ottenute con il metodo sbagliato, e nessuno se ne accorge
-finché non arriva uno bravo con una brutta calligrafia.
+Ti fidi di un professore che dà sempre voti giusti e non spiega mai come li
+assegna? Finché i voti sono corretti sì; ma il giorno che ne prendi uno che ti
+sembra ingiusto, senza una spiegazione non puoi né capire dove hai sbagliato né
+difenderti. E il colpo di scena arriva qui: i compiti quel professore non li
+legge, guarda la calligrafia. Correggerne trenta a sera sono tre ore, la
+calligrafia si vede in un secondo, e nella sua classe, per caso, i più bravi
+scrivono anche più ordinato. La regola gli è costata pochissimo e funziona:
+nessuno gli ha mai dato un motivo per cercarne una migliore.
 
-Aprire la scatola nera vuol dire proprio questo: chiedere al modello non solo
-*cosa* ha deciso, ma *su cosa* si è basato. Nel caso degli husky e dei lupi,
-guardare le risposte non bastava: il modello ne azzeccava tante, e per capire
-che «vedeva» la neve e non il muso bisognava vedere su quali pixel poggiava.
-Contare quante volte un modello ha ragione non dice mai *perché* ha ragione, e
-un modello può averla per il motivo sbagliato.
+E funziona anche sui compiti che non aveva mai visto: puoi metterlo alla prova
+quanto vuoi, finché quelli che gli porti vengono da quella classe i voti
+tornano. È il cavallo Hans in cattedra, e nessuno se ne accorge finché non
+arriva uno bravo con una brutta calligrafia, o un somaro ordinatissimo. Lì il
+voto è sbagliato, e nel registro non c'è niente che lo faccia sospettare.
+
+Aprire la scatola nera vuol dire chiedere al modello non solo *cosa* ha deciso,
+ma *su cosa* si è basato. Nel caso degli husky e dei lupi, guardare le risposte
+non bastava: il modello ne azzeccava tante, e per capire che «vedeva» la neve e
+non il muso bisognava vedere su quali pixel poggiava. Contare quante volte un
+modello ha ragione non dice mai *perché* ha ragione.
 
 `````
 
@@ -190,6 +194,16 @@ sistema non discrimini e che chi si vede dire di no possa protestare con
 qualche argomento in mano. Una sola frase non può accontentarli tutti: la
 spiegazione «buona» dipende da a chi parli e a cosa gli serve.
 
+E come si fa a sapere se una spiegazione ha funzionato? Il modo più solido
+costa caro: la si dà all'impiegata allo sportello, sulle pratiche vere che ha
+sul tavolo, e si guarda se decide meglio di prima. Quando quell'impiegata non
+ce l'hai, scendi di un gradino e la stessa spiegazione la fai leggere a
+persone qualunque, su un caso inventato più semplice, almeno per vedere se si
+capisce. E quando non hai nemmeno loro, resta un ripiego: misurare una
+proprietà della spiegazione stessa, per esempio quanto è corta, sperando che
+corta voglia dire chiara. Quel gradino è il più debole di tutti, perché non
+c'è più nessuno da convincere.
+
 `````
 
 `````{tab} Superiore
@@ -217,30 +231,35 @@ ordine e ci accompagneranno per tutto il capitolo.
 
 `````{tab} Elementare
 
-A ogni metodo di spiegazione conviene fare tre domande.
+A ogni metodo di spiegazione si fanno tre domande.
 
 - **Il modello si legge da sé, o va spiegato dopo?** Alcuni modelli decidono
   con una catena di domande sì/no («il reddito supera i 30 000? se sì, l'età
-  supera i 40? se no, rifiuta»). Un modello così si disegna, e viene fuori una
-  cosa che si biforca a ogni domanda: per questo si chiama **albero di
-  decisione**. Leggerlo è come leggere una ricetta, e diciamo che è
-  **trasparente**. Un modello con milioni di numeri dentro no: lì serve uno
-  strumento esterno che lo interroghi *dopo* che ha finito di imparare, e una
+  supera i 40? se no, rifiuta»). Disegnato, un modello così si biforca a ogni
+  domanda, e per questo si chiama **albero di decisione**: leggerlo è come
+  leggere una ricetta, e diciamo che è **trasparente**. Un modello con milioni
+  di numeri dentro no: lì serve uno strumento esterno che lo interroghi *dopo*
+  che ha finito di imparare, e una
   spiegazione ottenuta così si chiama **post-hoc**, che in latino vuol dire
   «dopo il fatto».
 - **Vuoi capire tutto il modello, o una singola decisione?** «In generale questo
   modello dà molto peso al reddito» riguarda il modello **nel suo insieme**
   (spiegazione *globale*). «*Questo* prestito è stato rifiutato per via della
-  rata troppo alta» riguarda **una risposta sola** (spiegazione *locale*).
+  rata troppo alta» riguarda **una risposta sola** (spiegazione *locale*). Del
+  modello intero si può non venire a capo, e riuscire benissimo a spiegare la
+  pratica di un cliente solo.
 - **Lo strumento funziona solo per un tipo di modello, o per qualunque
   modello?** Alcuni metodi hanno bisogno di sapere com'è fatto il modello
   dentro, e valgono solo per quel tipo lì. Altri non lo aprono nemmeno: gli
-  passano un caso, si prendono la risposta, e tanto basta. Questi ultimi
-  funzionano con qualunque cosa, e si chiamano *agnostici*: la parola, presa a
-  prestito dalla filosofia, qui vuol dire soltanto «che non si pronuncia su
-  com'è fatto il modello».
+  passano un caso, si prendono la risposta, e ricominciano con un altro caso,
+  cento o mille volte, finché dalle risposte si intravede una regola. Questi
+  ultimi funzionano con qualunque cosa, e si chiamano *agnostici*: la parola,
+  presa a prestito dalla filosofia, qui vuol dire soltanto «che non si
+  pronuncia su com'è fatto il modello». Il prezzo lo pagano in tentativi,
+  perché quello che gli altri leggono dentro al modello loro lo devono
+  ricavare a furia di domande.
 
-Tre domande, e ogni tecnica del capitolo si colloca rispondendo a tutte e tre.
+Ogni tecnica del capitolo si colloca rispondendo a tutte e tre.
 
 `````
 
@@ -387,7 +406,7 @@ ogni fiore prima o poi faccia da esame. La media di quelle dieci prove è il
 numero scritto sopra. La differenza, dunque, è di **un punto e tre**. In
 cambio, la logica della foresta non si stampa più, perché non è una ricetta:
 sono centinaia di ricette che votano. È in questo scambio che nascono i metodi
-del capitolo, e conviene notare fin d'ora che qui lo scambio conviene poco.
+del capitolo; su questi fiori, però, conviene poco.
 
 ## Una spiegazione può convincere ed essere falsa
 
@@ -404,10 +423,18 @@ che guardi tu, ma non è stato nella testa del calciatore, che magari è solo
 scivolato. La spiegazione è *credibile* e *falsa* insieme, e il telecronista
 non sta mentendo: sta indovinando dall'esterno, ed è tutto quello che può fare.
 
-Uno strumento che spiega un modello dall'esterno è nella stessa posizione. Può
-produrre una motivazione che a noi sembra ragionevole e che non corrisponde a
-come il modello ha davvero deciso. Chiamiamo **fedeltà** quanto la spiegazione
-aderisce al vero funzionamento del modello, e **plausibilità** quanto ci
+E anche quando ci prende, ci prende su quel tiro lì. Per raccontarlo si è
+fatto in testa un calciatore semplificato, che in quei tre secondi si muove
+come quello vero; sul rigore all'ottantesimo lo stesso calciatore immaginario
+dirà una sciocchezza. Aver spiegato bene un'azione non vuol dire aver capito
+il giocatore.
+
+Uno strumento che spiega un modello dall'esterno è nella stessa posizione, che
+si costruisca una copia semplificata o che si limiti a interrogarlo caso per
+caso. Può produrre una motivazione che a noi sembra ragionevole e che non
+corrisponde a come il modello ha davvero deciso. Chiamiamo **fedeltà** quanto
+la spiegazione aderisce al vero funzionamento del modello, e **plausibilità**
+quanto ci
 convince. Sono due cose diverse, e la seconda è pericolosa proprio quando non
 c'è la prima: una spiegazione bella e infedele ci fa fidare di un modello che
 non lo merita.

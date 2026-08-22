@@ -41,49 +41,50 @@ li fa crollare di numero.
 
 `````{tab} Elementare
 
-Il riordino è il raccoglimento a fattor comune, aritmetica di seconda media, e
-si vede meglio con due conti affiancati.
+Mille persone in una sala, una per ogni parola della frase, e ognuna ha
+qualcosa da dire alle altre. Farle parlare tutte con tutte sono $499\,500$
+conversazioni, contando una volta sola ogni coppia; la tabella per segnarle ha
+un milione di caselle, perché ogni persona ha la sua riga e la sua colonna, sé
+stessa compresa. Il costo esplode perché quanto io do retta a te nasce
+dall'incontro fra me e te: quel numero non esiste finché non ci siamo visti.
 
-Immagina tre parole che rispondono, ciascuna col proprio contributo: $2$, $5$ e
-$9$. Una quarta parola fa la domanda, e quello che riceve è la somma dei tre
-contributi, ciascuno moltiplicato per quanto le somiglia.
+Cambiamo la regola. All'ingresso ognuno riceve un cartellino con un numero, e
+da lì in poi quanto io do retta a te è il mio numero per il tuo. Il peso *si
+spezza* in due, un pezzo mio e uno tuo.
 
-Se la somiglianza **non si spezza**, ogni peso è un numero a sé, che nasce dal
-confronto di quella coppia lì: il conto è $3\times 2 + 7\times 5 + 4\times 9$.
-Quei tre pesi ($3$, $7$, $4$) sono tre caselle della tabella grande, e vanno
-calcolati uno per uno; con mille parole che fanno mille domande, sono un
-milione di caselle.
+Tre persone hanno da consegnare $2$, $5$ e $9$. Prima chi voleva farsi un'idea
+doveva incontrarle tutte e tre, e ne usciva con
+$3\times 2 + 7\times 5 + 4\times 9$: tre pesi diversi, tre incontri, tre
+caselle della tabella grande. Adesso invece ciascuno dei tre ha già
+moltiplicato il proprio contributo per il proprio cartellino prima di
+consegnarlo, e a chi ascolta resta soltanto il numero suo, sempre quello:
+$3\times 2 + 3\times 5 + 3\times 9 = 3\times(2+5+9) = 3\times 16$. È il
+raccoglimento a fattor comune di seconda media. E quel $16$ non dipende da chi
+ascolta: la persona dopo farà $7\times 16$, quella dopo ancora $4\times 16$.
 
-Se invece la somiglianza **si spezza**, il peso diventa il prodotto di due
-numeri, uno di chi chiede e uno di chi risponde; il numero di chi risponde sta
-già dentro il suo contributo, e allora resta scoperto solo quello di chi
-chiede. Chi chiede porta sempre lo stesso numero, e il conto si raccoglie:
-$3\times 2 + 3\times 5 + 3\times 9 = 3\times(2+5+9) = 3\times 16$. Il bello è che la parte fra parentesi non dipende
-da chi chiede: la parola dopo farà $7\times 16$, quella dopo ancora
-$4\times 16$. Quel $16$ si calcola **una volta per tutte**, e le caselle della
-tabella grande non si scrivono mai.
+Allora il $16$ si calcola una volta sola. All'ingresso c'è un **registro**:
+chi entra ci somma il proprio contributo, sempre nelle stesse caselle, e chi
+vuole farsi un'idea non gira più per la sala, legge il totale e lo moltiplica
+per il proprio cartellino. Le persone restano mille, il registro è uno solo, e
+lo si aggiorna una volta per ciascuna: mille aggiornamenti invece di mezzo
+milione di conversazioni. Scrivere sul registro non è gratis, costa quante
+sono le sue caselle. Ma quel costo resta lo stesso man mano che la sala si
+riempie: raddoppia la gente e raddoppiano gli aggiornamenti, mentre le
+conversazioni diventerebbero quattro volte tante.
 
-La stessa cosa, raccontata come una scena. Riprendiamo l'assemblea del capitolo
-sui Transformer: mille parole sono mille persone, e farle parlare tutte con tutte sono quasi mezzo milione di conversazioni (le
-caselle della tabella sono un milione perché ogni parola ha la sua riga e la
-sua colonna, diagonale compresa; le conversazioni fra due parole diverse,
-contate una volta sola, sono $499\,500$). Il costo esplode perché
-ogni coppia va gestita a parte.
+Il numero sul cartellino può essere piccolissimo, mai negativo: se no chi
+entra cancellerebbe dal registro quello che gli altri ci hanno scritto, invece
+di aggiungercisi. Accanto al registro sta poi un secondo foglio, molto più
+corto, dove si segna quanto pesano in tutto le risposte raccolte: alla fine si
+divide per quel totale, così quello che esce è una media dei contributi e non
+una somma che si gonfia man mano che entra gente. Chi si presenta col
+cartellino azzerato trova un totale nullo, non ha niente per cui dividere, ed
+è lì che il meccanismo si pianta.
 
-Invece di metterli tutti a chiacchierare fra loro, teniamo un **registro
-riassuntivo**: è la somma dentro la parentesi di poco fa, fatta una volta per
-tutte. Ogni persona che entra ci somma il proprio contributo («io ho questa
-etichetta e porto questa informazione»), sempre nelle stesse caselle, e chi
-deve farsi un'idea non interroga più tutti a uno a uno: legge il registro, già
-bell'e riassunto. Le persone restano mille, ma il registro è uno solo, e lo si
-aggiorna una volta per ciascuna: mille aggiornamenti invece di mezzo milione di
-conversazioni.
-
-Il trucco sta tutto nel trovare un modo di riassumere che non perda ciò che
-serve, e questo è il punto delicato: un riassunto, per quanto ben fatto, tiene
-meno cose di un archivio completo. Il conto lo pagheremo più avanti in questa
-pagina, quando vedremo che cosa succede a un registro su cui si continua a
-scrivere senza mai cancellare. In matematica quel modo di misurare la somiglianza si chiama **kernel**.
+Il punto delicato è scegliere che cosa scrivere nel registro: un riassunto ben
+fatto tiene comunque meno cose di mille resoconti per intero. Un modo di
+misurare la somiglianza che si spezza in due pezzi, in matematica, si chiama
+**kernel**.
 
 `````
 
@@ -126,7 +127,7 @@ dove i passaggi sono tre, e conviene separarli perché è su questi che si regge
 il capitolo: il prodotto scalare è simmetrico, quindi
 $\phi(\mathbf{q}_i)^\top \phi(\mathbf{k}_j) = \phi(\mathbf{k}_j)^\top \phi(\mathbf{q}_i)$;
 uno scalare si può spostare a destra del vettore $\mathbf{v}_j$; e a quel
-punto è l'**associatività** del prodotto a permettere di raccogliere
+punto è l’**associatività** del prodotto a permettere di raccogliere
 $\phi(\mathbf{q}_i)$ fuori dalla somma su $j$, che si stacca dalla query e si
 condensa in un'unica matrice
 $\mathbf{S} = \sum_j \mathbf{v}_j\, \phi(\mathbf{k}_j)^\top \in \mathbb{R}^{d_v\times C}$ (il «registro»
@@ -310,8 +311,7 @@ esattamente come alla prima.
 La {numref}`fig-stato-ricorrente` mostra la parte "economica" del patto: la
 memoria non cresce. Ma mostra anche, senza dirlo, il prezzo: dentro ogni cella
 i contributi di parole diverse finiscono sommati fra loro, e una volta sommati
-non si possono più separare. È il tema di *Il limite dell'accumulo*, più avanti
-in questa pagina.
+non si possono più separare. È il tema di *Il limite dell'accumulo*.
 
 `````{tab} Elementare
 
@@ -328,7 +328,7 @@ parola, perché il seguito non esiste ancora: lo stai inventando. Qui l'unica
 cosa che ti porti dietro è il foglio-registro, che aggiorni a ogni parola e che
 non cresce mai.
 
-Il bello è che le due forme danno lo stesso risultato, e allora si usa ciascuna
+Le due forme danno lo stesso risultato, e allora si usa ciascuna
 dove conviene: il modello si allena con quella che sfrutta tutte le unità di
 calcolo insieme, e scrive con quella che occupa sempre la stessa memoria. La KV
 cache dei Transformer, al contrario, obbliga a trascinare una pila che si
@@ -336,9 +336,21 @@ allunga a ogni parola generata.
 
 Un'avvertenza, perché il conto non sembri troppo bello: la forma «tutta
 insieme», fatta nel modo più ovvio, si ritrova per le mani la tabella grande di
-prima. Per evitarla si lavora **a blocchi**: si taglia il testo in pezzi, e
-dentro ogni pezzo si fa tutto insieme, dove la tabella è piccola perché le
-parole sono poche; poi il registro passa da un pezzo al successivo. In fila
+prima.
+
+C'è una seconda strada, e sembra risolvere tutto: dare a ognuna delle dieci
+persone il registro già aggiornato fino al punto in cui comincia il suo
+capitolo, così nessuno aspetta nessuno. Quei registri intermedi però bisogna
+prima costruirli, e il modo di costruirli senza mettersi in fila ne produce uno
+per ogni parola: con un testo di ottomila parole sono ottomila fogli invece di
+uno. I conti da fare restano proporzionali alla lunghezza, ma il tempo che si
+perde a scrivere, tenere e rileggere quella pila si mangia il guadagno di
+lavorare in dieci.
+
+La strada che si prende davvero sta in mezzo, e si lavora **a blocchi**: si
+taglia il testo in pezzi, e dentro ogni pezzo si fa tutto insieme, dove la
+tabella è piccola perché le parole sono poche; poi il registro passa da un
+pezzo al successivo. In fila
 vanno i pezzi, che sono pochi e grossi; il grosso del lavoro, quello dentro ai
 pezzi, resta in parallelo. Il risultato non cambia, e i blocchi torneranno in
 tutto il resto del capitolo.
@@ -397,11 +409,10 @@ bene il vantaggio della memoria costante quando $n$ diventa enorme.
 `````
 
 Concretamente, il passo con cui il modello genera una parola è poche righe: una
-tabella di numeri che vive in un posto solo e a ogni parola viene aggiornata
-sul posto.
-Chi non programma può leggerci una cosa sola, ed è quella che conta: `S` entra
-ed esce dalla funzione sempre della stessa taglia, e in tutto il codice non c'è
-nessuna lista che si allunga.
+tabella di numeri che vive in un posto solo e a ogni parola viene aggiornata sul
+posto. La cosa che conta si legge a colpo d'occhio: `S` entra ed esce dalla funzione
+sempre della stessa taglia, e in tutto il codice non c'è nessuna lista che si
+allunga.
 
 ```python
 import torch
@@ -455,6 +466,12 @@ pagine fa?») è impossibile. L'attenzione dei Transformer,
 quella che tiene tutti gli scontrini, quel dettaglio ce l'ha ancora; il registro
 riassuntivo può averlo perso.
 
+Trentadue non è un numero a caso: è quante etichette un foglio così riesce a
+tenere separate, e vale a patto che siano diverse fra loro il più possibile. È
+il caso migliore, quello che nella pratica non capita: le etichette non le
+sceglie nessuno apposta distinte, le assegna il modello, e due parole qualunque
+finiscono per somigliarsi un po’.
+
 E la domanda ovvia (perché non prendersi un foglio più grande?) ha una
 risposta altrettanto ovvia: si può, ed è una delle manopole di chi progetta il
 modello, ma si paga. Un foglio più largo vuol dire più caselle da aggiornare e
@@ -505,9 +522,9 @@ la *regola delta*). Sono esattamente i due fili della prossima sezione.
 - Far parlare ogni parola con tutte le altre è un'esplosione di conversazioni:
   mille parole sono quasi mezzo milione di scambi. Sostituire quel confronto a
   due a due con un **registro riassuntivo**, che ciascuno aggiorna una volta
-  sola, porta il conto a mille aggiornamenti: da esplosivo a proporzionale alla
-  lunghezza del testo, ed è esattamente ciò che si intende per costo
-  **lineare**.
+  sola, porta il conto a mille aggiornamenti, ciascuno grande quanto il registro
+  e sempre uguale a sé: da esplosivo a proporzionale alla lunghezza del testo,
+  ed è esattamente ciò che si intende per costo **lineare**.
 - Il registro è un **foglio di dimensione fissa**: ogni parola ci scrive la
   propria informazione sotto la propria etichetta, e per rispondere a una
   domanda lo si rilegge, invece di rovistare nella pila degli scontrini.

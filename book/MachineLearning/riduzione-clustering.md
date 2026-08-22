@@ -79,7 +79,9 @@ sparpagliate, e devi guardarti attorno. In un **grattacielo** (tre dimensioni)
 mille persone sono quasi nessuno: due o tre per piano. Aggiungi una dimensione,
 cioè una colonna, e il posto disponibile si gonfia ancora, mentre le persone
 restano mille: in dieci, cento, mille dimensioni lo spazio è così vasto che
-tutti sono lontanissimi da tutti, e la parola «vicino» perde senso.
+tutti sono lontanissimi da tutti, e la parola «vicino» perde senso. Il tuo
+amico è lontano, e lo sono anche tutti gli altri in modo così simile che
+sapere chi è il più vicino non ti aiuta a trovarlo.
 
 C'è un secondo effetto, ancora più controintuitivo, ed è quello della figura:
 in tante dimensioni quasi tutto lo spazio si accalca **sui bordi**. Il conto si
@@ -143,7 +145,7 @@ trova e tiene solo le prime.
 
 `````{tab} Elementare
 
-Pensa a uno stormo di uccelli fotografato da lontano. Se lo stormo è disteso
+Uno stormo di uccelli, fotografato da lontano. Se lo stormo è disteso
 in lunghezza, la fotografia più informativa la scatti di lato, cogliendo la
 direzione in cui gli uccelli sono più sparpagliati: da quella prospettiva
 distingui bene chi è avanti e chi è indietro. Fotografarlo di punta, invece, li
@@ -153,21 +155,34 @@ La PCA fa esattamente questo con i dati. Cerca la direzione lungo cui i punti
 sono **più dispersi** (la chiama *prima componente principale*), perché è lì
 che si nasconde la maggior parte delle differenze tra un esempio e l'altro.
 
-Poi cerca la seconda, e qui c'è un vincolo: dev'essere **perpendicolare** alla
-prima. La ragione è che due direzioni non perpendicolari raccontano in parte la
-stessa cosa, e quel pezzo lo si conterebbe due volte; perpendicolari, invece,
+Prima di scattare, però, ci si mette d'accordo sul metro. Se dello stormo
+misuri la lunghezza in metri e l'altezza in centimetri, i numeri diranno che
+gli uccelli sono sparpagliatissimi in altezza, e sarà soltanto colpa delle
+unità: due direzioni si possono confrontare quando le misure stanno sulla
+stessa scala. E lo sparpagliamento si conta a partire dal centro dello stormo,
+non da un punto qualsiasi del cielo.
+
+Trovata la prima direzione, ne cerca una seconda, e qui c'è un vincolo:
+dev'essere **perpendicolare** alla prima. La ragione è che due direzioni non
+perpendicolari raccontano in parte la stessa cosa, e quel pezzo lo si
+conterebbe due volte; perpendicolari, invece,
 non si sovrappongono affatto, e quello che la seconda aggiunge è tutta roba
 nuova. Poi la terza, perpendicolare alle prime due, e così via. (Di direzioni
 perpendicolari alla prima ce ne sono infinite: la seconda componente è quella,
 fra tutte, lungo cui i punti restano più dispersi.)
+
+C'è un caso in cui la domanda non ha una risposta sola: uno stormo a palla,
+sparpagliato uguale in tutte le direzioni. Lì nessuna direzione batte le
+altre, e una coppia di direzioni perpendicolari vale quanto un'altra.
 
 Se le prime due o tre direzioni catturano quasi tutta la
 dispersione, possiamo buttare le altre e rappresentare ogni dato con due o tre
 numeri soltanto, quasi senza perdite.
 
 La «dispersione» ha un nome tecnico, **varianza**, ed è la stessa parola che
-abbiamo già usato parlando del compromesso bias-varianza. **Ma non è la stessa
-cosa, e conviene tenerle separate.** Là la varianza era l'irrequietezza di un
+abbiamo già usato parlando del compromesso bias-varianza. Ma non indica la
+stessa cosa, e tenere separati i due usi evita un equivoco. Là la varianza era
+l'irrequietezza di un
 *modello*: quanto cambiano le sue risposte se lo riaddestriamo su un campione
 diverso. Qui è una proprietà dei *dati*, e non c'è nessun modello in giro:
 quanto sono sparpagliati i punti lungo una direzione. Stessa parola perché il
@@ -381,6 +396,22 @@ punti che erano vicini in origine. Il risultato sono mappe bellissime, dove
 categorie diverse (cifre scritte a mano, tipi di cellule, generi musicali) si
 separano in isole ben distinte.
 
+Chi sia «amico» non lo decide una soglia uguale per tutti: c'è il ragazzino
+che frequenta trenta persone e quello che ne frequenta tre. Si stabilisce in
+partenza quanti compagni stretti contare, all'incirca, e attorno a ciascuno si
+allarga o si stringe il cerchio finché ne stanno dentro quel tanto. Poi si
+mettono d'accordo le due versioni: se lui la considera un'amica e lei lo
+considera un conoscente, sul foglio finisce una via di mezzo fra le due.
+
+Il foglio, poi, è piccolo, e tutte le distanze insieme non possono tornare.
+Pretendere che anche le lontananze siano fedeli vorrebbe dire stringere tutti
+verso il centro, e gli amici finirebbero ammucchiati. Con i lontani, invece,
+si può essere di manica larga: basta che stiano lontani, quanto esattamente
+non importa. Anche gli sbagli, del resto, non pesano uguale: separare due amici
+costa carissimo e il disegno lo evita in ogni modo, mentre mettere due
+sconosciuti un po' più in qua o un po' più in là non costa quasi niente, e il
+disegno li sistema come gli torna comodo.
+
 Ma qui serve un'avvertenza onesta, perché è la causa di molti errori.
 Su queste mappe **non fidarti delle distanze grandi**: due isole lontane sul
 foglio non sono necessariamente più diverse di due isole vicine, l'algoritmo
@@ -504,12 +535,26 @@ tira-e-molla, ripetuto finché tutto si stabilizza:
 2. **Assegna** ogni persona al ritrovo più vicino: si formano due gruppi.
 3. **Sposta** ogni ritrovo esattamente al centro del suo gruppo (la media
    delle posizioni).
-4. Torna al passo 2. Con i ritrovi spostati, qualcuno cambierà gruppo; si
-   ricalcolano i centri; e si continua.
+4. Ricomincia dall'assegnazione. Con i ritrovi spostati, qualcuno cambierà
+   gruppo; si ricalcolano i centri; e si continua.
 
-Passo dopo passo i centri smettono di muoversi e nessuno cambia più gruppo:
-l'algoritmo si è fermato. Il numero di ritrovi (qui due) è il famoso $k$, che
-devi decidere tu in anticipo.
+Perché il tira-e-molla finisca, e non giri all'infinito, c'è una ragione
+precisa. Tieni il conto della scomodità: per ogni persona la distanza dal suo
+ritrovo moltiplicata per sé stessa, e poi tutte sommate; così una persona
+lasciata lontanissima conta più di dieci lasciate un po' scomode.
+L'assegnazione non può farlo salire: ognuno passa al ritrovo più
+vicino, quindi cammina meno di prima, o uguale. Nemmeno lo spostamento lo fa
+salire, perché fra tutti i punti in cui potresti piantare un ritrovo quello
+che rende minimo il conto del suo gruppo è proprio il centro. Un totale che non
+sale mai, e che sotto zero non può andare, prima o poi smette di scendere: i
+centri si fermano e nessuno cambia più gruppo.
+
+Fermarsi, però, non vuol dire aver trovato la sistemazione più comoda che
+c'era: vuol dire che nessuno guadagna a cambiare ritrovo per conto suo, e che
+ogni ritrovo sta già in mezzo ai suoi. Un giro, in compenso, costa poco: ogni
+persona confrontata con ogni ritrovo, e basta, anche quando le persone sono
+milioni. Il numero di ritrovi (qui due) è il famoso $k$, che devi decidere tu
+in anticipo.
 
 `````
 
@@ -618,23 +663,27 @@ aiutano a sceglierlo.
 `````{tab} Elementare
 
 Il **metodo del gomito** (*elbow*). Provi diversi valori di $k$ e, per
-ciascuno, misuri quanto sono «strette» le famiglie che ne escono, cioè la somma
-delle distanze dei punti dal proprio centro. Poi metti quei risultati su un
+ciascuno, misuri quanto sono «strette» le famiglie che ne escono: è lo stesso
+conto della scomodità di poco fa, le distanze dal proprio centro moltiplicate
+ciascuna per sé stessa e poi sommate. Poi metti quei risultati su un
 grafico: $k$ in orizzontale, la strettezza in verticale. La curva scende
 sempre, perché più centri ci sono e più ognuno è vicino ai suoi, e al limite
 con un centro per punto la somma è zero; ma a un certo punto smette di
 scendere ripida e prosegue quasi piatta. Il grafico fa una piega, come un
 braccio piegato, ed è quello il **gomito**. Il $k$ del gomito è di
 solito una buona scelta: da lì in poi aggiungere gruppi non compra quasi più
-niente.
+niente. Il guaio è che la piega la devi riconoscere tu: certe curve scendono
+lisce, senza nessun angolo, e davanti allo stesso grafico due persone scelgono
+due $k$ diversi.
 
 La **silhouette** (si legge *siluèt*, e in francese vuol dire «profilo», perché
 misura quanto un gruppo è ben ritagliato). Per ogni punto si misurano due
 distanze medie: quanto dista, in media, dai compagni del suo gruppo, e quanto
 dista, in media, dai membri del gruppo estraneo più vicino. Poi si fa la
-differenza fra la seconda e la prima e la si rimpicciolisce fino a stare fra
-$-1$ e $+1$. Vicino a $+1$ vuol dire che il punto è molto più vicino ai suoi
-che agli altri, cioè è ben piazzato; attorno a zero che sta sul confine;
+differenza fra la seconda e la prima e la si divide per la più grande delle
+due, così il risultato sta sempre fra $-1$ e $+1$. Vicino a $+1$ vuol dire che
+il punto è molto più vicino ai suoi che agli altri, cioè è ben piazzato;
+attorno a zero che sta sul confine;
 negativo che i vicini di casa sono nel gruppo sbagliato, cioè che lui è nel
 gruppo sbagliato. La media su tutti i punti dice quanto è «pulita» la
 partizione: si sceglie il $k$ che la rende più alta.
@@ -690,7 +739,10 @@ sperduto. DBSCAN ragiona così. Ha due manopole: un **raggio di vicinato**
 di vicini** perché una zona conti come densa. Con queste, parte da un punto in
 una zona affollata e «cresce» il cluster contagiando i vicini, e i vicini dei
 vicini, finché la densità regge. Quando i punti si diradano, il cluster
-finisce.
+finisce. Proprio sull'orlo c'è un caso a metà: il lampione che di vicini ne ha
+pochi, troppo pochi perché da lui il quartiere continui a crescere, ma che sta
+a un passo da uno che ne ha tanti. Quello nel quartiere entra lo stesso, e ne
+segna il bordo.
 
 Due regali rispetto a k-means. Primo: **non devi dire quanti gruppi cerchi**
 (li scopre lui, contando le zone dense). Secondo: i punti isolati, quelli in
@@ -698,6 +750,15 @@ mezzo al buio, non vengono forzati dentro a nessun gruppo: DBSCAN li marca
 come **rumore**. E poiché segue la forma della densità, riconosce famiglie di
 qualunque sagoma: anche due lune intrecciate, dove k-means fallisce
 miseramente ({numref}`fig-clustering-metodi`).
+
+Il prezzo si paga tutto sulle manopole. Il raggio lo scegli una volta e vale
+per l'intera foto: se nello stesso scatto ci sono una metropoli fittissima e
+un paese di poche case, un valore buono per tutti e due non c'è. Stretto
+abbastanza da tenere distinti i quartieri della metropoli, il paese non
+risulta mai abbastanza fitto e finisce tutto nel rumore; largo abbastanza da
+vedere il paese, la metropoli diventa una macchia sola. Per orientarsi si
+guarda, lampione per lampione, quanto dista il quinto vicino: dove quel numero
+fa un salto, lì passa il confine fra il fitto e il rado.
 
 `````
 
@@ -807,46 +868,50 @@ anche cosa impara di ciascun gruppo.
 
 `````{tab} Elementare
 
-Torna sul difetto di k-means che abbiamo già incontrato: preferisce i gruppi
-tondi e della stessa taglia, perché tutto ciò che sa di un gruppo è **dove sta
-il suo centro**. Se un gruppo è una nuvola allungata e uno è una pallina
-stretta, il centro da solo non basta a distinguerli, e i punti sul confine
-finiscono dalla parte sbagliata.
+Due comitive fanno merenda nello stesso prato, una in fila lungo la riva sotto i
+pioppi, l'altra stretta in cerchio attorno alla griglia. Chi dei gruppi sa
+soltanto dove ne cade il centro, come k-means, li vuole tondi e della stessa
+taglia, e manda l'ultimo della fila alla griglia, che gli è più vicina.
 
-Le **misture gaussiane** cambiano due cose insieme. (Il nome viene da Carl
-Friedrich Gauss: una *gaussiana* è la curva a campana, quella che descrive
-l'altezza delle persone o gli errori di una misura, con tanti valori
-addensati attorno a una media e sempre meno man mano che ci si allontana. Una
-«mistura» di gaussiane è semplicemente più campane sovrapposte, una per
-gruppo.)
+Sopra ogni comitiva si può disegnare una campana, alta dove la gente è fitta e
+bassa dove si dirada: lunga lungo la riva, tonda attorno alla griglia. È la
+curva di Carl Friedrich Gauss, quella dell'altezza delle persone e degli errori
+di misura, e due campane, una per comitiva, sono una **mistura gaussiana**. Di
+ogni gruppo si impara il centro e anche la forma, quanto si allarga e in che
+direzione. Così l'ultimo della fila resta dei suoi.
 
-La prima: di ogni gruppo non imparano solo il centro, ma anche la **forma**.
-Quanto è largo, quanto è allungato, in che direzione è orientato. Un gruppo
-non è più un puntino, è una macchia con un suo profilo.
+Chi siede a metà strada riceve una risposta divisa invece di un nome secco, nove
+decimi della fila e un decimo della griglia; nel folto di una comitiva sarebbe
+quasi tutta da una parte. Lì in mezzo l'incertezza c'è davvero, e chi conta le
+porzioni preferisce quel dubbio a un'etichetta che finge una sicurezza
+inesistente.
 
-La seconda: l'appartenenza smette di essere un sì o un no. Ogni punto riceve
-una risposta come «sono al 90% del gruppo A e al 10% del gruppo B». Per i
-punti nel cuore di una nuvola la risposta sarà quasi certa; per quelli sul
-confine sarà divisa, ed è giusto che lo sia, perché sul confine l'incertezza
-c'è davvero. Chi decide una strategia commerciale su quei clienti farebbe bene
-a saperlo, invece di ricevere un'etichetta che finge una sicurezza inesistente.
+Sotto c'è un racconto di come il prato si è riempito, e chi si limita a
+raggruppare non ce l'ha. Ognuno è arrivato in due mosse: ha scelto la comitiva,
+e quella che ne raccoglie sette su dieci esce sette volte su dieci; poi si è
+seduto, vicino ai suoi il più delle volte, in disparte di rado. Imparare vuol
+dire trovare le campane, e la frequenza del sorteggio, che rendono più
+plausibile il prato che hai davanti. E chi sta disteso in mezzo al campo da
+calcio, dove nessuna campana aspettava nessuno, è un'anomalia.
 
-Come si impara tutto questo? Con un ragionamento circolare che si scioglie
-girandolo. *Se* sapessi a quale gruppo appartiene ogni punto, calcolare centro
-e forma di ogni gruppo sarebbe una media. *Se* conoscessi centri e forme,
-calcolare l'appartenenza di ogni punto sarebbe un confronto. Non sai né l'una
-né l'altra cosa, quindi tiri a indovinare e poi alterni: aggiorni le
-appartenenze usando le forme attuali, aggiorni le forme usando le appartenenze
-attuali, e ripeti. Ogni giro la spiegazione dei dati migliora un pochino,
-finché smette di migliorare.
+Come si trovano le campane? Girando un ragionamento circolare. Sapendo di chi è
+ogni persona, centro e forma di una comitiva sono una media; sapendo centro e
+forma, dire di chi è una persona è un confronto. Non sai né l'una né l'altra,
+quindi tiri a indovinare e alterni. Nessuno conta per intero da una parte sola:
+chi è nove decimi della fila pesa nove volte tanto nel centro della fila che in
+quello del cerchio.
 
-Quel ciclo si chiama **algoritmo EM**, dalle due mosse che alterna:
-*expectation* (l'attesa, cioè indovinare a quale gruppo appartiene ogni punto,
-date le forme attuali) e *maximization* (la massimizzazione, cioè ricalcolare
-centri e forme al meglio, date quelle appartenenze). È una delle idee più
-riusate di tutta la statistica: lo stesso schema, sotto altri nomi, fa
-funzionare i vecchi sistemi di riconoscimento vocale e uno dei tokenizzatori
-che il libro incontrerà più avanti.
+Ogni giro spiega il prato non peggio del giro prima, e quasi sempre un po’
+meglio; quando la spiegazione smette di crescere, ci si ferma. Dove ci si ferma
+dipende da dove si è partiti, quindi si riprova da più partenze. Il giro si
+chiama **algoritmo EM**, dalle sue due mosse, l'attesa (*expectation*, di chi è
+ognuno viste le forme) e la massimizzazione (*maximization*, centri e forme
+viste le attribuzioni).
+
+Niente vieta a una campana di stringersi su una persona sola, seduta in
+disparte, e capita davvero. Quella la descrivi alla perfezione, il racconto
+sembra il migliore di tutti, e di una comitiva non hai imparato niente. Per
+questo alle campane si impone una larghezza minima.
 
 `````
 
@@ -945,8 +1010,8 @@ della silhouette, che sono diagnostiche geometriche senza un modello sotto.
 `````
 
 Conviene imparare a riconoscere l'algoritmo EM, perché ricompare in tutto il
-libro e ogni volta sotto un altro nome. Lo schema è sempre lo stesso, e
-conviene tenerlo come sagoma: *quando la cosa che renderebbe facile la stima è
+libro e ogni volta sotto un altro nome. Lo schema è sempre lo stesso, ed è una
+sagoma da tenere a mente: *quando la cosa che renderebbe facile la stima è
 proprio quella che non osservi, stimala e alterna*.
 
 Tre posti in cui lo si ritrova. Il primo è

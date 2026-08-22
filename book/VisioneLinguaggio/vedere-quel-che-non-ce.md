@@ -48,6 +48,14 @@ davvero bisogna fare meglio dell'ottanta per cento, e nessuno gliel'ha chiesto:
 l'addestramento premia la risposta media giusta, e la risposta media giusta si
 ottiene anche a occhi chiusi. Guardare non è vietato, è semplicemente facoltativo.
 
+E l'abitudine parte avvantaggiata. Le frasi la tastiera le macina da anni; la
+telecamera gliel'hanno attaccata ieri, e il filo fra le due è nuovo di zecca, per
+cui il primo giorno non guardare costa meno. Poi c'è il materiale su cui ha
+imparato. Le descrizioni delle fotografie le ha scritte qualcuno che aveva
+davanti due righe di didascalia e non la foto, e dove leggeva «tavola
+apparecchiata» ha messo piatto, coltello e forchetta. Quella forchetta era lì
+prima di ogni domanda.
+
 `````
 
 `````{tab} Superiore
@@ -158,8 +166,9 @@ niente.
 
 `````{tab} Elementare
 
-Un esame a crocette si fa facile o difficile scegliendo le risposte sbagliate da
-mettere accanto a quella giusta. Qui è lo stesso, e i modi sono tre.
+Un esame si fa facile o difficile decidendo che cosa chiedere. Qui si risponde
+soltanto sì o no, e la difficoltà sta tutta nell'oggetto assente su cui si
+interroga. I modi sono tre.
 
 Il primo: peschi un oggetto a caso dall'elenco delle categorie. «C'è una zebra?»
 davanti a un tavolo apparecchiato è una domanda regalata: nessuna abitudine
@@ -175,9 +184,9 @@ l'abitudine spinge con tutta la sua forza, ed è esattamente la spinta che
 vogliamo misurare.
 
 La cosa importante viene alla fine: non si guarda un punteggio, se ne guardano
-tre, e si guarda quanto scendono passando dal primo modo al terzo. Quella
-discesa non racconta quanto il modello sia bravo. Racconta a quale abitudine si
-sta appoggiando.
+tre, e si guarda quanto scendono passando dalla domanda regalata a quella
+cattiva. Quella discesa non racconta quanto il modello sia bravo. Racconta a
+quale abitudine si sta appoggiando.
 
 `````
 
@@ -212,8 +221,8 @@ con risposta sì e metà con risposta no, così che entrambe le strategie
 degeneri si collochino al livello del caso in accuratezza. La risposta è un
 token, quindi il confronto con la verità è esatto e riproducibile. E accanto
 alle metriche si riporta la **quota di sì**,
-$\hat{\pi} = \frac{1}{n}\sum_{i} \mathbb{1}[\hat{y}_i = \text{sì}]$, che è il
-vero strumento diagnostico: un $\hat{\pi}$ lontano da $0{,}5$ dice che il
+$\hat{\rho} = \frac{1}{n}\sum_{i} \mathbb{1}[\hat{y}_i = \text{sì}]$, che è il
+vero strumento diagnostico: un $\hat{\rho}$ lontano da $0{,}5$ dice che il
 modello non sta rispondendo alla domanda, sta esprimendo una disposizione.
 
 `````
@@ -311,14 +320,17 @@ domande e risposte finiscono nel materiale di studio insieme a tutto il resto.
 
 C'è anche un secondo difetto, più banale e forse peggiore: molte domande si
 possono indovinare senza guardare la fotografia. Queste prove, a differenza
-delle domande sì-o-no di poco fa, sono a crocette, e la risposta sta spesso
-nella domanda stessa, nelle alternative proposte accanto («che animale c'è nella
-foto? a) un cane b) una sedia c) un tavolo d) una nuvola») o in cose che chiunque
-sa del mondo.
+delle domande a cui si risponde sì o no, sono a crocette, e la risposta sta
+spesso nella domanda stessa, nelle alternative proposte accanto («che animale
+c'è nella foto? a) un cane b) una sedia c) un tavolo d) una nuvola») o in cose
+che chiunque sa del mondo.
 
 Per fortuna il controllo che li scopre tutti e due è il più semplice che si possa
 immaginare: rifare l'esame **togliendo l'immagine**. Quello che il modello porta
-a casa a occhi chiusi è quello che non ha imparato guardando. Chi pubblica un
+a casa a occhi chiusi è quello che non ha imparato guardando. E per sapere quale
+dei due difetti si ha davanti, quel voto si mette accanto a quello di un compagno
+che ha letto gli stessi libri e non ha mai fatto il corso con le fotografie;
+batterlo a occhi chiusi vuol dire che la fotocopia è girata. Chi pubblica un
 punteggio senza aver riportato anche quello sta chiedendo di essere creduto sulla
 parola.
 
@@ -345,7 +357,7 @@ multimodali, non dal guardare).
 Il caso è aggravante proprio per un protocollo come quello appena descritto,
 che poggia sulle annotazioni di un corpus fotografico pubblico, cioè su un
 corpus che sta nella miscela di addestramento di quasi ogni sistema di cui si
-vuole misurare l'allucinazione. Va detto con la cautela che merita: che quel
+vuole misurare l'allucinazione. Qui serve cautela: che quel
 corpus sia nella miscela è noto, che questo gonfi i punteggi è un rischio
 documentato altrove e non una misura pubblicata su questo protocollo. Il rimedio
 resta comunque quello, e costa una riesecuzione: riportare il punteggio **a
@@ -440,8 +452,8 @@ con $\mathbf{z}_1 \approx \mathbf{z}_2$ le due risposte partono costrette a
 somigliarsi, mentre le risposte corrette sono opposte. Non è una dimostrazione di
 impossibilità, perché $L$ non viene maggiorato e per una rete profonda è enorme;
 è la constatazione che quella distinzione la troverebbe solo chi la cercasse, e
-che il modello non la cerca, mentre tutto (il priore del blocco precedente) lo
-spinge a rompere il pareggio in un altro modo. Chi volesse l'affermazione
+che il modello non la cerca, mentre il priore linguistico lo spinge a rompere il
+pareggio in un altro modo. Chi volesse l'affermazione
 informazionale in senso forte deve introdurre del rumore, che nei sistemi veri
 c'è (quantizzazione, precisione ridotta, augmentation in addestramento): allora
 $\mathcal{I}(\mathbf{Z}; \mathbf{I})$ cala davvero e la disuguaglianza torna a
@@ -512,8 +524,8 @@ come si sceglie il token.
 Il trucco è fare la stessa domanda due volte: la prima guardando la fotografia,
 la seconda guardando la stessa fotografia rovinata di proposito, coperta di
 disturbo finché non ci si distingue quasi più niente. Poi si tiene solo la
-differenza. Per brevità diremo «a occhi aperti» e «a occhi chiusi», ma gli occhi
-nel secondo caso restano socchiusi, non chiusi del tutto come qualche pagina fa:
+differenza. Per brevità diremo «a occhi aperti» e «a occhi chiusi», ma nel
+secondo caso gli occhi restano socchiusi e non chiusi del tutto, perché
 l'immagine c'è ancora, solo che è illeggibile.
 (Qualcuno la toglie del tutto, ed è la variante più radicale dello stesso gesto.)
 
@@ -529,6 +541,12 @@ scelta in partenza alle parole che a occhi aperti valevano almeno un decimo
 della più probabile: dentro quella rosa si confronta, fuori non si guarda. E il
 conto da pagare è semplice: due letture invece di una, quindi il doppio del
 tempo per ogni parola scritta.
+
+Restano due modi di farsi male. Se si spinge forte sulla sottrazione sparisce
+anche la forchetta delle tavole in cui la forchetta c'è davvero, e si è barattato
+un errore con un altro. E se la bilancia che pesa la fotografia le due cose non
+le aveva separate, chiedere due volte non le separa: la differenza rimescola le
+parole in classifica, non aggiunge un pixel.
 
 `````
 
@@ -556,9 +574,9 @@ $$
 
 dove $\alpha \ge 0$ regola la forza della correzione e $\beta \in (0,1)$ (in
 pratica intorno a $0{,}1$) è la soglia di plausibilità che impedisce alla
-sottrazione di promuovere token del tutto improbabili. Vale la pena notare che
-la differenza dei due logit è, a meno delle costanti di normalizzazione, proprio
-il **contributo visivo** isolato nella scomposizione all'inizio della sezione:
+sottrazione di promuovere token del tutto improbabili. La differenza dei due
+logit è, a meno delle costanti di normalizzazione, proprio
+il **contributo visivo** isolato nella scomposizione della perdita:
 si sta decodificando su una **stima** della mutua informazione puntuale invece
 che sulla probabilità totale, con la stessa approssimazione di allora, resa
 qui ancora più larga quando $\mathbf{I}'$ è un'immagine degradata e non l'assenza
@@ -628,25 +646,29 @@ gradino.
 
 Un braccio robotico riceve sette numeri: di quanto spostare la mano nelle tre
 direzioni dello spazio, di quanto ruotarla nei tre versi, quanto stringere la
-pinza. Sono numeri continui, e un modello che scrive parole non sa dire numeri
-continui: sa scegliere una voce da un elenco. Allora si taglia ciascun numero in
-256 gradini, come le tacche di un righello, e si dà a ogni gradino un nome preso
-in prestito dal vocabolario, fra le parole che non si usano quasi mai.
+pinza. Sono numeri continui, e un modello che scrive parole sa soltanto
+scegliere una voce da un elenco. Allora si taglia ciascun numero in 256 gradini,
+come le tacche di un righello, e si dà a ogni gradino un nome preso in prestito
+dal vocabolario, fra le parole che non si usano quasi mai.
 
 Da quel momento «sposta la mano di un centimetro in avanti» è una parola, e
 produrre un movimento è la stessa identica operazione che produrre una frase:
-scegliere sette parole di fila. Non serve inventare niente di nuovo. Si riusa
-tutto quello che il capitolo ha costruito, l'encoder che guarda, il connettore
-che traduce, il modello che scrive; cambia soltanto che cosa c'è scritto
-nell'elenco finale.
+scegliere sette parole di fila. Si riusano i pezzi di prima, l'encoder che
+guarda, il connettore che traduce, il modello che scrive; cambia soltanto che
+cosa c'è scritto nell'elenco finale. E mentre impara a muoversi continua a
+leggere fotografie e frasi come faceva prima, per cui può eseguire un ordine che
+in nessuna dimostrazione ha mai visto: che cosa sia una banana non gliel'ha
+insegnato il robot.
 
-Il prezzo si legge sul righello. Se la mano si può spostare al massimo di cinque
-centimetri per volta, in avanti o all'indietro, il righello è lungo dieci
-centimetri: i 256 gradini se li dividono, e distano meno di quattro decimi di
-millimetro l'uno dall'altro. Il braccio esegue sempre il
-gradino più vicino a quel che gli è stato detto, quindi sbaglia al massimo di
-mezzo gradino: due decimi di millimetro, che vanno benissimo per afferrare una
-tazza e molto meno per infilare un ago.
+Il prezzo si legge sul righello. Quanto farlo lungo lo dicono le dimostrazioni
+raccolte, buttando via l'uno per cento più esagerato a ciascun capo: un solo
+strattone finito lì per sbaglio stirerebbe il righello e allontanerebbe le tacche
+per tutti. Se la mano si può spostare al massimo di cinque centimetri per volta,
+in avanti o all'indietro, il righello è lungo dieci centimetri: i 256 gradini se
+li dividono, e distano meno di quattro decimi di millimetro l'uno dall'altro. Il
+braccio esegue sempre il gradino più vicino a quel che gli è stato detto, quindi
+sbaglia al massimo di mezzo gradino: due decimi di millimetro, che vanno
+benissimo per afferrare una tazza e molto meno per infilare un ago.
 
 `````
 
@@ -678,13 +700,13 @@ traiettorie insegnano a muoversi, il resto della miscela impedisce al modello di
 dimenticare quel che sapeva, ed è la ragione per cui un'istruzione mai comparsa
 in nessuna dimostrazione può comunque essere eseguita, dato che il significato
 delle parole viene da altrove. OpenVLA {cite}`kim2024openvla` porta la stessa
-ricetta in una versione aperta e più piccola, con due accorgimenti che vale la
-pena isolare. Gli estremi $a_j^{\min}$ e $a_j^{\max}$ non sono il minimo e il
+ricetta in una versione aperta e più piccola, con due accorgimenti da
+isolare. Gli estremi $a_j^{\min}$ e $a_j^{\max}$ non sono il minimo e il
 massimo osservati ma i **quantili all'1% e al 99%** delle azioni di
 addestramento, perché un solo campione anomalo allargherebbe la scala e
 sprecherebbe i gradini. E l'encoder visivo **concatena per canali** le feature
 di un modello contrastivo e di uno auto-supervisionato di sola visione:
-esattamente il rimedio suggerito dal blocco precedente, adottato qui perché un
+esattamente il rimedio dei due encoder affiancati, adottato qui perché un
 orientamento sbagliato non è più una parola sbagliata.
 
 `````
@@ -808,8 +830,9 @@ di una fotografia che non ha guardato.
   di chi guarda davvero e sbaglia due volte su cinque.
 - Una parte del guaio viene da prima, dalla bilancia: esistono coppie di
   fotografie che una persona distingue in un istante e che l'encoder misura quasi
-  uguali. Quel che quella bilancia non separa non si recupera più a valle, e il
-  modello, invece di dire «non lo so», riempie il buco con l'abitudine.
+  uguali. La differenza c'è ancora, nel numero che la bilancia scrive, ma è così
+  piccola che nessuno ha mai insegnato al modello a guardarla; e lui, invece di
+  dire «non lo so», riempie il buco con l'abitudine.
 - Tre rimedi, nessuna cura: farsi dire **anche dove** (le coordinate l'abitudine
   non le regala), **chiedere due volte** e tenere la differenza fra occhi aperti e
   occhi chiusi, far **ricontrollare** la risposta da qualcuno di indipendente.

@@ -37,49 +37,39 @@ personaggio della sezione successiva.
 
 `````{tab} Elementare
 
-La temperatura è una scossa. Immagina la pallina ferma in una conca che non è
-la valle giusta: se il paesaggio resta immobile, non ne uscirà mai. Ora scuoti
-tutto, come faresti con una scatola da scarpe che ha dentro una pallina: con
-scossoni forti salta fuori anche dalle valli profonde e gira dappertutto; con
-scossoni deboli resta confinata nei fondovalle. Il trucco è scuotere forte
-all'inizio e sempre più piano, così ha modo di uscire dalle conche mediocri
-finché può e di assestarsi in una valle profonda quando la calma torna.
+La temperatura è una scossa. La pallina è ferma in una conca che non è la
+valle giusta, e se il paesaggio resta immobile non ne esce più. Scuoti tutto,
+come faresti con una scatola da scarpe che ha dentro una pallina: con scossoni
+forti salta fuori anche dalle valli profonde e gira dappertutto; con scossoni
+deboli resta confinata nei fondovalle. Il trucco è scuotere forte all'inizio e
+sempre più piano, così esce dalle conche mediocri finché può e si assesta in
+una valle profonda quando la calma torna.
 
-I neuroni nascosti, invece, sono taccuini interni: caselle che non
-corrispondono a nessuna casella del dato ma servono alla rete per annotare
-regolarità sue («qui c'è una riga verticale», «questi due angoli vanno
-insieme»).
+I neuroni nascosti sono taccuini interni: caselle che non corrispondono a
+nessuna casella del dato e servono alla rete per annotare regolarità sue
+(«qui c'è una riga verticale», «questi due angoli vanno insieme»).
 
-E l'apprendimento diventa un confronto fra due modi di stare al mondo. Nella
-fase di *veglia* la macchina guarda i dati veri e prende nota di quali coppie
-di caselle si accendono insieme. Le coppie, e non le singole caselle, perché è
-lì che sta tutto quello che questa rete sa: i suoi legami collegano due caselle
-per volta, quindi la sola cosa che può imparare è quali coppie vanno
-d'accordo. Nella fase di *sogno* la macchina viene lasciata libera di
-inventarsi configurazioni per conto suo, e si prende nota della stessa cosa.
+Imparare diventa un confronto fra due modi di stare al mondo. Nella *veglia*
+la macchina guarda i dati veri e segna quali coppie di caselle si accendono
+insieme; le coppie, perché i suoi legami collegano due caselle per volta, e
+quali coppie vanno d'accordo è tutto quello che può imparare. Nel *sogno* la
+si lascia inventare configurazioni per conto suo, e si segna la stessa cosa.
 
-Poi i legami si ritoccano per rinforzare ciò che accade da svegli più che in
-sogno, e indebolire il contrario. Vale la pena dire che cosa vuol dire
-«ritoccare un legame» nel linguaggio del paesaggio, perché è il ponte fra le
-due immagini del capitolo: sono i legami a decidere l'altezza di ogni punto,
-quindi cambiarli *è* deformare il paesaggio. Rinforzare i legami che si vedono
-da svegli abbassa il terreno sotto i dati veri; indebolire quelli che si vedono
-solo in sogno lo alza sotto le fantasie. Un'unica mossa, guardata da due
-parti. Si smette quando i sogni sono
-indistinguibili dalla veglia: a quel punto quello che la macchina si immagina
-ha le stesse regolarità di quello che ha visto, ed è questo che si intende
-quando si dice che «si è fatta un modello dei dati».
+Poi si ritoccano i legami, e ritoccare un legame vuol dire deformare il
+paesaggio: sono i legami a decidere l'altezza di ogni punto. Rinforzare quello
+che si vede da svegli abbassa il terreno sotto i dati veri; indebolire quello
+che si vede solo in sogno lo alza sotto le fantasie. Un gesto solo, guardato
+da due parti. Si smette quando i sogni sono indistinguibili dalla veglia:
+quello che la macchina si immagina ha le stesse regolarità di quello che ha
+visto.
 
-Il guaio, come vedremo, è il tempo, e non soltanto quello del sogno. Sognare
-«per bene» vuol dire una cosa precisa: lasciare la macchina a scuotersi finché
-le proporzioni non smettono di cambiare, cioè finché guardarla per altre mille
-volte non sposta più i conteggi. È il momento in cui si può dire di aver
-fotografato il paesaggio e non un pezzo di passeggiata, e arriva tardissimo,
-perché la macchina prima deve aver visitato ogni regione il numero di volte
-che le spetta. E nella macchina originale costava carissima anche la veglia,
-per lo stesso motivo: anche con i dati veri sotto gli occhi, le caselle
-nascoste dovevano assestarsi allo stesso modo, e quell'attesa andava rifatta
-da capo per ogni singolo dato dell'archivio.
+Il guaio è il tempo. Sognare per bene vuol dire lasciarla scuotere finché le
+proporzioni non smettono di cambiare, cioè finché altre mille occhiate non
+spostano più i conteggi: è il momento in cui si è fotografato il paesaggio e
+non un pezzo di passeggiata, e arriva tardissimo. Nella macchina originale
+costava carissima anche la veglia: con i dati veri sotto gli occhi i taccuini
+dovevano assestarsi allo stesso modo, e quell'attesa andava rifatta da capo
+per ogni singolo dato dell'archivio.
 
 `````
 
@@ -152,10 +142,12 @@ il «sogno»). Il «$\propto$» nasconde un $1/T$: il tasso di apprendimento
 effettivo dipende dalla temperatura a cui si raccolgono le statistiche. La
 derivazione è quella della sezione sulla partizione, applicata due volte:
 $\partial E/\partial w_{ij} = -s_i s_j$, e poiché i dati vincolano solo i
-visibili bisogna passare da $p(\mathbf{v}) = \sum_{\mathbf{h}}
-p(\mathbf{v},\mathbf{h})$, il che fa comparire una **seconda** media, quella
-sui nascosti dati i visibili. Da lì i due termini. Nella macchina di Boltzmann originale, a connettività generale,
-il problema non è solo il secondo termine: lo sono tutti e due. Con i visibili
+visibili bisogna passare alla marginale, cioè sommare la congiunta su tutte le
+configurazioni dei nascosti: compare così una **seconda** media, quella sui
+nascosti dati i visibili. Da lì i due termini.
+
+Nella macchina di Boltzmann originale, a connettività generale, il problema
+non è solo il secondo termine: lo sono tutti e due. Con i visibili
 bloccati sui dati la media $\langle s_i s_j \rangle_{\text{dati}}$ non ha
 forma chiusa, perché le unità nascoste sono interconnesse fra loro, e va
 stimata anch'essa portando una catena all'equilibrio, per *ogni* vettore
@@ -200,9 +192,10 @@ sta sbagliando (non è l'energia, che è il voto dato a una singola risposta: è
 un voto dato all'intera macchina, e si guarda una volta ogni tanto), e
 imparare vuol dire farlo scendere: se scende si è sulla strada giusta, e
 quando smette di scendere si è arrivati. Con il sogno abbreviato quel numero
-non c'è. Nessuno sa dire quale sia la cosa che la
-macchina sta migliorando, e quindi nessuno può garantire che stia andando
-verso qualcosa invece che in tondo. In pratica, sulle reti di allora,
+non c'è, e non perché sia difficile da calcolare o perché nessuno l'abbia
+ancora trovato: un numero del genere qui non esiste, e i ritocchi che la
+macchina fa non stanno scendendo lungo niente. Nessuno può garantire che stia
+andando verso qualcosa invece che in tondo. In pratica, sulle reti di allora,
 funzionava benissimo.
 
 `````
@@ -277,8 +270,7 @@ quel modo di partire, e oggi le RBM non si usano quasi più.
 
 Il modo di ragionare con cui erano state costruite, invece, è vivo e vegeto:
 nella prossima sezione si vede perché, e quanto costi davvero misurare il
-paesaggio intero, cioè il gesto entrato in scena in apertura di questa pagina,
-quello che trasforma un'altezza in una percentuale.
+paesaggio intero, cioè il gesto che trasforma un'altezza in una percentuale.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -300,8 +292,9 @@ quello che trasforma un'altezza in una percentuale.
   ristretta** (in sigla **RBM**: i taccuini interni scollegati fra loro)
   sistema la veglia; la **contrastive divergence** bara sul sogno, concedendo
   alla macchina un istante solo di fantasia a partire da una cosa vera.
-  Funziona, ma è una scorciatoia, non una soluzione: nessuno sa più che cosa la
-  macchina stia esattamente migliorando.
+  Funziona, ma è una scorciatoia, non una soluzione: il numero che dice quanto
+  la macchina sta sbagliando, qui, non esiste, e i suoi ritocchi non stanno
+  scendendo lungo niente.
 - Da qui in avanti l'altezza del paesaggio diventa una percentuale, e per
   trasformarla bisognerebbe aver misurato il paesaggio intero, valle per
   valle. È il conto che l'apertura del capitolo chiamava **funzione di

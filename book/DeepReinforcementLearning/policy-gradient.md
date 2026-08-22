@@ -49,8 +49,16 @@ regoliamo direttamente le probabilità con cui l'animale sceglie.
 
 Una **policy** è esattamente questo: data una situazione, dice con quale
 probabilità compiere ciascuna azione. In italiano si direbbe «strategia», ed è
-quello che vuol dire; il libro usa le due parole come sinonimi, perché *policy*
-è il termine che si legge dappertutto e conviene averlo in mano.
+quello che vuol dire; *policy* è la parola che si legge dappertutto, e le due
+valgono l'una per l'altra.
+
+Il premio, però, quasi mai arriva subito. In una seduta di addestramento il cane
+fa una decina di cose di fila e il biscotto compare in fondo: quello che si
+vuole far crescere è il bottino di tutta la seduta. Un biscotto che arriva fra
+dieci mosse conta meno di uno che arriva adesso, perché nel frattempo può
+succedere di tutto, e quanto meno conta lo decidiamo noi. Poi una seduta va bene
+e la successiva male, con lo stesso cane e la stessa tendenza: il conto che
+interessa è la media su tante sedute, mai su una sola.
 
 `````
 
@@ -99,14 +107,28 @@ probabile la prossima volta". Se ha perso, il contrario. Ripetuto migliaia di
 volte, questo semplice riflesso spinge il comportamento verso le mosse buone
 senza che nessuno debba mai spiegare *perché* siano buone.
 
-Il difetto salta subito all'occhio, ed è il motivo per cui esiste tutto il
-resto della sezione: il giudizio arriva **solo alla fine**, ed è uno solo per
-tutta la partita. Se hai vinto, l'algoritmo rende più probabili anche le due o
+Il difetto salta subito all'occhio, ed è quello da cui nasce tutto il seguito:
+il giudizio arriva **solo alla fine**, ed è uno solo per tutta la partita. Se
+hai vinto, l'algoritmo rende più probabili anche le due o
 tre mosse pessime che avevi fatto per strada; se hai perso, rende meno probabili
 anche quelle buone. E due partite giocate con la stessa identica strategia
 possono finire in modi opposti per puro caso, con la correzione che cambia
 segno di conseguenza. Il risultato è un apprendimento che **balla**: va nella
 direzione giusta in media, ma a strattoni, e ci mette moltissimo.
+
+Un primo ritocco costa niente. Quando i punti si segnano per strada, e non solo
+alla fine, una mossa non può cambiare quelli già segnati prima di lei: la si
+giudica soltanto su quello che viene dopo. La mossa dell'ultimo minuto risponde
+dell'ultimo minuto, e la spinta che riceve è tanto più forte quanto più alto è
+il bottino che l'ha seguita.
+
+C'è poi una condizione che regge tutto il resto: le partite da cui si impara
+devono essere state giocate con la strategia che si sta correggendo. Chi studia
+le registrazioni di come giocava l'anno scorso sta correggendo il giocatore
+dell'anno scorso, e più cambia, meno quelle registrazioni parlano di lui. Finché
+si gioca una partita, si guarda com'è andata e si corregge, la condizione è
+rispettata senza doverci pensare; diventa un problema appena si vuole spremere
+la stessa partita più volte.
 
 `````
 
@@ -167,9 +189,9 @@ $$
 $$
 
 con $\alpha$ il passo di apprendimento. E qui c'è un'avvertenza di rigore, perché
-l'aggiornamento appena scritto **non** è la formula del teorema: il $\gamma^{\,t}$
+l'aggiornamento appena scritto non è la formula del teorema: il $\gamma^{\,t}$
 davanti a ciascun addendo è sparito. Ometterlo è la prassi, ed è la prassi che
-seguiamo anche noi, ma va detto che cosa costa: la direzione che si ottiene è
+seguiamo anche noi, e costa: la direzione che si ottiene è
 leggermente distorta rispetto a $\nabla_\theta J(\theta)$, in cambio di non
 soffocare il segnale dei passi lontani nel tempo, che con lo sconto esatto
 peserebbero quasi nulla. Chi ha letto la sezione
@@ -213,6 +235,26 @@ Attore e critico non sono due persone, naturalmente: sono due reti neurali, che
 si allenano insieme sulla stessa partita. Una impara a decidere, l'altra impara
 a prevedere come andrà a finire.
 
+Quel «previsto» l'allenatore lo fissa guardando la situazione, prima che la
+mossa sia giocata: «da qui, di solito, si porta a casa un pareggio». È questo
+che rende onesto il commento che verrà dopo. Un allenatore che decidesse quanto era
+difficile *dopo* aver visto la mossa, e alzasse l'asticella solo davanti alle
+mosse che non gli piacciono, insegnerebbe al giocatore i propri gusti invece del
+gioco.
+
+E l'allenatore si può sbagliare. Il suo «meglio del previsto» vale quanto
+valgono le sue previsioni, e all'inizio non ne sa più del giocatore: sono
+giudizi affrettati presi per buoni. Il verdetto di fine partita, quello, non
+sbagliava mai; era soltanto rumoroso, perché una partita sola dice poco. Si
+scambia una cosa con l'altra, commenti immediati in cambio del rischio che siano
+storti, ed è lo scambio su cui si regge il metodo.
+
+Fra i due estremi c'è una manopola, e la si gira dove si vuole: quanto aspetta
+l'allenatore prima di parlare. Una mossa sola, e parla subito fidandosi tutto
+del proprio fiuto. Dieci mosse, e si fida un po’ meno, perché nel frattempo ha
+visto succedere delle cose. Fino alla fine della partita, che è tornare al prova
+e ricorda.
+
 `````
 
 `````{tab} Superiore
@@ -236,7 +278,7 @@ $$
 $$
 
 Da qui in avanti scriveremo $A_t$ per questa stima, com'è d'uso in deep RL, ma
-vale la pena ricordare che è uno stimatore e non la definizione: coincide con
+resta uno stimatore e non la definizione: coincide con
 $A^\pi$ solo se il critico ha ragione, cioè se $V_\phi = V^\pi$.
 
 $A_t$ misura di quanto l'azione compiuta ha superato le *aspettative*
@@ -341,10 +383,36 @@ cerca il guadagno non ha nessun motivo di farlo.
 `````{tab} Elementare
 
 Il rischio, quando aggiorni una strategia, è esagerare: un solo passo troppo
-lungo può rovinare l'apprendimento di ore intere. PPO fa esattamente ciò che
-suggerisce il nome (*proximal*, «vicino»): fa in modo che allontanarsi molto
-dalla strategia attuale non convenga, così i passi vengono piccoli e prudenti.
-Piccoli, ma tanti.
+lungo può rovinare l'apprendimento di ore intere. Il nome di PPO promette la
+cura (*proximal* vuol dire «vicino»): tenere la strategia nuova a poca distanza
+da quella che ha giocato le partite.
+
+Il freno, però, agisce da un lato solo, e quale lato dipende da com'è andata la
+mossa. Su una mossa che era andata bene, il guadagno si ferma quando la si è
+resa molto più probabile di prima: è lì che si rischia di strafare. Se invece
+quella stessa mossa buona è diventata molto meno probabile, il premio a
+rimetterla su resta intero, perché quello non è il pericolo. Sulle mosse andate
+male i due lati si scambiano. In due di quei quattro casi, insomma, il
+freno non frena niente, e «vicino» resta il proposito: quanto le due strategie
+si somiglino davvero, va misurato.
+
+Vietare sul serio i passi lunghi si può, ed è la strada più vecchia, quella che
+PPO ha semplificato: si misura di quanto la strategia nuova differisce dalla
+vecchia e, se la differenza supera una soglia, il passo si accorcia finché
+rientra. Quel modo la promessa la mantiene, e costa: la misura e l'accorciamento
+vanno rifatti a ogni passo, ed è parecchia macchina in più da costruire e da far
+girare. PPO ottiene quasi lo stesso effetto con due righe dentro un allenamento
+normale.
+
+Al numero che si fa salire si aggiunge poi un piccolo premio per chi non si
+riduce a giocare sempre la stessa mossa: serve a non far irrigidire la strategia
+su un'unica risposta prima di aver visto abbastanza.
+
+L'ultima cosa è la meno elegante. Quanto PPO vada meglio del suo predecessore,
+misurato, dipende poco dal guinzaglio: viene soprattutto da nove accorgimenti su
+come i numeri vengono scalati, tagliati e avviati dentro il programma. Fra
+l'algoritmo raccontato su una pagina e il programma che lo esegue c'è spesso più
+distanza che fra due algoritmi diversi.
 
 `````
 
@@ -360,7 +428,8 @@ $$
 
 dove $\rho_t = \dfrac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{\text{old}}}(a_t\mid s_t)}$
 è il rapporto tra la nuova e la vecchia policy, e $\epsilon$ (tipicamente
-$0{,}2$) fissa quanto le è concesso spostarsi. Quel rapporto non è un
+$0{,}2$) fissa la larghezza della fascia entro cui lo spostamento continua a
+fruttare. Quel rapporto non è un
 espediente inventato qui: è il **rapporto di importance sampling** incontrato
 nel capitolo precedente, quello che permette di valutare una policy con dati
 generati da un'altra, troncato a un passo solo. E il suo difetto è lo stesso
@@ -378,14 +447,15 @@ andata peggio del previsto ($A_t<0$) i due lati si scambiano: il taglio scatta
 sotto $1-\epsilon$, e sopra $1+\epsilon$ non scatta affatto. Con $\epsilon=0{,}2$,
 $A_t=-1$ e $\rho_t=5$, cioè un rapporto più di quattro volte l'estremo
 superiore della fascia ($1{,}2$), l'obiettivo vale $-5$ e la sua derivata rispetto a
-$\rho_t$ vale $-1$: gradiente intero, niente tosatura. Metà dei campioni fuori
-banda, insomma, non viene tosata affatto.
+$\rho_t$ vale $-1$: gradiente intero, niente tosatura. Dei quattro casi fuori
+banda (vantaggio positivo o negativo, rapporto sopra o sotto la fascia), in due
+la tosatura non interviene affatto.
 
 Conviene dire con precisione che cosa questo garantisce, perché è meno di quanto
 il nome suggerisca. È un'euristica **del primo ordine e per campione**, non un
 vincolo: niente impedisce a $\rho_t$ di finire fuori dall'intervallo, il
 gradiente si annulla solo dove il campione è già stato tosato (e si è appena
-visto quanto poco spesso sia), e PPO fa più
+visto in quali casi non lo sia), e PPO fa più
 epoche di minibatch sugli stessi dati. Ancora prima: al primo passo di ogni
 aggiornamento la nuova policy coincide con la vecchia, tutti i rapporti valgono
 $1$ e **nulla è tosato**, quindi quel passo è esattamente quello dell'obiettivo
@@ -429,7 +499,7 @@ scomodo da implementare. PPO osserva che l'effetto che si vuole (non
 allontanarsi troppo) si ottiene quasi tutto con un `min` e un `clip` dentro un
 normale ottimizzatore del primo ordine.
 
-Va aggiunto, per completezza, che a rigore l'obiettivo che si implementa non è
+A rigore l'obiettivo che si implementa non è
 solo $L^{\text{CLIP}}$: gli si sommano la perdita del critico e un piccolo
 **bonus di entropia**,
 
@@ -447,7 +517,7 @@ modesto.
 
 Sarebbe comodo chiudere dicendo che PPO ha vinto perché il tosaggio è
 «abbastanza corretto», ma è una spiegazione data a posteriori che la letteratura
-non regge, e vale la pena guardarla in faccia per due ragioni.
+non regge, e conviene guardarla in faccia per due ragioni.
 
 La prima è che il confronto con TRPO non è fra un'euristica e un teorema. Il
 teorema di miglioramento monotono chiede il **massimo** della KL su tutti gli
@@ -488,10 +558,12 @@ via quello che funzionava.
   lento e altalenante, perché il giudizio arriva solo alla fine.
 - **Actor-Critic** affianca al giocatore un allenatore a bordo campo che
   commenta ogni mossa ("meglio del previsto", "peggio del previsto"):
-  l'apprendimento diventa più rapido e più stabile. **A3C** fa giocare molti
-  attori in parallelo; **PPO** cambia la strategia solo di poco per volta
-  (passi piccoli e prudenti, ma tanti) ed è quello che si prova per primo,
-  perché perdona gli errori di taratura più degli altri.
+  l'apprendimento diventa più rapido e più stabile, al prezzo che finché
+  l'allenatore è inesperto i suoi commenti sono storti. **A3C** fa giocare
+  molti attori in parallelo; **PPO** scoraggia i passi lunghi invece di
+  vietarli: a chi si allontana troppo dalla strategia che ha giocato le
+  partite toglie il premio, non la possibilità. È quello che si prova per
+  primo, perché perdona gli errori di taratura più degli altri.
 ```
 `````
 
@@ -506,7 +578,7 @@ via quello che funzionava.
   $A_t$, riducendo la varianza: la baseline non distorce (basta che non dipenda
   dall'azione), il bootstrapping sì. **A3C** parallelizza gli attori; **PPO**
   scoraggia i passi lunghi con il *clipping*, che è un'euristica del primo
-  ordine e **non** un vincolo di trust region; il suo vantaggio misurato su
+  ordine e non un vincolo di trust region; il suo vantaggio misurato su
   TRPO viene in larga parte dalle ottimizzazioni di implementazione
   {cite}`engstrom2020implementation`.
 ```

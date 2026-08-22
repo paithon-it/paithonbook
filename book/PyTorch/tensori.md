@@ -40,13 +40,27 @@ direzioni lungo cui si estende ({numref}`fig-tensori-scala`):
 - una **pila di tabelle** (una foto a colori: una griglia per il rosso, una
   per il verde, una per il blu) ha tre assi.
 
+Gli assi si contano in un modo solo: sono le coordinate che devi dare per
+arrivare a un numero preciso. Per il voto di uno studente basta la posizione
+nella fila, una coordinata sola. Per un pixel della foto a colori ne servono
+tre: quale colore, quale riga, quale colonna. Per la temperatura nessuna,
+perché quel numero è già lì da solo.
+
 Due parole per due cose, e sono inglesi perché così le troverai scritte nel
 codice: il numero di assi si chiama **rank**, le lunghezze lungo ciascun asse
 formano la **shape** (la "forma"). Una foto a colori $256 \times 256$ è, in
 PyTorch, un tensore di shape $(3, 256, 256)$: rank 3, e i tre colori vengono
-scritti **per primi**, prima delle due misure della griglia. È una convenzione,
+scritti per primi, prima delle due misure della griglia. È una convenzione,
 non una legge di natura (altre librerie mettono i colori in fondo), e conviene
 saperlo perché quando la forma non torna il primo sospetto è averla invertita.
+
+La scala non si ferma alla foto singola. Alle reti le immagini si danno a
+mazzetti, trentadue per volta, e il mazzetto porta con sé il suo asse: la shape
+diventa $(32, 3, 256, 256)$, quattro coordinate per arrivare a un pixel (quale
+foto, quale colore, quale riga, quale colonna). È la forma con cui si lavora
+tutti i giorni. Una cosa sola resta uguale a ogni gradino della scala: dentro un
+tensore i numeri sono tutti dello stesso tipo, tutti interi o tutti con la
+virgola, e non si mescolano.
 
 `````
 
@@ -117,18 +131,44 @@ a.reshape(3, 1)  # nuova forma: gli stessi numeri in colonna, 3x1
 
 `````{tab} Elementare
 
-Tre cose da notare. Primo: il risultato compare all'istante, con i numeri già
-dentro (puoi controllare ogni passaggio come su una calcolatrice, senza
-"avviare" nulla). Secondo: il simbolo `@` è quello del prodotto fra matrici, e
-su due semplici file di numeri come queste fa la cosa più elementare che quel
-prodotto sappia fare, cioè moltiplicarle a due a due e sommare tutto
+I numeri escono già scritti, e così ogni passaggio si controlla come su una
+calcolatrice, senza "avviare" nulla.
+
+Il simbolo `@` è quello del prodotto fra matrici, e su due semplici file di
+numeri come queste fa la cosa più elementare che quel prodotto sappia fare,
+cioè moltiplicarle a due a due e sommare tutto
 ($1 \cdot 10 + 2 \cdot 20 + 3 \cdot 30 = 140$); è il **prodotto scalare**, e
-il conto è scritto per esteso nel commento apposta perché lo si possa
-rifare. Terzo: il **broadcasting**, che conosciamo già da NumPy,
-funziona identico. Se scrivi `a + 5`, PyTorch capisce da solo che vuoi sommare
-$5$ a *ciascuno* dei tre numeri, come un insegnante che alza di un punto tutti
-i voti della classe senza bisogno di scrivere la regola tre volte: il
-risultato è `tensor([6., 7., 8.])`.
+il conto è scritto per esteso nel commento apposta perché lo si possa rifare.
+
+Il **broadcasting**, che conosciamo già da NumPy, funziona identico. Se scrivi
+`a + 5`, PyTorch capisce da solo che vuoi sommare $5$ a *ciascuno* dei tre
+numeri, come un insegnante che aggiunge lo stesso bonus a tutti i compiti della
+classe senza riscrivere la regola una volta per studente: il risultato è
+`tensor([6., 7., 8.])`. Vale anche fra due tensori, purché le forme si possano
+affiancare: una tabella di tre righe per quattro colonne più una fila di quattro
+numeri va bene, e la fila si ripete su ciascuna delle tre righe. Tre numeri più
+quattro numeri invece no: PyTorch si ferma con un errore, ed è giusto così,
+perché non esiste un modo sensato di appaiare tre voti con quattro.
+
+Resta la cosa che si vede meno e che spiega di più. I numeri di un tensore
+stanno in fila uno dopo l'altro, come le lettere di un testo scritto su una
+striscia di carta senza interruzioni; la forma è soltanto l'istruzione che dice
+ogni quanto andare a capo. Cambiare forma allora non sposta nessun numero: si va
+a capo in un altro punto, e la striscia resta quella di prima. Per questo
+`a.reshape(3, 1)` è quasi gratis, e per questo un array di NumPy e un tensore di
+PyTorch possono leggere la stessa striscia senza copiarsela, con l'avvertenza
+che chi la cambia da una parte la cambia per tutti.
+
+Ci sono però riletture che dalla striscia non si ricavano. Prendi le righe di
+quel testo una sì e una no: quelle scartate sono ancora lì, in mezzo alle altre.
+Tagliare in due metà ciascuna riga rimasta si può, e rimettere insieme le due
+metà pure, perché ogni riga è tutta attaccata; leggere il tutto come un'unica
+riga continua no, perché fra un pezzo e il successivo c'è la roba che hai
+saltato. Per il taglio PyTorch dà la forma nuova senza toccare niente; per la
+riga continua deve ricopiare i numeri altrove, e la differenza fra i due comandi
+sta proprio qui: `reshape` ricopia in silenzio quando serve, `view` pretende di
+non ricopiare e, quando non può, si ferma con un errore invece di farlo di
+nascosto.
 
 `````
 
@@ -151,8 +191,8 @@ contiguità, come si legge spesso: è che la nuova forma sia compatibile con gli
 Spezzare o fondere assi già contigui fra loro riesce anche su un tensore non
 contiguo: se `x` è $(8,4)$ e `y = x[::2]` (quindi $(4,4)$ con stride $(8,1)$,
 non contigua), `y.view(4, 2, 2)` passa e condivide la memoria, mentre
-`y.view(16)` solleva. Il messaggio d'errore lo dice esattamente, e vale la
-pena leggerlo alla lettera: *view size is not compatible with input tensor's
+`y.view(16)` solleva. Il messaggio d'errore lo dice per esteso, e alla lettera
+suona così: *view size is not compatible with input tensor's
 size and stride (at least one dimension spans across two contiguous
 subspaces). Use `.reshape(...)` instead.* Molte operazioni
 esistono in variante *in-place* col suffisso underscore (`t.add_(1)`,
@@ -191,14 +231,21 @@ i conti da fare sono tanti.
 
 `````{tab} Elementare
 
-La regola è una sola: **i conti avvengono dove stanno i numeri**. Se il
+La regola è una sola: i conti avvengono dove stanno i numeri. Se il
 tensore è sulla CPU, calcola la CPU; se lo sposti sulla scheda grafica,
 calcola lei, e per le moltiplicazioni tra matrici grandi può essere decine o
 centinaia di volte più veloce, perché una GPU è nata per fare migliaia di
-piccoli conti in parallelo (in origine, i pixel dei videogiochi). L'unica
-attenzione: due tensori possono lavorare insieme solo se stanno sullo stesso
-dispositivo (non puoi sommare un numero che sta in cucina con uno che sta in
-garage senza prima spostarne uno).
+piccoli conti in parallelo (in origine, i pixel dei videogiochi).
+
+Due tensori lavorano insieme soltanto se stanno sullo stesso dispositivo:
+non puoi sommare un numero che sta in cucina con uno che sta in garage senza
+prima spostarne uno. E il trasloco si paga. Il passaggio fra la memoria del
+computer e quella della scheda è stretto rispetto alla velocità con cui la
+scheda macina i conti, quindi chi porta i numeri avanti e indietro a ogni riga
+consuma nel viaggio più di quanto guadagni nel calcolo: è come portare la
+pentola in garage per ogni singolo ingrediente. Ecco perché PyTorch non sposta
+mai niente per conto suo e preferisce fermarsi con un errore: il viaggio deve
+deciderlo tu, e devi poterlo vedere scritto.
 
 `````
 
@@ -271,26 +318,51 @@ x.grad                    # la derivata di y in x=3  ->  tensor(8.)
 
 `````{tab} Elementare
 
-Immagina un **registratore** acceso mentre fai i conti: annota ogni singola
-operazione eseguita a partire dai tensori "osservati". Alla fine gli chiedi:
-"com'è cambiato il risultato al variare di questo ingresso?" e lui,
-riavvolgendo il nastro all'indietro, ti risponde con la derivata esatta.
+Un registratore acceso accanto al foglio annota ogni conto mentre lo fai.
+`requires_grad=True` lo accende su `x`, e da lì in poi ogni operazione che parte
+da quel numero finisce sul nastro. `y.backward()` lo riavvolge e lascia in
+`x.grad` la derivata esatta, cioè di quanto cambia il risultato al variare di
+quell'ingresso.
 
-Il riavvolgimento non è una magia, ed è la parte che vale la pena capire.
-Nessun conto complicato è complicato *tutto insieme*: è una catena di gesti
-elementari, un'elevazione al quadrato, una moltiplicazione, una somma. Di
-ciascuno di questi la derivata è nota una volta per tutte, come una tabellina.
-Quindi chi ha annotato la catena può ripercorrerla al contrario, applicare a
-ogni anello la sua tabellina e comporre i risultati: alla fine del nastro ha in
-mano la derivata dell'intera catena, senza averla mai scritta.
+Il riavvolgimento riesce perché sul nastro non c'è mai un conto difficile, solo
+una fila di gesti elementari: un'elevazione al quadrato, una moltiplicazione,
+una somma. Di ognuno la derivata si sa a memoria, come una tabellina. Il
+registratore prende allora il numero che arriva dal gesto successivo, lo
+moltiplica per la tabellina del gesto che sta rileggendo e lo passa a quello
+prima. All'inizio del nastro ha in mano la derivata del conto intero, senza aver
+mai compilato la tabella di tutte le combinazioni possibili: rilegge soltanto i
+gesti fatti davvero. È il mestiere di autograd.
 
-È ciò che fa autograd: dichiarando `requires_grad=True` accendi il
-registratore su `x`; ogni calcolo successivo viene annotato; e la chiamata
-`y.backward()` riavvolge il nastro, depositando la derivata in `x.grad`. Nel
-codice sopra $y = x^2 + 2x$, e il numero che esce è $8$: lo stesso che nella
-pagina di apertura del capitolo avevamo controllato a mano spostando $x$ da
-$3$ a $3{,}01$. Non abbiamo scritto nessuna formula di derivata: l'ha
-ricostruita la libreria.
+Nel conto $y = x^2 + 2x$ con $x$ che vale $3$, dal nastro esce $8$. Lo stesso
+numero che viene a mano spostando $x$ da $3$ a $3{,}01$: $y$ sale da $15$ a
+$15{,}0801$, cioè di $0{,}0801$ per uno spostamento di $0{,}01$, otto volte
+tanto. Nessuno ha scritto la formula della derivata.
+
+Il verso del riavvolgimento decide il costo. Il nastro si riavvolge una volta
+sola, e da quel giro esce l'effetto di tutte le manopole insieme: mille manopole
+o un milione, il giro resta uno. Chi il registratore non ce l'ha fa il
+contrario: gira una manopola, rifà tutto il conto in avanti, guarda di quanto si
+è spostato il risultato, poi ricomincia con la manopola dopo. Stesse risposte, e
+un giro a testa. Con un milione di pesi, un giro contro un milione di giri è la
+distanza fra un addestramento che si può fare e uno che non si può.
+
+Una manopola può comandare in più punti dello stesso conto, e allora sul nastro
+compare più volte. Il registratore non ne sceglie una: per ogni punto scrive di
+quanto quel punto ha spostato il risultato, e alla fine somma i pezzi. Per
+questo in `x.grad` la derivata si aggiunge invece di sostituire quella di prima.
+
+Da qui la sorpresa che tocca a tutti la prima volta. Rifai il conto da capo,
+richiedi la derivata senza aver svuotato `x.grad`, e ti ritrovi in mano $16$
+invece di $8$: il taccuino su cui il registratore deposita non si cancella da
+sé. Un addestramento lo azzera prima di ogni passo.
+
+Il nastro invece si consuma mentre lo riavvolgi, perché gli appunti presi
+all'andata li cancella il viaggio di ritorno. Riavvolgere due volte lo stesso
+giro non si può, a meno di chiedere prima che gli appunti restino, e allora
+occupano memoria fino alla fine: non lo si chiede per abitudine. E il
+registratore scrive soltanto dove gli è stato detto di guardare: sulle manopole
+dichiarate la derivata si trova, sui risultati calcolati per strada non c'è
+niente.
 
 `````
 

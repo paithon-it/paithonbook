@@ -152,39 +152,40 @@ sola variante «azzecca» le parole del documento giusto, quel documento entra.
 `````{tab} Elementare
 
 «Ha qualcosa sul cane?». Se il bibliotecario prende la richiesta alla lettera
-cercherà la parola «cane» e ti porterà un romanzo dal titolo *Il cane di
-terracotta*, che con i cani non c'entra nulla. Un
-bibliotecario esperto invece ti interroga un attimo e capisce cosa cerchi
-davvero («l'educazione del cucciolo») e allora fa non una, ma tre ricerche
+cercherà la parola «cane» e ti porterà *Il cane di terracotta*, un romanzo che
+con i cani non c'entra nulla. Un bibliotecario esperto invece ci pensa su un
+attimo, capisce che cerchi l'educazione del cucciolo, e fa tre ricerche
 mirate: *addestramento del cane*, *comportamento del cucciolo*, *comandi di
 base*. Con tre reti gettate in punti diversi, la probabilità di tirare su il
 libro giusto sale.
 
-C'è un trucco ancora più sorprendente, che a prima vista sembra assurdo, e si chiama **HyDE**, dalle iniziali inglesi di «documenti di risposta
-immaginati, messi sulla mappa». Invece di
-cercare con la *domanda*, cerchi con una **risposta inventata**. Chiedi al modello: «Scrivi tu, di getto, come *sarebbe* la
-risposta ideale» (anche se sbaglia qualche dettaglio) e poi cerchi i documenti
-veri che somigliano a quella risposta finta. Perché funziona? Perché una
-domanda e la sua risposta sono scritte in modi diversi (una chiede, l'altra
-afferma), mentre due risposte sullo stesso tema si somigliano molto. La
-risposta inventata fa da esca: pesca meglio delle domande i documenti che
-*sono* fatti di risposte.
+C'è un trucco che a prima vista sembra assurdo. Invece di cercare con la
+*domanda*, cerchi con una **risposta inventata**: chiedi al modello di scrivere
+di getto la risposta ideale, dettagli sbagliati compresi, e poi cerchi i libri
+veri che somigliano a quella pagina finta. Gliene fai scrivere tre, diverse fra
+loro, e cerchi nel punto che sta in mezzo a tutte, la domanda di partenza
+compresa: uno sbaglio di una lo annegano le altre, e la domanda conta come una
+voce fra le quattro, non come quella che comanda. Funziona perché domanda e
+risposta sono scritte in modi diversi (una chiede, l'altra afferma), mentre due
+risposte sullo stesso tema si somigliano: l'esca finta pesca i libri veri
+meglio di quanto li peschi la domanda. Si chiama **HyDE**, «documenti di risposta
+immaginati».
 
-Un avvertimento, però, perché il trucco ha il suo posto e non è dappertutto.
-Un cercatore si può **addestrare** sul proprio archivio, cioè lo si può
-correggere mostrandogli molte domande con accanto i passaggi che le
-soddisfano, finché non impara a pescare quelli. Chi può permetterselo (e
-servono migliaia di esempi, raccolti a mano o dedotti da quello che gli utenti
-cliccano) fa quello, ed è la strada migliore. HyDE nasce per l'altro caso,
-quello di chi quegli esempi non li ha: il primo giorno, quando l'archivio è
-nuovo e nessuno ci ha ancora cercato niente.
+Tutto dipende però da chi scrive l'esca. Se le tre paginette le butta giù uno
+che di cani non sa niente, portano lontano dallo scaffale giusto: meglio allora
+cercare con la domanda e basta. E c'è un caso in cui il trucco non serve: un
+cercatore si può **addestrare** sul proprio archivio, mostrandogli migliaia di
+domande con accanto i libri giusti, finché non impara a pescare quelli. Chi può
+permetterselo fa quello: è la strada migliore. HyDE nasce per l'altro caso, il
+primo giorno, quando l'archivio è nuovo e nessuno ci ha ancora cercato niente.
 
 `````
 
 `````{tab} Superiore
 
-Il trucco dell'ultimo paragrafo ha un nome (**HyDE**, *Hypothetical Document
-Embeddings* {cite}`gao2023hyde`) e risolve un problema geometrico preciso: la
+Cercare con una risposta inventata invece che con la domanda ha un nome
+(**HyDE**, *Hypothetical Document Embeddings* {cite}`gao2023hyde`) e risolve
+un problema geometrico preciso: la
 **asimmetria** tra query e documenti. Una domanda («su cosa salta il gatto?»)
 e il passaggio che la soddisfa («il gatto salta sul muro») sono testi di forma
 diversa, e un encoder addestrato genericamente può collocarli non così
@@ -222,8 +223,8 @@ Gli autori sono espliciti nel dire che l'uso con un retriever messo a punto sul
 proprio dominio *non è quello previsto*.
 
 Il quadro che misurano su quel caso è più sfumato di come lo si racconta di
-solito, e vale la pena riportarlo com'è, perché non dipende dalla raccolta ma
-da **quanto è buono il modello che genera le ipotesi**. Con un generatore forte
+solito, e non dipende dalla raccolta ma da **quanto è buono il modello che
+genera le ipotesi**. Con un generatore forte
 HyDE alza anche un retriever addestrato sul dominio, ma in modo asimmetrico: su
 TREC DL19 l'NDCG@10 passa da $62{,}1$ a $67{,}4$, su DL20 da $63{,}2$ a
 $63{,}5$, cioè tre decimi, che è niente. Con generatori più deboli lo
@@ -236,7 +237,7 @@ registro delle ricerche cresce il traffico passa a un retriever supervisionato,
 lasciando a HyDE le domande rare e nuove.
 
 Attenzione anche alla lettera della formula: qui c'è un
-encoder solo, mentre poche pagine più avanti scriveremo la similarità come
+encoder solo, mentre il recupero a due stadi scrive la similarità come
 $E_q(q)^\top E_p(d)$, con due reti distinte. Applicare la ricetta di HyDE su un
 indice a due encoder significherebbe codificare la query con la rete
 sbagliata. Le riscritture
@@ -323,15 +324,24 @@ recuperare tanto e alla svelta, poi riordinare poco e per bene.
 
 `````{tab} Elementare
 
-Pensa a come si assume una persona. Non si fa un colloquio di due ore a ognuno
-dei mille che hanno mandato il curriculum: si fa prima una scrematura rapida
-(sguardi il CV, tieni i cinquanta più promettenti) e *solo* a quei cinquanta
-si fa il colloquio vero, quello che costa tempo ma capisce davvero chi hai
-davanti. Il bi-encoder è la scrematura dei curriculum: veloce, superficiale,
-va bene per buttare via i chiaramente fuori tema. Il cross-encoder è il
-colloquio: lento, ma legge la domanda e il candidato *insieme* e non si fa
-ingannare da chi «suona simile» senza rispondere. Applicarlo a tutti sarebbe
-rovinoso; applicarlo ai cinquanta scremati è esattamente il punto giusto.
+Mille curriculum per un posto, e un colloquio dura due ore: nessuno li fa
+tutti. Si fa prima una scrematura rapida, uno sguardo per foglio, e si tengono
+i cinquanta più promettenti; il colloquio vero, quello che costa tempo ma
+capisce chi hai davanti, si fa *solo* a quei cinquanta. Il bi-encoder è la
+scrematura: veloce, superficiale, va bene per buttare via i chiaramente fuori
+tema. Il cross-encoder è il colloquio: lento, ma guarda *insieme* il candidato
+e il posto da coprire, e non si fa ingannare da chi «suona simile» senza
+rispondere. Farlo a tutti e mille sarebbe rovinoso; farlo ai cinquanta scremati
+è esattamente il punto giusto.
+
+Fra i due c'è una via di mezzo, e la usa chi di curriculum ne legge tanti.
+Invece di un giudizio unico sul foglio intero, si va per pezzi: per ogni
+requisito del posto si cerca nel curriculum la riga che ci va più vicino, e si
+sommano i riscontri. Quelle righe si schedano in anticipo, prima ancora di
+sapere per quale posto serviranno, e al momento del confronto restano da fare
+solo gli abbinamenti. Si paga in spazio, perché lo schedario diventa molto più
+grosso (una scheda per riga invece che per candidato), e si guadagna quasi
+tutta la finezza del colloquio. Si chiama **ColBERT**.
 
 `````
 
@@ -357,14 +367,16 @@ nella dimensione degli embedding: il prezzo di vettori più lunghi non
 sparisce, si sposta nel costo del singolo confronto.
 
 Formalmente il primo stadio ordina l'archivio con la similarità del bi-encoder
-$E_q(q)^\top E_p(d)$ e ne trattiene i primi $N$; il secondo riordina
-questi $N$ con il punteggio del cross-encoder
+$E_q(q)^\top E_p(d)$ e ne trattiene i primi $k_1$; il secondo riordina
+questi $k_1$ con il punteggio del cross-encoder
 $\mathrm{score}(q, d) = \mathrm{CrossEnc}([q; d])$, dove $[q; d]$ è la
 concatenazione dei due testi data in input a un unico Transformer, e tiene i
 primi $k$, cioè i passaggi che entreranno davvero nel prompt del generatore
-(si sceglie $N \gg k$: tipicamente $N$ nell'ordine delle decine o centinaia,
-$k$ pochi). Il costo del reranking è $N$ inferenze di cross-encoder per query:
-accettabile con quei valori di $N$, proibitivo sull'intero archivio.
+(si sceglie $k_1 \gg k$: tipicamente $k_1$ nell'ordine delle decine o
+centinaia, $k$ pochi; $N$ resta la dimensione dell'archivio, che è un'altra
+cosa e di parecchi ordini di grandezza più grande). Il costo del reranking è
+$k_1$ inferenze di cross-encoder per query: accettabile con quei valori di
+$k_1$, proibitivo sull'intero archivio.
 
 Tra i due estremi esiste una via di mezzo elegante: l’**interazione tardiva**
 di **ColBERT** {cite}`khattab2020colbert`. Invece di collassare ogni testo in
@@ -573,19 +585,23 @@ capitolo sulle reti neurali su grafo la riprende per esteso.
 Torniamo allo studente all'esame a libro aperto. Lo studente ingenuo apre il
 libro *a ogni* domanda, anche a «quanto fa sette per otto»: perde tempo e
 rischia di copiare la pagina sbagliata. Lo studente maturo fa tre cose in più.
-Primo, si chiede *se* gli serve il libro: alle domande che sa già risponde a
-memoria e basta. Secondo, quando lo apre, **rilegge criticamente** ciò che ha
-trovato: «questa pagina risponde davvero alla domanda, o l'ho aperta a caso?».
-Terzo, se una pagina non basta, ne apre un'altra, e un'altra ancora, finché
-non ha in mano tutto quello che serve. Non è più un gesto automatico (apri,
-copia) ma un piccolo ciclo di decisioni: mi serve cercare? ho trovato la cosa
-giusta? mi manca ancora qualcosa? È la differenza tra consultare un libro e
-saperlo consultare.
+Primo, si chiede *se* gli serve il libro, e non se lo chiede una volta sola: a
+metà di una risposta può saltare fuori una data che a memoria non ha, e allora
+apre; alle domande che sa già risponde e basta. Secondo, quando lo apre,
+**rilegge criticamente**, con due domande diverse: «questa pagina risponde alla
+domanda che mi hanno fatto, o l'ho aperta a caso?» e, riga per riga, «quello
+che sto scrivendo sta davvero scritto qui, o l'ho aggiunto io?». Terzo, se una
+pagina non basta, ne apre un'altra, e un'altra ancora, finché non ha in mano
+tutto quello che serve; e se gli vengono in mente due modi di rispondere,
+consegna quello che le pagine aperte reggono meglio, non quello che suona
+meglio. Non è più un gesto automatico (apri, copia) ma un piccolo ciclo di
+decisioni: mi serve cercare? ho trovato la cosa giusta? quello che ho scritto
+sta nelle pagine? mi manca ancora qualcosa? È la differenza tra consultare un
+libro e saperlo consultare.
 
-Le due cose hanno un nome, e vale la pena averlo in tasca. Un modello
-addestrato a chiedersi da sé se gli serve aprire il libro, e a rileggere con
-occhio critico quello che ha trovato, si chiama **Self-RAG**, cioè «RAG che si
-controlla da solo». Un agente che invece torna a cercare quante volte gli
+Le due cose hanno un nome. Un modello addestrato a chiedersi da sé se gli serve
+aprire il libro, e a rileggere con occhio critico quello che ha trovato, si
+chiama **Self-RAG**, cioè «RAG che si controlla da solo». Un agente che invece torna a cercare quante volte gli
 serve, perché cercare non è più un passo obbligato ma un attrezzo che prende
 quando vuole, fa il **RAG agentico**.
 
@@ -607,10 +623,10 @@ strada.
 
 Il secondo comportamento è il **RAG agentico**: il recupero smette di essere
 un passo obbligato della pipeline e diventa uno **strumento** che un agente
-può invocare quando vuole, più volte, in un ciclo. È la stessa idea del *tool
-use* di questo capitolo (un modello che ragiona, decide di chiamare uno
-strumento, ne legge il risultato e decide la mossa successiva) applicata alla
-ricerca: l'agente formula una query, esamina i risultati, si accorge che gli
+può invocare quando vuole, più volte, in un ciclo. È il *tool use* applicato
+alla ricerca (un modello che ragiona, decide di chiamare uno strumento, ne
+legge il risultato e decide la mossa successiva):
+l'agente formula una query, esamina i risultati, si accorge che gli
 manca un pezzo, formula una seconda query mirata, e itera finché ha raccolto
 abbastanza per rispondere. È ciò che serve alle domande **multi-hop**, dove la
 risposta vive nell'incrocio di fonti che nessuna singola ricerca restituisce
@@ -643,20 +659,27 @@ ripara non sa dove mettere le mani. Servono misure separate, che sappiano
 
 `````{tab} Elementare
 
-Immagina di correggere il compito di uno studente che cita le fonti. Non basta
-un voto solo: devi controllare tre cose diverse. Primo, la **fedeltà**: ciò che
-ha scritto è davvero sostenuto dalle pagine che cita, o ha aggiunto di suo
-spacciandolo per citazione? Secondo, la **pertinenza**: la risposta parla della
-domanda che avevi fatto, o divaga su un tema vicino? Terzo, la **qualità della
-ricerca**: le pagine che ha aperto erano quelle giuste, o ne ha aperte di
+Un compito che cita le fonti non si corregge con un voto solo: le cose da
+guardare sono tre, e sono diverse fra loro. La **fedeltà**: prendi la risposta,
+la spezzi nelle singole affermazioni e per ognuna vai a vedere se sta davvero
+nella pagina citata; otto su dieci che reggono fanno $0{,}8$, e quello è un
+voto, mentre «fedele» detto e basta non lo è. La **pertinenza**: la risposta
+parla della domanda che avevi fatto, o divaga su un tema vicino? La **qualità
+della ricerca**: le pagine che ha aperto erano quelle giuste, o ne ha aperte di
 inutili e saltate di essenziali?
 
-E qui si affaccia una tentazione che tornerà più volte nel libro: siccome
-correggere a mano migliaia di risposte costa, si promuove un altro modello a
-esaminatore, che
-legge risposta e fonti e assegna i tre voti in un lampo. Comodissimo: a patto
-di ricordare che quell'esaminatore ha i suoi pregiudizi, e che va tenuto
-d'occhio esattamente come si tiene d'occhio uno studente che si autovaluta.
+Fedeltà e pertinenza le giudichi con il solo compito davanti, e per metà anche
+la qualità della ricerca: le pagine inutili che ha aperto le vedi lì.
+Accorgersi che ne ha saltata una essenziale è un altro paio di maniche: devi
+sapere tu quali erano le pagine giuste, cioè esserti preparato la soluzione
+prima. Costa, e spesso si rinuncia.
+
+Poi c'è la tentazione, quando i compiti sono migliaia: promuovere
+esaminatore un altro modello, che legge risposta e fonti e assegna i voti in un
+lampo. Comodissimo, a patto di ricordare che quell'esaminatore ha le sue
+debolezze: premia le risposte lunghe, si affeziona alla prima che ha letto, dà
+volentieri ragione a sé stesso. Va tenuto d'occhio esattamente come si tiene
+d'occhio uno studente che si autovaluta.
 
 `````
 
@@ -711,10 +734,9 @@ chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
 ```{admonition} Da ricordare
 :class: important
 - Quello che la ricerca non ripesca, la risposta quasi certamente non lo
-  conterrà: la qualità del **recupero** è il tetto di tutto il sistema. Le
-  tecniche di questa sezione lo alzano intervenendo *prima* di cercare
-  (migliorare la domanda), *dopo* (riordinare i risultati) e *attorno*
-  (decidere se e quando cercare).
+  conterrà: la qualità del **recupero** è il tetto di tutto il sistema. Le tre
+  leve lo alzano intervenendo *prima* di cercare (migliorare la domanda),
+  *dopo* (riordinare i risultati) e *attorno* (decidere se e quando cercare).
 - La domanda che scrive una persona è quasi sempre il testo peggiore da mandare
   a cercare: troppo corta, piena di sottintesi. Conviene riscriverla, oppure
   farne tre versioni diverse e unire i risultati. C'è perfino il trucco di
@@ -742,8 +764,8 @@ chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
   l'esaminatore ha i suoi pregiudizi e va tenuto d'occhio.
 - **Fedele non vuol dire vero**: se l'archivio contiene un documento sbagliato,
   la risposta più fedele possibile a quel documento sarà sbagliata, con tanto
-  di citazione impeccabile. Nessuna tecnica di questa sezione solleva chi la usa
-  dal dovere di scegliere bene cosa mettere nell'archivio.
+  di citazione impeccabile. Nessuna di queste tecniche solleva chi la usa dal
+  dovere di scegliere bene cosa mettere nell'archivio.
 ```
 
 `````
@@ -769,9 +791,9 @@ chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
   peggiora entrambe).
 - **Reranking in due stadi**: il **bi-encoder** recupera tanti candidati grezzi
   (veloce, embedding precalcolati), un **cross-encoder** riordina solo quella
-  rosa ristretta (preciso ma costoso, $N$ inferenze per query).
-  **ColBERT** {cite}`khattab2020colbert` è la via di mezzo, con MaxSim
-  token-a-token ed embedding precalcolabili. Il guadagno vero del secondo stadio
+  rosa ristretta (preciso ma costoso, $k_1$ inferenze per query, con
+  $k_1 \gg k$). **ColBERT** {cite}`khattab2020colbert` è la via di mezzo, con
+  MaxSim token-a-token ed embedding precalcolabili. Il guadagno vero del secondo stadio
   è la **separazione** dei punteggi, che rende possibile una soglia.
 - **RAG che si corregge**: **Self-RAG** {cite}`asai2024selfrag` addestra il
   modello a decidere *se* recuperare e a **criticare** i passaggi con token di

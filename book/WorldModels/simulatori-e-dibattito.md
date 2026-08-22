@@ -57,9 +57,11 @@ per spiegare che cosa cambia tra un fotogramma e il successivo può usare
 soltanto otto «mosse tipiche», e quali siano le otto più utili deve scoprirlo
 da solo, guardando migliaia di ore di partite. Otto lo hanno deciso loro,
 pensando a chi poi giocherà: un joystick con cento pulsanti sarebbe
-ingovernabile. E funziona perché in quei giochi i cambiamenti tipici sono
-davvero pochi: il personaggio si sposta a destra, o a sinistra, o salta, o
-cade. Quelle otto mosse diventano i pulsanti di un
+ingovernabile. E da un fotogramma all'altro cambiano molte più cose di otto:
+l'acqua che scorre sul fondale, il nemico che avanza, il corpo che ricade a
+terra dopo il salto. Nelle otto ci finisce soltanto quello che dipende da chi
+gioca; il resto lo tira avanti da sé la parte di rete che disegna il
+fotogramma dopo, che di cadute ne ha viste migliaia. Quelle mosse diventano i pulsanti di un
 joystick che Genie si è inventato da solo. Quando giochi, scegli un numero da
 1 a 8: che il pulsante 3 significhi «salta» lo scopri provando, come davanti a
 una console senza libretto di istruzioni.
@@ -88,8 +90,8 @@ dove $\mathbf{x}_{1:t+1}$ sono i fotogrammi osservati fino al tempo $t+1$;
 $\mathrm{tok}$ è il tokenizer, il primo dei tre moduli, che di ogni fotogramma
 fa una manciata di token discreti $\mathbf{z}_t$ guardando anche quelli che lo
 precedono (è causale nel tempo, non lavora un'immagine per volta: fa lo stesso
-mestiere del $\mathbf{z}$ del VAE nella prima sezione, ma con un vocabolario finito
-invece di 32 numeri continui); $f_\phi$ è un encoder che riassume la
+mestiere del $\mathbf{z}$ del VAE nel world model di Ha e Schmidhuber, ma con
+un vocabolario finito invece di 32 numeri continui); $f_\phi$ è un encoder che riassume la
 transizione dal fotogramma $t$ al $t+1$; $q$ è una quantizzazione vettoriale
 su un codebook di appena $|\mathcal{A}| = 8$ codici (un tetto fissato dagli autori perché il joystick resti
 maneggiabile per un giocatore umano); e $g_\theta$ è il modello di dinamica,
@@ -162,24 +164,28 @@ viene spesso «C4») o si è costruito dentro, da qualche parte, una scacchiera?
 
 `````{tab} Elementare
 
-Immagina una persona che non ha mai visto una scacchiera in vita sua e ha
-solo *ascoltato* migliaia di radiocronache di partite: sequenze di nomi di
-caselle, nient'altro. Dopo anni di ascolto, sa proseguire una radiocronaca
-con mosse che non fanno mai arrabbiare gli arbitri. Ha in testa una
-scacchiera immaginata, o solo un enorme orecchio per le frasi tipiche?
+Una persona che non ha mai visto una scacchiera e ha soltanto
+*ascoltato* migliaia di radiocronache di partite: nomi di caselle in fila,
+nient'altro. Dopo anni di ascolto sa proseguire una radiocronaca con mosse che
+non fanno mai arrabbiare gli arbitri. Ha in testa una scacchiera immaginata, o
+solo un enorme orecchio per le frasi tipiche?
 
 Con una persona non potremmo saperlo. Con una rete sì, perché possiamo
-guardarle dentro. Che cosa vuol dire, guardarci dentro? Che mentre la rete
-elabora una partita, ogni suo strato produce una fila di numeri, e quei numeri
-si possono leggere uno per uno: è l'attività interna, ed è la sola cosa che la
-rete abbia in testa. Gli autori la usano in due passi. Primo passo: addestrano
-un piccolo «lettore del pensiero» (una seconda rete, molto semplice) che
-guardando soltanto quei numeri deve indovinare dove sono le pedine. Ci riesce:
-sbaglia meno di 2 caselle su 100. Quindi l'informazione «com'è messa la
-scacchiera» *dentro la rete c'è*, anche se nessuno gliel'ha mai chiesta.
+guardarle dentro: mentre elabora una partita ogni suo strato produce una fila
+di numeri, e quei numeri si leggono uno per uno. È l'attività interna, la sola
+cosa che la rete abbia in testa. Gli autori la usano in due passi. Primo passo: addestrano
+un piccolo «lettore del pensiero» (una seconda rete) che guardando soltanto
+quei numeri deve indovinare dove sono le pedine. Il lettore più rozzo ci
+capisce poco: sbaglia una casella su cinque, quasi come davanti a una rete
+che non ha mai imparato niente. Uno più sveglio scende sotto le 2 caselle su
+100. E poco dopo si è visto che al rozzo bastava
+cambiare la domanda: non «questa pedina di che colore è» ma «è mia o
+dell'avversario». L'informazione «com'è messa la scacchiera» *dentro la rete
+c'è*, anche se nessuno gliel'ha mai chiesta; quanto sia facile tirarla fuori
+dipende però da chi la cerca e da come la chiede.
 Secondo passo, il più bello: il test del falso ricordo. Gli sperimentatori
 entrano in quei numeri e li ritoccano, spostando una pedina *nella mente* della
-rete: non nella sequenza di mosse, che resta identica. Se la scacchiera interna fosse un ornamento inutile, le
+rete: non nella sequenza di mosse, che resta identica. Se la scacchiera interna fosse un ornamento, le
 mosse proposte non cambierebbero. Invece cambiano, e in modo coerente con la
 scacchiera contraffatta: la rete gioca in base a ciò che «crede» di vedere.
 Non è un pappagallo di sequenze: dentro c'è un piccolo mondo, e lo usa.
@@ -270,20 +276,26 @@ caldi della ricerca, al di là delle demo spettacolari.
 
 `````{tab} Elementare
 
-Per tutto il libro il collo di bottiglia è stato lo stesso: i dati con le
-etichette costano. Qualcuno deve scrivere «gatto» sotto la foto del gatto,
-tradurre la frase, assegnare il voto. Il video no: è un giacimento sterminato in
+Qualcuno deve scrivere «gatto» sotto la foto del gatto, tradurre la frase,
+assegnare il voto: i dati con le etichette costano, ed è il collo di bottiglia
+di sempre. Il video no: è un giacimento sterminato in
 cui la correzione è *gratis*. Vuoi sapere se il modello ha previsto bene?
-Aspetta il fotogramma successivo: la risposta esatta arriva da sola, milioni
-di volte per ogni ora di filmato. Per giunta ogni video è un piccolo esperimento di
+Aspetta il fotogramma successivo: la risposta esatta arriva da sola, trenta
+volte al secondo, centomila volte per ogni ora di filmato. Per giunta ogni video è un piccolo esperimento di
 fisica già eseguito (bicchieri che cadono, palle che rimbalzano, porte che
 sbattono) registrato senza che nessuno lo abbia allestito. E il testo, invece,
-non è infinito. Il capitolo sui Transformer lo dice in due punti: più un modello è
+non è infinito. Il capitolo sui Transformer lo dice: più un modello è
 grande, più testo pretende per essere addestrato come si deve; e il web sta
 finendo come fonte gratuita di scrittura di qualità. Le pagine scritte dagli
 esseri umani restano quelle che sono. Il video è
 la più grande riserva di esperienza del mondo non ancora spremuta: ecco perché
 tutti scavano qui.
+
+Il giacimento però non regala tutto. Chi si mette a prevedere ogni puntino
+dello schermo passa il tempo anche sui riflessi del pavimento, che di quel che
+sta succedendo non dicono nulla. E indovinare il fotogramma dopo in una scena vista mille
+volte non vuol dire aver capito perché le cose cadono: il bicchiere che si
+rovescia senza bagnare il tavolo sta lì a ricordarlo.
 
 `````
 
@@ -296,8 +308,8 @@ rappresentazione $\mathbf{z}_{t+1}$, nella scelta JEPA), la loss una verosimigli
 una distanza predittiva, l'annotatore nessuno. Se la lezione delle leggi di
 scala {cite}`kaplan2020scaling` è che le prestazioni crescono con dati e
 calcolo secondo regolarità prevedibili, i video sono il posto naturale dove
-proseguire la curva quando il testo si esaurisce. Le incognite però sono due,
-e questo capitolo le ha incontrate entrambe: *dove* predire (lo spazio dei
+proseguire la curva quando il testo si esaurisce. Le incognite però sono
+due: *dove* predire (lo spazio dei
 pixel obbliga a modellare dettagli irrilevanti; lo spazio latente rischia il
 collasso e va regolarizzato) e *che cosa* la predizione garantisce; perché
 prevedere bene i fotogrammi tipici, come mostrano gli errori di Sora, non
@@ -365,11 +377,11 @@ esattamente ciò per cui conviene studiarle.
 - **Othello-GPT** è la pagina da ricordare: una rete che ha solo «ascoltato»
   radiocronache di partite si è costruita in testa una scacchiera. Lo si
   dimostra in due mosse, e la seconda è quella che conta: prima un lettore del
-  pensiero indovina dove sono le pedine guardando l'attività interna della
-  rete (sbaglia meno di 2 caselle su 100), poi il test del **falso ricordo**,
-  in cui gli sperimentatori spostano una pedina *nella mente* della rete e le
-  mosse cambiano di conseguenza. Non è un pappagallo: dentro c'è un piccolo
-  mondo, e lo usa.
+  pensiero indovina dove sono le pedine guardando l'attività interna della rete
+  (uno rozzo sbaglia una casella su cinque, uno più sveglio meno di 2 su 100),
+  poi il test del **falso ricordo**, in cui gli sperimentatori spostano una
+  pedina *nella mente* della rete e le mosse cambiano di conseguenza. Non è un
+  pappagallo: dentro c'è un piccolo mondo, e lo usa.
 - Ma un'altra rete, allenata sui percorsi dei taxi di New York, dà indicazioni
   quasi sempre giuste e ha in testa una mappa piena di strade che non esistono.
   Un modello del mondo, dunque, può nascere da solo; quanto sia coerente e
@@ -378,8 +390,9 @@ esattamente ciò per cui conviene studiarle.
 - Intanto queste cose lavorano: robot che pianificano immaginando, scenari
   rari generati per addestrare le auto a guida autonoma, ambienti illimitati
   in cui allenare programmi che imparano.
-- Perché il fronte è così caldo: il video è l'unico grande giacimento di dati
-  in cui la correzione è gratis. Vuoi sapere se il modello ha previsto bene?
+- Perché il fronte è così caldo: il video è il grande giacimento non ancora
+  spremuto in cui la correzione è gratis. Vuoi sapere se il modello ha
+  previsto bene?
   Aspetta il fotogramma successivo.
 - Il filo del capitolo, da Craik (1943) ai simulatori video: l'intelligenza
   come capacità di prevedere. Mancano ancora la capacità di ricombinare i

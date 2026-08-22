@@ -17,24 +17,46 @@ più sbrigativa che ci sia.
 
 `````{tab} Elementare
 
-Un peso è il numero che dice quanto un collegamento conta. Se quel numero è
-vicino a zero, il collegamento non sposta quasi niente: puoi tagliarlo e la
-rete se ne accorge appena.
+Un club vince il campionato e a giugno il presidente deve mandare via nove
+giocatori su dieci. La squadra era già messa nel modo migliore possibile,
+quindi chiunque mandi via, la squadra ci rimette: la domanda è solo chi costa
+meno perdere. Quanto valga davvero ciascuno non lo sa nessuno, e allora si
+guardano i minuti giocati e si manda via chi ne ha di meno.
 
-Da qui l’idea più semplice che ci sia, e resta la più usata: si ordinano tutti
-i pesi per grandezza, si tiene una percentuale dei più grandi e si mette a zero
-tutto il resto. Non serve capire che cosa faccia ciascun collegamento: basta
-guardare quanto è grosso.
+In una rete quella cifra c'è già, e sono i pesi. Il peso di un collegamento
+dice quanto quel collegamento conta, e uno vicino a zero non sposta quasi
+niente: tagliarlo sembra gratis. Si ordinano tutti per grandezza, si tiene una
+percentuale dei più grandi, il resto va a zero. Che lavoro faccia ciascun
+collegamento non lo guarda nessuno.
 
-Detta così sembra troppo facile, ed è troppo facile. Fatta e basta, la rete
-crolla: qui sotto, togliendo nove pesi su dieci, l'accuratezza passa da novantotto a trentanove per cento, cioè da «sbaglia una volta su cinquanta» a
-«sbaglia tre volte su cinque».
+Il presidente scommette tre volte, e perde tutte e tre. Che due giocatori con
+gli stessi minuti lascino lo stesso buco: il portiere gioca quanto un
+difensore e non si rimpiazza con la stessa facilità. Che i buchi si sommino:
+due che si intendevano bene, tolti insieme, si sentono più della somma dei due
+presi uno per uno. E che il conto regga anche a tagliare in blocco: vale per un
+giocatore alla volta, e di pesi se ne azzerano nove su dieci in un pomeriggio.
+La cosa curiosa è che il criterio funzioni lo stesso, e nessuno sa dire bene
+perché.
 
-Quello che la salva è un secondo tempo. Dopo aver tagliato **si riaddestra**,
-tenendo però i tagli dove sono: i pesi rimasti si sistemano per coprire il
-lavoro di quelli spariti, e la rete torna dov’era. È lo stesso che succede a
-una squadra a cui tolgono metà giocatori: gioca malissimo subito, e dopo
-qualche settimana di allenamento con la formazione nuova gioca di nuovo bene.
+La prima domenica dice come è andata. Tolti nove pesi su dieci, l'accuratezza
+passa da novantotto a trentanove per cento, cioè da «sbaglia una volta su
+cinquanta» a «sbaglia tre volte su cinque».
+
+Quello che salva la squadra è il ritiro. Dopo aver tagliato **si riaddestra**,
+tenendo però i tagli dove sono: i giocatori rimasti si allenano nei ruoli
+lasciati vuoti, e dopo qualche settimana si gioca di nuovo bene. Chi è stato
+mandato via non rientra: dopo ogni seduta i pesi tagliati vengono rimessi a
+zero, così nessuno di loro può riprendersi il posto.
+
+Il ritiro riesce meglio a scaglioni. Mandarne via nove su dieci in un
+pomeriggio e poi allenare quel che resta funziona peggio che tagliarne pochi,
+allenare, tagliarne altri pochi: ogni volta si chiede alla squadra un
+aggiustamento piccolo, e lo regge.
+
+E a un certo punto nemmeno il ritiro basta. Con la metà dei pesi tolti la rete
+non perde niente; con nove su dieci resta indietro di meno di un punto; con
+diciannove su venti di quasi cinque. Una squadra a cui restano sei giocatori
+può allenarsi quanto vuole: in campo ce ne vogliono undici.
 
 `````
 
@@ -45,19 +67,20 @@ una soglia, tipicamente scelta per percentile all’interno di ciascuna matrice.
 È il criterio di {cite}`han2015learning`, e la sua giustificazione risale a
 *Optimal Brain Damage* {cite}`lecun1990optimal`.
 La giustificazione è uno sviluppo di Taylor della funzione di costo attorno ai
-pesi addestrati, e vale la pena farlo per intero perché il numero di
-approssimazioni che nasconde è la parte interessante. Spostando i pesi di
+pesi addestrati, e seguirlo per intero mostra quante approssimazioni il
+criterio nasconde. Spostando i pesi di
 $\delta\boldsymbol{\theta}$,
 
 $$
-\delta E = \mathbf{g}^{\top}\delta\boldsymbol{\theta}
+\delta \mathcal{L} = \mathbf{g}^{\top}\delta\boldsymbol{\theta}
 + \tfrac{1}{2}\,\delta\boldsymbol{\theta}^{\top}\mathbf{H}\,\delta\boldsymbol{\theta}
 + O(\|\delta\boldsymbol{\theta}\|^3),
 $$
 
 con $\mathbf{g}$ il gradiente e $\mathbf{H}$ l’Hessiana. All’ottimo il gradiente
 è nullo, quindi il primo termine che non si annulla è quello del secondo ordine;
-**trascurando i termini fuori diagonale** resta $\tfrac{1}{2}h_{ii}\,\delta
+trascurando i termini fuori diagonale il costo si spezza in un addendo per
+peso, $\tfrac{1}{2}h_{ii}\,\delta
 \theta_i^2$, e azzerare il peso $i$-esimo vuol dire $\delta\theta_i = -w_i$,
 cioè un costo $\tfrac{1}{2}h_{ii}w_i^2$. Se poi si assume la diagonale
 **uniforme**, l’ordinamento per $|w_i|$ è l’ordinamento giusto.
@@ -250,11 +273,12 @@ mandano all’aria l’ordine con cui i numeri arrivano dalla memoria.
 
 A volte quel patto conviene e a volte no, e dipende da due cose: da quanto è
 vuota la matrice, e da che macchina la moltiplica. Su un processore normale,
-con novantacinque zeri su cento, l’elenco conviene e si guadagna davvero. Su
-una scheda grafica no, o quasi mai, perché lì il conto ordinato va così veloce
-che saltare gli zeri costa più di farli. Ed è per questo che, in pratica, si
-sente dire che la potatura non fa guadagnare tempo: è vero dove i modelli
-grandi girano davvero.
+con novantacinque zeri su cento, l’elenco conviene e si guadagna davvero; con
+la metà degli zeri no, perché tenere il conto delle posizioni costa più di
+quanto fa risparmiare. Su una scheda grafica non conviene quasi mai, perché lì
+il conto ordinato va così veloce che saltare gli zeri costa più di farli. Ed è
+per questo che, in pratica, si sente dire che la potatura non fa guadagnare
+tempo: è vero dove i modelli grandi girano davvero.
 
 Quello che invece si guadagna sempre è **lo spazio**: una matrice con novanta
 zeri su cento si salva su disco molto più piccola, e per chi deve distribuire
@@ -270,6 +294,15 @@ piccola costa meno, senza trucchi. Si paga in accuratezza, perché scegliendo a
 blocchi si è costretti a buttare via anche i pesi utili che stavano nella riga
 sbagliata.
 
+Una via di mezzo esiste, e taglia a gruppi minuscoli invece che a righe intere.
+Non la sceglie chi addestra: la decide chi disegna le macchine. Certe schede
+grafiche sanno saltare gli zeri, a una condizione: che stiano al loro posto. Di
+ogni quattro pesi in fila due devono essere zero e due no, sempre, in tutta la
+griglia. Il conto resta ordinato
+abbastanza da correre veloce, e chi taglia resta libero abbastanza da non dover
+buttare via righe intere. Il vincolo però non si tratta: dove di pesi utili ce
+ne sono tre di fila, uno dei tre va a zero lo stesso.
+
 `````
 
 `````{tab} Superiore
@@ -281,14 +314,14 @@ uscirne costi caro. La sparsità **non strutturata** distrugge esattamente le
 due proprietà che rendono quel kernel veloce, la regolarità dell’accesso e la
 possibilità di riempire le unità vettoriali. Passare a un **formato rado** (CSR
 e simili) non è quindi un aggiustamento di quel kernel, è **cambiare kernel**, e
-se convenga è una domanda empirica, non di principio. Misurato sulla matrice di
-questa pagina, su CPU e a tempo di processore: il CSR pareggia il denso intorno
-al venti per cento di densità, e al cinque per cento (cioè alla sparsità
-dell’esperimento qui sopra) è circa sette volte più veloce. Su GPU la soglia si
-sposta molto più in basso, perché il kernel denso lavora vicino al picco e gli
-accessi irregolari costano di più: è la ragione per cui in pratica la sparsità
-non strutturata si usa poco, e vale la pena sapere che è una ragione di
-hardware e non di aritmetica.
+se convenga è una domanda empirica, non di principio. Misurato sulla matrice
+rada del conto qui sopra, su CPU e a tempo di processore: il CSR pareggia il
+denso intorno al venti per cento di densità, e al cinque per cento (cioè con i
+novantacinque zeri su cento di quell’esperimento) va dalle cinque alle sette
+volte più veloce, a seconda della macchina. Su GPU la soglia si sposta molto
+più in basso, perché il kernel denso lavora vicino al picco e gli accessi
+irregolari costano di più: è la ragione per cui in pratica la sparsità non
+strutturata si usa poco, e sta nell’hardware, non nell’aritmetica.
 
 Da qui la distinzione operativa:
 

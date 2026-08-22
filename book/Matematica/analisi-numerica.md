@@ -59,7 +59,7 @@ sigla tecnica.)
 ```
 
 La distinzione di {numref}`fig-formati-virgola-mobile` fra **portata** e
-**precisione** attraversa tutta questa sezione. Sono due budget separati, e i
+**precisione** attraversa tutto quello che segue. Sono due budget separati, e i
 guai di cui parleremo nascono dall'esaurirsi ora dell'uno (si finisce fuori
 dai numeri rappresentabili) ora dell'altro (restano troppo poche cifre buone).
 Il `bfloat16` della terza barra è nato apposta per il deep learning: rinuncia
@@ -95,11 +95,10 @@ dove $1+f$ è la **mantissa** (o *significando*: le cifre significative) ed $e$
 l’**esponente** (la scala). Di quel numero si memorizza solo la parte
 frazionaria $f$, con $0 \le f < 1$, perché l’$1$ davanti è implicito e non
 serve scriverlo: è la ragione per cui il formato `float32` spende 1 bit di
-segno, 8 di esponente e 23 per $f$, ma i bit scritti per la parte frazionaria sono 23, e da lì (non dai 24 del
+segno, 8 di esponente e 23 per $f$. Da quei 23 bit (non dai 24 del
 significando, che comprendono l'uno implicito) esce l'$\varepsilon$ di due
 righe più sotto: a $x=1$ l'esponente è nullo, quindi il numero rappresentabile
-successivo è esattamente $1+2^{-23}$. Ed
-è da lì che esce l’$\varepsilon = 2^{-23}$ di due righe più sotto. Il
+successivo è esattamente $1+2^{-23}$. Il
 `float64` (doppia precisione) dà 52 bit a $f$. La granularità relativa è
 l’**epsilon macchina** $\varepsilon$: la
 distanza fra $1$ e il numero rappresentabile immediatamente successivo, pari a
@@ -199,6 +198,16 @@ ottenere zero», la risposta non esiste. In entrambi i casi esce infinito o
 `NaN`, e da lì in poi ogni conto che tocca quel valore diventa `NaN` a sua
 volta: l'addestramento si rompe, e spesso senza dire dove.
 
+A zero non si arriva solo con numeri estremi come $e^{-120}$: bastano tante
+moltiplicazioni per numeri più piccoli di uno. La probabilità di ottenere
+duecento teste di fila lanciando una moneta è un prodotto di duecento fattori
+$0{,}5$; il risultato vero è un numero minuscolo e positivo, eppure un
+`float32` registra zero tondo, senza avvisare. La difesa usa la notazione
+scientifica di prima: invece di moltiplicare i numeri, si sommano i loro «per
+dieci alla…», e duecento dimezzamenti diventano un esponente di circa $-60$,
+un numero qualunque, che si scrive senza fatica. Il conto è lo stesso, fatto
+per una strada che non passa mai da quantità fuori portata.
+
 `````
 
 `````{tab} Superiore
@@ -230,7 +239,7 @@ La softmax risponde alla domanda "che quota di probabilità spetta a ciascuna
 classe?", e la ricetta è: eleva $e$ a ciascun punteggio, poi dividi ognuno di
 quei risultati per la loro somma, così il totale fa uno.
 
-Se i punteggi sono $z=(1000,\ 1001,\ 1002)$ la ricetta fallisce, perché
+Se i punteggi sono $1000$, $1001$ e $1002$ la ricetta fallisce, perché
 $e^{1000}$ è ben oltre quello che un `float32` sa scrivere: tre overflow, e
 il conto si arrende.
 
@@ -238,8 +247,8 @@ Ma c'è una scappatoia, e sta nel fatto che alla fine si divide. Se moltiplico
 tutti e tre gli esponenziali per uno stesso numero, sopra e sotto la frazione
 compare lo stesso fattore e le quote non cambiano: è la stessa ragione per cui
 $\tfrac{2}{4}$ e $\tfrac{20}{40}$ sono lo stesso numero. Ora, moltiplicare
-tutti gli $e^{z}$ per una stessa quantità equivale a **sottrarre uno stesso
-numero a tutti i punteggi** prima di esponenziare, perché è così che si
+tutti gli $e^{z}$ per una stessa quantità equivale a sottrarre uno stesso
+numero a tutti i punteggi prima di esponenziare, perché è così che si
 comportano le potenze. Sottraendo il massimo, $1002$, i punteggi diventano
 $(-2,\ -1,\ 0)$, e adesso gli esponenziali sono tre numeri comodissimi:
 $e^{-2}=0{,}135$, $e^{-1}=0{,}368$, $e^{0}=1$. La loro somma fa $1{,}503$, e
@@ -255,14 +264,15 @@ prima di esponenziare: tutto qui.
 La softmax è
 
 $$
-\text{softmax}(z)_i = \frac{e^{z_i}}{\sum_{j} e^{z_j}} .
+\text{softmax}(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j} e^{z_j}} ,
 $$
 
+dove $\mathbf{z}$ è il vettore dei logit e $z_i$ la sua componente $i$-esima.
 Sia $m = \max_j z_j$. Moltiplicando numeratore e denominatore per $e^{-m}$ il
 valore non cambia, ma ogni esponente diventa $\le 0$:
 
 $$
-\text{softmax}(z)_i = \frac{e^{z_i - m}}{\sum_{j} e^{z_j - m}} .
+\text{softmax}(\mathbf{z})_i = \frac{e^{z_i - m}}{\sum_{j} e^{z_j - m}} .
 $$
 
 La stessa mossa stabilizza il logaritmo della somma di esponenziali, l'identità
@@ -273,9 +283,9 @@ $$
 $$
 
 Da qui la log-probabilità della classe corretta,
-$\log \hat{p}_i = z_i - \operatorname{logsumexp}(z)$, si calcola senza mai
+$\log \hat{p}_i = z_i - \operatorname{logsumexp}(\mathbf{z})$, si calcola senza mai
 formare $e^{z_i}$ crudo; la **cross-entropy** è semplicemente il suo opposto,
-$\operatorname{logsumexp}(z) - z_i$. È il motivo per cui i framework espongono
+$\operatorname{logsumexp}(\mathbf{z}) - z_i$. È il motivo per cui i framework espongono
 `log_softmax` e loss che lavorano direttamente sui logit (come la
 `nn.CrossEntropyLoss` di PyTorch, che incontreremo nel capitolo dedicato): non
 è pigrizia d'API, è stabilità numerica.
@@ -294,14 +304,19 @@ Si pesa un capitano *con la sua barca* ($80\,000$ kg), poi si pesa la sola
 barca ($79\,930$ kg), ciascuna misura accurata al chilo. La differenza (il peso
 del capitano) è $70$ kg, ma l'incertezza di un chilo su ciascuna misura ora
 pesa tantissimo *in proporzione*. Le cifre affidabili si sono "cancellate" e
-resta soprattutto rumore. In pratica: evita di calcolare una quantità piccola
-come differenza di due quantità grandi.
+resta soprattutto rumore. Al posto del capitano metti un gabbiano, e succede
+di peggio: due pesate sbagliate di un chilo in versi opposti possono dare una
+differenza sotto zero, cioè un peso negativo, una risposta impossibile. La via
+d'uscita esiste: il capitano sale sulla bilancia da solo, una pesata sola e
+l'errore torna a un chilo su settanta. In pratica: evita di calcolare una
+quantità piccola come differenza di due quantità grandi; quando puoi, misura
+direttamente la cosa piccola.
 
 `````
 
 `````{tab} Superiore
 
-Il caso da manuale è la varianza **stimata da un campione** (si scrive $s^2$,
+Il caso da manuale è la varianza stimata da un campione (si scrive $s^2$,
 ed è lo stimatore della sezione su probabilità e statistica, non la
 $\mathrm{Var}(X)$ della distribuzione) calcolata con la formula "ingenua"
 $s^2 \propto \overline{x^2}-\bar{x}^2$: con dati grandi e varianza piccola i
@@ -311,8 +326,8 @@ la formula ingenua: NumPy calcola prima la media e poi la media degli scarti
 quadratici, in due passate; quando i dati arrivano in flusso e di passata se ne
 può fare una sola, si usa l'algoritmo di **Welford**, numericamente stabile.
 Regola generale: riformula le espressioni per non sottrarre grandezze vicine;
-la stessa quantità matematica può avere condizionamenti numerici molto diversi
-a seconda di *come* la si calcola.
+la stessa quantità matematica può perdere molte o poche cifre a seconda di
+*come* la si calcola.
 
 `````
 
@@ -324,9 +339,7 @@ stampati non combaciano. Dove uno stampa $67{,}0\%$ l'altro stampa $66{,}5\%$;
 dove uno dà $5{,}551\cdot10^{-16}$ l'altro dà $4{,}441\cdot10^{-16}$. Quasi
 sempre la differenza resta in fondo, nella quindicesima o sedicesima cifra, e
 non se ne accorge nessuno. Ogni tanto arriva davanti, e allora conviene sapere
-da dove viene. Nessuno aveva toccato il codice, le librerie erano
-alla stessa versione fino all’ultima cifra, e il seme del
-generatore casuale era lo stesso.
+da dove viene.
 
 Il colpevole è una proprietà che a scuola si dà per acquisita e in virgola
 mobile è falsa: **l’addizione non è associativa**. $(a+b)+c$ e $a+(b+c)$ sono
@@ -425,8 +438,8 @@ La scelta si può fissare dall’esterno, con `OPENBLAS_CORETYPE` per OpenBLAS e
 Non basta però a garantire l'accordo in generale, ed è la metà che conta di
 più. I prodotti fra matrici di PyTorch non passano da
 OpenBLAS ma da un’altra libreria ancora, che quelle variabili non toccano; e
-una terza macchina, con le stesse due variabili fissate, ha ricominciato a
-discostarsi nell’ultima cifra. La riproducibilità bit a bit fra calcolatori
+basta una terza macchina, con le stesse due variabili fissate, perché
+l’ultima cifra ricominci a discostarsi. La riproducibilità bit a bit fra calcolatori
 diversi non è una casella da spuntare: si perde di nuovo appena un pezzo del
 conto sceglie una strada per conto proprio, e per questo due esecuzioni su
 macchine diverse si confrontano con una tolleranza, non con l’uguaglianza.
@@ -460,7 +473,8 @@ amplifica a dismisura.
 
 `````{tab} Elementare
 
-Pensa alla bilancia del capitano di poco fa. Se ti chiedo quanto pesa la barca,
+La bilancia del capitano di poco fa risponde a due domande molto diverse. Se
+ti chiedo quanto pesa la barca,
 un chilo di errore sulla misura ti dà un chilo di errore sulla risposta: un
 chilo su ottantamila è lo $0{,}00125\%$, cioè poco più di un millesimo di punto
 percentuale, e la domanda è ben condizionata.
@@ -468,20 +482,19 @@ percentuale, e la domanda è ben condizionata.
 Se ti chiedo quanto pesa il capitano, invece, la risposta la ricavo da due
 pesate, e le due imprecisioni si sommano: nel caso peggiore sbaglio di un chilo
 in un verso sulla prima e di un chilo nell'altro sulla seconda, cioè di due
-chili sulla differenza. Due chili su settanta sono il **due virgola nove per
-cento**. La *stessa* imprecisione, sulla *stessa* bilancia, in proporzione pesa
+chili sulla differenza. Due chili su settanta sono il due virgola nove per
+cento. La *stessa* imprecisione, sulla *stessa* bilancia, in proporzione pesa
 più di duemila volte tanto ($2{,}9$ diviso $0{,}00125$ fa circa $2\,300$). Non
 è colpa di chi fa i conti né della bilancia: è la domanda a essere fatta male.
 
-È una distinzione che conviene tenere, perché quando un risultato numerico
-esce sbagliato le cause possibili sono due e si confondono spesso. Una è che
-il problema amplifichi gli errori per conto suo, e allora non c'è programma
-che tenga: bisogna cambiare domanda. L'altra è che il programma sia scritto
-male e ne introduca di suoi, e allora si riscrive il programma (la formula
-ingenua della varianza e la softmax senza il trucco del massimo sono
-esattamente questo). Nel resto della sezione «riformula per non sottrarre
-grandezze vicine» è una cura del secondo tipo; standardizzare i dati, come
-vedremo subito, è una cura del primo.
+Quando un risultato numerico esce sbagliato, le cause possibili sono due e si
+confondono spesso. Una è che il problema amplifichi gli errori per conto suo,
+e allora non c'è programma che tenga: bisogna cambiare domanda. L'altra è che
+il programma sia scritto male e ne introduca di suoi, e allora si riscrive il
+programma (la softmax senza il trucco del massimo è esattamente questo).
+«Evita di calcolare una quantità piccola come differenza di due quantità
+grandi» è una cura del secondo tipo; standardizzare i dati, come vedremo
+subito, è una cura del primo.
 
 `````
 
@@ -538,7 +551,8 @@ vivono su scale lontanissime. Il prezzo è nell'ordine delle centinaia di
 migliaia, le stanze sono tre. Ciascuna di queste caratteristiche (in gergo si
 dicono *feature*, «caratteristiche» appunto) parla una lingua sua.
 
-Per il modello è un guaio, ed è esattamente il guaio della sezione precedente.
+Per il modello è un guaio, ed è esattamente il guaio del condizionamento
+appena visto.
 Il modello moltiplica ogni caratteristica per un peso, e il peso è una delle
 sue manopole. Ma il prezzo arriva in centinaia di migliaia, quindi al suo peso
 basta muoversi di un pelo perché il risultato cambi moltissimo; il numero di
@@ -569,9 +583,10 @@ rimedio più economico che ci sia: due righe di codice.
 `````{tab} Superiore
 
 Prima di dare i dati a un modello quasi sempre li **standardizziamo**,
-sottraendo la media e dividendo per la deviazione standard,
-$z = (x - \mu)/\sigma$, così ogni caratteristica (*feature*) ha media $0$ e
-scala $1$. Non è solo cosmesi: serve la stabilità, ed è un intervento sul
+sottraendo la media e dividendo per la deviazione standard: al posto di ogni
+valore $x$ si scrive $(x - \mu)/\sigma$, dove $\mu$ e $\sigma$ sono la media e
+la deviazione standard della colonna. Così ogni caratteristica (*feature*) ha
+media $0$ e scala $1$. Non è solo cosmesi: serve la stabilità, ed è un intervento sul
 **condizionamento del problema**, non sull'algoritmo.
 
 Se una feature vale in migliaia di euro e un'altra in numero di stanze, i loro
@@ -591,7 +606,7 @@ resta un po’ storta e qualche zig-zag la discesa lo fa ancora (a togliere anch
 quella servirebbe una trasformazione che decorrela, come lo *sbiancamento*).
 Resta il rimedio più economico che ci sia: due righe di codice, e il problema è
 molto meglio condizionato di prima. Una sola avvertenza operativa: media e
-deviazione standard si calcolano **sul solo training set** e si riusano tali e
+deviazione standard si calcolano sul solo training set e si riusano tali e
 quali su validazione e test, altrimenti si travasa nell'addestramento
 un'informazione che al momento della previsione non ci sarebbe.
 

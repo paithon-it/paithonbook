@@ -60,23 +60,23 @@ parola, e quel posto si paga.
 Prendiamo numeri veri. Un encoder molto usato lavora su immagini da
 $336 \times 336$ puntini e le taglia in tessere da $14 \times 14$: siccome
 $336 : 14 = 24$, ne stanno 24 per riga e 24 per colonna, cioè
-$24 \times 24 = 576$ tessere, e quindi 576 vettori. Adesso immagina di allegare
-quell'immagine a una domanda di venti parole. La sequenza che entra nel modello
-di linguaggio è fatta di 596 pezzi, e 576 su 596 sono immagine: il 97%. La tua
+$24 \times 24 = 576$ tessere, e quindi 576 vettori. Allega quell'immagine a una
+domanda di venti parole. La sequenza che entra nel modello di linguaggio è fatta
+di 596 pezzi, e 576 su 596 sono immagine: il 97%. La tua
 domanda è una briciola dentro un contesto quasi interamente occupato dalla foto.
 
 Peggio: il costo dell'attenzione, il meccanismo con cui ogni pezzo guarda tutti
 gli altri, non cresce come la lunghezza della sequenza, cresce come il suo
 **quadrato** (è il conto fatto nel capitolo sui Transformer: se i pezzi
 raddoppiano, le coppie da confrontare quadruplicano). Se al posto di 576 tessere
-ne passassimo 32 (un numero che fra poco incontreremo davvero), la sequenza
+ne passassimo 32 (un numero che qualcuno ha scelto davvero), la sequenza
 scenderebbe da 596 a 52 pezzi, cioè undici volte e mezzo più corta; e siccome il
 costo va col quadrato, undici e mezzo per undici e mezzo fa circa centotrenta
 volte meno.
 
-Ecco perché «quanti» è una domanda seria e non un dettaglio di
-implementazione: comprimere l'immagine in pochi vettori fa risparmiare
-moltissimo. Il resto della sezione racconta che cosa si perde in cambio.
+Ecco perché «quanti» pesa: comprimere l'immagine in pochi vettori fa risparmiare
+moltissimo. Quel risparmio si paga in quello che dell'immagine viene buttato
+via.
 
 `````
 
@@ -154,12 +154,13 @@ solo), e conviene guardarla da vicino.
 
 `````{tab} Elementare
 
-Immagina di aggiungere un secondo microfono a un impianto audio già tarato bene.
-Se lo accendi al volume che capita, il concerto è rovinato. Quello che fai è
-collegarlo con il **volume a zero**: l'impianto suona esattamente come prima,
-come se il microfono non ci fosse. Poi la manopola si alza, se e quanto serve.
+Un secondo microfono va aggiunto a un impianto audio già tarato bene. Acceso al
+volume che capita, rovina il concerto. Si collega allora con il **volume a
+zero**: l'impianto suona esattamente come prima, come se il microfono non ci
+fosse. Poi la manopola si alza, se e quanto serve, e ha un fondo scala: per
+quanto la si giri, il microfono nuovo non arriverà mai a coprire l'orchestra.
 
-Il nuovo strato è collegato così: una manopola, un unico numero, moltiplica
+Ogni strato nuovo è collegato così: una sua manopola, un unico numero, moltiplica
 tutto quello che lo strato produce prima di sommarlo al resto, e parte da zero.
 Al primo istante l'immagine non influenza nulla e il modello si comporta
 identico a com'era; poi l'addestramento scopre che alzarla conviene, perché
@@ -168,36 +169,34 @@ aiuta a indovinare le parole giuste, e la alza da sé.
 Resta il problema di quante file di numeri consegnare: un'immagine ne dà
 centinaia, un video ne dà centinaia per ogni fotogramma, e gli strati nuovi sono
 fatti per riceverne sempre lo stesso numero, altrimenti andrebbero ridisegnati a
-ogni cambio di formato. Il pezzo che se ne occupa ne fa uscire sempre 64, qualunque sia
-la roba che entra, ed ecco come. Le 64 righe da riempire ci sono già, sono fisse,
-e sono le domande che il pezzo ha imparato a fare in addestramento: per ogni
-riga, va a guardare tutto quello che è entrato, prende soprattutto da dove trova
-la risposta e scrive lì il riassunto. Che il materiale sia poco o tanto non
-cambia il numero di righe, cambia solo dove ciascuna va a pescare: è un modulo
-con 64 caselle, non un imbuto tarato su una quantità.
+ogni cambio di formato. Il pezzo che se ne occupa ne fa uscire sempre 64,
+qualunque sia la roba che entra. Le 64 righe da riempire ci sono già, fisse, e
+sono le domande che il pezzo ha imparato a fare in addestramento: per ognuna
+guarda tutto quello che è entrato, prende soprattutto da dove trova la risposta e
+scrive lì il riassunto. Che il materiale sia poco o tanto non cambia il numero di
+righe, cambia solo dove ciascuna va a pescare: è un modulo con 64 caselle, non un
+imbuto tarato su una quantità.
 
-Il conto da tenere a mente è che tutto questo, gli strati nuovi più il pezzo che
-riempie le 64 righe, pesa **miliardi** di numeri da imparare: è un modello dentro
-il modello.
+Tutto questo, gli strati nuovi più il pezzo che riempie le 64 righe, pesa
+**miliardi** di numeri da imparare: è un modello dentro il modello.
 
-E qui siamo già in vista del punto delicato della sezione, perché un modulo lo si
-compila prima di sapere che cosa vi verrà cercato dentro.
+E un modulo lo si compila prima di sapere che cosa vi verrà cercato dentro.
 
 `````
 
 `````{tab} Superiore
 
 Il meccanismo si chiama **tanh gating**. Ogni sotto-strato aggiunto entra nel
-flusso residuale non come $\mathbf{x} \leftarrow \mathbf{x} + \mathrm{XAttn}(\mathbf{x}, \mathbf{Z})$, ma come
+flusso residuale non come $\mathbf{x} \leftarrow \mathbf{x} + \mathrm{XAttn}(\mathbf{x}, \mathbf{R})$, ma come
 
 $$
-\mathbf{x} \;\leftarrow\; \mathbf{x} + \tanh(\alpha)\, \mathrm{XAttn}\big(\mathbf{x},\, \mathbf{Z}\big),
+\mathbf{x} \;\leftarrow\; \mathbf{x} + \tanh(\alpha)\, \mathrm{XAttn}\big(\mathbf{x},\, \mathbf{R}\big),
 $$
 
 dove $\mathbf{x}$ sono le attivazioni del testo che attraversano il modello
-congelato, $\mathbf{Z}$ i vettori visivi, $\mathrm{XAttn}$ la cross-attention
-(query da $\mathbf{x}$, chiavi e valori da $\mathbf{Z}$) e $\alpha$ uno scalare
-appreso, **uno per strato**,
+congelato, $\mathbf{R}$ i vettori visivi già preparati dal modulo a monte,
+$\mathrm{XAttn}$ la cross-attention (query da $\mathbf{x}$, chiavi e valori da
+$\mathbf{R}$) e $\alpha$ uno scalare appreso, **uno per strato**,
 inizializzato a zero. Poiché $\tanh(0) = 0$, alla prima iterazione ogni blocco
 aggiunto è esattamente l'identità: la funzione calcolata dalla rete è, token per
 token, quella del modello di partenza. L'inizializzazione non è quindi
@@ -214,7 +213,7 @@ chiavi e valori vengono dalla concatenazione $[\mathbf{Z}; \mathbf{L}]$ delle fe
 appiattite in un'unica sequenza e già proiettate in $\mathbb{R}^{N \times d}$
 (la concatenazione avviene lungo l'asse della sequenza, quindi la dimensione di
 feature dev'essere la stessa dei latenti), con i latenti stessi, che quindi
-attendono anche a sé: $\mathrm{XAttn}(\mathbf{L}, [\mathbf{Z}; \mathbf{L}]) \in \mathbb{R}^{K \times d}$,
+attendono anche a sé: $\mathbf{R} = \mathrm{XAttn}(\mathbf{L}, [\mathbf{Z}; \mathbf{L}]) \in \mathbb{R}^{K \times d}$,
 ripetuta per qualche strato con un feed-forward dopo ciascuno. Qualunque sia $N$ (una
 sola immagine, oppure le feature spazio-temporali di un video) l'uscita ha
 sempre $K$ righe, e il costo a valle diventa indipendente dalla risoluzione e
@@ -240,36 +239,37 @@ un normale prefisso di token.
 
 `````{tab} Elementare
 
-Il modo di comprimere è quello che rende la cosa interessante. Immagina un
-assistente che, davanti a qualunque fotografia, compila sempre lo stesso
+Un assistente, davanti a qualunque fotografia, compila sempre lo stesso
 questionario di 32 domande. Le domande non gliele detta nessuno: se le è scritte
-da solo durante l'addestramento, finché le risposte sono risultate le più utili
-a chi poi doveva parlare dell'immagine. Potrebbero essere «che oggetti ci sono»,
-«dove stanno l'uno rispetto all'altro», o cose senza nome che a noi non
+da solo in addestramento, tenendo quelle le cui risposte servivano di più a chi
+poi doveva parlare dell'immagine, e guardandole tutte insieme perché non
+finissero a chiedere due volte la stessa cosa. Potrebbero essere «che oggetti ci
+sono» o «dove stanno l'uno rispetto all'altro», e cose senza nome che a noi non
 verrebbero in mente.
 
-Davanti a ogni nuova immagine pone quelle 32 domande, guarda la foto per
-rispondere e consegna 32 risposte. Da quel momento il modello di linguaggio ha
-in mano solo le risposte: la foto non la vede più.
+Le ha scritte in due tempi. Prima con le sole foto davanti, correggendo le
+domande finché dalle risposte si capiva quale fotografia stava guardando; solo
+dopo le risposte sono andate a chi doveva scriverci sopra. Facendo tutto insieme
+si otterrebbero 32 risposte gradevoli da leggere e senza rapporto con la foto.
 
-Il guadagno si legge nei numeri, e qui l'encoder ne produce 257 per ogni foto.
-Da dove viene quel 257: l'immagine è da 224 puntini di lato, le tessere da 14,
-quindi ne stanno 16 per riga e 16 per colonna, in tutto 256, a cui l'encoder
-aggiunge una fila che riassume l'intera fotografia. (Qualche paragrafo fa erano
-576 perché lì l'immagine era da 336 puntini, e la fila di riassunto non veniva
-usata: il numero cambia ogni volta che cambiano la foto o la tessera, non è mai
-fisso.) Da 257 si scende a 32, otto volte meno. E ciascuna delle 32 risposte è
-anche una fila più corta, 768 numeri invece dei 1024 con cui l'encoder descrive
-ogni tessera: mettendo insieme le due cose, i numeri che passano sono
-$32 \times 768$ contro $257 \times 1024$, cioè circa undici volte meno.
+Davanti a ogni nuova foto pone le 32 domande, la guarda per rispondere e consegna
+32 risposte: da lì in poi il modello di linguaggio ha in mano solo quelle, la
+foto non la vede più.
 
-Tutto questo il questionario lo fa con una macchina sua, che pesa 188 milioni di
-caselle: poca cosa accanto ai due modelli che collega, ma il conto va tenuto,
-perché fra poco lo confronteremo con quello delle altre due strade.
+Il guadagno si legge nei numeri. L'encoder qui produce 257 file per ogni foto:
+l'immagine è da 224 puntini di lato, le tessere da 14, quindi 16 per riga e 16
+per colonna fanno 256 tessere, più una fila che riassume l'intera fotografia. (Su
+un'immagine da 336 puntini, e senza contare la fila di riassunto, le tessere
+erano 576: il numero cambia con la foto e con la tessera, non è mai fisso.) Da
+257 si scende a 32, otto volte meno, e ciascuna risposta è anche più corta, 768
+numeri invece dei 1024 con cui l'encoder descrive una tessera: in tutto passano
+$32 \times 768$ numeri contro $257 \times 1024$, circa undici volte meno.
 
-Il questionario però è stato scritto **una volta per tutte**, e le domande sono
-sempre quelle che in media servivano di più. Se arriva una richiesta a cui quelle
-32 domande non rispondono, non c'è più niente da rileggere.
+Il questionario lo compila una macchina sua, che pesa 188 milioni di caselle:
+poca cosa accanto ai due modelli che collega.
+
+Quelle 32 domande sono state fissate prima che qualcuno facesse una richiesta. Se
+ne arriva una a cui non rispondono, non c'è più niente da rileggere.
 
 `````
 
@@ -335,7 +335,7 @@ quattro milioni di caselle. Il modello di linguaggio a cui si salda ha sette
 miliardi di parametri, quindi la saldatura pesa lo $0{,}06\%$ del pezzo che
 collega, sei centesimi di punto percentuale. Una versione successiva dello
 stesso lavoro mette due tabelle in fila invece di una, e guarda le immagini da
-$336$ puntini invece che da $224$: è quella dei 576 pezzi di poco fa. La prima
+$336$ puntini invece che da $224$: è quella da 576 tessere. La prima
 tabella resta quella di prima, da $1024 \times 4096$; la seconda parte da un
 token già tradotto, quindi è da $4096 \times 4096$, quattro volte più grande, e
 in tutto fanno ventuno milioni di caselle, lo $0{,}3\%$. Sempre un'inezia, ma
@@ -357,13 +357,12 @@ $\mathbf{H}_v \in \mathbb{R}^{N \times d_t}$ sono i token visivi, che vivono nel
 spazio degli embedding di parola. La mappa è lineare e applicata patch per
 patch: nessuna interazione fra le righe, nessuna riduzione di $N$.
 
-Vale la pena mettere il conto accanto agli altri due. Con $d_v = 1024$ (un
-ViT-L/14) e $d_t = 4096$ (un modello di linguaggio da sette miliardi di
-parametri), $\mathbf{W}$ ha $1024 \times 4096 \approx 4{,}2$ milioni di parametri, cioè
-lo 0,06% del modello che serve. Una versione successiva del lavoro sostituisce
-la mappa lineare con un percettrone a due strati (`Linear` $\to$ GELU $\to$
-`Linear`), che porta il connettore a circa 21 milioni di parametri, cioè lo $0{,}3\%$
-del totale.
+Con $d_v = 1024$ (un ViT-L/14) e $d_t = 4096$ (un modello di linguaggio da sette
+miliardi di parametri), $\mathbf{W}$ ha $1024 \times 4096 \approx 4{,}2$ milioni
+di parametri, cioè lo 0,06% del modello che serve. Una versione successiva del
+lavoro sostituisce la mappa lineare con un percettrone a due strati (`Linear`
+$\to$ GELU $\to$ `Linear`), che porta il connettore a circa 21 milioni di
+parametri, cioè lo $0{,}3\%$ del totale.
 
 `````
 
@@ -399,9 +398,14 @@ fascicolo lasciato sulla scrivania: costa contesto (576 tessere occupano posto e
 tempo di calcolo) ma non butta via niente, e la selezione la fa l'attenzione del
 modello di linguaggio, quando la domanda è già arrivata.
 
-Da qui una regola che vale ben oltre questo capitolo: **quando il collo di
-bottiglia è l'informazione, e non il calcolo, conviene rimandare la selezione al
-momento in cui si conosce la domanda.**
+Il fascicolo sulla scrivania, però, regge finché sono quaranta pagine. Se ne
+fossero quattromila (una fotografia enorme, oppure un'ora di video, un fotogramma
+dopo l'altro), sfogliarle tutte a ogni domanda non si potrebbe, e il collega che
+riassume tornerebbe ad avere ragione.
+
+Ne esce una regola generale: **quando il collo di bottiglia è l'informazione, e
+non il calcolo, conviene rimandare la selezione al momento in cui si conosce la
+domanda.**
 
 `````
 
@@ -616,7 +620,7 @@ qui.
   dimenticare per strada una parte di quello che sapevano fare.
 - Al pezzo in mezzo si chiedono due cose insieme: **tradurre** la descrizione di
   una tessera d'immagine nel formato che il modello di linguaggio si aspetta, e
-  **decidere quante** tessere consegnargli. La seconda non è un dettaglio: ogni
+  **decidere quante** tessere consegnargli. La seconda pesa quanto la prima: ogni
   tessera occupa posto come una parola, e il lavoro dell'attenzione cresce con
   il quadrato dei pezzi messi in fila.
 - **Strati nuovi dentro il modello congelato** {cite}`alayrac2022flamingo`: si
@@ -635,8 +639,9 @@ qui.
   in fila).
 - Ha prevalso il più semplice, e la ragione è di principio: **riassumere vuol
   dire scegliere prima di sapere qual è la domanda**. Meglio il fascicolo intero
-  lasciato sulla scrivania: si paga in posto occupato, ma a scegliere è il
-  modello di linguaggio, quando la domanda è già arrivata.
+  lasciato sulla scrivania, finché lo si può sfogliare: si paga in posto
+  occupato, ma a scegliere è il modello di linguaggio, quando la domanda è già
+  arrivata.
 - L'addestramento è in **due tempi**: prima il solo connettore su coppie
   immagine-didascalia (imparare dove scrivere), poi dialoghi sulle immagini, con
   il modello di linguaggio libero di cambiare. I dialoghi del primo LLaVA li ha
@@ -672,7 +677,9 @@ qui.
   significa scegliere prima di conoscere la domanda**. Quando il collo di
   bottiglia è l'informazione e non il calcolo, conviene rimandare la selezione
   al punto in cui il condizionamento è massimo, cioè all'attenzione del modello
-  di linguaggio. Il prezzo è il contesto occupato.
+  di linguaggio. Il prezzo è il contesto occupato, e su immagini ad alta
+  risoluzione, documenti e video quel collo di bottiglia torna a essere
+  computazionale: lì la compressione ha di nuovo senso.
 - L'addestramento è in **due tempi**: prima il solo connettore su coppie
   immagine-didascalia, poi instruction tuning visivo con il modello di
   linguaggio scongelato. I dati di istruzione del primo LLaVA furono generati da

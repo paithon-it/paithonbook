@@ -44,11 +44,15 @@ inventato per andare oltre.
 
 `````{tab} Elementare
 
-Esplori una città enorme tirando un dado a ogni incrocio per decidere dove
-girare. Andrai avanti e indietro nello stesso quartiere per ore:
-il caso non ha memoria, non sa quali strade hai già battuto e quali no. Per
-raggiungere un vicolo che sta a dieci svolte precise da qui, la probabilità di
-azzeccarle tutte tirando a sorte è minuscola.
+Esplori una città enorme così: quasi sempre imbocchi la strada che ti sembra la
+migliore, e ogni venti incroci circa tiri un dado e vai dove dice lui. Andrai
+avanti e indietro nello stesso quartiere per ore: il caso non ha memoria, non sa
+quali strade hai già battuto e quali no. E per raggiungere un vicolo che sta a
+dieci svolte precise da qui dovrebbero capitarti insieme due fortune, dieci
+volte di fila: che proprio lì ti venga in mente di tirare il dado, e che il dado
+dica la svolta giusta. La probabilità di azzeccarle tutte è
+minuscola, e si schiaccia ancora di più per ogni svolta che si aggiunge alla
+catena.
 
 L'esplorazione casuale è così: agita le mani nel buio nei dintorni di dove sei
 già. Quello che servirebbe è un'esplorazione **diretta**: una spinta a puntare
@@ -86,11 +90,23 @@ sale.
 
 `````{tab} Elementare
 
-È il principio del turista curioso: dài a te stesso un piccolo premio ogni
-volta che metti piede in un posto nuovo, un premio che si spegne man mano che
-quel posto diventa familiare. All'inizio un quartiere ti frutta un bel bonus;
-dopo esserci passato cento volte, quasi niente. Il risultato è che vieni
-naturalmente spinto verso l'ignoto, senza bisogno di lanciare monetine.
+È il principio del turista curioso. Il viaggio ha già i suoi guadagni veri (il
+museo che volevi vedere, la cena buona), e tu ci aggiungi di tasca tua un
+piccolo premio ogni volta che metti piede in un posto dove non eri mai stato,
+un premio che si spegne man mano che quel posto diventa familiare. Il primo
+giorno un quartiere ti frutta il premio pieno; dopo esserci passato cento
+volte, quasi niente. Il risultato è che vieni spinto verso l'ignoto, senza
+bisogno di lanciare monetine.
+
+Quanto valga quel premio rispetto a una cena buona lo decidi tu, ed è una
+manopola delicata: alzalo troppo e girerai a vuoto per vicoli insignificanti,
+abbassalo troppo e non ti muoverai dall'isolato dell'albergo.
+
+C'è poi un modo di rompere tutto senza accorgersene, e consiste nel prendere
+appunti troppo precisi. Se segni sul taccuino la tua posizione al centimetro,
+non tornerai mai due volte nello stesso punto: ogni passo risulta inedito, ogni
+passo si prende il premio pieno, e un premio che vale uguale dappertutto non
+indica più niente.
 
 `````
 
@@ -201,11 +217,27 @@ Un bambino che gioca non prende punti da nessuno, eppure esplora
 instancabilmente, attratto da ciò che non riesce a prevedere. Spinge un
 bicchiere oltre il bordo del tavolo perché non sa ancora cosa succederà; una
 volta imparato che cade e si rompe, quel gesto smette di interessarlo e ne
-cerca un altro. La **curiosità** è proprio questo: un premio interno per la
-sorpresa. L'agente costruisce dentro di sé un modello di "cosa succederà se
+cerca un altro. La **curiosità** è proprio questo: un premio che ci si dà da
+soli per la sorpresa. L'agente si costruisce un modello di "cosa succederà se
 faccio questo"; quando il modello sbaglia la previsione, quello scarto vale
-come una piccola ricompensa. Impara facendo, spinto dal desiderio di ridurre
-lo stupore.
+come una piccola ricompensa, e lo tira verso il gesto che l'ha spiazzato. Il
+premio si consuma da sé: a forza di ripeterlo quel gesto diventa prevedibile,
+la sorpresa finisce, e l'agente si sposta altrove.
+
+Presa alla lettera, però, la ricetta ha un guasto, e nella scena del bambino si
+vede a occhio nudo. Alla finestra mentre piove le gocce scendono ogni volta
+diverse: prevederle non riesce a nessuno, e la sorpresa non si esaurisce mai.
+Un bambino premiato soltanto dallo stupore resterebbe lì per sempre, davanti a
+uno spettacolo che non gli insegna nulla, perché su quelle gocce la sua mano
+non conta.
+
+Il rimedio è cambiare l'oggetto della previsione: non tutto quello che si vede,
+ma soltanto la parte su cui la propria mano fa la differenza. E il modo di
+separare le due cose è un indovinello: guardare la scena prima e la scena dopo,
+e capire che cosa si è fatto in mezzo. Il bicchiere spostato di venti
+centimetri lo dice; la pioggia dietro il vetro no, perché è identica qualunque
+cosa si faccia. Si tiene quello che serve all'indovinello e si butta il resto:
+è il filtro che tiene il bambino lontano dalla finestra.
 
 `````
 
@@ -217,7 +249,7 @@ Pathak e colleghi, 2017 {cite}`pathak2017curiosity`) la ricompensa intrinseca
 previsione non avviene sui pixel grezzi ma in uno **spazio di feature**
 $\phi(s)$ appreso, che cattura solo ciò che l'agente *può controllare* e ignora
 il rumore irrilevante dell'ambiente. Come si ottenga una proprietà del genere è
-metà del lavoro, e vale la pena dirlo: $\phi$ non si addestra da sé, si addestra
+metà del lavoro: $\phi$ non si addestra da sé, si addestra
 con un modello di dinamica **inversa**, una rete che da $\phi(s_t)$ e
 $\phi(s_{t+1})$ deve indovinare l'azione $a_t$ che ha portato dall'uno all'altro.
 Per riuscirci $\phi$ è costretta a conservare tutto ciò che le azioni
@@ -257,7 +289,7 @@ tre anni dopo, anche la media umana era superata. Non di più, ed è bene dirlo
 con le parole del lavoro stesso, che sull'esito è prudente: l'agente
 «occasionalmente completa il primo livello». Occasionalmente, e il primo: dopo
 quello il gioco va avanti. Superare il punteggio umano medio e risolvere un
-gioco sono due affermazioni diverse, e vale la pena tenerle separate.
+gioco sono due affermazioni diverse, e vanno tenute separate.
 
 `````
 
@@ -320,49 +352,58 @@ libera attesa**) che tiene insieme due cose, quanto un'azione lo avvicina a ciò
 che preferisce e quanto gli farebbe **guadagnare informazione**. All'inferenza
 attiva il {doc}`capitolo sui world model </WorldModels/overview>` dedica una sezione, e il capitolo
 sull'auto-supervisione se ne serve per rispondere a un'obiezione sul rinforzo:
-qui ci interessa solo il riflesso che getta su questa pagina.
+qui ci interessa solo il riflesso che getta sui bonus di novità e sulla
+curiosità intrinseca.
 
 `````{tab} Elementare
 
-La differenza che conta è questa: lì il valore di sapere non è un premio
-aggiunto, **c'era già dall'inizio**, accanto al valore di ottenere. E allora non
-c'è nessun dosaggio da regolare fra il curiosare e l'incassare, perché tutti e
-due sono pezzi della stessa quantità.
+La differenza che conta è questa: lì il valore di sapere non arriva come premio
+aggiunto, sta accanto al valore di ottenere fin dall'inizio. Ordinare il piatto
+che non hai mai preso non ti costa un supplemento di curiosità da giustificare:
+scoprire com'è faceva parte di quello che cercavi, esattamente come mangiare
+bene. E allora non c'è nessun dosaggio da regolare fra il curiosare e
+l'incassare, perché tutti e due sono pezzi della stessa quantità.
 
-Vista da lì, la storia di questa sezione si legge al contrario. Non è che
-abbiamo aggiunto la curiosità a un agente che non ce l'aveva: è che, partendo da
-una ricompensa che dice solo «quanto ti è andata bene» e mai «quanto hai
-imparato», eravamo **obbligati** a rimetterla dentro a mano. Ogni coefficiente
-che in questa sezione dosa il peso del bonus è il prezzo di quella scelta
-iniziale.
+Vista da lì, la storia raccontata fin qui si legge al contrario. Non abbiamo
+aggiunto la curiosità a un agente che non ce l'aveva: partendo da una ricompensa
+che dice soltanto «quanto ti è andata bene» e mai «quanto hai imparato»,
+eravamo costretti a rimetterla dentro a mano. Ogni manopola che dosa il peso del
+bonus è il prezzo di quella scelta iniziale.
+
+E c'è un motivo per cui la faccenda tocca da vicino proprio le ricompense rade.
+Quando per centinaia di mosse non succede niente, il «quanto mi conviene» vale
+zero per tutte, e smette di distinguerle: l'unica cosa che ancora le mette in
+fila è il «quanto ci imparo». Dentro il tempio azteco, insomma, a guidare resta
+soltanto la curiosità, cioè proprio il pezzo che con le ricompense ordinarie
+tocca appiccicare da fuori.
 
 `````
 
 `````{tab} Superiore
 
 Formalmente il legame è più stretto di un'analogia. Gli autori mostrano che
-diversi schemi noti si riottengono **togliendo pezzi** alla loro grandezza:
-annullate le preferenze dell'agente, l'energia libera attesa **cambiata di
-segno** «è variamente nota come sorpresa bayesiana attesa (nel contesto
+diversi schemi noti si riottengono togliendo pezzi alla loro grandezza:
+annullate le preferenze dell'agente, l'energia libera attesa, cambiata di
+segno, «è variamente nota come sorpresa bayesiana attesa (nel contesto
 dell'esplorazione attentiva) o **motivazione intrinseca** (nel contesto
 dell'apprendimento autonomo)» {cite}`parr2022active`, che è esattamente la
-famiglia di metodi di questa sezione. Il segno non è un dettaglio: quella
-grandezza si **massimizza**, come si massimizza il bonus di novità qui sopra,
-mentre l'energia libera attesa da cui viene si minimizza.
+famiglia dei bonus di novità e della curiosità intrinseca. Il segno va
+guardato: quella grandezza si massimizza, come si massimizza un bonus di
+novità, mentre l'energia libera attesa da cui viene si minimizza.
 
 Il rapporto fra le due letture non è quindi di concorrenza: la ricompensa
 intrinseca è il caso particolare che si ottiene spegnendo il termine
-pragmatico. E c'è un motivo per cui la cosa riguarda proprio questa pagina: in
-un ambiente a ricompense rade il termine pragmatico, per la gran parte della
-traiettoria, vale lo stesso per tutte le mosse, e allora smette di ordinarle.
-Quel che resta a decidere è il termine epistemico, cioè la curiosità. È una
-conseguenza della decomposizione, non una misura: chi la volesse usare come tale
-dovrebbe verificarla.
+pragmatico. E c'è un motivo per cui la cosa riguarda da vicino le ricompense
+rade: in un ambiente di quel tipo il termine pragmatico, per la gran parte
+della traiettoria, vale lo stesso per tutte le mosse, e allora smette di
+ordinarle. Quel che resta a decidere è il termine epistemico, cioè la curiosità.
+È una conseguenza della decomposizione, non una misura: chi la volesse usare
+come tale dovrebbe verificarla.
 
 Resta la differenza che conta per chi implementa: questo quadro nasce come
 teoria del comportamento biologico, e i sistemi che oggi arrivano più lontano in
-*Montezuma's Revenge* sono quelli di questa sezione, non quelli dell'inferenza
-attiva. Serve a capire da dove viene la toppa, non a sostituirla.
+*Montezuma's Revenge* sono quelli a ricompensa intrinseca, non quelli
+dell'inferenza attiva. Serve a capire da dove viene la toppa, non a sostituirla.
 
 `````
 
@@ -376,41 +417,44 @@ shaping**, modellare la ricompensa. È potente, ma nasconde una trappola.
 `````{tab} Elementare
 
 Vuoi insegnare al robot a uscire dal labirinto e, per aiutarlo, gli dài un
-premietto ogni volta che si avvicina all'uscita. Sembra ragionevole. Ma se non
-stai attento, il robot può scoprire che gli conviene oscillare avanti e
-indietro davanti a una porta, incassando premietti all'infinito, senza mai
-uscire davvero. Gli hai insegnato a *inseguire il premietto*, non a uscire: hai
-cambiato il gioco senza accorgertene, ed è questo il rischio da cui ci si vuole
-difendere.
+premietto ogni volta che si avvicina all'uscita. Sembra ragionevole. Il robot
+trova la porta, fa mezzo passo avanti, incassa, mezzo passo indietro, di nuovo
+avanti, incassa ancora, e passa la giornata a dondolare sulla soglia. Ha
+imparato a prendersi il premietto, e dell'uscita non gli importa più: il gioco
+che gli hai messo davanti l'hai cambiato tu, senza accorgertene.
 
-Per fortuna esiste un modo di dare questi aiuti che quel rischio non ce l'ha,
-mai, comunque lo si usi. L'idea, dovuta ad Andrew Ng e colleghi nel 1999, è
-dare l'aiuto come *differenza di quota*. A ogni posto del labirinto si attacca
-un numero, la sua «quota», e si premia il robot soltanto per la differenza fra
-la quota di dove arriva e la quota di dove era. Sei alla quota $3$ e arrivi alla
-$5$: prendi $+2$. Torni indietro: prendi $-2$. Avanti e indietro fa zero, quindi
-oscillare davanti alla porta non frutta più niente.
+Andrew Ng e colleghi, nel 1999, hanno trovato il modo di dare quegli aiuti
+senza che il dondolio possa mai convenire. Attacchi un numero a ogni stanza, la
+sua **quota**, e paghi il robot per il dislivello: la quota della stanza in cui
+arriva, meno la quota della stanza da cui viene.
+Dalla quota $3$ alla $5$ incassa $+2$; se torna sui suoi passi, $-2$. Sulla
+soglia può dondolare quanto vuole, andata e ritorno fanno zero.
 
-Verrebbe da obiettare: se so già dare a ogni posto un numero che dice quanto è
-vicino all'uscita, il labirinto non l'ho già risolto? Ed è qui la finezza:
-**la quota non deve essere giusta**. Può essere una stima grossolana, per
-esempio la distanza in linea d'aria dall'uscita, che ignora i muri e ogni tanto
-manda dalla parte sbagliata. Se la stima è buona il robot impara molto più in
-fretta, perché a ogni passo ha un segnale invece del buio; se è pessima non
-aiuta, e può anche fargli perdere tempo. Ma in nessuno dei due casi gli fa
-imparare la cosa sbagliata: la strategia migliore resta quella di prima. È
-tutto lì il valore della garanzia.
+Per attaccare quei numeri sembra che tu debba già sapere quanto ogni stanza
+dista dall'uscita, e allora il labirinto lo avresti risolto tu al posto suo. Le
+quote, invece, non devono essere giuste: puoi misurarle in linea d'aria sulla
+pianta, ignorando i muri, e una stanza vicina all'uscita ma murata prende lo
+stesso una quota alta. Lì il robot lo mandi a sbattere. Con quote sensate
+impara molto più in fretta, perché a ogni passo ha un segnale invece del buio;
+con quote pessime ci mette di più e basta. In nessuno dei due casi impara a
+fare la cosa sbagliata: la strada migliore per uscire resta quella di prima,
+quote o non quote.
 
-(Un'ultima precisazione, per chi ha fatto il conto. Il «vado e torno fa zero»
-funziona così tondo solo se un premio incassato più tardi vale quanto uno
-incassato subito. Di solito non è così: come si è visto nel corridoio di Dyna,
-i premi lontani si scontano, cioè valgono un po’ meno. Il conto giusto, allora,
-non è la somma nuda dei premietti: è quella somma con ciascun premietto già
-moltiplicato per quanto vale a quella distanza. E in *quella* somma i pezzi si
-cancellano di nuovo a due a due, perché ogni quota ci entra con lo stesso peso
-in positivo e in negativo. Alla fine sopravvive soltanto la quota della casella
-da cui si è partiti, che è la stessa per qualunque strategia: un vantaggio
-uguale per tutti non favorisce nessuno.)
+Il conto della soglia torna così tondo finché un premietto incassato fra dieci
+mosse vale quanto uno incassato adesso. Di solito vale meno: come nel corridoio
+di Dyna, i premi lontani si scontano. Allora lo sconto entra anche nel
+premietto, se no il dondolio torna a rendere. La quota della stanza in cui il
+robot arriva si conta per quello che vale un passo più in là, e da lì si toglie
+la quota della stanza da cui viene. Se un passo più in là i premi valgono nove
+decimi, andare dalla quota $3$ alla $5$ frutta $0{,}9 \times 5 - 3 = 1{,}5$
+invece di $2$, e tornare indietro costa $0{,}9 \times 3 - 5 = -2{,}3$: il giro
+completo lascia il robot sotto zero.
+
+Su una strada lunga il conto si cancella ancora a due a due: ogni stanza
+attraversata entra una volta col più, quando il robot ci arriva, e una volta
+col meno, quando ne esce. Sopravvive soltanto la quota della stanza da cui è
+partito, che è la stessa qualunque strada prenda poi. Un vantaggio uguale per
+tutti non favorisce nessuno, e la meta del robot resta dov'era.
 
 `````
 
@@ -507,6 +551,15 @@ l'agente disobbedisce: è che obbedisce troppo bene, alla lettera sbagliata.
 Scrivere una ricompensa che dica davvero ciò che vogliamo (e non una sua
 approssimazione sfruttabile) è molto più difficile di quanto sembri.
 
+Qualche difesa c'è, e si vede subito fin dove arriva. All'idraulico metti nel
+contratto quali tubi non si toccano, e lui cambierà quelli rimasti. Lo paghi a
+impianto funzionante e mandi qualcuno a controllarlo un anno dopo, e adesso il
+metro è il giudizio di quella persona: resta da convincere lei. Provi a
+riformulare l'incarico in tre modi diversi per vedere se il risultato regge, e
+scopri quali formulazioni erano fragili, non come si scrive quella giusta. Chi
+progetta agenti ha in mano lo stesso repertorio, con lo stesso esito: ogni
+difesa sposta il bersaglio, nessuna chiude la partita.
+
 `````
 
 `````{tab} Superiore
@@ -544,9 +597,10 @@ L'elenco, riletto tutto insieme, è impressionante. Nella sezione su DQN, la
 memoria delle esperienze e la copia congelata, perché i voti non esplodessero.
 Nei gradienti di policy, il guinzaglio di PPO, perché non esplodesse la
 strategia. Nel RL basato su modello, i sogni corti, perché non esplodesse
-l'immaginazione. Nell'offline RL, il recinto attorno all'archivio, perché non
-esplodessero le stime su ciò che nessuno ha mai provato. Nell'imitazione,
-l'esperto richiamato a etichettare, perché l'allievo non finisse nel fosso.
+l'immaginazione. Nell'imitazione, l'esperto richiamato a etichettare, perché
+l'allievo non finisse nel fosso. Nell'offline RL, il recinto attorno
+all'archivio, perché non esplodessero le stime su ciò che nessuno ha mai
+provato.
 
 Il reward hacking è la stessa storia raccontata all'ultimo livello, quello
 dell'obiettivo, e con una differenza: qui il contenimento non è più un
@@ -558,9 +612,10 @@ sull'AI responsabile comincia da qui.
 :class: important
 - Quando la ricompensa arriva **di rado** (l'emblema è *Montezuma's Revenge*,
   dove il DQN segnava zero), tirare a caso ogni tanto non basta: è come
-  esplorare una città lanciando una monetina a ogni incrocio, si gira per ore
-  nello stesso quartiere. Serve una spinta che punti **deliberatamente** verso
-  quello che non si è ancora visto.
+  esplorare una città imboccando quasi sempre la strada che sembra migliore e
+  tirando un dado a un incrocio ogni tanto, e si gira per ore nello stesso
+  quartiere. Serve una spinta che punti **deliberatamente** verso quello che
+  non si è ancora visto.
 - Il modo più semplice è il **premio alla novità**, il principio del turista
   curioso: un piccolo premio ogni volta che metti piede in un posto nuovo, che
   si spegne man mano che quel posto diventa familiare. Negli spazi enormi, dove
@@ -570,7 +625,10 @@ sull'AI responsabile comincia da qui.
   a ciò che **sorprende**, come il bambino che spinge il bicchiere oltre il
   bordo del tavolo finché non ha imparato cosa succede. L'agente si costruisce
   una previsione di come andrà a finire, e ogni volta che sbaglia la previsione
-  incassa. Si spegne da sé: quando ha imparato, non c'è più sorpresa.
+  incassa. Si spegne da sé: quando ha imparato, non c'è più sorpresa. Ma solo
+  se a sorprenderlo è qualcosa su cui la sua mano fa la differenza, perché
+  davanti alla pioggia dietro il vetro, che nessuno sa prevedere, resterebbe lì
+  per sempre.
 - Aggiungere premietti intermedi per guidare l'agente (**reward shaping**)
   funziona, ma può cambiargli l'obiettivo sotto il naso: il robot scopre che gli
   conviene oscillare davanti alla porta incassando premietti, senza mai uscire.

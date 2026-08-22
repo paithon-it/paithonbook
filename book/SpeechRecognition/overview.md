@@ -21,11 +21,13 @@ parole che contiene.
 `````{tab} Elementare
 
 Ascolti una registrazione e la trascrivi a mano: ricevi un flusso continuo di
-suono (alti, bassi, pause) e produci una riga di parole scritte. Il
-riconoscitore vocale fa esattamente questo: in ingresso l'onda sonora
-catturata dal microfono, in uscita del testo. Attenzione: nessuna
-*comprensione* del significato, per ora. Solo il passaggio dal suono
-alle lettere giuste.
+suono (alti, bassi, pause) e produci una riga di parole scritte. Dieci secondi
+di registrazione diventano una ventina di parole, e nessuno ti dice quanti
+centesimi di secondo tocchino a ciascuna. Dove il parlato è impastato torni
+indietro, riascolti, provi due letture possibili e scrivi quella che ti
+convince di più. Il riconoscitore vocale fa esattamente questo: in ingresso
+l'onda sonora catturata dal microfono, in uscita del testo. Del significato
+non capisce niente, per ora. Solo il passaggio dal suono alle lettere giuste.
 
 `````
 
@@ -189,10 +191,13 @@ Il segnale grezzo è troppo minuto e dettagliato per lavorarci direttamente.
 Allora lo si taglia in fettine di pochi centesimi di secondo e, per ognuna, si
 misura "quanta energia c'è a ciascuna altezza sonora": un po’ come le barrette
 colorate che ballano nelle app della musica, dove le più a sinistra si alzano
-sui suoni gravi e le più a destra sugli acuti. Questa sequenza di
-istantanee sonore ha un nome, e lo useremo per tutto il capitolo: si chiama
-**spettrogramma**. Per un modello lavorare su queste istantanee è molto più
-facile che lavorare sull'onda di partenza.
+sui suoni gravi e le più a destra sugli acuti. Le fettine si prendono
+accavallate, così una consonante a cavallo di un taglio non va persa. Questa
+sequenza di istantanee sonore ha un nome, **spettrogramma**, ed è questo che
+il modello acustico ascolta al posto dell'onda. Un tempo lo riceveva anche più
+spremuto, una dozzina di numeri per fettina, perché lavorava bene solo con
+poche misure che non dicessero due volte la stessa cosa; oggi le reti se lo
+prendono così com'è.
 
 `````
 

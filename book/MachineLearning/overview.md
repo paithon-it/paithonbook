@@ -49,6 +49,10 @@ pasto al programma. È lui a trovare da solo le regolarità: quali parole, quali
 mittenti, quali combinazioni ricorrono nello spam. Le regole *emergono* dai
 dati, non le scrivi tu.
 
+E devono reggere fuori dal mucchio. Le email che gli hai dato qualcuno le ha
+già smistate a mano, quindi rismistarle non serve a nessuno: quello che ti
+serve è che se la cavi sulla prossima, quella che nel mucchio non c'era.
+
 `````
 
 `````{tab} Superiore
@@ -67,8 +71,8 @@ $\theta$.
 
 `````
 
-Vale la pena fermarsi su come si chiama il risultato di tutto questo, perché è
-la parola che tornerà in ogni pagina del libro: il **modello**. Non è il
+Il risultato di tutto questo ha un nome, ed è la parola che tornerà da qui alla
+fine: il **modello**. Non è il
 modellino di un aeroplano né chi sfila in passerella. È il programma *dopo* che
 ha visto i dati: la regola che quei dati hanno prodotto. Una regola del genere,
 dentro un calcolatore, è fatta di numeri (quanto conta la parola «vincita»,
@@ -96,7 +100,17 @@ questo "più bravo" lo possiamo misurare. Servono tre ingredienti:
 - la **misura**, come contiamo i progressi (la percentuale di partite vinte).
 
 Il programma di Samuel diventava più bravo (vinceva di più) man mano che
-accumulava partite. Questo, e solo questo, è imparare.
+accumulava partite. Questo, e solo questo, è imparare. Se dopo mille partite ne
+vincesse la stessa quota di prima non avrebbe imparato niente, per quante ne
+avesse giocate, perché a decidere è il numero che sale e non il tempo passato
+al tavolo.
+
+I tre ingredienti non parlano di dama. Al posto del compito metti il
+riconoscere una firma falsa, al posto dell'esperienza le firme già controllate
+una per una, al posto della misura quante ne sbagli su cento. La domanda da
+fare resta la stessa, e cioè se quegli errori calano man mano che le firme
+controllate aumentano. Funziona con un programma qualunque, senza sapere niente
+di come è fatto dentro.
 
 `````
 
@@ -134,10 +148,22 @@ lunga il modo più usato in pratica.
 
 `````{tab} Elementare
 
-A fianco di ogni esercizio c'è la soluzione. Chi studia così vede sia il
-problema sia la risposta corretta, e col tempo impara a rispondere da solo a
-esercizi nuovi. Le "soluzioni a fianco" sono le etichette: senza di esse,
-questo tipo di apprendimento non funziona.
+A fianco di ogni esercizio c'è la soluzione. Chi studia così prova a rispondere
+da solo, poi scopre il riquadro accanto e vede di quanto ha sbagliato. Su ogni
+esercizio gli resta un numero, lo scarto fra la sua risposta e quella giusta.
+
+Un singolo scarto dice poco. Quello che conta è la media su tutta la raccolta:
+cinque esercizi sbagliati di 2, 0, 1, 0 e 2 punti fanno 5 punti in tutto, cioè
+1 punto a esercizio, ed è quella media che chi studia cerca di far scendere. Si
+guarda lei, e mai il singolo esercizio. Un modo di rispondere che azzecca un
+esercizio solo e manda fuori strada gli altri quattro alza la media, quindi
+vale meno, per quanto sia perfetto lì. Fra due modi di rispondere si tiene
+sempre quello con la media più bassa.
+
+Le "soluzioni a fianco" sono le etichette: senza di esse non c'è niente contro
+cui misurare lo scarto, e questo tipo di apprendimento non funziona. La
+raccolta, poi, si fa per gli esercizi che ancora non ci sono, quelli senza
+soluzione stampata sotto, dove si vede se qualcuno ha davvero imparato.
 
 `````
 
@@ -299,41 +325,56 @@ quello che la scena di prima ignora ogni volta, e conviene capire dove passa.
 
 `````{tab} Elementare
 
-Il deep learning ha ridefinito cosa è possibile con immagini, audio e
-linguaggio. Ma dedurne che sia lo strumento migliore per qualsiasi problema è
-come cercare l'attrezzo migliore in assoluto: la domanda è mal posta. Su
-un'ampia fascia di casi reali i metodi di questo capitolo restano la scelta più
-sensata.
+Sullo schermo c'è la tabella dei clienti, una riga per persona e in colonna
+l'età, il codice postale, il reddito annuo, i giga consumati il mese scorso, i
+reclami aperti. Fra la colonna del codice postale e quella del reddito non c'è
+nessun rapporto: unità diverse, scale diverse, significati diversi. Si possono
+scambiare di posto e la tabella dice le stesse cose. Sono **colonne senza
+geografia**.
 
-La distinzione che conta non è l'età dell'algoritmo, ma **la forma dei dati**.
-In una tabella, la colonna "codice postale", quella "reddito annuo" e quella
-"ha un contratto attivo" non hanno nulla in comune: unità diverse, scale
-diverse, significati diversi. Fra due colonne non c'è vicinanza, come ce n'è
-fra due puntini accanto in una fotografia, e non c'è ordine, come ce n'è fra
-due parole in una frase. Sono **colonne senza geografia**, e le reti neurali
-sono costruite proprio per sfruttare una geografia: hanno pezzi fatti apposta
-per guardare i puntini vicini fra loro, e altri fatti apposta per guardare
-quali parole di una frase si riferiscono a quali. Su una tabella
-quella struttura non c'è, e il vantaggio evapora.
+In una fotografia la geografia c'è, perché due puntini vicini appartengono allo
+stesso occhio e scambiarli sfigura la faccia. In una frase c'è un ordine, e
+spostare una parola cambia chi fa che cosa. Le reti profonde hanno ridefinito
+quello che si può fare con immagini, suono e linguaggio proprio perché sono
+costruite su quella geografia, con pezzi fatti apposta per i puntini vicini e
+altri per capire quali parole si riferiscono a quali. Davanti alla tabella dei
+clienti quei pezzi non hanno niente da guardare, e il vantaggio evapora.
 
-Gli **alberi di decisione**, al contrario, si trovano a casa. Un albero è una
-catena di domande con risposta sì o no, una per volta e ciascuna su una colonna
-sola: «i metri quadri sono più di ottanta?», poi «il contratto è ancora
-attivo?», e via così fino a una risposta. Che le colonne abbiano unità e scale
-diverse non gli importa, perché non le mescola mai fra loro; e una domanda si
-può fare anche su un nome («il quartiere è Milano?») o sul fatto che una
-casella sia rimasta vuota.
+I modelli semplici che il collega scettico ha messo in fila lavorano una
+domanda alla volta: «i giga consumati sono più di ottanta?», poi «il contratto
+è ancora attivo?», poi «il quartiere è Milano?», e avanti così fino a una
+risposta. Una catena di domande con risposta sì o no, ciascuna su una colonna
+sola, si chiama **albero di decisione**. Che le colonne abbiano unità e scale
+diverse non gli dà nessun fastidio, perché non le mescola mai fra loro.
 
-Tre casi in cui il classico resta la scelta giusta:
+Dentro quella tabella le cose cambiano di scatto. La promozione parte a
+cinquanta euro di ricarica. Chi si ferma a quarantanove e novanta non prende i
+giga in regalo, chi arriva a cinquanta e un centesimo sì, e di due clienti
+quasi identici uno rinnova e l'altro se ne va. Una rete neurale tira
+volentieri curve morbide, e attraverso un salto del genere ci passa
+arrotondandolo, sbagliando proprio sui clienti a ridosso della soglia.
+L'albero quel salto lo fa netto, perché la sua domanda è già «la ricarica
+supera i cinquanta euro?», e di soglie così ne mette una dietro l'altra.
 
-- **dati in tabella**, che sono la forma più comune dei dati di un'azienda;
-- **pochi esempi**: con qualche migliaio di righe una rete profonda non ha
-  abbastanza materiale. Le reti, infatti, hanno un talento che i metodi di
-  questo capitolo non hanno, cioè costruirsi da sole le caratteristiche a
-  partire dai dati grezzi, ma per riuscirci di esempi ne vogliono tantissimi;
-- **serve spiegare la decisione**: un albero si può ripercorrere domanda per
-  domanda, e quando un rifiuto va motivato a un cliente o a un'autorità che
-  vigila, poter dire *perché* non è un dettaglio.
+Nella stessa tabella parecchie colonne non dicono niente sul problema: il
+codice interno del cliente, la data in cui la riga è stata digitata, un campo
+che qualcuno ha smesso di compilare due anni fa. La rete se le porta dietro
+tutte, e da quel rumore raccoglie qualcosa che scambia per un segnale. L'albero
+a ogni passo sceglie una colonna sola, e la sceglie perché divide bene chi
+resta da chi se ne va, quindi una colonna muta non la sceglie mai.
+
+Quella gara è stata rifatta su decine di tabelle vere, dando ai due contendenti
+lo stesso tempo di messa a punto, e gli alberi hanno vinto. Vale per tabelle
+come quella sullo schermo, intorno alle diecimila righe. Su una tabella cento
+volte più grande la gara è ancora da correre. Dalla parte opposta, con qualche
+migliaio di righe soltanto, una rete profonda ha poco materiale. Sa costruirsi
+da sola le caratteristiche buone dai dati grezzi, cosa che un albero non sa
+fare, ma di esempi ne vuole tantissimi.
+
+Resta il conto da pagare. Il modello del collega si è addestrato sul suo
+portatile e va in servizio così com'è, senza macchine speciali. Prima di
+firmare per una rete profonda si mette in piedi il modello semplice e lo si
+regola per bene, e molto spesso la risposta è già quella.
 
 `````
 

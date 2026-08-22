@@ -38,15 +38,29 @@ compatibili con i dati**, ciascuna con il suo grado di plausibilità.
 
 `````{tab} Elementare
 
-Immagina un fascio di fili elastici tesi sopra un tavolo: ognuno è una
-possibile curva "vera", un modo in cui il mondo potrebbe comportarsi. Ogni
-misura che facciamo è un chiodo piantato nel tavolo: da quel momento tutti i
-fili devono passare lì vicino, quasi toccarlo. Vicino ai chiodi il fascio è
-costretto, i fili quasi si sovrappongono; lontano dai chiodi si riapre a
-ventaglio, perché nulla lo vincola. La previsione del processo gaussiano è
-doppia: *dove passa in media il fascio* (la stima) e *quanto è largo lì*
-(l'incertezza). È esattamente la previsione «tra 21 e 27»: stretta dove abbiamo
-misurato, larga dove stiamo tirando a indovinare.
+Un fascio di fili elastici tesi sopra un tavolo, ognuno una possibile curva
+"vera", un modo in cui il mondo potrebbe comportarsi. Prima di misurare
+qualsiasi cosa i fili si affollano attorno alla stessa altezza in ogni punto
+del tavolo, moltissimi vicini a quella quota, pochi scostati parecchio,
+pochissimi in cima o in fondo. Punta il dito su un punto qualunque del tavolo e
+guarda soltanto le altezze dei fili lì sopra. La loro forma è la campana.
+Puntane tre insieme, prendi da ogni filo la terna di altezze, e ritrovi la
+stessa storia. Vale per una manciata qualsiasi di punti, ed è la regolarità che
+dà il nome al metodo.
+
+Ogni misura che facciamo è un chiodo piantato nel tavolo: da quel momento i
+fili devono passare lì vicino, quasi toccarlo, e chi passa lontano esce di
+scena. Vicino ai chiodi il fascio è costretto, i fili quasi si sovrappongono;
+lontano dai chiodi si riapre a ventaglio, perché nulla lo vincola. I chiodi
+però non cambiano la natura del fascio. Anche dopo, in ogni
+punto del tavolo, le altezze si affollano attorno a un centro con la loro
+campana; solo che il centro si è spostato sui dati e la campana si è
+ristretta.
+
+La previsione del processo gaussiano è doppia: *dove passa in media il fascio*
+(la stima) e *quanto è largo lì* (l'incertezza). È esattamente la previsione
+«tra 21 e 27»: stretta dove abbiamo misurato, larga dove stiamo tirando a
+indovinare.
 
 `````
 
@@ -82,33 +96,48 @@ valori in due punti devono somigliarsi.
 
 `````{tab} Elementare
 
-La regola del kernel è il buon senso del geometra: **punti vicini hanno valori
-simili**. Se a Modena ci sono 24 gradi, a Bologna (quaranta chilometri), mi
-aspetto quasi la stessa temperatura; ad Ancona, duecento chilometri più in là,
-la mia misura modenese dice ormai poco. Il kernel trasforma questa intuizione
-in un numero tra 0 e 1: due punti a un passo l'uno dall'altro valgono quasi 1,
-due punti lontanissimi quasi 0.
+Quaranta chilometri separano Modena da Bologna. Se a Modena il termometro segna
+24 gradi, a Bologna ci aspettiamo quasi la stessa temperatura; ad Ancona,
+duecento chilometri più giù, quella lettura ci dice ormai poco. Il kernel mette
+la faccenda in numeri fra 0 e 1: quasi 1 per due città a un passo, quasi 0 per
+due lontanissime.
 
-E ha una manopola fondamentale, il **raggio di influenza**:
-fin dove arriva l'effetto di una misura? La collega alle curve un ragionamento
-breve. Se il raggio è corto, la mia misura a Modena non dice niente su Bologna,
-quindi il valore a Bologna resta libero di essere qualunque cosa: fra due
-chiodi vicini il filo può fare quello che vuole, e le curve zigzagano. Se il
-raggio è lungo, la misura di Modena impegna anche Bologna a starle vicino, e a
-sua volta Bologna impegna Ferrara: i valori sono legati fra loro a catena, e
-una catena del genere non può fare scatti bruschi. Ne escono curve morbide e
-distese.
+Fin dove arriva una lettura lo decide una manopola, il **raggio d'influenza**.
+Corto, Modena non impegna Bologna, che resta libera di segnare qualunque cosa,
+e fra un termometro e l'altro la curva zigzaga. Lungo, Modena tiene stretta
+Bologna e Bologna tiene Ferrara: una catena del genere non fa scatti bruschi, e
+ne escono curve morbide e distese.
 
-Diamo un'idea con i numeri, misurando le distanze **in unità di raggio**: se il
-raggio d'influenza è quaranta chilometri, «distanza 1» vuol dire quaranta
-chilometri, «distanza 2» ottanta, e così via. La somiglianza cala
-come una campana, cioè non in proporzione alla distanza ma al suo **quadrato**:
-a distanza $1$ vale $0{,}61$, a distanza $2$ (dove il quadrato è quattro volte
-più grande) crolla a $0{,}14$, a distanza $3$ (nove volte) ad appena $0{,}01$.
-Già a un raggio pieno di distanza, quindi, la somiglianza è scesa a poco più
-della metà: «quasi gemelli» vuol dire molto più vicini di così.
+Le distanze si contano in raggi, e con un raggio di quaranta chilometri Bologna
+sta a distanza $1$. La somiglianza cala come una campana, col quadrato della
+distanza: a Bologna vale $0{,}61$, a ottanta chilometri (dove il quadrato è
+quattro volte più grande) $0{,}14$, a centoventi (nove volte) appena $0{,}01$,
+e Ancona è fuori. A un raggio pieno siamo appena sopra la metà, quindi «quasi
+gemelli» vuol dire molto più vicini di quaranta chilometri: l'influenza di un
+termometro sparisce di colpo.
 
-L'influenza di una misura, insomma, non si spegne piano: sparisce.
+Una seconda manopola, l'ampiezza, dice quanto ballano le letture: un grado di
+scarto o dieci. Nessuna delle due la giriamo a mano; la posizione la scelgono i
+termometri che abbiamo già, provando e dando un voto.
+
+Il voto tira in due versi. Uno premia chi indovina le nostre letture. L'altro
+conta quante altre tabelle di temperature, tutte diverse dalla nostra, quella
+posizione avrebbe spiegato altrettanto bene, e più ne sono più toglie. Col
+raggio cortissimo ogni città è libera dalle altre, e va bene qualsiasi tabella,
+anche quaranta gradi a Modena e zero a Bologna: chi accetta tutto non ha
+indovinato niente. Col raggio lunghissimo mezza Italia segna la stessa cifra, e
+le nostre letture dicono di no. Vince una posizione di mezzo.
+
+Le posizioni buone però sono più di una, e chi gira la manopola sempre nello
+stesso verso si ferma sulla prima. Per questo il giro si rifà cinque volte, da
+posizioni sorteggiate, tenendo il voto più alto.
+
+Sotto tutto c'è un'ipotesi, che il tempo cambi sempre dolcemente da una città
+all'altra. Su un valico, sulla costa, sul bordo di un temporale non è vero:
+cinque gradi se ne vanno in due chilometri, e quel salto il fascio non lo sa
+fare. Ci passa in mezzo con una rampa, e non avverte. La banda si stringe dove
+i termometri sono fitti, non dove le loro letture ci hanno sorpreso: sopra il
+valico, con due misure lì accanto, resta stretta e sbagliata.
 
 `````
 
@@ -132,9 +161,8 @@ regolarità forte, non sempre realistica.
 
 I suoi iperparametri $(\sigma, \ell)$
 non si fissano a mano: si stimano massimizzando la **verosimiglianza
-marginale** dei dati, cosa che `scikit-learn` fa da sola durante il `fit`. Vale
-la pena scriverla, perché è il pezzo di matematica più elegante dei processi
-gaussiani:
+marginale** dei dati, cosa che `scikit-learn` fa da sola durante il `fit`. È il
+pezzo di matematica più elegante dei processi gaussiani:
 
 $$
 \log p(\mathbf{y} \mid \mathbf{X}) =
@@ -154,10 +182,10 @@ determinante) penalizza i kernel «capaci», quelli che ammettono troppe funzion
 diverse. È il **rasoio di Occam scritto dentro il criterio**: qui non serve un
 validation set per punire la complessità, ci pensa la formula. Con una
 avvertenza pratica: quella funzione **non è concava** negli iperparametri e ha
-massimi locali {cite}`rasmussen2006gaussian`, ed è la ragione per cui il codice
-della prossima pagina la fa ripartire cinque volte da inizializzazioni diverse
-(`n_restarts_optimizer=5`), esattamente nello spirito della sezione sugli
-iperparametri.
+massimi locali {cite}`rasmussen2006gaussian`, ed è la ragione per cui
+l'ottimizzazione si fa ripartire cinque volte da inizializzazioni sorteggiate
+(`n_restarts_optimizer=5` in `scikit-learn`) tenendo il massimo più alto,
+esattamente nello spirito della sezione sugli iperparametri.
 
 `````
 
@@ -175,12 +203,33 @@ Ogni punto osservato *stringe* il fascio lì vicino: le curve che non passano
 nei paraggi vengono scartate, quelle che restano sono quasi d'accordo tra
 loro, e la banda d'incertezza si riduce a un filo. Lontano dai punti (tra un
 dato e l'altro, o fuori dalla zona esplorata) sopravvivono curve molto
-diverse, e la banda si riapre. Il risultato, per ogni punto in cui vogliamo
-una previsione, sono due numeri: la **media** delle curve sopravvissute (la
-stima migliore) e la **larghezza** del fascio (quanto fidarsi). Se la stima è
-24 gradi e la banda va da 21 a 27, il modello sta dicendo: «quasi certamente
-il valore è lì in mezzo». Una banda larghissima non è un difetto: è il modello
-che alza la mano e ammette di non avere dati per rispondere.
+diverse, e la banda si riapre. Il risultato, per ogni punto in cui vogliamo una
+previsione, sono due numeri, e nessuno dei due si cerca per tentativi. Piantati
+i chiodi e fissate le manopole, escono da un conto diretto.
+
+Il primo numero è la stima, e si ottiene come faceva Krige nelle miniere: una
+media delle misure che abbiamo, in cui ognuna pesa quanto è vicina al punto che
+ci interessa. Per prevedere a Bologna, il termometro di Modena conta quasi da
+solo; quello di Ancona entra nel conto con un peso troppo piccolo per spostare
+la virgola.
+
+Il secondo numero è la larghezza del fascio, e si ottiene per sottrazione. Si
+parte da quanto eravamo ignoranti prima di misurare, cioè dall'apertura del
+ventaglio libero, e si toglie quello che le misure hanno già spiegato. Accanto
+a un chiodo la sottrazione porta via quasi tutto e resta un filo; lontano non
+c'è niente da togliere, e si torna all'apertura di partenza.
+
+Se la stima è 24 gradi e la banda va da 21 a 27, il modello sta dicendo: «quasi
+certamente la temperatura vera è lì in mezzo». Quella banda risponde alla
+domanda «quanti gradi fa davvero adesso a Bologna». C'è una domanda vicina,
+«quanto segnerà il termometro che ci piazzo domani», e la banda che le risponde
+è più larga, perché porta con sé anche lo sbaglio dello strumento. La
+differenza si vede nel caso estremo. Su una città dove abbiamo cento misure la
+banda sulla temperatura vera si assottiglia fino quasi a sparire, mentre quella
+sulla lettura di domani non scende mai sotto l'errore del termometro.
+
+Una banda larghissima non è un difetto: è il modello che alza la mano e ammette
+di non avere dati per rispondere.
 
 `````
 
@@ -286,15 +335,7 @@ casi. È una proprietà della campana, non una scelta nostra, ed è la ragione p
 cui un intervallo largo due deviazioni standard per parte si legge come «quasi
 certamente il valore sta lì dentro».
 
-Il programma stampa questo:
-
-```text
-x = 1.5  ->  f(x) = +0.83 ± 0.20
-x = 3.0  ->  f(x) = +0.07 ± 0.36
-x = 8.0  ->  f(x) = +0.12 ± 1.38
-```
-
-E racconta la storia della figura in tre gradini, non
+Le tre righe stampate raccontano la storia della figura in tre gradini, non
 in due. A $x = 1{,}5$, accanto a un dato osservato, la banda è strettissima
 ($\pm 0{,}20$). A $x = 3{,}0$ siamo ancora *dentro* l'intervallo esplorato, ma
 in mezzo a un buco: gli otto punti sorteggiati cadono tutti fra $0{,}09$ e
@@ -317,7 +358,8 @@ gaussiano **regge male i dati tanti**.
 Il processo gaussiano non si costruisce un riassunto dei dati da consultare
 poi: tiene *tutte* le osservazioni e le confronta a due a due, come un medico
 che a ogni visita rileggesse le cartelle di tutti i pazienti mai avuti. Con
-cento pazienti funziona benissimo; con un milione è impensabile.
+qualche centinaio di pazienti funziona benissimo; verso le decine di migliaia
+comincia a non stare più in piedi; con un milione non se ne parla.
 
 E il conto è peggiore di quanto l'immagine suggerisca. Confrontare tutte le
 coppie sarebbe già un lavoro che cresce col **quadrato** del numero di
@@ -328,6 +370,14 @@ risultato è che il lavoro cresce col **cubo**: raddoppiare i dati lo moltiplica
 per otto ($2 \times 2 \times 2$), e passare da mille a diecimila punti lo
 moltiplica per mille. È il motivo per cui non
 addestreremo mai un processo gaussiano sulle foto di tutto internet.
+
+Una scorciatoia esiste, ed è proprio il riassunto che il metodo si rifiutava di
+fare. Invece di tenere tutte le cartelle se ne scelgono un centinaio, casi
+rappresentativi a cui ricondurre gli altri, e il conto torna abbordabile. Il
+prezzo si paga sull'ingrediente per cui si era scelto questo modello: le stime
+reggono, i margini di fiducia diventano meno affidabili. E resta in piedi la
+scommessa di partenza, la regola di somiglianza che abbiamo adottato, che è
+un'ipotesi sul mondo e sul mondo va controllata.
 
 `````
 

@@ -69,7 +69,7 @@ stessa identica tecnica del pre-addestramento.
 
 `````{tab} Elementare
 
-Immagina un apprendista che ha passato dieci anni a leggere *tutta* la
+Un apprendista ha passato dieci anni a leggere *tutta* la
 biblioteca del suo mestiere: manuali, riviste, verbali, romanzi. Sa
 moltissimo, ma nessuno gli ha mai mostrato com'è fatto il lavoro vero e
 proprio: se gli chiedi qualcosa, ti recita il seguito più probabile della tua
@@ -78,12 +78,14 @@ davanti qualche migliaio di **compiti già svolti bene** (la domanda di un
 cliente con accanto la risposta di un professionista esperto) e lui li studia
 uno per uno. Non impara quasi nulla di nuovo sul mondo: quello l'aveva già
 letto in biblioteca. Impara il **formato**: che quando arriva un'istruzione,
-la cosa da fare non è continuarla, ma eseguirla. È un tirocinio
+la cosa da fare non è continuarla, ma eseguirla. E lo si corregge soltanto
+sulla parte che tocca a lui: la richiesta del cliente la legge, e nessuno gli
+chiede di saperla ripetere a memoria. È un tirocinio
 sorprendentemente breve (migliaia di esempi contro i miliardi di frasi della
 biblioteca) proprio perché non aggiunge sapere: orienta quello che c'è già.
 
-Il tirocinio però ha un limite preciso, e conviene vederlo subito perché è la
-ragione per cui la storia non finisce qui: l'apprendista impara a **imitare** i
+Il tirocinio però ha un limite preciso, e si vede subito:
+l'apprendista impara a **imitare** i
 compiti svolti, non a distinguere un lavoro eccellente da uno appena
 accettabile. Nessuno gli ha mai fatto vedere due risposte con scritto quale
 delle due è meglio. E per moltissime richieste (la poesia sul mare, appunto)
@@ -167,50 +169,51 @@ laterale.
 
 `````{tab} Elementare
 
-Una premessa di due righe, perché senza quella il resto non si capisce. Dentro
-la rete i numeri non stanno alla rinfusa: stanno in **tabelle**, righe e
-colonne come un foglio di calcolo (in matematica si chiamano *matrici*), e una
-tabella grande può avere quattromila righe per quattromila colonne, cioè sedici
-milioni di caselle. Adattare un modello vuol dire riscrivere quelle caselle, e
-sono troppe.
+Un architetto che deve cambiare dieci cose in una pianta già disegnata appoggia
+sul foglio un lucido, e le modifiche le disegna lì. La pianta di sotto resta
+intatta.
 
-**LoRA** (*Low-Rank Adaptation*) {cite}`hu2022lora` parte da
-un'osservazione: quando adatti un modello già addestrato a un compito nuovo,
-quelle caselle non cambiano alla rinfusa. Si spostano poco, e le loro variazioni
-sono molto **ripetitive**: se guardi la tabella delle sole correzioni, le sue
-righe si somigliano moltissimo fra loro, tanto che quasi tutte si possono
-ottenere da un pugno di righe di base, mescolandole in dosi diverse. Un esempio
-minuscolo rende l'idea: una tabella di mille righe in cui ogni riga è una
-qualche moltiplicazione di due sole righe modello non ha mille righe da
-imparare, ne ha due più i moltiplicatori.
+Dentro la rete quella pianta esiste davvero. I numeri stanno in **tabelle**,
+righe e colonne come un foglio di calcolo (in matematica si chiamano
+*matrici*), e una tabella sola può essere quattromila righe per quattromila
+colonne, cioè sedici milioni di caselle. Riscriverle tutte per adattare il
+modello a un compito nuovo è fuori portata, e da qui viene il lucido.
 
-Ed è esattamente quello che LoRA fa. La tabella grande la congela, non la tocca
-più; accanto le mette due tabelle **sottili**, una da quattromila righe per
-otto colonne e una da otto righe per quattromila colonne, e impara solo quelle.
-Esiste un modo standard di moltiplicare due tabelle fra loro (lo stesso che il
-capitolo di matematica chiama prodotto di matrici) e da quelle due, moltiplicate
-in quest'ordine, ne esce una quattromila per quattromila: la stessa forma
-dell'originale, e quindi le si può sommare sopra. Ma i numeri da imparare erano
-$4000 \times 8 + 8 \times 4000 = 64\,000$ invece di sedici milioni, cioè lo
-$0{,}4\%$. Le otto colonne sono la manopola, e si chiamano il **rango**: più è
-alto, più la correzione può essere ricca, e più numeri ci sono da imparare.
+**LoRA** (*Low-Rank Adaptation*) {cite}`hu2022lora` nasce da una cosa che si
+vede controluce. I tratti di un lucido di correzioni si somigliano moltissimo,
+e quasi tutte le righe si ottengono da un pugno di righe di base, ripetute in
+dosi diverse. Un lucido di mille righe in cui ogni riga è una dose di due sole
+righe modello si impara con due righe, più i mille numeri che dicono quanta
+dose metterci.
 
-L'analogia è il lucido da architetto: la pianta originale resta intatta, tu
-disegni le modifiche su un foglio trasparente sovrapposto. Puoi tenere molti
-lucidi diversi (uno per il supporto clienti, uno per il codice, uno per il
-tono formale) e cambiarli in un istante sullo stesso disegno di base.
+Allora il lucido non si disegna casella per casella. Si compone con due strisce
+sottili, una alta quattromila e larga otto, una alta otto e larga quattromila.
+Moltiplicate in quest'ordine nel modo standard (il prodotto di matrici del
+capitolo di matematica), le due danno un foglio quattromila per quattromila,
+la misura esatta della pianta, e ci si appoggia sopra. I tratti da disegnare
+però erano $4000 \times 8 + 8 \times 4000 = 64\,000$ invece di sedici milioni,
+cioè lo $0{,}4\%$. Le otto colonne sono la manopola, e si chiamano il **rango**:
+più è alto, più ricca può essere la correzione, e più tratti ci sono da
+disegnare.
 
-E siccome i lucidi non si mettono su tutte le tabelle, ma solo su alcune, alla
-fine si addestra spesso **meno dello 0,1%** dei parametri dell'intero modello:
-il file da salvare pesa megabyte invece di gigabyte, e la qualità resta vicina
-al fine-tuning completo.
+Il lucido si comincia bianco, e finché non ci metti un tratto quello che si vede
+attraverso è la pianta di prima. L'adattamento parte esattamente dal
+comportamento che il modello aveva già, e da lì si sposta. Puoi tenerne molti
+(uno per il supporto clienti, uno per il codice, uno per il tono formale) e
+cambiarli in un istante sullo stesso disegno. Quando uno ti convince lo ricalchi
+sulla pianta una volta per tutte, così torni ad avere un foglio solo e
+consultarlo costa quanto prima.
 
-Con un confine da tenere presente, ed è lo stesso dell'analogia: su un lucido si
-disegnano le modifiche, non un edificio nuovo. Il ramo laterale è stretto
-apposta, e in quello stretto ci sta un cambio di tono, di formato, di materia
-trattata; non ci sta una materia che il modello non ha mai letto, né un cambio
-profondo del suo comportamento. Per quello tocca riscrivere la tabella grande,
-cioè tornare a spostare tutti i numeri.
+Nello studio i fogli sono tanti e il lucido non va su tutti, e alla fine si
+ridisegna spesso meno dello 0,1% dei numeri dell'intero modello. Quello che
+archivi pesa megabyte invece di gigabyte, e il risultato resta vicino a quello
+di una riscrittura completa.
+
+Il confine è quello del lucido, e sopra ci si disegnano le modifiche, non un
+edificio nuovo. Le due strisce sono strette apposta, e in quello stretto ci sta
+un cambio di tono, di formato, di materia trattata; non ci sta una materia che
+il modello non ha mai letto, né un cambio profondo del suo comportamento. Per
+quello tocca tornare sulla pianta e spostare tutti i numeri.
 
 `````
 
@@ -231,7 +234,7 @@ $$
 dove $d$ e $k$ sono le due dimensioni della matrice originale (righe e colonne)
 e $\rho$ è il **rango** dell'aggiornamento, cioè lo spessore del collo di
 bottiglia. Il rango si scrive di solito $r$; qui è $\rho$ perché $r$ in questo
-capitolo è già la ricompensa, e due righe più sotto la incontreremo.
+capitolo è già la ricompensa, che incontreremo con l'RLHF.
 
 Solo $\mathbf{A}$ e $\mathbf{B}$ ricevono gradiente. I parametri addestrabili
 passano da $dk$ a
@@ -260,7 +263,7 @@ Tre conseguenze pratiche:
    precisione più alta. Gli autori rifiniscono così un modello da 65 miliardi
    di parametri su una sola scheda da 48 GB, mentre il fine-tuning completo a
    16 bit dello stesso modello, per loro stesso conto, ne chiederebbe oltre
-   780: una quindicina di schede invece di una.
+   780: più di sedici schede di quelle, invece di una.
 
 Il limite è dove ci si aspetta: LoRA **adatta**, non insegna. Per far
 acquisire al modello conoscenza sostanzialmente nuova, o per cambiarne il
@@ -312,13 +315,26 @@ confronti si distilla una specie di **palato artificiale** (un giudice
 automatico che, assaggiato un piatto qualsiasi, gli dà un voto coerente con i
 gusti raccolti). A quel punto il cuoco può lavorare anche di notte, senza
 l'assaggiatore: prova una variante, il palato artificiale la vota, e lui
-aggiusta la ricetta per far salire il voto. Con una regola d'oro appesa in
-cucina: **mai stravolgere la ricetta di partenza**. Perché il palato
-artificiale è un'imitazione, e ha punti ciechi: se il cuoco insegue solo il
-voto, prima o poi scopre che (che so), raddoppiare la panna inganna il
-giudice, e finisce per servire piatti assurdi che «prendono voti alti» ma che
-nessun cliente vero vorrebbe. La regola del «resta vicino alla ricetta» tiene
-la creatività al guinzaglio: piccoli aggiustamenti sì, stravolgimenti no.
+aggiusta la ricetta per far salire il voto.
+
+Ridurre un piatto a un voto solo, però, è già una scommessa. Regge se i
+clienti hanno tutti più o meno lo stesso palato: se metà della sala ama il
+piccante e l'altra metà lo detesta, la media descrive un cliente che non
+esiste, e il cuoco finirà per cucinare per lui. E regge se le preferenze
+stanno in fila. Capita invece che girino in tondo (il primo piatto preferito
+al secondo, il secondo al terzo, e poi il terzo al primo), e un giro così in
+una classifica di voti non ci sta.
+
+Poi c'è una regola d'oro appesa in cucina: mai stravolgere la ricetta di
+partenza. Serve a due cose. Il palato artificiale è un'imitazione e ha i suoi
+punti ciechi: se il cuoco insegue solo il voto, prima o poi scopre che
+raddoppiare la panna inganna il giudice, e finisce per servire piatti assurdi
+che «prendono voti alti» ma che nessun cliente vero vorrebbe. E la ricetta di
+partenza qualcosa di buono ce l'aveva già: rifarla da zero per rincorrere il
+voto vuol dire perdere per strada anche il mestiere che c'era dentro. La
+regola del «resta vicino alla ricetta» tiene la creatività al guinzaglio, e il
+guinzaglio ha una lunghezza che si sceglie: corto, e il piatto cambia appena;
+lungo, e il cuoco osa di più rischiando di più.
 
 `````
 
@@ -330,12 +346,12 @@ annotatore indica la preferita, $y_w$ (*winner*), contro la scartata, $y_l$
 seconda». Il reward model $r_\phi(x, y)$ (tipicamente lo stesso Transformer
 con una testa scalare al posto della softmax) viene addestrato assumendo il
 modello di **Bradley–Terry** (1952), per cui la probabilità di preferenza
-dipende solo dalla differenza dei punteggi. Vale la pena dire che cosa si sta
-assumendo, perché non è poco: che esista **un solo numero** per risposta da cui
+dipende solo dalla differenza dei punteggi. Sotto quel modello stanno tre
+pretese, e non sono piccole: che esista **un solo numero** per risposta da cui
 discendono tutte le preferenze, e quindi che i giudizi siano **transitivi** e
 che gli annotatori siano **intercambiabili** fra loro. Nessuna delle tre cose è
 ovvia sulle persone vere, ed è la stessa ipotesi su cui poggerà anche
-l'equivalenza fra DPO e RLHF di cui parla la sezione seguente.
+l'equivalenza fra DPO e RLHF.
 
 $$
 P(y_w \succ y_l \mid x) = \sigma\big(r_\phi(x, y_w) - r_\phi(x, y_l)\big),
@@ -372,8 +388,8 @@ $-\beta\log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}$ dentro
 l'unica aspettazione: è la stessa cosa.) La penalità KL serve a due cose:
 impedisce alla policy di derivare verso le zone in cui $r_\phi$ (addestrato su
 dati limitati) estrapola male (il *reward hacking* su cui torneremo), e
-preserva la fluidità linguistica accumulata nel pre-addestramento. Vale la
-pena sapere che questa forma non è soltanto un espediente pratico: massimizzare
+preserva la fluidità linguistica accumulata nel pre-addestramento. Questa
+forma non è soltanto un espediente pratico: massimizzare
 una ricompensa restando vicini a una distribuzione di riferimento è
 formalmente la stessa cosa che fare inferenza bayesiana, con $\pi_{\text{ref}}$
 nel ruolo del priore {cite}`korbak2022rl`. La sezione sull'inferenza attiva,
@@ -539,8 +555,7 @@ Basta questa regola per leggere i numeri che seguono.
 La funzione qui sotto riceve quattro liste di questi numeri: quanto il modello
 che sta imparando (il cuoco) ritiene probabile la risposta preferita e quella
 scartata, e quanto le riteneva probabili la copia congelata di partenza (la
-ricetta). Chi non legge Python può saltare il blocco: il commento ai numeri,
-subito dopo, è in italiano.
+ricetta).
 
 ```python
 import torch
@@ -637,13 +652,24 @@ un'ora fino alle 11:00, poi altri 23; totale 96 minuti, cioè 1 ora e 36. Con i
 modelli funziona allo stesso modo: se l'esempio che gli mostri
 contiene i passaggi, o se glieli chiedi esplicitamente, il modello li scrive e
 sbaglia meno, perché ogni passaggio può appoggiarsi ai precedenti invece di
-indovinare tutto in un colpo. Un raffinamento semplice: fargli risolvere lo
-stesso problema più volte per strade diverse e prendere la risposta più
-votata, come chiedere a tre amici e fidarsi della maggioranza. I modelli
+indovinare tutto in un colpo.
+
+Il limite, in classe, si vede benissimo: «mostra i passaggi» aiuta chi i
+passaggi li sa fare. Chiederli a un bambino che non ha ancora imparato a
+leggere l'ora non gli regala la risposta: escono quattro righe sbagliate al
+posto di un numero sbagliato, e a volte il pasticcio delle righe lo porta più
+lontano dal risultato di quanto lo avrebbe portato tirare a indovinare. Con i
+modelli succede lo stesso, e la taglia conta: sotto una certa dimensione le
+catene di passaggi non aiutano, e a volte peggiorano le cose.
+
+Un raffinamento semplice: fargli risolvere lo stesso problema più volte per
+strade diverse e prendere la risposta più votata, come rifare il conto delle
+ore in tre modi e fidarsi del numero che salta fuori più spesso. I modelli
 «ragionanti» usciti tra il 2024 e il 2025 portano l'idea alle conseguenze:
 sono addestrati a produrre da soli, prima di ogni risposta, una lunga brutta
 copia di passaggi, che costa tempo e calcolo in più, ripagati soprattutto in
-matematica e programmazione, dove la risposta si può verificare.
+matematica e programmazione, dove la risposta si può verificare da sé, senza
+bisogno di qualcuno che dica se gli piace.
 
 `````
 
@@ -729,9 +755,9 @@ l'addestramento procede {cite}`yue2025rlvr`. Il risultato riguarda
 l'impostazione di addestramento corrente, non un limite di principio, ed è il
 motivo per cui il capitolo sull'auto-supervisione ci torna sopra per esteso.
 
-E c'è la domanda che nessun addestramento può chiudere. Tutto il lavoro di
-questa pagina serve a far sì che un modello si comporti come vorremmo, e quel
-lavoro ha un nome, **allineamento**: allineare il comportamento del modello a
+E c'è la domanda che nessun addestramento può chiudere. Tutto questo lavoro
+serve a far sì che un modello si comporti come vorremmo, e ha un nome,
+**allineamento**: allineare il comportamento del modello a
 ciò che le persone considerano utile e accettabile. Solo che a quel punto la
 domanda diventa **allineato a chi?** Le «preferenze umane» sono, in concreto,
 le preferenze di qualche decina di persone assunte per dare quei giudizi, che
@@ -773,7 +799,9 @@ garanzie sul risultato.
   cantiere: nei fatti i due metodi divergono, perché il quaderno dei confronti è
   fermo e il palato artificiale no.
 - **Mostrare i passaggi** {cite}`wei2022chain`: scrivere il ragionamento prima
-  della risposta fa sbagliare meno; rifare lo stesso problema per strade
+  della risposta fa sbagliare meno, ma solo a un modello che i passaggi li sa
+  fare (sotto una certa taglia le catene non aiutano, e a volte peggiorano);
+  rifare lo stesso problema per strade
   diverse e tenere la risposta più votata aiuta ancora; i modelli
   «ragionanti» {cite}`guo2025deepseek` si addestrano a stendere da soli una
   lunga brutta copia. Costa tempo e calcolo, e ripaga soprattutto dove la

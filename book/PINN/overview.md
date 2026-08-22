@@ -36,57 +36,51 @@ basta, e conviene vedere subito perché.
 
 `````{tab} Elementare
 
-Posa una tazza di caffè bollente sulla scrivania. Nessuno sa scrivere d'un
-fiato la sua temperatura tra dieci minuti, ma tutti conosciamo una regola più
-semplice: **il caffè si raffredda tanto più in fretta quanto più è caldo della
-stanza** (di corsa quando scotta, piano da tiepido, e da fermo quando è
-arrivato alla temperatura dell'aria intorno).
+Posa una tazza di caffè bollente sulla scrivania. Nessuno sa dire d'un fiato
+che temperatura avrà tra dieci minuti, ma la regola la conosciamo tutti: **il
+caffè si raffredda tanto più in fretta quanto più è caldo della stanza**, di
+corsa quando scotta, piano da tiepido, e da fermo quando è arrivato alla
+temperatura dell'aria intorno.
 
 La regola parla solo del *cambiamento*, eppure da lì si ricostruisce tutta la
-storia. Caffè a 80 °C, stanza a 20 °C; diciamo che ogni minuto il caffè perde
-un decimo della differenza con la stanza: al primo minuto la differenza è 60,
-quindi perde 6 gradi e scende a 74 °C; poi la differenza è 54, perde 5,4 e va
-a 68,6 °C; poi 63,7 °C, e così via fino alla curva completa (ripida
-all'inizio, sempre più piatta). Un'equazione differenziale è questo: una
-regola sul cambiamento che, partendo da una condizione iniziale (80 °C al
-minuto zero), inchioda tutto il futuro. Le leggi di Newton che Le Verrier
-stava applicando sono regole dello stesso tipo, con la gravità al posto del
-caffè.
+storia. Caffè a 80 °C, stanza a 20 °C, e ogni minuto il caffè perde un decimo
+della differenza: la differenza è 60, quindi scende di 6 gradi e va a 74 °C;
+poi la differenza è 54, perde 5,4 e arriva a 68,6 °C; poi 63,7 °C, e così via,
+in una curva ripida all'inizio e sempre più piatta. Un'equazione differenziale
+è questo: una regola sul cambiamento che, partendo da una condizione iniziale
+(80 °C al minuto zero), inchioda tutto il futuro. Senza quel numero di
+partenza le curve che obbediscono alla regola sarebbero infinite: l'80 sceglie
+la nostra. Le leggi di Newton che Le Verrier stava applicando sono regole
+così, con la gravità al posto del caffè.
 
-E vale la pena fermarsi su quel conto minuto per minuto, perché non è un
-esempio qualsiasi: **quello che abbiamo appena fatto a mano è il metodo
-classico**. Da settant'anni i calcolatori risolvono le equazioni differenziali
-così, avanzando un passettino alla volta lungo una fitta rete di puntini stesa
-su quello che ci interessa. Quella rete di puntini si chiama **griglia**. Per
-il caffè i puntini sono istanti, uno ogni minuto. Per una sbarra di ferro
-scaldata a un capo sarebbero anche punti lungo la sbarra, perché lì la
-temperatura cambia da posto a posto oltre che da un momento all'altro. Più i
-passettini sono piccoli, più il risultato è preciso e più conti servono; noi
-ne abbiamo fatti tre a mano, un calcolatore ne fa miliardi.
+Quel conto minuto per minuto è il **metodo classico**: da settant'anni i
+calcolatori risolvono così le equazioni differenziali, un passettino alla
+volta lungo una fitta rete di puntini. La rete di puntini si chiama
+**griglia**, e il programma che la macina **solutore**. Per il caffè i puntini
+sono istanti, uno ogni minuto; per una sbarra di ferro scaldata a un capo sono
+anche punti lungo il ferro, perché lì la temperatura cambia da posto a posto
+oltre che da un momento all'altro. Più fitti stanno, più il risultato è
+preciso e più conti servono: noi ne abbiamo fatti tre a mano, un calcolatore
+ne fa miliardi.
 
-Quando in questo capitolo si parla di **metodi classici**, o di **solutori**
-classici (un solutore è il programma che risolve l'equazione), si parla di
-lui: è maturo, accurato, velocissimo, ed è tuttora quello che si usa quasi
-sempre. Due cose però gli costano fatica, e sono esattamente quelle su cui
-gioca il metodo di questo capitolo. La prima: la rete di puntini va costruita
-su misura per la forma del problema. La seconda: il numero di puntini esplode
-quando la risposta che cerchiamo dipende da tante cose insieme. Per il caffè
-dipende da una sola, il tempo, e i puntini stanno in fila; per la sbarra da
-due, il tempo e il punto lungo la sbarra, e già bisogna riempire un
-rettangolo.
+Due cose però gli costano fatica. La griglia va tagliata su misura per la
+forma del problema, e tagliarla è un mestiere a sé. E i puntini esplodono
+quando la risposta dipende da tante cose insieme: già per la sbarra, che
+dipende dal tempo e dal posto, non basta più una fila di puntini, bisogna
+riempire un rettangolo.
 
-Un'ultima cosa sulla sbarra, che tornerà utile. Per il caffè bastava sapere da
-dove si parte; per la sbarra bisogna sapere anche che cosa le succede **ai due
-capi**, perché lì il calore entra o esce e da lì dipende tutto il resto: una
-fiamma sotto un'estremità e un blocco di ghiaccio sull'altra danno due storie
-completamente diverse. Sono, letteralmente, le condizioni ai bordi.
+La sbarra chiede anche un'altra cosa. Per il caffè bastava sapere da dove si
+parte; per la sbarra serve pure sapere che cosa le succede **ai due capi**,
+perché lì il calore entra o esce: una fiamma sotto un'estremità e un blocco di
+ghiaccio sull'altra danno due storie diverse. Sono, letteralmente, le
+condizioni ai bordi.
 
 `````
 
 `````{tab} Superiore
 
-La regola del caffè è la legge del raffreddamento di Newton, un’**equazione
-differenziale ordinaria** (ODE):
+Una tazza che si raffredda obbedisce alla legge del raffreddamento di Newton,
+un’**equazione differenziale ordinaria** (ODE):
 
 $$
 \frac{du}{dt} = -k\,\big(u(t) - T_a\big), \qquad u(0) = u_0,
@@ -145,30 +139,35 @@ vent'anni; è da qui che diventa praticabile.
 
 `````{tab} Elementare
 
-Immagina di dover disegnare la curva di raffreddamento del caffè avendo solo
-tre misure di termometro, pure un po’ ballerine. Una rete addestrata alla
-vecchia maniera passerebbe vicino ai tre punti e, nel resto del grafico,
-inventerebbe: tra una misura e l'altra potrebbe fare gobbe assurde, magari un
-caffè che si riscalda da solo. La PINN aggiunge un secondo esaminatore. Il
-primo, classico, controlla col righello che la curva passi vicino alle misure.
-Il secondo punta il dito su istanti scelti *a caso*, anche dove nessuno ha
-misurato niente, e lì verifica la regola. Quegli istanti scelti a caso si
+Tre misure di termometro, pure un po’ ballerine, e in mezzo il vuoto: da lì
+bisogna tirare fuori tutta la curva di raffreddamento del caffè. Una rete
+addestrata alla vecchia maniera passerebbe vicino ai tre punti e, nel resto
+del grafico, inventerebbe: tra una misura e l'altra potrebbe fare gobbe
+assurde, magari un caffè che si riscalda da solo. La PINN aggiunge un
+secondo esaminatore. Il primo controlla col righello che la curva passi
+vicino alle misure, e che al minuto zero valga gli 80 °C da cui il caffè
+parte. Il secondo punta il dito su istanti scelti *a caso*, anche dove
+nessuno ha misurato niente, e lì verifica la regola. Quegli istanti si
 chiamano **punti di collocazione**.
 
-Vediamolo fare, perché è un controllo che si fa con la matita. Il secondo
-esaminatore punta il dito su un istante qualsiasi e guarda due cose: a che
-altezza sta la curva lì, e quanto sta scendendo lì. Se la curva dice 60 °C,
-allora la differenza con la stanza è 40 gradi, e la regola (un decimo della
-differenza al minuto) impone che in quel momento stia scendendo di 4 gradi al
-minuto. Non uno, non otto: quattro. Se la curva scende di uno, lo scarto fra
-quello che fa e quello che dovrebbe fare vale 3, e la penalità cresce con lui.
-Quel «quanto sta scendendo», in un punto di una curva, si chiama **pendenza**:
-è la ripidità della strada misurata sotto i piedi, non su tutta la salita.
+È un controllo che si fa con la matita. Su uno di quegli istanti il secondo
+esaminatore guarda due cose: a che altezza sta la curva lì, e quanto sta
+scendendo lì. Se la curva dice 60 °C, allora la differenza con la stanza è 40
+gradi, e la regola (un decimo della differenza al minuto) impone
+che in quel momento stia scendendo di 4 gradi al minuto. Non uno, non otto:
+quattro. Se la curva scende di uno, lo scarto fra quello che fa e quello che
+dovrebbe fare vale 3, e la penalità cresce con lui. Quel «quanto sta
+scendendo», in un punto di una curva, si chiama **pendenza**: è la ripidità
+della strada misurata sotto i piedi, non su tutta la salita.
 
-Le penalità dei due esaminatori si sommano in un punteggio unico, quella loss
-che ci accompagna da inizio libro, e la rete aggiusta le sue manopole interne
-(i **pesi**) per farlo calare. Dove ci sono dati comanda il righello, dove non
-ce ne sono comanda la fisica, e la curva non può più inventare.
+Le penalità dei due esaminatori si sommano in un punteggio unico, quella
+loss che ci accompagna da inizio libro, e la rete aggiusta le sue manopole
+interne (i **pesi**) per farlo calare. Quanto conta ciascuno dei due lo
+decidiamo noi: se il secondo esaminatore urla dieci volte più forte, la
+curva si scosta dalle misure pur di non contraddire la regola, e le tre
+letture del termometro non contano quasi più. Con le dosi giuste, dove ci
+sono dati comanda il righello, dove non ce ne sono comanda la fisica, e la
+curva non può più inventare.
 
 `````
 
@@ -314,11 +313,18 @@ Su un problema ordinario (regola nota, forma regolare, nessuna misura da
 tenere insieme alla legge) il conto a passettini vince, e non di poco: è più
 rapido ed è più preciso. E c'è di più: di quel conto si sa **dimostrare** al
 massimo quanto può sbagliare, e che accorciando i passi sbaglia meno. È una
-garanzia scritta prima di partire, non un risultato osservato dopo. Di una
-rete addestrata questo non si sa dire: l'addestramento finisce quando smette
-di migliorare, e nessuno può garantire quanto lontana sia rimasta dalla
-risposta. Una PINN può metterci minuti dove il metodo di sempre impiega
-millisecondi, e ogni tanto sbaglia senza che nulla lo segnali.
+garanzia scritta prima di partire, non un risultato osservato dopo. Ha le
+sue condizioni, però, e chi fa il conto le conosce in anticipo. Sulla
+sbarra, per dire, accorciare i passettini lungo il ferro senza accorciare
+anche quelli nel tempo non migliora niente: il conto impazzisce e sputa
+temperature che nessun termometro vedrà mai, milioni di gradi sopra lo zero
+in un punto e altrettanti sotto zero in quello accanto. E se la storia da
+ricostruire fa un salto netto invece di scorrere liscia, di quel guadagno di
+precisione resta poco. Di una rete addestrata non si sa dire niente del
+genere: l'addestramento finisce quando smette di migliorare, e nessuno può
+garantire quanto lontana sia rimasta dalla risposta. Una PINN può metterci
+minuti dove il metodo di sempre impiega millisecondi, e ogni tanto sbaglia
+senza che nulla lo segnali.
 
 `````
 
@@ -371,8 +377,9 @@ mappa onesta dei limiti: quando convengono, quando no.
   costruita su misura, e quando le grandezze in gioco sono molte il numero di
   puntini esplode.
 - Una **PINN** usa una rete neurale come curva candidata e la corregge con
-  due esaminatori: il righello, che la tiene vicina alle (poche) misure, e il
-  controllo della regola in punti scelti a caso, i **punti di collocazione**,
+  due esaminatori: il righello, che la tiene vicina alle (poche) misure e al
+  punto da cui si parte, e il controllo della regola in punti scelti a caso,
+  i **punti di collocazione**,
   dove ogni violazione costa punti {cite}`raissi2019physics`. Funziona perché
   una legge sa dire che una risposta è **sbagliata** anche quando nessuno sa
   dire quale sia quella giusta. Le pendenze che servono a controllarla

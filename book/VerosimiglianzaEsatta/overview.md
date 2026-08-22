@@ -114,16 +114,18 @@ la ragione strutturale per cui ha perso.
 - I modelli si mettono in fila secondo che cosa sanno dire di quel numero.
   Alcuni **niente** (le GAN). Alcuni **un numero prudente**: i modelli
   latenti e quelli a diffusione danno un valore che sta di sicuro sotto a
-  quello vero, e per avere quello vero serve un secondo lavoro, lungo e a
-  parte. Alcuni **soltanto un confronto**: i modelli a energia sanno dire
+  quello vero, senza dire di quanto; nel caso della diffusione il valore vero
+  si può anche ottenere, ma con un secondo lavoro lungo e a parte. Alcuni
+  **soltanto un confronto**: i modelli a energia sanno dire
   quale di due dati è più plausibile, non stampare una percentuale, perché al
   loro voto manca una costante che nessuno conosce. E alcuni lo sanno
   **esatto**, ed è la famiglia di questo capitolo.
 - Le strade per saperlo esatto sono due. **A pezzi in fila**: si taglia il
   dato in pezzetti, si mette in fila e si moltiplicano le probabilità, come si
   fa da sempre con il testo. **Per deformazione**: si costruisce una macchina
-  che si può usare nei due sensi e che porta i dati su una nuvola semplice, e
-  la probabilità si legge di là.
+  che si può usare nei due sensi e che porta i dati su una nuvola semplice, la
+  probabilità si legge di là, e si tiene conto di quanto la macchina ha stirato
+  o schiacciato proprio in quel punto.
 - Tutte e due si pagano in libertà di progetto. La prima costringe a generare
   un pezzetto alla volta, e i pezzetti di un'immagine sono decine di migliaia.
   La seconda vieta di buttare via qualunque cosa, quindi vieta di comprimere.
@@ -138,7 +140,8 @@ la ragione strutturale per cui ha perso.
 - Asse di classificazione: **il rapporto del modello con $p(\mathbf{x})$**.
   Densità **implicita** (GAN: campionamento sì, valutazione no); densità
   **esplicita approssimata** (VAE: ELBO, cioè limite inferiore; EBM:
-  $-E_\theta(\mathbf{x})$ a meno di $\log Z$ ignoto; diffusione: bound
+  $-E_\theta(\mathbf{x})$ a meno di una costante di normalizzazione ignota;
+  diffusione: bound
   variazionale, con il valore esatto ottenibile via probability-flow ODE
   {cite}`song2021score` a costo non trascurabile); densità **esplicita
   trattabile** (autoregressivi e flussi).

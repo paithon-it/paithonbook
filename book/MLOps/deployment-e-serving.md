@@ -44,14 +44,21 @@ smaltisce tutte insieme, quando fa comodo (di notte, offline).
 
 C'è poi il **panino al momento**: un cliente entra, ordina, e vuole il suo
 panino *adesso*, non domani. Qui conta la fretta: ogni singola richiesta deve
-avere risposta in pochi secondi, mentre la persona aspetta. Questo è il regime
-*online*: una richiesta, una risposta, subito.
+avere risposta in pochi secondi, mentre la persona aspetta. E se la fila si
+allunga il fornaio non fa un panino più grande: chiama qualcuno al banco.
+Questo è il regime *online*: una richiesta, una risposta, subito.
 
 E c'è il **nastro trasportatore** del sushi: i piatti scorrono senza sosta e
 tu prendi al volo quello che passa. Nessuno «ordina» e nessuno «finisce»: è un
 flusso continuo che non si ferma mai. Questo è lo *streaming*: eventi che
 arrivano ininterrottamente (clic, transazioni, sensori) e il modello li lavora
 al volo, mentre passano.
+
+Fra il pane e il panino non si sceglie a caso. Il pane si fa la notte prima
+perché domani si vende comunque; il panino no, perché finché il cliente non
+parla non si sa che cosa metterci dentro. Quando la risposta si può preparare
+prima che serva conviene prepararla prima, e costa anche meno; se dipende da
+chi arriva, si fa sul momento.
 
 `````
 
@@ -85,10 +92,10 @@ serve l'online.
 
 Batch e online sono i due estremi che si incontrano più spesso, ed è utile
 vederli affiancati ({numref}`fig-mlops-serving`): stessa scatola «modello» al
-centro, priorità opposte ai due lati. Le due priorità hanno un nome, e sono le
-grandezze di cui questa sezione parlerà fino alla fine. La **latenza** è quanto
-si aspetta una risposta, il tempo che passa fra la domanda e la risposta; il
-**throughput** è quante risposte il sistema riesce a sfornare in un secondo.
+centro, priorità opposte ai due lati. Le due priorità hanno un nome. La
+**latenza** è quanto si aspetta una risposta, il tempo che passa fra la domanda
+e la risposta; il **throughput** è quante risposte il sistema riesce a sfornare
+in un secondo.
 
 ```{figure} ../figures/mlops-serving.svg
 :name: fig-mlops-serving
@@ -142,9 +149,9 @@ servizio riproducibile: se l'immagine contiene l'ambiente per intero, la stessa
 identica versione del modello gira sul portatile di chi sviluppa e sul
 **server** di produzione, cioè sul computer sempre acceso che risponde alle
 richieste del mondo. E il container si può buttare e ricreare senza pensarci,
-il che tornerà utile in fondo a questa sezione: è quello che permette di tenere
-in piedi due versioni del modello nello stesso momento, o di spegnere in un
-istante quella nuova se si comporta male.
+il che torna utile quando si sostituisce un modello con uno nuovo: è quello che
+permette di tenere in piedi due versioni del modello nello stesso momento, o di
+spegnere in un istante quella nuova se si comporta male.
 
 Chi chiama non sa e non deve sapere che dentro c'è una rete neurale: vede solo
 un servizio che, dati certi ingressi, restituisce una previsione. Dietro lo
@@ -224,10 +231,11 @@ modi diversi a seconda che stiano imparando o rispondendo.
 Uno di questi pezzi, mentre la rete studia, ne spegne a caso dei pezzetti a
 ogni ripetizione: è un trucco d'allenamento, serve a non farle imparare le
 risposte a memoria, come un insegnante che copre a caso qualche riga del testo.
-Un altro si regola guardando il gruppo di esempi che ha davanti, e quindi con
-un esempio solo non saprebbe che pesci pigliare. Se nessuno gli dice che
-l'allenamento è finito, quei pezzi continuano a comportarsi da studenti, e le
-risposte escono sbagliate **senza che niente segnali l'errore**.
+Un altro si regola guardando il gruppo di esempi che ha davanti, e con un
+esempio solo non saprebbe che pesci pigliare: quando risponde deve smettere di
+guardarsi intorno e usare la media che ha messo da parte studiando. Se nessuno
+gli dice che l'allenamento è finito, quei pezzi continuano a comportarsi da
+studenti, e le risposte escono sbagliate senza che niente segnali l'errore.
 
 Il terzo gesto è spegnere il taccuino. Mentre impara, la rete annota ogni
 singola operazione che fa, perché le servirà per tornare indietro e correggersi.
@@ -243,9 +251,9 @@ distinto fra addestramento e inferenza: il *dropout*, che in addestramento
 azzera a caso una frazione delle attivazioni e in inferenza deve lasciarle
 passare tutte, e la *BatchNorm*, che in addestramento normalizza sulle
 statistiche del batch corrente e in inferenza deve usare le medie mobili
-accumulate (con un batch di uno, le statistiche del batch non sono nemmeno
-definite). Dimenticarla non solleva alcuna eccezione: produce solo predizioni
-sbagliate.
+accumulate (con un batch di uno la statistica del batch non descrive più
+niente, e su uno strato lineare PyTorch si rifiuta di calcolarla).
+Dimenticarla non solleva alcuna eccezione: produce solo predizioni sbagliate.
 
 La seconda, `torch.no_grad()`, disattiva la costruzione del grafo delle
 operazioni che l’*autograd* userebbe per la retropropagazione. In inferenza
@@ -296,24 +304,32 @@ bit sono due volte più leggeri, otto bit quattro volte.
 `````{tab} Elementare
 
 È il trucco di quando mandi una foto su una chat: l'app la spedisce un po’
-sgranata. Non la ritaglia e non la rimpicciolisce, i pixel restano tutti al
-loro posto: sono i **colori** a diventare più grossolani, e a occhio quasi non
-si vede. In cambio il file pesa un quarto e parte in un lampo. Quantizzare un
-modello è la stessa idea applicata ai suoi numeri: i numeri restano tutti, ma
-ciascuno è scritto peggio. I pesi, di norma, sono decimali finissimi
-(tante cifre dopo la virgola): possono valere qualunque cosa. Quantizzare vuol
-dire smettere di ammettere qualunque valore e tenerne pronti soltanto 256, come
-i gradini di una scala. Il 256 non è scelto a caso: le macchine maneggiano i
-bit a gruppi di otto, e con otto bit si scrivono $2^8 = 256$ valori diversi.
-Ogni peso viene arrotondato al gradino più vicino, e al suo posto si scrive il
-**numero del gradino**, che è un intero piccolo. Ne guadagni quattro volte in
-leggerezza, perché prima ogni numero occupava trentadue bit e adesso ne occupa
-otto, e spesso un bel taglio di velocità;
-ne perdi un pizzico di precisione. Il patto conviene quasi sempre: spesso
-l'accuratezza cala di una frazione di punto percentuale, un prezzo minuscolo
-per un modello quattro volte più piccolo che gira anche su un telefono. Ma
-«spesso» non è «sempre», e di quanto cali lo si scopre soltanto misurandolo su
-quel modello lì.
+sgranata. Non la rimpicciolisce, i pixel restano tutti al loro posto: sono i
+**colori** a diventare più grossolani, e a occhio quasi non si vede. In cambio
+il file pesa un quarto e parte in un lampo.
+
+Quantizzare un modello è la stessa idea applicata ai suoi numeri: restano
+tutti, ma ciascuno è scritto peggio. Un peso può valere qualunque numero, con
+tante cifre dopo la virgola. Quantizzare vuol dire tenerne pronti
+soltanto 256, come i gradini di una scala. Il 256 non è scelto a caso: le
+macchine maneggiano i bit a gruppi di otto, e con otto bit si scrivono
+$2^8 = 256$ valori diversi. Ogni peso sale sul gradino più vicino, e al suo
+posto si scrive il **numero del gradino**, che è un intero piccolo. Della scala
+vanno segnate due cose, o non la si sa più rileggere: quanto è alto un gradino
+e quale gradino vale zero, perché i pesi scendono anche sotto. Nessun peso si
+sposta più di mezzo gradino: quello è tutto l'errore che si fa.
+
+Ogni numero passa da trentadue bit a otto: quattro volte più leggero, spesso
+molto più veloce, un pizzico meno preciso.
+
+Il guaio è un peso enorme in mezzo agli altri: i gradini devono arrivare fino a
+lui, quindi si alzano tutti, e i pesi normali, ammucchiati in basso, si
+ritrovano su una manciata di gradini. La cura costa poco: gruppetti piccoli,
+ognuno con i suoi gradini, invece di una scala sola per tutti.
+
+Il patto conviene quasi sempre: l'accuratezza cala di una frazione di punto e
+il modello gira anche su un telefono. Ma «quasi sempre» non è «sempre», e di
+quanto cali si scopre soltanto misurandolo su quel modello lì.
 
 `````
 
@@ -385,11 +401,11 @@ dipende dal modello e non è mai garantito trascurabile a priori.
 ## Latenza e throughput: cosa promettere
 
 Ottimizzato il servizio, resta la domanda più scomoda: che cosa **promettere** a
-chi lo userà? Le due grandezze in ballo sono quelle introdotte in cima alla
-pagina: la **latenza**, quanto si aspetta una risposta, e il **throughput**,
-quante risposte il sistema sforna in un secondo. Tirano in direzioni opposte, ed
-è per questo che vanno promesse insieme. Ma prima di promettere qualcosa bisogna
-decidere *quale numero* guardare, e qui il gergo confonde tre cose diverse.
+chi lo userà? Le due grandezze in ballo sono sempre quelle: la **latenza**,
+quanto si aspetta una risposta, e il **throughput**, quante risposte il sistema
+sforna in un secondo. Tirano in direzioni opposte, ed è per questo che vanno
+promesse insieme. Ma prima di promettere qualcosa bisogna decidere *quale
+numero* guardare, e qui il gergo confonde tre cose diverse.
 
 Le tre cose sono quelle di qualunque promessa: **che cosa si guarda**, **che
 cosa ci si impegna a fare** e **che cosa succede se non lo si fa**. Un treno le
@@ -397,9 +413,9 @@ ha tutte e tre: si guarda il ritardo all'arrivo, ci si impegna a stare sotto i
 cinque minuti, e se si sfora il biglietto viene rimborsato.
 
 La prima è la grandezza che si **misura**. Non è la latenza media, per una
-ragione che fra poco vedremo con la coda alla posta: è il tempo entro cui
-risponde la stragrande maggioranza delle richieste, per esempio il 99%. In
-gergo si chiama **SLI**, *Service Level Indicator*.
+ragione che arriva fra poco: è il tempo entro cui risponde la stragrande
+maggioranza delle richieste, per esempio il 99%. In gergo si chiama **SLI**,
+*Service Level Indicator*.
 
 La seconda è il **bersaglio** che i tecnici si danno da soli su quella
 grandezza: «il tempo entro cui risponde il 99% delle richieste sta sotto i 200
@@ -437,14 +453,12 @@ servizio*: quanto ci mette il modello a rispondere una volta che alla richiesta
 è arrivato il turno. Ma ciò che l'utente vive è l'attesa in fila **più** il
 servizio, e la fila non compare nella curva.
 
-Torniamo al forno del fornaio, ma stavolta di giorno, col negozio aperto e la
-gente in fila davanti al bancone: all'inizio della sezione il forno lavorava di
-notte apposta perché non ci fosse nessuno ad aspettare, e adesso invece
-l'attesa è tutto il problema. E con dei numeri. Un'infornata da una pagnotta
-sola richiede mezz'ora, quindi il forno ne sforna due all'ora; una da cento
-richiede
-quaranta minuti, un po’ di più, ma di pagnotte ne consegna centocinquanta
-all'ora. Adesso mettiamo che i clienti che entrano nel negozio siano sessanta
+Prendiamo un forno, stavolta di giorno, col negozio aperto e la gente in fila
+davanti al bancone: il lavoro pianificato di notte serve apposta a non far
+aspettare nessuno, qui invece l'attesa è tutto il problema. E con dei numeri.
+Un'infornata da una pagnotta sola richiede mezz'ora, quindi il forno ne sforna
+due all'ora; una da cento richiede quaranta minuti, un po’ di più, ma di
+pagnotte ne consegna centocinquanta all'ora. Adesso mettiamo che i clienti che entrano nel negozio siano sessanta
 all'ora.
 
 Con il forno da una pagnotta la fila **non smette mai di allungarsi**: entrano
@@ -470,31 +484,35 @@ non è un lusso: spesso è l'unica configurazione stabile.
 
 Alla posta, su cento clienti, ottanta escono dall’ufficio due minuti dopo
 esserci entrati, quindici ci mettono dieci minuti e cinque restano impantanati
-quaranta minuti: sono tempi porta a porta, fila compresa, che è esattamente
-quello che vive chi aspetta. L’attesa media è
-$(80 \times 2 + 15 \times 10 + 5 \times 40)/100 = 5{,}1$ minuti, cioè circa
-cinque. Ma **cinque minuti non li aspetta nessuno**: chi entra alla posta
-aspetta due minuti, o dieci, o quaranta. La media è un numero che non descrive
-l'esperienza di nessuno dei presenti.
+quaranta minuti: sono tempi porta a porta, fila compresa, che è quello che vive
+chi aspetta. L’attesa media è
+$(80 \times 2 + 15 \times 10 + 5 \times 40)/100 = 5{,}1$ minuti. Ma cinque
+minuti non li aspetta nessuno: chi entra alla posta aspetta due minuti, o
+dieci, o quaranta. La media è un numero che non descrive l'esperienza di
+nessuno dei presenti.
 
 Quello che conta davvero è la promessa sul *caso quasi peggiore*. Con questi
 stessi numeri si può dire: «novantacinque clienti su cento sono serviti entro
-dieci minuti», e stavolta è una frase vera e verificabile (i primi ottanta in
-due minuti più i quindici in dieci fanno novantacinque). Restano fuori i cinque
-sfortunati, e sono loro il problema del direttore dell'ufficio.
+dieci minuti», ed è una frase verificabile, perché gli ottanta in due minuti
+più i quindici in dieci fanno novantacinque. Restano fuori i cinque sfortunati,
+e sono loro il problema del direttore dell'ufficio: potrebbe aprire dieci
+sportelli e far uscire tutti in due minuti, e non lo fa perché dieci impiegati
+costano.
 
-Con i modelli è identico. Non si promette il tempo medio, si promette che la
-*stragrande maggioranza* delle risposte arriva entro un tempo dato. Perché il
-cliente scontento non è quello medio: è quello finito nel gruppetto lento.
+Quei cinque pesano più di quanto sembri, perché una pratica raramente si sbriga
+a uno sportello solo. Se per finirla ne servono tre, basta che uno sia di
+quelli lenti: con cinque lenti su cento per sportello, quattordici persone su
+cento ne incontrano almeno uno.
 
-Quel «novantacinque su cento entro dieci minuti» è la stessa idea che poche
-righe più su avevamo chiamato «il tempo entro cui risponde il 99% delle
-richieste», e il nome tecnico è **percentile**. La **p95** è il tempo entro cui
-è servito il 95% delle richieste, cioè il caso peggiore su venti; la **p99** è
-il caso peggiore su cento. Quale dei due mettere nel mirino lo decide chi
-promette, ed è una scelta di severità: la p99 è più difficile da rispettare
-della p95, perché lascia fuori dieci volte meno gente. La media, che è il numero
-che si guarda per abitudine, non dice niente né dell'una né dell'altra.
+Con i modelli è identico: si promette non il tempo medio, ma il tempo entro cui
+risponde la *stragrande maggioranza*. Il cliente scontento sta nel gruppetto
+lento.
+
+Quel «novantacinque su cento entro dieci minuti» ha un nome: si chiama
+**percentile**. La **p95** è il tempo entro cui è servito il 95% delle
+richieste, cioè il caso peggiore su venti; la **p99** è il caso peggiore su
+cento. Quale dei due mettere nel mirino è una scelta di severità: la p99 è più
+difficile da rispettare, perché lascia fuori cinque volte meno gente della p95.
 
 `````
 
@@ -512,7 +530,7 @@ che nasconde la coda.
 Il secondo numero da promettere è il **throughput** sostenibile (richieste al
 secondo), che con la latenza forma il classico compromesso: più batch grandi
 alzano il throughput ma allungano la coda della latenza. Il terzo è economico,
-il **costo per richiesta** (tempo di calcolo moltiplicato per il prezzo
+il **costo per richiesta** (tempo di calcolo moltiplicato per il prezzo orario
 dell'hardware) che spesso è il vero vincolo di progetto: un modello che
 rispetta lo SLO ma costa dieci volte troppo per richiesta non è dispiegabile
 {cite}`huyen2022designing`.
@@ -558,9 +576,9 @@ prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
   sopravvivere si tiene fuori.
 - Per andare più veloci: servire più richieste in un colpo solo, scrivere i
   numeri con meno cifre, e al limite arrotondarli ai 256 gradini di una scala
-  (la **quantizzazione**, come l'app che rimpicciolisce la foto prima di
-  mandarla). Quattro volte più leggero, un pizzico meno preciso, **da misurare
-  ogni volta**.
+  (la **quantizzazione**, come l'app che manda la foto un po’ sgranata senza
+  toglierle un pixel). Quattro volte più leggero, un pizzico meno preciso, **da
+  misurare ogni volta**.
 - Non si promette il tempo **medio** di risposta, che non lo vive quasi
   nessuno: si promette il caso quasi peggiore, «il 95% entro dieci minuti».
   Quel numero si chiama percentile, e il cliente scontento non è quello medio,

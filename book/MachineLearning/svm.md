@@ -88,10 +88,24 @@ confine. Nella scrittura, $\mathbf{w}$ è l'elenco dei pesi (che dà
 l'orientamento della frontiera), $\mathbf{x}$ l'elenco delle caratteristiche
 del punto, e la scrittura $\mathbf{w}^\top \mathbf{x}$ è solo un modo compatto
 di dire «moltiplica a coppie e somma»; $b$ sposta la frontiera avanti o
-indietro. La novità della SVM non è
-questa formula, è il criterio con cui sceglie $\mathbf{w}$ e $b$: non una
-frontiera qualsiasi, ma quella che lascia il vuoto più ampio attorno a sé. Più
-il corridoio è largo, più il classificatore è robusto.
+indietro. La novità della SVM sta nel criterio con cui sceglie $\mathbf{w}$ e
+$b$: non una frontiera qualsiasi, ma quella che lascia il vuoto più ampio
+attorno a sé. Più il corridoio è largo, più il classificatore è robusto.
+
+Su «largo», però, serve un'intesa, perché dipende da come lo si misura e il
+righello ce lo diamo noi. Diciamo che il corridoio è la fascia dove il conto
+qui sopra sta fra $-1$ e $+1$: i due bordi sono le righe dove vale esattamente
+$-1$ e $+1$, e il confine, dove vale zero, corre nel mezzo. Ne discende una
+regola sola, uguale per tutti: ogni punto di cui già conosciamo la classe deve
+stare dalla parte sua e fuori dalla fascia.
+
+Scelto il righello, la larghezza non si misura più sul disegno: viene fuori dai
+pesi, e vale $2$ diviso la lunghezza dell'elenco $\mathbf{w}$ (la lunghezza di
+un elenco di numeri si trova con Pitagora, come la diagonale di un rettangolo).
+Corridoio largo vuol dire allora elenco corto, e «trova il corridoio più largo»
+diventa «accorcia $\mathbf{w}$ il più possibile, senza infrangere quella
+regola». Di risposte migliori di tutte ce n'è una e una sola, e cercandola non
+ci si impantana in un falso fondo.
 
 `````
 
@@ -114,9 +128,9 @@ $$
 \text{margine} = \frac{2}{\lVert \mathbf{w}\rVert}.
 $$
 
-Il conto che porta a questa formula occupa due righe e sta più avanti in
-questa pagina, sotto il titolo «L'approccio della strada più larga», dove il
-problema viene ricavato da capo per intero. Massimizzare il margine equivale allora a *minimizzare*
+Il conto che porta a questa formula occupa due righe, e l'approccio della
+strada più larga lo svolge per intero, ricavando il problema da
+capo. Massimizzare il margine equivale allora a *minimizzare*
 $\lVert \mathbf{w}\rVert$, o più comodamente il suo quadrato (differenziabile
 ovunque). Il problema del
 **margine rigido** (*hard margin*) è
@@ -156,7 +170,17 @@ attraverso la strada; se fossero sfalsate, la distanza fra loro conterebbe
 anche un pezzo di cammino *lungo* la strada, che con la larghezza non c'entra.
 Più avanti vedremo come togliere quel pezzo di troppo.
 
-E le altre due case, quelle più arretrate? Prova a cancellarle dal foglio: il
+Proviamo con i pesi. Per questo confine vanno bene $0{,}5$ e $0{,}5$, con
+numero di partenza $-1$. Sulla casa in $(0,0)$ il conto dà
+$0{,}5\cdot 0 + 0{,}5\cdot 0 - 1 = -1$, e su quella in $(2,2)$ dà
+$0{,}5\cdot 2 + 0{,}5\cdot 2 - 1 = +1$: stanno esattamente sui due bordi della
+fascia, una per parte. Le due più lontane danno $-2$ e $+2$, il doppio: stanno
+larghe, ben fuori dalla fascia. E la larghezza si ritrova anche partendo dai
+pesi: l'elenco $(0{,}5;\ 0{,}5)$ è lungo
+$\sqrt{0{,}5^2 + 0{,}5^2} \approx 0{,}71$, e $2$ diviso $0{,}71$ fa $2{,}8$,
+la misura di prima.
+
+E quelle due lontane? Prova a cancellarle dal foglio: il
 confine non si sposta di un millimetro, perché non toccano il corridoio. Le
 due case sul bordo sono i **vettori di supporto**: reggono da sole l'intera
 soluzione.
@@ -236,8 +260,15 @@ concedere qualche violazione, pagandola.
 Torniamo al confine tra i due quartieri. Se una singola villetta isolata sconfina
 nel prato dell'altro, non ha senso stravolgere tutto il confine per accontentarla:
 meglio tracciare comunque un bel corridoio largo e mettere in conto quella
-manciata di eccezioni. La SVM a margine morbido fa proprio questo. Una
-manopola, chiamata $C$, decide quanto è severa:
+manciata di eccezioni. La SVM a margine morbido fa proprio questo, e le
+eccezioni le mette in conto una per una, con una multa proporzionata allo
+sconfinamento: chi si è spinto appena dentro il corridoio paga poco, chi è
+finito dalla parte sbagliata paga molto, e chi è rimasto comodamente fuori non
+paga niente, zero, nemmeno un centesimo. Alla fine il conto da tenere basso è
+uno solo: quanto è stretto il corridoio, più la somma di tutte le multe.
+
+Quanto pesano le multe rispetto alla larghezza lo decide una manopola, chiamata
+$C$:
 
 - $C$ **grande** = «non tollero errori»: il corridoio si stringe pur di far
   stare quasi tutti dalla parte giusta. Rischio di inseguire il rumore, cioè di
@@ -276,7 +307,8 @@ $$
 + \frac{1}{2C}\lVert \mathbf{w}\rVert^2 .
 $$
 
-La hinge loss $\max(0,\,1 - y_i f(\mathbf{x}_i))$ è nulla per i punti ben
+La hinge loss $\max(0,\,1 - y_i f(\mathbf{x}_i))$, dove
+$f(\mathbf{x}) = \mathbf{w}^\top\mathbf{x} + b$, è nulla per i punti ben
 classificati
 e fuori dal margine, e cresce *linearmente* per quelli dentro la fascia o
 dalla parte sbagliata: è l'analogo, per la SVM, di ciò che la log-loss è per
@@ -333,18 +365,20 @@ lei sappiamo una cosa sola: la direzione, di traverso alla strada. Quanto sia
 lunga non lo sappiamo ancora, e la cosa tornerà utile.
 
 Arriva un punto nuovo, di cui non conosciamo la classe. Come decidiamo da che
-parte sta? Gli facciamo fare l’**ombra sulla freccia**. Immagina la freccia
-appoggiata per terra, con la coda nell'origine, e una luce che arriva
-perpendicolare a lei: l'ombra del punto cade sulla freccia, in un certo punto,
-e quel punto lo possiamo misurare come una distanza dalla coda. Ne esce un
-numero solo. Se supera una certa soglia, il
-punto ha attraversato la strada ed è un più; se resta al di qua, è un meno.
+parte sta? Gli facciamo fare l’**ombra sulla freccia**. La freccia è appoggiata
+per terra, con la coda nell'origine, e una luce arriva perpendicolare a lei:
+l'ombra del punto cade sulla freccia, in un certo punto, e quel punto lo
+possiamo misurare come una distanza dalla coda. Ne esce un numero solo. Nel
+conto la freccia entra tutta quanta, e non solo la sua direzione, quindi quel
+numero cresce sia quando l'ombra cade più in là, sia quando la freccia è più
+lunga. Se supera una certa soglia, il punto ha attraversato la strada ed è un
+più; se resta al di qua, è un meno.
 
-Vale la pena notare che cosa abbiamo appena buttato via. Della posizione del
+Guardiamo che cosa abbiamo appena buttato via. Della posizione del
 punto *lungo* la strada non ci importa niente, perché camminando lungo la strada
 non si cambia mai lato: l'ombra la ignora, ed è esattamente ciò che vogliamo.
 Conta solo di quanto la strada la si attraversa. Quell'operazione (fare l'ombra
-di un punto su una direzione e leggerne un numero solo) si chiama **prodotto
+di un punto su una freccia e leggerne un numero solo) si chiama **prodotto
 scalare**, ed è il mattone di tutto ciò che segue. È la stessa cosa del
 «moltiplica a coppie e somma» di poco fa: si moltiplica ogni coordinata del
 punto per la coordinata corrispondente della freccia e si sommano i risultati.
@@ -352,14 +386,21 @@ Due descrizioni molto diverse, un unico conto, ed è proprio questa doppia
 natura, geometrica e aritmetica insieme, che alla fine della sezione farà il
 miracolo.
 
+Freccia e soglia, però, non sono ancora numeri: restano libere tutte e due, e
+alla stessa strada corrispondono infinite coppie, tutte ugualmente buone. I due
+passi che seguono servono a sceglierne una.
+
 `````
 
 `````{tab} Superiore
 
 Sia $\mathbf{w}$ un vettore perpendicolare all'asse della strada, di lunghezza
 per ora indeterminata, e sia $\mathbf{u}$ un punto di classe ignota. La
-proiezione di $\mathbf{u}$ su $\mathbf{w}$ è $\mathbf{w}^\top\mathbf{u}$, e la
-decisione si prende confrontandola con una soglia $c$:
+proiezione di $\mathbf{u}$ sulla direzione di $\mathbf{w}$ vale
+$\mathbf{w}^\top\mathbf{u} / \lVert\mathbf{w}\rVert$; siccome
+$\lVert\mathbf{w}\rVert$ è un numero positivo, confrontare quella
+proiezione con una soglia equivale a confrontare il prodotto scalare
+$\mathbf{w}^\top\mathbf{u}$ con una soglia $c$:
 
 $$
 \mathbf{w}^\top\mathbf{u} \ge c
@@ -393,8 +434,10 @@ una tacca; a una dei meno, che le resti sotto di almeno una tacca.
 Quanto vale una tacca? Lo decidiamo noi, e possiamo dire che vale $1$. Non è un
 atto di fede: ricordi che la lunghezza della freccia $\mathbf{w}$ era rimasta
 libera? Allungandola o accorciandola tutte le ombre si riscalano insieme, quindi
-fissare la tacca a $1$ non è un'ipotesi sui dati, è la scelta del righello. Uno
-dei due gradi di libertà che avanzavano lo abbiamo appena speso.
+fissare la tacca a $1$ non è un'ipotesi sui dati, è la scelta del righello. Da
+qui in avanti, scelta la strada, la freccia e la soglia vengono decise insieme
+a lei: la libertà che avanzava è spesa, e la lunghezza della freccia non la
+scegliamo più noi.
 
 Restano due regole, una per i più e una per i meno, e portarsene dietro due è
 scomodo. Il trucco è dare a ogni casa un'etichetta numerica che vale $+1$ se è
@@ -403,6 +446,10 @@ più non cambia nulla; sui meno si moltiplicano per un numero negativo entrambi 
 lati, il verso della disuguaglianza si rovescia, e le due regole diventano la
 stessa identica riga. Nessuna necessità matematica lo imponeva: è comodità
 dichiarata, e metà della matematica applicata è fatta di comodità dichiarate.
+
+Ancora una riga, che al passo dopo diventa decisiva: le case appoggiate al
+marciapiede hanno esattamente una tacca, né più né meno, ed è questo a
+distinguerle da tutte le altre, che ne hanno di più.
 
 `````
 
@@ -433,8 +480,9 @@ $$
 
 Il valore $1$ non è una costante fisica: è la normalizzazione che spende il
 grado di libertà residuo sulla scala di $(\mathbf{w}, b)$. Con quella fissata,
-alla coppia resta un solo grado di libertà da determinare, ed è la lunghezza di
-$\mathbf{w}$: il terzo passo mostra che è proprio lei a misurare la strada.
+a ogni strada corrisponde una sola coppia $(\mathbf{w}, b)$, e la lunghezza di
+$\mathbf{w}$ non è più libera: il terzo passo mostra che è proprio lei a
+misurare la strada.
 
 `````
 
@@ -446,7 +494,7 @@ misurare la quantità che vogliamo rendere massima.
 `````{tab} Elementare
 
 Prendiamo una casa che tocca il marciapiede di sinistra e una che tocca quello
-di destra, e congiungiamole con una freccia. Quella freccia **non** è la
+di destra, e congiungiamole con una freccia. Quella freccia non è la
 larghezza della strada, perché va di sghembo: parte in un punto della strada e
 arriva in un altro, e quindi contiene sia l'attraversamento sia un pezzo di
 cammino lungo la strada, che a noi non interessa.
@@ -461,19 +509,25 @@ dell'originale. Una freccia di lunghezza $1$ indica una direzione e basta;
 l'originale però resta dov'è, e fra due righe torna utile proprio con la sua
 lunghezza.
 
-Il conto è di due righe e sta nella scheda accanto, ma il risultato si può
-raccontare, perché è sorprendente. Viene fuori che la larghezza della strada
-vale sempre $2$ diviso la lunghezza della freccia $\mathbf{w}$ di partenza,
-quella che non abbiamo accorciato. Sempre: delle
-due case, che erano il punto di partenza, non resta traccia. Il $2$ non è un
-numero magico ma la conseguenza di come abbiamo fissato l'asticella al passo
-precedente, cioè a $+1$ da una parte e $-1$ dall'altra: fra i due c'è appunto
-una distanza di $2$, ed è quella che riemerge qui.
+Il conto sta in due righe di algebra, e il risultato è sorprendente. Viene
+fuori che la larghezza della strada vale sempre $2$ diviso la lunghezza della
+freccia $\mathbf{w}$ di partenza, quella che non abbiamo accorciato. Sempre:
+delle due case, che erano il punto di partenza, non resta traccia. La ragione è
+che quelle due toccano il marciapiede: hanno esattamente una tacca ciascuna, né
+più né meno, e nel conto i loro nomi si cancellano da soli.
+Anche il $2$ viene da lì, dall'asticella fissata a $+1$ da una parte e $-1$
+dall'altra: fra i due c'è appunto una distanza di $2$, ed è quella che riemerge
+qui.
 
 E allora il problema, che era «trova la strada più larga», è diventato: **rendi
 $\mathbf{w}$ più corta che puoi**, senza infrangere le regole del secondo passo.
 Sono quelle regole a impedire la risposta stupida (una freccia lunga zero, cioè
 nessuna frontiera).
+
+Un'ultima comodità, e riguarda solo i conti: invece della lunghezza si accorcia
+il suo quadrato. La freccia più corta resta la stessa (fra due lunghezze, che
+sono numeri positivi, la più piccola ha anche il quadrato più piccolo), e i
+passaggi che verranno vengono più lisci.
 
 `````
 
@@ -553,46 +607,47 @@ Teniamo il conto: caffè numero uno.
 
 `````{tab} Elementare
 
-Il minimo di una funzione libera si sa trovare da tre secoli: si cerca il punto
-dove la pendenza si annulla, perché sul fondo di una conca il terreno è piatto.
-Ma noi liberi non siamo: ci sono i paletti del secondo passo, e il fondo della
-conca cade fuori dal recinto. Il minimo che ci interessa sta *appoggiato* a un
-paletto, e lì il terreno non è piatto per niente.
+Da tre secoli il punto più basso di un prato lo si trova camminando finché il
+terreno smette di scendere: il fondo di una conca è piatto. Il nostro prato
+però ha una staccionata, fatta delle regole di poco fa, un paletto per ogni
+casa, e il fondo vero cade dall'altra parte. Il punto più basso che ci è
+concesso sta appoggiato ai paletti, e lì il terreno scende ancora.
 
-La ricetta per uscirne ha più di due secoli e porta il nome di Joseph-Louis Lagrange,
-che era nato a Torino nel 1736 e si chiamava Giuseppe Lodovico Lagrangia. L'idea
-è di trasformare i divieti in prezzi. A ogni paletto si attacca un numero,
-$\alpha_i$ (si legge «alfa i-esimo», e la $i$ dice soltanto di quale paletto
-stiamo parlando), e alla quota del terreno si somma quanto ciascun paletto fa
-pagare a chi lo tocca. Nella funzione nuova, quota più pedaggi, i paletti non
-compaiono più.
+Il modo di togliere la staccionata ha più di due secoli e porta il nome di
+Joseph-Louis Lagrange, nato a Torino nel 1736 come Giuseppe Lodovico
+Lagrangia. Al posto di ogni paletto si mette un casellante, con il suo
+cartellino: $\alpha_i$ (si legge «alfa i-esimo», e la $i$ dice soltanto di
+quale casa parliamo). Sul cartellino c'è un prezzo, mai uno sconto. Chi
+cammina paga la quota del terreno più i pedaggi dei caselli che ha
+oltrepassato, e quel conto si chiama **lagrangiana**: dentro non c'è più
+nemmeno un paletto.
 
-E il recinto? Non c'è più nemmeno lui, ed è esattamente il punto: la mossa non
-serve a impedirci fisicamente di uscire, serve a **rendere sconveniente**
-uscire. Fuori dal recinto il pedaggio cresce a dismisura, tanto da mangiarsi
-qualunque guadagno di quota; e allora possiamo cercare il minimo come se si
-fosse liberi di andare dove si vuole, sicuri che il minimo cadrà dentro. Un
-problema con le regole è diventato un problema senza regole, ed è tutto quello
-che serviva.
+Il recinto sparisce, il divieto resta. Il casellante decide da sé il prezzo e
+lo tira su più che può: a chi è passato dalla parte proibita lo alza senza
+limite, fino a mangiarsi qualunque guadagno di quota. Uscire smette di
+convenire, e allora il fondo si può cercare camminando dove pare, sicuri che
+cadrà là dove i paletti ci avrebbero lasciato stare.
 
-Restano da scegliere i prezzi, e la cosa notevole è che si scelgono da soli:
-sono i valori che rendono quel pedaggio il più caro possibile, e per ogni
-paletto la matematica dice qual è. Il caso che ci interessa è quello dei
-paletti che non stiamo nemmeno sfiorando: quelli non hanno nessuna ragione di
-farci pagare qualcosa, e il loro prezzo viene **zero**.
-Vale la pena tenere a mente questa frase, perché fra poco diventa la
-dimostrazione del fatto che i vettori di supporto sono pochi.
+I caselli davanti alle case lontane dalla strada non li oltrepassa nessuno, e
+chi non fa passare nessuno non ha niente da farsi pagare: il loro cartellino
+segna zero. A pagare sono soltanto le case appoggiate al marciapiede, e sono
+quelle poche a reggere la frontiera, i vettori di supporto.
 
-Fatto questo, cerchiamo dove la pendenza si annulla, e succede la prima cosa non
-prevedibile. Viene fuori che la freccia $\mathbf{w}$, cioè la frontiera stessa,
-si ottiene **sommando fra loro le case**, ciascuna moltiplicata per il proprio
-prezzo. (Sommare due case vuol dire sommare i loro elenchi di numeri, coordinata
-per coordinata: come si sommano due frecce mettendole in fila una dopo l'altra.)
-Non doveva andare
-così: da conti di questo tipo può uscire di tutto, e spesso esce qualcosa di
-intrattabile. Invece è venuta fuori una somma, e questo vuol dire che la
-frontiera non è un oggetto estraneo appoggiato sui dati: è fatta dei dati. E
-siccome molti prezzi valgono zero, è fatta di **pochi** dati.
+Adesso camminiamo finché il terreno è piatto, e arriva la prima cosa non
+prevedibile. La freccia $\mathbf{w}$, cioè la frontiera stessa, viene fuori
+dalle case: ognuna tira con la forza scritta sul proprio cartellino, i più da
+una parte e i meno dall'altra, e la freccia è la somma di quelle tirate.
+Sommare due case vuol dire mettere in fila i loro elenchi di numeri e sommarli
+coordinata per coordinata, come si fa con due frecce. Da un conto del genere
+poteva uscire di tutto, e di solito esce qualcosa di intrattabile. Invece è
+uscita una somma di case: la frontiera è fatta dei dati, e siccome quasi tutti
+i cartellini segnano zero, di case ne entrano pochissime.
+
+Dallo stesso terreno piatto esce una seconda condizione, molto più modesta: i
+due quartieri pagano lo stesso totale. Cinque case, tre col cartellino a zero;
+se quella dei più paga $4$, anche quella dei meno paga $4$, e la differenza fa
+zero. Sembra contabilità e basta, e appena rimetteremo la freccia dentro il
+conto cancellerà da sola un pezzo intero.
 
 `````
 
@@ -667,21 +722,27 @@ $\mathbf{w}$ non compare più.
 
 `````{tab} Elementare
 
-È solo algebra, e la scheda accanto la svolge per intero: sostituzioni e
-raccoglimenti, niente idee nuove. Quello che conta è il
-risultato, che è la seconda cosa non prevedibile del percorso.
+È solo algebra: sostituzioni e raccoglimenti, niente idee nuove. Quello che
+conta è il risultato, che è la seconda cosa non prevedibile del percorso.
 
 Dopo la sostituzione, dei dati non restano né le coordinate né le distanze dalla
-frontiera. Resta una cosa sola: per **ogni coppia** di case, l'ombra dell'una
-sulla direzione dell'altra. Il problema da risolvere e la regola per classificare
+frontiera. Se ne va anche la soglia, portata via dal pareggio dei prezzi trovato
+un attimo fa. Resta una cosa sola: per ogni coppia di case, l'ombra dell'una
+sulla freccia dell'altra. Il problema da risolvere e la regola per classificare
 un punto nuovo si scrivono entrambi usando soltanto quelle ombre a due a due.
 
 Detto altrimenti: della mappa del quartiere si può buttare via tutto, tenendo
 solo una tabella che per ogni coppia di case dice quanto si «vedono». Con quella
 tabella si costruisce la frontiera, e senza la mappa. È un fatto che al momento
-sembra soltanto elegante; è invece la porta di quello che viene fra poco in
-questa stessa pagina, perché se i dati entrano **solo** attraverso quelle
-ombre, allora nessuno ci vieta di cambiare il modo di calcolarle.
+sembra soltanto elegante, ed è invece la porta del kernel trick: se i dati
+entrano nel conto soltanto attraverso quelle ombre, nessuno ci vieta di cambiare
+il modo di calcolarle.
+
+Due note prima di proseguire. Anche riscritto così, il problema ha una sola
+risposta migliore di tutte, e chi la cerca non rischia di fermarsi in un falso
+fondo. E se le case non si lasciano separare in modo pulito, cambia una riga
+sola: la manopola $C$ del margine morbido diventa un tetto, e nessuna casa può
+spingere più forte di così.
 
 `````
 
@@ -699,7 +760,7 @@ $$
 $$
 
 il termine $\sum_i \alpha_i y_i \mathbf{w}^\top\mathbf{x}_i$ è la stessa doppia
-somma **senza** il fattore $1/2$, e il termine
+somma senza il fattore $1/2$, e il termine
 $\sum_i \alpha_i y_i b = b\sum_i \alpha_i y_i$ si annulla per la seconda
 condizione del quarto passo. Rimane il $+\sum_i\alpha_i$ che veniva dal $-1$
 dentro la parentesi quadra. Sommando i primi due (uno con $1/2$, l'altro intero,
@@ -749,18 +810,27 @@ percorso appena fatto: non è un fatto osservato provando, è una conseguenza.
 
 `````{tab} Elementare
 
-Torniamo alla frase più sorprendente della sezione: le case lontane dal confine
-non contano nulla, e potresti cancellarle senza spostarlo di un millimetro.
-Adesso sappiamo perché.
+Torniamo alla frase più sorprendente di tutto il percorso: le case lontane dal
+confine non contano nulla, e potresti cancellarle senza spostarlo di un
+millimetro. Adesso sappiamo perché.
 
-Immagina il confine come un muro elastico teso fra le due parti, e ogni casa
-come una mano che spinge il muro per allontanarlo da sé. Le case addossate al
+Il confine è un muro elastico teso fra le due parti, e ogni casa una mano che
+spinge il muro per allontanarlo da sé. Le case addossate al
 corridoio spingono davvero: se ne togli una, il muro scivola. Le case arretrate
 non toccano il muro, e la loro spinta è **esattamente zero**. Sono i prezzi
 $\alpha_i$ del quarto passo: chi non tocca il proprio paletto non paga pedaggio,
 e il suo prezzo è zero. Ma $\mathbf{w}$, l'abbiamo appena scoperto, è la somma
 delle case *pesata con quei prezzi*, e zero moltiplicato per qualunque cosa resta
 zero: nella soluzione, il contributo delle case arretrate non c'è proprio.
+
+Spingono anche le case che il margine morbido ha lasciato dentro il corridoio o
+dalla parte sbagliata: quelle il muro lo toccano eccome. Nessuna, però, può
+spingere più forte di quanto la manopola $C$ le consenta.
+
+Sulle quattro case in diagonale la spinta si conta. Le due sul bordo spingono
+un quarto ciascuna, le due arretrate zero; la casa in $(0,0)$ sta nell'origine
+e non sposta niente, e un quarto della casa in $(2,2)$ fa $(0{,}5;\ 0{,}5)$,
+cioè esattamente la freccia del confine trovato prima a occhio.
 
 È il motivo per cui la SVM, alla fine, si porta appresso solo i pochi punti che
 spingono e può dimenticare tutti gli altri, anche se erano un milione.
@@ -797,8 +867,8 @@ esattamente la soluzione trovata per via geometrica. Come controprova vale
 l'identità $\sum_i \alpha_i = \lVert\mathbf{w}\rVert^2$, che discende
 dall'uguaglianza fra primale e duale all'ottimo: qui $0{,}25 + 0{,}25 = 0{,}5$ e
 $\lVert\mathbf{w}\rVert^2 = 0{,}25 + 0{,}25 = 0{,}5$, e il margine
-$2/\lVert\mathbf{w}\rVert = 2/\sqrt{0{,}5} \approx 2{,}83$ torna con il conto
-svolto per via geometrica all'inizio di questa pagina.
+$2/\lVert\mathbf{w}\rVert = 2/\sqrt{0{,}5} \approx 2{,}83$ coincide con la
+larghezza già misurata sugli stessi quattro punti.
 
 `````
 

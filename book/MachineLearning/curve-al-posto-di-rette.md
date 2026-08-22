@@ -14,15 +14,14 @@ Sessanta.
 Fra un peso e l'altro quel listello non si piega a caso: prende **da sé** la
 curva più dolce che gli riesce, perché il legno si oppone alla piega e cede il
 meno che può. Il lavoro di Schoenberg è tutto lì dentro, ed è la ragione per cui
-questa sezione si apre con un attrezzo invece che con una formula: la curva che
-il legno disegna e la curva che la statistica calcola non si somigliano, **sono
-la stessa curva**. Il resto della pagina non fa che rendere esplicito il cambio
-di alfabeto.
+l'attrezzo viene prima della formula: la curva che il legno disegna e la curva
+che la statistica calcola non si somigliano, **sono la stessa curva**. Il resto
+non fa che rendere esplicito il cambio di alfabeto.
 
 La domanda di partenza, però, è più banale. Fin qui il libro ha adattato ai dati
 delle **rette**: una retta che li segue, nella regressione, e una retta che li
 divide, nella classificazione. Quando i dati su una retta non stanno, di strade
-ce ne sono tre. Due il capitolo le percorre subito dopo questa sezione: gli
+ce ne sono tre. Due il capitolo le percorre subito dopo: gli
 alberi, che invece di piegare la linea la spezzano a gradini, e le macchine a
 vettori di supporto, che curvano lo spazio sotto di essa. La terza è la più
 ovvia di tutte, quella che verrebbe in mente per prima a chiunque abbia disegnato
@@ -37,14 +36,18 @@ funziona finché il grado resta basso. Poi succede una cosa che non ci si aspett
 
 `````{tab} Elementare
 
-Resta al tavolo da disegno di Schoenberg, con il suo listello e i suoi pesi, e
-prova a far passare il listello sotto **ventun** pesi invece che sotto tre o
-quattro. Con tre o quattro ci riesci, e il listello resta bello. Con ventuno,
-per infilarsi sotto tutti deve ondeggiare, e ondeggia **tutto**: è un pezzo di
-legno solo, quindi non c'è modo di piegarlo in un punto senza che si muova
-anche il resto. Il guaio si vede soprattutto **alle estremità**, dove i pesi
-finiscono e non c'è più niente a tenerlo fermo: lì il listello parte per la
-tangente.
+Un palazzo di ventun appartamenti, una caldaia sola in cantina, e l'acqua calda
+che parte da lì e passa per tutti i termosifoni. Ogni inquilino ha la sua idea
+di temperatura giusta, e le idee sono ventuno. Chi regola l'impianto ha pochi
+comandi, e ognuno agisce sul palazzo intero. Apre per il quinto piano e bolle
+anche il terzo; allora strozza la colonna per rimediare, e si raffredda il
+secondo; ogni rimedio ne chiede un altro. Ai piani di mezzo i rimedi si
+accavallano e finiscono per compensarsi, e lì la temperatura viene giusta al
+grado. Ai due capi della colonna, in cima e a pianterreno, non c'è più niente
+che compensi. Uno gela e l'altro bolle, e non di un grado o due. In cima si sta
+col cappotto. Più si pretende di azzeccare la temperatura di ognuno, peggio
+stanno quei due, e basta che un inquilino cambi un radiatore perché tutta la
+regolazione vada rifatta da capo.
 
 Con i polinomi succede esattamente questo, e ha un nome, il **fenomeno di
 Runge**, dal matematico tedesco Carl Runge che nel 1901 lo descrisse
@@ -54,10 +57,12 @@ esattamente per tutti. Al centro il polinomio è impeccabile. Ai bordi impazzisc
 e più punti gli dai peggio va: con cinque punti sbaglia al massimo di $0{,}4$,
 con ventuno sbaglia di **quasi $60$**, su una curva che non supera mai $1$.
 
-Non è un difetto del calcolatore né della curva scelta: è la natura di una
-formula unica per tutto il campo. Aggiungere flessibilità a un polinomio
-significa aggiungerla **dappertutto**, anche dove non serviva, e la si paga
-dove i dati sono più radi.
+Spostare i punti aiuta, e per questa campana basta. Infittendoli verso i bordi
+invece di tenerli a distanze uguali, la curva torna a venire bene. Solo che nei
+dati veri dove cadono i punti non lo decidiamo noi, e il guaio grosso è un
+altro: una formula sola vale per tutto il campo, e ogni pezzo che le si aggiunge
+piega la curva dappertutto, anche dove andava bene com'era. Il conto lo si paga
+dove i dati sono più radi, cioè ai bordi.
 
 `````
 
@@ -109,9 +114,10 @@ radi rispetto alla distribuzione di Čebyšëv $\cos(k\pi/n)$, che invece li
 addensa ai bordi e rende la costante logaritmica.
 
 Cambiare la posizione dei nodi cura questo esempio ma non il problema di fondo,
-che è il **supporto globale** della base monomiale: ogni $x^{j}$ è diverso da
-zero ovunque, quindi ogni coefficiente influenza la curva su tutto il dominio, e
-la stima ai minimi quadrati non ha modo di localizzare la flessibilità.
+che è il **supporto globale** della base monomiale: nessun $x^{j}$ si annulla
+fuori dall'origine, quindi ogni coefficiente influenza la curva su tutto il
+dominio, e la stima ai minimi quadrati non ha modo di localizzare la
+flessibilità.
 
 `````
 
@@ -183,41 +189,43 @@ listello solo non si piega bene, se ne usano **tanti corti, giuntati**.
 
 `````{tab} Elementare
 
-Dividi il campo in tratti, mettendo dei paletti a separarli. In gergo quei
-paletti si chiamano **nodi**. Su ogni tratto metti una curva semplice, una
-cubica, che è la curva più semplice capace di avere un massimo, un minimo e un
-punto di flesso: quanto basta per fare una gobba e cambiare idea. Fin qui è una
-catena di pezzi indipendenti, e sui paletti si vedrebbero gli spigoli.
+Sul tavolo da disegno i listelli corti si appoggiano uno di seguito all'altro, e
+dove finisce il primo e comincia il secondo un peso li tiene fermi. Quel paletto
+fra un tratto e il successivo si chiama **nodo**. Ogni listello si piega come
+una cubica, la curva più semplice capace di avere un massimo, un minimo e un
+punto di flesso, quanto basta per fare una gobba e cambiare idea. Appoggiati e
+basta, però, i pezzi restano indipendenti, e sotto ogni peso si vedrebbe lo
+scalino.
 
-Il trucco sta nelle giunture. Su ogni paletto si pretendono tre cose:
+La giuntura si collauda col dito. Lo passi sopra il peso e non deve sentire
+niente: nessun gradino, cioè i due pezzi si toccano; nessuno spigolo, cioè
+arrivano con la stessa pendenza; nessuno scatto, cioè piegano dalla stessa parte
+e con la stessa forza. Tre pretese su ogni peso, e la giuntura sparisce anche
+alla vista: l'occhio non sa dire dove finisce un listello e comincia l'altro.
+Quello che resta sul foglio è una **spline cubica**. Adesso una gobba in fondo a
+destra si ottiene mettendo un peso in più a destra, e il listello di sinistra
+resta dov'era; con una formula sola per tutto il campo si muoveva tutto.
 
-1. che i due pezzi **si tocchino** (nessun gradino);
-2. che arrivino con la stessa **pendenza** (nessuno spigolo);
-3. che arrivino con la stessa **curvatura**, cioè che stiano piegando dalla
-   stessa parte e con la stessa forza (nessuno scatto).
+Quanta libertà resti alla curva si conta con le dita. Tre pesi fanno quattro
+tratti; ogni tratto è una cubica, e una cubica per stare ferma vuole quattro
+numeri, quindi sedici numeri in tutto. Ogni peso ne blocca tre, uno per pretesa,
+e i pesi sono tre: nove bloccati, sette liberi. Restano sette gradi di libertà,
+e ne viene uno in più per ogni peso che si aggiunge.
 
-Con queste tre condizioni la giuntura sparisce alla vista: l'occhio non sa dire
-dove finisce un listello e comincia l'altro. Il risultato è una **spline
-cubica**, e la differenza col polinomio unico è tutta qui: adesso una gobba in
-più in fondo a destra si ottiene aggiungendo un paletto a destra, e a sinistra
-non succede niente.
+Le tre pretese, e il grado tre, il legno le rispetta da solo. Schoenberg le
+ricava dalla teoria elementare della trave elastica, nella pagina stessa in cui
+descrive l'attrezzo: un'asta appoggiata su dei pesi si dispone in archi cubici,
+che si raccordano con la stessa pendenza e la stessa curvatura, e i raccordi
+cadono esattamente sotto i pesi. I paletti sul foglio sono i suoi pesi.
 
-Quelle tre condizioni, e il grado tre, sembrano una ricetta scelta a tavolino, e
-non lo sono: è ciò che fa il listello di legno. Schoenberg lo dice nella pagina
-stessa in cui descrive l'attrezzo, e lo fa discendere dalla teoria elementare
-della trave elastica (l'idea, annota in una nota a piè di pagina, gliel'aveva
-suggerita un collega, L. H. Thomas): un'asta appoggiata su dei pesi si dispone
-in archi **cubici**, che si raccordano con la stessa pendenza e la stessa
-curvatura, e i punti di raccordo sono **esattamente quelli in cui stanno i
-pesi**. I nostri paletti sono i suoi
-pesi, e le tre condizioni sono un fatto di fisica, non una convenzione.
-
-Un'ultima cortesia si fa agli estremi. Fuori dall'ultimo paletto non ci sono
-dati, e una cubica lasciata libera là fuori scappa via com'era scappata la
-tavola unica; allora la si obbliga a **finire dritta**, cioè a diventare una
-retta oltre gli estremi. Una spline che rispetta anche questo si chiama
-**naturale**, ed è la scelta di riferimento proprio perché rende noiosi i bordi,
-che sono il posto dove i modelli fanno i danni.
+Resta il pezzo di listello che sporge oltre l'ultimo peso. Là il foglio è vuoto,
+di dati non ce n'è, e la punta libera scappa via come scappava ai bordi la curva
+a formula unica. Allora la si schiaccia sul tavolo e la si obbliga a finire
+dritta, a proseguire come una retta oltre gli estremi. Un listello montato così
+si dice **naturale**, ed è la scelta di riferimento perché rende noiosi i bordi,
+che sono il posto dove i modelli fanno i danni. Anche questa cortesia si paga in
+libertà: due condizioni a ogni capo, e dei sette gradi di libertà ne restano
+tre, uno per paletto.
 
 `````
 
@@ -260,11 +268,13 @@ che viene tutto il vantaggio sul polinomio globale, dove ogni base è diversa da
 zero ovunque: la matrice di disegno è a banda, il condizionamento non degenera
 al crescere di $K$, e un coefficiente sposta la curva solo nel suo pezzo di
 dominio. In scikit-learn è ciò che fa `SplineTransformer`, che trasforma una
-colonna in $K + q + 1$ colonne di B-spline valutate sui dati, cioè i gradi di
-libertà contati sopra più uno per l'intercetta implicita (attenzione: il
+colonna in $K + q + 1$ colonne di B-spline valutate sui dati, cioè esattamente
+i $K+4$ gradi di libertà contati sopra (attenzione: il
 suo `n_knots` conta **anche** i due nodi di bordo, quindi con `n_knots=8` e
-grado 3 le colonne sono dieci); il modello lineare
-che gli si mette dopo resta un ordinario problema ai minimi quadrati.
+grado 3 le colonne sono dieci). Quelle colonne sommano a $1$ in ogni punto,
+perché le B-spline sono una partizione dell'unità, quindi la costante c'è già e
+l'intercetta del modello lineare che gli si mette dopo è ridondante; a parte
+questo resta un ordinario problema ai minimi quadrati.
 
 `````
 
@@ -293,6 +303,11 @@ oppone alla piega: piegarlo costa fatica, e più lo pieghi stretto più fatica
 costa. La curva che il listello disegna è il compromesso fra questi due tiri, e
 non è una curva scelta da nessuno: è quella che spende meno fatica in totale.
 
+E nessuno gli ha dovuto dire che forma prendere. Il legno non sa che cosa siano
+i tratti e i paletti, eppure quello che viene fuori è proprio una curva a tratti
+raccordati, con i raccordi sotto i pesi. E ne viene fuori una sola, perché fra
+tutte le forme possibili quella che costa meno fatica è una.
+
 La smoothing spline scrive quel compromesso in una formula sola, con
 **una manopola** in mezzo: quanto è rigido il legno.
 
@@ -303,11 +318,11 @@ La smoothing spline scrive quel compromesso in una formula sola, con
   piega affatto, e dei pesi si limita a stare in mezzo. È tornato a essere la
   retta di partenza.
 
-Il bello è che non serve credere sulla parola: la posizione della manopola si
-traduce in un numero che dice **quanto è flessibile la curva che ne esce**, e
-quel numero si può stampare. Con la manopola verso il rigido quel numero scende
-a $2$, che è quanto serve a una retta: uno per dire quanto è alta, uno per dire
-quanto pende. Non è una somiglianza vaga, è il conto che si legge sotto.
+La posizione della manopola si traduce in un numero, lo stesso conto dei
+paletti, cioè quanti gradi di libertà restano alla curva. Verso il morbido
+quel numero resta alto. Verso il rigido scende a $2$, che è la libertà di una
+retta: uno per dire quanto è alta, uno per dire quanto pende. Il righello di
+acciaio, allora, va preso alla lettera.
 
 `````
 
@@ -467,7 +482,8 @@ Robert Tibshirani nel 1986 {cite}`hastie1986generalized`.
 L'idea è di rinunciare a una cosa sola, e sapere a quale. Invece di chiedere
 «come varia il risultato al variare di tutte le colonne insieme», si chiede
 «come varia al variare di ciascuna colonna **presa da sola**», e poi si sommano
-le risposte.
+le risposte. Con dieci colonne le curve da disegnare sono dieci, e dieci curve
+si disegnano anche con i pochi dati che uno ha.
 
 Il prezzo dell'affitto, per dire. Una curva dice come cambia il prezzo al
 crescere dei metri quadri (sale, ma sempre meno: i primi cinquanta metri quadri
@@ -478,10 +494,24 @@ che non è affatto monotona: le case degli anni Sessanta valgono meno sia delle
 nuove sia di quelle d'epoca. Ogni curva la disegna una spline, e il prezzo
 stimato è la somma delle tre.
 
-Il guadagno non è nell'accuratezza, è che quelle curve si possono **guardare**.
-Un modello che dà un numero solo non dice niente; qui si stampano tre grafici e
-si vede la forma di ciascun effetto, gobbe comprese, senza aver dovuto decidere
-in anticipo che forma avesse.
+Le tre curve dicono uno scostamento, cioè di quanto si sale o si scende rispetto
+a un prezzo di partenza, che è scritto una volta sola per tutte e tre.
+Quell'accordo serve a poterle leggere. Senza, si potrebbe alzare di cento euro
+la curva dei metri quadri e abbassare di cento quella della distanza, ottenendo
+gli stessi identici prezzi con curve diverse, e nessuna delle tre vorrebbe più
+dire niente.
+
+Come si trovano, quelle tre curve? Una per volta, a giri. Si prende il prezzo
+di ogni casa, gli si toglie quello che le altre due curve spiegano già, e quel
+che resta lo si affida alla curva dei metri quadri, che si adatta a seguirlo.
+Poi tocca alla distanza, tenendo ferme le altre due, poi all'anno di
+costruzione. Si ricomincia il giro, e a ogni giro le curve si muovono meno,
+finché smettono di muoversi.
+
+Il guadagno che si vede subito è che quelle curve si possono guardare. Un
+modello che restituisce un numero solo non dice da dove viene quel numero; qui
+si disegnano tre grafici e si legge la forma di ciascun effetto, gobbe comprese,
+senza aver dovuto decidere in anticipo che forma avesse.
 
 E la rinuncia qual è? Che gli effetti non si parlano fra loro. Il modello non
 può dire «i metri quadri contano di più se sei in centro»: quello è un effetto
@@ -679,8 +709,9 @@ altri modelli.
 
 `````
 
-C'è un filo che tiene insieme questa sezione e le due che vengono dopo, ed è la
-domanda su **quanta struttura mettere nel modello prima di guardare i dati**. La
+C'è un filo che tiene insieme spline e GAM con le due sezioni che vengono dopo,
+ed è la domanda su **quanta struttura mettere nel modello prima di guardare i
+dati**. La
 retta ne mette troppa e non si piega; il polinomio ne toglie troppa e si piega
 dove non deve; la spline la rimette al posto giusto, dicendo che la curva deve
 essere dolce ma non dicendo che forma abbia. Il GAM fa lo stesso un gradino più

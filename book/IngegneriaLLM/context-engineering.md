@@ -119,9 +119,9 @@ come un piccolo repertorio.
 
 `````{tab} Elementare
 
-Immagina di lavorare su una scrivania minuscola, come già negli agenti: sul
-tavolo ci sta poca roba, e accanto hai uno schedario grande quanto vuoi. Da
-qui i quattro gesti.
+La scrivania è minuscola, la stessa vista con gli agenti: sul tavolo ci sta
+poca roba, e accanto hai uno schedario grande quanto vuoi. Da qui i quattro
+gesti.
 
 **Scrivere**: quello che adesso non ti serve lo metti nello schedario, così
 libera il tavolo e non è perso. **Selezionare**: quando ti serve qualcosa, vai
@@ -233,22 +233,21 @@ parla come se fosse sempre stato vero. L'errore non resta un errore: diventa
 una premessa. È per questo che, con gli agenti, conviene ripulire il contesto
 invece di lasciarlo crescere all'infinito.
 
-E c'è una conseguenza pratica che vale la pena dire subito, perché è la cosa
-più utile di questa pagina e si fa in un secondo: **quando una conversazione
-comincia a dire cose sbagliate, non insistere: aprine una nuova.** Correggere
-il modello dentro la stessa chat lascia l'errore dov'è, in mezzo a tutto quello
-che si è detto prima, e lui continuerà a rileggerlo. Una chat nuova parte dal
-foglio bianco, ed è l'unico modo che hai, da fuori, di togliere una diceria dal
-gruppo.
+Da qui il gesto che costa un secondo: quando una conversazione comincia a dire
+cose sbagliate, aprine una nuova invece di insistere. Correggere il modello
+dentro la stessa chat lascia l'errore dov'è, in mezzo a tutto quello che si è
+detto prima, e lui continua a rileggerlo. Una chat nuova parte dal foglio
+bianco, ed è l'unico modo che hai, da fuori, di togliere la diceria dal gruppo.
 
-Che «più lungo» non voglia dire «migliore» non è un'impressione, è stato
-misurato. In una prova di Liu e colleghi diventata famosa si dava al modello
-una domanda e un mucchio di documenti in cui cercare la risposta, e si
-spostava il documento giusto dentro il mucchio, ora in cima, ora in mezzo, ora
-in fondo. Quando i documenti erano venti o trenta e quello giusto capitava nel
+Che «più lungo» non voglia dire «migliore» è stato misurato. In una prova di
+Liu e colleghi diventata famosa si dava al modello una domanda e un mucchio di
+documenti in cui cercare la risposta, spostando quello giusto ora in cima, ora
+in mezzo, ora in fondo. Con venti o trenta documenti, e quello giusto nel
 mezzo, il modello rispondeva **peggio** di quando non gliene davano nessuno e
-doveva rispondere a memoria: il materiale in più, oltre una certa quantità,
-non aiutava, faceva danno.
+doveva rispondere a memoria. Una finestra più capiente non bastava: gli stessi
+modelli, nella versione che ne teneva molto di più, non usavano meglio quello
+che ci trovavano dentro. Lo spazio dichiarato non è lo spazio che il modello
+sa sfruttare.
 
 `````
 
@@ -298,15 +297,19 @@ che cosa si vuole ottenere.
 
 `````{tab} Elementare
 
-È la differenza tra dire a un artigiano «fammi un tavolo» e consegnargli un
-**progetto completo**: le misure, il tipo di legno, un disegno di com'è fatto
-un tavolo che ti piace, e (dettaglio decisivo) la regola con cui alla fine
-controllerete insieme se il tavolo è venuto bene («deve stare in piano e
-reggere 40 chili»). Con il progetto in mano, l'artigiano lavora quasi da solo
-e sbaglia di meno, perché ha davanti tutto il contesto *prima* di iniziare, e
-sa già come si misura il successo. Il PRP è quel progetto, scritto per un
-assistente che programma: regole, esempi, documentazione e il test finale,
-tutto in un foglio solo, pronto da riusare al prossimo lavoro.
+A un falegname puoi dire «fammi un tavolo», oppure puoi consegnargli un
+**progetto completo**: le misure, il tipo di legno, la foto di un tavolo che ti
+piace, perché il tuo venga di quello stile, e le due pagine del catalogo della
+ferramenta con le viti giuste, non il catalogo intero. In fondo al foglio c'è
+il dettaglio decisivo, la regola con cui si stabilisce se il tavolo è venuto
+bene, «deve stare in piano e reggere 40 chili». Con il progetto in mano
+il falegname lavora quasi da solo e sbaglia di meno, perché ha davanti tutto
+*prima* di iniziare. E quella regola finale non serve soltanto a te. Quando il
+tavolo è pronto, lui lo appoggia, ci carica sopra il peso, e se traballa
+ripialla la gamba corta prima di consegnartelo. Il PRP è quel foglio, scritto
+per un assistente che programma: regole, esempi, le pagine di manuale che
+servono e la prova finale, tutto insieme, pronto da riusare al prossimo
+lavoro.
 
 `````
 
@@ -366,16 +369,17 @@ progettata come tale.
   a che altezza si sta lavorando dice quanta cura serve. Le proposte in cima a
   quella scala sono ancora **ricerca**, non tecniche pronte, e va detto.
 - Sulla scrivania piccola ci sono **quattro gesti**: appuntare fuori quel che
-  non serve adesso, andare a prendere **solo** quel che serve, riassumere in
-  poche righe una pila di appunti, e passare un pezzo di lavoro a un collega
+  non serve adesso, andare a prendere quel che serve e nient'altro, riassumere
+  in poche righe una pila di appunti, e passare un pezzo di lavoro a un collega
   con la sua scrivania.
 - Un contesto si guasta in **quattro modi**: un errore che ci entra e da lì in
   poi viene ripetuto come se fosse vero; un contesto così lungo che il modello
   si fissa su quello che c'è scritto dentro e dimentica quello che sa; dettagli
   inutili che tirano la risposta fuori strada; pezzi che si contraddicono a
-  vicenda. Più lungo **non** vuol dire migliore: nella misura vista sopra, con
+  vicenda. Più lungo non vuol dire migliore: nella prova di Liu e colleghi, con
   venti o trenta documenti in finestra e quello giusto nel mezzo, le risposte
-  erano peggiori di quelle date senza alcun documento.
+  erano peggiori di quelle date senza alcun documento; e una finestra più
+  capiente non è una finestra usata meglio.
 - Il contesto si può preparare una volta e riusare: un **foglio di progetto**
   con dentro le regole, gli esempi, i pezzi di manuale che servono e,
   decisivo, la **prova con cui si stabilisce se il lavoro è finito**.

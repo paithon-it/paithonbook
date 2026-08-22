@@ -77,12 +77,19 @@ perché quell'ordine non significa nulla. Una griglia di pixel e una frase, al
 contrario, un ordine ce l'hanno eccome: il pixel in alto a sinistra è sempre
 in alto a sinistra, la prima parola è sempre la prima.
 
+Riscrivi la stessa lista in ordine alfabetico, poi fai due domande. «Alla cena
+ci si diverte?» deve avere la risposta di prima: la serata non cambia perché
+hai cambiato foglio. «Chi rischia di restare in disparte?» deve dare gli
+stessi nomi, che ora stanno su altre righe. Una risposta sola per tutta la
+tavolata resta ferma; una risposta per ciascuno segue le persone.
+
 E non è finita: a una cena ognuno ha un **numero diverso di amici** (c'è chi
 ne ha due e chi dieci), mentre in un'immagine ogni pixel ha sempre lo stesso
 numero di vicini. E ogni cena ha un **numero diverso di invitati**, mentre le
-foto le possiamo tagliare tutte alla stessa misura. Ordine che non conta,
-vicini in numero variabile, dimensione variabile: ecco perché un grafo non è
-né una griglia né una sequenza, e serve un'idea nuova.
+foto le possiamo tagliare tutte alla stessa misura; e lo stesso modo di fare
+deve andare bene per una tavolata da sei e per una da sessanta. Ordine che non
+conta, vicini in numero variabile, dimensione variabile: ecco perché un grafo
+non è né una griglia né una sequenza, e serve un'idea nuova.
 
 `````
 
@@ -137,7 +144,11 @@ Di una persona che non conosci ti fai un’idea guardando le
 compagnie che frequenta. «Dimmi con chi vai e ti dirò chi sei.» Una rete su
 grafo fa esattamente questo, a giri. All'inizio ogni nodo sa solo di sé; poi,
 a ogni giro, ciascun nodo **guarda i suoi vicini**, raccoglie quello che sanno
-e aggiorna la propria idea di sé. Dopo un giro, ogni nodo ha assorbito
+e aggiorna la propria idea di sé. Di quello che ha sentito gli resta
+un'impressione d'insieme: chi ha parlato per primo non lascia traccia, e
+quell'impressione si mescola con quello che pensava già di sé. La regola per
+ascoltare e per aggiornarsi è una sola, la stessa per il più popolare e per il
+più schivo, e la stessa a ogni cena nuova. Dopo un giro, ogni nodo ha assorbito
 qualcosa dagli amici diretti; dopo due giri, anche dagli amici degli amici; e
 così l'informazione si diffonde per la rete come una voce che circola. Alla
 fine, la fila di numeri di ogni nodo non descrive più solo il nodo, ma il nodo
@@ -167,10 +178,11 @@ massimo): proprio perché i vicini non hanno un ordine canonico. Dopo $K$ passi,
 $\mathbf{h}_v^{(K)}$ riassume l'informazione contenuta nel sottografo a
 distanza $K$ da $v$. Le funzioni $\mathrm{AGGREGATE}$ e $\mathrm{UPDATE}$ sono
 reti neurali con parametri $\theta$ condivisi da tutti i nodi e tutti i grafi:
-è questa condivisione a garantire l'equivarianza alla permutazione e a rendere
-il modello indipendente dalla taglia del grafo. La sezione sul message passing
-sviscera questo schema e ne ricava la sua incarnazione più celebre, la *Graph
-Convolutional Network* (GCN).
+è questa condivisione, unita all'invarianza all'ordine di
+$\mathrm{AGGREGATE}$, a garantire l'equivarianza alla permutazione, ed è
+ancora la condivisione a rendere il modello indipendente dalla taglia del
+grafo. La sezione sul message passing sviscera questo schema e ne ricava la
+sua incarnazione più celebre, la *Graph Convolutional Network* (GCN).
 
 `````
 
@@ -200,8 +212,15 @@ suggerimenti di amicizia e alle raccomandazioni, e indovinare un collegamento
 che non c'è ancora si chiama *link prediction*, «previsione dei
 collegamenti». Il terzo riguarda l’**intero grafo** preso come un tutt'uno:
 «questa molecola è tossica?», «questo composto uccide i batteri?», ed eccoci di
-nuovo ad halicin. Nodo, arco, grafo intero: la stessa macchina, tre domande
-diverse.
+nuovo ad halicin.
+
+Cambia anche quello che si ha in mano quando si comincia. Sul singolo nodo la
+risposta qualcuno l'ha già data, ma per pochi account: si impara da quei
+pochi, e tutti gli altri intorno fanno da contesto. Sull'intero grafo un nodo
+solo non dice niente, quindi le file di numeri di tutti gli atomi si mettono
+insieme in un unico riassunto della molecola, e su quel riassunto si risponde;
+e la molecola che arriva sul tavolo quasi mai è una di quelle su cui si è
+imparato. Nodo, arco, grafo intero: la stessa macchina, tre domande diverse.
 
 `````
 
@@ -301,7 +320,7 @@ guarda tutte le altre» vuol dire: c'è un grafo in cui ogni parola è un nodo, 
 ogni nodo è collegato a tutti gli altri (un grafo così si chiama **completo**).
 «Decide quanto ciascuna conta» vuol dire: ogni collegamento porta un peso. E
 «la nuova rappresentazione è il miscuglio delle altre» è, parola per parola, il
-passaparola fra vicini descritto qui sopra. Un Transformer, insomma, sta già
+passaparola fra vicini. Un Transformer, insomma, sta già
 facendo message passing: solo che il grafo non glielo dà nessuno, se lo
 fabbrica collegando tutti con tutti.
 
@@ -357,7 +376,9 @@ strada al contrario e a mettere un Transformer su un grafo qualunque.
 - Un grafo non è né una griglia di pixel né una fila di parole, e per tre
   motivi: **l'ordine in cui si elencano i nodi non conta**, ogni nodo ha **un
   numero diverso di vicini** e ogni grafo ha **un numero diverso di nodi**.
-  Serve un modello a cui, se riordini l'elenco, non cambi la risposta.
+  Serve un modello per cui riordinare l'elenco non cambi la risposta
+  sull'intero grafo, e faccia viaggiare con ciascun nodo la risposta che lo
+  riguarda.
 - L'idea delle **GNN** è dare a ogni nodo una fila di numeri che lo descrive, e
   costruirla facendo **circolare l'informazione lungo i collegamenti**: a ogni
   giro ogni nodo ascolta i vicini e si aggiorna. Il meccanismo si chiama
@@ -381,7 +402,8 @@ strada al contrario e a mettere un Transformer su un grafo qualunque.
 - Un grafo non è né una griglia (come per le CNN) né una sequenza (come per le
   RNN): i nodi non hanno **ordine canonico**, hanno **grado variabile**, e il
   grafo ha **dimensione variabile**. Serve un modello **invariante alla
-  permutazione**.
+  permutazione** se l'etichetta è dell'intero grafo, **equivariante** se è una
+  per nodo.
 - L'idea delle **GNN** è imparare una rappresentazione di nodi/archi/grafo
   facendo **propagare l'informazione lungo gli archi**, in modo differenziabile
   ed end-to-end. Il meccanismo si chiama **message passing**.

@@ -48,7 +48,22 @@ di quanto hai aperto il rubinetto, senza bisogno di ricordarla minuto per
 minuto. Il rubinetto è l'ingresso: quando lo apri di più, il livello sale. Lo
 scarico è la dinamica interna: se smetti di versare acqua, il livello cala da
 solo, un po’ alla volta. E ciò che *leggi* (magari un galleggiante collegato a
-un ago) è l'uscita, che dipende dal livello.
+un ago) è l'uscita, che dipende dal livello. A quell'ago se ne potrebbe
+affiancare un secondo, attaccato direttamente alla manopola del rubinetto:
+direbbe quanto è aperta in questo istante, senza memoria e senza ritardo. È una
+scorciatoia dall'ingresso alla lettura, e si tiene da parte, perché la parte
+interessante è quella che passa per la vasca.
+
+Quanto in fretta il livello scende, a rubinetto chiuso, dipende da quanto è
+aperto lo scarico: largo, e la vasca dimentica in un minuto; stretto, e si
+ricorda per un'ora; tappato, e non dimentica più niente, perché tutta l'acqua
+che hai versato resta lì. E la vasca non cala soltanto: spingi l'acqua verso un
+capo e per qualche secondo ondeggia avanti e indietro prima di quietarsi. Ci
+sono poi sistemi che crescono da soli, come il microfono avvicinato troppo alla
+cassa che lo amplifica: il fischio si alza da sé finché qualcuno non lo
+allontana. Calare, ondeggiare o crescere è quello che un sistema del genere fa
+quando lo lasci in pace, e a deciderlo è la sua regola interna, non chi lo
+alimenta.
 
 Un'eco in una valle funziona allo stesso modo: gridi (ingresso), il suono
 rimbomba e si spegne gradualmente (stato che decade), e quello che senti è una
@@ -99,8 +114,8 @@ lettera $x$ è già presa dal dato che entra nello strato, e in un SSM quel dato
 finirebbe a dividere la lettera con il proprio ingresso nella stessa equazione.
 Il libro segue la seconda convenzione, che è anche quella con cui $\mathbf{h}$
 indica lo stato nascosto fin dalle reti ricorrenti. L'unico residuo della prima
-è la $u(t)$ qui sopra: appena discretizzeremo, con l'ingresso diventato una
-sequenza di campioni, prenderà il nome di $x_t$.
+è la $u(t)$ del sistema a tempo continuo: appena discretizzeremo, con
+l'ingresso diventato una sequenza di campioni, prenderà il nome di $x_t$.
 
 `````
 
@@ -126,7 +141,7 @@ usano due che non vanno scambiate.
 
 Il modo più rapido di tenerle separate è pensarle come due figure
 geometriche: quella di S4 è un trapezio, quella di Mamba (l'altro protagonista
-del capitolo) è un rettangolo. Qui sotto si vede perché, e come si chiamano.
+del capitolo) è un rettangolo. Vediamo perché, e come si chiamano.
 
 `````{tab} Elementare
 
@@ -241,15 +256,22 @@ posizione moltiplica i propri pesi per i valori che ha sotto, poi somma. Due
 differenze. La prima è che qui il filtro è lungo quanto tutta la sequenza, non
 una finestrella di pochi elementi. La seconda è che nessuno lo scrive a mano:
 si ricava, con un conto, dalle tre regole del sistema. Ed è una buona notizia,
-perché il modello ha da imparare le tre regole, che sono poche, e non il
-i numeri del filtro, che sono tanti quanto il testo è lungo. Il vantaggio è
-che una convoluzione si
-calcola in un colpo solo, in parallelo su tutta la sequenza: proprio ciò che serve per
+perché il modello ha da imparare le tre regole, che sono poche, e non i numeri
+del filtro, che sono tanti quanto il testo è lungo. Quei numeri, uno per
+posizione, dicono quanto una parola di venti o di mille passi fa conta ancora
+sull'uscita di adesso. Il vantaggio è che una convoluzione si calcola in un
+colpo solo, in parallelo su tutta la sequenza: proprio ciò che serve per
 sfruttare le GPU in addestramento.
 
 Morale: si **addestra** in forma convoluzionale (veloce, parallela) e si fa
 **inferenza** in forma ricorrente (economica, una parola alla volta). La stessa
 funzione, due vestiti diversi a seconda dell'occasione.
+
+Tutto questo regge a una condizione: il filtro è uno solo, lo stesso dalla
+prima parola all'ultima. Se le tre regole cambiassero da una parola alla
+successiva, un filtro da calcolare una volta per tutte non ci sarebbe più, e
+resterebbe la sola strada passo dopo passo. Mamba prenderà proprio quella
+deviazione, sapendo quel che costa.
 
 `````
 
@@ -339,37 +361,52 @@ corta; costruita con criterio, può essere lunghissima.
 
 `````{tab} Elementare
 
-Immagina di dover riassumere un romanzo lunghissimo in una sola pagina di
-appunti, aggiornata mentre leggi. Se ogni frase nuova cancella la precedente,
-alla fine ti resta in mano solo l'ultimo capitolo. Serve un modo studiato apposta
-di comprimere: tenere una specie di riassunto a più livelli (l'idea generale,
-gli snodi principali, i dettagli recenti), così che ciò che conta del passato
-lontano non sbiadisca del tutto.
+Un romanzo lunghissimo, e una pagina sola di appunti da tenere aggiornata
+mentre lo leggi. La pagina non si allunga mai: per far entrare una riga nuova,
+una vecchia deve stringersi. Se ogni frase nuova cancella la precedente, alla
+fine ti resta in mano solo l'ultimo capitolo.
 
-È l'idea di **HiPPO** (la sigla è inglese, e sciolta suona «operatori di
-proiezione polinomiale di ordine alto»: è il nome tecnico di quel modo di
-riassumere): non una regola trovata a tentoni, ma la risposta migliore
-possibile a una domanda posta con precisione, cioè «fra tutti i riassunti che
-stanno in questo numero di numeri, quale somiglia di più alla storia intera?».
-La ricetta di HiPPO non è un pezzo in più da attaccare al modello: dice con
-quali numeri **partire**, prima ancora che l'addestramento cominci. Chi parte
-da lì ottiene, gratis, una memoria a lungo raggio; chi parte da numeri a caso
-si ritrova con una memoria corta, e l'addestramento non gliela allunga.
+C'è un modo migliore di riempirla, e nasce da una domanda precisa: fra tutte le
+pagine che stanno in quello spazio, quale somiglia di più al romanzo intero? La
+risposta ha un nome, **HiPPO** (la sigla è inglese, e sciolta suona «operatori
+di proiezione polinomiale di ordine alto»). La pagina viene su a strati: l'idea
+generale, gli snodi principali, i dettagli delle ultime righe. Il passato
+lontano si assottiglia e non sbiadisce del tutto.
 
-Su questa base nasce **S4**, il modello che dà il titolo alla sezione. Due
-mosse, una dietro l'altra: parte con la ricetta di HiPPO, così ha la memoria
-lunga; poi i suoi autori si accorgono che quei numeri di partenza non sono
-messi a caso ma seguono uno schema, e da uno schema si può calcolare il filtro
-lungo senza rifare ogni volta tutti i conti. La prima mossa gli dà la memoria, la seconda
-la velocità: senza tutt'e due sarebbe rimasto un esercizio.
+Quella pagina arriva già impostata prima che la lettura cominci, con lo spazio
+ripartito fra gli strati. Chi comincia da lì ha la memoria lunga senza fare
+altro; chi comincia da una pagina bianca qualunque ricorda le ultime frasi e
+basta, e continuare a leggere non gliela allunga.
+
+**S4** prende quella pagina impostata e ci aggiunge la velocità. Per allenarsi
+in fretta gli serve sapere in anticipo quanto ogni frase già letta pesa
+sull'appunto di adesso: un elenco lungo quanto il romanzo, e ricavarlo voce per
+voce vuol dire ripercorrere la storia da capo ogni volta. Ridisegnare la pagina
+per renderla comoda da calcolare non era un'opzione: chi tocca quel disegno
+butta via la memoria lunga insieme a lui. La regolarità, per fortuna, c'era
+già: l'impostazione di HiPPO è fatta di una parte tutta regolare più una
+piccola correzione, e da lì l'elenco intero esce in blocco. La memoria gliela
+dà la pagina di partenza, la velocità la regolarità: senza tutt'e due sarebbe
+rimasto un esercizio.
 
 Con tutt'e due è il primo modello che risolve **Path-X**, la prova più dura del
-*Long Range Arena*, la gara sulle dipendenze a lunghissimo raggio. In Path-X si
-guarda un'immagine di 128 pixel per 128 letta un pixel alla volta, in fila come
-se fosse un testo (fanno appunto $16\,384$ passi), e si deve dire se due
-puntini sono uniti da un tratto oppure no: per rispondere bisogna tenere
-insieme parti dell'immagine lontanissime nella fila. Lì i Transformer
-restavano al livello di chi tira a indovinare.
+*Long Range Arena*, la gara sulle dipendenze a lunghissimo raggio. Si guarda
+un'immagine di 128 pixel per 128, letta un pixel alla volta, in fila come se
+fosse un testo: 128 per 128 fanno $16\,384$ passi. Alla fine si deve dire se
+due puntini sono uniti da un tratto oppure no, e per rispondere bisogna tenere
+insieme parti dell'immagine lontanissime nella fila. Lì i Transformer restavano
+al livello di chi tira a indovinare. Sulle altre prove, dalle immagini al
+linguaggio, il distacco si accorcia senza sparire.
+
+Una virtù, però, per strada si perde. Il modo di prendere appunti di HiPPO non
+si cura di quanto sia lungo il romanzo: cento pagine o mille, la pagina resta
+una e si riadatta da sé man mano che la storia si allunga. S4 lo congela in una
+macchina che procede a passi tutti uguali, e da quel momento la distanza su cui
+ricordare va decisa prima di cominciare a leggere. Il rimedio è non deciderla
+una volta sola: la manopola che regola quanta storia entra in un salto viene
+messa su valori sparpagliati, dai lentissimi ai velocissimi, e le pagine tenute
+in parallelo si dividono il lavoro, una sull'ultima riga, una sul capitolo
+intero.
 
 `````
 
@@ -399,9 +436,8 @@ pratico è una matrice $\mathbf{A}$ specifica (la *matrice HiPPO*) con cui
 un ostacolo computazionale. Costruire il kernel $\bar{\mathbf{K}}$ richiede le potenze
 $\bar{\mathbf{A}}^{\,j}$ fino a $j = L-1$: farlo direttamente costa $O(N^2 L)$ operazioni,
 proibitivo per stati e sequenze grandi. La mossa di S4 non è **imporre** ad $\mathbf{A}$
-una struttura, ed è una distinzione che vale la pena tenere ferma: se lo
-facesse perderebbe proprio la matrice che dà la memoria lunga, e l'argomento
-crollerebbe. S4 **dimostra** (Teorema 1 del paper) che le matrici HiPPO una
+una struttura, e la distinzione va tenuta ferma: se lo facesse perderebbe
+proprio la matrice che dà la memoria lunga, e l'argomento crollerebbe. S4 **dimostra** (Teorema 1 del paper) che le matrici HiPPO una
 struttura sfruttabile ce l'hanno già, e che è **normale più basso rango**
 (NPLR):
 
@@ -417,8 +453,13 @@ Attenzione a chi sono gli autovalori: $\boldsymbol{\Lambda}$ raccoglie gli autov
 **parte normale**, non quelli di $\mathbf{A}$, e per la HiPPO-LegS i due insiemi non si
 somigliano affatto (gli autovalori di $\mathbf{A}$ sono reali, $-1, \dots, -N$; quelli
 di $\boldsymbol{\Lambda}$ hanno tutti parte reale $-1/2$ e parti immaginarie che crescono).
-È proprio la coniugazione a raddrizzare lo spettro su una retta verticale, ed è
-questo che rende stabile la diagonalizzazione.
+Gli autovalori di $\mathbf{A}$ restano dove sono, perché una similitudine non li
+sposta: la retta verticale appartiene alla parte normale, quella che resta una
+volta scorporata la correzione di rango basso. Il guadagno sta lì: una matrice
+normale ha una base di autovettori ortonormale, mentre la base di autovettori
+di $\mathbf{A}$ si mal condiziona in fretta al crescere di $N$, tanto da rendere
+impraticabile la diagonalizzazione diretta. Per questo l'algoritmo lavora sulla
+forma DPLR.
 
 Con questa struttura il kernel non si calcola più elevando a potenza una
 matrice piena: lo si ottiene passando alla sua *funzione generatrice* valutata
@@ -526,10 +567,10 @@ Mamba, ed è il tema della prossima sezione.
 - Un **SSM** nasce da un sistema che evolve nel tempo, come la vasca con il
   rubinetto aperto e lo scarico socchiuso: il livello dell'acqua è lo **stato**,
   una fotografia compatta del passato che basta a prevedere il futuro. Tre
-  ingredienti: come lo stato cala da solo, come l'ingresso lo alza, come si
-  legge l'uscita. È l'altra strada verso un modello che regge i testi lunghi
-  senza che il costo esploda, complementare all'attenzione lineare del capitolo
-  precedente.
+  ingredienti: come lo stato si muove da solo (la vasca cala, altri sistemi
+  ondeggiano o crescono), come l'ingresso lo alza, come si legge l'uscita. È
+  l'altra strada verso un modello che regge i testi lunghi senza che il costo
+  esploda, complementare all'attenzione lineare del capitolo precedente.
 - Per usarlo su una sequenza (parole, campioni audio) bisogna **misurare a
   intervalli regolari** e indovinare cosa succede *tra* un campione e il
   successivo. Le ricette non sono una sola e non vanno confuse: **S4 immagina

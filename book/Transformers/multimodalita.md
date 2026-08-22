@@ -36,33 +36,45 @@ per imparare a scrivere. La scheda qui sotto racconta chi sono i due, e conviene
 leggerla prima di tornare alla figura.
 
 `````{tab} Elementare
-Tre studenti si preparano allo stesso esame in tre modi diversi. **GPT**
-studia coprendo con la mano il resto della pagina: legge "Il gatto nero salta
-sul..." e prova a
-indovinare la parola dopo, milioni di volte (così diventa bravissimo a
-*continuare* un testo, cioè a scrivere). **BERT** studia con gli esercizi a
-buchi: riceve "Il gatto ___ salta sul muro" e indovina la parola mancante
-guardando sia prima che dopo il buco (così diventa bravissimo a *capire* le
-frasi, meno a scriverle). **T5** trasforma ogni compito in un tema: "traduci:
-...", "riassumi: ...", e la risposta è sempre un testo (un formato unico per
-tutti gli esercizi). Quando ChatGPT ti risponde, sotto c'è il metodo di GPT:
-indovinare la parola successiva, solo con miliardi di esempi alle spalle.
+Tre studenti si preparano allo stesso esame in tre modi diversi. **GPT** studia
+coprendo con la mano il resto della pagina. Legge "Il gatto nero salta sul..." e
+prova a indovinare la parola dopo, milioni di volte, e così diventa bravissimo a
+*continuare* un testo, cioè a scrivere. **BERT** studia con gli esercizi a
+buchi. Riceve "Il gatto ___ salta sul muro" e indovina la parola mancante
+guardando sia prima che dopo il buco, e così diventa bravissimo a *capire* le
+frasi, meno a scriverle. **T5** trasforma ogni compito in un tema. Scrive in
+cima al foglio "traduci:" oppure "riassumi:", e la risposta è sempre un testo,
+qualunque sia la domanda. Quando ChatGPT ti risponde, sotto c'è il metodo di
+GPT, coprire e indovinare, con miliardi di esempi alle spalle.
 
-C'è un quarto modo di studiare, meno noto e molto istruttivo, che nasce da
-un'obiezione all'esercizio a buchi. Negli esercizi veri di BERT i buchi non
-sono uno per frase: si cancella circa il quindici per cento delle parole, cioè
-grosso modo una ogni sette, e su quelle sole la rete viene interrogata. Delle
-altre sei su sette **non impara niente**, perché non le viene chiesto nulla, e
-leggerle è fatica sprecata.
+Nessuno dei tre, in quei milioni di ripetizioni, sta studiando il compito che
+gli verrà chiesto davvero. Studiano la lingua, e si correggono da soli, perché
+la risposta giusta sta già nella pagina, coperta dalla mano o nascosta dal buco,
+e nessun insegnante ha dovuto prepararla. Il compito vero (tradurre una frase,
+riassumere una pagina, dire se una recensione è entusiasta) arriva alla fine, e
+si impara con pochissimo: qualche esercizio già corretto, a volte solo le
+istruzioni scritte in cima al foglio, e in quel caso senza nemmeno rimettersi a
+studiare.
 
-**ELECTRA** cambia il gioco: invece di cancellare, *sostituisce* qualche
-parola con un'alternativa plausibile, prodotta da un modellino apposta, e poi
-chiede alla rete grande di fare il correttore di bozze, dicendo per **ogni**
-parola se è quella originale o un'intrusa. Il compito su ciascuna parola è più
-povero (una risposta sì/no invece di indovinarne una fra decine di migliaia) ma
-riguarda tutto il testo, e a parità di ore di computer bruciate si impara molto
-di più: gli autori misurano che per arrivare dove arrivano i modelli a buchi
-del suo tempo, ELECTRA spende meno di un quarto del loro addestramento.
+Al banco di fianco un quarto studente, **ELECTRA**, guarda i quaderni del
+compagno degli esercizi a buchi. I buchi non sono uno per frase. Sparisce circa
+il quindici per cento delle parole, grosso modo una ogni sette, e solo su quelle
+il compagno viene interrogato. Le altre sei su sette le legge e basta, fatica
+uguale, e non impara niente.
+
+Così ELECTRA si fa preparare le pagine da un ragazzo più piccolo, che invece di
+cancellare le parole le *sostituisce* con altre plausibili. Poi fa il correttore
+di bozze, e dice parola per parola se quella è l'originale o un'intrusa. Su ogni
+singola parola la domanda è più povera (sì o no, invece di indovinarne una fra
+decine di migliaia) ma non ne salta nessuna, e a parità di ore passate sui libri
+impara molto di più. Per arrivare dove arrivano i compagni degli esercizi a
+buchi gli basta meno di un quarto delle loro ore.
+
+Il ragazzo più piccolo, intanto, non sta giocando contro di lui. Fa i suoi
+esercizi a buchi come sempre, e se gli capita di rimettere al posto giusto
+proprio la parola che c'era, quella parola conta come originale e non come
+intrusa. Finito lo studio va a casa, e all'esame ci si presenta il correttore di
+bozze.
 `````
 
 `````{tab} Superiore
@@ -100,7 +112,7 @@ rete impara di più dalle stesse frasi perché le viene chiesto qualcosa su ogni
 posizione invece che su una su sette.
 
 La somiglianza con una **GAN** è dichiarata dagli autori stessi, e istruttiva
-soprattutto per dove si rompe: il generatore **non** è addestrato a ingannare
+soprattutto per dove si rompe: il generatore non è addestrato a ingannare
 il discriminatore (è addestrato con la sua verosimiglianza, come un normale
 MLM), non c'è vettore di rumore in ingresso, e quando produce per caso il token
 giusto quello viene etichettato come *originale* e non come falso. È
@@ -169,11 +181,22 @@ E le immagini? Il trucco è di una semplicità disarmante: si taglia la foto in
 tessere quadrate, come un mosaico, e si mettono le tessere in fila come se
 fossero le parole di una frase. A quel punto il Transformer fa quello che sa
 fare: per capire la tessera con l'orecchio del gatto, va a "guardare" anche
-quella con la coda, dall'altra parte della foto. I modelli **multimodali**
-fanno il passo successivo: imparano testo e immagini insieme, così puoi
-mostrare una foto e fare una domanda a parole, e la risposta arriva a parole.
-È quello che fa un assistente moderno quando gli carichi l'immagine di un
-modulo e gli chiedi di spiegartelo.
+quella con la coda, dall'altra parte della foto.
+
+Quella libertà si paga. Ogni tessera porta scritto il posto da cui viene, ma
+nessuno le ha detto che due posti confinanti abbiano qualcosa a che fare l'uno
+con l'altro: la tessera accanto a quella dell'orecchio e la tessera della coda,
+per il Transformer, sono lontane uguale. Che i puntini vicini vadano insieme
+deve scoprirlo guardando fotografie, e gliene servono a milioni. Con una
+scatola di foto e basta ne esce un pasticcio, e in quel caso conviene ancora il
+metodo che guarda un pezzetto di foto alla volta, che quella regola ce l'ha
+scritta dentro e non deve impararla.
+
+I modelli **multimodali** fanno il passo successivo: imparano testo e immagini
+insieme, su milioni di fotografie prese ciascuna con la sua didascalia, così
+puoi mostrare una foto e fare una domanda a parole, e la risposta arriva a
+parole. È quello che fa un assistente moderno quando gli carichi l'immagine di
+un modulo e gli chiedi di spiegartelo.
 `````
 
 `````{tab} Superiore
@@ -182,7 +205,7 @@ l'immagine in patch (tipicamente $16 \times 16$ pixel), le proietta
 linearmente in embedding e le tratta come token, con un positional encoding
 per la posizione spaziale. La cosa da portarsi via è la condizione: senza il
 *bias induttivo* di località delle CNN del capitolo sulla visione, il ViT
-regge il confronto **solo** se pre-addestrato su dataset molto grandi, e sotto
+regge il confronto solo se pre-addestrato su dataset molto grandi, e sotto
 quella soglia resta indietro. La località non è gratis: o la si mette
 nell'architettura, o la si compra in dati. Sul fronte multimodale, **CLIP**
 {cite}`radford2021learning` allinea in uno spazio comune embedding di immagini
@@ -251,26 +274,45 @@ distanza.
 
 `````{tab} Elementare
 
-I mattoncini della catena si chiamano amminoacidi, e ne esistono venti tipi:
-una proteina è una fila di quelli, agganciati in un ordine preciso, come una
-collana di perline di venti colori. Appena esiste, però, la collana si ripiega
-su sé stessa in una forma tridimensionale, e da quella forma dipende tutto ciò
-che sa fare: far avvenire una reazione chimica che da sola non avverrebbe,
-trasportare ossigeno nel sangue, agganciare un farmaco.
+Una collana di perline di venti colori, agganciate in un ordine preciso. I venti
+colori sono i venti tipi di amminoacido, i mattoncini della catena. Lasciata
+cadere, la collana si annoda su sé stessa sempre allo stesso modo, e prevedere
+quel nodo dal solo ordine delle perline era il problema.
 
-È come una collana di perline magnetiche che, ogni volta che la lasci cadere,
-si annoda esattamente allo stesso modo. Prevedere quel nodo dal solo ordine
-delle perline era il problema.
+La traccia da seguire l'ha lasciata l'evoluzione. Confrontando la stessa
+proteina in migliaia di specie diverse si scopre che certe posizioni della
+catena cambiano *in coppia*, e se una cambia cambia anche l'altra. Il motivo è
+che quelle due posizioni si toccano una volta che la collana si è annodata. Se
+muta una sola delle due il pezzo non combacia più, la proteina lavora peggio, e
+quella variante per strada si perde. Quel cambiare insieme (la co-evoluzione) è
+una traccia indiretta della vicinanza fisica.
 
-L'idea centrale è bellissima e non è di forza bruta: **leggere il segnale che
-l'evoluzione ha lasciato nei dati**. Confrontando la stessa proteina in
-migliaia di specie diverse si scopre che certe posizioni della catena mutano
-sempre *in coppia*: se una cambia, l'altra cambia con lei. Il motivo è che
-quelle due posizioni si toccano nello spazio: se una muta e l'altra no, la
-proteina non funziona più e l'individuo non lascia discendenti. La
-co-evoluzione è quindi una traccia indiretta della vicinanza fisica.
+AlphaFold la legge tenendo due fogli aperti sul tavolo. Sul primo c'è la stessa
+proteina come è scritta in migliaia di specie, una riga per specie. Sul secondo
+c'è una casella per ogni coppia di perline, e dentro la casella quanto si crede
+che quelle due finiscano a toccarsi. I due fogli si correggono a vicenda: quel
+che si nota leggendo le righe cambia i numeri nelle caselle, e i numeri nelle
+caselle fanno rileggere le righe con altri occhi. Arrivati in fondo si
+ricomincia da capo con i fogli già mezzi riempiti, più di una volta.
 
-AlphaFold impara a leggere quella traccia e a trasformarla in geometria.
+Le caselle, però, non sono indipendenti fra loro. Se la perlina 3 sta a due
+centimetri dalla 40, e la 40 sta a tre centimetri dalla 91, allora fra la 3 e
+la 91 non ci possono essere sei centimetri: al massimo cinque. È una regola che
+si vede solo guardando tre perline alla volta, mai due, e per questo la casella
+di una coppia viene aggiornata andando a leggere le altre due caselle del
+triangolo. Nessuno ha vietato al programma di scrivere sei. Gli si è dato il
+modo di accorgersene, e a rispettare la regola ci arriva a forza di esempi, come
+per tutto il resto.
+
+In fondo escono le coordinate di ogni perlina nello spazio, e accanto a ogni
+tratto di collana un voto: quanto il programma si fida di quel pezzo di
+risposta. Dove il voto è basso, spesso, quel tratto una forma fissa non ce l'ha
+davvero.
+
+Tutto questo poggia sui parenti. Di una proteina rara, o disegnata da qualcuno
+in laboratorio il mese scorso, cugini in altre specie non ce ne sono. Il primo
+foglio resta quasi vuoto, la traccia da leggere non c'è, e la previsione
+peggiora.
 
 `````
 
@@ -299,7 +341,7 @@ Il **modulo di struttura** finale produce le coordinate atomiche trattando ogni
 residuo come un sistema di riferimento rigido, e il tutto viene ripassato più
 volte (*recycling*): l'uscita rientra come ingresso e la struttura si affina.
 
-Due conseguenze che vale la pena tenere. La prima: il modello stima anche la
+Due conseguenze da tenere a mente. La prima: il modello stima anche la
 **propria confidenza** (pLDDT), e le regioni a bassa confidenza corrispondono
 spesso a parti realmente disordinate della proteina; un raro caso in cui
 l'incertezza dichiarata ha un significato fisico. La seconda: dipendendo
@@ -350,11 +392,13 @@ per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
   compito che serve, con pochi esempi o solo con le istruzioni scritte davanti
   (il *prompt*).
 - **ELECTRA** cambia l'esercizio invece dell'architettura: fa il correttore di
-  bozze su **ogni** parola invece di indovinarne una su sette, e a parità di
+  bozze su ogni parola invece di indovinarne una su sette, e a parità di
   fatica impara molto di più.
 - Le immagini entrano nello stesso meccanismo tagliandole in tessere e
   mettendole in fila come parole; da lì un modello può guardare una foto e
-  rispondere a parole.
+  rispondere a parole. La comodità si paga in esempi: che due tessere vicine
+  siano imparentate va imparato da milioni di fotografie, e quando le foto sono
+  poche conviene ancora il metodo che ne guarda un pezzetto alla volta.
 - I limiti vanno messi in conto quanto i pregi: costano moltissimo da
   addestrare, si portano dentro i pregiudizi dei testi su cui hanno studiato, e
   scrivono con la stessa sicurezza cose vere e cose inventate.

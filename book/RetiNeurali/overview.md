@@ -37,6 +37,12 @@ ciascun giurato è un numero, e si chiama **peso**. E il presidente ha una sua
 inclinazione ancora prima di sentire la giuria, chi parte prevenuto verso il
 sì e chi verso il no: anche quella è un numero, e si chiama **bias**.
 
+Il verdetto secco non è l'unica uscita possibile, e le reti di oggi ne
+preferiscono un'altra. Il presidente, invece di dire sì, dice di quanto il
+totale ha superato la soglia: se resta sotto, zero; se la supera, la misura
+dello scarto. A chi viene dopo di lui arriva allora una quantità al posto di un
+verdetto.
+
 `````
 
 `````{tab} Superiore
@@ -77,12 +83,23 @@ avrebbe "camminato, parlato e avuto coscienza di sé".
 `````{tab} Elementare
 
 Il percettrone impara come un allievo con un maestro severo. Riceve un
-esempio, prova a rispondere sì o no, e il maestro gli dice se ha sbagliato. Se
-doveva dire sì e ha detto no, alza i pesi degli indizi che in quell'esempio
-erano accesi, così la prossima volta il totale verrà più alto e supererà la
-soglia; se doveva dire no e ha detto sì, li abbassa. Un esempio dopo l'altro,
-i pesi si assestano finché gli errori diventano rari. Nessuno gli ha scritto la
-regola: l'ha ricavata dai dati.
+esempio, prova a rispondere sì o no, e il maestro gli dice soltanto se ha
+sbagliato; quando la risposta è giusta non si tocca niente. Se doveva dire sì e
+ha detto no, l'allievo alza i pesi degli indizi che in quell'esempio erano
+accesi, così la prossima volta il totale verrà più alto e supererà la soglia;
+se doveva dire no e ha detto sì, li abbassa. Il bias si muove con loro, nella
+stessa direzione. Di quanto? Sempre della stessa misura, fissata prima di
+cominciare: è il passo con cui l'allievo si corregge. Nessuno gli ha scritto la
+regola, la ricava dagli errori.
+
+C'è una promessa, e vale a una condizione. Se un modo di pesare gli indizi che
+azzecca tutti gli esempi del maestro esiste, l'allievo lo trova di sicuro: dopo
+un numero finito di correzioni smette di sbagliare, e da lì in poi i pesi
+restano dove sono. Se non esiste, l'allievo non si assesta mai: aggiusta un
+esempio e ne rompe un altro, poi torna indietro, e andrebbe avanti così per
+sempre. Da fuori i due casi si somigliano, perché si guarda una risposta alla
+volta e si vede solo un allievo che ogni tanto sbaglia; se stia per finire o
+stia girando in tondo, la lezione non lo dice.
 
 `````
 
@@ -129,8 +146,8 @@ autori la danno per nota. L'esempio che tutti ricordano è lo **XOR**, l’"o
 esclusivo". I teoremi veri del libro sono un'altra cosa, più forte, e li
 vediamo nella sezione dedicata al percettrone.
 
-E qui il titolo di questa sezione. Al 1969 seguirono anni in cui i soldi per
-l'intelligenza artificiale si ritirarono e molti gruppi di ricerca chiusero:
+Al 1969 seguirono anni in cui i soldi per l'intelligenza artificiale si
+ritirarono e molti gruppi di ricerca chiusero:
 sono l’**inverno dell'AI**, e sono la ragione per cui fra il libro di Minsky e
 Papert e la ripresa passano quasi vent'anni. Quanta parte di colpa tocchi
 davvero a quel libro è una questione aperta, e la riprendiamo nella sezione sul
@@ -198,14 +215,28 @@ Una fila di specchietti rimbalza il raggio di un puntatore laser fino a un
 segno sul muro, e il punto luminoso cade due dita più in là. Quale specchietto
 è storto? Guardandoli uno per uno non si capisce: l'inclinazione giusta di
 quelli in mezzo non l'ha scritta nessuno, e l'unica cosa che si vede è dove
-finisce il raggio. La backpropagation è il viaggio di ritorno: parte dal punto
-sbagliato, risale la fila e per ogni specchietto calcola di quanto sposterebbe
-il punto se lo si girasse un pochino. Chi lo sposta di più riceve la correzione
-più grande, chi quasi non conta resta quasi fermo. Ripetuto su migliaia di
-esempi, questo tornare indietro e correggere fa sì che anche i neuroni in mezzo
-alla fila, quelli di cui nessuno ha mai scritto la risposta giusta, imparino il
-loro mestiere. Hanno un nome: si chiamano neuroni **nascosti**, e "nascosto"
-vuol dire soltanto che non si affacciano né sull'ingresso né sull'uscita.
+finisce il raggio.
+
+Un modo ovvio ci sarebbe: girare un pochino il primo specchietto, guardare dove
+va a finire il punto, rimetterlo com'era, e poi il secondo, e poi il terzo. Con
+dieci specchietti si fa; con dieci milioni no, perché ogni prova costa un giro
+intero del raggio. La backpropagation di giri ne fa uno solo, e all'indietro:
+parte dal punto sbagliato e risale la fila. A ogni specchietto arriva già fatto
+il conto di tutto il tratto che viene dopo, e per sapere quanto conta quello lì
+basta combinarlo con la sua inclinazione; poi il conto, aggiornato, passa allo
+specchietto precedente. Alla fine ognuno sa di quanto sposterebbe il punto, se
+lo si girasse un pochino, e il ritorno è costato quanto un paio di andate, non
+dieci milioni. Tutto questo
+tiene finché il punto scorre: se saltasse da una posizione all'altra, quella
+domanda resterebbe senza risposta.
+
+Chi sposta il punto di più riceve la correzione più grande, chi quasi non conta
+resta quasi fermo, e ogni correzione rimane piccola, perché il conto appena
+fatto vale solo lì attorno. Ripetuto su migliaia di esempi, questo tornare
+indietro e correggere fa sì che anche i neuroni in mezzo alla fila, quelli di
+cui nessuno ha mai scritto la risposta giusta, imparino il loro mestiere. Hanno
+un nome: si chiamano neuroni **nascosti**, e "nascosto" vuol dire soltanto che
+non si affacciano né sull'ingresso né sull'uscita.
 
 `````
 
@@ -300,12 +331,17 @@ fuori così dall'addestramento. Lo **strato di output** tira le somme e
 produce la risposta: qui due numeri, per esempio quanto la rete è convinta di
 ciascuna delle due risposte possibili ("gatto" o "cane").
 
-C'è però una condizione, ed è il motivo per cui esiste una delle sezioni che
-seguono. Fra uno strato e l'altro deve succedere qualcosa che non sia
-soltanto moltiplicare e sommare. Se ogni strato si limitasse a quello, dieci
-strati in fila darebbero lo stesso risultato di uno solo: moltiplicare per $2$
-e poi per $3$ è come moltiplicare per $6$, e tutta la pila non servirebbe a
-niente.
+Quanto in là si arriva, con una pila del genere? Fino a qualunque forma: con
+abbastanza neuroni una rete traccia il contorno che le si chiede, preciso
+quanto lo si vuole. Che i pesi buoni esistano è dimostrato. Dove siano, la
+dimostrazione non lo dice: chi addestra una rete li cerca per tentativi
+guidati, e nessuno gli garantisce che li troverà.
+
+C'è però una condizione. Fra uno strato e l'altro deve succedere qualcosa che
+non sia soltanto moltiplicare e sommare. Se ogni strato si limitasse a quello,
+dieci strati in fila darebbero lo stesso risultato di uno solo: moltiplicare
+per $2$ e poi per $3$ è come moltiplicare per $6$, e tutta la pila non
+servirebbe a niente.
 
 `````
 

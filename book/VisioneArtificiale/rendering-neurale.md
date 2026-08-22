@@ -62,9 +62,14 @@ che le hai dato, e quando hai finito quella rete *è* quella scena. Non è un
 modello di come sono fatte le stanze: è quella stanza lì, scritta in forma di
 pesi.
 
-Il colore dipende anche dalla direzione, e non è un dettaglio: è ciò che
-permette a un riflesso di spostarsi mentre giri attorno a un tavolo lucido,
-cosa che un colore incollato su un triangolo non sa fare.
+Il colore dipende anche dalla direzione, ed è così che un riflesso si sposta
+mentre giri attorno a un tavolo lucido, cosa che un colore incollato su un
+triangolo non sa fare. Quanto un punto è solido, invece, non cambia con la
+direzione: il riflesso si sposta, il tavolo sta dov'è. La rete quella regola
+non l'ha scoperta, gliela si impone da fuori, ed è quella che tiene insieme la
+forma. Se anche la solidità potesse
+cambiare da un punto di vista all'altro, ogni fotografia potrebbe avere la sua
+sagoma privata, e nessuna dovrebbe rendere conto alle altre.
 
 `````
 
@@ -108,7 +113,7 @@ il meccanismo, e non è una rete: è fisica ottocentesca, e per la precisione la
 legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
 nomi di Beer e Lambert e ha quasi due secoli.
 
-**Differenziabile** è la parola su cui poggia tutto il resto. **Differenziabile** vuol dire che di ogni numero in gioco si può sempre
+**Differenziabile** vuol dire che di ogni numero in gioco si può sempre
 chiedere: «se questo fosse un pochino più grande, il risultato finale come
 cambierebbe?», e la risposta non è un'opinione, si calcola. È la condizione che
 permette di partire da un pixel venuto male e risalire la catena all'indietro
@@ -130,41 +135,47 @@ la strada all'indietro.
 
 `````{tab} Elementare
 
-Segui {numref}`fig-nerf-rendering`. Per calcolare il colore di **un solo
-pixel**, si parte dalla fotocamera e si lancia un raggio nella scena, come se
-si tendesse un filo. Lungo il filo si scelgono alcune decine di punti, e a
-ognuno si chiede alla rete: che colore, e quanto sei solido?
+Segui {numref}`fig-nerf-rendering`. Dall'obiettivo della fotocamera parte un
+filo teso che attraversa la scena, e sul filo si infilano qualche decina di
+quadratini di carta velina, uno per ogni punto da guardare. Colore e trama di
+ciascuno li dice la rete, a cui si chiede punto per punto che colore c'è lì e
+quanto è solido. Guardato il filo di punta, dalla parte dell'obiettivo, i
+quadratini si sovrappongono in una macchia di colore sola, e quella macchia è
+un pixel.
 
-Poi si sommano i colori, ma non in parti uguali. Si va dal più vicino al più
-lontano tenendo il conto di quanta luce è già stata fermata: un punto conta
-poco se è molto trasparente, e conta poco anche se è opaco ma sta **dietro** a
-qualcosa di opaco, perché quel qualcosa lo nasconde. È lo stesso ragionamento
-di una vetrata di più strati sovrapposti, o della nebbia: il primo strato
-conta pieno, il secondo conta per quel che passa del primo, e così via.
+I quadratini non contano tutti uguale. Si va dal primo all'ultimo tenendo il
+conto di quanta luce le veline già incontrate lasciano passare. Una velina
+quasi trasparente conta poco anche se sta davanti a tutte; una fitta conta
+pieno se è la prima, e quasi niente se ne ha un'altra fitta davanti, che la
+nasconde. La seconda vale per quel che passa della prima, la terza per quel che
+passa delle prime due, e così fino in fondo al filo.
 
-Ecco il punto decisivo: **tutta questa procedura è fatta di somme e
-moltiplicazioni**. Non c'è nessun passaggio brusco, nessuna decisione del tipo
-«qui c'è una superficie, quindi mi fermo». E di una catena di somme e
-moltiplicazioni si sa sempre rispondere alla domanda di prima («e se questo
-numero fosse un pochino più grande?»): se il pixel calcolato è troppo scuro, si
-risale all'indietro, si capisce quali punti dovevano essere più chiari o meno
-densi, e si corregge la rete di conseguenza.
+Lungo il filo nessuno dice mai «qui comincia una superficie, mi fermo». Nessun
+quadratino viene scelto e nessuno scartato: si moltiplica e si somma, e di una
+catena di moltiplicazioni e somme si sa sempre dire come cambierebbe il
+risultato se un numero fosse un pochino più grande. Così la macchia si mette
+accanto al pixel vero della fotografia, si guarda di quanto sbagliano, si torna
+indietro lungo il filo a vedere quali veline dovevano essere più chiare o più
+rade, e si corregge la rete. Poi da capo, per milioni di pixel presi a caso da
+tutte le foto. Le superfici nessuno le ha mai indicate alla rete, e vengono
+fuori da sole.
 
-L'addestramento è quindi banale da descrivere: rendi un pixel, confrontalo con
-la foto vera, misura la differenza, correggi. Ripeti per milioni di pixel
-presi a caso da tutte le foto. Nessuno ha mai detto alla rete dove stanno le
-superfici: la geometria compare da sola.
+Resta da decidere a che distanze infilare i quadratini. A distanze fisse la
+rete sarebbe interrogata sempre negli stessi posti, imparerebbe bene quelli e
+male ciò che sta in mezzo, e la scena uscirebbe a scalini. Si taglia allora il
+filo in tratti uguali, e dentro ogni tratto il quadratino va in un punto
+pescato a caso. Quasi tutti finiscono nell'aria vuota, dove non c'è niente da
+vedere, quindi si fa un primo giro rado per capire dove c'è qualcosa, e un
+secondo che infittisce solo lì.
 
-Vale la pena capire perché non ci sono scorciatoie. Una rete potrebbe cavarsela
-con **una** fotografia mettendo semplicemente un muro dipinto davanti
-all'obiettivo, e non avrebbe capito niente della scena. Ma quel muro, guardato
-dalla posizione della seconda fotografia, si vedrebbe di taglio, e non
-somiglierebbe a niente. Ogni fotografia in più esclude una montagna di
+Con una fotografia sola la rete se la caverebbe piantando un muro dipinto
+davanti all'obiettivo, che da lì si vede identico alla foto e della scena non
+dice niente. Ma dal punto della seconda fotografia quel muro si vede di taglio,
+e non somiglia a niente. Ogni fotografia in più butta via una montagna di
 soluzioni comode, e con qualche decina di fotografie prese tutt'attorno le
 sagome che le spiegano tutte insieme, senza contraddirne nemmeno una, sono
-sostanzialmente quelle vere. Non è una garanzia matematica, ed è per questo che
-sulle zone viste da una sola angolatura, o mai viste, questi metodi si
-inventano quello che vogliono.
+sostanzialmente quelle vere. Garanzie però non ce ne sono, e dove ha guardato
+una fotografia sola, o nessuna, la rete mette quello che le pare.
 
 `````
 
@@ -257,9 +268,9 @@ precedente.
 Il guadagno si vede con due numeri. I punti $0{,}30$ e $0{,}31$ sono quasi
 identici, e per la rete distinguerli è una tortura. Passati per l'onda più
 lenta restano quasi identici, come previsto. Ma passati per la decima, che è
-cinquecento volte più fitta, uno cade sulla cresta e l'altro nel cavo: due
-valori lontanissimi. La rete non deve più spaccare il capello, le basta
-guardare l'onda giusta.
+cinquecento volte più fitta, uno cade nel cavo dell'onda e l'altro dalla parte
+opposta, ben sopra lo zero: due valori lontanissimi. La rete non deve più
+spaccare il capello, le basta guardare l'onda giusta.
 
 È esattamente lo stesso trucco che il capitolo sui Transformer chiamerà
 **codifica posizionale**: là serve a dare un'identità a ciascuna posizione
@@ -314,7 +325,7 @@ rete, e un'immagine ha un milione di pixel. Se la rete è grande, non si
 finisce più. L'idea che ha sbloccato tutto è stata smettere di chiedere alla
 rete di ricordare **anche dove stanno le cose**, e darle un aiuto.
 
-Immagina di appoggiare sulla scena una griglia, e in ogni nodo della griglia un
+Sulla scena si appoggia una griglia, e in ogni nodo della griglia c'è un
 foglietto con sopra qualche numero. Quando si chiede il colore di un punto, non
 si costringe più la rete a ricordarsi tutto da sé: si vanno a leggere i
 foglietti dei nodi vicini, si mescolano fra loro secondo quanto sono vicini, e
@@ -327,6 +338,19 @@ corregge all'indietro fino ai foglietti, spostandoli un pochino. E le griglie
 non sono una sola ma una quindicina, dalla più larga alla più fitta, così che
 una sappia dov'è il tavolo e un'altra dove sono le venature del legno.
 
+I foglietti però sono contati, molti meno dei nodi delle griglie fitte, e a
+ciascun nodo se ne assegna uno con una regoletta che rimescola le coordinate.
+Due nodi lontanissimi fra loro possono capitare sullo stesso foglietto, e
+nessuno va a sbrogliare l'equivoco: si lascia com'è. Passa lo stesso, per due
+ragioni. Di due nodi che si dividono un foglietto quasi sempre uno sta
+nell'aria vuota, dove nessun pixel sbagliato reclama niente, e allora sul
+foglietto finisce scritto quello che chiede l'altro, il nodo dove la materia
+c'è davvero. E le griglie sono tante, ognuna con il suo rimescolamento: due
+nodi che si pestano i piedi su una griglia finiscono su foglietti diversi in
+tutte le altre. Quando invece a dividersi il foglietto sono due nodi che stanno
+tutti e due su una superficie, quel livello lì non sa più a chi dare ragione,
+e il dettaglio lo devono recuperare gli altri.
+
 È lo stesso baratto che si incontra ovunque nell'informatica: **memoria contro
 calcolo**, come tenere le tabelline scritte su un foglio invece di rifare la
 moltiplicazione ogni volta. Qui la memoria costa poco e il calcolo costava
@@ -338,12 +362,12 @@ l'addestramento di diversi ordini di grandezza.
 `````{tab} Superiore
 
 **Instant-NGP** sostituisce la codifica sinusoidale con una **codifica hash
-multirisoluzione**: $L$ livelli di griglia a risoluzioni geometricamente
-crescenti, ciascuno con una tabella di vettori di feature addestrabili
-indicizzata da una funzione hash spaziale. Per un punto si interpolano
-trilinearmente i vettori degli otto vertici di ogni livello, si concatenano, e
-si dà il risultato a due MLP **minuscoli**: uno per la densità, con un solo
-strato nascosto da 64 unità, e uno per il colore, con due
+multirisoluzione**: una sequenza di livelli di griglia a risoluzioni
+geometricamente crescenti, ciascuno con una tabella di vettori di feature
+addestrabili indicizzata da una funzione hash spaziale. Per un punto si
+interpolano trilinearmente i vettori degli otto vertici di ogni livello, si
+concatenano, e si dà il risultato a due MLP **minuscoli**: uno per la densità,
+con un solo strato nascosto da 64 unità, e uno per il colore, con due
 {cite}`muller2022instant`.
 
 La parte controintuitiva è che le collisioni della tabella hash **non si
@@ -354,7 +378,7 @@ quindi l'ambiguità di un livello viene sciolta dagli altri. Il risultato è un
 addestramento di ordini di grandezza più veloce, con qualità paragonabile, e un
 fotogramma in alta definizione reso in una manciata di millisecondi.
 
-Vale la pena leggerlo per quello che è: una parte sostanziale della
+Il passaggio va letto per quello che è: una parte sostanziale della
 rappresentazione si è spostata dai **pesi** a una **struttura dati esplicita e
 addestrabile**. Il campo continuo resta, ma non è più tutto dentro l'MLP.
 
@@ -374,13 +398,20 @@ materia e la si proiettasse sullo schermo?
 
 È l'idea dello **splatting**: la scena si rappresenta come qualche milione di
 granelli sfumati, ciascuno con la sua posizione, la sua forma (schiacciata,
-allungata, orientata come serve), il suo colore e la sua trasparenza. Per fare
+allungata, orientata come serve), il suo colore (che come prima cambia a
+seconda di dove ti metti a guardare) e la sua trasparenza. Per fare
 un'immagine, si proietta ogni granello sullo schermo, si ordinano dal più
 vicino al più lontano e si sovrappongono in quell'ordine. L'ordine conta perché
 un granello davanti nasconde in parte quello dietro, ed è la stessa somma
 pesata di prima: chi viene prima conta pieno, chi viene dopo conta per quel che
 resta. Nessuna ricerca, nessun campionamento a vuoto, e le schede grafiche
 fanno questo tipo di lavoro da trent'anni: è il loro mestiere.
+
+Un'approssimazione c'è, e sta nella proiezione. Un granello ovale resta un
+ovale pulito finché lo si guarda più o meno in faccia; verso i bordi
+dell'inquadratura la prospettiva lo storce, e il conto continua a trattarlo
+come un ovale. Al centro dell'immagine non lo noti, agli angoli sì, ed è lì
+che conviene andare a cercare i difetti.
 
 Il risultato è che la scena si guarda in tempo reale, muovendosi liberamente,
 con la stessa qualità di prima. E l'addestramento resta quello di sempre:
@@ -411,9 +442,8 @@ proiezione si **linearizza localmente**, e la covarianza proiettata è allora
 $\boldsymbol{\Sigma}' = \mathbf{J}\mathbf{W}\boldsymbol{\Sigma}\mathbf{W}^\top
 \mathbf{J}^\top$, dove $\mathbf{W}$ è la trasformazione di vista e $\mathbf{J}$
 lo jacobiano dell'approssimazione affine della proiezione (è la ricetta dello
-*splatting* con filtro ellittico della grafica volumetrica). È l'unica
-approssimazione del metodo, e si vede ai bordi dell'inquadratura, dove la
-linearizzazione è peggiore. Gli
+*splatting* con filtro ellittico della grafica volumetrica). Lo scarto si vede
+ai bordi dell'inquadratura, dove la linearizzazione è peggiore. Gli
 autori riportano sintesi di nuove viste in tempo reale ($\geq$ 30 fotogrammi
 al secondo) a risoluzione 1080p, con qualità allo stato dell'arte e tempi di
 addestramento competitivi.
@@ -525,9 +555,7 @@ sempre un pochino, mai esattamente zero. Il conto lo si può rifare. La densità
 del campione è $60$ e il suo spessore $0{,}1$ metri, e il loro prodotto,
 $60 \times 0{,}1 = 6$, dice quante volte la luce viene tagliata. Ogni taglio la
 riduce a $0{,}368$ di quel che era, e sei tagli la riducono a $0{,}368$
-elevato alla sesta, cioè a $0{,}0025$: un quattrocentesimo. Detto altrimenti,
-$0{,}368$
-moltiplicato per sé stesso sei volte, che fa $0{,}0025$: un quattrocentesimo.
+moltiplicato per sé stesso sei volte, cioè a $0{,}0025$: un quattrocentesimo.
 Quello che passa.
 
 **A che distanza sta la superficie?** Il codice non l'ha mai calcolato, eppure

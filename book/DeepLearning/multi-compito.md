@@ -42,24 +42,37 @@ fatto una volta sola e buono per tutti. Ogni testa lo traduce nella risposta
 che le serve.
 
 L'immagine giusta è quella di un ufficio: c'è un archivio comune, dove il
-materiale viene letto e ordinato una volta sola, e poi ci sono gli uffici
+materiale viene letto e ordinato una volta sola, e poi ci sono gli sportelli
 specializzati che da quello stesso archivio ricavano risposte diverse. Nessuno
 rilegge i documenti da capo per ogni domanda.
 
+Il conto, però, è uno solo. A fine giornata non si guarda uno sportello per
+volta: si somma quanto ha sbagliato ciascuno e ne esce un numero unico, ed è
+quel numero che si cerca di far scendere, sistemando insieme l'archivio e gli
+sportelli. Nel sommare bisogna decidere quanto conta ciascuno sportello, e
+quella decisione è la più delicata di tutte.
+
 Non è l'unica forma possibile. A volte i compiti sono parenti ma non abbastanza
 da poter condividere tutto: allora si tengono due reti separate, ciascuna col
-suo lavoro, e si chiede solo che **non si allontanino troppo** l'una
+suo lavoro, e si chiede soltanto che non si allontanino troppo l'una
 dall'altra. Vicine, qui, vuol dire con numeri simili al loro interno: alla fine
 di ogni passo si controlla quanto i pesi dell'una differiscono da quelli
-dell'altra, e più la differenza cresce più aumenta la multa. Sono due uffici
-distinti che però tengono le procedure allineate. Costa di più, perché le reti
-sono due, ma non obbliga due compiti diversi a usare per forza la stessa
-identica preparazione.
+dell'altra, e più la differenza cresce più sale la multa che si aggiunge al
+conto. Sono due uffici distinti che però tengono le procedure allineate. Costa
+di più, perché le reti sono due, ma non obbliga due compiti diversi a usare per
+forza la stessa identica preparazione.
 
 Nella pratica si finisce quasi sempre in mezzo: **condiviso in basso, separato
 in alto**. In basso una rete impara cose generiche (i bordi, le forme, la
 struttura della frase) che servono a chiunque; in alto cose specifiche del
 compito, che è giusto restino separate.
+
+I mestieri si possono anche imparare uno alla volta, invece che tutti insieme.
+Si arriva in fondo lo stesso, con un rischio che l'altra via non corre: mentre
+impara il secondo mestiere l'ufficio riordina l'archivio come conviene a
+quello, e del primo si dimentica, perché a fine giornata nessuno gliene chiede
+più conto. Imparandoli insieme il primo resta nel conto tutti i giorni, e non
+può essere lasciato cadere in silenzio.
 
 `````
 
@@ -77,8 +90,7 @@ $$
 Qui $\mathbf{x}$ è l'esempio in ingresso, $\phi$ sono i parametri del tronco
 condiviso e $\theta_t$ quelli della testa del compito $t$, $y_t$ è l'etichetta
 di quel compito, $\mathcal{L}_t$ la sua perdita e $\lambda_t > 0$ il peso con
-cui entra nella somma. Quei pesi sono il punto delicato di tutto il metodo, e
-la sezione «Quando invece fa danno» ci torna sopra.
+cui entra nella somma. Quei pesi sono il punto delicato di tutto il metodo.
 
 L'alternativa è la **condivisione morbida** (*soft sharing*): $T$ reti
 separate, ciascuna con i propri parametri, legate da un termine di
@@ -88,12 +100,12 @@ una rappresentazione unica: si usa quando i compiti sono affini ma non
 sovrapponibili.
 
 Le forme miste condividono gli strati bassi e lasciano divergere gli alti, ed è
-quasi sempre la scelta pratica, per la ragione che il capitolo ha già
-stabilito parlando di rappresentazioni gerarchiche: le feature generiche
+quasi sempre la scelta pratica, per la ragione già vista parlando di
+rappresentazioni gerarchiche: le feature generiche
 stanno in basso e quelle specifiche in alto, quindi il punto in cui separare le
 teste è una decisione su **quanto in alto arriva la parentela** fra i compiti.
 
-Da notare che il *transfer learning* già incontrato è lo stesso schema disteso
+Il *transfer learning* già incontrato è lo stesso schema disteso
 nel tempo: là i compiti si affrontano in sequenza (si pre-addestra su uno, si
 rifinisce sull'altro), qui in parallelo. La differenza pratica è che il
 sequenziale può dimenticare il primo compito mentre impara il secondo, e il
@@ -127,10 +139,7 @@ su quando aspettarsi un guadagno e quando no.
 
 `````{tab} Elementare
 
-Il guadagno viene da tre parti, e conviene tenerle distinte perché non sono la
-stessa cosa.
-
-Il primo è il più ovvio: **più segnale**. Il compito in più porta con sé altre
+Il più ovvio è **più segnale**. Il compito in più porta con sé altre
 **etichette**, cioè altre risposte giuste scritte accanto agli esempi, come «in
 questa foto c'è un gatto». Le etichette costano, perché quasi sempre è una
 persona a doverle scrivere una per una, e a volte sono semplicemente rare (di
@@ -138,20 +147,23 @@ persone che comprano ce ne sono molte meno di persone che guardano). Ogni
 etichetta in più è un'occasione in più di capire com'è fatto l'ingresso, e il
 guadagno è massimo quando il compito che ci sta a cuore ne ha poche e quello di
 contorno ne ha tante. Al contrario, se del compito principale abbiamo già
-esempi in abbondanza, questo primo vantaggio si assottiglia fino a sparire.
+esempi in abbondanza, questo vantaggio si assottiglia fino a sparire.
 
-Il secondo è più sottile ed è il vero motivo per cui la cosa funziona: il
-compito in più fa da **freno**. Una rete lasciata sola con un compito trova la
-scorciatoia più comoda per risolverlo, e le scorciatoie sono proprio ciò che
-non generalizza. Se la stessa rappresentazione deve servire anche a un secondo
+Più sottile, e il vero motivo per cui la cosa funziona: il compito in più fa da
+**freno**. Una rete lasciata sola con un compito trova la scorciatoia più
+comoda per risolverlo, e le scorciatoie sono proprio ciò che non
+generalizza. Se la stessa rappresentazione deve servire anche a un secondo
 compito, quelle scorciatoie smettono di essere convenienti, perché al secondo
 non servono. La rete è spinta verso soluzioni più generali, e questo è
 esattamente ciò che in gergo si chiama **regolarizzazione**: qualunque
 accorgimento che, restringendo le strade che la rete può prendere, la costringa
 a una risposta che vale in generale invece che a una perfetta sugli esempi già
-visti.
+visti. Un freno rende dove c'è da frenare, cioè quando gli esempi sono pochi e
+la rete è libera di inventarsi qualunque cosa. Quando gli esempi abbondano le
+scorciatoie comode sono già poche di loro, e il compito in più, invece di
+aggiungere, può cominciare a togliere.
 
-Il terzo è di attenzione: certi compiti **dicono alla rete dove guardare**. Se
+Poi c'è l'attenzione: certi compiti dicono alla rete dove guardare. Se
 per rispondere alla seconda domanda serve un dettaglio che per la prima
 sembrava trascurabile, la rete impara comunque a rappresentarlo, e magari
 scopre che serviva anche alla prima.
@@ -174,7 +186,7 @@ varianza in meno, ed è per questo che il guadagno è massimo dove la varianza �
 alta, cioè con **pochi dati per il compito principale**. Con dataset
 abbondanti l'effetto si assottiglia fino a sparire, e a volte si inverte.
 
-Una nota che allaccia il resto del libro: la **distinzione fra multi-compito e
+Una nota a margine: la **distinzione fra multi-compito e
 apprendimento auto-supervisionato è meno netta di quanto sembri**. Un compito
 inventato apposta perché la rete impari qualcosa (predire la rotazione di
 un'immagine, ricostruire una parte mascherata) è un compito ausiliario a tutti
@@ -203,15 +215,25 @@ Peggio: i due compiti possono chiedere al tronco cose incompatibili, e allora
 ogni passo che accontenta l'uno scontenta l'altro, e l'addestramento passa il
 tempo a oscillare invece di migliorare.
 
-C'è poi un problema più prosaico e altrettanto insidioso. Quando la rete impara
-due cose insieme, l'errore che si cerca di ridurre è **uno solo**: si prende
-quanto sbaglia sul primo compito, si prende quanto sbaglia sul secondo e si
-sommano. Ma quanto deve pesare ciascuno dei due in quella somma? Se un compito
-misura un errore in metri e un altro una probabilità, i loro numeri non sono
-paragonabili, e chi ha i numeri più grossi finisce per comandare l'addestramento
-senza che nessuno l'abbia deciso. Si può regolare a mano, provando, oppure
-lasciare che sia la rete a capire quanto fidarsi di ciascun compito: quelli su
-cui è molto incerta pesano meno.
+Il litigio si può smussare invece che subirlo, ed è quello che prova a fare il
+rimedio più noto: a ogni passo si guardano le correzioni che i due compiti
+chiedono al tronco, a ciascuna si toglie la parte che tira contro l'altra, e il
+resto si lascia intatto. L'idea è pulita e la diagnosi che la ispira regge;
+sulla cura si discute ancora. Chi ha rifatto i confronti su larga scala ha
+trovato che la vecchia somma, tenuta in ordine come si terrebbe quella di un
+compito solo, regge il passo o fa meglio.
+
+C'è poi un problema più prosaico e altrettanto insidioso, e nasce dal fatto che
+il conto da far scendere è uno: si prende quanto la rete sbaglia sul primo
+compito, si prende quanto sbaglia sul secondo e si sommano. Quanto deve pesare
+ciascuno dei due in quella somma? Se un compito misura un errore in metri e un
+altro una probabilità, i loro numeri non sono paragonabili, e chi ha i numeri
+più grossi finisce per comandare l'addestramento senza che nessuno l'abbia
+deciso. Si può regolare a mano, provando, oppure lasciare che sia la rete a
+capire quanto fidarsi di ciascun compito: quelli su cui è molto incerta pesano
+meno. Con un'avvertenza: dichiararsi incerta deve costarle qualcosa, se no la
+strada più comoda è dirsi incertissima su tutto, dare a ogni compito un peso
+quasi nullo e ritrovarsi con un conto vicino a zero senza aver imparato niente.
 
 E la domanda a monte, «questi due compiti sono imparentati?», non ha una
 formula. Si risponde provando.
@@ -229,7 +251,7 @@ $\nabla\mathcal{L}_i \cdot \nabla\mathcal{L}_j < 0$, proietta ciascun gradiente
 sul piano ortogonale all'altro prima di sommarli, rimuovendo la sola componente
 distruttiva e lasciando intatto il resto.
 
-Va detto che il beneficio pratico di questa famiglia di metodi è **contestato**:
+Il beneficio pratico di questa famiglia di metodi è però **contestato**:
 confronti su larga scala trovano che la somma pesata semplice, purché
 regolarizzata e stabilizzata come si farebbe per un compito solo, li eguaglia o
 li batte {cite}`kurin2022defense`, e che su compiti di visione e di linguaggio
@@ -425,7 +447,7 @@ provandoli a coppie, più che deducendolo.
   con una rappresentazione condivisa: un **tronco** comune e una **testa** per
   compito (*condivisione dura*), oppure reti separate tenute vicine da una
   penalità (*condivisione morbida*).
-- - Il guadagno ha tre sorgenti distinte: **più segnale** (soprattutto se il
+- Il guadagno ha tre sorgenti distinte: **più segnale** (soprattutto se il
   compito principale ha poche etichette), un effetto di **regolarizzazione**
   (le scorciatoie che servono a un compito solo smettono di convenire) e un
   effetto di **attenzione** (un compito indica alla rete cosa conviene

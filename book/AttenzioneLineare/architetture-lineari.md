@@ -3,9 +3,9 @@
 Le due sezioni precedenti hanno smontato i *meccanismi*: il modo di riassumere
 che trasforma l'attenzione in una memoria di taglia fissa, gli interruttori che
 la fanno sbiadire, la regola che corregge una voce invece di sommarci sopra.
-Erano pezzi sciolti su un tavolo. In questa sezione li vediamo montati in
-macchine intere: le architetture che, tra il 2023 e il 2025, hanno provato a
-fare concorrenza al Transformer sul suo stesso terreno.
+Erano pezzi sciolti su un tavolo. Adesso li vediamo montati in macchine intere:
+le architetture che, tra il 2023 e il 2025, hanno provato a fare concorrenza al
+Transformer sul suo stesso terreno.
 
 Ne guardiamo tre, scelte perché raccontano tre strade diverse verso la stessa
 meta: **RetNet**, nata in un laboratorio industriale attorno a un'idea di
@@ -43,43 +43,54 @@ diversa.
 
 `````{tab} Elementare
 
-Immagina di dover fare la somma dei voti di uno studente lungo tutto l'anno,
-dando più peso alle interrogazioni recenti e meno a quelle vecchie. (Nel
-modello vero ogni voto porta con sé anche quanto quella parola c'entra con la
-domanda; qui teniamo solo il peso della distanza, che è la novità di RetNet.)
-Puoi farlo in tre modi, e il totale non cambia. **Tutto insieme**: metti tutti i
-voti in tabella, accanto a ciascuno il suo peso, e sommi in un colpo solo
-(comodo se hai un foglio
-di calcolo che macina tante moltiplicazioni in parallelo). **Uno alla volta**:
-tieni un totale corrente e, a ogni nuova interrogazione, sbiadisci un po’ il
-totale vecchio e ci aggiungi il voto nuovo; comodo quando i voti arrivano in
-diretta, uno oggi e uno domani, e non vuoi rifare tutto da capo ogni volta.
-**A blocchi**: sommi un mese per volta con il metodo veloce, e poi colleghi
-i totali mensili sbiadendo l'uno nell'altro. Serve perché il totale finale, in
-realtà, non basta: ne vuole uno **dopo ogni interrogazione** (com'era messo lo
-studente a ottobre, a novembre, a dicembre), e per averli tutti in un colpo
-solo il primo metodo pretende una tabella con una riga per ogni momento e una
-colonna per ogni voto. Su un anno intero è di nuovo la tabella grande da cui
-siamo scappati all'inizio del capitolo; dentro un mese resta piccola.
+Un professore chiude il registro a giugno, e le interrogazioni di maggio pesano
+più di quelle di ottobre. Ogni interrogazione porta due cose, il voto e la
+materia; se oggi si parla di storia, l'interrogazione di storia conta più di
+quella di ginnastica, e su questo RetNet non cambia niente. Cambia il peso
+della distanza, che guarda quanto tempo è passato e basta.
 
-Vale la pena vederlo con i numeri, perché «il totale non cambia» è la cosa che
-regge tutto. Tre voti in ordine, $6$, $7$ e $8$, e a ogni passo quello che c'è
-già si dimezza. Il totale dopo il terzo voto viene così:
+Il registro si può chiudere in tre modi, e il totale è sempre lo stesso.
+
+Tutto insieme, il professore apre le pagine dell'anno sul tavolo, scrive
+accanto a ogni voto il suo peso e somma in un colpo solo. Con un foglio di
+calcolo che macina moltiplicazioni in parallelo è la strada più rapida, ed è
+quella dell'addestramento.
+
+Uno alla volta, tiene un numero solo a matita in fondo al registro. Finita
+un'interrogazione, sbiadisce un po’ il numero vecchio e ci somma il voto nuovo.
+Non riapre nessuna pagina, e ogni interrogazione gli costa gli stessi due
+gesti, che sia la prima o la centesima. È la strada dei voti in diretta, uno
+oggi e uno domani, cioè del modello che scrive una parola per volta.
+
+A blocchi, chiude un mese per volta sul tavolo e passa il totale al mese dopo
+sbiadendolo, come il numero a matita. Serve perché al professore il totale di
+giugno non basta: vuole com'era messo lo studente a ottobre, a novembre, a
+dicembre, un totale dopo ogni interrogazione. Averli tutti con le pagine sul
+tavolo vuol dire una tabella con una riga per ogni momento dell'anno e una
+colonna per ogni voto, che su un anno intero è di nuovo la tabella grande da
+cui l'attenzione lineare era scappata. Dentro un mese resta piccola, ed è così
+che reggono i testi lunghissimi.
+
+Che il totale non cambi si controlla con tre numeri. Tre voti in ordine, $6$,
+$7$ e $8$, e a ogni passo quello che c'è già si dimezza.
 
 - Tutto insieme: l'ultimo voto vale pieno, il precedente metà, quello prima
   ancora un quarto, cioè $8 + 0{,}5\times 7 + 0{,}25\times 6 = 13$.
 - Uno alla volta: parto da $6$; arriva il $7$ e faccio $0{,}5\times 6 + 7 = 10$;
-  arriva l’$8$ e faccio $0{,}5\times 10 + 8 = 13$. (E per strada mi sono
-  ritrovato in mano anche i totali intermedi, $6$ e $10$.)
+  arriva l’$8$ e faccio $0{,}5\times 10 + 8 = 13$. Per strada mi ritrovo in mano
+  anche i totali intermedi, $6$ e $10$.
 - A blocchi, con blocchi da due: i primi due voti li peso e li sommo in un
   colpo solo, senza passare per il totale del primo, $7 + 0{,}5\times 6 = 10$;
   poi il blocco successivo riparte da quel $10$ e ci attacca il terzo,
   $0{,}5\times 10 + 8 = 13$.
 
-Tredici tutte e tre le volte. RetNet è esattamente questo: la stessa somma
-pesata, in tre versioni. La prima serve ad addestrare in fretta, la seconda a
-usare il modello parola per parola, la terza per i testi lunghissimi. Il
-risultato è identico; cambia solo la convenienza pratica.
+Tredici tutte e tre le volte.
+
+E di registri il professore ne tiene parecchi affiancati, ognuno con un ritmo
+di sbiadimento suo. In uno il passato si dimezza a ogni interrogazione, e
+contano quasi soltanto le ultime due; in un altro sbiadisce così piano che
+settembre pesa ancora a giugno. Messi in fila dicono come sta lo studente
+adesso e come è andato l'anno, e il modello li legge tutti insieme.
 
 `````
 
@@ -179,18 +190,31 @@ niente e dà alla rete un accesso diretto al passo appena trascorso.
 
 `````{tab} Elementare
 
-Perché servano tutti e due si vede togliendoli. Senza il primo la frase
-resterebbe un elenco di parole che non si parlano; senza il secondo il modello
-saprebbe chi parla con chi ma capirebbe poco di ciascuno. Si alternano per tutta l'altezza della rete, ed è
-la stessa divisione del lavoro dei Transformer: di tutto questo capitolo,
-soltanto il primo dei due ci riguarda, perché è lì che sta la memoria di taglia
+Perché servano tutti e due si vede togliendoli. Senza il mescolamento fra le
+parole la frase resterebbe un elenco di voci che non si parlano; senza quello
+che rimescola i numeri di una parola sola il modello saprebbe chi parla con chi
+ma capirebbe poco di ciascuno. Si alternano per tutta l'altezza della rete, ed è
+la stessa divisione del lavoro dei Transformer. Dei due, quello che ci riguarda
+è il mescolamento fra le parole, perché è lì che sta la memoria di taglia
 fissa.
 
-Il nome, poi, è la lista dei quattro ingredienti del primo pezzo:
+Il nome, poi, è la lista dei quattro ingredienti del mescolamento fra le parole:
 *Receptance*, *Weight*, *Key*, *Value*. Le ultime tre le conosciamo (il peso
 che sbiadisce, l'etichetta, l'informazione); la *receptance* è un rubinetto
 d'uscita, che decide quanta parte di ciò che la memoria risponde viene
 effettivamente lasciata passare al resto della rete.
+
+Il peso che sbiadisce si vede all'opera tornando ai voti dello studente: il voto
+di ieri conta pieno, quello di prima ancora la metà.
+RWKV però fa due cose in più. Non si ferma alla somma: la divide per il totale
+dei pesi, e quello che esce è una media, cioè ancora un voto e non un mucchio
+che cresce con gli anni. E al voto di oggi non applica la regola dello
+sbiadimento: gli dà un peso deciso a parte, mettiamo il doppio, così che il
+presente non finisca trattato come una cosa vecchia. Con i voti $6$, $7$ e $8$
+i pesi diventano allora $0{,}5$, $1$ e $2$: la somma pesata fa
+$0{,}5\times 6 + 1\times 7 + 2\times 8 = 26$, i pesi messi insieme fanno
+$3{,}5$, e il risultato è $26$ diviso $3{,}5$, cioè circa $7{,}43$. Un voto,
+appunto: senza quella divisione resterebbe $26$, che non vuol dire niente.
 
 Un'ultima cosa da sapere, perché il seguito ci conta sopra: RWKV non è un
 modello solo, è una famiglia che ha cambiato pelle più volte, e le versioni si
@@ -300,46 +324,47 @@ esigenze.
 
 `````{tab} Elementare
 
-La vecchia LSTM è un magazziniere con un unico scaffale e tre
-interruttori: uno per buttare via, uno per riporre, uno per mostrare cosa c'è.
-Ha funzionato per anni, ma lo scaffale è piccolo e gli interruttori sono
-timidi. Timidi in un senso preciso: sono manopole che non arrivano mai al
-fondo, si fermano sempre un po’ prima dello spalancato e un po’ prima del
-chiuso. Non è un difetto di fabbrica, è come sono fatte: dentro c'è un conto che
-prende qualunque numero, anche enorme, e lo riporta dentro l'intervallo fra
-zero e uno. È comodo, perché così niente sfugge di mano, ma impedisce a una
-manopola di dare più di «tutto». Se il
-magazziniere si accorge, dopo mille articoli, che quello di oggi conta più di
-tutti gli altri messi insieme, non riesce a dargli molto più spazio degli
-altri: al massimo un po’ di più. xLSTM è lo stesso magazziniere che riapre
-bottega in grande.
+La vecchia LSTM tiene bottega con un unico scaffale e tre interruttori, uno per
+buttare via quello che c'è, uno per far entrare la roba nuova, uno per mostrare
+al cliente che cosa c'è dentro. Sono manopole, e vanno da zero a uno, dove uno
+vuol dire tutto. Il magazziniere gira finché la manopola si ferma, e più di
+così non può chiedere. Arriva un articolo che conta più dei mille precedenti
+messi insieme, e per farlo entrare ha soltanto quel gesto: la manopola era già
+quasi in fondo, lui la spinge fino in fondo, e all'articolo tocca appena
+un po’ di spazio in più degli altri.
 
-Nella prima variante (nei paper si chiama **sLSTM**) tiene lo scaffale singolo
-e cambia gli interruttori: i
-nuovi possono spalancarsi davvero, perché al posto di quel conto che schiaccia
-ne usano uno che lascia salire senza tetto, e allora una cosa importante entra
-occupando quanto merita, anche molto più di tutte le precedenti. Il prezzo lo
-paga in un altro modo: quando le manopole possono arrivare a valori enormi, i
-conti rischiano di andare fuori scala, e serve un accorgimento apposito per
-tenerli buoni.
+Nella prima bottega nuova (nei paper si chiama **sLSTM**) lo scaffale resta
+uno, e cambiano le manopole. Le nuove non hanno fine corsa, si continuano a
+girare, e l'articolo che conta più di tutti si prende lo spazio che merita:
+quello che stava sullo scaffale fino a ieri finisce sommerso sotto quello di
+oggi.
 
-Nella seconda variante (nei paper si chiama **mLSTM**, e sarà quella che conta)
-sostituisce lo scaffale con un intero **archivio a griglia**, dove ogni
-richiesta («dammi l'informazione di questa etichetta») pesca in una tabella
-molto più grande: è di nuovo il foglio-registro delle sezioni precedenti.
-Quanto sbiadire lo decide guardando l'articolo che sta arrivando, quindi parola
-per parola, come faceva Mamba-2.
+Quel giro senza fine si paga in due modi. Con le manopole aperte così i numeri
+sul quaderno del carico crescono in fretta e smettono di stare nelle caselle, e
+senza una contromisura apposita il conto salta. Poi c'è la risposta al cliente.
+Il magazziniere prende il mucchio che ha accumulato sullo scaffale e lo divide
+per quanto ne ha fatto entrare, come si fa con la media dei voti, e quello che
+consegna è il rapporto. Così la risposta resta della taglia di un
+articolo anche dopo mille articoli e con le manopole spalancate.
 
-Questa seconda bottega ha poi un vantaggio che non si vede a occhio, e non è la
-capienza. Dove va un articolo dipende solo dall'articolo, non da com'è messo
-l'archivio in quel momento: nessun addetto deve aspettare che il collega abbia
-finito per sapere che cosa fare, e allora mille addetti possono sistemare mille
-articoli **contemporaneamente**. Nella prima bottega no: per decidere quanto
-aprire gli interruttori il magazziniere guarda com'è ridotto lo scaffale
-adesso, e finché non ha sistemato l'articolo di oggi non sa come regolarsi
-domani, quindi si procede per forza in fila. (È lo stesso motivo per cui, nella
-sezione precedente, correggere era lento e sbiadire no.) È la LSTM di
-trent'anni fa, rifatta con la memoria e i muscoli di oggi.
+La seconda bottega (nei paper si chiama **mLSTM**, e sarà quella che conta)
+butta lo scaffale e mette un **archivio a griglia**, un cassetto per ogni
+etichetta, e chi arriva chiede l'informazione di un'etichetta invece di
+guardare un ripiano solo. È di nuovo il foglio a righe e colonne delle sezioni
+precedenti. Quanto sbiadire la roba vecchia, poi, il magazziniere lo decide
+articolo per articolo, guardando quello che ha in mano in quel momento, come
+faceva Mamba-2.
+
+E la bottega nuova guadagna una cosa che con la capienza non c'entra. Dove va
+un articolo dipende solo dall'articolo, perché l'etichetta dice già in che
+cassetto finisce, e nessuno ha bisogno di sapere com'è messo l'archivio adesso.
+Nessun addetto aspetta che il collega abbia finito, e allora mille addetti
+sistemano mille articoli contemporaneamente. Nella prima bottega non si può.
+Lì, per decidere quanto aprire le manopole, il magazziniere guarda com'è
+ridotto lo scaffale in quel momento; finché non ha sistemato l'articolo di oggi
+non sa come regolarsi con quello di domani, e si va in fila, uno dietro
+l'altro. È la bottega di trent'anni fa, rifatta con la memoria e i muscoli di
+oggi.
 
 `````
 
@@ -401,7 +426,7 @@ esponenziare: è il classico trucco *log-sum-exp*. Perché il risultato resti
 davvero identico, però, va riscalato anche il fondo del denominatore, che
 diventa $\max\big(|\mathbf{n}_t^\top \mathbf{q}_t|,\, e^{-m_t}\big)$: è la forma
 stabilizzata che gli autori danno in appendice {cite}`beck2024xlstm`, e la
-ragione è aritmetica. Sottrarre $m_t$ rimpicciolisce di $e^{-m_t}$ tanto
+ragione è aritmetica. Sottrarre $m_t$ riscala di $e^{-m_t}$ tanto
 $\mathbf{C}_t$ quanto $\mathbf{n}_t$; se anche la soglia porta lo stesso fattore, esso si
 semplifica e le due scritture coincidono per costruzione, mentre la soglia
 fissa $1$ non si riscala con il resto e, appena il massimo entra in gioco,
@@ -535,7 +560,7 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
   insieme in parallelo. Un modello da sette miliardi di parametri costruito solo
   su quest'ultima {cite}`beck2025xlstm7b` mostra che la formula regge alla scala
   dei grandi modelli.
-- Il filo comune: le tre architetture di questa sezione, e quelle della
+- Il filo comune: RetNet, RWKV e xLSTM, insieme ai modelli della sezione
   precedente, sono la stessa cosa: un riassunto di taglia fissa aggiornato
   parola per parola. A cambiare è **solo il modo in cui la memoria di ieri
   sopravvive a oggi**. Il prossimo capitolo arriverà allo stesso motore partendo
@@ -570,9 +595,9 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
   log) e due celle: **sLSTM** (memoria scalare, non parallelizzabile) e **mLSTM**
   (memoria matriciale
   $\mathbf{C}_t = f_t \mathbf{C}_{t-1} + i_t \mathbf{v}_t \mathbf{k}_t^\top$,
-  parallelizzabile,
-  di fatto una gated linear attention). **xLSTM-7B** {cite}`beck2025xlstm7b` la
-  porta alla scala dei grandi modelli.
+  parallelizzabile, di fatto un'attenzione lineare con decadimento scalare
+  data-dipendente, cioè la riga di Mamba-2 e RetNet). **xLSTM-7B**
+  {cite}`beck2025xlstm7b` la porta alla scala dei grandi modelli.
 - Il filo comune: RetNet, RWKV e xLSTM (con GLA e DeltaNet) sono la stessa
   **RNN lineare a stato fisso**; cambia **solo la transizione di stato**. Gli
   State Space Model, che il libro racconta subito dopo, arrivano allo stesso

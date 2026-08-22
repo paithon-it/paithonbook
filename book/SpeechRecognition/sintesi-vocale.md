@@ -96,8 +96,7 @@ sistema TTS deve decidere *quali parole* corrispondono a ciò che è scritto.
 
 `````{tab} Elementare
 
-Immagina di dettare un messaggio a qualcuno che lo deve scrivere sotto
-dettatura: «1901» non lo puoi mostrare, lo devi sciogliere a voce
+Al telefono, «1901» non lo puoi mostrare: lo devi sciogliere a voce
 («millenovecentouno»). La normalizzazione è esattamente
 questo lavoro, fatto da un programma. «Il dott. Rossi arriva l'1/3 alle 9:30»
 deve diventare «il dottor Rossi arriva il primo marzo alle nove e trenta»:
@@ -109,6 +108,12 @@ zero uno» se è un interno telefonico. E c'è di peggio: «ancora» si pronunci
 pagina sono identiche, e per scegliere bisogna capire che mestiere fa la
 parola nella frase. È lo stesso problema di analisi grammaticale di
 {doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`.
+
+E sbagliare qui non fa rumore. Se il programma legge «1901» come
+«millenovecentodieci», chi ascolta sente un anno plausibile, detto bene, e non
+ha il foglio davanti per accorgersi che era un altro. Un errore che nessuno
+può correggere pesa più di uno che si sente subito: per questo il lavoro si fa
+ancora a mano, regola per regola, invece di darlo a una rete.
 
 `````
 
@@ -137,19 +142,22 @@ ai suoni una a una.
 
 `````{tab} Elementare
 
-Un **fonema** è il più piccolo suono che, cambiando, cambia il significato:
-«pane» e «cane» differiscono per un solo suono iniziale, e infatti sono due
-parole diverse. Le lettere non bastano a rappresentarli: la «c» di *casa* e la
-«c» di *ciao* sono la stessa lettera ma due suoni completamente diversi. Per
+«Pane» e «cane» differiscono per un solo suono iniziale, e infatti sono due
+parole diverse. Quel suono minimo che, cambiando, cambia il significato si
+chiama **fonema**. Il contrario si sente con la bocca: pronuncia «un cane»,
+poi «un pane». La «n» non è la stessa (nel secondo caso le labbra si chiudono già
+per la «p» che arriva), eppure la parola non cambia. Sono due modi di dire lo
+stesso fonema, e a sceglierli non sei tu: è il suono che viene dopo. Le
+lettere, poi, non bastano a rappresentare i fonemi: la «c» di *casa* e la «c»
+di *ciao* sono la stessa lettera ma due suoni completamente diversi. Per
 scriverli senza ambiguità i linguisti usano l’**alfabeto fonetico
 internazionale** (IPA), dove ogni simbolo è un suono e uno solo, e si scrive
 fra due barrette: /k/ per la c di *casa*, /tʃ/ per la c di *ciao*. Il
-passaggio automatico dalle lettere ai suoni ha una sigla che compare anche
-nella figura di poco fa: **G2P**, dall'inglese *grapheme-to-phoneme*, cioè
-«dal grafema al fonema», che è il titolo di questa sezione. L'italiano è quasi
-«trasparente» (quasi
-sempre si legge come si scrive, con poche regole) ma l'inglese no: *though*,
-*tough* e *through* finiscono tutte in *-ough* e si pronunciano in tre modi
+passaggio automatico dalle lettere ai suoni ha una sigla, **G2P**,
+dall'inglese *grapheme-to-phoneme*, cioè «dal grafema al fonema».
+L'italiano è quasi «trasparente» (quasi sempre si legge come si scrive, con
+poche regole) ma l'inglese no: *though*, *tough* e *through* finiscono tutte
+in *-ough* e si pronunciano in tre modi
 che non si somigliano affatto. E i fonemi giusti non bastano ancora: prova a
 leggere ad alta voce l'elenco della spesa e poi una battuta di teatro. Le
 parole sono chiare in entrambi i casi, ma cambiano la melodia della frase, le
@@ -269,9 +277,8 @@ leggere segue il rigo. Se una vocale va tenuta a lungo, l'attenzione resta
 ferma lì per più colonne. Il risultato è quasi indistinguibile da una
 registrazione, ma il metodo ha il difetto di chi scrive una lettera alla
 volta: ogni tanto il dito scivola, e il modello salta una parola o balbetta
-una sillaba due volte. È lo stesso difetto dei riconoscitori con attenzione
-della sezione precedente di questo capitolo, con la freccia girata dall'altra
-parte.
+una sillaba due volte. È lo stesso difetto dei riconoscitori con attenzione,
+con la freccia girata dall'altra parte.
 
 **FastSpeech 2** {cite}`ren2021fastspeech` rovescia il metodo: prima decide
 *quanto dura* ogni suono, poi riempie tutte le colonne in un colpo solo, in
@@ -319,8 +326,7 @@ l'intervallo di confidenza non separa da quello del parlato registrato da
 professionisti; nel confronto diretto sulla stessa frase, però, gli ascoltatori
 preferiscono ancora la registrazione vera, in modo statisticamente
 significativo. Le due misure non si contraddicono: dicono che la media dei voti
-è uno strumento più grossolano del confronto appaiato, ed è una lezione che
-torna più avanti in questa stessa pagina, quando parleremo del MOS.
+è uno strumento più grossolano del confronto appaiato.
 
 FastSpeech 2 elimina l'autoregressione
 con un *variance adaptor* a tre rami (durate, pitch, energia): il predittore di
@@ -331,9 +337,9 @@ stimano pitch ed energia per frame; il mel si genera poi in parallelo. Niente
 attenzione da far convergere: spariscono salti e ripetizioni, e la velocità
 cresce di ordini di grandezza.
 
-C'è però un passaggio che la frase «niente attenzione da far convergere»
-nasconde, e vale la pena scoprirlo. Il predittore di durate è addestrato in
-modo supervisionato, quindi gli servono le durate vere di ogni fonema; ma un
+La frase «niente attenzione da far convergere» nasconde però un passaggio. Il
+predittore di durate è addestrato in modo supervisionato, quindi gli servono
+le durate vere di ogni fonema; ma un
 corpus TTS è fatto di coppie testo-audio, non di segmentazioni fonema per
 fonema, ed è la stessa impraticabilità che si è vista dal lato del
 riconoscimento. Le etichette gliele fornisce un **allineatore forzato**
@@ -371,21 +377,23 @@ decidendo ognuno sulla base di tutti i precedenti. Qualità mai sentita prima,
 ma una lentezza proverbiale: nella versione originale, generare un secondo di
 audio poteva costare minuti di calcolo. **HiFi-GAN** risolve il problema con
 una gara fra falsario ed esperti d'arte. È l'idea delle **GAN**, le reti
-avversarie generative, a cui più avanti nel libro è dedicato un capitolo
-intero: qui basta il gioco. Una rete-falsario impara a produrre l'onda intera
+avversarie generative, a cui più avanti è dedicato un capitolo intero: qui
+basta il gioco. Una rete-falsario impara a produrre l'onda intera
 in un colpo solo, e delle reti-esperto provano a distinguere l'audio vero da
-quello fabbricato. Gli esperti sono parecchi, e non è un dettaglio: uno solo
-si farebbe fregare, perché un difetto che si sente al rallentatore può sparire
-a velocità normale e viceversa. Ognuno ascolta l'onda a modo suo, e il
-falsario deve ingannarli tutti. Falsario ed esperti si allenano a vicenda
-finché il falso non si distingue più.
+quello fabbricato. Gli esperti sono parecchi, perché uno solo si farebbe
+fregare: un difetto che si sente al rallentatore può sparire a velocità
+normale e viceversa. Ognuno ascolta l'onda a modo suo, e il falsario deve
+ingannarli tutti. C'è poi un controllo in più: dal muro appena tirato su si
+ridisegna il progetto e lo si confronta con quello di partenza, così il
+falsario non può cavarsela con una voce bellissima che dice un'altra frase.
+Falsario ed esperti si allenano a vicenda finché il falso non si distingue
+più.
 
 Risultato: qualità paragonabile a WaveNet, ma molto **più veloce del tempo
 reale**, che vuol dire questo: per fabbricare un secondo di parlato ci mette
 molto meno di un secondo, tanto che in un secondo di calcolo ne produce minuti.
-Il calcolo lo fa su una scheda grafica, che nel libro abbiamo già visto essere
-l'attrezzo con cui si fanno i conti delle reti: qui non serve a disegnare
-niente, serve a fare migliaia di moltiplicazioni insieme.
+Il conto gira su una scheda grafica, che qui non disegna niente: fa migliaia di
+moltiplicazioni insieme.
 
 `````
 
@@ -410,8 +418,8 @@ che condiziona la generazione. L'architettura usa convoluzioni causali
 **dilatate**, con dilatazione che raddoppia a ogni strato: il campo recettivo
 cresce esponenzialmente e copre centinaia di millisecondi di contesto. Il
 limite è strutturale: $T'$ passi sequenziali, cioè ventiquattromila per ogni
-secondo di audio alla frequenza di Tacotron 2 (22.050 in LJSpeech, il corpus
-del codice in fondo alla sezione). HiFi-GAN {cite}`kong2020hifi` sostituisce
+secondo di audio alla frequenza di Tacotron 2 (22.050 nel corpus
+LJSpeech). HiFi-GAN {cite}`kong2020hifi` sostituisce
 l'autoregressione con un gioco avversario nel senso esatto del capitolo sulle
 GAN: il generatore è una pila di convoluzioni trasposte che sovracampiona il
 mel fino alla frequenza dell'onda; i discriminatori sono due famiglie:
@@ -420,8 +428,8 @@ periodicità, e *multi-scale*, che la ascoltano a risoluzioni diverse. Alla
 loss avversaria si sommano una *feature matching loss* e una loss L1 tra i
 mel-spettrogrammi dell'audio vero e di quello generato, che stabilizzano
 l'addestramento. La differenza di costo non è quantitativa ma strutturale:
-WaveNet paga $T'$ passi sequenziali, HiFi-GAN uno solo, e il divario misurato
-dagli autori è di due ordini di grandezza sopra il tempo reale su una singola
+WaveNet paga $T'$ passi sequenziali, HiFi-GAN uno solo, e la velocità misurata
+dagli autori sta due ordini di grandezza sopra il tempo reale su una singola
 GPU, con naturalezza percepita alla pari dei vocoder autoregressivi.
 
 `````
@@ -452,8 +460,10 @@ prova. Trenta persone in una stanza con le cuffie giudicano in un modo, trenta
 persone a casa propria in un altro, e lo stesso sistema può prendere 4,5 in
 uno studio e 3,7 in un altro senza essere cambiato di una virgola. Confrontare
 il MOS di un articolo con quello di un altro, quindi, non dice niente: è come
-confrontare i voti di due professori diversi. L'alternativa più affidabile è
-il **test A/B**: due
+confrontare i voti di due professori diversi. Lo stesso tremolio, in piccolo,
+c'è anche dentro una prova sola: cambia il gruppo di ascoltatori e i voti si
+spostano di qualche centesimo. Tre decimi sono un divario; tre centesimi sono
+rumore. L'alternativa più affidabile è il **test A/B**: due
 versioni della stessa frase, «quale preferisci?». Chiedere quale delle due si
 preferisce è una domanda più facile, e più fine, che chiedere un voto in
 assoluto. Non esiste comunque una formula che sostituisca le
@@ -652,7 +662,9 @@ quando chiedi «che ore sono?» al telefono, e una voce sintetica ti risponde.
   avversario e di ordini di grandezza più veloce).
 - La qualità si misura con l'orecchio: **MOS** e test A/B; nessuna metrica
   automatica è pienamente affidabile, perché la sintesi è un problema
-  uno-a-molti. Il MOS vale dentro una prova, non fra prove diverse.
+  uno-a-molti. Il MOS non si confronta fra prove diverse, e dentro la stessa
+  prova due numeri con intervalli di confidenza sovrapposti non si leggono per
+  differenza.
 - La **clonazione vocale** è già usata nelle truffe: la voce è un dato
   biometrico, e consenso e watermarking sono il minimo sindacale.
 ```

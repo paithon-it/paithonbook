@@ -38,20 +38,31 @@ Quanti conti servano si vede a occhio; il problema, come sempre su una GPU, non
 `````{tab} Elementare
 Una riga per una colonna, moltiplica e somma: facile. Ma immagina di farlo
 davvero *una casella alla volta*,
-andando ogni volta a ripescare la riga e la colonna dal magazzino lontano: la
-memoria globale della sezione precedente. Due caselle vicine sulla stessa riga
+andando ogni volta a ripescare la riga e la colonna dal magazzino lontano, cioè
+dalla memoria globale della scheda. Due caselle vicine sulla stessa riga
 usano la *stessa* riga della prima tabella: eppure, alla cieca, vai a
 riprenderla da capo per ognuna. È come cucinare cento piatti identici correndo
 in dispensa a prendere gli stessi ingredienti cento volte.
 
 Attenzione a non fraintendere: i conti da fare sono tantissimi, ed è proprio
 per questo che qui se ne va il tempo di un addestramento. Il punto è che i
-conti fatti **per ogni viaggio in dispensa** sono pochissimi, e la sezione
+conti fatti per ogni viaggio in dispensa sono pochissimi, e la sezione
 sulla memoria ha stabilito che è quel rapporto, e non il totale, a decidere se
 un calcolo va veloce: quanti conti si fanno per ogni byte che ci si è fatti
 portare. Fatta una casella alla volta, la moltiplicazione fra matrici sta in
 fondo a quella classifica: consuma tutti i byte al secondo che la memoria
-riesce a consegnare, e tiene le unità di calcolo per lo più ferme.
+riesce a consegnare, e tiene le unità di calcolo per lo più ferme. E
+ingrandire le tabelle non le cambia posto in classifica: raddoppia i lati, e
+conti e viaggi crescono insieme, nella stessa misura, mentre il rapporto fra i
+due resta quello di prima.
+
+Un aiuto arriva soltanto per caso. Fra la dispensa e le cucine c'è un
+ripostiglio in comune fra tutte le squadre, dove resta per un po' quello che è
+appena passato di lì (i tecnici lo chiamano **cache L2**), e ogni tanto la riga
+che ti serve è ancora lì: te la ritrovi a due passi invece che in fondo al
+corridoio. Qualche viaggio lo risparmi davvero, e le cose vanno un po' meglio
+di così. Ma è un colpo di fortuna, e nessuno l'ha deciso: il tiling farà di
+meglio, perché quel risparmio se lo prende per iscritto invece di sperarlo.
 `````
 
 `````{tab} Superiore
@@ -103,25 +114,45 @@ scartato.
 ```
 
 `````{tab} Elementare
-Torniamo ai cento piatti identici. La mossa intelligente non è correre in
-dispensa per ogni piatto: è portare *una cassetta* di ingredienti sul tavolo,
-all'inizio, e da lì cucinare un'intera infornata di piatti. Il viaggio in
-dispensa lo paghi una volta, non cento. Il tiling fa esattamente questo con la
-moltiplicazione tra matrici: prende un blocchetto della prima matrice e uno
-della seconda, li porta sul ripiano vicino ai calcolatori (la shared memory) e
-li tiene lì finché ha finito di usarli per tutta la tessera del risultato che
-sta calcolando. Ogni numero, caricato una volta, viene riusato molte volte
-prima di essere buttato. Più grande è la tessera, più prodotti spremi da ogni
-viaggio in dispensa, con un limite: il ripiano è piccolo, ci sta una cassetta e
-poco più, e oltre quella misura la tessera non può crescere.
+Cento piatti identici, e la dispensa in fondo al corridoio. Chi va a prendere
+gli ingredienti per ogni piatto passa la giornata nel corridoio; chi carica una
+cassetta all'inizio e cucina con quella l'infornata intera paga il viaggio una
+volta sola. La cassetta, qui, è un blocchetto della prima tabella e uno della
+seconda, portati sul ripiano accanto ai fornelli (la shared memory) e tenuti lì
+finché non hanno servito tutti i prodotti della tessera che la squadra sta
+calcolando. Ogni numero arriva una volta e viene riusato molte volte prima di
+essere buttato.
 
-E siccome il gioco funziona, i programmi veri lo giocano **due volte, una
-dentro l'altra**. Il primo livello è quello appena descritto: dalla dispensa al
-ripiano della squadra. Il secondo sta un gradino più su: ogni singolo
-lavoratore, dal ripiano comune, si tira in mano un quadratino ancora più
-piccolo e ci lavora senza tornare a consultare il ripiano per ogni conto.
-Stessa mossa, scala diversa, e il motivo è sempre quello: anche al ripiano
-comune, se ci vanno tutti a rovistare a ogni prodotto, si forma la coda.
+Più grande la cassetta, più piatti escono da ogni viaggio, e sul ripiano ci sta
+una cassetta e poco più. Con una tessera da trentadue caselle di lato i viaggi
+si dividono per trentadue, e nemmeno questo basta. Il pareggio fra magazzino e
+cuochi, quello stabilito nella sezione sulla memoria, sta a dieci conti per
+ogni byte che ci si fa portare, e una tessera così ne fa otto, con i cuochi che
+restano un po' fermi ad aspettare. Qualche casella in più colmerebbe il
+divario, se la soglia stesse ferma. Ma le unità costruite apposta per
+moltiplicare tabelloni la portano oltre il centocinquanta, e una cassetta
+capace di tenere quel passo sul ripiano non ci sta. Nemmeno scegliendo meglio
+la misura, perché la più grande che ci entra resta lontanissima. E un ripiano
+più largo rende meno di quanto prometta, visto che per fare il doppio dei conti
+su ogni byte portato deve diventare quattro volte più grande.
+
+Come mai, allora, le moltiplicazioni vere volano? Perché in fondo al corridoio
+non ci va quasi nessuno. Le squadre che lavorano fianco a fianco chiedono
+cassette identiche, e la prima che la ordina la lascia nel ripostiglio comune,
+dove le altre la trovano a due passi. Su una moltiplicazione grande la
+differenza è tutta qui. Contando ogni cassetta come un viaggio fino in
+dispensa, si passerebbe due volte e mezzo più tempo a trasportare che a
+cucinare; contando quello che il ripostiglio serve da sé, il trasporto scende
+sotto un decimo della cottura. Stesso lavoro, stessi piatti: nel primo conto
+comanda la dispensa, nel secondo i cuochi.
+
+Dentro quel viaggio i programmi veri ne infilano un secondo. Ogni cuoco prende
+dal ripiano sedici numeri, se li tiene in mano e ne ricava sessantaquattro
+prodotti senza tornare al ripiano nemmeno una volta. Quei sedici numeri non
+risparmiano un solo viaggio in dispensa, che quelli li decide la cassetta
+grande. Servono contro una coda diversa: al ripiano ci vanno tutte le mani
+della squadra, e se ognuna ci torna per ogni singolo prodotto si fa la fila.
+Stessa mossa, scala diversa.
 `````
 
 `````{tab} Superiore
@@ -142,9 +173,9 @@ $$
 Con $T = 32$ sono $8$ FLOP/byte: trentadue volte l'intensità della versione
 ingenua, e sul roofline la tessera scivola di parecchio verso destra.
 
-Vale però la pena fermarsi a fare il confronto che questo capitolo ha insegnato
-a fare, perché la conclusione non è quella che ci si aspetta: **otto FLOP/byte
-non bastano ancora**. Il ginocchio della sezione precedente sta a $\approx 10$
+Il confronto, però, va portato fino in fondo, perché la conclusione non è
+quella che ci si aspetta: **otto FLOP/byte non bastano ancora**. Il ginocchio
+del roofline sta a $\approx 10$
 con i CUDA core in `float32` e a $\approx 161$ con i tensor core in `float16`
 su A100: otto è a sinistra di entrambi, quindi questa tessera, da sola, è
 ancora memory-bound. E il tiling in shared memory non può cavarsela da sé:
@@ -190,7 +221,7 @@ capiente che ci sia.
 
 Il fatto generale, più della gerarchia in sé, è questo: **c'è un roofline per ogni livello della piramide**, ciascuno con
 la sua banda e il suo ginocchio, e ogni livello di tiling esiste per superare
-il proprio. Quanto al tetto, l’$n/6$ della sezione precedente è un *ideale* che
+il proprio. Quanto al tetto, l’$n/6$ del roofline è un *ideale* che
 richiederebbe le tre matrici intere on-chip, e per fortuna non serve
 raggiungerlo: l'intensità realmente raggiungibile non cresce con $n$, ma con la
 **radice** della memoria veloce disponibile (è il risultato classico di Hong e
@@ -233,7 +264,11 @@ def matmul_a_blocchi(A, B, T=32):
 
 A = np.random.randn(96, 80)
 B = np.random.randn(80, 64)
-print(np.allclose(matmul_a_blocchi(A, B), A @ B))   # True
+print(np.allclose(matmul_a_blocchi(A, B), A @ B))
+```
+
+```text
+True
 ```
 
 Il triplo ciclo su tessere è lo scheletro di *ogni* moltiplicazione fra matrici
@@ -266,14 +301,23 @@ timbro che sta al loro posto ne fa sessantaquattro, cioè **otto volte tanto**.
 Sulle schede di oggi il rapporto è salito a una quindicina, perché i timbri
 sono diventati più grandi e a ogni battito ne stampano di più.
 
-E c'è un secondo gesto, che vale la pena capire perché è furbo. Per fare le
-moltiplicazioni il timbro lavora con numeri «arrotondati», scritti con la metà
+C'è poi un secondo gesto, e spiega perché il timbro possa correre tanto. Per
+fare le moltiplicazioni lavora con numeri «arrotondati», scritti con la metà
 dello spazio (quelli della *mezza precisione* incontrata nella sezione
 «Prestazioni e scala»: due byte invece di quattro, meno cifre e più velocità di
 lettura); il totale che va accumulando, però, lo tiene nel formato lungo, per
 non perdere per strada le cifre che contano. È il gesto di chi pesa gli
 ingredienti a occhio, perché tanto un grammo non cambia il piatto, ma il conto
 della spesa lo tiene all'ultimo centesimo, perché lì gli errori si sommano.
+
+Un timbro così veloce, però, sposta il problema invece di chiuderlo. La
+dispensa consegna alla velocità di sempre, e chi timbra sedici volte più in
+fretta pretende sedici volte più conti da ogni cassetta che gli arriva. Più il
+timbro corre, più conta portare sul tavolo poca roba e spremerla fino in fondo:
+cassetta e timbro lavorano insieme, e nessuno dei due basta da solo. Il timbro,
+poi, non lo prende in mano chi scrive il
+programma: lo appoggiano da sé le librerie che PyTorch chiama ogni volta che
+una rete gira, a patto che i numeri siano quelli corti.
 `````
 
 `````{tab} Superiore
@@ -320,49 +364,47 @@ mette in prospettiva tutto il capitolo. La domanda è sempre quella: come si
 moltiplicano due matrici muovendo il meno possibile.
 
 `````{tab} Elementare
+Un capannone con i banchi disposti a scacchiera, e su ogni banco un numero
+solo, consegnato prima che il turno cominci: sono i numeri di una delle due
+tabelle, uno per banco, e lì resteranno fermi fino alla fine. In una GPU sono i
+dati a stare fermi in memoria e i calcolatori ad andarseli a prendere, e il
+tiling accorcia quei viaggi senza toglierli. Qui è il contrario.
 
-Nella GPU il dato sta fermo in memoria e i calcolatori vanno a prenderlo. Il
-tiling serve a ridurre i viaggi, ma i viaggi ci sono.
+Da sinistra entra in ogni fila un carrello con i numeri dell'altra tabella, e
+scorre lungo la fila da un capo all'altro. Dall'alto scende, di banco in banco,
+un foglio con un totale ancora incompleto. Ogni postazione sa fare un gesto
+solo: prende il numero che le passa davanti, lo moltiplica per il proprio,
+aggiunge il risultato al foglio che sta scendendo e passa il foglio al banco
+sotto. In fondo alla colonna il foglio esce compilato, ed è una casella del
+risultato.
 
-L'idea opposta è tenere fermi i calcolatori e far **scorrere** i dati
-attraverso di loro, come su una catena di montaggio. Si dispone una scacchiera
-di piccole unità, ognuna capace di una sola mossa: «moltiplica, e aggiungi il
-risultato al totale che ti sta passando davanti».
+Che cosa resti fermo sul banco è una scelta di chi progetta, e cambia la
+macchina che ne esce. In un altro capannone a restare fermo è il totale che si
+va accumulando, e a passargli davanti sono i numeri di tutt'e due le tabelle.
+Ha avuto più fortuna il primo, quello con il numero fermo sul banco, ed è
+quello che gli acceleratori più noti hanno adottato.
 
-Chi costruisce una macchina così deve decidere che cosa resta fermo nelle
-caselle e che cosa scorre, e da quella scelta nascono varianti diverse. In
-quella che ha avuto più fortuna il lavoro comincia **caricando** una delle due
-tabelle nella scacchiera, un numero per casella, dove resterà ferma per tutto
-il tempo: quei numeri non attraversano niente, aspettano. Poi i numeri
-dell'altra tabella entrano da sinistra e scorrono lungo le righe. E dall'alto
-verso il basso, di casella in casella, scende il **totale che si sta
-formando**: ogni unità lo riceve, gli aggiunge il proprio prodotto, e lo passa
-alla casella sotto. In fondo alla colonna il totale esce già finito, ed è una
-casella del risultato.
+Il guadagno sta tutto in quel passaggio da un vicino all'altro. Un numero
+prelevato una volta sola dal magazzino attraversa un'intera fila di banchi e li
+serve tutti, senza che nessuno debba andare a ripescarlo, e il totale si
+costruisce camminando lungo la colonna come un pezzo su una catena di
+montaggio. Una macchina fatta così si chiama **array sistolico**, dove *array*
+è la schiera dei banchi; chi la inventò, alla Carnegie Mellon alla fine degli
+anni Settanta, prese il resto del nome dal cuore, perché i dati attraversano la
+scacchiera a ondate regolari come il sangue spinto dalla sistole.
 
-Il guadagno è tutto lì, in quel passaggio da vicino a vicino: un numero letto
-una volta sola dalla memoria attraversa un'intera fila di caselle, servendole
-tutte senza essere mai riletto, e il totale si costruisce camminando, invece di
-essere ripescato ogni volta da qualche parte. È letteralmente la catena di
-montaggio: il pezzo scende lungo la linea e a ogni postazione qualcuno gli
-aggiunge un componente. Una macchina fatta così si chiama **array sistolico**,
-dove *array* qui vuol dire «schiera», la scacchiera di macchinette, e non la
-fila di numeri della sezione sui kernel. «Sistolico» perché i dati la
-attraversano a ondate regolari come il sangue spinto dal cuore: la sistole è il
-battito con cui il cuore lo spinge, e chi inventò questa macchina alla Carnegie
-Mellon, alla fine degli anni Settanta, prese il nome proprio da lì.
+Capannoni del genere si costruiscono davvero, ed è così che sono fatti i chip
+pensati apposta per l'intelligenza artificiale: la **TPU** di Google ha una
+scacchiera di 256 banchi per 256. Il guadagno più grosso si legge sul contatore
+della luce, perché mandare un numero da un capo all'altro del chip costa più
+corrente che moltiplicarlo, e qui i numeri camminano da un banco al vicino.
 
-Non è un esercizio da manuale: è così che sono fatti i chip costruiti apposta
-per l'intelligenza artificiale, a partire dalla **TPU** di Google, che di
-caselle ne ha una scacchiera da 256 per 256. Il prezzo di tanta specializzazione
-è la rigidità. Una macchina del genere sa fare benissimo una cosa sola: se la
-tabella da moltiplicare è più piccola della scacchiera, buona parte delle
-caselle moltiplica zeri per niente, e se l'operazione da fare non è una
-moltiplicazione fra tabelle, la scacchiera non serve e bisogna uscirne. Una GPU
-è più lenta di lei sul suo terreno e sa fare tutto il resto: è la stessa
-tensione fra la lepre e il formicaio della prima sezione, spostata di un
-livello.
-
+Il prezzo è la rigidità, e si vede appena il lavoro cambia. Se la tabella da
+moltiplicare è più piccola della scacchiera, molti banchi passano il turno a
+moltiplicare zeri. E se quello che c'è da fare non è una moltiplicazione fra
+tabelle, il capannone non serve, e bisogna uscirne per farlo altrove. Una GPU è
+più lenta di lei sul suo terreno e sa fare tutto il resto: è la stessa tensione
+fra la lepre e il formicaio della prima sezione, spostata di un livello.
 `````
 
 `````{tab} Superiore
@@ -412,7 +454,7 @@ della prima sezione, spostata di un livello.
 
 ## In pratica: forme «tonde» e mezza precisione
 
- Quasi certamente non scriverai mai a mano una
+Quasi certamente non scriverai mai a mano una
 moltiplicazione fra matrici: esistono librerie che la fanno meglio di quanto
 potrebbe chiunque, sfruttando tessere a più livelli e tensor core in modi che
 cambiano a ogni generazione di schede. Sono quelle che PyTorch chiama sotto
@@ -443,9 +485,8 @@ davvero il cronometro, e che altrimenti sembrerebbero magia:
   veloce che hai.
 
 Tutte e due queste regole promettono un guadagno quasi gratuito, e tutte e due
-capita che non lo diano. Le ragioni sono due, e conviene conoscerle perché
-nessuna delle due riguarda la tessera, che è la cosa a cui si dà la colpa: le
-schede qui sotto le spiegano.
+capita che non lo diano. Le ragioni sono due, e nessuna delle due riguarda la
+tessera, che è la cosa a cui si dà la colpa.
 
 `````{tab} Elementare
 Succede di arrotondare le misure e di non vedere cambiare niente, e la prima
@@ -507,13 +548,15 @@ esempio di una lezione che tornerà a ogni pagina.
   dell'informatica.
 - Farla nel modo ovvio, una casella del risultato alla volta, vuol dire correre
   in dispensa a riprendere gli stessi ingredienti centinaia di volte. I conti
-  sono pochi, i viaggi tantissimi: si finisce bloccati dal magazzino.
+  che si fanno a ogni viaggio sono pochi, i viaggi tantissimi: si finisce
+  bloccati dal magazzino.
 - La cura è il **tiling**: portare sul tavolo di lavoro un blocchetto di
   ciascuna tabella e usarlo per tutti i prodotti che può servire prima di
   buttarlo. Un viaggio invece di cento. Più grande il blocchetto, meglio è, ma
-  sul tavolo ci sta poco: per questo i programmi veri fanno la stessa cosa
-  **due volte**, con blocchetti grandi sul tavolo e blocchetti piccolissimi in
-  mano a ciascun lavoratore.
+  sul tavolo ci sta poco. I programmi veri lo fanno allora **due volte**, a due
+  scale: blocchetti grandi sul tavolo, che tagliano i viaggi in dispensa, e
+  blocchetti piccolissimi in mano a ciascun lavoratore, che di viaggi non ne
+  tolgono nemmeno uno ma sciolgono la fila al tavolo.
 - I **tensor core** sono il timbro che stampa un pezzo intero di tabellina in
   un colpo solo, sessantaquattro moltiplicazioni per battito, con i numeri
   arrotondati ma il totale tenuto preciso. È il pezzo di silicio più veloce di

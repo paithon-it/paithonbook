@@ -52,11 +52,13 @@ pagine duplicate e ai commenti scritti di fretta. Metà del lavoro di chi
 costruisce un grande modello non è addestrarlo: è preparare la biblioteca.
 
 `````{tab} Elementare
-Immagina di imparare una lingua straniera facendo *un solo tipo di esercizio*:
+Una lingua straniera si può imparare con *un solo tipo di esercizio*:
 frasi da completare. Nessuna grammatica, nessun insegnante, nessuna correzione
 a penna rossa: solo miliardi di esercizi di completamento, ricavati coprendo
 l'ultima parola di frasi vere. «Il gatto nero salta sul ___»: provi, sbagli,
-aggiusti, passi alla frase dopo. Con abbastanza esercizi, per completare bene
+aggiusti, passi alla frase dopo. Il voto che conta è quanto si sbaglia in media
+su una frase: il totale degli sbagli, con miliardi di frasi, direbbe soltanto
+che le frasi erano tante. Con abbastanza esercizi, per completare bene
 *devi* assorbire ortografia, grammatica, modi di dire, e perfino nozioni sul
 mondo: non puoi completare «la capitale della Francia è ___» senza sapere di
 Parigi. Il bello è che gli esercizi si fabbricano da soli: qualunque testo
@@ -65,7 +67,12 @@ biblioteca sterminata e *pulita*: se la soffitta è piena di doppioni,
 l'allievo impara a memoria invece di imparare la lingua; se è piena di
 spazzatura, impara la spazzatura. Per questo, prima di studiare, si butta via
 moltissimo: pagine duplicate, testo generato da macchine, contenuti di bassa
-qualità.
+qualità. A decidere che cosa buttare non c'è nessuno che legge: c'è un giudice
+automatico, a cui sono stati mostrati due o tre scaffali scelti bene, e che
+tiene le pagine somiglianti a quelli. E quello che resta non pesa tutto uguale:
+del mucchio raccolto dal web si legge una parte, mentre gli scaffali migliori
+si ripassano più volte, così contano nello studio più di quanto la loro mole
+direbbe.
 `````
 
 `````{tab} Superiore
@@ -140,12 +147,16 @@ tre nomi diversi che vogliono dire la stessa identica cosa, **parametri**,
 **pesi** o appunto manopole; «un modello da sette miliardi» vuol dire sette
 miliardi di manopole), la **quantità di testo** su cui studia, e il **calcolo**
 (quante ore di computer può bruciare). La scoperta del 2020
-{cite}`kaplan2020scaling` è che aumentando gli ingredienti **tutti insieme**
+{cite}`kaplan2020scaling` è che aumentando gli ingredienti tutti insieme
 l'errore cala in modo *prevedibile*: niente salti misteriosi, una curva liscia,
 come una ricetta che riesce sempre un po’ meglio se si raddoppia ogni
-ingrediente. Ma i miglioramenti sono lenti: ogni raddoppio del calcolo lima l'errore solo di qualche punto percentuale,
-poco più del tre per cento. La
-seconda scoperta, del 2022
+ingrediente. Prevedibile è la parola che conta: si prova la ricetta in piccolo,
+si guarda di quanto migliora a ogni raddoppio, e si sa già come verrà quella
+grande prima di infornarla. Il guadagno però è lento: ogni raddoppio del
+calcolo lima l'errore di poco più del tre per cento. E la ricetta perfetta non
+arriva mai: sotto un certo punto non si scende comunque, perché una quota
+dell'incertezza appartiene alla lingua stessa, e nessuna quantità di manopole
+la toglie di mezzo. La seconda scoperta, del 2022
 {cite}`hoffmann2022training`, è che gli ingredienti vanno **bilanciati**: è
 inutile fare una torta con dieci uova e un cucchiaio di farina. La regola
 pratica emersa è circa **20 pezzi di testo per ogni manopola del modello**,
@@ -188,8 +199,8 @@ addestrando modelli da milioni. Un'avvertenza sulla forma: scritte così le tre
 leggi mandano la loss a **zero** ingrandendo abbastanza, il che è falso. Valgono
 dentro il regime misurato, e la forma completa che si usa per estrapolare
 davvero somma un termine costante irriducibile, l'entropia del linguaggio
-stesso, che nessuna quantità di parametri toglie di mezzo: è quella che
-Hoffmann e colleghi usano nel paragrafo qui sotto.
+stesso, che nessuna quantità di parametri toglie di mezzo, ed è la forma che
+Hoffmann e colleghi adottano.
 
 Hoffmann e colleghi {cite}`hoffmann2022training` correggono la conclusione
 operativa di Kaplan (che suggeriva di privilegiare $N$): rifacendo le misure
@@ -296,6 +307,9 @@ dieci, il mazzo si adatta da solo alla situazione. È il metodo proposto
 proprio nell'articolo del "caso curioso", con il nome di *nucleus sampling*:
 si pesca solo dal nucleo buono del mazzo, e la coda di parole strampalate (che
 una per una vale poco, ma sommata pesa) sparisce.
+
+Le tre manopole si usano insieme, e in quest'ordine: prima si decide quanto
+truccare il dado, poi si tolgono le carte dal mazzo, e solo alla fine si pesca.
 `````
 
 `````{tab} Superiore
@@ -385,12 +399,20 @@ usi un segnalibro, e in testa ti restano gli appunti su quello che è successo.
 La KV cache è il segnalibro del modello: gli "appunti" che l'attenzione ha già
 calcolato sulle parole lette restano in memoria, e per ogni parola nuova il
 modello calcola solo gli appunti *di quella parola*, consultando i vecchi
-senza rifarli. Il risparmio è enorme: è la differenza tra girare pagina e
-rileggere il libro da capo a ogni pagina. Il prezzo, però, è lo spazio: gli
-appunti si accumulano, e più lunga è la conversazione, più scaffali servono
-per tenerli. È uno dei motivi per cui i contesti lunghi costano: non solo più
-calcolo, ma memoria che cresce parola dopo parola, e che per conversazioni
-molto lunghe arriva a pesare quanto il modello stesso.
+senza rifarli. Il risultato è identico a quello che verrebbe rileggendo tutto,
+perché quello che succede a pagina trecento non cambia quello che è successo a
+pagina dodici: gli appunti vecchi valgono ancora, tali e quali. Il risparmio è
+enorme: è la differenza tra girare pagina e rileggere il libro da capo a ogni
+pagina. Il prezzo, però, è lo spazio: gli appunti si accumulano, e più lunga è
+la conversazione, più scaffali servono per tenerli. È uno dei motivi per cui i
+contesti lunghi costano: non solo più calcolo, ma memoria che cresce parola
+dopo parola, e che per conversazioni molto lunghe arriva a pesare quanto il
+modello stesso.
+
+Anche col segnalibro, però, resta una fatica che non si può togliere: per ogni
+parola scritta il modello ripassa tutte le sue manopole, miliardi di numeri, una
+parola alla volta. Consultare gli appunti, al confronto, costa una frazione, e
+resta una frazione finché il testo davanti non diventa lunghissimo.
 `````
 
 `````{tab} Superiore
@@ -505,7 +527,8 @@ testo, vuol dire che, in media, a ogni parola si trova nella condizione di uno
 che deve indovinare fra venti possibilità equiprobabili. Un modello migliore
 scende a dieci, uno molto migliore a cinque, e nessuno arriverà mai a uno,
 perché il linguaggio ha una sua imprevedibilità di fondo che nessun modello può
-togliere: quella che Shannon misurava all'inizio di questa pagina.
+togliere: quella che Shannon misurava coprendo una riga di testo e chiedendo a
+una persona di indovinare come andava avanti.
 
 L'unica avvertenza è che il numero non si confronta fra testi diversi. La
 perplessità su una raccolta di leggi e quella su un romanzo non si possono
@@ -517,14 +540,16 @@ prevedibile: confrontare due modelli ha senso solo sullo stesso testo.
 In formula, con la stessa definizione del capitolo di matematica e di quello
 sull'NLP, la perplessità è $2^H$, dove $H$ è la cross-entropia media per token
 **espressa in bit**. La parola «bit» non è un vezzo, ed è il punto in cui si
-sbaglia: la loss di questa sezione usa il logaritmo naturale, quindi la loss
-per token $\bar{\mathcal{L}}$ è in *nat* e non in bit.
+sbaglia: la cross-entropia del pretraining si scrive col logaritmo naturale,
+quindi la loss per token $\bar{\mathcal{L}}$ è in *nat* e non in bit.
 Per passare dagli uni agli altri si moltiplica per $\log_2 e = 1{,}4427$, cioè
 $H = \bar{\mathcal{L}}/\ln 2$, e la perplessità si scrive allora più comodamente
 $e^{\bar{\mathcal{L}}}$. Chi invece mette $\bar{\mathcal{L}}$ tale e quale
 all'esponente di 2 sta usando un esponente più piccolo del dovuto di quel
 fattore, e ottiene la perplessità vera elevata a $\ln 2 = 0{,}693$: su una
-perplessità di 20 ne stampa 8.
+perplessità di 20 ne stampa 8. Il valore dipende poi dal corpus e da come il
+testo è stato spezzato in token, quindi due modelli si confrontano solo sullo
+stesso testo e con la stessa segmentazione.
 `````
 
 Ma nemmeno la perplessità dice quasi nulla di ciò che interessa a chi il modello
@@ -602,7 +627,7 @@ metrica lo nascondeva.
 
 In molti casi, non in tutti. Che gran parte di quelle curve a scalino sia un
 effetto del righello è ormai ben argomentato; che ingrandire un modello non gli
-cambi **mai** niente di qualitativo è un'affermazione più forte, e nessuno l'ha
+cambi *mai* niente di qualitativo è un'affermazione più forte, e nessuno l'ha
 dimostrata. Il dibattito è aperto, e conviene tenerlo aperto anche quando la
 spiegazione furba fa comodo.
 
@@ -618,13 +643,14 @@ Le abilità emergenti sono state documentate da Wei e colleghi
 Koyejo {cite}`schaeffer2023emergent`.
 
 L'argomento è preciso. Se l'errore per token cala regolarmente con la scala
-(come le leggi di potenza della sezione precedente predicono), l'accuratezza
-su una risposta di $n$ token valutata in modo esatto vale circa $p^{\,n}$, con
-$p$ la probabilità per token. Una funzione del genere resta schiacciata vicino
-a zero e poi si impenna: la discontinuità è **prodotta dalla non linearità
-della metrica**, non dal modello. Sostituendo l'accuratezza esatta con la
-distanza di edit, o con la log-verosimiglianza della risposta corretta, in
-molti casi l'emergenza svanisce.
+(come predicono le leggi di scala), l'accuratezza su una risposta di $n$ token
+valutata in modo esatto vale circa $p_{\text{tok}}^{\,n}$, dove
+$p_{\text{tok}}$ è la probabilità di azzeccare un singolo token e il conto
+suppone che gli errori sui token siano indipendenti l'uno dall'altro. Una
+funzione del genere resta schiacciata vicino a zero e poi si impenna: la
+discontinuità è **prodotta dalla non linearità della metrica**, non dal
+modello. Sostituendo l'accuratezza esatta con la distanza di edit, o con la
+log-verosimiglianza della risposta corretta, in molti casi l'emergenza svanisce.
 
 Il dibattito non è chiuso, e conviene tenere distinte due affermazioni. Che gran
 parte delle curve «a salto» siano artefatti di misura è ormai ben argomentato.
@@ -644,10 +670,9 @@ qualunque grafico in cui una capacità «appare». La prima domanda da farsi è 
 Le tre manopole della scelta stanno in una funzione di venti righe. Non c'è
 nessun modello scaricato: i punteggi grezzi (i *logit*, cioè i voti che il
 modello dà a ogni parola possibile prima di trasformarli in probabilità) sono
-scritti a mano, così resta in vista solo il meccanismo. Chi legge al livello
-Elementare può saltare i due blocchi che seguono senza perdere il filo: dicono
-in Python le stesse tre manopole già raccontate con il dado truccato, le carte
-tolte dal mazzo e il nucleo che si adatta.
+scritti a mano, così resta in vista solo il meccanismo. In Python ci sono le
+stesse tre manopole di prima: il dado truccato, le carte tolte dal mazzo e il
+nucleo che si adatta.
 
 ```python
 import torch
@@ -736,10 +761,11 @@ l'idea della sezione seguente.
   indovinarla, miliardi di volte, su una biblioteca raccolta dal web e
   ripulita. Nessuno gli corregge i compiti: la soluzione era già nel testo.
 - Più **manopole** interne, più testo da leggere e più ore di calcolo danno un
-  modello migliore, e in modo prevedibile. Ma gli ingredienti vanno
-  **bilanciati**, e la regola pratica è una ventina di pezzi di testo per ogni
-  manopola: «quanto è grande?», da sola, ha smesso di essere una domanda
-  sensata.
+  modello migliore, e in modo prevedibile. Non all'infinito, però: sotto un
+  certo punto non si scende, perché una quota dell'incertezza appartiene alla
+  lingua stessa. Gli ingredienti, poi, vanno **bilanciati**, e la regola
+  pratica è una ventina di pezzi di testo per ogni manopola: «quanto è
+  grande?», da sola, ha smesso di essere una domanda sensata.
 - Per scrivere, il modello **non** prende sempre la parola più probabile:
   verrebbe un testo noioso, che si incarta a ripetere sé stesso. Tira un dado,
   e tre manopole decidono quanto quel dado è truccato (la **temperatura**) e
@@ -763,7 +789,8 @@ l'idea della sezione seguente.
   token successivo** come unica supervisione, su corpora web filtrati e
   deduplicati (GPT-3: ~300 miliardi di token, 60% da Common Crawl).
 - **Leggi di scala**: la loss cala come una legge di potenza in parametri,
-  dati e calcolo {cite}`kaplan2020scaling`; il bilanciamento ottimale è circa
+  dati e calcolo {cite}`kaplan2020scaling`, dentro il regime misurato e sopra
+  un termine irriducibile; il bilanciamento ottimale è circa
   **20 token per parametro** {cite}`hoffmann2022training`. Sulle "capacità
   emergenti" il dibattito è aperto: prudenza.
 - Massimizzare la probabilità **degenera** in ripetizioni

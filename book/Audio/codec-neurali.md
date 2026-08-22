@@ -75,7 +75,10 @@ stampata sul coperchio: «togli sempre il beauty-case, arrotola le magliette,
 lascia a casa il terzo paio di scarpe». Vale per tutti, non cambia
 mai: è l'MP3. Il secondo modo è imparare *facendo*, viaggio dopo viaggio: provi
 a chiudere la valigia, vedi cosa si è sgualcito all'arrivo, e la prossima volta
-sistemi meglio proprio quelle cose. Dopo mille viaggi hai un tuo metodo, cucito
+sistemi meglio proprio quelle cose. A giudicare, poi, non sei solo tu: chi ti
+aspetta a casa apre la valigia e prova a indovinare se l'hai rifatta tu o se non
+l'hai mai aperta, e tante pieghe piccole sparse ovunque lo insospettiscono meno
+di una piega sola nel posto sbagliato. Dopo mille viaggi hai un tuo metodo, cucito
 sul tuo bagaglio, che nessuno ti ha dettato. Il codec neurale è il secondo
 viaggiatore: nessuno gli dice *cosa* buttare, lo scopre da solo cercando di far
 tornare a casa la valigia il più intatta possibile.
@@ -105,8 +108,8 @@ Fin qui è compressione con rappresentazione **continua**: ogni $\mathbf{z}$ è 
 numeri reali. La novità che ci interessa è renderla **discreta**: sostituire
 ogni vettore latente con un simbolo preso da un insieme finito. È il passaggio
 che trasforma un compressore in un *tokenizzatore* del suono, e apre la porta
-ai modelli di linguaggio sull'audio. Il come è il tema delle due parti che
-seguono.
+ai modelli di linguaggio sull'audio. Il come è il mestiere della
+quantizzazione, prima con un codebook solo e poi con una cascata di codebook.
 
 `````
 
@@ -123,13 +126,17 @@ i numeri.
 
 `````{tab} Elementare
 
-Sedici colori bastano per una fotografia che ne aveva milioni. Prendi una
-tavolozza fissa di sedici e, per ogni pixel della foto, scegli il colore della
-tavolozza che gli somiglia di più e lo sostituisci: la foto diventa un po’ più
-«a blocchi», ma la riconosci ancora. E adesso il colpo di genio: invece di
-salvare per ogni pixel i suoi tre numeri di colore, salvi **un solo numero**
-(la *posizione* nella tavolozza, da 0 a 15). La tavolozza la conosciamo già,
-ci basta l'indice.
+Sedici colori bastano per una fotografia che ne aveva milioni. I sedici non si
+tirano a sorte: si guardano tante fotografie, si tengono i colori che tornano
+più spesso, e quella tavolozza resta poi la stessa per tutte. Per ogni pixel
+scegli il colore della tavolozza che gli somiglia di più e lo sostituisci: la
+foto diventa un po’ più «a blocchi», ma la riconosci ancora. E adesso il colpo
+di genio: invece di salvare per ogni pixel i suoi tre numeri di colore, salvi
+**un solo numero** (la *posizione* nella tavolozza, da 0 a 15). La tavolozza la
+conosciamo già, ci basta l'indice. E quanti colori tenere è una scelta che si
+paga: con quattro la foto si sfalda e i volti diventano macchie; con mille torna
+quasi perfetta, ma la posizione da scrivere è un numero più lungo, e va scritto
+per ogni pixel.
 
 La *vector quantization* fa esattamente questo, ma invece dei colori dei pixel
 tratta i **pezzetti di suono** così come escono dall'encoder: ognuno è un
@@ -139,8 +146,8 @@ gruppetto di numeri, come un colore è un gruppetto di tre numeri. La
 prototipo più simile, e di lui si tiene solo il numero di posizione nell'elenco.
 Quel numero è il **token**: il nostro simbolo dell'alfabeto sonoro. E l'operazione
 che abbiamo appena fatto, sostituire una cosa qualsiasi con la più vicina di un
-elenco prestabilito, si chiama **quantizzare**: è la parola che tornerà per
-tutta la sezione, e vuol dire arrotondare, né più né meno.
+elenco prestabilito, si chiama **quantizzare**: vuol dire arrotondare, né più
+né meno.
 
 `````
 
@@ -174,8 +181,9 @@ $\beta \lVert \mathbf{z} - \mathrm{sg}[\mathbf{e}_{k^\star}] \rVert^2$, che
 tira i latenti verso i prototipi ($\mathrm{sg}$ è lo *stop-gradient*, e il
 verso della freccia sta tutto in quale dei due membri lo porta). Molte
 implementazioni sostituiscono il primo con una media mobile esponenziale, che
-è la stessa idea scritta in modo più stabile: è la regola alla k-means di cui
-si dice più avanti. Resta il compromesso di fondo: un codebook
+è la stessa idea scritta in modo più stabile: la regola alla k-means, che
+sposta ogni prototipo verso la media dei latenti che l'hanno scelto. Resta il
+compromesso di fondo: un codebook
 grande ($K$ alto) ricostruisce meglio ma costa più bit per token; uno piccolo
 comprime di più ma perde fedeltà.
 
@@ -269,7 +277,9 @@ Hai presente quando devi dare un resto di 87 centesimi con le monete? Non
 cerchi una moneta magica da 87: prendi prima la più grossa che ci sta (50), ti
 restano 37; poi la più grossa che ci sta nei 37 (20), restano 17; poi 10,
 restano 7; poi 5, poi 2. Ogni moneta si occupa di ciò che è avanzato dalla
-precedente, e passo dopo passo ti avvicini alla cifra esatta.
+precedente, e passo dopo passo ti avvicini alla cifra esatta. E se il resto è
+già in pari, quel giro lo salti: per questo una moneta in più non può
+allontanarti dalla cifra.
 
 La RVQ fa la stessa cosa con i vettori del suono. Il primo codebook dà
 l'approssimazione grossolana: la moneta da 50. Poi calcola quanto ha sbagliato
@@ -279,6 +289,12 @@ piccolo, che un terzo codebook rifinisce ancora, e così via. Alla fine ogni
 pezzetto di audio non è più un solo token, ma una **pila** di token (uno per
 codebook) che insieme lo descrivono con la precisione che serve, spendendo
 pochissimi bit.
+
+Le monete però non rendono tutte allo stesso modo: le prime coprono quasi tutto,
+le ultime limano centesimi che nessuno nota. Chi continua a raddoppiarne il
+numero paga ogni volta il doppio e porta a casa una differenza che all'orecchio
+non arriva. Conta anche quali tagli hai in tasca: con lo stesso numero di
+monete, tagli scelti male ti lasciano molto più lontano.
 
 `````
 
@@ -301,8 +317,8 @@ tupla di indici $(k_1^\star, \dots, k_N^\star)$: **$N$ flussi paralleli** di
 interi. Ogni stadio quantizza ciò che è avanzato, ma questo da solo non basta
 a garantire un miglioramento: l'errore non può crescere con $N$ se ogni
 codebook contiene il vettore nullo, perché scegliere lo zero equivale a non
-correggere (è il motivo per cui, nell'esempio in NumPy più avanti, il secondo
-codebook lo include). In pratica, con codebook appresi sui dati, l'errore
+correggere (è il motivo per cui il secondo codebook dell'esempio in NumPy lo
+include). In pratica, con codebook appresi sui dati, l'errore
 decresce a ogni stadio.
 
 Il conto del **bitrate** è pulito. Con $N$ quantizzatori, codebook di $K$ voci
@@ -324,8 +340,9 @@ il paragone con l'MP3, che si legge dappertutto: la parità a 64 kbps è del
 termini di confronto nel paper sono Opus, EVS e Lyra-v2. E quel gemello arriva
 ai 6 kbps per un'altra strada: a 48 kHz l'encoder produce 150 passi latenti al
 secondo invece di 75, quindi sono $4 \cdot 10 \cdot 150$, non gli
-$8 \cdot 10 \cdot 75$ appena calcolati. Nelle prove d'ascolto
-MUSHRA prende $82{,}9$ a 6 kbps contro $82{,}7$ di un MP3 a 64:
+$8 \cdot 10 \cdot 75$ appena calcolati. Nelle prove d'ascolto MUSHRA (voti da 0
+a 100, e più alto è migliore) prende $82{,}9$ a 6 kbps contro $82{,}7$ di un
+MP3 a 64:
 qualità percepita indistinguibile con un decimo dei bit, però con il riferimento
 non compresso a $95{,}1$, quindi *entrambi* si distinguono dall'originale.
 

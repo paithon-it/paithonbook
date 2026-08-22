@@ -92,55 +92,42 @@ dal nome del fisico inglese che la mise in uso).
 
 `````{tab} Elementare
 
-Il gradino è un interruttore: se la somma raggiunge la soglia, l'uscita è $1$
-("sì"); altrimenti è $0$ ("no"). Niente sfumature, solo acceso o spento. Tornando
-all'ombrello: sommati gli indizi, o esci con l'ombrello o non lo prendi.
+Un interruttore non conosce le mezze misure. Se la somma raggiunge la soglia
+l'uscita è $1$ ("sì"), altrimenti è $0$ ("no"): sommati gli indizi, o esci con
+l'ombrello o non lo prendi.
 
-Le manopole a questo punto sembrano tre (i pesi, il bias, la soglia), e invece
-sono due: chiedere che il totale superi $3$ è la stessa identica cosa che
-togliere $3$ dal totale e chiedere che superi lo zero. La soglia si può sempre
-nascondere dentro il bias, e da qui in avanti è quello che faremo: la soglia è
-sempre lo zero, e a spostare il punto in cui il neurone cambia idea è il bias.
+Le manopole da girare sembrano tre (i pesi, il bias, la soglia) e sono due.
+Chiedere che il totale superi $3$ è la stessa identica cosa che togliere $3$ dal
+totale e chiedere che superi lo zero. La soglia si nasconde dentro il bias, e da
+lì in avanti resta sempre lo zero: a spostare il punto in cui il neurone cambia
+idea è il bias.
 
-Facciamolo subito, sui numeri dell'ombrello. Il bias era $0{,}5$ e la soglia
-$3$, quindi il bias nuovo è $0{,}5 - 3 = -2{,}5$, e la regola diventa: «esci con
-l'ombrello se $0{,}3 \cdot x_1 + 2 \cdot x_2 - 2{,}5$ è sopra lo zero». Rifai il
-conto della giornata di prima e vedi che non è cambiato niente:
-$0{,}3 \cdot 7 + 2 \cdot 1 - 2{,}5 = 1{,}6$, che è sopra zero, e l'ombrello lo
-prendi come prima.
+Sui numeri dell'ombrello: il bias era $0{,}5$ e la soglia $3$, quindi il bias
+nuovo è $0{,}5 - 3 = -2{,}5$, e la regola diventa «esci con l'ombrello se
+$0{,}3 \cdot x_1 + 2 \cdot x_2 - 2{,}5$ è sopra lo zero». La giornata di prima
+non cambia: $0{,}3 \cdot 7 + 2 \cdot 1 - 2{,}5 = 1{,}6$, sopra zero, e
+l'ombrello lo prendi come prima.
 
-Adesso la cosa da vedere con gli occhi, perché tutto il resto
-del capitolo ci si appoggia. Prendi un foglio a quadretti e mettici i due
-indizi dell'ombrello, la nuvolosità in orizzontale e l'app in verticale: ogni
-giornata diventa un puntino. L'app ha due sole risposte, e anche quelle
-diventano numeri: $x_2 = 1$ se dice pioggia, $x_2 = 0$ se dice sereno.
+Adesso un foglio a quadretti, con la nuvolosità in orizzontale e l'app in
+verticale. Ogni giornata diventa un puntino, e anche l'app diventa un numero:
+$x_2 = 1$ se dice pioggia, $x_2 = 0$ se dice sereno. Segna le giornate in
+bilico, quelle in cui il totale fa esattamente zero. Sono due conti di seconda
+media.
 
-Cerchiamo adesso le giornate in bilico, quelle in cui il totale fa esattamente
-zero. Con i numeri appena sistemati sono due conti di seconda media.
+Con l'app che dice sereno resta $0{,}3 \cdot x_1 - 2{,}5 = 0$, quindi
+$0{,}3 \cdot x_1 = 2{,}5$ e la nuvolosità in bilico è
+$x_1 = 2{,}5 : 0{,}3 = 8{,}33\ldots$, in pratica $8{,}3$: ci vuole quasi tutto
+il cielo grigio. Con l'app che dice pioggia il suo contributo è
+$2 \cdot 1 = 2$, resta $0{,}3 \cdot x_1 + 2 - 2{,}5 = 0$, quindi
+$0{,}3 \cdot x_1 = 0{,}5$ e la nuvolosità in bilico è
+$x_1 = 0{,}5 : 0{,}3 = 1{,}66\ldots$, in pratica $1{,}7$: se l'app promette
+pioggia basta molto meno.
 
-- App **sereno**, cioè $x_2 = 0$. Resta $0{,}3 \cdot x_1 - 2{,}5 = 0$, quindi
-  $0{,}3 \cdot x_1 = 2{,}5$ e la nuvolosità in bilico è
-  $x_1 = 2{,}5 : 0{,}3 = 8{,}33\ldots$, in pratica $8{,}3$: ci vuole quasi
-  tutto il cielo grigio.
-- App **pioggia**, cioè $x_2 = 1$. Il suo contributo è $2 \cdot 1 = 2$, e resta
-  $0{,}3 \cdot x_1 + 2 - 2{,}5 = 0$, quindi $0{,}3 \cdot x_1 = 0{,}5$ e la
-  nuvolosità in bilico è $x_1 = 0{,}5 : 0{,}3 = 1{,}66\ldots$, in pratica
-  $1{,}7$: se l'app promette pioggia, basta molto meno.
-
-Segna quei due punti sul foglio, uno a $8{,}3$ in basso e uno a $1{,}7$ in
-alto, e tira una riga fra loro: da una parte della riga il neurone risponde
-sempre sì, dall'altra sempre no, e non esiste una terza possibilità. **Quella
-riga è tutto ciò che un neurone sa disegnare.** Cambiare i pesi la inclina,
-cambiare il bias la sposta avanti e indietro, ma resta una riga dritta.
-
-(Un dubbio legittimo, se hai davvero preso il foglio: l'app dice solo pioggia o
-sereno, quindi tutte le giornate vere finiscono su due sole righe orizzontali,
-e la riga di confine attraversa una fascia dove non c'è nessun puntino. Va
-bene lo stesso: se al posto dell'app ci fosse un indizio che può valere
-qualunque numero, come l'umidità, i puntini riempirebbero il foglio e il
-confine sarebbe sempre quella riga lì.)
-
-Fra qualche pagina questo dettaglio diventerà un muro.
+Un punto a $8{,}3$ in basso, un punto a $1{,}7$ in alto, e una riga tirata fra i
+due. Da una parte della riga il neurone risponde sempre sì, dall'altra sempre
+no, e una terza possibilità non c'è. Quella riga è tutto ciò che un neurone sa
+disegnare: cambiare i pesi la inclina, cambiare il bias la sposta avanti e
+indietro, ma resta dritta.
 
 `````
 
@@ -208,42 +195,59 @@ fra poco diventerà il problema principale.
 
 `````{tab} Elementare
 
-La ricetta è quasi banale. Per ogni esempio:
+Torni a casa la sera e sai com'è andata: è il momento di girare le manopole per
+il giorno dopo. Se stamattina il neurone ha azzeccato non tocchi nulla; se ha
+detto $0$, cioè niente ombrello, e ti sei bagnato, alzi i pesi; se ha detto $1$
+e c'era il sole, li abbassi.
 
-- se il neurone azzecca la risposta, non tocchi nulla;
-- se dice $0$ e doveva dire $1$, alzi i pesi;
-- se dice $1$ e doveva dire $0$, li abbassi.
-
-Di quanto? In proporzione a quanto valeva quell'ingresso nell'esempio appena
-sbagliato: chi valeva zero non si muove per niente (non aveva colpa, non ha
-detto la sua), chi valeva molto si muove molto. È il criterio più naturale del
-mondo: si corregge chi ha parlato più forte.
+Di quanto? In proporzione a quanto valeva quell'indizio quella mattina: chi
+segnava molto si muove molto, chi segnava zero non si muove affatto. Si corregge
+chi ha parlato più forte.
 
 Ogni correzione poi si moltiplica per un numeretto scelto da noi, il **passo di
-apprendimento** (in inglese *learning rate*, e nel codice qui sotto si chiama
-`eta`): decide quanto grandi diventano i pesi. Qui, curiosamente, non decide
-altro. Il neurone risponde guardando soltanto se il totale sta sopra o sotto
-lo zero, e moltiplicare tutti i pesi per uno stesso numero quel confine non lo
-sposta: con un passo dieci volte più lungo si ottengono pesi dieci volte più
-grandi e le stesse identiche risposte. Diventerà una scelta che conta davvero
-quando la correzione smetterà di essere un passo fisso, nella sezione sulla
-backpropagation.
+apprendimento** (in inglese *learning rate*, e nel codice `eta`): decide di
+quanto gira la manopola ogni volta. Qui, curiosamente, non decide altro. Il
+vicino di casa parte dalle stesse manopole a zero e le gira dieci volte più
+forte: si ritrova pesi dieci volte più grandi e tutte le mattine esce di casa
+come te, perché il neurone guarda soltanto se il totale sta sopra o sotto lo
+zero, e quel confine un fattore dieci non lo sposta. Diventerà una scelta che
+conta davvero quando la correzione smetterà di essere un passo fisso, nella
+sezione sulla backpropagation.
 
-Vediamola su numeri veri. Passo di apprendimento $0{,}1$; l'esempio ha due
-ingressi, $x_1 = 1$ e $x_2 = 0$; entrambi i pesi partono da zero; il neurone ha
-detto $0$ e doveva dire $1$. Allora il primo peso sale di $0{,}1 \cdot 1 =
-0{,}1$ e il secondo di $0{,}1 \cdot 0 = 0$, cioè non si muove affatto: i due
-pesi diventano $0{,}1$ e $0$. Il secondo ingresso valeva zero, non ha detto
-niente, e non paga niente.
+Una giornata per esteso, la prima, con le manopole ancora tutte a zero e il
+passo di apprendimento a $0{,}1$. Cielo quasi sereno, $x_1 = 1$; l'app dice
+sereno, $x_2 = 0$. Il neurone risponde $0$, esci senza ombrello, e piove:
+doveva dire $1$. Il peso della nuvolosità sale di $0{,}1 \cdot 1 = 0{,}1$,
+quello dell'app di $0{,}1 \cdot 0 = 0$, cioè non si muove affatto. Le due
+manopole segnano $0{,}1$ e $0$: l'app valeva zero, non ha detto niente, e non
+paga niente.
 
-E il bias? Si corregge anche lui, con la stessa regola, comportandosi come il
-peso di un ingresso che vale sempre $1$: quindi si sposta ogni volta del passo
-intero, in su quando la risposta era troppo bassa e in giù quando era troppo
-alta. Nel codice qui sotto è la riga `b += eta * errore`.
+E il bias? È una manopola anche lui, e si corregge con la stessa regola: si
+comporta come un indizio che vale sempre $1$, quindi parla tutte le mattine e
+ogni volta si sposta del passo intero, in su quando la risposta era troppo bassa
+e in giù quando era troppo alta. Nel codice è la riga `b += eta * errore`.
 
-Poi si ripete su tutti gli esempi, più volte: un giro completo su tutti gli
-esempi si chiama **epoca**, ed è la parola che nel codice qui sotto dà il nome
-a `epoche`.
+Poi si ricomincia, e si ripassa più volte sulle stesse giornate: un giro
+completo si chiama **epoca**, che nel codice dà il nome a `epoche`.
+
+Quante giornate sbagliate servono, prima che le manopole si fermino? Torna al
+foglio a quadretti con i puntini: fra il gruppo del sì e il gruppo del no c'è un
+corridoio vuoto, e a decidere è quanto è largo. Giornate o chiaramente da
+ombrello o chiaramente da occhiali da sole lasciano un corridoio comodo, e
+bastano poche correzioni. Due giornate quasi identiche che vogliono risposte
+opposte lo assottigliano, e le correzioni si moltiplicano: ogni volta che si
+dimezza, quelle che possono servire diventano quattro volte tante.
+
+Largo in proporzione al disegno, non in centimetri. Fotocopia il foglio al
+doppio e non cambia niente: corridoio doppio, puntini due volte più lontani,
+stesse correzioni di prima. E mille giornate in più segnate sul foglio, con lo
+stesso corridoio, non aggiungono un passo di lavoro.
+
+La riga prudente, però, la macchina non la promette. Si ferma appena nessun
+puntino resta dalla parte sbagliata, e la riga può restare lì, appiccicata a un
+puntino; una giornata nuova appena diversa finirebbe dal lato sbagliato. Cercare
+la riga che passa in mezzo al corridoio, il più lontano possibile da tutti i
+puntini, è un altro mestiere.
 
 `````
 
@@ -258,7 +262,7 @@ b \leftarrow b + \eta\,(y - \hat{y}).
 $$
 
 Il fattore $(y-\hat{y})$ vale $0$ quando la predizione è corretta (nessun
-aggiornamento), $+1$ o $-1$ altrimenti. Vale la pena notare che qui $\eta$ è
+aggiornamento), $+1$ o $-1$ altrimenti. Qui $\eta$ è
 cosmetico: partendo da $\mathbf{w}=\mathbf{0}$ e $b=0$ ogni aggiornamento è
 proporzionale a $\eta$, quindi cambiarlo riscala $\mathbf{w}$ e $b$ dello stesso
 fattore, e la decisione dipende solo dal **segno** di
@@ -323,7 +327,11 @@ def addestra(X, y, eta=0.1, epoche=10):
 X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 y_and = np.array([0, 0, 0, 1])
 w, b = addestra(X, y_and)
-print(gradino(X @ w + b))                   # -> [0 0 0 1]: ha imparato la AND
+print(gradino(X @ w + b))                   # ha imparato la AND
+```
+
+```text
+[0 0 0 1]
 ```
 
 ## Il muro dello XOR
@@ -371,6 +379,18 @@ e una riga non sa scavalcare il centro per andarle a prendere tutte e due. Un
 singolo percettrone traccia solo quella riga, quindi sullo XOR è condannato a
 sbagliare almeno un caso.
 
+Adesso lascia provare alla macchina, con la regola delle correzioni, e a ogni
+caso sbagliato la riga si sposta un po’. Dopo due o tre giri completi succede
+una cosa curiosa. Le quattro correzioni di un giro si annullano fra loro, e alla
+fine del giro la riga è tornata esattamente dov'era. Il giro dopo è identico, e
+quello dopo ancora.
+
+Da fuori sembra una macchina rotta e ferma: dà sempre le stesse quattro
+risposte, sbaglia sempre gli stessi casi, al decimo giro come al centesimo.
+Dentro invece si muove a ogni esempio, e gira in tondo. I pesi intanto non
+scappano verso numeri enormi, restano piccoli come all'inizio. La macchina non
+esplode, non si arrende, e continua a sbagliare con calma.
+
 `````
 
 `````{tab} Superiore
@@ -381,8 +401,8 @@ che $g(\mathbf{w}^\top\mathbf{x}+b)$ riproduca la tabella. Le classi $\{(0,0),
 $\mathbb{R}^2$. Non è un difetto dell'ottimizzatore, è un limite di *capacità*
 del modello.
 
-Vale la pena lanciare `addestra` su `y_xor = np.array([0, 1, 1, 0])` e guardare
-che cosa succede, perché quello che si vede non è quello che ci si aspetta. Non
+Lanciato `addestra` su `y_xor = np.array([0, 1, 1, 0])`, quello che si vede non
+è quello che ci si aspetta. Non
 converge, e fin qui è ovvio; ma nemmeno diverge, e nemmeno vaga. Le prime due
 epoche sbagliano tre esempi su quattro; dalla **terza** in poi li sbagliano
 tutti e quattro, tutti e quattro producono una correzione, e le quattro
@@ -391,7 +411,7 @@ tornati esattamente dov'erano ($\mathbf{w} = (-0{,}1,\ 0)$, $b = 0$), e l'uscita
 stampata è `[1 1 0 0]` alla decima epoca come alla centesima.
 
 Le quattro correzioni si seguono sul foglio, e conviene farlo perché è il modo
-più rapido per convincersi che il ciclo non è un caso fortunato. Si parte da
+più rapido per vedere da dove nasce il ciclo. Si parte da
 $\mathbf{w} = (-0{,}1,\ 0)$ e $b = 0$. Il primo esempio, $(0,0)$, riceve $1$ e
 doveva ricevere $0$: la correzione tocca **solo il bias**, perché ogni peso si
 muove in proporzione al proprio ingresso e qui gli ingressi valgono zero, e $b$
@@ -417,11 +437,11 @@ Prima di tutto, una parola che cambia significato. Nel loro libro «percettrone�
 non indica il neurone di poco fa, ma una macchina più generale, e conviene
 saperlo, altrimenti i loro risultati sembrano parlare di una cosa che non è.
 
-Immagina una fotografia e una squadra di ispettori: ciascuno può guardare
-**solo qualche punto** dell'immagine e risponde sì o no, poi un capo raccoglie
-le risposte, dà a ognuna un peso, somma e decide. Il neurone di poco fa è il
-caso più semplice di questa macchina, quello in cui ogni ispettore guarda un
-punto solo. La domanda dei teoremi non è se la squadra ce la fa, ma **quanti
+Una fotografia, e una squadra di ispettori: ciascuno può guardare **solo
+qualche punto** dell'immagine e risponde sì o no, poi un capo raccoglie le
+risposte, dà a ognuna un peso, somma e decide. Il neurone di poco fa è il caso
+più semplice di questa macchina, quello in cui ogni ispettore guarda un punto
+solo. La domanda dei teoremi non è se la squadra ce la fa, ma **quanti
 punti deve guardare in una volta sola l'ispettore più affamato**: quel numero
 si chiama **ordine**, e misura quanto il problema si lascia dividere in
 pezzetti.

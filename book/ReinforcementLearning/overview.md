@@ -77,13 +77,32 @@ questo capitolo si alternano: è la sola cosa che l'agente cerca di migliorare.
 
 `````{tab} Elementare
 
-Immagina un videogioco. A ogni istante vedi lo schermo (lo **stato**),
-premi un tasto (l’**azione**) e il gioco reagisce: nuova schermata e magari
-qualche punto in più o in meno (la **ricompensa**). L'obiettivo non è indovinare
-il tasto "giusto" in questo istante, ma accumulare più punti possibile fino alla
-fine della partita: quel totale è il **ritorno**, ed è il numero da cui si
-giudica tutto. La politica, cioè la tua abitudine di gioco ("in questa schermata
-salto sempre"), è quello che con l'esperienza migliora.
+In un videogioco vedi lo schermo, premi un tasto e il gioco risponde: schermata
+nuova, e qualche punto in più o in meno. Lo schermo è lo stato, il tasto è
+l'azione, i punti sono la ricompensa. Il numero da far crescere è il totale che
+avrai a fine partita, e quello è il ritorno: il punteggio di questo istante
+conta solo per quanto aggiunge al totale.
+
+Dentro il totale i punti lontani possono pesare meno di quelli vicini. Quanto
+meno, lo decide una manopola che chi imposta il problema gira prima che
+l'agente cominci a giocare. Tenuta al minimo, l'agente raccoglie tutte le monete
+che ha sotto il naso e ignora la chiave in fondo al livello. Tenuta al massimo,
+passa oltre le monete e va a prendere la chiave, perché dietro la porta ce n'è
+molto di più.
+
+Tenerla al massimo ha però un prezzo, e si paga nei giochi in cui non si arriva
+mai alla fine, quelli in cui si corre e si raccolgono monete finché non si
+sbaglia. Se un punto fra mille schermate contasse quanto un punto adesso,
+"quanti ne prendo in tutto" resterebbe senza risposta: si va avanti per sempre,
+e il totale non si ferma su nessun numero. Nelle partite che a un certo punto
+finiscono il problema non si pone: i punti da sommare sono contati, e la
+manopola si può tenere al massimo senza rischi.
+
+Con l'esperienza l'agente si costruisce un voto: per ogni schermata e per ogni
+tasto, quanti punti gli frutterà in tutto premerlo lì e poi tirare avanti con le
+solite abitudini. Quelle abitudini ("in questa schermata salto sempre") sono la
+politica, e migliorano insieme ai voti: più i voti sono affidabili, più conviene
+fidarsi di quello che dicono.
 
 `````
 
@@ -126,17 +145,34 @@ reinforcement learning le risposte corrette non esistono: nessuno le conosce.
 
 Nessuno dice mai all'agente "la mossa giusta era questa". Riceve solo una
 ricompensa che dice *quanto è andata bene*, non *cosa avrebbe dovuto fare*. E il
-punto più difficile è che la ricompensa spesso arriva **tardi**: negli scacchi
-capisci di aver sbagliato solo trenta mosse dopo, quando perdi. Quale mossa
-ringraziare per la vittoria? Quale incolpare per la sconfitta? Questo si chiama
-problema dell’**assegnazione del merito** (*credit assignment*), ed è il cuore
-di tutta la difficoltà.
+punto più difficile è il ritardo: negli scacchi il punteggio resta a zero per
+tutta la partita, e che una mossa fosse un errore lo capisci trenta mosse dopo,
+quando perdi. Quale mossa ringraziare per la vittoria? Quale incolpare per la
+sconfitta? Questo si chiama problema dell’**assegnazione del merito** (*credit
+assignment*), ed è il cuore di tutta la difficoltà.
+
+C'è una seconda differenza, meno vistosa e non meno seria. Chi impara a
+riconoscere i gatti riceve un mazzo di foto già pronto, e quel mazzo resta lo
+stesso sia che risponda bene sia che risponda male. Chi impara a giocare a
+scacchi il suo mazzo se lo fabbrica muovendo: se apre sempre allo stesso modo,
+per anni vedrà le stesse posizioni e delle altre non saprà niente. Le partite su
+cui ci si allena dipendono dal modo in cui si gioca, e appena quel modo cambia
+cambiano anche loro.
+
+Sapere chi ringraziare solo a partita conclusa sarebbe un lusso. La via d'uscita
+è dare a ogni posizione un voto provvisorio, anche grossolano: quanti punti mi
+aspetto di raccogliere da qui in avanti. Poi si muove, e si mettono insieme due
+cose, quello che si è guadagnato subito e il voto della mossa migliore che si
+vede dalla posizione nuova, quest'ultimo ridotto un poco perché guarda più
+lontano. Con quel totale si corregge il voto della posizione di partenza.
+Nessuno ha aspettato l'ultima mossa; eppure il giudizio finale, quando arriva,
+risale indietro di posizione in posizione fino all'apertura.
 
 `````
 
 `````{tab} Superiore
 
-La differenza è strutturale. Nel supervisionato i dati $(x, y)$ sono
+La differenza è strutturale. Nel supervisionato i dati $(\mathbf{x}, y)$ sono
 indipendenti e l'etichetta $y$ è il segnale di errore diretto. Nel RL il segnale
 è una ricompensa scalare, potenzialmente **ritardata** e **sparsa**, e i dati
 non sono indipendenti: l'azione di adesso determina lo stato successivo, quindi
@@ -168,11 +204,22 @@ serate in locali mediocri. Un buon agente fa entrambe le cose: sfrutta ciò che
 sa quasi sempre, ma ogni tanto azzarda, perché solo azzardando può scoprire
 ricompense che non sospettava.
 
-Questa ricetta ha un nome che ritornerà in ogni sezione del capitolo:
-**$\varepsilon$-greedy**, che si legge "epsilon-greedy". *Greedy* è l'inglese
-per "avido", cioè chi prende sempre quello che al momento sembra il meglio; ed
-$\varepsilon$ (epsilon) è la piccola probabilità con cui invece si azzarda, per
-esempio una volta su dieci.
+Questa ricetta ha un nome, **$\varepsilon$-greedy**, che si legge
+"epsilon-greedy". *Greedy* è l'inglese per "avido", cioè chi prende sempre
+quello che al momento sembra il meglio; ed $\varepsilon$ (epsilon) è la piccola
+probabilità con cui invece si azzarda, per esempio una volta su dieci.
+
+Quanto grande tenere quella probabilità dipende da quanto conosci la città.
+Appena trasferito non hai un preferito da difendere, e i giudizi che ti sei
+fatto valgono poco: tanto vale provare quasi ogni sera un posto diverso. Dopo un
+anno di cene i giudizi sono solidi, e continuare a tirare a caso una sera su
+dieci diventa uno spreco di serate. La quota di azzardo parte alta e si abbassa
+man mano che si impara.
+
+L'azzardo, poi, si può dosare meglio di un sorteggio. Fra due posti mai provati
+si sceglie volentieri quello di cui si sa meno, perché è lì che una sorpresa è
+ancora possibile; e fra tutti gli altri si torna più spesso in quelli che
+promettono di più, invece di trattarli tutti allo stesso modo.
 
 `````
 
@@ -192,9 +239,11 @@ $$
 
 In pratica $\varepsilon$ parte alto e decresce nel tempo: si esplora molto
 all'inizio, quando le stime di $Q$ sono grezze, e si sfrutta sempre di più man
-mano che diventano affidabili. Approcci più raffinati (*softmax*, *Upper
-Confidence Bound*, bonus di curiosità) dosano l'esplorazione in base
-all'incertezza invece che a caso.
+mano che diventano affidabili. Approcci più raffinati non affidano
+l'esplorazione a una moneta: *softmax* distribuisce la probabilità in base ai
+valori stimati, dando più peso alle azioni che promettono di più, mentre *Upper
+Confidence Bound* e i bonus di curiosità privilegiano le azioni su cui la stima
+è più incerta.
 
 `````
 
@@ -267,8 +316,9 @@ l'esperienza.
   dopo quella che lo ha meritato: capire chi ringraziare è la difficoltà
   centrale.
 - Quel che si vuole rendere grande non è il punteggio del momento ma il totale
-  da qui alla fine (il **ritorno**), con una regola di impazienza: un premio
-  lontano conta meno di uno vicino.
+  da qui alla fine (il **ritorno**). Di solito i premi lontani contano meno di
+  quelli vicini, e nei giochi che non finiscono mai contarli meno è
+  obbligatorio: altrimenti il totale non si ferma su nessun numero.
 - Chi decide i punti è chi imposta il problema, non il mondo: numeri scelti
   male insegnano il comportamento sbagliato.
 - Bisogna sempre scegliere fra tornare dove si sa che si sta bene e provare

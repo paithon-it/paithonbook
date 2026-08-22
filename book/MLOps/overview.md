@@ -50,13 +50,15 @@ Un cuoco inventa un piatto memorabile: ha fatto una cosa difficilissima e
 necessaria, ma non ha ancora aperto il ristorante. Per servire quel piatto a
 cento clienti a sera servono una cucina attrezzata, un magazzino con le
 forniture che non finiscono, camerieri, un sistema per prendere le comande,
-l'igiene a norma, i conti che tornano. Se il freezer si rompe o il fornitore
-non consegna, il piatto più buono del mondo non arriva al tavolo.
+l'igiene a norma, i conti che tornano.
 
 Il modello addestrato è il piatto: la ricetta funziona. MLOps è tutto il resto
 del ristorante. E come in un ristorante, il grosso dei guai non viene dalla
 ricetta: viene dal magazzino che si svuota, dal fornitore che cambia gli
-ingredienti, dalla cucina che va tenuta pulita ogni giorno.
+ingredienti, dalla cucina che va tenuta pulita ogni giorno. Per aprire un mese
+prima hai comprato un freezer di seconda mano: il giorno che lo installi non lo
+paghi, lo paghi ogni sera d'estate in cui si ferma e il piatto migliore del
+mondo resta in cucina. Le scorciatoie della fretta si pagano a rate, per anni.
 
 C'è poi una cosa che rende questa cucina più insidiosa di una vera. Se il
 fornitore cambia i pomodori, tu ti aspetti che cambi il sapore dei piatti col
@@ -130,6 +132,14 @@ e il piatto di oggi a Milano deve essere identico a quello di ieri a Napoli.
 Serve **riproducibilità**: chiunque, seguendo la procedura, riottiene lo
 stesso risultato.
 
+Perché torni davvero si tiene da parte tutto: la ricetta scritta, le cassette
+di pomodori di quella mattina con la data e il fornitore, e il lotto di salsa
+che ne è uscito, in barattoli numerati. Se fra sei mesi un cliente si lamenta,
+il numero sul barattolo dice da quale ricetta, da quali forniture e da quale
+mattina viene quel piatto; senza, il piatto è buono o cattivo e non si sa
+perché. E la salsa non la rifà a mano un capocuoco ogni volta: la preparazione
+parte da sé, sempre nello stesso ordine.
+
 MLOps è il passaggio dal cuoco geniale alla catena affidabile. Non toglie
 nulla alla bravura di chi inventa il modello: aggiunge la disciplina che
 permette di rifarlo uguale, di aggiornarlo senza rompere niente e di
@@ -187,18 +197,24 @@ ciclo ricomincia.
 
 `````{tab} Elementare
 
-Un modello non è un quadro che appendi al muro e dimentichi: è un giardino. Lo
-pianti (i dati), lo fai crescere (l'addestramento), controlli che sia sano (la
-valutazione), lo apri al pubblico (il deploy), e poi devi *tornarci ogni
-giorno*: annaffiare, potare, accorgerti se una pianta si ammala (il
+Il quadro lo appendi al muro e te ne dimentichi. Un modello somiglia piuttosto
+a un giardino: lo pianti (i dati), lo fai crescere (l'addestramento), controlli
+che sia sano (la valutazione), lo apri al pubblico (il deploy), e poi ci torni
+ogni giorno ad annaffiare, potare, guardare se una pianta si ammala (il
 monitoraggio). Le stagioni cambiano, il terreno si impoverisce, e ciò che
-andava bene a maggio non basta a novembre. Il lavoro del giardiniere non
-finisce mai: ricomincia, in tondo.
+andava bene a maggio non basta a novembre. Il giardino peggiora anche nell'anno
+in cui tu non hai toccato niente: si sono mossi il tempo e la terra. Ripiantare,
+per un giardiniere, è ordinaria amministrazione, e nessuno lo chiama una
+sconfitta.
 
-L'anello della figura racconta proprio questo. Le prime quattro tappe (dati,
-addestramento, valutazione, deploy) sono quelle che già conosci. La quinta, il
-monitoraggio, è quella nuova: è l'occhio che sta in produzione e, quando vede
-che i dati sono cambiati, tira la freccia che riporta all'inizio.
+Piantare, far crescere, controllare, aprire al pubblico: questi gesti li
+conosci già. Il gesto nuovo è tornare a guardare, e quando l'occhio in
+produzione vede che i dati sono cambiati tira la freccia che riporta
+all'inizio. E le strade di ritorno del giardino sono parecchie. Il basilico
+cresce e non profuma: potare non serve, quel guaio si ripara a monte, nel
+terreno e nella scelta dei semi. Trovi i sacchetti dei semi con le etichette scambiate: quello che è
+cresciuto è rigoglioso e inservibile, e si ricomincia dal sacchetto. Ogni
+freccia indietro torna al punto in cui il guaio è nato.
 
 `````
 
@@ -302,7 +318,7 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
 :class: important
 - Addestrare un modello è **la punta dell'iceberg**: è il piatto del cuoco, e
   il ristorante è tutto il resto (le forniture, la cucina, il servizio in
-  sala). Nel disegno del 2015 raccontato all'inizio, il pezzo di cui parlano i
+  sala). Nel disegno del 2015 di Sculley e colleghi, il pezzo di cui parlano i
   libri è un rettangolino, e tutto intorno ci sono scatole più grandi.
 - **In produzione** vuol dire che il modello ha smesso di essere un
   esperimento: lo stanno usando persone vere, adesso, e la distanza fra le due

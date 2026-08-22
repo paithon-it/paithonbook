@@ -42,6 +42,13 @@ persona. E c'è l’**ironia**: se dico «che bella giornata» mentre diluvia,
 intendo l'esatto contrario. Nessuna di queste cose è scritta nelle parole: sta
 tra le righe, ed è lì che le macchine si perdono.
 
+Non esiste una regola che, presa la frase, ne restituisca il significato:
+nemmeno tu ne hai una. Davanti al binocolo scegli la lettura che ti torna di
+più, e ti torna di più per via delle migliaia di frasi simili che hai già
+sentito in vita tua. Una macchina può fare soltanto lo stesso mestiere: pesare
+le letture possibili guardando le parole che ci stanno intorno, e puntare su
+quella che le sembra più probabile. È una scommessa, e ogni tanto la perde.
+
 `````
 
 `````{tab} Superiore
@@ -136,6 +143,11 @@ infinite e le regole diventavano ingestibili.
 lingua, le si dà da leggere montagne di testo e la si lascia notare le
 regolarità: dopo "buon" viene spesso "giorno", raramente "sasso". Con la
 diffusione di internet il testo da leggere è diventato praticamente infinito.
+Il testo grezzo però non bastava per tutti i mestieri: per insegnare alla
+macchina a riconoscere i verbi, qualcuno doveva prima segnarli a mano in
+migliaia di frasi, e per la traduzione servivano testi già tradotti da persone.
+Il lavoro a mano si era soltanto spostato, dallo scrivere le regole al
+preparare gli esempi.
 
 **Terza tappa, la mappa delle parole.** Qui i programmi hanno cominciato a
 rappresentare ogni parola con **qualche centinaio di numeri**. Sono coordinate,
@@ -154,6 +166,14 @@ aveva già letto. L'ultimo salto è stato un modello che guarda l'intera frase
 tutta insieme e decide, parola per parola, quali delle altre contano davvero
 per capirla: si chiama **Transformer**, e a quel nome è dedicato il capitolo
 successivo a questo.
+
+Cambiano due cose insieme. Con il riassunto, l'inizio di una frase lunga
+sbiadisce mentre si va avanti; guardando tutto in una volta, una parola può
+andarsi a prendere quella che sta venti parole indietro come se le fosse
+accanto. E leggere in fila obbliga ad aspettare: la centesima parola non si
+tratta prima della novantanovesima. Chi guarda tutta la frase insieme lavora su
+tutte le parole nello stesso momento, ed è così che si è potuto dare da leggere
+a queste macchine molto più testo di prima.
 
 `````
 

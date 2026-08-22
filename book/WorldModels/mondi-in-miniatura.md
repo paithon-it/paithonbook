@@ -90,6 +90,15 @@ disegno somiglia all'originale, il riassunto conteneva l'essenziale; se non
 somiglia, quei 32 numeri vanno usati meglio. Come al telefono: se dalla tua
 descrizione l'amico disegna una scena quasi uguale, la descrizione era buona.
 
+Nell'andata e ritorno c'è una seconda regola. La stessa schermata, descritta
+due volte, non viene mai con le stesse parole: «curva a sinistra» oggi, «piega a sinistra»
+domani, e l'amico deve cavare una scena sensata da tutt'e due, e da qualunque
+frase che ci somigli. Le descrizioni buone smettono così di essere formule
+fisse con il vuoto intorno: fra l'una e l'altra ci si sposta senza cadere. Il
+vuoto sarebbe un guaio, perché quelle frasi presto se le inventerà M, che lo
+schermo non lo guarda mai: se a una frase inventata non corrispondesse nessun
+disegno, l'amico poserebbe la matita quasi subito.
+
 `````
 
 `````{tab} Superiore
@@ -189,10 +198,10 @@ destra della barra verticale. È da $\mathbf{h}_{t+1}$, e solo da lì, che escon
 parametri della miscela: se l'azione non entrasse nella ricorrenza, M
 predirebbe lo stesso futuro qualunque cosa l'agente faccia, e sarebbe inutile
 proprio per la cosa a cui serve, immaginare le conseguenze di una scelta. La
-convenzione sui pedici è la stessa del controller del paragrafo seguente,
-dove $a_t$ si sceglie leggendo $\mathbf{z}_t$ e $\mathbf{h}_t$: $\mathbf{h}_t$ esiste *prima* che
-l'azione sia decisa, e la riga di codice `nn.LSTM(dim_z + dim_a, dim_h)` in
-fondo alla sezione è la ricorrenza qui sopra.
+convenzione sui pedici è la stessa del controller, dove $a_t$ si sceglie
+leggendo $\mathbf{z}_t$ e $\mathbf{h}_t$: $\mathbf{h}_t$ esiste *prima* che
+l'azione sia decisa. Nello scheletro in PyTorch la riga
+`nn.LSTM(dim_z + dim_a, dim_h)` monta esattamente questa ricorrenza.
 
 Quanto al resto, $z_{t+1,i}$ è la $i$-esima delle 32 componenti del prossimo
 codice: ognuna ha la *propria* miscela di $K = 5$ gaussiane, con pesi
@@ -303,35 +312,36 @@ numeri, una memoria da 512 numeri e un controller da 1088 parametri: la ricetta
 
 È il pilota che la sera prima della gara ripassa il circuito a occhi chiusi,
 curva per curva, i piloti veri lo fanno davvero: costa zero benzina e zero
-incidenti. Una domanda viene subito: se il gioco vero è staccato, chi tiene il
-punteggio? Il sogno stesso. Nello sparatutto il punteggio è quanto sopravvivi,
-e M, oltre al fotogramma dopo, prevede anche se sei stato colpito: quando
-decide che l'hai presa, la partita sognata finisce e il punteggio è la sua
-durata. Ma c'è un tallone d'Achille: se nella tua testa una curva è più
-dolce che in pista, impari una traiettoria che domani ti manda nella ghiaia.
-All'agente di Ha e Schmidhuber successe qualcosa di più subdolo: dentro il
-sogno scoprì dei *trucchi*. Trovò modi di muoversi per cui i mostri, in certe
-partite sognate, non sparavano neanche un colpo, e a volte riusciva perfino a
-far svanire le palle di fuoco. Stava barando non al gioco ma al *proprio sogno*,
-sfruttandone i difetti, come uno studente che si prepara all'esame
-inventandosi da solo domande facili. Punteggi splendidi nel mondo immaginato,
-figuraccia in quello vero. Il rimedio è elegante: rendere il sogno *più
-capriccioso* del gioco reale, così che i trucchi smettano di funzionare. E si
-fa girando una manopola sola, che si chiama **temperatura**. M, ricordi, non
-annuncia una continuazione unica ma un ventaglio di continuazioni con le loro
-probabilità: alzando la temperatura si dà più spazio a quelle improbabili, che
-escono più spesso. Il sogno diventa dispettoso, e un trucco che ha funzionato
-una volta la volta dopo non funziona più. Alzarla troppo, però, non conviene:
-un sogno completamente sregolato non somiglia più a niente, e lì dentro non si
-impara nulla. Con la manopola messa al punto giusto l'agente trovò il gioco
-vero quasi riposante: vi sopravvisse in media *più a lungo* che nel proprio
-sogno.
+incidenti. E se il gioco vero è staccato, chi tiene il punteggio? Il sogno
+stesso. Nello sparatutto il punteggio è quanto sopravvivi, e M, oltre al
+fotogramma dopo, prevede anche se sei stato colpito: quando decide che l'hai
+presa, la partita sognata finisce e il punteggio è la sua durata. Ma c'è un
+tallone d'Achille: se nella tua testa una curva è più dolce che in pista,
+impari una traiettoria che domani ti manda nella ghiaia. All'agente di Ha e
+Schmidhuber successe qualcosa di più subdolo: dentro il sogno scoprì dei
+*trucchi*. Trovò modi di muoversi per cui i mostri, in certe partite sognate,
+non sparavano un colpo, e in certe altre le palle di fuoco svanivano. Stava
+barando al *proprio sogno*, sfruttandone i difetti, come uno studente che si
+prepara all'esame inventandosi da solo domande facili. Punteggi splendidi nel
+mondo immaginato, figuraccia in quello vero.
 
-Resta una cosa da tenere a mente, ed è quella da cui siamo partiti: il sogno è
-stato imparato guardando partite giocate a casaccio. Il pilota è cresciuto
-dentro la copia di un gioco che nessun bravo giocatore ha mai giocato, e questo
-è un limite non del sogno in sé ma di quello che il sogno ha avuto occasione di
-vedere.
+Il rimedio è rendere il sogno *più capriccioso* del
+gioco vero, e si fa girando una manopola sola, la **temperatura**. M non
+annuncia una continuazione unica ma un ventaglio di continuazioni con le loro
+probabilità: alzando la temperatura escono più spesso quelle improbabili. Il
+sogno diventa dispettoso, e un trucco che ha funzionato una volta la volta dopo
+non funziona più. Alzarla troppo, però, non conviene: un sogno completamente
+sregolato non somiglia più a niente, e lì dentro non si impara nulla. Il punto
+giusto della manopola lo si scova provando, e lì l'agente trovò il gioco vero
+quasi riposante: vi sopravvisse in media *più a lungo* che nel proprio sogno.
+
+Resta la cosa da cui siamo partiti: il sogno è stato imparato guardando partite
+giocate a casaccio. Il pilota è cresciuto dentro la copia di un gioco che
+nessun bravo giocatore ha mai giocato, e questo è un limite non del sogno in sé
+ma di quello che il sogno ha avuto occasione di vedere. Per un gioco più ricco
+di questi due si torna in pista: il pilota che ha imparato qualcosa va a
+correre sul serio, e con le situazioni nuove che si porta a casa il ripasso a
+occhi chiusi si rifà da capo.
 
 `````
 
@@ -370,12 +380,12 @@ standard):
 | 1,15 | $918 \pm 546$ | $1092 \pm 556$ |
 | 1,30 | $732 \pm 269$ | $753 \pm 139$ |
 
-La curva **non è monotona**: ha un massimo a $\tau = 1{,}15$, dove l'agente va
+La curva non è monotona: ha un massimo a $\tau = 1{,}15$, dove l'agente va
 *meglio* nella realtà che nella propria immaginazione e supera largamente la
-soglia di risoluzione (750); a 1,30 ricade a tre punti da quella soglia, perché
-il sogno è diventato così rumoroso che dentro non si impara più niente. Gli
-autori lo dicono con parole loro: alzare $\tau$ rende più difficile a C trovare
-politiche avversarie, ma alzarla troppo rende l'ambiente virtuale troppo
+soglia di risoluzione (750); a 1,30 ricade a tre punti sopra quella soglia,
+perché il sogno è diventato così rumoroso che dentro non si impara più niente.
+Gli autori lo dicono con parole loro: alzare $\tau$ rende più difficile a C
+trovare politiche avversarie, ma alzarla troppo rende l'ambiente virtuale troppo
 difficile perché l'agente impari alcunché, e quindi è un **iperparametro da
 tarare**. Nel paper non c'è alcun criterio per sceglierlo a priori, né la
 pretesa che 1,15 valga altrove.
@@ -500,6 +510,12 @@ più di trent'anni: si chiama Dyna, l'architettura con cui Richard Sutton nel
 modellino imparato del labirinto {cite}`sutton1990integrated` (un antenato a
 caselle dei sogni di Dreamer, divulgato l'anno dopo in una versione più breve
 {cite}`sutton1991dyna`).
+
+C'è un prezzo, però: quel che si impara nella copia vale quanto la copia. Se il
+modellino mette un muro dove il labirinto vero ha un corridoio, l'agente impara
+benissimo a schivare un muro che non esiste. E dove le partite vere costano
+poco, giocarle davvero resta competitivo: fra chi sogna e chi prova, la partita
+è ancora aperta.
 
 `````
 

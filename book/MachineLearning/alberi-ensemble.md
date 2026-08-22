@@ -78,40 +78,35 @@ puri possibile.
 
 `````{tab} Elementare
 
-La misura più usata è l’**indice di Gini**: la probabilità di sbagliare se
-tirassimo a indovinare la classe di un esempio pescando a caso dal gruppo, con
-le stesse proporzioni del gruppo. Un gruppo puro non ci fa mai sbagliare (Gini
-= 0); un gruppo bilanciato ci fa sbagliare spesso (Gini alto).
+Un negozio online vuole sapere in anticipo chi comprerà. Sul bancone c'è un
+barattolo con dieci biglietti, uno per ogni cliente già passato di lì, e sopra
+ciascuno c'è scritto se ha comprato. Cinque sì, cinque no.
 
-Da quella frase alla formula ci si arriva in due righe, e vale la pena farle
-perché così il Gini smette di essere una regola calata dall'alto.
+Il proprietario ci gioca. Pesca un biglietto e quella diventa la sua
+scommessa; lo rimette dentro, ne pesca un altro, e su quel secondo cliente
+prova a indovinare. Ci prende quando i due pescati dicono la stessa cosa. Se
+chi compra occupa una frazione $p$ del barattolo, pescarlo capita nel $p$ dei
+casi alla prima pescata e nel $p$ dei casi alla seconda, e siccome la seconda
+non sa niente della prima le probabilità si moltiplicano, $p \cdot p = p^2$. La
+somma di quei quadrati sulle due risposte dà la probabilità che le pescate
+coincidano, cioè di indovinare. O coincidono o sono diverse, senza terze vie, e
+allora sbagliare ha probabilità $1$ meno quella somma. Ecco da dove viene
+l’«uno meno la somma dei quadrati».
 
-Il gioco è questo: peschi un esempio dal gruppo per sapere che classe
-indovinare, poi ne peschi un altro (rimettendo dentro il primo) ed è quello di
-cui devi indovinare la classe. Ci prendi se i due pescati sono della stessa
-classe. Ora, se la classe «compra» occupa una frazione $p$ del gruppo, pescarla
-due volte di fila capita nel $p$ dei casi per la prima pescata e nel $p$ dei
-casi per la seconda, e siccome le due pescate non si condizionano a vicenda le
-probabilità si moltiplicano: $p \cdot p = p^2$.
-
-Sommando quei quadrati su tutte le classi ottieni la probabilità che le due
-pescate coincidano, cioè di indovinare. Ma o le due pescate coincidono o sono
-diverse, non c'è una terza possibilità, e quindi la probabilità di **sbagliare**
-è $1$ meno quella somma. Ecco da dove viene l’«uno meno la somma dei
-quadrati».
-
-Facciamo i conti su un esempio. Un negozio online ha 10 clienti, e vogliamo
-prevedere chi comprerà: 5 comprano (sì), 5 no. Il gruppo è metà e metà, il più
-mescolato possibile:
+Quanto spesso il barattolo inganna chi ci gioca si chiama **indice di Gini**,
+ed è la misura di impurità più usata. Un barattolo di soli acquirenti non fa
+sbagliare mai, e il suo Gini vale zero; questo, metà e metà, inganna più di
+ogni altro.
 
 $$
 \text{Gini}_\text{padre} = 1 - \left(\tfrac{5}{10}\right)^2 - \left(\tfrac{5}{10}\right)^2
 = 1 - 0{,}25 - 0{,}25 = 0{,}5 .
 $$
 
-Proviamo a dividerli con la domanda «ha visitato il sito almeno 3 volte?».
-I 4 che rispondono «sì» comprano tutti e 4; dei 6 che rispondono «no», solo 1
-compra e 5 no. Calcoliamo l'impurità dei due gruppi figli:
+Il proprietario ora divide i biglietti in due barattoli, secondo la domanda «ha
+visitato il sito almeno 3 volte?». Nel barattolo dei «sì» finiscono 4
+biglietti, e sono 4 acquirenti; in quello dei «no» ne finiscono 6, e uno solo
+ha comprato.
 
 $$
 \text{Gini}_\text{sì} = 1 - \left(\tfrac{4}{4}\right)^2 - \left(\tfrac{0}{4}\right)^2 = 0 ,
@@ -120,29 +115,33 @@ $$
 = 1 - \tfrac{1}{36} - \tfrac{25}{36} = 1 - \tfrac{26}{36} \approx 0{,}278 .
 $$
 
-Il gruppo dei «sì» è puro; quello dei «no» è quasi puro. L'impurità *dopo* il
-taglio è la media dei due valori, ma non una media alla pari: pesa di più il
-gruppo che contiene più clienti (4 da una parte, 6 dall'altra), e per questo si
-chiama **media pesata**. Ognuno conta per la sua quota:
+Nel primo barattolo non si sbaglia più, nel secondo quasi mai. Per sapere
+quanto inganna la coppia si gioca in tutti e due, ma non alla pari, perché nel
+barattolo da 6 si pesca più spesso che in quello da 4. Ognuno conta per la sua
+quota, ed è una **media pesata**:
 
 $$
 \tfrac{4}{10}\cdot 0 + \tfrac{6}{10}\cdot 0{,}278 \approx 0{,}167 .
 $$
 
-Il **guadagno** è quanto abbiamo ridotto l'impurità:
-$0{,}5 - 0{,}167 = 0{,}333$. Un bel taglio! L'algoritmo prova tutte le domande
-possibili su tutte le caratteristiche e sceglie quella dal guadagno più alto:
-poi ricomincia su ciascun gruppo.
+Il **guadagno** è quanto è calato l'inganno, $0{,}5 - 0{,}167 = 0{,}333$. Un
+bel taglio. Il proprietario prova ogni domanda su ogni colonna della tabella,
+tiene quella che gli rende di più, e ricomincia il gioco dentro ciascuno dei
+due barattoli nuovi.
 
-«Tutte le domande possibili» sembra impossibile, visto che le soglie su un
-reddito sarebbero infinite: minore di 25 000, di 25 001, di 25 002... Ma le
-soglie che cambiano davvero qualcosa sono poche, ed è facile vedere quali. Se
-nei dati nessuno guadagna fra 24 000 e 26 000 euro, tutte le soglie in quel
-buco dividono i clienti nello stesso identico modo: sono la stessa domanda
-scritta in mille modi. Basta allora ordinare i valori che compaiono davvero nei
-dati e provare una soglia in mezzo a ogni coppia di valori consecutivi: con
-diecimila clienti sono al massimo novemilanovecentonovantanove prove per
-colonna, non infinite.
+Sul reddito le domande sembrano infinite, minore di 25 000, di 25 001, di
+25 002... Allora mette i biglietti in fila per reddito e cerca dove infilare le
+forbici. Se fra 24 000 e 26 000 euro non c'è nessun cliente, tagliare a 24 500
+o a 25 900 sposta gli stessi biglietti, ed è la stessa domanda scritta in mille
+modi. Contano solo i tagli fra un biglietto e il suo vicino di fila: con
+diecimila clienti in coda, al massimo novemilanovecentonovantanove per colonna.
+
+Il proprietario non torna mai sui suoi passi. I barattoli non si rovesciano, e
+la prima domanda resta quella che rendeva di più subito. Una domanda un po'
+peggiore in cima poteva preparare due domande ottime al giro dopo, e un albero
+finale migliore; nessuno lo scoprirà, perché quella strada non l'ha percorsa.
+In cambio l'albero si costruisce in fretta, e che sia il migliore possibile non
+glielo promette nessuno.
 
 `````
 
@@ -172,7 +171,9 @@ la loro numerosità. CART sceglie, tra tutte le coppie (caratteristica, soglia),
 quella che massimizza $\Delta$, e procede in modo ricorsivo e *greedy*: nessun
 passo indietro, ogni split è ottimo solo localmente.
 
-Riprendendo l'esempio numerico dell'altro livello con l’**entropia**: il nodo
+Un esempio numerico con l’**entropia**. Una domanda sì/no divide dieci esempi,
+cinque per classe, in un figlio «sì» di quattro tutti della stessa classe e in
+un figlio «no» di sei, dove una delle due classi compare una volta sola. Il nodo
 padre bilanciato ha $H_\text{padre} = -\tfrac{1}{2}\log_2\tfrac{1}{2} -
 \tfrac{1}{2}\log_2\tfrac{1}{2} = 1$ bit. Il figlio «sì» è puro ($H = 0$); il
 figlio «no» ha
@@ -221,8 +222,16 @@ uno split scelto in cima cambia, e tutto ciò che ci sta sotto cambia con lui.
 Nella sezione sul compromesso bias-varianza avevamo dato un nome a questa
 irrequietezza: si chiama **varianza**. Un singolo albero profondo ha bias basso
 (sa adattarsi a qualsiasi forma) ma varianza alta (dipende troppo dal
-particolare campione di dati). Ridurre quella varianza senza perdere la
-flessibilità: è tutto il problema che gli *ensemble* risolvono.
+particolare campione di dati).
+
+Il freno più ovvio è tenerlo corto: fermare la crescita a una certa profondità,
+pretendere che ogni foglia contenga almeno una ventina di esempi, oppure
+tagliare i rami più bassi dopo averlo cresciuto. Un albero corto sta fermo, e
+insieme all'irrequietezza perde anche la finezza: smette di seguire le forme
+che nei dati ci sono davvero, e comincia a sbagliare sempre allo stesso modo.
+La varianza scende, il bias sale, e il conto torna quasi uguale. Ridurre quella
+varianza senza perdere la flessibilità: è tutto il problema che gli *ensemble*
+risolvono.
 
 `````
 
@@ -238,8 +247,7 @@ Lo si può limitare con la **potatura** (*pruning*) o vincolando la crescita
 (profondità massima, numero minimo di esempi per foglia) ma questi freni
 scambiano varianza con bias, e un solo albero raramente compete con i modelli
 migliori. La strada vincente è un'altra: tenere alberi flessibili (bias basso)
-e abbattere la varianza **combinandone molti**. È il principio degli ensemble,
-oggetto del resto della sezione.
+e abbattere la varianza **combinandone molti**. È il principio degli ensemble.
 
 `````
 
@@ -309,6 +317,16 @@ gli errori dei 100 alberi non sono tutti uguali, mediando si annullano a
 vicenda, e la risposta collettiva è molto più stabile. Il bias resta quello di
 un albero (basso), la varianza crolla.
 
+Quanto crolla dipende da che cosa gli alberi hanno in comune. L'errore di un
+albero ha due parti: una che è sua e soltanto sua (dipende da quali esempi gli
+sono capitati in mano) e una che condivide con tutti gli altri (viene dal
+mucchio di partenza, che è uno solo). La prima si smorza contando gli alberi:
+mediandone cento, la sua varianza si divide per cento. La seconda non si
+smorza affatto, perché sta in tutte le risposte allo stesso modo, e la media la
+ritrova identica. C'è quindi un pavimento sotto il quale aggiungere alberi non
+fa scendere più niente, e quel pavimento è alto quanto gli alberi si somigliano
+fra loro.
+
 `````
 
 `````{tab} Superiore
@@ -369,23 +387,28 @@ combinazione, e la teoria che spiega perché funziona.
 
 L'idea è tanto semplice quanto efficace: a ogni split, invece di lasciar
 scegliere all'albero la domanda migliore tra *tutte* le caratteristiche,
-gliene mostriamo solo un sottoinsieme casuale (poche, estratte a caso ogni
-volta). Se la caratteristica dominante non è tra quelle proposte, l'albero è
-costretto a guardare altrove.
+gliene mostriamo solo un sottoinsieme casuale, sorteggiato di nuovo a ogni
+domanda. Quante gliene mostriamo? Di solito la radice quadrata di quante sono:
+con cento colonne, dieci per volta. Se la caratteristica dominante non è tra
+quelle proposte, l'albero è costretto a guardare altrove.
 
 È come chiedere a una giuria di esperti di votare, ma bendando ogni giurato su
 aspetti diversi del caso: nessuno può basarsi sempre sull'indizio più ovvio, e i
-loro pareri diventano davvero indipendenti. Alberi più diversi tra loro, media
+loro pareri si somigliano molto meno. Alberi più diversi tra loro, media
 più efficace, varianza ancora più bassa. Il singolo albero diventa un po’ meno
 bravo (gli abbiamo nascosto delle carte), ma l'insieme diventa molto più forte.
+
+Le bende, però, vanno messe davvero, e non compaiono da sole. Se i giurati
+vedono tutto, tornano tutti sull'indizio più ovvio, e la giuria è di nuovo
+quella di prima: una media di alberi che si somigliano.
 
 `````
 
 `````{tab} Superiore
 
 A ogni nodo, la ricerca dello split migliore è ristretta a un sottoinsieme
-casuale di $q$ caratteristiche estratte dalle $n$ totali; $q$ è una lettera
-nuova perché in questa sezione $m$ è già il numero di esempi. La convenzione
+casuale di $q$ caratteristiche estratte dalle $n$ totali, dove $n$ è il numero
+di colonne della tabella e il sorteggio si ripete a ogni nodo. La convenzione
 più diffusa è $q = \sqrt{n}$ per la classificazione e $q = n/3$ per la
 regressione, ed è una convenzione, non un default: in scikit-learn
 `RandomForestClassifier` estrae davvero $\sqrt{n}$ colonne, ma
@@ -450,8 +473,8 @@ accurato.
 
 `````{tab} Elementare
 
-Immagina uno studente che ripassa per un esame. Fa un primo giro di esercizi,
-sbaglia alcuni tipi di problema. Al secondo giro si concentra proprio su quelli
+Uno studente ripassa per un esame. Fa un primo giro di esercizi, e sbaglia
+alcuni tipi di problema. Al secondo giro si concentra proprio su quelli
 che ha sbagliato. Al terzo, su ciò che ancora non gli riesce. Ogni ripasso non
 riparte da zero: aggiusta il tiro là dove serve. Alla fine padroneggia
 l'insieme, un errore corretto per volta.
@@ -462,6 +485,17 @@ gli esempi classificati male ricevono un peso maggiore, così l'albero successiv
 è spinto a occuparsi soprattutto di loro. Gli alberi che nel complesso sbagliano
 meno pesano di più nel voto finale. Il risultato è un comitato in cui ciascuno è
 specializzato sui casi difficili lasciati aperti dai colleghi precedenti.
+
+C'è un secondo modo di dire «occupati di quello che gli altri hanno lasciato
+lì», ed è quello che oggi si usa di più: invece di ripesare gli esempi, si
+chiede al modello nuovo di indovinare **quanto manca**. Una valigia pesa 23
+chili. Il primo che la solleva dice 20, tre chili sotto il vero. Il secondo non
+prova a pesare la valigia: prova a dire di quanto ha sbagliato il primo, e
+propone «più 2». La stima aggiornata è 22, e adesso manca un chilo. Il terzo
+lavora su quel chilo, e così via. Nessuno dei tre, da solo, saprebbe pesare una
+valigia; la somma delle loro correzioni sì. Questo secondo modo si chiama
+**gradient boosting**, e il nome viene da lì: lo scarto che ogni modello insegue
+indica anche la direzione in cui l'errore cala più in fretta.
 
 `````
 
@@ -603,7 +637,10 @@ Il primo è il **voto**. Ogni modello dice la sua e vince la maggioranza. C'è
 una variante che quasi sempre funziona meglio: invece di contare i voti secchi
 si mediano le **probabilità**, così un modello sicurissimo pesa più di uno che
 era incerto. Contare i voti butta via l'informazione più utile, cioè quanto
-ciascuno ci credeva.
+ciascuno ci credeva. Con una riserva: le sicurezze devono essere confrontabili
+fra loro. Un modello che si dichiara certo al 99 per cento anche quando tira a
+indovinare trascina la media dalla sua parte, e a quel punto mediare le
+probabilità rende meno che contare i voti secchi.
 
 Il secondo è lo **stacking**, e l'idea è più ambiziosa: invece di decidere noi
 come pesare i modelli, **si addestra un modello a farlo**. Sopra i predittori
@@ -623,6 +660,15 @@ E la condizione perché tutto questo serva a qualcosa: i modelli devono
 **sbagliare in modi diversi**. Tre modelli che sbagliano sugli stessi casi non
 si correggono a vicenda, e combinarli non porta nulla. È la stessa ragione per
 cui una random forest decorrela gli alberi invece di limitarsi a fare la media.
+
+Su che cosa si può contare, allora, mettendo insieme dei pareri a pesi fissi?
+Quando i pareri sono numeri e se ne fa la media, su una cosa sola: il risultato
+non viene peggio del parere medio del gruppo, e viene tanto meglio quanto più i
+pareri erano diversi fra loro. Battere il **migliore** dei membri, invece, non
+lo promette nessuno. Un comitato che perde contro il suo elemento più bravo non
+ha infranto nessuna regola, e capita proprio quando gli altri lo tirano giù.
+Con i voti contati a maggioranza, poi, una garanzia altrettanto
+pulita non c'è.
 
 `````
 
@@ -659,8 +705,7 @@ $E_{\text{ens}} = \bar{E} - \bar{A}$ con $\bar{A} \ge 0$. Combinare aiuta nella
 misura in cui i modelli sono decorrelati negli errori, e non aiuta affatto se
 sono d'accordo anche quando sbagliano.
 
-Due cautele, che il paragrafo qui sotto mette alla prova con i numeri. La
-prima: l'identità **non regge tutti gli ensemble**, perché per la loss 0-1
+Due cautele. La prima: l'identità **non regge tutti gli ensemble**, perché per la loss 0-1
 (cioè per il voto di maggioranza) una scomposizione additiva analoga non
 esiste, e gli effetti della diversità dipendono dalla distribuzione delle
 etichette {cite}`wood2023unified`. La seconda, più insidiosa: da
@@ -675,7 +720,7 @@ ci si aspetta. Nell'esperimento che segue i tre modelli di base sono una
 foresta casuale, un k-NN e un terzo che non abbiamo ancora incontrato, il
 **Bayes ingenuo**.
 
-Vale la pena spiegarlo, perché è semplicissimo. Guarda le colonne una per
+È semplicissimo. Guarda le colonne una per
 volta e si fa, di ciascuna, una domanda sola: un valore come questo, quanto
 spesso capita fra i malati e quanto spesso fra i sani? Poi mette insieme tutti i
 verdetti parziali moltiplicandoli fra loro, come se ogni colonna raccontasse una
@@ -901,8 +946,8 @@ alle reti.
   leggermente diverse degli stessi dati e si fanno votare: gli errori, se sono
   errori diversi, si annullano a vicenda. La **foresta casuale** aggiunge il
   colpo di genio di nascondere a ogni albero alcune colonne, come una giuria in
-  cui ogni giurato è bendato su aspetti diversi, così i pareri diventano
-  davvero indipendenti.
+  cui ogni giurato è bendato su aspetti diversi, così i pareri si somigliano
+  molto meno.
 - L'altra strada è metterli **in fila** invece che in parallelo: ogni nuovo
   modello si occupa solo di ciò che i precedenti hanno sbagliato, come lo
   studente che al secondo giro ripassa gli esercizi andati male. È il

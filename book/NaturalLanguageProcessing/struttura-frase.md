@@ -50,7 +50,12 @@ salta il gatto nero» suona benissimo, mentre «*Muro il gatto nero salta sul*»
 non è italiano: abbiamo strappato il cartone e le forchette sono per terra.
 
 E dentro la scatola «sul muro» c'è una scatolina, «il muro»: scatole dentro
-scatole, fino alle parole.
+scatole, fino alle parole. Verso l'alto, invece, non c'è un tetto. Una scatola
+può stare dentro una scatola dello stesso tipo, e quella dentro un'altra
+ancora: «il gatto del vicino del piano di sopra» ne infila tre una dentro
+l'altra, e si potrebbe continuare per un pezzo. Sono sempre gli stessi pochi
+modi di inscatolare, riusati; bastano quelli a costruire frasi lunghe quanto si
+vuole, comprese quelle che nessuno ha mai pronunciato.
 
 Ora il binocolo. Le due letture sono due modi diversi di inscatolare le stesse
 parole. Se l'uomo ha il binocolo, c'è una scatola grande: «Ho visto [un uomo
@@ -67,9 +72,9 @@ sette parole, due disegni di scatole: l'ambiguità è tutta lì.
 Lo strumento formale è la **grammatica context-free** (CFG), introdotta da
 Noam Chomsky in un articolo del 1956 {cite}`chomsky1956three` che confronta
 tre modelli matematici del linguaggio: i processi a stati finiti (i parenti
-stretti degli $n$-gram incontrati in questo capitolo), le grammatiche a
-struttura sintagmatica e le grammatiche trasformazionali. La tesi che fece
-scuola: gli stati finiti non bastano, perché la sintassi annida dipendenze a
+stretti degli $n$-gram), le grammatiche a struttura sintagmatica e le
+grammatiche trasformazionali. La tesi che fece scuola: gli stati finiti non
+bastano, perché la sintassi annida dipendenze a
 distanza arbitraria; da quella gerarchia di formalismi (oggi detta *gerarchia
 di Chomsky*) l'informatica ha attinto anche i linguaggi di programmazione.
 
@@ -91,15 +96,14 @@ F &\to \text{AUX} \ \text{SV}
 \end{aligned}
 $$
 
-dove $F$ è la frase, SN, SV e SP i sintagmi nominale, verbale e
-preposizionale, e le categorie lessicali (DET, N, V, AUX, P) riscrivono le
-parole. Una **derivazione** parte da $F$ e riscrive un simbolo alla volta
-finché restano solo parole; la sua storia è l’**albero di derivazione**. Si
-noti la ricorsione di $\text{SN} \to \text{SN}\ \text{SP}$: sei regole
-generano infinite frasi, ed è proprio questa regola, in concorrenza con
-$\text{SV} \to \text{SV}\ \text{SP}$, a produrre l'ambiguità del binocolo
-(l’*attacco del sintagma preposizionale* al nome oppure al verbo, lo stesso
-bivio annunciato nella panoramica del capitolo).
+dove $F$ è il simbolo iniziale, cioè la frase, SN, SV e SP i sintagmi
+nominale, verbale e preposizionale, e le categorie lessicali (DET, N, V, AUX,
+P) riscrivono le parole. Una **derivazione** parte da $F$ e riscrive un simbolo
+alla volta finché restano solo parole; la sua storia è l’**albero di
+derivazione**. Si noti la ricorsione di $\text{SN} \to \text{SN}\ \text{SP}$:
+sei regole generano infinite frasi, ed è proprio questa regola, in concorrenza
+con $\text{SV} \to \text{SV}\ \text{SP}$, a produrre l'ambiguità del binocolo
+(l’*attacco del sintagma preposizionale*, al nome oppure al verbo).
 
 `````
 
@@ -113,16 +117,19 @@ dichiara il ruolo.
 
 `````{tab} Elementare
 
-Immagina l'organigramma di una piccola azienda. Ogni parola ha esattamente un
-capo, tranne una: il verbo principale, che è l'amministratore delegato. In «Il
+In un organigramma aziendale ogni impiegato ha un capo, e uno solo non ce l'ha.
+Una frase, disegnata così, ha la stessa forma: ogni parola dipende da un'altra
+parola, tranne il verbo principale, che è l'amministratore delegato. In «Il
 gatto nero salta sul muro» comanda «salta»: per lui lavorano «gatto», con la
 qualifica di *soggetto* (chi compie l'azione), e «muro», con la qualifica di
 *luogo*. A loro volta «il» e «nero» lavorano per «gatto», e «sul» per «muro».
-Sei parole in fila, cinque frecce (perché il capo non ha nessuno sopra di sé),
-ogni freccia con la sua mansione: questo è tutto. Se contate «su» e «il»
-separati, come si fa quando si etichetta parola per parola, le caselle
-dell'organigramma diventano sette e le frecce sei: la struttura non cambia,
-cambia solo quanto finemente si taglia il testo prima di disegnarla.
+Sei parole in fila, cinque frecce fra una parola e l'altra, ognuna con la sua
+mansione. Sopra l'amministratore delegato non c'è nessuno: in cima al foglio
+resta solo il nome dell'azienda, il punto da cui il disegno parte. Se contate
+«su» e «il» separati, come si fa quando si etichetta parola per parola, le
+caselle dell'organigramma diventano sette e le frecce sei: la
+struttura non cambia, cambia solo quanto finemente si taglia il testo prima di
+disegnarla.
 
 E l'ambiguità del binocolo? Diventa una sola domanda da ufficio del
 personale: *per chi lavora «binocolo»?* Se lavora per «visto», è lo
@@ -139,6 +146,12 @@ resta identico, cambia solo dove le parole sono scritte sulla riga. Ecco perché
 il progetto che annota con gli stessi criteri più di centocinquanta lingue,
 quell'Universal Dependencies già incontrato per le etichette, ha scelto le
 frecce, e infatti si chiama «delle dipendenze».
+
+C'è un effetto collaterale. Quando le parole si mescolano parecchio, due frecce
+disegnate sopra la riga possono accavallarsi, perché ciascuna deve raggiungere
+il proprio capo che nel frattempo è finito lontano. Dove l'ordine delle parole
+è rigido succede di rado; dove è libero è ordinaria amministrazione, e chi
+costruisce il disegno deve mettere in conto anche quel caso.
 
 `````
 
@@ -279,50 +292,50 @@ schema: l'idea, il costo, il compromesso.
 
 `````{tab} Elementare
 
-**Dal basso, per pezzi.** Il primo metodo si chiama CKY, dalle iniziali dei tre
-informatici che lo scoprirono per conto loro negli anni Sessanta (Cocke,
-Kasami e Younger), e lavora come si monta un mosaico. Prima capisce tutti i
-pezzi lunghi due parole («un uomo», «il binocolo»), poi quelli di tre («con il
-binocolo»), poi di quattro, e a ogni giro incolla due pezzi che ha già capito.
-Il risparmio sta lì: ogni pezzo lo calcola **una volta sola**, anche se servirà
-a dieci letture diverse. È la programmazione dinamica del navigatore di Viterbi
-della sezione precedente, applicata ai tratti di frase invece che alle parole:
-mai rifare due volte la stessa strada.
+Sul tavolo c'è un mosaico a metà. Due tessere che combaciano formano un'isola,
+un'altra coppia ne forma un'altra, e le isole si uniscono fra loro quando sono
+pronte. Il primo metodo monta la frase così, e si chiama **CKY** dalle iniziali
+di Cocke, Kasami e Younger, che negli anni Sessanta lo scoprirono ciascuno per
+conto suo. Prima mette insieme tutti i tratti lunghi due parole («un uomo», «il
+binocolo»), poi quelli di tre («con il binocolo»), poi di quattro, e a ogni
+giro incolla due isole già montate. Un'isola montata non si smonta più: «il
+binocolo» lo capisce una volta sola, anche se poi servirà a dieci letture
+diverse. È il risparmio del navigatore di Viterbi, spostato dalle parole ai
+tratti di frase.
 
-Il conto da pagare è che il lavoro cresce in fretta, e si può stimare. I pezzi
-da esaminare sono tutti i tratti di frase possibili, cioè tutti i modi di
-scegliere un inizio e una fine: con quattro parole sono dieci, con otto parole
-sono trentasei, quasi quattro volte tanti. Per giunta ogni tratto si può
-spezzare in due nel doppio dei punti. Quattro per due fa otto: raddoppiando la
-lunghezza della frase, il lavoro diventa circa otto volte tanto.
+Il tavolo però si riempie, e si può contare di quanto. Mettete in fila quattro
+parole. Le isole da provare, una per ogni scelta di dove cominciare e dove
+finire, sono dieci. Con otto parole diventano trentasei, quasi quattro volte
+tante. Ogni isola, per giunta, si può tagliare in due nel doppio dei punti di
+prima. Quattro per due fa otto, quindi a raddoppiare la
+lunghezza della frase il lavoro sul tavolo diventa circa otto volte tanto.
 
-**Da sinistra, a mosse.** Il secondo metodo legge la frase una parola alla
-volta tenendo accanto una **pila**, come un mazzo di carte scoperte di cui si
-vedono solo le prime due. A ogni passo fa una mossa sola, e le mosse possibili
-sono tre.
+Il secondo metodo gioca a carte. Le parole della frase arrivano una alla volta,
+nel loro ordine, e accanto c'è una **pila** di carte scoperte di cui si vedono
+solo le prime due. A ogni turno si fa una mossa sola, e le mosse sono tre.
 
-1. **Prendi**: tira su la parola successiva della frase e mettila in cima alla
-   pila.
-2. **Collega verso sinistra**: fra le due carte in cima, quella che sta sotto
-   diventa dipendente di quella che sta sopra, e sparisce dalla pila.
-3. **Collega verso destra**: il contrario, comanda quella sotto e sparisce
-   quella sopra.
+1. **Prendi**: la parola successiva della frase sale in cima alla pila.
+2. **Collega verso sinistra**: fra le due carte in cima comanda quella sopra, e
+   quella sotto esce dal tavolo.
+3. **Collega verso destra**: il contrario, comanda quella sotto ed esce quella
+   sopra.
 
-Le ultime due sono la stessa mossa fatta nei due versi, e servono tutte e due
-perché a volte comanda la parola che è arrivata prima («salta» comanda
-«muro»), a volte quella arrivata dopo («gatto» comanda «il»). Ogni volta che
-due carte si collegano, una esce di scena, perché il suo posto
-nell'organigramma è ormai deciso; si va avanti finché la pila è vuota, e
-l'albero è fatto.
+Le ultime due sono la stessa mossa nei due versi, e servono entrambe perché a
+volte comanda la parola arrivata prima («salta» comanda «muro»), a volte quella
+arrivata dopo («gatto» comanda «il»). La carta che si collega esce
+di scena, perché il suo posto nell'organigramma è ormai deciso. Si tira avanti
+finché le parole sono finite e sulla pila resta una carta sola, il capo di
+tutti. L'albero è fatto.
 
-A decidere quale delle tre mosse fare, a ogni passo, è un piccolo programma
-addestrato su migliaia di frasi già analizzate a mano: guarda che cosa c'è in
-cima alla pila e che cosa resta da leggere, e sceglie. Una sola passata sulla
-frase: velocissimo.
+A giocare è qualcuno che ha visto migliaia di frasi già analizzate a mano.
+Guarda le due carte in cima e quante parole restano da prendere, poi butta giù
+la mossa senza pensarci. Due mosse per parola, una sola passata sulla frase, e
+la partita è chiusa.
 
-Il difetto è il solito delle scelte ingorde, lo stesso visto per la traduzione:
-una mossa sbagliata all'inizio non si recupera più, perché non si torna
-indietro. E il rimedio è lo stesso, tenere aperte alcune strade invece di una.
+Una carta uscita dal tavolo, però, non ci torna più. Un collegamento messo
+storto alla terza parola resta storto fino all'ultima, ed è il difetto di ogni
+scelta ingorda, quella della traduzione compresa. Il rimedio è tenere aperte
+tre o quattro partite invece di una, e scartare alla fine quelle andate peggio.
 
 `````
 
@@ -352,11 +365,13 @@ restituisce l'albero più probabile: è Viterbi, trasportato dai prefissi agli
 intervalli.
 
 **Parsing a transizioni.** Per le dipendenze lo standard è lo *shift-reduce*:
-una configurazione è una terna (pila $\sigma$, buffer $\beta$, archi $A$) e le
-mosse della variante *arc-standard* sono tre; `shift` (sposta la prossima
-parola sulla pila), `left-arc` e `right-arc` (creano un arco etichettato tra
-le due parole in cima e ne rimuovono la dipendente). Una frase di $n$ parole
-si analizza in circa $2n$ mosse: costo **lineare**. La mossa la sceglie un
+una configurazione è una terna (pila $\sigma$, buffer $\beta$, archi
+$\mathcal{A}$) e le mosse della variante *arc-standard* sono tre; `shift`
+(sposta la prossima parola sulla pila), `left-arc` e `right-arc` (creano un
+arco etichettato tra le due parole in cima e ne rimuovono la dipendente). La
+configurazione finale ha il buffer vuoto e sulla pila la sola radice, e una
+frase di $n$ parole ci arriva in circa $2n$ mosse: costo **lineare**. La mossa
+la sceglie un
 classificatore sullo stato corrente; dalla svolta neurale (Chen e Manning,
 2014) i tratti simbolici sono rimpiazzati dagli embedding delle parole su pila
 e buffer, dati in pasto a un MLP. La decodifica greedy propaga gli errori;
@@ -527,7 +542,9 @@ dialogo tra persone e macchine.
 - Le **scatole del trasloco**: certi gruppi di parole viaggiano insieme, e lo si
   scopre con due prove da fare a orecchio, sostituire il gruppo con una parola
   sola e spostarlo tutto intero. Le scatole stanno dentro altre scatole, fino
-  alle singole parole.
+  alle singole parole; e una scatola può stare dentro una dello stesso tipo,
+  così che pochi modi di inscatolare, riusati, bastino a frasi lunghe quanto si
+  vuole, comprese quelle che nessuno ha mai pronunciato.
 - L’**organigramma**: la stessa struttura si può disegnare con delle frecce,
   ogni parola con un capo solo e il verbo principale in cima. L'ambiguità del
   binocolo diventa una domanda sola: per chi lavora «binocolo»? Le frecce

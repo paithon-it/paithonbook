@@ -83,30 +83,34 @@ Ogni fotografia va descritta riempiendo una scheda con otto
 caselle. Le caselle non hanno un significato deciso da noi: è il modello a
 scoprire che cosa metterci.
 
-Due cose devono essere vere perché la scheda sia buona, e sono due cose diverse.
+Perché la scheda sia buona devono valere due regole, e chiedono cose diverse.
 
-La prima: se compilo la scheda guardando due ritagli diversi della stessa foto,
-le due schede devono venire uguali. È il punto di sempre, l'indifferenza alle
-differenze che non contano. Con un'avvertenza che qui conta più che altrove:
-prima di confrontare due schede si guarda che cosa ogni casella ha scritto su
-tutte le altre fotografie, e una casella che scrive sempre lo stesso numero
-viene messa da parte, perché non ha detto niente. Due schede identiche perché
-tutte le caselle sono bloccate non si somigliano affatto: non hanno detto
-niente su cui somigliarsi.
+La somiglianza: se compilo la scheda guardando due ritagli diversi della stessa
+foto, le due schede devono venire uguali. Prima di confrontarle, però, si guarda
+che cosa ogni casella ha scritto sulle altre fotografie, e una casella che
+scrive sempre lo stesso numero viene messa da parte: non ha detto niente. Due
+schede identiche perché tutte le caselle sono bloccate non si somigliano
+affatto, non hanno detto niente su cui somigliarsi.
 
-La seconda è quella nuova: **le otto caselle devono dire otto cose diverse**. Se
-la casella 3 dice sempre la stessa cosa della casella 5, allora ho una scheda da
-otto caselle che ne vale sette, e sto sprecando spazio.
+La varietà: le otto caselle devono dire otto cose diverse. Se la casella 3 dice
+sempre la stessa cosa della casella 5, ho una scheda da otto caselle che ne vale
+sette, e sto sprecando spazio. Quanto pesi la varietà rispetto alla somiglianza
+lo decidiamo noi, con una manopola.
 
 Ecco perché questa famiglia non ha bisogno né di rivali né di trucchi
-costruttivi: i due requisiti vietano due guasti diversi, e insieme li coprono
-tutti e due. La **risposta vuota**, cioè descrivere tutte le fotografie allo
-stesso identico modo, la ferma il **primo**: caselle bloccate non si
-somigliano, non c'è niente da premiare, e quel requisito resta insoddisfatto
-per intero. Il **secondo** ferma un guasto più educato, la scheda che cambia da
-foto a foto ma dice otto volte la stessa cosa: lì i due ritagli si somigliano
-quanto devono, e a pagare è lo spreco. In tutti e due i casi la penalità è
-scritta nel punteggio, e non arriva per vie traverse.
+costruttivi: le due regole vietano guasti diversi, e insieme li coprono. La
+risposta vuota, cioè descrivere tutte le foto allo stesso modo, la ferma la
+somiglianza: caselle bloccate non si somigliano, non c'è niente da premiare, e
+quella regola resta insoddisfatta per intero. La varietà ferma un guasto più
+educato, la scheda che cambia da foto a foto ma dice otto volte la stessa cosa:
+lì i due ritagli si somigliano quanto devono, e a pagare è lo spreco. In tutti e
+due i casi la penalità è scritta nel punteggio, e non arriva per vie traverse.
+
+C'è chi, invece di mettere da parte la casella bloccata, scrive la pretesa nero
+su bianco: ogni casella deve variare almeno tanto da una foto all'altra, e se
+varia meno si paga. La richiesta sta su ciascuna scheda invece che nel confronto
+fra le due, e allora a compilarle possono essere due persone che lavorano in
+modo diverso, o perfino su materiali diversi.
 
 `````
 
@@ -148,19 +152,19 @@ segnale, che è la forma interessante del collasso, dopo la standardizzazione le
 colonne di $\mathbf{Z}^A$ sono identiche fra loro, e così quelle di
 $\mathbf{Z}^B$: ogni cella di $\mathbf{C}$ vale allora lo stesso numero $c$,
 quello che sta sulla diagonale, e il termine di ridondanza paga
-$\lambda \, D(D-1) \, c^2$, cioè tutto quello che può pagare a parità di
-diagonale, mentre una rappresentazione con la stessa diagonale e coordinate
-scorrelate pagherebbe zero. Non c'è niente da dimostrare sulla dinamica
+$\lambda \, D(D-1) \, c^2$, cioè $D(D-1)$ celle piene quanto la diagonale,
+mentre una rappresentazione con la stessa diagonale e coordinate scorrelate
+pagherebbe zero. Non c'è niente da dimostrare sulla dinamica
 dell'ottimizzazione, perché la penalità è scritta nell'obiettivo.
 
 **VICReg** {cite}`bardes2022vicreg` arriva alla stessa meta con tre termini
-espliciti, varianza, invarianza e covarianza, e la differenza pratica sta nel
-primo: un termine che tiene la **deviazione standard di ogni coordinata sopra
-una soglia**, con una cerniera. Gli autori lo dicono in modo che vale la pena
-riportare, perché è la critica alla seconda famiglia: il collasso, scrivono, «è
-spesso evitato attraverso bias impliciti nell'architettura di apprendimento, che
-spesso mancano di una giustificazione o di un'interpretazione chiara», e VICReg
-«evita esplicitamente il problema del collasso» con un termine di
+espliciti, varianza, invarianza e covarianza, e la differenza pratica sta nella
+varianza: un termine che tiene la **deviazione standard di ogni coordinata sopra
+una soglia**, con una cerniera, calcolato su ciascun ramo per conto suo. Gli
+autori lo scrivono come una critica alla seconda famiglia: il collasso, dicono,
+«è spesso evitato attraverso bias impliciti nell'architettura di apprendimento,
+che spesso mancano di una giustificazione o di un'interpretazione chiara», e
+VICReg «evita esplicitamente il problema del collasso» con un termine di
 regolarizzazione sulla varianza. Due conseguenze concrete: le due reti non hanno
 bisogno di condividere i pesi né di essere una la copia lenta dell'altra, e i
 due rami possono avere architetture diverse o perfino ingressi di natura
@@ -351,22 +355,23 @@ da due lati.
 - **Rendere le due reti diverse**: niente rivali, ma allievo e insegnante non
   sono intercambiabili. Funziona, e la spiegazione del perché è arrivata dopo il
   risultato.
-- **Vincolare le statistiche** è la novità di questa sezione. Si compila una
-  scheda con otto caselle e si chiede due cose insieme: che due ritagli della
-  stessa foto diano la stessa scheda, e che **le otto caselle dicano otto cose
-  diverse**. Le due richieste fermano due guasti diversi: la risposta vuota,
-  dove ogni casella scrive sempre lo stesso numero, la ferma la prima, perché
-  caselle bloccate non si somigliano; la scheda che dice otto volte la stessa
-  cosa la ferma la seconda. Nessuna delle due arriva per vie traverse: è
-  scritto nel punteggio. L'idea viene dalla neurofisiologia degli anni Sessanta.
+- **Vincolare le statistiche**: si compila una scheda con otto caselle e si
+  chiedono due cose insieme, la somiglianza e la varietà. La somiglianza vuole
+  che due ritagli della stessa foto diano la stessa scheda; la varietà vuole che
+  **le otto caselle dicano otto cose diverse**. Le due richieste fermano due
+  guasti diversi: la risposta vuota, dove ogni casella scrive sempre lo stesso
+  numero, la ferma la somiglianza, perché caselle bloccate non si somigliano; la
+  scheda che dice otto volte la stessa cosa la ferma la varietà. Nessuna delle
+  due arriva per vie traverse: è scritto nel punteggio. L'idea viene dalla
+  neurofisiologia degli anni Sessanta.
 - **Ricostruire**: si copre un pezzo e si chiede di rifarlo. Qui la risposta
   vuota non serve nemmeno a niente, perché per rifare *quella* foto bisogna
   averla descritta in modo suo. Si paga altrove: si spreca fatica su dettagli
   che nessuno può indovinare.
-- Il programma di questa pagina mostra la cosa in trenta righe: le caselle
-  smettono di ripetersi (il numero della ridondanza crolla da $0{,}70$ a
-  $0{,}01$) mentre la somiglianza fra le due schede resta dov'era, perché era
-  già al massimo che il disturbo consentiva.
+- Trenta righe di codice fanno vedere il vincolo all'opera: le caselle smettono
+  di ripetersi (il numero della ridondanza crolla da $0{,}70$ a $0{,}01$) mentre
+  la somiglianza fra le due schede resta dov'era, perché era già al massimo che
+  il disturbo consentiva.
 ```
 
 `````
@@ -388,8 +393,8 @@ da due lati.
   la ferma l'invarianza (la standardizzazione manda $\mathbf{C}$ a zero e quel
   termine vale $D$), mentre le coordinate **tutte uguali** le ferma la
   ridondanza, perché allora ogni cella di $\mathbf{C}$ vale lo stesso numero $c$
-  della diagonale e il termine paga $\lambda D(D-1)c^2$, il massimo a parità di
-  diagonale.
+  della diagonale e il termine paga $\lambda D(D-1)c^2$, cioè $D(D-1)$ celle
+  piene quanto la diagonale, e coordinate scorrelate pagherebbero zero.
 - **VICReg** {cite}`bardes2022vicreg`: varianza, invarianza, covarianza. Il
   termine di **varianza** con cerniera tiene la deviazione standard di ogni
   coordinata sopra una soglia, quindi l'anti-collasso è **esplicito** e non un
@@ -400,9 +405,9 @@ da due lati.
   vista dalla rappresentazione dell'altra, con equipartizione fra i prototipi
   come vincolo anti-collasso. Sta a cavallo fra i contrastivi e i metodi che
   vincolano le statistiche.
-- Nell'esperimento della pagina la fuori diagonale scende da $0{,}70$ a
-  $0{,}01$ mentre la diagonale non si muove, $0{,}92$ all'inizio e $0{,}93$
-  dopo seicento passi: è il **tetto imposto dal rumore delle viste**,
+- Nell'esperimento con otto coordinate ridondanti la fuori diagonale scende da
+  $0{,}70$ a $0{,}01$ mentre la diagonale non si muove, $0{,}92$ all'inizio e
+  $0{,}93$ dopo seicento passi: è il **tetto imposto dal rumore delle viste**,
   $1/(1+\sigma^2)$ con $\sigma = 0{,}3$, non un limite dell'ottimizzazione. La
   diagonale non deve tendere a uno in assoluto, ma al massimo che le
   trasformazioni consentono.

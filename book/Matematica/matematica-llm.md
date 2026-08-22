@@ -20,10 +20,10 @@ Gli altri tre (*query*, *chiave*, *testa*) sono etichette appiccicate a tre
 oggetti che qui nasceranno con un nome italiano; il nome inglese arriverà dopo,
 in una tabella, quando ci sarà qualcosa da tradurre.
 
-Questa sezione fa lo stesso percorso, ed è il punto in cui la cassetta degli
-attrezzi si richiude. Non spiega l'architettura Transformer, che il capitolo
-dedicato smonterà pezzo per pezzo con i suoi nomi standard; risponde a una
-domanda più stretta e, per chi ha appena finito cinque sezioni di
+Qui il percorso è lo stesso, ed è il punto in cui la cassetta degli
+attrezzi si richiude. L'architettura Transformer resta fuori, perché il
+capitolo dedicato la smonterà pezzo per pezzo con i suoi nomi standard; la
+domanda è più stretta e, per chi ha appena finito cinque sezioni di
 matematica, più urgente: *di che cosa è fatto un modello linguistico, se lo si
 guarda con gli strumenti visti fin qui?*
 
@@ -41,7 +41,7 @@ composti e in quante volte vengono ripetuti.
 matematica indica due cose diverse: nell'analisi è quella che moltiplica le
 pendenze lungo una catena di funzioni, la si è vista con gli ingranaggi; in
 probabilità è quella che spezza la probabilità di una sequenza intera nel
-prodotto dei singoli passi. Servono tutte e due in questa pagina, la seconda
+prodotto dei singoli passi. Servono tutte e due, la seconda
 per dire *che cosa* calcola il modello e la prima per addestrarlo, e il nome
 in comune è una coincidenza storica, non un legame.)
 
@@ -161,8 +161,8 @@ numeri.
 
 `````{tab} Elementare
 
-Il modo più ovvio è anche il peggiore: si numerano le voci del vocabolario da
-$1$ a cinquantamila e si dà a ciascuna una lista lunga cinquantamila, tutta di
+Si potrebbero numerare le voci del vocabolario da $1$ a cinquantamila,
+dando a ciascuna una lista lunga cinquantamila, tutta di
 zeri tranne un $1$ nella sua casella. È la codifica che si chiama *one-hot*,
 «uno acceso». Funziona, nel senso che ogni parola ha la sua lista e nessuna si
 confonde con un'altra, ma butta via l'unica cosa che ci interessava. Prese due
@@ -241,77 +241,57 @@ frasi diverse, deve uscire con due vettori diversi.
 ## Il motore: una media pesata con pesi appresi
 
 Il meccanismo che risolve il problema è, come operazione, fra le più modeste
-di questo libro: una media pesata. Tutto il resto è il modo in cui i pesi
+viste finora: una media pesata. Tutto il resto è il modo in cui i pesi
 vengono decisi.
 
 `````{tab} Elementare
 
-Per capire «salta» in «Il gatto nero salta sul muro» conviene mescolare al
-suo vettore un po’ di ciò che sanno le altre parole: parecchio di «gatto»
-(è chi salta), un po’ di «muro» (è dove), quasi niente di «il» e di «sul».
-Mescolare in proporzioni diverse è fare una **media pesata**: si moltiplica
-ogni vettore per un numero e si somma tutto (sono i due gesti della sezione di
-algebra lineare, moltiplicare una lista per un numero e sommarne due voce per
-voce), e si pretende che i numeri siano non negativi e sommino a uno,
-altrimenti non è una media ma una combinazione qualsiasi.
+«Salta», in «Il gatto nero salta sul muro», ha un minuto per capire di che
+salto si tratta, e lo spartisce fra le altre parole: mezzo a «gatto», che è chi
+salta, un quarto a «muro», che è dove, briciole a «il» e a «sul». Nessuna
+porzione è negativa, e insieme fanno il minuto esatto. Mescolare i vettori in
+quelle proporzioni è fare una **media pesata**, cioè moltiplicare ogni lista
+per un numero e sommarle voce per voce, i due gesti della sezione di algebra
+lineare. La porzione che la parola numero $i$ dà alla numero $j$ è il **peso di
+influenza** $\alpha_{ij}$, dove la lettera greca si legge «alfa» e i due
+numerini stanno per le due parole in gioco. Il minuto di «gatto» si spartisce
+in un altro modo, perché quanto «gatto» serve a «salta» non è quanto «salta»
+serve a «gatto».
 
-Quel numero, il peso che la posizione $i$ mette sulla posizione $j$, lo
-chiamiamo **peso di influenza** e lo scriviamo $\alpha_{ij}$: la lettera greca
-$\alpha$ si legge «alfa», e i due numerini servono perché il peso dipende da
-due posizioni, non da una (quanto la parola numero $i$ si appoggia alla parola
-numero $j$). Due osservazioni lo rendono meno banale di quanto sembri.
+Ogni parola si presenta con tre biglietti: che cosa cerca, che cosa offre a chi
+la cerca, che cosa ha da dire una volta scelta. «Gatto» offre di essere un nome
+in funzione di soggetto, ed è questo a renderlo rilevante per un verbo; sul
+terzo biglietto scrive di essere un animale piccolo, domestico e nero. Con un
+biglietto solo le due cose si confonderebbero, e il confronto darebbe lo stesso
+numero in tutti e due i versi.
 
-La prima: l'influenza è a senso unico. Quanto «gatto» conta per capire
-«salta» non è quanto «salta» conta per capire «gatto». Sono due domande
-diverse e vogliono due risposte diverse.
+I tre biglietti escono tutti dalla stessa lista di numeri, passata per tre
+moduli di domande fisse. Entra una lista lunga, esce un biglietto corto, e il
+modulo è la tabella di pesi dell'appartamento, quella da cui, partendo da metri
+quadri, stanze e piano, uscivano «ampiezza» e «comodità». Nessun grammatico ha
+scritto i moduli. Partono uguali, e a distinguerli è il posto che occupano: i
+primi due finiscono accostati, il terzo letto ad alta voce, e mestieri diversi
+li tirano in direzioni diverse. Il posto è deciso a tavolino, quello che ci
+finisce sopra viene dalle prove. Se salta fuori qualcosa che somiglia alla
+grammatica, è perché aiuta a indovinare la parola dopo.
 
-La seconda: quel peso non lo scrive nessuno. Non c'è una regola grammaticale
-programmata da qualche parte che dica «il soggetto pesa molto sul verbo». Il
-peso viene calcolato dai vettori stessi, con una formula che ha dentro dei
-parametri, e sono quei parametri a essere appresi dai dati. Il modello non
-riceve la grammatica: riceve la struttura del calcolo, e la grammatica (o
-qualcosa che le somiglia) è ciò che deve venir fuori perché aiuta a
-indovinare la parola dopo.
+Il punteggio si conta accostando il primo biglietto dell'una e il secondo
+dell'altra, e guardando riga per riga quanto vanno d'accordo, che è poi il
+prodotto scalare della sezione di algebra lineare. Un biglietto da cento righe
+dà somme più grosse di uno da dieci solo perché le righe sono di più, e allora
+il punteggio si divide per un numero legato alla lunghezza del biglietto, così
+biglietti corti e lunghi tornano confrontabili. Restano numeri qualsiasi, anche
+negativi, e a farne porzioni di minuto c'è la softmax della sezione di analisi
+numerica, che li rende positivi e a somma uno, calcolata sottraendo prima il
+punteggio più alto (il trucco che là si chiamava *log-sum-exp*). Sono i pesi
+$\alpha_{ij}$.
 
-Per misurare quanto una parola riguardi un'altra si usa lo strumento
-della sezione di algebra lineare: il prodotto scalare, che è grande quando due
-vettori puntano dalla stessa parte. Ma non fra i vettori originali, per due
-ragioni. Il prodotto scalare è simmetrico, e abbiamo appena detto che
-l'influenza non lo è; e poi *quanto* una parola conta e *che cosa* quella
-parola porta con sé sono informazioni diverse. Che «gatto» sia un nome in
-funzione di soggetto è ciò che lo rende rilevante per il verbo; che sia un
-animale piccolo e domestico è ciò che ha da dire.
-
-Servono quindi tre versioni ridotte dello stesso vettore, non una, e ciascuna
-tiene solo l'informazione che serve al suo mestiere. Come si ricavano lo
-sappiamo già: è la tabella di pesi dell'appartamento. Lì, da (metri quadri,
-stanze, piano) uscivano due numeri nuovi, «ampiezza» e «comodità», ciascuno una
-mescolanza decisa da una riga della tabella. Qui è identico, in grande: la
-lista lunga di una parola passa attraverso una tabella di pesi e ne esce una
-lista più corta, che è appunto una versione ridotta. Di tabelle ce ne sono tre,
-diverse fra loro e tutte imparate dai dati: la prima tiene quello che la parola
-da capire sta *cercando*, la seconda quello che una parola di contesto *offre*,
-la terza quello che quella parola *dice* una volta che il peso è stato deciso.
-
-I tre mestieri, va detto, non li assegna nessuno alle tre tabelle: nascono
-uguali, e a distinguerle è il posto che occupano nel calcolo. La prima e la
-seconda finiscono moltiplicate fra loro per decidere un peso, la terza finisce
-mediata; da mestieri diversi vengono pressioni diverse, e le tre tabelle si
-adattano a quello che gli tocca fare. Tornerà più avanti, quando le copie del meccanismo saranno molte: la struttura
-del calcolo è decisa a progetto, il contenuto delle tabelle no.
-
-Adesso la ricetta si chiude. Il punteggio fra la parola $i$ e la parola $j$ è
-il prodotto scalare fra la prima versione ridotta di $i$ e la seconda di $j$:
-un numero solo, alto quando quello che $i$ cerca somiglia a quello che $j$
-offre, e diverso a seconda di chi guarda chi, perché le due tabelle sono
-diverse. Quei punteggi sono numeri qualsiasi, anche negativi, e vanno resi
-proporzioni: si passano alla softmax della sezione di analisi numerica, che li
-rende tutti positivi e a somma uno (ed è la stessa che si calcola sottraendo
-prima il punteggio più grande, il trucco che là si chiamava *log-sum-exp*).
-Sono i pesi $\alpha_{ij}$. E la nuova
-rappresentazione della parola $i$ è la media pesata, con quei pesi, delle terze
-versioni ridotte di tutte le parole. Tre tabelle, un prodotto scalare, una
-softmax e una media: non c'è altro.
+Senza quella divisione i punteggi diventano enormi, il primo classificato si
+prende tutto il minuto e «salta» ascolta una voce sola. Ritoccare un po’ i
+moduli non sposta più niente, e non resta niente da imparare. Decise le
+porzioni, ogni parola legge il suo terzo biglietto per il tempo che le tocca, e
+quello che «salta» ha sentito è la sua nuova versione. Tre moduli, un prodotto
+scalare, una softmax e una media: non c'è altro.
 
 `````
 
@@ -338,7 +318,7 @@ $\mathbf{c}_j$ è il contenuto che $j$ mette a disposizione. Restano da
 definire due cose: da dove vengono i pesi e da dove viene il contenuto.
 
 (Il simbolo è $\mathbf{o}_i$ e non $\mathbf{h}_i$ perché questa è l'uscita di
-**una** aggregazione, e vive in $\mathbb{R}^k$ con $k < d$. La
+una sola aggregazione, e vive in $\mathbb{R}^k$ con $k < d$. La
 rappresentazione contestuale $\mathbf{h}_i \in \mathbb{R}^d$ dell'obiettivo
 si ottiene solo più avanti, ricomponendo le $H$ aggregazioni parallele.)
 
@@ -457,10 +437,10 @@ sa produrre.
 
 `````{tab} Elementare
 
-Immagina una tabella gigantesca che, per ogni coppia di caratteristiche
-possibili, dica quanto quella dell'una si accorda con quella dell'altra: la
+Una tabella gigantesca che, per ogni coppia di caratteristiche
+possibili, dica quanto l'una si accorda con l'altra: la
 riga «è un verbo di movimento» incrocia la colonna «è un nome animato» con un
-numero alto, e così via per ogni coppia. Sarebbe il modo più generale di
+numero alto, e così via. Sarebbe il modo più generale di
 misurare l'affinità fra due parole, e sarebbe anche insostenibile. Prendiamo i
 numeri veri di GPT-3, il modello di cui torneremo a fare i conti più avanti: la
 lista di numeri di una parola, lì, è lunga $12\,288$. Quella tabella avrebbe
@@ -519,7 +499,7 @@ partenza dell'analisi meccanicistica dei circuiti nei Transformer
 {cite}`elhage2021mathematical`, dove il prodotto $(\mathbf{W}^A)^\top
 \mathbf{W}^B$ (la matrice *QK*) e l'analogo prodotto sul lato del contenuto
 (la matrice *OV*) sono gli oggetti da studiare, mentre le singole proiezioni
-non lo sono. Il perché è nella prossima sezione.
+non lo sono. Il perché è subito sotto.
 
 `````
 
@@ -548,7 +528,7 @@ frecce partendo da un'altra direzione. Terzo, ed è il punto: una rotazione non
 cambia né le lunghezze né gli angoli fra le frecce, e il prodotto scalare
 della sezione di algebra lineare dipende soltanto da quelli. Ruotando tutto
 insieme, quindi, i punteggi restano identici fino all'ultima cifra: le due
-liste girano **nello stesso verso**, e il prodotto scalare, che guarda solo
+liste girano nello stesso verso, e il prodotto scalare, che guarda solo
 lunghezze e angoli, non se ne accorge.
 
 Di rotazioni così ce ne sono infinite, e tutte danno lo stesso identico
@@ -588,7 +568,7 @@ E poiché anche gli embedding sono appresi, l'indeterminazione si estende a
 loro: per ogni $\mathbf{R} \in \mathbb{R}^{d \times d}$ invertibile,
 sostituire $\mathbf{e} \to \mathbf{R}\mathbf{e}$ insieme a
 $\mathbf{W}^A \to \mathbf{W}^A \mathbf{R}^{-1}$, $\mathbf{W}^B \to
-\mathbf{W}^B \mathbf{R}^{-1}$ **e** $\mathbf{W}^C \to \mathbf{W}^C
+\mathbf{W}^B \mathbf{R}^{-1}$ e $\mathbf{W}^C \to \mathbf{W}^C
 \mathbf{R}^{-1}$ lascia il modello identico. La terza sostituzione non è
 facoltativa: senza di essa restano invariati i punteggi $r_{ij}$, ma i
 contenuti $\mathbf{c}_j = \mathbf{W}^C\mathbf{e}_j$ diventano
@@ -599,8 +579,8 @@ $\mathbf{R}$ dal lato giusto, e i vettori d'uscita $\mathbf{u}_v$ con
 $\mathbf{R}^{-\top}$.)
 
 Due dettagli del modello vero stringono però la libertà di $\mathbf{R}$, e
-è giusto dirli, perché mostrano che l'indeterminazione è reale ma non
-sconfinata. Il primo è la normalizzazione, che agisce sul flusso residuo e non
+mostrano che l'indeterminazione è reale ma non sconfinata. Il primo è la
+normalizzazione, che agisce sul flusso residuo e non
 commuta con una trasformazione qualsiasi: normalizzare un vettore ruotato non
 dà il vettore normalizzato e poi ruotato, salvo che $\mathbf{R}$ sia una
 rotazione compatibile. Il secondo è la pratica, diffusissima, di riusare la
@@ -694,8 +674,9 @@ dipendenze sintattiche, altre la coreferenza, altre l'adiacenza, molte niente
 di nominabile.
 
 Vista in termini di algebra lineare, ogni copia definisce un modo diverso di
-costruire medie pesate, e le $H$ copie insieme formano una base rispetto a
-cui la rappresentazione contestuale viene costruita. Il termine standard per
+costruire medie pesate, e la rappresentazione contestuale è la somma dei
+contributi delle $H$ copie, ciascuno riproiettato dal proprio blocco di
+colonne di $\mathbf{W}^O$. Il termine standard per
 una copia è *head*, «testa»: un nome che suggerisce un componente progettato
 per una funzione (come le testine di un disco rigido) proprio dove la
 funzione, se c'è, è emersa da sola.
@@ -736,8 +717,8 @@ fra una pesata e l'altra.
 
 Nessun parametro è condiviso fra gli strati: ogni strato ha la sua copia
 completa del meccanismo, moltiplicata per il numero di relazioni. Ed è da qui
-che vengono i numeri da capogiro. Prendendo GPT-3, che è il modello su cui
-questa sezione fa i conti: novantasei strati, ciascuno con novantasei
+che vengono i numeri da capogiro. Prendendo GPT-3, lo stesso modello dei
+conti di prima: novantasei strati, ciascuno con novantasei
 relazioni, ciascuna con le sue tre tabelle, più le tabelle della parte non
 lineare. E ogni singola tabella, l'abbiamo visto, è già di suo qualche milione
 di caselle. Messo tutto insieme si arriva a circa **centosettantacinque
@@ -851,17 +832,16 @@ si prende il numero fisso $e$ della sezione sull'analisi, lo si eleva a
 ciascuno dei punteggi (così spariscono i segni meno e i punteggi alti restano
 alti) e si divide ognuno per il totale, in modo che la somma faccia uno.
 
-Vale la pena fermarsi su che cosa è appena successo, perché è la conclusione
-di tutta la sezione. Prese le ultime due righe da sole, quello che il modello
-fa alla fine è la cosa più ordinaria della statistica: ha una lista di numeri
+Quest'ultimo passo, preso da solo, è la cosa più ordinaria della statistica:
+il modello ha una lista di numeri
 che descrivono la situazione, la confronta con una lista per ogni risposta
 possibile e ne ricava delle probabilità. È lo stesso schema con cui si stima
 se un cliente restituirà un prestito, dati il suo reddito e la sua età. La
 differenza, e non è piccola, è che lì i numeri che descrivono la situazione li
 sceglie una persona (reddito, età, anzianità di lavoro), mentre qui sono
 calcolati dalle decine di strati che li precedono. Tutta la sofisticazione
-dell'architettura serve a **costruire i numeri giusti da dare in pasto a un
-metodo vecchio**.
+dell'architettura serve a costruire i numeri giusti da dare in pasto a un
+metodo vecchio.
 
 `````
 
@@ -879,8 +859,8 @@ P(w_{n+1} = v \mid w_1, \dots, w_n)
 = \frac{e^{z_v}}{\sum_{v' \in \mathcal{V}} e^{z_{v'}}} .
 $$
 
-Detto in una riga: **l'ultimo strato di un modello linguistico è una
-regressione logistica multinomiale** con $|\mathcal{V}|$ categorie, in cui il
+Detto in una riga: l'ultimo strato di un modello linguistico è una
+regressione logistica multinomiale con $|\mathcal{V}|$ categorie, in cui il
 vettore dei regressori non è stato scelto da un analista ma calcolato dagli
 $L$ strati precedenti. Tutta la sofisticazione dell'architettura serve a
 costruire delle buone covariate (cioè le variabili esplicative, i «numeri che
@@ -942,8 +922,8 @@ $$
 della regola della catena in una somma. Cambiando segno e mediando si
 ottiene la log-verosimiglianza negativa, che è poi la **cross-entropia** fra
 la distribuzione vera e quella del modello: la sezione sulla teoria
-dell'informazione ha già mostrato che sono la stessa cosa, e vale la pena
-vedere perché in questo caso specifico. La distribuzione «vera» su ogni
+dell'informazione ha già mostrato che sono la stessa cosa, e in questo caso
+specifico il perché si vede in due righe. La distribuzione «vera» su ogni
 posizione è *degenere*, cioè mette tutta la probabilità su un solo esito, la
 parola che è effettivamente occorsa; la sua entropia è nulla, e la
 cross-entropia si riduce a $-\log q(\text{parola occorsa})$. Minimizzare la

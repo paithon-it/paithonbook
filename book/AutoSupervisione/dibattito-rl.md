@@ -29,8 +29,8 @@ dello stesso ragionamento**, non come due obiezioni separate.
 Torniamo all'esempio della prima sezione, quella giornata nel bosco al termine
 della quale qualcuno ti dice soltanto «oggi hai fatto bene».
 
-La prima obiezione è quella che già conosciamo: **è pochissimo**. Una frase per
-una giornata intera. Se invece qualcuno ti avesse commentato ogni singolo
+La prima obiezione è quella che già conosciamo: è pochissimo. Una frase per una
+giornata intera. Se invece qualcuno ti avesse commentato ogni singolo
 avvistamento, avresti ricevuto migliaia di volte più informazione.
 
 La seconda obiezione è più insidiosa, e non riguarda la quantità: riguarda il
@@ -39,12 +39,20 @@ fatto centinaia di cose. Hai preso il sentiero giusto, ti sei fermato troppo
 presto a una radura, hai avuto la pazienza di aspettare mezz'ora sotto un faggio,
 e a un certo punto hai fatto rumore e hai fatto volare via tutto. Alla fine il
 giudizio è positivo. Che cosa impari? Che la giornata è andata bene: quindi, non
-sapendo distinguere, tendi a ripetere **tutto**, compresa la sosta inutile e il
+sapendo distinguere, tendi a ripetere tutto, compresa la sosta inutile e il
 rumore.
 
+Rimediare si può, in parte. Confronta la giornata con le tue solite, e un
+«bene» come quello di sempre smette di giustificare tutto. Fatti accompagnare da
+qualcuno che, dopo tante uscite, provi a dirti come sta andando mentre ancora
+cammini. Sono rimedi veri, e aiutano a smistare. Ma nemmeno lui ha mai sentito
+altro che la frase della sera: nessuno dei due inventa quello che nessuno ha
+detto.
+
 Il punto è che le due obiezioni si moltiplicano invece di sommarsi. Poca
-informazione sarebbe già un problema; poca informazione **e** da spalmare su
-centinaia di decisioni che non sai distinguere è un problema di un altro ordine.
+informazione sarebbe già un problema; poca informazione, e da spalmare su
+centinaia di decisioni che non sai distinguere, è un problema di un altro
+ordine. E più lunga è la giornata, più sono le decisioni fra cui dividerla.
 
 `````
 
@@ -66,10 +74,11 @@ $$
 \nabla_\theta \log \pi_\theta\!\left(a^{(m)}_t \mid s^{(m)}_t\right),
 $$
 
-lo **stesso** scalare $R^{(m)}$ moltiplica il gradiente di *ogni* azione della
-traiettoria $m$: le azioni buone e quelle cattive di un episodio riuscito
-ricevono la medesima spinta verso l'alto. La sezione sui metodi a gradiente di
-policy, nel capitolo sul deep reinforcement learning,
+dove $M$ è il numero di traiettorie campionate e $J(\theta)$ il ritorno atteso
+della politica. Lo scalare $R^{(m)}$ è uno per traiettoria, e moltiplica il
+gradiente di ogni azione di quella traiettoria: le azioni buone e quelle cattive
+di un episodio riuscito ricevono la medesima spinta verso l'alto. La sezione sui
+metodi a gradiente di policy, nel capitolo sul deep reinforcement learning,
 mostra come si attenua il problema (una linea di base per ridurre la varianza,
 un critico che stima il vantaggio azione per azione, lo sconto che accorcia
 l'orizzonte di attribuzione), e sono attenuazioni vere; ma nessuna di esse
@@ -196,23 +205,27 @@ parte interessante.
 
 Come si fa a misurare se un addestramento ha aggiunto capacità o solo messo
 ordine in quelle che c'erano? Gli autori usano un'idea semplice: invece di
-chiedere al modello **una** risposta, gliene chiedono tante alla stessa domanda,
-e contano se almeno una è giusta.
+chiedere al modello una risposta, gliene chiedono tante alla stessa domanda, e
+contano se almeno una è giusta.
 
 Se ne chiedi una sola, il modello addestrato col rinforzo vince: è più affidabile,
 azzecca più spesso al primo colpo. Ma se gliene chiedi moltissime, succede il
-contrario: è il modello **non** addestrato col rinforzo a risolvere problemi che
-l'altro non risolve, e nelle misure degli autori il sorpasso arriva già a
-qualche decina o qualche centinaio di tentativi, non a numeri irraggiungibili.
+contrario: è il modello di partenza, quello che il rinforzo non ha mai toccato,
+a risolvere problemi che l'altro non risolve, e nelle misure degli autori il
+sorpasso arriva già a qualche decina o qualche centinaio di tentativi, non a
+numeri irraggiungibili.
 
 La lettura degli autori è che l'addestramento non abbia insegnato niente di
 nuovo: abbia reso più probabili alcune strade che il modello sapeva già
 percorrere, e nel farlo abbia reso improbabili le altre. Più preciso, e più
 stretto.
 
-Attenzione a non tirare la conclusione più in là di dove arriva la misura: gli
-autori parlano del modo in cui questo addestramento si fa **oggi**, non di un
-limite di principio.
+Attenzione a non tirare la conclusione più in là di dove arriva la misura, e
+sono gli autori i primi a dirlo. Il trucco delle tante risposte non si può
+spingere all'infinito: se i tentativi fossero un numero assurdo, prima o poi
+anche battendo i tasti a caso salterebbe fuori la risposta giusta, e il
+confronto non direbbe più niente. Quello che è stato misurato è il modo in cui
+questo addestramento si fa **oggi**, non un limite di principio.
 
 `````
 
@@ -307,15 +320,14 @@ interessa qui è come è fatta: si scompone in due pezzi.
 
 `````{tab} Elementare
 
-Un esempio che gli autori usano, e che funziona meglio di qualunque formula.
+Uno vuole un caffè, e l'esempio è degli autori. In città ci sono due buoni bar:
+uno apre dal lunedì al venerdì, l'altro solo nel fine settimana. Lui però non sa
+che giorno è.
 
-Uno vuole un caffè. In città ci sono due buoni bar: uno apre dal lunedì al
-venerdì, l'altro solo nel fine settimana. Lui però non sa che giorno è.
-
-Che cosa fa per prima cosa? Non va a un bar: **guarda il calendario**. È
-un'azione che non gli porta nessun caffè, e nemmeno un passo verso il caffè:
-gli porta soltanto *informazione*. Solo dopo, sapendo che giorno è, va al bar
-giusto, e quella seconda azione è quella che gli porta la cosa che voleva.
+Che cosa fa per prima cosa? Non va a un bar: guarda il calendario. È un'azione
+che non gli porta nessun caffè, e nemmeno un passo verso il caffè: gli porta
+soltanto *informazione*. Solo dopo, sapendo che giorno è, va al bar giusto, e
+quella seconda azione è quella che gli porta la cosa che voleva.
 
 Le due azioni valgono per ragioni diverse: la prima **risolve un'incertezza**,
 la seconda **realizza una preferenza**. Ed è qui il punto: un sistema che sappia
@@ -326,8 +338,13 @@ gli autori, spesso il caffè non se lo beve.
 Il rinforzo classico è in quella situazione. La ricompensa dice quanto ti è
 andata bene, non quanto hai imparato; e per questo, quando l'esplorazione serve,
 gliela si deve pagare a parte, con un premio aggiunto apposta. Nell'inferenza
-attiva non si paga niente in più, perché **il valore di sapere era già dentro
-la quantità da minimizzare**, accanto al valore di ottenere.
+attiva non si paga niente in più, perché il valore di sapere era già dentro la
+quantità da minimizzare, accanto al valore di ottenere.
+
+E quel premio aggiunto apposta è proprio quello che resta al nostro uomo se gli
+si toglie la voglia di caffè: guarda il calendario per il gusto di sapere che
+giorno è, e nient'altro. La curiosità che si paga a parte, insomma, è il caso in
+cui il caffè non c'è.
 
 `````
 
@@ -397,7 +414,9 @@ comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </Worl
   allargare le capacità del modello non l'ha detta Karpathy, l'hanno **misurata**
   Yue e colleghi, chiedendo al modello tante risposte alla stessa domanda invece
   di una. Con una sola risposta vince il modello addestrato; con moltissime
-  vince quello di partenza.
+  vince quello di partenza. Vale per come questo addestramento si fa oggi:
+  spinto a un numero assurdo di tentativi il confronto non direbbe più niente,
+  perché la risposta giusta salterebbe fuori anche battendo i tasti a caso.
 - Il contraddittorio esiste ed è forte: gli assistenti che usiamo tutti i
   giorni sono rifiniti proprio così, e i modelli «ragionanti» si addestrano così
   sui problemi dove la risposta si può verificare. Nessuno propone di buttare il

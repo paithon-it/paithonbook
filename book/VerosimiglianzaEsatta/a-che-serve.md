@@ -24,25 +24,24 @@ frase.
 
 `````{tab} Elementare
 
-Vale la pena fare il conto una volta con numeri veri, perché è lì che il legame
-smette di sembrare una metafora.
-
 Una figurina a colori di 32 pixel per lato è fatta di $32 \times 32 \times 3 =
 3.072$ numeri, ognuno fra 0 e 255. Chi non sa niente di come sono fatte le
 immagini deve spendere 8 bit per ciascuno, cioè 3.072 byte: è il file grezzo.
-Il miglior modello fra quelli che questo capitolo racconta costa 2,92 bit per
-numero, e $3.072 \times 2{,}92$ fa 8.970 bit, cioè meno di 1.130 byte. Stesso
-contenuto, ricostruibile senza perdere niente, in poco più di un terzo dello
-spazio. L'unica cosa che il modello ha in più è sapere che cosa aspettarsi.
+Il miglior modello di questa famiglia costa 2,92 bit per numero, e
+$3.072 \times 2{,}92$ fa 8.970 bit, cioè meno di 1.130 byte. Stesso contenuto,
+ricostruibile senza perdere niente, in poco più di un terzo dello spazio.
+L'unica cosa che il modello ha in più è sapere che cosa aspettarsi.
 
-Un'avvertenza sulla parola «esatto», perché vale per una delle due strade e non
-per l'altra. Chi mette i pixel in fila lavora sui numeri interi che l'immagine
-ha davvero, e il conto è quello e basta. Un flusso invece lavora con quantità
-continue, e su valori interi una descrizione continua non sta in piedi: si
-aggiunge allora un pizzico di rumore ai pixel prima di misurarli, e quello che
-esce è la misura esatta dei dati così sporcati. Rispetto al file vero è un
-numero prudente: il file non sarà mai più grosso di così, semmai un po’ più
-piccolo. Va benissimo per confrontare due modelli, ma non è la stessa cosa.
+Un'avvertenza sulla parola «esatto», perché vale per una delle due strade e
+non per l'altra. Chi mette i pixel in fila lavora sui numeri interi che
+l'immagine ha davvero, e il conto è quello e basta. Un flusso invece lavora
+con quantità continue, e su valori interi una descrizione continua non sta in
+piedi: senza precauzioni può ammassare tutta la fiducia esattamente sui 256
+valori ammessi e dichiarare che il file non costa niente. Si aggiunge allora
+un pizzico di rumore ai pixel prima di misurarli, e quello che esce è la
+misura esatta dei dati così sporcati. Rispetto al file vero è un numero
+prudente: il file non sarà mai più grosso di così, semmai un po’ più piccolo.
+Va benissimo per confrontare due modelli, ma non è la stessa cosa.
 
 `````
 
@@ -56,7 +55,7 @@ $$
 $$
 
 con $D$ il numero di componenti del dato ($D = 32 \times 32 \times 3 = 3.072$
-per una immagine di CIFAR-10). Su CIFAR-10, che è il banco di prova storico
+per un'immagine di CIFAR-10). Su CIFAR-10, che è il banco di prova storico
 della famiglia: NICE $4{,}48$; RealNVP $3{,}49$; Glow $3{,}35$; PixelCNN
 $3{,}14$; Gated PixelCNN $3{,}03$; PixelRNN $3{,}00$; PixelCNN++ $2{,}92$. E in
 cima, a $8{,}00$, il modello che non sa niente.
@@ -138,31 +137,35 @@ sicurezza. Il modello dichiara più tipica la roba che non ha mai visto.
 
 `````{tab} Elementare
 
-La spiegazione più accreditata è tanto semplice quanto scomoda, e conviene
-arrivarci con un esempio che non ha niente a che fare con le immagini.
+La spiegazione più accreditata è tanto semplice quanto scomoda, e si vede
+meglio lontano dalle immagini.
 
-Immagina un modello addestrato su testi italiani, e supponi di misurargli
-quanto trova probabile una pagina. Adesso dagli in pasto una pagina bianca con
-scritto in mezzo «aaaaaaaaaaaa». Non è italiano, non l'ha mai visto, è roba
-fuori posto sotto ogni criterio. Ma è anche **facilissima**: ogni carattere è
-identico al precedente, quindi il modello ci azzecca ogni volta, e la
-probabilità che ne esce è altissima. Più alta di quella di una pagina di
-italiano vero, che è piena di scelte difficili.
+Un modello addestrato su testi italiani riceve una pagina e dice quanto la
+trova probabile. Gli arriva un foglio bianco, con scritto in mezzo
+«aaaaaaaaaaaa». Non è italiano, non l'ha mai visto, è roba fuori posto sotto
+ogni criterio. Ma è anche facilissima: ogni carattere è identico al precedente,
+quindi il modello ci azzecca ogni volta, e la probabilità che ne esce è
+altissima, più alta di quella di una pagina di italiano vero, piena di scelte
+difficili.
 
 Le fotografie dei numeri civici fanno la stessa cosa: sono immagini più lisce,
 più povere di dettaglio, più prevedibili di quelle di un bosco o del pelo di un
 cane. Il modello le trova facili, e «facile» per lui vuol dire «probabile».
 
-Ed è qui la lezione, che vale ben oltre questa famiglia: **«quanto è probabile»
-e «l'ho già visto» non sono la stessa domanda**. Le abbiamo confuse perché
-nella nostra testa vanno insieme, e per un modello no. Chi vuole sapere se un
-dato viene dalla distribuzione su cui il modello è stato addestrato deve
-chiederlo con un metodo che risponda a *quella* domanda, e non prendere in
-prestito il numero che risponde a un'altra.
+Il rovescio è ancora più strano. In una vita di letture, una pagina fatta di
+«a» in fila non capita mai. Le pagine vere stanno tutte in una fascia di mezzo,
+mai facilissime e mai impossibili, e nessuna arriva vicino al record. «L'ho già
+visto» abita quella fascia, e la pagina più probabile di tutte ne sta fuori.
 
-Un'ultima cosa, che rende la storia meno amara. La convinzione girava da anni,
-ed è bastato un esperimento piccolo e riproducibile a smontarla: addestrare
-tre modelli su una raccolta di fotografie e misurarli su un'altra.
+Ed è qui la lezione, che vale ben oltre questa famiglia: «quanto è probabile» e
+«l'ho già visto» sono due domande diverse. Le abbiamo confuse perché nella
+nostra testa vanno insieme, e per un modello no. Chi vuole sapere se un dato
+viene dalla distribuzione su cui il modello è stato addestrato deve misurare se
+quel dato cade nella fascia di mezzo, non se ha battuto un record.
+
+C'è un lato lieto. La convinzione girava da anni, ed è bastato un esperimento
+piccolo e riproducibile a smontarla: tre modelli fatti in modi diversi,
+addestrati su una raccolta di fotografie e misurati su un'altra.
 
 `````
 

@@ -44,15 +44,18 @@ l’archivista.
 
 Conviene rimettere a fuoco che cosa fa la clessidra, perché quello che qui
 serve non è la compressione, è la **scheda**. E la parte stretta in mezzo alla
-clessidra, quella da cui deve passare tutto, si chiama **strozzatura**: qui
-sotto la chiamiamo anche «il collo stretto», ed è la stessa cosa.
+clessidra, quella da cui deve passare tutto, si chiama **strozzatura**, e la
+chiameremo anche «il collo stretto», che è la stessa cosa.
 
 `````{tab} Elementare
 
 Due metà e un collo stretto in mezzo. La prima metà, l’archivista, prende il
 quadro e lo riduce a una fila di pochi numeri; la seconda, il copista, da quei
 numeri prova a ritirare fuori il quadro. La pagella è una sola per tutti e due:
-quanto la copia somiglia all’originale.
+quanto la copia somiglia all’originale. E il voto si dà un quadro alla volta:
+si prende un quadro, si guarda la copia che ne esce, si scrive il voto, si
+passa al successivo. Il cassetto con tutte le schede dentro nessuno lo apre mai
+per vedere come stanno messe.
 
 Il collo stretto non è un limite tecnico da subire: **è la richiesta**. Se
 all’archivista fosse concesso scrivere una scheda lunga quanto il quadro, la
@@ -65,10 +68,10 @@ Sulla scheda finiscono allora le cose che il copista non saprebbe indovinare da
 sé (che soggetto è, com’è composto, quali colori dominano) e non finiscono
 quelle che sa già (la grana della tela, il modo in cui uno sfondo sfuma):
 spenderci una riga non farebbe guadagnare niente, perché il copista le
-rimetterebbe comunque. Non che se le ricordi: **ne mette una qualunque**,
-sempre la stessa per tutti i quadri che gli somigliano, e a nessuno importa che
-sia proprio quella. Vale la pena tenerlo a mente, perché più avanti torna: il
-copista non inventa niente, ripete.
+rimetterebbe comunque. Non che se le ricordi: ne mette sempre la stessa, per
+tutti i quadri che gli somigliano, e a nessuno importa che sia proprio quella.
+Il copista non inventa niente, ripete; e in mano non ha mai avuto una scheda
+che non venisse da un quadro vero.
 
 `````
 
@@ -88,8 +91,8 @@ dove $\mathbf{x}_i$ è l’$i$-esimo esempio, $D$ la dimensione del dato, $L$
 quella del **codice** $\mathbf{z}_i = e_\phi(\mathbf{x}_i)$, $N$ il numero di
 esempi e $\ell$ una misura di scarto fra dato e ricostruzione, **sommata sulle
 $D$ componenti** (errore quadratico, oppure cross-entropia per componente come
-nel blocco più avanti: è la somma sui pixel a fare del risultato un costo «per
-cifra» e non «per pixel»). Il vincolo $L \ll D$ è la strozzatura, e senza di essa il problema è vuoto: con $L \ge D$
+nell’addestramento sulle cifre scritte a mano: è la somma sui pixel a fare del
+risultato un costo «per cifra» e non «per pixel»). Il vincolo $L \ll D$ è la strozzatura, e senza di essa il problema è vuoto: con $L \ge D$
 basta prendere $d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per
 dire) e la loss va a zero senza che nessuno abbia imparato niente.
 
@@ -117,18 +120,24 @@ fattoriale, è sua parente stretta.
 
 Mettiamo che all’archivista sia vietato essere creativo: le sue schede devono
 essere una combinazione fissa dei pixel, «tanto di questo più tanto di quello»,
-e basta, senza nessuna decisione presa caso per caso. In queste condizioni non
-gli resta niente da inventare, e il meglio che può fare è già noto: schiacciare
-i quadri sul **piano** lungo cui differiscono di più, che è la cosa che nella
-sezione su riduzione e clustering si chiamava analisi delle componenti
-principali. Quale coppia di direzioni scelga dentro quel piano non è deciso:
-conta il piano, non gli assi che ci disegna sopra.
+la stessa per tutti, senza nessuna decisione presa caso per caso. In queste
+condizioni non gli resta niente da inventare, e il meglio che può fare è già
+noto: schiacciare i quadri sul **piano** lungo cui differiscono di più, che è
+la cosa che nella sezione su riduzione e clustering si chiamava analisi delle
+componenti principali. Quale coppia di direzioni scelga dentro quel piano non è
+deciso: conta il piano, non gli assi che ci disegna sopra.
+
+Un permesso però gli serve, ed è l’unico: partire dal quadro medio del museo e
+annotare soltanto di quanto il quadro che ha davanti se ne discosta. Senza, il
+piano è costretto a passare per la tela bianca, e quasi mai è quello giusto.
 
 Detto altrimenti: la clessidra non è una macchina nuova, è la vecchia a cui è
-stato tolto il divieto di piegarsi. La differenza fra le due è tutta lì, e
-spiega quando conviene l’una e quando l’altra: se i dati stanno davvero su un
-piano, piegarsi non serve; se stanno su una superficie curva, un piano la può
-solo approssimare.
+stato tolto il divieto di piegarsi. E va tolto a tutti e due: se si piega solo
+l’archivista e il copista resta alle sue somme pesate, si finisce di nuovo su
+un piano, lo stesso di prima. La differenza fra le due macchine spiega quando
+conviene l’una e quando l’altra: se i quadri stanno davvero su un piano,
+piegarsi non serve; se stanno su una superficie curva, un piano la può solo
+approssimare.
 
 `````
 
@@ -137,13 +146,14 @@ solo approssimare.
 Con $e_\phi$ e $d_\theta$ **affini** e $\ell$ l’errore quadratico, il minimo
 della loss si raggiunge quando la **ricostruzione**
 $d_\theta(e_\phi(\mathbf{x}))$ è la proiezione ortogonale di $\mathbf{x}$ sul
-sottospazio generato dalle prime $L$ componenti principali dei dati
-**centrati** {cite}`bourlard1988auto`, e il codice ne è un sistema di
-coordinate. La centratura non è un dettaglio: con mappe puramente lineari e
+sottospazio affine che passa per la media dei dati ed è generato dalle prime
+$L$ componenti principali dei dati **centrati** {cite}`bourlard1988auto`, e il
+codice ne è un sistema di coordinate.
+La centratura non è un dettaglio: con mappe puramente lineari e
 dati non centrati il minimo è il sottospazio dei primi $L$ vettori singolari
 della matrice grezza, che passa per l'origine e in generale non coincide con
 quello della PCA. A farsene carico è il termine additivo, ed è la ragione per
-cui le `nn.Linear` del blocco più avanti ce l'hanno. Con una
+cui le `nn.Linear` della `Clessidra` ce l'hanno. Con una
 precisazione che conta: la soluzione è unica solo **a meno di un cambio di
 base** nel latente, cioè l’autoencoder lineare recupera il *sottospazio* di
 massima varianza, non le singole direzioni principali né il loro ordinamento;
@@ -161,8 +171,8 @@ dimostrano la metà negativa della faccenda, ed è quella che sorprende: in una
 rete a tre strati con uscita lineare, mettere una non linearità nello strato
 nascosto non serve a niente, il minimo resta quello lineare. Perché la
 superficie su cui giacciono i dati possa essere curva serve un passaggio non
-lineare **da tutte e due le parti**, uno nell’archivista e uno nel copista, che
-è la `Clessidra` del blocco più avanti.
+lineare **da tutte e due le parti**, uno nell’archivista e uno nel copista, ed
+è così che è fatta la `Clessidra` addestrata sulle cifre scritte a mano.
 Tutto il resto (la strozzatura, la loss, l’assenza di probabilità) è identico.
 
 `````
@@ -405,13 +415,12 @@ Conviene dire per bene di chi sia la colpa, perché non è dell’archivista.
 
 `````{tab} Elementare
 
-Guardiamo la pagella con cui i due sono stati giudicati: «la copia somiglia
-all’originale?». È l’unica domanda che è stata fatta loro, per milioni di
-volte. In quella domanda non compare da nessuna parte la richiesta di tenere le
-schede in ordine nel cassetto, né quella di riempire i vuoti fra una scheda e
-l’altra, né quella di dipingere qualcosa di sensato partendo da una scheda che
-nessuno ha mai scritto. Quello che non si chiede non si ottiene, e qui non è
-stato chiesto.
+Che cosa è stato chiesto ai due, in tutto? Una cosa sola, e per milioni di
+volte: «la copia somiglia all’originale?». Su quella pagella non compare da
+nessuna parte la richiesta di tenere le schede in ordine nel cassetto, né
+quella di riempire i vuoti fra una scheda e l’altra, né quella di dipingere
+qualcosa di sensato partendo da una scheda che nessuno ha mai scritto. Quello
+che non si chiede non si ottiene, e qui non è stato chiesto.
 
 E c’è un motivo per aspettarsi anche di peggio, che non è dimostrato ma è
 plausibile: se l’unica cosa che conta è che ogni quadro torni indietro
@@ -423,9 +432,10 @@ qualche angolo, larghe distese vuote in mezzo, e nessun confine che dica dove
 finisce la zona buona. Per rileggere va benissimo. Per pescare, no: non si sa
 dove pescare, e quasi ovunque si peschi non c’è niente.
 
-Manca quindi qualcosa di preciso, e conviene dirlo con esattezza perché è ciò
-che la prossima sezione aggiunge: **manca una regola su dove vanno messe le
-schede**. Non una scheda migliore: una regola sull’insieme.
+Manca quindi una regola su dove vanno messe le schede, e sono due cose
+insieme: una forma decisa in anticipo per il cassetto, così si sa dove pescare,
+e un voto che pretenda quella forma accanto al voto sulla somiglianza. Non una
+scheda scritta meglio: una regola sull’insieme.
 
 `````
 
@@ -447,13 +457,14 @@ vincolata, non se ne conosce la forma, e soprattutto non ci si sa campionare.
 Ma generare richiede esattamente quello, cioè una distribuzione da cui pescare
 $\mathbf{z}$ prima di decodificare. (Nella sezione seguente lo stesso simbolo
 $q_\phi(\mathbf{z})$ tornerà con l’encoder diventato stocastico: là le delta
-saranno gaussiane, e l’aggregato sarà una loro mistura.) Sostituirla a posteriori con una gaussiana adattata ai codici,
-come nel blocco qui sopra, è la scorciatoia ovvia, e il rapporto $2{,}2$
-misurato è quanto costa: la gaussiana copre una regione che
-$q_\phi(\mathbf{z})$ non occupa.
+saranno gaussiane, e l’aggregato sarà una loro mistura.) Sostituirla a
+posteriori con una gaussiana adattata ai codici è la scorciatoia ovvia, e il
+rapporto $2{,}2$ appena misurato è quanto costa: la gaussiana copre una regione
+che $q_\phi(\mathbf{z})$ non occupa.
 
 E non c’è nemmeno niente che si opponga alla dilatazione del latente, che è
-il modo in cui il difetto si manifesta nella misura qui sopra. L’argomento è
+il modo in cui il difetto si manifesta nella misura delle distanze fra i
+codici. L’argomento è
 euristico e conviene dirlo: a parità del resto, codici più distanti fra loro si
 ricostruiscono meglio, perché il decoder ha meno occasioni di confonderli, e
 nella loss non compare nessun termine che paghi quella distanza. Si dice, con
@@ -496,8 +507,9 @@ chiesto e che nessuna quantità di addestramento gli fa venire.
   punti che non vogliono dire niente, e pescando una scheda a caso si finisce,
   di norma, a più del doppio della distanza che separa due schede vere.
 - La colpa non è dell’archivista: nella sua pagella non compariva l’ordine del
-  cassetto. Quello che manca è **una regola su dove vanno messe le schede**, e
-  la sezione seguente la ricava senza inventarla.
+  cassetto. Quello che manca è **una regola su dove vanno messe le schede**, ed
+  è fatta di due pezzi, una forma decisa in anticipo per il cassetto e un voto
+  che quella forma la pretenda; la sezione seguente li ricava senza inventarli.
 ```
 
 `````
@@ -508,11 +520,14 @@ chiesto e che nessuna quantità di addestramento gli fa venire.
 :class: important
 - Un autoencoder addestra $e_\phi$ e $d_\theta$ sulla sola ricostruzione, con
   $L \ll D$. Nella sua definizione **non compare nessuna distribuzione**.
-- Nel caso lineare con errore quadratico ritrova il sottospazio delle prime
+- Con $e_\phi$ e $d_\theta$ **affini** ed errore quadratico ritrova il
+  sottospazio affine che passa per la media dei dati ed è generato dalle prime
   $L$ componenti principali {cite}`bourlard1988auto`, a meno di un cambio di
-  base: è la PCA della sezione su riduzione e clustering. Con una non linearità
-  **per parte** è la stessa macchina a cui quel vincolo è stato tolto, e la
-  superficie che ritrova può essere curva.
+  base: è la PCA della sezione su riduzione e clustering. Senza il termine
+  additivo, su dati non centrati, quel sottospazio passa per l’origine e in
+  generale non è quello della PCA. Con una non linearità
+  **per parte** cade il vincolo di affinità, e la superficie che ritrova può
+  essere curva.
 - La ricostruzione riesce (16,3 nat per cifra contro i 27,1 di chi dichiara il
   grigio medio di ogni pixel senza guardare la cifra: tre quinti, su cifre da
   64 pixel compresse in 8 numeri); il campionamento no: un codice sorteggiato
