@@ -159,7 +159,7 @@ minimo che serve per pianificarci dentro. La sezione sul RL basato su modello ci
 torna sopra. Anche i modelli linguistici che esplorano più catene di
 ragionamento prima di rispondere fanno, con altri nomi, la stessa cosa.
 
-### In pratica: le visite si concentrano
+## In pratica: le visite si concentrano
 
 Che l'albero cresca storto non è un modo di dire, ed è la cosa più facile da
 verificare. Prendiamo un albero giocattolo: due strade a ogni bivio e quattro

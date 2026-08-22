@@ -246,7 +246,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepLearning/architetture-storiche.html</loc>
-    <lastmod>2026-08-21T03:09:00+00:00</lastmod>
+    <lastmod>2026-08-22T05:22:57+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepLearning/multi-compito.html</loc>
@@ -306,7 +306,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/ReinforcementLearning/banditi.html</loc>
-    <lastmod>2026-08-21T11:47:31+00:00</lastmod>
+    <lastmod>2026-08-22T05:22:57+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/ReinforcementLearning/mdp-valore.html</loc>
@@ -334,7 +334,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepReinforcementLearning/mcts-alphago.html</loc>
-    <lastmod>2026-08-21T14:37:21+00:00</lastmod>
+    <lastmod>2026-08-22T05:13:46+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/DeepReinforcementLearning/controllo-continuo.html</loc>
@@ -578,7 +578,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/overview.html</loc>
-    <lastmod>2026-08-21T15:51:32+00:00</lastmod>
+    <lastmod>2026-08-22T05:07:57+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/dal-suono-alle-feature.html</loc>
@@ -598,7 +598,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/generazione-audio.html</loc>
-    <lastmod>2026-08-21T15:51:32+00:00</lastmod>
+    <lastmod>2026-08-22T05:13:46+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SpeechRecognition/overview.html</loc>
@@ -662,7 +662,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/VerosimiglianzaEsatta/pixel-per-pixel.html</loc>
-    <lastmod>2026-08-21T20:08:18+00:00</lastmod>
+    <lastmod>2026-08-22T05:07:57+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/VerosimiglianzaEsatta/flussi.html</loc>
@@ -846,7 +846,7 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/AIResponsabile/overview.html</loc>
-    <lastmod>2026-08-22T02:16:58+00:00</lastmod>
+    <lastmod>2026-08-22T05:07:57+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/AIResponsabile/equita-e-bias.html</loc>
@@ -874,6 +874,6 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/aggiornamenti.html</loc>
-    <lastmod>2026-08-22T04:39:14+00:00</lastmod>
+    <lastmod>2026-08-22T05:18:25+00:00</lastmod>
   </url>
 </urlset>

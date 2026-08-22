@@ -237,7 +237,7 @@ Tre spostamenti quantitativi hanno reso il tema ineludibile.
 
 `````
 
-## Quattro modi in cui un modello fa danno
+## Tre modi in cui un modello fa danno
 
 Il resto del capitolo procede lungo tre assi, dagli effetti più visibili a
 quelli più strutturali, e quello di mezzo prende due sezioni invece di una.

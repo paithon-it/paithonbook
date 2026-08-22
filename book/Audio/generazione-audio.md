@@ -261,9 +261,9 @@ Transformer continua la fila, il decoder la ritrasforma in suono.
 
 Generare token, non campioni: il codec comprime il suono in pochi simboli al
 secondo, il Transformer allunga la fila, e il decoder restituisce l'onda.
-``` La via dei
-token ha un
-precursore: già nel 2020 **Jukebox** {cite}`dhariwal2020jukebox`, di OpenAI,
+```
+
+La via dei token ha un precursore: già nel 2020 **Jukebox** {cite}`dhariwal2020jukebox`, di OpenAI,
 riduceva la musica a token e li faceva scrivere in sequenza a un Transformer,
 arrivando a minuti di canzone con tanto di voce, anche se su quella durata la
 struttura del brano si sfilacciava. Ma il sistema che porta la ricetta a

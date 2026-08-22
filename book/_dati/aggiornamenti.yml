@@ -91,6 +91,15 @@ versioni:
       invece di fermarsi al primo conto.
 
   - tipo: corretto
+    pagina: Audio/generazione-audio.md
+    testo: >
+      **Un capoverso che si leggeva come codice torna a essere prosa.** In
+      generazione audio la riga che chiude la figura si era attaccata al
+      paragrafo successivo, e il pezzo su Jukebox e AudioLM finiva impaginato
+      come un blocco di programma. E in ricerca ad albero un titolo di sezione
+      era di un livello più basso degli altri due della pagina.
+
+  - tipo: corretto
     testo: >
       **Una lettera, un mestiere.** Decine di simboli che ne facevano due nella
       stessa pagina sono stati rinominati: la sequenza di token e il vettore

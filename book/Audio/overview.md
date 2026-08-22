@@ -159,7 +159,7 @@ l'immagine diventa testo. Nel disegno il Transformer è un blocco solo, ma dentr
 fa due mestieri: la parte che legge (l’*encoder*) riassume lo spettrogramma e la
 parte che scrive (il *decoder*) ne ricava le parole, una alla volta. È la strada
 che il capitolo sullo Speech Recognition, subito dopo questo, percorre per
-intero. Il pezzo su cui le pagine qui sotto intervengono è il secondo riquadro:
+intero. Il pezzo su cui interviene l'alfabeto sonoro è il secondo riquadro:
 lo spettrogramma resta una tabella di numeri qualsiasi, e c'è un modo di
 scriverlo con dei simboli.
 ```

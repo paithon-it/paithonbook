@@ -159,9 +159,9 @@ fare predizioni» {cite}`oord2016conditional`.
 Il perché è geometrico e si vede sulla mappa. Ogni strato allarga la vista di
 una casella per lato, ma verso destra può salire di una sola colonna per ogni
 riga che sale, perché la maschera taglia la riga corrente all'altezza del
-centro. Il risultato è un cono che si apre verso l'alto a sinistra e resta
-chiuso verso l'alto a destra, mentre il passato vero, quello dell'ordine di
-lettura, comprende tutta la riga di sopra fino in fondo.
+centro. Il risultato è un cono che verso sinistra si apre in fretta e verso
+destra si allarga di una colonna per riga, mentre il passato vero, quello
+dell'ordine di lettura, comprende tutta la riga di sopra fino in fondo.
 
 ```{figure} ../figures/campo-cieco.svg
 :name: fig-campo-cieco

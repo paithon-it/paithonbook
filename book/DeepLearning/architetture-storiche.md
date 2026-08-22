@@ -38,9 +38,11 @@ più matura della serie, ed è la versione che si studia ancora oggi.
 
 `````{tab} Elementare
 Una piccola lente scorre sull'immagine di una cifra, un pezzetto alla volta,
-cercando tratti semplici: un bordo, una curva, un angolo. È la stessa lente in
-ogni punto del foglio, e questo cambia il conto: c'è da impararne una sola,
-invece di una diversa per ogni posizione.
+cercando tratti semplici: un bordo, una curva, un angolo. È lo stampino che
+scorreva sul foglio a quadretti, chiamato con l'altro nome che gli si dà
+quando l'immagine è una fotografia invece di una griglia di numeri. È la stessa
+lente in ogni punto del foglio, e questo cambia il conto: c'è da impararne una
+sola, invece di una diversa per ogni posizione.
 
 Dopo ogni passata la rete riassume. Divide il risultato in quadretti e di
 ciascuno tiene un numero solo: resta scritto che il tratto c'era, si perde dove

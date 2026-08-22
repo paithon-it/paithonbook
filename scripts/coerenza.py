@@ -546,6 +546,28 @@ def main():
                         f"{capitolo}: ${simbolo}$  ->  "
                         + " | ".join(sorted(glosse)[:3]))
 
+    if "schede" in attivi:
+        # Una recinzione a backtick con del testo attaccato sulla stessa riga.
+        # Se chiude una direttiva, Sphinx legge quel testo come l'APERTURA di
+        # un blocco di codice (`\`\`\` La via dei` diventa un blocco in
+        # linguaggio «La»), e da li' in poi un capoverso di prosa viene
+        # impaginato come codice.
+        #
+        # Il difetto e' invisibile a tutto: la build esce a zero, la pagina si
+        # vede solo aprendola, e il controllo sui notebook non lo trova perche'
+        # il notebook e' COERENTE con il sorgente rotto. Al 22 agosto 2026 ce
+        # n'era una sola in tutto il libro, e per settimane aveva messo
+        # l'etichetta di sezione sbagliata su una cella di `Audio.ipynb`. Si e'
+        # vista costruendo il PDF, fra gli avvisi di LaTeX.
+        for f, testo in testi.items():
+            if not f.endswith(".md"):
+                continue
+            for n, riga in enumerate(testo.split("\n"), 1):
+                m = re.match(r"^(`{3,})\s*(\S.*)$", riga.rstrip())
+                if m and not m.group(2).startswith("{") and " " in m.group(2).strip():
+                    problemi["recinzione con del testo attaccato"].append(
+                        f"{f}:{n}  {riga.strip()[:60]}")
+
     if "ricordare" in attivi:
         # `book/aggiornamenti.md` promette al lettore, nero su bianco: «Ogni
         # capitolo si chiude con un riquadro "Da ricordare", scritto sui due
@@ -1141,6 +1163,7 @@ def main():
               "numero scritto a mano nella scheda",
               "schede contigue, che la build fonde",
               "coppia di schede spezzata da prosa",
+              "recinzione con del testo attaccato",
               "schede Elementari molto lunghe (da rileggere)",
               "capitoli oltre il tetto di 10 clip",
               "clip fuori dalla tabella del README",
