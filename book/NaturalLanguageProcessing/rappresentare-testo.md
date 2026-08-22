@@ -612,7 +612,7 @@ diversissimi senza rifare tutto. Ma nessuno gli ha mai chiesto quanto due
 moduli vogliano dire la stessa cosa, e infatti lo giudica male: quello che si
 vuole da uno spazio bisogna insegnarglielo.
 
-Gliela insegna tre moduli per volta: uno di riferimento, l'**ancora**, uno che
+Gliela insegna tre moduli per volta: uno di riferimento, l’**ancora**, uno che
 dice la stessa cosa, uno che parla d'altro. Chiede solo che l'ancora finisca
 più vicina al primo che al secondo, e non di un soffio, ma di uno scarto minimo
 deciso in partenza, il margine; dove vadano i tre non lo dice. Le terne che

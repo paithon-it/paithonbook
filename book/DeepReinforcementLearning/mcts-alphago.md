@@ -39,7 +39,7 @@ Ogni giro sono quattro gesti. Finché trova foglietti, sceglie la leva che mette
 d'accordo il buon rendimento e le poche tacche, ed è la **selezione**; quanto
 pesi la curiosità rispetto al rendimento è una manopola, e si regola prima di
 cominciare. Alla prima leva senza foglietto gliene appende uno bianco, ed è
-l'**espansione**. Da lì tira a casaccio e in fretta fino all'uscita, solo per
+l’**espansione**. Da lì tira a casaccio e in fretta fino all'uscita, solo per
 vedere come va a finire, ed è la **simulazione**. Poi rifà la strada al contrario
 e segna l'esito su ogni foglietto incontrato, ed è la **risalita**. Le stanze
 sono a turno, una sua e una di chi gioca contro, e per l'altro una vincita è una
@@ -396,7 +396,7 @@ sull'imitazione ci torna sopra per esteso, e spiega perché da sola non basta.
 - **AlphaGo** e **AlphaZero** uniscono la strategia, la stima di chi sta
   vincendo e quella esplorazione ad albero. Nel 2016 la ricerca si fidava a
   metà della rete e a metà delle partite tirate a caso; solo con AlphaGo Zero,
-  l'anno dopo, la rete basta da sola. Con l'**RLHF** lo stesso meccanismo,
+  l'anno dopo, la rete basta da sola. Con l’**RLHF** lo stesso meccanismo,
   guidato dalle preferenze delle persone, allinea i modelli linguistici.
 ```
 `````

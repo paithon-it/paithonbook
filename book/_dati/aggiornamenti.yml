@@ -48,6 +48,24 @@
 
 versioni:
 
+- versione: "1.10.2"
+  data: 2026-08-22
+  voci:
+
+  - tipo: corretto
+    pagina: prefazione.md
+    testo: >
+      **La prefazione si legge più svelta.** Il racconto dei pappagalli
+      stocastici arriva prima al punto, e il triangolo impossibile dice quello
+      che deve in un terzo dello spazio: ogni angolo regge da solo, il giro
+      no, ed è il modo in cui una macchina sbaglia su una materia tecnica.
+
+  - tipo: corretto
+    testo: >
+      **Gli strumenti che il libro nomina hanno la loro fonte.** PyTorch,
+      TensorFlow, Keras e Hugging Face si trovano ora in bibliografia con
+      l'articolo di chi li ha fatti e l'indirizzo per approfondire.
+
 - versione: "1.10.1"
   data: 2026-08-22
   voci:

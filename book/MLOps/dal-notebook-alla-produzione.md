@@ -29,7 +29,7 @@ cioè lasciare che il risultato buono viva soltanto nella memoria di una
 sessione che qualcuno prima o poi chiuderà.
 
 Fra quel notebook e un sistema che dà previsioni a persone vere, ogni giorno,
-senza sorprese, c'è quindi un abisso. Colmarlo è il mestiere dell'**MLOps**. Che cosa cambia davvero, passando «dal
+senza sorprese, c'è quindi un abisso. Colmarlo è il mestiere dell’**MLOps**. Che cosa cambia davvero, passando «dal
 mio computer» al mondo, e con quali attrezzi si attraversa: si comincia da
 qui.
 

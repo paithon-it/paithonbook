@@ -84,7 +84,7 @@ la fattorizzazione salta.
 Non basta però che $g$ sia non lineare, ed è un punto su cui si scivola spesso.
 Se $g$ fosse un polinomio, per esempio $g(x)=x^2$, uno strato nascosto
 calcolerebbe $\sum_i c_i\,(w_i x + b_i)^2 + d$, dove $w_i$ e $b_i$ sono peso e
-bias dell'$i$-esimo neurone nascosto, $c_i$ il peso con cui l'uscita lo
+bias dell’$i$-esimo neurone nascosto, $c_i$ il peso con cui l'uscita lo
 raccoglie e $d$ il bias d'uscita: comunque si scelgano quei parametri resta un
 polinomio di grado $2$, e aggiungere neuroni non servirebbe a
 niente. Provato ai minimi quadrati su $x^3$ in $[-1,1]$ (duemila punti

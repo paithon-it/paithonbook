@@ -369,7 +369,7 @@ due classi perché sono identici.
 :alt: "Tre pannelli sugli stessi due gruppi di punti, teal e terracotta, che si sovrappongono in parte. Nel primo, LDA, le due classi hanno la stessa identica ellisse di forma in due posizioni diverse, e il confine fra loro e una retta. Nel secondo, QDA, ogni classe ha la sua ellisse, con orientamenti diversi, e il confine e una curva. Nel terzo, naive Bayes gaussiano, le ellissi hanno gli assi obbligatoriamente paralleli agli assi del grafico, perche l ipotesi di indipendenza vieta le diagonali, e il confine e una curva diversa dalla precedente."
 :width: 100%
 
-Le tre ipotesi, disegnate. L'ovale che circonda ciascun gruppo (un'**ellisse**)
+Le tre ipotesi, disegnate. L'ovale che circonda ciascun gruppo (un’**ellisse**)
 è la forma che quel metodo si concede per descrivere la classe, e da sola decide
 la forma del confine: una **sola forma**, la stessa per le due classi in due
 posizioni diverse, dà una retta; **due forme diverse** danno una curva. Nessuno

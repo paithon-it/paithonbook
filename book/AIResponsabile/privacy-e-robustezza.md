@@ -745,7 +745,7 @@ modello (trenta piccole spinte concordi, invisibili una per una: sono le dita
 del titolo), e guardiamo la predizione ribaltarsi. 
 
 L'esempio non è scelto a mano: il programma prende il primo caso che il
-modello azzecca con una fiducia fra l'$85$ e il $95$ per cento. Su un caso in
+modello azzecca con una fiducia fra l’$85$ e il $95$ per cento. Su un caso in
 cui è sicuro al $100\%$ questa spinta non basterebbe a ribaltarlo.
 
 ```python

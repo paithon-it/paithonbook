@@ -55,7 +55,7 @@ nessuno si aspettava. I modelli di sequenza, e i Transformer dopo di loro,
 hanno insegnato alle macchine a leggere e a scrivere
 {cite}`vaswani2017attention`; e poi a tenere insieme [visione e
 linguaggio](../VisioneLinguaggio/overview.md) nello stesso modello, imparando
-quasi tutto con l'[auto-supervisione](../AutoSupervisione/overview.md), cioè da
+quasi tutto con l’[auto-supervisione](../AutoSupervisione/overview.md), cioè da
 etichette che nessuno scrive perché stanno già dentro i dati. Sono venuti
 poi [il suono](../Audio/overview.md), [la voce](../SpeechRecognition/overview.md),
 [i grafi](../GraphNeuralNetwork/overview.md) (i dati fatti di puntini collegati
@@ -66,7 +66,7 @@ temporali](../SerieTemporali/overview.md), le
 [equazioni della fisica](../PINN/overview.md): i capitoli in cui la stessa
 matematica cambia mestiere
 a seconda della forma dei dati. E accanto alle architetture è cresciuto il
-mestiere di farle stare nei conti, l'[efficienza](../Efficienza/overview.md):
+mestiere di farle stare nei conti, l’[efficienza](../Efficienza/overview.md):
 far entrare in una scheda sola, e in una bolletta sola, un modello che non ci
 starebbe.
 

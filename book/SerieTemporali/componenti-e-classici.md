@@ -145,7 +145,7 @@ scorsi, il residuo di quel trimestre sarebbe $82 - (45 + 35) = 2$.
 
 ## Stazionarietà e differenziazione
 
-L'{doc}`apertura del capitolo </SerieTemporali/overview>` ha presentato la
+L’{doc}`apertura del capitolo </SerieTemporali/overview>` ha presentato la
 **stazionarietà** con l'immagine del fiume stabile. Detta per esteso: una serie è stazionaria quando il valore attorno
 a cui balla, l'ampiezza con cui balla e il modo in cui due giorni si somigliano
 restano gli stessi lungo tutta la serie. L'ultimo punto è quello che conta, e va

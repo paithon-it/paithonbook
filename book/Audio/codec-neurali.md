@@ -175,7 +175,7 @@ gradiente del decoder viene copiato tal quale sull'uscita dell'encoder, come se
 $q$ fosse l'identità) e con due termini quadratici: il *codebook loss*
 $\lVert \mathrm{sg}[\mathbf{z}] - \mathbf{e}_{k^\star} \rVert^2$, che tira il
 prototipo scelto verso i latenti che l'hanno scelto, ed è l'unica cosa che fa
-imparare il codebook visto che l'$\arg\min$ non lascia passare gradiente, e la
+imparare il codebook visto che l’$\arg\min$ non lascia passare gradiente, e la
 *commitment loss*
 $\beta \lVert \mathbf{z} - \mathrm{sg}[\mathbf{e}_{k^\star}] \rVert^2$, che
 tira i latenti verso i prototipi ($\mathrm{sg}$ è lo *stop-gradient*, e il

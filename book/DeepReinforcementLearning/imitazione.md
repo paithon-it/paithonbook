@@ -198,7 +198,7 @@ $$
 dove $C$ è il **costo** atteso di una politica sull'orizzonte $T$, cioè un
 danno da contenere e non un ritorno da massimizzare: per questo $C(\hat\pi)$
 sta a sinistra della disuguaglianza (nel lavoro originale è chiamato $J$).
-Quanto a $\epsilon_N$, non è l'$\epsilon$ misurato sotto la distribuzione
+Quanto a $\epsilon_N$, non è l’$\epsilon$ misurato sotto la distribuzione
 dell'esperto: è
 l'errore della migliore politica *col senno di poi*, misurato sulla media di
 tutte le distribuzioni di stati accumulate nei $N$ giri. Che quel numero sia

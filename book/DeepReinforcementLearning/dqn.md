@@ -111,7 +111,7 @@ segna quanto promette bene. Ha tre abitudini.
 
 Non tiene un foglio per ogni schermata, giudica a somiglianza: ci rimette in
 precisione sulla singola, e in cambio ha un voto anche per quelle che non ha
-mai visto. È l'**approssimazione**.
+mai visto. È l’**approssimazione**.
 
 Non aspetta la fine della partita. Una mossa gli frutta $1$ punto, valuta $7$
 la schermata in cui si ritrova, e scrive subito i due numeri messi insieme,

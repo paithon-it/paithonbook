@@ -398,7 +398,7 @@ metodi, ciascuno dei quali soddisfa due proprietà su tre:
 
 - fermarsi quando i gruppi sono $k$ rinuncia alla **ricchezza**, perché le
   suddivisioni con un numero diverso di gruppi non sono più raggiungibili;
-- fermarsi a una distanza fissa rinuncia all'**invarianza di scala**, perché
+- fermarsi a una distanza fissa rinuncia all’**invarianza di scala**, perché
   quella distanza è in centimetri e cambiando unità cambia tutto;
 - fermarsi a una frazione della distanza massima rinuncia alla **coerenza**.
 

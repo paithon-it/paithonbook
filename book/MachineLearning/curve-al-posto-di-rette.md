@@ -535,7 +535,7 @@ la regressione, logit per la classificazione, e in quest'ultimo caso il modello
 è la regressione logistica con le $\theta_j x_j$ promosse a $f_j(x_j)$), e ogni
 $f_j$ è una funzione liscia stimata dai dati, tipicamente una spline. Per
 identificabilità si impone $\sum_{i} f_j(x_{ij}) = 0$ per ogni $j$, dove $i$
-scorre sugli esempi e $x_{ij}$ è la $j$-esima colonna dell'$i$-esimo: si scarica
+scorre sugli esempi e $x_{ij}$ è la $j$-esima colonna dell’$i$-esimo: si scarica
 così il livello medio su
 $\theta_0$.
 

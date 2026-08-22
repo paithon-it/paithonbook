@@ -482,7 +482,7 @@ $$
 $$
 
 dove $\delta$ è il raggio ammesso, cioè quanto la policy nuova può differire
-dalla vecchia: è la manopola che in PPO fa l'$\epsilon$ del tosaggio, con la
+dalla vecchia: è la manopola che in PPO fa l’$\epsilon$ del tosaggio, con la
 differenza che qui è un vincolo e là un incentivo.
 
 Il vincolo definisce una **regione di fiducia**, cioè l'intorno entro il quale

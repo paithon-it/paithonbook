@@ -64,9 +64,23 @@ FIRMA = "paithon-it"
 # La riga si prende INTERA (`.*`): la prima versione di questa espressione
 # si fermava al prefisso, e il rapporto degli errori era una colonna di punti
 # esclamativi. Un setaccio che non dice che cosa ha trovato non serve.
+#
+# `not found in language.dat.lua` e' entrato dopo: e' un *Warning*, quindi non
+# somigliava a un guasto, e per questo e' rimasto in pagina a lungo. Senza i
+# pattern di sillabazione LuaLaTeX non spezza le parole a fine riga, e il libro
+# esce con centinaia di righe che sbordano o troppo spaziate; ma la build
+# riesce, il codice di uscita e' 0 e il PDF c'e'. Vale la pena tenere presente
+# come si e' scoperto: non da un controllo, ma aprendo il PDF e leggendolo.
+# Si ripara sulla macchina (`texlive-lang-italian`), non nel libro.
+#
+# `undefined` prende i rimandi ciechi: un {doc} verso una pagina che in stampa
+# non c'e' (FUORI_STAMPA in pt_stampa.py) non rompe niente, ma promette al
+# lettore un capitolo che nel file che ha in mano non esiste.
 GUAI = re.compile(
     r"^(?:!.*|.*?Package \S+ Error.*|.*?LaTeX Error.*"
-    r"|.*?File .* not found.*|.*?Missing character.*)$", re.M)
+    r"|.*?File .* not found.*|.*?Missing character.*"
+    r"|.*?not found in language\.dat\.lua.*"
+    r"|.*?(?:Hyper reference|Citation|Reference) .*undefined.*)$", re.M)
 
 
 def esegui(comando: list[str], dove: pathlib.Path | None = None,

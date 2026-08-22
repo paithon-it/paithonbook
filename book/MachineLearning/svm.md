@@ -964,7 +964,7 @@ volta più indietro.
   per ogni punto fuori dal margine, e $\mathbf{w}=\sum_i\alpha_iy_i\mathbf{x}_i$
   non lo contiene.
 - Il **margine morbido** ammette violazioni $\xi_i$ pagate dal parametro $C$,
-  l'**inverso** della forza di regolarizzazione: $C$ grande → margine stretto
+  l’**inverso** della forza di regolarizzazione: $C$ grande → margine stretto
   (overfitting), $C$ piccolo → margine largo. La perdita è la **hinge loss**,
   parente della log-loss ma piatta oltre il margine.
 ```

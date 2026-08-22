@@ -425,7 +425,7 @@ recuperare in venti archivi diversi, oppure venti programmi esterni a cui il
 modello chiede una cosa ciascuno (che ora, un cambio, un prezzo) prima di
 poter rispondere. Lì non si aspetta la media, si
 aspetta **la più lenta di tutte**, e basta che una sia finita nella coda perché
-l'intera risposta ci finisca. Se ciascuna ha l'$1\%$ di probabilità di essere lenta, e le venti sono lente
+l'intera risposta ci finisca. Se ciascuna ha l’$1\%$ di probabilità di essere lenta, e le venti sono lente
 per ragioni indipendenti, la probabilità che almeno una lo sia è
 $1 - 0{,}99^{20} \approx 18\%$; quando invece condividono la stessa scheda, la
 stessa rete o lo stesso scheduler la loro sfortuna arriva insieme, e il $18\%$

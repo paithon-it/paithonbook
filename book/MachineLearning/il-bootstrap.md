@@ -184,8 +184,8 @@ terzo tornerà, a rovescio, a dire dove il bootstrap non arriva.
 
 Il codice qui sotto fabbrica sessanta stipendi (con la coda a destra che hanno i
 redditi veri), ne ricampiona diecimila volte, e da quelle diecimila mediane
-ricava due numeri: l'**errore standard**, che è quanto la stima balla in media,
-e l'**intervallo** dentro cui cade nel $95\%$ dei casi. Poi fa la stessa cosa
+ricava due numeri: l’**errore standard**, che è quanto la stima balla in media,
+e l’**intervallo** dentro cui cade nel $95\%$ dei casi. Poi fa la stessa cosa
 sulla media, dove esiste anche la formula di due secoli fa, per avere qualcosa
 contro cui controllarlo.
 

@@ -1066,7 +1066,7 @@ nuclei sono due problemi diversi.
 Che i thread non aiutino a calcolare, e aiutino invece ad aspettare, si può
 vedere in una ventina di righe, con una misura da fare una volta con le
 proprie mani (l'ambiente per farlo è quello preparato
-nell'{doc}`apertura del capitolo </Python/overview>`). Il programma che segue
+nell’{doc}`apertura del capitolo </Python/overview>`). Il programma che segue
 stampa i numeri che contano, e ognuno di essi è
 stampato due volte, perché i tempi da guardare sono due. Il **tempo di parete**
 è quello dell'orologio appeso al muro, cioè quanto si è aspettato; il **tempo

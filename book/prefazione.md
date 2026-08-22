@@ -6,7 +6,8 @@ manoscritto è rimasto in un cassetto: la prima forma in cui arriva a qualcuno
 è questa, online e gratuita.
 
 Con il senno di poi è stata una fortuna. Quell'indice si fermava al deep
-reinforcement learning e prometteva codice in TensorFlow e Keras; la parola
+reinforcement learning e prometteva codice in TensorFlow e Keras
+{cite}`abadi2016tensorflow,chollet2015keras`; la parola
 *Transformer* non compariva da nessuna parte, benché l'articolo che la
 introduce (*Attention Is All You Need*, di Vaswani e colleghi
 {cite}`vaswani2017attention`) avesse ormai due anni, e il capitolo sul
@@ -18,7 +19,8 @@ invecchiare il giorno stesso in cui arrivava in libreria.
 Online il problema si pone in un altro modo. Un errore si corregge il giorno
 in cui qualcuno lo segnala, e il testo cresce quando cresce il campo: del
 manoscritto è rimasta l'ossatura, e attorno sono nati i capitoli che allora
-non si potevano scrivere. Il codice, nel frattempo, è passato a PyTorch. Quello
+non si potevano scrivere. Il codice, nel frattempo, è passato a PyTorch
+{cite}`paszke2019pytorch`. Quello
 che non è cambiato è il motivo per cui il libro esiste.
 
 Quello che è cambiato, e molto, è il mondo intorno. Nel 2019 questa era una
@@ -27,7 +29,7 @@ industriali e commerciali enormi. È guardando
 quel passaggio che ho capito perché valeva la pena riprendere il manoscritto.
 
 Nel 2021 un articolo molto discusso ha chiamato i modelli linguistici (i
-programmi che stanno dietro a ChatGPT e ai suoi parenti)
+programmi che stanno dietro a ChatGPT e alle sue varianti)
 **pappagalli stocastici** {cite}`bender2021dangers`: macchine che rimettono
 insieme pezzi di quello che hanno letto senza capire quello che dicono.
 L'espressione ha fatto il giro del mondo. E a un certo punto mi sono accorto
@@ -37,8 +39,8 @@ Succedeva in due modi, e si somigliavano. Usciva una notizia, e per settimane
 la stessa frase rimbalzava identica sui canali di chi commenta questa materia
 di mestiere, ripetuta da gente che alla fonte non era mai andata. Nelle aziende
 capitava la versione tecnica: si scaricava un modello già pronto da Hugging
-Face, il magazzino pubblico dove queste macchine si prendono e si condividono,
-lo si
+Face, il repository pubblico dove questi modelli si prendono e si condividono
+{cite}`wolf2020transformers`, lo si
 metteva in produzione perché lo stavano facendo tutti, e spesso nessuno apriva
 la licenza per vedere se quell'uso commerciale fosse permesso. Il gesto era lo
 stesso: ripetere una cosa senza sapere che cosa si stava dicendo.
@@ -50,37 +52,20 @@ racconta, la usava chi l'articolo l'aveva letto, e poi «la frase ha superato
 l'articolo» {cite}`bender2026unasked`. È il pappagallo che si descrive da solo.
 
 Intanto, di quei modelli, la cosa che si ripeteva più spesso è che si
-limitano a indovinare una parola per volta. È vero, ma dice come il testo
-esce, non come viene deciso. Anthropic, l'azienda che aveva costruito uno di
-questi modelli, è andata a guardarci dentro mentre il modello scriveva una
-poesia in rima
-{cite}`lindsey2025biology`, aspettandosi di vederlo procedere parola per
-parola e aggiustare la rima all'ultimo momento. Ha trovato il contrario. Prima
-ancora di cominciare il verso, il modello aveva già in testa più parole con cui
-poteva chiuderlo, e scriveva il verso per arrivare alla prima; tolta quella,
-riscriveva il verso per arrivare all'altra che aveva in
-mente, e cambiava la frase per farcela stare. La riga con cui il gruppo lo ha
-raccontato al pubblico è questa: anche se questi modelli sono addestrati a
-produrre una
-parola per volta, per farlo possono pensare su orizzonti molto più lunghi
-{cite}`anthropic2025tracing`.
+limitano a indovinare una parola per volta. È vero, ma questo riguarda come il
+testo viene generato, non come viene deciso. Anthropic, l'azienda che
+costruisce una delle migliori famiglie di questi modelli, è andata a guardare
+dentro uno dei suoi mentre scriveva una poesia in rima: la parola con cui
+avrebbe chiuso il verso ce l'aveva in mente prima di cominciarlo, e il verso lo
+costruiva per arrivarci {cite}`lindsey2025biology,anthropic2025tracing`.
 Predire una parola alla volta non vuol dire ragionare una parola alla volta.
 
-Su questo Bender non sarebbe d'accordo. L'obiezione che le
-arriva puntuale, racconta, è sempre la stessa: i pappagalli stocastici
-andavano bene un tempo, ma adesso non più, perché è appena uscito un modello
-che fa una cosa che prima non faceva. Per lei non è nemmeno un'obiezione, dato
-che quella non era una previsione da superare ma «una descrizione, o una
-metafora» di che cosa fanno quelle macchine. E il bersaglio della sua critica,
-aggiunge, non sono affatto i modelli: «quello che mi preoccupa sono le azioni
-delle persone», il furto dei dati, lo sfruttamento del lavoro, l'indifferenza
-per l'impatto ambientale, e «la sorprendente disponibilità di tanti a cedere il
-proprio potere e affidarsi a testo sintetico».
-
-Su che cosa faccia una macchina la penso diversamente da lei. Su chi sia il
-pappagallo, no. E l'unica cosa che separa chi capisce da chi ripete è sapere
-come funziona la cosa di cui si sta parlando: è quello che queste pagine
-provano a dare.
+Su che cosa faccia una macchina la penso diversamente da Bender, e la
+discussione è aperta. Su chi sia il pappagallo, no: il bersaglio della sua
+critica, dice, non sono affatto i modelli, «quello che mi preoccupa sono le
+azioni delle persone». E l'unica cosa che separa chi capisce da chi ripete è
+sapere come funziona la cosa di cui si sta parlando: è quello che queste
+pagine provano a dare.
 
 Il metodo lo trovi descritto nella {doc}`pagina di apertura </intro>`: ogni
 concetto che conta è spiegato due volte, una con un'analogia che non chiede
@@ -91,7 +76,7 @@ sempre citate, così che tu possa andare ad approfondire.
 
 Lo scopo di questo libro è introdurre i concetti principali dell'intelligenza
 artificiale, dal machine learning al deep learning al reinforcement learning
-(che cosa siano lo dice l'{doc}`introduzione </Introduzione/overview>`, una
+(che cosa siano lo dice l’{doc}`introduzione </Introduzione/overview>`, una
 definizione per ciascuno, prima di dedicarci il resto) fino ai capitoli che
 questi sistemi li portano in produzione e a quelli che ne discutono le
 conseguenze, e fornire gli strumenti utili a costruire un applicativo
@@ -118,9 +103,9 @@ macchina esattamente come per una persona.
 
 Solo dopo il testo arriva a me, e quello è il passaggio che decide che cosa
 resta. È la parte che al posto mio una macchina non sa
-fare: un modello punta ad avere ragione, un libro deve farsi capire. La prima
-cosa si misura sui fatti, la seconda su una
-persona che prima non sapeva e adesso sa.
+fare: un modello punta ad avere ragione, un libro deve farsi capire. Avere
+ragione si controlla riaprendo le fonti; farsi capire, soltanto leggendo la
+pagina come la leggerebbe un altro lettore.
 
 Così una spiegazione esatta ma fredda si riscrive finché non somiglia a come
 la racconterei a voce; un esempio ineccepibile che però non fa scattare niente
@@ -137,11 +122,10 @@ su questo libro e non su un altro: è una figura impossibile.
 
 ```{figure} figures/triangolo-di-penrose.svg
 :name: fig-triangolo-penrose
-:alt: Il triangolo di Penrose, tre travi colorate in terracotta, teal e ocra incastrate in un anello triangolare. Ogni angolo, guardato da solo coprendo il resto, mostra due travi che si incontrano in modo corretto; seguendo una trave per l'intero giro le tre giunzioni non si compongono, e l'oggetto non può esistere.
-:width: 52%
+:alt: Il triangolo di Penrose, il triangolo impossibile: tre travi a sezione quadrata, una terracotta, una teal e una ocra, disposte in anello triangolare. Ogni trave passa davanti a quella che incontra e dietro a quella da cui arriva, e il giro si chiude soltanto in apparenza.
+:width: 42%
 
-Il segno del libro, per esteso. Ogni angolo, preso da solo, si costruisce
-davvero; è il giro intero a non chiudersi.
+Il segno del libro, ingrandito: gli stessi tre tracciati del logo.
 ```
 
 Guarda uno qualsiasi dei tre angoli ({numref}`fig-triangolo-penrose`),
@@ -149,31 +133,16 @@ coprendo con una mano tutto il resto:
 quello che resta scoperto è corretto, due travi che si incontrano ad angolo
 retto, una davanti e una dietro; si costruisce davvero,
 con dei pezzi di legno. Vale per tutti e tre, uno alla volta. L'impossibilità
-non sta in nessun angolo: sta nel fatto che le tre soluzioni locali non si
-possono avere tutte insieme, e per accorgersene bisogna smettere di guardare
-l'angolo e seguire una trave per l'intero giro.
-
-E non è un inganno dell'occhio: è un teorema, che Roger Penrose ha scritto in
-matematica trentatré anni dopo averlo disegnato con suo padre
-{cite}`penrose1958impossible,penrose1991cohomology`. Un foglio non
-dice a che distanza stiano le cose che rappresenta: di un pezzo di figura sai
-com'è fatto, non quanto è lontano, e puoi immaginartelo vicino e piccolo
-oppure lontano e grande. Quella scelta che il foglio ti lascia è un numero.
-Dove due pezzi si sovrappongono, invece, il disegno ti obbliga, e fissa il
-rapporto fra le due distanze. Allora fai il giro e moltiplica i tre rapporti
-che hai raccolto: «il doppio» per «il doppio» per «un quarto» fa uno, e una
-figura così si costruisce; qualunque altro risultato dice di no. Qui non viene
-uno. Ogni pezzo, preso da solo, corrisponde a un oggetto vero, e gli corrisponde in
-tutto tranne che nella distanza: forma, spigoli e angoli passano dal disegno
-all'oggetto e tornano indietro senza perdere niente, ed è quello che in
-matematica si chiama **isomorfismo**. Di isomorfismi ce ne sono tre, tutti e
-tre perfetti; il guasto sta solo nel loro giro, che non si chiude.
+non sta in nessuno dei tre, sta nel fatto che non si possono avere tutti
+insieme, e per accorgersene bisogna smettere di guardare l'angolo e seguire
+una trave per l'intero giro. Non è un inganno dell'occhio ma un teorema, che
+Roger Penrose ha scritto in matematica trentatré anni dopo aver disegnato la
+figura con suo padre {cite}`penrose1958impossible,penrose1991cohomology`.
 
 È il modo esatto in cui una macchina sbaglia su una materia tecnica. Ogni frase
 regge da sola, ogni numero è verificabile, e il montaggio è falso. Il
-triangolo sta sul libro per tutte e due le ragioni insieme: come giro dei tre
-mestieri che si reggono a vicenda, e come promemoria del guasto che quel giro
-esiste per prendere.
+triangolo sta sul libro per tutte e due le ragioni insieme: è il giro dei tre
+mestieri che si reggono a vicenda, ed è il guasto contro cui quel giro esiste.
 
 Il metodo è severo per una ragione precisa: un modello sbaglia con la
 stessa sicurezza con cui dice il vero, e su una materia tecnica sbaglia proprio
@@ -187,11 +156,19 @@ dettaglio che ne faceva una lezione. Sono guasti che non si vedono rileggendo:
 si vedono solo aprendo la fonte, rifacendo il conto a mano, mandando in
 esecuzione il codice.
 
+% La chiusa di questo capoverso esiste in due versioni perche' la pagina degli
+% aggiornamenti online c'e' e in stampa no: `FUORI_STAMPA` in `pt_stampa.py` la
+% toglie dal PDF, dove la versione e' una sola ed e' quella del colophon. Senza
+% lo sdoppiamento il {doc} resta un rimando cieco, e il PDF prometteva una
+% pagina che il lettore non poteva trovare (il log lo diceva, in una riga sola:
+% «Hyper reference `aggiornamenti::doc' on page 5 undefined»).
+
+:::{only} html
 Su una cosa questo libro scommette apertamente. Il testo che leggi oggi è il
 meglio che questo metodo sappia produrre adesso, non il meglio possibile:
 qualche errore è rimasto, e più di una pagina si potrà spiegare meglio di
 così. Ma un libro online non ha migliaia di copie già stampate da rincorrere
-con il foglietto degli errori: si riscrive dove sbaglia, il giorno in cui
+con l’*errata corrige*: si riscrive dove sbaglia, il giorno in cui
 qualcuno se ne
 accorge. E gli strumenti con cui è scritto migliorano a loro volta, anno dopo
 anno. Se mantengono quello che promettono, ogni versione dovrebbe arrivare un
@@ -199,6 +176,22 @@ po’ più completa e un po’ meno sbagliata della precedente, finché le
 correzioni diventeranno rare e poi rarissime. È la scommessa che questo libro
 fa su se stesso, e la si può verificare: {doc}`Aggiornamenti </aggiornamenti>`
 tiene il conto delle correzioni, versione per versione.
+:::
+
+:::{only} latex
+Su una cosa questo libro scommette apertamente. Il testo che leggi oggi è il
+meglio che questo metodo sappia produrre adesso, non il meglio possibile:
+qualche errore è rimasto, e più di una pagina si potrà spiegare meglio di
+così. Ma un libro online non ha migliaia di copie già stampate da rincorrere
+con l’*errata corrige*: si riscrive dove sbaglia, il giorno in cui
+qualcuno se ne
+accorge. E gli strumenti con cui è scritto migliorano a loro volta, anno dopo
+anno. Se mantengono quello che promettono, ogni versione dovrebbe arrivare un
+po’ più completa e un po’ meno sbagliata della precedente, finché le
+correzioni diventeranno rare e poi rarissime. È la scommessa che questo libro
+fa su se stesso, e la si può verificare: online, il registro degli
+aggiornamenti tiene il conto delle correzioni, versione per versione.
+:::
 
 La responsabilità di quello che leggi è mia. L'impegno a renderlo ogni volta
 più chiaro nasce da un fatto semplice.

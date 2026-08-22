@@ -11,7 +11,8 @@ per settimane, spendendo in elettricità quanto una casa in un anno. Il
 risultato di quella fatica si scarica e si usa in tre righe, ed è quello che
 chiamiamo un modello **pre-addestrato**. A tenerne il catalogo è Hugging Face,
 un'azienda che ospita un sito da cui chiunque può scaricarli; il programma con
-cui li si adopera si chiama `transformers` ed è una *libreria*, cioè una
+cui li si adopera si chiama `transformers` {cite}`wolf2020transformers` ed è
+una *libreria*, cioè una
 cassetta degli attrezzi già pronta che un programma può aprire e usare.
 Sotto c'è PyTorch, lo strumento con cui in questo libro si costruiscono le reti.
 

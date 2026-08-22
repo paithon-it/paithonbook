@@ -2,7 +2,7 @@
 
 ## WordPiece: non il più frequente, il meno casuale
 
-BPE ha un difetto che si vede bene nell'[esempio svolto](tokenizzatori.md)
+BPE ha un difetto che si vede bene nell’[esempio svolto](tokenizzatori.md)
 con le cinque parole. Ha fuso per
 prima la coppia `ss` perché la `s` è una lettera comunissima e le doppie
 italiane sono ovunque: la coppia è frequente soprattutto perché i suoi pezzi

@@ -17,7 +17,8 @@ chiama **PyTorch** {cite}`paszke2019pytorch`. In
 pochi anni è diventato lo strumento standard della ricerca mondiale
 sull'intelligenza artificiale: la quasi totalità dei modelli pubblicati su
 Hugging Face (il grande archivio pubblico dove la comunità condivide i propri
-modelli) e gran parte degli articoli scientifici recenti sono scritti così.
+modelli {cite}`wolf2020transformers`) e gran parte degli articoli scientifici
+recenti sono scritti così.
 
 ## La filosofia: il grafo si costruisce mentre giri
 
@@ -80,7 +81,8 @@ punto la storia ha dato ragione a PyTorch.
 
 ## Perché ha vinto nella ricerca
 
-Nel 2017 il posto di PyTorch era già occupato. Lo teneva **TensorFlow**, la
+Nel 2017 il posto di PyTorch era già occupato. Lo teneva **TensorFlow**
+{cite}`abadi2016tensorflow`, la
 libreria di Google, uscita nel 2015 e allora usata praticamente da tutti: era
 lei lo strumento con cui si faceva deep learning, e PyTorch era l'ultimo
 arrivato. Cinque anni dopo i rapporti si erano invertiti, almeno nei

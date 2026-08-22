@@ -131,7 +131,7 @@ $$
 \underbrace{\alpha_t\,(\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top)}_{\text{Gated DeltaNet}}
 $$
 
-dove l'**oblio** è compreso fra $0$ e $1$ e cambia forma lungo la fila: dove
+dove l’**oblio** è compreso fra $0$ e $1$ e cambia forma lungo la fila: dove
 moltiplica l'identità è lo scalare $\alpha_t$, un numero solo; dentro
 $\mathrm{Diag}$ è il vettore $\boldsymbol{\alpha}_t \in (0,1)^d$, un valore per
 canale, e il grassetto è lì apposta per non far leggere le due cose come una

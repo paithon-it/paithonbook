@@ -38,6 +38,15 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-10-2)=
+
+## 1.10.2 · 22 agosto 2026
+
+### Correzioni
+
+- {doc}`Prefazione </prefazione>`. **La prefazione si legge più svelta.** Il racconto dei pappagalli stocastici arriva prima al punto, e il triangolo impossibile dice quello che deve in un terzo dello spazio: ogni angolo regge da solo, il giro no, ed è il modo in cui una macchina sbaglia su una materia tecnica.
+- **Gli strumenti che il libro nomina hanno la loro fonte.** PyTorch, TensorFlow, Keras e Hugging Face si trovano ora in bibliografia con l'articolo di chi li ha fatti e l'indirizzo per approfondire.
+
 (v1-10-1)=
 
 ## 1.10.1 · 22 agosto 2026

@@ -96,7 +96,7 @@ l’**esponente** (la scala). Di quel numero si memorizza solo la parte
 frazionaria $f$, con $0 \le f < 1$, perché l’$1$ davanti è implicito e non
 serve scriverlo: è la ragione per cui il formato `float32` spende 1 bit di
 segno, 8 di esponente e 23 per $f$. Da quei 23 bit (non dai 24 del
-significando, che comprendono l'uno implicito) esce l'$\varepsilon$ di due
+significando, che comprendono l'uno implicito) esce l’$\varepsilon$ di due
 righe più sotto: a $x=1$ l'esponente è nullo, quindi il numero rappresentabile
 successivo è esattamente $1+2^{-23}$. Il
 `float64` (doppia precisione) dà 52 bit a $f$. La granularità relativa è
