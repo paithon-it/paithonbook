@@ -38,6 +38,21 @@ torchvision==0.28.0
 # `torch` il problema non si pone perché lì la ruota di PyPI è già senza CUDA.
 torchaudio==2.11.0+cpu
 
+# `triton` serve a `GPU/kernel-e-cuda.md`, che importa Triton per mostrare un
+# kernel fuso. Non lo tira dentro nessuno: la ruota CUDA di torch lo porta come
+# dipendenza, la ruota **CPU** no, ed e' quella che la CI installa apposta. Per
+# questo il blocco girava su chi scrive (dove torch e' completo) e non di la',
+# che e' la terza volta che questo file scopre una dipendenza cosi', sempre
+# perche' l'ambiente di chi verifica e' piu' ricco di quello che pubblica.
+#
+# Una GPU NON serve: il blocco **definisce** il kernel e non lo lancia mai
+# (`fused_relu` non viene chiamata), e `@triton.jit` compila alla prima
+# chiamata, non alla decorazione. Provato senza CUDA: import e decorazione
+# riescono. Unica cautela, che e' del decoratore e non del libro: la funzione
+# dev'essere in un file vero, perche' `triton.jit` legge il sorgente con
+# `inspect`; da un `python3 -c` fallisce, dal notebook e dal verificatore no.
+triton==3.7.1
+
 # --- calcolo, dati, grafici ---
 numpy==2.4.6
 pandas==3.0.5

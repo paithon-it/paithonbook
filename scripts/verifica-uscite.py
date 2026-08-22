@@ -328,7 +328,15 @@ def main() -> None:
     # log della CI, accanto ai capitoli che invece sono stati controllati.
     for nome, perche in sorted(saltati.items()):
         print(f"  ~  {nome:28} fuori da qui: {perche}")
+    # I due guasti si contano SEPARATI perche' hanno diagnosi opposte, e
+    # confonderli manda il prossimo a cercare la cosa sbagliata: un capitolo che
+    # non parte non ha nessuna uscita che «non combacia», semplicemente non e'
+    # stato eseguito, e la causa sta nell'ambiente (una libreria che qui non
+    # c'e') non nel libro. Sommandoli, il rapporto finale diceva «1 uscite non
+    # combaciano: o il codice e' cambiato, o il blocco ```text e' stato scritto
+    # a mano», cioe' una diagnosi falsa e per giunta credibile.
     problemi = 0
+    non_eseguiti = 0
     for nome, pagine in sorted(scelti.items()):
         raccolti = [(p, *x) for p in pagine
                     for x in blocchi_di(p, args.anche_lenti)]
@@ -348,7 +356,7 @@ def main() -> None:
             uscite = uscite[1:]
         if guasto:
             print(f"  ✗  {nome:28} {guasto}")
-            problemi += 1
+            non_eseguiti += 1
             continue
 
         rotti = []
@@ -369,9 +377,16 @@ def main() -> None:
                   f"{da_controllare} combaciano{nota}")
 
     print()
+    if non_eseguiti:
+        print(f"{non_eseguiti} capitoli non sono stati eseguiti: manca qualcosa "
+              f"in QUESTO ambiente, e le loro uscite restano non verificate. "
+              f"Non vuol dire che i numeri siano sbagliati, vuol dire che "
+              f"nessuno li ha controllati: se la libreria serve al libro, "
+              f"dichiararla in requirements-notebook.txt.")
     if problemi:
         print(f"{problemi} uscite non combaciano: o il codice e' cambiato, o il "
               f"blocco ```text e' stato scritto a mano e non ricontrollato.")
+    if problemi or non_eseguiti:
         sys.exit(1)
     print("ogni numero stampato nel libro e' quello che il codice produce.")
 
