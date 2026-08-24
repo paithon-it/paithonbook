@@ -5,6 +5,7 @@
     python3 scripts/genera-pdf.py --solo-tex   # si ferma al sorgente LaTeX
     python3 scripts/genera-pdf.py --pulisci    # butta la cache delle figure
     python3 scripts/genera-pdf.py --verifica   # il PDF c'e' ed e' aggiornato?
+    python3 scripts/genera-pdf.py --capitoli  # ritaglia un PDF per capitolo
     python3 scripts/genera-pdf.py --rilascia   # lo allega alla release
 
 Il libro online si legge una pagina alla volta; questo e' il secondo formato,
@@ -52,6 +53,7 @@ RADICE = pathlib.Path(__file__).resolve().parent.parent
 LIBRO = RADICE / "book"
 USCITA = LIBRO / "_build" / "stampa"
 TEX = USCITA / "tex"
+CAPITOLI = USCITA / "capitoli"
 NOME = "paithon-book"
 CASA = "book.paithon.it"
 PUBBLICO = "paithon-it/paithonbook"
@@ -306,9 +308,37 @@ def rilascia(pdf: pathlib.Path, conferma: bool) -> None:
     esiste = esegui(["gh", "release", "view", tag, "--repo", PUBBLICO])
     peso = pdf.stat().st_size / 1024 / 1024
 
+    # SOLO I CAPITOLI CAMBIATI. Il libro si ricompone per intero a ogni giro
+    # (e' impaginato globalmente: un paragrafo in piu' al capitolo 3 sposta
+    # tutto quello dopo), ma di ritagli ne cambiano pochi, e non ha senso
+    # rispedire quaranta megabyte per tre capitoli toccati. Chi c'e' gia' e
+    # com'e' fatto lo dice la release, che di ogni allegato espone lo sha256:
+    # lo stato vero e' quello che il lettore scarica, non quello che questa
+    # macchina ricorda.
+    gia = allegati(tag)
+    capitoli = sorted(CAPITOLI.glob(f"{NOME}-*.pdf"))
+    # I ritagli li scrive la stessa build che scrive il libro, quindi vecchi
+    # non dovrebbero esserlo mai. Se lo sono e' successo qualcosa (una build
+    # interrotta, una cartella copiata a mano), e caricarli vorrebbe dire
+    # mettere sulla release capitoli di due edizioni diverse.
+    vecchi = [f for f in capitoli if f.stat().st_mtime < pdf.stat().st_mtime]
+    if vecchi:
+        sys.exit(f"{len(vecchi)} ritagli sono piu' vecchi del libro "
+                 f"({vecchi[0].name} e gli altri): rifalli con\n"
+                 f"  python3 scripts/genera-pdf.py --capitoli")
+    da_caricare = [f for f in capitoli if gia.get(f.name) != impronta(f)]
+
     print(f"  versione {numero} ({data}), {peso:.1f} MB")
     print(f"  release {tag} su {PUBBLICO}: "
           f"{'esiste già, sostituisco il file' if esiste.returncode == 0 else 'da creare'}")
+    if capitoli:
+        nomi = ", ".join(f.stem.split("-", 2)[-1] for f in da_caricare)
+        print(f"  capitoli: {len(capitoli)} sul disco, "
+              f"{len(da_caricare)} da caricare"
+              + (f" ({nomi})" if 0 < len(da_caricare) < len(capitoli) else ""))
+    else:
+        print(f"  capitoli: nessuno in {CAPITOLI.relative_to(RADICE)}, "
+              f"li ritaglia `genera-pdf.py` (anche da solo, con --capitoli)")
     if not conferma:
         print("\n  prova a vuoto. Per farlo davvero: --rilascia --conferma")
         return
@@ -325,6 +355,13 @@ def rilascia(pdf: pathlib.Path, conferma: bool) -> None:
                         "--notes-file", str(note), str(pdf)])
     if fatto.returncode != 0:
         sys.exit(f"la release non e' andata:\n{fatto.stderr}")
+
+    if da_caricare:
+        fatto = esegui(["gh", "release", "upload", tag, "--repo", PUBBLICO,
+                        "--clobber", *[str(f) for f in da_caricare]])
+        if fatto.returncode != 0:
+            sys.exit(f"i capitoli non sono saliti:\n{fatto.stderr}")
+        print(f"  capitoli caricati: {len(da_caricare)}")
     print(f"  fatto: https://github.com/{PUBBLICO}/releases/tag/{tag}")
 
 
@@ -351,6 +388,9 @@ def ricompatta(pdf: pathlib.Path) -> None:
     documento = fitz.open(pdf)
     pagine, segnalibri = documento.page_count, len(documento.get_toc())
     documento.xref_set_key(-1, "ID", "[<70616974686F6E><626F6F6B>]")
+    rimessi = length1(documento)
+    if rimessi:
+        print(f"  /Length1 rimesso su {rimessi} font")
     temporaneo = pdf.with_suffix(".compatto.pdf")
     documento.save(temporaneo, garbage=3, deflate=True, no_new_id=True)
     documento.close()
@@ -366,6 +406,175 @@ def ricompatta(pdf: pathlib.Path) -> None:
     if prima - pdf.stat().st_size > 1024 * 1024:
         print(f"  ricompattato: {prima / 1024 / 1024:.0f} MB "
               f"-> {pdf.stat().st_size / 1024 / 1024:.0f} MB")
+
+
+def length1(documento) -> int:
+    """Rimette il `/Length1` che LuaTeX non scrive nei font che incorpora lui.
+
+    Un `FontFile2` deve dichiarare in `/Length1` la lunghezza del programma
+    TrueType non compresso: e' obbligatorio, e Acrobat lo usa per estrarre il
+    font. Senza, apre il libro e avvisa che «non e' possibile estrarre il font
+    incorporato», con il nome del carattere dei titoli, e aggiunge che dei
+    caratteri potrebbero non stamparsi bene.
+
+    Non lo vede nessuno degli strumenti della catena: `qpdf --check` dice che
+    il file e' a posto (controlla la sintassi, non le chiavi obbligatorie), e
+    gli altri lettori il font lo disegnano lo stesso. Lo dice solo Acrobat, a
+    chi scarica il PDF.
+
+    Sono i font che incorpora LuaTeX, cioe' quelli del testo; quelli che
+    arrivano dentro le figure convertite da Chromium il `/Length1` ce l'hanno,
+    ed e' il motivo per cui l'avviso nomina sempre i primi.
+    """
+    import re
+    rimessi = 0
+    for xref in range(1, documento.xref_length()):
+        try:
+            oggetto = documento.xref_object(xref, compressed=False)
+        except Exception:
+            continue
+        if "/FontFile2" not in oggetto or "/FontName" not in oggetto:
+            continue
+        programma = re.search(r"/FontFile2 (\d+) 0 R", oggetto)
+        if not programma:
+            continue
+        font = int(programma.group(1))
+        if "/Length1" in documento.xref_object(font, compressed=False):
+            continue
+        documento.xref_set_key(font, "Length1",
+                               str(len(documento.xref_stream(font))))
+        rimessi += 1
+    return rimessi
+
+
+def pagine_dei_capitoli(documento, sorgente: pathlib.Path) -> list[tuple]:
+    """Per ogni capitolo del libro: cartella, prima e ultima pagina (0-based).
+
+    I confini non si indovinano dai titoli dell'indice, che sono prosa e
+    cambiano: si prendono dalle **ancore** che hyperref lascia nel PDF
+    (`chapter.1`, `chapter.2`, ...), messe in fila per pagina e accoppiate ai
+    `\\chapter` del sorgente LaTeX, che portano subito sotto il `\\label` con
+    il nome del file da cui vengono. Se i due conti non tornano ci si ferma:
+    accoppiare per posizione due elenchi di lunghezza diversa vuol dire dare a
+    ogni capitolo il PDF di quello accanto, e nessuno se ne accorgerebbe.
+
+    Il confine di destra e' la prossima ancora, di capitolo **o di parte**: il
+    frontespizio di una parte cade fra la fine di un capitolo e l'inizio del
+    successivo, e senza contarlo finirebbe in coda al capitolo precedente.
+    """
+    testo = sorgente.read_text(encoding="utf-8")
+    etichette = re.findall(
+        r"^\\chapter[\[{].*\n\\label\{\\detokenize\{([^:}]+):", testo, re.M)
+    ancore = sorted((v["page"], k) for k, v in documento.resolve_names().items()
+                    if k.startswith("chapter."))
+    if len(ancore) != len(etichette):
+        sys.exit(f"nel PDF ci sono {len(ancore)} ancore di capitolo e nel "
+                 f"sorgente {len(etichette)} capitoli: non si accoppiano.")
+    confini = sorted(v["page"] for k, v in documento.resolve_names().items()
+                     if k.startswith(("chapter.", "part.")))
+
+    capitoli = []
+    for (prima, _), etichetta in zip(ancore, etichette):
+        # Le pagine di radice (prefazione, bibliografia) non stanno in una
+        # cartella, e un capitolo del libro si', sempre: e' il filtro.
+        if "/" not in etichetta:
+            continue
+        dopo = [p for p in confini if p > prima]
+        ultima = (dopo[0] - 1) if dopo else documento.page_count - 1
+        capitoli.append((etichetta.split("/")[0], prima, ultima))
+    return capitoli
+
+
+def pagina_vuota(pagina) -> bool:
+    """La verso bianca che `openright` lascia in fondo a un capitolo."""
+    return (not pagina.get_text().strip() and not pagina.get_images()
+            and not pagina.get_drawings())
+
+
+def spezza(pdf: pathlib.Path, sorgente: pathlib.Path) -> dict:
+    """Il libro impaginato, tagliato in un PDF per capitolo.
+
+    Si RITAGLIA dal libro gia' composto invece di compilare ogni capitolo per
+    conto suo, e la ragione e' che un libro e' impaginato globalmente: un
+    capitolo compilato da solo riparte da pagina 1, si numera «Capitolo 1» e
+    ai rimandi fuori dalle sue pagine risponde `??`. Ritagliato, porta i
+    numeri veri e i riferimenti risolti, e costa un secondo e mezzo per tutto
+    il libro invece di una passata di LuaLaTeX per capitolo.
+
+    Nei metadati non finisce nessuna data: il libro intero la sua ce l'ha, ma
+    qui la data cambierebbe a ogni costruzione, e con essa il codice di
+    controllo di ogni ritaglio, che e' proprio quello con cui `rilascia()`
+    decide chi ricaricare e chi no.
+    """
+    import fitz
+
+    documento = fitz.open(pdf)
+    indice = documento.get_toc()
+    titoli = {p: t for livello, t, p in indice if livello == 2}
+    marca = dict(documento.metadata)
+    for campo in ("creationDate", "modDate", "producer"):
+        marca.pop(campo, None)
+
+    CAPITOLI.mkdir(parents=True, exist_ok=True)
+    fatti = {}
+    for cartella, prima, ultima in pagine_dei_capitoli(documento, sorgente):
+        while ultima > prima and pagina_vuota(documento[ultima]):
+            ultima -= 1
+        pezzo = fitz.open()
+        pezzo.insert_pdf(documento, from_page=prima, to_page=ultima)
+        # L'indice del pezzo e' quello del libro ristretto alle sue pagine e
+        # rialzato di un livello: il capitolo, che nel libro e' figlio di una
+        # parte, qui e' la radice.
+        pezzo.set_toc([[livello - 1, testo, pagina - prima]
+                       for livello, testo, pagina in indice
+                       if livello >= 2 and prima < pagina <= ultima + 1])
+        pezzo.set_metadata(dict(
+            marca, title=f"{titoli.get(prima + 1, cartella)} · Paithon Book"))
+        length1(pezzo)
+        pezzo.xref_set_key(-1, "ID", "[<70616974686F6E><626F6F6B>]")
+        file = CAPITOLI / f"{NOME}-{cartella}.pdf"
+        pezzo.save(file, garbage=4, deflate=True, no_new_id=True)
+        pezzo.close()
+        fatti[cartella] = file
+
+    # Un capitolo tolto dal libro lascerebbe qui il suo ritaglio, e da li'
+    # salirebbe sulla release: sulla home la scheda non c'e' piu', il file si
+    # scarica ancora.
+    for avanzo in CAPITOLI.glob(f"{NOME}-*.pdf"):
+        if avanzo not in fatti.values():
+            avanzo.unlink()
+            print(f"  tolto il ritaglio di un capitolo che non c'e' piu': "
+                  f"{avanzo.name}")
+
+    peso = sum(f.stat().st_size for f in fatti.values()) / 1024 / 1024
+    print(f"  capitoli: {len(fatti)} file in "
+          f"{CAPITOLI.relative_to(RADICE)} ({peso:.0f} MB)")
+    return fatti
+
+
+def impronta(file: pathlib.Path) -> str:
+    """Lo stesso codice di controllo che GitHub espone sugli allegati."""
+    import hashlib
+    return "sha256:" + hashlib.sha256(file.read_bytes()).hexdigest()
+
+
+def allegati(tag: str) -> dict:
+    """Nome -> impronta di quello che sulla release c'e' gia'.
+
+    E' la lista che permette di ricaricare **solo i capitoli cambiati**, e la
+    si chiede alla release invece di tenersene una copia qui: lo stato vero e'
+    quello che il lettore scarica, non quello che questa macchina ricorda.
+    Se la release non esiste ancora, non c'e' niente e si carica tutto.
+    """
+    import json
+    fatto = esegui(["gh", "api", f"repos/{PUBBLICO}/releases/tags/{tag}",
+                    "--jq", "[.assets[] | {name, digest}]"])
+    if fatto.returncode != 0:
+        return {}
+    try:
+        return {a["name"]: a.get("digest") or "" for a in json.loads(fatto.stdout)}
+    except (ValueError, TypeError):
+        return {}
 
 
 def versione_stampata(pdf: pathlib.Path) -> str | None:
@@ -437,6 +646,9 @@ def main() -> None:
                            help="provino di un capitolo solo (per es. "
                                 "VisioneArtificiale): compila in secondi, "
                                 "ma i numeri di pagina non sono quelli veri")
+    argomenti.add_argument("--capitoli", action="store_true",
+                           help="ritaglia dal PDF gia' costruito un file per "
+                                "capitolo, senza ricompilare niente")
     argomenti.add_argument("--rilascia", action="store_true",
                            help="allega il PDF alla release del repo pubblico")
     argomenti.add_argument("--conferma", action="store_true",
@@ -445,6 +657,14 @@ def main() -> None:
 
     if scelte.rilascia:
         rilascia(USCITA / f"{NOME}.pdf", conferma=scelte.conferma)
+        return
+
+    if scelte.capitoli:
+        libro, sorgente = USCITA / f"{NOME}.pdf", TEX / f"{NOME}.tex"
+        if not libro.exists() or not sorgente.exists():
+            sys.exit("prima si costruisce il libro: python3 scripts/genera-pdf.py")
+        print("ritaglio i capitoli...")
+        spezza(libro, sorgente)
         return
 
     print("costruisco il sorgente LaTeX...")
@@ -466,6 +686,11 @@ def main() -> None:
     guai = errori_veri(cartella / f"{nome}.log")
     ricompatta(pdf)
     racconta(pdf)
+
+    # I capitoli si ritagliano dal libro appena composto: costa un secondo e
+    # mezzo, quindi non e' un passo a parte da ricordarsi.
+    if not scelte.capitolo:
+        spezza(pdf, cartella / f"{NOME}.tex")
 
     # Il provino di un capitolo la copertina non ce l'ha: si controlla il
     # libro intero, che e' poi quello che va in release.

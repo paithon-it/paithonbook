@@ -16,7 +16,8 @@ toglierli di mezzo prima di rileggere:
   ref/doc    riferimenti interni a target inesistenti
   figure     file in book/figures/ che nessuno richiama
   toc        file sotto book/ non elencati in _toc.yml
-  landing    schede di intro.md che non corrispondono ai capitoli del _toc.yml
+  landing    schede di intro.md che non corrispondono ai capitoli del _toc.yml,
+             o a cui manca il collegamento al proprio capitolo in PDF
              (mancanti, di troppo, fuori ordine, o col numero scritto a mano)
   animazioni capitoli senza nemmeno una figura animata: zero clip puo' essere
              la scelta giusta, ma va DICHIARATA in animazioni/senza-clip.toml
@@ -406,6 +407,15 @@ def main():
                                      testo_landing):
                 problemi["numero scritto a mano nella scheda"].append(
                     f"«{numero}», lo conta il CSS, lo <span> va lasciato vuoto")
+
+            # Accanto a ogni scheda si scarica il capitolo in PDF, e il nome
+            # del file lo decide la cartella. Se i due si scollano il lettore
+            # clicca su un 404, che dalla pagina non si vede: il collegamento
+            # c'e', il file no, e se ne accorge solo chi ci prova.
+            for scheda in schede:
+                atteso = f"paithon-book-{scheda.split('/')[0]}.pdf"
+                if atteso not in testo_landing:
+                    problemi["scheda senza il suo capitolo in PDF"].append(atteso)
 
     if "schede" in attivi:
         # `sphinx-inline-tabs` unisce in UN SOLO gruppo le schede che si
@@ -1161,6 +1171,7 @@ def main():
               "schede della landing senza capitolo",
               "schede della landing fuori ordine",
               "numero scritto a mano nella scheda",
+              "scheda senza il suo capitolo in PDF",
               "schede contigue, che la build fonde",
               "coppia di schede spezzata da prosa",
               "recinzione con del testo attaccato",

@@ -1437,6 +1437,25 @@ html[data-theme="dark"] p.copyright img {
   counter-reset: pt-scheda;
 }
 
+/* La cella tiene insieme la scheda e il suo capitolo in PDF. Serve perche' un
+   <a> dentro un <a> non e' HTML valido: il collegamento al PDF non puo' stare
+   dentro la scheda, e sta accanto. Il sollevamento al passaggio del mouse si
+   sposta qui, cosi' la pastiglia sale insieme alla scheda invece di restare
+   indietro. */
+.pt-cella {
+  position: relative;
+  display: flex;
+  transition: transform var(--transition-fast);
+}
+
+.pt-cella:hover {
+  transform: translateY(-3px);
+}
+
+.pt-cella > a.pt-card {
+  flex: 1;
+}
+
 a.pt-card {
   display: flex;
   flex-direction: column;
@@ -1453,7 +1472,6 @@ a.pt-card {
 }
 
 a.pt-card:hover {
-  transform: translateY(-3px);
   border-color: var(--primary-color);
   box-shadow: var(--shadow-md);
   border-bottom-color: var(--primary-color);
@@ -1492,6 +1510,33 @@ a.pt-card:hover .pt-card-title {
   font-size: 0.9rem;
   line-height: 1.55;
   color: var(--text-light);
+}
+
+/* Il capitolo in PDF: l'angolo in alto a destra e' l'unico pezzo di scheda
+   sempre libero, perche' il numero occupa la prima riga a sinistra. */
+a.pt-card-pdf {
+  position: absolute;
+  top: 1.15rem;
+  right: 1.15rem;
+  font-family: var(--font-heading);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-light);
+  text-decoration: none;
+  transition: color var(--transition-fast),
+              background var(--transition-fast),
+              border-color var(--transition-fast);
+}
+
+a.pt-card-pdf:hover {
+  color: var(--bg-main);
+  background: var(--primary-color);
+  border-color: transparent;
 }
 
 /* Il badge "Bonus" sulle card è stato eliminato: i capitoli sono tutti
