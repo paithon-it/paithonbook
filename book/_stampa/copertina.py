@@ -94,14 +94,21 @@ def archi(d, colori) -> list[str]:
 
 
 def punti(d, colori) -> list[str]:
-    """Una griglia di punti che si dirada."""
+    """Una griglia di punti che si dirada.
+
+    L'inchiostro lo sceglie la CASELLA (riga piu' colonna), non il pixel: con
+    `(x + y) % 3` la banda restava di un colore solo tutte le volte che il
+    passo era un multiplo di tre, perche' allora `x + y` cambia sempre di un
+    multiplo di tre e il resto non si muove mai. Capitava a un capitolo su
+    tre fra quelli a griglia, e da fuori sembrava una scelta.
+    """
     pezzi = []
     passo = 26 + d(10)
-    for x in range(30, LARGA - 20, passo):
-        for y in range(24, ALTA - 10, passo):
+    for riga, x in enumerate(range(30, LARGA - 20, passo)):
+        for colonna, y in enumerate(range(24, ALTA - 10, passo)):
             r = 1.5 + (x / LARGA) * (3 + d(3))
             pezzi.append(f'<circle cx="{x}" cy="{y}" r="{r:.1f}" '
-                         f'fill="{colori[(x + y) % len(colori)]}" '
+                         f'fill="{colori[(riga + colonna) % len(colori)]}" '
                          f'opacity="0.{4 + d(5)}"/>')
     return pezzi
 
@@ -166,6 +173,12 @@ def banda(numero: int) -> str:
     colori = colori[numero % 3:] + colori[:numero % 3]
     disegno = DISEGNI[numero % len(DISEGNI)]
     corpo = "\n  ".join(disegno(d, colori))
+    # Una banda di un inchiostro solo non si distingue da una banda che ha
+    # perso la palette, e nessuno la guarda capitolo per capitolo.
+    usati = [inchiostro for inchiostro in INCHIOSTRI if inchiostro in corpo]
+    assert len(usati) > 1, (
+        f"la banda del capitolo {numero} ({disegno.__name__}) usa un "
+        f"inchiostro solo ({usati}): il disegno sceglie male il colore")
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Paithon Book, banda di apertura del capitolo {numero}.

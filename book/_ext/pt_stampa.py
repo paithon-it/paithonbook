@@ -492,6 +492,28 @@ FONTPKG = r"""
 \newfontfamily\ptDisplayLeggero{Fraunces 72pt}[Path=\ptFontDir,
   UprightFont=fraunces-400.ttf, ItalicFont=fraunces-400italic.ttf,
   BoldFont=fraunces-600.ttf, BoldItalicFont=fraunces-600italic.ttf]
+% `\mathbb{1}`, l'indicatrice, NON esiste. `\mathbb` viene dal font `msbm` di
+% AMS, che ha solo le LETTERE, e nella casella dove starebbe la cifra 1 quel
+% font tiene ⊮ (il «non forza» della logica modale). Nessun errore, nessun
+% avviso: il libro stampava ⊮ ovunque usasse l'indicatrice, 22 volte su 15
+% pagine, e il glifo giusto non compariva mai. Online non si vedeva, perche'
+% li' compone MathJax.
+%
+% Si ripara qui e non nelle 313 occorrenze del sorgente, perche' e' un guasto
+% di composizione e non di contenuto. Il glifo vero (U+1D7D9) ce l'ha DejaVu
+% Sans, che e' gia' la riserva dei simboli dichiarata qui sopra: basta emettere
+% il carattere e la riserva lo va a prendere. Niente pacchetti nuovi, quindi
+% niente da aggiungere a `pdf.yml`, che DejaVu la installa gia'.
+%
+% `\AtBeginDocument` non e' un vezzo: `\mathbb` lo definisce `amssymb`, che
+% Sphinx carica DOPO questo blocco, quindi prendere il controllo adesso
+% catturerebbe una macro che non esiste ancora.
+\AtBeginDocument{%
+  \let\ptMathbbOrig\mathbb
+  \renewcommand{\mathbb}[1]{%
+    \def\ptMathbbArg{#1}\def\ptMathbbUno{1}%
+    \ifx\ptMathbbArg\ptMathbbUno \text{𝟙}\else\ptMathbbOrig{#1}\fi}%
+}
 """
 
 

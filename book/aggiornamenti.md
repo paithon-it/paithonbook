@@ -40,11 +40,15 @@ piedi.
 
 (v1-10-2)=
 
-## 1.10.2 · 22 agosto 2026
+## 1.10.2 · 23 agosto 2026
+
+### Pagine ampliate
+
+- {doc}`Prefazione </prefazione>`. **La prefazione dice da che parte sta il libro.** Da quando i mestieri di chi lavora con l'intelligenza artificiale sono stati riassorbiti in uno solo, l'apprendimento automatico è diventato facoltativo, e al suo posto è rimasta la fiducia che un modello già addestrato impari al volo dagli esempi che gli si mettono nel prompt. Queste pagine stanno dall'altra parte: meno caccia all'istruzione magica, più architetture, iperparametri e funzioni di costo.
 
 ### Correzioni
 
-- {doc}`Prefazione </prefazione>`. **La prefazione si legge più svelta.** Il racconto dei pappagalli stocastici arriva prima al punto, e il triangolo impossibile dice quello che deve in un terzo dello spazio: ogni angolo regge da solo, il giro no, ed è il modo in cui una macchina sbaglia su una materia tecnica.
+- {doc}`Prefazione </prefazione>`. **La prefazione si legge più svelta, e riconosce un debito.** Il racconto dei pappagalli stocastici arriva prima al punto e il triangolo impossibile dice quello che deve in un terzo dello spazio; il segno del libro nomina ora *Gödel, Escher, Bach*, da cui viene sia la lettura di quella figura come un anello che torna su sé stesso, sia l'idea di spiegare ogni cosa due volte.
 - **Gli strumenti che il libro nomina hanno la loro fonte.** PyTorch, TensorFlow, Keras e Hugging Face si trovano ora in bibliografia con l'articolo di chi li ha fatti e l'indirizzo per approfondire.
 
 (v1-10-1)=

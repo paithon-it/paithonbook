@@ -177,12 +177,16 @@ def ritaglia_capitolo(sorgente: pathlib.Path, nome: str) -> pathlib.Path:
     scelto = None
     for numero, taglio in enumerate(tagli):
         fine = tagli[numero + 1] if numero + 1 < len(tagli) else len(testo)
-        if f"{{{nome}/" in testo[taglio:fine] or f"{nome}/" in testo[taglio:fine]:
+        fetta_test = testo[taglio:fine]
+        # Le pagine di radice (prefazione, intro) non stanno in una
+        # cartella: la loro etichetta e' `nome:`, non `nome/`.
+        if any(m in fetta_test for m in (f"{{{nome}/", f"{nome}/", f"{nome}:")):
             scelto = (taglio, fine)
             break
     if scelto is None:
         sys.exit(f"capitolo «{nome}» non trovato (e' il nome della cartella "
-                 f"sotto book/, per esempio VisioneArtificiale)")
+                 f"sotto book/, per esempio VisioneArtificiale, o della pagina "
+                 f"di radice, per esempio prefazione)")
 
     fetta = testo[scelto[0]:scelto[1]]
     provino = sorgente.with_name(f"{NOME}-provino.tex")

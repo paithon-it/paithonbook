@@ -192,6 +192,7 @@
 %% nome del capitolo e si capisce da se'.
 \newcommand{\ptMiniIndice}{%
   \begingroup
+  \hypersetup{linkcolor=ptNero}%
   \etocsettocstyle{}{}%
   \etocsetnexttocdepth{section}%
   \etocsetstyle{section}{}{}
@@ -209,18 +210,57 @@
 \titleformat{\subsubsection}
   {\ptDisplay\normalsize}{\color{ptTeal}\thesubsubsection}{1em}{}
 
+%% ------------------------------------------------------------- i link
+%% Il colore dei link, se non lo si dice, resta quello che porta Sphinx
+%% (#355F7C), e nella palette non c'e'. In pagina i rimandi sono pochi e la
+%% cosa non si vede; nell'INDICE invece ogni riga e' un link, quindi quel
+%% colore diventa il colore dell'indice, e la gerarchia finisce per essere
+%% detta dal colore invece che dal corpo e dal peso.
+%%
+%% Terracotta e' la stessa scelta del sito (`--pt-accent`), il teal va agli
+%% indirizzi esterni: chi porta fuori dal libro si distingue da chi porta
+%% da un'altra parte dentro.
+\hypersetup{linkcolor=ptTerracotta, citecolor=ptTerracotta,
+            urlcolor=ptTeal, filecolor=ptTeal}
+
 %% ------------------------------------------------------ indice generale
+%% Nell'indice il colore dice una cosa sola: a che livello sei. Il titolo
+%% resta nero, perche' e' testo da leggere; terracotta il numero del capitolo
+%% e la sua pagina, che sono i due appigli per cui un indice si apre; teal le
+%% parti e i numeri di sezione, cioe' l'impalcatura; ocra i puntini, che
+%% servono all'occhio per non perdere la riga e non devono farsi guardare
+%% (sono i segni piu' numerosi della pagina, quindi il colore piu' quieto).
+%%
+%% Il gancio di `sphinxmanual` rimette `\@dottedtocline` su `\l@section` e
+%% `\l@subsection`, cioe' butta via lo stile che titletoc ha appena messo, e
+%% lo fa DENTRO l'indice: chi tocca `\titlecontents{section}` e non vede
+%% cambiare niente sta guardando questo. Qui il gancio fa un'altra cosa sola:
+%% dentro l'indice i link sono neri, perche' li' i titoli sono testo da
+%% leggere e non rimandi, e la riga resta cliccabile lo stesso.
+\renewcommand\sphinxtableofcontentshook{\hypersetup{linkcolor=ptNero}}
+
+%% La parte non ha `\numberline` nel .toc (il numero sta dentro il testo,
+%% «I\hspace{1em}Prima di cominciare»), quindi `\thecontentslabel` e' vuoto e
+%% il numero non si puo' colorare a parte: e' testo dentro il link. Il livello
+%% lo dice allora un filetto teal sotto la riga, che e' anche quello che
+%% separa i blocchi dell'indice.
+\titlecontents{part}[0pt]
+  {\addvspace{16pt}\large\bfseries}
+  {}
+  {}
+  {\hfill\textcolor{ptTeal}{\contentspage}}
+  [\vspace{2.5pt}{\color{ptTeal}\hrule height 0.6pt}\vspace{4pt}]
 \titlecontents{chapter}[0pt]
-  {\addvspace{8pt}\ptDisplay\large}
+  {\addvspace{8pt}\ptDisplay\large\color{ptNero}}
   {\textcolor{ptTerracotta}{\thecontentslabel}\hspace{5mm}}
   {}
-  {\titlerule*[0.7pc]{\textcolor{ptTerracotta}{.}}%
+  {\titlerule*[0.7pc]{\textcolor{ptOcra}{.}}%
    \textcolor{ptTerracotta}{\contentspage}}
 \titlecontents{section}[15mm]
-  {\addvspace{1pt}\small}
-  {\contentslabel{11mm}}
+  {\addvspace{1pt}\small\color{ptNero}}
+  {\textcolor{ptTeal}{\contentslabel{11mm}}}
   {}
-  {\titlerule*[0.8pc]{.}\contentspage}
+  {\titlerule*[0.8pc]{\textcolor{ptOcra}{.}}\contentspage}
 
 %% ------------------------------------------------------ i due livelli
 %% Il nome dell'ambiente lo decide `_ext/pt_stampa.py`, che lo mette come

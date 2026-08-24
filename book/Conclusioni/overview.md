@@ -1,7 +1,7 @@
 # Conclusioni
 
 Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: «si dice
-che spiegare significhi dissolvere» {cite}`weizenbaum1966eliza`. Voleva dire
+che spiegare sia dissolvere l'incanto» {cite}`weizenbaum1966eliza`. Voleva dire
 che quando capisci come è fatto un trucco, il trucco smette di essere magia.
 Adesso possiamo dire com'è andata. Sono passati
 {{ n_capitoli_meno_uno_lettere }} capitoli, dall'algebra lineare alle reti che

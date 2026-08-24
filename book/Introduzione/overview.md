@@ -6,14 +6,15 @@ storia: un programma con cui si poteva conversare per iscritto, digitando una
 frase e leggendo la risposta. L'articolo che lo descrive si apre così
 {cite}`weizenbaum1966eliza`:
 
->Si dice che spiegare significhi dissolvere.[^spiegare-via]
+>Si dice che spiegare sia dissolvere l'incanto.[^spiegare-via]
 
 [^spiegare-via]: «It is said that to explain is to explain away»,
     nell'originale. *To explain away* è un verbo frasale che l'italiano non
     ha: vuol dire spiegare una cosa fino a toglierle ogni mistero, e con
-    quello ogni importanza. Poco più sotto, nello stesso paragrafo, l'articolo
-    dice che appena il programma viene smascherato «its magic crumbles away»:
-    l'incanto si sgretola.
+    quello ogni importanza. In italiano quel verbo pretende un oggetto che
+    l'inglese sottintende, e l'oggetto viene dallo stesso paragrafo
+    dell'articolo, dove Weizenbaum scrive che appena il programma è
+    smascherato «its magic crumbles away».
 
 Nei programmi che sembrano intelligenti, osservava, questa massima si compie
 alla perfezione: finché il meccanismo resta nascosto la macchina appare
@@ -140,7 +141,8 @@ loro, che comincia nel 1969 con un libro che ne dimostrava i limiti e si
 intreccia con l'inverno degli anni Settanta, perché i tagli seguiti al
 rapporto Lighthill colpirono tutto il campo. Si scioglie nel 1986, quando un
 articolo su *Nature* rende finalmente pratico un modo di addestrarle che
-qualcuno aveva già formulato dodici anni prima: la racconta per esteso il
+qualcuno aveva già formulato dodici anni prima
+{cite}`rumelhart1986learning,werbos1974beyond`: la racconta per esteso il
 {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`.
 
 Meno noto, e conviene saperlo, è che una delle auto che si guidavano da sole

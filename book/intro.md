@@ -17,16 +17,6 @@
 
 # Il Libro di Intelligenza Artificiale che spiega due volte.
 
-L'intelligenza artificiale ha la fama di essere una materia per pochi, e in
-giro si trovano soprattutto due cose: articoli che promettono tutto senza
-spiegare niente, e testi che spiegano bene ma danno per acquisiti corsi
-universitari di analisi e statistica. Questo libro prova a stare nel mezzo, in
-italiano, partendo da zero e senza saltare i passaggi difficili. Ogni concetto
-che conta è spiegato **due volte**, una con un'analogia di tutti i giorni e una
-con la notazione e le formule per intero. Non è la stessa spiegazione in
-versione corta e in versione lunga: sono due strade per lo stesso posto, e
-prendendone una non perdi l'altra.
-
 ```{epigraph}
 Invece di cercare di produrre un programma che simuli la mente adulta, perché non provare piuttosto a produrne uno che simuli quella di un bambino?
 
@@ -36,10 +26,25 @@ Invece di cercare di produrre un programma che simuli la mente adulta, perché n
 % L'attribuzione della citazione qui sopra e’ scritta in HTML perche’ al sito
 % serve la classe CSS `attribution`. In stampa il blocco raw sparisce e la
 % citazione resterebbe senza autore, quindi si ripete per il solo LaTeX.
+%
+% L'epigrafe sta SUBITO SOTTO IL TITOLO e non dopo il primo capoverso: in
+% stampa spariscono i blocchi `only html` che la circondavano, e quella che
+% online era un'epigrafe finiva a meta' pagina, fra due paragrafi, dove non
+% si legge piu' come un'epigrafe.
 
 :::{only} latex
 *Alan Turing, «Computing Machinery and Intelligence», 1950.*
 :::
+
+L'intelligenza artificiale ha la fama di essere una materia per pochi, e in
+giro si trovano soprattutto due cose: articoli che promettono tutto senza
+spiegare niente, e testi che spiegano bene ma danno per acquisiti corsi
+universitari di analisi e statistica. Questo libro prova a stare nel mezzo, in
+italiano, partendo da zero e senza saltare i passaggi difficili. Ogni concetto
+che conta è spiegato **due volte**, una con un'analogia di tutti i giorni e una
+con la notazione e le formule per intero. Non è la stessa spiegazione in
+versione corta e in versione lunga: sono due strade per lo stesso posto, e
+prendendone una non perdi l'altra.
 
 :::{only} html
 E **«due volte» ha un secondo senso**, che riguarda come queste pagine sono
