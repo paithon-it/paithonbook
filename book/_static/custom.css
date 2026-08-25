@@ -1996,3 +1996,27 @@ nav.bd-links li.toctree-l1.current > details > summary .toctree-toggle {
   letter-spacing: 0.01em;
   color: var(--text-light);
 }
+
+/* Un blocco marcato `:class: pt-non-eseguibile` è illustrativo: usa nomi che
+   non esistono (`dati.csv`, `modello`, un `...` al posto dei pesi) e resta
+   fuori dal notebook e dalle verifiche. Finora la marcatura era **solo
+   semantica**, cioè invisibile: ventinove blocchi nel libro, e nessuna regola,
+   né qui né in stampa, che li distinguesse da quelli fatti per essere provati.
+   Il lettore non aveva modo di saperlo, e il capitolo di Python promette
+   esplicitamente che il codice è fatto per girare.
+
+   L'etichetta sta SOTTO il blocco e nel flusso normale, come in stampa. In
+   posizione assoluta dentro l'angolo coprirebbe l'ultima riga di codice quando
+   il blocco arriva fino in fondo a destra; e in alto a destra c'e' gia' il
+   pulsante «copia», che compare al passaggio del mouse. */
+div.pt-non-eseguibile::after {
+  content: "non si esegue";
+  display: block;
+  margin-top: -0.35rem;
+  text-align: right;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--text-light);
+  pointer-events: none;
+}

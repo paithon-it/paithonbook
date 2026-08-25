@@ -244,7 +244,7 @@ lentamente di quattro.
 Il prezzo di imparare, pagato mentre si legge. Le tre curve sono il costo medio
 per lettera accumulato dall'inizio del testo: chi non ha la forma giusta resta
 in alto per sempre, chi ce l'ha scende verso il fondo, e chi ne ha troppa ci
-mette più tempo e arriva un po' più in su.
+mette più tempo e arriva un po’ più in su.
 ```
 
 ```{admonition} Il gesto da portarsi via

@@ -38,6 +38,20 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-10-4)=
+
+## 1.10.4 · 25 agosto 2026
+
+### Correzioni
+
+- **Nel PDF il codice si copia e gira.** Il carattere con cui il libro compone il codice unisce certe coppie di simboli in un segno solo: in stampa `!=` usciva come ≠, `>=` come ≥ e `->` come una freccia, cioè righe che ricopiate a mano non sono Python. Adesso ogni simbolo resta quello che è, in pagina e nel testo che si seleziona.
+- **Si vede quali blocchi sono da provare e quali da leggere.** Qualche esempio usa nomi di comodo, un file che non esiste o un modello che si dà per costruito altrove: adesso lo dichiara, online e in stampa, invece di somigliare a codice pronto da eseguire.
+- {doc}`Le basi di Python </Python/basi>` (Python). **Quello che serve per programmare non è più chiuso in metà pagina.** Come si scrive dentro una tabella senza rovinarla, perché un dizionario trova un valore in un colpo mentre una lista va scorsa tutta, come si chiede la copia di una lista, e come si legge un messaggio d'errore: erano cose che arrivavano solo a chi apriva la scheda avanzata, e ora ci sono a tutti e due i livelli.
+- {doc}`Python </Python/overview>`. **Da dove venga la velocità di NumPy, raccontato una volta sola.** Le due schede sull'ecosistema rispondevano a due domande diverse, e la facile lasciava credere che il guadagno venisse dal contenitore. Viene invece dal pedaggio che Python paga a ogni giro di un ciclo, e che scrivendo il conto sul blocco intero si paga una volta.
+- {doc}`NumPy </Python/numpy>` (Python). **I riquadri di ripasso dicono quello che dice la pagina.** La regola del broadcasting era enunciata in un modo che l'esempio subito sopra smentisce, PyTorch risultava in cima alla torre delle librerie proprio dove il testo spiega che le sta accanto, e dai ripassi mancavano la mutabilità, le viste di NumPy e Matplotlib.
+- **I numeri del capitolo di Python tornano, e le fonti ci sono.** La media di gruppo dice ora che i valori mancanti non contano nel divisore; la tassonomia dei dati mancanti porta il riferimento a Rubin; il costo del Python senza lucchetto è quello che dichiara la documentazione ufficiale; il messaggio d'errore stampato è quello che Python produce davvero, freccine comprese; e PyTorch nasce nel 2016 ma arriva ai ricercatori l'anno dopo.
+- {doc}`L'addestramento avversario </GAN/come-funziona>` (GAN). **La derivazione del valore di una GAN si legge anche in stampa.** La formula che riscrive il secondo integrale nello spazio dei dati usciva dal margine della pagina e ci lasciava fuori la coda: adesso va a capo sull'uguale.
+
 (v1-10-3)=
 
 ## 1.10.3 · 24 agosto 2026
@@ -97,7 +111,7 @@ piedi.
 
 ### Pagine ampliate
 
-- {doc}`Deep Q-Network (DQN) </DeepReinforcementLearning/dqn>` (Deep Reinforcement Learning). **Il quaderno degli appunti ha imparato a ripassare ciò che sorprende.** Le due migliorie di DQN che mancavano hanno la loro sezione: il replay con priorità, che pesca più spesso le esperienze su cui la rete ha sbagliato di più (contando un po' meno i ripassi pescati apposta, per non farsi un'idea storta), e la rete a due rami, che giudica la situazione separatamente dalle mosse e impara anche dove le mosse non contano. Con le formule, le fonti, e la riga su Rainbow che le mette insieme.
+- {doc}`Deep Q-Network (DQN) </DeepReinforcementLearning/dqn>` (Deep Reinforcement Learning). **Il quaderno degli appunti ha imparato a ripassare ciò che sorprende.** Le due migliorie di DQN che mancavano hanno la loro sezione: il replay con priorità, che pesca più spesso le esperienze su cui la rete ha sbagliato di più (contando un po’ meno i ripassi pescati apposta, per non farsi un'idea storta), e la rete a due rami, che giudica la situazione separatamente dalle mosse e impara anche dove le mosse non contano. Con le formule, le fonti, e la riga su Rainbow che le mette insieme.
 - {doc}`Prefazione </prefazione>`. **Il triangolo impossibile adesso si vede.** La prefazione chiede di guardare il segno del libro un angolo alla volta, coprendo il resto con una mano; accanto a quel passaggio ora c'è il disegno grande, gli stessi tre tracciati del logo, così la mano ha dove posarsi.
 
 ### Correzioni
@@ -302,7 +316,7 @@ piedi.
 ### Correzioni
 
 - **Il libro è stato riletto da capo con l'idea di metterlo in difficoltà**, pagina per pagina, su tutto quello che è arrivato con l'ultima pubblicazione: un lettore che non sa niente di intelligenza artificiale, uno studente che contesta le formule, e uno che apre le fonti una per una. Sono venuti fuori più di cento difetti, e i peggiori erano numeri: un rapporto sbagliato di cento volte, una memoria dichiarata otto volte più grande del vero, un fattore invertito in una formula spiegata due volte (giusta nella versione difficile, rovesciata in quella facile). Corretti tutti, con la prova accanto.
-- **Su quasi ogni pagina c'erano mille apostrofi sbagliati, e nessuno li vedeva.** «Un po' meno» usciva stampato come «un po” meno», con una virgoletta doppia al posto dell'apostrofo, perché il programma che compone il testo, in italiano, interpretava così ogni apostrofo a fine parola. Il sorgente era giusto, il difetto nasceva nella composizione: 1086 occorrenze, riparate.
+- **Su quasi ogni pagina c'erano mille apostrofi sbagliati, e nessuno li vedeva.** `«Un po' meno»` usciva stampato come `«un po” meno»`, con una virgoletta doppia al posto dell'apostrofo, perché il programma che compone il testo, in italiano, interpretava così ogni apostrofo a fine parola. Il sorgente era giusto, il difetto nasceva nella composizione: 1086 occorrenze, riparate.
 - **Le aperture e i congedi.** Il capitolo di matematica cominciava con quarantasette righe di definizioni, e la frase di Galileo in cima non era di Galileo ma una parafrasi da manuale: adesso c'è il passo vero del *Saggiatore*, e ad aprire è von Neumann che consiglia a Shannon di chiamarla entropia «perché nessuno sa davvero cosa sia». Il capitolo sugli agenti diceva che un modello di linguaggio è passivo e non può agire, una pagina dopo averne mostrato uno che comanda un braccio robotico. E dove un capitolo finiva dentro un elenco puntato, adesso c'è una frase che consegna il passaggio a quello dopo.
 
 (v1-5-8)=

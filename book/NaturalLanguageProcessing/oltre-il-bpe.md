@@ -150,7 +150,7 @@ prima di infilare, se quel passaggio si è fatto.
 
 I pezzi con cui si compone la collana si possono anche scegliere al rovescio di
 BPE. Nel cassetto ce ne sono migliaia di pronti, spezzoni già infilati, tutti i
-frammenti che nel testo ricorrono un po', e non si chiude: allora se ne mette
+frammenti che nel testo ricorrono un po’, e non si chiude: allora se ne mette
 via uno alla volta, si rifanno le collane della giornata senza di lui, e quello
 di cui non si sente la mancanza si butta. Poi si rifà il giro, finché il
 cassetto si chiude. Quanto serva ciascuno si scopre solo usandolo: si infila, si

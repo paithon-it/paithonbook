@@ -94,7 +94,7 @@ Il problema **inverso** cammina all'indietro. Non conosci la ricetta: assaggi
 la torta e provi a indovinare le dosi. Quanto zucchero? Quanto lievito? Hai il
 risultato e cerchi la causa che l'ha prodotto. È incomparabilmente più
 difficile. Tante ricette diverse danno torte che al palato si somigliano, e in
-mano hai una fetta sola, magari con il bordo un po' bruciato. Sbagli di poco
+mano hai una fetta sola, magari con il bordo un po’ bruciato. Sbagli di poco
 l'assaggio e la dose che ne ricavi sbaglia di molto: un pizzico di sale che
 non avevi sentito, e ti convinci che il lievito fosse il doppio.
 

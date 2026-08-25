@@ -67,9 +67,11 @@
   <text class="name" x="290" y="226">set</text>
   <text class="tag"  x="290" y="246">senza duplicati</text>
   <!-- input con doppione, sbiadito -->
-  <text class="kv" x="300" y="278" fill="#8B847C">{ 3, 1, 4, </text>
-  <text class="kv" x="370" y="278" fill="#8B847C" text-decoration="line-through">1</text>
-  <text class="kv" x="380" y="278" fill="#8B847C"> }</text>
+  <!-- Un solo <text> con un <tspan> barrato: con tre <text> a coordinate
+       fissate a mano il duplicato finiva sopra il «4,» e in stampa i due
+       glifi si impastavano, cioe' la figura nascondeva proprio la cosa che
+       esiste per mostrare. Qui le posizioni le calcola il compositore. -->
+  <text class="kv" x="300" y="278" fill="#8B847C">{ 3, 1, 4, <tspan text-decoration="line-through">1</tspan> }</text>
   <text class="arrow" x="300" y="304">&#8595;</text>
   <!-- risultato: insieme senza duplicati -->
   <rect x="322" y="290" width="150" height="36" rx="18" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>

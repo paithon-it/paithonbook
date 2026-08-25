@@ -28,11 +28,12 @@ e gli faceva sostenere la conversazione di uno psicoterapeuta: riconosceva nella
 frase dell'utente uno schema noto e gliela rigirava addosso. «Mi sento
 infelice» diventava «pensa che venire qui la aiuterà a non sentirsi infelice?»,
 e alla parola «madre» rispondeva «mi parli della sua famiglia». Nessuna
-comprensione, e come memoria soltanto una pila di frasi già dette, messe da
-parte per essere ritirate fuori quando la conversazione si fermava.
+comprensione, e come memoria soltanto una pila di risposte costruite su cose
+dette prima, tenute da parte per quando nella frase dell'utente non c'era
+niente a cui agganciarsi.
 
-Quella separazione fra il motore e il foglio delle regole conviene notarla,
-perché è il primo passo della strada che percorreremo. Nel 1966 le regole le
+Quella separazione fra il motore e il foglio delle regole è il primo passo
+della strada che percorreremo. Nel 1966 le regole le
 scriveva ancora una persona, a mano, una per una; ma stavano già fuori dal
 programma, come un testo che il programma legge. I capitoli che seguono
 raccontano che cosa succede quando quel foglio non lo scrive più nessuno.
@@ -70,8 +71,8 @@ decennio 2010–2019) ci è entrata senza farsi notare, dentro il traduttore
 automatico, i suggerimenti di un negozio online, il riconoscimento dei volti
 nelle fotografie: la usavano tutti e quasi nessuno la chiamava per nome. Dal
 novembre 2022, con ChatGPT, è diventata invece qualcosa con cui si parla
-apposta, e in pochi mesi il nome lo conosceva chiunque. Conviene tenere
-separati i due momenti. Il salto che il pubblico ha percepito alla fine del
+apposta, e in pochi mesi il nome lo conosceva chiunque. I due momenti vanno
+tenuti separati. Il salto che il pubblico ha percepito alla fine del
 2022 era cominciato cinque anni prima, in un articolo del 2017 intitolato
 *Attention Is All You Need*, «l'attenzione è tutto ciò che serve»
 {cite}`vaswani2017attention`. Da lì è nata la famiglia di programmi con cui
@@ -87,9 +88,9 @@ Ma torniamo all'inizio, che è più indietro di quanto sembri: prima dei
 calcolatori c'erano stati duemila anni di gente che pensava alle stesse
 cose {cite}`russell2020artificial`.
 
-Aristotele, nel IV secolo a.C., fu il primo a mettere per iscritto le regole
-del ragionamento corretto. Il suo sistema si regge sui **sillogismi**: catene
-di tre frasi in cui la terza discende dalle prime due per la sola forma in cui
+Aristotele, nel IV secolo a.C., è il primo di cui ci sia rimasto un sistema
+scritto delle regole del ragionamento corretto. Si regge sui **sillogismi**:
+catene di tre frasi in cui la terza discende dalle prime due per la sola forma in cui
 sono scritte. L'esempio che sanno tutti è «tutti gli uomini sono mortali;
 Socrate è un uomo; quindi Socrate è mortale». Per tirare la conclusione non
 serve sapere chi fosse Socrate: basta la struttura delle prime due frasi. È
@@ -104,7 +105,7 @@ sottrazioni. Pascal costruì una di quelle macchine, la Pascalina, e scrisse che
 la macchina aritmetica produce effetti che sembrano più vicini al pensiero di
 quanto lo sia tutto ciò che fanno gli animali (la prima macchina calcolatrice
 in assoluto risulta però essere quella di Wilhelm Schickard, del 1623).
-Cartesio, infine, tracciò la prima distinzione netta fra
+Cartesio, infine, tracciò una distinzione netta fra
 mente e materia, sostenendo che il pensiero è fatto di una sostanza diversa dal
 corpo e non obbedisce alle stesse leggi. Una macchina, invece, è materia e
 nient'altro: se Cartesio avesse ragione, nessuna macchina potrebbe mai avere
@@ -128,7 +129,7 @@ Guardati da vicino, i tre facevano in fondo la stessa cosa. Ognuno inventava un
 punteggio che dice quanto bene sta andando (quanto costa il giro dei camion, di
 quanto la temperatura si scosta da quella voluta, quanto si guadagna in una
 partita) e poi cercava le mosse che lo fanno salire. Quel punteggio ha un nome,
-ed è uno dei pochi che conviene imparare adesso: si chiama **funzione
+ed è uno dei pochi da imparare adesso: si chiama **funzione
 obiettivo**. È a grandi linee anche lo scopo dell'AI, costruire sistemi che
 agiscono «nel modo migliore possibile».
 
@@ -141,7 +142,7 @@ ordine fare le cose per arrivare a un obiettivo: erano problemi che si ponevano
 completamente fuori dal suo campo d'azione, ed è per affrontarli che nasce un
 campo nuovo.
 
-Nel 1950 Alan Turing, in un articolo destinato a fare storia, propose di
+Nel 1950 Alan Turing propose di
 sostituire la domanda «le macchine possono pensare?» con un esperimento
 concreto, il *gioco dell'imitazione*, oggi noto
 come **test di Turing**: se conversando a distanza non riesci a capire se
@@ -156,7 +157,7 @@ mettere da parte {cite}`turing1950computing`.[^gioco-imitazione]
     tutti chiamano test di Turing è la lettura moderna, non l'esperimento
     originale.
 
-Conviene essere precisi su che cosa quel gioco misuri: misura se una
+Quel gioco misura una cosa sola, e va detta con precisione: se una
 conversazione regge, non se dall'altra parte qualcuno ha capito qualcosa. Che
 l'asticella sia più bassa di quanto sembri lo abbiamo appena visto con ELIZA,
 che di comprensione non ne aveva nessuna e riusciva lo stesso a commuovere le
@@ -177,8 +178,8 @@ spalle e i calcolatori elettronici sono in circolazione da una decina d'anni.
 
 Fra il seminario di Dartmouth e i risultati che oggi diamo per scontati, però,
 non c'è una linea che sale. Ci sono due lunghi **inverni**: si chiamano così i
-periodi in cui le promesse non vengono mantenute e i soldi spariscono. Conviene
-raccontarli subito, perché sono l'antidoto migliore sia all'entusiasmo sia alla
+periodi in cui le promesse non vengono mantenute e i soldi spariscono. Vanno
+raccontati subito: sono l'antidoto migliore sia all'entusiasmo sia alla
 paura.
 
 Il primo arriva negli anni Settanta. Le promesse del decennio precedente (una
@@ -193,18 +194,18 @@ aggiornare e non reggevano il mondo vero.
 
 Il modo di lavorare che è succeduto a questo secondo inverno ne è il rovescio
 esatto, e fra poco, quando parleremo di regole che nessuno scrive, si vedrà
-quale. Le **reti neurali** (i programmi ispirati alla forma del cervello)
-hanno invece avuto un inverno tutto loro, che comincia nel 1969 con
-*Perceptrons* di Minsky e Papert, che ne dimostrava i limiti
-{cite}`minsky1969perceptrons`, e si intreccia con l'inverno degli anni
-Settanta, perché i tagli seguiti al rapporto Lighthill colpirono tutto il
+quale. Le reti neurali, che incontreremo per esteso più avanti, hanno invece
+avuto un inverno tutto loro, che comincia nel 1969 con
+*Perceptrons* di Minsky e Papert, che dimostrava quanto poco sapesse fare una
+rete a un solo strato {cite}`minsky1969perceptrons`, e si intreccia con
+l'inverno degli anni Settanta, perché i tagli seguiti al rapporto Lighthill colpirono tutto il
 campo. Si scioglie nel 1986, quando un
 articolo su *Nature* rende finalmente pratico un modo di addestrarle che
 qualcuno aveva già formulato dodici anni prima
 {cite}`rumelhart1986learning,werbos1974beyond`: la racconta per esteso il
 {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`.
 
-Meno noto, e conviene saperlo, è che una delle auto che si guidavano da sole
+Meno noto è che una delle auto che si guidavano da sole
 negli anni Novanta girava sulle strade italiane, su una Lancia Thema. A
 partire dal 1996, all'Università di Parma, un gruppo di ricercatori e
 ingegneri guidato da Alberto Broggi costruì ARGO. Vedeva con due telecamere in
@@ -218,19 +219,20 @@ guidando da sola per il 94% del tragitto.
 
 Il primato non è di essere arrivati per primi: negli stessi anni la VaMP di
 Ernst Dickmanns girava sulle autostrade europee e la Navlab 5 della Carnegie
-Mellon University, in Pennsylvania, attraversava gli Stati Uniti. Il primato è
-**come**: la VaMP portava armadi di elettronica costruita apposta, ARGO due
-telecamere e un personal computer da negozio, e dimostrò che per stare in corsia
-poteva bastare molto meno ferro di quanto tutti credessero.
+Mellon University, in Pennsylvania, attraversava gli Stati Uniti. Il primato
+sta nel come: la VaMP portava armadi di elettronica costruita apposta, ARGO
+due telecamere e un personal computer da negozio, e dimostrò che per stare in
+corsia poteva bastare molto meno ferro di quanto tutti credessero.
 
 Dentro ARGO, però, non c'era niente che avesse imparato qualcosa. Le regole
 con cui riconosceva la corsia e gli ostacoli le aveva scritte a mano qualcuno
 che sapeva già che aspetto ha una striscia bianca su un asfalto grigio, una
 regola per volta.
 
-Nel 2010 il gruppo di Broggi è riuscito a far guidare autonomamente delle auto
-dall'Italia… alla Cina! La sfida si chiamava VIAC (VisLab Intercontinental
-Autonomous Challenge): quasi sedicimila chilometri da Parma a Shanghai, con
+Nel 2010 il gruppo di Broggi è riuscito a far guidare da soli dei furgoni
+elettrici dall'Italia alla Cina. La sfida si chiamava VIAC (VisLab
+Intercontinental Autonomous Challenge): più di quindicimila chilometri da
+Parma a Shanghai, con
 due veicoli in marcia (più due di riserva) e una regola d'ingaggio da dire,
 perché è la parte interessante. I due procedevano in fila: quello di testa
 apriva la strada e ogni tanto un umano interveniva, per scegliere il percorso
@@ -246,9 +248,8 @@ una lista finita di passi precisi che, eseguiti nell'ordine giusto, portano a
 un risultato. Uno dei primi della storia si può far risalire a Euclide, che
 oltre due millenni fa trovò il modo di calcolare il massimo comune divisore di
 due numeri: applicato a $12$ e $8$, per dire, restituisce $4$. È esattamente il
-procedimento che proveremo a scrivere, in Python, nella pagina che segue
-(«Python e l'AI»): è un *notebook*, cioè una pagina in cui il codice non si
-legge soltanto, si esegue.
+procedimento che proveremo a scrivere in Python, appena avremo finito di
+guardarlo da vicino.
 
 `````{tab} Elementare
 Il massimo comune divisore (MCD) di $12$ e $8$ è il numero più grande che li
@@ -274,11 +275,15 @@ non avanza niente, e quando non avanza niente il lato del quadrato è la
 piastrella cercata.
 
 Il bello è che le divisioni restano poche anche quando i numeri crescono: per
-due numeri lunghi cento cifre ne bastano qualche centinaio, mentre provare i
-divisori uno per uno, come si fa a scuola, ne chiederebbe fino a un $1$ seguito
-da cento zeri. Per darti la misura di quanto sia grande quel numero: gli atomi
-dell'intero universo osservabile si stimano intorno a un $1$ seguito da
-ottanta zeri, cioè cento miliardi di miliardi di volte di meno.
+due numeri lunghi cento cifre ne bastano al massimo cinquecento, mentre provare
+i divisori uno per uno, come si fa a scuola, ne chiederebbe fino a un $1$
+seguito da cento zeri. Per darti la misura di quanto sia grande quel numero:
+gli atomi dell'intero universo osservabile si stimano intorno a un $1$ seguito
+da ottanta zeri, cioè cento miliardi di miliardi di volte di meno.
+
+Poche divisioni, però, non vuol dire poco tempo. Dividere due numeri da cento
+cifre costa molto più che dividerne due da una cifra, e il conto finale cresce
+con la lunghezza dei numeri anche quando i passi restano pochi.
 `````
 
 `````{tab} Superiore
@@ -294,12 +299,15 @@ $(12, 8) \to (8, 4) \to (4, 0) \Rightarrow 4$. Il numero di passi è
 $O(\log \min(a, b))$: il caso peggiore si ha con due numeri di Fibonacci
 consecutivi (teorema di Lamé, 1844). È per questa efficienza (non solo per
 l'età) che l'idea di Euclide è ancora oggi nelle librerie standard di ogni
-linguaggio. Attenzione però a leggere bene la stima: quelli sono *passi*, e su
-numeri molto lunghi ogni passo costa una divisione fra interi grandi, il cui
-prezzo cresce quadraticamente nel numero di cifre: su due numeri di $n$ cifre
-il tempo totale cresce come $n^2$, anche se i passi restano logaritmici. È il motivo per cui le
-librerie non eseguono questo ciclo tale e quale, ma sue raffinature
-(l'algoritmo di Lehmer, in CPython).
+linguaggio. Attenzione però a leggere bene la stima: quelli sono *passi*, e il
+logaritmo è preso sul *valore* di $\min(a, b)$, quindi su due numeri di $n$
+cifre i passi sono $O(n)$, non $O(\log n)$. Su interi lunghi ogni passo costa una divisione,
+il cui prezzo è proporzionale alle cifre del quoziente moltiplicate per quelle
+del divisore; la somma delle cifre di tutti i quozienti resta però $O(n)$,
+perché i quozienti sono quasi sempre di una cifra sola. Da lì il tempo totale
+$O(n^2)$, e non l’$n^3$ che il prodotto ingenuo dei due fattori farebbe
+temere. È il motivo per cui le librerie non eseguono questo ciclo tale e
+quale, ma sue raffinature (l'algoritmo di Lehmer, in CPython).
 `````
 
 La {numref}`fig-euclide-scende` mostra la stessa discesa su un'altra coppia di
@@ -351,10 +359,10 @@ Il «gatto» scritto accanto a ciascuna foto si chiama **etichetta**.
 
 Le fotografie etichettate a mano sono il caso più facile da raccontare, non
 l'unico né il più diffuso. La risposta giusta può essere già dentro il
-materiale che si ha: si copre una parola in mezzo a una frase e si chiede al
+materiale che si ha: si nasconde la parola che viene dopo e si chiede al
 programma di indovinarla, e a quel punto le etichette sono infinite e gratuite,
 perché le fornisce il testo stesso. È così che si addestrano i modelli di cui
-oggi si parla di più; ma conviene sapere fin d'ora che «imparare dagli
+oggi si parla di più, e fin d'ora vale la distinzione: «imparare dagli
 esempi» non vuol dire per forza che qualcuno abbia etichettato qualcosa.
 
 Da qui i tre nomi che incontrerai più spesso, in questo libro e fuori, e che a
@@ -416,14 +424,24 @@ ricerca operativa e il termostato usavano per sapere se il piano stava
 funzionando; solo che adesso a cercare le mosse che lo fanno salire non è un
 ingegnere, è l'addestramento.
 
+Quello che l'addestramento tocca, però, è una cosa sola. Dentro un programma
+che impara c'è un elenco di numeri, spesso lunghissimo, e si chiamano
+**parametri**: l'addestramento li cambia, guarda se il punteggio è salito, e
+li cambia ancora. Il comportamento viene dietro.
+
 `````{tab} Elementare
 A un robot aspirapolvere assegni un punteggio: $+1$ per ogni
 briciola raccolta, $-1$ per ogni urto contro un mobile. Se in un giro di
 salotto raccoglie $30$ briciole e sbatte $5$ volte, totalizza $30 - 5 = 25$
 punti. Quel numero è la sua funzione obiettivo: non gli spieghiamo *come*
-pulire, gli diciamo solo *che punteggio* vogliamo veder salire. Qualunque
-cambiamento nel suo comportamento che porti il totale sopra $25$ è un
-miglioramento; «agire nel modo migliore possibile» significa, alla fine,
+pulire, gli diciamo solo *che punteggio* vogliamo veder salire.
+
+Dentro, il robot ha una manciata di manopole: quanto sterzare quando il
+sensore davanti si accende, quanto rallentare vicino a un mobile, quanto
+insistere dove il tappeto è sporco. Si girano quelle, si guarda il punteggio,
+si girano ancora. Qualunque giro di manopola che porti il totale medio sopra
+$25$ è un miglioramento; «agire nel modo migliore possibile» significa, alla
+fine,
 scegliere le mosse che rendono quel punteggio il più alto possibile. Buona
 parte dell'intelligenza artificiale moderna, sotto sotto, funziona così: si
 sceglie un numero da massimizzare (o un errore da rendere minimo) e si lascia
@@ -442,7 +460,9 @@ aspirapolvere pagato a briciole raccolte, se è abbastanza
 bravo, può scoprire che gli conviene rovesciare il cestino e raccoglierle una
 seconda volta. Ha fatto il punteggio più alto e ha sporcato il salotto: ha
 obbedito alla lettera tradendo l'intenzione. Il fenomeno ha un nome, *reward
-hacking*, e una sezione tutta sua nel capitolo sul deep reinforcement learning.
+hacking*, e una sezione tutta sua nel {doc}`capitolo sul deep reinforcement
+learning </DeepReinforcementLearning/overview>`, cioè l'imparare per tentativi
+ed errori con le reti neurali.
 `````
 
 `````{tab} Superiore
@@ -495,8 +515,8 @@ porta dietro cresce con i dati, invece di essere fissato in partenza. Va aggiunt
 non è un'eccezione ma un limite della cornice, dichiarato dagli stessi autori
 che l'hanno resa canonica: $J$ è il punteggio che *scriviamo noi*, non quello
 che vogliamo davvero, e un sistema abbastanza bravo massimizza il primo anche
-a spese del secondo. Il fenomeno si chiama *reward hacking* e ha una sezione
-sua nel capitolo sul deep reinforcement learning.
+a spese del secondo. Il fenomeno si chiama *reward hacking* e ha una sezione sua nel
+{doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`.
 `````
 
 ## Perché proprio adesso
@@ -510,8 +530,9 @@ massimo due.
 L'AI è in profondo debito con l'informatica e con l'elettronica, che le hanno
 apparecchiato la tavola. Le hanno dato i linguaggi con cui si scrivono i
 programmi, Python fra questi. Le hanno dato le **librerie**, cioè raccolte di
-codice già scritto e collaudato che si usano invece di rifarlo da capo (PyTorch,
-che useremo in tutto il libro, e TensorFlow). E le hanno dato macchine sempre
+codice già scritto e collaudato che si usano invece di rifarlo da capo
+(PyTorch, con cui addestreremo le reti neurali, e TensorFlow, che fa lo stesso
+mestiere ed è nato in Google). E le hanno dato macchine sempre
 più veloci: prima i processori normali, le CPU; poi le schede grafiche, le GPU,
 che erano nate per far girare i videogiochi e si sono rivelate perfette per
 addestrare le reti neurali, perché sanno fare moltissimi conti semplici tutti
@@ -526,7 +547,7 @@ learning </DeepLearning/overview>` li conta uno per uno; quanto pesi ciascuno
 dei tre si può perfino misurare, e lo fa il capitolo sui **Transformer**, i
 modelli nati da quell'articolo del 2017.
 
-Su che cosa siano quei dati conviene fermarsi, perché è la cosa che si
+Su che cosa siano quei dati bisogna fermarsi, perché è la cosa che si
 fraintende più spesso. Il modo di dire corrente li chiama «il petrolio del
 nostro secolo», cioè un giacimento che qualcuno è andato a scavare. I dati
 sono piuttosto uno **scarto**. Non che nessuno li produca apposta: le fotografie

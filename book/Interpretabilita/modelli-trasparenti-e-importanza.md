@@ -705,7 +705,7 @@ ragioni agiscono **insieme**, dentro lo stesso numero. Nelle 309 righe di
 addestramento `s3` e `s6` hanno 59 e 56 valori distinti: molti meno del rumore
 continuo, che ne ha 309, ma moltissimi di più di `sex`, che ne ha due.
 Cinquantotto soglie fra cui scegliere bastano perché una colonna inutile si
-guadagni comunque un po' di merito, e lo si può misurare: rimescolando `s3`
+guadagni comunque un po’ di merito, e lo si può misurare: rimescolando `s3`
 e `s6` su tutte e 442 le righe, cioè cancellando ogni loro legame con la
 malattia e lasciandone intatta la distribuzione, l'impurità che ricevono scende
 soltanto a circa $0{,}036$ e $0{,}040$. Due terzi di quel merito, dunque, non

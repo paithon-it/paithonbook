@@ -187,7 +187,7 @@ modello e il pre-addestramento della precisione di ogni singola annotazione.
 ## Quando l'attenzione arriva all'audio: l'AST
 
 Fino al 2021 la mappa era chiara: gli spettrogrammi si classificano con una
-rete convoluzionale, al più con un po' di attenzione appiccicata sopra
+rete convoluzionale, al più con un po’ di attenzione appiccicata sopra
 all'ultimo strato. Poi è arrivato l’**Audio Spectrogram Transformer** (AST)
 di Gong, Chung e Glass {cite}`gong2021ast`, e ha buttato via proprio quelle. Le
 convoluzioni sono i **filtri che scorrono**: piccole griglie di numeri, larghe

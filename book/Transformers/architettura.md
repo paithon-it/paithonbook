@@ -100,7 +100,7 @@ nulla.
 
 Una parola alla volta vuol dire proprio una. A ogni passo la macchina
 distribuisce la propria fiducia su tutte le parole che conosce, decine di
-migliaia, un po' a questa e un po' a quella; poi da quell'elenco ne prende una
+migliaia, un po’ a questa e un po’ a quella; poi da quell'elenco ne prende una
 sola. È la parola presa a rientrare al passo dopo, in coda a quelle già
 scritte, perché l'ingresso è fatto per parole e un elenco di fiducie non ci
 passerebbe. Durante lo studio la parola che rientra è quella vera della

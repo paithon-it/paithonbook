@@ -484,7 +484,7 @@ torna alla pesca a caso di prima. Le esperienze appena vissute entrano col
 segnalibro al massimo, così nessuna finisce nel dimenticatoio prima di un
 primo ripasso. Il prezzo c'è: chi ripassa quasi soltanto le pagine dove
 sbaglia si fa un'idea storta del libro intero, e il rimedio è contare i
-ripassi pescati apposta un po' meno di quelli che sarebbero usciti a caso.
+ripassi pescati apposta un po’ meno di quelli che sarebbero usciti a caso.
 
 L'altra idea spezza il voto in due domande: quanto è buona la situazione, e
 quanto aggiunge ciascuna mossa. Su un rettilineo vuoto guidare bene non
@@ -597,7 +597,7 @@ DQN attenua e basta, ne restano tre.
   alla rete che impara e *quanto vale* alla copia congelata; non lo elimina,
   perché le due reti sono parenti strette.
 - Due migliorie con un'idea ciascuna: si ripassa più spesso ciò che ha
-  **sorpreso** (contando un po' meno i ripassi pescati apposta, per non farsi
+  **sorpreso** (contando un po’ meno i ripassi pescati apposta, per non farsi
   un'idea storta), e si giudica la **situazione** separatamente dalle mosse,
   così si impara anche dove le mosse non contano.
 - Il risultato storico del 2015: un solo programma, con le stesse manopole di

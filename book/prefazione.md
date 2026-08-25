@@ -109,7 +109,7 @@ un libro online non ha migliaia di copie stampate da rincorrere con l’*errata
 corrige*: si riscrive dove sbaglia il giorno in cui qualcuno se ne accorge, e
 {doc}`Aggiornamenti </aggiornamenti>` tiene il conto delle correzioni. È una
 scommessa che il libro fa su se stesso: che questi sistemi continuino a
-migliorare, e che ogni versione arrivi un po' meno sbagliata della precedente.
+migliorare, e che ogni versione arrivi un po’ meno sbagliata della precedente.
 L'impegno a renderlo ogni volta più chiaro nasce da un fatto semplice.
 :::
 
@@ -119,7 +119,7 @@ un libro online non ha migliaia di copie stampate da rincorrere con l’*errata
 corrige*: si riscrive dove sbaglia il giorno in cui qualcuno se ne accorge, e
 online il registro degli aggiornamenti tiene il conto delle correzioni. È una
 scommessa che il libro fa su se stesso: che questi sistemi continuino a
-migliorare, e che ogni versione arrivi un po' meno sbagliata della precedente.
+migliorare, e che ogni versione arrivi un po’ meno sbagliata della precedente.
 L'impegno a renderlo ogni volta più chiaro nasce da un fatto semplice.
 :::
 

@@ -27,9 +27,9 @@ afferrare, oppure portare qualcosa in un punto preciso. Ne resta fuori la
 lavatrice, che pure sente (il carico, la temperatura) e agisce (apre la
 valvola, ferma il cestello). A noi qui interessa lo schema, sentire e agire,
 perché è quello con cui l'intelligenza artificiale ha a che fare; ma una
-lavatrice resta fuori anche dall'altra definizione, quella data in
-{doc}`apertura di capitolo </Introduzione/overview>`: per decidere quando
-fermare il risciacquo una ricetta c'è, ed è corta, una soglia su un sensore.
+lavatrice resta fuori anche dall'altra definizione, quella dei {doc}`compiti
+per cui nessuno sa scrivere una ricetta </Introduzione/overview>`: la ricetta
+per fermare il risciacquo esiste, ed è corta.
 
 Esiste però un ponte fra i due mondi, ed è fatto di programmi che imparano per
 tentativi ed errori, incassando un «premio» ogni volta che fanno bene, un po’
@@ -55,7 +55,11 @@ un totale preciso, e due modi di camminare si possono sempre confrontare.
 Le mosse non le sceglie a colpo sicuro, le sorteggia, come tirando dei dadi. Di
 dadi ne tiene uno per ogni situazione in cui il corpo può trovarsi (sbilanciato
 in avanti, piegato su un ginocchio, in equilibrio), e a ogni istante tira
-quello che corrisponde a com'è messo in quel momento. All'inizio tutti i dadi
+quello che corrisponde a com'è messo in quel momento. Dadi strani, però: le
+facce non sono sei e non sono nemmeno un numero fisso, perché quello che il
+robot sorteggia è la spinta da dare a un motore, e quella può valere qualunque
+cosa fra il minimo e il massimo. Più che scegliere fra alcune mosse, il dado
+decide con quanta forza fare quella che sta facendo. All'inizio tutti i dadi
 sono onesti e ogni mossa ha la stessa probabilità di uscire. Dopo ogni prova il
 programma li ritocca di pochissimo, e questo è il punto in cui l'imparare
 succede: sui dadi tirati nelle prove andate bene rende un po’ più facile
@@ -83,29 +87,31 @@ videogioco al metallo, senza perderlo per strada, resta un problema aperto.
 Nel formalismo che svilupperemo nei due capitoli sul reinforcement learning:
 un **agente** osserva
 lo stato $s_t$ dell'ambiente, sceglie un'azione $a_t$ secondo una
-**politica** $\pi(a \mid s)$ e riceve una ricompensa $r_{t+1}$; l'obiettivo è
-trovare la politica che massimizza il ritorno atteso
+**policy** $\pi(a \mid s)$ e riceve una ricompensa $r_{t+1}$; l'obiettivo è
+trovare la policy che massimizza il ritorno atteso
 $\mathbb{E}_{\pi}\!\left[\sum_{t=0}^{\infty} \gamma^{\,t} r_{t+1}\right]$,
-dove la media è presa sulle traiettorie che la politica $\pi$ genera e
-$\gamma \in [0, 1)$ sconta le ricompense future, il che è anche quello che
-rende finita una somma di infiniti termini. Per la robotica, con azioni continue (coppie ai motori), si usano i
-metodi a gradiente di policy e actor-critic; l'addestramento avviene in
-simulazione, con il passaggio al robot fisico (*sim-to-real*) come problema
-aperto. Qui basta la sagoma del meccanismo.
+dove la media è presa sulle traiettorie che la policy $\pi$ genera e
+$\gamma \in [0, 1)$ sconta le ricompense future; con ricompense limitate è lo
+sconto a rendere finita una somma di infiniti termini, e senza quel limite la
+serie diverge anche per $\gamma < 1$. Per la robotica, con azioni continue
+(coppie ai motori), si usano i metodi a gradiente di policy; l'addestramento
+avviene in simulazione, con il passaggio al robot fisico (*sim-to-real*) come
+problema aperto.
 `````
 
-Di questa storia conviene fissare subito i nomi, perché torneranno per intero
-nei due {doc}`capitoli sul reinforcement learning </ReinforcementLearning/overview>`. Si chiama **agente** chi decide,
-cioè il robot dell'esempio; **ambiente** tutto il resto con cui l'agente ha a
+Questi nomi vanno fissati adesso, perché torneranno per intero nei due
+{doc}`capitoli sul reinforcement learning </ReinforcementLearning/overview>`.
+Si chiama **agente** chi decide, cioè il robot dell'esempio; **ambiente** tutto il resto con cui l'agente ha a
 che fare (il pavimento, la gravità, il cronometro che conta i secondi in
 piedi); **stato** la fotografia della situazione in cui l'agente si trova nel
 momento in cui deve decidere (com'è messo il corpo, a che velocità sta
 cadendo); **ricompensa** il punteggio che l'ambiente gli restituisce dopo ogni
 mossa; e **policy** la regola con cui l'agente sceglie la mossa, che è poi la
 cosa che deve imparare (in italiano si traduce «politica», ma è una parola che
-porta fuori strada, e ovunque troverai scritto *policy*). Il disegno qui sotto
-mette in fila queste parole e nient'altro; le letterine in basso segnano
-soltanto il momento, $a_t$ è «l'azione alla mossa $t$» e $s_{t+1}$ «lo stato
+porta fuori strada, e ovunque troverai scritto *policy*). La
+{numref}`fig-agente-ambiente` mette in fila queste parole e nient'altro; le
+letterine in basso segnano soltanto il momento, $a_t$ è «l'azione alla mossa
+$t$», $r_{t+1}$ «la ricompensa che arriva subito dopo» e $s_{t+1}$ «lo stato
 alla mossa dopo».
 
 ```{figure} ../figures/reinforcement-learning-agenti-stati-azioni.svg
@@ -113,15 +119,14 @@ alla mossa dopo».
 :alt: "Anello fra due blocchi: l'agente invia un'azione all'ambiente; l'ambiente restituisce all'agente il nuovo stato e una ricompensa numerica, e il giro ricomincia. Nessun altro canale collega i due: tutto ciò che l'agente sa del mondo passa da stato e ricompensa."
 :width: 88%
 
-Il giro che regge i due capitoli sul reinforcement learning: l'agente manda la
-sua mossa, l'ambiente risponde con la nuova situazione e con la ricompensa, e
-si ricomincia. Non passa altro: nessuno spiega mai all'agente *perché* quella
-ricompensa sia arrivata.
+L'anello fra l'agente e l'ambiente: l'agente manda la sua mossa, l'ambiente
+risponde con la nuova situazione e con la ricompensa, e si ricomincia. Non
+passa nient'altro.
 ```
 
-Tra i due, come mostra {numref}`fig-agente-ambiente`, passa pochissimo, ed è
-proprio questo a rendere il problema difficile e interessante. Torna indietro
-la nuova situazione, e torna indietro un numero: quel numero è l'unico
+Tra i due passa pochissimo, ed è proprio questo a rendere il problema
+difficile e interessante. Torna indietro la nuova situazione, e torna indietro
+un numero: quel numero è l'unico
 giudizio che l'agente riceverà mai sul proprio operato, e per giunta arriva
 spesso in ritardo di molte mosse rispetto alla scelta che l'ha causato: il
 robot cade adesso per un passo storto di tre secondi fa. Mai una spiegazione,
@@ -130,14 +135,8 @@ tante, vada assegnato il merito di un punto arrivato dopo è il problema
 centrale di questo campo, e i due capitoli dedicati non fanno altro che
 girargli attorno.
 
-E quando la «mente» artificiale entra in un corpo meccanico, i risultati si
-vedono: rover marziani che scelgono da soli il percorso evitando le rocce,
-magazzini in cui flotte di carrelli autonomi si coordinano senza scontrarsi,
-droni che si stabilizzano da soli in mezzo alle raffiche.
-
-Le applicazioni crescono giorno dopo giorno, e sempre più spesso
-l'intelligenza artificiale sconfina in campi dove la ricerca sembrava arrivata
-a un punto morto: raffreddare un capannone pieno di computer accesi, leggere
-un elettrocardiogramma, e un problema di biologia rimasto aperto per mezzo
-secolo. Sono i tre esempi da cui
-{doc}`si riparte </Introduzione/conclusione>`.
+Fuori dai corpi meccanici, poi, l'intelligenza artificiale sconfina sempre più
+spesso in campi dove la ricerca sembrava arrivata a un punto morto:
+raffreddare un capannone pieno di computer accesi, leggere un
+elettrocardiogramma, e un problema di biologia rimasto aperto per mezzo
+secolo. Sono i tre esempi da cui {doc}`si riparte </Introduzione/conclusione>`.

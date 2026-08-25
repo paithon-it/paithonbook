@@ -409,7 +409,7 @@ verso il centro, e gli amici finirebbero ammucchiati. Con i lontani, invece,
 si può essere di manica larga: basta che stiano lontani, quanto esattamente
 non importa. Anche gli sbagli, del resto, non pesano uguale: separare due amici
 costa carissimo e il disegno lo evita in ogni modo, mentre mettere due
-sconosciuti un po' più in qua o un po' più in là non costa quasi niente, e il
+sconosciuti un po’ più in qua o un po’ più in là non costa quasi niente, e il
 disegno li sistema come gli torna comodo.
 
 Ma qui serve un'avvertenza onesta, perché è la causa di molti errori.
@@ -541,7 +541,7 @@ tira-e-molla, ripetuto finché tutto si stabilizza:
 Perché il tira-e-molla finisca, e non giri all'infinito, c'è una ragione
 precisa. Tieni il conto della scomodità: per ogni persona la distanza dal suo
 ritrovo moltiplicata per sé stessa, e poi tutte sommate; così una persona
-lasciata lontanissima conta più di dieci lasciate un po' scomode.
+lasciata lontanissima conta più di dieci lasciate un po’ scomode.
 L'assegnazione non può farlo salire: ognuno passa al ritrovo più
 vicino, quindi cammina meno di prima, o uguale. Nemmeno lo spostamento lo fa
 salire, perché fra tutti i punti in cui potresti piantare un ritrovo quello

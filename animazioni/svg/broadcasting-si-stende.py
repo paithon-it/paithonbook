@@ -37,7 +37,10 @@ GX, GY = 214, 132          # angolo alto-sinistro della griglia
 AY, AH = 64, 48            # la riga a, sopra la griglia
 BX = 102                   # la colonna b, a sinistra della griglia
 Y_RIS, Y_FASE = 372, 402   # etichetta del risultato, testo di fase
-Y_CAP = 430                # le due righe di chiusura
+# Qui stavano due righe di chiusura fisse. Erano fisse, quindi comparivano
+# IDENTICHE in tutti e tre i fermi immagine della stampa, in corpo minuscolo, e
+# ripetevano parola per parola quello che dice gia' la didascalia della pagina.
+# Tolte: in figura resta il movimento, il commento sta sotto una volta sola.
 
 # --------------------------------------------------------------- la scaletta
 # Quattro tempi: le forme, la riga che scende, la colonna che attraversa, le
@@ -222,13 +225,8 @@ def costruisci() -> Figura:
         corpo.append(f'<text class="fase" x="30" y="{Y_FASE}" opacity="{1 if ultimo else 0}" '
                      f'style="animation:fa{k} var(--d) infinite">{testo}</text>')
 
-    corpo.append(f'<text class="lbs" x="30" y="{Y_CAP}">Dodici celle, sette numeri veri: '
-                 f'a è riletto per ogni riga, b per ogni colonna.</text>')
-    corpo.append(f'<text class="lbs" x="30" y="{Y_CAP + 20}">Le caselle tratteggiate sono '
-                 f'letture, non copie: il lato trasmesso ha stride zero.</text>')
-
     return Figura(
-        larghezza=590, altezza=470,
+        larghezza=590, altezza=424,
         alt="Una riga di quattro numeri (10, 20, 30, 40) sta sopra una griglia "
             "vuota di tre righe per quattro colonne, e una colonna di tre numeri "
             "(1, 2, 3) sta alla sua sinistra. La riga scende di riga in riga e "

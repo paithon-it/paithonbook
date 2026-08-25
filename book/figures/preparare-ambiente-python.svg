@@ -1,4 +1,4 @@
-<svg viewBox="0 0 720 440" width="100%" role="img" aria-label="Anatomia di un setup Python: il sistema operativo con Python 3.12, la cartella di progetto con l'ambiente virtuale e le librerie, e l'IDE che punta all'interprete dell'ambiente" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 720 440" width="100%" role="img" aria-label="Anatomia di un setup Python: il sistema operativo con Python 3.12, la cartella di progetto con l'ambiente virtuale e le librerie, e l'editor che punta all'interprete dell'ambiente" xmlns="http://www.w3.org/2000/svg">
   <rect x="0" y="0" width="720" height="440" fill="#F8F5EE"/>
   <defs>
     <marker id="fr201" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/></marker>
@@ -36,7 +36,7 @@
 
   <!-- IDE -->
   <rect x="60" y="120" width="130" height="120" rx="10" fill="#B5532C"/>
-  <text x="125" y="165" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE" text-anchor="middle">IDE</text>
+  <text x="125" y="165" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F8F5EE" text-anchor="middle">Editor</text>
   <text x="125" y="186" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">VS Code /</text>
   <text x="125" y="203" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F8F5EE" text-anchor="middle">PyCharm</text>
 

@@ -129,7 +129,7 @@ si ferma; imparare significa scavare il paesaggio finché le valli non stanno
 nei punti giusti.
 
 Le percentuali, dalla carta, si ricavano. Scuotila e lascia girare la pallina
-per un'ora. Tocca un po' tutti i punti, ma in quelli bassi si trattiene molto
+per un'ora. Tocca un po’ tutti i punti, ma in quelli bassi si trattiene molto
 più a lungo che in cima, e quel «molto più a lungo» è una percentuale. Altezze e
 frequenze dicono la stessa cosa in due lingue. La traduzione, però, si paga. Se
 ti chiedessi «quante probabilità ci sono che dietro l'angolo ci sia un gatto?»

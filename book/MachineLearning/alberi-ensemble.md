@@ -137,7 +137,7 @@ modi. Contano solo i tagli fra un biglietto e il suo vicino di fila: con
 diecimila clienti in coda, al massimo novemilanovecentonovantanove per colonna.
 
 Il proprietario non torna mai sui suoi passi. I barattoli non si rovesciano, e
-la prima domanda resta quella che rendeva di più subito. Una domanda un po'
+la prima domanda resta quella che rendeva di più subito. Una domanda un po’
 peggiore in cima poteva preparare due domande ottime al giro dopo, e un albero
 finale migliore; nessuno lo scoprirà, perché quella strada non l'ha percorsa.
 In cambio l'albero si costruisce in fretta, e che sia il migliore possibile non

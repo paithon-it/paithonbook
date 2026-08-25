@@ -46,7 +46,7 @@ sola, invece di una diversa per ogni posizione.
 
 Dopo ogni passata la rete riassume. Divide il risultato in quadretti e di
 ciascuno tiene un numero solo: resta scritto che il tratto c'era, si perde dove
-stava di preciso. Una cifra scritta un po' più in alto, o un po' più storta,
+stava di preciso. Una cifra scritta un po’ più in alto, o un po’ più storta,
 lascia allora la stessa traccia. Poi una seconda lente combina questi tratti in
 forme più grandi, finché la rete decide quale numero da 0 a 9 sta guardando.
 
@@ -134,7 +134,7 @@ tutte le altre, che sono poi le uniche che conteranno. Uno dei due spegne a caso
 una parte dei neuroni a ogni passata, così nessuno può contare sempre sugli
 stessi compagni per dare la sua risposta. L'altro non mostra mai la stessa
 fotografia due volte uguale: la ritaglia in un punto diverso, la specchia, le
-sposta un po' i colori.
+sposta un po’ i colori.
 
 Con più muscoli e quegli accorgimenti, AlexNet ha imparato a distinguere
 migliaia di oggetti diversi in fotografie vere, sfocate e disordinate come

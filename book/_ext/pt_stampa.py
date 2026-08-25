@@ -236,6 +236,37 @@ class TabInLaTeX(SphinxPostTransform):
             tab.replace_self(nuovo)
 
 
+class NonEseguibileInLaTeX(SphinxPostTransform):
+    """Rende visibile in stampa `:class: pt-non-eseguibile`.
+
+    Quella classe marca i blocchi illustrativi, quelli che usano nomi che non
+    esistono (`dati.csv`, `modello`) e che restano fuori dal notebook e dalle
+    verifiche. Sono ventinove nel libro, e fino a oggi la marcatura era **solo
+    semantica**: lo scrittore LaTeX di Sphinx lascia cadere le classi di un
+    `literal_block`, quindi in stampa non ne restava traccia. Online nemmeno,
+    finche' non e' arrivata la regola in `custom.css`.
+
+    Il risultato era che il lettore non aveva modo di distinguere un blocco da
+    provare da uno da leggere, in nessuno dei due formati, mentre il capitolo
+    di Python promette in chiaro che il codice e' fatto per essere provato.
+
+    Lo stile della riga sta in `_stampa/paithon.sty`, come per le schede.
+    """
+
+    default_priority = 185
+    formats = ("latex",)
+
+    def run(self, **kwargs):
+        for blocco in list(self.document.findall(nodes.literal_block)):
+            if "pt-non-eseguibile" not in blocco.get("classes", []):
+                continue
+            padre = blocco.parent
+            if padre is None:
+                continue
+            padre.insert(padre.index(blocco) + 1,
+                         nodes.raw("", "\\ptNonEseguibile", format="latex"))
+
+
 # Pagine che online hanno senso e in un PDF no. Il registro delle versioni
 # racconta la storia di un sito che cambia; in mano a chi ha scaricato un
 # file, la versione e' una sola ed e' scritta nel colophon.
@@ -446,9 +477,18 @@ class AnimazioniInLaTeX(SphinxPostTransform):
             if radice and ancora and pagina:
                 url = f"{radice}/{pagina}.html#{ancora}"
                 rimando = nodes.paragraph(classes=["pt-rimando"])
-                rimando += nodes.Text("L'animazione si muove su ")
+                # L'apostrofo si scrive a mano: qui non passa `smartquotes`,
+                # che lavora sul sorgente e non sui nodi che costruiamo noi,
+                # e il dritto usciva composto in tutte le figure che si
+                # muovono (una cinquantina, e in stampa si vedeva).
+                rimando += nodes.Text("L’animazione si muove su ")
                 rimando += nodes.reference("", url, refuri=url)
-                blocco += rimando
+                # Va appeso alla FIGURA e non al blocco delle immagini, cosi'
+                # cade dopo la didascalia. Dentro il blocco si infilava fra i
+                # tre fermi e la didascalia, separando la figura da cio' che
+                # la spiega: il lettore trovava un indirizzo lungo nel punto
+                # in cui si aspettava «Fig. 3.1».
+                figura += rimando
 
             immagine.replace_self(blocco)
 
@@ -480,7 +520,23 @@ FONTPKG = r"""
 \setsansfont{Inter}[Path=\ptFontDir,
   UprightFont=inter-500.ttf, ItalicFont=inter-400italic.ttf,
   BoldFont=inter-600.ttf, BoldItalicFont=inter-600italic.ttf]
+% Le LEGATURE di JetBrains Mono vanno spente, e non e' una questione di gusto:
+% il font compone `==` come una doppia linea continua, `!=` come ≠, `>=` come ≥,
+% `->` come una freccia. In un libro di prosa sarebbero belle; in un blocco di
+% Python la pagina stampa codice che non esiste, e chi ricopia quello che vede
+% prende un SyntaxError. Il difetto vive SOLO in stampa (online compone il
+% browser, che quelle legature non le applica) e non lo vede nessun controllo
+% sul sorgente, perche' nel sorgente non c'e'.
+%
+% Si scopre dal livello testo, dove il glifo di legatura esce come `^`
+% (`(a ^!= b)`, `def ^__init^__`): 1142 occorrenze su 245 pagine. Il glifo in
+% pagina invece si vede giusto SOLO dove la legatura e' innocua (`__`), e per
+% questo il difetto e' sopravvissuto alle riletture del PDF.
+%
+% La larghezza non cambia: le legature di un monospazio da codice conservano
+% l'avanzamento per carattere, quindi nessuna riga si ricompone.
 \setmonofont{JetBrains Mono}[Path=\ptFontDir, Scale=0.86,
+  RawFeature={fallback=ptSimboli;-liga;-clig;-dlig;-calt},
   UprightFont=jetbrains-mono-400.ttf,
   ItalicFont=jetbrains-mono-400italic.ttf,
   BoldFont=jetbrains-mono-600.ttf]
@@ -508,9 +564,21 @@ FONTPKG = r"""
 % `\AtBeginDocument` non e' un vezzo: `\mathbb` lo definisce `amssymb`, che
 % Sphinx carica DOPO questo blocco, quindi prendere il controllo adesso
 % catturerebbe una macro che non esiste ancora.
+% E vuole `\protected`, non `\renewcommand`. Una didascalia in LaTeX e' un
+% argomento mobile: viene riscritta nel `.aux` e nell'elenco delle figure, e
+% li' una macro fragile si espande dove `\ptMathbbArg` non esiste ancora.
+% Risultato: `! Undefined control sequence` in `nonstopmode`, che non ferma
+% niente (codice di uscita 0, PDF in mano) e lascia in pagina il glifo
+% sbagliato al posto di `\mathbb{E}`. Si vedeva solo aprendo il PDF.
+%
+% `\DeclareRobustCommand` qui NON va, ed e' stato provato: sdoppia il comando
+% in un guscio piu' un `\mathbb␣` interno, e siccome `\ptMathbbOrig` tiene il
+% guscio, il rinvio all'originale torna sul corpo nuovo. Ricorsione infinita,
+% `TeX capacity exceeded`, nessun PDF. `\protected\def` non sdoppia niente:
+% ridefinisce il nome esterno e basta, e l'originale resta raggiungibile.
 \AtBeginDocument{%
   \let\ptMathbbOrig\mathbb
-  \renewcommand{\mathbb}[1]{%
+  \protected\def\mathbb#1{%
     \def\ptMathbbArg{#1}\def\ptMathbbUno{1}%
     \ifx\ptMathbbArg\ptMathbbUno \text{𝟙}\else\ptMathbbOrig{#1}\fi}%
 }
@@ -798,6 +866,7 @@ def setup(app):
     app.connect("config-inited", prepara_frontespizio, priority=902)
     app.connect("config-inited", porta_le_bande, priority=903)
     app.add_post_transform(FuoriStampa)
+    app.add_post_transform(NonEseguibileInLaTeX)
     app.add_post_transform(ApreLaPrefazione)
     app.add_post_transform(ViaISeparatori)
     app.add_post_transform(TabInLaTeX)

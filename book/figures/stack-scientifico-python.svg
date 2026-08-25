@@ -31,7 +31,7 @@
   <!-- Strato 3 (deep learning): PyTorch e TensorFlow -->
   <rect class="box" x="30"  y="24" width="212" height="54" rx="6" stroke="#B5532C" stroke-width="2.5"/>
   <text class="name" x="136" y="50"  text-anchor="middle">PyTorch</text>
-  <text class="desc" x="136" y="68"  text-anchor="middle">reti neurali (Meta) &#183; usato nel libro</text>
+  <text class="desc" x="136" y="68"  text-anchor="middle">reti neurali (Meta)</text>
   <rect class="box" x="258" y="24" width="212" height="54" rx="6" stroke="#B5532C" stroke-width="2.5"/>
   <text class="name" x="364" y="50"  text-anchor="middle">TensorFlow</text>
   <text class="desc" x="364" y="68"  text-anchor="middle">reti neurali (Google)</text>

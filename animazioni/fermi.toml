@@ -31,11 +31,15 @@ istanti = [0.03, 0.45, 0.88]
 # quarta e dell'ultima posa.
 
 [broadcasting-si-stende]
-istanti = [0.25, 0.50, 0.90]
+istanti = [0.25, 0.50, 0.96]
 # perche': al 10% la copia della riga e' ancora sopra la riga vera, quindi il
 # fermo immagine mostra una griglia vuota mentre la didascalia dice che la riga
 # si sta stendendo. Al 25% la copia e' scesa di una riga e la prima ha gia' le
 # sue letture: si vede il movimento, che e' il motivo per cui la clip esiste.
+# E il terzo e' passato da 0.90 a 0.96: le celle entrano fra il 66% e il 94%,
+# una dopo l'altra, quindi al 90% l'ultima in basso a destra era ancora
+# tratteggiata e vuota. Il fermo mostrava undici celle mentre la didascalia ne
+# prometteva dodici.
 
 [spartito-in-fila]
 istanti = [0.10, 0.50, 0.97]

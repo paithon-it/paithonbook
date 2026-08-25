@@ -57,10 +57,10 @@ conti e viaggi crescono insieme, nella stessa misura, mentre il rapporto fra i
 due resta quello di prima.
 
 Un aiuto arriva soltanto per caso. Fra la dispensa e le cucine c'è un
-ripostiglio in comune fra tutte le squadre, dove resta per un po' quello che è
+ripostiglio in comune fra tutte le squadre, dove resta per un po’ quello che è
 appena passato di lì (i tecnici lo chiamano **cache L2**), e ogni tanto la riga
 che ti serve è ancora lì: te la ritrovi a due passi invece che in fondo al
-corridoio. Qualche viaggio lo risparmi davvero, e le cose vanno un po' meglio
+corridoio. Qualche viaggio lo risparmi davvero, e le cose vanno un po’ meglio
 di così. Ma è un colpo di fortuna, e nessuno l'ha deciso: il tiling farà di
 meglio, perché quel risparmio se lo prende per iscritto invece di sperarlo.
 `````
@@ -128,7 +128,7 @@ una cassetta e poco più. Con una tessera da trentadue caselle di lato i viaggi
 si dividono per trentadue, e nemmeno questo basta. Il pareggio fra magazzino e
 cuochi, quello stabilito nella sezione sulla memoria, sta a dieci conti per
 ogni byte che ci si fa portare, e una tessera così ne fa otto, con i cuochi che
-restano un po' fermi ad aspettare. Qualche casella in più colmerebbe il
+restano un po’ fermi ad aspettare. Qualche casella in più colmerebbe il
 divario, se la soglia stesse ferma. Ma le unità costruite apposta per
 moltiplicare tabelloni la portano oltre il centocinquanta, e una cassetta
 capace di tenere quel passo sul ripiano non ci sta. Nemmeno scegliendo meglio

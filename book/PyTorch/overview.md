@@ -56,7 +56,7 @@ prima di muoversi, e se lo può studiare a tavolino: accorpare due commissioni
 che stanno nella stessa via, tagliare il giro largo, fare benzina nell'unico
 punto in cui costa meno. Il navigatore quella vista d'insieme non ce l'ha,
 perché decide un incrocio alla volta, e per anni i programmi scritti così hanno
-girato un po' più lenti di quelli descritti tutti in anticipo. Poi i navigatori
+girato un po’ più lenti di quelli descritti tutti in anticipo. Poi i navigatori
 hanno imparato il mestiere: quando si accorgono che il tragitto è sempre
 quello, se lo studiano una volta sola e da lì in avanti lo percorrono di
 filato. PyTorch lo fa dal 2023, e buona parte di quel ritardo se n'è andata.

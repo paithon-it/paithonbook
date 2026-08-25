@@ -114,6 +114,27 @@
   \addto\captionsitalian{\renewcommand{\contentsname}{Indice}}%
 }
 
+%% --------------------------------------- blocchi di codice illustrativi
+%% Un blocco marcato `:class: pt-non-eseguibile` usa nomi che non esistono
+%% (`dati.csv`, `modello`) e sta fuori dal notebook e dalle verifiche. Fino a
+%% oggi quella marcatura era solo semantica: Sphinx lascia cadere le classi di
+%% un literal_block nello scrittore LaTeX, quindi in stampa non ne restava
+%% traccia, e il lettore non aveva modo di distinguerlo da un blocco fatto per
+%% girare. Il capitolo di Python promette in chiaro che il codice si prova.
+%%
+%% La riga si attacca sotto al blocco, allineata a destra e smorzata: e' una
+%% postilla, non un avviso.
+%% Il rientro verticale era `-0.9\baselineskip` e su un blocco su sette il
+%% bordo inferiore del riquadro passava DENTRO l'etichetta, barrandola. La
+%% distanza fra la fine del codice e la chiusura della cornice non e' la stessa
+%% dappertutto, quindi il margine va tenuto largo: con `-0.35` l'etichetta resta
+%% attaccata al blocco e lo sgombro c'e' anche nel caso peggiore.
+\newcommand{\ptNonEseguibile}{%
+  \nopagebreak\vspace{-0.35\baselineskip}%
+  \par\noindent\hfill{\footnotesize\color{ptTeal}non si esegue}%
+  \par\vspace{0.3\baselineskip}%
+}
+
 %% ------------------------------------------------- apertura di capitolo
 %% Banda, pillola col numero e il titolo, mini-indice delle sezioni.
 %%

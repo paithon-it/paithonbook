@@ -140,8 +140,8 @@ Il modello di una creatura non è una fotocopia del mondo: chi avesse in testa
 solo una fotocopia descriverebbe la corrente e si lascerebbe portare. Il modello
 si porta dentro anche le condizioni in cui quella creatura deve trovarsi per
 continuare a esistere. Nessuno ha scritto al pesce, su un foglio a parte, un
-premio per l'acqua: il pesce si aspetta l'acqua, e se la aspetta un po' più di
-quanto i fatti gli garantiscano. Da quel po' di ottimismo viene la nuotata.
+premio per l'acqua: il pesce si aspetta l'acqua, e se la aspetta un po’ più di
+quanto i fatti gli garantiscano. Da quel po’ di ottimismo viene la nuotata.
 
 Per un pesce, «essere all'asciutto» è la cosa più sorprendente che possa
 capitargli, e nessuna quantità di immobilità gliela risparmia: al contrario, se

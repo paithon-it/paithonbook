@@ -462,7 +462,7 @@ $$
 cioè la somiglianza con la domanda $q$ **meno** la somiglianza con il più
 vicino fra i passaggi $S$ già scelti, pesate da un $\lambda$ fra zero e uno.
 Il secondo termine compra la novità: un passaggio rilevantissimo ma fotocopia
-di uno già dentro perde il posto a favore di uno un po' meno rilevante che
+di uno già dentro perde il posto a favore di uno un po’ meno rilevante che
 aggiunge qualcosa. Con $\lambda = 1$ si torna alla pura rilevanza.
 
 Sono poche decine di righe che non «capiscono» nulla, eppure incarnano tre

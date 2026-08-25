@@ -171,7 +171,7 @@ batching**, il mazzo continuo.
 Più coperti nella stessa sala vogliono dire più clienti serviti nella stessa
 serata, ed è ciò che permette a un LLM di rispondere a migliaia di persone con
 lo stesso hardware. Un prezzo però c'è, e lo paga chi è già seduto, perché con
-la sala piena il cameriere ha più tavoli da servire e il piatto arriva un po'
+la sala piena il cameriere ha più tavoli da servire e il piatto arriva un po’
 più tardi. Dove mettere l'ago dipende dal locale, visto che una mensa vuole
 coperti e un ristorante vuole il piatto puntuale.
 

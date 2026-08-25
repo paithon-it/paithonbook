@@ -364,7 +364,7 @@ Due cose, però, l'arbitro non le aggiusta. Uno che dicesse «ripeti» a chiunqu
 non lascerebbe passare nessun errore e non farebbe arrivare in fondo neanche una
 frase giusta: quanto vale un arbitro si vede anche da quante volte ferma chi
 aveva ragione. E il bambino a cui fai ripetere spesso ripete lo stesso sbaglio,
-perché la parola l'aveva sentita male fin dall'inizio; il guadagno vero è un po'
+perché la parola l'aveva sentita male fin dall'inizio; il guadagno vero è un po’
 meno di quello che il conto promette.
 
 `````

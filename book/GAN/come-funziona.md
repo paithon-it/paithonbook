@@ -197,10 +197,12 @@ proprio lei a cadere.
 **Primo passaggio: il discriminatore ottimo.** Fissato $G$, il secondo integrale si riscrive nello spazio dei dati invece che in quello del rumore, perché spingere $\mathbf{z}$ attraverso $G$ è esattamente ciò che definisce $p_G$:
 
 $$
-V(D,G) = \int p_{\text{dati}}(\mathbf{x})\log D(\mathbf{x})\,d\mathbf{x}
-       + \int p_z(\mathbf{z})\log\big(1-D(G(\mathbf{z}))\big)\,d\mathbf{z}
-       = \int \Big[\, p_{\text{dati}}(\mathbf{x})\log D(\mathbf{x})
-       + p_G(\mathbf{x})\log\big(1-D(\mathbf{x})\big) \Big]\,d\mathbf{x}.
+\begin{aligned}
+V(D,G) &= \int p_{\text{dati}}(\mathbf{x})\log D(\mathbf{x})\,d\mathbf{x}
+        + \int p_z(\mathbf{z})\log\big(1-D(G(\mathbf{z}))\big)\,d\mathbf{z} \\
+       &= \int \Big[\, p_{\text{dati}}(\mathbf{x})\log D(\mathbf{x})
+        + p_G(\mathbf{x})\log\big(1-D(\mathbf{x})\big) \Big]\,d\mathbf{x}.
+\end{aligned}
 $$
 
 Ed è qui che serve l'ipotesi di capacità illimitata: poiché $D$ non ha vincoli, l'integrale si massimizza massimizzando l'integrando **punto per punto**, cioè scegliendo per ogni $\mathbf{x}$ separatamente il numero $u = D(\mathbf{x}) \in [0,1]$ che rende massima $a\log u + b\log(1-u)$, con $a = p_{\text{dati}}(\mathbf{x})$ e $b = p_G(\mathbf{x})$. Derivando in $u$:

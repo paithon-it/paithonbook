@@ -244,7 +244,7 @@ sceglie la parola più plausibile dopo le altre. Attenzione, però: questa è un
 ricercatori rispondono che per indovinare bene la parola successiva in tutti i
 testi del mondo bisogna, in qualche misura, aver imparato molto del mondo che
 quei testi descrivono, e fanno notare che intanto i modelli continuano a
-migliorare. E che rileggere, un po', quei programmi lo fanno: capita che si
+migliorare. E che rileggere, un po’, quei programmi lo fanno: capita che si
 accorgano dello sbaglio e lo aggiustino nella frase dopo, e allora la catena
 non si spezza. Su questo c'è perfino un esperimento pensato per decidere la
 questione con i dati invece che con gli slogan, condotto su un gioco da tavolo:
