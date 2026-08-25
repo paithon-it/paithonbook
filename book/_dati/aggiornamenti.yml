@@ -48,6 +48,53 @@
 
 versioni:
 
+- versione: "1.10.3"
+  data: 2026-08-24
+  voci:
+
+  - tipo: corretto
+    pagina: Introduzione/overview.md
+    testo: >
+      **Una definizione sola di intelligenza artificiale, e regge per tutto il
+      libro.** Si occupa dei compiti per cui nessuno sa scrivere una ricetta
+      che tenga nel mondo vero: ne resta fuori la lavatrice, che una ricetta
+      ce l'ha e funziona, e ci restano dentro i sistemi esperti, che a
+      scriverla provavano lo stesso, a mano. Il loro fallimento diventa così
+      la premessa del capitolo invece di un aneddoto.
+
+  - tipo: corretto
+    pagina: Introduzione/overview.md
+    testo: >
+      **L'Introduzione va in una direzione sola.** Il blocco filosofico e le
+      tre discipline in cui la decisione si studiava da prima arrivano ora
+      davanti a Turing, e la funzione obiettivo ha una sezione sua, dopo che
+      il lettore sa che cosa vuol dire addestrare un modello. E ARGO, la
+      Lancia Thema che nel 1998 fece da sola il 94% dei duemila chilometri
+      della Mille Miglia, dice adesso perché sta lì: dentro non c'era niente
+      che avesse imparato qualcosa.
+
+  - tipo: corretto
+    testo: >
+      **I rinvii dicono dove.** «Ci torneremo», «lo vedremo da vicino»: un
+      rimando che non nomina la destinazione chiede di aspettare senza dare
+      niente in cambio. Nell'Introduzione quello sui Transformer è diventato
+      un collegamento, in World Model il collasso nomina la sezione sulle
+      JEPA, in Ricerca e pianificazione la promessa è sparita perché due
+      righe più in là il testo dice già chi se ne occupa.
+
+  - tipo: corretto
+    testo: >
+      **Ogni capitolo scaricato in PDF dice come si può usare.** Il libro
+      intero lo scrive nel colophon, che un capitolo ritagliato non si porta
+      dietro: ora la licenza sta a piè di pagina in ciascuno dei file per
+      capitolo, che sono quelli fatti per essere mandati a qualcuno.
+
+  - tipo: corretto
+    testo: >
+      **Il razzo si trova.** Sulle pagine che sono esse stesse un notebook, il
+      comando che esegue il codice sta fra i pulsanti in cima alla pagina; da
+      telefono è accanto al marchio, non a destra come il testo diceva.
+
 - versione: "1.10.2"
   data: 2026-08-23
   voci:

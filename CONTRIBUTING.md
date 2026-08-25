@@ -216,7 +216,13 @@ Queste cinque cose sono **difetti**, non questioni di gusto:
 - **la parentetica che spezza il respiro** dove il lettore stava prendendo il
   ritmo. Se l'inciso è lungo, è una frase dopo, o una nota;
 - **le citazioni infilate a metà periodo**: `{cite}` a fine frase, non fra
-  soggetto e verbo.
+  soggetto e verbo;
+- **la promessa vuota**: «e la incontreremo al momento giusto», «ci
+  torneremo», «ci arriveremo con calma». Chiede al lettore di aspettare senza
+  dargli niente in cambio: né dove, né quando. Un rimando in avanti va bene
+  quando **nomina la destinazione** («lo racconta il capitolo sulle reti
+  neurali»), perché quello informa e si può linkare. La prova: se togliendo
+  l'inciso il lettore non perde un'informazione, si toglie.
 
 E la soglia non è la stessa dappertutto: nei capitoli d'apertura
 (Introduzione, Python, Matematica, Machine Learning, Reti neurali, PyTorch,

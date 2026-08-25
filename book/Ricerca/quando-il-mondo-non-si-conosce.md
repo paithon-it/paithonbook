@@ -232,7 +232,7 @@ cieca e diventa quella di AlphaGo e dei suoi successori
 {cite}`silver2016mastering`. E se il modello non c’è affatto, restano i metodi
 del capitolo seguente.
 
-Resta un punto di contatto, e il libro ci tornerà alla fine: anche a modello
+Resta un punto di contatto: anche a modello
 ignoto, **pensare prima di rispondere paga**. Il calcolo speso al momento
 della risposta invece che durante l’addestramento è
 una forma di ricerca, e il capitolo sui Transformer lo tratterà per esteso

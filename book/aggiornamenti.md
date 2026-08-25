@@ -38,6 +38,18 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-10-3)=
+
+## 1.10.3 · 24 agosto 2026
+
+### Correzioni
+
+- {doc}`Introduzione </Introduzione/overview>`. **Una definizione sola di intelligenza artificiale, e regge per tutto il libro.** Si occupa dei compiti per cui nessuno sa scrivere una ricetta che tenga nel mondo vero: ne resta fuori la lavatrice, che una ricetta ce l'ha e funziona, e ci restano dentro i sistemi esperti, che a scriverla provavano lo stesso, a mano. Il loro fallimento diventa così la premessa del capitolo invece di un aneddoto.
+- {doc}`Introduzione </Introduzione/overview>`. **L'Introduzione va in una direzione sola.** Il blocco filosofico e le tre discipline in cui la decisione si studiava da prima arrivano ora davanti a Turing, e la funzione obiettivo ha una sezione sua, dopo che il lettore sa che cosa vuol dire addestrare un modello. E ARGO, la Lancia Thema che nel 1998 fece da sola il 94% dei duemila chilometri della Mille Miglia, dice adesso perché sta lì: dentro non c'era niente che avesse imparato qualcosa.
+- **I rinvii dicono dove.** «Ci torneremo», «lo vedremo da vicino»: un rimando che non nomina la destinazione chiede di aspettare senza dare niente in cambio. Nell'Introduzione quello sui Transformer è diventato un collegamento, in World Model il collasso nomina la sezione sulle JEPA, in Ricerca e pianificazione la promessa è sparita perché due righe più in là il testo dice già chi se ne occupa.
+- **Ogni capitolo scaricato in PDF dice come si può usare.** Il libro intero lo scrive nel colophon, che un capitolo ritagliato non si porta dietro: ora la licenza sta a piè di pagina in ciascuno dei file per capitolo, che sono quelli fatti per essere mandati a qualcuno.
+- **Il razzo si trova.** Sulle pagine che sono esse stesse un notebook, il comando che esegue il codice sta fra i pulsanti in cima alla pagina; da telefono è accanto al marchio, non a destra come il testo diceva.
+
 (v1-10-2)=
 
 ## 1.10.2 · 23 agosto 2026

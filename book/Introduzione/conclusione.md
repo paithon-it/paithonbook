@@ -85,8 +85,12 @@ E si comincia dagli attrezzi. Il prossimo capitolo è dedicato a **Python**, il
 linguaggio con cui tutto il resto del libro è scritto, e quello dopo alla
 manciata di matematica che serve davvero: se hai in mano le frazioni, le
 potenze e le percentuali, il resto lo impari qui, strada facendo. Poi si entra
-nel merito: il machine learning, cioè il salto di questa pagina raccontato per
-bene, e da lì in avanti le reti neurali.
+nel merito: il machine learning, cioè il salto raccontato per bene, e da lì le
+reti neurali, che sono il modo di farlo che ha vinto. Il libro si allarga da
+lì. I Transformer, i programmi con cui oggi si conversa. Il reinforcement
+learning, per quando gli esempi giusti non esistono e resta solo un punteggio.
+E i capitoli che si occupano di quello che va storto, dall'interpretabilità
+all'AI responsabile.
 
 `````{tab} Elementare
 

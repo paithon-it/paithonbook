@@ -57,6 +57,9 @@ CAPITOLI = USCITA / "capitoli"
 NOME = "paithon-book"
 CASA = "book.paithon.it"
 PUBBLICO = "paithon-it/paithonbook"
+# Il carattere della riga di licenza dei ritagli: quello del piede che c'e'
+# gia', non un ripiego di sistema. Vedi `timbra_licenza()`.
+INTER = LIBRO / "_static" / "brand" / "stampa" / "fonts" / "inter-400.ttf"
 # Chi firma le release. Vedi `rilascia()`: si controlla, non si spera.
 FIRMA = "paithon-it"
 
@@ -388,6 +391,9 @@ def ricompatta(pdf: pathlib.Path) -> None:
     documento = fitz.open(pdf)
     pagine, segnalibri = documento.page_count, len(documento.get_toc())
     documento.xref_set_key(-1, "ID", "[<70616974686F6E><626F6F6B>]")
+    rimesse = tabella_post(documento)
+    if rimesse:
+        print(f"  tabella `post` rimessa su {rimesse} font")
     rimessi = length1(documento)
     if rimessi:
         print(f"  /Length1 rimesso su {rimessi} font")
@@ -406,6 +412,92 @@ def ricompatta(pdf: pathlib.Path) -> None:
     if prima - pdf.stat().st_size > 1024 * 1024:
         print(f"  ricompattato: {prima / 1024 / 1024:.0f} MB "
               f"-> {pdf.stat().st_size / 1024 / 1024:.0f} MB")
+
+
+def tabella_post(documento) -> int:
+    """Rimette la tabella `post` che LuaTeX non scrive nei font che incorpora.
+
+    Per un font con contorni TrueType la specifica OpenType elenca `post` fra
+    le tabelle **obbligatorie**, insieme a `cmap`, `head`, `hhea`, `hmtx`,
+    `maxp`, `name` e `OS/2`. I sottoinsiemi che incorpora LuaTeX le hanno
+    tutte tranne quella, e Acrobat, aprendo il libro, avvisa che «non e'
+    possibile estrarre il font incorporato» con il nome del carattere,
+    aggiungendo che dei caratteri potrebbero non vedersi o stamparsi bene.
+
+    E' la stessa storia del `/Length1` qui sotto, sugli stessi font, e con lo
+    stesso silenzio intorno: `qpdf --check` guarda la sintassi del PDF e non
+    entra nel programma del font, gli altri lettori i glifi li disegnano
+    comunque, e i sottoinsiemi che arrivano dentro le figure convertite da
+    Chromium la `post` ce l'hanno. Lo dice solo Acrobat, a chi scarica.
+
+    La versione 3.0 e' quella giusta qui: dichiara le metriche che servono e
+    **non porta i nomi dei glifi**, che in un sottoinsieme con
+    `CIDToGIDMap /Identity` non li usa nessuno e sarebbero peso inutile.
+    L'inclinazione si copia dal `/ItalicAngle` del descrittore, che il PDF
+    gia' dichiara, invece di inventarla.
+    """
+    import io
+    import re
+    try:
+        from fontTools.ttLib import TTFont, newTable
+    except ImportError:
+        print("  tabella `post`: saltata, manca fonttools "
+              "(pip install fonttools)")
+        return 0
+
+    rimesse, saltati = 0, 0
+    for xref in range(1, documento.xref_length()):
+        try:
+            oggetto = documento.xref_object(xref, compressed=False)
+        except Exception:
+            continue
+        if "/FontFile2" not in oggetto or "/FontName" not in oggetto:
+            continue
+        programma = re.search(r"/FontFile2 (\d+) 0 R", oggetto)
+        if not programma:
+            saltati += 1
+            continue
+        font = int(programma.group(1))
+        try:
+            carattere = TTFont(io.BytesIO(documento.xref_stream(font)),
+                               lazy=False)
+        except Exception:
+            saltati += 1
+            continue
+        if "post" in carattere:
+            continue
+
+        em = carattere["head"].unitsPerEm
+        inclina = re.search(r"/ItalicAngle\s+(-?[\d.]+)", oggetto)
+        post = newTable("post")
+        post.formatType = 3.0
+        post.italicAngle = float(inclina.group(1)) if inclina else 0.0
+        post.underlinePosition = -em // 10
+        post.underlineThickness = em // 20
+        # Il bit 1 di /Flags e' la spaziatura fissa: e' il descrittore del PDF
+        # a saperlo, e dirlo due volte in modo diverso sarebbe peggio che non
+        # dirlo.
+        bandiere = re.search(r"/Flags (\d+)", oggetto)
+        post.isFixedPitch = int(bandiere.group(1)) & 1 if bandiere else 0
+        post.minMemType42 = post.maxMemType42 = 0
+        post.minMemType1 = post.maxMemType1 = 0
+        carattere["post"] = post
+
+        riscritto = io.BytesIO()
+        carattere.save(riscritto)
+        dati = riscritto.getvalue()
+        documento.update_stream(font, dati, compress=True)
+        # Il programma e' cambiato, quindi `/Length1` va rifatto qui: la
+        # funzione che lo rimette salta chi ce l'ha gia', e si terrebbe il
+        # valore vecchio, che e' peggio di nessun valore.
+        documento.xref_set_key(font, "Length1", str(len(dati)))
+        rimesse += 1
+    # Un font che questo giro non ha saputo aprire e' esattamente il caso che
+    # tornerebbe a far comparire l'avviso, e in silenzio: si dice.
+    if saltati:
+        print(f"  ATTENZIONE: {saltati} font incorporati non si sono aperti, "
+              f"e la loro `post` non e' stata controllata")
+    return rimesse
 
 
 def length1(documento) -> int:
@@ -491,6 +583,94 @@ def pagina_vuota(pagina) -> bool:
             and not pagina.get_drawings())
 
 
+def inter_ridotto(testo: str) -> pathlib.Path:
+    """Inter tagliato ai soli caratteri che servono alla riga di licenza.
+
+    PyMuPDF incorpora il file che gli si da', **intero**: Inter regular pesa
+    300 KB, e su un ritaglio da 800 KB sono il 35% del file per una riga di
+    testo. Sottoinsiemare qui invece che chiamare `subset_fonts()` sul PDF
+    finito non e' pignoleria: quella passata rimetterebbe le mani anche sui
+    font che ha incorporato LuaLaTeX, che sono gia' sottoinsiemati e che in
+    questo libro hanno gia' avuto bisogno di due riparazioni (`length1`,
+    `tabella_post`). Si tocca solo cio' che si e' aggiunto.
+
+    Il ritaglio si tiene accanto al PDF e si rifa' solo se il testo cambia.
+    """
+    from fontTools import subset
+
+    ridotto = USCITA / "inter-licenza.ttf"
+    marca = USCITA / "inter-licenza.txt"
+    if (ridotto.exists() and marca.exists()
+            and marca.read_text(encoding="utf-8") == testo
+            and ridotto.stat().st_mtime > INTER.stat().st_mtime):
+        return ridotto
+
+    opzioni = subset.Options()
+    # Senza, fontTools butta le tabelle che PyMuPDF si aspetta di trovare.
+    opzioni.drop_tables = []
+    font = subset.load_font(str(INTER), opzioni)
+    subsettatore = subset.Subsetter(options=opzioni)
+    subsettatore.populate(text=testo)
+    subsettatore.subset(font)
+    subset.save_font(font, str(ridotto), opzioni)
+    font.close()
+    marca.write_text(testo, encoding="utf-8")
+    return ridotto
+
+
+def timbra_licenza(pezzo, numero: str) -> None:
+    """La riga di licenza in fondo a ogni pagina di un capitolo ritagliato.
+
+    Il libro intero dice come si puo' usare nel **colophon**, che sta nelle
+    prime pagine; un ritaglio comincia dall'apertura del suo capitolo, quindi
+    quella pagina non se la porta dietro e il file circola senza dire niente.
+    E i ritagli sono fatti apposta per circolare: e' il formato che si manda
+    a qualcuno, e nessuno risale al libro per sapere che licenza ha.
+
+    Sta qui e non nel LaTeX per non toccare l'impaginazione del libro intero,
+    che la licenza ce l'ha gia' e a cui la riga non serve.
+
+    Le misure vengono dal piede che c'e' gia' (Inter 8pt, ultima riga a
+    y=789 su una pagina alta 842): la riga si mette **sotto**, piu' piccola,
+    e nel margine che resta. Il carattere e' lo stesso del piede, non un
+    ripiego di sistema: un Helvetica in fondo alla pagina si vede.
+    """
+    import datetime
+
+    import fitz
+
+    # `book.paithon.it` non si ripete: sta gia' nel piede, una riga piu' su.
+    testo = (f"© 2019–{datetime.date.today().year} Francesco Messina · "
+             f"Paithon Book{f' {numero}' if numero else ''} · "
+             "testo e figure CC BY-NC-ND 4.0 · codice Apache 2.0 · "
+             "ogni altro diritto riservato")
+    if not INTER.exists():
+        sys.exit(f"manca il carattere del piede: {INTER.relative_to(RADICE)}. "
+                 "Il submodule del brand non e' stato clonato "
+                 "(git submodule update --init).")
+
+    ridotto = inter_ridotto(testo)
+    corpo = 5.5
+    carattere = fitz.Font(fontfile=str(ridotto))
+    # La riga sta dentro la giustezza del testo, altrimenti sborda nei margini
+    # e in stampa finisce sul taglio. Se non ci sta, si stringe: meglio una
+    # riga piccola di una riga tagliata.
+    while corpo > 4 and carattere.text_length(testo, corpo) > 448:
+        corpo -= 0.25
+
+    larghezza = carattere.text_length(testo, corpo)
+    for pagina in pezzo:
+        # Su una verso bianca la riga sarebbe l'unica cosa stampata, e
+        # sembrerebbe un errore di composizione.
+        if pagina_vuota(pagina):
+            continue
+        pagina.insert_text(
+            fitz.Point((pagina.rect.width - larghezza) / 2,
+                       pagina.rect.height - 34),
+            testo, fontsize=corpo, fontname="ptinter",
+            fontfile=str(ridotto), color=(0.102, 0.102, 0.102))
+
+
 def spezza(pdf: pathlib.Path, sorgente: pathlib.Path) -> dict:
     """Il libro impaginato, tagliato in un PDF per capitolo.
 
@@ -511,6 +691,7 @@ def spezza(pdf: pathlib.Path, sorgente: pathlib.Path) -> dict:
     documento = fitz.open(pdf)
     indice = documento.get_toc()
     titoli = {p: t for livello, t, p in indice if livello == 2}
+    numero, _ = versione()
     marca = dict(documento.metadata)
     for campo in ("creationDate", "modDate", "producer"):
         marca.pop(campo, None)
@@ -530,6 +711,9 @@ def spezza(pdf: pathlib.Path, sorgente: pathlib.Path) -> dict:
                        if livello >= 2 and prima < pagina <= ultima + 1])
         pezzo.set_metadata(dict(
             marca, title=f"{titoli.get(prima + 1, cartella)} · Paithon Book"))
+        # Prima di `length1`, che deve riparare anche il carattere appena
+        # incorporato dal timbro.
+        timbra_licenza(pezzo, numero)
         length1(pezzo)
         pezzo.xref_set_key(-1, "ID", "[<70616974686F6E><626F6F6B>]")
         file = CAPITOLI / f"{NOME}-{cartella}.pdf"

@@ -27,9 +27,9 @@ afferrare, oppure portare qualcosa in un punto preciso. Ne resta fuori la
 lavatrice, che pure sente (il carico, la temperatura) e agisce (apre la
 valvola, ferma il cestello). A noi qui interessa lo schema, sentire e agire,
 perché è quello con cui l'intelligenza artificiale ha a che fare; ma una
-lavatrice resta fuori anche dall'altra definizione, quella data in {doc}`apertura di capitolo </Introduzione/overview>`: la regola
-che decide quando fermare il risciacquo l'ha scritta un
-tecnico, riga per riga.
+lavatrice resta fuori anche dall'altra definizione, quella data in
+{doc}`apertura di capitolo </Introduzione/overview>`: per decidere quando
+fermare il risciacquo una ricetta c'è, ed è corta, una soglia su un sensore.
 
 Esiste però un ponte fra i due mondi, ed è fatto di programmi che imparano per
 tentativi ed errori, incassando un «premio» ogni volta che fanno bene, un po’
@@ -38,8 +38,7 @@ dell'intelligenza artificiale si chiama **reinforcement learning**
 (apprendimento per rinforzo). È così che oggi si insegna a un robot a
 camminare, ad afferrare oggetti o a mantenere l'equilibrio, e quando a fare il
 lavoro sono le reti neurali si parla di *deep reinforcement learning*, cioè lo
-stesso con le reti a molti strati. Ne parleremo per esteso nei due capitoli
-dedicati all'uno e all'altro.
+stesso con le reti a molti strati.
 
 `````{tab} Elementare
 Un robot deve imparare a camminare, e nessun ingegnere gli spiega come piegare
@@ -92,8 +91,7 @@ $\gamma \in [0, 1)$ sconta le ricompense future, il che è anche quello che
 rende finita una somma di infiniti termini. Per la robotica, con azioni continue (coppie ai motori), si usano i
 metodi a gradiente di policy e actor-critic; l'addestramento avviene in
 simulazione, con il passaggio al robot fisico (*sim-to-real*) come problema
-aperto. Tutti questi termini avranno il loro capitolo: qui basta la sagoma
-del meccanismo.
+aperto. Qui basta la sagoma del meccanismo.
 `````
 
 Di questa storia conviene fissare subito i nomi, perché torneranno per intero

@@ -311,7 +311,7 @@ torna utile
 per intero, perché una JEPA è un modello a energia: la stessa idea del
 buttafuori che assegna un voto di compatibilità, e lo stesso pericolo, che le
 due reti si mettano d'accordo per dare a ogni cosa lo stesso riassunto (è il
-**collasso**, e lo vedremo da vicino).
+**collasso**, e lo riprende la {doc}`sezione sulle JEPA </WorldModels/jepa>`).
 
 Terza tappa, l’**inferenza attiva**, e qui si cambia disciplina: è la risposta
 che alla stessa domanda danno le neuroscienze teoriche. La tesi è che percepire
