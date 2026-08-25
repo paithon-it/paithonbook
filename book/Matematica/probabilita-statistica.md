@@ -83,7 +83,7 @@ l'informazione cumulata fino a $x$.
 `````
 
 La stessa curva si può disegnare in due modi, e conviene saperli riconoscere
-tutti e due, perché ritorneranno entrambi.
+tutti e due.
 
 ```{figure} ../figures/variabili-aleatorie-momenti-percentili.svg
 :name: fig-densita-percentili
@@ -102,9 +102,10 @@ due sigle in cima ai grafici sono le abbreviazioni inglesi con cui si trovano
 ovunque: *PDF* per la densità, *CDF* per la ripartizione.)
 ```
 
-La corrispondenza fra i due grafici di {numref}`fig-densita-percentili` non è
-un vezzo: risponde alla domanda che si fa più spesso su una misura, cioè
-«sotto quale valore cade il novantacinque per cento dei casi?». Quel valore si
+I due grafici di {numref}`fig-densita-percentili` si corrispondono punto per
+punto, e la seconda curva esiste per rispondere alla domanda che si fa più
+spesso su una misura: «sotto quale valore cade il novantacinque per cento dei
+casi?». Quel valore si
 chiama **novantacinquesimo percentile**, e i percentili si leggono sul grafico
 di destra perché lì basta partire dall'altezza $0{,}95$ e scendere a leggere il
 numero corrispondente. Sul grafico di sinistra la stessa domanda vorrebbe che
@@ -119,7 +120,7 @@ tipica, ma di quanto vanno male le giornate storte.
 Il quadro completo di come si comporta una grandezza casuale (quali valori
 escono, e con che frequenza ciascuno) si chiama la sua **distribuzione**: è la
 parola che d'ora in poi useremo per la curva o per l'elenco di probabilità
-appena visti, e ritorna in ogni pagina del libro. Quasi sempre non serve tutto
+appena visti. Quasi sempre non serve tutto
 il quadro: bastano due numeri, dove sta il centro della distribuzione e quanto
 è dispersa attorno a esso.
 
@@ -137,7 +138,7 @@ lo stipendio medio senza spostare quello di mezzo.
 ```
 
 L'ordine in cui i tre indicatori compaiono in {numref}`fig-centro-larghezza`
-non è casuale ed è un buon promemoria pratico: quando media e mediana si
+è un buon promemoria pratico: quando media e mediana si
 allontanano molto, la distribuzione ha una coda, e riassumerla con la sola
 media descrive un valore tipico che quasi nessuno osserva.
 
@@ -244,8 +245,8 @@ $p$ e $0$ con probabilità $1-p$. Serve a modellare qualunque esito binario:
 click/non click, spam/non spam.
 
 La normale, che si chiama anche **gaussiana** dal nome del matematico Carl
-Friedrich Gauss (i due nomi indicano la stessa identica cosa e nel libro si
-alternano), è la celebre **curva a campana** ({numref}`fig-curva-normale`):
+Friedrich Gauss (i due nomi indicano la stessa identica cosa e si usano l'uno
+per l'altro), è la celebre **curva a campana** ({numref}`fig-curva-normale`):
 simmetrica, con la maggior parte dei valori stretti attorno alla media $\mu$ e
 code che si assottigliano ai lati. Vale una regola pratica utilissima, la
 "68–95": circa il $68\%$ dei casi cade entro una deviazione standard dalla media
@@ -254,9 +255,11 @@ misura, rumore: in natura la campana è dappertutto.
 
 **Perché dappertutto?** C'è un risultato che lo spiega, e ha un nome
 importante: il **teorema del limite centrale**. Dice una cosa sorprendente:
-ogni volta che una grandezza è la *somma* di tanti piccoli contributi casuali
-e indipendenti fra loro, il risultato assomiglia a una campana, e questo
-succede **qualunque sia la forma dei singoli contributi**. L'altezza di una
+ogni volta che una grandezza è la *somma* di tanti contributi casuali e
+indipendenti fra loro, e nessuno dei quali possa da solo essere enormemente
+più grande di tutti gli altri messi insieme, il risultato assomiglia a una
+campana, e questo succede **qualunque sia la forma dei singoli
+contributi**. L'altezza di una
 persona è la somma di centinaia di piccoli effetti (geni, alimentazione,
 salute da bambino): campana. L'errore di uno strumento è la somma di tante
 imprecisioni minuscole: campana. Il totale di tre dadi è la somma di tre
@@ -306,21 +309,24 @@ disuguaglianza di Berry–Esseen,
 $\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$, dove $F_n$ è la
 funzione di ripartizione della somma standardizzata, $\Phi$ quella della
 normale standard, $C$ una costante universale minore di mezzo che non dipende
-dalla distribuzione di partenza, e $\rho_3 =
-\mathbb{E}|X-\mu|^3$: la distanza cala come $1/\sqrt{n}$, e davanti c'è un
-momento terzo **assoluto**, che non sa distinguere una coda lunga da un lato
-sola da due code lunghe simmetriche. A separarle è lo sviluppo di Edgeworth, il
-cui primo termine correttivo è proporzionale all’**asimmetria** e si annulla
-quando la distribuzione di partenza è simmetrica: è lei, a parità di tutto il
-resto, a governare il termine dominante. Misurato con la statistica di
-Kolmogorov–Smirnov sulla somma standardizzata: partendo da un dado uniforme
-(asimmetria nulla) la distanza dalla normale è già $0{,}069$ con $n=3$;
-partendo da una lognormale$(0;\,2)$, asimmetrica e continua, resta $0{,}27$ a
-$n=30$. Il confronto con una Bernoulli$(0{,}01)$, che a $n=30$ dà $0{,}45$, non
-è dello stesso tipo: lì il numero non misura l'asimmetria ma la
-**discretezza**, perché la somma mette il $74\%$ della massa su un valore solo
-e quel salto, da solo, vale $0{,}449$. Il caso «piatto» resta il più gentile di
-tutti, non il più ostile.
+dalla distribuzione di partenza, e $\rho_3 = \mathbb{E}|X-\mu|^3$. La distanza
+cala dunque come $1/\sqrt{n}$. Davanti, però, c'è un momento terzo
+**assoluto**, che non sa distinguere una coda lunga da un lato sola da due code
+lunghe simmetriche. A separarle è lo sviluppo di Edgeworth, il cui primo
+termine correttivo è proporzionale all’**asimmetria** e si annulla quando la
+distribuzione di partenza è simmetrica: è lei, a parità di tutto il resto, a
+governare il termine dominante.
+
+La distanza fra due distribuzioni si misura con la statistica di
+Kolmogorov–Smirnov, applicata qui alla somma standardizzata contro la
+normale. Partendo da un dado uniforme (asimmetria nulla) la distanza è già
+$0{,}069$ con $n=3$, e il conto è esatto perché i $216$ esiti si enumerano
+tutti; partendo da una lognormale$(0;\,2)$, asimmetrica e continua,
+resta $0{,}27$ a $n=30$, su quattrocentomila somme simulate. Il confronto con
+una Bernoulli$(0{,}01)$, che a $n=30$ dà $0{,}45$, non è dello stesso tipo: lì
+il numero non misura l'asimmetria ma la **discretezza**, perché la somma mette
+il $74\%$ della massa su un valore solo e quel salto, da solo, vale $0{,}449$.
+Il caso «piatto» resta il più gentile di tutti, non il più ostile.
 
 `````
 
@@ -340,7 +346,7 @@ sulla somma media dei tre e larga di conseguenza, e i dadi le danno ragione.
 ```
 
 Due cose valgono più della formula, nella {numref}`fig-limite-centrale`. La
-prima è che la distribuzione di partenza non ha **niente** della campana:
+prima è che la distribuzione di partenza non ha niente della campana:
 nessuna faccia è privilegiata, il disegno di un dado singolo sarebbe una
 fila di barre tutte uguali, e la campana arriva lo stesso. È questo il senso
 di «qualunque sia la forma dei singoli contributi».
@@ -355,7 +361,8 @@ tanto è enorme) la campana non si vede nemmeno dopo trenta addendi. Il teorema
 promette l'arrivo, non il tempo di percorrenza.
 
 Lo stesso fenomeno si vede con le monete, ed è il caso che ricorre più spesso
-nel libro: contare i successi in una serie di prove «sì/no» indipendenti.
+nel machine learning: contare i successi in una serie di prove «sì/no»
+indipendenti.
 
 ```{figure} ../figures/gaussiana-ovunque-distribuzioni-ai.svg
 :name: fig-conteggio-successi
@@ -374,7 +381,7 @@ set**), e si conta la percentuale di risposte esatte: quella percentuale si
 chiama **accuratezza**. Ma un conteggio di risposte esatte su prove
 indipendenti è la stessa cosa del conteggio di teste appena disegnato, quindi
 lo si può trattare come una campana. È l'approssimazione su cui poggiano gli
-intervalli di confidenza che vedremo fra poco.
+intervalli di confidenza.
 
 ## Aggiornare le credenze: il teorema di Bayes
 
@@ -403,7 +410,7 @@ $$
 P(A\mid B)=\frac{P(B\mid A)\,P(A)}{P(B)} .
 $$
 
-Con $A=\text{"malato"}$ e $B=\text{"positivo"}$, prevalenza $P(A)=0{,}01$,
+Con $A$ = «malato» e $B$ = «positivo», prevalenza $P(A)=0{,}01$,
 sensibilità $P(B\mid A)=0{,}99$ e tasso di falsi positivi $P(B\mid A^c)=0{,}05$,
 il denominatore è $P(B)=0{,}99\cdot 0{,}01+0{,}05\cdot 0{,}99=0{,}0594$, da cui
 
@@ -464,8 +471,8 @@ numero di prove, ma alla sua **radice quadrata**. Il conto è quello: con cento
 prove l'incertezza vale un certo tanto, e per dimezzarla non basta arrivare a
 duecento, bisogna arrivare a quattrocento, perché quello che deve raddoppiare è
 la radice, e la radice di quattrocento è il doppio della radice di cento
-($20$ contro $10$). Quattro volte i dati per metà dell'errore: è una tassa che
-si paga in tutto il libro.
+($20$ contro $10$). Quattro volte i dati per metà dell'errore, e la tassa si
+paga ogni volta che si misura qualcosa su un campione.
 
 `````{tab} Elementare
 
@@ -480,7 +487,7 @@ Dopo dieci teste di fila la moneta non "deve" croce, il lancio successivo resta
 50 e 50. Quello che succede è che le dieci teste iniziali pesano sempre meno
 man mano che i lanci si accumulano, finché diventano irrilevanti nella media.
 
-Due condizioni non sono pignoleria, e conviene tenerle distinte perché si
+Due condizioni reggono la garanzia, e conviene tenerle distinte perché si
 rompono in modi diversi. La prima è che le osservazioni siano
 **indipendenti**, cioè che nessuna influenzi le altre: se le prime recensioni
 di un ristorante sono entusiaste, chi scrive dopo le ha lette e si adegua, e
@@ -528,7 +535,7 @@ esempi, quattro decimi di punto sono **due risposte esatte in più**. Due.
 
 ```{figure} ../figures/intervalli-di-confidenza.svg
 :name: fig-intervalli-confidenza
-:alt: "Tre modelli su un asse dell'accuratezza da 80 a 92 per cento, ciascuno con la sua stima puntuale e una barra d'errore. Il modello A sta all'87,2% e il modello B all'86,8%: le loro barre si sovrappongono quasi per intero, e una nota dice che con intervalli sovrapposti non c'è un vincitore. Il modello C sta all'81,0%, con la barra molto più in basso, che con le altre due non si sovrappone."
+:alt: "Tre modelli su un asse dell'accuratezza da 72 a 92 per cento, ciascuno con la sua stima puntuale e una barra d'errore. Il modello A sta all'87,2% e il modello B all'86,8%: le loro barre si sovrappongono quasi per intero, e una nota dice che con intervalli sovrapposti non c'è un vincitore. Il modello C sta al 78,0%, con la barra molto più in basso, che con le altre due non si sovrappone."
 :width: 90%
 
 Le stesse tre misure, con l'incertezza disegnata. A e B non sono
@@ -641,7 +648,7 @@ curve c'è una terza cosa, il caldo.
 :width: 82%
 
 Il **confondente**, disegnato (nel disegno è etichettato «confonditore Z»: i
-due nomi indicano la stessa cosa, e nel libro si usa il primo). Fra gelati e
+due nomi indicano la stessa cosa, e qui si usa il primo). Fra gelati e
 annegamenti non passa nessuna freccia: il legame che si misura nei dati è
 tutto riflesso di quello che ciascuno dei due ha con il caldo.
 ```
@@ -803,8 +810,10 @@ scelti a caso e si confrontano i risultati) e l'apprendimento per rinforzo,
 dove un programma i dati non li riceve, se li produce agendo. Sul terzo stanno
 le domande su ciò che non è successo, tipo «a questo cliente il prestito è
 stato negato; glielo avrebbero dato con mille euro di reddito in più?»: si
-chiamano **spiegazioni controfattuali**. Ognuno dei tre ha il suo capitolo più
-avanti, e non serve andarlo a cercare adesso.
+chiamano **spiegazioni controfattuali**. Il secondo gradino ha il suo capitolo
+nel {doc}`reinforcement learning </ReinforcementLearning/overview>`; le
+spiegazioni controfattuali stanno nel capitolo
+sull'{doc}`interpretabilità </Interpretabilita/overview>`.
 
 ## Dalla probabilità all'apprendimento
 
@@ -818,7 +827,9 @@ MLE).
 :width: 90%
 
 Stessa proporzione, due quantità di prove. Il punto più alto non si sposta; a
-cambiare è quanto la curva sia stretta, cioè quanto ci si può contare.
+cambiare è quanto la curva sia stretta, cioè quanto ci si può contare. Il
+cappello su $\hat p$, nel disegno, vuol dire «ricavato dai dati», e serve a
+tenerlo distinto dal valore vero, che nessuno conosce.
 ```
 
 Le due curve di {numref}`fig-verosimiglianza` dicono ciò che la sola stima non
@@ -876,8 +887,8 @@ massimo, e i due problemi hanno lo stesso $\arg\max$. Che poi sommare sia
 anche numericamente più stabile che moltiplicare mille numeri piccoli è un
 secondo vantaggio, non la giustificazione.
 
-(Scriviamo $L$ e non $\mathcal{L}$: la $\mathcal{L}$ calligrafica in questo
-libro è la loss, che si minimizza; la verosimiglianza si massimizza, e le due
+(Scriviamo $L$ e non $\mathcal{L}$: la $\mathcal{L}$ calligrafica indica la
+loss, che si minimizza; la verosimiglianza si massimizza, e le due
 si incontrano nella log-verosimiglianza negativa,
 $\mathcal{L}(\theta)=-\log L(\theta)$ a meno di costanti.) Il punto cruciale:
 per un modello di regressione che descrive $y$ dato $x$ come una gaussiana
@@ -886,8 +897,7 @@ $y \mid x \sim \mathcal{N}(\hat{y},\sigma^2)$
 con varianza fissa, massimizzare la log-verosimiglianza equivale a
 **minimizzare l'errore quadratico medio**; sotto ipotesi di
 Bernoulli/categoriche equivale a minimizzare la **cross-entropy**. Le loss
-$\mathcal{L}$ che incontreremo più avanti non sono scelte arbitrarie:
-sono verosimiglianze travestite.
+$\mathcal{L}$ non sono scelte arbitrarie: sono verosimiglianze travestite.
 
 `````
 
@@ -904,7 +914,7 @@ valori = np.arange(1, 7)
 p = np.full(6, 1/6)
 mu  = (valori * p).sum()                # 3.5
 var = ((valori - mu)**2 * p).sum()      # ~2.9167
-print(mu, var, np.sqrt(var))            # 3.5  2.9167  1.7078
+print(mu, var, np.sqrt(var))            # 3.5  ~2.9167  ~1.7078
 
 # Teorema di Bayes: test per una malattia rara
 prevalenza  = 0.01     # P(malato)
@@ -913,7 +923,7 @@ falsi_pos   = 0.05     # P(positivo | sano)
 
 p_pos     = sensibilita * prevalenza + falsi_pos * (1 - prevalenza)
 posterior = sensibilita * prevalenza / p_pos
-print(posterior)       # ~0.167: solo il 17% dei positivi e' davvero malato
+print(posterior)       # ~0.167: solo il 17% dei positivi è davvero malato
 ```
 
 `````{tab} Elementare

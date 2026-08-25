@@ -17,8 +17,8 @@ Dei quattro nomi di cui si lamenta, uno serve subito e va tolto di mezzo: un
 parola ma un frammento (una parola corta per intero, la radice di una lunga, un
 segno di punteggiatura), e una frase, per il modello, è la fila dei suoi token.
 Gli altri tre (*query*, *chiave*, *testa*) sono etichette appiccicate a tre
-oggetti che qui nasceranno con un nome italiano; il nome inglese arriverà dopo,
-in una tabella, quando ci sarà qualcosa da tradurre.
+oggetti che qui nasceranno con un nome italiano, e il nome inglese si
+affiancherà a quello quando ci sarà qualcosa da tradurre.
 
 Qui il percorso è lo stesso, ed è il punto in cui la cassetta degli
 attrezzi si richiude. L'architettura Transformer resta fuori, perché il
@@ -283,8 +283,7 @@ il punteggio si divide per un numero legato alla lunghezza del biglietto, così
 biglietti corti e lunghi tornano confrontabili. Restano numeri qualsiasi, anche
 negativi, e a farne porzioni di minuto c'è la softmax della sezione di analisi
 numerica, che li rende positivi e a somma uno, calcolata sottraendo prima il
-punteggio più alto (il trucco che là si chiamava *log-sum-exp*). Sono i pesi
-$\alpha_{ij}$.
+punteggio più alto, cioè con il *log-sum-exp*. Sono i pesi $\alpha_{ij}$.
 
 Senza quella divisione i punteggi diventano enormi, il primo classificato si
 prende tutto il minuto e «salta» ascolta una voce sola. Ritoccare un po’ i
@@ -389,12 +388,10 @@ più corta) nella letteratura portano i nomi di *query*, *key* e *value*, presi
 in prestito dalle basi di dati: si interroga una base con una chiave per
 ottenere un valore. La
 metafora è imperfetta, perché non c'è nessuna base di dati e nessuna
-interrogazione: c'è un vettore confrontato con altri vettori. Il libro
-continua a usare i nomi standard, perché sono quelli dei paper e del codice,
-ma tenere accanto la traduzione aiuta.
-
-Segue un dizionario, da consultare il giorno in cui uno di quei nomi salta
-fuori in un articolo o in un pezzo di codice.
+interrogazione: c'è un vettore confrontato con altri vettori. I nomi standard
+restano quelli dei paper e del codice, e conviene tenerci accanto la
+traduzione, per il giorno in cui uno di quei nomi salta fuori in un articolo o
+in un pezzo di codice.
 
 | il nome che si incontra | qui | che cosa fa davvero |
 |---|---|---|
@@ -432,7 +429,8 @@ Il quadrato pieno e la sua versione fattorizzata. Imparare il quadrato per
 intero significherebbe un numero da regolare per ogni coppia di coordinate;
 ricavandolo dal prodotto di due tabelle sottili se ne regolano quarantotto
 volte meno, e in cambio si rinuncia a tutti i quadrati che quel prodotto non
-sa produrre.
+sa produrre. Nel disegno $d$ è la lunghezza della lista di numeri di una
+parola e $k$ l'altezza delle due tabelle sottili.
 ```
 
 `````{tab} Elementare
@@ -494,12 +492,12 @@ $d^2 = 150\,994\,944$ parametri, la coppia di fattori ne ha $2kd =
 regolarizzatore, nello stesso senso in cui lo fa in una fattorizzazione di
 matrice per i sistemi di raccomandazione.
 
-La lettura in termini di $\mathbf{M}$ non è solo cosmesi: è il punto di
+La lettura in termini di $\mathbf{M}$ è il punto di
 partenza dell'analisi meccanicistica dei circuiti nei Transformer
 {cite}`elhage2021mathematical`, dove il prodotto $(\mathbf{W}^A)^\top
 \mathbf{W}^B$ (la matrice *QK*) e l'analogo prodotto sul lato del contenuto
 (la matrice *OV*) sono gli oggetti da studiare, mentre le singole proiezioni
-non lo sono. Il perché è subito sotto.
+non lo sono. Il perché sta nella non identificabilità delle singole matrici.
 
 `````
 
@@ -628,14 +626,12 @@ non c'è una copia incaricata dei pronomi e una della concordanza. Le $H$
 copie sono identiche nella struttura, partono da numeri casuali e vengono
 addestrate tutte con lo stesso identico obiettivo, indovinare la parola dopo.
 
-Si specializzano lo stesso, e la ragione è economica: se due copie
-imparassero la stessa cosa, una delle due sarebbe sprecata, e sprecarla
-costa in accuratezza. C'è quindi una pressione implicita a differenziarsi,
-perché ogni copia contribuisce di più quando cattura qualcosa che le altre si
-perdono. Succede lo stesso in una vecchia tecnica della statistica, l'analisi
-fattoriale, dove si prova a spiegare tanti dati con poche cause nascoste:
-nessuno decide quali siano, e vengono fuori diverse fra loro, perché spiegare
-due volte la stessa cosa non spiega niente di nuovo.
+Qualcuna si specializza lo stesso, e la spiegazione che si dà di solito è
+economica: una copia contribuisce di più quando cattura qualcosa che le altre
+si perdono, quindi conviene differenziarsi. La pressione però è debole, e si
+misura da quanto poco costa togliere delle copie: potandone via una quota
+grossa da un modello già addestrato l'accuratezza quasi non si muove, segno
+che molte stavano facendo un lavoro che qualcun'altra faceva già.
 
 Andando a guardare dentro modelli addestrati si trovano davvero copie che
 seguono i legami sintattici, altre le catene di riferimento, altre la
@@ -666,8 +662,12 @@ dimensione piena. Nei modelli attuali $H$ va tipicamente da 12 a 96.
 Conviene tenere separato ciò che è progettato da ciò che è scoperto. La
 scelta di avere $H$ copie è architetturale e crea *capacità* di
 specializzazione; quali relazioni emergano è deciso dall'ottimizzazione, che
-è identica per tutte le copie. La differenziazione è un effetto della
-ridondanza penalizzata implicitamente dalla loss, non di un vincolo esplicito.
+è identica per tutte le copie. Che la ridondanza sia penalizzata
+implicitamente dalla loss è un'ipotesi ragionevole, non un risultato, e la
+prova sperimentale la ridimensiona: una quota grande delle copie si pota da un
+modello addestrato senza costo misurabile {cite}`michel2019sixteen`, e in un
+modello di traduzione il lavoro pesante risulta concentrato in poche copie
+identificabili, mentre le altre si eliminano {cite}`voita2019analyzing`.
 L'analisi post-hoc dei modelli addestrati conferma un allineamento parziale
 con le categorie linguistiche {cite}`clark2019what`: alcune copie tracciano
 dipendenze sintattiche, altre la coreferenza, altre l'adiacenza, molte niente
@@ -751,7 +751,7 @@ gradiente accanto a quella che passa per $f$.
 
 Quanto quella via resti davvero libera dipende però da dove si mette la
 normalizzazione, e qui il testo non può promettere più di quanto la formula
-mantenga. Nella forma del 2017 (*post-LN*, quella scritta qui sotto) la
+mantenga. Nella forma del 2017 (*post-LN*) la
 normalizzazione sta **sopra** la somma, quindi il gradiente la attraversa a
 ogni strato e viene moltiplicato per la sua Jacobiana, che identità non è: il
 termine si attenua, tanto più quanto più il residuo cresce in norma, ed è il
@@ -769,7 +769,8 @@ I parametri non sono condivisi fra strati, e questo spiega gli ordini di
 grandezza. Contiamoli per GPT-3 {cite}`brown2020language`, con $d = 12\,288$,
 $L = 96$, $H = 96$. Per strato: quattro matrici $d \times d$ per la parte
 contestuale (le tre proiezioni, che sommate su tutte le relazioni valgono
-$Hkd = d^2$ ciascuna, più la riproiezione $\mathbf{W}^O$) e due matrici per
+$Hkd = d^2$ ciascuna, perché $k = d/H$ e quindi $Hk = d$; più la riproiezione
+$\mathbf{W}^O$) e due matrici per
 la parte non lineare, che internamente si allarga a $4d$, cioè $8d^2$. In
 totale $12d^2 = 1{,}81 \cdot 10^9$ parametri per strato, che per $96$ strati
 fanno $1{,}74 \cdot 10^{11}$; gli embedding di un vocabolario da $50\,257$
@@ -1011,7 +1012,7 @@ $$
 $$
 
 Ricomposizione delle $H$ relazioni, aggiornamento additivo e non linearità
-(con $\mathbf{z}_i$ il vettore intermedio fra i due sotto-strati; la
+(con $\mathbf{g}_i$ il vettore intermedio fra i due sotto-strati; la
 normalizzazione è scritta in coda a ciascuno dei due, come nell'articolo del
 2017, mentre i modelli recenti la spostano a monte):
 
@@ -1019,13 +1020,13 @@ $$
 \tilde{\mathbf{h}}_i = \mathbf{W}^O_\ell
 \big[\mathbf{o}^{(1)}_i; \dots; \mathbf{o}^{(H)}_i\big],
 \qquad
-\mathbf{z}_i = \operatorname{Norm}\!\big(
+\mathbf{g}_i = \operatorname{Norm}\!\big(
 \mathbf{h}^{(\ell-1)}_i + \tilde{\mathbf{h}}_i\big) ,
 $$
 
 $$
 \mathbf{h}^{(\ell)}_i = \operatorname{Norm}\!\big(
-\mathbf{z}_i + \mathbf{W}_2 \max(0, \mathbf{W}_1 \mathbf{z}_i)\big) .
+\mathbf{g}_i + \mathbf{W}_2 \max(0, \mathbf{W}_1 \mathbf{g}_i)\big) .
 $$
 
 Uscita, con $\mathbf{u}_v \in \mathbb{R}^d$ il vettore appreso del token $v$:
@@ -1060,9 +1061,8 @@ come si vede cambiando i nomi delle variabili in un problema di logica o
 immergendolo in una storia insolita. E vede solo dentro una finestra di
 contesto fissata a progetto: quello che sta prima, semplicemente, non c'è.
 
-Resta la domanda aperta, che è anche la più interessante. Nessuna delle
-formule qui sopra menziona la sintassi, i concetti o le relazioni fra
-concetti, eppure al crescere di dati e parametri la qualità delle previsioni
+Resta la domanda aperta, che è anche la più interessante. Nessuna di quelle
+formule menziona la sintassi, i concetti o le relazioni fra concetti, eppure al crescere di dati e parametri la qualità delle previsioni
 migliora in modo regolare {cite}`kaplan2020scaling` e compaiono comportamenti
 che è naturale descrivere proprio in quei termini {cite}`brown2020language`.
 
@@ -1095,7 +1095,7 @@ parole = ["il", "gatto", "nero", "salta"]
 d, k = 6, 3                                  # dimensione embedding, dimensione proiezioni
 E = rng.normal(size=(len(parole), d))        # una riga per parola: gli embedding
 
-W_A = rng.normal(size=(k, d)) / np.sqrt(d)   # cosa la posizione i e' disposta a ricevere
+W_A = rng.normal(size=(k, d)) / np.sqrt(d)   # cosa la posizione i è disposta a ricevere
 W_B = rng.normal(size=(k, d)) / np.sqrt(d)   # cosa la posizione j offre
 W_C = rng.normal(size=(k, d)) / np.sqrt(d)   # cosa la posizione j trasmette
 
@@ -1103,7 +1103,7 @@ A, B, C = E @ W_A.T, E @ W_B.T, E @ W_C.T    # tre proiezioni, (n, k) ciascuna
 
 R = A @ B.T / np.sqrt(k)                     # punteggi di influenza r_ij
 
-# asimmetria: l'influenza di "gatto" su "salta" non e' quella di "salta" su "gatto"
+# asimmetria: l'influenza di "gatto" su "salta" non è quella di "salta" su "gatto"
 i, j = parole.index("salta"), parole.index("gatto")
 print(round(R[i, j], 3), round(R[j, i], 3))  # -0.503  -0.272
 
@@ -1122,7 +1122,7 @@ M = W_A.T @ W_B                              # (d, d)
 print(M.shape, np.linalg.matrix_rank(M))     # (6, 6) 3
 print(np.allclose(E @ M @ E.T / np.sqrt(k), R))   # True
 
-# non identificabilita': ruotare insieme W_A e W_B non cambia nulla
+# non identificabilità: ruotare insieme W_A e W_B non cambia nulla
 O, _ = np.linalg.qr(rng.normal(size=(k, k)))
 R_ruotato = (E @ (O @ W_A).T) @ (E @ (O @ W_B).T).T / np.sqrt(k)
 print(np.allclose(R, R_ruotato))             # True
@@ -1156,8 +1156,9 @@ identificabili separatamente.
   mestieri diversi e nascondono più di quanto spieghino: sotto ci sono tre
   tabelle di pesi, un prodotto scalare e una media.
 - Nessuno assegna i ruoli alle copie parallele del meccanismo: partono
-  identiche e casuali, e si specializzano perché due copie che imparano la
-  stessa cosa sprecano capacità.
+  identiche e casuali, e qualcuna si specializza da sé. Molte però finiscono
+  per fare un lavoro che un'altra fa già, tanto che si possono togliere quasi
+  senza perdere accuratezza.
 - Gli strati non collassano l'uno nell'altro solo grazie a una funzione non
   lineare in mezzo, e restano addestrabili perché ognuno somma una correzione
   invece di riscrivere tutto da capo.
@@ -1200,8 +1201,9 @@ identificabili separatamente.
   trasformare **anche** $\mathbf{W}^C$: senza, i punteggi restano ma l'uscita
   cambia.
 - Le $H$ copie parallele (*head*) sono capacità progettata, non ruoli
-  assegnati: si differenziano perché la ridondanza costa accuratezza, e
-  l'allineamento con le categorie linguistiche è parziale.
+  assegnati: l'allineamento con le categorie linguistiche è parziale, e la
+  ridondanza è grande, tanto che gran parte delle copie si pota senza costo
+  misurabile.
 - La profondità richiede una non linearità (altrimenti $L$ mappe lineari
   collassano in una) e un aggiornamento additivo, che mette in ogni derivata un
   termine dell'identità; quanto quel cammino resti libero dipende però da dove
@@ -1221,9 +1223,12 @@ identificabili separatamente.
 ```
 `````
 
-Qui il capitolo si chiude, e conviene guardare che cosa ci portiamo dietro:
-una lista di numeri con cui rappresentare qualunque cosa, un modo per capire
-da che parte conviene migliorare, e un modo per dire quanto siamo sicuri di
-quello che abbiamo trovato. Sono tre attrezzi, e nel {doc}`capitolo sul machine
-learning </MachineLearning/overview>` non si studiano più: si usano, su un problema vero, dal primo esempio
-all'ultimo.
+Restano in mano cinque cose, ed è tutto il bagaglio: una lista di numeri con
+cui rappresentare qualunque dato, un modo per capire da che parte conviene
+migliorare, un modo per dire quanto siamo sicuri di quello che abbiamo
+trovato, un modo per misurare l'errore con un numero solo, e l'avvertenza che
+a fare i conti è una macchina capace di scrivere poche cifre per volta. Le
+prime tre entrano in scena subito: nel {doc}`capitolo sul machine learning
+</MachineLearning/overview>` non si studiano più, si usano, su un problema
+vero, dal primo esempio all'ultimo. Le altre due si fanno vive quando qualcosa
+non torna, ed è lì che si scopre quanto servivano.

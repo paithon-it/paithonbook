@@ -94,9 +94,12 @@ cioè $100$ per $e \approx 2{,}718$. Quel simbolo indica sempre lo stesso numero
 come $\pi$ vale $3{,}14$, e la curva $e^x$ che ne viene fuori in ogni punto
 cresce esattamente quanto vale: con $5$ sul conto gli interessi maturano al
 ritmo di $5$, con $10$ al ritmo doppio. Fuori dal libretto l'esponenziale sta
-dentro la **sigmoide** e la **softmax**, due ricette che rimettono in riga i
-punteggi grezzi sputati da un modello (numeri qualsiasi, anche negativi) come
-probabilità fra zero e uno che sommate fanno uno. Il logaritmo, dal canto suo,
+dentro la **sigmoide** e la **softmax**, due ricette che prendono i punteggi
+grezzi sputati da un modello (numeri qualsiasi, anche negativi) e li
+restituiscono come probabilità fra zero e uno: la sigmoide un punteggio alla
+volta, quando la domanda è sì o no e le due risposte si spartiscono da sé
+l'intero; la softmax tutti insieme, quando le alternative sono più di due e le
+loro probabilità devono sommare a uno. Il logaritmo, dal canto suo,
 compare nella **cross-entropy**, il costo con cui si addestrano i
 classificatori, di cui parla per esteso la sezione sulla teoria
 dell'informazione.
@@ -156,14 +159,14 @@ opposto: il triangolino capovolto $\nabla$ è il simbolo che lo indica, si legge
 trova.
 ```
 
-Quell'angolo retto di {numref}`fig-curve-di-livello` non è un vezzo del
-disegnatore, ed è utile capire da dove viene. Camminare lungo un anello vuol
-dire, per definizione dell'anello, restare alla stessa quota: in quella
-direzione il costo non cambia di niente. La direzione in cui il costo cambia
-*di più* è dunque la più lontana possibile da quella, e sul piano la più
-lontana possibile da una direzione è quella a novanta gradi. Ecco perché la
-freccia esce sempre perpendicolare all'anello (chi preferisce la parola tecnica
-la trova come «ortogonale»: vuol dire la stessa cosa).
+Quell'angolo retto di {numref}`fig-curve-di-livello` viene da una ragione
+precisa. Camminare lungo un anello vuol dire, per definizione dell'anello,
+restare alla stessa quota: in quella direzione il costo non cambia di niente.
+Per cambiare quota bisogna attraversare gli anelli, e a parità di passi la si
+cambia di più là dove l'anello successivo è più vicino; la strada più corta da
+un anello a quello accanto è quella che lo taglia ad angolo retto. Ecco perché
+la freccia esce sempre perpendicolare all'anello (chi preferisce la parola
+tecnica la trova come «ortogonale»: vuol dire la stessa cosa).
 
 È lo stesso angolo retto a spiegare un fastidio che si incontra sempre. Se la
 conca invece di essere tonda si allunga in una valle stretta, gli anelli
@@ -178,7 +181,9 @@ e misura la pendenza rispetto a quello, come chiudere gli occhi su tutte le
 manopole di un mixer tranne una e ascoltare l'effetto di quella sola. Metti in
 fila tutte queste pendenze e ottieni il **gradiente**: un vettore che punta
 nella direzione in cui il costo cresce più in fretta (la salita più ripida).
-Per *scendere*, ci basta andare nel verso opposto.
+Per *scendere*, ci basta andare nel verso opposto. È lo stesso oggetto che
+nella sezione di algebra lineare risaliva la pila di tavole come messaggio di
+ritorno: dice, manopola per manopola, di quanto conviene girarla.
 
 «Più ripida» rispetto a che cosa? Confrontare le direzioni presuppone passi
 della stessa lunghezza, misurati alla maniera ovvia: un metro è un metro, in
@@ -229,7 +234,8 @@ disuguaglianza di Cauchy–Schwarz vale
 $|\nabla\mathcal{L}^\top\mathbf{u}| \le \lVert\nabla\mathcal{L}\rVert$, con
 uguaglianza se e solo se $\mathbf{u}$ è parallelo a $\nabla\mathcal{L}$. La
 perpendicolarità alle curve di livello si ottiene invece con la regola
-della catena. Se $\gamma(t)$ è una curva che resta su una curva di livello,
+della catena in più variabili. Se $\gamma(t)$ è una curva che resta su una
+curva di livello,
 allora $\mathcal{L}(\gamma(t))$ è costante, quindi
 $\frac{d}{dt}\mathcal{L}(\gamma(t)) = \nabla\mathcal{L}^\top \gamma'(t) = 0$:
 il gradiente è ortogonale a ogni direzione tangente all'insieme di livello.
@@ -269,8 +275,8 @@ L'ultima riga di {numref}`fig-regola-catena` riassume tutto in una frase.
 Il calcolo si può fare localmente, anello per anello, senza che nessuno abbia
 in testa la funzione intera, ed è questo che rende derivabile una rete da
 milioni di parametri con lo stesso sforzo per ogni peso. La procedura che lo fa
-ha un nome che si incontra ovunque, ed è quello che compare fra due righe: si
-chiama *backpropagation*, cioè «propagazione all'indietro».
+ha un nome che si incontra ovunque: si chiama *backpropagation*, cioè
+«propagazione all'indietro».
 
 `````{tab} Elementare
 
@@ -323,10 +329,14 @@ nella nebbia: un passo in discesa, ricalcola, ripeti
 :width: 85%
 
 La funzione di costo $\mathcal{L}(\theta)$ come una scodella. Sull'asse
-orizzontale c'è il parametro da regolare, che si scrive con la lettera greca
-$\theta$ (si legge «theta»); il numerino in basso conta i passi, quindi
+orizzontale c'è il parametro da regolare, che per tradizione si scrive con la
+lettera greca $\theta$ (si legge «theta»: è la stessa lettera che nel prodotto
+scalare indicava un angolo, e qui indica tutt'altro, cioè una manopola da
+girare); il numerino in basso conta i passi, quindi
 $\theta_0$ è la regolazione di partenza, quella scelta a caso prima che
-l'addestramento cominci. Da lì ogni passo va nel verso opposto al gradiente, e
+l'addestramento cominci, mentre $\theta^*$, con l'asterisco, è quella in fondo
+alla scodella, la migliore che ci sia. Da lì ogni passo va nel verso opposto al
+gradiente, e
 i passi si accorciano avvicinandosi al minimo, dove la pendenza (e quindi il
 passo) tende a zero.
 ```
@@ -402,17 +412,19 @@ La discesa del gradiente scende sempre. Ma "in fondo a cosa", esattamente?
 
 ```{figure} ../figures/minimi-locali-plateau-sella.svg
 :name: fig-paesaggio-loss
-:alt: "Profilo stilizzato di una superficie di loss percorsa da sinistra a destra: un tratto quasi orizzontale segnato come plateau, una conca poco profonda segnata come minimo locale, un tratto in cui la discesa si appiattisce per poi riprendere (in una dimensione l'analogo del punto di sella) e infine la conca più profonda, il minimo globale. Una nota avverte che nei punti piatti, plateau e sella, il segnale di discesa quasi scompare."
+:alt: "Profilo stilizzato di una superficie di loss percorsa da sinistra a destra: un tratto quasi orizzontale segnato come plateau, una conca poco profonda segnata come minimo locale, un tratto in cui la discesa si appiattisce per poi riprendere, segnato come sella vista di taglio, e infine la conca più profonda, il minimo globale. Una nota avverte che nei punti piatti, plateau e sella, il segnale di discesa quasi scompare."
 :width: 92%
 
 I quattro luoghi dove una pallina che segue il gradiente può fermarsi o
 rallentare, con i nomi che si trovano nel disegno. Un **plateau** è un
 altopiano, un tratto in cui il terreno è quasi orizzontale su una distanza
 lunga. Un **minimo locale** è una conca vera, ma non la più profonda del
-paesaggio. Un **punto di sella** è un passo di montagna: sceso da una parte, si
-sale dall'altra, quindi non è né una cima né un fondo (visto su un profilo a
-una dimensione sola, com'è qui, si presenta come un tratto che si appiattisce e
-poi riprende a scendere). L'ultimo è il **minimo globale**, il fondo più basso
+paesaggio. Un **punto di sella** è il valico di un passo di montagna: lungo la
+cresta è il punto più basso, lungo la strada che attraversa il passo è il più
+alto, quindi non è né una cima né un fondo. Servono almeno due direzioni
+perché esista, e su un profilo a una dimensione sola come quello del disegno se
+ne vede solo la metà, il tratto che si appiattisce e poi riprende a scendere.
+L'ultimo è il **minimo globale**, il fondo più basso
 di tutti, ed è l'unico che vorremmo: nulla, nel gradiente, dice alla pallina in
 quale dei quattro si trova.
 ```
@@ -500,13 +512,13 @@ for _ in range(20):
 print(round(theta, 3))              # -> 2.919, ormai vicino al minimo 3
 ```
 
-Cambia `eta` e osserva: con un valore piccolo (`0.01`) l'avvicinamento al
-minimo, che in gergo si chiama **convergenza**, rallenta
-(dopo venti passi $\theta$ è a $-1{,}67$, ancora lontano); con uno troppo
-grande (`1.1`) $\theta$ **diverge** oscillando, cioè scappa via invece di
-avvicinarsi, saltando a ogni passo da una parte all'altra del minimo e sempre
-più lontano (dopo venti passi vale $-265$). È la stessa dinamica, in scala
-minima, che governa l'addestramento di una rete con miliardi di pesi.
+Cambia `eta` e osserva. Con un valore piccolo (`0.01`) l'avvicinamento al
+minimo, che in gergo si chiama **convergenza**, rallenta: dopo venti passi
+$\theta$ è a $-1{,}67$, ancora lontano. Con uno troppo grande (`1.1`) $\theta$
+**diverge**, cioè scappa via invece di avvicinarsi, saltando a ogni passo da
+una parte all'altra del minimo e sempre più lontano; dopo venti passi vale
+$-265$. È la stessa dinamica, in scala minima, che governa l'addestramento di
+una rete con miliardi di pesi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

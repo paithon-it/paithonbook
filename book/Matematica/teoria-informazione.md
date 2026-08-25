@@ -51,9 +51,12 @@ non si influenzano a vicenda.
 
 Un dado onesto ha sei facce, e sei sta in mezzo fra quattro e otto: fra $2$ e
 $3$ bit. Il numero esatto è l'esponente che elevando $2$ dà $6$, cioè circa
-$2{,}585$. In una partita singola nessuno fa due domande e mezzo; su tante
-partite, invece, una strategia ottima ne consuma *in media* poco più di due e
-mezzo, e sono i «2,6 bit» del dado.
+$2{,}585$. Attenzione però a che cosa promette. Le domande si contano intere,
+quindi su un tiro solo la strategia migliore ne consuma in media due e due
+terzi, un po’ più di quel numero; il resto si recupera giocando molti tiri
+insieme e facendo domande che ne riguardano parecchi per volta, e allora la
+media per tiro scende fino a $2{,}585$ e sotto non va. Sono i «2,6 bit» del
+dado: non il costo di una partita, ma il fondo a cui si arriva allungandola.
 
 Con una moneta sbilanciata il conto è lo stesso, con un'avvertenza: al posto
 del numero di alternative si mette uno diviso la probabilità. Una moneta
@@ -80,7 +83,7 @@ $$
 
 dove il segno meno rende la quantità positiva (i logaritmi di numeri fra $0$ e
 $1$ sono negativi) e la base $2$ fissa l'unità di misura in bit. La forma
-logaritmica non è un vezzo: è l'unica forma **continua** (a meno della base)
+logaritmica è obbligata: è l'unica forma **continua** (a meno della base)
 che rende la sorpresa **additiva** per eventi indipendenti; se
 $p(x,y)=p(x)\,p(y)$, allora $I(x,y)=I(x)+I(y)$, perché il logaritmo trasforma i
 prodotti in somme. L'aggettivo serve: l'equazione funzionale $f(pq)=f(p)+f(q)$
@@ -149,8 +152,8 @@ degeneri (un esito certo); e $H(p)\le \log_2 n$, con uguaglianza solo per la
 distribuzione uniforme. L'entropia è quindi una misura di *incertezza*: nulla
 quando l'esito è scritto, massima quando le $n$ alternative sono equiprobabili.
 
-Entrambe valgono nel **discreto**, ed è bene dirlo perché nel continuo la
-prima cade. L'analogo per una densità, l’*entropia differenziale*
+Entrambe valgono nel **discreto**, e nel continuo la prima cade. L'analogo
+per una densità, l’*entropia differenziale*
 $h(f) = -\int f\log_2 f$, può essere negativo appena la densità si concentra:
 $h(\mathcal{N}(0,1)) = +2{,}05$ bit, ma $h(\mathcal{N}(0,\,0{,}1^2)) =
 -1{,}27$. La divergenza KL, invece, resta $\ge 0$ in entrambi i casi, ed è una
@@ -177,7 +180,9 @@ per misurare quanto la seconda sbaglia rispetto alla prima.
 Le due curve e il fatto che non combaciano. La cross-entropia misura il costo
 totale di descrivere $p$ usando $q$; la divergenza KL misura solo il
 sovrapprezzo, cioè quanto si paga in più rispetto a conoscere $p$, ed è la
-sottrazione scritta in fondo al disegno. Due avvertenze sul resto. Lo spazio
+sottrazione scritta in fondo al disegno (dove $H(p,q)$ è la cross-entropia,
+$H(p)$ la sorpresa media della realtà, e la doppia stanghetta si legge
+«rispetto a»). Due avvertenze sul resto. Lo spazio
 bianco fra le due curve è un promemoria visivo e non la misura: le due misure
 vere sono definite fra poche righe. E il punto segnato sulla coda di sinistra è
 il caso che costa di più, quello in cui la realtà ogni tanto produce una parola
@@ -352,7 +357,9 @@ l'entropia nel *numero di alternative ugualmente probabili* che darebbero la
 stessa incertezza. Moneta equa: perplessità 2. Dado onesto: 6. La moneta
 truccata: circa 1,4 (quasi nessun dubbio, poco più di un'alternativa secca).
 Quando leggerai che un modello di linguaggio "ha perplessità 20", ora sai cosa
-significa: a ogni parola è incerto *come se* tirasse un dado a 20 facce.
+significa: a ogni parola è incerto *come se* tirasse un dado a 20 facce. Meno
+facce, modello più sicuro: è un numero da far scendere, e sotto $1$ (nessun
+dubbio) non può andare.
 
 `````
 
@@ -368,7 +375,8 @@ l'esponenziale dell'entropia nella stessa base del logaritmo. Per la
 distribuzione uniforme su $n$ esiti, $\mathrm{PP} = 2^{\log_2 n} = n$: il
 numero di alternative, appunto. Per le nostre sorgenti:
 $2^{1}=2$ (moneta equa), $2^{\log_2 6}=6$ (dado),
-$2^{0{,}469}\approx 1{,}38$ (moneta truccata). Nei modelli di linguaggio si usa
+$2^{0{,}469}\approx 1{,}38$ (moneta truccata). Si minimizza, come l'entropia da
+cui deriva, e il suo pavimento è $1$. Nei modelli di linguaggio si usa
 la perplessità *per parola*, calcolata sulla cross-entropia media del modello
 su un testo di test: la riprenderemo, numeri alla mano, nel capitolo sul
 Natural Language Processing.
@@ -385,23 +393,29 @@ nessun programma, per quanto ingegnoso, può scendere sotto l’**entropia per
 simbolo** del messaggio, cioè sotto la sorpresa media che ogni carattere porta
 con sé. In media, sotto quella soglia non si scende.
 
-L'aggettivo «per simbolo» non è un dettaglio, ed è il punto in cui la frase
-detta male diventa falsa. La sorpresa media $H$ calcolata sulle sole frequenze
-delle lettere descrive una sorgente **senza memoria**, una che estrae ogni
-lettera indipendentemente dalle precedenti. Una lingua non è così: dopo una
-«q» arriva quasi sempre una «u», dopo «il gatto ne» le continuazioni plausibili
-sono poche. Per una sorgente con memoria il limite vero è più basso, ed è la
-sorpresa media di ogni lettera **dato tutto ciò che la precede**.
+L'aggettivo «per simbolo» regge tutta l'affermazione, ed è il punto in cui la
+frase detta male diventa falsa. La sorpresa media $H$ calcolata sulle sole
+frequenze delle lettere descrive una sorgente **senza memoria**, una che
+estrae ogni lettera indipendentemente dalle precedenti. Una lingua non è così:
+dopo una «q» arriva quasi sempre una «u», dopo «il gatto ne» le continuazioni
+plausibili sono poche. Per una sorgente con memoria il limite vero è più
+basso, ed è la sorpresa media di ogni lettera **dato tutto ciò che la
+precede**.
 
-La differenza si tocca con mano, e chiunque può rifare il conto su un testo
-che ha già. Prendendo i file di
-testo con cui questo libro è scritto (sei megabyte abbondanti) e contando
-soltanto quanto è frequente ciascun carattere, la sorpresa media viene circa
-$4{,}7$ bit a carattere. Poi si passa il tutto a `gzip`, che è il compressore
-più ordinario che ci sia, e il file esce a circa $2{,}9$ bit a carattere, cioè
-a poco più del $60\%$ di quel presunto limite invalicabile. Non ha violato
-nessun teorema: sta sfruttando proprio la ridondanza fra un carattere e il
-successivo, che quel conto ignorava.
+La differenza si tocca con mano su una sorgente con memoria costruita apposta,
+dove si sa in partenza dove la memoria sta. Si estraggono a caso ventimila
+parole da un elenco di sei e si mettono una dietro l'altra. La sorgente vera
+produce $\log_2 6 \approx 2{,}6$ bit ogni volta che sceglie una parola, e
+siccome le parole sono lunghe in media poco più di cinque caratteri, ne produce
+meno di mezzo bit per carattere. Contando invece soltanto quanto è frequente
+ciascuna lettera, senza accorgersi che le lettere arrivano in gruppi
+obbligati, la sorpresa media sale a $3{,}36$ bit a carattere. Passato lo stesso
+testo a `gzip`, il compressore più ordinario che ci sia, il file esce a
+$0{,}80$ bit a carattere, cioè a un quarto di quel presunto limite
+invalicabile. Non ha violato nessun teorema, sta sfruttando la ridondanza fra
+un carattere e il successivo che quel conto ignorava; e resta comunque sopra il
+mezzo bit della sorgente vera, perché un compressore generico quella struttura
+la indovina, non la conosce.
 
 È la stessa quantità che Shannon stimò nel 1951 per l'inglese scritto in circa
 **un bit per lettera** {cite}`shannon1951prediction`, e va confrontata con i
@@ -443,13 +457,39 @@ def cross_entropia(p, q):
     m = p > 0
     return -(p[m] * np.log2(q[m])).sum()
 
-# la realta' e' truccata, il modello crede la moneta equa
+# la realtà è truccata, il modello crede la moneta equa
 H_pq = cross_entropia(truccata, equa)   # 1.0
 kl   = H_pq - entropia(truccata)        # ~0.5310: lo "spreco" in bit
 print(H_pq, kl)
 
-# perplessita': 2^H, il numero di alternative equiprobabili
+# perplessità: 2^H, il numero di alternative equiprobabili
 print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
+```
+
+E il conto della compressione, sulla sorgente con memoria: le lettere arrivano
+in gruppi obbligati, e chi conta solo quanto è frequente ciascuna non se ne
+accorge.
+
+```python
+import gzip
+
+rng = np.random.default_rng(0)
+parole = ["gatto ", "cane ", "topo ", "riso ", "muro ", "tetto "]
+testo = "".join(rng.choice(parole) for _ in range(20_000))
+
+# sorpresa media contando SOLO quanto è frequente ciascun carattere
+_, conteggi = np.unique(list(testo), return_counts=True)
+h_zero = entropia(conteggi / conteggi.sum())
+
+# quanto ci mette davvero un compressore ordinario, in bit per carattere
+compresso = gzip.compress(testo.encode(), 9)
+gzip_per_carattere = 8 * len(compresso) / len(testo)
+
+print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
+```
+
+```text
+3.36  0.80
 ```
 
 `````{tab} Elementare
@@ -474,7 +514,8 @@ print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
   operazione.
 - La **perplessità** traduce l'entropia in facce del dado: quante alternative
   ugualmente probabili darebbero la stessa incertezza (2 per la moneta equa, 6
-  per il dado). La ritroveremo nei modelli di linguaggio.
+  per il dado). Meno facce, meno incertezza: è un numero da far scendere, e
+  sotto $1$ non va. La ritroveremo nei modelli di linguaggio.
 - Comprimere senza perdere niente ha un limite, ed è l'entropia **per
   simbolo** della sorgente: quanta sorpresa porta in media ogni pezzo di
   messaggio, tenuto conto di tutto quello che lo precede. È molto meno di
@@ -497,8 +538,9 @@ print(2**entropia(equa), 2**entropia(dado))   # 2.0  6.0
   Asimmetrica: non è una distanza.
 - Minimizzare la cross-entropy come loss = minimizzare la KL fra dati e
   modello = massima verosimiglianza: tre nomi per la stessa operazione.
-- La **perplessità** $2^{H}$ traduce l'entropia in "facce del dado": la
-  ritroveremo nei modelli di linguaggio.
+- La **perplessità** $2^{H}$ traduce l'entropia in "facce del dado": si
+  minimizza come l'entropia, con pavimento $1$, e la ritroveremo nei modelli di
+  linguaggio.
 - Il limite della compressione senza perdite è l’**entropia per simbolo**
   (*entropy rate*) $\lim_n H(X_1,\dots,X_n)/n$, non la $H$ di ordine zero
   calcolata sulle frequenze marginali: per una sorgente con memoria la seconda

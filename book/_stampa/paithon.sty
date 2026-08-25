@@ -101,11 +101,18 @@
     \fancyfoot[RE,LO]{\footnotesize\color{ptTeal}\ptCasa}%
     \renewcommand{\headrulewidth}{0pt}%
   }%
-  %% Sphinx traduce «(continua dalla pagina precedente)» ma non la riga
-  %% gemella, che restava «(continues on next page)»: in un libro italiano
+  %% Sphinx traduce «continua dalla pagina precedente» ma non la riga
+  %% gemella, che restava «continues on next page»: in un libro italiano
   %% si vede, ed e' l'unica stringa inglese rimasta in pagina.
-  \renewcommand{\literalblockcontinuedname}{(continua dalla pagina precedente)}%
-  \renewcommand{\literalblockcontinuesname}{(continua nella pagina seguente)}%
+  %%
+  %% Le parentesi NON si scrivono qui: le mette Sphinx, che compone il nome
+  %% dentro `\sphinxstylecodecontinues{...}`, cioe' `{\footnotesize(#1)}`
+  %% (`sphinxlatexstyletext.sty`). Scrivendole anche qui uscivano doppie,
+  %% `((continua nella pagina seguente))`, e sono rimaste cosi' finche'
+  %% qualcuno non ha aperto il PDF: e' un difetto che nel sorgente non c'e',
+  %% e nasce dall'aver ricopiato la stringa COMPOSTA invece del suo nome.
+  \renewcommand{\literalblockcontinuedname}{continua dalla pagina precedente}%
+  \renewcommand{\literalblockcontinuesname}{continua nella pagina seguente}%
   %% E l'indice si chiama «Indice». `sphinx-jupyterbook-latex` lo battezza col
   %% titolo della PRIMA PARTE del toc: si chiamava «Fondamenta», e cambiando
   %% l'ordine dei capitoli si e' messo a chiamarsi «Prima di cominciare». Non
@@ -292,17 +299,42 @@
 %% `breakable` non e' un vezzo: le coppie di livelli nel libro sono quasi
 %% mille, e un riquadro che non si spezza lascerebbe mezze pagine bianche di
 %% continuo.
-%% `\needspace` prima del riquadro: senza, un livello che comincia a due
-%% righe dalla fine della pagina apre un riquadro vuoto con dentro solo la
-%% sua etichetta, e il contenuto va tutto alla pagina dopo. Su quasi mille
-%% coppie succede di continuo, ed e' il difetto piu' visibile della prima
-%% prova.
+%% `lines before break` e non `\needspace`, ed e' una correzione. Un livello
+%% che comincia in fondo alla pagina apriva un riquadro vuoto con dentro solo
+%% la sua etichetta, e il contenuto se ne andava tutto alla pagina dopo: sul
+%% libro intero succedeva **277 volte**, e una di quelle si e' portata via una
+%% pagina bianca intera.
+%%
+%% `\needspace{4\baselineskip}` c'era gia' e non bastava, perche' misura la
+%% cosa sbagliata: lo spazio LORDO, imbottitura del riquadro compresa. Fra
+%% `before skip`, `top` e l'etichetta se ne vanno circa due righe, quindi
+%% quattro ne lasciavano due di contenuto. `lines before break` di tcolorbox
+%% sottrae da se' l'imbottitura (`\tcb@h@page-\tcb@h@padding-\tcb@h@padtitle`,
+%% in `tcbbreakable.code.tex`) e salta la pagina PRIMA di aprire il riquadro:
+%% stessa intenzione, misurata sulle righe di testo vere. Il valore resta 4
+%% perche' era quello giusto fin dall'inizio, contato bene.
+%%
+%% Alzarlo NON e' la cura, e la misura lo dice. Sul libro intero, senza il
+%% trattamento del «Da ricordare» qui sotto: 4 righe danno 277 vuoti in 2332
+%% pagine, 8 ne danno 234 in 2356, 11 ne danno 189 in 2376, 15 ne danno 151 in
+%% 2406. Poco piu' di mezza pagina per difetto, sempre, senza nessun
+%% ginocchio: spingere la soglia e' comprare, non riparare. Con il trattamento
+%% separato, invece, si scende a **60 vuoti** pagando **8 pagine**, e alzare la
+%% soglia da 4 a 11 costerebbe altre 36 pagine per quattro difetti.
+%%
+%% (Non si tara sul provino di un capitolo: l'impaginazione e' globale, e la
+%% stessa soglia che li' costava una pagina sul libro intero ne costava
+%% settantaquattro. Come si conta sta in `docs/OPERAZIONI.md`.)
+%%
+%% `breakable` resta, e non e' un vezzo: le coppie di livelli sono quasi
+%% mille, e un riquadro che non si spezza lascerebbe mezze pagine bianche di
+%% continuo.
 \newtcolorbox{sphinxclasspt-elementare}{
   breakable, enhanced, sharp corners,
   colback=ptOcra!10, colframe=ptOcra, boxrule=0pt, leftrule=2.5pt,
   left=5mm, right=4mm, top=4mm, bottom=3mm,
   before skip=3mm, after skip=3mm,
-  before={\par\needspace{4\baselineskip}},
+  lines before break=4, before={\par},
   overlay unbroken and first={
     \node[anchor=north east, font=\ptDisplayLeggero\scriptsize,
           text=ptOcra!55!ptNero, inner sep=0pt]
@@ -313,7 +345,40 @@
   colback=white, colframe=ptTeal, boxrule=0pt, leftrule=2.5pt,
   left=5mm, right=4mm, top=4mm, bottom=3mm,
   before skip=3mm, after skip=3mm,
-  before={\par\needspace{4\baselineskip}},
+  lines before break=4, before={\par},
+  overlay unbroken and first={
+    \node[anchor=north east, font=\ptDisplayLeggero\scriptsize,
+          text=ptTeal, inner sep=0pt]
+      at ([shift={(-4mm,-2mm)}]frame.north east) {SUPERIORE};}}
+
+%% ---------------------------------------- i livelli che sono solo un riquadro
+%% Il «Da ricordare» e' un caso a parte, e lo marca `pt_stampa.py`: dentro c'e'
+%% un'admonition sola, cioe' un `framed` che non si spezza. Una soglia normale
+%% non lo puo' aiutare (il contenuto e' alto dieci-quaranta righe, e o ci sta
+%% tutto o non ci sta), quindi qui la soglia e' alta apposta: se non c'e'
+%% spazio, si salta pagina PRIMA di aprire il riquadro invece di lasciarne la
+%% cornice vuota in fondo. **Non costa pagine**, ed e' misurato: da solo porta
+%% i riquadri vuoti da 189 a 56 senza spostare di una il totale delle pagine,
+%% perche' quel contenuto la pagina la saltava comunque e cambia solo che
+%% adesso non ci lascia la cornice. Tutto il resto e' identico ai due riquadri
+%% di sopra.
+\newtcolorbox{sphinxclasspt-elementare-chiuso}{
+  breakable, enhanced, sharp corners,
+  colback=ptOcra!10, colframe=ptOcra, boxrule=0pt, leftrule=2.5pt,
+  left=5mm, right=4mm, top=4mm, bottom=3mm,
+  before skip=3mm, after skip=3mm,
+  lines before break=30, before={\par},
+  overlay unbroken and first={
+    \node[anchor=north east, font=\ptDisplayLeggero\scriptsize,
+          text=ptOcra!55!ptNero, inner sep=0pt]
+      at ([shift={(-4mm,-2mm)}]frame.north east) {ELEMENTARE};}}
+
+\newtcolorbox{sphinxclasspt-superiore-chiuso}{
+  breakable, enhanced, sharp corners,
+  colback=white, colframe=ptTeal, boxrule=0pt, leftrule=2.5pt,
+  left=5mm, right=4mm, top=4mm, bottom=3mm,
+  before skip=3mm, after skip=3mm,
+  lines before break=30, before={\par},
   overlay unbroken and first={
     \node[anchor=north east, font=\ptDisplayLeggero\scriptsize,
           text=ptTeal, inner sep=0pt]

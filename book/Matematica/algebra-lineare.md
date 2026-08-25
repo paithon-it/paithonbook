@@ -65,10 +65,9 @@ Con più di tre numeri la freccia non la disegniamo più, ma i tre gesti restano
 identici, perché sono conti sulle liste e non sul disegno: si sommano
 ottantaquattro numeri con ottantaquattro numeri esattamente come se ne
 sommavano tre con tre. Prendi una fotografia in bianco e nero di ventotto
-puntini per ventotto: ogni puntino, che si chiama **pixel**, per il calcolatore
-è un numero, e dice quanto quel punto è chiaro o scuro. Mettendoli in fila una
-riga dopo l'altra viene una lista di $28 \times 28 = 784$ numeri, ed è un
-esempio che tornerà spesso. Quando si dirà
+puntini per ventotto: ogni pixel, per il calcolatore, è un numero, e dice
+quanto quel punto è chiaro o scuro. Mettendoli in fila una riga dopo l'altra
+viene una lista di $28 \times 28 = 784$ numeri. Quando si dirà
 «direzione» in uno spazio a 784 dimensioni, la cosa da tenere in mente non è
 un'immagine ma questa: le operazioni sono le stesse, e le parole «vicino»,
 «lontano», «dalla stessa parte» continuano a voler dire qualcosa perché si
@@ -104,8 +103,9 @@ di grigi, "srotolata", è un vettore di $\mathbb{R}^{784}$.
 
 ## Il prodotto scalare: quanto due vettori "vanno d'accordo"
 
-È l'operazione più importante di tutto il libro: un **neurone artificiale**,
-in fondo, non fa altro che calcolare un prodotto scalare. Il nome arriva dal
+È l'operazione che ritorna più spesso in tutto il machine learning: un
+**neurone artificiale**, in fondo, non fa altro che calcolare un prodotto
+scalare. Il nome arriva dal
 capitolo sulle reti neurali e qui basta sapere cosa indica: il mattone
 elementare di cui una rete è fatta, un pezzetto di calcolo che riceve una
 lista di numeri, la confronta con una lista di numeri propri e restituisce un
@@ -123,11 +123,11 @@ l'operazione aritmetica più eseguita sul pianeta in questo momento.
 :alt: "Proiezione geometrica: il vettore a proiettato sul vettore b, con l'angolo theta e la perpendicolare tratteggiata; la lunghezza della proiezione evidenziata in terracotta"
 :width: 85%
 
-La proiezione di $\mathbf{a}$ su $\mathbf{b}$ è l’"ombra" che $\mathbf{a}$
+La proiezione di $\mathbf{a}$ su $\mathbf{b}$ è l’«ombra» che $\mathbf{a}$
 getta sulla direzione di $\mathbf{b}$. Il prodotto scalare è la lunghezza di
 quest'ombra moltiplicata per la lunghezza di $\mathbf{b}$, e l'angolo fra le
 due frecce (nel disegno la lettera greca $\theta$, si legge «theta») decide se
-il risultato è grande, nullo o negativo. Nella formula scritta accanto, le
+il risultato è grande, nullo o negativo. Nella formula del disegno, le
 stanghette $\lvert\mathbf{a}\rvert$ vogliono dire «lunghezza di $\mathbf{a}$»
 e $\cos\theta$, il *coseno* dell'angolo, è semplicemente un numero fra $-1$ e
 $1$ che misura l'accordo fra le due direzioni: vale $1$ se puntano dalla
@@ -181,8 +181,8 @@ bastone.
 Per confrontare le sole pendenze si divide il prodotto scalare per le due
 lunghezze, cioè per il massimo che potrebbe raggiungere, quello che si tocca
 col bastone sdraiato esattamente lungo la strada. La lunghezza di una freccia
-la dà il teorema di Pitagora, si chiama **norma** e avrà più avanti una sezione
-tutta sua. Le nostre due frecce misurano
+la dà il teorema di Pitagora e si chiama **norma**. Le nostre due frecce
+misurano
 $\sqrt{4^2+2^2}=\sqrt{20}\approx 4{,}47$ e
 $\sqrt{1^2+3^2}=\sqrt{10}\approx 3{,}16$; il prodotto scalare faceva $10$, e
 $10 / (4{,}47 \cdot 3{,}16) \approx 0{,}71$. Quel numero sta fra $-1$ e $1$,
@@ -301,8 +301,8 @@ una rete non è altro che
 $\mathbf{h} = \sigma(\mathbf{W}\mathbf{x}+\mathbf{b})$: una moltiplicazione
 per la matrice dei pesi $\mathbf{W}$, seguita da una non linearità $\sigma$.
 Il fatto che tante operazioni si riducano a prodotti tra matrici è ciò che
-rende le GPU (nate per moltiplicare matrici in grafica) così efficaci nel
-deep learning.
+rende le GPU (nate per fare in parallelo lo stesso conto su milioni di pixel)
+così efficaci nel deep learning.
 
 `````
 
@@ -388,23 +388,25 @@ cento volte per lo stesso strato. Gli allungamenti si moltiplicano fra loro. Un
 $1{,}1$ ripetuto cento volte fa $13\,781$, un $0{,}9$ fa $0{,}000027$, numeri
 enormi da un capo e indistinguibili da zero dall'altro.
 
-Una rete profonda è una pila di cento tavole incollate una sull'altra, che è
-poi il modo in cui si fa il compensato. All'andata il colpo entra dalla prima e
-attraversa tutta la pila, in fondo si guarda quanto il pezzo è venuto storto, e
-la correzione risale tavola per tavola dicendo a ognuna come dovrà essere
-venata la prossima volta. Quel messaggio di ritorno si chiama *gradiente*, ed è
-l'argomento della prossima sezione. Moltiplicato a ogni tavola per poco più di
-uno, alla prima arriva gonfiato a dismisura; per poco meno di uno non ci arriva
-affatto. In gergo i gradienti esplodono o svaniscono, ed è fra le prime cose
-che si guardano quando un addestramento smette di migliorare.
+Una rete profonda è una pila di cento tavole incollate una sull'altra.
+All'andata il colpo entra dalla prima e attraversa tutta la pila, in fondo si
+guarda quanto il pezzo è venuto storto, e la correzione risale tavola per
+tavola dicendo a ognuna come dovrà essere venata la prossima volta. Quel
+messaggio di ritorno si chiama *gradiente*, ed è l'argomento della sezione
+sull'analisi. Moltiplicato a ogni tavola per poco più di uno, alla prima arriva
+gonfiato a dismisura; per poco meno di uno non ci arriva affatto. In gergo i
+gradienti esplodono o svaniscono, ed è fra le prime cose che si guardano
+quando un addestramento smette di migliorare.
 
 Le cento tavole, però, non hanno la stessa venatura, ed è qui che l'immagine
-viene usata a sproposito più spesso. Ogni strato ha la sua matrice, e quello
-che si accumula non è un solo $\lambda$ elevato a cento ma il prodotto di cento
-allungamenti diversi. Resta vera l'idea generale, che in una catena lunga basta
-poco perché cento moltiplicazioni portino lontanissimo; il numero da guardare
-non è l'autovalore di una singola matrice, ed è un conto che il capitolo sulle
-reti neurali rifà per esteso.
+viene usata a sproposito più spesso. È anche il modo in cui si fa il compensato
+vero, girando la venatura di uno strato rispetto al successivo, e in una rete
+succede lo stesso: ogni strato ha la sua matrice, e quello che si accumula non
+è un solo $\lambda$ elevato a cento ma il prodotto di cento allungamenti
+diversi. Resta vera l'idea generale, che in una catena lunga basta poco perché
+cento moltiplicazioni portino lontanissimo; il numero da guardare non è
+l'autovalore di una singola matrice, ed è un conto che il capitolo sulle reti
+neurali rifà per esteso.
 
 `````
 
@@ -485,13 +487,13 @@ coincidono, ma non sono nemmeno estranee: il prodotto dei moduli è lo stesso
 $\sigma_{\max}\ge|\lambda|_{\max}$, cioè l'allungamento massimo non è mai
 inferiore al **modulo** dell'autovalore più grande. È una
 disuguaglianza che può essere larghissima, e proprio in quella distanza sta
-il fenomeno più interessante. Tornerà nella sezione
-di analisi numerica (dove il numero di condizionamento è il rapporto
-$\sigma_{\max}/\sigma_{\min}$), nel capitolo sulle reti neurali (la
-"grandezza" di una Jacobiana) e in quello sui sistemi di raccomandazione
-(l'approssimazione di rango basso di una matrice di valutazioni).
+il fenomeno più interessante. Il rapporto $\sigma_{\max}/\sigma_{\min}$ è il
+numero di condizionamento della sezione di analisi numerica; la stessa
+disuguaglianza torna nel capitolo sulle reti neurali, dove misura la
+"grandezza" di una Jacobiana, e in quello sui sistemi di raccomandazione, dove
+regge l'approssimazione di rango basso di una matrice di valutazioni.
 
-L'iterazione chiarisce il resto: $\mathbf{A}^k\mathbf{v} =
+L'iterazione chiarisce il resto: su un autovettore $\mathbf{A}^k\mathbf{v} =
 \lambda^k\mathbf{v}$, quindi il comportamento asintotico di un sistema che
 applica *sempre la stessa* matrice è governato dall'autovalore di modulo
 massimo (il *raggio spettrale* $\rho(\mathbf{A})$). Se $\rho(\mathbf{A})<1$
@@ -524,9 +526,11 @@ singolari, ed è il conto che rifà il capitolo sulle reti neurali.
 ## Norme: misurare lunghezze ed errori
 
 È la promessa lasciata in sospeso parlando del prodotto scalare: quanto è
-lunga una freccia. La risposta è più utile di quanto sembri, perché la stessa
-domanda, fatta alla freccia che va dalla risposta giusta alla risposta del
-modello, misura di quanto il modello ha sbagliato.
+lunga una freccia. La risposta è più utile di quanto sembri. Un modello che
+deve indovinare un prezzo, o tre prezzi insieme, non risponde con un'etichetta
+ma con dei numeri: la sua risposta è una lista, e lo è anche quella giusta. La
+stessa domanda, fatta alla freccia che va dall'una all'altra, misura di quanto
+il modello ha sbagliato.
 
 `````{tab} Elementare
 
@@ -587,16 +591,16 @@ $$
 \lVert \hat{\mathbf{y}}^{(i)} - \mathbf{y}^{(i)} \rVert_2^2 .
 $$
 
-Qui $m$ è il numero di esempi (poco sopra la stessa lettera contava le righe
-di una matrice), $\mathbf{y}^{(i)}$ è l'uscita vera dell'esempio $i$-esimo e
-$\hat{\mathbf{y}}^{(i)}$ quella predetta dal modello.
+Qui $m$ è il numero di esempi (la stessa lettera che nel prodotto
+matrice-vettore contava le righe di $\mathbf{A}$), $\mathbf{y}^{(i)}$ è
+l'uscita vera dell'esempio $i$-esimo e $\hat{\mathbf{y}}^{(i)}$ quella predetta
+dal modello.
 
 (Scritta così la media è sui soli $m$ esempi. Con uscite vettoriali le
 librerie mediano anche sulle componenti: `mean_squared_error` di scikit-learn
-e `nn.MSELoss` con `reduction='mean'` dividono per $m\cdot d$, dove $d$ è
-quante componenti ha ciascuna uscita, quindi il loro numero differisce da
-questo per un fattore $d$. Il minimo è lo stesso, il
-valore stampato no.)
+e `nn.MSELoss` con `reduction='mean'` dividono per $m$ moltiplicato per il
+numero di componenti di ciascuna uscita, quindi il loro numero differisce da
+questo per quel fattore. Il minimo è lo stesso, il valore stampato no.)
 
 Norme e prodotti scalari sono legati da $\lVert\mathbf{x}\rVert_2^2 =
 \mathbf{x}^\top\mathbf{x}$: misurare una lunghezza è fare il prodotto scalare
@@ -606,13 +610,10 @@ di un vettore con sé stesso.
 
 ## In pratica, con NumPy
 
-In Python l'algebra lineare vive in **NumPy**, la cassetta di funzioni già
-pronte di cui parla il {doc}`capitolo su Python </Python/overview>` (in gergo una cassetta così si chiama
-*libreria*). Qui basta il richiamo: le operazioni di sopra sono una riga
-ciascuna.
-
-Chi non ha mai programmato può leggere solo i commenti, cioè il testo dopo il
-cancelletto: dicono in italiano quello che ogni riga fa.
+In Python l'algebra lineare vive in **NumPy**, la libreria di cui parla il
+{doc}`capitolo su Python </Python/overview>`. Qui basta il richiamo: le
+operazioni di sopra sono una riga ciascuna, e i commenti dopo il cancelletto
+dicono in italiano quello che ogni riga fa.
 
 ```python
 import numpy as np

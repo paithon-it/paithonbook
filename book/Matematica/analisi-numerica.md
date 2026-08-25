@@ -26,11 +26,13 @@ dividendo zero per zero.
 
 ## La virgola mobile: un budget fisso di cifre
 
-Prima di guardare la figura conviene sapere che cosa ci si vede. Un calcolatore
-conserva ogni numero in una fila di **bit**, cioè di caselle che possono valere
-solo $0$ o $1$, e la fila ha una lunghezza fissata: trentadue caselle per il
-formato che si usa più spesso, che infatti si chiama `float32`, sedici per i
-formati ridotti. Quelle caselle vengono spartite in tre gruppi, come nella
+Un calcolatore conserva ogni numero in una fila di **bit**, cioè di caselle che
+possono valere solo $0$ o $1$. È lo stesso bit della sezione sulla teoria
+dell'informazione, guardato dal lato della memoria invece che da quello della
+sorpresa: una casella che vale $0$ o $1$ risponde esattamente a una domanda sì
+o no. La fila ha una lunghezza fissata: trentadue caselle per il formato che si
+usa più spesso, che infatti si chiama `float32`, sedici per i formati
+ridotti. Quelle caselle vengono spartite in tre gruppi, come nella
 notazione scientifica che si impara a scuola quando si scrive $3{,}0\cdot10^8$
 invece di $300\,000\,000$:
 
@@ -376,7 +378,7 @@ differenza:   4.547e-12
 ```
 
 Gli addendi sono gli stessi e cambia solo l’ordine, ma il totale cambia nella
-dodicesima cifra. (Il ciclo scritto a mano non è pignoleria: da Python 3.12 la
+dodicesima cifra. (Il ciclo è scritto a mano per una ragione: da Python 3.12 la
 funzione `sum()` applica ai numeri in virgola mobile la somma compensata di
 Neumaier, che recupera le cifre perse, e con lei i due totali tornerebbero
 uguali.)
@@ -402,9 +404,9 @@ tenere, e a decidere in quante colonne si divide la somma è il processore: le
 sue istruzioni lavorano su due, quattro o otto numeri per volta, e la
 libreria di calcolo, appena parte, sceglie la versione fatta apposta per il
 processore che si trova sotto. Quella versione ha un nome: si chiama
-**kernel**, ed è la stessa parola che il libro userà più avanti per il
-programma che gira sulla scheda grafica. Il senso è quello: un pezzo di
-codice specializzato per il ferro su cui deve girare.
+**kernel**, la stessa parola che il {doc}`capitolo sulle GPU </GPU/overview>`
+usa per il programma che gira sulla scheda grafica. Il senso è quello: un pezzo
+di codice specializzato per il ferro su cui deve girare.
 
 `````
 
@@ -412,8 +414,9 @@ codice specializzato per il ferro su cui deve girare.
 
 Una libreria di algebra lineare non contiene una sola implementazione di
 ciascuna routine: ne contiene molte, compilate ciascuna per un **insieme di
-istruzioni vettoriali**, cioè per una delle SIMD di cui si è detto parlando di
-NumPy. Su un processore x86 sono generazioni successive, e a distinguerle è la
+istruzioni vettoriali**, cioè per una delle SIMD di cui parla il
+{doc}`capitolo su Python </Python/numpy>`. Su un processore x86 sono
+generazioni successive, e a distinguerle è la
 larghezza dei registri su cui lavorano: 128 bit per SSE2, 256 per AVX2, 512
 per AVX-512, dove il numero nel nome è proprio quella larghezza. In doppia
 precisione vuol dire due, quattro e otto numeri per istruzione.
@@ -433,7 +436,8 @@ per la stessa ragione conta anche il numero di thread, perché una riduzione
 parallela spezza la somma in tanti pezzi quanti sono gli esecutori.
 
 La scelta si può fissare dall’esterno, con `OPENBLAS_CORETYPE` per OpenBLAS e
-`ATEN_CPU_CAPABILITY` per le operazioni su CPU di PyTorch, e fissarla rimette d'accordo la parte di conto che passa da quelle due strade.
+`ATEN_CPU_CAPABILITY` per le operazioni su CPU di PyTorch, e fissarla rimette
+d'accordo la parte di conto che passa da quelle due strade.
 
 Non basta però a garantire l'accordo in generale, ed è la metà che conta di
 più. I prodotti fra matrici di PyTorch non passano da
@@ -473,8 +477,8 @@ amplifica a dismisura.
 
 `````{tab} Elementare
 
-La bilancia del capitano di poco fa risponde a due domande molto diverse. Se
-ti chiedo quanto pesa la barca,
+La bilancia del capitano e della barca risponde a due domande molto diverse.
+Se ti chiedo quanto pesa la barca,
 un chilo di errore sulla misura ti dà un chilo di errore sulla risposta: un
 chilo su ottantamila è lo $0{,}00125\%$, cioè poco più di un millesimo di punto
 percentuale, e la domanda è ben condizionata.
@@ -493,8 +497,8 @@ e allora non c'è programma che tenga: bisogna cambiare domanda. L'altra è che
 il programma sia scritto male e ne introduca di suoi, e allora si riscrive il
 programma (la softmax senza il trucco del massimo è esattamente questo).
 «Evita di calcolare una quantità piccola come differenza di due quantità
-grandi» è una cura del secondo tipo; standardizzare i dati, come vedremo
-subito, è una cura del primo.
+grandi» è una cura del secondo tipo; standardizzare i dati è una cura del
+primo.
 
 `````
 
@@ -512,7 +516,7 @@ $$
 $$
 
 il rapporto fra il più grande e il più piccolo dei valori singolari della
-sezione di algebra lineare. La precisazione «in norma $2$» non è pedanteria:
+sezione di algebra lineare. La precisazione «in norma $2$» serve, perché
 $\kappa(\mathbf{A}) = \lVert\mathbf{A}\rVert\,\lVert\mathbf{A}^{-1}\rVert$
 dipende dalla norma scelta, e su
 $\mathbf{A}=\begin{pmatrix}1&2\\3&4\end{pmatrix}$ vale $14{,}9$ in norma $2$ e
@@ -586,7 +590,7 @@ Prima di dare i dati a un modello quasi sempre li **standardizziamo**,
 sottraendo la media e dividendo per la deviazione standard: al posto di ogni
 valore $x$ si scrive $(x - \mu)/\sigma$, dove $\mu$ e $\sigma$ sono la media e
 la deviazione standard della colonna. Così ogni caratteristica (*feature*) ha
-media $0$ e scala $1$. Non è solo cosmesi: serve la stabilità, ed è un intervento sul
+media $0$ e scala $1$. Il motivo è la stabilità: è un intervento sul
 **condizionamento del problema**, non sull'algoritmo.
 
 Se una feature vale in migliaia di euro e un'altra in numero di stanze, i loro
@@ -659,8 +663,8 @@ euro.
   (**log-sum-exp**), e le quantità piccole non si ricavano mai come differenza
   di due quantità grandi (la barca e il capitano).
 - **Standardizzare** i dati, cioè portare ogni caratteristica a centro zero e
-  larghezza uno, non è pignoleria: è ciò che rende la valle da scendere più
-  tonda, e quindi la discesa più svelta.
+  larghezza uno, rende la valle da scendere più tonda, e quindi la discesa più
+  svelta.
 - Lo stesso programma, sugli stessi dati, può stampare ultime cifre diverse su
   due calcolatori diversi: non è un guasto, è l’ordine in cui il processore
   somma. Un numero che cambia solo in fondo non è cambiato.

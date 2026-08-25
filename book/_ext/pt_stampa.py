@@ -195,6 +195,23 @@ class ConvertitoreChromium(ImageConverter):
         return True
 
 
+def solo_un_riquadro(figli) -> bool:
+    """Il livello contiene un riquadro e basta: e' il «Da ricordare».
+
+    Serve a distinguerlo perche' in stampa si comporta in modo opposto agli
+    altri. Un livello pieno di prosa si spezza volentieri fra due pagine; un
+    livello che contiene **solo** un'admonition non si spezza affatto, perche'
+    dentro c'e' un ambiente `framed` che per lo scrittore LaTeX e' un blocco
+    unico. Il riquadro esterno allora si apre in fondo alla pagina, non ci
+    mette niente dentro, e il contenuto salta tutto alla pagina dopo: resta
+    una cornice colorata alta due centimetri con dentro una parola sola.
+    Sul libro intero e' il caso di gran lunga piu' frequente (152 su 189).
+    """
+    veri = [f for f in figli
+            if not isinstance(f, (nodes.comment, nodes.system_message))]
+    return len(veri) == 1 and isinstance(veri[0], nodes.Admonition)
+
+
 class TabInLaTeX(SphinxPostTransform):
     """Da TabContainer a container con un nome che il .sty sa vestire.
 
@@ -230,9 +247,10 @@ class TabInLaTeX(SphinxPostTransform):
                 elif isinstance(figlio, nodes.container) and corpo is None:
                     corpo = figlio
             classe = LIVELLI.get(etichetta.lower(), "pt-tab")
-            nuovo = nodes.container(
-                "", *(corpo.children if corpo is not None else []),
-                classes=[classe])
+            figli = list(corpo.children) if corpo is not None else []
+            if classe != "pt-tab" and solo_un_riquadro(figli):
+                classe += "-chiuso"
+            nuovo = nodes.container("", *figli, classes=[classe])
             tab.replace_self(nuovo)
 
 
@@ -481,7 +499,14 @@ class AnimazioniInLaTeX(SphinxPostTransform):
                 # che lavora sul sorgente e non sui nodi che costruiamo noi,
                 # e il dritto usciva composto in tutte le figure che si
                 # muovono (una cinquantina, e in stampa si vedeva).
-                rimando += nodes.Text("L’animazione si muove su ")
+                # I tre fermi vanno letti come tre istanti in fila, e senza
+                # dirlo il lettore di carta trova tre disegni quasi uguali e
+                # nessuna istruzione su come guardarli. Sta qui e non nelle
+                # didascalie perche' le figure che si muovono sono una
+                # cinquantina: scritto una volta, vale per tutte.
+                rimando += nodes.Text(
+                    "I tre fermi sono tre istanti dello stesso movimento, in "
+                    "ordine. L’animazione si muove su ")
                 rimando += nodes.reference("", url, refuri=url)
                 # Va appeso alla FIGURA e non al blocco delle immagini, cosi'
                 # cade dopo la didascalia. Dentro il blocco si infilava fra i

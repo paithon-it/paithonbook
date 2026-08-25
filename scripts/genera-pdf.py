@@ -179,19 +179,31 @@ def ritaglia_capitolo(sorgente: pathlib.Path, nome: str) -> pathlib.Path:
     if not tagli:
         sys.exit("nel sorgente non ci sono capitoli")
 
-    scelto = None
+    # Si cerca la `\label` che il capitolo si mette addosso, non il nome
+    # nudo: un `\hyperref` verso un altro capitolo contiene la stessa
+    # stringa, e siccome si prendeva il PRIMO capitolo che la conteneva,
+    # `--capitolo Matematica` restituiva il capitolo su Python, che alla
+    # matematica rimanda tre volte. Non falliva: dava il capitolo sbagliato
+    # e lo stampava lo stesso, quindi chi guardava un riquadro lo guardava
+    # nel posto sbagliato per tutta la sessione. Le etichette le emette solo
+    # il capitolo che possiede la pagina, quindi qui non c'e' ambiguita'.
+    # Le pagine di radice (prefazione, intro) non stanno in una cartella:
+    # la loro etichetta e' `nome:`, non `nome/`.
+    marche = (f"\\label{{\\detokenize{{{nome}/", f"\\label{{\\detokenize{{{nome}:")
+    trovati = []
     for numero, taglio in enumerate(tagli):
         fine = tagli[numero + 1] if numero + 1 < len(tagli) else len(testo)
-        fetta_test = testo[taglio:fine]
-        # Le pagine di radice (prefazione, intro) non stanno in una
-        # cartella: la loro etichetta e' `nome:`, non `nome/`.
-        if any(m in fetta_test for m in (f"{{{nome}/", f"{nome}/", f"{nome}:")):
-            scelto = (taglio, fine)
-            break
-    if scelto is None:
+        if any(m in testo[taglio:fine] for m in marche):
+            trovati.append((taglio, fine))
+    if not trovati:
         sys.exit(f"capitolo «{nome}» non trovato (e' il nome della cartella "
                  f"sotto book/, per esempio VisioneArtificiale, o della pagina "
                  f"di radice, per esempio prefazione)")
+    if len(trovati) > 1:
+        sys.exit(f"«{nome}» compare in {len(trovati)} capitoli: il provino "
+                 f"prenderebbe il primo e non si vedrebbe. Usa un nome piu' "
+                 f"preciso.")
+    scelto = trovati[0]
 
     fetta = testo[scelto[0]:scelto[1]]
     provino = sorgente.with_name(f"{NOME}-provino.tex")

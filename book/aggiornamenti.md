@@ -38,6 +38,19 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-10-5)=
+
+## 1.10.5 · 25 agosto 2026
+
+### Correzioni
+
+- {doc}`Analisi e ottimizzazione </Matematica/analisi-ottimizzazione>` (Matematica). **Tre affermazioni del capitolo di matematica che non reggevano.** La sigmoide non restituisce probabilità che sommate fanno uno: quella è la softmax, e le due rispondono a domande diverse. Un punto di sella è un fondo in una direzione e una cima in quella perpendicolare, quindi servono almeno due dimensioni perché esista. E il gradiente taglia le curve di livello ad angolo retto per una ragione che vale in ogni dimensione, non solo sul piano.
+- {doc}`Teoria dell'informazione </Matematica/teoria-informazione>` (Matematica). **I bit di un dado non sono il numero di domande che servono.** Le domande si contano intere, quindi su un tiro solo la strategia migliore ne consuma in media due e due terzi; ai 2,585 bit del dado ci si arriva soltanto giocando molti tiri insieme. E il limite della compressione ha ora un conto che si può rifare, stampato dal codice della pagina.
+- {doc}`Probabilità e statistica </Matematica/probabilita-statistica>` (Matematica). **Il teorema del limite centrale, con l'ipotesi che gli serve.** Vale quando nessuno dei contributi può essere, da solo, enormemente più grande di tutti gli altri messi insieme, e adesso lo dice anche la spiegazione facile. Nella figura sugli intervalli di confidenza il terzo modello è sceso dove la distanza dagli altri due è più larga dell'incertezza della misura.
+- {doc}`La matematica di un LLM </Matematica/matematica-llm>` (Matematica). **Le copie parallele dell'attenzione si specializzano meno di quanto si racconti.** Che due copie che imparano la stessa cosa costino accuratezza è un'ipotesi ragionevole, non un risultato: da un modello addestrato se ne può togliere una quota grossa senza perdite misurabili, e la pagina lo dice adesso con i lavori che l'hanno mostrato.
+- **Le figure del capitolo di matematica dicono quello che il disegno mostra.** I simboli che vivevano solo nella scheda avanzata (l'asterisco del punto migliore, il cappello di una stima, le lettere della divergenza) sono sciolti nella didascalia; e in due disegni una scritta finiva fuori dal margine o sopra un'altra.
+- **In stampa i riquadri non si aprono più a vuoto.** Una scheda che cominciava in fondo alla pagina lasciava lì una cornice colorata con dentro la sola etichetta, e mandava il contenuto tutto alla pagina dopo. I blocchi di codice spezzati fra due pagine lo segnalano ora con una riga pulita, e dove online si muove una figura, sulla carta i tre fermi immagine dicono di essere tre istanti dello stesso movimento.
+
 (v1-10-4)=
 
 ## 1.10.4 · 25 agosto 2026
