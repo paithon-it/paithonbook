@@ -63,15 +63,15 @@ $$
 f_\theta = f_L \circ f_{L-1} \circ \dots \circ f_1 ,
 $$
 
-dove $L$ è il numero di strati e tipicamente
-$f_\ell(\mathbf{Z}) = \sigma(\mathbf{W}_\ell \mathbf{Z} + \mathbf{b}_\ell)$, con la matrice di pesi
-$\mathbf{W}_\ell$, il vettore di bias $\mathbf{b}_\ell$ e la non linearità $\sigma$ applicata
-elemento per elemento (ma incontreremo anche strati di altra forma, come il
-pooling). Tutti i parametri $\theta$, dal primo strato all'ultimo, vengono
-ottimizzati insieme minimizzando la loss $\mathcal{L}$ per retropropagazione
-(*end-to-end*). L'estrazione delle feature
-non è più a monte e fissa: è parte del modello e viene appresa. È ciò che si
-chiama *representation learning*.
+dove $L$ è il numero di strati e tipicamente $f_\ell(\mathbf{Z}) =
+\sigma(\mathbf{W}_\ell \mathbf{Z} + \mathbf{b}_\ell)$, con la matrice di pesi
+$\mathbf{W}_\ell$, il vettore di bias $\mathbf{b}_\ell$ e la non linearità
+$\sigma$ applicata elemento per elemento (ma incontreremo anche strati di altra
+forma, come il pooling). Tutti i parametri $\theta$, dal primo strato
+all'ultimo, vengono ottimizzati insieme minimizzando la loss $\mathcal{L}$ per
+retropropagazione (*end-to-end*). L'estrazione delle feature diventa parte del
+modello e viene appresa, invece di stare a monte e fissa. È ciò che si chiama
+*representation learning*.
 
 `````
 
@@ -79,9 +79,9 @@ chiama *representation learning*.
 
 Una rete profonda è fatta di **strati**: gruppi di neuroni messi in fila, dove
 il primo riceve i numeri dell'immagine e ognuno dei successivi riceve quello che
-ha prodotto quello prima di lui. (Un neurone, qui, non è una cellula: è un
-pezzetto di conto, che prende dei numeri, li somma dopo averli pesati e ne
-restituisce uno.) Cosa impara davvero uno strato?
+ha prodotto quello prima di lui. (Un neurone, qui, è un pezzetto di conto e non
+una cellula: prende dei numeri, li somma dopo averli pesati e ne restituisce
+uno.) Cosa impara davvero uno strato?
 
 Nel 2014 Zeiler e Fergus {cite}`zeiler2014visualizing` trovarono il modo di
 "visualizzarlo", cioè di risalire, per ogni neurone di una **rete

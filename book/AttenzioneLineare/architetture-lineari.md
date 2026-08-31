@@ -216,8 +216,8 @@ $0{,}5\times 6 + 1\times 7 + 2\times 8 = 26$, i pesi messi insieme fanno
 $3{,}5$, e il risultato è $26$ diviso $3{,}5$, cioè circa $7{,}43$. Un voto,
 appunto: senza quella divisione resterebbe $26$, che non vuol dire niente.
 
-Un'ultima cosa da sapere, perché il seguito ci conta sopra: RWKV non è un
-modello solo, è una famiglia che ha cambiato pelle più volte, e le versioni si
+Un'ultima cosa da sapere, perché il seguito ci conta sopra: RWKV è una famiglia
+che ha cambiato pelle più volte e non un modello solo, e le versioni si
 contano con un numero. Le tappe che ci riguardano sono quattro. La quarta
 (2023) non tiene ancora un foglio a righe e colonne, ma una fila di numeri che
 sbiadiscono con ritmi decisi una volta per tutte. La quinta (2024) sostituisce

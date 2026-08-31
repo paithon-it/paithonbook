@@ -258,7 +258,7 @@ proprie foto, la prima volta che le scorre tutte.
 $(C, H, W)$ e valori riscalati in $[0,1]$; `Normalize`, date media $\mu$ e
 deviazione standard $\sigma$, applica $x' = (x - \mu)/\sigma$ canale per
 canale. L'ordine conta: la
-normalizzazione lavora su tensori, quindi va **dopo** `ToTensor()`, mentre le
+normalizzazione lavora su tensori, quindi va dopo `ToTensor()`, mentre le
 trasformazioni geometriche e fotometriche lavorano tradizionalmente su PIL e
 vanno prima.
 
@@ -336,9 +336,10 @@ non indovinare.
 
 E un tranello che colpisce su Windows e macOS, dove ogni aiutante che si
 presenta al lavoro rilegge da capo il foglio delle istruzioni. Se sul foglio,
-in mezzo alle altre righe, c'è scritto «assumi otto aiutanti», ognuno ne
-assume altri otto, e la cucina si riempie di gente finché la macchina non si
-arrende. Il rimedio è mettere le righe che avviano il lavoro sotto
+in mezzo alle altre righe, c'è scritto «assumi otto aiutanti», ognuno
+proverebbe ad assumerne altri otto, e la catena non finirebbe più: Python se
+ne accorge sulla porta e ferma tutto con un errore. Il rimedio è mettere le
+righe che avviano il lavoro sotto
 `if __name__ == "__main__":`, che è il modo di dire «questo pezzo lo esegue
 soltanto chi ha lanciato il programma, non chi arriva dopo».
 `````
@@ -360,8 +361,9 @@ trasferimento DMA asincrono verso la GPU; combinato con
 `tensore.to(device, non_blocking=True)` permette di sovrapporre copia e
 calcolo. Su Windows e macOS, dove i worker nascono per *spawn* e non per
 *fork*, il codice che li avvia deve stare sotto
-`if __name__ == "__main__":`, altrimenti si ottiene una ricorsione di
-processi.
+`if __name__ == "__main__":`: senza, ogni worker rilegge il modulo e prova a
+far ripartire il programma, e Python lo ferma sul nascere con un
+`RuntimeError`.
 
 Infine `shuffle=True` e l'argomento `sampler` sono **mutuamente esclusivi**:
 `shuffle` è di fatto una scorciatoia per `RandomSampler`. Chi passa un sampler
@@ -413,17 +415,19 @@ print(imbottite.shape, lunghezze.shape, etichette.shape)
 print(lunghezze[:8].tolist(), "-> larghezza", imbottite.shape[1])
 ```
 
-I numeri cambiano a ogni esecuzione, perché le frasi sono sorteggiate, ma la
-forma di quello che esce è sempre questa:
+I numeri cambiano a ogni esecuzione, perché le frasi sono sorteggiate, e
+cambia con loro la larghezza del vassoio, che è la lunghezza della frase più
+lunga capitata dentro. Quello che non cambia sono le tre forme: trentadue
+righe, trentadue lunghezze, trentadue etichette.
 
 ```text
 torch.Size([32, 39]) torch.Size([32]) torch.Size([32])
 [20, 14, 14, 32, 36, 15, 39, 9] -> larghezza 39
 ```
 
-Trentadue frasi, ciascuna larga trentanove, che è la lunghezza della più lunga
-del vassoio; e accanto le trentadue lunghezze vere, tutte diverse. La frase che
-ne aveva nove è stata allungata con trenta zeri.
+Trentadue frasi portate tutte alla larghezza della più lunga del vassoio, qui
+trentanove; e accanto le trentadue lunghezze vere, tutte diverse. La frase che
+ne aveva nove è arrivata a trentanove con trenta zeri in coda.
 
 Le **lunghezze** vanno restituite insieme ai dati e non sono un dettaglio.
 Dopo l'imbottitura tutte le frasi del vassoio hanno la stessa larghezza, e gli
@@ -464,16 +468,17 @@ campionatore = WeightedRandomSampler(weights=pesi,
 loader = DataLoader(dati_train, batch_size=32, sampler=campionatore)
 ```
 
-Il campionamento pesato è una delle tre leve possibili: le altre sono pesare
-la *loss* (`weight` in `CrossEntropyLoss`) e generare esempi sintetici della
-classe rara. Il {doc}`capitolo sul machine learning </MachineLearning/overview>` discute quando conviene ciascuna.
+Il campionamento pesato tocca i dati, che è l'ultima delle quattro leve contro
+lo sbilanciamento: prima vengono la metrica, la soglia e il peso delle classi
+(`weight` in `CrossEntropyLoss`), e la {doc}`sezione sulle classi
+sbilanciate </MachineLearning/metriche>` le ordina dalla più economica alla
+più invasiva.
 
-E discute anche perché, quando le classi sono sbilanciate così, l'accuratezza
-smette di dire la verità. Basta un conto: se su duemila foto millenovecento
-sono pizza, un modello che risponde «pizza» a occhi chiusi, sempre, prende
-novantacinque su cento e non ha imparato niente. Servono misure che guardino
-anche le classi rare, e sono [precisione, richiamo e
-F1](../MachineLearning/metriche.md).
+Quella stessa sezione spiega perché, quando le classi sono sbilanciate così,
+l'accuratezza smette di dire la verità. Basta un conto: se su duemila foto
+millenovecento sono pizza, un modello che risponde «pizza» a occhi chiusi,
+sempre, prende novantacinque su cento e non ha imparato niente. Servono misure
+che guardino anche le classi rare, e sono precisione, richiamo e F1.
 
 ## Dividere i dati senza barare
 
@@ -560,8 +565,8 @@ rifacendo identico decine di volte. Farlo una volta e salvare le immagini già
 piccole su disco è un pomeriggio che si ripaga in un'ora.
 
 **Meno file, più grandi.** Questo è il rimedio che stupisce, perché la ragione
-non è quella che si immagina: il costo grosso non è *leggere* le foto, è
-**aprirle**. Aprire un file è come chiedere al bibliotecario di andare a
+non è quella che si immagina: il costo grosso sta nell’**aprirle**, più che nel
+*leggerle*. Aprire un file è come chiedere al bibliotecario di andare a
 prendere un volume: il tempo lo fa il tragitto, non la lettura, e per un
 milione di volumi si fa un milione di tragitti. Impacchettare le immagini in
 pochi archivi grandi, letti di seguito, è chiedere al bibliotecario uno
@@ -586,7 +591,7 @@ lavora su batch di tensori, quindi anche su device).
 
 Il rimedio dei file impacchettati guadagna per una ragione precisa. Su una
 collezione grande il costo
-dominante non è decodificare i file, è **aprirli**: ogni `open()` è una
+dominante sta nell’**aprirli**, più che nel decodificarli: ogni `open()` è una
 chiamata di sistema e un accesso ai metadati del filesystem, e un milione di
 file piccoli produce un milione di accessi minuscoli e sparsi, che è lo schema
 peggiore per qualunque disco e disastroso su uno storage di rete, dove ogni
@@ -604,13 +609,15 @@ meglio.
 Due avvertenze, e sono le stesse di sempre. La prima: quei sei numeri si
 calcolano **solo sulle foto di addestramento**, mai su tutte. Calcolarli su
 tutte vuol dire far entrare nelle mie decisioni anche le foto d'esame, e il
-voto non è più onesto: è la stessa perdita di informazione della divisione
-fatta a caso su esempi che si assomigliano, e il {doc}`capitolo sul machine learning </MachineLearning/overview>`
-la tratta per esteso. La seconda: se si parte da un modello già addestrato da
-altri, i sei numeri non si calcolano affatto, si prendono quelli con cui è
-stato addestrato lui. Le librerie li tengono insieme ai pesi proprio per
-questo, e un modello a cui si danno immagini centrate diversamente da come le
-ricorda risponde peggio senza dire niente.
+voto smette di essere onesto, per la stessa perdita di informazione della
+divisione fatta a caso su esempi che si assomigliano, e la {doc}`sezione su
+overfitting e validazione </MachineLearning/overfitting-validazione>` la
+tratta per esteso. La seconda: se si parte da un modello già addestrato da
+altri, i sei numeri non si
+calcolano affatto, si prendono quelli con cui è stato addestrato lui. Le
+librerie li tengono insieme ai pesi proprio per questo, e un modello a cui si
+danno immagini centrate diversamente da come le ricorda risponde peggio senza
+dire niente.
 
 Il tubo che porta i file dentro la rete è fatto: da qui in avanti si può
 tornare a occuparsi del modello, sapendo che i dati arrivano. La sezione sulle

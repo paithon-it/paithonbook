@@ -85,8 +85,16 @@ ALIAS = {
 RIMANDO = re.compile(
     r"\b(capitol[oi])\s+"
     r"(?:(?:precedente|seguente|successiv[oi]|nuovo|scors[oi])\s+)?"
-    r"(?:su[ila]?\s*|sugli\s+|sulle\s+|sull'|d[ei]\s+|del\s+|dell[ae]\s+|"
-    r"dell'|dedicat[oi]\s+a[ial]?\s*|dedicat[oi]\s+all[ae']\s*|"
+    # Le preposizioni articolate vanno dalla piu' lunga alla piu' corta.
+    # Con `su[ila]?\s*` in testa, «capitolo sulle reti neurali» faceva match
+    # su «sul» e lasciava «le reti neurali», che nessun alias riconosce: il
+    # rimando spariva senza dire niente, e con esso ogni «sulle», «sull'»,
+    # «sugli», «sulla». L'ordine qui non e' estetico, e' il controllo.
+    r"(?:sugli\s+|sulle\s+|sulla\s+|sull'|sull’|sui\s+|sul\s+|su\s+|"
+    r"degli\s+|delle\s+|della\s+|dell'|dell’|dei\s+|del\s+|di\s+|"
+    r"dedicat[oi]\s+agli\s+|dedicat[oi]\s+alle\s+|dedicat[oi]\s+alla\s+|"
+    r"dedicat[oi]\s+all'|dedicat[oi]\s+all’|dedicat[oi]\s+ai\s+|"
+    r"dedicat[oi]\s+al\s+|dedicat[oi]\s+a\s+|"
     r"che\s+parla\s+d[iael]+\s*|intitolato\s+)?"
     r"([A-Za-zÀ-ù0-9'’\- ]{2,40})",
     re.IGNORECASE,
@@ -106,21 +114,42 @@ def documenti():
 
 
 def maschera(testo):
-    """Le righe che non sono prosa: codice, formule di blocco, direttive."""
+    """Le righe che non sono prosa: codice, formule di blocco, direttive.
+
+    Non tutte le recinzioni sono codice, ed e' l'errore che questa funzione
+    faceva: `{tab}` e `{admonition}` contengono PROSA, e in questo libro dentro
+    le schede sta piu' della meta' delle parole. Trattandole come codice il
+    rilevatore leggeva la sola spina dorsale e tornava zero, che e' il numero
+    piu' rassicurante che esista.
+
+    E serve una pila, non un interruttore: dentro una scheda a cinque apici sta
+    quasi sempre un ```python a tre, e con l'interruttore quel blocco *spegneva*
+    la maschera invece di accenderla, cioe' da li' in poi contava a rovescio.
+    Si maschera una riga quando almeno una delle recinzioni che la contengono e'
+    di codice (recinzione senza `{direttiva}` subito dopo gli apici).
+    """
     fuori = set()
-    dentro_codice = False
+    pila = []           # (numero di apici, e' una recinzione di codice)
     dentro_math = False
     for i, riga in enumerate(testo.splitlines()):
         s = riga.strip()
-        if s.startswith("```") or s.startswith("````") or s.startswith(":::"):
-            dentro_codice = not dentro_codice if s.startswith("```") else dentro_codice
+        apici = len(s) - len(s.lstrip("`"))
+        if apici >= 3 or s.startswith(":::"):
             fuori.add(i)
+            if s.startswith(":::"):
+                continue
+            coda = s[apici:].strip()
+            if pila and not coda and apici >= pila[-1][0]:
+                pila.pop()
+            else:
+                pila.append((apici, not coda.startswith("{")))
             continue
         if s.startswith("$$"):
             dentro_math = not dentro_math
             fuori.add(i)
             continue
-        if dentro_codice or dentro_math or s.startswith(":") or s.startswith("#"):
+        if (dentro_math or any(codice for _, codice in pila)
+                or s.startswith(":") or s.startswith("#")):
             fuori.add(i)
     return fuori
 
@@ -167,13 +196,23 @@ def candidati(percorso, overview):
 def main():
     scrivi = "--scrivi" in sys.argv
     verifica = "--verifica" in sys.argv
+    # `--solo <Cartella>`: serve nei worktree, dove una sessione lavora a un
+    # capitolo solo e non deve toccare i file degli altri. Senza, `--scrivi`
+    # riscrive tutto il libro, che con piu' sessioni in volo e' un conflitto.
+    solo = None
+    if "--solo" in sys.argv:
+        solo = sys.argv[sys.argv.index("--solo") + 1]
     overview = documenti()
     totale = 0
+    letti = 0
     for percorso in sorted(RADICE.rglob("*.md")):
         if "_build" in percorso.parts or "_static" in percorso.parts:
             continue
         if percorso.name in ("aggiornamenti.md", "references.md"):
             continue
+        if solo and percorso.relative_to(RADICE).parts[0] != solo:
+            continue
+        letti += 1
         trovati = candidati(percorso, overview)
         if not trovati:
             continue
@@ -197,7 +236,12 @@ def main():
         else:
             for n, _, _, testo, doc, _a in trovati:
                 print(f"{rel}:{n}  «{testo}» -> {doc}")
-    print(f"\n{totale} rimandi" + (" scritti" if scrivi else " da linkare"))
+    # Il denominatore accanto al numero: uno zero senza «su quanti file» non
+    # e' una misura, e con `--solo` sbagliato la glob e' vuota e torna zero.
+    assert letti, "nessun file letto: perimetro sbagliato?"
+    print(f"\n{totale} rimandi" + (" scritti" if scrivi else " da linkare")
+          + f", su {letti} file letti"
+          + (f" (solo {solo})" if solo else ""))
     if verifica and totale:
         return 1
     return 0

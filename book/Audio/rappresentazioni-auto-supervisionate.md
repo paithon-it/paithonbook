@@ -54,14 +54,15 @@ migliaia; e per una lingua parlata da poche persone quel lavoro non lo ha fatto
 mai nessuno e non lo farà. Le **etichette**, cioè le risposte giuste scritte da
 un umano accanto a ogni esempio, sono la cosa più cara che c'è.
 
-La via d'uscita è spezzare l'apprendimento in due tempi. Prima una lunga fase di
-studio su una massa enorme di audio senza risposte, per imparare come è fatto il
-suono in generale; poi una breve rifinitura sul compito vero, con le poche
-etichette che si hanno. Il primo tempo si chiama **pre-addestramento**
-(*pretraining*), il secondo **rifinitura** (*fine-tuning*), e il paradigma non è
-nuovo: è lo stesso dei modelli linguistici del {doc}`capitolo sui Transformer </Transformers/overview>`, e
-quello che nella visione artificiale si chiama *transfer learning*. Il lavoro
-pesante si fa una volta sola, e ogni compito successivo riparte da lì.
+La via d'uscita è spezzare l'apprendimento in due tempi. Prima una lunga fase
+di studio su una massa enorme di audio senza risposte, per imparare come è
+fatto il suono in generale; poi una breve rifinitura sul compito vero, con le
+poche etichette che si hanno. Il primo tempo si chiama **pre-addestramento**
+(*pretraining*), il secondo **rifinitura** (*fine-tuning*), e il paradigma è lo
+stesso dei modelli linguistici del {doc}`capitolo sui Transformer
+</Transformers/overview>`, e quello che nella visione artificiale si chiama
+*transfer learning*. Il lavoro pesante si fa una volta sola, e ogni compito
+successivo riparte da lì.
 
 `````{tab} Elementare
 
@@ -91,8 +92,10 @@ riservato alle funzioni di perdita). Il pretraining ottimizza su $\mathcal{D}_U$
 un obiettivo che non richiede $\mathbf{y}$, un **pretesto** (*pretext task*)
 costruito dai dati stessi, per apprendere un encoder $f_\theta$ che mappa la
 forma d'onda in rappresentazioni contestuali. Il fine-tuning aggiunge sopra
-$f_\theta$ una testa leggera (per l'ASR, tipicamente uno strato con perdita
-**CTC**, che vedremo nel capitolo sullo Speech Recognition) e la addestra su
+$f_\theta$ una testa leggera (per il riconoscimento vocale, in sigla **ASR**,
+*automatic speech recognition*, tipicamente uno strato con perdita **CTC**, che
+la {doc}`sezione sui modelli di riconoscimento </SpeechRecognition/modelli-asr>`
+costruisce da capo) e la addestra su
 $\mathcal{D}_L$, aggiornando eventualmente anche $\theta$.
 
 Il punto empirico che rende il tutto interessante è la **curva di efficienza
@@ -105,7 +108,7 @@ visione, trasferita al dominio del suono.
 
 ## wav2vec 2.0: mascherare il suono
 
-Il primo modello a rendere questa idea pienamente convincente per il parlato è
+Il modello che rende questa idea pienamente convincente per il parlato è
 **wav2vec 2.0**, di Alexei Baevski e colleghi a Facebook AI (il laboratorio
 che oggi si chiama Meta AI) nel 2020 {cite}`baevski2020wav2vec`. La ricetta
 ricalca il «gioco della parola coperta» che nel testo ha reso grande BERT (il
@@ -186,8 +189,9 @@ L'obiettivo è **contrastivo**. Per ogni passo mascherato $t$, dato il vettore
 contestuale $\mathbf{c}_t$, il modello deve riconoscere la vera unità quantizzata
 $\mathbf{q}_t$
 in mezzo a un insieme $\mathcal{Q}_t$ formato da $\mathbf{q}_t$ e da $K$
-distrattori (nel paper,
-$K = 100$) pescati da altri passi mascherati:
+distrattori (nel paper, $K = 100$; è la $K$ del contrastivo, e non ha niente a
+che vedere con le $K$ voci del codebook della sezione sui codec) pescati da
+altri passi mascherati:
 
 $$
 \mathcal{L}_m = -\log
@@ -196,7 +200,9 @@ $$
 $$
 
 dove $\mathrm{sim}(\mathbf{a},\mathbf{b})$ è la **similarità del coseno** (già usata per gli
-embedding), $\kappa$ una temperatura e $\mathcal{Q}_t$ l'insieme dei candidati. È una
+embedding), $\kappa$ una temperatura (un'altra: non ha niente a che vedere con
+la $\tau$ della Gumbel-softmax di poco sopra, che sceglie l'unità, mentre
+questa smussa il confronto) e $\mathcal{Q}_t$ l'insieme dei candidati. È una
 softmax che premia il modello quando assegna a $\mathbf{q}_t$ la probabilità più alta.
 Un secondo termine di **diversità** incoraggia a usare tutte le voci del
 dizionario, evitando che ne collassi solo qualcuna. A valle, con una testa CTC
@@ -266,8 +272,8 @@ scelto: 0 (0 = unita' giusta)
 ```
 
 L'unità giusta vince, ma il margine merita uno sguardo: si prende due terzi
-della probabilità, e un distrattore pescato a caso se ne prende un quarto. Non è
-un difetto del conto: è che i gruppetti di numeri, qui, sono cortissimi.
+della probabilità, e un distrattore pescato a caso se ne prende un quarto. Il
+conto non ha difetti: i gruppetti di numeri, qui, sono cortissimi.
 
 Vale una regola che tornerà spesso: più numeri ha un gruppetto, più è difficile
 che due gruppetti pescati a caso si somiglino. Con pochi numeri, invece, succede
@@ -350,9 +356,9 @@ risorse su Librispeech {cite}`hsu2021hubert`.
 
 `````
 
-Conviene notare la parentela, perché i due si somigliano più di quanto sembri.
-Dentro sono fatti allo stesso modo, e il motore è identico: coprire dei pezzi
-di audio e costringere il modello a tirare fuori quello che c'era sotto.
+I due si somigliano più di quanto sembri. Dentro sono fatti allo stesso modo,
+e il motore è identico: coprire dei pezzi di audio e costringere il modello a
+tirare fuori quello che c'era sotto.
 Cambia il **bersaglio**, cioè che cosa esattamente gli si chiede di
 indovinare. Uno gliela fa riconoscere in mezzo a dei distrattori, come in un
 test a crocette; l'altro gli chiede di dirne il nome, e i nomi possibili sono
@@ -367,8 +373,7 @@ cominciare, e lo rifà solo ogni tanto: mentre si gioca, l'elenco sta fermo.
 
 Queste rappresentazioni pre-addestrate sono diventate un **mattone** di buona
 parte dei sistemi audio moderni. Il caso di scuola è il riconoscimento vocale,
-che d'ora in poi chiameremo con la sua sigla inglese, **ASR** (*automatic speech
-recognition*), la stessa che userà per intero il capitolo successivo.
+l’**ASR**, la stessa sigla che userà per intero il capitolo successivo.
 
 Serve soprattutto dove le trascrizioni scarseggiano: una lingua parlata da poche
 persone, un dialetto, un mestiere di cui nessuno ha mai raccolto registrazioni
@@ -384,12 +389,11 @@ sezioni) fanno da punto di partenza anche per la **generazione** di audio: i
 pezzetti-tipo imparati qui diventano un vocabolario su cui un modello può
 «scrivere» suono, come un modello linguistico scrive testo.
 
-Onestà d'obbligo, però, sui limiti. Queste rappresentazioni colgono benissimo
-i suoni e come si incastrano fra loro: quali sono, in che ordine, con che
-timbro. È esattamente ciò che il gioco della parte coperta premia, e non c'è da
-stupirsi.
+Queste rappresentazioni colgono benissimo i suoni e come si incastrano fra
+loro: quali sono, in che ordine, con che timbro. È esattamente ciò che il
+gioco della parte coperta premia, e non c'è da stupirsi.
 
-Colgono molto meno il **significato**. Un modello addestrato così sa che due
+Colgono molto meno, però, il **significato**. Un modello addestrato così sa che due
 frammenti suonano simili, non sa se una frase è ironica o se una domanda vuole
 una certa risposta. È un orecchio finissimo, non una mente che comprende. Il
 senso lo mettono i pezzi che vengono dopo, che su questo orecchio si appoggiano.

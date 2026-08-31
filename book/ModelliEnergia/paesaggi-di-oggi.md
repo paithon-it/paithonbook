@@ -295,8 +295,8 @@ cui si litiga di più.
 La **seconda** riga, abbandonare il modello probabilistico in favore dei
 modelli a energia, è quella su cui l'argomento tecnico è più solido, ed è
 tutto in questo capitolo: misurare il paesaggio intero, il conto che serve per
-trasformare le altezze in percentuali, non è caro, è impossibile, e moltissimi
-compiti non l'hanno mai richiesto.
+trasformare le altezze in percentuali, è impossibile prima ancora che caro, e
+moltissimi compiti non l'hanno mai richiesto.
 
 La **terza**, abbandonare i metodi contrastivi in favore di quelli
 regolarizzati, è la scelta discussa nella sezione precedente: mostrare al

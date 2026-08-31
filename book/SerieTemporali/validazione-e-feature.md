@@ -52,11 +52,11 @@ va benissimo e nella realtà crolla.
 
 `````{tab} Superiore
 
-Il problema è che gli esempi di una serie non sono **indipendenti**: sono
-ordinati e fortemente autocorrelati. Uno split casuale, o una k-fold con
-shuffle, mette nel training istanti $t+1, t+3, \dots$ e nel validation
-l'istante $t$: il modello osserva valori *successivi* a quello che deve
-prevedere, e sfrutta l'autocorrelazione per «interpolare» all'indietro. La
+Il problema è che gli esempi di una serie sono ordinati e fortemente
+autocorrelati, quindi tutt'altro che **indipendenti**. Uno split casuale, o una
+k-fold con shuffle, mette nel training istanti $t+1, t+3, \dots$ e nel
+validation l'istante $t$: il modello osserva valori *successivi* a quello che
+deve prevedere, e sfrutta l'autocorrelazione per «interpolare» all'indietro. La
 stima dell'errore che ne esce è sistematicamente ottimista: un caso di *data
 leakage*, la stessa fuga di informazione per cui la sezione sulla validazione,
 nel capitolo sul Machine Learning, imponeva di non toccare mai il test.
@@ -257,7 +257,7 @@ purché la serie di training non sia costante. La lettura, però, va data per
 esteso, perché la versione corta («sotto 1 batte il naive») è la fonte di
 un equivoco: un valore sotto $1$ vuol dire che il modello sbaglia meno di quanto
 sbaglia, **a un passo di stagione e sui dati di addestramento**, il predittore
-che copia il ciclo precedente. Non è un duello, è una scala: il denominatore
+che copia il ciclo precedente. È una scala e non un duello: il denominatore
 serve a togliere l'unità di misura della serie, non a fare da avversario. Un
 modello con MASE $0{,}9$ su un orizzonte a dodici passi non ha battuto nessuno,
 ha sbagliato il 90% di quanto sbaglia a un passo chi copia; il che su dodici
@@ -346,8 +346,8 @@ un anno di mesi).
   partita da 10, adesso sta a 40, e ci ha messo 30 giorni; sale dunque di
   $30/30 = 1$ al giorno, e la previsione per fra una settimana è $40 + 7 = 47$.
 
-Non è falsa modestia, è il solo modo di accorgersi quando un modello complicato
-sta imitando, e per giunta peggio, quello che una riga di codice farebbe gratis.
+È il solo modo di accorgersi quando un modello complicato sta imitando, e per
+giunta peggio, quello che una riga di codice farebbe gratis.
 
 ## Le bande di previsione sono più strette di quello che dichiarano
 
@@ -359,8 +359,8 @@ aperta nell'introduzione: qui ci sono gli attrezzi per chiuderla.
 Prima però va detto per bene che cosa promette una forbice, perché è una
 promessa precisa e si può controllare. Quando un modello dice «fra 22 e 26,
 all'80%» sta dicendo: se ripetessi questa previsione mille volte, il valore vero
-mi cadrebbe dentro ottocento volte. Non è una speranza, è un conto che il
-modello ha fatto, ed è un conto che poggia su due comodità.
+mi cadrebbe dentro ottocento volte. È un conto che il modello ha fatto, non una
+speranza, ed è un conto che poggia su due comodità.
 
 La prima: i numeri del modello (la frazione con cui ieri pesa su oggi,
 l'ampiezza tipica degli scarti) vengono trattati come se li conoscessimo, mentre
@@ -635,10 +635,10 @@ print(f"MASE medio - naive semplice:   {np.mean(mase_semplice):.3f}")
 Il naive stagionale esce **attorno a 1**, e non poteva che essere così: su una
 serie con un ciclo settimanale il metro è lui, quindi sta pareggiando con sé
 stesso. Il naive semplice, cieco alla settimana, sta **sopra 5**: sbaglia cinque
-volte tanto. La morale non è che il naive stagionale sia bravo, è che su una
-serie stagionale il metro giusto è quello, e chi non lo batte non ha un modello.
+volte tanto. La morale è che su una serie stagionale il metro giusto è quello,
+e chi non lo batte non ha un modello.
 
-Conviene notare quanto la scelta del metro cambi il verdetto, perché è una
+La scelta del metro cambia il verdetto, ed è una
 scorciatoia che si incontra spesso: mettendo sotto la linea di frazione il
 naive a un passo invece che a sette, gli stessi due predittori escono a
 $0{,}34$ e $1{,}64$, e il primo sembrerebbe bravissimo. Non ha previsto meglio

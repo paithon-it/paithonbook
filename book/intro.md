@@ -119,8 +119,9 @@ aria-label="Scarica in PDF il capitolo «Python»" title="«Python» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Matematica/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Richiami di matematica</span> <span
-class="pt-card-desc">Algebra lineare, ottimizzazione, probabilità, teoria
-dell'informazione, analisi numerica e la matematica di un LLM.</span> </a> <a
+class="pt-card-desc">Algebra lineare, sistemi e proiezioni, ottimizzazione,
+probabilità e concentrazione, catene di Markov, teoria dell'informazione,
+analisi numerica e la matematica di un LLM.</span> </a> <a
 class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Matematica.pdf"
 aria-label="Scarica in PDF il capitolo «Richiami di matematica»"
@@ -297,8 +298,9 @@ aria-label="Scarica in PDF il capitolo «GAN»" title="«GAN» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="ModelliDiffusione/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Modelli di Diffusione</span> <span
-class="pt-card-desc">Rumore e ritorno: da DDPM a Stable Diffusion e ai
-Diffusion Transformer.</span> </a> <a class="pt-card-pdf"
+class="pt-card-desc">Rumore e ritorno: da DDPM alle equazioni differenziali,
+flow matching, campionatori veloci, generatori a un passo, guida e diffusione
+sul testo.</span> </a> <a class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-ModelliDiffusione.pdf"
 aria-label="Scarica in PDF il capitolo «Modelli di Diffusione»" title="«Modelli
 di Diffusione» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"

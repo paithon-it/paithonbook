@@ -99,8 +99,8 @@ condizionata sul ritorno desiderato.
 L'assunzione nascosta, che è tutto il problema, è quella di ogni apprendimento
 supervisionato: **dati indipendenti e identicamente distribuiti**. Qui non lo
 sono, perché gli stati che l'agente incontrerà dipendono dalle azioni che
-avrà scelto. La distribuzione degli stati non è fissata dal mondo, è **indotta
-dalla politica**, e quella dell'allievo non è quella del maestro.
+avrà scelto. La distribuzione degli stati è **indotta dalla politica** e non
+fissata dal mondo, e quella dell'allievo non è quella del maestro.
 
 `````
 
@@ -198,15 +198,14 @@ $$
 dove $C$ è il **costo** atteso di una politica sull'orizzonte $T$, cioè un
 danno da contenere e non un ritorno da massimizzare: per questo $C(\hat\pi)$
 sta a sinistra della disuguaglianza (nel lavoro originale è chiamato $J$).
-Quanto a $\epsilon_N$, non è l’$\epsilon$ misurato sotto la distribuzione
-dell'esperto: è
-l'errore della migliore politica *col senno di poi*, misurato sulla media di
-tutte le distribuzioni di stati accumulate nei $N$ giri. Che quel numero sia
-piccolo non è gratis: lo garantisce il fatto che i giri si comportino come un
-algoritmo *no-regret*, e servono $N$ dell'ordine di $u\,T$ perché il resto sia
-davvero $O(1)$. La garanzia, poi, copre la migliore delle politiche prodotte
-lungo la sequenza e non necessariamente l'ultima, ed è il motivo per cui in
-pratica si sceglie su un insieme di validazione quale tenere.
+Quanto a $\epsilon_N$, è l'errore della migliore politica *col senno di poi* e
+non l’$\epsilon$ misurato sotto la distribuzione dell'esperto: misurato sulla
+media di tutte le distribuzioni di stati accumulate nei $N$ giri. Che quel
+numero sia piccolo non è gratis: lo garantisce il fatto che i giri si
+comportino come un algoritmo *no-regret*, e servono $N$ dell'ordine di $u\,T$
+perché il resto sia davvero $O(1)$. La garanzia, poi, copre la migliore delle
+politiche prodotte lungo la sequenza e non necessariamente l'ultima, ed è il
+motivo per cui in pratica si sceglie su un insieme di validazione quale tenere.
 
 Quanto a $u$, misura di quanto un singolo errore può peggiorare il
 costo-per-andare dell'esperto. Nei compiti **recuperabili** $u$ è $O(1)$ e la
@@ -245,7 +244,7 @@ algoritmi {cite}`ng2000algorithms`: l'RL inverso, nella sua forma
 nuda, è **mal posto**. Infinite funzioni di ricompensa rendono ottimo lo stesso
 comportamento osservato, a cominciare da quella identicamente nulla, sotto la
 quale ogni politica è ottima: l'insieme delle ricompense compatibili con una
-politica osservata non è una retta, è un poliedro. Nemmeno chiedendo molto di
+politica osservata è un poliedro e non una retta. Nemmeno chiedendo molto di
 più, cioè che l'ordinamento di *tutte* le politiche resti quello, si arriva a una
 risposta sola: si arriva a una scala positiva e a un termine di *shaping
 potential-based*, e non oltre. È un oggetto che il
@@ -418,8 +417,8 @@ mediana $322$ e va da $76$ a $473$: il numero del racconto sta perfino **sotto**
 il più mite degli otto, e la mediana è più di quattro volte più grande. La
 conclusione qualitativa non cambia di una virgola (la clonazione finisce fuori
 strada in tutti e otto i casi, finendo cento o mille volte più lontano
-dell'esperto), ma la cifra precisa non è una proprietà dell'algoritmo: è una
-proprietà di quella ripetizione, e per giunta quella che fa apparire il guaio
+dell'esperto), ma la cifra precisa è una proprietà di quella ripetizione e non
+dell'algoritmo, e per giunta quella che fa apparire il guaio
 più piccolo di com'è.
 
 Secondo, e conta di più: **senza la folata non succede niente**. Sugli stessi
@@ -454,8 +453,8 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
 :class: important
 - La **clonazione comportamentale** è la scorciatoia più ovvia: si registra
   qualcuno che il lavoro lo sa fare, si annota «in questa situazione, questa
-  mossa», e da lì in poi il problema non è più imparare per tentativi, è
-  indovinare la risposta giusta. Stabile, sicura, parca di dati, e già usata due
+  mossa», e da lì in poi il problema diventa indovinare la risposta giusta,
+  invece di imparare per tentativi. Stabile, sicura, parca di dati, e già usata due
   volte nel libro senza chiamarla per nome.
 - La crepa sta in un'assunzione che nessuno dichiara: che le situazioni siano
   sempre le stesse, decise dal mondo. Non è così, perché **le situazioni che
@@ -493,7 +492,7 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
   libro senza il suo nome (la policy iniziale di AlphaGo, la fase supervisionata
   che precede l'RLHF).
 - L'assunzione che salta è quella di dati **i.i.d.**: la distribuzione degli
-  stati non è fissata dal mondo, è **indotta dalla politica**, e quella
+  stati è **indotta dalla politica** e non fissata dal mondo, e quella
   dell'allievo non è quella del maestro.
 - Da qui la **composizione degli errori**: un errore piccolo porta in uno stato
   poco familiare, dove l'errore è più grande, e così via. Il costo cresce come

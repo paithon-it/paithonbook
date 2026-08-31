@@ -23,7 +23,7 @@ un solo dato in più**.[^munch]
 
 ## Un numero da solo non dice quanto balla
 
-Ogni volta che questo capitolo ha stampato una cifra ne ha nascosta un'altra,
+Ogni cifra stampata fin qui ne ha nascosta un'altra,
 e conviene vederlo su un caso qualunque. Mettiamo che un modello dia l’$87\%$
 di accuratezza: sì, ma su *questo* test. Rifacendo la prova con altri trecento
 esempi, quanto verrebbe? $86\%$? $91\%$? La differenza fra i due casi decide
@@ -161,8 +161,8 @@ $$
 e l'intervallo **percentile** al livello $1-2\alpha$ è la coppia di quantili
 empirici $[\hat\theta^{*}_{(\alpha)},\, \hat\theta^{*}_{(1-\alpha)}]$.
 
-Due avvertenze. La prima: $B$ non è la taglia del campione, è il numero di
-simulazioni, e l'unico costo è di calcolo; $B = 200$ basta per un errore
+Due avvertenze. La prima: $B$ conta le simulazioni, non gli esempi del
+campione, e l'unico costo è di calcolo; $B = 200$ basta per un errore
 standard, per i quantili di un intervallo ne servono almeno $1000$ e $10\,000$
 non fanno male. La seconda: l'intervallo percentile è il più semplice e non il
 migliore. È corretto al primo ordine, e con statistiche distorte o asimmetriche
@@ -172,8 +172,8 @@ valore vero si conosce, la sotto-copertura si può misurare.
 
 `````
 
-Il ricampionamento con reimmissione non è nuovo in questo capitolo: è
-esattamente la mossa con cui il **bagging** costruisce dataset diversi avendone
+Il ricampionamento con reimmissione è esattamente la mossa con cui il
+**bagging** costruisce dataset diversi avendone
 uno solo, e il conto di quanti esempi restano fuori (poco più di un terzo) è
 già stato fatto lì. Quello che cambia è cosa se ne fa: il bagging usa i
 campioni per addestrare modelli diversi da far votare, qui li si usa per
@@ -182,9 +182,9 @@ terzo tornerà, a rovescio, a dire dove il bootstrap non arriva.
 
 ## Il conto, su sessanta stipendi
 
-Il codice qui sotto fabbrica sessanta stipendi (con la coda a destra che hanno i
-redditi veri), ne ricampiona diecimila volte, e da quelle diecimila mediane
-ricava due numeri: l’**errore standard**, che è quanto la stima balla in media,
+Su sessanta stipendi fabbricati apposta (con la coda a destra che hanno i
+redditi veri), ricampionati diecimila volte, quelle diecimila mediane danno
+due numeri: l’**errore standard**, che è quanto la stima balla in media,
 e l’**intervallo** dentro cui cade nel $95\%$ dei casi. Poi fa la stessa cosa
 sulla media, dove esiste anche la formula di due secoli fa, per avere qualcosa
 contro cui controllarlo.
@@ -226,8 +226,8 @@ tutto il resto. Sulla **media**, dove la risposta si sa da due secoli, il
 bootstrap dice $1675$ e la formula dice $1666$: differiscono di nove unità su
 milleseicento, cioè di mezzo punto percentuale, che è il rumore delle diecimila
 simulazioni. Il metodo non sta inventando niente dove qualcuno può controllarlo,
-ed è per questo che ci si può fidare della riga sopra, dove nessuno può: per la
-**mediana** una formula non c'è, e il bootstrap risponde lo stesso, $2061$.
+ed è per questo che ci si può fidare anche dove nessuno può: per la **mediana**
+una formula non c'è, e il bootstrap risponde lo stesso, $2061$.
 
 Da notare, per inciso, che la mediana ($29\,282$) sta ben sotto la media
 ($31\,425$), che è quello che succede sempre agli stipendi e alle case: pochi
@@ -248,8 +248,8 @@ campione solo, una distribuzione.
 Quello che {numref}`fig-bootstrap-accumula` fa vedere e la tabella no è che il
 campione **non si tocca**: la variabilità che si vede a destra non viene da dati
 nuovi, viene tutta dal sorteggio di quali dei sessanta guardare. È il punto in
-cui il metodo sembra un imbroglio, e la risposta al sospetto è il paragrafo che
-segue.
+cui il metodo sembra un imbroglio, e a togliere il sospetto è il collaudo
+dell'intervallo.
 
 ### Ma quell'intervallo è davvero al 95%?
 
@@ -297,8 +297,9 @@ Alla seconda («è esatto?») risponde di no, ma la risposta va letta con la ter
 riga in mano, ed è per averla che quel numero è stampato con **due** decimali
 invece di uno. Anche il $94{,}27\%$ è una stima, ottenuta da quattromila prove
 e non da infinite, quindi balla pure lui, fra $93{,}56\%$ e $94{,}99\%$. Il
-$95\%$ promesso resta fuori da quell'intervallo, e ci resta per un centesimo di
-punto: l'esperimento rileva la sotto-copertura, e la rileva **di misura**.
+$95\%$ promesso resta fuori da quell'intervallo, e ci resta per cinque
+millesimi di punto: l'esperimento rileva la sotto-copertura, e la rileva **di
+misura**.
 
 Un decimale in meno avrebbe capovolto la conclusione senza cambiare un dato:
 $94{,}3\%$ più $0{,}7$ fa esattamente $95{,}0$, e chi legge così crede che il
@@ -348,7 +349,7 @@ quota di ricampionamenti che ridanno esattamente quel valore: 0.631
 ```
 
 Diecimila ricampionamenti e **nove** risposte diverse: la distribuzione bootstrap
-del massimo non è una distribuzione, è un mucchietto di nove valori, e nei due
+del massimo si riduce a un mucchietto di nove valori, e nei due
 terzi dei casi è sempre lo stesso. La ragione è ovvia una volta detta: il massimo
 di un ricampionamento non può superare il massimo del campione, quindi da quel
 lato l'intervallo è murato, e dall'altro può solo saltare al secondo, al terzo, al

@@ -395,18 +395,18 @@ aggiunta dopo: il modello *è* la propria spiegazione, e sta in sette righe.
 
 Adesso il confronto. Al posto di un albero solo se ne possono far crescere
 centinaia, tutti un po’ diversi fra loro, e far votare le loro risposte: si
-chiama **foresta casuale**, ed è il metodo visto nella
-{doc}`sezione su alberi e metodi ensemble </MachineLearning/alberi-ensemble>`. Tanti pareri
-sbagliano meno di uno, e infatti su questi fiori la foresta indovina un po’
-più dell'alberello: il $96{,}0\%$ contro il $94{,}7\%$. Il modo di misurarlo è
-quello di sempre, e conviene dirlo: si dividono i 150 fiori in dieci gruppi,
-si addestra il modello su nove gruppi e lo si interroga sul decimo, e si
-ripete dieci volte cambiando ogni volta il gruppo tenuto da parte, così che
-ogni fiore prima o poi faccia da esame. La media di quelle dieci prove è il
-numero scritto sopra. La differenza, dunque, è di **un punto e tre**. In
-cambio, la logica della foresta non si stampa più, perché non è una ricetta:
-sono centinaia di ricette che votano. È in questo scambio che nascono i metodi
-del capitolo; su questi fiori, però, conviene poco.
+chiama **foresta casuale**, ed è il metodo visto nella {doc}`sezione su alberi
+e metodi ensemble </MachineLearning/alberi-ensemble>`. Tanti pareri sbagliano
+meno di uno, e infatti su questi fiori la foresta indovina un po’ più
+dell'alberello: il $96{,}0\%$ contro il $94{,}7\%$. Il modo di misurarlo è
+quello di sempre, e conviene dirlo: si dividono i 150 fiori in dieci gruppi, si
+addestra il modello su nove gruppi e lo si interroga sul decimo, e si ripete
+dieci volte cambiando ogni volta il gruppo tenuto da parte, così che ogni fiore
+prima o poi faccia da esame. La media di quelle dieci prove è il numero scritto
+sopra. La differenza, dunque, è di **un punto e tre**. In cambio, la logica
+della foresta non si stampa più, perché sono centinaia di ricette che votano
+invece di una sola. È in questo scambio che nascono i metodi del capitolo; su
+questi fiori, però, conviene poco.
 
 ## Una spiegazione può convincere ed essere falsa
 

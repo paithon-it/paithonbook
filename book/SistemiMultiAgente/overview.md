@@ -24,7 +24,8 @@ Lassù, trenta metri sopra la strada, montarono tre postazioni fotografiche che
 scattavano tutte nello stesso istante: due lontane venticinque metri l'una
 dall'altra, la terza a soli due metri e mezzo da una delle prime due. Servivano
 dieci fotogrammi al secondo, e nessuna macchina di allora ci arrivava da sola:
-su ogni postazione ne misero due, che si alternavano cinque scatti per uno.
+su ogni postazione ne misero due, ciascuna a cinque scatti al secondo e sfasata
+di mezzo tempo rispetto alla compagna, così che gli scatti si incastrassero.
 
 Due fotografie scattate nello stesso istante bastano a dire dove sta un uccello
 nello spazio, con la stessa geometria con cui due occhi ricavano la profondità.
@@ -38,9 +39,11 @@ ciascuno ripreso per qualche secondo, alcuni dei quali arrivavano a 2600
 individui.
 
 Il risultato, pubblicato su *PNAS* nel 2008 {cite}`ballerini2008interaction`, è
-di quelli che cambiano la domanda. Fino ad allora si dava per scontato che ogni
-uccello reagisse ai compagni entro un certo raggio, mettiamo due metri: chi sta
-dentro conta, chi sta fuori no. È una regola **metrica**, cioè fatta di metri.
+di quelli che cambiano la domanda. Quasi tutti i modelli davano per scontato che
+ogni uccello reagisse ai compagni entro un certo raggio, mettiamo due metri: chi
+sta dentro conta, chi sta fuori no. È una regola **metrica**, cioè fatta di
+metri. Chi fissava il numero dei vicini, e qualcuno lo faceva, continuava
+comunque a pesarli per quanto erano lontani.
 I dati di Roma dicono altro. Ogni storno tiene d'occhio un numero circa
 **fisso** di vicini più prossimi, sei o sette (la media sui dieci stormi è sei
 e mezzo), e quanto quei vicini siano lontani non conta. La differenza fra le due
@@ -358,7 +361,7 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
   agenti valgono quanto uno, al costo di dieci.
 - Il caso con molti agenti non è quello singolo ripetuto tante volte: per
   ciascuno il mondo contiene gli altri, che nel frattempo cambiano. Il traguardo
-  non è più il fondo di una valle, è un **pareggio**: la situazione in cui a
+  non è più il fondo di una valle ma un **pareggio**: la situazione in cui a
   nessuno conviene più muoversi da solo.
 ```
 

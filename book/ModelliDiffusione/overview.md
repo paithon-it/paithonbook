@@ -44,13 +44,13 @@ non uno, e nella prossima sezione si vedrà perché servono tutti e due). Il
 **ritorno** è l'unica cosa che si apprende, ed è una domanda sola: guardando un
 fotogramma sporco, *quanto rumore c'è qui sopra?*
 
-Su quella domanda conviene essere precisi subito. Alla rete non si chiede il pizzico dell'ultimo
-passo, ma **tutto il rumore accumulato** da quando la fotografia era pulita: la
-distanza fra il fotogramma che ha davanti e l'originale. E quello che la rete
-risponde non è un'immagine, è una mappa: per ogni punto del fotogramma, di
-quanto quel punto è stato spostato. Come si passi da quella mappa a un'immagine
-è una faccenda a parte, meno intuitiva di quanto sembri, ed è il centro della
-prossima sezione.
+Su quella domanda conviene essere precisi subito. Alla rete non si chiede il
+pizzico dell'ultimo passo, ma **tutto il rumore accumulato** da quando la
+fotografia era pulita: la distanza fra il fotogramma che ha davanti e
+l'originale. E quello che la rete risponde è una mappa e non un'immagine: per
+ogni punto del fotogramma, di quanto quel punto è stato spostato. Come si passi
+da quella mappa a un'immagine è una faccenda a parte, meno intuitiva di quanto
+sembri, ed è il centro della prossima sezione.
 
 `````{tab} Elementare
 
@@ -294,8 +294,8 @@ in tempo ciò che guadagna in stabilità dell'addestramento e in copertura della
 varietà. Da lì in poi, buona parte del lavoro sulla diffusione è servito ad
 accorciare quel conto, e nel farlo ha spesso rimesso in gioco un
 **discriminatore**, che è il nome tecnico del detective del capitolo
-precedente: il duello non è sparito, è rientrato come attrezzo di servizio
-dentro una macchina che di suo non ne ha bisogno. L'impianto dei generatori di
+precedente: il duello è rientrato come attrezzo di servizio dentro una macchina
+che di suo non ne ha bisogno, invece di sparire. L'impianto dei generatori di
 immagini arrivati al pubblico dal 2022 in poi, però, è questo e non quello, ed
 è la ragione per cui il resto del capitolo lo smonta pezzo per pezzo.
 
@@ -340,8 +340,8 @@ arrivano i filmati generati a partire da una frase.
 - Rispetto alle GAN: niente duello fra falsario e detective, quindi niente
   allenamenti che si incartano e nessun rifugio in un unico quadro vincente.
   Il conto si paga in attesa: il falsario dipinge in una pennellata sola, il
-  restauratore ripete il suo giro centinaia di volte. Non è una classifica, è
-  un baratto: tempo in cambio di stabilità e varietà.
+  restauratore ripete il suo giro centinaia di volte. È un baratto e non una
+  classifica: tempo in cambio di stabilità e varietà.
 - Nel resto del capitolo: DDPM in dettaglio; il trucco che fa lavorare la rete
   su una **versione compressa** della fotografia invece che sui pixel, ed è il
   motivo per cui Stable Diffusion gira in casa; un Transformer, cioè
@@ -372,8 +372,12 @@ arrivano i filmati generati a partire da una frase.
   fenomeno pubblico.
 - Rispetto alle GAN: niente duello, niente *mode collapse*, addestramento
   stabile, ma il campionamento costa molti passi di rete invece di uno.
-- Nel resto del capitolo: DDPM in dettaglio, la diffusione **latente** di
-  Stable Diffusion, i **diffusion Transformer** (DiT) e i modelli video.
+- Nel resto del capitolo: DDPM in dettaglio, il **limite continuo** che ne fa
+  un'equazione differenziale, il **flow matching** che sceglie il percorso
+  invece di ereditarlo, la diffusione **latente** di Stable Diffusion, i
+  **diffusion Transformer**, i campionatori che tagliano i passi, i
+  **generatori a un passo**, la **guida** e infine la diffusione sui simboli,
+  cioè sul testo.
 ```
 
 `````

@@ -9,7 +9,7 @@ Apri un terminale Python e prova la cosa più innocente del mondo:
 0.30000000000000004
 ```
 
-Non è un difetto di Python: è così su qualunque calcolatore. Un computer non
+Succede su qualunque calcolatore, e non per un difetto di Python. Un computer non
 conserva i numeri reali, ma loro approssimazioni con un numero **finito** di
 cifre. Di solito la differenza è invisibile; a volte no. Il 4 giugno 1996 un
 numero troppo grande, convertito in un formato più piccolo, "straripò" a bordo
@@ -465,8 +465,8 @@ stampa. Due risultati in virgola mobile non si confrontano con `==` ma con una
 tolleranza dichiarata, che `np.allclose` prende come argomento. E le cifre
 di un residuo di arrotondamento non si leggono come un risultato: il
 $5{,}551\cdot10^{-16}$ di prima vuol dire zero, a meno dell’epsilon macchina, e
-la sua mantissa non è un’informazione sul problema, è l’impronta del processore
-su cui è girato il conto.
+la sua mantissa è l’impronta del processore su cui è girato il conto, non
+un’informazione sul problema.
 
 ## Condizionamento: quanto un problema amplifica gli errori
 
@@ -666,8 +666,8 @@ euro.
   larghezza uno, rende la valle da scendere più tonda, e quindi la discesa più
   svelta.
 - Lo stesso programma, sugli stessi dati, può stampare ultime cifre diverse su
-  due calcolatori diversi: non è un guasto, è l’ordine in cui il processore
-  somma. Un numero che cambia solo in fondo non è cambiato.
+  due calcolatori diversi, e non è un guasto: cambia l’ordine in cui il
+  processore somma. Un numero che cambia solo in fondo non è cambiato.
 ```
 `````
 

@@ -14,8 +14,8 @@ Taylor voleva misurare i lettori. Sessantasei anni dopo, lo stesso identico
 gioco (coprire una parola e farla indovinare) è diventato il modo in cui si
 addestrano i modelli di linguaggio, e gli autori di BERT lo dicono in chiaro,
 rimandando proprio a Taylor: quel loro esercizio, scrivono, in letteratura si
-chiama *compito cloze* {cite}`devlin2019bert`. Nel mezzo non è cambiato l'esercizio:
-è cambiato **chi lo fa** e **a che scopo**. Non si misura più il lettore, si
+chiama *compito cloze* {cite}`devlin2019bert`. Nel mezzo sono cambiati **chi lo
+fa** e **a che scopo**, non l'esercizio. Non si misura più il lettore, si
 fabbrica il lettore.
 
 Questo capitolo parla di quella mossa, che il libro ha già usato cinque volte
@@ -60,8 +60,8 @@ ricevuto per quella fotografia: una parola sola, scelta da un elenco di nomi
 che qualcuno ha compilato prima.
 
 Nel secondo, ti mostrano la stessa fotografia con mezza immagine coperta e ti
-chiedono di disegnare quello che manca. Adesso la risposta giusta non è una
-parola: è tutta la metà nascosta, con la forma del becco, il colore delle ali,
+chiedono di disegnare quello che manca. Adesso la risposta giusta è tutta la
+metà nascosta e non una parola: con la forma del becco, il colore delle ali,
 il ramo che continua, l'ombra che cade dalla parte giusta. Per riempire quel
 buco devi aver capito parecchio, e ogni singolo dettaglio che indovini o sbagli
 ti dice qualcosa.
@@ -301,7 +301,7 @@ strada.
 Una nota di vocabolario, per non inciampare più avanti. Lo stesso obiettivo, in
 quella letteratura, circola sotto molti nomi: minimizzare la **sorpresa**,
 l’**entropia**, l’**errore di predizione** oppure l’**energia libera
-variazionale**. Non sono quattro cose, sono quattro modi di dire, e la scelta
+variazionale**. Sono quattro modi di dire la stessa cosa, e la scelta
 dipende dal mestiere di chi parla: «errore di predizione» dove si spiegano
 segnali cerebrali, «energia libera variazionale» dove si fa apprendimento
 automatico.

@@ -4,8 +4,8 @@ Prova a tradurre parola per parola: «Il gatto nero salta sul muro»
 diventerebbe *«The cat black jumps on the wall»*, e un inglese storcerebbe il
 naso, perché l'aggettivo va prima del nome: *«The black cat jumps on the
 wall»*. Sei parole sono diventate sette, e due si sono scambiate di posto. La
-traduzione non è una sostituzione uno-a-uno: è prendere il *senso* di una
-sequenza e riscriverlo in un'altra sequenza, di lunghezza diversa e con un
+traduzione prende il *senso* di una sequenza e lo riscrive in un'altra
+sequenza, invece di sostituire una parola per volta: di lunghezza diversa e con un
 ordine diverso.
 
 Nella sezione precedente abbiamo costruito gli attrezzi: RNN, LSTM, GRU. In
@@ -236,7 +236,23 @@ Resta un metro grezzo, e ha due punti ciechi. Va usato su un pacco intero di
 frasi e non su una sola, perché su una frase corta basta una quaterna che
 manca per mandare il voto a zero. E non riconosce le parafrasi, quindi una
 traduzione giusta che sceglie sinonimi diversi da quelli del traduttore umano
-prende comunque un voto basso. Con questo metro, nel 2014, cinque di queste
+prende comunque un voto basso.
+E c'è un terzo punto cieco, che si vede
+tornando all'interprete. Questo metro guarda le parole che l'interprete ha
+detto e va a cercarle in quelle del traduttore umano: castiga chi **si
+inventa** un pezzo. L'interprete che invece **salta** il capoverso che contava
+lo castiga poco, e solo di rimbalzo, perché una versione più corta paga la
+penalità sulla lunghezza. Su una traduzione la scelta ha le sue ragioni, e
+qualche riga più sotto si vede quali. Ma il giorno in cui alla macchina si
+chiede di **riassumere** invece che di tradurre, saltare diventa il peccato
+principale, e il metro si gira: si prendono le parole del riassunto umano e si
+va a vedere quante sono finite in quello della macchina. Il voto che ne esce si
+chiama **ROUGE** {cite}`lin2004rouge`, e nella pratica di oggi i due versi di
+uno stesso conteggio, quello che castiga l'inventare e quello che castiga il
+saltare, si mettono insieme con la media prudente dell’$F_1$ della
+{doc}`sezione sulle metriche </MachineLearning/metriche>`, quella in cui un
+voto basso non si può nascondere dietro un voto alto.
+Con questo metro, nel 2014, cinque di queste
 reti messe insieme superano di poco il sistema statistico preso come termine
 di paragone, e restano sotto ai sistemi migliori dell'anno. La traduzione
 neurale non ha ancora vinto; ha fatto vedere che può.
@@ -279,13 +295,55 @@ $$
 
 dove $p_n$ è la precisione clippata degli $n$-grammi e $w_n = 1/4$ il peso
 uniforme dei quattro ordini. I limiti vanno detti subito, perché servono a
-leggere i numeri qui sotto: BLEU è definito **sul corpus** e non sulla singola
+leggere i punteggi di Sutskever: BLEU è definito **sul corpus** e non sulla singola
 frase (le $p_n$ si accumulano su tutto il test set, e su una frase sola un
 4-gramma mancante manda il punteggio a zero); dipende dalla tokenizzazione e
 dal numero di riferimenti, tanto che due punteggi si confrontano solo a
 protocollo identico, ed è la ragione per cui esiste `sacrebleu`; ed è cieco
 alla parafrasi corretta. Un punto di differenza è un segnale, non una
 sentenza.
+
+Quel «un termine di *recall* non c'è» è la porta da cui entra il metro gemello.
+**ROUGE** {cite}`lin2004rouge` (l'acronimo, coniato da Chin-Yew Lin, sta per
+*Recall-Oriented Understudy for Gisting Evaluation*) nasce per i riassunti,
+dove l'errore che conta è l'omissione. Con **un** riferimento la sua ROUGE-N è
+la stessa frazione di BLEU con il denominatore sull'altro lato:
+
+$$
+\text{ROUGE-N} = \frac{\sum_{g_n \in R}
+\mathrm{Count}_{\text{match}}(g_n)}
+{\sum_{g_n \in R} \mathrm{Count}(g_n)} ,
+$$
+
+dove $R$ è il riassunto di riferimento, $g_n$ i suoi $n$-grammi,
+$\mathrm{Count}(g_n)$ quante volte $g_n$ compare in $R$ e
+$\mathrm{Count}_{\text{match}}(g_n)$ quante di quelle occorrenze si ritrovano
+nel candidato. Detto a parole: BLEU conta quanti $n$-grammi del candidato
+stanno nel riferimento, ROUGE quanti $n$-grammi del riferimento stanno nel
+candidato.
+
+La simmetria si rompe appena i riferimenti sono più d'uno, e vale la pena
+saperlo perché è il caso normale. BLEU taglia il conteggio del candidato sul
+**massimo** fra i riferimenti; la ROUGE-N originale somma invece numeratore e
+denominatore **su tutti** i riferimenti, il che dà più peso agli $n$-grammi che
+compaiono in parecchi di loro, e il pacchetto dell'autore usa poi una terza
+ricetta ancora (il massimo delle ROUGE calcolate a coppie). Su un esempio di
+tre parole i numeratori diventano $3$ e $4$: nessuna delle due formule si
+ottiene dall'altra scambiando un denominatore.
+
+Accanto alla ROUGE-N si riporta quasi sempre la **ROUGE-L**, che al posto degli
+$n$-grammi conta la sottosequenza comune più lunga fra riferimento e candidato.
+Le due proprietà per cui esiste sono precise: non chiede che le parole in comune
+siano **consecutive**, quindi vede l'ordine senza pretendere la contiguità; e
+non chiede di **fissare $n$** in anticipo. Il prezzo è che una sottosequenza
+lunga si ottiene anche allungando il candidato, e per questo la si normalizza
+sulle lunghezze delle due sequenze prima di confrontare riassunti di taglia
+diversa (nel lavoro originale, dove i riassunti erano tagliati a una lunghezza
+fissa, quella normalizzazione era regolata per contare il solo richiamo).
+
+E questa è la ragione per cui oggi si riportano quasi sempre le $F_1$, cioè
+precisione e richiamo insieme: un richiamo puro non cala mai allungando il
+candidato, quindi da solo premia chi ricopia mezzo articolo.
 
 Sutskever et al. usano LSTM a 4 strati con stati da
 1000 dimensioni e riportano, sul benchmark WMT'14 inglese→francese, un BLEU di
@@ -357,8 +415,7 @@ grosso si sposterà su «muro».
 (Nella figura quei voti sono chiamati **pesi**, ed è il termine che si usa
 ovunque, ma attenzione a non confonderli con i pesi della sezione precedente,
 quelli che una rete impara e si tiene: questi cambiano a ogni parola prodotta e
-non sono roba che il modello possiede, sono roba che il modello *decide sul
-momento*.)
+sono roba che il modello *decide sul momento*, non roba che possiede.)
 
 Con questo, il collo di bottiglia del vettore unico sparisce: nessuna fila di
 numeri di lunghezza fissa deve più contenere l'intera frase. Resta invece
@@ -450,6 +507,243 @@ senza nessun pezzo in mezzo. La seconda è che cadrà tutta l'impalcatura
 ricorrente attorno: resterà solo l'attenzione, che qui nasce come rattoppo per
 la traduzione e là diventa l'architettura intera.
 
+## Con la soluzione accanto: il teacher forcing
+
+Il decoder scrive una parola alla volta, e ogni parola la decide guardando
+quella che l'ha preceduta. Quale, però? Mentre si addestra ce ne sono due
+disponibili, la parola che il decoder ha appena prodotto e quella che la
+traduzione di riferimento ha in quel punto, e non sono la stessa parola.
+Prendere la seconda si chiama *teacher forcing*, alla lettera «imporre quella
+del maestro».
+
+`````{tab} Elementare
+
+Per insegnarti a tradurre, il professore ha un metodo. Ti dà la frase inglese,
+tu scrivi la prima parola italiana, lui te la segna se è sbagliata (è da quel
+segno che imparerai) e poi, prima di chiederti la seconda, cancella la tua e ci
+mette **la parola giusta**. Poi ti chiede la seconda, e rifà lo stesso. Ogni
+parola la scrivi partendo da un inizio corretto, anche quando la tua era
+sbagliata. Il foglio delle soluzioni è la traduzione umana che sta nei dati, e
+il professore è il conto che confronta la tua parola con quella.
+
+Il metodo ha un vantaggio che non è la gentilezza. Il professore conosce tutte
+le venti domande **prima** che tu cominci, perché l'inizio di ognuna sta già
+scritto sulla soluzione; se invece dovesse partire dalle tue parole, la settima
+domanda non saprebbe formularla finché non hai finito la sesta. Avere le domande
+tutte pronte in anticipo è un guadagno enorme per una macchina, che così
+organizza il lavoro in blocco invece di fermarsi venti volte, ed è la ragione
+per cui a questo metodo nessuno rinuncia. Quanto grande sia il guadagno dipende
+da com'è fatta la rete: qui, dove ogni parola aspetta comunque il riassunto di
+quella prima, resta un risparmio; nel capitolo che segue, dove quell'attesa
+sparisce, diventa un unico passaggio per la frase intera.
+
+Poi arriva il compito in classe, e lì nessuno cancella niente. Scrivi «The», e
+la seconda parola la scrivi partendo dal tuo «The». Se in quel punto il
+professore avrebbe messo «A», stai continuando da un inizio su cui non ti sei
+mai esercitato.
+
+Da lì in poi peggiora, e questa è la parte che sorprende. L'errore non resta
+soltanto scritto: cambia anche tutte le domande che vengono dopo, perché ogni
+parola successiva la scegli guardando un foglio che nell'esercizio non è mai
+comparso. Il modo in cui si continua una frase già sgangherata non l'hai mai
+provato, perché nei compiti di esercizio la frase era sempre a posto. Questo
+scarto fra come si impara e come si lavora ha un nome, **exposure bias**: alla
+lettera «distorsione da esposizione», perché durante l'esercizio si è stati
+esposti solo ai testi giusti.
+
+Il rimedio che viene in mente per primo è ammorbidire il metodo: ogni tanto il
+professore lasci stare la tua parola invece di correggerla, di rado all'inizio e
+sempre più spesso man mano che migliori. Così ogni tanto ti eserciti anche a
+continuare da un inizio tuo.
+
+Il secondo rimedio smette di correggere parola per parola: consegni la
+traduzione intera e il professore le dà un voto, con uno dei metri automatici
+già visti, BLEU o ROUGE, con tutti i limiti che quei metri hanno. Il voto arriva
+alla fine e non dice quale parola fosse sbagliata, che è la situazione di chi
+impara per tentativi da una ricompensa, cioè il
+{doc}`reinforcement learning </ReinforcementLearning/overview>` a cui il libro
+dedica una parte intera. Anche questo rimedio, però, parte dal primo metodo e lo
+tiene: si comincia correggendo parola per parola, e solo dopo si passa al voto
+sul risultato, prima sulla coda della frase e via via su tutta.
+
+Il primo rimedio ha però un buco, e si vede guardando che cosa quell'esercizio
+premia davvero. La parola che il professore si aspetta è sempre quella che
+segue sulla soluzione, qualunque cosa tu abbia scritto un attimo prima. Ma
+allora, per prendere il massimo dei voti, la tua frase non serve nemmeno
+guardarla: basta tenere il conto di quante parole sono passate e ricopiare la
+soluzione da lì in poi. Chi vince quell'esercizio può farlo ignorando quello che
+sta scrivendo, ed è esattamente quello che un traduttore non può fare.
+
+`````
+
+`````{tab} Superiore
+
+La verosimiglianza di una coppia sorgente-traduzione si fattorizza come
+
+$$
+\log P(y \mid x) = \sum_{i=1}^{m+1} \log P(y_i \mid y_{<i},\, x),
+\qquad y_{m+1} = \texttt{</s>},
+$$
+
+dove $y_{<i}$ sono i token della traduzione **di riferimento** che precedono la
+posizione $i$, e l'ultimo fattore è quello del token di fine frase, senza il
+quale la somma sulle sequenze di ogni lunghezza non farebbe uno. Massimizzarla
+prescrive di condizionare sul prefisso vero, e non su quello che il modello
+produrrebbe: il *teacher forcing* è la forma esatta della massima
+verosimiglianza su queste coppie, e non un'approssimazione adottata per
+comodità. Il nome è quello che gli danno Williams e Zipser
+{cite}`williams1989learning` in un contesto diverso, le reti ricorrenti
+addestrate in continuo, dove la pratica era già in uso.
+
+Ne discende il guadagno computazionale. Con il prefisso vero disponibile in
+anticipo, tutti gli **ingressi** del decoder sono noti prima di cominciare,
+quindi cade la dipendenza dal campionamento: nessun passo deve attendere che il
+precedente estragga un token. Su una RNN resta la dipendenza dallo **stato**,
+cioè $m$ passi in sequenza, e il guadagno è che le proiezioni ingresso-stato si
+fanno tutte insieme in un prodotto di matrici solo. Nelle architetture del
+capitolo seguente, dove la causalità è imposta da una maschera e non da una
+ricorrenza, cade anche la dipendenza dallo stato: un solo passaggio in avanti
+per l'intera frase.
+
+A generazione, però, $y_{<i}$ non esiste: al suo posto c'è $\hat{y}_{<i}$,
+prodotto dal modello stesso. Il modello viene quindi interrogato su una
+distribuzione di prefissi che in addestramento non ha mai visto. Ranzato e
+colleghi {cite}`ranzato2016sequence` battezzano lo scarto: «ci riferiamo a
+questa discrepanza come *exposure bias*, che si verifica quando un modello è
+esposto soltanto alla distribuzione dei dati di addestramento invece che alle
+proprie predizioni».
+
+Il danno non è la composizione di un tasso d'errore costante. La conditional
+$P_\theta(y_i \mid y_{<i}, x)$ è stimata bene dove i prefissi abbondano, cioè
+sul supporto dei dati; fuori di lì non c'è nessuna garanzia, perché i dati non
+permettono di distinguere fra ipotesi che coincidono sul supporto e divergono
+altrove. Un token deviante porta il modello in un contesto raro o inedito, dove
+sbaglia di più, il che rende più probabile il token deviante successivo. La
+popolazione delle sequenze si sdoppia: quelle ancora sul supporto sbagliano al
+tasso misurato in addestramento, quelle uscite sbagliano molto di più, e la
+media fra le due peggiora finché le proporzioni si assestano.
+
+I rimedi seguono due strade, e nessuna delle due abbandona il teacher forcing.
+Lo *scheduled sampling* di Bengio e colleghi {cite}`bengio2015scheduled`
+interpola: a ogni token si tira una moneta e con probabilità $1-\epsilon$ si usa
+$\hat{y}_{i-1}$ al posto di $y_{i-1}$, con $\epsilon$ portato da 1 verso 0 lungo
+l’**addestramento** (non lungo la frase), cioè un curriculum. MIXER, di Ranzato
+e colleghi, ottimizza la metrica di valutazione con il gradiente di policy di
+{doc}`REINFORCE </DeepReinforcementLearning/policy-gradient>`, ma parte da un
+modello già addestrato con l'entropia incrociata, tiene le due perdite mescolate
+e sposta il confine fra le due un pezzo di frase alla volta: gli autori
+insistono che entrambi gli ingredienti sono necessari, e chiamano curriculum
+anche il proprio.
+
+Il punto di rottura sta sul primo rimedio. Huszár {cite}`huszar2015how` mostra
+che l'obiettivo dello scheduled sampling è **improprio**, e che il suo ottimo
+non è la distribuzione dei dati nemmeno nel limite di dati e capacità infiniti:
+il modello che lo minimizza può ignorare il contenuto del prefisso e limitarsi a
+contare le posizioni. La derivazione è svolta su sequenze di lunghezza due e la
+generalizzazione è dichiarata dagli autori come una congettura, ma la direzione
+è chiara. Lo stesso lavoro, va detto per intero, sostiene che anche la massima
+verosimiglianza sia l'obiettivo sbagliato quando lo scopo è generare testo
+verosimile. La tensione corre allora fra due obiettivi di cui nessuno dei due è
+quello che si vorrebbe davvero, e il rimedio guasto contro il metodo sano è una
+lettura più comoda del vero.
+
+`````
+
+Che cosa succeda al tasso d'errore si può guardare senza addestrare niente.
+Serve una lingua giocattolo di dieci parole, numerate da 0 a 9, in cui l'unica
+frase legale è contare: dopo lo 0 viene 1, dopo il 7 viene 8, dopo il 9 si
+ricomincia da 0. E serve un modello che, come i decoder veri, guardi **due**
+parole per scegliere la terza, mentre a questa lingua ne basterebbe una: è
+questa sovrabbondanza a creare i paia di parole che i dati non contengono mai.
+Sui paia che i dati contengono il modello sbaglia una volta su cento; sugli
+altri tira a caso fra le dieci parole, e non perché la regola là non valga (vale
+identica) ma perché nei dati «la successiva della seconda» e «la seconda dopo la
+prima» sono la stessa cosa, e quale delle due il modello abbia imparato si vede
+soltanto fuori. La terza riga stampata è la controprova: la stessa cosa, con un
+modello che quei paia li sappia continuare.
+
+```python
+import numpy as np
+
+V, T, N = 10, 60, 20000   # 10 parole, frasi lunghe 60, 20000 frasi per volta
+FUGA = 0.01               # sui paia che i dati contengono sbaglia una volta su cento
+
+def modello(sa_continuare_fuori):
+    """Le probabilità della parola dopo, dato il paio che precede."""
+    M = np.full((V, V, V), 1.0 / V)      # paia mai viste: il modello tira a caso
+    for a in range(V):
+        paia = range(V) if sa_continuare_fuori else [(a + 1) % V]
+        for b in paia:
+            M[a, b] = FUGA / (V - 1)
+            M[a, b, (b + 1) % V] = 1 - FUGA
+    return M.cumsum(axis=2)
+
+def scrivi(cum, da_se, seme=20260830):
+    """N frasi; se `da_se` è falso, prima di ogni parola torna l'inizio giusto."""
+    rng = np.random.default_rng(seme)
+    seq = np.zeros((N, T), dtype=int)
+    seq[:, 1] = 1
+    scritte = np.zeros((N, T), dtype=int)
+    for t in range(2, T):
+        a, b = (seq[:, t-2], seq[:, t-1]) if da_se else ((t-2) % V, (t-1) % V)
+        scelta = (cum[a, b] < rng.random(N)[:, None]).sum(axis=1).clip(0, V - 1)
+        scritte[:, t] = scelta
+        seq[:, t] = scelta if da_se else t % V
+    return seq, scritte
+
+reale = modello(False)
+_, con_soluzione = scrivi(reale, da_se=False)
+libere, _ = scrivi(reale, da_se=True)
+ideali, _ = scrivi(modello(True), da_se=True)
+ok_sol = con_soluzione[:, 2:] == np.arange(2, T) % V
+ok_lib = libere[:, 2:] == (libere[:, 1:-1] + 1) % V
+ok_ide = ideali[:, 2:] == (ideali[:, 1:-1] + 1) % V
+
+print("parola  con la soluzione   da sé   da sé, sulle frasi ancora intatte   frasi intatte")
+for t in (0, 8, 28, 57):
+    intatte = ok_lib[:, :t].all(axis=1)      # nessun errore prima di questa parola
+    print(f"{t+2:6}{100*ok_sol[:, t].mean():16.1f}%{100*ok_lib[:, t].mean():8.1f}%"
+          f"{100*ok_lib[intatte, t].mean():36.1f}%{100*intatte.mean():16.1f}%")
+
+print()
+print("controprova, con un modello che sappia continuare anche fuori strada:")
+print("  da sé      " + "  ".join(f"{100*ok_ide[:, t].mean():.1f}%" for t in (0, 8, 28, 57)))
+print("  frasi intatte " + "  ".join(
+    f"{100*ok_ide[:, :t].all(axis=1).mean():.1f}%" for t in (0, 8, 28, 57)))
+```
+
+```text
+parola  con la soluzione   da sé   da sé, sulle frasi ancora intatte   frasi intatte
+     2            98.9%    98.9%                                98.9%           100.0%
+    10            99.1%    94.2%                                99.1%            92.1%
+    30            99.0%    91.2%                                99.0%            75.7%
+    59            99.0%    90.9%                                99.0%            56.1%
+
+controprova, con un modello che sappia continuare anche fuori strada:
+  da sé      98.9%  99.1%  99.0%  99.0%
+  frasi intatte 100.0%  92.1%  75.7%  56.1%
+```
+
+La prima colonna è piatta: con la soluzione accanto il modello sbaglia una
+parola su cento alla seconda posizione e una su cento alla cinquantanovesima,
+perché a ogni passo riparte da un inizio corretto. La seconda scende fino a nove
+errori su cento e poi si assesta lì, e la terza dice da dove viene quel calo:
+fra le frasi che non hanno ancora sbagliato niente, il modello continua a
+sbagliare una volta su cento, sempre, esattamente come in addestramento. Le
+frasi buone non peggiorano, diventano sempre meno, e la quarta colonna le conta:
+da cento su cento scendono a cinquantasei.
+
+La controprova dice quale delle quattro colonne misuri davvero l'exposure bias,
+e la risposta è una sola. Con un modello che sappia continuare anche fuori
+strada, la seconda colonna resta al novantanove per cento a ogni posizione,
+mentre la quarta scende esattamente come prima, fino a quel cinquantasei: le
+frasi si rovinano lo stesso, perché anche un modello perfetto fuori strada
+sbaglia una parola su cento e in sessanta parole l'errore capita. **Lo scarto
+fra la prima colonna e la seconda è tutto l'exposure bias, e le altre due non ne
+contengono niente.** Il numero che l'addestramento misura è il primo; quello che
+descrive la macchina al lavoro è il secondo; e la distanza fra i due la fanno,
+per intero, le frasi su cui il modello non si è mai esercitato.
+
 ## Generare la frase: greedy e beam search
 
 Resta un problema che finora abbiamo dato per scontato. Il decoder, a ogni
@@ -461,7 +755,7 @@ abbia fretta. Ma la parola migliore *adesso* non porta sempre alla frase
 migliore *alla fine*.
 
 (E chi gli dice di smettere? Fra le voci del suo elenco ce n'è una che non è
-una parola: è il segnale di fine frase, lo stesso `</s>` incontrato con gli
+una parola, ma il segnale di fine frase, lo stesso `</s>` incontrato con gli
 n-gram. Quando il decoder scommette su quello, ha deciso che la traduzione è
 finita, e ci si ferma. È una scommessa come le altre, e come le altre può
 sbagliare: un modello che lo tira fuori troppo presto tronca la frase, uno che
@@ -642,10 +936,28 @@ da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
   un'attenzione che si sposta a ogni passo e che nessuno gli ha insegnato dove
   posare. In regalo si ottiene l'allineamento fra le parole delle due lingue,
   ed è la stessa idea che nei Transformer diventerà protagonista.
+- Mentre impara, il decoder riparte dopo ogni parola da quella **giusta** invece
+  che dalla propria (*teacher forcing*), e per questo tutte le domande della
+  frase sono note in anticipo, il che fa risparmiare molto lavoro. Quando poi
+  lavora da sé quella correzione non c'è, e da un inizio sbagliato continua come
+  non si è mai esercitato a fare: sbaglia nove parole su cento dove in
+  addestramento ne sbagliava una, ed è lì, in quello scarto, che sta tutto il
+  danno. Le frasi ancora senza errori continuano invece a sbagliarne una su
+  cento, e quel nove è la media fra loro e quelle già uscite di strada. Si
+  rimedia lasciandogli ogni tanto la propria parola già mentre impara, oppure
+  dandogli un voto sulla traduzione intera; il primo rimedio però si può vincere
+  ignorando quello che si è appena scritto, che è la cosa che un traduttore non
+  può fare.
 - Prendere ogni volta la parola più probabile è **miope**, perché la strada
   che parte peggio può arrivare meglio: la **beam search** tiene aperte le
   poche strade più promettenti e decide qualche passo più avanti (con una
   correzione che le impedisce di preferire sempre le frasi corte).
+- Un testo generato si giudica confrontandolo con quello di una persona, e il
+  **verso** del confronto dipende da quale errore costa. In traduzione costa
+  inventare, e si guarda quante parole della macchina stanno nella versione
+  umana (**BLEU**); in un riassunto costa saltare, e si guarda quante parole
+  della versione umana stanno in quella della macchina (**ROUGE**). Chi legge
+  un punteggio senza sapere in che verso è fatto legge un numero e basta.
 - Nel 2016 la traduzione neurale entra in produzione con GNMT di Google; nel
   2017 *Attention Is All You Need* manda in soffitta la lettura passo dopo
   passo e tiene solo l'attenzione.
@@ -667,6 +979,18 @@ da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
 - L’**attenzione di Bahdanau** lo elimina: a ogni passo il decoder rivede
   *tutti* gli stati dell'encoder con pesi $\alpha_{ij}$ appresi; è il
   precursore diretto della *scaled dot-product attention* dei Transformer.
+- L'addestramento condiziona su $y_{<i}$ di riferimento (**teacher forcing**),
+  che è la forma esatta della massima verosimiglianza sulle coppie, token di
+  fine frase compreso, e rende noti in anticipo gli ingressi del decoder: su una
+  RNN restano comunque $m$ passi in sequenza, con una maschera causale il
+  passaggio diventa uno solo. In generazione il condizionamento è su
+  $\hat{y}_{<i}$, cioè su prefissi fuori dal supporto dei dati: è l’**exposure
+  bias** {cite}`ranzato2016sequence`, e si misura come scarto fra l'errore per
+  token con prefisso vero e quello con prefisso proprio, non sulla quota di
+  sequenze intatte, che scende uguale anche senza. Rimedi: *scheduled sampling*
+  {cite}`bengio2015scheduled`, il cui obiettivo è però improprio e lo stimatore
+  inconsistente {cite}`huszar2015how`, e MIXER, che mescola entropia incrociata
+  e gradiente di policy invece di sostituirla.
 - In generazione la scelta **greedy** è miope; la **beam search** tiene
   aperte le $k$ ipotesi migliori (con una *length penalty* per non penalizzare
   le frasi lunghe).
@@ -675,6 +999,13 @@ da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
   protocollo, cieco alla parafrasi. Nel 2014 la rete pura ($34{,}8$) supera il
   sistema statistico di riferimento ($33{,}3$) ma non lo stato dell'arte
   ($37{,}0$).
+- Il gemello per i riassunti è **ROUGE** {cite}`lin2004rouge`: un **richiamo**
+  sugli $n$-grammi del riferimento, perché là il peccato è l'omissione. Con un
+  riferimento solo è la frazione di BLEU col denominatore scambiato; con più
+  riferimenti no, perché BLEU taglia sul massimo e ROUGE somma. La **ROUGE-L**
+  usa la sottosequenza comune più lunga, che vede l'ordine senza pretendere la
+  contiguità e non chiede di fissare $n$; si riportano le $F_1$ perché un
+  richiamo puro premia il candidato lungo.
 - Nel 2016 la traduzione neurale entra in produzione con GNMT; nel 2017
   *Attention Is All You Need* fa cadere la ricorrenza.
 ```

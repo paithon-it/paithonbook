@@ -90,8 +90,8 @@ moltissimi esempi etichettati e molta potenza di calcolo. Con le poche
 migliaia di foto di un progetto reale
 (le lastre di un ambulatorio, i difetti su una linea di produzione, le specie
 di una guida botanica), una rete addestrata da zero fa esattamente così: sulle
-foto di addestramento risponde benissimo, su tutte le altre sbaglia. Il collo di bottiglia, quasi sempre, non è
-l'algoritmo: sono i **dati** e il **tempo**.
+foto di addestramento risponde benissimo, su tutte le altre sbaglia. Il collo
+di bottiglia, quasi sempre, sono i **dati** e il **tempo**, non l'algoritmo.
 
 ## Prendere in prestito: transfer learning
 

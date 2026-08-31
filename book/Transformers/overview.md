@@ -27,8 +27,9 @@ versione più raffinata, quella con un taccuino su cui annotare e cancellare
 Un romanzo letto attraverso una fessura che scopre una parola alla volta, con
 tutto il resto da tenere a memoria: dopo dieci pagine, quanto ricordi della
 prima? È il problema delle reti ricorrenti: sui testi lunghi il ricordo
-dell'inizio sbiadisce. Il taccuino su cui annoti quello che conta aiuta, ma ha
-una pagina sola: a ogni parola nuova la riscrivi, e di quel che c'era
+dell'inizio sbiadisce. Il taccuino su cui annoti quello che conta aiuta
+parecchio, perché ci scrivi solo l'essenziale e cancelli il resto. Ma la
+pagina è una sola, e a furia di aggiungere e cancellare, di quel che c'era
 all'inizio resta sempre meno. E c'è un secondo problema: se puoi leggere solo
 una parola alla volta, non puoi farti aiutare; cento amici non leggono un
 libro più in fretta di te se il libro va comunque letto in fila.
@@ -54,7 +55,8 @@ volta.
 `````{tab} Superiore
 Nelle RNN l'informazione che va dalla prima all'ultima parola di una sequenza
 lunga $n$ attraversa $O(n)$ passaggi di stato: il segnale si degrada (gradiente
-che svanisce, come visto nel capitolo sulle reti neurali) e le dipendenze
+che svanisce, come visto nella {doc}`sezione sulle funzioni di attivazione
+</RetiNeurali/funzioni-attivazione>`) e le dipendenze
 lunghe si perdono, problema che LSTM e GRU mitigano ma non eliminano. Inoltre
 la ricorrenza è intrinsecamente **sequenziale**: il passo $t$ richiede il passo
 $t-1$, e l'hardware parallelo (le GPU) resta sottoutilizzato in addestramento.
@@ -70,13 +72,11 @@ della sequenza, di cui parleremo nella sezione sui confronti.
 
 ## Dal meccanismo ai modelli
 
-Una nota di metodo, prima dell'elenco. I Transformer sono importanti, ma non
-sono magia: sotto il cofano ci sono tabelle di numeri e operazioni che si fanno
-con carta e penna, montate in un ordine particolarmente felice. Chi ha letto i
-capitoli sulla matematica e sulle reti neurali ritroverà i pezzi con i loro
-nomi (matrici, prodotti scalari, softmax); chi non li ha letti può seguire lo
-stesso il filo del livello Elementare, dove ogni pezzo ha un'immagine al posto
-della formula.
+I Transformer sono importanti, ma non sono magia: sotto il cofano ci sono
+tabelle di numeri e operazioni che si fanno con carta e penna, montate in un
+ordine particolarmente felice. Chi ha letto i {doc}`capitoli sulla matematica
+</Matematica/overview>` e sulle reti neurali ritroverà i pezzi con i loro nomi:
+matrici, prodotti scalari, softmax.
 
 Il capitolo segue la scia dell'articolo del 2017. Si comincia dal **meccanismo
 di attenzione**: cos'è, come si calcola, perché funziona. Poi si monta

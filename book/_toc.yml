@@ -52,10 +52,20 @@ parts:
     sections:
     - file: Matematica/algebra-lineare.md
       title: Algebra lineare
+    - file: Matematica/sistemi-lineari.md
+      title: Sistemi lineari
+    - file: Matematica/ortogonalita-proiezioni.md
+      title: Ortogonalità e proiezioni
+    - file: Matematica/determinante-e-volume.md
+      title: Il determinante
     - file: Matematica/analisi-ottimizzazione.md
       title: Analisi e ottimizzazione
     - file: Matematica/probabilita-statistica.md
       title: Probabilità e statistica
+    - file: Matematica/concentrazione.md
+      title: Quanto può sbagliare una media
+    - file: Matematica/catene-di-markov.md
+      title: Catene di Markov
     - file: Matematica/teoria-informazione.md
       title: Teoria dell'informazione
     - file: Matematica/analisi-numerica.md
@@ -169,6 +179,8 @@ parts:
       title: Architetture storiche
     - file: DeepLearning/multi-compito.md
       title: Una rete, molti compiti
+    - file: DeepLearning/meta-apprendimento.md
+      title: Imparare a imparare
   - file: VisioneArtificiale/overview.md
     title: Visione artificiale
     sections:
@@ -226,6 +238,8 @@ parts:
       title: Imparare guardando
     - file: DeepReinforcementLearning/offline-rl.md
       title: Offline RL
+    - file: DeepReinforcementLearning/gerarchia.md
+      title: Gerarchia e opzioni
     - file: DeepReinforcementLearning/esplorazione-e-ricompensa.md
       title: Esplorazione e ricompensa
 
@@ -399,10 +413,22 @@ parts:
     sections:
     - file: ModelliDiffusione/come-funziona.md
       title: Come funziona la diffusione
+    - file: ModelliDiffusione/sde-e-ode.md
+      title: Il limite continuo
+    - file: ModelliDiffusione/flow-matching.md
+      title: Flow matching
     - file: ModelliDiffusione/stable-diffusion.md
       title: Stable Diffusion
     - file: ModelliDiffusione/diffusion-transformer.md
       title: Diffusion Transformer (DiT)
+    - file: ModelliDiffusione/campionatori-veloci.md
+      title: Meno passi
+    - file: ModelliDiffusione/pochi-passi.md
+      title: Generatori a un passo
+    - file: ModelliDiffusione/guida.md
+      title: Guida e allineamento
+    - file: ModelliDiffusione/diffusione-discreta.md
+      title: Diffondere il testo
   - file: VerosimiglianzaEsatta/overview.md
     title: Verosimiglianza esatta
     sections:

@@ -436,7 +436,7 @@ prossima sezione.
   velocissimi e finisce in fretta il singolo compito (bassa *latenza*, cioè
   poca attesa); la GPU ne ha migliaia lenti e smaltisce montagne di conti
   uguali (alto *throughput*, cioè tanta roba per ora).
-- Una GPU non è un blocco unico: è una federazione di **officine** (gli
+- Una GPU è una federazione di **officine** e non un blocco unico (gli
   *Streaming Multiprocessor*), da qualche decina a oltre un centinaio, ognuna
   con i propri calcolatori, il proprio caposquadra e il proprio tavolo di
   lavoro. Insieme tengono al lavoro centinaia di migliaia di lavoratori.

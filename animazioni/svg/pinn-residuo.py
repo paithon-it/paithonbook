@@ -1,7 +1,7 @@
 """Una PINN impara la fisica: il residuo che si spegne, la curva che si incolla.
 
 I fotogrammi sono stati veri dell'addestramento, non un'interpolazione fra
-inizio e fine: `addestra()` è la PINN di `PINN/come-funziona.md` riga per riga
+inizio e fine: l'esperimento è la PINN di `PINN/come-funziona.md` riga per riga
 (stessa equazione, stessa rete, stesso seme, stessa loss) e la figura fotografa
 i pesi a cinque epoche.
 
@@ -10,18 +10,55 @@ in alto la curva della rete che si sovrappone alla soluzione esatta, in basso
 il residuo nei punti di collocazione che cala. Sono lo stesso fatto visto da
 due lati, ed è il motivo per cui una figura ferma qui perde quasi tutto.
 
-Costa una quarantina di secondi (trentamila epoche su CPU) e richiede `torch`:
-è il prezzo di numeri veri. Alla fine la rete riproduce i valori che il
-capitolo stampa, e gli `assert` in fondo a `addestra()` lo verificano: se un
-giorno l'addestramento non converge più, la figura non nasce.
+## Il dato si misura una volta, il disegno è una funzione pura
+
+L'addestramento non gira più mentre la figura si costruisce, e la ragione non
+sono i quaranta secondi che costa: sono trentamila passi di Adam su una loss
+che deriva due volte la rete, cioè trentamila occasioni perché l'ultimo bit di
+una somma parziale mandi i pesi da un'altra parte. Fra due CPU con ordini di
+riduzione BLAS diversi (stesso torch, stesso seme) la curva esce diversa alla
+terza cifra, l'SVG cambia, e `genera.py --verifica` dichiara «da rigenerare»
+su ogni macchina che non sia quella che ha committato. Un cancello che non può
+tornare verde non protegge niente: prima o poi lo si aggira, ed è la fine
+peggiore per un controllo.
+
+Quindi la misura e il disegno si separano, come per la potatura iterativa:
+
+- **il dato**: `misura()` addestra la rete, la collauda e scrive
+  `animazioni/dati/pinn-residuo.json`, che è committato e porta dentro il
+  seme, la configurazione e la data (`genera.py --misura pinn-residuo`);
+- **il disegno**: `costruisci()` legge quel json e basta. Funzione pura dei
+  dati, quindi stessi byte su ogni macchina, e nemmeno un `import torch`;
+- **la verità**: `verifica()` gira in tutti e due i posti. Sui dati committati
+  a ogni disegno, perché un dato committato è un dato che nessuno riapre più;
+  sull'addestramento appena fatto quando si rimisura, prima che tocchi il
+  disco.
+
+Il prezzo è che l'addestramento non lo riesegue più nessun controllo
+automatico, e «identico» non vuol dire «giusto»: un json vecchio verrebbe
+ridisegnato fedelmente per sempre. A difendere la pagina restano tre cose. Le
+asserzioni girano sul dato committato a ogni disegno, quindi un dato che non
+mostra il fenomeno non arriva in pagina. Il json porta dentro la
+configurazione con cui è stato misurato e il caricamento la riconfronta con
+quella scritta qui, quindi chi ritocca un parametro e non rimisura trova un
+rifiuto. E senza il json il generatore si ferma e dice come produrlo: una
+figura che si inventa i propri numeri è peggio di una figura che manca.
 """
 
+import json
 import math
+import sys
+from datetime import date
+from pathlib import Path
 
 from paithon_svg import *
 
 NOME = "pinn-residuo"
 TITOLO = "una PINN impara la fisica"
+
+QUI = Path(__file__).resolve()
+RADICE = QUI.parents[2]
+DATI = QUI.parents[1] / "dati" / f"{NOME}.json"
 
 # Il problema del capitolo: oscillatore armonico smorzato, m u'' + c u' + k u = 0
 M, C, K = 1.0, 0.4, 4.0
@@ -34,17 +71,55 @@ EPOCHE = 30_000
 LR = 1e-3
 LAMBDA_0 = 100.0
 N_COLLOCAZIONE = 200
+# Un thread. Non è una scelta di velocità: il numero di thread cambia l'ordine
+# di riduzione, cioè l'ultimo bit, e su trentamila passi da lì in poi la rete
+# non è più la stessa. Sta fra i parametri perché cambiarlo cambia i numeri.
+THREAD = 1
 
 TAPPE = (0, 4_000, 8_000, 16_000, 30_000)   # le epoche fotografate
 N_GRIGLIA = 71      # punti con cui si disegna una curva
 N_BARRE = 16        # quanti punti di collocazione mostra il pannello in basso
+N_FITTA = 500       # la griglia su cui il capitolo misura lo scarto massimo
 
-# Quello che il capitolo stampa a fine addestramento, con questo stesso seme:
-# residuo (media di r^2) sui 200 punti 7,77e-3 e scarto massimo 0,154.
-RESIDUO_CAPITOLO = 7.8e-3
-ERRORE_CAPITOLO = 0.154
 TOLLERANZA_CURVA = 0.20    # scarto massimo ammesso dalla soluzione esatta
 CALO_MINIMO = 20.0         # di quante volte il residuo deve almeno scendere
+
+# I quattro numeri che la pagina nomina, nel testo e nell'`:alt:` del `.md`,
+# che è la copia che nessuna macchina confronta con la figura. Sono scritti
+# **come la figura li stampa**, così il confronto è quello che il lettore fa
+# davvero, e girano a ogni disegno. Se un giorno la misura li spostasse, a
+# essere falsa sarebbe la pagina: si riscrive quella, non si allargano queste
+# righe (e sono due misure gemelle, il residuo e lo scarto, che tirano in
+# versi opposti: si rimisurano insieme).
+SCARTO_PAGINA = ("1,009", "0,154")            # prima e ultima tappa
+RESIDUO_PAGINA = ("2,6·10⁻¹", "7,8·10⁻³")     # media di r^2, prima e ultima
+
+
+def configurazione() -> dict:
+    """Tutto ciò che, cambiando, cambia i numeri: va nel json e si riconfronta.
+
+    Serve a impedire il guasto che la separazione fra dato e disegno rende
+    possibile: si ritocca un parametro qui, non si rimisura, e la figura
+    continua a disegnare l'addestramento vecchio mentre le etichette
+    raccontano quello nuovo (la riga dell'equazione in fondo alla figura, per
+    dirne una, legge `M`, `C` e `K` e non il json).
+    """
+    return {
+        "equazione": f"m u'' + c u' + k u = 0, m {M}, c {C}, k {K}",
+        "iniziali": f"u(0) {U_0}, u'(0) {V_0}, t in [0, {T_MAX}]",
+        "rete": "Linear(1,32), Tanh, Linear(32,32), Tanh, "
+                "Linear(32,32), Tanh, Linear(32,1)",
+        "ottimizzatore": f"Adam, lr {LR}",
+        "lambda_iniziale": LAMBDA_0,
+        "collocazione": N_COLLOCAZIONE,
+        "epoche": EPOCHE,
+        "tappe": list(TAPPE),
+        "griglia": N_GRIGLIA,
+        "barre": N_BARRE,
+        "fitta": N_FITTA,
+        "seme": SEME,
+        "thread": THREAD,
+    }
 
 
 def soluzione_esatta(t: float) -> float:
@@ -55,18 +130,26 @@ def soluzione_esatta(t: float) -> float:
                                    + (gamma / omega_d) * math.sin(omega_d * t))
 
 
-def addestra():
+# --------------------------------------------------------------------------
+# Il dato: l'addestramento eseguito per davvero, una volta, e committato
+# --------------------------------------------------------------------------
+def esperimento() -> dict:
     """La PINN di `PINN/come-funziona.md`, con le fotografie alle epoche di TAPPE.
 
-    Restituisce (istanti mostrati, stati), dove ogni stato porta l'epoca, la
-    curva sulla griglia di disegno, il residuo nei punti mostrati, la media di
+    Restituisce la griglia di disegno, la soluzione esatta su quella griglia,
+    gli istanti dei punti di collocazione mostrati, e uno stato per tappa:
+    l'epoca, la curva della rete, il residuo nei punti mostrati, la media di
     r^2 su tutti i punti di collocazione e lo scarto massimo dalla soluzione
     esatta.
+
+    `torch` si importa qui dentro e non in cima al file: chi disegna la figura
+    non ne ha bisogno, e una verifica che non ha bisogno di un ambiente di
+    calcolo è una verifica che gira dappertutto.
     """
     import torch
     from torch import nn
 
-    torch.set_num_threads(1)        # una sola somma parziale: risultati ripetibili
+    torch.set_num_threads(THREAD)   # una somma parziale sola: risultati ripetibili
     torch.manual_seed(SEME)
 
     rete = nn.Sequential(
@@ -87,7 +170,7 @@ def addestra():
     # lo scarto si misura sulla griglia fitta del capitolo (500 istanti), non su
     # quella di disegno: altrimenti il numero mostrato dipenderebbe da quanti
     # punti servono a tracciare una linea liscia
-    fitta = [T_MAX * i / 499 for i in range(500)]
+    fitta = [T_MAX * i / (N_FITTA - 1) for i in range(N_FITTA)]
     t_f = torch.tensor(fitta, dtype=torch.float32).reshape(-1, 1)
     esatta_fitta = [soluzione_esatta(t) for t in fitta]
     istanti = t_c.detach().squeeze(1).tolist()
@@ -96,6 +179,13 @@ def addestra():
                 for i in range(N_BARRE)]
 
     stati = []
+
+    def tondo(v):
+        # Nove decimali: questi valori escono da tensori float32, che portano
+        # circa nove cifre decimali significative, quindi arrotondare piu'
+        # corto butterebbe via misura, e a un decimo di pixel di distanza da
+        # un arrotondamento sposterebbe anche un punto disegnato.
+        return round(float(v), 9)
 
     def fotografa(epoca):
         u = rete(t_c)
@@ -107,10 +197,10 @@ def addestra():
             densa = rete(t_f).squeeze(1).tolist()
         stati.append({
             "epoca": epoca,
-            "curva": curva,
-            "residui": [abs(float(residuo[i])) for i in mostrati],
-            "medio": float((residuo ** 2).mean()),
-            "scarto": max(abs(a - b) for a, b in zip(densa, esatta_fitta)),
+            "curva": [tondo(v) for v in curva],
+            "residui": [tondo(abs(float(residuo[i]))) for i in mostrati],
+            "medio": tondo((residuo ** 2).mean()),
+            "scarto": tondo(max(abs(a - b) for a, b in zip(densa, esatta_fitta))),
         })
 
     for epoca in range(EPOCHE + 1):
@@ -132,35 +222,125 @@ def addestra():
         (loss_fisica + LAMBDA_0 * loss_iniziale).backward()
         ottimizzatore.step()
 
+    return {
+        "griglia": [tondo(t) for t in griglia],
+        "esatta": [tondo(v) for v in esatta],
+        "t_barre": [tondo(istanti[i]) for i in mostrati],
+        "stati": stati,
+    }
+
+
+def misura() -> Path:
+    """Riesegue l'addestramento, lo collauda, e riscrive il dato committato.
+
+        python3 animazioni/svg/genera.py --misura pinn-residuo
+
+    Il collaudo sta **qui**, prima della scrittura: un dato che non mostra il
+    fenomeno che la didascalia promette non deve arrivare al disco, o il
+    prossimo che rigenera la figura si ritrova con una pagina che mente e
+    nessun cancello rosso.
+    """
+    import torch
+
+    corsa = esperimento()
+    verifica(corsa)
+    dato = {
+        "_": ("L'addestramento misurato della PINN, disegnato da "
+              f"animazioni/svg/{NOME}.py. Non si scrive a mano: lo riscrive "
+              f"`python3 animazioni/svg/genera.py --misura {NOME}`, che prima "
+              "di scrivere collauda che il fenomeno ci sia."),
+        "data": date.today().isoformat(),
+        "configurazione": configurazione(),
+        "versioni": {
+            "python": ".".join(str(v) for v in sys.version_info[:3]),
+            "torch": torch.__version__,
+        },
+        **corsa,
+    }
+    DATI.parent.mkdir(parents=True, exist_ok=True)
+    DATI.write_text(json.dumps(dato, indent=1, ensure_ascii=False) + "\n",
+                    encoding="utf-8")
+    return DATI
+
+
+def dati() -> dict:
+    """L'addestramento committato, con il rifiuto al posto dell'invenzione."""
+    if not DATI.is_file():
+        raise FileNotFoundError(
+            f"manca il dato misurato: {DATI.relative_to(RADICE)}\n"
+            f"    Questa figura disegna un addestramento **misurato**, non "
+            f"calcolato: senza il suo json non c'è niente da disegnare, e dei "
+            f"numeri inventati sarebbero peggio della figura che manca.\n"
+            f"    python3 animazioni/svg/genera.py --misura {NOME}")
+
+    dato = json.loads(DATI.read_text(encoding="utf-8"))
+    if dato.get("configurazione") != configurazione():
+        raise ValueError(
+            f"{DATI.relative_to(RADICE)} è stato misurato con un'altra "
+            f"configurazione:\n"
+            f"    committata: {dato.get('configurazione')}\n"
+            f"    nel file:   {configurazione()}\n"
+            f"    Il disegno legge il json ma le etichette leggono le costanti "
+            f"del generatore: disegnerebbe una rete e ne racconterebbe "
+            f"un'altra.\n"
+            f"    python3 animazioni/svg/genera.py --misura {NOME}")
+    return dato
+
+
+# --------------------------------------------------------------------------
+# La verità: le stesse asserzioni sul dato committato e sull'esperimento
+# --------------------------------------------------------------------------
+def verifica(corsa: dict) -> None:
+    """La figura promette un residuo che si spegne e una curva che si incolla.
+
+    Gira in due momenti, e sono due mestieri diversi. Quando si rimisura,
+    difende il dato che sta per finire sul disco. Quando si disegna, difende
+    la pagina: un json committato è un file che nessuno riapre più, e la sola
+    cosa che impedisce a un dato rimasto indietro di diventare una didascalia
+    falsa è che il disegno si rifiuti di disegnarlo.
+    """
+    stati = corsa["stati"]
+    assert [s["epoca"] for s in stati] == list(TAPPE), \
+        f"le tappe fotografate non sono {list(TAPPE)}"
+    assert len(corsa["griglia"]) == N_GRIGLIA == len(corsa["esatta"]), \
+        f"la curva si disegna su {N_GRIGLIA} punti, il dato ne porta altri"
+    assert len(corsa["t_barre"]) == N_BARRE, \
+        f"il pannello in basso disegna {N_BARRE} barre, il dato ne porta altre"
+    assert all(len(s["curva"]) == N_GRIGLIA and len(s["residui"]) == N_BARRE
+               for s in stati), "una tappa porta un numero di punti diverso"
+    assert all(v >= 0 for s in stati for v in s["residui"]), \
+        "il pannello in basso disegna |r(t)|: un residuo negativo non ci sta"
+
     primo, ultimo = stati[0], stati[-1]
     # Le due promesse della figura. Se l'addestramento non converge piu', meglio
     # nessuna figura che una figura che dice il contrario del capitolo.
-    if ultimo["medio"] * CALO_MINIMO > primo["medio"]:
-        raise AssertionError(
-            f"il residuo e' passato da {primo['medio']:.2e} a {ultimo['medio']:.2e}: "
-            f"meno di {CALO_MINIMO:g} volte, la figura non mostrerebbe nulla")
-    if ultimo["scarto"] > TOLLERANZA_CURVA:
-        raise AssertionError(
-            f"scarto massimo dalla soluzione esatta {ultimo['scarto']:.3f} > "
-            f"{TOLLERANZA_CURVA}: la rete non si e' incollata alla curva vera")
-    # E la terza: i numeri devono restare quelli che il capitolo stampa.
-    if not 0.6 < ultimo["medio"] / RESIDUO_CAPITOLO < 1.6:
-        raise AssertionError(
-            f"residuo finale {ultimo['medio']:.2e}, il capitolo stampa "
-            f"{RESIDUO_CAPITOLO:.1e}: uno dei due va rifatto")
-    if not 0.7 < ultimo["scarto"] / ERRORE_CAPITOLO < 1.4:
-        raise AssertionError(
-            f"scarto finale {ultimo['scarto']:.3f}, il capitolo stampa "
-            f"{ERRORE_CAPITOLO}: uno dei due va rifatto")
+    assert ultimo["medio"] * CALO_MINIMO <= primo["medio"], \
+        (f"il residuo è passato da {primo['medio']:.2e} a {ultimo['medio']:.2e}: "
+         f"meno di {CALO_MINIMO:g} volte, la figura non mostrerebbe nulla")
+    assert ultimo["scarto"] <= TOLLERANZA_CURVA, \
+        (f"scarto massimo dalla soluzione esatta {ultimo['scarto']:.3f} > "
+         f"{TOLLERANZA_CURVA}: la rete non si è incollata alla curva vera")
     for prima, dopo in zip(stati, stati[1:]):
-        if dopo["medio"] >= prima["medio"] or dopo["scarto"] >= prima["scarto"]:
-            raise AssertionError(
-                f"fra l'epoca {prima['epoca']} e la {dopo['epoca']} qualcosa "
-                "risale: le tappe vanno riscelte, la figura racconta un calo")
+        assert dopo["medio"] < prima["medio"] and dopo["scarto"] < prima["scarto"], \
+            (f"fra l'epoca {prima['epoca']} e la {dopo['epoca']} qualcosa "
+             f"risale: le tappe vanno riscelte, la figura racconta un calo")
 
-    return griglia, esatta, [istanti[i] for i in mostrati], stati
+    # E i numeri che la pagina nomina, confrontati **come la figura li stampa**.
+    detti_scarto = (_numero(primo["scarto"]), _numero(ultimo["scarto"]))
+    assert detti_scarto == SCARTO_PAGINA, \
+        (f"la pagina nomina uno scarto che va da {SCARTO_PAGINA[0]} a "
+         f"{SCARTO_PAGINA[1]}, la misura dà {detti_scarto[0]} e "
+         f"{detti_scarto[1]}: va riscritta la pagina, non questa riga")
+    detti_residuo = (_potenza(primo["medio"]), _potenza(ultimo["medio"]))
+    assert detti_residuo == RESIDUO_PAGINA, \
+        (f"la pagina nomina un residuo che va da {RESIDUO_PAGINA[0]} a "
+         f"{RESIDUO_PAGINA[1]}, la misura dà {detti_residuo[0]} e "
+         f"{detti_residuo[1]}: va riscritta la pagina, non questa riga")
 
 
+# --------------------------------------------------------------------------
+# Il disegno
+# --------------------------------------------------------------------------
 def _numero(x: float, cifre: int = 3) -> str:
     return f"{x:.{cifre}f}".replace(".", ",")
 
@@ -182,7 +362,10 @@ def _polilinea(r: Riquadro, xs, ys) -> str:
 
 
 def costruisci() -> Figura:
-    griglia, esatta, t_barre, stati = addestra()
+    corsa = dati()
+    verifica(corsa)
+    griglia, esatta = corsa["griglia"], corsa["esatta"]
+    t_barre, stati = corsa["t_barre"], corsa["stati"]
     n = len(stati)
 
     y_min = min(min(min(s["curva"]) for s in stati), min(esatta)) - 0.12

@@ -1,6 +1,6 @@
 <svg viewBox="0 0 720 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ciclo percezione-azione di un agente: percezione, decisione, azione, osservazione, con la memoria al centro che alimenta ogni fase">
   <rect x="0" y="0" width="720" height="360" fill="#F8F5EE"/>
-  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Il ciclo percezione–azione</text>
+  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Il ciclo percezione-azione</text>
   <!-- nodi -->
   <rect x="45" y="150" width="150" height="62" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
   <text x="120" y="176" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">Percezione</text>

@@ -18,6 +18,8 @@ tre patti, e chi impara a riconoscerli a colpo d'occhio smette di cercare
 l'errore per tentativi.
 
 ```python
+import torch
+
 x = torch.randn(32, 3, 224, 224)
 print(x.shape)    # torch.Size([32, 3, 224, 224])  -> la forma
 print(x.dtype)    # torch.float32                   -> il tipo
@@ -37,9 +39,10 @@ RuntimeError: mat1 and mat2 shapes cannot be multiplied (32x784 and 128x10)
 dice già tutto: PyTorch ha provato a moltiplicare una tabella $32 \times 784$
 per una $128 \times 10$, e non si può, perché il numero di colonne della prima
 ($784$) non coincide con il numero di righe della seconda ($128$). È la regola
-del prodotto fra matrici vista nel {doc}`capitolo di algebra lineare </Matematica/overview>`, e il motivo per
-cui esiste è che ogni riga della prima matrice viene accoppiata a una colonna
-della seconda, numero per numero: se le due file non hanno la stessa lunghezza,
+del prodotto fra matrici vista nella {doc}`sezione di algebra
+lineare </Matematica/algebra-lineare>`, e il motivo per cui esiste è che ogni
+riga della prima matrice viene accoppiata a una colonna della seconda, numero
+per numero: se le due file non hanno la stessa lunghezza,
 gli accoppiamenti non si chiudono.
 
 I numeri dicono anche *dove* è successo, ed è la parte che si impara a leggere.
@@ -139,11 +142,11 @@ strati `nn` (i casi dei due messaggi qui sopra) il tipo se lo aspetta preciso,
 e preferisce fermarsi piuttosto che indovinare quale volevamo.
 
 I due messaggi vanno letti in modi diversi, e conviene saperlo perché è proprio
-la varietà delle formulazioni a disorientare. Nel **primo** i due tipi non sono
-"atteso" e "trovato": sono i **due operandi**, il tensore che abbiamo passato e
-i pesi del modello, nell'ordine. `Byte` è il nome interno di `uint8`, il tipo
-di un'immagine appena letta da un file, e `Float` è il tipo dei pesi: la frase
-dice che una cosa a interi e una a decimali si sono incontrate in una
+la varietà delle formulazioni a disorientare. Nel **primo** i due tipi sono i
+**due operandi**, il tensore che abbiamo passato e i pesi del modello,
+nell'ordine, e non "atteso" e "trovato". `Byte` è il nome interno di `uint8`,
+il tipo di un'immagine appena letta da un file, e `Float` è il tipo dei pesi:
+la frase dice che una cosa a interi e una a decimali si sono incontrate in una
 moltiplicazione fra matrici. Il **secondo** riguarda le etichette, e lì i nomi
 sono quelli dei tipi ammessi (`Long`, cioè `int64`) contro quello ricevuto.
 
@@ -222,8 +225,8 @@ La riga della `CrossEntropyLoss` spiega anche perché il suo messaggio parla di
 «target dtype» e non di «scalar type»: da PyTorch 1.10 quella loss accetta
 *anche* target `float`, ma solo con la stessa shape dei logit, interpretandoli
 come probabilità di classe (è la forma che serve per il *label smoothing* e per
-la distillazione). Un target `float` di shape $(N,)$ non è quindi una forma
-sbagliata, è un **tipo** sbagliato, ed è per questo che l'errore parla di tipi.
+la distillazione). Un target `float` di shape $(N,)$ è quindi un **tipo**
+sbagliato e non una forma sbagliata, ed è per questo che l'errore parla di tipi.
 
 Nota che `float16` e `bfloat16` non fanno eccezione a queste regole: la
 precisione mista, trattata in [prestazioni](prestazioni.md), non si ottiene
@@ -300,7 +303,9 @@ diversa disciplina d'uso.
 
 Il caso che sfugge quasi sempre è un tensore **creato dentro il `forward`**:
 
-```python
+```{code-block} python
+:class: pt-non-eseguibile
+
 def forward(self, x):
     maschera = torch.ones(x.shape[-1])            # nasce su CPU: errore
     maschera = torch.ones(x.shape[-1], device=x.device)   # corretto
@@ -359,17 +364,17 @@ training set il suo errore è zero, ed è proprio questo a doverci insospettire.
 ```
 
 {numref}`fig-curva-nervosa` è la forma grafica dell'errore silenzioso più
-comune di tutti, e non sta nella lista che segue perché non è una riga di
-codice sbagliata: è la loss di addestramento che scende benissimo mentre quella
-di validazione risale, cioè un modello che memorizza invece di imparare. Il
+comune di tutti, e non sta nella lista che segue perché nessuna riga di codice
+è sbagliata. Succede che la loss di addestramento scende benissimo mentre
+quella di validazione risale, cioè un modello che memorizza invece di imparare. Il
 codice funziona, non c'è niente da correggere in PyTorch, e proprio per questo
 lo si scopre tardi. Se ne parla per esteso nella sezione dopo l'elenco, quella
 sulle curve.
 
 - **`optimizer.zero_grad()` dimenticato.** Senza quella riga i gradienti si
   sommano invece di sostituirsi, e al giro numero $t$ la correzione che il
-  modello applica non è quella dell'ultimo errore: è la somma di tutte quelle
-  dei $t$ giri precedenti, cioè grosso modo $t$ volte la correzione media. La
+  modello applica è la somma di tutte quelle dei $t$ giri precedenti, e non
+  quella dell'ultimo errore, cioè grosso modo $t$ volte la correzione media. La
   parte interessante è che **cosa si vede dipende dall'ottimizzatore**, e non
   nel verso che ci si aspetta. Con **SGD** il passo cresce insieme alla somma:
   con un learning rate piccolo la loss resta perfino *migliore* di quella del
@@ -390,14 +395,18 @@ sulle curve.
   default.
 - **La predizione e il target non hanno la stessa forma.** Se le predizioni
   sono una colonna di otto numeri e le etichette una riga di otto, `nn.MSELoss`
-  e `nn.L1Loss` non protestano: allineano le due forme allargandole (è il
-  *broadcasting* già visto sui tensori) e finiscono per confrontare **ogni**
-  predizione con **ogni** etichetta, sessantaquattro coppie invece di otto. Il
-  numero che esce non è quindi l'errore, è una media di errori incrociati che
-  non significa niente. Su una prova con otto esempi la MSE restituisce
+  e `nn.L1Loss` non si fermano: allineano le due forme allargandole (è il
+  *broadcasting* già visto sui tensori) e finiscono per confrontare ogni
+  predizione con ogni etichetta, sessantaquattro coppie invece di otto. Il
+  numero che esce è quindi una media di errori incrociati che non significa
+  niente. Su una prova con otto esempi la MSE restituisce
   $1{,}8507$ al posto di $2{,}0946$, cioè il dodici per cento sotto; con la L1
-  lo scarto è dello $0{,}3\%$, indistinguibile dal rumore, e il modello passa
-  la notte a ottimizzare la cosa sbagliata senza che nulla lo denunci. La
+  lo scarto è dello $0{,}3\%$, indistinguibile dal rumore. Un avviso arriva e
+  nomina il guasto (*«Using a target size that is different to the input
+  size»*), ma è un `UserWarning` fra le righe di avvio, si stampa una volta
+  sola per processo e non ferma niente: il modello passa la notte a
+  ottimizzare la cosa sbagliata mentre l'unica traccia è scorsa via un'ora
+  prima. La
   `BCEWithLogitsLoss` è l'eccezione gentile, perché si rifiuta e lo dice
   (`Target size must be the same as input size`). Il rimedio è una riga sola,
   e va scritta prima di ogni loss:
@@ -413,8 +422,8 @@ sulle curve.
   dropout, e altri strati a doppia personalità che il capitolo sul deep
   learning presenta): le metriche di test risultano peggiori e, cosa più
   insidiosa, diverse a ogni esecuzione.
-- **Memoria che cresce a ogni epoca.** `perdita` non è un numero: è un numero
-  *più* tutta la catena di operazioni che l'ha prodotto, che PyTorch conserva
+- **Memoria che cresce a ogni epoca.** `perdita` è un numero *più* tutta la
+  catena di operazioni che l'ha prodotto, che PyTorch conserva
   perché servirà al calcolo della derivata. Accumulare `totale += perdita`
   tiene quindi in vita l'intera catena di ogni batch, una sopra l'altra;
   `perdita.item()` estrae il numero e basta, e la catena può essere buttata.
@@ -434,7 +443,7 @@ sulle curve.
   essere zero esatto.
 - **`shuffle=True` sul `DataLoader` di test.** Non è un errore di per sé, ma
   rende impossibile confrontare le predizioni con le etichette in un ordine
-  stabile. Quello che invece **non** cambia è il voto: con `model.eval()`
+  stabile. Quello che invece non cambia è il voto: con `model.eval()`
   l'accuratezza misurata è identica cifra per cifra con il mescolamento acceso
   e con quello spento, perché sono gli stessi esempi in un altro ordine.
   L'unico numero che balla è la media delle medie per batch, che però è un
@@ -469,8 +478,8 @@ capita.
 
 **Non impara.** Le curve restano alte e piatte. Qui conviene guardare da
 vicino *quanto* piatte, perché la distinzione è diagnostica. Se la loss è
-**esattamente** identica epoca dopo epoca, non è un problema di
-apprendimento: è un bug, e i sospetti sono pochi (manca `optimizer.step()`,
+**esattamente** identica epoca dopo epoca, il problema non è di apprendimento
+ma un bug, e i sospetti sono pochi (manca `optimizer.step()`,
 il learning rate è zero, i parametri sono congelati da un
 `requires_grad=False` di troppo, oppure la loss che si retropropaga non è
 collegata all'uscita del modello). Se invece scende pochissimo ma scende, è
@@ -681,7 +690,9 @@ conviene rileggerne il riassunto la prima volta che qualcosa si rompe.
 - Il metodo vale più dei rimedi: **traceback dal basso**, stampa della terna,
   problema ridotto, giro a vuoto con un tensore finto.
 - Gli errori peggiori sono quelli **silenziosi**: `zero_grad` mancante (che con
-  SGD può far *scendere* la loss più in fretta, non divergere), softmax
+  SGD e passo corto può far *scendere* la loss più in fretta, e con passo
+  lungo la fa esplodere; con Adam non diverge mai, ed è il caso peggiore),
+  softmax
   doppia, `eval()` dimenticato, `.item()` dimenticato nell'accumulo.
 - Per gli errori silenziosi il messaggio d'errore è **la coppia di curve**, e
   va disegnata dall'epoca uno. Piatta come un tavolo: è un bug. Scende appena:

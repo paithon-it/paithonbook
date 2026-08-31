@@ -5,7 +5,7 @@ un'inchiesta destinata a diventare un caso di scuola
 {cite}`angwin2016machine`. Al centro c'è **COMPAS**, un software venduto ai
 tribunali statunitensi che assegna a ogni imputato un punteggio di rischio: la
 probabilità, stimata da un algoritmo, che quella persona torni a delinquere.
-Non è un dettaglio burocratico: quei punteggi finiscono sotto gli occhi dei
+E quei punteggi finiscono sotto gli occhi dei
 giudici quando decidono se una persona aspetterà il processo a casa o in
 carcere, se concedere la libertà vigilata, quanti anni di pena dare.
 Julia Angwin e i suoi colleghi ricostruiscono i punteggi di oltre settemila
@@ -96,8 +96,8 @@ paradosso è che entrambe le parti avevano ragione, e la ragione è un teorema:
 quando i tassi di base delle due popolazioni differiscono, la **parità del
 valore predittivo** rivendicata dall'azienda e la parità di *entrambi* i tassi
 di errore misurata da ProPublica non possono valere insieme
-{cite}`chouldechova2017fair`. Non è un difetto risolvibile con codice migliore:
-è un vincolo aritmetico.
+{cite}`chouldechova2017fair`. È un vincolo aritmetico, che il codice migliore
+non tocca.
 
 Due avvertenze, che la sezione sull'equità svilupperà. La prima: «parità del
 valore predittivo» non è sinonimo di «calibrazione», e i teoremi che si citano
@@ -284,8 +284,9 @@ politiche, che nessuna formula risolve al posto nostro.
 Ce n'è una che viene prima di tutte, e che un capitolo tecnico rischia di
 saltare: **chi ha deciso di mettere lì quel sistema, e per risolvere quale
 problema**. Quando un tribunale adotta un software di punteggi, il problema che
-si sta togliendo dal tavolo non è quasi mai «vorremmo essere più giusti»: sono
-i tempi, i costi, la pila di fascicoli da smaltire. E c'è un vantaggio in più,
+si sta togliendo dal tavolo sono quasi sempre i tempi, i costi, la pila di
+fascicoli da smaltire, e quasi mai «vorremmo essere più giusti». E c'è un
+vantaggio in più,
 meno confessabile: davanti a un reclamo un numero si difende meglio di una
 motivazione scritta, perché sembra non avere un autore. Tenere presente quel
 passo dice che «come rendo equo il modello» non è sempre la prima domanda: a

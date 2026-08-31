@@ -71,8 +71,8 @@ dove i dati sono più radi, cioè ai bordi.
 La regressione polinomiale $y = \theta_0 + \theta_1 x + \theta_2 x^2 + \dots$ è
 ancora un modello **lineare**, perché lineare lo è nei *parametri* $\theta_j$ e
 non in $x$: è quello che conta per risolverla, visto che resta un problema ai
-minimi quadrati con una matrice di disegno più larga. La difficoltà non è
-dunque nel risolverla; è in che cosa si ottiene.
+minimi quadrati con una matrice di disegno più larga. La difficoltà sta dunque
+in che cosa si ottiene, non nel risolverla.
 
 L'interpolazione polinomiale su nodi equispaziati non converge uniformemente per
 ogni funzione continua. L'esempio canonico di Runge è
@@ -121,8 +121,8 @@ flessibilità.
 
 `````
 
-Il codice qui sotto misura la stessa cosa su dati rumorosi, che è il caso
-realistico. L'errore che stampa è quello commesso su punti **che il modello non
+Su dati rumorosi, che è il caso realistico, la stessa misura si fa così.
+L'errore stampato è quello commesso su punti **che il modello non
 ha visto in addestramento**, ed è separato in due: quello nel centro del campo
 di gioco e quello nel quinto esterno, cioè ai bordi. È la separazione che rende
 visibile il difetto, perché nella media su tutti i punti si perde: ai bordi i
@@ -237,7 +237,7 @@ polinomio di grado $\le q$, e che in ogni nodo è continua insieme alle derivate
 fino alla $(q-1)$-esima. Per $q = 3$ (il caso quasi universale) le condizioni di
 raccordo sono continuità di $f$, $f'$ e $f''$.
 
-Il caso $q=3$ non è scelto per comodità: è il listello. Schoenberg deriva la
+Il caso $q=3$ viene direttamente dal listello. Schoenberg deriva la
 definizione dalla meccanica dell'asta appoggiata, con una linearizzazione
 dichiarata (se la curva è quasi parallela all'asse $x$ si può trascurare $y'$, e
 la curvatura $1/R = y''/(1+y'^2)^{3/2}$ si riduce a $y''$), e conclude che la
@@ -279,12 +279,13 @@ questo resta un ordinario problema ai minimi quadrati.
 `````
 
 Un dettaglio pratico da isolare, perché è il punto in cui il metodo mostra il
-suo carattere. La spline sposta il problema: non c'è più da scegliere un
-grado, c'è da scegliere **quanti paletti e dove**. Sul «dove», l'uso è mettere
-i nodi ai quantili della variabile (più paletti dove ci sono più dati, che è
-dove si possono permettere); sul «quanti», è un iperparametro come gli altri, che si sceglie con la validazione incrociata di
-{doc}`Overfitting e validazione <overfitting-validazione>`. Ma esiste
-anche una terza via, ed è quella che riporta al listello.
+suo carattere. La spline sposta il problema: non c'è più da scegliere un grado,
+c'è da scegliere **quanti paletti e dove**. Sul «dove», l'uso è mettere i nodi
+ai quantili della variabile (più paletti dove ci sono più dati, che è dove si
+possono permettere); sul «quanti», è un iperparametro come gli altri, che si
+sceglie con la cross-validation di {doc}`Overfitting e validazione
+<overfitting-validazione>`. Ma esiste anche una terza via, ed è quella che
+riporta al listello.
 
 ## La manopola che irrigidisce il legno
 
@@ -300,8 +301,8 @@ Reinsch, tre anni dopo {cite}`reinsch1967smoothing`.
 Il listello di legno fa due cose in contrasto fra loro. Da un lato deve passare
 vicino ai pesi, e ogni peso lo tira dalla sua parte. Dall'altro il legno si
 oppone alla piega: piegarlo costa fatica, e più lo pieghi stretto più fatica
-costa. La curva che il listello disegna è il compromesso fra questi due tiri, e
-non è una curva scelta da nessuno: è quella che spende meno fatica in totale.
+costa. La curva che il listello disegna è il compromesso fra questi due tiri,
+cioè quella che spende meno fatica in totale.
 
 E nessuno gli ha dovuto dire che forma prendere. Il legno non sa che cosa siano
 i tratti e i paletti, eppure quello che viene fuori è proprio una curva a tratti
@@ -364,12 +365,11 @@ in un caso in cui i parametri non si contano.
 
 `````
 
-Il codice qui sotto gira la manopola e stampa i gradi di libertà effettivi
+Girando la manopola si vedono i gradi di libertà effettivi
 accanto all'errore rispetto alla curva vera, che in un esperimento fabbricato in
 casa si conosce. Quel numero si ottiene con un conto pigro ma leggibile: si
 guarda, un dato per volta, di quanto la curva si sposta se si muove **solo**
-quel dato, e si sommano i centoventi spostamenti. Non è il modo veloce, è il
-modo che si legge.
+quel dato, e si sommano i centoventi spostamenti.
 
 ```python
 import numpy as np
@@ -523,8 +523,9 @@ modo grosso, non per un pelo.
 
 `````{tab} Superiore
 
-Un GAM sostituisce la parte lineare di un modello lineare generalizzato con una
-somma di funzioni univariate lisce:
+Un GAM sostituisce la parte lineare di un {doc}`modello lineare generalizzato
+</MachineLearning/apprendimento-supervisionato>` con una somma di funzioni
+univariate lisce:
 
 $$
 g\bigl(\mathbb{E}[y \mid \mathbf{x}]\bigr) = \theta_0 + \sum_{j=1}^{d} f_j(x_j),
@@ -635,16 +636,16 @@ crolla. Prima di usarne uno conviene sapere quale ipotesi si sta firmando.
 
 ## Dove stanno, in pratica
 
-Le spline e i GAM occupano una posizione precisa fra i metodi di questo
-capitolo, e conviene fissarla, perché non è «un modello in più».
+Le spline e i GAM occupano una posizione precisa fra la retta e i modelli del
+tutto liberi, e conviene fissarla, perché non è «un modello in più».
 
 Sono la risposta giusta quando servono tre cose insieme: che l'effetto di una
 variabile sia **curvo** e non se ne conosca la forma; che quell'effetto vada
 **mostrato a qualcuno**, in un grafico che si legge senza sapere di statistica;
 e che i dati non siano tantissimi. La medicina e l'epidemiologia le usano da
 decenni per questa ragione, ed è anche il motivo per cui il capitolo
-sull'interpretabilità ci tornerà sopra: un GAM non è un modello opaco che poi
-qualcuno cerca di spiegare, è un modello che si guarda direttamente.
+sull'interpretabilità ci tornerà sopra: un GAM si guarda direttamente, senza
+bisogno che qualcuno venga dopo a spiegarlo.
 
 Sono la risposta sbagliata quando le interazioni sono il cuore del problema, e
 quando i dati sono immagini, suono o testo: là non ci sono colonne con un
@@ -656,9 +657,9 @@ altri modelli.
 ```{admonition} Da ricordare
 :class: important
 - Un **polinomio** unico piegato troppo ondeggia dappertutto, e i danni li fa
-  **ai bordi**, dove i dati sono radi: è il fenomeno di Runge, e nel conto qui
-  sopra il polinomio più flessibile sbaglia ai bordi undici volte il rumore che
-  c'è nei dati, restando impeccabile al centro.
+  **ai bordi**, dove i dati sono radi: è il fenomeno di Runge, e al grado 21 il
+  polinomio sbaglia ai bordi undici volte il rumore che c'è nei dati, restando
+  impeccabile al centro.
 - Una **spline** è la stessa curva del listello di legno dei cantieri navali:
   tante cubiche corte, giuntate in modo che sui paletti (i **nodi**) non si
   vedano né gradini né spigoli né scatti di curvatura.

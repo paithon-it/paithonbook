@@ -9,8 +9,8 @@ precedente, da sole, qui non bastano. Ausiliare, verbo, articolo, nome,
 preposizione, articolo, nome: il POS tagging produce la stessa identica
 sequenza per entrambe le letture. In «La vecchia porta la sbarra» l'ambiguità
 viveva al piano delle categorie grammaticali; qui vive un piano più su. Le due
-letture non sono due sfumature dello stesso significato: sono due
-**strutture** diverse costruite con gli stessi mattoni.
+letture sono due **strutture** diverse costruite con gli stessi mattoni, e non
+due sfumature dello stesso significato.
 
 La disciplina che studia queste strutture è la **sintassi**; costruirle
 automaticamente si chiama **parsing**, o analisi sintattica, e un programma che
@@ -240,8 +240,8 @@ agganci del secondo.
 scatola di «un uomo». Dove può andare «nel parco»? Al *vedere* (ho visto nel
 parco), all’*uomo con il binocolo* (l'uomo col binocolo che stava nel parco),
 oppure al *binocolo* (il binocolo del parco, quello lì in dotazione). Tre.
-Attenzione: agganciarlo al solo «uomo» *senza* il binocolo non è una quarta
-possibilità, è la stessa scatola: dal momento che il binocolo è già dentro
+Attenzione: agganciarlo al solo «uomo» *senza* il binocolo ricade nella stessa
+scatola e non in una quarta possibilità: dal momento che il binocolo è già dentro
 l'uomo, non c'è modo di infilare il parco fra i due senza tagliare il cartone.
 
 **Caso B: il binocolo è mio**, cioè «con il binocolo» è già agganciato al

@@ -259,8 +259,8 @@ davvero è misurare quanto va veloce, non sapere che cosa calcola.
 Perché prendersi la briga di scrivere un kernel fuso come quello, invece della
 riga PyTorch pulita `y = torch.relu(a * x + b)`? Perché quella riga contiene
 **tre** operazioni (moltiplica, somma, azzera i negativi) e nel modo di
-eseguire di partenza, che si chiama *eager*, «impaziente», non sono affatto una
-cosa sola: sono tre kernel distinti, lanciati uno dopo l'altro, e ogni lancio
+eseguire di partenza, che si chiama *eager*, «impaziente», sono tre kernel
+distinti e non una cosa sola, lanciati uno dopo l'altro, e ogni lancio
 ha un prezzo.
 
 `````{tab} Elementare
@@ -352,15 +352,15 @@ normalizzazioni) passa per i kernel *elementwise* di PyTorch, uno per
 operazione. È flessibile e immediato da debuggare, ma paga i lanci e i viaggi
 in memoria appena visti, uno per ogni riga.
 
-In modalità **compile**, la catena cambia forma. Come descritto in
-«Prestazioni e scala», TorchDynamo cattura la sequenza di operazioni in un
-grafo e TorchInductor la ricompila: le operazioni pesanti restano affidate a
-cuBLAS e cuDNN, ma le lunghe catene elementwise che le circondano (quelle che
-in eager sarebbero stati dieci kernel e dieci viaggi in memoria) vengono
-**fuse** in pochi kernel Triton generati al volo. Meno lanci, meno traffico
-sulla HBM, la GPU meglio sfamata. La riga `model = torch.compile(model)` non è
-magia: è questa fabbrica di kernel fusi che si mette in moto, e i kernel che
-sforna sono scritti nel linguaggio che abbiamo appena letto.
+In modalità **compile**, la catena cambia forma. Come descritto in «Prestazioni
+e scala», TorchDynamo cattura la sequenza di operazioni in un grafo e
+TorchInductor la ricompila: le operazioni pesanti restano affidate a cuBLAS e
+cuDNN, ma le lunghe catene elementwise che le circondano (quelle che in eager
+sarebbero stati dieci kernel e dieci viaggi in memoria) vengono **fuse** in
+pochi kernel Triton generati al volo. Meno lanci, meno traffico sulla HBM, la
+GPU meglio sfamata. Dietro la riga `model = torch.compile(model)` c'è questa
+fabbrica di kernel fusi che si mette in moto, e i kernel che sforna sono
+scritti nel linguaggio che abbiamo appena letto.
 
 `````
 

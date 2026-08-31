@@ -22,9 +22,10 @@ la chiamata, e con altri toni le si dettava un numero qualunque, a New York
 come a Roma. A fine mese sul conto compariva la sola cosa che il nastro avesse
 mai registrato: una telefonata a un numero gratuito. Chi finì arrestato,
 racconta il reportage, aveva fatto l'unico errore che si potesse fare, e cioè
-partire da un numero che gratuito non era. Alla rete il fischio non era arrivato come un suono dentro una
-conversazione: era arrivato come un **comando**, perché le parole delle persone
-e i comandi delle macchine viaggiavano sullo stesso paio di fili. Non c'era
+partire da un numero che gratuito non era. Alla rete il fischio era arrivato
+come un **comando** e non come un suono dentro una conversazione, perché le
+parole delle persone e i comandi delle macchine viaggiavano sullo stesso paio
+di fili. Non c'era
 nessun errore di programmazione da correggere. C'era un canale solo.
 
 Il problema la rete telefonica lo ha risolto nel giro di un decennio,
@@ -39,8 +40,8 @@ La sezione {doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>`
 ha mostrato come si inganna la *vista* di una rete neurale, con manomissioni
 invisibili all'occhio. Questa affronta
 la stessa domanda per i modelli di linguaggio, e il quadro cambia in due modi.
-Il primo: l'attacco non è un rumore impercettibile, è prosa che chiunque può
-leggere, e per scriverla non serve né conoscere il modello né saper fare i
+Il primo: l'attacco è prosa che chiunque può leggere, non un rumore
+impercettibile, e per scriverla non serve né conoscere il modello né saper fare i
 conti. Il secondo, meno rassicurante: il canale separato, per ora, non c'è.
 
 ## Il difetto sta nel canale, non nel modello
@@ -290,8 +291,8 @@ ha spiegato come rifiutare. Averlo visto respingere qualcuno in italiano non
 dice quasi niente su cosa farà in greco.
 
 Allineare un modello è assumere un ottimo portiere. Non è installare una porta.
-E la domanda giusta, per chi progetta, non è «quanto è bravo il portiere», è
-«che cosa succede la volta in cui sbaglia».
+E la domanda giusta, per chi progetta, riguarda che cosa succede la volta in
+cui il portiere sbaglia, più che quanto sia bravo.
 
 `````
 
@@ -308,7 +309,7 @@ contesti in cui rifiutare costa moltissimo alla predizione del token successivo
 o al seguire le istruzioni. Un aggiramento
 riuscito è, in questa lettura, un input costruito in modo che l'obiettivo di
 sicurezza sia l'unico a chiedere il rifiuto e gli altri spingano tutti
-dall'altra parte. Non è il modello che «cede»: è un massimo che si sposta.
+dall'altra parte. È un massimo che si sposta, più che un modello che «cede».
 
 La seconda è la **generalizzazione discordante** (*mismatched
 generalization*). Il pre-addestramento copre una distribuzione enorme, il
@@ -337,7 +338,7 @@ che gli si vuole far disimparare. Se si riempie la conversazione di finti
 scambi in cui il modello accetta di fare una cosa che non dovrebbe, alla fine
 la fa. E siccome le conversazioni che questi sistemi riescono a tenere a mente
 si sono allungate moltissimo, di finti esempi ce ne stanno centinaia. Il punto
-non è il singolo attacco: è che **la memoria lunga, che è una capacità, è
+sta nel fatto che **la memoria lunga, che è una capacità, è
 anche una porta**, e più la si allarga per rendere il sistema utile, più larga
 diventa anche per chi vuole entrare.
 
@@ -662,9 +663,9 @@ il compito A si ferma e chiede aiuto, e un sistema tarato male chiede conferma
 così spesso che l'utente comincia ad approvare senza leggere, il che riporta
 la difesa a zero.
 
-**Isolamento del contesto.** L'ultima voce non è un gradino sopra la
-precedente: è il modo di realizzarla quando il testo non fidato va comunque
-letto. Consiste nel tenere separato ciò che è fidato da ciò che non lo è,
+**Isolamento del contesto.** L'ultima voce è il modo di realizzare la
+precedente quando il testo non fidato va comunque letto, più che un gradino
+sopra di essa. Consiste nel tenere separato ciò che è fidato da ciò che non lo è,
 invece di impastare tutto in un'unica finestra. In pratica, far elaborare i
 contenuti non fidati a una chiamata dedicata, con permessi propri e senza
 accesso ai dati riservati, e restituire al ciclo principale non il testo
@@ -702,8 +703,8 @@ cioè una voce dell'esame. Da lì in poi la
 lista di prove si rilancia a ogni cambio di istruzioni, di modello o di
 strumenti, e serve a verificare che quello che era stato aggiustato sia rimasto
 aggiustato. Il programma che fa da giudice porta però con sé i limiti già visti
-nel capitolo di MLOps per i giudici automatici: non è la verità, è un
-sostituto della verità, e ha i suoi pregiudizi. Lavorare troppo per compiacerlo
+nel capitolo di MLOps per i giudici automatici: è un sostituto della verità, e
+ha i suoi pregiudizi. Lavorare troppo per compiacerlo
 produce un sistema bravo a superare lui, che non è la stessa cosa di un sistema
 sicuro.
 
@@ -737,8 +738,8 @@ Il modo giusto di leggere tutto questo è quello della sicurezza informatica,
 che ha smesso da tempo di promettere l'invulnerabilità e ragiona in termini di
 superficie e di contenimento: si riduce la superficie di attacco, si limita il
 raggio del danno, si rendono le azioni pericolose reversibili o soggette a
-conferma, e si osserva quello che succede. Non è una resa: è ciò che ha reso
-utilizzabili sistemi molto più insicuri di questi.
+conferma, e si osserva quello che succede. È ciò che ha reso utilizzabili
+sistemi molto più insicuri di questi, e non una resa.
 
 E resta la conseguenza pratica, in una frase sola. Quando serve davvero una
 garanzia, la si cerca **fuori** dal modello: in un componente che non si lascia

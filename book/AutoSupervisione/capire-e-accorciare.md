@@ -190,8 +190,8 @@ teorico si mette in conto quello scarto senza accorgersene.
 Il modello di **ordine 0**, quello che conta quanto è frequente ciascuna
 lettera, non guadagna niente: $2{,}0001$ contro i $2{,}0000$ di chi non sa
 nulla, cioè spende leggermente di più di quanto spenderebbe tirando a caso.
-Non è un difetto del modello: è che in questa lingua le frequenze delle lettere
-non contengono informazione, per costruzione. Ha guardato nel posto sbagliato,
+In questa lingua le frequenze delle lettere non contengono informazione, per
+costruzione. Ha guardato nel posto sbagliato,
 e guardare non è gratis.
 
 Il modello di **ordine 1**, quello che per indovinare una lettera guarda la
@@ -202,8 +202,8 @@ dentro il numero, perché nelle prime lettere il modello non sapeva ancora
 niente e ha speso di più. E c'è un conto classico che lo prevede: un codice
 che stima i suoi parametri mentre legge paga, per lettera, metà del numero di
 parametri liberi moltiplicato per $\log_2 N / N$. Qui i parametri liberi sono
-dodici, cioè quattro contesti per tre probabilità ciascuno (la quarta non è
-libera: è quello che avanza per arrivare a uno), e con $N$ pari a duecentomila
+dodici, cioè quattro contesti per tre probabilità ciascuno (la quarta è quello
+che avanza per arrivare a uno), e con $N$ pari a duecentomila
 il conto dà $0{,}0005$ contro i $0{,}0004$ misurati. È un'asintotica e
 sovrastima un poco, come si vedrà anche fra due righe, ma l'ordine di grandezza
 è quello. Su questo prezzo torneremo, perché è il punto in cui la tesi di
@@ -319,8 +319,8 @@ C'è però una fregatura, ed è un teorema: quella lunghezza non si può
 calcolare. Non serve un calcolatore più grosso: un programma che, preso un
 foglio qualsiasi, dica qual è la ricetta più corta che lo produce non esiste e
 non può esistere. Per esserne sicuri bisognerebbe provarle tutte, e certe
-ricette non finiscono mai. Quindi il fondo c'è, ma non è una procedura: è un
-metro contro cui misurarsi sapendo che non lo si raggiungerà mai.
+ricette non finiscono mai. Quindi il fondo c'è, ma è un metro contro cui
+misurarsi sapendo che non lo si raggiungerà mai, e non una procedura.
 
 `````
 
@@ -369,12 +369,12 @@ $$
 
 cioè il valore atteso di $K$ sta sempre sopra l'entropia e la supera al più
 della complessità della sorgente stessa {cite}`grunwald2004shannon`. La
-costante non è universale: è quanto costa **descrivere** $P$. Sono due nozioni
-diverse di informazione, una per singolo oggetto e l'altra per distribuzione, e
-su una sorgente semplice come quella della sezione precedente si toccano; è la
-ragione per cui lì il fondo di Shannon e il fondo algoritmico raccontano la
-stessa storia, e insieme la ragione per cui su *una* stringa sorteggiata
-possono divergere di molto.
+costante misura quanto costa **descrivere** $P$, e non è universale. Sono due
+nozioni diverse di informazione, una per singolo oggetto e l'altra per
+distribuzione, e su una sorgente semplice come quella della sezione precedente
+si toccano; è la ragione per cui lì il fondo di Shannon e il fondo algoritmico
+raccontano la stessa storia, e insieme la ragione per cui su *una* stringa
+sorteggiata possono divergere di molto.
 
 Il terzo è che $K$ è **non computabile**: nessun algoritmo, dato $x$, ne
 restituisce $K(x)$. Segue dall'indecidibilità della fermata ed è già in
@@ -402,8 +402,8 @@ scegliere un modello mentre $K$ da sola non servirebbe.
 
 `````
 
-Il legame con questo libro non è una curiosità: è che questo **è** il rasoio di
-Occam, scritto in una forma che si può mettere in un programma. Il capitolo sul
+E il legame conta: quello appena scritto **è** il rasoio di Occam, in una forma
+che si può mettere in un programma. Il capitolo sul
 machine learning aveva enunciato il rasoio come massima («a parità di
 spiegazione, vince la più semplice») e poi l'aveva reso operativo con la
 regolarizzazione, che penalizza i pesi grandi. La complessità di Kolmogorov dice
@@ -472,8 +472,8 @@ L'auto-supervisione no. Lì si ottimizza un obiettivo (indovinare la parola
 coperta) e ci si aspetta che ne migliori un altro del tutto diverso
 (rispondere a domande di biologia), senza che nessuna ragione ovvia dica
 perché debba succedere. Ottimizzi una cosa, te ne interessa un'altra, e la
-seconda migliora: detta così ha l'aria di un trucco di prestigio. Non era che
-la teoria fosse debole, è che proprio non c'era.
+seconda migliora: detta così ha l'aria di un trucco di prestigio. La teoria non
+era debole: proprio non c'era.
 
 **Prima mossa: un caso in cui la garanzia c'è.** Esiste un modo di imparare
 senza etichette che, come il supervisionato, *deve* funzionare, e il suo
@@ -532,8 +532,8 @@ ci guadagni è quanto la prima valigia conteneva già della seconda, e non lo
 decidi tu: lo decide il mondo, cioè se davvero il testo scritto dalle persone
 contiene qualcosa della biologia.
 
-E c'è un secondo pezzo. Chi fa la valigia, qui, non è una persona che ragiona:
-è la discesa del gradiente, il metodo con cui una rete aggiusta a piccoli passi
+E c'è un secondo pezzo. Chi fa la valigia, qui, è la discesa del gradiente e
+non una persona che ragiona: è il metodo con cui una rete aggiusta a piccoli passi
 i propri pesi. La stessa rete, con pesi diversi, esegue procedimenti diversi: i
 pesi sono il suo programma, e lei la macchina che lo esegue. Addestrarla è come
 cercare, fra i tanti modi possibili di fare quella valigia, quello che occupa
@@ -717,8 +717,9 @@ con le etichette; e le due curve, quella della bravura a indovinare il pixel
 dopo e quella del classificatore lineare, salgono insieme. È il punto:
 **migliora il predittore e migliora la rappresentazione**, senza che nessuno
 abbia mai detto alla rete che cosa sia un gatto. (Scongelando la rete e
-rifinendola per intero si arriva al $99{,}0\%$, ma quello non è più un
-sondaggio: è addestramento con le etichette, e non dimostra la stessa cosa.)
+rifinendola per intero si arriva al $99{,}0\%$, ma quello diventa
+addestramento con le etichette invece che un sondaggio, e non dimostra la
+stessa cosa.)
 
 Sutskever lo presenta per quello che è, una prova di principio costosa e non un
 metodo pratico. Il modello che dà quel $96{,}3\%$ ha un miliardo e quattrocento milioni di parametri e lavora sui 32 pixel per
@@ -779,8 +780,8 @@ di qualche pagina che ne avesse codificati in caratteri, cosa che ritengono
 improbabile), batte i formati progettati apposta per quei due mestieri.
 
 Conviene però sapere com'è fatta quella prova, perché a immaginarla male si
-immagina qualcosa di più clamoroso di quel che è. Non sono fotografie intere e
-brani interi: sono ritagli da 2048 byte, cioè quanto il modello riesce a
+immagina qualcosa di più clamoroso di quel che è. Sono ritagli da 2048 byte, e
+non fotografie intere e brani interi: cioè quanto il modello riesce a
 guardare in una volta, e per le immagini sono rettangoli di 32 per 64 pixel in
 scala di grigio. Su blocchi così corti anche i formati specializzati rendono
 meno di quanto potrebbero, perché di contesto ne hanno poco da sfruttare.
@@ -832,8 +833,8 @@ Adesso l'obiezione seria, che è anche il punto in cui questa pagina si separa
 dalle sue versioni entusiaste.
 
 Un compressore va spedito insieme al file, altrimenti chi riceve non sa
-decomprimere. Nei conti di poche righe fa il modello non è stato contato:
-sono i «bit per carattere» a modello dato. Se lo si conta, la scena cambia in
+decomprimere. Nei conti di poche righe fa il modello non è stato contato, e
+quelli sono «bit per carattere» a modello dato. Se lo si conta, la scena cambia in
 modo drammatico.
 
 `````{tab} Elementare
@@ -876,15 +877,16 @@ l'ha spedito: se lo sono fabbricato tutti e due leggendo.
 
 `````{tab} Superiore
 
-Il conto a modello dato non è una lunghezza di descrizione: è
-$-\log_2 p_\theta(x)$ con $\theta$ regalato. La lunghezza di descrizione vera è
+Il conto a modello dato è $-\log_2 p_\theta(x)$ con $\theta$ regalato, e non
+una lunghezza di descrizione. La lunghezza di descrizione vera è
 quella in due parti di MDL, $L(\theta) + L(x \mid \theta)$, e su una rete grande
 il primo termine domina tutto. Lo stesso articolo di DeepMind riporta la
 colonna corretta: contando i parametri a due byte l'uno, la resa di Chinchilla
 70B su `enwik9` passa da $8{,}3\%$ a $14\,008{,}3\%$
 {cite}`deletang2024language`.
 
-La via d'uscita non è aggiustare il conto: è **cambiare codice**. Il codice
+La via d'uscita sta nel **cambiare codice**, più che nell'aggiustare il conto.
+Il codice
 *prequenziale*, o in linea, non trasmette mai i parametri. Fissati istanti di
 riaddestramento $1 = t_0 < t_1 < \dots < t_S = n$, la lunghezza è
 
@@ -924,8 +926,8 @@ $61{,}6\%$.
 Resta che sono due reti convoluzionali che arrivano quasi allo stesso posto,
 $92{,}9\%$ e $93{,}3\%$, e che a parità di risultato una viene contata
 **duemilacinquecento volte peggio** del non fare niente e l'altra **quasi
-quattro volte meglio**. Non è un dettaglio tecnico: è la differenza fra «il
-deep learning contraddice il rasoio di Occam» e «il deep learning lo rispetta»,
+quattro volte meglio**. È la differenza fra «il deep learning contraddice il
+rasoio di Occam» e «il deep learning lo rispetta»,
 e a deciderla è la scelta del codice, non il modello.
 
 La ragione profonda è che il codice prequenziale misura la
@@ -951,7 +953,7 @@ riguarda solo la compressione. Due gruppi seri possono guardare la stessa rete
 addestrata e concludere che comprime magnificamente o che è un disastro, senza
 che nessuno dei due sbagli un conto: cambia che cosa si mette nel prezzo. Ogni
 volta che si legge «il modello X comprime al tot per cento», la domanda da fare
-non è quanto, è **chi paga il vocabolario**.
+è **chi paga il vocabolario**, più che quanto.
 
 ## Dove la tesi si ferma
 
@@ -982,8 +984,8 @@ si comprime un file che sta lì; nell'addestramento vero c'è un insieme di
 addestramento e poi dati nuovi che, di fatto, non finiscono mai. Se quello che
 si vuole comprimere non finisce mai, la dimensione del compressore smette di
 contare, perché la si divide per una quantità che cresce senza limite. Ecco
-perché il paragrafo precedente non è un'obiezione che chiude la partita: è
-un'obiezione che vale su un file, e la sua forza dipende da una domanda che
+perché il paragrafo precedente è un'obiezione che vale su un file e non una che
+chiude la partita: e la sua forza dipende da una domanda che
 va posta ogni volta, cioè se il dato sia una cosa finita o un rubinetto aperto.
 Anche questa resta dichiarata come una discrepanza da chiarire, non come una
 cosa risolta.

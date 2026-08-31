@@ -38,6 +38,39 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-0)=
+
+## 1.12.0 · 30 agosto 2026
+
+### Sezioni nuove
+
+- {doc}`Imparare a imparare </DeepLearning/meta-apprendimento>` (Deep Learning). **Imparare a imparare.** Una sezione nuova sul meta-apprendimento: che cosa vuol dire scegliere una posizione di partenza da cui pochi passi bastano su un compito mai visto, e il conto che lo dimostra.
+- {doc}`Gerarchia e opzioni </DeepReinforcementLearning/gerarchia>` (Deep Reinforcement Learning). **Decidere ogni tanto invece che sempre.** Una sezione nuova sul rinforzo gerarchico: le opzioni, chi decide a quale scala di tempo, e perché un agente che sceglie meno spesso può imparare di più.
+
+### Pagine ampliate
+
+- {doc}`Far funzionare le reti profonde </DeepLearning/ottimizzazione-regolarizzazione>` (Deep Learning). **Quattro cose che il libro usava come note e non aveva mai spiegato.** Il label smoothing (promesso da un altro capitolo e mai mantenuto), il Thompson sampling nei banditi, il teacher forcing e l'exposure bias nei modelli sequenza-a-sequenza, i test d'ipotesi e il p-value con le correzioni per i confronti multipli: ciascuno nella sezione in cui il lettore ha già ciò che serve per capirlo.
+- {doc}`Componenti e modelli classici </SerieTemporali/componenti-e-classici>` (Serie temporali). **Sette voci dalla terza tornata sulle fonti.** L'orizzonte di un MA(q) e il nome della passeggiata aleatoria, ROUGE accanto a BLEU e il verso di un metro, il curriculum e il self-play negli agenti che imparano insieme, e l'ordinare per perdita fra le metriche.
+- {doc}`Algebra lineare </Matematica/algebra-lineare>` (Matematica). **Altri quattro presupposti spiegati.** La decomposizione ai valori singolari e l'approssimazione di rango basso (che reggono PCA, LoRA e le fattorizzazioni), la calibrazione delle probabilità con il diagramma di affidabilità e il temperature scaling, il filtro di Kalman nelle serie temporali, e i modelli lineari generalizzati con la regressione di Poisson: lineare, logistica e Poisson sono la stessa macchina.
+
+### Correzioni
+
+- **Dieci capitoli riletti con quattro lenti.** Matematica, Modelli di diffusione, Python, Machine learning, Reti neurali, PyTorch, Transformers, State space model, Sistemi multi-agente e Audio sono passati per i tre lettori-agente e per un lettore esperto che apre ogni rimando alla destinazione: rimandi che mandavano dove la cosa non c'era, termini dati per noti prima di essere spiegati, due formule sbagliate, un'affermazione vera in aritmetica esatta e falsa eseguendo la pagina. Ogni correzione è misurata nel suo consuntivo, e i tagli sono più delle aggiunte.
+
+(v1-11-0)=
+
+## 1.11.0 · 30 agosto 2026
+
+### Sezioni nuove
+
+- {doc}`Sistemi lineari </Matematica/sistemi-lineari>` (Matematica). **Il capitolo di matematica arriva a undici sezioni.** Cinque nuove: come si risolve un sistema lineare e che cosa si risponde quando una risposta non c'è, le proiezioni e i minimi quadrati, il determinante come volume, le disuguaglianze che valgono senza sapere niente della distribuzione, e le catene di Markov, che qui servono a tre capitoli più avanti.
+- {doc}`Il limite continuo </ModelliDiffusione/sde-e-ode>` (Modelli di diffusione). **La diffusione, dal limite continuo alla generazione in un passo.** Sei sezioni nuove: le equazioni differenziali dietro il rumore che si toglie, il flow matching che sceglie il percorso invece di ereditarlo, i campionatori che tagliano i passi, i generatori che ne fanno uno solo, i modi di dire al modello che cosa generare, e che cosa cambia quando lo stato è fatto di parole invece che di numeri.
+
+### Correzioni
+
+- {doc}`Guida e allineamento </ModelliDiffusione/guida>` (Modelli di diffusione). **Che cosa fa davvero alzare la forza della guida.** Si legge dappertutto che equivale a campionare da una distribuzione «inclinata»: sul banco di prova, dove le due quantità si calcolano esattamente, i campioni escono da tutt'altra parte, e la pagina misura di quanto. Il danno si concentra a metà percorso, dove le due direzioni divergono di più.
+- **Meno cadenza, più prosa.** Una passata su tutto il libro ha diradato la costruzione «non è X, è Y», che ricorreva più di settecento volte e a forza di ripetersi non contrapponeva più niente. Dove il contrasto serviva a mettere in guardia da un errore vero è rimasto, in una forma ordinaria.
+
 (v1-10-5)=
 
 ## 1.10.5 · 25 agosto 2026
@@ -155,7 +188,7 @@ piedi.
 
 ### Correzioni
 
-- **Il libro sapeva una metafora sola, e cominciava sempre allo stesso modo.** Una scheda «Elementare» su cinque apriva con «Immagina di»: presa una per una era una buona apertura, ma chi legge di fila incontrava lo stesso invito ogni cinque pagine, e a quel punto non è più un gancio, è un tizio che si schiarisce la voce. Adesso sono una su dodici, e nessun capitolo ne ha più del quindici per cento. Nessuna analogia è stata tolta: è cambiato il modo di entrarci, perché entrare nella scena è più forte che chiedere il permesso di immaginarla. «Immagina» è rimasto dove è il verbo esatto, cioè dove si chiede davvero di figurarsi qualcosa che non si può vedere: uno spazio a dodicimila dimensioni, una lingua senza alfabeto, sedicimila puntini in un secondo di suono.
+- **Il libro sapeva una metafora sola, e cominciava sempre allo stesso modo.** Una scheda «Elementare» su cinque apriva con «Immagina di»: presa una per una era una buona apertura, ma chi legge di fila incontrava lo stesso invito ogni cinque pagine, e a quel punto quello che si sente è un tizio che si schiarisce la voce. Adesso sono una su dodici, e nessun capitolo ne ha più del quindici per cento. Nessuna analogia è stata tolta: è cambiato il modo di entrarci, perché entrare nella scena è più forte che chiedere il permesso di immaginarla. «Immagina» è rimasto dove è il verbo esatto, cioè dove si chiede davvero di figurarsi qualcosa che non si può vedere: uno spazio a dodicimila dimensioni, una lingua senza alfabeto, sedicimila puntini in un secondo di suono.
 - **E sotto c'era la catena di montaggio.** Tolta la cornice, è venuto fuori che la stessa immagine apriva sette spiegazioni in cinque capitoli diversi, tre con le stesse identiche parole. Dove regge fino in fondo resta (in *GPU* è il filo di tutto il capitolo, e la catena percorsa all'indietro è il modo migliore di raccontare come una rete impara dai propri errori); dove era solo un modo di dire «una cosa dopo l'altra» ha lasciato il posto a un'immagine scelta per quel passaggio: una filiera del latte dove il controllo scarta un lotto intero, un autolavaggio a tunnel, una fila di specchietti che rimbalza un raggio laser.
 
 (v1-9-1)=
@@ -290,7 +323,7 @@ piedi.
 
 ### Pagine ampliate
 
-- {doc}`Prefazione </prefazione>`. **Perché il segno di questo libro è un triangolo impossibile.** La prefazione lo mostrava senza dirlo. Adesso aggiunge la ragione, in un paragrafo: quell'impossibilità non è un inganno dell'occhio, è un teorema, e dice una cosa che vale per chi rilegge un libro tecnico. I tre pezzi della figura sono tutti e tre perfetti, corrispondono a oggetti veri, e il guasto non è in nessuno dei tre: è che non si compongono. L'errore non ha un luogo.
+- {doc}`Prefazione </prefazione>`. **Perché il segno di questo libro è un triangolo impossibile.** La prefazione lo mostrava senza dirlo. Adesso aggiunge la ragione, in un paragrafo: quell'impossibilità è un teorema e non un inganno dell'occhio, e dice una cosa che vale per chi rilegge un libro tecnico. I tre pezzi della figura sono tutti e tre perfetti, corrispondono a oggetti veri, e il guasto non è in nessuno dei tre: è che non si compongono. L'errore non ha un luogo.
 
 ### Correzioni
 
@@ -414,7 +447,7 @@ piedi.
 
 ### Correzioni
 
-- **Tutti e trentatré i capitoli sono stati riletti da capo**, con il codice eseguito davvero e i conti rifatti a mano. Non è una rilettura di forma: sono usciti errori di sostanza in quasi ogni capitolo, e i più gravi erano affermazioni che il libro smentiva da sé qualche pagina dopo. Qualche esempio: il clipping di PPO è asimmetrico e taglia da un lato solo, il gradiente della funzione di partizione era annunciato e mai derivato, TransE la composizione ce l'ha (a mancargli è un'altra cosa), e «PALLA sta in sette frame» è falso, il minimo è sei.
+- **Tutti e trentatré i capitoli sono stati riletti da capo**, con il codice eseguito davvero e i conti rifatti a mano. Sono usciti errori di sostanza in quasi ogni capitolo, e i più gravi erano affermazioni che il libro smentiva da sé qualche pagina dopo. Qualche esempio: il clipping di PPO è asimmetrico e taglia da un lato solo, il gradiente della funzione di partizione era annunciato e mai derivato, TransE la composizione ce l'ha (a mancargli è un'altra cosa), e «PALLA sta in sette frame» è falso, il minimo è sei.
 - **I sette capitoli d'apertura sono stati riscritti per essere più leggeri.** Un capitolo può essere tutto vero e restare illeggibile, e quelle sono le pagine dove arriva chi non ha basi. A leggerli è stato un ragazzo di tredici anni che non aveva mai sentito parlare di intelligenza artificiale, e ogni punto in cui si è fermato è stato riscritto: il conto con il seno che «non è un conto che posso rifare, è un numero da credere», la matrice che «gira e stira lo spazio» dopo un esempio che non gira niente, gli alberi che «si trovano a casa» prima che il libro dica che cos'è un albero.
 - **Le figure adesso mostrano quello che le didascalie promettono.** Erano decine i casi in cui il testo accreditava un disegno di qualcosa che non c'era: «quasi tutte le celle sono vuote» di una griglia piena al settantadue per cento, «ogni tacca vale dieci volte la precedente» di un disegno senza tacche, «le caselle sono numerate a partire da zero» dove i numeri non c'erano. In una figura sulle GAN una freccia diceva l'esatto contrario di quanto la pagina spiega per tre paragrafi.
 - {doc}`Allineamento e governance </AIResponsabile/allineamento-e-governance>` (AI responsabile). L'elenco delle pratiche vietate dall’**AI Act** era rimasto indietro: il regolamento europeo del 24 luglio 2026 lo ha allungato, e dal 2 dicembre 2026 sono vietati anche i sistemi che generano materiale intimo non consensuale e materiale di abuso sessuale su minori.
@@ -435,7 +468,7 @@ piedi.
 
 ### Sezioni nuove
 
-- Il libro si scarica in **PDF**, tutto in un file solo. Non è la stampa delle pagine web: è un secondo formato, impaginato come un libro, con l'indice, i numeri di pagina, le aperture di capitolo e i due livelli di lettura che si riconoscono dal riquadro. Il collegamento è qui nella pagina di apertura, sotto il numero di versione, e punta sempre all'ultima edizione.
+- Il libro si scarica in **PDF**, tutto in un file solo. È un secondo formato e non la stampa delle pagine web: impaginato come un libro, con l'indice, i numeri di pagina, le aperture di capitolo e i due livelli di lettura che si riconoscono dal riquadro. Il collegamento è qui nella pagina di apertura, sotto il numero di versione, e punta sempre all'ultima edizione.
 - Dove il libro online muove una figura, il PDF mostra **tre fermi immagine** (l'inizio, il mezzo e la fine) e l'indirizzo della pagina in cui quella figura si muove davvero. Vale per tutte e trentacinque le animazioni: tre fotogrammi non sono un'animazione, ma dicono che c'era un prima e un dopo, che è quello che un fermo immagine solo perde.
 
 ### Pagine ampliate
@@ -470,7 +503,7 @@ piedi.
 
 ### Correzioni
 
-- Le figure animate calcolano i numeri che mostrano, e adesso lo verificano: ognuna delle sei porta un controllo che ne impedisce la nascita se il risultato non coincide con quello che il capitolo dichiara. Lo scan a raddoppio si genera solo se dà lo stesso risultato di quello in fila, posizione per posizione; la figura dell'attacco solo se a spinta zero la risposta è giusta e oltre la soglia è ribaltata; quella della rete guidata dalla fisica addestra davvero, per trentamila epoche, e ritrova i due numeri stampati nella pagina. Una figura che smentisce il testo non è un difetto grafico: è il libro che dice due cose diverse nella stessa pagina.
+- Le figure animate calcolano i numeri che mostrano, e adesso lo verificano: ognuna delle sei porta un controllo che ne impedisce la nascita se il risultato non coincide con quello che il capitolo dichiara. Lo scan a raddoppio si genera solo se dà lo stesso risultato di quello in fila, posizione per posizione; la figura dell'attacco solo se a spinta zero la risposta è giusta e oltre la soglia è ribaltata; quella della rete guidata dalla fisica addestra davvero, per trentamila epoche, e ritrova i due numeri stampati nella pagina. Una figura che smentisce il testo è il libro che dice due cose diverse nella stessa pagina, e non un difetto grafico.
 - {doc}`Mamba </StateSpaceModel/mamba>` (State Space Model). Il testo attribuiva a Blelloch lo scan parallelo e gli accreditava lo stesso numero di operazioni della versione in fila, ma il codice stampato poche righe dopo è quello a raddoppio, che di operazioni ne fa di più. Adesso il libro distingue le due versioni e dice quale sta scrivendo: il guadagno è sui turni, e si paga in conti.
 
 (v1-4-0)=
@@ -485,7 +518,7 @@ piedi.
 
 ### Correzioni
 
-- Correzioni in tutti i capitoli, elencate nelle voci che seguono. La più importante non è nessuna delle singole: è che il codice del libro, da questa versione, gira davvero.
+- Correzioni in tutti i capitoli, elencate nelle voci che seguono. La più importante non è nessuna delle singole, ed è che il codice del libro, da questa versione, gira davvero.
 - Alcuni esempi si smentivano da soli, e si vedeva solo lanciandoli. La frase scelta per dimostrare che l'attenzione capisce la negazione veniva classificata male dal modello che la sezione fa girare; l'esempio che doveva mostrare come il BPE non perde informazione usava lettere fuori dal proprio alfabeto; l'analogia «re meno uomo più donna» restituisce «re», se non si esclude il punto di partenza. Adesso il libro lo dice, e dove il modello sbaglia lo mostra invece di nasconderlo: è più interessante di un successo.
 - {doc}`Il filtraggio collaborativo </SistemiRaccomandazione/filtraggio-collaborativo>` (Sistemi di raccomandazione). L'unico esperimento del capitolo misurava l'errore sui dati di addestramento e ne traeva una conclusione sulla capacità di generalizzare. Tenendo da parte un quinto dei voti, l'errore passa da 0,019 a 0,418. Un capitolo che insegna a valutare i modelli non può sbagliare la propria valutazione.
 - {doc}`La legge dentro la loss </PINN/come-funziona>` (PINN: reti e fisica). L'esempio del capitolo non convergeva come il testo prometteva, e la cosa si vedeva solo addestrando davvero. Adesso il libro mostra il caso che fallisce: una rete con il residuo più basso di tutte e la soluzione più sbagliata, che è esattamente la lezione che la pagina insegna due paragrafi dopo. Con tre controlli nel codice che se ne accorgono, se un domani i numeri cambiano.
@@ -515,7 +548,7 @@ piedi.
 - {doc}`Far funzionare le reti profonde </DeepLearning/ottimizzazione-regolarizzazione>` (Deep Learning). Il riscaldamento del learning rate, che in ogni ricetta di addestramento moderna sta all'inizio e che il libro dava per noto: perché i primi passi siano i più pericolosi, e perché convenga farli piano.
 - {doc}`Prestazioni e scala </PyTorch/prestazioni>` (PyTorch). Come si misura davvero il tempo su una GPU. È la trappola in cui cade chiunque la prima volta, perché la GPU non esegue quando glielo si chiede ma quando le viene comodo, e un cronometro ingenuo misura il nulla.
 - {doc}`Replicare un paper </PyTorch/replicare-un-paper>` (PyTorch). Il diario degli esperimenti, cioè la metà del lavoro che nessuno scrive. Le tre regole che lo rendono utile, e la cosa che gli strumenti di tracciamento non registrano al posto tuo: perché avevi provato.
-- {doc}`Dati su misura </PyTorch/dati-su-misura>` (PyTorch). Perché impacchettare un dataset grande convenga, e non per la ragione che si immagina: il costo dominante non è decodificare i file, è aprirli. Nello stesso passaggio si calcolano le statistiche che serviranno per normalizzare.
+- {doc}`Dati su misura </PyTorch/dati-su-misura>` (PyTorch). Perché impacchettare un dataset grande convenga, e non per la ragione che si immagina: il costo dominante sta nell’aprire i file, non nel decodificarli. Nello stesso passaggio si calcolano le statistiche che serviranno per normalizzare.
 - {doc}`Modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>` (Natural Language Processing). Come si addestra davvero una rete ricorrente su una sequenza lunga, e il prezzo che si paga: spezzandola in blocchi, la rete non può più imparare legami più lunghi del blocco. Parte di ciò che chiamiamo «memoria corta» è una scelta di ingegneria, non un limite matematico.
 - {doc}`MDP e funzioni valore </ReinforcementLearning/mdp-valore>` (Reinforcement Learning). Che cosa succede quando l'agente non vede lo stato del mondo ma solo un pezzo rumoroso, che è la regola e non l'eccezione. È il motivo per cui certi agenti impilano gli ultimi fotogrammi e altri hanno una memoria.
 - {doc}`Gradiente di policy </DeepReinforcementLearning/policy-gradient>` (Deep Reinforcement Learning). Da dove viene il «guinzaglio» di PPO: è la versione economica di un vincolo preciso, formulato qualche anno prima e troppo costoso da calcolare. Non più corretto, abbastanza corretto e molto più semplice.

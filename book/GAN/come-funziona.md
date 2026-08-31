@@ -265,8 +265,8 @@ campane sono separate il verdetto è netto; quando si sovrappongono diventa un
 mezzo dappertutto, cioè una moneta lanciata in aria.
 ```
 
-Il riquadro di sotto non è disegnato a mano: è il verdetto migliore possibile
-contro quel generatore, e si calcola dalle due curve di sopra con una regola
+Il riquadro di sotto è il verdetto migliore possibile contro quel generatore,
+e non un disegno fatto a mano: e si calcola dalle due curve di sopra con una regola
 sola. In ogni punto si prende l'altezza della curva vera e la si divide per la
 somma delle due altezze: se lì cade solo roba vera il conto dà uno, se cade
 solo roba falsa dà zero, se le due curve sono alte uguali dà un mezzo. Da
@@ -291,8 +291,8 @@ La seconda è l’**altezza della gobba**, cioè quanto l'esperto è sicuro nel 
 terreno migliore. Nella prima tappa la gobba arriva a $0{,}93$, che è quasi
 certezza; nell'ultima è scesa a $0{,}50$, che è nessuna certezza. Il confine si
 sposta e intanto la gobba si sgonfia, e quando la gobba tocca il mezzo il
-confine non c'è più: non è che l'esperto abbia sbagliato posto, è che non c'è
-più un posto giusto.
+confine non c'è più, e non perché l'esperto abbia sbagliato posto: un posto
+giusto non esiste più.
 
 C'è infine una ragione per cui la curva di sotto **non attraversa tutto il
 riquadro**. Verso i bordi non cade quasi nessun esempio, né vero né falso, e
@@ -347,12 +347,12 @@ aggiusta dentro una rete, e tenerli fermi è il «congelamento» di cui fra poco
 vedremo che cosa lo garantisce.
 
 Nel codice, il punteggio unico del gioco si spezza in due conti dell'errore,
-uno per rete: sono le due **loss** del ciclo, `loss_D` e
-`loss_G`. Non sono due giochi diversi: sono le due facce dello stesso
-punteggio, ciascuna scritta dal punto di vista di chi la deve far scendere; e
-d'ora in avanti, quando parleremo di "loss", parleremo di queste. (Con una
-sorpresa in agguato: fra poco vedremo che una delle due righe, nel codice vero,
-è scritta in un modo che quel punteggio unico lo incrina. Per adesso teniamolo.)
+uno per rete: sono le due **loss** del ciclo, `loss_D` e `loss_G`. Sono le due
+facce dello stesso punteggio e non due giochi diversi, ciascuna scritta dal
+punto di vista di chi la deve far scendere; e d'ora in avanti, quando parleremo
+di "loss", parleremo di queste. (Con una sorpresa in agguato: fra poco vedremo
+che una delle due righe, nel codice vero, è scritta in un modo che quel
+punteggio unico lo incrina. Per adesso teniamolo.)
 
 Il ciclo completo sta in una ventina di righe, e le tre cose che contano sono
 spiegate subito sotto: per seguirle bastano le poche paroline del codice che
@@ -544,8 +544,8 @@ gruppo di turno, e serve a preparare esattamente altrettante etichette "vero" e
 
 Primo dettaglio. Nel codice, il lavoro di girare i pesi non lo fa la rete: lo
 fa un pezzo di programma attaccato a lei, che si chiama **allenatore** (`opt_G`
-per il falsario, `opt_D` per l'esperto). Non sono due personaggi nuovi della
-storia, sono la mano del falsario e la mano dell'esperto: prendono le
+per il falsario, `opt_D` per l'esperto). Sono la mano del falsario e la mano
+dell'esperto, non due personaggi nuovi della storia: prendono le
 correzioni calcolate e le applicano. Il punto è che sono due, e che ciascuno
 conosce soltanto i pesi della propria rete: è questo, e nient'altro, a
 garantire che ciascuno dei due impari solo nel proprio turno. È il
@@ -571,7 +571,7 @@ all'esperto. Non più «quanto è falso questo quadro?», ma «quanto manca perc
 passi per vero?».
 
 Le due domande si comportano in modo diverso proprio dove serve. La correzione,
-lo abbiamo appena visto, non è il voto: è **di quanto il voto cambierebbe**. Se
+lo abbiamo appena visto, è **di quanto il voto cambierebbe**, non il voto. Se
 l'esperto è sicurissimo che il quadro sia falso, il suo giudizio è schiacciato
 contro il fondo della scala e non può scendere oltre: un ritocco al quadro non
 lo sposta di una virgola, e alla prima domanda la risposta è sempre la stessa,
@@ -715,7 +715,8 @@ reti più difficili da addestrare, e tre problemi ricorrono.
   varietà così hanno supporti quasi certamente disgiunti (o intersecantisi in
   un insieme di misura nulla), un discriminatore perfetto esiste, e su supporti
   disgiunti la $\mathrm{JSD}$ vale $\log 2$ **qualunque** sia la distanza fra le
-  due distribuzioni. Il gradiente non è piccolo: è nullo, e resta nullo mentre $G$ si avvicina. Ed
+  due distribuzioni. Il gradiente è nullo, e non soltanto piccolo, e resta
+  nullo mentre $G$ si avvicina. Ed
   è qui che si chiude il cerchio con le ipotesi del teorema: il conto che dava
   $2\,\mathrm{JSD}$ presupponeva due densità, e un generatore vero una densità
   non ce l'ha. La caratterizzazione dell'ottimo resta vera; è il mondo in cui
@@ -803,13 +804,14 @@ una dall'altra: l'esperto viene giudicato su due risposte, una su un quadro
 vero e una su un falso, e il falsario su una sola, la propria; per questo il
 suo numero è la metà.
 
-Quei due valori non sono un voto di promozione: sono il punto in cui il gioco
-è in parità. Quello che conta è **di quanto** ciascuna loss se ne allontana, e
+Quei due valori sono il punto in cui il gioco è in parità, e non un voto di
+promozione. Quello che conta è **di quanto** ciascuna loss se ne allontana, e
 la cosa più comoda è tradurla nella domanda vera: quanto l'esperto crede vero
-un falso. A $0{,}69$ lo crede vero una volta su due, cioè non lo distingue affatto; a $0{,}81$ scende a poco più di quattro volte su dieci; a $1{,}27$ a meno di
-tre su dieci, e lì lo sta smascherando sette volte su dieci. (La conversione è
-$e^{-\mathcal{L}_G}$, che è una media di logaritmi riportata indietro: la
-frequenza vera sta un pelo più in alto, mai più in basso.)
+un falso. A $0{,}69$ lo crede vero una volta su due, cioè non lo distingue
+affatto; a $0{,}81$ scende a poco più di quattro volte su dieci; a $1{,}27$ a
+meno di tre su dieci, e lì lo sta smascherando sette volte su dieci. (La
+conversione è $e^{-\mathcal{L}_G}$, che è una media di logaritmi riportata
+indietro: la frequenza vera sta un pelo più in alto, mai più in basso.)
 
 Il risultato più netto sta dentro un singolo addestramento, e si ripete in
 tutti e quattro (uno per seme, quattro addestramenti identici in tutto tranne
@@ -852,8 +854,8 @@ ImageNet) come strumento di misura.
 
 Il primo tentativo, l’**Inception Score**, chiede due cose insieme a un
 giudice esterno che sa riconoscere gli oggetti. E qui attenzione, perché
-entra in scena un personaggio nuovo: non è l'esperto d'arte del duello, è un
-giudice terzo, una rete addestrata altrove a riconoscere cani, automobili e
+entra in scena un personaggio nuovo, ed è un giudice terzo e non l'esperto
+d'arte del duello: una rete addestrata altrove a riconoscere cani, automobili e
 divani, che con la nostra partita non c'entra niente e non ha nessun interesse
 a farla finire in un modo o nell'altro. Il falsario e l'esperto restano dove
 sono; questo signore arriva a cose fatte e guarda i risultati.

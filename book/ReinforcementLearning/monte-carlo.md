@@ -576,8 +576,8 @@ mente per tutto il resto del capitolo:
 | Differenze temporali | un passo, su una partita sola | no | sì |
 
 In quella tabella manca una riga, ed è quella in mezzo: guardare avanti non un
-passo solo e nemmeno fino alla fine, ma due passi, o tre, o dieci. Non è una
-possibilità teorica, è una manopola vera, che va con continuità dalle
+passo solo e nemmeno fino alla fine, ma due passi, o tre, o dieci. È una
+manopola vera e non una possibilità teorica, che va con continuità dalle
 differenze temporali pure al Monte Carlo puro; la fine della prossima sezione è
 dedicata a lei.
 

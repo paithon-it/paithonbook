@@ -213,22 +213,20 @@ quello stimato, è la *stochastic gradient Langevin dynamics*
 {cite}`welling2011bayesian`, nata per campionare la distribuzione a posteriori
 dei *parametri* e poi passata di peso al campionamento dei dati: un passo di
 discesa dimezzato ($\epsilon/2$) più un rumore di deviazione standard
-$\sqrt{\epsilon}$. Il $\tfrac12$ e la radice non sono scelte di gusto: sono
-ciò che rende la ricorsione la discretizzazione di Eulero–Maruyama della
-diffusione $d\mathbf{x} = -\tfrac12 \nabla_{\mathbf{x}} E_\theta\, dt + d\mathbf{W}$,
-che ha $p_\theta$ come misura invariante. Le due ampiezze non si
-confrontano fra loro: hanno dimensioni diverse (la discesa va come
-$[\text{tempo}]$, il rumore come $[\text{tempo}]^{1/2}$), e su un intervallo
-di tempo fissato i due contributi
+$\sqrt{\epsilon}$. Il $\tfrac12$ e la radice sono ciò che rende la ricorsione
+la discretizzazione di Eulero–Maruyama della diffusione $d\mathbf{x} =
+-\tfrac12 \nabla_{\mathbf{x}} E_\theta\, dt + d\mathbf{W}$, che ha $p_\theta$
+come misura invariante. Le due ampiezze non si confrontano fra loro: hanno
+dimensioni diverse (la discesa va come $[\text{tempo}]$, il rumore come
+$[\text{tempo}]^{1/2}$), e su un intervallo di tempo fissato i due contributi
 restano dello stesso ordine, che è precisamente il motivo per cui il limite
-continuo esiste. Quello che in Welling e Teh diventa trascurabile al
-decrescere del passo è un'altra cosa ancora: il rumore del **gradiente su
-minibatch**, che scala come $\epsilon$ e finisce sotto quello iniettato; ed è
-lì che la catena passa senza soluzione di continuità dall'ottimizzazione al
-campionamento. Nella pratica degli EBM la catena si tronca dopo poche
-decine di passi (*short-run MCMC*) e si conservano i campioni in un serbatoio
-da cui ripartire, l'erede diretto della persistent contrastive divergence
-della sezione precedente.
+continuo esiste. Quello che in Welling e Teh diventa trascurabile al decrescere
+del passo è un'altra cosa ancora: il rumore del **gradiente su minibatch**, che
+scala come $\epsilon$ e finisce sotto quello iniettato; ed è lì che la catena
+passa senza soluzione di continuità dall'ottimizzazione al campionamento. Nella
+pratica degli EBM la catena si tronca dopo poche decine di passi (*short-run
+MCMC*) e si conservano i campioni in un serbatoio da cui ripartire, l'erede
+diretto della persistent contrastive divergence della sezione precedente.
 
 `````
 
@@ -465,17 +463,17 @@ serve in più la densità del **modello** strettamente positiva ovunque,
 ipotesi che nel caso ben specificato si trasmette ai dati
 {cite}`hyvarinen2005estimation`.
 
-È lì che le cose si rompono davvero, e per due motivi diversi. Il primo: i
-dati veri vivono su una varietà di dimensione molto minore dello spazio in cui
+È lì che le cose si rompono davvero, e per due motivi diversi. Il primo: i dati
+veri vivono su una varietà di dimensione molto minore dello spazio in cui
 stanno (una fotografia di volti non riempie $\mathbb{R}^{D}$), e la positività
 ovunque salta. Il secondo: quando il supporto si spezza in pezzi separati lo
-score smette di identificare la densità, perché due densità che differiscono
-di un fattore costante da una componente all'altra hanno lo stesso score. La
-seconda osservazione, si noti, non è nell'articolo del 2005: è arrivata quindici
-anni dopo, con il lavoro di Li K. Wenliang e Heishiro Kanagawa sulla cecità dei metodi a score alle componenti isolate
-{cite}`wenliang2020blindness`, ed è la ragione per cui questi
-metodi sbagliano i pesi di una miscela. Sotto le ipotesi del teorema
-{cite}`hyvarinen2005estimation`:
+score smette di identificare la densità, perché due densità che differiscono di
+un fattore costante da una componente all'altra hanno lo stesso score. La
+seconda osservazione, si noti, è arrivata quindici anni dopo l'articolo del
+2005, con il lavoro di Li K. Wenliang e Heishiro Kanagawa sulla cecità dei
+metodi a score alle componenti isolate {cite}`wenliang2020blindness`, ed è la
+ragione per cui questi metodi sbagliano i pesi di una miscela. Sotto le ipotesi
+del teorema {cite}`hyvarinen2005estimation`:
 
 $$
 J(\theta) = \mathbb{E}_{\mathbf{x} \sim p_{\text{dati}}}
@@ -527,14 +525,14 @@ regressione quadratica *è* la media condizionale del bersaglio. Chi minimizza
 la regressione, quindi, ottiene esattamente lo score della marginale. È il
 **denoising score matching**, niente hessiana e niente MCMC, ed è la loss dei
 modelli di diffusione {cite}`song2021score` a meno di una **riponderazione per
-livello di rumore**, che non è un dettaglio: senza di essa il bersaglio
+livello di rumore**, che pesa: senza di essa il bersaglio
 $-\boldsymbol{\varepsilon}/\sigma$ farebbe esplodere il peso dei livelli di
 rumore piccoli, e il fattore che si usa (proporzionale a $\sigma^2$) è
 precisamente quello che cancella l’$1/\sigma$ e lascia la regressione sul
 rumore in forma pulita.
 
-Il prezzo c'è, e non è quello che si direbbe: ciò che si impara non è lo score
-dei dati, è lo score dei dati **sporcati**, cioè della densità marginale
+Il prezzo c'è, e non è quello che si direbbe: ciò che si impara è lo score dei
+dati **sporcati** e non quello dei dati, cioè della densità marginale
 $q_\sigma$, che è $p_{\text{dati}}$ convoluta con la gaussiana (e si noti che
 $q_\sigma(\tilde{\mathbf{x}})$ e $q_\sigma(\tilde{\mathbf{x}} \mid \mathbf{x})$
 sono due oggetti diversi, come sempre nella notazione delle densità). I due
@@ -639,7 +637,7 @@ mossa decisiva è che $\log Z$ viene trattata come un **parametro in più**,
 stimato insieme agli altri: il modello non normalizzato
 $\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - c$ impara anche $c$, perché al
 classificatore la costante *serve* per calibrarsi. Con la massima
-verosimiglianza la stessa mossa non è semplicemente inutile, è **impossibile**:
+verosimiglianza la stessa mossa è **impossibile**, non soltanto inutile:
 lasciando $c$ libero, la verosimiglianza si fa crescere quanto si vuole
 mandando $c \to -\infty$, cioè dichiarando una densità sempre più alta in
 ogni punto, e il problema non ha soluzione. È il vincolo di
@@ -697,7 +695,8 @@ conto non si apre nemmeno.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Misurare l'intero continente non è caro, è impossibile. Cento neuroni, cioè
+- Misurare l'intero continente è impossibile, prima ancora che caro. Cento
+  neuroni, cioè
   cento interruttori accesi o spenti, danno un numero di configurazioni lungo
   trentuno cifre: a un miliardo di configurazioni al secondo servirebbero
   quasi tremila volte l'età dell'universo, e cento interruttori sono
@@ -728,7 +727,8 @@ conto non si apre nemmeno.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- $Z$ non è cara: è impossibile. Con $N = 100$ variabili binarie gli stati
+- $Z$ è impossibile, prima ancora che cara. Con $N = 100$ variabili binarie gli
+  stati
   sono $\approx 1{,}27 \times 10^{30}$, quasi tremila volte l'età
   dell'universo a un miliardo di stati al secondo.
 - Il gradiente della log-verosimiglianza ha una **fase positiva** (abbassa

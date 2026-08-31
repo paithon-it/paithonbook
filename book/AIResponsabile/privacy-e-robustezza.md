@@ -421,7 +421,7 @@ riproduce schematicamente la {numref}`fig-esempio-avversario`.
 
 La ricetta di un esempio avversario. All'immagine di un panda, riconosciuta con
 il $57{,}7\%$ di confidenza, si somma un rumore impercettibile: il riquadro di
-mezzo è quel rumore, e non è casuale, è la mappa di dove spingere ciascun pixel
+mezzo è quel rumore, ed è la mappa di dove spingere ciascun pixel
 per danneggiare al massimo il modello. La *stessa* immagine viene poi
 classificata «gibbone» (una scimmia) con il $99{,}3\%$ di confidenza. A occhio
 nudo le due immagini sono identiche.
@@ -441,8 +441,8 @@ un inganno.
 
 `````{tab} Elementare
 
-La cosa controintuitiva è che la perturbazione non è casuale: è costruita *su
-misura* per quel modello. Un rumore a caso non farebbe quasi nulla; questo,
+La cosa controintuitiva è che la perturbazione è costruita *su misura* per
+quel modello. Un rumore a caso non farebbe quasi nulla; questo,
 invece, spinge ogni singolo pixel nella direzione precisa che aumenta l'errore
 della rete, tutti d'accordo nello stesso verso. Presi uno a uno, gli
 spostamenti sono minuscoli: non li vedi. Ma sommati su centinaia di migliaia
@@ -523,8 +523,8 @@ il modo peggiore di rovinare l'immagine; chi difende allena il modello proprio
 su quelle immagini rovinate. La seconda mossa è la difesa più efficace che si
 conosca, e si chiama **adversarial training**: durante l'addestramento alla
 rete non si mostrano solo gli esempi puliti, ma anche le loro versioni
-sabotate, rifabbricate a ogni passo con l'attacco più forte disponibile. Non è
-la singola spinta di poco fa: è quella stessa spinta data molte volte di
+sabotate, rifabbricate a ogni passo con l'attacco più forte disponibile. È
+quella stessa spinta di poco fa, data però molte volte di
 seguito, ogni volta piccolissima e ogni volta ricalcolata, che è il modo per
 trovare la manomissione peggiore invece della prima che capita. La rete impara
 così a rispondere

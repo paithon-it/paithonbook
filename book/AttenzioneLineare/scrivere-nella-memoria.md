@@ -54,8 +54,8 @@ riscrivono a ogni parola (nei paper si chiamano *ricorrenze lineari*).
 La prima idea è lasciare che le voci vecchie sbiadiscano da sole. Invece di
 tramandare la memoria intatta, la si moltiplica a ogni passo per un fattore di
 decadimento minore di uno: ciò che è stato scritto tempo fa pesa sempre meno,
-finché svanisce. È il **gate di dimenticanza**, e non è un'idea nuova: è lo
-stesso *forget gate* che Gers, Schmidhuber e Cummins aggiunsero nel 2000 alle
+finché svanisce. È il **gate di dimenticanza**, ed è lo stesso *forget gate*
+che Gers, Schmidhuber e Cummins aggiunsero nel 2000 alle
 LSTM, le celle ricorrenti che abbiamo incontrato nel capitolo sull'NLP
 {cite}`gers2000learning`. Qui torna nella sua forma più spoglia, un numero che
 moltiplica.
@@ -135,26 +135,25 @@ dove ora $\boldsymbol{\alpha}_t \in (0,1)^d$ è un *vettore* di gate, uno per
 canale di chiave (il grassetto lo distingue dallo scalare $\alpha_t$ della
 formula precedente: stesso ruolo, una componente sola contro $d$), e
 $\operatorname{Diag}(\boldsymbol{\alpha}_t)$ è la matrice diagonale che ne fa i
-coefficienti. Il **lato** da cui moltiplica non è un dettaglio di scrittura:
-con la convenzione di questo capitolo ($\mathbf{S} = \sum_i \mathbf{v}_i \mathbf{k}_i^\top$,
-lettura $\mathbf{o} = \mathbf{S}\mathbf{q}$) le colonne di $\mathbf{S}$ sono
-indicizzate dai canali della chiave e le righe da quelli del valore, quindi
-moltiplicando **da destra** ogni colonna decade al proprio ritmo, che è quel
-che si vuole; da sinistra sbiadirebbero i canali del valore, che è un'altra
-cosa. (Anche la transizione della delta rule, fra poco, sta da quel lato e per
-la stessa ragione.) Così $\alpha_{t,i}\to 1$ conserva il canale $i$
-(nel limite si torna all'accumulo puro), $\alpha_{t,i}\to 0$ lo azzera. Il
+coefficienti. Il **lato** da cui moltiplica cambia il risultato: con la
+convenzione di questo capitolo ($\mathbf{S} = \sum_i \mathbf{v}_i
+\mathbf{k}_i^\top$, lettura $\mathbf{o} = \mathbf{S}\mathbf{q}$) le colonne di
+$\mathbf{S}$ sono indicizzate dai canali della chiave e le righe da quelli del
+valore, quindi moltiplicando **da destra** ogni colonna decade al proprio
+ritmo, che è quel che si vuole; da sinistra sbiadirebbero i canali del valore,
+che è un'altra cosa. (Anche la transizione della delta rule, fra poco, sta da
+quel lato e per la stessa ragione.) Così $\alpha_{t,i}\to 1$ conserva il canale
+$i$ (nel limite si torna all'accumulo puro), $\alpha_{t,i}\to 0$ lo azzera. Il
 vettore è ricavato dall'input con una proiezione a **basso rango** (un collo di
 bottiglia stretto, dimensione 16) seguita da una sigmoide, così da generare $d$
 gate distinti senza far esplodere il numero di parametri; la sigmoide è poi
 elevata a $1/\tau$ con $\tau = 16$, una *temperatura* che spinge i gate verso
 1, cioè verso l'oblio lento, che è la molla di tutto il meccanismo:
-$\boldsymbol{\alpha}_t = \sigma\big(\mathbf{W}^2_\alpha \mathbf{W}^1_\alpha \mathbf{x}_t + \mathbf{b}_\alpha\big)^{1/\tau}$, con
-$\mathbf{W}^1_\alpha$ che porta da $d$ a 16 e $\mathbf{W}^2_\alpha$ che
-riporta a $d$. La
-gerarchia è chiara: scalare fisso (RetNet) $\to$ scalare data-dipendente
-(Mamba-2) $\to$ diagonale data-dipendente (GLA), dal più grossolano al più
-selettivo.
+$\boldsymbol{\alpha}_t = \sigma\big(\mathbf{W}^2_\alpha \mathbf{W}^1_\alpha
+\mathbf{x}_t + \mathbf{b}_\alpha\big)^{1/\tau}$, con $\mathbf{W}^1_\alpha$ che
+porta da $d$ a 16 e $\mathbf{W}^2_\alpha$ che riporta a $d$. La gerarchia è
+chiara: scalare fisso (RetNet) $\to$ scalare data-dipendente (Mamba-2) $\to$
+diagonale data-dipendente (GLA), dal più grossolano al più selettivo.
 
 `````
 
@@ -536,9 +535,9 @@ il fattore $\beta_t$).
 
 Questa è la struttura profonda che unifica l'intera famiglia, ed è la stessa
 che, nel prossimo capitolo, ritroveremo arrivando da tutt'altra strada: quella
-dei sistemi dinamici degli **State Space Model**. Non è un caso che Mamba-2 (il
-modello che sbiadisce tutta la memoria allo stesso ritmo, ma decidendo il ritmo
-parola per parola) compaia due volte, qui tra le attenzioni lineari e là tra
+dei sistemi dinamici degli **State Space Model**. E Mamba-2 (il modello che
+sbiadisce tutta la memoria allo stesso ritmo, ma decidendo il ritmo parola per
+parola) compare due volte, qui tra le attenzioni lineari e là tra
 gli SSM: è il ponte fra le due famiglie. I suoi autori lo scrivono infatti in
 due modi, una volta come memoria che si aggiorna e una volta come attenzione, e
 chiamano *dualità* quella doppia scrittura.

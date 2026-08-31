@@ -36,7 +36,8 @@ fatto un traduttore automatico prima. Erano due macchine attaccate: la prima
 leggeva la frase di partenza e ne faceva un riassunto, la seconda leggeva solo
 quel riassunto e da lì scriveva la traduzione. Le due metà hanno un nome che
 torna in tutto il capitolo: l’**encoder** è la parte che legge, il **decoder**
-quella che scrive (li rivediamo per bene in fondo a questa pagina). E il
+quella che scrive, e la {doc}`sezione sulla struttura del Transformer
+<architettura>` li smonta pezzo per pezzo. E il
 riassunto era una sola lista di numeri, sempre lunga uguale: la stessa per una
 frase di cinque parole e per una di cinquanta.
 
@@ -66,8 +67,8 @@ pesa tutte le altre della propria frase (e anche sé stessa), e si chiama
 che è stata letta, ed è la **cross-attention**, quella del traduttore che torna
 sull'originale. Il meccanismo è identico in tutto e per tutto: cambia soltanto
 chi guarda chi. Nelle pagine che seguono il caso di riferimento sarà il primo,
-perché è quello su cui si capiscono i conti; il secondo torna in fondo a questa
-pagina, quando encoder e decoder si incontrano.
+perché è quello su cui si capiscono i conti; il secondo torna quando encoder e
+decoder si incontrano.
 
 `````{tab} Elementare
 Prendi la frase "Il gatto nero salta sul muro". Il modello sta elaborando la
@@ -97,17 +98,21 @@ arriva una frase nuova. E il criterio lo impara provando e correggendosi su
 miliardi di frasi: ogni volta che il risultato non è quello giusto (una
 traduzione sbagliata, la parola successiva sbagliata), viene ritoccato un
 pochino nella direzione che avrebbe fatto sbagliare di meno, con lo stesso
-provare-e-correggere del capitolo sulle reti neurali. E quando il gioco lo fa
-ogni parola verso tutte le altre e non solo "salta", siamo nella self-attention
+provare-e-correggere del
+{doc}`capitolo sulle reti neurali </RetiNeurali/overview>`. E quando il gioco
+lo fa ogni parola verso tutte le altre e non solo "salta", siamo nella
+self-attention
 di poco fa: l'intera frase che si rilegge da sé, tutte le parole nello stesso
 momento.
 `````
 
 `````{tab} Superiore
-Ogni parola (più precisamente ogni *token*, come vedremo) è rappresentata da
-un vettore. Da ciascun vettore la rete ricava tre proiezioni con matrici
-apprese: una **query** ("che cosa sto cercando?"), una **key** ("che cosa
-offro come etichetta?") e un **value** ("che informazione porto?").
+Ogni parola (più precisamente ogni *token*, l'unità in cui la
+{doc}`sezione sui tokenizzatori </NaturalLanguageProcessing/tokenizzatori>` ha
+spezzato il testo) è rappresentata da un vettore. Da ciascun vettore la rete
+ricava tre proiezioni con matrici apprese: una **query** ("che cosa sto
+cercando?"), una **key** ("che cosa offro come etichetta?") e un **value**
+("che informazione porto?").
 L'affinità tra la parola che elabora e ogni altra è il prodotto scalare
 query·key (la stessa misura di somiglianza tra vettori vista in *Algebra
 lineare*) e la **Scaled Dot-Product Attention** la trasforma in pesi:
@@ -177,8 +182,9 @@ $(3, 1, 0)$ fa $2\cdot3 + 0\cdot1 + 1\cdot0 = 6$, mentre contro $(0, 4, 0)$ fa
 $0 + 0 + 0 = 0$. Se le due liste hanno numeri grandi negli stessi posti la
 somma viene grande, e vuol dire che quell'etichetta risponde a quella ricerca;
 se i numeri grandi stanno in posti diversi la somma viene piccola. È
-l'operazione che il {doc}`capitolo di matematica </Matematica/overview>` chiama *prodotto scalare*, ed è
-l'unico conto che l'attenzione fa davvero.
+l'operazione che la
+{doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>` chiama
+*prodotto scalare*, ed è l'unico conto che l'attenzione fa davvero.
 
 Resta un ultimo passaggio, e va detto perché senza di esso i conti non
 tornano. Da quel confronto escono numeri qualsiasi: 6, oppure 340, oppure $-7$.
@@ -189,15 +195,17 @@ numero $e = 2{,}718\ldots$, lo si eleva a ciascun punteggio, e si divide
 ciascun risultato per la somma di tutti. Su tre punteggi $2$, $1$ e $-1$:
 $e^2 = 7{,}39$, $e^1 = 2{,}72$, $e^{-1} = 0{,}37$, che sommati fanno $10{,}48$;
 le tre intensità sono allora $0{,}71$, $0{,}26$ e $0{,}04$, che sommano a uno a
-meno degli arrotondamenti, come promesso. L'elevamento a potenza serve a due cose: non far uscire mai
-numeri negativi (una parola non può contribuire in negativo), e allargare le
-differenze, così che un punto di vantaggio si veda davvero. Proprio perché le
-allarga, però, va tenuto d'occhio: se i punteggi grezzi sono numeri enormi, il
-più alto si prende tutto il colore e agli altri resta zero, cioè l'evidenziatore
-smette di sfumare e diventa un interruttore. E i punteggi crescono con la
-lunghezza delle liste, perché sono somme di tanti pezzi: per questo, prima della
-softmax, si rimpiccioliscono tutti dividendoli per uno stesso numero, tanto più
-grande quanto più le liste sono lunghe. Fatto questo, i
+meno degli arrotondamenti, come promesso. L'elevamento a potenza serve a due
+cose: non far uscire mai numeri negativi (una parola non può contribuire in
+negativo), e allargare le differenze, così che un punto di vantaggio si veda
+davvero. Proprio perché le allarga, però, va tenuto d'occhio: se i punteggi
+grezzi sono numeri enormi, il più alto si prende tutto il colore e agli altri
+resta zero, cioè l'evidenziatore smette di sfumare e diventa un interruttore.
+E i punteggi si allargano al crescere della lunghezza delle liste, ma non in
+proporzione: sono somme di tanti pezzi che in parte si compensano fra loro, e
+crescono come la **radice quadrata** della lunghezza (liste quattro volte più
+lunghe, punteggi grandi il doppio). Per questo, prima della softmax, si
+rimpiccioliscono tutti dividendoli proprio per quella radice. Fatto questo, i
 value si mescolano in quelle proporzioni.
 
 ```{figure} ../figures/attention-is-all-you-need.svg
@@ -278,7 +286,7 @@ teste addestrate conferma almeno in parte.
 
 ## Dove va a finire l'attenzione: encoder e decoder
 
-L'attenzione, da sola, non è ancora un modello: è un pezzo, e va montato. Il
+L'attenzione, da sola, è un pezzo, e va montato. Il
 pezzo si chiama **blocco**, e un blocco è quello che si ripete sempre uguale a
 sé stesso lungo la macchina, come un piano di un palazzo. L’**encoder**, la
 torre che legge, è una pila di questi blocchi; il **decoder**, quella che
@@ -343,8 +351,10 @@ $$
 $$
 
 attorno a ogni sotto-strato (attenzione o feed-forward). La connessione
-residuale (la stessa idea delle ResNet che abbiamo visto nel capitolo sul deep
-learning) offre al gradiente un cammino quasi diretto verso gli strati
+residuale (la stessa idea delle ResNet che abbiamo visto fra le
+{doc}`architetture storiche del deep learning
+</DeepLearning/architetture-storiche>`) offre al gradiente un cammino quasi
+diretto verso gli strati
 iniziali, contrastando il gradiente che svanisce; la layer normalization
 stabilizza media e varianza delle attivazioni a ogni posizione, rendendo
 l'addestramento meno sensibile a learning rate e inizializzazione. «Quasi»,
@@ -370,9 +380,10 @@ per strato, e in pratica la stessa stabilità.
 Scorciatoia e taratura sono la parte che nessuno racconta mai, e senza la quale
 niente di tutto il resto starebbe in piedi: l'attenzione è l'idea, ma un'idea
 impilata sessanta volte (tanti sono i blocchi di un modello grande di oggi) si
-sfalda, e questi due accorgimenti sono ciò che la tiene insieme. Ci si può
-fermare qui con il meccanismo in mano; la sezione successiva prende questi pezzi
-e li monta nelle due torri di una macchina vera.
+sfalda, e questi due accorgimenti sono ciò che la tiene insieme. Con il
+meccanismo in mano, la {doc}`sezione sulla struttura del Transformer
+<architettura>` prende questi pezzi e li monta nelle due torri di una macchina
+vera.
 
 ```{admonition} Un cantiere parallelo: le reti a memoria
 :class: note
@@ -411,9 +422,10 @@ come una discendenza è forte e sarebbe falsa: l'attenzione per la traduzione è
 del settembre 2014, le memory network dell'ottobre dello stesso anno, la
 versione a graduatoria del marzo 2015. Sono due strade partite quasi insieme,
 da due problemi diversi, e arrivate alla stessa operazione; nessuna delle due
-nasce dall'altra. Quello che le reti a memoria hanno di proprio non è dunque
-l'attenzione, è l’**archivio tenuto fuori dai numeri imparati** e consultato al
-momento della domanda: ed è quel pezzo lì, messo da parte perché la sua epoca
+nasce dall'altra. Quello che le reti a memoria hanno di proprio è dunque
+l’**archivio tenuto fuori dai numeri imparati** e consultato al momento della
+domanda, più che l'attenzione: ed è quel pezzo lì, messo da parte perché la
+sua epoca
 non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nome.
 ```
 

@@ -301,10 +301,10 @@ si scoprì, è parte del saper ricordare.
 Esiste anche una versione più snella della stessa idea, proposta nel 2014 da
 Kyunghyun Cho e colleghi e chiamata **GRU** (*Gated Recurrent Unit*, «unità
 ricorrente con i cancelli»: il nome descrive esattamente quello che è). Le
-manopole sono due invece di tre, e il taccuino non è separato dal foglietto dei
-riassunti, è lo stesso foglio. Meno pezzi, meno numeri da imparare, e spesso
-risultati altrettanto buoni. Le due sigle compaiono quasi sempre appaiate, LSTM
-e GRU: sono due tagli dello stesso vestito.
+manopole sono due invece di tre, e il taccuino è lo stesso foglio del
+promemoria, invece di essere separato. Meno pezzi, meno numeri da imparare, e
+spesso risultati altrettanto buoni. Le due sigle compaiono quasi sempre
+appaiate, LSTM e GRU: sono due tagli dello stesso vestito.
 
 `````
 
@@ -397,8 +397,8 @@ uno dopo l'altro.
 
 Perché è un guaio? Perché le macchine su cui girano queste reti sono fatte
 apposta per il contrario. Una **scheda grafica** (la stessa che nel computer di
-casa disegna i videogiochi, e che in gergo si chiama GPU) non è brava a fare un
-conto difficile: è brava a fare *migliaia di conti facili tutti insieme*.
+casa disegna i videogiochi, e che in gergo si chiama GPU) è brava a fare
+*migliaia di conti facili tutti insieme*, più che un conto difficile.
 Metterle davanti una rete ricorrente è come una catena di montaggio con una
 postazione sola: per quanti operai tu abbia, devono aspettare il proprio turno,
 e la fila non si accorcia.

@@ -219,7 +219,8 @@ no. La ragione è che il dizionario ritrova un valore andando dritto al posto
 che alla chiave compete, e quel posto lo calcola dal contenuto della chiave: se
 il contenuto cambiasse, il valore resterebbe in un posto in cui nessuno lo
 cerca più. Ecco perché si può usare come chiave solo qualcosa che non cambia, e
-perché una coppia di numeri è comodissima:
+che non cambia neanche dentro: una tupla di numeri va bene, una tupla che
+contiene una lista no. Ed ecco perché una coppia di numeri è comodissima:
 
 ```python
 distanze = {("Milano", "Roma"): 573, ("Milano", "Napoli"): 770}
@@ -551,10 +552,11 @@ parametri **posizionali**, quelli con un default vengono dopo quelli
 obbligatori (`def g(a=1, b)` è un errore di sintassi). Dopo un `*` nudo
 cominciano invece i parametri *keyword-only*, che si passano solo per nome e
 che possono essere obbligatori anche venendo dopo dei default: `def f(a=1, *,
-b)` è legale, e `b` va passato. È il motivo per cui tante firme di scikit-learn
-e PyTorch hanno un asterisco solitario in mezzo: costringere a scrivere il nome
-degli argomenti rende leggibile il codice di chi chiama e permette di
-aggiungere parametri senza rompere il codice altrui.
+b)` è legale, e `b` va passato. È il motivo per cui tante firme di scikit-learn,
+e quelle di PyTorch dove i parametri sono molti (`Adam`, `DataLoader`), hanno un
+asterisco solitario in mezzo: costringere a scrivere il nome degli argomenti
+rende leggibile il codice di chi chiama e permette di aggiungere parametri senza
+rompere il codice altrui.
 
 Una trappola classica: il valore di default è valutato **una sola volta**, alla
 definizione. Non usare mai un oggetto mutabile come default (`def f(x, acc=[])`)
@@ -900,6 +902,12 @@ Il banco, nel codice, si chiama `involucro`, e sta dentro `cronometra` perché
 `return involucro`, senza parentesi: consegna il banco senza farci passare
 nessuno.
 
+Questo banco però fa passare solo chi arriva a mani vuote. `involucro` non
+prende argomenti, e se la funzione da avvolgere ne vuole il programma si ferma
+prima ancora di cronometrare. Se ne fa uno che lascia passare chiunque dicendo
+all'involucro di accettare qualunque cosa gli arrivi e di girarla identica alla
+stanza in fondo.
+
 La riga `@cronometra` è la targa nuova, e vale
 `addestra = cronometra(addestra)`: da quel momento chi cerca `addestra` trova
 il banco. Dietro c'è ancora la funzione di prima, che dorme i suoi tre decimi
@@ -919,11 +927,10 @@ deve solo rispondere e non più imparare.
 
 `````{tab} Superiore
 
-Due dettagli separano un decoratore giocattolo da uno usabile.
-
-**Accettare qualunque firma, e non falsificare l'identità.** L'involucro
-sostituisce l'originale, quindi deve poter ricevere gli argomenti che
-riceveva quella: `*args` raccoglie in una tupla tutti gli argomenti passati per
+Due dettagli separano un decoratore giocattolo da uno usabile, e sono
+accettare qualunque firma e non falsificare l'identità di ciò che si avvolge.
+L'involucro sostituisce l'originale, quindi deve poter ricevere gli argomenti
+che riceveva quella: `*args` raccoglie in una tupla tutti gli argomenti passati per
 posizione, `**kwargs` in un dizionario tutti quelli passati per nome. E poiché
 è l'involucro a prendere il posto dell'originale, `__name__`, `__doc__` e la
 firma diventano i suoi, con danni a `help()`, ai debugger e a qualunque codice
@@ -1084,10 +1091,10 @@ di Python (CPython) che protegge lo stato interno dell'interprete, in
 particolare il **conteggio dei riferimenti** con cui ogni oggetto tiene traccia
 di quanti nomi lo puntano (è il meccanismo primario con cui CPython libera la
 memoria; il `gc` vero e proprio gli sta sopra e serve a raccogliere i cicli).
-La sua conseguenza è netta: **un solo thread per processo esegue bytecode Python in
-un dato istante**. Resta una scelta di implementazione e non una proprietà del
-linguaggio, tanto che Jython e IronPython il GIL non ce l'hanno; ma è la scelta
-dell'interprete che tutti usano.
+La sua conseguenza è netta: **un solo thread per interprete esegue bytecode
+Python in un dato istante**. Resta una scelta di implementazione e non una
+proprietà del linguaggio, tanto che Jython e IronPython il GIL non ce l'hanno;
+ma è la scelta dell'interprete che tutti usano.
 
 Le tre vie alla concorrenza in Python vanno quindi tenute distinte, perché
 risolvono problemi diversi:
@@ -1125,7 +1132,7 @@ pur non essendo ancora quella predefinita. Resta un costo sul codice a thread
 singolo, che la documentazione di CPython 3.14 dà «attorno al 5-10%, a seconda
 della piattaforma e del compilatore C» (la PEP 779, scritta prima, riportava
 circa il 10%, e circa il 3% su macOS). Nel 3.13 era molto più alto, e il salto
-viene soprattutto dall'**interprete adattivo** della PEP 659, che nella build
+viene soprattutto dall’**interprete adattivo** della PEP 659, che nella build
 senza GIL adesso è acceso e in quella del 3.13 non lo era. Farne il default è
 una terza fase annunciata ma non ancora datata. È materia in movimento: quel che
 resta vero, e che conviene portarsi via, è la **distinzione** fra lavoro che
@@ -1213,8 +1220,9 @@ if hasattr(sys, "_is_gil_enabled"):     # la domanda esiste da Python 3.13
 ```
 
 Su una macchina Linux a quattro nuclei che non stia facendo altro, con CPython
-3.12 (dove `sys._is_gil_enabled` non esiste ancora, e quindi le ultime due
-righe del programma non stampano niente), esce qualcosa del genere:
+3.12, cioè il Python che si scarica da `python.org` (in quella versione
+`sys._is_gil_enabled` non esiste ancora, e quindi le ultime due righe del
+programma non stampano niente), esce qualcosa del genere:
 
 ```text
 CPU, in sequenza    : parete 0.26 s | CPU 0.26 s
@@ -1235,16 +1243,16 @@ lucchetto è posato e nessuno si ostacola. Con i processi accelera anche il
 calcolo, quanto lo permettono i nuclei disponibili. Tre confronti, e la regola
 resta in mente.
 
-Va fatto su una
-macchina che non stia facendo nient'altro, e il modo di accorgersi che non è
-così è guardare la prima riga: se il tempo di parete è molto più alto del tempo
-di CPU (qui sono uguali, 0,26 e 0,26), vuol dire che il programma ha passato la
-maggior parte del tempo in coda dietro a qualcun altro, e le misure che seguono
-non parlano più del GIL. Sotto carico pesante può perfino capitare il
-risultato opposto, i
-quattro thread che finiscono *prima* di quello solo: non lavorano in
-parallelo (il tempo di CPU resta identico), ma con quattro candidati pronti in
-coda capita più spesso che almeno uno di loro abbia il turno. È un effetto
+L'esperimento vale solo su una
+macchina scarica, e per accorgersi che non lo è basta la prima riga. Se il
+tempo di parete è molto più alto del tempo di CPU (qui sono uguali, 0,26 e
+0,26), il programma ha passato quasi tutto il tempo in coda dietro a qualcun
+altro. Le righe che seguono, allora, non parlano più del GIL.
+
+Sotto carico pesante può perfino capitare il risultato opposto, i quattro
+thread che finiscono *prima* di quello solo: non lavorano in parallelo (il
+tempo di CPU resta identico), ma con quattro candidati pronti in coda capita
+più spesso che almeno uno di loro abbia il turno. È un effetto
 instabile, e un motivo in più per misurare a macchina scarica.
 
 Il **tempo di CPU** stampato accanto serve a distinguere le due situazioni in

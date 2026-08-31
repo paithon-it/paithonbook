@@ -1,0 +1,86 @@
+{
+ "_": "I tre giri misurati del ciclo di addestramento, disegnati da animazioni/svg/ciclo-addestramento.py. Non si scrive a mano: lo riscrive `python3 animazioni/svg/genera.py --misura ciclo-addestramento`, che prima di scrivere collauda che il fenomeno ci sia.",
+ "data": "2026-08-31",
+ "configurazione": {
+  "dati": "sklearn load_digits, immagini 8x8 divise per 16",
+  "rete": "Flatten, Linear(64,16), ReLU, Linear(16,10)",
+  "loss": "CrossEntropyLoss",
+  "ottimizzatore": "SGD, lr 1.0",
+  "batch": 256,
+  "giri": 3,
+  "n_pesi": 6,
+  "seme": 0,
+  "thread": 1
+ },
+ "versioni": {
+  "python": "3.12.3",
+  "torch": "2.13.0+cpu",
+  "scikit-learn": "1.9.0"
+ },
+ "perdite": [
+  2.352591038,
+  2.285956621,
+  2.246175766
+ ],
+ "gradienti": [
+  [
+   -0.019111698,
+   0.01261673,
+   0.002200684,
+   -0.008667322,
+   0.018947631,
+   0.037510701
+  ],
+  [
+   -0.009927712,
+   0.017101713,
+   0.008342551,
+   -0.014756061,
+   0.018691763,
+   0.021658363
+  ],
+  [
+   -0.043570932,
+   0.030677343,
+   0.027149413,
+   -0.02545028,
+   0.025178533,
+   0.024423774
+  ]
+ ],
+ "scostamenti": [
+  [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  [
+   0.019111693,
+   -0.012616724,
+   -0.002200685,
+   0.00866732,
+   -0.018947631,
+   -0.037510701
+  ],
+  [
+   0.029039413,
+   -0.029718429,
+   -0.010543235,
+   0.023423381,
+   -0.037639394,
+   -0.059169061
+  ],
+  [
+   0.072610348,
+   -0.060395777,
+   -0.037692651,
+   0.048873663,
+   -0.062817931,
+   -0.083592832
+  ]
+ ],
+ "parametri": 1210
+}

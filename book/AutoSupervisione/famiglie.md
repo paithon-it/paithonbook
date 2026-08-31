@@ -329,8 +329,9 @@ sta usando qui. Questa pagina taglia secondo **che cosa impedisce la risposta
 vuota**, ed è la colonna di mezzo della tabella; ne escono quattro famiglie.
 La colonna di destra, «dove sta la difficoltà», è invece l'asse che usa
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
-e non è un caso che coincida. Nel {doc}`capitolo sui world model </WorldModels/overview>` si taglia invece secondo
-**dove avviene la previsione**, cioè se il modello prova a rifare il dato
+e la coincidenza ha una ragione. Nel
+{doc}`capitolo sui world model </WorldModels/overview>` si taglia invece
+secondo **dove avviene la previsione**, cioè se il modello prova a rifare il dato
 (i pixel, i token) oppure il suo riassunto: da lì escono tre famiglie, e la
 terza, quella che predice nello spazio delle rappresentazioni, in questa pagina
 non compare affatto perché non è un modo diverso di evitare il collasso.

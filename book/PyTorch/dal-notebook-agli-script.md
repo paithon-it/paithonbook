@@ -16,7 +16,7 @@ succede niente di buono. La cella 43 usa una variabile definita nella cella 12,
 che nel frattempo è stata cancellata; la funzione buona è la terza versione,
 ma le prime due sono ancora lì sotto; il modello che ha dato il risultato
 migliore è stato addestrato con un learning rate che nessuno ha annotato, e
-che ora non è più nel codice. Il notebook non è rotto: è che era un
+che ora non è più nel codice. Il notebook ha fatto il suo mestiere di
 **laboratorio**, e a un certo punto il laboratorio va trasformato in un
 prodotto.
 
@@ -142,11 +142,12 @@ medie non è la media. Con i numeri: due vassoi, il primo con dieci esempi che
 sbagliano in media di $1$, il secondo con due esempi che sbagliano in media di
 $4$. La media vera sui dodici esempi è $(10 \cdot 1 + 2 \cdot 4)/12 = 1{,}5$;
 la media delle due medie è $(1 + 4)/2 = 2{,}5$, cioè due terzi più alta del
-vero, perché conta i due esempi del secondo vassoio come se fossero dieci. Moltiplicare
-ciascuna media per il numero di esempi del suo vassoio, sommare, e dividere
-alla fine per il totale rimette le cose a posto. Non è un caso di scuola: a
-meno di chiedere il contrario, il `DataLoader` l'ultimo vassoio lo serve anche
-se è mezzo vuoto, quindi c'è quasi sempre un batch più piccolo degli altri.
+vero, perché conta i due esempi del secondo vassoio come se fossero dieci.
+Moltiplicare ciascuna media per il numero di esempi del suo vassoio, sommare, e
+dividere alla fine per il totale rimette le cose a posto. E capita quasi
+sempre: a meno di chiedere il contrario, il `DataLoader` l'ultimo vassoio lo
+serve anche se è mezzo vuoto, quindi c'è quasi sempre un batch più piccolo
+degli altri.
 
 Il secondo dettaglio è la riga `@torch.no_grad()` scritta sopra la seconda
 funzione. Quella chiocciola in Python si chiama **decoratore**: è una riga che
@@ -285,8 +286,8 @@ qui: `vars(args)` è un dizionario di stringhe e numeri, non un `Namespace`,
 proprio per questo.
 `````
 
-Ed ecco la funzione che salva, che è il posto in cui il capitolo mette in fila
-tutto quello che ha detto sui checkpoint: i pesi, lo stato
+Ed ecco la funzione che salva, che mette in fila tutto quello che deve entrare
+in un file per riprendere (un **checkpoint**, nel gergo): i pesi, lo stato
 dell'ottimizzatore, l'epoca raggiunta, i nomi delle classi e la configurazione.
 
 ```python

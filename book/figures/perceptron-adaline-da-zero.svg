@@ -38,5 +38,5 @@
   <path d="M 600 233 L 600 300 L 185 300 L 185 210" fill="none" stroke="#C9A961" stroke-width="2" stroke-dasharray="6 5"/>
   <polygon points="185,204 179,216 191,216" fill="#C9A961"/>
   <text x="392" y="322" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#1A1A1A" text-anchor="middle">se ŷ ≠ y: w ← w + η · (y − ŷ) · x</text>
-  <text x="340" y="40" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Il perceptron: un neurone implementabile in 30 righe</text>
+  <text x="340" y="40" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Il percettrone: pesare, sommare, decidere, correggere</text>
 </svg>

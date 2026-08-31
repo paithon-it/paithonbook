@@ -9,8 +9,8 @@ Boris Cherny, tra gli autori di Claude Code (un assistente di programmazione
 che non ha finestre né bottoni: gli si scrive e risponde, come si faceva con i
 computer prima che arrivassero i mouse), l'ha riassunta in una battuta: non fa
 quasi più prompt al modello, scrive **loop** (giri, cicli) che quei prompt li
-fanno per lui {cite}`cherny2026loops`. Non è una provocazione: è uno
-spostamento di leva. La cosa su cui conviene lavorare non è più il singolo
+fanno per lui {cite}`cherny2026loops`. È uno spostamento di leva e non una
+provocazione. La cosa su cui conviene lavorare non è più il singolo
 messaggio, ma il **sistema di controllo** che attorno a quel messaggio decide
 quando parte, cosa gli si mette davanti, come si verifica il risultato e cosa
 succede dopo.
@@ -44,15 +44,15 @@ conversazione: tu chiedi, guardi
 la risposta, storci il naso, richiedi meglio. Quel loop esiste ancora ed è il
 più comune di tutti; solo che lo giri **tu**, a mano, e finisce quando chiudi
 la finestra. Qui il loop diventa un'altra cosa: lo stesso giro affidato a un
-programma, che lo fa partire da sé, lo ripete e ne conserva l'esito. Non è una
-sostituzione, è un annidamento: dentro c'è ancora il ciclo di prima. Quello che
+programma, che lo fa partire da sé, lo ripete e ne conserva l'esito. È un
+annidamento e non una sostituzione: dentro c'è ancora il ciclo di prima. Quello che
 cambia è chi lo mette in moto e chi decide quando è finito, e quel «chi», da
 qui in avanti, non è più una persona davanti a una tastiera.
 
 L'unità di lavoro del loop engineering non è la richiesta, ma il **ciclo**:
 una sequenza che si ripete (*pianifica, esegui, verifica, rifletti*) e poi
-ricomincia, portandosi dietro ciò che ha imparato. Non è un'idea nuova, è la
-stessa ossatura del giro *osserva, ragiona, agisci* con cui lavora un agente.
+ricomincia, portandosi dietro ciò che ha imparato. È la stessa ossatura del
+giro *osserva, ragiona, agisci* con cui lavora un agente.
 La novità del loop engineering è riconoscere che di cicli, in un sistema
 serio, ce ne sono **due, annidati**, e che sono cose diverse.
 
@@ -132,7 +132,7 @@ consegnato, chi non lo supera torna indietro con il motivo del rifiuto.
 
 ## I componenti di un loop
 
-Un capobottega non è un'idea astratta: è fatto di attrezzi concreti. Cobus
+Un capobottega è fatto di attrezzi concreti. Cobus
 Greyling {cite}`greyling2026loop` ne ha raccolto il repertorio, e conviene
 scorrerlo, perché ogni voce risponde a un problema pratico che il ciclo
 esterno pone. Gli esempi vengono quasi tutti dal mondo di chi programma, che

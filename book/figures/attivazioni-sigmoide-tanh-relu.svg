@@ -71,6 +71,6 @@
 
   <!-- su due righe: in una sola la frase misura 760-860 px (a seconda del
        font) e il viewBox, largo 660, la tagliava da tutte e due le parti -->
-  <text class="cap" x="330" y="206">Tre non linearità a confronto: la sigmoide <tspan font-weight="700" fill="#1A1A1A">satura</tspan> tra 0 e 1,</text>
+  <text class="cap" x="330" y="206">Tre non linearità a confronto: la sigmoide <tspan font-weight="700" fill="#1A1A1A">si appiattisce</tspan> tra 0 e 1,</text>
   <text class="cap" x="330" y="224">la tanh è <tspan font-weight="700" fill="#1A1A1A">centrata nello zero</tspan>, la ReLU lascia passare solo la <tspan font-weight="700" fill="#1A1A1A">parte positiva</tspan>.</text>
 </svg>

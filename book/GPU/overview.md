@@ -299,8 +299,8 @@ parentesi, la cosa che significa, ed è quella la promessa della sezione.
   velocissimi e ne mette moltissimi lenti. È un pessimo affare per un lavoro
   che cambia a ogni passo, ed è l'affare perfetto per milioni di conti tutti
   uguali, che è esattamente ciò di cui una rete neurale è fatta.
-- Il vero collo di bottiglia non è quasi mai fare i conti: è **portare i
-  numeri** dalla memoria fin sotto ai calcolatori. Il cuoco è veloce, la
+- Il vero collo di bottiglia sta quasi sempre nel **portare i numeri** dalla
+  memoria fin sotto ai calcolatori, più che nel fare i conti. Il cuoco è veloce, la
   dispensa è lontana.
 - Da qui il filo conduttore di tutto il capitolo, che tornerà con nomi diversi
   in ogni sezione: **fare più conti con ogni carico di ingredienti**, e tenere

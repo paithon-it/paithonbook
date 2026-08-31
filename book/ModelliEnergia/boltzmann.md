@@ -120,9 +120,9 @@ sono tutte necessarie: l'aggiornamento dev'essere **asincrono** (così è
 campionamento di Gibbs, e soddisfa il bilancio dettagliato rispetto a questa
 distribuzione), la temperatura dev'essere $T > 0$ (a $T = 0$ la catena si
 inchioda nel primo minimo) e la scansione dei neuroni dev'essere equa. Con
-l'aggiornamento **sincrono**, quello di Little, la distribuzione stazionaria
-non è questa: è la stessa differenza che nella sezione precedente faceva
-cadere la garanzia di discesa. I neuroni si dividono in **visibili** (dove si
+l'aggiornamento **sincrono**, quello di Little, la distribuzione stazionaria è
+un'altra, per la stessa differenza che nella sezione precedente faceva cadere
+la garanzia di discesa. I neuroni si dividono in **visibili** (dove si
 presentano i dati) e **nascosti** (variabili latenti che catturano regolarità
 di ordine superiore). L'apprendimento massimizza la verosimiglianza dei dati
 sui visibili, e il gradiente ha una forma di contrasto di rara eleganza:

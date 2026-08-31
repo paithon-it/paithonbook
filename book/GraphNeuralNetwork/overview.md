@@ -288,8 +288,8 @@ spostata di un pixel contiene sempre lo stesso gatto; un grafo con i nodi
 rinumerati è sempre lo stesso grafo. Queste trasformazioni che non cambiano la
 risposta si chiamano **simmetrie** del dato, e una volta elencate dicono come
 deve essere fatta la rete che ci lavora sopra. Da quel punto di vista reti
-convoluzionali, reti ricorrenti e reti su grafo non sono tre invenzioni
-separate: sono la stessa ricetta applicata a tre elenchi di simmetrie diversi.
+convoluzionali, reti ricorrenti e reti su grafo sono la stessa ricetta
+applicata a tre elenchi di simmetrie diversi.
 
 Il secondo filo porta ai **sistemi di raccomandazione**. Lì il dato è, per sua
 natura, un grafo: da un lato gli utenti, dall'altro gli oggetti, e un arco
@@ -298,8 +298,8 @@ nodi divisi in due squadre e archi solo fra una squadra e l'altra (mai fra due
 utenti, mai fra due prodotti), si dice **bipartito**, e la parola tornerà più
 volte nel capitolo. La *link prediction* su questo grafo è, letteralmente, il
 problema della raccomandazione: prevedere gli archi che ancora non ci sono.
-Non è un caso che le GNN siano oggi il motore dei sistemi di raccomandazione
-dei grandi servizi. Il capitolo dedicato le riprenderà da vicino.
+Ed è la ragione per cui le GNN sono oggi il motore dei sistemi di
+raccomandazione dei grandi servizi. Il capitolo dedicato le riprenderà da vicino.
 
 Il terzo filo è il meno ovvio dei tre e il più utile, perché porta a un
 capitolo che sembrava parlare d'altro: quello sui **Transformer**, i modelli

@@ -168,8 +168,8 @@ sintomi molto chiari. Davanti a un caso dubbio resterà prudente e dirà «sano�
 il che era la scommessa giusta ieri ed è quella sbagliata oggi, che i malati
 sono venti volte tanti.
 
-**Cambia la regola stessa** (*concept shift*, o *drift*). Che cos'è lo spam?
-Le stesse parole ("offerta", "clicca qui", "solo per oggi") che nel 2005
+**Cambia la regola stessa** (*concept shift*, o *concept drift*). Che cos'è lo
+spam? Le stesse parole ("offerta", "clicca qui", "solo per oggi") che nel 2005
 gridavano truffa, oggi arrivano da negozi legittimi; e intanto i truffatori
 hanno imparato a scrivere come una banca. Qui non cambiano solo le domande:
 cambia la *risposta giusta alla stessa domanda*. Allo spam sono serviti anni;

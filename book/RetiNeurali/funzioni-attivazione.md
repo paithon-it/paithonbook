@@ -34,18 +34,19 @@ rete la libertà di disegnare curve.
 Non una piega qualunque, però. Uno strato è fatto di macchinette affiancate
 invece che in fila: lavorano tutte sullo stesso numero, e quello che hanno
 prodotto si somma. Allargare lo strato vuol dire affiancarne di più.
-Prendiamo come piega "eleva al quadrato", che si ottiene solo moltiplicando e
-sommando, e chiediamo allo strato di ricalcare la curva di $x^3$ fra $-1$ e
-$1$, quella che scende, si raddrizza e risale. Dieci macchinette sbagliano in
-media di quindici centesimi, su una curva i cui valori stanno fra $-1$ e $1$.
-Ottocento sbagliano di quindici centesimi, gli stessi. Sommare parabole non
-porta oltre la parabola, e di quanto la miglior parabola resti lontana da
-quella curva si sa fare il conto prima ancora di provare: quei quindici
-centesimi sono il muro contro cui la larghezza si ferma. Con una piega che non
-si ottenga moltiplicando e sommando, invece, allargare rende davvero: dieci
-macchinette scendono a tre centesimi di scarto,
-cinque volte sotto il muro, e ottocento a poco più di un millesimo, cento
-volte sotto.
+Prendiamo come piega "eleva al quadrato", che è una piega vera ma è pur sempre
+una parabola, e chiediamo allo strato di ricalcare la curva di $x^3$ fra $-1$ e
+$1$, quella che sale ripida agli estremi e si appiattisce attorno allo zero.
+Dieci
+macchinette sbagliano in media di quindici centesimi, su una curva i cui valori
+stanno fra $-1$ e $1$. Ottocento sbagliano di quindici centesimi, gli stessi.
+Sommare parabole non porta oltre la parabola, e di quanto la miglior parabola
+resti lontana da quella curva si sa fare il conto prima ancora di provare: quei
+quindici centesimi sono il muro contro cui la larghezza si ferma. Con una piega
+che nessuna somma di parabole sappia rifare, invece, allargare rende davvero:
+dieci macchinette
+scendono a tre centesimi di scarto, cinque volte sotto il muro, e ottocento a
+poco più di un millesimo, cento volte sotto.
 
 Con una piega di quelle buone, e abbastanza macchinette affiancate, ci si
 avvicina quanto si vuole a qualunque curva tracciata senza staccare la matita.
@@ -85,8 +86,8 @@ Non basta però che $g$ sia non lineare, ed è un punto su cui si scivola spesso
 Se $g$ fosse un polinomio, per esempio $g(x)=x^2$, uno strato nascosto
 calcolerebbe $\sum_i c_i\,(w_i x + b_i)^2 + d$, dove $w_i$ e $b_i$ sono peso e
 bias dell’$i$-esimo neurone nascosto, $c_i$ il peso con cui l'uscita lo
-raccoglie e $d$ il bias d'uscita: comunque si scelgano quei parametri resta un
-polinomio di grado $2$, e aggiungere neuroni non servirebbe a
+raccoglie e $c_0$ il bias d'uscita: comunque si scelgano quei parametri resta
+un polinomio di grado al più $2$, e aggiungere neuroni non servirebbe a
 niente. Provato ai minimi quadrati su $x^3$ in $[-1,1]$ (duemila punti
 equispaziati, uno strato nascosto, Adam per quattromila passi con
 $\eta = 10^{-2}$), dieci neuroni e ottocento danno lo stesso errore,
@@ -138,13 +139,12 @@ punto in cui il neurone stava lavorando. Se lì la funzione è ripida, il
 messaggio passa; se lì la funzione è **piatta**, la sua pendenza vale quasi
 zero, e moltiplicare per quasi zero spegne il messaggio.
 
-È tutto qui il metro, ed è quello che applicheremo tre volte: una buona
-funzione di attivazione è una che non spegne il messaggio mentre lo lascia
-passare.
+Una buona funzione di attivazione è una che non spegne il messaggio mentre lo
+lascia passare.
 
-Le protagoniste degli **strati nascosti** (quelli in mezzo, che non si
-affacciano né sull'ingresso né sull'uscita) sono tre, ognuna con un carattere diverso
-({numref}`fig-attivazioni`); alla fine della sezione se ne aggiunge una quarta,
+Le protagoniste degli strati nascosti sono tre, ognuna con un carattere
+diverso ({numref}`fig-attivazioni`); alla fine della sezione se ne aggiunge una
+quarta,
 la softmax, che fa un altro mestiere e lavora solo sull'ultimo strato.
 
 ```{figure} ../figures/attivazioni-sigmoide-tanh-relu.svg
@@ -164,7 +164,8 @@ la rete si spegne.
 La prima scelta, storicamente: schiaccia qualunque numero in un valore fra $0$
 e $1$. Comoda, perché un numero fra zero e uno si legge come un interruttore
 acceso a metà, o come «quanto sono convinto». Viene dalla regressione
-logistica, il classificatore incontrato nel {doc}`capitolo di machine learning </MachineLearning/overview>`.
+logistica, il classificatore di [apprendimento
+supervisionato](../MachineLearning/apprendimento-supervisionato.md).
 
 `````{tab} Elementare
 
@@ -191,7 +192,8 @@ E quei due numeri sono, in pratica, la pendenza: la pendenza vera è quanto si
 muove l'uscita per un passo *piccolissimo*, e su un passo lungo uno viene fuori
 un po’ meno (vicino allo zero la pendenza vera è $0{,}25$, non $0{,}23$). Nelle
 code il divario resta, ma i numeri in gioco sono tutti dello stesso ordine: la
-pendenza vera vale meno di tre millesimi in $-6$ e quasi sette in $-5$, e i
+pendenza vera vale meno di tre millesimi in $-6$ e quasi sette millesimi in
+$-5$, e i
 quattro millesimi letti sulla tabella stanno in mezzo. Il messaggio che risale
 la rete viene moltiplicato per un numero così, e si spegne.
 
@@ -242,7 +244,7 @@ $128$ unità, pesi estratti con l'inizializzazione di Glorot, ingressi normali
 standard, e per «fattore» si intende il rapporto fra la norma del gradiente che
 esce da uno strato verso l'ingresso e quella del gradiente che vi è entrato
 dall'uscita, mediato sugli strati. Con quel protocollo il fattore medio per
-strato viene $0{,}24$, in linea con il $0{,}25$ teorico; quadruplicando la
+strato viene $0{,}24$, in linea con il tetto di $1/4$; quadruplicando la
 scala dei pesi sale soltanto a $0{,}6$, perché nel frattempo
 $\mathbb{E}[\sigma'(z)]$ scende da $0{,}23$ a $0{,}13$. Si guadagna sul modulo
 di $\mathbf{W}$ e si perde sulla saturazione, e il fattore resta sotto $1$
@@ -314,10 +316,11 @@ da $20$ a $21$ passa da $20$ a $21$, ancora uno intero. Lontano dallo zero
 quanto vicino, la pendenza vale sempre $1$. Il
 messaggio che risale la rete, moltiplicato per $1$, resta quello di prima; non
 si smorza a ogni passaggio come faceva con la sigmoide, e arriva quindi fino ai
-primi strati anche in una rete che ne ha decine. Ed è velocissima da calcolare:
-un confronto con lo zero. Lo sportello chiuso si fa sentire anche più avanti:
-in qualunque momento buona parte dei numeri esce a zero, e lo strato
-successivo riceve poche voci accese invece di tutte.
+primi strati anche in una rete che ne ha decine, lungo gli sportelli aperti:
+dove lo sportello è chiuso non passa niente. Ed è velocissima da calcolare: un
+confronto con lo zero. Lo sportello chiuso si fa sentire anche più avanti: in
+qualunque momento buona parte dei numeri esce a zero, e lo strato successivo
+riceve poche voci accese invece di tutte.
 
 Un punto solo fa eccezione, lo zero esatto: lì la curva fa un angolo, piatta
 da una parte e inclinata dall'altra, e non esiste una pendenza sola che valga
@@ -514,11 +517,14 @@ stabile.
 ```{admonition} Da ricordare
 :class: important
 - Fra uno strato e l'altro ci vuole una **piega**: senza, mettere in fila dieci
-  strati equivale a metterne uno, e tutta la profondità non serve a niente.
+  strati equivale a metterne uno, e tutta la profondità non serve a niente. E
+  non una piega qualunque: con una parabola, allargare lo strato smette di
+  servire, perché sommare parabole non porta oltre la parabola.
 - **Sigmoide** e **tanh** schiacciano i numeri fra due estremi, e proprio agli
   estremi diventano piatte: lì la rete non trova più nessuna pendenza da
   seguire e smette di imparare. La tanh è un po’ meglio perché è centrata sullo
-  zero.
+  zero. E alzare i pesi per compensare non aiuta: li spinge proprio verso le
+  code, dove la curva è ancora più piatta.
 - La **ReLU** ("se è positivo lascialo passare, altrimenti zero") dal lato
   positivo non si appiattisce mai, e costa un confronto: è la scelta di
   partenza, ed è ciò che ha reso possibili le reti profonde. La **Leaky ReLU**

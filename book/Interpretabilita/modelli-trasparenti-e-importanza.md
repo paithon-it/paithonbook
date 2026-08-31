@@ -569,8 +569,7 @@ righe) serve al modello per imparare, e su quelle diremo che il modello si
 **addestra**; il restante 30% (133 righe) resta da parte, e il modello lo vedrà
 solo alla fine, per essere messo alla prova su casi che non ha mai incontrato.
 Il primo mucchio si chiama insieme di addestramento, il secondo insieme di
-prova, o *test*. La distinzione qui non è un dettaglio: è metà della morale di
-questa pagina.
+prova, o *test*. La distinzione qui è metà della morale di questa pagina.
 
 E poi un accorgimento, che è il vero esperimento: aggiungiamo alla tabella
 **due colonne inventate**, riempite di numeri tirati a sorte e senza alcun
@@ -665,7 +664,7 @@ rendono misurabili.
 
 **La prima differenza è il segno.** Diverse colonne hanno un'importanza da
 rimescolamento lievemente **negativa** (`s3`, `s4`, `s6`, e il rumore binario):
-rimescolarle *migliora* di un soffio le risposte. Non è un paradosso, è il caso:
+rimescolarle *migliora* di un soffio le risposte. È il caso e non un paradosso:
 sono numeri dell'ordine del centesimo, cioè dello stesso ordine del ballerio fra
 un rimescolamento e l'altro che il «$\pm$» accanto dichiara, e il modo giusto di
 leggerli è «quella colonna non serviva». La

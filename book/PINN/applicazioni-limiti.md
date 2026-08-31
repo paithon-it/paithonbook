@@ -34,10 +34,9 @@ volta.
 
 Il primo anello lega il filmato alla velocità. Il tracciante non si muove da
 solo: se ne sta lì e va dove lo porta il sangue, come una macchia di colore in
-un fiume. Quindi il modo in cui la macchia si allunga e si sposta non è
-compatibile con qualsiasi corrente: è compatibile solo con quella che
-l'avrebbe spostata proprio così. La velocità non si vede nel filmato, ma il
-filmato la restringe moltissimo.
+un fiume. Quindi il modo in cui la macchia si allunga e si sposta è compatibile
+solo con la corrente che l'avrebbe spostata proprio così. La velocità non si
+vede nel filmato, ma il filmato la restringe moltissimo.
 
 Il secondo anello lega la velocità alla pressione, e la cosa che dice è quella
 che tutti conosciamo senza chiamarla così: un fluido viene spinto verso i
@@ -383,8 +382,8 @@ minimizzando non è quello giusto. La strada, in quel caso, è riscrivere il
 vincolo in forma **debole** o integrale, che è un'altra famiglia di metodi.
 
 Sugli **orizzonti temporali lunghi** agisce invece un secondo modo di
-fallire, da tenere distinto dal primo: non è lo spectral bias detto in altre
-parole, è un meccanismo indipendente. Non è nemmeno un accumulo di
+fallire, da tenere distinto dal primo: è un meccanismo indipendente e non lo
+spectral bias detto in altre parole. Non è nemmeno un accumulo di
 errore passo dopo passo (quella è la malattia degli integratori sequenziali,
 e qui di passi non ce ne sono: l'ottimizzazione è globale nel tempo). È che
 la loss, sommando residui su punti sparsi in tutto il dominio, non impone
@@ -626,8 +625,8 @@ capitolo per capitolo, era troppo vicino per vedersi.
   {cite}`karnakov2024discrete`.
 - Applicazioni reali dove il vantaggio è concreto: emodinamica e fluidodinamica,
   identificazione di parametri nei materiali, inversione geofisica. I grandi
-  modelli meteo neurali, invece, **non sono PINN**: sono operatori appresi dai
-  dati di rianalisi, senza fisica nella loss.
+  modelli meteo neurali, invece, sono operatori appresi dai dati di rianalisi,
+  senza fisica nella loss, e **non sono PINN**.
 - Limiti onesti {cite}`krishnapriyan2021characterizing`: le PINN falliscono
   anche su PDE semplici; la loss multi-obiettivo è un **tiro alla fune** da
   bilanciare a mano; lo **spectral bias** frena fronti ripidi e strati limite;

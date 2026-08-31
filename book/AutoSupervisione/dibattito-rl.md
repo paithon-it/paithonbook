@@ -198,7 +198,7 @@ percorsi di ragionamento che il modello aveva già acquisito nel
 pre-addestramento.
 
 È una tesi tecnica precisa, ed è di Yang Yue e colleghi {cite}`yue2025rlvr`.
-Non è un'opinione, è una misura, e conviene dire come è fatta perché è la
+È una misura e non un'opinione, e conviene dire come è fatta perché è la
 parte interessante.
 
 `````{tab} Elementare
@@ -458,5 +458,5 @@ Da questo capitolo si esce con un criterio più che con una risposta: prima di
 chiedersi se un modo di addestrare funzioni, conviene chiedersi quanta
 informazione porta il segnale su cui si regge, e a quante scelte quel poco va
 poi diviso. Nel {doc}`capitolo sui world model </WorldModels/overview>` il segnale resta la previsione, ma la
-cosa da prevedere non è più la parte coperta di un dato, è quello che succede
-dopo nel mondo.
+cosa da prevedere diventa quello che succede dopo nel mondo, invece della parte
+coperta di un dato.

@@ -65,7 +65,7 @@ che spezzano l'indice per aree.
 |---|----------|----------|
 | 1 | **Introduzione** | Che cos'è l'AI, da ELIZA a oggi; il primo notebook eseguibile |
 | 2 | **Python** | Le basi del linguaggio, NumPy, pandas e matplotlib |
-| 3 | **Richiami di matematica** | Algebra lineare, ottimizzazione, probabilità, teoria dell'informazione, analisi numerica, e la matematica che sta dentro un modello linguistico |
+| 3 | **Richiami di matematica** | Algebra lineare, sistemi lineari, ortogonalità e proiezioni, determinante, ottimizzazione, probabilità, disuguaglianze di concentrazione, catene di Markov, teoria dell'informazione, analisi numerica, e la matematica che sta dentro un modello linguistico |
 | 4 | **Machine Learning** | Apprendimento supervisionato, overfitting, metriche, iperparametri, spline e modelli additivi, alberi e metodi ensemble (Random Forest, gradient boosting, XGBoost), bootstrap, SVM e kernel trick, classificatori generativi (naive Bayes, analisi discriminante), riduzione della dimensionalità e clustering (PCA, t-SNE/UMAP, k-means, DBSCAN) con le metriche per valutarlo, distribution shift, processi gaussiani |
 | 5 | **Reti Neurali** | Percettrone, funzioni di attivazione, backpropagation |
 | 6 | **PyTorch** | Tensori, autograd, `nn.Module`, training loop, `Dataset` e `DataLoader`, i tre errori più comuni, dal notebook agli script, replicare un paper, prestazioni e scala |
@@ -88,7 +88,7 @@ che spezzano l'indice per aree.
 | 23 | **Speech Recognition** | Dalla voce al testo: allineamento e CTC, modelli con attenzione, Whisper, sintesi vocale (TTS) |
 | 24 | **Modelli latenti** | Spiegare i dati con una causa che non si vede: autoencoder e il suo limite, verosimiglianza intrattabile, ELBO e trucco della riparametrizzazione, beta-VAE e latente discreto, e i quattro punti del libro in cui erano già al lavoro |
 | 25 | **Generative Adversarial Network** | Il gioco avversario, applicazioni ed evoluzioni |
-| 26 | **Modelli di Diffusione** | Da DDPM a Stable Diffusion e ai Diffusion Transformer (DiT, Sora) |
+| 26 | **Modelli di Diffusione** | Da DDPM al limite continuo (SDE, ODE del flusso di probabilità), flow matching, Stable Diffusion, Diffusion Transformer (DiT, Sora), campionatori veloci, generatori a un passo, guida e allineamento, diffusione sul testo |
 | 27 | **Verosimiglianza esatta** | I modelli che sanno dire quanto è probabile un dato: autoregressivi sulle immagini (PixelCNN, maschere e punto cieco), flussi normalizzanti (cambio di variabile, RealNVP, GLOW), a che serve la verosimiglianza e dove sbaglia |
 | 28 | **Modelli a energia** | Il paesaggio invece della probabilità: memoria associativa di Hopfield, macchine di Boltzmann e contrastive divergence, i modi di aggirare la funzione di partizione (Langevin, score matching, NCE), la cornice di LeCun, EBM di oggi (IGEBM, JEM) |
 | 29 | **Auto-supervisione** | Il segnale fabbricato dai dati: la banda informativa e la torta di LeCun, le quattro famiglie (contrastiva, distillazione, riduzione di ridondanza con Barlow Twins e VICReg, mascheramento), collasso e misura, il dibattito sul rinforzo |

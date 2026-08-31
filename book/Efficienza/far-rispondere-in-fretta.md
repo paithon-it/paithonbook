@@ -54,8 +54,8 @@ carico, e da ogni viaggio escono meno coperti di quanti il conto pulito ne
 prometta. Il conto tiene finché i coperti sono pochi rispetto a quanto pesano
 le casse.
 
-Quindi la domanda che decide tutto non è quanti conti ci sono da fare, è
-**quanti conti si riescono a fare per ogni viaggio in cantina**. La tabella qui
+Quindi la domanda che decide tutto è **quanti conti si riescono a fare per ogni
+viaggio in cantina**, più che quanti conti ci siano da fare. La tabella qui
 sotto è quella domanda, messa in numeri.
 
 `````
@@ -64,11 +64,11 @@ sotto è quella domanda, messa in numeri.
 
 Uno strato moltiplica una matrice di pesi $n \times n$ per un blocco di
 ingressi $n \times k$, dove $k$ è quante cose si elaborano insieme. Le
-operazioni in virgola mobile sono $2 n^2 k$, e il due non è un dettaglio: per
-ogni casella del risultato si fanno $n$ moltiplicazioni **e altrettante
-somme**, ed è la convenzione con cui il capitolo sulla GPU conta i FLOP. I byte
-letti dalla memoria sono invece $n^2 b / 8$, con $b$ i bit per peso come nel
-resto del capitolo, e **non dipendono da $k$**, perché i pesi sono gli stessi.
+operazioni in virgola mobile sono $2 n^2 k$, e il due ha una ragione: per ogni
+casella del risultato si fanno $n$ moltiplicazioni **e altrettante somme**, ed
+è la convenzione con cui il capitolo sulla GPU conta i FLOP. I byte letti dalla
+memoria sono invece $n^2 b / 8$, con $b$ i bit per peso come nel resto del
+capitolo, e **non dipendono da $k$**, perché i pesi sono gli stessi.
 
 Il rapporto fra le due quantità,
 
@@ -226,10 +226,11 @@ il punto in cui il modello grande la taglia.
 
 `````
 
-Il capitolo si chiude qui, e la cosa da portarsi dietro non è l’elenco delle
-tecniche: è che ognuna delle tre leve **si paga**, e che il prezzo si conosce
+Il capitolo si chiude qui, e la cosa da portarsi dietro è che ognuna delle tre
+leve **si paga**, più dell’elenco delle tecniche: e che il prezzo si conosce
 solo misurandolo sul proprio modello e sui propri dati. Arrotondare a otto bit
 costa l’uno per cento e a quattro molto di più; potare novanta pesi su cento
 costa un punto di accuratezza e non regala un millisecondo; imitare un maestro
-costa tutti gli errori del maestro. Nessuna delle tre è gratis, e il prezzo cambia da un modello all'altro: chi le
-adotta senza misurarlo sul proprio sta scegliendo alla cieca.
+costa tutti gli errori del maestro. Nessuna delle tre è gratis, e il prezzo
+cambia da un modello all'altro: chi le adotta senza misurarlo sul proprio sta
+scegliendo alla cieca.

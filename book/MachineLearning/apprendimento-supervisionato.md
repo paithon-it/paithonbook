@@ -45,8 +45,8 @@ fra le due ci sia qualcosa a 1,5. È un ordine, e sono delle distanze, che
 nessuno intendeva metterci.
 
 Di ogni appartamento teniamo tre numeri in fila (metri quadri, stanze, piano):
-un elenco ordinato di numeri si chiama **vettore**, ed è lo stesso oggetto del
-{doc}`capitolo di algebra lineare </Matematica/overview>`. Lo scriviamo
+un elenco ordinato di numeri si chiama **vettore**, ed è lo stesso oggetto della
+{doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>`. Lo scriviamo
 $\mathbf{x}$, in grassetto minuscolo, proprio per ricordare che non è un numero
 solo. A ciascun appartamento associamo poi un'etichetta $y$ (il prezzo). Il
 "supervisore" è proprio quella $y$ nota: qualcuno, in passato, ha già
@@ -224,7 +224,7 @@ Nella nebbia ci si ferma nella prima conca, senza sapere mai che dietro il
 crinale ce n'era una più profonda. Con la media degli scarti al quadrato non
 capita, perché quella collina ha la forma di una scodella, con un fondo solo,
 e da qualunque retta si parta si finisce lì. La garanzia riguarda la retta e
-non ogni modello, e le reti neurali che incontreremo camminano su terreni
+non ogni modello, e le reti neurali camminano su terreni
 molto più accidentati. Per una retta, poi, si può anche non camminare, perché
 un conto diretto dà i pesi migliori in un colpo solo, e finché i dati stanno
 comodi si usa quello. Con milioni di case e centinaia di colonne quel conto
@@ -245,7 +245,7 @@ colonne sono più delle case in archivio, con tante manopole e poche vendite da
 rispettare.
 
 Quella passeggiata a piccoli passi è il motore di quasi tutto l'apprendimento
-che incontreremo, reti neurali comprese, ed è la ragione per cui la parola
+automatico, reti neurali comprese, ed è la ragione per cui la parola
 «errore» torna a ogni passaggio: non dà solo un voto alla regola, le dice da
 che parte andare.
 
@@ -383,7 +383,7 @@ nient'altro. La libreria ci aggiunge di
 suo un **freno**, cioè quel prezzo alla complessità che vedremo nella prossima
 sezione: senza dire niente, tiene i pesi più piccoli di quanto sarebbero.
 
-Non è un capriccio, ed è quasi sempre un bene. Con dati così
+È quasi sempre un bene. Con dati così
 facili che una linea li separa alla perfezione, il modello, per prendere pieni
 voti, non deve solo azzeccare le risposte, deve anche essere *sicuro*, e per
 essere più sicuro gli basta ingigantire i pesi. Un punteggio di $10$ dà una
@@ -394,10 +394,11 @@ freno è ciò che dice «basta così».
 Il freno si vede nei numeri. Su quattro punti messi in modo che una linea li
 separi senza incertezze, il peso che esce con le impostazioni di fabbrica vale
 circa $1$, e chiedendo di togliere il freno diventa quasi nove volte tanto,
-mentre il confine fra le due classi resta esattamente dov'era. La manopola, poi, ha un
-verso che confonde, perché il numero da scrivere dice quanto freno si toglie:
-più è grande, meno freno c'è. È comunque il tipo di dettaglio
-che va saputo, perché il modello che gira non è quello della definizione, e chi
+mentre il confine fra le due classi resta esattamente dov'era. La manopola si
+chiama `C`, e ha un verso che confonde, perché il numero da scrivere dice
+quanto freno si toglie: più è grande, meno freno c'è. È comunque il tipo di
+dettaglio che va saputo, perché il modello che gira non è quello della
+definizione, e chi
 confronta quei due pesi senza saperlo pensa di aver sbagliato i conti.
 
 `````
@@ -420,6 +421,277 @@ proprio il freno. Chi vuole la stima non regolarizzata deve chiederla
 sapendo che cosa sta chiedendo.
 
 `````
+
+## Lineare, logistica, Poisson: una famiglia sola
+
+I due modelli visti finora rispondono a due domande diverse: la retta dice
+*quanto* (un prezzo, una temperatura, un numero qualsiasi), la logistica dice
+*sì o no*. Ce n'è una terza, altrettanto comune, alla quale nessuna delle due
+risponde: quante volte. Quanti clienti entrano in farmacia fra le nove e le
+dieci, quanti guasti registra una linea in un turno, quante volte un utente
+apre l'applicazione in una settimana. Sono conteggi: numeri interi, mai
+negativi, e con una particolarità che la retta non sa gestire.
+
+Provare comunque con la retta è istruttivo, perché fallisce in due modi
+visibili. Su duemila giornate (inventate al calcolatore, così che la risposta
+giusta si conosca in anticipo e si possa controllare se il modello la ritrova)
+la retta migliore prevede un numero negativo di clienti in
+duecentoquarantasette casi, il che è una risposta che nessuno può usare; e i
+suoi scarti si aprono a ventaglio, piccoli dove i clienti sono pochi e grandi
+dove sono tanti, mentre tutto l'impianto della retta di prima suppone che siano
+più o meno gli stessi dappertutto.
+
+La riparazione non butta via niente di quello che si è imparato: tiene il
+punteggio lineare, cambia il modo di leggerlo, e cambia la regola con cui si
+misura lo scarto. Fatto per la terza volta, il gesto si riconosce come uno
+solo, e il suo nome è **modelli lineari generalizzati**, che gliel'hanno dato
+John Nelder e Robert Wedderburn nel 1972 {cite}`nelder1972generalized`.
+
+`````{tab} Elementare
+
+Il farmacista vuole sapere quanti clienti aspettarsi alle nove del mattino, e
+ha le colonne di sempre: che giorno è, che tempo fa, se c'è una promozione in
+corso, quanto siamo dentro la stagione dell'influenza. La prima mossa è quella
+già vista: si moltiplica ogni colonna per il suo peso, si somma tutto, e ne
+esce un punteggio, che come sempre può valere qualsiasi cosa, meno sette o più
+quattrocento.
+
+La seconda mossa è dove le tre risposte si separano. Per un prezzo il punteggio
+si legge così com'è. Per un sì o no lo si schiaccia fra zero e uno con la curva
+a esse. Per un conteggio si fa una terza cosa: si prende quel punteggio come
+**logaritmo** del numero di clienti, e per tornare al numero si fa il conto
+all'incontrario, cioè si eleva a quel punteggio il numero $e$ (che vale circa
+$2{,}718$, e che la {doc}`sezione su analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>` racconta insieme al logaritmo). Il
+vantaggio è immediato: un numero positivo elevato a qualunque cosa resta
+positivo, anche a un esponente negativo, quindi la previsione non può più
+essere meno tre clienti.
+
+Il prezzo di questa scelta va detto subito, perché cambia il senso dei pesi.
+Nel punteggio i pesi si sommano, come sempre; ma disfare un logaritmo
+trasforma le somme in prodotti, e quindi sui clienti quei pesi
+**moltiplicano**. Un peso che vale un mezzo non aggiunge mezzo cliente:
+moltiplica per la radice quadrata di $2{,}718$, cioè per $1{,}65$. Il sabato
+non aggiunge dodici clienti: il sabato raddoppia.
+
+C'è anche una cosa da sistemare prima di cominciare, e riguarda il tempo. Un
+conteggio non vuol dire niente se non si sa su quanto tempo è stato fatto:
+dodici clienti in un'ora e dodici in una giornata sono due fatti diversi. Se le
+finestre non sono tutte uguali, la durata entra nel conto come un ingrediente
+con il peso già deciso e non da imparare, e quello che il modello stima diventa
+il ritmo, cioè i clienti per ora.
+
+Resta il terzo pezzo, quello sull'irregolarità, e cambia la terza cosa: la
+regola con cui si misura lo scarto. Un conteggio non si sparpaglia come un
+prezzo. Se in media entrano due clienti l'ora, i giorni oscillano fra zero e
+cinque; se ne entrano cento, oscillano fra ottanta e centoventi. In proporzione
+l'oscillazione si stringe, e in valore assoluto cresce come la **radice** della
+media: da due a cento la media si moltiplica per cinquanta e l'oscillazione per
+poco più di sette, che è la radice di cinquanta. È la regola dei conteggi che
+capitano ciascuno per conto proprio, quella che porta il nome di Poisson, e
+prendere quella invece della curva a campana chiude la terza differenza.
+
+Le tre risposte, allora, sono la stessa macchina con tre impostazioni: il
+punteggio si costruisce sempre allo stesso modo, e cambiano solo come lo si
+legge e con che regola si misura lo scarto. Cambia poco anche il modo di
+imparare: si guarda la differenza fra quello che è successo e quello che il
+modello si aspettava, e si spingono i pesi in quella direzione. Uguale per
+tutte e tre.
+
+E i due modi di sbagliare. Il primo: leggere il punteggio come un logaritmo è
+una scelta di chi costruisce il modello, e dice che gli effetti si
+moltiplicano. Se nel negozio in questione il sabato aggiunge davvero dodici
+clienti invece di raddoppiarli, quella lettura è la lettura sbagliata, e i pesi
+che ne escono raccontano una storia che non c'è. Il secondo morde più spesso: i
+conteggi veri sono quasi sempre più irregolari di quanto la regola prometta.
+Basta che i clienti arrivino a gruppetti, perché scende un autobus o perché è
+finita la messa, e l'oscillazione diventa il doppio di quella prevista. I pesi
+non se ne vanno lontano dal vero, ma la fiducia che il modello dichiara sì, ed
+è troppa: chi la prende per buona prepara i turni su un'oscillazione che non
+esiste. La cura è una versione con una manopola in più, che regola
+l'irregolarità separatamente dalla media, e si chiama binomiale negativa.
+
+
+`````
+
+`````{tab} Superiore
+
+Un **modello lineare generalizzato** (GLM) si specifica con tre pezzi
+{cite}`nelder1972generalized`. Una **distribuzione** per $y \mid \mathbf{x}$
+scelta nella famiglia esponenziale; un **predittore lineare** $\eta =
+\mathbf{w}^\top\mathbf{x} + b$; e una **funzione di legame** $g$ che li unisce,
+con $g(\mu) = \eta$ e $\mu = \mathbb{E}[y \mid \mathbf{x}]$.
+
+La **famiglia esponenziale** in forma canonica raccoglie le densità
+
+$$
+p(y \mid \theta) = h(y)\,\exp\!\big(\theta\, y - A(\theta)\big),
+$$
+
+dove $h$ dipende dalla sola $y$ (la misura di base: vale $1$ per la Bernoulli,
+$1/y!$ per la Poisson), $\theta$ è il **parametro naturale** (una lettera che
+qui non indica i parametri del modello, che restano $\mathbf{w}$ e $b$) e
+$A(\theta) = \log\int h(y)e^{\theta y}\,dy$ è la **log-partizione**, cioè il
+logaritmo di ciò che serve a far tornare l'integrale a uno, e che dipende da
+$\theta$. Da $A$ discende tutto, derivando sotto il segno di integrale (lecito
+all'interno dell'insieme dei $\theta$ per cui quell'integrale converge):
+
+$$
+A'(\theta) = \mathbb{E}[y], \qquad A''(\theta) = \operatorname{Var}[y] .
+$$
+
+Tre casi bastano qui. La gaussiana a **varianza unitaria** ha $\theta = \mu$ e
+$A(\theta) = \theta^2/2$, quindi media $\theta$ e varianza $1$; con una
+varianza nota diversa da uno servono $\theta = \mu/\sigma^2$ e
+$A(\theta) = \sigma^2\theta^2/2$, oppure la forma con un parametro di
+dispersione a parte. La Bernoulli ha $\theta = \log\frac{\mu}{1-\mu}$ (il
+*logit*) e $A(\theta) = \log(1+e^{\theta})$, quindi
+$A'(\theta) = \sigma(\theta)$: la sigmoide, dunque, è la derivata della
+log-partizione. La distribuzione di **Poisson**, che descrive un conteggio di
+eventi indipendenti in una finestra fissa con $P(y=k) = e^{-\mu}\mu^k/k!$, ha
+$\theta = \log\mu$ e $A(\theta) = e^{\theta}$, da cui
+$A'(\theta) = A''(\theta) = \mu$: media e varianza coincidono, e quindi
+l'ampiezza tipica dell'oscillazione va come $\sqrt{\mu}$.
+
+Il **legame canonico** è quello che pone $\theta = \eta$, cioè $g = (A')^{-1}$:
+identità per la gaussiana, logit per la Bernoulli, logaritmo per la Poisson.
+Con quella scelta, e assumendo le $y_i$ indipendenti date le $\mathbf{x}_i$, la
+log-verosimiglianza di $m$ osservazioni è
+
+$$
+\ell(\mathbf{w}) = \sum_{i=1}^{m}
+\big(\eta_i\, y_i - A(\eta_i)\big) + \text{cost.},
+\qquad
+\nabla_{\mathbf{w}}\,\ell = \sum_{i=1}^{m}
+\big(y_i - \mu_i\big)\,\mathbf{x}_i ,
+$$
+
+perché $A'(\eta_i) = \mu_i$. Il gradiente ha la stessa forma per tutti e tre i
+modelli: residuo per feature, sommato sugli esempi. All'ottimo si annulla, cioè
+i residui risultano ortogonali a ogni colonna, compresa la colonna di uno
+dell'intercetta, da cui la loro somma nulla (senza intercetta quella condizione
+non c'è). È la stessa condizione del primo ordine dei minimi quadrati vista
+nella {doc}`sezione su ortogonalità e proiezioni
+</Matematica/ortogonalita-proiezioni>`, ma non la stessa geometria, perché
+$\mu_i = A'(\eta_i)$ non appartiene allo span delle colonne e non c'è nessun
+teorema di Pitagora da invocare.
+
+Due garanzie discendono da $A''>0$. La log-verosimiglianza è concava in
+$\mathbf{w}$, quindi non ci sono ottimi locali e il massimo, **quando esiste**,
+è unico a meno di colonne collineari: che esista non è garantito, ed è di nuovo
+il caso della separazione perfetta appena visto per la logistica. E l'Hessiana
+$-\sum_i A''(\eta_i)\mathbf{x}_i\mathbf{x}_i^\top$ si scrive come una matrice
+di pesi, il che rende il passo di Newton una regressione ai minimi quadrati
+pesata, rifatta a ogni iterazione: è l'algoritmo IRLS del lavoro del 1972, che
+ancora oggi gira in `glm()` di R e in statsmodels, mentre scikit-learn
+preferisce un ottimizzatore generico.
+
+I punti di rottura sono tre. Il legame è un'ipotesi di modello e non un fatto:
+con il logaritmo gli effetti sono moltiplicativi, e un fenomeno additivo va
+modellato con il legame identità e distribuzione di Poisson, che è legittimo ma
+non canonico. L’esposizione: se le finestre di osservazione hanno durate
+diverse $t_i$, i conteggi non sono confrontabili, e si aggiunge un *offset*
+$\log t_i$ al predittore lineare, cioè un termine con coefficiente fissato a
+uno. E soprattutto la sovradispersione: la Poisson impone
+$\operatorname{Var} = \mu$, e i conteggi reali quasi sempre oscillano di più,
+perché gli eventi si raggruppano o perché resta eterogeneità non osservata.
+Purché la media sia specificata bene (legame e predittore giusti) i
+coefficienti restano consistenti, e a uscire sbagliati sono gli errori
+standard, troppo piccoli di un fattore $\sqrt{\hat\phi}$, con $\hat\phi$ la
+dispersione stimata. Il rimedio più diretto è quindi correggere quelli, per
+quasi-verosimiglianza o con uno stimatore sandwich, senza toccare le stime; il
+rimedio che cambia modello è la **binomiale negativa**, che aggiunge un
+parametro di dispersione (e a dispersione libera non è più un GLM nel senso
+appena definito). Torna come distribuzione di uscita di una rete nella
+{doc}`sezione sul forecasting neurale </SerieTemporali/forecasting-neurale>`.
+
+`````
+
+I tre difetti della retta sui conteggi si vedono in un blocco solo, e con essi
+il modo in cui il legame logaritmico li ripara.
+
+```python
+import numpy as np
+from sklearn.linear_model import LinearRegression, PoissonRegressor
+
+rng = np.random.default_rng(0)
+n_giorni = 2000
+# l'indice di stagione: zero d'estate, due al picco influenzale
+stagione = rng.uniform(0, 2, n_giorni)
+log_media = 0.4 + 1.5 * stagione         # gli effetti si moltiplicano
+clienti = rng.poisson(np.exp(log_media))  # un conteggio, mai negativo
+X = stagione.reshape(-1, 1)
+
+# 1. la retta: prevede clienti negativi, e gli scarti si aprono a ventaglio
+retta = LinearRegression().fit(X, clienti)
+print(f"retta:  {retta.intercept_:.4f} + {retta.coef_[0]:.4f} * stagione")
+negative = (retta.predict(X) < 0).sum()
+print(f"        {negative} previsioni negative su {n_giorni}")
+scarti = clienti - retta.predict(X)
+for lo, hi in ((0.0, 0.5), (0.75, 1.25), (1.5, 2.0)):
+    m = (stagione >= lo) & (stagione < hi)
+    print(f"        stagione {lo}-{hi}: scarto tipico {scarti[m].std():.2f}")
+
+# 2. lo stesso punteggio, letto come logaritmo della media
+glm = PoissonRegressor(alpha=0.0, max_iter=10000, tol=1e-10).fit(X, clienti)
+media = glm.predict(X)
+print(f"legame log:  {glm.intercept_:.4f} + {glm.coef_[0]:.4f} * stagione")
+print(f"        un punto di stagione moltiplica per"
+      f" {np.exp(glm.coef_[0]):.4f}")
+print(f"        scarti sommati, e per colonna: "
+      f"{np.round([(clienti - media).sum(), stagione @ (clienti - media)], 3)}"
+      f"  su {clienti.sum()} clienti")
+
+# 3. il limite: conteggi piu' irregolari di quanto Poisson ammetta
+dispersione = lambda y, mu: float((((y - mu) / np.sqrt(mu)) ** 2).mean())
+print(f"dispersione sui dati di Poisson:  {dispersione(clienti, media):.4f}")
+
+sovra = rng.negative_binomial(3, 3 / (3 + np.exp(log_media)))
+g2 = PoissonRegressor(alpha=0.0, max_iter=10000, tol=1e-10).fit(X, sovra)
+m2 = g2.predict(X)
+d = dispersione(sovra, m2)
+print(f"su conteggi sovradispersi:  {g2.intercept_:.4f}"
+      f" + {g2.coef_[0]:.4f} * stagione")
+print(f"        dispersione {d:.4f}, radice {np.sqrt(d):.4f}")
+```
+
+```text
+retta:  -3.0126 + 12.5509 * stagione
+        247 previsioni negative su 2000
+        stagione 0.0-0.5: scarto tipico 2.06
+        stagione 0.75-1.25: scarto tipico 2.57
+        stagione 1.5-2.0: scarto tipico 5.92
+legame log:  0.3784 + 1.5158 * stagione
+        un punto di stagione moltiplica per 4.5531
+        scarti sommati, e per colonna: [-0. -0.]  su 19022 clienti
+dispersione sui dati di Poisson:  1.0224
+su conteggi sovradispersi:  0.4086 + 1.4990 * stagione
+        dispersione 3.8411, radice 1.9599
+```
+
+La retta prevede $-3{,}01$ clienti quando l'indice di stagione vale zero, cioè
+d'estate, e finisce sotto zero in $247$ giornate su duemila; i suoi scarti
+tipici passano da $2{,}06$ a $5{,}92$ attraversando l'intervallo, che è il
+ventaglio annunciato. Il modello che legge il punteggio come logaritmo ritrova
+invece i due numeri con cui i dati erano stati inventati, $0{,}4$ e $1{,}5$, e
+il suo peso si legge come moltiplicatore: un punto in più di stagione
+moltiplica i clienti per $4{,}55$. La riga sugli scarti è un controllo:
+moltiplicandoli per ciascuna colonna e sommandoli si ottiene zero al millesimo
+su quasi ventimila clienti, cioè quello che il modello non è riuscito a
+spiegare non ha più niente in comune con le colonne che ha usato, ed è lo
+stesso segno di «ho finito» della retta di prima.
+
+Le ultime due righe sono il limite, e il conto è questo: si prende ogni scarto,
+lo si divide per la radice del numero atteso, e si guarda quanto quei rapporti
+si sparpagliano. Se l'oscillazione cresce davvero come la radice della media,
+come Poisson promette, quel valore deve venire circa uno, e sui dati generati
+da una Poisson viene $1{,}0224$. Rifacendo tutto su conteggi generati con la
+versione a due manopole, la binomiale negativa, i pesi restano quelli
+($0{,}4086$ e $1{,}499$) ma lo stesso valore sale a $3{,}84$. Il numero che
+conta per chi deve decidere è la sua radice, $1{,}96$: le oscillazioni vere
+sono quasi il doppio di quelle che il modello annuncia, e il farmacista che gli
+crede prepara i turni per un sabato tranquillo che non arriverà.
+
 
 ## k-NN: chiedi ai vicini
 
@@ -598,8 +870,15 @@ per tutto il resto del libro.
 - Se la risposta è un **numero** si cerca una retta che passi *in mezzo* ai
   punti; se è un **sì o no** si cerca una linea che li *separi*, dopo aver
   trasformato il punteggio in una probabilità e aver scelto dove tagliare.
-- La retta buona non si trova per tentativi: si parte da una qualsiasi e la si
-  sposta a piccoli passi nella direzione in cui l'errore cala (la **discesa del
+- E se la risposta è un **conteggio** («quante volte») non va bene nessuna
+  delle due: il punteggio si legge come il logaritmo del numero atteso, così la
+  previsione non può venire negativa e i pesi moltiplicano invece di sommare.
+  Le tre risposte sono la stessa macchina con tre impostazioni. Attenzione però
+  ai conteggi veri, che quasi sempre oscillano più di quanto quel modello
+  ammetta: i pesi restano giusti, la fiducia dichiarata no.
+- La retta buona si può trovare con un conto diretto, che però con tanti dati
+  costa più della passeggiata: allora si parte da una qualsiasi e la si sposta
+  a piccoli passi nella direzione in cui l'errore cala (la **discesa del
   gradiente**), decidendo quanto lunghi sono i passi.
 - Il **k-NN** non impara niente: tiene in memoria tutti gli esempi e, alla
   domanda, fa votare i $k$ più simili. Semplicissimo, ma va in crisi quando le
@@ -619,12 +898,22 @@ per tutto il resto del libro.
   $(\mathbf{x}^{(i)}, y^{(i)})$.
 - **Regressione** = uscita continua (MSE, retta di best fit); **classificazione**
   = uscita discreta (sigmoide, confine di decisione $\mathbf{w}^\top\mathbf{x}+b=0$).
+- I **modelli lineari generalizzati** {cite}`nelder1972generalized` mettono i
+  due casi (e la **Poisson** per i conteggi) sotto un solo impianto:
+  distribuzione nella famiglia esponenziale, predittore lineare
+  $\eta=\mathbf{w}^\top\mathbf{x}+b$, legame $g(\mu)=\eta$. Con il legame
+  canonico $g=(A')^{-1}$ la log-verosimiglianza è concava e il gradiente vale
+  $\sum_i (y_i-\mu_i)\mathbf{x}_i$ per tutti e tre, da cui l'IRLS. La Poisson
+  impone $\operatorname{Var}=\mu$: contro la sovradispersione, binomiale
+  negativa.
 - Il tipo di ogni colonna (numerica, categorica, ordinale) è una decisione di
   chi prepara i dati: una categorica codificata come intero acquista un ordine
   e delle distanze che nessuno intendeva metterci.
 - **k-NN** è non parametrico: non stima parametri, ricorda i dati e li fa votare.
-  Costo $O(mn)$ per query ($m$ distanze da $n$ coordinate ciascuna), e la
-  concentrazione delle distanze lo affossa in alta dimensione.
+  Costo $O(mn)$ per query ($m$ distanze da $n$ coordinate ciascuna), che gli
+  indici spaziali (KD-tree, ball-tree) portano a circa $O(n\log m)$ sotto le
+  poche decine di dimensioni; sopra, la concentrazione delle distanze affossa
+  gli indici e il metodo insieme.
 - Attenzione all’**overfitting**: imparare a memoria non è capire. Ne parliamo
   nella sezione dedicata.
 ```

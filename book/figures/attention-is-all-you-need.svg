@@ -28,7 +28,7 @@
   <!-- nodo punteggi (Q e K) -->
   <rect x="370" y="102" width="150" height="52" rx="6" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
   <text x="445" y="126" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">punteggi</text>
-  <text x="445" y="144" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Q · K&#8348; / &#8730;d&#8342;</text>
+  <text x="445" y="144" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Q · K&#8868; / &#8730;d&#8342;</text>
   <g stroke="#1A1A1A" stroke-width="1.5" fill="none">
     <path d="M306 92 L 366 118"/>
     <path d="M306 178 L 366 138"/>

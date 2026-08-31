@@ -64,8 +64,8 @@ Uno *state space model* fa questo con una sequenza. Dove la vasca ha un
 livello solo, il modello ne tiene qualche decina, vasche affiancate che salgono
 e calano insieme a ogni parola in arrivo; quante siano si decide prima di
 aprire il rubinetto e non cambia più, per lungo che sia il testo. È lo stesso
-spirito della rete ricorrente vista nel capitolo sul linguaggio, con rubinetto,
-scarico e ago presi dai sistemi che evolvono nel tempo.
+spirito della {doc}`rete ricorrente </NaturalLanguageProcessing/modelli-sequenza>`,
+con rubinetto, scarico e ago presi dai sistemi che evolvono nel tempo.
 
 Proprio perché la regola non cambia mai, a quel 3,875 ci si arriva per due
 strade. Passo dopo passo, dal livello di prima a quello di adesso, una parola
@@ -137,11 +137,10 @@ Il confronto di {numref}`fig-attenzione-vs-ssm` mostra anche dove sta il
 prezzo. Un riassunto di taglia fissa deve, prima o poi, dimenticare qualcosa.
 Il primo dei due fili che attraversano il capitolo è la **selettività** (il
 rombo sul lato destro della figura): decidere *cosa* scrivere nello stato, e
-cosa lasciar cadere, in funzione di ciò che sta arrivando. Conviene essere
-precisi su che cosa promette, perché è facile chiedere troppo alla
-selettività: cambia *come* si usa lo spazio del riassunto, non lo allarga. Il
-tetto di un riassunto di taglia fissa resta, ed è l'argomento dell'ultima
-sezione del capitolo.
+cosa lasciar cadere, in funzione di ciò che sta arrivando. È facile chiedere
+troppo alla selettività: cambia *come* si usa lo spazio del riassunto, non lo
+allarga. Il tetto di un riassunto di taglia fissa resta, ed è l'argomento di
+{doc}`Panorama e limiti </StateSpaceModel/panorama-e-limiti>`.
 
 Il secondo filo è una parentela. Alla fine, con **Mamba-2**
 {cite}`dao2024mamba2`, vedremo che non è una somiglianza vaga: un *state space
@@ -164,8 +163,7 @@ Quattro tappe, dall'idea di base alla frontiera.
 
 **Dai sistemi dinamici a S4**: che cos'è una macchina che riassume il passato
 in un pugno di numeri, come si adatta a una sequenza fatta di passi separati, e
-come si fa a darle una memoria lunga (sono HiPPO e S4, e il secondo dà il
-titolo alla sezione).
+come si fa a darle una memoria lunga (sono HiPPO e S4).
 
 **Mamba**: come si insegna alla macchina a scegliere, invece di trattare tutte
 le parole allo stesso modo; che cosa costa quella scelta (si perde il modo
@@ -201,7 +199,7 @@ architetture **ibride** che oggi mettono insieme il meglio delle due strade.
 - **Mamba** {cite}`gu2023mamba` rompe quella regola fissa: lascia decidere alla
   parola in arrivo quanto scrivere e quanto dimenticare (è la **selettività**).
   **Mamba-2** {cite}`dao2024mamba2` mostra poi che, nella sua versione più
-  semplice, questa macchina **è** un'attenzione che guarda solo all'indietro:
+  semplice, questa macchina è un'attenzione che guarda solo all'indietro:
   le due famiglie si incontrano su quel gradino.
 - Il percorso: dai sistemi dinamici a S4 → Mamba (scegliere, e restare veloci)
   → la dualità (Mamba-2 e Mamba-3) → panorama, limiti e ibridi.

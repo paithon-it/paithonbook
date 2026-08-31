@@ -247,15 +247,14 @@ cui oggi si fa ricerca in deep learning.
 
 ```{admonition} Se vuoi lo stesso percorso in forma di corso
 :class: seealso
-Il libro spiega *come funziona*; per esercitarsi con i notebook alla mano, il
+Qui si spiega *come funziona*; per esercitarsi con i notebook alla mano, il
 corso gratuito [Learn PyTorch for Deep
 Learning](https://www.learnpytorch.io/) di Daniel Bourke copre lo stesso
 terreno in inglese, con codice eseguibile e video. È una buona palestra
-parallela alla lettura di questo capitolo.
+parallela.
 ```
 
-Un ripasso della pagina, per chi legge di seguito e per chi torna a
-consultarla.
+Un ripasso, prima di aprire la scatola dei tensori.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

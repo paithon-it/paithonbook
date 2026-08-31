@@ -5,8 +5,8 @@ sbloccano il 90% delle capacità nascoste del modello», corsi che promettono di
 farti diventare *prompt engineer* in un weekend, immagini di istruzioni lunghe
 una pagina spacciate come formule alchemiche. È l'equivalente moderno delle
 parole magiche: si crede che esista *la* frase giusta, e che chi la conosce
-comandi la macchina. Conviene sgombrare il campo subito. Il prompt non è un
-incantesimo; è il **primo livello** con cui si programma un modello di
+comandi la macchina. Conviene sgombrare il campo subito. Il prompt è il
+**primo livello** con cui si programma un modello di
 linguaggio: il più immediato, quello che vedi e scrivi nella casella della
 chat. Sopra di esso, come abbiamo anticipato aprendo questo capitolo, ci sono
 il contesto e il loop; ma è da qui che si comincia, perché è qui che nascono
@@ -15,8 +15,8 @@ quasi tutti i malintesi.
 Questa sezione guarda dentro il singolo messaggio: com'è fatto, quali leve ha,
 e quali tecniche (dagli esempi al ragionamento a voce alta) spostano davvero
 la qualità della risposta. Il punto di partenza è quello dell'apertura del
-capitolo: in un'applicazione vera il prompt non è una frase, è un oggetto che
-il programma monta pezzo per pezzo. Il metro di
+capitolo: in un'applicazione vera il prompt è un oggetto che il programma monta
+pezzo per pezzo, non una frase. Il metro di
 riferimento è la *Prompt Engineering Guide* di DAIR.AI
 {cite}`dair2024promptguide`, la raccolta di un gruppo che cura da anni la
 documentazione di questa materia: la usiamo come mappa, rielaborandola con
@@ -196,8 +196,8 @@ voti, per arrivare a novanta te ne servono di più, e la rosa si allunga da sé.
 La soglia non l'hai toccata, eppure il taglio è caduto da un'altra parte.
 
 Un'ultima cosa, perché sorprende tutti: nemmeno a temperatura zero il modello
-ti darà *sempre* identica la stessa risposta. Non è un capriccio, è che il
-computer dall'altra parte non serve solo te: mette insieme le richieste che
+ti darà *sempre* identica la stessa risposta, e la ragione è che il computer
+dall'altra parte non serve solo te: mette insieme le richieste che
 gli arrivano nello stesso momento e le calcola in blocco, e a seconda di quante
 ne ha per le mani i conti finiscono per differire nelle ultimissime cifre
 decimali. Quasi sempre non cambia niente; ma quando due candidati sono
@@ -251,7 +251,7 @@ capitolo sui Transformer.
 La leva più potente del prompt engineering è anche la più semplice: **mostrare
 al modello degli esempi svolti**. I nomi che si incontrano contano una cosa
 sola, quanti esempi gli si mostrano: nessuno (*zero-shot*), uno (*one-shot*),
-qualcuno (*few-shot*). *Shot* qui non è uno sparo, è un tentativo mostrato; e
+qualcuno (*few-shot*). *Shot* qui è un tentativo mostrato e non uno sparo; e
 vedremo che gli esempi non insegnano niente al modello, gli fanno capire che
 cosa vogliamo.
 
@@ -372,8 +372,8 @@ di conti, e quella parola, appena scritta, torna nel testo che ha davanti alla
 passata dopo. Se la risposta deve uscire subito, tutto il lavoro gli tocca
 farlo in una passata sola; se prima gli lasciamo scrivere «17 × 20 = 340», di
 passate ne ha una in più, e nella seconda quel 340 non deve più calcolarlo:
-gli sta davanti, scritto. Lasciarlo scrivere i passaggi non è una cortesia, è
-dargli più spazio per fare i conti.
+gli sta davanti, scritto. Lasciarlo scrivere i passaggi gli dà più spazio per
+fare i conti, e non è una cortesia.
 
 `````{tab} Elementare
 
@@ -496,8 +496,8 @@ fornitore sconta il contesto già visto. Senza nessuna delle due, $N$ chiamate
 separate si pagano $N$ volte per intero. È un compromesso di puro
 context/compute engineering: si compra affidabilità spendendo campioni.
 
-Vale la pena dichiarare l'ipotesi che sta sotto all’«intuizione statistica»,
-perché il testo di solito la tace e non è innocua: il voto premia la risposta
+Sotto all’«intuizione statistica» c'è un'ipotesi che il testo di solito tace, e
+non è innocua: il voto premia la risposta
 giusta **solo se gli errori sono poco correlati fra le catene**. Le $N$ catene
 non sono $N$ ragionatori indipendenti, sono $N$ campioni dalla stessa
 $P_\theta$ con lo stesso contesto, e l'unica sorgente di variazione è il

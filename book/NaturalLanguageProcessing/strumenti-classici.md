@@ -493,8 +493,8 @@ risalire il canale e indovinare che cosa c'era all'ingresso.
 Si fa in due tempi.
 
 **Primo tempo: una lista corta di sospetti.** Ci si tengono le parole del
-vocabolario a distanza di edit 1 o 2 da quello che è arrivato. Il 2 non è una
-legge di natura, è una scelta pratica, e poggia su un dato: la stragrande
+vocabolario a distanza di edit 1 o 2 da quello che è arrivato. Il 2 è una
+scelta pratica e non una legge di natura, e poggia su un dato: la stragrande
 maggioranza dei refusi sta a una sola mossa dalla parola giusta. Allargare a 3
 farebbe entrare migliaia di candidati per pochissimi refusi in più.
 

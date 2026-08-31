@@ -326,9 +326,9 @@ natura.
 Il terzo vantaggio si dimentica spesso ed è forse il più pratico: le domande
 che chiedono di **contare**. «Quanti registi italiani hanno girato almeno tre
 film ambientati a Napoli» non è una domanda a cui un modello di linguaggio
-possa rispondere in modo affidabile, e non è nemmeno una domanda di
-somiglianza: è un'interrogazione da fare a un archivio ordinato, e vuole una
-struttura su cui contare davvero.
+possa rispondere in modo affidabile, e nemmeno di somiglianza: vuole
+un'interrogazione a un archivio ordinato, e una struttura su cui contare
+davvero.
 
 Messi insieme, i tre vantaggi hanno prodotto un'idea che gira parecchio.
 Dare a un modello di linguaggio dei documenti pescati sul momento, invece di
@@ -398,9 +398,9 @@ prezzo di costruirlo.
   di impararla a memoria, purché l'entità porti con sé qualcosa di proprio da
   cui partire. Se non lo porta, il punto di partenza resta imparato a memoria
   come prima, e un'entità mai vista resta fuori.
-- Il vantaggio che resta, e per cui si paga la manutenzione, non è
-  sapere i fatti (per quello ci sono i modelli di linguaggio): è **mettere
-  insieme** più fatti in catena, mostrare il **percorso** che ha prodotto la
+- Il vantaggio che resta, e per cui si paga la manutenzione, sta nel **mettere
+  insieme** più fatti in catena, non nel sapere i fatti (per quello ci sono i
+  modelli di linguaggio): mostrare il **percorso** che ha prodotto la
   risposta perché sia verificabile, rispondere a domande che chiedono di
   **contare**, e poter dichiarare **regole** che il sistema non può violare. E
   un grafo non aggiornato è peggio di nessun grafo, perché sembra ancora
@@ -436,8 +436,8 @@ prezzo di costruirlo.
 - **R-GCN** {cite}`schlichtkrull2018modeling` porta il message passing sul
   grafo eterogeneo con una matrice di pesi per tipo di relazione, controllata
   con matrici di base condivise per non esplodere in parametri.
-- Il vantaggio durevole non è sapere i fatti (per quello ci sono gli LLM), è
-  **comporre** più fatti, esibire il **cammino** come spiegazione e rispondere
+- Il vantaggio durevole sta nel **comporre** più fatti, non nel saperli (per
+  quello ci sono gli LLM): esibire il **cammino** come spiegazione e rispondere
   a domande **aggregate**. Il prezzo è la manutenzione, e un grafo non
   aggiornato è peggio di nessun grafo perché sembra ancora autorevole.
 ```

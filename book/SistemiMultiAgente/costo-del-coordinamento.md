@@ -4,15 +4,15 @@ Nel 1975 Fred Brooks pubblica *The Mythical Man-Month*, il resoconto di cosa
 fosse andato storto nella costruzione dell'OS/360 alla IBM. La tesi che lo ha
 reso celebre è controintuitiva e brutale: aggiungere programmatori a un
 progetto software già in ritardo lo fa ritardare di più. La ragione che porta
-non è di psicologia aziendale, è aritmetica. Due persone hanno un canale di
+è aritmetica, non psicologia aziendale. Due persone hanno un canale di
 comunicazione da mantenere, tre ne hanno tre, quattro sei, dieci quarantacinque.
 Il lavoro utile, intanto, al massimo raddoppia quando raddoppiano le persone: i
 canali no, crescono molto più in fretta. Passata una certa soglia il tempo speso
 a tenersi aggiornati si mangia il tempo guadagnato lavorando in più.
 
 Chi mette al lavoro più agenti si trova davanti un conto della stessa forma, ma
-di origine diversa. Qui a moltiplicarsi non sono i canali fra le persone: è la
-conversazione che si allunga a ogni intervento, e che ogni agente rilegge da
+di origine diversa. Qui a moltiplicarsi non sono i canali fra le persone ma la
+conversazione, che si allunga a ogni intervento e che ogni agente rilegge da
 capo prima di parlare. Quello che si rilegge sono **token**, cioè i pezzetti in
 cui un modello di linguaggio spezza il testo per digerirlo: in italiano un token
 vale grosso modo mezza parola, e una pagina come questa ne contiene sette o
@@ -200,8 +200,8 @@ l'informazione decisiva (una decisione presa al decimo turno, un vincolo
 enunciato al terzo) sta sepolta lì in mezzo, che è la posizione peggiore: è il *lost in the
 middle* del {doc}`context engineering </Agenti/context-engineering>`, cioè il
 fatto misurato che un modello usa bene quello che legge in cima e in fondo e
-trascura quello che sta nel mezzo. Una trascrizione condivisa non è solo cara:
-è anche il posto peggiore dove mettere qualcosa che deve essere ricordato.
+trascura quello che sta nel mezzo. Una trascrizione condivisa costa cara,
+ed è anche il posto peggiore dove mettere qualcosa che deve essere ricordato.
 
 ## Il tetto di Amdahl
 
@@ -306,10 +306,6 @@ divisibile lo giustifica, e poi si smette. La domanda da farsi non è «un altro
 agente aiuterebbe?» (la risposta è quasi sempre sì, di pochissimo) ma «quanto
 vale l’*ultimo* agente aggiunto, rispetto a quello che costa?».
 
-Sul rapporto in dieci ore la risposta si legge senza calcoli. Passare da quattro
-persone a otto accorcia il lavoro di meno di un'ora, cioè compra mezza volta
-scarsa di velocità in più.
-
 Il rapporto e la squadra della tabella sono due esempi diversi, uno fatto di ore
 e l'altro di token, e non c'è modo di sommarli; ma c'è una cosa che si può fare,
 ed è guardare che cosa succede in tutti e due nel passare **dalle stesse quattro
@@ -328,8 +324,8 @@ sezione tutta loro.
 
 Il terzo conto è quello che manda a picco le catene lunghe di agenti, ed è il
 più semplice dei tre. Se un lavoro passa di mano in mano, e ogni passaggio
-riesce o fallisce per conto proprio, quanto è affidabile l'insieme non è la
-media di quanto sono affidabili i passaggi: è molto meno, perché per arrivare in
+riesce o fallisce per conto proprio, quanto è affidabile l'insieme sta molto
+sotto la media di quanto sono affidabili i passaggi, perché per arrivare in
 fondo devono riuscire **tutti**.
 
 `````{tab} Elementare
@@ -357,8 +353,8 @@ otto volte su dieci, invece di tre.
 
 Ne basta anche uno solo, messo a metà fila: quello che si è rovinato nei primi
 dieci passaggi lì viene rimesso a posto e non entra negli altri dieci, e la fila
-riesce poco più di cinque volte su dieci invece di tre. Metà del guadagno, con
-un arbitro solo.
+riesce poco più di cinque volte su dieci invece di tre. Poco più di quattro
+decimi del guadagno, con un arbitro solo.
 
 Due cose, però, l'arbitro non le aggiusta. Uno che dicesse «ripeti» a chiunque
 non lascerebbe passare nessun errore e non farebbe arrivare in fondo neanche una
@@ -443,9 +439,10 @@ e non si lascia convincere da come gliela si racconta. E si noti che cosa non gl
 serve: non deve conoscere la risposta giusta, deve solo saper riconoscere una
 risposta che non sta in piedi. Sono cose come un programma di prova che si esegue
 e o passa o non passa, un conto che deve tornare, un modulo che deve avere tutte
-le caselle riempite. Nel {doc}`capitolo su prompt, contesto e loop </IngegneriaLLM/overview>` quel
-controllo si chiama **cancello di verifica** (in inglese *validation gate*), e
-il nome dice il mestiere: chi non è in regola non passa.
+le caselle riempite. Nella sezione sul
+{doc}`loop engineering </IngegneriaLLM/loop-engineering>` quel controllo si
+chiama **cancello di verifica** (in inglese *validation gate*), e il nome dice
+il mestiere: chi non è in regola non passa.
 
 Quello che i conti di questa sezione aggiungono è la ragione per cui il cancello
 non è un lusso ma il pezzo portante. Senza, ogni passaggio in più toglie una
@@ -468,11 +465,11 @@ tempo, quel tetto non è nemmeno il metro giusto, perché era stato calcolato
 sull'ipotesi che il lavoro da fare restasse sempre lo stesso. Il segnale che
 distingue i due casi è preciso: le parti non devono scambiarsi informazioni
 *durante* il lavoro, solo alla fine. Se invece i pezzi devono consultarsi di
-continuo, non è decomposizione: è la chat di gruppo del primo conto con un altro
-nome, e il conto è quello.
+continuo, quella non è decomposizione ma la chat di gruppo del primo conto con
+un altro nome, e il conto è quello.
 
 **Secondo: serve un giudizio indipendente da chi ha prodotto.** Qui il valore
-aggiunto non è potenza di calcolo, è l'indipendenza: chi ha scritto il codice
+aggiunto sta tutto nell'indipendenza: chi ha scritto il codice
 ha già deciso, mentre lo scriveva, che è giusto. Separare chi fa da chi
 controlla (nel loop engineering, *maker* e *checker*) serve esattamente a
 questo, e il guadagno si può mettere in numeri.
@@ -517,13 +514,13 @@ primo: a quel punto i due contesti tornano a coincidere.
 `````
 
 **Terzo: i contesti sono in conflitto.** È il caso più sottovalutato, e merita
-di essere detto senza mezzi termini: qui il multi-agente non è un argomento di
-intelligenza, è un argomento di **gestione del contesto**.
+di essere detto senza mezzi termini: qui il multi-agente è un argomento di
+**gestione del contesto**, prima che di intelligenza.
 
 `````{tab} Elementare
 
 Prova a fare due lavori diversi sulla stessa scrivania, con le carte di
-entrambi mescolate. Non è che diventi meno intelligente: è che ogni volta che
+entrambi mescolate. La tua intelligenza è la stessa, ma ogni volta che
 cerchi un foglio ne trovi tre dell'altra pratica, e ogni tanto scrivi in un
 documento una cosa che riguardava l'altro. Due scrivanie, una per pratica,
 risolvono il problema senza che nessuno diventi più bravo.
@@ -534,8 +531,7 @@ che si rilegge davanti prima di rispondere) continua a influenzare le risposte
 successive, anche quello che si è rivelato sbagliato. Un'ipotesi tentata e
 abbandonata al terzo turno resta scritta lì, e al ventesimo turno tira ancora
 la risposta dalla sua parte. Dare a ogni agente una finestra pulita sul suo
-pezzo non è un modo di avere più cervelli: è un modo di avere scrivanie
-separate.
+pezzo serve ad avere scrivanie separate, più che cervelli in più.
 
 Che costano anche meno. Nella chat di gruppo ognuno rilegge le carte di tutti, e
 il tempo di lettura si accumula; qui nessuno apre la pratica dell'altro, e
@@ -588,14 +584,15 @@ raccogliere aneddoti hanno fatto una cosa più noiosa e più utile: si sono lett
 le trascrizioni di sistemi multi-agente al lavoro davvero, cioè tutto quello che
 gli agenti si erano detti e avevano fatto dall'inizio alla fine.
 
-Sono sette fra i programmi più usati per costruire queste squadre, su più di
-duecento compiti, e a leggere sono stati sei esperti. Prima si sono messi
-d'accordo su come giudicare, poi hanno misurato quanto spesso, sulla stessa
-trascrizione, davano davvero lo stesso giudizio: quasi sempre, ed è questa
-misura a rendere l'elenco qualcosa di più delle impressioni di sei persone. Per
-poterlo poi applicare a molte trascrizioni senza rileggerle a mano ne hanno
-affidato la catalogazione a un modello, dopo aver controllato che sui casi già
-giudicati dagli esperti desse le stesse risposte. Il risultato lo chiamano MAST,
+Sono cinque fra i programmi più usati per costruire queste squadre, letti da sei
+esperti su più di centocinquanta trascrizioni. Prima si sono messi d'accordo su
+come giudicare, poi hanno misurato quanto spesso, sulla stessa trascrizione,
+davano davvero lo stesso giudizio: quasi sempre, ed è questa misura a rendere
+l'elenco qualcosa di più delle impressioni di sei persone. Per applicarlo poi
+senza rileggere a mano ne hanno affidato la catalogazione a un modello, dopo
+aver controllato che sui casi già giudicati dagli esperti desse le stesse
+risposte: così il conto è arrivato a oltre milleseicento trascrizioni prodotte
+da sette programmi. Il risultato lo chiamano MAST,
 che sta per «tassonomia dei fallimenti dei sistemi multi-agente»: quattordici
 modi ricorrenti raggruppati in tre famiglie, e sono le famiglie la parte da
 ricordare, perché dicono *dove* guardare.
@@ -671,10 +668,9 @@ un'architettura che alza il successo di due punti e il costo di dieci volte non
 ha vinto, ha speso.
 
 Sotto tutte e quattro c'è la lezione di Brooks mezzo secolo dopo: il
-coordinamento non è gratis e non è neutro, è una voce di costo che cresce più
-in fretta del beneficio che finanzia. Un sistema multi-agente ben progettato
-non è quello con più agenti: è quello con il minimo numero di agenti che
-risolve il problema, ciascuno con una finestra pulita e un compito che il
+coordinamento è una voce di costo, e cresce più in fretta del beneficio che
+finanzia. Un sistema multi-agente ben progettato ha il minimo numero di agenti
+che risolve il problema, ciascuno con una finestra pulita e un compito che il
 solista non chiudeva.
 
 `````{tab} Elementare
@@ -702,7 +698,7 @@ solista non chiudeva.
   lasciano la frase intatta sei volte su dieci e venti passaggi poco più di tre.
   Basta però un controllo esterno a ogni passaggio (il **cancello di verifica**)
   che intercetti otto errori su dieci e faccia rifare il passaggio, e i venti
-  passaggi tornano a riuscire otto volte su dieci: la verifica non è un lusso, è
+  passaggi tornano a riuscire otto volte su dieci: la verifica esterna è
   ciò che spezza la catena.
 - Si guadagna davvero in **tre casi soli**: il compito si spezza in parti che
   non hanno bisogno di parlarsi mentre lavorano; serve un **giudizio
@@ -741,8 +737,8 @@ solista non chiudeva.
 - Gli errori si **compongono**: $n$ passi corretti con probabilità $p$ danno
   $p^n$. Con $p = 0{,}95$, dieci passi danno $0{,}60$ e venti $0{,}36$. Un
   **validation gate** che intercetta l’$80\%$ degli errori (e fa rifare il
-  passo intercettato) porta $p'$ a $0{,}99$ e i venti passi a $0{,}82$: la
-  verifica non è un lusso, è ciò che spezza la catena moltiplicativa.
+  passo intercettato) porta $p'$ a $0{,}99$ e i venti passi a $0{,}82$: il
+  gate è ciò che spezza la catena moltiplicativa.
 - Si guadagna davvero in **tre casi soli**: il compito si decompone in parti
   quasi indipendenti; serve un **giudizio indipendente** (il valore è nella
   decorrelazione, non nella potenza aggiunta); i **contesti sono in conflitto**

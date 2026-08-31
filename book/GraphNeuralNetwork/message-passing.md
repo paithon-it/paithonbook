@@ -339,8 +339,8 @@ dei vicini**. Se lo fosse, il nodo 3, che vale $3$ e sta fra un $2$ e un $4$,
 resterebbe a $3$; invece sale a $3{,}300$. La ragione è che i pesi di una riga
 non sommano a uno (in quella del nodo 3 fanno $1{,}07$), quindi ogni giro non
 è una media ma una somma pesata, che può alzare il livello generale. Quello
-che la GCN garantisce non è che ciascuno vada verso i suoi vicini a ogni
-singolo passo: è che, ripetendo, le differenze di partenza si consumino. Il
+che la GCN garantisce è che, ripetendo, le differenze di partenza si
+consumino, e non che ciascuno vada verso i suoi vicini a ogni singolo passo. Il
 livellamento si vedrà succedere, giro dopo giro, su questi stessi quattro
 numeri.
 
@@ -421,8 +421,8 @@ decomporre un segnale sui nodi nelle sue «frequenze», moltiplicarle una per un
 e ricomporre con $\mathbf{U}^\top$ presuppone una base ortonormale, e senza di
 essa la lettura spettrale non sta in piedi.
 
-Ed è anche la ragione per cui quella forma non è stata scelta: è **caduta** dal
-conto. Qui sta il secondo punto, l’**origine spettrale**. La GCN nasce come
+Ed è anche la ragione per cui quella forma è **caduta** dal conto invece di
+essere scelta. Qui sta il secondo punto, l’**origine spettrale**. La GCN nasce come
 approssimazione al prim'ordine di una convoluzione definita nel dominio
 spettrale del grafo: i filtri polinomiali di Čebyšëv di Defferrard, Bresson e
 Vandergheynst {cite}`defferrard2016convolutional`. Troncare quel polinomio al
@@ -570,9 +570,9 @@ fa esplodere i valori: da qui il *renormalization trick*, cioè sostituirla con
 $\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-1/2}$
 dove $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}_N$ e $\tilde{\mathbf{D}}$ è
 la matrice dei gradi di $\tilde{\mathbf{A}}$. È la formula della GCN, e il
-conto rimasto in sospeso è saldato: la normalizzazione simmetrica non era una
-scelta di comodo, è quel che resta di una convoluzione spettrale dopo due
-approssimazioni.
+conto rimasto in sospeso è saldato: la normalizzazione simmetrica è quel che
+resta di una convoluzione spettrale dopo due approssimazioni, e non una scelta
+di comodo.
 
 I cappi, per inciso, non riscalano soltanto: rendono il grafo non bipartito e
 staccano il fondo dello spettro da $-1$ (su una catena di otto nodi il minimo
@@ -633,8 +633,8 @@ autovalore di modulo minore di $1$ **svanisce**: dopo abbastanza strati
 sopravvive solo la componente lungo l'autovettore dominante, che è la stessa
 per tutti i nodi a meno del loro grado. (Vale su un grafo **connesso**: se le
 componenti connesse sono più d'una, l'autovalore $1$ ha la loro molteplicità e
-il collasso avviene dentro ciascuna componente separatamente. Non è un caso di
-scuola, perché un batch di molecole in PyTorch Geometric *è* un unico grafo
+il collasso avviene dentro ciascuna componente separatamente. E capita
+davvero, perché un batch di molecole in PyTorch Geometric *è* un unico grafo
 sconnesso, una componente per molecola, e l'oversmoothing non le mescola fra
 loro.)
 
@@ -664,8 +664,8 @@ per la rete intera è un teorema con le sue condizioni.
 
 Questo appiattimento ha un nome, **oversmoothing**, cioè «levigatura
 eccessiva», e l'ultima sezione del capitolo lo elencherà fra i limiti delle
-GNN. Adesso però sappiamo che non è una sfortuna capitata in laboratorio: è
-quello che fa, per costruzione, un filtro che smussa le differenze (in gergo un
+GNN. Adesso però sappiamo che è quello che fa, per costruzione, un filtro che
+smussa le differenze (in gergo un
 **filtro passa-basso**) quando lo si applica molte volte di fila. Non c'è
 nessun errore di programmazione da andare a cercare. C'è da decidere quanti
 strati mettere, oppure da cambiare filtro.
@@ -910,8 +910,8 @@ porta scritto sopra un verbo.
   il campo visivo di un neurone cresce con la profondità. Ma smussando a ogni
   giro, troppi giri cancellano le differenze e i nodi diventano
   indistinguibili (è l’*oversmoothing*, la classe in cui tutti copiano dal
-  compagno di banco finché i compiti si somigliano tutti): non è un errore di
-  programmazione, è quello che il metodo fa per costruzione.
+  compagno di banco finché i compiti si somigliano tutti): è quello che il
+  metodo fa per costruzione, non un errore di programmazione.
 - L'addestramento tipico è indovinare la categoria di tutti i nodi
   conoscendola per pochissimi (Cora): si pagano solo gli errori su quei pochi,
   ma per rispondere la rete ha dovuto far girare l'informazione su tutto il

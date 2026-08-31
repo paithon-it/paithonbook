@@ -172,8 +172,8 @@ quello di tutta la sezione precedente, quattro delle otto righe della scheda
 portano zero nat: la rete ha scelto da sé di usarne quattro. Alzando la
 manopola ne resta una in meno, e alla tacca dopo cadono le ultime tre insieme.
 Chi si aspettava che il latente usasse tutto lo spazio disponibile ha
-un’informazione in più, e conviene tenerla: **la dimensione del latente non è
-quella che si dichiara**, è quella che la rete decide di pagare.
+un’informazione in più, e conviene tenerla: **la dimensione del latente è
+quella che la rete decide di pagare**, non quella che si dichiara.
 
 **A quattro, l’archivista ha smesso di scrivere.** Costo zero su tutte le
 righe: è il collasso della posterior, arrivato non per sfortuna ma perché lo
@@ -245,10 +245,10 @@ Con la manopola a uno, invece, succede qualcosa, e conviene guardarlo bene
 perché è il punto della sezione. A sinistra c’è uno zero, con il buco aperto
 in mezzo; spostandosi verso destra il buco si chiude, la figura si stringe e
 si sposta di lato, e l’ultima immagine non è più uno zero né si riesce a dire
-che cifra sia. Non è cambiata **una** cosa: sono cambiate insieme la forma del
-tratto, la posizione e l’identità della cifra. Quella riga della scheda non è
-«lo spessore» né «l’inclinazione»: è una direzione lungo la quale parecchie
-cose si muovono insieme.
+che cifra sia. Sono cambiate insieme la forma del tratto, la posizione e
+l’identità della cifra, e non **una** cosa sola. Quella riga della scheda è una
+direzione lungo la quale parecchie cose si muovono insieme, e non «lo
+spessore» né «l’inclinazione».
 
 Ed è la regola, non l’eccezione. Chiamiamo **fattori** gli ingredienti di cui un
 dato è fatto e che si vorrebbero tenere separati: per un volto, la luce, quanto
@@ -403,8 +403,8 @@ nessuna immagine, e il sogno si spezzerebbe dopo pochi passi.
   peggiora, e su nessuna si guadagna da tutte e due le parti.
 - Girando la manopola le righe della scheda **si spengono**, a una a una o a
   gruppi: già al valore normale, quattro righe su otto portano zero. La
-  dimensione del latente non è quella che si dichiara, è quella che la rete
-  decide di pagare.
+  dimensione del latente la decide la rete, pagandola, e non la
+  dichiarazione.
 - Girata troppo, l’archivista smette di scrivere: la scheda non governa più
   niente e il copista dipinge sempre lo stesso quadro.
 - La manopola compra **spazio sulla scheda, non significato**: muovendo una
@@ -453,7 +453,7 @@ nessuna immagine, e il sogno si spezzerebbe dopo pochi passi.
   *straight-through*. Nell’obiettivo del VQ-VAE il termine di divergenza vale
   $\log K$ ed è quindi costante, cioè resta lì senza avere gradiente, e
   **accanto** compaiono due termini estranei all’ELBO che allineano dizionario
-  ed encoder. Ma lo scostamento che conta non è quello: è che lo
+  ed encoder. Ma lo scostamento che conta è un altro: lo
   *straight-through* dà un gradiente **distorto**, quindi non si sta più
   ottimizzando un limite in senso stretto.
 - Quattro usi nel libro, due già letti e due che verranno: tokenizzazione del

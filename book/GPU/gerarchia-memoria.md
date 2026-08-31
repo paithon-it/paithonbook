@@ -27,7 +27,7 @@ postazioni di calcolo, ma se i byte non arrivano, quelle in più restano a
 girarsi i pollici.
 
 Per capire dove i byte si perdono bisogna conoscere la geografia della memoria
-di una GPU. Non è un unico serbatoio: è una **piramide** di livelli, ognuno un
+di una GPU. È una **piramide** di livelli e non un unico serbatoio, ognuno un
 compromesso diverso tra quanto è veloce e quanto è capiente.
 
 ## La piramide della memoria
@@ -180,8 +180,8 @@ otto numeri perché la memoria consegna a blocchi da 32 byte, dentro i quali di
 numeri da quattro byte ce ne stanno appunto otto. Se i 32 lavoratori di un
 plotone chiedono dati messi in fila, l'hardware li serve in quattro consegne
 piene; se li chiedono sparsi, deve fare una consegna quasi vuota per ognuno, e
-la banda va in fumo. La regola del deposito, poi, non è un capriccio: è come
-sono fatti i collegamenti dentro il chip, e non si può cambiare. La morale
+la banda va in fumo. La regola del deposito, poi, dipende da come sono fatti i
+collegamenti dentro il chip, e non si può cambiare. La morale
 pratica: **sistema i dati in modo che lavoratori vicini leggano posizioni
 vicine**.
 `````

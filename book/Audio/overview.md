@@ -24,8 +24,9 @@ categorie**: dal latrato di un cane al colpo di tosse, dal fruscio della pioggia
 al suono di una chitarra elettrica. Poi hanno riempito quelle caselle
 ritagliando frammenti da dieci secondi da video di YouTube ed etichettandoli a
 mano, e oggi i frammenti raccolti sono **oltre due milioni**. Di categorie ne
-hanno usate 527 delle 632: le altre sono rimaste troppo vuote per servire a
-qualcosa, ed è già un dato interessante.
+hanno usate 527 delle 632: settantotto non sono mai state date da etichettare
+(troppo oscure, o ambigue, o semplici caselle intermedie dell'albero), e delle
+rimanenti non si sono trovate abbastanza registrazioni.
 
 Un elenco così lungo dice una cosa sola: il suono che non è parola non è un
 rumore indistinto. Ha regole sue, riconoscibili, come le ha una lingua. Un
@@ -111,7 +112,7 @@ parola, e un modello che deve capirlo.
 ## Le fondamenta, prima di tutto
 
 Prima di correre in avanti c'è un ponte da attraversare, e questo capitolo lo
-costruisce **subito**, nella sua prima sezione, *Dal suono alle feature*: il
+costruisce subito, nella sua prima sezione, *Dal suono alle feature*: il
 passaggio da un'onda di pressione ai numeri con cui lavora un modello. È un
 ponte che non serve solo qui: regge qualunque suono, e sarà il punto di
 partenza anche del capitolo sullo Speech Recognition che segue.
@@ -128,11 +129,10 @@ I pezzi del ponte sono questi:
 
 Tutto questo vale identico per il canto di un merlo, per un accordo di chitarra,
 per il fragore di un temporale: è il **punto di partenza comune** di ogni
-sezione che segue. Da lì in poi diamo per acquisito che un pezzo di audio arrivi
-al modello come uno **spettrogramma log-mel**, e siccome quella parola comparirà
-in ogni pagina conviene dire subito cosa nasconde. È l'immagine del suono, con
-due accorgimenti. Le frequenze sono riscritte come le sente un orecchio, che è
-preciso sui suoni gravi e approssimativo sugli acuti (è la parte «mel»); e le
+sezione che segue. Da lì in poi torna spesso una parola, **spettrogramma
+log-mel**, ed è l'immagine del suono con due accorgimenti. Le frequenze sono
+riscritte come le sente un orecchio, che è preciso sui suoni gravi e
+approssimativo sugli acuti (è la parte «mel»); e le
 intensità sono schiacciate, in modo che un sussurro si veda accanto a un urlo
 invece di sparirci sotto (è la parte «log»). Un oggetto, cioè, che sappiamo
 trattare come un'immagine.
@@ -234,12 +234,12 @@ $$
 
 dove $k_i$ è il token audio in posizione $i$ e ogni fattore è una softmax sulle
 $K$ voci del codebook: la stessa fattorizzazione, parola per parola, del
-capitolo sui Transformer, con i token audio al posto delle parole. È la
-ricetta dietro sistemi come AudioLM e MusicLM: prima si impara un *alfabeto*
-del suono, poi ci si scrive sopra con un modello di linguaggio. Le due
-difficoltà (costruire un buon alfabeto che perda poco fedeltà, e modellare
-bene sequenze di token lunghissime) sono i due poli attorno a cui ruotano le
-sezioni sui codec neurali e sulla generazione.
+{doc}`capitolo sui Transformer </Transformers/overview>`, con i token audio al
+posto delle parole. È la ricetta dietro sistemi come AudioLM e MusicLM: prima
+si impara un *alfabeto* del suono, poi ci si scrive sopra con un modello di
+linguaggio. Le due difficoltà (costruire un buon alfabeto che perda poco
+fedeltà, e modellare bene sequenze di token lunghissime) sono i due poli
+attorno a cui ruotano le sezioni sui codec neurali e sulla generazione.
 
 `````
 
@@ -247,9 +247,9 @@ C'è un'asimmetria onesta da segnalare subito. Il testo *nasce* discreto: le
 lettere e le parole sono già simboli, l'alfabeto ce lo dà la lingua. L'audio
 no: è un'onda continua, e l'alfabeto sonoro non esiste in natura; va
 **costruito**, ed è di per sé un problema di apprendimento difficile. Un
-alfabeto troppo povero rende il suono metallico e irriconoscibile; uno troppo
-ricco produce sequenze di token sterminate, che nessun modello riesce a
-gestire. Trovare il giusto compromesso è precisamente il mestiere dei codec
+alfabeto troppo povero rende il suono metallico e irriconoscibile; e più lo si
+vuole fedele, più lunga diventa la fila di token da scrivere e da leggere,
+finché nessun modello ci arriva in fondo. Il compromesso è il mestiere dei codec
 neurali, ed è la ragione per cui la sezione che li tratta viene prima di
 quella sulla generazione: senza un buon alfabeto, non c'è nulla su cui
 scrivere.
@@ -272,8 +272,9 @@ l'alfabeto, e infine scriverci sopra suono nuovo.
   rete impara a comprimere l'audio in pochi token e a ricostruirlo, fondendo
   compressione e apprendimento.
 - **Generazione audio e musica**: scrivere suono nuovo. Due strade, i modelli di
-  linguaggio sui token e la **diffusione**, che è il metodo (lo vedremo nascere
-  per le immagini, in un capitolo suo) di partire da rumore puro e ripulirlo un
+  linguaggio sui token e la **diffusione**, che è il metodo (nato per le
+  immagini, e raccontato per intero nel {doc}`capitolo sui modelli di diffusione
+  </ModelliDiffusione/overview>`) di partire da rumore puro e ripulirlo un
   passo alla volta finché non ne esce qualcosa.
 
 Un filo, quattro nodi: si parte dall'ascoltare per arrivare a comporre, e in

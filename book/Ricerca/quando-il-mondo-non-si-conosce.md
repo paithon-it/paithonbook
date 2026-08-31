@@ -107,10 +107,10 @@ partite giocate, e nei modelli generativi per stimare integrali che non hanno
 forma chiusa.
 
 Resta da dire come si distribuisce il budget di simulazioni fra i figli della
-radice, e la risposta non è «in parti uguali»: è **esattamente** il dilemma fra
-esplorare e sfruttare che il capitolo seguente introdurrà con i bandit a più
-braccia. Dare più prove a ciò che finora rende, senza smettere di provare ciò
-di cui si sa poco, e con una regola che quantifichi quel «senza smettere».
+radice, e la risposta è **esattamente** il dilemma fra esplorare e sfruttare
+che il capitolo seguente introdurrà con i bandit a più braccia. Dare più prove
+a ciò che finora rende, senza smettere di provare ciò di cui si sa poco, e con
+una regola che quantifichi quel «senza smettere».
 
 Valutare una posizione giocando partite a caso non è un’idea del 2006, e nel
 Go ci era arrivato per primo Bernd Brügmann {cite}`brugmann1993monte`, che nel

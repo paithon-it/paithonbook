@@ -17,7 +17,7 @@ La prima: *questi dati hanno davvero bisogno di tutte queste dimensioni, o si
 possono comprimere senza perdere l'essenziale?* È la **riduzione della
 dimensionalità**. La seconda: *ci sono gruppi naturali là dentro, famiglie di
 esempi che si somigliano tra loro?* È il **clustering**. Sono i due pilastri
-di questa sezione.
+dell'apprendimento non supervisionato.
 
 ## Quando avere troppe dimensioni è un problema
 
@@ -49,8 +49,9 @@ Il conto di {numref}`fig-maledizione-dimensionalita` non è una curiosità
 geometrica: dice che in tante dimensioni **il centro si svuota** e tutto finisce
 in periferia. E siccome gli angoli di un cubo sono tanti e distanti fra loro,
 c'è poi un secondo fatto, che si vede meglio guardando le distanze invece dei
-volumi: la distanza fra due punti è una **somma** di $d$ scarti, e una somma
-di tanti addendi indipendenti cade quasi sempre attorno allo stesso valore. Le
+volumi: il quadrato della distanza fra due punti è una **somma** di $d$
+contributi, uno per direzione, e una somma di tanti addendi indipendenti cade
+quasi sempre attorno allo stesso valore. Le
 distanze fra tutte le coppie si assomigliano, e i punti finiscono tutti
 lontani gli uni dagli
 altri.
@@ -453,7 +454,8 @@ quest'ultimo punto vale però una precisazione che ridimensiona il confronto:
 Kobak e Linderman {cite}`kobak2021initialization` hanno mostrato che il divario
 si annulla inizializzando t-SNE con la PCA invece che a caso, ed è quindi
 l’**inizializzazione**, più dell'algoritmo, a decidere quanto sopravvive della
-struttura globale (in scikit-learn, `init="pca"`). Resta comunque lo stesso
+struttura globale. In scikit-learn `init="pca"` è il default dalla versione
+1.2, quindi il rimedio è già acceso. Resta comunque lo stesso
 monito per entrambi: sono strumenti di visualizzazione, non di
 analisi metrica. Entrambi vanno usati per *esplorare*, mai per concludere che
 «questo gruppo è il doppio più lontano di quell'altro».
@@ -465,18 +467,17 @@ analisi metrica. Entrambi vanno usati per *esplorare*, mai per concludere che
 **Sì**: guardare se un mucchio di dati ha una struttura a gruppi prima di
 metterci un modello; guardare le rappresentazioni interne di una rete neurale,
 cioè gli elenchi di numeri con cui la rete descrive ogni esempio dentro di sé
-(li incontreremo con il nome di *embedding*), per capire cosa ha imparato;
+(si chiamano *embedding*), per capire cosa ha imparato;
 presentare a un
 pubblico la forma di dati che nessuno può visualizzare, come le immagini di
 cifre scritte a mano di $28 \times 28$ pixel: sono $784$ pixel per immagine, e
 quindi $784$ colonne, cioè $784$ dimensioni.
 
 **No**: come passaggio preparatorio prima di un classificatore. Per quello
-serve la PCA, per tre ragioni. Si applica **a dati nuovi** ripetendo la stessa
-identica trasformazione, mentre t-SNE e UMAP andrebbero rifatti da capo e
-darebbero un'altra mappa; la loro mappa, per giunta, cambia a ogni esecuzione
-se si cambia il numero da cui parte il sorteggio (il *seme* della sezione sugli
-iperparametri). E la PCA sa anche tornare indietro, ricostruendo i dati di
+serve la PCA, per due ragioni. Si applica **a dati nuovi** ripetendo la stessa
+identica trasformazione, mentre t-SNE e UMAP andrebbero rifatti da capo su
+tutto l'insieme, dati vecchi compresi, e restituirebbero un'altra mappa. E la
+PCA sa anche tornare indietro, ricostruendo i dati di
 partenza dalle poche direzioni tenute: una ricostruzione approssimata, perché
 quello che si è buttato via è perso (è lo stesso $20\%$ dell'esempio di poco
 fa), ma nella stessa forma di prima.
@@ -506,7 +507,7 @@ dovuto a Stuart Lloyd (formulato ai Bell Labs nel 1957, pubblicato nel 1982)
 Prima della figura, una parola sul nome che ci compare sopra: **centroide**. È
 semplicemente il punto che sta nel mezzo di un gruppo, quello che si ottiene
 facendo la media delle posizioni di tutti i suoi membri. Nei disegni si segna
-con una x, e non è uno dei dati: è un punto che ci mettiamo noi.
+con una x, e non è uno dei dati, ma un punto che ci mettiamo noi.
 
 ```{figure} ../figures/k-means-raggruppare-senza-etichette.svg
 :name: fig-kmeans-migrazione
@@ -733,7 +734,7 @@ sono separate da zone quasi vuote.
 
 Guarda le luci di una città dall'aereo di notte. Non ti servono dei «centri»
 per riconoscere i quartieri: li vedi come **zone fitte** di luci, separate da
-buio. Un lampione isolato in campagna non è un quartiere, è solo un puntino
+buio. Un lampione isolato in campagna resta un puntino
 sperduto. DBSCAN ragiona così. Ha due manopole: un **raggio di vicinato**
 (quanto vicini devono stare due punti per dirsi «vicini») e un **numero minimo
 di vicini** perché una zona conti come densa. Con queste, parte da un punto in
@@ -788,8 +789,7 @@ adattarsi a tutte.
 Due modi di non dover dire quanti gruppi cercare. A sinistra DBSCAN: i punti
 nel folto del gruppo (*core*), quelli sul bordo (*border*) e quelli che restano
 fuori da tutto, il **rumore**. A destra l'albero di parentele del metodo
-gerarchico, che troviamo qualche riga più sotto: lì il numero di gruppi lo
-decide l'altezza a cui si taglia.
+gerarchico: lì il numero di gruppi lo decide l'altezza a cui si taglia.
 ```
 
 La categoria «rumore» in {numref}`fig-dbscan-dendrogramma` è la differenza
@@ -981,8 +981,8 @@ Con le covarianze piene, però, quell'ottimo globale non è nemmeno una cosa da
 cercare: la verosimiglianza è **illimitata superiormente**. Basta una
 componente che si stringe attorno a un singolo punto, con la sua covarianza che
 tende a zero: la densità in quel punto tende a $+\infty$, e con lei la
-verosimiglianza, mentre il modello non ha imparato assolutamente niente. Non è
-un massimo difficile da raggiungere, è una **degenerazione**, e va impedita: le
+verosimiglianza, mentre il modello non ha imparato assolutamente niente. Quel
+massimo è una **degenerazione**, e va impedita: le
 implementazioni aggiungono una piccola quantità sulla diagonale delle
 covarianze, che tiene le componenti larghe abbastanza da non collassare (in
 scikit-learn è `reg_covar`, di default $10^{-6}$).
@@ -990,7 +990,7 @@ scikit-learn è `reg_covar`, di default $10^{-6}$).
 Due letture che pagano nel resto del libro. La prima: **k-means è il caso
 limite** di EM su una mistura con covarianze $\sigma^2\mathbf{I}$ e
 $\sigma^2 \to 0$, dove le responsabilità collassano su 0 e 1. L'assegnazione
-dura non è un metodo diverso, è la versione degenere di quella morbida, e la
+dura è la versione degenere di quella morbida, e la
 preferenza di k-means per gruppi sferici è scritta in quella $\mathbf{I}$. La
 seconda: essendo generativo, un GMM restituisce una **densità**, quindi serve
 anche a quello che il clustering non fa, cioè segnalare i punti improbabili.
@@ -1003,8 +1003,8 @@ a $-2$ volte la log-verosimiglianza una penalità sul numero di parametri
 ($p\log m$ per il BIC, $2p$ per l'AIC), e si prende il $K$ che li **minimizza**:
 il primo termine premia chi spiega bene i dati (cambiato di segno, quindi
 minimizzarlo vuol dire massimizzare la verosimiglianza), il secondo fa pagare i
-parametri usati per farlo. È la convenzione di `GaussianMixture.bic`, quella
-usata dal codice più sotto, e una risposta più difendibile del gomito o
+parametri usati per farlo. È la convenzione di `GaussianMixture.bic`, e una
+risposta più difendibile del gomito o
 della silhouette, che sono diagnostiche geometriche senza un modello sotto.
 
 `````
@@ -1022,10 +1022,11 @@ queste, e le addestravano con EM. Il secondo è
 anche lì
 c'è un metodo che sceglie i pezzi migliori senza sapere in anticipo come le
 parole vadano tagliate, e il motore è di nuovo EM. Il terzo arriva molto più
-avanti, ed è quello che rende questa sezione più importante di quanto sembri:
-il capitolo sui **modelli latenti** riprende la mistura gaussiana per quello
-che è davvero, cioè il caso più semplice di un modello che spiega i dati con
-una causa che non si osserva, e sostituisce il ciclo di EM con una rete.
+avanti, fra i modelli latenti: la sezione su
+{doc}`ELBO e riparametrizzazione </ModelliLatenti/il-salto-probabilistico>`
+riprende la mistura gaussiana per quello che è davvero, cioè il caso più
+semplice di un modello che spiega i dati con una causa che non si osserva, e
+sostituisce il ciclo di EM con una rete.
 
 ## In pratica, con scikit-learn
 
@@ -1034,10 +1035,14 @@ righe, con la solita interfaccia `fit` (qui spesso `fit_transform` per chi
 trasforma i dati, o `fit_predict` per chi assegna etichette di cluster):
 
 ```python
+from sklearn.cluster import KMeans, DBSCAN
+from sklearn.datasets import make_blobs
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
-from sklearn.cluster import KMeans, DBSCAN
 from sklearn.preprocessing import StandardScaler
+
+# Tre gruppi in cinque dimensioni, i dati su cui gira tutto il blocco
+X, _ = make_blobs(n_samples=300, n_features=5, centers=3, random_state=0)
 
 # Standardizzare prima: PCA e le distanze sono sensibili alla scala
 X_std = StandardScaler().fit_transform(X)
@@ -1059,8 +1064,12 @@ etichette_db = db.fit_predict(X_std)   # -1 marca il rumore
 ```
 
 ```text
-[0.94174775 0.05825225]
+[0.55173949 0.37539761]
 ```
+
+Le prime due componenti si prendono il $55\%$ e il $38\%$ della dispersione,
+il $93\%$ in tutto: tre centri stanno per forza su un piano, e le altre tre
+dimensioni portano solo la dispersione interna ai gruppi.
 
 Due dettagli che fanno la differenza in pratica. La **standardizzazione**
 prima di PCA o di qualunque clustering per distanza non è opzionale: senza, la
@@ -1134,7 +1143,7 @@ sono allungate, e la frontiera a metà strada fra i due centri le taglia di
 traverso. La mistura arriva a $0{,}997$, perché ha imparato che i gruppi sono
 larghi in una direzione e stretti nell'altra. Restano **cinque punti** su
 seicento su cui il modello non si sbilancia oltre il 90%, e sono quelli in
-mezzo: non è un difetto, è l'unica risposta onesta lì.
+mezzo: l'unica risposta onesta, lì.
 
 Resta l'ultima stampa, il **BIC** (sono le iniziali di *Bayesian Information
 Criterion*). È un punteggio che mette insieme due

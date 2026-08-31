@@ -87,7 +87,7 @@ e per latenza {cite}`breck2017ml`.
    {cite}`huyen2022designing`: l'etichetta arriva in ritardo (il rimborso del
    prestito si scopre a mesi, la diagnosi confermata a settimane) o non arriva
    affatto. La qualità vera è quindi una metrica *ritardata*, e per questo i
-   proxy statistici del livello 2 non sono un ripiego ma una necessità: sono
+   proxy statistici del livello 2 diventano una necessità: sono
    l'unica spia che si accende *prima* che il danno sia misurabile.
 
 `````
@@ -213,8 +213,9 @@ cambia). Le tre decisioni operative sono:
   $p \sim 10^{-7}$, e il rifiuto arriva su ogni finestra simulata. Il problema
   non è la molteplicità dei test ma la
   **taglia del campione**, e correggere per Bonferroni non lo tocca, perché i
-  $p$-value non sono al limite, sono a molti ordini di grandezza sotto
-  qualunque soglia. L'allarme va quindi fondato sull’**ampiezza** ($D$, o una
+  $p$-value stanno molti ordini di grandezza sotto
+  qualunque soglia, altro che al limite. L'allarme va quindi fondato
+  sull’**ampiezza** ($D$, o una
   distanza normalizzata, o il PSI) con una soglia decisa sul significato
   pratico, tenendo il $p$-value al più come filtro contro il rumore delle
   finestre piccole. La correzione per test multipli serve contro la
@@ -297,8 +298,8 @@ centesimi della soglia. Adesso immagina di rifare la misura di quello stesso
 mese duemila volte, ripescando ogni volta dati diversi. Con duemila dati
 per finestra il controllo grida «è cambiato!» in circa il $99\%$ di quelle
 duemila ripetizioni. Con cinquecento dati per finestra, e la deriva identica,
-grida solo in poco più della metà. Non è cambiato il mondo fra i due casi: sono
-cambiati quanti dati avevi in mano.
+grida solo in poco più della metà. Fra i due casi è cambiato quanti dati avevi
+in mano, non il mondo.
 
 Morale: il $p$-value risponde alla domanda «è cambiato qualcosa?», che in un
 servizio vero è quasi sempre sì. La domanda che serve a chi deve decidere è
@@ -398,8 +399,8 @@ sufficiente. Guarda una colonna alla volta, quindi è cieco ai cambiamenti che
 vivono nel **rapporto** fra le colonne: se altezza e peso continuano ciascuna a
 distribuirsi come prima ma smettono di crescere insieme, ogni singola colonna
 risulta innocente mentre il detective, che le guarda insieme, grida. Quando
-capita questo, la conclusione giusta non è «falso allarme»: è che il
-cambiamento sta nelle dipendenze, e va cercato con strumenti che le guardino
+capita questo, la conclusione giusta non è «falso allarme» ma un cambiamento
+nelle dipendenze, da cercare con strumenti che le guardino
 (le importanze del detective stesso, le correlazioni a coppie).
 
 Una cautela finale, la stessa della sezione statistica ma più severa di come la
@@ -576,9 +577,9 @@ così che il *rollback* al precedente sia sempre un'operazione di un istante.
 
 `````
 
-Con questo l'anello si chiude e ricomincia. Il monitoraggio non è l'ultima
-tappa di una linea retta: è l'occhio che, accorgendosi del drift, fa ripartire
-il ciclo (indagine, retraining, rilascio graduale) e riporta all'inizio. Un
+Con questo l'anello si chiude e ricomincia. Il monitoraggio è l'occhio che,
+accorgendosi del drift, fa ripartire il ciclo (indagine, retraining, rilascio
+graduale) e riporta all'inizio. Un
 modello in produzione, l'abbiamo detto, non è un risultato da archiviare ma un
 processo da tenere in vita {cite}`shankar2022operationalizing`; questa sezione
 è il turno di guardia che quel processo richiede, ogni giorno, finché il

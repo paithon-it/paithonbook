@@ -31,20 +31,72 @@ all'ultimo giro: così nessuna barra è schiacciata a zero proprio nel fotogramm
 che finisce in stampa. Le altezze delle barre e gli spostamenti dei pesi sono
 in scala relativa, cioè le proporzioni sono vere e il fattore di scala no: uno
 spostamento da 0,04 su una pista larga quanto l'intero peso sarebbe invisibile.
+
+## Il dato si misura una volta, il disegno è una funzione pura
+
+Il ciclo non gira più mentre la figura si costruisce, e non è una questione di
+secondi (qui sono tre mini-batch, un istante). È che i sei pesi disegnati li
+sceglie un `topk` sui gradienti dell'ultimo giro, cioè un ordinamento fra
+valori appaiati: basta l'ultimo bit perché entri nella figura un peso invece
+di un altro, e da lì cambiano sei colonne su sei. Fra due CPU con ordini di
+riduzione BLAS diversi (stesso torch, stesso seme) l'SVG esce diverso, e
+`genera.py --verifica` dichiara «da rigenerare» su ogni macchina che non sia
+quella che ha committato. Un cancello che non può tornare verde non protegge
+niente: prima o poi lo si aggira, ed è la fine peggiore per un controllo.
+
+Quindi la misura e il disegno si separano, come per la potatura iterativa:
+
+- **il dato**: `misura()` esegue i tre giri, li collauda e scrive
+  `animazioni/dati/ciclo-addestramento.json`, che è committato e porta dentro
+  il seme, la configurazione e la data
+  (`genera.py --misura ciclo-addestramento`);
+- **il disegno**: `costruisci()` legge quel json e basta. Funzione pura dei
+  dati, quindi stessi byte su ogni macchina;
+- **la verità**: `verifica()` gira in tutti e due i posti. Sui dati committati
+  a ogni disegno, perché un dato committato è un dato che nessuno riapre più;
+  sull'esperimento appena fatto quando si rimisura, prima che tocchi il disco.
+
+Il prezzo è che l'addestramento non lo riesegue più nessun controllo
+automatico, e «identico» non vuol dire «giusto»: un json vecchio verrebbe
+ridisegnato fedelmente per sempre. A difendere la pagina restano tre cose. Le
+asserzioni girano sul dato committato a ogni disegno, quindi un dato che non
+mostra il fenomeno non arriva in pagina. Il json porta dentro la
+configurazione con cui è stato misurato e il caricamento la riconfronta con
+quella scritta qui, quindi chi ritocca un parametro e non rimisura trova un
+rifiuto. E senza il json il generatore si ferma e dice come produrlo: una
+figura che si inventa i propri numeri è peggio di una figura che manca.
 """
 
-import torch
-from torch import nn, optim
-from torch.utils.data import DataLoader, TensorDataset
+import json
+import sys
+from datetime import date
+from pathlib import Path
 
 from paithon_svg import *
 
 NOME = "ciclo-addestramento"
 TITOLO = "il ciclo di addestramento: cinque passi, tre giri"
 
+QUI = Path(__file__).resolve()
+RADICE = QUI.parents[2]
+DATI = QUI.parents[1] / "dati" / f"{NOME}.json"
+
 SEME, LR, BATCH = 0, 1.0, 256
 GIRI, N_PESI = 3, 6
 N_STATI = GIRI * 5
+# Un thread. Non è una scelta di velocità: il numero di thread cambia
+# l'ordine di riduzione, cioè l'ultimo bit, cioè quali sei pesi il `topk`
+# porta nella figura. Sta fra i parametri perché cambiarlo può cambiare i
+# numeri (su questa macchina, con questo lotto, non li cambia: fissarlo serve
+# a chi rimisura altrove).
+THREAD = 1
+
+# I tre valori che la pagina nomina, nella didascalia e nell'`:alt:` del
+# `.md`, che è la copia che nessuna macchina confronta con la figura. Stanno
+# qui perché un'asserzione li confronti a ogni disegno: se un giorno la misura
+# li spostasse, a essere falsa sarebbe la pagina, e allora si riscrive quella,
+# non si allarga questa riga.
+LOSS_PAGINA = ("2,35", "2,29", "2,25")
 
 # I cinque passi nell'ordine del capitolo, con le parole del capitolo.
 PASSI = [
@@ -68,17 +120,47 @@ Y_LOSS = [226, 264, 302]
 DURATA = N_STATI * 0.7           # e un giro dura un terzo del totale
 
 
+def configurazione() -> dict:
+    """Tutto ciò che, cambiando, cambia i numeri: va nel json e si riconfronta.
+
+    Serve a impedire il guasto che la separazione fra dato e disegno rende
+    possibile: si ritocca un parametro qui, non si rimisura, e la figura
+    continua a disegnare l'esperimento vecchio mentre le etichette raccontano
+    quello nuovo (l'etichetta dei pesi, per dirne una, legge `N_PESI` e non il
+    json).
+    """
+    return {
+        "dati": "sklearn load_digits, immagini 8x8 divise per 16",
+        "rete": "Flatten, Linear(64,16), ReLU, Linear(16,10)",
+        "loss": "CrossEntropyLoss",
+        "ottimizzatore": f"SGD, lr {LR}",
+        "batch": BATCH,
+        "giri": GIRI,
+        "n_pesi": N_PESI,
+        "seme": SEME,
+        "thread": THREAD,
+    }
+
+
 # --------------------------------------------------------------------------
-# L'algoritmo
+# Il dato: i tre giri eseguiti per davvero, una volta, e committati
 # --------------------------------------------------------------------------
-def addestra() -> dict:
+def esperimento() -> dict:
     """Tre giri veri del training loop, nell'ordine in cui li scrive il capitolo.
 
     Restituisce la loss di ogni giro, i gradienti dei pesi mostrati a ogni
     `backward()` e lo scostamento di quei pesi dal valore di partenza.
+
+    `torch` e `sklearn` si importano qui dentro e non in cima al file: chi
+    disegna la figura non ne ha bisogno, e una verifica che non ha bisogno di
+    un ambiente di calcolo è una verifica che gira dappertutto.
     """
+    import torch
+    from torch import nn, optim
+    from torch.utils.data import DataLoader, TensorDataset
     from sklearn.datasets import load_digits
 
+    torch.set_num_threads(THREAD)
     torch.manual_seed(SEME)
     cifre = load_digits()
     X = torch.tensor(cifre.images, dtype=torch.float32).unsqueeze(1) / 16.0
@@ -110,28 +192,136 @@ def addestra() -> dict:
     # i sei pesi da mostrare: quelli col gradiente piu' grande all'ultimo giro
     scelti = gradienti[-1].abs().topk(N_PESI).indices.tolist()
 
-    if not all(perdite[i] > perdite[i + 1] for i in range(GIRI - 1)):
-        raise AssertionError(f"la figura mostra una loss in discesa, "
-                             f"l'addestramento dà {perdite}")
-
-    # la figura dice: barra del gradiente in su, peso che scende. Con SGD e'
-    # vero per costruzione, ma e' la cosa che la figura insegna: si controlla.
-    for t in range(GIRI):
-        for i in scelti:
-            passo = (pesi[t + 1][i] - pesi[t][i]).item()
-            g = gradienti[t][i].item()
-            if passo * g > 0:
-                raise AssertionError(
-                    f"peso {i}, giro {t + 1}: gradiente {g:+.4f} e spostamento "
-                    f"{passo:+.4f} hanno lo stesso segno, la figura mentirebbe")
+    def arr(riga):
+        # Nove decimali, e non sei: questi valori escono da tensori float32,
+        # che portano circa nove cifre decimali significative, quindi
+        # arrotondare piu' corto butta via misura. Non e' pignoleria di
+        # rappresentazione: con sei decimali lo scostamento del secondo peso
+        # all'ultimo giro (-0,060395777) diventa -0,060396, e la sua ordinata
+        # passa da 336,4499894 a 336,4500138, cioe' scavalca l'arrotondamento
+        # a un decimo di pixel e il cerchio si sposta.
+        return [round(v, 9) for v in riga]
 
     return {
-        "perdite": perdite,
-        "gradienti": [[g[i].item() for i in scelti] for g in gradienti],
-        "scostamenti": [[(p[i] - pesi[0][i]).item() for i in scelti]
+        "perdite": arr(perdite),
+        "gradienti": [arr(g[i].item() for i in scelti) for g in gradienti],
+        "scostamenti": [arr((p[i] - pesi[0][i]).item() for i in scelti)
                         for p in pesi],
         "parametri": sum(p.numel() for p in modello.parameters()),
     }
+
+
+def misura() -> Path:
+    """Riesegue i tre giri, li collauda, e riscrive il dato committato.
+
+        python3 animazioni/svg/genera.py --misura ciclo-addestramento
+
+    Il collaudo sta **qui**, prima della scrittura: un dato che non mostra il
+    fenomeno che la didascalia promette non deve arrivare al disco, o il
+    prossimo che rigenera la figura si ritrova con una pagina che mente e
+    nessun cancello rosso.
+    """
+    import sklearn
+    import torch
+
+    corsa = esperimento()
+    verifica(corsa)
+    dato = {
+        "_": ("I tre giri misurati del ciclo di addestramento, disegnati da "
+              f"animazioni/svg/{NOME}.py. Non si scrive a mano: lo riscrive "
+              f"`python3 animazioni/svg/genera.py --misura {NOME}`, che prima "
+              "di scrivere collauda che il fenomeno ci sia."),
+        "data": date.today().isoformat(),
+        "configurazione": configurazione(),
+        "versioni": {
+            "python": ".".join(str(v) for v in sys.version_info[:3]),
+            "torch": torch.__version__,
+            "scikit-learn": sklearn.__version__,
+        },
+        **corsa,
+    }
+    DATI.parent.mkdir(parents=True, exist_ok=True)
+    DATI.write_text(json.dumps(dato, indent=1, ensure_ascii=False) + "\n",
+                    encoding="utf-8")
+    return DATI
+
+
+def dati() -> dict:
+    """La corsa committata, con il rifiuto al posto dell'invenzione."""
+    if not DATI.is_file():
+        raise FileNotFoundError(
+            f"manca il dato misurato: {DATI.relative_to(RADICE)}\n"
+            f"    Questa figura disegna un addestramento **misurato**, non "
+            f"calcolato: senza il suo json non c'è niente da disegnare, e dei "
+            f"numeri inventati sarebbero peggio della figura che manca.\n"
+            f"    python3 animazioni/svg/genera.py --misura {NOME}")
+
+    dato = json.loads(DATI.read_text(encoding="utf-8"))
+    if dato.get("configurazione") != configurazione():
+        raise ValueError(
+            f"{DATI.relative_to(RADICE)} è stato misurato con un'altra "
+            f"configurazione:\n"
+            f"    committata: {dato.get('configurazione')}\n"
+            f"    nel file:   {configurazione()}\n"
+            f"    Il disegno legge il json ma le etichette leggono le costanti "
+            f"del generatore: disegnerebbe una rete e ne racconterebbe "
+            f"un'altra.\n"
+            f"    python3 animazioni/svg/genera.py --misura {NOME}")
+    return dato
+
+
+# --------------------------------------------------------------------------
+# La verità: le stesse asserzioni sul dato committato e sull'esperimento
+# --------------------------------------------------------------------------
+def verifica(corsa: dict) -> None:
+    """La figura promette una loss in discesa e il segno del gradiente: ci sono?
+
+    Gira in due momenti, e sono due mestieri diversi. Quando si rimisura,
+    difende il dato che sta per finire sul disco. Quando si disegna, difende
+    la pagina: un json committato è un file che nessuno riapre più, e la sola
+    cosa che impedisce a un dato rimasto indietro di diventare una didascalia
+    falsa è che il disegno si rifiuti di disegnarlo.
+    """
+    perdite = corsa["perdite"]
+    grad, scost = corsa["gradienti"], corsa["scostamenti"]
+
+    assert len(perdite) == GIRI, \
+        f"servono {GIRI} giri, il dato ne porta {len(perdite)}"
+    assert len(grad) == GIRI and all(len(g) == N_PESI for g in grad), \
+        f"la figura disegna {N_PESI} pesi per giro, il dato ne porta altri"
+    assert len(scost) == GIRI + 1 and all(len(s) == N_PESI for s in scost), \
+        "gli scostamenti sono uno per giro piu' quello di partenza"
+    assert all(v == 0 for v in scost[0]), \
+        "al giro zero i pesi non si sono ancora spostati da sé"
+
+    assert all(perdite[i] > perdite[i + 1] for i in range(GIRI - 1)), \
+        f"la figura mostra una loss in discesa, l'addestramento dà {perdite}"
+
+    # La didascalia e l'`:alt:` del `.md` nominano i tre valori: se la misura
+    # li spostasse, la pagina direbbe numeri che la figura non disegna, e non
+    # c'è nessun altro controllo che confronti quelle due copie.
+    detti = tuple(f"{p:.2f}".replace(".", ",") for p in perdite)
+    assert detti == LOSS_PAGINA, \
+        (f"la pagina nomina una loss {', '.join(LOSS_PAGINA)} e la misura dà "
+         f"{', '.join(detti)}: va riscritta la pagina, non questa riga")
+
+    # La figura dice: barra del gradiente in su, peso che scende. Con SGD è
+    # vero per costruzione, ma è la cosa che la figura insegna: si controlla.
+    for t in range(GIRI):
+        for i in range(N_PESI):
+            passo = scost[t + 1][i] - scost[t][i]
+            g = grad[t][i]
+            assert passo * g <= 0, \
+                (f"peso {i}, giro {t + 1}: gradiente {g:+.4f} e spostamento "
+                 f"{passo:+.4f} hanno lo stesso segno, la figura mentirebbe")
+
+    # Le due scale del disegno dividono per il massimo: un massimo nullo
+    # sarebbe una divisione per zero, e prima ancora una figura senza niente
+    # da mostrare.
+    assert max(abs(v) for riga in grad for v in riga) > 0, \
+        "tutti i gradienti mostrati sono nulli: non c'è nessuna barra"
+    assert max(abs(v) for riga in scost for v in riga) > 0, \
+        "nessuno dei pesi mostrati si è spostato"
 
 
 # --------------------------------------------------------------------------
@@ -199,7 +389,8 @@ def quali_pesi() -> list[int]:
 # Il disegno
 # --------------------------------------------------------------------------
 def costruisci() -> Figura:
-    corsa = addestra()
+    corsa = dati()
+    verifica(corsa)
     perdite, grad = corsa["perdite"], corsa["gradienti"]
     scost, n_par = corsa["scostamenti"], corsa["parametri"]
 

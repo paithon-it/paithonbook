@@ -24,8 +24,8 @@ Un organismo, per continuare a esistere, deve mantenersi in un piccolo
 sottoinsieme degli stati possibili. Un pesce, scrivono gli autori, deve stare
 **nell'acqua**; una persona deve tenere temperatura corporea e battito dentro un
 intervallo stretto, «altrimenti morirà, o più precisamente diventerà qualcos'altro,
-per esempio un cadavere». Quell'intervallo non è un obiettivo che qualcuno ha
-assegnato: è ciò che definisce quella cosa come quella cosa.
+per esempio un cadavere». Quell'intervallo è ciò che definisce quella cosa come
+quella cosa, e non un obiettivo assegnato da qualcuno.
 
 Da qui la mossa. Se una creatura si costruisce un modello di come vanno le cose,
 allora «trovarsi fuori dall'acqua» è per lei un'osservazione **estremamente
@@ -211,9 +211,9 @@ una che avvicina la meta a occhi chiusi.
 
 L'esempio è degli autori. Uno vuole un caffè e conosce due bar, uno aperto nei
 giorni feriali e uno nel fine settimana, ma non sa che giorno è. La prima cosa
-che fa non è andare a un bar: è guardare il calendario, che non porta un passo
-verso il caffè ma apre la porta del bar giusto. Quel che le due misure pesano,
-insomma, non è il passo per sé ma la strada che apre. Il capitolo
+che fa è guardare il calendario, non andare a un bar: quel gesto non porta un
+passo verso il caffè ma apre la porta del bar giusto. Quel che le due misure
+pesano, insomma, non è il passo per sé ma la strada che apre. Il capitolo
 sull'auto-supervisione lo racconta per esteso.
 
 Lo stesso conto fa evitare i posti da cui si vede male. Un vicolo e una
@@ -221,11 +221,11 @@ piazza possono essere ugualmente vicini al bar, ma dal vicolo non si capisce
 nemmeno se la saracinesca è alzata: chi si infila lì resta nel dubbio comunque
 si giri, e il dubbio era la cosa che stava cercando di togliersi.
 
-Il punto che conta è che quelle due misure non sono due voti da mettere
-d'accordo: sono le due metà di un voto solo, che l'agente cerca di rendere più
-alto possibile. Non c'è nessuna manopola da girare per decidere quanta
-curiosità concedere, perché la curiosità non è stata aggiunta: era lì
-dall'inizio, dentro quel voto.
+Il punto che conta è che quelle due misure sono le due metà di un voto solo,
+che l'agente cerca di rendere più alto possibile, e non due voti da mettere
+d'accordo. Non c'è nessuna manopola da girare per decidere quanta
+curiosità concedere, perché la curiosità era lì dall'inizio, dentro quel voto,
+e nessuno l'ha aggiunta.
 
 `````
 
@@ -272,8 +272,8 @@ sparisce è l'altra metà, la spinta a cercare i posti da cui si vede bene.
 Tre cose, e nessuna delle tre chiede di adottare il quadro per intero.
 
 La prima è una risposta alla domanda con cui il capitolo è partito, «a che serve
-un modello del mondo». Qui la risposta non è «a pianificare meglio»: è che senza
-un modello di quel che succederà non si può anticipare niente, e un organismo
+un modello del mondo». Qui la risposta non è «a pianificare meglio»: senza un
+modello di quel che succederà non si può anticipare niente, e un organismo
 che non anticipa arriva sempre tardi. Cercare l'ombra prima di avere caldo è un
 atto di previsione, e nient'altro.
 
@@ -285,8 +285,8 @@ concettuale vera, ed è anche la ragione per cui il capitolo sull'auto-supervisi
 può usare questa cornice per rispondere a un'obiezione sul rinforzo: lo fa nella
 sua ultima sezione, con l'esempio del caffè per esteso.
 
-La terza è la scala dei tempi. Percepire, agire e imparare non sono tre
-programmi diversi che si alternano: sono la stessa operazione a tre velocità.
+La terza è la scala dei tempi. Percepire, agire e imparare sono la stessa
+operazione a tre velocità, e non tre programmi diversi che si alternano.
 Chi legge il capitolo sull'auto-supervisione riconoscerà l'idea, perché è la
 versione biologica di quello che quel capitolo dice dei dati: il bersaglio non lo
 scrive nessuno, arriva da sé, ed è il segnale successivo.
@@ -306,8 +306,8 @@ buttafuori si perde.
 La confusione ha anche un appiglio tipografico, ed è meglio toglierlo di
 mezzo: la sezione sulla JEPA scrive $\mathcal{E}$ per l'energia di una coppia
 (presente, futuro), e qui $F$ è l'energia libera variazionale. Due lettere
-diverse per due grandezze diverse, e non è un vezzo: sono le due «energie» che
-questo riquadro invita a non scambiare.
+diverse per due grandezze diverse, e la differenza serve: sono le due
+«energie» che questo riquadro invita a non scambiare.
 ```
 
 ## Onestà sui limiti
@@ -441,15 +441,16 @@ posti da cui si vede bene non ha dove attaccarsi.
 Resta poi una cosa che il lettore può portarsi via anche senza seguire un
 passaggio di algebra. Quando un obiettivo pratico si scrive come «ottieni ciò
 che preferisci, ma non allontanarti dal punto di partenza», quella seconda metà
-**non è mai un dettaglio implementativo**: è un'ipotesi su dove sia lecito
-cercare, ed è quasi sempre la parte che decide che cosa il sistema diventerà.
+**è sempre un'ipotesi su dove sia lecito cercare**, mai un dettaglio
+implementativo, ed è quasi sempre la parte che decide che cosa il sistema
+diventerà.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- L’**inferenza attiva** dice una cosa sola e grossa: percepire e agire non sono
-  due mestieri, sono lo stesso mestiere in due direzioni. Davanti a uno scarto
+- L’**inferenza attiva** dice una cosa sola e grossa: percepire e agire sono lo
+  stesso mestiere in due direzioni. Davanti a uno scarto
   fra quello che ti aspettavi e quello che trovi, o **cambi idea** (percepire) o
   **cambi il mondo** (agire). Anche **imparare** è la stessa cosa, solo più
   lenta.
@@ -471,8 +472,8 @@ cercare, ed è quasi sempre la parte che decide che cosa il sistema diventerà.
   che si desidera sta nello stesso posto in cui sta quello che ci si aspetta.
 - La regola d'oro della cucina, quella con cui si rifiniscono i modelli di
   linguaggio («insegui il voto, ma non allontanarti dalla ricetta di partenza»),
-  non è una toppa: è **lo stesso conto** dell'energia libera scritto con altre
-  lettere, e qualcuno l'ha dimostrato nel 2022.
+  è **lo stesso conto** dell'energia libera scritto con altre lettere, e non
+  una toppa: e qualcuno l'ha dimostrato nel 2022.
 - Attenzione a non prendere l'inferenza attiva per il seguito delle tappe
   precedenti: è una teoria di come funzionano gli esseri viventi, non il modo
   in cui oggi si costruiscono i programmi che giocano o generano video.

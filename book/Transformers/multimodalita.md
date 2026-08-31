@@ -28,12 +28,11 @@ cosa ogni parola ha il diritto di guardare, e da lì discende tutto il resto.
 
 {numref}`fig-bert-vs-gpt` mostra la sola cosa che li distingue davvero: non
 l'architettura, che è la stessa, ma quali parole ciascuno ha il permesso di
-guardare. Il primo può guardare anche le parole che vengono dopo, e chi vede
-tutta la frase la capisce meglio (dire di che parla, trovarci dentro una
-risposta, giudicarla); il secondo vede solo le parole che precedono, ed è
-costretto a indovinare come si continua, che è esattamente l'esercizio da fare
-per imparare a scrivere. La scheda qui sotto racconta chi sono i due, e conviene
-leggerla prima di tornare alla figura.
+guardare. BERT può guardare anche le parole che vengono dopo, e chi vede tutta
+la frase la capisce meglio (dire di che parla, trovarci dentro una risposta,
+giudicarla); GPT vede solo le parole che precedono, ed è costretto a indovinare
+come si continua, che è esattamente l'esercizio da fare per imparare a
+scrivere.
 
 `````{tab} Elementare
 Tre studenti si preparano allo stesso esame in tre modi diversi. **GPT** studia
@@ -107,7 +106,7 @@ discriminatore. Il guadagno che gli autori misurano è tutto sull'asse del
 confrontabili dell'epoca spendendo meno di un quarto del loro addestramento, e
 la versione piccola, quattro giorni su una sola GPU, se la cava meglio di un
 modello autoregressivo che di calcolo ne aveva consumato trenta volte tanto.
-Non è una vittoria di architettura, è una vittoria di **obiettivo**: la stessa
+È una vittoria di **obiettivo** e non di architettura: la stessa
 rete impara di più dalle stesse frasi perché le viene chiesto qualcosa su ogni
 posizione invece che su una su sette.
 
@@ -117,8 +116,8 @@ il discriminatore (è addestrato con la sua verosimiglianza, come un normale
 MLM), non c'è vettore di rumore in ingresso, e quando produce per caso il token
 giusto quello viene etichettato come *originale* e non come falso. È
 un'architettura avversaria nella forma e cooperativa nella sostanza, e chi ha
-letto il capitolo sulle GAN riconoscerà quanto di quella instabilità venga
-proprio dal pezzo che qui è stato tolto.
+letto il {doc}`capitolo sulle GAN </GAN/overview>` riconoscerà quanto di
+quella instabilità venga proprio dal pezzo che qui è stato tolto.
 `````
 
 Fra i tre, il terzo merita un disegno, perché la sua idea è quella che si è
@@ -204,10 +203,10 @@ Il **Vision Transformer** (ViT {cite}`dosovitskiy2021image`) suddivide
 l'immagine in patch (tipicamente $16 \times 16$ pixel), le proietta
 linearmente in embedding e le tratta come token, con un positional encoding
 per la posizione spaziale. La cosa da portarsi via è la condizione: senza il
-*bias induttivo* di località delle CNN del capitolo sulla visione, il ViT
-regge il confronto solo se pre-addestrato su dataset molto grandi, e sotto
-quella soglia resta indietro. La località non è gratis: o la si mette
-nell'architettura, o la si compra in dati. Sul fronte multimodale, **CLIP**
+*bias induttivo* di località delle CNN, il ViT regge il confronto solo se
+pre-addestrato su dataset molto grandi, e sotto quella soglia resta indietro.
+La località non è gratis: o la si mette nell'architettura, o la si compra in
+dati. Sul fronte multimodale, **CLIP**
 {cite}`radford2021learning` allinea in uno spazio comune embedding di immagini
 e testi tramite addestramento contrastivo su coppie immagine–didascalia; i
 modelli generativi di immagini come DALL·E e Stable Diffusion usano componenti
@@ -221,12 +220,13 @@ Qui ci fermiamo al principio, che è il filo di questo capitolo: tutto ciò che 
 riduce a una fila di mattoncini (i *token*: le parole di una frase, le tessere
 di una foto, gli spezzoni di un suono) è terreno dell'attenzione. Come si
 costruisca davvero un modello che vede e parla è un'altra storia, e ha un
-capitolo suo più avanti. Le strade sono tre, e basta averne il nome in mente:
+capitolo suo, {doc}`visione e linguaggio </VisioneLinguaggio/overview>`. Le
+strade sono tre, e basta averne il nome in mente:
 tenere immagini e parole ciascuna nella propria mappa e allenarle a mettere le
 cose corrispondenti nello stesso punto; innestare un occhio su un modello di
 linguaggio già fatto, lasciando comandare il linguaggio; oppure dare a tessere e
 parole un unico vocabolario, come se le tessere fossero le parole di una lingua
-in più. Quale convenga, e che cosa costi ciascuna, si vedrà là.
+in più. Quale convenga, e che cosa costi ciascuna, lo dice quel capitolo.
 
 ## Fuori dal linguaggio: AlphaFold 2 e la forma delle proteine
 
@@ -240,16 +240,16 @@ stessa in una forma tridimensionale precisa. Da quella forma dipende tutto quel
 che la proteina sa fare, e prevederla a partire dalla sola fila di mattoncini
 era un problema aperto da mezzo secolo. Nel novembre 2020, alla CASP14, la gara
 biennale in cui i programmi che ci provano si sfidano su proteine di cui la
-risposta è nota solo agli organizzatori, **AlphaFold 2** ha predetto quelle
-forme con un'accuratezza confrontabile con quella delle misure fatte in
-laboratorio **nella maggior parte dei casi**, chiudendo di fatto il problema per
-le proteine formate da una catena sola.
+risposta è nota solo agli organizzatori, **AlphaFold 2**
+{cite}`jumper2021highly` ha predetto quelle forme con un'accuratezza
+confrontabile con quella delle misure fatte in laboratorio **nella maggior
+parte dei casi**, e per le proteine formate da una catena sola.
 
 Le due clausole non sono prudenza di maniera. Restano fuori le proteine fatte di
 più catene incastrate, i tratti che una forma stabile non ce l'hanno affatto,
 le proteine che ne assumono più d'una a seconda della situazione, e l'effetto
-delle mutazioni; e la formula «problema risolto», che allora circolò molto,
-stava nel comunicato stampa, non nel giudizio di chi assegnava i punteggi.
+delle mutazioni: la formula «problema risolto», che allora circolò molto, va
+letta con quell'elenco accanto.
 
 ```{figure} ../figures/alphafold-2.svg
 :name: fig-alphafold

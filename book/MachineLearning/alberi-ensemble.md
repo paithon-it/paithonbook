@@ -20,7 +20,7 @@ Gli alberi appartengono a
 un'altra famiglia, e sono i re incontrastati di un terreno preciso: i **dati in
 tabella**, quelli a righe e colonne di un foglio di calcolo, dove ogni
 colonna è una caratteristica di natura diversa (un'età, un reddito, una
-categoria). Su questo terreno gli algoritmi di questa sezione restano, ancora
+categoria). Su questo terreno gli alberi e i loro ensemble restano, ancora
 oggi, difficili da battere.
 
 C'è poi una ragione in più per studiarli: sono **interpretabili**. Un albero
@@ -262,12 +262,12 @@ combinano le risposte.
 
 ```{figure} ../figures/ensemble-modelli-deboli.svg
 :name: fig-voto-di-maggioranza
-:alt: "Cinque modelli deboli, ciascuno appena migliore del caso, ricevono lo stesso esempio e votano; alcuni sbagliano, ma i loro errori cadono su risposte diverse mentre i corretti convergono sulla stessa. Il voto di maggioranza produce la risposta giusta."
+:alt: "Cinque riquadri affiancati, ciascuno etichettato «debole» con la propria accuratezza fra il 54 e il 57 per cento; da ognuno parte una linea verso un ovale «voto aggregato». A lato, il confronto fra un singolo modello, circa 55 per cento, e l'insieme dei cinque, circa 91 per cento."
 :width: 92%
 
-Perché il voto funzioni servono errori *diversi*. I tre che azzeccano
-concordano; i due che sbagliano sbagliano in due modi differenti, e da soli
-non fanno maggioranza.
+Cinque modelli che da soli azzeccano poco più di una volta su due, e messi a
+votare arrivano al novanta. Il salto dipende da una condizione che il disegno
+non può mostrare.
 ```
 
 La condizione nascosta in {numref}`fig-voto-di-maggioranza` è quella che tutto
@@ -368,20 +368,21 @@ mirata proprio a rompere quella somiglianza.
 
 ```{figure} ../figures/random-forest.svg
 :name: fig-foresta-voto
-:alt: "Molti alberi di decisione affiancati, ciascuno cresciuto su un campione diverso dei dati e su un sottoinsieme diverso delle feature; ognuno emette la propria predizione, e le predizioni confluiscono in un voto di maggioranza che produce il verdetto finale."
+:alt: "Quattro alberi di decisione affiancati sotto l'intestazione «stesso input, alberi diversi»; sotto ciascuno il suo voto, tre volte A e una volta B, e le quattro linee confluiscono in «maggioranza: A, tre voti contro uno». In fondo la riga «ogni albero vede dati e feature diversi: gli errori individuali si compensano nel voto»."
 :width: 96%
 
-La foresta al lavoro. La diversità qui non è un caso fortunato: è costruita
+La foresta al lavoro. La diversità è costruita
 apposta, con due sorteggi, uno sugli esempi dati a ciascun albero e uno sulle
 colonne che ciascun albero può guardare.
 ```
 
-Il primo sorteggio di {numref}`fig-foresta-voto` è il bootstrap, che c'era già
-nel bagging. Il **secondo**, quello sulle colonne, era stato proposto da altri
-pochi anni prima (Tin Kam Ho, e poi Amit e Geman) e la foresta casuale lo mette
-insieme al primo: togliendo a turno a ciascun albero la colonna più ovvia, li
-si costringe a scoprire strade diverse. Il contributo di Breiman è la
-combinazione, e la teoria che spiega perché funziona.
+Il primo dei due sorteggi è il bootstrap, che c'era già nel bagging. Il
+**secondo**, quello sulle colonne, non era inedito: sorteggiarle una volta per
+albero è di Tin Kam Ho, ripetere il sorteggio **a ogni nodo** è di Amit e
+Geman, ed è questa seconda forma che la foresta casuale adotta. Togliendo a
+turno a ciascun albero la colonna più ovvia, li si costringe a scoprire strade
+diverse. Il contributo di Breiman è la combinazione, e la teoria che spiega
+perché funziona.
 
 `````{tab} Elementare
 
@@ -479,8 +480,8 @@ che ha sbagliato. Al terzo, su ciò che ancora non gli riesce. Ogni ripasso non
 riparte da zero: aggiusta il tiro là dove serve. Alla fine padroneggia
 l'insieme, un errore corretto per volta.
 
-Il primo algoritmo di questo tipo, **AdaBoost** (Freund e Schapire, 1997
-{cite}`freund1997decision`), fa proprio così con dei **pesi**: dopo ogni albero,
+**AdaBoost** (Freund e Schapire, 1997 {cite}`freund1997decision`), dove la «A»
+sta per *adaptive*, fa proprio così con dei **pesi**: dopo ogni albero,
 gli esempi classificati male ricevono un peso maggiore, così l'albero successivo
 è spinto a occuparsi soprattutto di loro. Gli alberi che nel complesso sbagliano
 meno pesano di più nel voto finale. Il risultato è un comitato in cui ciascuno è
@@ -543,7 +544,7 @@ $$
 dove $R_{jt}$ è la $j$-esima foglia dell'albero $t$ e $\gamma_{jt}$ il valore
 che le viene assegnato. Con la loss quadratica il passaggio è invisibile,
 perché quella costante è la media dei residui, cioè esattamente ciò che
-l'albero aveva già messo nella foglia: è il caso svolto qui sopra. Con la
+l'albero aveva già messo nella foglia. Con la
 log-loss no, i due valori sono diversi, e la log-loss è il default di
 `GradientBoostingClassifier`.
 
@@ -728,7 +729,7 @@ storia sua, senza rapporti con le altre. «Ingenuo» è proprio questo: le colon
 di una tabella vera sono quasi sempre legate (reddito e quartiere non sono
 indipendenti), e fare finta di no è una semplificazione grossolana. È la ragione
 per cui qui sarà nettamente il più debole dei tre. Lo riprende per esteso
-{doc}`Modelli generativi <modelli-generativi>`, più avanti in questo capitolo,
+{doc}`Modelli generativi <modelli-generativi>`
 e
 {doc}`Classificare il testo </NaturalLanguageProcessing/classificazione-testo>`
 lo mostra al lavoro sulle parole di un'email, dove invece funziona benissimo.
@@ -793,11 +794,11 @@ esempio per esempio e si contano soltanto i casi su cui i due modelli
 **dissentono**, cioè quelli che uno azzecca e l'altro sbaglia. Se i due si
 equivalgono, quei casi dovrebbero dividersi più o meno a metà, come testa e
 croce; se uno è davvero migliore, la bilancia pende dalla sua parte. È il test
-di McNemar, e la sua risposta è un numero chiamato $p$, che si legge così: **la
-probabilità di vedere uno sbilanciamento almeno così marcato se i due modelli
-fossero equivalenti**. Un $p$ grande vuol dire «poteva benissimo capitare per
-caso», e quindi non prova niente; un $p$ piccolo (per convenzione sotto
-$0{,}05$) vuol dire che il caso, da solo, fatica a spiegarlo.
+di McNemar, e la sua risposta è il **$p$** della sezione su
+[ipotesi nulla e p-value](../Matematica/probabilita-statistica.md): quanto
+spesso il caso, da solo, produrrebbe uno sbilanciamento almeno così marcato se i
+due modelli fossero equivalenti. Sotto $0{,}05$, per la convenzione di sempre,
+si smette di credere che siano equivalenti.
 
 Qui, foresta contro voto duro dà
 $p = 0{,}38$, foresta contro voto morbido $p = 0{,}20$, voto duro contro voto
@@ -834,8 +835,8 @@ conto va fatto.
 
 L'interfaccia `fit`/`predict` è la stessa vista per gli altri modelli
 supervisionati; per una guida applicativa estesa a questi metodi rimandiamo al
-manuale di Géron {cite}`geron2022hands`. I quattro protagonisti di questa
-sezione stanno in poche righe:
+manuale di Géron {cite}`geron2022hands`. I quattro protagonisti stanno in
+poche righe:
 
 ```python
 from sklearn.datasets import make_classification
@@ -886,9 +887,13 @@ le cinque colonne che contano di piu': [14  8 16 11  4]
 ```
 
 Le prime tre righe dicono tutto: un albero solo si ferma a $0{,}796$, e gli
-stessi alberi messi a votare arrivano a $0{,}891$,
-messi in fila a $0{,}883$. Quasi dieci punti, senza cambiare famiglia di
-modelli. La quarta riga è il regalo dell'out-of-bag: una stima dell'errore
+stessi alberi messi a votare arrivano a $0{,}891$, messi in fila a $0{,}883$.
+Quasi dieci punti, senza cambiare famiglia di modelli. Fra il voto e la fila,
+invece, non c'è niente da leggere: otto millesimi su un test di novecento
+esempi stanno sotto l'incertezza della misura, che a quell'accuratezza vale un
+punto percentuale. Che sui dati in tabella il boosting arrivi di norma più in
+alto resta vero come tendenza; su un problema solo, e per giunta fabbricato,
+non si vede. La quarta riga è il regalo dell'out-of-bag: una stima dell'errore
 ottenuta senza mettere da parte niente, che qui dà $0{,}898$ contro lo
 $0{,}891$ misurato sul test vero, cioè sbaglia di sette millesimi in favore
 del modello.

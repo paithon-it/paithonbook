@@ -65,8 +65,8 @@ $$
 stati possibili: un numero di quasi diciassettemila cifre, incommensurabilmente
 più grande degli atomi dell'universo osservabile ($\sim 10^{80}$). Una $Q$-table
 richiederebbe una cella per ciascuno stato $s$ e azione $a$: né la memoria né i
-dati per visitarli tutti esisteranno mai. Il problema non è l'algoritmo, è la
-**rappresentazione**: enumerare gli stati non scala.
+dati per visitarli tutti esisteranno mai. Il problema è la
+**rappresentazione** e non l'algoritmo: enumerare gli stati non scala.
 
 `````
 
@@ -239,16 +239,19 @@ strada ci sono gli assistenti conversazionali, che oggi si addestrano proprio
 così.
 
 Quella famiglia serve subito. Nel **controllo continuo** (un braccio robotico,
-uno sterzo) le mosse non sono un menu di poche voci, sono una quantità da
-dosare, e la ricetta del DQN non si applica più.
+uno sterzo) le mosse sono una quantità da dosare e non un menu di poche voci, e
+la ricetta del DQN non si applica più.
 
-Le tre sezioni che seguono attaccano tutte lo stesso problema, cioè che
+Le sezioni che seguono attaccano tutte lo stesso problema, cioè che
 l'esperienza costa. Il RL **basato su modello** fa provare all'agente le mosse
 nella propria testa prima che nel mondo. L’**imitazione** salta i tentativi ed
 errori: si guarda qualcuno che il compito lo sa già fare, e si scopre perché non
 basta. L’**offline RL** impara da un archivio di esperienze altrui senza mai
 agire, che è l'unica strada quando sbagliare è pericoloso, in terapia intensiva
-come al volante.
+come al volante. La **gerarchia** cambia invece l'unità di misura: al posto di
+una mossa alla volta, pezzi di comportamento che si chiamano per nome, si
+riusano per obiettivi diversi, e fanno risparmiare esperienza al prezzo delle
+scorciatoie che scavalcano.
 
 Si chiude sull’**esplorazione**: cosa fare quando la ricompensa arriva così di
 rado che non c'è nulla da inseguire, e cosa succede quando l'agente ottimizza

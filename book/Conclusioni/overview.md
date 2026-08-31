@@ -111,9 +111,8 @@ pensare, e più vecchie
 delle reti che hanno reso famoso il deep learning. I modelli a energia nascono
 dalla fisica dei primi anni Ottanta; l'impalcatura matematica del reinforcement
 learning è degli anni Cinquanta, cioè di quando i calcolatori occupavano una
-stanza. Quello che è successo dopo il 2012 non è che qualcuno abbia inventato
-quelle idee: è che finalmente c'erano i dati e le macchine per farle
-funzionare.
+stanza. Quello che è successo dopo il 2012 è che finalmente c'erano i dati e le
+macchine per far funzionare quelle idee, non che qualcuno le avesse inventate.
 
 Altre invece sono giovanissime: le due reti che si sfidano sono del 2014, e gli
 agenti e i modelli del mondo hanno preso velocità in questi ultimi anni. Nel
@@ -146,9 +145,9 @@ E poi gli ultimi capitoli, che non parlano di architetture ma di **mestiere**:
 portare un modello in produzione e tenerlo in vita
 ([MLOps](../MLOps/overview.md)), aprirlo per capire perché ha deciso così
 ([interpretabilità](../Interpretabilita/overview.md)), rispondere delle sue
-conseguenze ([AI responsabile](../AIResponsabile/overview.md)). Non sono
-appendici morali messe in fondo per buona educazione: sono la parte del lavoro
-che decide se quello che hai costruito serve a qualcuno o fa danni.
+conseguenze ([AI responsabile](../AIResponsabile/overview.md)). Sono la parte
+del lavoro che decide se quello che hai costruito serve a qualcuno o fa danni,
+non appendici morali messe in fondo per buona educazione.
 
 Argomenti diversissimi, e in mezzo quasi settant'anni di storia: dal
 percettrone di Rosenblatt del 1958 ai modelli di oggi. Eppure, sotto, tornano sempre le stesse tre idee.
@@ -248,8 +247,8 @@ passata sola è la [retropropagazione](../RetiNeurali/backpropagation.md), che
 sta nel capitolo sulle reti neurali. Senza, niente di tutto questo sarebbe
 possibile.
 
-Dove ci si ferma non è il suono più bello che quel mixer sappia fare: è un
-punto in cui ogni piccolo giro peggiora le cose. Con le manopole messe in
+Dove ci si ferma è un punto in cui ogni piccolo giro peggiora le cose, e non il
+suono più bello che quel mixer sappia fare. Con le manopole messe in
 tutt'altro modo potrebbe uscire qualcosa di meglio, e nessuno andrà a
 cercarlo.
 
@@ -431,15 +430,15 @@ passo va bene 95 volte su 100, cioè con probabilità 0,95, e se i venti passi
 non si influenzano fra loro, la probabilità che vadano bene *tutti e venti* è
 0,95 elevato alla ventesima, cioè venti fattori 0,95 moltiplicati fra loro: si
 moltiplica perché ogni passo aggiunge una condizione da soddisfare. Viene
-0,3585, appena 36 volte su 100. Nella pratica quel numero non è né il caso migliore né il peggiore, è solo il
-caso più semplice. Se l'agente si accorge di uno sbaglio e torna sui suoi
-passi va meglio; se ogni tentativo inciampa su un passo diverso va anche
-peggio; e se i venti passi sbagliano tutti insieme, per la stessa ragione,
-succede una cosa strana: o va tutto bene o va tutto storto in blocco, e le
-volte buone risalgono a 95 su 100. Un agente vero sta in mezzo a questi casi,
-e il conto della calcolatrice serve a vedere la cosa che non cambia mai: ogni
-passo in più è una condizione in più, ed è la ragione per cui i compiti
-lunghi restano difficili.
+0,3585, appena 36 volte su 100. Nella pratica quel numero è solo il caso più
+semplice, né il migliore né il peggiore. Se l'agente si accorge di uno sbaglio
+e torna sui suoi passi va meglio; se ogni tentativo inciampa su un passo
+diverso va anche peggio; e se i venti passi sbagliano tutti insieme, per la
+stessa ragione, succede una cosa strana: o va tutto bene o va tutto storto in
+blocco, e le volte buone risalgono a 95 su 100. Un agente vero sta in mezzo a
+questi casi, e il conto della calcolatrice serve a vedere la cosa che non
+cambia mai: ogni passo in più è una condizione in più, ed è la ragione per cui
+i compiti lunghi restano difficili.
 
 **Quanto consuma.** Addestrare e far girare questi modelli costa corrente,
 acqua per raffreddare i calcolatori e chip che sanno fabbricare pochissime
@@ -507,7 +506,7 @@ traiettoria, se i passi sono indipendenti e ogni errore è fatale la probabilit�
 di arrivare in fondo senza inciampi è $(1-p)^T$, che precipita. Le due ipotesi
 vanno dichiarate, perché nessuna delle due vale per un agente vero: i passi
 sono correlati, e riflessione e re-planning recuperano una parte degli errori.
-E attenzione a come si chiama quel numero: non è un caso peggiore. Con le
+E attenzione a come si chiama quel numero, perché un caso peggiore non è. Con le
 probabilità di ogni singolo passo fissate, la correlazione può portare l'esito
 ovunque fra $\max(0,\,1-Tp)$, se i fallimenti si escludono a vicenda, e $1-p$,
 se cadono tutti insieme: con $p = 0{,}05$ e $T = 20$ è l'intervallo
@@ -597,8 +596,8 @@ vero. È giusto a metà, e la metà che manca conta.
 La prima cosa che manca è che **il campo si allarga**. Ogni sensore, ogni
 telecamera, ogni pagamento tracciato prende un pezzo di mondo vero e lo
 trasforma in numeri, cioè lo porta dentro casa loro. È l'altra faccia di quello
-che l'introduzione chiamava scarto: ciò che lasciamo dietro non è solo l'aria
-che respirano, è anche il terreno su cui giocano. La robotica è il tentativo di
+che l'introduzione chiamava scarto: ciò che lasciamo dietro è l'aria che
+respirano e anche il terreno su cui giocano. La robotica è il tentativo di
 portare la partita all'aperto, e lì il conto si vede a occhio nudo: una prova
 dura il tempo vero che ci vuole, il braccio si consuma, e una caduta non si
 annulla premendo un tasto. Non è una profezia sul fatto che la robotica resterà
@@ -606,8 +605,8 @@ indietro, perché le profezie scadono: è il motivo per cui lì ogni tentativo
 costa più che al chiuso, e se un giorno costerà meno sarà perché uno di quei
 tre pezzi, il tempo, l'usura o la caduta, è cambiato.
 
-La seconda è che quello che resta nostro non è un **territorio**, è un
-**mestiere**: un territorio si perde, e ce ne si accorge quando qualcun altro
+La seconda è che quello che resta nostro è un **mestiere** e non un
+**territorio**: un territorio si perde, e ce ne si accorge quando qualcun altro
 ci sta già giocando.
 
 Quel mestiere è fatto di due cose. La prima è **rispondere** di una scelta, e
@@ -646,8 +645,8 @@ l'addestramento ha regolato, le manopole di prima: sono un file che chiunque
 può tenersi, e quindi misurarne i difetti, sondarlo, smentirlo. Altri si
 raggiungono solo attraverso un'interfaccia, cioè mandando domande al server di
 chi li possiede e ricevendo risposte: quelli si verificano solo con il permesso
-di quel qualcuno, e quel permesso può essere tolto. Non è una questione di
-mercato: è una questione di chi può sapere cosa.
+di quel qualcuno, e quel permesso può essere tolto. È una questione di chi può
+sapere cosa, non di mercato.
 
 Attenzione però: quella distinzione non è una classifica di bravura
 ({numref}`fig-aperti-chiusi`).
@@ -866,8 +865,8 @@ artificiale non si lascia definire, visto che ogni pezzo capito smette di
 sembrare intelligenza. Smettere di sembrare intelligenza, però, non è smettere
 di funzionare, e nemmeno di contare. Per te queste macchine non sono più una
 scatola nera: sai di che cosa sono fatte, dati, rappresentazioni,
-ottimizzazione. Quello che resta chiuso non è più la macchina, è quello che ha
-imparato, e adesso sai anche perché leggerlo sia un problema aperto. Il resto è
+ottimizzazione. Quello che resta chiuso è quello che ha imparato, non più la
+macchina, e adesso sai anche perché leggerlo sia un problema aperto. Il resto è
 pratica.
 
 Buon lavoro, e in bocca al lupo.

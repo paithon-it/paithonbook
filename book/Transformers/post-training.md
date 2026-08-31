@@ -20,8 +20,8 @@ di questi modelli contando i numeri che regolano mentre imparano, i
 **parametri**: ebbene, davanti a valutatori in carne e ossa, le risposte di un
 modello da 1,3 miliardi di parametri passato per il post-training venivano
 *preferite* a quelle del GPT-3 da 175 miliardi, cioè a un modello più di cento
-volte più grande. Quel che manca al gigante non sono le conoscenze: è la
-disposizione a usarle per aiutarti.
+volte più grande. Quel che manca al gigante è la disposizione a usare le
+conoscenze per aiutarti, non le conoscenze.
 
 La ricetta, schematizzata in {numref}`fig-post-training-pipeline`, ha due mosse
 principali: prima si insegna il *formato* con esempi svolti (l’**instruction
@@ -132,8 +132,9 @@ quel che segue danno per risolto: per rifinire un modello bisogna poterne
 riscrivere i numeri interni, e quei numeri sono tanti.
 
 Il conto si fa in tre passaggi. Un modello «da sette miliardi» ha sette
-miliardi di numeri da tenere, e ciascuno, nel formato più comune, occupa quattro
-caselle di memoria (quattro *byte*): sono ventotto miliardi di caselle, e un
+miliardi di numeri da tenere, e ciascuno, nel formato in cui un modello si
+tiene **mentre impara**, occupa quattro caselle di memoria (quattro *byte*):
+sono ventotto miliardi di caselle, e un
 miliardo di caselle è un **gigabyte**, quindi **28 GB** solo per tenerlo fermo.
 
 Per farlo imparare, però, servono altre tre tabelle grandi uguali. La prima dice,
@@ -146,7 +147,7 @@ prudenza. Quattro copie della stessa tabella, dunque, **oltre cento gigabyte**.
 
 E la parola che manca è dove devono starci. Non nel disco del computer, dove
 cento gigabyte non sono niente, ma nella memoria di una **scheda grafica**, il
-processore che fa i conti: le schede più diffuse ne hanno fra le otto e le
+processore che fa i conti: le schede più diffuse ne hanno fra gli otto e i
 ventiquattro, le più costose ottanta. Fuori dai laboratori, per un modello che
 in questo campo è fra i piccoli, quasi nessuno può permetterselo.
 
@@ -188,8 +189,9 @@ dose metterci.
 
 Allora il lucido non si disegna casella per casella. Si compone con due strisce
 sottili, una alta quattromila e larga otto, una alta otto e larga quattromila.
-Moltiplicate in quest'ordine nel modo standard (il prodotto di matrici del
-capitolo di matematica), le due danno un foglio quattromila per quattromila,
+Moltiplicate in quest'ordine nel modo standard (il prodotto di matrici della
+{doc}`sezione di algebra lineare </Matematica/algebra-lineare>`), le due danno
+un foglio quattromila per quattromila,
 la misura esatta della pianta, e ci si appoggia sopra. I tratti da disegnare
 però erano $4000 \times 8 + 8 \times 4000 = 64\,000$ invece di sedici milioni,
 cioè lo $0{,}4\%$. Le otto colonne sono la manopola, e si chiamano il **rango**:
@@ -377,30 +379,30 @@ $$
 
 dove $\pi_{\text{ref}}$ è il modello di riferimento congelato (di solito il
 modello SFT), $D_{\mathrm{KL}}$ è la divergenza di Kullback–Leibler
-{cite}`kullback1951information` vista nel capitolo sui richiami di matematica
-e $\beta > 0$ regola la forza del vincolo. Si noti che entrambi i termini
-stanno **dentro** la stessa aspettazione sui prompt: la deriva si penalizza in
-media sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$, non su un
-prompt lasciato libero, altrimenti
-l'espressione non sarebbe funzione dei soli $\theta$ e non ci sarebbe niente da
-massimizzare. (InstructGPT la scrive in forma campionata, con
-$-\beta\log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}$ dentro
-l'unica aspettazione: è la stessa cosa.) La penalità KL serve a due cose:
-impedisce alla policy di derivare verso le zone in cui $r_\phi$ (addestrato su
-dati limitati) estrapola male (il *reward hacking* su cui torneremo), e
-preserva la fluidità linguistica accumulata nel pre-addestramento. Questa
-forma non è soltanto un espediente pratico: massimizzare
-una ricompensa restando vicini a una distribuzione di riferimento è
-formalmente la stessa cosa che fare inferenza bayesiana, con $\pi_{\text{ref}}$
-nel ruolo del priore {cite}`korbak2022rl`. La sezione sull'inferenza attiva,
-nel capitolo sui *world model*, riprende quell'identità e ne mostra la
-conseguenza: il termine che qui trattiene la policy è, letto dall'altra parte,
-lo stesso che altrove spinge un agente a cercare informazione.
-L'ottimizzazione usa **PPO** {cite}`schulman2017proximal`, l'algoritmo a
-gradiente di policy che hai visto sviluppato, insieme a tutta la famiglia dei
-*policy gradient*, nel capitolo sul Deep Reinforcement Learning: l'idea in una
-riga è aumentare la probabilità delle risposte con ricompensa alta, a piccoli
-passi controllati per non destabilizzare la policy.
+{cite}`kullback1951information` vista nel capitolo sui richiami di matematica e
+$\beta > 0$ regola la forza del vincolo. Si noti che entrambi i termini stanno
+**dentro** la stessa aspettazione sui prompt: la deriva si penalizza in media
+sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$, non su un prompt
+lasciato libero, altrimenti l'espressione non sarebbe funzione dei soli
+$\theta$ e non ci sarebbe niente da massimizzare. (InstructGPT la scrive in
+forma campionata, con $-\beta\log\frac{\pi_\theta(y\mid
+x)}{\pi_{\text{ref}}(y\mid x)}$ dentro l'unica aspettazione: è la stessa cosa.)
+La penalità KL serve a due cose: impedisce alla policy di derivare verso le
+zone in cui $r_\phi$ (addestrato su dati limitati) estrapola male (il *reward
+hacking* su cui torneremo), e preserva la fluidità linguistica accumulata nel
+pre-addestramento. Questa forma non è soltanto un espediente pratico:
+massimizzare una ricompensa restando vicini a una distribuzione di riferimento
+è formalmente la stessa cosa che fare inferenza bayesiana, con
+$\pi_{\text{ref}}$ nel ruolo del priore {cite}`korbak2022rl`. La sezione
+sull'inferenza attiva, nel capitolo sui *world model*, riprende quell'identità
+e ne mostra la conseguenza: il termine che qui trattiene la policy è, letto
+dall'altra parte, lo stesso che altrove spinge un agente a cercare
+informazione. L'ottimizzazione usa **PPO** {cite}`schulman2017proximal`,
+l'algoritmo a gradiente di policy che hai visto sviluppato, insieme a tutta la
+famiglia dei *policy gradient*, nel {doc}`capitolo sul Deep Reinforcement
+Learning </DeepReinforcementLearning/overview>`: l'idea in una riga è aumentare
+la probabilità delle risposte con ricompensa alta, a piccoli passi controllati
+per non destabilizzare la policy.
 
 `````
 
@@ -486,12 +488,12 @@ $r(x,y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} +
 
 Da qui i due passaggi che rendono possibile il metodo, e conviene separarli.
 Il primo: $Z(x)$ è una somma su **tutte** le risposte, quindi dipende dal
-prompt e **non** dalla risposta; siccome $y_w$ e $y_l$ stanno sotto lo stesso
+prompt e non dalla risposta; siccome $y_w$ e $y_l$ stanno sotto lo stesso
 prompt, i due $\beta\log Z(x)$ sono lo stesso numero e si elidono nella
 differenza che il modello di Bradley–Terry chiede. Ed è l'unico posto in cui
 $Z(x)$ compare: quella somma sarebbe incalcolabile, e sparisce prima di dover
 essere calcolata. Il secondo passaggio è meno visibile e più importante: la
-relazione appena scritta dice che **ogni** ricompensa è rappresentabile come
+relazione appena scritta dice che qualunque ricompensa è rappresentabile come
 $\beta\log(\pi/\pi_{\text{ref}})$ per una qualche policy, a meno di una
 funzione del solo $x$. Si può allora smettere di parametrizzare le ricompense
 e parametrizzare direttamente le policy, sostituire $\pi^*$ con la $\pi_\theta$
@@ -608,12 +610,13 @@ equivalgono ($+0{,}3$ e $+0{,}3$): il cuoco è rimasto in pareggio, non ha
 imparato niente da quel confronto, ed è la coppia su cui la correzione spinge di
 più.
 
-E il tirocinio sugli esempi svolti? Non merita codice nuovo: è il normale ciclo
-di addestramento del {doc}`capitolo su PyTorch </PyTorch/overview>` (si fa passare l'esempio nella rete,
-si misura di quanto ha sbagliato, si guarda in che direzione andavano spostati
-i numeri, li si sposta di un'inezia: `forward`, `loss`, `backward`, `step`),
-con una sola differenza: il conto dell'errore si fa **solo** sui pezzi della
-risposta e non su quelli della domanda. La ragione è che non vogliamo insegnare
+E il tirocinio sugli esempi svolti? Non merita codice nuovo: è il normale
+{doc}`ciclo di addestramento di PyTorch </PyTorch/addestramento>` (si fa
+passare l'esempio nella rete, si misura di quanto ha sbagliato, si guarda in
+che direzione andavano spostati i numeri, li si sposta di un'inezia:
+`forward`, `loss`, `backward`, `step`), con una sola differenza: il conto
+dell'errore si fa sui soli pezzi della risposta e non su quelli della
+domanda. La ragione è che non vogliamo insegnare
 al modello a inventare domande, ma a rispondere a quelle che riceve: la domanda
 gliela si fa leggere, non ripetere.
 
@@ -747,13 +750,14 @@ ciò nonostante, l'apprendimento per rinforzo resta oggi il meglio disponibile,
 perché quello che c'era prima era peggio.
 
 Un'ultima avvertenza, sulla domanda se questo addestramento aggiunga capacità o
-soltanto le riordini. Chiedendo al modello **una sola** risposta per problema, i
-modelli addestrati sui domini verificabili battono i loro modelli di partenza;
-chiedendone moltissime e contando se almeno una è giusta, il rapporto si
-rovescia, e il confine delle capacità tende a restringersi man mano che
+soltanto le riordini. Chiedendo al modello **una sola** risposta per problema,
+i modelli addestrati sui domini verificabili battono i loro modelli di
+partenza; chiedendone moltissime e contando se almeno una è giusta, il rapporto
+si rovescia, e il confine delle capacità tende a restringersi man mano che
 l'addestramento procede {cite}`yue2025rlvr`. Il risultato riguarda
 l'impostazione di addestramento corrente, non un limite di principio, ed è il
-motivo per cui il capitolo sull'auto-supervisione ci torna sopra per esteso.
+motivo per cui il {doc}`capitolo sull'auto-supervisione
+</AutoSupervisione/overview>` ci torna sopra per esteso.
 
 E c'è la domanda che nessun addestramento può chiudere. Tutto questo lavoro
 serve a far sì che un modello si comporti come vorremmo, e ha un nome,

@@ -11,10 +11,11 @@ significa capire il motore su cui gira tutto il deep learning moderno.
 
 ## Che cos'è un tensore
 
-Scalari, vettori e matrici li abbiamo già incontrati nel {doc}`capitolo di algebra
-lineare </Matematica/overview>`: un numero solo, una fila di numeri, una tabella di numeri. Il tensore
-è semplicemente il passo successivo, la stessa idea portata avanti finché si
-vuole: si continua ad aggiungere direzioni lungo cui i numeri si estendono, e
+Scalari, vettori e matrici li abbiamo già incontrati nella {doc}`sezione di
+algebra lineare </Matematica/algebra-lineare>`: un numero solo, una fila di
+numeri, una tabella di numeri. Il tensore è semplicemente il passo
+successivo, la stessa idea portata avanti finché si vuole: si continua ad
+aggiungere direzioni lungo cui i numeri si estendono, e
 ciascuna di quelle direzioni si chiama **asse**.
 
 ```{figure} ../figures/tensori-scala.svg
@@ -89,7 +90,7 @@ soltanto la struttura dati: un array $n$-dimensionale con un `dtype` omogeneo
 Un tensore si può fabbricare in tre modi: scrivendo i numeri a mano in una
 lista Python, chiedendo a PyTorch di riempirlo lui (`zeros`, `ones`, `randn`, fra un
 attimo), oppure partendo da un array di **NumPy**, la libreria di calcolo
-numerico del {doc}`capitolo su Python </Python/overview>`. Con
+numerico della {doc}`sezione su NumPy </Python/numpy>`. Con
 quest'ultima PyTorch va d'accordo così bene che i due si passano i dati senza
 nemmeno ricopiarli.
 
@@ -110,8 +111,8 @@ torch.arange(0, 10, 2)   # da 0 a 10 di 2 in 2, 10 escluso: tensor([0, 2, 4, 6, 
 ```
 
 Le ultime quattro righe fabbricano tensori pieni senza che si debba scrivere i
-numeri a mano, e la terza, quella che li sorteggia, non è un capriccio: una
-rete comincia la sua vita con dei numeri a caso dentro, e riempire un tensore
+numeri a mano, e la terza, quella che li sorteggia, serve davvero: una rete
+comincia la sua vita con dei numeri a caso dentro, e riempire un tensore
 di zeri o di numeri sorteggiati è il gesto con cui la si mette al mondo.
 
 Sui tensori valgono le operazioni dell'algebra lineare che già conosciamo
@@ -221,8 +222,8 @@ La prima riga è un modo compatto di scrivere una scelta, e si legge da
 sinistra: prendi `"cuda"` *se* c'è una scheda utilizzabile, *altrimenti*
 `"cpu"`. È il gesto con cui comincia quasi ogni programma PyTorch, e da qui in
 avanti lo ritroveremo identico. L'ultima riga stampa dove il risultato è
-finito, e su una macchina senza scheda grafica stampa `cpu`: non è un guasto,
-è la scelta della prima riga che si vede all'opera. Su un computer con una
+finito, e su una macchina senza scheda grafica stampa `cpu`, ed è la scelta
+della prima riga che si vede all'opera. Su un computer con una
 scheda NVIDIA la stessa identica riga stamperebbe `cuda:0`.
 
 La matrice è di mille per mille perché su matrici piccole la differenza fra i
@@ -237,15 +238,15 @@ calcola lei, e per le moltiplicazioni tra matrici grandi può essere decine o
 centinaia di volte più veloce, perché una GPU è nata per fare migliaia di
 piccoli conti in parallelo (in origine, i pixel dei videogiochi).
 
-Due tensori lavorano insieme soltanto se stanno sullo stesso dispositivo:
-non puoi sommare un numero che sta in cucina con uno che sta in garage senza
-prima spostarne uno. E il trasloco si paga. Il passaggio fra la memoria del
-computer e quella della scheda è stretto rispetto alla velocità con cui la
-scheda macina i conti, quindi chi porta i numeri avanti e indietro a ogni riga
-consuma nel viaggio più di quanto guadagni nel calcolo: è come portare la
-pentola in garage per ogni singolo ingrediente. Ecco perché PyTorch non sposta
-mai niente per conto suo e preferisce fermarsi con un errore: il viaggio deve
-deciderlo tu, e devi poterlo vedere scritto.
+Due tensori lavorano insieme soltanto se stanno sullo stesso dispositivo, e
+se non ci stanno bisogna prima spostarne uno. Il trasloco si paga: il
+passaggio fra la memoria del computer e quella della scheda è stretto rispetto
+alla velocità con cui la scheda macina i conti, quindi chi porta i numeri
+avanti e indietro a ogni riga consuma nel viaggio più di quanto guadagni nel
+calcolo, come attraversare la cucina con una cassa per ogni singolo
+ingrediente. Ecco perché PyTorch non sposta mai niente per conto suo e
+preferisce fermarsi con un errore: il viaggio deve deciderlo tu, e devi poterlo
+vedere scritto.
 
 `````
 
@@ -271,9 +272,9 @@ commette non diventa piccolo. Quell'errore ha un nome che ricorrerà per tutto
 il libro: si chiama **loss**, la perdita.
 
 Per sapere da che parte girare ciascuna manopola serve il **gradiente**. È di
-nuovo una derivata, ma stavolta la cosa che si sposta di un soffio non è il
-dato che entra: è la manopola. Il gradiente dice, per ogni singolo peso, che
-cosa succede alla loss se quel peso lo si alza appena: sale o scende, e di
+nuovo una derivata, ma stavolta la cosa che si sposta di un soffio è la
+manopola, non più il dato che entra. Il gradiente dice, per ogni singolo peso,
+che cosa succede alla loss se quel peso lo si alza appena: sale o scende, e di
 quanto. Chi vuole meno errore gira ogni manopola dalla parte in cui il numero
 scende. Farlo a mano per una rete con milioni di pesi è impensabile, e qui
 entra la **differenziazione automatica** (*autodiff*), il vero cuore di
@@ -425,7 +426,7 @@ possono invalidare i valori salvati per la passata a ritroso.
 
 `````
 
-Resta da dire che cosa succede quando il registratore **non** serve, ed è il
+Resta da dire che cosa succede quando il registratore non serve, ed è il
 caso più comune di tutti: il modello ha finito di imparare e lo si sta soltanto
 usando. Gli si dà una foto, lui risponde, e nessuno ha intenzione di correggere
 niente. Lì tutti quegli appunti sono peso morto, e si può dire in anticipo di
@@ -446,8 +447,8 @@ capitolo: dalla prossima sezione non si farà che comporli.
   chiama **rank**, le lunghezze lungo gli assi sono la **shape**. Una foto a
   colori è una pila di tre tabelle, una per colore.
 - Ogni riga di conti viene eseguita **subito**, con i numeri già dentro, e le
-  regole sono quelle di NumPy, la libreria già vista nel {doc}`capitolo su Python </Python/overview>`:
-  sommare un numero a tutta una fila si scrive una volta sola.
+  regole sono quelle di {doc}`NumPy </Python/numpy>`: sommare un numero a
+  tutta una fila si scrive una volta sola.
 - Ogni tensore vive su un **dispositivo**, la CPU o la scheda grafica: i conti
   avvengono dove stanno i numeri, e il codice non cambia, cambia solo la
   velocità.

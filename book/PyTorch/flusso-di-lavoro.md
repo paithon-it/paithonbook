@@ -179,8 +179,6 @@ for epoca in range(1000):
 print(modello.state_dict())
 ```
 
-Ecco che cosa stampa, che è la parte da guardare:
-
 ```text
 epoca    0 | train 0.5552 | test 0.5740
 epoca  199 | train 0.0103 | test 0.0003
@@ -191,17 +189,18 @@ epoca  995 | train 0.0103 | test 0.0003
 OrderedDict({'strato.weight': tensor([[0.6968]]), 'strato.bias': tensor([0.3025])})
 ```
 
-Alla fine `state_dict()` stampa due numeri molto vicini a $0{,}7$ e $0{,}3$:
-$0{,}6968$ e $0{,}3025$, cioè $0{,}70$ e $0{,}30$ arrotondati al centesimo.
+Questa è la parte da guardare. Alla fine `state_dict()` stampa due numeri
+molto vicini a $0{,}7$ e $0{,}3$: $0{,}6968$ e $0{,}3025$, cioè $0{,}70$ e
+$0{,}30$ arrotondati al centesimo.
 Non identici, perché la discesa del gradiente si ferma quando è *abbastanza*
 vicina. È una verifica che nella maggior parte dei problemi veri non potremo
 mai fare, e proprio per questo conviene farla almeno una volta: qui sappiamo
 con certezza che la macchina funziona.
 
 Guardando la tabella si nota che le ultime righe si ripetono: $0{,}0103$ e
-$0{,}0013$ tornano a turno. Non è un caso, ed è la cosa più istruttiva di tutto
-l'esempio: verso la fine la perdita non si ferma su un valore, **alterna** fra
-quei due, un giro sì e un giro no.
+$0{,}0013$ tornano a turno. Ed è la cosa più istruttiva di tutto l'esempio:
+verso la fine la perdita non si ferma su un valore, **alterna** fra quei due,
+un giro sì e un giro no.
 
 Perché lo faccia si dice in una riga. Questa misura dell'errore corregge sempre
 della stessa quantità, che si sia lontanissimi o a un capello dal bersaglio:
@@ -403,8 +402,8 @@ la differenza.
 Un controllo però viene prima di tutti e sei, e costa cinque minuti:
 l'idraulico apre il rubinetto e guarda se l'acqua arriva, perché se non arriva
 la guarnizione non c'entra. Il rubinetto, per un modello, sono due mucchietti
-di esempi, una ventina in tutto: si addestra su quelli finché l'errore non è
-quasi zero. Venti li manda a memoria qualunque rete, e se la tua non ci riesce
+di esempi, una decina in tutto: si addestra su quelli finché l'errore non è
+quasi zero. Dieci li manda a memoria qualunque rete, e se la tua non ci riesce
 non c'è manopola che la salvi su cinquantamila: c'è un errore nel codice, e
 stai girando le manopole sbagliate.
 `````
@@ -422,9 +421,9 @@ di iterazioni e si sceglie il valore poco prima che la loss esploda.
 
 C'è poi una diagnosi che viene prima di tutto il resto: verificare che il
 modello riesca a fare *overfitting* su un campione minuscolo (due o tre
-batch). Se non riesce a mandare a memoria dieci esempi, il problema non sono
-gli iperparametri: è un bug (target disallineati, loss sbagliata, gradienti
-che non arrivano). Sono cinque minuti che ne risparmiano molti. Il repertorio
+batch). Se non riesce a mandare a memoria dieci esempi, il problema è un bug e
+non gli iperparametri (target disallineati, loss sbagliata, gradienti che non
+arrivano). Sono cinque minuti che ne risparmiano molti. Il repertorio
 completo (regolarizzazione, scheduler, normalizzazione) è nel capitolo sul
 [deep learning](../DeepLearning/ottimizzazione-regolarizzazione.md);
 l'infrastruttura per non perdere il conto degli esperimenti in [dal notebook
@@ -482,8 +481,8 @@ dà più lavoro di tutti: i dati.
   prima più dati, poi più tempo, poi un modello più grande, poi la manopola
   del passo, poi i freni, e solo alla fine si cambia strada.
 - Prima di girare qualunque manopola, il collaudo che costa cinque minuti: il
-  modello deve riuscire a **mandare a memoria venti esempi**. Se non ci
-  riesce, non è una manopola sbagliata, è un errore nel codice.
+  modello deve riuscire a **mandare a memoria dieci esempi**. Se non ci
+  riesce, l'errore è nel codice e non in una manopola.
 - Per dare al modello un dato nuovo servono **tre condizioni** (stesso posto,
   stesso tipo di numeri, stessa forma) e **due interruttori** (modalità esame,
   niente appunti).
@@ -505,7 +504,7 @@ dà più lavoro di tutti: i dati.
 - Nel ciclo di miglioramento si cambia **una leva alla volta**, in ordine:
   dati, durata, capacità, learning rate, regolarizzazione, architettura.
 - Prima di ottimizzare qualunque cosa: verifica che il modello riesca a
-  mandare a memoria **due batch**. Se non ci riesce, è un bug, non un
+  mandare a memoria **dieci esempi**. Se non ci riesce, è un bug, non un
   iperparametro.
 - Per predire su dati nuovi servono **tre condizioni** (device, dtype, shape)
   e **due interruttori** (`eval()`, `no_grad()`).

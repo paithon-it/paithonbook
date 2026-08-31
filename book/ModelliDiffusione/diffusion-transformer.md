@@ -408,10 +408,10 @@ La terza novità tocca il cuore del capitolo, cioè il modo stesso di andare dal
 rumore all'immagine. Stable Diffusion 3 abbandona la catena di rumore di DDPM
 per il **rectified flow** {cite}`liu2023rectified`, letteralmente «flusso
 raddrizzato», che è una variante particolare di una famiglia di metodi più
-generale, il *flow matching* di Yaron Lipman e colleghi
-{cite}`lipman2023flow`. L'idea merita di essere raccontata due volte, una a
-parole e una con la
-matematica.
+generale, il *flow matching* di Yaron Lipman e colleghi {cite}`lipman2023flow`,
+che la {doc}`sezione dedicata </ModelliDiffusione/flow-matching>` ha già
+presentato. Qui si riprende dal lato che riguarda l'architettura, una volta a
+parole e una con la matematica.
 
 ```{figure} ../figures/flow-matching-traiettorie-dritte.svg
 :name: fig-traiettorie-dritte
@@ -490,18 +490,19 @@ col segno opposto. Il modello $\mathbf{v}_\theta(\mathbf{x}_t, t)$ viene
 addestrato a regredirla:
 
 $$
-\mathcal{L}_{\mathrm{FM}} = \mathbb{E}_{\mathbf{x}_0,\, \boldsymbol{\epsilon},\, t}
+\mathcal{L}_{\mathrm{CFM}} = \mathbb{E}_{\mathbf{x}_0,\, \boldsymbol{\epsilon},\, t}
 \Big[\, \big\lVert \mathbf{v}_\theta(\mathbf{x}_t, t) - (\boldsymbol{\epsilon} - \mathbf{x}_0) \big\rVert^2 \,\Big],
 $$
 
-dove $\mathbf{v}_\theta$ è il campo di velocità appreso, con parametri $\theta$, e
-l'attesa è su un dato, un rumore e un istante estratti a caso: la stessa
-struttura da "regressione con bersaglio noto" della loss di DDPM, con la
+dove $\mathbf{v}_\theta$ è il campo di velocità appreso, con parametri
+$\theta$, e l'attesa è su un dato, un rumore e un istante estratti a caso. È
+l'obiettivo **condizionato**, quello che si sa calcolare, e ha la stessa
+struttura da «regressione con bersaglio noto» della loss di DDPM, con la
 velocità al posto del rumore. Per generare si integra l'ODE
-$\mathrm{d}\mathbf{x}/\mathrm{d}t = \mathbf{v}_\theta(\mathbf{x}, t)$ da $t = 1$ (rumore) a $t = 0$, per
-esempio con passi di Eulero: niente termine stocastico, come già nel
-campionatore DDIM, ma qui il campo dell'ODE è
-appreso direttamente, non ricavato a posteriori da un predittore di rumore.
+$\mathrm{d}\mathbf{x}/\mathrm{d}t = \mathbf{v}_\theta(\mathbf{x}, t)$ da
+$t = 1$ (rumore) a $t = 0$, per esempio con passi di Eulero: niente termine
+stocastico, come già nel campionatore DDIM, ma qui il campo dell'ODE è appreso
+direttamente, non ricavato a posteriori da un predittore di rumore.
 
 Perché bastano meno passi? Il campo appreso in un punto è la media delle
 velocità di tutte le coppie $(\mathbf{x}_0, \boldsymbol{\epsilon})$ le cui interpolazioni
@@ -651,7 +652,7 @@ Resta un fatto che questa storia ripete a ogni tappa. Nel
 2015 la diffusione nasce da un'analogia termodinamica; nel 2024 genera un
 minuto di video da una frase. In mezzo, nessun colpo di genio isolato, ma
 quattro mattoni presi da scaffali diversi. L'autoencoder variazionale è del
-2014, e non era nato per comprimere: era nato per **inventare** immagini nuove,
+2014, ed era nato per **inventare** immagini nuove e non per comprimerle,
 sorteggiando una scheda a caso e facendola ridipingere al copista. Qui gli
 tocca il ruolo del compressore, e a inventare pensa qualcun altro. La U-Net
 è del 2015 ed era nata per i microscopi {cite}`ronneberger2015u`. L'attenzione

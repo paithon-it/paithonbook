@@ -1,7 +1,7 @@
 # Una rete, molti compiti: l'apprendimento multi-compito
 
 Chi ha studiato il latino racconta spesso di aver capito meglio l'italiano.
-Non è un modo di dire affettuoso verso il liceo classico: è che le due materie
+E non è un modo di dire affettuoso verso il liceo classico: le due materie
 poggiano sulla stessa impalcatura, e faticare sulla declinazione di una
 costringe a guardare in faccia una struttura che nell'altra si usava senza
 accorgersene. Imparare due cose imparentate insieme non costa il doppio, e a
@@ -374,7 +374,7 @@ confronto fra i tre.
   nascosta* da cui entrambi dipendono, e ottocento esempi su quella quantità
   hanno insegnato al tronco quello che quaranta non bastavano a insegnare;
 - **ausiliario che non ha niente da insegnare**: $0{,}3523$, cioè **il 25% di
-  errore in più**. Non è neutro: è peggio che non averlo. La capacità del tronco
+  errore in più**, cioè peggio che non averlo. La capacità del tronco
   spesa a inseguire quel bersaglio è capacità sottratta al compito che contava.
 
 Il terzo numero è il più importante dei tre, perché è quello che di solito non
@@ -393,8 +393,8 @@ difendibile, visto che poco fa si è detto che sono proprio quei pesi a comandar
 l'addestramento senza che nessuno l'abbia deciso. Rifacendo le
 stesse cinque prove con l'ausiliario pesato $\lambda = 0{,}1$ il danno scende a
 $+7\%$, e con $\lambda = 0{,}01$ a $+1{,}5\%$. Il trasferimento negativo,
-insomma, non è una proprietà della sola coppia di compiti: è una proprietà della
-coppia **e** del peso che le si dà.
+insomma, è una proprietà della coppia **e** del peso che le si dà, non della
+sola coppia di compiti.
 
 E per simmetria va detto anche del primo numero, il migliore dei tre. Il compito
 «parente» è imparentato quanto è possibile esserlo: il suo bersaglio si ricava
@@ -474,9 +474,10 @@ provandoli a coppie, più che deducendolo.
 ```
 `````
 
-Il capitolo si chiude su un tronco solo che serve a più mestieri, ed è
-l'immagine da portarsi via: la profondità costruisce una scala di descrizioni,
-dal bordo alla forma, e quella scala non appartiene al compito per cui era
-nata. Il capitolo sulla visione artificiale porta quel tronco dentro un solo
-dominio, le immagini, dove i mestieri hanno nomi precisi: dire che cosa c'è,
-dire dov'è, ritagliarne il contorno.
+Resta un tronco solo che serve a più mestieri, ed è l'immagine da portarsi
+via: la profondità costruisce una scala di descrizioni, dal bordo alla forma, e
+quella scala non appartiene al compito per cui era nata. Il che rende sensata
+la domanda successiva, e la sezione che chiude il capitolo la prende di petto:
+se quella scala non appartiene ai compiti che l'hanno costruita, quanto poco
+basta per farla servire a un mestiere che quando la si costruiva non
+esisteva?

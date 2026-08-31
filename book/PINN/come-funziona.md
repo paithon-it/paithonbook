@@ -1123,7 +1123,7 @@ curva, non basterebbe unirli? Vale la pena rispondere con un numero invece che
 con una frase. Facendo passare una curva morbida per quei venticinque punti, e
 basta, lo scarto massimo dalla soluzione vera si ferma attorno a $0{,}12$
 (mediana su duemila sorteggi del rumore, con lo scarto tipico $0{,}05$ di
-sopra). Non è un caso che quel numero somigli al rumore delle misure: chi si
+sopra). E che quel numero somigli al rumore delle misure ha una ragione: chi si
 limita a unire i puntini ne ricopia anche gli errori, e più preciso dei
 puntini che ha non può diventare.
 

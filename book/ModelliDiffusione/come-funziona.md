@@ -39,8 +39,8 @@ dire dove sta il disturbo.
 ## L'andata: rovinare con metodo
 
 Il processo in avanti non si impara: è una ricetta fissa, la esegue un
-generatore di numeri casuali. Ma non è una distruzione qualsiasi: è una
-distruzione *dosata*, e i dosaggi sono scelti con cura, perché è su di essi
+generatore di numeri casuali. Ma è una distruzione *dosata* e non qualsiasi, e
+i dosaggi sono scelti con cura, perché è su di essi
 che il ritorno farà affidamento.
 
 L'ingrediente è sempre lo stesso: numeri sorteggiati dalla **campana di
@@ -395,8 +395,8 @@ Le proporzioni fra le tre mosse sono poi l'esatto contrario di quello che il
 buon senso si aspetta, ed è la cosa più importante di tutto il ritorno. Diamo
 un numero a metà viaggio, al passo 500, misurando quanto ciascuna mossa sposta
 il valore tipico di un pixel: la scheggia cancellata lo sposta di 0,0105, la
-manciata di rumore nuovo di 0,1002, nove volte e mezzo tanto. E non è un caso
-isolato: **la manciata è dalle
+manciata di rumore nuovo di 0,1002, nove volte e mezzo tanto. E vale in
+generale: **la manciata è dalle
 sette alle dieci volte più grande della scheggia**, e lo è per i primi
 novecento passi su mille; solo nell'ultimo decimo del percorso si rimpicciolisce
 fino a pareggiare la scheggia, e sull'ultimo gradino sparisce del tutto.
@@ -423,10 +423,10 @@ punto è che sul disturbo, e solo su di lui, agisce anche la correzione. Messe
 insieme le tre mosse, a metà viaggio il livello di disturbo passa da 0,9599 a
 0,9595: quattro decimillesimi in meno, un'inezia, ma sempre dallo stesso lato.
 Mille inezie tutte dallo stesso lato ribaltano il conto, e alla fine dei mille
-passi il disturbo non è centocinquanta volte più grande: è **cento volte più
-piccolo** di com'era. Il disegno, invece, non perde niente per strada: quello che le
-cancellature vi depositano si tiene tutte e centocinquanta le volte di
-ingrandimento.
+passi il disturbo è **cento volte più piccolo** di com'era, invece che
+centocinquanta volte più grande. Il disegno, invece, non perde niente per
+strada: quello che le cancellature vi depositano si tiene tutte e
+centocinquanta le volte di ingrandimento.
 
 Ecco il conto del viaggio. Il disegno cresce di centocinquanta volte, il
 disturbo cala di cento: rispetto al disturbo che lo copre, il disegno è
@@ -699,40 +699,38 @@ in un altro con continuità, invece di due immagini che non c'entrano niente.
 `````{tab} Superiore
 
 L'osservazione chiave è che $\mathcal{L}_{\text{semplice}}$ dipende dal
-processo in avanti solo attraverso le marginali $q(\mathbf{x}_t \mid \mathbf{x}_0)$: mai
-attraverso la struttura congiunta della catena. Esiste allora un'intera
-famiglia di processi **non markoviani** con le *stesse* marginali, per i quali
-la rete già addestrata è altrettanto valida; Song, Meng ed Ermon la
-parametrizzano con un grado di stocasticità $\eta$: per $\eta = 1$ si recupera
-il campionamento ancestrale di DDPM **nella variante con
-$\sigma_t^2 = \tilde{\beta}_t$**, la varianza del posteriore, non in quella
-con $\sigma_t^2 = \beta_t$ usata sopra; per $\eta = 0$ il passo inverso
-diventa **deterministico**; dato $\mathbf{x}_T$, l'uscita $\mathbf{x}_0$ è una funzione, non un
-campione. Qui la distinzione fra le due varianti, irrilevante sui mille passi,
-diventa decisiva: a una cinquantina di passi la scelta
+processo in avanti solo attraverso le marginali $q(\mathbf{x}_t \mid
+\mathbf{x}_0)$: mai attraverso la struttura congiunta della catena. Esiste
+allora un'intera famiglia di processi **non markoviani** con le *stesse*
+marginali, per i quali la rete già addestrata è altrettanto valida; Song, Meng
+ed Ermon la parametrizzano con un grado di stocasticità $\eta$: per $\eta = 1$
+si recupera il campionamento ancestrale di DDPM **nella variante con
+$\sigma_t^2 = \tilde{\beta}_t$**, la varianza del posteriore, non in quella con
+$\sigma_t^2 = \beta_t$ usata sopra; per $\eta = 0$ il passo inverso diventa
+**deterministico**; dato $\mathbf{x}_T$, l'uscita $\mathbf{x}_0$ è una
+funzione, non un campione. Qui la distinzione fra le due varianti, irrilevante
+sui mille passi, diventa decisiva: a una cinquantina di passi la scelta
 $\sigma_t^2 = \beta_t$ produce campioni molto peggiori della variante con
 $\tilde{\beta}_t$, che a sua volta è peggiore del caso deterministico. Ed è
 anche il motivo per cui DDIM è una scoperta e non una scorciatoia: accorciare
-la catena non è solo saltare gradini, è cambiare quanto rumore si rimette a
-ogni gradino.
+la catena vuol dire cambiare quanto rumore si rimette a ogni gradino, e non
+solo saltarne qualcuno.
 
-E poiché la generazione non deve più simulare fedelmente una catena
-markoviana passo-passo, può percorrere una sottosequenza
-$\tau_1 < \dots < \tau_S$ di $\{1, \dots, T\}$ con $S \ll T$. Gli autori
-dichiarano qualità paragonabile a quella dei mille passi «entro i venti e i
-cento passi»; la loro stessa tabella, letta con attenzione, chiede qualche
-cautela in più. La parità vera arriva a cento passi e non a cinquanta, dove
-qualcosa già si paga; a venti la misura di qualità peggiora di più della metà,
-e sotto i venti precipita. E dipende dai dati: sul dataset di volti che gli
-autori usano, nemmeno cento passi bastano a raggiungere i mille. È un
-compromesso regolabile fra costo e fedeltà, non un pasto gratis. La mappa
-deterministica
-rumore→immagine rende inoltre significative le interpolazioni in $\mathbf{x}_T$ e la
-ricostruzione (quasi) esatta di un'immagine dal suo rumore. Non è un caso che
-tutto ciò ricordi la vista continua incontrata sotto il cofano:
-il campionatore
-DDIM con $\eta = 0$ è, in effetti, una discretizzazione dell'ODE del flusso di
-probabilità associata alla SDE di {cite}`song2021score`.
+E poiché la generazione non deve più simulare fedelmente una catena markoviana
+passo-passo, può percorrere una sottosequenza $\tau_1 < \dots < \tau_S$ di
+$\{1, \dots, T\}$ con $S \ll T$. Gli autori dichiarano qualità paragonabile a
+quella dei mille passi «entro i venti e i cento passi»; la loro stessa tabella,
+letta con attenzione, chiede qualche cautela in più. La parità vera arriva a
+cento passi e non a cinquanta, dove qualcosa già si paga; a venti la misura di
+qualità peggiora di più della metà, e sotto i venti precipita. E dipende dai
+dati: sul dataset di volti che gli autori usano, nemmeno cento passi bastano a
+raggiungere i mille. È un compromesso regolabile fra costo e fedeltà, non un
+pasto gratis. La mappa deterministica rumore→immagine rende inoltre
+significative le interpolazioni in $\mathbf{x}_T$ e la ricostruzione (quasi)
+esatta di un'immagine dal suo rumore. E la somiglianza con la vista continua
+incontrata sotto il cofano ha una ragione: il campionatore DDIM con $\eta = 0$
+è, in effetti, una discretizzazione dell'ODE del flusso di probabilità
+associata alla SDE di {cite}`song2021score`.
 
 `````
 

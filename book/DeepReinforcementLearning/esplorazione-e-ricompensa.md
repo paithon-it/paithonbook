@@ -163,8 +163,8 @@ quindi $0{,}5$ diviso $1$, cioè il bonus massimo, $0{,}500$; quello battuto
 duecento volte prende $0{,}5$ diviso la radice di $201$, che vale poco più di
 quattordici, cioè $0{,}035$: quattordici volte meno.
 
-La radice quadrata, in quel conto, non è un capriccio: serve a far scendere il
-premio in fretta all'inizio e piano dopo. Fra zero visite e tre il premio si
+La radice quadrata, in quel conto, serve a far scendere il premio in fretta
+all'inizio e piano dopo. Fra zero visite e tre il premio si
 dimezza esatto, da $0{,}500$ a $0{,}250$, e la differenza si sente; fra cento e
 centotré scende da $0{,}0498$ a $0{,}0490$, cioè non cambia niente. Ed è giusto
 così: la centesima visita a un posto insegna molto meno della prima.
@@ -523,7 +523,7 @@ La legge porta il nome di Charles Goodhart, un economista britannico che nel
 1975 la osservò a proposito della moneta: le banche centrali usavano certi
 indicatori per capire come andasse l'economia, e quegli indicatori smisero di
 funzionare non appena si cominciò a governarli. Ma quella frase così memorabile
-non è sua: è dell'antropologa **Marilyn Strathern**, che la scrisse nel 1997
+è dell'antropologa **Marilyn Strathern**, che la scrisse nel 1997
 studiando come si valutano le università britanniche
 {cite}`strathern1997improving`, ed è la formulazione che ha portato la legge
 fuori dall'economia.
@@ -603,8 +603,8 @@ all'archivio, perché non esplodessero le stime su ciò che nessuno ha mai
 provato.
 
 Il reward hacking è la stessa storia raccontata all'ultimo livello, quello
-dell'obiettivo, e con una differenza: qui il contenimento non è più un
-accorgimento tecnico, è una domanda su che cosa vogliamo davvero. Il capitolo
+dell'obiettivo, e con una differenza: qui il contenimento diventa una domanda
+su che cosa vogliamo davvero, invece di un accorgimento tecnico. Il capitolo
 sull'AI responsabile comincia da qui.
 
 `````{tab} Elementare
@@ -636,8 +636,8 @@ sull'AI responsabile comincia da qui.
   *differenze di quota*.
 - Il pericolo grosso ha un nome, **reward hacking**: l'idraulico pagato a tubi
   sostituiti che comincia a sostituire tubi sani, la barca di *CoastRunners* che
-  gira in tondo prendendo fuoco. Il problema non è che l'agente disobbedisce, è
-  che obbedisce troppo bene, alla lettera sbagliata. Ed è il ponte verso il
+  gira in tondo prendendo fuoco. Il problema è che l'agente obbedisce troppo
+  bene, alla lettera sbagliata. Ed è il ponte verso il
   capitolo sull'AI responsabile.
 ```
 `````

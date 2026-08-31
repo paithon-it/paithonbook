@@ -202,24 +202,23 @@ righe.
 
 Il conto qui sopra pota in un colpo solo, perché sta in venti righe. Chi pota
 sul serio lo fa **a giri**: toglie una fetta, riaddestra, toglie un’altra
-fetta, e così via. {numref}`fig-potatura` fa proprio questo, nove giri di fila
-più lo stato di partenza, ed è una figura che **si muove**: se la si guarda online i pesi si
-spengono giro dopo giro e la curva si allunga da sinistra a destra. La rete lì
-dentro è più piccola di quella qui sopra, quindi i numeri non combaciano con
-quelli della tabella e non devono: la cosa da guardare non è il valore, è la
-forma della curva.
+fetta, e così via. {numref}`fig-potatura` fa proprio questo, tredici giri di
+fila più lo stato di partenza, ed è una figura che **si muove**: se la si
+guarda online i pesi si spengono giro dopo giro e la curva si allunga da
+sinistra a destra. La rete lì dentro ha un solo strato nascosto invece di due,
+quindi i numeri non combaciano con quelli della tabella e non devono: la cosa
+da guardare è la forma della curva, non il valore.
 
 ```{figure} ../figures/potatura-che-assottiglia.svg
 :name: fig-potatura
-:alt: "Due riquadri affiancati. A sinistra una griglia di sedici per sedici quadratini, un campione dei pesi del primo strato di una rete: all'inizio sono tutti pieni, e giro dopo giro se ne svuotano sempre di più, fino a restarne pochissimi. A destra la curva dell'accuratezza contro la frazione di pesi tolti, tracciata un punto per giro: resta piatta poco sotto il cento per cento mentre si tolgono i primi nove pesi su dieci, e poi precipita negli ultimi giri. Sotto, a ogni giro, quanti pesi sono stati tolti e l'accuratezza corrispondente."
+:alt: "Due riquadri affiancati. A sinistra una griglia di sedici per sedici quadratini, un campione dei pesi del primo strato di una rete: all'inizio sono tutti pieni, e giro dopo giro se ne svuotano sempre di più, fino a restare vuota o quasi. A destra la curva dell'accuratezza contro la frazione di pesi tolti, tracciata un punto per giro: resta piatta poco sotto il cento per cento mentre si tolgono i primi nove pesi su dieci, e poi precipita negli ultimi giri. Sotto, a ogni giro, quanti pesi sono stati tolti e l'accuratezza corrispondente."
 :width: 100%
 
-Nove giri di potatura iterativa su una rete piccola, più lo stato di partenza.
-A sinistra i pesi che
-restano, a destra quello che costa toglierli. La curva non scende piano: resta
-piatta finché si tolgono i primi nove pesi su dieci, e poi cade. Il punto in cui
-cade non si sa prima, e per questo si pota misurando a ogni giro invece che
-scegliendo una percentuale all’inizio.
+Tredici giri di potatura iterativa su una rete piccola, più lo stato di
+partenza. A sinistra i pesi che restano, a destra quello che costa toglierli.
+La curva non scende piano: resta piatta finché si tolgono i primi nove pesi su
+dieci, e poi cade. Il punto in cui cade non si sa prima, e per questo si pota
+misurando a ogni giro invece che scegliendo una percentuale all’inizio.
 ```
 
 ## Perché il conto non si accorge degli zeri
@@ -313,7 +312,7 @@ regime per cui l’hardware è costruito, e il capitolo sulla GPU spiega perché
 uscirne costi caro. La sparsità **non strutturata** distrugge esattamente le
 due proprietà che rendono quel kernel veloce, la regolarità dell’accesso e la
 possibilità di riempire le unità vettoriali. Passare a un **formato rado** (CSR
-e simili) non è quindi un aggiustamento di quel kernel, è **cambiare kernel**, e
+e simili) vuol dire quindi **cambiare kernel**, non aggiustare quello di prima, e
 se convenga è una domanda empirica, non di principio. Misurato sulla matrice
 rada del conto qui sopra, su CPU e a tempo di processore: il CSR pareggia il
 denso intorno al venti per cento di densità, e al cinque per cento (cioè con i

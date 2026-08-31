@@ -1,9 +1,9 @@
 # Modelli che vedono e parlano
 
 Nel 1929 René Magritte dipinge una pipa su fondo chiaro e, sotto, ci scrive a
-mano *Ceci n'est pas une pipe*: questa non è una pipa. Non è un gioco di
-parole, è una constatazione esatta. Il disegno non è la pipa, è un velo di
-colore steso su una tela; e la frase sotto non è il disegno, è una fila di
+mano *Ceci n'est pas une pipe*: questa non è una pipa. È una constatazione
+esatta, non un gioco di parole. Il disegno non è la pipa, è un velo di
+colore steso su una tela; e la frase sotto è una fila di
 segni d'inchiostro. Eppure chi guarda il quadro attraversa quei due confini
 senza accorgersene: vede una forma, pensa a un oggetto, gli dà un nome.
 
@@ -347,7 +347,7 @@ che il sistema abbia davvero guardato.
 - Il rischio da tenere presente fin da subito: un modello che vede e parla può
   parlare benissimo **senza aver guardato**, come lo studente che ha letto
   migliaia di didascalie di spiaggia e ti nomina gli ombrelloni anche quando non
-  ci sono. Non è sfortuna, è quello che l'addestramento premia.
+  ci sono. È quello che l'addestramento premia.
 ```
 
 `````
@@ -357,7 +357,7 @@ che il sistema abbia davvero guardato.
 ```{admonition} Da ricordare
 :class: important
 - Il problema non è di formato ma di **raccordo fra rappresentazioni**: quello
-  che manca non è un convertitore, è uno spazio in cui la vicinanza voglia dire
+  che manca è uno spazio in cui la vicinanza voglia dire
   la stessa cosa per una misura di luce e per una parola.
 - Testo e immagine hanno nature opposte: il testo è **discreto e già
   simbolico**, l'immagine un reticolo **continuo** senza unità naturali, dove

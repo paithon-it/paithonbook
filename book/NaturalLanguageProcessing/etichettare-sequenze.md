@@ -3,8 +3,8 @@
 «La vecchia porta la sbarra». Leggi la frase una prima volta: c'è un'anziana
 signora («la vecchia»), e sta trasportando («porta») una sbarra di ferro. Ora
 rileggila cambiando i ruoli: c'è una porta malandata («la vecchia porta») che
-sbarra il passaggio («la sbarra») a una donna, e quel «la» adesso non è più un
-articolo, è lei. Nessun trucco di punteggiatura: le stesse cinque parole, nello
+sbarra il passaggio («la sbarra») a una donna, e quel «la» adesso è lei e non
+più un articolo. Nessun trucco di punteggiatura: le stesse cinque parole, nello
 stesso ordine, formano due frasi italiane complete e sensate.
 
 Il bivio è tutto grammaticale, e sta in quattro parole su cinque: «vecchia» può

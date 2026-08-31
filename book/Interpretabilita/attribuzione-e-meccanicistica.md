@@ -7,9 +7,9 @@ precedente: trattava il modello come una scatola chiusa, gli passava l'immagine
 con alcune porzioni spente e guardava come cambiava la risposta, senza mai
 aprire niente.
 
-E doveva andare così, per come quel modello era fatto. Non era una rete
-addestrata da capo sulle venti foto: era una rete già pronta, presa da altri e
-lasciata intatta, con appiccicato sopra un modello a somma di quelli della
+E doveva andare così, per come quel modello era fatto. Era una rete già pronta,
+presa da altri e lasciata intatta invece che addestrata da capo sulle venti
+foto, con appiccicato sopra un modello a somma di quelli della
 prima sezione, e ad addestrarsi sulle venti foto truccate era stato soltanto
 quest'ultimo. La scorciatoia («c'è neve → lupo») l'aveva imparata lui, non la
 rete sotto.
@@ -791,8 +791,8 @@ Gradients e Grad-CAM, rifatti con i numeri e con poche righe di codice.
 ## Integrated Gradients coi numeri: un esempio eseguibile
 
 Vale più di mille formule vedere la completezza tornare al centesimo. La
-funzione che segue non è quella disegnata nella figura di poco fa, è un secondo
-esempio, costruito per lo stesso scopo ma con due variabili invece di una, così
+funzione che segue è un secondo esempio e non quella disegnata poco fa,
+costruito per lo stesso scopo ma con due variabili invece di una, così
 che si possano guardare due attribuzioni separate. Prendiamo dunque una funzione
 giocattolo di due variabili costruita apposta per **saturare**,
 cioè per riprodurre il caso in cui il gradiente locale mente. È la solita somma

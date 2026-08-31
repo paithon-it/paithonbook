@@ -236,13 +236,13 @@ Diverso è il caso in cui la risposta dipende da molte grandezze insieme, e qui
 si passa dal risparmio all'impossibilità. Per il caffè ne basta una, il tempo,
 e i puntini stanno in fila; per la sbarra ne servono due, il tempo e il punto
 lungo la sbarra, e i puntini riempiono un rettangolo. Ma ci sono problemi in
-cui le grandezze da cui la risposta dipende sono dieci, e i puntini vanno
-messi in tutte le combinazioni possibili. Il conto è spietato e si fa in un
-rigo: dieci puntini bastano a coprire un segmento, per un quadrato ne servono
-cento, per un cubo mille, e per dieci grandezze un uno seguito da dieci zeri.
-Lì una griglia non è costosa: è impossibile, e una strada che non ha bisogno
-di griglia è l'unica che resta aperta. Con un'avvertenza onesta: che poi una
-rete ci arrivi davvero non è automatico. Quando le grandezze sono tante
+cui le grandezze da cui la risposta dipende sono dieci, e i puntini vanno messi
+in tutte le combinazioni possibili. Il conto è spietato e si fa in un rigo:
+dieci puntini bastano a coprire un segmento, per un quadrato ne servono cento,
+per un cubo mille, e per dieci grandezze un uno seguito da dieci zeri. Lì una
+griglia è impossibile, prima ancora che costosa, e una strada che non ha
+bisogno di griglia è l'unica che resta aperta. Con un'avvertenza onesta: che
+poi una rete ci arrivi davvero non è automatico. Quando le grandezze sono tante
 davvero i risultati si ottengono con varianti costruite apposta, non con la
 ricetta base di questo capitolo, ed è ricerca ancora in corso
 {cite}`hu2024tackling`.

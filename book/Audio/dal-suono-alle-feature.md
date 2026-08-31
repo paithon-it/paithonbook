@@ -8,7 +8,7 @@ Quaranta, ai Bell Labs, un gruppo guidato da Ralph Potter costruì il *sound
 spectrograph*, una macchina che trasformava quest'onda in un'immagine e la
 chiamò *visible speech*, "parola visibile". È esattamente il percorso che
 compie oggi *qualsiasi* sistema che lavora sull'audio (riconoscere una voce,
-un canto, un allarme) **prima** ancora di provare a capire *cosa* quel suono
+un canto, un allarme) prima ancora di provare a capire *cosa* quel suono
 significhi: trasformare un'onda in numeri, e i numeri in un'immagine su cui un
 modello sa lavorare.
 
@@ -142,11 +142,11 @@ trattata a $f_s = 16\,\text{kHz}$, un buon compromesso tra fedeltà e peso.
 
 Resta in sospeso la seconda domanda: quanto precisa deve essere ogni singola
 misura? La risposta abituale è che ogni campione si scrive con 16 risposte
-sì/no, e può quindi prendere uno di 65.536 valori diversi. Sono abbastanza da
-non farsi sentire: fra un valore e il successivo la differenza è troppo piccola
-perché l'orecchio la colga. Ci torneremo nell'ultima sezione del capitolo, dove
-un modello famoso si accontenta di 256 valori e deve inventarsi un trucco per
-farli bastare.
+sì/no, e siccome ogni risposta raddoppia i casi possibili, sedici ne fanno
+65.536. Sono abbastanza da non farsi sentire: fra un valore e il successivo la
+differenza è troppo piccola perché l'orecchio la colga. Ci torneremo
+nell'ultima sezione del capitolo, dove un modello famoso si accontenta di 256
+valori e deve inventarsi un trucco per farli bastare.
 
 ## Dal tempo alla frequenza: la trasformata di Fourier
 
@@ -233,14 +233,15 @@ saprebbe dare.
 ```
 
 Le finestre a cavallo fra una nota e l'altra mostrano **entrambe** le frequenze,
-ed è la cosa più istruttiva del disegno: non è una sbavatura, è il compromesso su
-cui la trasformata a finestre è costruita. Una finestra lunga distingue bene le
+ed è la cosa più istruttiva del disegno: è il compromesso su cui la trasformata
+a finestre è costruita, non una sbavatura. Una finestra lunga distingue bene le
 frequenze e male gli istanti, perché dentro ci finiscono due note; una corta fa
 il contrario. Non esiste una lunghezza che vinca su tutti e due i fronti, ed è
 per questo che sceglierla è una decisione e non un dettaglio.
 
-Una parola sulla **forma** della finestra, perché nel disegno non è il rettangolo
-che «finestrella» lascia immaginare: è gonfia in mezzo e va a zero ai bordi.
+Una parola sulla **forma** della finestra, perché nel disegno è gonfia in mezzo
+e va a zero ai bordi, invece del rettangolo che «finestrella» lascia
+immaginare.
 Tagliare di netto un pezzo di onda creerebbe due gradini artificiali agli
 estremi, e la trasformata leggerebbe quei gradini come frequenze che nel suono
 non ci sono. Smussando i bordi il taglio diventa una dissolvenza e il difetto
@@ -303,15 +304,16 @@ di $f_s/N$ hertz e una colonna ogni $H/f_s$ secondi. Sono i passi con cui
 *campioniamo* il piano tempo-frequenza, e non vanno confusi con la
 risoluzione: infittirli (zero-padding in frequenza, $H$ più piccolo nel tempo)
 non aggiunge informazione, la interpola soltanto. La risoluzione vera dipende
-dalla sola lunghezza della finestra, e ha un limite che nessuna scelta di
-parametri aggira. Per il parlato la scelta standard è una finestra di 25 ms e
-un passo di 10 ms (a 16 kHz sono $N = 400$ campioni e $H = 160$, cioè
+dalla lunghezza della finestra (a parità di forma, solo da quella), e ha un
+limite che nessuna scelta di parametri aggira. Per il parlato la scelta
+standard è una finestra di 25 ms e un passo di 10 ms (a 16 kHz sono
+$N = 400$ campioni e $H = 160$, cioè
 `n_fft=400` e `hop_length=160` per `librosa`), perché i fonemi durano decine di
 millisecondi e una finestra più lunga ne mescolerebbe due.
 
-Il compromesso non è pratico ma **teorico**: è la relazione di indeterminazione
-di Gabor (1946), l'analogo per l'analisi di Fourier del principio di
-indeterminazione di Heisenberg,
+Il compromesso è **teorico** e non pratico: viene dalla relazione di
+indeterminazione di Gabor (1946), l'analogo per l'analisi di Fourier del
+principio di indeterminazione di Heisenberg,
 
 $$
 \sigma_t \cdot \sigma_f \ \geq\ \frac{1}{4\pi},
@@ -438,11 +440,17 @@ lecite. Caduta l'ipotesi, è caduta la ragione: una rete non chiede feature
 scorrelate, e la DCT le fa pagare un prezzo, perché mescolando tutte le bande in
 ogni coefficiente **distrugge la località in frequenza** su cui una convoluzione
 lavora. Per questo dagli anni Dieci si è tornati allo **spettrogramma log-mel
-grezzo**, che è ciò che ricevono in ingresso i modelli del resto di questo
-capitolo (l'AST della prossima sezione prende 128 bande log-mel; Whisper, che è
-del capitolo dopo, ne prende 80, e 128 nelle versioni più recenti), mentre i 13 MFCC restano
-una feature d'archivio, ancora comoda dove serve un vettore piccolo (HuBERT li
-usa proprio per il primo raggruppamento).
+grezzo**, mentre i 13 MFCC restano una feature d'archivio, ancora comoda dove
+serve un vettore piccolo (HuBERT li usa proprio per il primo raggruppamento).
+
+Da qui in poi le strade si dividono, e la divisione attraversa tutto il resto
+del capitolo. Chi in uscita ha un'etichetta o del testo parte dal log-mel:
+l'AST della prossima sezione ne prende 128 bande, Whisper, che è del capitolo
+dopo, ne prende 80, e 128 nelle versioni più recenti. Chi in uscita ha del
+*suono* parte invece dai campioni, perché il log-mel butta via la fase e non si
+torna indietro: sono i codec e i generatori delle ultime due sezioni. E chi
+vuole imparare tutto dai dati sceglie i campioni comunque, e il banco di filtri
+che qui abbiamo disegnato a mano se lo costruisce da sé.
 
 `````
 
@@ -459,23 +467,21 @@ Il compito del modello diventa così più facile:
 parte da una descrizione più piccola, più stabile e già "orientata" verso ciò
 che distingue un suono dall'altro.
 
-Onestà d'obbligo: i sistemi più recenti *end-to-end*, come wav2vec 2.0
-{cite}`baevski2020wav2vec` o Whisper {cite}`radford2022robust`, tendono a
-imparare le feature
-direttamente dai dati. Ma non partono dal nulla: Whisper, per esempio, riceve in
-input proprio uno **spettrogramma log-mel**. La scala mel, ispirata al nostro
-orecchio, resta il punto di partenza più diffuso anche nell'era del deep
-learning.
+I sistemi più recenti, come wav2vec 2.0 {cite}`baevski2020wav2vec` o Whisper
+{cite}`radford2022robust`, tendono a imparare le feature direttamente dai dati.
+Ma non partono dal nulla: Whisper, per esempio, riceve in input proprio uno
+**spettrogramma log-mel**. La scala mel, ispirata al nostro orecchio, resta il
+punto di partenza più diffuso anche nell'era del deep learning.
 
-Vale la pena fermarsi sulla parola **feature**, quella del titolo, perché è qui
-che cambia padrone. Fin dal
-{doc}`capitolo sul machine learning </MachineLearning/overview>` le feature erano *scelte da noi*: qualcuno decideva
-quali numeri estrarre da ogni esempio, e quella decisione era metà del lavoro.
-Da questa pagina in poi saranno quasi sempre *imparate dalla rete*, che si
-costruisce da sé i numeri che le servono. La parola indica lo stesso oggetto (i
-numeri che descrivono un esempio) e cambia solo chi li sceglie; ma è il
-passaggio che divide questa sezione da tutte quelle che seguono, e conviene
-saperlo prima di incontrarlo scritto come se fosse ovvio.
+La parola **feature**, quella del titolo, qui cambia padrone. Fin dal
+{doc}`capitolo sul machine learning </MachineLearning/overview>` le feature
+erano *scelte da noi*: qualcuno decideva quali numeri estrarre da ogni esempio,
+e quella decisione era metà del lavoro. Da questa pagina in poi saranno quasi
+sempre *imparate dalla rete*, che si costruisce da sé i numeri che le servono.
+La parola indica lo stesso oggetto (i numeri che descrivono un esempio) e
+cambia solo chi li sceglie; ma è il passaggio che divide questa sezione da
+tutte quelle che seguono, e conviene saperlo prima di incontrarlo scritto come
+se fosse ovvio.
 
 ## In pratica
 
@@ -564,15 +570,16 @@ assi dei tempi diversi e un errore di dimensione incomprensibile.
   **spettrogramma**, l'immagine del suono.
 - La finestra impone un **limite**, non un compromesso negoziabile:
   $\sigma_t \cdot \sigma_f \ge 1/(4\pi)$ (Gabor, 1946). Per una finestra di Hann
-  il prodotto vale $0{,}0817$ a **ogni** lunghezza: raddoppiare la finestra
+  il prodotto vale $0{,}0817$ a ogni lunghezza: raddoppiare la finestra
   dimezza $\sigma_f$ e raddoppia $\sigma_t$, senza sconti.
 - La **scala mel** è un adattamento a dati percettivi, non una legge: di formule
   ne esiste più d'una (HTK contro Slaney) e danno bande diverse, quindi la
   scelta va dichiarata.
 - Gli **MFCC** (banco di filtri, logaritmo, DCT, primi $\sim 13$ coefficienti)
   sono una feature **d'archivio**: la DCT serviva a rendere lecita la covarianza
-  diagonale delle GMM, e con le reti profonde quell'ipotesi non c'è più. I
-  modelli di questo capitolo mangiano **spettrogramma log-mel grezzo**.
+  diagonale delle GMM, e con le reti profonde quell'ipotesi non c'è più. Chi in
+  uscita ha un'etichetta o del testo mangia **log-mel grezzo**; chi produce
+  suono parte dai **campioni**, perché il log-mel non si inverte.
 ```
 
 `````

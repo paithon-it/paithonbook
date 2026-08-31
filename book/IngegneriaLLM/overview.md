@@ -13,8 +13,8 @@ pagina del capitolo. Il **prompt** è il messaggio che scriviamo al modello: la
 richiesta, più tutto quello che le mettiamo attorno. La **finestra di
 contesto** è il tetto di testo che un modello riesce a leggere in una volta
 sola: tutto ciò che vogliamo che sappia, prima di rispondere, deve starci
-dentro, e quando è piena qualcosa va tolto per far posto. Non è una metafora,
-è un limite di progetto del modello, ed è la ragione per cui riempirla bene è
+dentro, e quando è piena qualcosa va tolto per far posto. È un limite di
+progetto del modello e non una metafora, ed è la ragione per cui riempirla bene è
 un mestiere.
 
 Anche «il passo successivo» merita una riga: è la mossa dopo, in un lavoro che
@@ -145,8 +145,8 @@ l'equivoco da cui bisogna liberarsi subito, ed è la ragione per cui la
 terminologia è cambiata. Fra noi e il modello, in un'applicazione vera, c'è
 sempre un **programma**: il sito, l'assistente, le righe di codice che
 raccolgono la nostra richiesta e la spediscono. Il testo che arriva al modello
-lo scrive quel programma, e non è una frase: è un carico fatto di parti con
-ruoli diversi, montate poco prima di partire (in gergo si chiama **payload**,
+lo scrive quel programma, ed è un carico fatto di parti con ruoli diversi e non
+una frase: montate poco prima di partire (in gergo si chiama **payload**,
 appunto il carico). E questo carico va costruito, misurato e ricostruito a
 ogni passo. Da qui i tre livelli del capitolo.
 
@@ -271,7 +271,7 @@ dopo viene «cosa manca davvero».
 
 L'ordine delle domande in {numref}`fig-quale-leva` dice già come ragiona un
 ingegnere. Si comincia dalla leva che costa meno e si sale solo se serve: il
-fine-tuning non è più avanzato del prompt, è più caro (vuole esempi raccolti a
+fine-tuning è più caro del prompt, non più avanzato (vuole esempi raccolti a
 mano, macchine per addestrare, e va rifatto ogni volta che si cambia modello),
 e va giustificato da qualcosa che il prompt non poteva dare. La domanda che fa
 scegliere, quando il prompt non basta, è che cosa manchi davvero. Se mancano

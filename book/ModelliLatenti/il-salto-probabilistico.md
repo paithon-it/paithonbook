@@ -180,8 +180,8 @@ quartiere abita?», andare lì, e cercare in quel quartiere.
 Cercando solo dove ha detto lui non si perde niente: il conto si corregge
 apposta per il fatto che si è guardato in una fetta sola, e resta giusto. (Un
 quartiere che in quella città non esiste manderebbe all’aria tutto, e per
-fortuna non capita.) Quello che ne esce, però, non è la probabilità vera: è una
-**stima prudente**, cioè un numero che sta sicuramente sotto a quello giusto.
+fortuna non capita.) Quello che ne esce, però, è una **stima prudente** e non
+la probabilità vera, cioè un numero che sta sicuramente sotto a quello giusto.
 
 Perché sotto e non sopra? Non per via della fetta, ma per l’ordine di due
 operazioni. I numeri in gioco sono minuscoli, e per maneggiarli si
@@ -275,8 +275,8 @@ differenza è che qui $q$ non si calcola in forma chiusa, si **apprende**.
 
 Il limite e il divario. La riga in alto è il valore che vorremmo e non sappiamo
 calcolare; la curva è quello che calcoliamo e spingiamo in su. La distanza fra
-le due non è un errore ignoto: è esattamente quanto la zona proposta
-dall’archivista differisce da quella giusta. Salgono tutte e due, ed è il
+le due misura esattamente quanto la zona proposta dall’archivista differisce
+da quella giusta. Salgono tutte e due, ed è il
 punto: la curva guadagna sia perché il tetto si alza, sia perché lo raggiunge
 meglio.
 ```
@@ -389,7 +389,7 @@ il modo in cui il metodo può fallire.
 
 ## Il trucco della riparametrizzazione
 
-Manca un pezzo, ed è tecnico ma non è un dettaglio: senza, niente di tutto
+Manca un pezzo, tecnico e decisivo: senza, niente di tutto
 questo si potrebbe addestrare in un tempo ragionevole.
 
 Il problema è che nel mezzo del conto c’è un **sorteggio**. L’archivista non
@@ -613,8 +613,8 @@ ELBO                -23.8 nat  (log p(x) sta piu' in alto di qui)
 La prima cosa da notare è che la ricostruzione è **peggiorata**: 20,2 nat
 contro i 16,3 della clessidra semplice, sulle stesse cifre e con la stessa
 architettura, a parte la testa dell’encoder che qui deve produrre anche la
-larghezza. Non è un difetto, è il prezzo: quei quasi quattro nat sono la
-vaghezza che abbiamo comprato.
+larghezza. È il prezzo: quei quasi quattro nat sono la vaghezza che abbiamo
+comprato.
 
 La macchina che abbiamo appena montato ha un nome, ed è quello del capitolo:
 **autoencoder variazionale**, in sigla **VAE**. «Variazionale» è la parola
@@ -658,15 +658,16 @@ quattro cifre pescate dal prior e decodificate
 ```
 
 Una precisazione prima di guardarle, perché cambia come si leggono: quello che
-il blocco stampa non è un sorteggio dei pixel, è il **grigio medio** che il
-copista dichiara per ciascuno. Sorteggiando davvero uscirebbe sale e pepe, e
+il blocco stampa è il **grigio medio** che il copista dichiara per ciascun
+pixel, non un sorteggio. Sorteggiando davvero uscirebbe sale e pepe, e
 una parte della morbidezza che si vede è quindi una scelta di come disegnare,
 non solo del modello.
 
-Detto questo, non sono capolavori e non conviene venderle per più di quello che
-sono: sono grosse, un po’ molli, e su qualcuna si esita fra due cifre. Quello che conta è
-un’altra cosa: **non è stato dato in pasto niente**. Quei quattro disegni
-vengono da quattro file di otto numeri sorteggiate da una gaussiana, e da
+Detto questo, non sono capolavori, e non conviene venderle per più di quello
+che sono: grosse, un po’ molli, e su qualcuna si esita fra due cifre. Quello
+che conta è un’altra cosa: **non è stato dato in pasto niente**. Quei quattro
+disegni vengono da quattro file di otto numeri sorteggiate da una gaussiana, e
+da
 nient’altro, e quella gaussiana era **dichiarata in partenza**. Alla clessidra
 della sezione precedente una gaussiana si era dovuta adattare ai codici a cose
 fatte, sperando che ci somigliassero: è lì che si era aperto il buco.
@@ -734,7 +735,7 @@ autoencoder variazionale                1.0x                  1.09
 
 La prima colonna è la geometria: un codice sorteggiato dal prior cade, per il
 VAE, **praticamente alla distanza tipica** fra i codici che il decoder ha visto
-in addestramento. Non è terra sconosciuta, è casa. Per la clessidra semplice
+in addestramento. È casa, non terra sconosciuta. Per la clessidra semplice
 distava più del doppio.
 
 Prima di leggerla, una precisazione onesta: le due righe non pescano allo
@@ -780,8 +781,8 @@ immagini, alla fine racconta altro.
 
 `````{tab} Elementare
 
-**Le immagini vengono morbide.** Non è un caso e non si risolve allenando di
-più. La pagella con cui il copista è giudicato lo punisce moltissimo se dichiara
+**Le immagini vengono morbide.** E non si risolve allenando di più. La pagella
+con cui il copista è giudicato lo punisce moltissimo se dichiara
 quasi impossibile un quadro che invece esiste, e quasi per niente se dichiara
 possibile un quadro che non esisterebbe mai. Le due pene non sono pari, e
 allora conviene **abbondare**: dichiarare possibile più di quel che serve, e in

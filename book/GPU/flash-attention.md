@@ -69,7 +69,7 @@ nessuno vuole come risultato, e che pure vanno scritti per intero.
 
 Il primo istinto è pensare che l'attenzione sia lenta perché fa *tanti conti*.
 È vero solo a metà. Il vero collo di bottiglia, come quasi sempre su una GPU,
-non è il calcolo: è il **movimento dei dati** (la stessa lezione della
+sta nel **movimento dei dati** e non nel calcolo (la stessa lezione della
 gerarchia di memoria e del roofline delle sezioni precedenti).
 
 `````{tab} Elementare
@@ -383,9 +383,11 @@ un colpo solo: la online softmax dà gli stessi pesi. In generale, arrivando un
 nuovo blocco con massimo locale $\tilde m$, le regole di aggiornamento sono
 
 $$
-m^{\text{new}} = \max(m, \tilde m), \quad
-l^{\text{new}} = e^{\,m - m^{\text{new}}}\, l + \!\sum_{i \in \text{blocco}}\! e^{\,s_i - m^{\text{new}}}, \quad
-\mathbf{o}^{\text{new}} = e^{\,m - m^{\text{new}}}\, \mathbf{o} + \!\sum_{i \in \text{blocco}}\! e^{\,s_i - m^{\text{new}}}\, \mathbf{v}_i,
+\begin{aligned}
+m^{\text{new}} &= \max(m, \tilde m), \\
+l^{\text{new}} &= e^{\,m - m^{\text{new}}}\, l + \!\sum_{i \in \text{blocco}}\! e^{\,s_i - m^{\text{new}}}, \\
+\mathbf{o}^{\text{new}} &= e^{\,m - m^{\text{new}}}\, \mathbf{o} + \!\sum_{i \in \text{blocco}}\! e^{\,s_i - m^{\text{new}}}\, \mathbf{v}_i,
+\end{aligned}
 $$
 
 dove $\mathbf{o}$ è la riga di uscita accumulata, cioè la somma pesata dei
@@ -565,7 +567,7 @@ capitolo.
 - **FlashAttention** {cite}`dao2022flashattention` quella tabella non la scrive
   mai: tiene ferma sul tavolo una manciata di parole e fa scorrere le altre a
   **blocchetti**, uno per volta, buttando via ogni blocchetto appena usato. Il
-  risultato non è un'approssimazione: è lo stesso identico numero di prima.
+  risultato è lo stesso identico numero di prima, e non un'approssimazione.
 - A rendere possibile il lavoro a blocchetti è la **online softmax**, il gesto
   di chi pesa i sacchi due per volta tenendo un foglietto con il totale finora:
   qui i foglietti sono due, il totale e il punteggio più alto visto fin lì, e

@@ -249,8 +249,8 @@ dell'uscita contro zero, si legge la norma del gradiente sui pesi del **primo**
 strato, mediana su cinque semi. I **bias** seguono ciascuno la propria ricetta:
 azzerati con He e con Glorot, come le due prescrivono, e lasciati come li mette
 PyTorch nel caso del default, che è appunto quel che si ottiene senza toccare
-niente. Non è un dettaglio: azzerando anche quelli del default, si arriva a
-zero esatto già a quaranta blocchi invece che a sessanta, perché quei valori
+niente. E conta: azzerando anche quelli del default, si arriva a zero esatto
+già a quaranta blocchi invece che a sessanta, perché quei valori
 uniformi sono l'unica cosa che tiene in vita il segnale quando i pesi lo
 spengono. Viene $4{,}2\times10^{-1}$ inizializzando alla
 He, $5{,}5\times10^{-13}$ alla Glorot e $9{,}7\times10^{-18}$ con il default di
@@ -282,8 +282,8 @@ più rapido e stabile.
 Da tre **distribuzioni** che vagano a una sola. Una distribuzione è la gobba che
 si ottiene segnando quanti numeri cadono in ciascun punto: alta dove i numeri si
 addensano, bassa dove sono rari, e spostata a destra o a sinistra a seconda di
-dove sta il grosso. Nel riquadro di mezzo le tre non sono sparite: sono
-diventate indistinguibili, che è esattamente il punto, e per
+dove sta il grosso. Nel riquadro di mezzo le tre sono diventate
+indistinguibili invece che sparire, che è esattamente il punto, e per
 questo se ne disegna una. Il terzo riquadro è la coda dell'operazione: due
 manopole, chiamate $\gamma$ (gamma) e $\beta$ (beta), restituiscono alla rete la
 libertà che la normalizzazione le ha appena tolto, la prima riallargando o
@@ -389,8 +389,8 @@ della prima (che la normalizzazione renda più regolare il modo in cui l'errore
 cambia quando si toccano i pesi, e quindi più facile capire in che direzione
 conviene muoversi) è a sua volta un'ipotesi, non una dimostrazione.
 
-Non è un motivo per non usarla, è un motivo per diffidare delle spiegazioni
-troppo pulite: nel deep learning capita spesso che una tecnica sia solidissima
+È un motivo per diffidare delle spiegazioni troppo pulite, non per rinunciare
+alla tecnica: nel deep learning capita spesso che una tecnica sia solidissima
 in pratica e ancora senza una teoria che regga.
 
 ## Spegnere neuroni a caso: il dropout
@@ -473,6 +473,261 @@ propri: sono tutte ritagliate dallo stesso insieme di pesi, e un peso migliorato
 adesso lo ritroveranno migliorato tutte le innumerevoli sotto-reti che lo
 contengono. Non si allenano una alla volta: si allenano tutte, un pezzetto per
 volta.
+
+## Bersagli meno netti: il label smoothing
+
+Il dropout tocca la rete. Il modo che viene adesso tocca invece **il bersaglio**,
+cioè il foglio delle risposte su cui la rete viene corretta, e in inglese si
+chiama *label smoothing*, «etichette lisciate».
+
+L'etichetta di un esempio si scrive come una fila di zeri con un uno solo:
+gatto 1, lince 0, cane 0, camion 0, sedia 0. La rete però risponde con una
+softmax, che dei punteggi grezzi dell'ultimo strato fa percentuali, e nessuna di
+quelle percentuali arriva mai a zero tondo né a cento tondo: sono i due valori
+che la softmax sfiora e non tocca. Chiedere quel bersaglio significa mandare la
+rete verso un traguardo che non esiste.
+
+`````{tab} Elementare
+
+Il professore di scienze fa un gioco. Mostra la foto di un animale, e ciascuno,
+invece di scrivere una risposta sola, deve spartire **dieci gettoni** fra le
+cinque risposte in elenco: gatto, lince, cane, camion, sedia. Più gettoni sulla
+risposta giusta, più punti.
+
+I gettoni però non si posano a mano. Accanto a ogni risposta si scrive un
+numero, e i gettoni si spartiscono seguendo quei numeri: chi ha il numero più
+alto prende la fetta più grossa. È il gioco della softmax, che dei punteggi
+grezzi fa percentuali, e la sua regola ha una proprietà che qui conta più di
+tutte: per quanto in basso si scriva un numero, la fetta rimpicciolisce e non
+si annulla. Per dare **zero** gettoni al camion bisognerebbe scrivergli accanto
+un numero più basso di qualunque numero, e un numero così non c'è. Tacere non è
+previsto: le cinque risposte hanno tutte il loro numero.
+
+Il regolamento dice che la risposta perfetta sono dieci gettoni sul gatto e zero
+su tutto il resto, e lì sta il guaio: quello zero non si può ottenere. Si può
+soltanto scrivere accanto al gatto un numero sempre più alto e vedere la
+briciola del camion rimpicciolire senza sparire. E un numero più alto c'è
+sempre. Chi prende alla lettera quel regolamento non ha mai finito.
+
+E allora perché cambiare il regolamento? Per due ragioni, e nessuna delle due è
+la voglia di finire prima. La prima: chi passa i suoi turni a rialzare il numero
+accanto a una risposta che sa già non sta imparando niente di nuovo, sta
+imparando a memoria quelle foto lì. La seconda: una rete che si dà il
+$99{,}99\%$ su tutto ha smesso di dire qualcosa quando le si chiede quanto sia
+sicura, ed è una domanda che si fa spesso, perché la risposta decide se fidarsi
+o chiamare una persona.
+
+E chi scrive numeri enormi si rende difficile cambiarli. La correzione che il
+professore segna è la differenza fra la fetta uscita e quella che si voleva,
+cioè fra due percentuali: quando il gatto sta già dodici punti sopra gli altri,
+una correzione così piccola non lo sposta quasi più.
+
+Il rimedio sta in una riga del regolamento. Al posto di «dieci sul gatto», il
+bersaglio diventa: **nove gettoni sul gatto, e il decimo spartito in parti
+uguali fra tutte e cinque le risposte**, gatto compreso. Fa nove gettoni e due
+decimi al gatto, due decimi a ciascuna delle altre quattro.
+
+Sembra uno sconto e invece è una richiesta in più. La vecchia, «metti i gettoni
+sul gatto», adesso pesa nove decimi; e accanto ne compare una nuova, «non
+lasciare nessuna risposta completamente a secco», che pesa il decimo restante e
+tira nella direzione opposta. Il lavoro lo fa quel tiro contrario.
+
+Adesso il traguardo esiste, e si può calcolare prima di cominciare. Al gatto
+tocca prendersi nove gettoni e due decimi contro i due decimi di ciascun altro,
+cioè quarantasei volte tanto. E alzare di uno il numero scritto accanto a una
+risposta le moltiplica la fetta **rispetto a ciascuna delle altre** per $2{,}7$
+circa, sempre: per moltiplicarla per quarantasei ci vuole poco meno di quattro
+punti di **distacco**, cioè di differenza fra il numero del gatto e quello degli
+altri. Il valore esatto è
+$3{,}83$, e fra poco si vedrà stampato. Arrivati lì si smette di alzare, perché
+alzare ancora abbasserebbe il voto invece di alzarlo: il gioco ha un punto in
+cui si vince, e ci si può arrivare.
+
+Il prezzo si legge nella stessa riga che ha portato il guadagno. Quel decimo di
+gettone si spartisce **in parti uguali**: alla lince tanto quanto al camion. Ma
+la lince era quasi giusta e il camion era assurdo, e il bersaglio nuovo cancella
+quel «quasi». Finché si tratta di indovinare l'animale non manca niente. Comincia
+a mancare quando è una rete piccola a imparare dalle risposte di una grande,
+invece che dal foglio delle soluzioni. È la
+[distillazione](../Efficienza/un-modello-piccolo-che-imita.md), quella del
+maestro che scrive «7, ma per un soffio»: lì il «quasi» era la cosa che si
+voleva passare, ed è proprio la cosa che il bersaglio morbido ha appiattito.
+
+`````
+
+`````{tab} Superiore
+
+Con $K$ classi, l'etichetta di un esempio è la distribuzione degenere
+$q(k) = \delta_{k,y}$, che vale 1 sulla classe vera $y$ e 0 altrove, e la loss
+è l'entropia incrociata
+
+$$
+H(q, p) = -\sum_{k=1}^{K} q(k) \log p(k) = -\log p(y),
+\qquad p = \mathrm{softmax}(\mathbf{z}),
+$$
+
+dove $\mathbf{z} \in \mathbb{R}^K$ sono i logit dell'ultimo strato e $p(k)$ la
+probabilità che il modello assegna alla classe $k$ (questo $p$ è la
+distribuzione predetta, e non ha niente a che vedere con la $p$ scalare della
+sezione accanto, che era la probabilità di spegnimento del dropout). Il minimo
+si tocca per $p(y) = 1$, e nessun $\mathbf{z}$ finito lo realizza:
+avvicinarvisi richiede $z_y - z_k \to \infty$ per ogni $k \ne y$. Il gradiente
+rispetto ai logit vale $\partial H / \partial z_k = p(k) - q(k)$ e resta
+diverso da zero comunque a lungo si vada avanti, quindi i logit continuano a
+crescere e con loro i pesi che li producono. Vale però in un regime preciso,
+quello in cui la rete riesce davvero a separare gli esempi di addestramento: se
+gli stessi ingressi compaiono con etichette diverse, il bersaglio che la rete
+vede in aggregato finisce dentro la simplex e il distacco converge da sé, senza
+bisogno di nessun ammorbidimento. Quel gradiente, poi, è limitato in modulo da
+1, e su distacchi già enormi le correzioni disponibili diventano minuscole
+rispetto al distacco: è così che Szegedy e colleghi leggono la perdita di
+adattabilità di un modello troppo sicuro. Il weight decay mette un prezzo sulla
+crescita dei pesi; il label smoothing toglie invece la ragione di crescere.
+
+Szegedy e colleghi {cite}`szegedy2016rethinking`, lavorando su Inception-v2,
+sostituiscono il bersaglio con una miscela fra $q$ e una distribuzione fissa
+$u$, indipendente dall'esempio, governata da un parametro $\epsilon$:
+
+$$
+q'(k) = (1-\epsilon)\,\delta_{k,y} + \epsilon\, u(k),
+\qquad u(k) = \frac{1}{K},
+$$
+
+dove $\epsilon$ è la frazione di massa ceduta ($0{,}1$ nell'articolo, con $K =
+1000$) e $u$ è l'uniforme su **tutte** le $K$ classi, quella vera compresa.
+Attenzione alla lettera: questo $\epsilon$ vale un decimo ed è una frazione di
+probabilità, mentre l’$\epsilon$ della batch normalization e quello degli
+ottimizzatori adattivi sono numeri minuscoli che evitano una divisione per
+zero. In PyTorch si chiamano tutti e tre `eps`, ed è la
+ragione per cui nessuno dei tre si può rinominare. Il bersaglio sulla classe
+corretta è quindi $1-\epsilon+\epsilon/K$, e non $1-\epsilon$: la differenza è
+piccola ma le due convenzioni circolano entrambe.
+
+L'entropia incrociata contro il nuovo bersaglio si spezza in due termini:
+
+$$
+H(q', p) = (1-\epsilon)\,H(q, p) + \epsilon\,H(u, p),
+$$
+
+cioè la loss di prima più una penalità che misura quanto $p$ si allontani
+dall'uniforme, con peso relativo $\epsilon/(1-\epsilon)$. E siccome
+$H(u,p) = D_{\mathrm{KL}}(u \,\|\, p) + H(u)$ con $H(u)$ costante, quella
+penalità è una divergenza di Kullback-Leibler a meno di un termine che dei
+parametri non dipende.
+
+Il guadagno è che l'ottimo diventa raggiungibile. Minimizzando $H(q', p)$
+rispetto a $p$ **su tutte le distribuzioni** (il vincolo $\sum_k p(k) = 1$
+serve: senza, l'entropia incrociata non ha minimo) si trova $p^\star = q'$ per
+la disuguaglianza di Gibbs, quindi un distacco fra logit finito e calcolabile in
+anticipo:
+
+$$
+z_y - z_k = \log \frac{1-\epsilon+\epsilon/K}{\epsilon/K}
+= \log \frac{K(1-\epsilon)+\epsilon}{\epsilon}.
+$$
+
+Con $K = 5$ e $\epsilon = 0{,}1$ fa $\log 46 \approx 3{,}83$; con $K = 1000$ e
+lo stesso $\epsilon$, $\log 9001 \approx 9{,}10$. C'è un punto in cui il
+modello si ferma. Il conto vale per un esempio con i logit liberi: con i
+parametri condivisi fra milioni di esempi quell'ideale non è raggiungibile per
+tutti insieme, e ciò che la rete fa davvero è avvicinarvisi collassando le
+rappresentazioni di ogni classe in un gruppo compatto.
+
+Il punto di rottura sta nella scelta di $u$ uniforme, che dichiara tutte le
+classi sbagliate sbagliate allo stesso modo. Müller, Kornblith e Hinton
+{cite}`muller2019when` misurano due effetti, e li tengono separati. Il primo:
+le rappresentazioni del penultimo strato si stringono in gruppi compatti per
+classe, e da quel collasso sparisce dai logit l'informazione su quanto una
+classe somigli a un'altra; una rete così addestrata fa quindi da cattiva
+maestra nella
+[distillazione](../Efficienza/un-modello-piccolo-che-imita.md), dove quello che
+passa all'allievo è la graduatoria intera e non la sola risposta giusta (il
+loro esperimento è sulle immagini: per la traduzione dichiarano di non sapere
+quale delle due scelte convenga). Il secondo effetto va nella direzione
+opposta: le probabilità dichiarate si avvicinano alle frequenze con cui il
+modello ci prende davvero. Gli autori lo presentano come sorprendente proprio
+alla luce del collasso, e non come una sua conseguenza.
+
+E l'uniforme non è obbligatoria: l'articolo di Szegedy propone come $u$ la
+distribuzione a priori delle classi, e ripiega sull'uniforme solo negli
+esperimenti. Chi ha capito il punto di rottura ha già in mano la direzione in
+cui ripararlo.
+
+In PyTorch è un argomento della loss, `nn.CrossEntropyLoss(label_smoothing=0.1)`,
+e la convenzione implementata è quella di Szegedy, con $\epsilon$ spartito su
+tutte le $K$ classi.
+
+Una riserva sull'insieme, che i due articoli scrivono e vale ripetere. Il
+guadagno in accuratezza è piccolo e non costante: su alcuni compiti Müller e
+colleghi non ne misurano affatto, e resta un accorgimento che si adotta perché
+raramente danneggia, più che perché si sappia quando aiuti. Il titolo del loro
+articolo è una domanda, e nell'abstract il verdetto è che il label smoothing
+«è ancora poco capito». Il conto sul distacco fra logit spiega
+perché l'addestramento smetta di correre, non perché la rete generalizzi
+meglio: sono due domande diverse, e la seconda è aperta come lo è quella sulla
+batch normalization.
+
+`````
+
+Quel distacco si può guardare crescere. Bastano cinque punteggi grezzi liberi,
+senza nessuna rete attorno, corretti un poco per volta verso i due bersagli,
+quello netto e quello morbido; e la correzione da fare, come già detto, vale
+«percentuale che esce meno percentuale che si voleva».
+
+```python
+import math
+
+import numpy as np
+
+K, eps, passo = 5, 0.1, 0.5
+
+netto = np.zeros(K)
+netto[0] = 1.0                   # gatto sì, tutto il resto no
+morbido = np.full(K, eps / K)
+morbido[0] += 1 - eps            # nove e due decimi al gatto, due decimi agli altri
+
+def softmax(z):
+    e = np.exp(z - z.max())
+    return e / e.sum()
+
+def scendi(q, tappe):
+    """Discesa del gradiente sui soli punteggi grezzi: la correzione vale p - q."""
+    z = np.zeros(K)
+    for t in range(1, max(tappe) + 1):
+        z -= passo * (softmax(z) - q)
+        if t in tappe:
+            p = softmax(z)
+            yield t, z[0] - z[1], p[0]
+
+tappe = (10**3, 10**4, 10**5)
+for (t, dn, pn), (_, dm, pm) in zip(scendi(netto, tappe), scendi(morbido, tappe)):
+    print(f"{t:>6} passi | netto: distacco {dn:5.2f}, al gatto il {pn:8.4%}"
+          f" | morbido: distacco {dm:4.2f}, al gatto il {pm:.4%}")
+
+print("distacco previsto per il morbido:",
+      round(math.log((K * (1 - eps) + eps) / eps), 2))
+```
+
+```text
+  1000 passi | netto: distacco  7.82, al gatto il 99.8388% | morbido: distacco 3.83, al gatto il 92.0000%
+ 10000 passi | netto: distacco 10.13, al gatto il 99.9840% | morbido: distacco 3.83, al gatto il 92.0000%
+100000 passi | netto: distacco 12.43, al gatto il 99.9984% | morbido: distacco 3.83, al gatto il 92.0000%
+distacco previsto per il morbido: 3.83
+```
+
+Con il bersaglio netto il distacco fa $7{,}82$, poi $10{,}13$, poi $12{,}43$:
+ogni volta che i passi si moltiplicano per dieci ne guadagna circa $2{,}3$, e
+non accenna a fermarsi: per aggiungerne altri due e tre decimi servono dieci
+volte i passi fatti finora, sempre, per quanto lontano si sia arrivati. Con
+quello morbido
+si posa su $3{,}83$ già alla prima misura e ci resta: è il distacco che vale un
+rapporto di quarantasei, cioè proprio i nove gettoni e due decimi contro i due
+decimi del foglio delle risposte, e la percentuale stampata, $92{,}0000\%$, è
+quel nove e due decimi su dieci. La differenza fra i due comportamenti non sta
+nella risposta scelta, che è la stessa: sta nei numeri che la rete dichiara
+accanto alla risposta, e nel fatto che uno dei due addestramenti sa quando ha
+finito.
+
 
 ## Scendere bene: gli optimizer moderni
 
@@ -747,8 +1002,8 @@ la fa scappare.
 
 Quella lunghezza dipende da quanto la conca è ripida e stretta, e le conche non
 sono tutte uguali. Camminando, la rete passa da un tratto di paesaggio a un
-altro, e il passo tarato sul primo è quello sbagliato sul secondo: non è il
-paesaggio che si muove, è che se ne sta attraversando un pezzo nuovo.
+altro, e il passo tarato sul primo è quello sbagliato sul secondo, e non perché
+il paesaggio si muova: se ne sta attraversando un pezzo nuovo.
 
 `````{tab} Elementare
 
@@ -889,11 +1144,11 @@ rispondono a due domande sole. La prima è come far arrivare un segnale sensato
 dall'uscita fino ai primi strati, e riguarda l'inizializzazione, la scelta
 dell'attivazione e la batch normalization. La seconda è come camminare in quel
 paesaggio una volta ricevuto il segnale: gli ottimizzatori, la lunghezza del
-passo e il modo in cui cambia nel tempo. Il dropout e la multa sui pesi grandi
-stanno un po’ di traverso rispetto a entrambe, perché non servono a far
-imparare la rete ma a impedirle di imparare *troppo* quello che ha davanti; e
-compaiono qui perché in pratica si montano nello stesso punto, dentro lo stesso
-ciclo di addestramento.
+passo e il modo in cui cambia nel tempo. Il dropout, la multa sui pesi grandi e
+il bersaglio ammorbidito stanno un po’ di traverso rispetto a entrambe, perché
+non servono a far imparare la rete ma a impedirle di imparare *troppo* quello
+che ha davanti; e compaiono qui perché in pratica si montano nello stesso
+punto, dentro lo stesso ciclo di addestramento.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -906,6 +1161,14 @@ ciclo di addestramento.
   riga i numeri a ogni strato (**batch normalization**) e spegnere neuroni a
   caso (**dropout**) sono i tre accorgimenti che rendono l'addestramento
   stabile e la rete meno incline a imparare a memoria.
+- Il foglio delle risposte si può ammorbidire (**label smoothing**): al posto di
+  «tutto al gatto, il resto a zero», «nove decimi al gatto, e il decimo restante
+  spartito in parti uguali fra tutte le risposte, gatto compreso» (con cinque
+  risposte fa il $92\%$ al gatto e il $2\%$ a ciascun'altra). Lo zero la rete
+  non può scriverlo, quindi con il bersaglio netto continua ad alzare i propri
+  numeri per sempre, imparando a memoria e dandosi il $99{,}99\%$ su tutto; con
+  quello morbido c'è un punto in cui si ferma. Il prezzo: la briciola è uguale
+  per tutti, e così va perduto che la lince era quasi giusta e il camion no.
 - **Adam** è il punto di partenza sensato: mette insieme l'inerzia della
   pallina che rotola e un passo su misura per ogni peso. **AdamW** se si
   vogliono anche tenere piccoli i pesi.
@@ -927,6 +1190,15 @@ ciclo di addestramento.
   **batch normalization**, che in una CNN normalizza per canale, e **dropout**
   rendono l'addestramento stabile e generalizzabile; perché la batch
   normalization funzioni è però ancora una questione aperta.
+- Il **label smoothing** sostituisce il bersaglio $\delta_{k,y}$ con
+  $(1-\epsilon)\delta_{k,y} + \epsilon/K$, cioè aggiunge alla loss una
+  penalità verso l'uniforme, di peso **relativo** $\epsilon/(1-\epsilon)$
+  rispetto alla loss di prima. Su un esempio con logit liberi l'ottimo diventa
+  raggiungibile, con distacco
+  $\log\big((K(1-\epsilon)+\epsilon)/\epsilon\big)$. In cambio l'uniforme
+  appiattisce le somiglianze fra classi, e sulle immagini un modello così
+  addestrato distilla peggio. Che smetta di correre è dimostrato; che
+  generalizzi meglio è misurato e non spiegato.
 - **Adam** (momentum + passo adattivo) è il punto di partenza sensato,
   **AdamW** se si usa il weight decay (che in `torch.optim` è una penalità L2,
   la quale coincide col decadimento vero solo per l'SGD senza momentum); un

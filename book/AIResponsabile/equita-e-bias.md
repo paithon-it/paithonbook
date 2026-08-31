@@ -103,7 +103,7 @@ Conviene distinguere le sorgenti, perché richiedono rimedi diversi
 - **Bias storico.** I dati riflettono fedelmente un mondo già iniquo. Anche con
   campionamento perfetto ed etichette perfette, la regolarità che il modello
   apprende *è* la disuguaglianza. Nessuna quantità di dati aggiuntivi la corregge,
-  perché non è un errore di misura: è il fenomeno stesso.
+  perché quella disuguaglianza è il fenomeno, non un errore di misura.
 - **Bias di rappresentazione (campionamento).** La distribuzione dei dati di
   addestramento $P_{\text{train}}$ differisce dalla popolazione bersaglio
   $P_{\text{test}}$, e in particolare sotto-rappresenta alcuni gruppi. È il caso
@@ -184,7 +184,7 @@ richieste distinte.
   può pretendere la sola parità sulle persone a cui l'esito è capitato, in gergo
   *equal opportunity*.
 - **Stesso significato del punteggio**, in gergo *calibrazione*. Il punteggio
-  non è un voto, è una **previsione di probabilità**. «70» non vuol dire
+  è una **previsione di probabilità** e non un voto. «70» non vuol dire
   «bravo sette su dieci», vuol dire «di persone come questa, secondo me,
   l'esito capita a settanta su cento».
   Calibrato vuol dire che quella promessa viene mantenuta, e mantenuta allo
@@ -320,8 +320,8 @@ numero, come si è appena visto, può benissimo coincidere) e la parità di quel
 che sfuggono. Quest'ultima è la pretesa di prendere la stessa quota, girata al
 contrario: se il modello ne prende 35 su 50, gliene sfuggono 15 su 50, e
 pretendere l'una è pretendere l'altra. Qualunque due tu scelga di assicurare,
-la terza salta. Non è un difetto da correggere con codice migliore o più dati:
-è un vincolo dell'aritmetica.
+la terza salta. È un vincolo dell'aritmetica, che né codice migliore né più
+dati possono togliere.
 
 E la richiesta rimasta fuori dal conto, dire sì alla stessa quota di persone in
 ogni gruppo, non si salva da sola. Se l'esito capita a una persona su due di
@@ -460,8 +460,8 @@ ottenuto con due soglie.
 Tutti e tre i risultati partono dallo stesso presupposto, ed è il punto in cui
 il ragionamento fatto finora rischia di dare una mano proprio a ciò che ha appena
 denunciato. Il conflitto si accende quando i tassi di base differiscono. Ma
-«tasso di base» non è un dato di natura: è la frequenza di un esito **così
-come lo abbiamo misurato**, ed è esattamente la grandezza che il bias di
+«tasso di base» è la frequenza di un esito **così come lo abbiamo misurato**,
+e non un dato di natura: è esattamente la grandezza che il bias di
 misura, quello delle etichette storte, può distorcere.
 In COMPAS il tasso di base non è la frequenza dei reati: è la frequenza dei
 **riarresti**. Se gli arresti dipendono anche da dove passano le pattuglie,
@@ -503,7 +503,7 @@ problema mal posto.
 
 `````{tab} Superiore
 
-L'osservazione non è esterna alla letteratura: è di Chouldechova stessa.
+L'osservazione viene da dentro la letteratura, ed è di Chouldechova stessa.
 Fogliato, G'Sell e Chouldechova {cite}`fogliato2020fairness` studiano la
 valutazione dell'equità quando l'etichetta osservata è una versione rumorosa e
 **sistematicamente distorta** di quella d'interesse, ed è precisamente il caso
@@ -826,9 +826,9 @@ su dati veri sono stimati da etichette che possono essere a loro volta distorte.
 
 Se c'è una lezione da portare via, è questa: la domanda «questo modello è
 equo?» è mal posta finché non specifichiamo *secondo quale criterio*. Parità
-demografica, equalized odds, calibrazione ed equità individuale non sono
-approssimazioni successive di un'unica verità nascosta: sono definizioni
-**diverse e in tensione**, ciascuna sensata in certi contesti e inaccettabile
+demografica, equalized odds, calibrazione ed equità individuale sono definizioni
+**diverse e in tensione**, e non approssimazioni successive di un'unica verità
+nascosta: ciascuna è sensata in certi contesti e inaccettabile
 in altri. In un esame di massa per una malattia grave conta non mancare i
 malati, e allora si pretende lo stesso tasso di veri positivi; nella
 concessione di un mutuo conta che un punteggio significhi lo stesso per tutti,
@@ -874,7 +874,7 @@ privacy e la robustezza dei modelli; e chi vuole lo strumento che rende queste s
 - Si può **attenuare**, non risolvere, e si può farlo in tre momenti: prima
   della gara (sistemando i dati), durante (cambiando le regole
   dell'addestramento) o dopo (usando una soglia diversa per gruppo).
-- Quale garanzia pretendere non è un calcolo: è una **decisione**, e va presa
+- Quale garanzia pretendere è una **decisione** e non un calcolo, e va presa
   alla luce del sole.
 ```
 

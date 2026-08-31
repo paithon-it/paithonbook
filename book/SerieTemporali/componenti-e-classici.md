@@ -197,6 +197,26 @@ non c'è: la serie cammina alla cieca, e ogni scossa le sposta il livello **per
 sempre**, come il prezzo di un'azione in borsa che dopo un crollo riparte da
 dove è arrivato e non da dove sarebbe dovuto essere.
 
+Il camminare alla cieca ha un nome, e conviene saperlo perché è quello che si
+trova nei manuali e nel codice: la **passeggiata aleatoria** (*random walk*),
+cioè il processo $x_t = x_{t-1} + \varepsilon_t$, dove ogni valore è il
+precedente più una scossa e nient'altro. Riconoscerla è la stessa procedura di
+questa sezione, letta all'incontrario: se la serie non è stazionaria ma la sua
+differenza prima lo è **e** non ha più nessuna autocorrelazione (l'ACF della
+differenza è piatta), allora quello che resta dopo aver tolto il livello è puro
+rumore, e la serie era una passeggiata aleatoria.
+
+Sapere di averne una davanti serve soprattutto a non farsi ingannare da un
+grafico. La previsione a un passo di una passeggiata aleatoria è, per
+costruzione, l'ultimo valore osservato: disegnata sopra la serie vera, la curva
+prevista la ricalca con un giorno di ritardo, e sembra bravissima. Non ha
+imparato niente, e la prova sta nel fatto che quella previsione **è** la linea
+di base «ripeti l'ultimo valore» della
+{doc}`sezione sulla validazione </SerieTemporali/validazione-e-feature>`,
+scritta con altre parole. Su una serie del genere l'unica previsione onesta a
+orizzonte lungo è una retta orizzontale all'ultimo valore, con una banda
+d'incertezza che si allarga come la radice di quanti passi si guarda avanti.
+
 La differenziazione è la cura del secondo caso, e lì è insostituibile. Sul primo
 fa un danno, e il danno si vede a mano, senza far girare niente.
 
@@ -407,14 +427,14 @@ verso $\mu$.
 
 L'AR è metà della storia. L'altra metà guarda non ai valori passati, ma agli
 **urti** passati: è il modello a **media mobile**, sigla MA. Attenzione, perché
-«media mobile» in questo campo indica due cose diverse. La prima, la più comune,
-è il modo più semplice di lisciare un grafico: si sostituisce ogni valore con la
-media dei suoi vicini, e così il tremolio si attenua e si vede il fondo. È anche
-il modo più semplice di tirar fuori la tendenza di una serie, ed è per questo
-che il nome ricorre in giro. La seconda è questa, il modello MA, e non è una
-media dei valori: è
-una media **degli imprevisti**. Sono due mestieri diversi con lo stesso nome, e
-d'ora in avanti «media mobile», da sola, indica il modello.
+«media mobile» in questo campo indica due cose diverse. La prima, la più
+comune, è il modo più semplice di lisciare un grafico: si sostituisce ogni
+valore con la media dei suoi vicini, e così il tremolio si attenua e si vede il
+fondo. È anche il modo più semplice di tirar fuori la tendenza di una serie, ed
+è per questo che il nome ricorre in giro. La seconda è questa, il modello MA,
+ed è una media **degli imprevisti** e non dei valori. Sono due mestieri diversi
+con lo stesso nome, e d'ora in avanti «media mobile», da sola, indica il
+modello.
 
 `````{tab} Elementare
 
@@ -430,6 +450,28 @@ incassi, e la sorpresa di ieri si ricava all'indietro, per differenza fra quello
 che ci si aspettava e quello che è arrivato. Il conto all'indietro riesce finché
 i pesi restano dentro certi limiti; fuori da quelli il modello è scritto bene,
 ma alle sorprese non si risale, e senza quelle non prevede niente.
+
+Questo modo di ricordare ha un limite che si incontra presto. Chiedi alla
+gelateria l'incasso di domani e di dopodomani: l'eco delle sorprese di ieri e di
+oggi c'è ancora, e il modello la usa. Delle sorprese che devono ancora
+succedere non sa niente, e non prova a indovinarle: le mette a zero, perché
+tanto in media non spostano né in su né in giù. Chiedi allora l'incasso di
+venerdì prossimo. Di eco non ne resta più nemmeno una, e restano solo le
+sorprese future messe a zero: la risposta è il giorno normale, e lo stesso
+numero per tutti i giorni che seguono. Sul grafico esce una linea piatta.
+
+Piatta non vuol dire ignorante: l'altezza a cui sta è la media degli incassi
+passati, che il modello ha calcolato sul registro, e infatti è il numero che
+stampa per primo qui sotto. Vuol dire che da venerdì in poi il modello risponde
+sempre quella, e chiunque avrebbe potuto rispondere lo stesso guardando la
+media. Il modello non si è rotto: ha finito la memoria, e la memoria dura
+quanti giorni gli si è detto di farla durare.
+
+Chi a venerdì ci vuole arrivare glielo chiede due giorni per volta, e appena gli
+incassi veri arrivano glieli rimette sotto, così ogni volta riparte da qualcosa
+che è successo davvero. Funziona per chi previene la settimana giorno per
+giorno, mentre i giorni passano; a chi oggi deve consegnare la previsione di
+venerdì non serve, perché mercoledì non è ancora successo.
 
 Le due memorie si possono usare insieme: quella dei valori (l'AR appena visto)
 e quella degli urti (il MA). E siccome le serie vere quasi mai stanno ferme
@@ -477,6 +519,45 @@ dati, cioè solo con essa il modello si può usare per prevedere. Una spia utile
 quando una serie è stata **sovradifferenziata**, il $\theta$ stimato finisce
 inchiodato a $-1$ o quasi, cioè proprio sul bordo di questa regione.
 
+Ricostruire le scosse passate serve a prevedere, e da qui viene un limite
+dell'MA($q$) che si incontra al primo uso. La previsione a orizzonte $h$ è la
+migliore previsione lineare di $x_{T+h}$ dato tutto il passato fino
+all'ultimo istante osservato, che chiamiamo $T$ (attenzione: è un'altra cosa
+dal trend-ciclo $T_t$ della scomposizione di apertura, e qui $T$ è un indice
+e non una componente). Le scosse ancora da venire non sono correlate con
+niente di osservato e portano zero, quelle già viste restano, e quel che
+avanza è
+
+$$
+\hat{x}_{T+h} = \mu + \sum_{i=h}^{q} \theta_i\, \varepsilon_{T+h-i} ,
+$$
+
+dove $\mu$ è il livello medio attorno a cui la serie oscilla. La somma parte da
+$i = h$ perché solo per $i \geq h$ l'istante $T+h-i$ cade a $T$ o prima, cioè
+solo quelle scosse si sono già viste; e finisce a $i = q$ perché oltre $q$ il
+modello non ha più pesi da dare. Appena $h > q$ i due estremi si incrociano, la
+somma è **vuota**, e la previsione vale $\mu$ per tutti gli orizzonti
+successivi: una retta orizzontale, che coincide (a meno di come si stima $\mu$)
+con il rispondere sempre il livello medio della serie. Un MA(2) interrogato su
+cinquanta passi ne dà due sensati e quarantotto piatti, e quei quarantotto
+dicono soltanto che il modello ha esaurito la memoria che gli si è data.
+
+Il rimedio è chiedergli non più di $q$ passi per volta, e vale **quando i dati
+arrivano prima della previsione successiva**: la seconda coppia si chiede
+quando le osservazioni vere della prima sono ormai in mano, e l'orizzonte torna
+ogni volta a uno. È lo stesso gesto con cui la
+{doc}`sezione sulla validazione </SerieTemporali/validazione-e-feature>` farà
+scorrere la finestra per **misurare** un modello, usato qui per **prevedere**.
+Chi invece deve consegnare oggi i cinquanta passi di domani non ha rimedi: con
+un MA($q$) quell'orizzonte resta scoperto, ed è un'informazione sul modello, non
+un dettaglio operativo.
+
+E la regola vale per l'MA puro, non per quello che viene adesso: in un
+ARMA($p,q$) causale, oltre $q$ passi la parte autoregressiva continua a
+lavorare, e la previsione **tende** a $\mu$ per via geometrica senza arrivarci
+mai (con una differenziazione, $d \geq 1$, tende a una retta). Chi porta dentro
+l'ARIMA la regola della linea piatta se la ritrova falsa.
+
 Mettendo insieme le due idee si ottiene l’**ARMA($p,q$)**, che spiega il valore
 odierno con $p$ valori passati e $q$ errori passati. Ma l'ARMA vive solo su
 serie stazionarie, e le serie vere quasi mai lo sono. La soluzione di Box e
@@ -498,6 +579,111 @@ Un SARIMA$(1,1,1)(1,1,1)_{12}$ è, ancora oggi, un ottimo punto di partenza per
 una serie mensile con trend e stagionalità annuale.
 
 `````
+
+### In pratica: dopo due passi un MA(2) smette di prevedere
+
+La linea piatta si può vedere, e senza aspettare che capiti su dati veri: si
+genera una serie da un MA(2) di cui si conoscono i pesi, si stima il modello, e
+gli si chiedono sei passi. Poi si confrontano tre modi di coprire quaranta
+passi: tutto in un colpo solo, due passi per volta, e la linea di base che
+risponde sempre il livello medio. Le serie sono dodici, perché un rapporto
+misurato una volta sola non è un rapporto, e il confronto si fa **serie per
+serie**, così che a decidere sia la differenza dentro ciascuna e non il caso
+che ha reso quelle dodici più o meno agitate.
+
+```python
+import numpy as np
+from statsmodels.tsa.arima_process import ArmaProcess
+from statsmodels.tsa.arima.model import ARIMA
+
+# Un MA(2) con eco marcata: l'urto di oggi si sente per due passi, poi basta.
+processo = ArmaProcess(ar=np.r_[1], ma=np.r_[1, 0.9, 0.7])
+
+rng = np.random.default_rng(0)
+serie = processo.generate_sample(nsample=300, distrvs=rng.standard_normal)
+stimato = ARIMA(serie, order=(0, 0, 2)).fit()
+media = stimato.params[stimato.param_names.index("const")]
+
+print(f"livello medio stimato: {media:+.3f}")
+for h, y in enumerate(stimato.forecast(steps=6), start=1):
+    print(f"   h = {h}   previsione = {y:+.3f}   "
+          f"scarto dal livello medio = {abs(y - media):.0e}")
+
+# Tre modi di coprire quaranta passi, sulle stesse dodici serie.
+colpo, piatta, finestra = [], [], []
+for seme in range(12):
+    rng = np.random.default_rng(seme)
+    s = processo.generate_sample(nsample=340, distrvs=rng.standard_normal)
+    passato, futuro = s[:300], s[300:]
+    fit = ARIMA(passato, order=(0, 0, 2)).fit()
+    mu = fit.params[fit.param_names.index("const")]
+    colpo.append(np.mean((futuro - fit.forecast(steps=len(futuro))) ** 2))
+    piatta.append(np.mean((futuro - mu) ** 2))            # la linea di base
+    stato, pezzi = fit, []
+    for i in range(0, len(futuro), 2):                    # due passi per volta
+        pezzi.extend(stato.forecast(steps=2))
+        stato = stato.append(futuro[i:i + 2], refit=False)  # rientrano i veri
+    finestra.append(np.mean((futuro - np.array(pezzi)) ** 2))
+
+colpo, piatta, finestra = map(np.array, (colpo, piatta, finestra))
+print("\nerrore quadratico medio su 40 passi, 12 serie:")
+for etichetta, v in (("tutto in un colpo solo", colpo),
+                     ("sempre il livello medio", piatta),
+                     ("due passi per volta", finestra)):
+    print(f"   {etichetta:24s} {v.mean():.2f}")
+v = 1 + 0.9 ** 2 + 0.7 ** 2                 # varianza del processo
+guadagno = ((v - 1) + (v - (1 + 0.9 ** 2))) / 40
+print(f"   (a parametri noti i due passi utili valgono {guadagno:.3f} su 40)")
+print("\nscarto appaiato rispetto alla linea piatta (negativo = meglio):")
+for nome, misura in (("tutto in un colpo solo", colpo),
+                     ("due passi per volta", finestra)):
+    d = misura - piatta
+    print(f"   {nome:24s} {d.mean():+.2f} +/- "
+          f"{d.std(ddof=1) / np.sqrt(len(d)):.2f}"
+          f"   meglio in {int((d < 0).sum())} serie su 12")
+```
+
+```text
+livello medio stimato: -0.092
+   h = 1   previsione = -0.150   scarto dal livello medio = 6e-02
+   h = 2   previsione = +0.544   scarto dal livello medio = 6e-01
+   h = 3   previsione = -0.092   scarto dal livello medio = 0e+00
+   h = 4   previsione = -0.092   scarto dal livello medio = 0e+00
+   h = 5   previsione = -0.092   scarto dal livello medio = 0e+00
+   h = 6   previsione = -0.092   scarto dal livello medio = 0e+00
+
+errore quadratico medio su 40 passi, 12 serie:
+   tutto in un colpo solo   2.45
+   sempre il livello medio  2.49
+   due passi per volta      1.49
+   (a parametri noti i due passi utili valgono 0.045 su 40)
+
+scarto appaiato rispetto alla linea piatta (negativo = meglio):
+   tutto in un colpo solo   -0.04 +/- 0.01   meglio in 10 serie su 12
+   due passi per volta      -0.99 +/- 0.18   meglio in 12 serie su 12
+```
+
+Dal terzo passo in poi lo scarto dal livello medio è esattamente zero, e non
+semplicemente piccolo: il formato `.0e` stamperebbe `2e-17` se ci fosse un
+arrotondamento, e stampa `0e+00`.
+
+Il confronto interessante, però, è quello sotto, e la prima riga da leggere è
+la seconda. Chiedere all'MA(2) tutti e quaranta i passi in un colpo solo costa
+$2{,}45$; rispondere sempre il livello medio, cioè non usare affatto il
+modello, costa $2{,}49$. **Sono la stessa cosa**, e i quattro centesimi che le
+separano hanno un nome preciso: sono i due passi utili, spalmati su quaranta.
+A parametri noti il conto li mette a $0{,}045$, ed è quello che il confronto
+appaiato misura ($-0{,}04$, più basso in dieci serie su dodici). Chi consegna
+quaranta passi di previsione da un MA(2) sta consegnando, per il novantacinque
+per cento, la linea di base.
+
+Chiederli due per volta cambia registro: $1{,}49$, cioè un terzo in meno della
+linea piatta, con uno scarto di $-0{,}99$ che è più basso in **tutte e dodici**
+le serie. Vale la pena guardare i due margini d'errore accanto alle medie, che
+sono la ragione per cui questi due confronti si leggono in modo diverso: la
+differenza fra $2{,}45$ e $2{,}49$ è piccola ma sistematica, quella fra
+$2{,}45$ e $1{,}49$ è grossa e sistematica, e nessuna delle due si sarebbe
+potuta chiamare così guardando una serie sola.
 
 ## Scegliere l'ordine, e poi verificare i residui
 
@@ -582,8 +768,8 @@ sovradifferenzia. Mettendo il trend nella specificazione, la stessa serie sugli
 stessi dati dà il verdetto opposto, con un $p$ praticamente nullo. Lo stesso
 vale per il KPSS, che a seconda della specificazione ha per ipotesi nulla la
 stazionarietà attorno a una costante oppure attorno a un trend: di entrambi i
-test va saputo quale delle due domande si è posta. Non è un difetto dei test: è
-che stanno rispondendo a domande diverse.
+test va saputo quale delle due domande si è posta. I test non hanno difetti:
+stanno rispondendo a domande diverse.
 
 **2. Scegliere gli ordini con un criterio di informazione.** Si stimano tutte
 le combinazioni di $(p,q)$ entro una griglia e si prende quella che minimizza
@@ -661,7 +847,7 @@ comunque non oltre $n/5$, e comunque più di $p+q$, altrimenti i gradi di libert
 del prossimo paragrafo diventano zero o negativi
 {cite}`hyndman2021forecasting`.
 
-Con quanti gradi di libertà, però, non è un dettaglio. Applicato ai residui di
+Con quanti gradi di libertà, però, cambia tutto. Applicato ai residui di
 un ARMA **stimato**, il test va calcolato con $\ell - (p+q)$ gradi di libertà e
 non con $\ell$ {cite}`hyndman2021forecasting`: i parametri già spesi per far
 aderire il modello ai dati non contano come prove d'innocenza. Ometterlo è la
@@ -694,8 +880,9 @@ Le due cose hanno un nome, e conviene averlo prima di vederle all'opera. Il
 criterio che sceglie fra i modelli si chiama **AIC**: più è basso, meglio è. Ma
 è un numero che vale solo per differenza, e la differenza va guardata con una
 soglia in testa: **sotto le due unità l'AIC non sta distinguendo niente**, e due
-modelli così vicini sono, per lui, lo stesso modello. Quel due non è una legge
-di natura, è la regola d'uso della materia, e nasce da un'osservazione semplice:
+modelli così vicini sono, per lui, lo stesso modello. Quel due è la regola
+d'uso della materia e non una legge di natura, e nasce da un'osservazione
+semplice:
 scarti più piccoli si ottengono anche solo cambiando una manciata di
 osservazioni, quindi non sono prova di niente.
 
@@ -801,14 +988,14 @@ osservazioni e cinque volte su venti con duemila. Più dati aiutano, quindi, e s
 vede; ma non bastano affatto, perché anche con duemila osservazioni l'AIC manca
 il modello vero tre volte su quattro.
 
-Non è un difetto dell'AIC: è che l'AIC è fatto per scegliere il modello che
-prevede meglio, non per indovinare quello che ha generato i dati, e quando due
-modelli spiegano i dati quasi ugualmente bene i due obiettivi non coincidono. A
-puntare sull'identificazione è semmai il **BIC**, un parente stretto che
-penalizza i parametri tanto più severamente quante più osservazioni ci sono. La
-lezione che invece tiene su tutti i semi e a tutte e due le numerosità è
-un'altra: il Ljung-Box non rifiuta mai, e il $p$-value più basso osservato in
-quaranta esperimenti è $0{,}13$.
+L'AIC non ha difetti: è fatto per scegliere il modello che prevede meglio, non
+per indovinare quello che ha generato i dati, e quando due modelli spiegano i
+dati quasi ugualmente bene i due obiettivi non coincidono. A puntare
+sull'identificazione è semmai il **BIC**, un parente stretto che penalizza i
+parametri tanto più severamente quante più osservazioni ci sono. La lezione che
+invece tiene su tutti i semi e a tutte e due le numerosità è un'altra: il
+Ljung-Box non rifiuta mai, e il $p$-value più basso osservato in quaranta
+esperimenti è $0{,}13$.
 
 Sul modello vuoto, infine, il $p$-value crolla a zero. «Vuoto» vuol dire
 letteralmente questo: un ARMA($0,0$) non guarda nessun valore passato e nessun
@@ -820,9 +1007,8 @@ Un'ultima avvertenza, che la sezione seguente riprenderà da capo: anche
 **scegliere** $p$ e $q$ è un modo di usare i dati. Qui le sedici combinazioni
 sono state provate su tutta la serie, dal primo giorno all'ultimo. Se adesso
 misurassimo quanto sbaglia il modello scelto su quegli stessi giorni, il numero
-verrebbe più bello del vero, perché il modello non è stato scelto a occhi
-chiusi: è stato scelto avendo già visto anche i giorni che avrebbero dovuto
-fargli da esame.
+verrebbe più bello del vero, perché il modello è stato scelto avendo già visto
+anche i giorni che avrebbero dovuto fargli da esame.
 
 Con l'AIC il danno è piccolo, perché l'AIC non promette di dire quanto il
 modello sbaglierà su giorni nuovi: dichiara solo quanto aderisce a quelli che ha
@@ -1042,6 +1228,329 @@ che aggiungono un'interpretazione probabilistica e intervalli di previsione
 
 `````
 
+## Lo stato che non si vede: il filtro di Kalman
+
+Il lisciamento esponenziale ha una manopola, e finora è stata una scelta di
+gusto: girala di qua e insegue, girala di là e va lenta. C'è una risposta
+migliore, e viene dall'ingegneria dei sistemi di controllo. La
+{doc}`sezione sui sistemi dinamici </StateSpaceModel/dai-sistemi-dinamici-a-s4>`
+racconta la formulazione che Rudolf Kálmán pubblicò nel 1960: descrivere
+quello che evolve nel tempo con una manciata di variabili nascoste, lo
+**stato**, e tenere separata la misura che se ne prende. Lo stesso ciclo era
+stato scritto altrove e prima, dall'astronomo danese Thorvald Thiele nel 1880 e
+da Ruslan Stratonovich e Peter Swerling alla fine degli anni Cinquanta
+{cite}`russell2020artificial`; il nome è rimasto a Kálmán perché è la sua
+versione che l'ingegneria ha adottato. Quello che resta da dire è la ricetta
+che quella rappresentazione porta con sé {cite}`kalman1960new`: come si
+aggiorna la stima dello stato ogni volta che arriva una misura nuova. Quella
+ricetta ha un caso particolare, e il caso particolare è il lisciamento
+esponenziale; la manopola, allora, smette di essere una questione di gusto e
+diventa una conseguenza di due incertezze dichiarate.
+
+`````{tab} Elementare
+
+Il magazzino di un ricambista tiene ottomila codici, e per ciascuno ci sono due
+numeri che dicono quanti pezzi ci sono. Il primo lo dà il gestionale, cioè il
+programma che registra i movimenti: ieri erano quaranta, oggi ne sono usciti
+sei ed è arrivato un bancale da dieci, quindi oggi sono quarantaquattro. Il
+secondo lo dà il magazziniere che, ogni tanto, va allo scaffale e li conta. Il
+conto dà quarantuno. Quei pezzi che ci sono davvero, e che nessuno dei due
+numeri conosce, sono lo **stato**.
+
+Nessuno dei due è la verità. Il gestionale non registra le rotture, i resi
+messi a posto male, il pezzo preso di fretta senza scrivere niente; e quegli
+errori si accumulano, perché ogni giorno che passa senza un controllo se ne
+aggiunge un altro. Il magazziniere, dal canto suo, conta in fretta scaffali
+alti, e sbaglia di uno o due, ma sbaglia soltanto oggi: il suo errore non si
+porta dietro quello di ieri.
+
+La domanda è che cosa scrivere sulla scheda. Prendere il conto e buttare il
+gestionale è sprecare tutto quello che si sapeva; tenere il gestionale e
+ignorare il conto è ostinazione. La risposta è muoversi in mezzo, e di quanto
+lo decide il confronto fra i due margini di errore, quello del gestionale e
+quello del conteggio. Se il magazziniere è preciso e il gestionale è vecchio di
+tre settimane, ci si sposta quasi tutto sul conto; se il conto è stato fatto di
+corsa e il gestionale è stato aggiornato ieri, ci si sposta appena. La
+proporzione con cui ci si sposta ha un nome, **guadagno**, e si ricava dai due
+margini: si fa il quadrato di ciascuno, perché è così che due errori
+indipendenti si mettono insieme (si sommano i quadrati, come i cateti di un
+triangolo rettangolo), e si guarda quanto pesa il quadrato del gestionale sul
+totale. Con un margine di tre pezzi per il gestionale e di uno per il
+conteggio: nove e uno, cioè nove parti su dieci in tutto, guadagno nove
+decimi. La sorpresa, cioè i quarantuno contati meno i quarantaquattro previsti,
+vale meno tre, e nove decimi di meno tre fanno meno due virgola sette: sulla
+scheda va quarantuno virgola tre. Come conteggio di pezzi un numero con la
+virgola non esiste; come stima sì, ed è quello che si sta scrivendo.
+
+E non è una via di mezzo ragionevole fra tante. Se i due margini sono
+dichiarati onestamente, quella proporzione è la sola che rende lo sbaglio più
+piccolo possibile **sul lungo periodo**: su una singola giornata può capitare
+che spostarsi un po’ di più o un po’ di meno sarebbe stato più fortunato, ma su
+mille giornate nessun'altra proporzione fa meglio.
+
+Fatto questo, c'è un secondo numero da aggiornare, ed è quello che rende la
+faccenda un ciclo invece di una formula: il margine di quello che si è appena
+scritto. Dopo un conteggio si sa di più di prima, quindi il margine si stringe,
+e nell'esempio passa da tre pezzi a circa uno; più era preciso il conteggio,
+più si stringe. Poi ricomincia il giro: si prevede il giorno dopo, e nel
+prevedere il margine si allarga di nuovo, perché un altro giorno di rotture non
+registrate è passato. Il ciclo è sempre lo stesso, tre mosse: prevedi, guarda,
+correggi in proporzione a quanto ti fidi. Ed è per questo che si chiama filtro:
+lascia passare quello che nella misura è informazione e trattiene quello che è
+rumore.
+
+Qui succede la cosa interessante, e si vede su un codice lento, di quelli che
+stanno fermi sullo scaffale per mesi. Lì il gestionale non ha movimenti da
+registrare, quindi la previsione è semplicemente «oggi come ieri»; e se i due
+margini restano gli stessi giorno dopo giorno, il guadagno smette di cambiare e
+si assesta su un valore fisso. La regola diventa: la stima nuova è un pezzetto
+del conto di oggi più tutto il resto della stima di ieri. Che è, parola per
+parola, il lisciamento esponenziale. E la sua manopola non era una questione di
+gusto: la decide il confronto fra quanto si muove la cosa che si vuole
+conoscere e quanto sbaglia lo strumento che la guarda.
+
+I modi di sbagliare sono due, e prima di elencarli va detto che cosa conta
+davvero: il confronto fra i due margini, non la loro grandezza. Dichiararli
+tutti e due doppi non cambia una virgola delle stime, cambia solo l'ampiezza
+che si annuncia attorno a esse. Sbagliare il confronto, invece, si paga.
+Dichiarare il magazziniere più preciso di quanto sia vuol dire riscrivere la
+scheda a ogni conteggio, inseguendo i suoi errori; dichiararlo meno preciso
+vuol dire smettere di ascoltarlo, e allontanarsi piano piano dalla realtà senza
+accorgersene. Non c'è modo di scoprirlo guardando la scheda, e si scopre invece
+tenendo il registro delle sorprese: se i due margini sono dichiarati bene, le
+sorprese devono risultare grandi più o meno quanto quei margini promettevano.
+Sorprese sistematicamente più piccole vogliono dire margini troppo generosi,
+sistematicamente più grandi il contrario.
+
+Resta un limite, ed è quello che manda fuori strada. Tutto il ragionamento
+regge se la previsione si fa sommando (ieri più gli arrivi meno le uscite) e se
+gli errori sono sparsi attorno allo zero, cioè se sbagliano tanto in eccesso
+quanto in difetto. Se qualcuno si porta via i pezzi, gli errori sbagliano
+sempre nello stesso verso, e nessun dosaggio fra i due numeri lo aggiusta:
+quello è un modello sbagliato, e va cambiato il modello. E c'è un secondo caso
+in cui una stima sola non basta, diverso dal primo: il bancale di stamattina o
+è arrivato o non è arrivato, quindi i pezzi sono quaranta oppure cinquanta.
+Scrivere quarantacinque con un margine largo è una bugia comoda, perché
+quarantacinque non è mai stato possibile. Lì si cambia arnese e si tiene una
+nuvola di ipotesi, mille schede diverse; ogni scheda si porta avanti da sola, e
+quando arriva il conteggio si dà più peso a quelle che lo avevano azzeccato,
+buttando via le peggiori e duplicando le migliori. Si chiama filtro a
+particelle, e il suo prezzo è tutto lì: quante schede servono. Per una
+grandezza sola ne bastano mille; per dieci grandezze insieme ne servono così
+tante che la strada si richiude.
+
+`````
+
+`````{tab} Superiore
+
+Il modello a **livello locale** è il più piccolo modello in spazio di stato che
+serva a qualcosa: uno stato scalare che cammina a caso, e una misura rumorosa
+di quello stato,
+
+$$
+\ell_t = \ell_{t-1} + w_t, \qquad w_t \sim \mathcal{N}(0, \sigma_\ell^2),
+\qquad
+x_t = \ell_t + e_t, \qquad e_t \sim \mathcal{N}(0, \sigma_x^2),
+$$
+
+con $w_t$ ed $e_t$ indipendenti fra loro, nel tempo e dallo stato iniziale
+(alla più debole delle due garanzie che seguono basta che siano
+**incorrelati**). Il livello $\ell_t$ è la
+stessa grandezza che il lisciamento esponenziale stima, e $x_t$ la serie
+osservata.
+
+Il **filtro di Kalman** mantiene due numeri, la stima corrente
+$\hat{\ell}_{t}$ e la sua varianza $V_t$, e li aggiorna in due tempi. La
+**predizione** porta avanti lo stato e allarga l'incertezza,
+
+$$
+\hat{\ell}_{t|t-1} = \hat{\ell}_{t-1}, \qquad V_{t|t-1} = V_{t-1} + \sigma_\ell^2 ;
+$$
+
+la **correzione** usa la misura appena arrivata, con il **guadagno**
+
+$$
+K_t = \frac{V_{t|t-1}}{V_{t|t-1} + \sigma_x^2},
+\qquad
+\hat{\ell}_t = \hat{\ell}_{t|t-1} + K_t\big(x_t - \hat{\ell}_{t|t-1}\big),
+\qquad
+V_t = (1 - K_t)\,V_{t|t-1} .
+$$
+
+La quantità $x_t - \hat{\ell}_{t|t-1}$ è l’**innovazione**, cioè la parte della
+misura che il modello non aveva previsto, e $K_t \in (0,1)$ dice quanta parte
+di quella sorpresa entra nella stima. Il guadagno è grande quando l'incertezza
+sulla previsione supera quella della misura, e piccolo nel caso opposto: è un
+rapporto fra fiducie, non una costante da tarare.
+
+La garanzia è forte e va enunciata per intero. Sotto linearità e rumore
+gaussiano, $\hat{\ell}_t$ è la media della distribuzione a posteriori dello
+stato date tutte le osservazioni fino a $t$, quindi è lo stimatore a minimo
+errore quadratico medio, e $V_t$ è la sua varianza esatta. Senza gaussianità la
+ricorsione resta il migliore fra gli stimatori lineari non distorti, e a quella
+seconda garanzia bastano media nulla, varianze note e incorrelazione: è meno,
+ma non è poco.
+
+Con $\sigma_\ell^2>0$ e $\sigma_x^2$ costanti la ricorsione su $V$ converge.
+Componendo correzione e predizione si ha
+$V_{t+1|t} = V_{t|t-1}\sigma_x^2/(V_{t|t-1}+\sigma_x^2) + \sigma_\ell^2$;
+dividendo per $\sigma_x^2$, e posti $r = \sigma_\ell^2/\sigma_x^2$ (il
+rapporto segnale-rumore, che è il nome con cui compare anche nel codice, e non
+ha niente a che vedere con le $r$ variabili esogene del SARIMAX) e
+$v = V_{t|t-1}/\sigma_x^2$, l'iterazione diventa $v \mapsto v/(v+1) + r$, che
+ha derivata $1/(v+1)^2 < 1$: è una contrazione, quindi il punto fisso esiste, è
+unico ed è attrattivo. La condizione $v = v/(v+1) + r$ dà
+$v^2 - rv - r = 0$, la cui sola radice positiva (e $v$ è un rapporto di
+varianze) è
+
+$$
+v = \frac{r + \sqrt{r^2 + 4r}}{2},
+\qquad
+K_\infty = \frac{v}{v+1} .
+$$
+
+E la ricorsione a regime, sostituendo, è
+$\hat{\ell}_t = K_\infty x_t + (1-K_\infty)\hat{\ell}_{t-1}$, cioè il
+lisciamento esponenziale semplice con $\alpha = K_\infty$. La corrispondenza si
+inverte in una riga, $r = K_\infty^2/(1-K_\infty)$, ed è una biiezione
+fra $(0,\infty)$ e $(0,1)$: a ogni fattore di lisciamento ammissibile
+corrisponde uno e un solo rapporto segnale-rumore, e viceversa. Sceglierlo
+equivale quindi a dichiarare un'ipotesi sul fenomeno invece che a tentare un
+numero, ed è per questo che i modelli in forma spazio-stato danno, oltre alle
+stesse previsioni puntuali, anche gli intervalli e un criterio d'informazione
+per scegliere fra modelli {cite}`hyndman2021forecasting`.
+
+Con $\sigma_\ell^2 = 0$ la convergenza si perde: il guadagno scende come
+$1/t$, la stima diventa la media campionaria dell'intera serie, e non è più un
+lisciamento esponenziale.
+
+La generalizzazione è meccanica. Lo stato diventa un vettore (livello e
+pendenza, oppure livello e dodici indici stagionali), la sua evoluzione una
+matrice, e la misura una combinazione lineare delle sue componenti; varianze e
+guadagno diventano matrici, e l'unica divisione della formula scalare diventa
+l'inversione di una matrice, di lato pari al numero di grandezze osservate
+insieme. È in quella forma che `statsmodels` stima un ARIMA, la cui classe
+eredita per intero dall'impianto in spazio di stato: la verosimiglianza si
+scrive come prodotto delle densità delle innovazioni, e il filtro la calcola in
+una passata. (I modelli ETS della stessa libreria seguono invece la forma a
+innovazioni di Hyndman, dove i fattori di lisciamento sono direttamente i
+parametri e il filtro non serve.)
+
+I punti di rottura sono tre. Il primo è la linearità: se lo stato evolve o si
+osserva in modo non lineare, si linearizza attorno alla stima corrente (filtro
+esteso) o si propagano pochi punti scelti (filtro *unscented*), e tutti e due
+possono divergere quando la non linearità è forte. Il secondo sono la
+gaussianità e l'unimodalità: il filtro riassume la posteriore con media e
+varianza, quindi un problema in cui le ipotesi plausibili sono due lontane fra
+loro non ci sta dentro. Lì si usa il **filtro a particelle**
+{cite}`gordon1993novel`, che rappresenta la
+posteriore con un campione pesato: ogni particella si propaga secondo il
+modello, il suo peso viene moltiplicato per la verosimiglianza della misura, e
+si normalizzano i pesi e si ricampiona, per non ritrovarsi con un peso solo
+diverso da zero. Non chiede né linearità né gaussianità, e il suo prezzo è il
+numero di particelle, che per tenere l'errore sotto controllo deve crescere
+molto in fretta con la dimensione dello stato: per questo è il metodo di
+elezione su stati piccoli e non su stati grandi. Il terzo punto di rottura sono
+le due varianze: $\sigma_\ell^2$ e $\sigma_x^2$ non si osservano ma si
+stimano, e conviene distinguere che cosa dipenda da che cosa. Le **stime**
+dipendono solo dal loro rapporto, quindi scalarle entrambe dello stesso fattore
+non le cambia; gli **intervalli** invece sì. Sbagliare il rapporto degrada il
+filtro nei due versi. La diagnostica giusta non guarda le stime ma
+le innovazioni, che sotto il modello corretto sono bianche e di varianza
+$V_{t|t-1} + \sigma_x^2$: un test di Ljung-Box sulle innovazioni normalizzate è
+lo stesso controllo sui residui già visto per ARIMA.
+
+`````
+
+Il filtro sta in dieci righe, e la cosa da guardare mentre gira è la
+proporzione con cui la sorpresa entra nella stima: parte da uno, perché
+all'inizio non si sa niente e la prima misura vale come verità, e scende fino
+ad assestarsi.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+passi = 300
+var_livello, var_misura = 0.05, 1.0        # quanto si muove, quanto sbaglia
+livello = np.cumsum(rng.normal(0, np.sqrt(var_livello), passi))
+misura = livello + rng.normal(0, np.sqrt(var_misura), passi)
+
+def filtro(x, var_l, var_x, V0=1e6):
+    """Predici, guarda, correggi: una passata sola sui dati."""
+    stima, V, storia, guadagni = 0.0, V0, [], []
+    for xt in x:
+        V = V + var_l                      # predico: l'incertezza cresce
+        K = V / (V + var_x)                # quanto credo alla misura nuova
+        stima = stima + K * (xt - stima)   # correggo, in proporzione a K
+        V = (1 - K) * V                    # e l'incertezza scende
+        storia.append(stima)
+        guadagni.append(K)
+    return np.array(storia), np.array(guadagni)
+
+stima, K = filtro(misura, var_livello, var_misura)
+print(np.round(K[:6], 4))     # -> [1. 0.5122 0.3599 0.2907 0.2541 0.2332]
+print(round(K[-1], 6))        # -> 0.2
+
+# a regime il guadagno e' l'alfa del lisciamento esponenziale
+r = var_livello / var_misura
+v = (r + np.sqrt(r * r + 4 * r)) / 2
+alfa = v / (v + 1)
+print(round(alfa, 6))         # -> 0.2
+
+ses = np.empty(passi)
+ses[0] = misura[0]
+for t in range(1, passi):
+    ses[t] = alfa * misura[t] + (1 - alfa) * ses[t - 1]
+print(round(np.abs(stima[100:] - ses[100:]).max(), 10),   # -> 2e-10
+      round((1 - alfa) ** 100, 10))                       # -> 2e-10
+
+# quanto serve: errore quadratico medio contro il livello vero, e il valore
+# che la teoria prevede a regime, cioe' la radice di (1 - alfa) * v
+rmse = lambda a: float(np.sqrt(np.mean((a - livello) ** 2)))
+print(round(rmse(misura), 4), round(rmse(stima), 4),      # -> 0.9752 0.4171
+      round(np.sqrt((1 - alfa) * v), 4))                  # -> 0.4472
+
+# e i due modi di sbagliare le due larghezze dichiarate
+print(round(rmse(filtro(misura, var_livello, var_misura / 25)[0]), 4),
+      round(rmse(filtro(misura, var_livello, var_misura * 25)[0]), 4))
+# -> 0.6608 0.6819
+```
+
+La proporzione parte da $1$, scende in fretta ($0{,}51$, $0{,}36$, $0{,}29$,
+$0{,}25$, $0{,}23$) e continua a scendere fino ad assestarsi su $0{,}2$, che è
+esattamente il valore che si ricava dalle due larghezze dichiarate. Da lì in
+poi il filtro e il lisciamento esponenziale con la manopola su venti centesimi
+producono le stesse stime: al centesimo passo la differenza è
+$0{,}0000000002$, e la seconda riga stampata dice da dove viene, perché è
+$0{,}8$ elevato a cento. Le due ricorsioni partono da punti diversi, e la
+distanza fra loro si spegne moltiplicandosi per $0{,}8$ a ogni passo, ed è la
+memoria dell'inizio che si esaurisce, non l'arrotondamento del calcolatore.
+Sul valore vero, che qui si conosce perché è stato generato apposta, lo scarto
+quadratico medio della
+misura grezza è $0{,}9752$ e quello del filtro $0{,}4171$, contro un valore
+teorico a regime di $0{,}4472$: meno della metà, senza guardare nemmeno un dato
+futuro.
+
+Le ultime due righe sono i due modi di sbagliare le larghezze, e su questa
+serie costano quasi uguale. Dichiarando la misura venticinque volte più precisa
+di quanto sia l'errore sale a $0{,}6608$, perché il filtro insegue il rumore;
+dichiarandola venticinque volte meno precisa sale a $0{,}6819$, perché smette
+di ascoltarla. Quale dei due sia peggiore dipende dalla serie e non si decide
+su un esempio solo; quello che si decide è che a sbagliare di venticinque volte
+si perde metà del guadagno e si resta comunque sotto lo $0{,}9752$ della misura
+grezza. Sbagliando di mille il filtro peggiora la misura invece di migliorarla,
+e il verso sordo resta il più insidioso, perché produce una curva liscia e
+convincente che si allontana dalla realtà con calma.
+
+Il giro vale ben oltre il lisciamento esponenziale, ed è la ragione per cui
+questa ricetta sta in mezzo ai modelli classici. Scritti in questa forma, con
+uno stato nascosto e una misura rumorosa, ci stanno anche ARIMA e Holt-Winters:
+il filtro passa una volta sui dati, dice quanto quel modello è d'accordo con la
+serie osservata, e da lì si cercano i coefficienti. È così che le librerie
+stimano un ARIMA, ed è anche il motivo per cui questi modelli, oltre alla
+previsione puntuale, sanno dare la forbice attorno a essa.
+
 ## Quando i classici bastano (o battono il deep learning)
 
 Verrebbe da pensare che, con le reti neurali che il capitolo affronta più
@@ -1222,6 +1731,14 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
   la sigla ci sono solo tre conteggi; **SARIMA** rifà lo stesso gioco sul
   calendario, confrontando dicembre con lo scorso dicembre
   {cite}`box2015time`.
+- La memoria degli urti, però, **dura quanto le si è detto**, e finita quella il
+  modello smette di prevedere: chiede due giorni di eco e al terzo risponde il
+  giorno medio, sempre lo stesso, per quanto lontano gli si chieda. Non è un
+  guasto ed è un limite vero: quell'orizzonte, con quel modello, resta scoperto,
+  a meno che i giorni passino davvero e gli incassi veri gli si possano
+  rimettere sotto man mano. (La memoria dei valori invece non si esaurisce mai
+  di colpo: si spegne piano, ed è per questo che l'ARIMA non fa la linea
+  piatta.)
 - Gli ordini non si indovinano guardando i grafici: **si provano tutte le
   combinazioni** e si sceglie con un criterio che pesa insieme quanto il
   modello spiega e quanti parametri ha speso (l’**AIC**). Poi, e questo è il
@@ -1241,6 +1758,21 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
   molto e ogni passo indietro pesa una frazione in meno, come un ricordo che
   sbiadisce. Tre gradini: solo il livello, poi livello più tendenza, poi
   anche la stagione, e con tutti e tre il metodo si chiama Holt-Winters.
+- Il **filtro di Kalman** tiene separato quello che si vuole conoscere (lo
+  **stato**) da quello che si riesce a misurare, e a ogni passo fa tre mosse:
+  prevede, guarda, e corregge in proporzione a quanto si fida della misura
+  nuova rispetto alla propria previsione. Aggiorna anche il margine di quella
+  stima, che cresce prevedendo e si stringe misurando. Su una grandezza che si
+  sposta a caso e che nessun movimento registrato aiuta a prevedere, dopo un
+  po' di passi la proporzione smette di cambiare e la ricetta diventa proprio
+  il lisciamento esponenziale, di cui spiega la manopola.
+- I modi di sbagliarlo sono dichiarare lo strumento più preciso di quanto sia
+  (si insegue il rumore) o meno preciso (si smette di ascoltarlo), e si
+  scoprono guardando se le sorprese sono grandi quanto i margini promettevano.
+  E tutto regge finché la previsione si fa sommando e gli errori sbagliano
+  tanto in eccesso quanto in difetto: se sbagliano sempre nello stesso verso il
+  modello è sbagliato, e se le possibilità plausibili sono due lontane fra loro
+  una stima sola non le può rappresentare.
 - I classici sono **robusti, si accontentano di poche osservazioni e si
   spiegano a chi deve decidere**: nelle competizioni M restano una **linea di
   base** durissima da battere. Prima si supera quella, poi si tira in ballo il
@@ -1271,6 +1803,14 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
 - **AR($p$)** spiega il valore con i $p$ passati; **MA($q$)** con i $q$ errori
   passati; **ARIMA($p,d,q$)** unisce i due sulla serie differenziata $d$ volte,
   e **SARIMA** aggiunge i termini stagionali al ritardo $m$ {cite}`box2015time`.
+- Un **MA($q$) non prevede oltre $q$ passi**: per $h > q$ la somma
+  $\sum_{i=h}^{q}\theta_i\varepsilon_{T+h-i}$ è vuota e la previsione vale
+  $\mu$, cioè una retta piatta al livello medio. Il rimedio, chiedere al più
+  $q$ passi per volta rimettendo sotto le osservazioni vere, vale solo se i dati
+  arrivano prima della previsione successiva; altrimenti quell'orizzonte resta
+  scoperto. La regola è dell'MA **puro**: in un ARMA causale la parte
+  autoregressiva fa convergere la previsione a $\mu$ per via geometrica, senza
+  linea piatta.
 - La **procedura** è in tre tempi: stazionarizzare (fissando $d$), scegliere
   $(p,q)$ minimizzando l’**AIC** $= 2k - 2\ln\hat L$ su una griglia, verificare
   che i residui siano **rumore bianco** con il Q-Q plot e il test di
@@ -1290,6 +1830,17 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
 - Il **lisciamento esponenziale** pesa il passato con pesi che **decadono
   esponenzialmente**: SES (solo livello), Holt (livello + trend), Holt-Winters
   (livello + trend + stagionalità).
+- Il **filtro di Kalman** alterna predizione
+  ($V_{t|t-1} = V_{t-1} + \sigma_\ell^2$) e correzione con guadagno
+  $K_t = V_{t|t-1}/(V_{t|t-1}+\sigma_x^2)$: è la media a posteriori esatta
+  sotto linearità e gaussianità, e il migliore stimatore lineare **non
+  distorto** senza. Sul modello a livello locale il guadagno converge e la
+  ricorsione diventa il SES con $\alpha = K_\infty$, in corrispondenza
+  biunivoca con il rapporto $\sigma_\ell^2/\sigma_x^2$. Cade sulla non
+  linearità (filtro esteso o *unscented*), sulla posteriore multimodale
+  (**filtro a particelle**, il cui costo cresce in fretta con la dimensione
+  dello stato) e sul rapporto fra le due varianze mal stimato, che si
+  diagnostica dalle innovazioni.
 - I modelli classici sono **robusti, frugali di dati e interpretabili**: nelle
   competizioni M restano una **linea di base** durissima da battere. Prima si
   supera quella, poi si passa al deep learning {cite}`hyndman2021forecasting`.

@@ -155,17 +155,17 @@ lavora in sedici bit» e che si scrive attorno alle due righe della previsione e
 dell'errore: sceglierà lui, operazione per operazione, dove i sedici bit sono
 sicuri. E infine tre righe che prendono il posto delle solite `backward()` e
 `step()`, per ingrandire prima e rimpicciolire dopo.
-Il blocco qui sotto è scritto per girare **davvero**, anche senza GPU, quindi
-si costruisce i suoi pezzi e stampa qualcosa a ogni giro: il ciclo che non
-stampa niente è un ciclo che non è mai entrato, ed è un guasto che altrimenti
-non si vede. Una sola avvertenza sulla prima riga: di formati corti ne esistono
-due, `float16` e `bfloat16`, e il codice sceglie il secondo quando gira senza
+
+Una sola avvertenza sulla prima riga: di formati corti ne esistono due,
+`float16` e `bfloat16`, e il codice sceglie il secondo quando gira senza
 scheda grafica. La differenza fra i due la vediamo subito dopo il blocco; per
 ora basta sapere che sono due modi di scrivere un numero in sedici bit.
 
 ```python
 import torch
 from torch import nn
+
+torch.manual_seed(0)                             # cosi' i numeri qui sotto tornano
 
 dispositivo = "cuda" if torch.cuda.is_available() else "cpu"
 # su GPU si usa float16 con la "lente"; su CPU l'autocast lavora in bfloat16,
@@ -193,14 +193,16 @@ for i, (X, y) in enumerate(train_loader):
     print(f"batch {i}: loss {loss.item():.4f} | tipo interno {y_pred.dtype}")
 ```
 
-Su CPU stampa tre righe come questa:
-
 ```text
-batch 0: loss 2.2945 | tipo interno torch.bfloat16
+batch 0: loss 2.2802 | tipo interno torch.bfloat16
+batch 1: loss 2.3753 | tipo interno torch.bfloat16
+batch 2: loss 2.3972 | tipo interno torch.bfloat16
 ```
 
-Dove `autocast` accetta i sedici bit sono le moltiplicazioni fra tabelle, cioè
-il grosso del lavoro; dove li rifiuta sono le somme molto lunghe, in cui gli
+Tre righe, una per batch, e su una scheda grafica il tipo interno sarebbe
+`torch.float16` invece di `torch.bfloat16`. Dove `autocast` accetta i sedici
+bit sono le moltiplicazioni fra tabelle, cioè il grosso del lavoro; dove li
+rifiuta sono le somme molto lunghe, in cui gli
 arrotondamenti si accumulerebbero. La riga stampata è la prova che sta
 funzionando: l'uscita del modello è davvero in mezza precisione, e questo
 mentre i pesi, sul disco e in memoria, sono rimasti tutti quanti a 32 bit. Le
@@ -225,7 +227,7 @@ sceglie scrivendo `dtype=torch.bfloat16`.
 
 (Nel codice qui sopra lo scaler c'è comunque, perché quel blocco deve girare in
 tutti e due i casi. Attenzione a non trarne la conclusione sbagliata, che si
-legge spesso: **non** si spegne da solo quando il formato è il bfloat16. Resta
+legge spesso: non si spegne da solo quando il formato è il bfloat16. Resta
 acceso e continua a moltiplicare per $65\,536$, semplicemente non fa né bene né
 male, perché moltiplicare e poi dividere per una potenza di due restituisce i
 numeri identici a com'erano. In un programma scritto per il solo bfloat16 quelle
@@ -252,9 +254,9 @@ Per misurare sul serio bisogna dire esplicitamente «fermati qui finché la GPU
 non ha finito», e lo si dice due volte, una prima di far partire il cronometro,
 perché nella coda può esserci ancora il lavoro di poco fa, e una alla fine,
 prima di leggere il tempo. Vale anche al contrario, quando si legge un
-risultato: se una riga sembra lentissima, spesso non è lei a essere lenta, è la
-prima che ha avuto bisogno del risultato e ha dovuto aspettare tutta la coda
-accumulata prima.
+risultato: se una riga sembra lentissima, spesso a essere lenta è la prima che
+ha avuto bisogno del risultato e ha dovuto aspettare tutta la coda accumulata
+prima.
 
 La coda però è anche un'occasione. Il vassoio di esempi successivo può mettersi
 in viaggio verso la scheda mentre quella sta ancora lavorando su quello di
@@ -278,14 +280,14 @@ tensore, un `if` che dipende da un valore calcolato sulla GPU. Ognuno di questi
 è una barriera implicita, ed è il motivo per cui loggare la loss a ogni passo
 può costare parecchio.
 
-Per cronometrare correttamente serve `torch.cuda.synchronize()` **prima** di
-far partire il cronometro (per svuotare la coda pregressa) e **dopo** il blocco
+Per cronometrare correttamente serve `torch.cuda.synchronize()` prima di
+far partire il cronometro (per svuotare la coda pregressa) e dopo il blocco
 da misurare. In alternativa si usano i `torch.cuda.Event`, che si registrano
 nello stream e misurano sul lato GPU senza bloccare l'host, ed è ciò che fanno
 i profiler seri.
 
 Da qui anche un pattern utile: `tensore.to(device, non_blocking=True)`
-sovrappone il trasferimento al calcolo, ma **solo** se la memoria sorgente è
+sovrappone il trasferimento al calcolo, ma solo se la memoria sorgente è
 *pinned* (bloccata in pagine non swappabili), che è ciò che fa
 `pin_memory=True` nel `DataLoader`. Senza quella condizione l'opzione non ha
 effetto, ed è una delle micro-ottimizzazioni più spesso copiate senza le sue
@@ -340,7 +342,7 @@ condivisa.
 Su CPU, con queste due precauzioni, i due numeri si equivalgono a meno del
 rumore di misura (qualche punto percentuale, in un senso o nell'altro), perché
 lì la coda non c'è: la CPU esegue e basta. Questa è la prova in bianco, quella
-che si fa apposta dove il fenomeno **non** deve comparire, e serve a
+che si fa apposta dove il fenomeno non deve comparire, e serve a
 dimostrare che la differenza che vedremo sulla GPU è del fenomeno e non del
 modo di misurare. Su una GPU, invece, la prima riga stampa un tempo
 assurdamente piccolo e la seconda quello vero. Conviene rifare questo
@@ -394,12 +396,12 @@ protetto da *guard*: se cambiano forme dei tensori o rami del control flow, si
 ricompila (altro overhead). Nei benchmark ufficiali su GPU A100 il guadagno
 medio in addestramento è attorno al 40%, ma la varianza è alta: modelli grandi
 e statici guadagnano di più, modelli piccoli o dalle forme variabili poco,
-nulla, o **meno di zero**: il pavimento non è la parità. Misurato sulla MLP di
-MNIST su CPU: decine di secondi solo per compilare (da 23 a 75 in due prove con
-carichi diversi, contro un addestramento che dura minuti) e, a regime, un
-compilato più lento dell'eager, di una frazione o di parecchie volte a seconda
-di quanto la macchina è carica. Su CPU l'inductor gioca in trasferta e il
-fattore non è trasferibile a una GPU, ma il segno sì. La regola pratica:
+nulla, o **meno di zero**: il pavimento non è la parità. Sulla MLP di MNIST in
+CPU la compilazione da sola costa decine di secondi, contro un addestramento
+che dura minuti, e a regime il compilato resta più lento dell'eager, di una
+frazione o di parecchie volte a seconda del carico. Su CPU l'inductor gioca in
+trasferta e il fattore non è trasferibile a una GPU, ma il segno sì. La regola
+pratica:
 attivalo quando l'addestramento dura ore, misura, e tienilo solo se il
 cronometro dà ragione.
 `````
@@ -470,11 +472,9 @@ gira un processo per GPU proprio per questo: un GIL a testa.
 `````
 
 In codice questo si chiama **DDP**, da `DistributedDataParallel`, ed è più uno
-schema che una libreria da imparare; chi ha una scheda sola (cioè quasi tutti)
-può guardarlo di sfuggita, perché quello che c'era da capire l'ha già detto la
-figura. Il pezzo di codice che segue, per giunta, non si lancia con `python`:
-serve un programma di avvio, `torchrun`, che fa partire un processo per ogni
-GPU e dice a ciascuno chi è.
+schema che una libreria da imparare. Il pezzo di codice che segue non si
+lancia con `python`: serve un programma di avvio, `torchrun`, che fa partire
+un processo per ogni GPU e dice a ciascuno chi è.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -523,15 +523,16 @@ da correggere, e la rete non parte. Se sono troppo grandi succede il contrario,
 il segnale si gonfia strato dopo strato e i numeri esplodono.
 
 Le due ricette classiche si chiamano **Xavier** (o Glorot, dal cognome di chi
-la propose) e **He**, e sono due modi di scegliere quella scala a partire da
+la propose) e **He** (anch'esso un cognome, quello di Kaiming He), e sono due
+modi di scegliere quella scala a partire da
 quanti ingressi ha ciascun neurone: più ingressi, più piccoli i pesi, perché
 tanti contributi piccoli sommati fanno comunque un numero della misura giusta.
 Delle due, la prima è pensata per le reti in cui il segnale passa per intero,
 positivi e negativi trattati allo stesso modo; la seconda per la ReLU, che i
 negativi li schiaccia a zero e quindi ne lascia passare circa metà, e per
-compensare vuole pesi un po’ più grandi. Il {doc}`capitolo sul deep
-learning </DeepLearning/overview>` ne darà la ragione per esteso; qui vediamo il gesto con cui si
-applicano.
+compensare vuole pesi un po’ più grandi. La {doc}`sezione
+sull'inizializzazione </DeepLearning/ottimizzazione-regolarizzazione>` ne darà
+la ragione per esteso; qui vediamo il gesto con cui si applicano.
 
 I default di PyTorch sono ragionevoli, e conviene sapere quali sono, perché si
 legge spesso che i framework moderni usino Xavier o He e per `nn.Linear` non è
@@ -540,9 +541,9 @@ sorteggia i pesi fra $-1/\sqrt{d}$ e $+1/\sqrt{d}$, con $d$ il numero di
 ingressi. Sullo strato da mille ingressi dell'esempio di poco fa,
 $\sqrt{1000}$ fa circa $31{,}6$, quindi i pesi nascono tutti fra $-0{,}032$ e
 $+0{,}032$: piccoli, come previsto. Quando si vuole il controllo esplicito,
-`torch.nn.init` offre le ricette pronte, con la solita convenzione
-dell'underscore finale per le operazioni che modificano sul posto, vista nella
-sezione sui tensori:
+`torch.nn.init` offre le ricette pronte, e i loro nomi finiscono tutti con un
+trattino basso: è la convenzione con cui PyTorch segna le funzioni che
+riscrivono il tensore che ricevono, invece di restituirne uno nuovo.
 
 ```python
 from torch import nn
@@ -557,7 +558,8 @@ model.apply(inizializza)   # applica la funzione a ogni sotto-modulo
 
 `apply()` visita ricorsivamente tutti i sotto-moduli e passa ciascuno alla
 funzione; l’`if isinstance` fa da filtro, così solo gli strati `nn.Linear`
-ricevono la ricetta He (`kaiming`, dal nome di Kaiming He). Lo stesso schema
+ricevono la ricetta He (`kaiming`, dal suo nome di battesimo). Lo stesso
+schema
 serve per qualunque intervento mirato sui pesi di una rete già costruita.
 
 ## E chi non ha otto GPU?
@@ -577,8 +579,8 @@ spostano davvero il cronometro sono più modeste e più vicine:
   unità di calcolo indipendenti che ha dentro: `os.cpu_count()` le conta)
   prepara i batch in parallelo mentre la GPU lavora, e `pin_memory=True`
   accelera il trasferimento.
-- **Precisione mista anche in piccolo**: i tensor core non sono un lusso da
-  datacenter; li hanno tutte le GeForce RTX. Le cinque righe di `autocast`
+- **Precisione mista anche in piccolo**: i tensor core li hanno tutte le
+  GeForce RTX. Le cinque righe di `autocast`
   viste sopra sono spesso il singolo guadagno più grande disponibile su una
   GPU consumer.
 - **Nessuna GPU?** Google Colab ne offre una gratis (con limiti di tempo), e
@@ -637,7 +639,9 @@ tenuta a regime.
   `DistributedDataParallel`, lanciato con `torchrun`; il training loop resta
   identico.
 - `nn.init` con `apply()` applica le inizializzazioni Xavier/He
-  (`kaiming_normal_`) che il {doc}`capitolo sul deep learning </DeepLearning/overview>` motiverà.
+  (`kaiming_normal_`) che la {doc}`sezione
+  sull'inizializzazione </DeepLearning/ottimizzazione-regolarizzazione>`
+  motiverà.
 - Su una macchina sola contano `batch_size`, `num_workers`, la precisione
   mista, e il cronometro prima di tutto: riscaldamento fuori dalla misura e
   minimo di più ripetizioni, non la prima.

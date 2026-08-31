@@ -76,8 +76,8 @@ non la stessa grandezza contata due volte.)
 
 Ventiquattromila contro ottanta: trecento volte meno. Attenzione a cosa dice
 davvero questo trecento. Non dice che l'immagine sia trecento volte più
-piccola, perché ogni colonna non è un numero solo, sono ottanta misure, una
-per banda: in tutto fanno seimilaquattrocento numeri contro ventiquattromila,
+piccola, perché ogni colonna sono ottanta misure e non un numero solo, una per
+banda: in tutto fanno seimilaquattrocento numeri contro ventiquattromila,
 cioè quasi quattro volte meno, che non è granché. Dice che i **passi** da fare
 uno dopo l'altro sono trecento volte meno, e quando le decisioni vanno prese
 in fila, ciascuna aspettando la precedente, è quello il numero che conta.
@@ -583,8 +583,9 @@ voce, e qui conviene fermarsi un attimo, perché di numeri del genere il
 capitolo ne ha già detti tre diversi: sedicimila per il microfono del telefono
 nel riconoscimento, ventiquattromila per Tacotron 2 nell'articolo che lo
 presenta, e adesso 22.050 per le registrazioni su cui questo modello è
-addestrato. Non è un'incoerenza e non ce n'è uno giusto: è una scelta, come
-decidere ogni quanti millimetri mettere una tacca sul righello. Più tacche
+addestrato. Nessuno dei tre è quello giusto, e non c'è nessuna incoerenza: è
+una scelta, come decidere ogni quanti millimetri mettere una tacca sul
+righello. Più tacche
 vuol dire più fedeltà e più spazio occupato, e ciascuno sceglie il suo. Quello
 che conta è non mescolarli: un modello addestrato con un righello va usato con
 quello.

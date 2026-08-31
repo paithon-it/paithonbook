@@ -26,8 +26,8 @@ aperta.
 
 La tentazione è pensare che dialogare sia facile, una volta che si sa generare
 una frase: il modello risponde all'ultima battuta, e via così. Ma una
-conversazione non è una collana di frasi indipendenti: è un'attività
-*congiunta*, con regole sue che rispettiamo senza accorgercene. Per vederle
+conversazione è un'attività *congiunta* e non una collana di frasi
+indipendenti, con regole sue che rispettiamo senza accorgercene. Per vederle
 basta origliare una telefonata qualsiasi:
 
 > - Ristorante Da Mario, buonasera.
@@ -431,9 +431,9 @@ cui misurare davvero qualcosa.
 Resta l'ultima domanda, quella da cui siamo partiti: perché la segretaria
 chiese di restare sola col programma? Il fenomeno ha oggi un nome, **effetto
 ELIZA**: la tendenza, robusta e quasi automatica, ad attribuire comprensione e
-intenzioni a qualunque cosa parli la nostra lingua. Non è ingenuità: è il
-riflesso di una specie che per tutta la sua storia ha avuto un'unica sorgente
-di linguaggio fluente, gli altri esseri umani.
+intenzioni a qualunque cosa parli la nostra lingua. È il riflesso di una specie
+che per tutta la sua storia ha avuto un'unica sorgente di linguaggio fluente,
+gli altri esseri umani.
 
 Weizenbaum ne fu così turbato da cambiare mestiere: da costruttore di
 programmi a loro critico. Nel libro che scrisse dieci anni dopo, *Computer
@@ -555,8 +555,8 @@ capitolo intero: i **Transformer** ci aspettano alla prossima pagina.
 ```
 `````
 
-Quello che resta in mano, arrivati qui, non è un catalogo di modelli: è un
-catalogo di problemi. Dove si taglia un testo, come una parola diventa numeri,
+Quello che resta in mano, arrivati qui, è un catalogo di problemi più che di
+modelli. Dove si taglia un testo, come una parola diventa numeri,
 come si giudica una macchina che parla quando la risposta giusta non è una
 sola. Il capitolo sui **Transformer** eredita quelle domande per intero: a
 cambiare è la macchina che prova a rispondere, non le domande, e chi le ha

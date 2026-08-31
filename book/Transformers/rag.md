@@ -61,8 +61,9 @@ parole rare contano di più.
 Poi apri un titolo e conti. «Gatto» ci compare dieci volte, ma il libro non è
 dieci volte più pertinente di uno che lo nomina una volta sola: dopo un po’ il
 tema è chiaro e le menzioni in più aggiungono briciole. Con la taratura più
-diffusa una menzione vale un punto e dieci ne valgono meno di due; per quanto
-si insista non si arriva a due e mezzo, perché c'è un tetto e si tocca presto.
+diffusa, e su un libro di mole normale, una menzione vale un punto e dieci ne
+valgono meno di due; per quanto si insista non si arriva a due e due decimi,
+perché c'è un tetto e si tocca presto.
 
 Sullo scaffale accanto c'è l'enciclopedia in dodici volumi, che contiene
 «gatto» e «muro» per forza di cose, come contiene quasi ogni parola. Se la
@@ -142,8 +143,9 @@ L'indice invertito ha un difetto congenito: cerca **parole**, non significati.
 Chi scrive «abitazione» non trova il documento che dice «casa». Il rimedio è la
 stessa **mappa del significato** incontrata parlando delle cento lingue: ogni
 parola, e poi ogni frase, diventa un punto su una mappa, con la regola che cose
-che vogliono dire cose simili finiscono in punti vicini. Cercare, allora, non è
-più confrontare parole: è misurare distanze. Il modo di cercare che ne esce si
+che vogliono dire cose simili finiscono in punti vicini. Cercare, allora,
+diventa misurare distanze invece che confrontare parole. Il modo di cercare
+che ne esce si
 chiama **retrieval denso**, dove «denso» sta per il tipo di indirizzi che usa:
 non una casella per ogni parola del vocabolario, quasi tutte vuote, ma poche
 centinaia di numeri tutti pieni e tutti significativi.
@@ -173,7 +175,9 @@ della lingua: «auto», «macchina» e «vettura» indicano lo stesso oggetto. M
 per un indice invertito sono tre chiavi diverse: la query «manutenzione della
 vettura» non troverà mai il documento che parla solo di «tagliando dell'auto»,
 perché non condividono una sola parola. Il rimedio ha un nome, ed è quello che
-il {doc}`capitolo sul NLP </NaturalLanguageProcessing/overview>` dà agli indirizzi su quella mappa: gli **embedding**.
+la {doc}`sezione su come si rappresenta il testo
+</NaturalLanguageProcessing/rappresentare-testo>` dà agli indirizzi su quella
+mappa: gli **embedding**.
 
 `````{tab} Elementare
 
@@ -200,14 +204,17 @@ in una sola, tenendo in cima quello che compare in alto in entrambe.
 
 `````{tab} Superiore
 
-L'architettura standard è il **bi-encoder**, cioè la struttura siamese
-descritta in *Rappresentare il testo* applicata a due tipi di ingresso
-diversi: due encoder Transformer (o uno
+L'architettura standard è il **bi-encoder**, cioè la struttura siamese della
+{doc}`sezione su come si rappresenta il testo
+</NaturalLanguageProcessing/rappresentare-testo>` applicata a due tipi di
+ingresso diversi: due encoder Transformer (o uno
 condiviso), $E_q$ per le query ed $E_z$ per i passaggi, producono vettori in
 $\mathbb{R}^d$, e la rilevanza fra una query $q$ e un passaggio $z$ è il
 prodotto scalare
 $\mathrm{sim}(q, z) = E_q(q)^\top E_z(z)$, che coincide con la **similarità
-del coseno**, già incontrata in *Algebra lineare*, quando i vettori sono
+del coseno**, già incontrata nella
+{doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>`, quando i
+vettori sono
 normalizzati. Il vantaggio computazionale è decisivo: gli embedding dei
 passaggi si calcolano **una volta sola**, offline; a query time restano una
 codifica e una ricerca di vicini più prossimi, che su milioni di vettori si fa
@@ -412,6 +419,10 @@ numeri scritti a mano: qui le coordinate sono tutte positive e allora il coseno
 sta fra $0$ e $1$, ma in generale scende fino a $-1$, e i valori negativi vanno
 letti come «direzioni opposte», non come un guasto.)
 
+L'uscita merita un momento di attenzione, e conviene guardarla tutta: prima i
+due passaggi trovati con la loro somiglianza, poi il prompt aumentato per
+intero, cioè esattamente quello che il modello si troverà davanti.
+
 ```python
 import torch
 
@@ -457,11 +468,16 @@ prompt = (
 print(prompt)
 ```
 
-L'output della ricerca merita un momento di attenzione:
-
 ```text
 0.99  Il gatto nero salta sul muro del giardino.
 0.78  Il gatto dorme accanto ai fornelli.
+Rispondi usando solo i passaggi seguenti e cita le fonti.
+
+[1] Il gatto nero salta sul muro del giardino.
+[2] Il gatto dorme accanto ai fornelli.
+
+Domanda: Su cosa salta il gatto nero?
+Risposta:
 ```
 
 Il primo passaggio è quello giusto, con una somiglianza di $0{,}99$, cioè

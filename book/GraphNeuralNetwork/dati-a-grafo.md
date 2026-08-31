@@ -1,7 +1,7 @@
 # Il mondo come grafo
 
 Fermati un attimo a guardare i dati che ti circondano. I tuoi contatti sul
-telefono non sono un elenco: sono una rete di persone che, a loro volta, si
+telefono non sono un elenco, ma una rete di persone che, a loro volta, si
 conoscono tra loro. Una molecola non è una lista di atomi, ma un intreccio di
 legami. Il web non è una pila di pagine, bensì un tessuto di link. La rete
 stradale di una città, i pagamenti tra conti bancari, le citazioni tra articoli
@@ -86,9 +86,8 @@ cosa sola: fila di numeri, vettore, rappresentazione. **Vettore** è come si
 chiama l'oggetto: una fila di numeri, punto. La **rappresentazione** di un
 nodo, la parola dell'introduzione, è il vettore che
 in un certo momento descrive quel nodo: all'inizio sono proprio le caselline
-accanto ai nodi, dopo un giro di ascolto sarà qualcos'altro. Non sono due oggetti
-diversi: è lo stesso oggetto, chiamato una volta col suo nome e una volta col
-suo mestiere.
+accanto ai nodi, dopo un giro di ascolto sarà qualcos'altro. È lo stesso
+oggetto, chiamato una volta col suo nome e una volta col suo mestiere.
 
 Un grafo, insomma, è fatto di due cose insieme: una **struttura** (chi è
 connesso a chi) e dei **contenuti** (cosa sono i nodi).
@@ -155,7 +154,7 @@ ma la matrice $\mathbf{A}$ cambia completamente aspetto.
 
 È la cena dell'introduzione, guardata più da vicino. Se rifai l'elenco degli
 invitati in ordine diverso (prima per cognome, poi per età), la cena non è
-cambiata di una virgola: sono le stesse persone, le stesse amicizie. Ma se
+cambiata di una virgola, e restano le stesse persone e le stesse amicizie. Ma se
 avessi scritto le amicizie come una tabella «riga per invitato», riordinando
 l'elenco la tabella si stravolge, pur descrivendo la stessa realtà.
 
@@ -299,8 +298,8 @@ L'obiettivo è quello di sempre: dare a ogni nodo una fila di qualche decina di
 numeri, fatta in modo che due nodi vicini nel grafo ricevano due file che si
 somigliano, numero per numero. Un vettore costruito con questa intenzione (i
 simili vicini fra loro) ha un nome che il capitolo sul linguaggio ha già usato
-per le parole: si chiama **embedding**. Non è un oggetto nuovo, è sempre una
-fila di numeri: «embedding» dice a che scopo è stata costruita. Lì l'idea era
+per le parole: si chiama **embedding**. È sempre una fila di numeri, e
+«embedding» dice a che scopo è stata costruita. Lì l'idea era
 che a ogni parola tocca un punto, e che parole di significato simile finiscono
 vicine; e «vicine» va preso alla lettera, come su una mappa, solo che le
 coordinate non sono due ma qualche decina.
@@ -411,9 +410,9 @@ guarda, un social network con un miliardo di persone no. A un certo punto il
 disegno smette di esistere e resta solo l'elenco, e allora il grafo bisogna
 **scriverlo**. Il modo standard è una tabella quadrata con una riga e una
 colonna per nodo, in cui ogni casella dice se i due nodi corrispondenti sono
-collegati. Quello che segue non è un argomento nuovo: è la figura di prima scritta in un altro modo, e costruirla è solo contare
-vicini e riportare i conti. La sostanza sta nelle righe di testo fra una
-tabella e l'altra.
+collegati. Quello che segue è la figura di prima scritta in un altro modo, e
+costruirla è solo contare vicini e riportare i conti. La sostanza sta nelle
+righe di testo fra una tabella e l'altra.
 
 I suoi archi sono: 1–2, 1–3, 2–3, 3–4 e 4–5. È un grafo non diretto e non
 pesato, quindi la matrice di adiacenza $\mathbf{A}$ è simmetrica e fatta di
@@ -490,7 +489,7 @@ $$
 
 che è un disegno di numeri completamente diverso dal primo. I gradi sono
 $(3,2,2,2,1)$: gli stessi cinque numeri di prima, in un altro ordine, come
-dev'essere, perché i nodi non sono cambiati, sono cambiati i loro nomi. Ecco il
+dev'essere, perché a cambiare sono stati i loro nomi, non i nodi. Ecco il
 problema in una tabella: due fogli con numeri diversi, e dietro un unico grafo.
 Una rete che legga il foglio riga per riga vede due cose diverse; e nessuno le
 ha detto che non lo sono.
@@ -521,8 +520,8 @@ nomi, la tabella cambia da cima a fondo e il grafo no.
 
 `````{tab} Superiore
 
-Queste tre matrici non sono un esercizio di contabilità: sono i mattoni con cui
-si costruisce la convoluzione su grafo. Il *message passing* della prossima
+Queste tre matrici sono i mattoni con cui si costruisce la convoluzione su
+grafo. Il *message passing* della prossima
 sezione, nella sua forma più nota, non usa direttamente $\tilde{\mathbf{A}}$ ma
 la sua versione **normalizzata simmetricamente**
 

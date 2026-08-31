@@ -20,8 +20,8 @@ la serie sia finita conviene guardare da vicino il difetto della prima.
 :alt: "A sinistra una cella ricorrente con una freccia che rientra su sé stessa, il cappio dello stato. A destra la stessa cella srotolata nel tempo in tre copie identiche, ciascuna che riceve una parola e passa lo stato alla successiva: sono la stessa cella, con gli stessi pesi, applicata a istanti diversi."
 :width: 96%
 
-Il cappio e il suo srotolamento. Le tre copie a destra non sono tre reti: sono
-la stessa, riusata a ogni passo, ed è per questo che una RNN funziona su
+Il cappio e il suo srotolamento. Le tre copie a destra sono la stessa rete,
+riusata a ogni passo, ed è per questo che una RNN funziona su
 sequenze di lunghezza qualsiasi.
 ```
 
@@ -60,9 +60,10 @@ Due precisazioni, perché il «qualunque altra» va preso con le pinze. La prima
 vale per la torre che **legge** (l'encoder); quella che **scrive** (il decoder)
 ha una regola ferrea, non si sbircia avanti, e guarda solo all'indietro.
 
-La seconda riguarda la velocità. Da sola non spiega la vittoria, perché il
-taccuino delle LSTM allungava già la memoria: quello che nessuna macchina di
-prima sapeva fare era mettere tante mani sullo stesso testo. Se le parole
+La seconda riguarda la velocità. Il ricordo che non sbiadisce, da solo, non
+spiega la vittoria, perché il taccuino delle LSTM allungava già la memoria:
+quello che nessuna macchina di prima sapeva fare era mettere tante mani sullo
+stesso testo. Se le parole
 si guardano tutte insieme invece che in fila, il lavoro si può spartire fra
 migliaia di processori che macinano in parallelo: sono i «cento amici» di
 prima, quelli che con un libro da leggere in fila non servivano a niente e qui
@@ -79,11 +80,14 @@ Le **RNN** mantengono uno stato
 $\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$: la dipendenza tra
 posizioni distanti $m$ passi attraversa $m$ applicazioni di $f$, e il
 gradiente retropropagato si attenua o esplode esponenzialmente (il *vanishing
-/ exploding gradient* del capitolo sulle reti neurali). Le **LSTM**
-{cite}`hochreiter1997long` introducono una cella di memoria regolata da tre
-gate (*input*, *forget*, *output*) che creano un cammino quasi lineare per il
-gradiente; le **GRU** {cite}`cho2014learning` ottengono un effetto simile con
-due soli gate, *reset* e *update*, e meno parametri. Entrambe allungano
+/ exploding gradient* del
+{doc}`capitolo sulle reti neurali </RetiNeurali/overview>`). Le **LSTM**
+{cite}`hochreiter1997long` introducono una cella di memoria regolata da gate,
+che creano un cammino quasi lineare per il gradiente: nell'architettura del
+1997 sono due, *input* e *output*, e diventano tre quando Gers, Schmidhuber e
+Cummins aggiungono il *forget gate* {cite}`gers2000learning`; le **GRU**
+{cite}`cho2014learning` ottengono un effetto simile con due soli gate, *reset*
+e *update*, e meno parametri. Entrambe allungano
 l'orizzonte della memoria ma restano **sequenziali**: il passo $t$ attende il
 passo $t-1$, in addestramento come in inferenza.
 
@@ -96,7 +100,7 @@ potevano offrire insieme. Il parallelismo, però, è un vantaggio soprattutto
 sequenziale, un token alla volta.
 `````
 
-## Il conto da pagare: l'attenzione costa quadratica
+## Il conto da pagare: l'attenzione cresce col quadrato
 
 Il Transformer non è gratis, e il suo tallone d'Achille è proprio il gesto
 che lo definisce: far guardare ogni parola a tutte le altre.
@@ -142,11 +146,13 @@ dirsi qualcosa finiscono separati, e nessuno se ne accorge. Si rimescola più
 volte con criteri diversi, così l'occasione persa a un giro si recupera al
 successivo, ma nessuno promette che non ne resti fuori una.
 
-Gli stessi organizzatori risparmiano sui verbali. Di ogni giro se ne tiene uno,
-perché a riunione finita bisogna tornarci sopra per capire che cosa ha
-funzionato, e più giri più verbali. Se un giro si può ripercorrere a ritroso,
-il verbale si butta e si riscrive rifacendo i conti: spazio risparmiato, fatica
-in più, un baratto che in questo mestiere torna di continuo.
+Gli stessi organizzatori hanno un secondo accorgimento, e non è un altro modo
+di sfoltire: non riguarda chi parla con chi, riguarda i verbali. Di ogni giro
+se ne tiene uno, perché a riunione finita bisogna tornarci sopra per capire che
+cosa ha funzionato, e più giri più verbali. Se un giro si può ripercorrere a
+ritroso, il verbale si butta e si riscrive rifacendo i conti: spazio
+risparmiato, fatica in più, un baratto che in questo mestiere torna di
+continuo.
 
 Il terzo butta la lista degli invitati invece di sfoltirla: i conti si
 riordinano perché le coppie non si formino mai una per una, invece di
@@ -187,13 +193,15 @@ Quel teorema va letto con le sue ipotesi accanto, che è facile dimenticare
 proprio davanti ai risultati che fanno comodo. Vale per le funzioni
 **continue su un dominio limitato**; e vale per
 qualunque schema sparso **che contenga i token globali**, cioè sono loro a
-portare il teorema, non la finestra. Soprattutto, gli stessi autori dimostrano
-il rovescio nello stesso lavoro: esiste un compito che l'attenzione piena
-risolve in un numero costante di strati e che **qualunque** attenzione sparsa
-con un numero di archi proporzionale a $n$ costringe a una profondità che
-cresce con $n$. «Universale» vuol dire che ci si arriva, non che ci si arriva
-alla stessa profondità: la sparsificazione non è gratis, baratta ampiezza con
-altezza.
+portare il teorema, non la finestra. Soprattutto, gli stessi autori mostrano
+il rovescio nello stesso lavoro, e anche quel rovescio ha la sua ipotesi:
+esiste un compito che l'attenzione piena risolve in un numero costante di
+strati e che **qualunque** attenzione sparsa con un numero di archi
+proporzionale a $n$ costringe a una profondità che cresce con $n$, «under
+standard complexity theoretic assumptions», cioè ammettendo la congettura dei
+vettori ortogonali, che nessuno ha dimostrato. «Universale» vuol dire che ci
+si arriva, non che ci si arriva alla stessa profondità: la sparsificazione non
+è gratis, baratta ampiezza con altezza.
 
 Il capitolo sulle reti neurali su grafo
 riprende questa lettura dall'altro capo, mostrando che la self-attention è
@@ -277,7 +285,7 @@ partita del decennio, non necessariamente il campionato eterno.
   **in anticipo** chi parla con chi (ognuno con i vicini, più qualche
   partecipante che parla con tutti), lasciare che siano **i dati** a dire quali
   coppie contano, oppure cambiare del tutto il modo di fare i conti (il
-  capitolo sull'attenzione lineare).
+  {doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`).
 - Nessuna architettura vince per sempre: i due capitoli che seguono riportano
   in gioco l'idea del riassunto che si aggiorna, proprio dove la riunione
   plenaria costa troppo.
@@ -288,8 +296,8 @@ partita del decennio, non necessariamente il campionato eterno.
 ```{admonition} Da ricordare
 :class: important
 - **RNN**: memoria che sbiadisce e calcolo sequenziale. **LSTM/GRU**: gate
-  che allungano la memoria (3 gate le prime, 2 le seconde), ma sempre in
-  fila.
+  che allungano la memoria (tre le prime, contando il *forget* aggiunto nel
+  2000; due le seconde), ma sempre in fila.
 - Il **Transformer** collega ogni coppia di posizioni in un passo e si
   addestra in parallelo: dipendenze lunghe *e* velocità. In inferenza, però, la
   generazione resta sequenziale.

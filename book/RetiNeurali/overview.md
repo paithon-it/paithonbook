@@ -40,8 +40,8 @@ sì e chi verso il no: anche quella è un numero, e si chiama **bias**.
 Il verdetto secco non è l'unica uscita possibile, e le reti di oggi ne
 preferiscono un'altra. Il presidente, invece di dire sì, dice di quanto il
 totale ha superato la soglia: se resta sotto, zero; se la supera, la misura
-dello scarto. A chi viene dopo di lui arriva allora una quantità al posto di un
-verdetto.
+dello scarto. Se poi quel numero va davanti a un'altra giuria, quello che le
+arriva è una quantità e non un verdetto.
 
 `````
 
@@ -56,11 +56,12 @@ $$
 
 Qui $\mathbf{w}$ è il vettore dei **pesi** (una "importanza" per ciascun
 ingresso), $b$ è il **bias** (che sposta la soglia), $z$ è la
-**pre-attivazione** (la somma pesata) e $\sigma$ è la **funzione di
+**pre-attivazione** (la somma pesata), $a$ l’**attivazione** che ne esce e
+$\sigma$ è la **funzione di
 attivazione** che introduce la non linearità: un gradino, una sigmoide o,
 oggi, quasi sempre la ReLU $\max(0,z)$. Il cuore del calcolo,
-$\mathbf{w}^\top\mathbf{x}$, è il prodotto scalare che abbiamo incontrato nel
-capitolo di algebra lineare.
+$\mathbf{w}^\top\mathbf{x}$, è il prodotto scalare della
+{doc}`sezione di algebra lineare </Matematica/algebra-lineare>`.
 
 `````
 
@@ -77,8 +78,8 @@ carta, senza apprendimento: i pesi li fissava a mano il progettista.
 Il salto arriva nel 1958 con Frank Rosenblatt e il suo **percettrone**. Non
 solo un neurone che decide, ma un neurone che *impara*: aggiusta i propri pesi
 guardando gli errori che commette. La stampa dell'epoca si entusiasma oltre
-ogni misura: il *New York Times* scrisse di una macchina che un giorno
-avrebbe "camminato, parlato e avuto coscienza di sé".
+ogni misura: il *New York Times* scrisse di una macchina che un giorno avrebbe
+camminato, parlato e avuto coscienza di sé.
 
 `````{tab} Elementare
 
@@ -97,9 +98,9 @@ azzecca tutti gli esempi del maestro esiste, l'allievo lo trova di sicuro: dopo
 un numero finito di correzioni smette di sbagliare, e da lì in poi i pesi
 restano dove sono. Se non esiste, l'allievo non si assesta mai: aggiusta un
 esempio e ne rompe un altro, poi torna indietro, e andrebbe avanti così per
-sempre. Da fuori i due casi si somigliano, perché si guarda una risposta alla
-volta e si vede solo un allievo che ogni tanto sbaglia; se stia per finire o
-stia girando in tondo, la lezione non lo dice.
+sempre. Quanto manchi alla fine, però, dall'esterno non si vede: si guarda una
+risposta alla volta, e finché l'allievo sbaglia ogni tanto non si sa se sia a
+un passo dal riuscirci o se stia girando in tondo.
 
 `````
 
@@ -290,20 +291,18 @@ confine con cui la rete separa i casi ({numref}`fig-confini-multistrato`).
 
 Gli stessi quattro punti, tre confini. Un neurone solo li separa con una riga
 dritta; uno strato nascosto mette insieme più righe e ritaglia una regione
-chiusa; aggiungendo strati le regioni si combinano fra loro e il bordo segue
-la forma dei dati sempre più da vicino.
+chiusa, che una riga sola non poteva dare; aggiungendo strati le regioni si
+combinano fra loro e il bordo si fa di molti lati, senza che serva uno strato
+smisurato.
 ```
 
-I quattro punti del disegno non sono lo XOR: sono un caso più facile, che una
-riga sola risolve benissimo, e stanno lì per far vedere che cosa si guadagna
+I quattro punti del disegno sono un caso più facile dello XOR, che una riga
+sola risolve benissimo, e stanno lì per far vedere che cosa si guadagna
 mano a mano che gli strati aumentano. Lo XOR risolto arriva nella prossima
-sezione. Il senso però è lo stesso: il guaio del percettrone non era che
-imparasse male, era che una riga sola non può separare **i quattro casi dello
-XOR** per quanto bene la si giri. Serviva un secondo strato, non un
+sezione. Il senso però è lo stesso: il guaio del percettrone era che una riga
+sola non può separare **i quattro casi dello XOR** per quanto bene la si giri,
+non che imparasse male. Serviva un secondo strato, non un
 addestramento migliore.
-
-E i due passaggi del disegno non sono lo stesso passaggio, il che è la cosa
-meno ovvia della figura.
 
 Dal primo riquadro al secondo si guadagna qualcosa che prima non c'era. Un
 neurone solo disegna una riga e nient'altro, quindi un confine chiuso gli è
@@ -417,9 +416,7 @@ l'errore risale la rete e dice a ogni peso di quanto muoversi; e con essa la
 **discesa del gradiente**, il modo in cui quelle correzioni si fanno davvero,
 un passettino alla volta, sempre nella direzione che fa scendere l'errore
 («gradiente» è il nome che prende, tutto insieme, l'elenco di quelle
-direzioni). Chi ha le derivate nello zaino ci riconoscerà la
-regola della catena applicata con ordine, ma la parte principale è raccontata
-anche senza.
+direzioni).
 
 Restano fuori due scelte pratiche, che riprende il {doc}`capitolo sul deep learning </DeepLearning/overview>`:
 da dove far partire i pesi, e come impedire a una rete di imparare a memoria
@@ -441,10 +438,8 @@ sono percettroni multistrato cresciuti, specializzati e resi profondi.
 - Un neurone da solo sa dividere i casi con **una riga dritta**, e sullo
   **XOR** quella riga non esiste: nel 1969 il libro di Minsky e Papert lo
   ricorda a tutti. Agli anni di disinteresse e di fondi tagliati che seguirono
-  quel libro contribuì, ma non li decise: a tenere ferme le reti era un
-  problema tecnico (nessuno sapeva correggere i neuroni in mezzo), e i tagli
-  veri arrivarono qualche anno dopo e colpirono l'intelligenza artificiale
-  tutta intera.
+  quel libro contribuì, ma non li decise da solo. E intanto le reti restavano
+  ferme per una ragione tecnica: nessuno sapeva correggere i neuroni in mezzo.
 - La **backpropagation** (1986) risolve la domanda che teneva ferma la
   faccenda: come si correggono i neuroni in mezzo, quelli a cui nessuno dice
   quale fosse la risposta giusta.

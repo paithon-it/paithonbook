@@ -21,8 +21,8 @@ contesi risultarono tutti di Madison: un verdetto oggi condiviso dagli storici
 Quello che è successo ha un nome: un problema da archivisti è stato
 risolto trasformandolo in un problema di **classificazione di testi**
 (assegnare a ogni documento un'etichetta, "Hamilton" o "Madison", sulla base
-delle parole che contiene). E lo strumento matematico non era un ritrovato
-dell'informatica: era un teorema del Settecento, applicato con più pazienza
+delle parole che contiene). E lo strumento matematico era un teorema del
+Settecento e non un ritrovato dell'informatica, applicato con più pazienza
 che potenza di calcolo. In questa sezione costruiamo proprio quel tipo di
 giudice automatico, con gli attrezzi di oggi.
 
@@ -523,8 +523,8 @@ Resta il tranello che nel capitolo sul machine learning avevamo battezzato
 "l'accuratezza inganna", e nei testi è la regola più che l'eccezione, perché le
 classi sono quasi sempre **sbilanciate**. Se solo un'email su cento è spam, il
 filtro pigro che risponde sempre "legittima" sfoggia il 99% di risposte esatte
-senza aver fermato nulla. Quale metrica privilegiare non è un dettaglio
-tecnico: è la definizione di "successo" per quel particolare giudice.
+senza aver fermato nulla. Quale metrica privilegiare è la definizione di
+"successo" per quel particolare giudice.
 
 ## Il termometro delle parole: i lessici di sentiment
 

@@ -519,8 +519,8 @@ basso a sinistra, che dalla meta dista cinque passi ed è la casella più
 lontana, porta appunto il $0{,}66$.
 
 Un momento, però: la casella da cui basta una mossa per arrivare, quella che
-qui vale $1{,}00$, poco fa valeva $0{,}5$. Non è una
-contraddizione, sono due istantanee della stessa storia. Il $0{,}5$ era il voto
+qui vale $1{,}00$, poco fa valeva $0{,}5$. Sono due istantanee della stessa
+storia, e non una contraddizione. Il $0{,}5$ era il voto
 dopo il **primo** passaggio, quando alla sorpresa si dava retta a metà
 partendo da zero. Per quella mossa il bersaglio resta sempre $1$, perché
 incassa il premio e la partita finisce lì: a ogni passaggio successivo, quindi,

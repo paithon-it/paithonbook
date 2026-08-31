@@ -171,17 +171,17 @@ punto interrogativo. Prevedere il valore di una cella vuota (qui, il voto di
 Anna al film D) è l'intero problema.
 ```
 
-La seconda anomalia è che **non esiste una «risposta giusta» da guardare**.
-Un classificatore di cifre si può confrontare con l'etichetta vera, perché
-quell'immagine o è un 7 o non lo è, e qualcuno lo sa. Qui invece
-la domanda riguarda un fatto che non è avvenuto: *se* ti avessimo mostrato
-quel film, ti sarebbe piaciuto? Una domanda così si dice **controfattuale**, e
-per la stragrande maggioranza delle coppie utente-film non avrà mai una
-risposta osservata. Per giudicare un modello bisogna allora arrangiarsi con un
-ripiego: si nasconde una parte delle interazioni che si conoscono, e si guarda
-se il modello le ritrova. *Quale* parte si nasconde non è un dettaglio di
-procedura. È la decisione che sposta i risultati più di quasi ogni scelta di
-modello, e ci torneremo quando parleremo di come si misura una classifica.
+La seconda anomalia è che **non esiste una «risposta giusta» da guardare**. Un
+classificatore di cifre si può confrontare con l'etichetta vera, perché
+quell'immagine o è un 7 o non lo è, e qualcuno lo sa. Qui invece la domanda
+riguarda un fatto che non è avvenuto: *se* ti avessimo mostrato quel film, ti
+sarebbe piaciuto? Una domanda così si dice **controfattuale**, e per la
+stragrande maggioranza delle coppie utente-film non avrà mai una risposta
+osservata. Per giudicare un modello bisogna allora arrangiarsi con un ripiego:
+si nasconde una parte delle interazioni che si conoscono, e si guarda se il
+modello le ritrova. *Quale* parte si nasconde sposta i risultati più di quasi
+ogni scelta di modello, e ci torneremo quando parleremo di come si misura una
+classifica.
 
 La terza è la più insidiosa: **il sistema influenza i dati che raccoglie**.
 

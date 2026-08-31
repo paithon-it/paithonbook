@@ -25,10 +25,10 @@ si rompe un vetro. È l'audio *oltre* la voce: non più «cosa hai detto», ma
 Il punto di partenza è quello costruito nella prima sezione, [Dal suono alle
 feature](dal-suono-alle-feature.md): l'onda diventa una tabella con il tempo su
 un asse e le frequenze sull'altro, riletta come la sente un orecchio (lo
-**spettrogramma mel**). Da lì in avanti il suono non è più un suono, è
-un'immagine. E riconoscere un'immagine è il mestiere delle **reti
-convoluzionali**, in sigla CNN: la stessa macchina che nel {doc}`capitolo di visione </VisioneArtificiale/overview>`
-riconosceva un gatto in una foto.
+**spettrogramma mel**). Da lì in avanti il suono diventa un'immagine. E
+riconoscere un'immagine è il mestiere delle **reti convoluzionali**, in sigla
+CNN: la stessa macchina che nel {doc}`capitolo di visione
+</VisioneArtificiale/overview>` riconosceva un gatto in una foto.
 
 `````{tab} Elementare
 
@@ -79,10 +79,8 @@ cambi la classe. Lungo il tempo è una simmetria vera, un latrato è un latrato
 mezzo secondo dopo; lungo la frequenza no, perché su una scala quasi
 logaritmica traslare in su è **trasporre**, e la trasposizione cambia la vocale,
 la nota, lo strumento. Funziona lo stesso perché i motivi utili restano locali,
-ma è un bias solo approssimato: da qui la pratica di non fare pooling globale
-sull'asse delle frequenze, e la scelta dell'Audio Spectrogram Transformer di
-dare a ogni patch un embedding della sua posizione *in frequenza*, che sarebbe
-superfluo se quell'asse fosse davvero simmetrico. Anche il
+ma è un bias solo approssimato, e va tenuto a mente quando si legge una CNN su
+spettrogrammi come se fosse una CNN su fotografie. Anche il
 **transfer learning** si trasporta di peso: si parte spesso da una rete
 pre-addestrata su ImageNet e si rifinisce sugli spettrogrammi, replicando il
 canale grigio sui tre canali RGB attesi in ingresso.
@@ -130,7 +128,8 @@ dove $z_c$ è il logit della classe $c$, $\hat{y}_c \in (0,1)$ la probabilità
 *indipendente* che quel suono sia presente e $y_c \in \{0,1\}$ l'etichetta
 vera. Nessun vincolo di somma: più classi possono essere «accese» insieme. Il
 **rilevamento degli eventi sonori** (*sound event detection*, il cuore delle
-sfide DCASE) spinge oltre, chiedendo una predizione per ogni istante (un
+sfide DCASE, la gara annuale sul rilevamento e la classificazione di scene ed
+eventi acustici) spinge oltre, chiedendo una predizione per ogni istante (un
 tagging *frame per frame* con i confini temporali di ogni evento) e si valuta
 con metriche che confrontano gli intervalli predetti con quelli veri.
 
@@ -141,7 +140,7 @@ con metriche che confrontano gli intervalli predetti con quelli veri.
 Un modello vale quanto i dati su cui impara, e per i suoni del mondo il
 riferimento è **AudioSet**, pubblicato da Google nel 2017
 {cite}`gemmeke2017audioset`. Quello che lo rende diverso da tutto ciò che
-c'era prima non è come è fatto: è quanto è grosso.
+c'era prima è quanto è grosso, più che come è fatto.
 
 `````{tab} Elementare
 
@@ -176,9 +175,11 @@ quei due numeri la fonte è la pagina del dataset, non il paper. Le etichette so
 localizzazione temporale, ed essendo multi-etichetta si prestano naturalmente
 alla coppia sigmoide + BCE. La metrica di riferimento non è
 l'accuratezza (inadatta a un problema multi-etichetta e sbilanciato) ma la
-**mean Average Precision** (mAP), la media, sulle classi, dell'area sotto la
-curva precisione–richiamo. Un dataset grande e debolmente etichettato sposta
-il collo di bottiglia: non più «troppi pochi dati», ma «etichette rumorose e
+**mean Average Precision** (mAP), che per ogni classe fa la media delle
+precisioni raggiunte a ciascuna soglia, pesandole con l'aumento di richiamo che
+quella soglia porta, e poi media sulle classi. Si massimizza. Un dataset grande
+e debolmente etichettato sposta il collo di bottiglia: non più «troppi pochi
+dati», ma «etichette rumorose e
 code lunghe di classi rare», un regime in cui contano di più la capienza del
 modello e il pre-addestramento della precisione di ogni singola annotazione.
 
@@ -235,15 +236,17 @@ di **fotografie** e riadattarla agli spettrogrammi.
 
 L'AST applica un Transformer in stile ViT direttamente allo spettrogramma
 log-mel, senza alcuna convoluzione, e si presenta come il primo modello di
-classificazione audio puramente attentivo. Lo spettrogramma viene suddiviso in **patch**
-$16 \times 16$ (parzialmente sovrapposte), ciascuna proiettata linearmente in
-un embedding e trattata come un token, con un *positional embedding* per la
-posizione tempo–frequenza; da lì in poi è il consueto stack di
-*self-attention* del capitolo sui Transformer. Il vantaggio è il campo
-recettivo globale fin dal primo strato: ogni patch può pesare qualunque altra,
-mentre una CNN allarga la propria vista solo strato dopo strato. Sul benchmark AudioSet completo l'AST raggiunge una mAP di $0{,}459$ con un
-singolo modello ($0{,}485$ nell'ensemble più grande), contro lo $0{,}444$ del
-miglior ibrido CNN più attenzione dell'epoca a parità di protocollo.
+classificazione audio puramente attentivo. Lo spettrogramma viene suddiviso in
+**patch** $16 \times 16$ (parzialmente sovrapposte), ciascuna proiettata
+linearmente in un embedding e trattata come un token, con un *positional
+embedding* per la posizione tempo–frequenza; da lì in poi è il consueto stack
+di *self-attention* del {doc}`capitolo sui Transformer
+</Transformers/overview>`. Il vantaggio è il campo recettivo globale fin dal
+primo strato: ogni patch può pesare qualunque altra, mentre una CNN allarga la
+propria vista solo strato dopo strato. Sul benchmark AudioSet completo l'AST
+raggiunge una mAP di $0{,}459$ con un singolo modello ($0{,}485$ nell'ensemble
+più grande), contro lo $0{,}444$ del miglior ibrido CNN più attenzione
+dell'epoca a parità di protocollo.
 
 Onestà d'obbligo, la stessa del capitolo sui Transformer: rinunciare alla
 convoluzione significa rinunciare al suo *bias induttivo* di località, e quel
@@ -313,9 +316,10 @@ spettrali di [Dal suono alle feature](dal-suono-alle-feature.md).
 `````
 
 Generiamo un segnale finto in tre parti (un tono puro, del silenzio, del
-rumore) e classifichiamo ogni finestra con una regoletta a soglie. Il generatore
-di numeri casuali parte da un valore fissato in partenza, così chi esegue il
-codice ottiene esattamente i numeri stampati qui sotto e non altri:
+rumore) e classifichiamo ogni finestra con una regoletta a soglie, per vedere
+come le due misure, prese in quest'ordine, separino le tre situazioni. Il
+generatore di numeri casuali parte da un valore fissato in partenza, così chi
+esegue il codice ottiene esattamente gli stessi numeri e non altri:
 
 ```python
 import numpy as np
@@ -360,9 +364,6 @@ for i in range(0, len(segnale) - L + 1, L):
     print(f"{i//L:>8} | {e:>9.4f} | {z:>6.3f} | {classifica(e, z)}")
 ```
 
-L'output mostra come le due misure, prese in quest'ordine, separino le tre
-situazioni:
-
 ```text
 finestra |   energia |    zcr | classe
 ------------------------------------------
@@ -386,15 +387,15 @@ che di picco arriva a 325.)
 Il suo zcr, invece, è bassissimo: $0{,}049$. Ecco il conto. Il tono del codice
 fa 200 oscillazioni al secondo e noi misuriamo 8.000 volte al secondo, quindi
 ogni oscillazione la campioniamo 40 volte ($8000$ diviso $200$). Ma ogni
-oscillazione attraversa lo zero **due** volte, una salendo e una scendendo:
+oscillazione attraversa lo zero due volte, una salendo e una scendendo:
 quindi un attraversamento ogni 20 campioni, e $1$ diviso $20$ fa $0{,}05$,
 cioè quello che troviamo nella tabella a meno degli arrotondamenti ai bordi.
 Più il suono è acuto, più fitti sono quei passaggi: è tutto il legame fra questa
 misura e le frequenze.
 
 Il silenzio ha energia praticamente nulla, e sullo zcr c'è una cosa da
-guardare: vale circa $0{,}5$, cioè **quanto quello del rumore**. Non è una
-stranezza, è come l'abbiamo costruito: il nostro «silenzio» è rumore anche
+guardare: vale circa $0{,}5$, cioè **quanto quello del rumore**. È come
+l'abbiamo costruito: il nostro «silenzio» è rumore anche
 lui, solo trecento volte più piccolo. In un fondo così ogni minuscolo sbalzo
 casuale attraversa lo zero, esattamente come fanno gli sbalzi grossi del
 rumore vero. Contare gli attraversamenti, da solo, non li distingue affatto.
@@ -402,8 +403,8 @@ rumore vero. Contare gli attraversamenti, da solo, non li distingue affatto.
 E allora perché la regola funziona? Perché le due domande si fanno in un ordine
 preciso: prima l'energia, che manda il silenzio fuori gioco, e solo dopo lo zcr,
 che a quel punto deve separare soltanto il tono dal rumore, e lì la differenza è
-enorme ($0{,}05$ contro $0{,}5$, dieci volte). Una regola a soglie non è un
-elenco di condizioni: è una scaletta, e cambiare l'ordine la rompe.
+enorme ($0{,}05$ contro $0{,}5$, dieci volte). Una regola a soglie è una
+scaletta e non un elenco di condizioni, e cambiare l'ordine la rompe.
 
 Due numeri per finestra e due soglie, nessuna rete, e la logica è già quella dei
 modelli grandi: *estrarre feature che separano le classi, poi decidere*. La

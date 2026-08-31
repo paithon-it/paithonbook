@@ -22,9 +22,10 @@ reti.) È la scelta di design più caratteristica della libreria: il modello non
 si descrive in un elenco a parte da consegnare alla libreria, si *scrive* come
 una normale classe Python.
 
-Le classi le abbiamo viste nel {doc}`capitolo su Python </Python/overview>` con l'immagine dello stampo
-per biscotti: una classe è lo stampo, l'oggetto è il biscotto. *Ereditare*
-vuol dire partire da uno stampo che esiste già e aggiungergli qualcosa invece
+Le classi le abbiamo viste nella {doc}`sezione sulle basi di
+Python </Python/basi>` con l'immagine dello stampo per biscotti: una classe è
+lo stampo, l'oggetto è il biscotto. *Ereditare* vuol dire partire da uno
+stampo che esiste già e aggiungergli qualcosa invece
 di intagliarne uno da zero: il nuovo stampo sa fare tutto quello che sapeva
 fare il vecchio, più ciò che gli abbiamo aggiunto. Nel codice l'eredità si
 scrive mettendo il nome dello stampo di partenza fra parentesi,
@@ -239,7 +240,7 @@ le loss di questo capitolo: è quanto vale la cross-entropy per un modello che
 tira a indovinare fra dieci cifre, cioè che dà a ciascuna una probabilità su
 dieci. Un addestramento che funziona parte da lì e scende; uno che resta a
 $2{,}3$ non ha imparato niente. (Il valore esatto dipende dai pesi casuali di
-partenza, e su due sole immagini oscilla fra $2$ e $2{,}5$: è la media su
+partenza, e su due sole immagini oscilla fra $1{,}9$ e $2{,}8$: è la media su
 tante immagini che si assesta.)
 
 `````{tab} Elementare
@@ -306,15 +307,16 @@ e con essa il learning rate che serviva. Per la classificazione a $K$ classi,
 i logit $z_1, \dots, z_K$ e la classe vera $c$ di un singolo esempio,
 
 $$
-\mathcal{L} = -\log \hat{y}_c,
+\ell = -\log \hat{y}_c,
 \qquad
 \hat{y}_k = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}} ,
 $$
 
-dove qui $k$ e $j$ scorrono le $K$ classi, non gli esempi. Sul batch il modulo
-restituisce la **media** di questi termini sugli $N$ esempi
-(`reduction='mean'`, il default): è il "numero solo" del codice qui sopra, e
-qui la media è davvero per esempio, perché di termini ce n'è uno per esempio.
+dove qui $k$ e $j$ scorrono le $K$ classi, non gli esempi, e $\ell$ è il costo
+di **una** predizione, quello che sta dentro la somma. Sul batch il modulo
+restituisce la $\mathcal{L}$, cioè la **media** di questi termini sugli $N$
+esempi (`reduction='mean'`, il default): è il "numero solo" del codice, e qui
+la media è davvero per esempio, perché di termini ce n'è uno per esempio.
 Applicarla ai logit, e non a probabilità già normalizzate, non è un
 capriccio: il calcolo congiunto del logaritmo e della softmax è numericamente
 più stabile (evita underflow con il *log-sum-exp trick*), e per questo
@@ -344,8 +346,8 @@ cresce senza limite man mano che il modello esclude la risposta giusta.
 ```
 
 È il comportamento agli estremi, e non altro, la ragione per cui in
-classificazione si sceglie la seconda. Lì ciò che deve fare male non è
-sbagliare di poco, è essere convinti del contrario: la cross-entropy è
+classificazione si sceglie la seconda. Lì ciò che deve fare male è essere
+convinti del contrario, più che sbagliare di poco: la cross-entropy è
 costruita esattamente per questo.
 
 Il modello esiste e sa dire quanto sbaglia. Manca chi usa quel numero per

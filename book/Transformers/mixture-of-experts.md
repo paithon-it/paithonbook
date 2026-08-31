@@ -318,8 +318,8 @@ caratteristico di tutta la famiglia.
 
 Un modello a esperti, lasciato a sé stesso, tende a **collassare**: dopo
 qualche migliaio di passi il router manda quasi tutti i token agli stessi due
-o tre esperti, e gli altri restano dei blocchi di parametri inerti. Non è un
-bug di implementazione, è la dinamica naturale del sistema.
+o tre esperti, e gli altri restano dei blocchi di parametri inerti. È la
+dinamica naturale del sistema, non un bug di implementazione.
 
 `````{tab} Elementare
 
@@ -601,8 +601,9 @@ successivo, che è la data della voce in bibliografia) porta il meccanismo dentr
 il Transformer nella forma che ancora usiamo: la rete feed-forward di uno strato
 ogni due sostituita da un banco di esperti, due esperti per token, il tetto alla
 capacità con i token che cadono, e gli esperti sparsi su centinaia di schede che
-si scambiano token in continuazione. Sette mesi dopo, nel gennaio 2021, Switch
-Transformer {cite}`fedus2022switch` (uscito su rivista l'anno dopo, che è la
+si scambiano token in continuazione. Poco più di sei mesi dopo, nel gennaio
+2021, Switch Transformer {cite}`fedus2022switch` (uscito su rivista l'anno
+dopo, che è la
 data in bibliografia) fa la mossa controintuitiva: **un solo esperto per
 token**. Il ragionamento del 2017 diceva che ne servivano almeno due, altrimenti
 lo smistatore avrebbe perso il segnale con cui impara (quella domanda «se avessi
@@ -620,13 +621,16 @@ perdere per strada una parte dell'uscita; con uno solo quella parte perduta è
 tutta la stessa uscita moltiplicata per un fattore, il che è una cosa che la
 rete impara a compensare da sé, e in cambio si guadagna la manopola su cui lo
 smistatore impara. In più, scegliere un solo esperto dimezza il viavai fra le
-schede, semplifica il codice e permette tetti di capacità più bassi. Con il top-1 arrivano anche gli accorgimenti che rendono
-stabile l'addestramento. Il più istruttivo riguarda le cifre con cui si scrivono
-i numeri: per andare più in fretta il modello ne usa poche (mezza precisione,
-`float16`), ma i punteggi del router si calcolano con il doppio delle cifre
-(`float32`), perché quando due esperti sono quasi in pareggio è la terza cifra
-a decidere chi entra, e un esperto scelto per un errore di arrotondamento è un
-esperto sbagliato.
+schede, semplifica il codice e permette tetti di capacità più bassi.
+
+Con il top-1 arrivano anche gli accorgimenti che rendono stabile
+l'addestramento. Il più istruttivo riguarda le cifre con cui si scrivono i
+numeri: per andare più in fretta il modello ne tiene sedici bit invece di
+trentadue (il formato `bfloat16`), ma i punteggi del router li calcola a
+trentadue (`float32`), che di cifre significative ne porta tre volte tante,
+ventiquattro bit contro otto. Quando due esperti sono quasi in pareggio è
+l'ultima cifra a decidere chi entra, e un esperto scelto per un errore di
+arrotondamento è un esperto sbagliato.
 
 Da allora l'architettura sparsa è di uso comune nei modelli di frontiera, ed è
 il motivo per cui capita di leggere due numeri di parametri per lo stesso
@@ -642,8 +646,8 @@ descrizione verificata.
 
 Il codice qui sotto implementa lo strato per intero: esperti, router, top-$k$,
 softmax sui soli scelti, combinazione pesata. Non c'è nessuna delle
-ottimizzazioni vere (il *dispatch* efficiente dei token, l'all-to-all, la
-capacità con i buffer preallocati), e il ciclo `for` sugli esperti sarebbe
+ottimizzazioni vere (lo smistamento dei token fra le schede, i buffer di
+capacità preallocati), e il ciclo `for` sugli esperti sarebbe
 inaccettabile su scala; ma la struttura è quella, e si legge. Manca però anche
 una cosa che non è un'ottimizzazione, ed è bene dirlo forte perché è la sola
 che riguarda la **correttezza**: non c'è la loss di bilanciamento. Chi prendesse
@@ -728,7 +732,7 @@ contati; contandoli da tutte e due le parti verrebbe $3{,}98$.)
 Lo strato è intercambiabile con la FFN di un blocco Transformer: stessa forma
 in ingresso, stessa forma in uscita. Ed è precisamente questa
 intercambiabilità la ragione per cui la mixture of experts si è diffusa così
-in fretta: non è un'architettura nuova, è un pezzo di ricambio.
+in fretta: è un pezzo di ricambio più che un'architettura nuova.
 
 Nulla di tutto questo, però, cambia *cosa* il modello ha imparato a fare.
 Denso o sparso, quello che esce dal pre-addestramento resta un completatore di
@@ -762,7 +766,9 @@ testo, e per trasformarlo in un interlocutore serve la fase successiva, il
   città per arrivare al suo specialista e poi torna indietro. E quando il
   modello scrive, il tempo se ne va più ad andare a prendere quello che sa che
   a fare i conti: uno che sa moltissimo e fatica poco su ogni parola attacca
-  il lato sbagliato del problema, e resta pesante da far girare.
+  il lato sbagliato del problema. Quanto pesi dipende però da **quante
+  richieste si servono insieme**: una alla volta il vantaggio si sente tutto,
+  a centinaia insieme sparisce.
 - L'idea è del 1991 {cite}`jacobs1991adaptive`, ma allora ogni pezzo passava
   per tutti gli esperti e delle loro risposte si faceva la media: un buon modo
   di organizzare il lavoro, non di risparmiarlo. Il salto è del 2017
@@ -780,7 +786,7 @@ testo, e per trasformarlo in un interlocutore serve la fase successiva, il
 :class: important
 - La mixture of experts sostituisce la **rete feed-forward** di uno strato con
   $N$ esperti paralleli più un **router** che per ogni token ne sceglie $k$
-  (uno o due). Un modello sparso si descrive con **due** numeri, non uno:
+  (uno o due). Un modello sparso si descrive con due numeri e non con uno:
   **parametri totali** (la memoria) e **parametri attivi** (il calcolo per
   token).
 - Il router è uno strato lineare:

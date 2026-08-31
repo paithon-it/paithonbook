@@ -14,7 +14,7 @@ computer che fanno i conti. La morale della figura è brutale e onesta:
 addestrare il modello è la parte più piccola del lavoro. Tutto il resto (il
 grosso) è il sistema che gli sta intorno.
 
-Non è un dettaglio da ingegneri pignoli. Nel settore si ripete spesso che
+E la differenza si vede nei numeri del settore. Si ripete spesso che
 moltissimi modelli non arrivino mai **in produzione**, cioè non finiscano mai
 davanti a persone vere che li usano ogni giorno. È un'osservazione diffusa e
 più aneddotica che misurata, e non è su quella che ci appoggiamo. Il problema
@@ -33,8 +33,8 @@ che è in funzione.
 
 L'errore di prospettiva è comprensibile: fino a qui, in tutto il libro, «fare
 machine learning» ha significato scegliere un modello, addestrarlo, misurarne
-l'accuratezza. E tutto questo si fa in un **notebook**, che qui non è un
-computer portatile: è una pagina su cui il programma si scrive a pezzetti, uno
+l'accuratezza. E tutto questo si fa in un **notebook**, che qui vuol dire una
+pagina su cui il programma si scrive a pezzetti, uno
 sotto l'altro, e ogni pezzetto lo si può far partire da solo vedendo subito che
 cosa combina. È comodissimo per
 provare, ed è lì che nasce quasi ogni modello. Sul proprio computer il lavoro
@@ -164,8 +164,8 @@ L'obiettivo non è la sofisticazione, ma l’**automazione** e la
 ogni rilascio ripetibile e ogni predizione riconducibile agli artefatti che
 l'hanno prodotta. È la tesi di fondo dei testi che hanno sistematizzato la
 disciplina, *Designing Machine Learning Systems* fra i primi
-{cite}`huyen2022designing`: un modello in produzione non è un risultato, è un
-**processo** da tenere in vita.
+{cite}`huyen2022designing`: un modello in produzione è un
+**processo** da tenere in vita, più che un risultato.
 
 `````
 
@@ -174,7 +174,7 @@ disciplina, *Designing Machine Learning Systems* fra i primi
 Ed è proprio la parola «processo» a segnare la differenza più importante.
 Siamo abituati a pensare al machine learning come a una linea retta: si
 raccolgono i dati, si addestra, si valuta, si consegna. Fine. Ma la consegna
-non è la fine: è il punto in cui il modello incontra il mondo reale, e il
+è il punto in cui il modello incontra il mondo reale, e il
 mondo reale cambia. Un modello in produzione va **sorvegliato**, perché prima o
 poi i dati che incontra smettono di somigliare a quelli su cui è stato
 addestrato. Quello scivolamento lento ha un nome inglese che useremo sempre,
@@ -182,7 +182,7 @@ addestrato. Quello scivolamento lento ha un nome inglese che useremo sempre,
 dati cambiano» del {doc}`capitolo di Machine Learning </MachineLearning/overview>`, lì misurata con gli strumenti
 della statistica, qui affrontata da chi il servizio lo deve tenere acceso.
 Quando succede, si torna all'inizio: nuovi dati, nuovo addestramento. Il
-percorso non è una linea, è un **anello**
+percorso si chiude in un **anello**
 ({numref}`fig-mlops-ciclo-vita`).
 
 ```{figure} ../figures/mlops-ciclo-vita.svg

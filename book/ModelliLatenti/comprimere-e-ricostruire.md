@@ -7,8 +7,8 @@ qualcosa lo si scopre chiamando un copista, dandogli una scheda e nient’altro,
 e guardando se il quadro che ridipinge somiglia a quello di partenza. Se
 somiglia, la scheda conteneva l’essenziale.
 
-I due imparano insieme, ed è il punto: una scheda non è buona in assoluto, è
-buona **rispetto a chi la deve leggere**. Se il copista sa già dipingere una
+I due imparano insieme, ed è il punto: una scheda è buona **rispetto a chi la
+deve leggere**, mai in assoluto. Se il copista sa già dipingere una
 cornice dorata, l’archivista non ha bisogno di annotarla; se non lo sa, quella
 riga sulla scheda va spesa. Nessuno dei due ha ricevuto istruzioni su che cosa
 sia importante in un quadro: se lo sono divisi lavorando, e questo capitolo
@@ -43,7 +43,7 @@ l’archivista.
 ## La strozzatura è il compito
 
 Conviene rimettere a fuoco che cosa fa la clessidra, perché quello che qui
-serve non è la compressione, è la **scheda**. E la parte stretta in mezzo alla
+serve è la **scheda**, più che la compressione. E la parte stretta in mezzo alla
 clessidra, quella da cui deve passare tutto, si chiama **strozzatura**, e la
 chiameremo anche «il collo stretto», che è la stessa cosa.
 
@@ -131,8 +131,8 @@ Un permesso però gli serve, ed è l’unico: partire dal quadro medio del museo
 annotare soltanto di quanto il quadro che ha davanti se ne discosta. Senza, il
 piano è costretto a passare per la tela bianca, e quasi mai è quello giusto.
 
-Detto altrimenti: la clessidra non è una macchina nuova, è la vecchia a cui è
-stato tolto il divieto di piegarsi. E va tolto a tutti e due: se si piega solo
+Detto altrimenti: la clessidra è la vecchia macchina a cui è stato tolto il
+divieto di piegarsi. E va tolto a tutti e due: se si piega solo
 l’archivista e il copista resta alle sue somme pesate, si finisce di nuovo su
 un piano, lo stesso di prima. La differenza fra le due macchine spiega quando
 conviene l’una e quando l’altra: se i quadri stanno davvero su un piano,
@@ -149,7 +149,7 @@ $d_\theta(e_\phi(\mathbf{x}))$ è la proiezione ortogonale di $\mathbf{x}$ sul
 sottospazio affine che passa per la media dei dati ed è generato dalle prime
 $L$ componenti principali dei dati **centrati** {cite}`bourlard1988auto`, e il
 codice ne è un sistema di coordinate.
-La centratura non è un dettaglio: con mappe puramente lineari e
+E la centratura conta: con mappe puramente lineari e
 dati non centrati il minimo è il sottospazio dei primi $L$ vettori singolari
 della matrice grezza, che passa per l'origine e in generale non coincide con
 quello della PCA. A farsene carico è il termine additivo, ed è la ragione per
@@ -178,9 +178,9 @@ Tutto il resto (la strozzatura, la loss, l’assenza di probabilità) è identic
 `````
 
 Da qui in avanti la clessidra è curva, cioè ciascuna delle due metà ha dentro
-di sé un passaggio che non è una semplice somma pesata: è la **non linearità**
-del capitolo sulle reti neurali, ed è ciò che permette a una rete di piegarsi
-invece di limitarsi a piani. Adesso la guardiamo lavorare su dati veri.
+di sé un passaggio in più rispetto alla semplice somma pesata, cioè la **non
+linearità** del capitolo sulle reti neurali, ed è ciò che permette a una rete
+di piegarsi invece di limitarsi a piani. Adesso la guardiamo lavorare su dati veri.
 
 ## Trenta righe, e funziona
 
@@ -407,7 +407,7 @@ perché dice il **perché** invece del sintomo. I codici veri stanno a poco più
 di due unità l’uno dall’altro; un codice sorteggiato dista più di cinque dal
 più vicino dei codici veri. Sorteggiare in quello spazio vuol dire finire, di
 norma, a **più del doppio** della distanza che separa due schede vere. È terra
-mai battuta, e non è una zona di frontiera: è la regola.
+mai battuta, ed è la regola più che l’eccezione.
 
 ## Perché la strozzatura non basta
 
@@ -469,7 +469,7 @@ euristico e conviene dirlo: a parità del resto, codici più distanti fra loro s
 ricostruiscono meglio, perché il decoder ha meno occasioni di confonderli, e
 nella loss non compare nessun termine che paghi quella distanza. Si dice, con
 formula spiccia, che il latente **non è regolarizzato**, e la regolarizzazione
-che manca non è sui pesi: è sulla distribuzione dei codici.
+che manca riguarda la distribuzione dei codici, non i pesi.
 
 Da qui il programma della sezione seguente. Servono due cose insieme, e sono le
 due che il nome «autoencoder variazionale» tiene una per parola: una
@@ -542,9 +542,9 @@ chiesto e che nessuna quantità di addestramento gli fa venire.
 `````
 
 Resta una cosa da dire prima di andare avanti, ed è un avvertimento che
-conviene tenere. Quello che abbiamo appena visto non è un esperimento andato
-male: è un esperimento **andato benissimo**, che ha risposto a una domanda
-diversa da quella che avevamo in testa. Chiedere «la copia somiglia
+conviene tenere. Quello che abbiamo appena visto è un esperimento **andato
+benissimo**, che ha risposto a una domanda diversa da quella che avevamo in
+testa. Chiedere «la copia somiglia
 all’originale?» e sperare in un archivio ordinato è la versione in miniatura di
 un errore che in questo libro torna spesso, e cioè scambiare la cosa che si
 misura con la cosa che si vuole. La sezione seguente non aggiusta la clessidra:

@@ -28,8 +28,8 @@ parlato finora) siano vicini non gli dice niente. Ma in un'immagine la posizione
 somigliano: un pezzo di cielo è azzurro tutto intorno.
 
 Una variante che ne teneva conto c'era già nel paper del 2014, e addestrarla
-era un terno al lotto: quel che mancava non era l'idea, era una ricetta che
-stesse in piedi. Arriva a fine 2015 con la **DCGAN** (*Deep Convolutional GAN*)
+era un terno al lotto: quel che mancava era una ricetta che stesse in piedi, non
+l'idea. Arriva a fine 2015 con la **DCGAN** (*Deep Convolutional GAN*)
 di Radford, Metz e Chintala {cite}`radford2016unsupervised`.
 
 `````{tab} Elementare
@@ -47,8 +47,8 @@ qualche migliaio? Il primo passaggio dispone quel centinaio di numeri in una
 griglia minuscola, $4\times4$, ma spessa: in ogni casella non un valore solo,
 bensì una pila di valori. Da lì in poi ogni passaggio raddoppia il lato: da
 $4\times4$ a $8\times8$, poi $16\times16$, fino ai $64\times64$ che erano la
-taglia della DCGAN, mentre la pila si assottiglia. I puntini in più non sono
-copiati da nessuna parte, sono *decisi*: dove il vecchio puntino era uno solo,
+taglia della DCGAN, mentre la pila si assottiglia. I puntini in più sono
+*decisi* e non copiati da nessuna parte: dove il vecchio puntino era uno solo,
 il passaggio successivo ne mette quattro, e quanto ciascuno debba essere chiaro
 o scuro lo dicono i filtri. Con questa architettura le immagini smettono di
 essere macchie e cominciano ad avere bordi netti e coerenza.
@@ -115,8 +115,8 @@ ricco (da un'etichetta discreta a un'intera frase).
 
 È la tecnologia dietro i volti impossibili da smascherare a occhio, ed è quella
 che ha reso famose le GAN presso chi non le ha mai studiate. Ma il cambiamento
-che StyleGAN {cite}`karras2019style` porta non è nella qualità delle immagini:
-è nel **governo** di ciò che si ottiene. Il generatore di NVIDIA cambia
+che StyleGAN {cite}`karras2019style` porta sta nel **governo** di ciò che si
+ottiene, più che nella qualità delle immagini. Il generatore di NVIDIA cambia
 impianto per farsi guidare, non per disegnare meglio.
 
 `````{tab} Elementare
@@ -184,9 +184,9 @@ duecentocinquantasei, e via fino al milione.
 Il punto delicato è il gradino, ed è lì che sta il mestiere. Aggiungere di
 colpo uno strato nuovo, coi suoi numeri ancora casuali, davanti a due reti che
 avevano appena trovato l'equilibrio vuol dire buttare all'aria l'equilibrio. La
-soluzione è una **dissolvenza**: per un po’ l'immagine che esce non è quella
-del gradino nuovo, è una miscela fra quella del gradino vecchio (semplicemente
-ingrandita) e quella del gradino nuovo, e il peso della miscela scivola da zero
+soluzione è una **dissolvenza**: per un po’ l'immagine che esce è una miscela
+fra quella del gradino vecchio (semplicemente ingrandita) e quella del gradino
+nuovo, e il peso della miscela scivola da zero
 a uno nel corso dell'addestramento. All'inizio comanda il vecchio, alla fine il
 nuovo, e in mezzo non c'è nessun salto. Lo stesso, specularmente, dalla parte
 dell'esperto. Nessuno dei due si sveglia una mattina in un mondo diverso.
@@ -322,8 +322,8 @@ il modello stava **facendo il suo lavoro nel modo che l'impianto gli
 permetteva**. È la differenza fra il debug di un programma, dove qualcosa è
 scritto storto, e la diagnosi di un modello, dove di solito non c'è niente di
 storto e c'è invece un obiettivo che premia una strada che non avevamo
-previsto. Quando una rete fa una cosa strana e ripetuta, la domanda che paga non è dove
-sia il guasto, è che cosa ci stia guadagnando; il
+previsto. Quando una rete fa una cosa strana e ripetuta, la domanda che paga è
+che cosa ci stia guadagnando, più che dove sia il guasto; il
 {doc}`capitolo sull'interpretabilità </Interpretabilita/overview>` ne fa un
 mestiere.
 ```
@@ -559,7 +559,7 @@ soltanto col criterio «somiglia», il catalogo si riempie di tessere sbiadite:
 davanti a un dubbio la scelta più prudente è sempre il grigio medio, che
 somiglia un po’ a tutto e non è niente. Mettendo un esperto a bocciare le
 ricostruzioni molli, le tessere restano nette. È il mestiere di sempre, ma
-stavolta il prodotto dell'esperto non è un'immagine: è un alfabeto.
+stavolta il prodotto dell'esperto è un alfabeto e non un'immagine.
 
 Un'avvertenza: il catalogo è **un soffitto**. Ciò che nessuna delle mille
 tessere sa dire, nessuno lo recupera più a valle, per quanto bravo sia chi
@@ -671,9 +671,9 @@ che riporta quella versione ridotta e compatta ai pixel veri e propri, e la si
 chiama decodificatore: ecco, è stata addestrata anche con una loss avversaria,
 cioè con un esperto contro. Finito l'addestramento l'esperto se ne va, come nel
 duello di questo capitolo, ed
-è quella parte a tenere nitide le ricostruzioni. Il duello, insomma, non è
-finito in soffitta: è passato dal centro della scena a un ruolo di
-manutenzione. Ma il centro di gravità si è spostato.
+è quella parte a tenere nitide le ricostruzioni. Il duello, insomma, è passato
+dal centro della scena a un ruolo di manutenzione, invece di finire in
+soffitta. Ma il centro di gravità si è spostato.
 
 ```{admonition} Nota etica: i deepfake
 :class: warning
@@ -708,8 +708,8 @@ duello, e conviene ripassarle così.
   a un milione, e a ogni gradino si passa in **dissolvenza** invece che di
   colpo. La manopola non impartisce ordini: **rimette tutte le corsie del
   segnale alla stessa taratura e poi le ritara** secondo lo stile, come un
-  mixer. E la famosa macchia a goccia delle immagini di StyleGAN non era un
-  errore: era il falsario che si fabbricava un picco enorme per contrabbandare,
+  mixer. E la famosa macchia a goccia delle immagini di StyleGAN era il
+  falsario che si fabbricava un picco enorme per contrabbandare,
   attraverso quella taratura, un'informazione che la taratura gli toglieva.
   StyleGAN2 la fa sparire tarando i **pesi** invece del segnale, cioè con un
   controllo che l'immagine non la guarda; e con la stessa revisione mette da

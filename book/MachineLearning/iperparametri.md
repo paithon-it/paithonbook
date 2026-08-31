@@ -63,10 +63,11 @@ Chi regola una macchina del caffè professionale ha davanti quattro manopole
 livelli. Per assaggiare tutte le combinazioni servono
 $5 \times 5 \times 5 \times 5 = 625$
 caffè. E siccome un solo assaggio può ingannare (magari quella tazzina è venuta
-bene per caso), ogni combinazione va provata cinque volte: è la
-cross-validation della sezione su overfitting e validazione, che divide i dati
-in cinque blocchi e fa girare il blocco di prova. Quindi
-$625 \times 5 = 3\,125$ caffè.
+bene per caso, o è capitata a un cliente che il caffè lo prende amaro comunque),
+ogni regolazione va giudicata da cinque clienti diversi, uno per tavolo, e conta
+come è andata in media: è la cross-validation della sezione su overfitting e
+validazione, che a turno tiene da parte un blocco di dati diverso e giudica su
+quello. Quindi $625 \times 5 = 3\,125$ caffè.
 
 Se ogni «caffè» è un addestramento da due minuti, sono
 $3\,125 \times 2 = 6\,250$ minuti, cioè quattro giorni e un terzo di macchina
@@ -267,7 +268,8 @@ migliore col senno di poi.
 
 `````
 
-L’*early stopping* (che vedremo all'opera nel {doc}`capitolo su PyTorch </PyTorch/overview>`) è il caso
+L’*early stopping* (che vedremo all'opera nella pagina
+sull’{doc}`addestramento in PyTorch </PyTorch/addestramento>`) è il caso
 limite di questa idea: un torneo con un solo iscritto, che si ritira quando la
 validazione smette di migliorare.
 
@@ -462,14 +464,14 @@ rende meno.
 
 La seconda è la **riproducibilità**. Un computer non sa tirare a caso davvero:
 produce numeri che *sembrano* casuali partendo da un numero iniziale, il
-**seme** (in inglese *seed*, il `random_state` del codice qui sopra). Stesso
+**seme** (in inglese *seed*, il `random_state` di scikit-learn). Stesso
 seme, stessa sequenza di numeri «a caso», stesso risultato domani e sul
 computer di un altro; seme non fissato, esito diverso a ogni esecuzione, e
 allora nessuno può ripetere il tuo esperimento, nemmeno tu. Alla stessa
 famiglia appartiene un'altra dimenticanza: dire «il metodo A batte il metodo B»
 senza dichiarare in quale intervallo si è cercato e quante prove si sono fatte
-non è un confronto, è un aneddoto, perché a parità di tempo il vincitore può
-capovolgersi.
+vale come aneddoto e non come confronto, perché a parità di tempo il vincitore
+può capovolgersi.
 
 La terza avvertenza è la più subdola.
 

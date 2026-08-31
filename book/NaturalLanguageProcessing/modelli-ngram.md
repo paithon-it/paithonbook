@@ -205,7 +205,7 @@ nero» non compare mai nel corpus, quindi $P(\text{nero} \mid \text{cane}) = 0$,
 e uno zero nel prodotto azzera tutto. Il modello confonde «mai visto» con
 «impossibile».
 
-Non è un difetto del nostro corpus giocattolo: è la regola, e i conti si fanno
+È la regola, e non un difetto del nostro corpus giocattolo, e i conti si fanno
 in fretta. Jurafsky e Martin {cite}`jurafsky2026speech` prendono l'opera omnia
 di Shakespeare: circa 884.000 parole in tutto, ma **parole diverse** solo
 29.000, perché le stesse tornano di continuo. Le coppie possibili sono allora

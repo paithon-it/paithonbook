@@ -162,9 +162,9 @@ il pareggio è il traguardo.
 Perché il pareggio arriva quando il falsario è diventato bravissimo. Se i suoi
 quadri sono indistinguibili da quelli veri, l'esperto non ha più niente su cui
 appoggiarsi: qualunque cosa gli passi davanti, può solo tirare a indovinare,
-come a testa o croce, e indovina una volta su due. Quel 50% non è un esperto
-che si è arreso: è il massimo che chiunque possa ottenere quando non c'è più
-niente da vedere.
+come a testa o croce, e indovina una volta su due. Quel 50% è il massimo che
+chiunque possa ottenere quando non c'è più niente da vedere, non un esperto che
+si è arreso.
 
 Ma perché dovrebbe finire *così*, e non con l'esperto che vince sempre e il
 falsario che resta scarso per sempre? La risposta sta in un dettaglio

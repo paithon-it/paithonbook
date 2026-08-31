@@ -3,13 +3,14 @@
 Le mille categorie di ImageNet, il dataset su cui si è addestrata mezza storia
 della visione artificiale, contengono circa centoventi razze di cane e nessuna
 classe «persona» (ci sono uno «sposo», un «giocatore di baseball» e un
-«sommozzatore», ma l'essere umano in quanto tale non è una categoria). Non è una
-svista, è la conseguenza di come nasce un classificatore: qualcuno decide una
-lista, qualcun altro etichetta milioni di immagini secondo quella lista, e il
+«sommozzatore», ma l'essere umano in quanto tale non è una categoria).
+Quell'assenza è la conseguenza di come nasce un classificatore: qualcuno
+decide una lista, qualcun altro etichetta milioni di immagini secondo quella
+lista, e il
 modello impara a rispondere sempre alla stessa domanda, quale delle mille.
 Fuori da quell'elenco non esiste niente. Un tram non esiste, una radiografia
 non esiste, e «un gatto nero che salta sul muro» non esiste nemmeno come
-domanda: non è una classe, è una frase.
+domanda: è una frase, non una classe.
 
 Nel capitolo sulla visione abbiamo visto la via d'uscita standard, il
 **transfer learning**: si prende una rete pre-addestrata, si toglie la testa
@@ -45,7 +46,8 @@ sezione.
 L'idea, resa celebre da CLIP {cite}`radford2021learning` nel 2021, è di
 addestrare due reti separate, un **encoder di immagini** e un **encoder di
 testo**, a scrivere le loro uscite su quell'unica mappa (in gergo: nello stesso
-**spazio vettoriale**). Il compito non è più assegnare un'etichetta: è appaiare.
+**spazio vettoriale**). Il compito diventa appaiare invece che assegnare
+un'etichetta.
 Dato un mucchietto di immagini e il mucchietto mescolato delle loro didascalie,
 il modello deve dire chi va con chi.
 
@@ -479,8 +481,8 @@ fotografia qualunque, che con lei non c'entra niente, circa $0{,}76$. Ogni foto
 Non è un guasto, e il meccanismo funziona lo stesso: sulle stesse ottanta
 immagini il classificatore scritto a parole (le dieci categorie diventano dieci
 frasi, e si tiene la più vicina) indovina quasi nove volte su dieci. Funziona
-perché il confronto che conta non è mai «foto contro frase, in assoluto»: è
-sempre «questa foto, con quale delle dieci frasi va meglio?». Fra le frasi la
+perché il confronto che conta è sempre «questa foto, con quale delle dieci
+frasi va meglio?», e mai «foto contro frase, in assoluto». Fra le frasi la
 graduatoria è giusta, ed è tutto quello che serve.
 
 La mappa, insomma, è una sola, ma ci sono due quartieri: le fotografie da una
@@ -530,11 +532,12 @@ somigliano fra loro più di quanto si somiglino fotografie a piena risoluzione:
 su queste il valore scende, senza che la forbice si chiuda. L'ampiezza del
 divario dipende dunque dal modello e dai dati; la sua esistenza no.
 
-Che non si chiuda non è un difetto dell'ottimizzazione: è ciò che
-l'ottimizzazione chiede. La InfoNCE dipende soltanto dai **rapporti** fra le
+Che non si chiuda è proprio ciò che l'ottimizzazione chiede. La InfoNCE
+dipende soltanto dai **rapporti** fra le
 similarità di una riga, quindi è insensibile a qualunque spostamento in blocco
-di una delle due nuvole che non cambi l'ordinamento; il minimo non è «le due
-nuvole sovrapposte», è «dentro ogni riga, la coppia vera davanti alle altre». Il
+di una delle due nuvole che non cambi l'ordinamento; il minimo si scrive
+«dentro ogni riga, la coppia vera davanti alle altre», e non «le due nuvole
+sovrapposte». Il
 divario nasce per giunta già all'inizializzazione (è l’**effetto cono**: una rete
 profonda non addestrata concentra le proprie uscite in un cono stretto, e due
 reti diverse danno due coni diversi), e la temperatura bassa di cui si è parlato
@@ -767,13 +770,13 @@ scelte insieme, sono tutti *sotto* il livello del caso, il che non è sfortuna:
 vuol dire che qualcosa li spinge sistematicamente verso la risposta sbagliata. (Sulla prima delle tre, quella in cui si sceglie la
 didascalia, qualcuno il caso lo stacca, ed è l'unica in cui succede: chi va a
 guardare la tabella dello studio trova quella colonna e crede che la frase sia
-smentita, mentre sono le altre due a contare.) Non è una classifica fra prodotti: è la misura di un
-limite che riguarda la famiglia.
+smentita, mentre sono le altre due a contare.) È la misura di un limite che
+riguarda la famiglia, non una classifica fra prodotti.
 
 La ragione è strutturale, e sta nel gioco stesso che abbiamo descritto: il
-modello non è addestrato a *descrivere* un'immagine, è addestrato a
-*distinguere* la sua didascalia dalle altre del gruppo, che sono didascalie di
-immagini prese a caso. Per vincere, quasi sempre, basta indovinare quali oggetti
+modello impara a *distinguere* la sua didascalia dalle altre del gruppo
+(didascalie di immagini prese a caso), e non a *descrivere* quello che vede.
+Per vincere, quasi sempre, basta indovinare quali oggetti
 compaiono nella foto: se le altre parlano di un tramonto, di una bicicletta e di
 una scodella di minestra, riconoscere «gatto» e «muro» è più che sufficiente, e
 capire *chi sta sopra chi* non porta nessun vantaggio. La strada più economica
@@ -791,14 +794,14 @@ peggiora. Se l'ordine si può buttare via senza pagare pegno, l'ordine il compit
 non lo chiedeva. Lo stesso lavoro mostra anche il rovescio, che è la parte utile:
 aggiungendo al mucchio, come didascalie sbagliate, la **didascalia giusta con le
 parole rimescolate**, la stessa identica rete impara l'ordine. Il limite
-non era dell'architettura, era di quello che le si chiedeva di distinguere.
+stava in quello che le si chiedeva di distinguere, non nell'architettura.
 
 Due precisazioni, per onestà. La prima è che quegli esempi, scelti a mano
 perché siano difficili, lo sono anche per altre ragioni (alcuni chiedono
 conoscenza del mondo, altri sono visivamente ostici
-{cite}`diwan2022why`), e quindi quel che misurano non è soltanto il
-saper mettere insieme i pezzi di una frase (la **composizionalità**): è quello,
-più qualcos'altro. Il fenomeno è solido, la sua quantificazione esatta lo è
+{cite}`diwan2022why`), e quindi quel che misurano è il
+saper mettere insieme i pezzi di una frase (la **composizionalità**) più
+qualcos'altro. Il fenomeno è solido, la sua quantificazione esatta lo è
 meno. La seconda è che un limite parallelo viene
 dalla forma della rappresentazione: un'intera immagine finisce in **una sola**
 fila di qualche centinaio di numeri, e una fila sola non può portare insieme la

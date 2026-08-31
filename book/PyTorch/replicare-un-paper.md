@@ -73,7 +73,7 @@ tutti controllabili **senza addestrare**:
    meno dell'1% significa che la struttura è quella; discostarsi del 30%
    significa che manca un blocco o che una dimensione è sbagliata.
 3. **Invariante di gradiente.** Un `backward()` su una loss finta deve
-   produrre `p.grad is not None` per **ogni** parametro. Un tensore creato con
+   produrre `p.grad is not None` per ogni parametro. Un tensore creato con
    `torch.tensor(...)` invece che `nn.Parameter`, o un ramo staccato per
    sbaglio con `detach()`, si scopre qui e non dopo tre giorni di
    addestramento che non converge.
@@ -257,14 +257,15 @@ esattamente il tipo di nota che fa fallire una replica.
 `````
 
 Le equazioni 2 e 3 descrivono il blocco che poi si ripete dodici volte, e in
-esse compaiono tre sigle e due parole che il libro spiegherà per esteso nel
-{doc}`capitolo sui Transformer </Transformers/overview>`. Qui bastano una riga a testa. **MSA** è l'attenzione
-multi-testa, cioè la scatola in cui i quadratini si guardano fra loro e ognuno
+esse compaiono tre sigle e due parole che il libro spiegherà per esteso nella
+{doc}`sezione sulla struttura del Transformer </Transformers/architettura>`.
+Qui bastano una riga a testa. **MSA** è l'attenzione multi-testa, cioè la
+scatola in cui i quadratini si guardano fra loro e ognuno
 raccoglie qualcosa dagli altri. **MLP** è una coppia di strati come quelli già
 visti, che lavora su ogni posizione per conto suo. **LN** è la
 *LayerNorm*, che rimette i numeri su una scala comoda prima di darli in pasto
 alle altre due. *Pre-norm* vuol dire soltanto che quella rimessa in scala
-avviene **prima** delle scatole e non dopo. E la **connessione residua** è il
+avviene prima delle scatole e non dopo. E la **connessione residua** è il
 `+ z` in fondo a ciascuna riga: quello che la scatola ha prodotto non
 sostituisce l'ingresso, gli si somma, così il segnale originale ha sempre una
 strada libera per arrivare in fondo.
@@ -306,12 +307,13 @@ class BloccoTransformer(nn.Module):
 ```
 
 Due trappole in dieci righe, ed è normale. `nn.MultiheadAttention` restituisce
-**due** cose insieme, il risultato e i pesi dell'attenzione: dimenticare il
+due cose insieme, il risultato e i pesi dell'attenzione: dimenticare il
 `[0]` che tiene solo la prima produce un errore di tipo poco comprensibile. E
 `batch_first=True` non è il default: senza, il modulo si aspetta i tre assi
 nell'ordine (posizione, esempio, numeri) e non (esempio, posizione, numeri).
-È un errore che *non* solleva eccezioni quando gli esempi del vassoio sono
-tanti quante le posizioni della sequenza, e che quindi va messo lì e
+È un errore che non solleva mai un'eccezione, perché l'attenzione conserva le
+forme e il residuo si chiude lo stesso: il modello gira, e attende fra gli
+esempi del vassoio invece che fra le posizioni della sequenza. Va messo lì e
 dimenticato.
 
 ## Verificare senza addestrare
@@ -385,7 +387,7 @@ $$
 $$
 
 ed è esattamente il numero che quel modello riporta, fino all'ultima cifra. Il
-$+K$ in coda non è un dettaglio decorativo: scordarsi i mille bias della testa
+$+K$ in coda conta: scordarsi i mille bias della testa
 farebbe chiudere il conto mille parametri sotto, e in una verifica che si
 vanta di essere esatta all'unità mille parametri si vedono.
 
@@ -445,9 +447,10 @@ Quando invece i numeri dovrebbero tornare e non tornano, la lista dei sospetti
 3. **La dimensione del batch e l'accumulo.** Chi ha 8 GPU e chi ne ha una non
    stanno addestrando lo stesso modello, a meno di accumulare i gradienti.
 4. **I freni**, cioè tutto quello che si mette apposta per rendere la vita più
-   difficile al modello mentre impara. Ce n'è una famiglia intera, con nomi che
-   il libro incontrerà più avanti (weight decay, dropout, *label smoothing*),
-   e un paper che ne omette uno solo è già un altro esperimento.
+   difficile al modello mentre impara. Ce n'è una famiglia intera (weight decay,
+   dropout, *label smoothing*), e li raccoglie la sezione su [come far funzionare
+   le reti profonde](../DeepLearning/ottimizzazione-regolarizzazione.md): un paper
+   che ne omette uno solo è già un altro esperimento.
 5. **L'inizializzazione**, cioè da quali numeri partono i pesi, quando non è
    quella che la libreria mette di suo.
 6. **Il protocollo di valutazione**: su quale porzione di dati si misura, in
@@ -526,7 +529,7 @@ conferenze, che chiedono agli autori di dichiarare esattamente questi punti
 
 «Si registra» merita più di due parole, perché è la pratica che distingue tre
 giorni di lavoro da tre giorni di lavoro buttati. La forma minima è una riga
-per esperimento, scritta **prima** di lanciarlo:
+per esperimento, scritta prima di lanciarlo:
 
 > *Esperimento 7. Ipotesi: la differenza viene dal warmup, che nel paper è di
 > 10k passi e nel mio di 500. Cambio solo quello. Mi aspetto che la loss

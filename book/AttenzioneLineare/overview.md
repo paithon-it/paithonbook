@@ -131,8 +131,8 @@ Chiamarlo riassunto fa pensare a un foglio con delle frasi sopra. È invece una
 matematica una tabella così si chiama *matrice*, e la parola tornerà spesso).
 
 Che una tabella di numeri possa contenere delle parole suona strano, e su
-questo regge tutto il resto: dentro un modello una parola non è una parola, è
-una fila di qualche centinaio di numeri (le posizioni di quella fila si
+questo regge tutto il resto: dentro un modello una parola è una fila di qualche
+centinaio di numeri (le posizioni di quella fila si
 chiamano *canali*). Etichetta e informazione sono due file di numeri anche
 loro, ricavate dalla parola. Quindi «scrivere nel riassunto» vuol dire sommare
 dei numeri alle caselle, e «rileggerlo» vuol dire rifare dei conti.

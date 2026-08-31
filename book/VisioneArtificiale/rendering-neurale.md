@@ -58,9 +58,9 @@ doppio di domande. È la differenza fra una fotografia, che ha i pixel che ha,
 e una formula, a cui puoi chiedere quanti valori ti pare. La seconda: la rete
 non è addestrata su altre scene e non "sa" cosa siano gli alberi o le sedie.
 **Viene addestrata su questa scena e su nient'altro**, a partire dalle foto
-che le hai dato, e quando hai finito quella rete *è* quella scena. Non è un
-modello di come sono fatte le stanze: è quella stanza lì, scritta in forma di
-pesi.
+che le hai dato, e quando hai finito quella rete *è* quella scena. È quella
+stanza lì, scritta in forma di pesi, e non un modello di come sono fatte le
+stanze.
 
 Il colore dipende anche dalla direzione, ed è così che un riflesso si sposta
 mentre giri attorno a un tavolo lucido, cosa che un colore incollato su un
@@ -99,8 +99,8 @@ La rappresentazione è **implicita** e **continua**: non esiste una griglia,
 non esiste una risoluzione, e la memoria occupata è quella dei pesi (nel
 lavoro originale una manciata di megabyte per scena, contro i gigabyte di una
 griglia voxel di pari qualità). In cambio, $F_\theta$ è ottimizzata **per una
-singola scena**: non è un modello che generalizza, è una compressione con
-perdita di quel particolare insieme di fotografie, in una forma che si può
+singola scena**: è una compressione con perdita di quel particolare insieme di
+fotografie, più che un modello che generalizza, in una forma che si può
 interrogare da punti di vista nuovi.
 
 `````
@@ -109,8 +109,8 @@ interrogare da punti di vista nuovi.
 
 Avere una funzione che risponde punto per punto non basta: bisogna trasformare
 quelle risposte in un'immagine. Il passaggio è la parte più importante di tutto
-il meccanismo, e non è una rete: è fisica ottocentesca, e per la precisione la
-legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
+il meccanismo, ed è fisica ottocentesca invece che una rete: per la precisione
+la legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
 nomi di Beer e Lambert e ha quasi due secoli.
 
 **Differenziabile** vuol dire che di ogni numero in gioco si può sempre
@@ -415,8 +415,9 @@ che conviene andare a cercare i difetti.
 
 Il risultato è che la scena si guarda in tempo reale, muovendosi liberamente,
 con la stessa qualità di prima. E l'addestramento resta quello di sempre:
-confronta con le foto, correggi. Solo che qui a essere corretti non sono i
-pesi di una rete, sono **posizione, forma, colore e trasparenza dei granelli**,
+confronta con le foto, correggi. Solo che qui a essere corretti sono
+**posizione, forma, colore e trasparenza dei granelli**, non i pesi di una
+rete,
 e ogni tanto si aggiungono granelli dove il dettaglio manca e si tolgono dove
 sono inutili.
 
@@ -476,8 +477,8 @@ anni fa era fantascienza.
 **Cosa serve, e viene dalla sezione precedente.** Le **pose** delle
 fotocamere. Praticamente ogni pipeline le ottiene da una ricostruzione
 *structure from motion*, e quando quella sbaglia il campo di radianza non
-sbaglia un po’: produce una nuvola incoerente. La geometria classica non è
-stata sostituita, è diventata l'infrastruttura su cui il metodo poggia.
+sbaglia un po’: produce una nuvola incoerente. La geometria classica è
+diventata l'infrastruttura su cui il metodo poggia.
 
 **Cosa resta aperto.** Tre cose, e conviene distinguerle.
 
@@ -548,8 +549,8 @@ Tre numeri da leggere con attenzione.
 
 **Quanto conta, in tutto, il raggio?** Se si sommano i pesi di tutti i sessanta
 punti viene $0{,}9975$: la superficie ferma il $99{,}75\%$ della luce e il
-restante quarto di punto percentuale passa oltre. Non è un errore di calcolo, è
-fisica. La luce che attraversa qualcosa di torbido non si spegne di colpo: cala
+restante quarto di punto percentuale passa oltre. È fisica, non un errore di
+calcolo. La luce che attraversa qualcosa di torbido non si spegne di colpo: cala
 di una frazione fissa per ogni tratto percorso, e dopo tanti tratti ne resta
 sempre un pochino, mai esattamente zero. Il conto lo si può rifare. La densità
 del campione è $60$ e il suo spessore $0{,}1$ metri, e il loro prodotto,
@@ -583,8 +584,8 @@ pesci pigliare.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **campo di radianza** non è un elenco di triangoli, è una **risposta a una
-  domanda**: «da qui, guardando di là, che colore vedo, e c'è qualcosa di
+- Un **campo di radianza** è una **risposta a una domanda** e non un elenco di
+  triangoli: «da qui, guardando di là, che colore vedo, e c'è qualcosa di
   solido?». A rispondere è una piccola rete, addestrata **su quella scena sola**
   e su nient'altro: finito l'addestramento, quella rete *è* quella scena.
 - Il colore di un pixel si ottiene lanciando un raggio e sommando i colori dei
@@ -606,8 +607,8 @@ pesci pigliare.
   milioni di **granelli sfumati** da proiettare sullo schermo (è quello che le
   schede grafiche sanno fare da trent'anni).
 - Serve sapere **dove stava e da che parte guardava** ogni fotocamera, e lo dice
-  la sezione precedente: se quelle posizioni sono sbagliate, il risultato non è
-  impreciso, è una nuvola confusa.
+  la sezione precedente: se quelle posizioni sono sbagliate, il risultato è una
+  nuvola confusa, non solo impreciso.
 - Questi metodi **non capiscono** la scena: la sanno rifare. Non sanno che c'è
   una sedia, né che il tavolo continua dietro il vaso.
 ```
@@ -638,8 +639,8 @@ pesci pigliare.
   invece di marciare e rende in tempo reale, al prezzo di linearizzare
   localmente la prospettiva.
 - Le **pose** delle fotocamere restano un ingresso obbligatorio, e vengono
-  dalla *structure from motion*: la geometria classica non è stata sostituita,
-  è diventata l'infrastruttura.
+  dalla *structure from motion*: la geometria classica è diventata
+  l'infrastruttura.
 - Questi metodi **non capiscono** la scena: la sanno rigenerare. È
   un'interpolazione eccellente fra le viste osservate, non un modello del
   mondo.

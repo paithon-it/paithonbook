@@ -14,9 +14,9 @@ addendo è come contare i centesimi.
 
 ## Arrotondare, e di quanto si sbaglia
 
-Arrotondare non è approssimare alla buona: è decidere una volta per tutte di
-quanto si è disposti a sbagliare su ogni numero. Quel «di quanto» ha una regola
-sola, e da lì viene tutto il resto della sezione.
+Arrotondare vuol dire decidere una volta per tutte di quanto si è disposti a
+sbagliare su ogni numero, non approssimare alla buona. Quel «di quanto» ha una
+regola sola, e da lì viene tutto il resto della sezione.
 
 `````{tab} Elementare
 
@@ -84,7 +84,7 @@ numero. (Troncare $q$ all’intervallo rappresentabile è una prudenza che con l
 scala presa dal massimo non scatta mai: serve soltanto se la scala viene da
 altro, per esempio da una calibrazione fatta su dati diversi.)
 
-Quello che conta però non è l’errore sul peso, è l’errore sull’uscita. Per un
+Quello che conta però è l’errore sull’uscita, non quello sul peso. Per un
 prodotto scalare $\sum_i w_i x_i$ l’errore è $\sum_i (\hat{w}_i - w_i) x_i$,
 una somma di $n$ termini che, se gli arrotondamenti sono approssimativamente
 indipendenti e a media nulla, cresce come $\sqrt{n}$.
@@ -109,8 +109,9 @@ $-0{,}76$), ma a due bit è già crollato tutto.
 Il punto delicato è la definizione della scala, perché $s$ è fissata dal
 **massimo in valore assoluto** del gruppo di numeri che condividono la scala. Un
 singolo elemento molto più grande degli altri allarga $s$ per tutti, e ogni
-altro elemento del gruppo perde risoluzione in proporzione. Il rimedio non è
-mai «arrotondare meglio»: è **cambiare chi condivide la scala**, restringendo
+altro elemento del gruppo perde risoluzione in proporzione. Il rimedio sta
+sempre nel **cambiare chi condivide la scala**, mai nell’arrotondare meglio:
+si restringe
 il gruppo oppure tenendone fuori i pochi elementi anomali.
 
 Questa è la forma **simmetrica**, che dà per scontato che i numeri stiano
@@ -203,9 +204,9 @@ riga da guardare due volte.
 Quel diciotto e sette per cento conviene tradurlo, perché da solo non dice
 niente. È il rapporto fra la lunghezza del vettore degli errori e quella del
 vettore dei risultati veri, e vuol dire che l’uscita **tipica** dello strato è
-lontana quasi un quinto dal valore che avrebbe dovuto avere. Non è un
-arrotondamento all’ultima cifra, è uno scostamento grosso, che la rete userà
-come se fosse il risultato buono. E la distribuzione è peggiore di quel che il
+lontana quasi un quinto dal valore che avrebbe dovuto avere. È uno scostamento
+grosso e non un arrotondamento all’ultima cifra, e la rete lo userà come se
+fosse il risultato buono. E la distribuzione è peggiore di quel che il
 numero lascia intendere: misurato, **un’uscita su otto sbaglia di più del
 proprio valore**, e sono le più piccole, cioè proprio quelle su cui una
 decisione si gioca per poco. E lo strato dopo prende quei numeri per veri e ci
@@ -275,8 +276,8 @@ la componente enorme piu' grande vale  167.6
 
 Tre colonne su cinquecentododici, cioè lo 0,6 per cento dei numeri, tenute per
 esteso invece che arrotondate, e l’errore passa da poco più del sette per cento
-a due decimi. Non è una rifinitura: è la differenza fra un modello che
-funziona e uno che farnetica, e la scoperta che quelle componenti esistano e
+a due decimi. È la differenza fra un modello che funziona e uno che farnetica,
+e non una rifinitura: e la scoperta che quelle componenti esistano e
 siano poche è la ragione per cui `int8` è diventato praticabile sui modelli
 linguistici {cite}`dettmers2022llmint8`.
 
@@ -352,8 +353,8 @@ stimata su un piccolo insieme di dati. **AWQ** {cite}`lin2024awq` parte da
 un’osservazione complementare: non tutti i pesi contano uguale, e quelli che
 moltiplicano le attivazioni grandi vanno protetti riscalando i canali prima di
 arrotondare. In tutti e due i casi la differenza rispetto alla tabella qui sopra
-non è la formula dell’arrotondamento, è che **si guarda che cosa quel peso fa**
-invece che soltanto quanto vale.
+sta nel fatto che **si guarda che cosa quel peso fa** invece che soltanto
+quanto vale, e non nella formula dell’arrotondamento.
 
 `````
 
@@ -436,7 +437,7 @@ due salti.
   giù e si **compensano**. Una rete somma sempre tanti numeri insieme, e questa
   è la sua fortuna.
 - Il passo lo decide il numero **più grande** del gruppo che lo condivide.
-  Quindi la domanda vera non è «quanti bit», è **chi condivide il passo**:
+  Quindi la domanda vera è **chi condivide il passo**, più che «quanti bit»:
   misurato, una scala ogni sessantaquattro pesi taglia l’errore di un fattore
   1,74 rispetto a una scala sola per tutta la matrice, e lo stesso fattore vale
   a otto bit come a tre.

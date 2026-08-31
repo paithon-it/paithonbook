@@ -110,7 +110,7 @@ da un capo, attraversa una stazione dopo l'altra e ne esce pronto. Ognuno di
 questi passaggi si scrive con gli attrezzi per maneggiare tabelle già visti nel
 {doc}`capitolo su Python </Python/overview>`.
 
-Il salto di qualità, però, non è tecnico: è organizzativo, e chiede due cose
+Il salto di qualità, però, è organizzativo prima che tecnico, e chiede due cose
 alla catena. Che sia **riproducibile**, cioè che rilanciandola sugli stessi
 dati grezzi si riottenga lo stesso identico dataset. E che sia **orchestrata**,
 cioè che l'ordine dei passaggi sia scritto una volta in un file, e sia un
@@ -296,8 +296,8 @@ sotto motori che non si somigliano affatto, ed è anche ciò che sta sotto il
 tipo stringa di Pandas, cambiato di recente e in silenzio: dalla versione 3 le
 colonne di testo hanno un tipo dedicato,
 appoggiato ad Arrow quando PyArrow è installato, e quella differenza (con il
-vecchio `object` di NumPy era sostanziale) non è più un'opzione da attivare, è
-il comportamento normale della libreria.
+vecchio `object` di NumPy era sostanziale) è ormai il comportamento normale
+della libreria, e non un'opzione da attivare.
 
 La regola pratica, sintetica: **CSV per scambiare con un umano, Parquet per
 tutto il resto**; e se una tabella attraversa un confine di processo o di
@@ -599,7 +599,7 @@ e due i controlli, quello sul tipo (perché vero *è* un numero) e quello
 sull'intervallo (perché uno sta fra zero e centoventi). Il guardiano dice che va
 tutto bene, e non va bene niente.
 
-Non è un caso di scuola: è quello che capita quando una colonna di sì e no viene
+Capita davvero, ogni volta che una colonna di sì e no viene
 letta come vero-e-falso da un programma e come zero-e-uno da un altro, cioè
 proprio la classe di guasti silenziosi che un CSV senza tipi dichiarati produce
 a getto continuo. La cura è chiedere il tipo *esatto*

@@ -28,7 +28,7 @@ momento in cui l'idea entra nelle reti neurali.
 
 E qui va detta subito la cosa che chiude un debito col capitolo precedente:
 quel «flusso» è la stessa parola del *rectified flow* di Stable Diffusion 3.
-Non è una coincidenza di vocabolario, è una parentela, e in fondo alla prossima
+È una parentela e non una coincidenza di vocabolario, e in fondo alla prossima
 sezione la ricostruiremo per intero.
 
 ## Il fattore che nessuno si aspetta

@@ -228,8 +228,8 @@ vera, dopo tre episodi vale già $0{,}200$, dopo dieci $0{,}808$ e alla
 trentesima $0{,}815$.
 
 Quel $0{,}815$ è la risposta esatta, e la risposta esatta si calcola a mano.
-Prima però va detto perché un premio lontano conta meno di uno vicino: non è una
-legge di natura, è una scelta di chi programma, e si fa per due motivi. Un
+Prima però va detto perché un premio lontano conta meno di uno vicino: è una
+scelta di chi programma e non una legge di natura, e si fa per due motivi. Un
 agente che dà lo stesso peso a un guadagno fra tre mosse e a uno fra tremila non
 ha nessun motivo di sbrigarsi; e su una partita che potrebbe non finire mai, la
 somma di tutti i premi futuri sarebbe infinita per chiunque, il che renderebbe

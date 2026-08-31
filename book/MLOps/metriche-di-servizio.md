@@ -115,7 +115,7 @@ il testo a $1/0{,}015 \approx 67$ token al secondo. Con un numero solo sarebbero
 indistinguibili.
 
 Il secondo, per giunta, spreca la sua velocità, e per capire perché serve
-sapere quanto vale un token in parole. Un token non è una parola: è più corto,
+sapere quanto vale un token in parole. Un token è più corto di una parola,
 perché le parole lunghe il modello le spezza in due o tre pezzi. Su un paragrafo
 italiano il conto, misurato con due tokenizzatori diversi, sta fra un token e
 mezzo e due e mezzo per parola. Un lettore adulto legge tre o quattro parole al
@@ -338,8 +338,9 @@ esempio il $90\%$). Definito così è la metrica su cui si dimensiona il servizi
 perché tiene insieme il costo (le GPU) e la promessa (le soglie).
 
 Due avvertenze. Il goodput dipende dalle soglie, quindi non è confrontabile fra
-sistemi che ne dichiarano di diverse: è un numero interno, non un vanto da
-comunicato. E il throughput misurato in **token al secondo** inganna più di
+sistemi che ne dichiarano di diverse, e resta un numero interno più che un
+vanto da comunicato. E il throughput misurato in **token al secondo** inganna
+più di
 quello in richieste al secondo, perché somma i token di prefill a quelli di
 decode: un carico di prompt lunghi e risposte corte produce un numero
 spettacolare senza che nessun utente veda il testo scorrere più in fretta.
@@ -404,7 +405,7 @@ entro cui è servito il 95% delle richieste, la p99 quello entro cui ne è
 servito il 99%, e la promessa si scrive su quelli e non sulla media. Manca
 solo un nome, che da qui in poi torna in ogni paragrafo: il gruppetto di
 richieste sfortunate che resta *oltre* il percentile si chiama la **coda**.
-Attenzione, non è la coda nel senso di fila: è la coda della cometa, cioè la
+Attenzione, è la coda della cometa e non quella di una fila: la
 striscia di ritardatarie che si allunga dietro a tutte le altre. Sono poche,
 sono molto più lente, e sono quelle che fanno arrabbiare le persone.
 
@@ -440,8 +441,8 @@ conto dove non vale. Un agente che fa venti chiamate **una dopo l'altra** non
 aspetta la più lenta, le somma, e sommando la sfortuna si diluisce. Venti passi
 da un secondo fanno venti secondi; se uno va male e ne impiega tre, il totale
 diventa ventidue, cioè il $10\%$ in più, non il $200\%$ che quel passo ha
-subìto per conto suo. Lì il problema non è la coda: è il **totale**, venti volte
-più grande, che sfonda la promessa da solo.
+subìto per conto suo. Lì a sfondare la promessa è il **totale**, venti volte
+più grande, per conto suo.
 
 **La terza** si vede nel confronto fra le due configurazioni di poco fa, e sono
 i numeri della tabella che il codice in fondo alla pagina stampa. Con mazzi da
@@ -618,8 +619,8 @@ quello che serve per sapere se un servizio che genera testo sta funzionando.
 
 ## Che cosa vuol dire funzionare
 
-Queste metriche non sono contabilità da presentare a fine mese: sono la
-**definizione operativa** di cosa vuol dire, per questo servizio, funzionare.
+Queste metriche sono la **definizione operativa** di cosa vuol dire, per
+questo servizio, funzionare, e non contabilità da presentare a fine mese.
 Sceglierle equivale a decidere quali richieste contano e quali no, e ogni
 ottimizzazione successiva si muoverà nella direzione che quella scelta indica.
 Un sistema tarato sul throughput diventerà bravissimo a servire molte richieste

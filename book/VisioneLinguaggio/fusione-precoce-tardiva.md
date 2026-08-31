@@ -2,7 +2,8 @@
 
 Chiedi a un sistema come quello della sezione precedente di *disegnare* un
 gatto nero che salta su un muro, e ti risponderà con delle parole. Magari
-ottime parole: quella scena descritta benissimo. Non è pigrizia e non è un rifiuto: è la forma dell'ultimo strato.
+ottime parole: quella scena descritta benissimo. A deciderlo è la forma
+dell'ultimo strato, e non una pigrizia o un rifiuto.
 Qualunque cosa quel modello abbia capito guardando, per uscire deve passare da
 un unico collo di bottiglia: scegliere una voce da un elenco chiuso, il
 **vocabolario**. E in quell'elenco ci sono soltanto parole.
@@ -112,8 +113,8 @@ quel che conta è che adesso l'immagine è una **lista di simboli presi da un
 elenco fisso**, esattamente come una frase è una lista di parole prese da un
 dizionario.
 
-Due cose sono andate perse per strada. La tessera scelta non è quasi mai
-identica al quadratino originale, è la più vicina che c'era in magazzino, e la
+Due cose sono andate perse per strada. La tessera scelta è quasi sempre la più
+vicina che c'era in magazzino e non il quadratino originale, e la
 differenza è sparita per sempre. E per fare della griglia una lista abbiamo
 dovuto decidere un ordine di lettura, riga per riga, come per il testo: ma una
 fotografia non ha un verso di lettura, quell'ordine ce lo siamo inventato noi.
@@ -161,9 +162,9 @@ prossima sezione, sulla risoluzione).
 
 Con i token visivi in mano possiamo dare alle due parole del titolo un
 significato preciso. La differenza fra fusione **tardiva** e fusione
-**precoce** non è quanta informazione si scambiano immagine e testo: è quanto
-presto cominciano a scambiarsela, e se a maneggiarle sia un pezzo solo di rete
-o due pezzi diversi, cresciuti separati.
+**precoce** non sta in quanta informazione si scambiano immagine e testo, ma in
+quanto presto cominciano a scambiarsela, e se a maneggiarle sia un pezzo solo
+di rete o due pezzi diversi, cresciuti separati.
 
 `````{tab} Elementare
 
@@ -232,8 +233,8 @@ $V$, il modello può emettere un token visivo dove prima poteva emettere solo
 una parola. Generare un'immagine è campionare 1.024 volte dalla stessa softmax
 da cui si campionano le parole, e passare i risultati al decoder del
 tokenizzatore. Nessuna testa aggiuntiva, nessun secondo modello: la
-simmetria non è una funzionalità in più, è un effetto della scelta del
-vocabolario.
+simmetria è un effetto della scelta del vocabolario, più che una funzionalità
+in più.
 
 `````
 
@@ -247,8 +248,7 @@ successivo. Lo stesso
 modello genera e capisce: nella stessa sequenza di simboli sta la richiesta di
 produrre un'immagine e la domanda su un'immagine già data. Che il video entri
 quasi senza modifiche è un'indicazione: quel che rende la fusione precoce
-interessante non è la modalità in sé, è che il formato «sequenza di simboli» le
-assorbe tutte.
+interessante è che il formato «sequenza di simboli» le assorbe tutte.
 
 ## Perché non l'hanno fatto subito
 
@@ -559,8 +559,9 @@ chiamato allucinazione visiva.
 La prova che deciderebbe la questione ha allora questa forma: a parità di
 parametri, di dati e di calcolo, la capacità di *capire* di un modello a
 fusione precoce migliora quando gli si insegna anche a *generare*? Se sì, il
-vocabolario comune non è una comodità architetturale, è un modo di imparare
-meglio, e vale il costo del pre-addestramento da zero. Se le due capacità si
+vocabolario comune è un modo di imparare meglio, e non una comodità
+architetturale, e vale il costo del pre-addestramento da zero. Se le due
+capacità si
 limitano a convivere senza aiutarsi, la fusione precoce resta una scelta di
 ingegneria, giustificata quando serve un solo sistema al posto di due, e il
 connettore continuerà a vincere per la ragione più semplice del mondo: costa

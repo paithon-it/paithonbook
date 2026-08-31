@@ -189,6 +189,78 @@ def sorgenti() -> dict[str, str]:
             if "_static" not in p.parts and "_build" not in p.parts}
 
 
+_RX_RECINTO_CODICE = re.compile(
+    r"^\{?(?:code-block|code|literalinclude|eval-rst)\}?\b"
+    r"|^(?:python|py|ipython3?|text|bash|sh|shell|console|json|ya?ml|toml"
+    r"|latex|tex|html|css|js|javascript|c|cpp|sql|diff|ini|makefile"
+    r"|dockerfile|xml|markdown|md|r|julia|rust|go)\b", re.I)
+
+
+def _maschera_prosa(testo: str) -> str:
+    """Il testo con **il solo codice**, la matematica e gli URL messi a spazi.
+
+    Serve a ogni asse che cerca un segno di prosa, perche' in un libro tecnico
+    gli stessi caratteri compaiono legittimamente dappertutto: segni meno nelle
+    formule, opzioni da riga di comando, separatori di tabella.
+
+    Tre trappole, e tutte e tre sono costate.
+
+    La prima: un interruttore acceso/spento sui recinti si **desincronizza**
+    sulle schede a cinque backtick, quindi ci vuole una pila.
+
+    La seconda: una formula in linea puo' andare a capo, quindi la matematica
+    si maschera sul testo intero e non riga per riga, con `$$...$$` prima di
+    `$...$`. Si sostituisce con spazi, e non si cancella, per non spostare i
+    numeri di riga.
+
+    La terza, la piu' cara, e' rimasta in piedi per parecchio: **non tutte le
+    recinzioni contengono codice**. Le schede `{tab}` e i riquadri
+    `{admonition}` sono recinzioni, e dentro c'e' quasi tutta la prosa del
+    libro. Chi le maschera insieme ai blocchi `python` costruisce un controllo
+    che gira su una frazione del testo e torna verde, e nessuno se ne accorge
+    perche' verde e' la risposta che ci si aspetta. Qui si guarda **l'etichetta
+    del recinto**: si azzera solo dove quell'etichetta dice codice (o dove non
+    dice niente, che e' il caso dei blocchi di uscita), e la prosa dentro le
+    schede resta visibile. Le righe di apertura e chiusura si azzerano sempre,
+    perche' i backtick non sono testo.
+
+    La quarta l'ha portata una riga di uscita vera: **dentro un recinto di
+    codice non si apre niente**. Dal 3.11 il traceback di Python sottolinea il
+    pezzo che ha ceduto con `~~~~^^^^^^`, e quella riga, dentro un blocco
+    ` ```text `, questo regex la prende per una recinzione a tilde: da li' in
+    poi la pila e' sfasata di uno e il recinto di codice non si chiude piu'.
+    In `Python/basi.md` restavano azzerate 741 righe di prosa su 1092, due
+    terzi del capitolo, per ogni asse che passa di qui. Adesso, quando in cima
+    alla pila c'e' un recinto di **codice**, l'unica riga che conta e' la sua
+    chiusura (stesso carattere, lunghezza non minore, nessuna etichetta): il
+    resto e' contenuto, che e' poi la regola di CommonMark.
+    """
+    fuori, pila = [], []          # pila di (backtick, e_codice)
+    for riga in testo.split("\n"):
+        m = re.match(r"^(\s*)(`{3,}|~{3,})(.*)$", riga)
+        if m and pila and pila[-1][1] and not (
+                m.group(2)[0] == pila[-1][0][0]
+                and len(m.group(2)) >= len(pila[-1][0])
+                and not m.group(3).strip()):
+            m = None              # dentro il codice, e' contenuto e basta
+        if m:
+            tick, info = m.group(2), m.group(3).strip()
+            if pila and len(tick) >= len(pila[-1][0]) and not info:
+                pila.pop()
+            elif info or not pila:
+                pila.append((tick, bool(_RX_RECINTO_CODICE.match(info)) or not info))
+            else:
+                pila.pop()
+            fuori.append(" " * len(riga))
+            continue
+        dentro_codice = any(e_codice for _, e_codice in pila)
+        fuori.append(" " * len(riga) if dentro_codice else riga)
+    t = "\n".join(fuori)
+    for rx in (r"\$\$.*?\$\$", r"\$[^$]*?\$", r"`[^`]*`", r"https?://\S+"):
+        t = re.sub(rx, lambda m: re.sub(r"[^\n]", " ", m.group(0)), t, flags=re.S)
+    return t
+
+
 @functools.lru_cache(maxsize=1)
 def _tempi_git() -> dict[str, int]:
     """{percorso relativo: data dell'ultimo commit che lo tocca}, in una passata.
@@ -286,7 +358,8 @@ def main():
     attivi = set(args.solo.split(",")) if args.solo else {
         "numref", "cite", "ref", "figure", "toc", "landing", "animazioni",
         "schede", "ricordare", "simboli", "avanti", "palette", "clip", "ambiente",
-        "lineette", "stampa", "verso", "matematica", "doppioni"}
+        "lineette", "stampa", "verso", "matematica", "doppioni",
+        "contrapposizioni"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -534,11 +607,31 @@ def main():
         # Non si cercano le occorrenze, che sono migliaia: si cercano le
         # GLOSSE. Il libro introduce un simbolo scrivendo «$x$ e' il ...», e se
         # nello stesso capitolo lo stesso simbolo riceve due glosse diverse,
-        # o e' una collisione o e' la stessa cosa detta due volte. Elenca e
-        # basta, perche' distinguere le due richiede di leggere: al 22 agosto
-        # 2026 dava ventisei righe, circa meta' collisioni vere (tau
-        # traiettoria contro temperatura, G generatore contro gradiente, d
-        # grado del polinomio contro numero di dimensioni).
+        # o e' una collisione o e' la stessa cosa detta due volte.
+        #
+        # **Elenca e basta, e la meta' delle righe non e' un difetto.** Le
+        # ventisette del 29 agosto 2026 sono state aperte una per una:
+        #
+        #   6  artefatti della regex: cinque volte il simbolo non e' il
+        #      soggetto ma la coda di un complemento («la media di tutti gli
+        #      $\ell$ **e' la** loss», «Cio' che risale da $D$ verso $G$ **e'
+        #      il** gradiente»: li' $\ell$ e $G$ fanno un mestiere solo), una
+        #      volta e' il pedice tolto ($F_1$ la metrica contro $F$ il simbolo
+        #      iniziale di una grammatica);
+        #  13  lo stesso mestiere glossato due volte, che e' spreco e non
+        #      errore: quattro «$r$ e' la ricompensa...» in DeepRL, tre
+        #      «$\sigma$ e' la sigmoide» nei Transformer;
+        #   4  l'ambiguita' **e' l'argomento** del paragrafo, e toglierla
+        #      toglierebbe la lezione: la $p$ della cross-entropia in
+        #      Matematica spiega con quelle due letture perche' la loss di
+        #      training scenda a zero e quella di validazione no;
+        #   4  riuso vero di una lettera consolidata in sezioni lontane, ognuna
+        #      con la sua glossa.
+        #
+        # Nessuna delle ventisette ha richiesto di rinominare. Prima di
+        # ripararne una si legga in `CLAUDE.md` quando una collisione e' un
+        # difetto e quando e' una convenzione: la medicina non e' sempre
+        # rinominare, e questo asse non lo sa.
         glossa = re.compile(
             r"\$\\?([A-Za-z]|\\[a-zA-Z]+)(?:_\{?\w+\}?)?\$\s*(?:è|e')\s+"
             r"((?:il|la|lo|l'|un|una|uno|i|le|gli)\s+\w+(?:\s+\w+)?)", re.I)
@@ -801,7 +894,19 @@ def main():
         # con l'immagine di oggi. Se Docker non c'e' non e' un difetto del
         # libro, e' una mancanza della macchina: si tace.
         collaudo = QUI / "animazioni" / "collaudo.py"
-        if collaudo.is_file() and shutil.which("docker"):
+        # L'immagine e' attrezzatura della macchina come Docker stesso: dove
+        # manca (un runner CI appena nato) il controllo non puo' dire niente
+        # sull'ambiente, e un "non posso misurare" non e' un rosso. Si tace
+        # CON NOTA, mai in silenzio (misurato 2026-08-30: il cancello della
+        # pubblicazione andava rosso su ogni runner, sempre).
+        ha_immagine = shutil.which("docker") and subprocess.run(
+            ["docker", "image", "inspect", "paithon-manim"],
+            capture_output=True).returncode == 0
+        if collaudo.is_file() and shutil.which("docker") and not ha_immagine:
+            print("   (ambiente delle clip: immagine paithon-manim assente su"
+                  " questa macchina, controllo non eseguito —"
+                  " docker build -t paithon-manim animazioni/)")
+        if collaudo.is_file() and ha_immagine:
             r = subprocess.run([sys.executable, str(collaudo), "--verifica"],
                                cwd=QUI, capture_output=True, text=True)
             if r.returncode != 0:
@@ -906,37 +1011,14 @@ def main():
         # CSS, separatori di tabella, elenchi. Al primo giro un interruttore
         # acceso/spento sui recinti ne ha lasciati passare cinque, perche' le
         # schede a cinque backtick lo desincronizzavano; e la matematica in
-        # linea che va a capo non si vede guardando una riga per volta. Quindi
-        # qui si maschera il testo **una volta sola**, con una pila per i
-        # recinti e sostituendo con spazi per non spostare i numeri di riga.
-        def maschera(testo: str) -> str:
-            fuori, pila = [], []
-            for riga in testo.split("\n"):
-                m = re.match(r"^(\s*)(`{3,}|~{3,})(.*)$", riga)
-                if m:
-                    tick, info = m.group(2), m.group(3).strip()
-                    if pila and len(tick) >= len(pila[-1]) and not info:
-                        pila.pop()
-                    elif info or not pila:
-                        pila.append(tick)
-                    else:
-                        pila.pop()
-                    fuori.append(" " * len(riga))
-                    continue
-                fuori.append(" " * len(riga) if pila else riga)
-            t = "\n".join(fuori)
-            # matematica: $$...$$ prima di $...$, e su tutto il testo perche'
-            # una formula in linea puo' andare a capo
-            for rx in (r"\$\$.*?\$\$", r"\$[^$]*?\$", r"`[^`]*`", r"https?://\S+"):
-                t = re.sub(rx, lambda m: re.sub(r"[^\n]", " ", m.group(0)), t, flags=re.S)
-            return t
-
+        # linea che va a capo non si vede guardando una riga per volta. La
+        # mascheratura sta in `_maschera_prosa`, che la fa **una volta sola**.
         doppia = re.compile(r"(?<![-\w])--(?![-\w])|(?<=\w)--(?=\w)")
         singola = re.compile(r"(?<=\w) - (?=\w)")
         for f, t in sorted(testi.items()):
             if not f.endswith(".md"):
                 continue
-            for n, riga in enumerate(maschera(t).split("\n"), 1):
+            for n, riga in enumerate(_maschera_prosa(t).split("\n"), 1):
                 if "<!--" in riga or "-->" in riga or '="' in riga:
                     continue
                 if re.match(r"^\s*\|[\s|:-]+\|\s*$", riga) or re.match(r"^\s*-{3,}\s*$", riga):
@@ -945,6 +1027,92 @@ def main():
                 if doppia.search(pulita) or singola.search(pulita):
                     problemi["lineette scritte in ASCII (-- oppure - )"].append(
                         f"{f}:{n}  {pulita.strip()[:88]}")
+
+    if "contrapposizioni" in attivi:
+        # «non e' X, e' Y». `CLAUDE.md` ne ammette **due per capitolo**, e solo
+        # dove la contrapposizione *e'* l'argomento. Fuori di li' e' la cadenza
+        # da diapositiva: il paragrafo si presenta prima di parlare.
+        #
+        # Questo asse nasce da una campagna, e la campagna ha insegnato tre
+        # cose che stanno tutte nel codice qui sotto.
+        #
+        # **La prima: il costrutto ha tre punteggiature, non una.** Un
+        # rilevatore che cerca solo la virgola ne trova meno della meta'. Su
+        # Machine Learning ha detto «ventuno, adesso due» quando ne restavano
+        # diciotto, tutti con i due punti o con il punto e virgola. Ogni volta
+        # che il pattern e' stato allargato ne sono usciti altri, tre volte di
+        # fila: e' la ragione per cui qui le tre forme sono nella stessa regex
+        # invece che in tre passate successive.
+        #
+        # **La seconda: la negazione dentro una citazione non e' il
+        # costrutto.** «una su due non e' a posto»: sono due bocciature
+        # diverse» e la frase del capitolo sulle GPU richiamata fra virgolette
+        # («il collo di bottiglia non sono i conti, sono i byte») sono
+        # riferimenti, non mosse fatte adesso. Chi le «ripara» rompe una
+        # citazione, quindi il testo fra «» e fra "" si maschera prima.
+        #
+        # **La terza: sopra il tetto non si fallisce, si elenca.** Quando
+        # l'asse e' nato, trentacinque capitoli su quarantuno erano oltre, e un
+        # controllo sempre rosso non avvisa di niente. Falliscono i soli
+        # capitoli gia' portati dentro il tetto, elencati in CHIUSI: li' un
+        # ritorno sopra i due e' una regressione e va vista subito. Gli altri
+        # si contano e basta, e la lista si accorcia man mano.
+        # Tutti i capitoli sono stati portati dentro il tetto, quindi
+        # `CHIUSI` non e' piu' una lista da allungare: e' il libro. Da qui in
+        # avanti l'asse **fallisce** su qualunque capitolo torni sopra i due,
+        # ed e' il comportamento giusto adesso che partire da zero e' possibile.
+        CHIUSI = None      # None = tutti
+        TETTO = 2
+        # `(?![^\S\n]{3,})` esclude i falsi positivi che la **mascheratura
+        # stessa fabbrica**: azzerando il codice in linea, «non sono Python:
+        # `%timeit` e' un comando» diventa «non sono Python:        e' un
+        # comando», e il costrutto si forma dal nulla. Sul grezzo quelle frasi
+        # non hanno nessun match. La prosa vera fra la punteggiatura e il verbo
+        # mette uno spazio solo, o un a capo: tre o piu' spazi di fila sono
+        # sempre roba mascherata.
+        rx_tic = re.compile(
+            r"\b[Nn]on (?:è|sono|era|erano|si tratta di)\b"
+            r"[^.;!?:,]{0,120}?[,:;](?![^\S\n]{3,})\s*(?:è|sono|era|erano)\b",
+            re.S)
+        # `(?! particolare)` perche' «non e' un **caso particolare** della GCN»
+        # e' un'affermazione tecnica, non la sorella retorica di «non e' un
+        # caso» (= non e' una coincidenza). Senza l'esclusione il rilevatore
+        # fa «riparare» una frase giusta, che e' il modo in cui un controllo
+        # costa piu' di quanto rende.
+        rx_sorelle = re.compile(
+            r"[Nn]on è un (?:dettaglio|caso|teoria|zelo|cosmesi|pignoleria"
+            r"|capriccio)\b(?! particolare)")
+
+        def senza_citazioni(t: str) -> str:
+            for rx in (r"«[^»]*»", r'"[^"\n]*"', r"“[^”]*”"):
+                t = re.sub(rx, lambda m: re.sub(r"[^\n]", " ", m.group(0)), t)
+            return t
+
+        per_capitolo = defaultdict(list)
+        for f, t in sorted(testi.items()):
+            if "/" not in f:
+                continue
+            capitolo = f.split("/")[0]
+            pulito = senza_citazioni(_maschera_prosa(t))
+            trovati = {m.start(): m for m in rx_tic.finditer(pulito)}
+            trovati.update({m.start(): m for m in rx_sorelle.finditer(pulito)})
+            for pos in sorted(trovati):
+                n = pulito[:pos].count("\n") + 1
+                frase = " ".join(trovati[pos].group(0).split())
+                per_capitolo[capitolo].append(f"{f}:{n}  {frase[:78]}")
+
+        for capitolo, righe in sorted(per_capitolo.items()):
+            if len(righe) <= TETTO:
+                continue
+            chiave = ("«non e' X, e' Y» oltre il tetto di due"
+                      if CHIUSI is None or capitolo in CHIUSI else
+                      "«non e' X, e' Y» oltre il tetto (campagna in corso)")
+            problemi[chiave].append(
+                f"{capitolo}: {len(righe)} (tetto {TETTO})")
+            for r in righe[:4]:
+                problemi[chiave].append(f"    {r}")
+            if len(righe) > 4:
+                problemi[chiave].append(f"    … e altre {len(righe) - 4}")
 
     if "matematica" in attivi:
         # Dentro `$...$` la tipografia italiana non vale, e nessuno se ne
@@ -1181,6 +1349,8 @@ def main():
               "capitoli senza figure animate (dichiarali in "
               "animazioni/senza-clip.toml, con la ragione)",
               "lineette scritte in ASCII (-- oppure - )",
+              "«non e' X, e' Y» oltre il tetto di due",
+              "«non e' X, e' Y» oltre il tetto (campagna in corso)",
               "frasi scritte due volte",
               "«Da ricordare» fuori dalle schede",
               "una lettera con due glosse nello stesso capitolo",
@@ -1204,6 +1374,7 @@ def main():
                    "una lettera con due glosse nello stesso capitolo",
                    "rimandi in avanti (da leggere)",
                    "colori fuori palette (decisione del repo brand)",
+                   "«non e' X, e' Y» oltre il tetto (campagna in corso)",
                    "«Da ricordare» fuori dalle schede"}
     totale = 0
     for k in ordine:

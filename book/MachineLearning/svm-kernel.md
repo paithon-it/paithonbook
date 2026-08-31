@@ -345,19 +345,23 @@ reg = make_pipeline(StandardScaler(),
                     SVR(kernel="rbf", C=10.0, epsilon=0.1))
 reg.fit(X, y_reg)
 
-# One-class SVM: impara la regione dei dati "normali";
-# nu ~ frazione di anomalie attese
+# One-class SVM: impara la regione dei dati "normali"; nu e' un tetto,
+# non una previsione: al piu' quella frazione dei dati visti resta fuori
 normali = X[y == 0]                      # fingiamo di avere solo la classe "normale"
 det = make_pipeline(StandardScaler(),
                     OneClassSVM(kernel="rbf", nu=0.05, gamma="scale"))
 det.fit(normali)
 esito = det.predict(X)                   # +1 = normale, -1 = anomalia
-print("anomalie segnalate:", int(np.sum(esito == -1)))
+mai_visti = esito[y == 1]                # i 100 punti dell'altra luna
+print("dei 100 mai visti, segnalati:", int(np.sum(mai_visti == -1)))
 ```
 
 ```text
-anomalie segnalate: 104
+dei 100 mai visti, segnalati: 95
 ```
+
+Il rilevatore ha imparato la forma di una luna sola e non ha mai visto
+l'altra: dei cento punti di quell'altra ne riconosce estranei novantacinque.
 
 La solita grammatica `fit`/`predict` regge anche qui. Per la SVM con kernel la
 coppia di iperparametri da tarare per validazione è $(C, \gamma)$: una ricerca

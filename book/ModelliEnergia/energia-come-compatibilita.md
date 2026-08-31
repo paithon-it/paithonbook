@@ -134,8 +134,8 @@ La prima regola della lista è anche la più ingenua, quella che si limita ad
 abbassare l'energia sui dati veri senza mai guardare nient'altro. Nella sua
 casella del margine c'è scritto «none», nessuno {cite}`lecun2006tutorial`,
 cioè con un'architettura qualunque non protegge affatto (l'articolo mostra poi
-qualche architettura speciale in cui va bene lo stesso). Non è un difetto
-sottile da manuale avanzato: è la prima riga della tabella.
+qualche architettura speciale in cui va bene lo stesso). È la prima riga della
+tabella, non un difetto sottile da manuale avanzato.
 
 `````{tab} Elementare
 
@@ -190,16 +190,17 @@ $$
 dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. E qui
 c'è un costo che di solito passa sotto silenzio: $\bar{y}$ è a sua volta un
 $\arg\min$ su $\mathcal{Y}$, cioè **un'inferenza completa a ogni passo di
-addestramento**. Il problema dei metodi contrastivi non è soltanto quanti
-controesempi servano; è che trovarne uno *buono* costa quanto rispondere. La
-massima verosimiglianza appartiene alla stessa famiglia: il suo termine
-contrastivo è la log-partizione, che solleva l'energia di *ogni* risposta con
-forza proporzionale alla sua verosimiglianza, e nel limite $\beta \to \infty$
-la loss NLL degenera nella loss del percettrone generalizzata, che ne solleva una sola,
-quella a energia minima {cite}`lecun2006tutorial`. Contrastive divergence, NCE
-e le loss a margine sono tutte varianti di una stessa domanda: **quali
-risposte tirare su, e con che forza**. Il male comune, in alta dimensione, è
-che i controesempi non bastano mai a puntellare un'intera superficie.
+addestramento**. Il problema dei metodi contrastivi sta soprattutto nel fatto
+che trovarne uno *buono* costa quanto rispondere, prima ancora che nel loro
+numero. La massima verosimiglianza appartiene alla stessa famiglia: il suo
+termine contrastivo è la log-partizione, che solleva l'energia di *ogni*
+risposta con forza proporzionale alla sua verosimiglianza, e nel limite $\beta
+\to \infty$ la loss NLL degenera nella loss del percettrone generalizzata, che
+ne solleva una sola, quella a energia minima {cite}`lecun2006tutorial`.
+Contrastive divergence, NCE e le loss a margine sono tutte varianti di una
+stessa domanda: **quali risposte tirare su, e con che forza**. Il male comune,
+in alta dimensione, è che i controesempi non bastano mai a puntellare un'intera
+superficie.
 
 I **metodi regolarizzati o architetturali** impediscono il collasso per
 costruzione, limitando il *volume* dello spazio a bassa energia invece di

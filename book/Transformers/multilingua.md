@@ -20,9 +20,9 @@ somiglia a una **interlingua**: una rappresentazione interna dove il
 significato di una frase finisce più o meno nello stesso posto qualunque
 lingua la vesta.
 
-Quella prudenza non è ancora del tutto superata, e questa sezione racconta
-perché. È la sezione più utile a chi legge un libro italiano su una tecnologia
-addestrata in prevalenza in inglese.
+Quella prudenza non è ancora del tutto superata, e vale la pena di capire
+perché, soprattutto se la lingua in cui si lavora non è l'inglese: quasi tutto
+ciò che fa funzionare un modello in italiano passa da qui.
 
 ## Un vocabolario per tutte
 
@@ -132,16 +132,16 @@ essendo in due lingue di cui al modello nessuno ha mai raccontato l'esistenza.
 
 Conviene essere precisi su *quanto* vicine, perché il modo in cui la cosa si
 misura è più interessante dello slogan. I due quartieri, quello italiano e
-quello inglese, non sono sovrapposti: sono **affiancati e paralleli**. Fra
+quello inglese, sono **affiancati e paralleli** invece che sovrapposti. Fra
 l'uno e l'altro c'è uno spostamento, e lo si misura nel modo più elementare
 che ci sia: si prendono mille frasi italiane con accanto la loro traduzione
 inglese, si guarda di quanto ciascuna coppia è distanziata sulla mappa, e di
 tutti quegli scarti si fa la media. La scoperta è che quella media *funziona*:
 sommata a una frase italiana qualsiasi, anche una che nelle mille non c'era,
 porta proprio nel punto dove sta la sua traduzione inglese. Lo spostamento,
-cioè, dipende solo dalla **coppia di lingue** e non dalla frase. Non è dunque
-che le due frasi coincidano; è che le due lingue occupano due copie della
-stessa mappa, una accanto all'altra.
+cioè, dipende solo dalla **coppia di lingue** e non dalla frase. Le due frasi,
+dunque, non coincidono: le due lingue occupano due copie della stessa mappa,
+una accanto all'altra.
 
 La conseguenza pratica arriva subito, e va enunciata con cura, perché lo
 spostamento appena descritto sembrerebbe mandarla all'aria. Se un programma
@@ -181,8 +181,9 @@ all'altra è tutto il resto, cioè proprio la parte che nessuno ha toccato.
 
 L'altra spiegazione è meno intuitiva e più affascinante: il modello ha una
 capacità limitata e cento lingue da imparare, e la strada più economica per
-riuscirci non è memorizzarle una per una, è **accorgersi che si somigliano** e
-riusare la stessa struttura. Non allinea le lingue perché glielo chiediamo:
+riuscirci sta nell’**accorgersi che si somigliano** e riusare la stessa
+struttura, invece di memorizzarle una per una. Non allinea le lingue perché
+glielo chiediamo:
 allinea per avarizia, perché tenerle separate costerebbe più memoria di quanta
 ne abbia.
 
@@ -414,8 +415,9 @@ combinazioni la smentiscono: rifinendo su una lingua SOV e usando su un'altra
 SOV si ottiene 64,2, e rifinendo su una SOV per usare su una SVO si ottiene
 64,0, cioè lo stesso numero. Fra due lingue costruite allo stesso modo, dunque,
 il salto è facile in un caso e non nell'altro: non c'è simmetria, e il caso
-facile non è «le lingue che si somigliano», è **partire da una lingua SVO**,
-che è poi il caso in cui casca l'italiano. Chi misura la resa sull'italiano e
+facile è **partire da una lingua SVO**, più che avere lingue che si
+somigliano, ed è poi il caso in cui casca l'italiano. Chi misura la resa
+sull'italiano e
 ne deduce la resa «sulle altre lingue» sta misurando la cosa più facile che
 c'era da misurare.
 
@@ -517,8 +519,8 @@ lingue si parlano.
   della torre che i lettori in parallelo, e c'è chi sostiene che il modello
   allinei per avarizia, perché tenere cento lingue separate costerebbe più
   memoria di quanta ne abbia.
-- Lo si può anche chiedere apertamente, in due modi: coprire parole in una
-  frase **e** nella sua traduzione messe una dopo l'altra, così che per
+- Lo si può anche chiedere apertamente, in due modi: coprire parole tanto in
+  una frase quanto nella sua traduzione, messe una dopo l'altra, così che per
   indovinarle convenga sbirciare nell'altra lingua; oppure ridurre ogni frase,
   letta per conto suo, al suo indirizzo sulla mappa, e chiedere di appaiare un
   mucchietto di frasi con il mucchietto mescolato delle loro traduzioni,
@@ -528,9 +530,9 @@ lingue si parlano.
   italiano**, senza un solo esempio etichettato in italiano. Due avvertenze:
   la rifinitura **consuma** l'allineamento (i pesi che si spostano per
   imparare il compito sono gli stessi che tenevano vicine le lingue), e il
-  salto non riesce uguale in tutte le direzioni: quel che conta non è che le
-  due lingue si somiglino, è partire da una lingua che mette le parole
-  nell'ordine dell'italiano e dell'inglese.
+  salto non riesce uguale in tutte le direzioni: quel che conta è partire da
+  una lingua che mette le parole nell'ordine dell'italiano e dell'inglese, più
+  che la somiglianza fra le due.
 - La **maledizione della multilingualità**: lo spazio è una coperta corta.
   Oltre un certo numero di lingue, ognuna in più peggiora un po’ tutte le
   altre, e l'unico rimedio pieno è un modello più grande.

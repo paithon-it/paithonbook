@@ -32,7 +32,7 @@ stessa cosa.
 
 Se quella quantità esista davvero, e che cosa sia, è oggetto di una discussione
 che dura da oltre un secolo, e in questo libro non prendiamo posizione: quello
-che ci serve non è la conclusione, è **la mossa**. La mossa è sopravvissuta
+che ci serve è **la mossa**, non la conclusione. La mossa è sopravvissuta
 alla discussione, ha preso un nome (**variabile latente**, dal latino *latere*,
 «stare nascosto») e ha una macchina matematica che la rende operativa, che
 Spearman inventò per sostenere la sua tesi e che oggi si chiama analisi
@@ -93,7 +93,7 @@ conto sarebbe una banalità: guardi il sacchetto, sai la sua gobba, hai finito.
 Il conto diventa difficile proprio perché quel dato manca. Tutto quello che
 segue nasce da lì, ed è anche la ragione per cui la mossa paga.
 
-Nei casi che ci interessano i sacchetti non sono due, sono infiniti: al posto
+Nei casi che ci interessano i sacchetti sono infiniti e non due: al posto
 delle due scatole c’è un righello, si sorteggia un punto qualunque, e una
 regola dice attorno a che misura stanno le biglie del sacchetto che sta lì.
 
@@ -219,8 +219,8 @@ strumenti distinti.
 **Prima difficoltà: la somma.** Per sapere quanto è probabile un dato bisogna
 considerare tutti i valori che la causa nascosta poteva prendere, e sommarli
 pesandoli. Con due sacchetti sono due addendi. Ma la causa nascosta di cui
-parleremo non è la scelta fra due scatole: è una fila di numeri (nel capitolo
-ne useremo otto, che è quanto basta a comprimere una cifra scritta a mano), e
+parleremo è una fila di numeri (nel capitolo ne useremo otto, che è quanto
+basta a comprimere una cifra scritta a mano) e non la scelta fra due scatole, e
 ciascuno può valere qualunque cosa. Gli addendi diventano allora infiniti, il
 che di per sé non sarebbe un guaio, perché somme di infiniti addendi si fanno
 da secoli, purché la cosa da sommare sia semplice.

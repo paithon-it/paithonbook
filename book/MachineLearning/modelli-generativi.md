@@ -13,8 +13,8 @@ separa meglio; la SVM cerca il corridoio più largo fra le due classi. Nessuno d
 loro sa **com'è fatta** una classe: sanno solo dove finisce una e comincia
 l'altra, che è un'informazione più povera e, spesso, più difficile da ottenere.
 
-Questa sezione racconta l'altra strada. Si impara a descrivere ciascuna classe,
-una per volta, e il confine si ricava dopo, con una riga di conto. La famiglia
+L'altra strada è opposta: si impara a descrivere ciascuna classe, una per
+volta, e il confine si ricava dopo, con una riga di conto. La famiglia
 si chiama dei modelli **generativi**, e i suoi tre membri classici (analisi
 discriminante lineare, quadratica, e naive Bayes) hanno tutti più di
 cinquant'anni e sono tutti ancora in uso.
@@ -248,7 +248,8 @@ Il conto dei parametri spiega il compromesso. Con $d$ feature e $K$ classi, la
 LDA stima $K$ medie più **una** covarianza, cioè $Kd + d(d+1)/2$ numeri; la QDA
 ne stima $K$, cioè $Kd + K\,d(d+1)/2$. Per $d = 20$ e $K = 2$ sono $250$ contro
 $460$: quasi il doppio, e la parte che raddoppia è quella difficile, perché
-stimare una covarianza è stimare $d^2/2$ numeri da dati che ne informano poco.
+stimare una covarianza è stimare circa $d^2/2$ numeri da dati che ne
+informano poco.
 Da qui la **regularized discriminant analysis** di Friedman
 {cite}`friedman1989regularized`, che interpola fra le due mescolando
 $\boldsymbol{\Sigma}_k$ con la covarianza comune. In scikit-learn quella
@@ -324,9 +325,8 @@ sta quattro punti sopra le altre due, con la deviazione più piccola di tutte: l
 la differenza è reale.
 
 Notare anche chi resta indietro insieme a chi: LDA e regressione logistica si
-muovono appaiate in tutte e due le righe, che è quello che il paragrafo formale
-prevede, perché tracciano lo stesso tipo di confine e differiscono solo su come
-ne stimano la posizione.
+muovono appaiate in tutte e due le righe, perché tracciano lo stesso tipo di
+confine e differiscono solo su come ne stimano la posizione.
 
 E che il confine della LDA sia davvero una retta non è una cosa da credere
 sulla parola. Il collaudo è questo: si prende il punteggio con cui il modello
@@ -357,12 +357,12 @@ LDA, scarto dall'affine: 8.88e-15
 QDA, scarto dall'affine: 7.21e+00
 ```
 
-Lo scarto della LDA è $10^{-15}$, cioè un miliardesimo di miliardesimo: non è
-«quasi zero», è zero, e quel che resta sono gli arrotondamenti del calcolatore.
+Lo scarto della LDA è $10^{-15}$, cioè un milionesimo di miliardesimo: zero,
+e quel che si legge sono gli arrotondamenti del calcolatore.
 Il punteggio della LDA **è** una retta, non le somiglia. La QDA se ne scosta di
-$7{,}2$, e nessuna retta la approssima. È la stessa cosa che il paragrafo
-formale ottiene con l'algebra, dove i termini al quadrato si cancellano fra le
-due classi perché sono identici.
+$7{,}2$, e nessuna retta la approssima. È la stessa cosa che si ottiene con
+l'algebra, dove i termini al quadrato si cancellano fra le due classi perché
+sono identici.
 
 ```{figure} ../figures/lda-qda-naive-bayes.svg
 :name: fig-lda-qda
@@ -374,8 +374,8 @@ Le tre ipotesi, disegnate. L'ovale che circonda ciascun gruppo (un’**ellisse**
 la forma del confine: una **sola forma**, la stessa per le due classi in due
 posizioni diverse, dà una retta; **due forme diverse** danno una curva. Nessuno
 dei confini è stato disegnato: sono tutti conseguenze delle ellissi. Il terzo
-pannello anticipa il metodo del paragrafo che segue, che le ellissi le obbliga a
-stare dritte, con gli assi paralleli a quelli del grafico.
+pannello anticipa il naive Bayes gaussiano, che le ellissi le obbliga a stare
+dritte, con gli assi paralleli a quelli del grafico.
 ```
 
 ## Naive Bayes: l'ipotesi sfacciata che funziona
@@ -438,7 +438,8 @@ posteriori stesse, perché la funzione $\arg\max$ è invariante a un'ampia class
 di distorsioni monotone. Le stime restano però mal **calibrate**, tipicamente
 sovrasicure, perché feature correlate contribuiscono evidenza ripetuta al
 prodotto: chi ha bisogno delle probabilità e non solo dell'etichetta ricalibri
-(Platt scaling, isotonica).
+con lo scaling di Platt o con l'isotonica, che la
+{doc}`sezione sulle metriche </MachineLearning/metriche>` mette alla prova.
 
 Nel caso discreto (conteggi di parole) il modello prende il nome di naive Bayes
 **multinomiale**, e con lo smoothing di Laplace è la base storica della
@@ -462,8 +463,7 @@ con pochi esempi è già vicino al meglio che sa fare. Il discriminativo parte
 peggio, ma il meglio che sa fare è **più alto**, e con abbastanza esempi ci
 arriva. Su pochi dati vince il primo; su tanti, il secondo.
 
-L'esperimento qui sotto rifà quel confronto, con una colonna in più che cambia le
-conclusioni.
+Rifacendo quel confronto con una colonna in più, le conclusioni cambiano.
 
 ```python
 import numpy as np
@@ -531,7 +531,7 @@ secondo**: se il modello del naive Bayes è quello giusto, i due metodi hanno lo
 stesso tetto, e quel tetto è il minimo teorico del problema ($0{,}866$, che si
 calcola). Infatti l'ultima riga li dà appaiati a $0{,}860$ e $0{,}859$, e nessuno
 dei due supera mai l'altro: l'asintoto più alto del discriminativo si vede solo
-quando l'ipotesi naive è **falsa**, che è il caso qui sotto. Rifacendo tutto con
+quando l'ipotesi naive è **falsa**. Rifacendo tutto con
 feature correlate a $0{,}25$ il naive Bayes resta indietro a ogni numerosità,
 perché al vantaggio di stimare poco si somma il costo di un'ipotesi falsa. Il
 vantaggio dei pochi dati è reale; non è un salvacondotto.
@@ -595,8 +595,8 @@ Quando conviene prenderli in considerazione, in concreto:
 - **con pochi esempi e molte colonne**, che è la situazione tipica dei dati
   clinici e sperimentali: è la riga $n = 80$ della tabella;
 - **quando serve una densità**, cioè quando bisogna accorgersi degli esempi che
-  non somigliano a niente di visto. La sezione sui dati che cambiano userà
-  proprio questo;
+  non somigliano a niente di visto: è quello che la mistura gaussiana, più
+  avanti nel capitolo, farà per segnalare i punti improbabili;
 - **per schiacciare i dati in poche dimensioni senza perdere le classi**: la
   LDA li proietta su al più $K-1$ direzioni, scelte apposta perché su quelle le
   classi si distinguano. È la cugina supervisionata dell'analisi delle
@@ -660,8 +660,8 @@ Quando conviene prenderli in considerazione, in concreto:
   posteriori restano **sovrasicure** e vanno ricalibrate.
 - **Ng e Jordan** {cite}`ng2001discriminative`: il generativo converge al
   proprio asintoto molto prima, ma quello del discriminativo è più alto **quando
-  l'ipotesi del generativo è falsa**. La tabella qui sopra misura solo la prima
-  metà, perché è costruita a feature indipendenti e lì i due asintoti coincidono
+  l'ipotesi del generativo è falsa**. Il confronto a feature indipendenti misura
+  solo la prima metà, perché lì i due asintoti coincidono
   (col tasso di Bayes, $0{,}866$). Il confronto è contro la logistica **non
   regolarizzata**; con l’$\ell_2$ di default il divario quasi sparisce, cioè il
   fenomeno è del 2001 e i default di oggi lo mascherano.
@@ -672,8 +672,8 @@ Quando conviene prenderli in considerazione, in concreto:
 
 `````
 
-Con questa sezione il capitolo ha chiuso il giro dei classificatori classici, e
-lo ha chiuso tornando al punto di partenza da dietro: la regressione logistica
+Il giro dei classificatori classici si chiude tornando al punto di partenza da
+dietro: la regressione logistica
 con cui tutto era cominciato e la LDA di Fisher tracciano lo stesso confine e non
 sono lo stesso metodo, perché una guarda il confine e l'altra guarda le classi.
 La prossima sezione abbandona del tutto le etichette e chiede ai dati di

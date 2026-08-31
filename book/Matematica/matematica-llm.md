@@ -7,10 +7,10 @@ convinto che gli basterà. Non gli basta, e non per la matematica: per i nomi.
 «Un token non è una *query*. I linguisti non parlano di *chiavi*. Che cos'è
 una *testa*?». Il documento che scrive per rimediare ricostruisce gli stessi
 modelli usando soltanto parole di matematica e di statistica
-{cite}`breeden2026simple`, e alla fine osserva che il muro non era il
-contenuto: era il vocabolario preso in prestito da mestieri diversi (le basi di
-dati, le scienze cognitive, l'elettrotecnica) e appiccicato sopra a operazioni
-che avevano già un nome.
+{cite}`breeden2026simple`, e alla fine osserva che il muro era il vocabolario
+preso in prestito da mestieri diversi (le basi di dati, le scienze cognitive,
+l'elettrotecnica) e appiccicato sopra a operazioni che avevano già un nome,
+non il contenuto.
 
 Dei quattro nomi di cui si lamenta, uno serve subito e va tolto di mezzo: un
 **token** è il pezzetto di testo su cui il modello lavora, non proprio una
@@ -226,8 +226,8 @@ nudo in italiano con la parola «piano»:
 - «Non avevano un **piano**» (il progetto).
 
 Un solo punto nello spazio non può stare vicino a «pianoforte», a «scala», a
-«lentamente» e a «strategia» contemporaneamente. La polisemia non è
-un'eccezione da manuale, è la norma: pochi vocaboli frequenti hanno un solo
+«lentamente» e a «strategia» contemporaneamente. La polisemia è la norma più
+che un'eccezione da manuale: pochi vocaboli frequenti hanno un solo
 significato.
 
 Da qui l'obiettivo di calcolo, che è la richiesta precisa da cui nasce tutto
@@ -411,8 +411,9 @@ Una **forma bilineare** è un modo di misurare l'accordo fra due liste di
 numeri passando per una tabella: si prende la prima lista, la si fa attraversare
 dalla tabella e si fa il prodotto scalare con la seconda.
 
-Il **rango** di una tabella è un po’ più sottile, e conviene vederlo su un
-esempio piccolo. Una tabella di cento righe sembra contenere cento
+Il **rango** di una tabella è un po’ più sottile (la {doc}`sezione sui sistemi
+lineari </Matematica/sistemi-lineari>` lo definisce per bene) e conviene
+vederlo su un esempio piccolo. Una tabella di cento righe sembra contenere cento
 informazioni, ma può darsi che la terza riga sia semplicemente la prima più la
 seconda, la quarta il doppio della prima, e così via: allora le righe davvero
 autonome sono due, e le altre novantotto si ricostruiscono combinando quelle.
@@ -454,8 +455,8 @@ $128 \times 12\,288 \approx 1{,}6$ milioni di caselle, e in due fanno $3{,}1$
 milioni invece di $151$: quarantotto volte meno
 ({numref}`fig-forma-bilineare`).
 
-Si perde qualcosa, ovviamente. Le tabelle ottenute in questo modo non sono
-tutte quelle possibili, sono una famiglia ristretta. Ma il risparmio non è solo
+Si perde qualcosa, ovviamente. Le tabelle ottenute in questo modo sono una
+famiglia ristretta e non tutte quelle possibili. Ma il risparmio non è solo
 di memoria: meno manopole vuol dire anche meno modi di imparare a memoria i
 dettagli irrilevanti degli esempi visti, che è il difetto in cui un modello
 cade più volentieri (si chiama *overfitting*, e mettergli dei paletti apposta
@@ -819,7 +820,7 @@ per indovinare la parola dopo, se la leggerebbe.
 Dopo tutti gli strati resta un vettore, quello dell'ultima posizione, che
 riassume tutto ciò che il modello ha estratto dal contesto. Convertirlo in una
 distribuzione di probabilità sulle parole possibili richiede un ultimo passo,
-e non è un passo nuovo: è lo stesso di prima.
+ed è lo stesso passo di prima.
 
 `````{tab} Elementare
 
@@ -838,7 +839,7 @@ il modello ha una lista di numeri
 che descrivono la situazione, la confronta con una lista per ogni risposta
 possibile e ne ricava delle probabilità. È lo stesso schema con cui si stima
 se un cliente restituirà un prestito, dati il suo reddito e la sua età. La
-differenza, e non è piccola, è che lì i numeri che descrivono la situazione li
+differenza, che è grossa, è che lì i numeri che descrivono la situazione li
 sceglie una persona (reddito, età, anzianità di lavoro), mentre qui sono
 calcolati dalle decine di strati che li precedono. Tutta la sofisticazione
 dell'architettura serve a costruire i numeri giusti da dare in pasto a un
@@ -868,9 +869,9 @@ costruire delle buone covariate (cioè le variabili esplicative, i «numeri che
 descrivono il caso») per un modello statistico fra i più antichi e più
 studiati che ci siano.
 
-I vettori $\mathbf{u}_v$, per inciso, in molti modelli non sono parametri
-nuovi: sono le righe della matrice di embedding $\mathbf{E}$, riusate al
-contrario (*weight tying*). È il motivo per cui, nel conteggio dei parametri di
+I vettori $\mathbf{u}_v$, per inciso, in molti modelli sono le righe della
+matrice di embedding $\mathbf{E}$, riusate al contrario (*weight tying*), e non
+parametri nuovi. È il motivo per cui, nel conteggio dei parametri di
 poco fa, gli embedding sono stati contati una volta sola.
 
 `````
@@ -894,8 +895,8 @@ stato scritto davvero?
 
 C'è una semplificazione che rende il conto praticabile, e non va persa. Per
 ogni posizione del testo il modello produce una distribuzione su
-tutto il vocabolario, ma la realtà, lì, non è una distribuzione: è una parola
-sola, quella che è effettivamente occorsa. Del sacco di probabilità che il
+tutto il vocabolario, ma la realtà, lì, è una parola sola e non una
+distribuzione: quella che è effettivamente occorsa. Del sacco di probabilità che il
 modello ha prodotto interessa quindi un numero solo, quello assegnato alla
 parola giusta, e l'obiettivo si riduce a: fai in modo che quel numero sia il
 più alto possibile, in ogni punto del testo. È esattamente la sorpresa media
@@ -934,27 +935,27 @@ il «pavimento» della loss è zero: la sezione sulla teoria dell'informazione
 osservava che il minimo teorico è $H(p)$, ed è vero della distribuzione
 condizionata vera del processo, non di questo bersaglio empirico.)
 
-La massimizzazione avviene per **discesa del gradiente stocastica**: si
-calcola il gradiente su un sottoinsieme casuale di sequenze invece che
-sull'intero corpus, il che dà una stima rumorosa ma **non distorta**, cioè
-sbagliata in media di zero: gli errori dei singoli passi si compensano invece
-di sommarsi in una direzione. I parametri si aggiornano nella direzione che
-migliora l'obiettivo. Che il gradiente sia
-calcolabile attraverso decine di strati non è un miracolo, è la regola della
-catena: il modello, dagli embedding fino alle probabilità, è una composizione
-di funzioni differenziabili, e il capitolo su PyTorch mostra la macchina che
-lo fa in automatico.
+La massimizzazione avviene per **discesa del gradiente stocastica**: si calcola
+il gradiente su un sottoinsieme casuale di sequenze invece che sull'intero
+corpus, il che dà una stima rumorosa ma **non distorta**, cioè sbagliata in
+media di zero: gli errori dei singoli passi si compensano invece di sommarsi in
+una direzione. I parametri si aggiornano nella direzione che migliora
+l'obiettivo. Che il gradiente sia calcolabile attraverso decine di strati viene
+dalla regola della catena: il modello, dagli embedding fino alle probabilità, è
+una composizione di funzioni differenziabili, e il capitolo su PyTorch mostra
+la macchina che lo fa in automatico.
 
 `````
 
 Se qualcosa in tutto questo somiglia alla magia, non è la stima simultanea di
-miliardi di parametri: è che funzioni. L'apparenza di un'unica gigantesca
-ottimizzazione è comunque fuorviante, perché l'addestramento di un modello di
-frontiera è organizzato in fasi, con un pre-addestramento sul testo grezzo,
-un affinamento su esempi curati e una fase di allineamento alle preferenze
-umane {cite}`ouyang2022training`, il tutto con programmi di riscaldamento e
-decadimento del tasso di apprendimento. Ne parla il {doc}`capitolo sui Transformer </Transformers/overview>`;
-la matematica dell'obiettivo, però, resta questa.
+miliardi di parametri, ma il fatto che funzioni. L'apparenza di un'unica
+gigantesca ottimizzazione è comunque fuorviante, perché l'addestramento di un
+modello di frontiera è organizzato in fasi, con un pre-addestramento sul testo
+grezzo, un affinamento su esempi curati e una fase di allineamento alle
+preferenze umane {cite}`ouyang2022training`, il tutto con programmi di
+riscaldamento e decadimento del tasso di apprendimento. Ne parla il
+{doc}`capitolo sui Transformer </Transformers/overview>`; la matematica
+dell'obiettivo, però, resta questa.
 
 ## Il modello, in una pagina
 

@@ -238,13 +238,13 @@ su cui si è diviso è diventata il suo indice.
 
 L'ultimo passaggio di {numref}`fig-split-apply-combine` è quello che si tende
 a dimenticare: dopo un `groupby` la colonna di raggruppamento diventa
-l'indice, e smette di essere una colonna. Da lì in poi ci si riferisce a una riga con la sua
-etichetta e non con il valore di una colonna, e questo spiega gran parte dei
-`KeyError` che seguono: `KeyError` è l'errore con cui Python dice «questo nome
-qui dentro non c'è», e chiedere la colonna `"citta"` al **risultato** di un
-raggruppamento per città
-è il modo più rapido di provocarlo (sulla tabella originale, che il
-raggruppamento non tocca, la colonna c'è ancora).
+l'indice, e smette di essere una colonna. Da lì in poi una riga si chiama con
+la sua etichetta, non con il valore di una colonna. È questo a spiegare gran
+parte dei `KeyError` che arrivano dopo un raggruppamento, dove `KeyError` è
+l'errore con cui Python dice «questo nome qui dentro non c'è»: chiedere la
+colonna `"citta"` al risultato di un raggruppamento per città è il modo più
+rapido di provocarlo. Sulla tabella di partenza, che il raggruppamento non
+tocca, quella colonna c'è ancora.
 
 ```python
 df.groupby("citta")["spesa"].mean()    # spesa media per città
@@ -264,12 +264,22 @@ Il secondo esempio calcola due riassunti in una volta e dà a ciascuno il nome
 che si vuole: a sinistra dell'uguale il nome della colonna che uscirà, a destra
 la coppia «da quale colonna prendere i valori, che conto farci sopra».
 
-Eseguendole sulla nostra tabella, Napoli risponde `NaN`. Le funzioni di
-riassunto di pandas saltano le caselle vuote: una colonna con due numeri e un
-buco fa la media dei due. Ma il suo unico cliente
-ha la spesa mancante, e una media senza nemmeno un valore da mediare non
-esiste. È il primo incontro con le caselle vuote, che meritano una sezione
-loro.
+Eseguendo la prima riga sulla nostra tabella, la spesa media per città esce
+così:
+
+```text
+citta
+Milano    223.50
+Napoli       NaN
+Torino     81.95
+Name: spesa, dtype: float64
+```
+
+Napoli risponde `NaN`. Le funzioni di riassunto di pandas saltano le caselle
+vuote: una colonna con due numeri e un buco fa la media dei due. Ma il suo
+unico cliente ha la spesa mancante, e una media senza nemmeno un valore da
+mediare non esiste. È il primo incontro con le caselle vuote, che meritano una
+sezione loro.
 
 `````{tab} Elementare
 
@@ -330,7 +340,8 @@ qualcosa, e riempirla con la media cancella proprio quel qualcosa.
 `````{tab} Elementare
 
 Hai due strade. Puoi **buttare via** le righe incomplete, oppure **riempirle**
-con un valore ragionevole (spesso la media o la mediana della colonna):
+con un valore ragionevole, la media della colonna o la sua mediana (il valore
+che sta in mezzo quando li si mette in fila):
 
 ```python
 df.isna().sum()              # quanti buchi per colonna?
@@ -396,7 +407,8 @@ applicata al test set, per non far trapelare informazione (*data leakage*).
 Verrebbe la tentazione di saltare direttamente al modello, e c'è un esempio
 famoso che spiega perché sia una cattiva idea. Nel 1973 lo statistico Francis
 Anscombe mise insieme quattro piccole raccolte di undici punti ciascuna, e le
-costruì apposta perché, misurate, risultassero gemelle.
+costruì apposta perché, misurate, risultassero gemelle fino al secondo
+decimale, che è la precisione con cui una statistica si scrive.
 
 Le misure su cui risultano gemelle sono le stesse che si prendono davanti a
 qualunque tabella nuova, e si guardano una per volta.
@@ -410,8 +422,9 @@ valori stanno tutti lì vicino, grande se sono sparsi ai due estremi. Coincide
 anche questa.
 
 La **correlazione** è un numero fra $-1$ e $1$ che dice quanto le due grandezze
-crescono insieme, e a zero vuol dire che sapere l'una non dice niente
-sull'altra. Nelle quattro raccolte vale circa $0{,}816$.
+crescono insieme lungo una retta, e a zero vuol dire che una retta fra le due
+non c'è: un legame di un'altra forma può esserci eccome, e i quattro disegni
+stanno per mostrarlo. Nelle quattro raccolte vale circa $0{,}816$.
 
 La **retta di regressione**, infine, è quella che passa più vicino possibile a
 tutti i punti insieme. Ed è la stessa retta:
@@ -438,8 +451,9 @@ che raccontano quattro storie completamente diverse.
 :alt: "Quattro grafici a dispersione con la stessa retta di regressione ma nubi di punti molto diverse: una relazione lineare, una curva, una lineare con un valore anomalo, e una con i punti allineati verticalmente più un punto isolato."
 :width: 90%
 
-Il quartetto di Anscombe. Stesse statistiche, stessa retta: solo il grafico
-rivela che i quattro insiemi di dati non hanno nulla in comune.
+Il quartetto di Anscombe. Le stesse statistiche a due decimali, la stessa
+retta: solo il grafico rivela che i quattro insiemi di dati non hanno nulla in
+comune.
 ```
 
 Il primo è davvero lineare; il secondo è una curva che una retta descrive
@@ -552,8 +566,9 @@ nella sostanza.
   (`Axes`) sono due oggetti distinti, e quasi tutti i metodi appartengono al
   secondo: da lì nasce l'errore più comune dei primi tempi.
 - **Guarda i dati prima di modellare**: il quartetto di Anscombe mostra che
-  quattro insiemi di dati con gli stessi numeri riassuntivi possono essere
-  completamente diversi, e che a vederlo è l'occhio, non la media.
+  quattro insiemi di dati con gli stessi numeri riassuntivi a due decimali
+  possono essere completamente diversi, e che a vederlo è l'occhio, non la
+  media.
 ```
 
 `````
@@ -577,7 +592,8 @@ nella sostanza.
   `Figure`/`Axes` come modello a oggetti (`fig, ax = plt.subplots()`), che è la
   forma da preferire appena i grafici sono più d'uno.
 - **Visualizza prima di modellare**: il quartetto di Anscombe mostra che
-  statistiche identiche possono nascondere dati radicalmente diversi.
+  statistiche che a due decimali coincidono possono nascondere dati
+  radicalmente diversi.
 ```
 
 `````

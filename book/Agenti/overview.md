@@ -15,7 +15,7 @@ sviluppatore in carne e ossa. È un compito che nessun completamento di testo,
 per quanto fluente, chiude in un colpo solo: bisogna trovare i file giusti,
 provare, sbagliare, rileggere il messaggio d'errore, correggere. I primi
 sistemi ci riuscivano in una **piccola frazione** dei casi, pochi punti
-percentuali. Un numero così basso non è una delusione, è la notizia: è la
+percentuali. Un numero così basso è la notizia, non la delusione: è la
 prima misura pubblica di quanto costi tenere insieme molte mosse di fila.
 Sull'affidabilità di quella misura, però, l'ultima sezione avrà qualcosa da
 ridire: si scoprirà che una parte di quei pochi successi non era stata
@@ -41,7 +41,7 @@ in cui ha studiato (in gergo si dice che è stato **addestrato**: gli si è fatt
 leggere una montagna di testo finché non ha imparato a proseguirlo). Può
 inventare la risposta, con la stessa sicurezza con cui ne direbbe una vera,
 oppure fermarsi a metà, andare a *guardare* il meteo e riprendere da lì. La
-seconda strada non è più fluenza: è una decisione presa nel mezzo di una frase.
+seconda strada è una decisione presa nel mezzo di una frase, e non più fluenza.
 
 Fra il 2023 e il 2024 compaiono i sistemi che quella decisione la prendono di
 continuo: cercano sul web una notizia di ieri, eseguono un pezzo di codice per
@@ -409,11 +409,11 @@ errori localizzabili, successo misurabile) ma incapace di uscire dallo spazio
 di stati previsto.
 
 L'agente LLM tiene l'ossatura (uno stato, una policy, delle azioni) ma la
-policy non è più un diagramma di flusso: è un modello di linguaggio orientato
-da un prompt. Lo spazio delle azioni si allarga enormemente, e con esso la
+policy diventa un modello di linguaggio orientato da un prompt, al posto di un
+diagramma di flusso. Lo spazio delle azioni si allarga enormemente, e con esso la
 copertura dei casi non previsti; in cambio si perde parte del controllo e
-della prevedibilità che rendevano affidabili i sistemi a frame. Non è un
-rimpiazzo indolore: è uno scambio, e i due mondi convivono ancora; spesso un
+della prevedibilità che rendevano affidabili i sistemi a frame. È uno scambio,
+non un rimpiazzo indolore, e i due mondi convivono ancora; spesso un
 agente flessibile viene racchiuso dentro binari rigidi proprio per riottenere
 un po’ di quelle garanzie.
 

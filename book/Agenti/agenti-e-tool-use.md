@@ -133,7 +133,7 @@ chiave che lo contiene invece cambia da un fornitore all'altro
 (`parameters`, `input_schema`, `inputSchema`); la forma dello schema no, ed è
 quella che conta.
 
-La descrizione non è decorazione: è il testo su cui il modello ragiona per
+La descrizione è il testo su cui il modello ragiona per
 decidere *se* e *quando* invocare lo strumento, ed è quindi parte del prompt a
 tutti gli effetti. Il modello, invece di campionare token destinati
 all'utente, emette una struttura `{"name": "calcola", "arguments":
@@ -173,8 +173,8 @@ giornali fra un anno; la forma invece è la stessa per tutti.
 :alt: "A sinistra un riquadro grande, l'applicazione che contiene il modello: dentro ci stanno il modello e due connettori, marcati client 1 e client 2. Ciascun connettore è collegato, con lo stesso protocollo, a un riquadro esterno diverso, il server A e il server B: uno per ogni sistema con cui si vuole parlare. Ogni server dichiara che cosa mette a disposizione, e a destra si vede su cosa comanda: il primo su dei file, il secondo su un archivio di dati. In fondo la scritta: una porta sola, tante periferiche."
 :width: 100%
 
-Lo stesso catalogo, ma standardizzato. A parlare il protocollo non è il
-modello: è l'applicazione che lo ospita, la quale apre **un canale per ogni
+Lo stesso catalogo, ma standardizzato. A parlare il protocollo è
+l'applicazione che ospita il modello, la quale apre **un canale per ogni
 sistema esterno** (nel disegno sono due, uno che governa dei file e uno che
 governa un archivio di dati) e li interroga tutti allo stesso modo. Al modello
 arrivano poi strumenti come gli altri, senza che debba sapere da dove vengono.
@@ -286,8 +286,8 @@ non *come* comporre: non sa usare gli strumenti in **catena** (l'uscita di uno
 come ingresso di un altro) né in modo **interattivo** (raffinare la richiesta
 guardando il risultato), ed è ciò che serve a un agente. È il salto che
 affronta ReAct, che però non gli è succeduto: ReAct è dell'ottobre 2022,
-Toolformer del febbraio successivo. Non sono due tappe di una scala, sono due
-risposte a due domande diverse.
+Toolformer del febbraio successivo. Sono due risposte a due domande diverse, non
+due tappe di una scala.
 
 `````
 
@@ -340,11 +340,11 @@ prosaica: dà al modello un posto dove scrivere a che punto è del compito prima
 di scegliere l'azione. È la stessa idea che ritroveremo, chiamata **foglio di
 brutta**, parlando di come si riempie la finestra di contesto.
 
-Ma il guadagno più grosso non è il pensiero: è l’**osservazione**, e per
-apprezzarlo serve un nome. Quando un modello inventa un fatto e lo dice con la
-faccia di chi lo sa, si parla di **allucinazione**: non è che menta, è che
-genera la continuazione più plausibile e nessuno gli ha mai chiesto di
-controllare. Un'osservazione che arriva da fuori, invece, non se l'è inventata
+Ma il guadagno più grosso sta nell’**osservazione**, più che nel pensiero, e
+per apprezzarlo serve un nome. Quando un modello inventa un fatto e lo dice con la
+faccia di chi lo sa, si parla di **allucinazione**: il modello genera la
+continuazione più plausibile, e nessuno gli ha mai chiesto di controllare.
+Un'osservazione che arriva da fuori, invece, non se l'è inventata
 lui: è testo che gli è stato messo davanti dal programma. Il pensiero decide
 *quale* strumento usare e *come* leggere ciò che è tornato, ma è
 l'osservazione a tenerlo attaccato a qualcosa di vero.
@@ -409,8 +409,8 @@ fallimenti passano da oltre metà a zero) ma il ragionamento si irrigidisce
 sulla forma pensiero-azione-osservazione, e gli errori di ragionamento quasi
 **triplicano**, dal 16% al 47% delle traiettorie fallite esaminate; per
 giunta nasce un modo di fallire che prima non esisteva, la
-ricerca che torna a mani vuote. Il risultato migliore del lavoro non è ReAct da
-solo: è la combinazione dei due, che si alternano quando l'uno si arena.
+ricerca che torna a mani vuote. Il risultato migliore del lavoro viene dalla
+combinazione dei due, che si alternano quando l'uno si arena.
 
 Il costo è in token e latenza (ogni pensiero è testo generato in più). In
 cambio la traccia è **ispezionabile**, ed è un vantaggio operativo vero. Ma

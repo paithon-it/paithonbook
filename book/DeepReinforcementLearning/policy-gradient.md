@@ -343,8 +343,8 @@ sta per *Asynchronous Advantage Actor-Critic*: attore-critico, con il
 vantaggio, e in parallelo, cioè le tre cose appena dette.
 
 **PPO** (*Proximal Policy Optimization* {cite}`schulman2017proximal`) è
-l'algoritmo che oggi si prova per primo, e la ragione non è che sia il più
-potente: è che **perdona la taratura**, cioè funziona ragionevolmente su una
+l'algoritmo che oggi si prova per primo, e la ragione è che **perdona la
+taratura**, più che la potenza: cioè funziona ragionevolmente su una
 gamma larga di problemi senza che qualcuno passi giorni a regolarne le manopole.
 
 ```{figure} ../figures/ppo-2017.svg
@@ -426,12 +426,12 @@ L^{\text{CLIP}}(\theta) =
 \operatorname{clip}(\rho_t,\,1-\epsilon,\,1+\epsilon)\,A_t\big)\big],
 $$
 
-dove $\rho_t = \dfrac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{\text{old}}}(a_t\mid s_t)}$
-è il rapporto tra la nuova e la vecchia policy, e $\epsilon$ (tipicamente
-$0{,}2$) fissa la larghezza della fascia entro cui lo spostamento continua a
-fruttare. Quel rapporto non è un
-espediente inventato qui: è il **rapporto di importance sampling** incontrato
-nel capitolo precedente, quello che permette di valutare una policy con dati
+dove $\rho_t = \dfrac{\pi_\theta(a_t\mid
+s_t)}{\pi_{\theta_{\text{old}}}(a_t\mid s_t)}$ è il rapporto tra la nuova e la
+vecchia policy, e $\epsilon$ (tipicamente $0{,}2$) fissa la larghezza della
+fascia entro cui lo spostamento continua a fruttare. Quel rapporto è il
+**rapporto di importance sampling** incontrato nel capitolo precedente e non un
+espediente inventato qui: quello che permette di valutare una policy con dati
 generati da un'altra, troncato a un passo solo. E il suo difetto è lo stesso
 già visto là: può assumere valori enormi e mandare in aria la stima. Il
 *clipping* **toglie il premio**, campione per campione, a chi spinge $\rho_t$

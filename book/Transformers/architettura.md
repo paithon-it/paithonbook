@@ -11,7 +11,7 @@ stanno le parole.
 
 ```{figure} ../figures/architettura-transformer.svg
 :name: fig-blocco-transformer
-:alt: "Schema annotato di un blocco Transformer: l'ingresso attraversa la multi-head attention, si somma a sé stesso attraverso una connessione residua e passa per una normalizzazione; il risultato attraversa la rete feed-forward, con una seconda connessione residua e una seconda normalizzazione, prima di uscire verso il blocco successivo."
+:alt: "Schema annotato di un blocco Transformer: l'ingresso passa per una normalizzazione, entra nella multi-head attention e si somma alla copia di sé stesso arrivata dalla connessione residua; il risultato passa per una seconda normalizzazione, attraversa la rete feed-forward e si somma di nuovo a sé stesso, prima di uscire verso il blocco successivo."
 :width: 62%
 
 Il blocco che si ripete, sempre uguale a sé stesso. I due mestieri sono la
@@ -19,18 +19,20 @@ riunione (l'attenzione, dove le parole si scambiano informazioni) e il lavoro
 individuale, dove ogni parola rielabora per conto suo; attorno a entrambi c'è
 l'impalcatura della sezione precedente, cioè la scorciatoia e la taratura, che
 permette di impilare decine di blocchi senza che i primi smettano di imparare.
+Il disegno mette la taratura **all'ingresso** di ciascuno dei due mestieri, che
+è il montaggio dei modelli di oggi; quello del 2017 la metteva subito dopo la
+somma.
 ```
 
 Conviene fissare {numref}`fig-blocco-transformer` prima di scendere nei
 dettagli, perché tutto il capitolo gira attorno a questa figura: encoder e
-decoder non sono due macchine diverse, sono due pile dello stesso blocco,
-montate in modo leggermente diverso.
+decoder sono due pile dello stesso blocco, montate in modo leggermente
+diverso.
 
-Una parola serve prima di cominciare, perché torna dieci volte in questa
-pagina. Dentro la rete ogni parola è diventata una lista di numeri, e quella
-lista è ciò che il libro chiama la sua **rappresentazione**: non è la parola
-scritta, è quello che il modello ne ha capito finora, e cambia a ogni piano.
-Tutto il lavoro delle due torri consiste nel riscriverla.
+Una parola serve prima di cominciare. Dentro la rete ogni parola è diventata
+una lista di numeri, e quella lista si chiama la sua **rappresentazione**: è
+quello che il modello ha capito della parola finora, non la parola scritta, e
+cambia a ogni piano. Tutto il lavoro delle due torri consiste nel riscriverla.
 
 ## L'encoder: la torre che legge
 
@@ -45,7 +47,7 @@ rappresentazione che avevano da sole, fuori da qualunque frase: "nero" vale
 parola guarda tutte le altre e si arricchisce di quello che ha visto), poi
 ciascuna parola viene rielaborata per conto suo da una piccola rete di neuroni,
 e il risultato sale al piano di sopra. Piano dopo piano la rappresentazione di
-ogni parola si specializza: "nero" al sesto piano non è più solo un colore, è
+ogni parola si specializza: "nero" al sesto piano è diventato
 *il colore di quel gatto in quella frase*. Alla fine della salita, l'encoder
 consegna una versione della frase in cui ogni parola porta scritto addosso il
 proprio contesto.
@@ -79,8 +81,8 @@ rappresentazioni via via più astratte.
 
 ## Il decoder: la torre che scrive
 
-Quello che esce dalla torre che legge, però, non è ancora una traduzione: è solo
-una frase capita bene. A trasformarla in un'altra frase ci pensa la seconda
+Quello che esce dalla torre che legge, però, è solo una frase capita bene, non
+ancora una traduzione. A trasformarla in un'altra frase ci pensa la seconda
 torre, ed è la più delicata delle due, perché deve scrivere.
 
 `````{tab} Elementare
@@ -115,8 +117,9 @@ Anche il decoder ha $L = 6$ strati, ma con tre sotto-strati ciascuno:
 1. **Masked Multi-Head Self-Attention**: come la self-attention dell'encoder,
    ma con una maschera che azzera (pone a $-\infty$ prima della softmax) le
    affinità verso le posizioni future: la posizione $t$ vede solo
-   $1, \dots, t$. È ciò che rende il modello **autoregressivo** e coerente
-   tra addestramento e generazione;
+   $1, \dots, t$. È ciò che rende il modello **autoregressivo**, e fa sì che il
+   *meccanismo* di condizionamento sia lo stesso in addestramento e in
+   generazione;
 2. **Cross-Attention**: le query vengono dal decoder, key e value dall'output
    dell'encoder, è qui che la generazione "consulta" la frase di partenza;
 3. **Feed-Forward Network**, identica a quella dell'encoder.
@@ -127,10 +130,15 @@ dell'embedding, §3.4) e una softmax danno la distribuzione del token
 successivo. Da quella distribuzione si sceglie un token, ed è il suo
 embedding a rientrare come input al passo dopo: non la distribuzione, che è un
 vettore di $|\mathcal{V}|$ probabilità e non ha modo di entrare in un ingresso
-fatto per un token. Come si sceglie (il più probabile, uno estratto a sorte, o
-il token
-vero durante l'addestramento, che è il *teacher forcing*) è una questione a sé,
-e la sezione sui grandi modelli linguistici la affronta per intero.
+fatto per un token. Come si sceglie a generazione (il più probabile, oppure uno
+estratto a sorte) è una questione a sé, e la sezione sui grandi modelli
+linguistici la affronta per intero. In addestramento entra invece il token
+**vero**, ed è il *teacher forcing*. La maschera garantisce che il meccanismo
+sia lo stesso nei due casi, ma i prefissi su cui il decoder viene interrogato
+no: in addestramento sono quelli del riferimento, in generazione i propri, ed è
+l’*exposure bias* che la sezione
+[con la soluzione accanto](../NaturalLanguageProcessing/seq2seq-traduzione.md)
+ha raccontato.
 `````
 
 ```{figure} ../figures/attenzione-mascherata.gif
@@ -138,9 +146,10 @@ e la sezione sui grandi modelli linguistici la affronta per intero.
 :alt: Animazione di una matrice di attenzione 6x6 sulla frase «Il gatto nero salta sul muro». Prima tutte le celle si riempiono di punteggi grigi; poi una scala separa il triangolo superiore, che si spegne perché posto a meno infinito; infine il triangolo inferiore si ricolora con i pesi normalizzati dalla softmax.
 :width: 85%
 
-La maschera causale al lavoro. Ogni riga della griglia è una parola che guarda
-tutte le altre; le caselle verso il futuro si spengono, e ogni riga
-ridistribuisce tutto il colore dell'evidenziatore su ciò che precede.
+Il divieto di sbirciare avanti, al lavoro: si chiama *maschera causale*, dove
+«causale» vuol dire che nessuna parola dipende da ciò che viene dopo. Le
+caselle verso il futuro si spengono, e ogni riga ridistribuisce tutto il colore
+dell'evidenziatore su ciò che precede.
 ```
 
 La griglia di {numref}`fig-attenzione-mascherata` è l'evidenziatore della
@@ -186,8 +195,10 @@ parte inaspettatamente interessante.
 
 Le frequenze del positional encoding. Nessuna onda da sola dice dove siamo: la
 firma di una posizione è la fila verticale dei punti che tutte le onde toccano
-lì (qui il disegno ne mostra tre, in un modello vero sono centinaia), e due
-posizioni non ricevono mai la stessa.
+lì (qui il disegno ne mostra tre, in un modello vero sono centinaia). Con tre
+sole onde, e così lente, la fila tornerebbe uguale ogni dieci posizioni; nel
+modello vero la più lenta compie un giro in oltre sessantamila, e due posizioni
+non ricevono mai la stessa firma.
 ```
 
 La firma della posizione c'è, ma non è scritta come un semplice contatore (1,
@@ -213,14 +224,15 @@ tre curve del disegno sono tre lancette a tre velocità. La firma di una
 posizione è allora la fila verticale dei tre punti che le tre onde toccano lì.
 
 Una lancetta sola, certo, si ripete: alle tre di notte e alle tre di pomeriggio
-la lancetta delle ore sta nello stesso posto. Ma tutte e tre insieme no, ed è
-esattamente perché girano a velocità che non sono l'una multipla dell'altra: la
-combinazione delle tre non si ripete per un tratto lunghissimo, molto più lungo
-di qualunque frase.
+la lancetta delle ore sta nello stesso posto. Su un orologio da parete si ripete
+anche la fila intera delle tre, ogni dodici ore, perché lì le velocità sono
+l'una multipla dell'altra. Le velocità delle onde stanno molto più lontane fra
+loro, e la più lenta impiega oltre sessantamila posizioni a compiere un giro:
+nessuna frase è abbastanza lunga perché la fila dei punti torni uguale.
 
 `````{tab} Elementare
-Il posto numerato, dunque, c'è, ma il numero non è scritto in cifre: è scritto
-con le lancette. La sostanza però è quella del teatro: stessa parola, poltrona
+Il posto numerato, dunque, c'è, ma il numero è scritto con le lancette invece
+che in cifre. La sostanza però è quella del teatro: stessa parola, poltrona
 diversa, e la rete può accorgersi che l'ordine conta. Il modo in cui la firma
 viene consegnata è sbrigativo: non si aggiunge un pezzo in fondo alla lista
 della parola, si **somma** numero per numero alla lista che c'è già. Parola e
@@ -410,8 +422,9 @@ momento. In questa pagina un solo ingrediente era nuovo davvero, il posto
 numerato; tutti gli altri erano già sul tavolo. C'è l'attenzione della sezione
 precedente, c'è una piccola rete di neuroni come quelle del capitolo sulle
 reti neurali, ci sono una scorciatoia e una taratura attorno a ciascuna delle
-due. Il Transformer non è un pezzo nuovo, è un modo di impilare quei quattro, sempre nello stesso ordine: sei piani nel
-modello del 2017, qualche decina in quelli su cui si fanno i conti oggi.
+due. Il Transformer è un modo di impilare quei quattro, sempre nello stesso ordine:
+sei piani nel modello del 2017, qualche decina in quelli su cui si fanno i
+conti oggi.
 
 È il motivo per cui l'architettura ha retto senza cambiare forma mentre i
 modelli diventavano quasi tremila volte più grandi: dai 65 milioni di parametri

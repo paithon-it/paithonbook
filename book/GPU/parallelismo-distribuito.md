@@ -520,17 +520,17 @@ molto più in fretta della memoria che si riesce a mettere su una singola GPU:
 inevitabile, e che FSDP è oggi la via pratica per addestrare modelli grandi su
 un numero ragionevole di schede.
 
-Addestrare su un cluster è la condizione di pochi, e va benissimo così. Ma le quattro strategie (spartire gli esempi,
-spartire i tabelloni, spartire gli strati, spartire lo stato) non sono folklore
-da datacenter: sono la mappa che spiega *come* nascono i modelli di cui
-leggiamo i nomi ogni settimana. E l'ultima, FSDP, è alla portata già di **due
-schede infilate nello stesso computer**. Perché proprio lei: il parallelismo
-dati su due schede è facilissimo da accendere ma non risolve il problema del
-modello che non ci sta, visto che ogni scheda ne tiene una copia intera;
-spezzare i tabelloni o gli strati risolve, ma vuole che si rimetta mano a come
-il modello è scritto. FSDP risolve *e* costa una riga di codice al posto di
-un'altra. Se un giorno vi troverete con un modello che in una scheda sola non
-entra, è da lì che si comincia.
+Addestrare su un cluster è la condizione di pochi, e va benissimo così. Ma le
+quattro strategie (spartire gli esempi, spartire i tabelloni, spartire gli
+strati, spartire lo stato) sono la mappa che spiega *come* nascono i modelli di
+cui leggiamo i nomi ogni settimana, e non folklore da datacenter. E l'ultima,
+FSDP, è alla portata già di **due schede infilate nello stesso computer**.
+Perché proprio lei: il parallelismo dati su due schede è facilissimo da
+accendere ma non risolve il problema del modello che non ci sta, visto che ogni
+scheda ne tiene una copia intera; spezzare i tabelloni o gli strati risolve, ma
+vuole che si rimetta mano a come il modello è scritto. FSDP risolve *e* costa
+una riga di codice al posto di un'altra. Se un giorno vi troverete con un
+modello che in una scheda sola non entra, è da lì che si comincia.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

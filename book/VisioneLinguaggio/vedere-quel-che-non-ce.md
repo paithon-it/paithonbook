@@ -140,7 +140,7 @@ da come è formulata la richiesta e da quanto è lunga la descrizione che ne esc
 perché più si scrive più si rischia di sbagliare. È l'obiezione che muovono gli autori del protocollo di cui parliamo
 fra poco {cite}`li2023evaluating`, e che li ha portati a cambiare strada.
 
-Il risultato non è una misura sbagliata: è una misura che **si muove per ragioni
+Il risultato è una misura che **si muove per ragioni
 che con l'immagine non c'entrano**. Chiedi al modello una descrizione più lunga
 e il punteggio peggiora; cambia il modo di chiedere e cambia di nuovo, senza che
 il modello sia cambiato di una virgola. È la cosa peggiore che si possa avere in
@@ -160,8 +160,8 @@ a correggere un secondo modello di linguaggio (il modello giudice,
 l’*LLM-as-a-judge* di cui parlerà il capitolo sull'MLOps), e un secondo modello
 si porta dietro i propri difetti proprio là dove si vuole misurarne uno.
 
-Il cuore del metodo, però, non è il formato binario: è **come si scelgono gli
-oggetti assenti**. Chiedere «c'è una zebra?» davanti a una cucina non misura
+Il cuore del metodo, però, sta in **come si scelgono gli oggetti assenti**, più
+che nel formato binario. Chiedere «c'è una zebra?» davanti a una cucina non misura
 niente.
 
 `````{tab} Elementare
@@ -209,8 +209,8 @@ dove $\hat{p}(o)$ è la frequenza marginale della categoria $o$ nel corpus e
 $\hat{p}(o \mid o')$ la sua frequenza condizionata alla presenza di $o'$; nelle
 ultime due si prendono i primi $k$ candidati in ordine di punteggio anziché
 campionare, con $k$ pari al numero di domande negative che tocca all'immagine.
-Le tre condizioni non sono tre difficoltà arbitrarie: sono due
-priori diversi messi alla prova separatamente, quello **marginale** e quello
+Le tre condizioni mettono alla prova separatamente due
+priori diversi, quello **marginale** e quello
 **condizionato alla co-occorrenza**, più un controllo. Il divario fra le
 accuratezze nelle tre condizioni è una stima di quanto ciascun priore stia
 guidando la risposta.
@@ -457,8 +457,8 @@ pareggio in un altro modo. Chi volesse l'affermazione
 informazionale in senso forte deve introdurre del rumore, che nei sistemi veri
 c'è (quantizzazione, precisione ridotta, augmentation in addestramento): allora
 $\mathcal{I}(\mathbf{Z}; \mathbf{I})$ cala davvero e la disuguaglianza torna a
-mordere. In tutti i casi, punto cieco a monte e allucinazione a valle non sono
-due difetti: sono un difetto e la sua manifestazione.
+mordere. In tutti i casi, punto cieco a monte e allucinazione a valle sono
+un difetto e la sua manifestazione.
 
 `````
 
@@ -482,8 +482,8 @@ cambia il conto: si può allungare la fila di numeri di ogni tessera attaccandoc
 in coda quella dell'altro encoder, e allora la sequenza resta lunga uguale;
 oppure mettere in fila prima i pezzi di un encoder e poi quelli dell'altro, e
 allora il posto occupato raddoppia (è il conto della sezione sulla risoluzione). In tutti i
-casi restano due encoder da far girare invece di uno, e il problema non è
-cancellato; è spostato.
+casi restano due encoder da far girare invece di uno, e il problema si sposta
+invece di sparire.
 
 ## Tre rimedi, nessuna cura
 
@@ -623,8 +623,8 @@ smascherare. Il rimedio funziona nella misura in cui il secondo controllo è
 foto, uno che li ritaglia sapendo riconoscere anche categorie che non erano nel
 suo elenco, oppure una persona.
 
-Nessuno dei tre elimina il fenomeno, e conviene dirlo senza attenuanti. Non è
-pessimismo: è la conseguenza di come nasce. Finché la funzione di costo premia
+Nessuno dei tre elimina il fenomeno, e conviene dirlo senza attenuanti. È la
+conseguenza di come nasce. Finché la funzione di costo premia
 la continuazione plausibile e l'immagine è un condizionamento fra gli altri, il
 priore resta la strada più economica verso una perdita bassa. I rimedi spostano
 il punto di equilibrio, rendono le affermazioni falsificabili, rendono più caro
@@ -760,8 +760,8 @@ fra uno e tre comandi al secondo, e sceso a qualche miliardo arriva a circa
 cinque;
 un controllore classico ne emette decine o centinaia. Finché il compito è
 afferrare e spostare va bene, per un movimento che deve
-reagire in fretta no, e non è un problema di ingegneria del software: è la
-dimensione del modello.
+reagire in fretta no, e a decidere è la
+dimensione del modello, non l'ingegneria del software.
 
 Il secondo è **come si sbaglia**. Una parola sbagliata si rilegge, e il
 peggio che capita è che qualcuno la creda. Un movimento sbagliato è già
@@ -812,17 +812,17 @@ di una fotografia che non ha guardato.
 
 ```{admonition} Da ricordare
 :class: important
-- La forchetta che non c'era **non è un errore di vista**: è l'abitudine della
-  lingua che vince sulla fotografia, e si chiama **allucinazione visiva**. Nelle
+- La forchetta che non c'era viene dall’**abitudine della
+  lingua** che vince sulla fotografia, e si chiama **allucinazione visiva**. Nelle
   didascalie del mondo, accanto a un piatto e a un coltello, una forchetta c'è
   quasi sempre, e chi è addestrato a scrivere frasi plausibili la scrive.
-  Guardare non è vietato, è facoltativo.
+  Guardare resta facoltativo.
 - Dare un voto a sei righe di descrizione è rumoroso: bisogna decidere quali
   parole sono affermazioni sul mondo e poi controllarle una a una. La via che
   funziona è **cambiare la domanda**: si chiede «c'è una forchetta?» e si accetta
   solo sì o no.
-- Le domande difficili non sono quelle a caso («c'è una zebra?»), sono quelle
-  sull'oggetto che di solito accompagna quelli presenti. Non si guarda **un**
+- Le domande difficili sono quelle sull'oggetto che di solito accompagna
+  quelli presenti, non quelle a caso («c'è una zebra?»). Non si guarda **un**
   punteggio: se ne guardano tre e si guarda **quanto scendono**, perché quella
   discesa misura l'abitudine e non la bravura.
 - Il voto va letto insieme a **quante volte il modello ha detto sì**: chi dice
@@ -852,7 +852,7 @@ di una fotografia che non ha guardato.
 - L’**allucinazione visiva** non è un errore di percezione: la perdita si
   scompone in un **priore linguistico** più un **contributo visivo**, e dove la
   didascalia è già prevedibile dal testo il gradiente che spinge a guardare è
-  debole. Guardare non è vietato, è facoltativo.
+  debole. Guardare resta facoltativo.
 - Le due misure sono **costrutti diversi**, non due letture della stessa
   grandezza. **CHAIR** {cite}`rohrbach2018object` conta gli oggetti allucinati in
   una descrizione libera (generativo, rumoroso, sensibile all'istruzione e alla

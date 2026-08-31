@@ -21,7 +21,7 @@ Photoshop e Blender, versioni modificate per ogni gusto. La generazione di
 immagini smette di essere una demo da guardare e diventa uno strumento da
 usare.
 
-La domanda di questa sezione è: che cosa lo rende possibile *tecnicamente*?
+La domanda è: che cosa lo rende possibile *tecnicamente*?
 Non un modello più grande: al contrario, uno più piccolo. Il segreto è un
 trasloco: la diffusione che conosciamo fa le valigie, lascia i pixel e si
 trasferisce in uno spazio compresso, decine di volte più piccolo, dove ogni
@@ -38,16 +38,16 @@ catena di montaggio, che non è quello per cui di solito lo si costruisce.
 
 ## Il prezzo dei pixel
 
-Facciamo due conti. Nella sezione precedente un'immagine era una griglia di
-numeri, uno per pixel, perché la guardavamo in bianco e nero. A colori i numeri
-per pixel diventano tre, uno per ciascuno dei colori con cui uno schermo compone
-tutti gli altri (rosso, verde, blu). Un'immagine a colori di
-$512 \times 512$ pixel è fatta quindi di
-$512 \times 512 \times 3 = 786\,432$ numeri. Il restauratore della sezione
-precedente (la U-Net {cite}`ronneberger2015u` che predice il rumore) deve
-elaborarli *tutti*, e deve farlo a ogni passo di pulitura: centinaia o
-migliaia di passaggi per una sola immagine. Con le centinaia di macchine di un
-laboratorio si può fare; su un computer di casa no.
+Facciamo due conti. Nella {doc}`sezione su come funziona la diffusione
+</ModelliDiffusione/come-funziona>` un'immagine era una griglia di numeri, uno
+per pixel, perché la guardavamo in bianco e nero. A colori i numeri per pixel
+diventano tre, uno per ciascuno dei colori con cui uno schermo compone tutti
+gli altri (rosso, verde, blu). Un'immagine a colori di $512 \times 512$ pixel è
+fatta quindi di $512 \times 512 \times 3 = 786\,432$ numeri. Il restauratore
+(la U-Net {cite}`ronneberger2015u` che predice il rumore) deve elaborarli
+*tutti*, e deve farlo a ogni passo di pulitura: centinaia o migliaia di
+passaggi per una sola immagine. Con le centinaia di macchine di un laboratorio
+si può fare; su un computer di casa no.
 
 Ed è uno spreco, per una ragione precisa: la maggior parte di quei 786.432
 numeri non descrive *che cosa* c'è nell'immagine, ma dettagli percettivi (la
@@ -109,11 +109,12 @@ coppia: il valore *e* il margine.)
 ```
 
 La {numref}`fig-vae` dà per scontata una cosa da fissare. Una scheda è una
-lista di numeri, e come tale si può immaginare come un **punto su una mappa**,
-esattamente la mappa delle immagini possibili di poche pagine fa: schede
-simili sono punti vicini, e fra due punti c'è sempre tutto lo spazio in mezzo.
-È quello che permette di dire frasi come «una scheda a metà strada fra due che
-esistono», che con dei foglietti di carta non vorrebbero dire niente.
+lista di numeri, e come tale si può immaginare come un **punto su una mappa**.
+Non più la mappa delle immagini possibili, dove ogni punto era una fotografia
+intera: quella delle schede, fatta allo stesso modo e con molte meno direzioni.
+Schede simili sono punti vicini, e fra due punti c'è sempre tutto lo spazio in
+mezzo. È quello che permette di dire frasi come «una scheda a metà strada fra
+due che esistono», che con dei foglietti di carta non vorrebbero dire niente.
 
 Sulla mappa si rivede in un colpo d'occhio quello che il capitolo sui modelli
 latenti ha misurato. Un archivista senza margine di tolleranza comprime e
@@ -202,11 +203,11 @@ encoder che si allontanano dal prior. È questo secondo termine a rendere lo
 spazio latente **continuo** (input simili, codici vicini) e **campionabile**,
 cioè a fornire una distribuzione da cui pescare $\mathbf{z}$ senza doverla
 stimare: l'obiettivo è che ogni regione con probabilità apprezzabile sotto il
-prior decodifichi in un dato plausibile, e quanto ci si riesca davvero è la
-domanda del paragrafo che segue. Nella convenzione del libro, dove $\mathcal{L}$ si
-minimizza, la loss corrispondente è $\mathcal{L} = -\mathrm{ELBO}$. La
-derivazione, come limite inferiore della log-verosimiglianza, sta nel capitolo
-sui modelli latenti; qui ci basta il ruolo funzionale dei due termini.
+prior decodifichi in un dato plausibile, e quanto ci si riesca davvero ha un
+limite noto. Nella convenzione del libro, dove $\mathcal{L}$ si minimizza, la
+loss corrispondente è $\mathcal{L} = -\mathrm{ELBO}$. La derivazione, come
+limite inferiore della log-verosimiglianza, sta nel capitolo sui modelli
+latenti; qui ci basta il ruolo funzionale dei due termini.
 
 Di quel capitolo va richiamato anche il limite, perché in Stable Diffusion
 determina una scelta di progetto. Il termine KL agisce **su un esempio alla
@@ -246,12 +247,12 @@ conseguenze proprie.
 
 ## La ricetta in quattro mosse
 
-Manca un pezzo solo, che finora questa sezione ha tenuto in disparte: **il
-testo**. Le fotografie con cui questi modelli si
-addestrano non arrivano nude, arrivano con una didascalia accanto («un gatto
-nero seduto su un muro»), raccolta insieme all'immagine dal sito da cui è stata
-presa. È così che il modello impara ad associare le parole alle cose, ed è il
-motivo per cui alla fine gli si potrà scrivere che cosa disegnare.
+Manca un pezzo solo, tenuto finora in disparte: **il testo**. Le fotografie con
+cui questi modelli si addestrano non arrivano nude, arrivano con una didascalia
+accanto («un gatto nero seduto su un muro»), raccolta insieme all'immagine dal
+sito da cui è stata presa. È così che il modello impara ad associare le parole
+alle cose, ed è il motivo per cui alla fine gli si potrà scrivere che cosa
+disegnare.
 
 La {numref}`fig-latent-diffusion` mette allora in fila tutto: la rete che
 comprime, lo spazio delle schede dove avviene la diffusione, il testo che entra
@@ -278,12 +279,12 @@ richiesta scritta dall'utente, che entra di lato.
 
 Quattro mosse. **Prima**: l'archivista comprime ogni fotografia dell'archivio
 di addestramento nella sua scheda; d'ora in poi si lavora solo su schede.
-**Seconda**: il restauratore della sezione precedente fa esattamente il suo
-solito mestiere (sporca di rumore, impara a indicare il disturbo) ma su schede
-da 16.384 numeri invece che su quadri da 786.432, come restaurare cartoline
-anziché affreschi. Ogni giro di domanda e risposta costa decine di volte meno,
-non proprio quarantotto, perché la rete delle schede è progettata apposta e non
-è quella dei quadri rimpicciolita.
+**Seconda**: il restauratore fa esattamente il suo solito mestiere (sporca di
+rumore, impara a indicare il disturbo) ma su schede da 16.384 numeri invece che
+su quadri da 786.432, come restaurare cartoline anziché affreschi. Ogni giro di
+domanda e risposta costa decine di volte meno, non proprio quarantotto, perché
+la rete delle schede è progettata apposta e non è quella dei quadri
+rimpicciolita.
 
 Le schede, però, vanno convertite prima di finire sul tavolo del restauratore:
 si moltiplicano tutte per uno stesso numero fisso, 0,18215, poco meno di un
@@ -325,8 +326,8 @@ $\mathbf{x} \in \mathbb{R}^{512 \times 512 \times 3}$ (scriveremo $\mathcal{E}(\
 per brevità, ricordando che sotto c'è un campionamento).
 
 **2. Diffusione nel latente.** Il processo diretto e quello inverso hanno la
-stessa forma di quelli della sezione precedente, applicati a $\mathbf{z}$ anziché a
-$\mathbf{x}$, con un'avvertenza che il paragrafo sul processo diretto aveva già
+stessa forma di quelli di DDPM, applicati a $\mathbf{z}$ anziché a $\mathbf{x}$,
+con un'avvertenza che il paragrafo sul processo diretto aveva già
 anticipato: lo schedule *variance-preserving* presuppone dati a **varianza
 unitaria**, e il latente del VAE non ce l'ha. LDM lo riscala quindi per la
 deviazione standard misurata componente per componente sui latenti (in Stable
@@ -398,7 +399,7 @@ quel file, caricato in memoria con numeri a metà precisione, di gigabyte ne
 occupa circa due, e gli altri due servono ai conti.) È il secondo di questi
 due conti, non il primo, ad aver cambiato chi può partecipare.
 
-## Due bussole: quanto dare retta alla richiesta
+## Quanto dare retta alla richiesta
 
 Manca un ingrediente, quello che decide *quanto* l'immagine obbedisce alla
 richiesta. L'occhiata al testo, da sola, è un suggerimento più che un
@@ -419,8 +420,8 @@ commissione viene *nascosta*. Così impara due mestieri insieme: disegnare
 
 In generazione, allora, a ogni passo puoi porre la domanda due volte e
 ottenere due risposte, al prezzo di fare il lavoro due volte. È il cartello
-della salita della sezione precedente, quello che indica in che direzione
-ritoccare l'immagine per renderla più credibile, che si sdoppia: uno dice «per
+della salita, quello che indica in che direzione ritoccare l'immagine per
+renderla più credibile, che si sdoppia: uno dice «per
 una figura credibile, va’ di là», l'altro «per una figura credibile *e che
 rispetta la richiesta*, va’ di là». Chiamiamole le due bussole, tenendo a mente
 che ognuna indica la sua direzione, e le due direzioni non coincidono.
@@ -503,19 +504,20 @@ attacco avversario a un classificatore di immagini. Il «classificatore
 implicito» è una guida al ragionamento, non un oggetto che esiste da qualche
 parte.
 
-E c'è una seconda conseguenza, che le interfacce non dichiarano mai: per
-$w > 1$ il campionatore **non campiona più da $p(\mathbf{x} \mid c)$**, e nemmeno da
-$p(\mathbf{x})\,p(c \mid \mathbf{x})^w$, che in generale non è normalizzabile. Non campiona,
-cioè, da nessuna distribuzione scritta. Bradley e Nakkiran
-{cite}`bradley2024classifier` lo chiudono mostrando che nessuno dei due
-campionatori usuali, con la guidance attiva, genera la distribuzione che si
-suppone generi, e che la guidance è piuttosto un metodo predittore-correttore
-che alterna un passo di denoising e uno di affilatura. Il $w = 7{,}5$ di
-default sta quindi in un regime scelto per il **giudizio umano**, ben oltre il
-punto in cui la somiglianza statistica con i dati veri comincia a peggiorare:
-non è una manopola della qualità, è una manopola della preferenza, e la
-distinzione conta ogni volta che si valuta un modello con una metrica invece
-che con gli occhi.
+E c'è una seconda conseguenza, che le interfacce non dichiarano mai:
+per $w > 1$ il campionatore **non campiona più da $p(\mathbf{x} \mid c)$**, e
+nemmeno da $p(\mathbf{x})\,p(c \mid \mathbf{x})^w$, la distribuzione
+«inclinata» che di solito si cita per giustificarlo. Bradley e Nakkiran
+{cite}`bradley2024classifier` lo mostrano per costruzione, e aggiungono che la
+guida interagisce in modo diverso con i due campionatori in uso, che quindi non
+producono nemmeno la stessa distribuzione fra loro. Su che cosa la guida sia,
+danno una risposta parziale: nel limite continuo si comporta come un metodo
+predittore-correttore, che alterna un passo di denoising e uno di affilatura.
+Il $w = 7{,}5$ di default sta in un regime scelto per il **giudizio umano**,
+ben oltre il punto in cui la somiglianza statistica con i dati veri comincia a
+peggiorare: non è una manopola della qualità, è una manopola della preferenza,
+e la distinzione conta ogni volta che si valuta un modello con una metrica
+invece che con gli occhi.
 
 Il prezzo è dunque triplice. Computazionale: due valutazioni della U-Net per
 ogni passo (in pratica, un batch di due). Statistico: al crescere di $w$
@@ -567,8 +569,9 @@ immagine.save("gatto_acquerello.png")
 Due note pratiche. Il prompt è in inglese perché i modelli della famiglia
 SD v1 sono addestrati su didascalie in inglese: con altre lingue i
 risultati peggiorano sensibilmente. E se la memoria non basta,
-`pipe.enable_attention_slicing()` scambia un po’ di velocità per un
-consumo molto più basso.
+`pipe.enable_model_cpu_offload()` tiene sulla scheda un pezzo di modello per
+volta e lascia gli altri nella memoria del computer: si paga in secondi e il
+picco scende di molto.
 
 ## L'onda lunga dei pesi aperti
 
@@ -695,7 +698,9 @@ tecnica.
   condizionata e non, con peso $w$: più aderenza al testo, meno varietà. Il
   «classificatore implicito» è un'ispirazione, non un oggetto (il campo
   guidato non è conservativo), e per $w > 1$ non si campiona più da
-  $p(\mathbf{x} \mid c)$ {cite}`bradley2024classifier`. I *negative prompt* sono la
+  $p(\mathbf{x} \mid c)$ e nemmeno dall'inclinata
+  $p(\mathbf{x})\,p(c \mid \mathbf{x})^w$, che è la giustificazione corrente
+  {cite}`bradley2024classifier`. I *negative prompt* sono la
   stessa formula al contrario.
 - I pesi aperti (agosto 2022) hanno generato un ecosistema (LoRA
   {cite}`hu2022lora`, ControlNet {cite}`zhang2023adding`, interfacce di

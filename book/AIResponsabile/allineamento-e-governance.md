@@ -464,9 +464,9 @@ come si attacca e si difende un modello di linguaggio; e nei sistemi agentici
 (con accesso a strumenti, mail, file) il danno smette di essere un testo
 sbagliato e diventa un'azione. Sopra tutto sta la
 questione dell’**uso duale**: le stesse capacità che rendono un modello utile
-per chimica, biologia o codice possono assistere chi vuole nuocere. Non è un
-bug da correggere, è una proprietà della capacità stessa, e ne fa una
-questione di controllo dell'accesso, non solo di addestramento.
+per chimica, biologia o codice possono assistere chi vuole nuocere. È una
+proprietà della capacità stessa, e ne fa una questione di controllo
+dell'accesso più che di addestramento.
 
 `````
 
@@ -481,7 +481,7 @@ prestito il vocabolario della sicurezza informatica.
 :alt: "Ciclo chiuso in quattro stazioni disposte ad anello e percorse in senso orario: 1 policy (cosa il modello non deve fare), 2 attacco (jailbreak, injection, attacchi automatizzati), 3 scoperta (falle documentate e classificate), 4 patch (fine-tuning, filtri, system prompt), e dalla patch di nuovo alla policy. Al centro dell'anello la nota «si ricomincia: ogni patch invita un nuovo attacco»."
 :width: 78%
 
-Il red teaming non è un collaudo che si supera una volta: è un anello. Il
+Il red teaming è un anello, non un collaudo che si supera una volta. Il
 tratto che dalla patch torna alla policy è la parte onesta del disegno, perché
 ogni correzione cambia la superficie d'attacco invece di eliminarla.
 ```
@@ -532,8 +532,9 @@ Goodhart. Primo: un benchmark è un proxy, e ottimizzare *per* il benchmark
 migliorare la sicurezza reale, per questo contano i *test adversariali tenuti
 nascosti*. Secondo: passare le evals dimostra l'assenza dei fallimenti
 *cercati*, non la sicurezza in assoluto. L'assenza di prove non è prova
-d'assenza: è il motivo per cui la valutazione è un processo continuo, non un
-timbro una tantum. Non a caso, come vedremo, l'AI Act impone il red-teaming
+d'assenza, ed è il motivo per cui la valutazione resta un processo continuo
+invece di un timbro una tantum. Non a caso, come vedremo, l'AI Act impone il
+red-teaming
 come obbligo per i modelli più capaci.
 
 `````
@@ -604,7 +605,7 @@ riguardano la vita di chiunque vada a scuola o lavori.
   l'orientamento sessuale** di qualcuno.
 - **Riconoscere i volti in tempo reale nei luoghi pubblici**, ma attenzione:
   questo divieto vale per le **forze dell'ordine**, non per chiunque. Fuori da
-  quel caso il riconoscimento biometrico non è vietato, è solo sorvegliato.
+  quel caso il riconoscimento biometrico resta permesso, ma sorvegliato.
 
 Sotto c'è l’*alto rischio*, ed è il gradino che riguarda le decisioni serie:
 chi viene assunto, chi ottiene un prestito, un dispositivo medico, l'ammissione
@@ -690,8 +691,9 @@ $10^{25}$ FLOP (art. 51(2)), dove FLOP sta per *floating point operations*, il
 conto totale delle operazioni aritmetiche fatte per addestrare il modello. È un
 criterio di **capacità**, applicato al fornitore, prima e indipendentemente da
 qualunque impiego a valle: della sfera dell'uso non c'è più niente. Che sia
-stato necessario non è un difetto di scrittura, è la natura dell'oggetto: un
-modello generalista gli usi non li sceglie, quindi un criterio d'uso da solo non
+stato necessario dipende dalla natura dell'oggetto, non da una scrittura
+difettosa: un modello generalista gli usi non li sceglie, quindi un criterio
+d'uso da solo non
 aveva presa. E la soglia è un rattoppo dichiarato: il calcolo di addestramento
 non misura la capacità, e infatti il regolamento prevede che la Commissione
 possa modificarla, il che è un modo elegante di ammettere che nessuno la
@@ -774,8 +776,8 @@ noi.
 - **Rischi**: le **allucinazioni** (il modello inventa in buona fede, perché
   «suonare vero» non è «essere vero») si combattono verificando a valle; gli
   **attacchi** si combattono difendendo un perimetro. E le stesse capacità che
-  rendono un modello utile lo rendono utile anche a chi vuole nuocere: non è un
-  difetto da correggere, è la capacità stessa.
+  rendono un modello utile lo rendono utile anche a chi vuole nuocere, ed è la
+  capacità stessa vista dall'altro lato.
 - Si può attaccare il proprio sistema apposta per trovarne le falle, e si
   possono fare esami ripetibili per controllare che le falle vecchie non
   tornino. Ma **passare un esame non vuol dire essere sicuri**: vuol dire non
@@ -833,8 +835,8 @@ noi.
 
 `````
 
-Con questo capitolo il libro smette di aggiungere strumenti. Quello che resta
-non è una garanzia, è un'abitudine, e consiste nel chiedere su quale numero un
+Da qui in avanti non si aggiungono più strumenti. Quello che resta è
+un'abitudine più che una garanzia, e consiste nel chiedere su quale numero un
 sistema è stato premiato, che cosa quel numero lascia fuori e chi risponde
 quando la risposta è sbagliata. Restano le Conclusioni, che non insegnano
 niente di nuovo: servono a vedere che cosa, di tutto quello che hai letto,

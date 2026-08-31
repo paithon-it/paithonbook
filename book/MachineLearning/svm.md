@@ -93,8 +93,8 @@ $b$: non una frontiera qualsiasi, ma quella che lascia il vuoto più ampio
 attorno a sé. Più il corridoio è largo, più il classificatore è robusto.
 
 Su «largo», però, serve un'intesa, perché dipende da come lo si misura e il
-righello ce lo diamo noi. Diciamo che il corridoio è la fascia dove il conto
-qui sopra sta fra $-1$ e $+1$: i due bordi sono le righe dove vale esattamente
+righello ce lo diamo noi. Diciamo che il corridoio è la fascia dove quel conto
+sta fra $-1$ e $+1$: i due bordi sono le righe dove vale esattamente
 $-1$ e $+1$, e il confine, dove vale zero, corre nel mezzo. Ne discende una
 regola sola, uguale per tutti: ogni punto di cui già conosciamo la classe deve
 stare dalla parte sua e fuori dalla fascia.
@@ -168,7 +168,8 @@ verticale, quindi $\sqrt{2^2 + 2^2} = \sqrt{8} \approx 2{,}8$. Attenzione però,
 qui va bene perché le due case sono messe proprio l'una di fronte all'altra
 attraverso la strada; se fossero sfalsate, la distanza fra loro conterebbe
 anche un pezzo di cammino *lungo* la strada, che con la larghezza non c'entra.
-Più avanti vedremo come togliere quel pezzo di troppo.
+A togliere quel pezzo di troppo è il conto con i pesi, che misura in
+perpendicolare ai marciapiedi.
 
 Proviamo con i pesi. Per questo confine vanno bene $0{,}5$ e $0{,}5$, con
 numero di partenza $-1$. Sulla casa in $(0,0)$ il conto dà
@@ -349,8 +350,8 @@ vocabolario, che è più concreto del nostro: il corridoio diventa **una strada*
 le due rette di margine diventano **i marciapiedi**, e quello che cerchiamo è la
 strada più larga che si riesca a far passare fra i più e i meno.
 
-Winston apriva quella lezione con un avvertimento che è anche la ragione per cui
-questa sezione esiste. Quando una derivazione così la si legge in un libro,
+Winston apriva quella lezione con un avvertimento che vale per ogni derivazione
+elegante. Quando una derivazione così la si legge in un libro,
 finita e ordinata, viene da pensare che Vapnik l'abbia tirata fuori tutta
 insieme un sabato pomeriggio in cui il tempo era troppo brutto per uscire. Non è
 così che succede. Succede in un altro modo, e alla fine della sezione vedremo
@@ -434,7 +435,7 @@ una tacca; a una dei meno, che le resti sotto di almeno una tacca.
 Quanto vale una tacca? Lo decidiamo noi, e possiamo dire che vale $1$. Non è un
 atto di fede: ricordi che la lunghezza della freccia $\mathbf{w}$ era rimasta
 libera? Allungandola o accorciandola tutte le ombre si riscalano insieme, quindi
-fissare la tacca a $1$ non è un'ipotesi sui dati, è la scelta del righello. Da
+fissare la tacca a $1$ è una scelta di righello, e non dice niente sui dati. Da
 qui in avanti, scelta la strada, la freccia e la soglia vengono decise insieme
 a lei: la libertà che avanzava è spesa, e la lunghezza della freccia non la
 scegliamo più noi.
@@ -478,7 +479,7 @@ y_i\,(\mathbf{w}^\top\mathbf{x}_i + b) - 1 = 0
 \qquad\text{per } \mathbf{x}_i \text{ sul margine.}
 $$
 
-Il valore $1$ non è una costante fisica: è la normalizzazione che spende il
+Il valore $1$ è la normalizzazione che spende il
 grado di libertà residuo sulla scala di $(\mathbf{w}, b)$. Con quella fissata,
 a ogni strada corrisponde una sola coppia $(\mathbf{w}, b)$, e la lunghezza di
 $\mathbf{w}$ non è più libera: il terzo passo mostra che è proprio lei a
@@ -806,7 +807,7 @@ spingere un singolo punto. Tutto il resto, kernel compreso, resta identico.
 
 Che i punti che contano siano pochi lo abbiamo detto fin dalla prima pagina, e
 finora era una promessa. Adesso si dimostra in due righe, e discende dal
-percorso appena fatto: non è un fatto osservato provando, è una conseguenza.
+percorso appena fatto: è una conseguenza, non un'osservazione fatta provando.
 
 `````{tab} Elementare
 
@@ -888,9 +889,9 @@ vent'anni, quel lavoro non lo lesse quasi nessuno.
 
 Nel 1990 Vapnik emigra negli Stati Uniti e finisce ai laboratori Bell di
 Holmdel, nel New Jersey, dove si lavorava al riconoscimento delle cifre scritte
-a mano. È lì che, nel 1992, nasce l'idea del paragrafo che segue: si prende la
-tabella delle ombre a due a due appena trovata e si cambia il modo di
-riempirla, ed è il **kernel** {cite}`boser1992training`. Winston fa notare per
+a mano. È lì che, nel 1992, nasce il **kernel** {cite}`boser1992training`: si
+prende la tabella delle ombre a due a due appena trovata e si cambia il modo di
+riempirla. Winston fa notare per
 inciso il vantaggio di
 studiare cose fatte da gente ancora viva: a Fourier non si può telefonare per
 chiedergli come gli sia venuta, a Vapnik sì. E il seguito lo racconta così. Gli
@@ -898,9 +899,9 @@ articoli mandati alla conferenza NIPS quell'anno furono respinti tutti. Vapnik
 aveva un'opinione bassissima delle reti neurali, e scommise una cena con un
 collega che le SVM le avrebbero battute sulla scrittura a mano. Fu il collega a
 mettersi alla prova: usò un kernel appena appena curvo (un polinomio di grado
-due, cioè la più timida delle frontiere non dritte) e funzionò al primo colpo,
-facendo vincere la cena a chi l'aveva sfidato. A Napoleone si attribuisce l'osservazione che un
-soldato si batte a lungo e con ferocia per un pezzetto di nastro colorato; ecco,
+due, cioè la più timida delle frontiere non dritte) e funzionò al primo colpo. A
+Napoleone si attribuisce l'osservazione che un soldato si batte a lungo e con
+ferocia per un pezzetto di nastro colorato; ecco,
 commenta Winston, questo è il pezzetto di nastro, ed era una cena.
 
 Il kernel Vapnik ce l'aveva già nella tesi. Non aveva mai pensato che fosse

@@ -339,8 +339,8 @@ continuano a valere, ed è per questo che di due parole si dice che «puntano»
 da qualche parte.
 
 La similarità del coseno guarda proprio le direzioni delle due frecce, e
-ignora quanto sono lunghe. Non è una distanza in metri: è un numero fra $-1$ e
-$+1$. Vale $+1$ quando le due frecce puntano esattamente dalla stessa parte,
+ignora quanto sono lunghe. È un numero fra $-1$ e $+1$, non una distanza in
+metri. Vale $+1$ quando le due frecce puntano esattamente dalla stessa parte,
 $0$ quando sono perpendicolari, cioè non hanno niente da spartire, $-1$ quando
 puntano in versi opposti. Un «coseno $0{,}88$» si legge «si somigliano molto»;
 un «coseno $-0{,}26$» si legge «non c'entrano niente l'uno con l'altra».
@@ -551,14 +551,14 @@ $$
 $$
 
 La ricerca però si fa **escludendo dai candidati le tre parole della domanda**,
-e quel vincolo non è un dettaglio di implementazione: senza di esso il primo
-vicino è quasi sempre *re* stesso. Su GloVe da $100$ dimensioni addestrato su
-6 miliardi di token (i vettori distribuiti come `glove-wiki-gigaword-100`, su
-cui i conti che seguono si rifanno in tre righe), il coseno con *king* vale
-$0{,}855$ contro lo $0{,}783$ di *queen*, e la stessa cosa succede a
-`man : doctor :: woman : ?` ($0{,}866$ per *doctor*, $0{,}776$ per *nurse*) e a
-`good : better :: bad : ?` ($0{,}886$ per *bad*, $0{,}839$ per *worse*).
-L'enunciato onesto non è dunque l’$\approx$ della formula, ma
+e quel vincolo pesa: senza di esso il primo vicino è quasi sempre *re* stesso.
+Su GloVe da $100$ dimensioni addestrato su 6 miliardi di token (i vettori
+distribuiti come `glove-wiki-gigaword-100`, su cui i conti che seguono si
+rifanno in tre righe), il coseno con *king* vale $0{,}855$ contro lo $0{,}783$
+di *queen*, e la stessa cosa succede a `man : doctor :: woman : ?` ($0{,}866$
+per *doctor*, $0{,}776$ per *nurse*) e a `good : better :: bad : ?` ($0{,}886$
+per *bad*, $0{,}839$ per *worse*). L'enunciato onesto non è dunque l’$\approx$
+della formula, ma
 
 $$
 \arg\max_{w \,\notin\, \{\text{re},\,\text{uomo},\,\text{donna}\}}

@@ -24,14 +24,14 @@ imparano, non si adattano ai dati.
 
 Un codec **neurale** ribalta l'approccio. Invece di scrivere le regole, le fa
 **imparare** a una rete. La struttura ha un nome, **autoencoder**, e una forma
-da guardare: un **encoder** che stringe quello che entra fino a farlo
-diventare un pugno di numeri, e un **decoder** che da quel pugno di numeri
-cerca di ritirare fuori l'originale. I due si addestrano *insieme*, con
-un'unica regola: quello che esce deve somigliare a quello che è entrato.
-Questa forma non è del suono, è di qualunque cosa si voglia comprimere, ed è
-qui che il libro la monta: il {doc}`capitolo sui modelli latenti </ModelliLatenti/overview>` la riprenderà per
-le immagini, e le aggiungerà l'unica cosa che le manca per servire anche a
-*generare*.
+da guardare: un **encoder** che stringe quello che entra fino a farlo diventare
+un pugno di numeri, e un **decoder** che da quel pugno di numeri cerca di
+ritirare fuori l'originale. I due si addestrano *insieme*, con un'unica regola:
+quello che esce deve somigliare a quello che è entrato. Questa forma vale per
+qualunque cosa si voglia comprimere, non solo per il suono, ed è qui che il
+libro la monta: il {doc}`capitolo sui modelli latenti
+</ModelliLatenti/overview>` la riprenderà per le immagini, e le aggiungerà
+l'unica cosa che le manca per servire anche a *generare*.
 
 ```{figure} ../figures/autoencoder-comprimere-per-capire.svg
 :name: fig-autoencoder-clessidra
@@ -65,8 +65,10 @@ perché è lì che questo schema si vede meglio: una cifra scritta a mano di
 $28 \times 28$ pixel, cioè 784 numeri, ridotta a 32 e poi rifatta. Con l'audio è
 uguale, con questi ordini di grandezza: entra un secondo di suono misurato
 24.000 volte, cioè 24.000 numeri, ed escono dalla strozzatura 75 latenti, uno
-ogni 320 misure. Sono i valori di EnCodec, il codec che accompagnerà tutta la
-sezione, e li ritroveremo.
+ogni 320 misure. Ogni latente però è un vettore di 128 numeri, quindi la
+strozzatura da sola stringe appena due volte e mezzo: la compressione grossa
+arriva dopo, ed è il mestiere del resto della sezione. Sono i valori di
+EnCodec, il codec che accompagnerà tutta la sezione, e li ritroveremo.
 
 `````{tab} Elementare
 
@@ -190,12 +192,12 @@ comprime di più ma perde fedeltà.
 `````
 
 Conviene fare i conti a mano su un esempio minuscolo, perché il meccanismo è
-tutto qui. Prendiamo un codebook di appena **quattro** prototipi e, per
+tutto qui. Prendiamo un codebook di appena quattro prototipi e, per
 poterli scrivere su una riga, immaginiamo che ogni pezzetto di suono sia
 descritto da due soli numeri invece che da centinaia. Una avvertenza prima di
 guardarli: dentro le parentesi tonde troverai virgole di due tipi, quelle che
 separano le due caselle e quelle dei decimali. Ogni parentesi contiene sempre
-**due** numeri, mai quattro.
+due numeri, mai quattro.
 
 $$
 \mathbf{e}_1 = (0,0),\quad \mathbf{e}_2 = (1,0),\quad
@@ -249,21 +251,23 @@ sì/no. Con 3 bit, cioè tre risposte sì/no in fila, si distinguono
 $2 \times 2 \times 2 = 8$ casi; con 10 bit se ne distinguono 1024. Per dire a
 quale prototipo si riferisce, un token deve spendere tanti bit quanti bastano a
 distinguere le voci dell'elenco: quindi **raddoppiare** l'elenco costa una
-risposta in più, non il doppio.
+risposta in più, non il doppio. E quanti bit al secondo servano in tutto a un
+codec si chiama **bitrate**, e si misura in kbps, migliaia di bit al secondo:
+un CD non compresso viaggia sui 1.400 kbps, un MP3 di buona qualità sui 128, e
+i codec neurali di questa sezione scendono sotto i 10. Attenzione al verso,
+perché è il contrario di quasi tutti gli altri numeri che abbiamo incontrato:
+qui **più è basso, meglio è**, perché vuol dire meno roba da trasmettere a
+parità di suono.
 
-Sembra poco, ed è il punto. Perché quel bit in più lo paga *ogni* token, per
-sempre, e il guadagno che porta è minuscolo: per dimezzare l'errore non basta
-raddoppiare i prototipi, ne servirebbero tantissimi di più. Si spende in
-proporzione al numero di volte che si raddoppia e si guadagna molto meno. Non
-regge.
-
-Ultima parola sulle unità: quanti bit al secondo servano in tutto a un codec si
-chiama **bitrate**, e si misura in kbps, migliaia di bit al secondo. Per farsi
-un'idea degli ordini di grandezza: un CD non compresso viaggia sui 1.400 kbps,
-un MP3 di buona qualità sui 128, e i codec neurali di questa sezione scendono
-sotto i 10. E attenzione al verso, perché è il contrario di quasi tutti gli
-altri numeri del libro: qui **più è basso, meglio è**, perché vuol dire meno
-roba da trasmettere a parità di suono.
+Adesso il conto si può fare al contrario, ed è lì che l'idea di allargare si
+schianta. SoundStream lo svolge sul proprio caso: 6.000 bit al secondo divisi
+per 75 pezzetti fanno 80 bit a pezzetto, e per indirizzare 80 bit un elenco
+solo dovrebbe avere $2^{80}$ prototipi, cioè un milione di miliardi di
+miliardi. Il problema non è il prezzo: quei prototipi bisogna tenerli in
+memoria e percorrerli tutti, a ogni pezzetto, per trovare il più vicino, e da
+nessuna parte ci stanno. Otto elenchi
+da 1024 voci spendono esattamente gli stessi 80 bit, e di prototipi ne hanno
+8.192 in tutto.
 
 La soluzione, elegante, è la **residual vector quantization** (RVQ), introdotta
 per i codec neurali da **SoundStream** {cite}`zeghidour2021soundstream`, di
@@ -374,7 +378,7 @@ sbagliare poco. Accanto a lui, durante l'addestramento, lavora un
 **discriminatore**: una seconda rete il cui unico mestiere è smascherare l'audio
 finto, e che quindi lo costringe a produrre qualcosa che *suoni* vero, non
 soltanto qualcosa di numericamente vicino all'originale (è il meccanismo delle
-GAN, a cui il libro dedica un capitolo più avanti).
+{doc}`GAN </GAN/overview>`, raccontato per intero più avanti).
 
 Sotto quella pressione il decoder diventa a tutti gli effetti un piccolo
 generatore, guidato dai token che riceve. A bitrate bassi il dettaglio più fine
@@ -401,9 +405,10 @@ l'audio.
 
 Tolte le reti neurali, la RVQ è quattro operazioni in croce e si scrive in poche
 righe: un elenco di prototipi, la ricerca del più vicino, il calcolo di quello
-che è avanzato, e un secondo elenco che rifinisce l'avanzo. Il codice qui sotto
-lo fa su sei pezzetti finti da due numeri ciascuno, presi a caso, e misura
-quanto si sbaglia usando un solo elenco e poi due.
+che è avanzato, e un secondo elenco che rifinisce l'avanzo. Il codice lo fa su
+sei pezzetti finti da due numeri ciascuno, presi a caso, e stampa i due
+«flussi» di token e, soprattutto, l'errore che cala aggiungendo il secondo
+stadio.
 
 Due avvertenze prima di leggerlo, per non inciampare sui numeri. Qui i prototipi
 sono numerati a partire da **zero**, come conta Python, mentre nella formula
@@ -461,9 +466,6 @@ print(f"MSE con 1 quantizzatore: {mse(Z, ric1):.4f}")
 print(f"MSE con 2 quantizzatori: {mse(Z, ric2):.4f}")
 ```
 
-L'output mostra i due «flussi» di token e, soprattutto, l'errore che cala
-aggiungendo il secondo stadio:
-
 ```text
 vettori da quantizzare:
  [[ 0.27 -0.46]
@@ -490,7 +492,8 @@ Gli elenchi qui sopra li abbiamo scritti noi; nei codec veri i prototipi si
 **imparano** insieme all'encoder e al decoder. La regola con cui si imparano è semplice: ogni prototipo viene
 spostato ogni tanto nel mezzo dei pezzetti che l'hanno scelto, così da
 rappresentarli meglio (è lo stesso meccanismo del **k-means**, l'algoritmo di
-raggruppamento del {doc}`capitolo sul machine learning </MachineLearning/overview>`).
+raggruppamento della {doc}`sezione su riduzione e clustering
+</MachineLearning/riduzione-clustering>`).
 
 E quella regola porta con sé il guasto caratteristico di tutta la famiglia. Una
 voce che nessun pezzetto sceglie non viene mai spostata, quindi resta dov'è e
@@ -511,26 +514,26 @@ non per quante ne dichiara.
 Sulla misura della qualità serve poi una distinzione che il gergo tende a
 cancellare, e conviene dirla in ordine. **Primo**: l'errore quadratico medio sui
 campioni non è il criterio giusto nemmeno per addestrare, perché non ha
-orecchio, e i codec veri usano invece perdite calcolate sullo spettro, più il
-discriminatore di cui abbiamo parlato, che premiano ciò che *suona* bene.
+orecchio, e i codec veri usano invece perdite calcolate sullo spettrogramma,
+più il discriminatore di cui abbiamo parlato, che premiano ciò che *suona*
+bene.
 **Secondo**, ed è il punto: quelli sono obiettivi di addestramento. Dicono al
 modello dove andare, non dicono a noi dove è arrivato, e un discriminatore che
 promuove il proprio generatore è metà di una partita, non un verdetto.
 
 **Misurare** la qualità è un problema diverso, e ancora aperto. Esistono voti
-che una macchina può dare da sola (PESQ, STOI, ViSQOL, FAD sono i nomi che si
-incontrano), ma sono tutti approssimazioni, ognuna tarata su un tipo di difetto
-e nessuna affidabile fuori dal suo. I primi due, per dire, nascono per il
-parlato rovinato dal rumore, e si comportano male davanti a un decoder che il
-segnale se lo reinventa. Per questo i lavori del settore continuano a chiudere
-con prove d'ascolto fatte da persone, secondo un protocollo che si chiama
-**MUSHRA**: a chi ascolta si fanno sentire, mescolati e senza dire quale è
-quale, il suono da giudicare, l'originale intatto e una versione volutamente
-rovinata, così che nessuno sappia mai cosa sta votando. Quando un lavoro riporta
-un solo voto automatico, quel voto è un indizio, non la qualità.
-
-Il principio della cascata sul residuo, però, è esattamente quello che hai
-appena visto girare.
+che una macchina può dare da sola, e vanno letti in due versi opposti: in PESQ,
+STOI e ViSQOL il numero alto è quello buono, mentre la FAD è una distanza,
+quindi lì il numero buono è il basso. Sono tutti approssimazioni, ognuna tarata
+su un tipo di difetto e nessuna affidabile fuori dal suo. I primi due, per
+dire, nascono per il parlato rovinato dal rumore, e si comportano male davanti
+a un decoder che il segnale se lo reinventa. Per questo i lavori del settore
+continuano a chiudere con prove d'ascolto fatte da persone, secondo un
+protocollo che si chiama **MUSHRA**: a chi ascolta si fanno sentire, mescolati
+e senza dire quale è quale, il suono da giudicare, l'originale intatto e una
+versione volutamente rovinata, così che nessuno sappia mai cosa sta votando.
+Quando un lavoro riporta un solo voto automatico, quel voto è un indizio, non
+la qualità.
 
 `````{tab} Elementare
 
@@ -576,7 +579,7 @@ appena visto girare.
   con monete via via più piccole.
 - L'audio diventa così una **griglia di token** (tempo × profondità della
   cascata): con EnCodec a 24 kHz, 600 simboli per secondo a 6 kbps. Il bitrate è
-  $N \cdot \log_2 K \cdot f_r$, ma **non** è una manopola monotona: nelle prove
+  $N \cdot \log_2 K \cdot f_r$, ma non è una manopola monotona: nelle prove
   MUSHRA 12 e 24 kbps sono indistinguibili, e a parità di bit codec diversi
   distano decine di punti.
 - Il decoder non ricostruisce, **risintetizza**: addestrato con un
@@ -586,8 +589,8 @@ appena visto girare.
   viene più aggiornata e muore, quindi il codebook effettivo si riduce mentre il
   bitrate nominale resta (rimedio: il *restart* delle voci morte). E perdite
   spettrali e discriminatori sono **obiettivi di addestramento**, non metriche:
-  gli indicatori oggettivi (PESQ, STOI, ViSQOL, FAD) sono surrogati d'ambito, e
-  il giudizio resta MUSHRA.
+  gli indicatori oggettivi (PESQ, STOI e ViSQOL si massimizzano, la FAD si
+  minimizza) sono surrogati d'ambito, e il giudizio resta MUSHRA.
 - Con due soli stadi, nell'esempio in NumPy, l'errore di ricostruzione più che si
   dimezza: è l'intera meccanica della RVQ in scala di laboratorio.
 - Ottenuto l'alfabeto, l'audio *è* una sequenza di simboli: tutto

@@ -106,14 +106,14 @@ per guardarci davvero; gli altri una volta sola.
 :width: 92%
 
 L'approccio a stadio singolo, cioè una sola passata sull'immagine. La griglia
-non è una ricerca: è una divisione di responsabilità decisa in anticipo.
+è una divisione di responsabilità decisa in anticipo, non una ricerca.
 ```
 
 Guardiamo la seconda famiglia, quella della passata unica, perché
 {numref}`fig-yolo` rende evidente cosa si guadagna e cosa si perde. Guardare
 l'immagine una volta sola è quello che rende possibile il tempo reale; il prezzo
-lo si legge nella griglia disegnata sopra la foto. Quella griglia non è una
-ricerca: è una divisione del lavoro decisa prima di guardare, in cui ogni
+lo si legge nella griglia disegnata sopra la foto. Quella griglia è una
+divisione del lavoro decisa prima di guardare, in cui ogni
 casella (una **cella**) si prende la responsabilità degli oggetti che le cadono
 dentro. E siccome a ogni cella si concede in partenza un numero fisso di
 riquadri, di solito due, oggetti piccoli e ammassati nella stessa cella se li

@@ -31,8 +31,13 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Pandas e Matplotlib](https://book.paithon.it/main/Python/pandas-matplotlib.html)
 - [Matematica](https://book.paithon.it/main/Matematica/overview.html): «Chiamala entropia, per due ragioni. La prima è che la tua funzione d'incertezza in meccanica statistica si chiama già così.
   - [Algebra lineare](https://book.paithon.it/main/Matematica/algebra-lineare.html)
+  - [Sistemi lineari](https://book.paithon.it/main/Matematica/sistemi-lineari.html)
+  - [Ortogonalità e proiezioni](https://book.paithon.it/main/Matematica/ortogonalita-proiezioni.html)
+  - [Il determinante](https://book.paithon.it/main/Matematica/determinante-e-volume.html)
   - [Analisi e ottimizzazione](https://book.paithon.it/main/Matematica/analisi-ottimizzazione.html)
   - [Probabilità e statistica](https://book.paithon.it/main/Matematica/probabilita-statistica.html)
+  - [Quanto può sbagliare una media](https://book.paithon.it/main/Matematica/concentrazione.html)
+  - [Catene di Markov](https://book.paithon.it/main/Matematica/catene-di-markov.html)
   - [Teoria dell'informazione](https://book.paithon.it/main/Matematica/teoria-informazione.html)
   - [Analisi numerica](https://book.paithon.it/main/Matematica/analisi-numerica.html)
   - [La matematica di un LLM](https://book.paithon.it/main/Matematica/matematica-llm.html)
@@ -91,6 +96,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Far funzionare le reti profonde](https://book.paithon.it/main/DeepLearning/ottimizzazione-regolarizzazione.html)
   - [Architetture storiche](https://book.paithon.it/main/DeepLearning/architetture-storiche.html)
   - [Una rete, molti compiti](https://book.paithon.it/main/DeepLearning/multi-compito.html)
+  - [Imparare a imparare](https://book.paithon.it/main/DeepLearning/meta-apprendimento.html)
 - [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Nel 1966, al MIT, Seymour Papert affidò a un gruppo di studenti un compito per l'estate: collegare una telecamera a un computer e insegnargli a descrivere quello che vedeva.
   - [Classificazione e transfer learning](https://book.paithon.it/main/VisioneArtificiale/classificazione-transfer.html)
   - [Data augmentation](https://book.paithon.it/main/VisioneArtificiale/data-augmentation.html)
@@ -119,6 +125,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [RL basato su modello](https://book.paithon.it/main/DeepReinforcementLearning/model-based.html)
   - [Imparare guardando](https://book.paithon.it/main/DeepReinforcementLearning/imitazione.html)
   - [Offline RL](https://book.paithon.it/main/DeepReinforcementLearning/offline-rl.html)
+  - [Gerarchia e opzioni](https://book.paithon.it/main/DeepReinforcementLearning/gerarchia.html)
   - [Esplorazione e ricompensa](https://book.paithon.it/main/DeepReinforcementLearning/esplorazione-e-ricompensa.html)
 
 ## Linguaggio e sequenze
@@ -157,7 +164,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Mamba](https://book.paithon.it/main/StateSpaceModel/mamba.html)
   - [Mamba-2 e Mamba-3](https://book.paithon.it/main/StateSpaceModel/dualita-e-mamba-2-3.html)
   - [Panorama e limiti](https://book.paithon.it/main/StateSpaceModel/panorama-e-limiti.html)
-- [Visione e linguaggio](https://book.paithon.it/main/VisioneLinguaggio/overview.html): Nel 1929 René Magritte dipinge una pipa su fondo chiaro e, sotto, ci scrive a mano Ceci n'est pas une pipe: questa non è una pipa. Non è un gioco di parole, è una constatazione esatta.
+- [Visione e linguaggio](https://book.paithon.it/main/VisioneLinguaggio/overview.html): Nel 1929 René Magritte dipinge una pipa su fondo chiaro e, sotto, ci scrive a mano Ceci n'est pas une pipe: questa non è una pipa. È una constatazione esatta, non un gioco di parole.
   - [Allineare due spazi](https://book.paithon.it/main/VisioneLinguaggio/allineare-due-spazi.html)
   - [Innestare gli occhi](https://book.paithon.it/main/VisioneLinguaggio/innestare-gli-occhi.html)
   - [Fusione precoce e tardiva](https://book.paithon.it/main/VisioneLinguaggio/fusione-precoce-tardiva.html)
@@ -205,8 +212,14 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Evoluzioni e applicazioni](https://book.paithon.it/main/GAN/applicazioni-evoluzioni.html)
 - [Modelli di diffusione](https://book.paithon.it/main/ModelliDiffusione/overview.html): Versa una goccia d'inchiostro in un bicchiere d'acqua e guarda. Prima un filamento scuro, poi volute sempre più sottili, e in pochi minuti l'acqua è tutta di un azzurro pallido e uniforme.
   - [Come funziona la diffusione](https://book.paithon.it/main/ModelliDiffusione/come-funziona.html)
+  - [Il limite continuo](https://book.paithon.it/main/ModelliDiffusione/sde-e-ode.html)
+  - [Flow matching](https://book.paithon.it/main/ModelliDiffusione/flow-matching.html)
   - [Stable Diffusion](https://book.paithon.it/main/ModelliDiffusione/stable-diffusion.html)
   - [Diffusion Transformer (DiT)](https://book.paithon.it/main/ModelliDiffusione/diffusion-transformer.html)
+  - [Meno passi](https://book.paithon.it/main/ModelliDiffusione/campionatori-veloci.html)
+  - [Generatori a un passo](https://book.paithon.it/main/ModelliDiffusione/pochi-passi.html)
+  - [Guida e allineamento](https://book.paithon.it/main/ModelliDiffusione/guida.html)
+  - [Diffondere il testo](https://book.paithon.it/main/ModelliDiffusione/diffusione-discreta.html)
 - [Verosimiglianza esatta](https://book.paithon.it/main/VerosimiglianzaEsatta/overview.html): Immagina di avere fra le mani il generatore di volti del , quello che sforna a ripetizione persone che non esistono, e di fargli una domanda diversa da tutte quelle che gli abbiamo fatto finora.
   - [Un pixel alla volta](https://book.paithon.it/main/VerosimiglianzaEsatta/pixel-per-pixel.html)
   - [I flussi normalizzanti](https://book.paithon.it/main/VerosimiglianzaEsatta/flussi.html)

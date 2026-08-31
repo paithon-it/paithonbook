@@ -149,8 +149,8 @@ fosse, metodi che l'informazione mutua non la stimano affatto non dovrebbero
 funzionare; e invece la sezione precedente ne ha mostrati due che funzionano
 benissimo, la distillazione asimmetrica e la riduzione di ridondanza, e nessuno
 dei due ha un termine che assomigli a un limite su $I$. Quello che i metodi
-riusciti hanno in comune non è una quantità informativa massimizzata: è una
-**invarianza imposta** più un **meccanismo che vieta la risposta vuota**.
+riusciti hanno in comune è una **invarianza imposta** più un **meccanismo che
+vieta la risposta vuota**, e non una quantità informativa massimizzata.
 
 `````
 

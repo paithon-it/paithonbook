@@ -34,12 +34,12 @@ Il nome non è di persona: sta per *adaptive moment estimation*.
 
 ```{figure} ../figures/adam-ottimizzatore.svg
 :name: fig-adam-passo-per-peso
-:alt: "Confronto fra due ottimizzatori sugli stessi pesi. Con SGD tutti i parametri si muovono con lo stesso passo, grande o piccolo che sia stata finora la loro correzione. Con Adam ogni peso ha il passo suo, calcolato da quanto quel peso si è mosso nelle correzioni precedenti: chi si è mosso molto rallenta, chi si è mosso poco accelera."
+:alt: "Confronto fra due ottimizzatori sugli stessi pesi. Con SGD il passo di un parametro è proporzionale al suo gradiente, quindi chi ha il gradiente grande fa un salto grande. Con Adam ogni peso ha il passo suo, tarato sul rapporto fra la direzione media dei suoi gradienti e la loro grandezza tipica: chi viene spinto sempre dalla stessa parte avanza a passo pieno, chi sbanda avanti e indietro rallenta."
 :width: 96%
 
 Un learning rate per ciascuno. Adam non sceglie una velocità migliore: ne
-sceglie una diversa per ogni parametro, in base a quanto quel parametro si è
-mosso finora.
+sceglie una diversa per ogni parametro, in base a quanto è costante la
+direzione in cui quel parametro viene spinto.
 ```
 
 La conseguenza pratica: con SGD il learning rate va tarato bene, perché è uno
@@ -148,8 +148,8 @@ grande su una macchina piccola che vedremo in
 [replicare un paper](replicare-un-paper.md): lì si eseguono $k$ `backward()` e
 un solo `step()`, quindi l'azzeramento esce dal giro e si fa una volta ogni
 $k$ micro-batch. Rispettare la liturgia lì è l'errore: il codice gira
-identico, e la matematica no. Misurato, l'accumulo fatto bene coincide con il
-batch grande vero a meno di $1{,}5 \cdot 10^{-8}$, quello con lo `zero_grad()`
+identico, e la matematica no. L'accumulo fatto bene coincide con il batch
+grande vero a meno di $1{,}5 \cdot 10^{-8}$, quello con lo `zero_grad()`
 a ogni micro-batch sbaglia di $8{,}4 \cdot 10^{-2}$ senza una riga di errore.
 `````
 
@@ -304,9 +304,7 @@ Cinque epoche, e l'accuratezza sul test arriva attorno al **97–98%**:
 novantasette cifre su cento lette correttamente da $101\,770$ numeri che prima
 di partire erano casuali. Quanto ci vuole dipende molto dalla macchina, e
 conviene dirlo per non lasciare aspettative sbagliate: su una GPU sono decine
-di secondi, su una CPU normale si va sui minuti (su questa macchina, quattro
-core e nient'altro di speciale, sette minuti, con un $97{,}5\%$ alla quinta
-epoca).
+di secondi, su una CPU normale si va sui minuti, e su quattro core sono sette.
 
 ## Studiare e dare l'esame: `train()` ed `eval()`
 
@@ -356,7 +354,7 @@ Attenzione a come si dice, perché la
 formulazione sbrigativa («`eval()` spegne dropout e batch norm») è falsa per la
 seconda: in `eval()` il dropout diventa davvero l'identità, la batch norm
 invece continua a normalizzare, solo che usa le medie mobili accumulate invece
-delle statistiche del batch corrente. Misurato su torch 2.13: un
+delle statistiche del batch corrente. Su torch 2.13 un
 `nn.BatchNorm1d(3)` allenato su dati centrati attorno a $10$ e poi messo in
 `eval()` restituisce uscite di media $\approx 0$ a fronte di ingressi di media
 $\approx 10$. La differenza non è terminologica: chi crede che `eval()`
@@ -371,8 +369,8 @@ la varianza per canale non è stimabile, e la libreria preferisce fermarsi
 piuttosto che normalizzare per qualcosa che non ha calcolato. Dove invece i
 valori per canale sono più di uno il conto si fa e `nan` non ne esce: un
 ingresso $(1, 3, 5)$, o l'immagine $(1, 3, 4, 4)$ di una `nn.BatchNorm2d`,
-passano senza storie, e su un ingresso costante l'uscita non è `nan`: è zero, o
-un residuo minuscolo di arrotondamento, perché l’$\varepsilon$ che si somma al
+passano senza storie, e su un ingresso costante l'uscita è zero, o un residuo
+minuscolo di arrotondamento, e non `nan`, perché l’$\varepsilon$ che si somma al
 denominatore impedisce che si divida zero per zero.
 `torch.no_grad()` è un context manager che sospende la
 costruzione del grafo autograd: non vengono salvati i valori intermedi per un
@@ -472,8 +470,9 @@ con accanto il nome del pezzo a cui appartengono (in Python un elenco fatto
 così, dove a ogni nome corrisponde una cosa, si chiama *dizionario*). Dentro
 non ci sono solo i pesi imparati: ci sono anche i *buffer*, cioè i numeri che
 il modello si tiene da parte senza impararli, perché li ha misurati sui dati
-invece di ricavarli dall'errore. Ne incontreremo un caso nel {doc}`capitolo sul deep
-learning </DeepLearning/overview>`; qui basta sapere che nel file finiscono anche quelli.
+invece di ricavarli dall'errore. Ne incontreremo un caso nella {doc}`sezione
+sulla normalizzazione </DeepLearning/ottimizzazione-regolarizzazione>`; qui
+basta sapere che nel file finiscono anche quelli.
 
 Il motivo per cui non si salva l'oggetto intero è pratico. Salvare l'oggetto
 significherebbe mettere nel file anche la classe Python che lo descrive, e

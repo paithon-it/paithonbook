@@ -6,7 +6,7 @@ nell'estate del 2006: la risoluzione fissava tre criteri (orbitare attorno al
 Sole, essere abbastanza massiccio da essersi fatto tondo da sé, e aver ripulito
 la propria orbita dagli altri corpi) e Plutone cadeva sul terzo.
 
-La cosa da notare non è il verdetto: è che ci sia voluta una **votazione**. Le
+La cosa da notare è che ci sia voluta una **votazione**. Le
 misure erano note a tutti e nessuno le contestava; a mancare era il criterio con
 cui raggruppare gli oggetti del sistema solare in famiglie, perché di criteri
 ragionevoli ce n'era più d'uno e portavano a risposte diverse. Tenendo i tre
@@ -113,7 +113,7 @@ $$
 
 con $n_{\text{ins}}$ le coppie tenute **insieme** da entrambe e $n_{\text{sep}}$
 quelle **separate** da entrambe (le lettere $a$, $b$ e $s$ sono già occupate
-dalla silhouette qui sopra). Ha un
+dalla silhouette). Ha un
 difetto grave: **non vale zero sul caso nullo**, e la linea di base non è
 nemmeno una costante: dipende da quanti gruppi hanno le due partizioni. Due
 etichettature casuali concordano infatti su tutte le coppie che entrambe
@@ -196,7 +196,7 @@ partizione e quella vera sono la stessa. La **silhouette** dà a
 DBSCAN $0{,}331$ e a $k$-means $0{,}486$: giudicando con lei si sceglierebbe il
 metodo che ha sbagliato, e lo si sceglierebbe con un margine confortevole.
 
-Non è un difetto della silhouette, è la sua definizione presa sul serio. Lei
+La silhouette qui fa esattamente il suo mestiere. Lei
 chiede «ogni punto è più vicino ai suoi compagni che agli estranei?», e in una
 luna intrecciata con l'altra la risposta è no: la punta di una luna ha vicini
 dell'altra a un centimetro e compagni all'altro capo della curva. La silhouette
@@ -213,7 +213,7 @@ purché i gruppi siano abbastanza fini, e chi legge quel numero pensa di aver
 quasi indovinato. La ragione è aritmetica: due partizioni fini separano quasi
 tutte le coppie, e il Rand conta come «accordo» anche l'aver separato.
 
-L'ARI sulle stesse tre righe vale $0{,}0000$, $-0{,}0003$, $-0{,}0001$: non si
+L'ARI sulle stesse tre righe vale $+0{,}0003$, $-0{,}0003$, $-0{,}0001$: non si
 muove. È esattamente lo stesso inganno dell'accuratezza su classi sbilanciate, e
 la correzione è la stessa idea: sottrarre quello che si otterrebbe per caso, che
 è ciò che l'aggettivo *aggiustato* significa.
@@ -243,7 +243,7 @@ sbagliato produce scaffalature che cambiano ogni volta che cambiano i libri.
 Rifare il conto su un'altra pescata è la mossa del bootstrap, qui al servizio di
 un'altra domanda.
 
-Attenzione a una trappola, che si vedrà nella tabella qui sotto: dividere in
+Attenzione a una trappola: dividere in
 **pochissimi** gruppi regge quasi sempre, anche quando è la risposta sbagliata,
 perché un taglio grossolano viene quasi sempre uguale. Il modo di accorgersene è
 guardare non solo quanto le prove vanno d'accordo in media, ma anche se vanno
@@ -261,8 +261,8 @@ l'accordo fra le due assegnazioni con un indice esterno (l'ARI, appunto, perché
 l'accordo fra due partizioni è esattamente ciò che misura). Ripetuto e mediato,
 dà $\mathrm{stab}(k)$, e si sceglie il $k$ che la massimizza.
 
-Il criterio ha una nota da conoscere prima di usarlo, ed è visibile nella
-tabella qui sotto: i valori **piccoli** di $k$ sono stabili quasi per
+Il criterio ha una nota da conoscere prima di usarlo: i valori **piccoli** di
+$k$ sono stabili quasi per
 costruzione, perché una bipartizione grossolana di dati ben separati esce quasi
 sempre uguale. La stabilità va quindi letta come un vincolo (scarta i $k$
 instabili),
@@ -323,8 +323,8 @@ stabilità $0{,}960$, quasi quanto quella del $k$ giusto. È qui che serve
 l'ultima colonna, ed è la ragione per cui c'è. A $k = 4$ la stabilità è
 $1{,}000$ con dispersione **zero**: venticinque prove su venticinque hanno
 dato lo stesso identico risultato. A $k = 2$ la stessa media di $0{,}960$
-arriva da prove che ballano di $\pm 0{,}197$, cioè non è affatto un valore
-ripetibile: è quasi sempre un accordo pieno e ogni tanto un disaccordo totale.
+arriva da prove che ballano di $\pm 0{,}197$: quella media nasconde due esiti
+opposti, quasi sempre un accordo pieno e ogni tanto un disaccordo totale.
 
 Il perché sta nella geometria. Quattro mucchi ai vertici di un quadrato si
 possono tagliare in due in **due** modi che costano esattamente uguale, in
@@ -352,9 +352,10 @@ l'apprendimento non usi supervisione affatto, mentre nei metodi che a lui
 interessano (prevedere una parte del dato dal resto: la parola coperta in una
 frase, il pezzo mancante di un'immagine) un segnale di correzione c'è eccome, ed
 è molto più ricco di quello di un'etichetta. Quei metodi si chiamano
-**auto-supervisionati**, e il libro dedica loro un capitolo intero.
+**auto-supervisionati**, e hanno il loro capitolo in
+{doc}`Auto-supervisione </AutoSupervisione/overview>`.
 
-Ma i metodi di questa sezione e della precedente non sono quelli. Quando
+Ma i metodi visti fin qui non sono quelli. Quando
 $k$-means sposta un centroide o la PCA cerca la direzione di massima varianza,
 non c'è nessun bersaglio da indovinare, nessuna previsione confrontata con una
 risposta: c'è una funzione obiettivo che descrive **la forma dei dati** e la si
@@ -403,9 +404,9 @@ metodi, ciascuno dei quali soddisfa due proprietà su tre:
 - fermarsi a una frazione della distanza massima rinuncia alla **coerenza**.
 
 Il primo caso vale per chiunque fissi il numero di gruppi in anticipo,
-$k$-means compreso. E allora i metodi noti non sono approssimazioni imperfette
-di un ideale che un giorno qualcuno troverà: sono i rami di una biforcazione
-obbligatoria, e ciascuno dichiara, con la sua regola d'arresto, a che cosa ha
+$k$-means compreso. E allora i metodi noti sono i rami di una biforcazione
+obbligatoria, e non approssimazioni imperfette di un ideale che un giorno
+qualcuno troverà: ciascuno dichiara, con la sua regola d'arresto, a che cosa ha
 rinunciato.
 
 È lo stesso Jon Kleinberg che il capitolo sull'AI responsabile incontra per il
@@ -449,21 +450,23 @@ Che è, poi, la storia di Plutone: alla fine si vota.
 
 ```{admonition} Da ricordare
 :class: important
-- Indici **interni** (silhouette, Calinski–Harabasz, Davies–Bouldin): usano solo
-  $\mathbf{X}$ e le etichette assegnate, e premiano coesione e separazione. Sono
-  allineati a un'ipotesi geometrica **convessa**: su geometrie non convesse
+- Indici **interni**: usano solo $\mathbf{X}$ e le etichette assegnate, e
+  premiano coesione e separazione, salendo la silhouette e il
+  Calinski–Harabasz, **scendendo** il Davies–Bouldin, che dei tre è il solo da
+  minimizzare. Sono allineati a un'ipotesi geometrica **convessa**: su
+  geometrie non convesse
   misurano la somiglianza con la partizione di $k$-means, non la qualità.
   Sulle due lune la silhouette dà $0{,}486$ a $k$-means e $0{,}331$ a DBSCAN,
   mentre ARI e NMI di DBSCAN valgono $1{,}000$.
 - Indici **esterni** (ARI, NMI/AMI): confrontano con una partizione nota, sono
   invarianti alla permutazione delle etichette e ragionano sulle **coppie** di
   punti. L'indice di Rand grezzo non è corretto per il caso: su etichette
-  casuali dà $\mathrm{RI} = 0{,}500$ contro $\mathrm{ARI} = 0{,}0000$.
+  casuali dà $\mathrm{RI} = 0{,}500$ contro $\mathrm{ARI} = +0{,}0003$.
 - **Stabilità**: due sottocampioni, due adattamenti a $k$ gruppi, accordo
   misurato con l'ARI sull'intersezione. Criterio applicabile senza etichette; da
   usare per **scartare** i $k$ instabili, perché i $k$ piccoli sono stabili quasi
-  per costruzione ($0{,}960$ a $k=2$ contro $1{,}000$ a $k=4$ nel conto qui
-  sopra).
+  per costruzione ($0{,}960$ a $k=2$ contro $1{,}000$ a $k=4$ sulle quattro
+  nuvole).
 - **Teorema di impossibilità di Kleinberg** {cite}`kleinberg2002impossibility`:
   nessuna funzione di clustering soddisfa insieme invarianza di scala, ricchezza
   e coerenza. Gli algoritmi noti sono i rami della rinuncia, non approssimazioni
@@ -477,8 +480,8 @@ Che è, poi, la storia di Plutone: alla fine si vota.
 
 `````
 
-Con questa sezione il capitolo ha detto tutto quello che sa dire su dati senza
-etichette, e ha finito con una richiesta invece che con una risposta: dichiarare
+Su dati senza etichette non c'è altro da dire, e quello che rimane è una
+richiesta invece che una risposta: dichiarare
 il criterio, perché i dati non lo contengono. È un'abitudine che tornerà utile
 subito, perché la sezione seguente osserva cosa succede quando anche il criterio
 sta fermo e a muoversi sono i dati.

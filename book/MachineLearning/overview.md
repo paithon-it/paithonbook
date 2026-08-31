@@ -15,9 +15,9 @@ adesso avvicinandolo a quello che vedeva **dopo**. Nessuno gli diceva chi
 avesse ragione: a fare da maestro era la propria stessa valutazione, presa un
 passo più avanti, dove si vede meglio. Ripetuto per tutta la partita e per
 tutte le partite, quel voto diventa un fiuto per le posizioni che portano bene.
-È il terzo dei tre modi di imparare che vedremo fra poco, e la sua forma
-matura si chiama apprendimento per differenze temporali: il nome torna in
-{doc}`Reinforcement Learning </ReinforcementLearning/overview>`, ed è lì che
+È il modo di imparare per tentativi e ricompense, e la sua forma
+matura si chiama apprendimento per differenze temporali: il nome torna nella
+pagina sul {doc}`Q-learning </ReinforcementLearning/q-learning>`, ed è lì che
 si vede per intero.
 
 In quell'articolo compare, tra le prime volte nella storia, l'espressione
@@ -269,8 +269,8 @@ In pratica l'addestramento (in inglese *training*, ed è la parola che si sente
 più spesso) è sorprendentemente breve da scrivere. Con una **libreria**, cioè
 una cassetta di attrezzi già pronti che qualcun altro ha costruito, addestrare
 un modello e usarlo sono due sole richieste: `.fit()` per imparare dai dati,
-`.predict()` per prevedere su casi nuovi. La cassetta degli attrezzi che
-useremo in questo capitolo si chiama scikit-learn.
+`.predict()` per prevedere su casi nuovi. La cassetta degli attrezzi si chiama
+scikit-learn.
 
 `````
 
@@ -303,7 +303,7 @@ C'è una scena che si ripete in ogni squadra alle prime armi. Arriva un problema
 di età, contratti, consumi, reclami) e qualcuno propone subito una rete
 neurale profonda, perché è quella di cui parlano tutti. Passano due settimane
 di messa a punto, e alla fine la rete arriva faticosamente a pareggiare un
-*gradient boosting*, cioè uno dei metodi di questo capitolo: tanti
+*gradient boosting*, cioè tanti
 piccoli modelli semplici messi in fila, ognuno a correggere gli errori del
 precedente. Quel gradient boosting l'aveva addestrato in dieci minuti un
 collega scettico, senza toccare nemmeno una impostazione.
@@ -394,8 +394,9 @@ Le ragioni identificate sono strutturali, non contingenti:
    split assiali approssima bene;
 2. le reti sono sensibili alle feature non informative, di cui una tabella
    reale abbonda, mentre gli alberi le ignorano per costruzione;
-3. le reti sono invarianti per rotazione, proprietà desiderabile sui pixel e
-   dannosa su colonne che hanno significati diversi e non intercambiabili.
+3. le reti sono invarianti per rotazione, cioè indifferenti a una mescolanza
+   lineare delle colonne, e una tabella invece ha una base naturale, la sua:
+   colonne con significati diversi, che non si scambiano.
 
 Il corollario pratico riguarda il **costo**: un gradient boosting si addestra
 in minuti su CPU e si mette in produzione senza GPU. Prima di pagare il conto
@@ -404,8 +405,8 @@ spesso che quella baseline sia già la risposta.
 
 `````
 
-Ed è il motivo per cui questo capitolo viene prima degli altri, e non per
-ragioni cronologiche. Da qui in avanti tutto il libro userà le stesse quattro
+Ed è il motivo per cui il machine learning classico si impara per primo, e non
+per ragioni cronologiche. Da qui in avanti valgono sempre le stesse quattro
 parole (modello, feature, parametri, loss) e gli stessi due gesti (addestrare,
 valutare su dati mai visti): cambieranno i modelli, non la grammatica.
 
@@ -416,11 +417,11 @@ valutare su dati mai visti): cambieranno i modelli, non la grammatica.
 - Nel machine learning **non si scrivono le regole**: si danno migliaia di
   esempi già etichettati (le email marchiate «spam» e «non spam») e le regole
   emergono da sole dai dati.
-- Su **dati in tabella**, con pochi esempi o quando la decisione va spiegata a
-  un cliente o a un'autorità, i metodi di questo capitolo battono ancora
-  regolarmente il deep learning: fra le colonne di una tabella non c'è quella
-  vicinanza che le reti profonde sanno sfruttare fra i puntini di una foto o
-  fra le parole di una frase.
+- Su una **tabella** intorno alle diecimila righe gli alberi battono ancora
+  regolarmente le reti profonde: fra le colonne di una tabella non c'è quella
+  vicinanza che le reti sanno sfruttare fra i puntini di una foto o fra le
+  parole di una frase. Su tabelle cento volte più grandi la gara è ancora da
+  correre.
 - Un programma **impara** (Mitchell) se, facendo pratica, diventa più bravo in
   un compito e questo «più bravo» si può misurare: servono il **compito**,
   l’**esperienza** e la **misura**.
@@ -440,8 +441,14 @@ valutare su dati mai visti): cambieranno i modelli, non la grammatica.
 - Nel machine learning **non si scrivono le regole**: si forniscono esempi e le
   regole emergono dai dati, cioè si stimano i parametri $\theta$ minimizzando
   una loss $\mathcal{L}$ sugli esempi osservati.
-- Su **dati tabulari**, con pochi esempi o quando serve spiegare la decisione,
-  i metodi di questo capitolo battono ancora regolarmente il deep learning.
+- Su **dati tabulari di taglia media**, dell'ordine dei diecimila esempi, i
+  modelli ad albero restano superiori alle reti anche a parità di ricerca degli
+  iperparametri {cite}`grinsztajn2022why`. Fuori da quella scala il confronto
+  resta aperto.
+- Le ragioni sono strutturali: il bias induttivo delle reti verso funzioni
+  regolari, contro target irregolari a tratti; la loro sensibilità alle feature
+  non informative; la loro invarianza per rotazione, dannosa su colonne che non
+  sono intercambiabili.
 - Un programma **impara** (Mitchell) se la sua performance $P$ su un compito $T$
   migliora con l'esperienza $E$.
 - Tre paradigmi: **supervisionato** (dati etichettati), **non supervisionato**

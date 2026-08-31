@@ -86,8 +86,8 @@ non il valore assoluto.
 Il paper propone anche una variante che affianca i due mondi (*NeuMF*): un
 ramo con il prodotto elemento per elemento e un ramo MLP, **ciascuno con la
 propria coppia di tabelle di embedding**, fusi concatenando l'ultimo strato
-nascosto. Che le tabelle siano separate non è un dettaglio implementativo, ed è
-il paper stesso ad argomentarlo: condividerle costringerebbe i due rami alla
+nascosto. Che le tabelle siano separate conta, ed è il paper stesso ad
+argomentarlo: condividerle costringerebbe i due rami alla
 stessa dimensione degli embedding, e gli autori scrivono che questo potrebbe
 limitare le prestazioni del modello fuso. La
 conseguenza da tenere a mente è che NeuMF ha il doppio dei parametri di
@@ -260,8 +260,8 @@ guadagna niente; LightGCN toglie la rete, tiene solo il camminare, e batte il
 modello più complicato da cui è stato ricavato. Camminare sul grafo, in fondo,
 è un modo di dire al modello una cosa che il confronto voce per voce non sa:
 *chi ha visto cose simili alle tue va ascoltato, anche a più di un passo di
-distanza*. Non è più potenza di calcolo: è un'ipotesi migliore su come è fatto
-il problema.
+distanza*. È un'ipotesi migliore su come è fatto il problema, non più potenza
+di calcolo.
 
 Il disegno dà anche una risposta parziale alla partenza a freddo, il muro
 contro cui la sezione precedente si era fermata, e quella risposta conviene
@@ -275,13 +275,13 @@ messa da qualcuno. Un film uscito ieri non ha ancora nessuna linea verso gli
 spettatori, ma ha già le sue linee verso il regista e verso gli attori, e
 quelle bastano: camminando su di esse il film raccoglie qualcosa da tutti gli
 altri film dello stesso regista, e si presenta al sistema con una scheda
-sensata prima ancora che qualcuno lo guardi. Un film senza spettatori non è un
-film sconosciuto: è un film di cui sappiamo tutto tranne la cosa che ci
-interessa. Un grafo con più tipi di pallini e di linee si dice **eterogeneo**.
+sensata prima ancora che qualcuno lo guardi. Un film senza spettatori è un film
+di cui sappiamo tutto tranne la cosa che ci interessa. Un grafo con più tipi di
+pallini e di linee si dice **eterogeneo**.
 
 Riformulare la raccomandazione come *link prediction*, cioè come il compito di
-prevedere gli archi che mancano, non è un gioco di parole: è la lettura che
-rende disponibile tutto l'armamentario delle reti su grafo. Il caso più
+prevedere gli archi che mancano, è la lettura che rende disponibile tutto
+l'armamentario delle reti su grafo, e non un gioco di parole. Il caso più
 noto, **PinSage** {cite}`ying2018graph`, è raccontato nel capitolo sulle reti
 neurali su grafo, insieme al campionamento dei vicini che lo rende praticabile
 a scala web. Leggere la raccomandazione come link prediction non è però *la
@@ -681,7 +681,7 @@ esattamente la partenza a freddo.
 `````
 
 E una cosa che sorprende sempre, in un sistema del genere: il lavoro difficile
-non è quasi mai il modello, è l'impianto che tiene tutto aggiornato. Uno
+sta quasi sempre nell'impianto che tiene tutto aggiornato, più che nel modello. Uno
 scaffale di schede vecchie di una settimana consiglia benissimo la settimana
 scorsa.
 
@@ -744,7 +744,7 @@ smettere di prendere la vetrina per il catalogo.
   voce con una regola fissa, le incolla una sotto l'altra e lascia decidere a
   una piccola rete. In teoria vede combinazioni che il confronto voce per voce
   non coglie; alla prova dei fatti il vecchio confronto, tarato con cura, resta
-  un avversario durissimo: più libertà non è gratis. E non è un caso isolato:
+  un avversario durissimo: più libertà non è gratis. E il caso non è isolato:
   quando si è provato a rifare i conti di diciotto metodi neurali, sette si
   sono lasciati riprodurre e sei di quei sette perdevano contro metodi molto
   più semplici.

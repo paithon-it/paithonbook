@@ -28,7 +28,7 @@ macchina possa manipolare, e quel qualcosa è una griglia.
 Una foto, per il computer, è un enorme foglio a quadretti. Ogni quadretto è un
 **pixel**, e dentro ci sta un numero che dice quanto quel puntino è chiaro o
 scuro: $0$ è nero pieno, $255$ è bianco pieno, e i valori in mezzo sono le
-sfumature di grigio. Il $255$ non è un capriccio: il computer conta a gruppi di
+sfumature di grigio. Il $255$ viene da come il computer conta, a gruppi di
 otto interruttori acceso-spento, e ogni interruttore raddoppia le combinazioni
 possibili, cioè $2 \times 2 \times 2 \times 2 \times 2 \times 2 \times 2 \times
 2 = 2^8 = 256$. Contando anche lo zero, i valori vanno da $0$ a $255$. Una foto
@@ -268,8 +268,8 @@ rilevatore dice dove sta un oggetto in pixel, non a quanti metri. Esiste però
 una seconda famiglia di domande, che il capitolo affronta più avanti e che
 richiede strumenti diversi: **dove sono le cose nello spazio**, quanto sono
 lontane, come si muovono, che forma hanno. Lì la risposta non si trova
-guardando meglio una fotografia, perché la profondità non è nascosta
-nell'immagine: è andata perduta nel momento dello scatto, e va ricostruita da
+guardando meglio una fotografia, perché la profondità è andata perduta nel
+momento dello scatto, e va ricostruita da
 più viste o indovinata con un modello di come è fatto il mondo.
 
 ## Dai filtri disegnati a mano alle feature imparate
@@ -351,8 +351,8 @@ immagini che nessuno ha mai etichettato: il trucco, lì, è inventare un gioco
 di cui conosciamo già la risposta giusta, perché a costruirla siamo stati noi.
 Poi salgono le pretese sulla risposta,
 dal riquadro attorno all'oggetto alla sua sagoma esatta: **rilevamento e
-segmentazione**. L'obiettivo non è solo capire come funzionano queste tecniche:
-è metterle al lavoro, con PyTorch, sulle nostre immagini.
+segmentazione**. L'obiettivo, oltre a capire come funzionano queste tecniche,
+è metterle al lavoro con PyTorch sulle nostre immagini.
 
 Le sezioni successive cambiano domanda e passano dal «che cosa» al «dove»: la
 **geometria** che lega una fotografia alla scena da cui viene, e che permette
@@ -391,7 +391,7 @@ fotografia tiene il soggetto e ne cambia la pennellata.
   architettura.
 - A quei compiti se ne aggiunge una famiglia diversa, che chiede **dove** sono
   le cose e non solo che cosa sono. Lì la difficoltà è di natura opposta: la
-  distanza non è nascosta nella foto, è stata cancellata dallo scatto, e si
+  distanza è stata cancellata dallo scatto, e si
   recupera confrontando più immagini o affidandosi a ciò che il modello ha
   imparato su come è fatto il mondo.
 ```

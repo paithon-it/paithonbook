@@ -3,6 +3,7 @@
     python3 animazioni/svg/genera.py                  # tutte
     python3 animazioni/svg/genera.py percettrone-impara xor-non-separabile
     python3 animazioni/svg/genera.py --verifica       # sono allineate?
+    python3 animazioni/svg/genera.py --misura NOME    # rimisura il dato di NOME
 
 Ogni generatore è un file `<nome>.py` accanto a questo, che espone `NOME`,
 `TITOLO` e `costruisci() -> Figura`. Il nome col trattino non è importabile
@@ -19,10 +20,26 @@ rigenera, e la figura pubblicata continua a dire la cosa vecchia. È già
 successo (`caffda4` ha tolto le lineette dai sorgenti e per settimane gli SVG
 online ne hanno portate tredici). Rigenera in un temporaneo e confronta:
 non scrive niente e torna 1 se qualcosa è disallineato.
+
+`--misura` serve alle figure che disegnano un **esperimento**, non un calcolo:
+là il dato si misura una volta, si committa in `animazioni/dati/` e il disegno
+lo legge, perché due CPU con ordini di riduzione BLAS diversi danno numeri
+diversi e `--verifica` non potrebbe mai tornare verde altrove. Il generatore
+che fa così espone una `misura()`, che riesegue l'esperimento, lo collauda e
+riscrive il proprio json; le altre figure non ce l'hanno e `--misura` le salta
+dicendolo. È l'unico comando di questo file che tocca qualcosa fuori da
+`book/figures/`, e va lanciato apposta: rimisurare cambia la figura.
+
+E perché la separazione non duri finché qualcuno se la ricorda, `--verifica`
+guarda anche i sorgenti: un generatore che importa torch deve esporre
+`misura()`, e non deve importarlo al livello del modulo. È il cancello che
+chiude la classe, e senza di lui il prossimo generatore che addestra nasce con
+l'esperimento dentro `costruisci()`, come sono nati questi.
 """
 
 import argparse
 import importlib.util
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -60,9 +77,91 @@ def carica(percorso: Path):
     return mod
 
 
+def misura(files) -> int:
+    """Riesegue gli esperimenti delle figure che ne hanno uno, e ne
+    riscrive il dato.
+
+    Non ridisegna niente: dopo, `genera.py <nome>` rifà l'SVG dal dato nuovo.
+    Sono due passi apposta, perché sono due decisioni diverse (rimisurare, e
+    accettare quello che ne è uscito), e la seconda si prende guardando il
+    provino.
+    """
+    moduli = [(f, carica(f)) for f in files]
+    con_esperimento = [(f, m) for f, m in moduli if hasattr(m, "misura")]
+    if not con_esperimento:
+        nomi = ", ".join(sorted(f.stem for f in files))
+        print(f"nessun esperimento da rimisurare in: {nomi}", file=sys.stderr)
+        print("  (una figura che disegna un esperimento espone `misura()`)",
+              file=sys.stderr)
+        return 1
+
+    errori = 0
+    for f, mod in con_esperimento:
+        try:
+            out = mod.misura()
+            print(f"✓ {out.relative_to(RADICE)}  ({out.stat().st_size:,} byte)"
+                  .replace(",", "."))
+        except Exception as e:
+            errori += 1
+            print(f"✗ {f.stem}: {type(e).__name__}: {e}", file=sys.stderr)
+
+    if not errori:
+        nomi = " ".join(f.stem for f, _ in con_esperimento)
+        print(f"\nora ridisegna, e guarda il provino:\n"
+              f"  python3 animazioni/svg/genera.py {nomi}")
+    return 1 if errori else 0
+
+
+# Una riga che importa torch, al livello di indentazione a cui sta.
+IMPORTA_TORCH = re.compile(r"^(\s*)(?:import torch|from torch\b)", re.M)
+
+
+def impuri(files) -> list[str]:
+    """I generatori che addestrano senza aver separato il dato dal disegno.
+
+    È il cancello che chiude la classe, e senza di lui la separazione dura
+    finché qualcuno se la ricorda: il prossimo generatore che addestra nasce
+    come sono nati questi tre, cioè con `costruisci()` che esegue la rete, e
+    la cosa si scopre mesi dopo su un runner che cambia CPU. Due difetti, e
+    stanno tutti e due nel sorgente, quindi si vedono senza eseguire niente:
+
+    - importa torch e non espone `misura()`: l'esperimento non è stato
+      separato affatto;
+    - importa torch **al livello del modulo**: allora l'import lo paga anche
+      chi disegna, e `costruisci()` può usarlo senza che si veda.
+
+    Il perimetro sono i generatori passati, e il chiamante ne stampa il
+    numero: uno zero che viene da una glob vuota assomiglia troppo a uno zero
+    che viene da un libro pulito.
+    """
+    guasti = []
+    for f in files:
+        sorgente = f.read_text(encoding="utf-8")
+        righe = IMPORTA_TORCH.findall(sorgente)
+        if not righe:
+            continue
+        if "\ndef misura(" not in sorgente:
+            guasti.append(
+                f"{f.stem}: addestra e non espone `misura()`. Il disegno deve "
+                f"essere una funzione pura del dato: l'esperimento si esegue "
+                f"una volta, il suo risultato si committa in "
+                f"animazioni/dati/{f.stem}.json e `costruisci()` legge quello. "
+                f"Il procedimento sta in animazioni/README.md")
+        if any(indentazione == "" for indentazione in righe):
+            guasti.append(
+                f"{f.stem}: importa torch al livello del modulo, quindi lo "
+                f"importa anche chi disegna. L'import va dentro "
+                f"`esperimento()`, dove serve")
+    return guasti
+
+
 def verifica(files) -> int:
     """Rigenera in un temporaneo e confronta, senza toccare book/figures/."""
     disallineate, mancanti, errori = [], [], 0
+
+    guasti = impuri(files)
+    for g in guasti:
+        print(f"✗ {g}", file=sys.stderr)
 
     with tempfile.TemporaryDirectory(prefix="paithon-svg-verifica-") as tmp:
         prova = Path(tmp)
@@ -82,7 +181,7 @@ def verifica(files) -> int:
             elif committata.read_bytes() != atteso.read_bytes():
                 disallineate.append(mod.NOME)
 
-    if errori:
+    if errori or guasti:
         return 1
     if mancanti or disallineate:
         if mancanti:
@@ -92,7 +191,8 @@ def verifica(files) -> int:
         print("  python3 animazioni/svg/genera.py")
         return 1
 
-    print(f"allineate ai generatori: {len(files)} figure")
+    print(f"allineate ai generatori: {len(files)} figure, "
+          f"e chi addestra disegna dal proprio dato")
     return 0
 
 
@@ -102,6 +202,9 @@ def main(argv):
                     help="i generatori da eseguire (default: tutti)")
     ap.add_argument("--verifica", action="store_true",
                     help="esce con 1 se le figure sul disco non sono quelle attese")
+    ap.add_argument("--misura", action="store_true",
+                    help="riesegue l'esperimento delle figure che ne hanno uno "
+                         "e riscrive il loro dato in animazioni/dati/")
     argomenti = ap.parse_args(argv)
 
     scelti = set(argomenti.nomi)
@@ -114,6 +217,8 @@ def main(argv):
 
     if argomenti.verifica:
         return verifica(files)
+    if argomenti.misura:
+        return misura(files)
 
     errori = 0
     for f in files:

@@ -92,8 +92,9 @@ dove $\tau_{ij}$ è la quantità di feromone sull'arco $(i,j)$, $\eta_{ij}$ è l
 **visibilità**, cioè l'inverso della lunghezza dell'arco ($\eta_{ij} = 1/d_{ij}$
 nel commesso viaggiatore, e niente a che vedere con il tasso di apprendimento
 $\eta$ del resto del libro), $\mathcal{A}_k$ è l'insieme dei nodi che la formica
-$k$ non ha ancora visitato (glielo impedisce una lista di nodi proibiti, che è
-ciò che rende il giro legale) e gli esponenti $\alpha, \beta \ge 0$ pesano i due
+$k$ non ha ancora visitato, tenuto da una lista di nodi proibiti che le vieta di
+tornare dove è già passata ed è ciò che rende legale il giro, e gli esponenti
+$\alpha, \beta \ge 0$ pesano i due
 termini l'uno contro l'altro. La formula è un compromesso fra **esperienza
 collettiva** ($\tau$: quante formiche sono passate di qui e quanto bene è
 andata) ed **euristica locale** ($\eta$: quanto è vicino il prossimo nodo). I
@@ -160,8 +161,8 @@ fare la differenza è **soltanto** quanto ciascuna lascia alla fine del giro, e
 siccome un giro è lungo la metà dell'altro, chi lo fa lascia il doppio di chi fa
 l'altro. Da lì in poi il vantaggio si rinforza da sé.
 
-La seconda è che **anche la strada lunga si ispessisce**. Non è un dettaglio del
-disegno: è il difetto del meccanismo. Finché le formiche passano, il feromone si
+La seconda è che **anche la strada lunga si ispessisce**. Il difetto sta nel
+meccanismo, non nel disegno. Finché le formiche passano, il feromone si
 accumula dappertutto e non se ne va più; quello che cresce è il *divario*, non
 la differenza fra una traccia e nessuna traccia. Un sistema fatto così sa
 premiare, ma non sa dimenticare, ed è esattamente il buco che le prossime pagine
@@ -306,7 +307,7 @@ rumore aggiunto a mano per rendere il volo credibile: non serviva. Via
 l'allineamento con il vicino più prossimo (ogni agente copiava la velocità del
 compagno più vicino, che è l'allineamento dei boids ridotto a un solo vicino):
 senza, riportano gli autori, l'ottimizzazione va perfino un po’ più in fretta, e
-quello che resta non è più uno stormo, è uno sciame. Restano due sole
+quello che resta è uno sciame, non più uno stormo. Restano due sole
 attrazioni: verso il punto migliore che quella particella ha trovato finora, e
 verso il punto migliore che ha trovato il gruppo.
 
@@ -468,7 +469,7 @@ degli obiettivi in anticipo e rilanciare la ricerca per ogni compromesso.
 
 `````
 
-Lo zaino non è un esempio scelto a caso: è il tipo di problema su cui il metodo
+Lo zaino è il tipo di problema su cui il metodo
 solito, quello che cerca il punto più basso sentendo da che parte scende il
 terreno (la **discesa del gradiente**, di cui si parla fra due pagine), non ha
 proprio dove appoggiarsi. Nel codice che segue i
@@ -537,13 +538,14 @@ aspetto.
 
 Nel machine learning questa famiglia compare in due punti. Il primo è la
 **ricerca di architetture**, e conviene distinguere subito le due strade
-perché si confondono spesso. La rete base di EfficientNet, ricordata nel
-{doc}`capitolo sul deep learning </DeepLearning/overview>`, viene da una ricerca automatica multi-obiettivo
+perché si confondono spesso. La rete base di EfficientNet, ricordata fra le
+{doc}`architetture storiche </DeepLearning/architetture-storiche>` del deep
+learning, viene da una ricerca automatica multi-obiettivo
 guidata dal **reinforcement learning**, non dall'evoluzione. L'evoluzione è
 l'altra strada principale, e il suo esemplare è AmoebaNet
 {cite}`real2019regularized`, dove le architetture **mutano** e le migliori
 sopravvivono, con una selezione a torneo che scarta anche le più vecchie.
-Quell'algoritmo il crossover non ce l'ha, ed è coerente con la scommessa
+Quell'algoritmo l'incrocio non ce l'ha, ed è coerente con la scommessa
 dichiarata poche righe fa: in un'architettura i pezzi non sono separabili,
 perché un blocco che funziona bene in una rete può essere pessimo in un'altra,
 quindi la scommessa non reggerebbe e l'algoritmo si limita a non farla. Il
@@ -556,8 +558,9 @@ ottimizzare una pipeline di preelaborazione.
 Sia le formiche sia le particelle hanno una proprietà che va guardata in faccia:
 non usano mai la **derivata** della funzione da minimizzare, cioè la sua
 pendenza. Vedono solo il suo
-valore, in un punto alla volta. Il {doc}`capitolo di matematica </Matematica/overview>` ha dedicato una
-sezione alla discesa del gradiente (scendere seguendo quella pendenza), che è
+valore, in un punto alla volta. La sezione di matematica su
+{doc}`analisi e ottimizzazione </Matematica/analisi-ottimizzazione>` ha spiegato
+la discesa del gradiente (scendere seguendo quella pendenza), che è
 il metodo con cui si addestra ogni
 rete di questo libro; qui abbiamo un'altra famiglia, e il confronto va fatto
 per bene, perché è il punto in cui la divulgazione su questi metodi diventa
@@ -674,7 +677,7 @@ iterazione  60   f = 0.000168   x = (+0.0009, +0.0000)
 ```
 
 La riga da guardare è la prima. Alla decima iterazione il punto migliore che lo
-sciame conosce non è il fondo vero: è dentro la fossetta accanto, quella scavata
+sciame conosce sta dentro la fossetta accanto, quella scavata
 attorno al punto di coordinate meno uno e zero, il cui fondo vale uno invece di
 zero (e nel punto trovato la funzione vale poco meno di due, perché lo sciame in
 fondo a quella fossetta non c'è nemmeno arrivato). Un metodo che segue la
@@ -739,9 +742,75 @@ sessantasei. Le prove riuscite in tutto sono sessantasette, quindi una sola ce
 l'ha fatta partendo interamente da fuori. Nascere nel posto giusto, qui, è
 sempre bastato e quasi sempre è servito. La discesa con trenta ripartenze non
 ha imparato niente in più dello sciame: ha soltanto avuto trenta biglietti
-invece di uno. (E il suo risultato dipende da quanto sono lunghi i passi più
-di quanto dipenda dal metodo: raddoppiando la lunghezza del passo non arriva
-più al fondo vero in nessuna delle trecento prove.)
+invece di uno. (E la lunghezza del passo non è una manopola da girare per fare
+meglio: sotto la soglia oltre la quale la discesa diventa instabile il
+risultato non cambia di una prova, sopra crolla a zero su trecento.)
+
+Tutti i numeri di questa sezione escono da un blocco solo, che rifà le
+trecento prove per intero — stessi sorteggi, stessa soglia, che qui smette di
+essere sottintesa: «arrivare al fondo vero» vuol dire scendere sotto un
+centesimo.
+
+```python
+# Le trecento prove del confronto: semi 0..299. Ogni prova usa gli STESSI
+# trenta punti iniziali per lo sciame e per le trenta ripartenze della
+# discesa; la rastrigin e' quella definita sopra.
+def sciame(X0, rng):
+    n, d = X0.shape
+    w, c1, c2 = 0.73, 1.50, 1.50
+    X = X0.copy()
+    V = rng.uniform(-1.0, 1.0, (n, d))
+    P, fP = X.copy(), rastrigin(X)
+    g = int(np.argmin(fP))
+    for t in range(1, 61):
+        r1, r2 = rng.random((n, d)), rng.random((n, d))
+        V = w * V + c1 * r1 * (P - X) + c2 * r2 * (P[g] - X)
+        X = np.clip(X + V, -5.12, 5.12)
+        f = rastrigin(X)
+        meglio = f < fP
+        P[meglio], fP[meglio] = X[meglio], f[meglio]
+        g = int(np.argmin(fP))
+    return fP[g]
+
+
+def discese(X0, passo=0.005, passi=2000):
+    X = X0.copy()
+    for _ in range(passi):
+        G = 2 * X + 20 * np.pi * np.sin(2 * np.pi * X)   # gradiente esatto
+        X = np.clip(X - passo * G, -5.12, 5.12)
+    return rastrigin(X)
+
+
+s_ok = d1_ok = d30_ok = singole_ok = conca = conca_ok = 0
+for seme in range(300):
+    rng = np.random.default_rng(seme)
+    X0 = rng.uniform(-5.12, 5.12, (30, 2))
+    f_sciame, f_disc = sciame(X0, rng), discese(X0)
+    s_ok += f_sciame < 1e-2                   # la soglia del «fondo vero»
+    d1_ok += f_disc[0] < 1e-2                 # partenza singola: il primo punto
+    d30_ok += f_disc.min() < 1e-2             # il migliore delle trenta
+    singole_ok += int((f_disc < 1e-2).sum())  # tutte le 9000 partenze singole
+    in_conca = np.all(np.abs(X0) < 0.5, axis=1).any()
+    conca += in_conca
+    conca_ok += in_conca and (f_disc.min() < 1e-2)
+
+p = singole_ok / 9000
+print(f"sciame:                       {s_ok} su 300")
+print(f"discesa, partenza singola:    {d1_ok} su 300")
+print(f"discesa, trenta ripartenze:   {d30_ok} su 300")
+print(f"partenze singole riuscite:    {singole_ok} su 9000")
+print(f"prove nate in conca centrale: {conca} (riuscite: {conca_ok})")
+print(f"atteso dal conto dei biglietti: {round((1 - (1 - p) ** 30) * 300)} su 300")
+```
+
+```text
+sciame:                       277 su 300
+discesa, partenza singola:    2 su 300
+discesa, trenta ripartenze:   67 su 300
+partenze singole riuscite:    72 su 9000
+prove nate in conca centrale: 66 (riuscite: 66)
+atteso dal conto dei biglietti: 64 su 300
+```
 
 Un'ultima nota sui tre numeri in cima al programma, quelli che pesano le tre
 spinte (tirare dritto per dove stavo andando, tornare dove sono stato meglio io,
@@ -758,21 +827,25 @@ tarare a mano l'ampiezza dei passi.
 
 Gli sciami mettono molte unità stupide a risolvere un problema. Con i modelli di
 linguaggio si può fare una cosa che prima non si poteva: mettere molte unità
-**non** stupide a fare qualcosa che un problema di ottimizzazione non è, cioè
+non stupide a fare qualcosa che un problema di ottimizzazione non è, cioè
 comportarsi. Il lavoro di riferimento è quello di Park e colleghi del 2023
 {cite}`park2023generative`, che il capitolo sugli Agenti ha già presentato
 parlando della memoria che dura: venticinque agenti in un paese simulato,
 ciascuno con un archivio di ricordi in linguaggio naturale. Il risultato più citato è un
-comportamento emerso: un'agente decide di dare una festa di San Valentino,
-l'invito si propaga di bocca in bocca senza che nessuno lo instradi, e alla fine
-tredici agenti su venticinque ne sanno qualcosa e cinque si presentano.
+comportamento emerso, e conviene dire dove comincia l'emergenza: agli
+sperimentatori tocca una riga sola, mettere in testa a un'agente l'intenzione di
+dare una festa di San Valentino, e da lì in poi nessuno instrada più niente.
+L'invito si propaga di bocca in bocca, e alla fine tredici agenti su venticinque
+ne sanno qualcosa e cinque si presentano.
 
 Non ripetiamo l'architettura, che è già stata descritta lì: flusso di
-osservazioni, recupero, riflessione, pianificazione. Conviene guardare da
-vicino il pezzo che regge tutto, e che è anche il più imitato senza capirlo:
-la **funzione di recupero a tre termini**. Risponde alla domanda di qualunque
-memoria grande: fra diecimila ricordi, quali sono i pochi che vanno messi nel
-contesto **adesso**?
+osservazioni, recupero, riflessione, pianificazione. La riflessione è il
+momento in cui l'agente si ferma, rilegge quello che gli è appena successo e ne
+ricava una conclusione più generale, che riscrive fra i propri ricordi.
+Conviene guardare da vicino il pezzo che regge tutto, e che è anche il più
+imitato senza capirlo: la **funzione di recupero a tre termini**. Risponde
+alla domanda di qualunque memoria grande: fra diecimila ricordi, quali sono i
+pochi che vanno messi nel contesto **adesso**?
 
 `````{tab} Elementare
 
@@ -832,12 +905,12 @@ un'altra terna, ne uscirebbe con un punteggio diverso.
 Il punteggio di recupero è la somma di tre segnali,
 
 $$
-s(m, q) \;=\; \alpha_{\text{rec}}\,\widetilde{\text{rec}}(m)
-\;+\; \alpha_{\text{imp}}\,\widetilde{\text{imp}}(m)
-\;+\; \alpha_{\text{rel}}\,\widetilde{\text{rel}}(m, q),
+s(e, q) \;=\; \alpha_{\text{rec}}\,\widetilde{\text{rec}}(e)
+\;+\; \alpha_{\text{imp}}\,\widetilde{\text{imp}}(e)
+\;+\; \alpha_{\text{rel}}\,\widetilde{\text{rel}}(e, q),
 $$
 
-dove $m$ è un ricordo, $q$ la situazione corrente e la tilde indica che ogni
+dove $e$ è un ricordo, $q$ la situazione corrente e la tilde indica che ogni
 termine è stato riscalato con un **min-max** nell'intervallo $[0,1]$ prima della
 somma. Nel lavoro originale i tre pesi valgono tutti $1$, il che rende la
 normalizzazione l'unico meccanismo che impedisce al termine con l'escursione
@@ -892,7 +965,7 @@ linguaggio da cui provengono, non un risultato dell'esperimento. Un modello
 addestrato su enormi quantità di testo umano è, per costruzione, una macchina
 per produrre continuazioni verosimili di testo umano; quando gli si chiede di
 comportarsi come una persona, il fatto che il risultato somigli a una persona
-**non è una scoperta**, è la specifica. Peggio: la nostra sensazione di aver
+**è la specifica**, non una scoperta. Peggio: la nostra sensazione di aver
 visto qualcosa di vero cresce proprio con la qualità del modello, cioè con la
 sua abilità a produrre testo convincente, che è la variabile meno legata alla
 verità di tutte. Le mani avanti se le mettono gli autori stessi, in una nota a
@@ -939,7 +1012,7 @@ velocità con cui il feromone svanisce: sono la stessa manopola, girata su
 sistemi diversi.
 
 È la tesi dell'apertura, arrivata in fondo intatta: il comportamento di un
-gruppo è una proprietà della regola di interazione più che della bravura dei
+gruppo è una proprietà della regola di interazione, non della bravura dei
 singoli. Vale per gli storni sopra Termini, che contando i vicini restano uniti
 e misurandoli in metri si sfalderebbero nel momento peggiore
 {cite}`ballerini2008interaction`; vale per una colonia di formiche artificiali,
@@ -1066,8 +1139,9 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   paragone va preso **a parità di budget**, come impone la regola prudente del
   «Costo del coordinamento»: la discesa del gradiente a partenza singola chiude
   2 prove su 300, ma con trenta ripartenze, cioè con gli stessi trenta punti
-  iniziali dello sciame, ne chiude 67, e sono esattamente i semi che avevano un
-  punto nato nella conca giusta. In alta dimensione il rapporto si
+  iniziali dello sciame, ne chiude 67: 66 sono i semi che avevano un punto nato
+  nella conca giusta, e riescono tutti, uno solo ce la fa da fuori. In alta
+  dimensione il rapporto si
   rovescia, e non sono un'alternativa generale.
 - Nelle **società simulate** {cite}`park2023generative` il pezzo da capire è il
   recupero a tre termini (recenza, importanza, pertinenza) **normalizzati** e

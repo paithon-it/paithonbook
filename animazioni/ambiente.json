@@ -1,9 +1,9 @@
 {
   "_": "Manifesto dell'ambiente di render. Lo scrive animazioni/collaudo.py.",
-  "data": "2026-08-13",
+  "data": "2026-08-30",
   "versioni": {
     "manim": "0.21.0",
-    "python": "3.12.13",
+    "python": "3.12.14",
     "latex": "TeX Live 2022",
     "ffmpeg": "5.1.9-0+deb12u1",
     "immagine": "paithon-manim"
@@ -12,47 +12,47 @@
     "attenzione-mascherata.py": {
       "classe": "AttenzioneMascherata",
       "ok": true,
-      "secondi": 4.7
+      "secondi": 5.0
     },
     "backpropagation.py": {
       "classe": "Backpropagation",
       "ok": true,
-      "secondi": 3.9
+      "secondi": 4.9
     },
     "convoluzione.py": {
       "classe": "Convoluzione",
       "ok": true,
-      "secondi": 6.0
+      "secondi": 7.1
     },
     "diffusione-denoising.py": {
       "classe": "DiffusioneDenoising",
       "ok": true,
-      "secondi": 5.4
+      "secondi": 6.5
     },
     "generazione-autoregressiva.py": {
       "classe": "GenerazioneAutoregressiva",
       "ok": true,
-      "secondi": 5.9
+      "secondi": 6.9
     },
     "iterazione-valore.py": {
       "classe": "IterazioneValore",
       "ok": true,
-      "secondi": 6.2
+      "secondi": 7.3
     },
     "limite-centrale.py": {
       "classe": "LimiteCentrale",
       "ok": true,
-      "secondi": 4.2
+      "secondi": 4.8
     },
     "message-passing.py": {
       "classe": "MessagePassing",
       "ok": true,
-      "secondi": 4.0
+      "secondi": 4.4
     },
     "stato-ricorrente.py": {
       "classe": "StatoRicorrente",
       "ok": true,
-      "secondi": 6.9
+      "secondi": 7.6
     }
   }
 }

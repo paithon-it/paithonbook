@@ -6,7 +6,7 @@ titolo che è già una tesi: *How to Do Things with Words*, come fare cose con l
 parole. L'osservazione di partenza sembra ovvia appena qualcuno la pronuncia.
 Certe frasi descrivono il mondo, e di esse ha senso chiedersi se siano vere o
 false: «piove». Altre non descrivono niente, lo cambiano. «Prometto di venire
-domani» non è né vero né falso: è un impegno che un istante prima non
+domani» sfugge al vero e al falso: è un impegno che un istante prima non
 esisteva. Il sindaco che dice «vi dichiaro marito e moglie» non riferisce di un
 matrimonio, lo celebra. Austin chiamò queste frasi **enunciati performativi**, e
 da lì è nata la teoria degli atti linguistici, il capitolo della pragmatica che
@@ -24,7 +24,7 @@ sta sotto il voto, perché è il punto più frainteso dell'intero capitolo.
 ## Un messaggio è una mossa
 
 Cominciamo dalla forma. In un sistema multi-agente il testo che passa da un
-partecipante all'altro non è prosa: è una mossa dentro una partita, e come ogni
+partecipante all'altro è una mossa dentro una partita, e come ogni
 mossa ha un *tipo*.
 
 ```{figure} ../figures/anatomia-agente-ai.svg
@@ -98,8 +98,8 @@ Negli anni Novanta qualcuno decide di prendere sul serio questa analisi e di
 farne una regola di scrittura. Ogni messaggio fra agenti deve portare in cima,
 scritto a chiare lettere, che cosa quel messaggio **fa**: si chiama
 **performativa**, ed è il nome tecnico di quello che sui biglietti del
-frigorifero era il tipo di biglietto. Non è una convenzione stilistica: è una
-casella obbligatoria, da riempire scegliendo in un elenco finito, accanto a
+frigorifero era il tipo di biglietto. È una casella obbligatoria, da riempire
+scegliendo in un elenco finito, accanto a
 mittente, destinatario, contenuto, a quale conversazione il messaggio appartiene
 e a quale messaggio risponde. Le due proposte che hanno fatto scuola sono
 **KQML**, sviluppato da Tim Finin e colleghi in un programma di ricerca
@@ -322,7 +322,7 @@ $P_{21} = 0{,}974$. La convergenza è reale ma lenta, con rendimenti
 decrescenti marcati: i primi due votanti aggiunti comprano otto punti
 ($0{,}700 \to 0{,}784$), i dodici che portano da nove a ventuno ne comprano
 sette ($0{,}901 \to 0{,}974$). Questa curva va confrontata con il
-costo, che l'apertura del capitolo ha mostrato crescere come il quadrato
+costo, che «Il costo del coordinamento» ha mostrato crescere come il quadrato
 quando tutti leggono tutto: il voto è il caso migliore per il multi-agente
 proprio perché i votanti non si parlano, e quindi il costo resta lineare in
 $n$.
@@ -336,8 +336,8 @@ teorema di Condorcet ha un'ipotesi, l’**indipendenza**, e nei sistemi
 multi-agente costruiti oggi quell'ipotesi è quasi sempre falsa.
 
 Dieci copie dello stesso modello, con lo stesso foglio di istruzioni, davanti
-alla stessa domanda, non sono dieci votanti: sono **un votante interrogato
-dieci volte**. Non è un sospetto, è una conseguenza di come sono fatte. Un
+alla stessa domanda, valgono **un votante interrogato
+dieci volte**. È una conseguenza di come sono fatte. Un
 modello addestrato è una macchina con dentro dei numeri che non cambiano più:
 sono i **pesi**, quelli che l'addestramento ha aggiustato una volta per tutte.
 L'unica cosa che varia da una risposta all'altra è il modo in cui il testo viene
@@ -345,7 +345,7 @@ tirato fuori. Parola per parola, il modello non prende sempre la più probabile,
 ma ogni tanto ne pesca una vicina. Quanto spesso lo faccia si regola con una
 manopola che si chiama **temperatura**. Portata a zero, il caso si spegne del
 tutto e dieci copie
-restituiscono la stessa identica risposta: non sono dieci pareri, è un parere
+restituiscono la stessa identica risposta, cioè un parere
 fotocopiato dieci volte. Alzandola si cambia il percorso lungo il quale la
 risposta si forma, non la macchina che la forma: restano identici i pesi, i dati
 su cui il modello si è addestrato e le lacune che quei dati hanno lasciato. Un
@@ -378,7 +378,7 @@ volta.
 
 Cambia tutto quando si vota. Con tre agenti si passa da settantotto volte su
 cento a settantasette: poco. Con nove agenti, dove Condorcet prometteva novanta,
-ci si ferma a ottanta. E la cosa da guardare non è quanto si è perso, è che
+ci si ferma a ottanta. E la cosa da guardare è che
 **oltre non si va**: con ventuno agenti si fa ottanta, con novantanove ancora
 ottanta. Il tetto lo fissa la quota di domande-trappola: restano le altre
 quattro domande su cinque, cioè l'ottanta per cento, e nessun numero di
@@ -553,7 +553,7 @@ Geoffrey Irving, Paul Christiano e Dario Amodei {cite}`irving2018ai`, non come
 un prodotto ma come una linea di ricerca su un problema aperto: come si fa a
 controllare un sistema che su una certa questione ne sa più di chi lo controlla.
 
-Il meccanismo interessante non è la gara, è lo **squilibrio fra inventare e
+Il meccanismo interessante è lo **squilibrio fra inventare e
 controllare**. Comporre un cruciverba richiede giorni; verificare che una griglia
 compilata sia giusta richiede minuti, e non serve saperlo comporre. Il dibattito
 vive di questo squilibrio: trasforma una domanda a cui il giudice non saprebbe
@@ -685,7 +685,7 @@ differenza.
 
 C'è però un secondo muro, e sta prima di questo. Finora abbiamo dato per buona
 una cosa che sembra ovvia e non lo è: che ci si accorga quando un generale
-**non** risponde. Ma come fai ad accorgertene? Aspetti. E se dopo un'ora non è
+non risponde. Ma come fai ad accorgertene? Aspetti. E se dopo un'ora non è
 arrivato niente non sai se il messaggero è morto o se è solo in ritardo: da dove
 sei tu, un compagno fermo e un compagno lento sono la stessa identica cosa. Nel
 1985 tre informatici hanno dimostrato che senza un tempo massimo garantito per
@@ -722,11 +722,11 @@ luogotenente rigira a tutti gli altri quello che ha appena sentito. Cambiando
 ipotesi cambia il limite: con **messaggi firmati**, cioè con firme non
 falsificabili e verificabili da chiunque, il vincolo dei due terzi cade e
 l'algoritmo $\mathrm{SM}(f)$ risolve il problema per qualunque $f$ purché
-$n \ge f+2$ (sotto quella soglia i luogotenenti leali sono al più uno, e le due
+$n \ge f+2$ (a quella soglia il luogotenente leale è già uno solo, e le due
 condizioni valgono a vuoto).
 
-Delle tre ipotesi orali conviene però fermarsi sulla terza, perché non è un
-dettaglio tecnico: è un'ipotesi sul **tempo**, travestita. Sono gli autori
+Delle tre ipotesi orali conviene però fermarsi sulla terza, perché è
+un'ipotesi sul **tempo**, travestita da dettaglio tecnico. Sono gli autori
 stessi a scioglierla, quando passano ai sistemi reali. L'assenza di un messaggio
 si può rilevare in un modo solo, cioè constatando che non è arrivato entro un
 tempo prefissato, e questo richiede che esista un tempo massimo entro il quale
@@ -748,7 +748,7 @@ abbastanza sfortunato.
 
 FLP è il più forte dei due risultati, perché chiede meno, e il muro vero del
 consenso distribuito è quello, non $3f+1$: la soglia dei due terzi è ciò che si
-paga **dopo** aver comprato l'ipotesi che FLP nega. Le monete con cui la si
+paga dopo aver comprato l'ipotesi che FLP nega. Le monete con cui la si
 compra sono tre, e sono tutte e tre in uso. La **sincronia parziale**, cioè i
 timeout: si scommette su un tempo massimo, e si accetta di sbagliare quando la
 scommessa salta. La **randomizzazione**, che rinuncia alla terminazione certa e
@@ -795,7 +795,7 @@ avversario che sceglie la strategia peggiore possibile e può mettersi d'accordo
 con gli altri traditori: un modello che sbaglia non è malevolo in quel senso, e
 la soglia dei due terzi non si trasferisce come formula ai sistemi di agenti,
 che non hanno traditori coordinati da tollerare. Quello che
-si trasferisce, e non è poco, è la classificazione dei guasti e la sua
+si trasferisce, e conta parecchio, è la classificazione dei guasti e la sua
 conseguenza di progetto: contro un partecipante che mente con garbo, l'unica
 difesa è un **riscontro esterno** che non passi per la sua parola. Uno strumento
 che misura, una fonte che si può andare a leggere, un programma di prova che o
@@ -856,7 +856,7 @@ converge in silenzio sulla risposta sbagliata.
   volte, votare *peggiora* le cose. Il voto non aggiunge competenza: amplifica
   quella che c'è, nel bene e nel male.
 - **Fra agenti identici l'ipotesi crolla.** Dieci copie dello stesso modello con
-  le stesse istruzioni non sono dieci votanti, sono un votante interrogato dieci
+  le stesse istruzioni valgono un votante interrogato dieci
   volte: sulle domande che mandano fuori strada quel modello sbagliano tutte
   insieme e allo stesso modo, e su quelle il voto non corregge, certifica. Il
   voto non aumenta la correttezza, aumenta la **sicurezza con cui la risposta

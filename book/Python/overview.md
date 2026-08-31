@@ -95,13 +95,15 @@ non per il computer, che lo salta. I commenti dicono che cosa fa la riga
 accanto, e la freccia `->` dentro un commento significa «e viene fuori questo».
 
 Su quel «viene fuori» c'è una cosa da chiarire subito, perché altrimenti
-confonde per tutto il capitolo. Nell'interprete, se scrivi una riga che *vale*
-qualcosa (un conto, il nome di una variabile) e premi Invio, lui te ne mostra
-il risultato di sua iniziativa, senza che tu glielo abbia chiesto: è fatto per
+confonde da qui in avanti. Nell'interprete, la finestra in cui le
+istruzioni si scrivono una per volta, se scrivi una riga che *vale* qualcosa
+(un conto, il nome di una variabile) e premi Invio, lui te ne mostra il
+risultato di sua iniziativa, senza che tu glielo abbia chiesto: è fatto per
 conversare. In un programma salvato in un file, invece, quella stessa riga
 calcola e non dice niente, e per vedere il risultato bisogna chiederlo con
-`print`. Gli esempi che seguono sono scritti come li si digiterebbe nell'interprete, ed
-è per questo che spesso una riga mostra un valore senza `print` accanto.
+`print`. Gli esempi che seguono sono scritti come li si digiterebbe
+nell'interprete, ed è per questo che spesso una riga mostra un valore senza
+`print` accanto.
 
 Eseguendo `import this` compaiono i diciannove aforismi che Tim Peters
 codificò nel 1999.
@@ -121,7 +123,7 @@ librerie costruite l'una sull'altra ({numref}`fig-stack-python`; in inglese
 quella torre si chiama *stack*). Ognuna fa una cosa e la fa bene.
 
 - **NumPy**: il fondamento. Introduce l’*array* N-dimensionale, il blocco di
-  numeri su cui i conti si fanno tutti insieme, e rende veloce l'**algebra
+  numeri su cui i conti si fanno tutti insieme, e rende veloce l’**algebra
   lineare**, cioè la matematica delle tabelle di numeri; quasi tutto il resto
   poggia su di lui.
 - **Pandas**: dati tabellari. Il `DataFrame` è un foglio di calcolo
@@ -149,12 +151,12 @@ quella torre si chiama *stack*). Ognuna fa una cosa e la fa bene.
 :alt: "Diagramma a strati: alla base Python, sopra NumPy, poi Pandas Matplotlib e scikit-learn, in cima PyTorch e TensorFlow."
 :width: 85%
 
-La torre delle librerie scientifiche di Python. Pandas, Matplotlib e
-scikit-learn poggiano davvero su NumPy: per funzionare hanno bisogno che sia
-installato, e lo dichiarano: sono le due frecce. PyTorch e TensorFlow stanno
-accanto alla torre più che sopra, e infatti sotto di loro la freccia manca: i
-conti se li fanno per conto proprio, con un motore tutto loro, e con NumPy si
-limitano a scambiarsi i dati.
+La torre delle librerie scientifiche di Python. Le due frecce sono i due
+«poggia su» veri: NumPy sul linguaggio, e Pandas, Matplotlib e scikit-learn su
+NumPy, senza il quale non funzionano. Sopra il secondo strato la
+freccia manca, ed è il punto: PyTorch e TensorFlow stanno accanto alla torre
+più che sopra, perché i conti se li fanno per conto proprio, con un motore
+tutto loro, e con NumPy si limitano a scambiarsi i dati.
 ```
 
 Dire che Pandas o scikit-learn sono «costruiti su NumPy» vuol dire che non

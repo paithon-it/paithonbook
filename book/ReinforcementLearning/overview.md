@@ -295,8 +295,8 @@ Tutte e tre riempiono la stessa cosa: una grande tabella con una casella per
 ogni situazione.
 
 Il passo verso il **deep reinforcement learning**, dove reti neurali stimano
-quei valori o direttamente la politica, non è un ampliamento facoltativo: è una
-necessità, perché la tabella smette di stare in piedi appena le situazioni
+quei valori o direttamente la politica, è una necessità e non un ampliamento
+facoltativo, perché la tabella smette di stare in piedi appena le situazioni
 possibili sono tante, e va sostituita da qualcosa che sappia indovinare il
 valore di situazioni mai viste prima. Lo affrontiamo nel capitolo successivo,
 ricostruendo proprio il tipo di agente che ha imparato a giocare a partire dai

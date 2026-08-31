@@ -418,9 +418,9 @@ guardate, ed è la parte che spiega il resto. Si può disegnare: ogni posizione
 aperta si mette su un piano, in orizzontale i passi già fatti per arrivarci e
 in verticale **la stima** di quanti ne mancano ({numref}`fig-frontiera`). In
 verticale c’è la stima e non la distanza vera, e la differenza conta: quello
-che il disegno mostra non è che con il fiuto la ricerca stia lontana dai vicoli
-ciechi, è che non apre mai una posizione per cui la somma dei due numeri superi
-il costo della soluzione. Il piano è lo stesso nei due casi, e cambia una cosa
+che il disegno mostra è che con il fiuto la ricerca non apre mai una posizione
+per cui la somma dei due numeri superi il costo della soluzione, non che stia
+lontana dai vicoli ciechi. Il piano è lo stesso nei due casi, e cambia una cosa
 sola: se l’algoritmo quel secondo numero lo guarda oppure no.
 
 ```{figure} ../figures/frontiera-che-si-allarga.svg
@@ -437,11 +437,11 @@ tempo perso. Senza la stima la ricerca ci finisce di continuo; con la stima non
 ci mette piede, ed è proprio la garanzia che A\* dà.
 ```
 
-E qui c’è la cosa che i tre numeri da soli non facevano vedere: non è che la
-stima faccia guardare *meno in giro*, è che le impedisce di salire sopra quella
-riga. Con la stima a zero la somma dei due numeri è sempre uguale ai soli passi
-fatti, quindi non c’è nessuna riga da non superare, e ogni posizione vale
-quanto un’altra alla stessa distanza dalla partenza.
+E qui c’è la cosa che i tre numeri da soli non facevano vedere: la stima non fa
+guardare *meno in giro*, le impedisce di salire sopra quella riga. Con la stima
+a zero la somma dei due numeri è sempre uguale ai soli passi fatti, quindi non
+c’è nessuna riga da non superare, e ogni posizione vale quanto un’altra alla
+stessa distanza dalla partenza.
 
 E il confronto fra le due stime ha una regola sola, che si legge nella loro
 definizione: contare i passi è **sempre almeno quanto** contare le tessere
@@ -469,8 +469,8 @@ euristica vuol dire cercare la stima più alta che non superi mai il vero.
   Rifare ogni volta i primi metri costa poco, perché i bivi vicini all’inizio
   sono pochissimi rispetto a quelli lontani, e in cambio si tengono la memoria
   del filo e la garanzia dell’acqua.
-- Il difetto vero del cercare a tentoni non è la memoria: è che si cerca
-  dappertutto con lo stesso impegno, anche dalla parte sbagliata.
+- Il difetto vero del cercare a tentoni è che si cerca dappertutto con lo
+  stesso impegno, anche dalla parte sbagliata, e non la memoria.
 - La cosa che cambia le proporzioni è una **stima di quanto manca**: la
   distanza in linea d’aria dalla torre vicino a casa dell’amico. Non dice
   quale strada prendere, dice solo da che parte guardare per primo.

@@ -4,12 +4,12 @@ Negli anni Venti il biologo marino Umberto D'Ancona mise in fila i registri dei
 mercati ittici dell'alto Adriatico (Venezia, Trieste e Fiume) per gli anni dal
 1905 al 1923, e trovò un fatto che non sapeva spiegare. Durante gli anni della
 Grande Guerra, quando la pesca si era quasi fermata, la quota dei pesci
-**predatori** (squali, razze) sul totale del pescato non era rimasta uguale: era
+**predatori** (squali, razze) sul totale del pescato era
 cresciuta parecchio, e finita la guerra era tornata a scendere. Meno pesca per
 tutti, e a guadagnarci erano stati solo quelli che mangiano gli altri.
 
 D'Ancona portò il problema a Vito Volterra, di cui nel luglio del 1926 sarebbe
-diventato genero. Volterra rispose quello stesso anno, negli atti
+diventato genero. Volterra rispose quello stesso anno, nelle memorie
 dell'Accademia dei Lincei, con *Variazioni e fluttuazioni del numero
 d'individui in specie animali conviventi*. La risposta erano due formule, una
 per le prede e una per i predatori, che dicono di quanto cambia ciascuna
@@ -49,8 +49,8 @@ minuti. Non è un'impressione, l'hai misurata trenta volte.
 
 Il mese dopo la stessa scorciatoia ne risparmia cinque. Il terzo mese, nessuno.
 Il quarto ci metti di più che sul viale. Non è cambiata la strada, non ci sono
-lavori in corso, e non è sfortuna: è che anche gli altri automobilisti hanno un
-navigatore, e anche loro hanno imparato la stessa cosa che avevi imparato tu.
+lavori in corso, e la sfortuna non c'entra: anche gli altri automobilisti hanno
+un navigatore, e anche loro hanno imparato la stessa cosa che avevi imparato tu.
 Quando eri l'unico a saperlo la scorciatoia era vuota; adesso che lo sanno
 tutti, la scorciatoia è la coda.
 
@@ -111,7 +111,7 @@ compreso quello che gli altri stanno per fare.
 
 Una squadra di soccorso entra in un capannone pieno di fumo, senza radio.
 Ciascuno vede tre metri davanti a sé e nient'altro, e non può chiedere niente a
-nessuno. Tutto quello che la squadra farà deve essere deciso **prima** di
+nessuno. Tutto quello che la squadra farà deve essere deciso prima di
 entrare, e deve essere un piano completo: non «vai a destra», ma «se davanti a
 te vedi una porta chiusa vai a destra, se vedi una scala scendi, se non vedi
 niente prosegui», per ogni cosa che ciascuno potrebbe trovarsi davanti.
@@ -250,9 +250,9 @@ che lo copre, e con cento compagni un decimo. Il modello additivo è, si noti,
 il caso *facile*, quello in cui il credito sarebbe in linea di principio
 separabile: già lì lo stimatore ingenuo affoga, e nei casi in cui i
 contributi si intrecciano non va meglio. È il **passeggero a scrocco** in
-forma di gradiente, e la cosa da notare è che nessuno bara: il problema non è
-la disonestà di un agente, è che l'informazione che distinguerebbe l'utile dal
-passivo non arriva a destinazione.
+forma di gradiente, e la cosa da notare è che nessuno bara: il problema sta
+nell'informazione che distinguerebbe l'utile dal passivo e non arriva a
+destinazione.
 
 Quel rumore ha un antidoto parziale ma diretto: una **baseline
 controfattuale**. Invece di moltiplicare il gradiente per il ritorno di tutti,
@@ -286,10 +286,10 @@ varianza**, non l'isolamento del contributo di $i$.
 
 La contromisura ovvia, dare a ciascuno un premio suo, sposta il problema invece
 di risolverlo. Premi individuali scritti a mano sono il terreno di coltura di un
-guaio già visto nel deep reinforcement learning, quello di chi trova il modo di
-far salire il proprio punteggio senza fare la cosa per cui il punteggio era
-stato inventato; e un agente che insegue il proprio numero può danneggiare la
-squadra in perfetta buona fede.
+guaio già visto nel deep reinforcement learning, il **reward hacking**: si trova
+il modo di far salire il proprio punteggio senza fare la cosa per cui il
+punteggio era stato inventato, e un agente che insegue il proprio numero può
+danneggiare la squadra in perfetta buona fede.
 
 La strada che ha funzionato è l'opposta: tenere un premio solo e **ricavarne**
 il merito di ciascuno, invece di dichiararlo in anticipo. Le vie sono due. La
@@ -298,7 +298,9 @@ andata se quel membro, al posto della mossa che ha fatto, ne avesse fatta una a
 caso fra quelle che di solito fa, e tutti gli altri avessero giocato
 esattamente come hanno giocato. Sulla relazione di gruppo, è chiedersi che voto
 avrebbe preso lo stesso lavoro se uno dei cinque avesse scritto la sua parte
-come gli capitava, e gli altri quattro no.
+come gli capitava, e gli altri quattro no. Il rumore dei compagni si abbassa;
+il merito del singolo, però, non viene isolato, perché come è andata dipende
+comunque anche da quello che hanno fatto loro.
 
 La seconda impara a **scomporre il risultato**, cioè a stimare quanto ciascuno
 ha contribuito partendo dal solo voto di squadra: è la via che il resto della
@@ -422,7 +424,7 @@ azioni usando le policy correnti, a vedersi muovere il terreno sotto i piedi.
 Attenzione a non chiedere a quella riga più di quanto dica, perché è un passo
 che si sbaglia facilmente. Ciò che è stazionario per costruzione è il **nucleo
 di transizione** condizionato all'azione congiunta. Ciò che il critico deve
-regredire non è la transizione: è $Q^i(x, a^1, \dots, a^N)$, un valore **atteso
+regredire è invece $Q^i(x, a^1, \dots, a^N)$, un valore **atteso
 lungo la traiettoria futura**, e quella traiettoria la generano le policy
 $\pi^{-i}$ dal passo successivo in poi. Tenendo $P$ e $r$ identiche e cambiando
 soltanto la policy dell'avversario, il numero da regredire a parità di ingresso
@@ -492,9 +494,11 @@ arbitraria ne è il caso da manuale.
 `````
 
 C'è una terza ricetta, e il suo interesse è di metodo prima che tecnico.
-**MAPPO** {cite}`yu2022surprising` non inventa nulla: prende un algoritmo del
-{doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`, quello che a ogni aggiornamento
-impedisce a un agente di cambiare troppo il proprio modo di giocare, lascia a
+**MAPPO** {cite}`yu2022surprising` non inventa nulla: prende **PPO**, che sono
+le due P del suo nome, cioè l'algoritmo dei
+{doc}`gradienti di policy </DeepReinforcementLearning/policy-gradient>` che a
+ogni aggiornamento impedisce a un agente di cambiare troppo il proprio modo di
+giocare, lascia a
 ciascuno il suo attore che vede solo il proprio pezzo, e gli affianca **un
 critico solo per tutta la squadra**, che in allenamento guarda tutto. Il
 titolo del lavoro dichiara la sorpresa: un metodo semplice, con le manopole
@@ -507,16 +511,18 @@ conviene misurare fin dove arriva quella semplice messa a punto per bene.
 
 ## L'avversario sei tu di ieri
 
-Nel 1959 Arthur Samuel, ingegnere IBM, pubblica sull’*IBM Journal of Research
-and Development* uno studio su un programma che gioca a dama. Dentro c'è
-un'idea che regge ancora oggi. Per giudicare una posizione sulla scacchiera il
-programma usava una formula che sommava alcune caratteristiche (quanti pezzi ho
-io, quanti ne ha lui, chi controlla il centro e così via), ciascuna con un peso
-che diceva quanto contava. Per allenarlo, Samuel ne teneva due copie, che
-chiamava alpha e beta. Alpha aggiustava i propri pesi **dopo ogni mossa**, e
-ogni tanto buttava via le caratteristiche che sembravano non servire
-sostituendole con altre pescate da una lista di riserva; beta teneva la sua
-formula ferma per tutta la partita.
+Il programma di dama di Arthur Samuel, con cui si apre il
+{doc}`capitolo sul machine learning </MachineLearning/overview>`, arrivò a
+giocare meglio del suo autore. Il congegno con cui ci riuscì è ancora quello di
+oggi. Il programma giudicava una posizione con una formula che sommava alcune
+caratteristiche (quanti pezzi ho io, quanti ne ha lui, chi controlla il
+centro), ciascuna con un peso che diceva quanto contava; e per allenarlo Samuel
+ne teneva due copie, che chiamava alpha e beta (sono due copie del programma, e
+non hanno niente a che vedere con i due limiti della potatura alfa-beta).
+Alpha aggiustava i propri pesi
+**dopo ogni mossa**, e ogni tanto buttava via le caratteristiche che sembravano
+non servire sostituendole con altre pescate da una lista di riserva; beta
+teneva la sua formula ferma per tutta la partita.
 
 Il contrasto è lì, ed è tutto: uno dei due si muove *dentro* la partita, l'altro
 sta fermo finché la partita non è finita, ed è proprio questo a farne un
@@ -530,8 +536,18 @@ buono soltanto perché non ne ha provati altri, l'unico modo di scoprirlo è
 costringerlo a cambiare. Il programma non aveva un maestro: aveva se stesso, un
 passo indietro.
 
-Il meccanismo prezioso del **self-play** non è il risparmio di partite umane:
-è che il **curriculum si genera da solo**. Un avversario troppo forte non
+Quella scala che sale, la formula vincente di alpha che passa a beta e diventa
+l'avversario da battere al giro dopo, ha un nome: si chiama **curriculum**, nel
+senso in cui la parola indica un programma di studi. Una successione di
+esercizi ordinati dal più facile al più difficile, invece del problema intero
+servito subito. Yoshua Bengio e colleghi l’hanno studiata nel 2009 come
+tecnica di addestramento generale {cite}`bengio2009curriculum`, misurandola su
+compiti che con i giochi non c’entrano niente: riconoscere forme geometriche, e
+indovinare la parola successiva in un testo.
+
+Giocare contro copie di sé si chiama **self-play**, e il suo meccanismo
+prezioso sta nel curriculum che si genera da solo, più che nel risparmio di
+partite umane. Un avversario troppo forte non
 insegna niente (perdi comunque, e non sai per che cosa); uno troppo debole
 nemmeno (vinci comunque, e qualunque cosa tu faccia va bene). L'avversario che
 insegna è quello che ti sta appena sopra, e deve cambiare man mano che migliori.
@@ -542,14 +558,13 @@ perché l'avversario è forte quanto te, sempre, essendo te. Nessuno dei due vin
 troppo spesso, e le partite restano informative.
 
 È la linea che porta ad **AlphaGo** {cite}`silver2016mastering`, già raccontato
-nel {doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`: una rete che sceglie la mossa,
+nella sezione {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>`:
+una rete che sceglie la mossa,
 addestrata prima sulle partite dei giocatori umani e poi affinata giocando
 contro copie di sé, e una rete che dice chi sta vincendo, addestrata proprio
-sulle partite così generate. Le due lavorano dentro un terzo meccanismo, che
-prima di muovere prova a immaginare come proseguirebbe la partita, non però
-tutte le continuazioni possibili (sono troppe) ma alcune migliaia pescate a
-caso, dando la precedenza a quelle che le due reti giudicano promettenti.
-L'anno dopo la stessa squadra
+sulle partite così generate. Le due guidano la ricerca ad albero Monte Carlo di
+quella sezione, che prima di muovere prova a immaginare come proseguirebbe la
+partita. L'anno dopo la stessa squadra
 toglie di mezzo anche il punto di partenza umano: **AlphaGo Zero**
 {cite}`silver2017mastering` parte dalle sole regole del gioco e da pesi
 casuali, e tutto il suo addestramento è self-play. È la prova più netta del
@@ -684,7 +699,7 @@ sfruttabilita' della popolazione:  +0.008
 Conviene leggere le quattro colonne una per una, perché ciascuna è una
 lezione. La prima è la metrica che tutti guardano, ed è una linea piatta di
 vittorie: ogni generazione batte la precedente, sempre, per sempre. La seconda
-è la stessa storia dal lato scomodo: contro la versione di **due** generazioni
+è la stessa storia dal lato scomodo: contro la versione di due generazioni
 prima si perde, sempre. La terza dice che contro l'insieme delle versioni
 passate il guadagno resta a zero, con qualche sussulto verso l'alto nelle
 generazioni in cui quell'insieme è sbilanciato. La quarta è la più severa: la
@@ -699,8 +714,8 @@ le versioni passate, invece che contro l'ultima, in duemila generazioni la
 popolazione si assesta su un terzo di sasso, un terzo di carta e un terzo di
 forbici: è l'equilibrio, il pareggio di cui parlava l'apertura del capitolo, e
 la sua sfruttabilità scende quasi a zero. Notate però il soggetto della frase,
-perché è tutta la differenza: a essere imbattibile non è un agente, è la
-**popolazione**. Il campione da schierare non è l'ultimo nato, è il mucchio.
+perché è tutta la differenza: a essere imbattibile è la
+**popolazione**. Il campione da schierare è il mucchio, non l'ultimo nato.
 
 Su scala industriale, questa è la *league* di AlphaStar
 {cite}`vinyals2019grandmaster`, cioè una lega in cui convivono tre tipi di
@@ -904,7 +919,7 @@ la domenica.
   garanzie di convergenza viste nel reinforcement learning, che presuppongono un
   mondo fisso, non valgono più.
 - Se poi ciascuno vede solo il proprio pezzo (la squadra di soccorso nel fumo,
-  senza radio) tutto il coordinamento va deciso **prima** di entrare, e i piani
+  senza radio) tutto il coordinamento va deciso prima di entrare, e i piani
   da confrontare esplodono: bastano due soccorritori, due cose da vedere, due da
   fare e cinque passi per superare i quattro miliardi di miliardi di coppie di
   piani. Non esiste, ed è dimostrato, un modo di risolvere davvero questo

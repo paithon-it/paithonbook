@@ -399,8 +399,8 @@ Schede identiche, punteggio pieno, e nessuno dei due che abbia mai guardato
 davvero. È il collasso di cui si diceva, e a impedirlo qui non c'è nessuna forza
 che allontani: ci sono due dissimmetrie.
 
-La prima riguarda l'insegnante: non è una seconda rete assunta a parte, è una
-**copia lenta dell'allievo**, i suoi criteri rimescolati poco alla volta con
+La prima riguarda l'insegnante, che è una **copia lenta dell'allievo** e non
+una seconda rete assunta a parte, i suoi criteri rimescolati poco alla volta con
 quelli dell'allievo di oggi. Verrebbe da chiedersi che cosa si possa mai
 imparare da una copia di sé stessi, e la risposta è che l'insegnante non sa di
 più: sa **un'altra cosa**, perché sta guardando l'altro ritaglio. Il sapere non
@@ -459,9 +459,9 @@ quanto mostrano le analisi teoriche disponibili (condotte su modelli lineari
 semplificati {cite}`tian2021understanding`), due asimmetrie. La prima: il ramo
 target non riceve gradiente (**stop-gradient**), non può «accordarsi» con
 l'altro e si limita a inseguirlo in ritardo. La seconda: la testa $q_\theta$ è
-presente da un lato solo, quindi l'obiettivo effettivo dell'encoder online non è
-produrre $\mathbf{z}'_\xi$, è produrre qualcosa da cui $q_\theta$ *possa
-predire* $\mathbf{z}'_\xi$, che è un vincolo più debole. Un lavoro successivo, SimSiam
+presente da un lato solo, quindi l'obiettivo effettivo dell'encoder online è
+produrre qualcosa da cui $q_\theta$ *possa predire* $\mathbf{z}'_\xi$, e non
+$\mathbf{z}'_\xi$ stesso, che è un vincolo più debole. Un lavoro successivo, SimSiam
 {cite}`chen2021exploring`, ha isolato il pezzo indispensabile, lo stop-gradient,
 mostrando che la media mobile è utile ma non necessaria; e una prima spiegazione
 molto discussa, che attribuiva l'anti-collasso alla batch normalization

@@ -101,8 +101,8 @@ Il bersaglio in basso a sinistra di {numref}`fig-bias-varianza`, colpi
 raccolti ma tutti fuori centro, è il più insidioso: un modello del genere è
 molto *coerente*, dà quasi sempre la stessa risposta, e la coerenza si scambia
 facilmente per affidabilità. Raccogliere altri dati serve a stringere il gruppo
-dei fori, non a spostarlo: qui il problema non è che il gruppo sia largo, è che
-è centrato nel punto sbagliato, e altri dati non lo aggiustano.
+dei fori, non a spostarlo: qui il guaio è dove il gruppo è centrato, e altri
+dati non lo aggiustano.
 
 `````{tab} Elementare
 
@@ -126,18 +126,22 @@ l'aria si muove. Nei dati il vento è la misura imprecisa, l'eccezione, tutto
 ciò che capita e basta: quella parte di errore resta lì comunque, e nessun
 modello, per quanto bravo, se la prende.
 
-Misurando quanto ci si allontana dal centro, i tre pezzi si sommano: quello del
-mirino, quello della mano, quello del vento. Semplice vuol dire molto bias e
-poca varianza; complesso, poco bias e molta varianza. Il bravo modellista cerca
+Il conto va fatto come si è fatto sul prezzo delle case: si misura di quanto il colpo si
+allontana dal centro, si eleva al quadrato, e si fa la media su tutti i colpi.
+Solo allora i tre pezzi si sommano davvero, e quella media si spacca in tre
+addendi puliti: quello del mirino, quello della mano, quello del vento. Sulle
+distanze nude la somma non torna, e la stessa aritmetica che rende il quadrato
+scomodo da leggere è quella che lo rende scomponibile.
+
+Letto così, il quadro è semplice. Un modello rigido ha molto bias e poca
+varianza; uno flessibile, poco bias e molta varianza. Il bravo modellista cerca
 il punto di mezzo.
 
-C'è però un caso in cui questo conto salta, e si vede proprio sul bersaglio.
-Se quel che conta è soltanto finire dentro il cerchietto o fuori, e non di
-quanto ci si allontana dal centro, il tiratore raccolto e storto non fa un
-centro in tutta la giornata, mentre quello che trema ogni tanto dentro ci
+Il conto vale finché a giudicare è la distanza dal centro. Se quel che conta è
+soltanto finire dentro il cerchietto o fuori, il tiratore raccolto e storto non
+fa un centro in tutta la giornata, mentre quello che trema ogni tanto dentro ci
 finisce. Dove la domanda è secca, sano o malato, un po’ di tremore può perfino
-convenire, e i tre pezzi dell'errore smettono di sommarsi come si sommavano le
-distanze.
+convenire, e i tre addendi smettono di sommarsi.
 
 `````
 
@@ -218,9 +222,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import learning_curve
 
 rng = np.random.default_rng(0)
-n = 3000
-X = rng.normal(size=(n, 6))
-y = np.sin(2 * X[:, 0]) + X[:, 1] ** 2 - X[:, 2] + rng.normal(0, 0.3, n)  # non lineare
+m = 3000
+X = rng.normal(size=(m, 6))
+y = np.sin(2 * X[:, 0]) + X[:, 1] ** 2 - X[:, 2] + rng.normal(0, 0.3, m)  # non lineare
 
 # i due estremi del campo di gioco, senza i quali "alto" e "basso" non dicono
 # niente: l'errore di chi risponde sempre la media, e il pavimento del rumore
@@ -233,14 +237,14 @@ for nome, modello in [("lineare (troppo semplice)", LinearRegression()),
                        RandomForestRegressor(n_estimators=120, random_state=0))]:
     # shuffle=True mescola le righe prima di ritagliare i sottoinsiemi: senza,
     # il seme non farebbe nulla (learning_curve lo usa solo se si mescola)
-    m, tr, va = learning_curve(modello, X, y, train_sizes=taglie, cv=5,
-                               scoring="neg_mean_squared_error",
-                               shuffle=True, random_state=0)
+    usati, tr, va = learning_curve(modello, X, y, train_sizes=taglie, cv=5,
+                                   scoring="neg_mean_squared_error",
+                                   shuffle=True, random_state=0)
     tr, va = -tr.mean(1), -va.mean(1)
     print(f"\n{nome}")
-    print(f"  con {m[0]:>4} esempi: train {tr[0]:.3f}  validazione {va[0]:.3f}"
+    print(f"  con {usati[0]:>4} esempi: train {tr[0]:.3f}  validazione {va[0]:.3f}"
           f"  divario {va[0]-tr[0]:+.3f}")
-    print(f"  con {m[-1]:>4} esempi: train {tr[-1]:.3f}  validazione {va[-1]:.3f}"
+    print(f"  con {usati[-1]:>4} esempi: train {tr[-1]:.3f}  validazione {va[-1]:.3f}"
           f"  divario {va[-1]-tr[-1]:+.3f}")
 ```
 
@@ -257,8 +261,8 @@ foresta (abbastanza ricca)
   con 2400 esempi: train 0.031  validazione 0.215  divario +0.184
 ```
 
-Una parola su che cosa sono questi numeri. Qui gli $y$ non sono euro né gradi:
-sono numeri puri, fabbricati apposta dalla riga `y = ...`. E l'errore si misura
+Una parola su che cosa sono questi numeri. Qui gli $y$ sono numeri puri e non
+euro né gradi: li fabbrica la riga `y = ...`. E l'errore si misura
 come per la retta di best fit, cioè scarto fra vero e previsto, elevato al
 quadrato e mediato. Un errore di $2{,}3$ vuol dire che, in media, il quadrato
 dello scarto vale $2{,}3$: da solo non dice niente, e infatti le prime due
@@ -500,8 +504,8 @@ scambiabili**, cioè che partizionarle a caso produca fold indipendenti fra
 loro. Se più righe descrivono lo **stesso soggetto** (più visite dello stesso
 paziente, più eventi dello stesso utente, più fotogrammi dello stesso video),
 il rimescolamento mette quasi-duplicati sia in training sia in validation, e il
-modello ritrova in validation ciò che ha già visto. Il risultato non è una
-stima un po’ ottimista: è una stima priva di significato, e non dà nessun
+modello ritrova in validation ciò che ha già visto. Il risultato è una stima
+priva di significato, non solo un po’ ottimista, e non dà nessun
 segnale d'allarme. Con duecento soggetti, dieci misure quasi identiche
 ciascuno e un'etichetta assegnata **a caso** (quindi non c'è niente da
 imparare, e la verità è $0{,}50$), la 5-fold mescolata riporta accuratezza
@@ -575,12 +579,12 @@ disegnare.
 Immagina un piano con due soli pesi, $w_1$ e $w_2$, uno per asse. È lo stesso
 gesto della collina nella nebbia: gli assi non portano più i dati, portano le
 manopole del modello, e **ogni punto del piano è una scelta possibile dei due
-numeri**. Dire al modello «non spendere
-più di tanto in pesi» significa allora recintare una regione attorno
-all'origine e obbligarlo a restare dentro. Se la spesa si conta sommando i
-**valori assoluti** (la L1), il recinto è un rombo con le punte sugli assi: per
-star dentro basta che $|w_1| + |w_2|$ non superi il budget, e i due estremi
-sono spendere tutto su un peso solo, che sono appunto le punte. Se si conta
+numeri**. Dire al modello «non spendere più di tanto in pesi» equivale, per
+ogni valore del prezzo, a recintare una regione attorno all'origine e
+obbligarlo a restare dentro. Se la spesa si conta sommando i **valori
+assoluti** (la L1), il recinto è un rombo con le punte sugli assi: per star
+dentro basta che $|w_1| + |w_2|$ non superi il budget, e i due estremi sono
+spendere tutto su un peso solo, che sono appunto le punte. Se si conta
 sommando i **quadrati** (la L2) il recinto è un cerchio.
 
 E l'errore? Fuori dal recinto l'errore ha la forma di una **conca**, con il
@@ -610,8 +614,8 @@ stanno sugli assi, cioè in punti
 dove uno dei due pesi vale esattamente zero. Un cerchio invece non ha punte, e
 il primo contatto cade in un posto qualunque del bordo, dove entrambi i pesi
 sono piccoli ma nessuno è nullo. Ecco perché sommare i valori assoluti seleziona
-le caratteristiche e sommare i quadrati no: non è una proprietà nascosta della
-formula, è la forma del recinto.
+le caratteristiche e sommare i quadrati no: la ragione sta tutta nella forma
+del recinto.
 
 `````{tab} Elementare
 
@@ -711,9 +715,10 @@ penalità ($\alpha = 1$ è Lasso puro, $\alpha = 0$ è Ridge puro) e non ha nien
 a che vedere con la loro intensità, che resta $\lambda$. Nel codice, invece,
 l'argomento `alpha` di `Ridge`, `Lasso` ed `ElasticNet` fa il mestiere
 dell’**intensità**, cioè del nostro $\lambda$, mentre la miscela lì si chiama
-`l1_ratio`. Fa il mestiere, però non è lo stesso numero, e per la stessa
-ragione vista con la hinge delle SVM: la loss qui è **mediata** sugli esempi e
-la penalità no, mentre `Ridge` non media affatto e `Lasso` divide per $2m$.
+`l1_ratio`. Fa il mestiere, però non è lo stesso numero, e la ragione è dove
+ciascuna libreria mette la divisione per il numero di esempi: la loss qui
+è **mediata** sugli esempi e la penalità no, mentre `Ridge` non media affatto e
+`Lasso` divide per $2m$.
 A parità di soluzione, $\lambda = \texttt{alpha}/m$ per la prima e
 $\lambda = 2\,\texttt{alpha}$ per la seconda. Sono due tradizioni che si sono incrociate su una lettera sola:
 conviene guardare che cosa fa il parametro, non come si chiama.
@@ -734,8 +739,8 @@ La regolarizzazione non è altro che il rasoio di Occam scritto in formule: la
 manopola $\lambda$ è il prezzo che facciamo pagare alla complessità, così che il
 modello la compri solo quando serve davvero. La curva morbida del pannello
 centrale vince non perché sia la più elaborata, ma perché è la più semplice tra
-quelle che rendono conto dei dati. La semplicità, in machine learning, non è
-eleganza estetica: è ciò che permette di generalizzare.
+quelle che rendono conto dei dati. La semplicità, in machine learning, è ciò
+che permette di generalizzare.
 
 ## Quando la U non basta: la doppia discesa
 
@@ -757,7 +762,7 @@ nel disastro, e invece quella rete generalizza benissimo.
 :alt: "Grafico con la capacità del modello, cioè il numero di parametri, in ascissa e l'errore in ordinata. L'errore di training scende e resta a zero. L'errore di test disegna prima la classica U del regime classico, con un minimo, poi risale fino a un picco in corrispondenza della soglia di interpolazione, e infine riscende in una seconda discesa nel regime sovraparametrizzato."
 :width: 96%
 
-La U non è sbagliata: è solo il primo tratto. Oltre il picco, dove il modello
+La U descrive solo il primo tratto. Oltre il picco, dove il modello
 ha appena abbastanza capacità per memorizzare tutto, la curva riscende invece
 di continuare a salire.
 ```
@@ -819,7 +824,7 @@ rispetto al *tempo di addestramento* (epoch-wise) e alla *quantità di dati*, e
 in quest'ultimo caso produce l'effetto contro-intuitivo per cui, vicino al
 punto di interpolazione, **aggiungere dati può peggiorare** il test error.
 
-**Il rasoio di Occam non è confutato, è misurato male.** Il numero di
+**Il rasoio di Occam regge, misurato bene.** Il numero di
 parametri è un pessimo proxy della complessità di una rete: la quantità che
 conta è una misura di norma della soluzione trovata, non di capacità
 dell'ipotesi. La discesa del gradiente ha un *bias implicito* verso soluzioni
@@ -863,16 +868,16 @@ fili più deboli; quello che resta dopo il taglio è una **sottorete**.
 :alt: "A sinistra una rete densa con tutte le sue connessioni disegnate in grigio. A destra la stessa rete con evidenziato un sottoinsieme molto più piccolo di connessioni e nodi, il biglietto vincente, che addestrato da solo a partire dalla propria inizializzazione originale raggiunge la stessa accuratezza della rete intera."
 :width: 96%
 
-Dentro la rete grande ce n'è una piccola che basta. Il punto non è che si può
-potare a posteriori: è che quella sottorete funziona solo se riparte dai *suoi*
+Dentro la rete grande ce n'è una piccola che basta. Il punto sta
+nell'inizializzazione: quella sottorete funziona solo se riparte dai *suoi*
 pesi iniziali, quelli che aveva nella rete grande.
 ```
 
 La condizione in coda a {numref}`fig-biglietto-vincente` è ciò che rende
 questa idea, che si chiama **ipotesi del biglietto vincente**, interessante
 invece che ovvia. Se si riprende la stessa sottorete e
-la si inizializza da capo a caso, non impara altrettanto bene: il biglietto
-non è la forma della sottorete, è la coppia fra la forma e i numeri con cui è
+la si inizializza da capo a caso, non impara altrettanto bene: il biglietto sta
+nella coppia fra la forma della sottorete e i numeri con cui è
 nata. Sovradimensionare, in questa lettura, serve a comprare molti biglietti.
 
 `````{tab} Elementare
@@ -976,9 +981,10 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
   valori assoluti alcuni pesi vanno esattamente a zero (le caratteristiche
   inutili spariscono), contandola a quadrati si rimpiccioliscono tutti.
 - Il principio antico è il **rasoio di Occam**: a parità di spiegazione dei
-  dati, vince la spiegazione più semplice. Con un'eccezione da conoscere, la
-  **doppia discesa**: oltre il punto in cui il modello impara tutto a memoria,
-  ingrandirlo ancora torna a farlo funzionare meglio.
+  dati, vince la spiegazione più semplice. Il principio regge anche per la
+  **doppia discesa**, dove oltre il punto in cui il modello impara tutto a
+  memoria ingrandirlo ancora torna a farlo funzionare meglio: quello che conta
+  è quanto sono grandi i pesi, più che quante manopole ha il modello.
 ```
 
 `````
@@ -1009,8 +1015,9 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
   nel tempo `TimeSeriesSplit`.
 - La **regolarizzazione** (Ridge $\ell_2$, Lasso $\ell_1$) frena la complessità
   con una penalità $\lambda$ sui pesi; il Lasso azzera le feature inutili.
-- Tutto obbedisce al **rasoio di Occam**: a parità di adattamento, vince il
-  modello più semplice.
+- Il **rasoio di Occam** regge, misurato bene: la quantità che conta è la norma
+  della soluzione trovata, non il numero di parametri, e la discesa del
+  gradiente ha un *bias implicito* verso norme piccole.
 ```
 
 `````

@@ -175,8 +175,8 @@ capitolo. Se lancio un dado una volta e fa sei, non posso dire che quel dado fa
 sempre sei: ho misurato quel lancio, non il dado. Lo stesso vale per un
 algoritmo che a ogni passo tira a sorte. Quindi la ricerca qui sotto si lancia
 **sessanta volte**, cambiando ogni volta il *seme*, cioè il numero da cui parte
-il sorteggio (dentro un computer il caso non è vero caso: è una sequenza
-calcolata, che dipende tutta da quel numero iniziale, e cambiarlo è il modo di
+il sorteggio (dentro un computer il caso è una sequenza calcolata e non vero
+caso, che dipende tutta da quel numero iniziale, e cambiarlo è il modo di
 rifare l'esperimento daccapo). Di ciò che ne esce non si guarda un risultato: si
 guardano il valore di mezzo (la **mediana**: la metà delle sessanta prove sta
 sotto, l'altra metà sopra) e gli estremi.

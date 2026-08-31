@@ -225,11 +225,11 @@ centinaia di migliaia, il modulo che *decide* è la cosa più semplice del
 capitolo. C prende i 32 numeri del codice visivo e i 256 della memoria, li
 mette in fila (288 numeri in tutto) e da quei 288 ricava i tre comandi (sterzo,
 acceleratore, freno) facendo per ciascuno una somma pesata: 288 pesi per il
-primo comando, 288 per il secondo, 288 per il terzo, più tre numeri che
-alzano o abbassano ciascun comando di una quantità fissa. Totale
-$288 \times 3 + 3 = 867$ numeri. Non è un vezzo, è la
-tesi dell'articolo: se V e M hanno digerito davvero il mondo, per agire bene
-basta un riflesso. Tutta l'intelligenza sta nel modello, non nel controllore.
+primo comando, 288 per il secondo, 288 per il terzo, più tre numeri che alzano
+o abbassano ciascun comando di una quantità fissa. Totale $288 \times 3 + 3 =
+867$ numeri, ed è la tesi dell'articolo: se V e M hanno digerito davvero il
+mondo, per agire bene basta un riflesso. Tutta l'intelligenza sta nel modello,
+non nel controllore.
 
 `````{tab} Elementare
 
@@ -293,8 +293,8 @@ sogno e poi trasferito, senza ritocchi, nel gioco vero.
 Sulla parola conviene fermarsi un secondo, perché si porta dietro qualcosa che
 qui non c'entra. Un sogno vero è sconclusionato, e da un sogno ci si aspetta
 che sbagli; questo invece è una simulazione, e la si vuole fedele: quando si
-scolla dal gioco vero non è pittoresco, è un guasto, ed è il guasto di cui
-parla il resto della sezione. Per il resto la parola calza: il gioco è
+scolla dal gioco vero è un guasto e non un tratto pittoresco, ed è il guasto di
+cui parla il resto della sezione. Per il resto la parola calza: il gioco è
 staccato, si procede a occhi chiusi, e quel che si vede se lo sta inventando
 chi lo guarda.
 
@@ -398,8 +398,8 @@ cui cresce il pilota è stato imparato guardando qualcuno che gioca malissimo.
 Gli autori dichiarano che questo basta *perché i due compiti sono semplici*, e
 per ambienti più ricchi prescrivono una procedura **iterativa**, in cui
 l'agente torna a raccogliere dati veri e il modello viene riaddestrato. Il
-limite, quindi, non è solo quanto M è preciso: è che cosa la policy di raccolta
-ha avuto occasione di vedere. E il disallineamento tra $P_\tau$ e la vera
+limite, quindi, è che cosa la policy di raccolta ha avuto occasione di vedere,
+e non solo quanto M sia preciso. E il disallineamento tra $P_\tau$ e la vera
 dinamica non si annulla comunque: gli errori si accumulano lungo il rollout,
 ragione per cui i sogni utili sono brevi.
 

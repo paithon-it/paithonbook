@@ -140,20 +140,20 @@ partite portate fino in fondo: 255168
 ```
 
 Lo zero è la patta, ed è la risposta giusta. Il numero sotto va letto con
-attenzione, perché è il conto che serve: non sono duecentocinquantacinquemila
-*posizioni diverse* (di quelle un gioco da nove caselle ne ha molte meno), sono
-duecentocinquantacinquemila **partite intere**, giocate una per una dalla prima
-mossa all’ultima. Sono meno delle $9! = 362\,880$ sequenze con cui si possono
-riempire nove caselle, perché una partita si ferma appena qualcuno allinea tre
-simboli, anche a tabellone mezzo vuoto. È l’albero dell’apertura del capitolo in miniatura: piccolo
-abbastanza da srotolarlo tutto, e già abbastanza grande da far vedere il
-problema.
+attenzione, perché è il conto che serve: sono duecentocinquantacinquemila
+**partite intere** e non *posizioni diverse* (di quelle un gioco da nove
+caselle ne ha molte meno), giocate una per una dalla prima mossa all’ultima.
+Sono meno delle $9! = 362\,880$ sequenze con cui si possono riempire nove
+caselle, perché una partita si ferma appena qualcuno allinea tre simboli, anche
+a tabellone mezzo vuoto. È l’albero dell’apertura del capitolo in miniatura:
+piccolo abbastanza da srotolarlo tutto, e già abbastanza grande da far vedere
+il problema.
 
 ## Smettere di guardare: la potatura
 
 C’è un modo di ottenere **esattamente lo stesso numero** srotolando una
-frazione di quelle partite, e non è un’approssimazione: è accorgersi che certi
-rami, qualunque cosa contengano, non possono cambiare la risposta.
+frazione di quelle partite, e senza nessuna approssimazione: basta accorgersi
+che certi rami, qualunque cosa contengano, non possono cambiare la risposta.
 
 `````{tab} Elementare
 

@@ -4,9 +4,9 @@ C'è una differenza sottile ma decisiva tra due previsioni del tempo. «Domani
 24 gradi» è una cifra secca: sembra sicura, ma non dice nulla su quanto
 fidarsi. «Domani tra 21 e 27» dice di meno e comunica di più: oltre alla
 stima, dichiara *quanto il modello non sa*. Quasi tutti i modelli visti finora
-in questo capitolo (la retta di best fit, la regressione logistica, il k-NN)
-rispondono alla prima maniera: un numero, prendere o lasciare. In questa
-sezione incontriamo un modello che risponde alla seconda: il **processo
+(la retta di best fit, la regressione logistica, il k-NN)
+rispondono alla prima maniera: un numero, prendere o lasciare. Ne esiste
+uno che risponde alla seconda: il **processo
 gaussiano**.
 
 Il nome, per una volta, si spiega in una riga. **Gaussiano** perché tutto ciò
@@ -81,7 +81,7 @@ $\big(f(\mathbf{x}_1), \dots, f(\mathbf{x}_q)\big)$ ha distribuzione
 gaussiana multivariata, con medie $\mu(\mathbf{x}_i)$ e covarianze
 $k(\mathbf{x}_i, \mathbf{x}_j)$. È un
 *prior* sulle funzioni: prima di vedere i dati, tutte le curve coerenti con il
-kernel sono possibili; condizionare sulle osservazioni (lo vedremo tra poco)
+kernel sono possibili; condizionare sulle osservazioni
 restringe il fascio, e il risultato è ancora un processo gaussiano
 {cite}`rasmussen2006gaussian`.
 
@@ -175,7 +175,7 @@ $$
 dove $\mathbf{K}$ è la matrice del kernel fra i punti di addestramento
 ($K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$), $\sigma_n^2$ la varianza del
 **rumore di misura** (da non confondere con la $\sigma^2$ di segnale del
-kernel, qui sopra), $\mathbf{I}$ la matrice identità e $m$ il numero di esempi.
+kernel), $\mathbf{I}$ la matrice identità e $m$ il numero di esempi.
 
 Il primo termine premia l'aderenza ai dati, il secondo (il logaritmo del
 determinante) penalizza i kernel «capaci», quelli che ammettono troppe funzioni
@@ -184,7 +184,8 @@ validation set per punire la complessità, ci pensa la formula. Con una
 avvertenza pratica: quella funzione **non è concava** negli iperparametri e ha
 massimi locali {cite}`rasmussen2006gaussian`, ed è la ragione per cui
 l'ottimizzazione si fa ripartire cinque volte da inizializzazioni sorteggiate
-(`n_restarts_optimizer=5` in `scikit-learn`) tenendo il massimo più alto,
+(`n_restarts_optimizer=5` in `scikit-learn`, che di suo non ne fa nessuna: il
+default è zero) tenendo il massimo più alto,
 esattamente nello spirito della sezione sugli iperparametri.
 
 `````
@@ -228,7 +229,7 @@ differenza si vede nel caso estremo. Su una città dove abbiamo cento misure la
 banda sulla temperatura vera si assottiglia fino quasi a sparire, mentre quella
 sulla lettura di domani non scende mai sotto l'errore del termometro.
 
-Una banda larghissima non è un difetto: è il modello che alza la mano e ammette
+Una banda larghissima è il modello che alza la mano e ammette
 di non avere dati per rispondere.
 
 `````
@@ -264,17 +265,16 @@ ciò che i dati spiegano: vicino ai dati la sottrazione mangia quasi tutto e
 l'incertezza crolla; lontano non sottrae nulla e si torna all'incertezza del
 prior.
 
-La banda al 95% **sulla funzione** è
-$\boldsymbol{\mu}_* \pm 2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*)}$,
-ed è quella che
+La banda al 95% **sulla funzione** è $\boldsymbol{\mu}_* \pm
+2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*)}$, ed è quella che
 `scikit-learn` restituisce con `return_std=True`. Attenzione a non confonderla
 con l'intervallo su una **nuova osservazione**, che è un'altra cosa: lì al
 posteriore sulla funzione va aggiunto il rumore di misura, cioè
-$\boldsymbol{\mu}_* \pm
-2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*) + \sigma_n^2}$. La differenza
-non è cosmetica: sui punti già osservati la prima tende a zero, la seconda non
-scende mai sotto $\sigma_n$. Se la domanda è «che valore misurerò domani» serve
-la seconda; se è «quanto vale la grandezza vera», la prima.
+$\boldsymbol{\mu}_* \pm 2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*) +
+\sigma_n^2}$. La differenza non è cosmetica: dove le misure si infittiscono la
+prima si assottiglia fino quasi a sparire, mentre la seconda non scende mai
+sotto $\sigma_n$. Se la domanda è «che valore misurerò domani» serve la
+seconda; se è «quanto vale la grandezza vera», la prima.
 
 `````
 
@@ -307,7 +307,7 @@ rng = np.random.default_rng(0)
 X_train = rng.uniform(0, 6, size=(8, 1))
 y_train = np.sin(X_train).ravel() + rng.normal(0, 0.1, size=8)
 
-# Kernel RBF; alpha è la varianza del rumore (il sigma_n^2 delle formule)
+# Kernel RBF; alpha è la varianza del rumore delle osservazioni
 kernel = 1.0 * RBF(length_scale=1.0)
 gp = GaussianProcessRegressor(kernel=kernel, alpha=0.1**2,
                               n_restarts_optimizer=5)
@@ -317,11 +317,13 @@ gp.fit(X_train, y_train)          # stima anche sigma e l dai dati
 X_test = np.array([[1.5], [3.0], [8.0]])
 media, dev_std = gp.predict(X_test, return_std=True)
 
+print("i punti misurati:", np.sort(X_train.ravel()).round(2))
 for x, mu, s in zip(X_test.ravel(), media, dev_std):
     print(f"x = {x:.1f}  ->  f(x) = {mu:+.2f} ± {2 * s:.2f}")
 ```
 
 ```text
+i punti misurati: [0.1  0.25 1.62 3.64 3.82 4.38 4.88 5.48]
 x = 1.5  ->  f(x) = +0.83 ± 0.20
 x = 3.0  ->  f(x) = +0.07 ± 0.36
 x = 8.0  ->  f(x) = +0.12 ± 1.38
@@ -338,9 +340,8 @@ certamente il valore sta lì dentro».
 Le tre righe stampate raccontano la storia della figura in tre gradini, non
 in due. A $x = 1{,}5$, accanto a un dato osservato, la banda è strettissima
 ($\pm 0{,}20$). A $x = 3{,}0$ siamo ancora *dentro* l'intervallo esplorato, ma
-in mezzo a un buco: gli otto punti sorteggiati cadono tutti fra $0{,}09$ e
-$5{,}48$, però fra $1{,}62$ e $3{,}64$ non ce n'è nessuno, e $3{,}0$ sta
-proprio in quel vuoto. La banda si
+in mezzo a un buco: fra $1{,}62$ e $3{,}64$ la prima riga stampata non ha
+nessun punto, e $3{,}0$ sta proprio in quel vuoto. La banda si
 allarga già a $\pm 0{,}36$, quasi il doppio, pur restando utile. A $x = 8{,}0$,
 fuori da tutto ciò che il modello ha visto, si spalanca a $\pm 1{,}38$, cioè
 quasi quanto era prima di vedere qualsiasi dato. È la lezione della sezione:
@@ -401,9 +402,9 @@ simulazioni ingegneristiche da ore di calcolo l'una, prove sul campo che non
 si possono ripetere. E il caso che abbiamo già incontrato: l’**ottimizzazione
 bayesiana degli iperparametri** {cite}`snoek2012practical`, dove ogni "dato" è
 un intero addestramento e il processo gaussiano fa da mappa (stima più
-incertezza) per decidere quale configurazione provare dopo. La sezione sugli
-iperparametri di questo capitolo racconta proprio quel meccanismo: qui abbiamo
-aperto il cofano del suo motore.
+incertezza) per decidere quale configurazione provare dopo.
+{doc}`Trovare gli iperparametri <iperparametri>` racconta quel meccanismo dal
+lato di chi lo usa, e il processo gaussiano ne è il motore.
 
 `````{tab} Elementare
 
@@ -417,11 +418,11 @@ aperto il cofano del suo motore.
   lo decide una sola manopola, il raggio d'influenza: corto, curve nervose;
   lungo, curve morbide.
 - La **banda d'incertezza** si stringe accanto ai dati e si riapre dove
-  mancano, compresi i buchi *in mezzo* alle misure. Quello che distingue una
-  previsione affidabile da una azzardata non è stare dentro o fuori
-  dall'intervallo esplorato: è avere o non avere un dato vicino.
-- Una banda larghissima non è un difetto del modello: è il modello che alza la
-  mano e ammette di non sapere. Pochi altri metodi lo fanno.
+  mancano, compresi i buchi *in mezzo* alle misure. A distinguere una
+  previsione affidabile da una azzardata è avere o non avere un dato vicino,
+  più che stare dentro o fuori dall'intervallo esplorato.
+- Una banda larghissima vale come ammissione: il modello dichiara di non
+  sapere, e pochi altri metodi lo fanno.
 - Il prezzo è che **non scala**: a ogni previsione riapre l'archivio di tutte
   le misure e le confronta fra loro, e raddoppiare i dati moltiplica il lavoro
   per otto. È perfetto quando i dati sono **pochi e costosi** (un esperimento,
@@ -457,8 +458,9 @@ aperto il cofano del suo motore.
 `````
 
 Fin qui la forma del modello l'abbiamo scelta noi, una per problema: una retta,
-un albero, un confine largo, un fascio di curve. Cambiava il problema e si
-cambiava attrezzo, mentre il modo di giudicarli restava sempre lo stesso, cioè
-dati tenuti da parte e un numero onesto alla fine. Quel modo va portato intatto
+un albero, un confine largo, un fascio di curve, dei gruppi trovati senza
+etichette. Cambiava il problema e si cambiava attrezzo, e cambiava anche il
+metro, perché dove una risposta giusta non esiste il voto si dichiara invece di
+calcolarlo. Resta uguale la pretesa di un conto onesto, e va portata intatta
 in {doc}`Reti neurali </RetiNeurali/overview>`, dove invece l'attrezzo è uno
 solo e prende la forma che serve impilando pezzi tutti uguali.

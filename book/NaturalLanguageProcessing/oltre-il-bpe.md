@@ -322,12 +322,12 @@ composizione di un corpus, e che si corregge solo addestrando il tokenizzatore
 su dati più bilanciati.
 
 **Terzo: uno spazio in più o in meno cambia i token.** Nei tokenizzatori
-moderni lo spazio non è un separatore invisibile, è attaccato al token che lo
-segue: `▁gatto` e `gatto` sono due voci diverse del vocabolario, con due
-posizioni diverse sulla mappa e due storie diverse alle spalle. La prima è
-comunissima, perché quasi sempre *gatto* è preceduto da uno spazio; la seconda
-è rara, perché ricorre solo dove *gatto* attacca senza spazio davanti, cioè
-quasi mai.
+moderni lo spazio è attaccato al token che lo segue, invece di fare da
+separatore invisibile: `▁gatto` e `gatto` sono due voci diverse del
+vocabolario, con due posizioni diverse sulla mappa e due storie diverse alle
+spalle. La prima è comunissima, perché quasi sempre *gatto* è preceduto da uno
+spazio; la seconda è rara, perché ricorre solo dove *gatto* attacca senza
+spazio davanti, cioè quasi mai.
 
 Ne segue una cosa che sorprende chiunque non l'abbia mai sentita. Il testo che
 si scrive a un modello per farlo lavorare (una domanda, un'istruzione, l'inizio
@@ -336,8 +336,8 @@ finisce con uno spazio, quello spazio l'avete già speso voi, e al modello
 tocca continuare con un token *senza* barretta iniziale, cioè con la variante
 rara, quella su cui ha molta meno esperienza. Un solo carattere invisibile in
 coda alla richiesta, e la risposta può peggiorare senza che si capisca il
-perché. Non è fragilità del modello: è che gli avete dato in ingresso una
-sequenza diversa da quella che credevate.
+perché. La fragilità non è del modello: gli avete dato in ingresso una sequenza
+diversa da quella che credevate.
 
 **Quarto: il vocabolario si fissa prima dell'addestramento e non si cambia
 dopo.** Questa è la conseguenza più vincolante, e riguarda com'è fatto il

@@ -181,8 +181,7 @@ bastone.
 Per confrontare le sole pendenze si divide il prodotto scalare per le due
 lunghezze, cioè per il massimo che potrebbe raggiungere, quello che si tocca
 col bastone sdraiato esattamente lungo la strada. La lunghezza di una freccia
-la dà il teorema di Pitagora e si chiama **norma**. Le nostre due frecce
-misurano
+la dà il teorema di Pitagora. Le nostre due frecce misurano
 $\sqrt{4^2+2^2}=\sqrt{20}\approx 4{,}47$ e
 $\sqrt{1^2+3^2}=\sqrt{10}\approx 3{,}16$; il prodotto scalare faceva $10$, e
 $10 / (4{,}47 \cdot 3{,}16) \approx 0{,}71$. Quel numero sta fra $-1$ e $1$,
@@ -253,8 +252,8 @@ prezzi, e si somma.
 - comodità: $0\cdot 75 + 1\cdot 3 + 5\cdot 2 = 0 + 3 + 10 = 13$.
 
 Il risultato è la lista $(180,\ 13)$. Tre numeri sono entrati, due ne sono
-usciti, e non sono gli stessi tre riordinati: sono due misture nuove,
-ciascuna decisa da una riga della tabella. Questo è tutto ciò che significa
+usciti, e sono due misture nuove invece degli stessi tre riordinati, ciascuna
+decisa da una riga della tabella. Questo è tutto ciò che significa
 moltiplicare i dati per una matrice, e lo si può ripetere: la lista che esce
 può entrare in un'altra tabella. È così che ogni strato di una rete neurale
 "riscrive" ciò che riceve prima di passarlo allo strato dopo, e i pesi delle
@@ -333,8 +332,8 @@ quella freccia dà la stessa freccia moltiplicata per un numero», e quel numero
 è il $3$ o l’$1$.
 ```
 
-Il $3$ e l’$1$ non sono da prendere per buoni, sono due conti come quelli
-dell'appartamento. Nella didascalia la tabella è scritta stretta fra due
+Il $3$ e l’$1$ sono due conti come quelli dell'appartamento, non numeri da
+prendere per buoni. Nella didascalia la tabella è scritta stretta fra due
 parentesi, che è il modo consueto di scriverla: la prima riga è $2$ e $1$, la
 seconda è $1$ e $2$. E la diagonale che sale è la freccia $(1,1)$, cioè quella
 che avanza di un passo verso destra e di uno verso l'alto, così che i due
@@ -449,8 +448,8 @@ varianza c'è lungo ciascuna.
 :alt: "Una nube di punti allungata in diagonale, con sovrapposti i due assi principali: il primo orientato lungo la direzione in cui i punti si sparpagliano di più, il secondo perpendicolare a esso e molto più corto, lungo la direzione di varianza minima."
 :width: 82%
 
-Gli autovettori della covarianza, disegnati. Il primo asse non è né
-l'orizzontale né la verticale: è la direzione che i dati stessi indicano.
+Gli autovettori della covarianza, disegnati. Il primo asse è la direzione che
+i dati stessi indicano, e non l'orizzontale né la verticale.
 ```
 
 {numref}`fig-pca-assi-principali` mostra perché la PCA sia una faccenda di
@@ -471,27 +470,29 @@ $$
 
 con $\mathbf{U}\in\mathbb{R}^{m\times m}$ e $\mathbf{V}\in\mathbb{R}^{n\times
 n}$ ortogonali e $\boldsymbol{\Sigma}$ "diagonale" con elementi
-$\sigma_1\ge\sigma_2\ge\dots\ge 0$, i **valori singolari**. È la
-decomposizione ai valori singolari (*singular value decomposition*, SVD).
-Letta a destra-verso-sinistra dice che ogni trasformazione lineare è una
-rotazione, seguita da una dilatazione lungo assi ortogonali, seguita da
-un'altra rotazione. I due valori estremi hanno un significato immediato:
-$\sigma_1 = \max_{\lVert\mathbf{x}\rVert=1}\lVert\mathbf{A}\mathbf{x}\rVert$ è
-di quanto al massimo la matrice allunga un vettore, $\sigma_{\min}$ di quanto
-al minimo (per una matrice con almeno tante righe quante colonne: altrimenti
-c'è sempre una direzione che viene annullata), e il **rango** è il numero dei
-$\sigma_i$ non nulli. Per una matrice simmetrica i valori singolari sono i
-moduli degli autovalori; per una matrice quadrata qualsiasi le due famiglie non
-coincidono, ma non sono nemmeno estranee: il prodotto dei moduli è lo stesso
-(entrambe le famiglie danno $|\det\mathbf{A}|$) e soprattutto
+$\sigma_1\ge\sigma_2\ge\dots\ge 0$, i **valori singolari**. È la decomposizione
+ai valori singolari (*singular value decomposition*, SVD). Letta a
+destra-verso-sinistra dice che ogni trasformazione lineare è una rotazione,
+seguita da una dilatazione lungo assi ortogonali, seguita da un'altra
+rotazione. I due valori estremi hanno un significato immediato: $\sigma_1 =
+\max_{\lVert\mathbf{x}\rVert=1}\lVert\mathbf{A}\mathbf{x}\rVert$ è di quanto al
+massimo la matrice allunga un vettore, $\sigma_{\min}$ di quanto al minimo (per
+una matrice con almeno tante righe quante colonne: altrimenti c'è sempre una
+direzione che viene annullata), e il **rango** è il numero dei $\sigma_i$ non
+nulli (la {doc}`sezione sui sistemi lineari </Matematica/sistemi-lineari>` lo
+definisce da capo, e mostra le altre tre facce equivalenti dello stesso
+conteggio). Per una matrice simmetrica i valori singolari sono i moduli degli
+autovalori; per una matrice quadrata qualsiasi le due famiglie non coincidono,
+ma non sono nemmeno estranee: il prodotto dei moduli è lo stesso (entrambe le
+famiglie danno $|\det\mathbf{A}|$) e soprattutto
 $\sigma_{\max}\ge|\lambda|_{\max}$, cioè l'allungamento massimo non è mai
-inferiore al **modulo** dell'autovalore più grande. È una
-disuguaglianza che può essere larghissima, e proprio in quella distanza sta
-il fenomeno più interessante. Il rapporto $\sigma_{\max}/\sigma_{\min}$ è il
-numero di condizionamento della sezione di analisi numerica; la stessa
-disuguaglianza torna nel capitolo sulle reti neurali, dove misura la
-"grandezza" di una Jacobiana, e in quello sui sistemi di raccomandazione, dove
-regge l'approssimazione di rango basso di una matrice di valutazioni.
+inferiore al **modulo** dell'autovalore più grande. È una disuguaglianza che
+può essere larghissima, e proprio in quella distanza sta il fenomeno più
+interessante. Il rapporto $\sigma_{\max}/\sigma_{\min}$ è il numero di
+condizionamento della sezione di analisi numerica; la stessa disuguaglianza
+torna nel capitolo sulle reti neurali, dove misura la "grandezza" di una
+Jacobiana, e in quello sui sistemi di raccomandazione, dove regge
+l'approssimazione di rango basso di una matrice di valutazioni.
 
 L'iterazione chiarisce il resto: su un autovettore $\mathbf{A}^k\mathbf{v} =
 \lambda^k\mathbf{v}$, quindi il comportamento asintotico di un sistema che
@@ -504,12 +505,13 @@ colonne e corretta con il *teletrasporto* del fattore di smorzamento), è il
 **PageRank**: sotto quelle ipotesi il teorema di Perron–Frobenius garantisce
 che l'autovalore $1$ sia semplice e dominante, e l'ordinamento delle pagine è
 il suo autovettore, l'unica direzione che la trasformazione lascia esattamente
-com'è.
+com'è. La {doc}`sezione sulle catene di Markov </Matematica/catene-di-markov>`
+riprende il conto per esteso, compresa la velocità con cui converge.
 
 Diciamo subito dove questo argomento non arriva, perché è il
 punto in cui viene applicato più spesso a sproposito. Il gradiente che
-attraversa una rete profonda non è $\mathbf{A}^k$: è un prodotto di matrici
-**diverse** (le Jacobiane dei singoli strati), e gli autovalori di un prodotto
+attraversa una rete profonda è un prodotto di matrici **diverse** (le
+Jacobiane dei singoli strati) e non $\mathbf{A}^k$, e gli autovalori di un prodotto
 non si ricavano dagli autovalori dei fattori. Di più: anche con una
 sola matrice, $\rho(\mathbf{A})<1$ garantisce soltanto il comportamento
 *asintotico*. Per $\mathbf{A} = \begin{pmatrix}0{,}9 & 100\\ 0 &
@@ -525,12 +527,12 @@ singolari, ed è il conto che rifà il capitolo sulle reti neurali.
 
 ## Norme: misurare lunghezze ed errori
 
-È la promessa lasciata in sospeso parlando del prodotto scalare: quanto è
-lunga una freccia. La risposta è più utile di quanto sembri. Un modello che
-deve indovinare un prezzo, o tre prezzi insieme, non risponde con un'etichetta
-ma con dei numeri: la sua risposta è una lista, e lo è anche quella giusta. La
-stessa domanda, fatta alla freccia che va dall'una all'altra, misura di quanto
-il modello ha sbagliato.
+Torniamo alla lunghezza di una freccia, incontrata parlando del prodotto
+scalare senza darle un nome. La risposta è più utile di quanto sembri. Un
+modello che deve indovinare un prezzo, o tre prezzi insieme, non risponde con
+un'etichetta ma con dei numeri: la sua risposta è una lista, e lo è anche
+quella giusta. La stessa domanda, fatta alla freccia che va dall'una all'altra,
+misura di quanto il modello ha sbagliato.
 
 `````{tab} Elementare
 
@@ -684,3 +686,10 @@ tutti casi della stessa operazione.
   che si intende quando si dice che due embedding sono vicini.
 ```
 `````
+
+Vettori, matrici, autovettori e norme sono il vocabolario: dicono di che cosa
+sono fatti i dati e che cosa una trasformazione fa loro. Non dicono ancora
+niente sulla domanda che arriva appena i dati cominciano a imporre delle
+condizioni, cioè che cosa succede quando le condizioni sono tante e vanno
+tenute tutte insieme, e che cosa succede quando non bastano. È il mestiere dei
+sistemi lineari.

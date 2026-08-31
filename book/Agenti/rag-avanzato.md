@@ -532,7 +532,7 @@ secondo e resta secondo. Quello che cambia è la **distanza** fra il primo e il
 secondo. Il bi-encoder li dava a $0{,}99$ contro $0{,}78$: una differenza che
 non permette di decidere niente, perché il quasi-pertinente è quasi buono
 quanto la risposta. Il cross-encoder li dà a $9{,}0$ contro $1{,}0$, e nove
-volte non è un margine sfumato: è un verdetto.
+volte è un verdetto, non un margine sfumato.
 
 Da lì viene il guadagno vero, che è una decisione diventata possibile. Con
 punteggi indistinguibili l'unica regola disponibile è «prendine i primi

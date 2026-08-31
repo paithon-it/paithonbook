@@ -3,8 +3,9 @@
 Nel 1958 uno psicologo di Cornell, Frank Rosenblatt, presenta alla stampa il
 *percettrone* {cite}`rosenblatt1958perceptron`, un modello di neurone
 artificiale che impara a riconoscere forme dagli esempi. Il *New York Times*
-scrive che è l'embrione di un computer elettronico capace, un giorno, di
-camminare, parlare e riprodursi. Due anni dopo l'idea prende corpo in una
+scrive che è l'embrione di un computer elettronico che un giorno saprà
+camminare, parlare, vedere, scrivere, riprodursi e avere coscienza di sé. Due
+anni dopo l'idea prende corpo in una
 macchina grande come un armadio, il *Mark I Perceptron*. Davanti c'è una
 griglia di quattrocento fotocellule, che è l'occhio. Dietro non ci sono
 quattrocento manopole ma cinquecentododici: le fotocellule sono collegate a
@@ -12,8 +13,8 @@ caso, con fili fissi, a un banco di unità intermedie, e regolabili sono le
 manopole di quelle. Girarne una vuol dire cambiare quanto conta il verdetto di
 un'unità, non di un singolo puntino di luce. A girarle, ogni volta
 che la macchina sbaglia, è un motorino: l'apprendimento, lì, era fatto di
-ferro. Il clamore era smisurato, e lo pagheremo caro qualche
-pagina più avanti. Ma sotto c'è un'idea sobria e duratura, che ancora oggi è il
+ferro. Il clamore era smisurato, e lo pagheremo caro. Ma sotto c'è un'idea
+sobria e duratura, che ancora oggi è il
 mattone di ogni rete neurale: un neurone artificiale non è altro che un pezzo
 di aritmetica.
 
@@ -75,7 +76,8 @@ $$
 z = \mathbf{w}^\top\mathbf{x} + b = \sum_{i=1}^{n} w_i x_i + b .
 $$
 
-È la stessa operazione vista nel capitolo di algebra lineare: $z$ è grande e
+È la stessa operazione della
+{doc}`sezione di algebra lineare </Matematica/algebra-lineare>`: $z$ è grande e
 positivo quando $\mathbf{x}$ "punta nella direzione" di $\mathbf{w}$. Il luogo
 dei punti in cui $z = 0$, cioè $\mathbf{w}^\top\mathbf{x} + b = 0$, è un
 **iperpiano**: la frontiera che il neurone traccia per separare lo spazio degli
@@ -164,8 +166,7 @@ chi lo nota: il bias qui non è tenuto da parte come nella figura precedente, ma
 è disegnato come un ingresso in più che vale sempre $1$, con il suo peso $w_0$.
 È la stessa cosa scritta in un altro modo, perché un peso moltiplicato per $1$
 dà il peso stesso, e quindi $w_0$ fa esattamente il mestiere del bias. Comodo,
-perché così anche il bias si corregge con la regola degli altri pesi, che è
-quella della prossima pagina.
+perché così anche il bias si corregge con la regola degli altri pesi.
 ```
 
 La freccia di ritorno in {numref}`fig-neurone-con-retroazione` è, in
@@ -216,10 +217,12 @@ sezione sulla backpropagation.
 
 Una giornata per esteso, la prima, con le manopole ancora tutte a zero e il
 passo di apprendimento a $0{,}1$. Cielo quasi sereno, $x_1 = 1$; l'app dice
-sereno, $x_2 = 0$. Il neurone risponde $0$, esci senza ombrello, e piove:
-doveva dire $1$. Il peso della nuvolosità sale di $0{,}1 \cdot 1 = 0{,}1$,
+sereno, $x_2 = 0$. Il totale fa zero, e lo zero la soglia la raggiunge, quindi
+il neurone risponde $1$: con le manopole a zero dice sì a qualunque giornata,
+ed è la prima cosa che dovrà disimparare. Esci con l'ombrello e c'è il sole:
+doveva dire $0$. Il peso della nuvolosità scende di $0{,}1 \cdot 1 = 0{,}1$,
 quello dell'app di $0{,}1 \cdot 0 = 0$, cioè non si muove affatto. Le due
-manopole segnano $0{,}1$ e $0$: l'app valeva zero, non ha detto niente, e non
+manopole segnano $-0{,}1$ e $0$: l'app valeva zero, non ha detto niente, e non
 paga niente.
 
 E il bias? È una manopola anche lui, e si corregge con la stessa regola: si
@@ -241,7 +244,7 @@ dimezza, quelle che possono servire diventano quattro volte tante.
 Largo in proporzione al disegno, non in centimetri. Fotocopia il foglio al
 doppio e non cambia niente: corridoio doppio, puntini due volte più lontani,
 stesse correzioni di prima. E mille giornate in più segnate sul foglio, con lo
-stesso corridoio, non aggiungono un passo di lavoro.
+stesso corridoio, non aggiungono una correzione.
 
 La riga prudente, però, la macchina non la promette. Si ferma appena nessun
 puntino resta dalla parte sbagliata, e la riga può restare lì, appiccicata a un
@@ -291,8 +294,10 @@ bias assorbito come ingresso costante: è il trucco della
 {numref}`fig-neurone-con-retroazione`, l'ingresso sempre pari a $1$, e serviva
 proprio qui (assorbito il bias, quella coordinata in più entra anche in $R$). In
 quel limite **non compaiono né il numero di esempi né la dimensione**: quel che
-conta è quanto è sottile il corridoio fra le due classi, e raddoppiare il
-dataset non raddoppia il lavoro. E non dice l'altra metà: l'iperpiano trovato è uno
+conta è il rapporto fra quanto sono lontani gli esempi e quanto è sottile il
+corridoio fra le due classi (la dimensione rientra dentro $R$), e raddoppiare
+il dataset non raddoppia il numero di correzioni. E non dice l'altra metà:
+l'iperpiano trovato è uno
 qualunque fra quelli che separano, senza alcuna garanzia di margine, che è
 esattamente la differenza con le
 {doc}`Support Vector Machine </MachineLearning/svm>`. Il seme
@@ -336,7 +341,7 @@ print(gradino(X @ w + b))                   # ha imparato la AND
 
 ## Il muro dello XOR
 
-Ed eccolo, il muro annunciato qualche pagina fa. Merita di essere raccontato
+Ed eccolo, il muro. Merita di essere raccontato
 per quello che è, perché la versione che si sente di solito è comoda e
 sbagliata.
 
@@ -359,7 +364,7 @@ poi che cosa dimostra davvero quel libro.
 La stessa retta della figura precedente, questa volta sui quattro casi dello
 XOR: gli assi portano i due ingressi, $0$ e $1$, e ogni angolo del quadrato è
 uno dei quattro casi. Come là, il terracotta è la classe con uscita $1$. Per
-quanto la si giri, la retta lascia sempre **due** punti dalla parte sbagliata.
+quanto la si giri, la retta lascia sempre due punti dalla parte sbagliata.
 ```
 
 Il contrasto con la {numref}`fig-percettrone-impara` è tutto il punto: là la
@@ -420,8 +425,8 @@ dovevano ricevere $1$: ciascuno alza di $0{,}1$ il peso del proprio ingresso
 acceso, e ciascuno rialza il bias. Il quarto, $(1,1)$, riceve $1$ e doveva
 ricevere $0$: riabbassa entrambi i pesi e riporta il bias dov'era. Fine
 dell'epoca, e siamo al punto di partenza. Da fuori una risposta immobile e
-sbagliata (due casi su quattro), da dentro un ciclo. Non è un caso fortunato: è
-il *perceptron cycling theorem*, enunciato nello stesso *Perceptrons* e
+sbagliata (due casi su quattro), da dentro un ciclo. È il *perceptron cycling
+theorem*, enunciato nello stesso *Perceptrons* e
 dimostrato per intero da Block e Levin {cite}`block1970boundedness`, che su dati
 non separabili garantisce almeno che i pesi restino limitati.
 
@@ -477,14 +482,15 @@ difetto peggiore, perché non si vede finché non si prova a ingrandire.
 
 `````{tab} Superiore
 
-Nel libro il percettrone non è il neurone di poco fa: è una somma pesata di
-**predicati**
-qualsiasi, ciascuno dei quali però può guardare solo un pezzetto dell'immagine
-in ingresso, e il numero di punti che il predicato più affamato deve guardare si
-chiama **ordine**. I teoremi sono su quello. Il più celebre dice che per
-calcolare la **parità** di $n$ bit (rispondere "quanti sono accesi, pari o
-dispari?") serve ordine $n$: qualche predicato deve guardare **tutti** gli
-ingressi in una volta sola, e non c'è modo di cavarsela con pezzetti. Un altro
+Nel libro «percettrone» indica una macchina più generale del neurone di poco
+fa: una somma pesata di **predicati** qualsiasi, ciascuno dei quali però può
+guardare solo un pezzetto dell'immagine in ingresso, e il numero di punti che
+il predicato più affamato deve guardare si chiama **ordine**. I teoremi sono su
+quello. Il più celebre dice che per calcolare la **parità** di $n$ bit
+(rispondere "quanti sono
+accesi, pari o dispari?") serve ordine $n$: qualche predicato deve guardare
+tutti gli ingressi in una volta sola, e non c'è modo di cavarsela con
+pezzetti. Un altro
 dice che per decidere se una figura disegnata è tutta d'un pezzo o spezzata in
 due, il numero di punti da guardare insieme cresce con la figura. Lo XOR è la
 parità a due bit, cioè il caso più piccolo di una famiglia: non un impossibile,
@@ -541,18 +547,16 @@ riga sola. Tanto basta per lo XOR, e fra poco lo vediamo disegnato.
 
 C'è però una condizione non negoziabile, la stessa già annunciata
 nell'introduzione del capitolo: fra uno strato e l'altro deve succedere
-qualcosa che non sia moltiplicare e sommare. Il motivo è che due passaggi di
-sola moltiplicazione e somma, messi in fila, danno ancora un passaggio dello
-stesso tipo: se il primo strato moltiplica per $2$ e il secondo per $3$,
-insieme moltiplicano per $6$, e un neurone che moltiplica per $6$ sa fare
-esattamente quello che sapeva fare prima, cioè una riga dritta. Cento strati
-così si schiaccerebbero in uno solo, di nuovo incapace di XOR. Quel qualcosa da
-mettere in mezzo si chiama **non linearità**, e sono funzioni come la ReLU o la
-sigmoide: sono loro, insieme al percettrone multistrato (MLP) e all'algoritmo
-che lo addestra, la *backpropagation*, il tema delle prossime due sezioni.
+qualcosa che non sia moltiplicare e sommare. Se no cento strati si
+schiaccerebbero in uno solo, capace di disegnare quello che sapeva disegnare
+prima, cioè una riga dritta, e lo XOR resterebbe fuori portata. Quel qualcosa
+da mettere in mezzo si chiama **non linearità**, e sono funzioni come la ReLU o
+la sigmoide: sono loro, insieme al percettrone multistrato (MLP) e
+all'algoritmo che lo addestra, la *backpropagation*, il tema delle prossime due
+sezioni.
 
 La {numref}`fig-xor-si-piega` fa vedere il passaggio per intero, ed è la
-risposta che aspettavamo da tre pagine: lo XOR risolto. Conviene capire il
+risposta che aspettavamo: lo XOR risolto. Conviene capire il
 trucco, perché è lo stesso di tutto il deep learning.
 
 I due neuroni del primo strato tracciano due righe parallele, e lasciano fra
@@ -561,8 +565,8 @@ fuori, uno da una parte e uno dall'altra, i due che vogliono risposta $0$.
 
 Una precisazione prima dei numeri: questi due neuroni non usano l'interruttore
 secco di prima. Usano la ReLU, che lascia passare il totale quando è positivo e
-dà zero quando è negativo, quindi la loro risposta non è solo «sì o no», è
-«quanto». Le due regole si leggono in fondo alla figura, e sono
+dà zero quando è negativo, quindi la loro risposta dice «quanto» e non solo «sì
+o no». Le due regole si leggono in fondo alla figura, e sono
 $h_1 = \mathrm{ReLU}(x_1 + x_2 - 0{,}5)$ e
 $h_2 = \mathrm{ReLU}(-x_1 - x_2 + 1{,}5)$. Applicate ai quattro casi danno
 questo:
@@ -590,7 +594,7 @@ nascosti in tutto il libro.
 :width: 95%
 
 Il seguito della {numref}`fig-xor-non-separabile`, cioè lo XOR risolto. A
-sinistra il piano di partenza: il primo strato sono due neuroni, quindi **due**
+sinistra il piano di partenza: il primo strato sono due neuroni, quindi due
 rette invece di una, e la fascia che lasciano in mezzo contiene i due casi con
 uscita $1$. A destra gli stessi quattro punti ridisegnati nelle coordinate
 $(h_1, h_2)$ che quei due neuroni calcolano: i due casi con uscita $1$ sono
@@ -598,8 +602,11 @@ finiti nello stesso posto, i due con uscita $0$ ai lati opposti, e lì il
 neurone di uscita li separa con una retta sola. I due neuroni nascosti sono
 scelti a mano, e le loro formule si leggono in fondo alla figura; i pesi del
 neurone d'uscita no, li trova la discesa del gradiente, il metodo di
-aggiustamento automatico di cui parla la sezione sulla backpropagation. Messi in fila i quattro ingressi, la rete risponde $0, 1, 1, 0$: lo XOR, per
-intero.
+aggiustamento automatico di cui parla la sezione sulla backpropagation. Che di
+un interruttore secco non saprebbe che farsene, quindi ad addestrarsi è un
+neurone dall'uscita morbida, e l'interruttore torna alla fine, a leggere il
+risultato. Messi in fila i quattro ingressi, la rete risponde $0, 1, 1, 0$: lo
+XOR, per intero.
 ```
 
 `````{tab} Elementare
@@ -616,9 +623,11 @@ intero.
   esempi.
 - Un neurone solo sa tracciare **una riga dritta** fra le due classi, e il
   motivo è che somma e confronta con una soglia: i casi in cui il totale
-  pareggia la soglia stanno tutti su una riga. Se quella riga esiste, la trova;
-  ma sullo **XOR** non esiste, perché i casi da separare stanno negli angoli
-  opposti del quadrato.
+  pareggia la soglia stanno tutti su una riga. Se quella riga esiste la trova,
+  ma è una qualunque fra quelle che separano e può restare appiccicata a un
+  puntino; sullo **XOR** non esiste, perché i casi da separare stanno negli
+  angoli opposti del quadrato, e allora la macchina non si ferma e non esplode:
+  gira in tondo, sbagliando sempre gli stessi casi.
 - Per piegare la frontiera servono più neuroni impilati in **strati** e, fra
   uno strato e l'altro, un passaggio che non sia una semplice riga: è il ponte
   verso le reti neurali profonde.
@@ -634,10 +643,12 @@ intero.
   bias, $\mathbf{w}^\top\mathbf{x}+b$, e la fa passare in una funzione di
   attivazione.
 - Il percettrone **impara** correggendo i pesi in proporzione all'errore:
-  $w_i \leftarrow w_i + \eta\,(y-\hat{y})\,x_i$. Se i dati sono separabili
-  converge in al più $(R/\gamma)^2$ correzioni, un limite che **non dipende dal
-  numero di esempi** ma dal margine $\gamma$; se non lo sono, i pesi non
-  divergono, entrano in un ciclo.
+  $w_i \leftarrow w_i + \eta\,(y-\hat{y})\,x_i$. Se i dati sono separabili e si
+  parte da $\mathbf{w}=\mathbf{0}$ con il bias assorbito, converge in al più
+  $(R/\gamma)^2$ correzioni, un limite che **non dipende dal numero di esempi**
+  ma dal rapporto fra la norma massima e il margine; l'iperpiano che trova però
+  è uno qualunque fra quelli che separano, senza garanzia di margine. Se non lo
+  sono, i pesi non divergono: entrano in un ciclo.
 - Un solo neurone è un **classificatore lineare**: separa lo spazio con un
   iperpiano e fallisce su problemi non separabili come lo **XOR**. Quel che
   *Perceptrons* dimostra però è sull’**ordine** dei predicati (la parità su $n$

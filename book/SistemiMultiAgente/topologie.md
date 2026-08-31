@@ -8,12 +8,12 @@ prima figura non contiene formule: contiene tre disegni. Una rete
 rete **decentralizzata**, fatta di piccoli centri collegati fra loro. Una rete
 **distribuita**, una maglia in cui ogni nodo ha molte strade per raggiungere
 ogni altro. Stessi apparati, stesso mestiere, tre destini diversi. La domanda
-che Baran mette davanti al lettore non è quanti nodi servano: è che forma
-debbano avere.
+che Baran mette davanti al lettore è che forma debbano avere, più che quanti
+ne servano.
 
-È la domanda di questa sezione. La precedente ha contato quanto costa una
-squadra di agenti, e in fondo a quel conto ha lasciato una frase da
-riprendere: **la forma dello schema decide il ritmo con cui il costo cresce**.
+È la domanda di questa sezione. «Il costo del coordinamento» ha contato quanto
+costa una squadra di agenti, e quel conto finiva su una differenza che qui
+diventa il tema.
 Se ognuno legge tutto quello che dicono gli altri, il conto sale molto più in
 fretta che se ognuno legge soltanto il proprio pezzo; e non di una quantità
 fissa, ma di un divario che si allarga man mano che la squadra cresce. Non
@@ -186,8 +186,8 @@ cantiere non rallenta, si ferma.
 
 Con $N$ lavoratori (quindi $N+1$ nodi in tutto, supervisore compreso) la stella
 ha $\mathrm{diam}(G) = 2$ e $\Delta(G) = N$, tutto
-concentrato sul centro. Ma il costo che morde non è il numero di archi, è ciò
-che vi scorre dentro: il supervisore riceve $N$ rapporti, e se ciascuno è lungo
+concentrato sul centro. Ma il costo che morde è ciò che scorre negli archi,
+più del loro numero: il supervisore riceve $N$ rapporti, e se ciascuno è lungo
 $\bar{m}$ token la sua finestra cresce come
 
 $$
@@ -201,7 +201,7 @@ guadagno della stella: i lavoratori non si leggono a vicenda. Ma è lineare su
 la finestra del supervisore contiene 24.000 token di rapporti prima di
 qualunque ragionamento.
 
-La contromisura non è allargare il contesto: è **comprimere all'ingresso**,
+La contromisura sta nel **comprimere all'ingresso**,
 imponendo ai lavoratori un formato di risposta stretto (uno schema, non prosa
 libera). Portare $\bar{m}$ da 800 a 150 token vale, in questa formula, quanto
 ridurre di oltre cinque volte il numero di lavoratori, e non costa nulla in
@@ -310,7 +310,10 @@ le stesse quindici persone.
 
 Il prezzo lo conosce chiunque abbia lavorato in un'azienda grande. A ogni
 livello qualcuno **riassume**: il capo squadra riporta al direttore
-l'essenziale, e l'essenziale lo sceglie lui. Se a ogni passaggio verso l'alto
+l'essenziale, e l'essenziale lo sceglie lui. È il modulo di tre righe del capo
+cantiere, ma lì il passaggio era uno e a sparire erano le chiacchiere; qui i
+passaggi sono in fila, e ogni volta resta fuori qualcosa che contava. Se a ogni
+passaggio verso l'alto
 sopravvive l'ottanta per cento di ciò che contava, con tre passaggi in cima
 arriva l'ottanta per cento dell'ottanta per cento dell'ottanta per cento,
 cinquantuno su cento. Il riassunto però sembra completo, è per questo che è un
@@ -500,9 +503,9 @@ centocinque coppie possibili. La lavagna, che ha lo stesso diametro, arriva
 invece al 100%: lei nel mezzo ci sta sempre, perché non parla mai per conto suo.
 
 **La seconda.** L'organigramma non batte la fila né sul carico (54% contro 47%)
-né sulla fragilità (37% contro 46%): la batte sul diametro, sei contro
-quattordici, e basta. La gerarchia compra distanza, non robustezza, ed è bene
-non aspettarsi dell'altro.
+né su quello che resta in piedi (37% contro 46%): la batte sul diametro, sei
+contro quattordici, e basta. La gerarchia compra distanza, non robustezza, ed
+è bene non aspettarsi dell'altro.
 
 **La terza**, ed è la più istruttiva: nell'organigramma il più sollecitato **non
 è il capo supremo**, è un capo intermedio, che porta il 54% del traffico contro
@@ -528,7 +531,7 @@ diviso a metà. Nell'albero la somma è due (il capo supremo) più tre per sei
 **quattordici** fili. Nell'ipercubo è quattro per sedici, cioè sessantaquattro,
 e diviso due fa **trentadue**. Più del doppio, ed è tutto lì il segreto.
 
-Non è un caso fortunato: in uno schema abbastanza regolare nessuno sta più al
+La ragione è strutturale: in uno schema abbastanza regolare nessuno sta più al
 centro degli altri, quindi il traffico si distribuisce da sé, e con più strade
 fra ogni coppia togliere qualcuno non spezza niente. Il baratto fra le tre
 grandezze era **il prezzo di chi vuole spendere pochi fili**, non una legge:
@@ -542,8 +545,8 @@ interlocutori e di rileggere ciò che gli arriva da tutti e quattro, il che
 riporta dritti al conto della sezione precedente, quello che esplode quando
 ognuno legge gli altri. Baran poteva tirare fili perché un cavo in più costa un
 cavo in più; qui un collegamento in più costa, a ogni giro, altro testo da
-rileggere. **Ciò che esclude la terza figura di Baran non è la forma, è quanto
-ciascuno riesce a leggere**: la sua rete si comprava con il rame, la nostra si
+rileggere. **A escludere la terza figura di Baran è quanto ciascuno riesce a
+leggere, non la sua forma**: la sua rete si comprava con il rame, la nostra si
 comprerebbe con il testo da rileggere, che si paga a peso. Ed è la ragione per
 cui le cinque forme di questa sezione sono, tutte e cinque, varianti dei primi
 due disegni di Baran e mai del terzo.
@@ -582,11 +585,11 @@ su *ACM Computing Surveys* firmato da Lee Erman, Frederick Hayes-Roth, Victor
 Lesser e Raj Reddy {cite}`erman1980hearsay`. Doveva capire frasi dette a voce,
 di seguito e senza pause, per interrogare una raccolta di riassunti di
 articoli di informatica («*Which abstracts refer to theory of computation?*»),
-con un vocabolario di 1011 parole. Sbagliava il senso di due frasi su ventitré, cioè ne interpretava
-correttamente il novantuno per cento; e conviene sapere che le frasi di prova
-erano appunto ventitré, mai sentite prima dal sistema: una percentuale su così
-pochi casi va letta sapendo questo. (Contando parola per parola invece che
-frase per frase, l'errore saliva al diciannove per cento.)
+con un vocabolario di 1011 parole. Sbagliava il senso di due frasi su ventitré,
+cioè ne interpretava correttamente il novantuno per cento; e conviene sapere che
+le frasi di prova erano appunto ventitré, mai sentite prima dal sistema: una
+percentuale su così pochi casi va letta sapendo questo. (Le frasi sbagliate anche
+in una sola parola, e non soltanto nel senso, erano il diciannove per cento.)
 
 `````{tab} Elementare
 
@@ -642,7 +645,7 @@ da basi di dati (transazioni, versioni, blocchi) con soluzioni note. In cambio
 il disaccoppiamento è massimo: le knowledge source non si nominano fra loro, e
 aggiungerne una non richiede di modificare le altre.
 
-Gli autori stessi elencano **due** debolezze, e valgono ancora. La prima nasce
+Gli autori stessi elencano due debolezze, e valgono ancora. La prima nasce
 dalla generalità: ogni decisione passa per la lavagna, il che si è rivelato
 desiderabile *fra* moduli e inadatto ai passaggi intermedi *dentro* un modulo,
 dove le knowledge source di Hearsay-II usavano strutture dati private e
@@ -758,8 +761,10 @@ sono due, e nessuna sta nel protocollo: rendere l'offerta **verificabile** (non
 «so farlo» ma un risultato parziale su un campione, che il gestore può
 controllare) e pesare le offerte con la storia degli esiti passati. È la stessa
 lezione dei fallimenti reali dei sistemi multi-agente, dove la verifica
-inadeguata è una delle tre famiglie ricorrenti: un verdetto che nessuno può
-provare non aggiunge informazione, aggiunge una firma {cite}`cemri2025why`.
+inadeguata è una delle tre famiglie ricorrenti {cite}`cemri2025why`: chi
+dichiara di saper fare una cosa e chi dichiara che è stata fatta bene pongono lo
+stesso problema, e la cura è la stessa, cioè qualcosa che il banditore possa
+controllare da sé.
 
 `````
 
@@ -771,12 +776,12 @@ deciso in anticipo**, e risolvono lo stesso problema in modi speculari. Il
 malinteso da togliere di mezzo subito è che rinuncino ai messaggi diretti: il
 contract net è fatto *soltanto* di messaggi diretti, quattro tipi in croce, e
 la {numref}`fig-multiagente-topologie` disegna le frecce che vanno dal
-banditore a ciascun offerente. A sparire non è il canale, è il progettista che
-stabilisce in anticipo chi scriverà a chi.
+banditore a ciascun offerente. A sparire è il progettista che
+stabilisce in anticipo chi scriverà a chi, non il canale.
 
 La lavagna ci rinuncia togliendo il **destinatario**: nessuno scrive a nessuno,
 ognuno lascia una traccia in uno spazio comune e reagisce alle tracce che ci
-trova. Il coordinamento non è nei messaggi, è nello stato del mondo. L'idea ha
+trova. Il coordinamento sta nello stato del mondo. L'idea ha
 un nome preciso, **stigmergia**, coniato nel 1959 dal biologo francese
 Pierre-Paul Grassé per le termiti che ricostruiscono il nido senza progetto e
 senza capo, ciascuna reagendo a quello che le altre hanno già costruito; ed è il
@@ -788,7 +793,7 @@ lo sceglie il progettista, lo trova il **bando**. Gli agenti non si conoscono e
 condividono una grammatica di messaggi (annuncia, offri, assegna) che permette a
 due sconosciuti di accordarsi su chi fa cosa; chi risponderà al prossimo annuncio
 non lo sa nessuno finché non risponde, e il grafo di quella conversazione esiste
-solo dopo che è avvenuta. Il coordinamento non è nello stato del mondo, è nella
+solo dopo che è avvenuta. Il coordinamento sta qui nella
 forma della conversazione, che è il tema della prossima sezione: là ogni
 messaggio si porterà scritto in cima che cosa fa, e la decisione collettiva
 diventerà una regola di voto.
@@ -847,8 +852,8 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
   loro): c'è una persona sola a cui chiedere che cosa sta succedendo
   {cite}`wu2024autogen`, e si paga con la sua giornata, che ha ventiquattro ore
   come quella degli altri, e con il fatto che se si ferma lui si ferma tutto. La
-  cura non è dargli più tempo per leggere, è obbligare gli altri a scrivergli
-  meno.
+  cura sta nell'obbligare gli altri a scrivergli meno, più che nel dargli più
+  tempo per leggere.
 - **Fila** (*handoff*): semplicissima e con la testa sgombra per tutti, ma non si
   torna indietro, e chi sta in fondo non ha mai visto il foglio di partenza. Sei
   passaggi fatti bene novantacinque volte su cento arrivano in fondo intatti
@@ -859,8 +864,8 @@ controllo che sbarra la strada, è nel frattempo un ottimo posto dove aspettare.
   invece di quattordici). Si paga con i riassunti, che perdono qualcosa a ogni
   livello e non dicono che cosa hanno perso, e con la responsabilità che si
   diluisce. Conviene quindi tenerla **larga e bassa**, ma solo finché ogni capo
-  riesce a leggere quel che gli arriva. E il più carico non è il capo supremo: è
-  un capo intermedio.
+  riesce a leggere quel che gli arriva. E il più carico è un capo intermedio,
+  non il capo supremo.
 - **Lavagna della sala operativa**: nessuno scrive a nessuno, si scrive sulla
   lavagna e si reagisce a quello che ci si trova. Nata con **Hearsay-II** per
   capire il parlato, dove suoni, parole, grammatica e significato devono

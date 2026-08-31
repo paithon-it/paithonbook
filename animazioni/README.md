@@ -76,6 +76,63 @@ segno che avrebbe mandato in stampa una retta con la pendenza sbagliata.
 `scrivi()` rifiuta il file se contiene colori fuori palette, uno `<script>` o
 XML malformato.
 
+### Quando la figura disegna un esperimento, e non un calcolo
+
+Un generatore che **calcola** (una funzione, una geometria, un algoritmo su
+dati costruiti) dà gli stessi byte su qualunque macchina, e `--verifica` fa il
+suo mestiere. Un generatore che **addestra una rete** no: dove c'è un
+`kthvalue`, un `argmax` o un ordinamento fra valori appaiati, l'ultimo bit
+decide quale peso sopravvive, e due CPU con ordini di riduzione BLAS diversi
+(stesso seme, stesso torch) prendono da lì in poi due strade diverse. L'SVG
+cambia, `--verifica` dice «da rigenerare» su ogni macchina che non sia quella
+che ha committato, e un cancello che non può tornare verde viene aggirato.
+
+La regola per queste figure: **il dato si misura una volta e si committa, il
+disegno è una funzione pura del dato.**
+
+```bash
+python3 animazioni/svg/genera.py --misura NOME  # riesegue e riscrive il dato
+python3 animazioni/svg/genera.py NOME           # ridisegna, e guarda il provino
+```
+
+Il generatore espone in più una `misura()`, che esegue l'esperimento, lo
+collauda e scrive `animazioni/dati/<nome>.json` con dentro il seme, la
+configurazione e la data; `costruisci()` legge quel json e non ha bisogno
+nemmeno di importare `torch`. Le asserzioni che difendono la didascalia girano
+in tutti e due i posti: sul dato committato a ogni disegno, perché un dato
+committato è un dato che nessuno riapre più, e sull'esperimento quando lo si
+rimisura. Il json porta con sé la configurazione con cui è stato prodotto e il
+caricamento la riconfronta con quella del generatore, così chi ritocca un
+parametro e non rimisura trova un rifiuto invece di una figura che disegna una
+rete che non esiste più. E senza il json il generatore si ferma e dice come
+produrlo: una figura che si inventa i propri numeri è peggio di una figura che
+manca.
+
+**E l'arrotondamento del dato si conta, non si sceglie a occhio.** Nel json i
+numeri vanno arrotondati, o il file si riempie di cifre che non significano
+niente e in un diff non si legge più. Ma tagliare corto butta via misura: un
+float32 porta circa nove cifre decimali significative, e su un valore da
+qualche centesimo sei decimali ne tengono cinque. Non è una questione di
+principio: nel ciclo di addestramento uno scostamento passava da -0,060395777
+a -0,060396 e la sua ordinata da 336,4499894 a 336,4500138, cioè scavalcava
+l'arrotondamento a `.1f` e il punto disegnato si spostava di un decimo di
+pixel. La prova che decide è una sola, e va fatta la prima volta: si rigenera
+l'SVG e si guarda se cambia rispetto a quello committato.
+
+Le due strade non si scelgono a gusto. Se l'algoritmo è deterministico
+dappertutto, calcolare nel generatore è più semplice e si fa così; se dentro
+c'è un addestramento, il dato si separa. E non è più una cosa da ricordarsi:
+`genera.py --verifica` guarda anche i sorgenti, e un generatore che importa
+torch senza esporre `misura()`, o che lo importa al livello del modulo (cioè
+lo fa pagare anche a chi disegna), lo rifiuta. Chi vuole sapere quante figure
+sono in questa classe le conta invece di fidarsi di un elenco scritto a mano
+(oggi sono tre, e l'ancoraggio a inizio riga non è pignoleria: senza, il
+conto tira dentro anche `genera.py`, che di torch parla soltanto):
+
+```bash
+grep -lE '^[[:space:]]*(import torch|from torch)' animazioni/svg/*.py
+```
+
 ## Online la clip, a stampa tre fermi immagine
 
 Nel PDF il movimento non c'è, e una figura ferma sola perde proprio la cosa
@@ -142,6 +199,7 @@ nota, e costa meno di un minuto.
 | `svg/broadcasting-si-stende.py` | `fig-broadcasting-si-stende` | `Python/numpy.md` |
 | `svg/cammino-latente.py` | `fig-cammino-latente` | `ModelliLatenti/il-salto-probabilistico.md` |
 | `svg/campo-cieco.py` | `fig-campo-cieco` | `VerosimiglianzaEsatta/pixel-per-pixel.md` |
+| `svg/catena-si-assesta.py` | `fig-catena-si-assesta` | `Matematica/catene-di-markov.md` |
 | `svg/cancello-che-respinge.py` | `fig-cancello-che-respinge` | `IngegneriaLLM/loop-engineering.md` |
 | `svg/ciclo-addestramento.py` | `fig-ciclo-addestramento` | `PyTorch/addestramento.md` |
 | `svg/ciclo-agente.py` | `fig-ciclo-agente` | `Agenti/agenti-e-tool-use.md` |

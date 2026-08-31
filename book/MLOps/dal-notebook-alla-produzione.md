@@ -303,7 +303,7 @@ peggio. Dopo cento giri hai un numero buono in mano e non sai più a quale
 combinazione appartenga: rifarlo a memoria non funziona, perché le prove si
 somigliano tutte.
 
-La cura non è un attrezzo, è un'abitudine. Prima di lanciare una prova, scrivere
+La cura è un'abitudine, più che un attrezzo. Prima di lanciare una prova, scrivere
 da qualche parte che cosa si è impostato; a prova finita, scrivere com'è andata.
 «Da qualche parte» vuol dire in un posto che sopravviva alla chiusura del
 programma, non in una cella del notebook.
@@ -438,7 +438,7 @@ Sculley e colleghi catalogano le forme di debito specifiche dell'ML, tra cui:
 - **Glue code**, la valanga di codice di raccordo attorno a una libreria di ML
   generica. Gli autori arrivano a dire che un sistema maturo può ritrovarsi con
   al massimo il 5% di codice di apprendimento e almeno il 95% di incollaggio:
-  non è una misura, è l'ordine di grandezza a cui vogliono che si pensi.
+  è l'ordine di grandezza a cui vogliono che si pensi, più che una misura.
 - **Pipeline jungles**: trasformazioni dei dati che si stratificano fino a
   diventare grovigli impossibili da modificare in sicurezza.
 - **Configuration debt**: la proliferazione di manopole (iperparametri,

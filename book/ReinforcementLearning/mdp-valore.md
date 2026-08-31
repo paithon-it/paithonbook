@@ -42,8 +42,8 @@ ha.
 
 Una mossa, poi, non sempre fa quello che promette. Su un pavimento scivoloso il
 comando «avanti» porta avanti nove volte su dieci e di traverso una volta su
-dieci: dove si finisce non è una casella sola, è un elenco di caselle con
-accanto quanto spesso capita ciascuna. Lo stesso per il punteggio: se una
+dieci: dove si finisce è un elenco di caselle con accanto quanto spesso capita
+ciascuna, e non una casella sola. Lo stesso per il punteggio: se una
 casella bagnata certe volte costa un punto e certe altre tre, il numero che
 conta è quanto costa in media. Nel labirinto su cui faremo i conti niente
 slitta e niente varia, ogni mossa porta sempre nella stessa casella e paga
@@ -347,8 +347,8 @@ in funzione del successivo.
 
 Quando la strategia lascia qualcosa al caso, o quando il mondo alla stessa
 mossa risponde in modi diversi, «la ricompensa che incassi» e «dove finisci»
-non sono un numero e una casella: sono più possibilità, ciascuna con la sua
-probabilità. Il gradino allora si calcola in media, pesando ogni possibilità
+sono più possibilità, ciascuna con la sua probabilità, invece di un numero e
+una casella. Il gradino allora si calcola in media, pesando ogni possibilità
 per quanto spesso capita. Una mossa che sette volte su dieci porta in una
 casella che vale $10$, e tre volte su dieci scivola in una che vale $0$, in
 media porta $0{,}7 \times 10 + 0{,}3 \times 0 = 7$.

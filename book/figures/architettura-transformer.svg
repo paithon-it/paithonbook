@@ -37,5 +37,5 @@
   <text x="480" y="401" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">su scala standard</text>
   <!-- ripetizione -->
   <rect x="240" y="72" width="240" height="356" fill="none" stroke="#8B847C" stroke-width="1.5" stroke-dasharray="3 5" rx="10"/>
-  <text x="360" y="68" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8B847C">questo blocco si ripete N volte (32, 64, 100+)</text>
+  <text x="360" y="68" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8B847C">questo blocco si ripete L volte (32, 64, 100+)</text>
 </svg>

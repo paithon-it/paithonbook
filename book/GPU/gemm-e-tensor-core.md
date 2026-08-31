@@ -16,13 +16,13 @@ probabilmente il pezzo di codice più ottimizzato della storia
 dell'informatica: a ogni generazione di hardware qualcuno lo riscrive da capo
 per spremerne l'ultima goccia.
 
-Non è un caso. Nella sezione «Prestazioni e scala» del {doc}`capitolo su PyTorch </PyTorch/overview>`
-abbiamo detto che una rete neurale, vista dall'hardware, è quasi soltanto una
-cosa: moltiplicazioni fra matrici. Da AlexNet {cite}`krizhevsky2012imagenet` in
-poi, il grosso dei conti di qualunque rete si riduce a quella. E la sezione «La
-memoria: il vero collo di bottiglia» ha lasciato in sospeso una promessa,
-mostrare per esteso il trucco con cui la si rende veloce, il **tiling**: è il
-momento di mantenerla.
+E la ragione c'è. Nella sezione «Prestazioni e scala» del {doc}`capitolo su
+PyTorch </PyTorch/overview>` abbiamo detto che una rete neurale, vista
+dall'hardware, è quasi soltanto una cosa: moltiplicazioni fra matrici. Da
+AlexNet {cite}`krizhevsky2012imagenet` in poi, il grosso dei conti di qualunque
+rete si riduce a quella. E la sezione «La memoria: il vero collo di bottiglia»
+ha lasciato in sospeso una promessa, mostrare per esteso il trucco con cui la
+si rende veloce, il **tiling**: è il momento di mantenerla.
 
 ## Il conto, e il problema della versione ingenua
 
@@ -415,7 +415,8 @@ di una sola operazione: moltiplicare due ingressi, sommare il prodotto a un
 valore che gli arriva, e propagare ai vicini al ciclo successivo. Non c'è
 memoria condivisa, non c'è arbitraggio, non c'è un file di registri da
 indirizzare: il movimento dei dati è cablato nella topologia. Che cosa stia
-fermo e che cosa scorra, però, non è unico: è la scelta di **dataflow**, e cambia la macchina. I nomi con cui queste
+fermo e che cosa scorra, però, è la scelta di **dataflow**, e cambia la
+macchina. I nomi con cui queste
 scelte si chiamano oggi vengono dalla tassonomia di Chen, Emer e Sze
 {cite}`chen2016eyeriss`, non dagli array sistolici originali.
 
@@ -480,9 +481,9 @@ davvero il cronometro, e che altrimenti sembrerebbero magia:
   otto di fila fanno un byte: con 16 bit si scrivono numeri meno precisi, con
   32 più precisi). Occupano metà spazio e si leggono in metà tempo, e i tensor
   core esistono per loro: senza, girano a una frazione della propria potenza.
-  Le quattro righe di `autocast` viste in «Prestazioni e scala» non sono un
-  vezzo da datacenter, sono l'interruttore che accende il pezzo di silicio più
-  veloce che hai.
+  Le quattro righe di `autocast` viste in «Prestazioni e scala» sono
+  l'interruttore che accende il pezzo di silicio più veloce che hai, non un
+  vezzo da datacenter.
 
 Tutte e due queste regole promettono un guadagno quasi gratuito, e tutte e due
 capita che non lo diano. Le ragioni sono due, e nessuna delle due riguarda la

@@ -50,8 +50,8 @@ spiega come si costruisce, concretamente, quell'elenco di pezzi.
 ## Il dilemma del vocabolario
 
 Prima di guardare gli algoritmi conviene capire che cosa stiamo cercando di
-rendere migliore, perché la scelta della taglia del vocabolario non è un
-dettaglio: è un baratto fra due costi che tirano in direzioni opposte.
+rendere migliore, perché la scelta della taglia del vocabolario è un baratto
+fra due costi che tirano in direzioni opposte.
 
 `````{tab} Elementare
 

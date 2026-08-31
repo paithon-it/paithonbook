@@ -8,8 +8,8 @@ occhi, e siamo nell'ordine di qualche centesimo di dollaro a conversazione. Il
 dettaglio interessante è quello che *non* dice: il modello dietro ChatGPT, un
 GPT-3.5, era già pronto da mesi, addestrato e poi rifinito perché rispondesse
 come ci si aspetta da un assistente e non come da un completatore di testi. La
-cosa nuova, quella che teneva svegli gli ingegneri, non era *costruire* il
-modello, era **operarlo**:
+cosa nuova, quella che teneva svegli gli ingegneri, era **operarlo** invece che
+costruirlo:
 servirlo a milioni di persone, in fretta, in modo affidabile, senza che la
 bolletta della GPU divorasse l'azienda.
 
@@ -105,7 +105,7 @@ contro questi due limiti.
 ## Servire un LLM
 
 Riprendiamo la cosa che si è appena detta, perché tutta questa sezione ne
-discende: la parte lenta non è pensare, è ricordare. Per scrivere un token il
+discende: a fare da freno è il ricordare. Per scrivere un token il
 modello deve rileggersi tutti i suoi numeri, e quella rilettura costa più del
 calcolo che ci fa sopra.
 
@@ -114,8 +114,8 @@ stessa qualunque cosa il modello stia scrivendo. Farla per servire una persona
 sola, o per servirne cento nello stesso istante, costa quasi uguale: i pesi
 passano una volta e si usano per tutte e cento le risposte in corso. È lo
 stesso mazzo di richieste, il *batch*, che nella sezione «Servire un modello»
-serviva a tenere occupata la scheda; qui non è un'ottimizzazione fra le altre,
-è il motivo per cui un LLM è economicamente sostenibile.
+serviva a tenere occupata la scheda; qui quel mazzo è il motivo per cui un LLM
+è economicamente sostenibile, e non un'ottimizzazione fra le altre.
 
 Solo che formare il mazzo, qui, è molto più difficile, e per due ragioni.
 
@@ -280,8 +280,8 @@ Il metodo è dovuto a Leviathan, Kalman e Matias di Google Research
 
 Questa regola di accettazione-rifiuto è ciò che rende il metodo **esatto**: la
 distribuzione dei token emessi è identica a quella del solo modello target.
-Non è un'approssimazione che scambia qualità per velocità: è la stessa uscita,
-più in fretta.
+L'uscita è la stessa, solo più in fretta, senza nessuno scambio fra qualità e
+velocità.
 
 Il guadagno dipende dal **tasso di accettazione** $\alpha$: sotto l'ipotesi
 semplificatrice (dichiarata dagli autori) che le accettazioni siano
@@ -344,14 +344,15 @@ scritture (quanti bit occupa ciascun numero, e se ha o no la virgola: `FP32`
 sono trentadue bit con la virgola, `INT4` quattro bit senza), ma a decidere
 sono i gigabyte, e la decisione è un sì o un no: ventotto vogliono una macchina
 da centro dati, tre e mezzo entrano in un portatile. Su quel portatile le prime
-due righe non sono «più lente», sono impossibili.
+due righe sono impossibili, altro che «più lente».
 ```
 
 Quello che {numref}`fig-quantizzazione-memoria` racconta non è un risparmio
 graduale, ed è per questo che la quantizzazione conta più di quanto un taglio
-del 75% suggerisca. Le quattro barre non sono quattro sconti sempre più
-generosi: sono quattro risposte a una domanda che ammette solo sì o no, cioè
-«ci sta nella memoria che ho?». Sul portatile da 8 gigabyte della prima figura,
+del 75% suggerisca. Le quattro barre sono quattro risposte a una
+domanda che ammette solo sì o no, cioè «ci sta nella memoria che ho?», e non
+quattro sconti sempre più generosi. Sul portatile da 8 gigabyte della prima
+figura,
 che dopo il margine per la conversazione ne lascia liberi cinque, le prime tre
 righe sono tutte e tre un no, e la differenza fra loro non serve a niente:
 l'unica che cambia la vita è la quarta.
@@ -411,8 +412,9 @@ costa circa quattro ore di GPU, con degrado trascurabile.
 Il terzo, **AWQ** (*Activation-aware Weight Quantization*), le usa per decidere
 quali **pesi** proteggere {cite}`lin2024awq`. I pesi che contano non sono i più
 grandi ma quelli attraversati dai valori più grandi, e sono circa l'uno per
-cento: i canali salienti. La mossa poi non è tenerli in 16 bit, è riscalarli
-prima di quantizzarli, e questo evita sia la retropropagazione sia la
+cento: i canali salienti. La mossa poi sta nel riscalarli prima di
+quantizzarli, non nel tenerli in 16 bit, e questo evita sia la
+retropropagazione sia la
 ricostruzione su un obiettivo di regressione: è l'obiezione che gli autori di
 AWQ muovono a GPTQ, cioè che aderendo al proprio insieme di calibrazione rischi
 di generalizzare peggio fuori da quello.
@@ -456,8 +458,8 @@ il
 senso, ed è quello che si fa; su un modello da miliardi di numeri quella
 rilettura costerebbe quanto costruirlo, e nessuno la fa dopo un rilascio. Per
 questo qui si strappa molto meno, e si sceglie con cura: le pagine da togliere
-non sono quelle scritte più in piccolo, sono quelle su cui è passato meno
-lettore. Con questa cautela si arriva a buttarne circa metà senza danni
+sono quelle su cui è passato meno lettore, non quelle scritte più in
+piccolo. Con questa cautela si arriva a buttarne circa metà senza danni
 evidenti; oltre, il conto si fa salato.
 
 `````
@@ -614,17 +616,18 @@ prompt o di modello, spesso con l'LLM-as-a-judge a fare da metro automatico.
 Resta fuori, di proposito, tutto ciò che sta *sopra* il modello: ancorare le
 risposte a documenti recuperati al momento (il *retrieval-augmented
 generation* nella sua forma avanzata), far usare al modello strumenti esterni,
-comporre più passi in un **agente**. Non è un dettaglio di serving: è un
+comporre più passi in un **agente**. È un
 capitolo a sé, quello sugli **Agenti**, che abbiamo già percorso.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Con un grande modello linguistico **la parte lenta non è pensare, è
-  ricordare**: per scrivere una sola parola il modello deve rileggersi tutti i
+- Con un grande modello linguistico **la parte lenta è la rilettura**: per
+  scrivere una sola parola il modello deve rileggersi tutti i
   suoi numeri, e sono miliardi. Il calcolo, in confronto, è quasi fermo.
-- La prima domanda non è quale modello sia migliore, è **quale ci sta** nella
-  memoria che si ha: se non ci sta, non è lento, proprio non parte.
+- La prima domanda è **quale ci sta** nella
+  memoria che si ha, prima ancora di quale sia migliore: se non ci sta, non è
+  lento, proprio non parte.
 - Servendo tante richieste **insieme** quella rilettura si paga una volta per
   tutte: è il motivo per cui un buon maître non riserva tavoloni e riempie ogni
   sedia appena si libera.

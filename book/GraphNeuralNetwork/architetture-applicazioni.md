@@ -308,8 +308,8 @@ Finora abbiamo prodotto una fila di numeri *per ogni nodo*. Ma i compiti a
 batteri?») chiedono un solo verdetto per l'intero grafo. Serve un passo in più:
 comprimere le tante file di numeri dei nodi in **una** sola, quella del grafo.
 Questo passo si chiama **readout**, letteralmente «lettura finale», e la scelta
-di come farlo non è un dettaglio: decide quali grafi diversi la rete riuscirà a
-distinguere fra loro.
+di come farlo decide quali grafi diversi la rete riuscirà a distinguere fra
+loro.
 
 `````{tab} Elementare
 
@@ -352,10 +352,10 @@ alternano message passing e fusione di gruppi di nodi in super-nodi, costruendo
 il vettore del grafo per livelli, come il pooling delle CNN accorpa regioni
 dell'immagine.
 
-La scelta dell'aggregatore non è un dettaglio implementativo: decide il
-**potere espressivo** della rete, cioè quali grafi diversi essa riesce a
-distinguere. Il risultato di riferimento è di Xu, Hu, Leskovec e Jegelka nel
-2019 {cite}`xu2019powerful`, e lega le GNN a un classico test di isomorfismo,
+La scelta dell'aggregatore decide il **potere espressivo** della rete, cioè
+quali grafi diversi essa riesce a distinguere. Il risultato di riferimento è
+di Xu, Hu, Leskovec e Jegelka nel 2019 {cite}`xu2019powerful`, e lega le GNN a
+un classico test di isomorfismo,
 il **1-WL** di Weisfeiler–Lehman (noto anche come *color refinement*; le
 versioni di ordine superiore, $k$-WL, che il paper non usa, distinguono grafi
 che 1-WL confonde). Il test
@@ -605,7 +605,7 @@ Il grafo si può ridare anche in un secondo modo, senza firmare i nodi: si dice
 all'attenzione quanti passi separano due nodi, e le si fa scontare la distanza.
 Oggi si tengono insieme le due cose, il passaparola fra vicini per quel che
 succede vicino e l'attenzione di tutti con tutti per quel che arriva da
-lontano: il vicinato non era un difetto da togliere, era un aiuto.
+lontano: il vicinato era un aiuto, non un difetto da togliere.
 
 `````
 
@@ -644,8 +644,8 @@ alla topologia. Sono due simmetrie diverse. La GNN è equivariante rispetto alle
 permutazioni che riordinano $(\mathbf{A}, \mathbf{X})$ **insieme**; il
 Transformer nudo lo è rispetto a quelle che riordinano $\mathbf{X}$ **da
 solo**, qualunque cosa faccia $\mathbf{A}$, ed è una simmetria molto più
-grande: pretenderla costringe la funzione a ignorare $\mathbf{A}$. Non è un
-difetto di simmetria, è un'informazione che non entra, e la si deve
+grande: pretenderla costringe la funzione a ignorare $\mathbf{A}$. È
+un'informazione che non entra, più che un difetto di simmetria, e la si deve
 reiniettare: le due strade sono quelle che il capitolo sui Transformer già
 conosce.
 
@@ -907,7 +907,7 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
 
 `````
 
-Il grafo, da qui in avanti, non è più un caso particolare, è una lente. Ogni
+Il grafo, da qui in avanti, è una lente più che un caso particolare. Ogni
 volta che i dati sono fatti di cose collegate ad altre cose, la domanda «che
 cosa dicono di questo nodo i suoi vicini?» è già mezza risposta. Il capitolo
 sui sistemi di raccomandazione lavora sul grafo più quotidiano che ci sia,

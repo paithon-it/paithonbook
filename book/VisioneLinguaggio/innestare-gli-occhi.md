@@ -34,8 +34,8 @@ pesi che esistono già. Un modello di linguaggio riaddestrato su qualche milione
 di didascalie perde per strada una parte di quello che sapeva fare con il testo
 puro: impara una cosa nuova cancellandone una vecchia. È la **dimenticanza
 catastrofica**, già incontrata dal vivo nella {doc}`pagina sui modelli
-multilingua </Transformers/multilingua>`. Congelare non è soltanto un risparmio: è una garanzia sul
-comportamento che si vuole conservare.
+multilingua </Transformers/multilingua>`. Congelare dà anche una garanzia sul
+comportamento che si vuole conservare, oltre al risparmio.
 
 ## Che cosa deve fare, di preciso, il pezzo in mezzo
 
@@ -101,9 +101,8 @@ token, il costo dell'attenzione per strato è $O\big((M+T)^2 d_t\big)$, e la
 memoria della cache delle chiavi e dei valori cresce linearmente in $M+T$ per
 ogni strato e ogni testa. Con i valori dell'esempio numerico, $N = 576$ e
 $T = 20$: passare da $M = 32$ a $M = N$ moltiplica il termine quadratico per
-$(596/52)^2 \approx 131$. La compressione, quando si può fare, non è un
-dettaglio di ottimizzazione: è ciò che rende praticabile allegare un'immagine a
-ogni richiesta.
+$(596/52)^2 \approx 131$. La compressione, quando si può fare, è ciò
+che rende praticabile allegare un'immagine a ogni richiesta.
 
 `````
 
@@ -111,8 +110,8 @@ ogni richiesta.
 
 Le soluzioni che hanno lasciato il segno sono tre, e conviene percorrerle in
 ordine di complessità **decrescente**, che qui coincide con l'ordine
-cronologico: è il rovescio di come di solito vanno queste cose. Non è un caso, e
-questa sezione esiste soprattutto per spiegare perché.
+cronologico: è il rovescio di come di solito vanno queste cose, e ha una
+ragione precisa.
 
 ```{figure} ../figures/vlm-connettori.svg
 :name: fig-vlm-connettori
@@ -199,9 +198,9 @@ $\mathrm{XAttn}$ la cross-attention (query da $\mathbf{x}$, chiavi e valori da
 $\mathbf{R}$) e $\alpha$ uno scalare appreso, **uno per strato**,
 inizializzato a zero. Poiché $\tanh(0) = 0$, alla prima iterazione ogni blocco
 aggiunto è esattamente l'identità: la funzione calcolata dalla rete è, token per
-token, quella del modello di partenza. L'inizializzazione non è quindi
-«piccola», è **esatta**, e si parte da un punto di cui si conoscono le
-prestazioni; $\tanh$ dà inoltre un gate limitato in $(-1, 1)$, che non fa
+token, quella del modello di partenza. L'inizializzazione è quindi
+**esatta** e non soltanto «piccola», e si parte da un punto di cui si conoscono
+le prestazioni; $\tanh$ dà inoltre un gate limitato in $(-1, 1)$, che non fa
 esplodere il ramo nuovo quando $\alpha$ cresce. Lo stesso schema avvolge il
 blocco feed-forward che accompagna la cross-attention, da cui il nome *gated
 cross-attention dense*.
@@ -415,8 +414,8 @@ Il punto si formula bene in termini di condizionamento. Un connettore con
 $M \ll N$ è un canale a capacità fissa, e la funzione $g_\theta$ che decide che
 cosa passa viene appresa **marginalizzando** sulla distribuzione dei compiti
 visti in addestramento: produce il riassunto ottimo *in media*. All'inferenza
-però il compito non è più una variabile aleatoria, è la domanda che l'utente ha
-scritto, e il connettore non la vede: i token visivi si calcolano prima di
+però il compito è la domanda che l'utente ha scritto, e non più una variabile
+aleatoria, e il connettore non la vede: i token visivi si calcolano prima di
 leggere il prompt (nel Q-Former per costruzione, dato che le query sono
 parametri). L'informazione scartata è irrecuperabile, e lo è **prima** che il
 condizionamento su cui conterebbe sia disponibile.
@@ -436,8 +435,8 @@ Due onestà, per non trasformare un'osservazione in un dogma. Il prezzo è
 pesante: il termine quadratico calcolato sopra diventa proibitivo su immagini ad
 alta risoluzione, su documenti e sui video, dove il collo di bottiglia torna a
 essere *computazionale* e la compressione torna sensata (è il tema della sezione
-sulla risoluzione). E le query apprese non sono un'idea sbagliata: sono un'idea
-con un dominio di validità, e riappaiono proprio dove i token visivi sarebbero
+sulla risoluzione). E le query apprese sono un'idea con un dominio
+di validità, e riappaiono proprio dove i token visivi sarebbero
 troppi.
 
 `````
@@ -505,9 +504,10 @@ classico dell'ottimizzazione congiunta di due componenti mal condizionate.
 
 Un dettaglio metodologico di questa seconda fase merita di essere raccontato,
 perché è interessante e perché ha un limite che si vede a occhio nudo. I dati di
-istruzione visiva del primo LLaVA non sono stati scritti da persone davanti a
-delle fotografie: sono stati **generati da un modello di solo testo**, a cui delle immagini si
-davano soltanto due sostituti scritti: le didascalie già disponibili e le
+istruzione visiva del primo LLaVA sono stati **generati da un modello di solo
+testo**, e non scritti da persone davanti a delle fotografie; a quel modello
+delle immagini si davano soltanto due sostituti scritti: le didascalie già
+disponibili e le
 coordinate dei riquadri degli oggetti annotati. Da quel
 materiale uscivano conversazioni, descrizioni dettagliate e domande di
 ragionamento, per un totale di 158 000 esempi (58 000 dialoghi, 23 000
@@ -554,7 +554,7 @@ proiettore = Proiettore(d_visione=1024, d_testo=4096)
 print(sum(p.numel() for p in proiettore.parameters()))  # 20979712
 ```
 
-Il pezzo che conta davvero, però, non è la classe: è come i token visivi
+Il pezzo che conta davvero, però, è come i token visivi
 raggiungono il decoder. Non passano da una porta di servizio, entrano dalla
 stessa porta delle parole.
 

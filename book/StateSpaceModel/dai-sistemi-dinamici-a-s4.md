@@ -156,7 +156,7 @@ l'altro succede molto e di quel che c'era prima resta poco. È la manopola che
 decide quanto in fretta il sistema dimentica, e più avanti Mamba la girerà a
 ogni parola.
 
-Le due regole (bilineare e ZOH) sono due modi diversi di indovinare cosa
+Le due regole sono due modi diversi di indovinare cosa
 succede *tra* un campione e l'altro, e basta un po’ di geometria a
 raccontarli. Immagina di dover calcolare quanta acqua è entrata nella vasca
 durante il tratto che non hai visto, sapendo solo l'apertura del rubinetto
@@ -196,7 +196,8 @@ $\Delta\,\varphi_1(\Delta \mathbf{A})\,\mathbf{B}$ con $\varphi_1(z)=\sum_{k\ge 
 una serie definita anche quando $\mathbf{A}$ è singolare (per $\mathbf{A}$ diagonale con un
 autovalore nullo la formula scritta con l'inversa non si può valutare, la serie
 sì). In codice si usa la serie, o `expm1`, non il quoziente: per $a$ piccolo la
-differenza $e^{\Delta a}-1$ perde le cifre significative.
+differenza $e^{\Delta a}-1$ perde le cifre significative per
+{doc}`cancellazione </Matematica/analisi-numerica>`.
 
 Se $\mathbf{A}$ è diagonale, ogni suo autovalore $a$ si discretizza per conto suo:
 $\bar{a} = e^{\Delta a}$ e $\bar{b} = \frac{e^{\Delta a}-1}{a}\,b$, ben definito
@@ -216,13 +217,13 @@ $$
 \bar{\mathbf{B}} = \Big(\mathbf{I} - \tfrac{\Delta}{2}\mathbf{A}\Big)^{-1}\Delta \mathbf{B} .
 $$
 
-È la scelta di S4, e vale la pena ricordarsela: attribuire lo ZOH a S4 è un
-errore che si trova spesso in giro. In entrambi i casi la $\mathbf{C}$ resta
-invariata ($\bar{\mathbf{C}}=\mathbf{C}$), e i
-parametri effettivi del modello sono la quaterna $(\Delta, \mathbf{A}, \mathbf{B}, \mathbf{C})$: le matrici
-continue più il passo, da cui si generano le matrici discrete. Il passo $\Delta$
-non è un dettaglio: fissa la *scala temporale* del sistema, cioè quanto in fretta
-lo stato dimentica.
+È la scelta di S4, e attribuirgli lo ZOH è un errore che si trova spesso in
+giro. In entrambi i casi la $\mathbf{C}$ resta
+invariata ($\bar{\mathbf{C}}=\mathbf{C}$), e i parametri effettivi del modello
+sono la quaterna $(\Delta, \mathbf{A}, \mathbf{B}, \mathbf{C})$: le matrici
+continue più il passo, da cui si generano le matrici discrete. Il passo
+$\Delta$ decide molto: fissa la *scala temporale* del sistema, cioè quanto in
+fretta lo stato dimentica.
 
 `````
 
@@ -250,9 +251,10 @@ una RNN.
 
 Dall'altro la forma **convoluzionale**: se il sistema non cambia nel tempo, si
 può dimostrare che l'intera uscita è una singola convoluzione dell'ingresso
-con un filtro fisso. E la convoluzione la conosciamo dalle reti convoluzionali
-del capitolo sul deep learning: un filtro che scorre lungo il segnale e a ogni
-posizione moltiplica i propri pesi per i valori che ha sotto, poi somma. Due
+con un filtro fisso. E la convoluzione la conosciamo dalle
+{doc}`reti convoluzionali </DeepLearning/reti-convoluzionali>`: un filtro che
+scorre lungo il segnale e a ogni posizione moltiplica i propri pesi per i
+valori che ha sotto, poi somma. Due
 differenze. La prima è che qui il filtro è lungo quanto tutta la sequenza, non
 una finestrella di pochi elementi. La seconda è che nessuno lo scrive a mano:
 si ricava, con un conto, dalle tre regole del sistema. Ed è una buona notizia,
@@ -302,18 +304,20 @@ $$
 \dots,\; \mathbf{C}\bar{\mathbf{A}}^{\,k}\bar{\mathbf{B}},\; \dots\big) ,
 $$
 
-dove $\bar{\mathbf{K}}$ è un filtro causale lungo quanto la sequenza. Calcolata questa
-volta sola, l'uscita $\mathbf{y} = \mathbf{x} * \bar{\mathbf{K}}$ si ottiene per l'intera sequenza in
-parallelo, con la FFT in tempo $O(L \log L)$ ($L$ è la lunghezza). Il termine
-$\mathbf{C}\bar{\mathbf{A}}^{\,j}\bar{\mathbf{B}}$ misura quanto un ingresso di $j$ passi fa pesa ancora
-sull'uscita di adesso: è la memoria del sistema, e decade con le potenze
-$\bar{\mathbf{A}}^{\,j}$.
+dove $\bar{\mathbf{K}}$ è un filtro causale lungo quanto la sequenza. Calcolata
+questa volta sola, l'uscita $\mathbf{y} = \mathbf{x} * \bar{\mathbf{K}}$ si
+ottiene per l'intera sequenza in parallelo, con la trasformata di Fourier
+veloce, la FFT, in tempo $O(L \log L)$ ($L$ è la lunghezza). Il termine
+$\mathbf{C}\bar{\mathbf{A}}^{\,j}\bar{\mathbf{B}}$ misura quanto un ingresso di
+$j$ passi fa pesa ancora sull'uscita di adesso: è la memoria del sistema, e
+decade con le potenze $\bar{\mathbf{A}}^{\,j}$.
 
-L'equivalenza $ \text{ricorrenza} \equiv \text{convoluzione} $ vale **solo**
-perché $\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}$ sono costanti nel tempo: è la tempo-invarianza a
-garantire che il kernel $\bar{\mathbf{K}}$ sia unico e fisso. Quando, con Mamba, faremo
-dipendere questi parametri dall'ingresso, il sistema cesserà di essere LTI, il
-kernel di convoluzione fisso svanirà, e resterà solo lo scan ricorrente.
+L'equivalenza $ \text{ricorrenza} \equiv \text{convoluzione} $ vale solo perché
+$\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}$ sono costanti nel tempo: è la
+tempo-invarianza a garantire che il kernel $\bar{\mathbf{K}}$ sia unico e
+fisso. Quando, con Mamba, faremo dipendere questi parametri dall'ingresso, il
+sistema cesserà di essere LTI, il kernel di convoluzione fisso svanirà, e
+resterà solo lo scan ricorrente.
 
 `````
 
@@ -321,7 +325,7 @@ Questa dualità è esattamente lo stesso trucco che ha animato il capitolo
 sull'attenzione lineare: un'unica funzione con una forma parallela per
 l'addestramento e una forma ricorrente per l'inferenza. Che due strade così
 diverse (una nata dall'attenzione, l'altra dai sistemi dinamici) approdino
-alla stessa struttura non è un caso, come vedremo. La
+alla stessa struttura ha una ragione, come vedremo. La
 {numref}`fig-ssm-forma-duale` mostra le due facce affiancate.
 
 ```{figure} ../figures/ssm-forma-duale.svg
@@ -334,13 +338,13 @@ passo all'altro. A sinistra si va **passo dopo passo**: lo stato si aggiorna
 una parola alla volta, ed è il modo economico per generare. A destra si fa
 **tutto insieme**: un unico filtro, lungo quanto la sequenza, produce tutte le
 uscite in una volta sola, ed è il modo veloce per addestrare. Il simbolo al
-centro dice che non sono due calcoli diversi: è lo stesso, scritto in due modi.
+centro dice che è lo stesso calcolo, scritto in due modi.
 ```
 
 ## HiPPO e S4: ricordare a lungo
 
 C'è un problema che abbiamo scavalcato. Nei modelli veri lo stato non è un
-numero solo, come il livello della vasca: è un pugno di numeri, qualche decina,
+numero solo come il livello della vasca, ma un pugno di numeri, qualche decina,
 che insieme fanno il riassunto. Restano pochi, però, e la domanda è perché un
 riassunto così piccolo dovrebbe ricordare qualcosa avvenuto migliaia di passi
 prima.
@@ -370,8 +374,9 @@ C'è un modo migliore di riempirla, e nasce da una domanda precisa: fra tutte le
 pagine che stanno in quello spazio, quale somiglia di più al romanzo intero? La
 risposta ha un nome, **HiPPO** (la sigla è inglese, e sciolta suona «operatori
 di proiezione polinomiale di ordine alto»). La pagina viene su a strati: l'idea
-generale, gli snodi principali, i dettagli delle ultime righe. Il passato
-lontano si assottiglia e non sbiadisce del tutto.
+generale, gli snodi principali, poi i dettagli più fini, sparsi su tutto il
+romanzo e non solo sull'ultimo capitolo. Il passato lontano si assottiglia e
+non sbiadisce del tutto.
 
 Quella pagina arriva già impostata prima che la lettura cominci, con lo spazio
 ripartito fra gli strati. Chi comincia da lì ha la memoria lunga senza fare
@@ -395,8 +400,8 @@ un'immagine di 128 pixel per 128, letta un pixel alla volta, in fila come se
 fosse un testo: 128 per 128 fanno $16\,384$ passi. Alla fine si deve dire se
 due puntini sono uniti da un tratto oppure no, e per rispondere bisogna tenere
 insieme parti dell'immagine lontanissime nella fila. Lì i Transformer restavano
-al livello di chi tira a indovinare. Sulle altre prove, dalle immagini al
-linguaggio, il distacco si accorcia senza sparire.
+al livello di chi tira a indovinare. Fuori dal Long Range Arena, sulle immagini
+e sul linguaggio, il distacco si accorcia senza sparire.
 
 Una virtù, però, per strada si perde. Il modo di prendere appunti di HiPPO non
 si cura di quanto sia lungo il romanzo: cento pagine o mille, la pagina resta
@@ -414,8 +419,9 @@ intero.
 
 **HiPPO** (*High-order Polynomial Projection Operators*, Gu et al., 2020,
 {cite}`gu2020hippo`) formalizza la compressione online di un segnale come la
-sua proiezione ottima su una base di **polinomi ortogonali** (per esempio i
-polinomi di Legendre) rispetto a una misura sul passato. Lo stato $\mathbf{h}(t)$
+sua {doc}`proiezione ottima </Matematica/ortogonalita-proiezioni>` su una base
+di **polinomi ortogonali** (per esempio i polinomi di Legendre) rispetto a una
+misura sul passato. Lo stato $\mathbf{h}(t)$
 diventa il vettore dei coefficienti di quella proiezione: ricostruisce, nel
 modo meno sbagliato possibile, tutto il segnale visto fin lì. La variante
 **HiPPO-LegS** (*scaled Legendre*) usa una misura che copre uniformemente
@@ -489,7 +495,7 @@ nominare, perché ognuna smonta un pezzo del problema.
 `````{tab} Elementare
 
 Tre modelli, tre pezzi del problema. **S5** (2023) semplifica la macchina di S4
-e, soprattutto, dimostra che la forma «passo dopo passo» non è condannata a
+e, soprattutto, fa vedere che la forma «passo dopo passo» non è condannata a
 essere lenta. Sembrerebbe di sì, visto che ogni passo ha bisogno del risultato
 del precedente. Il fatto è che due passi consecutivi si possono fondere in un
 passo solo, che fa il lavoro di tutti e due; e le fusioni di coppie diverse non
@@ -507,8 +513,8 @@ finché gli serve.
 
 **Hyena** (2023), infine, prova la via più diretta: se l'ingrediente vincente
 è un filtro lungo che scorre su tutta la frase (come quelli delle reti
-convoluzionali del capitolo sul deep learning, ma lunghi quanto l'intero
-testo), tanto vale imparare direttamente il filtro, senza passare dal sistema
+convoluzionali, ma lunghi quanto l'intero testo), tanto vale imparare
+direttamente il filtro, senza passare dal sistema
 dinamico. Con un accorgimento, però: quei numeri Hyena non se li impara a
 memoria uno per uno, che sarebbe un elenco lungo quanto il testo. A disegnare
 il filtro mette una piccola rete, così le cose da imparare restano poche come
@@ -585,7 +591,7 @@ Mamba, ed è il tema della prossima sezione.
   come un unico filtro lungo che scorre sulla sequenza (parallelo: perfetto per
   addestrare sulle GPU). Si allena nel secondo modo, si usa nel primo: la stessa
   dualità vista con l'attenzione lineare.
-- L'equivalenza regge **solo** finché quelle regole restano fisse: Mamba le farà
+- L'equivalenza regge solo finché quelle regole restano fisse: Mamba le farà
   dipendere da ciò che legge, e allora resterà solo il modo passo dopo passo.
 - **HiPPO** (Gu et al., 2020) è il modo studiato apposta per riassumere una storia
   lunghissima in pochi numeri, come appunti a più livelli su un romanzo: dice
@@ -626,7 +632,7 @@ Mamba, ed è il tema della prossima sezione.
   (inferenza $O(1)$ per passo) e **convoluzionale** $\mathbf{y}=\mathbf{x}*\bar{\mathbf{K}}$
   (addestramento parallelo). Si allena convoluzionale, si inferisce
   ricorrente: la stessa dualità vista con l'attenzione lineare.
-- Questa equivalenza vale **solo** se $\bar{\mathbf{A}},\bar{\mathbf{B}},
+- Questa equivalenza vale solo se $\bar{\mathbf{A}},\bar{\mathbf{B}},
   \mathbf{C}$ sono costanti: Mamba la romperà rendendoli dipendenti
   dall'ingresso, e allora resterà solo lo scan.
 - **HiPPO** (Gu et al., 2020) sceglie $\mathbf{A}$ proiettando la storia su

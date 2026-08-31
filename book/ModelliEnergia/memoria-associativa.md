@@ -376,8 +376,8 @@ che la pallina scende. E si vede la proprietà che rende la rete una memoria e
 non un pasticcio: l'energia non risale mai. Scende quando una casella cambia,
 e resta ferma quando la casella si guarda intorno e decide di stare com'è; nel
 disegno si contano solo i sei cambi, perché sono i soli passi in cui succede
-qualcosa. Che i cambi siano sei come le caselle rovinate non è una regola, è
-il caso migliore: vuol dire che ogni casella sbagliata si è raddrizzata una
+qualcosa. Che i cambi siano sei come le caselle rovinate è il caso migliore e
+non una regola: vuol dire che ogni casella sbagliata si è raddrizzata una
 volta sola e che nessuna casella giusta si è mossa per sbaglio. Alla fine
 nessuna casella vuole più cambiare, e quello è ciò che i tecnici chiamano un
 **punto fisso**.
@@ -443,8 +443,8 @@ dall'altra parte, e una discesa che si muove una casella per volta non ci
 arriva mai.
 
 E c'è un punto in cui questa rete è più fortunata di quanto la teoria le
-concederebbe. Le tre lettere non sono state pescate a caso: sono state scelte
-in modo da somigliarsi il meno possibile, e si può misurare quanto. Per ogni
+concederebbe. Le tre lettere sono state scelte in modo da somigliarsi il meno
+possibile, non pescate a caso, e si può misurare quanto. Per ogni
 coppia di lettere si contano le caselle su cui concordano, si sottraggono
 quelle su cui discordano, e del saldo si tiene solo il numero senza il segno,
 perché anche un ricordo che è l'esatto opposto di un altro conta come una

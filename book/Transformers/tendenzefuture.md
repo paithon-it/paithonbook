@@ -44,8 +44,9 @@ imparare quali cose si somigliano è metà del mestiere.
 
 `````{tab} Elementare
 Gli altri modi di rimpicciolire un modello sono due, e li costruisce il
-capitolo sull’efficienza. Il primo è scrivere ogni numero con meno cifre; il
-secondo è togliere di mezzo i numeri che contano poco. Detti così sembrano
+{doc}`capitolo sull’efficienza </Efficienza/overview>`. Il primo è scrivere
+ogni numero con meno cifre; il secondo è togliere di mezzo i numeri che contano
+poco. Detti così sembrano
 gratis, e non lo sono. Là il prezzo è contato: arrotondare a quattro bit, senza
 altri accorgimenti, sposta di quasi un quinto quello che esce da uno strato, e
 una rete a cui si tolgono nove pesi su dieci smette di funzionare finché non la
@@ -190,9 +191,10 @@ difficile più ne generano. Le due vie hanno un compromesso opposto e non
 risolto. Il calcolo latente è più economico (nessun token da produrre e
 rileggere) e **non è ispezionabile**; quello in token costa di più, è più
 facile da addestrare con la supervisione esistente, e lascia una traccia che si
-può leggere, il che nel capitolo sull'interpretabilità è tutt'altro che un
-dettaglio. Che la traccia sia poi una descrizione *fedele* del calcolo svolto è
-una domanda a sé, e la risposta corrente è: non necessariamente.
+può leggere, il che nel {doc}`capitolo sull'interpretabilità
+</Interpretabilita/overview>` è tutt'altro che un dettaglio. Che la traccia sia
+poi una descrizione *fedele* del calcolo svolto è una domanda a sé, e la
+risposta corrente è: non necessariamente.
 
 `````
 
@@ -215,7 +217,7 @@ Un elenco onesto, da tenere accanto agli entusiasmi:
 - **Comprensione**: su cosa i modelli *capiscano* davvero il dibattito
   scientifico è tutt'altro che chiuso, e attribuire loro intenzioni o
   ragionamento senza prove è un errore prima ancora che una scortesia verso i
-  fatti. Prudenza, qui, non è modestia di facciata: è il modo in cui si tratta
+  fatti. Prudenza, qui, è il modo in cui si tratta
   un'affermazione che non si sa ancora come verificare.
 
 ## Niente di nuovo, tutto in un ordine nuovo
@@ -242,7 +244,8 @@ legge.
   che impara dal maestro; la *quantizzazione*, cioè scrivere ogni numero con
   meno cifre per farlo stare in un telefono; e i modelli che tengono acceso
   solo un pezzo di sé per ogni parola), **contesto lungo** (modi più economici
-  di far parlare fra loro le parti di un testo, fino agli *state space model*)
+  di far parlare fra loro le parti di un testo, fino ai modelli a spazio di
+  stato)
   e **multimodalità** (leggere, guardare e ascoltare con lo stesso meccanismo).
 - Un Transformer spende **lo stesso calcolo** su ogni ingresso, facile o
   difficile che sia. Nel 2018 si provò a togliere quel vincolo con un piano

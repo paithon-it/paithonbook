@@ -28,8 +28,8 @@ abbiamo lavorato sul singolo messaggio, sulla frase scritta bene; qui saliamo
 di un livello e trattiamo la finestra come un **sistema** da progettare nel
 suo insieme. Cole Medin, uno che di mestiere costruisce queste applicazioni,
 lo dice con uno slogan efficace {cite}`medin2025contextintro`: il context
-engineering non sono «parole magiche», è un sistema completo (regole, esempi,
-documentazione, prove di collaudo) e sta al prompt engineering come una
+engineering è un sistema completo (regole, esempi, documentazione, prove di
+collaudo) e non «parole magiche», e sta al prompt engineering come una
 **sceneggiatura** sta a un *post-it*. Un post-it dice cosa fare in una riga;
 una sceneggiatura dà a ogni scena il contesto per recitarla bene. È
 un'affermazione di chi costruisce, non un risultato misurato, e la riportiamo
@@ -105,8 +105,8 @@ La scala non è solo ordine mentale: dice anche **dove va speso lo sforzo**. Un
 compito semplice vive negli atomi e nelle molecole, e lì un buon prompt basta.
 Un **agente**, cioè il programma che usa il modello a più riprese e a ogni
 ripresa può fargli usare uno strumento, vive negli organi: lì il collo di
-bottiglia non è più la frase, è amministrare quello che entra ed esce dalla
-finestra a ogni giro.
+bottiglia diventa amministrare quello che entra ed esce dalla finestra a ogni
+giro, invece della frase.
 
 ## Quattro mosse: scrivere, selezionare, comprimere, isolare
 
@@ -129,8 +129,8 @@ a prendere *solo quella cosa*, non svuoti il cassetto sul tavolo.
 **Comprimere**: una pila di appunti lunga la riscrivi in tre righe di sunto,
 che occupano molto meno spazio. **Isolare**: se il compito è grosso, lo spezzi
 e ne affidi un pezzo a un collega che ha la *sua* scrivania, così la tua non
-si intasa. Il collega, qui, non è una persona: è un'altra copia dello stesso
-modello, con una finestra sua, a cui il programma dà un pezzo di lavoro e da
+si intasa. Il collega, qui, è un'altra copia dello stesso modello e non una
+persona: con una finestra sua, a cui il programma dà un pezzo di lavoro e da
 cui riprende solo il risultato.
 
 Quattro gesti semplici, ripetuti a ogni passo, che tengono la finestra pulita.
@@ -353,15 +353,15 @@ metterli in fila {cite}`mei2025context`: il context engineering sta diventando
 una **disciplina**, con le sue immagini mentali, le sue tattiche e i suoi modi
 di fallire. È la stessa strada che ha percorso, decenni fa, il mestiere di
 scrivere programmi, quando ha smesso di essere un'arte individuale e si è dato
-delle regole. La finestra non è una casella di testo: è un sistema, e va
+delle regole. La finestra è un sistema e non una casella di testo, e va
 progettata come tale.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Quello che arriva al modello non è la tua frase: è **tutto un pacco**, che il
-  programma monta ogni volta rimettendoci dentro le istruzioni di fondo, gli
+- Quello che arriva al modello è **tutto un pacco** e non la tua frase: lo
+  monta il programma ogni volta rimettendoci dentro le istruzioni di fondo, gli
   esempi, i pezzi di documento che servono e il riassunto di quanto già detto.
   Progettare quel pacco è il mestiere; la tua frase ne è l'ultima riga.
 - Il contesto non è tutto uguale: c'è quello semplice come un atomo (una

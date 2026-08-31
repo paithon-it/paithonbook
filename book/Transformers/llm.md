@@ -46,10 +46,11 @@ dell'altro: prima si impara la lingua e il mondo, poi si impara un mestiere.
 Qui parliamo del primo tempo.
 
 Trecento miliardi di token non stanno in nessuna enciclopedia: l'unico posto
-dove trovarli è il web. Ma il web non è una biblioteca ordinata: è una
-soffitta piena di tutto, dove i libri buoni stanno accanto allo spam, alle
+dove trovarli è il web. Ma il web è una soffitta piena di tutto e non
+una biblioteca ordinata, dove i libri buoni stanno accanto allo spam, alle
 pagine duplicate e ai commenti scritti di fretta. Metà del lavoro di chi
-costruisce un grande modello non è addestrarlo: è preparare la biblioteca.
+costruisce un grande modello sta nel preparare la biblioteca, prima ancora di
+addestrarlo.
 
 `````{tab} Elementare
 Una lingua straniera si può imparare con *un solo tipo di esercizio*:
@@ -82,11 +83,13 @@ GPT-3, un classificatore addestrato a distinguere le pagine simili a corpora
 di riferimento dal resto del crawl), **deduplicazione** fuzzy (i duplicati
 gonfiano la memorizzazione e falsano la valutazione) e rimozione di contenuti
 indesiderati. Il dataset di GPT-3 {cite}`brown2020language` è una miscela
-pesata: il Common Crawl filtrato copre il 60% dei token visti in
-addestramento, il resto viene da corpora più piccoli ma sovracampionati perché
-ritenuti di qualità superiore; WebText2 (22%), due corpora di libri (8% + 8%)
-e Wikipedia in inglese (3%). Il testo è segmentato in sub-word con BPE, come
-visto nel capitolo sull'NLP {cite}`sennrich2016neural`.
+pesata a mano, e il peso non segue la dimensione: il Common Crawl filtrato dà
+il 60% dei token visti in addestramento; le fonti ritenute migliori, e più
+piccole, vengono ripassate più volte (WebText2 quasi tre, Wikipedia più di
+tre) e pesano il 22% e il 3%. Nel mezzo due corpora di libri, 8% ciascuno.
+Il testo è segmentato in sub-word con BPE, come visto nella
+{doc}`sezione sui tokenizzatori </NaturalLanguageProcessing/tokenizzatori>`
+{cite}`sennrich2016neural`.
 
 L'unica supervisione è il testo stesso: si minimizza la cross-entropia sul
 token successivo,
@@ -112,9 +115,10 @@ dibattito è aperto e acceso {cite}`bender2021dangers`.
 Quell'idea, che qualunque testo esistente sia già un esercizio con la soluzione
 inclusa, ha un nome e non riguarda soltanto il linguaggio: si chiama
 **apprendimento auto-supervisionato**. È lo stesso meccanismo con cui il
-capitolo sulla visione ha fatto imparare a guardare senza etichette, e con cui
-più avanti si riconoscerà il parlato senza trascrizioni e si allineeranno le
-immagini alle loro didascalie. Il capitolo sull'auto-supervisione lo tratta
+{doc}`capitolo sulla visione </VisioneArtificiale/overview>` ha fatto imparare
+a guardare senza etichette, e con cui più avanti si riconoscerà il parlato
+senza trascrizioni e si allineeranno le immagini alle loro didascalie. Il
+{doc}`capitolo sull'auto-supervisione </AutoSupervisione/overview>` lo tratta
 come il paradigma che è, e dice anche **perché** ha finito per reggere quasi
 tutto: la correzione che il modello riceve a ogni singola parola è
 incomparabilmente più ricca di un'etichetta scritta sotto una fotografia, e di
@@ -122,17 +126,16 @@ un «hai vinto» a fine partita.
 
 ## La ricetta a tre ingredienti: le leggi di scala
 
-Perché proprio *grandi* modelli? Non è una moda, è una regolarità che qualcuno
-ha misurato.
+Perché proprio *grandi* modelli? È una regolarità che qualcuno ha misurato.
 
-Prima però serve sapere che cosa si misura, perché in questa sezione «migliora»
-e «sbaglia meno» ricorrono di continuo. Un modello di linguaggio ha un solo
+Prima però serve sapere che cosa si misura, perché «migliora» e «sbaglia meno»
+sono espressioni che tornano di continuo. Un modello di linguaggio ha un solo
 compito, indovinare la parola dopo, e su quel compito si può dargli un voto
 preciso: gli si fa leggere del testo che non ha mai visto e si guarda quanta
 probabilità aveva assegnato alle parole che poi sono comparse davvero. Se ne
 dava tanta, ha indovinato bene; se ne dava poca, male. Quel numero, che va
-verso il basso quando il modello impara, è **l'errore** di cui si parla qui
-sotto (in gergo la *loss*), e più avanti in questa pagina lo ritroveremo sotto
+verso il basso quando il modello impara, è **l'errore** (in gergo la *loss*),
+e quando si tratterà di dare un voto a un modello finito lo ritroveremo sotto
 un altro nome, la perplessità, che è lo stesso numero raccontato come un dado.
 
 Tra il 2020 e il 2022 due lavori hanno misurato, con la pazienza di centinaia
@@ -233,8 +236,8 @@ incomparabili.
 Una parola di prudenza, per intanto: quello che le leggi di scala garantiscono
 è che il modello sbaglierà un po’ meno a indovinare la parola dopo, non che a
 una certa taglia gli spunterà una certa abilità. Che le abilità spuntino
-davvero all'improvviso è una faccenda controversa, e ha una sezione tutta sua
-in fondo a questa pagina.
+davvero all'improvviso è una faccenda controversa, e le abilità emergenti
+hanno un paragrafo tutto loro.
 
 ## Generare: l'arte di scegliere la parola dopo
 
@@ -243,7 +246,8 @@ quelle possibili. Per *scrivere*, però, bisogna sceglierne una davvero, poi
 un'altra, poi un'altra ancora, e il modo in cui la si sceglie cambia moltissimo
 il testo che ne esce.
 
-I due modi classici li abbiamo già visti nel capitolo sull'NLP. Il primo è
+I due modi classici li abbiamo già visti nella {doc}`sezione sulla traduzione
+con le reti </NaturalLanguageProcessing/seq2seq-traduzione>`. Il primo è
 prendere ogni volta la parola più probabile e tirare dritto (si chiama
 *greedy*, cioè ingorda). Il secondo è meno miope: invece di impegnarsi subito,
 si portano avanti in parallelo le $k$ continuazioni più promettenti, si vede
@@ -279,8 +283,8 @@ fondo e ricomincia da capo.
 
 Nella {numref}`fig-generazione-autoregressiva` la scelta cade ogni volta sul
 candidato più probabile: è la decodifica *greedy*, quella che produce i loop
-di cui sopra. Le manopole che seguono servono esattamente a **non** far
-vincere sempre la barra più lunga.
+di cui sopra. Le manopole che seguono servono esattamente a non far vincere
+sempre la barra più lunga.
 
 `````{tab} Elementare
 Tre manopole, tutte con la stessa filosofia: quanta sorpresa vogliamo?
@@ -502,8 +506,8 @@ manuale del linguaggio di programmazione, perché non è un linguaggio di
 programmazione. Sotto non c'è nessuno che esegue un ordine: c'è una macchina
 che, dato tutto quello che ha davanti, calcola quanto è probabile ogni
 possibile continuazione, e ne sceglie una. Se cambi quello che ha davanti,
-cambiano le probabilità; l'istruzione non è un comando, è un pezzo di contesto
-come tutti gli altri, e il confine tra "istruire" e "suggestionare" è sottile.
+cambiano le probabilità; l'istruzione è un pezzo di contesto come tutti gli
+altri e non un comando, e il confine tra "istruire" e "suggestionare" è sottile.
 Il *prompt engineering*
 (l'artigianato di formulare richieste che funzionano) è utile, ma va preso per
 quello che è: una collezione di euristiche su un sistema che nessuno, finora,
@@ -530,15 +534,19 @@ perché il linguaggio ha una sua imprevedibilità di fondo che nessun modello pu
 togliere: quella che Shannon misurava coprendo una riga di testo e chiedendo a
 una persona di indovinare come andava avanti.
 
-L'unica avvertenza è che il numero non si confronta fra testi diversi. La
+L'avvertenza è che il numero non si confronta fra testi diversi. La
 perplessità su una raccolta di leggi e quella su un romanzo non si possono
 mettere sulla stessa riga, perché le leggi sono scritte in modo molto più
-prevedibile: confrontare due modelli ha senso solo sullo stesso testo.
+prevedibile: confrontare due modelli ha senso solo sullo stesso testo, e
+spezzato in pezzi allo stesso modo.
 `````
 
 `````{tab} Superiore
-In formula, con la stessa definizione del capitolo di matematica e di quello
-sull'NLP, la perplessità è $2^H$, dove $H$ è la cross-entropia media per token
+In formula, con la stessa definizione della
+{doc}`sezione sulla teoria dell'informazione </Matematica/teoria-informazione>`
+e di quella {doc}`sui modelli n-gram
+</NaturalLanguageProcessing/modelli-ngram>`, la perplessità è $2^H$, dove $H$
+è la cross-entropia media per token
 **espressa in bit**. La parola «bit» non è un vezzo, ed è il punto in cui si
 sbaglia: la cross-entropia del pretraining si scrive col logaritmo naturale,
 quindi la loss per token $\bar{\mathcal{L}}$ è in *nat* e non in bit.
@@ -600,8 +608,8 @@ inquietante che ingrandendo un modello si ottengano capacità non previste.
 :alt: "Due grafici affiancati che misurano lo stesso modello al crescere della scala. A sinistra, con una metrica discontinua come la risposta esatta sì o no, la curva resta piatta e poi salta di colpo: sembra un'abilità comparsa all'improvviso. A destra, con una metrica continua come la distanza di edit, la stessa crescita appare come un miglioramento graduale e regolare."
 :width: 100%
 
-Lo stesso modello, due righelli. Il gradino di sinistra non è nei dati: è
-nel modo di dare i voti, che assegna zero a una risposta quasi giusta finché
+Lo stesso modello, due righelli. Il gradino di sinistra sta nel modo di dare i
+voti, non nei dati: quel modo assegna zero a una risposta quasi giusta finché
 non diventa esatta.
 ```
 
@@ -744,14 +752,14 @@ capitale della Francia?» può rispondere «Qual è la capitale della Spagna? Qu
 completare la lista è probabilissimo. Trasformare il completatore in un
 interlocutore che risponde, segue istruzioni e rifiuta le richieste dannose
 richiede una seconda fase di addestramento, con ricette proprie: è il
-**post-training**, e ha una sezione tutta sua poco più avanti. Prima però
+**post-training**, e ha una {doc}`sezione tutta sua <post-training>`. Prima però
 conviene fermarsi su un'idea architetturale che le leggi di scala rendono quasi
 obbligata. Crescere conviene, questo lo abbiamo visto; ma per scrivere una sola
 parola il modello deve moltiplicarla, piano dopo piano, per **tutte** le sue
 manopole, e più le manopole sono tante più quel giro costa: la bolletta di ogni
 singola parola sale insieme alla taglia del modello. A meno di non fare in modo
 che ogni parola passi solo per un pezzetto delle manopole, che è esattamente
-l'idea della sezione seguente.
+l'idea della {doc}`sezione sui modelli a esperti <mixture-of-experts>`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -766,7 +774,7 @@ l'idea della sezione seguente.
   lingua stessa. Gli ingredienti, poi, vanno **bilanciati**, e la regola
   pratica è una ventina di pezzi di testo per ogni manopola: «quanto è
   grande?», da sola, ha smesso di essere una domanda sensata.
-- Per scrivere, il modello **non** prende sempre la parola più probabile:
+- Per scrivere, il modello non prende sempre la parola più probabile:
   verrebbe un testo noioso, che si incarta a ripetere sé stesso. Tira un dado,
   e tre manopole decidono quanto quel dado è truccato (la **temperatura**) e
   quante carte restano nel mazzo da cui pescare (il **top-k** e il **top-p**).

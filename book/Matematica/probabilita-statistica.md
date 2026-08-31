@@ -340,8 +340,8 @@ parole sembra una promessa e guardato sembra un trucco.
 
 Un dado è **piatto**: nessuna faccia è più probabile di un'altra. Eppure la
 somma di tre dadi, ripetuta seicento volte, si dispone da sé lungo la campana.
-La curva sovrapposta non è stata disegnata sopra le barre a cose fatte: è la
-campana che il teorema prevede prima ancora di tirare i dadi, quella centrata
+La curva sovrapposta è la campana che il teorema prevede prima ancora di
+tirare i dadi, e non un disegno fatto sopra le barre a cose fatte: quella centrata
 sulla somma media dei tre e larga di conseguenza, e i dadi le danno ragione.
 ```
 
@@ -352,13 +352,10 @@ fila di barre tutte uguali, e la campana arriva lo stesso. È questo il senso
 di «qualunque sia la forma dei singoli contributi».
 
 La seconda va detta con più cautela di quanto si faccia di solito. Qui bastano
-tre addendi, ma non è un merito del teorema: è un merito del dado, che è
-**simmetrico**, cioè non ha una coda più lunga dell'altra. È proprio la
-simmetria a far arrivare in fretta la campana, ed è per questo che il
-caso più «piatto» è anche il più facile. Con una distribuzione di partenza
-molto sbilanciata (un evento che capita una volta su cento, un valore che ogni
-tanto è enorme) la campana non si vede nemmeno dopo trenta addendi. Il teorema
-promette l'arrivo, non il tempo di percorrenza.
+tre addendi, ma il merito è del dado più che del teorema: è **simmetrico**,
+cioè non ha una coda più lunga dell'altra. È proprio la simmetria a far
+arrivare in fretta la campana, ed è per questo che il caso più «piatto» è anche
+il più facile.
 
 Lo stesso fenomeno si vede con le monete, ed è il caso che ricorre più spesso
 nel machine learning: contare i successi in una serie di prove «sì/no»
@@ -444,7 +441,7 @@ test dice che sta bene.
 ```
 
 Il test non è peggiorato di una virgola fra {numref}`fig-bayes-test` e
-l'esempio di prima: sono cambiati i malati. È la ragione per cui la stessa
+l'esempio di prima: a cambiare sono stati i malati. È la ragione per cui la stessa
 identica prova diagnostica va interpretata diversamente in uno screening di
 massa e in un reparto, dove chi arriva è già stato selezionato dai sintomi.
 
@@ -633,6 +630,354 @@ test corretto è quello di McNemar sui disaccordi, non il confronto fra due
 intervalli, che è conservativo e può nascondere differenze reali.
 
 `````
+
+## Escludere il caso: l'ipotesi nulla e il p-value
+
+Un intervallo di confidenza sa dire «non lo so», ed è già molto. Ma prima o poi
+qualcuno chiede una risposta secca: questo modello è meglio dell'altro, sì o no?
+Questa serie di dati è cambiata rispetto al mese scorso, sì o no? Una risposta
+secca si può dare, a patto di dichiarare quanto spesso si è disposti a
+sbagliarla.
+
+`````{tab} Elementare
+
+Cento lanci di una moneta, sessanta teste. È truccata?
+
+La mossa che la statistica fa, e che sorprende chi la incontra la prima volta,
+è cominciare dalla risposta che si vorrebbe scartare. Si suppone la moneta
+**onesta**, e si guarda quanto sarebbe strano un sessanta contro quaranta se lo
+fosse davvero. Quella supposizione si chiama **ipotesi nulla**. Non si scrive
+perché ci si creda: si scrive perché è l'unica su cui si sappiano fare i conti.
+«Onesta» dice esattamente che numeri aspettarsi; «truccata» non dice niente,
+perché truccata al cinquantacinque per cento e truccata al novanta sono due
+mondi diversi.
+
+Il conto a mente si può fare, con la regola delle campane. Su cento lanci di
+una moneta onesta le teste si accumulano attorno a cinquanta, e la larghezza
+tipica di quella campana è la radice di un quarto dei lanci: un quarto di cento
+fa venticinque, la cui radice è **cinque** teste. (È lo stesso conto del
+margine dei sondaggi, dove con cento intervistati venivano dieci punti: là
+erano due larghezze, cioè il margine al $95\%$, qui è una sola.) Sessanta sta
+dunque due larghezze sopra il centro, e fuori da due larghezze si finisce circa
+cinque volte su cento. «Circa cinque su cento» però non basta a decidere,
+perché la soglia è proprio cinque su cento, e la campana è un'approssimazione
+di un conto che si può fare esatto, contando quante file di cento testa-o-croce
+hanno sessanta teste o più. Fatto esatto: uno sbilanciamento di sessanta e più
+(o di quaranta e meno) capita a una moneta onesta $57$ volte su mille, cioè
+$0{,}057$. La regola a mente dava il paese giusto, la decisione la prende la
+cifra. Quel numero, cioè quanto spesso il caso da solo produrrebbe una
+stranezza almeno pari a quella vista, si chiama **$p$**, o $p$-value.
+Attenzione alla lettera: questa $p$ è una proprietà della *prova* appena fatta,
+e non ha niente a che vedere con la $p$ con cui poco fa si indicava la
+probabilità che esca testa, che è una proprietà *della moneta*.
+
+Si contano anche i quaranta e meno perché la domanda era «è truccata», e non «è
+truccata a favore di testa». Chi decide il verso dopo aver visto il risultato ha
+due possibilità di gridare al trucco invece di una, e quelle possibilità in più
+se le prende anche quando il trucco non c'è.
+
+Chi la prova sul serio decide **prima di lanciare** quanto piccolo debba essere
+$p$ perché si smetta di credere all'ipotesi nulla. Per convenzione cinque su
+cento, e quel numero non dice quanto è forte la prova: dice quanto spesso si
+accetta di accusare una moneta onesta. Qui $p$ vale $0{,}057$, appena sopra la
+soglia, e la moneta non viene accusata: per accusarla ci sarebbero volute
+sessantuno teste.
+
+Il verdetto ha due facce, e sono due errori diversi. Si può accusare una moneta
+onesta, e quanto spesso capita lo si è deciso a tavolino. Oppure si può lasciar
+passare una moneta truccata, e questo capita tanto più spesso quanto meno lanci
+si sono fatti: con venti lanci e dodici teste $p$ vale $0{,}503$, cioè con una
+prova così corta la stessa proporzione di teste non dice più niente. Non
+accusare non è assolvere. E i due errori si scambiano: alzare l'asticella per
+accusare vuol dire lasciar passare più monete truccate, e viceversa. L'unico
+modo di stringerli tutti e due insieme è lanciare di più.
+
+E c'è un modo di leggere $p$ che è sbagliato, ed è quello che viene in mente per
+primo: $p$ non è la probabilità che la moneta sia onesta. Per dire quella
+servirebbe sapere quante monete truccate girano in giro, che è il passaggio del
+teorema di Bayes visto prima. $p$ risponde a una domanda sola: **se fosse
+onesta**, quanto spesso vedrei una cosa così?
+
+`````
+
+`````{tab} Superiore
+
+Si fissa un'ipotesi nulla $H_0$ (la moneta è onesta, $\pi = 1/2$), un'alternativa
+$H_1$, e una statistica $T$ calcolata sui dati. Il **$p$-value** è
+
+$$
+p = \Pr\big(T \text{ almeno estrema quanto } T_{\text{oss}} \;\big|\; H_0\big),
+$$
+
+dove $T_{\text{oss}}$ è il valore osservato e «almeno estrema» va nel verso
+dell'alternativa (bilaterale, se conta lo sbilanciamento in entrambi i sensi).
+Con $n = 100$ e $60$ successi, la binomiale esatta dà $p = 0{,}057$ (bilaterale
+come raddoppio della coda minore, la convenzione più diffusa; la variante che
+somma tutte le probabilità non superiori a quella osservata qui coincide, perché
+la binomiale con $\pi = 1/2$ è simmetrica).
+
+La discretezza costa qualcosa, e va detto perché si vede nei conti. I valori
+ottenibili di $p$ sono un insieme finito, quindi il livello nominale $\alpha$
+non è quasi mai raggiunto: con $n = 100$ il più piccolo rifiuto ammesso è a $61$
+successi, e la taglia effettiva del test è $0{,}035$ invece di $0{,}05$. Un test
+esatto su una statistica discreta è **conservativo**, e un conto di falsi
+positivi fatto con $\alpha$ nominale ne prevede più di quanti ne arrivino.
+
+Il livello $\alpha$ si fissa **prima**, e Neyman e Pearson
+{cite}`neyman1933problem` gli danno il significato che ancora si usa: è la
+frequenza con cui la procedura rifiuta $H_0$ quando $H_0$ è vera, cioè l'errore
+**di prima specie**. L'errore di seconda specie $\beta$ è non rifiutare quando
+$H_1$ è vera, e $1-\beta$ è la **potenza**. A parità di dati i due si scambiano;
+per stringerli insieme serve $n$.
+
+La dualità con la sezione precedente vale **a parità di famiglia**: rifiutare
+$H_0: \theta = \theta_0$ al livello $\alpha$ equivale a non trovare $\theta_0$
+dentro l'intervallo di confidenza al $1-\alpha$ **costruito con lo stesso
+metodo**. L'intervallo di Wald della sezione precedente e il test binomiale
+esatto di questa non sono duali fra loro, e chi li mescola trova casi in cui
+uno rifiuta e l'altro contiene, e con $n = 100$ succede proprio alle sessanta
+teste da cui questo conto è partito. Le coppie giuste: Clopper-Pearson con il
+test binomiale esatto, Wald con il test $z$ che stima l'errore standard dalla
+proporzione osservata, Wilson con il test $z$ che lo calcola sotto $H_0$. Test
+e intervallo dicono la stessa cosa in due modi, e l'intervallo dice in più
+*quali* valori restano compatibili.
+
+Sull'interpretazione l'American Statistical Association ha ritenuto necessario un
+comunicato {cite}`wasserstein2016asa`, sei principi di cui il primo dice che
+cosa il $p$-value fa (indica quanto i dati siano incompatibili con un modello
+statistico specificato) e due dicono che cosa non fa: non misura la probabilità
+che l'ipotesi studiata sia vera, né la probabilità che i dati siano stati
+prodotti dal solo caso; e nessuna conclusione dovrebbe reggersi soltanto sul
+fatto che un $p$-value superi o non superi una soglia. La prima delle due
+proibizioni è il passaggio da $\Pr(\text{dati} \mid H_0)$ a
+$\Pr(H_0 \mid \text{dati})$, che senza una probabilità a priori non si fa.
+
+Il punto di rottura è a monte del conto. Il $p$-value ha il significato dichiarato
+solo se la statistica, il verso e la soglia sono stati scelti **prima** di
+guardare i dati. Chi prova più definizioni di errore, più finestre temporali, più
+sottogruppi e riporta la migliore ha misurato la propria ostinazione, ed è la
+stessa porta da cui entra il guaio della molteplicità.
+
+`````
+
+### Mille domande insieme: Bonferroni e le false scoperte
+
+Il guaio comincia quando la domanda non è una sola. Un programma che sorveglia
+un modello al lavoro tiene d'occhio trecento grandezze e per ciascuna chiede «è
+cambiata?»; uno studio di genetica misura ventimila geni; un banco di prova
+confronta sessanta modi di regolare la stessa rete. La soglia che regge una
+domanda non regge trecento.
+
+`````{tab} Elementare
+
+Una scatola con mille monete, novecento oneste e cento truccate, e da fuori non
+si vede quali. Le truccate escono testa il sessantacinque per cento delle volte:
+al sessanta, come si è appena visto, in cento lanci non si distinguerebbero. Le
+si lancia cento volte ciascuna e si accusa quella che sbilancia troppo, con la
+solita soglia di cinque su cento, cioè da sessantuno teste in su.
+
+Il guaio si vede prima ancora di aprire la scatola. La soglia prometteva cinque
+accuse ingiuste ogni cento monete oneste, che con novecento farebbero
+quarantacinque; saranno una trentina, perché le teste sono un numero intero e
+la soglia non si può centrare esattamente, ma trenta o quarantacinque il punto
+non cambia. In un elenco di accusate lungo un centinaio, decine sono lì per
+caso, e chi legge l'elenco non ha modo di sapere quali.
+
+La prima riparazione alza l'asticella in proporzione al numero di domande: con
+mille monete si chiede $0{,}05$ diviso mille, cioè cinque su centomila. Il conto
+che la giustifica è di una riga: ogni moneta onesta viene accusata cinque volte
+su centomila, le monete sono mille, e mille per cinque su centomila fa cinque
+centesimi di accusa ingiusta a scatola. Cioè si accusa un innocente in una
+scatola su venti: di nuovo cinque su cento, ma stavolta riferito all’**intera**
+scatola invece che a ogni singola moneta. Si chiama correzione di
+**Bonferroni**, ed è prudentissima. Il prezzo lo si vede subito: con
+un'asticella così in alto smettono di essere accusate anche quasi tutte le
+monete davvero truccate.
+
+La seconda riparazione cambia la promessa, e si chiama **Benjamini-Hochberg**.
+Invece di «quasi certamente non accuso nemmeno una moneta onesta», si promette
+«fra le monete che accuso, in media non più del cinque per cento sono oneste»,
+e anzi qualcosa meno, tanto meno quante più truccate ci sono nella scatola. In
+media su tante scatole, perché su una singola scatola nessuno può garantire
+niente; ed è una promessa più debole, che proprio per questo permette di
+accusarne molte di più.
+
+La ricetta si mette in una riga. Si allineano le mille monete dalla più
+sbilanciata alla meno, e alla moneta che sta al posto numero $k$ si chiede la
+soglia divisa per **mille diviso $k$**: alla prima la soglia divisa per mille,
+come faceva Bonferroni; alla seconda divisa per cinquecento; alla decima divisa
+per cento; alla centesima divisa per dieci. Si scende finché una ce la fa, si
+segna quel posto, e si accusano tutte le monete da lì in su. Sì: nel gruppo
+finisce anche qualcuna che da sola non ce l'avrebbe fatta, ed è voluto. Il nome
+della cosa che si tiene sotto controllo è **tasso di false scoperte**, e
+«scoperta» è il nome che si dà a un'accusa quando il colpevole non è una moneta
+ma un gene o un guasto.
+
+Ed è anche la ragione per cui la promessa più debole permette di accusarne di
+più. Bonferroni giudica ogni moneta da sola, come se fosse l'unica; qui una
+moneta un po' sospetta viene creduta anche per la compagnia in cui si trova,
+perché sopra di lei nella fila ce ne sono decine ancora più sbilanciate, e
+decine di monete sbilanciate tutte insieme sono una cosa che il caso da solo non
+produce.
+
+Quale delle due serva dipende da che cosa succede dopo l'accusa. Se ogni
+segnalazione fa scattare qualcosa di costoso, e una segnalazione sbagliata si
+paga cara, la prudenza di Bonferroni è quella giusta. Se invece la segnalazione
+apre soltanto un controllo, e di controlli se ne possono fare a decine, tenere
+bassa la quota di controlli inutili serve molto più che evitarne uno a tutti i
+costi.
+
+`````
+
+`````{tab} Superiore
+
+Con $m$ test simultanei, sia $V$ il numero di ipotesi nulle vere rifiutate
+(falsi positivi) e $R$ il numero totale di rifiuti. Le due grandezze da
+controllare sono
+
+$$
+\mathrm{FWER} = \Pr(V \ge 1),
+\qquad
+\mathrm{FDR} = \mathbb{E}\!\left[\frac{V}{R}\right]
+$$
+
+(con $V/R$ posto a $0$ quando $R = 0$). La prima è la probabilità di sbagliare
+**almeno una volta** in tutta la famiglia; la seconda è la quota attesa di
+errori fra le scoperte annunciate.
+
+La correzione di **Bonferroni** confronta ogni $p$-value con $\alpha/m$
+{cite}`dunn1961multiple`. Che controlli la FWER segue dalla disuguaglianza di
+Boole, $\Pr(\bigcup_i A_i) \le \sum_i \Pr(A_i)$, e quindi **non chiede
+indipendenza**: è la sua forza e la ragione della sua prudenza. Una cosa la
+chiede, e va detta perché è quella che si rompe più spesso: che ogni $p$-value
+sia valido di per sé, cioè $\Pr(p_i \le t \mid H_0) \le t$. Con $p$-value
+ottimisti Bonferroni fallisce anche senza nessuna dipendenza. Un fratello
+maggiore gratuito esiste: la procedura di Holm ordina i $p$-value e allenta la
+soglia man mano, controlla la stessa FWER sotto le stesse ipotesi e rifiuta
+sempre almeno quanto Bonferroni.
+
+La procedura di **Benjamini e Hochberg** {cite}`benjamini1995controlling`
+controlla invece la FDR a un livello $q$: si ordinano i $p$-value
+$p_{(1)} \le \dots \le p_{(m)}$, si cerca il più grande $k$ tale che
+
+$$
+p_{(k)} \le \frac{k}{m}\,q,
+$$
+
+e si rifiutano le prime $k$ ipotesi. Sotto indipendenza, e sotto la dipendenza
+positiva che Benjamini e Yekutieli chiamano PRDS
+{cite}`benjamini2001control`, la garanzia è $\mathrm{FDR} \le q\,m_0/m$, dove
+$m_0$ è il numero di ipotesi nulle vere: con il $90\%$ di nulle vere e
+$q = 0{,}05$, il limite effettivo è $4{,}5\%$. Fuori di lì la garanzia cade e
+serve la versione conservativa $q/\sum_{j \le m} 1/j$. E come Bonferroni,
+anche questa presuppone $p$-value validi: se sotto $H_0$ sono conservativi,
+come lo sono i $p$-value binomiali delle monete, la FDR misurata resta sotto il
+limite per quella ragione e non per merito della procedura.
+
+Il punto di rottura sta nella parola *attesa*. La FDR è una media su ripetizioni:
+sul singolo insieme di dati la quota di falsi fra le scoperte può essere ben
+più alta di $q$, e nessuna procedura può garantire il contrario. La scelta fra
+le due grandezze è quindi una scelta di mestiere: confermare una singola
+affermazione chiede la FWER, esplorare ventimila geni chiede la FDR.
+
+`````
+
+I due $p$ delle monete singole e la differenza fra le tre strade si misurano
+nello stesso blocco. Per la scatola: mille monete, cento delle quali escono
+testa il $65\%$ delle volte e le altre novecento oneste, cento lanci a testa, e
+il $p$ calcolato contando le combinazioni; il tutto ripetuto trecento volte con
+scatole sorteggiate in modo diverso, perché una quota media si guarda su molte
+prove e con trenta non si era ancora assestata.
+
+```python
+import numpy as np
+from math import comb
+
+M, TRUCCATE, LANCI = 1000, 100, 100
+SBILANCIO, ALFA, PROVE = 0.65, 0.05, 300
+
+def massa_binomiale(n):
+    return [comb(n, i) / 2**n for i in range(n + 1)]
+
+def tabella_p(n):
+    """Per ogni k, quanto spesso una moneta onesta sbilancia almeno quanto k teste."""
+    massa = massa_binomiale(n)
+    return [min(1.0, 2 * min(sum(massa[:k+1]), sum(massa[k:]))) for k in range(n + 1)]
+
+tavola = tabella_p(LANCI)
+massa = massa_binomiale(LANCI)
+prima = next(k for k in range(LANCI // 2 + 1, LANCI + 1) if tavola[k] <= ALFA)
+taglia = sum(massa[k] for k in range(LANCI + 1) if tavola[k] <= ALFA)
+print(f"larghezza tipica della campana dei {LANCI} lanci: {(LANCI * 0.25)**0.5:.1f} teste")
+print(f"p di 60 teste su 100 lanci: {tavola[60]:.3f}")
+print(f"p di 12 teste su  20 lanci: {tabella_p(20)[12]:.3f}")
+print(f"prima accusata a {prima} teste; soglia dichiarata {ALFA}, "
+      f"quota vera di oneste accusate {taglia:.3f}")
+print()
+
+truccata = np.zeros(M, dtype=bool)
+truccata[M - TRUCCATE:] = True
+
+def una_scatola(seme):
+    rng = np.random.default_rng(seme)
+    teste = rng.binomial(LANCI, np.where(truccata, SBILANCIO, 0.5))
+    p = np.array([tavola[k] for k in teste])
+    ordine = np.argsort(p)                       # Benjamini-Hochberg
+    sotto = np.nonzero(p[ordine] <= ALFA * np.arange(1, M + 1) / M)[0]
+    bh = np.zeros(M, dtype=bool)
+    if len(sotto):
+        bh[ordine[:sotto[-1] + 1]] = True
+    return {"nessuna correzione": p < ALFA, "Bonferroni": p < ALFA / M, "Benjamini-Hochberg": bh}
+
+conti = {nome: [] for nome in ("nessuna correzione", "Bonferroni", "Benjamini-Hochberg")}
+for seme in range(PROVE):
+    for nome, accusate in una_scatola(seme).items():
+        n = accusate.sum()
+        conti[nome].append((n, (accusate & ~truccata).sum() / n if n else 0.0,
+                            (accusate & truccata).sum()))
+
+for nome, righe in conti.items():
+    n, quota, trovate = (np.mean([r[i] for r in righe]) for i in range(3))
+    print(f"{nome:20} accusate {n:6.1f}   oneste fra le accusate {100*quota:5.1f}%"
+          f"   truccate trovate {trovate:5.1f} su {TRUCCATE}")
+```
+
+```text
+larghezza tipica della campana dei 100 lanci: 5.0 teste
+p di 60 teste su 100 lanci: 0.057
+p di 12 teste su  20 lanci: 0.503
+prima accusata a 61 teste; soglia dichiarata 0.05, quota vera di oneste accusate 0.035
+
+nessuna correzione   accusate  115.3   oneste fra le accusate  27.9%   truccate trovate  83.0 su 100
+Bonferroni           accusate   12.7   oneste fra le accusate   0.2%   truccate trovate  12.7 su 100
+Benjamini-Hochberg   accusate   48.6   oneste fra le accusate   3.5%   truccate trovate  46.9 su 100
+```
+
+I numeri delle ultime tre righe sono medie su trecento scatole, ed è per questo
+che hanno la virgola. Senza correzione si annunciano centoquindici scoperte e
+più di una su quattro è rumore: la soglia del cinque per cento sta facendo il
+suo mestiere una domanda alla volta, e chi legge l'elenco intero non ha nessuna
+delle garanzie che crede di avere. Bonferroni porta i falsi quasi a zero e trova
+dodici monete truccate su cento; Benjamini-Hochberg ne trova quarantasette, e la
+quota di oneste fra le accusate resta al $3{,}5\%$, sotto il $4{,}5\%$ promesso
+(che è il cinque per cento moltiplicato per la quota di monete oneste nella
+scatola). L'ultima colonna, quante truccate si trovano su cento, ha un nome: è
+la **potenza** della procedura. Le tre righe descrivono tre promesse diverse,
+non una classifica, e la domanda giusta è quale delle tre serva a chi legge il
+risultato.
+
+Un conto va rifatto, perché non torna, e la ragione è istruttiva. Senza
+correzione le accusate sono $115$ e le truccate trovate $83$: le oneste accusate
+sono quindi una trentina, mentre il cinque per cento di novecento ne farebbe
+prevedere quarantacinque. La spiegazione sta nella quarta riga stampata. Le
+teste sono un numero intero, e fra sessanta e sessantuno non c'è niente: a
+sessanta $p$ vale $0{,}057$ e non basta, a sessantuno vale $0{,}035$ e basta. La
+soglia dichiarata è cinque su cento, quella che si ottiene davvero è tre e mezzo
+su cento, e il test è più prudente di quanto prometta. Da lì viene anche il
+margine fra il $3{,}5\%$ misurato e il $4{,}5\%$ promesso: con $p$-value
+continui quel margine sparirebbe. È il primo posto in cui guardare quando un
+conto sui $p$-value non torna.
+
 
 ## Correlazione non è causalità
 
@@ -947,6 +1292,23 @@ print(posterior)       # ~0.167: solo il 17% dei positivi è davvero malato
 - Un'accuratezza è una **stima**, come un sondaggio elettorale: su $500$ esempi
   vale circa $3$ punti in più o in meno, e differenze più piccole di così sono
   rumore, non progresso.
+- Per una risposta secca («è cambiato qualcosa, sì o no?») si parte dalla
+  risposta che si vuole scartare: si suppone che sia stato **il caso** e si
+  guarda quanto spesso il caso, da solo, produrrebbe una stranezza come quella
+  vista. Quel «quanto spesso» è il **$p$**, e la soglia sotto cui lo si accetta
+  (per convenzione cinque su cento) dice quante volte si è disposti ad accusare
+  un innocente, non quanto è forte la prova. Non accusare non è assolvere: con
+  pochi dati non si distingue una moneta truccata da una onesta.
+- E $p$ **non** è la probabilità che l'ipotesi sia vera: per quella servirebbe
+  anche sapere quanto la cosa cercata è rara, cioè di nuovo Bayes.
+- Facendo mille domande insieme con la solita soglia, decine di risposte
+  positive arriverebbero per puro caso anche se non ci fosse assolutamente
+  niente da trovare. **Bonferroni** stringe la soglia
+  dividendola per il numero di domande, così è improbabile sbagliarne anche una
+  sola, e in cambio quasi non trova più niente; **Benjamini-Hochberg** promette
+  invece che fra le scoperte annunciate la quota di errori resti bassa in
+  media, e ne trova molte di più. La scelta dipende da quanto costa una
+  segnalazione sbagliata.
 - Due grandezze che salgono e scendono insieme (i gelati e gli annegamenti)
   bastano a **prevedere** finché il mondo resta com'è, non a **decidere** un
   intervento: dietro le due curve c'è una causa comune, il caldo, e vietare il
@@ -974,6 +1336,21 @@ print(posterior)       # ~0.167: solo il 17% dei positivi è davvero malato
   come $1/\sqrt{n}$: dimezzare l'incertezza costa quattro volte i dati.
 - Un'accuratezza è una **stima**: su $500$ esempi il margine al $95\%$ è di
   circa $\pm 3$ punti, e differenze più piccole sono rumore.
+- Il **$p$-value** è $\Pr(T \text{ almeno estrema} \mid H_0)$, e il livello
+  $\alpha$ (errore di prima specie) si fissa **prima**: rifiutare a livello
+  $\alpha$ equivale a non trovare il valore nullo nell'intervallo di confidenza
+  al $1-\alpha$ **costruito con lo stesso metodo** (Wald con il test $z$,
+  Clopper-Pearson con il binomiale esatto). Su una statistica discreta il
+  livello nominale non è raggiunto e il test è conservativo: con $n=100$ e
+  $\alpha = 0{,}05$ la taglia vera è $0{,}035$. Non misura $\Pr(H_0 \mid \text{dati})$, e perde ogni
+  significato se statistica e soglia sono scelte dopo aver visto i dati.
+- Con $m$ test simultanei si controlla la **FWER** $= \Pr(V \ge 1)$ con
+  Bonferroni ($\alpha/m$, valida senza ipotesi di indipendenza per la
+  disuguaglianza di Boole) oppure la **FDR** $= \mathbb{E}[V/R]$ con
+  Benjamini-Hochberg (il più grande $k$ con $p_{(k)} \le kq/m$), che sotto
+  indipendenza o dipendenza positiva (PRDS) garantisce
+  $\mathrm{FDR} \le q\,m_0/m$. Entrambe presuppongono $p$-value validi, e la
+  FDR è una media su ripetizioni, non una promessa su questo insieme di dati.
 - La **correlazione** basta per predire dentro la stessa distribuzione, non per
   decidere un intervento: confondenti e collider producono correlazioni senza
   causalità.

@@ -38,7 +38,7 @@ sezioni precedenti, il ciclo osserva → ragiona → agisci **riempie il contest
 da sé**: ogni pensiero, ogni chiamata a uno strumento, ogni osservazione di
 ritorno è testo che si accumula. Dopo dieci passi la finestra trabocca di
 cronologia, cioè dell'elenco di tutto quel che si è detto e fatto finora, e
-decidere cosa tenere e cosa buttare non è un dettaglio: è ciò che distingue un
+decidere cosa tenere e cosa buttare è ciò che distingue un
 agente che arriva in fondo da uno che si perde.
 
 Qui ne diamo la versione essenziale, quella che serve a un agente: come si
@@ -57,8 +57,8 @@ un'applicazione vera fra l'utente e il modello c'è di mezzo un programma, ed è
 quel programma a comporre il testo che il modello riceve: prende l'ultima cosa
 scritta dall'utente e le cuce attorno tutto il resto, ogni volta da capo.
 
-Il prompt, allora, non è una frase scritta di getto: è un **oggetto montato a
-pezzi**, e i pezzi hanno ruoli diversi. Le istruzioni di fondo, gli esempi che
+Il prompt, allora, è un **oggetto montato a pezzi** e non una frase scritta di
+getto, e i pezzi hanno ruoli diversi. Le istruzioni di fondo, gli esempi che
 mostrano il comportamento voluto, il formato preciso in cui vogliamo la
 risposta, e solo alla fine la richiesta dell'utente.
 
@@ -110,8 +110,8 @@ prompt è codice**. Quella riga d'istruzione che orienta il modello è fragile
 software. Se ne tiene la **storia**, cioè si conserva ogni versione con la data
 e il motivo del cambiamento, invece di sovrascriverla; la si prova su una
 batteria di casi noti; e prima di sostituirla si fanno girare le due versioni
-in parallelo sugli stessi casi, per vedere quale risponde meglio. Non è
-pignoleria: è l'unico modo di sapere se la modifica di ieri ha migliorato o
+in parallelo sugli stessi casi, per vedere quale risponde meglio. È l'unico
+modo di sapere se la modifica di ieri ha migliorato o
 peggiorato le risposte di oggi. Il prompt magico non esiste; esiste il prompt
 *provato*.
 
@@ -254,7 +254,7 @@ progressivo**: quando la cronologia della conversazione si allunga, la si
 comprime in un sunto che ne conserva l'essenziale a costo di token molto
 minore, liberando finestra. La terza sono i **fatti strutturati** (preferenze,
 identità, vincoli dell'utente) tenuti a parte e reiniettati quando pertinenti.
-Il nodo difficile non è memorizzare: è la **politica di rimozione**
+Il nodo difficile è la **politica di rimozione**
 (*eviction*) (cosa promuovere a lungo termine, cosa comprimere, cosa
 dimenticare), perché la finestra è il collo di bottiglia e ogni token speso a
 ricordare è un token in meno per ragionare.
@@ -266,8 +266,8 @@ Ricordare è facile: uno schedario si allarga quanto si vuole, e scriverci
 dentro non costa quasi niente. La difficoltà è a ogni singolo passo, quando
 bisogna decidere che cosa di tutto quel materiale merita di occupare la
 finestra *adesso*. Ogni riga che ci metti per ricordare è una riga in meno per
-ragionare, e il conto lo si paga subito. Non è un problema di memoria, è un
-problema di scelta: la domanda difficile non è cosa tenere, è cosa lasciare
+ragionare, e il conto lo si paga subito. Il problema è di scelta, prima che
+di memoria: la domanda difficile non è cosa tenere, è cosa lasciare
 fuori.
 
 ## Assemblare il contesto, con un budget
@@ -276,8 +276,8 @@ Mettiamo insieme le tre lezioni (il prompt montato a pezzi, la finestra
 costosa, l'informazione che si perde nel mezzo) in un pezzo di codice che le
 rende concrete. Il programma di cui parlavamo all'inizio, quello che a ogni
 passo cuce insieme il testo da mandare al modello, ha un nome: si chiama
-**context builder**, il montatore del contesto. Non è un dettaglio da
-programmatori: è il punto in cui le decisioni di questa sezione smettono di
+**context builder**, il montatore del contesto. È il punto in cui quelle
+decisioni smettono di
 essere opinioni e diventano righe che qualcuno esegue.
 
 `````{tab} Elementare
@@ -510,8 +510,9 @@ messa dove rende di più.
   **contesto**: quello che gli metti davanti prima di fargli la domanda è
   l'unico comando che hai. Il mestiere di riempire bene quello spazio vale più
   di qualunque «frase magica».
-- Il **prompt** non è un incantesimo, è un **documento di lavoro** montato a
-  pezzi: le istruzioni di fondo, qualche esempio svolto, il formato in cui si
+- Il **prompt** è un **documento di lavoro** montato a
+  pezzi, non un incantesimo: le istruzioni di fondo, qualche esempio svolto, il
+  formato in cui si
   vuole la risposta, e solo alla fine la richiesta. E siccome una parola diversa
   cambia il risultato, va trattato come si tratta il software: se ne conserva
   la storia, lo si prova su casi noti, si confrontano due versioni prima di
@@ -525,7 +526,7 @@ messa dove rende di più.
   l'agente scrive i conti a metà; a lungo termine uno **schedario esterno** da
   cui pescare solo la pagina che serve adesso (i documenti recuperati, i
   riassunti di quello che si è detto, i fatti sull'utente tenuti a parte). Il
-  problema difficile non è ricordare, è decidere cosa **lasciare fuori** dalla
+  problema difficile è decidere cosa **lasciare fuori** dalla
   finestra adesso: ogni riga spesa a ricordare è una riga in meno per ragionare.
 - Assemblare il contesto è come fare la **valigia con un limite di peso**:
   prima l'indispensabile, poi il resto per priorità finché entra, e quel che

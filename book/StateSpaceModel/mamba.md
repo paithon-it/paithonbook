@@ -40,8 +40,8 @@ selezione, calcolati con uno scan». Di progressione non ce n'è nessuna, tanto
 che S5, incontrato fra le tappe verso il linguaggio, è il modello di un altro
 gruppo di ricerca.
 
-La conseguenza tecnica è importante
-e va guardata in faccia: se le regole cambiano a ogni parola, il sistema non è
+La conseguenza tecnica va guardata in faccia: se le regole cambiano a ogni
+parola, il sistema non è
 più invariante nel tempo. E un sistema che cambia regola strada facendo non ha
 un filtro unico: la forma «tutto insieme», che era il segreto
 dell'addestramento veloce di S4, semplicemente non è più applicabile. Bisognerà
@@ -57,16 +57,16 @@ Un SSM invariante nel tempo è il tornello; Mamba è il buttafuori. Quanto di un
 persona gli resta in testa, e quanto di ciò che ha in testa tira fuori al
 momento giusto, cambia da una faccia all'altra.
 
-Una cosa però il buttafuori non la cambia mai, ed è la velocità con cui i suoi
-ricordi sbiadiscono: chi è entrato tempo fa gli si annebbia sempre allo stesso
-ritmo. Quello che decide, faccia per faccia, è quanto tempo lasciar passare
-prima di occuparsi del prossimo. È la manopola che regola quanto in fretta il
-sistema dimentica, e Mamba la gira a ogni parola. Quando se la prende comoda,
-chi ha davanti gli si stampa bene in testa e le facce di prima gli sbiadiscono
-parecchio; se fa passare qualcuno in un lampo, quello non lascia traccia e la
-sua testa resta com'era. Con la sola manopola del tempo ottiene tutte e due le
-cose che gli servono: «di questo mi ricorderò» e «questo non l'ho nemmeno
-visto».
+Una cosa però il buttafuori non la cambia da una faccia all'altra, ed è la
+velocità con cui i suoi ricordi sbiadiscono: chi è entrato tempo fa gli si
+annebbia sempre allo stesso ritmo. Quello che decide, faccia per faccia, è
+quanto tempo lasciar passare prima di occuparsi del prossimo. È la manopola che
+regola quanto in fretta il sistema dimentica, e Mamba la gira a ogni parola.
+Quando se la prende comoda, chi ha davanti gli si stampa bene in testa e le
+facce di prima gli sbiadiscono parecchio; se fa passare qualcuno in un lampo,
+quello non lascia traccia e la sua testa resta com'era. Con la sola manopola
+del tempo ottiene tutte e due le cose che gli servono: «di questo mi ricorderò»
+e «questo non l'ho nemmeno visto».
 
 Perché ci interessa? Perché apre la porta a un tipo di ragionamento che un
 tornello non potrà mai fare: quello che dipende dal **contenuto**. Prendi il
@@ -110,20 +110,22 @@ $$
 \qquad
 \mathbf{h}_t = \bar{\mathbf{A}}_t\, \mathbf{h}_{t-1} + \bar{\mathbf{B}}_t\, x_t,
 \qquad
-y_t = \mathbf{C}_t\, \mathbf{h}_t,
+y_t = \mathbf{C}_t^{\top} \mathbf{h}_t,
 $$
 
-dove $\bar{\mathbf{A}}_t$ è la transizione discreta al passo $t$ e $\bar{\mathbf{B}}_t$ è il termine
-di ingresso, entrambi ottenuti da $\Delta_t$ (la ricorrenza è scritta per un
-canale: $x_t$ è la componente dell'attivazione $\mathbf{x}_t$ su quel canale, ed è
-un numero). Poiché $\Delta_t$ dipende da $\mathbf{x}_t$,
-anche $\bar{\mathbf{A}}_t$ diventa **di fatto data-dipendente**, pur partendo da una $\mathbf{A}$
-fissa: un $\Delta_t$ grande apre la memoria al nuovo token, un $\Delta_t$ vicino a
-zero la lascia scorrere via quasi immutata. Il prezzo è la perdita
-dell'invarianza temporale: non esiste più un unico kernel
-$\bar{\mathbf{K}} = (\mathbf{C}\bar{\mathbf{B}},\, \mathbf{C}\bar{\mathbf{A}}\bar{\mathbf{B}},\, \dots)$, perché $\bar{\mathbf{A}}_t, \bar{\mathbf{B}}_t, \mathbf{C}_t$
-cambiano a ogni passo. La forma convoluzionale svanisce; resta la sola forma
-ricorrente, e con essa il problema di come addestrarla in parallelo.
+dove $\bar{\mathbf{A}}_t$ è la transizione discreta al passo $t$ e
+$\bar{\mathbf{B}}_t = \Delta_t \mathbf{B}_t$ è il termine di ingresso, entrambi
+ottenuti da $\Delta_t$ (la ricorrenza è scritta per un canale: $x_t$ è la
+componente dell'attivazione $\mathbf{x}_t$ su quel canale, ed è un numero).
+Poiché $\Delta_t$ dipende da $\mathbf{x}_t$, anche $\bar{\mathbf{A}}_t$ diventa
+**di fatto data-dipendente**, pur partendo da una $\mathbf{A}$ fissa: un
+$\Delta_t$ grande apre la memoria al nuovo token, un $\Delta_t$ vicino a zero
+la lascia scorrere via quasi immutata. Il prezzo è la perdita dell'invarianza
+temporale: non esiste più un unico kernel $\bar{\mathbf{K}} =
+(\mathbf{C}\bar{\mathbf{B}},\, \mathbf{C}\bar{\mathbf{A}}\bar{\mathbf{B}},\,
+\dots)$, perché $\bar{\mathbf{A}}_t, \bar{\mathbf{B}}_t, \mathbf{C}_t$ cambiano
+a ogni passo. La forma convoluzionale svanisce; resta la sola forma ricorrente,
+e con essa il problema di come addestrarla in parallelo.
 
 `````
 
@@ -156,15 +158,16 @@ da dove si vuole.
 poi a gruppi di quattro, di otto, invece di percorrerli in fila da sinistra a
 destra. Questo è il *parallel scan*, dove «scan» è la passata che percorre la
 sequenza accumulando i risultati parziali. I conti da fare, a seconda di come
-si raggruppa, restano tanti quanti erano oppure crescono un poco. Quello che
+si raggruppa, restano tanti quanti erano oppure diventano parecchi di più.
+Quello che
 crolla è l’**attesa**: raddoppiando la lunghezza della sequenza si aggiunge un
 turno soltanto, e dove prima c'erano mille passi in fila adesso ci sono una
 decina di turni. È il compromesso tipico del calcolo parallelo, dove si
 accettano più conti in cambio di meno attesa.
 
 Ogni turno tiene occupati migliaia di core della GPU: quelli generici, però,
-non le sue unità dedicate a moltiplicare matrici, e più avanti si vedrà che è
-un problema. La convoluzione se n'è andata, ma il parallelismo resta.
+non le sue unità dedicate a moltiplicare matrici, ed è il problema da cui
+partirà Mamba-2. La convoluzione se n'è andata, ma il parallelismo resta.
 
 La {numref}`fig-scan-parallelo` mette le due strade sullo stesso orologio.
 
@@ -180,7 +183,9 @@ definitivo (il pallino pieno) avanza di una posizione alla volta: servono
 undici turni. A destra si compongono le posizioni distanti prima 1, poi 2, poi
 4, poi 8, e siccome a ogni turno raddoppia il tratto di sequenza già riassunto,
 dopo quattro turni ogni posizione ha il suo risultato. Le due strade danno gli
-stessi numeri; cambia solo quanto c'è da aspettare.
+stessi numeri, e non con la stessa fatica: a sinistra di composizioni se ne
+contano undici, a destra trentatré. Si accettano volentieri, perché quello che
+crolla è l'attesa.
 ```
 
 Non basta però l'algoritmo. Mamba deve fare i conti anche con il modo in cui
@@ -192,13 +197,13 @@ sta la parte «hardware-aware».
 Mille numeri alla lavagna, e una classe che deve sommarli. Un ragazzo solo
 parte dal primo e va avanti, quasi mille addizioni una dopo l'altra, e nessuno
 può aiutarlo, perché per fare la somma di adesso deve aspettare quella di
-prima. La classe invece si mette in coppia, ogni coppia somma i suoi due
-numeri, e i mille diventano cinquecento in un colpo solo, poi
-duecentocinquanta, e così via, finché dopo dieci giri si è in fondo, perché
-dimezzando mille dieci volte si arriva a uno. Di addizioni se ne fanno più o
-meno quante prima, qualcuna in più oppure nemmeno una, secondo come i ragazzi
-si raggruppano. A crollare è l'attesa, perché a ogni giro lavorano tutti
-insieme.
+prima. La classe invece lavora tutta insieme: al primo giro ognuno somma al
+proprio numero quello del compagno che lo precede, al secondo quello di due
+posti prima, al terzo quello di quattro, e a ogni giro raddoppia il tratto di
+lavagna che ciascuno si è già messo dentro. Dopo dieci giri si è in fondo,
+perché raddoppiando dieci volte si passa il mille. Di addizioni se ne fanno
+parecchie più di prima, perché a ogni giro lavorano quasi tutti; a crollare è
+l'attesa, che da mille passi in fila scende a dieci giri.
 
 Alla lavagna, al posto dei numeri, la catena dei passi di Mamba mette
 istruzioni, e ognuna dice due cose, del totale che hai tieni questa parte e
@@ -261,7 +266,7 @@ Le versioni classiche dello scan sono due, e differiscono nel lavoro, non
 nella profondità. Detta $L$ la lunghezza della sequenza, quella **a
 raddoppio** compone a ogni turno le posizioni distanti
 prima 1, poi 2, poi 4: raggiunge la profondità $O(\log L)$, ma con un lavoro
-$O(L\log L)$, cioè qualche operazione più del necessario. Quella di
+$O(L\log L)$, cioè tante volte il necessario quanti sono i turni. Quella di
 **Blelloch**, con una passata che sale e una che scende, ha la stessa
 profondità $O(\log L)$ e lavoro $O(L)$, come la versione sequenziale. In
 entrambe il numero di turni crolla da $L$ al suo logaritmo, ed è il numero di
@@ -322,7 +327,7 @@ def ssm_selettivo(x, A, B, C, delta):
 Il ciclo `for` è la forma ricorrente, quella dell'inferenza: costo e memoria
 costanti per token, un aggiornamento dopo l'altro. Quel ciclo però si può evitare in due modi, e li proviamo tutti e due.
 
-Il primo riguarda la sezione precedente: se le regole **non** cambiano da un
+Il primo riguarda la sezione precedente: se le regole non cambiano da un
 passo all'altro, lo stesso risultato si ottiene con un filtro unico che scorre
 sulla sequenza. Congeliamo allora i tre parametri che dipendevano dal token,
 costruiamo quel filtro e confrontiamo.
@@ -389,20 +394,21 @@ print("ciclo vs scan parallelo, scarto massimo:",
 ```
 
 Entrambi gli scarti sono dell'ordine di $10^{-16}$, cioè zero a meno
-dell'ultima cifra che un calcolatore riesce a rappresentare: le tre forme
-calcolano la stessa funzione. È, ancora una volta, la doppia natura che
-accomuna tutta questa famiglia di modelli: una forma parallela per addestrare
-in fretta, una forma ricorrente a costo costante per generare.
+dell'ultima cifra che un calcolatore riesce a rappresentare: in tutti e due i
+confronti le forme messe a paragone calcolano la stessa funzione. È, ancora una
+volta, la doppia natura che accomuna tutta questa famiglia di modelli: una
+forma parallela per addestrare in fretta, una forma ricorrente a costo costante
+per generare.
 
 ## Il blocco Mamba
 
 Il meccanismo selettivo è il motore; attorno gli serve una carrozzeria. Il
 **blocco Mamba** nasce fondendo due pezzi già noti: il blocco H3
-{cite}`fu2023h3`, che per primo aveva adattato gli SSM al linguaggio mettendo
-attorno al nucleo ricorrente una valvola (la stessa idea del capitolo
-precedente: due rami che si moltiplicano, e uno regola quanto dell'altro lascia
-passare), e il *gated MLP*, cioè lo strato che nei Transformer segue
-l'attenzione, dotato anche lui di una valvola. Il risultato è un unico mattone omogeneo, che si
+{cite}`fu2023h3`, che aveva adattato gli SSM al linguaggio mettendo attorno al
+nucleo ricorrente una valvola (la stessa idea del capitolo precedente: due rami
+che si moltiplicano, e uno regola quanto dell'altro lascia passare), e il
+*gated MLP*, cioè la variante con valvola dello strato che nei Transformer
+segue l'attenzione. Il risultato è un unico mattone omogeneo, che si
 impila su se stesso a formare l'intera rete: non si alternano blocchi di tipo
 diverso, come nei Transformer, ce n'è uno solo, ripetuto.
 
@@ -445,8 +451,8 @@ fine.
 
 Detta $\mathbf{u}$ l'attivazione in ingresso al blocco, il flusso è:
 
-1. **Proiezione in ingresso**: due proiezioni lineari espandono $\mathbf{u}$ (fattore
-   $E=2$) in due rami, $\mathbf{x}$ (principale) e $\mathbf{z}$ (di *gating*).
+1. **Proiezione in ingresso**: una proiezione lineare espande $\mathbf{u}$ (fattore
+   $E=2$) e la divide in due rami, $\mathbf{x}$ (principale) e $\mathbf{z}$ (di *gating*).
 2. **Convoluzione causale 1D**: una `Conv1d` a finestra corta scorre sul ramo
    $\mathbf{x}$ lungo la dimensione temporale. È «causale» perché ogni posizione vede
    solo il proprio passato immediato (nessuna fuga di informazione dal futuro)
@@ -454,8 +460,9 @@ Detta $\mathbf{u}$ l'attivazione in ingresso al blocco, il flusso è:
    qui ridotta a una dimensione e a una manciata di passi. Fornisce un
    contesto locale a basso costo prima dell'SSM.
 3. **Attivazione SiLU**: si applica $\mathrm{SiLU}(x) = x\,\sigma(x)$ (nota anche
-   come *Swish*), la parente liscia della ReLU incontrata tra le funzioni di
-   attivazione, dove $\sigma$ è la sigmoide.
+   come *Swish*), la parente liscia della ReLU delle
+   {doc}`funzioni di attivazione </RetiNeurali/funzioni-attivazione>`, dove
+   $\sigma$ è la sigmoide.
 4. **SSM selettivo (S6)**: il ramo attraversa il nucleo selettivo, con
    $\mathbf{B}_t, \mathbf{C}_t, \Delta_t$ generati dall'input e calcolato via
    parallel scan.
@@ -483,16 +490,14 @@ cosa se ne ricava?
 
 Due cose, soprattutto. La prima è **il lavoro che non esplode quando il testo
 si allunga**: mentre un Transformer, per raddoppiare la lunghezza, quadruplica
-il lavoro, Mamba lo raddoppia soltanto. È questo, e nient'altro, che si
-intende con «costo **lineare**»: il lavoro cresce di pari passo con la
-lunghezza. Nella generazione parola per parola il vantaggio si
-sente, perché a ogni parola nuova il modello non deve rileggersi tutto quello
-che ha scritto finora: gli basta il suo riassunto, che è sempre della stessa
-misura.
+il lavoro, Mamba lo raddoppia soltanto. Nella generazione parola per parola il
+vantaggio si sente, perché a ogni parola nuova il modello non deve rileggersi
+tutto quello che ha scritto finora: gli basta il suo riassunto, che è sempre
+della stessa misura.
 
 La seconda è la **portata**, ed è il punto in cui conviene essere precisi su
 dove è stata misurata. Le sequenze da un milione di passi su cui Mamba continua
-a migliorare non sono testo: sono suono grezzo (dove un passo è un campione
+a migliorare sono suono grezzo e non testo (dove un passo è un campione
 sonoro: in un secondo di registrazione ce ne stanno circa sedicimila, quindi un
 milione di campioni è poco più di un minuto) e
 sequenze di DNA (dove un passo è una lettera del genoma). Sul linguaggio i
@@ -523,14 +528,13 @@ Il bilancio, in termini di meccanismi e non di classifiche:
 
 `````
 
-Un'ultima onestà, che vale come promemoria e come ponte. Mamba ha avuto un
-percorso editoriale movimentato. L'articolo comparve alla fine del 2023 come
-*preprint*: messo online a disposizione di tutti prima che qualcuno lo avesse
-giudicato. Il giudizio, nella ricerca, lo danno le riviste e i convegni, che
-affidano ogni lavoro ad altri studiosi del campo; e il primo convegno a cui
-Mamba fu sottoposto, ICLR, nel 2024 lo respinse, con un rifiuto che fece
-discutere. Pochi mesi dopo un altro convegno, COLM, lo ha accettato e gli ha
-assegnato un premio come uno dei lavori migliori dell'anno.
+Mamba ha avuto un percorso editoriale movimentato. L'articolo comparve alla
+fine del 2023 come *preprint*: messo online a disposizione di tutti prima che
+qualcuno lo avesse giudicato. Il giudizio, nella ricerca, lo danno le riviste e
+i convegni, che affidano ogni lavoro ad altri studiosi del campo; e il primo
+convegno a cui Mamba fu sottoposto, ICLR, nel 2024 lo respinse, con un rifiuto
+che fece discutere. Pochi mesi dopo un altro convegno, COLM, lo ha accettato e
+gli ha assegnato un premio come uno dei lavori migliori dell'anno.
 
 Il vaglio, quindi, c'è stato.
 
@@ -559,7 +563,7 @@ stessa cosa.
   modo passo dopo passo.
 - Il prezzo si recupera con lo **scan**, cioè svolgendo la catena a gruppi
   invece che in fila (a coppie, poi a quattro, poi a otto): di operazioni se ne
-  fanno più o meno quante prima, ma i turni di attesa crollano. In più Mamba tiene i conti nella
+  fanno di più, ma i turni di attesa crollano. In più Mamba tiene i conti nella
   memoria piccola e vicina della scheda grafica, come il contabile che non
   scende in cantina a ogni riga, e i risultati intermedi che gli serviranno
   dopo li **rifà** invece di conservarli.

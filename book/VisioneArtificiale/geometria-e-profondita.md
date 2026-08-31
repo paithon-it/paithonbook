@@ -120,10 +120,9 @@ rette, cosa che si vede soprattutto ai bordi. Quei numeri, presi insieme,
 descrivono com'è fatta la fotocamera e si chiamano i suoi **parametri
 intrinseci**; ricavarli si chiama **calibrazione**, e si fa mostrando alla
 fotocamera un oggetto di cui si conoscono le misure, tipicamente una scacchiera
-stampata, e guardando come viene deformata. Non è un dettaglio da laboratorio:
-senza quelle misure i numeri dei pixel non si possono convertire in
-centimetri, e nessuna delle ricostruzioni che seguono può dare una risposta in
-metri.
+stampata, e guardando come viene deformata. E conta: senza quelle misure i
+numeri dei pixel non si possono convertire in centimetri, e nessuna delle
+ricostruzioni che seguono può dare una risposta in metri.
 
 ## Trovare la stessa cosa in due foto
 
@@ -228,8 +227,8 @@ mano.
 Ma il confronto va guardato anche dall'altro lato, ed è la parte che sorprende.
 La geometria è rimasta dov'era. Le formule che legano due fotografie della
 stessa scena furono dimostrate fra la fine degli anni Settanta e l'inizio degli
-anni Ottanta, e si usano oggi identiche, perché non sono ricette che funzionano
-più o meno bene: sono teoremi. Le reti hanno sostituito la parte fragile, non
+anni Ottanta, e si usano oggi identiche, perché sono teoremi e non ricette che
+funzionano più o meno bene. Le reti hanno sostituito la parte fragile, non
 quella dimostrata.
 
 ## Il vincolo epipolare: da un piano a una retta
@@ -277,8 +276,8 @@ cui ciascuna fotocamera vedrebbe l'altra. Non devi cercare in
 tutta l'immagine, devi cercare lungo una riga.
 
 È il passaggio che rende praticabile tutto il resto. Milioni di candidati
-diventano qualche centinaio, e a lavorare non è un modello di come sono fatte
-le cose: è una legge geometrica che vale sempre, per qualsiasi scena.
+diventano qualche centinaio, e a lavorare è una legge geometrica che vale
+sempre, per qualsiasi scena, non un modello di come sono fatte le cose.
 
 `````
 
@@ -414,9 +413,9 @@ una misura di somiglianza fra finestre (differenze assolute, correlazione
 normalizzata, *census transform*), un'aggregazione spaziale, un'ottimizzazione
 globale con un termine di regolarità che favorisce disparità localmente
 costanti, e un raffinamento sub-pixel. Il termine di regolarità è ciò che
-tappa i buchi nelle zone senza tessitura: non è geometria, è un **prior** sulla
-forma delle superfici, e le reti moderne lo sostituiscono con un prior appreso
-da grandi collezioni di scene.
+tappa i buchi nelle zone senza tessitura, ed è un **prior** sulla forma delle
+superfici più che geometria, e le reti moderne lo sostituiscono con un prior
+appreso da grandi collezioni di scene.
 
 `````
 
@@ -531,8 +530,8 @@ freccia misurata e la freccia che manca per arrivare al movimento vero stanno
 si sommano i numeri: si sommano come i cateti di un triangolo rettangolo, con
 Pitagora. Quella che manca è lunga **45 pixel**, e infatti
 $\sqrt{85^2 + 45^2} = \sqrt{9250} = 96{,}2$, cioè i novantasei di partenza a
-meno degli arrotondamenti. L'informazione persa non è un decimo, è quasi la
-metà, e sfugge perché si nasconde in una direzione diversa da quella che si sta
+meno degli arrotondamenti. L'informazione persa è quasi la metà e non un
+decimo, e sfugge perché si nasconde in una direzione diversa da quella che si sta
 guardando.
 
 Quei 45 pixel sono scivolati **lungo** il bordo, ed è esattamente lì che il
@@ -772,8 +771,8 @@ zero, a meno degli arrotondamenti che il computer fa quando scrive un numero
 con la virgola. La regola dice che la profondità si ottiene moltiplicando la
 **focale** (quanto la fotocamera ingrandisce, qui $700$) per la **base** (la
 distanza fra le due fotocamere, qui $30$ centimetri) e dividendo per il salto
-misurato: $Z = fB/d$. Non è un'approssimazione che funziona più o meno bene: è
-un'identità, e o si applica alla lettera o non si applica affatto. E `righe
+misurato: $Z = fB/d$. È un'identità, e o si applica alla lettera o non si
+applica affatto. E `righe
 uguali` conferma l'altra cosa che il testo aveva promesso: con le due
 fotocamere affiancate e allineate, il gemello di un pixel sta sulla **stessa
 riga** dell'altra immagine, così che a cercarlo basta scorrere quella.
@@ -859,8 +858,8 @@ invecchiata.
 :class: important
 - **Proiettare perde una dimensione.** Un pixel determina una *direzione*, mai
   una posizione: tutti i punti di una semiretta uscente dal centro ottico
-  danno lo stesso pixel. La profondità non è nascosta nell'immagine, è stata
-  cancellata dalla divisione per $Z$.
+  danno lo stesso pixel. La profondità è stata cancellata dalla divisione per
+  $Z$.
 - Il modello **stenopeico** con la matrice degli intrinseci $\mathbf{K}$
   descrive la fotocamera; stimarla si chiama **calibrazione** e senza di essa
   i pixel non hanno scala.

@@ -53,9 +53,9 @@ foglio più capiente è anche un foglio più lento.
 La seconda decide **come sbiadisce** il passato quando arriva il presente: si
 può non sbiadire affatto, sbiadire tutto in blocco della stessa quantità,
 sbiadire casella per casella in modo diverso, oppure cancellare *di mira* solo
-la vecchia voce che sta per essere riscritta. Quest'ultima posizione sta su un
-altro asse rispetto alle prime: sbiadire alleggerisce tutto senza guardare che
-cosa butta via, cancellare di mira tiene in ordine una voce sola. Non
+la vecchia voce che sta per essere riscritta. Sbiadire alleggerisce tutto
+senza guardare che cosa butta via, cancellare di mira tiene in ordine una voce
+sola. Non
 sbiadire affatto, però, non vuol dire tenere tutto: le caselle restano quelle,
 le voci continuano ad ammucchiarsi una sopra l'altra, e più se ne ammucchiano
 meno pulita torna ciascuna. Anche questa manopola ha il suo prezzo. Con una
@@ -136,25 +136,26 @@ moltiplica l'identità è lo scalare $\alpha_t$, un numero solo; dentro
 $\mathrm{Diag}$ è il vettore $\boldsymbol{\alpha}_t \in (0,1)^d$, un valore per
 canale, e il grassetto è lì apposta per non far leggere le due cose come una
 sola. $\beta_t \in (0,1)$ è invece la **forza di riscrittura** della delta
-rule. Si va dall'accumulo puro (identità, non si dimentica nulla) al
-decadimento scalare uniforme, a quello diagonale per-canale, alla correzione
-mirata di Householder che *cancella* la vecchia associazione prima di scrivere
-la nuova, fino alla combinazione dei due
-(decadimento globale *più* correzione mirata) del Gated DeltaNet
-{cite}`yang2024gateddelta`. Due precisazioni, perché la fila non è una scala
-regolare. La prima: i primi tre gradini sono nidificati (ciascuno contiene il
-precedente come caso particolare), ma il passo dal decadimento diagonale
-$\mathrm{Diag}(\boldsymbol{\alpha}_t)$ alla delta rule non è un'inclusione,
-perché quel decadimento e la correzione mirata di Householder sono capacità
-**complementari** e nessuna delle due contiene l'altra. La seconda: quello che
-il Gated DeltaNet unisce non è la coppia appena nominata. Il suo $\alpha_t$ è
-uno **scalare**, quindi mette insieme il decadimento *globale* (il secondo
-gradino) con la delta rule,
-e contiene il secondo e il quarto ma non il terzo: il gating per canale della
-GLA resta fuori anche dall'ultimo gradino. Lungo tutta la catena, però, il
-conto è lo stesso: si paga in complessità della transizione (via via più
-difficile da rendere parallelizzabile) ciò che si guadagna in *state tracking*
-e in *recall* preciso.
+rule, e nelle due righe che la usano moltiplica anche il termine di scrittura,
+che diventa $\beta_t\, \mathbf{v}_t \mathbf{k}_t^\top$. Si va dall'accumulo
+puro (identità, non si dimentica nulla) al decadimento scalare uniforme, a
+quello diagonale per-canale, alla correzione mirata di Householder che
+*cancella* la vecchia associazione prima di scrivere la nuova, fino alla
+combinazione dei due (decadimento globale *più* correzione mirata) del Gated
+DeltaNet {cite}`yang2024gateddelta`. Due precisazioni, perché la fila non è una
+scala regolare. La prima: i primi tre gradini sono nidificati (ciascuno
+contiene il precedente come caso particolare), ma il passo dal decadimento
+diagonale $\mathrm{Diag}(\boldsymbol{\alpha}_t)$ alla delta rule non è
+un'inclusione, perché quel decadimento e la correzione mirata di Householder
+sono capacità **complementari** e nessuna delle due contiene l'altra. La
+seconda: quello che il Gated DeltaNet unisce non è la coppia appena nominata.
+Il suo $\alpha_t$ è uno **scalare**, quindi mette insieme il decadimento
+*globale* con la delta rule, e contiene quei due gradini ma non quello del
+decadimento per canale: il gating della GLA resta fuori anche dall'ultimo
+gradino. Lungo tutta la catena, però, il conto è lo stesso: si paga in
+complessità della transizione (via via più difficile da rendere
+parallelizzabile) ciò che si guadagna in *state tracking* e in *recall*
+preciso.
 
 **3. Il grado di dipendenza dai dati.** La transizione può essere **fissa**
 (scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
@@ -165,19 +166,19 @@ decidere cosa tenere e cosa lasciar cadere in base a *ciò che si legge*, non
 solo a quanto tempo è passato. È il salto che separa un metal detector
 regolato una volta per tutte da una guardia che valuta caso per caso.
 
-Su questa mappa gli SSM non sono un'isola. La **dualità stato-attenzione** (SSD)
-di Mamba-2 {cite}`dao2024mamba2`, che abbiamo visto nella sezione su Mamba-2,
-dimostra che un SSM con transizione **scalare per identità** ($\alpha_t \mathbf{I}$) è
-*esattamente* un'attenzione lineare mascherata: è la seconda riga della tabella,
-raggiunta dal versante dei sistemi dinamici invece che da quello
-dell'attenzione. Le due famiglie che abbiamo raccontato in capitoli separati
-sono, alla lettera, due viste della stessa cosa.
+Su questa mappa gli SSM non sono un'isola. La **dualità stato-attenzione**
+(SSD) di Mamba-2 {cite}`dao2024mamba2`, che abbiamo visto nella sezione su
+Mamba-2, dimostra che un SSM con transizione **scalare per identità**
+($\alpha_t \mathbf{I}$) è *esattamente* un'attenzione lineare mascherata: è la
+riga del decadimento scalare, raggiunta dal versante dei sistemi dinamici
+invece che da quello dell'attenzione. Le due famiglie che abbiamo raccontato in
+capitoli separati sono, alla lettera, due viste della stessa cosa.
 
 `````
 
 ## Il collo di bottiglia dello stato fisso
 
-Fin qui i pregi. Ora il limite, che va detto senza giri di parole: **un
+Fin qui i pregi. Ora il limite, e senza giri di parole: **un
 riassunto di taglia fissa non può fare tutto ciò che fa l'attenzione piena**.
 Non è un difetto di come è stato costruito, di quelli che prima o poi qualcuno
 aggiusta: è la conseguenza dell'essere di taglia fissa. Il punto in cui si vede
@@ -313,12 +314,13 @@ scorrevole** (*sliding-window attention*): l'attenzione locale copre il
 contesto ravvicinato, Mamba porta la memoria a lungo raggio, e insieme
 estrapolano a lunghezze molto oltre quella di addestramento. La stessa ricetta
 appare come variante ibrida sia del Gated DeltaNet {cite}`yang2024gateddelta`
-(combinato con attenzione a finestra o globale) sia di Mamba-2
+(combinato con attenzione a finestra scorrevole o con strati Mamba-2) sia di
+Mamba-2
 {cite}`dao2024mamba2`, il cui articolo studia esplicitamente l'aggiunta di
 pochi strati di attenzione a uno stack SSM.
 
-La tendenza è la stessa in tutti questi lavori, e il messaggio non è «l'ibrido
-vince sempre»: è qualcosa di più solido e più modesto. I due ingredienti hanno
+La tendenza è la stessa in tutti questi lavori, e il messaggio è più solido e
+più modesto di «l'ibrido vince sempre». I due ingredienti hanno
 punti di forza **complementari** (recall verbatim l'uno, costo e memoria
 costanti l'altro), e complementare vuol dire che mescolarli in proporzione
 sbilanciata (poca attenzione, molta ricorrenza) costa poco e rende quasi
@@ -457,4 +459,4 @@ taglia fissa non ridà alla lettera quello che ha letto) e la ricetta mista che
 ne discende. Da qui in avanti la domanda cambia lato. Non più come attraversare
 un testo lunghissimo senza pagarlo troppo, ma che cosa diventa un'immagine
 quando la si dà in pasto a una macchina costruita per le parole: è l'argomento
-di **Visione e linguaggio**.
+di {doc}`Visione e linguaggio </VisioneLinguaggio/overview>`.

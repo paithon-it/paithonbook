@@ -75,8 +75,8 @@ di che cosa si paga in cambio, perché qualcosa si paga sempre.
 ## Le tre leve
 
 Un modello troppo grande si può stringere in tre modi, e sono tre modi
-davvero diversi: non è la stessa idea vista da tre angoli, sono tre operazioni
-che agiscono su cose diverse e si possono usare tutte e tre insieme.
+davvero diversi: sono tre operazioni che agiscono su cose diverse, non la
+stessa idea vista da tre angoli, e si possono usare tutte e tre insieme.
 
 **Meno bit per parametro.** I parametri restano tutti, e resta la forma della
 rete: cambia solo quante cifre si tengono di ciascun numero. È la leva del

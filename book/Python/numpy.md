@@ -141,9 +141,12 @@ disegnare curve). E il generatore casuale moderno si costruisce con
 minimo di ogni lavoro scientifico serio. Non è una contraddizione: un computer
 non sa fare niente a caso, e quei numeri li calcola con una formula che li fa
 *sembrare* casuali (si dicono infatti *pseudo-casuali*). Il seme è il numero da
-cui la formula parte: stesso seme, stessa sequenza, oggi e fra un anno; seme
-diverso, sequenza diversa. Zero è solo il primo numero che viene in mente, e
-qualunque altro andrebbe uguale.
+cui la formula parte: stesso seme, stessa sequenza, oggi e sulla macchina di un
+altro; seme diverso, sequenza diversa. La promessa vale a parità di versione di
+NumPy, che si riserva di cambiare la formula quando ne trova una migliore, e lo
+dichiara. Chi deve ritrovare gli stessi numeri fra dieci anni scrive nel lavoro
+anche la versione. Zero è solo il primo numero che viene in mente, e qualunque
+altro andrebbe uguale.
 
 ## Indicizzazione e slicing
 
@@ -251,11 +254,12 @@ y[(y > 15) & (y < 45)]    # array([20, 30, 40])
 
 Una condizione come `x > 25` produce una **maschera booleana**, un array di
 `bool` della stessa forma. Usata come indice, `x[mask]` estrae gli elementi
-dove la maschera è `True` restituendo un array 1-D, ed è necessariamente una
-*copia*: gli elementi selezionati non stanno a passo costante, quindi non
-esiste nessuno stride che li descriva, e senza stride non c'è vista. La stessa
-maschera funziona in assegnazione, `x[mask] = 0`, che invece scrive sul buffer
-originale.
+dove la maschera è `True` restituendo un array 1-D, ed è sempre una *copia*:
+gli elementi scelti in generale non stanno a passo costante, quindi non esiste
+nessuno stride che li descriva, e senza stride non c'è vista. Copia anche
+quando il passo per caso ci sarebbe, perché la regola guarda la forma
+dell'indicizzazione e non i valori della maschera. La stessa maschera funziona
+in assegnazione, `x[mask] = 0`, che invece scrive sul buffer originale.
 
 Gli operatori con cui le maschere si compongono sono quelli *bitwise* `&`, `|`,
 `~`, e non `and`/`or`, che su un array solleverebbero
@@ -332,15 +336,16 @@ $$
 (1,4) \;\text{ con }\; (3,1) \;\longrightarrow\; (3,4).
 $$
 
-L'asse mancante di $\mathbf{a}$ viene inserito a sinistra come $1$, poi ogni asse-$1$ è
+L'asse mancante di $a$ viene inserito a sinistra come $1$, poi ogni asse-$1$ è
 trasmesso lungo l'altra dimensione. Il risultato è equivalente a
 $C_{ij}=a_j+b_i$ ma è calcolato in C, senza materializzare le copie: gli stride
 del lato "trasmesso" sono posti a $0$, così lo stesso dato viene riletto più
 volte. Con stride nullo più celle guardano lo stesso byte, e da qui la vista
 che `np.broadcast_to` restituisce è in **sola lettura**: assegnarci dentro
 solleva `ValueError: assignment destination is read-only`, perché
-un'assegnazione non saprebbe quale delle celle sovrapposte debba vincere. È il meccanismo che permette, per esempio, di sottrarre la media di
-colonna da un'intera matrice di dati con `X - X.mean(axis=0)`.
+un'assegnazione non saprebbe quale delle celle sovrapposte debba vincere. È il
+meccanismo che permette, per esempio, di sottrarre la media di colonna da
+un'intera matrice di dati con `X - X.mean(axis=0)`.
 
 `````
 
@@ -386,23 +391,28 @@ lista = x.tolist()              # gli stessi numeri, in una lista Python
 ```
 
 Le ultime due righe non sono Python: `%timeit` è un comando dei notebook (una
-*magic* di IPython) che cronometra un'istruzione ripetendola molte volte e
-riportando **media e deviazione standard** dei tempi (`mean ± std. dev.`),
-insieme al numero di ripetizioni. In un normale file `.py` non funziona: lì si
-usa il modulo `timeit` della libreria standard. 
+*magic* di IPython, il motore che sta sotto le celle) che cronometra
+un'istruzione ripetendola molte volte e riportando il tempo medio e di quanto
+le singole ripetizioni se ne scostano (`mean ± std. dev.`), insieme al numero
+di ripetizioni. In un normale file `.py` non funziona: lì si usa il modulo
+`timeit` della libreria standard.
 
 `````{tab} Elementare
 
 Le due misure riguardano la stessa cosa (raddoppiare un milione di numeri) ma
 la seconda strada è tipicamente **centinaia di volte più veloce**, e la ragione
-sta tutta nel ciclo che **sparisce**, non nei numeri che stanno vicini.
-Il ciclo Python paga un piccolo pedaggio a ogni giro, un milione di volte;
-`2 * x` è una sola richiesta, e a scorrere il blocco è il motore in C, che quel
-pedaggio non lo paga. Vale anche il rovescio: se il ciclo lo scrivi comunque,
-farlo passare su un array invece che su una lista lo rallenta, perché a ogni
-giro l'array deve chiudere il numero in una scatola che nella lista esisteva
-già. La regola d'oro con NumPy: *se stai scrivendo un `for` su
-un array, quasi sempre esiste un modo per non scriverlo*.
+sta tutta nel ciclo che **sparisce**. Il ciclo Python paga un piccolo pedaggio
+a ogni giro, un milione di volte; `2 * x` è una sola richiesta, e a scorrere il
+blocco è il motore in C, che quel pedaggio non lo paga. Che i numeri stiano in
+fila serve a lui, che li prende a manciate, e non a un ciclo scritto in Python.
+Vale anche il rovescio: se il ciclo lo scrivi comunque, farlo passare su un
+array invece che su una lista lo rallenta, perché a ogni giro l'array deve
+chiudere il numero in una scatola che nella lista esisteva già.
+
+Un prezzo però c'è, e si vede solo sui dati grandi: il conto fatto sul blocco
+intero fabbrica per strada altri blocchi grandi come quello, e quella memoria
+va trovata. La regola d'oro con NumPy: *se stai scrivendo un `for` su un
+array, quasi sempre esiste un modo per non scriverlo*.
 
 `````
 
@@ -435,11 +445,12 @@ giusta.
 
 ## Algebra lineare, in una riga
 
-Qui i conti del {doc}`capitolo di matematica </Matematica/overview>` diventano
-codice, e quello che conta è una cosa sola: ogni operazione è una riga.
-Prodotto scalare, prodotto matrice-vettore e prodotto fra matrici sono tutti
-l'operatore `@`, e `np.linalg` raccoglie il resto. Che cosa siano un prodotto
-scalare o una matrice inversa lo spiega quel capitolo.
+Qui i conti della {doc}`sezione di algebra lineare
+</Matematica/algebra-lineare>` diventano codice, e quello che conta è una cosa
+sola: ogni operazione è una riga. Prodotto scalare, prodotto matrice-vettore e
+prodotto fra matrici sono tutti l'operatore `@`, e `np.linalg` raccoglie il
+resto. Che cosa siano un vettore, una matrice e i loro prodotti lo spiega
+quella sezione.
 
 ```python
 A = np.array([[1., 2.],
@@ -458,18 +469,19 @@ np.linalg.solve(A, v)  # risolve A z = v  (più stabile dell'inversa)
 Un'avvertenza che torna spesso: per risolvere un sistema
 $\mathbf{A}\mathbf{z} = \mathbf{v}$ si usa
 `np.linalg.solve`, non `inv(A) @ v`. Il primo è più preciso e più veloce;
-calcolare l'inversa esplicita è quasi sempre uno spreco. Con questi mattoni
-(array, broadcasting, vettorizzazione, algebra lineare), abbiamo il
-vocabolario per esprimere in poche righe ciò che un modello, sotto, fa milioni
-di volte.
+calcolare l'inversa esplicita è quasi sempre uno spreco, e la
+{doc}`sezione sui sistemi lineari </Matematica/sistemi-lineari>` dice quanto
+costa. Con questi mattoni (array, broadcasting, vettorizzazione, algebra
+lineare), abbiamo il vocabolario per esprimere in poche righe ciò che un
+modello, sotto, fa milioni di volte.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
 - In un `ndarray` i valori sono tutti dello **stesso tipo** e stanno **uno
-  accanto all'altro**: è questo che permette di scrivere i conti su tutto il
-  blocco in una volta. La velocità viene da lì, cioè dal `for` che sparisce,
+  accanto all'altro**, ed è la condizione che permette di scrivere il conto sul
+  blocco intero in una volta. Il guadagno però nasce dal `for` che sparisce,
   non dal contenitore: un `for` scritto a mano su un `ndarray` è più lento
   dello stesso `for` su una lista.
 - `array`, `zeros`, `ones`, `arange`, `linspace`, `default_rng` creano array; le
@@ -487,7 +499,8 @@ di volte.
   ciclo sparisce.
 - Il segno `@` fa i prodotti fra vettori e matrici e `np.linalg` raccoglie il
   resto dell'algebra lineare: qui basta sapere che esistono e che ognuno di
-  quei conti è una riga sola, il significato arriva col {doc}`capitolo di matematica </Matematica/overview>`.
+  quei conti è una riga sola, il significato arriva con la
+  {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`.
 ```
 
 `````

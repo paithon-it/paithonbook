@@ -20,7 +20,7 @@ parole dicono esattamente cosa succede.
 **Collaborativo** perché ognuno, mettendo un voto, senza saperlo aiuta degli
 sconosciuti che gli somigliano: nessuno collabora di proposito, eppure il
 lavoro è collettivo. **Filtraggio** perché di fronte a un catalogo enorme il
-mestiere non è produrre, è lasciar passare: di centomila titoli te ne arrivano
+mestiere è lasciar passare e non produrre: di centomila titoli te ne arrivano
 dieci, e il sistema è il setaccio.
 
 ## La saggezza dei vicini
@@ -133,7 +133,8 @@ fattori latenti, che è tutt'altro conteggio.
 
 C'è un guasto in agguato in questa formula, e non è quello che si direbbe. Con
 $|\mathcal{I}_{uv}| = 0$ la similarità non è definita e i due utenti
-semplicemente non si vedono: è un falso negativo, sgradevole ma riconoscibile.
+semplicemente non si vedono, cioè un falso negativo, sgradevole ma
+riconoscibile.
 Con $|\mathcal{I}_{uv}| = 1$ la formula restituisce $\mathrm{sim}(u,v) = 1$
 **sempre**, qualunque siano i due voti: anche se uno ha dato 1 e l'altro 5, il
 numeratore e il denominatore coincidono. Il metodo fabbrica cioè un gemello
@@ -221,8 +222,8 @@ vuota; P raccoglie una scheda di pochi numeri per ogni utente (nel disegno, il
 suo «profilo»); Q fa lo stesso per ogni film. Il voto previsto è il confronto
 voce per voce fra due schede, una riga di P e una colonna di Q. Il segno in
 mezzo è un «circa» e non un uguale, perché due tabelle strette non possono
-riprodurre esattamente la grande: e non è un difetto, è lo scopo, perché
-costringere il modello a dire tanto con pochi numeri è ciò che lo obbliga a
+riprodurre esattamente la grande, ed è lo scopo, perché costringere il modello
+a dire tanto con pochi numeri è ciò che lo obbliga a
 cercare i tratti che contano invece di ricopiare i voti. Il disegno si ferma
 poi al confronto: nel modello completo si sommano anche due correzioni, quanto
 quella persona vota alto in generale e quanto quel film è apprezzato in

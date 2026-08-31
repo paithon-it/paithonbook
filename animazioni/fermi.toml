@@ -52,12 +52,15 @@ istanti = [0.10, 0.50, 0.97]
 
 [potatura-che-assottiglia]
 istanti = [0.10, 0.45, 0.90]
-# perche': i dieci cartigli si avvicendano ogni 8,9% con una dissolvenza di
-# 0,8, e il 50% cade proprio dentro quella fra il quinto e il sesto giro: il
-# fermo di mezzo stampava «82% tolti» e «88% tolti» sovrapposti, cifra su
-# cifra, e in stampa e' una delle tre immagini che sostituiscono la clip. Al
-# 45% il quinto giro e' fermo e pieno, e la curva non ha ancora raccontato il
-# crollo, che e' quello che il fermo di mezzo non deve anticipare.
+# perche': i cartigli si avvicendano con una dissolvenza di 0,8, e un fermo che
+# cada dentro una dissolvenza stampa due cartigli sovrapposti, cifra su cifra,
+# in una delle tre immagini che in stampa sostituiscono la clip. Con quattordici
+# cartigli il passo e' 6,15% e i tre istanti cadono su un giro pieno (lo 0, il 6
+# e il 13); erano dieci, passo 8,9%, e il 50% cadeva dentro una dissolvenza.
+# Chi cambia GIRI ricontrolli: il fermo di mezzo deve prendere un giro in cui la
+# curva e' ancora piatta, perche' il crollo non lo deve anticipare. Al 45% il
+# giro 6 ha gia' tolto nove pesi su dieci e l'accuratezza e' ancora quella di
+# partenza, che e' la cosa che questa figura esiste per far vedere.
 
 [bootstrap-si-accumula]
 istanti = [0.04, 0.50, 0.90]
@@ -67,3 +70,22 @@ istanti = [0.04, 0.50, 0.90]
 # mostrava gia' due barre, cioe' la prima immagine si contraddiceva da sola.
 # Al 4% lo scatto e' fermo e la barra e' una, che e' il punto di partenza da
 # cui l'accumulo si capisce. Gli altri due vanno bene come sono.
+
+[catena-si-assesta]
+istanti = [0.04, 0.32, 0.90]
+# perche': le sette tappe durano un settimo di ciclo ciascuna e fra l'una e
+# l'altra c'e' una dissolvenza. Al 10% e al 50% i default cadevano nelle
+# dissolvenze, e i tre fermi mostravano colonne a meta' strada, cioe' non una
+# tappa vera. I tre istanti nuovi cadono dentro la sosta della partenza, della
+# terza tappa e dello stato a regime, che sono le tre cose da vedere in stampa.
+
+[backpropagation]
+istanti = [0.10, 0.35, 0.90]
+# perche': la formula in fondo si costruisce un fattore alla volta fra il 41% e
+# il 75%, quindi il 50% di default cadeva dentro la costruzione e il fermo di
+# mezzo stampava «dL/dW1 = dL/dy^», che e' un'uguaglianza **falsa**: quel
+# prodotto e' dL/dh, e i due fattori che mancano arrivano dopo. Nella clip si
+# vede crescere e va benissimo; in stampa resta ferma li'. Al 35% il riquadro
+# della loss c'e' gia' e la formula non e' ancora cominciata, cosi' i tre fermi
+# danno i tre stati che la didascalia promette: l'andata, l'errore misurato, e
+# il ritorno con la catena completa.

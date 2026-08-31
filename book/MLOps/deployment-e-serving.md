@@ -83,7 +83,7 @@ l'altro.
   spesso su finestre temporali scorrevoli, e produce output man mano. Caso d'uso:
   rilevare frodi su transazioni mentre avvengono.
 
-La scelta non è di gusto: è dettata dal prodotto {cite}`huyen2022designing`. Se
+La scelta la detta il prodotto {cite}`huyen2022designing`, non il gusto. Se
 la previsione può essere pronta *prima* che serva, il batch è più semplice ed
 economico; se dipende da un input che esiste solo al momento della richiesta,
 serve l'online.
@@ -179,7 +179,7 @@ ogni richiesta esegue solo il *forward*, in modalità inferenza. Sopra questa
 logica si appoggia un livello di trasporto (REST/JSON per semplicità, o gRPC
 per la bassa latenza e i payload binari) che però è, in sostanza, contorno.
 
-Il problema serio non è esporre l'endpoint, è renderlo **riproducibile**. Un
+Il problema serio sta nel renderlo **riproducibile**, più che nell'esporlo. Un
 modello dipende da una versione precisa di PyTorch, delle librerie di
 pre-processing, perfino di CUDA: la stessa trappola del «sul mio computer
 funzionava» vista in *Dal notebook alla produzione*, spostata
@@ -274,9 +274,9 @@ accelerare l'inferenza sono diverse da quelle dell'addestramento, ma una radice 
 comune con il {doc}`capitolo PyTorch </PyTorch/overview>`: meno numeri da spostare, più velocità.
 
 La prima leva è il **batching dinamico**, e qui la parola *batch* torna con un
-significato diverso da quello di poco fa: non è più il regime di chi macina
-tutto di notte, è solo il mazzetto di richieste che il server mette insieme
-prima di passarle al modello. Il motivo è che la scheda grafica che fa i conti
+significato diverso da quello di poco fa: qui è il mazzetto di richieste che il
+server mette insieme prima di passarle al modello. Il motivo è che la scheda
+grafica che fa i conti
 (la **GPU**) è costruita per eseguire migliaia di operazioni identiche nello
 stesso istante, e a servirle una richiesta per volta la si tiene quasi ferma: è
 il punto su cui è costruito tutto il capitolo che le è dedicato. Il server
@@ -297,8 +297,8 @@ lo scorrere dei byte, quasi sempre, il vero collo di bottiglia. Si perde
 qualche cifra dopo la virgola, ed è quasi gratis.
 
 La terza leva spinge oltre, fino agli **interi**: la **quantizzazione** a
-`int8` {cite}`jacob2018quantization`. Le due leve non sono alternative, sono un
-seguito, e il conto si fa sempre rispetto ai trentadue bit di partenza: sedici
+`int8` {cite}`jacob2018quantization`. Le due leve si sommano invece di
+escludersi, e il conto si fa sempre rispetto ai trentadue bit di partenza: sedici
 bit sono due volte più leggeri, otto bit quattro volte.
 
 `````{tab} Elementare
@@ -581,8 +581,8 @@ prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
   misurare ogni volta**.
 - Non si promette il tempo **medio** di risposta, che non lo vive quasi
   nessuno: si promette il caso quasi peggiore, «il 95% entro dieci minuti».
-  Quel numero si chiama percentile, e il cliente scontento non è quello medio,
-  è quello finito nella coda lenta.
+  Quel numero si chiama percentile, e il cliente scontento è quello finito
+  nella coda lenta, non quello medio.
 - Una versione nuova non si accende di colpo per tutti, ma per gradi: prima la
   si fa girare **in ombra**, senza servirne le risposte a nessuno; poi la si fa
   provare a **pochi**; e infine si dividono gli utenti in due gruppi, si dà a

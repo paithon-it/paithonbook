@@ -94,8 +94,8 @@ i caratteri uguali consecutivi, poi elimina i vuoti
 
 Il meccanismo della CTC, un passo alla volta. La rete assegna un simbolo a ogni
 frame (anche il simbolo «vuoto» ∅); poi si uniscono i ripetuti consecutivi, e
-**solo dopo** si tolgono i vuoti. L'ordine non è un dettaglio: invertendolo la
-doppia «L» si perde, ed è per impedirlo che il ∅ esiste. I frame disegnati sono
+**solo dopo** si tolgono i vuoti. L'ordine decide tutto: invertendolo la doppia
+«L» si perde, ed è per impedirlo che il ∅ esiste. I frame disegnati sono
 sette perché ci stiano: per una parola come «palla» ne servirebbero una
 cinquantina, uno ogni dieci millesimi di secondo.
 ```
@@ -147,14 +147,14 @@ minuto.
 Con cinquanta frame, che sono quelli che «palla» occupa davvero, lo stesso
 conto portato avanti con pazienza dà quasi ventiquattro miliardi di modi.
 Sommarli tutti sembra un lavoro impossibile, e invece si fa in fretta. La
-ragione è che i modi si somigliano: prendine due che per i primi tre frame
-sono identici e si separano al quarto, e vedrai che il conto dei primi tre
-frame è lo stesso per tutti e due. Basta farlo una volta e riusarlo. Mettendo
-insieme tutti i modi che condividono l'inizio, il lavoro non è più
-ventiquattro miliardi di conti: è riempire una tabella lunga cinquanta
-colonne, una per frame, e alta quanto la parola scritta con i vuoti in mezzo.
-Qualche centinaio di caselle in tutto, ed è lo stesso risparmio del navigatore di Viterbi di
-{doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`.
+ragione è che i modi si somigliano: prendine due che per i primi tre frame sono
+identici e si separano al quarto, e vedrai che il conto dei primi tre frame è
+lo stesso per tutti e due. Basta farlo una volta e riusarlo. Mettendo insieme
+tutti i modi che condividono l'inizio, il lavoro diventa riempire una tabella
+lunga cinquanta colonne, una per frame, e alta quanto la parola scritta con i
+vuoti in mezzo. Qualche centinaio di caselle in tutto, ed è lo stesso risparmio
+del navigatore di Viterbi di {doc}`POS tagging ed entità
+</NaturalLanguageProcessing/etichettare-sequenze>`.
 
 C'è però un prezzo. La rete vota un frame alla volta, e ogni voto lo dà
 guardando il suono e nient'altro: non si rilegge mai
@@ -234,11 +234,11 @@ lettera «A» esce da tre percorsi diversi, e insieme fanno 24 + 24 + 16 = 64%:
 quasi il doppio. Prendendo il percorso migliore avremmo trascritto il
 silenzio; sommando come fa la CTC, la risposta è «A».
 
-Non è un caso costruito ad arte: succede ogni volta che una trascrizione è
-sostenuta da tanti percorsi mediocri e un'altra da un percorso solo, molto
-convinto. E succede più spesso di quanto si creda, perché di percorsi che
-danno la stessa parola ce ne sono a miliardi, come abbiamo contato poco fa per
-«palla».
+E succede davvero, non solo negli esempi costruiti ad arte: capita ogni volta
+che una trascrizione è sostenuta da tanti percorsi mediocri e un'altra da un
+percorso solo, molto convinto. E succede più spesso di quanto si creda, perché
+di percorsi che danno la stessa parola ce ne sono a miliardi, come abbiamo
+contato poco fa per «palla».
 
 `````
 
@@ -505,8 +505,8 @@ si trascrive mentre si ascolta.
 
 `````
 
-Non è un'architettura di nicchia: è quella su cui gira, dal 2019, la dettatura
-in tempo reale sui telefoni {cite}`he2019streaming`, dove la risposta deve
+È l'architettura su cui gira, dal 2019, la dettatura in tempo reale sui
+telefoni {cite}`he2019streaming`, dove la risposta deve
 arrivare mentre si parla e il modello deve stare dentro un dispositivo.
 Conviene tenerlo a mente fra qualche pagina, quando ci chiederemo a che cosa
 serva ancora, oggi, la vecchia catena a stadi.
@@ -559,8 +559,8 @@ delle altre sta sotto le mille ore. È da qui che viene il salto di qualità che
 si sente passando all'italiano, e gli autori ne ricavano una regola: la quota
 di parole sbagliate (il tasso di errore, che a fine pagina impareremo a
 misurare) si dimezza ogni volta che le ore di una lingua si moltiplicano per
-sedici. Non è una classifica fra lingue, è una misura di quanto costa fare
-meglio, e il costo cresce in fretta.
+sedici. È una misura di quanto costa fare meglio e non una classifica fra
+lingue, e il costo cresce in fretta.
 
 Con lo stesso modello Whisper trascrive, traduce verso l'inglese e riconosce
 la lingua. A dirgli quale dei tre mestieri fare sono delle istruzioni infilate

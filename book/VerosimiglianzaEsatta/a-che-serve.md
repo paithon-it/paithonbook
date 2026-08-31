@@ -218,8 +218,8 @@ invertibile e per avere un determinante leggibile. Domanda naturale: e se
 invece di comporre venti passi grossi ne componessimo infiniti
 infinitamente piccoli? La composizione diventa un'equazione differenziale: si
 dichiara una **velocità** in ogni punto dello spazio e in ogni istante, si
-lascia scorrere, e il punto di partenza arriva dove deve. La deformazione non è
-più fatta di gradini, è un movimento continuo.
+lascia scorrere, e il punto di partenza arriva dove deve. La deformazione
+diventa un movimento continuo, invece di una scala di gradini.
 
 Il guadagno è enorme. In quel limite il logaritmo del determinante si riduce
 alla **traccia** della jacobiana, cioè alla sola diagonale: è il risultato

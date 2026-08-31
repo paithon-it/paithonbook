@@ -242,8 +242,8 @@ e conviene tenerlo in mente quando si sceglie fra un modello grande e uno
 piccolo rifinito bene.
 
 Ne segue che **le leve che contano sono quelle del rispondere, non quelle
-dell'addestrare**. E la buona notizia è che non sono leve nuove: sono le
-stesse già viste in questo capitolo per risparmiare denaro e tempo, cioè
+dell'addestrare**. E la buona notizia è che sono le
+stesse leve già viste per risparmiare denaro e tempo, cioè
 alleggerire il modello (la quantizzazione e la potatura della sezione su
 LLMOps), servire molte richieste in una volta sola, e non ricalcolare ciò che è
 già stato calcolato (la cache del prefisso della sezione sulle metriche di
@@ -355,9 +355,10 @@ ha chiesto ai centri dati sei volte il lavoro, e loro hanno consumato quasi
 uguale: lì l'efficienza la crescita se l'è mangiata tutta.
 
 È un caso solo, e per giunta precedente all'ondata che questo libro racconta,
-quindi non dimostra niente sul futuro. Serve a dire che il rimbalzo **non è un
-destino**: è un effetto frequente, non una legge. L'argomento, insomma, non è
-contro l'efficienza; è contro il crederla sufficiente da sola.
+quindi non dimostra niente sul futuro. Serve a dire che il rimbalzo è un
+effetto frequente e **non una legge**.
+L'argomento, insomma, colpisce il crederla sufficiente da sola, non
+l'efficienza.
 
 La seconda riguarda i numeri. Quasi tutte le cifre pubblicate su questo tema
 sono **stime**, ottenute da ipotesi su hardware, utilizzo e mix energetico che
@@ -374,9 +375,9 @@ molto.
   moltiplicazione, ma da quel prezzo non segue ancora dove finisca la bolletta:
   dipende da **quanti conti si fanno per ogni numero preso**, e la soglia sta
   attorno ai centotrenta. Generare una parola alla volta ci sta molto sotto, e
-  lì la corrente se ne va nei viaggi: è la stessa frase del capitolo sulle GPU
-  (il collo di bottiglia non sono i conti, sono i byte) riletta con la bolletta
-  in mano, cioè andare più veloci e consumare meno sono la stessa cosa.
+  lì la corrente se ne va nei viaggi: è la frase del capitolo sulle GPU a
+  proposito del collo di bottiglia, riletta con la bolletta in mano, cioè
+  andare più veloci e consumare meno sono la stessa cosa.
   Leggere un prompt lungo e addestrare stanno invece sopra la soglia, e lì
   limare i viaggi sposta poco.
 - L'impronta finale è il prodotto di **tre fattori**: l'energia che consumano i

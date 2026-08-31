@@ -466,8 +466,8 @@ pagine fa?») è impossibile. L'attenzione dei Transformer,
 quella che tiene tutti gli scontrini, quel dettaglio ce l'ha ancora; il registro
 riassuntivo può averlo perso.
 
-Trentadue non è un numero a caso: è quante etichette un foglio così riesce a
-tenere separate, e vale a patto che siano diverse fra loro il più possibile. È
+Trentadue è quante etichette un foglio così riesce a tenere separate, e non un
+numero preso a caso: e vale a patto che siano diverse fra loro il più possibile. È
 il caso migliore, quello che nella pratica non capita: le etichette non le
 sceglie nessuno apposta distinte, le assegna il modello, e due parole qualunque
 finiscono per somigliarsi un po’.

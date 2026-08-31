@@ -199,8 +199,8 @@ Nel 2018 Scott Fujimoto, Herke van Hoof e David Meger analizzano queste
 patologie e propongono **TD3**, *Twin Delayed DDPG* {cite}`fujimoto2018addressing`.
 Quel «TD» non ha niente a che vedere con le differenze temporali del capitolo
 precedente: sta per *Twin Delayed*, «gemello e ritardato», e i due aggettivi
-dicono già due dei tre accorgimenti. Non è un algoritmo nuovo: è DDPG con tre
-correzioni mirate, ognuna rivolta a un difetto preciso.
+dicono già due dei tre accorgimenti. È DDPG con tre correzioni mirate e non un
+algoritmo nuovo, ognuna rivolta a un difetto preciso.
 
 `````{tab} Elementare
 
@@ -485,8 +485,8 @@ che porta un robot a muoversi nel mondo.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Nel **controllo continuo** l'azione non è una voce da scegliere in un menu,
-  è una quantità da dosare (quanta forza a ciascun motore) e il menu ha
+- Nel **controllo continuo** l'azione è una quantità da dosare (quanta forza a
+  ciascun motore) e non una voce da scegliere in un menu, e il menu ha
   infinite righe: scorrerle tutte, come fa DQN, non si può. La via d'uscita è
   affiancare al giudice che assegna i voti un **attore** che propone
   direttamente la mossa; al giudice resta da dire se è buona e da che parte

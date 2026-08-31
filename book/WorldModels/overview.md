@@ -201,8 +201,8 @@ prevedere il mondo, non a memorizzarlo.
 
 Nel 2022 LeCun mette online, aperto ai commenti di chiunque, un documento di
 una sessantina di pagine: *A Path Towards Autonomous Machine Intelligence*
-{cite}`lecun2022path`. Non è un articolo di risultati, è un programma di
-ricerca, cioè il disegno di come andrebbe costruita una macchina che si
+{cite}`lecun2022path`. È un programma di ricerca e non un articolo di
+risultati, cioè il disegno di come andrebbe costruita una macchina che si
 arrangia da sola nel mondo. Il disegno è fatto di pezzi che si passano il
 lavoro: uno guarda, uno ricorda, uno propone la mossa, uno pianifica provando
 le alternative. Al centro c'è un modello del mondo, imparato guardando e senza
@@ -345,7 +345,7 @@ intero l'esperimento sul gioco da tavolo promesso poco fa.
   prezzo: se il simulatore è impreciso ci si allena a vincere un gioco che non
   esiste, e in un mondo che non si rimette in assetto da sé l'imprecisione si
   somma quanto più lontano si prova a guardare.
-- Il **senso comune** non è un elenco di fatti, è un repertorio di previsioni
+- Il **senso comune** è un repertorio di previsioni e non un elenco di fatti
   (le cose non sostenute cadono, quel che è nascosto continua a esistere) che
   i bambini costruiscono guardando. Nessuno etichetta niente: il maestro è il
   futuro, e la lezione arriva quando il mondo smentisce la previsione.
@@ -356,8 +356,8 @@ intero l'esperimento sul gioco da tavolo promesso poco fa.
   del mondo se lo siano già costruito dentro, per quanto rudimentale.
 - Nella stessa proposta c'è una **retrocessione**: imparare per tentativi e
   premi, dice LeCun, è «la ciliegina sulla torta», e al suo posto va la
-  pianificazione dentro un modello del mondo. Il motivo non è il disprezzo, è un
-  conto: chi impara per tentativi riceve una correzione pochissimo informativa,
+  pianificazione dentro un modello del mondo. Il motivo è un conto e non il
+  disprezzo: chi impara per tentativi riceve una correzione pochissimo informativa,
   una specie di «bravo» a fine giornata. Il capitolo sull'auto-supervisione lo
   fa, quel conto, e riporta anche le obiezioni.
 - Il percorso del capitolo, in quattro tappe. Prima i **mondi in miniatura**: il

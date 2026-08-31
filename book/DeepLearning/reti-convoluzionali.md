@@ -253,7 +253,7 @@ ogni scatto) sopravvive solo per gli spostamenti pari, offre una modesta
 tolleranza alle traslazioni di un pixel. Modesta è la
 parola giusta: su un picco isolato spostato di un pixel la mappa risultante
 resta identica circa una volta su due, su feature map dense di valori diversi
-praticamente mai. Non è un'aggiunta gratuita, è un baratto.
+praticamente mai. È un baratto e non un'aggiunta gratuita.
 
 `````
 

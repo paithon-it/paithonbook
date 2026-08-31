@@ -128,8 +128,8 @@ autori dichiarano per quello che è.
 
 Il punto che la distingue dalle altre due, e che vale più della formula, è che
 $y$ è una regressione **sul tempo**, non sui valori passati: non c'è nessuno
-stato, nessuna dipendenza fra $y(t)$ e $y(t-1)$. Non è un processo stocastico,
-è una curva interpolata. Da qui vengono insieme il pregio (i dati mancanti e gli
+stato, nessuna dipendenza fra $y(t)$ e $y(t-1)$. È una curva interpolata e non
+un processo stocastico. Da qui vengono insieme il pregio (i dati mancanti e gli
 *outlier* non rompono niente, perché non c'è nessuna ricorsione da interrompere,
 e la stima è veloce) e il limite: il modello **non sfrutta l'autocorrelazione a
 breve**, che è precisamente ciò che rende prevedibile una serie molto correlata,

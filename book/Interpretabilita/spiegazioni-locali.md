@@ -242,8 +242,8 @@ $25 + 15 = 40$, esattamente quanto separa il punteggio finale (50) dalla
 risposta base (10). Tutto il bottino è stato ripartito, senza avanzi: nessun
 merito inventato, nessuno perso per strada.
 
-E i dieci punti dell'interazione? Non sono spariti, sono stati divisi a metà, e
-il modo in cui è successo si legge nei due ordini qui sopra. Chi entra per
+E i dieci punti dell'interazione? Sono stati divisi a metà, e il modo in cui è
+successo si legge nei due ordini qui sopra. Chi entra per
 **secondo** se li prende tutti e dieci: nel primo ordine sono i pagamenti (che
 da soli valevano 10 e lì aggiungono 20), nel secondo è il reddito (che da solo
 valeva 20 e lì aggiunge 30). Siccome ciascuno dei due arriva secondo in metà

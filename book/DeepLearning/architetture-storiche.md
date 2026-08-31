@@ -350,10 +350,9 @@ immagini diverse, e quando una sbaglia le altre cinque la contraddicono, così i
 gruppo sbaglia meno di ciascuno dei suoi membri.
 
 Non è la fine della corsa: la competizione andrà avanti fino al 2017 e l'errore
-scenderà ancora, fino al 2,25% dell'ultima edizione. Ma ormai la domanda non era
-più «quanto si può scendere su ImageNet»: era come portare le stesse reti dove
-servivano davvero, dentro un telefono o un'automobile, ed è la domanda con cui
-si chiude questa sezione.
+scenderà ancora, fino al 2,25% dell'ultima edizione. Ma ormai la domanda
+diventava come portare le stesse reti dove servivano davvero, dentro un
+telefono o un'automobile, ed è la domanda con cui si chiude questa sezione.
 
 ```{figure} ../figures/residuo-skip-connection.svg
 :name: fig-skip-connection
@@ -418,8 +417,8 @@ termine additivo $\mathbf{x}$ apre una via diretta al gradiente durante la
 Quella somma ha però una precondizione che l'equazione nasconde:
 $\mathcal{F}(\mathbf{x})$ e $\mathbf{x}$ devono avere la **stessa forma**.
 Quando un blocco raddoppia i canali o dimezza la risoluzione con uno stride,
-sommarli non è approssimativo, è un errore di dimensione e basta
-(`RuntimeError`). L'articolo lo prevede nella sua equazione (2), dove la
+sommarli dà un errore di dimensione e basta (`RuntimeError`), non
+un'approssimazione. L'articolo lo prevede nella sua equazione (2), dove la
 scorciatoia porta una proiezione lineare,
 
 $$
@@ -427,14 +426,13 @@ $$
 $$
 
 realizzata come una convoluzione $1\times1$ con lo stesso stride; in
-`torchvision` è il modulo `downsample`, che compare **solo** sul primo blocco di
-uno stage, e solo dove serve davvero. In una ResNet-50 il primo blocco del primo
-stage ce l'ha, perché il collo di bottiglia quadruplica i canali da 64 a 256; in
-una ResNet-18 lo stesso blocco non ce l'ha, perché lì la forma non cambia
-affatto. Non è un dettaglio di implementazione: è il
-punto in cui l'argomento «azzerare $\mathcal{F}$ dà l'identità gratis» smette
-di valere, perché lì la scorciatoia non è l'identità ma una trasformazione con
-pesi da imparare.
+`torchvision` è il modulo `downsample`, che compare **solo** sul primo blocco
+di uno stage, e solo dove serve davvero. In una ResNet-50 il primo blocco del
+primo stage ce l'ha, perché il collo di bottiglia quadruplica i canali da 64 a
+256; in una ResNet-18 lo stesso blocco non ce l'ha, perché lì la forma non
+cambia affatto. È il punto in cui l'argomento «azzerare $\mathcal{F}$ dà
+l'identità gratis» smette di valere, perché lì la scorciatoia non è l'identità
+ma una trasformazione con pesi da imparare.
 
 Le versioni profonde, poi, non impilano quel blocco così com'è. Da ResNet-50 in
 su si usa il blocco a **collo di bottiglia**: tre convoluzioni al posto di due,

@@ -49,21 +49,20 @@ le ha mai viste è esattamente il lettore per cui questo capitolo è scritto.
 ## Una foto, e tre lingue
 
 Il compito più classico dell'AI è questo: guardare una foto e dire se contiene
-un gatto. Per un calcolatore quella foto non è un gatto, è una griglia di
-numeri (l'intensità di ogni pixel). Metterli in fila ordinata è **algebra
-lineare**. Poi quei numeri vengono trasformati più volte di seguito, e ogni
-passaggio è uno **strato**: prende la lista di numeri che gli arriva e ne
-produce un'altra, fino a che dall'ultimo esce la risposta «gatto / non gatto».
-Anche questo è algebra lineare, con in mezzo qualche piccola funzione che
-*piega* i numeri: sommare e moltiplicare, ripetuto cento volte, resta un
-sommare e moltiplicare con altri numeri, e la piega serve a rompere questa
-regola. Misurare *quanto* il programma sbaglia, e capire come
-ritoccare i numeri che ha dentro perché sbagli un po’ meno la volta dopo, è
-**analisi**. L'analisi è il ramo della matematica che studia come cambia una
-quantità quando se ne muove un'altra: qui, di quanto cambia l'errore se si
-sposta un numero. E poiché una risposta del genere non è mai una certezza (il programma
-è «abbastanza sicuro» che sia un gatto), il modo naturale di esprimere quella
-sicurezza è la **probabilità**.
+un gatto. Per un calcolatore quella foto è una griglia di numeri (l'intensità
+di ogni pixel), non un gatto. Metterli in fila ordinata è **algebra lineare**.
+Poi quei numeri vengono trasformati più volte di seguito, e ogni passaggio è
+uno **strato**: prende la lista di numeri che gli arriva e ne produce un'altra,
+fino a che dall'ultimo esce la risposta «gatto / non gatto». Anche questo è
+algebra lineare, con in mezzo qualche piccola funzione che *piega* i numeri:
+sommare e moltiplicare, ripetuto cento volte, resta un sommare e moltiplicare
+con altri numeri, e la piega serve a rompere questa regola. Misurare *quanto*
+il programma sbaglia, e capire come ritoccare i numeri che ha dentro perché
+sbagli un po’ meno la volta dopo, è **analisi**. L'analisi è il ramo della
+matematica che studia come cambia una quantità quando se ne muove un'altra:
+qui, di quanto cambia l'errore se si sposta un numero. E poiché una risposta
+del genere non è mai una certezza (il programma è «abbastanza sicuro» che sia
+un gatto), il modo naturale di esprimere quella sicurezza è la **probabilità**.
 
 Quel «programma» ha un nome preciso, e i nomi li ha già dati
 l’{doc}`Introduzione </Introduzione/overview>`: un modello è un programma che
@@ -87,25 +86,35 @@ successivi useranno davvero, e nient'altro.
 
 ## Cinque attrezzi, una domanda ciascuno
 
-Cinque attrezzi, e ciascuno risponde a una domanda che si può fare a voce; una
-sesta sezione, in fondo, li rimette al lavoro tutti insieme su un oggetto solo.
+Cinque attrezzi, e ciascuno risponde a una domanda che si può fare a voce.
+Alcuni occupano più di una sezione, perché la domanda si articola; una sezione
+finale li rimette al lavoro tutti insieme su un oggetto solo.
 
 - **Algebra lineare**: come si mettono i numeri in fila, e come si trasformano
-  tutti insieme (vettori, matrici, prodotti e norme).
+  tutti insieme. Sono quattro sezioni: *vettori, matrici, prodotti e norme*
+  per cominciare; i *sistemi lineari*, cioè che cosa succede quando i dati
+  impongono dei vincoli e quando quei vincoli non bastano; *ortogonalità e
+  proiezioni*, che rispondono quando una risposta esatta non esiste; e il
+  *determinante*, che misura di quanto una trasformazione gonfia lo spazio.
 - **Analisi e ottimizzazione**: come si capisce da che parte migliorare, e come
   ci si arriva un passo alla volta (derivate, gradiente, discesa del gradiente).
 - **Probabilità e statistica**: come si convive con l'incertezza, e come si
   aggiorna un'opinione quando arrivano dati nuovi (fino al teorema di Bayes).
+  Seguono due sezioni che ne tirano le conseguenze: *quanto può sbagliare una
+  media*, che dice quante prove servono per fidarsi di un numero misurato, e le
+  *catene di Markov*, dove la probabilità incontra l'algebra lineare e la
+  domanda «dove finisce, andando avanti per sempre?» ha una risposta esatta.
 - **Teoria dell'informazione**: come si misura la sorpresa con un numero solo.
   È da lì che viene il punteggio d'errore con cui si addestra quasi ogni
   modello che deve scegliere fra alternative (entropia e cross-entropia).
 - **Analisi numerica**: che cosa cambia quando i conti li fa una macchina che
   scrive solo poche cifre per numero, e come si evita che il conto vada fuori
   strada.
-- **La matematica di un modello linguistico**: le cinque voci rimesse insieme.
-  Un modello linguistico (in inglese *large language model*, da cui la sigla
-  **LLM** che si incontra ovunque) smontato con i soli attrezzi di questo
-  capitolo, che sono poi gli unici che servono.
+
+L'ultima sezione non aggiunge un sesto attrezzo, rimette al lavoro i cinque
+insieme su un oggetto solo: un modello linguistico (in inglese *large language
+model*, da cui la sigla **LLM** che si incontra ovunque), smontato con i soli
+attrezzi di questo capitolo, che sono poi gli unici che servono.
 
 I nomi fra parentesi sono le etichette tecniche, e nessuna di esse è data per
 saputa: ognuna nasce dentro la sua sezione, con un'immagine prima e la formula

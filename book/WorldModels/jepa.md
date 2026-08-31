@@ -178,15 +178,15 @@ ogni coppia un voto di compatibilità (in quel capitolo il voto si chiama
 modo più comodo di non sbagliare mai è dire sempre sì.
 
 Qui la scorciatoia è la stessa. Se il voto premia soltanto la vicinanza fra il
-riassunto predetto e quello del bersaglio, la strada più comoda non è capire il
-mondo, è **appiattirlo**: basta che i due encoder imparino a produrre sempre la
-stessa identica fila di numeri, qualunque cosa guardino. Predizione perfetta,
-voto pieno, energia zero dappertutto, e rappresentazioni che non distinguono un
-gatto da un lampadario. È il **collasso**, e per le JEPA è il pericolo numero
-uno, perché qui (a differenza dei modelli generativi, ancorati ai pixel veri)
-anche il *bersaglio* è prodotto da una rete che avrebbe tutto l'interesse a
-barare. Nel documento del 2022 LeCun indica la famiglia di rimedi che
-preferisce, quella già incontrata fra i modelli a energia: invece di
+riassunto predetto e quello del bersaglio, la strada più comoda è
+**appiattire** il mondo, non capirlo: basta che i due encoder imparino a
+produrre sempre la stessa identica fila di numeri, qualunque cosa guardino.
+Predizione perfetta, voto pieno, energia zero dappertutto, e rappresentazioni
+che non distinguono un gatto da un lampadario. È il **collasso**, e per le JEPA
+è il pericolo numero uno, perché qui (a differenza dei modelli generativi,
+ancorati ai pixel veri) anche il *bersaglio* è prodotto da una rete che avrebbe
+tutto l'interesse a barare. Nel documento del 2022 LeCun indica la famiglia di
+rimedi che preferisce, quella già incontrata fra i modelli a energia: invece di
 fabbricare risposte sbagliate da bocciare, si toglie al modello la possibilità
 stessa di dare a tutto lo stesso riassunto, per esempio obbligandolo a tenerli
 diversi fra loro. Ma nei sistemi JEPA costruiti davvero da Meta la difesa
@@ -407,8 +407,8 @@ corrente («una piccola testa di classificazione») sottostima parecchio. Il
 protocollo di V-JEPA usa un *attentive probe*: uno strato di cross-attention
 con un token di query appreso, la cui uscita rientra nel token di query per
 connessione residua e finisce in un MLP a due strati. Uno strato di
-cross-attention non è un classificatore lineare, è un aggregatore *addestrato*
-che decide quali token guardare: fra i due estremi «regressione logistica sopra
+cross-attention è un aggregatore *addestrato* che decide quali token guardare,
+non un classificatore lineare: fra i due estremi «regressione logistica sopra
 feature congelate» e «fine-tuning completo» sta molto più vicino al secondo di
 quanto la parola «testa» lasci intendere. E in V-JEPA 2 la sonda cresce
 ancora: **quattro blocchi transformer**, l'ultimo dei quali sostituisce la
@@ -701,8 +701,8 @@ modello impara a prevedere il *contenuto* delle tessere coperte (che è
 condiviso con il contesto) e ignora il rumore (che non è prevedibile), senza
 appiattire le rappresentazioni.
 
-Il modo di convincersene, però, non è leggere quei numeri: è spegnere il
-meccanismo e guardare che cosa succede. Sostituendo la riga del bersaglio con
+Il modo di convincersene, però, è spegnere il meccanismo e guardare che cosa
+succede, più che leggere quei numeri. Sostituendo la riga del bersaglio con
 `s_y = encoder(patch[:, N_CONTESTO:]).mean(dim=1)`, cioè togliendo in un colpo
 solo la copia lenta e il `torch.no_grad()`, i due rami tornano a essere la
 stessa rete e possono accordarsi: dopo 600 passi la loss scende a cinque

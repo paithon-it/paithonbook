@@ -303,7 +303,7 @@ token (i pezzetti di testo della sezione precedente), in chiamate agli
 strumenti e in secondi di attesa; quest'ultima voce si chiama **latenza**, ed è
 il tempo che l'utente passa a guardare lo schermo.
 
-Il costo non è un dettaglio contabile: un agente che risolve il compito
+Il costo entra nel giudizio: un agente che risolve il compito
 consumando diecimila token e trenta passi non è «riuscito» allo stesso modo di
 uno che lo chiude in quattro.
 
@@ -356,7 +356,7 @@ criterio di progresso **monotono**, e punirebbe esattamente le mosse mature di
 un agente, cioè il re-planning quando un sotto-obiettivo fallisce, il tornare
 indietro dai rami che non promettono del Tree of Thoughts, il tentativo
 fallito che Reflexion usa per orientare il successivo. Il fallimento tipico di
-un loop non è il passo che allontana: è il passo che si ripete. Un agente può
+un loop è il passo che si ripete, più che quello che allontana. Un agente può
 poi azzeccare la risposta per la strada sbagliata (giusto per caso) o
 sbagliarla dopo una traiettoria impeccabile (l'ultimo passo va storto):
 guardare solo il risultato finale confonde questi casi, e per capire davvero
@@ -514,8 +514,8 @@ bene e i test erano all'altezza di giudicarlo.
 Niente di tutto ciò toglie valore a SWE-bench, che resta il modo più onesto
 che abbiamo di mettere alla prova un agente su lavoro vero. Sposta però la
 morale: i compiti lunghi e realistici sono duri, e misurarli è duro quasi
-quanto risolverli. Un numero su un agente non è mai soltanto una proprietà
-dell'agente: è anche una proprietà della prova con cui lo si è ottenuto.
+quanto risolverli. Un numero su un agente è anche una proprietà
+della prova con cui lo si è ottenuto, e non soltanto dell'agente.
 
 C'è infine una faccia della valutazione che non è una misura ma una rete di
 sicurezza. Un agente non solo *risponde*: *agisce*, e un'azione può fare danni
@@ -536,7 +536,7 @@ purché si ricordi che ha delle **inclinazioni sistematiche** da cui non si
 libera. Tende a preferire la risposta che ha letto per prima, a premiare le
 risposte lunghe perché sembrano più complete, e a dare ragione a se stesso
 quando è lui l'autore di ciò che sta giudicando. La valutazione di un agente,
-come quella di una risposta libera, non è mai *solo* un numero: è un numero
+come quella di una risposta libera, è sempre un numero
 più un sistema di controlli attorno.
 
 ## Uno sguardo onesto
@@ -545,7 +545,7 @@ più un sistema di controlli attorno.
 promettenti: l'idea di un modello che pianifica, usa strumenti, collabora e
 ricorda è potente, e i primi risultati su compiti reali, per quanto modesti,
 erano impensabili pochi anni fa. Ma sono anche **fragili**, e i loro difetti
-non sono dettagli da limare: sono strutturali. Gli errori si **accumulano**
+sono strutturali, e non dettagli da limare. Gli errori si **accumulano**
 lungo la catena, e un compito lungo li amplifica: se a ogni mossa se ne sbaglia
 una su dieci, arrivare in fondo a dieci mosse senza un solo errore capita poco
 più di una volta su tre, che è il conto $0{,}9^{10}$ dell'apertura del
@@ -565,9 +565,9 @@ garantire cosa farà: più libertà d'azione, meno controllo.
 È, soprattutto, un'area **giovane**: più ricette provate che teoria (le
 euristiche di cui parlavamo in apertura), banchi di prova ancora in
 costruzione, poche certezze su cosa funzioni e perché {cite}`xi2023rise`. Chi
-lavora con gli agenti oggi costruisce su terreno che si muove. Questo non è un
-motivo per starne alla larga, è un motivo per starci con lucidità: misurare più
-che sperare, aggiungere complessità solo quando paga, e diffidare di ogni
+lavora con gli agenti oggi costruisce su terreno che si muove. È un motivo per
+starci con lucidità, non per starne alla larga: misurare più che sperare,
+aggiungere complessità solo quando paga, e diffidare di ogni
 numero troppo bello. La distanza tra un agente che *sembra* funzionare in una
 dimostrazione e uno di cui *fidarsi* quando lo usa la gente si misura
 esattamente con gli strumenti di questa sezione.
@@ -589,7 +589,7 @@ esattamente con gli strumenti di questa sezione.
   guadagni spesso modesti, e ha trovato che si sbaglia soprattutto nel
   **mettersi d'accordo**, non dentro il singolo agente. Si aggiunge un ruolo
   solo quando risolve un problema vero.
-- La **memoria che dura** non è tenere tutto sott'occhio: è un diario tenuto
+- La **memoria che dura** è un diario tenuto
   fuori, da cui si ripesca solo la pagina che conta adesso. Gli agenti di
   Smallville {cite}`park2023generative` la ripescano con tre criteri sommati
   insieme (quanto è **recente** il ricordo, quanto è **importante**, quanto
@@ -665,9 +665,9 @@ esattamente con gli strumenti di questa sezione.
 `````
 
 Il capitolo si chiude su una nota di prudenza, e ci sta: un agente è la cosa
-più fragile che questo libro abbia costruito, perché ogni passo in più è
-un'altra occasione di sbagliare. Quello che ci portiamo dietro, però, non è la
-fragilità: è che a decidere quanto un agente vale non è il modello che ha
+più fragile che abbiamo montato, perché ogni passo in più è
+un'altra occasione di sbagliare. Quello che ci portiamo dietro, però, è che a
+decidere quanto un agente vale non è il modello che ha
 dentro, ma quello che gli si mette davanti a ogni passo, e come lo si rimette
 in circolo. Il {doc}`capitolo su prompt, contesto e loop </IngegneriaLLM/overview>` è dedicato per intero a
 quel mestiere lì.
