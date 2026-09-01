@@ -1,16 +1,16 @@
 # Modelli a verosimiglianza esatta
 
-Immagina di avere fra le mani il generatore di volti del
-{doc}`capitolo sulle GAN </GAN/overview>`,
-quello che sforna a ripetizione persone che non esistono, e di fargli una
-domanda diversa da tutte quelle che gli abbiamo fatto finora. Non «fammi un
-volto», ma: prendi *questa* fotografia, guardala, e dimmi quanto è probabile.
+Il generatore di volti del {doc}`capitolo sulle GAN </GAN/overview>` sforna a
+ripetizione persone che non esistono. Facciamogli una domanda diversa da tutte
+quelle che gli abbiamo fatto finora. Non «fammi un volto», ma: prendi *questa*
+fotografia, guardala, e dimmi quanto è probabile.
 
 Non è che risponde male. Non ha uno sportello a cui rivolgere quella domanda.
 Il falsario ha imparato a **produrre**, non a **valutare**: il numero che
 misura quanto un dato è plausibile non compare da nessuna parte nel suo
-addestramento, e non c'è modo di estrarlo dai suoi pesi. Il capitolo sui
-modelli di diffusione, appena chiuso, sta un gradino più in là: lì quel numero
+addestramento, e non c'è modo di estrarlo dai suoi pesi. Il
+{doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`, appena
+chiuso, sta un gradino più in là: lì quel numero
 esiste, ma quello che il modello ottimizza non è quel numero: è una stima
 prudente che gli sta sotto, e per avere il valore vero bisogna fare un secondo
 lavoro, lungo e a parte.
@@ -18,8 +18,9 @@ lavoro, lungo e a parte.
 Questo capitolo racconta la terza risposta: la famiglia di modelli che quel
 numero lo restituisce **esatto**, con un solo passaggio della rete, perché è
 costruita apposta. La cosa conviene non per pignoleria, ma perché quel numero
-è la stessa cosa di tre mestieri diversi (comprimere, riconoscere ciò che è
-fuori posto, confrontare due modelli senza chiamare un giudice), ed è la
+è la stessa cosa di tre mestieri diversi (comprimere, mettere in fila delle
+ipotesi, accorgersi che è arrivata roba diversa da quella su cui il modello è
+stato addestrato), ed è la
 ragione per cui questa famiglia, che nella corsa alle immagini ha perso, non è
 affatto uscita di scena.
 
@@ -37,7 +38,8 @@ tutti i dati possibili fa esattamente uno.
 
 Quel «fa esattamente uno» è tutto il problema, ed è il filo che tiene insieme
 questo capitolo e il prossimo. Sommare su tutti i dati possibili non si può, e
-il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` mostrerà quanto quel conto sia fuori portata.
+il capitolo sui modelli a energia mostrerà quanto quel conto sia fuori
+portata.
 Le strade sono allora due: rinunciare alla normalizzazione e cavarsela lo
 stesso (è il capitolo sui modelli a energia), oppure **costruire il modello in modo che
 venga normalizzato da sé**, senza mai fare quel conto. È la strada di questo.
@@ -46,8 +48,8 @@ venga normalizzato da sé**, senza mai fare quel conto. È la strada di questo.
 
 I capitoli generativi del libro sono cinque, e per la prima volta li mettiamo
 tutti insieme: {doc}`modelli latenti </ModelliLatenti/overview>`,
-{doc}`GAN </GAN/overview>`, {doc}`diffusione </ModelliDiffusione/overview>`,
-questo e {doc}`modelli a energia </ModelliEnergia/overview>`. L'asse su cui li
+le GAN, la diffusione,
+questo e i modelli a energia. L'asse su cui li
 ordiniamo è uno solo: **che rapporto ha il modello con la probabilità del
 dato**. È un taglio fra i tanti possibili, e altrove nel libro le stesse cose
 sono ordinate secondo altri assi (le quattro famiglie dell'auto-supervisione si
@@ -64,7 +66,7 @@ no.
 
 **Ce l'ha approssimata.** Il modello ha di che parlare di probabilità, ma quel
 che ottimizza e quel che sa dire è un surrogato. I **VAE**, gli autoencoder
-variazionali del {doc}`capitolo sui modelli latenti </ModelliLatenti/overview>`, danno un limite inferiore,
+variazionali del capitolo sui modelli latenti, danno un limite inferiore,
 l'ELBO: si sa
 che il valore vero sta più in alto, non di quanto. I **modelli a energia**
 danno il voto a meno di una costante che nessuno conosce: bastano per dire
@@ -76,14 +78,14 @@ fatta a campione di un pezzo per cui una formula chiusa non esiste, cioè con un
 lavoro che nessuno fa a ogni immagine.
 
 **Ce l'ha esatta.** Il modello restituisce $\log p(\mathbf{x})$, giusto, in un
-passaggio. Due strade portano lì, e sono le due sezioni di questo capitolo. La
+passaggio. Due strade portano lì, e sono le prime due sezioni. La
 prima spezza il dato in pezzi e li mette in fila, moltiplicando le probabilità
 uno dopo l'altro: sono i **modelli autoregressivi**, che il libro conosce da
 tempo sul testo e sull'audio, e che qui incontriamo sulle immagini. La seconda
 non spezza niente e deforma: costruisce una trasformazione **invertibile** dai
 dati a una gaussiana, e legge la probabilità di là. Sono i **flussi
-normalizzanti**, ed è la parola «flusso» che il capitolo precedente ha usato
-per il *rectified flow* senza mai dire da dove venisse.
+normalizzanti**, e sono la famiglia da cui il *rectified flow* del capitolo
+precedente ha preso il nome.
 
 ## Il prezzo
 
@@ -147,7 +149,8 @@ la ragione strutturale per cui ha perso.
   trattabile** (autoregressivi e flussi).
 - **Autoregressivi**: $\log p(\mathbf{x}) = \sum_i \log p(x_i \mid
   \mathbf{x}_{<i})$, ogni fattore una softmax normalizzata. Valutazione in un
-  passaggio (*teacher forcing*), campionamento in $D$ passaggi sequenziali.
+  passaggio (*teacher forcing*), campionamento in $D$ passaggi sequenziali,
+  con $D$ il numero di valori che compongono il dato.
 - **Flussi**: $\log p(\mathbf{x}) = \log p_Z(f(\mathbf{x})) + \log \lvert \det
   \partial f / \partial \mathbf{x} \rvert$, con $f$ invertibile. Valutazione e
   campionamento entrambi in un passaggio; in cambio $f$ è vincolata a essere
@@ -160,9 +163,9 @@ la ragione strutturale per cui ha perso.
 
 `````
 
-## Tre modi di scrivere una probabilità
+## Due meccanismi, e un bilancio
 
-Due meccanismi e un bilancio. Prima gli **autoregressivi sulle immagini**: come
+Prima gli **autoregressivi sulle immagini**: come
 si impone un ordine a una griglia di pixel, come si costringe una convoluzione
 a guardare solo indietro, e il difetto famoso che quella costrizione porta con
 sé. Poi i **flussi normalizzanti**: il cambio di variabile che è tutta la

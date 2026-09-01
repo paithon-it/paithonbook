@@ -1242,7 +1242,7 @@ $y \mid x \sim \mathcal{N}(\hat{y},\sigma^2)$
 con varianza fissa, massimizzare la log-verosimiglianza equivale a
 **minimizzare l'errore quadratico medio**; sotto ipotesi di
 Bernoulli/categoriche equivale a minimizzare la **cross-entropy**. Le loss
-$\mathcal{L}$ non sono scelte arbitrarie: sono verosimiglianze travestite.
+$\mathcal{L}$ sono verosimiglianze travestite, non scelte arbitrarie.
 
 `````
 

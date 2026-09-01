@@ -2,26 +2,27 @@
 
 Per insegnare a un bambino che cos'è una tazza non servono diecimila tazze. Ne
 basta una: la gira tra le mani, la guarda dall'alto e di lato, la vede al sole
-e in penombra, mezza nascosta dietro la caffettiera. Ogni sguardo è
-un'immagine diversa dello stesso oggetto, e da quella manciata di occhiate il
-concetto di "tazza" esce solidissimo. Una rete neurale non ha mani. Ma
-possiamo girare noi l'oggetto al posto suo: prendere ogni fotografia del
-training set e mostrargliela specchiata, ritagliata, un po’ ruotata, più
-chiara o più scura. Si chiama **data augmentation** (letteralmente "aumento
-dei dati") ed è il modo più economico che esista per moltiplicare gli esempi
-senza raccoglierne di nuovi. Non è un'idea recente: nel {doc}`capitolo sul deep
-learning </DeepLearning/overview>` abbiamo visto che già AlexNet, nel 2012, la usava in modo aggressivo
-(ritagli casuali, riflessioni, perturbazioni di colore). Bastano i primi due,
-calcolano gli autori, per ricavare da ogni immagine oltre duemila varianti
-possibili {cite}`krizhevsky2012imagenet`, ed è una moltiplicazione, non una
-magia. Il conto si rifà a mano. Da un'immagine di 256 pixel di lato se ne
-ritaglia una di 224: il bordo sinistro del ritaglio può quindi scivolare di
-$256 - 224 = 32$ colonne, e il bordo alto di altrettante righe, il che fa
-$32 \times 32 = 1024$ ritagli diversi. Lo specchio li raddoppia, e si arriva a
-$2048$. (A essere pignoli le posizioni sono $33 \times 33$, perché una la
-occupa il ritaglio tutto a sinistra e le altre trentadue sono gli scivolamenti:
-gli autori arrotondano alla potenza di due, che è il numero tondo per un
-computer, e la sostanza non cambia.)
+e in penombra, mezza nascosta dietro la caffettiera. Ogni sguardo è un'immagine
+diversa dello stesso oggetto, e da quella manciata di occhiate il concetto di
+"tazza" esce solidissimo. Una rete neurale non ha mani. Ma possiamo girare noi
+l'oggetto al posto suo: prendere ogni fotografia del training set e
+mostrargliela specchiata, ritagliata, un po’ ruotata, più chiara o più scura.
+Si chiama **data augmentation** (letteralmente "aumento dei dati") ed è il modo
+più economico che esista per moltiplicare gli esempi senza raccoglierne di
+nuovi. Non è un'idea recente: fra le {doc}`architetture storiche del deep
+learning </DeepLearning/architetture-storiche>` abbiamo visto che già AlexNet,
+nel 2012, la usava in modo aggressivo (ritagli casuali, riflessioni,
+perturbazioni di colore). Bastano i primi due, calcolano gli autori, per
+ricavare da ogni immagine oltre duemila varianti possibili
+{cite}`krizhevsky2012imagenet`, ed è una moltiplicazione, non una magia. Il
+conto si rifà a mano. Da un'immagine di 256 pixel di lato se ne ritaglia una di
+224: il bordo sinistro del ritaglio può quindi scivolare di $256 - 224 = 32$
+colonne, e il bordo alto di altrettante righe, il che fa $32 \times 32 = 1024$
+ritagli diversi. Lo specchio li raddoppia, e si arriva a $2048$. (A essere
+pignoli le posizioni sono $33 \times 33$, perché una la occupa il ritaglio
+tutto a sinistra e le altre trentadue sono gli scivolamenti: gli autori
+arrotondano alla potenza di due, che è il numero tondo per un computer, e la
+sostanza non cambia.)
 
 ## Cambiare i pixel, non l'etichetta
 
@@ -187,12 +188,13 @@ il compito: per un classificatore di cifre o di cartelli stradali, il
 ## Perché funziona: un altro modo di mettere il freno
 
 Impedire a una rete di imparare a memoria è un problema vecchio, e il libro ci
-ha già messo mano due volte: nel {doc}`capitolo sul machine learning </MachineLearning/overview>` penalizzando i
-modelli che si affidano troppo a pochi numeri grossi (la regolarizzazione
-$\ell_2$), in quello sul deep learning spegnendo a caso una parte della rete a
-ogni passo, il dropout {cite}`srivastava2014dropout`. Tutti questi freni si
-chiamano **regolarizzazioni**, e l'augmentation è uno di loro, con una
-differenza: agisce sui dati invece che sulla rete.
+ha già messo mano due volte: nella {doc}`sezione su overfitting e validazione
+</MachineLearning/overfitting-validazione>` penalizzando i modelli che si
+affidano troppo a pochi numeri grossi (la regolarizzazione $\ell_2$), in quella
+sul deep learning spegnendo a caso una parte della rete a ogni passo, il
+dropout {cite}`srivastava2014dropout`. Tutti questi freni si chiamano
+**regolarizzazioni**, e l'augmentation è uno di loro, con una differenza:
+agisce sui dati invece che sulla rete.
 
 `````{tab} Elementare
 Torniamo ai compiti a casa, e chiediamoci perché l'insegnante cambi i numeri
@@ -206,20 +208,21 @@ mai due volte lo stesso. Ciò che sopravvive a specchi, ritagli e cambi di luce
 
 `````{tab} Superiore
 L'addestramento standard minimizza il rischio empirico
-$\hat{R}(\theta) = \frac{1}{n}\sum_{i=1}^{n} \mathcal{L}\big(f_\theta(\mathbf{x}_i), y_i\big)$,
-dove la distribuzione empirica concentra tutta la massa sugli $n$ punti
-osservati. L'augmentation sostituisce ogni punto con una nuvola di varianti:
+$\hat{R}(\theta) = \frac{1}{n}\sum_{i=1}^{n} \ell\big(f_\theta(\mathbf{x}_i), y_i\big)$,
+dove $\ell$ è il costo di una singola predizione e la distribuzione empirica
+concentra tutta la massa sugli $n$ punti osservati. L'augmentation sostituisce
+ogni punto con una nuvola di varianti:
 
 $$
 \hat{R}_{\text{aug}}(\theta) \;=\; \frac{1}{n}\sum_{i=1}^{n}
-\mathbb{E}_{T\sim\mathcal{T}}\Big[\mathcal{L}\big(f_\theta(T(\mathbf{x}_i)),\, y_i\big)\Big],
+\mathbb{E}_{T\sim\mathcal{T}}\Big[\ell\big(f_\theta(T(\mathbf{x}_i)),\, y_i\big)\Big],
 $$
 
 dove $\mathcal{T}$ è la distribuzione sulle trasformazioni ammesse. In altre parole
 **allarga il supporto della distribuzione empirica**: invece di esigere la
 risposta giusta in $n$ punti isolati, la esige su interi intorni, e questo
 spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte (un
-vincolo che riduce l'overfitting esattamente come farebbe un termine di
+vincolo che riduce l'overfitting con lo stesso effetto di un termine di
 regolarizzazione). È l'idea del *vicinal risk minimization*, formulata da
 Chapelle, Weston, Bottou e Vapnik {cite}`chapelle2000vicinal` (apprendere non
 dai punti, ma dai loro dintorni), che tra poco vedremo portata alle estreme
@@ -273,15 +276,18 @@ $$
 dove $\mathbf{x}_i, \mathbf{x}_j$ sono due immagini, $y_i, y_j$ le rispettive
 etichette in codifica one-hot e $\lambda \in [0,1]$ è estratto da una distribuzione
 $\mathrm{Beta}(\alpha, \alpha)$, dove l'iperparametro $\alpha$ regola
-l'intensità della mescolanza: con $\alpha$ piccolo (il paper usa valori tra
-$0{,}1$ e $0{,}4$) $\lambda$ si concentra vicino a $0$ o a $1$, e le miscele
-restano leggere. Il modello viene addestrato a produrre predizioni che
-interpolano linearmente tra le classi, il che regolarizza il comportamento
-*tra* gli esempi, dove il rischio empirico tace. **Cutout**
+l'intensità della mescolanza: con $\alpha$ piccolo (su ImageNet il paper usa
+valori fra $0{,}1$ e $0{,}4$) $\lambda$ si concentra vicino a $0$ o a $1$, e le
+miscele restano leggere; con $\alpha = 1$, che è quanto usa sui dataset più
+piccoli, $\lambda$ è uniforme e il mezzo e mezzo capita quanto tutto il resto.
+Il modello viene addestrato a produrre predizioni che interpolano linearmente
+tra le classi, il che regolarizza il comportamento *tra* gli esempi, dove il
+rischio empirico tace. **Cutout**
 {cite}`devries2017improved` azzera un riquadro casuale dell'immagine (l'idea
-quasi identica del *random erasing* lo sostituisce con valori casuali;
-torchvision la implementa in `transforms.RandomErasing`, da applicare dopo
-`ToTensor`), impedendo alla rete di dipendere da una singola regione
+quasi identica del *random erasing* lo riempie invece di valori casuali;
+torchvision le fa tutte e due con `transforms.RandomErasing`, da applicare dopo
+`ToTensor`, ma il valore predefinito è zero, cioè Cutout: per il random erasing
+serve `value="random"`), impedendo alla rete di dipendere da una singola regione
 discriminante: un dropout applicato allo spazio dei pixel. Infine
 **AutoAugment** {cite}`cubuk2019autoaugment` tratta la scelta delle
 trasformazioni come un problema di ricerca: un controllore addestrato per
@@ -304,15 +310,16 @@ scena.
 Soprattutto, l'augmentation **non cura lo shift di dominio**. Se il modello è
 addestrato su foto diurne e in produzione arrivano riprese notturne, se il
 nuovo ospedale usa uno scanner diverso da quello del training set, nessuno
-specchio e nessun ritaglio colmerà quella distanza: è il problema dei *dati
-che cambiano* che abbiamo discusso nel {doc}`capitolo sul machine learning </MachineLearning/overview>`, e la
+specchio e nessun ritaglio colmerà quella distanza: è il problema di
+{doc}`quando i dati cambiano </MachineLearning/dati-che-cambiano>`, e la
 risposta è raccogliere dati rappresentativi del dominio reale, non deformare
-quelli vecchi. Anzi, un'augmentation scelta male può peggiorare le cose,
-perché iniettare l'invarianza sbagliata significa insegnare alla rete una cosa
-falsa sul mondo: una radiografia del torace specchiata mette il cuore a
-destra, un'anatomia rarissima che il modello imparerebbe a considerare
-normale. Le trasformazioni codificano le nostre ipotesi sul problema, e delle
-ipotesi, come sempre, si risponde.
+quelli vecchi. Anzi,
+un'augmentation scelta male può peggiorare le cose, perché iniettare
+l'invarianza sbagliata significa insegnare alla rete una cosa falsa sul mondo:
+una radiografia del torace specchiata mette il cuore a destra, un'anatomia
+rarissima che il modello imparerebbe a considerare normale. Le trasformazioni
+codificano le nostre ipotesi sul problema, e delle ipotesi, come sempre, si
+risponde.
 
 `````{tab} Elementare
 
@@ -321,8 +328,9 @@ ipotesi, come sempre, si risponde.
 - L'augmentation fabbrica varianti di ogni foto (specchiata, ritagliata,
   ruotata, più chiara) e le conta come esempi nuovi. Le domande da farsi sono
   due: **la risposta giusta non deve cambiare** (lo specchio va bene per i
-  gatti, rovina i cartelli stradali e trasforma un 6 in un 9), e la foto che ne
-  esce dev'essere una foto che potrebbe capitare davvero.
+  gatti e rovina i cartelli stradali, e non è solo lo specchio: un 6 capovolto
+  diventa un 9), e la foto che ne esce dev'essere una foto che potrebbe
+  capitare davvero.
 - Si applica **solo alle foto su cui la rete si allena**, e cambia a ogni
   passaggio. Sulle foto d'esame si fanno solo operazioni che danno sempre lo
   stesso risultato, altrimenti il voto non misura più niente.

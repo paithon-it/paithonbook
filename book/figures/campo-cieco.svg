@@ -7,7 +7,7 @@
   prefers-reduced-motion) vede la figura conclusa.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 736 414"
-     role="img" aria-label="Una griglia di nove per nove quadretti con il pixel da indovinare in basso al centro. Al crescere della profondità della rete i quadretti che entrano nel campo visivo si accendono, partendo dai vicini e allargandosi verso l'alto a sinistra; i quadretti che vengono dopo nell'ordine di lettura restano spenti, come è giusto, e un triangolo di quadretti in alto a destra resta spento pur venendo prima: è il punto cieco, e non si accende nemmeno con ventiquattro strati.">
+     role="img" aria-label="Una griglia di nove per nove quadretti con il pixel da indovinare in basso al centro. Al crescere della profondità della rete i quadretti che entrano nel campo visivo si accendono, partendo dai vicini e allargandosi verso l'alto a sinistra; i quadretti che vengono dopo nell'ordine di lettura restano spenti, come è giusto, e un triangolo di sei quadretti appena sopra e a destra del pixel da indovinare resta spento pur venendo prima: è il punto cieco, e non si accende nemmeno con ventiquattro strati.">
   <style>
     svg  { --d: 12.0s; }
     .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }

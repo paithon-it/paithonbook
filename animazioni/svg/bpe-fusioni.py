@@ -193,8 +193,10 @@ def costruisci() -> Figura:
         larghezza=W, altezza=H,
         alt="Cinque parole di un corpus giocattolo, spezzate in caratteri. A "
             "ogni passo la coppia adiacente più frequente diventa un simbolo "
-            "solo: le scatole si saldano, l'elenco delle fusioni si allunga e "
-            "il corpus si accorcia, finché la parola «rosso» sta in un token "
+            "solo: le scatole si saldano, l'elenco delle fusioni si allunga "
+            "con il conteggio che ha fatto vincere quella coppia (ss 25, sso "
+            "20, ro 14, rosso 9) e il corpus si accorcia da 146 pezzi a 121, "
+            "101, 87 e infine 78, finché la parola «rosso» sta in un token "
             "solo.",
         corpo="".join(corpo),
         stile=f"""    rect.box  {{ fill:none; stroke:{BORDER_STRONG}; stroke-width:1.6; }}

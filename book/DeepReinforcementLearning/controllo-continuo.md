@@ -8,12 +8,12 @@ immaginare un braccio robotico con sette articolazioni, o un robot a quattro
 zampe che deve imparare a camminare. A ogni istante il controllore non decide
 "sinistra o destra": decide *quanta spinta* dare a ciascun motore, un numero
 con la virgola, magari negativo per frenare, magari $3{,}4$, magari $3{,}41$.
-Non c'è un menu di mosse da scorrere: c'è un continuo di forze da dosare.
+Non c'è un menu di mosse da scorrere, ma un continuo di forze da dosare.
 
-È lo scoglio annunciato in fondo alla sezione su DQN. Prendere il voto più alto
-vuol dire scorrere le mosse una per una: con un joystick si può, con uno sterzo,
-un acceleratore o sette giunti che si muovono insieme le combinazioni sono
-infinite e non si scorre più niente.
+È lo scoglio annunciato in fondo alla {doc}`sezione su DQN <dqn>`. Prendere il
+voto più alto vuol dire scorrere le mosse una per una: con un joystick si può,
+con uno sterzo, un acceleratore o sette giunti che si muovono insieme le
+combinazioni sono infinite e non si scorre più niente.
 
 I metodi a [gradiente di policy](policy-gradient.md) (REINFORCE,
 attore-critico, A3C, PPO) su questo non hanno problemi: imparano a decidere,
@@ -188,10 +188,7 @@ cui le reti si correggono, quanto rumore aggiungere, quanto farle grandi.
 Ritoccarne una di poco può fare la differenza fra un agente che impara a
 camminare e uno che crolla a terra. E non serve nemmeno ritoccarla: basta
 rilanciare lo stesso identico addestramento cambiando il seme, cioè il numero da
-cui parte il sorteggio interno, e i risultati possono essere molto diversi. È la
-ragione per cui in questo campo un risultato si riporta su molte ripetizioni,
-come abbiamo appena fatto con la ricerca ad albero: una prova sola non dice
-quasi niente.
+cui parte il sorteggio interno, e i risultati possono essere molto diversi.
 
 ## TD3: tre correzioni chirurgiche
 
@@ -295,21 +292,20 @@ tiene aperto un ventaglio.
 
 `````{tab} Elementare
 
-Un agente che punta solo al premio tende a incaponirsi presto su un'unica
-strategia: la prima che sembra funzionare. Se quella strategia era solo
-mediocre, non se ne accorgerà più, perché ha smesso di provare alternative.
+Chi va al lavoro sempre per la stessa strada, perché quella "funziona", la
+scorciatoia non la scopre: si è incaponito sulla prima strada che andava bene,
+e se era solo mediocre non lo saprà mai.
 
 SAC cambia la regola del gioco. All'agente non chiede soltanto "massimizza il
-premio", ma "massimizza il premio *restando il più imprevedibile possibile*".
-A parità di ricompensa attesa, preferisce la condotta più varia, quella che
-mantiene aperte più opzioni. Chi va al lavoro sempre per la stessa strada,
-perché quella "funziona", la scorciatoia non la scopre. Un pendolare che ogni
-tanto cambia percorso, senza perdere troppo tempo, resta pronto a cogliere la
-via migliore quando si presenta. Questa preferenza per la varietà si
-regola con una manopola, la "temperatura": alta, l'agente esplora molto; bassa,
-si concentra sul premio. Il nome viene dalla fisica, e l'immagine è quella
-giusta: più la temperatura è alta, più le cose si agitano e si mescolano; più è
-bassa, più tutto si posa in un'unica configurazione.
+premio", ma "massimizza il premio *restando il più imprevedibile possibile*". A
+parità di ricompensa attesa, preferisce la condotta più varia, quella che
+mantiene aperte più opzioni. Un pendolare che ogni tanto cambia percorso, senza
+perdere troppo tempo, resta pronto a cogliere la via migliore quando si
+presenta. Questa preferenza per la varietà si regola con una manopola, la
+"temperatura": alta, l'agente esplora molto; bassa, si concentra sul premio. Il
+nome viene dalla fisica, e l'immagine è quella giusta: più la temperatura è
+alta, più le cose si agitano e si mescolano; più è bassa, più tutto si posa in
+un'unica configurazione.
 
 La manopola, di solito, non la gira una persona. Si fissa all'inizio quanta
 varietà si pretende, un minimo sotto il quale non si vuole scendere, e poi la
@@ -328,12 +324,12 @@ e ne ricava il percorso del giorno. Con il numero tenuto fermo la domanda ha
 una risposta, e la regola si può ritoccare nella direzione giusta.
 
 C'è poi un tetto alla deviazione: oltre un certo giro si arriva tardi, e la
-regola riporta dentro il tetto qualunque numero le venga passato. Riportare
+regola riporta dentro il tetto qualunque numero le venga passato. Ma riportare
 dentro ammucchia: due numeri molto diversi, se sono tutti e due grandi, danno
-quasi lo stesso giro largo. Chi allora conta la varietà sui numeri pescati,
-invece che sui percorsi davvero fatti, si crede più imprevedibile di quanto
-sia, e gira la manopola della temperatura leggendo un numero falso. È lo
-sbaglio che guasta proprio la cosa per cui SAC è stato inventato.
+quasi lo stesso giro largo. Il pendolare sembra allora più vario di quanto sia,
+perché la varietà dei numeri pescati non è più quella dei percorsi che fa. Chi
+la conta sui numeri gira la manopola della temperatura leggendo un valore
+falso, e guasta proprio la cosa per cui SAC è stato inventato.
 
 `````
 
@@ -371,8 +367,9 @@ campionamento** dell'azione, che da solo non lo lascia passare. La via è la
 rumore esterno,
 
 $$
-a = \tanh\!\big(\boldsymbol{\mu}_\theta(s) +
-\boldsymbol{\sigma}_\theta(s) \odot \boldsymbol{\epsilon}\big),
+\mathbf{u} = \boldsymbol{\mu}_\theta(s) +
+\boldsymbol{\sigma}_\theta(s) \odot \boldsymbol{\epsilon},
+\qquad a = \tanh(\mathbf{u}),
 \qquad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 

@@ -13,8 +13,8 @@ non vedrà mai una ricompensa da cui imparare.
 
 Notare che cosa *non* è andato storto. Il DQN quello schermo lo vedeva
 benissimo, e i suoi conti li faceva come sugli altri quarantotto giochi. Il muro
-è un altro, ed è il tema di questa sezione: come si va a cercare qualcosa in un
-mondo dove le ricompense sono **rade**, o come si dice di solito **sparse**,
+è un altro: come si va a cercare qualcosa in un mondo dove le ricompense sono
+**rade**, o come si dice di solito **sparse**,
 cioè capitano una volta ogni tanto e in mezzo non c'è niente. Si chiama
 **esplorazione**.
 
@@ -169,16 +169,12 @@ dimezza esatto, da $0{,}500$ a $0{,}250$, e la differenza si sente; fra cento e
 centotré scende da $0{,}0498$ a $0{,}0490$, cioè non cambia niente. Ed è giusto
 così: la centesima visita a un posto insegna molto meno della prima.
 
-Notare che cosa non è cambiato: la regola con cui l'agente sceglie è quella di
-sempre, prendere la mossa col voto più alto. È solo il voto ad avere adesso un
+La regola con cui l'agente sceglie è rimasta quella di sempre, prendere la
+mossa col voto più alto. È solo il voto ad avere adesso un
 pezzo in più, e l'agente si dirige verso l'ignoto credendo di dirigersi verso il
 guadagno. Non gli si è insegnata la curiosità: gliel'hanno pagata.
 
-Questo però funziona finché le situazioni si possono contare. Davanti allo
-schermo di un videogioco no: ogni schermata è unica, basta che un puntino si
-sposti e non l'hai mai vista prima, quindi il conto delle visite vale sempre
-uno e il premietto viene identico dappertutto, il che è come non darlo. La via
-d'uscita è smettere
+La via d'uscita, quando le situazioni non si possono contare, è smettere
 di contare e cominciare a **stimare**: si valuta quanto una schermata assomigli
 a quelle già viste, e da quella somiglianza si ricava un conteggio finto, uno
 *pseudo-conteggio*, che si usa al posto di quello vero. È così che, nel 2016,
@@ -279,9 +275,7 @@ $$
 r_t^{\text{int}} = \big\lVert \hat f(s_t) - f(s_t) \big\rVert^2 .
 $$
 
-Sugli stati già visti molte volte il predictor ha imparato a riprodurre la
-target e l'errore è basso; su uno stato mai incontrato non ha idea di cosa
-produrrà la rete casuale, e l'errore (cioè la novità) è alto. RND fu il primo
+RND fu il primo
 metodo a superare la prestazione media umana su Montezuma's Revenge senza
 ricorrere a dimostrazioni umane né allo stato interno dell'emulatore: il
 punteggio zero del DQN era già stato scalfito dagli pseudo-conteggi, ma ora,
@@ -336,21 +330,20 @@ optimizer.step()
 
 ## Un modo diverso di guardare la curiosità
 
-Prima di cambiare argomento conviene fermarsi su una cosa che, messa così,
-sembra ovvia e non lo è. In tutto quello che abbiamo visto finora la curiosità
+In tutto quello che abbiamo visto finora la curiosità
 è un **premio in più**: c'era una ricompensa, ci siamo accorti che non
 bastava, e gliene abbiamo affiancata un'altra, fabbricata da noi. È una toppa
-che funziona benissimo, ma resta una toppa, e la frase di prima («non gli si è
-insegnata la curiosità: gliel'hanno pagata») lo dice meglio di qualunque
-commento.
+che funziona benissimo, ma resta una toppa.
 
 Esiste una lettura opposta, e chiarisce parecchio anche a chi non intende
 seguirla. Nel quadro dell’**inferenza attiva**, che nelle neuroscienze teoriche
 descrive percezione e azione come un unico problema {cite}`parr2022active`,
-l'agente non massimizza una ricompensa: minimizza una grandezza (l’**energia
-libera attesa**) che tiene insieme due cose, quanto un'azione lo avvicina a ciò
-che preferisce e quanto gli farebbe **guadagnare informazione**. All'inferenza
-attiva il {doc}`capitolo sui world model </WorldModels/overview>` dedica una sezione, e il capitolo
+l'agente non massimizza una ricompensa: minimizza un'unica grandezza che tiene
+insieme quanto un'azione lo avvicina a ciò che preferisce e quanto gli farebbe
+**guadagnare informazione**. Il nome, **energia libera attesa**, è preso in
+prestito dalla fisica, e qui conta soltanto che le due cose stiano in un conto
+unico. All'inferenza attiva il {doc}`capitolo sui world model
+</WorldModels/overview>` dedica una sezione, e il capitolo
 sull'auto-supervisione se ne serve per rispondere a un'obiezione sul rinforzo:
 qui ci interessa solo il riflesso che getta sui bonus di novità e sulla
 curiosità intrinseca.
@@ -376,6 +369,12 @@ zero per tutte, e smette di distinguerle: l'unica cosa che ancora le mette in
 fila è il «quanto ci imparo». Dentro il tempio azteco, insomma, a guidare resta
 soltanto la curiosità, cioè proprio il pezzo che con le ricompense ordinarie
 tocca appiccicare da fuori.
+
+Da qui non viene però una ricetta migliore: dentro quel tempio chi arriva più
+lontano è ancora l'agente a cui la curiosità è stata pagata da fuori. Questa
+lettura serve a capire da dove viene la toppa, non a sostituirla; e il «resta
+soltanto la curiosità» discende da come la quantità è fatta, non da una misura
+presa su un agente vero.
 
 `````
 
@@ -443,18 +442,19 @@ quote o non quote.
 Il conto della soglia torna così tondo finché un premietto incassato fra dieci
 mosse vale quanto uno incassato adesso. Di solito vale meno: come nel corridoio
 di Dyna, i premi lontani si scontano. Allora lo sconto entra anche nel
-premietto, se no il dondolio torna a rendere. La quota della stanza in cui il
-robot arriva si conta per quello che vale un passo più in là, e da lì si toglie
-la quota della stanza da cui viene. Se un passo più in là i premi valgono nove
+premietto, se no il dondolio torna a rendere. Della stanza in cui il robot
+arriva si prende la quota scontata di un passo, e da lì si toglie, intera, la
+quota della stanza da cui viene. Se un passo più in là i premi valgono nove
 decimi, andare dalla quota $3$ alla $5$ frutta $0{,}9 \times 5 - 3 = 1{,}5$
 invece di $2$, e tornare indietro costa $0{,}9 \times 3 - 5 = -2{,}3$: il giro
 completo lascia il robot sotto zero.
 
-Su una strada lunga il conto si cancella ancora a due a due: ogni stanza
-attraversata entra una volta col più, quando il robot ci arriva, e una volta
-col meno, quando ne esce. Sopravvive soltanto la quota della stanza da cui è
-partito, che è la stessa qualunque strada prenda poi. Un vantaggio uguale per
-tutti non favorisce nessuno, e la meta del robot resta dov'era.
+Su una strada lunga il conto si cancella ancora a due a due, ma a premi
+scontati: la quota che il robot incassa entrando in una stanza e quella che
+paga uscendone valgono, lì, esattamente lo stesso. Sopravvive soltanto la quota
+della stanza da cui è partito, che è la stessa qualunque strada prenda poi. Un
+vantaggio uguale per tutti non favorisce nessuno, e la meta del robot resta
+dov'era.
 
 `````
 
@@ -480,15 +480,15 @@ una col segno meno, e di una traiettoria di $T$ passi sopravvivono i soli due
 termini di bordo, $-\Phi(s_0) + \gamma^{T}\Phi(s_T)$. Il secondo svanisce nei
 due casi che interessano: a orizzonte infinito con $\gamma<1$ e $\Phi$
 limitata, perché $\gamma^{T}\Phi(s_T)\to 0$; nei task episodici con la
-convenzione (quella di Ng, Harada e Russell) $\Phi(s)=0$ sugli stati
-terminali. Resta allora il solo $-\Phi(s_0)$: un
-contributo che dipende dallo stato di partenza e non dal percorso, identico
-quindi per tutte le policy. Nel caso non scontato ($\gamma=1$) l'argomento ha
+convenzione (quella di Ng, Harada e Russell) $\Phi(s)=0$ sugli stati terminali.
+Resta allora il solo $-\Phi(s_0)$: un contributo che dipende dallo stato di
+partenza e non dal percorso, identico quindi per tutte le policy. Nel caso non
+scontato ($\gamma=1$, che nei compiti che finiscono è ammesso) l'argomento ha
 il corollario intuitivo della quota: un ciclo chiuso frutta esattamente zero;
 con $\gamma<1$ i cicli non sono più esattamente nulli, ma l'invarianza resta,
-perché a garantirla è il telescopio. Lo shaping accelera
-l'apprendimento rendendo il segnale più denso, senza spostare l'obiettivo
-(si veda {cite}`sutton2018reinforcement`).
+perché a garantirla è il telescopio. Lo shaping accelera l'apprendimento
+rendendo il segnale più denso, senza spostare l'obiettivo (si veda
+{cite}`sutton2018reinforcement`).
 
 `````
 
@@ -576,9 +576,10 @@ penalità esplicite, apprendimento della ricompensa dalle preferenze umane
 (*reward modeling*, RLHF), verifica di robustezza rispetto a piccole modifiche
 della specifica. Il nodo di fondo (specificare compiutamente ciò che vogliamo
 tramite una funzione scalare) è il **problema dell'allineamento**, che
-affronteremo nel capitolo sull'AI responsabile. Il reward hacking è il punto
-in cui l'ottimizzazione tecnica incontra una domanda che tecnica non è del
-tutto: siamo sicuri di aver chiesto la cosa giusta?
+affronteremo nel {doc}`capitolo sull'AI responsabile
+</AIResponsabile/overview>`. Il reward hacking è il punto in cui
+l'ottimizzazione tecnica incontra una domanda che tecnica non è del tutto:
+siamo sicuri di aver chiesto la cosa giusta?
 
 `````
 
@@ -593,10 +594,12 @@ Con questo il capitolo si chiude, e quella frase vale anche per tutto ciò che l
 precede. Dal DQN in avanti ogni sezione ha dato all'agente un pezzo di libertà
 in più, e subito dopo ha dovuto inventarsi come contenerla.
 
-L'elenco, riletto tutto insieme, è impressionante. Nella sezione su DQN, la
+Nella sezione su DQN, la
 memoria delle esperienze e la copia congelata, perché i voti non esplodessero.
 Nei gradienti di policy, il guinzaglio di PPO, perché non esplodesse la
-strategia. Nel RL basato su modello, i sogni corti, perché non esplodesse
+strategia. Nel controllo continuo, i due giudici e il bersaglio sfumato, perché
+non esplodessero i voti di un attore libero di dosare qualunque forza. Nel RL
+basato su modello, i sogni corti, perché non esplodesse
 l'immaginazione. Nell'imitazione, l'esperto richiamato a etichettare, perché
 l'allievo non finisse nel fosso. Nell'offline RL, il recinto attorno
 all'archivio, perché non esplodessero le stime su ciò che nessuno ha mai
@@ -671,7 +674,8 @@ sull'AI responsabile comincia da qui.
 `````
 
 Quel ponte, però, è lungo: all'AI responsabile si arriva fra molti capitoli,
-quasi in fondo al libro. La pagina dopo riparte da un'altra storia, la
+quasi in fondo al libro. Il {doc}`capitolo sul linguaggio naturale
+</NaturalLanguageProcessing/overview>` riparte da un'altra storia, la
 traduzione automatica del 1954, e non è una deviazione. Qui la ricompensa la
 scriveva un programma, e si è visto che cosa succede quando la scrive male;
 quando l'allineamento tornerà, a scriverla sarà una persona che legge due frasi

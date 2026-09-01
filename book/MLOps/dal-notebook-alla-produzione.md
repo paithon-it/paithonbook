@@ -273,7 +273,10 @@ identici fino all'ultima cifra. Si può avere, ma si paga. Bisogna dare un seme
 a ogni sorgente di casualità, chiedere esplicitamente alla libreria di usare
 solo procedimenti che a parità di ingressi danno sempre la stessa uscita
 (`torch.use_deterministic_algorithms(True)`), rinunciare a caricare i dati con
-più processi in parallelo, e accettare di andare più piano.
+più processi in parallelo, e accettare di andare più piano. E vale su una
+macchina sola: quel comando vieta i procedimenti ballerini di *quel*
+calcolatore, non l'ordine in cui due processori diversi sommano gli stessi
+numeri.
 
 La seconda è la **riproducibilità statistica**: i numeri non coincidono
 all'ultima cifra, ma le differenze restano dentro il ballo naturale delle
@@ -287,9 +290,10 @@ significato.
 
 Durante l'esplorazione non si prova una configurazione sola: se ne provano
 decine, poi centinaia. Si cambia la velocità con cui il modello impara, si
-cambia la forma della rete, si cambia quali informazioni le si danno in pasto.
-E senza un registro, dopo una settimana, nessuno ricorda più *quale*
-combinazione aveva dato quel 94%.
+cambia la forma della rete, si cambia quali informazioni le si danno in pasto:
+sono gli **iperparametri**, le manopole che decide una persona e che il modello
+non impara da sé. E senza un registro, dopo una settimana, nessuno ricorda più
+*quale* combinazione aveva dato quel 94%.
 
 La cura è segnare ogni prova: che cosa si era impostato prima di lanciarla e
 com'è andata dopo. In gergo si chiama **experiment tracking**, e una singola
@@ -381,11 +385,6 @@ print(run_a)            # e4d5dc4d91ef
 print(run_a == run_b)   # True: l'impronta non dipende dall'ordine delle chiavi
 ```
 
-Le manopole che si scelgono prima di lanciare una prova hanno un nome: sono
-gli **iperparametri**, cioè i numeri che decide una persona e che il modello
-non impara da sé (quanti esempi per volta, con che velocità imparare, per
-quanti giri).
-
 Il registro, poi, è una semplice rubrica in memoria, che si salva su disco in un
 file di testo: nulla di magico. Il valore non sta nella tecnologia ma nella
 disciplina: non lanciare *mai* un addestramento senza che iperparametri, semi e
@@ -394,9 +393,9 @@ risultati finiscano da qualche parte che sopravviva alla chiusura del notebook.
 
 ## Il debito tecnico del machine learning
 
-C'è un'ultima verità, la più scomoda, e la enuncia il paper che ha dato il
-nome al problema: *Hidden Technical Debt in Machine Learning Systems*
-{cite}`sculley2015hidden`, di un gruppo di Google nel 2015. La tesi è che i
+C'è un'ultima verità, la più scomoda, e la mette a fuoco un paper del 2015:
+*Hidden Technical Debt in Machine Learning Systems*
+{cite}`sculley2015hidden`, di un gruppo di Google. La tesi è che i
 sistemi di ML accumulano **debito tecnico** (le scorciatoie di oggi che si
 pagano con gli interessi domani) più in fretta e in modi più insidiosi del
 software normale.
@@ -406,15 +405,15 @@ software normale.
 Il debito tecnico è come costruire una casa di fretta: per consegnare in tempo
 salti qualche fondamenta, e per un po’ la casa sta in piedi. Ma ogni
 scorciatoia è un prestito: prima o poi va restituito, con gli interessi, sotto
-forma di crepe da riparare. Lo stesso gruppo, un anno prima, aveva intitolato
-un articolo così: il machine learning è «la carta di credito ad alto tasso del
-debito tecnico». Oggi basta un notebook e qualche riga scritta di fretta per
+forma di crepe da riparare. L'immagine con cui lo stesso gruppo l'aveva detto
+l'anno prima è rimasta: il machine learning è la carta di credito ad alto tasso
+del debito tecnico. Oggi basta un notebook e qualche riga scritta di fretta per
 collegare fra loro i pezzi già pronti che si sono messi insieme: righe che non
 fanno niente di intelligente, servono solo a far combaciare l'uscita di un
-pezzo con l'ingresso del successivo, come il nastro adesivo che tiene su un
-impianto. Si scrivono in un pomeriggio, poi vanno mantenute per anni, e intanto
-diventano tantissime: tubi aggiunti uno sopra l'altro, con rubinetti che
-nessuno sa più a che cosa servano e che nessuno osa chiudere.
+pezzo con l'ingresso del successivo. Si scrivono in un pomeriggio, poi vanno
+mantenute per anni, e intanto diventano tantissime: tubi aggiunti uno sopra
+l'altro, con rubinetti che nessuno sa più a che cosa servano e che nessuno osa
+chiudere.
 
 E c'è un motivo più profondo: un modello dipende dai **dati**, non solo dal
 codice, e dentro un modello nulla è separato da nulla. Basta cambiare una delle
@@ -453,7 +452,8 @@ Come si misura se un sistema è pronto per la produzione? Una rubrica nota come
 feature, sviluppo del modello, infrastruttura, monitoraggio)
 {cite}`breck2017ml`. Il voto complessivo è dettato dall'area più debole: non
 basta un modello brillante se il monitoraggio è assente. All'estremo opposto
-della maturità sta la **Continuous Delivery for Machine Learning**
+della maturità sta la **Continuous Delivery for Machine Learning**, in sigla
+**CD4ML**
 {cite}`sato2019continuous`, che estende al ML le pratiche di consegna continua
 del software: automatizzare l'intero ciclo (dati, training, valutazione,
 deploy), così che qualunque modello sia riproducibile e rilasciabile in modo
@@ -479,7 +479,7 @@ contare.
 - Rifare esattamente un risultato è la competenza su cui poggia tutto il resto:
   se non sai rifare un modello non puoi confrontarlo, correggerlo, né tornare
   a quello buono quando il nuovo peggiora.
-- Le cose da conservare sono **tre** (il programma, i dati, il modello), e a
+- Le cose da conservare sono tre (il programma, i dati, il modello), e a
   queste tre vanno aggiunte due condizioni: le **librerie** con cui si è
   cucinato e il **seme**, cioè il punto da cui parte il sorteggio. Fissare il
   seme è il primo passo e non basta da solo: due

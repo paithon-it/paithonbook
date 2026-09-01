@@ -2,7 +2,8 @@
 
 Il 15 febbraio 2024 OpenAI presenta Sora, un modello che da una descrizione
 testuale genera video fotorealistici fino a un minuto. Come sia fatto dentro
-l'ha già raccontato il {doc}`capitolo sui Modelli di Diffusione </ModelliDiffusione/overview>`; qui interessa che
+l'ha già raccontato la {doc}`sezione sui diffusion
+transformer </ModelliDiffusione/diffusion-transformer>`; qui interessa che
 cosa dimostra. Il rapporto che lo accompagna {cite}`brooks2024video` ha un
 titolo che è una tesi: *Video generation models as world simulators*, i modelli
 di generazione video come simulatori di mondo. È un documento aziendale con dimostrazioni scelte da chi le pubblica, non un
@@ -13,12 +14,14 @@ dichiara *emerse* senza essere state programmate: coerenza tridimensionale
 delle scene, oggetti che continuano a esistere quando escono dall'inquadratura,
 un pittore che lascia sulla tela pennellate che restano.
 
-Ma lo stesso rapporto, poche righe più in basso, mostra i video in cui la
+Ma lo stesso rapporto, poche righe più in basso, mostra il video in cui la
 scommessa incespica: un bicchiere si rovescia sul tavolo e il liquido non si
 versa come dovrebbe; il vetro non si infrange, il contenuto sfida la gravità.
-Gli autori lo ammettono senza giri di parole: il modello «non simula
-accuratamente la fisica di molte interazioni di base», e mangiare un biscotto
-non sempre lascia il segno del morso. In quell'immagine c'è per intero la
+Gli autori lo ammettono senza giri di parole, e l'esempio che scelgono è
+proprio quello: il modello «non simula accuratamente la fisica di molte
+interazioni di base, come il vetro che va in frantumi», e mangiare qualcosa
+«non produce sempre il cambiamento di stato corretto». In quell'immagine c'è
+per intero la
 domanda di quest'ultima sezione: un video che *sembra* vero dimostra che il
 modello ha *capito* il mondo, o soltanto che ha imparato a imitarne le
 apparenze? I pittori fiamminghi rendevano alla perfezione la luce nei calici
@@ -100,7 +103,7 @@ passato *e* dall'azione latente $\tilde{a}_t$. A riportare i token in pixel è
 il decoder del tokenizer: il modello di dinamica non vede mai un pixel e non ne
 produce mai uno. Il collo di
 bottiglia è la chiave: potendo trasmettere a $g_\theta$ solo tre bit per
-passo, $\tilde{a}_t$ è costretta a codificare il *cambiamento controllabile*
+passo, $\tilde{a}_t$ è spinta a codificare il *cambiamento controllabile*
 (la mossa) e a lasciare tutto il resto (sfondo, fisica, inerzia) al modello di
 dinamica. In inferenza il modello di azioni sparisce e l'azione la fornisce
 l'utente, fotogramma per fotogramma. Le azioni apprese risultano
@@ -112,9 +115,9 @@ legata ai platform.
 `````
 
 La discendenza di Genie è andata avanti a passo rapido. Qui la raccontiamo solo
-per quello che ha di strutturale: il resto invecchia in fretta, e vale il
-cartello appeso poco fa a Sora, perché la fonte sono annunci sul blog di
-DeepMind, non articoli passati da revisione. Due passi contano. Il primo,
+per quello che ha di strutturale: il resto invecchia in fretta, e vale
+l'avvertenza fatta per Sora: la fonte, qui, sono annunci sul blog di DeepMind.
+Due passi contano. Il primo,
 **Genie 2** (dicembre 2024), esce dal piatto del disegno a due dimensioni: da una singola
 immagine genera mondi a tre dimensioni, esplorabili con tastiera e mouse, con
 acqua, fumo e gravità. Il secondo, **Genie 3** (agosto 2025), passa dal
@@ -127,9 +130,9 @@ spettacolari. Le
 sessioni si misurano in minuti. Il repertorio di comandi è ristretto: quel che
 scarseggia sono le azioni possibili, non i posti dove andare. Il testo che
 compare in scena è spesso illeggibile. E mettere più agenti autonomi nello
-stesso mondo resta problematico. Anteprime di ricerca, insomma: dimostrazioni
-notevoli, non prodotti, e la distanza tra le due cose, in questo campo, va
-sempre tenuta a mente.
+stesso mondo resta problematico. È l'elenco che separa una dimostrazione da un
+prodotto, e in questo campo la distanza fra le due cose va sempre tenuta a
+mente.
 
 ## La scacchiera nella macchina: gli LLM hanno un world model?
 
@@ -200,7 +203,7 @@ al passo $t$ e deve predire lo stato di ciascuna delle 64 caselle (vuota,
 nera, bianca). Le sonde *lineari* falliscono (errore fra il 20% e il 24% a
 seconda dello strato, appena meglio del 26–29% che si ottiene sondando una rete
 con pesi casuali), quelle *non lineari* (un MLP a uno strato nascosto) arrivano
-all'1,7% di errore negli strati più profondi: lo stato della partita è
+all'1,7% di errore al settimo strato degli otto: lo stato della partita è
 ricostruibile quasi per intero dalle attivazioni. Poiché una sonda potrebbe leggere una correlazione senza
 ruolo causale, il passo decisivo è l’**intervento**: si modificano le
 attivazioni con una discesa di gradiente finché la sonda vi legge una
@@ -241,7 +244,8 @@ buone finché si resta nelle situazioni su cui la rete si è addestrata, fragili
 appena se ne esce (**fuori distribuzione** si dice appunto di tutto ciò che al
 momento dell'addestramento non c'era).
 
-È l'eco di una prudenza già incontrata nel {doc}`capitolo sui Transformer </Transformers/overview>`, a
+È l'eco di una prudenza già incontrata nella {doc}`sezione su tendenze e limiti
+dei Transformer </Transformers/tendenzefuture>`, a
 proposito di allucinazioni e comprensione: su che cosa i modelli capiscano
 davvero, il dibattito scientifico è tutt'altro che chiuso. Da una parte c'è
 chi, come LeCun, ritiene che serva un'architettura pensata apposta per
@@ -444,6 +448,7 @@ esattamente ciò per cui conviene studiarle.
 Un modello del mondo può nascere da solo, dalla sola previsione, e restare
 incoerente proprio dove nessuno lo ha mai messo alla prova. Accorgersene non è
 questione di fargli altre domande facili, bisogna interrogarlo dove non è stato
-addestrato. Con il capitolo sulle reti neurali su grafo si cambia aria, perché
+addestrato. Con il {doc}`capitolo sulle reti neurali su
+grafo </GraphNeuralNetwork/overview>` si cambia aria, perché
 lì la struttura del mondo non va indovinata dai dati, arriva già scritta
 insieme a loro.

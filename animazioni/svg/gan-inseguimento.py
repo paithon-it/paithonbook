@@ -121,9 +121,9 @@ def costruisci() -> Figura:
         alt="Due pannelli sovrapposti. Sopra, la campana dei dati veri sta "
             "ferma al centro mentre quella del generatore, all'inizio spostata "
             "a sinistra e più larga, si sposta e si stringe fino a coprirla. "
-            "Sotto, la curva del discriminatore parte a gobba, alta dove "
+            "Sotto, la curva del verdetto parte a gobba, alta dove "
             "prevalgono i dati veri e bassa dove prevale il generatore, e si "
-            "appiattisce fino a diventare la retta orizzontale a un mezzo. È "
+            "appiattisce fino a diventare la retta orizzontale a un mezzo; è "
             "disegnata solo nel tratto in cui almeno una delle due campane ha "
             "densità apprezzabile.",
         corpo="".join(corpo),

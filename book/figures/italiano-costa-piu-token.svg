@@ -17,26 +17,28 @@
     <text x="387" y="112" text-anchor="middle">table</text>
   </g>
   <text x="440" y="112" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">= 6 token</text>
-  <text x="40" y="176" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#B5532C">IT: "Il gatto è sopra il tavolo"</text>
+  <text x="40" y="176" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#B5532C">IT: "Il gatto sta sul tavolo"</text>
   <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">
-    <rect x="40" y="190" width="44" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-    <text x="62" y="212" text-anchor="middle">Il</text>
-    <rect x="92" y="190" width="52" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-    <text x="118" y="212" text-anchor="middle">g</text>
-    <rect x="152" y="190" width="56" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-    <text x="180" y="212" text-anchor="middle">atto</text>
-    <rect x="216" y="190" width="44" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-    <text x="238" y="212" text-anchor="middle">è</text>
-    <rect x="268" y="190" width="64" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-    <text x="300" y="212" text-anchor="middle">sopra</text>
-    <rect x="340" y="190" width="44" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-    <text x="362" y="212" text-anchor="middle">il</text>
-    <rect x="392" y="190" width="52" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-    <text x="418" y="212" text-anchor="middle">tav</text>
-    <rect x="452" y="190" width="52" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-    <text x="478" y="212" text-anchor="middle">olo</text>
+    <rect x="40" y="190" width="40" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+    <text x="60" y="212" text-anchor="middle">Il</text>
+    <rect x="88" y="190" width="34" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+    <text x="105" y="212" text-anchor="middle">g</text>
+    <rect x="130" y="190" width="56" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+    <text x="158" y="212" text-anchor="middle">atto</text>
+    <rect x="194" y="190" width="40" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+    <text x="214" y="212" text-anchor="middle">st</text>
+    <rect x="242" y="190" width="34" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+    <text x="259" y="212" text-anchor="middle">a</text>
+    <rect x="284" y="190" width="46" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+    <text x="307" y="212" text-anchor="middle">sul</text>
+    <rect x="338" y="190" width="34" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+    <text x="355" y="212" text-anchor="middle">t</text>
+    <rect x="380" y="190" width="40" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+    <text x="400" y="212" text-anchor="middle">av</text>
+    <rect x="428" y="190" width="46" height="34" rx="6" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+    <text x="451" y="212" text-anchor="middle">olo</text>
   </g>
-  <text x="524" y="212" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#B5532C">= 8 token</text>
+  <text x="494" y="212" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#B5532C">= 9 token</text>
   <line x1="40" y1="256" x2="680" y2="256" stroke="#C9A961" stroke-width="1.5"/>
   <text x="40" y="286" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Le parole rare nel corpus vengono spezzate in frammenti: ogni frammento è un token,</text>
   <text x="40" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">e ogni token si paga (in denaro, latenza e finestra di contesto).</text>

@@ -13,12 +13,10 @@ mai la regola che alla sezione precedente mancava, quella su dove vanno messe
 le schede, non bisogna aggiungerla: **cade fuori da sola** dal tentativo di
 rispondere.
 
-Il percorso è in quattro passi, e conviene averli in testa: il conto che non
+Il percorso è in quattro passi: il conto che non
 si può fare; il modo di aggirarlo chiedendo aiuto a chi sa dove guardare; la
-formula che ne esce, che si chiama **ELBO** (dall’inglese *evidence lower
-bound*, cioè «limite inferiore» di quel numero che non si sa calcolare) e che
-è appunto quella stima prudente, con due termini dai significati netti; e il
-trucco tecnico senza il quale niente di tutto questo si potrebbe addestrare.
+stima prudente che ne esce, con due termini dai significati netti; e il trucco
+tecnico senza il quale niente di tutto questo si potrebbe addestrare.
 
 ## Il conto che non si può fare
 
@@ -67,7 +65,7 @@ distorta** per $p_\theta(\mathbf{x})$ ma inutile in pratica. Il motivo è che
 $p_\theta(\mathbf{x} \mid \mathbf{z})$, come funzione di $\mathbf{z}$, è
 concentrata in una regione la cui massa sotto il prior decade
 esponenzialmente con $L$: la somma è dominata da pochissimi termini, e la sua
-varianza relativa cresce con la stessa legge.
+varianza relativa cresce anch’essa esponenzialmente.
 
 Due conseguenze si misurano su un caso in cui $p_\theta(\mathbf{x})$ si
 conosce in forma chiusa. La prima: in scala logaritmica la stima è **distorta
@@ -152,7 +150,7 @@ destra dice perché: su centomila sorteggi, uno solo si prende il trentacinque
 per cento del totale. Non stiamo facendo una media, stiamo aspettando un colpo
 di fortuna.
 
-E la scheda di questa sezione di numeri ne ha otto soltanto. Quella che permette a
+E la scheda delle nostre cifre ha otto numeri soltanto. Quella che permette a
 **Stable Diffusion**, il generatore di immagini che il libro racconta più
 avanti, di girare su un computer di casa, ne ha sedicimila.
 
@@ -162,7 +160,7 @@ Se il problema è che si pesca nel posto sbagliato, la soluzione è pescare nel
 posto giusto. E chi sa dov’è il posto giusto? Chi ha la cifra sotto gli occhi:
 l’archivista.
 
-Ecco allora la mossa, e conviene dirla prima in italiano che in formule.
+Ecco allora la mossa, prima in italiano che in formule.
 Invece di sorteggiare schede alla cieca, chiediamo all’archivista di
 **proporre** lui le poche schede che valga la pena guardare per *questa*
 cifra. Poi correggiamo il conto per tenere conto del fatto che le schede non
@@ -185,11 +183,11 @@ la probabilità vera, cioè un numero che sta sicuramente sotto a quello giusto.
 
 Perché sotto e non sopra? Non per via della fetta, ma per l’ordine di due
 operazioni. I numeri in gioco sono minuscoli, e per maneggiarli si
-**schiacciano**, cioè di ciascuno si tiene solo l’ordine di grandezza. Prendi 1
-e 100: la media è 50,5, ma schiacciati diventano 0 e 2, la cui media è 1, cioè
-10. Il 100, che nella media si prendeva quasi tutto, schiacciato non pesa quasi
-niente. Il conto che sappiamo fare è quello schiacciato; il valore vero è
-l’altro, e sta sempre più in alto.
+**schiacciano**, cioè di ciascuno si tiene solo quanti zeri ha, che è il suo
+ordine di grandezza. Prendi 1 e 100: la media è 50,5, ma schiacciati diventano
+0 e 2, la cui media è 1, cioè 10. Il 100, che nella media si prendeva quasi
+tutto, schiacciato non pesa quasi niente. Il conto che sappiamo fare è quello
+schiacciato; il valore vero è l’altro, e sta sempre più in alto.
 
 Il divario fra la stima e il vero dipende da una cosa sola, da quanto il
 consiglio era buono: se il conoscente sapeva davvero il quartiere, il divario
@@ -221,7 +219,7 @@ $$
 \!\left[\log \frac{q_\phi(\mathbf{z} \mid \mathbf{x})}{p_\theta(\mathbf{z} \mid \mathbf{x})}\right],
 $$
 
-dove i passaggi sono tre e conviene contarli: la log-verosimiglianza si può
+dove i passaggi sono tre: la log-verosimiglianza si può
 mettere dentro un valore atteso rispetto a $q_\phi$ perché non dipende da
 $\mathbf{z}$ e perché $q_\phi$ è normalizzata; poi si applica la definizione di
 probabilità condizionata, $p_\theta(\mathbf{z} \mid \mathbf{x}) =
@@ -260,11 +258,13 @@ due fatti che reggono tutto il metodo {cite}`kingma2019introduction`:
   stringe il divario, cioè si migliora l’encoder. È il «due al prezzo di uno»
   di Kingma e Welling.
 
-Il capitolo sui modelli di diffusione, più avanti, userà una versione ripesata
-di questo stesso limite, e chi ci arriverà riconoscerà l’oggetto. E chi arriva
-dal capitolo sul machine learning riconosce la struttura dell’algoritmo EM,
-che alterna il miglioramento del bound rispetto a $q$ e rispetto a $\theta$; la
-differenza è che qui $q$ non si calcola in forma chiusa, si **apprende**.
+{doc}`Come funziona la diffusione </ModelliDiffusione/come-funziona>`, più
+avanti, userà una versione ripesata di questo stesso limite, e chi ci arriverà
+riconoscerà l’oggetto. E chi arriva dalla {doc}`sezione su riduzione e
+clustering </MachineLearning/riduzione-clustering>` riconosce la struttura
+dell’algoritmo EM, che alterna il miglioramento del bound rispetto a $q$ e
+rispetto a $\theta$; la differenza è che qui $q$ non si calcola in forma
+chiusa, si **apprende**.
 
 `````
 
@@ -278,22 +278,21 @@ calcolare; la curva è quello che calcoliamo e spingiamo in su. La distanza fra
 le due misura esattamente quanto la zona proposta dall’archivista differisce
 da quella giusta. Salgono tutte e due, ed è il
 punto: la curva guadagna sia perché il tetto si alza, sia perché lo raggiunge
-meglio.
+meglio. (Le due curve sono disegnate, non misurate: quello che si vuole far
+vedere è la forma del divario, non la sua grandezza, che dipende dal modello.)
 ```
 
-Della {numref}`fig-elbo-divario` conviene fissare una cosa sola, perché è la
-sola che serve: **spingendo in su la curva si guadagna quasi sempre da tutte e
-due le parti**. O sale perché il modello descrive meglio i dati, o sale perché
-il divario si stringe. Che salga soltanto per il secondo motivo, mentre il
-modello peggiora, è possibile e ogni tanto succede; ma è l’eccezione, e in
-cambio si ottiene una cosa che si addestra come qualunque altra rete.
+La curva di {numref}`fig-elbo-divario` guadagna quasi sempre da tutte e due le
+parti. Che salga soltanto perché il divario si stringe, mentre il modello
+peggiora, è possibile e ogni tanto succede; ma è l’eccezione, e in cambio si
+ottiene una cosa che si addestra come qualunque altra rete.
 
 ## I due termini, e il costo di descrizione
 
-Quella stima prudente ha un nome, ed è il nome che dà il titolo alla sezione:
-si chiama **ELBO**. Da qui in avanti «ELBO» e «stima prudente» vogliono dire la
-stessa identica cosa, e conviene tenerselo perché la parola compare dappertutto,
-nei programmi come nei paper.
+Quella stima prudente ha un nome: si chiama **ELBO**, dall’inglese *evidence
+lower bound*, «limite inferiore» di quel numero che non si sa calcolare. Da qui
+in avanti «ELBO» e «stima prudente» vogliono dire la stessa identica cosa, e la
+parola compare dappertutto, nei programmi come nei paper.
 
 Scritta tutta insieme, quella stima è compatta e opaca. Spezzata in due pezzi
 diventa la cosa che si programma, e quei due pezzi hanno un significato da
@@ -307,9 +306,9 @@ Il conto si spezza in due voci, e sono le due voci di una spesa.
 precedente, nient’altro che il vecchio «la copia somiglia all’originale?».
 
 **Seconda voce: quanto costa scrivere la scheda.** Qui c’è la novità, ed è la
-regola che mancava. Archivista e copista si sono messi d’accordo in anticipo su
-un **vocabolario comune**: un modo standard di descrivere un quadro, che vale
-per tutti i quadri e non è stato adattato a nessuno. Quando
+regola che mancava. Un **vocabolario comune** è stato fissato prima che i due
+cominciassero, e non lo decidono loro: un modo standard di descrivere un
+quadro, che vale per tutti i quadri e non è stato adattato a nessuno. Quando
 l’archivista scrive una scheda, paga solo per quello che si discosta da quel
 vocabolario. Descrivere un quadro come «uno dei soliti» non costa niente;
 descriverlo nel dettaglio, con precisione al millimetro, costa molto.
@@ -375,7 +374,8 @@ covarianza diagonale, il secondo termine si scrive in forma chiusa e non serve
 stimarlo:
 
 $$
-D_{\mathrm{KL}} = \frac{1}{2} \sum_{j=1}^{L}
+D_{\mathrm{KL}}\!\big(q_\phi(\mathbf{z} \mid \mathbf{x}) \,\|\, p(\mathbf{z})\big)
+= \frac{1}{2} \sum_{j=1}^{L}
 \Big( \mu_j^2 + \sigma_j^2 - \log \sigma_j^2 - 1 \Big),
 $$
 
@@ -399,11 +399,12 @@ pescato; ma quello che il copista ha visto è il punto.
 
 Ed è qui che la macchina si inceppa. Una rete impara perché la correzione
 risale all’indietro, dal voto finale fino a ciascuno dei suoi numeri interni,
-un pezzo alla volta: è la procedura che il capitolo sulle reti neurali chiama
-*backpropagation*. Ma quella risalita ha bisogno, a ogni pezzo, di una domanda
-a cui si sappia rispondere: «se sposto un pochino questo, di quanto cambia
-quello?». Davanti a un sorteggio la domanda non ha risposta, perché il numero
-uscito è uscito a caso, e la risalita si ferma lì.
+un pezzo alla volta: è la procedura che il {doc}`capitolo sulle reti neurali
+</RetiNeurali/overview>` chiama *backpropagation*. Ma quella risalita ha
+bisogno, a ogni pezzo, di una domanda a cui si sappia rispondere: «se sposto un
+pochino questo, di quanto cambia quello?». Davanti a un sorteggio la domanda
+non ha risposta, perché il numero uscito è uscito a caso, e la risalita si
+ferma lì.
 
 `````{tab} Elementare
 
@@ -433,10 +434,11 @@ lì**. Funziona, non imbroglia, e si usa quando gli scarti non si possono
 decidere prima. Ma la mano trema molto di più, e la differenza si misura.
 
 Il punto di rottura, che serve alla sezione seguente: il trucco degli scarti
-decisi prima si può fare **solo** se la zona è una di quelle che si spostano e
-si allargano, come una nuvola su un piano. Se la scelta nascosta fosse «quale dei dieci cassetti», non
-esisterebbe nessuno scarto da decidere in anticipo, perché fra il cassetto tre
-e il cassetto quattro non c’è niente in mezzo. E lì il trucco non si applica.
+decisi prima si può fare soltanto se la zona è una di quelle che si spostano e
+si allargano, come una nuvola su un piano. Se la scelta nascosta fosse «quale
+dei dieci cassetti», non esisterebbe nessuno scarto da decidere in anticipo,
+perché fra il cassetto tre e il cassetto quattro non c’è niente in mezzo. E lì
+il trucco non si applica.
 
 `````
 
@@ -452,7 +454,8 @@ $$
 \mathbb{E}_{q_\phi(\mathbf{z} \mid \mathbf{x})}[\nabla_\phi f(\mathbf{z})],
 $$
 
-perché è la misura stessa a dipendere da $\phi$. Il **trucco della
+perché è la misura stessa a dipendere da $\phi$; $f$ è la funzione di cui si
+prende il valore atteso. Il **trucco della
 riparametrizzazione**, proposto indipendentemente da Kingma e Welling
 {cite}`kingma2014auto` e da Rezende, Mohamed e Wierstra
 {cite}`rezende2014stochastic`, riscrive la variabile aleatoria come funzione
@@ -469,8 +472,7 @@ $$
 
 dove $\boldsymbol{\mu}_\phi$ e $\boldsymbol{\sigma}_\phi$ sono le uscite
 dell’encoder, $\boldsymbol{\epsilon}$ è la sorgente di rumore e $\odot$ è il
-prodotto componente per componente ($f$, nella disuguaglianza, è la funzione di
-cui si prende il valore atteso). Adesso il valore atteso è rispetto a
+prodotto componente per componente. Adesso il valore atteso è rispetto a
 $p(\boldsymbol{\epsilon})$, che di $\phi$ non
 dipende, l’operatore di derivata entra, e un solo campione basta a dare uno
 stimatore non distorto del gradiente.
@@ -485,13 +487,13 @@ una proprietà notevole: la sua varianza tende a zero man mano che la posterior
 approssimata si avvicina a quella vera. È lo stimatore detto *sticking the
 landing* {cite}`roeder2017sticking`.
 
-L’alternativa esiste ed è lo **stimatore a punteggio**,
-$\nabla_\phi \mathbb{E}_{q_\phi}[f] = \mathbb{E}_{q_\phi}[f(\mathbf{z})\,
-\nabla_\phi \log q_\phi(\mathbf{z} \mid \mathbf{x})]$, che è il gradiente di
-policy di REINFORCE incontrato nel capitolo sul deep reinforcement learning.
-Anche quello è non distorto, e ha il vantaggio decisivo di funzionare su
-variabili discrete, dove la riparametrizzazione non si applica. Paga in
-varianza, e quel prezzo si misura.
+L’alternativa esiste ed è lo **stimatore a punteggio**, $\nabla_\phi
+\mathbb{E}_{q_\phi}[f] = \mathbb{E}_{q_\phi}[f(\mathbf{z})\, \nabla_\phi \log
+q_\phi(\mathbf{z} \mid \mathbf{x})]$, che è il gradiente di policy di REINFORCE
+incontrato nel {doc}`capitolo sul deep reinforcement learning
+</DeepReinforcementLearning/overview>`. Anche quello è non distorto, e ha il
+vantaggio decisivo di funzionare su variabili discrete, dove la
+riparametrizzazione non si applica. Paga in varianza, e quel prezzo si misura.
 
 `````
 
@@ -542,8 +544,8 @@ la varianza del secondo e' 22 volte quella del primo
 
 Tutti e due i metodi puntano al valore giusto, 4: nessuno dei due imbroglia. La
 differenza è la mano, che nel secondo trema molto di più, e a dirlo è la
-**deviazione standard**, cioè di quanto una singola risposta si scosta in media
-dal valore giusto: 2,0 per il primo metodo, 9,3 per il secondo. Il numero in
+**deviazione standard**, cioè quanto una singola risposta balla attorno al
+valore giusto: 2,0 per il primo metodo, 9,3 per il secondo. Il numero in
 fondo eleva al quadrato quelle due, che è il passaggio con cui si arriva alla
 **varianza**: 9,3 al quadrato contro 2 al quadrato, cioè ventidue volte tanto.
 
@@ -553,7 +555,7 @@ differenza fra un metodo che si usa e uno che non si usa.
 
 ## Tutto insieme
 
-I pezzi ci sono tutti. L’encoder, invece di un codice, produce **due** file di
+I pezzi ci sono tutti. L’encoder, invece di un codice, produce due file di
 numeri, una media e una larghezza; da lì si pesca con lo scarto deciso prima;
 il decoder ricostruisce; e la perdita è la somma delle due voci di spesa.
 
@@ -620,12 +622,12 @@ La macchina che abbiamo appena montato ha un nome, ed è quello del capitolo:
 **autoencoder variazionale**, in sigla **VAE**. «Variazionale» è la parola
 dell’apertura: alla risposta esatta si è rinunciato, e si è cercata la migliore
 dentro una famiglia di risposte semplici, che qui sono le zone gaussiane che
-l’archivista propone. Vale adesso la pena vedere che cosa abbiamo preso in
-cambio dei quattro nat.
+l’archivista propone. Vediamo che cosa abbiamo preso in cambio di quei quasi
+quattro nat.
 
 Il vocabolario comune, nel gergo di questa materia e nel codice, si chiama
 **prior**, che in inglese vuol dire «ciò che viene prima»: prima di guardare il
-dato, è quello che ci si aspetta dalla scheda. Compare nell’uscita qui sotto.
+dato, è quello che ci si aspetta dalla scheda.
 
 ```python
 LIVELLI = " .:-=+*#%"
@@ -663,14 +665,13 @@ pixel, non un sorteggio. Sorteggiando davvero uscirebbe sale e pepe, e
 una parte della morbidezza che si vede è quindi una scelta di come disegnare,
 non solo del modello.
 
-Detto questo, non sono capolavori, e non conviene venderle per più di quello
-che sono: grosse, un po’ molli, e su qualcuna si esita fra due cifre. Quello
-che conta è un’altra cosa: **non è stato dato in pasto niente**. Quei quattro
-disegni vengono da quattro file di otto numeri sorteggiate da una gaussiana, e
-da
-nient’altro, e quella gaussiana era **dichiarata in partenza**. Alla clessidra
-della sezione precedente una gaussiana si era dovuta adattare ai codici a cose
-fatte, sperando che ci somigliassero: è lì che si era aperto il buco.
+Detto questo, non sono capolavori: grosse, un po’ molli, e su qualcuna si esita
+fra due cifre. Quello che conta è un’altra cosa: **non è stato dato in pasto
+niente**. Quei quattro disegni vengono da quattro file di otto numeri
+sorteggiate da una gaussiana, e da nient’altro, e quella gaussiana era
+**dichiarata in partenza**. Alla clessidra della sezione precedente una
+gaussiana si era dovuta adattare ai codici a cose fatte, sperando che ci
+somigliassero: è lì che si era aperto il buco.
 
 Il metro della sezione precedente lo dice senza aggettivi. Rimettiamo in piedi
 anche la clessidra semplice, così i due numeri li stampa la stessa macchina.
@@ -733,17 +734,17 @@ autoencoder                             2.2x                  1.62
 autoencoder variazionale                1.0x                  1.09
 ```
 
+Prima di leggerla, una precisazione onesta: le due righe non pescano allo
+stesso modo. Per il VAE si pesca dal vocabolario comune, che è dichiarato in
+partenza; per la clessidra un vocabolario non c’è, e bisogna adattarne uno ai
+codici a cose fatte. Quella differenza nel modo di pescare **è** la differenza
+fra le due macchine, e nasconderla renderebbe il confronto inutile invece che
+equo.
+
 La prima colonna è la geometria: un codice sorteggiato dal prior cade, per il
 VAE, **praticamente alla distanza tipica** fra i codici che il decoder ha visto
 in addestramento. È casa, non terra sconosciuta. Per la clessidra semplice
 distava più del doppio.
-
-Prima di leggerla, una precisazione onesta: le due righe non pescano allo
-stesso modo. Per il VAE si pesca dal vocabolario comune, che è dichiarato in
-partenza; per la clessidra un vocabolario non c’è, e bisogna adattarne uno ai
-codici a cose fatte. Non è un favore fatto a nessuno dei due: **è esattamente
-la differenza fra le due macchine**, e nasconderla renderebbe il confronto
-inutile invece che equo.
 
 La seconda colonna è la conseguenza: una cifra vera dista dalla sua vicina
 1,01; una cifra inventata dal VAE dista 1,09, cioè l’otto per cento in più;
@@ -769,7 +770,8 @@ stanno più vicini, perché il costo di descrizione li tira verso il centro, e
 ciascun codice occupa un alone invece che un punto. (Sono sedici
 codici su un piano perché così si guardano, e la soglia che decide che cosa sia
 «battuto» è scelta a mano: è un’illustrazione del meccanismo, non una misura.
-Nell’esperimento qui sopra i codici sono milleottocento in otto dimensioni, e a
+Nell’esperimento sulle cifre i codici sono quasi milleottocento in otto
+dimensioni, e a
 dirlo resta solo la tabella.)
 ```
 
@@ -905,8 +907,8 @@ Qual è, lo dice la sezione seguente.
   $\log p_\theta(\mathbf{x}) = \mathcal{E}_{\theta,\phi}(\mathbf{x}) +
   D_{\mathrm{KL}}(q_\phi(\mathbf{z} \mid \mathbf{x}) \,\|\,
   p_\theta(\mathbf{z} \mid \mathbf{x}))$. L’ELBO è un limite inferiore e il
-  divario **è** l’errore della posterior approssimata: massimizzarlo migliora
-  modello ed encoder insieme.
+  divario coincide con l’errore della posterior approssimata:
+  massimizzarlo migliora modello ed encoder insieme.
 - Forma operativa:
   $\mathcal{E} = \mathbb{E}_{q_\phi}[\log p_\theta(\mathbf{x} \mid \mathbf{z})]
   - D_{\mathrm{KL}}(q_\phi(\mathbf{z} \mid \mathbf{x}) \,\|\, p(\mathbf{z}))$.
@@ -920,8 +922,8 @@ Qual è, lo dice la sezione seguente.
   $\mathbf{z} = \boldsymbol{\mu}_\phi + \boldsymbol{\sigma}_\phi \odot
   \boldsymbol{\epsilon}$ con $\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0},
   \mathbf{I})$. Sposta il caso fuori dal grafo delle derivate; misurato, ha
-  varianza 22 volte minore dello stimatore a punteggio (REINFORCE), che però è
-  l’unico applicabile a latenti discreti.
+  varianza 22 volte minore dello stimatore a punteggio (REINFORCE), che però si
+  applica anche ai latenti discreti, dove la riparametrizzazione non arriva.
 - Limiti strutturali: **sfocatura** (direzione della KL, quindi copertura),
   **collasso della posterior** {cite}`bowman2016generating,kingma2016improved`
   e **scarto fra prior e posterior aggregata**
@@ -930,7 +932,7 @@ Qual è, lo dice la sezione seguente.
 
 `````
 
-Quello che abbiamo in mano, alla fine di questa sezione, è una macchina che
+Quello che abbiamo in mano è una macchina che
 comprime e che sa anche pescare. La sezione seguente smette di guardarla da
 dentro e la guarda da fuori: che cosa si può chiedere a quel latente una volta
 che c’è, che cosa succede se il vocabolario comune si fa di simboli invece che

@@ -11,7 +11,7 @@ di volte al minuto.
 Le due sezioni precedenti (*Dal notebook alla produzione* e *Dati e pipeline*)
 si sono fermate sul punto in cui i tre pezzi (dati, codice, pesi) sono
 tracciabili e riproducibili. Questa affronta il passo successivo, il quarto
-nodo dell'anello disegnato nella pagina d'apertura: **consegnare** il modello
+nodo dell'anello: **consegnare** il modello
 al mondo, cioè metterlo in un posto dove chi ne ha il diritto possa
 interrogarlo. In inglese consegnarlo si dice *deployment*; tenere acceso quel
 posto, giorno dopo giorno, si dice *serving*. Sono le due parole che nel gergo
@@ -28,9 +28,9 @@ volta il grosso non riguarda la rete neurale, ma tutto ciò che le sta attorno
 Prima di scrivere una riga di codice va scelto il **regime di inferenza**.
 *Inferenza* è il momento in cui il modello non impara più ma risponde: gli si
 dà un caso, restituisce la sua previsione; il regime è il modo in cui quel
-momento è organizzato, cioè come il modello incontra le richieste. Non è un
-dettaglio: cambia l'architettura, le priorità, perfino il conto della
-bolletta. I regimi fondamentali sono tre.
+momento è organizzato, cioè come il modello incontra le richieste. La scelta
+cambia l'architettura, le priorità, perfino il conto della bolletta. I regimi
+fondamentali sono tre.
 
 `````{tab} Elementare
 
@@ -210,7 +210,7 @@ modello.eval()                             # modalità inferenza: niente dropout
 @torch.no_grad()                           # niente autograd: meno memoria, più veloce
 def predici(richiesta: dict) -> dict:
     x = preprocessa(richiesta)             # dal JSON al tensore d'ingresso (batch di 1)
-    logit = modello(x)                     # forward: logit grezzi (cfr. capitolo PyTorch)
+    logit = modello(x)                     # forward: logit grezzi, come in PyTorch
     prob = torch.softmax(logit, dim=1)     # logit -> probabilità
     return {
         "classe": int(prob.argmax(dim=1).item()),
@@ -251,9 +251,11 @@ distinto fra addestramento e inferenza: il *dropout*, che in addestramento
 azzera a caso una frazione delle attivazioni e in inferenza deve lasciarle
 passare tutte, e la *BatchNorm*, che in addestramento normalizza sulle
 statistiche del batch corrente e in inferenza deve usare le medie mobili
-accumulate (con un batch di uno la statistica del batch non descrive più
-niente, e su uno strato lineare PyTorch si rifiuta di calcolarla).
-Dimenticarla non solleva alcuna eccezione: produce solo predizioni sbagliate.
+accumulate. Dimenticarla, quasi sempre, non solleva nessuna eccezione:
+produce solo predizioni sbagliate. L'unico caso in cui l'errore si fa sentire
+è la `BatchNorm1d` su un batch di uno, dove la statistica del batch non
+descrive più niente e il modulo si rifiuta di calcolarla; il dropout invece
+tace sempre.
 
 La seconda, `torch.no_grad()`, disattiva la costruzione del grafo delle
 operazioni che l’*autograd* userebbe per la retropropagazione. In inferenza
@@ -271,7 +273,8 @@ su una distribuzione di probabilità.
 
 Un servizio corretto può ancora essere troppo lento o troppo costoso. Le leve per
 accelerare l'inferenza sono diverse da quelle dell'addestramento, ma una radice è
-comune con il {doc}`capitolo PyTorch </PyTorch/overview>`: meno numeri da spostare, più velocità.
+comune con le {doc}`prestazioni in PyTorch </PyTorch/prestazioni>`: meno numeri
+da spostare, più velocità.
 
 La prima leva è il **batching dinamico**, e qui la parola *batch* torna con un
 significato diverso da quello di poco fa: qui è il mazzetto di richieste che il
@@ -279,7 +282,7 @@ server mette insieme prima di passarle al modello. Il motivo è che la scheda
 grafica che fa i conti
 (la **GPU**) è costruita per eseguire migliaia di operazioni identiche nello
 stesso istante, e a servirle una richiesta per volta la si tiene quasi ferma: è
-il punto su cui è costruito tutto il capitolo che le è dedicato. Il server
+il punto su cui è costruito il {doc}`capitolo sulle GPU </GPU/overview>`. Il server
 allora accumula per qualche millisecondo le richieste che arrivano, ne fa un
 mazzetto e lo passa al modello in un colpo solo. Chi era arrivato per primo
 aspetta quei pochi millisecondi in più; in cambio, nello stesso secondo, il
@@ -297,9 +300,11 @@ lo scorrere dei byte, quasi sempre, il vero collo di bottiglia. Si perde
 qualche cifra dopo la virgola, ed è quasi gratis.
 
 La terza leva spinge oltre, fino agli **interi**: la **quantizzazione** a
-`int8` {cite}`jacob2018quantization`. Le due leve si sommano invece di
-escludersi, e il conto si fa sempre rispetto ai trentadue bit di partenza: sedici
-bit sono due volte più leggeri, otto bit quattro volte.
+`int8` {cite}`jacob2018quantization`. Con la seconda non si somma, perché è la
+stessa manopola girata più in là: si decide quanti bit dare a ogni numero, e il
+conto si fa sempre rispetto ai trentadue di partenza, sedici bit due volte più
+leggeri, otto bit quattro volte. Col batching invece sì, perché mazzetti più
+grandi e numeri più corti sono due guadagni indipendenti.
 
 `````{tab} Elementare
 
@@ -342,7 +347,8 @@ reale $r$ e l'intero $q$, con $S$ la larghezza di un gradino e $Z$ il livello
 che rappresenta lo zero; l'errore limitato a mezzo gradino; e soprattutto il
 fatto che
 la larghezza del gradino la detti l'elemento più grande fra quelli che
-condividono la scala) è costruito per esteso nel capitolo sull'efficienza
+condividono la scala) è costruito per esteso in
+{doc}`Meno bit </Efficienza/meno-bit>`
 {cite}`jacob2018quantization`, insieme alle due conseguenze che qui si danno
 per acquisite: che la **granularità** della scala sia la leva più economica, e
 che nei modelli linguistici poche componenti anomale la dettino per tutte le
@@ -371,13 +377,13 @@ torch.onnx.export(modello, (esempio,), "modello.onnx")  # lo stesso, in ONNX
 
 La `quantize_dynamic` è la variante più indolore (nessun dato di calibrazione
 richiesto, adatta agli strati lineari), e va usata sapendo due cose. La prima è
-che qui PyTorch adotta lo schema **simmetrico**, cioè quello con lo zero-point
-fissato a zero: è il caso particolare della mappa affine, quello in cui la
-scala basta da sola, ed è anche la forma su cui il capitolo sull’efficienza
-costruisce tutto il meccanismo.
-La seconda è che quell'API è dichiarata in uscita (il messaggio di deprecazione
-rimanda a `torchao` e alla sua `quantize_`), quindi è materia da ricontrollare a
-ogni aggiornamento invece che da imparare a memoria.
+che sui **pesi** PyTorch adotta lo schema **simmetrico**, cioè quello con lo
+zero-point fissato a zero (sulle attivazioni, quantizzate al volo, no): è il
+caso particolare della mappa affine, quello in cui la scala basta da sola, ed è
+anche la forma su cui il capitolo sull’efficienza costruisce tutto il
+meccanismo. La seconda è che quell'API è dichiarata in uscita (il messaggio di
+deprecazione rimanda a `torchao` e alla sua `quantize_`), quindi è materia da
+ricontrollare a ogni aggiornamento invece che da imparare a memoria.
 
 Sull'esportazione, invece, è cambiato il rapporto fra i due strumenti.
 `torch.export` cattura il grafo del modello staccandolo dal codice Python che
@@ -401,21 +407,21 @@ dipende dal modello e non è mai garantito trascurabile a priori.
 ## Latenza e throughput: cosa promettere
 
 Ottimizzato il servizio, resta la domanda più scomoda: che cosa **promettere** a
-chi lo userà? Le due grandezze in ballo sono sempre quelle: la **latenza**,
-quanto si aspetta una risposta, e il **throughput**, quante risposte il sistema
-sforna in un secondo. Tirano in direzioni opposte, ed è per questo che vanno
-promesse insieme. Ma prima di promettere qualcosa bisogna decidere *quale
-numero* guardare, e qui il gergo confonde tre cose diverse.
+chi lo userà? Le due grandezze in ballo sono sempre latenza e throughput, e
+tirano in direzioni opposte: per questo vanno promesse insieme. Ma prima di
+promettere qualcosa bisogna decidere *quale numero* guardare, e qui il gergo
+confonde tre cose diverse.
 
 Le tre cose sono quelle di qualunque promessa: **che cosa si guarda**, **che
 cosa ci si impegna a fare** e **che cosa succede se non lo si fa**. Un treno le
 ha tutte e tre: si guarda il ritardo all'arrivo, ci si impegna a stare sotto i
 cinque minuti, e se si sfora il biglietto viene rimborsato.
 
-La prima è la grandezza che si **misura**. Non è la latenza media, per una
-ragione che arriva fra poco: è il tempo entro cui risponde la stragrande
-maggioranza delle richieste, per esempio il 99%. In gergo si chiama **SLI**,
-*Service Level Indicator*.
+La prima è la grandezza che si **misura**, e in gergo si chiama **SLI**,
+*Service Level Indicator*. Sceglierla è già una decisione: la latenza media è
+un indicatore legittimo ed è quello sbagliato, per una ragione che arriva fra
+poco, e al suo posto si prende il tempo entro cui risponde la stragrande
+maggioranza delle richieste, per esempio il 99%.
 
 La seconda è il **bersaglio** che i tecnici si danno da soli su quella
 grandezza: «il tempo entro cui risponde il 99% delle richieste sta sotto i 200
@@ -447,11 +453,12 @@ riconoscere: oltre quel punto si continua a pagare in attesa senza più
 guadagnare in capacità. Dove fermarsi non lo decide la curva ma il bersaglio
 che il team si è dato (lo SLO), ed è questo il senso di sceglierlo prima.
 
-La condizione posta nella didascalia merita il suo paragrafo, perché la curva
-da sola inganna. Il tempo segnato sull'asse orizzontale è la latenza *di
-servizio*: quanto ci mette il modello a rispondere una volta che alla richiesta
-è arrivato il turno. Ma ciò che l'utente vive è l'attesa in fila **più** il
-servizio, e la fila non compare nella curva.
+Quel vincolo, che il sistema stia già smaltendo le richieste alla velocità con
+cui arrivano, merita il suo paragrafo, perché la curva da sola inganna. Il
+tempo segnato sull'asse orizzontale è la latenza *di servizio*: quanto ci mette
+il modello a rispondere una volta che alla richiesta è arrivato il turno. Ma
+ciò che l'utente vive è l'attesa in fila sommata al servizio, e la fila non
+compare nella curva.
 
 Prendiamo un forno, stavolta di giorno, col negozio aperto e la gente in fila
 davanti al bancone: il lavoro pianificato di notte serve apposta a non far
@@ -465,8 +472,8 @@ Con il forno da una pagnotta la fila **non smette mai di allungarsi**: entrano
 sessanta persone e ne escono due, quindi ogni ora ne restano dentro
 cinquantotto in più, e chi arriva alle undici aspetta più di chi è arrivato
 alle dieci, per sempre. Con il forno da cento, che ne fa centocinquanta contro
-sessanta, la fila si smaltisce e nessuno aspetta più di un'infornata. La singola
-infornata è più lenta, e ciononostante **tutti aspettano meno**.
+sessanta, la fila si smaltisce e nessuno aspetta più di due infornate. La
+singola infornata è più lenta, e ciononostante **tutti aspettano meno**.
 
 Ci sono quindi tre situazioni, non due, e conviene tenerle distinte. Finché il
 forno non sta dietro ai clienti, ingrandire l'infornata migliora tutto: sforna
@@ -501,8 +508,9 @@ costano.
 
 Quei cinque pesano più di quanto sembri, perché una pratica raramente si sbriga
 a uno sportello solo. Se per finirla ne servono tre, basta che uno sia di
-quelli lenti: con cinque lenti su cento per sportello, quattordici persone su
-cento ne incontrano almeno uno.
+quelli lenti: con cinque lenti su cento per sportello, che vadano bene tutti e
+tre capita a ottantasei persone su cento ($0{,}95$ moltiplicato per sé stesso
+tre volte), e le altre quattordici ne incontrano almeno uno.
 
 Con i modelli è identico: si promette non il tempo medio, ma il tempo entro cui
 risponde la *stragrande maggioranza*. Il cliente scontento sta nel gruppetto
@@ -581,8 +589,8 @@ prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
   misurare ogni volta**.
 - Non si promette il tempo **medio** di risposta, che non lo vive quasi
   nessuno: si promette il caso quasi peggiore, «il 95% entro dieci minuti».
-  Quel numero si chiama percentile, e il cliente scontento è quello finito
-  nella coda lenta, non quello medio.
+  Quel numero si chiama percentile, e il cliente scontento è quello del
+  gruppetto lento, non quello medio.
 - Una versione nuova non si accende di colpo per tutti, ma per gradi: prima la
   si fa girare **in ombra**, senza servirne le risposte a nessuno; poi la si fa
   provare a **pochi**; e infine si dividono gli utenti in due gruppi, si dà a
@@ -606,15 +614,17 @@ prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
 - Le leve per accelerare sono il **batching dinamico**, la **riduzione di
   precisione** (`float16`, come nel capitolo PyTorch) e la **quantizzazione a
   `int8`** con la mappa affine $r = S(q - Z)$, cioè scala e livello dello zero
-  {cite}`jacob2018quantization`: circa
-  4× di memoria in meno al prezzo di un piccolo calo di accuratezza, **da
+  {cite}`jacob2018quantization`: circa 4× di memoria in meno **sui pesi che si
+  quantizzano** (con `quantize_dynamic` e i soli `nn.Linear`, su una rete mista
+  il guadagno complessivo è molto minore), al prezzo di un piccolo calo di
+  accuratezza, **da
   misurare** sempre. La scala **per canale** costa una manciata di scalari per
   strato ed evita che un solo canale anomalo allarghi il gradino di tutti.
 - L'esportazione stacca il modello dal codice che l'ha addestrato:
   `torch.export` cattura il grafo, e da PyTorch 2.9 **l'esportatore ONNX passa
   di lì** invece di essere la sua alternativa (serve `onnxscript`, che non è più
   una dipendenza di `torch`).
-- I termini sono **tre**: l’**SLI** è ciò che si misura (la p99 della latenza),
+- I termini sono tre: l’**SLI** è ciò che si misura (la p99 della latenza),
   lo **SLO** la soglia che il team si impone su quell'indicatore, lo **SLA** il
   contratto con le penali. Uno SLO serio si scrive sui **percentili alti**
   (p95, p99), non sulla media, e va bilanciato con **throughput** e **costo per

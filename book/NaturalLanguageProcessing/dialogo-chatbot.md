@@ -147,9 +147,8 @@ Colby costruì il contrario, PARRY, che simulava un paziente paranoide: nel 1972
 i due programmi furono perfino messi a conversare fra loro attraverso ARPANET,
 la rete di calcolatori americana da cui sarebbe nata internet.)
 
-Vale la pena ricostruirla, perché è il programma più istruttivo del capitolo:
-bastano le espressioni regolari della prima sezione e una tabellina di
-sostituzioni. Ecco una mini-ELIZA italiana:
+È il programma più istruttivo del capitolo, e bastano le espressioni regolari
+della prima sezione e una tabellina di sostituzioni. Ecco una mini-ELIZA italiana:
 
 ```python
 import re
@@ -439,7 +438,7 @@ Weizenbaum ne fu così turbato da cambiare mestiere: da costruttore di
 programmi a loro critico. Nel libro che scrisse dieci anni dopo, *Computer
 Power and Human Reason* {cite}`weizenbaum1976computer`, raccontò di non aver
 mai immaginato «che esposizioni brevissime a un programma per calcolatore
-relativamente semplice potessero indurre un pensiero delirante così potente in
+relativamente semplice potessero indurre un pensiero delirante potente in
 persone del tutto normali»; lo scandalizzò, più di tutto, la proposta di
 psichiatri veri di usare programmi come il suo per la psicoterapia su larga
 scala. La sua tesi, spesso semplificata in generico allarme, era invece
@@ -496,7 +495,7 @@ scrivere: come conteggi in un sacchetto, come punti su una mappa di
 significati, come riassunto che scorre dentro una rete che legge in fila.
 L'ultimo passo, l'architettura che ha mandato in pensione quella lettura in
 fila e ha reso possibili gli interlocutori artificiali di oggi, merita un
-capitolo intero: i **Transformer** ci aspettano alla prossima pagina.
+capitolo intero, ed è quello sui **Transformer**.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

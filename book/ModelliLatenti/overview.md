@@ -31,7 +31,7 @@ materie non si somigliano fra loro: si somigliano perché sono figlie della
 stessa cosa.
 
 Se quella quantità esista davvero, e che cosa sia, è oggetto di una discussione
-che dura da oltre un secolo, e in questo libro non prendiamo posizione: quello
+che dura da oltre un secolo, e il libro non prende posizione: quello
 che ci serve è **la mossa**, non la conclusione. La mossa è sopravvissuta
 alla discussione, ha preso un nome (**variabile latente**, dal latino *latere*,
 «stare nascosto») e ha una macchina matematica che la rende operativa, che
@@ -52,8 +52,8 @@ Chi vuole costruire una macchina che fabbrica dati nuovi ha davanti un compito
 scoraggiante: scrivere una formula per la probabilità di un dato. Quanto è
 probabile *questa* fotografia?
 
-La domanda suona strana, perché una fotografia c’è o non c’è, e conviene
-scioglierla subito visto che regge tutto il capitolo: vuol dire **quanto ci si
+La domanda suona strana, perché una fotografia c’è o non c’è, e la
+sciogliamo subito, perché regge tutto il capitolo: vuol dire **quanto ci si
 aspettava di vedere una cosa così**. La foto di un gatto nero su un muro è
 probabile; la stessa foto con il muro fatto di puntini colorati a caso non lo
 è. E chi sa rispondere sa anche fabbricare, perché sapere quali immagini sono
@@ -143,26 +143,28 @@ peso e ugual larghezza ne danno due soltanto se i centri distano più di due
 deviazioni standard, e sotto quella soglia la densità torna a una gobba sola
 pur restando una mistura.
 
-Il caso continuo generalizza la stessa costruzione: se
-$p(\mathbf{z}) = \mathcal{N}(\mathbf{0}, \mathbf{I})$ e
-$p_\theta(\mathbf{x} \mid \mathbf{z}) = \mathcal{N}\big(\mathbf{x};\,
-f_\theta(\mathbf{z}),\, \sigma^2 \mathbf{I}\big)$, dove $f_\theta$ è una rete
-neurale e $\sigma^2$ la varianza del rumore che il decoder aggiunge (da non
-confondere con la varianza della zona proposta dall’encoder, che comparirà
-nella terza sezione), allora $p_\theta(\mathbf{x})$ è una **mistura infinita** di gaussiane
-sferiche, i cui centri sono le uscite della rete e i cui pesi sono dati dal
-prior. Una rete deterministica più due gaussiane elementari bastano quindi a
-descrivere una distribuzione che non si saprebbe scrivere in nessun altro modo.
+Il caso continuo generalizza la stessa costruzione: se $p(\mathbf{z}) =
+\mathcal{N}(\mathbf{0}, \mathbf{I})$ e $p_\theta(\mathbf{x} \mid \mathbf{z}) =
+\mathcal{N}\big(\mathbf{x};\, f_\theta(\mathbf{z}),\, \sigma^2
+\mathbf{I}\big)$, dove $f_\theta$ è una rete neurale e $\sigma^2$ la varianza
+del rumore che il decoder aggiunge (da non confondere con la varianza della
+zona proposta dall’encoder, che comparirà nella sezione sull’ELBO), allora
+$p_\theta(\mathbf{x})$ è una **mistura infinita** di gaussiane sferiche, i cui
+centri sono le uscite della rete e i cui pesi sono dati dal prior. Una rete
+deterministica più due gaussiane elementari bastano quindi a descrivere una
+distribuzione che non si saprebbe scrivere in nessun altro modo.
 
-Con $f_\theta$ **lineare** il modello diventa la PCA probabilistica, la cui
+Con $f_\theta$ **affine** il modello diventa la PCA probabilistica, la cui
 soluzione a massima verosimiglianza individua il **sottospazio** generato dalle
 prime $L$ componenti principali e non le singole direzioni (con $f_\theta$
-lineare, cioè $f_\theta(\mathbf{z}) = \mathbf{W}\mathbf{z}$ e $\mathbf{z}$ di
-dimensione $L$, la matrice $\mathbf{W}$ è determinata a meno di una rotazione),
-e nel limite $\sigma^2 \to 0$ la codifica si riduce alla proiezione
-ortogonale, cioè alla PCA della sezione su
-riduzione e clustering. Cambiando l’ipotesi sul rumore, da una sola varianza
-per tutte le componenti osservate a una varianza per ciascuna, si ottiene
+affine, cioè $f_\theta(\mathbf{z}) = \mathbf{W}\mathbf{z} + \boldsymbol{\mu}$ e
+$\mathbf{z}$ di dimensione $L$, la matrice $\mathbf{W}$ è determinata a meno di
+una rotazione),
+e nel limite $\sigma^2 \to 0$ la ricostruzione si riduce alla proiezione
+ortogonale, cioè alla PCA della sezione su riduzione e clustering, e il codice
+ne è un sistema di coordinate. Cambiando l’ipotesi sul rumore, da una sola
+varianza per tutte le componenti osservate a una varianza per ciascuna, si
+ottiene
 l’**analisi fattoriale**, che è esattamente il modello di Spearman: un fattore
 comune a tutte le prove più uno scarto proprio di ciascuna, e nel lavoro del
 1904 quello scarto è già misurato prova per prova (per le materie classiche
@@ -195,7 +197,7 @@ la regola con cui si sceglie il sacchetto.
 
 ## Il prezzo: la somma che non si può fare
 
-La mossa costa, e conviene dire subito quanto, perché è il problema che il
+La mossa costa, e il prezzo si dice subito, perché è il problema che il
 capitolo passa il tempo ad aggirare.
 
 ```{figure} ../figures/modello-latente-generare-e-inferire.svg
@@ -206,8 +208,7 @@ capitolo passa il tempo ad aggirare.
 Le due direzioni della stessa freccia. Scendere è facile: si sorteggia un punto
 là sopra e si applica la regola che porta da lui al dato. Risalire, cioè
 chiedersi da quale punto di sopra possa essere venuto un dato che si ha in
-mano, è il problema che il capitolo risolve, e costa in due modi diversi, che
-il testo qui sotto separa. (Le due lettere del disegno sono i nomi con cui
+mano, è la parte cara. (Le due lettere del disegno sono i nomi con cui
 questa materia le chiama da sempre: **z** la cosa nascosta, **x** il dato che
 si vede.)
 ```
@@ -239,7 +240,7 @@ latente, guardare quanto ciascuno spiega bene il dato, e fare la media. In
 poche dimensioni si fa. In molte no, e la ragione è che quasi tutti i valori
 sorteggiati spiegano il dato in modo pessimo: la media di mille numeri quasi
 nulli e di un numero grande dipende tutta da quell’uno, che quasi mai capita di
-pescare. La sezione centrale del capitolo lo misura invece di dirlo.
+pescare. La sezione sull’ELBO lo misura invece di dirlo.
 
 ## La stessa idea, dentro quattro macchine
 
@@ -254,16 +255,17 @@ rimanda la fattura, dicendo che lo vedrà più avanti o che gli basta il ruolo
 dei due termini. L’ultima sezione la paga, e ripassa i quattro punti uno per
 uno adesso che la macchina è nota.
 
-Dove stia questa famiglia rispetto alle altre lo mette in fila, più avanti, il
-capitolo sulla **verosimiglianza** esatta. «Verosimiglianza» è proprio quel
-numero di poco fa, quanto il modello si aspettava di vedere il dato; e là i
-modelli generativi del libro sono ordinati tutti insieme secondo una cosa sola,
-che cosa ciascuno sa dirne. Quella mappa vive là, e qui non ne facciamo una
+Il {doc}`capitolo sulla verosimiglianza esatta
+</VerosimiglianzaEsatta/overview>`, più avanti, mette in fila dove questa
+famiglia stia rispetto alle altre. «Verosimiglianza» è proprio quel numero di
+poco fa, quanto il modello si aspettava di vedere il dato; e là i modelli
+generativi del libro sono ordinati tutti insieme secondo una cosa sola, che
+cosa ciascuno sa dirne. Quella mappa vive là, e qui non ne facciamo una
 seconda. Basta l’essenziale: i modelli di questo capitolo quel numero lo sanno
 dire **per difetto**, cioè restituiscono un valore che sta di sicuro sotto a
-quello vero. Di che cosa sia fatto il divario si sa benissimo, e la terza
-sezione lo dice; quanto valga, no. Perché ci si debba accontentare, e perché
-accontentarsi convenga, è la storia della terza sezione.
+quello vero. Di che cosa sia fatto il divario si sa benissimo; quanto valga,
+no. Perché ci si debba accontentare, e perché accontentarsi convenga, è la
+storia della sezione sull’ELBO.
 
 `````{tab} Elementare
 
@@ -299,10 +301,11 @@ accontentarsi convenga, è la storia della terza sezione.
   $p_\theta(\mathbf{x} \mid \mathbf{z}) = \mathcal{N}(\mathbf{x};
   f_\theta(\mathbf{z}), \sigma^2 \mathbf{I})$ si ottiene una **mistura infinita
   di gaussiane** con centri $f_\theta(\mathbf{z})$. La mistura di gaussiane
-  finita del {doc}`capitolo sul machine learning </MachineLearning/overview>` è lo stesso oggetto con $\mathbf{z}$
-  discreto; con $f_\theta$ lineare si ottiene la PCA probabilistica, e
-  l’analisi fattoriale è la variante con una varianza di rumore per ciascuna
-  componente osservata.
+  finita della {doc}`sezione su riduzione e clustering
+  </MachineLearning/riduzione-clustering>` è lo stesso oggetto con
+  $\mathbf{z}$ discreto; con $f_\theta$ affine si ottiene la PCA
+  probabilistica, e l’analisi fattoriale è la variante con una varianza di
+  rumore per ciascuna componente osservata.
 - La marginale è **intrattabile**: nessuna forma chiusa, e la stima Monte Carlo
   dal prior ha varianza che esplode con la dimensione di $\mathbf{z}$, perché
   quasi tutti i campioni cadono dove
@@ -330,7 +333,3 @@ nascosto una volta che c’è: la manopola con cui gli si può chiedere di tener
 separate le cose di cui il dato è fatto (la luce, l’inclinazione, il soggetto),
 il riassunto fatto di simboli invece che di numeri, e i quattro punti del libro
 in cui questa macchina è al lavoro.
-
-Il capitolo che segue prende lo stesso problema, fabbricare dati nuovi e
-plausibili, e lo attacca dal lato opposto: butta via la probabilità e mette un
-giudice. Conviene arrivarci sapendo che cosa si sta buttando via.

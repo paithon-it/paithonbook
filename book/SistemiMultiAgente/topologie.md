@@ -507,14 +507,14 @@ né su quello che resta in piedi (37% contro 46%): la batte sul diametro, sei
 contro quattordici, e basta. La gerarchia compra distanza, non robustezza, ed
 è bene non aspettarsi dell'altro.
 
-**La terza**, ed è la più istruttiva: nell'organigramma il più sollecitato **non
-è il capo supremo**, è un capo intermedio, che porta il 54% del traffico contro
-il 47% del capo supremo. È la riga che il programma stampa in fondo, dopo la
-tabella. La ragione, a guardarla, è ovvia: il capo supremo sta in mezzo solo fra
-le due metà dell'organigramma, mentre un capo intermedio sta in mezzo sia fra i
-sei che ha sotto di sé, sia fra ciascuno di quei sei e tutto il resto.
-Chi progetta squadre di agenti farebbe bene a saperlo, perché il ruolo da
-irrobustire per primo non è quello che sembra.
+**La terza**, ed è la più istruttiva: nell'organigramma il più sollecitato è un
+**capo intermedio**, non il capo supremo, con il 54% del traffico contro il
+47%. È la riga che il programma stampa in fondo, dopo la tabella. La ragione, a
+guardarla, è ovvia: il capo supremo sta in mezzo solo fra le due metà
+dell'organigramma, mentre un capo intermedio sta in mezzo sia fra i sei che ha
+sotto di sé, sia fra ciascuno di quei sei e tutto il resto. Chi progetta
+squadre di agenti farebbe bene a saperlo, perché il ruolo da irrobustire per
+primo non è quello che sembra.
 
 **E poi c'è l'ultima riga della tabella.** L'ipercubo batte l'organigramma a due
 sottoposti su **tutte e tre** le grandezze insieme: diametro quattro contro sei,

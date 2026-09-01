@@ -78,7 +78,7 @@ $$
 
 dove $\mathrm{freq}(a)$ è il numero di occorrenze del simbolo $a$ nel corpus
 segmentato allo stato corrente e $\mathrm{freq}(ab)$ quello della coppia
-adiacente. È una trasformazione monotona della **informazione mutua puntuale**
+adiacente. È una trasformazione monotona dell’**informazione mutua puntuale**
 (PMI): passando dalle frequenze assolute a quelle relative, il rapporto diventa
 $\frac{p(ab)}{p(a)\,p(b)}$ a meno di un fattore che dipende solo dalla taglia
 del corpus, quindi costante entro un singolo passo e ininfluente
@@ -148,14 +148,14 @@ della virgola no, dopo l'apostrofo nemmeno). La frase torna com'era e non quasi
 com'era, apostrofi e punteggiatura compresi: uguale a come la si era uniformata
 prima di infilare, se quel passaggio si è fatto.
 
-I pezzi con cui si compone la collana si possono anche scegliere al rovescio di
-BPE. Nel cassetto ce ne sono migliaia di pronti, spezzoni già infilati, tutti i
-frammenti che nel testo ricorrono un po’, e non si chiude: allora se ne mette
-via uno alla volta, si rifanno le collane della giornata senza di lui, e quello
-di cui non si sente la mancanza si butta. Poi si rifà il giro, finché il
-cassetto si chiude. Quanto serva ciascuno si scopre solo usandolo: si infila, si
-segna quali sono serviti, si corregge la stima e si ricomincia, finché non
-cambia più niente.
+I pezzi si possono anche scegliere al rovescio di BPE. Invece di partire dalle
+lettere e incollare, si parte da un cassetto **troppo pieno**: dentro ci sono
+tutti i frammenti che nel testo ricorrono un po’, molti più di quanti ce ne
+stiano. Poi si toglie. Si prende uno spezzone, si rifanno senza di lui tutte
+le collane del testo, e se nessuna ne sente la mancanza si butta; si rifà il
+giro finché nel cassetto resta il numero di pezzi che ci si era prefissi.
+Quanto ciascuno serva si scopre solo usandolo: si infila, si segna quali sono
+serviti, si aggiorna il conto e si ricomincia, finché non cambia più niente.
 
 Davanti a una parola nuova, con il cassetto ripulito non si ripetono gli
 incollaggi nell'ordine in cui sono stati scoperti: si cerca il modo migliore di
@@ -217,11 +217,12 @@ $x = (x_1,\dots,x_\ell)$ di una stringa la probabilità $P(x) = \prod_i p(x_i)$,
 ma qui la verosimiglianza di una stringa $s$ è la somma su tutte le
 segmentazioni possibili, $P(s) = \sum_{x \in S(s)} P(x)$. Le $p(x_i)$ si
 stimano con
-l'algoritmo EM (lo stesso delle misture gaussiane, nel capitolo sul Machine
-Learning: qui la variabile che renderebbe facile la stima e non si osserva non
-è l'identità della componente, è la segmentazione);
-poi, per ogni token, si calcola quanto la verosimiglianza
-totale calerebbe rimuovendolo, e si elimina la frazione di token meno utili.
+l'algoritmo EM (lo stesso delle misture gaussiane della {doc}`sezione su
+riduzione e clustering </MachineLearning/riduzione-clustering>`: qui la
+variabile nascosta, quella che renderebbe facile la stima, è la
+segmentazione e non l'identità della componente); poi, per ogni token, si
+calcola quanto la verosimiglianza totale calerebbe rimuovendolo, e si
+elimina la frazione di token meno utili.
 Si itera fino alla taglia voluta. La segmentazione di una stringa nuova è
 quella di massima probabilità, trovata con Viterbi in tempo lineare nella
 lunghezza. Due proprietà distinguono unigram da BPE: è un modello
@@ -277,7 +278,7 @@ a gruppi fissi di tre, proprio per restituire al modello una griglia regolare.
 
 ```{figure} ../figures/italiano-costa-piu-token.svg
 :name: fig-italiano-token
-:alt: "La stessa frase scritta in inglese e in italiano, una sopra l'altra, con i confini fra un token e l'altro marcati sopra ciascuna. In inglese, «The cat is on the table», le sei parole restano sei token interi. In italiano, «Il gatto è sopra il tavolo», due parole si spezzano in due pezzi ciascuna, «gatto» in «g» e «atto» e «tavolo» in «tav» e «olo», e i token diventano otto."
+:alt: "La stessa frase scritta in inglese e in italiano, una sopra l'altra, con i confini fra un token e l'altro marcati sopra ciascuna. In inglese, «The cat is on the table», le sei parole restano sei token interi. In italiano, «Il gatto sta sul tavolo», tre parole si spezzano: «gatto» in «g» e «atto», «sta» in «st» e «a», «tavolo» in «t», «av» e «olo», e i token diventano nove."
 :width: 96%
 
 Stessa frase, due conti diversi. Le parole italiane si frammentano perché il
@@ -305,16 +306,16 @@ E in che valuta si paga? In tre.
   programma che, dato un testo, scommette su come continua: è il tema di una
   sezione più avanti) fanno pagare un tanto a token. La stessa richiesta
   scritta in italiano costa dunque più della stessa richiesta in inglese, e di
-  quanto dipende dal tokenizzatore: nella frase della figura, spezzata dal tokenizzatore di GPT-2, sono dodici
-  token contro sei, cioè il doppio (con tokenizzatori più recenti il rapporto
-  scende, ma il verso non cambia mai).
+  quanto dipende dal tokenizzatore: nella frase della figura, spezzata dal
+  tokenizzatore di GPT-2, sono nove token contro sei, cioè la metà in più (con
+  tokenizzatori più recenti il rapporto scende, ma il verso non cambia mai).
 - **In posti occupati.** Un modello può tenere davanti agli occhi solo una
   certa quantità di testo per volta, misurata anch'essa in token: è la sua
   **finestra di contesto**. Un documento che in inglese ci sta, in italiano può
   non starci.
 - **In lavoro.** E qui il conto non è proporzionale, per via del costo
-  quadratico dell'attenzione di cui si diceva all'inizio: se una lingua consuma
-  il 50 per cento di token in più, l'attenzione su quel testo costa
+  quadratico dell'attenzione, che confronta ogni posizione con ogni altra:
+  quel 50 per cento di token in più fa costare l'attenzione
   $1{,}5^2 = 2{,}25$ volte tanto.
 
 È una disparità che non nasce da una scelta contro l'italiano, ma dalla
@@ -343,23 +344,22 @@ diversa da quella che credevate.
 dopo.** Questa è la conseguenza più vincolante, e riguarda com'è fatto il
 modello per dentro. In ingresso c'è una tabella con **una riga per ogni token
 del vocabolario**: la riga contiene i numeri con cui quel pezzo di parola viene
-rappresentato, ed è quella che nel resto del libro si chiama *matrice di
-embedding*. In uscita ce n'è una seconda che fa il lavoro opposto, e infatti è
-girata di novanta gradi: ha **una colonna per ogni token**, e serve a dare a
-ciascun pezzo un punteggio per decidere quale scrivere. Una per entrare, una
-per uscire. Aggiungere un token al vocabolario vuol dire allora aggiungere
-una riga e una colonna vuote a due tabelle che l'addestramento ha già
-riempito: numeri che nessuno ha mai regolato, in mezzo a numeri regolati per
-mesi. E cambiare la segmentazione di un token esistente è peggio, perché
-tutto ciò che il modello ha imparato su quella riga si riferisce ormai a
-un'altra cosa. Il tokenizzatore è quindi parte del modello quanto i suoi pesi, si
-distribuisce insieme a essi, e se il dominio d'uso non era rappresentato nel
-corpus su cui è stato costruito (una lingua minore, la notazione chimica, un
-linguaggio di programmazione poco diffuso) quel testo resterà frammentato per
-tutta la vita del modello. Si può porre rimedio solo riaddestrando, o almeno
-estendendo il vocabolario e riadattando gli embedding nuovi: entrambe
-operazioni costose, che è il motivo per cui la scelta del tokenizzatore va
-fatta all'inizio e con calma.
+rappresentato, ed è quella che si chiama *matrice di embedding*. In uscita ce
+n'è una seconda che fa il lavoro opposto, e infatti è girata di novanta gradi:
+ha **una colonna per ogni token**, e serve a dare a ciascun pezzo un punteggio
+per decidere quale scrivere. Una per entrare, una per uscire. Aggiungere un
+token al vocabolario vuol dire allora aggiungere una riga e una colonna vuote a
+due tabelle che l'addestramento ha già riempito: numeri che nessuno ha mai
+regolato, in mezzo a numeri regolati per mesi. E cambiare la segmentazione di
+un token esistente è peggio, perché tutto ciò che il modello ha imparato su
+quella riga si riferisce ormai a un'altra cosa. Il tokenizzatore è quindi parte
+del modello quanto i suoi pesi, si distribuisce insieme a essi, e se il dominio
+d'uso non era rappresentato nel corpus su cui è stato costruito (una lingua
+minore, la notazione chimica, un linguaggio di programmazione poco diffuso)
+quel testo resterà frammentato per tutta la vita del modello. Si può porre
+rimedio solo riaddestrando, o almeno estendendo il vocabolario e riadattando
+gli embedding nuovi: entrambe operazioni costose, che è il motivo per cui la
+scelta del tokenizzatore va fatta all'inizio e con calma.
 
 ## Un'idea che vale oltre il testo
 
@@ -380,11 +380,12 @@ un catalogo fisso di frammenti sonori campione, diciamo mille, e poi si scorre
 la registrazione un pezzetto alla volta, si cerca nel catalogo il campione che
 somiglia di più a quello che si ha davanti, e al posto del suono si scrive il
 suo numero di catalogo. L'onda diventa così una fila di numeri fra mille, cioè
-un testo in un alfabeto di mille lettere. Questo mestiere ha un nome che
-incontrerete nel capitolo sull'audio, ed è il **codec neurale**; il pezzo che
-sceglie il campione più vicino si chiama *quantizzatore vettoriale*. Il
-problema è lo stesso di questa sezione, la soluzione è diversa perché diversa è
-la materia prima.
+un testo in un alfabeto di mille lettere. Questo mestiere ha un nome, il
+**codec neurale**, e il capitolo sull'audio gli dedica {doc}`una sezione
+</Audio/codec-neurali>`; il pezzo che sceglie il campione più vicino si
+chiama *quantizzatore vettoriale*. Il problema è lo stesso della
+tokenizzazione del testo, la soluzione è diversa perché diversa è la materia
+prima.
 
 E la domanda che resta aperta, in entrambi i casi, è se il testo e il suono
 debbano davvero passare per dei simboli, o se un giorno i modelli lavoreranno
@@ -399,10 +400,11 @@ paga.
   frequente, ma quella che sta insieme più di quanto ci si aspetterebbe per
   caso («acqua minerale» contro «di un»).
 - **SentencePiece** tratta il testo come una collana ininterrotta di simboli,
-  con lo spazio scritto come `▁`: non c'è bisogno di tagliarlo prima in parole
-  (indispensabile per cinese e giapponese, che gli spazi non li usano) e il
-  testo si ricompone identico. Sotto i caratteri ci sono i **byte**, che sono
-  256 comunque vada: partendo da lì non resta fuori più niente, mai.
+  con lo spazio scritto come `▁`: non c'è bisogno di tagliarlo prima in
+  parole, che per cinese e giapponese, dove gli spazi non ci sono, è l'unica
+  strada praticabile; e il testo si ricompone identico. Sotto i caratteri ci
+  sono i **byte**, che sono 256 comunque vada: partendo da lì non resta fuori
+  più niente, mai.
 - Le conseguenze si toccano con mano: **i numeri** vengono spezzati secondo la
   frequenza e non secondo il posto delle cifre, e i conti ne soffrono;
   **l'italiano costa più token dell'inglese**, cioè più soldi e più posti

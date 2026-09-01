@@ -10,7 +10,9 @@ Esiste un modo di guardare la faccenda in cui quella separazione non c'è, e i
 due mestieri sono lo stesso mestiere. Non nasce nell'informatica ma nelle
 neuroscienze teoriche, si chiama **inferenza attiva** e la sua trattazione
 d'insieme è un libro di Thomas Parr, Giovanni Pezzulo e Karl Friston
-{cite}`parr2022active`. Conviene dedicargli una sezione, non perché sia il
+{cite}`parr2022active`. «Inferenza», qui, è quella dei modelli latenti:
+risalire alla causa nascosta a partire da quel che si vede, non il far girare
+un modello già addestrato. Conviene dedicargli una sezione, non perché sia il
 modo in cui oggi si costruiscono i sistemi (non lo è, e più avanti lo diciamo
 senza giri di parole) ma perché risponde alla domanda del capitolo da
 un'angolatura che le due tappe precedenti non hanno: **a che cosa serve, in
@@ -58,10 +60,10 @@ quello che ti aspettavi e quello che trovi. E la tesi dell'inferenza attiva è
 che siano davvero **la stessa operazione**, fatta in due direzioni: percepire
 piega le tue idee verso il mondo, agire piega il mondo verso le tue idee.
 
-Quanto sia strana davvero quella stanza al buio, però, non lo sai: quello che
-senti è il tuo sconcerto, e lo sconcerto è sempre almeno quanto la stranezza
+Quanto sia sorprendente davvero quella stanza al buio, però, non lo sai: quello
+che senti è il tuo sconcerto, e lo sconcerto è sempre almeno quanto la sorpresa
 vera, mai meno. Trovata la spiegazione giusta lo sconcerto cala, e si ferma
-contro quel fondo di stranezza che la scena ha comunque. Quel che resta in mezzo
+contro quel fondo di sorpresa che la scena ha comunque. Quel che resta in mezzo
 è quanto la tua spiegazione dista dalla migliore che il buio consente.
 
 C'è un terzo modo: **imparare**. Se le sorprese si ripetono, non basta più
@@ -91,10 +93,11 @@ cioè l'evidenza logaritmica negativa del modello; la divergenza è non negativa
 quindi $F$ è un **limite superiore** sulla sorpresa, e il divario è esattamente
 quanto $Q$ si discosta dalla distribuzione a posteriori che si otterrebbe
 facendo l'inferenza esatta. Minimizzare $F$ rispetto a $Q$ stringe il limite ed
-è l'inferenza approssimata di sempre: è lo stesso limite variazionale che il
-capitolo sui modelli di diffusione deriva sotto il nome di **ELBO**, cambiato di
-segno. Il punto nuovo è che $F$ dipende **anche** da $o$, e le osservazioni un
-agente se le può andare a prendere.
+è l'inferenza approssimata di sempre: è lo stesso limite variazionale che la
+{doc}`sezione sul salto
+probabilistico </ModelliLatenti/il-salto-probabilistico>` deriva sotto il nome
+di **ELBO**, cambiato di segno. Il punto nuovo è che $F$ dipende **anche** da
+$o$, e le osservazioni un agente se le può andare a prendere.
 
 Da qui i tre modi, che sono tre argomenti diversi rispetto a cui si minimizza la
 stessa quantità:
@@ -157,8 +160,8 @@ Gli autori mostrano che questo scala molto oltre i riflessi. Restare alla
 temperatura giusta, scrivono, è **sudare** (che è fisiologia), ma anche
 comprarsi da bere (che è psicologia) e mettere l'aria condizionata in una città
 intera (che è una faccenda collettiva). E soprattutto è **cercare l'ombra prima
-di surriscaldarsi**, che è l'esempio a cui tengono di più, perché lì il
-correttivo arriva *prima* del guaio. Lo stesso imperativo, insomma, soddisfatto
+di surriscaldarsi**, che è il caso in cui il correttivo arriva *prima* del
+guaio. Lo stesso imperativo, insomma, soddisfatto
 con un anticipo sempre maggiore, e per anticipare serve un modello di quel che
 succederà.
 
@@ -194,8 +197,9 @@ Fin qui abbiamo detto il *perché*: un pesce si muove per non trovarsi
 all'asciutto. Resta il *come*. Davanti a due mosse possibili, che cosa dice a
 un agente del genere quale delle due è meglio? La risposta ha una particolarità
 che sarebbe un peccato saltare, ed è la ragione per cui questa cornice torna
-utile due volte altrove nel libro: nel capitolo sull'auto-supervisione e nella
-sezione sull'esplorazione del deep reinforcement learning.
+utile due volte altrove: nella {doc}`sezione sul dibattito attorno al
+rinforzo </AutoSupervisione/dibattito-rl>` e in quella
+{doc}`sull'esplorazione </DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 
 `````{tab} Elementare
 
@@ -302,12 +306,6 @@ Le due parole si somigliano perché vengono dallo stesso
 posto, la fisica statistica, e i due conti in qualche punto si toccano; ma
 scambiarle porta fuori strada, e chi legge «energia libera» pensando al
 buttafuori si perde.
-
-La confusione ha anche un appiglio tipografico, ed è meglio toglierlo di
-mezzo: la sezione sulla JEPA scrive $\mathcal{E}$ per l'energia di una coppia
-(presente, futuro), e qui $F$ è l'energia libera variazionale. Due lettere
-diverse per due grandezze diverse, e la differenza serve: sono le due
-«energie» che questo riquadro invita a non scambiare.
 ```
 
 ## Onestà sui limiti
@@ -325,8 +323,9 @@ riportarlo perché evita di arruolarli in una polemica che non hanno cercato: il
 quadro «non mira a rimpiazzare altri quadri di riferimento, come la psicologia
 comportamentale, la teoria delle decisioni e l'apprendimento per rinforzo»,
 piuttosto spera di comprenderli. Diverse cose che il libro ha già visto si
-riottengono infatti come casi particolari, e la sezione sull'esplorazione, nel
-{doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`, ne mostra una.
+riottengono infatti come casi particolari, e la {doc}`sezione
+sull'esplorazione </DeepReinforcementLearning/esplorazione-e-ricompensa>` del
+deep reinforcement learning ne mostra una.
 
 **Una cornice che spiega tutto va maneggiata con cura.** Una teoria che
 riconduce percezione, azione, apprendimento, attenzione e omeostasi allo stesso
@@ -407,22 +406,22 @@ $$
 Quella $F$ è **la stessa** dell'inizio della sezione, riga per riga: $\pi_\theta$
 fa da $Q$, il modello generativo non normalizzato è $\tilde{P}$, l'osservazione
 si riduce al singolo evento «questa uscita è ottima» e $-\ln Z(x)$ è la sorpresa
-di quell'evento. Massimizzare l'obiettivo dell'RLHF **è** minimizzare
-un'energia libera variazionale. Non è una nostra lettura: Korbak, Perez e
-Buckley lo dimostrano nel 2022, ricavando $J(\theta)$ come ELBO sulla
-log-verosimiglianza di quell'evento, con $\pi_{\text{ref}}$ nel ruolo di priore
-{cite}`korbak2022rl`; il terzo autore lavora sull'inferenza attiva, il che
-spiega da dove arrivi il collegamento.
+di quell'evento. Massimizzare l'obiettivo dell'RLHF e minimizzare un'energia
+libera variazionale sono la stessa operazione. Non è una nostra lettura:
+Korbak, Perez e Buckley lo dimostrano nel 2022, ricavando $J(\theta)$ come ELBO
+sulla log-verosimiglianza di quell'evento, con $\pi_{\text{ref}}$ nel ruolo di
+priore {cite}`korbak2022rl`; il terzo autore lavora sull'inferenza attiva, il
+che spiega da dove arrivi il collegamento.
 
 Restano due differenze che nessuna algebra cancella, e sono quelle da tenere in
 mano. **Primo**, i due termini KL non sono lo stesso termine. Nel rischio
-dell'energia libera attesa la distribuzione di riferimento **è** la preferenza,
-$P(\tilde{o} \mid C)$; nell'RLHF il riferimento è il priore $\pi_{\text{ref}}$
-(il modello pre-addestrato, un artefatto della procedura) e la preferenza è
-scritta a parte, in $r_\phi$. I due mestieri li fanno oggetti diversi, e i due
-schemi si toccano solo passando per il quadro comune del **controllo come
-inferenza** (trattare la scelta di una traiettoria come l'inferenza di una
-distribuzione a posteriori), non con un travaso diretto.
+dell'energia libera attesa la distribuzione di riferimento coincide con la
+preferenza, $P(\tilde{o} \mid C)$; nell'RLHF il riferimento è il priore
+$\pi_{\text{ref}}$ (il modello pre-addestrato, un artefatto della procedura) e
+la preferenza è scritta a parte, in $r_\phi$. I due mestieri li fanno oggetti
+diversi, e i due schemi si toccano solo passando per il quadro comune del
+**controllo come inferenza** (trattare la scelta di una traiettoria come
+l'inferenza di una distribuzione a posteriori), non con un travaso diretto.
 
 **Secondo**, che cosa sparisce davvero togliendo l'ambiguità. Non il valore
 dell'informazione per intero: come si è visto, il rischio conserva
@@ -459,7 +458,7 @@ diventerà.
   sei**, non a quello che capita. Per un pesce, essere all'asciutto è la cosa più
   sorprendente possibile, e restare immobile non lo aiuta affatto.
 - Per questo un organismo è **costretto** a muoversi, e ad anticipare: non basta
-  sudare quando fa caldo, conviene cercare l'ombra **prima**. Anticipare vuol
+  sudare quando fa caldo, conviene cercare l'ombra prima. Anticipare vuol
   dire avere un modello di quel che succederà, che è poi l'argomento di questo
   capitolo.
 - Per scegliere una mossa, un agente così la misura **due volte**: quanto lo
@@ -467,8 +466,8 @@ diventerà.
   farebbe scoprire qualcosa che non sa (il valore di **sapere**). Sono le due
   metà di un voto solo, quindi non c'è nessuna manopola da girare per decidere
   quanta curiosità concedere.
-- La differenza dai sistemi delle sezioni precedenti: là ci sono **due** cose da
-  scrivere, il modello del mondo e il premio; qui ce n'è **una**, perché quello
+- La differenza dai sistemi delle sezioni precedenti: là ci sono due cose da
+  scrivere, il modello del mondo e il premio; qui ce n'è una, perché quello
   che si desidera sta nello stesso posto in cui sta quello che ci si aspetta.
 - La regola d'oro della cucina, quella con cui si rifiniscono i modelli di
   linguaggio («insegui il voto, ma non allontanarti dalla ricetta di partenza»),

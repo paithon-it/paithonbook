@@ -14,11 +14,10 @@ computer che fanno i conti. La morale della figura è brutale e onesta:
 addestrare il modello è la parte più piccola del lavoro. Tutto il resto (il
 grosso) è il sistema che gli sta intorno.
 
-E la differenza si vede nei numeri del settore. Si ripete spesso che
-moltissimi modelli non arrivino mai **in produzione**, cioè non finiscano mai
-davanti a persone vere che li usano ogni giorno. È un'osservazione diffusa e
-più aneddotica che misurata, e non è su quella che ci appoggiamo. Il problema
-di fondo, però, è documentato. Una rassegna di casi reali lo ricostruisce
+Si ripete spesso che moltissimi modelli non arrivino mai **in produzione**,
+cioè davanti a persone vere che li usano ogni giorno: è un'osservazione
+diffusa e più aneddotica che misurata. Il problema di fondo, però, è
+documentato. Una rassegna di casi reali lo ricostruisce
 progetto per progetto, e mostra quanti ostacoli costellino *ogni* tappa del
 percorso che porta un modello dal prototipo al servizio: raccogliere e
 verificare i dati, consegnare il modello al mondo reale (il *deployment*),
@@ -102,18 +101,19 @@ funzione (*Ops*, le operazioni). DevOps è il modo di lavorare con cui quei due
 mondi hanno smesso di essere separati, e il patto è che tutto ciò che sta in
 mezzo diventi automatico e tracciato. Si conserva ogni versione del programma,
 non soltanto l'ultima. E a ogni modifica, senza che nessuno lo chieda, un
-computer di servizio riprende il programma, gli fa passare tutte le prove e,
-se le supera, lo pubblica al posto della versione di prima: quel meccanismo si
-chiama **CI/CD**, che sta per «integrazione e distribuzione continue», cioè
-controllo e pubblicazione che avvengono di continuo invece che una volta ogni
-tanto. Infine si sorveglia ciò che è in funzione. Il risultato è che pubblicare
-una versione nuova diventa un gesto ordinario invece che una notte in bianco.
+computer di servizio riprende il programma, gli fa passare tutte le prove e, se
+le supera, lo pubblica al posto della versione di prima: quel meccanismo si
+chiama **CI/CD**, dalle iniziali inglesi di «integrazione e distribuzione
+continue», cioè controllo e pubblicazione che avvengono di continuo invece che
+una volta ogni tanto. Infine si sorveglia ciò che è in funzione. Il risultato è
+che pubblicare una versione nuova diventa un gesto ordinario invece che una
+notte in bianco.
 
 MLOps prende quella cultura e la porta al ciclo di vita del machine learning
 {cite}`kreuzberger2023machine`. Con una complicazione in più, che è il cuore
 di tutto. Nel software classico la cosa da conservare versione per versione è
 una sola, il codice; qui i pezzi che compongono il lavoro finito (gli
-**artefatti**) sono **tre**: il codice, i dati e il modello addestrato. E due
+**artefatti**) sono tre: il codice, i dati e il modello addestrato. E due
 dei tre non sono testo. Gli strumenti con cui il software tiene la propria
 cronologia da decenni sono fatti apposta per il testo: sanno dire quale riga è
 cambiata fra ieri e oggi. Su una cartella di immagini, o sul file che contiene
@@ -178,9 +178,10 @@ raccolgono i dati, si addestra, si valuta, si consegna. Fine. Ma la consegna
 mondo reale cambia. Un modello in produzione va **sorvegliato**, perché prima o
 poi i dati che incontra smettono di somigliare a quelli su cui è stato
 addestrato. Quello scivolamento lento ha un nome inglese che useremo sempre,
-*drift*, e vuol dire deriva: è la stessa cosa di cui parla la sezione «Quando i
-dati cambiano» del {doc}`capitolo di Machine Learning </MachineLearning/overview>`, lì misurata con gli strumenti
-della statistica, qui affrontata da chi il servizio lo deve tenere acceso.
+*drift*, e vuol dire deriva: è la stessa cosa di cui parla
+{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`, lì misurata
+con gli strumenti della statistica, qui affrontata da chi il servizio lo deve
+tenere acceso.
 Quando succede, si torna all'inizio: nuovi dati, nuovo addestramento. Il
 percorso si chiude in un **anello**
 ({numref}`fig-mlops-ciclo-vita`).
@@ -262,13 +263,12 @@ serva a qualcuno. E la freccia che torna indietro in fondo è l'anello: da lì
 si ricomincia.
 ```
 
-Quattro caselle su cinque vengono *dopo* il notebook: è la proporzione di
-{numref}`fig-cinque-tappe`, ed è il messaggio dell'intero capitolo. Perché
-questo capitolo dà per acquisito tutto ciò che serve a *costruire* un modello,
-cioè la teoria dei capitoli precedenti e gli attrezzi con cui si addestra una
-rete, che sono quelli del capitolo su **PyTorch**. Il notebook che addestra una
-rete e ne stampa il voto è, a tutti gli effetti, il punto di partenza di questo
-capitolo, non un traguardo.
+Quattro caselle su cinque vengono *dopo* il notebook, ed è la proporzione da
+tenere a mente. Costruire il modello sta tutto nella prima: la teoria dei
+capitoli precedenti e gli attrezzi con cui si addestra una rete, quelli di
+{doc}`PyTorch </PyTorch/overview>`, sono il bagaglio con cui si arriva qui. Il
+notebook che addestra una rete e ne stampa il voto è la riga di partenza, e da
+lì in poi comincia tutto il resto.
 
 Perché un notebook non basta lo si capisce elencando ciò che non fa. Non mette
 il modello a disposizione di chi deve usarlo. Non decide *come* metterlo a
@@ -277,41 +277,45 @@ durante la notte, un mucchio alla volta (in gergo un *batch*, e la parola
 tornerà spesso). Non sa dire se i dati di oggi somigliano ancora a quelli di
 ieri. Non tiene traccia di quale versione dei dati ha prodotto quali pesi, così
 che tra sei mesi si possa capire *perché* una predizione è quella. Non si
-riaddestra da solo quando il mondo cambia. 
+riaddestra da solo quando il mondo cambia.
 
 ## L'anello, un attrezzo alla volta
 
 Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
 
-
-- **Dal notebook alla produzione**, che cosa cambia quando si esce
-  dall'ambiente di sperimentazione: riproducibilità, versionamento degli
-  artefatti (dati, codice, modello), esperimenti tracciabili, il debito
-  tecnico da tenere a bada.
-- **Dati e pipeline**, l'ingranaggio più grande e più trascurato. Una
-  *pipeline* è alla lettera una conduttura: la catena di stazioni che prende il
-  dato grezzo, lo pulisce e lo consegna pronto al modello. Qui si vede come si
-  raccoglie, come si controlla e come si fa in modo che il dato su cui il
-  modello impara e quello su cui risponde siano costruiti allo stesso modo.
-- **Servire un modello**, cioè come lo si mette *in ascolto*: rispondere a
-  una richiesta per volta oppure a mille tutte insieme di notte, quanto si
-  aspetta una risposta (la *latenza*) e quante se ne servono al secondo (il
-  *throughput*), e come si sostituisce un modello con uno nuovo facendolo
-  provare prima a pochi, per non rompere niente.
-- **Monitoraggio e drift**, l'occhio in produzione: sorvegliare che cosa entra,
-  che cosa esce e quanto si sbaglia, accorgersi della deriva di cui si diceva
-  poco fa e decidere *quando* rimettere mano al modello.
-- **LLMOps**, come cambiano le regole del gioco con i grandi modelli
-  linguistici (in sigla **LLM**, *large language model*): modelli che non si
-  addestrano ma si *interrogano*, testi da giudicare senza che esista una
-  risposta giusta sola, e un conto che si paga a pezzetti di testo (i *token*).
-- **Misurare un servizio**, che cosa vuol dire davvero «veloce» quando la
-  risposta non arriva tutta insieme ma una parola alla volta: quanto si aspetta
-  la prima, con che ritmo scorrono le altre, e perché le medie mentono.
-- **Il conto in energia**, l'unica voce che non si dichiara quasi mai: dove
-  finisce la corrente (nel movimento dei dati, non nei conti), come si arriva
-  dall'energia ai grammi di anidride carbonica, e perché in un modello che
-  resta in servizio per anni rispondere costa più che addestrare.
+- {doc}`Dal notebook alla produzione </MLOps/dal-notebook-alla-produzione>`,
+  che cosa cambia quando si esce dall'ambiente di sperimentazione:
+  riproducibilità, versionamento degli artefatti (dati, codice, modello),
+  esperimenti tracciabili, il debito tecnico da tenere a bada.
+- {doc}`Dati e pipeline </MLOps/dati-e-pipeline>`, l'ingranaggio più grande e
+  più trascurato. Una *pipeline* è alla lettera una conduttura: la catena di
+  stazioni che prende il dato grezzo, lo pulisce e lo consegna pronto al
+  modello. Qui si vede come si raccoglie, come si controlla e come si fa in
+  modo che il dato su cui il modello impara e quello su cui risponde siano
+  costruiti allo stesso modo.
+- {doc}`Servire un modello </MLOps/deployment-e-serving>`, cioè come lo si
+  mette *in ascolto*: rispondere a una richiesta per volta oppure a mille tutte
+  insieme di notte, quanto si aspetta una risposta (la *latenza*) e quante se
+  ne servono al secondo (il *throughput*), e come si sostituisce un modello con
+  uno nuovo facendolo provare prima a pochi, per non rompere niente.
+- {doc}`Monitoraggio e drift </MLOps/monitoring-e-drift>`, l'occhio in
+  produzione: sorvegliare che cosa entra, che cosa esce e quanto si sbaglia,
+  accorgersi della deriva di cui si diceva poco fa e decidere *quando*
+  rimettere mano al modello.
+- {doc}`LLMOps </MLOps/llmops>`, come cambiano le regole del gioco con i grandi
+  modelli linguistici (in sigla **LLM**, *large language model*): modelli che
+  non si addestrano ma si *interrogano*, testi da giudicare senza che esista
+  una risposta giusta sola, e un conto che si paga a pezzetti di testo (i
+  *token*).
+- {doc}`Misurare un servizio </MLOps/metriche-di-servizio>`, che cosa vuol dire
+  davvero «veloce» quando la risposta non arriva tutta insieme ma una parola
+  alla volta: quanto si aspetta la prima, con che ritmo scorrono le altre, e
+  perché le medie mentono.
+- {doc}`Il conto in energia </MLOps/energia-e-impronta>`, l'unica voce che non
+  si dichiara quasi mai: dove finisce la corrente (nel movimento dei dati, non
+  nei conti), come si arriva dall'energia ai grammi di anidride carbonica, e
+  perché in un modello che resta in servizio per anni rispondere costa più che
+  addestrare.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

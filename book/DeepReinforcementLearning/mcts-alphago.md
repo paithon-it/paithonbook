@@ -13,12 +13,13 @@ scrivono testo, come quelli dietro agli assistenti conversazionali) quando
 esplorano più ragionamenti prima di rispondere. Lo si vede qui una volta per
 bene, anche perché è un vecchio amico travestito.
 
-Il capitolo sulla ricerca aveva lasciato la faccenda esattamente qui: la
-ricerca classica, per fermarsi a metà albero, ha bisogno di una formula che
-dia un voto alla posizione, e nel Go quella formula nessuno è mai riuscito a
-scriverla. La via d'uscita era smettere di giudicare e mettersi a contare, cioè
-giocare da lì un mucchio di partite a caso e guardare come finiscono. Quello
-che segue è il seguito di quella frase.
+La {doc}`sezione sulle tre cose che la ricerca dava per scontate
+</Ricerca/quando-il-mondo-non-si-conosce>` aveva lasciato la faccenda
+esattamente qui: la ricerca classica, per fermarsi a metà albero, ha bisogno di
+una formula che dia un voto alla posizione, e nel Go quella formula nessuno è
+mai riuscito a scriverla. La via d'uscita era smettere di giudicare e mettersi
+a contare, cioè giocare da lì un mucchio di partite a caso e guardare come
+finiscono. Quello che segue è il seguito di quella frase.
 
 `````{tab} Elementare
 
@@ -47,8 +48,7 @@ perdita: sui suoi foglietti lo stesso esito si segna al rovescio.
 
 Dopo qualche migliaio di giri le stanze non risultano battute allo stesso modo, e
 di proposito: certi corridoi hanno foglietti fitti per venti stanze di fila,
-altri una tacca sola sulla prima leva. Nessuno gli ha detto quali corridoi
-fossero buoni; lo ha scoperto camminandoci.
+altri una tacca sola sulla prima leva.
 
 Alla fine si tira per davvero la leva con più tacche, e non quella con la media
 migliore. Una media alta può venire da due colpi fortunati; una leva tirata mille
@@ -86,7 +86,8 @@ $$
 dove $N(s)$ è il numero di visite al nodo, $N(s,a)$ quelle al figlio,
 $Q(s,a) = W(s,a)/N(s,a)$ la media dei ritorni osservati passando di lì e
 $c>0$ la costante che decide quanto pesa il secondo termine. È
-**letteralmente UCB1**, la formula della sezione sui bandit, applicata a ogni
+**letteralmente UCB1**, la formula della
+{doc}`sezione sui bandit </ReinforcementLearning/banditi>`, applicata a ogni
 bivio: stesso ottimismo di fronte all'incertezza, stesso decadimento
 logaritmico. Il contributo di UCT è mostrare che applicandola ricorsivamente
 la stima alla radice converge a quella minimax, con garanzie **asintotiche**
@@ -133,15 +134,13 @@ $\lambda = 0{,}5$ (è il simbolo del paper, e non ha niente a che vedere con il
 $\lambda$ della *generalized advantage estimation* incontrata col
 [gradiente di policy](policy-gradient.md): qui è
 soltanto il peso con cui si mescolano due giudizi). Rete di valore
-e partita giocata a caso pesano quindi identico, che è un modo educato per dire
-che nel 2016 della rete non ci si fidava ancora abbastanza. La simulazione
+e partita giocata a caso pesano quindi identico. La simulazione
 casuale sparisce del tutto solo con **AlphaGo Zero** (2017), dove la rete di
 valore basta da sola: è la stessa tappa in cui spariscono le partite umane, e
 non è una coincidenza, perché entrambe le cose diventano superflue quando la
 rete è abbastanza buona da giudicare da sé.
 
-Il risultato è quello che rende possibile il ciclo di *self-play*: **la ricerca
-gioca meglio delle reti che la guidano**. La distribuzione delle visite alla
+La distribuzione delle visite alla
 radice, normalizzata, è una policy migliorata rispetto a $P(s,\cdot)$, e
 diventa il bersaglio su cui la rete si addestra. MCTS, in questa lettura, è un
 **operatore di miglioramento della policy**: lo stesso ruolo che nella
@@ -155,17 +154,19 @@ averla in tasca: **quando si può simulare, si può pensare**. Il programma
 MuZero, per esempio, la usa senza nemmeno conoscere le regole del gioco: se le
 costruisce da solo, guardando le partite. E il modello che si costruisce non
 ridisegna la scacchiera pezzo per pezzo, ne tiene solo un riassunto interno, il
-minimo che serve per pianificarci dentro. La sezione sul RL basato su modello ci
-torna sopra. Anche i modelli linguistici che esplorano più catene di
-ragionamento prima di rispondere fanno, con altri nomi, la stessa cosa.
+minimo che serve per pianificarci dentro. La {doc}`sezione sul RL basato su
+modello <model-based>` ci torna sopra. Anche i modelli linguistici che
+esplorano più catene di ragionamento prima di rispondere fanno, con altri nomi,
+la stessa cosa.
 
 ## In pratica: le visite si concentrano
 
 Che l'albero cresca storto non è un modo di dire, ed è la cosa più facile da
 verificare. Prendiamo un albero giocattolo: due strade a ogni bivio e quattro
 bivi in fila, cioè $2\times2\times2\times2 = 16$ finali possibili, ognuno con il
-suo valore. Il migliore lo mettiamo noi, nascosto in mezzo agli altri: la
-risposta giusta la sappiamo, l'algoritmo no, e il gioco è vedere se ci arriva.
+suo valore. Un valore alto lo piantiamo noi, nascosto in mezzo agli altri, e
+qual è il migliore dei sedici lo sappiamo comunque: l'algoritmo no, e il gioco
+è vedere se ci arriva.
 Due parole di gergo, che tornano nel codice e nei risultati: la **radice** è il
 punto di partenza dell'albero, le **foglie** sono le sue punte, cioè i sedici
 finali.
@@ -234,14 +235,24 @@ def cerca(seme, giri=2000):
             W[n] += ritorno
 
     visite = np.array([N.get(PRIME + i, 0) for i in range(RAMI ** PROFONDITA)])
-    n = PRIME + migliore                     # risalgo dalla foglia buona
-    while (n - 1) // RAMI != 0:              # fino al ramo che parte dalla radice
-        n = (n - 1) // RAMI
+
+    def ramo(i):                             # da quale ramo della radice pende
+        f = PRIME + i
+        while (f - 1) // RAMI != 0:
+            f = (f - 1) // RAMI
+        return f
+
+    n = ramo(migliore)                       # il ramo che porta alla foglia buona
+    altro = next(f for f in figli(0) if f != n)
     return {
         "rami": [N[f] for f in figli(0)],
         "quota": visite[migliore] / visite.sum(),
         "ramo_buono": N[n],
         "azzecca": N[n] == max(N[f] for f in figli(0)),   # la mossa più visitata
+        # di quanto la foglia migliore batte la migliore dell'altro ramo:
+        # dice se una scelta sbagliata e' un errore o un pareggio
+        "scarto": valori_foglie[migliore] - max(
+            valori_foglie[i] for i in range(RAMI ** PROFONDITA) if ramo(i) == altro),
     }
 
 e = cerca(seme=7)
@@ -259,8 +270,12 @@ print(f"          metà centrale fra {np.percentile(quote, 25):.1%} "
       f"e {np.percentile(quote, 75):.1%}")
 print(f"          visite al ramo giusto: mediana {np.median(buoni):.0f}, "
       f"da {buoni.min()} a {buoni.max()}")
+sbagliati = np.array([not p["azzecca"] for p in prove])
+scarti = np.array([p["scarto"] for p in prove])
 print(f"          la mossa più visitata è il ramo sbagliato in "
-      f"{sum(not p['azzecca'] for p in prove)} semi su 60")
+      f"{sbagliati.sum()} semi su 60")
+print(f"          in quei semi la foglia migliore batte l'altro ramo di "
+      f"{np.median(scarti[sbagliati]):.3f}, contro {np.median(scarti):.3f} su 60")
 ```
 
 Sul seme $7$, quello dell'esempio, il ramo che porta alla foglia buona riceve
@@ -273,15 +288,16 @@ Su sessanta semi, però, quella quota ha **mediana $50{,}5\%$** e oscilla fra il
 $16\%$ e l’$89\%$; scartando le quindici prove più basse e le quindici più alte,
 le trenta di mezzo stanno fra il $33\%$ e il $60\%$. Le visite al ramo giusto
 hanno mediana $1582$ e vanno da $593$ a $1965$, cioè il $1922$ del seme $7$ è
-vicino al massimo osservato. Peggio, in **nove semi su sessanta** il ramo più
-visitato alla radice non è quello che contiene la foglia migliore: la regola
-«si gioca la mossa più visitata», che poco fa abbiamo presentato come la scelta
-più solida, in quei casi sbaglia. Nove su sessanta è quasi una volta su sei:
-abbastanza da ricordarsi che è una regola pratica e non un teorema, e che qui i
-giri di ricerca sono duemila mentre in una partita vera sono molti di più.
+vicino al massimo osservato. In **nove semi su sessanta** il ramo più visitato alla
+radice non è quello che contiene la foglia migliore. Guardati da vicino, però,
+quei nove sono pareggi e non errori. Là dove la regola «si gioca la mossa
+più visitata» sceglie l'altro ramo, la foglia migliore lo batte di $0{,}004$,
+contro lo $0{,}032$ mediano su tutte e sessanta le prove: la ricerca sta
+scegliendo fra due rami che valgono quasi lo stesso. Che sia una regola pratica
+e non un teorema resta vero, ma a dirlo è la garanzia asintotica, non questi
+nove semi.
 
-Nessuna di queste cifre smentisce il punto della sezione, e proprio per questo
-si possono riportare senza imbarazzo. La quota oscilla, la forma no: l'albero
+La quota oscilla, la forma no: l'albero
 cresce storto su tutti e sessanta i semi, e mai una volta le visite si
 distribuiscono uniformemente. Ma se avessimo tenuto il solo numero del seme $7$,
 con la sua bella cifra decimale, l'algoritmo sarebbe sembrato più preciso di
@@ -324,8 +340,7 @@ la rete avrebbe scelto da sola, ed è un esempio su cui la rete può allenarsi.
 Ecco la fonte di supervisione interna: non serve un maestro, basta giocare
 contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo
 questo giro lo faceva solo a metà: le sue due reti erano state prima addestrate
-su partite umane, e solo dopo affinate giocando contro se stesse. Quel gradino
-umano è il pezzo tratteggiato della figura, ed è il primo che cadrà.
+su partite umane, e solo dopo affinate giocando contro se stesse.
 
 Un anno dopo, **AlphaGo Zero** {cite}`silver2017mastering` elimina persino le
 partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal
@@ -340,8 +355,7 @@ apprendimento per rinforzo, ricerca ad albero e reti profonde.
 ## Un ultimo salto: allineare i modelli linguistici
 
 Lo stesso meccanismo (aumentare la probabilità di ciò che riceve un giudizio
-positivo) è oggi al cuore dell'addestramento dei modelli linguistici, i
-programmi che stanno dietro agli assistenti conversazionali.
+positivo) è oggi al cuore dell'addestramento dei modelli linguistici.
 
 **Allineare** un modello vuol dire portarlo a fare ciò che chi lo interroga
 intende davvero. Non è scontato, perché un modello linguistico nasce sapendo
@@ -388,11 +402,12 @@ sull'imitazione ci torna sopra per esteso, e spiega perché da sola non basta.
   conviene, si prova un ramo nuovo, si tira fino alla fine e si riporta
   indietro il risultato. L'albero cresce **storto di proposito**, profondo
   dove promette e appena accennato altrove, e la mossa scelta è la **più
-  visitata**, non quella con la media più alta. È però una regola pratica, non un
-  teorema: su sessanta ripetizioni dell'esperimento l'albero cresce storto
-  sempre, ma *quanto* storto cambia parecchio, e in nove casi su sessanta il
-  ramo più visitato è quello sbagliato. È il motivo per cui i risultati si
-  contano su molte prove e non su una.
+  visitata**, non quella con la media più alta. È però una regola pratica e non
+  un teorema, e a garantirla è soltanto il comportamento alla lunga: su
+  sessanta ripetizioni l'albero cresce storto sempre, ma *quanto* storto
+  cambia parecchio, e nei nove casi in cui la mossa più visitata non porta
+  alla foglia migliore i due rami valgono quasi lo stesso. È il motivo per
+  cui i risultati si contano su molte prove e non su una.
 - **AlphaGo** e **AlphaZero** uniscono la strategia, la stima di chi sta
   vincendo e quella esplorazione ad albero. Nel 2016 la ricerca si fidava a
   metà della rete e a metà delle partite tirate a caso; solo con AlphaGo Zero,

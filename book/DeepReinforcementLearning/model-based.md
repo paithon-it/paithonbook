@@ -91,8 +91,8 @@ compromesso: quanta fiducia concedere al modello.
 
 ## Dyna: intrecciare il vero e l'immaginato
 
-L'idea non è nuova. Nel 1990 Richard Sutton (lo stesso del libro di
-riferimento su cui poggia mezzo capitolo {cite}`sutton2018reinforcement`)
+L'idea non è nuova. Nel 1990 Richard Sutton (lo stesso del manuale
+classico della materia {cite}`sutton2018reinforcement`)
 presenta **Dyna** {cite}`sutton1990integrated`, ripresa l'anno dopo in una
 versione più diffusa {cite}`sutton1991dyna`. È un'architettura tanto semplice
 quanto lungimirante: mentre l'agente gioca, impara *contemporaneamente* due cose
@@ -228,8 +228,8 @@ vera, dopo tre episodi vale già $0{,}200$, dopo dieci $0{,}808$ e alla
 trentesima $0{,}815$.
 
 Quel $0{,}815$ è la risposta esatta, e la risposta esatta si calcola a mano.
-Prima però va detto perché un premio lontano conta meno di uno vicino: è una
-scelta di chi programma e non una legge di natura, e si fa per due motivi. Un
+Lo sconto dei premi lontani è una scelta di chi programma e non una legge di
+natura, e si fa per due motivi. Un
 agente che dà lo stesso peso a un guadagno fra tre mosse e a uno fra tremila non
 ha nessun motivo di sbrigarsi; e su una partita che potrebbe non finire mai, la
 somma di tutti i premi futuri sarebbe infinita per chiunque, il che renderebbe
@@ -255,9 +255,9 @@ che in questo ambiente non hanno.
 C'è un motivo se Dyna, nell'esempio, «immagina» transizioni di *un solo passo*
 già osservate, e non intere partite inventate di sana pianta. È il problema
 strutturale di ogni approccio model-based: più il sogno si allunga, più
-l'errore del modello **si compone**, cioè non si somma soltanto, si moltiplica su
-se stesso. Una predizione appena imprecisa a un passo diventa una predizione
-mediocre a cinque passi e un'assurdità a venti. (Una di quelle partite
+l'errore del modello **si compone**, perché ogni previsione parte da una già
+sbagliata. Dove gli scarti si amplificano, una predizione appena imprecisa a un
+passo è mediocre a cinque e un'assurdità a venti. (Una di quelle partite
 immaginate, in gergo, si chiama *rollout*.)
 
 `````{tab} Elementare
@@ -410,8 +410,8 @@ ferma alla fine della partita immaginata: risale lungo tutta la partita, mossa
 dopo mossa, fino alla prima. Il pilota impara quindi non solo *che* la manovra è
 finita male, ma anche *quale* dettaglio della manovra andava cambiato.
 
-Il simulatore, poi, non ridisegna il mondo puntino per puntino: ne tiene solo il
-riassunto che serve a decidere, e in gergo quel riassunto si chiama **latente**.
+Il riassunto che il simulatore tiene al posto del mondo, in gergo, si chiama
+**latente**.
 
 `````{tab} Elementare
 

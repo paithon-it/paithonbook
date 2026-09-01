@@ -96,7 +96,7 @@ F &\to \text{AUX} \ \text{SV}
 \end{aligned}
 $$
 
-dove $F$ è il simbolo iniziale, cioè la frase, SN, SV e SP i sintagmi
+dove $F$ fa da simbolo iniziale $S$ ed è la frase, SN, SV e SP i sintagmi
 nominale, verbale e preposizionale, e le categorie lessicali (DET, N, V, AUX,
 P) riscrivono le parole. Una **derivazione** parte da $F$ e riscrive un simbolo
 alla volta finché restano solo parole; la sua storia è l’**albero di
@@ -341,14 +341,16 @@ tre o quattro partite invece di una, e scartare alla fine quelle andate peggio.
 
 `````{tab} Superiore
 
-**CKY.** Richiede la grammatica in *forma normale di Chomsky* (regole
-binarie $A \to B\,C$ o lessicali $A \to w$; ogni CFG vi si converte). Il
-numero di alberi binari su $n$ foglie è il numero di Catalan
-$C_{n-1} = \frac{1}{n}\binom{2(n-1)}{n-1}$, che cresce all'incirca come
-$4^{n}$: l'enumerazione è fuori discussione. CKY riempie una tabella triangolare
+**CKY.** Richiede la grammatica in *forma normale di Chomsky* (regole binarie
+$A \to B\,C$ o lessicali $A \to w$; ogni CFG vi si converte). Il numero di
+alberi binari su $n$ foglie è il numero di Catalan $C_{n-1} =
+\frac{1}{n}\binom{2(n-1)}{n-1}$, dove le foglie non sono le parole ma i pezzi
+da imparentesare (il verbo, il sintagma nominale, e un sintagma preposizionale
+per ogni complemento); cresce come $4^{n}$ a meno di un fattore polinomiale, e
+l'enumerazione è fuori discussione. CKY riempie una tabella triangolare
 indicizzata dagli **intervalli** della frase: $T[i,j]$ è l'insieme delle
-categorie che possono coprire le parole dalla posizione $i$ alla $j$
-(esclusa), calcolato dal corto verso il lungo con la ricorrenza
+categorie che possono coprire le parole dalla posizione $i$ alla $j$ (esclusa),
+calcolato dal corto verso il lungo con la ricorrenza
 
 $$
 T[i,j] = \big\{\, A \;:\; A \to B\,C \in R,\ \exists\,k,\;

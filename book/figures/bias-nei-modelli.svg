@@ -22,8 +22,8 @@
   <polygon points="527,195 517,190 517,200" fill="#1A1A1A"/>
 
   <!-- bias entering at data -->
-  <text x="137" y="95" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">bias storico e di</text>
-  <text x="137" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">rappresentazione entra qui</text>
+  <text x="137" y="95" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">il passato storto e i</text>
+  <text x="137" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">gruppi poco visti entrano qui</text>
   <line x1="137" y1="120" x2="137" y2="146" stroke="#B5532C" stroke-width="2"/>
   <polygon points="137,150 132,140 142,140" fill="#B5532C"/>
 

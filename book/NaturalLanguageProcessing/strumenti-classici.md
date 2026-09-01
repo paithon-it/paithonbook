@@ -63,7 +63,8 @@ simpatico. Le espressioni regolari nascono negli anni Cinquanta, e non nascono
 per cercare nei testi: nascono per descrivere che cosa sa riconoscere una rete
 di neuroni artificiali. Il logico Stephen Kleene stava studiando i modellini
 matematici di neurone proposti nel 1943 da Warren McCulloch e Walter Pitts,
-gli stessi da cui parte il capitolo sulle reti neurali, e per dire quali
+gli stessi da cui parte il {doc}`capitolo sulle reti neurali
+</RetiNeurali/overview>`, e per dire quali
 sequenze di segnali una rete del genere sa distinguere si inventò questa
 notazione. Conviene fermarsi un secondo su questo: gli attrezzi «vecchi» e
 quelli «nuovi» di questo capitolo hanno lo stesso atto di nascita.
@@ -146,11 +147,15 @@ più potenti, o, come vedremo, modelli che la imparano dai dati.
 
 Una cautela pratica prima di scendere al codice: il teorema, e con esso la
 garanzia di tempo lineare, riguarda i motori che compilano davvero l'automa,
-come `grep` o RE2. Il modulo `re` di Python, che useremo tra poco, procede
-invece per *backtracking*, e i suoi costrutti aggiuntivi (le *backreference*)
-descrivono anche linguaggi che regolari non sono: fuori dalla portata del
-teorema, il costo non è più garantito, e su pattern patologici come `(a+)+$`
-applicato a un input ostile il tempo può degradare fino a essere esponenziale.
+come `grep` o RE2. Il modulo `re` di Python, che useremo tra poco, l'automa
+non lo costruisce: procede per *backtracking*, cioè prova una strada e torna
+indietro, e la garanzia cade anche su schemi che il teorema copre benissimo.
+Su `(a+)+$`, che descrive il modestissimo insieme delle stringhe di sole `a` e
+che `grep` liquida in un istante, `re` applicato a un input ostile impiega un
+tempo che raddoppia a ogni carattere in più. E i costrutti aggiuntivi del
+modulo (le *backreference*, che chiedono a un pezzo di ripetersi identico)
+descrivono in più linguaggi che regolari non sono, cioè escono proprio dalla
+portata del teorema.
 
 `````
 
@@ -326,8 +331,8 @@ avete perso il nome proprio, e con lui la battuta. Al posto della potatura
 usano un taglio diverso, che conserva il testo com'è e lo spezza in unità più
 piccole della parola: *straordinariamente* non finisce nel dizionario intero,
 ci finiscono `stra`, `ordinaria` e `mente`, che ricorrono in mille altre
-parole. Come si scelgano quei pezzi è il tema di una sezione fra due, quella
-sui **tokenizzatori**. La normalizzazione aggressiva è dunque un attrezzo da
+parole. Come si scelgano quei pezzi è il tema della sezione sui
+**tokenizzatori**. La normalizzazione aggressiva è dunque un attrezzo da
 usare quando si conta, non un obbligo universale.
 
 ## La distanza di edit: quante mosse da una parola all'altra
@@ -436,16 +441,16 @@ e la riga di $\varepsilon$, la stringa vuota, sono i casi base):
 | **o** | 4 | 3 | 3 | 2 | **2** |
 
 L'angolo in basso a destra dà $D_{4,4} = 2$: bastano due sostituzioni (*u* →
-*a*, *o* → *e*), e il percorso ottimo (in grassetto) scende lungo la
-diagonale, pagando 1 solo dove le lettere differiscono. La tabella ha
-$(n+1)(m+1)$ celle e ogni cella costa un confronto: complessità $O(nm)$ in
-tempo, riducibile a $O(\min(n,m))$ in memoria tenendo in vita solo due righe
-della tabella, orientata lungo la stringa più corta. La formulazione tabellare
-è nota anche come algoritmo di Wagner–Fischer (1974). Una variante dovuta a
-Fred Damerau (1964) aggiunge lo **scambio** di due lettere adiacenti come
-quarta mossa: per «gatot» → «gatto» la distanza scende da 2 a 1, coerente con
-l'osservazione di Damerau che circa quattro refusi su cinque sono a una sola
-mossa dalla parola giusta.
+*a*, *o* → *e*), e il percorso ottimo (in grassetto) scende lungo la diagonale,
+pagando 1 solo dove le lettere differiscono. La tabella ha $(n+1)(m+1)$ celle e
+ogni cella costa un confronto: complessità $O(nm)$ in tempo, riducibile a
+$O(\min(n,m))$ in memoria tenendo in vita solo due righe della tabella,
+orientata lungo la stringa più corta. La formulazione tabellare è nota anche
+come algoritmo di Wagner–Fischer (1974). Una quarta mossa, lo **scambio** di
+due lettere adiacenti, viene da Fred Damerau, che nel 1964 precede di due anni
+l'articolo di Levenshtein: per «gatot» → «gatto» la distanza scende da 2 a 1,
+coerente con l'osservazione di Damerau che circa quattro refusi su cinque sono
+a una sola mossa dalla parola giusta.
 
 `````
 
@@ -504,12 +509,13 @@ insieme. Il primo voto è quanto quella parola è frequente nella lingua; il
 secondo è quanto è facile che il rumore l'abbia trasformata proprio in ciò che
 si legge. Quest'ultimo non lo decide nessuno a mano: si conta, su un archivio
 di refusi veri, quante volte una certa svista è capitata davvero. Prendiamo
-«gatot». Il candidato *gatto* è frequente (diciamo una parola su ventimila) e
+«gatot». Il candidato *gatto* è frequente, diciamo una parola su ventimila, e
 l'errore che servirebbe è lo scambio di due lettere vicine, una svista che
 capita eccome quando si scrive in fretta sulla tastiera, diciamo una volta su
-venti. Il candidato *gatot* così com'è,
-se anche fosse una parola, sarebbe rarissimo. Il primo prodotto è enormemente
-più grande del secondo, e il telefono scrive *gatto*.
+venti: il suo voto complessivo è un ventimillesimo per un ventesimo, cioè una
+probabilità su quattrocentomila. Il candidato *gatot* così com'è, se anche
+fosse una parola, sarebbe molto più raro di così. Vince *gatto*, ed è quello
+che il telefono scrive.
 
 È un'idea messa in pratica già nel 1990 da Mark Kernighan, Kenneth Church e
 William Gale, con un correttore che non conteneva nemmeno una regola di
@@ -526,9 +532,10 @@ La griglia della distanza di edit, del resto, non corregge solo refusi. Con
 qualche ritocco (per esempio facendo costare più di 1 certe mosse) la stessa
 tabella mette in fila due sequenze di DNA in biologia, e ritrova le persone
 registrate due volte in un archivio, «Giovanni Rossi» contro «Givanni Rossi».
-E non abbiamo finito di incontrarla: tornerà nel {doc}`capitolo sul riconoscimento
-vocale </SpeechRecognition/overview>` come metro di giudizio dei programmi che trascrivono il parlato. Lì le
-mosse non si contano più sulle lettere ma sulle parole, cioè quante parole un
+E non abbiamo finito di incontrarla: tornerà fra i {doc}`modelli di
+riconoscimento vocale </SpeechRecognition/modelli-asr>` come metro di giudizio
+dei programmi che trascrivono il parlato. Lì le mosse non si contano più sulle
+lettere ma sulle parole, cioè quante parole un
 programma ha sbagliato, saltato o aggiunto rispetto a quello che era stato
 detto davvero; il rapporto fra queste e il totale è il **WER**, *word error
 rate*, il tasso di errore per parola. Chi volesse approfondire l'intera

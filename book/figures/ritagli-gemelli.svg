@@ -3,7 +3,7 @@
   paithon book - figura: l'apprendimento contrastivo con due viste (SimCLR).
   Sinistra: una foto (gatto su un muro) con due ritagli tratteggiati, uno sul
   muso (terracotta) e uno su coda e muro (teal). Centro: i due ritagli passano
-  nello STESSO encoder. Destra: la mappa degli embedding, con i due gemelli
+  nello STESSO encoder. Destra: la mappa dei riassunti, con i due gemelli
   vicini e i negativi (grigio) sparsi lontano.
   Palette-locked, fondo trasparente: leggibile in light e dark mode.
 -->
@@ -74,6 +74,6 @@
     <circle cx="118" cy="20" r="5" fill="#8B847C"/>
     <text class="lbl" x="62" y="34" text-anchor="middle">i gemelli, vicini</text>
     <text class="leg" x="110" y="152" text-anchor="middle" fill="#5E5852">grigi: i negativi, da tenere lontani</text>
-    <text class="leg" x="110" y="166" text-anchor="middle">la mappa degli embedding</text>
+    <text class="leg" x="110" y="166" text-anchor="middle">la mappa dei riassunti</text>
   </g>
 </svg>

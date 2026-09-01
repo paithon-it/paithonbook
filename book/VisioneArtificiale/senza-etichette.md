@@ -5,21 +5,23 @@ duecentomila, non sono piovute dal cielo: qualcuno le ha guardate a una a una e
 ha confermato che dentro c'era davvero la cosa che il nome prometteva. ImageNet
 è stata costruita così, per anni, da decine di migliaia di persone reclutate su
 piattaforme di micro-lavoro e pagate a cottimo. È il lavoro invisibile su cui
-poggia la sezione sul transfer learning: quando scarichiamo una rete
+poggia la {doc}`sezione sul transfer learning
+</VisioneArtificiale/classificazione-transfer>`: quando scarichiamo una rete
 «pre-addestrata» stiamo prendendo in prestito il tempo di quegli annotatori. E
 quel lavoro non cresce insieme al problema: le etichette costano, e le costa
 qualcuno a mano, una per una; l'elenco delle categorie utili cambia da un
 mestiere all'altro, e per moltissimi settori non esiste affatto. Le immagini
 *senza* etichetta, al contrario, sono praticamente infinite.
 
-Da questa asimmetria nasce la domanda: si può insegnare a una rete a descrivere bene un'immagine **senza che nessuno dica mai che cosa c'è
-nella foto**? Quella descrizione, la lista di numeri in cui la rete riassume
-un'immagine, si chiama la sua **rappresentazione**, ed è la cosa che vogliamo:
-il resto si costruisce sopra. La risposta è sì, e per arrivarci bisogna
-rovesciare l'uso di uno strumento appena costruito. Nella sezione sulla data
-augmentation le trasformazioni erano un freno, un modo di impedire alla rete di
-imparare a memoria. Qui non frenano niente: qui l'augmentation **è il segnale
-di addestramento**.
+Da questa asimmetria nasce la domanda: si può insegnare a una rete a descrivere
+bene un'immagine **senza che nessuno dica mai che cosa c'è nella foto**? Quella
+descrizione, la lista di numeri in cui la rete riassume un'immagine, si chiama
+la sua **rappresentazione**, ed è la cosa che vogliamo: il resto si costruisce
+sopra. La risposta è sì, e per arrivarci bisogna rovesciare l'uso di uno
+strumento appena costruito. Nella {doc}`sezione sulla data augmentation
+</VisioneArtificiale/data-augmentation>` le trasformazioni erano un freno, un
+modo di impedire alla rete di imparare a memoria. Qui non frenano niente: qui
+l'augmentation **è il segnale di addestramento**.
 
 ## Un compito la cui risposta è già nei dati
 
@@ -63,7 +65,7 @@ encoder normale, due trasformazioni scelte bene e batch abbastanza grandi
 
 ```{figure} ../figures/ritagli-gemelli.svg
 :name: fig-ritagli-gemelli
-:alt: Tre pannelli. A sinistra una fotografia stilizzata di un gatto su un muro, con due ritagli tratteggiati, uno sul muso e uno su coda e muro. Al centro i due ritagli entrano nello stesso encoder. A destra la mappa degli embedding, con i due punti dei ritagli gemelli vicini e cerchiati e i punti grigi dei negativi sparsi lontano.
+:alt: Tre pannelli. A sinistra una fotografia stilizzata di un gatto su un muro, con due ritagli tratteggiati: uno inquadra il muso, l'altro la coda e un pezzo di muro. Al centro i due ritagli entrano nello stesso encoder. A destra una mappa di punti: i due punti dei ritagli gemelli sono vicini e cerchiati, gli altri punti, i negativi delle altre foto, stanno sparsi lontano.
 :width: 100%
 
 Due ritagli della stessa foto passano nello stesso encoder e devono finire
@@ -184,7 +186,7 @@ trasformazioni non decorano il compito, lo **definiscono**: chiedere che due
 viste finiscano vicine significa dire al modello *a che cosa deve essere
 indifferente*. Se ruotiamo, gli insegniamo che l'orientamento non conta; se
 cambiamo colore, che il colore non conta. L'elenco delle trasformazioni
-ammesse **è** la specifica di ciò che il modello considererà «la stessa cosa».
+ammesse è la specifica di ciò che il modello considererà «la stessa cosa».
 
 La coppia che conta, negli esperimenti di SimCLR, è **ritaglio casuale più
 disturbo del colore**, e la ragione per cui il secondo è indispensabile è la
@@ -291,7 +293,8 @@ abbinamenti: un modello addestrato in quelle condizioni non ha nessun motivo di
 guardare le forme. Aggiungendo il disturbo del colore la stessa scorciatoia
 crolla al 5%. Il metro di paragone è quanto prenderebbe tirando a indovinare:
 con duecento candidati fra cui scegliere si azzecca una volta su duecento, cioè
-lo 0,5%. Il 5% resta dieci volte tanto, e va detto: il disturbo non cancella
+lo 0,5%. Il 5% resta parecchie volte tanto, anche se su duecento prove una
+cifra così ha il suo margine; quello che conta è che il disturbo non cancella
 l'indizio, lo rende inaffidabile, e questo basta perché al modello convenga
 cercarne uno migliore. Il punto è strutturale: la difficoltà del pretesto non
 sta nei dati, sta nelle trasformazioni che abbiamo scelto.
@@ -309,7 +312,7 @@ acceleratori in parallelo, il che taglia fuori chiunque non abbia un centro di
 calcolo.
 
 Da qui la mossa che scioglie il nodo, e conviene dire subito che è arrivata
-**prima**: MoCo è di qualche mese anteriore a SimCLR, e non nasce come sua
+prima: MoCo è di qualche mese anteriore a SimCLR, e non nasce come sua
 risposta ma come attacco allo stesso problema, già noto. La mossa è staccare
 l'una dall'altra due cose che fin qui erano la stessa, **quanti rivali il
 modello vede** e **quante immagini si elaborano insieme**. Perché mai i
@@ -448,7 +451,7 @@ $$
 dove $\mathbf{z}_\theta$ è la proiezione della vista $\mathbf{v}$ nella rete
 online, $\mathbf{z}'_\xi$
 quella della vista $\mathbf{v}'$ nella rete target e $q_\theta$ la testa di predizione;
-la perdita si simmetrizza scambiando le due viste. Il gradiente scende **solo**
+la perdita si simmetrizza scambiando le due viste. Il gradiente scende solo
 su $\theta$, mentre i parametri target seguono la solita media mobile,
 $\xi \leftarrow m\, \xi + (1-m)\, \theta$, con $m$ inizializzato a $0{,}996$ e
 portato verso uno durante l'addestramento.
@@ -643,16 +646,20 @@ motivo il testo, discreto e denso di informazione, si accontenta del 15% di BERT
 {cite}`devlin2019bert`, e il parlato sta nel mezzo (wav2vec 2.0 maschera circa
 la metà dei tratti). E poiché l'encoder elabora solo il 25% dei token, il costo
 del passaggio in avanti scende **all'incirca in proporzione**, e appena di più.
-Il quadratico dell'attenzione fa spesso dire più di quanto sia vero: in un
-blocco Transformer quasi tutte le moltiplicazioni
-(proiezioni $\mathbf{Q}$, $\mathbf{K}$, $\mathbf{V}$, proiezione d'uscita, MLP) sono **lineari** in $N$, e
-solo il prodotto $N \times N$ fra query e chiavi è quadratico. È quest'ultimo, e
-soltanto lui, a scendere a un sedicesimo passando da $N$ a $N/4$; ma alle taglie
-in gioco pesa poco. Contando i FLOP di un blocco come $24Nd^2$ (parte lineare)
-più $4N^2d$ (parte quadratica), per un ViT-B/16 con $N = 196$ patch e
-$d = 768$ il termine quadratico è circa il 4% del totale, per un ViT-L
-($d = 1024$) il 3%: passando da $N = 196$ a $N = 49$ il blocco scende al 24%
-del costo iniziale, cioè poco meno di un quarto, non a un sedicesimo. Gli autori
+Il quadratico dell'attenzione fa spesso dire più di quanto sia vero. Siano
+$N_{\text{tok}}$ il numero di token e $d$ la dimensione delle rappresentazioni
+interne (il batch qui non entra: il conto è per sequenza). In un blocco
+Transformer quasi tutte le moltiplicazioni (proiezioni $\mathbf{Q}$,
+$\mathbf{K}$, $\mathbf{V}$, proiezione d'uscita, MLP) sono **lineari** in
+$N_{\text{tok}}$, e solo il prodotto $N_{\text{tok}} \times N_{\text{tok}}$ fra
+query e chiavi è quadratico. È quest'ultimo, e soltanto lui, a scendere a un
+sedicesimo quando i token si riducono a un quarto; ma alle taglie in gioco pesa
+poco. Contando i FLOP di un blocco come $24 N_{\text{tok}} d^2$ (parte lineare)
+più $4 N_{\text{tok}}^2 d$ (parte quadratica), per un ViT-B/16 con
+$N_{\text{tok}} = 196$ patch e $d = 768$ il termine quadratico è circa il 4% del
+totale, per un ViT-L ($d = 1024$) il 3%: scendendo a $N_{\text{tok}} = 49$ il
+blocco arriva al 24% del costo iniziale, cioè poco meno di un quarto, non a un
+sedicesimo. Gli autori
 misurano un
 pretraining complessivamente tre o più volte più rapido a parità di
 architettura, e il fattore è minore di quattro per una ragione precisa: il
@@ -723,9 +730,10 @@ a $k$ vicini più prossimi, che non addestra proprio niente.
 
 `````
 
-La prova più severa è però un'altra: **cambiare compito**. Rilevamento e
-segmentazione, di cui questo capitolo si occupa a parte, non chiedono di dire
-che cosa c'è nella foto, chiedono di dire *dove*: e per rispondere non basta un
+La prova più severa è però un'altra: **cambiare compito**. Il
+{doc}`rilevamento e la segmentazione </VisioneArtificiale/detection-segmentazione>`
+non chiedono di dire che cosa c'è nella foto, chiedono di dire *dove*: e per
+rispondere non basta un
 riassunto che descriva bene l'immagine tutta insieme, ne serve uno che resti
 preciso zona per zona, angolo per angolo. Può quindi succedere che un encoder
 superi l'esame con la linea dritta sulla classificazione e poi, messo a fare da
@@ -761,13 +769,14 @@ lontano dalla risposta vuota.
 
 Tre posti, ma non sono tutti, e conviene dirlo subito. Ce n'è un quarto, e sta
 dove nessuno dei tre guarda: la difficoltà si mette **dentro il riassunto**,
-chiedendo che i numeri che lo compongono dicano ciascuno una cosa propria
-invece di ripetersi a vicenda. Niente rivali da allontanare, e nessun
-bisogno che le due reti siano fatte diverse: la condizione che tiene lontana la
-risposta vuota è scritta direttamente nel punteggio. Il capitolo
-sull'auto-supervisione presenta questa quarta famiglia insieme alle altre tre,
-e poi rilegge tutte e quattro secondo una seconda domanda, che cosa impedisce
-in ciascuna al modello di rispondere sempre la stessa cosa.
+chiedendo che i numeri che lo compongono dicano ciascuno una cosa propria invece
+di ripetersi a vicenda. Niente rivali da allontanare, e nessun bisogno che le
+due reti siano fatte diverse: la condizione che tiene lontana la risposta vuota
+è scritta direttamente nel punteggio. Il
+{doc}`capitolo sull'auto-supervisione </AutoSupervisione/overview>` presenta
+questa quarta famiglia insieme alle altre tre, e poi rilegge tutte e quattro
+secondo una seconda domanda, che cosa impedisce in ciascuna al modello di
+rispondere sempre la stessa cosa.
 
 Da qui il libro prosegue in due direzioni che chiudono il cerchio. Nel capitolo
 sui world model la JEPA porta la difficoltà in un posto ancora diverso: si

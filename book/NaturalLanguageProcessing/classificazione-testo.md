@@ -98,18 +98,19 @@ dica «offerta».
   $0{,}4 \times 0{,}75 \times 0{,}5 = 0{,}15$;
 - pila delle legittime: 0,6 per 1/6 per 1/6, circa 0,017.
 
-Vince la prima, e di parecchio: 0,15 è quasi nove volte 0,017. I due punteggi
+Vince la prima, e di parecchio: 0,15 è nove volte tonde 0,017 (che per esteso
+è un sessantesimo). I due punteggi
 diventano probabilità solo quando li si rapporta al totale, come i voti di
 un'elezione a due candidati: $0{,}15 \div (0{,}15 + 0{,}017) = 0{,}90$, cioè il
-90 per cento di probabilità che sia spam. E l'ingenuità si vede sul tavolo:
-«gratis» e «offerta» arrivano quasi sempre in coppia, e votano da estranee.
+90 per cento di probabilità che sia spam. E l'ingenuità è proprio qui:
+«gratis» e «offerta» sono due parole che viaggiano insieme, e il conto le fa
+votare da estranee.
 
 Una parola della nuova email mai vista nella pila delle spam vale zero, e uno
 zero moltiplicato spegne l'intera pila per colpa di una parola sola. Si regala
 allora un conteggio a tutte le parole, così nessuna resta a secco; il regalo si
-paga, perché chi aggiunge 1 sopra deve aggiungere sotto il numero dei regali
-distribuiti. È la regola del +1 di Laplace, e torna presto con i conti per
-esteso.
+paga, perché chi aggiunge 1 al numeratore deve aggiungere al denominatore il
+numero dei regali distribuiti. È la regola del +1 di Laplace.
 
 Le email vere hanno trecento parole, e trecento frazioni moltiplicate una dopo
 l'altra danno un numero con centinaia di zeri dopo la virgola: sotto una certa
@@ -232,8 +233,8 @@ secondo: giudicare il tono si rivelò più difficile che riconoscere di che
 argomento parla un testo, perché l'argomento sta nelle parole e il giudizio si
 nasconde nei giri di frase, che i conteggi prendono male.
 
-Con `scikit-learn`, il filtro che sopra abbiamo fatto a mano diventa poche
-righe. Costruiamo un micro-corpus di recensioni in italiano:
+Con `scikit-learn` il filtro antispam diventa poche righe. Costruiamo un
+micro-corpus di recensioni in italiano:
 
 ```python
 from sklearn.feature_extraction.text import CountVectorizer
@@ -338,8 +339,8 @@ $$
 dove $\mathbf{w} \in \mathbb{R}^{|V|}$ è il vettore dei pesi (uno per parola:
 il segno dice la direzione, il modulo la forza dell'indizio), $b$ il bias, $z$
 e $\hat{y}$ due scalari, il punteggio e la probabilità della classe positiva.
-È la stessa formula del percettrone nel capitolo sulle reti neurali, con la
-stessa grafia: minuscolo grassetto per i vettori. Per $K$ classi i pesi
+È la stessa formula del {doc}`percettrone </RetiNeurali/percettrone>`, con
+la stessa grafia: minuscolo grassetto per i vettori. Per $K$ classi i pesi
 diventano una **matrice** $\mathbf{W} \in \mathbb{R}^{K \times |V|}$ e la
 sigmoide lascia il posto alla softmax,
 $\hat{\mathbf{y}} = \mathrm{softmax}(\mathbf{W}\mathbf{x} + \mathbf{b})$, con
@@ -420,7 +421,8 @@ dei quali i pesi si spostano un pochino nella direzione che fa sbagliare di
 meno. E il **logit** è il punteggio grezzo della bilancia, quel 3,5 di prima:
 il numero che la curva a S non ha ancora trasformato in probabilità.
 
-Chi ha letto il capitolo sulle reti neurali riconoscerà qui il **percettrone**,
+Chi ha letto il {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`
+riconoscerà qui il **percettrone**,
 cioè un neurone artificiale solo: la ricetta è la stessa, un peso per ingresso
 e una somma, e cambia solo come si schiaccia il risultato alla fine. Riusiamo
 il micro-corpus di prima, con vettori TF-IDF in ingresso:
@@ -429,6 +431,8 @@ il micro-corpus di prima, con vettori TF-IDF in ingresso:
 import torch
 from torch import nn
 from sklearn.feature_extraction.text import TfidfVectorizer
+
+torch.manual_seed(0)   # senza seme i pesi partono a caso e i numeri cambiano
 
 vec = TfidfVectorizer()
 X = torch.tensor(vec.fit_transform(recensioni).toarray(), dtype=torch.float32)
@@ -464,10 +468,13 @@ print("piu' negative:", [parole[i] for i in ordine[:3]])
 print("piu' positive:", [parole[i] for i in ordine[-3:]])
 ```
 
-Su un corpus vero, in cima e in fondo alla lista compaiono proprio le parole
-che un lettore umano sottolineerebbe: il modello è una bilancia trasparente,
-e questa leggibilità è uno dei motivi per cui resta un riferimento anche
-nell'era dei Transformer.
+Con otto recensioni, però, la lista dice più sul corpus che sulla lingua: in
+cima finiscono parole che compaiono una volta sola, e perfino una parola
+vuota come «che» può prendersi un peso alto solo perché ricorre nelle
+recensioni entusiaste. Su un corpus vero, dove ogni parola si è vista in
+contesti diversi, in cima e in fondo compaiono quelle che un lettore umano
+sottolineerebbe: il modello è una bilancia trasparente, e questa leggibilità
+è uno dei motivi per cui resta un riferimento anche nell'era dei Transformer.
 
 ## Giudicare il giudice
 
@@ -510,7 +517,8 @@ Quando servono tutte e due in un numero solo si usa $F_1$, che è una media
 costruita apposta perché un voto basso non si possa nascondere dietro un voto
 alto. La ricetta: si moltiplicano i due numeri, si raddoppia il prodotto, e lo
 si divide per la loro somma. In simboli, chiamando $P$ la precision e $R$ la
-recall, $F_1 = 2PR/(P+R)$.
+recall (questa $P$ è un numero fra zero e uno, non la probabilità $P(\cdot)$
+dei conti di Naive Bayes), $F_1 = 2PR/(P+R)$.
 
 Provate con precision $1{,}0$ e recall $0{,}1$, cioè un sistema che segnala
 pochissimo e però non sbaglia mai. La media normale, quella di scuola, darebbe
@@ -558,10 +566,12 @@ solo segno. L'ironia: «complimenti davvero», scritto sotto il racconto di un
 disastro, in un elenco di parole conta come una lode. E la negazione: «non è
 affatto male» è un complimento, eppure è fatto soltanto di parole che
 un elenco di quel genere marchia come negative o neutre, «non» e «male» in
-testa. È lo stesso esempio che ritroveremo nel capitolo sui Transformer, e
-va a finire così. Un conteggio di parole isolate quella
-frase non la può prendere, per costruzione: presa una per una, nessuna di
-quelle parole è un elogio, e il senso sta tutto in come stanno insieme. Un
+testa. È lo stesso esempio che ritroveremo negli
+{doc}`esempi pratici del capitolo sui Transformer </Transformers/esempi>`, e
+va a finire così. Un
+conteggio di parole isolate quella frase non la può prendere, per
+costruzione: presa una per una, nessuna di quelle parole è un elogio, e il
+senso sta tutto in come stanno insieme. Un
 modello che legge la frase intera con l'attenzione invece potrebbe, perché ha
 davanti anche il «non»; e quello che proveremo là sbaglia lo stesso, per un
 soffio, dando alla frase due stelle su cinque, cioè leggendola come una
@@ -578,7 +588,7 @@ categorie tra cui positivo/negativo. Le voci si costruiscono a mano o in modo
 semi-supervisionato: si parte da pochi semi di polarità nota e la si propaga
 alle parole che co-occorrono in congiunzioni rivelatrici ("bello e X"
 suggerisce X positivo, "bello ma X" il contrario) o che risiedono vicine nello
-spazio degli word embedding. In un sistema moderno il
+spazio dei word embedding. In un sistema moderno il
 lessico raramente decide da solo: i suoi conteggi entrano come feature in una
 regressione logistica, dove convivono con i pesi appresi; un innesto utile
 soprattutto quando i dati etichettati del dominio sono pochi. Restano i limiti

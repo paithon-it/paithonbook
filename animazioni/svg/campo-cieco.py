@@ -143,9 +143,9 @@ def costruisci() -> Figura:
             "quadretti che entrano nel campo visivo si accendono, partendo dai "
             "vicini e allargandosi verso l'alto a sinistra; i quadretti che "
             "vengono dopo nell'ordine di lettura restano spenti, come è giusto, "
-            "e un triangolo di quadretti in alto a destra resta spento pur "
-            "venendo prima: è il punto cieco, e non si accende nemmeno con "
-            "ventiquattro strati.",
+            "e un triangolo di sei quadretti appena sopra e a destra del pixel "
+            "da indovinare resta spento pur venendo prima: è il punto cieco, e "
+            "non si accende nemmeno con ventiquattro strati.",
         corpo="".join(corpo),
         stile=f"""    .q     {{ stroke-width:1.5; }}
     .pas   {{ fill:{CREAM}; stroke:{BORDER}; }}

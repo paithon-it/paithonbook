@@ -17,8 +17,8 @@ Battistero vero; lo rimetti, torna il dipinto. Erano identici. La parte alta
 della tavoletta, dove ci sarebbe stato il cielo, era coperta d'argento brunito,
 così che nel riflesso si vedessero le nuvole vere che passavano.
 
-Quella tavoletta è il primo esperimento noto costruito per dimostrare
-una legge geometrica: **un punto di vista, un foro, e il mondo tridimensionale
+Quella tavoletta è la prima dimostrazione sperimentale nota della prospettiva
+lineare: **un punto di vista, un foro, e il mondo tridimensionale
 si schiaccia su una superficie piatta in un modo prevedibile e calcolabile**.
 Vent'anni dopo Leon Battista Alberti ne scrisse le regole nel *De pictura*, e
 la prospettiva lineare diventò una tecnica insegnabile.
@@ -34,8 +34,8 @@ alto, quanto lontano. Un punto sulla foto ne ha due, la riga e la colonna del
 suo pixel. **Proiettare significa quindi buttare via un numero per ogni
 punto**, e quel numero è proprio la distanza. Il resto del capitolo si è
 occupato di che *cosa* c'è in un'immagine; qui ci occupiamo di **dove**, e la
-domanda è più difficile di quanto sembri, perché l'informazione che serve non
-è nascosta nell'immagine: è stata proprio cancellata.
+domanda è più difficile di quanto sembri, perché quel numero nell'immagine non
+c'è più: cercarlo meglio non serve a niente.
 
 ## La proiezione perde una dimensione
 
@@ -226,8 +226,8 @@ mano.
 
 Ma il confronto va guardato anche dall'altro lato, ed è la parte che sorprende.
 La geometria è rimasta dov'era. Le formule che legano due fotografie della
-stessa scena furono dimostrate fra la fine degli anni Settanta e l'inizio degli
-anni Ottanta, e si usano oggi identiche, perché sono teoremi e non ricette che
+stessa scena furono dimostrate fra il 1981 e i primi anni Novanta, e si usano
+oggi identiche, perché sono teoremi e non ricette che
 funzionano più o meno bene. Le reti hanno sostituito la parte fragile, non
 quella dimostrata.
 
@@ -318,7 +318,7 @@ $$
 $$
 
 dove $[\mathbf{t}]_\times$ è la matrice antisimmetrica associata al prodotto
-vettoriale per $\mathbf{t}$. Il prodotto $\mathbf{F}\tilde{\mathbf{x}}_L$ **è**
+vettoriale per $\mathbf{t}$. Il prodotto $\mathbf{F}\tilde{\mathbf{x}}_L$ è
 la retta epipolare nella seconda immagine, scritta come terna di coefficienti
 $(a,b,c)$ dell'equazione $au + bv + c = 0$: il vincolo dice semplicemente che
 $\tilde{\mathbf{x}}_R$ le appartiene. $\mathbf{F}$ ha rango 2 e sette gradi di
@@ -615,11 +615,14 @@ aspirapolvere, un visore per la realtà aumentata, un drone che rientra da solo.
 
 `````{tab} Superiore
 
-Il criterio è l’**errore di riproiezione**: dati i parametri delle fotocamere
-$\{\mathbf{K}_j, \mathbf{R}_j, \mathbf{t}_j\}$ e i punti $\{\mathbf{p}_i\}$,
+Il criterio è l’**errore di riproiezione**. Date le posizioni
+$\mathbf{u}_{ij}$ in cui i punti sono stati osservati, le incognite sono i
+parametri delle fotocamere $\{\mathbf{K}_j, \mathbf{R}_j, \mathbf{t}_j\}$ e i
+punti $\{\mathbf{p}_i\}$:
 
 $$
-\min \; \sum_{i,j} m_{ij} \,\big\| \, \mathbf{u}_{ij} - \pi(\mathbf{K}_j,
+\min_{\{\mathbf{K}_j,\, \mathbf{R}_j,\, \mathbf{t}_j\},\; \{\mathbf{p}_i\}}
+\; \sum_{i,j} m_{ij} \,\big\| \, \mathbf{u}_{ij} - \pi(\mathbf{K}_j,
 \mathbf{R}_j, \mathbf{t}_j, \mathbf{p}_i) \, \big\|^2 ,
 $$
 
@@ -648,13 +651,13 @@ per calibrare prima.
 
 `````
 
-Questa sezione, apparentemente la più tecnica, è quella che serve di più
-subito dopo. Le **pose** delle fotocamere (dove stava e da che parte guardava
-ognuna, che è quello che una ricostruzione *structure from motion* calcola
-insieme ai punti) sono l'ingresso obbligatorio dei metodi di rendering
-neurale della sezione seguente, quelli che ricostruiscono una scena
+Apparentemente la più tecnica, la geometria a due viste è quella che serve di
+più subito dopo. Le **pose** delle fotocamere sono l'ingresso obbligatorio di
+NeRF e dello splatting, i metodi che ricostruiscono una scena
 addestrando una piccola rete a rispondere «da qui, guardando di là, che colore
-si vede?». Chi ha provato a costruirne uno da un video e ha ottenuto una nuvola
+si vede?». Le pose sono dove stava e da che parte guardava ognuna, ed è quello
+che una ricostruzione *structure from motion* calcola insieme ai punti. Chi ha
+provato a costruirne uno da un video e ha ottenuto una nuvola
 confusa, nove volte su dieci non ha sbagliato la rete: ha sbagliato le pose.
 
 ## Profondità da una sola immagine
@@ -682,7 +685,7 @@ vera, e un plastico ben fatto viene letto come un palazzo.
 C'è poi un limite che non è un difetto ma una legge: la **scala** resta
 sconosciuta. La rete mette la scena in fila dal vicino al lontano, e dice senza
 esitare che l'auto sta più indietro dell'albero; se siano a dieci metri o a
-cento non lo dice, e nemmeno di quante volte l'una sia più lontana dell'altro.
+cento non lo dice, e nemmeno di quante volte l'una sia più lontana dell'altra.
 Nessun indizio nell'immagine lo contiene.
 
 `````
@@ -807,9 +810,13 @@ residuo = np.einsum('ij,jk,ik->i', omogenee(u3), F, omogenee(u1))
 print("residuo epipolare :", np.abs(residuo).max())
 ```
 
-Il residuo massimo è dell'ordine di $10^{-17}$, cioè ancora una volta zero. Se
-valesse $0{,}3$ vorrebbe dire che il pixel cade a fianco della riga prevista, e
-qui invece per ognuno degli otto punti il pixel nella seconda immagine sta
+Il residuo massimo è dell'ordine di $10^{-17}$, cioè ancora una volta zero.
+Attenzione a leggerlo: è un numero algebrico e non una distanza, e per farne
+pixel va diviso per la lunghezza del vettore che definisce la retta, che qui
+vale circa $4 \cdot 10^{-4}$. Un residuo di $0{,}3$ vorrebbe dire settecento
+pixel fuori posto su un sensore largo seicentoquaranta, cioè dall'altra parte
+dell'immagine; questo vale $3 \cdot 10^{-14}$ pixel. Per ognuno degli otto
+punti il pixel nella seconda immagine sta
 **esattamente** sulla retta calcolata dalla prima. Nessuna rete, nessun
 dato: è un'identità algebrica che dipende solo da come è fatta la proiezione,
 ed è la ragione per cui questa parte della visione artificiale non è
@@ -821,9 +828,9 @@ invecchiata.
 :class: important
 - **Scattare una foto butta via la distanza.** Un pixel dice da che parte
   guardare, non quanto lontano: la mano vicina e la Torre di Pisa lontana, se
-  sono allineate con l'obiettivo, finiscono nello stesso punto della foto. Non
-  è un'informazione nascosta da scovare, è un'informazione cancellata da
-  ricostruire.
+  sono allineate con l'obiettivo, finiscono nello stesso punto della foto.
+  Nell'immagine non c'è niente da scovare: quella distanza va ricostruita da
+  fuori.
 - Prima di qualunque conto la fotocamera va **misurata** (quanto ingrandisce,
   dove cade il centro dell'immagine, quanto l'obiettivo incurva le rette), e
   si fa fotografando una scacchiera. Senza quelle misure nessuna risposta può

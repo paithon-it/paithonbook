@@ -38,6 +38,18 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-1)=
+
+## 1.12.1 · 31 agosto 2026
+
+### Correzioni
+
+- **Dieci capitoli riletti per intero.** MLOps, Visione artificiale, AI responsabile, Deep reinforcement learning, PINN, NLP, GAN, Modelli latenti, Verosimiglianza esatta e World models sono passati per le quattro lenti: rimandi portati al bersaglio giusto, glosse riallineate alle formule che commentano, numeri verificati contro i blocchi che li stampano. In Matematica e Sistemi multi-agente sono state diradate le contrapposizioni rimaste, dove non contrapponevano più niente.
+- {doc}`L'addestramento avversario </GAN/come-funziona>` (GAN). **Il discriminatore giocattolo è stato eseguito davvero.** Il conto della pagina è girato riga per riga, seme compreso: il gradiente letto per quello che indica (dove il verdetto scende, e quindi, a ritroso, in che verso salire), la conversione fra perdita e frequenza che dà un minimo e non un massimo, e la curva del verdetto rimessa dove i numeri la mettono. Nel capitolo, quattro buchi dell'isomorfismo chiusi e un verso di metrica raddrizzato.
+- {doc}`Comprimere e ricostruire </ModelliLatenti/comprimere-e-ricostruire>` (Modelli latenti). **Le affermazioni che il capitolo smentiva altrove.** La non linearità che serve nel decoder e non «da tutte e due le parti», il copista e l'archivista rimessi ciascuno al proprio mestiere, il rapporto di compressione che una sezione dava cinquanta e un'altra quarantotto, e la media che mancava alla PCA probabilistica: tutto verificato coi conti eseguiti.
+- {doc}`A che serve saperlo </VerosimiglianzaEsatta/a-che-serve>` (Verosimiglianza esatta). **Una citazione che cambiava soggetto.** Le virgolette si aprivano su «non riescono a distinguere» e lasciavano fuori chi non distingue, mentre l'originale parla della densità appresa dai modelli a flusso: il soggetto sbagliato proprio nel capoverso la cui tesi è che la densità e il modello non sono la stessa cosa. Ripresa dal testo originale.
+- {doc}`Mondi in miniatura </WorldModels/mondi-in-miniatura>` (World Model). **Alla temperatura più alta l'agente impara meno bene, non smette di imparare.** La conclusione non seguiva dai numeri che la pagina stampa: il punteggio resta sopra la soglia, e lontano da quello di una politica che gioca a caso. A cambiare è la deviazione standard, che stava nella tabella e non veniva mai usata.
+
 (v1-12-0)=
 
 ## 1.12.0 · 30 agosto 2026

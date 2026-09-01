@@ -88,7 +88,7 @@ spazio e una direzione di vista, in uscita un colore RGB $\mathbf{c}$ e una
 differenziale che un raggio venga fermato in quel punto.
 
 Due scelte architetturali del lavoro originale sono cariche di significato.
-La prima è che $\sigma$ dipende **solo** da $\mathbf{x}$, mentre $\mathbf{c}$
+La prima è che $\sigma$ dipende solo da $\mathbf{x}$, mentre $\mathbf{c}$
 dipende da entrambi: è un vincolo imposto a mano che impedisce alla rete di
 inventare geometria diversa per ogni punto di vista, ed è ciò che costringe la
 forma a essere coerente. La seconda è che la direzione entra **tardi**, negli
@@ -243,12 +243,12 @@ campioni lì, perché spendere calcolo nell'aria vuota è sprecarlo.
 
 ## Perché serve la codifica posizionale
 
-C'è un dettaglio che, tolto, fa collassare il metodo in un'immagine sfocata:
-le reti fanno una gran fatica a imparare tutto ciò che cambia in fretta da un
-punto all'altro. È lo stesso limite che il capitolo sulle PINN (le reti a cui
-si insegna una legge fisica) incontrerà davanti a quelle soluzioni che passano
-da un valore all'altro in uno spazio brevissimo, i cosiddetti *fronti ripidi*.
-Qui il problema torna, ma con la soluzione in mano.
+C'è un dettaglio che, tolto, fa collassare il metodo in un'immagine sfocata: le
+reti fanno una gran fatica a imparare tutto ciò che cambia in fretta da un punto
+all'altro. È lo stesso limite che il {doc}`capitolo sulle PINN </PINN/overview>`
+(le reti a cui si insegna una legge fisica) incontrerà davanti a quelle
+soluzioni che passano da un valore all'altro in uno spazio brevissimo, i
+cosiddetti *fronti ripidi*. Qui il problema torna, ma con la soluzione in mano.
 
 `````{tab} Elementare
 
@@ -272,10 +272,11 @@ cinquecento volte più fitta, uno cade nel cavo dell'onda e l'altro dalla parte
 opposta, ben sopra lo zero: due valori lontanissimi. La rete non deve più
 spaccare il capello, le basta guardare l'onda giusta.
 
-È esattamente lo stesso trucco che il capitolo sui Transformer chiamerà
-**codifica posizionale**: là serve a dare un'identità a ciascuna posizione
-dentro una frase, qui a darne una a ciascun punto dello spazio. Stesso
-problema, stessa soluzione, due campi che non si parlavano.
+È esattamente lo stesso trucco che il
+{doc}`capitolo sui Transformer </Transformers/overview>` chiamerà **codifica
+posizionale**: là serve a dare un'identità a ciascuna posizione dentro una
+frase, qui a darne una a ciascun punto dello spazio. Stesso problema, stessa
+soluzione, due campi che non si parlavano.
 
 `````
 
@@ -376,7 +377,7 @@ dominato da quello dove c'è densità, perché la regione vuota contribuisce
 poco alla loss, e i livelli a risoluzione diversa collidono in modi diversi,
 quindi l'ambiguità di un livello viene sciolta dagli altri. Il risultato è un
 addestramento di ordini di grandezza più veloce, con qualità paragonabile, e un
-fotogramma in alta definizione reso in una manciata di millisecondi.
+fotogramma in alta definizione reso in qualche decina di millisecondi.
 
 Il passaggio va letto per quello che è: una parte sostanziale della
 rappresentazione si è spostata dai **pesi** a una **struttura dati esplicita e
@@ -386,8 +387,8 @@ addestrabile**. Il campo continuo resta, ma non è più tutto dentro l'MLP.
 
 ## Splatting: dai raggi ai granelli
 
-Nel 2023 lo stesso obiettivo è stato raggiunto da un'altra direzione, e il
-risultato ha cambiato di nuovo cosa si intende per stato dell'arte.
+Nel 2023 lo stesso obiettivo è stato raggiunto da un'altra direzione, e per
+farlo ha cambiato la rappresentazione invece del modo di ottimizzarla.
 
 `````{tab} Elementare
 
@@ -433,8 +434,9 @@ mantenerla semidefinita positiva durante l'ottimizzazione), un'opacità e dei
 coefficienti di armoniche sferiche per il colore dipendente dalla direzione
 {cite}`kerbl20233d`.
 
-La proiezione di una gaussiana 3D sul piano immagine è ancora una gaussiana
-2D, il che rende il rendering una **rasterizzazione** invece di un *ray
+La proiezione di una gaussiana 3D sul piano immagine è ancora, con buona
+approssimazione, una gaussiana 2D, il che rende il rendering una
+**rasterizzazione** invece di un *ray
 marching*: si ordina per profondità, si compone con la stessa formula di
 $\alpha$-blending vista sopra, e si sfrutta appieno l'hardware grafico. Con una
 precisazione che il metodo non nasconde: sotto la prospettiva vera, che divide
@@ -466,13 +468,12 @@ geometriche, ma con la loss differenziabile del rendering neurale.
 Conviene dire con precisione che cosa è stato risolto, perché intorno a questi
 metodi la retorica è abbondante.
 
-**Cosa funziona.** Date da qualche decina a un centinaio di fotografie di una
-scena statica, cioè quello che si raccoglie girandoci attorno col telefono in
-un paio di minuti, e sapendo da dove sono state scattate, si ottiene una
-rappresentazione che permette di
-guardarla da punti di vista nuovi con realismo fotografico, comprese le
-trasparenze e i riflessi, in tempo reale, con qualche minuto di calcolo. Dieci
-anni fa era fantascienza.
+**Cosa funziona.** Servono da qualche decina a un centinaio di fotografie di
+una scena ferma, cioè quello che si raccoglie girandoci attorno col telefono in
+un paio di minuti, e bisogna sapere da dove sono state scattate. Con qualche
+minuto di calcolo se ne ricava una rappresentazione che la fa guardare da punti
+di vista nuovi, con realismo fotografico, trasparenze e riflessi compresi, in
+tempo reale. Dieci anni fa era fantascienza.
 
 **Cosa serve, e viene dalla sezione precedente.** Le **pose** delle
 fotocamere. Praticamente ogni pipeline le ottiene da una ricostruzione
@@ -566,12 +567,12 @@ sulla superficie si prende tutto, e viene $3{,}99$ metri. È così che da un cam
 di radianza esce **gratis** anche una mappa di profondità.
 
 Non viene esattamente quattro, e la ragione merita di essere detta perché è un
-errore che si fa davvero. I pesi sommano a $0{,}9975$ e non a uno, quindi non
-è ancora una media: è una somma. Per farne una media va divisa per il totale dei
-pesi, e $3{,}99 / 0{,}9975$ dà esattamente $4{,}00$ metri, cioè dove la
-superficie sta davvero. Chi salta quella divisione ottiene mappe di profondità
-sistematicamente più corte del vero, e tanto più corte quanto più la scena è
-semitrasparente.
+errore che si fa davvero. I pesi sommano a $0{,}9975$ e non a uno, quindi
+quella è una somma e non ancora una media. Per farne una media va divisa per il
+totale dei pesi, e $3{,}99 / 0{,}9975$ dà esattamente $4{,}00$ metri, cioè dove
+la superficie sta davvero. Chi salta quella divisione ottiene mappe di
+profondità sistematicamente più corte del vero, e tanto più corte quanto più la
+scena è semitrasparente.
 
 **E se non c'è nessuna superficie?** Nel caso della nebbia il punto che conta
 di più conta $0{,}044$, contro lo $0{,}9975$ di prima: nessuno comanda, il

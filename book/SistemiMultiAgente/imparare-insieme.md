@@ -344,8 +344,8 @@ solo il proprio pezzo di campo e decide; e in allenamento gli sta accanto un
 **critico**, cioè quello che dà i voti, che invece guarda tutto: la situazione
 completa e la mossa di ciascuno. Così il terreno si muove molto meno, perché un
 voto dato sapendo che cosa hanno fatto *tutti* non scade appena gli altri
-cambiano abitudini: le loro abitudini non gli servivano, gli servivano le loro
-mosse, e quelle gliele abbiamo messe sul tavolo.
+cambiano abitudini: al critico servono le loro mosse, e quelle gliele
+abbiamo messe sul tavolo.
 
 Molto meno, però, non vuol dire fermo. Il critico sa che cosa hanno fatto
 tutti **adesso**, ma il voto che deve dare riguarda come andrà a finire, e come

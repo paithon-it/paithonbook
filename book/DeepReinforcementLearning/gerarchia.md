@@ -99,9 +99,9 @@ sconto e $\alpha$ il passo di apprendimento. Il salto è tutto in
 quell'esponente: lo sconto si applica $k$ volte invece che una, perché fra le
 due decisioni è passato $k$ e non $1$.
 
-Da qui i tre problemi che il campo si porta dietro, e vale la pena tenerli
-distinti perché hanno risposte diverse: trovare i **sotto-obiettivi**, trovare
-la **politica sulle opzioni**, trovare le **sotto-politiche**.
+Da qui i problemi che il campo si porta dietro, e conviene tenerli distinti
+perché hanno risposte diverse: trovare i **sotto-obiettivi**, trovare la
+**politica sulle opzioni**, trovare le **sotto-politiche**.
 
 `````
 
@@ -176,10 +176,9 @@ I costi sono di tre specie, e l'ultima è quella che si dimentica.
 
 Il risparmio di esperienza, le scorciatoie perse e la ragione per cui le
 opzioni si aggiungono alle mosse invece di rimpiazzarle si misurano tutti e tre
-nello stesso banco di prova, che è la pianta di poco fa. Le opzioni sono otto,
-cioè due per ogni porta, una per ciascuna delle due stanze che quella porta
-collega, e ognuna conduce alla sua porta per la via più breve dentro la stanza,
-terminando quando ci arriva.
+nello stesso banco di prova, che è la pianta di poco fa. Le opzioni sono otto: ogni
+porta ne ha due, una per ciascuna delle due stanze che collega. Ognuna arriva
+alla sua porta per la via più breve dentro la stanza, e finisce lì.
 
 Poi si allenano tre agenti sullo stesso problema, dando a ogni passo elementare
 una ricompensa di $-1$: il segno negativo fa sì che l'agente, cercando il
@@ -355,16 +354,15 @@ episodi l'agente a sole mosse ne spende $85{,}1$ per arrivare, quello che ha
 anche le opzioni $21{,}6$, cioè un quarto. È il risparmio di esperienza, e viene
 tutto da un fatto: una decisione al posto di una stanza intera.
 
-Nella stessa tabella c'è però il prezzo, e sta nell'ultima riga. L'agente che
-ha **solo** le opzioni impara ancora più in fretta ($15{,}7$), e poi si ferma su
-una politica da $14{,}7$ passi contro gli $8{,}5$ che si potrebbero fare: va di
-porta in porta, e le scorciatoie dentro le stanze non le può nemmeno
-rappresentare. In trecento episodi nessuno dei tre scende agli $8{,}5$, quindi
-le opzioni comprano velocità e non un cammino più corto di quello che le mosse
-consentirebbero; ma quel $14{,}7$ misura il repertorio di chi ha solo le
-opzioni, e non la sua lentezza nell'imparare.
+Nella stessa tabella l'ultima riga va letta con prudenza. L'agente che ha
+**solo** le opzioni impara ancora più in fretta ($15{,}7$) e poi si ferma su una
+politica da $14{,}7$ passi contro gli $8{,}5$ possibili, ma quel $14{,}7$ non è il
+limite del suo repertorio: qui il traguardo è una porta, l'opzione in corso si
+ferma appena ci arriva, e anche con le sole opzioni la strada da $8{,}5$ esiste.
+È l'apprendimento a non arrivarci, e in trecento episodi non ci arriva nessuno
+dei tre: le opzioni comprano velocità, non un cammino più corto.
 
-La seconda tabella è la stessa cosa detta in modo brutale. Il traguardo è in un
+Il prezzo del repertorio lo dice la seconda tabella. Il traguardo è in un
 angolo di stanza, dove nessuna opzione conduce, e l'agente a sole opzioni
 **non ci arriva mai**: i suoi $300{,}5$ passi sono la sbarra che il conto si dà
 per non girare all'infinito (poco più di trecento, perché la sbarra ferma
@@ -383,9 +381,9 @@ si distinguono per **chi decide che cosa**.
 
 La prima famiglia non decide niente in anticipo: fa imparare le opzioni
 **insieme** alla politica che le sceglie. L’**option-critic**
-{cite}`bacon2017optioncritic` estende alle opzioni lo stesso gradiente con cui
-il {doc}`gradiente di policy </DeepReinforcementLearning/policy-gradient>`
-migliora una politica, e lo usa per aggiustare tre cose alla volta: che cosa fa
+{cite}`bacon2017optioncritic` applica alle opzioni il metodo del
+{doc}`gradiente di policy </DeepReinforcementLearning/policy-gradient>`, e lo
+usa per aggiustare tre cose alla volta: che cosa fa
 un'opzione, quando finisce, e quale opzione conviene chiamare. Nessuno deve
 scrivere un sotto-obiettivo; bisogna solo dire **quante** opzioni si vogliono,
 che è come dire a una squadra «preparatene otto» invece di dettargliele.
@@ -393,9 +391,10 @@ che è come dire a una squadra «preparatene otto» invece di dettargliele.
 La seconda famiglia divide i compiti: il livello alto **nomina** un obiettivo,
 il livello basso lo raggiunge come crede. L'immagine è quella di un feudo, dove
 il signore assegna il territorio e non entra nel merito di come lo si lavora, e
-il nome se lo portano dietro le **FeUdal Networks** {cite}`vezhnevets2017feudal`:
+il nome se lo portano dietro le **FeUdal Networks** {cite}`vezhnevets2017feudal`,
+che lo riprendono da Dayan e Hinton:
 un modulo *manager* lavora a passo lento e fissa obiettivi, un modulo *worker*
-li traduce in azioni elementari a ogni battito dell'ambiente. Il manager non
+li traduce in azioni elementari a ogni passo dell'ambiente. Il manager non
 dice mai come fare: dice dove andare.
 
 Che le due famiglie si incontrino proprio dove la ricompensa arriva di rado ha

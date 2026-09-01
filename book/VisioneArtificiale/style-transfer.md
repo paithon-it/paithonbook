@@ -49,10 +49,9 @@ due giudizi. Alla fine la tela è la tua foto, ma dipinta.
 
 Una domanda che viene naturale: da che cosa si parte, la prima volta? Da quello
 che si vuole, ed è una scelta che conta. Si può partire dalla foto stessa, e
-allora il critico ha già metà del lavoro fatto e si arriva prima. Oppure si può
-partire da una tela di puntini a caso, quello che si chiama **rumore**, come
-uno schermo televisivo senza segnale: ci vuole più pazienza, ma siccome i
-puntini a caso sono ogni volta diversi, ogni volta esce un quadro diverso.
+allora il critico ha già metà del lavoro fatto. Oppure da una tela di puntini a
+caso, quello che si chiama **rumore**, come uno schermo televisivo senza
+segnale: ci vuole più pazienza.
 
 Il critico è la rete convoluzionale: ha già imparato a "vedere" su milioni di
 immagini e qui non deve imparare altro. Ciò che cambia, ritocco dopo ritocco,
@@ -86,16 +85,16 @@ usato a fin di bene.
 
 `````
 
-Perché proprio una rete già addestrata? Perché, come abbiamo visto nel capitolo
-sul Deep Learning e ritrovato nella sezione sul transfer learning, i suoi strati
-formano una **gerarchia**. Ogni strato è fatto di rilevatori che si accendono
-quando trovano quello che cercano, e più si va in profondità più quello che
-cercano è grande: i primi si accendono su bordi, colori e piccole trame, quelli
-profondi su parti di oggetti e su oggetti interi
-{cite}`zeiler2014visualizing`. Serve proprio questo, perché una pennellata e un
-campanile stanno a due scale diversissime e qui vanno giudicati tutti e due,
-dalla stessa rete, nello stesso momento: ai primi strati si guarda la
-pennellata, agli ultimi il campanile.
+Perché proprio una rete già addestrata? Perché, come abbiamo visto nel
+{doc}`capitolo sul Deep Learning </DeepLearning/overview>` e ritrovato nella
+sezione sul transfer learning, i suoi strati formano una **gerarchia**. Ogni
+strato è fatto di rilevatori che si accendono quando trovano quello che cercano,
+e più si va in profondità più quello che cercano è grande: i primi si accendono
+su bordi, colori e piccole trame, quelli profondi su parti di oggetti e su
+oggetti interi {cite}`zeiler2014visualizing`. Serve proprio questo, perché una
+pennellata e un campanile stanno a due scale diversissime e qui vanno giudicati
+tutti e due, dalla stessa rete, nello stesso momento: ai primi strati si guarda
+la pennellata, agli ultimi il campanile.
 
 ## Contenuto e stile: cosa c'è, come è dipinto
 
@@ -148,9 +147,10 @@ mostrano gli stessi oggetti nella stessa disposizione, anche se differiscono
 pixel per pixel.
 
 Lo **stile** è codificato dalle correlazioni tra i canali di uno strato. Allo
-strato $l$ la rete produce $N_l$ mappe di attivazione di
-$M_l = h_l \times w_l$ posizioni ciascuna; srotolando ogni mappa in una riga
-si ottiene la matrice $\mathbf{F}^{(l)} \in \mathbb{R}^{N_l \times M_l}$. La
+strato $l$ la rete produce $N_l$ mappe di attivazione, ciascuna di $M_l$
+posizioni (l'altezza per la larghezza della mappa); srotolando ogni mappa in
+una riga si ottiene la matrice
+$\mathbf{F}^{(l)} \in \mathbb{R}^{N_l \times M_l}$. La
 **matrice di Gram** è
 
 $$
@@ -231,8 +231,9 @@ $$
 $$
 
 dove $\mathbf{F}^{(l)}$ e $\mathbf{P}^{(l)}$ sono le mappe di attivazione
-(canali × posizioni)
-dell'immagine generata e della foto di contenuto. Il termine di stile
+dell'immagine generata e della foto di contenuto: qui $i$ è il canale e $j$ la
+posizione, mentre nella Gram poco sopra erano canali tutti e due. Il termine di
+stile
 confronta le matrici di Gram su più strati (nel paper, il primo strato di
 ogni blocco: `conv1_1`, `conv2_1`, `conv3_1`, `conv4_1`, `conv5_1`):
 
@@ -243,7 +244,9 @@ $$
 dove $\mathbf{G}^{(l)}$ e $\mathbf{A}^{(l)}$ sono le Gram dell'immagine
 generata e del quadro di
 stile allo strato $l$, $w_l$ è il peso dello strato e il fattore
-$1/(4 N_l^2 M_l^2)$ normalizza rispetto a numero di canali e posizioni. Usare
+$1/(4 N_l^2 M_l^2)$ va come l'inverso del **quadrato** del numero di canali e
+di posizioni, perché le entrate della Gram crescono con $M_l$ e la loro
+differenza al quadrato con $M_l^2$. Usare
 più strati cattura lo stile a più scale: dai granelli di colore alle volute
 larghe. Nel paper il rapporto $\alpha/\beta$ è dell'ordine di $10^{-3}$–$10^{-4}$,
 ma quel numero è solidale con la normalizzazione appena scritta: cambiandola
@@ -305,9 +308,9 @@ with torch.no_grad():
 # 2. Si ottimizza l'IMMAGINE: parte dalla foto, il gradiente scende sui pixel
 img = img_contenuto.clone().requires_grad_(True)
 opt = optim.Adam([img], lr=0.02)
-alpha, beta = 1.0, 1e5           # taglia solidale con la gram() qui sopra:
-                                 # il 1000 della sezione precedente vale per
-                                 # la normalizzazione del paper, non per questa
+alpha, beta = 1.0, 1e5           # la taglia di beta dipende da come si
+                                 # normalizza la gram() qui sopra: quella del
+                                 # paper ne chiede un'altra
 
 for passo in range(300):
     opt.zero_grad()
@@ -335,8 +338,8 @@ caso se ne possono generare quante se ne vuole.
 cioè al pezzo di codice che, saputo di quanto si è sbagliato, decide come
 muovere i pixel. Gli autori usavano L-BFGS, che su un problema come questo
 arriva in meno passi ma va richiamato in un modo tutto suo; noi usiamo Adam,
-che è lo stesso del ciclo di addestramento visto nel {doc}`capitolo su PyTorch </PyTorch/overview>` e
-funziona benissimo.
+che è lo stesso del {doc}`ciclo di addestramento </PyTorch/addestramento>` già
+visto, e funziona benissimo.
 
 **Un ritocco alla rete.** Gli autori, dove la VGG tiene solo il valore più
 grande di ogni quadratino, preferivano tenerne la media
@@ -358,19 +361,19 @@ tempo reale. È la
 famiglia di tecniche che ha reso possibili app come Prisma, con il compromesso
 di una rete da addestrare *per ciascuno stile*.
 
-La storia poi è proseguita altrove. Per insegnare a un programma a tradurre
-una foto in un quadro il modo ovvio sarebbe mostrargli tante coppie, la
-stessa identica scena fotografata e dipinta, e nessuno le ha: Monet è morto e
-non torna a dipingere su commissione. CycleGAN {cite}`zhu2017unpaired` ha
-risolto il problema imparando **senza coppie**, da due mucchi separati e non
+La storia poi è proseguita altrove. Per insegnare a un programma a tradurre una
+foto in un quadro il modo ovvio sarebbe mostrargli tante coppie, la stessa
+identica scena fotografata e dipinta, e nessuno le ha: Monet è morto e non torna
+a dipingere su commissione. CycleGAN {cite}`zhu2017unpaired` ha risolto il
+problema imparando **senza coppie**, da due mucchi separati e non
 corrispondenti, tante foto da una parte e tanti Monet dall'altra. E oggi il
 trasferimento di stile è una delle tante abilità dei **modelli di diffusione**,
 che con un'istruzione scritta ridipingono un'immagine in qualunque maniera
-{cite}`rombach2022high`. Di tutti e due parla il capitolo sulle GAN (sta per
-*generative adversarial network*, le «reti generative avversarie»), nella
-sezione sulle evoluzioni. Ma l'idea di fondo, contenuto e stile come due
-conteggi diversi dentro una stessa rete, nasce qui, da una passeggiata sul
-Neckar.
+{cite}`rombach2022high`. Di tutti e due parla la
+{doc}`sezione sulle evoluzioni delle GAN </GAN/applicazioni-evoluzioni>` (GAN
+sta per *generative adversarial network*, le «reti generative avversarie»). Ma
+l'idea di fondo, contenuto e stile come due conteggi diversi dentro una stessa
+rete, nasce qui, da una passeggiata sul Neckar.
 
 `````{tab} Elementare
 

@@ -7,7 +7,7 @@
   prefers-reduced-motion) vede la figura conclusa.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 676 330"
-     role="img" aria-label="Cinque parole di un corpus giocattolo, spezzate in caratteri. A ogni passo la coppia adiacente più frequente diventa un simbolo solo: le scatole si saldano, l'elenco delle fusioni si allunga e il corpus si accorcia, finché la parola «rosso» sta in un token solo.">
+     role="img" aria-label="Cinque parole di un corpus giocattolo, spezzate in caratteri. A ogni passo la coppia adiacente più frequente diventa un simbolo solo: le scatole si saldano, l'elenco delle fusioni si allunga con il conteggio che ha fatto vincere quella coppia (ss 25, sso 20, ro 14, rosso 9) e il corpus si accorcia da 146 pezzi a 121, 101, 87 e infine 78, finché la parola «rosso» sta in un token solo.">
   <style>
     svg  { --d: 10.0s; }
     .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }

@@ -20,8 +20,10 @@ un riquadro e un'etichetta.
 :alt: "La stessa scena, un cane e una palla su un prato, trattata da tre compiti diversi. Nella classificazione l'uscita è una sola etichetta per l'intera immagine, «cane». Nella detection sono due riquadri, uno attorno al cane e uno attorno alla palla, ciascuno con la sua etichetta e la sua confidenza. Nella segmentazione ogni pixel prende un colore secondo la categoria a cui appartiene, sfondo compreso: il cane in terracotta, la palla in ocra, il prato in teal."
 :width: 100%
 
-Stessa foto, tre uscite. Salendo da sinistra a destra cresce la precisione
-della risposta e, con essa, il costo di annotare i dati per addestrarla.
+Stessa foto, tre uscite: classificazione, rilevamento e segmentazione
+semantica, cioè tre dei quattro compiti classici. Salendo da sinistra a destra
+cresce la precisione della risposta e, con essa, il costo di annotare i dati
+per addestrarla.
 ```
 
 La progressione di {numref}`fig-tre-uscite` va letta anche al contrario, cioè
@@ -267,10 +269,11 @@ reale (teal): è l'area di **intersezione** divisa per l'area di **unione**.
 `````{tab} Elementare
 
 Chi corregge appoggia sulla foto del cane un foglio trasparente con la cornice
-giusta, e lo confronta con la cornice che il rilevatore ha tracciato. Non
-combaciano mai. La foto è stampata su carta a quadretti, e allora la somiglianza
-si misura contando: i quadretti coperti da tutte e due, divisi per quelli
-coperti da almeno una ({numref}`fig-iou`). Trenta in comune, sessanta in tutto:
+giusta, e lo confronta con la cornice che il rilevatore ha tracciato
+({numref}`fig-iou`). Non combaciano mai. La foto è stampata su carta a
+quadretti, e allora la somiglianza si misura contando: i quadretti coperti da
+tutte e due, divisi per quelli coperti da almeno una. Trenta in comune,
+sessanta in tutto:
 $30/60 = 0{,}5$. Il conto si chiama IoU e dà sempre un numero fra 0 e 1, dove 1
 vuol dire cornici sovrapposte quadretto per quadretto e 0 cornici che non si
 toccano nemmeno.
@@ -283,26 +286,27 @@ approssimative crolla molto più in fretta di chi le disegna precise. Nelle gare
 serie il correttore rifà quindi il conto con dieci soglie, da 0,5 a 0,95, e fa
 la media dei dieci verdetti: nessuno si presenta col metro tagliato su misura.
 
-Nella foto accanto i cani sono tre, e il rilevatore consegna cinque cornici in
-fila, dalla più sicura alla meno sicura. Il correttore le prende in
+Mettiamo che in una foto i cani siano tre, e che il rilevatore consegni cinque
+cornici in fila, dalla più sicura alla meno sicura. Il correttore le prende in
 quest'ordine. Una cornice passa se copre abbastanza un cane che nessuna cornice
 precedente si è già presa, e da quel momento quel cane è suo: una seconda
 cornice sullo stesso animale, per quanto ben piazzata, va nella pila degli
 errori. Dopo ogni cornice giusta il correttore si ferma e conta quante ne ha
 viste giuste su quante ne ha guardate. Quella frazione è la **precisione**.
 
-Sono giuste la prima e le ultime due, quindi le fermate sono tre: 1 su 1, cioè
-1; poi 2 su 4, cioè 0,50; poi 3 su 5, cioè 0,60. I tre numeri ballano, perché
-ogni cornice sbagliata li tira giù e la giusta che viene dopo li rialza, su e
-giù come i denti di una sega. Prima di sommarli il correttore li appiattisce, e
-la regola sta in una riga: al posto del numero di quel momento si prende il più
-alto fra quello e tutti quelli che vengono dopo. I tre diventano 1, 0,60 e
-0,60. Un altro correttore, in un'altra stanza, arriva agli stessi tre, ed è per
-questo che si appiattisce.
+Diciamo che siano giuste la prima e le ultime due: le fermate sono tre, 1 su 1,
+cioè 1; poi 2 su 4, cioè 0,50; poi 3 su 5, cioè 0,60. I tre numeri ballano,
+perché ogni cornice sbagliata li tira giù e la giusta che viene dopo li rialza,
+su e giù come i denti di una sega. Prima di sommarli il correttore li
+appiattisce, e la regola sta in una riga: al posto del numero di quel momento
+si prende il più alto fra quello e tutti quelli che vengono dopo. I tre
+diventano 1, 0,60 e 0,60. Un altro correttore, in un'altra stanza, arriva agli
+stessi tre, ed è per questo che si appiattisce.
 
 La somma fa 2,20, e si divide per tre, cioè per i cani che c'erano davvero, non
-per le cinque cornici disegnate: 0,73. Il cane che nessuna cornice ha cerchiato
-non aggiunge niente alla somma e resta comunque nel divisore. Chi disegna una
+per le cinque cornici disegnate: 0,73. Un cane che nessuna cornice avesse
+cerchiato non aggiungerebbe niente alla somma e resterebbe comunque nel
+divisore. Chi disegna una
 cornice sola, la più sicura di tutte, tiene la precisione altissima e porta a
 casa un voto basso; chi ne disegna mille li cerchia tutti e tre e paga a ogni
 fermata gli errori che ha lasciato dietro. Quel 0,73 è il voto sui cani.
@@ -386,15 +390,17 @@ perché la stessa figura può essere insieme «persona» e «pedone».
 
 Poi la famiglia cambia natura. Dal 2020 le versioni nuove sono software,
 mantenuto dalla società Ultralytics {cite}`jocher2026ultralytics`, e la storia
-si legge nei registri delle versioni invece che negli articoli. YOLOv5 arriva
+di questa linea si legge nei registri delle versioni invece che negli
+articoli. YOLOv5 arriva
 così, libreria PyTorch senza paper; YOLOv8, nel 2023, toglie le ancore,
-predicendo direttamente centro e distanze dai bordi come i rilevatori
-*anchor-free* incontrati a proposito delle ancore; e YOLO26, all'inizio del
-2026, toglie anche la NMS, punendo i doppioni durante l'addestramento con la
-stessa idea dell'abbinamento uno a uno di DETR, così quello che la rete produce
-è già il risultato finale. Le due impalcature del mestiere, le ancore e la
-pulizia dei doppioni, la famiglia le ha prima usate e poi tolte tutte e due;
-restano la griglia, la passata unica e il nome.
+predicendo direttamente centro e distanze dai bordi, come i rilevatori detti
+*anchor-free*; e YOLO26, all'inizio del 2026, toglie anche la NMS, punendo i
+doppioni durante l'addestramento con la stessa idea dell'abbinamento uno a uno
+di DETR, che nella famiglia era entrata qualche versione prima, così quello che
+la rete produce è già il risultato finale. Le due
+impalcature del mestiere, le ancore e la pulizia dei doppioni, la famiglia le ha
+prima usate e poi tolte tutte e due; restano la griglia, la passata unica e il
+nome.
 
 Provare l'ultima versione costa cinque righe. La libreria si installa con
 `pip install ultralytics`, scarica i pesi alla prima esecuzione e porta con sé
@@ -508,13 +514,13 @@ griglia in un numero solo) *riducono* le **mappe**, cioè le griglie di numeri
 che ogni strato consegna al successivo: dopo il ramo discendente della U,
 quello che comprime, un'immagine 512×512 può essersi ristretta a 16×16. Quel
 ramo ha un nome, **encoder**, e vuol dire «la parte che riassume»: è lo stesso
-mestiere che nella sezione sull'apprendimento senza etichette riassumeva
-un'immagine in una lista di numeri, solo che qui il riassunto è una griglia
-piccola. Ma il verdetto della segmentazione va dato pixel per pixel, alla
-risoluzione di partenza: serve una seconda metà che riespanda, e quella si
-chiama **decoder**. Come si risale?
-L'operazione che la *Fully Convolutional Network* {cite}`long2015fully` ha
-reso standard è la **convoluzione trasposta**: una convoluzione che invece di
+mestiere che nella {doc}`sezione sull'apprendimento senza etichette
+</VisioneArtificiale/senza-etichette>` riassumeva un'immagine in una lista di
+numeri, solo che qui il riassunto è una griglia piccola. Ma il verdetto della
+segmentazione va dato pixel per pixel, alla risoluzione di partenza: serve una
+seconda metà che riespanda, e quella si chiama **decoder**. Come si risale?
+L'operazione che la *Fully Convolutional Network* {cite}`long2015fully` ha reso
+standard è la **convoluzione trasposta**: una convoluzione che invece di
 rimpicciolire ingrandisce, con numeri che la rete impara.
 
 ```{figure} ../figures/convoluzione-trasposta.svg
@@ -634,9 +640,12 @@ cliente.
 Nessuno di questi sistemi è infallibile, e conviene dire con precisione dove
 sta il margine, perché la sovrapposizione non è un tasso di errore. Una
 maschera con IoU $0{,}9$ è una maschera buona, e vuol dire che di dieci
-quadretti coperti in tutto, nove sono in comune e uno no: un decimo dell'area è
-sbagliato, per eccesso o per difetto. Su un nodulo, un decimo di volume è una
-differenza clinica. E soprattutto restano gli oggetti mancati del tutto, che in
+quadretti coperti in tutto, nove sono in comune e uno no: un decimo dell'area
+cade nel posto sbagliato, per eccesso o per difetto. Su un nodulo quel decimo
+può anche non cambiare il volume misurato, perché la parte in più e quella in
+meno si compensano; a spostarsi è il contorno, che in qualche punto entra nel
+tessuto sano e in qualche altro lascia fuori del tumore. E soprattutto restano
+gli oggetti mancati del tutto, che in
 quel numero non compaiono affatto: la IoU si calcola confrontando due cornici,
 quindi esiste solo dove il sistema una cornice l'ha disegnata. Un pedone che il
 rilevatore non ha visto non ha nessuna cornice, quindi nessuna IoU, quindi non

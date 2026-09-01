@@ -261,6 +261,65 @@ def _maschera_prosa(testo: str) -> str:
     return t
 
 
+# Lo spazio della **prosa**: orizzontale, oppure un solo a capo. Non due: una
+# riga vuota e' un cambio di capoverso, e «non» in fondo a un capoverso con
+# «e'» in cima al successivo sono due frasi diverse, non un costrutto.
+#
+# Serve perche' il libro va a capo a ottanta colonne, quindi la stessa frase
+# si scrive «non e' un caso» su una riga e «non e' un\ncaso» sulla riga dopo,
+# a seconda di dove cade il margine. Con lo spazio **letterale** un
+# rilevatore ne vede una e non l'altra, e dichiara dentro il tetto capitoli
+# che non ci sono: il costrutto e' lo stesso, cambia solo dove cade l'a capo.
+_SP = r"(?:[^\S\n]+|[^\S\n]*\n[^\S\n]*)"
+
+# `(?![^\S\n]{3,})` esclude i falsi positivi che la **mascheratura stessa
+# fabbrica**: azzerando il codice in linea, «non sono Python: `%timeit` e' un
+# comando» diventa «non sono Python:        e' un comando», e il costrutto si
+# forma dal nulla. Sul grezzo quelle frasi non hanno nessun match. La prosa
+# vera fra la punteggiatura e il verbo mette uno spazio solo, o un a capo:
+# tre o piu' spazi di fila sono sempre roba mascherata.
+_RX_TIC = re.compile(
+    rf"\b[Nn]on{_SP}(?:è|sono|era|erano|si{_SP}tratta{_SP}di)\b"
+    r"[^.;!?:,]{0,120}?[,:;](?![^\S\n]{3,})\s*(?:è|sono|era|erano)\b",
+    re.S)
+
+# `(?!...particolare)` perche' «non e' un **caso particolare** della GCN» e'
+# un'affermazione tecnica, non la sorella retorica di «non e' un caso» (= non
+# e' una coincidenza). Senza l'esclusione il rilevatore fa «riparare» una
+# frase giusta, che e' il modo in cui un controllo costa piu' di quanto rende.
+# E anche qui lo spazio e' `_SP`, perche' il difetto morde al contrario:
+# l'esclusione saltava appena l'a capo cadeva fra «caso» e «particolare».
+_RX_SORELLE = re.compile(
+    rf"[Nn]on{_SP}è{_SP}un{_SP}(?:dettaglio|caso|teoria|zelo|cosmesi"
+    rf"|pignoleria|capriccio)\b(?!{_SP}particolare)")
+
+
+def _senza_citazioni(t: str) -> str:
+    """Il testo con le citazioni messe a spazi, i numeri di riga fermi.
+
+    Una negazione dentro «virgolette» e' un riferimento a una frase gia'
+    coniata, non una mossa fatta adesso: chi la «ripara» rompe una citazione.
+    """
+    for rx in (r"«[^»]*»", r'"[^"\n]*"', r"“[^”]*”"):
+        t = re.sub(rx, lambda m: re.sub(r"[^\n]", " ", m.group(0)), t)
+    return t
+
+
+def contrapposizioni(testo: str) -> list[tuple[int, str]]:
+    """[(riga, frase)] dei «non e' X, e' Y» di una pagina, criterio ufficiale.
+
+    Sta qui, e non dentro l'asse, perche' **chi misura deve poter eseguire il
+    rilevatore vero** invece di riscriverne una copia: due copie divergono, e
+    a quel punto non si sa piu' quale dei due conti abbia ragione.
+    """
+    pulito = _senza_citazioni(_maschera_prosa(testo))
+    trovati = {m.start(): m for m in _RX_TIC.finditer(pulito)}
+    trovati.update({m.start(): m for m in _RX_SORELLE.finditer(pulito)})
+    return [(pulito[:pos].count("\n") + 1,
+             " ".join(trovati[pos].group(0).split()))
+            for pos in sorted(trovati)]
+
+
 @functools.lru_cache(maxsize=1)
 def _tempi_git() -> dict[str, int]:
     """{percorso relativo: data dell'ultimo commit che lo tocca}, in una passata.
@@ -1057,48 +1116,33 @@ def main():
         # capitoli gia' portati dentro il tetto, elencati in CHIUSI: li' un
         # ritorno sopra i due e' una regressione e va vista subito. Gli altri
         # si contano e basta, e la lista si accorcia man mano.
-        # Tutti i capitoli sono stati portati dentro il tetto, quindi
-        # `CHIUSI` non e' piu' una lista da allungare: e' il libro. Da qui in
-        # avanti l'asse **fallisce** su qualunque capitolo torni sopra i due,
-        # ed e' il comportamento giusto adesso che partire da zero e' possibile.
-        CHIUSI = None      # None = tutti
+        # `CHIUSI` era diventato `None`, cioe' «tutti», perche' col rilevatore
+        # vecchio ogni capitolo risultava dentro il tetto. Riparato lo spazio
+        # il conto vero e' un altro, e tenere `None` renderebbe l'asse rosso
+        # per chiunque fino alla fine della campagna: un controllo sempre rosso
+        # non avvisa di niente, e' soltanto un cancello che si impara ad
+        # aggirare. Vale quindi il meccanismo che questo asse ha sempre avuto,
+        # e la lista **cresce** man mano che un capitolo rientra: dentro
+        # `CHIUSI` si fallisce, perche' li' tornare sopra il tetto e' una
+        # regressione; fuori si elenca e basta.
+        CHIUSI = {"Agenti", "AttenzioneLineare", "Audio",
+                  "AutoSupervisione", "Conclusioni", "Efficienza", "GAN",
+                  "GPU", "GraphNeuralNetwork", "Interpretabilita",
+                  "Introduzione", "MachineLearning", "ModelliLatenti",
+                  "Python", "ReinforcementLearning", "RetiNeurali",
+                  "Ricerca", "SerieTemporali", "SpeechRecognition",
+                  "VerosimiglianzaEsatta"}
         TETTO = 2
-        # `(?![^\S\n]{3,})` esclude i falsi positivi che la **mascheratura
-        # stessa fabbrica**: azzerando il codice in linea, «non sono Python:
-        # `%timeit` e' un comando» diventa «non sono Python:        e' un
-        # comando», e il costrutto si forma dal nulla. Sul grezzo quelle frasi
-        # non hanno nessun match. La prosa vera fra la punteggiatura e il verbo
-        # mette uno spazio solo, o un a capo: tre o piu' spazi di fila sono
-        # sempre roba mascherata.
-        rx_tic = re.compile(
-            r"\b[Nn]on (?:è|sono|era|erano|si tratta di)\b"
-            r"[^.;!?:,]{0,120}?[,:;](?![^\S\n]{3,})\s*(?:è|sono|era|erano)\b",
-            re.S)
-        # `(?! particolare)` perche' «non e' un **caso particolare** della GCN»
-        # e' un'affermazione tecnica, non la sorella retorica di «non e' un
-        # caso» (= non e' una coincidenza). Senza l'esclusione il rilevatore
-        # fa «riparare» una frase giusta, che e' il modo in cui un controllo
-        # costa piu' di quanto rende.
-        rx_sorelle = re.compile(
-            r"[Nn]on è un (?:dettaglio|caso|teoria|zelo|cosmesi|pignoleria"
-            r"|capriccio)\b(?! particolare)")
-
-        def senza_citazioni(t: str) -> str:
-            for rx in (r"«[^»]*»", r'"[^"\n]*"', r"“[^”]*”"):
-                t = re.sub(rx, lambda m: re.sub(r"[^\n]", " ", m.group(0)), t)
-            return t
-
+        # **La quarta: dentro il costrutto lo spazio non e' uno spazio.**
+        # Il rilevatore vero sta in `contrapposizioni()`, a livello di
+        # modulo, con `_SP` e le due regex: li' lo puo' eseguire anche chi
+        # misura, invece di riscriverne una copia che poi diverge.
         per_capitolo = defaultdict(list)
         for f, t in sorted(testi.items()):
             if "/" not in f:
                 continue
             capitolo = f.split("/")[0]
-            pulito = senza_citazioni(_maschera_prosa(t))
-            trovati = {m.start(): m for m in rx_tic.finditer(pulito)}
-            trovati.update({m.start(): m for m in rx_sorelle.finditer(pulito)})
-            for pos in sorted(trovati):
-                n = pulito[:pos].count("\n") + 1
-                frase = " ".join(trovati[pos].group(0).split())
+            for n, frase in contrapposizioni(t):
                 per_capitolo[capitolo].append(f"{f}:{n}  {frase[:78]}")
 
         for capitolo, righe in sorted(per_capitolo.items()):

@@ -20,13 +20,13 @@ aperto, perché dalla parte di chi chiamava la cornetta era ancora alzata. A
 quel punto quella macchina era lì che aspettava di sentirsi dire dove mandare
 la chiamata, e con altri toni le si dettava un numero qualunque, a New York
 come a Roma. A fine mese sul conto compariva la sola cosa che il nastro avesse
-mai registrato: una telefonata a un numero gratuito. Chi finì arrestato,
-racconta il reportage, aveva fatto l'unico errore che si potesse fare, e cioè
+mai registrato: una telefonata a un numero gratuito. Chi finì arrestato, spiega
+nel reportage uno dei protagonisti, aveva sbagliato nel modo più semplice:
 partire da un numero che gratuito non era. Alla rete il fischio era arrivato
 come un **comando** e non come un suono dentro una conversazione, perché le
 parole delle persone e i comandi delle macchine viaggiavano sullo stesso paio
-di fili. Non c'era
-nessun errore di programmazione da correggere. C'era un canale solo.
+di fili. Non c'era nessun errore di programmazione da correggere. C'era un
+canale solo.
 
 Il problema la rete telefonica lo ha risolto nel giro di un decennio,
 nell'unico modo davvero strutturale che esista: mandando i comandi delle
@@ -252,7 +252,6 @@ e aspetta.
 
 ## L'allineamento è una disposizione, non un controllo di accesso
 
-Il titolo mette a confronto due cose, e servono chiare tutte e due.
 **Allineare** un modello, come si è detto in apertura di capitolo, vuol dire
 fare in modo che quello che fa combaci con quello che volevamo: in pratica,
 addestrarlo a rifiutare certe richieste. Un **controllo di accesso** è invece
@@ -260,8 +259,9 @@ il termine con cui in informatica si chiama un cancello vero: la regola che
 decide chi può fare cosa, scritta da qualche parte e verificabile da chiunque.
 
 L'obiezione ragionevole è: ma i modelli non sono addestrati apposta a
-rifiutare? Sì. Il modo, che il {doc}`capitolo sui Transformer </Transformers/overview>` racconta per esteso,
-in sostanza è questo: gli si fanno vedere moltissime coppie di risposte con
+rifiutare? Sì. Il modo, che la {doc}`sezione sul post-training
+</Transformers/post-training>` racconta per esteso, in sostanza è questo: gli
+si fanno vedere moltissime coppie di risposte con
 scritto quale delle due era migliore, finché non prende l'abitudine di
 produrre quelle {cite}`ouyang2022training`; oppure gli si fa imparare la
 stessa cosa in un colpo solo, con una scorciatoia che la sezione seguente
@@ -352,9 +352,10 @@ tanto, cento quasi sempre, e in mezzo si sale piano, senza scalini. Non
 c'è un numero di pagine sotto il quale si è al sicuro: si può dire quanto è
 difficile, mai che è impossibile.
 
-Chi il portiere ce l'ha a disposizione, e può provarci quante volte vuole, fa
-un'altra cosa ancora: gli recita formule senza senso, cambia una parola alla
-volta, tiene la versione che lo fa esitare di più e riparte da lì. La formula
+Chi il portiere se lo può studiare da dentro, e sa che effetto gli fa ogni
+parola prima ancora di dirgliela, fa un'altra cosa ancora: parte da una formula
+senza senso, cambia una parola alla volta scegliendo quella che lo avvicina di
+più a cedere, e riparte da lì. La formula
 che ne esce funziona spesso anche sul portiere del palazzo accanto, che lavora
 per un'altra agenzia e non l'ha mai sentita. Quello che è stato trovato non
 appartiene a quella persona, ma al modo in cui tutte vengono formate.
@@ -363,8 +364,9 @@ appartiene a quella persona, ma al modo in cui tutte vengono formate.
 
 `````{tab} Superiore
 
-È l’**apprendimento in contesto**, il meccanismo che il capitolo sui Transformer
-ha descritto come base del *few-shot*: qualche esempio dentro il prompt orienta
+È l’**apprendimento in contesto**, il meccanismo che la {doc}`sezione sui
+grandi modelli linguistici </Transformers/llm>` ha descritto come base del
+*few-shot*: qualche esempio dentro il prompt orienta
 il comportamento senza toccare i pesi. Cem Anil e colleghi
 {cite}`anil2024manyshot` hanno osservato che, con le finestre di contesto lunghe
 entrate in uso nel frattempo, condizionare la risposta con centinaia di
@@ -393,7 +395,8 @@ notizia, degli esempi avversari della visione.
 
 Passiamo alla parte che conta di più per chi costruisce sistemi. Finché il
 modello risponde a una domanda, il danno di un'istruzione ostile è limitato a
-un testo sbagliato. Ma il capitolo sugli agenti ha descritto un modello che
+un testo sbagliato. Ma il {doc}`capitolo sugli agenti </Agenti/overview>` ha
+descritto un modello che
 *agisce*: usa strumenti, naviga, legge documenti, interroga archivi, e ogni
 volta rimette dentro alla conversazione ciò che ha trovato. Quella
 conversazione, con tutto quello che ci è finito dentro, si chiama il
@@ -471,7 +474,8 @@ eseguire. Il canale in uscita è il termine che si sottovaluta più spesso,
 perché di rado assomiglia a un canale: qualunque funzione che porti fuori una
 stringa scelta dal modello lo è.
 
-Vale infine il richiamo al capitolo sui sistemi multi-agente. Un componente che
+Vale infine il richiamo alla {doc}`sezione su protocolli e consenso
+</SistemiMultiAgente/protocolli-e-consenso>`. Un componente che
 risponde in tempo, in modo perfettamente plausibile, e dice il falso ha già un
 nome là: è un partecipante **bizantino** {cite}`lamport1982byzantine`. Un
 agente che ha ricevuto un'istruzione iniettata è esattamente questo, con
@@ -534,11 +538,12 @@ non un gradino superiore.
 
 **Difese nel prompt.** Delimitare i dati con marcatori, ripetere le istruzioni
 alla fine del contesto, chiedere al modello di ignorare eventuali comandi
-contenuti nei documenti. Sono buone pratiche, già raccomandate in
-{doc}`Prompt, contesto e loop </IngegneriaLLM/overview>` per ragioni di
-chiarezza, e qualche effetto ce l'hanno: riducono le confusioni accidentali e alzano il costo dei tentativi
-banali. Ma il codice visto sopra ha mostrato perché non sono un confine: un
-delimitatore scritto nel canale è un dato come gli altri, e un'istruzione
+contenuti nei documenti. Sono buone pratiche, già raccomandate dalla
+{doc}`sezione sul prompt engineering </IngegneriaLLM/prompt-engineering>` per
+ragioni di chiarezza, e qualche effetto ce l'hanno: riducono le confusioni
+accidentali e alzano il costo dei tentativi banali. Ma il tokenizzatore
+giocattolo ha mostrato perché non sono un confine: un delimitatore scritto nel
+canale è un dato come gli altri, e un'istruzione
 che chiede al modello di ignorare le istruzioni vive nello stesso posto di
 quelle ostili, senza alcun titolo di precedenza. Vanno adottate e non vanno
 raccontate come una protezione.
@@ -546,13 +551,16 @@ raccontate come una protezione.
 **Classificatori a monte e a valle.** Un secondo modello, o un classificatore
 addestrato apposta, ispeziona ciò che entra e ciò che esce, e blocca quello che
 riconosce come tentativo di aggiramento, contenuto vietato, dato personale in
-uscita. È l'idea dei **guardrail** vista nel {doc}`capitolo di MLOps </MLOps/overview>`, e il principio
+uscita. È l'idea dei **guardrail** vista nella {doc}`sezione su LLMOps
+</MLOps/llmops>`, e il principio
 che la giustifica è quello classico della **difesa in profondità**: un secondo
 controllo, indipendente dal primo, fallisce per ragioni diverse. Attenzione
 però a che cosa vuol dire «indipendente»: se il filtro è a sua volta un modello
 di linguaggio addestrato in modo simile, eredita in buona parte le stesse
-debolezze, e due giudici che sbagliano allo stesso modo contano per uno (il
-{doc}`capitolo sui sistemi multi-agente </SistemiMultiAgente/overview>` lo mette anche in formula). I costi vanno
+debolezze, e due giudici che sbagliano allo stesso modo contano per uno (la
+{doc}`sezione sul costo del coordinamento
+</SistemiMultiAgente/costo-del-coordinamento>` lo mette anche in formula). I
+costi vanno
 messi in conto: un'attesa aggiuntiva su ogni richiesta e blocchi ingiusti di
 lavoro legittimo, con la solita soglia da tarare.
 
@@ -679,10 +687,9 @@ rete telefonica, ma è il suo surrogato più onesto: se il confine non può star
 
 ## Cercare i guasti prima che li trovi qualcun altro
 
-Resta il metodo con cui si scopre cosa non va. Due nomi vanno presentati,
-perché la prossima sezione, sull'allineamento e la governance, li riprenderà
-in generale: il **red teaming** è il mestiere di chi attacca il proprio
-sistema apposta, per trovare le falle prima che le trovi qualcun altro; le
+Resta il metodo con cui si scopre cosa non va, e ha due nomi. Il **red
+teaming** è il mestiere di chi attacca il proprio sistema apposta, per trovare
+le falle prima che le trovi qualcun altro; le
 **evals** (da *evaluation*) sono esami ripetibili, liste di prove con un voto,
 per controllare che le falle già corrette non tornino. La divisione dei
 compiti è questa: la ricerca a mano scopre le categorie nuove, l'esame

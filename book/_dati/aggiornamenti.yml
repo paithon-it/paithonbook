@@ -48,6 +48,59 @@
 
 versioni:
 
+- versione: "1.12.1"
+  data: 2026-08-31
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Dieci capitoli riletti per intero.** MLOps, Visione artificiale, AI
+      responsabile, Deep reinforcement learning, PINN, NLP, GAN, Modelli
+      latenti, Verosimiglianza esatta e World models sono passati per le
+      quattro lenti: rimandi portati al bersaglio giusto, glosse riallineate
+      alle formule che commentano, numeri verificati contro i blocchi che li
+      stampano. In Matematica e Sistemi multi-agente sono state diradate le
+      contrapposizioni rimaste, dove non contrapponevano più niente.
+
+  - tipo: corretto
+    pagina: GAN/come-funziona.md
+    testo: >
+      **Il discriminatore giocattolo è stato eseguito davvero.** Il conto
+      della pagina è girato riga per riga, seme compreso: il gradiente letto
+      per quello che indica (dove il verdetto scende, e quindi, a ritroso, in
+      che verso salire), la conversione fra perdita e frequenza che dà un
+      minimo e non un massimo, e la curva del verdetto rimessa dove i numeri
+      la mettono. Nel capitolo, quattro buchi dell'isomorfismo chiusi e un
+      verso di metrica raddrizzato.
+
+  - tipo: corretto
+    pagina: ModelliLatenti/comprimere-e-ricostruire.md
+    testo: >
+      **Le affermazioni che il capitolo smentiva altrove.** La non linearità
+      che serve nel decoder e non «da tutte e due le parti», il copista e
+      l'archivista rimessi ciascuno al proprio mestiere, il rapporto di
+      compressione che una sezione dava cinquanta e un'altra quarantotto, e la
+      media che mancava alla PCA probabilistica: tutto verificato coi conti
+      eseguiti.
+
+  - tipo: corretto
+    pagina: VerosimiglianzaEsatta/a-che-serve.md
+    testo: >
+      **Una citazione che cambiava soggetto.** Le virgolette si aprivano su
+      «non riescono a distinguere» e lasciavano fuori chi non distingue,
+      mentre l'originale parla della densità appresa dai modelli a flusso: il
+      soggetto sbagliato proprio nel capoverso la cui tesi è che la densità e
+      il modello non sono la stessa cosa. Ripresa dal testo originale.
+
+  - tipo: corretto
+    pagina: WorldModels/mondi-in-miniatura.md
+    testo: >
+      **Alla temperatura più alta l'agente impara meno bene, non smette di
+      imparare.** La conclusione non seguiva dai numeri che la pagina stampa:
+      il punteggio resta sopra la soglia, e lontano da quello di una politica
+      che gioca a caso. A cambiare è la deviazione standard, che stava nella
+      tabella e non veniva mai usata.
+
 - versione: "1.12.0"
   data: 2026-08-30
   voci:

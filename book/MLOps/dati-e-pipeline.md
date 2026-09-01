@@ -107,8 +107,8 @@ si mettono davanti al modello al posto del dato grezzo («la spesa media
 dell'ultimo mese», «quante volte ha comprato di notte»); e solo alla fine si
 **addestra**. È la *pipeline* annunciata nella pagina d'apertura: il dato entra
 da un capo, attraversa una stazione dopo l'altra e ne esce pronto. Ognuno di
-questi passaggi si scrive con gli attrezzi per maneggiare tabelle già visti nel
-{doc}`capitolo su Python </Python/overview>`.
+questi passaggi si scrive con gli attrezzi per maneggiare tabelle già visti in
+{doc}`Pandas e Matplotlib </Python/pandas-matplotlib>`.
 
 Il salto di qualità, però, è organizzativo prima che tecnico, e chiede due cose
 alla catena. Che sia **riproducibile**, cioè che rilanciandola sugli stessi
@@ -139,8 +139,8 @@ di due corse su piste di lunghezza diversa.
 Il latte che arriva in bottiglia ha attraversato una filiera: la cisterna lo
 raccoglie dalle stalle, il laboratorio ne analizza un campione, la
 pastorizzazione lo tiene alla temperatura giusta per il tempo giusto, e solo
-alla fine si imbottiglia. Nessuno di quei passaggi si salta, e l'ordine non è
-un dettaglio: se il campione si analizzasse in fondo, un carico guasto lo si
+alla fine si imbottiglia. Nessuno di quei passaggi si salta, e nemmeno il loro
+ordine: se il campione si analizzasse in fondo, un carico guasto lo si
 scoprirebbe quando è già nelle bottiglie di tutti, mentre analizzato all'inizio
 quel carico si scarta e non entra. Una pipeline di dati è questo: passaggi
 collegati, ognuno con un compito e con il suo controllo, che trasformano il
@@ -167,10 +167,11 @@ piccoli, dichiarati, e nessuna trasformazione «a mano» che non lasci traccia.
 
 Formalmente una pipeline è un **DAG** (*directed acyclic graph*): i nodi sono
 trasformazioni, gli archi le dipendenze dato-verso-dato, e l'assenza di cicli
-garantisce un ordine di esecuzione ben definito. Due proprietà la rendono
-governabile. L’**idempotenza**: rieseguire uno stadio sugli stessi input
-produce lo stesso output, senza effetti collaterali accumulati (condizione per
-poter ripartire da metà catena dopo un errore). E la **materializzazione
+garantisce che un ordine di esecuzione valido esista, di solito più d'uno, ed è
+per questo che qualcosa poi può andare in parallelo. Due proprietà la rendono
+governabile. L’**idempotenza**: rilanciare uno stadio già eseguito lascia il
+risultato dov'era invece di accumulare effetti collaterali, ed è la condizione
+per ripartire da metà catena dopo un errore. E la **materializzazione
 versionata** degli stadi intermedi, così che un cambiamento a valle non
 obblighi a ricalcolare tutto da capo. Il programma che tiene insieme il tutto
 si chiama **orchestratore**: decide in che ordine far girare gli stadi, quali
@@ -214,26 +215,25 @@ Ogni elenco, poi, è spezzato in cassetti, con scritto fuori il valore più
 piccolo e il più grande che contengono: chi cerca le spese sopra i mille euro
 salta i cassetti che si fermano a cento, senza aprirli.
 
-C'è un secondo guadagno, meno ovvio. Nella colonna delle città ci sono
-migliaia di «Milano» di fila, e allora «Milano» si scrive una volta sola e poi
-ci si rimanda con un numerino; nella scheda per riga ogni valore è circondato
-da valori di natura diversa, e non c'è niente da riconoscere.
+Mettere insieme valori della stessa natura fa guadagnare una seconda volta,
+sullo spazio. Nella colonna delle città ci sono migliaia di «Milano» di fila, e
+allora «Milano» si scrive una volta sola e poi ci si rimanda con un numerino;
+nella scheda per riga ogni valore è circondato da valori di natura diversa, e
+non c'è niente da riconoscere.
 
-Da solo, però, l'archivio riconosce soltanto i valori ripetuti. Una colonna di
-orari che crescono di pochi secondi alla volta sembrerebbe il caso più facile
-del mondo (si scrive il primo e poi gli scattini) e invece se la cava male: di
-orari uguali non ce n'è quasi nessuno. Quel risparmio bisogna chiederlo
-apposta, e chi non lo sa se lo perde.
+L'archivio però riconosce solo i valori uguali, e nella colonna degli orari,
+che crescono di pochi secondi alla volta, di uguali non ce n'è quasi nessuno:
+gli basterebbe segnare il primo e poi gli scarti, ma quel modo di scrivere
+glielo si deve chiedere apposta.
 
 Il formato per colonna più usato si chiama **Parquet**, e in più tiene i tipi
 delle colonne (che il CSV non ha: per lui è tutto testo, ed è il motivo per cui
 un codice postale che comincia per zero si trasforma in un numero e perde lo
 zero).
 
-Poi c'è **Arrow**, che non riguarda il disco ma la memoria: il disco è
-l'armadio dove le cose restano anche a macchina spenta, la memoria è il tavolo
-su cui le tiri fuori per lavorarci. Sul tavolo ogni programma dispone i dati a
-modo suo, e passarne una a un altro vuol dire riscriverla tutta; Arrow è
+Poi c'è **Arrow**, che non riguarda il disco ma la memoria, cioè il tavolo su
+cui i dati si tirano fuori per lavorarci. Lì ogni programma li dispone a modo
+suo, e passare una tabella a un altro vuol dire riscriverla tutta; Arrow è
 l'accordo di disporli tutti alla stessa maniera, e il passaggio non costa più
 niente.
 
@@ -255,9 +255,9 @@ per contenuto, il che abilita codifiche specializzate (dizionario per le
 categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
 timestamp) prima ancora della compressione generica. Rispetto al CSV
 equivalente il guadagno è di **qualche volta**, e a decidere quante è la
-codifica a dizionario. I numeri che seguono sono misurati qui, su
-tabelle da duecentomila righe, confrontando il `.csv` e il `.parquet` scritti
-da Pandas con le impostazioni di serie. Sei colonne di categorie con sei valori
+codifica a dizionario. I numeri che seguono vengono da tabelle di duecentomila
+righe, con il `.csv` e il `.parquet` scritti da Pandas 3 e PyArrow 25 con le
+impostazioni di serie. Sei colonne di categorie con sei valori
 distinti (nomi di città) stanno in un file **diciotto volte** più piccolo,
 perché il dizionario sostituisce ogni stringa con un indice, e quante volte lo
 decide la lunghezza delle stringhe. Sei colonne di numeri casuali con la
@@ -269,11 +269,14 @@ Le colonne ordinate, che l'intuizione metterebbe in alto, non ci vanno, e la
 ragione è istruttiva: la codifica che le comprimerebbe davvero (memorizzare le
 differenze fra un valore e il precedente, la *delta encoding*) **non è quella
 che la libreria sceglie da sola**. Su una colonna di istanti che crescono di
-pochi secondi alla volta, il default si ferma a **due volte**, perché il
+pochi secondi alla volta il default resta **sotto il tre**, perché il
 dizionario, su valori quasi tutti diversi, non ha niente da riusare; chiedendo
-esplicitamente la delta si arriva a **quasi quaranta**. È il caso da tenere a
-mente ogni volta che si dichiara che cosa fa uno strumento «di serie»: qui
-l'impostazione di serie lascia sul tavolo un fattore venti.
+esplicitamente la delta si sale a **una decina di volte e oltre**, e quanto
+esattamente lo decide la regolarità degli scarti (con incrementi fra uno e tre
+secondi si arriva sopra il venti, con incrementi fino a un minuto si resta
+sotto il dieci). È il caso da tenere a mente ogni volta che si dichiara che
+cosa fa uno strumento «di serie»: qui l'impostazione di serie lascia sul
+tavolo un fattore fra il tre e l'otto.
 
 **Predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
 statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
@@ -473,11 +476,11 @@ opposte. La pipeline corretta riconosce il lotto come sospetto: probabilità
 media di frode $0{,}97$, cioè un allarme netto. Quella bacata, ricentrando ogni
 lotto su sé stesso, cancella l'anomalia e scende a $0{,}45$, che non vuol dire
 «innocuo»: vuol dire **testa o croce**, ed è anche peggio, perché un sistema
-antifrode tarato per intervenire sopra una certa soglia adesso lascia passare
-tutto senza fiatare. Su singole transazioni la differenza fra le due risposte
-arriva a $0{,}79$. Nessun errore, nessun avviso: solo predizioni sbagliate.
-Ecco perché la definizione di una feature deve vivere in *un posto solo*,
-condiviso tra addestramento e servizio: è il compito del feature store.
+antifrode tarato per intervenire sopra una certa soglia adesso ne lascia
+passare la maggior parte. Su singole transazioni la differenza fra le due
+risposte arriva a $0{,}79$. Nessun errore, nessun avviso: solo predizioni
+sbagliate. Ecco perché la definizione di una feature deve vivere in *un posto
+solo*, condiviso tra addestramento e servizio: è il compito del feature store.
 
 ## Validare i dati in ingresso
 
@@ -515,17 +518,18 @@ La validazione dei dati è uno dei quattro assi della **ML Test Score**
 {cite}`breck2017ml`, la rubrica di collaudo che misura la maturità di un
 sistema di ML: include test sullo schema delle feature, sui loro intervalli e
 sul fatto che ogni feature apporti davvero valore. Conviene distinguere due
-livelli. I controlli **puntuali** (tipo, obbligatorietà, intervallo, assenza
-di `NaN`) si applicano a ogni record isolato e sono economici: sono quelli che
-il codice mette in pratica. I controlli **distribuzionali** (la media di una
+livelli. I controlli **puntuali** (tipo, obbligatorietà, intervallo, assenza di
+`NaN`) si applicano a ogni record isolato e sono economici: sono quelli che il
+codice mette in pratica. I controlli **distribuzionali** (la media di una
 feature è slittata? la proporzione di una categoria è raddoppiata?) richiedono
 di confrontare un lotto con una *baseline* di riferimento, ed è qui che la
 validazione statica sfuma nel **monitoraggio** del *dataset shift*
-{cite}`quinonero2009dataset`: lo abbiamo inquadrato in termini statistici
-nella sezione «Quando i dati cambiano», e il suo lato operativo (sorvegliare
-le distribuzioni nel tempo e decidere quando riaddestrare) avrà una sezione
-dedicata. Qui restiamo al primo livello: fermare alla porta il record
-palesemente malformato.
+{cite}`quinonero2009dataset`: lo abbiamo inquadrato in termini statistici in
+{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`, e il suo
+lato operativo, sorvegliare le distribuzioni nel tempo e decidere quando
+riaddestrare, sta in {doc}`Sorvegliare un modello vivo
+</MLOps/monitoring-e-drift>`. Qui restiamo al primo livello: fermare alla porta
+il record palesemente malformato.
 
 `````
 
@@ -627,12 +631,13 @@ questo: dargli un contratto, e farlo rispettare.
   compito e con il suo controllo, sempre nello stesso ordine, senza ritocchi a
   mano che non lascino traccia. Altrimenti diventa una giungla di tubature che nessuno
   sa più dove portino.
-- Il **formato** in cui i dati aspettano fra una stazione e l'altra non è un
-  dettaglio: l'archivio **per colonna** (**Parquet**) legge solo le poche voci
-  che servono invece di attraversare tutte le schede, e si comprime molto
-  meglio perché in una colonna lo stesso valore si ripete, e un valore ripetuto
-  si scrive una volta sola. Il CSV va bene per passare una tabella a una
-  persona, non per il resto.
+- Conta anche il **formato** in cui i dati aspettano fra una stazione e
+  l'altra: l'archivio **per colonna** (**Parquet**) legge solo le poche voci
+  che servono invece di attraversare tutte le schede, e si comprime meglio,
+  perché un valore che si ripete si scrive una volta sola; dove di ripetuto non
+  c'è niente, come in una colonna di orari sempre diversi, quel risparmio va
+  chiesto apposta. Il CSV va bene per passare una tabella a una persona, non
+  per il resto.
 - Il bug più costoso del mestiere è calcolare una stessa informazione in un
   modo mentre si impara e in un modo appena diverso mentre si risponde: nessun
   errore compare a schermo, solo predizioni sbagliate. La cura è definirla in
@@ -640,8 +645,10 @@ questo: dargli un contratto, e farlo rispettare.
   tutte e due le parti.
 - I dati in ingresso si **controllano alla porta**, come la merce al
   ricevimento di un supermercato: ci sono tutte le colonne? i valori sono
-  plausibili? quante caselle sono vuote? Chi non passa il controllo finisce in
-  un registro, non dentro il modello.
+  plausibili? quante caselle sono vuote? Chi non passa finisce in un registro
+  invece che dentro il modello. E il guardiano va scritto con cura, perché
+  chiedere «è un numero?» lascia passare anche un «vero», che sotto sotto un
+  numero lo è.
 ```
 `````
 
@@ -661,15 +668,16 @@ questo: dargli un contratto, e farlo rispettare.
   resa **riproducibile e orchestrata** (un DAG di stadi idempotenti), per non
   degenerare nella *pipeline jungle*; automatizzarla per intero è il cuore della
   CD4ML {cite}`sato2019continuous`.
-- Il **formato** in cui i dati stanno fra uno stadio e l'altro non è un
-  dettaglio: un formato **colonnare** (**Parquet**) legge solo le colonne che
-  servono, comprime meglio perché i valori simili sono vicini (misurato:
-  diciotto volte su colonne categoriche, poco più di due su float casuali, fra
-  due e tre su una tabella mista, e due sole su istanti ordinati finché non si
-  chiede la *delta encoding*, che porta a quaranta), salta interi blocchi grazie alle
-  statistiche, e ha uno **schema con i tipi** che al CSV manca. **Arrow** fa la
-  stessa cosa **in memoria**, e serve a passarsi una tabella fra processi o
-  linguaggi senza convertirla. CSV per un umano, Parquet per tutto il resto.
+- Conta anche il **formato** in cui i dati stanno fra uno stadio e l'altro: uno
+  **colonnare** (**Parquet**) legge solo le colonne che servono, comprime
+  meglio perché i valori simili sono vicini (diciotto volte su colonne
+  categoriche, poco più di due su float casuali, fra due e tre su una tabella
+  mista, e sotto il tre su istanti ordinati finché non si chiede la *delta
+  encoding*, che porta a una decina di volte e oltre), salta interi blocchi
+  grazie alle statistiche, e ha uno **schema con i tipi** che al CSV manca.
+  **Arrow** fa la stessa cosa **in memoria**, e serve a passarsi una tabella
+  fra processi o linguaggi senza convertirla. CSV per un umano, Parquet per
+  tutto il resto.
 - Il **feature store** centralizza la definizione delle feature: stessa ricetta
   in addestramento (*offline*) e in produzione (*online*), riuso tra modelli,
   freschezza e **point-in-time correctness** contro il *leakage* temporale.

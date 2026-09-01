@@ -53,7 +53,7 @@ partenza le curve che obbediscono alla regola sarebbero infinite: l'80 sceglie
 la nostra. Le leggi di Newton che Le Verrier stava applicando sono regole
 così, con la gravità al posto del caffè.
 
-Quel conto minuto per minuto è il **metodo classico**: da settant'anni i
+Quel conto minuto per minuto è il **metodo classico**: dagli anni Cinquanta i
 calcolatori risolvono così le equazioni differenziali, un passettino alla
 volta lungo una fitta rete di puntini. La rete di puntini si chiama
 **griglia**, e il programma che la macina **solutore**. Per il caffè i puntini
@@ -65,15 +65,13 @@ ne fa miliardi.
 
 Due cose però gli costano fatica. La griglia va tagliata su misura per la
 forma del problema, e tagliarla è un mestiere a sé. E i puntini esplodono
-quando la risposta dipende da tante cose insieme: già per la sbarra, che
-dipende dal tempo e dal posto, non basta più una fila di puntini, bisogna
-riempire un rettangolo.
+quando la risposta dipende da tante cose insieme.
 
 La sbarra chiede anche un'altra cosa. Per il caffè bastava sapere da dove si
 parte; per la sbarra serve pure sapere che cosa le succede **ai due capi**,
 perché lì il calore entra o esce: una fiamma sotto un'estremità e un blocco di
 ghiaccio sull'altra danno due storie diverse. Sono, letteralmente, le
-condizioni ai bordi.
+condizioni ai bordi, o al contorno, che è il nome che portano di solito.
 
 `````
 
@@ -101,7 +99,8 @@ dove $u(x,t)$ è la temperatura nel punto $x$ al tempo $t$ e $\alpha$ la
 diffusività termica; oltre alla condizione iniziale (il profilo a $t=0$)
 servono **condizioni al contorno**: cosa accade agli estremi della sbarra.
 Pochissime equazioni ammettono soluzioni in forma chiusa; per le altre si
-passa al calcolatore, nello spirito dei richiami di analisi numerica: là
+passa al calcolatore, nello spirito dei
+{doc}`richiami di analisi numerica </Matematica/analisi-numerica>`: là
 abbiamo accettato numeri a precisione finita, qui si accetta un continuo fatto
 a punti (una **griglia** su $x$ e $t$, con le derivate rimpiazzate da
 **differenze finite**, rapporti incrementali a passo piccolo ma non nullo).
@@ -122,8 +121,8 @@ curva non è davvero la risposta. A correggerla sono due cose insieme: le poche
 misure, che dicono dove la curva deve passare, e la legge, che dice come deve
 comportarsi *dappertutto*.
 
-Vale la pena fermarsi un secondo su come sia possibile, perché è il perno di
-tutto il capitolo. Per correggere un compito, di solito, serve avere
+Come sia possibile è il perno di tutto. Per correggere un compito, di solito,
+serve avere
 sott'occhio la risposta giusta. Qui la risposta giusta non ce l'ha nessuno: è
 proprio quella che stiamo cercando. Una legge però permette di correggere lo
 stesso, perché sa dire se una risposta è *sbagliata* anche quando nessuno sa
@@ -281,19 +280,17 @@ anche con misure rumorose e incomplete.
 
 Attenzione però a non attribuirsi un vantaggio che non c'è: nemmeno i metodi
 classici procedono per tentativi. Da quarant'anni gli inversi vincolati da una
-PDE si affrontano con il **metodo dello stato aggiunto**, che ricava il
-gradiente della funzione di scarto rispetto a *tutti* i parametri incogniti al
-costo di una o due risoluzioni del problema diretto, indipendentemente da
-quanti siano, e poi scende esattamente come fa una rete
-{cite}`plessix2006adjoint`. La differenza è un'altra, ed è di uniformità: lo
-stato aggiunto chiede di scrivere su misura, per quell'equazione, sia il
-solutore diretto sia quello aggiunto; la PINN risolve un unico problema non
-vincolato in $(\theta, \alpha)$, assorbe misure sparse e rumorose senza
-cambiare impianto e non discretizza né la geometria né l'operatore aggiunto. È
-soprattutto questa naturalezza sui problemi inversi ad aver fatto la fortuna
-delle PINN {cite}`raissi2019physics`. Il filone che ne è nato (reti vincolate
-dalla fisica, operatori neurali, scoperta di equazioni dai dati) va oggi sotto
-il nome di **scientific machine learning** {cite}`karniadakis2021physics`.
+PDE hanno il loro strumento maturo, il **metodo dello stato aggiunto**, che il
+gradiente rispetto a tutti i parametri incogniti lo ottiene con una o due
+risoluzioni del problema diretto {cite}`plessix2006adjoint`; va però scritto
+su misura per ogni equazione, solutore diretto e aggiunto compresi, mentre la
+PINN monta sempre lo stesso problema non vincolato in $(\theta, \alpha)$. La
+{doc}`sezione su dove la fisica aiuta e dove no </PINN/applicazioni-limiti>`
+ci torna sopra, e ci aggiunge un concorrente che costa ancora meno. È comunque
+questa naturalezza sui problemi inversi ad aver fatto la fortuna delle PINN
+{cite}`raissi2019physics`. Il filone che ne è nato (reti vincolate dalla
+fisica, operatori neurali, scoperta di equazioni dai dati) va oggi sotto il
+nome di **scientific machine learning** {cite}`karniadakis2021physics`.
 
 `````
 
@@ -311,20 +308,23 @@ scritto su misura per quell'equazione, e una PINN no. Altrove niente.
 
 Su un problema ordinario (regola nota, forma regolare, nessuna misura da
 tenere insieme alla legge) il conto a passettini vince, e non di poco: è più
-rapido ed è più preciso. E c'è di più: di quel conto si sa **dimostrare** al
-massimo quanto può sbagliare, e che accorciando i passi sbaglia meno. È una
-garanzia scritta prima di partire, non un risultato osservato dopo. Ha le
-sue condizioni, però, e chi fa il conto le conosce in anticipo. Sulla
-sbarra, per dire, accorciare i passettini lungo il ferro senza accorciare
-anche quelli nel tempo non migliora niente: il conto impazzisce e sputa
-temperature che nessun termometro vedrà mai, milioni di gradi sopra lo zero
-in un punto e altrettanti sotto zero in quello accanto. E se la storia da
-ricostruire fa un salto netto invece di scorrere liscia, di quel guadagno di
-precisione resta poco. Di una rete addestrata non si sa dire niente del
-genere: l'addestramento finisce quando smette di migliorare, e nessuno può
-garantire quanto lontana sia rimasta dalla risposta. Una PINN può metterci
-minuti dove il metodo di sempre impiega millisecondi, e ogni tanto sbaglia
-senza che nulla lo segnali.
+rapido ed è più preciso. Di quel conto si sa **dimostrare** al massimo quanto
+può sbagliare, e che accorciando i passi sbaglia meno: è una garanzia scritta
+prima di partire, non un risultato osservato dopo.
+
+La garanzia ha le sue condizioni, e chi fa il conto le conosce in anticipo. La
+più stretta lega fra loro i due passi: sulla sbarra, accorciare i passettini
+lungo il ferro senza accorciare anche quelli nel tempo fa sprofondare un
+puntino sotto zero e schizzare sopra il vicino, e a ogni passo quello scarto
+si moltiplica, finché il conto sputa temperature che nessun termometro vedrà
+mai.
+E se la storia da ricostruire fa un salto netto invece di scorrere liscia, di
+quel guadagno di precisione resta poco.
+
+Di una rete addestrata non si sa dire niente del genere: l'addestramento
+finisce quando smette di migliorare, e nessuno può garantire quanto lontana
+sia rimasta dalla risposta. Una PINN può metterci minuti dove il metodo di
+sempre impiega millisecondi, e ogni tanto sbaglia senza che nulla lo segnali.
 
 `````
 

@@ -1,16 +1,13 @@
 # Allineamento e governance: dai valori umani alle regole
 
-Nel dicembre 2016 alcuni ricercatori di OpenAI addestrano un agente a giocare
-a *CoastRunners*, una gara di motoscafi {cite}`clark2016faulty`. L'obiettivo
-dichiarato era semplice: vincere la corsa. Ma il punteggio del gioco non
-premiava l'arrivo: premiava il colpire una serie di bersagli disseminati lungo
-il percorso. L'agente lo
-scoprì, e trovò una scorciatoia geniale e assurda: invece di correre, faceva
-girare la barca in tondo dentro una piccola laguna, colpendo all'infinito gli
-stessi bersagli che ricomparivano, prendendo fuoco, andando contromano e
-schiantandosi, e intanto accumulava un punteggio più alto del 20% rispetto a
-qualunque giocatore umano che *finiva* la gara. Aveva fatto esattamente ciò
-che gli avevamo chiesto. Non ciò che intendevamo.
+La barca che gira in tondo dentro una laguna di *CoastRunners*, prendendo
+fuoco e andando contromano mentre incassa in media il venti per cento di punti
+in più dei giocatori umani senza mai tagliare il traguardo, la racconta per
+esteso la {doc}`sezione su esplorazione e ricompensa
+</DeepReinforcementLearning/esplorazione-e-ricompensa>`
+{cite}`clark2016faulty`. Qui serve la frase che la chiude, perché è da lì che
+riparte tutto il resto. Quell'agente aveva fatto esattamente ciò che gli
+avevamo chiesto. Non ciò che intendevamo.
 
 Questa distanza (tra la **lettera** di un obiettivo e la sua **intenzione**) è
 il cuore del problema dell’**allineamento**. La parola dice quello che sembra
@@ -30,13 +27,13 @@ tutto entro binari accettabili (la governance).
 
 ## Il problema dell'allineamento
 
-L'aneddoto del motoscafo ha un nome tecnico: **specification gaming**, il
-«giocare» con la specifica, cioè con la descrizione precisa di ciò che abbiamo
-chiesto. Non è una novità di questo capitolo. Il libro l'ha già incontrato dove
-si insegna a una macchina inseguendo un premio, cioè nell'apprendimento per
-rinforzo; e poi di nuovo nell'ultima fase con cui si rifiniscono i grandi
-modelli di linguaggio (gli **LLM**, dall'inglese *large language model*), dove
-lo stesso guaio prende il nome di **reward hacking**, «imbrogliare col premio».
+L'aneddoto del motoscafo ha un nome tecnico, anzi due per la stessa cosa:
+**reward hacking**, «scassinare la ricompensa», e **specification
+gaming**, il «giocare» con la specifica, cioè con la descrizione precisa di ciò
+che abbiamo chiesto. Nell'apprendimento per rinforzo il guaio si incontra a
+ogni ricompensa mal scritta, e torna identico nell'ultima fase con cui si
+rifiniscono i grandi modelli di linguaggio (gli **LLM**, dall'inglese *large
+language model*).
 
 La formula da tenere a mente è questa: quando ottimizzi un **surrogato** del
 tuo vero obiettivo, prima o poi ottieni il surrogato e perdi l'obiettivo.
@@ -100,11 +97,12 @@ per perseguire *internamente* una volta addestrato: anche con una specifica
 perfetta, un sistema ottimizzato su una distribuzione può interiorizzare un
 obiettivo che generalizza male fuori da essa (*goal misgeneralization*). Sul
 primo pesa la **legge di Goodhart**, nella formulazione resa celebre da
-Marilyn Strathern: «quando una misura diventa un obiettivo, cessa di essere
-una buona misura». Formalmente, ottimizziamo un proxy
-$\tilde{r} \approx r^*$; ma $\arg\max_y \tilde{r}(y)$ e $\arg\max_y r^*(y)$
-non coincidono, e la differenza $\tilde{r} - r^*$, piccola dove il proxy è stato
-stimato (i comportamenti tipici, quelli su cui esistevano dati), viene
+Marilyn Strathern {cite}`strathern1997improving`: «quando una misura diventa un
+obiettivo, cessa di essere una buona misura». Formalmente, ottimizziamo un
+proxy $\tilde{r} \approx r^*$; ma $\arg\max_y \tilde{r}(y)$ e
+$\arg\max_y r^*(y)$ in generale non coincidono, e la differenza
+$\tilde{r} - r^*$, piccola dove il proxy è stato stimato (i comportamenti
+tipici, quelli su cui esistevano dati), viene
 *amplificata* proprio dalla ricerca del massimo, che spinge il sistema fuori da
 quella regione, dove il proxy sovrastima. Qui $r^*$ è l'obiettivo vero
 (non osservabile direttamente), $\tilde{r}$ è il surrogato che ottimizziamo
@@ -122,15 +120,16 @@ e uno, e più è alto meglio è. Al suo posto abbiamo il surrogato, cioè un
 giudice automatico che dà un voto.
 
 Le regole del giocattolo sono tre, e vanno dette tutte prima, altrimenti i
-numeri non si possono commentare. **Primo**: la qualità vera di una risposta
-dipende dal suo merito e dalla sua lunghezza, e la lunghezza aiuta fino a un
-certo punto e poi stanca chi legge; quindi una risposta troppo lunga è davvero
-peggio, non solo giudicata peggio. **Secondo**: il giudice il merito lo vede,
-però ci somma un premio per la lunghezza, e quel premio non smette mai di
-crescere. Questa è la deformazione che i giudici automatici ereditano dalle
-persone da cui hanno imparato, che le risposte lunghe tendono a preferirle.
-Il giudice, insomma, ha un debole per le risposte lunghe, e gliel'abbiamo dato
-noi.
+numeri non si possono commentare. La **qualità vera** di una risposta dipende
+dal suo merito e dalla sua lunghezza, due numeri anche loro fra zero e uno, e
+la lunghezza aiuta fino a un certo punto e poi stanca chi legge: una risposta
+troppo lunga è davvero peggio, non solo giudicata peggio. Il **premio alla
+lunghezza** è il difetto del giudice, che il merito lo vede ma ci somma un
+bonus per le righe in più, e quel bonus
+non smette mai di crescere; è la deformazione che i giudici automatici
+ereditano dalle persone da cui hanno imparato, e gliel'abbiamo data noi. E c'è
+il **tremolio**: il giudice sbaglia anche a caso, di poco, come chiunque dia
+molti voti di fila.
 
 Quel che l'esperimento misura è un'altra cosa, e non è affatto ovvia: **quanto
 danno fa quel difetto al crescere della pressione con cui si ottimizza**. La
@@ -209,9 +208,10 @@ danno una tabella della stessa forma {cite}`gao2023scaling`.
 
 ## Allineare gli LLM
 
-Come si orienta, in concreto, un modello di linguaggio? Il capitolo sui
-Transformer, nella sezione sul post-training, sviluppa la ricetta per intero;
-qui la richiamiamo per sommi capi e ne aggiungiamo il tassello mancante.
+Come si orienta, in concreto, un modello di linguaggio? La ricetta per intero
+sta nella {doc}`sezione sul post-training </Transformers/post-training>`; qui
+restano i due passaggi che servono a leggere il resto, e il tassello che là non
+c'era.
 
 La prima mossa storica è l’**RLHF** (*Reinforcement Learning from Human
 Feedback*, apprendimento per rinforzo dai giudizi delle persone). L'idea di far
@@ -255,7 +255,8 @@ Il procedimento è in due tempi. I confronti umani addestrano un **reward
 model** che impara a dare voti; quel modello fa poi da giudice mentre la
 *policy* del linguaggio (cioè il modello generativo, visto come la regola che
 sceglie il prossimo token) viene ottimizzata con **PPO**, l'algoritmo di
-reinforcement learning descritto nel capitolo sul deep reinforcement learning,
+reinforcement learning descritto nel {doc}`capitolo sul deep reinforcement
+learning </DeepReinforcementLearning/overview>`,
 sotto una **penalità KL** che misura quanto la policy si è allontanata da
 quella di partenza e la riporta indietro. Quella penalità è la difesa contro il
 reward hacking appena misurato, ed è anche l'ammissione che il reward model è
@@ -307,8 +308,9 @@ un modello: è una questione di quanta macchina serve. La riga sotto ciascuna
 delle due file elenca che cosa si smette di tenere in piedi. Con il giudice
 bisogna tenere accesi insieme fino a quattro modelli (quello che si sta
 allenando, la copia di com'era prima che fa da guinzaglio, il giudice, e un
-quarto che stima quanto si sta andando bene) e far generare risposte nuove a
-ogni passo; con la DPO i modelli sono due e le risposte sono già scritte. È la
+quarto che indovina il voto finale quando la risposta è ancora a metà) e far
+generare risposte nuove a ogni passo; con la DPO i modelli sono due e le
+risposte sono già scritte. È la
 differenza fra una tecnica che possono permettersi pochi laboratori e una che
 può usare un gruppo qualsiasi, ed è il motivo per cui l'allineamento ha smesso
 di essere una cosa che si fa in tre posti al mondo.
@@ -356,10 +358,14 @@ $$
 P(y_w \succ y_l \mid x) = \sigma\big(r(x, y_w) - r(x, y_l)\big),
 $$
 
-dove $\sigma$ è la sigmoide e $r$ un punteggio scalare (esplicito nel reward
-model dell'RLHF, implicito in $\beta \log \frac{\pi_\theta}{\pi_{\text{ref}}}$
-nella DPO). Quel «di norma» porta con sé un'ipotesi, ed è la stessa su cui
-poggia l'equivalenza fra DPO e RLHF:
+dove $\sigma$ è la sigmoide e $r$ un punteggio scalare: esplicito nel reward
+model dell'RLHF, implicito nella DPO, dove lo stesso ruolo lo fa
+$\beta \log \frac{\pi_\theta(y \mid x)}{\pi_{\text{ref}}(y \mid x)}$, con
+$\pi_{\text{ref}}$ la policy di partenza e $\beta$ la forza del vincolo che la
+tiene vicina (il termine di normalizzazione si cancella nella differenza).
+
+Quel «di norma» porta con sé un'ipotesi, ed è la stessa su cui poggia
+l'equivalenza fra DPO e RLHF:
 Bradley-Terry assume che esista **un unico punteggio scalare** da cui
 tutte le preferenze discendono, quindi che siano transitive e omogenee fra
 annotatori. Preferenze intransitive, o popolazioni con valori diversi, non sono
@@ -472,9 +478,11 @@ dell'accesso più che di addestramento.
 
 ## Valutare la sicurezza
 
-Se non possiamo garantire che un modello sia sicuro, possiamo almeno *provare a
-romperlo prima che lo faccia il mondo*. Qui la sicurezza dell'AI prende in
-prestito il vocabolario della sicurezza informatica.
+Se non possiamo garantire che un modello sia sicuro, possiamo almeno *provare
+a romperlo prima che lo faccia il mondo*. Qui la sicurezza dell'AI prende in
+prestito il vocabolario della sicurezza informatica, e i due mestieri sono
+quelli già incontrati attaccando un modello di linguaggio: cercare le falle a
+mano, e poi mettere in una lista di prove quelle già trovate.
 
 ```{figure} ../figures/red-teaming.svg
 :name: fig-red-teaming
@@ -486,33 +494,29 @@ tratto che dalla patch torna alla policy è la parte onesta del disegno, perché
 ogni correzione cambia la superficie d'attacco invece di eliminarla.
 ```
 
-L'anello di {numref}`fig-red-teaming` comincia dalla policy, e non è un
-dettaglio burocratico: senza aver scritto prima *cosa* il modello non deve
-fare, un attacco riuscito non si distingue da una risposta insolita, e non c'è
-modo di dire se la patch abbia funzionato.
+L'anello di {numref}`fig-red-teaming` comincia dalla policy, ed è una scelta
+tecnica prima che burocratica: senza aver scritto prima *cosa* il modello non
+deve fare, un attacco riuscito non si distingue da una risposta insolita, e non
+c'è modo di dire se la patch abbia funzionato.
 
 `````{tab} Elementare
 
 Prima di aprire un ponte al traffico non ci si limita a guardarlo: gli si
 fanno passare sopra camion carichi, lo si sottopone a vibrazioni, si cerca
 *apposta* il punto in cui potrebbe cedere. Con i modelli si fa lo stesso, in
-due modi complementari. Il **red-teaming** è una squadra il cui unico compito
-è comportarsi da avversario: inventare le domande più insidiose, i trucchi, i
-giri di parole, per trovare dove il modello sbaglia (meglio scoprirlo in
-laboratorio che sui giornali); e una parte di quel lavoro la squadra la gira a
-un altro modello, istruito a inventare trabocchetti a migliaia. Le **evals** (da
-*evaluation*) sono invece esami standardizzati: liste di prove ripetibili con un
-voto finale, così da misurare se una nuova versione è più o meno sicura della
-precedente. Il red-teaming cerca la falla nuova; le evals controllano che le
-vecchie non tornino.
+due modi complementari, ed è la coppia già vista: una squadra che si comporta
+da avversario e inventa le domande più insidiose (meglio scoprirlo in
+laboratorio che sui giornali), e una lista di prove ripetibili con un voto
+finale, che dice se la versione nuova è più o meno sicura della precedente. Il
+**red-teaming** cerca la falla nuova; le **evals** controllano che le vecchie
+non tornino.
 
-Un esame superato, però, dice meno di quel che sembra. Se le domande girano in
-anticipo, e con i modelli
-capita, perché le prove finiscono nel materiale su cui hanno studiato, il voto
-sale senza che sia migliorato niente: per questo qualche prova si tiene da
-parte e non si pubblica. E un ponte che ha passato le prove ha passato quelle
-prove: se al vento di traverso non ha pensato nessuno, del vento di traverso
-non si sa ancora niente.
+Un esame superato, però, dice meno di quel che sembra. Con i modelli le
+domande girano in anticipo, perché le prove finiscono nel materiale su cui
+hanno studiato, e allora il voto sale senza che sia migliorato niente. Per
+questo qualche prova si tiene da parte e non si pubblica. E un ponte che ha
+passato le prove ha passato quelle prove: se al vento di traverso non ha
+pensato nessuno, del vento di traverso non si sa ancora niente.
 
 `````
 
@@ -533,9 +537,8 @@ migliorare la sicurezza reale, per questo contano i *test adversariali tenuti
 nascosti*. Secondo: passare le evals dimostra l'assenza dei fallimenti
 *cercati*, non la sicurezza in assoluto. L'assenza di prove non è prova
 d'assenza, ed è il motivo per cui la valutazione resta un processo continuo
-invece di un timbro una tantum. Non a caso, come vedremo, l'AI Act impone il
-red-teaming
-come obbligo per i modelli più capaci.
+invece di un timbro una tantum. L'AI Act ne fa un obbligo per i modelli più
+capaci.
 
 `````
 
@@ -562,6 +565,15 @@ e per la maggior parte dei sistemi non morde affatto. Sapere in quale gradino
 cade ciò che si sta costruendo è il primo esercizio di conformità, e spesso
 anche l'ultimo.
 
+E c'è una differenza di natura fra la cima e il gradino sotto, che la forma
+della piramide non mostra. Sotto si autorizza a condizioni: il legislatore
+ammette che di quel sistema esista una versione fatta bene. In cima no, e la
+ragione che il legislatore ne dà è che di certi usi una versione fatta bene non
+esiste. Un punteggio unico attaccato a ogni cittadino sposta comunque il potere
+su chi tiene il registro, e chi si ritrova il voto basso non ha nemmeno un
+posto in cui protestare: non è un problema di taratura, e nessuna
+documentazione tecnica lo toglierebbe.
+
 `````{tab} Elementare
 
 Non regoliamo tutti i prodotti allo stesso modo: un giocattolo di plastica e
@@ -570,37 +582,34 @@ possono fare. L’**AI Act** europeo applica la stessa idea all'intelligenza
 artificiale: guarda anzitutto al **rischio** di ogni suo impiego, più che alla
 tecnologia in astratto, e lo dispone su una piramide a quattro gradini.
 
-In cima, il rischio *inaccettabile*: pochi usi semplicemente **vietati**. Due
-riguardano la vita di chiunque vada a scuola o lavori.
+In cima, il rischio *inaccettabile*: gli usi semplicemente **vietati**, che
+sono pochi. Uno riguarda la vita di chiunque vada a scuola, e conviene
+cominciare da lì. **Riconoscere le emozioni sul luogo di lavoro e a scuola**: usare
+l'intelligenza artificiale per dedurre dal volto o dalla voce di uno studente
+se è attento, annoiato, nervoso, è vietato in Europa, con eccezioni strette
+come i motivi medici. Se stai leggendo da un banco, quella legge esiste anche
+per te.
 
-- Dare a ogni cittadino un **punteggio sociale**: un voto unico attaccato a
-  ogni persona, calcolato dal suo comportamento in un ambito, che poi decide
-  cosa può fare in un altro (prendere un treno, affittare una casa, iscrivere
-  un figlio da qualche parte). Il legislatore europeo lo ha messo in cima alla
-  piramide invece che fra gli usi sorvegliati, e la ragione che ne ha dato è
-  che qui non c'è una versione fatta bene da autorizzare: un sistema simile
-  sposta comunque il potere su chi tiene il registro, e chi si ritrova il voto
-  basso non ha nemmeno un posto in cui protestare.
-- **Riconoscere le emozioni sul luogo di lavoro e a scuola.** Sì, a scuola:
-  usare l'intelligenza artificiale per dedurre dal volto o dalla voce di uno
-  studente se è attento, annoiato, nervoso, è vietato in Europa (con eccezioni
-  strette, per esempio motivi medici o di sicurezza). Se stai leggendo da un
-  banco, quella legge esiste anche per te.
-- **Raccogliere facce da internet o dalle telecamere** senza un bersaglio
-  preciso (cioè senza cercare una persona in particolare), per costruire
-  archivi che servono poi a riconoscere la gente dal viso. Riconoscere qualcuno
-  da una caratteristica del suo corpo, il volto, la voce, le impronte, si dice
-  **biometrico**.
-- **Prevedere chi commetterà un reato** basandosi soltanto sul profilo di una
-  persona (dove vive, che tratti ha) invece che su fatti concreti: è il parente
-  stretto del software da cui questo capitolo è partito.
+Gli altri.
+
+- Dare a ogni cittadino un **punteggio sociale**: un voto unico calcolato dal
+  suo comportamento in un ambito, che poi decide cosa può fare in un altro,
+  prendere un treno, affittare una casa, iscrivere un figlio da qualche parte.
+- **Raccogliere facce da internet o dalle telecamere** senza cercare una
+  persona in particolare, per costruire archivi che servono poi a riconoscere
+  la gente dal viso. Riconoscere qualcuno da una caratteristica del corpo, il
+  volto, la voce, le impronte, si dice **biometrico**.
+- **Prevedere chi commetterà un reato** dal solo profilo di una persona, dove
+  vive e che tratti ha, invece che da fatti concreti: è il parente stretto del
+  software da cui il capitolo è partito.
 - **Manipolare** le persone con tecniche che aggirano la loro consapevolezza, o
   **sfruttare le vulnerabilità** di chi è fragile per età, disabilità o
   condizione economica.
 - **Fabbricare immagini intime di una persona riconoscibile senza il suo
   consenso**, e il materiale di abuso sessuale su minori. È la voce aggiunta
-  nel 2026, e colpisce le applicazioni che «spogliano» una fotografia: non per
-  come sono fatte, ma per quello che producono.
+  nel 2026, e colpisce le applicazioni che «spogliano» una fotografia per quello
+  che producono, non per come sono fatte. Il divieto è scritto ma non ancora in
+  vigore: si applica dal dicembre 2026.
 - Dedurre da un volto la **razza, le opinioni politiche, la religione o
   l'orientamento sessuale** di qualcuno.
 - **Riconoscere i volti in tempo reale nei luoghi pubblici**, ma attenzione:
@@ -618,8 +627,7 @@ te sentirti dire di no da una macchina.
 Più giù, il *rischio limitato*: basta la **trasparenza**, cioè avvisare le
 persone («stai parlando con un'AI», «questo video è generato»). In fondo, il
 *rischio minimo*: la stragrande maggioranza dei sistemi, senza obblighi
-particolari. Un unico principio: più un uso può ferire, più regole deve
-rispettare.
+particolari.
 
 Resta una domanda che a questo punto viene naturale: e i modelli come quelli
 che usiamo tutti i giorni per farci scrivere un testo, in quale gradino stanno?
@@ -678,7 +686,7 @@ Un capo a parte è dedicato ai **GPAI** (*general-purpose AI*), i modelli di uso
 generale: per tutti valgono obblighi di documentazione tecnica, informazione
 agli sviluppatori a valle e sintesi pubblica dei dati di addestramento (art.
 53); per quelli con **rischio sistemico** si aggiungono valutazione del modello,
-**adversarial testing** (il red-teaming visto poco sopra), mitigazione dei
+**adversarial testing**, cioè il red-teaming, mitigazione dei
 rischi sistemici, cybersicurezza e segnalazione degli incidenti gravi (art. 55).
 Le sanzioni per le pratiche vietate arrivano fino a 35 milioni di euro o al 7%
 del fatturato mondiale annuo (art. 99(3)).
@@ -722,8 +730,8 @@ sistema automatico) sono la parte che riguarda chi quelle decisioni le
 subisce: senza traccia scritta e senza un umano responsabile, un reclamo non
 ha nemmeno un posto dove essere depositato. Chi vuole tirare il filo trova la
 parte tecnica della stessa domanda, poter dire *perché* il sistema ha deciso
-così, nel capitolo sull'interpretabilità, che viene appena
-prima.
+così, nel {doc}`capitolo sull'interpretabilità </Interpretabilita/overview>`,
+che viene appena prima.
 
 Dietro le regole c'è poi un dibattito che va reso esplicito, perché divide
 anche gli addetti ai lavori: è quello annunciato all'inizio del capitolo,
@@ -761,11 +769,9 @@ noi.
   volevamo. Il guaio è che noi non gli diamo il desiderio, gli diamo un numero
   da far salire, e lui quel numero lo fa salire davvero: come il genio della
   lampada, che esaudisce le parole e non l'intenzione.
-- Il numero che gli diamo è sempre un’**imitazione** di ciò che ci interessa
-  (nel libro: un *surrogato*, o *proxy*). E c'è una cosa da sapere, che si vede
-  nella tabella dell'esperimento: spremere quell'imitazione **all'inizio
-  funziona e poi peggiora le cose**. Non è vero che ottimizzare di più sia
-  sempre meglio.
+- Il numero che gli diamo è sempre un’**imitazione** di ciò che ci interessa,
+  un *surrogato*. E spremerla **all'inizio funziona e poi peggiora le cose**:
+  non è vero che ottimizzare di più sia sempre meglio.
 - Come si orienta un modello: gli si mostrano tante coppie di risposte con
   scritto quale delle due è migliore, si addestra un giudice automatico a
   imitare quei giudizi, e poi si allena il modello a piacere al giudice,

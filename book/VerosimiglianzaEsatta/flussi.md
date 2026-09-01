@@ -84,27 +84,28 @@ area sotto la densita' di y, senza fattore: 3.000  <- non e' una probabilita'
 ```
 
 In una dimensione il fattore è lo stiramento, cioè di quanto la trasformazione
-allunga o accorcia. In molte dimensioni la trasformazione può allungare in una
-direzione, accorciare in un'altra e ruotare il tutto, e allora il fattore
-giusto è quello che dice di quante volte è cambiato il **volume**. Ha un nome:
-si chiama **determinante**, e qui va calcolato sulla tabella delle derivate
-della trasformazione, che di suo si chiama *jacobiana*. Sono le due parole
-nuove della sezione, e la seconda è soltanto il nome di una tabella.
+allunga o accorcia. Attenzione al verso, perché è la trappola: stirando i dati
+sul tavolo la densità è scesa, mentre la macchina di cui parliamo stira **verso
+la gaussiana**, e allora quel fattore va moltiplicato. In molte dimensioni la
+trasformazione può allungare in una direzione, accorciare in un'altra e ruotare
+il tutto, e allora il fattore giusto è quello che dice di quante volte è
+cambiato il **volume**: il **determinante** della tabella delle derivate, la
+*jacobiana*.
 
 `````{tab} Elementare
 
-Il determinante si capisce in un disegno.
+Il determinante l'abbiamo già incontrato nei {doc}`richiami di matematica
+</Matematica/determinante-e-volume>`: dice di quante volte una trasformazione
+cambia l'area di un quadratino, il volume di un cubetto, e in mille dimensioni
+la stessa cosa senza più niente da disegnare. E passando per due
+trasformazioni in fila le variazioni si moltiplicano: un'area che triplica e
+poi raddoppia è cresciuta sei volte.
 
-Prendi un quadratino disegnato sul tavolo, di lato uno, e applicagli la
-trasformazione. Il quadratino diventa un'altra figura: magari un rettangolo
-allungato, magari un rombo storto. Il determinante conta quante volte l'area è
-cambiata: due se è diventata grande il doppio, un mezzo se è diventata la metà.
-Quando la figura si ribalta, come allo specchio, il numero esce col meno
-davanti, e del meno non ce ne facciamo niente. In tre dimensioni è il volume, e
-in mille il conto è lo stesso.
-
-E se il quadratino passa per due trasformazioni in fila, le variazioni si
-moltiplicano: un'area che triplica e poi raddoppia è cresciuta sei volte.
+Qui però cambia una cosa, ed è la sola da portarsi dietro. Là il quadretto
+poteva stare dovunque sul foglio e il numero era sempre quello, perché lo
+stiramento era lo stesso dappertutto. Una macchina che raddrizza le fotografie
+non è così: schiaccia in un punto e allarga in quello a fianco. Il numero è
+quello del punto in cui si sta guardando, e cambia se ci si sposta.
 
 La regola dei flussi si legge allora in italiano, senza formule: *la
 probabilità di una fotografia è la probabilità del punto dove la fotografia
@@ -119,9 +120,12 @@ schiaccia in un puntino, si accontenta dell'acqua di un puntino, e lì le
 fotografie sono rare.
 
 Nel verso della generazione la macchina è l'inversa, e la regola si capovolge
-con lei: là si divide, e una zona schiacciata diventa probabile. Chi gira nei
-due sensi però non butta via niente per strada: quello che perde all'andata, al
-ritorno dovrebbe indovinarlo.
+con lei: là si divide, e una zona schiacciata diventa probabile.
+
+C'è però una cosa che una macchina così non può fare, ed è buttare via. Se
+all'andata lasciasse per strada anche un solo numero, al ritorno dovrebbe
+inventarselo, e quella che esce non sarebbe più la fotografia che era entrata.
+Per questo un flusso esce con esattamente tanti numeri quanti ne sono entrati.
 
 E adesso il guaio. Calcolare un determinante costa, e costa tantissimo: per una
 tabella di mille righe per mille colonne il conto generale richiede all'incirca
@@ -179,10 +183,10 @@ vengano trasformate e prima o poi facciano da guida.
 
 L'idea è del 2014, di NICE {cite}`dinh2015nice`, dove però la seconda metà
 veniva soltanto traslata e non scalata: una traslazione non cambia i volumi,
-quindi lì il fattore di correzione valeva uno tondo e non c'era niente da
-calcolare. La scala, che è quella che rende il fattore interessante, arriva con
-RealNVP {cite}`dinh2017density`, ed è la forma che si usa oggi e che il flusso
-sulle due lune mette in pratica.
+quindi quegli strati il fattore non lo toccavano affatto, e a cambiarlo restava
+un solo strato di scala in cima alla pila. La scala, che è quella che rende il
+fattore interessante, arriva con RealNVP {cite}`dinh2017density`, ed è la forma
+che si usa oggi e che il flusso sulle due lune mette in pratica.
 
 Tre proprietà cadono tutte insieme, ed è per questo che la ricetta ha vinto.
 
@@ -299,7 +303,6 @@ opt = torch.optim.Adam(flusso.parameters(), lr=3e-3)
 for passo in range(1500):
     perdita = -flusso.log_densita(X).mean()          # verosimiglianza, e basta
     opt.zero_grad(); perdita.backward(); opt.step()
-print(f"log-verosimiglianza media per punto: {-perdita.item():.3f} nat")
 
 # --- Prova 1: e' davvero invertibile? Andata e ritorno, e si controlla.
 with torch.no_grad():
@@ -308,15 +311,20 @@ with torch.no_grad():
 print(f"errore massimo andata e ritorno: {errore:.2e}")
 
 # --- Prova 2: e' davvero una densita'? Si integra su una griglia fitta.
-# In due dimensioni la quadratura si puo' ancora fare, e vale come verifica
-# del fatto che il fattore |det| non e' decorativo: senza, non farebbe 1.
+# In due dimensioni la quadratura si puo' ancora fare, e la rifacciamo due
+# volte sugli stessi pesi, con il fattore |det| e senza: e' il modo di vedere
+# che non e' una rifinitura.
 g = torch.linspace(-6, 6, 601)
 gx, gy = torch.meshgrid(g, g, indexing="ij")
 griglia = torch.stack([gx.reshape(-1), gy.reshape(-1)], 1)
-with torch.no_grad():
-    p = flusso.log_densita(griglia).exp()
 area = (g[1] - g[0]) ** 2
-print(f"integrale della densita' sulla griglia: {(p.sum() * area).item():.4f}")
+with torch.no_grad():
+    z_g, logdet_g = flusso.avanti(griglia)
+    log_gauss_g = -0.5 * (z_g ** 2).sum(1) - math.log(2 * math.pi)
+print(f"integrale della densita', col fattore:   "
+      f"{((log_gauss_g + logdet_g).exp().sum() * area).item():.4f}")
+print(f"integrale della densita', senza fattore: "
+      f"{log_gauss_g.exp().sum().mul(area).item():.4f}")
 
 # --- Prova 3: la densita' distingue le lune dal resto del piano?
 fuori = torch.rand(2000, 2) * 8 - 4
@@ -326,30 +334,32 @@ with torch.no_grad():
 ```
 
 ```text
-log-verosimiglianza media per punto: -1.307 nat
 errore massimo andata e ritorno: 1.40e-06
-integrale della densita' sulla griglia: 1.0000
+integrale della densita', col fattore:   1.0000
+integrale della densita', senza fattore: 0.2394
 log-densita' media sulle lune:  -1.31
 log-densita' media a caso:      -169.04
 ```
 
-Le cinque righe vanno lette una per una, perché ciascuna dice una cosa diversa
-e nessuna è scontata.
+Le cinque righe vanno lette una per una, perché nessuna è scontata.
 
-La prima è la loss, e da sola non dice granché. La seconda è la prova che la
+La prima è la prova che la
 macchina si usa nei due sensi: andata e ritorno riportano al punto di partenza
 con un errore di poco più di un milionesimo, che è il rumore dei numeri a
-trentadue bit e non un'approssimazione del metodo. La terza è quella che
-importa a questo capitolo: la densità del modello, integrata su tutto il piano,
-fa **uno**, e non perché qualcuno l'abbia normalizzata a mano. Fa uno perché il
-cambio di variabile lo garantisce, e togliendo il termine `logdet` dal codice
-non farebbe più uno. È esattamente la differenza fra questa famiglia e quella
-del {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>`, dove quel conto non si può fare e tutto il capitolo
-gira attorno a come evitarlo. Le ultime due vanno lette insieme, e dicono che
-il modello ha imparato dov'è la roba: sulle lune assegna circa $-1{,}3$, su
-punti presi a caso nel quadrato circa $-169$. Sono centosessantotto nat di
-differenza, e siccome quei numeri sono logaritmi, in scala normale vuol dire un
-rapporto di più di $10^{72}$.
+trentadue bit e non un'approssimazione del metodo. La seconda e la terza sono
+quelle che importano a questo capitolo, e vanno lette insieme: la densità del
+modello, integrata numericamente su una griglia che la copre tutta, fa **uno**,
+e non perché qualcuno l'abbia normalizzata a mano. Fa uno perché il cambio di
+variabile lo garantisce, e la riga dopo lo mostra togliendo il fattore dagli
+stessi identici pesi: senza, l'area scende a un quarto, e un numero la cui area
+non fa uno non è una probabilità. È esattamente la
+differenza fra questa famiglia e quella del {doc}`capitolo sui modelli a
+energia </ModelliEnergia/overview>`, dove quel conto non si può fare e tutto il
+capitolo gira attorno a come evitarlo. Le ultime due dicono che il modello ha
+imparato dov'è la roba: sulle lune assegna circa
+$-1{,}3$, su punti presi a caso nel quadrato circa $-169$. Fra i due ci sono
+quasi centosessantotto nat, e siccome quei numeri sono logaritmi, in scala
+normale vuol dire un rapporto di più di sessanta ordini di grandezza.
 
 ## Glow, e il limite che non si toglie
 

@@ -287,10 +287,10 @@ $$
 Da qui la log-probabilità della classe corretta,
 $\log \hat{p}_i = z_i - \operatorname{logsumexp}(\mathbf{z})$, si calcola senza mai
 formare $e^{z_i}$ crudo; la **cross-entropy** è semplicemente il suo opposto,
-$\operatorname{logsumexp}(\mathbf{z}) - z_i$. È il motivo per cui i framework espongono
-`log_softmax` e loss che lavorano direttamente sui logit (come la
-`nn.CrossEntropyLoss` di PyTorch, che incontreremo nel capitolo dedicato): non
-è pigrizia d'API, è stabilità numerica.
+$\operatorname{logsumexp}(\mathbf{z}) - z_i$. È per stabilità numerica, e non
+per pigrizia d'API, che i framework espongono `log_softmax` e loss che
+lavorano direttamente sui logit (come la `nn.CrossEntropyLoss` di PyTorch,
+che incontreremo nel capitolo dedicato).
 
 `````
 

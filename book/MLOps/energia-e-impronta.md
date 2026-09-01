@@ -20,43 +20,43 @@ anelli da conoscere, perché ognuno è una leva.
 Il **joule** è l'unità con cui si misura l'energia, come il metro lo è per le
 distanze: la corrente che si compra a kilowattora sono joule, e anche quello
 che un chip brucia per fare un conto sono joule, solo molti di meno. Il primo
-anello della catena porta dai conti ai joule, ed è già stato costruito nel
-capitolo sulle GPU, anche se lì lo guardavamo con il cronometro invece che col
-contatore.
+anello della catena porta dai conti ai joule, ed è già stato costruito
+parlando della {doc}`memoria di una GPU </GPU/gerarchia-memoria>`, anche se lì
+lo guardavamo con il cronometro invece che col contatore.
 
 `````{tab} Elementare
 
-L'energia se ne va nei conti: più moltiplicazioni, più corrente. Il contatore,
-quasi sempre, dice un'altra cosa.
+Ci si aspetta che l'energia se ne vada nei conti: più moltiplicazioni, più
+corrente. Il contatore, quasi sempre, dice un'altra cosa.
 
-I due numeri veri li ha misurati un ingegnere di Stanford, Mark Horowitz, e
+I due numeri li ha messi in fila un ingegnere di Stanford, Mark Horowitz, e
 sono facili da tenere a mente. Fare un conto dentro il processore (una
-moltiplicazione e la somma che la segue) costa **circa 5**. Andare a prendere
-un numero nella memoria che sta fuori dal chip costa **circa 640**, più di
-cento volte tanto. L'unità non conta (è il picojoule, troppo piccolo perché
-immaginarlo abbia senso): conta il rapporto fra i due.
+moltiplicazione e la somma che la segue) costa **poco meno di cinque**. Andare
+a prendere un numero nella memoria che sta fuori dal chip costa **circa 640**,
+più di cento volte tanto. L'unità non conta (è il picojoule, troppo piccolo
+perché immaginarlo abbia senso): conta il rapporto fra i due.
 
 Il motivo è fisico, non informatico. Portare un numero da fuori a dentro il
 chip vuol dire far cambiare stato a lunghissime piste di rame, e ogni
-cambiamento di stato costa corrente. Un numero già dentro si tocca quasi
-gratis: di rame ne muove pochissimo.
+cambiamento di stato costa corrente. Un numero che sta già dentro costa quanto
+farci sopra un conto: di rame ne muove pochissimo.
 
 Dai due prezzi, però, non segue ancora chi si prende la bolletta. Il chip è un
 tavolo di lavoro e la memoria di fuori l'armadio in fondo alla stanza, come nel
 capitolo sulle GPU: chi attraversa la stanza per copiare un numero solo passa
 la giornata in piedi, chi torna con un foglio da cui ricava trecento conti non
 si accorge nemmeno del tragitto. Dividendo i due prezzi si trova la soglia, ed
-è attorno ai **centotrenta conti** per ogni numero preso da fuori: sotto, la
+è attorno ai **centoquaranta conti** per ogni numero preso da fuori: sotto, la
 corrente se ne va nei viaggi; sopra, se ne va nei conti.
 
 Generare una parola alla volta sta molto sotto la soglia: il calcolatore
 rilegge tutti i pesi del modello per una parola sola. Lì tagliare i viaggi vale
 tutto, ed è il mestiere delle tecniche di quel capitolo: tenere i dati vicino
 al processore, fare più cose in un passaggio solo invece di andare e tornare.
-«Il collo di bottiglia non sono i conti, sono i byte» là valeva per il tempo e
-qui vale per la corrente: andare più veloci e consumare meno sono la stessa
-cosa. L'addestramento e la lettura di un prompt lungo stanno sopra la soglia, e
-lì limare i viaggi sposta poco.
+Essere limitati dai byte invece che dai conti là valeva per il tempo e qui vale
+per la corrente: andare più veloci e consumare meno sono la stessa cosa.
+L'addestramento e la lettura di un prompt lungo stanno sopra la soglia, e lì
+limare i viaggi sposta poco.
 
 `````
 
@@ -98,7 +98,7 @@ per FLOP.
 
 Al di sotto di quella soglia l'energia se ne va quasi tutta in movimento di
 dati, ed è il caso della generazione token per token, dove l'intensità è
-dell'ordine dell'unità e la quota spesa in aritmetica è di qualche punto
+dell'ordine dell'unità e la quota spesa in aritmetica è poco più di un punto
 percentuale. Al di sopra domina invece l'aritmetica: la lettura di un prompt
 lungo, o una passata di addestramento, stanno dall'altra parte del
 ginocchio. La leva del movimento
@@ -137,7 +137,7 @@ tuo addestramento per una notte: la bolletta cala di quello che consumavano le
 tue macchine e di poco altro, perché le luci, le batterie e la ventilazione
 restavano accese comunque. Chi si addebita anche il venti per cento di contorno
 si fa il conto più caro del vero: il rapporto serve per l'ordine di grandezza,
-non per dire quale di due lavori sulla stessa macchina è costato meno.
+non per confrontare due lavori sulla stessa macchina.
 
 La stessa elettricità, poi, non inquina uguale dappertutto. Un kilowattora
 prodotto dove la rete è idroelettrica o nucleare porta con sé qualche decina di
@@ -151,18 +151,20 @@ consumo o spostare il lavoro su una rete che sporca la metà fanno lo stesso
 effetto sul conto finale.
 
 E non pesano uguale. Un gruppo di ricerca di Google, guidato da David
-Patterson, ha messo un numero accanto a quattro decisioni. Conta di più **quale
-modello**: fra uno che per rispondere si accende tutto e uno a scomparti, che
-ne sveglia due o tre e lascia spenti gli altri, a parità di risposte ci possono
-stare dieci volte. Le sta vicino **dove** si esegue, cioè su quale rete, che
-sposta le emissioni da cinque a dieci volte anche restando nello stesso paese.
-Più sotto **su che macchina** (una fatta apposta rende da due a cinque volte
-più di una generica) e **in che edificio** (da 1,4 a 2 volte, ed è il
-raffreddamento di poco fa).
+Patterson, ha messo un numero accanto a quattro decisioni, contando la corrente
+che serve ad **addestrare** un modello grande. Conta di più **quale modello**:
+fra uno che per rispondere si accende tutto e uno a scomparti, che ne sveglia
+due o tre e lascia spenti gli altri, a parità di qualità il primo
+può consumare dieci volte tanto. Le sta vicino **dove** si esegue, cioè su
+quale rete, che sposta le emissioni da cinque a dieci volte anche restando
+nello stesso paese. Più sotto **su che macchina** (una fatta apposta fa da due
+a cinque volte i conti di una generica con la stessa corrente) e **in che
+edificio** (da 1,4 a 2 volte, ed è il raffreddamento di poco fa).
 
-Sono misure del 2021 e scadono come tutte le misure. Quello che regge è
-l'ordine: quanto modello serve e dove farlo girare contano più di qualunque
-limatura del programma.
+Sono misure del 2021 sull'addestramento, e scadono come tutte le misure.
+L'ordine però regge anche dal lato del rispondere, perché in gioco ci sono le
+stesse grandezze: quanto modello si accende e con quale corrente contano più
+di qualunque limatura del programma.
 
 `````
 
@@ -246,15 +248,16 @@ dell'addestrare**. E la buona notizia è che sono le
 stesse leve già viste per risparmiare denaro e tempo, cioè
 alleggerire il modello (la quantizzazione e la potatura della sezione su
 LLMOps), servire molte richieste in una volta sola, e non ricalcolare ciò che è
-già stato calcolato (la cache del prefisso della sezione sulle metriche di
+già stato calcolato (il riuso del prefisso della sezione sulle metriche di
 servizio). Là erano modi di spendere meno e rispondere prima; sono la stessa
 cosa vista da un'altra finestra.
 
 Se ne aggiunge una, ed è la più radicale, perché non alleggerisce il modello:
 lo sostituisce. Si chiama **distillazione** e consiste nell'addestrare un
 modello piccolo a imitare le risposte di uno grande, per poi mandare in
-servizio soltanto il piccolo. La incontra il {doc}`capitolo sui Transformer </Transformers/overview>`, nella
-sezione *Tendenze e limiti*.
+servizio soltanto il piccolo. La incontra
+{doc}`Tendenze e limiti </Transformers/tendenzefuture>`, nel capitolo sui
+Transformer.
 
 ## Il carbonio che c'è già dentro
 
@@ -354,7 +357,7 @@ prima è un pochino in più, la seconda è sei volte tanto. In otto anni il mond
 ha chiesto ai centri dati sei volte il lavoro, e loro hanno consumato quasi
 uguale: lì l'efficienza la crescita se l'è mangiata tutta.
 
-È un caso solo, e per giunta precedente all'ondata che questo libro racconta,
+È un caso solo, e per giunta precedente all'ondata dei grandi modelli,
 quindi non dimostra niente sul futuro. Serve a dire che il rimbalzo è un
 effetto frequente e **non una legge**.
 L'argomento, insomma, colpisce il crederla sufficiente da sola, non
@@ -374,7 +377,7 @@ molto.
 - Prendere un numero dalla memoria esterna costa più di cento volte una
   moltiplicazione, ma da quel prezzo non segue ancora dove finisca la bolletta:
   dipende da **quanti conti si fanno per ogni numero preso**, e la soglia sta
-  attorno ai centotrenta. Generare una parola alla volta ci sta molto sotto, e
+  attorno ai centoquaranta. Generare una parola alla volta ci sta molto sotto, e
   lì la corrente se ne va nei viaggi: è la frase del capitolo sulle GPU a
   proposito del collo di bottiglia, riletta con la bolletta in mano, cioè
   andare più veloci e consumare meno sono la stessa cosa.

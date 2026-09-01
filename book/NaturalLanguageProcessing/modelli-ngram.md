@@ -101,11 +101,11 @@ quanto meriti.
 `````{tab} Superiore
 
 Un modello di linguaggio stima la probabilità congiunta di una sequenza di
-parole $w_1, \dots, w_m$. La **regola della catena** la scompone, senza
+parole $w_1, \dots, w_N$. La **regola della catena** la scompone, senza
 alcuna approssimazione, in un prodotto di probabilità condizionate:
 
 $$
-P(w_1, \dots, w_m) = \prod_{t=1}^{m} P(w_t \mid w_1, \dots, w_{t-1}),
+P(w_1, \dots, w_N) = \prod_{t=1}^{N} P(w_t \mid w_1, \dots, w_{t-1}),
 $$
 
 dove $w_t$ è la parola in posizione $t$ e ogni fattore è la scommessa sulla
@@ -209,9 +209,10 @@ e uno zero nel prodotto azzera tutto. Il modello confonde «mai visto» con
 in fretta. Jurafsky e Martin {cite}`jurafsky2026speech` prendono l'opera omnia
 di Shakespeare: circa 884.000 parole in tutto, ma **parole diverse** solo
 29.000, perché le stesse tornano di continuo. Le coppie possibili sono allora
-29.000 per 29.000, cioè poco più di 800 milioni; le coppie che Shakespeare ha
-davvero scritto sono circa 300.000. Vuol dire che il 99,96 per cento delle
-coppie possibili non compare mai, nemmeno una volta, in tutto Shakespeare.
+29.000 per 29.000, cioè poco più di 800 milioni. Le coppie che Shakespeare ha
+davvero scritto, contate nelle edizioni precedenti dello stesso manuale, sono
+circa 300.000: vuol dire che il 99,96 per cento delle coppie possibili non
+compare mai, nemmeno una volta, in tutto Shakespeare.
 
 E Shakespeare è un corpus generoso. Qualunque testo nuovo conterrà coppie
 legittime che il modello non ha mai visto: il quaderno è quasi tutto bianco, e
@@ -326,7 +327,8 @@ riempitivi di buchi nuovi valgono poco. Una parola vista dopo cento parole
 diverse, invece, è una buona scommessa quasi ovunque.
 
 Il mucchietto messo da parte ha adesso una misura e una destinazione. Da ogni
-coppia vista si trattengono circa tre quarti di conteggio, sempre quelli. Chi
+coppia vista si trattengono circa tre quarti di conteggio, e nella versione
+più semplice sempre gli stessi tre quarti. Chi
 ne aveva molti quasi non se ne accorge, chi ne aveva uno solo ne perde tre
 quarti, ed è giusto, perché una coppia vista una volta sola poteva essere un
 caso. Poi si spartisce in proporzione alle feste girate, così che chi era
@@ -440,16 +442,17 @@ $8^{1/8} \approx 1{,}30$ a parità di scommesse.
 
 ```{figure} ../figures/perplexity-sorpresa-modello.svg
 :name: fig-perplessita-frase
-:alt: "La frase «Il gatto dorme sul divano» scritta parola per parola in cinque riquadri, e sotto ciascuno una barretta con la probabilità che il modello gli aveva assegnato: 0,60 su «Il», 0,15 su «gatto», 0,30 su «dorme», 0,45 su «sul», 0,12 su «divano», che è la parola meno prevista ed è evidenziata. In fondo, in un riquadro, il prodotto delle cinque probabilità, circa 0,0015, e la perplessità che ne risulta, circa 3,7 alternative effettive per token."
+:alt: "La frase «Il gatto dorme sul divano» scritta parola per parola in cinque riquadri, più un sesto riquadro per la chiusura di frase, e sotto ciascuno una barretta con la probabilità che il modello gli aveva assegnato: 0,60 su «Il», 0,15 su «gatto», 0,30 su «dorme», 0,45 su «sul», 0,12 su «divano», che è la parola meno prevista ed è evidenziata, e 0,50 sulla chiusura. In fondo, in un riquadro, il prodotto delle sei probabilità, circa 0,00073, e la perplessità che ne risulta, circa 3,3 alternative effettive per token."
 :width: 96%
 
-La perplessità nasce parola per parola: si moltiplicano le cinque scommesse e
-si riporta il risultato a una sola, con la radice. Nessuna parola, da sola,
-decide il punteggio.
+La perplessità nasce parola per parola: si moltiplicano le scommesse e si
+riporta il risultato a una sola, con la radice. La chiusura di frase è una
+scommessa come le altre, e infatti ha il suo riquadro. Nessuna parola, da
+sola, decide il punteggio.
 ```
 
 E proprio lì sta il limite della misura, come la {numref}`fig-perplessita-frase`
-lascia vedere. Le cinque scommesse pesano **tutte allo stesso modo**: quella su
+lascia vedere. Le sei scommesse pesano **tutte allo stesso modo**: quella su
 «il», che è un'ovvietà, conta quanto quella su «divano», che è il punto in cui
 il modello ha davvero rischiato qualcosa. In un testo vero le parole ovvie sono
 la stragrande maggioranza, quelle su cui si gioca la qualità sono una manciata,
@@ -475,8 +478,8 @@ Laplace e su tre frasi che il modello non ha mai letto. Il codice a fine
 sezione troverà perplessità intorno a **5,5** su «il gatto nero salta sul
 divano» (frase nuova, ma tutta fatta di coppie già viste: proprio ciò che si
 intende con «in stile»), **7,0** su «il cane nero salta sul divano», che è la
-stessa frase con una coppia mai vista dentro, e oltre **14** sulla prima frase
-con le parole rimescolate a caso, «divano sul salta nero gatto il».
+stessa frase con una coppia mai vista dentro, e oltre **14** sulla prima delle
+tre, con le parole in ordine rovesciato, «divano sul salta nero gatto il».
 
 Sono due confronti, e ciascuno dice una cosa sua. Dalla prima frase alla
 seconda: una sola coppia mai vista fa salire la perplessità di poco più di un
@@ -570,13 +573,13 @@ cambia solo quanta memoria porta con sé lo scommettitore. Portata all'estremo
 Tutto ciò che serve è contare. Il codice che segue costruisce il bigramma sul
 corpus di tre frasi e non usa niente che non sia già dentro Python.
 
-Il programma fa quattro cose, nell'ordine. Il
-primo è **il quaderno**: scorre le tre frasi coppia per coppia e tiene il conto
-di quante volte ogni parola ne segue un'altra. Il secondo sono **le due
+Il programma fa quattro cose, nell'ordine. La
+prima è **il quaderno**: scorre le tre frasi coppia per coppia e tiene il conto
+di quante volte ogni parola ne segue un'altra. La seconda sono **le due
 frazioni**, quella grezza e quella con il regalo di Laplace, che sono le stesse
-di qualche pagina fa. Il terzo è **la passeggiata**: parte dal segnale di
+di qualche pagina fa. La terza è **la passeggiata**: parte dal segnale di
 inizio e pesca dal sacchetto dei foglietti finché non trova il segnale di fine.
-Il quarto è **la pagella**: moltiplica le scommesse di una frase, capovolge,
+La quarta è **la pagella**: moltiplica le scommesse di una frase, capovolge,
 prende la radice, cioè le tre mosse della perplessità (con i logaritmi al posto
 delle moltiplicazioni, che è lo stesso conto scritto in modo che il computer
 non perda cifre per strada).
@@ -647,7 +650,7 @@ print(perplessita("il cane nero salta sul divano"))   # ~7.0  una coppia mai vis
 print(perplessita("divano sul salta nero gatto il"))  # ~14.2 la prima, rimescolata
 ```
 
-Vale la pena soffermarsi sulle uscite. La generazione con il seme 2 inciampa
+La generazione con il seme 2 inciampa
 nell'anello «il cane guarda il cane guarda…»: a ogni passo il bigramma vede
 solo l'ultima parola, e da «guarda» si torna legittimamente a «il». E le tre
 perplessità raccontano la storia giusta, tutte e tre su frasi che il modello
@@ -660,24 +663,23 @@ posto di Python, sono i conti che Markov fece nel 1913.
 
 Sarebbe facile chiudere con «poi arrivarono le reti neurali e gli n-gram
 finirono in soffitta». Non è andata così, e l'onestà storica impone di dirlo.
-Contare è imbattibilmente *economico*, e conviene dire rispetto a che cosa.
-Addestrare una rete neurale vuol dire ripassare sugli stessi dati decine di
-volte, aggiustando ogni volta milioni di numeri con quel segnale di ritorno
-che si chiama gradiente, e per farlo in tempi umani serve una scheda grafica,
-una GPU. Costruire un n-gram vuol dire leggere il corpus **una volta sola** e
-riempire un quaderno; usarlo vuol dire aprire il quaderno alla pagina giusta.
-Nessuna scheda grafica, nessun gradiente, nessuna attesa. Nel 2006 Google
-distribuì i conteggi fino ai 5-grammi estratti da circa mille miliardi di
-parole di web: modelli giganteschi costruiti, in fondo, con la matita di
-Markov. Per anni la barra dei suggerimenti delle tastiere dei telefoni è stata
-proprio questo (un n-gram con smoothing, piccolo e veloce abbastanza da girare
-sul dispositivo) e solo di recente le reti neurali compatte l'hanno affiancata
-o sostituita. E nel riconoscimento vocale, come vedremo nel capitolo sullo
-Speech Recognition, un modello di linguaggio si fonde ancora col modello
-acustico per scegliere fra trascrizioni identiche all'orecchio («l'ago» o
-«lago») e per anni quel correttore silenzioso è stato un n-gram alla
-Kneser–Ney. Quando serve una probabilità *subito*, su hardware qualunque,
-contare resta un'ottima idea.
+Contare è imbattibilmente *economico*. Addestrare una rete neurale vuol dire
+ripassare sugli stessi dati decine di volte, aggiustando ogni volta milioni di
+numeri con quel segnale di ritorno che si chiama gradiente, e per farlo in
+tempi umani serve una scheda grafica, una GPU. Costruire un n-gram vuol dire
+leggere il corpus **una volta sola** e riempire un quaderno; usarlo vuol dire
+aprire il quaderno alla pagina giusta. Nessuna scheda grafica, nessun
+gradiente, nessuna attesa. Nel 2006 Google distribuì i conteggi fino ai
+5-grammi estratti da circa mille miliardi di parole di web: modelli giganteschi
+costruiti, in fondo, con la matita di Markov. Per anni la barra dei
+suggerimenti delle tastiere dei telefoni è stata proprio questo (un n-gram con
+smoothing, piccolo e veloce abbastanza da girare sul dispositivo) e solo di
+recente le reti neurali compatte l'hanno affiancata o sostituita. E nel
+riconoscimento vocale, come vedremo nel capitolo sullo Speech Recognition, un
+modello di linguaggio si fonde ancora col modello acustico per scegliere fra
+trascrizioni identiche all'orecchio («l'ago» o «lago») e per anni quel
+correttore silenzioso è stato un n-gram alla Kneser–Ney. Quando serve una
+probabilità *subito*, su hardware qualunque, contare resta un'ottima idea.
 
 Ma il soffitto degli n-gram è quello che abbiamo toccato con mano: memoria
 corta per costruzione, e nessuna nozione del fatto che «gatto» e «micio» si
@@ -701,7 +703,8 @@ sé, parola dopo parola, un riassunto dell'intera frase.
 - Una coppia mai vista vale zero, e uno zero azzera l'intera frase: il modello
   confonde «mai visto» con «impossibile». Il rimedio più semplice è la
   **regola del $+1$** (un conteggio regalato a tutti), ma con un vocabolario
-  vero diventa una patrimoniale che consegna quasi tutto ai fantasmi. Meglio
+  vero quel regalo si mangia quasi tutta la probabilità, che finisce alle
+  coppie mai viste. Meglio
   **mescolare** il giudizio della coppia con quello della parola singola, o
   **ripiegare** sulla seconda quando la prima manca; e meglio ancora, con
   **Kneser–Ney**, chiedersi non quante volte una parola è comparsa ma in

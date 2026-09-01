@@ -151,9 +151,9 @@ ha deciso un algoritmo di frequenze, non la grammatica.
 Una ventina d'anni dopo, nel 2015, Rico Sennrich, Barry Haddow e Alexandra Birch
 {cite}`sennrich2016neural` si accorgono che quell'algoritmo di compressione
 risolve un problema completamente diverso: la traduzione automatica delle
-parole rare. Cambiano una cosa sola, cioè fondono caratteri (e sequenze di
-caratteri) invece che byte, e invece di comprimere si fermano quando il
-vocabolario ha raggiunto la taglia voluta. Nel loro articolo il numero di
+parole rare. Cambiano due cose: fondono caratteri (e sequenze di caratteri)
+invece che byte, e invece di comprimere si fermano quando il vocabolario ha
+raggiunto la taglia voluta. Nel loro articolo il numero di
 fusioni è, testualmente, l'unico **iperparametro** dell'algoritmo: l'unica
 manopola, cioè, che chi lo usa deve girare a mano, perché tutto il resto lo
 decidono i conteggi. Il lavoro viene presentato nel 2016 alla conferenza ACL
@@ -191,8 +191,8 @@ perché le stesse poche parole tornano di continuo: il risultato si scrive
 accanto alla parola la prima volta, e dalla seconda in poi si legge e basta.
 
 Fuori non resta niente, purché la scatola contenga davvero tutte le lettere che
-potranno arrivare: è un «purché» che pesa più di quanto sembri, e più avanti
-vedremo come lo si toglie di mezzo per sempre.
+potranno arrivare: è un «purché» che pesa più di quanto sembri, e a toglierlo
+di mezzo per sempre sarà il livello dei byte, nella sezione che segue.
 
 `````
 
@@ -316,27 +316,27 @@ corpus, quindi i suoi pezzi si trovano insieme più spesso di chiunque altro e
 si saldano per primi. È il motivo per cui, nei tokenizzatori veri, *casa* o
 *the* sono un token solo mentre *ortogonalizzazione* ne prende cinque.
 
-Il risultato dei quattro passi, e l'elenco che li registra, stanno tutti nella
-{numref}`fig-bpe-fusioni`: a sinistra come sono ridotte le cinque parole a fine
-corsa, a destra le quattro fusioni in ordine, ciascuna con il conteggio che le
-ha fatte vincere.
+I quattro passi si vedono succedere nella {numref}`fig-bpe-fusioni`: a sinistra
+le cinque parole, che a ogni fusione perdono una scatola; a destra l'elenco,
+che si allunga di una riga per volta con il conteggio che ha fatto vincere
+quella coppia.
 
 ```{figure} ../figures/bpe-fusioni.svg
 :name: fig-bpe-fusioni
-:alt: A sinistra le cinque parole del corpus giocattolo dopo quattro fusioni, ciascuna spezzata in scatole, una per token, con accanto la propria frequenza: basso è b, a, sso; bassotto è b, a, sso, t, t, o; bosso è b, o, sso; rosso è una scatola sola, evidenziata; rossetto è ro, ss, e, t, t, o. A destra le quattro fusioni in ordine con il loro conteggio: ss 25, sso 20, ro 14, rosso 9. In basso a sinistra il totale, 78 token contro i 146 caratteri di partenza.
+:alt: Cinque parole di un corpus giocattolo, spezzate in caratteri. A ogni passo la coppia adiacente più frequente diventa un simbolo solo: le scatole si saldano, l'elenco delle fusioni si allunga con il conteggio che ha fatto vincere quella coppia (ss 25, sso 20, ro 14, rosso 9) e il corpus si accorcia da 146 pezzi a 121, 101, 87 e infine 78, finché la parola «rosso» sta in un token solo.
 :width: 96%
 
-Il corpus dopo quattro fusioni, e l'elenco ordinato che le registra. La parola
-più frequente, `rosso`, è finita in una scatola sola, e il testo è passato da
-146 pezzi a 78.
+Le quattro fusioni, una dopo l'altra. A ogni passo la coppia più frequente
+diventa un pezzo solo e il corpus si accorcia: 146 pezzi, poi 121, 101, 87 e
+infine 78, con `rosso` in una scatola sola.
 ```
 
 Dopo quattro fusioni il vocabolario contiene le sette lettere del corpus
 (`a b e o r s t`) più `ss`, `sso`, `ro`, `rosso`. Al passo successivo si
 presenterebbe un pareggio, `b`+`a` e `a`+`sso` a quota 8, e serve una regola
-di spareggio: la fissiamo in modo esplicito nel codice qui sotto (a parità di
-conteggio, la coppia prima in ordine alfabetico). Non è pignoleria: un
-tokenizzatore, rilanciato domani sullo stesso corpus, deve produrre esattamente
+di spareggio, che il programma fissa in modo esplicito: a parità di conteggio
+vince la coppia prima in ordine alfabetico. Un tokenizzatore, rilanciato
+domani sullo stesso corpus, deve produrre esattamente
 lo stesso vocabolario, altrimenti tutto ciò che il modello ha imparato punta ai
 pezzi sbagliati.
 
@@ -376,10 +376,10 @@ Un caso più estremo: un cognome come `rossellini`, mai visto, diventa
 ross | e | l | l | i | n | i
 ```
 
-sette token per una parola sola. È il prezzo che le sotto-parole fanno pagare a
-ciò che è raro, e alla fine della sezione lo ritroveremo due volte: nei numeri,
-che si spezzano a casaccio, e nelle lingue diverse dall'inglese, che si
-frammentano più dell'inglese.
+sette token per una parola sola. È il prezzo che le sotto-parole fanno pagare
+a ciò che è raro, e nella sezione che segue lo ritroveremo due volte: nei
+numeri, che si spezzano a casaccio, e nelle lingue diverse dall'inglese, che
+si frammentano di più.
 
 E c'è dell'altro, che conviene guardare in faccia invece di girarci intorno,
 perché è il punto in cui la promessa «niente resta fuori» mostra la sua

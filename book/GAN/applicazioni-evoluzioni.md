@@ -117,7 +117,8 @@ ricco (da un'etichetta discreta a un'intera frase).
 che ha reso famose le GAN presso chi non le ha mai studiate. Ma il cambiamento
 che StyleGAN {cite}`karras2019style` porta sta nel **governo** di ciò che si
 ottiene, più che nella qualità delle immagini. Il generatore di NVIDIA cambia
-impianto per farsi guidare, non per disegnare meglio.
+impianto per farsi guidare; poi disegna anche meglio, ma quello viene in
+aggiunta.
 
 `````{tab} Elementare
 StyleGAN non "disegna" il volto tutto in una volta: lo costruisce a livelli,
@@ -153,21 +154,30 @@ ciò che non lo sembra. I livelli danno il *controllo*, il duello dà il realism
 `````{tab} Superiore
 L'innovazione è architetturale: una rete di *mapping* trasforma $\mathbf{z}$ in uno spazio latente intermedio $\mathcal{W}$, più disaccoppiato; i vettori di stile $\mathbf{w}$ modulano ogni strato del generatore via *adaptive instance normalization* (AdaIN); rumore stocastico separato controlla i dettagli ad alta frequenza. Il risultato è il controllo *scale-specific*.
 
-La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla **Progressive GAN** dello stesso gruppo {cite}`karras2018progressive`, che l'anno prima aveva imparato a salire fino a lì facendo crescere le due reti un livello per volta, e che StyleGAN dichiara come propria configurazione di base, «da cui ereditiamo le reti e tutti gli iperparametri». Là si era imparato a *salire* la scala; qui si impara a decidere che cosa succede a ciascun gradino. StyleGAN2 (2020) elimina poi i caratteristici artefatti "a goccia" ridisegnando la normalizzazione: con quella revisione la ricetta si assesta, ed è la forma in cui la famiglia è entrata nell'uso corrente.
+La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla
+**Progressive GAN** dello stesso gruppo {cite}`karras2018progressive`, che
+l'anno prima aveva imparato a salire fino a lì facendo crescere le due reti un
+livello per volta, e che StyleGAN dichiara come propria configurazione di base,
+«da cui ereditiamo le reti e tutti gli iperparametri, salvo dove indicato». Là
+si era imparato a *salire* la scala; qui si impara a decidere che cosa succede
+a ciascun gradino. StyleGAN2 (2020) elimina poi i caratteristici artefatti "a
+goccia" ridisegnando la normalizzazione: con quella revisione la ricetta si
+assesta, ed è la forma in cui la famiglia è entrata nell'uso corrente.
 `````
 
 ## Sotto il cofano: crescere, modulare, e la goccia
 
 Tre meccanismi sono stati nominati e non aperti: come si
 fanno crescere due reti, che cosa vuol dire «consegnare una manopola a un
-livello», e che cos'era la macchia a goccia che StyleGAN2 ha fatto sparire. Valgono la pena
-tutti e tre, perché sono meccanismi e non risultati: la crescita per gradini è
-l'esempio più limpido di un'idea che torna ogni volta che un addestramento è
-troppo grosso per essere affrontato tutto insieme (e che qui, si vedrà, verrà
-poi superata proprio da chi l'aveva inventata), la modulazione degli
-strati è finita dentro i generatori di immagini di oggi (la ritroveremo nel
-capitolo sulla diffusione, sotto un altro nome), e la storia della goccia è la
-migliore lezione di metodo di tutto il capitolo.
+livello», e che cos'era la macchia a goccia che StyleGAN2 ha fatto sparire.
+Sono meccanismi e non risultati, e ciascuno vale al di là di StyleGAN. La
+crescita per gradini è l'esempio più limpido di un'idea che torna ogni volta
+che un addestramento è troppo grosso per essere affrontato tutto insieme, e
+poco più avanti verrà superata proprio da chi l'aveva inventata. La
+modulazione degli strati è finita dentro i generatori di immagini di oggi, e
+si ritrova sotto un altro nome nella {doc}`sezione sul Diffusion Transformer
+</ModelliDiffusione/diffusion-transformer>`. La storia della goccia è la
+migliore lezione di metodo del capitolo.
 
 ### Crescere per gradini
 
@@ -211,7 +221,7 @@ rete rispondano con la stessa prontezza, perché altrimenti alcuni si aggiustano
 in fretta e altri restano indietro, e chi resta indietro rallenta tutti. Il
 secondo: dentro il falsario, dopo ogni passaggio, i numeri vengono riportati a
 una taglia standard, perché in una gara a chi urla più forte tendono a
-gonfiarsi da soli. Il terzo: si mostra all'esperto **quanto si assomigliano fra
+gonfiarsi da soli. Il terzo: si mostra all'esperto **quanto sono diverse fra
 loro** le immagini di un gruppo, che è il modo più diretto di smascherare un
 falsario che dipinge sempre lo stesso quadro.
 
@@ -245,7 +255,8 @@ Gli altri tre contributi del lavoro:
   degli altri. Scalando a runtime, tutti i pesi hanno lo stesso raggio d'azione
   e lo stesso passo effettivo.
 - **Pixelwise feature normalization** nel generatore: dopo ogni convoluzione il
-  vettore di attivazioni di ciascun pixel è normalizzato a norma unitaria. Non
+  vettore di attivazioni di ciascun pixel è riscalato perché la media dei suoi
+  quadrati sui canali valga uno. Non
   ha parametri appresi e serve a impedire che le magnitudini scappino via
   durante l'escalation del duello.
 - **Minibatch standard deviation**: al discriminatore si aggiunge un canale
@@ -258,9 +269,8 @@ Gli altri tre contributi del lavoro:
 ### Modulare invece di ordinare
 
 Detto come cresce, resta da dire che cosa StyleGAN aggiunge, e la risposta sta
-in una parola che il libro finora ha usato senza scioglierla: **AdaIN**, che
-sta per *adaptive instance normalization*, cioè «taratura adattiva, una corsia
-alla volta». Le corsie sono la parte da spiegare.
+in una sigla: **AdaIN**, *adaptive instance normalization*, cioè «taratura
+adattiva, una corsia alla volta». Le corsie sono la parte da spiegare.
 
 Il gesto ha due tempi. Primo tempo, si azzera: dentro il falsario, a ogni
 livello, il segnale viaggia in tante corsie parallele (le stesse pile di valori
@@ -369,8 +379,8 @@ media e deviazione standard **della mappa stessa**, e la coppia di vettori
 $(\mathbf{y}_s, \mathbf{y}_b)$ è lo stile, ricavato da $\mathbf{w}$ con una
 trasformazione affine appresa; $y_{s,i}$ e $y_{b,i}$, tondi perché sono due
 numeri e non due vettori, sono le loro componenti sul canale $i$. Il varco del
-contrabbandiere è quella divisione per $\sigma(\mathbf{x}_i)$, che è l'unico
-punto in cui il calcolo guarda i valori prodotti.
+contrabbandiere è quella divisione per $\sigma(\mathbf{x}_i)$, il punto in cui il
+calcolo si lascia dominare dai valori prodotti.
 
 Al suo posto la modulazione scala i pesi della convoluzione per lo stile, e la
 demodulazione li rinormalizza sotto l'ipotesi che gli ingressi siano
@@ -384,7 +394,10 @@ $$
 
 dove $i$ indicizza i canali d'ingresso, $j$ quelli d'uscita, $k$ le posizioni
 spaziali del filtro, $s_i$ è la scala dettata dallo stile ed $\epsilon$ evita la
-divisione per zero. Gli apici al denominatore non sono decorativi: la somma
+divisione per zero. Questi $w$ sono i **pesi della convoluzione**, e non hanno
+niente a che vedere con il $\mathbf{w}$ di poche righe sopra, che è il vettore
+dello spazio latente intermedio: sono due notazioni consolidate dello stesso
+paper. Gli apici al denominatore non sono decorativi: la somma
 corre su tutti i canali d'ingresso e su tutte le posizioni **a canale d'uscita
 $j$ fissato**, cioè è la norma dell'intero filtro che produce il canale $j$, e
 $i'$ e $k'$ scorrono mentre l’$i$ e il $k$ del numeratore restano fermi.
@@ -422,7 +435,7 @@ dove $g$ è il generatore, $\mathbf{u}$ è l'immagine di rumore gaussiano su cui
 si proietta (il paper la chiama $\mathbf{y}$, lettera che qui è già lo stile) e
 $a$ non è un iperparametro ma una media mobile
 esponenziale delle lunghezze osservate, cioè un bersaglio che il termine si
-sceglie da solo strada facendo. Lo Jacobiano non si calcola mai per esteso:
+sceglie da solo strada facendo. Lo jacobiano non si calcola mai per esteso:
 basta l'identità $\mathbf{J}_{\mathbf{w}}^{\top}\mathbf{u} =
 \nabla_{\mathbf{w}}\big(g(\mathbf{w}) \cdot \mathbf{u}\big)$, che è una normale
 retropropagazione. È un vincolo di buon condizionamento della mappa
@@ -441,7 +454,7 @@ notte. È **pix2pix** {cite}`isola2017image`. Ha però un vincolo: servono
 coppie allineate, cioè lo stesso soggetto ripreso nei due mondi che si vogliono
 tradurre l'uno nell'altro (in gergo, i due **domini**), e coppie così sono
 difficili da procurare. **CycleGAN** {cite}`zhu2017unpaired` rimuove il
-vincolo.
+vincolo, con la regola di {numref}`fig-cyclegan`.
 
 ```{figure} ../figures/cyclegan-ciclo.svg
 :name: fig-cyclegan
@@ -453,7 +466,11 @@ ritradurre deve riportare al punto di partenza.
 ```
 
 `````{tab} Elementare
-CycleGAN impara a trasformare foto in quadri di Monet (e viceversa) senza mai vedere una foto e il suo quadro corrispondente: gli bastano due mucchi separati, tante foto e tanti Monet. Il trucco è il vincolo di andata e ritorno ({numref}`fig-cyclegan`): se prendo una foto, la converto in "stile Monet" e poi la riconverto in foto, devo ritrovare la foto di partenza.
+CycleGAN impara a trasformare foto in quadri di Monet (e viceversa) senza mai
+vedere una foto e il suo quadro corrispondente: gli bastano due mucchi
+separati, tante foto e tanti Monet. Il trucco è il vincolo di andata e ritorno:
+se prendo una foto, la converto in "stile Monet" e poi la riconverto in foto,
+devo ritrovare la foto di partenza.
 
 Detta così, la regola sembra avere una scappatoia grande come una casa: al traduttore converrebbe **non cambiare niente**, restituire la foto tale e quale e vincere senza fatica. Non gli conviene, perché il vincolo di andata e ritorno non gioca da solo: dall'altra parte c'è sempre un esperto, uno per dominio, addestrato a distinguere i veri Monet dai finti Monet. Chi non dipinge viene smascherato da lui. Le due regole si tengono a vicenda: l'esperto obbliga a cambiare stile, il ciclo obbliga a non stravolgere il contenuto.
 
@@ -505,12 +522,13 @@ Tutte le varianti viste finora cambiano il regolamento del duello lasciandone
 intatto lo scopo: alla fine esce un'immagine, e a farla è il falsario.
 L'ultima che raccontiamo cambia lo scopo. Il duello non serve più a fare
 immagini: serve a fabbricare un **alfabeto** con cui scriverle. E chi poi le
-scrive è una macchina che questo libro conosce da tempo, quella che indovina il
+scrive è una macchina che il lettore conosce da tempo, quella che indovina il
 simbolo successivo.
 
 Il ragionamento parte da un desiderio. Un Transformer sa continuare qualunque
 cosa gli si dia in fila, purché sia una fila corta di simboli presi da un
-elenco finito: è così che scrive testo, ed è così che, nel capitolo sull'audio,
+elenco finito: è così che scrive testo, ed è così che, nella
+{doc}`sezione sulla generazione di suono e musica </Audio/generazione-audio>`,
 ha scritto musica. Un'immagine non è né l'una né l'altra cosa. Non è un elenco
 finito, perché i suoi puntini sono numeri che variano con continuità; e non è
 corta, perché di puntini ce ne sono centinaia di migliaia. Servono due
@@ -625,10 +643,10 @@ fra i suoi autori; là però il latente resta **continuo**, perché il termine c
 disciplina è una KL leggera invece di una quantizzazione, e a comporre non
 pensa un Transformer autoregressivo ma la diffusione. VQ-GAN è la fucina in cui
 quella ricetta è stata forgiata. Il secondo: l'idea di trattare un'immagine
-come una sequenza di simboli non è nuova per chi legge, perché il capitolo su
-visione e linguaggio l'ha già usata per i generatori multimodali a fusione
-precoce; qui se ne vede l'officina, cioè da dove arriva l'alfabeto e a che
-prezzo lo si fabbrica.
+come una sequenza di simboli non è nuova per chi legge, perché la {doc}`sezione
+sulla fusione precoce </VisioneLinguaggio/fusione-precoce-tardiva>` l'ha già
+usata per i generatori multimodali; qui se ne vede l'officina, cioè da dove
+arriva l'alfabeto e a che prezzo lo si fabbrica.
 
 `````
 

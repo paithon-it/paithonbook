@@ -81,9 +81,9 @@ acquisite) evitano per costruzione.
 
 ## Perché è difficile: la distanza fra pixel e significato
 
-Fra la griglia di numeri e la parola «gatto» c'è un salto da misurare prima di
-provare a colmarlo, perché ogni tecnica delle prossime sezioni è la risposta a
-una voce precisa di questo elenco.
+Fra la griglia di numeri e la parola «gatto» c'è un salto, e conviene misurarlo
+prima di provare a colmarlo: ogni tecnica delle prossime sezioni risponde a una
+sua voce precisa.
 
 `````{tab} Elementare
 
@@ -114,7 +114,7 @@ che noi vediamo senza pensarci vanno indovinati numero per numero.
 **Variazione dentro la classe.** L'ultimo ritrae un persiano bianco: col
 siamese dell'avviso condivide l'etichetta e quasi nient'altro.
 
-Al telefono le foto non le guarda nessuno: ci sono solo i numeri. Si
+Dentro il telefono le foto non le guarda nessuno: ci sono solo i numeri. Si
 sovrappongono i due fogli a quadretti e si sommano le differenze quadretto per
 quadretto: ne esce un numero che dice quanto le due foto sono lontane. C'è
 anche una scatola di scatti già etichettati, e la regola più ovvia che esista è
@@ -132,11 +132,13 @@ quadretto alla volta, dall'angolo in alto a sinistra fino in fondo. La lente
 non sa in che punto si trova, quindi quello che impara a riconoscere in un
 angolo lo riconosce anche nell'altro, ed è già moltissimo.
 
-Fra uno strato e l'altro, però, la rete ricopia il foglio più piccolo: tiene un
-numero ogni due o ogni tre e butta via gli altri. Basta che il gatto sia
-inquadrato un quadretto più a destra perché i numeri sopravvissuti siano altri
-e la risposta cambi. La lente è la stessa dappertutto; la risposta no: un solo
-pixel di spostamento fa cambiare idea anche alle reti convoluzionali grandi.
+Fra uno strato e l'altro, però, la rete ricopia il foglio più piccolo: di ogni
+quadratino tiene il numero più forte e lascia cadere gli altri. Finché il gatto
+si sposta restando dentro lo stesso quadratino il più forte resta quello e la
+mappa non cambia; appena scavalca il confine cambia eccome, e con essa possono
+cambiare tutte le mappe che vengono dopo. La lente è la stessa dappertutto; la
+risposta no, e su una foto vera basta spesso un pixel a farla cambiare, anche
+alle reti convoluzionali grandi.
 
 Chi addestra la rete rilegge i sette scatti come una lista di cose da fare: di
 foto del gatto ne ha poche e ne fabbrica centinaia, ruotando (contro il punto
@@ -148,7 +150,7 @@ dov'era.
 
 Lo stesso gesto porta fino a imparare da foto che nessuno ha etichettato. Si
 ritagliano due pezzi dello stesso scatto, la testa e una zampa, e si pretende
-dalla rete la stessa risposta per tutti e due, senza dirle mai che cosa
+dalla rete la stessa descrizione per tutti e due, senza dirle mai che cosa
 raffigurano. Chi sceglie quali cambiamenti non devono contare sta scegliendo,
 in quel momento, che cosa la rete imparerà a guardare.
 
@@ -192,11 +194,11 @@ definizione del problema.
 ## I compiti della visione
 
 Avere i numeri è solo l'inizio. La domanda vera è: *che cosa chiediamo alla
-rete di produrre?* (Da qui in avanti la chiameremo spesso anche **modello**,
-che è il nome generico di un programma che ha imparato dai dati: una rete
-neurale è un modello fra i tanti.) Da qui nascono i quattro compiti
-fondamentali, che si possono leggere come una scala di ambizione crescente
-({numref}`fig-compiti-visione`).
+rete di produrre?* Da qui nascono i quattro compiti fondamentali, che si
+possono leggere come una scala di ambizione crescente
+({numref}`fig-compiti-visione`). Da qui in avanti la rete la chiameremo spesso
+anche **modello**, che è il nome generico di un programma che ha imparato dai
+dati.
 
 ```{figure} ../figures/compiti-visione.svg
 :name: fig-compiti-visione
@@ -323,14 +325,13 @@ disegnano più: si *imparano*, strato dopo strato, direttamente dai pixel.
 
 ## Il carburante: i grandi dataset
 
-Le CNN non avrebbero spiccato il volo senza qualcosa su cui volare. Il progetto
-**ImageNet**, guidato da Fei-Fei Li, viene presentato nel 2009 con 3,2 milioni
-di immagini etichettate ed è poi cresciuto fino a oltre quattordici milioni; la
-sua sfida annuale (ILSVRC, *ImageNet Large Scale Visual Recognition Challenge*)
-usa un sottoinsieme di mille categorie ed è la palestra su cui, nel 2012, una
-rete convoluzionale chiamata **AlexNet** cambia la storia: vince quella gara
-con un margine che nessun metodo precedente aveva avvicinato, e da lì in poi
-tutti smettono di disegnare i filtri a mano. Poco dopo arriva **COCO**
+Le reti convoluzionali non avrebbero spiccato il volo senza qualcosa su cui
+volare. Il progetto **ImageNet**, guidato da Fei-Fei Li, viene presentato nel
+2009 con 3,2 milioni di immagini etichettate ed è poi cresciuto fino a oltre
+quattordici milioni; la sua sfida annuale (ILSVRC, *ImageNet Large Scale Visual
+Recognition Challenge*) usa un sottoinsieme di mille categorie ed è la palestra
+su cui, nel 2012, una rete convoluzionale chiamata **AlexNet** cambia la storia.
+Poco dopo arriva **COCO**
 (*Common Objects in Context*, 2014), con centinaia di migliaia di immagini
 annotate non solo con l'etichetta, ma con i riquadri e le maschere (le sagome
 pixel per pixel di poco fa) di circa ottanta categorie di oggetti comuni: il

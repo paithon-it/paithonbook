@@ -67,11 +67,11 @@ malafede: basta uno specchio storto, e il modello riflette il mondo che gli
 abbiamo dato da guardare, difetti compresi.
 
 Chi vendeva il software rispose con un conto suo, e tornava anche quello: fra
-gli imputati che avevano ricevuto lo stesso punteggio, quelli riarrestati
-davvero erano in proporzione gli stessi, neri o bianchi. Due conti giusti che
-si contraddicono, e nessuno dei due è truccato: se nei due gruppi il riarresto
-non capita con la stessa frequenza, le due pretese non possono valere insieme,
-e nessun codice migliore le riconcilia.
+gli imputati che il sistema aveva etichettato «ad alto rischio», quelli
+riarrestati davvero erano in proporzione gli stessi, neri o bianchi. Due conti
+giusti che si contraddicono, e nessuno dei due è truccato: se nei due gruppi il
+riarresto non capita con la stessa frequenza, le due pretese non possono valere
+insieme, e nessun codice migliore le riconcilia.
 
 `````
 
@@ -90,9 +90,10 @@ Il caso COMPAS nasconde però una sottigliezza che ritroveremo per tutto il
 capitolo. Northpointe, l'azienda che produceva il software (oggi Equivant),
 rispose con un rapporto il cui titolo è già l'argomento tecnico della disputa:
 *COMPAS Risk Scales: Demonstrating Accuracy Equity and **Predictive Parity***
-{cite}`dieterich2016compas`. A parità di punteggio assegnato, la quota di chi
-veniva davvero riarrestato era la stessa per neri e bianchi. Ed era vero. Il
-paradosso è che entrambe le parti avevano ragione, e la ragione è un teorema:
+{cite}`dieterich2016compas`. Fra gli imputati classificati ad alto rischio la
+quota di chi veniva davvero riarrestato era la stessa nei due gruppi, ed era
+vero. Il paradosso è che entrambe le parti avevano ragione, e la ragione è un
+teorema:
 quando i tassi di base delle due popolazioni differiscono, la **parità del
 valore predittivo** rivendicata dall'azienda e la parità di *entrambi* i tassi
 di errore misurata da ProPublica non possono valere insieme
@@ -136,7 +137,7 @@ solo un tema da conferenza accademica, ma materia di diritto.
 ## Che cosa vuol dire «responsabile»
 
 «AI responsabile» è un ombrello che copre diverse preoccupazioni, distinte ma
-intrecciate. Sono l'ossatura del capitolo, e quindi si nominano subito.
+intrecciate, e conviene chiamarle per nome prima di entrarci dentro.
 
 - **Equità (*fairness*)**: il modello non deve sistematicamente svantaggiare
   gruppi di persone in base a genere, etnia, età o altre **caratteristiche
@@ -175,9 +176,9 @@ Nessuna di queste dimensioni si ottiene con un numero da tenere d'occhio o con
 un pezzo di software da installare. Sono proprietà del *sistema nel suo
 contesto d'uso*, non del solo codice.
 
-Va detto subito anche che cosa resta fuori, perché la prima cosa che viene in
-mente sentendo «pericoli dell'intelligenza artificiale» è spesso quella dei
-film. C'è chi ritiene che un giorno una macchina molto più capace di noi possa
+Resta fuori la preoccupazione che viene in mente per prima sentendo «pericoli
+dell'intelligenza artificiale», quella dei film. C'è chi ritiene che un giorno
+una macchina molto più capace di noi possa
 sfuggirci di mano in modo irreparabile: è il **rischio esistenziale**, e sulle
 sue probabilità le opinioni degli esperti vanno da «è fantascienza» a «bisogna
 fermare tutto». Qui non ne parliamo, e non perché sia una domanda sciocca:
@@ -207,7 +208,7 @@ moltiplicato su tutta la popolazione, diventa un'ingiustizia su larga scala.
 E la ricetta delle mense non l'ha scritta un cuoco: è uscita da diecimila cene
 guardate una per una. Chi guarda così tanto raccoglie anche le abitudini che
 col piatto non c'entrano: se in quelle cene il pesce lo ordinavano quasi solo
-gli anziani, nella ricetta il pesce resta legato all'età di chi mangia, e quel
+gli anziani, la regola che ne esce lega il pesce all'età di chi mangia, e quel
 legame finisce nel piatto di tutti. In più, a differenza di un impiegato a cui
 puoi chiedere «perché mi hai detto di no?», molti modelli non sanno spiegarsi:
 sono scatole che restituiscono un sì o un no, e basta. Potenza, diffusione
@@ -224,9 +225,10 @@ Tre spostamenti quantitativi hanno reso il tema ineludibile.
    su: catturano regolarità sottili nei dati, comprese quelle che *vorremmo*
    non imparassero (le correlazioni spurie tra caratteristiche protette ed
    esito).
-2. **Diffusione**. Lo stesso modello viene servito a scala di popolazione. Un
-   *bias* con effetto trascurabile sul singolo caso diventa, per la legge dei
-   grandi numeri, un effetto sistematico su interi gruppi sociali: proprio i
+2. **Diffusione**. Lo stesso modello viene servito a scala di popolazione, e
+   uno scarto sistematico, a differenza del rumore, non si media via al
+   crescere dei casi: si somma. Un *bias* con effetto trascurabile sul singolo
+   caso diventa così un effetto su interi gruppi sociali, proprio nei
    contesti (credito, giustizia, impiego, servizi essenziali) che l'AI Act
    classifica come **ad alto rischio** {cite}`euaiact2024`.
 3. **Opacità**. Le reti profonde sono ottime nel *cosa* (l'accuratezza) e
@@ -239,8 +241,8 @@ Tre spostamenti quantitativi hanno reso il tema ineludibile.
 
 ## Tre modi in cui un modello fa danno
 
-Il resto del capitolo procede lungo tre assi, dagli effetti più visibili a
-quelli più strutturali, e quello di mezzo prende due sezioni invece di una.
+I modi in cui un modello fa danno sono tre, e vanno dagli effetti più visibili
+a quelli più strutturali.
 
 Prima l’**equità e i *bias***: da dove nasce un pregiudizio (dai dati, dalle
 etichette, da come è stato scelto l'obiettivo), come lo si *misura* e quali
@@ -310,12 +312,12 @@ mostrano. Possiamo pretendere che il modello **sbagli allo stesso modo** su
 ogni gruppo, oppure che il suo «sì» **valga lo stesso** per tutti, cioè che
 quando dice sì ci prenda ugualmente spesso in ogni gruppo. Sono due richieste
 sensate, e le vorremmo tutte e due; ma se una certa cosa, nei dati, capita più
-spesso in un gruppo che nell'altro, le due richieste litigano e una va lasciata
-andare. E quel «capita più spesso» è a sua volta un conteggio: lo si legge in
-un registro, e un registro può essere storto come quello degli arresti. Quale
-richiesta lasciare andare è una decisione che spetta alle persone e non alla
-matematica: la tecnica dice quali compromessi esistono, sceglierli resta un
-atto di responsabilità umana.
+spesso in un gruppo che nell'altro, le due richieste litigano, e qualcosa
+dell'una va lasciato andare. E quel «capita più spesso» è a sua volta un
+conteggio: lo si legge in un registro, e un registro può essere storto come
+quello degli arresti. Quale richiesta lasciare andare è una decisione che
+spetta alle persone e non alla matematica: la tecnica dice quali compromessi
+esistono, sceglierli resta un atto di responsabilità umana.
 
 `````
 
@@ -328,9 +330,9 @@ predizione positiva, stessa probabilità reale di esito nei due gruppi), la
 parità dei **falsi positivi** e la parità dei **falsi negativi** non possono in
 generale valere tutte e tre insieme quando i tassi di base dei gruppi
 differiscono, se non nei casi degeneri {cite}`chouldechova2017fair`. Due se ne
-tengono sempre: è la terza a saltare. La sezione sull'equità mostra l'identità
-algebrica da cui discende, e distingue questo enunciato dagli altri due che gli
-somigliano e che vengono regolarmente confusi con esso.
+possono sempre comprare: è la terza a saltare. La sezione sull'equità mostra
+l'identità algebrica da cui discende, e distingue questo enunciato dagli altri
+due che gli somigliano e che vengono regolarmente confusi con esso.
 
 La scelta di *quale* criterio privilegiare non discende dai dati: è normativa.
 La statistica delimita lo spazio delle opzioni e ne espone i costi; qual è il

@@ -207,7 +207,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Comprimere e ricostruire](https://book.paithon.it/main/ModelliLatenti/comprimere-e-ricostruire.html)
   - [ELBO e riparametrizzazione](https://book.paithon.it/main/ModelliLatenti/il-salto-probabilistico.html)
   - [Il latente che si usa](https://book.paithon.it/main/ModelliLatenti/il-latente-che-si-usa.html)
-- [GAN](https://book.paithon.it/main/GAN/overview.html): L'idea di cui parla questo capitolo è nata, dice la leggenda (perché ormai è una leggenda), in un bar di Montréal, i Trois Brasseurs, nel 2014.
+- [GAN](https://book.paithon.it/main/GAN/overview.html): L'idea di cui parla questo capitolo è nata, dice la leggenda (perché ormai è una leggenda), in un bar di Montréal, «Les 3 Brasseurs», nel 2014.
   - [L'addestramento avversario](https://book.paithon.it/main/GAN/come-funziona.html)
   - [Evoluzioni e applicazioni](https://book.paithon.it/main/GAN/applicazioni-evoluzioni.html)
 - [Modelli di diffusione](https://book.paithon.it/main/ModelliDiffusione/overview.html): Versa una goccia d'inchiostro in un bicchiere d'acqua e guarda. Prima un filamento scuro, poi volute sempre più sottili, e in pochi minuti l'acqua è tutta di un azzurro pallido e uniforme.
@@ -220,7 +220,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Generatori a un passo](https://book.paithon.it/main/ModelliDiffusione/pochi-passi.html)
   - [Guida e allineamento](https://book.paithon.it/main/ModelliDiffusione/guida.html)
   - [Diffondere il testo](https://book.paithon.it/main/ModelliDiffusione/diffusione-discreta.html)
-- [Verosimiglianza esatta](https://book.paithon.it/main/VerosimiglianzaEsatta/overview.html): Immagina di avere fra le mani il generatore di volti del , quello che sforna a ripetizione persone che non esistono, e di fargli una domanda diversa da tutte quelle che gli abbiamo fatto finora.
+- [Verosimiglianza esatta](https://book.paithon.it/main/VerosimiglianzaEsatta/overview.html): Il generatore di volti del sforna a ripetizione persone che non esistono. Facciamogli una domanda diversa da tutte quelle che gli abbiamo fatto finora.
   - [Un pixel alla volta](https://book.paithon.it/main/VerosimiglianzaEsatta/pixel-per-pixel.html)
   - [I flussi normalizzanti](https://book.paithon.it/main/VerosimiglianzaEsatta/flussi.html)
   - [A che serve saperlo](https://book.paithon.it/main/VerosimiglianzaEsatta/a-che-serve.html)

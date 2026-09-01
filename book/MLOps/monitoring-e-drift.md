@@ -9,8 +9,9 @@ sala di controllo piena di spie e manometri. Lì l'immagine era servita a dire
 *perché* serve monitorare. Restava tutto il seguito: quali strumenti montare
 su quell'impianto, dove piazzare le spie, a che soglia farle scattare e cosa
 fare quando una si accende. È il mestiere di questa sezione: il lato operativo
-di un problema che nel {doc}`capitolo di Machine Learning </MachineLearning/overview>` avevamo posto in termini
-statistici.
+del problema che
+{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>` aveva posto
+in termini statistici.
 
 Il guaio dei modelli, rispetto a un impianto industriale, è che quando si
 guastano non fanno rumore. Una pompa che si rompe fischia, perde, si ferma; un
@@ -124,10 +125,11 @@ in corso, mentre accade.
 Lo strumento l'abbiamo già incontrato: il **classificatore-detective**. Si
 addestra un modello a distinguere i dati di ieri da quelli di oggi, e si
 guarda quanto ci riesce. Il numero con cui si misura quanto ci riesce è
-l’**AUC**, incontrata nel {doc}`capitolo sul machine learning </MachineLearning/overview>` parlando di metriche, e
+l’**AUC**, incontrata parlando di {doc}`metriche </MachineLearning/metriche>`, e
 qui va letta così: vale $1$ quando il detective indovina sempre da quale dei
 due periodi viene un dato, e vale $0{,}5$ quando sta tirando a indovinare,
-perché fra due possibilità chi tira a caso ne azzecca la metà.
+perché a caso, fra un dato di ieri e uno di oggi, quale sia quale lo si azzecca
+una volta su due.
 
 Un'AUC vicina a $0{,}5$ dice quindi che i due periodi sono indistinguibili *per
 lui*. È una rassicurazione, non una prova: uno scostamento piccolo, o distribuito su molte colonne senza spiccare su
@@ -241,8 +243,8 @@ cambia). Le tre decisioni operative sono:
 
 `````
 
-La deriva è una delle poche cose di questo libro che **in un fotogramma non si
-vede**: il grafico dei valori di oggi, da solo, non è né normale né anomalo, e
+La deriva ha una particolarità: in un fotogramma non si vede. Il grafico dei
+valori di oggi, da solo, non è né normale né anomalo, e
 lo diventa solo accanto a quello di prima. In {numref}`fig-deriva-ks` ci sono
 sei mesi di una stessa colonna: la finestra di riferimento sta ferma e quella
 corrente le scivola via, mese dopo mese.
@@ -261,20 +263,20 @@ che l'hanno inventato, Kolmogorov e Smirnov, in sigla **KS**.
 :alt: "Una curva cumulativa color teal sta ferma; una curva terracotta, che all'inizio le sta sopra esattamente, scivola verso destra mese dopo mese. Un segmento verticale ocra unisce le due curve nel punto in cui sono più distanti, e la scritta sotto dice di quanto: si parte da zero e si arriva a 0,40, ben oltre la soglia di 0,10."
 :width: 92%
 
-Le due finestre in cumulata, mese per mese. Il segmento verticale non è un
-ornamento: **è** la statistica $D$, cioè il punto in cui le due curve si
-allontanano di più. Il numero sotto è quello che decide se suonare l'allarme, e
+Le due finestre in cumulata, mese per mese. Il segmento verticale è la
+statistica $D$, cioè il punto in cui le due curve si allontanano di più. Il
+numero sotto è quello che decide se suonare l'allarme, e
 cresce da un mese all'altro: $0$ al mese zero, $0{,}06$ al mese 1, e poi
 $0{,}12$, $0{,}20$, $0{,}29$, $0{,}40$.
 ```
 
-Due cose il disegno le mostra e una formula non le dice. La prima è *dove* cade
-il segmento: non ai bordi, perché lì le due curve tornano comunque a
-coincidere, l'una partendo da zero e l'altra arrivando a uno, ma nel mezzo,
-esattamente a metà strada fra il centro di ieri e il centro di oggi. La
-seconda è che la soglia disegnata, quel $0{,}10$, è una soglia
-**sull'ampiezza** del segmento, decisa su quanto si è disposti a lasciar
-scivolare le cose prima di preoccuparsi.
+Due cose il disegno le mostra e il numero $D$, da solo, non direbbe. La prima è
+*dove* cade il segmento: non ai bordi, perché lì le due curve tornano comunque
+a coincidere, l'una partendo da zero e l'altra arrivando a uno, ma nel mezzo,
+esattamente a metà strada fra il centro di ieri e il centro di oggi. La seconda
+è che la soglia disegnata, quel $0{,}10$, è una soglia **sull'ampiezza** del
+segmento, decisa su quanto si è disposti a lasciar scivolare le cose prima di
+preoccuparsi.
 
 Sembra un dettaglio e non lo è, perché c'è un altro numero che il KS
 restituisce, e prenderlo per la soglia è l'errore più comune del mestiere.
@@ -318,8 +320,8 @@ disegnata, e già sotto il $D$ del **mese 1**, che vale $0{,}060$. Cioè il test
 rifiuta quando l'occhio non vede ancora niente.
 
 Il conto, su quel mese (due normali di uguale varianza sfalsate di $0{,}15$
-deviazioni standard, che è il $\mu$ con cui la scena è generata; duemila
-osservazioni per finestra, duemila ripetizioni): il rifiuto al cinque per cento
+deviazioni standard, che è lo scostamento del mese 1; duemila osservazioni per
+finestra, duemila ripetizioni): il rifiuto al cinque per cento
 arriva nel $98{,}5\%$ delle prove, con un $p$ mediano di $6\cdot 10^{-5}$. Alla
 stessa identica deriva, con cinquecento osservazioni per finestra, il rifiuto
 scende al $54\%$ e il $p$ mediano risale a $4\cdot 10^{-2}$. Non è cambiato lo
@@ -327,7 +329,8 @@ scostamento: è cambiata la taglia del campione, e con essa la potenza del test.
 
 `````
 
-Mettiamo insieme le tre decisioni in poche righe eseguibili. Il codice confronta
+Le finestre le diamo per scelte, e mettiamo in poche righe eseguibili le altre
+due decisioni, la soglia e la localizzazione. Il codice confronta
 una finestra di riferimento con una corrente, in cui iniettiamo di proposito uno
 shift su una sola *feature*: calcola l'AUC del detective come indicatore globale,
 stampa un allarme se supera la soglia, e in caso di allarme usa un KS per colonna
@@ -496,7 +499,9 @@ automatizzate tengono un umano *nell'anello* alle soglie alte della piramide,
 e valutano ogni candidato al retraining su dati **freschi e possibilmente non
 contaminati** dalle scelte del modello in carica. Il caso limite, in cui il
 feedback loop non è un incidente ma la struttura stessa del problema, lo
-abbiamo già visto nel capitolo sui sistemi di raccomandazione: lì il modello
+abbiamo già visto nel
+{doc}`capitolo sui sistemi di raccomandazione </SistemiRaccomandazione/overview>`:
+lì il modello
 decide che cosa l'utente può vedere, e quindi che cosa potrà mai cliccare.
 
 `````
@@ -558,9 +563,8 @@ Le tre tecniche, in ordine crescente di esposizione {cite}`huyen2022designing`:
   doppio e non si misurano gli effetti sul comportamento reale (nessuno
   *agisce* sulle predizioni ombra).
 - **Canary release**: il modello nuovo serve davvero, ma solo una **piccola
-  quota** del traffico (l'1%, il 5%), come il canarino che i minatori portavano
-  in miniera per accorgersi del gas prima degli uomini. Si sorvegliano le
-  metriche sulla quota canary e, se reggono, si aumenta gradualmente fino al
+  quota** del traffico (l'1%, il 5%). Si sorvegliano le metriche sulla quota
+  canary e, se reggono, si aumenta gradualmente fino al
   100%; al primo segnale cattivo si torna indietro (*rollback*) avendo esposto
   pochi utenti.
 - **A/B test**: due gruppi di utenti, assegnati a caso, ricevono
@@ -631,7 +635,9 @@ modello serve.
 - Il **detective** della sezione «Quando i dati cambiano» diventa sorveglianza
   continua con tre scelte operative: **finestre** (riferimento vs corrente
   scorrevole), **soglia** sull'AUC (tarata sui falsi allarmi) e **test per
-  *feature*** (Kolmogorov–Smirnov) per localizzare il drift. Essendo addestrato
+  *feature*** per localizzare il drift: Kolmogorov–Smirnov sulle colonne
+  numeriche, e sulle categoriche, a cui non si applica, il **PSI** o un chi
+  quadro. Essendo addestrato
   sui soli ingressi, rileva un cambiamento della **marginale $P(X)$**, che
   covariate shift e label shift condividono, ed è cieco al *concept shift*
   puro.

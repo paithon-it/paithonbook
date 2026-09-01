@@ -43,10 +43,10 @@ una voce sola: quella dell'etichetta vera. Un `0.82` lì sopra costa poco, un
 che ha dentro, dalla prima lente all'ultimo strato, per far salire quella
 voce. Ripetuto su milioni di foto, questo è l'addestramento.
 
-Quello che la rete ha dentro non è distribuito alla pari. L'ultimo strato,
-quello che trasforma la lista in probabilità, in una rete moderna tiene pochi
-numeri; nelle prime reti di questo genere era il contrario. In AlexNet
-novantasei numeri su cento stavano nel finale, e cambiare il finale voleva dire
+Quello che la rete ha dentro non è distribuito alla pari. La coda, cioè gli
+strati che vengono dopo le lenti, in una rete moderna tiene pochi numeri; nelle
+prime reti di questo genere era il contrario. In AlexNet novantasei numeri su
+cento stavano nei suoi ultimi tre strati, e rifare quella coda voleva dire
 rifare quasi tutta la rete.
 
 `````
@@ -71,10 +71,11 @@ $$
 
 Qui $\hat{y}_k$ è la probabilità stimata della classe $k$, $\mathbf{w}_k$ è la
 riga di pesi ad essa associata e $b_k$ il suo termine costante.
-L'addestramento minimizza la *cross-entropy*
-$\mathcal{L} = -\sum_k y_k \log \hat{y}_k$, dove $y_k$ vale 1 sulla classe vera
-e 0 sulle altre (resta quindi il solo termine $-\log \hat{y}_{\text{vera}}$),
-ottimizzando tutti i parametri $\theta$ della rete.
+Su un esempio il costo è la *cross-entropy*
+$\ell = -\sum_k y_k \log \hat{y}_k$, dove $y_k$ vale 1 sulla classe vera
+e 0 sulle altre (resta quindi il solo termine $-\log \hat{y}_{\text{vera}}$);
+l'addestramento minimizza la sua media $\mathcal{L}$ sull'insieme, ottimizzando
+tutti i parametri $\theta$ della rete.
 
 `````
 
@@ -165,12 +166,12 @@ quadratino di griglia in un numero solo, e così la rimpicciolisce): è il modo
 in cui la rete smette di guardare i pixel e comincia a guardare le cose.
 ```
 
-I due movimenti di {numref}`fig-gerarchia-pooling` vanno in verso opposto e
-sono la ragione per cui il transfer learning funziona: la griglia si
-rimpicciolisce, il significato cresce. Quello che si perde per strada, la
-posizione esatta dei pixel, è la parte che vale in qualunque fotografia del
-mondo; quello che si guadagna in fondo, l'oggetto riconosciuto, è la parte che
-dipende dal compito. Ecco perché si riusa la prima e si rifà la seconda.
+I due movimenti di {numref}`fig-gerarchia-pooling` vanno in verso opposto.
+Buttare via la posizione
+esatta dei pixel per costruire forme sempre più grandi serve in qualunque
+fotografia del mondo; riconoscere in fondo alla pila proprio le mille categorie
+di ImageNet serve solo lì. Ecco perché la pila si riusa quasi tutta, e a rifarsi
+è la punta.
 
 ## Congelare o rifinire: feature extraction vs fine-tuning
 
@@ -266,8 +267,8 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.fc.parameters(), lr=1e-3)
 ```
 
-L'addestramento è il **training loop** del {doc}`capitolo su PyTorch </PyTorch/overview>`, il ciclo che
-mostra alla rete un mucchietto di immagini alla volta, guarda quanto ha
+L'addestramento è il {doc}`training loop </PyTorch/addestramento>`, il ciclo
+che mostra alla rete un mucchietto di immagini alla volta, guarda quanto ha
 sbagliato e sposta i suoi numeri un pochino nella direzione giusta. «Un
 pochino» quanto, lo decide un valore che si chiama *learning rate*, alla
 lettera «velocità di apprendimento»: è la lunghezza del passo. Quando la testa
@@ -294,10 +295,10 @@ nostre immagini somigliano a quelle su cui la base è stata addestrata, ed è la
 stessa cosa da cui dipende quanto rende il transfer learning: più il dominio è
 lontano da ImageNet (le radiografie, le immagini satellitari, il microscopio),
 meno c'è da riusare e più c'è da riaddestrare. Sostituendo `resnet18` con
-`resnet50` o con
-`efficientnet_b0` {cite}`tan2019efficientnet` la struttura del codice non
-cambia: è il
-bello del transfer learning.
+`resnet50` la struttura del codice non cambia. Cambiando famiglia cambiano i
+nomi, e vanno guardati: in `efficientnet_b0` {cite}`tan2019efficientnet` la
+testa si chiama `classifier[1]` e non `fc`, e gli strati alti stanno dentro
+`features` e non in un `layer4`.
 
 `````{tab} Elementare
 

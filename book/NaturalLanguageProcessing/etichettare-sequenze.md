@@ -20,7 +20,7 @@ discorso), uno dei compiti più antichi del NLP; suo cugino stretto è il
 **NER**, da *named entity recognition*, e che abbiamo già incontrato nella
 panoramica del capitolo. Li raccontiamo insieme perché condividono la forma
 (un'etichetta per ogni parola) e la stessa storia: prima i modelli
-probabilistici degli anni Novanta, la «seconda stagione» della parabola
+probabilistici degli anni Novanta, la **seconda tappa** della parabola
 storica del capitolo, poi le reti ricorrenti delle sezioni precedenti.
 
 ## Il mestiere di ogni parola
@@ -50,8 +50,8 @@ categorie condiviso: è il contributo del progetto **Universal Dependencies**
 {cite}`nivre2016universal`, un'impresa collettiva di linguisti che prendono
 testi veri e ci scrivono sopra, parola per parola, l'analisi giusta (si dice
 che li **annotano**), sempre con gli stessi criteri e nella stessa notazione.
-Alla presentazione del 2016 le lingue erano 33; da allora la raccolta è
-cresciuta di anno in anno e oggi ne conta diverse volte tante. Il nome parla di «dipendenze» e non di categorie perché il
+Alla presentazione del 2016 le lingue erano 33; oggi sono più di
+centocinquanta. Il nome parla di «dipendenze» e non di categorie perché il
 grosso di quel lavoro riguarda un piano più su, quello della struttura della
 frase, che è il tema della prossima sezione; le diciassette etichette sono le
 fondamenta su cui quella struttura si appoggia.
@@ -221,8 +221,9 @@ Come si insegna a una macchina a etichettare? La risposta classica, cuore
 della stagione statistica del NLP, è un modello dal nome intimidatorio e
 dall'idea limpida: lo **Hidden Markov Model** (HMM, modello di Markov
 nascosto). Il nome si scioglie pezzo per pezzo. *Markov* è il matematico russo
-che due sezioni fa contava le lettere dell’*Onegin*, e la parola richiama il
-suo patto: quello che succede adesso dipende solo da quello che è successo
+che nella sezione sui modelli n-gram contava le lettere dell’*Onegin*, e la
+parola richiama il suo patto: quello che succede adesso dipende solo da
+quello che è successo
 subito prima. *Model*, modello, perché è appunto una descrizione semplificata
 di come nasce una frase. E *hidden*, nascosto, che è l'aggettivo importante: le
 categorie grammaticali non si vedono mai, perché sulla pagina ci sono soltanto
@@ -307,7 +308,7 @@ quelle prima ancora. È la stessa regola del patto di Markov, ed è il motivo pe
 cui questi modelli si dicono «a catena»: come in una catena, ogni anello tocca
 solo il precedente e il successivo.
 
-Conviene dire in che senso quella proprietà salva. Arrivato alla parola 12,
+In che senso quella proprietà salva? Arrivato alla parola 12,
 non ho bisogno di ricordare tutta la storia di come ci sono arrivato: mi basta
 sapere, per ciascuna delle 17 categorie possibili, qual era il modo migliore
 di arrivarci alla parola 11. Tutto il resto si può buttare, perché non
@@ -572,8 +573,8 @@ un'entità sbagliata: mezza persona non serve a nessuno. Per questo il NER si
 giudica a evidenziature intere (vale solo il segmento completo, del colore
 giusto) e con due domande: di quello che hai evidenziato, quanto era giusto? E
 di quello che andava evidenziato, quanto ne hai trovato? Sono la precisione e
-il richiamo che abbiamo incontrato nel capitolo sul machine learning e usato
-nella sezione sulla classificazione, dove si chiamavano con i loro nomi
+il richiamo della {doc}`sezione sulle metriche </MachineLearning/metriche>`,
+usati nella sezione sulla classificazione, dove si chiamavano con i loro nomi
 inglesi, *precision* e *recall*: sono la stessa identica coppia di domande. Il
 voto unico $F_1$ le riunisce con la media severa già vista là: si moltiplicano
 i due voti, si raddoppia il prodotto, e lo si divide per la somma dei due voti.
@@ -652,8 +653,9 @@ imparato a mettere.
   mano. La stessa macchina, con i suoni al posto delle categorie, ha retto il
   riconoscimento vocale per trent'anni.
 - **Viterbi** è il navigatore che a ogni incrocio, per ogni corsia, conserva
-  solo il modo migliore di arrivarci e butta via gli altri: invece di provare
-  miliardi di percorsi ne visita poche centinaia di caselle, e trova comunque
+  solo il modo migliore di arrivarci e butta via gli altri: invece di provarli
+  tutti, che sono quei quattro milioni di miliardi di miliardi, ne visita poche
+  centinaia di caselle, e trova comunque
   il percorso migliore in assoluto, garantito.
 - Alla recita dietro la tenda sono poi succeduti metodi che non raccontano più
   come parole ed etichette nascano insieme: si allenano soltanto a scegliere

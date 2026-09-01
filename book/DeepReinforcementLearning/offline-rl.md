@@ -73,7 +73,8 @@ sempre. Capire *perché* è il cuore di tutto l'argomento.
 
 Il colpevole è la differenza fra le mosse che nel diario ci sono e le mosse che
 l'agente, imparando, vorrebbe fare. Ha un nome tecnico, **distributional
-shift**, e un modo molto più chiaro di raccontarlo.
+shift**, lo spostamento di distribuzione, e un modo molto più chiaro di
+raccontarlo.
 
 `````{tab} Elementare
 
@@ -265,12 +266,12 @@ figura strepitoso può ancora finire in cima alla lista. Girata a fondo, tutto
 ciò che non è documentato sprofonda, e allora il critico dai quaderni non esce
 più, nemmeno quando fuori ci sarebbe di meglio.
 
-La promessa che si riesce a dimostrare, poi, è più modesta della regola.
-Prendi una serata e i piatti che il critico ordinerebbe: il voto medio che dà a
-quel gruppo non supera mai quello che la serata renderà davvero, se si fa come
-dice lui. Un singolo piatto dentro il gruppo può ancora essere sopravvalutato,
-e può ancora battere un piatto documentato. La garanzia è sulla media, non su
-ogni riga della lista.
+La promessa che si riesce a dimostrare, poi, è più modesta della regola. Prendi
+una serata e i piatti che il critico ordinerebbe: la media dei voti che dà a
+quei piatti non supera mai quello che la serata renderà davvero, se si ordina
+come dice lui. Un singolo piatto dentro il gruppo può ancora essere
+sopravvalutato, e può ancora battere un piatto documentato. La garanzia è sulla
+media, non su ogni riga della lista.
 
 E vale a due condizioni. La prima è che la manopola sia girata abbastanza, e
 quanto basti dipende da quanto ciascun piatto è documentato: uno cucinato una
@@ -344,8 +345,9 @@ Come si fa a scegliere bene senza mai considerare piatti mai cucinati? IQL
 cambia la domanda che rivolge ai quaderni. Non chiede più «quanto varrebbe
 questa ricetta ipotetica?», che è la domanda da cui nascono i voti di
 fantasia: chiede «nelle serate come questa, quanto hanno reso le ricette
-*migliori* fra quelle davvero provate?». È come giudicare il potenziale di una
-cucina dai suoi piatti più riusciti, senza fantasticare su menù mai esistiti.
+*migliori* fra quelle davvero provate?», e quella risposta è il **metro** della
+situazione. È come giudicare il potenziale di una cucina dai suoi piatti più
+riusciti, senza fantasticare su menù mai esistiti.
 
 I due numeri si calcolano uno dall'altro. Il voto di una ricetta tiene conto
 del metro della situazione in cui ti lascia; il metro di una situazione esce
@@ -386,7 +388,9 @@ $$
 V(s') - Q(s,a)\big)^2\Big].
 $$
 
-Dove $\tau \in (0,1)$ è l’**expectile** (in pratica $\tau \approx 0{,}7$–$0{,}9$):
+Dove $\tau \in (0,1)$ è l’**expectile** (in pratica $\tau \approx 0{,}7$–$0{,}9$;
+questo $\tau$ è il livello dell'asimmetria, e non ha niente a che vedere né con
+la traiettoria né con il peso dello scorrimento di DDPG):
 la perdita asimmetrica $L_2^\tau$ pesa di più i residui positivi, spingendo $V$
 verso l'alto della distribuzione dei $Q$ nel dataset. Un dettaglio che sembra di
 implementazione e non lo è: il $Q$ dentro $\mathcal{L}_V$ è una **copia
@@ -423,7 +427,8 @@ Fin qui abbiamo curato il Q-learning perché sopravvivesse ai dati fissi. Nel 20
 un gruppo di Berkeley (Lili Chen, Kevin Lu e colleghi) propone di cambiare
 proprio domanda {cite}`chen2021decision`: e se smettessimo di stimare valori e
 trattassimo l'apprendimento offline come un problema di **modellazione di
-sequenze**, lo stesso su cui i Transformer eccellono nel linguaggio?
+sequenze**, lo stesso su cui eccellono i **Transformer**, il tipo di rete con
+cui oggi si costruiscono i modelli linguistici?
 
 `````{tab} Elementare
 
@@ -464,18 +469,18 @@ $$
 
 dove $\hat{R}_t$ è il **return-to-go**, la somma delle ricompense da $t$ in
 poi. Un Transformer causale in stile GPT (la stessa architettura ad
-auto-attenzione mascherata descritta nel capitolo sui Transformer) predice in
-modo autoregressivo l'azione $a_t$ condizionando sui token precedenti, cioè su
-return desiderato, stati e azioni fino a $s_t$. L'addestramento è puramente
-**supervisionato**: minimizza l'errore (cross-entropy per azioni discrete, MSE
-per continue) tra l'azione predetta e quella nel dataset. È clonazione
-comportamentale, cioè imitazione delle azioni osservate, con in più il
-condizionamento sul ritorno desiderato. Non compaiono né
-equazione di Bellman, né bootstrapping, né operatore $\max$, e quindi neppure
-la sovrastima delle azioni OOD che affligge il Q-learning offline. In cambio
-eredita la fragilità della clonazione: la distribuzione degli stati resta
-quella di chi ha prodotto il dataset, non quella indotta dalla politica
-appresa.
+auto-attenzione mascherata descritta nel {doc}`capitolo sui Transformer
+</Transformers/overview>`) predice in modo autoregressivo l'azione $a_t$
+condizionando sui token precedenti, cioè su return desiderato, stati e azioni
+fino a $s_t$. L'addestramento è puramente **supervisionato**: minimizza
+l'errore (cross-entropy per azioni discrete, MSE per continue) tra l'azione
+predetta e quella nel dataset. È clonazione comportamentale, cioè imitazione
+delle azioni osservate, con in più il condizionamento sul ritorno desiderato.
+Non compaiono né equazione di Bellman, né bootstrapping, né operatore $\max$, e
+quindi neppure la sovrastima delle azioni OOD che affligge il Q-learning
+offline. In cambio eredita la fragilità della clonazione: la distribuzione
+degli stati resta quella di chi ha prodotto il dataset, non quella indotta
+dalla politica appresa.
 
 In fase di controllo si fissa un return-to-go iniziale $\hat{R}_1$ desiderato, si
 osserva lo stato, si genera l'azione; a ogni passo si decrementa il return-to-go
@@ -500,17 +505,18 @@ learning si può riformulare come apprendimento supervisionato di sequenze.
 
 ## Un filo che torna: le preferenze dell'RLHF
 
-Questa prospettiva illumina qualcosa che abbiamo già incontrato. Nella sezione
-sui metodi a gradiente di policy abbiamo visto l’**RLHF**, il modo in cui si
-addestrano oggi gli assistenti conversazionali {cite}`ouyang2022training`: delle
-persone confrontano a due a due le risposte del modello e dicono quale
-preferiscono; da quei confronti si costruisce un giudice automatico, il *modello
-di ricompensa*, che da lì in poi assegna i voti al posto loro.
+Questa prospettiva illumina qualcosa che abbiamo già incontrato. In fondo alla
+{doc}`sezione sulla ricerca ad albero <mcts-alphago>` abbiamo visto l’**RLHF**,
+il modo in cui si addestrano oggi gli assistenti conversazionali
+{cite}`ouyang2022training`: delle persone confrontano a due a due le risposte
+del modello e dicono quale preferiscono; da quei confronti si costruisce un
+giudice automatico, il *modello di ricompensa*, che da lì in poi assegna i voti
+al posto loro.
 
-Quei confronti formano un archivio, e come tutti gli archivi di questa sezione
-resta fermo mentre l'addestramento va avanti. Fermo però non vuol dire chiuso
+Quei confronti formano un archivio, e come ogni archivio resta fermo mentre
+l'addestramento va avanti. Fermo però non vuol dire chiuso
 per sempre: il lavoro che ha introdotto la ricetta dice che i due passi
-(raccogliere confronti e ottimizzare) «possono essere iterati di continuo»,
+(raccogliere confronti e ottimizzare) si possono iterare di continuo,
 tornando dalle persone a chiedere nuovi giudizi sulle risposte della versione
 migliore del momento. Si raccoglie a tornate. Ma fra una tornata e l'altra il
 giudice non cambia di una virgola, e il grosso dei confronti su cui è stato

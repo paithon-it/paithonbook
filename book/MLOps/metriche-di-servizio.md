@@ -28,7 +28,7 @@ servizio, *andare veloce*.
 ## Scomporre la latenza
 
 La generazione ha due fasi, molto diverse fra loro, e sono quelle incontrate
-nel {doc}`capitolo sui Transformer </Transformers/overview>` parlando di KV cache.
+nei {doc}`grandi modelli linguistici </Transformers/llm>` parlando di KV cache.
 
 Nella prima il modello **legge la domanda**: tutte le parole insieme, in un
 colpo solo, prendendosi gli appunti che gli serviranno dopo (sono proprio gli
@@ -116,15 +116,15 @@ indistinguibili.
 
 Il secondo, per giunta, spreca la sua velocità, e per capire perché serve
 sapere quanto vale un token in parole. Un token è più corto di una parola,
-perché le parole lunghe il modello le spezza in due o tre pezzi. Su un paragrafo
-italiano il conto, misurato con due tokenizzatori diversi, sta fra un token e
-mezzo e due e mezzo per parola. Un lettore adulto legge tre o quattro parole al
-secondo, quindi sta consumando qualcosa come 5–10 token al secondo. Un sistema
-che ne consegna 40 va dunque da quattro a otto volte più veloce di chi legge, e
-accelerare ancora non si vede: le parole erano già lì prima che l'occhio le
-raggiungesse. Il TTFT invece si sente sempre, perché è tempo in cui sullo
-schermo non succede niente. È il primo criterio di progetto: **oltre una certa
-soglia il TPOT smette di essere percepibile, il TTFT no**.
+perché le parole lunghe il modello le spezza in due o tre pezzi: su un
+paragrafo italiano ne servono fra uno e mezzo e due e mezzo, a seconda di come
+il modello è stato addestrato a spezzarle. Un lettore adulto legge tre o
+quattro parole al secondo, quindi sta consumando qualcosa come 4,5-10 token al
+secondo. Un sistema che ne consegna 40 va dunque da quattro a nove volte più
+veloce di chi legge, e accelerare ancora non si vede: le parole erano già lì
+prima che l'occhio le raggiungesse. Il TTFT invece si sente sempre, perché è
+tempo in cui sullo schermo non succede niente. È il primo criterio di progetto:
+**oltre una certa soglia il TPOT smette di essere percepibile, il TTFT no**.
 
 ## Prefill e decode sono due mestieri diversi
 
@@ -178,7 +178,7 @@ viaggiano nella stessa passata (trascurando KV cache e attenzione, che spostano
 il conto ma non la conclusione). Si noti che $n_{\text{tok}}$ conta i *token*,
 non le richieste: è la stessa quantità in prefill e in decode, ma la si riempie
 in due modi diversi. Le due fasi cadono così ai due lati del ginocchio del
-roofline, che sulle schede da datacenter sta fra qualche decina e qualche
+roofline, che sulle schede da datacenter sta fra un centinaio e qualche
 centinaio di FLOP/byte:
 
 - **prefill**: un prompt di 2.048 token dà $I \approx 2048$ FLOP/byte, ben oltre
@@ -367,9 +367,8 @@ mentre in un sistema vero peggiora molto di più chi ha la sfortuna di accodarsi
 in fondo.
 
 C'è poi una grandezza che si misura per richiesta e non è un tempo: quanti
-token quella richiesta consuma. Conviene guardarla qui, perché è la stessa di
-cui parla tutta questa sezione, vista dal lato del conto invece che da quello
-dell'orologio.
+token quella richiesta consuma, la stessa di cui parla tutta la sezione, vista
+dal lato del conto invece che da quello dell'orologio.
 
 ```{figure} ../figures/costo-per-forma-di-richiesta.svg
 :name: fig-costo-per-caso-uso
@@ -381,8 +380,8 @@ Un modello non ha memoria fra un turno e l'altro: per rispondere gli si rimanda
 ogni volta tutto quello che ci si è detti fin lì. Se ogni turno aggiunge 250
 token in tutto (la domanda più la risposta), all'ottavo gliene sono passati
 $250 \times (1 + 2 + \dots + 8)$, cioè novemila. È il conto del caso peggiore,
-quello in cui il modello rilegge tutto da capo ogni volta; l'ultima sezione di
-questa pagina mostra come si evita. E attenzione a leggere le barre: **una
+quello in cui il modello rilegge tutto da capo ogni volta, e la sezione sul
+riuso del prefisso mostra come si evita. E attenzione a leggere le barre: **una
 tacca in più non vuol dire un
 po’ di più, vuol dire dieci volte tanto** (è la scala logaritmica, l'unico modo
 di far stare quaranta e sessantatremila nello stesso disegno).
@@ -396,7 +395,7 @@ riassumere un documento lungo ne manda migliaia; una conversazione le rimanda
 tutte a ogni turno. E i token che si pagano sono esattamente gli stessi che
 occupano lo spazio che il modello ha per leggere, riempiono gli appunti della
 KV cache e allungano l'attesa: chi ne fa risparmiare uno risparmia insieme
-denaro, memoria e tempo. È la leva su cui si chiude questa pagina.
+denaro, memoria e tempo.
 
 ## Le medie mentono, e qui in tre modi
 
@@ -426,15 +425,16 @@ recuperare in venti archivi diversi, oppure venti programmi esterni a cui il
 modello chiede una cosa ciascuno (che ora, un cambio, un prezzo) prima di
 poter rispondere. Lì non si aspetta la media, si
 aspetta **la più lenta di tutte**, e basta che una sia finita nella coda perché
-l'intera risposta ci finisca. Se ciascuna ha l’$1\%$ di probabilità di essere lenta, e le venti sono lente
-per ragioni indipendenti, la probabilità che almeno una lo sia è
-$1 - 0{,}99^{20} \approx 18\%$; quando invece condividono la stessa scheda, la
-stessa rete o lo stesso scheduler la loro sfortuna arriva insieme, e il $18\%$
-è la stima ottimistica: si calcola la probabilità che vadano bene tutte
-e venti ($0{,}99$ moltiplicato per sé stesso venti volte, cioè circa l’$82\%$) e
-la si toglie da uno. Una p99 rassicurante sul singolo passo diventa un utente
-scontento su cinque sull'intera interazione, ed è l'argomento di Dean e Barroso
-{cite}`dean2013tail`.
+l'intera risposta ci finisca. Se ciascuna ha l’$1\%$ di probabilità di essere
+lenta, e le venti sono lente per ragioni indipendenti, la probabilità che almeno
+una lo sia si trova al rovescio: si calcola quella che vadano bene tutte e venti
+(venti volte $0{,}99$ moltiplicati fra loro, circa l’$82\%$) e la si toglie
+da uno, cioè $1 - 0{,}99^{20} \approx 18\%$. Ed è ancora una stima ottimistica,
+perché quell’$1\%$ è misurato su una chiamata sola: venti che premono insieme
+sulla stessa scheda o sulla stessa rete si rallentano a vicenda, e la
+probabilità di partenza sale. Una p99 rassicurante sul singolo passo diventa un
+utente scontento su cinque sull'intera interazione, ed è l'argomento di Dean e
+Barroso {cite}`dean2013tail`.
 
 Nel caso opposto l'effetto si rovescia, e conviene saperlo per non applicare il
 conto dove non vale. Un agente che fa venti chiamate **una dopo l'altra** non
@@ -444,8 +444,8 @@ diventa ventidue, cioè il $10\%$ in più, non il $200\%$ che quel passo ha
 subìto per conto suo. Lì a sfondare la promessa è il **totale**, venti volte
 più grande, per conto suo.
 
-**La terza** si vede nel confronto fra le due configurazioni di poco fa, e sono
-i numeri della tabella che il codice in fondo alla pagina stampa. Con mazzi da
+**La terza** si vede nel confronto fra le due configurazioni di poco fa, sugli
+stessi numeri. Con mazzi da
 64 il TTFT **medio** è 457 ms, cioè dentro l'obiettivo di 500 ms: guardando
 quello, il sistema mantiene la promessa. Ma la p95 passa da 486 a 729 ms, e lì
 la riga dei 500 viene attraversata di netto. E la tabella ha una colonna che
@@ -549,29 +549,31 @@ stranamente in fretta, vuol dire che gli appunti su quel testo c'erano già,
 cioè che *qualcun altro* lo aveva mandato prima. Si scopre così un pezzo di
 quello che stanno chiedendo gli altri, senza vedere niente di loro. È un canale
 laterale a base di
-tempo, della stessa famiglia degli attacchi che il capitolo sull'AI
-responsabile affronterà parlando di privacy. Le difese sono di progetto, non di
+tempo, della stessa famiglia degli attacchi di
+{doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>`.
+Le difese sono di progetto, non di
 taratura: si partiziona la cache per cliente, e si condividono solo i prefissi
 dichiaratamente pubblici, tipicamente l'istruzione di sistema del prodotto.
 
 Stessa disciplina per la correttezza. Gli appunti tenuti da parte valgono solo
 per chi li ha scritti, e dipendono da tre cose: da quale modello li ha
 calcolati, da quali eventuali pesi aggiuntivi lo stessero specializzando (la
-LoRA vista nel {doc}`capitolo sui Transformer </Transformers/overview>`) e da con quante cifre i suoi numeri
-erano scritti. Se il magazzino non tiene conto di tutte e tre, consegna a un
+LoRA vista {doc}`dopo il pre-addestramento </Transformers/post-training>`) e da
+quante cifre avevano i suoi numeri. Se il magazzino non tiene conto di tutte
+e tre, consegna a un
 modello gli appunti presi da un altro, e nessuno se ne accorge.
 
 ## Misurare in venti righe
 
-Il codice qui sotto prende, per ogni richiesta arrivata in dieci secondi, il suo
-TTFT e il suo TPOT, e ne ricava throughput, goodput e percentili. I due tempi
-non sono misurati ma estratti a sorte, e la forma con cui si sorteggia non è
-scelta a caso: dev'essere quella che i tempi di risposta hanno davvero, cioè
-tantissime richieste ammassate attorno a un valore tipico e poche, sempre più
-rare, che si allontanano verso i tempi lunghi. È esattamente la coda di cui
-parla tutta questa pagina, e ha anche la proprietà che serve, cioè che non
-esce mai un tempo negativo. Quella forma ha un nome, **lognormale**, e nel
-codice è la riga `rng.lognormal`.
+Venti righe bastano a prendere, per ogni richiesta arrivata in dieci secondi,
+il suo TTFT e il suo TPOT, e ne ricava throughput, goodput e percentili. I due
+tempi non sono misurati ma estratti a sorte, e la forma con cui si sorteggia
+non è scelta a caso: dev'essere quella che i tempi di risposta hanno davvero,
+cioè tantissime richieste ammassate attorno a un valore tipico e poche, sempre
+più rare, che si allontanano verso i tempi lunghi. È esattamente la coda di cui
+parla tutta questa pagina, e ha anche la proprietà che serve, cioè che non esce
+mai un tempo negativo. Quella forma ha un nome, **lognormale**, e nel codice è
+la riga `rng.lognormal`.
 
 ```python
 import numpy as np

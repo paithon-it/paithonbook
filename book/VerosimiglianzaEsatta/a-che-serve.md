@@ -1,8 +1,9 @@
 # A che serve saperlo, e dove sbaglia
 
 Abbiamo speso due sezioni per ottenere un numero. Adesso la domanda che le
-giustifica: a che cosa serve. Sono tre mestieri, e sul terzo questa famiglia ha
-preso una lezione che vale più dei primi due.
+giustifica: a che cosa serve. Sono tre mestieri, e su quello del riconoscere
+ciò che è fuori posto questa famiglia ha preso una lezione che vale più degli
+altri due.
 
 ## Primo: comprimere
 
@@ -14,7 +15,7 @@ fattore»: proprio quella grandezza lì, con uno scarto di un paio di bit su
 tutto il file, che è quanto costa scrivere in bit interi una quantità che
 intera non è.
 
-Un modello che sa dire $p(\mathbf{x})$ **è** un compressore, e non per
+Un modello che sa dire $p(\mathbf{x})$ *è* un compressore, e non per
 analogia. Gli si dà un file, lui dà una probabilità, un codificatore aritmetico
 la trasforma in bit, e il file si ricostruisce esattamente. È la ragione per cui
 in questa letteratura la qualità non si misura in punti su cento ma in **bit per
@@ -27,7 +28,7 @@ frase.
 Una figurina a colori di 32 pixel per lato è fatta di $32 \times 32 \times 3 =
 3.072$ numeri, ognuno fra 0 e 255. Chi non sa niente di come sono fatte le
 immagini deve spendere 8 bit per ciascuno, cioè 3.072 byte: è il file grezzo.
-Il miglior modello di questa famiglia costa 2,92 bit per numero, e
+Un modello autoregressivo ben fatto costa 2,92 bit per numero, e
 $3.072 \times 2{,}92$ fa 8.970 bit, cioè meno di 1.130 byte. Stesso contenuto,
 ricostruibile senza perdere niente, in poco più di un terzo dello spazio.
 L'unica cosa che il modello ha in più è sapere che cosa aspettarsi.
@@ -75,8 +76,9 @@ codifica vero. Conservativo, il che va benissimo, ma non è la stessa cosa.
 
 `````
 
-C'è anche un motivo per cui questo modo di misurare piace, e il capitolo sulle
-GAN lo rende evidente per contrasto. Confrontare due GAN richiede il FID, che
+C'è anche un motivo per cui questo modo di misurare piace, e la
+{doc}`sezione sull'addestramento avversario </GAN/come-funziona>` lo rende
+evidente per contrasto. Confrontare due GAN richiede il FID, che
 richiede una terza rete addestrata da qualcun altro, che a sua volta ha le sue
 idee su che cosa sia una fotografia. Confrontare due modelli a verosimiglianza
 esatta richiede un numero solo, misurato su dati mai visti, senza giudici
@@ -116,8 +118,8 @@ L'applicazione più ovvia di tutte è questa. Ho addestrato il modello sulle mie
 fotografie; adesso me ne arriva una nuova; se il modello le dà una probabilità
 bassissima, vuol dire che è roba diversa da quella che ho visto. Rilevamento di
 anomalie, controllo qualità, allarme quando il mondo cambia sotto ai piedi del
-sistema (è il tema della sezione su monitoraggio e deriva, nel capitolo su
-MLOps). Sembra la cosa più solida del mondo.
+sistema (è il tema della {doc}`sezione sul sorvegliare un modello vivo
+</MLOps/monitoring-e-drift>`). Sembra la cosa più solida del mondo.
 
 Non funziona. E il modo in cui non funziona è così netto da essere diventato un
 classico.
@@ -127,10 +129,11 @@ PixelCNN su CIFAR-10, una raccolta di fotografie di cani, camion, cavalli e
 altre cose comuni. Poi mostrano a quei modelli SVHN, che sono fotografie di
 numeri civici: un'altra raccolta, un altro mondo, immagini che il modello non
 ha mai visto e che non somigliano a niente di ciò che ha visto. E misurano la
-verosimiglianza. Il risultato, nelle loro parole, è che quei modelli «non
-riescono a distinguere immagini di oggetti comuni come cani, camion e cavalli
-da quelle di numeri civici, **assegnando una verosimiglianza più alta a queste
-ultime** quando il modello è stato addestrato sulle prime».
+verosimiglianza. Il risultato, nelle loro parole, è che «la densità
+appresa» da quei modelli «non riesce a distinguere immagini di oggetti comuni
+come cani, camion e cavalli
+da quelle di numeri civici, assegnando una verosimiglianza più alta a queste
+ultime quando il modello è stato addestrato sulle prime».
 
 Non «faticano a distinguere»: sbagliano nella direzione sbagliata, e con
 sicurezza. Il modello dichiara più tipica la roba che non ha mai visto.
@@ -196,11 +199,12 @@ $\mathbf{x} \in \operatorname{supp} p_{\text{dati}}$.
 Va aggiunta una precisazione di geometria in alta dimensione, che rende il
 risultato meno paradossale di quanto sembri: la massa di
 probabilità di una gaussiana non sta nel punto di densità massima ma in un
-guscio a distanza $\approx \sqrt{D}$ dall'origine (in $D = 1024$ la norma di un
-campione gaussiano standard vale in media $32{,}0$). Un campione **tipico** non
+guscio a distanza $\approx \sqrt{D}$ dall'origine (su CIFAR-10, dove
+$D = 3.072$, la norma di un campione gaussiano standard vale in media
+$55{,}4$). Un campione **tipico** non
 è quindi un campione ad alta densità, e i due concetti divergono tanto più
 quanto $D$ cresce. Cercare l'atipico guardando la densità è, letteralmente,
-guardare l'asse sbagliato, ed è la strada che gli stessi autori prendono subito
+guardare l'asse sbagliato, ed è la strada che lo stesso gruppo prende subito
 dopo, nel 2019, sostituendo alla densità un test di **tipicità**
 {cite}`nalisnick2019typicality`.
 
@@ -208,8 +212,9 @@ dopo, nel 2019, sostituendo alla densità un test di **tipicità**
 
 ## Il ponte: dai flussi al *flow matching*
 
-Resta un debito, aperto nella sezione precedente e prima ancora dal capitolo
-sui modelli di diffusione: la parola «flusso» del *rectified flow*. Adesso la
+Resta un debito, aperto nella sezione precedente e prima ancora dalla
+{doc}`sezione sul flow matching </ModelliDiffusione/flow-matching>`: la parola
+«flusso» del *rectified flow*. Adesso la
 si può saldare, e la parentela è più stretta di quanto sembri.
 
 Un flusso, come l'abbiamo costruito, è una **composizione di tanti passi
@@ -222,7 +227,8 @@ lascia scorrere, e il punto di partenza arriva dove deve. La deformazione
 diventa un movimento continuo, invece di una scala di gradini.
 
 Il guadagno è enorme. In quel limite il logaritmo del determinante si riduce
-alla **traccia** della jacobiana, cioè alla sola diagonale: è il risultato
+all'integrale nel tempo della **traccia** della jacobiana, cioè della sola
+diagonale: è il risultato
 delle *neural ODE* di Ricky Chen e colleghi {cite}`chen2018neural`, che al posto di una pila di
 strati mettono l'integrazione di un'equazione differenziale. Quella traccia
 però va ancora calcolata, e calcolarla per intero costa quanto il quadrato
@@ -306,7 +312,10 @@ struttura, ed è per questo da sapere da dove viene la parola.
 - **Limite continuo** (*neural ODE* {cite}`chen2018neural`): la composizione di
   passi discreti diventa una ODE sul campo di velocità e
   $\log\lvert\det\mathbf{J}\rvert$ si riduce a
-  $\int \operatorname{tr} (\partial v / \partial \mathbf{x})\, dt$. La traccia
+  $\int_0^T \operatorname{tr} (\partial \mathbf{v}_t / \partial \mathbf{x}_t)\,
+  \mathrm{d}t$, con $\mathbf{v}_t$ il campo di velocità: è la divergenza di
+  $\mathbf{v}_t$, ed è la forma in cui la {doc}`sezione su SDE e ODE
+  </ModelliDiffusione/sde-e-ode>` scrive lo stesso integrale. La traccia
   esatta costa $\mathcal{O}(D^2)$; lo stimatore stocastico di FFJORD
   {cite}`grathwohl2019ffjord` la porta a $\mathcal{O}(D)$ e toglie così ogni
   vincolo architetturale, al prezzo dell'integrazione numerica.
@@ -323,7 +332,7 @@ struttura, ed è per questo da sapere da dove viene la parola.
 Il filo da tenere è il prezzo. La verosimiglianza esatta non è gratis, si paga
 in vincoli su come la rete può essere fatta, e ogni modello di questo capitolo
 è un modo diverso di pagarla, dalla generazione un pezzo alla volta ai
-determinanti facili dei flussi. «Modelli a energia» quel prezzo si rifiuta di
-pagarlo e prende la strada opposta: rinuncia a normalizzare, cioè al conto che
-trasforma i punteggi in probabilità vere, e si tiene soltanto il confronto fra
-un dato e l'altro.
+determinanti facili dei flussi. Quel prezzo si può anche rifiutare, ed è la
+strada dei {doc}`modelli a energia </ModelliEnergia/overview>`: rinunciare a
+normalizzare, cioè al conto che trasforma i punteggi in probabilità vere, e
+tenersi soltanto il confronto fra un dato e l'altro.

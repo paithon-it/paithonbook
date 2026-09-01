@@ -108,7 +108,7 @@ def costruisci() -> Figura:
         f'<text class="lbs" x="{RIQ.x + RIQ.larg / 2:.0f}" '
         f'y="{RIQ.y + RIQ.alt + 72}" text-anchor="middle">'
         f'al modello basta sbagliare del {100 * (A_SOGNO - A_VERO) / A_VERO:.1f} '
-        f'per cento un solo numero: quanta spinta resta a ogni passo</text>'
+        f'per cento un solo numero: quanto slancio sopravvive a ogni passo</text>'
         .replace("2.8", "2,8"),
         # gli assi vanno nominati: un lettore che salta le schede non ha modo
         # di sapere che cosa sia la quantita' disegnata

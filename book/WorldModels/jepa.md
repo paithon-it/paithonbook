@@ -98,15 +98,18 @@ un **predictor** $g_\theta$ opera interamente lì:
 $$
 E(\mathbf{x}, \mathbf{y}, \mathbf{z}) = \big\lVert\, g_\theta(\mathbf{s}_x, \mathbf{z}) - \mathbf{s}_y \,\big\rVert_2^2,
 \qquad
-\mathcal{E}(\mathbf{x}, \mathbf{y}) = \min_{\mathbf{z}} E(\mathbf{x}, \mathbf{y}, \mathbf{z}),
+E^\star(\mathbf{x}, \mathbf{y}) = \min_{\mathbf{z}} E(\mathbf{x}, \mathbf{y}, \mathbf{z}),
 $$
 
 dove $\mathbf{z}$ è una variabile latente che assorbe la molteplicità dei futuri
 (quale dei tanti esiti plausibili si è realizzato) e $\phi$, $\bar{\phi}$,
 $\theta$ sono i parametri dei due encoder e del predictor. L'energia della
-*coppia* è la seconda quantità, $\mathcal{E}$: si sceglie la $\mathbf{z}$ che spiega meglio il
+*coppia* è la seconda quantità, $E^\star$ (nel documento del 2022 si chiama
+energia libera e si scrive $F$, ma quella lettera qui è già l'energia libera
+variazionale dell'inferenza attiva, che misura un'altra cosa): si sceglie la
+$\mathbf{z}$ che spiega meglio il
 futuro osservato, e quel minimo misura la compatibilità tra $\mathbf{x}$ e $\mathbf{y}$. Il
-collegamento con il capitolo sui modelli a energia è letterale: una JEPA **è** un
+collegamento con il capitolo sui modelli a energia è letterale: una JEPA è un
 modello a energia non normalizzato; la compatibilità tra presente e futuro è
 l'errore di predizione nello spazio latente, l'inferenza è la solita
 $\arg\min$ (qui, il minimo su $\mathbf{z}$), e della funzione di partizione non
@@ -116,7 +119,8 @@ Una precisazione, perché altrimenti quel $\min_{\mathbf{z}}$ resta un debito: $
 forma **generale** dello schema proposto nel 2022, non la ricetta che poi è
 stata implementata. I due sistemi costruiti da Meta (I-JEPA per le immagini,
 V-JEPA per i video) istanziano il caso **senza latente**: il
-predictor è deterministico, $g_\theta(\mathbf{s}_x)$, quindi $\mathcal{E}(\mathbf{x}, \mathbf{y}) = E(\mathbf{x}, \mathbf{y})$ e non
+predictor è deterministico, $g_\theta(\mathbf{s}_x)$, quindi
+$E^\star(\mathbf{x}, \mathbf{y}) = E(\mathbf{x}, \mathbf{y})$ e non
 c'è alcun minimo da calcolare, né in addestramento né a inferenza. Quel poco
 di «quale futuro» che serve è passato al predictor come informazione
 esplicita (i token posizionali che dicono *dove* prevedere), non inferito
@@ -145,9 +149,12 @@ inglese «perdita») è il voto: il numero che misura quanto la risposta data si
 discosta da quella giusta, e che l'addestramento passa il tempo ad abbassare.
 
 Una parola sulle parole, già che ci siamo. Riassunto, embedding,
-rappresentazione, «spazio delle idee» e, nel gergo dei paper, *latente*, in
-questo capitolo indicano la stessa cosa: la manciata di numeri in cui una rete
-ha condensato quello che ha guardato. Cambia il registro, non l'oggetto.
+rappresentazione e «spazio delle idee», in questo capitolo, indicano la stessa
+cosa: la manciata di numeri in cui una rete ha condensato quello che ha
+guardato. Cambia il registro, non l'oggetto. Fa eccezione *latente*, che nei
+paper indica anche un'altra cosa, e poco fa l'ha indicata: la $\mathbf{z}$
+della formula generale, che non riassume niente di visto ma dice quale dei
+futuri possibili si è realizzato.
 
 ```{figure} ../figures/jepa-architettura.svg
 :name: fig-jepa-architettura
@@ -171,11 +178,11 @@ nello stesso spazio, ed è lì che si possono confrontare.
 
 ## Il ritorno del collasso
 
-Chi ha letto il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` sa già dove si nasconde la
-trappola, perché è la stessa del buttafuori pigro: quello che, dovendo dare a
-ogni coppia un voto di compatibilità (in quel capitolo il voto si chiama
-**energia**, e più è basso più le due cose stanno bene insieme), scopre che il
-modo più comodo di non sbagliare mai è dire sempre sì.
+La trappola è la stessa del buttafuori pigro, e chi ha letto il {doc}`capitolo
+sui modelli a energia </ModelliEnergia/overview>` sa già dove si nasconde. Quel
+buttafuori deve dare a ogni coppia un voto di compatibilità: là il voto si
+chiama **energia**, e più è basso più le due cose stanno bene insieme. E scopre
+presto che il modo più comodo di non sbagliare mai è dire sempre sì.
 
 Qui la scorciatoia è la stessa. Se il voto premia soltanto la vicinanza fra il
 riassunto predetto e quello del bersaglio, la strada più comoda è
@@ -241,13 +248,15 @@ In I-JEPA $m$ parte da 0,996, quindi a ogni passo il target si sposta di una
 frazione millesimale verso l'encoder corrente, e **cresce linearmente fino a 1**
 lungo l'addestramento: verso la fine il bersaglio smette del tutto di muoversi.
 All'EMA si accompagna lo **stop-gradient**: la loss non si propaga
-mai attraverso il ramo del target, che è puro riferimento. Dei due, il muro
-contro il collasso è lo **stop-gradient**: è quello che impedisce la discesa
-coordinata dei due encoder verso la costante, perché il bersaglio insegue e non
-può contrattare. L'EMA aggiunge lentezza e stabilità al bersaglio, ed è
-un'ottima cosa nei sistemi veri, ma non è lei a reggere il muro: nella
-mini-JEPA in PyTorch, toglierla e tenere il solo stop-gradient non produce
-alcun collasso (la varietà delle rappresentazioni, anzi, sale da 1,0 a 1,6). È
+mai attraverso il ramo del target, che è puro riferimento. Dei due, quello che
+impedisce la discesa coordinata dei due encoder verso la costante è lo
+**stop-gradient**, perché il bersaglio insegue e non può contrattare: nella
+mini-JEPA in PyTorch, togliere l'EMA e tenere il solo stop-gradient non produce
+alcun collasso (la varietà delle rappresentazioni, anzi, sale da 1,0 a 1,6).
+Da un giocattolo ai sistemi veri, però, il passo non è automatico, e i paper
+non lo fanno: I-JEPA chiama l'EMA «essenziale per addestrare» architetture
+come questa, e la difesa dal collasso la attribuisce all'asimmetria fra i due
+rami nel suo insieme. È
 comunque la stessa scoperta empirica che aveva sorpreso la comunità con BYOL
 nel 2020 {cite}`grill2020bootstrap`: niente coppie negative, niente termini
 contrastivi, eppure niente collasso. Una comprensione teorica
@@ -264,8 +273,9 @@ Nel documento del 2022 la JEPA è soprattutto un diagramma. La prima
 incarnazione convincente arriva l'anno dopo, dal gruppo di LeCun a Meta AI:
 **I-JEPA** (*Image-based JEPA*, la JEPA per le immagini)
 {cite}`assran2023self`, presentata alla conferenza CVPR. I pezzi sono quelli di
-poco fa. L'encoder è un **Vision Transformer**, la rete che nel capitolo sui
-Transformer tagliava l'immagine in tessere e le trattava come le parole di una
+poco fa. L'encoder è un **Vision Transformer**, la rete che nella
+{doc}`sezione sui modelli multimodali </Transformers/multimodalita>`
+tagliava l'immagine in tessere e le trattava come le parole di una
 frase {cite}`dosovitskiy2021image`. Il compito è un indovinello: dato un solo
 blocco di *contesto* dell'immagine, prevedere che cosa c'è in quattro blocchi
 *bersaglio* nascosti. La novità è tutta nel **che cosa** si prevede: non i
@@ -292,7 +302,8 @@ servono i trucchi artigianali con cui di solito si addestrano questi sistemi
 da chi progetta). Basta l'indovinello. E i risultati danno ragione alla
 scommessa: con appena l'1% delle etichette di ImageNet (una dozzina di foto
 etichettate per categoria) I-JEPA classifica meglio dei metodi che
-ricostruiscono i pixel, e ci arriva con molto meno calcolo. Quel risparmio è
+ricostruiscono i pixel: 73 risposte giuste su cento contro 71. E ci arriva con
+molto meno calcolo. Quel risparmio è
 facile capirlo al contrario: non è che ogni ripasso costi meno (costa anzi un
 pelo di più, c'è una rete in più da far girare), è che di ripassi ne servono
 cinque volte meno.
@@ -385,8 +396,8 @@ movimento.
 Un'avvertenza, però, e vale per tutti gli esami fatti così: più l'esaminatore
 è bravo, meno si capisce di chi sia il merito. Se è un programmino, quel che
 risponde lo ha trovato bell'e pronto nei riassunti; se è una rete capace, una
-parte del lavoro può averla fatta lui. E qui l'esaminatore un programmino non
-è: è una piccola rete addestrata apposta, che nella versione successiva del
+parte del lavoro può averla fatta lui. E qui l'esaminatore è del secondo tipo:
+una piccola rete addestrata apposta, che nella versione successiva del
 sistema cresce ancora. Quindi quel «sette su dieci» dice quanto l'informazione
 sul movimento sia **facile da tirare fuori** dai riassunti, che non è la
 stessa cosa che dire che il modello «ha capito». Il confronto fra sistemi
@@ -479,7 +490,9 @@ non aveva mai visto, senza un solo minuto di pratica lì dentro. Si chiama
 Qui però serve la cifra, non l'aggettivo, perché «riesce» dice troppo.
 Raggiungere un punto gli riesce sempre. Posare un oggetto dove va, circa tre
 volte su quattro. Afferrare una tazza, due volte su tre. Afferrare una
-scatola, una volta su quattro. E per ogni singolo gesto il robot passa
+scatola, una volta su quattro. Posare, però, non gli riesce con una foto sola
+dell'obiettivo: gliene servono tre, e a sceglierle è una persona. E per ogni
+singolo gesto il robot passa
 **sedici secondi** a immaginare, perché non prova un comando alla volta: ne
 sorteggia ottocento, tiene i dieci il cui esito finisce più vicino
 all'obiettivo, e sorteggia gli ottocento del giro dopo tutti attorno a quei
@@ -515,7 +528,12 @@ costano di più. Il costo è **16 secondi di calcolo su GPU per ogni singola
 azione**. E i tassi di successo, medi sui due laboratori, dicono a
 che punto siamo davvero: *reach* 100%, pick-and-place della tazza 80% e della
 scatola 65%, presa della tazza 65%, presa della scatola **25%**. Afferrare una
-scatola riesce una volta su quattro. Il sistema regge anche compiti di *video
+scatola riesce una volta su quattro. E il pick-and-place, che è il numero più
+alto, non si guida con un'immagine sola: gli autori ne danno tre (oggetto
+afferrato, oggetto vicino alla meta, oggetto posato) e passano dall'una
+all'altra a passi fissi. A scomporre l'obiettivo è una persona, ed è il conto
+che presenta l'orizzonte $T = 1$: fra i limiti gli autori mettono proprio il
+pick-and-place *senza* sotto-obiettivi. Il sistema regge anche compiti di *video
 question answering*, una volta allineato con un modello di linguaggio. È il
 punto esatto in cui la via di LeCun smette di essere un diagramma e tocca,
 letteralmente, il mondo fisico; non è il punto in cui la partita è vinta.
@@ -583,10 +601,10 @@ scommessa più grossa.
 
 ## Una scommessa aperta
 
-Chiudiamo con l'onestà dovuta. Quella raccontata in questa sezione è una
-**linea di ricerca in corso**, non un traguardo raggiunto. Le rappresentazioni
+Chiudiamo con l'onestà dovuta. Quella raccontata fin qui è una **linea di
+ricerca in corso**, non un traguardo raggiunto. Le rappresentazioni
 JEPA sono eccellenti e costano poco, e V-JEPA 2-AC ha mostrato che un world
-model auto-supervisionato può guidare un robot vero; ma dell'architettura a
+model auto-supervisionato può guidare un robot vero. Ma dell'architettura a
 sei moduli del 2022 la maggior parte resta sulla carta: la JEPA **gerarchica**,
 cioè fatta a livelli, dove quello alto pianifica a grandi passi («esco di casa,
 vado alla stazione») e quelli sotto ne riempiono i dettagli, ciascuno sulla

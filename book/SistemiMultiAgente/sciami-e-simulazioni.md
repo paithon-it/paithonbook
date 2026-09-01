@@ -721,9 +721,9 @@ passi, contro le milleottocentotrenta misure dello sciame.
 
 E si può capire da dove venga quel sessantasette, il che è più interessante del
 numero. Le partenze singole in tutto sono novemila, cioè trecento prove per
-trenta punti ciascuna, e ne riescono settantadue: **otto su mille**. Non è un
-caso: la fossetta centrale è larga circa uno per uno dentro un quadrato di lato
-dieci e un quarto, quindi occupa poco meno dell'uno per cento dell'area, e
+trenta punti ciascuna, e ne riescono settantadue: **otto su mille**, che è la
+misura della fossetta centrale. È larga circa uno per uno dentro un quadrato di
+lato dieci e un quarto, quindi occupa poco meno dell'uno per cento dell'area, e
 nascere lì dentro è appunto un tiro di dado che va bene una volta ogni cento e
 rotti.
 

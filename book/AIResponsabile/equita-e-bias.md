@@ -20,7 +20,8 @@ Gli altri due significati riguardano chi ha già letto i capitoli precedenti, e
 restano distinti: non è il bias del neurone (il termine $b$ che nel capitolo
 sulle reti neurali si somma ai pesi e sposta la soglia), e non è il bias del
 compromesso bias-varianza (l'errore sistematico di un modello troppo semplice,
-nel {doc}`capitolo di Machine Learning </MachineLearning/overview>`). Il secondo in particolare è vicino
+nella {doc}`sezione su overfitting e validazione
+</MachineLearning/overfitting-validazione>`). Il secondo in particolare è vicino
 abbastanza da confondere, e non lo è: un modello troppo semplice non per
 questo discrimina, e un modello che discrimina può essere complicato quanto si
 vuole.
@@ -138,8 +139,10 @@ ottiene tagliandolo a una certa altezza.
 Su questi ingredienti si contano gli errori, e le misure sono le stesse due del
 capitolo di Machine Learning. Il **tasso di veri positivi** è la quota di casi
 veri che il modello prende; il **tasso di falsi positivi** è la quota di falsi
-allarmi su chi non c'entrava nulla. «Tasso» vuol dire soltanto «quanti su
-cento», scritto però come numero fra zero e uno: $0{,}80$ sta per ottanta su
+allarmi su chi non c'entrava nulla. Nelle figure e in letteratura si scrivono
+abbreviati, `TPR` e `FPR`, dalle iniziali inglesi, e le quattro caselle della
+tabella si chiamano `VP`, `FP`, `FN`, `VN`. «Tasso» vuol dire soltanto «quanti
+su cento», scritto però come numero fra zero e uno: $0{,}80$ sta per ottanta su
 cento. La differenza rispetto a quel capitolo è una sola, ed è decisiva: qui i
 conti si fanno **separatamente per ciascun gruppo** e poi si confrontano
 ({numref}`fig-equita-tassi`).
@@ -175,8 +178,9 @@ richieste distinte.
   il «a prescindere» va preso alla lettera: la richiesta resta soddisfatta
   anche scegliendo i migliori fra gli uomini e tirando a sorte fra le donne.
 - **Stessi errori per tutti**, in gergo *equalized odds* (che si potrebbe
-  rendere con «pari probabilità di sbagliare»: *odds* in inglese sono le
-  probabilità che si dicono agli scommettitori). Sono due condizioni in una: il
+  rendere con «pari probabilità di sbagliare»: gli *odds* sono il modo in cui
+  gli scommettitori dicono una probabilità, il rapporto fra le volte che una
+  cosa capita e quelle che non capita). Sono due condizioni in una: il
   modello deve prendere la stessa quota di persone a cui l'esito è poi capitato
   davvero, e dare la stessa quota di falsi allarmi su chi non c'entrava nulla.
   È la richiesta che la {numref}`fig-equita-tassi` mostra violata: stesso
@@ -206,7 +210,8 @@ criterio enunciato su $\hat{Y}$ sono affermazioni diverse, e la distinzione fra
 i due torna a ogni risultato di impossibilità.
 
 Le definizioni di equità di gruppo si organizzano attorno a tre criteri
-statistici {cite}`hardt2016equality`.
+statistici, nella terna di Barocas, Hardt e Narayanan
+{cite}`barocas2023fairness`.
 
 **Parità demografica** (*independence*, $\hat{Y} \perp A$): la quota di esiti
 positivi non dipende dal gruppo,
@@ -257,18 +262,26 @@ $$
 
 cioè l'uguaglianza fra i gruppi del valore predittivo positivo
 $\text{VPP}=P(Y=1\mid\hat{Y}=1)$, che è la *precision* del capitolo di Machine
-Learning. È questo, e non la calibrazione, il criterio che Northpointe
-rivendicava a difesa di COMPAS {cite}`dieterich2016compas`, ed è il perno dei
-risultati di impossibilità.
+Learning. È il criterio che Northpointe rivendicava a difesa di COMPAS
+{cite}`dieterich2016compas`, ed è il perno dei risultati di impossibilità.
 
 `````
 
 ## I risultati di impossibilità
 
-Arriviamo al nodo. Le richieste appena viste, e una quarta che aggiungeremo fra
-poco, non entrano in conflitto per caso: alcune di esse sono **matematicamente
-incompatibili** ogni volta che i gruppi partono da tassi di base diversi, cioè
-ogni volta che l'esito, nei dati, è più frequente in un gruppo che nell'altro.
+Arriviamo al nodo, e alle tre richieste viste finora va affiancata una quarta.
+Somiglia moltissimo alla calibrazione e non è la stessa cosa: **quando il
+modello dice sì, ci prende ugualmente spesso in ogni gruppo**, e in gergo si
+chiama *parità del valore predittivo*. La differenza con la calibrazione è
+sottile e conta: la calibrazione riguarda il punteggio, il «70» che deve voler
+dire settanta su cento per tutti; questa riguarda il sì e il no che si
+ottengono tagliando quel punteggio a una certa altezza. È quest'ultima, non la
+calibrazione, quella che l'azienda di COMPAS rivendicava.
+
+Queste quattro richieste non entrano in conflitto per caso: alcune di esse sono
+**matematicamente incompatibili** ogni volta che i gruppi partono da tassi di
+base diversi, cioè ogni volta che l'esito, nei dati, è più frequente in un
+gruppo che nell'altro.
 
 Conviene però dire subito una cosa che si legge di continuo detta male. Non c'è
 **un** teorema di impossibilità: ce ne sono tre, dimostrati da persone diverse,
@@ -279,15 +292,7 @@ lo spazio per vederlo succedere invece di annunciarlo.
 
 `````{tab} Elementare
 
-Serve prima una quarta richiesta, che somiglia moltissimo alla calibrazione e
-non è la stessa cosa: **quando il modello dice sì, ci prende ugualmente spesso
-in ogni gruppo**. In gergo si chiama *parità del valore predittivo*. La
-differenza con la calibrazione è sottile e conta: la calibrazione riguarda il
-punteggio (il «70» deve voler dire settanta su cento per tutti), questa riguarda
-il sì e il no che si ottengono tagliando quel punteggio a una certa altezza. È
-quest'ultima, non la calibrazione, quella che l'azienda di COMPAS rivendicava.
-
-Adesso mettiamoci due gruppi veri e contiamo, perché è l'unico modo di vedere
+Mettiamoci due gruppi veri e contiamo, perché è l'unico modo di vedere
 *perché* il muro c'è. In tutti e due l'esito che vogliamo prevedere capita a
 cinquanta persone; la differenza è che il Gruppo A è fatto di cento persone e
 il Gruppo B di duecento. Quindi nel Gruppo A l'esito riguarda una persona su
@@ -318,8 +323,9 @@ diversi, tre richieste non stanno insieme. Sono la parità del valore
 predittivo, la parità del **tasso** di falsi allarmi (non del numero: il
 numero, come si è appena visto, può benissimo coincidere) e la parità di quelli
 che sfuggono. Quest'ultima è la pretesa di prendere la stessa quota, girata al
-contrario: se il modello ne prende 35 su 50, gliene sfuggono 15 su 50, e
-pretendere l'una è pretendere l'altra. Qualunque due tu scelga di assicurare,
+contrario: se delle cinquanta persone a cui l'esito è capitato il modello ne
+prende trentacinque, le altre quindici gli sfuggono, e pretendere l'una è
+pretendere l'altra. Qualunque due tu scelga di assicurare,
 la terza salta. È un vincolo dell'aritmetica, che né codice migliore né più
 dati possono togliere.
 
@@ -337,8 +343,10 @@ Avevano ragione **entrambe**, ed è proprio questo il punto.
 
 Teoremi di questa famiglia ce ne sono altri due, e nei giornali finiscono
 regolarmente scambiati con questo. Uno guarda i punteggi invece dei sì: la
-calibrazione non convive con il dare lo stesso punteggio medio, di qua e di là,
-a chi l'esito lo ha avuto e a chi non lo ha avuto. L'altro dice che calibrazione ed errori pari
+calibrazione non convive con il dare lo stesso punteggio medio, di qua e di
+là, a chi l'esito lo ha avuto e a chi non lo ha avuto, salvo che i due gruppi
+partano dalla stessa frequenza o che il modello non sbagli mai. L'altro dice
+che calibrazione ed errori pari
 possono stare insieme, ma pareggiando un errore alla volta: o i falsi allarmi o
 le persone che sfuggono, non tutti e due. Nessuno dei tre dice «non si può
 essere equi»: dicono quali garanzie si possono comprare insieme, e quale
@@ -361,10 +369,13 @@ $$
 
 Qui $p$ è la frazione reale di positivi nel gruppo, $\text{VPP}=P(Y=1\mid\hat{Y}=1)$
 è la probabilità che un positivo predetto sia davvero positivo, e $\text{FNR}$ e
-$\text{FPR}$ sono i due tassi di errore. L'identità si ricava dalla sola
-definizione di $\text{VPP}$ e vale sempre. La sua conseguenza è drastica:
-**fissati $\text{VPP}$ e $\text{FNR}$ uguali fra due gruppi, se le prevalenze
-$p_a \neq p_b$ differiscono, allora i $\text{FPR}$ sono per forza diversi.**
+$\text{FPR}$ sono i due tassi di errore. L'identità si ricava contando i
+quattro pezzi della matrice di confusione e vale sempre. La sua conseguenza è
+drastica: **fissati $\text{VPP}$ e $\text{FNR}$ uguali fra due gruppi, se le
+prevalenze $p_a \neq p_b$ differiscono, allora i $\text{FPR}$ sono per forza
+diversi**, fuori dai casi degeneri in cui il prodotto si annulla
+($\text{VPP}=1$, cioè nessun falso positivo da nessuna parte, oppure
+$\text{FNR}=1$, cioè nessun positivo preso).
 
 Un esempio numerico lo rende palpabile. Siano due gruppi con prevalenze
 $p_a=0{,}50$ e $p_b=0{,}25$, e supponiamo un modello con lo *stesso* valore
@@ -540,8 +551,9 @@ prodotte.
 
 In una gara di corsa un gruppo parte più indietro. Puoi intervenire
 in tre momenti. **Prima** della gara, sistemando la linea di partenza: correggi
-i dati, dando più peso agli esempi dei gruppi di cui ce ne sono pochi, o
-raccogliendone altri, e la linea sistemata vale per tutte le gare che verranno.
+i dati, ripesando gli esempi finché nel mucchio pesato l'esito e il gruppo
+smettono di andare insieme, o raccogliendone altri, e la linea sistemata vale
+per tutte le gare che verranno.
 **Durante** la gara, cambiando le regole: al modello si chiede di sbagliare il
 meno possibile, e gli si aggiunge una penale ogni volta che sbaglia più su un
 gruppo che sull'altro, come un giudice che toglie punti a
@@ -672,8 +684,9 @@ media $0{,}50$ e $0{,}33$), e con essa la prevalenza $p=\mathbb{E}[S]$.
 
 `````
 
-Se non programmi, il codice si può saltare: quello che conta sono i numeri
-stampati sotto, ed è di quelli che parla il commento.
+Il programma sorteggia i due gruppi e poi stampa, riga per riga, gli errori che
+il modello fa in ciascuno. Sono quei numeri, e non il programma, quelli di cui
+parla il commento.
 
 ```python
 import numpy as np
@@ -727,8 +740,6 @@ for nome, s, y, t in [("A", sA, yA, 0.72), ("B", sB, yB, 0.57)]:
     sel, tpr, fpr, ppv = tassi(s, y, t)
     print(f"  Gruppo {nome}: TPR={tpr:.3f}  FPR={fpr:.3f}  VPP={ppv:.3f}")
 ```
-
-L'esecuzione stampa qualcosa come:
 
 ```text
 Gruppo A: base=0.500  selection=0.502  TPR=0.658  FPR=0.346  VPP=0.656
@@ -860,8 +871,10 @@ privacy e la robustezza dei modelli; e chi vuole lo strumento che rende queste s
 - Ci sono più idee di equità, tutte ragionevoli: stessa quota di sì per tutti;
   stessi errori per tutti; stesso significato del punteggio, che non è un voto
   ma una previsione di probabilità; e che quando il modello dice sì ci prenda
-  ugualmente spesso in ogni gruppo. **Non si possono avere tutte insieme**
-  quando l'esito è più frequente in un gruppo che nell'altro.
+  ugualmente spesso in ogni gruppo. Quando l'esito è più frequente in un gruppo
+  che nell'altro, **non si possono avere tutte insieme**, e il muro è preciso:
+  fra l'affidabilità del sì, il tasso di falsi allarmi e la quota di persone
+  che sfuggono se ne comprano **due alla volta**, mai tre.
 - Il conto che lo mostra si fa a mano, ed è quello dei due gruppi da cento e
   duecento persone. Se pretendi di prendere la stessa quota di persone a cui
   l'esito è poi capitato *e* di avere la stessa affidabilità quando dici sì, i

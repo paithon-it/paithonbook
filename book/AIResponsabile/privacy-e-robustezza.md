@@ -6,8 +6,8 @@ web) un gran numero di frasi da cui partire, e si mise a leggere le risposte.
 In mezzo al mare di frasi plausibili ne trovarono alcune che *non erano*
 plausibili: erano *vere*. Il modello sputava, parola per parola, il nome
 completo di una persona
-reale, il suo indirizzo, un numero di telefono, un'email: informazioni
-comparse una manciata di volte nei dati di addestramento, e da lì
+reale, il suo indirizzo, un numero di telefono, un'email: informazioni che
+nei dati di addestramento comparivano in un documento solo, e da lì
 *memorizzate*. Nessuno aveva chiesto al modello di ricordarle: l'aveva fatto
 da solo, come effetto collaterale dell'imparare.
 
@@ -89,8 +89,8 @@ svolge troppo in fretta e senza esitazioni. Sapere «Tizio era nel dataset
 dell'ospedale» può essere di per sé un'informazione sensibile.
 
 E più memoria ha lo studente, più pagine recita: i modelli grandi si portano
-dentro parola per parola molto più dei piccoli, e a una frase basta comparire
-una manciata di volte per restare impressa.
+dentro parola per parola molto più dei piccoli, e a una frase basta essere
+passata una volta sola per restare impressa.
 
 `````
 
@@ -108,7 +108,7 @@ singoli esempi, più li lascia riconoscere. L’**estrazione di dati di
 addestramento** è più aggressiva: Carlini e colleghi
 {cite}`carlini2021extracting` mostrarono che da
 GPT-2 si potevano recuperare *verbatim* sequenze memorizzate (nomi, recapiti,
-frammenti di codice) presenti anche una sola manciata di volte nel corpus. La
+frammenti di codice) presenti anche in un **solo documento** del corpus. La
 memorizzazione cresce con la dimensione del modello e con la ripetizione del
 dato: un problema strutturale dei grandi modelli linguistici, non un bug
 isolato. Serve quindi una nozione di privacy che sia una *garanzia
@@ -184,9 +184,15 @@ usati nel deep learning.
 
 Come si ottiene? Con il **meccanismo di Laplace**. Data una funzione numerica
 $f$, se ne misura la *sensibilità*
-$\Delta f = \max_{\mathcal{D},\mathcal{D}'} \lVert f(\mathcal{D})-f(\mathcal{D}')\rVert_1$,
-cioè quanto al massimo un singolo individuo può farne variare il valore; poi si
-restituisce
+
+$$
+\Delta f = \max_{\mathcal{D} \sim \mathcal{D}'}
+   \lVert f(\mathcal{D})-f(\mathcal{D}')\rVert_1,
+$$
+
+dove il massimo corre sui soli **dataset vicini** di poco fa, quelli che
+differiscono per una riga: è quanto al massimo un singolo individuo può far
+variare il valore di $f$. Poi si restituisce
 
 $$
 \mathcal{M}(\mathcal{D}) = f(\mathcal{D}) + \mathrm{Lap}\!\left(\frac{\Delta f}{\varepsilon}\right),
@@ -231,7 +237,10 @@ def conteggio_privato(conteggio_vero, epsilon):
 vero = 42
 stime = [conteggio_privato(vero, epsilon=0.5) for _ in range(5)]
 print("vero:", vero, " privati:", np.round(stime, 1))
-# vero: 42  privati: [42.6 40.8 37.  35.2 44. ]
+```
+
+```text
+vero: 42  privati: [42.6 40.8 37.  35.2 44. ]
 ```
 
 Su tante pubblicazioni il rumore si annulla, perché è centrato sullo zero e
@@ -240,7 +249,7 @@ i singoli tiri quelli che conviene guardare. Con una taglia di due unità lo
 scarto resta entro tre unità in circa tre casi su quattro, ed è una proprietà
 del dado che stiamo tirando, non una cosa che si legge dai cinque numeri; e
 infatti tre di questi cinque tiri sono lì attorno. Gli altri due no: uno
-sbaglia di cinque unità e l'altro pubblica $35$ dove il vero è $42$. È il
+sbaglia di cinque unità e l'altro pubblica $35{,}2$ dove il vero è $42$. È il
 prezzo di $\varepsilon = 0{,}5$ su un conteggio piccolo, e si vede a occhio.
 
 Resta da dire con precisione **che cosa** si è comprato, perché la formula
@@ -253,9 +262,10 @@ si compra è un limite a quanto si può dedurre, non un divieto di dedurre. Il
 patto, detto per esteso, è questo: qualunque numero esca, doveva poter uscire
 quasi altrettanto facilmente anche se quella persona non fosse stata
 nell'elenco. Quanto «quasi» lo decide la manopola, ed è l'altra faccia della
-stessa scelta: con $\varepsilon = 0{,}5$ vuol dire che togliendo quella
-persona quel numero sarebbe uscito al più $1{,}65$ volte meno facilmente, poco
-più di una volta e mezza. Chi guarda il numero pubblicato può quindi farsi
+stessa scelta: un conto fisso la trasforma in un fattore, e a
+$\varepsilon = 0{,}5$ quel fattore vale $1{,}65$. Vuol dire che togliendo
+quella persona quel numero sarebbe uscito al più una volta e mezza meno
+facilmente. Chi guarda il numero pubblicato può quindi farsi
 un'idea sulla presenza di quella persona, e quell'idea può spostarsi: ma di
 tanto così, il che fa di quel numero un indizio e non una prova.
 
@@ -329,15 +339,17 @@ sensibilità del passo (nessun esempio la fa esplodere), il rumore gaussiano
 fornisce la garanzia; componendo i molti passi con il *moments accountant*
 introdotto nello stesso lavoro si ottiene un budget $(\varepsilon,\delta)$
 complessivo. Il **compromesso privacy/utilità** è concreto: Abadi e colleghi
-addestrano su MNIST con un budget dell'ordine di $\varepsilon \approx 8$
-arrivando attorno al $97\%$ di accuratezza, poco più di un punto sotto la stessa
+addestrano su MNIST con un budget dell'ordine di $\varepsilon \approx 8$ (per
+la precisione $(8,\,10^{-5})$-DP: è la versione rilassata di poco fa, e il
+$\delta$ va sempre chiesto insieme all’$\varepsilon$) arrivando attorno al
+$97\%$ di accuratezza, poco più di un punto sotto la stessa
 architettura senza privacy ($98{,}3\%$), e la qualità cala via via che si
 stringe $\varepsilon$ ($95\%$ a $\varepsilon = 2$, $90\%$ a
 $\varepsilon = 0{,}5$).
 
 Quel $\varepsilon \approx 8$ è il punto in cui la privacy differenziale smette
-di essere una garanzia e diventa una casella spuntata. Il fattore in gioco non
-è più $e^{0{,}5} \approx 1{,}65$: è $e^{8} \approx 3000$. Formalmente, la
+di essere una garanzia e diventa una casella spuntata. Il fattore in gioco
+passa da $e^{0{,}5} \approx 1{,}65$ a $e^{8} \approx 3000$. Formalmente, la
 presenza di una singola persona può moltiplicare per tremila la plausibilità
 di un esito, il che come promessa vale poco più di un rito. Non è un difetto
 del lavoro di Abadi, che è esplicito sui suoi numeri; è la cosa da sapere
@@ -352,7 +364,8 @@ dove è girata.
 
 C'è una via complementare alla privacy: non proteggere l'output di un modello
 addestrato su dati raccolti in un unico posto, ma **non raccoglierli
-affatto**. È l'idea del *federated learning*, proposta da McMahan e colleghi
+affatto**. È l'idea del *federated learning*, proposta pensando alla tastiera
+predittiva dei telefoni da McMahan e colleghi
 {cite}`mcmahan2017communication` per addestrare la tastiera predittiva di
 milioni di telefoni senza spedire a un server ciò che le persone digitano.
 
@@ -539,6 +552,14 @@ perimetro*.
 
 `````{tab} Elementare
 
+Prima delle difese, una cosa da chiarire, o «robusto» promette troppo. Le
+manomissioni di cui si è parlato finora sono tutte della stessa specie: si
+tocca ogni pixel di pochissimo, e non si tocca nient'altro. Quella specie è
+comoda da studiare, e non è quella che si incontra per strada. Un cartello si
+può ruotare, mettere in ombra, coprire per metà con un adesivo; una frase si
+può dire con altre parole. Un modello allenato a reggere i tocchi minuscoli non
+regge per questo nessuna di quelle.
+
 Difendersi dagli esempi avversari somiglia a una rincorsa continua. Si propone
 una difesa, sembra reggere, e poco dopo qualcuno trova un attacco nuovo che la
 aggira. Molte protezioni annunciate negli anni si sono rivelate illusorie, e
@@ -593,11 +614,12 @@ predizione è invariante.
 Anche qui la garanzia va letta per quello che è. Il teorema riguarda il
 classificatore lisciato, non quello di partenza; e siccome il lisciato non è
 calcolabile esattamente, predizione e raggio si stimano per campionamento
-Monte Carlo, con una procedura che può **astenersi** e la cui garanzia vale con
-probabilità almeno $1-\alpha$, dove $\alpha$ lo si sceglie. Non è un certificato
-deterministico come quelli che si ottengono propagando intervalli o limitando la
-costante di Lipschitz. Le certificazioni coprono raggi ancora modesti, ma
-spostano comunque il terreno da «non sono riuscito a romperla» a «si dimostra,
+Monte Carlo, con una procedura che può **astenersi** e la cui garanzia vale a
+meno di una probabilità di errore, che sceglie chi certifica. Non è un
+certificato deterministico come quelli che si ottengono propagando intervalli
+o limitando la costante di Lipschitz. Le certificazioni coprono raggi ancora
+modesti, ma spostano comunque il terreno da «non sono riuscito a romperla» a
+«si dimostra,
 salvo una probabilità di errore che scelgo io, che non si rompe».
 
 Gli esempi avversari agiscono in fase di *inferenza*, su un modello già
@@ -669,16 +691,18 @@ girato una televisione? Un sigillo, che solo chi possiede una certa chiave
 segreta sa produrre e chiunque può controllare senza possederla. Se il sigillo
 non torna, il cartellino è falso e si vede subito.
 
-La differenza si vede tutta con una foto dello schermo: porta via il
-cartellino e lascia la filigrana, un po’ consumata, perché copia i pixel e
-butta il resto. In compenso il cartellino racconta una storia, la filigrana
+La differenza si vede tutta con una foto dello schermo, che copia i pixel e
+butta il resto: si porta via il cartellino e lascia la filigrana, un po’
+consumata. In compenso il cartellino racconta una storia, la filigrana
 dice soltanto «sono artificiale».
 
-Né la filigrana né il cartellino chiudono la porta. Chi ha tempo riscrive il
-testo con altre parole, ritaglia e ricomprime l'immagine finché il segno non si
-legge più, e il cartellino lo stacca in un secondo. Quello che si compra è il
-prezzo: far passare per autentico un contenuto fabbricato smette di essere
-gratis.
+Né la filigrana né il cartellino chiudono la porta, e non è questione di farle
+meglio: si **dimostra** che chi sa giudicare quando un contenuto è venuto bene,
+e sa riscriverlo lasciandolo equivalente, la strada che cancella la marca la
+trova sempre. Chi ha tempo riscrive il testo con altre parole, ritaglia e
+ricomprime l'immagine finché il segno non si legge più, e il cartellino lo
+stacca in un secondo. Quello che si compra è il prezzo: far passare per
+autentico un contenuto fabbricato smette di essere gratis.
 
 `````
 
@@ -689,8 +713,8 @@ partiziona pseudo-casualmente il vocabolario in una lista "verde" e una
 "rossa", con un seme derivato dal **token precedente**, e si aggiunge un piccolo
 bias ai logit dei verdi. Il testo resta fluido dove le alternative
 plausibili sono molte; e su una sequenza lunga la frazione di token verdi si
-scosta dalla frazione attesa $\gamma$ (che è un parametro, non una costante: nel
-lavoro originale $0{,}5$, $0{,}25$ e $0{,}1$) in modo statisticamente
+scosta dalla frazione attesa $\gamma$ (che è un parametro, non una costante:
+il lavoro originale la fa scorrere da $0{,}1$ a $0{,}9$) in modo statisticamente
 rilevabile. Il rilevatore non deve conoscere il testo originale né avere accesso
 al modello: gli basta ricalcolare le liste e fare un test d'ipotesi
 (Kirchenbauer e colleghi {cite}`kirchenbauer2023watermark`).
@@ -802,8 +826,6 @@ print(f"ribaltati {ribaltati.sum()} dei {azzeccati.sum()} esempi classificati be
       f" ({100 * ribaltati.sum() / azzeccati.sum():.0f}%)")
 ```
 
-L'output mostra il ribaltamento:
-
 ```text
 esempio scelto: i = 1,  vera etichetta y = 1
 originale:  p(classe 1) = 0.890  ->  predice 1  (corretto)
@@ -914,6 +936,12 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
   invisibili una per una. Difendersi è una rincorsa: al momento non esiste una
   difesa definitiva, e «robusto» vuol sempre dire robusto contro un attacco
   preciso e dentro un limite dichiarato.
+- Quello che un modello **produce** si può marchiare in due modi opposti: un
+  segno nascosto dentro il testo o l'immagine, che l'occhio non vede e un
+  rilevatore ritrova; oppure un **cartellino allegato** che dice chi l'ha
+  fatto, con un sigillo che solo lui sa produrre. Chi ha tempo riscrive il
+  testo, ricomprime l'immagine e il cartellino lo stacca in un secondo: quello
+  che si compra è il prezzo, non una porta chiusa.
 - Chi controlla i dati di addestramento può anche piazzarci dentro una parola
   d'ordine segreta che, quando compare, fa fare al modello quel che vuole lui.
 ```
@@ -948,6 +976,13 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
   scrive $\varepsilon$, che in questo capitolo è già il budget di privacy.
 - La palla $\ell_p$ è una comodità matematica, non il modello di minaccia: la
   robustezza si dichiara sempre con accanto perimetro e attacco.
+- Sul lato dell'output, il **watermarking** del testo sbilancia la scelta dei
+  token verso una lista pseudo-casuale e si rileva con un test d'ipotesi
+  {cite}`kirchenbauer2023watermark`: regge dove l'entropia è alta, non sul
+  testo quasi obbligato, e una parafrasi lo cancella; il **C2PA** allega invece
+  una provenienza firmata, che uno screenshot toglie. Nessun watermark può
+  essere insieme impercettibile e robusto {cite}`zhang2023watermarks`: alza il
+  costo del falso, non stabilisce che cosa è vero.
 - Non esiste difesa definitiva: è una **corsa agli armamenti**. La robustezza
   certificata offre garanzie provate ma su raggi piccoli, e nel caso del
   *randomized smoothing* {cite}`cohen2019certified` sono garanzie probabilistiche

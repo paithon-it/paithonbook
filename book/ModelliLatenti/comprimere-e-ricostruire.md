@@ -14,15 +14,15 @@ riga sulla scheda va spesa. Nessuno dei due ha ricevuto istruzioni su che cosa
 sia importante in un quadro: se lo sono divisi lavorando, e questo capitolo
 li tiene per mano fino in fondo.
 
-Questa macchina il libro l’ha già montata, nel capitolo sull’audio, per
-comprimere il suono: si chiama **autoencoder**, e ha la forma di una
-**clessidra**, larga alle due estremità e strettissima in mezzo
-({numref}`fig-autoencoder-clessidra`, che sta là). «Clessidra» è il nome che
-useremo da qui in avanti. I nomi tecnici delle sue due metà sono quelli inglesi
-che si trovano nel codice: l’archivista è l’**encoder**, «chi codifica», e il
-copista è il **decoder**, «chi decodifica»; la scheda si chiama **codice**, o
-**latente**. Useremo le due serie di parole come sinonimi, perché sono la
-stessa cosa detta in due modi.
+Questa macchina il libro l’ha già montata nella {doc}`sezione sui codec neurali
+</Audio/codec-neurali>`, per comprimere il suono: si chiama **autoencoder**, e
+ha la forma di una **clessidra**, larga alle due estremità e strettissima in
+mezzo ({numref}`fig-autoencoder-clessidra`, che sta là). «Clessidra» è il nome
+che useremo da qui in avanti. I nomi tecnici delle sue due metà sono quelli
+inglesi che si trovano nel codice: l’archivista è l’**encoder**, «chi
+codifica», e il copista è il **decoder**, «chi decodifica»; la scheda si chiama
+**codice**, o **latente**. Useremo le due serie di parole come sinonimi, perché
+sono la stessa cosa detta in due modi.
 
 Un’ultima cosa prima di cominciare, e serve per tutto il resto del capitolo.
 Una scheda è una fila di numeri, e una fila di numeri si può sempre immaginare
@@ -42,10 +42,9 @@ l’archivista.
 
 ## La strozzatura è il compito
 
-Conviene rimettere a fuoco che cosa fa la clessidra, perché quello che qui
-serve è la **scheda**, più che la compressione. E la parte stretta in mezzo alla
-clessidra, quella da cui deve passare tutto, si chiama **strozzatura**, e la
-chiameremo anche «il collo stretto», che è la stessa cosa.
+Della clessidra, qui, serve la **scheda** più che la compressione. E la parte
+stretta in mezzo, quella da cui deve passare tutto, si chiama **strozzatura**,
+e la chiameremo anche «il collo stretto», che è la stessa cosa.
 
 `````{tab} Elementare
 
@@ -132,10 +131,10 @@ annotare soltanto di quanto il quadro che ha davanti se ne discosta. Senza, il
 piano è costretto a passare per la tela bianca, e quasi mai è quello giusto.
 
 Detto altrimenti: la clessidra è la vecchia macchina a cui è stato tolto il
-divieto di piegarsi. E va tolto a tutti e due: se si piega solo
-l’archivista e il copista resta alle sue somme pesate, si finisce di nuovo su
-un piano, lo stesso di prima. La differenza fra le due macchine spiega quando
-conviene l’una e quando l’altra: se i quadri stanno davvero su un piano,
+divieto di piegarsi. E a doversi piegare è soprattutto il copista: se lui resta
+alle sue somme pesate, i quadri che ridipinge cadono tutti su un piano,
+l’archivista si pieghi quanto vuole. La differenza fra le due macchine spiega
+quando conviene l’una e quando l’altra: se i quadri stanno davvero su un piano,
 piegarsi non serve; se stanno su una superficie curva, un piano la può solo
 approssimare.
 
@@ -147,7 +146,8 @@ Con $e_\phi$ e $d_\theta$ **affini** e $\ell$ l’errore quadratico, il minimo
 della loss si raggiunge quando la **ricostruzione**
 $d_\theta(e_\phi(\mathbf{x}))$ è la proiezione ortogonale di $\mathbf{x}$ sul
 sottospazio affine che passa per la media dei dati ed è generato dalle prime
-$L$ componenti principali dei dati **centrati** {cite}`bourlard1988auto`, e il
+$L$ componenti principali dei dati **centrati**
+{cite}`bourlard1988auto,baldi1989neural`, e il
 codice ne è un sistema di coordinate.
 E la centratura conta: con mappe puramente lineari e
 dati non centrati il minimo è il sottospazio dei primi $L$ vettori singolari
@@ -166,21 +166,25 @@ della PCA probabilistica nel limite di rumore infinitesimo, mentre l’analisi
 fattoriale di Spearman è la stessa famiglia con una varianza di rumore per
 ciascuna componente osservata, e lì una soluzione in forma chiusa non c’è.
 
-Attenzione poi a **dove** vanno messe le non linearità. Bourlard e Kamp
-dimostrano la metà negativa della faccenda, ed è quella che sorprende: in una
-rete a tre strati con uscita lineare, mettere una non linearità nello strato
-nascosto non serve a niente, il minimo resta quello lineare. Perché la
-superficie su cui giacciono i dati possa essere curva serve un passaggio non
-lineare **da tutte e due le parti**, uno nell’archivista e uno nel copista, ed
-è così che è fatta la `Clessidra` addestrata sulle cifre scritte a mano.
-Tutto il resto (la strozzatura, la loss, l’assenza di probabilità) è identico.
+Attenzione poi a **dove** vanno messe le non linearità, perché il vincolo è
+asimmetrico. Bourlard e Kamp dimostrano la metà negativa della faccenda, ed è
+quella che sorprende: in una rete a tre strati con uscita lineare, mettere una
+non linearità nello strato nascosto non serve a niente, il minimo resta quello
+lineare. La ragione è che le ricostruzioni sono l’immagine del decoder, e con
+un decoder affine quell’immagine è un sottospazio affine comunque sia fatto
+l’encoder. **A piegare la superficie è il decoder**; la non linearità
+dell’encoder serve ad atterrarci sopra meglio. La `Clessidra` addestrata sulle
+cifre scritte a mano ce l’ha da tutte e due le parti, e tutto il resto (la
+strozzatura, la loss, l’assenza di probabilità) è identico.
 
 `````
 
-Da qui in avanti la clessidra è curva, cioè ciascuna delle due metà ha dentro
-di sé un passaggio in più rispetto alla semplice somma pesata, cioè la **non
-linearità** del capitolo sulle reti neurali, ed è ciò che permette a una rete
-di piegarsi invece di limitarsi a piani. Adesso la guardiamo lavorare su dati veri.
+Da qui in avanti la clessidra è curva, e la curva la mette il copista: dentro
+di lui c’è un passaggio in più rispetto alla semplice somma pesata, la **non
+linearità** del {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`, ed
+è quella a permettere ai quadri ridipinti di stare su una superficie piegata
+invece che su un piano. Anche l’archivista ne ha una, e gli serve a trovare su
+quella superficie il punto giusto. Adesso la guardiamo lavorare su dati veri.
 
 ## Trenta righe, e funziona
 
@@ -188,9 +192,9 @@ Le cifre scritte a mano di `scikit-learn` sono immagini di 8 pixel per lato,
 cioè 64 numeri, e sono 1797. Le comprimiamo in **otto** numeri, che è un ottavo
 del dato, e chiediamo alla rete di rifarle.
 
-Il voto che le diamo è la **cross-entropia**, il metro introdotto nel
-{doc}`capitolo di matematica </Matematica/overview>`, presa un pixel alla
-volta: invece di contare i grigi di differenza fra originale e
+Il voto che le diamo è la **cross-entropia**, il metro della {doc}`sezione
+sulla teoria dell’informazione </Matematica/teoria-informazione>`, presa un
+pixel alla volta: invece di contare i grigi di differenza fra originale e
 copia, misura quanto il copista si è sbilanciato su quel pixel e quanto ci ha
 azzeccato. È la scelta consueta su immagini a un canale come queste, dove ogni
 pixel è un grigio fra bianco e nero, e in cambio dà un numero che si legge in
@@ -252,17 +256,16 @@ chi non guarda la cifra:  27.1 nat per cifra
 
 L’errore si misura in **nat**, l’unità di informazione dei richiami di
 matematica: sono i nat che si sprecano in media su una cifra scommettendo male
-invece di conoscerla già. (Con una riserva, che la terza sezione dichiara per
-esteso: su grigi che non sono zeri e uni questo conto è un surrogato, e i suoi
-nat vanno letti come un metro di confronto fra due macchine, non come una
-misura assoluta.) Da solo il 16,3 non direbbe niente, e per questo c’è la
-seconda riga. Il confronto giusto non è con chi tira a caso, che è un
-bersaglio troppo facile, ma con chi ha guardato bene **tutte** le cifre e non
-guarda quella che deve rifare: per ogni pixel dichiara il grigio che quel pixel
-ha in media, e nient’altro. Quello spende 27,1 nat. La clessidra, con otto
-numeri, ne spende 16,3, cioè **tre quinti**: comprimere una cifra in un ottavo
-dello spazio costa il sessanta per cento di quello che costerebbe non guardarla
-affatto. Quel 27,1 tornerà, e in un posto che non ci si aspetta.
+invece di conoscerla già, e più sono, peggio si è scommesso. (Con una riserva:
+su grigi che non sono zeri e uni questo conto è un surrogato, e i suoi nat
+vanno letti come un metro di confronto fra due macchine, non come una misura
+assoluta.) Da solo il 16,3 non direbbe niente, e per questo c’è la seconda
+riga. Il confronto giusto non è con chi tira a caso, che è un bersaglio troppo
+facile, ma con chi ha guardato bene **tutte** le cifre e non guarda quella che
+deve rifare: per ogni pixel dichiara il grigio che quel pixel ha in media, e
+nient’altro. Quello spende 27,1 nat. La clessidra, con otto numeri, ne spende
+16,3: **tre quinti**, avendo compresso la cifra in un ottavo dello spazio. Quel
+27,1 tornerà, e in un posto che non ci si aspetta.
 
 ```python
 LIVELLI = " .:-=+*#%"
@@ -354,11 +357,8 @@ Lo stesso succede, e peggio, provando a inventare da zero. «Inventare» qui vuo
 dire una cosa precisa: si guarda dove stanno i codici veri (il loro centro, e
 quanto sono sparpagliati attorno a quel centro, una posizione per volta), si
 pesca un punto a caso in quella zona, e lo si dà al copista. È il modo più
-ragionevole di provarci, e sotto si vede come va. Che si guardi una posizione
-per volta è una semplificazione, e si paga: tenendo conto anche di come le
-posizioni vanno d’accordo fra loro il divario si accorcia, da 2,2 spaziature a
-1,8, senza sparire. La forma dell’archivio non è quella di una nuvola semplice,
-e non basta correggerne l’inclinazione.
+ragionevole di provarci. Guardare una posizione per volta è però una
+semplificazione, e si prova anche a guardarle tutte insieme.
 
 Un’ultima cosa da fissare, perché il numero che segue si regge su quella: la
 distanza fra due schede si misura come quella fra due punti su una carta.
@@ -381,6 +381,16 @@ lontananza = torch.cdist(sorteggiati, codici).min(1).values.median()
 print(f"\nfra un codice vero e il suo vicino:   {spaziatura:.2f}")
 print(f"fra un codice sorteggiato e i veri:   {lontananza:.2f}"
       f"   ({lontananza / spaziatura:.1f} volte la spaziatura)")
+
+# la stessa pesca guardando anche come le otto posizioni vanno d'accordo
+# fra loro, invece di una per volta
+with torch.no_grad():
+    scala = torch.linalg.cholesky(torch.cov(codici.T))
+    accoppiati = codici.mean(0) + torch.randn(500, 8) @ scala.T
+accoppiata = torch.cdist(accoppiati, codici).min(1).values.median()
+
+print(f"lo stesso, guardandole insieme:       {accoppiata:.2f}"
+      f"   ({accoppiata / spaziatura:.1f} volte la spaziatura)")
 ```
 
 ```text
@@ -396,10 +406,11 @@ quattro cifre decodificate da codici sorteggiati
 
 fra un codice vero e il suo vicino:   2.34
 fra un codice sorteggiato e i veri:   5.20   (2.2 volte la spaziatura)
+lo stesso, guardandole insieme:       4.21   (1.8 volte la spaziatura)
 ```
 
-Le quattro immagini hanno l’aria di cifre e non lo sono, e conviene non
-insistere oltre: la seconda e la quarta hanno tratti che si interrompono a
+Le quattro immagini hanno l’aria di cifre e non lo sono: la seconda e la
+quarta hanno tratti che si interrompono a
 metà, la prima è un anello troppo grasso, la terza una forma piena, e nessuna
 delle quattro si lascia chiamare per nome. Ma il numero conta più delle
 immagini,
@@ -407,11 +418,15 @@ perché dice il **perché** invece del sintomo. I codici veri stanno a poco più
 di due unità l’uno dall’altro; un codice sorteggiato dista più di cinque dal
 più vicino dei codici veri. Sorteggiare in quello spazio vuol dire finire, di
 norma, a **più del doppio** della distanza che separa due schede vere. È terra
-mai battuta, ed è la regola più che l’eccezione.
+mai battuta, ed è la regola più che l’eccezione. E non dipende dal modo
+semplice di pescare: guardando anche come le posizioni vanno d’accordo fra
+loro il divario scende da 2,2 spaziature a 1,8, e non sparisce. La forma
+dell’archivio non è quella di una nuvola semplice, e non basta correggerne
+l’inclinazione.
 
 ## Perché la strozzatura non basta
 
-Conviene dire per bene di chi sia la colpa, perché non è dell’archivista.
+La colpa non è dell’archivista.
 
 `````{tab} Elementare
 
@@ -465,7 +480,7 @@ che $q_\phi(\mathbf{z})$ non occupa.
 E non c’è nemmeno niente che si opponga alla dilatazione del latente, che è
 il modo in cui il difetto si manifesta nella misura delle distanze fra i
 codici. L’argomento è
-euristico e conviene dirlo: a parità del resto, codici più distanti fra loro si
+euristico: a parità del resto, codici più distanti fra loro si
 ricostruiscono meglio, perché il decoder ha meno occasioni di confonderli, e
 nella loss non compare nessun termine che paghi quella distanza. Si dice, con
 formula spiccia, che il latente **non è regolarizzato**, e la regolarizzazione
@@ -481,11 +496,12 @@ verosimiglianza dei dati.
 
 `````
 
-Prima di tirare le somme, una precisazione su che cosa **non** è in
+Prima di tirare le somme, una precisazione su che cosa non è in
 discussione. La clessidra resta il modo giusto di comprimere, ed è così che il
-libro la usa quando le chiede di comprimere: nel capitolo sull’audio per
-fabbricare un alfabeto del suono, e più avanti per far stare un’immagine in
-sedicimila numeri invece di ottocentomila. (In quei due posti la clessidra ha
+libro la usa quando le chiede di comprimere: nel {doc}`capitolo sull’audio
+</Audio/overview>` per
+fabbricare un alfabeto del suono, e più avanti per rimpicciolire un’immagine
+di quarantotto volte. (In quei due posti la clessidra ha
 in più il pezzo che la sezione seguente aggiunge, ma il mestiere che le si
 chiede è questo.) Il difetto misurato qui riguarda
 un mestiere diverso, fabbricare dati nuovi, che a un compressore nessuno ha mai
@@ -522,12 +538,13 @@ chiesto e che nessuna quantità di addestramento gli fa venire.
   $L \ll D$. Nella sua definizione **non compare nessuna distribuzione**.
 - Con $e_\phi$ e $d_\theta$ **affini** ed errore quadratico ritrova il
   sottospazio affine che passa per la media dei dati ed è generato dalle prime
-  $L$ componenti principali {cite}`bourlard1988auto`, a meno di un cambio di
+  $L$ componenti principali {cite}`bourlard1988auto,baldi1989neural`, a meno
+  di un cambio di
   base: è la PCA della sezione su riduzione e clustering. Senza il termine
   additivo, su dati non centrati, quel sottospazio passa per l’origine e in
-  generale non è quello della PCA. Con una non linearità
-  **per parte** cade il vincolo di affinità, e la superficie che ritrova può
-  essere curva.
+  generale non è quello della PCA. Basta una non linearità nel **decoder**
+  perché cada il vincolo di affinità e la superficie che ritrova possa essere
+  curva.
 - La ricostruzione riesce (16,3 nat per cifra contro i 27,1 di chi dichiara il
   grigio medio di ogni pixel senza guardare la cifra: tre quinti, su cifre da
   64 pixel compresse in 8 numeri); il campionamento no: un codice sorteggiato
@@ -542,32 +559,32 @@ chiesto e che nessuna quantità di addestramento gli fa venire.
 `````
 
 Resta una cosa da dire prima di andare avanti, ed è un avvertimento che
-conviene tenere. Quello che abbiamo appena visto è un esperimento **andato
+da tenere. Quello che abbiamo appena visto è un esperimento **andato
 benissimo**, che ha risposto a una domanda diversa da quella che avevamo in
 testa. Chiedere «la copia somiglia
 all’originale?» e sperare in un archivio ordinato è la versione in miniatura di
-un errore che in questo libro torna spesso, e cioè scambiare la cosa che si
+un errore che nel libro torna spesso, e cioè scambiare la cosa che si
 misura con la cosa che si vuole. La sezione seguente non aggiusta la clessidra:
 cambia la domanda.
 
 
-[^thread]: Il motivo è che **le somme in virgola mobile non sono
-associative**: sommando gli stessi numeri in un ordine diverso il risultato
-cambia nell’ultima cifra, perché a ogni passo il totale parziale viene
-arrotondato a quante cifre il formato può tenere, e arrotondare un totale
-grande insieme a un addendo piccolo ne perde un pezzo. PyTorch, per andare più
-veloce, spezza ogni somma lunga fra i nuclei di calcolo disponibili e poi
-rimette insieme i pezzi: quanti sono i pezzi dipende da quanti nuclei ha la
-macchina, quindi **macchine diverse sommano in ordini diversi**. Su una rete
-addestrata per quattromila passi quelle ultime cifre si accumulano, e alla
-fine si vedono: il costo di descrizione dell’ultima sezione, senza quella
-riga, vale 6,04 lasciando lavorare i quattro nuclei di questa macchina e 6,03
-usandone uno solo. Conviene tenere la regola, perché è più larga di PyTorch:
-**fissare il seme non basta**, dato che il seme governa i sorteggi e non
-l’ordine delle somme. E la riparazione non costa niente, anzi. Su tensori piccoli come questi (1797 cifre da 64 numeri) un thread solo è
-**più veloce**, e di parecchio. Non è un paradosso: spartire il lavoro e rimettere
-insieme i pezzi ha un costo fisso, che qui si paga quattromila volte, e ogni
-volta a ciascun nucleo tocca un pezzo di conto talmente piccolo che il tempo
-per consegnarglielo supera il tempo per farlo. Il parallelismo rende quando a
-ciascuno tocca abbastanza da fare, ed è la stessa ragione per cui non si
-chiamano quattro muratori a spostare un mattone.
+[^thread]: Il motivo è che **le somme in virgola mobile non sono associative**:
+sommando gli stessi numeri in un ordine diverso il risultato cambia nell’ultima
+cifra, perché a ogni passo il totale parziale viene arrotondato a quante cifre
+il formato può tenere, e arrotondare un totale grande insieme a un addendo
+piccolo ne perde un pezzo. PyTorch, per andare più veloce, spezza ogni somma
+lunga fra i nuclei di calcolo disponibili e poi rimette insieme i pezzi: quanti
+sono i pezzi dipende da quanti nuclei ha la macchina, quindi **macchine diverse
+sommano in ordini diversi**. Su una rete addestrata per quattromila passi
+quelle ultime cifre si accumulano, e alla fine si vedono: il costo di
+descrizione dell’ultima sezione, senza quella riga, vale 6,04 lasciando
+lavorare quattro nuclei e 6,03 usandone uno solo. La regola è più larga di
+PyTorch: **fissare il seme non basta**, dato che il seme
+governa i sorteggi e non l’ordine delle somme. E la riparazione non costa
+niente, anzi. Su tensori piccoli come questi (1797 cifre da 64 numeri) un
+thread solo è **più veloce**, e di parecchio. Non è un paradosso: spartire il
+lavoro e rimettere insieme i pezzi ha un costo fisso, che qui si paga
+quattromila volte, e ogni volta a ciascun nucleo tocca un pezzo di conto
+talmente piccolo che il tempo per consegnarglielo supera il tempo per farlo. Il
+parallelismo rende quando a ciascuno tocca abbastanza da fare, ed è la stessa
+ragione per cui non si chiamano quattro muratori a spostare un mattone.

@@ -215,7 +215,8 @@ due scritture della stessa parola non contino come due parole diverse (la
 edit*, quella che sta dietro al correttore del telefono). Poi il testo diventa
 numeri: prima lo si taglia in pezzi (la *tokenizzazione*), poi si contano i
 pezzi (il *bag-of-words*, il "sacchetto di parole"), infine ogni parola riceve
-le sue coordinate sulla mappa di cui si diceva sopra (gli *embedding*).
+un pugno di coordinate che la collocano vicino alle parole affini (gli
+*embedding*).
 
 Con i numeri in mano affrontiamo i compiti, uno alla volta.
 

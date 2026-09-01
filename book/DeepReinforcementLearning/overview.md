@@ -4,11 +4,11 @@ Nel 2013 un laboratorio londinese ancora poco noto, DeepMind, pubblica un
 risultato che sembra un giochino e invece è uno spartiacque: una rete neurale
 impara a giocare a *Breakout*, il classico dei mattoncini dell'Atari 2600,
 guardando **solo i pixel dello schermo** e il punteggio. Nessuno le ha spiegato
-le regole, cosa sia la pallina, cosa sia la racchetta. Alla fine di un
-addestramento che vale settimane di gioco non si limita a giocare bene: scopre
-da sola la tattica di scavare un tunnel sul lato del muro per far rimbalzare la
-pallina dietro i mattoni. Nessuno gliel'ha insegnata, e nel punteggio non c'era
-scritta.
+le regole, cosa sia la pallina, cosa sia la racchetta. Due anni dopo, con un
+addestramento cinque volte più lungo, quella stessa rete non si limita a
+giocare bene: scopre da sola la tattica di scavare un tunnel sul lato del muro
+per far rimbalzare la pallina dietro i mattoni. Nessuno gliel'ha insegnata, e
+nel punteggio non c'era scritta.
 
 Nel capitolo precedente abbiamo visto il *reinforcement learning* classico.
 C'è qualcuno che decide (l’**agente**), c'è la situazione in cui si trova (lo
@@ -31,7 +31,7 @@ farebbe una persona.
 
 `````{tab} Elementare
 
-La tabella del labirinto era un quaderno con una riga per casella, e dentro ogni
+La tabella del labirinto era un elenco con una riga per casella, e dentro ogni
 riga un voto per ciascuna mossa. Davanti a un televisore servirebbe una riga per
 ogni schermata che il gioco può mostrare.
 
@@ -39,7 +39,7 @@ Lo schermo, ridotto al minimo che serve per giocare, è una griglia di 84
 quadretti per lato, poco più di settemila in tutto, e ogni quadretto può avere
 una qualsiasi di 256 sfumature di grigio. Le schermate diverse che ne vengono
 fuori sono un numero di quasi diciassettemila cifre. Gli atomi dell'universo
-sono un 1 seguito da ottanta zeri: se ogni atomo tenesse un quaderno da un
+sono un 1 seguito da ottanta zeri: se ogni atomo tenesse un registro da un
 miliardo di righe, l'elenco non sarebbe nemmeno cominciato.
 
 Il guaio non finisce con la carta. Per scrivere il voto di una riga bisogna aver
@@ -48,7 +48,7 @@ un quadretto perché la schermata sia un'altra, con la sua riga da riempire. Ott
 ore al giorno per cinquant'anni fanno scorrere una trentina di miliardi di
 schermate, che su quell'elenco non si vedono.
 
-Il modo di dare i voti regge. A cedere è il quaderno, cioè l'idea di tenere una
+Il modo di dare i voti regge. A cedere è l'elenco, cioè l'idea di tenere una
 riga per ciascuna schermata.
 
 `````
@@ -94,7 +94,7 @@ vale la mossa $a$ nella situazione $s$».
 
 `````{tab} Elementare
 
-Invece del quaderno con una riga per ogni immagine, addestriamo un "occhio
+Invece dell'elenco con una riga per ogni immagine, addestriamo un "occhio
 esperto" che guarda lo schermo e, sul momento, dà un voto a ciascuna mossa
 possibile ("vai a sinistra: 3", "resta fermo: 1", "vai a destra: 8"). Poi si
 sceglie la mossa col voto più alto. Il bello è che questo occhio, avendo visto
@@ -109,12 +109,12 @@ conta meno del primo, perché è roba che deve ancora arrivare; di quanto meno, 
 si stabilisce una volta per tutte.
 
 L'occhio aveva dato 8 a "vai a destra". Si fa la mossa: arriva 1 punto, e sulla
-schermata che compare, la mossa migliore prende 5. Contando quel 5 al novanta per
-cento, il voto giusto era 1 + 4,5 = 5,5, e l'8 era ottimista di due punti e
-mezzo. Quei due punti e mezzo sono l'errore, e l'occhio si corregge per ridurlo;
-gli scarti grossi pesano più che in proporzione, quindi sono i primi a essere
-sistemati. Uno scarto isolato non basta a smuoverlo: conta la media su tante
-mosse giocate.
+schermata che compare, la mossa migliore prende 5. Contando quel 5 al novanta
+per cento, il voto giusto era 1 + 4,5 = 5,5, e l'8 era ottimista di due punti e
+mezzo. Quei due punti e mezzo sono l'errore, e l'occhio si corregge per
+ridurlo; gli scarti grossi pesano più che in proporzione, perché contano per il
+loro quadrato, quindi sono i primi a essere sistemati. Uno scarto isolato non
+basta a smuoverlo: conta la media su tante mosse giocate.
 
 Il voto sulla schermata successiva, poi, non lo chiede a sé stesso di adesso: lo
 chiede a una sua copia di qualche tempo prima, messa da parte e lasciata com'era.
@@ -157,8 +157,8 @@ persona.
 ```
 
 Il blocco laterale di {numref}`fig-dqn-atari`, la memoria delle esperienze, è
-uno dei due accorgimenti che rendono stabile tutto il resto, e la sezione sul
-prezzo da pagare ci tornerà sopra. Addestrare sui fotogrammi nell'ordine in cui
+uno dei due accorgimenti che rendono stabile tutto il resto, e il prezzo da
+pagare ci tornerà sopra. Addestrare sui fotogrammi nell'ordine in cui
 arrivano significa dare alla rete esempi consecutivi, e quindi quasi identici
 fra loro; ripescarli a caso dalla memoria li rimescola, e la rete torna a vedere
 situazioni diverse una dall'altra.
@@ -179,9 +179,9 @@ una versione più forte dello stesso programma batte per 4 a 1 Lee Sedol, fra i
 più forti giocatori al mondo. Il Go, un gioco con più configurazioni che atomi
 nell'universo, era a lungo considerato fuori portata per le macchine. Ad
 AlphaGo non basta l'istinto di una rete: prima di muovere prova mentalmente le
-continuazioni, un po’ come farebbe un giocatore forte, ed è la tecnica che la
-sezione sui gradienti di policy chiama *ricerca ad albero*. Il deep RL smette
-di essere una curiosità da laboratorio.
+continuazioni, un po’ come farebbe un giocatore forte, ed è la *ricerca ad
+albero* di cui si occupa la {doc}`sezione su MCTS e AlphaGo <mcts-alphago>`. Il
+deep RL smette di essere una curiosità da laboratorio.
 
 ## Il prezzo: un addestramento che balla, e milioni di partite
 
@@ -197,7 +197,8 @@ ogni correzione: è come cercare di colpire la propria ombra, che si muove ogni
 volta che ti muovi tu. Basta poco (un ritocco alla velocità con cui la rete si
 corregge) e invece di assestarsi i suoi giudizi crescono senza fermarsi. È qui
 che servono i due accorgimenti annunciati poco fa, la memoria delle esperienze
-e la copia congelata della rete, e la sezione su DQN li racconta per esteso.
+e la copia congelata della rete, e la {doc}`sezione su DQN <dqn>` li racconta
+per esteso.
 
 La seconda difficoltà: serve **una quantità enorme di partite**. L'agente
 impara per tentativi, e di tentativi ne vuole milioni: settimane di gioco. In
@@ -232,8 +233,7 @@ copia congelata.
 Poi si cambia famiglia. Invece di dare un voto a ogni mossa e scegliere la
 migliore, si può imparare **direttamente a decidere**. Sono i metodi a
 *gradiente di policy*, e portano lontano: al giocatore si affianca un giudice
-che commenta ogni mossa; nasce l'algoritmo che oggi si prova per primo, quello che nella sezione
-seguente si chiamerà PPO;
+che commenta ogni mossa; nasce l'algoritmo che oggi si prova per primo, il PPO;
 compare la ricerca ad albero che sta dietro ad AlphaGo. E in fondo a quella
 strada ci sono gli assistenti conversazionali, che oggi si addestrano proprio
 così.
@@ -256,4 +256,5 @@ scorciatoie che scavalcano.
 Si chiude sull’**esplorazione**: cosa fare quando la ricompensa arriva così di
 rado che non c'è nulla da inseguire, e cosa succede quando l'agente ottimizza
 *troppo* bene una ricompensa scritta male. Quest'ultima insidia, il *reward
-hacking*, è il ponte verso il capitolo sull'AI responsabile.
+hacking*, è il ponte verso il {doc}`capitolo sull'AI responsabile
+</AIResponsabile/overview>`.

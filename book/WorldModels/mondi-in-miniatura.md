@@ -37,16 +37,16 @@ Minecraft, e ricostruiamo i tre moduli in PyTorch.
 
 La ricetta ha tre ingredienti dai nomi minimalisti: **V** come *visione*,
 **M** come *memoria*, **C** come *controller*. V comprime ogni fotogramma in
-un piccolo codice; M è una **rete ricorrente** (in sigla RNN: una rete che
-legge un passo alla volta portandosi dietro un riassunto di tutto quel che ha
-già visto, e quel riassunto, nel disegno qui sotto, si chiama $\mathbf{h}$) e impara
-come quel codice evolve in risposta alle azioni; la variante di rete ricorrente
-che Ha e Schmidhuber adoperano si chiama **LSTM**, ed è il nome che si legge nel
-disegno. C, che dei tre è di gran lunga il più piccolo, legge codice e memoria e
-decide. Un avviso sui numeri che seguono: sono quelli del gioco di guida, che è
-il più comodo da raccontare; nell'esperimento del sogno, che è l'altro, le
-taglie cambiano, e a tempo debito lo diremo. La
-{numref}`fig-world-model-vmc` mostra il giro completo: l'azione di C torna
+un piccolo codice. M impara come quel codice evolve in risposta alle azioni, ed
+è una **rete ricorrente** (in sigla RNN): una rete che legge un passo alla
+volta portandosi dietro un riassunto di tutto quel che ha già visto, e quel
+riassunto si chiama $\mathbf{h}$. La variante di rete ricorrente che Ha e
+Schmidhuber adoperano si chiama **LSTM**. C, che dei tre è di gran lunga il più
+piccolo, legge codice e memoria e decide. I numeri che seguono sono quelli del
+gioco di guida, che è il più comodo da raccontare; l'esperimento del sogno usa
+taglie diverse, e le dichiara quando arriva. La
+{numref}`fig-world-model-vmc` mostra il giro completo, con $\mathbf{h}$ e LSTM
+scritti al loro posto: l'azione di C torna
 all'ambiente, che produce il fotogramma successivo. E mostra l'anello
 tratteggiato che rende speciale l'architettura: M può alimentare se stesso,
 sostituendosi all'ambiente. È il circuito del sogno, e ci arriviamo tra poco.
@@ -148,7 +148,8 @@ Un fotogramma compresso è una fotografia, non un film: non dice cosa
 succederà. Il secondo modulo impara la **dinamica**: dato il codice di adesso
 e l'azione scelta, quale sarà il codice di poi? M è una LSTM, la rete
 ricorrente con i *gate* (i cancelli che decidono cosa ricordare e cosa
-dimenticare) incontrata nel {doc}`capitolo sul Natural Language Processing </NaturalLanguageProcessing/overview>`
+dimenticare) incontrata nella {doc}`sezione sui modelli di
+sequenza </NaturalLanguageProcessing/modelli-sequenza>`
 {cite}`hochreiter1997long`. Solo che qui la «frase» da proseguire non è fatta
 di parole ma di codici $\mathbf{z}$: M vive nel piccolo mondo dei 32 numeri, senza mai
 toccare i pixel, perciò è veloce ed economica. Il riassunto che si porta dietro
@@ -287,7 +288,7 @@ codice, invece di confrontarlo con la realtà, lo ridessimo in pasto a M come
 ingresso del passo successivo? Il modello comincia a raccontarsi il gioco da
 solo, un passo dopo l'altro: niente più ambiente, niente pixel, solo codici
 che generano codici. Ha e Schmidhuber lo chiamano *dream*, sogno, e
-l'esperimento è tutto qui: C viene addestrato **esclusivamente** dentro il
+l'esperimento è tutto qui: C viene addestrato soltanto dentro il
 sogno e poi trasferito, senza ritocchi, nel gioco vero.
 
 Sulla parola conviene fermarsi un secondo, perché si porta dietro qualcosa che
@@ -332,8 +333,9 @@ probabilità: alzando la temperatura escono più spesso quelle improbabili. Il
 sogno diventa dispettoso, e un trucco che ha funzionato una volta la volta dopo
 non funziona più. Alzarla troppo, però, non conviene: un sogno completamente
 sregolato non somiglia più a niente, e lì dentro non si impara nulla. Il punto
-giusto della manopola lo si scova provando, e lì l'agente trovò il gioco vero
-quasi riposante: vi sopravvisse in media *più a lungo* che nel proprio sogno.
+giusto della manopola lo si scova provando, e lì il sogno era diventato più
+capriccioso del gioco vero: l'agente sopravvisse in media *più a lungo* nella
+realtà che nella propria testa.
 
 Resta la cosa da cui siamo partiti: il sogno è stato imparato guardando partite
 giocate a casaccio. Il pilota è cresciuto dentro la copia di un gioco che
@@ -382,8 +384,9 @@ standard):
 
 La curva non è monotona: ha un massimo a $\tau = 1{,}15$, dove l'agente va
 *meglio* nella realtà che nella propria immaginazione e supera largamente la
-soglia di risoluzione (750); a 1,30 ricade a tre punti sopra quella soglia,
-perché il sogno è diventato così rumoroso che dentro non si impara più niente.
+soglia di risoluzione (750); a 1,30 ricade a tre punti sopra quella soglia, ma
+con una deviazione standard molto più stretta (139 contro 556). Non è un agente
+che non ha imparato niente: è un agente meno bravo e più regolare.
 Gli autori lo dicono con parole loro: alzare $\tau$ rende più difficile a C
 trovare politiche avversarie, ma alzarla troppo rende l'ambiente virtuale troppo
 difficile perché l'agente impari alcunché, e quindi è un **iperparametro da
@@ -458,11 +461,12 @@ di sedici. Dichiararla non è pignoleria: chi non dichiara la tolleranza non
 sta dichiarando neanche l’**orizzonte**, cioè fino a che punto il sogno
 conviene essere ascoltato.
 
-Una quarta cosa, infine, la figura non può mostrarla, ed è bene non dedurla da
+C'è poi una cosa che la figura non può mostrare, ed è bene non dedurla da
 qui. *Quanto in fretta* lo scarto si apra non è una legge universale: dipende
-da quanto il sistema amplifica gli scossoni che riceve. Il {doc}`capitolo sul Deep
-Reinforcement Learning </DeepReinforcementLearning/overview>` lo scrive per bene, e mostra che su una dinamica
-abbastanza mite lo scarto, invece di esplodere, si assesta.
+da quanto il sistema amplifica gli scossoni che riceve. La {doc}`sezione sul
+reinforcement learning basato su
+modello </DeepReinforcementLearning/model-based>` lo scrive per bene, e mostra
+che su una dinamica abbastanza mite lo scarto, invece di esplodere, si assesta.
 
 ## Dai sogni ai diamanti: la linea Dreamer
 
@@ -474,7 +478,8 @@ nello spazio dei codici, non in quello dei pixel. Una catena di passi generati
 uno dall'altro si chiama **rollout**, ed è esattamente il sogno di poco fa; la
 parola vale anche per le partite vere, quando si raccolgono una mossa alla
 volta. A imparare da quei rollout sono due reti che si danno il
-cambio, e le abbiamo incontrate nel {doc}`capitolo sul Deep Reinforcement Learning </DeepReinforcementLearning/overview>`:
+cambio, e le abbiamo incontrate nella {doc}`sezione sul controllo
+continuo </DeepReinforcementLearning/controllo-continuo>`:
 l’**attore**, che sceglie la mossa, e il **critico**, che stima quanto vale la
 situazione in cui l'attore si è cacciato, così che l'attore sappia subito se ha
 fatto bene invece di dover aspettare la fine della partita. DreamerV2 (2021) è
@@ -621,8 +626,8 @@ prima cosa che viene in mente di provare) non produce nessun effetto visibile.
 Lo si misura così: si parte da cinque fotogrammi diversi invece che da uno, si
 danno a tutti e cinque le stesse identiche azioni, e si guarda quanto restano
 distanti fra loro i cinque codici sognati. Dopo dieci passi quella distanza è
-scesa di più di tremila volte rispetto alla partenza, e i tre comandi finali si
-somigliano fino a meno di due millesimi.[^sei-prove]
+scesa di qualche migliaio di volte rispetto alla partenza, e i tre comandi
+finali si somigliano fino a meno di due millesimi.[^quaranta-prove]
 
 La seconda: questo M predice *un* codice solo e non un ventaglio di
 continuazioni possibili, quindi la manopola della temperatura qui non c'è,
@@ -630,7 +635,7 @@ perché non ci sono probabilità da rimescolare.
 
 ```python
 V, M, C = EncoderVAE(), ModelloRNN(), Controller()
-print(sum(p.numel() for p in C.parameters()))   # 867: il pilota è minuscolo
+print(sum(p.numel() for p in C.parameters()))   # il pilota è minuscolo
 
 x = torch.rand(1, 3, 64, 64)     # un fotogramma finto: batch 1, RGB, 64x64
 z = V(x).unsqueeze(1)            # (1, 1, 32): il codice, come sequenza di 1 passo
@@ -643,6 +648,10 @@ for t in range(10):              # dieci passi di sogno: nessun ambiente
 # il controller legge codice e memoria e restituisce i tre comandi
 h = stato[0].squeeze(0)          # stato nascosto della LSTM: (1, 256)
 comandi = C(z.squeeze(1), h)     # (1, 3): sterzo, acceleratore, freno
+```
+
+```text
+867
 ```
 
 `````{tab} Elementare
@@ -718,16 +727,20 @@ comandi = C(z.squeeze(1), h)     # (1, 3): sterzo, acceleratore, freno
     e la ragione è una differenza vera: su *Take Cover* il controller legge
     anche il secondo dei due riassunti che una LSTM si porta dietro (lo stato
     di *cella*), quindi in ingresso ha $64 + 512 + 512 = 1088$ numeri, e da lì
-    ricava un comando solo, andare a sinistra o a destra. Il conto dei
-    parametri, a rigore, farebbe uno in più per via del termine costante: il
-    paper riporta la larghezza dell'ingresso.
+    ricava un comando solo: un numero fra $-1$ e $1$ diviso in tre fette, che
+    dicono se andare a sinistra, restare fermo o andare a destra. E 1088 sono
+    proprio i parametri, non la larghezza dell'ingresso: là il termine costante
+    non c'è, perché su quel gioco la formula del controller è
+    $a_t = \mathbf{W}_c[\mathbf{z}_t ; \mathbf{h}_t]$, senza il $\mathbf{b}_c$
+    che invece compare su *CarRacing*.
 
 [^scala-altalena]: Il confronto va fatto sui passi buoni. Prendendo tutto il
-    tracciato l'escursione quasi raddoppia, ma i suoi estremi cadono **dopo**
+    tracciato l'escursione quasi raddoppia, ma i suoi estremi cadono dopo
     la rottura, cioè dentro il tratto che stiamo dichiarando inaffidabile:
     dividere per quelli farebbe sembrare la tolleranza più piccola di quello
     che è.
 
-[^sei-prove]: I numeri esatti: ripetendo la prova sei volte, ciascuna con pesi
-    casuali diversi, la distanza fra i codici sognati si riduce di un fattore
-    compreso fra 3.300 e 4.700.
+[^quaranta-prove]: Quanto si riduca dipende dai pesi con cui si parte, e sei
+    prove non bastano a dirlo. Su quaranta inizializzazioni diverse il fattore
+    sta fra 2.800 e 5.200, con una mediana attorno a 3.700, e i tre comandi non
+    si allontanano mai oltre un millesimo e mezzo.

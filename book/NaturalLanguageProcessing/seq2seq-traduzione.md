@@ -99,8 +99,8 @@ incollano i due riassunti (quello di ciò che precede e quello di ciò che
 segue). Attenzione però: questo trucco vale solo per **capire** un testo che
 esiste già tutto intero. Per **generare** una frase non funziona: mentre
 scrivi, le parole future non esistono ancora; nessun giallista può rileggere
-il capitolo che deve ancora scrivere. Per questo, come vedremo, chi *legge* la
-frase può essere bidirezionale, ma chi la *scrive* procede sempre in avanti.
+il capitolo che deve ancora scrivere. Per questo chi *legge* la frase può
+essere bidirezionale, ma chi la *scrive* procede sempre in avanti.
 
 `````
 
@@ -194,7 +194,7 @@ esempio, e resta di mille numeri sia che la frase da tradurre abbia cinque
 parole sia che ne abbia cinquanta: nessuno spazio in più per le frasi lunghe,
 per quanto ce ne sarebbe bisogno.
 
-E c'è un dettaglio che tornerà utile fra due pagine, quindi mettiamolo a fuoco
+E c'è un dettaglio di cui l'attenzione si servirà, quindi mettiamolo a fuoco
 adesso. L'encoder, mentre legge, produce **un riassunto dopo ogni parola**: uno
 dopo «il», uno dopo «il gatto», uno dopo «il gatto nero», e così via fino in
 fondo. Sono tanti riassunti quante sono le parole, ciascuno con la sua fila di
@@ -232,18 +232,16 @@ corta di quella di riferimento paga una penalità, tanto più pesante quanto pi�
 Questo metro si chiama **BLEU**, ed è quello con cui la traduzione automatica
 ha fatto i conti per vent'anni.
 
-Resta un metro grezzo, e ha due punti ciechi. Va usato su un pacco intero di
-frasi e non su una sola, perché su una frase corta basta una quaterna che
-manca per mandare il voto a zero. E non riconosce le parafrasi, quindi una
-traduzione giusta che sceglie sinonimi diversi da quelli del traduttore umano
-prende comunque un voto basso.
-E c'è un terzo punto cieco, che si vede
-tornando all'interprete. Questo metro guarda le parole che l'interprete ha
-detto e va a cercarle in quelle del traduttore umano: castiga chi **si
-inventa** un pezzo. L'interprete che invece **salta** il capoverso che contava
-lo castiga poco, e solo di rimbalzo, perché una versione più corta paga la
-penalità sulla lunghezza. Su una traduzione la scelta ha le sue ragioni, e
-qualche riga più sotto si vede quali. Ma il giorno in cui alla macchina si
+Resta un metro grezzo, e ha tre punti ciechi che conviene chiamare per nome.
+**La frase sola**: va usato su un pacco intero di frasi, perché su una frase
+corta basta una quaterna che manca per mandare il voto a zero. **I sinonimi**:
+non riconosce le parafrasi, quindi una traduzione giusta che sceglie parole
+diverse da quelle del traduttore umano prende comunque un voto basso. E
+**il saltare**, che si vede tornando all'interprete: questo metro guarda le
+parole che l'interprete ha detto e va a cercarle in quelle del traduttore
+umano, quindi castiga chi **si inventa** un pezzo, mentre chi **salta** il
+capoverso che contava lo castiga poco, e solo di rimbalzo, perché una versione
+più corta paga la penalità sulla lunghezza. Ma il giorno in cui alla macchina si
 chiede di **riassumere** invece che di tradurre, saltare diventa il peccato
 principale, e il metro si gira: si prendono le parole del riassunto umano e si
 va a vedere quante sono finite in quello della macchina. Il voto che ne esce si
@@ -322,8 +320,8 @@ nel candidato. Detto a parole: BLEU conta quanti $n$-grammi del candidato
 stanno nel riferimento, ROUGE quanti $n$-grammi del riferimento stanno nel
 candidato.
 
-La simmetria si rompe appena i riferimenti sono più d'uno, e vale la pena
-saperlo perché è il caso normale. BLEU taglia il conteggio del candidato sul
+La simmetria si rompe appena i riferimenti sono più d'uno, che è il caso
+normale. BLEU taglia il conteggio del candidato sul
 **massimo** fra i riferimenti; la ROUGE-N originale somma invece numeratore e
 denominatore **su tutti** i riferimenti, il che dà più peso agli $n$-grammi che
 compaiono in parecchi di loro, e il pacchetto dell'autore usa poi una terza
@@ -367,8 +365,9 @@ visibilmente al crescere della lunghezza della frase.
 
 ## Tornare a guardare: la nascita dell'attenzione
 
-La soluzione arriva nel giro di pochi mesi, da Dzmitry Bahdanau, Kyunghyun Cho
-e Yoshua Bengio {cite}`bahdanau2015neural`, e nasce da una domanda tanto ovvia
+La soluzione è quasi contemporanea, e porta la data del settembre 2014 come
+il lavoro appena raccontato: la firmano Dzmitry Bahdanau, Kyunghyun Cho e
+Yoshua Bengio {cite}`bahdanau2015neural`, e nasce da una domanda tanto ovvia
 quanto ben posta: perché costringere il decoder a lavorare a memoria, se i
 riassunti intermedi ci sono già?
 
@@ -468,10 +467,9 @@ allineamento tra le due frasi: appresa senza alcuna supervisione esplicita.
 
 `````
 
-Vale la pena dirlo in modo esplicito, perché è il ponte verso il capitolo
-successivo: questa è **la stessa attenzione** dei Transformer. E siccome è
-l'idea che di là diventa tutto, conviene guardarla una volta con i numeri sotto
-gli occhi.
+Questa è **la stessa attenzione** dei Transformer, ed è il ponte verso il
+capitolo successivo. Siccome è l'idea che di là diventa tutto, conviene
+guardarla una volta con i numeri sotto gli occhi.
 
 Immaginiamo che i riassunti siano corti, tre numeri l'uno, e che ce ne siano
 tre soltanto:
@@ -624,7 +622,7 @@ tasso misurato in addestramento, quelle uscite sbagliano molto di più, e la
 media fra le due peggiora finché le proporzioni si assestano.
 
 I rimedi seguono due strade, e nessuna delle due abbandona il teacher forcing.
-Lo *scheduled sampling* di Bengio e colleghi {cite}`bengio2015scheduled`
+Lo *scheduled sampling* di Samy Bengio e colleghi {cite}`bengio2015scheduled`
 interpola: a ogni token si tira una moneta e con probabilità $1-\epsilon$ si usa
 $\hat{y}_{i-1}$ al posto di $y_{i-1}$, con $\epsilon$ portato da 1 verso 0 lungo
 l’**addestramento** (non lungo la frase), cioè un curriculum. MIXER, di Ranzato
@@ -638,14 +636,14 @@ anche il proprio.
 Il punto di rottura sta sul primo rimedio. Huszár {cite}`huszar2015how` mostra
 che l'obiettivo dello scheduled sampling è **improprio**, e che il suo ottimo
 non è la distribuzione dei dati nemmeno nel limite di dati e capacità infiniti:
-il modello che lo minimizza può ignorare il contenuto del prefisso e limitarsi a
-contare le posizioni. La derivazione è svolta su sequenze di lunghezza due e la
-generalizzazione è dichiarata dagli autori come una congettura, ma la direzione
-è chiara. Lo stesso lavoro, va detto per intero, sostiene che anche la massima
-verosimiglianza sia l'obiettivo sbagliato quando lo scopo è generare testo
-verosimile. La tensione corre allora fra due obiettivi di cui nessuno dei due è
-quello che si vorrebbe davvero, e il rimedio guasto contro il metodo sano è una
-lettura più comoda del vero.
+il modello che lo minimizza può ignorare il contenuto del prefisso e limitarsi
+a contare le posizioni. La derivazione è svolta su sequenze di lunghezza due, e
+al caso generale il lavoro non la estende, ma la direzione è chiara. Lo stesso
+lavoro, va detto per intero, sostiene che anche la massima verosimiglianza sia
+l'obiettivo sbagliato quando lo scopo è generare testo verosimile. La tensione
+corre allora fra due obiettivi di cui nessuno dei due è quello che si vorrebbe
+davvero, e il rimedio guasto contro il metodo sano è una lettura più comoda del
+vero.
 
 `````
 
@@ -654,26 +652,27 @@ Serve una lingua giocattolo di dieci parole, numerate da 0 a 9, in cui l'unica
 frase legale è contare: dopo lo 0 viene 1, dopo il 7 viene 8, dopo il 9 si
 ricomincia da 0. E serve un modello che, come i decoder veri, guardi **due**
 parole per scegliere la terza, mentre a questa lingua ne basterebbe una: è
-questa sovrabbondanza a creare i paia di parole che i dati non contengono mai.
-Sui paia che i dati contengono il modello sbaglia una volta su cento; sugli
+questa sovrabbondanza a creare le coppie di parole che i dati non contengono
+mai. Sulle coppie che i dati contengono il modello sbaglia una volta su cento;
+sugli
 altri tira a caso fra le dieci parole, e non perché la regola là non valga (vale
 identica) ma perché nei dati «la successiva della seconda» e «la seconda dopo la
 prima» sono la stessa cosa, e quale delle due il modello abbia imparato si vede
 soltanto fuori. La terza riga stampata è la controprova: la stessa cosa, con un
-modello che quei paia li sappia continuare.
+modello che quelle coppie le sappia continuare.
 
 ```python
 import numpy as np
 
 V, T, N = 10, 60, 20000   # 10 parole, frasi lunghe 60, 20000 frasi per volta
-FUGA = 0.01               # sui paia che i dati contengono sbaglia una volta su cento
+FUGA = 0.01               # sulle coppie che i dati contengono sbaglia 1 su 100
 
 def modello(sa_continuare_fuori):
     """Le probabilità della parola dopo, dato il paio che precede."""
-    M = np.full((V, V, V), 1.0 / V)      # paia mai viste: il modello tira a caso
+    M = np.full((V, V, V), 1.0 / V)      # coppie mai viste: il modello tira a caso
     for a in range(V):
-        paia = range(V) if sa_continuare_fuori else [(a + 1) % V]
-        for b in paia:
+        coppie = range(V) if sa_continuare_fuori else [(a + 1) % V]
+        for b in coppie:
             M[a, b] = FUGA / (V - 1)
             M[a, b, (b + 1) % V] = 1 - FUGA
     return M.cumsum(axis=2)
@@ -770,9 +769,9 @@ migliore. La frase si costruisce un pezzo alla volta, come un cammino deciso
 bivio per bivio, e la sola domanda è quanto guardare avanti prima di
 impegnarsi.
 
-Al primo bivio ci sono due cartelli, e per comodità facciamo finta che siano
-gli unici. «A» promette 0,50, «The» promette 0,40. Chi ha fretta prende «A» e
-non torna più indietro.
+Al primo bivio i cartelli che contano sono due: «A» promette 0,50, «The»
+promette 0,40, e il terzo, «One», sta a 0,04 e non se lo fila nessuno. Chi ha
+fretta prende «A» e non torna più indietro.
 
 Il primo cartello però non decide da solo. Una strada vale il prodotto di tutti
 i numeri incontrati lungo il cammino, perché sono cose che devono capitare
@@ -835,8 +834,7 @@ poi con una variante appena più elaborata,
 $lp(y) = \frac{(5+|y|)^{\alpha}}{6^{\alpha}}$, dove l'esponente agisce su
 $(5+|y|)$ e non su $|y|$: per questo il valore che gli autori usano,
 $\alpha = 0{,}2$, non è confrontabile con lo $0{,}65$ dell'euristica di
-partenza, ed è un dettaglio che vale la pena tenere a mente prima di citare
-«l’$\alpha$ di GNMT».
+partenza, ed è da tenere a mente prima di citare «l’$\alpha$ di GNMT».
 
 `````
 
@@ -890,13 +888,13 @@ gruppi di parole si scambiano con quali. Aveva retto per un decennio. Si parte
 dalla coppia cinese-inglese, circa 18 milioni di traduzioni al giorno.
 
 E il miglioramento non è misurato con un punteggio calcolato da un programma,
-ma da esseri umani. Google mette delle persone bilingui davanti alla stessa
-frase tradotta dal vecchio sistema e dal nuovo, senza dire quale sia quale, e
-chiede di dare un voto a ciascuna; poi confronta i voti. Nel mucchio ci mette
-anche una traduzione fatta da un traduttore umano, che prende il voto più alto
-di tutti ed è il metro di riferimento. Il risultato: della distanza che separava il vecchio sistema dal traduttore umano, il nuovo
-ne recupera **almeno il 60 per cento** su tutte e sei le coppie misurate, e in
-media quasi il settanta. Per la prima volta le reti
+ma da esseri umani. Google mette delle persone a dare un voto alla stessa
+frase tradotta dal vecchio sistema e dal nuovo, e nel mucchio ci mette anche
+una traduzione fatta da traduttori che conoscono bene tutte e due le lingue,
+che prende il voto più alto di tutti ed è il metro di riferimento. Il
+risultato: della distanza che separava il vecchio sistema dal traduttore
+umano, il nuovo ne recupera **fra il 58 e l'87 per cento** a seconda della
+coppia di lingue, e in media quasi il settanta. Per la prima volta le reti
 ricorrenti che abbiamo studiato traducono, ogni giorno, per centinaia di
 milioni di persone.
 
@@ -910,9 +908,9 @@ molte lingue si formi qualcosa di simile a una lingua franca interna.
 Ma il rattoppo si stava già mangiando il vestito. Se l'attenzione permette a
 ogni parola generata di guardare direttamente tutte le parole sorgente, a cosa
 serve ancora far scorrere uno stato passo dopo passo? Nel 2017 un gruppo di
-ricercatori di Google si fa esattamente questa domanda, e il titolo della
-risposta è tutto un programma: *Attention Is All You Need*
-{cite}`vaswani2017attention`; l'attenzione è tutto ciò che serve. Via la
+ricercatori di Google si fa esattamente questa domanda, e la risposta si
+intitola *Attention Is All You Need* {cite}`vaswani2017attention`:
+l'attenzione è tutto ciò che serve. Via la
 ricorrenza, resta solo il meccanismo che avete appena visto nascere, promosso
 da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
 **Transformer**.

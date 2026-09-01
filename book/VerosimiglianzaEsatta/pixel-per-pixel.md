@@ -6,7 +6,7 @@ alla volta, e prima ancora, con WaveNet, un campione d'onda alla volta. La
 ricetta è sempre la stessa: si mette il dato in fila, si insegna alla rete a
 indovinare il pezzo successivo dati i precedenti, e la probabilità dell'intero
 è il prodotto delle probabilità dei pezzi. Nessuna approssimazione: quel
-prodotto **è** la probabilità, non una sua stima, e ogni fattore è una
+prodotto *è* la probabilità, non una sua stima, e ogni fattore è una
 probabilità vera perché è una scelta fra un numero finito di possibilità, con i
 pesi che sommano a uno.
 
@@ -14,7 +14,8 @@ Chiediamoci allora la cosa ovvia: e un'immagine? È più vecchia di quanto si
 creda, come domanda. Nel gennaio del 2016 Aäron van den Oord, Nal Kalchbrenner
 e Koray Kavukcuoglu {cite}`oord2016pixel` costruiscono una rete che «predice in
 sequenza i pixel di un'immagine lungo le due dimensioni spaziali»; WaveNet, che
-il capitolo sull'audio racconta come la pietra miliare del suono generato, è la
+la {doc}`sezione sul generare suono </Audio/generazione-audio>` racconta come la
+pietra miliare del suono generato, è la
 sorella minore di questo lavoro, stesso laboratorio e stesso anno, con l'onda
 al posto della griglia.
 
@@ -227,23 +228,26 @@ La fattorizzazione è la regola della catena applicata a un ordinamento totale
 dei pixel:
 
 $$
-p(\mathbf{x}) = \prod_{i=1}^{n^2} p\big(x_i \mid x_1, \dots, x_{i-1}\big),
+p(\mathbf{x}) = \prod_{i=1}^{D} p\big(x_i \mid x_1, \dots, x_{i-1}\big),
 $$
 
-con $x_i$ l’$i$-esimo pixel in ordine di scansione su un'immagine $n \times n$
-(e, sui colori, i tre canali ordinati dentro ciascun pixel). Ogni fattore è una
-categorica su 256 livelli,
+con $x_i$ l’$i$-esimo valore in ordine di scansione e $D$ il numero di valori
+che compongono il dato: $n^2$ per un'immagine $n \times n$ in scala di grigi,
+$3n^2$ a colori, dove i tre canali stanno ordinati dentro ciascun pixel. Ogni
+fattore è una categorica su 256 livelli,
 quindi normalizzata per costruzione: $\log p(\mathbf{x})$ è **esatta** e si
 ottiene in un solo passaggio in avanti, perché durante l'addestramento tutti i
 contesti sono disponibili insieme (*teacher forcing*). È l'asimmetria
 caratteristica della famiglia: valutare costa un passaggio, campionare ne costa
-$n^2$.
+$D$.
 
 Le maschere realizzano il vincolo di causalità a livello di pesi:
 $\mathbf{W} \leftarrow \mathbf{W} \odot \mathbf{M}$ con $\mathbf{M}$ binaria,
 tipo A al primo strato ($\mathbf{M}$ azzera il centro) e tipo B dopo. La
-composizione di strati mascherati resta causale perché la causalità è chiusa
-per composizione, ed è ciò che il test sul gradiente verifica: detta
+composizione resta causale grazie al primo strato: il tipo B conserva la
+dipendenza dal centro, il tipo A la toglie, e toglierla una volta sola,
+all'ingresso, basta per tutta la pila. È ciò che il test sul gradiente
+verifica: detta
 $\hat{x}_i$ l'uscita della rete in posizione $i$, si ha $\partial \hat{x}_i /
 \partial x_j = 0$ per ogni $j \geq i$ nell'ordine di scansione, a qualunque
 profondità.
@@ -291,8 +295,9 @@ differenza di categoria.
 Ed è per questo che l'idea, sulle immagini, è tornata da un'altra porta.
 Nessuna legge dice che i pezzi da mettere in fila debbano essere i pixel. Se
 prima si comprime l'immagine in una griglia piccola di simboli presi da un
-catalogo (il VQ-GAN del capitolo sulle GAN: $256 \times 256$ diventano $16
-\times 16$, cioè 256 simboli), allora i passaggi sequenziali da 196.608
+catalogo (il VQ-GAN della {doc}`sezione sulle evoluzioni delle GAN
+</GAN/applicazioni-evoluzioni>`: $256 \times 256$ diventano $16 \times 16$,
+cioè 256 posizioni), allora i passaggi sequenziali da 196.608
 diventano 256, settecentosessantotto volte meno, e a metterli in fila può
 pensare un Transformer. L'autoregressione sulle immagini non è morta: si è
 spostata di un piano, dai pixel ai token, ed è la forma in cui oggi si trova
@@ -316,14 +321,16 @@ vera deve restare sui pixel, o cambiare famiglia: ed è la sezione che segue.
   del filtro che guardano nel futuro. Al primo strato si spegne anche quella
   centrale, perché lì c'è il pixel che stiamo cercando di indovinare, e vederlo
   sarebbe copiare la risposta dalla domanda.
-- Il bavaglio si porta dietro un guasto che nessuno aveva previsto: un triangolo
-  di pixel che vengono **prima** e che la rete non guarderà mai, per quanto la
+- Il bavaglio si porta dietro un guasto suo: un triangolo
+  di pixel che vengono prima e che la rete non guarderà mai, per quanto la
   si faccia profonda. Si chiama **punto cieco**, e non si cura con la
   profondità: si cura cambiando la forma della finestra, cioè mettendone due.
 - Generare costa carissimo, perché va fatto un pixel alla volta e in fila: su
   una fotografia sono quasi duecentomila passaggi, contro l'unico di una GAN.
   Per questo oggi la stessa idea si applica a pezzi più grossi dei pixel (i
-  simboli di catalogo del VQ-GAN), dove i passaggi diventano poche centinaia.
+  simboli di catalogo del VQ-GAN), dove i passaggi diventano poche centinaia. Il
+  prezzo del trasloco è che il numero esatto vale allora per i simboli, e non
+  più per l'immagine.
 ```
 
 `````
@@ -335,8 +342,8 @@ vera deve restare sui pixel, o cambiare famiglia: ed è la sezione che segue.
 - $\log p(\mathbf{x}) = \sum_i \log p(x_i \mid \mathbf{x}_{<i})$ su un
   ordinamento totale dei pixel, ogni fattore una categorica su 256 livelli:
   normalizzazione per costruzione, verosimiglianza **esatta**, valutazione in un
-  passaggio (*teacher forcing*), campionamento in $\mathcal{O}(n^2)$ passaggi
-  sequenziali.
+  passaggio (*teacher forcing*), campionamento in $D$ passaggi sequenziali,
+  uno per valore del dato.
 - Causalità imposta **sui pesi**: $\mathbf{W} \leftarrow \mathbf{W} \odot
   \mathbf{M}$, maschera di tipo A al primo strato (azzera il centro) e di tipo
   B dopo. La causalità è chiusa per composizione, e il test sul gradiente la

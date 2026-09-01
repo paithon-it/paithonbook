@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" role="img" aria-label="Schema dell'architettura di una GAN: un vettore di rumore z entra nel generatore G che produce un dato sintetico; il dato sintetico e i dati reali entrano nel discriminatore D che restituisce una probabilita reale o falso; i gradienti dell'errore retroagiscono verso le due reti">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" role="img" aria-label="Schema dell'architettura di una GAN: un vettore di rumore z entra nel generatore G che produce un dato sintetico; il dato sintetico e i dati reali entrano nel discriminatore D che restituisce una probabilita reale o falso; i gradienti dell'errore tornano indietro dal discriminatore al generatore">
   <defs>
     <marker id="gan-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>

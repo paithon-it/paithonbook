@@ -43,7 +43,8 @@ Alla fine nella scatola convivono pezzi di ogni taglia. Le parole comunissime,
 *il* e *sul*, ci stanno per intero; *tokenizzazione* è rara e non ci sta, quindi
 si scrive come `token` + `izzazione`, due pezzi visti tante volte altrove. E una
 parola mai incontrata, un cognome o una sigla, si scrive lo stesso, al peggio
-lettera per lettera: la scatola non resta mai senza pezzi.
+lettera per lettera, purché quelle lettere fossero nel testo da cui la scatola
+è stata riempita: è una condizione che sembra scontata e non lo è.
 
 `````
 
@@ -57,13 +58,13 @@ vocabolario enorme e le parole fuori dizionario (*out-of-vocabulary*).
 I sistemi moderni usano perciò tokenizzatori **sottoparola** (*subword*). Il
 *Byte Pair Encoding* {cite}`sennrich2016neural` parte dai singoli caratteri e
 fonde iterativamente la coppia di simboli più frequente; *WordPiece*
-{cite}`schuster2012japanese` adotta una strategia analoga, ma fonde la coppia
-che
-massimizza la verosimiglianza del corpus anziché la semplice frequenza. In
+{cite}`schuster2012japanese` adotta una strategia analoga, ma sceglie la
+coppia con un criterio che premia le coppie sorprendenti invece di quelle
+semplicemente frequenti. In
 entrambi i casi il processo si arresta quando il vocabolario raggiunge una
-taglia fissata (tipicamente $30\,000$–$100\,000$ token). Ogni stringa, anche
-mai vista, resta rappresentabile; nel caso limite si scende fino al singolo
-byte.
+taglia fissata (tipicamente $30\,000$–$100\,000$ token). Ogni stringa fatta di
+simboli visti in addestramento resta rappresentabile, anche se la stringa
+intera è nuova; la copertura diventa totale solo scendendo al singolo byte.
 
 `````
 
@@ -177,14 +178,15 @@ compare, più conta. La rarità nella raccolta (*inverse document frequency*, la
 frequenza documentale rovesciata) guarda in quanti documenti la parola compare,
 e premia quelle che ne occupano pochi.
 
-La rarità si calcola così: si divide il numero totale di documenti per il numero
-di quelli in cui la parola compare, e del risultato si prende il logaritmo, che
-è solo un modo di schiacciare i numeri grandi perché non prendano il
-sopravvento. Su una raccolta di mille documenti: *il* compare in tutti e mille,
-mille diviso mille fa 1, e il logaritmo di 1 è zero. La rarità di *il* vale
-zero, e zero per qualunque cosa fa zero: *il* sparisce, che è esattamente quello
-che volevamo. *Sinapsi* compare in due documenti, mille diviso due fa
-cinquecento, e il logaritmo di cinquecento è circa 6,2. Sopravvive, e pesa.
+La rarità si calcola così: si divide il numero totale di documenti per il
+numero di quelli in cui la parola compare, e del risultato si prende il
+logaritmo naturale, che è solo un modo di schiacciare i numeri grandi perché
+non prendano il sopravvento. Su una raccolta di mille documenti: *il* compare
+in tutti e mille, mille diviso mille fa 1, e il logaritmo di 1 è zero. La
+rarità di *il* vale zero, e zero per qualunque cosa fa zero: *il* sparisce, che
+è esattamente quello che volevamo. *Sinapsi* compare in due documenti, mille
+diviso due fa cinquecento, e il logaritmo di cinquecento è circa 6,2.
+Sopravvive, e pesa.
 
 Il prodotto dei due numeri gonfia dunque le parole rare e informative e sgonfia
 quelle comuni a tutti: stessa pulsantiera, manopole tarate meglio. Una cosa però
@@ -253,8 +255,9 @@ le proporzioni fra le sue parole, non quante ne ha.
 C'è un effetto collaterale, ed è meglio conoscerlo perché altrimenti i numeri a
 schermo sorprendono. Con la ricetta da manuale una parola presente in *tutti* i
 documenti prendeva zero e spariva; con la variante della libreria le resta
-addosso un peso, e su una raccolta piccola quel peso è tutt'altro che poco. Nei
-due testi dell'esempio *il* esce con $0{,}318$ e *gatto* con $0{,}447$:
+addosso un peso, e su una raccolta piccola quel peso è tutt'altro che poco.
+Nel primo dei due testi dell'esempio *il* esce con $0{,}318$ e *gatto* con
+$0{,}447$:
 l'articolo che sta in tutti e due i testi pesa circa sette decimi della parola
 che compare in uno solo. La distanza fra i due si allarga man mano che la
 raccolta cresce, perché la parola che sta dappertutto resta ferma dov'è mentre
@@ -284,7 +287,7 @@ Il salto concettuale arriva nel 2013. L'idea guida è vecchia, il linguista
 John Firth nel 1957 la riassunse così: *"You shall know a word by the company
 it keeps"*, conoscerai una parola dalla compagnia che frequenta. Parole che
 appaiono in contesti simili hanno significati simili. Se lo facciamo dire ai
-numeri, otteniamo gli **word embedding**: la parola inglese vuol dire
+numeri, otteniamo i **word embedding**: la parola inglese vuol dire
 «immersione», e l'immagine è quella di ogni parola calata dentro uno spazio,
 in un punto suo.
 
@@ -326,27 +329,18 @@ Il risultato è una **mappa del significato**. Su questa mappa *gatto* e
 *mercoledì* agli antipodi. La vicinanza geometrica diventa vicinanza di
 senso.
 
-Quella vicinanza ha un modo standard di misurarsi, e conviene impararne il
-nome adesso perché lo si incontra ovunque: la **similarità del coseno**.
-
-Prima però serve un anello che finora è rimasto implicito. Una fila di due
-numeri, `(3, 4)`, si può leggere come un punto su un foglio a quadretti: tre
-caselle a destra, quattro in su. E un punto lo si può raggiungere solo in un
-modo, con una freccia che parte dall'origine e arriva lì. Quindi fila di
-numeri, punto e freccia sono la stessa cosa vista in tre modi. Con trecento
-numeri il foglio a quadretti non basta più, ma le parole «punto» e «freccia»
-continuano a valere, ed è per questo che di due parole si dice che «puntano»
-da qualche parte.
-
-La similarità del coseno guarda proprio le direzioni delle due frecce, e
-ignora quanto sono lunghe. È un numero fra $-1$ e $+1$, non una distanza in
-metri. Vale $+1$ quando le due frecce puntano esattamente dalla stessa parte,
-$0$ quando sono perpendicolari, cioè non hanno niente da spartire, $-1$ quando
-puntano in versi opposti. Un «coseno $0{,}88$» si legge «si somigliano molto»;
-un «coseno $-0{,}26$» si legge «non c'entrano niente l'uno con l'altra».
-(Nella pratica il caso $-1$ fra due parole quasi non si vede: i valori negativi
-che si incontrano davvero sono piccoli, e vogliono dire «estranei», non
-«contrari».)
+Quella vicinanza ha un modo standard di misurarsi, ed è quello già visto con
+le frecce dell’{doc}`algebra lineare </Matematica/algebra-lineare>`, dove il
+conto è svolto per esteso su due numeri soli. Una fila come `(3, 4)` è anche
+un punto su un foglio a quadretti, tre caselle a destra e quattro in su, e
+quindi una freccia che ci arriva: è per questo che di due parole si dice che
+«puntano» da qualche parte. La **similarità del coseno** guarda da che parte
+puntano le due frecce e ignora quanto sono lunghe. È un numero fra $-1$ e
+$+1$: vale $+1$ quando puntano dalla stessa parte, $0$ quando non hanno niente
+da spartire. Un «coseno $0{,}88$» si legge «si somigliano molto», un «coseno
+$-0{,}26$» «non c'entrano niente l'uno con l'altra». Fra due parole il $-1$
+non si vede quasi mai: i valori negativi che si incontrano davvero sono
+piccoli, e vogliono dire «estranei», non «contrari».
 
 I due programmi che hanno reso comuni questi vettori portano nomi che si
 incontrano ovunque. **word2vec**, del 2013, è quello che lavora con la finestra
@@ -358,7 +352,8 @@ davvero dalle intruse. Una domanda piccola, ripetuta miliardi di volte.
 
 **GloVe**, del 2014, arriva allo stesso risultato per un'altra strada: conta una
 volta per tutte quante volte ogni parola compare vicino a ogni altra, e poi
-cerca i numeri che spiegano quei conteggi. Due estremi vanno tenuti a bada. Le
+cerca, per ogni parola, la fila di numeri che quei conteggi li ricostruisce.
+Due estremi vanno tenuti a bada. Le
 coppie che non si sono mai viste non hanno niente da insegnare, e restano fuori
 dal conto invece di pesare come una somiglianza mancata. Le coppie che
 contengono una parola come *di* si contano a milioni, e da sole coprirebbero la
@@ -411,10 +406,10 @@ Quella procedura ha un nome, e conviene impararlo qui perché torna per tutto il
 libro. Nessuno ha preparato gli esercizi su cui word2vec si addestra: la parola
 al centro e le sue vicine stavano già nel testo, e a separarle per farne una
 domanda e una risposta siamo stati noi. Un compito costruito così si chiama
-**auto-supervisionato**. La sezione «Imparare senza etichette», nel capitolo
-sulla visione artificiale, l'ha già fatto sulle immagini: si copre un pezzo di
-foto e si chiede di indovinarlo. Il capitolo che porta quel nome lo racconta
-per esteso.
+**auto-supervisionato**. Sulle immagini l'ha già fatto {doc}`Imparare senza
+etichette </VisioneArtificiale/senza-etichette>`, coprendo un pezzo di foto e
+chiedendo di indovinarlo; e a raccontarlo per esteso è il capitolo
+sull'auto-supervisione.
 
 ## Sotto la parola: fastText
 
@@ -491,7 +486,7 @@ I quattro embedding formano un parallelogramma: la stessa freccia
 "regalità" separa *uomo* da *re* e *donna* da *regina*; la stessa freccia
 "femminile" separa *uomo* da *donna* e *re* da *regina*. Il disegno è
 idealizzato: nello spazio vero le due frecce non sono identiche e il
-parallelogramma si chiude solo per approssimazione, come si legge qui sotto.
+parallelogramma si chiude solo per approssimazione.
 ```
 
 `````{tab} Elementare
@@ -592,6 +587,15 @@ tema, pescare da un archivio i tre paragrafi giusti da mettere sotto gli occhi
 di un chatbot prima che risponda. Serve un vettore per **frase**, e ottenerlo
 non è altrettanto ovvio.
 
+C'è anche una ragione di costo, e da sola decide l'architettura. Dare a un
+modello le due frasi attaccate, perché le legga come un testo solo, dà il
+giudizio migliore ma vale per quella coppia sola: su diecimila frasi le coppie
+sono quasi cinquanta milioni ($10\,000 \times 9\,999$ diviso $2$), e gli autori
+di **Sentence-BERT** {cite}`reimers2019sentence` le hanno cronometrate in circa
+65 ore su una GPU del 2019. Riassumere invece una volta sola le diecimila
+frasi costa cinque secondi, e i cinquanta milioni di confronti fra file già
+pronte un centesimo di secondo: è la differenza fra un'idea e un prodotto.
+
 `````{tab} Elementare
 
 Diecimila moduli di reclamo in uno scatolone, e bisogna trovare i due che
@@ -605,12 +609,13 @@ stesso riassunto. E le parole piccole pesano quanto le altre, così fra «il
 film mi è piaciuto» e «il film non mi è piaciuto» il «non» annega.
 
 Si fa aiutare da un lettore che l'ordine lo tiene, della famiglia dei
-Transformer. Si chiama **BERT**, è del 2018, e ha passato miliardi di frasi su
-due esercizi: indovinare le parole che gli avevano cancellato, e dire se due
-frasi stessero davvero una dopo l'altra. Quell'allenamento si riusa per compiti
-diversissimi senza rifare tutto. Ma nessuno gli ha mai chiesto quanto due
-moduli vogliano dire la stessa cosa, e infatti lo giudica male: quello che si
-vuole da uno spazio bisogna insegnarglielo.
+Transformer. Si chiama **BERT**, è del 2018, e si è allenato su tre miliardi di
+parole, fra libri e Wikipedia, con due esercizi: indovinare le parole che gli
+avevano cancellato, e dire se due frasi stessero davvero una dopo l'altra.
+Quell'allenamento si riusa per compiti diversissimi senza rifare tutto. Ma
+nessuno gli ha mai chiesto quanto due moduli vogliano dire la stessa cosa, e
+infatti lo giudica male: quello che si vuole da uno spazio bisogna
+insegnarglielo.
 
 Gliela insegna tre moduli per volta: uno di riferimento, l’**ancora**, uno che
 dice la stessa cosa, uno che parla d'altro. Chiede solo che l'ancora finisca
@@ -626,15 +631,6 @@ confrontabili. E le
 terne non si preparano una per una. Sul tavolo vanno mille coppie «reclamo e
 suo gemello», e per ognuna i moduli delle altre novecentonovantanove fanno da
 lontani: quasi mille, senza cercarne uno.
-
-Lo scatolone, adesso: quasi cinquanta milioni di coppie (ognuna con ognuna,
-$10\,000 \times 9\,999$ diviso $2$). Passare a BERT le due frasi attaccate,
-così che le legga come un testo solo, dà il giudizio migliore, ma vale per
-quella coppia sola. Cinquanta milioni di letture sono circa 65 ore,
-cronometrate nel 2019 su una GPU da laboratorio dagli autori di
-**Sentence-BERT**. Riassumere una volta sola le diecimila frasi costa cinque
-secondi, e i cinquanta milioni di confronti fra file già pronte un centesimo di
-secondo. È la differenza fra un'idea e un prodotto.
 
 Quello che l'impiegata ha insegnato, però, è «questi due si somigliano», non
 «questo risponde a quello». «Chi ha scritto la Divina Commedia?» e «Dante
@@ -689,10 +685,10 @@ vicino del negativo, e di almeno $m$». È più robusta della contrastive perch�
 non impone distanze assolute, che sarebbero arbitrarie, ma solo un ordinamento.
 
 La **multiple negatives ranking loss** (o InfoNCE, la stessa forma già
-incontrata per SimCLR nella sezione *Imparare senza etichette* del capitolo
-sulla visione artificiale, e che tornerà per CLIP in *Allineare due spazi*, nel
-capitolo su visione e linguaggio) usa come negativi tutti gli altri elementi
-del batch:
+incontrata per SimCLR in {doc}`Imparare senza etichette
+</VisioneArtificiale/senza-etichette>`, e che tornerà per CLIP in
+{doc}`Allineare due spazi </VisioneLinguaggio/allineare-due-spazi>`) usa come
+negativi tutti gli altri elementi del batch:
 
 $$
 \mathcal{L} = -\log \frac{\exp\big(\mathrm{sim}(\mathbf{a}, \mathbf{p})/\tau\big)}
@@ -709,8 +705,8 @@ $B$ vie in cui la classe giusta è «il proprio positivo».
 
 È oggi la scelta prevalente, perché un batch da 1024 fornisce 1023 negativi
 gratis a ogni esempio, ed è precisamente la ricetta degli *in-batch negatives*
-che la sezione *Retrieval e RAG*, nel capitolo sui Transformer, attribuisce a
-DPR {cite}`karpukhin2020dense`.
+che {doc}`Retrieval e RAG </Transformers/rag>`, nel capitolo sui Transformer,
+attribuisce a DPR {cite}`karpukhin2020dense`.
 
 Due avvertenze pratiche che separano un modello che funziona da uno che no.
 La prima è la **scelta dei negativi**: quelli presi a caso diventano presto
@@ -845,7 +841,7 @@ che si ha davvero, e non una classifica generica.
   partenza onesto ma cieco all'ordine; e un BERT preso così com'è non fa
   meglio, perché nessuno gliel'aveva chiesto. Se vuoi che uno spazio abbia una
   certa proprietà, quella proprietà devi addestrarla: una sola rete usata tre
-  volte, e triplette di frasi da avvicinare e da allontanare.
+  volte, e terne di frasi da avvicinare e da allontanare.
 - Il coseno dice «si somigliano», non «questo risponde a quella»: chi cerca
   risposte addestra due reti separate, una per le domande e una per i testi.
 ```
@@ -858,7 +854,7 @@ che si ha davvero, e non una classifica generica.
   *sottoparola* per gestire qualunque parola.
 - **One-hot** e **bag-of-words / TF-IDF** danno vettori enormi, sparsi e senza
   nozione di somiglianza tra parole diverse.
-- Gli **word embedding** (word2vec, GloVe) sono densi e a bassa dimensione: la
+- I **word embedding** (word2vec, GloVe) sono densi e a bassa dimensione: la
   **vicinanza geometrica riflette la vicinanza di significato**, misurata con
   la **similarità del coseno**.
 - L’**analogia lineare** ($\mathbf{v}_{\text{re}} - \mathbf{v}_{\text{uomo}} +

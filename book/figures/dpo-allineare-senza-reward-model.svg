@@ -1,6 +1,6 @@
 <svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra la pipeline RLHF in tre passi e la pipeline DPO in un passo solo">
   <rect x="0" y="0" width="760" height="400" fill="#F8F5EE"/>
-  <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">RLHF vs DPO: stesso obiettivo, due tappe in meno</text>
+  <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">RLHF e DPO: gli stessi dati, con meno macchinari</text>
   <!-- RLHF row -->
   <text x="30" y="80" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">RLHF</text>
   <rect x="30" y="95" width="170" height="60" rx="9" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>

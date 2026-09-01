@@ -21,7 +21,8 @@ soprattutto. La prima: il modello, spesso, non lo addestri tu. Lo prendi già
 fatto (pesi aperti da ospitare, o un'API di terzi da interrogare) e il tuo
 lavoro è *adattarlo* e *servirlo*, non allenarlo da zero. La seconda: l'output
 non è più una classe o un numero, ma **testo aperto**, difficile da misurare
-quanto è difficile giudicare un tema di italiano. Quel territorio ha un nome, ormai: **LLMOps**.
+quanto è difficile giudicare un tema di italiano. Quel territorio ha un nome:
+**LLMOps**.
 
 ## Che cosa cambia con gli LLM
 
@@ -30,13 +31,14 @@ tempi come i costi: è il pezzetto di testo (una parola corta, o un frammento di
 parola) che il modello legge e scrive come unità.
 
 Detto questo, il baricentro si sposta, e conviene essere precisi su cosa si
-sposta dove. Nel resto del capitolo il problema era caricare i pesi dal disco
+sposta dove. Fin qui il problema era caricare i pesi dal disco
 alla memoria: si fa una volta all'avvio, poi non ci si pensa più. Qui il
 problema è un altro viaggio, molto più corto ma molto più frequente: portare
 quei pesi **dalla memoria ai circuiti che fanno i conti**, e questo viaggio va
 rifatto per intero **a ogni singolo token**. Il modello scrive la risposta un
 token alla volta, e ogni token lo decide guardando tutti quelli già scritti (è
-il modo di generare, *autoregressivo*, studiato nel {doc}`capitolo sui Transformer </Transformers/overview>`);
+il modo di generare, *autoregressivo*, studiato nei
+{doc}`grandi modelli linguistici </Transformers/llm>`);
 a ogni giro, tutti i miliardi di numeri devono ripassare dalla memoria ai
 circuiti. È lì che se ne va il tempo, ed è lì che se ne va la bolletta.
 
@@ -138,7 +140,7 @@ lunga per tenere fermi tutti gli altri.
 
 La seconda riguarda la memoria. Mentre scrive, il modello tiene degli appunti
 su ciò che ha già letto, per non doverlo rileggere da capo a ogni parola nuova:
-sono la **KV cache** incontrata nel {doc}`capitolo sui Transformer </Transformers/overview>`. Ogni risposta in
+sono la **KV cache** già incontrata nel capitolo sui Transformer. Ogni risposta in
 corso porta con sé i propri appunti, e quegli appunti crescono a ogni token
 senza che si sappia fin dove. Chi gestisce la memoria si trova quindi davanti a
 una scelta scomoda: o riserva a ciascuno lo spazio del caso peggiore, e allora
@@ -186,7 +188,7 @@ interna** (lo spazio riservato e mai usato) ed **esterna** (i buchi fra
 blocchi di taglia diversa), che negli approcci precedenti bruciavano tra il
 60% e l'80% della memoria della cache. La soluzione di **vLLM**, la
 **PagedAttention** {cite}`kwon2023efficient`, prende in prestito un'idea
-vecchia di cinquant'anni dai sistemi operativi: la *paginazione* della memoria
+vecchia di sessant'anni dai sistemi operativi: la *paginazione* della memoria
 virtuale. La cache di ogni sequenza è spezzata in **blocchi di taglia fissa**,
 sistemati in modo non contiguo dove c'è spazio, con una *block table* che
 mappa posizioni logiche a fisiche: proprio il foglietto del maître. Lo spreco
@@ -210,13 +212,14 @@ dal prodotto.
 
 ## Speculative decoding: far indovinare a un modello piccolo
 
-C'è una seconda strada per accelerare la generazione. Non è in concorrenza con
-il batching, si somma a quello, e ha una proprietà rara: **non cambia di una
-virgola il testo che esce**.
+C'è una seconda strada per accelerare la generazione, e vive dove il batching
+non arriva: quando le richieste sono poche e quello che conta è vedere la
+risposta subito. Ha anche una proprietà rara: il testo che esce resta testo del
+modello grande.
 
 ```{figure} ../figures/speculative-decoding-2024.svg
 :name: fig-speculative-decoding
-:alt: "In alto un modello bozza, piccolo e veloce, genera in sequenza quattro token candidati. In basso il modello grande li verifica tutti insieme in un'unica passata parallela: accetta i primi tre, che coincidono con quello che avrebbe prodotto lui, e al quarto lo corregge scrivendo di suo il token giusto."
+:alt: "In alto un modello bozza, piccolo e veloce, genera in sequenza quattro token candidati. In basso il modello grande li verifica tutti insieme in un'unica passata parallela: accetta i primi tre e al quarto lo corregge, scrivendo di suo il token che sceglie lui."
 :width: 100%
 
 Il modello piccolo tira a indovinare, che gli costa poco; il grande verifica
@@ -229,9 +232,14 @@ comunque quella giusta.
 
 La proprietà rara annunciata sopra si legge nella metà inferiore di
 {numref}`fig-speculative-decoding`: il modello grande non si fida mai del
-piccolo, lo *controlla*. Ciò che viene accettato è solo ciò che il grande
-avrebbe prodotto da sé, e per questo il risultato è identico, token per token,
-a quello della generazione normale. Cambia il tempo, non il testo.
+piccolo, lo *controlla*, e il controllo mette a confronto le due probabilità.
+Se il grande dava a quella parola almeno la fiducia che le dava il piccolo, la
+prende senz'altro; se gliene dava meno, la prende tanto più di rado quanto più
+i due erano in disaccordo, e quando la scarta scrive lui. Il conto è costruito
+perché quello che esce sia sorteggiato come lo avrebbe sorteggiato il grande da
+solo: se davanti a una frase quel modello sceglie sempre la stessa parola, esce
+parola per parola il suo testo; se sorteggia fra più continuazioni, escono le
+stesse continuazioni con le stesse probabilità. Cambia il tempo, non il testo.
 
 `````{tab} Elementare
 
@@ -250,9 +258,9 @@ numero, una svolta del discorso) invece sbaglia. Lo stagista è un secondo
 modello, piccolo e rapido, il **modello bozza**; il revisore è quello grande.
 
 Il revisore legge le quattro proposte in un colpo, con una rilettura sola del
-manuale. Tiene quelle su cui è d'accordo e, alla prima che non gli va, butta il
-resto e scrive lui la riga giusta. Quello che esce porta la sua firma parola
-per parola, e senza il suo assenso non passa niente.
+manuale. Quelle che avrebbe scritto anche lui passano subito; quelle che lo
+convincono meno passano solo ogni tanto, e alla prima bocciata butta il resto e
+riscrive la riga di suo pugno. Senza il suo assenso non passa niente.
 
 Se lo stagista ne azzecca tre su quattro, escono quattro righe nel tempo di
 una. Se sbaglia quasi sempre si va più piano che senza di lui, perché il
@@ -331,7 +339,7 @@ Sugli LLM questa leva conta doppio, per due ragioni. La prima è che qui il
 tempo se ne va nel rileggere i pesi: alleggerirli non fa solo risparmiare
 spazio, accorcia *direttamente* il tempo di ogni token. La seconda è che
 riaddestrare un modello da centinaia di miliardi di parametri è fuori portata
-per quasi tutti, quindi la quantizzazione va fatta **dopo** l'addestramento,
+per quasi tutti, quindi la quantizzazione va fatta dopo l'addestramento,
 senza rimettere mano alla ricetta originale.
 
 ```{figure} ../figures/quantizzazione-modelli.svg
@@ -343,8 +351,7 @@ Lo stesso modello, quattro ingombri. Le sigle sono i nomi tecnici delle quattro
 scritture (quanti bit occupa ciascun numero, e se ha o no la virgola: `FP32`
 sono trentadue bit con la virgola, `INT4` quattro bit senza), ma a decidere
 sono i gigabyte, e la decisione è un sì o un no: ventotto vogliono una macchina
-da centro dati, tre e mezzo entrano in un portatile. Su quel portatile le prime
-due righe sono impossibili, altro che «più lente».
+da centro dati, tre e mezzo entrano in un portatile.
 ```
 
 Quello che {numref}`fig-quantizzazione-memoria` racconta non è un risparmio
@@ -366,8 +373,8 @@ centimetri di spazio.
 
 Fra i miliardi di numeri di un modello succede lo stesso. Una manciata è
 fragile e portante, e arrotondarla come le altre fa crollare la qualità.
-Riconoscerla è il difficile, perché non si vede dalla stazza. Conta quanta roba
-ci passa sopra, come sul tavolo di cucina, piccolo e usato tutti i giorni.
+Riconoscerla è il difficile, perché non si vede dalla stazza: conta quanta roba
+ci passa sopra.
 
 Poi ognuno ha il suo modo di proteggere i pochi delicati. C'è chi li tiene in
 una scatola a parte, senza schiacciarli. C'è chi li imbottisce prima e poi li
@@ -407,7 +414,7 @@ cioè l'informazione del second'ordine che dice quanto l'uscita di quello strato
 soffre se un peso si sposta. Poi quantizza uno strato alla volta, un peso dopo
 l'altro, correggendo man mano sui pesi rimasti l'errore appena introdotto. Così
 scende a **3 o 4 bit per peso**; un modello da 175 miliardi di parametri gli
-costa circa quattro ore di GPU, con degrado trascurabile.
+costa circa quattro ore su una sola A100, con degrado trascurabile.
 
 Il terzo, **AWQ** (*Activation-aware Weight Quantization*), le usa per decidere
 quali **pesi** proteggere {cite}`lin2024awq`. I pesi che contano non sono i più
@@ -444,10 +451,9 @@ La quantizzazione scrive gli stessi pesi con meno cifre. La **potatura**
 (*pruning*) fa una cosa diversa: ne butta via una parte.
 
 Quanto se ne possa buttare, e perché toglierne il novanta per cento non renda
-un modello dieci volte più veloce, li costruisce il capitolo sull'efficienza,
-insieme alla distinzione fra sparsità non strutturata e strutturata e agli
-schemi a densità fissa che l'hardware sa eseguire. Qui interessa la parte che di là non c'è, ed è quella che rende gli LLM un
-caso a sé.
+un modello dieci volte più veloce, li costruisce
+{doc}`Meno pesi </Efficienza/meno-pesi>`. Qui interessa quello che rende gli
+LLM un caso a sé.
 
 `````{tab} Elementare
 
@@ -616,8 +622,8 @@ prompt o di modello, spesso con l'LLM-as-a-judge a fare da metro automatico.
 Resta fuori, di proposito, tutto ciò che sta *sopra* il modello: ancorare le
 risposte a documenti recuperati al momento (il *retrieval-augmented
 generation* nella sua forma avanzata), far usare al modello strumenti esterni,
-comporre più passi in un **agente**. È un
-capitolo a sé, quello sugli **Agenti**, che abbiamo già percorso.
+comporre più passi in un **agente**. È il
+{doc}`capitolo sugli Agenti </Agenti/overview>`, che abbiamo già percorso.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -633,8 +639,9 @@ capitolo a sé, quello sugli **Agenti**, che abbiamo già percorso.
   sedia appena si libera.
 - Si può far **indovinare in anticipo** un modello piccolo e far verificare al
   grande in blocco quello che ha indovinato: se il piccolo azzecca si va molto
-  più veloci, e quello che esce è comunque parola per parola ciò che avrebbe
-  scritto il grande.
+  più veloci, e passa solo quello che il grande avrebbe potuto scrivere lui.
+  Serve però quando le richieste sono poche: con la sala piena il grande ha già
+  da fare per conto suo.
 - Per farlo entrare si **comprime**: si arrotondano i numeri, o se ne buttano
   via una parte. Ma alcuni numeri sono fragili e portanti, come i bicchieri
   buoni in un trasloco, e vanno trattati a parte.

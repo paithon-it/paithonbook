@@ -80,7 +80,8 @@ si aggiorna e la prossima previsione è un po’ migliore.
 
 `````{tab} Superiore
 
-Nel linguaggio del capitolo sul Reinforcement Learning: l'ambiente è un MDP
+Nel linguaggio della {doc}`sezione sui processi decisionali di
+Markov </ReinforcementLearning/mdp-valore>`: l'ambiente è un MDP
 con dinamica $P(s' \mid s, a)$, che gli algoritmi di pianificazione (value
 iteration, policy iteration) assumevano **nota** e che Q-learning e DQN
 aggiravano imparando direttamente i valori dall'esperienza. Un world model è
@@ -99,15 +100,15 @@ ricompensa $r_\theta(s_t, a_t)$. Un modello così abilita tre operazioni:
 ritorno più alto) e **simulazione di alternative** («e se agissi
 diversamente?»). Su quest'ultima una precisazione da manuale di causalità:
 ri-simulare da $s_t$ con un'altra azione è, nel lessico di Pearl, un
-*intervento* nel modello; il contrafattuale in senso stretto («cosa *sarebbe*
+*intervento* nel modello; il controfattuale in senso stretto («cosa *sarebbe*
 successo in *quella* traiettoria») chiederebbe invece di tenere fisso il caso
 già uscito (di riusare cioè la stessa realizzazione del rumore esogeno di
 quella traiettoria, non di ri-estrarlo) e di ri-simulare cambiando la sola
-azione; le due cose coincidono solo se la dinamica è deterministica. C'è però
+azione; le due cose coincidono quando la dinamica è deterministica. C'è però
 un dettaglio che occuperà mezzo capitolo: nel mondo reale lo stato non si
 osserva. Si osservano pixel, suoni, letture di
 sensori: un'osservazione $\mathbf{x}_t$ ad alta dimensione e piena di dettagli
-irrilevanti. I world model moderni imparano perciò **due** oggetti distinti: un
+irrilevanti. I world model moderni imparano perciò due oggetti distinti: un
 **codice** compatto della singola osservazione, $\mathbf{z}_t = f_\phi(\mathbf{x}_t)$ con
 $f_\phi$ un encoder appreso, e una **memoria** $\mathbf{h}_t$ che riassume la storia
 precedente. Da un solo fotogramma mancherebbero, per dire, le velocità: è $\mathbf{h}_t$
@@ -176,11 +177,9 @@ imprecisa a un passo può essere pessima a $k$ passi; peggio, una policy
 ottimizzata dentro il modello impara a sfruttarne i difetti (*model
 exploitation*), ottenendo ritorni immaginari che l'ambiente vero non paga.
 Gran parte del capitolo è il racconto di come la ricerca ha negoziato questo
-compromesso: quanta fiducia concedere al sogno. Con una precisazione che il
-capitolo sul Deep Reinforcement Learning quantifica e che qui conviene non
-promettere di più: *quanto in fretta* l'errore si componga dipende da quanto la
-dinamica amplifica le perturbazioni, e su sistemi contrattivi lo scarto, invece
-di esplodere, si assesta.
+compromesso: quanta fiducia concedere al sogno, e per quanti passi. *Quanto in
+fretta* l'errore si componga, però, non è una costante: dipende da quanto la
+dinamica amplifica le perturbazioni.
 
 `````
 
@@ -190,7 +189,7 @@ repertorio di previsioni: le cose non sostenute cadono, ciò che è nascosto
 continua a esistere, i liquidi si versano, gli oggetti spinti si muovono. È la
 *fisica intuitiva* che il neonato dell'incipit costruisce guardando, senza
 etichette: il segnale di apprendimento è la sorpresa, lo scarto tra ciò che il
-suo modello prevedeva e ciò che accade. Nel lessico di questo libro quella è
+suo modello prevedeva e ciò che accade. Quella è
 una lezione **auto-supervisionata**: la risposta giusta su cui correggersi (in
 gergo il **bersaglio**) non la scrive nessuno, è il futuro stesso che arriva. Il
 maestro non è un annotatore umano, è il mondo un istante dopo. Se il senso
@@ -222,7 +221,8 @@ l'apprendimento per rinforzo {cite}`lecun2016cake`. Due capitoli di questo libro
 sono dedicati a quella ciliegina, e conviene dire subito che la battuta ha un
 argomento sotto, non è uno sfottò: riguarda **quanta informazione** porta la
 correzione con cui un sistema impara, e chi impara per tentativi ne riceve
-pochissima. Il capitolo sull'auto-supervisione lo misura e riporta anche chi la
+pochissima. La {doc}`sezione sul dibattito attorno al
+rinforzo </AutoSupervisione/dibattito-rl>` lo misura e riporta anche chi la
 pensa diversamente; qui basta sapere che è da lì che viene la proposta di sostituire i
 tentativi con la **pianificazione dentro un modello del mondo**, che è
 esattamente l'oggetto delle pagine che seguono.
@@ -325,8 +325,7 @@ Ultima tappa, i **simulatori generativi di video** (Sora di OpenAI, presentato
 nel 2024 come passo verso «simulatori di mondo», e Genie di Google DeepMind,
 che genera ambienti interattivi giocabili) e la domanda con cui il capitolo
 chiude, onestamente aperta: generare video plausibili significa aver capito la
-fisica, o soltanto saperla imitare? È anche la sezione in cui si racconta per
-intero l'esperimento sul gioco da tavolo promesso poco fa.
+fisica, o soltanto saperla imitare?
 
 `````{tab} Elementare
 
@@ -357,23 +356,14 @@ intero l'esperimento sul gioco da tavolo promesso poco fa.
 - Nella stessa proposta c'è una **retrocessione**: imparare per tentativi e
   premi, dice LeCun, è «la ciliegina sulla torta», e al suo posto va la
   pianificazione dentro un modello del mondo. Il motivo è un conto e non il
-  disprezzo: chi impara per tentativi riceve una correzione pochissimo informativa,
-  una specie di «bravo» a fine giornata. Il capitolo sull'auto-supervisione lo
-  fa, quel conto, e riporta anche le obiezioni.
-- Il percorso del capitolo, in quattro tappe. Prima i **mondi in miniatura**: il
-  programma che impara a giocare allenandosi dentro il proprio sogno, e i suoi
-  eredi (i *Dreamer*, che di sogno vivono quasi soltanto). Poi la strada di
-  LeCun, che invece di immaginare il mondo immagine per immagine lo immagina
-  **per idee**, cioè prevede a grandi linee cosa ci sarà, non ogni singolo
-  puntino dello schermo (la sigla è **JEPA**, *Joint-Embedding Predictive
-  Architecture*: «architettura che predice fra due riassunti»). Poi
-  l’**inferenza attiva**, che è la risposta delle neuroscienze alla stessa
-  domanda: percepire e agire sono la stessa cosa in due direzioni, e un pesce si
-  muove per non trovarsi all'asciutto, non per incassare un premio. Infine i
-  programmi che sanno
-  generare video, e la domanda con cui il capitolo si chiude: chi sa girare il
-  filmato giusto ha capito come funziona il mondo, o è solo bravissimo a
-  imitarlo?
+  disprezzo: chi impara per tentativi riceve una correzione pochissimo
+  informativa, una specie di «bravo» a fine giornata.
+- Le quattro tappe: i **mondi in miniatura**, dove un programma impara a giocare
+  dentro il proprio sogno; la strada di LeCun, che il mondo lo immagina **per
+  idee** e non puntino per puntino; l’**inferenza attiva**, dove percepire e
+  agire sono la stessa cosa in due direzioni; e i programmi che generano video,
+  con la domanda su cui il capitolo si chiude: chi sa girare il filmato giusto
+  ha capito come funziona il mondo, o è solo bravissimo a imitarlo?
 ```
 
 `````

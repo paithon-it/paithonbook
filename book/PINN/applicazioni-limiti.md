@@ -2,10 +2,10 @@
 
 Un neurochirurgo studia un aneurisma: una sacca gonfiata sulla parete di
 un'arteria del cervello, che se cede uccide. La domanda che conta è quanto
-**preme** il sangue contro quella parete, perché è la pressione a decidere se
-e quando si romperà. Ma la pressione dentro un vaso non si misura senza
-infilarci un tubicino, il catetere: un gesto invasivo, rischioso, che
-sull'arteria malata proprio non si può fare.
+**preme** il sangue contro quella parete, perché la pressione è fra le cose
+che decidono se e quando si romperà. Ma la pressione dentro un vaso non si
+misura senza infilarci un tubicino, il catetere: un gesto invasivo, rischioso,
+che sull'arteria malata proprio non si può fare.
 
 Quello che si riesce ad avere, invece, è un filmato. Nel sangue si inietta una
 sostanza che le macchine sanno vedere (si chiama **tracciante**), poi la si
@@ -53,12 +53,13 @@ dislivello non è più libero: la legge lo ha già deciso.
 Ecco la catena intera. Il filmato restringe la velocità; la velocità inchioda
 la pressione; e le due leggi, messe nella loss come penalità esattamente come
 si è fatto per la molla, costringono la rete a tirare fuori due grandezze che
-nel filmato non c'erano. È il momento di dirlo: nell'esperimento
-dell'articolo il flusso era simulato al calcolatore, il che sembra una
-scorciatoia e invece è il punto. Solo così la risposta vera si conosce, e si
-può controllare se la ricostruzione ci ha preso. Su una simulazione di
-aneurisma intracranico il metodo ricostruisce la pressione senza che nessuna
-misura di pressione gli sia mai stata data.
+nel filmato non c'erano. È il momento di dirlo: nell'esperimento dell'articolo
+il flusso era simulato al calcolatore. È il punto e insieme una debolezza, che
+gli autori mettono fra i propri limiti: solo con dati fabbricati la risposta
+vera si conosce e si può controllare se la ricostruzione ci ha preso, ma quei
+dati sono più puliti di qualunque risonanza. Su una simulazione di aneurisma
+intracranico il metodo ricostruisce la pressione senza che nessuna misura di
+pressione gli sia mai stata data.
 
 Va detto subito un limite, perché sta dentro le equazioni e non nel modo di
 risolverle. Se il fluido è **incomprimibile** (l'acqua e il sangue lo sono in
@@ -70,7 +71,8 @@ dire «qui la pressione è più alta di cinque millimetri di mercurio che là»
 senza saper dire se qui vale 105 o 205. Per fissare il livello servirebbe una
 misura vera, presa da qualche parte, ed è proprio quella che dentro l'arteria
 malata non si può prendere. Restano i dislivelli, ed è comunque moltissimo:
-sono loro a dire dove la parete è sollecitata di più. Ed è la vera ragione per
+da lì, e dal modo in cui il sangue scorre rasente alla parete, si capisce
+dove la parete è sollecitata di più. Ed è la vera ragione per
 cui conviene studiare le PINN: non tanto rifare quello che i **solutori
 classici** fanno già benissimo (il conto a passettini dell'apertura del
 capitolo, quello che avanza su una fitta rete di puntini), ma leggere il non
@@ -207,25 +209,25 @@ resto, e non c'è niente che lo segnali.
 
 **Geofisica e sismica.** Risalire alla struttura del sottosuolo dai
 sismogrammi (i tracciati registrati in superficie dai rilevatori di
-vibrazioni) è un inverso da manuale, e le PINN sono state proposte per
-affrontarlo. Resta un campo di ricerca attivo più che una tecnologia
+vibrazioni) è un inverso da manuale, e ci si è provato anche con le PINN.
+Resta un campo di ricerca attivo più che una tecnologia
 consolidata: quello stesso problema ha già i suoi metodi classici, che in
 inglese si chiamano *full-waveform inversion*, e sono maturi e difficili da
 battere.
 
 **Clima e meteo.** Qui serve una precisazione netta, per non confondere due
 cose diverse. I grandi modelli meteorologici neurali che negli ultimi anni
-hanno fatto notizia (capaci di previsioni globali a dieci giorni in pochi
-secondi) **non sono PINN**: non hanno alcuna equazione nella loss. Hanno
-imparato a prevedere guardando decenni di mappe del tempo passato. Quelle
-mappe non sono l'archivio grezzo delle misure, che è pieno di buchi e cambia
-strumento ogni pochi anni: sono il risultato di un lavoro lungo, in cui tutte
-le osservazioni disponibili vengono rimesse insieme dai centri meteorologici e
-rese omogenee, così che ogni punto del pianeta e ogni ora abbiano il loro
-valore. Si chiamano dati di *rianalisi*. Da lì i modelli imparano la dinamica
-dall'osservazione, non dalla fisica imposta. Ci torneremo fra qualche pagina,
-in fondo a questa stessa sezione, perché sono la porta verso l'idea più
-interessante di tutte.
+hanno fatto notizia (previsioni globali a dieci giorni in meno di un minuto, e
+a una settimana in pochi secondi) **non sono PINN**: non hanno alcuna
+equazione nella loss. Hanno imparato a prevedere guardando decenni di mappe
+del tempo passato. Quelle mappe non sono l'archivio grezzo delle misure, che è
+pieno di buchi e cambia strumento ogni pochi anni: sono il risultato di un
+lavoro lungo, in cui tutte le osservazioni disponibili vengono rimesse insieme
+dai centri meteorologici e rese omogenee, così che ogni punto del pianeta e
+ogni ora abbiano il loro valore. Si chiamano dati di *rianalisi*. Da lì i
+modelli imparano la dinamica dall'osservazione, non dalla fisica imposta. Ci
+torneremo fra qualche pagina, in fondo a questa stessa sezione, perché sono la
+porta verso l'idea più interessante di tutte.
 
 ## I limiti, detti con franchezza
 
@@ -270,12 +272,14 @@ Nelle formule scritte da altri quella manopola porta per nome la lettera greca
 rapporto fra le due forze.
 
 Poi c'è un guaio che nessuna posizione della manopola sistema. La squadra
-della fisica tira in base a quanto la curva si piega, e il piegamento cambia
-moltissimo per uno spostamento minimo. Un capello, e la sua forza raddoppia.
-Con un avversario che strattona così non c'è passo che vada bene, e si avanza
-al rallentatore o non si avanza affatto. Un rimedio che funziona è cominciare
-da una legge addolcita e irrigidirla poco alla volta, mentre la curva si
-sistema.
+della fisica non guarda dove passa la curva, ma quanto si piega; e una curva
+si piega tanto più quanto più in fretta cambia direzione, non quanto è alta:
+un'increspatura minuscola, se è stretta, piega moltissimo. Basta quindi un
+ritocco invisibile perché quella squadra strattoni con tutt'altra forza, e con
+un avversario così non c'è passo che vada bene: si avanza al rallentatore, o
+non si avanza affatto. Un rimedio che funziona è cominciare da una versione
+mite della legge, con il numero che la rende difficile abbassato, e riportarlo
+poco alla volta al suo valore mentre la curva si sistema.
 
 `````
 
@@ -288,14 +292,16 @@ gradienti dei due termini possono puntare in direzioni discordi: minimizzare
 l'uno peggiora l'altro, e il peso $\lambda$ ne stabilisce a mano il
 compromesso. Peggio: il termine fisico contiene operatori differenziali di
 ordine alto (derivate seconde, a volte quarte) che rendono il problema **mal
-condizionato**, nel senso preciso visto nei richiami di analisi numerica, e la
+condizionato**, nel senso preciso dei
+{doc}`richiami di analisi numerica </Matematica/analisi-numerica>`, e la
 discesa rallenta o si blocca. De Ryck e colleghi individuano la radice del
 guasto non nell'ottimizzatore ma in un operatore preciso, che mette insieme il
 **quadrato hermitiano** dell'operatore della PDE e il nucleo tangente del
 modello: se quello è mal condizionato l'addestramento è lento o impraticabile
 {cite}`deryck2024operator`. Nel regime in cui la rete si comporta come un
-modello lineare quell'operatore coincide con l'Hessiano della loss, ed è da
-questa lettura che gli autori ricavano il precondizionamento che propongono.
+modello lineare quell'operatore ha lo stesso numero di condizionamento
+dell'Hessiano della loss, ed è da questa lettura che gli autori ricavano il
+precondizionamento che propongono.
 
 Krishnapriyan e colleghi guardano la stessa cosa da un altro lato e puntano il
 dito sulla regolarizzazione soft, cioè sull'imporre la PDE come penalità
@@ -335,26 +341,26 @@ punto a quello accanto, e su un salto netto quella domanda non ha risposta. La
 lentezza non c'entra più: lì il voto non vuol dire niente, e ne servirebbe un
 altro, dato su una macchia intera invece che su un punto.
 
-C'è poi il quadro lunghissimo, una giornata intera dipinta su una parete.
-Nessuno obbliga il pittore a partire da sinistra e ad andare in ordine: ritocca
-un pezzo qua e uno là, ogni tratto guardato da vicino sta in piedi, ma l'alba
-che gli avevano dato non arriva mai in fondo alla parete. Viene fuori una
-giornata piatta e senza ore, che passa tutti i controlli da vicino ed è
-sbagliata guardata intera.
+E c'è un terzo guaio, che non somiglia a nessuno dei due: il quadro
+lunghissimo, una giornata intera dipinta su una parete. Nessuno obbliga il
+pittore a partire da sinistra e ad andare in ordine: ritocca un pezzo qua e
+uno là, ogni tratto guardato da vicino sta in piedi, ma l'alba che gli avevano
+dato non arriva mai in fondo alla parete. Viene fuori una giornata piatta e
+senza ore, che passa tutti i controlli da vicino ed è sbagliata guardata
+intera.
 
 `````
 
 `````{tab} Superiore
 
-Una rete a strati densi apprende le componenti di Fourier a bassa frequenza in
-poche iterazioni e quelle ad alta frequenza in un numero di iterazioni molto
-maggiore: la velocità di apprendimento decresce con la frequenza. Il fenomeno
-è documentato da Rahaman e colleghi {cite}`rahaman2019spectral` e va anche
-sotto il nome di *frequency principle* {cite}`xu2020frequency`. Per una PINN è
-un problema strutturale, perché molte soluzioni interessanti (fronti ripidi,
-strati limite, regimi turbolenti) vivono proprio nelle alte frequenze. Si
-mitiga con accorgimenti: *Fourier features* in ingresso, funzioni di
-attivazione periodiche, riscalamenti.
+È lo **spectral bias** già incontrato nella {doc}`sezione sul rendering
+neurale </VisioneArtificiale/rendering-neurale>`: la velocità con cui una rete
+densa apprende una componente di Fourier decresce con la frequenza
+{cite}`rahaman2019spectral`, e altrove porta il nome di *frequency principle*
+{cite}`xu2020frequency`. Per una PINN è un problema strutturale, perché molte
+soluzioni interessanti (fronti ripidi, strati limite, regimi turbolenti)
+vivono proprio nelle alte frequenze. Si mitiga con gli stessi accorgimenti di
+là, *Fourier features* in ingresso, attivazioni periodiche, riscalamenti.
 
 Va però tenuto distinto da un altro terreno ostile con cui viene spesso
 confuso, quello delle PDE **stiff**. La rigidezza è un rapporto fra autovalori
@@ -367,11 +373,13 @@ cresce di cinque ordini di grandezza mentre il contenuto in frequenza della
 soluzione non si muove di un millimetro. Alle PINN i problemi stiff danno
 comunque filo da torcere, ma per la ragione vista poco sopra, non per lo
 spectral bias: Wang, Teng e Perdikaris riconoscono il modo di fallire nello
-squilibrio dei gradienti che la rigidezza produce
-{cite}`wang2021understanding`, De Ryck e colleghi nel condizionamento
-dell'operatore {cite}`deryck2024operator`. Quel che lo spectral bias spiega
-davvero sono i fronti ripidi e gli strati limite, che sono *localmente* ad
-alta frequenza, e fra questi il transitorio iniziale di un problema stiff.
+squilibrio fra i rami della loss, che rende rigida la discesa stessa (la loro
+«rigidezza» è quella del flusso del gradiente nello spazio dei pesi, non
+quella dell'equazione) {cite}`wang2021understanding`, De Ryck e colleghi nel
+condizionamento dell'operatore {cite}`deryck2024operator`. Quel che lo
+spectral bias spiega davvero sono i fronti ripidi e gli strati limite, che
+sono *localmente* ad alta frequenza, e fra questi il transitorio iniziale di
+un problema stiff.
 
 C'è poi un caso che lo spectral bias non copre affatto, ed è il più duro:
 quando la soluzione ha una **discontinuità vera**, come l'urto di una legge di
@@ -381,9 +389,9 @@ che cosa aggrapparsi: non è che impari piano, è che il problema che sta
 minimizzando non è quello giusto. La strada, in quel caso, è riscrivere il
 vincolo in forma **debole** o integrale, che è un'altra famiglia di metodi.
 
-Sugli **orizzonti temporali lunghi** agisce invece un secondo modo di
-fallire, da tenere distinto dal primo: è un meccanismo indipendente e non lo
-spectral bias detto in altre parole. Non è nemmeno un accumulo di
+Sugli **orizzonti temporali lunghi** agisce invece un guasto tutto suo, da
+tenere distinto dallo spectral bias: è un meccanismo indipendente, non quello
+detto in altre parole. Non è nemmeno un accumulo di
 errore passo dopo passo (quella è la malattia degli integratori sequenziali,
 e qui di passi non ce ne sono: l'ottimizzazione è globale nel tempo). È che
 la loss, sommando residui su punti sparsi in tutto il dominio, non impone
@@ -451,8 +459,8 @@ Il mestiere ha i suoi confini, come li ha quello di una persona. Chi si è
 allenato sulle sbarre di ferro che si scaldano non sa per questo come si
 raffredda una stanza, e la rete portata fuori dal suo terreno risponde lo
 stesso, con la stessa sicurezza, e risponde male. Una rete abbastanza grande
-da imparare quel mestiere esiste di sicuro, lo dice un teorema; quanto grande
-debba essere, il teorema non lo dice.
+da imparare quel mestiere esiste di sicuro, lo dice un teorema di
+approssimazione universale; quanto grande debba essere, non lo dice.
 
 Quelle reti si chiamano **operatori neurali**, dove «operatore» è il nome che
 i matematici danno appunto a un procedimento che prende una cosa intera e ne
@@ -479,34 +487,31 @@ Kovachki e colleghi parametrizza il nucleo integrale direttamente nello spazio
 di Fourier {cite}`li2021fourier`: ogni strato trasforma, tiene le sole
 frequenze basse e le ripesa con parametri appresi, antitrasforma. Le alte
 frequenze non sono perdute per sempre, altrimenti il filtro sarebbe un
-passa-basso e basta: a rimetterle in gioco sono la trasformazione lineare che
-scorre accanto al ramo spettrale e le nonlinearità fra uno strato e l'altro.
+passa-basso e basta: a rigenerarle sono le nonlinearità fra uno strato e
+l'altro, mentre la trasformazione lineare che scorre accanto al ramo spettrale
+porta avanti quello che il taglio lascia fuori.
 Il risultato è
 *invariante alla risoluzione* (addestri su una griglia, valuti su un'altra) e
 su Navier–Stokes gli autori dichiarano un'inferenza fino a circa **tre ordini
 di grandezza** più rapida di un solutore pseudospettrale.
 
-Quella cifra però va presa con le stesse pinze che questo capitolo pretende di
-usare sulle PINN, e sarebbe scorretto non farlo. Nel corpo dello stesso
-articolo il cronometro dà 5 millisecondi contro 2,2 secondi, cioè **440
-volte**, non mille. Il confronto non è a parità di accuratezza: il solutore
-pseudospettrale è quello che ha *generato* i dati di addestramento, e altrove
-nello stesso articolo, nella tabella dell'accuratezza, l'errore relativo
-dell'operatore alle due viscosità più basse che provano sta fra l'8% e il 19%
-a seconda di quanti esempi gli si danno da studiare. E il confronto è già
-stato rifatto da altri: McGreivy e Hakim, in una rassegna sistematica del
-settore, replicano quel risultato con un metodo Discontinuous Galerkin e
-trovano un vantaggio di **7 volte**, per di più mettendo l'operatore neurale
-su GPU contro un portatile {cite}`mcgreivy2024weak`. E fra gli articoli che
-dichiarano di battere un metodo numerico classico, la stessa rassegna ne trova
-60 su 76 che si confrontano con una baseline debole. Gli operatori neurali
-restano la direzione più interessante di tutte; i loro numeri di targa vanno
-letti come si leggono tutti gli altri.
+Quella cifra però va presa con le stesse pinze che si usano qui sulle PINN, e
+sarebbe scorretto non farlo. Il confronto non è a parità di accuratezza: il
+solutore pseudospettrale è quello che ha *generato* i dati di addestramento, e
+nella tabella dell'accuratezza dello stesso articolo l'errore relativo
+dell'operatore alle due viscosità più basse che provano sta fra l'8% e il 19%,
+a seconda di quanti esempi gli si danno da studiare. Sui tempi, rifatti da
+altri, si tornerà fra qualche pagina; qui conta il conto d'insieme della
+stessa rassegna, che dà la misura del problema: fra gli articoli che dichiarano
+di battere un metodo numerico classico, ne trova **60 su 76** che si
+confrontano con una baseline debole {cite}`mcgreivy2024weak`. Gli operatori
+neurali restano la direzione più interessante di tutte; i loro numeri di targa
+vanno letti come si leggono tutti gli altri.
 
 `````
 
 Ed eccoci al meteo. I modelli neurali che prevedono il tempo su tutto il
-pianeta in pochi secondi, là dove i centri di calcolo tradizionali macinano
+pianeta in un minuto scarso, là dove i centri di calcolo tradizionali macinano
 equazioni per ore su un supercomputer, sono costruiti proprio così: reti che
 hanno imparato *il metodo* invece della singola risposta. È lo spirito di uno
 dei capostipiti della famiglia, il **Fourier Neural Operator**, che lavora
@@ -582,7 +587,8 @@ capitolo per capitolo, era troppo vicino per vedersi.
 - Dove serve per davvero: sangue e fluidi, stima delle proprietà nascoste di
   un materiale. Sulla struttura del sottosuolo dalle onde dei terremoti si sta
   ancora provando, e i metodi vecchi per ora tengono. I grandi
-  modelli che prevedono il tempo in pochi secondi, invece, **non sono PINN**:
+  modelli che prevedono il tempo di tutto il pianeta in un minuto scarso,
+  invece, **non sono PINN**:
   non hanno nessuna legge dentro il punteggio, hanno solo imparato da decenni
   di mappe del tempo passato.
 - Limiti, senza sconti {cite}`krishnapriyan2021characterizing`: il metodo
@@ -620,9 +626,9 @@ capitolo per capitolo, era troppo vicino per vedersi.
   la fisica come vincolo {cite}`raissi2020hidden`. Il parametro ignoto diventa
   una variabile addestrabile, stimata *insieme* alla soluzione. Il vantaggio
   sui classici è di **uniformità**, non di complessità: lo stato aggiunto dà
-  il gradiente in due risoluzioni {cite}`plessix2006adjoint`, e sugli stessi
-  benchmark ODIL costa da due a cinque ordini di grandezza meno
-  {cite}`karnakov2024discrete`.
+  il gradiente in due risoluzioni {cite}`plessix2006adjoint`, e sui propri
+  problemi di riferimento ODIL costa da due a cinque ordini di grandezza meno
+  della PINN {cite}`karnakov2024discrete`.
 - Applicazioni reali dove il vantaggio è concreto: emodinamica e fluidodinamica,
   identificazione di parametri nei materiali, inversione geofisica. I grandi
   modelli meteo neurali, invece, sono operatori appresi dai dati di rianalisi,

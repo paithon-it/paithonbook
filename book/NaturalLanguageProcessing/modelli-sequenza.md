@@ -1,18 +1,18 @@
 # Modelli di sequenza: da RNN ai Transformer
 
-Leggi questa frase da sinistra a destra, una parola alla volta. Quando arrivi
-a «lo» o a «quello», la tua mente sa già a cosa si riferisce, perché ha tenuto
-in memoria ciò che è venuto prima. Il linguaggio funziona così: ogni parola
-prende senso dalla scia di quelle che la precedono. «Il gatto nero salta sul
+«Il gatto nero salta sul muro, e dopo un attimo lo scavalca.» Leggila da
+sinistra a destra, una parola alla volta: quando arrivi a «lo», sai già che
+cosa viene scavalcato, perché hai tenuto in memoria ciò che è venuto prima. Il
+linguaggio funziona così: ogni parola prende senso dalla scia di quelle che la
+precedono. «Il gatto nero salta sul
 muro» non è un sacchetto di parole mescolabili a piacere: l'ordine *è* il
 significato.
 
-Le reti viste finora non sanno farlo, e conviene dire perché. Sono fatte a
-strati, e i numeri le attraversano da un capo all'altro senza tornare mai
-indietro: entra un blocco di dati, esce una risposta, fine. Per questo si
-chiamano *feed-forward*, «che vanno solo in avanti». Vogliono in ingresso
-sempre la stessa quantità di roba, e fra una risposta e l'altra non si ricordano
-niente.
+Le reti viste finora non sanno farlo. Sono fatte a strati, e i numeri le
+attraversano da un capo all'altro senza tornare mai indietro: entra un blocco
+di dati, esce una risposta, fine. Per questo si chiamano *feed-forward*, «che
+vanno solo in avanti». Vogliono in ingresso sempre la stessa quantità di roba,
+e fra una risposta e l'altra non si ricordano niente.
 
 Un modello che vuole capire o generare testo deve invece fare due cose in più:
 accettare una **sequenza** di lunghezza qualsiasi (le frasi non hanno tutte lo
@@ -118,14 +118,13 @@ stato nascosto** al confine, passandolo al blocco successivo come un valore
 qualunque, senza la sua storia. In PyTorch è letteralmente una chiamata,
 `h = h.detach()`.
 
-Il prezzo è dichiarato ed è la ragione per cui vale la pena conoscerlo: il
-gradiente non attraversa mai il confine, quindi **la rete non può imparare
-dipendenze più lunghe del blocco**. Lo stato in avanti sì, continua a
-propagarsi e a portare informazione; è il segnale di apprendimento che si
-ferma. Quando si legge che una ricorrente «fatica sulle dipendenze lunghe»,
-una parte del problema è matematica, ed è il gradiente che svanisce; una parte
-è questa, cioè una scelta di ingegneria presa per far entrare l'addestramento
-in memoria.
+Il prezzo è dichiarato: il gradiente non attraversa mai il confine, quindi **la
+rete non può imparare dipendenze più lunghe del blocco**. Lo stato in avanti
+sì, continua a propagarsi e a portare informazione; è il segnale di
+apprendimento che si ferma. Quando si legge che una ricorrente «fatica sulle
+dipendenze lunghe», una parte del problema è matematica, ed è il gradiente che
+svanisce; una parte è questa, cioè una scelta di ingegneria presa per far
+entrare l'addestramento in memoria.
 
 `````
 
@@ -228,12 +227,12 @@ sia decisiva richiede tre passaggi, e conviene farli.
 **Primo: che cosa vuol dire «riscrivere il riassunto».** Fin qui l'abbiamo
 detto a parole, ma dentro il computer quel riassunto è una fila di numeri. E
 anche la parola nuova è una fila di numeri: prima di entrare nella rete, ogni
-parola viene sostituita dalle sue coordinate sulla mappa dei significati, quelle
-della sezione sugli embedding. Riscrivere il riassunto vuol dire allora
-moltiplicarlo per i pesi della cella e sommarci la fila di numeri della parola
-nuova. Non è una metafora: a ogni passo i numeri del riassunto vengono
-letteralmente moltiplicati per gli stessi numeri, quelli della cella, che è
-sempre la stessa.
+parola viene sostituita dalle sue coordinate sulla mappa dei significati,
+quelle della sezione su come si rappresenta il testo. Riscrivere il riassunto
+vuol dire allora moltiplicarlo per i pesi della cella e sommarci la fila di
+numeri della parola nuova. Non è una metafora: a ogni passo i numeri del
+riassunto vengono letteralmente moltiplicati per gli stessi numeri, quelli
+della cella, che è sempre la stessa.
 
 **Secondo: perché ripetere una moltiplicazione fa danni.** Una rete impara
 correggendo i propri pesi, e per correggerli deve poter risalire all'indietro
@@ -314,11 +313,11 @@ La LSTM affianca allo stato nascosto $\mathbf{h}_t$ uno **stato di cella**
 $\mathbf{c}_t$, la memoria a lungo termine. I gate sono vettori in $[0,1]$
 prodotti da una sigmoide $\sigma$; nella formulazione del 1997 erano due,
 *input* $\mathbf{i}_t$ e *output* $\mathbf{o}_t$, e la memoria si aggiornava
-per pura addizione, senza poter mai essere svuotata:
-$\mathbf{c}_t = \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$,
-con $\tilde{\mathbf{c}}_t$ la memoria candidata definita qui sotto. La versione
-con il *forget gate* $\mathbf{f}_t$ {cite}`gers2000learning`, quella che segue,
-è la forma canonica di oggi:
+per pura addizione, senza poter mai essere svuotata: $\mathbf{c}_t =
+\mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$, con
+$\tilde{\mathbf{c}}_t$ la memoria candidata, definita poco più avanti. La
+versione con il *forget gate* $\mathbf{f}_t$ {cite}`gers2000learning`, quella
+che segue, è la forma canonica di oggi:
 
 $$
 \mathbf{f}_t = \sigma(\mathbf{W}_f[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_f), \quad
@@ -350,13 +349,12 @@ Tutta questa storia (cella, cancelli, stato nascosto) in PyTorch si condensa in
 poche righe. Il compito che scegliamo per l'esempio è quello della sezione sulla
 classificazione: leggere una recensione e dire se è entusiasta o stroncatoria.
 
-Chi non programma può leggere il blocco come si legge una ricetta, perché i tre
-pezzi hanno i nomi delle cose di cui abbiamo appena parlato: `nn.Embedding` è la
-tabella che trasforma ogni parola nella sua fila di numeri, `nn.LSTM` è la cella
-con i suoi cancelli, `nn.Linear` è la bilancia finale che dall'ultimo riassunto
-ricava il verdetto. E siccome le tre celle disponibili, `nn.RNN`, `nn.LSTM` e
-`nn.GRU`, si usano tutte allo stesso modo, per cambiarne una basta cambiare
-quella parola lì e rilanciare.
+I tre pezzi del programma hanno i nomi delle cose di cui abbiamo appena
+parlato: `nn.Embedding` è la tabella che trasforma ogni parola nella sua fila
+di numeri, `nn.LSTM` è la cella con i suoi cancelli, `nn.Linear` è la bilancia
+finale che dall'ultimo riassunto ricava il verdetto. E siccome le tre celle
+disponibili, `nn.RNN`, `nn.LSTM` e `nn.GRU`, si usano tutte allo stesso modo,
+per cambiarne una basta cambiare quella parola lì e rilanciare.
 
 ```python
 import torch
@@ -375,12 +373,12 @@ class ClassificatoreSentiment(nn.Module):
         return self.out(h[:, -1])  # ultimo passo -> logit per CrossEntropyLoss
 ```
 
-Il ciclo di addestramento è quello che conosciamo dal {doc}`capitolo su PyTorch </PyTorch/overview>`. E
-provare, come si è detto, costa una parola: si scambia `nn.LSTM` con `nn.RNN` o
-con `nn.GRU` e si guarda quante risposte esatte escono. Su frasi lunghe LSTM e
-GRU battono quasi sempre la RNN semplice, e il perché lo abbiamo appena visto:
-il taccuino protetto lascia arrivare il segnale di ritorno anche da lontano,
-il foglietto riscritto da capo no.
+Il ciclo di addestramento è quello che conosciamo dal {doc}`capitolo su PyTorch
+</PyTorch/overview>`. E provare, come si è detto, costa una parola: si scambia
+`nn.LSTM` con `nn.RNN` o con `nn.GRU`, e il resto del programma non cambia di
+una riga. Su frasi lunghe LSTM e GRU battono quasi sempre la RNN semplice, e il
+perché lo abbiamo appena visto: il taccuino protetto lascia arrivare il segnale
+di ritorno anche da lontano, il foglietto riscritto da capo no.
 
 ## Il collo di bottiglia sequenziale
 
@@ -427,7 +425,7 @@ gate) l'apprendimento di dipendenze molto lunghe.
 
 Le celle ricorrenti che abbiamo costruito qui sono i mattoni del passo
 successivo: mettere due RNN una di fronte all'altra (una che legge, una che
-scrive) e fargli **tradurre una frase intera**. È la storia della prossima
+scrive) e farle **tradurre una frase intera**. È la storia della prossima
 sezione, ed è proprio lì, per rimediare ai limiti di questa architettura, che
 nascerà il meccanismo di **attenzione**: la possibilità, per ogni parola in
 uscita, di tornare a guardare tutte le parole in ingresso e pesare da sola
@@ -481,8 +479,11 @@ corrente poca.
   contesto**.
 - Una **RNN** riusa la stessa cella a ogni passo, facendo scorrere lo stato
   nascosto $\mathbf{h}_t$ nel tempo.
-- Le RNN semplici soffrono il **gradiente che svanisce**: dimenticano le
-  dipendenze a lungo termine.
+- Le RNN semplici perdono le dipendenze a lungo termine per due ragioni
+  distinte: il **gradiente che svanisce**, che è matematica, e il **BPTT
+  troncato**, che è ingegneria. Staccando lo stato al confine del blocco
+  (`h.detach()`) il gradiente non lo attraversa, quindi un legame più lungo
+  del blocco la rete non lo impara mai.
 - **LSTM** e **GRU** introducono i **gate**, che decidono cosa ricordare e cosa
   dimenticare, proteggendo la memoria. L'architettura del 1997
   {cite}`hochreiter1997long` ne aveva due; il *forget gate* è del 2000

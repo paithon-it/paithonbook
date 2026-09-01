@@ -9,11 +9,11 @@ a che distanza sono le cose), e restituiva l'angolo di sterzata
 sarebbe stato imprudente su una strada vera: era stato addestrato a
 **riprodurre, per ogni immagine di strada, l'angolo di sterzata corretto**. Gli
 si mostrava la risposta giusta e lo si correggeva finché non la indovinava, che
-è il modo di imparare più comune di tutti e che nel libro si chiama
-apprendimento supervisionato.
+è il modo di imparare più comune di tutti e si chiama apprendimento
+supervisionato.
 
-C'è un dettaglio di quella storia che sembra un'inezia ed è invece la tesi di
-questa sezione, arrivata con trent'anni di anticipo. Le immagini su cui ALVINN
+C'è un dettaglio di quella storia che sembra un'inezia ed è invece tutto il
+problema, arrivato con trent'anni di anticipo. Le immagini su cui ALVINN
 imparò, nel lavoro del 1989, erano **simulate**. Quando Pomerleau passò alle
 registrazioni di un guidatore vero, due anni dopo, si trovò davanti a un
 ostacolo che dovette aggirare a mano: un guidatore bravo non esce mai dalla
@@ -49,8 +49,8 @@ Che la mossa sia una scelta fra poche (frenare, sterzare, tirare dritto) o un
 numero da regolare (di quanti gradi girare il volante) cambia solo il modo di
 misurare lo scarto, non l'impianto.
 
-Si chiama **clonazione comportamentale**, ed è tanto semplice che il libro l'ha
-già usata due volte senza chiamarla così. Il primo AlphaGo, prima di giocare
+Si chiama **clonazione comportamentale**, ed è tanto semplice che l'abbiamo già
+incontrata due volte senza chiamarla così. Il primo AlphaGo, prima di giocare
 contro sé stesso, aveva imparato a proporre mosse guardando
 centosessantamila partite di giocatori forti. E la prima fase
 dell'addestramento di un assistente
@@ -88,7 +88,8 @@ non compare il bootstrapping: è **regressione o classificazione**, con tutto
 ciò che ne consegue in termini di stabilità e di strumenti già noti.
 
 La stessa mossa compare in tre punti del libro, e conviene riconoscerla. Nella
-sezione sui metodi a gradiente di policy, la rete di policy di AlphaGo è
+{doc}`sezione sui metodi a gradiente di policy <policy-gradient>`, la rete di
+policy di AlphaGo è
 pre-addestrata in modo supervisionato su partite umane prima del *self-play*.
 Nel post-addestramento dei modelli linguistici, la fase di *supervised
 fine-tuning* che precede l'RLHF è clonazione comportamentale su dimostrazioni
@@ -134,10 +135,10 @@ Allora lo fai salire accanto a te, e guidi tu. Dove ti impianti gli chiedi che
 cosa avrebbe fatto lì, e la sua risposta va nel quaderno con le registrazioni
 vecchie. Giro dopo giro il quaderno si riempie delle strade che percorri tu, e
 si smette quando non finisci più in posti nuovi. Si chiama **DAgger**, da
-*Dataset Aggregation*, «accumulare dati». Delle tue versioni uscite dai giri
-non tieni l'ultima per forza: le provi su un percorso mai fatto e tieni la
-migliore. Il conto lo paghi in ore del pilota, che deve stare lì a rispondere:
-la scatola delle vecchie cassette non basta più.
+*Dataset Aggregation*, «accumulare dati». E alla fine non tieni per forza il
+guidatore dell'ultimo giro: provi su una strada mai fatta quello di ogni giro,
+e tieni il migliore. Il conto lo paghi in ore del pilota, che deve stare lì a
+rispondere: la scatola delle vecchie cassette non basta più.
 
 Oltre un certo punto non serve. Finché le ruote sono sull'asfalto, storte
 quanto vuoi, lui sa raddrizzare, e uno sbaglio isolato costa poco e si paga
@@ -157,8 +158,9 @@ pilota è perfetto insieme a chiunque altro. Nemmeno pretendere di più basta.
 Chiedi che tutti i viaggi possibili restino nello stesso ordine, dal migliore
 al peggiore, e ne sopravvivono ancora infiniti: quelli che ripetono la stessa
 cosa in un'altra unità di misura, come contare in euro invece che in centesimi,
-e quelli che seminano premi lungo la strada che a fine viaggio si annullano fra
-loro. Guardando solo come guida, sceglierne uno non si può.
+e quelli che seminano premi lungo la strada in modo che, a viaggio finito, la
+somma sia la stessa qualunque strada si sia presa. Guardando solo come guida,
+sceglierne uno non si può.
 
 `````
 
@@ -240,28 +242,27 @@ ricompensa addestrato sulle preferenze è, di fatto, una ricompensa inferita da
 comportamento umano.
 
 Il difetto strutturale, però, gli sta accanto fin dal lavoro che ne dà i primi
-algoritmi {cite}`ng2000algorithms`: l'RL inverso, nella sua forma
-nuda, è **mal posto**. Infinite funzioni di ricompensa rendono ottimo lo stesso
-comportamento osservato, a cominciare da quella identicamente nulla, sotto la
-quale ogni politica è ottima: l'insieme delle ricompense compatibili con una
-politica osservata è un poliedro e non una retta. Nemmeno chiedendo molto di
-più, cioè che l'ordinamento di *tutte* le politiche resti quello, si arriva a una
+algoritmi {cite}`ng2000algorithms`: l'RL inverso, nella sua forma nuda, è **mal
+posto**. Infinite funzioni di ricompensa rendono ottimo lo stesso comportamento
+osservato, a cominciare da quella identicamente nulla, sotto la quale ogni
+politica è ottima: l'insieme delle ricompense compatibili con una politica
+osservata è un poliedro e non una retta. Nemmeno chiedendo molto di più, cioè
+che l'ordinamento di *tutte* le politiche resti quello, si arriva a una
 risposta sola: si arriva a una scala positiva e a un termine di *shaping
-potential-based*, e non oltre. È un oggetto che il
-capitolo rincontrerà: nella sezione sull'esplorazione si dimostra che aggiungere
-alla ricompensa un termine della forma $\gamma\Phi(s')-\Phi(s)$ lascia
-invariata la policy ottima, *per qualunque* $\Phi$. Là quella proprietà è una
-garanzia (si possono dare aiuti senza spostare l'obiettivo); qui, letta al
-rovescio, è esattamente l'ambiguità che l'RL inverso non può sciogliere. Stessa
-proprietà, due lati.
+potential-based* {cite}`ng1999policy`, e non oltre. È un oggetto che il
+capitolo rincontrerà: nella {doc}`sezione sull'esplorazione
+<esplorazione-e-ricompensa>` si dimostra che aggiungere alla ricompensa un
+termine della forma $\gamma\Phi(s')-\Phi(s)$ lascia invariata la policy ottima,
+*per qualunque* $\Phi$. Là quella proprietà è una garanzia (si possono dare
+aiuti senza spostare l'obiettivo); qui, letta al rovescio, è esattamente
+l'ambiguità che l'RL inverso non può sciogliere. Stessa proprietà, due lati.
 
 `````
 
 ## In pratica: che cosa succede appena si esce da ciò che il maestro ha mostrato
 
-L'affermazione centrale di questa sezione si può toccare con mano in mezza
-pagina. È l'auto storta del racconto qui sopra, scritta in numeri, e i numeri
-sono pochissimi.
+Quell'affermazione si può toccare con mano: è l'auto storta del racconto,
+scritta in numeri, e i numeri sono pochissimi.
 
 Di quanto siamo fuori posto lo dice un numero solo, che chiameremo $s$: zero
 vuol dire dritti in mezzo alla corsia, e più cresce (in positivo o in negativo)
@@ -382,7 +383,8 @@ $0{,}000000$, e qualunque valutazione fatta sui dati di addestramento direbbe
 che il modello è impeccabile.
 
 A $s = 3{,}0$, però, dove non è mai stata, l'esperto correggerebbe di $1{,}200$
-e la clonazione propone $0{,}824$: una correzione **più debole di un terzo**.
+e la clonazione propone $0{,}824$: una correzione **più debole di quasi un
+terzo**.
 (Da qui in poi guardiamo solo quanto è grande la correzione e non il suo segno,
 perché la direzione è sempre la stessa: verso il centro della corsia.) Sembra
 poco, e invece siamo sul filo. Il minimo che serve a raddrizzarsi, a $s = 3$, è
@@ -407,9 +409,6 @@ cambiati **quali situazioni stanno nel mucchio degli esempi**.
 
 ### Che cosa questo esperimento dimostra, e che cosa no
 
-Un numero solo, però, non basta: quel valore esce da una ripetizione sola, e
-la ripetizione dipende dal sorteggio interno.
-
 Primo, quel $74{,}6$ è **un seme**, cioè una singola ripetizione, quella che
 esce dal numero da cui è partito il sorteggio interno. Rifacendo tutto da capo
 con otto semi diversi, lo stato finale della clonazione dopo la folata ha
@@ -423,7 +422,7 @@ più piccolo di com'è.
 
 Secondo, e conta di più: **senza la folata non succede niente**. Sugli stessi
 otto semi, lasciata a sé, la clonazione chiude con mediana $0{,}0285$ (fra
-$0{,}025$ e $0{,}031$) e l'esperto con mediana $0{,}0318$: non solo sono dello
+$0{,}024$ e $0{,}031$) e l'esperto con mediana $0{,}0318$: non solo sono dello
 stesso ordine, ma su questi otto semi l'allievo sta perfino un filo meglio del
 maestro, che è quanto dire che la differenza è rumore. Il fosso arriva solo
 quando qualcosa porta l'allievo fuori dalla fascia dimostrata, e in questo
@@ -454,8 +453,8 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
 - La **clonazione comportamentale** è la scorciatoia più ovvia: si registra
   qualcuno che il lavoro lo sa fare, si annota «in questa situazione, questa
   mossa», e da lì in poi il problema diventa indovinare la risposta giusta,
-  invece di imparare per tentativi. Stabile, sicura, parca di dati, e già usata due
-  volte nel libro senza chiamarla per nome.
+  invece di imparare per tentativi. Stabile, sicura, parca di dati, e già
+  incontrata due volte senza chiamarla per nome.
 - La crepa sta in un'assunzione che nessuno dichiara: che le situazioni siano
   sempre le stesse, decise dal mondo. Non è così, perché **le situazioni che
   incontri dipendono dalle mosse che hai fatto**, e le mosse dell'allievo non

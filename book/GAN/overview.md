@@ -1,41 +1,41 @@
 # Generative Adversarial Networks
 
 L'idea di cui parla questo capitolo è nata, dice la leggenda (perché ormai è
-una leggenda), in un bar di Montréal, i *Trois Brasseurs*, nel 2014. Ian
+una leggenda), in un bar di Montréal, «Les 3 Brasseurs», nel 2014. Ian
 Goodfellow, dottorando nel laboratorio di Yoshua Bengio, festeggia con alcuni
-colleghi. Uno di loro racconta a che cosa sta lavorando: vuole una rete che
-generi fotografie realistiche, e il suo metodo è misurare a una a una le
+colleghi. Gli raccontano a che cosa stanno lavorando: vogliono una rete che
+generi fotografie realistiche, e il loro metodo è misurare a una a una le
 regolarità delle immagini vere (quanto spesso due pixel vicini hanno lo stesso
 colore, quali sfumature si accompagnano a quali) per poi costruire un'immagine
 nuova che le rispetti tutte. Il lavoro non finisce mai, perché le regolarità
-sono troppe, e il collega si è arenato lì. Goodfellow obietta che così non
+sono troppe, e lì si sono arenati. Goodfellow obietta che così non
 funzionerà, ma tornando a casa gli viene un'idea diversa: e se invece di una
 rete sola ne mettessi *due*, una a fabbricare immagini e una a smascherarle, e
 le facessi combattere? Quella notte scrive il codice. Funziona quasi al primo
 colpo. Ne esce l'articolo *Generative Adversarial Nets*
-{cite}`goodfellow2014generative`, uno dei più citati del decennio:
+{cite}`goodfellow2014generative`:
 *generative adversarial networks*, alla lettera reti generative avversarie,
 cioè reti che fabbricano qualcosa e che imparano a farlo sfidandosi.
 
 ## Generare, non classificare
 
-Il libro ha già incontrato reti che *producono* qualcosa, e parecchie: un
-modello linguistico scrive la parola dopo, un sintetizzatore legge un testo ad
-alta voce, un vocoder trasforma la descrizione di un suono nell'onda sonora
-vera e propria. Tutte quelle, però, mentre imparavano avevano sotto gli occhi
-la risposta giusta: la parola che veniva davvero dopo, l'onda che quella frase
-aveva davvero. Chi deve disegnare un gatto mai esistito non ce l'ha e non può
+Il libro ha già incontrato reti che *producono* qualcosa: un modello
+linguistico scrive la parola dopo, un sintetizzatore legge un testo ad alta
+voce. Tutte e due, però, mentre imparavano avevano sotto gli occhi la risposta
+giusta: la parola che veniva davvero dopo, l'onda che quella frase aveva
+davvero. Chi deve disegnare un gatto mai esistito non ce l'ha e non può
 averla: non c'è nessun originale da mettere accanto al risultato per vedere,
 punto per punto, di quanto ci si è allontanati. La domanda di questo capitolo è
 proprio questa: come si insegna a una rete a **fabbricare dati nuovi e
 plausibili** quando non c'è niente con cui confrontarli.
 
 Una risposta il libro l'ha appena data, ed è quella del {doc}`capitolo sui modelli
-latenti </ModelliLatenti/overview>`: si scrive una formula per la probabilità di un dato, si rinuncia a
-calcolarla esattamente e si ottimizza quello che si riesce a calcolare. Questo
-capitolo prende la strada opposta, e conviene tenerlo a mente perché è la
-scelta che spiega tutto il resto: qui la probabilità non si scrive affatto, e
-al suo posto si mette qualcuno che guarda il risultato e dice se ci crede.
+latenti </ModelliLatenti/overview>`: si scrive una formula che dice quanto è
+probabile un dato come questo, si rinuncia a calcolarla esattamente, e si fa
+salire quel poco che se ne riesce a calcolare. Questo capitolo prende la strada
+opposta, ed è la scelta che spiega tutto il resto: qui quella formula non si
+scrive affatto, e al suo posto si mette qualcuno che guarda il risultato e dice
+se ci crede.
 
 `````{tab} Elementare
 
@@ -46,19 +46,20 @@ ripreso. Non ha imparato a mettere un'etichetta: ha imparato la "ricetta" di
 che aspetto ha una foto di gatto, e può cucinarne di nuove all'infinito.
 
 I numeri casuali sono la sua materia prima. Sono una manciata (un centinaio, di
-solito), e glieli diamo noi tirandoli a sorte come i numeri di una tombola. Che
-debbano essere **diversi** ogni volta si capisce: ad addestramento finito la
-rete non cambia più, resta quella, e quei numeri sono l'unica cosa che la
-distingue da una richiesta all'altra. È da lì che viene la varietà: numeri
-diversi in ingresso, gatti diversi in uscita.
+solito), e glieli diamo noi tirandoli a sorte, quasi tutti piccoli e vicini
+allo zero, con qualcuno più grosso ogni tanto. Che debbano essere **diversi**
+ogni volta si capisce: ad addestramento finito la rete non cambia più, resta
+quella, e quei numeri sono l'unica cosa che la distingue da una richiesta
+all'altra. È da lì che viene la varietà: numeri diversi in ingresso, gatti
+diversi in uscita.
 
-Che debbano essere **a sorte**, e non scelti da noi in fila (1, 2, 3…), è una
-faccenda diversa. Durante l'addestramento alla rete arrivano solo numeri usciti
-da quella tombola, e lei impara a cavarsela nella zona da cui escono. Numeri
-scelti a mano cadono quasi sempre lontano da quella zona, in un territorio dove
-la rete non è mai stata, e quello che ne esce non ha nessuna ragione di
-somigliare a un gatto. Il sorteggio è un patto preso in addestramento, e va
-rispettato anche dopo.
+Che debbano essere **a sorte**, e non scelti da noi, è una faccenda diversa.
+Durante l'addestramento alla rete arrivano solo manciate sorteggiate così, e
+lei impara a cavarsela dove quelle manciate cadono. Una manciata scelta a mano
+(i numeri tutti uguali, o in fila 1, 2, 3…) cade quasi sempre lontano, in un
+territorio dove la rete non è mai stata, e quello che ne esce non ha nessuna
+ragione di somigliare a un gatto. Il sorteggio è un patto preso in
+addestramento, e va rispettato anche dopo.
 
 `````
 
@@ -83,12 +84,12 @@ l'intero capitolo.
 
 `````{tab} Elementare
 
-Un **falsario** dipinge quadri contraffatti; un **esperto
-d'arte** deve dire quali sono autentici e quali falsi. All'inizio il
-falsario è maldestro e l'esperto lo smaschera senza sforzo. Ma ogni volta che
-viene scoperto, il falsario impara qualcosa e migliora; e l'esperto, di fronte
-a falsi sempre più raffinati, affina il proprio occhio. È una corsa agli
-armamenti: i due si perfezionano a vicenda. Alla fine i falsi sono così buoni
+Un **falsario** dipinge quadri contraffatti; un **esperto d'arte** deve dire
+quali sono autentici e quali falsi. All'inizio il falsario è maldestro e
+l'esperto lo smaschera senza sforzo. Ma ogni volta che viene scoperto, il
+falsario impara qualcosa e migliora; e l'esperto, di fronte a falsi sempre più
+raffinati, affina il proprio occhio. È una corsa agli armamenti: i due si
+perfezionano a vicenda. Se la corsa arriva in fondo, i falsi sono così buoni
 che nemmeno l'esperto sa più distinguerli. Il **generatore** è il falsario, il
 **discriminatore** è l'esperto.
 
@@ -201,8 +202,8 @@ $D(G(\mathbf{z}))$ verso $1$. All'ottimo teorico si ha
 $p_G=p_{\text{dati}}$ e $D(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei dati: l'esperto
 non sa più decidere. In pratica l'equilibrio è delicato: instabilità
 dell'addestramento e *mode collapse* (il generatore che produce sempre la
-stessa immagine vincente) sono i due grattacapi ricorrenti, che affronteremo
-più avanti.
+stessa immagine vincente) sono i due grattacapi ricorrenti, e la sezione
+sull'addestramento avversario li riprende uno per uno.
 
 `````
 
@@ -216,7 +217,7 @@ primo sguardo non si distingue da una fotografia. Da qui arrivano anche i
 **deepfake** (volti sostituiti nei video) con tutto il loro carico di rischi
 per disinformazione e consenso. E arriva l’**arte generata**, con un ritratto prodotto da una GAN battuto
 all'asta da Christie's nel 2018: l'episodio, e la questione di chi ne sia
-l'autore, sono raccontati in chiusura di capitolo.
+l'autore, tornano nella sezione sulle applicazioni.
 
 Uno strumento potente e ambivalente, insomma: capace di fabbricare dataset
 (le raccolte di esempi su cui si addestrano le altre reti),

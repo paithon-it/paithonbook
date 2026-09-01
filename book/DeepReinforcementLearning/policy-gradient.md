@@ -7,8 +7,8 @@ errore. (Il Go si gioca appoggiando pietre bianche e nere sugli incroci di una
 griglia, e vince chi circonda più territorio.) Era invece una mossa che, secondo
 le stime del programma stesso, un umano avrebbe giocato circa una volta su
 diecimila. Lee Sedol si alza dal tavolo per un quarto d'ora. Quella mossa non
-era stata copiata da nessun archivio di partite: era il frutto di una
-*strategia* appresa giocando milioni di volte contro se stesso.
+veniva da nessun archivio di partite umane, ma da una *strategia* appresa
+giocando milioni di volte contro se stesso.
 
 Come si insegna a una macchina una strategia? Nei metodi basati sul valore,
 che abbiamo incontrato con il Q-learning, impariamo a stimare *quanto vale una
@@ -84,7 +84,8 @@ Un avviso sulla notazione, perché da qui in avanti cambia. Questa è la
 convenzione dei lavori di deep RL: $r_t$ è la ricompensa che **segue** l'azione
 $a_t$, cioè esattamente ciò che il capitolo precedente indicava con $R_{t+1}$;
 e stati e azioni si scrivono in minuscolo, perché la maiuscola $A_t$ qui serve
-al *vantaggio*, come annunciato nella sezione sui bandit. Il pedice si sposta
+al *vantaggio*, come annunciato nella
+{doc}`sezione sui bandit </ReinforcementLearning/banditi>`. Il pedice si sposta
 di uno, la sostanza no: $G_t = \sum_{k\ge t}\gamma^{\,k-t} r_k$ e
 $G_t = \sum_{k\ge 0}\gamma^{k} R_{t+1+k}$ sono lo stesso oggetto scritto in due
 modi.
@@ -309,7 +310,7 @@ Il vantaggio scritto sopra è la scelta più economica del compromesso, cioè
 l'errore TD a **un passo**: poca varianza e parecchio bias. All'altro estremo
 c'è il ritorno completo di REINFORCE, che è non distorto e ballerino. Fra i due
 non c'è un salto ma una famiglia continua, governata da un parametro $\lambda$
-che dice quanti passi guardare avanti prima di affidarsi al critico: detto
+che regola quanto lontano si guarda avanti prima di affidarsi al critico: detto
 $\delta_t = r_t + \gamma V_\phi(s_{t+1}) - V_\phi(s_t)$ l'errore TD di un
 passo, la stima del vantaggio è
 
@@ -340,7 +341,8 @@ ritrova mai a correggersi dieci volte di fila su
 situazioni quasi identiche, e l'addestramento balla di meno. Come effetto
 collaterale, si usano tutti i processori della macchina invece di uno. La sigla
 sta per *Asynchronous Advantage Actor-Critic*: attore-critico, con il
-vantaggio, e in parallelo, cioè le tre cose appena dette.
+vantaggio, e in parallelo senza aspettarsi a vicenda, cioè le tre cose appena
+dette.
 
 **PPO** (*Proximal Policy Optimization* {cite}`schulman2017proximal`) è
 l'algoritmo che oggi si prova per primo, e la ragione è che **perdona la
@@ -374,11 +376,12 @@ rapporto vale $1{,}2$, se non è cambiato niente vale $1$. La fascia disegnata
 nella figura va appunto da $0{,}8$ a $1{,}2$, cioè un quinto in meno e un quinto
 in più.
 
-E che succede fuori da lì? Ricordiamo che tutto questo mestiere consiste nel far
-salire un numero, la ricompensa attesa, spostando i pesi della rete. Ecco: fuori
-dalla fascia quel numero smette di salire per quanto ci si sposti. Il passo
-successivo non è vietato, semplicemente non frutta più niente, e una rete che
-cerca il guadagno non ha nessun motivo di farlo.
+E che succede fuori da lì? Ricordiamo che tutto questo mestiere consiste nel
+far salire un numero, la ricompensa attesa, spostando i pesi della rete. Ecco:
+appena si esce dalla fascia dalla parte pericolosa, quel numero smette di
+salire per quanto ci si sposti ancora. Il passo non è vietato, semplicemente
+non frutta più niente, e una rete che cerca il guadagno non ha nessun motivo di
+farlo.
 
 `````{tab} Elementare
 
@@ -392,8 +395,9 @@ mossa. Su una mossa che era andata bene, il guadagno si ferma quando la si è
 resa molto più probabile di prima: è lì che si rischia di strafare. Se invece
 quella stessa mossa buona è diventata molto meno probabile, il premio a
 rimetterla su resta intero, perché quello non è il pericolo. Sulle mosse andate
-male i due lati si scambiano. In due di quei quattro casi, insomma, il
-freno non frena niente, e «vicino» resta il proposito: quanto le due strategie
+male i due lati si scambiano. Il freno, insomma, non frena la mossa buona
+diventata rara né quella cattiva diventata frequente, e «vicino» resta il
+proposito: quanto le due strategie
 si somiglino davvero, va misurato.
 
 Vietare sul serio i passi lunghi si può, ed è la strada più vecchia, quella che
@@ -408,9 +412,11 @@ Al numero che si fa salire si aggiunge poi un piccolo premio per chi non si
 riduce a giocare sempre la stessa mossa: serve a non far irrigidire la strategia
 su un'unica risposta prima di aver visto abbastanza.
 
-L'ultima cosa è la meno elegante. Quanto PPO vada meglio del suo predecessore,
-misurato, dipende poco dal guinzaglio: viene soprattutto da nove accorgimenti su
-come i numeri vengono scalati, tagliati e avviati dentro il programma. Fra
+L'ultima cosa è la meno elegante. Quanto PPO vada meglio della strada più
+vecchia, misurato, dipende poco dal guinzaglio: viene soprattutto da nove
+accorgimenti di programmazione, del genere di rimettere i numeri sulla stessa
+scala, tagliare quelli fuori misura, scegliere da quali valori far partire la
+rete. Fra
 l'algoritmo raccontato su una pagina e il programma che lo esegue c'è spesso più
 distanza che fra due algoritmi diversi.
 
@@ -482,8 +488,9 @@ $$
 $$
 
 dove $\delta$ è il raggio ammesso, cioè quanto la policy nuova può differire
-dalla vecchia: è la manopola che in PPO fa l’$\epsilon$ del tosaggio, con la
-differenza che qui è un vincolo e là un incentivo.
+dalla vecchia (questo $\delta$ è una soglia, e non ha niente a che vedere con
+l'errore TD $\delta_t$ di poco sopra): è la manopola che in PPO fa l’$\epsilon$
+del tosaggio, con la differenza che qui è un vincolo e là un incentivo.
 
 Il vincolo definisce una **regione di fiducia**, cioè l'intorno entro il quale
 l'approssimazione lineare dell'obiettivo è ancora credibile. La ragione per cui

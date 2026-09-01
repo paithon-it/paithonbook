@@ -3,11 +3,12 @@
 Torniamo al risultato del 2013 da cui si è aperto il capitolo, stavolta per
 guardarci dentro. Quel piccolo gruppo di ricercatori londinesi di una startup
 chiamata DeepMind aveva mostrato un unico programma che imparava a giocare a
-diversi videogiochi Atari (*Breakout*, *Pong*, *Space
-Invaders*) senza che nessuno gli avesse spiegato le regole. L'algoritmo
+sette videogiochi Atari, da *Pong* a *Space Invaders*, senza che nessuno gli
+avesse spiegato le regole. L'algoritmo
 riceveva solo ciò che vedrebbe un ragazzino davanti al cabinato: i pixel dello
-schermo e il punteggio. Da lì, per tentativi, su tre di quei giochi
-arrivava a superare un umano esperto {cite}`mnih2013playing`. Due anni dopo il
+schermo e il punteggio. Da lì, per tentativi, in tre di quei sette
+(*Breakout*, *Enduro* e *Pong*) arrivava a superare un umano esperto
+{cite}`mnih2013playing`. Due anni dopo il
 risultato finì sulla
 copertina di *Nature* {cite}`mnih2015human`. Quel programma si chiama **Deep
 Q-Network**, DQN.
@@ -115,12 +116,11 @@ mai visto. È l’**approssimazione**.
 
 Non aspetta la fine della partita. Una mossa gli frutta $1$ punto, valuta $7$
 la schermata in cui si ritrova, e scrive subito i due numeri messi insieme,
-circa $8$: quello è il **bersaglio** verso cui correggerà. Aggiustare un voto
+il secondo contato per nove decimi: $7{,}3$, ed è il **bersaglio** verso cui
+correggerà. Aggiustare un voto
 con un altro voto si chiama **bootstrapping**, e separa le differenze
 temporali del capitolo precedente, il TD, dai metodi Monte Carlo, che
-aspettano il fischio finale per tirare le somme (il nome viene dal casinò: i
-matematici lo danno ai conti che lasciano le cose a sorte e guardano com'è
-finita).
+aspettano il fischio finale per tirare le somme.
 
 Guarda partite giocate a casaccio e scrive i voti come se al posto di quel
 giocatore ci fosse un campione: l'off-policy di poco fa.
@@ -147,15 +147,15 @@ bersaglio già mosso.
 Restava una protezione, e la toglie la terza abitudine. Il tale non corregge
 una schermata per volta: rivede un mucchio di schermate insieme, e quelle che
 nel mucchio tornano spesso tirano il taccuino più delle altre. Dalle partite
-che giocherebbe lui il mucchio uscirebbe nelle proporzioni vere, e siccome
-sono le schermate frequenti a decidere come va a finire, il rimpallo si
-smorzerebbe da sé. È dimostrato, però, solo per il modo più elementare di dare
-i voti, moltiplicare per un numero ogni cosa che si vede e sommare: per i
-giudizi profondi nessuno c'è riuscito, e in casi noti i voti scappano anche
-giocando le proprie partite. Il suo mucchio, poi, viene da partite giocate in
-un altro modo: certe schermate gli passano davanti molto più spesso di quanto
-capiterebbero, altre quasi mai. Corregge con forza dove non gli serve, e i
-voti salgono invece di posarsi.
+che giocherebbe lui il mucchio uscirebbe nelle proporzioni vere, e siccome sono
+le schermate frequenti a decidere come va a finire, il rimpallo si smorzerebbe
+da sé. Ma è dimostrato solo per il modo più elementare di dare i voti,
+moltiplicare per un numero ogni cosa che si vede e sommare. Con una rete a
+molti strati nessuno c'è riuscito, e si conoscono casi in cui i voti scappano
+perfino quando le partite se le gioca lui. Il mucchio del tale, poi, viene da
+partite giocate in un altro modo: certe schermate gli passano davanti molto più
+spesso di quanto capiterebbero, altre quasi mai. Corregge con forza dove non
+gli serve, e i voti salgono invece di posarsi.
 
 `````
 
@@ -201,10 +201,6 @@ paga in efficienza computazionale (bisogna conservare tutto fino alla fine
 dell'episodio) e in efficienza di dati. All’**off-policy** si può, sostituendo
 il Q-learning con Sarsa, e si perde la possibilità di imparare da un archivio
 di esperienze altrui, che è però proprio la premessa del replay buffer.
-
-DQN non rinuncia a nessuno dei tre. Fa un'altra cosa: rende meno velenosi il
-bootstrapping e l'off-policy, il che spiega perché i due accorgimenti che
-seguono siano esattamente due e non uno o tre.
 
 `````
 
@@ -293,21 +289,23 @@ sono un milione e quelle pescate a ogni giro sono trentadue.
 ```
 
 Si vede anche quale dei tre ingredienti ciascun accorgimento addolcisce. La
-copia congelata addolcisce il secondo, cioè il correggere una stima guardandone
-un'altra: quell'altra adesso sta ferma per un po’ e si fa raggiungere. La
-memoria di replay addolcisce il terzo, cioè l'imparare da partite giocate in un
-altro modo: pescando a caso da un milione di ricordi l'agente si allena su un
-miscuglio largo, invece che sulla manciata di situazioni che sta attraversando
-in questo momento. Il primo ingrediente, la rete al posto della tabella, resta
-intatto: è quello per cui si è fatto tutto il resto.
+copia congelata addolcisce il bootstrapping, cioè il correggere una stima
+guardandone un'altra: quell'altra adesso sta ferma per un po’ e si fa
+raggiungere. La memoria di replay addolcisce l'off-policy, cioè l'imparare da
+partite giocate in un altro modo: pescando a caso da un milione di ricordi
+l'agente si allena su un miscuglio largo, invece che sulla manciata di
+situazioni che sta attraversando in questo momento. Il primo ingrediente, la
+rete al posto della tabella, resta intatto: è quello per cui si è fatto tutto
+il resto.
 
 La rete, in PyTorch, si costruisce in poche righe. Un paio di numeri prima di
 leggerla. I fotogrammi arrivano ridotti a $84\times84$ punti in scala di grigi
-e impilati a quattro a quattro, perché da una sola immagine ferma non si capisce
-dove stia andando la pallina. Poi ciascuno dei tre strati convoluzionali passa
-sull'immagine con una finestrella che avanza a salti, e più lungo è il salto più
-piccolo è ciò che restituisce: il primo strato salta di quattro punti alla volta
-e riduce $84$ a $20$, il secondo salta di due e porta $20$ a $9$, il terzo salta
+e impilati a quattro a quattro, perché da una sola immagine ferma non si
+capisce dove stia andando la pallina. Poi ciascuno dei tre strati
+convoluzionali passa sull'immagine con una finestrella che avanza a salti, e
+più lungo è il salto più piccolo è ciò che restituisce. Le finestrelle sono da
+otto, quattro e tre punti: il primo strato salta di quattro punti alla volta e
+riduce $84$ a $20$, il secondo salta di due e porta $20$ a $9$, il terzo salta
 di uno e lascia $7$. Alla fine restano $7\times7$ caselle per ciascuno dei $64$
 **filtri**, cioè dei rivelatori che quello strato ha imparato (uno reagisce ai
 bordi verticali, un altro alla pallina, e così via). Da lì esce il `64 * 7 * 7`
@@ -364,8 +362,7 @@ calcolata a mano da un programmatore (in gergo, nessuna *feature*: niente
 *iperparametri*: quelli che si decidono prima e non si imparano), fu addestrato
 su 49 giochi diversi: raggiunse un livello comparabile a quello di
 un tester umano professionista, ottenendo almeno il 75% del suo punteggio in
-29 giochi su 49. In *Breakout* scoprì da solo la strategia del "tunnel"
-(scavare un varco laterale per far rimbalzare la pallina dietro il muro) che
+29 giochi su 49. In *Breakout* scoprì da solo la strategia del "tunnel", che
 nessuno gli aveva insegnato. Era la prima volta che un singolo sistema
 imparava una gamma così ampia di compiti partendo da input sensoriali grezzi.
 
@@ -375,31 +372,30 @@ Nel bersaglio di DQN c'è un'operazione che sembra innocua e non lo è:
 **prendere il valore più alto**. Conviene capire perché gonfia le stime, sia
 perché è controintuitivo (prendere il massimo è proprio quello che si vuole
 fare), sia perché lo stesso difetto e la stessa cura torneranno, identici,
-nella sezione sul controllo continuo.
+nella {doc}`sezione sul controllo continuo <controllo-continuo>`.
 
 `````{tab} Elementare
 
 Otto mosse da cui scegliere, e per ciascuna un voto approssimativo: giusto *in
 media*, ma sporcato ogni volta da un errore in più o in meno. Tu prendi sempre
-il voto più alto. Ora, il voto più alto degli otto non
-è quasi mai quello della mossa davvero migliore: è quello della mossa a cui
-l'errore ha dato la spinta verso l'alto più grande. Fra otto misure sbagliate a
+il voto più alto. Ora, il voto più alto degli otto è di
+solito quello della mossa a cui l'errore ha dato la spinta verso l'alto più
+grande, non quello della mossa davvero migliore. Fra otto misure sbagliate a
 caso, la più alta è quasi sempre una misura fortunata.
 
 Prendere il massimo di stime rumorose, insomma, non restituisce il massimo dei
 valori veri: restituisce qualcosa di sistematicamente più grande. Il conto si
-può anche fare. Le otto mosse valgono tutte esattamente $5$, e ogni voto sbaglia
-di una quantità qualsiasi fra $-1$ e $+1$, in su come in giù, senza preferenze.
-Fra otto errori pescati così, il più grande sta quasi sempre vicino al bordo
-alto: in media vale $+0{,}78$, non $0$. Quindi il voto più alto degli otto, in
-media, non vale $5$: vale $5{,}78$. Quanto si gonfia dipende da due cose: da
-quante sono le mosse fra cui si sceglie, e da quanto sono sballati i voti. Con
-due mosse sole, e gli stessi errori di prima, la gonfiatura scende da $0{,}78$ a
-$0{,}33$; con otto mosse ma errori larghi il doppio, sale a $1{,}56$. (I conti
-esatti si fanno con un po’ di probabilità, ma si possono anche solo simulare, e
-vengono gli stessi.) E il guaio è che il voto gonfiato diventa il bersaglio
-dell'aggiornamento successivo, quindi la gonfiatura non resta dov'era: si
-tramanda.
+può anche fare. Le otto mosse valgono tutte esattamente $5$, e ogni voto
+sbaglia di una quantità qualsiasi fra $-1$ e $+1$, in su come in giù, senza
+preferenze. Fra otto errori pescati così, il più grande sta quasi sempre vicino
+al bordo alto: in media vale $(8-1)/(8+1)$, cioè $+0{,}78$ invece di $0$.
+Quindi il voto più alto degli otto, in media, non vale $5$: vale $5{,}78$.
+Quanto si gonfia dipende da due cose: da quante sono le mosse fra cui si
+sceglie, e da quanto sono sballati i voti. Con due mosse sole, e gli stessi
+errori di prima, la gonfiatura scende a $1/3$; con otto mosse ma errori larghi
+il doppio, tutto raddoppia e sale a $1{,}56$. E il guaio è che il voto gonfiato
+diventa il bersaglio dell'aggiornamento successivo, quindi la gonfiatura non
+resta dov'era: si tramanda.
 
 Il rimedio si chiama **Double DQN**, e divide in due un lavoro che prima faceva
 una rete sola. Prima: la stessa rete decide qual è la mossa migliore *e* dice
@@ -493,12 +489,12 @@ tranquillo, e lo sarà per chiunque. La rete **a due rami** impara le due cose
 separatamente e le rimette insieme alla fine, sommandole. Sommare, però, lascia
 una libertà di troppo: "la strada vale 10 e la sterzata non aggiunge niente" e
 "la strada vale 7 e la sterzata aggiunge 3" fanno lo stesso voto, e niente dice
-quale delle due divisioni sia quella buona. Serve un patto, ed è questo: i
+quale delle due divisioni sia quella buona. Serve un patto, e glielo si impone: i
 contributi delle mosse devono compensarsi fra loro, tanto in su quanto in giù,
-e quello che avanza è il giudizio sulla situazione. Con i due rami che imparano
-separatamente, quel giudizio si affina a ogni passaggio, anche quando sulle
-singole mosse non c'è niente da imparare, ed è già pronto quando arriva la curva
-in cui le mosse tornano a contare.
+e quello che avanza è il giudizio sulla situazione. Con i due rami separati, quel
+giudizio si affina a ogni passaggio, anche quando sulle singole mosse non c'è
+niente da imparare. Così è già pronto quando arriva la curva in cui le mosse
+tornano a contare.
 
 `````
 
@@ -511,15 +507,15 @@ $$
 P(i) \;\propto\; |\delta_i|^{\alpha},
 $$
 
-dove $\delta_i$ è l'ultimo errore TD misurato sulla transizione $i$ e
-$\alpha \ge 0$ dosa quanto la priorità morde ($\alpha = 0$ riporta
-all'uniforme); le transizioni nuove entrano con priorità massima. Il
-campionamento non uniforme distorce però la distribuzione degli aggiornamenti,
-e la correzione è un peso di *importance sampling*
-$w_i = \big(N\, P(i)\big)^{-\beta}$, dove $N$ è il numero di transizioni in
-memoria; il peso si normalizza sul massimo del minibatch, e $\beta$ viene
-portato verso $1$ nel corso dell'addestramento, quando la correzione conta di
-più.
+dove $\delta_i$ è l'ultimo errore TD misurato sulla transizione $i$, a cui il
+lavoro somma un $\epsilon$ piccolo perché un errore sceso a zero non escluda
+per sempre quella transizione, e $\alpha \ge 0$ dosa quanto la priorità morde
+($\alpha = 0$ riporta all'uniforme); le transizioni nuove entrano con priorità
+massima. Il campionamento non uniforme distorce però la distribuzione degli
+aggiornamenti, e la correzione è un peso di *importance sampling* $w_i =
+\big(N\, P(i)\big)^{-\beta}$, dove $N$ è il numero di transizioni in memoria;
+il peso si normalizza sul massimo del minibatch, e $\beta$ viene portato verso
+$1$ nel corso dell'addestramento, quando la correzione conta di più.
 
 La **dueling network** {cite}`wang2016dueling` spezza la testa della rete in
 due rami, il valore dello stato $V(s)$ e il vantaggio delle azioni $A(s,a)$,
@@ -561,7 +557,7 @@ DQN attenua e basta, ne restano tre.
   uno sterzo o un braccio robotico, dove la mossa è una quantità da dosare e le
   possibilità sono infinite. Da lì nascono gli algoritmi **attore-critico**
   (*actor-critic*), dove uno propone la mossa e l'altro la giudica, che
-  incontreremo nelle prossime due sezioni.
+  incontreremo nel gradiente di policy e nel controllo continuo.
 - **Ricompense rade.** In certi giochi il punteggio arriva solo dopo lunghe
   sequenze di mosse esatte: in *Montezuma's Revenge*, per esempio, bisogna
   scendere una scala, saltare una fune e schivare un teschio prima di prendere
@@ -588,9 +584,9 @@ DQN attenua e basta, ne restano tre.
   la stessa pagina) e la
   **copia congelata** della rete, che tiene fermo il bersaglio abbastanza a
   lungo perché lo si possa raggiungere. Nessuno dei tre ingredienti sparisce: il
-  quaderno addolcisce il terzo (imparare da partite giocate in un altro modo) e
-  la copia congelata il secondo (correggere una stima guardandone un'altra); il
-  primo, la rete al posto della tabella, resta intatto.
+  quaderno addolcisce l'off-policy (imparare da partite giocate in un altro
+  modo) e la copia congelata il bootstrapping (correggere una stima guardandone
+  un'altra); l'approssimazione, la rete al posto della tabella, resta intatta.
 - Prendere sempre il **voto più alto** gonfia i voti: fra tante stime sporcate
   da un errore, la più alta è quasi sempre una stima fortunata, non la mossa
   migliore. Il **Double DQN** attenua il difetto facendo dire *quale mossa*
@@ -620,7 +616,7 @@ DQN attenua e basta, ne restano tre.
   soluzione esatta è rappresentabile e i pesi divergono lo stesso.
 - Due accorgimenti lo rendono stabile: l’**experience replay** (memoria di
   transizioni campionate a caso) e la **rete-target** (bersaglio congelato).
-  Non rinunciano a nessuno dei tre anelli: ne attenuano due.
+  Non rinunciano a nessuno dei tre ingredienti: ne attenuano due.
 - Il $\max$ nel bersaglio **sovrastima** perché il rumore incontra una funzione
   convessa, non perché le stime siano distorte (Jensen; stretta solo se il
   rumore può cambiare quale azione risulta la migliore, non su tutte le stime

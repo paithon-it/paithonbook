@@ -563,8 +563,8 @@ rispondere in un controllo che il giudice sa fare.
 
 In un processo il giudice non ha svolto le indagini, non ha visitato la scena,
 non ha interrogato i testimoni: da solo non arriverebbe mai alla
-verità. Eppure decide, e il sistema funziona perché non deve *ricostruire*
-niente: deve solo accorgersi di quando un ragionamento non sta in piedi. Ci
+verità. Eppure decide, e il sistema funziona perché il suo compito è più
+piccolo: accorgersi di quando un ragionamento non sta in piedi. Ci
 sono due parti che hanno interesse opposto, e ciascuna ha tutte le ragioni per
 mettere in evidenza la falla dell'altra.
 
@@ -858,9 +858,9 @@ converge in silenzio sulla risposta sbagliata.
 - **Fra agenti identici l'ipotesi crolla.** Dieci copie dello stesso modello con
   le stesse istruzioni valgono un votante interrogato dieci
   volte: sulle domande che mandano fuori strada quel modello sbagliano tutte
-  insieme e allo stesso modo, e su quelle il voto non corregge, certifica. Il
-  voto non aumenta la correttezza, aumenta la **sicurezza con cui la risposta
-  viene data**: su nove agenti concordi, quasi una unanimità su due è sbagliata.
+  insieme e allo stesso modo, e su quelle il voto non corregge, certifica.
+  Quello che sale è la **sicurezza con cui la risposta viene data**: su nove
+  agenti concordi, quasi una unanimità su due è sbagliata.
 - Un po’ di indipendenza si compra: far generare le risposte in modo meno
   prevedibile, chiedere strade di ragionamento diverse, riformulare la domanda,
   cambiare modello. È il motivo per cui la **self-consistency**
