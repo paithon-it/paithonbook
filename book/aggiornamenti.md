@@ -38,6 +38,15 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-3)=
+
+## 1.12.3 · 2 settembre 2026
+
+### Impianto
+
+- **La colonna di lettura è la stessa su tutte le pagine.** Dove manca il sommario di destra (la prefazione, la bibliografia, l'indice dei termini, la pagina della ricerca e due sezioni dell'Introduzione) il testo stava in una colonna più stretta di quella dei capitoli e spostata verso destra: su una finestra da 1280 pixel la prefazione ne misurava 548 contro 613, e l'indice dei termini si era ridotto a una striscia da 64. Adesso la larghezza e il margine sinistro sono gli stessi ovunque.
+- {doc}`Prefazione </prefazione>`. **Il triangolo di Penrose tiene i suoi colori anche in tema scuro.** Il segno del progetto veniva schiarito e appoggiato su un fondo bianco, come se fosse una fotografia. È online dalla 1.12.2, che non lo annotava.
+
 (v1-12-2)=
 
 ## 1.12.2 · 1 settembre 2026

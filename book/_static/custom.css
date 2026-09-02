@@ -230,8 +230,21 @@ body,
  * fuori dallo schermo, tagliato a metà parola. Il `min(…, 100%)` è tutta la
  * correzione; il `min-width: 0` più sotto serve perché un figlio flex, senza,
  * si rifiuta di restringersi sotto il proprio contenuto.
+ *
+ * Il `width: 100%` ripara il difetto opposto, e si vedeva solo sulle pagine
+ * SENZA sommario di destra (prefazione, bibliografia, le sezioni che non
+ * hanno titoli interni da elencare). Per lo stesso motivo spiegato più sotto
+ * per `article.bd-article`, `.bd-content` è un figlio flex e il margine
+ * `auto` gli spegne lo stiramento: la cornice si restringeva al proprio
+ * contenuto. Dove il sommario c'è, il contenuto arriva comunque al tetto e
+ * non si notava; dove non c'è, la cornice si fermava alla sola colonna di
+ * lettura, e sopra i 1200px la regola del tema su `.bd-article-container`
+ * le sottraeva lo stesso i 17rem riservati al sommario, cioè 272px tolti a
+ * una cornice già stretta. A 1280 la prefazione si leggeva su 548px contro
+ * i 612 di un capitolo, e cominciava 32px più a destra.
  */
 .bd-main .bd-content {
+  width: 100%;
   max-width: min(var(--content-max-width), 100%);
   margin: 0 auto;
   padding: 2.5rem var(--pt-margine) 3rem;

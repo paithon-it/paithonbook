@@ -48,6 +48,29 @@
 
 versioni:
 
+- versione: "1.12.3"
+  data: 2026-09-02
+  voci:
+
+  - tipo: impianto
+    testo: >
+      **La colonna di lettura è la stessa su tutte le pagine.** Dove manca il
+      sommario di destra (la prefazione, la bibliografia, l'indice dei
+      termini, la pagina della ricerca e due sezioni dell'Introduzione) il
+      testo stava in una colonna più stretta di quella dei capitoli e spostata
+      verso destra: su una finestra da 1280 pixel la prefazione ne misurava
+      548 contro 613, e l'indice dei termini si era ridotto a una striscia
+      da 64. Adesso la larghezza e il margine sinistro sono gli stessi
+      ovunque.
+
+  - tipo: impianto
+    pagina: prefazione.md
+    testo: >
+      **Il triangolo di Penrose tiene i suoi colori anche in tema scuro.** Il
+      segno del progetto veniva schiarito e appoggiato su un fondo bianco,
+      come se fosse una fotografia. È online dalla 1.12.2, che non lo
+      annotava.
+
 - versione: "1.12.2"
   data: 2026-09-01
   voci:
