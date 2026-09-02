@@ -139,9 +139,10 @@ ed è la ragione per cui su quelle serie perde contro un ARIMA banale.
 
 ## Reti ricorrenti per il forecasting
 
-Il primo strumento neurale per le sequenze lo abbiamo già costruito, nel
-{doc}`capitolo sul Natural Language Processing </NaturalLanguageProcessing/overview>`:
-una rete che legge un pezzo per volta e si porta dietro un riassunto di quello che ha letto fin lì. Quel
+Il primo strumento neurale per le sequenze lo abbiamo già costruito, nella
+{doc}`sezione sui modelli di sequenza
+</NaturalLanguageProcessing/modelli-sequenza>`: una rete che legge un pezzo per
+volta e si porta dietro un riassunto di quello che ha letto fin lì. Quel
 riassunto si chiama **stato nascosto**, ed è tutta la memoria che la rete ha.
 Le **reti ricorrenti** (RNN) funzionano così; la **LSTM** di Sepp Hochreiter e
 Jürgen Schmidhuber {cite}`hochreiter1997long` è la versione che a ogni passo
@@ -203,12 +204,13 @@ la ricorrenza. La prima risposta arriva, curiosamente, dalle convoluzioni.
 
 ## TCN: convoluzioni che guardano solo indietro
 
-Una **convoluzione** è l'operazione del {doc}`capitolo sul Deep Learning </DeepLearning/overview>`: una piccola
-finestra che scorre sui dati e a ogni posizione fa sempre lo stesso conto,
-prendere i valori che ha sotto, pesarli e sommarli. Là scorreva su un'immagine,
-qui scorre su una fila di giorni. Il vantaggio, rispetto a una rete che legge un
-giorno per volta, è che tutte le posizioni si possono calcolare **insieme**,
-perché nessuna aspetta il risultato di un'altra.
+Una **convoluzione** è l'operazione della {doc}`sezione sulle reti
+convoluzionali </DeepLearning/reti-convoluzionali>`: una piccola finestra che
+scorre sui dati e a ogni posizione fa sempre lo stesso conto, prendere i valori
+che ha sotto, pesarli e sommarli. Là scorreva su un'immagine, qui scorre su una
+fila di giorni. Il vantaggio, rispetto a una rete che legge un giorno per
+volta, è che tutte le posizioni si possono calcolare **insieme**, perché
+nessuna aspetta il risultato di un'altra.
 
 Nel 2018 Shaojie Bai, Zico Kolter e Vladlen Koltun pubblicarono un confronto
 sistematico tra reti ricorrenti e reti convoluzionali sulle sequenze, e la
@@ -227,7 +229,7 @@ giorni distanziati, e la distanza raddoppia salendo. La
 
 ```{figure} ../figures/tcn-convoluzioni-causali.svg
 :name: fig-tcn-convoluzioni-causali
-:alt: Una rete convoluzionale temporale con convoluzioni causali dilatate. In basso otto nodi di ingresso lungo l'asse del tempo; sopra tre strati di nodi collegati da archi che saltano sempre all'indietro con dilatazione 1, 2 e 4. Nessun arco punta al futuro. Un cono ombreggiato evidenzia il campo recettivo, pari a otto istanti. In alto a destra il nodo di uscita in terracotta.
+:alt: Schema di una rete convoluzionale temporale con convoluzioni causali dilatate. In basso otto nodi di ingresso disposti lungo l'asse del tempo, dall'istante t meno sette all'istante t. Sopra, tre strati di nodi collegati da archi che saltano sempre all'indietro, verso il passato, con dilatazione crescente uno, due e quattro. Nessun arco punta verso il futuro. Il singolo nodo di uscita in alto a destra, evidenziato in terracotta, riceve informazione da tutti e otto gli ingressi: il campo recettivo, mostrato come cono ombreggiato, è pari a due elevato alla tre uguale otto istanti.
 :width: 100%
 
 Una TCN con convoluzioni **causali** (nessun arco viene dal futuro) e
@@ -314,13 +316,13 @@ statistica, si chiama **distribuzione**.
 Un bollettino serio non dice «domani piove»: dice «70% di probabilità di
 pioggia». DeepAR fa lo stesso con le vendite. A ogni passo, invece di sputare
 una cifra, descrive un **ventaglio di futuri plausibili**: il valore più
-probabile e quanto ci si può discostare. E un bollettino così si giudica in un
-modo solo, da quanta probabilità aveva dato a quello che poi è successo
-davvero: alzare quel punteggio, su tutte le serie insieme, è tutto
-l'addestramento della rete. E ogni serie, prima di entrare, passa dalla
-bilancia: la si divide per la propria media, e alla fine la previsione si
-rimoltiplica per quella. Senza, il prodotto da trentamila pezzi al giorno
-coprirebbe quello da tre, e la rete imparerebbe soltanto dal più grande.
+probabile e quanto ci si può discostare. E un bollettino così si giudica da
+quanta probabilità aveva dato a quello che poi è successo davvero: alzare quel
+punteggio, su tutte le serie insieme, è tutto l'addestramento della rete. E
+ogni serie, prima di entrare, passa dalla bilancia: la si divide per la propria
+media, e alla fine la previsione si rimoltiplica per quella. Senza, il prodotto
+da trentamila pezzi al giorno coprirebbe quello da tre, e la rete imparerebbe
+soltanto dal più grande.
 
 Per prevedere una settimana intera, la rete «tira i dadi» tante volte (genera
 migliaia di storie possibili, e in ciascuna il valore appena tirato diventa il
@@ -434,7 +436,7 @@ cui la banda va stampata con tre decimali e non con due: arrotondata al
 centesimo, la crescita degli ultimi tre giorni sparirebbe, e si concluderebbe
 che si è fermata. Non si è fermata: quel che le resta da crescere è ormai una
 manciata di millesimi. Sta arrivando al suo limite, che qui vale $3{,}20$, e al
-quinto giorno ne ha già raggiunto il $99{,}7\%$.[^banda-limite]
+quinto giorno la banda vera ne ha già raggiunto il $99{,}7\%$.[^banda-limite]
 
 Ed è la parte più istruttiva del programmino. È il rovescio del rientro verso la
 media dei modelli classici: una serie che torna sempre verso il proprio valore
@@ -461,11 +463,12 @@ probabilistica dichiara e una puntuale nasconde.
 
 ## N-BEATS: solo percettroni, ma interpretabili
 
-Nel 2019 Boris Oreshkin e colleghi mostrarono che per battere i metodi statistici
-non servivano né ricorrenza né convoluzioni. Bastavano gli strati più ordinari
-che ci siano, quelli in cui ogni neurone guarda tutti quelli dello strato
-precedente (i **percettroni** del capitolo sulle Reti neurali), montati con la
-giusta architettura {cite}`oreshkin2020nbeats`.[^date-nbeats] **N-BEATS**
+Nel 2019 Boris Oreshkin e colleghi mostrarono che per battere i metodi
+statistici non servivano né ricorrenza né convoluzioni. Bastavano gli strati
+più ordinari che ci siano, quelli in cui ogni neurone guarda tutti quelli dello
+strato precedente (i **percettroni** della {doc}`sezione sul percettrone
+</RetiNeurali/percettrone>`), montati con la giusta architettura
+{cite}`oreshkin2020nbeats`.[^date-nbeats] **N-BEATS**
 (*Neural Basis Expansion Analysis for Time Series*) è fatto solo di quelli, e la
 sua eleganza sta in un'idea di contabilità: il **doppio residuo**.
 
@@ -527,15 +530,16 @@ scrivono gli autori, i mattoni del deep learning si bastavano da soli
 
 ## Transformer per le serie, e un lineare che li imbarazza
 
-Nel {doc}`capitolo sui Transformer </Transformers/overview>` il libro ha raccontato una rete che, invece di
-leggere una sequenza un pezzo per volta, guarda tutti i pezzi in una volta sola
-e decide da sé a quali dare peso: quel «decidere a quali dare peso» è
-l’**attenzione**, e nel trattamento del linguaggio ha spazzato via le reti che
-leggevano in fila {cite}`vaswani2017attention`. Portarla nelle serie temporali
-era una tentazione irresistibile, per una ragione precisa: un Transformer mette
-in comunicazione due giorni lontanissimi con **un solo passaggio**, mentre una
-rete ricorrente deve trascinarsi l'informazione attraverso tutti i giorni in
-mezzo, ed è per questo che se la dimentica.
+Nella {doc}`sezione sul meccanismo di attenzione </Transformers/attenzione>` il
+libro ha raccontato una rete che, invece di leggere una sequenza un pezzo per
+volta, guarda tutti i pezzi in una volta sola e decide da sé a quali dare peso:
+quel «decidere a quali dare peso» è l’**attenzione**, e nel trattamento del
+linguaggio ha spazzato via le reti che leggevano in fila
+{cite}`vaswani2017attention`. Portarla nelle serie temporali era una tentazione
+irresistibile, per una ragione precisa: un Transformer mette in comunicazione
+due giorni lontanissimi con **un solo passaggio**, mentre una rete ricorrente
+deve trascinarsi l'informazione attraverso tutti i giorni in mezzo, ed è per
+questo che se la dimentica.
 
 Fioccarono architetture dedicate, e le due più citate sono due risposte opposte
 allo stesso problema. Il problema è il tempo di calcolo: confrontare ogni giorno
@@ -544,11 +548,12 @@ confronti, e più si allunga la finestra più il conto esplode. **Informer** tag
 i confronti, e ne fa solo una parte, scelta bene, invece di tutti.
 **Autoformer** cambia proprio domanda: invece di confrontare coppie di giorni
 cerca le somiglianze della serie con sé stessa fatta scivolare indietro, cioè
-l’**autocorrelazione** della prima sezione, da cui viene il nome, e per
-calcolarle tutte in fretta usa una scorciatoia che il libro ha già incontrato
-nel capitolo sull'audio, la trasformata di Fourier (la stessa famiglia di conti
-da cui vengono il seno e il coseno della sezione precedente). Fra un blocco e
-l'altro, poi, scompone la serie in tendenza e stagionalità.
+l’**autocorrelazione** della prima sezione, da cui viene il nome. Per
+calcolarle tutte in fretta usa la trasformata di Fourier, quella con cui la
+{doc}`sezione dal suono alle feature </Audio/dal-suono-alle-feature>` scomponeva
+un accordo nelle sue note, e da cui vengono anche il seno e il coseno dei
+termini stagionali. E fra un blocco e l'altro scompone la serie in tendenza e
+stagionalità.
 
 Poi, nel 2022, una doccia fredda.
 
@@ -582,6 +587,12 @@ complessità non è mai un vantaggio gratuito. Prima di celebrare un modello
 elaborato, va confrontato con la linea di base più stupida che ti viene in
 mente, e va controllato che stia usando l'informazione che dice di usare. A
 volte la retta vince.
+
+Dove invece un Transformer fatto apposta continua a servire è quando le
+informazioni esterne sono molte e di tipi diversi (quelle che non cambiano mai,
+quelle già scritte in calendario, quelle che si osservano solo dopo) e quando
+si vuole poter chiedere al modello su che cosa si è appoggiato per rispondere.
+Quello, una retta, non lo sa fare.
 
 `````
 
@@ -631,11 +642,13 @@ colleghi {cite}`lim2021temporal` resta forte quando servono **covariate
 multiple** (statiche, note nel futuro, osservate nel passato) e
 **interpretabilità**, grazie alle reti di selezione delle variabili, alla
 scomposizione dell'importanza per orizzonte e a pesi di attenzione
-ispezionabili. Su quest'ultimo punto vale la cautela che il capitolo
-sull'interpretabilità impone: i pesi di attenzione sono un indizio suggestivo,
-non una spiegazione affidabile {cite}`jain2019attention`, e le prime due leve
-reggono anche senza di lui. Resta comunque un promemoria di metodo: sempre una
-linea di base, sempre onesta.
+ispezionabili. Su quest'ultimo punto vale la cautela della {doc}`sezione su
+attribuzione e meccanicistica
+</Interpretabilita/attribuzione-e-meccanicistica>`: i pesi di attenzione sono
+un indizio suggestivo, non una spiegazione affidabile
+{cite}`jain2019attention`, e le prime due leve reggono anche senza di lui.
+Resta comunque un promemoria di metodo: sempre una linea di base, sempre
+onesta.
 
 `````
 
@@ -756,13 +769,14 @@ class TCN(nn.Module):
         return self.testa(h[:, :, -1])     # ultimo istante -> (batch, 1)
 ```
 
-L'addestramento è il consueto ciclo di discesa del gradiente del capitolo su
-PyTorch. Si taglia la serie in coppie, la finestra dei giorni passati e il
-valore del giorno dopo, rispettando la separazione temporale imposta dalla
-sezione sulla validazione e senza mai mescolare futuro e passato. Poi si passano
-le finestre al modello e si spingono le sue uscite verso i valori giusti,
-misurando la distanza con l'errore quadratico (`nn.MSELoss`) e lasciando che a
-correggere i pesi ci pensi `torch.optim.Adam`.
+L'addestramento è il consueto ciclo di discesa del gradiente del {doc}`training
+loop di PyTorch </PyTorch/addestramento>`. Si taglia la serie in coppie, la
+finestra dei giorni passati e il valore del giorno dopo, rispettando la
+separazione temporale imposta dalla sezione sulla validazione e senza mai
+mescolare futuro e passato. Poi si passano le finestre al modello e si spingono
+le sue uscite verso i valori giusti, misurando la distanza con l'errore
+quadratico (`nn.MSELoss`) e lasciando che a correggere i pesi ci pensi
+`torch.optim.Adam`.
 
 Basta poco per farne un modello **probabilistico**, nello spirito di DeepAR:
 invece di far uscire dalla rete un numero solo se ne fanno uscire due, il valore

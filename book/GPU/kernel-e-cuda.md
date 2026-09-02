@@ -10,12 +10,11 @@ tutti insieme. Quel programma ha un nome: **kernel**.
 (Un tensore, se serve un ripasso, è la scatola in cui il deep learning tiene i
 numeri: una lunga fila di valori, o una tabella, o una pila di tabelle,
 comunque tanti numeri raccolti sotto un nome solo. `a + b` somma i due mucchi
-posizione per posizione.) È il vero protagonista di
-questo capitolo (l'unità di lavoro che gira davvero sulla GPU) e finora
-l'abbiamo solo nominato. Nella sezione sull'architettura abbiamo visto *chi*
-esegue (gli Streaming Multiprocessor, i warp da 32 thread); in quella sulla
-memoria, *da dove* arrivano i dati. Qui vediamo *cosa* eseguono: il kernel,
-appunto, e come lo si scrive.
+posizione per posizione.) È l'unità di lavoro che gira davvero sulla GPU, e
+finora l'abbiamo solo nominata. Nella sezione sull'architettura abbiamo
+visto *chi* esegue (gli Streaming Multiprocessor, i warp da 32 thread); in quella
+sulla memoria, *da dove* arrivano i dati. Qui vediamo *cosa* eseguono: il
+kernel, appunto, e come lo si scrive.
 
 ## Un programma solo, un milione di esecutori
 
@@ -55,7 +54,8 @@ Da queste tre cose il conto viene da sé: quante squadre ho davanti,
 moltiplicato per quante persone stanno in una squadra, più il posto che occupo
 io. Squadre da quattro, e si conta partendo da zero: chi sta al posto 2 della
 squadra 1 ha davanti una squadra intera, cioè quattro cassette, e da lì conta
-altri due posti, quindi la sua è la cassetta 6. È la figura qui sotto.
+altri due posti, quindi la sua è la cassetta 6. È quello che disegna la
+{numref}`fig-kernel-indice`.
 
 Un kernel è esattamente quell'ordine unico: una manciata di righe, scritte
 pensando a *un* esecutore, che la GPU fa eseguire in parallelo a un'intera
@@ -145,10 +145,10 @@ Ecco un kernel che calcola in un colpo solo $y = \max(0,\; a x + b)$. In
 parole povere: prendi ogni numero della lista, moltiplicalo per $a$, aggiungi
 $b$ e, se il risultato viene negativo, sostituiscilo con uno zero. Con $a = 2$
 e $b = 1$: da $3$ esce $7$; da $-4$ uscirebbe $-7$, che diventa $0$.
-Quell'ultima mossa («se è sotto zero, metti zero») è la ReLU incontrata nel
-capitolo sulle reti neurali, e la catena moltiplica-somma-ReLU ricorre ovunque
-nelle reti. Che cosa calcola il kernel, insomma, lo abbiamo appena detto senza
-simboli; il codice si può anche solo guardare da lontano, cogliendone la taglia:
+Quell'ultima mossa («se è sotto zero, metti zero») è la ReLU incontrata fra le
+{doc}`funzioni di attivazione </RetiNeurali/funzioni-attivazione>` delle reti
+neurali, e la catena moltiplica-somma-ReLU ricorre ovunque nelle reti. Che cosa
+calcola il kernel, insomma, lo abbiamo appena detto senza simboli; nel codice
 il kernel vero e proprio sono le sette righe di conti in alto, il resto è il
 modo di lanciarlo.
 
@@ -187,11 +187,15 @@ che si occupa di una cassetta sola. In Triton lo si dà a un'intera **squadra**:
 Le squadre qui sono da 1024, molto più grandi delle quattro persone di poco fa,
 ed è la riga `BLOCK_SIZE=1024` del codice.
 
-La misura della squadra non si sceglie a piacere. Dev'essere un multiplo di 32,
-perché i lavoratori marciano in plotoni da 32 e una squadra di taglia diversa
-lascerebbe l'ultimo plotone mezzo vuoto. Quale multiplo di 32, invece, non si sa
-a tavolino: dipende dalla scheda che si ha davanti e dal conto che le si sta
-chiedendo, e il modo di trovarlo è provarne qualcuno e cronometrare. Quel numero
+La misura della squadra non si sceglie a piacere: dev'essere una potenza di
+due, 256, 512, 1024. Le ragioni sono due, una per ciascuno dei due mestieri.
+I lavoratori marciano in plotoni da 32, quindi una squadra che non sia un
+multiplo di 32 lascerebbe l'ultimo plotone mezzo vuoto; e chi traduce l'ordine
+sa spezzare in parti uguali solo le taglie che si dimezzano fino in fondo, e su
+una taglia come 96 (che pure di 32 è multiplo) si ferma e protesta invece di
+provarci. Quale potenza di due, invece, non si sa a tavolino: dipende dalla
+scheda che si ha davanti e dal conto che le si sta chiedendo, e il modo di
+trovarlo è provarne qualcuna e cronometrare. Quel numero
 però va scritto nell'ordine prima che l'ordine parta, non deciso per strada: chi
 traduce l'ordine vuole saperlo in anticipo, così prepara istruzioni tagliate
 apposta per squadre di quella taglia.
@@ -237,7 +241,7 @@ tempo di compilazione: Triton la usa per generare codice specializzato
 (srotolare cicli, dimensionare i registri), ed è uno dei pomelli su cui
 l'autotuning cerca il valore migliore.
 
-E il codice qui sopra non è illustrativo: gira. Non serve nemmeno una GPU per
+E quel kernel non è illustrativo: gira. Non serve nemmeno una GPU per
 guardarlo lavorare, perché con la variabile d'ambiente `TRITON_INTERPRET=1`
 Triton esegue il kernel in un interprete sulla CPU, un thread per volta: con
 $a = 2$ e $b = 1$ da $3$ esce $7$ e da $-4$ esce $0$, cioè esattamente i numeri
@@ -248,7 +252,7 @@ si ha davanti) per
 un'architettura scelta a tavolino, `sm_90` per esempio, senza che
 quell'architettura sia presente. Lì dentro il risultato si legge in linguaggio
 macchina: la moltiplicazione e la somma non compaiono come istruzioni separate,
-al loro posto c'è una sola `fma.rn.f32` (*fused multiply-add*), cioè la fusione
+al posto delle due c'è una `fma.rn.f32` (*fused multiply-add*), cioè la fusione
 già avvenuta dentro una singola istruzione. Quello per cui una GPU vera serve
 davvero è misurare quanto va veloce, non sapere che cosa calcola.
 

@@ -1,13 +1,11 @@
 # Oltre una GPU: parallelismo distribuito
 
 I modelli di cui leggiamo i nomi ogni settimana non nascono su una scheda: ne
-servono centinaia, a volte migliaia, tutte sullo stesso compito. Quasi nessun
-lettore di questo libro avrà un impianto del genere sotto mano, e va benissimo
-così. Ma il modo in cui quelle schede si spartiscono il lavoro è la cosa che
-spiega meglio *come* l'intelligenza artificiale di oggi viene costruita, e si
-racconta con quattro immagini: un tavolo di persone che si passano i conti, un
-registro strappato a metà, una catena di montaggio e un manuale diviso in
-fascicoli.
+servono centinaia, a volte migliaia, tutte sullo stesso compito. Il modo in cui
+quelle schede si spartiscono il lavoro è la cosa che spiega meglio *come*
+l'intelligenza artificiale di oggi viene costruita, e si racconta con quattro
+immagini: un tavolo di persone che si passano i conti, un registro strappato a
+metà, una catena di montaggio e un manuale diviso in fascicoli.
 
 Prima però conviene vedere *perché* una scheda non basta, e vederlo con un
 conto vero invece che a parole.
@@ -24,10 +22,10 @@ non ci sono solo i pesi. C'è anche la contabilità di chi guida l'apprendimento
 cioè di chi a ogni passo decide di quanto spostare ciascun peso: quel «chi» si
 chiama **ottimizzatore**, e il più usato, **Adam** {cite}`kingma2015adam`, non
 guarda soltanto la correzione del momento, si tiene anche un po’ di memoria di
-come quel peso si è mosso di recente (il {doc}`capitolo sul deep learning </DeepLearning/overview>` gli dedica
-una sezione). Quella memoria va conservata numero per numero, per tutta la
-durata dell'addestramento. L'inventario completo, per **ogni** parametro, è
-questo:
+come quel peso si è mosso di recente, come racconta per esteso la sezione sugli
+{doc}`optimizer moderni </DeepLearning/ottimizzazione-regolarizzazione>`. Quella
+memoria va conservata numero per numero, per tutta la durata
+dell'addestramento. L'inventario, parametro per parametro, è questo:
 
 - i **pesi** in mezza precisione, 2 byte, quelli che il modello usa per
   calcolare;
@@ -62,13 +60,13 @@ mettiamo a fuoco il limite, e poi andiamo *oltre*: una mappa dei modi di
 dividere il lavoro quando un modello è troppo grande perché una GPU basti a
 sé.
 
-Due parole da fissare subito, perché tornano in ogni pagina di questa sezione.
+Due parole da fissare subito, perché da qui in avanti tornano di continuo.
 Un **nodo** è un singolo computer, con dentro le sue schede, di solito quattro
 o otto, collegate fra loro da connessioni interne molto veloci. Un **cluster**
 è un insieme di nodi collegati in rete, che lavorano allo stesso compito: fra
 due schede dello stesso nodo i dati volano, fra due nodi diversi devono passare
 per la rete, che è molto più lenta. Quasi tutte le scelte che seguono nascono
-da questa differenza. (Attenzione a una parola che in questa pagina fa due
+da questa differenza. (Attenzione a una parola che qui fa due
 mestieri: quando si dice «rete» in questo senso si intendono i cavi che
 collegano i computer, non la rete neurale. Per quest'ultima, qui, diremo sempre
 «il modello».)
@@ -194,12 +192,11 @@ strategie che seguono, che invece di replicare **spezzano**.
 ## Spezzare la matrice: il tensor parallelism
 
 La prima idea è tagliare il modello dove è più grosso. Un modello, dentro, è
-fatto in buona parte di grandi tabelloni di numeri: uno per strato, e farlo
-lavorare vuol dire moltiplicare i numeri che entrano per i numeri del
-tabellone. Un tabellone così, in matematica, si chiama **matrice**, ed è
-l'oggetto di cui parla il capitolo sulla matematica. Invece di tenerne una
-copia intera su ogni GPU, se ne mette **un pezzo** su ciascuna, e ognuna
-calcola la propria fetta del risultato. È il secondo pannello di
+fatto in buona parte delle stesse matrici della sezione precedente: una per
+strato, e farla lavorare vuol dire moltiplicare i numeri che entrano per i
+numeri della matrice. Invece di tenerne una copia intera su ogni GPU, se ne
+mette **un pezzo** su ciascuna, e ognuna calcola la propria fetta del
+risultato. È il secondo pannello di
 {numref}`fig-parallelismo-strategie`, ed è l'idea alla base di **Megatron-LM**
 {cite}`shoeybi2019megatron`.
 
@@ -226,7 +223,7 @@ posto di una, con gli stessi conti da fare.
 Quella sosta, poi, non arriva una volta sola alla fine. Il totale di ogni
 pagina serve per cominciare la pagina dopo, quindi i due contabili devono
 fermarsi, mettere insieme i pezzi e ripartire **a ogni pagina**: e un modello
-di pagine ne ha decine, una per strato. E nessuno dei due, nel frattempo, può
+di pagine ne ha decine, due per strato. E nessuno dei due, nel frattempo, può
 portarsi avanti con altro lavoro: quello che deve scrivere dipende proprio dal
 foglio in arrivo.
 
@@ -293,13 +290,11 @@ modello le «auto» sono pezzetti del mazzetto di esempi, i **micro-batch**, che
 si fanno scorrere lungo gli strati.
 
 Il tempo iniziale in cui le postazioni si riempiono, e quello finale in cui si
-svuotano, è tempo sprecato. Ha un nome che viene dal disegno con cui si
-rappresentano queste cose (una riga per postazione, il tempo che scorre in
-orizzontale, il lavoro come una barra piena): all'inizio e alla fine restano
-due sacche vuote, e quelle sacche si chiamano **bolla**. Quanto costa la bolla
-si conta: con quattro postazioni e una macchina sola se ne va in fumo il 75%
-del tempo, con trentadue macchine in fila si scende sotto il 9%. Più
-micro-batch si mandano di seguito, più la bolla si assottiglia.
+svuotano, è tempo sprecato, e ha un nome: all'inizio e alla fine della
+lavorazione restano due sacche vuote, e quelle sacche si chiamano **bolla**.
+Quanto costa la bolla si conta: con quattro postazioni e una macchina sola se
+ne va in fumo il 75% del tempo, con trentadue macchine in fila si scende sotto
+il 9%. Più micro-batch si mandano di seguito, più la bolla si assottiglia.
 
 Assottigliarla costa, e costa in due modi. Le auto non si possono
 rimpicciolire all'infinito: sotto una certa taglia ogni postazione passa più
@@ -401,7 +396,8 @@ domanda la cui regola sta a pagina 700, l'insegnante che non ce l'ha la chiede
 al collega che tiene quel fascicolo, se la fa fotocopiare *giusto per quella
 correzione*, e appena finito butta la fotocopia. Adesso i viaggi aumentano:
 dove prima se ne facevano due se ne fanno tre, una volta e mezza. In cambio lo
-zaino pesa otto volte meno. E i fascicoli vanno tagliati sottili: farsi
+zaino, contando anche i due strappi di prima, pesa otto volte meno di quello di
+partenza. E i fascicoli vanno tagliati sottili: farsi
 fotocopiare mezzo tomo per una domanda sola tornerebbe a riempire il banco, e
 il guadagno sparirebbe.
 
@@ -520,8 +516,7 @@ molto più in fretta della memoria che si riesce a mettere su una singola GPU:
 inevitabile, e che FSDP è oggi la via pratica per addestrare modelli grandi su
 un numero ragionevole di schede.
 
-Addestrare su un cluster è la condizione di pochi, e va benissimo così. Ma le
-quattro strategie (spartire gli esempi, spartire i tabelloni, spartire gli
+Le quattro strategie (spartire gli esempi, spartire i tabelloni, spartire gli
 strati, spartire lo stato) sono la mappa che spiega *come* nascono i modelli di
 cui leggiamo i nomi ogni settimana, e non folklore da datacenter. E l'ultima,
 FSDP, è alla portata già di **due schede infilate nello stesso computer**.
@@ -609,6 +604,6 @@ Da qui in avanti la macchina non è più una scatola chiusa: sappiamo perché le
 piacciono certi conti e non altri, dove il tempo se ne va per davvero, e come
 un modello che non entrerebbe in nessuna scheda venga fatto stare in mille. È
 il motivo per cui oggi si possono impilare decine di strati senza aspettare
-mesi. Resta però la domanda a cui l'hardware non risponde, ed è quella del
-{doc}`capitolo sul Deep Learning </DeepLearning/overview>`: la profondità, che adesso ci possiamo permettere,
-che cosa ci fa guadagnare?
+mesi. Finora, però, è la macchina che si è piegata al modello. Il
+{doc}`capitolo sull'efficienza </Efficienza/overview>` fa la domanda opposta:
+quanto si può restringere il modello, perché di macchina ne serva meno?

@@ -9,7 +9,7 @@
   fondo trasparente, tratti scuri leggibili anche in dark mode.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" role="img"
-     aria-label="Arco del libro con cinque tappe - Matematica, Machine learning, Reti neurali, Deep learning, Generativi e reinforcement learning - e sotto tre fili conduttori paralleli: Dati, Rappresentazioni, Ottimizzazione">
+     aria-label="Arco del libro con cinque tappe (Matematica, Machine learning, Reti neurali, Deep learning, Generativi e reinforcement learning) e sotto tre fili conduttori paralleli: Dati, Rappresentazioni, Ottimizzazione">
   <style>
     .rail  { stroke:#8B847C; stroke-width:2.5; fill:none; }
     .dot   { fill:#F8F5EE; stroke:#1A1A1A; stroke-width:2; }

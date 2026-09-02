@@ -23,8 +23,8 @@ l'oggetto del lavoro: non più la singola frase («trovare l'incantesimo
 giusto») ma il **governo dell'intero contesto** che riempie la finestra a ogni
 passo.
 
-È il tema di questa sezione. Quella precedente ne ha aperto la porta: là
-abbiamo lavorato sul singolo messaggio, sulla frase scritta bene; qui saliamo
+Il prompt engineering ne ha aperto la porta: là abbiamo lavorato sul singolo
+messaggio, sulla frase scritta bene; qui saliamo
 di un livello e trattiamo la finestra come un **sistema** da progettare nel
 suo insieme. Cole Medin, uno che di mestiere costruisce queste applicazioni,
 lo dice con uno slogan efficace {cite}`medin2025contextintro`: il context
@@ -39,8 +39,8 @@ La meccanica del contesto, cioè come si sceglie che cosa entra in una finestra
 che non basta per tutto, come il programma rimonta quel carico a ogni giro e
 dove si tengono i ricordi che nella finestra non stanno, è quella del
 {doc}`context engineering degli agenti </Agenti/context-engineering>`. Qui si
-guarda l'altra metà: **come si pensa** il contesto (un modello mentale a scale
-di complessità), **quali mosse** lo governano, **come si guasta**, e **come lo
+guarda l'altra metà: **come si pensa** il contesto (una scala di complessità),
+**quali mosse** lo governano, **come si guasta**, e **come lo
 si rende una procedura ripetibile**.
 
 ## Una scala di complessità: dagli atomi agli organi
@@ -66,7 +66,7 @@ passi, dove il modello può chiedere al programma di fare qualcosa per lui
 (cercare, calcolare, aprire un archivio) e poi usare il risultato. Ancora più
 in su c'è chi propone di trattare tutto il contesto come una cosa sola,
 continua, invece che come pezzi distinti: sono idee di ricerca, non attrezzi
-da usare oggi, e le nominiamo solo perché nessuno te le venda per tali.
+da usare oggi, e le nominiamo solo perché nessuno te le venda per attrezzi.
 
 Della biologia non ti serve altro. Quello che serve è l'idea che il contesto
 non è tutto uguale, che ce n'è di semplice come un atomo e di complesso come
@@ -119,9 +119,8 @@ come un piccolo repertorio.
 
 `````{tab} Elementare
 
-La scrivania è minuscola, la stessa vista con gli agenti: sul tavolo ci sta
-poca roba, e accanto hai uno schedario grande quanto vuoi. Da qui i quattro
-gesti.
+La scrivania è minuscola: sul tavolo ci sta poca roba, e accanto hai uno
+schedario grande quanto vuoi. Da qui i quattro gesti.
 
 **Scrivere**: quello che adesso non ti serve lo metti nello schedario, così
 libera il tavolo e non è perso. **Selezionare**: quando ti serve qualcosa, vai
@@ -142,7 +141,7 @@ Quattro gesti semplici, ripetuti a ogni passo, che tengono la finestra pulita.
 Le quattro operazioni, in termini di ingegneria del contesto:
 
 - **Write**, persistere informazione *fuori* dalla finestra per riusarla dopo:
-  uno *scratchpad* per gli stati intermedi, una memoria esterna per i fatti a
+  un file di appunti per gli stati intermedi, una memoria esterna per i fatti a
   lungo termine. Esempio: l'agente salva su un file il piano che sta seguendo,
   invece di riportarlo in ogni prompt.
 - **Select**, recuperare *dentro* la finestra soltanto ciò che serve al passo
@@ -244,7 +243,9 @@ Liu e colleghi diventata famosa si dava al modello una domanda e un mucchio di
 documenti in cui cercare la risposta, spostando quello giusto ora in cima, ora
 in mezzo, ora in fondo. Con venti o trenta documenti, e quello giusto nel
 mezzo, il modello rispondeva **peggio** di quando non gliene davano nessuno e
-doveva rispondere a memoria. Una finestra più capiente non bastava: gli stessi
+doveva rispondere a memoria. Era un modello solo, e di allora: quello che si
+porta via è la forma della curva, non la soglia. Una finestra più capiente non
+bastava: gli stessi
 modelli, nella versione che ne teneva molto di più, non usavano meglio quello
 che ci trovavano dentro. Lo spazio dichiarato non è lo spazio che il modello
 sa sfruttare.
@@ -253,34 +254,34 @@ sa sfruttare.
 
 `````{tab} Superiore
 
-Per *distraction* e *confusion* una lettura possibile (interpretativa: le
-mette insieme chi scrive, non la letteratura) è la **diluizione
-dell'attenzione**: man mano che il contesto si allunga, il segnale rilevante
-si distribuisce su più token e la capacità del modello di isolarlo cala. Le
-evidenze si sovrappongono più di quanto la distinzione dei nomi suggerisca.
-Liu e colleghi {cite}`liu2024lost` misurano la **posizione** (la curva di
-accuratezza in funzione di dove sta l'informazione ha la forma a U, come visto
-nel capitolo sugli Agenti) e insieme la **lunghezza**: sul QA multi-documento
-fanno variare il numero di documenti in finestra e trovano che, su
-GPT-3.5-Turbo, **nel caso peggiore** (cioè quando il documento rilevante
-capita in mezzo) con venti o trenta documenti l'accuratezza scende **sotto**
-quella a libro chiuso, cioè sotto il 56,1 per cento che lo stesso modello
-ottiene senza alcun documento. Il numero è di un modello solo e di quel
-momento, e non va portato in giro come una soglia universale; quello che si
-porta in giro è il fatto che la curva, a un certo punto, gira verso il basso.
-Aggiungere contesto, oltre una certa soglia, costa più di quanto renda. Dallo
-stesso lavoro viene un secondo punto che conviene tenere: i modelli a contesto
-esteso **non usano il proprio contesto meglio** di quelli da cui derivano, e
-quindi la finestra dichiarata non è la finestra utile. La *distraction* del
-catalogo è quest'ultimo effetto visto dal lato pratico, con soglie osservate
-attorno alle decine di migliaia di token; *confusion* è invece il caso in cui
-token irrilevanti ma presenti attirano indebitamente
+Per *distraction* e *confusion* una lettura possibile (interpretativa: le mette
+insieme chi scrive, non la letteratura) è la **diluizione dell'attenzione**:
+man mano che il contesto si allunga, il segnale rilevante si distribuisce su
+più token e la capacità del modello di isolarlo cala. Le evidenze si
+sovrappongono più di quanto la distinzione dei nomi suggerisca. Liu e colleghi
+{cite}`liu2024lost` misurano la **posizione** (la curva di accuratezza in
+funzione di dove sta l'informazione ha la forma a U, come visto nel capitolo
+sugli Agenti) e insieme la **lunghezza**: sul QA multi-documento fanno variare
+il numero di documenti in finestra e trovano che, su GPT-3.5-Turbo, **nel caso
+peggiore** (cioè quando il documento rilevante capita in mezzo) con venti o
+trenta documenti l'accuratezza scende **sotto** quella a libro chiuso, cioè
+sotto il 56,1 per cento di risposte esatte che quel modello ottiene senza alcun
+documento davanti. Il numero è di un modello solo e di quel momento, e non va
+portato in giro come una soglia universale; quello che si porta in giro è il
+fatto che la curva, a un certo punto, gira verso il basso. Aggiungere contesto,
+oltre una certa soglia, costa più di quanto renda. Dallo stesso lavoro viene un
+secondo punto che conviene tenere: i modelli a contesto esteso **non usano il
+proprio contesto meglio** di quelli da cui derivano, dove i due si possono
+confrontare, e quindi la finestra dichiarata non è la finestra utile. La
+*distraction* del catalogo è quest'ultimo effetto visto dal lato pratico, con
+soglie osservate attorno alle decine di migliaia di token; *confusion* è invece
+il caso in cui token irrilevanti ma presenti attirano indebitamente
 l'attenzione. Il *poisoning* è di natura diversa (è un problema di
 **veridicità** dello stato, non di posizione) e il *clash* è un problema di
-**coerenza** dell'insieme. La lezione operativa è simmetrica alle quattro
-mosse: *compress* combatte distraction, *select* combatte confusion, l'igiene
-dello stato (rimuovere ciò che si è rivelato falso) combatte poisoning, e la
-deduplicazione delle fonti combatte clash.
+**coerenza** dell'insieme. A ogni guasto risponde un gesto diverso: *compress*
+combatte distraction, *select* combatte confusion, l'igiene dello stato
+(rimuovere ciò che si è rivelato falso) combatte poisoning, e la deduplicazione
+delle fonti combatte clash.
 
 `````
 
@@ -327,10 +328,10 @@ finito. I primi tre ingredienti sono context engineering allo stato puro: sono
 le mosse *select* e *write* rese esplicite in un artefatto versionabile. Il
 quarto anticipa la prossima sezione: il *validation gate* è il seme del **loop
 engineering**, perché trasforma un colpo solo in un **ciclo** (genera,
-verifica contro il gate, e se fallisce reitera con l'esito in contesto). Non è
-un caso che il repo riassuma la propria tesi con uno slogan volutamente
-iperbolico («10x meglio del prompt engineering, 100x meglio del *vibe
-coding*») che riportiamo come rivendicazione di chi propone il metodo, non
+verifica contro il gate, e se fallisce reitera con l'esito in contesto). Il
+repo riassume la propria tesi con uno slogan volutamente iperbolico («10x
+meglio del prompt engineering, 100x meglio del *vibe coding*») che riportiamo
+come rivendicazione di chi propone il metodo, non
 come misura verificata: l'ordine di grandezza è retorica, l'intuizione (dare
 più contesto strutturato riduce gli errori) è sensata.
 
@@ -341,8 +342,9 @@ progetto per un lavoro solo, si mette nel contesto un metodo di lavoro: schemi
 di ragionamento riusabili, «scomponi il problema», «verifica il risultato»,
 che fanno da impalcatura a come il modello procede. Ebouky, Bartezzaghi e
 Rigotti li hanno studiati sotto il nome di **cognitive tools**, strumenti
-cognitivi, e mostrano che con questi nel contesto il modello ragiona meglio
-senza che dentro gli si sia toccato niente {cite}`ebouky2025cognitive`. È lo
+cognitivi, e misurano che con questi nel contesto il modello risolve più
+problemi di matematica senza che dentro gli si sia toccato niente
+{cite}`ebouky2025cognitive`. È lo
 stesso spirito del PRP applicato non al codice ma al pensiero, e sta anch'esso
 al livello degli «organi» della scala di prima: non un singolo prompt, ma
 qualcosa che mette in fila più passi.

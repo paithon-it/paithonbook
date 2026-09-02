@@ -541,8 +541,7 @@ di aggiungere $\mathbf{I}$.
 `````
 
 Per chi programma, le tre tabelle sono tre righe di `numpy`, e i numeri che
-stampa sono esattamente quelli scritti sopra. Chi non programma può saltare il
-riquadro: non c'è dentro niente che il testo non abbia già detto.
+stampa sono esattamente quelli appena scritti.
 
 ```python
 import numpy as np

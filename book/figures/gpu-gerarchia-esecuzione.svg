@@ -128,6 +128,7 @@
   <text x="488" y="348" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">SM si libera, ne prende un altro.</text>
   <line x1="488" y1="368" x2="822" y2="368" stroke="#C9A961" stroke-width="1.2"/>
   <text x="488" y="392" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#2D5A5C">Ordini di grandezza</text>
-  <text x="488" y="412" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.85">decine di SM &#183; migliaia di core</text>
-  <text x="488" y="430" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.85">decine di migliaia di thread residenti</text>
+  <text x="488" y="412" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.85">da qualche decina a oltre cento SM</text>
+  <text x="488" y="430" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.85">migliaia o decine di migliaia di core</text>
+  <text x="488" y="448" font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" fill-opacity="0.85">centinaia di migliaia di thread residenti</text>
 </svg>

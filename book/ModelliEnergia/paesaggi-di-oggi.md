@@ -63,8 +63,8 @@ nessuno se n'era accorto {cite}`grathwohl2020your`.
 
 Una rete che classifica immagini produce, per ogni immagine, un pugno di
 numeri: uno per classe, tanto più alto quanto più la rete crede in quella
-classe. Di solito si trasformano in percentuali che sommano a cento, si legge
-la classe vincente e il resto si butta via.
+classe. Di solito la *softmax* ne fa percentuali che sommano a cento,
+esaltando il più alto: si legge la classe vincente e il resto si butta via.
 
 Si butta via più di quel che sembra. Le percentuali guardano solo le
 *differenze* fra i punteggi, non quanto sono grandi: 8, 2, 1 e 9, 3, 2 danno
@@ -90,20 +90,21 @@ basso, l'energia è quel grido con il segno cambiato: chi grida forte sta in
 fondo a una valle, chi non grida sta in cima.
 
 Una cosa al grido non si può chiedere: che probabilità ha questa immagine di
-esistere. Dire quale di due immagini grida più forte funziona sempre; una
-probabilità vera vuole la somma del paesaggio intero, e certi paesaggi
-scendono senza fine, senza avere una somma. Che quello di una rete qualunque
-non sia di quelli, nessuno lo promette.
+esistere. Confrontare due gridi funziona sempre; una probabilità vera vuole la
+somma di tutto il paesaggio, e un paesaggio che scende senza mai fermarsi
+quella somma non ce l'ha. Nessuno promette che quello di una rete qualunque
+non sia di questi.
 
 Addestrando la stessa rete a fare bene tutte e due le cose (riconoscere la
-classe, e insieme dare energia bassa alle immagini plausibili) si ottiene un
-classificatore che sbaglia con più prudenza: quando è incerto lo dice,
+classe, e insieme dare energia bassa alle immagini plausibili) gli autori
+riportano un classificatore che sbaglia con più prudenza: quando è incerto lo dice,
 riconosce le cose che non ha mai visto ed è più difficile da ingannare con
 immagini manipolate.
 
 Il secondo mestiere si insegna facendo rotolare palline giù per il paesaggio,
-come nella via del campionamento, e quelle ogni tanto scappano: chiedere le
-due cose insieme rende l'addestramento fragile. È il difetto di famiglia dei
+come nella via del campionamento, e quelle ogni tanto scappano in regioni dove
+il paesaggio non ha ancora forma: chiedere le due cose insieme rende
+l'addestramento fragile. È il difetto di famiglia dei
 modelli a energia, non di questo in particolare.
 
 `````
@@ -153,8 +154,8 @@ addestramento più fragile, che è il difetto ereditario di tutta la famiglia.
 ## I due ritorni non dichiarati
 
 Il primo lo abbiamo già incontrato nella sezione sulla funzione di partizione,
-e conviene ripeterlo perché è il ponte più solido di tutto il capitolo: **i
-modelli di diffusione sono modelli a energia che hanno smesso di dirlo**. Il
+ed è il ponte più solido del capitolo: **i modelli di diffusione sono modelli
+a energia che hanno smesso di dirlo**. Il
 compito con cui si addestrano è quello della seconda delle tre vie, quella che
 rinuncia alle percentuali e impara soltanto la pendenza: «indovina il rumore
 che ti ho aggiunto» {cite}`vincent2011connection`.
@@ -195,12 +196,9 @@ resterebbe prigioniera nei dintorni di dove è caduta, per quanto la si scuota.
 Partire da quello liscio la porta prima nella regione giusta, dove le valli
 sono larghe e si passa da una all'altra, e solo dopo nei particolari.
 
-Resta una differenza con un modello a energia dichiarato. Un
-modello a energia impara l'altezza di ogni punto, e le frecce della discesa si
-ricavano da quella; un modello di diffusione impara direttamente le frecce, e
-niente garantisce che esista davvero un paesaggio di cui quelle frecce siano
-la pendenza (sono le quattro frecce in tondo lungo il bordo di un quadrato,
-che sembrano un pendio e non lo sono).
+Resta la differenza con un modello a energia dichiarato, già raccontata con le
+quattro frecce in tondo: un modello di diffusione impara le frecce e non
+l'altezza, e che siano la pendenza di un paesaggio vero nessuno lo garantisce.
 
 Il secondo è più sorprendente, e chiude un cerchio con il
 {doc}`capitolo sui Transformer </Transformers/overview>`, cioè con
@@ -209,10 +207,11 @@ linguaggio. Le reti di Hopfield di oggi non sono quelle del 1982: i neuroni
 non sono più soltanto accesi o spenti, e soprattutto la formula dell'energia è
 stata riscritta.
 
-Il primo a riscriverla è Dmitry Krotov con lo stesso Hopfield, nel 2016
-{cite}`krotov2016dense`. Nella formula del 1982 ogni ricordo contribuisce all'energia con la sua
-somiglianza allo stato della rete, contata al quadrato; loro alzano quella
-somiglianza a una potenza più alta, e più alta è la potenza più la memoria è
+A riportarla nel deep learning sono Dmitry Krotov e lo stesso Hopfield, nel
+2016 {cite}`krotov2016dense`, riprendendo un filone di fisica statistica dei
+tardi anni Ottanta che loro stessi citano. Nella formula del 1982 ogni ricordo
+abbassa l'energia in proporzione al quadrato della sua somiglianza con lo stato
+della rete; alzando quel quadrato a una potenza più alta la memoria diventa più
 capiente. Con l'esponente due si ritrova la rete di sempre, in cui la capienza
 cresce in proporzione al numero di neuroni: raddoppiando i neuroni si
 raddoppiano i ricordi. Con l'esponente tre cresce come il *quadrato* dei
@@ -222,7 +221,7 @@ raddoppiandoli, i ricordi diventano quattro volte tanti.
 Mete Demircigil e colleghi, l'anno dopo, spingono la stessa idea fino in fondo
 {cite}`demircigil2017model`, e la capienza cambia proprio modo di crescere.
 La rete del 1982 tiene circa il 14% dei neuroni, cioè guadagna un ricordo ogni
-sette neuroni in più; questa raddoppia il numero di ricordi ogni due.
+sette neuroni in più; questa si avvicina al raddoppio ogni due.
 
 E Hubert Ramsauer e colleghi portano il tutto ai valori continui, dove un
 neurone non è più acceso o spento ma porta un numero qualsiasi, trovando la
@@ -237,25 +236,25 @@ attenzione. La domanda che si fa alla memoria è quella che nell'attenzione si
 chiama *query*, i ricordi in archivio sono le *key*, e un passo di attenzione
 è un passo di discesa verso il ricordo più compatibile.
 
-«A meno di un passaggio» non è una formula di cortesia, e conviene spendere
-due righe, perché è il punto in cui la battuta del titolo va presa meno alla
-lettera di quanto si direbbe. L'identità vale a tre condizioni. La prima: che
-si faccia **un solo** passo di aggiornamento, invece di ripetere il passo fino
-in fondo come farebbe una rete di Hopfield normale. La seconda: che la
-temperatura della memoria, cioè quanto forte la si scuote, sia fissata
-esattamente al valore che i Transformer usano per dividere i loro punteggi
-prima di confrontarli, cioè la radice quadrata della lunghezza dei vettori in
-gioco. La terza: che quello che la memoria restituisce venga fatto passare per
-un'ultima moltiplicazione, la stessa che nell'attenzione trasforma i ricordi
-in ciò che poi viene davvero letto, e che si chiama *value*. I ricordi grezzi,
-nella corrispondenza, sono le key; i value sono quegli stessi ricordi dopo
-quella moltiplicazione.
+«A meno di un passaggio» non è una formula di cortesia. È il punto in cui la
+battuta del titolo va presa meno alla lettera di quanto si direbbe. L'identità
+vale a tre condizioni. La prima: che si faccia **un solo** passo di
+aggiornamento, invece di ripetere il passo fino in fondo come farebbe una rete
+di Hopfield normale. La seconda: che la temperatura della memoria, cioè quanto
+forte la si scuote, sia fissata esattamente al valore che i Transformer usano
+per dividere i loro punteggi prima di confrontarli, cioè la radice quadrata
+della lunghezza dei vettori in gioco. La terza: che quello che la memoria
+restituisce venga fatto passare per un'ultima moltiplicazione, la stessa che
+nell'attenzione trasforma i ricordi in ciò che poi viene davvero letto, e che
+si chiama *value*. I ricordi grezzi, nella corrispondenza, sono le key; i value
+sono quegli stessi ricordi dopo quella moltiplicazione.
 
 C'è poi un risultato che questo capitolo tiene volentieri, perché è più
 interessante della battuta. L'attenzione di un Transformer non è un blocco
 solo: dentro ogni strato ce ne sono parecchie copie che lavorano in parallelo,
-e ciascuna copia si chiama **testa**. Puntando questa lente sulle teste dei
-Transformer veri, gli autori trovano che nei primi strati la maggior parte di
+e ciascuna copia si chiama **testa**. Puntando questa lente sulle teste di un
+modello di linguaggio addestrato davvero (nell'articolo è BERT), gli autori
+trovano che nei primi strati la maggior parte di
 esse non sta richiamando nessun ricordo singolo: sta facendo una media su
 moltissimi. La discesa c'è sempre; il punto d'arrivo è un ricordo preciso
 solo quando i ricordi sono ben separati fra loro, e altrimenti è una media. La
@@ -267,9 +266,9 @@ sfumato, e più informativo, di «è un richiamo di memoria».
 
 Chi ha seguito le conferenze di Yann LeCun degli ultimi anni conosce la sua
 slide delle raccomandazioni: quattro righe, ciascuna una rinuncia, ciascuna
-con la sua alternativa. Conviene metterle in fila, perché sono la mappa del
-programma di ricerca in cui questo capitolo si inserisce, e perché tre delle
-quattro toccano cose che il libro ha già trattato.
+con la sua alternativa. Sono la mappa del programma di ricerca in cui i
+modelli a energia stanno, e tre delle quattro toccano cose che il libro ha già
+trattato.
 
 ```{figure} ../figures/quattro-rinunce.svg
 :name: fig-quattro-rinunce
@@ -288,18 +287,17 @@ questo capitolo.
 ```
 
 Le quattro righe di {numref}`fig-quattro-rinunce` non hanno tutte lo stesso
-peso, e conviene prenderle una per una, in ordine di solidità: prima la
-seconda, poi la terza, poi la quarta, e la prima per ultima perché è quella su
-cui si litiga di più.
+peso, e vanno prese in ordine di solidità: le probabilità, poi i metodi
+contrastivi, poi il reinforcement learning, e per ultimo il generativo, che è
+quello su cui si litiga di più.
 
-La **seconda** riga, abbandonare il modello probabilistico in favore dei
-modelli a energia, è quella su cui l'argomento tecnico è più solido, ed è
-tutto in questo capitolo: misurare il paesaggio intero, il conto che serve per
-trasformare le altezze in percentuali, è impossibile prima ancora che caro, e
-moltissimi compiti non l'hanno mai richiesto.
+Le probabilità sono la seconda riga, e quella su cui l'argomento tecnico è più
+solido: misurare il paesaggio intero, il conto che serve per trasformare le
+altezze in percentuali, è impossibile prima ancora che caro, e moltissimi
+compiti non l'hanno mai richiesto.
 
-La **terza**, abbandonare i metodi contrastivi in favore di quelli
-regolarizzati, è la scelta discussa nella sezione precedente: mostrare al
+I metodi contrastivi sono la terza, e abbandonarli in favore di quelli
+regolarizzati è la scelta discussa nella sezione precedente: mostrare al
 modello dei controesempi, oppure costruirlo in modo che non possa dire di sì a
 tutto. È una questione di ricerca aperta con risultati da entrambe le parti.
 L'apprendimento contrastivo ha prodotto sistemi che funzionano molto bene, e
@@ -307,24 +305,25 @@ la scommessa di chi sta dall'altra parte è che non reggeranno al video, dove
 il numero di risposte possibili è tale che nessuna quantità di controesempi
 basterebbe a puntellarlo.
 
-La **quarta**, sostituire il reinforcement learning con il controllo
-predittivo basato su modello, dice, nel lessico dei capitoli
+Il reinforcement learning è la quarta, e sostituirlo con il controllo
+predittivo basato su modello vuol dire, nel lessico dei capitoli
 sull'apprendimento per rinforzo: invece di imparare per tentativi ed errori,
 costruirsi un modello di come va il mondo e pianificare dentro quello,
 ricorrendo ai tentativi soltanto per correggere il modello (o il giudice che
-valuta le mosse) quando la previsione sbaglia.
+dà il voto alle mosse) quando la previsione sbaglia.
 
-Il *perché* di quella riga non sta nella diapositiva, e conviene anticiparlo
-perché è un conto, non un'antipatia. Quando un sistema impara per tentativi,
+Il *perché* di quella riga non sta nella diapositiva, ed è un conto, non
+un'antipatia. Quando un sistema impara per tentativi,
 la correzione che riceve alla fine di un tentativo è una quantità sola: è
 andata bene oppure male. Quando impara guardando, la correzione è grande
 quanto il pezzo di mondo che stava provando a indovinare, e contata in bit è
 dell'ordine di centomila volte tanto. È l'argomento che LeCun riassume dicendo
 che l'apprendimento per rinforzo è la «ciliegina sulla torta»
-{cite}`lecun2016cake`, e il capitolo sull'auto-supervisione lo misura per
-intero, quel conto compreso, insieme alle obiezioni di chi non ci sta.
+{cite}`lecun2016cake`, e il {doc}`dibattito sul rinforzo
+</AutoSupervisione/dibattito-rl>` lo misura per intero, quel conto compreso,
+insieme alle obiezioni di chi non ci sta.
 
-La **prima** riga è la più contestata, e non conviene nasconderlo. Rinunciare
+Il generativo è la prima, ed è la più contestata. Rinunciare
 ai modelli generativi in favore delle architetture a incorporamento congiunto,
 cioè delle JEPA nominate in apertura di capitolo, quelle che confrontano due
 riassunti del mondo invece di ridisegnarlo, è una tesi sul modo giusto di
@@ -360,14 +359,17 @@ una profezia.
   imparano la pendenza di un paesaggio per ogni grado di sporco, e generare
   un'immagine è scendere, con addosso il rumore, lungo quella fila di
   paesaggi, dal più liscio (dove è difficile sbagliare direzione) al più
-  dettagliato.
+  dettagliato. Con la riserva delle quattro frecce in tondo: imparano le
+  pendenze, e che siano le pendenze di un paesaggio vero nessuno lo
+  garantisce.
 - Le **reti di Hopfield di oggi** tengono in memoria molti più ricordi di
   quelle del 1982, e il modo in cui li richiamano è, a un passaggio di
   distanza, l'attenzione dei Transformer: la domanda che si fa alla memoria è
   la stessa cosa che nell'attenzione decide a quali parole guardare. Con una
-  sorpresa: guardando dentro i Transformer
-  veri con questa lente, la maggior parte delle teste non richiama un ricordo
-  solo, ne fa la media di moltissimi.
+  sorpresa: guardando con questa lente dentro un modello di linguaggio vero,
+  nei primi strati quasi nessuna testa richiama un ricordo solo, ne fa la media
+  di moltissimi; più avanti la media si stringe, e solo a metà rete qualcuna
+  arriva vicino a un ricordo singolo.
 - Le **quattro rinunce** di Yann LeCun: via i modelli che rifanno il dato
   pezzo per pezzo (meglio reti che si limitano a confrontare due riassunti,
   invece di ridisegnare ogni pixel), via le probabilità (meglio l'energia), via il
@@ -400,8 +402,9 @@ una profezia.
 - Le **Hopfield moderne** hanno energia riprogettata {cite}`krotov2016dense`,
   capienza esponenziale {cite}`demircigil2017model` e, agli stati continui,
   una regola di aggiornamento che è la *scaled dot-product attention*
-  {cite}`ramsauer2021hopfield`: con $\beta = 1/\sqrt{d_k}$ (la temperatura
-  inversa coincide col fattore di scala dell'attenzione), un solo passo di
+  {cite}`ramsauer2021hopfield`: con $\beta = 1/\sqrt{d_k}$ (la temperatura è
+  il divisore $\sqrt{d_k}$ dell'attenzione, e $\beta$ il suo inverso), un solo
+  passo di
   aggiornamento e una proiezione dei pattern sui value. Sulle teste vere il
   punto fisso è raramente un ricordo singolo: nei primi strati è una media su
   moltissimi pattern, negli strati intermedi compaiono stati metastabili

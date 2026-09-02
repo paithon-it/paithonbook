@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 230" role="img" aria-label="Pipeline della sintesi vocale in sei stadi: il testo scritto viene normalizzato, convertito in fonemi, trasformato in mel-spettrogramma dal modello acustico e infine in onda sonora dal vocoder">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 230" role="img" aria-label="Pipeline della sintesi vocale: il testo scritto attraversa quattro tappe, la normalizzazione, la conversione in fonemi, il modello acustico che produce il mel-spettrogramma e il vocoder che ne fa l'onda sonora">
   <defs>
     <marker id="ah-tts" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
       <path d="M0,0 L6,3 L0,6 Z" fill="#B5532C"/>

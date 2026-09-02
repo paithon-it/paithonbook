@@ -72,26 +72,20 @@ addestrata non su un supercalcolatore ma su due normali schede da
 videogiocatori. Da allora hardware parallelo e deep learning non si sono più
 lasciati.
 
-Questo capitolo è, appunto, l'approfondimento «sotto il cofano» della sezione
-«Prestazioni e scala» del {doc}`capitolo su PyTorch </PyTorch/overview>`. Lì abbiamo imparato i *gesti*,
-cioè le poche righe di codice da scrivere per usare una scheda: si spostano i
-dati dalla memoria del computer a quella della scheda; si fanno lavorare i
-conti su numeri scritti in metà spazio, che si leggono in metà tempo (si chiama
-*precisione mista*, e «mista» perché non si accorciano proprio tutti: i totali
-che si accumulano restano lunghi, altrimenti gli errori si sommano); si lascia
-che PyTorch riscriva da sé il programma in una forma più efficiente; si
-spartiscono gli esempi fra più schede. (Chi ha letto quella
-sezione li riconosce dai nomi: `.to(device)`, `autocast`, `torch.compile`,
-`DistributedDataParallel`.) Li abbiamo giustificati a grandi linee, con
-l'analogia della GPU come squadra di operai semplici. Qui
-apriamo il cofano: *perché* quei gesti funzionano, cosa succede davvero nel
-silicio quando una rete gira, e fin dove si può spingere l'hardware. Non serve
-saper programmare una GPU per usarla (PyTorch lo fa per noi) ma capire come è
-fatta dentro spiega quasi tutto ciò che separa un addestramento veloce da uno
-lento.
+La sezione «Prestazioni e scala» del {doc}`capitolo su PyTorch
+</PyTorch/overview>` aveva insegnato i *gesti*, cioè le poche righe di codice
+da scrivere per usare una scheda: spostare i dati sulla scheda
+(`.to(device)`), far lavorare i conti su numeri scritti in metà spazio
+(`autocast`), lasciare che PyTorch riscriva da sé il programma in una forma
+più efficiente (`torch.compile`), spartire gli esempi fra più schede
+(`DistributedDataParallel`). Li aveva giustificati a grandi linee, con
+l'analogia della GPU come squadra di operai semplici. Qui si apre il cofano:
+*perché* quei gesti funzionano, cosa succede davvero nel silicio quando una
+rete gira, e fin dove si può spingere l'hardware. Non serve saper programmare
+una GPU per usarla (PyTorch lo fa per noi) ma capire come è fatta dentro spiega
+quasi tutto ciò che separa un addestramento veloce da uno lento.
 
-Due idee attraversano tutte le sezioni che seguono, ed è bene tenerle a mente
-fin da subito.
+Due idee attraversano tutte le sezioni che seguono.
 
 ## Molti, non veloci: la scommessa del parallelismo
 
@@ -186,18 +180,14 @@ La seconda idea è meno intuitiva, e proprio per questo va detta subito: il limi
 di una GPU, molto più spesso di quanto si creda, non è *quanti conti* sa fare, ma
 *quanti byte* le arrivano da calcolare.
 
-Il **byte** è la scatoletta in cui sta un pezzetto di informazione, e serve da
-unità di misura per tutto ciò che un computer conserva. Dentro ci stanno otto
-cifre binarie, cioè otto caselline che possono dire solo sì o no: è con quelle
-che si scrive tutto, numeri compresi. Quanti byte usare per un numero è una
-scelta di chi programma: con più byte si scrivono più cifre e si è più precisi.
-Una rete neurale ne usa quattro per numero, oppure due, e come vedremo i due
-bastano quasi sempre. Un miliardo di byte fa un gigabyte, e la memoria di una
-scheda si misura in decine di gigabyte.
+L'unità di misura è il **byte**, la scatoletta da otto cifre binarie in cui sta
+un pezzetto di informazione: una rete neurale ne usa quattro per numero, oppure
+due. Un miliardo di byte fa un gigabyte, e la memoria di una scheda si misura
+in decine di gigabyte.
 
-I byte, insomma, sono la stoffa di cui i dati sono fatti, e portarli fin sotto
-ai calcolatori costa tempo. Le migliaia di core sono
-la parte facile; tenerle rifornite è l'ingegneria vera.
+I byte sono la stoffa di cui i dati sono fatti, e portarli fin sotto ai
+calcolatori costa tempo: le migliaia di core sono la parte facile, tenerle
+rifornite è l'ingegneria vera.
 
 `````{tab} Elementare
 Cento piatti al minuto: un cuoco fulmineo ci arriverebbe, se solo avesse gli
@@ -249,7 +239,7 @@ più vicino possibile ai core.
 
 Le sei sezioni scendono, un gradino alla volta, dal modo in cui una GPU esegue
 il codice fino a come si addestrano le reti che non entrano in una scheda sola.
-I nomi tecnici qui sotto non vanno capiti adesso: ciascuno ha accanto, fra
+I nomi tecnici che seguono non vanno capiti adesso: ciascuno ha accanto, fra
 parentesi, la cosa che significa, ed è quella la promessa della sezione.
 
 - **Dentro la GPU: come è fatta e come esegue**. La scommessa opposta a quella

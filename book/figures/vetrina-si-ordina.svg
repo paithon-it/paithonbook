@@ -7,7 +7,7 @@
   prefers-reduced-motion) vede la figura conclusa.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 520"
-     role="img" aria-label="Una vetrina di 10 libri in colonna, dal posto 1 al posto 10. I quattro che il cliente ha comprato (B, D, G, I) partono sparsi, tre di loro nella metà bassa. A ogni confronto si pesca una coppia formata da un libro comprato e da uno ignorato: se il comprato sta già sopra la spinta è quasi nulla e la vetrina non si muove, se sta sotto sale di uno o più posti e l'ignorato scende. Al quarto confronto l'ignorato pescato è E, che al cliente sarebbe piaciuto: scende di un posto per sbaglio e due confronti dopo è già risalito. Dopo ottanta confronti l'ordine è B, D, I, G, E, J, F, H, A, C: i quattro comprati sono i primi quattro, e il primo dei non comprati è proprio E. La loss media scende da 1,17 a 0,05, e nessuno ha mai dato un voto.">
+     role="img" aria-label="Una vetrina di 10 libri in colonna, dal posto 1 al posto 10. I quattro che il cliente ha comprato (B, D, G, I) partono sparsi, tre di loro nella metà bassa. A ogni confronto si pesca una coppia formata da un libro comprato e da uno ignorato: se il comprato sta già sopra la spinta è quasi nulla e la vetrina non si muove, se sta sotto sale di uno o più posti e l'ignorato scende. Al quarto confronto l'ignorato pescato è E, che al cliente sarebbe piaciuto: scende di un posto per sbaglio e al confronto dopo è già risalito. Dopo ottanta confronti l'ordine è B, D, I, G, E, J, F, H, A, C: i quattro comprati sono i primi quattro, e il primo dei non comprati è proprio E. La loss media scende da 1,17 a 0,05, e nessuno ha mai dato un voto.">
   <style>
     svg  { --d: 18.0s; }
     .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }

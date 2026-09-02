@@ -30,14 +30,10 @@ sempre lo stesso a ogni passo di attesa. Se per esempio ogni attesa lascia in
 piedi nove decimi, un premio di dieci punti che arriva una mossa più tardi ne
 vale nove, due mosse più tardi otto e un decimo, e così via.
 
-Serve anche a una cosa pratica, e questa conviene vederla coi numeri. Immagina
-una partita che non finisce mai e che paga dieci punti a ogni mossa, per
-sempre. Senza il taglio la somma cresce all'infinito e non vuol dire più
-niente. Con il taglio la somma è $10 + 9 + 8{,}1 + 7{,}29 + \ldots$, e per
-quanto si vada avanti non arriva mai a $100$: ogni pezzo nuovo è nove decimi
-del precedente, e quello che resta da aggiungere si assottiglia più in fretta
-di quanto la somma cresca. Un totale infinito diventa così un numero
-maneggiabile. La sezione {doc}`MDP e funzioni valore <mdp-valore>` lo scrive per bene.
+Il taglio serve anche a una cosa pratica: su una partita che non finisce mai
+la somma di tutti i premi cresce all'infinito e smette di dire qualcosa,
+mentre ridotta resta un numero. La sezione
+{doc}`MDP e funzioni valore <mdp-valore>` lo scrive per bene, coi conti.
 
 ```{figure} ../figures/rl-ciclo-interazione.svg
 :name: fig-rl-ciclo
@@ -52,28 +48,24 @@ ricompensa) e il numeretto è il conto dei passi. L'azione la si compie al passo
 $t$, lo stato nuovo e la ricompensa arrivano subito dopo, al passo $t+1$.
 ```
 
-Una domanda viene prima di ogni algoritmo, e conviene togliersela subito: **chi
-decide la ricompensa?** Non l'agente, e nemmeno il mondo: la scrive chi imposta
-il problema. In un videogioco il punteggio esiste già e si prende quello; per un
-robot che deve imparare a camminare qualcuno deve stabilire che cadere vale
-$-5$ e che un metro guadagnato vale $+1$. È una scelta di progetto, ed è una
-scelta seria, perché un agente ottimizza esattamente i numeri che gli sono
-stati dati e non le intenzioni di chi glieli ha dati: premiato per la velocità,
-può imparare a buttarsi in avanti e cadere in fretta. Chi imposta il problema
-può anche aggiungere premi intermedi, per guidare l'agente invece di lasciarlo
-cercare a vuoto: si chiama *reward shaping*, «dare forma alla ricompensa». È
-un'arma a doppio taglio. Esiste un modo di aggiungerli che è dimostrato non
-cambiare quale sia la strategia migliore, e l'idea in una riga è questa: si
-attacca un punteggio a ogni situazione e si premia solo la *differenza* fra il
-punteggio di dove si arriva e quello di dove si era, così che un giro che torna
-al punto di partenza non frutti niente e nessuno possa guadagnare andando
-avanti e indietro. Tutti gli altri modi, che sono la maggior parte, la
-strategia migliore la spostano senza dirlo. Il {doc}`capitolo di deep reinforcement
-learning </DeepReinforcementLearning/overview>` ci torna per esteso, nella sezione su esplorazione e ricompensa.
+Una domanda viene prima di ogni algoritmo: **chi decide la ricompensa?** Non
+l'agente, e nemmeno il mondo: la scrive chi imposta il problema. In un
+videogioco il punteggio esiste già e si prende quello; per un robot che deve
+imparare a camminare qualcuno deve stabilire che cadere vale $-5$ e che un
+metro guadagnato vale $+1$. È una scelta di progetto, ed è una scelta seria,
+perché un agente ottimizza esattamente i numeri che gli sono stati dati e non
+le intenzioni di chi glieli ha dati: premiato per la velocità, può imparare a
+buttarsi in avanti e cadere in fretta. Chi imposta il problema può anche
+aggiungere premi intermedi, per guidare l'agente invece di lasciarlo cercare a
+vuoto: si chiama *reward shaping*, «dare forma alla ricompensa». È un'arma a
+doppio taglio, perché quasi tutti i modi di aggiungerli spostano senza dirlo
+qual è il comportamento migliore; uno solo è dimostrato non spostarlo, e lo
+racconta la sezione su {doc}`esplorazione e ricompensa
+</DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 
 La regola con cui l'agente sceglie, situazione per situazione, si chiama
-**politica**, all'inglese **policy**. Le due parole indicano la stessa cosa e in
-questo capitolo si alternano: è la sola cosa che l'agente cerca di migliorare.
+**politica**, all'inglese **policy**. Le due parole indicano la stessa cosa e si
+alterneranno: è la sola cosa che l'agente cerca di migliorare.
 
 `````{tab} Elementare
 
@@ -84,7 +76,7 @@ avrai a fine partita, e quello è il ritorno: il punteggio di questo istante
 conta solo per quanto aggiunge al totale.
 
 Dentro il totale i punti lontani possono pesare meno di quelli vicini. Quanto
-meno, lo decide una manopola che chi imposta il problema gira prima che
+contano, lo decide una manopola che chi imposta il problema gira prima che
 l'agente cominci a giocare. Tenuta al minimo, l'agente raccoglie tutte le monete
 che ha sotto il naso e ignora la chiave in fondo al livello. Tenuta al massimo,
 passa oltre le monete e va a prendere la chiave, perché dietro la porta ce n'è
@@ -123,7 +115,7 @@ $$
 
 Qui $\gamma$ è il **fattore di sconto**: vicino a $1$ l'agente è lungimirante e
 dà peso al futuro lontano; vicino a $0$ è miope e insegue solo il premio
-immediato. $\gamma < 1$ è obbligatorio nei compiti **continui**, che non
+immediato. $\gamma < 1$ è la strada standard nei compiti **continui**, che non
 terminano mai, perché senza sconto quella somma infinita non converge; nei
 compiti **episodici**, che finiscono da soli, la somma ha un numero finito di
 termini e $\gamma = 1$ è ammesso e usatissimo. Cercare la politica ottima
@@ -253,7 +245,8 @@ Il RL non è un'idea nuova, ma ha avuto pochi momenti che ne hanno mostrato la
 potenza. Nei primi anni Novanta, all'IBM, Gerald Tesauro costruì **TD-Gammon**,
 un programma che imparò a giocare a backgammon (il gioco da tavolo con le
 pedine e i dadi) quasi al livello dei campioni umani. Il metodo con cui
-imparava è quello che l'ultima sezione di questo capitolo racconta per esteso:
+imparava lo racconta per esteso la sezione sul
+{doc}`Q-learning e le differenze temporali <q-learning>`:
 a ogni mossa il programma si fa un'idea di come andrà a finire, e alla mossa
 dopo corregge un poco l'idea di prima. Le partite se le giocò da solo, oltre un
 milione, muovendo da tutte e due le parti: nessuno gli diceva quale fosse la
@@ -266,11 +259,11 @@ riviste scientifiche più importanti che esistano, il **DQN**. Era un agente che
 imparava a giocare a decine di videogiochi della vecchia console **Atari**
 partendo dai soli pixel dello schermo e dal punteggio, senza sapere nulla delle
 regole. Le tre lettere del nome stanno per *Deep Q-Network*: la Q è il voto che
-l'agente dà a ogni mossa, ed è il filo di tutto questo capitolo; *network* è la
-rete neurale che quel voto lo indovina; *deep*, «profonda», è come si chiamano
-le reti a molti strati dei capitoli precedenti. La sezione {doc}`Deep Q-Network </DeepReinforcementLearning/dqn>` lo smonta
-pezzo per pezzo. E
-nel marzo 2016 **AlphaGo** batté 4-1 il campione Lee Sedol al Go, il gioco
+l'agente dà a ogni mossa, il filo che tiene insieme tutto il resto; *network* è
+la rete neurale che quel voto lo indovina; *deep*, «profonda», è come si
+chiamano le reti a molti strati dei capitoli precedenti. La sezione {doc}`Deep
+Q-Network </DeepReinforcementLearning/dqn>` lo smonta pezzo per pezzo. E nel
+marzo 2016 **AlphaGo** batté 4-1 il campione Lee Sedol al Go, il gioco
 orientale in cui si posano pietre bianche e nere sugli incroci di una griglia:
 era considerato fuori portata per le macchine perché le posizioni possibili
 sono troppe per elencarle (quante di preciso lo dice la sezione sulle funzioni

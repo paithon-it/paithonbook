@@ -44,8 +44,11 @@ lontana e lenta. In mezzo, una scala di compromessi
 :width: 80%
 
 I cinque piani della memoria di una GPU. Salendo verso l'apice si trova
-memoria più veloce ma più piccola; scendendo verso la base memoria più
-capiente ma più lenta, perché più lontana dalle unità che fanno i conti. I
+memoria più veloce; scendendo verso la base memoria più lenta, perché più
+lontana dalle unità che fanno i conti. La larghezza dice quanta ne tocca a chi
+la usa (a un thread, a un blocco, a tutta la scheda), non quanta ce ne sia in
+tutto a quel piano: sul totale il triangolo inganna, e la sezione ci torna
+sopra. I
 primi tre piani stanno *dentro* il chip della GPU (in inglese *on-chip*); gli
 ultimi due, la memoria grande della scheda e quella del computer, stanno fuori
 dal chip (*off-chip*), ed è per questo che raggiungerli costa tanto. 
@@ -79,9 +82,8 @@ A quel tavolo lavorano più di mille persone. Le penne sono minuscole una per
 una, ma tutte insieme sono più roba di quanta ne stia sul ripiano: il pugno di
 numeri è quello che tocca al singolo, non quanto ce n'è in tutto. E chi ha
 bisogno di più penne di quante gliene stiano in mano non le perde: quelle di
-troppo finiscono sul ripiano, dove rubano posto alla squadra e vanno riprese
-ogni volta. Caricarsi di penne oltre un certo punto peggiora le cose invece di
-migliorarle.
+troppo finiscono sul ripiano, e vanno riprese ogni volta. Caricarsi di penne
+oltre un certo punto peggiora le cose invece di migliorarle.
 
 Contano le proporzioni, più dei nomi. Se prendere la penna che hai già fra le
 dita costa un secondo, cercare fra i fogli sul piano ne costa una ventina,
@@ -116,10 +118,11 @@ grandezza (le cifre esatte cambiano con la generazione: qui contano le
   che il programmatore gira (192 KB combinati per SM su A100, di cui fino a 164
   configurabili come shared; 256 KB su H100). Tre conseguenze pratiche:
   chiedere tutta la shared possibile non è gratis, perché toglie cache; il
-  riuso «sperato» che il GEMM ingenuo strappa alle cache lo recupera in primo
-  luogo la L1, non la L2; e negli **spill** dei registri (quando un thread ne
-  chiede più di quanti ne ha) finisce lì il traffico che rende improduttivo
-  alzare ancora i registri per thread. Latenza di poche decine di cicli.
+  riuso «sperato» che il GEMM ingenuo strappa alle cache lo recuperano insieme
+  questa L1, la L2 e il broadcast dentro il warp; e negli **spill** dei
+  registri (quando un thread ne chiede più di quanti ne ha) finisce lì il
+  traffico che rende improduttivo alzare ancora i registri per thread. Latenza
+  di poche decine di cicli.
 - **Cache L2**: condivisa da tutte le unità di calcolo, dell'ordine di decine
   di MB (40 MB su A100), con latenza di un paio di centinaia di cicli. È
   l'ultimo livello *dentro* il chip.
@@ -165,11 +168,12 @@ sola.
 `````{tab} Elementare
 Un fattorino ha 32 pacchi da consegnare e un furgone che ne carica otto per
 volta. C'è però una regola del deposito, ed è la regola che rende questo
-esempio vero: **il furgone può scaricare in una via sola**, e per cambiare via
-deve tornare a caricare. Se i 32 indirizzi sono tutti sulla stessa via, uno
-dopo l'altro, gli bastano dunque **quattro** giri, e a ogni giro scarica il
-furgone pieno: otto pacchi, otto consegne. Se invece i 32 indirizzi sono sparsi
-ai quattro angoli della città, ogni giro consegna un pacco solo e riporta
+esempio vero: **il furgone può scaricare in una via sola**, e in una via ci
+stanno otto numeri civici esatti. Se i 32 indirizzi sono in fila, uno dopo
+l'altro, occupano quattro vie, e gli bastano dunque **quattro** giri, a ognuno
+dei quali scarica il furgone pieno: otto pacchi, otto consegne. Se invece i 32
+indirizzi sono sparsi ai quattro angoli della città, ogni giro consegna un
+pacco solo e riporta
 indietro sette posti vuoti: servono **32** giri per consegnare esattamente gli
 stessi 32 pacchi. Il lavoro utile è identico, i viaggi sono 32 invece di 4:
 **otto volte tanto**, e l'otto viene da qui, dai posti del furgone.
@@ -214,14 +218,12 @@ ri-leggere dalla HBM ciò che ti serve più volte. Se un blocco di dati verrà
 usato da molti thread, conviene portarlo *una sola volta* nella shared memory
 (il ripiano condiviso della scrivania) e da lì servirlo a tutti.
 
-Di questo principio c'è un esempio celebre, e conviene anticiparlo qui perché
-è il principio di questa sezione allo stato puro. Si chiama
-**FlashAttention**, ed è il modo in cui oggi si eseguono i confronti fra le
-parole di un testo dentro un modello linguistico; una sezione più avanti lo
-racconta per esteso. La cosa da sapere fin da adesso è una sola: quel metodo
-non fa *meno* conti di prima. Ne fa altrettanti, e in un passaggio addirittura
-qualcuno in più. Va molte volte più veloce soltanto perché muove molti meno
-byte.
+Di questo principio l'esempio più puro si chiama **FlashAttention**, ed è il
+modo in cui oggi si eseguono i confronti fra le parole di un testo dentro un
+modello linguistico; una sezione più avanti lo racconta per esteso. La cosa da
+sapere fin da adesso è una sola: quel metodo non fa *meno* conti di prima. Ne
+fa altrettanti, e in un passaggio addirittura qualcuno in più. Va molte volte
+più veloce soltanto perché muove molti meno byte.
 
 `````{tab} Elementare
 Lo stesso manuale, consultato decine di volte da tutta la squadra: i modi di
@@ -413,7 +415,7 @@ l'intensità di pareggio. A sinistra ($I < I^\star$) domina la banda: si è
 Conviene fissare subito dove cade quel ginocchio, perché è il metro con cui il
 resto del capitolo giudicherà ogni tecnica, e perché **ce n'è più d'uno sulla
 stessa scheda**: dipende da quali unità di calcolo si stanno usando. Su una
-A100 da 80 GB (banda $1{,}935$ TB/s) i CUDA core in `float32` danno
+A100 80 GB PCIe (banda $1{,}935$ TB/s) i CUDA core in `float32` danno
 $19{,}5/1{,}935 \approx 10$ FLOP/byte, ma i tensor core in `float16` danno
 $312/1{,}935 \approx 161$; su una H100 SXM (banda $3{,}35$ TB/s) si passa da
 $67/3{,}35 = 20$ a $989/3{,}35 \approx 295$. Un calcolo che sta a destra del

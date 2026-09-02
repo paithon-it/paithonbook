@@ -7,9 +7,9 @@ soltanto il proprio riassunto interno, e il suo punteggio (quanto bene ha risolt
 il pretesto) non ci dice quello che vogliamo sapere, perché il pretesto lo
 abbiamo inventato noi e a nessuno interessa.
 
-Restano quindi due domande aperte, e questa sezione è fatta di quelle. La prima:
-che cosa può andare storto senza che il punteggio se ne accorga. La seconda: con
-che cosa si sostituisce, il punteggio.
+Restano quindi due domande aperte. La prima: che cosa può andare storto senza
+che il punteggio se ne accorga. La seconda: con che cosa si sostituisce, il
+punteggio.
 
 ## Il collasso non è uno solo
 
@@ -83,18 +83,19 @@ la varianza e la diagonale. Due tipi di vincolo per due collassi diversi.
 
 ## Che cosa garantisce davvero il punteggio dei metodi contrastivi
 
-C'è una lettura elegante dei metodi contrastivi che circola molto, e conviene
-esaminarla perché è vera a metà, e la metà che manca è istruttiva.
+C'è una lettura elegante dei metodi contrastivi che circola molto ed è vera a
+metà. La metà che manca è quella istruttiva.
 
 La lettura è questa. Il punteggio con cui si addestrano quei metodi si chiama
 **InfoNCE** {cite}`oord2018representation`, e il nome dice già dove vuole
 andare: si sostiene che sia legato all’**informazione mutua** fra le due viste,
 cioè a quanto, sapendo una delle due, si diventa meno incerti sull'altra.
-L'informazione mutua è appunto la differenza fra l'incertezza che si aveva prima
-e quella che resta dopo, e si misura con l'entropia della sezione sulla teoria
-dell'informazione. Minimizzare quella perdita, si dice, equivale a massimizzare
-l'informazione mutua. Se fosse tutta la storia, avremmo una spiegazione limpida
-del perché quei metodi funzionano.
+L'informazione mutua è appunto la differenza fra l'incertezza che si aveva
+prima e quella che resta dopo, e si misura con l'entropia di
+{doc}`Teoria dell'informazione </Matematica/teoria-informazione>`. Minimizzare
+quella perdita, si dice, equivale a massimizzare l'informazione mutua. Se fosse
+tutta la storia, avremmo una spiegazione limpida del perché quei metodi
+funzionano.
 
 `````{tab} Elementare
 
@@ -166,21 +167,25 @@ torch.manual_seed(0)
 # possibilita'?
 
 def infonce_al_meglio(n, d=64):
-    """Loss InfoNCE con un critico PERFETTO su n coppie, e il limite che ne segue."""
+    """Loss InfoNCE con un critico PERFETTO fra n candidati, e il limite che segue.
+
+    n e' il numero di candidati fra cui il gioco chiede di scegliere, non la
+    dimensione del batch: in NT-Xent un batch di B immagini ne mette 2B-1.
+    """
     z = torch.nn.functional.normalize(torch.randn(n, d), dim=1)
     sim = (z @ z.t()) / 0.01           # temperatura bassissima: critico ideale
     perdita = torch.nn.functional.cross_entropy(sim, torch.arange(n)).item()
     # I(x; y) >= log N - L   (van den Oord e colleghi), qui in bit
     return perdita, (math.log(n) - perdita) / math.log(2)
 
-print(f"{'coppie nel batch':>18s} {'perdita':>10s} {'bit certificati':>18s} {'log2(N)':>10s}")
+print(f"{'candidati':>18s} {'perdita':>10s} {'bit certificati':>18s} {'log2(N)':>10s}")
 for n in (8, 64, 512, 4096):
     perdita, bit = infonce_al_meglio(n)
     print(f"{n:>18d} {perdita:>10.4f} {bit:>18.2f} {math.log2(n):>10.2f}")
 ```
 
 ```text
-  coppie nel batch    perdita    bit certificati    log2(N)
+         candidati    perdita    bit certificati    log2(N)
                  8     0.0000               3.00       3.00
                 64     0.0000               6.00       6.00
                512     0.0000               9.00       9.00
@@ -189,24 +194,26 @@ for n in (8, 64, 512, 4096):
 
 Le due colonne di destra coincidono riga per riga, ed è tutta la dimostrazione:
 con il critico perfetto la perdita è nulla e il numero certificato è
-**esattamente** $\log_2 N$. Anche col batch da $4096$ di SimCLR
-{cite}`chen2020simple`, che è il metodo contrastivo più noto, quello che si può
-garantire sono dodici bit, cioè **poco più di quanto porti una singola
-etichetta** su mille classi secondo il conto della prima sezione: dieci bit. Un
-batch da quattromila immagini, che per stare in memoria vuole i centoventotto
-acceleratori dichiarati in quel lavoro, certifica due bit più di una parola
-scritta sotto una foto. Che quei modelli imparino molto di più è fuori
-discussione; quindi non è quel limite a spiegare quello che fanno.
+**esattamente** $\log_2 N$, dove $N$ sono i candidati. Prendiamo SimCLR
+{cite}`chen2020simple`, che è il metodo contrastivo più noto: un batch da
+quattromila immagini ne mette in campo ottomila viste, e i candidati per
+ciascuna sono le altre $2N-1$, cioè $8191$. Il tetto è allora tredici bit,
+**poco più di quanto porti una singola etichetta** su mille classi secondo il
+conto d'apertura del capitolo: dieci. Un batch così, che per stare in memoria
+vuole i centoventotto acceleratori dichiarati in quel lavoro, certifica tre bit
+più di una parola scritta sotto una foto. Che quei modelli imparino molto di
+più è fuori discussione; quindi non è quel limite a spiegare quello che fanno.
 
 ## Con che cosa si sostituisce il punteggio
 
 Resta la seconda domanda: come si misura se il riassunto è buono.
 
-Lo strumento standard il libro l'ha già costruito, nel capitolo sulla visione
-artificiale, e si chiama **sondaggio lineare**: si congela l'encoder, gli si
-affianca un classificatore così semplice da non poter aggiungere niente di suo,
-e si guarda se passa l'esame. Se un giudice tanto sprovveduto ci riesce, il
-merito è del riassunto.
+Lo strumento standard è già costruito in
+{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
+e si chiama **sondaggio lineare**: si congela l'encoder, gli si affianca un
+classificatore così semplice da non poter aggiungere niente di suo, e si guarda
+se passa l'esame. Se un giudice tanto sprovveduto ci riesce, il merito è del
+riassunto.
 
 Qui interessa il seguito, cioè che cosa quello strumento **non** vede, perché è
 la parte che si dimentica.
@@ -270,13 +277,14 @@ sola sonda e un solo dataset misura la sonda quanto i metodi.
 `````
 
 Le due domande di apertura hanno quindi la stessa forma di risposta, ed è una
-risposta scomoda: non esiste un numero solo. Il collasso si vede guardando la
-**geometria** di quello che il modello produce, non il suo punteggio; e la
-qualità di un riassunto si vede solo mettendolo a fare **un mestiere che non è
-quello per cui è stato addestrato**. Chi cerca in questo campo una metrica unica
-da massimizzare sta cercando una cosa che, per come il paradigma è fatto, non
-può esserci: se avessimo un punteggio che dice tutto, avremmo anche il compito
-vero, e non ci sarebbe stato bisogno di inventarne uno finto.
+risposta scomoda: non esiste un numero solo. Il collasso si vede guardando che
+forma prendono, tutti insieme, i riassunti che il modello produce, non il suo
+punteggio; e la qualità di un riassunto si vede solo mettendolo a fare **un
+mestiere che non è quello per cui è stato addestrato**. Chi cerca in questo
+campo una metrica unica da massimizzare sta cercando una cosa che, per come il
+paradigma è fatto, non può esserci: se avessimo un punteggio che dice tutto,
+avremmo anche il compito vero, e non ci sarebbe stato bisogno di inventarne uno
+finto.
 
 `````{tab} Elementare
 
@@ -294,14 +302,20 @@ vero, e non ci sarebbe stato bisogno di inventarne uno finto.
 - Sull'idea che i metodi contrastivi funzionino perché «massimizzano
   l'informazione»: il legame c'è ma ha un **tetto**, e il tetto dipende da quanti
   rivali ci sono nel gruppo, non da quanto il modello ha capito. Con un modello
-  che indovina sempre, quattromila rivali certificano **dodici bit**, cioè
-  appena più dei dieci che porta una singola etichetta.
+  che indovina sempre, un gruppo di ottomila candidati certifica **la capacità
+  di scegliere fra ottomila** e nient'altro: sono tredici bit, appena più dei
+  dieci che porta una parola scelta fra mille.
 - Quindi quella non è la spiegazione: metodi che di informazione non parlano
   affatto funzionano benissimo lo stesso.
-- Per misurare c'è l’**esame con le mani legate**, il sondaggio lineare. Ma
-  promuove solo ciò che si separa con una linea dritta, e si fa quasi sempre
-  sulla stessa domanda. La prova che conta davvero è **cambiare compito**: è il
-  motivo per cui addestriamo in anticipo.
+- Per misurare c'è il **sondaggio lineare**: si congela il riassunto e gli si
+  affianca un giudice troppo sprovveduto per aggiungerci qualcosa di suo, così
+  che il merito, se passa l'esame, sia del riassunto. Ma promuove solo ciò che
+  si separa con una linea dritta, e si fa quasi sempre sulla stessa domanda.
+- Accanto ce ne stanno due che costano poco: ripetere la risposta dei riassunti
+  già visti che somigliano a quello nuovo, senza studiare niente, e contare
+  quante caselle dicono davvero qualcosa di proprio. La prova che conta davvero
+  è **cambiare compito**, ed è il motivo per cui addestriamo in anticipo.
+  Nessuna di queste prove, da sola, chiude la questione.
 ```
 
 `````
@@ -324,9 +338,10 @@ vero, e non ci sarebbe stato bisogno di inventarne uno finto.
   e insieme portano una direzione sola.
 - **InfoNCE e informazione mutua**:
   $I(\mathbf{x};\mathbf{y}) \ge \log N - \mathcal{L}_{\text{NCE}}$
-  {cite}`oord2018representation`, quindi il limite è **saturato da $\log N$**:
-  con critico perfetto e $N = 4096$ si certificano $12$ bit, mentre
-  l'informazione vera fra due viste è molto maggiore. Dodici bit sono appena
+  {cite}`oord2018representation`, quindi il limite è **saturato da $\log N$**,
+  con $N$ il numero di candidati: in SimCLR un batch da $4096$ immagini dà
+  $2N-1 = 8191$ candidati per vista, cioè $13$ bit con critico perfetto, mentre
+  l'informazione vera fra due viste è molto maggiore. Tredici bit sono appena
   più dei dieci di un'etichetta su mille classi: la garanzia è debolissima. La
   dimensione del batch entra nella garanzia, non solo nel costo.
 - Conseguenza interpretativa: la massimizzazione dell'informazione mutua **non

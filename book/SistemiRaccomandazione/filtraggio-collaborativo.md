@@ -40,14 +40,15 @@ una cella vuota significa guardare la riga di chi ha votato in modo simile sui
 film che entrambi hanno visto (nel disegno, la riga di Bruno), oppure la
 colonna dei film votati in modo simile dalle stesse persone (la colonna di
 *Love Actually*). Le due strade hanno un nome inglese ciascuna, *user-based* e
-*item-based*, e qui portano alla stessa previsione, due stelle: il voto di
-Bruno a *Notting Hill* per la prima, quello di Carla a *Love Actually* per la
-seconda.
+*item-based*, e qui, seguendo la riga e la colonna che il disegno segna,
+portano alla stessa previsione, due stelle: il voto di Bruno a *Notting Hill*
+per la prima, quello di Carla a *Love Actually* per la seconda.
 ```
 
-Il disegno indica un vicino, non il vincitore di una classifica, e conviene
-dire perché. Applicando alla lettera il modo standard di misurare la
-somiglianza, davanti a Bruno finiscono in due: prima Dario, poi Anna. E Dario
+La {numref}`fig-matrice-voti` indica un vicino, non il vincitore di una
+classifica, e conviene dire perché. Applicando alla lettera il modo standard di
+misurare la somiglianza, davanti a Bruno finiscono in due: prima Dario, poi
+Anna. E Dario
 con Carla ha in comune **un film solo**, il che, come vedremo fra poco, basta
 a farlo sembrare un gemello perfetto. Il difetto si vede già qui, su una
 griglia di venticinque caselle.
@@ -82,8 +83,8 @@ Dario, che ne ha uno solo, non può contare quanto chi ne ha cinquanta, e sotto
 una manciata conviene rispondere che non si sa. E i voti si rimettono sullo
 stesso metro prima di
 mediarli, perché c'è chi dà 5 a tutto e chi non supera mai il 3: un 2 da chi di
-media dà 4 è una stroncatura, un 3 da chi di media dà 2 è un elogio, e nella
-media entrano questi scarti, riportati alla fine sul metro di Carla.
+media dà 4 è una stroncatura, un 3 da chi di media dà 2 è un elogio. Nella
+media entrano questi scarti, e alla fine si sommano alla media di Carla.
 
 **Da oggetto a oggetto.** Si può ribaltare il punto di vista: invece di
 cercare utenti simili, cerco *film* simili; dove "simili" non significa stesso
@@ -100,7 +101,7 @@ tutte.
 
 Ogni utente $u$ è rappresentato dalla riga $\mathbf{r}_u$ della matrice dei
 voti, un vettore con una componente per film (quasi tutte mancanti). La
-somiglianza fra due utenti è la **similarità del coseno** incontrata nel
+somiglianza fra due utenti è la **similarità del coseno** incontrata nella
 {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`, ristretta
 all'insieme $\mathcal{I}_{uv}$ dei film votati da entrambi:
 
@@ -113,9 +114,9 @@ $$
 
 Restringere a $\mathcal{I}_{uv}$ non è pignoleria. Sui vettori interi il coseno
 si può calcolare solo dopo aver deciso cosa mettere nelle componenti mancanti,
-e la scelta corrente per il coseno «pieno», imputare zero, afferma che il non
-visto vale quanto il detestato: è una decisione di modellazione, non una
-necessità.
+e la scelta corrente per il coseno «pieno», imputare zero, mette il non visto
+sotto al peggiore dei voti possibili, che su una scala da 1 a 5 parte da 1: è
+una decisione di modellazione, non una necessità.
 
 Il voto previsto per l'utente $u$ sul film $i$ è la media dei voti dei vicini,
 pesata per la somiglianza:
@@ -139,8 +140,9 @@ Con $|\mathcal{I}_{uv}| = 1$ la formula restituisce $\mathrm{sim}(u,v) = 1$
 **sempre**, qualunque siano i due voti: anche se uno ha dato 1 e l'altro 5, il
 numeratore e il denominatore coincidono. Il metodo fabbrica cioè un gemello
 perfetto, con peso massimo nella media, a partire da nessuna evidenza; e
-centrando i voti la cosa si sposta appena, perché la correlazione di Pearson su
-due soli item vale $\pm 1$ sempre.
+centrare i voti sposta il guasto di un passo invece di chiuderlo, perché su un
+film solo la correlazione di Pearson non è nemmeno definita, e su due vale
+$\pm 1$ ogni volta che lo è.
 Nel regime di sparsità descritto poco fa le coppie con uno o due film in comune
 sono la maggioranza delle coppie non vuote, quindi questo è il caso tipico, non
 il caso limite. Il correttivo standard è lo **smorzamento per numerosità**
@@ -191,15 +193,15 @@ gusti gemelli che per caso non hanno votato *nessun* film in comune risultano
 perfette estranee: il metodo non le vede. E due persone che hanno visto un film
 solo in comune risultano gemelle perfette, qualunque voto gli abbiano dato. La
 ragione sta in che cosa guarda il conto della somiglianza: non mette a
-confronto i due voti uno con l'altro, guarda se le due righe si muovono
-insieme, cioè se dove una sale sale anche l'altra. Con un film solo in comune
-ogni riga si riduce a un numero, e un numero da solo non sale né scende: non
-c'è nessun movimento da confrontare, e il conto risponde «identiche» comunque,
-tanto a chi ha dato 1 quanto a chi ha dato 5. Il metodo, qui, vede una
-somiglianza che non c'è. La
-radice è la stessa, cioè che il confronto passa dai film in comune, e in una
-tabella quasi vuota i film in comune sono pochissimi. Serve un modo per
-confrontare due persone che non passi da lì.
+confronto i due voti uno con l'altro, guarda in che direzione punta la fila dei
+voti di ciascuno e ignora quanto è lunga. Con un film solo in comune ogni fila
+si riduce a un numero, e due numeri positivi puntano per forza dalla stessa
+parte: non c'è nessuna direzione da confrontare, e il conto risponde
+«identiche» comunque, tanto a chi ha dato 1 quanto a chi ha dato 5. Il metodo,
+qui, vede una somiglianza che non c'è. La radice è la stessa, cioè che il
+confronto passa dai film in comune, e in una tabella quasi vuota i film in
+comune sono pochissimi. Serve un modo per confrontare due persone che non passi
+da lì.
 
 ## Fattori latenti: la matrice compressa
 
@@ -217,14 +219,14 @@ di un numero. Il disegno è in {numref}`fig-matrix-factorization`.
 :alt: La grande matrice sparsa dei voti R è approssimata dal prodotto di due matrici strette, P con una riga per utente e Q trasposta con una colonna per film, entrambe con k fattori latenti.
 :width: 95%
 
-Le lettere del disegno sono tre: R è la tabella dei voti, enorme e quasi tutta
-vuota; P raccoglie una scheda di pochi numeri per ogni utente (nel disegno, il
-suo «profilo»); Q fa lo stesso per ogni film. Il voto previsto è il confronto
-voce per voce fra due schede, una riga di P e una colonna di Q. Il segno in
-mezzo è un «circa» e non un uguale, perché due tabelle strette non possono
-riprodurre esattamente la grande, ed è lo scopo, perché costringere il modello
-a dire tanto con pochi numeri è ciò che lo obbliga a
-cercare i tratti che contano invece di ricopiare i voti. Il disegno si ferma
+Tre lettere danno il nome alle tabelle: R è quella dei voti, enorme e quasi
+tutta vuota; P raccoglie una scheda di pochi numeri per ogni utente (nel
+disegno, il suo «profilo»); Q fa lo stesso per ogni film. Il voto previsto è il
+confronto voce per voce fra due schede, una riga di P e una colonna di Q. Il
+segno in mezzo è un «circa» e non un uguale, perché due tabelle strette non
+possono riprodurre esattamente la grande, ed è lo scopo, perché costringere il
+modello a dire tanto con pochi numeri è ciò che lo obbliga a cercare i tratti
+che contano invece di ricopiare i voti. Il disegno si ferma
 poi al confronto: nel modello completo si sommano anche due correzioni, quanto
 quella persona vota alto in generale e quanto quel film è apprezzato in
 generale. La piccola «T» accanto alla Q dice solo che quella tabella è girata
@@ -244,38 +246,39 @@ $0{,}9 \cdot 0{,}8 + 0{,}1 \cdot 0{,}2 = 0{,}74$. Con un film d'azione puro
 $0{,}9 \cdot 0{,}1 + 0{,}1 \cdot 0{,}9 = 0{,}18$, e il primo è più di quattro
 volte il secondo.
 
-Al confronto si aggiungono due correzioni che con i gusti non c'entrano, quanto
-quella persona vota alto o basso in generale e quanto quel film è apprezzato in
-generale, e si parte dal voto medio del sito. Tolto di mezzo il facile, alle
-manopole resta l'incontro fra quella persona e quel film.
+L'affinità però non è ancora un voto in stelle. Ci si arriva dal voto medio del
+sito, corretto due volte: di quanto quella persona vota alto o basso rispetto a
+tutti, e di quanto quel film è apprezzato rispetto a tutti. Se sul sito si
+danno in media $3{,}4$ stelle, Anna sta mezza stella sotto e il film quattro
+decimi sopra, la previsione è $3{,}4 - 0{,}5 + 0{,}4 + 0{,}74 = 4{,}04$. Tolto
+di mezzo il facile, alle manopole resta l'incontro fra quella persona e quel
+film.
 
-E qui questa strada batte quella dei gemelli di gusto: la scheda c'è sempre,
-anche per due persone che non hanno nessun film in comune, e la tabella larga
-diecimila colonne diventa una scheda lunga venti.
+E qui questa strada batte quella dei gemelli di gusto: la scheda c'è anche per
+due persone senza un film in comune, e la tabella larga diecimila colonne
+diventa una scheda lunga venti.
 
-Il colpo di scena è che le manopole non le sceglie nessuno. Non c'è un esperto
-che etichetta i film: l'algoritmo riceve solo la tabella dei voti e cerca da sé
-i numeri da mettere nelle schede, in modo che i voti già dati tornino. E non
-sono numeri fra $0$ e $1$ come nell'esempio: vengono anche negativi, e una
+Il colpo di scena è che le manopole non le sceglie nessuno. Nessun esperto
+etichetta i film: l'algoritmo riceve solo la tabella dei voti e cerca da sé i
+numeri da mettere nelle schede, in modo che i voti già dati tornino. E non sono
+numeri fra $0$ e $1$ come nell'esempio: vengono anche negativi, e una
 «commedia» negativa dice che quella persona la commedia la evita. I tratti che
-ne escono (a guardarli dopo, somigliano spesso a "commedia/dramma" o
-"mainstream/nicchia") sono per questo detti **fattori latenti**: nascosti nei
-dati, mai dichiarati da nessuno. Ed è anche il motivo per cui l'app non sa
-dirti perché ti consiglia un titolo: la ragione vera è un mucchietto di numeri
-senza nome.
+ne escono, che a guardarli dopo somigliano spesso a «commedia/dramma» o
+«mainstream/nicchia», sono per questo detti **fattori latenti**: nascosti nei
+dati, mai dichiarati da nessuno.
 
 E le caselle vuote? Riempirle di zeri sarebbe un disastro: su una scala che
 parte da 1, uno zero direbbe «peggio del peggio», mentre una casella vuota dice
 «non lo so». L'algoritmo infatti non le guarda: cerca le manopole che fanno
-tornare i voti *che ci sono*, e sulle vuote dice alla fine il numero che ne
-viene fuori.
+tornare i voti *che ci sono*, e sulle vuote dice il numero che ne viene fuori.
 
-Questo finché la gente vota. Dove nessuno vota, e si sa soltanto che cosa uno
-ha aperto e quante volte, il vuoto cambia mestiere: diventa l'unico segnale
-negativo, perché tutto quello che si è raccolto è positivo. Allora la tabella
-si riempie tutta, e a ogni casella si affianca quanto ci si crede: chi ha
-rivisto una serie dieci volte è un sì solido, chi non l'ha mai aperta un no
-debolissimo, perché magari nessuno gliel'ha proposta.
+Questo finché la gente vota. Dove nessuno mette stelle si sa soltanto che cosa
+uno ha aperto, e quante volte, e la casella vuota cambia mestiere: smette di
+dire «non lo so» e diventa l'unica cosa che somigli a un no, perché tutto il
+resto è un sì.
+Allora nessuna resta fuori dal conto, e accanto a ciascuna si scrive quanto ci
+si crede: chi ha rivisto una serie dieci volte è un sì solido, chi non l'ha mai
+aperta un no debolissimo, perché magari nessuno gliel'ha proposta.
 
 `````
 
@@ -329,8 +332,8 @@ $$
 
 dove la somma corre su **tutte** le celle, osservate e no. È un cambio di
 regime, non una variante: i termini diventano miliardi, la discesa stocastica
-sulle triple non è più praticabile, e i minimi quadrati alternati (ALS)
-smettono di essere un'alternativa di gusto per diventare l'unica strada, grazie
+sulle triple non è più praticabile per questa loss, e i minimi quadrati
+alternati (ALS) smettono di essere un'alternativa di gusto, grazie
 a una precomputazione che riporta il costo per utente al numero delle sue
 interazioni invece che al numero degli oggetti del catalogo. Il metodo si
 chiama iALS, ha quasi vent'anni ed è tutt'altro che un cimelio: ritarato con
@@ -343,13 +346,18 @@ chiusa alternando $\mathbf{P}$ e $\mathbf{Q}$ (fissato uno dei due, l'altro è
 una regressione ridge, e ha soluzione esatta). Il criterio non è di gusto: SGD è
 più semplice e più veloce sul dato sparso esplicito, ALS si parallelizza meglio
 e diventa obbligato quando ogni cella conta, come appunto sull'implicito. In
-nessuno dei due casi si arriva a un minimo globale: il problema è convesso in
-$\mathbf{P}$ e in $\mathbf{Q}$ *separatamente* (che è precisamente ciò che rende
-sensato alternare) ma non nei due insieme, e dove si finisce dipende anche da
-dove si è partiti. È lo stesso motivo per cui un utente senza interazioni
-resterà fermo alla sua inizializzazione casuale.
+nessuno dei due casi c'è la garanzia di arrivare a un minimo globale: il
+problema è convesso in $\mathbf{P}$ e in $\mathbf{Q}$ *separatamente* (che è
+precisamente ciò che rende sensato alternare) ma non nei due insieme, e dove si
+finisce dipende anche da dove si è partiti.
 
 `````
+
+I fattori latenti non hanno un nome perché nessuno gliel'ha dato: sono le
+coordinate che l'ottimizzazione ha trovato comode, non etichette. È il motivo
+per cui una raccomandazione fattorizzata non si sa raccontare, e per cui le
+spiegazioni che si leggono davvero («perché hai visto X») vengono quasi sempre
+dal lato oggetto-oggetto della pagina precedente.
 
 ## Il modello in PyTorch
 
@@ -427,22 +435,35 @@ perm = torch.randperm(n_voti)
 tr, te = perm[:4_800], perm[4_800:]
 loader = DataLoader(TensorDataset(u[tr], i[tr], voti[tr]),
                     batch_size=256, shuffle=True)
+
+celle = {*zip(u.tolist(), i.tolist())}
+viste = {*zip(u[tr].tolist(), i[tr].tolist())}
+ripetute = sum(c in viste for c in zip(u[te].tolist(), i[te].tolist()))
+print(f"celle distinte: {len(celle)} su {n_voti} voti")
+print(f"voti tenuti da parte su celle gia' viste: {ripetute} su {len(te)}")
+```
+
+```text
+celle distinte: 5723 su 6000 voti
+voti tenuti da parte su celle gia' viste: 91 su 1200
 ```
 
 I voti si pescano a caso, quindi la stessa coppia (utente, film) può uscire due
-volte, e in effetti succede: contandole, le celle distinte sono 5.723 invece di
-6.000. Non
-è un problema per l'esempio (sono due osservazioni concordi della stessa cosa),
-ma è il tipo di dettaglio che su dati veri va guardato.
+volte, e in effetti succede. Sono pochi e non spostano le conclusioni, ma quei
+91 voti meritano un nome, perché è lo stesso che la sezione sulle metriche
+darà a un difetto di mezza letteratura: sono una **fuga di informazione**. Su
+quelle celle il modello non deve indovinare niente, gli basta ricordare, e
+l'errore che leggeremo fra poco è di quel tanto più basso del vero.
 
 L'addestramento è un normale ciclo PyTorch. A ogni giro completo sui voti, e un
 giro si chiama **epoca**, il modello prevede, si misura di quanto ha sbagliato
 e l'ottimizzatore ritocca le schede. La misura è l'errore quadratico medio, la
-**MSE** incontrata nel {doc}`sezione sulle metriche </MachineLearning/metriche>`. È lo stesso metro del
-Netflix Prize, meno l'ultimo passaggio: il RMSE della prima pagina del capitolo
-è la radice quadrata della MSE che vedremo stampata. Una MSE di $0{,}42$ vale
-quindi un errore di circa $0{,}65$ stelle, perché $\sqrt{0{,}42} \approx
-0{,}65$.
+**MSE** incontrata nella
+{doc}`sezione sulle metriche </MachineLearning/metriche>`. È lo stesso metro
+del Netflix Prize, meno l'ultimo passaggio: il RMSE della prima pagina del
+capitolo è la radice quadrata della MSE che vedremo stampata. Una MSE di
+$0{,}42$ vale quindi un errore di circa $0{,}65$ stelle, perché
+$\sqrt{0{,}42} \approx 0{,}65$.
 
 C'è poi un **freno**, che a ogni passo tira verso lo zero i numeri delle schede
 e impedisce che crescano a dismisura pur di far tornare i voti già noti. Nel
@@ -510,7 +531,7 @@ for epoca in range(30):
               f" · MSE tenuti da parte {fuori:.3f} · banale {banale:.3f}")
 ```
 
-```
+```text
 epoca 10 · MSE visti 0.162 · MSE tenuti da parte 0.784 · banale 0.997
 epoca 20 · MSE visti 0.043 · MSE tenuti da parte 0.549 · banale 0.997
 epoca 30 · MSE visti 0.019 · MSE tenuti da parte 0.418 · banale 0.997
@@ -580,11 +601,14 @@ cui lo troverete scritto quasi ovunque), e spiega perché le piattaforme ti
 tempestano di domande all'iscrizione («scegli tre titoli che ti piacciono»):
 stanno comprando a poco prezzo le prime celle della tua riga.
 
-Finché quelle celle non ci sono, la scheda di chi è appena arrivato è un
-mucchietto di numeri a caso, e dal confronto non esce niente di personale:
-resta soltanto quanto quel film piace in generale, cioè una classifica identica
-per chiunque. Tanto vale sceglierla apposta, e mostrare i titoli che piacciono
-a tutti.
+Finché quelle celle non ci sono, nella scheda di chi è appena arrivato non c'è
+niente che lo riguardi, e dal confronto non esce niente di personale: resta
+soltanto quanto quel film piace in generale, cioè una classifica identica per
+chiunque. Tanto vale sceglierla apposta, e mostrare i titoli che piacciono a
+tutti. Con un'avvertenza, che è la stessa di prima: un film con dodici voti
+entusiasti sembra amatissimo per la stessa ragione per cui due persone con un
+film solo in comune sembrano gemelle, quindi quella classifica va fatta
+contando anche quante persone hanno votato.
 
 **La dittatura della popolarità.** I film con moltissimi voti entrano nei conti
 di tutti, vengono consigliati spesso, e così raccolgono altri voti: i
@@ -603,17 +627,20 @@ lista salta la domanda più semplice.
 
 `````{tab} Superiore
 
-**Partenza a freddo.** Un utente o item senza interazioni ha embedding fermo
-all'inizializzazione casuale: nessun gradiente lo ha mai toccato, e il modello
-collaborativo puro non ha alcun canale per informarlo. Le mitigazioni escono
+**Partenza a freddo.** L'embedding di un utente o di un item senza interazioni
+non compare in nessun termine della somma, quindi niente lo determina: con
+l'SGD sulle sole triple resta all'inizializzazione, con ALS o con un
+decadimento dei pesi finisce a zero. In nessuno dei due casi il modello
+collaborativo puro ha un canale per informarlo. Le mitigazioni escono
 dal paradigma: modelli *content-based* o ibridi che inizializzano l'embedding
 dai metadati (genere, cast, descrizione, per gli item) o da questionari e dati
 demografici (per gli utenti), oppure strategie di esplorazione che raccolgono
 interazioni mirate nei primi giorni di vita. Nell'attesa che una di queste
 faccia effetto, il ripiego standard è la classifica dei titoli più popolari, ed
 è meno rozzo di quanto suoni. Su un utente di cui non si sa nulla il termine
-$\mathbf{p}_u^\top \mathbf{q}_i$ è rumore attorno allo zero, e ciò che resta in
-piedi del modello è $\mu + b_i$: un ordinamento per gradimento medio del
+$\mathbf{p}_u^\top \mathbf{q}_i$ è rumore attorno allo zero, o esattamente
+zero se l'embedding ci è finito, e ciò che resta in piedi del modello è
+$\mu + b_i$: un ordinamento per gradimento medio del
 titolo, uguale per tutti. Il sistema una classifica non personalizzata la sta
 già servendo, quindi tanto vale sceglierla apposta e sceglierla robusta,
 perché $b_i$ stimato su una manciata di voti è esposto allo stesso guasto

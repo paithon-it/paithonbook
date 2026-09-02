@@ -1,26 +1,30 @@
 # Attenzione lineare
 
-Nel 2020, mentre il mondo dell'intelligenza artificiale celebrava i
-Transformer come la rottura definitiva con il passato ricorrente, quattro
-ricercatori fra la Svizzera e gli Stati Uniti (Katharopoulos, Vyas, Pappas e
-Fleuret) pubblicano un articolo dal titolo che suona come una provocazione:
-*Transformers are RNNs* {cite}`katharopoulos2020transformers`, dove RNN è la
-sigla inglese delle reti ricorrenti, quelle che leggono una parola alla volta.
-La tesi è tanto semplice quanto spiazzante. Togli al meccanismo di attenzione la
-sua funzione softmax (il passaggio che, davanti a una parola, spartisce l'attenzione
-fra tutte le altre come le fette di una torta), metti al suo posto un modo
-più rozzo di misurare quanto due parole si somigliano, e il Transformer, il
-modello che aveva appena spodestato le reti ricorrenti, ricade esattamente in
-una **rete ricorrente**. Il re, sotto il mantello, era un vecchio parente.
+Centomila parole sono la lunghezza di un romanzo, e per leggerlo un Transformer
+deve confrontare ogni parola con tutte le altre: centomila per centomila, cioè
+dieci miliardi di confronti, e non una volta sola, ma in ognuno degli strati
+della rete, che sono decine. È il conto che nel 2020, mentre il mondo
+dell'intelligenza artificiale celebrava i Transformer come la rottura
+definitiva con il passato ricorrente, quattro ricercatori fra la Svizzera e gli
+Stati Uniti (Katharopoulos, Vyas, Pappas e Fleuret) provano ad aggirare, in un
+articolo intitolato *Transformers are RNNs*
+{cite}`katharopoulos2020transformers`, dove RNN è la sigla inglese delle reti
+ricorrenti, quelle che leggono una parola alla volta.
 
-Non è un gioco di prestigio: è una porta. Nel {doc}`capitolo sui Transformer </Transformers/overview>` abbiamo
-visto che l'attenzione si paga due volte. Il primo conto è il lavoro: ogni
+La tesi è tanto semplice quanto spiazzante. Togli al meccanismo di attenzione
+la sua funzione softmax (il passaggio che, davanti a una parola, spartisce
+l'attenzione fra tutte le altre come le fette di una torta), metti al suo posto
+un modo più rozzo di misurare quanto due parole si somigliano, e il
+Transformer, il modello che aveva appena spodestato le reti ricorrenti, ricade
+esattamente in una **rete ricorrente**. Il re, sotto il mantello, era un
+vecchio parente.
+
+Non è un gioco di prestigio: è una porta. Nel
+{doc}`capitolo sui Transformer </Transformers/overview>` abbiamo visto che
+l'attenzione si paga due volte, e il primo conto è quello appena fatto: ogni
 parola guarda tutte le altre, quindi raddoppiando la lunghezza del testo il
 lavoro **quadruplica**, ed è ciò che si chiama costo *quadratico*: dieci volte
-il testo, cento volte il lavoro. Un numero per sentirne il peso: su centomila
-parole, la lunghezza di un romanzo, sono centomila per centomila confronti da
-fare, cioè dieci miliardi, e non una volta sola, ma in ognuno degli strati
-della rete, che sono decine.
+il testo, cento volte il lavoro.
 
 Il secondo conto si paga mentre il modello scrive. Per non rifare ogni volta
 gli stessi calcoli, il modello tiene da parte un archivio di appunti, la
@@ -51,11 +55,11 @@ e quel pezzo resta: la memoria occupata cresce con quanto si è scritto finora,
 e nessun passo la libera.
 ```
 
-{numref}`fig-kv-cache-cresce` mostra il secondo dei due conti, quello che si
-paga mentre il modello scrive: è il muro in una figura: la memoria che si allunga sotto gli occhi, un token
-dopo l'altro. Una ricorrenza a stato fisso non fa crescere
-niente: comprime il passato in una memoria di taglia costante, e la domanda
-diventa quanto si perde nel comprimerlo.
+{numref}`fig-kv-cache-cresce` è il muro in una figura: la memoria che si
+allunga sotto gli occhi, un token dopo l'altro, ed è il secondo dei due conti,
+quello che si paga mentre il modello scrive. Una ricorrenza a stato fisso non
+fa crescere niente: comprime il passato in una memoria di taglia costante, e la
+domanda diventa quanto si perde nel comprimerlo.
 
 ## Il compromesso che tutti inseguono
 
@@ -88,18 +92,19 @@ in fila sono due modi opposti di lavorare. La via d'uscita sta nel fatto che si
 tratta di uno stesso conto, e uno stesso conto si può fare in due maniere.
 Tutto insieme, ed è così che il modello impara; una parola alla volta, ed è
 così che il modello scrive. Il risultato che ne esce è lo stesso. È ciò che
-promette l'attenzione lineare, e con lei tutta la famiglia di modelli di questo
-capitolo.
+promette l'attenzione lineare, e con lei tutta la famiglia di ricorrenze che
+le sta intorno.
 
 `````
 
 `````{tab} Superiore
 
 Formalizziamo il compromesso. L'attenzione softmax costa $O(n^2 d)$ nella
-lunghezza $n$ della sequenza (la matrice di affinità è $n \times n$) e in
-generazione autoregressiva conserva tutte le chiavi e i valori passati:
-memoria che cresce linearmente con il contesto. Una rete ricorrente costa
-$O(n d^2)$ (lineare in $n$) e mantiene uno stato di dimensione fissa, ma il
+lunghezza $n$ della sequenza, dove $d$ è la dimensione delle rappresentazioni
+(la matrice di affinità è $n \times n$), e in generazione autoregressiva
+conserva tutte le chiavi e i valori passati: memoria che cresce linearmente con
+il contesto. Una rete ricorrente costa $O(n d^2)$, con $d$ la dimensione del suo
+stato (lineare in $n$) e mantiene uno stato di dimensione fissa, ma il
 passo $t$ dipende dal passo $t-1$: niente parallelismo lungo la sequenza.
 
 L'attenzione lineare vive nel punto d'incontro: espone **due forme
@@ -114,7 +119,7 @@ questi due capitoli.
 
 ## Una sola idea, molte incarnazioni
 
-Se c'è una tesi che tiene insieme questo capitolo e il successivo, è questa:
+Una sola tesi tiene insieme l'attenzione lineare e gli State Space Model:
 tutti questi modelli tengono un **riassunto di taglia fissa** e a ogni parola
 lo riscrivono nello stesso modo, cioè *quel che resta del riassunto di prima,
 più quel che si scrive adesso*. Ciò che distingue un modello dall'altro è,
@@ -188,12 +193,12 @@ Transformer (RetNet, RWKV, xLSTM). Chiude un breve **notebook**, cioè una
 pagina di codice che si può far girare, in cui verifichiamo con i numeri veri
 che i due modi di fare il conto danno davvero lo stesso risultato.
 
-Con i nomi che si trovano negli articoli: il *trucco del kernel* che spezza la
+Con i nomi che si trovano negli articoli: il *trucco del kernel* spezza la
 softmax e trasforma l'attenzione in una ricorrenza a stato-matrice, con la sua
-doppia natura parallelo/ricorrente, e il limite di capacità dell'accumulo puro;
-poi i *gate* per dimenticare (RetNet, Mamba-2, GLA) e la *delta rule* per
+doppia natura parallelo/ricorrente e il limite di capacità dell'accumulo puro.
+Poi i *gate* per dimenticare (RetNet, Mamba-2, GLA) e la *delta rule* per
 correggere (DeltaNet, Gated DeltaNet), unificati dalla tabella finale come casi
-di una stessa **regressione online**; infine RetNet, RWKV e xLSTM come istanze
+di una stessa **regressione online**. Infine RetNet, RWKV e xLSTM come istanze
 dello stesso scheletro.
 
 Si comincia dal problema, cioè dal punto in cui l'attenzione dei Transformer

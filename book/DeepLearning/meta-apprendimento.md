@@ -16,6 +16,11 @@ partenza da cui il compito successivo si impara in fretta.
 
 ## La posizione di partenza, invece della risposta
 
+L'algoritmo che ha dato forma canonica a questa idea si chiama **MAML**, e la
+sua mossa sta tutta in che cosa sceglie di misurare. Si paga con un conto in
+più: per correggere il punto di partenza bisogna seguire anche l'effetto dei
+passi di adattamento.
+
 `````{tab} Elementare
 
 Uno che ha suonato per anni il violino, poi la viola, poi il violoncello, si
@@ -62,11 +67,10 @@ gli strumenti dell'allenamento, e quel mucchio è la promessa che sta facendo.
 
 `````{tab} Superiore
 
-L'algoritmo che ha dato la forma canonica a questa idea è **MAML**
-(*Model-Agnostic Meta-Learning*) {cite}`finn2017maml`. Model-agnostic vuol dire
-che non prescrive un'architettura: si applica a qualunque modello addestrato
-per discesa del gradiente, e infatti gli autori lo provano su regressione,
-classificazione e apprendimento per rinforzo.
+**MAML** sta per *Model-Agnostic Meta-Learning* {cite}`finn2017maml`, e
+model-agnostic vuol dire che non prescrive un'architettura: si applica a
+qualunque modello addestrato per discesa del gradiente, e infatti gli autori lo
+provano su regressione, classificazione e apprendimento per rinforzo.
 
 Si parte da una **distribuzione di compiti** $p(\mathcal{T})$: non un compito,
 una famiglia da cui si sorteggia. L'ottimizzazione è a due livelli.
@@ -122,28 +126,30 @@ $$
 = \mathbb{E}[A]\cdot\frac{2}{\pi}\cos x \approx 1{,}62\cos x ,
 $$
 
-una cosinusoide sola, di ampiezza piccola, che **non appartiene alla
-famiglia**. Una rete addestrata congiuntamente su $p(\mathcal{T})$ converge lì,
-ed è il punto: non impara una sinusoide sbagliata, impara una curva che nella
-famiglia non c'è.
+una cosinusoide sola, di ampiezza ridotta. Della famiglia è un membro anche
+lei ($A = 1{,}62$, $\varphi = \pi/2$, tutti e due dentro il loro intervallo), ma
+uno solo, e non predice nessuno degli altri: una rete addestrata
+congiuntamente su $p(\mathcal{T})$ converge lì, e da lì tutte le altre onde
+sono lontane.
 
 `````
 
 ### In pratica: dieci punti su un'onda mai vista
 
 L'esperimento con cui questa idea fu presentata usa la famiglia più semplice
-che si possa disegnare: le **onde**, cioè le curve che salgono e scendono
-regolarmente, tutte della stessa forma ma ciascuna con la propria altezza e il
-proprio punto di partenza. Sono un buon banco di prova perché si somigliano
-(sono tutte onde) e sono diverse (una è alta e comincia in cima, un'altra è
-bassa e comincia in fondo). Il compito è indovinare *quale* onda, avendone visti
-dieci punti.
+che si possa disegnare: le **onde**, o *sinusoidi*, cioè le curve che salgono e
+scendono regolarmente, tutte della stessa forma ma ciascuna con la propria
+altezza e il proprio punto di partenza. Sono un buon banco di prova perché si
+somigliano (sono tutte onde) e sono diverse (una è alta e comincia in cima,
+un'altra è bassa e comincia in fondo). Il compito è indovinare *quale* onda,
+avendone visti dieci punti.
 
-La famiglia serve anche a far vedere in anticipo che cosa impara il termine di
-paragone, perché la sua media si calcola. Sommando tutte le onde della famiglia
-e dividendo, quello che resta è un'unica curva, bassa e sempre uguale, che sta
-più o meno a metà strada fra tutte e che nella famiglia **non c'è**. Chi si
-allena su tutte le onde insieme converge lì.
+La famiglia serve anche a far vedere in anticipo che cosa impara la rete
+allenata su tutte le onde insieme, che sarà il termine di paragone, perché la
+sua media si calcola. Sommando tutte le onde della famiglia e dividendo, quello
+che resta è un'unica curva, bassa e sempre uguale, che sta più o meno a metà
+strada fra tutte. È un'onda anche lei, ma una sola, e nessuna delle altre le
+somiglia. Chi si allena su tutte le onde insieme converge lì.
 
 Si confrontano tre punti di partenza, dando a tutti e tre lo stesso
 adattamento, cioè cinque passi di aggiustamento sui dieci punti: una rete presa
@@ -247,7 +253,7 @@ for etichetta, (a, b, quante) in righe.items():
 with torch.no_grad():
     u = rete(prova, insieme)
     print(f"\nla rete allenata su tutte oscilla fra {u.min():.2f} e {u.max():.2f}:")
-    print("e' la media della famiglia, non una sua sinusoide")
+    print("e' la media della famiglia: un'onda sola, di ampiezza ridotta")
 ```
 
 ```text
@@ -259,7 +265,7 @@ errore quadratico mediano su 100 sinusoidi mai viste
    MAML                     2.08          1.74    77 casi su 100
 
 la rete allenata su tutte oscilla fra -0.96 e 1.84:
-e' la media della famiglia, non una sua sinusoide
+e' la media della famiglia: un'onda sola, di ampiezza ridotta
 ```
 
 I numeri sono errori: più bassi, meglio la curva prevista ricalca l'onda vera.
@@ -291,12 +297,9 @@ Quello che il meta-addestramento ha ottimizzato, insomma, non si vede
 guardando la rete ferma: si vede soltanto guardando che cosa le succede quando
 impara. Ed è proprio così che era stata definita la cosa da migliorare.
 
-Un'ultima nota sul come si misura, che vale oltre questo esperimento. La tabella
-riporta **mediane**, e non medie, perché con passi di dimensione fissa capita
-che su qualche onda i cinque passi non convergano affatto: basta uno di quei
-casi, e la media di cento numeri la decide lui. Una prima versione di questa
-prova riportava medie su quaranta onde, e alla riga di mezzo dava un errore di
-trentacinque miliardi che non descriveva nessuna delle quaranta.
+La tabella riporta **mediane**, e non medie, perché con passi di dimensione
+fissa capita che su qualche onda i cinque passi non convergano affatto: basta
+uno di quei casi, e la media di cento numeri la decide lui.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -305,12 +308,13 @@ trentacinque miliardi che non descriveva nessuna delle quaranta.
   visto: la allena a essere un **buon punto di partenza** per il compito
   successivo, quello di cui esistono dieci esempi.
 - L'allenamento è strano apposta: si prende un compito messo da parte, ci si
-  concede qualche passo di adattamento, e si guarda com'è andata **dopo**
+  concede qualche passo di adattamento, e si guarda com'è andata dopo
   quei passi. È quel «dopo» a essere migliorato, non il «prima».
 - La strada ovvia (allenare una rete sola su tutti i compiti insieme e poi
   ripassarla) fallisce quando la famiglia è varia, perché quella rete impara la
-  **media** dei compiti, e la media di solito non è nessuno di loro: sulle onde
-  della prova è una curva bassa e sempre uguale, che nella famiglia non c'è.
+  **media** dei compiti, e la media di solito non somiglia a nessuno di loro:
+  sulle onde della prova è un'onda bassa e sempre la stessa, e le altre non le
+  somigliano.
   E fallisce due volte, perché quella curva media è un posto comodo dove stare
   fermi: i pochi passi di aggiustamento la portano fuori di lì e la lasciano a
   metà, cioè peggiorano invece di migliorare.
@@ -329,7 +333,7 @@ trentacinque miliardi che non descriveva nessuna delle quaranta.
   e il ciclo esterno aggiorna $\theta$ sul valore di $\mathcal{L}$ calcolata in
   $\theta_i'$. Derivare attraverso l'adattamento chiama le derivate seconde: è
   il costo del metodo.
-- L'obiettivo ottimizzato è la prestazione **dopo** l'adattamento, che è una
+- L'obiettivo ottimizzato è la prestazione dopo l'adattamento, che è una
   proprietà diversa dalla prestazione tout court, e la si ottiene solo
   scrivendola nella funzione obiettivo.
 - *Model-agnostic* vuol dire che serve solo che il modello si addestri per
@@ -348,7 +352,7 @@ stessa cosa vista da tre angoli: la posizione in cui una rete si trova prima di
 affrontare un compito, che vale più del compito per cui era nata. La
 profondità la costruisce a scala, dal bordo grezzo alla forma intera; il
 multi-compito la fa servire a più mestieri insieme; il meta-apprendimento la
-sceglie in modo che il mestiere successivo costi poco. Il capitolo sulla
-visione artificiale la porta dentro un dominio solo, le immagini, dove i
-mestieri hanno nomi precisi: dire che cosa c'è, dire dov'è, ritagliarne il
-contorno.
+sceglie in modo che il mestiere successivo costi poco. Il {doc}`capitolo sulla
+visione artificiale </VisioneArtificiale/overview>` la porta dentro un dominio
+solo, le immagini, dove i mestieri hanno nomi precisi: dire che cosa c'è, dire
+dov'è, ritagliarne il contorno.

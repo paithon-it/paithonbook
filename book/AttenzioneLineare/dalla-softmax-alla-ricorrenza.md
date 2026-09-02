@@ -3,7 +3,7 @@
 Il {doc}`capitolo sui Transformer </Transformers/overview>` si chiude con un paradosso. Il meccanismo che ha
 vinto la partita (l'attenzione, che lascia ogni parola libera di guardare
 tutte le altre) vince *proprio perché* guarda tutte le altre; ed è esattamente
-questo il suo conto da pagare. Sono i due conti di cui si è detto aprendo il capitolo. Il primo è il lavoro,
+questo il suo conto da pagare. I conti sono due. Il primo è il lavoro,
 che cresce col quadrato della lunghezza (gli informatici lo scrivono $O(n^2)$,
 che è solo un modo compatto di dirlo). Il secondo è il segnalibro che il
 modello si tiene mentre scrive, con dentro le etichette e le informazioni già
@@ -15,11 +15,10 @@ nessuno di questi due problemi: leggevano in fila, a costo lineare, con uno
 stato di dimensione *fissa* che non cresceva mai. Le avevamo abbandonate per
 un difetto altrettanto grave, la **sequenzialità**: ogni passo deve aspettare
 quello prima, e le schede grafiche (le GPU), che sono fatte per macinare
-montagne di conti tutti insieme, restano a guardare. La domanda di questo
-capitolo è se si possano avere entrambe le cose: distribuire il lavoro su tanti
-conti simultanei quando il modello impara, e pagare poco, sempre lo stesso,
-quando scrive. La risposta parte da un'osservazione che si fa alle medie, e la
-vediamo subito.
+montagne di conti tutti insieme, restano a guardare. La domanda è se si possano
+avere entrambe le cose: distribuire il lavoro su tanti conti simultanei quando
+il modello impara, e pagare poco, sempre lo stesso, quando scrive. La risposta
+parte da un'osservazione che si fa alle medie, e la vediamo subito.
 
 ## Il trucco del kernel: spezzare la softmax
 
@@ -48,16 +47,17 @@ un milione di caselle, perché ogni persona ha la sua riga e la sua colonna, sé
 stessa compresa. Il costo esplode perché quanto io do retta a te nasce
 dall'incontro fra me e te: quel numero non esiste finché non ci siamo visti.
 
-Cambiamo la regola. All'ingresso ognuno riceve un cartellino con un numero, e
-da lì in poi quanto io do retta a te è il mio numero per il tuo. Il peso *si
-spezza* in due, un pezzo mio e uno tuo.
+Cambiamo la regola. All'ingresso ognuno riceve un cartellino con un numero, che
+è la sua etichetta ridotta a un numero solo, e da lì in poi quanto io do retta
+a te è il mio numero per il tuo. Il peso *si spezza* in due, un pezzo mio e uno
+tuo.
 
 Tre persone hanno da consegnare $2$, $5$ e $9$. Prima chi voleva farsi un'idea
 doveva incontrarle tutte e tre, e ne usciva con
 $3\times 2 + 7\times 5 + 4\times 9$: tre pesi diversi, tre incontri, tre
-caselle della tabella grande. Adesso invece ciascuno dei tre ha già
-moltiplicato il proprio contributo per il proprio cartellino prima di
-consegnarlo, e a chi ascolta resta soltanto il numero suo, sempre quello:
+caselle della tabella grande. Adesso invece nel numero che ciascuno consegna il
+proprio cartellino è già conteggiato, e a chi ascolta resta soltanto il numero
+suo, sempre quello:
 $3\times 2 + 3\times 5 + 3\times 9 = 3\times(2+5+9) = 3\times 16$. È il
 raccoglimento a fattor comune di seconda media. E quel $16$ non dipende da chi
 ascolta: la persona dopo farà $7\times 16$, quella dopo ancora $4\times 16$.
@@ -81,10 +81,8 @@ una somma che si gonfia man mano che entra gente. Chi si presenta col
 cartellino azzerato trova un totale nullo, non ha niente per cui dividere, ed
 è lì che il meccanismo si pianta.
 
-Il punto delicato è scegliere che cosa scrivere nel registro: un riassunto ben
-fatto tiene comunque meno cose di mille resoconti per intero. Un modo di
-misurare la somiglianza che si spezza in due pezzi, in matematica, si chiama
-**kernel**.
+Un modo di misurare la somiglianza che si spezza in due pezzi, in matematica,
+si chiama **kernel**.
 
 `````
 
@@ -239,9 +237,23 @@ $\mathbf{S}_t \phi(\mathbf{q}_t) = \sum_{i\le t} \big(\phi(\mathbf{k}_i)^\top\ph
 ripesca dai value in proporzione a quanto la sua etichetta somiglia a ciascuna
 key già scritta.
 
+Una cosa sul modo di scrivere il meccanismo, che non lo cambia di una
+virgola: Katharopoulos tiene il normalizzatore $\mathbf{z}_t$, e la lettura è
+una media pesata di cui $\mathbf{z}_t^\top \phi(\mathbf{q}_t)$ è il
+denominatore. Già i lavori sui *fast weight* di poco successivi lo abbandonano,
+giudicandolo instabile (quell'accumulatore può crescere senza controllo), e
+normalizzano invece chiavi e query trasformate; le varianti più recenti vi
+rinunciano del tutto, aggiungendo una *layer normalization* in uscita e, dove
+la transizione lo richiede (DeltaNet), riportando le key a norma unitaria. Sono
+tre impostazioni diverse, che è meglio non mescolare: nelle prossime sezioni le
+teniamo distinte e, parlando delle architetture moderne, usiamo l'ultima, cioè
+feature map $\phi$ posta all'identità e nessun $\mathbf{z}_t$ nelle formule.
+
 Guardiamo bene questa ricorrenza. È **esattamente una RNN**, ma con due
-differenze rispetto alle celle del capitolo sull'NLP. La prima: lo stato non è
-un vettore $\mathbf{h}_t$ ma una **matrice** $\mathbf{S}_t$ (una memoria molto più capiente). La
+differenze rispetto alle celle dei
+{doc}`modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>`.
+La prima: lo stato non è un vettore $\mathbf{h}_t$ ma una **matrice**
+$\mathbf{S}_t$ (una memoria molto più capiente). La
 seconda, decisiva: la transizione di stato è **lineare**, anzi è l'identità
 ($\mathbf{S}_{t-1}$ passa intatto, gli si somma soltanto un termine nuovo). Non c'è
 nessuna $\tanh$ o non-linearità *sullo stato*, come invece in
@@ -272,19 +284,6 @@ Come mostra {numref}`fig-attenzione-lineare-ricorrenza`, i due schemi
 raccolgono la stessa informazione in modi opposti: la KV cache la conserva
 tutta e paga in memoria che cresce; il registro la comprime in un foglio di
 taglia fissa.
-
-Un'ultima cosa sul modo di scrivere il meccanismo, che non lo cambia di una
-virgola: Katharopoulos tiene il normalizzatore $\mathbf{z}_t$, e la lettura è
-una media pesata di cui $\mathbf{z}_t^\top \phi(\mathbf{q}_t)$ è il
-denominatore. Già i lavori sui *fast weight* di poco successivi lo abbandonano,
-giudicandolo instabile (quell'accumulatore può crescere senza controllo), e
-normalizzano invece chiavi e query trasformate; le varianti più recenti vi
-rinunciano del tutto, aggiungendo una *layer normalization* in uscita e, dove
-la transizione lo richiede (DeltaNet), riportando le key a norma unitaria. Sono
-impostazioni diverse, che è meglio non mescolare: nelle prossime sezioni
-teniamo distinte le due scuole e, parlando delle architetture moderne, usiamo
-la seconda, cioè feature map $\phi$ posta all'identità e nessun
-$\mathbf{z}_t$ nelle formule.
 
 ## Addestrare in parallelo, generare in ricorrenza
 
@@ -408,11 +407,9 @@ bene il vantaggio della memoria costante quando $n$ diventa enorme.
 
 `````
 
-Concretamente, il passo con cui il modello genera una parola è poche righe: una
-tabella di numeri che vive in un posto solo e a ogni parola viene aggiornata sul
-posto. La cosa che conta si legge a colpo d'occhio: `S` entra ed esce dalla funzione
-sempre della stessa taglia, e in tutto il codice non c'è nessuna lista che si
-allunga.
+Il passo con cui il modello genera una parola sta in poche righe, e la cosa che
+conta si legge a colpo d'occhio: `S` entra ed esce dalla funzione sempre della
+stessa taglia, e in tutto il codice non c'è nessuna lista che si allunga.
 
 ```python
 import torch
@@ -457,20 +454,20 @@ subito, piano, e cresce con quante cose hai scritto.
 E il foglio si riempie molto prima di quanto lascino sperare le sue caselle,
 perché un'informazione non occupa una casella: quando la scrivi si spalma su
 tutto il foglio, e la successiva si spalma sopra di lei. Prendi un foglio
-piccolo, trentadue righe per trentadue colonne (nei modelli veri una memoria di
-questo tipo ne ha sessantaquattro o centoventotto): di caselle ne ha più di
-mille, ma già a otto informazioni la risposta torna sbagliata di circa metà del
-suo valore, e a trentadue lo sbaglio è grande quanto la risposta. Da lì in poi
-ritrovare il dettaglio giusto («di che colore era il cappotto citato venti
-pagine fa?») è impossibile. L'attenzione dei Transformer,
-quella che tiene tutti gli scontrini, quel dettaglio ce l'ha ancora; il registro
-riassuntivo può averlo perso.
+piccolo, trentadue righe per trentadue colonne (nei modelli veri il lato è di
+sessantaquattro o centoventotto): di caselle ne ha più di mille, ma le
+etichette che riesce a tenere separate sono trentadue, cioè il suo lato, tante
+quante ne stanno una accanto all'altra senza pestarsi i piedi.
 
-Trentadue è quante etichette un foglio così riesce a tenere separate, e non un
-numero preso a caso: e vale a patto che siano diverse fra loro il più possibile. È
-il caso migliore, quello che nella pratica non capita: le etichette non le
-sceglie nessuno apposta distinte, le assegna il modello, e due parole qualunque
-finiscono per somigliarsi un po’.
+E trentadue è già il caso migliore, quello che nella pratica non capita: le
+etichette non le sceglie nessuno apposta distinte, le assegna il modello, e due
+parole qualunque finiscono per somigliarsi un po’. Infatti già a otto
+informazioni la risposta torna sbagliata di circa metà del suo valore, e a
+trentadue lo sbaglio è grande quanto la risposta. Da lì in poi ritrovare il
+dettaglio giusto («di che colore era il cappotto citato venti pagine fa?») è
+impossibile. L'attenzione dei Transformer, quella che tiene tutti gli
+scontrini, quel dettaglio ce l'ha ancora; il registro riassuntivo può averlo
+perso.
 
 E la domanda ovvia (perché non prendersi un foglio più grande?) ha una
 risposta altrettanto ovvia: si può, ed è una delle manopole di chi progetta il
@@ -496,7 +493,7 @@ come $\sqrt{N/d}$ con il numero $N$ di associazioni scritte. A $N \approx d$
 l'interferenza vale ormai quanto il valore cercato. In $d=32$, con chiavi
 gaussiane riportate a norma unitaria e value gaussiani, l'errore relativo medio
 del richiamo (media su tutte le chiavi scritte e su duemila estrazioni) è
-$0{,}99$ a $N=d$ e $0{,}46$ a $N=d/4$: sono i valori attesi
+$0{,}99$ a $N=d$ e $0{,}46$ a $N=d/4$, in accordo con l'andamento atteso
 $\sqrt{(N-1)/d}$, cioè $\sqrt{N/d}$ a meno del contributo della chiave che si
 sta interrogando. Il richiamo pulito vuole quindi
 $N$ **ben minore** di $d$, non $N \le d$. Ed essendo la transizione l'identità, non
@@ -506,6 +503,38 @@ com'è, resta indietro rispetto all'attenzione softmax proprio sui compiti di
 richiamo preciso.
 
 `````
+
+Il conto si rifà in poche righe: si riempie una memoria $32\times32$ con $N$
+associazioni, la si rilegge con le stesse chiavi con cui è stata scritta, e si
+guarda di quanto la risposta si discosta dal valore giusto.
+
+```python
+import numpy as np
+
+def errore_richiamo(N, d=32, prove=2000, seme=0):
+    # errore relativo medio nel rileggere N associazioni da una memoria d x d
+    rng = np.random.default_rng(seme)
+    errori = []
+    for _ in range(prove):
+        K = rng.standard_normal((N, d))
+        K /= np.linalg.norm(K, axis=1, keepdims=True)  # chiavi a norma unitaria
+        V = rng.standard_normal((N, d))
+        S = V.T @ K                                    # la memoria dopo N scritture
+        letto = (S @ K.T).T                            # rileggo con le stesse chiavi
+        errori.append((np.linalg.norm(letto - V, axis=1)
+                       / np.linalg.norm(V, axis=1)).mean())
+    return float(np.mean(errori))
+
+for N in (8, 16, 32):
+    print(f"N={N:2d}  errore relativo medio = {errore_richiamo(N):.2f}"
+          f"   (andamento atteso ~{np.sqrt((N - 1) / 32):.2f})")
+```
+
+```text
+N= 8  errore relativo medio = 0.46   (andamento atteso ~0.47)
+N=16  errore relativo medio = 0.68   (andamento atteso ~0.68)
+N=32  errore relativo medio = 0.99   (andamento atteso ~0.98)
+```
 
 Da qui in avanti l'intero capitolo è un tentativo di curare questi due mali
 tenendo però il dono della memoria che non cresce. Servono due ingredienti: un

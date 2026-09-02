@@ -15,8 +15,8 @@ sviluppatore in carne e ossa. È un compito che nessun completamento di testo,
 per quanto fluente, chiude in un colpo solo: bisogna trovare i file giusti,
 provare, sbagliare, rileggere il messaggio d'errore, correggere. I primi
 sistemi ci riuscivano in una **piccola frazione** dei casi, pochi punti
-percentuali. Un numero così basso è la notizia, non la delusione: è la
-prima misura pubblica di quanto costi tenere insieme molte mosse di fila.
+percentuali. Un numero così basso è la notizia, non la delusione: è la misura
+che ha reso visibile a tutti quanto costi tenere insieme molte mosse di fila.
 Sull'affidabilità di quella misura, però, l'ultima sezione avrà qualcosa da
 ridire: si scoprirà che una parte di quei pochi successi non era stata
 guadagnata sul campo.
@@ -43,8 +43,8 @@ inventare la risposta, con la stessa sicurezza con cui ne direbbe una vera,
 oppure fermarsi a metà, andare a *guardare* il meteo e riprendere da lì. La
 seconda strada è una decisione presa nel mezzo di una frase, e non più fluenza.
 
-Fra il 2023 e il 2024 compaiono i sistemi che quella decisione la prendono di
-continuo: cercano sul web una notizia di ieri, eseguono un pezzo di codice per
+Fra il 2023 e il 2024 si diffondono i sistemi che quella decisione la prendono
+di continuo: cercano sul web una notizia di ieri, eseguono un pezzo di codice per
 controllare se gira, compilano un modulo, prenotano, propongono una correzione a
 un programma vero. È il mondo di SWE-bench, ed è il mondo di questo capitolo.
 
@@ -62,9 +62,10 @@ dedicato all'automobile.
 ## Dal completare testo all'agire
 
 Il primo passo di un modello fuori da se stesso è stato piccolo e si è visto
-nel {doc}`capitolo sui Transformer </Transformers/overview>`: prima di rispondere, va a cercare qualcosa in un
-archivio di documenti e se lo rilegge. Quella mossa ha un nome, **RAG**, e il
-disegno qui sotto è lo schema con cui è stata presentata al mondo.
+nella sezione {doc}`«Cercare per rispondere» </Transformers/rag>`: prima di
+rispondere, il modello va a cercare qualcosa in un archivio di documenti e se
+lo rilegge. Quella mossa ha un nome, **RAG**, e {numref}`fig-rag-lewis` è lo
+schema con cui è stata presentata al mondo.
 
 ```{figure} ../figures/rag-lewis-2020.svg
 :name: fig-rag-lewis
@@ -81,8 +82,8 @@ tutta dentro il modello.
 Le tre lettere stanno per *Retrieval-Augmented Generation*, cioè «generazione
 aiutata da un recupero», e sono di Lewis e colleghi {cite}`lewis2020retrieval`.
 Il nome dice poco; quel che fa, invece, si dice in una riga: il modello
-**sospende la risposta, va a prendere qualcosa fuori di sé, e solo dopo
-conclude**. È già qualcosa che il completamento puro non sa fare, ed è il
+sospende la risposta, va a prendere qualcosa fuori di sé, e solo dopo
+conclude. È già qualcosa che il completamento puro non sa fare, ed è il
 precedente diretto di tutto questo capitolo.
 
 Il «fuori di sé» va preso alla lettera, e conviene fermarsi un istante, perché
@@ -118,9 +119,9 @@ essere il cervello (sa *cosa* andrebbe fatto) ma attorno gli mettiamo delle
 mani (gli strumenti) e un metodo di lavoro: fai una mossa, guarda com'è
 andata, decidi la prossima.
 
-Quel metodo si regge su un taccuino. L'assistente ci scrive tutto: ho
+Quel metodo si regge su un elenco. L'assistente ci scrive tutto, in ordine: ho
 telefonato all'albergo, era pieno; ho provato quello accanto, ha una stanza
-libera. Prima di ogni telefonata rilegge il taccuino dall'inizio, perché è lì
+libera. Prima di ogni telefonata rilegge l'elenco dall'inizio, perché è lì
 che sa a che punto è arrivato. E si ferma in due casi: quando ti mette il
 biglietto in mano, oppure quando le telefonate diventano troppe e torna da te
 a mani vuote invece di andare avanti all'infinito.
@@ -313,8 +314,8 @@ negozio nuovo, lo metti al lavoro con mezza pagina di istruzioni sul bancone:
 «se chiedono una taglia che non c'è, guarda nel magazzino di sotto», e sotto
 un caso capitato ieri con la sua soluzione. Legge, e lavora così da subito.
 Nessun corso, nessun apprendistato: quelle righe sono bastate. Con il modello
-vale uguale, e in quelle righe c'è tutto quello che farà. Sono state loro a
-rendere possibili gli agenti, non una macchina più potente.
+vale uguale, e quelle righe sono tutto quello che gli diamo. Sono state loro a
+rendere possibili gli agenti, non un trucco di programmazione in più.
 
 `````
 
@@ -339,8 +340,8 @@ ricette che qualcuno ha provato e che sembrano funzionare (di una ricetta così,
 che non garantisce niente ma spesso va, si dice che è un’**euristica**).
 
 La seconda avvertenza è un problema strutturale: gli errori si **sommano lungo
-il ciclo**. Se il modello azzecca una mossa nove volte su dieci, dieci mosse di
-fila senza un solo inciampo gli riescono poco più di una volta su tre. Il conto
+il ciclo**. Se il modello sbaglia una mossa su dieci, dieci mosse di fila
+senza un solo inciampo gli riescono poco più di una volta su tre. Il conto
 è quello che sembra: chiamiamo $p$ la probabilità di sbagliare un passo e $n$
 il numero di passi, e la probabilità di attraversarli tutti senza errori vale
 $(1-p)^n$, che con $p = 0{,}1$ e $n = 10$ fa $0{,}9^{10} \approx 0{,}35$. Il
@@ -353,20 +354,20 @@ restano difficili.
 
 ## Un antenato: i chatbot a regole
 
-L'idea di un sistema che percepisce, decide e agisce non nasce con gli LLM.
-Nel {doc}`capitolo sul Natural Language
-Processing </NaturalLanguageProcessing/overview>` abbiamo incontrato i primi programmi capaci di sostenere una
-conversazione, quelli che oggi chiamiamo **chatbot**.
+L'idea di un sistema che percepisce, decide e agisce non nasce con gli LLM. Nel
+capitolo sul Natural Language Processing, parlando di {doc}`dialogo e chatbot
+</NaturalLanguageProcessing/dialogo-chatbot>`, abbiamo incontrato i primi
+programmi capaci di sostenere una conversazione.
 
 Il primo è **ELIZA**, che negli anni Sessanta rispondeva rigirando le parole
-dell'interlocutore con delle **espressioni regolari**, schemi scritti a mano
-del tipo «se la frase contiene *mia madre*, rispondi *mi parli della sua
-famiglia*». Il secondo è **GUS**, del 1977, che faceva l'agente di viaggio: conduceva la
-conversazione riempiendo le caselle di un modulo (*dove*, *quando*, *quanti*)
-con domande mirate, e a modulo completo prenotava. I sistemi fatti così si
-chiamano **a modulo**, o *a frame* dalla parola inglese, e quel modulo mezzo
-pieno era la loro piccola memoria: l'unica cosa che si portavano dietro da una
-battuta all'altra.
+dell'interlocutore con **schemi scritti a mano**, del tipo «se la frase
+contiene *mia madre*, rispondi *mi parli della sua famiglia*». Il secondo è
+**GUS**, del 1977, che faceva l'agente di viaggio: conduceva la conversazione
+riempiendo le caselle di un modulo (*dove*, *quando*, *quanti*) con domande
+mirate, e a modulo completo prenotava. I sistemi fatti così si chiamano **a
+modulo**, o *a frame* dalla parola inglese, e quel modulo mezzo pieno era la
+loro piccola memoria: l'unica cosa che si portavano dietro da una battuta
+all'altra.
 
 Erano già agenti, a modo loro. Avevano una percezione, cioè quello che arriva
 dall'esterno; avevano delle azioni, cioè le risposte da dare e la prenotazione
@@ -437,7 +438,7 @@ abbiamo solo montato insieme.
   spazio è poco.
 - **Architetture e valutazione**, cioè come si compongono più agenti in un
   sistema, e il problema aperto di dare loro un voto. È lì che finisce il
-  discorso su SWE-bench {cite}`jimenez2024swebench` cominciato qui sopra. Il
+  discorso su SWE-bench {cite}`jimenez2024swebench` cominciato in apertura. Il
   problema gemello, come si dà un voto a un modello che si limita a rispondere
   quando non esiste una risposta giusta sola, ha invece un posto suo più
   avanti: il capitolo su **MLOps**, che è il mestiere di portare un modello dal
@@ -505,8 +506,9 @@ abbiamo solo montato insieme.
   **in-context learning** rendono eseguibile «usa questo strumento». È però
   un'area giovane {cite}`xi2023rise`, e gli errori si accumulano lungo il
   loop.
-- I **chatbot a regole** del {doc}`capitolo NLP </NaturalLanguageProcessing/overview>` (ELIZA, sistemi a frame) sono gli
-  antenati rigidi: l'agente LLM generalizza la stessa idea con un motore
+- I **chatbot a regole** della {doc}`sezione su dialogo e chatbot
+  </NaturalLanguageProcessing/dialogo-chatbot>` (ELIZA, sistemi a frame) sono
+  gli antenati rigidi: l'agente LLM generalizza la stessa idea con un motore
   linguistico flessibile, guadagnando versatilità e perdendo prevedibilità.
 - Nel resto del capitolo: **tool use**, **RAG avanzato**, **context
   engineering**, **architetture e valutazione**; di quest'ultima, SWE-bench

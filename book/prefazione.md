@@ -79,6 +79,7 @@ insegnato Douglas Hofstadter in *Gödel, Escher, Bach*
 
 ```{figure} figures/triangolo-di-penrose.svg
 :name: fig-triangolo-penrose
+:class: dark-light
 :alt: Il triangolo di Penrose, il triangolo impossibile: tre travi a sezione quadrata, una terracotta, una teal e una ocra, disposte in anello triangolare. Ogni trave passa davanti a quella che incontra e dietro a quella da cui arriva, e il giro si chiude soltanto in apparenza.
 :width: 30%
 

@@ -36,7 +36,8 @@ manuale di Molnar {cite}`molnar2022interpretable`.
 Alcuni modelli non hanno bisogno di essere spiegati: *sono* la loro
 spiegazione. L'esempio più puro è quello che risponde facendo una somma:
 prende ogni colonna, la moltiplica per un numero suo, e somma tutto. Sono i due
-modelli incontrati nel {doc}`capitolo sul machine learning </MachineLearning/overview>` con i nomi di **regressione
+modelli incontrati nella {doc}`sezione sull'apprendimento supervisionato
+</MachineLearning/apprendimento-supervisionato>` con i nomi di **regressione
 lineare** (quando la risposta è una quantità, un prezzo) e **regressione
 logistica** (quando è un sì o un no). Quei numeri, uno per colonna, si chiamano **pesi** (o, con la parola che
 si usa più spesso in statistica, **coefficienti**: sono la stessa cosa), e una
@@ -127,7 +128,8 @@ regolarizzazione Ridge/Lasso vista nel capitolo di machine learning).
 `````
 
 La trasparenza non finisce con i modelli lineari. Gli **alberi di decisione**,
-studiati nel {doc}`capitolo sul machine learning </MachineLearning/overview>`, sono l'altro archetipo di «scatola
+studiati nella {doc}`sezione su alberi e metodi ensemble
+</MachineLearning/alberi-ensemble>`, sono l'altro archetipo di «scatola
 bianca»: si parte dalla domanda in cima (che si chiama **radice**, perché
 l'albero si disegna capovolto, con le foglie in basso) e a ogni risposta si
 scende di un ramo, fino a una casella finale che porta la decisione (una
@@ -157,8 +159,9 @@ contributi, uno per colonna, che non si mescolano fra loro; **generalizzati**
 perché lo stesso impianto va bene sia quando la risposta è una quantità sia
 quando è una probabilità. Si citano quasi sempre con la sigla inglese, **GAM**.
 Come si costruiscono, e che cosa costa la loro ipotesi quando è falsa, lo
-racconta la sezione sulle spline del capitolo di machine learning; qui interessa
-l'altra metà, cioè perché si lasciano leggere.
+racconta la {doc}`sezione su spline e modelli additivi
+</MachineLearning/curve-al-posto-di-rette>`; qui interessa l'altra metà, cioè
+perché si lasciano leggere.
 
 `````{tab} Elementare
 
@@ -179,7 +182,7 @@ alla volta, come le voci di una ricevuta.
 Un GAM scrive
 
 $$
-g\big(\mathbb{E}[y \mid \mathbf{x}]\big) = \theta_0 + \sum_j f_j(x_j),
+g\big(\mathbb{E}[y \mid \mathbf{x}]\big) = b + \sum_j f_j(x_j),
 $$
 
 dove ogni $f_j$ è una funzione liscia stimata dai dati (spline, smoother) e $g$
@@ -270,11 +273,12 @@ punteggio scritto sotto è uno dei tanti possibili. A destra si è deciso, e son
 rimaste tre colonne su otto.
 ```
 
-La differenza fra i due passi è di natura, non di ordine. Una classifica è un
-fatto misurabile: si misura, e viene quel che viene. La riga tratteggiata invece
-non la dice nessun dato, la decide una persona, e va giustificata con qualcosa
-d'altro: il costo di raccogliere una colonna, un vincolo di leggibilità, una
-prova che il modello ridotto non peggiora. Quello di cui parliamo da qui in avanti è la classifica, non la riga
+La differenza fra i due passi che {numref}`fig-feature-selection` affianca è di
+natura, non di ordine. Una classifica è un fatto misurabile: si misura, e viene
+quel che viene. La riga tratteggiata invece non la dice nessun dato, la decide
+una persona, e va giustificata con qualcosa d'altro: il costo di raccogliere
+una colonna, un vincolo di leggibilità, una prova che il modello ridotto non
+peggiora. Quello di cui parliamo da qui in avanti è la classifica, non la riga
 tratteggiata.
 
 Cominciamo dal modo più generale e più solido di costruirla. È un metodo che non
@@ -317,6 +321,8 @@ ogni mese sul conto, rimescolare il reddito non fa danni: il modello legge
 l'altra colonna e il calo resta piccolo. Quel numero basso è vero se la domanda
 è di che cosa il modello ha bisogno, perché gli basta una delle due colonne;
 inganna chi ci legge quanta informazione porti il reddito, che ne porta eccome.
+È il bivio dell'apertura, quello fra spiegare il programma e spiegare il mondo,
+che torna qui per la prima volta.
 Il rovescio è che rimescolando si fabbricano clienti impossibili, un ventenne
 con la pensione di un ex dirigente: su gente mai vista il modello risponde come
 capita, il calo si gonfia, e quella colonna sembra contare più del vero.
@@ -328,13 +334,13 @@ capita, il calo si gonfia, e quella colonna sembra contare più del vero.
 Formalizziamo. Sia $f$ il modello addestrato e
 $e_{\text{orig}} = \mathcal{L}(f, \mathcal{D})$ il suo errore (o l'opposto di uno
 *score*: MSE in regressione, $1-\text{acc}$ in classificazione) su un insieme
-di valutazione $\mathcal{D} = (\mathbf{X}, y)$. Per la feature $j$ si costruisce
-$\mathbf{X}_{\pi_j}$,
+di valutazione $\mathcal{D} = (\mathbf{X}, \mathbf{y})$. Per la feature $j$ si
+costruisce $\mathbf{X}_{\pi_j}$,
 copia di $\mathbf{X}$ in cui i valori della **sola colonna $j$** sono permutati
 casualmente lungo le righe (rompendo il legame tra $x_j$ e $y$ ma
 preservandone la distribuzione marginale) e si misura
-$e_{\pi_j} = \mathcal{L}(f, (\mathbf{X}_{\pi_j}, y))$. L'importanza è il
-peggioramento
+$e_{\pi_j} = \mathcal{L}(f, (\mathbf{X}_{\pi_j}, \mathbf{y}))$. L'importanza
+è il peggioramento
 
 $$
 \mathrm{FI}_j = \frac{1}{K}\sum_{k=1}^{K} e_{\pi_j}^{(k)} - e_{\text{orig}},
@@ -432,7 +438,7 @@ non soffre: ed è la ragione per cui, dovendo scegliere, ci si fida di quello.
 
 Il bias della MDI è verso le feature ad **alta cardinalità** e quelle
 **continue**, ed è stato stabilito da Strobl, Boulesteix, Zeileis e Hothorn
-{cite}`strobl2007bias`, che ne identificano **due** sorgenti distinte.
+{cite}`strobl2007bias`, che ne identificano due sorgenti distinte.
 
 La prima è combinatoria: il numero di split candidati cresce con
 il numero di valori distinti, e massimizzare la riduzione d'impurità su molti
@@ -555,10 +561,9 @@ Torniamo alle due classifiche, quelle di due sezioni fa, e mettiamole a
 confronto su dati veri. Le curve appena viste rispondevano a «come agisce una
 colonna»; adesso si torna alla domanda di prima, «quanto conta», e si guarda
 quale dei due modi di misurarla è affidabile. Ne useremo una raccolta che si
-studia da decenni, distribuita insieme alla libreria `scikit-learn` (lo
-strumentario di machine learning che il libro usa da sempre) e che si chiama
-`diabetes`. È una tabella di 442 righe, una per paziente diabetico, e dieci
-colonne di misure cliniche: l'età, il sesso, l'indice di massa corporea
+studia da decenni, distribuita insieme alla libreria `scikit-learn` e che si
+chiama `diabetes`. È una tabella di 442 righe, una per paziente diabetico, e
+dieci colonne di misure cliniche: l'età, il sesso, l'indice di massa corporea
 (`bmi`), la pressione (`bp`) e sei valori del sangue, chiamati da `s1` a `s6`.
 La cosa da prevedere, in ogni riga, è quanto la malattia sarà progredita dopo un
 anno; la colonna da prevedere si chiama, in gergo, il **target**, ed è l'unica
@@ -569,7 +574,7 @@ righe) serve al modello per imparare, e su quelle diremo che il modello si
 **addestra**; il restante 30% (133 righe) resta da parte, e il modello lo vedrà
 solo alla fine, per essere messo alla prova su casi che non ha mai incontrato.
 Il primo mucchio si chiama insieme di addestramento, il secondo insieme di
-prova, o *test*. La distinzione qui è metà della morale di questa pagina.
+prova, o *test*. La distinzione fra i due mucchi è metà della morale.
 
 E poi un accorgimento, che è il vero esperimento: aggiungiamo alla tabella
 **due colonne inventate**, riempite di numeri tirati a sorte e senza alcun
@@ -578,7 +583,8 @@ fra loro), una binaria (soltanto 0 o 1). Sappiamo per costruzione che non
 valgono niente, tutte e due allo stesso modo, e proprio per questo servono:
 sono il metro con cui leggere ciò che le due misure diranno. Su questa tabella a
 dodici colonne facciamo crescere una foresta casuale, e poi chiediamo a
-entrambe le tecniche quali colonne contano.
+entrambe le tecniche quali colonne contano. La stampa ordina le dodici
+colonne per importanza da impurità e affianca quella per rimescolamento.
 
 ```python
 import numpy as np
@@ -605,33 +611,31 @@ print("R^2 sul test:", round(rf.score(X_te, y_te), 3))  # -> 0.315
 # Importanza da permutazione, misurata sul TEST (10 mescolamenti per feature)
 pi = permutation_importance(rf, X_te, y_te, n_repeats=10, random_state=0)
 
-print("feature      (impurita)   perm-import")
+print("feature      (impurita)   perm-import   valori distinti")
 for i in np.argsort(rf.feature_importances_)[::-1]:   # dalla piu alta per la MDI
-    print(f"{nomi[i]:>11}   {rf.feature_importances_[i]:.3f}       "
-          f"{pi.importances_mean[i]:+.3f} +/- {pi.importances_std[i]:.3f}")
+    print(f"{nomi[i]:>11}   {rf.feature_importances_[i]:.4f}      "
+          f"{pi.importances_mean[i]:+.3f} +/- {pi.importances_std[i]:.3f}"
+          f"   {len(np.unique(X_tr[:, i])):5d}")
 ```
-
-L'output ordina le dodici colonne per importanza da impurità e affianca quella
-per rimescolamento:
 
 ```text
 R^2 sul test: 0.315
-feature      (impurita)   perm-import
-        bmi   0.297       +0.179 +/- 0.023
-         s5   0.296       +0.188 +/- 0.065
-         bp   0.091       +0.035 +/- 0.012
-         s3   0.058       -0.015 +/- 0.015
-         s6   0.051       -0.001 +/- 0.008
-rumore_cont   0.047       +0.004 +/- 0.012
-         s2   0.042       +0.002 +/- 0.009
-        age   0.041       +0.005 +/- 0.011
-         s1   0.037       +0.002 +/- 0.007
-         s4   0.025       -0.009 +/- 0.008
-        sex   0.007       +0.004 +/- 0.002
- rumore_bin   0.006       -0.002 +/- 0.002
+feature      (impurita)   perm-import   valori distinti
+        bmi   0.2972      +0.179 +/- 0.023     140
+         s5   0.2959      +0.188 +/- 0.065     156
+         bp   0.0914      +0.035 +/- 0.012      87
+         s3   0.0584      -0.015 +/- 0.015      59
+         s6   0.0506      -0.001 +/- 0.008      56
+rumore_cont   0.0467      +0.004 +/- 0.012     309
+         s2   0.0420      +0.002 +/- 0.009     238
+        age   0.0411      +0.005 +/- 0.011      57
+         s1   0.0374      +0.002 +/- 0.007     127
+         s4   0.0253      -0.009 +/- 0.008      53
+        sex   0.0075      +0.004 +/- 0.002       2
+ rumore_bin   0.0065      -0.002 +/- 0.002       2
 ```
 
-Prima di leggere la classifica, i tre numeri della stampa, uno alla volta.
+Prima di leggere la classifica, i tre numeri che la compongono, uno alla volta.
 
 Il **primo** dice quanto è bravo il modello, ed è costruito su una scala con due
 paletti. Da una parte c'è chi risponde sempre la media, senza nemmeno guardare
@@ -639,15 +643,13 @@ il paziente: quello prende **zero**. Dall'altra c'è chi indovina la progression
 esatta di ogni paziente: quello prende **uno**. (E si può anche andare sotto
 zero, facendo peggio di chi risponde sempre la media.) Il nostro modello prende
 $0{,}315$, cioè sta a poco meno di un terzo del cammino fra il pigro e
-l'indovino. Quella misura si chiama $R^2$, e il numero va tenuto a mente per
-tutta la pagina: l'importanza che stiamo per leggere descrive *questo* modello,
+l'indovino. Quella misura si chiama $R^2$, e il numero va tenuto a mente:
+l'importanza che stiamo per leggere descrive *questo* modello,
 che non è bravissimo, non la verità clinica.
 
 Il **secondo**, la colonna dell'impurità, è il merito accumulato dai tagli. È
 distribuito su tutte le colonne come una torta: i dodici numeri sommano a 1, e
-infatti si leggono come frazioni del merito totale. (Sommandoli a mano da questa
-stampa viene $0{,}998$: è colpa dei tre decimali a cui la stampa arrotonda, non
-del conto.)
+infatti si leggono come frazioni del merito totale.
 
 Il **terzo**, la colonna del rimescolamento, è il calo di quel primo numero,
 l’$R^2$, quando la colonna viene rimescolata. Le due colonne di numeri non sono
@@ -664,25 +666,24 @@ rendono misurabili.
 
 **La prima differenza è il segno.** Diverse colonne hanno un'importanza da
 rimescolamento lievemente **negativa** (`s3`, `s4`, `s6`, e il rumore binario):
-rimescolarle *migliora* di un soffio le risposte. È il caso e non un paradosso:
-sono numeri dell'ordine del centesimo, cioè dello stesso ordine del ballerio fra
-un rimescolamento e l'altro che il «$\pm$» accanto dichiara, e il modo giusto di
-leggerli è «quella colonna non serviva». La
-misura da impurità questo non lo può dire, perché non scende **mai sotto zero**:
-un taglio o abbassa l'impurità o non viene scelto, quindi accredita sempre
-merito positivo, e nel suo linguaggio la frase «questa colonna non serve»
-letteralmente non esiste.
+rimescolarle *migliora* di un soffio le risposte. Nessun paradosso: sono
+numeri dell'ordine del centesimo, e quel poco dipende da quali 133 righe sono
+capitate nell'insieme di prova, tanto che estraendole in un altro modo lo
+stesso `s3` può venire positivo. Il modo giusto di leggerli è «quella colonna
+non serviva». La misura da impurità questo non lo può dire, perché non scende
+**mai sotto zero**: con i criteri che gli alberi usano nessun taglio può alzare
+l'impurità, quindi ogni taglio accredita merito positivo, e nel suo linguaggio
+la frase «questa colonna non serve» letteralmente non esiste.
 
 **La seconda differenza è la distorsione, e adesso si vede.** Il `rumore_cont`
-prende un'impurità di $0{,}047$: più di `s2`, di `age`, di `s1` e di `s4`, che
+prende un'impurità di $0{,}0467$: più di `s2`, di `age`, di `s1` e di `s4`, che
 sono indicatori clinici veri. Il `rumore_bin`, altrettanto inutile, prende
-$0{,}006$. Fra due colonne che valgono entrambe esattamente zero c'è quindi un
-fattore **sette**: la stampa arrotonda a tre decimali, e a occhio la divisione
-darebbe quasi otto, ma sui valori pieni, $0{,}0467$ e $0{,}0065$, il rapporto è
-$7{,}2$. L'unica differenza fra le due colonne è quanti valori distinti
-contengono nelle 309 righe su cui gli alberi sono cresciuti: 309 la prima, cioè
-un valore diverso per ogni riga; due la seconda. È la distorsione verso le
-colonne con tanti valori, misurata invece che affermata.
+$0{,}0065$: fra due colonne che valgono entrambe esattamente zero c'è un
+fattore $7{,}2$. La differenza che conta sta nell'ultima colonna della
+stampa, quanti valori distinti contengono nelle 309 righe su cui gli alberi
+sono cresciuti: 309 la prima, cioè un valore diverso per ogni riga; due la
+seconda. È la distorsione verso le colonne con tanti valori, misurata invece
+che affermata.
 
 E il rimescolamento, sulle stesse due colonne inventate, dà $+0{,}004$ e
 $-0{,}002$: zero entrambe, come dev'essere. Su questo non si fa ingannare dal
@@ -690,7 +691,7 @@ numero di valori, perché non guarda le soglie: guarda soltanto se il modello
 peggiora.
 
 La riga di `sex`, invece, va letta con prudenza. È una colonna vera, non
-inventata da noi, ed è ferma a $0{,}007$, cioè al livello del rumore binario, e
+inventata da noi, ed è ferma a $0{,}0075$, cioè al livello del rumore binario, e
 verrebbe voglia di dire che è la sua binarietà a penalizzarla. Può darsi, ma la
 tabella non lo dimostra: anche il rimescolamento le dà quasi zero, quindi il
 sesso potrebbe semplicemente contare poco per *questo* modello, e le due
@@ -700,20 +701,16 @@ merito che ricevono è distorsione e basta.
 
 Resta da spiegare perché `s3` e `s6` prendano un'impurità non trascurabile
 (circa $0{,}05$) benché il rimescolamento li dichiari inutili. Qui le due
-ragioni agiscono **insieme**, dentro lo stesso numero. Nelle 309 righe di
-addestramento `s3` e `s6` hanno 59 e 56 valori distinti: molti meno del rumore
-continuo, che ne ha 309, ma moltissimi di più di `sex`, che ne ha due.
-Cinquantotto soglie fra cui scegliere bastano perché una colonna inutile si
-guadagni comunque un po’ di merito, e lo si può misurare: rimescolando `s3`
-e `s6` su tutte e 442 le righe, cioè cancellando ogni loro legame con la
-malattia e lasciandone intatta la distribuzione, l'impurità che ricevono scende
-soltanto a circa $0{,}036$ e $0{,}040$. Due terzi di quel merito, dunque, non
-venivano dalla malattia: venivano dal numero di soglie. Il terzo che resta lo
-aggiunge la seconda ragione, cioè che i meriti sono accreditati sulle stesse
-309 righe da cui gli alberi hanno imparato: là un taglio su `s3` sembrava
-utile, sulle 133 righe di prova non serve più. Due meccanismi diversi, sommati
-dentro un numero solo, ed è per questo che quella colonna non va letta come una
-classifica.
+ragioni agiscono **insieme**, dentro lo stesso numero. La prima è quella di
+poco fa: l'ultima colonna della stampa dice che nelle 309 righe di
+addestramento `s3` e `s6` hanno 59 e 56 valori distinti, molti meno del rumore
+continuo ma moltissimi di più di `sex`, che ne ha due, e tante soglie fra cui
+scegliere bastano perché una colonna debole si guadagni comunque un po’ di
+merito. La seconda è che i meriti sono accreditati sulle stesse 309 righe da
+cui gli alberi hanno imparato: là un taglio su `s3` sembrava utile, sulle 133
+righe di prova non serve più. Due meccanismi diversi, sommati dentro un numero
+solo che non dice quanto spetti a ciascuno, ed è per questo che quella colonna
+non va letta come una classifica.
 
 ## Che una feature conti, non come, né perché
 
@@ -723,7 +720,7 @@ asmatici. L'importanza delle feature (per rimescolamento o da impurità) dice
 (per quello servono le curve di poco fa), non dice se l'effetto sia lo stesso
 per tutti (per quello servono i metodi della sezione seguente), e soprattutto
 non dice che quella colonna sia la **causa** di niente. Attenzione a questa
-parola, che somiglia a un'altra usata dieci volte in questa pagina: «casuale»
+parola, che somiglia a un'altra usata qui di continuo: «casuale»
 vuol dire tirato a sorte, «causale» vuol dire che una cosa ne provoca un'altra,
 ed è la seconda che qui stiamo negando.
 
@@ -756,7 +753,9 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   il modello: se rimescolando il reddito le risposte giuste scendono dal $90\%$
   al $72\%$, quella colonna vale 18 punti. Funziona con qualunque modello, va
   misurata su dati che il modello non ha mai visto in addestramento e ripetuta
-  più volte, facendo la media.
+  più volte, facendo la media. Vale finché le colonne non dicono la stessa cosa:
+  se ce n'è una gemella il modello legge quella, e il calo resta piccolo anche
+  per una colonna che conta eccome.
 - L'importanza **da impurità** degli alberi (l'impurità è quanto sono mescolate
   le risposte dentro un gruppo: l'albero taglia per fare gruppi più omogenei)
   arriva gratis con l'addestramento ma è **distorta**: premia le colonne con
@@ -777,9 +776,9 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   solo valori vicini fra chi quei valori li ha davvero, senza inventare
   nessuno.
 - L'importanza dice **che** una colonna pesa sulle risposte, non come agisce
-  né che ne sia la **causa**: il reddito può contare solo perché fa da spia del
-  quartiere. È l'errore della regola sugli asmatici; il panorama completo è nel
-  manuale di Molnar.
+  né che ne sia la **causa**: è l'errore della regola sugli asmatici, dove a
+  proteggere non era l'asma ma la corsia in cui l'asma faceva finire. Il
+  panorama completo è nel manuale di Molnar.
 ```
 
 `````
@@ -795,7 +794,9 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
 - La **permutation importance** {cite}`breiman2001random` mescola i valori di
   una sola colonna e misura il **calo** di performance ($\mathrm{FI}_j =
   e_{\pi_j} - e_{\text{orig}}$): è **model-agnostic**, va calcolata su dati
-  **held-out** e mediata su più permutazioni.
+  **held-out** e mediata su più permutazioni. Con feature **correlate** il
+  numero va letto con la domanda in mano: la gemella non permutata lo
+  sottostima, l'estrapolazione fuori supporto lo sovrastima.
 - L'importanza da **impurità** (MDI) negli alberi è gratis ma **distorta**
   {cite}`strobl2007bias`: gonfia le feature continue e ad alta cardinalità (per
   via del numero di split candidati *e* del bootstrap con reimmissione), ed è

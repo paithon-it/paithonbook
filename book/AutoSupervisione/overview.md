@@ -18,9 +18,9 @@ chiama *compito cloze* {cite}`devlin2019bert`. Nel mezzo sono cambiati **chi lo
 fa** e **a che scopo**, non l'esercizio. Non si misura più il lettore, si
 fabbrica il lettore.
 
-Questo capitolo parla di quella mossa, che il libro ha già usato cinque volte
-con cinque nomi diversi senza mai fermarsi a dire che era una cosa sola, e che
-oggi regge il pre-addestramento di quasi tutti i modelli di cui si parla.
+Quella mossa è comparsa già cinque volte, con cinque nomi diversi e senza che
+nessuno si fermasse a dire che era una cosa sola, e oggi regge il
+pre-addestramento di quasi tutti i modelli di cui si parla.
 
 ## Un compito la cui risposta è già nei dati
 
@@ -39,16 +39,14 @@ parola avevo coperto, quale pezzo di immagine avevo ritagliato, quale
 fotogramma viene dopo. La risposta c'era già, e noi l'abbiamo solo nascosta per
 un momento.
 
-Detta così sembra un trucco contabile. Non lo è, e la ragione è il resto di
-questa pagina.
+Detta così sembra un trucco contabile. Non lo è, e la ragione è aritmetica.
 
 ## Quanta informazione porta una risposta
 
-Le tre grandi famiglie di apprendimento che il libro ha attraversato
-(supervisionato, per rinforzo, auto-supervisionato) si distinguono di solito
-per come sono fatte. Conviene invece guardarle da un'altra parte: per **quanto
-dice** la risposta con cui il modello si corregge. Non quanto è giusta: quanto
-è *grande*.
+Le tre grandi famiglie di apprendimento (supervisionato, per rinforzo,
+auto-supervisionato) si distinguono di solito per come sono fatte. Conviene
+invece guardarle da un'altra parte: per **quanto dice** la risposta con cui il
+modello si corregge. Non quanto è giusta: quanto è *grande*.
 
 `````{tab} Elementare
 
@@ -84,8 +82,8 @@ l'auto-supervisione, ed è il solo dei tre in cui la correzione che ricevi è
 La quantità da guardare è l'informazione portata dal **bersaglio**, cioè dalla
 risposta corretta su cui si calcola la perdita. Una scelta fra $K$ possibilità
 equiprobabili porta al più $\log_2 K$ bit, che è la definizione di entropia
-applicata al caso uniforme (la sezione sulla teoria dell'informazione, nei
-richiami di matematica, la ricava).
+applicata al caso uniforme, e la ricava
+{doc}`Teoria dell'informazione </Matematica/teoria-informazione>`.
 
 Da qui tre conti, e sono conti di **tetto**, non di sostanza:
 
@@ -111,7 +109,7 @@ from math import log2
 
 # Quanta informazione porta AL PIU' il bersaglio, cioe' la risposta giusta su
 # cui il modello si corregge. E' il tetto del canale: quanto ci passa davvero
-# e' un'altra domanda, e la pagina ci torna sopra.
+# e' un'altra domanda.
 
 def bit_per_scelta(n):
     """Una scelta fra n possibilita' equiprobabili vale log2(n) bit."""
@@ -164,7 +162,7 @@ una pagina di testo che nessuno ha mai guardato può bastare a insegnare
 qualcosa.
 
 Adesso però va detta la cosa che rende il conto onesto, perché senza di essa
-questa pagina prometterebbe più di quanto può mantenere.
+quei numeri prometterebbero più di quanto possono mantenere.
 
 `````{tab} Elementare
 
@@ -203,9 +201,10 @@ più basso.
 La seconda: l'informazione del bersaglio è un limite superiore
 sull'informazione che il gradiente può trasportare, non una misura di ciò che
 la rete acquisisce. Fra le due c'è di mezzo l'ottimizzazione, l'architettura e
-la scelta del pretesto, e il capitolo sulla visione ha già mostrato quanto
-quella scelta pesi: con le trasformazioni sbagliate un modello risolve il
-pretesto per scorciatoia e non impara niente.
+la scelta del pretesto, e quanto quella scelta pesi lo ha già mostrato
+{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`:
+con le trasformazioni sbagliate un modello risolve il pretesto per scorciatoia
+e non impara niente.
 
 La terza, ed è quella che il dibattito sul rinforzo userà: la povertà del
 segnale nel rinforzo non è solo una questione di quantità. Un bit per episodio
@@ -217,8 +216,7 @@ numero di bit.
 
 ## La torta, e la parola che ci hanno cambiato dentro
 
-L'argomento ha una forma celebre, e conviene raccontarla per intero perché la
-sua storia dice qualcosa sul campo.
+L'argomento ha una forma celebre, e la sua storia dice qualcosa sul campo.
 
 Nel dicembre del 2016, a un convegno, Yann LeCun mostra una diapositiva con
 una fetta di torta e una frase: «se l'intelligenza è una torta, il grosso della
@@ -236,8 +234,8 @@ fuorviante, perché suggerisce che l'apprendimento non usi supervisione affatto,
 mentre in realtà l'auto-supervisione «usa molti più segnali di correzione di
 quanti ne usino i metodi supervisionati e per rinforzo standard».
 
-Quella frase è il conto della sezione precedente, detto in una riga e dalla
-persona che ha disegnato la torta.
+Quella frase è il conto sull'informazione del bersaglio, detto in una riga e
+dalla persona che l'ha disegnata, la torta.
 
 Conviene essere precisi su che cosa quell'obiezione colpisce, perché «non
 supervisionato» resta una parola giusta in un caso e fuorviante nell'altro.
@@ -246,25 +244,26 @@ partire dal resto**: là un segnale di correzione c'è, ed è quello che rende
 l'espressione fuorviante. Non colpisce i metodi che non prevedono niente e si
 limitano a descrivere la forma dei dati, cioè il raggruppamento, la riduzione
 della dimensionalità e la stima di densità: lì la supervisione manca davvero,
-e il nome tradizionale non inganna nessuno. Il {doc}`capitolo di machine learning </MachineLearning/overview>`
-tiene la distinzione esplicita nella sezione su come si valuta un
-raggruppamento; qui basti sapere che dei due usi solo il primo è quello
-contestato, ed è l'unico che questo libro evita.
+e il nome tradizionale non inganna nessuno. La distinzione è tenuta esplicita
+in {doc}`Valutare un raggruppamento </MachineLearning/valutare-un-raggruppamento>`;
+qui basti sapere che dei due usi solo il primo è quello contestato, ed è
+l'unico che si evita.
 
 ```{admonition} Una nota sulla fonte
 :class: note
 Della diapositiva del 2016 circolano moltissime riproduzioni e la frase è
 riportata in modo concorde, ma le lastre originali non sono più reperibili
-online. L'argomento di questa pagina non poggia su di esse: poggia sul testo
-del 2021, che è firmato, datato e leggibile da chiunque. La torta serve come
-immagine e come cronologia, non come prova.
+online. L'argomento non poggia su di esse: poggia sul testo del 2021, che è
+firmato, datato e leggibile da chiunque. La torta serve come immagine e come
+cronologia, non come prova.
 ```
 
-## Dove il libro l'ha già fatto
+## Cinque pretesti, un solo meccanismo
 
-Se l'auto-supervisione è il paradigma, allora il libro ne è pieno, e la
-tabella che segue è l'elenco delle volte in cui l'ha già fatta senza chiamarla
-per nome.
+Se l'auto-supervisione è il paradigma, di pretesti se ne sono già costruiti
+parecchi senza chiamarli per nome, e la tabella che segue li mette in fila. Le
+prime quattro righe sono strada percorsa; l'ultima è quella che viene subito
+dopo.
 
 | dove | il pretesto | che cosa se ne tiene |
 |---|---|---|
@@ -274,18 +273,19 @@ per nome.
 | {doc}`Allineare due spazi </VisioneLinguaggio/allineare-due-spazi>` | riappaiare l'immagine con la sua didascalia | uno spazio comune fra vista e lingua |
 | {doc}`World model </WorldModels/overview>` | prevedere come continua la scena | un simulatore interno |
 
-Cinque righe e un solo meccanismo, distribuito su sei capitoli, perché la prima
-riga ne tiene due. La colonna di mezzo cambia sempre; la colonna di destra è
-sempre la stessa cosa, una **rappresentazione**, cioè il riassunto interno che
-il modello si costruisce e che tutto il resto usa come materia prima. Il pezzo
-di rete che produce quel riassunto si chiama **encoder**, ed è esattamente
-quello che si tiene quando il pretesto si butta.
+Cinque pretesti diversi e un meccanismo solo, che occupa sei capitoli perché il
+linguaggio ne prende due. La colonna di mezzo cambia sempre; la colonna di
+destra è sempre la stessa cosa, una **rappresentazione**, cioè il riassunto
+interno che il modello si costruisce e che tutto il resto usa come materia
+prima. Il pezzo di rete che produce quel riassunto si chiama **encoder**, ed è
+esattamente quello che si tiene quando il pretesto si butta.
 
-C'è poi una sesta riga, che non è un capitolo del libro ma un organismo vivo.
-Nelle neuroscienze teoriche c'è un modo di guardare al cervello, l’**inferenza
+C'è poi un sesto caso, che non è un capitolo ma un organismo vivo. Nelle
+neuroscienze teoriche c'è un modo di guardare al cervello, l’**inferenza
 attiva**, secondo cui percepire e agire non sono due mestieri distinti ma lo
 stesso mestiere: indovinare che cosa c'è là fuori, e muoversi per indovinare
-meglio. Il {doc}`capitolo sui world model </WorldModels/overview>` gli dedica una sezione. Qui serve una frase
+meglio; gli è dedicata
+{doc}`Inferenza attiva </WorldModels/inferenza-attiva>`. Qui serve una frase
 sola, perché dice del paradigma qualcosa che nessun sistema artificiale può
 dire: imparare «non è fondamentalmente diverso dalla percezione; opera
 semplicemente su una scala di tempo più lenta» {cite}`parr2022active`.
@@ -316,8 +316,8 @@ alle spalle, cioè *perché* tutto questo funzioni: la risposta che una parte de
 campo dà è che prevedere bene obbliga a comprimere, e comprimere obbliga a
 capire. Infine la **ciliegina**, cioè il dibattito su quanto conti
 l'apprendimento per rinforzo rispetto alla torta dell'auto-supervisione, che è
-la parte in cui persone molto autorevoli non sono d'accordo fra loro e questo
-libro si limita a riportare gli argomenti con i loro nomi giusti.
+la parte in cui persone molto autorevoli non sono d'accordo fra loro, e qui
+gli argomenti si riportano con i loro nomi giusti e basta.
 
 `````{tab} Elementare
 
@@ -334,10 +334,12 @@ libro si limita a riportare gli argomenti con i loro nomi giusti.
   correzione** che il modello riceve. Una parola sola («cardellino») per una
   fotografia intera; oppure mezza fotografia da ricostruire, cioè migliaia di
   dettagli; oppure un «bravo» a fine giornata, che vale per tutta la giornata.
-- Fra la mezza fotografia da ricostruire e la parola scritta sotto la foto ci
-  sono quattro zeri di differenza, e fra la mezza fotografia e il «bravo» di
-  fine giornata ce ne sono cinque. La parola e il «bravo», invece, distano
-  appena dieci volte, e il conto lo fa un programma che si può rilanciare.
+- Il conto lo fa per bene un programma che si può rilanciare, e lo fa su un
+  caso solo: il brano di testo che il modello legge in un colpo, ottomila
+  pezzetti di parola. Quel brano vale quasi quattordicimila parole scritte
+  sotto una foto e centotrentanovemila «bravo» di fine giornata, cioè quattro
+  zeri di differenza da una parte e cinque dall'altra. La parola e il «bravo»,
+  invece, distano appena dieci volte.
 - Attenzione a non chiedere troppo a quei numeri: dicono quanto è **grande** la
   risposta, non quanto il modello ne ha capito. Sono il diametro del tubo, non
   l'acqua che ci passa.
@@ -376,9 +378,9 @@ libro si limita a riportare gli argomenti con i loro nomi giusti.
   motivazione è scritta in {cite}`lecun2021darkmatter`: «unsupervised» è
   fuorviante perché l'auto-supervisione «usa molti più segnali di correzione»
   del supervisionato e del rinforzo.
-- Il libro ha già istanziato il paradigma in cinque ambiti e sei capitoli
-  (linguaggio, che ne occupa due, visione, audio, visione-linguaggio, world
-  model): questo capitolo non li ripete, li unifica.
+- Il paradigma è già istanziato in cinque ambiti e sei capitoli (linguaggio,
+  che ne occupa due, visione, audio, visione-linguaggio, e i world model, che
+  vengono subito dopo): qui non si ripetono, si unificano.
 ```
 
 `````

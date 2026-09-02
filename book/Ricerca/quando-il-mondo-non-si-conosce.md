@@ -30,8 +30,9 @@ Agli scacchi il voto si sa scrivere: quanti pezzi ho, quanto vale ciascuno, se
 il re è al riparo, come stanno i pedoni. È la somma della sezione precedente, e
 funziona: nel 1997 il programma Deep Blue, che faceva esattamente questo e la
 potatura vista qui, giocò sei partite contro Garri Kasparov, che era il
-giocatore più forte del mondo, e ne uscì in vantaggio: tre e mezzo a due e
-mezzo, cioè due vittorie contro una e tre patte.
+giocatore più forte del mondo, e ne uscì in vantaggio per tre punti e mezzo a
+due e mezzo: due vittorie contro una, e tre patte, che valgono mezzo punto a
+testa.
 
 Il Go è un altro gioco, e conviene dire com’è fatto perché in Italia lo si
 vede di rado. Si gioca su una griglia grande, diciannove righe per diciannove,
@@ -51,9 +52,6 @@ arriva al punto in cui bisogna fermarsi, e lì non c’è niente da leggere.
 
 `````{tab} Elementare
 
-L’idea che sblocca la faccenda è di quelle che sembrano una presa in giro, e
-funzionano.
-
 Non sai giudicare una posizione? E allora **non giudicarla**: da lì, gioca la
 partita fino in fondo tirando le mosse a caso, e guarda come finisce. Poi
 rifallo. Poi rifallo mille volte. Alla fine non hai un giudizio, hai un
@@ -63,9 +61,9 @@ seicentotrenta volte su mille.
 A caso, ma con un divieto: non si posa un sassolino dentro un buco circondato
 tutto da sassolini propri. È una mossa che nessun giocatore farebbe, perché
 riempie con le proprie mani il territorio che stava tenendo. E senza quel
-divieto due giocatori che tirano a caso continuano a disfare quello che hanno
-appena costruito, la partita non finisce, e mille partite che non finiscono
-non contano niente.
+divieto due giocatori che tirano a caso disfano quello che hanno appena
+costruito, le partite rischiano di non finire più, e mille partite che non
+finiscono non contano niente.
 
 Detta così sembra assurdo, perché nessuna di quelle mille partite somiglia a
 una partita vera: sono mosse a caso, giocate malissimo da tutti e due. Ed è
@@ -76,12 +74,16 @@ misura come andrebbe la partita: misura quanto la posizione è *comoda*, e per
 scegliere una mossa spesso basta.
 
 Le partite da tirare, poi, non sono infinite, e servono a scegliere fra le
-mosse che potrei fare adesso: mille per ciascuna sarebbero troppe. Allora se
-ne dà qualcuna a tutte, si guarda quali stanno rendendo, e le prove successive
+mosse che potrei fare adesso: mille per ciascuna sarebbero troppe. Allora se ne
+dà qualcuna a tutte, si guarda quali stanno rendendo, e le prove successive
 vanno soprattutto lì; qualcuna però resta sempre per le mosse provate poco,
-perché tre partite andate male possono essere solo sfortuna. E ogni partita
-nuova si assegna così, una per volta, seguendo una regola sempre uguale invece
-che a occhio.
+perché tre partite andate male possono essere solo sfortuna. E dove va la
+partita successiva lo decide un conto, sempre lo stesso.
+
+E dentro la mossa che sta rendendo si rifà la stessa cosa, con le risposte che
+l’avversario potrebbe darle. Un pezzetto alla volta cresce un disegno di rami,
+fitto dalla parte che conta e quasi vuoto altrove, e ogni partita nuova parte
+dal fondo del ramo già scavato invece che da qui.
 
 Il punto di rottura c’è ed è serio: questo funziona nei giochi in cui una
 posizione buona resta buona anche giocando male. Ci sono giochi in cui non è
@@ -98,34 +100,33 @@ La mossa è sostituire la valutazione statica $\mathrm{ev}(s)$ con una stima
 **campionaria**: da $s$ si simulano $N$ partite fino alla fine con una politica
 rapida (nella versione più semplice, uniforme sulle mosse legali, con
 l’eccezione di quelle che nel Go riempirebbero un proprio occhio: senza quel
-divieto le partite a caso non finiscono) e si usa la
-frazione di vittorie come stima del valore. Stimare una quantità che non si sa
-calcolare campionando a caso e facendo la media si chiama **metodo Monte
-Carlo**, ed è un attrezzo che il libro riuserà in tre posti diversi: qui su un
-albero di gioco, nel capitolo seguente per stimare il valore di uno stato dalle
-partite giocate, e nei modelli generativi per stimare integrali che non hanno
-forma chiusa.
+divieto le partite a caso rischiano di non finire) e si usa la frazione di
+vittorie come stima del valore. Stimare una quantità che non si sa calcolare
+campionando a caso e facendo la media si chiama **metodo Monte Carlo**, ed è un
+attrezzo che il libro riuserà in tre posti diversi: qui su un albero di gioco,
+nel capitolo sul reinforcement learning per stimare il valore di uno stato
+dalle partite giocate, e nei modelli generativi per stimare integrali che non
+hanno forma chiusa.
 
 Resta da dire come si distribuisce il budget di simulazioni fra i figli della
 radice, e la risposta è **esattamente** il dilemma fra esplorare e sfruttare
-che il capitolo seguente introdurrà con i bandit a più braccia. Dare più prove
-a ciò che finora rende, senza smettere di provare ciò di cui si sa poco, e con
-una regola che quantifichi quel «senza smettere».
+che il capitolo sul reinforcement learning introdurrà con i bandit a più
+braccia. Dare più prove a ciò che finora rende, senza smettere di provare ciò
+di cui si sa poco, e con una regola che quantifichi quel «senza smettere».
 
-Valutare una posizione giocando partite a caso non è un’idea del 2006, e nel
-Go ci era arrivato per primo Bernd Brügmann {cite}`brugmann1993monte`, che nel
+Valutare una posizione giocando partite a caso non è un’idea del 2006, e nel Go
+ci era arrivato per primo Bernd Brügmann {cite}`brugmann1993monte`, che nel
 1993, senza dare al programma nessuna conoscenza oltre alle regole, sul nove
 per nove aveva raggiunto la forza di un principiante, ed è Coulom stesso a
-citarlo. Quello che nasce in quegli anni è la **fusione** delle due cose,
-e nasce in due tempi. Prima l’albero che cresce **una simulazione alla volta**,
+citarlo. Quello che nasce in quegli anni è la **fusione** delle due cose, e
+nasce in due tempi. Prima l’albero che cresce **una simulazione alla volta**,
 con un modo di risalire i valori che comincia facendo la media e finisce
 facendo il minimax {cite}`coulom2006efficient`. Poi la regola che decide dove
 spendere la simulazione successiva, cioè la stessa regola dei bandit (si chiama
 UCB1, e sceglie il ramo col miglior compromesso fra quanto ha reso finora e
 quanto poco lo si è provato) applicata a ogni nodo dell’albero
-{cite}`kocsis2006bandit`: è la seconda a dare al metodo le garanzie di
-convergenza, dimostrate però per una classe circoscritta di problemi e non in
-generale.
+{cite}`kocsis2006bandit`: è la seconda a dare al metodo le sue garanzie di
+convergenza, che però dicono che la stima arriva, non quanto in fretta.
 
 C’è un limite, e il metodo se lo porta dietro: la stima campionaria è tanto
 più informativa quanto più il valore di una posizione è **robusto rispetto
@@ -137,19 +138,20 @@ linea forzata, le simulazioni casuali sono rumore puro.
 Questa idea ha un nome, **ricerca ad albero Monte Carlo** (in inglese *Monte
 Carlo tree search*, abbreviata in MCTS). «Monte Carlo» è il nome che i
 matematici danno da ottant’anni ai metodi che stimano per sorteggio quello che
-non si sa calcolare, e da dove venga quel nome lo racconta il capitolo
-seguente, che sui metodi Monte Carlo ha una sezione sua. Ma il metodo non si
-esaurisce nel contare le partite: quello che lo rende praticabile è non
-spartire le simulazioni in parti uguali, perché darne mille a una mossa
-palesemente perdente è tempo buttato.
+non si sa calcolare, e da dove venga quel nome lo racconta il {doc}`capitolo
+sul reinforcement learning </ReinforcementLearning/overview>`, che sui metodi
+Monte Carlo ha una sezione sua. Ma il metodo non si esaurisce nel contare le
+partite: quello che lo rende praticabile è non spartire le simulazioni in parti
+uguali, perché darne mille a una mossa palesemente perdente è tempo buttato. E
+la stessa scelta si rifà più sotto, dentro la mossa che sta rendendo: è di lì
+che viene l’albero del nome.
 
-Il libro la costruisce per intero due capitoli più avanti, in quello che
-applica le reti profonde all’apprendimento per rinforzo (in inglese *deep
-reinforcement learning*, che è il nome con cui il capitolo si presenta), dove
-serve a raccontare come una rete neurale e una ricerca si aiutino a vicenda. Qui
-interessa solo il suo posto in questa storia, che è preciso: nasce per
-rispondere al voto che manca, ed è la ragione per cui il Go, che alla ricerca
-classica aveva resistito per trent’anni, ha cominciato a cedere.
+Il libro la costruisce per intero nella {doc}`sezione su MCTS e AlphaGo
+</DeepReinforcementLearning/mcts-alphago>`, dove serve a raccontare come una
+rete neurale e una ricerca si aiutino a vicenda. Qui interessa solo il suo
+posto in questa storia, che è preciso: nasce per rispondere al voto che manca,
+ed è la ragione per cui il Go, che alla ricerca classica aveva resistito per
+trent’anni, ha cominciato a cedere.
 
 ## Quando l’arrivo non si sa dire
 
@@ -170,17 +172,18 @@ sono gli spostamenti che la migliorano un po’, e a un certo punto si smette
 perché è ora di cena. Nessuno ha finito: uno ha smesso.
 
 Questa famiglia di metodi il libro la incontra altrove sotto altri nomi. È
-quello che fa la **discesa del gradiente** dei richiami di matematica, cioè il
-modo in cui una rete neurale impara: si parte da una configurazione qualunque,
-si guarda da che parte migliora, ci si sposta di un passo, e nessuno dice mai
-che si è arrivati. Ed è quello che rifanno gli **sciami** del capitolo sui
-sistemi multi-agente, dove a spostare i mobili sono in tanti insieme e nessuno
-comanda.
+quello che fa la **discesa del gradiente** dei {doc}`richiami di matematica
+</Matematica/analisi-ottimizzazione>`, cioè il modo in cui una rete neurale
+impara: si parte da una configurazione qualunque, si guarda da che parte
+migliora, ci si sposta di un passo, e nessuno dice mai che si è arrivati. Ed è
+quello che rifà lo {doc}`sciame di particelle dei sistemi multi-agente
+</SistemiMultiAgente/sciami-e-simulazioni>`, dove a spostare i mobili sono in
+tanti insieme e nessuno comanda.
 
 ## Quando le regole non si possono interrogare
 
 Le regole sono il regalo più grosso dei tre, e toglierle è quello che apre il
-capitolo seguente.
+capitolo sul reinforcement learning.
 
 `````{tab} Elementare
 
@@ -208,8 +211,6 @@ bene. Se ne incateni dieci, ogni pezzo storto si somma a quelli di prima, e il
 finale che ti figuri non ha più molto a che fare con quello che succederà
 davvero al tavolo.
 
-Ed è esattamente quello che si impara a fare da qui in poi.
-
 `````
 
 `````{tab} Superiore
@@ -224,29 +225,32 @@ davvero accaduti.
 
 Le due cose non sono alternative, e i capitoli che seguono lo mostrano in tre
 modi. Se il modello manca ma lo si può **imparare**, si ricade nel caso di
-questo capitolo usando il modello appreso al posto di quello vero: sono i
-metodi basati su modello del capitolo sul deep reinforcement learning, con il
-rischio che gli errori del modello si accumulino lungo i rami immaginati. Se
+questo capitolo usando il modello appreso al posto di quello vero: è la
+{doc}`famiglia dei metodi basati su modello
+</DeepReinforcementLearning/model-based>`, col rischio che gli errori del
+modello si accumulino lungo i rami immaginati. Se
 esiste una rete che **suggerisce dove guardare**, la ricerca smette di essere
 cieca e diventa quella di AlphaGo e dei suoi successori
 {cite}`silver2016mastering`. E se il modello non c’è affatto, restano i metodi
-del capitolo seguente.
+del capitolo sul reinforcement learning.
 
 Resta un punto di contatto: anche a modello
 ignoto, **pensare prima di rispondere paga**. Il calcolo speso al momento
 della risposta invece che durante l’addestramento è
-una forma di ricerca, e il capitolo sui Transformer lo tratterà per esteso
-parlando dei modelli che scrivono una lunga brutta copia prima di rispondere.
+una forma di ricerca, e la {doc}`sezione sul post-addestramento
+</Transformers/post-training>` la tratterà per esteso, parlando dei modelli che
+scrivono una lunga brutta copia prima di rispondere.
 
 `````
 
 Conviene guardare i tre casi tutti insieme, perché messi in fila dicono una
 cosa che presa uno per uno non si vede: **non sono tre difficoltà, sono tre
 destinazioni**. Senza il voto si arriva alla ricerca ad albero Monte Carlo;
-senza l’arrivo si finisce nell’ottimizzazione, quella della discesa del
-gradiente dei richiami di matematica e degli sciami; senza le regole da
-interrogare, all’apprendimento per rinforzo. Un metodo di intelligenza artificiale, spesso,
-è il nome che diamo a un regalo che ci hanno tolto.
+senza l’arrivo si finisce nell’ottimizzazione, cioè nel migliorare senza mai
+arrivare, quella della discesa del gradiente dei richiami di matematica e degli
+sciami; senza le regole da interrogare, all’apprendimento per rinforzo. Un
+metodo di intelligenza artificiale, spesso, è il nome che diamo a un regalo che
+ci hanno tolto.
 
 `````{tab} Elementare
 
@@ -287,7 +291,8 @@ interrogare, all’apprendimento per rinforzo. Un metodo di intelligenza artific
   campionaria ottenuta simulando partite fino in fondo, e si distribuiscono le
   simulazioni risolvendo un problema di esplorazione contro sfruttamento.
   È la ricerca ad albero Monte Carlo {cite}`coulom2006efficient,kocsis2006bandit`,
-  che il libro costruisce nel {doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`.
+  che il libro costruisce nella {doc}`sezione su MCTS e AlphaGo
+  </DeepReinforcementLearning/mcts-alphago>`.
 - Cade il **test di terminazione**: il problema diventa di ottimizzazione, non
   di ricerca di un cammino.
 - Cade il **modello interrogabile**: si entra nell’apprendimento per rinforzo.

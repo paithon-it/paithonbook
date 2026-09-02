@@ -87,10 +87,10 @@ insiemi di addestramento e di valutazione vanno costruiti di conseguenza.
 
 ## Costruirlo è il lavoro
 
-Il grafo non arriva già fatto, e va detto con chiarezza che questa è la parte
-grossa: rispetto a costruirlo, i modelli che ci girano sopra sono la parte
-facile e divertente. Il percorso da un mucchio di testi a un grafo di fatti
-passa per quattro gradini, e il libro ha già affrontato il primo.
+Il grafo non arriva già fatto, e costruirlo è la parte grossa: i modelli che ci
+girano sopra, al confronto, sono la parte facile e divertente. Il percorso da
+un mucchio di testi a un grafo di fatti passa per quattro gradini, e il libro
+ha già affrontato il primo.
 
 Il primo gradino è **trovare i nomi**: individuare nel testo i pezzi che
 nominano una cosa. Si chiama **riconoscimento delle entità nominate**, ed è la
@@ -155,7 +155,7 @@ già diventa da sé lo scarto richiesto, senza che una freccia sia stata puntata
 meglio. Per questo, a ogni passata, i punti vengono rimessi tutti alla stessa
 distanza dal centro.
 
-Restano tre fatti che una freccia non sa raccontare. Il primo: una freccia
+Restano alcuni fatti che una freccia non sa raccontare. Il primo: una freccia
 porta da un punto a un punto e basta, mentre «ha-recitato-in» lega un attore a
 decine di film, e il modello se la cava ammucchiando quei film nello stesso
 punto, dove diventano indistinguibili.
@@ -301,20 +301,21 @@ un'entità mai vista resta fuori, esattamente come in TransE.
 
 ## Rispondere navigando
 
-Riempire da sé i buchi che ha, come si è appena visto con Lisbona, è già
-qualcosa. Ma a che cosa serve, un grafo di fatti, quando la domanda arriva da
-fuori? A tre cose, e sono tre cose che un archivio di documenti non sa fare.
+Riempire da sé i buchi che ha, prevedendo i fatti che nessuno ci ha scritto, è
+già qualcosa. Ma a che cosa serve, un grafo di fatti, quando la domanda arriva
+da fuori? A tre cose, e sono tre cose che un archivio di documenti non sa
+fare.
 
-La prima è **comporre**. Se il grafo contiene «il regista di questo film è X» e
-«X è nato in questa città», la domanda «in che città è nato il regista di
+La prima è **comporre**. Se il grafo contiene «il regista di questo film è X»
+e «X è nato in questa città», la domanda «in che città è nato il regista di
 questo film» si risponde percorrendo due archi. Il modo usuale di rispondere a
 una domanda su un archivio di testi è invece cercare i **brani più somiglianti
 alla domanda** e darli in pasto a un modello di linguaggio: è il **retrieval
-denso** del {doc}`capitolo sui Transformer </Transformers/overview>`, dove i brani non si confrontano parola
-per parola, ma trasformando ciascuno in una fila di numeri e cercando le file
-più vicine. Se nessun documento contiene entrambi i fatti nella stessa frase,
-quel sistema non li mette insieme: non gli è stato chiesto di ragionare, gli è
-stato chiesto di somigliare.
+denso** della {doc}`sezione su retrieval e RAG </Transformers/rag>`, dove i
+brani non si confrontano parola per parola, ma trasformando ciascuno in una
+fila di numeri e cercando le file più vicine. Se nessun documento contiene
+entrambi i fatti nella stessa frase, quel sistema non li mette insieme: non
+gli è stato chiesto di ragionare, gli è stato chiesto di somigliare.
 
 Il secondo vantaggio è che **il cammino è la spiegazione**. Una ricerca per
 somiglianza restituisce tre paragrafi e una risposta, e per verificarla bisogna
@@ -330,18 +331,17 @@ possa rispondere in modo affidabile, e nemmeno di somiglianza: vuole
 un'interrogazione a un archivio ordinato, e una struttura su cui contare
 davvero.
 
-Messi insieme, i tre vantaggi hanno prodotto un'idea che gira parecchio.
-Dare a un modello di linguaggio dei documenti pescati sul momento, invece di
-fidarsi di quel che ricorda, è la tecnica che i {doc}`capitoli sui Transformer </Transformers/overview>` e
-sugli agenti chiamano **RAG**, dalle iniziali di *Retrieval-Augmented
-Generation*, «generazione con recupero». Da qui l'idea di fare la stessa cosa
-con un grafo, e il nome che ne è venuto fuori è **GraphRAG**: invece di andare
-a prendere dei brani di testo si va a prendere un **sottografo**, cioè il
-pezzetto di grafo attorno alle cose nominate nella domanda, e si mette quello
-davanti al modello insieme alla domanda. Le varianti differiscono per come si
-sceglie il pezzetto e per come lo si riscrive in frasi (un grafo va disteso in
-una fila di parole prima di poterlo dare a un modello che legge testo), ma il
-principio è quello.
+Messi insieme, i tre vantaggi hanno prodotto un'idea che gira parecchio. Dare
+a un modello di linguaggio dei documenti pescati sul momento, invece di
+fidarsi di quel che ricorda, si chiama **RAG**, dalle iniziali di
+*Retrieval-Augmented Generation*, «generazione con recupero». Da qui l'idea di
+fare la stessa cosa con un grafo, e il nome che ne è venuto fuori è
+**GraphRAG**: invece di andare a prendere dei brani di testo si va a prendere
+un **sottografo**, cioè il pezzetto di grafo attorno alle cose nominate nella
+domanda, e si mette quello davanti al modello insieme alla domanda. Le
+varianti differiscono per come si sceglie il pezzetto e per come lo si
+riscrive in frasi (un grafo va disteso in una fila di parole prima di poterlo
+dare a un modello che legge testo), ma il principio è quello.
 
 ## Quando conviene, e quando no
 

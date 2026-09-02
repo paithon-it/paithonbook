@@ -82,20 +82,20 @@ $V^\pi(s)$ e varianza finita, quindi per la legge dei grandi numeri la media
 converge al valore vero, e l'errore standard cala come $1/\sqrt{n}$ con $n$
 ritorni mediati. Ogni stima è **non distorta**.
 
-La variante a ogni visita è invece distorta per $n$ finito, e conviene dire da
-dove viene la distorsione, perché la spiegazione naturale è sbagliata: **non**
-dal fatto che i ritorni di uno stesso episodio siano correlati (una media di
+La variante a ogni visita è invece distorta per $n$ finito, e la spiegazione
+naturale della distorsione è sbagliata. **Non** viene
+dal fatto che i ritorni di uno stesso episodio siano correlati: una media di
 variabili correlate, in numero fissato e con la stessa media marginale, resta
-non distorta: la correlazione muove la varianza, non il valore atteso). Viene
-dal fatto che il **denominatore è aleatorio**: il numero di visite non è deciso
-in anticipo, ed è correlato con il numeratore, perché un episodio che passa
+non distorta, e la correlazione muove la varianza, non il valore atteso. Viene
+dal fatto che il **denominatore è aleatorio**. Il numero di visite non è deciso
+in anticipo ed è correlato con il numeratore, perché un episodio che passa
 molte volte per lo stesso stato contribuisce molte righe, e quelle righe non
 sono un campione qualunque dei ritorni possibili. È il classico
-stimatore-rapporto, dove l'attesa del rapporto non è il rapporto delle attese;
-di quanto e in che verso sbagli dipende dal problema, e il conto sulle tre
+stimatore-rapporto, dove l'attesa del rapporto non è il rapporto delle attese.
+Di quanto e in che verso sbagli dipende dal problema: il conto sulle tre
 partite, dove la variante a ogni visita dà un numero più alto dell'altra, ne è
-un esempio e non una regola. La distorsione svanisce al crescere degli episodi, e
-la variante si estende meglio all'approssimazione di funzione
+un esempio e non una regola. La distorsione svanisce al crescere degli episodi,
+e la variante si estende meglio a quando il quaderno diventa una rete neurale
 {cite}`sutton2018reinforcement`.
 
 Il punto strutturale: qui **non c'è bootstrapping**. Il bersaglio è il ritorno
@@ -119,18 +119,7 @@ i due non è di efficienza ma di **che cosa serve sapere**.
 La programmazione dinamica guarda **un passo in avanti ma in tutte le
 direzioni**: per calcolare il valore di una casella tiene conto di tutte le
 caselle in cui quella mossa potrebbe far finire, dando a ciascuna un peso pari
-alla sua probabilità.
-
-«Dare un peso» è il gesto che torna in tutto il resto del capitolo, e conviene
-vederlo una volta su due numeri. È la media che si fa a scuola quando una prova
-conta il doppio di un'altra: invece di sommare e dividere per quanti sono, si
-moltiplica ogni numero per quanto conta e poi si somma. Se una mossa porta
-nella casella A otto volte su dieci e nella casella B due volte su dieci, e A
-vale $10$ mentre B vale $0$, quella mossa vale
-$0{,}8 \times 10 + 0{,}2 \times 0 = 8$: non $5$, che sarebbe la media semplice
-fra $10$ e $0$, perché in B ci si finisce di rado.
-
-Alla programmazione dinamica quei pesi servono, e quindi le serve conoscere le
+alla sua probabilità. Quei pesi le servono, e quindi le serve conoscere le
 probabilità; in cambio non le deve stimare.
 
 Monte Carlo guarda **in una direzione sola ma fino in fondo**: segue la
@@ -258,19 +247,19 @@ visita è il più facile da giustificare: ogni partita porta un numero solo, e
 numeri che vengono da partite diverse non si influenzano a vicenda, che è
 esattamente la condizione in cui fare una media è la cosa giusta da fare.
 Quello a ogni visita conta anche i ripassaggi, quindi butta via meno dati, e
-per questo regge meglio quando le partite sono poche e il quaderno resta quasi
-vuoto: è la situazione del capitolo successivo, dove il quaderno viene
-sostituito da una rete neurale. Con tante partite la scelta non cambia il
+non obbliga a tenere il conto di dove si è già passati; e si estende meglio a
+quando il quaderno viene sostituito da una rete neurale, che è la situazione
+del capitolo successivo. Con tante partite la scelta non cambia il
 risultato, perché tutti e due finiscono sul valore vero.
 
 Tutti e quattro i numeri, però, restano sotto quelli che la sezione precedente
-aveva calcolato sullo stesso mondo, che erano $9$ per $s_0$ e $10$ per $s_1$, e
-la ragione conviene fissarla:
+aveva calcolato sullo stesso mondo, che erano $9$ per $s_0$ e $10$ per $s_1$:
 là si calcolava il valore della strategia **migliore possibile**, qui si misura
 quello della strategia **che ha giocato davvero**, tentennamenti compresi. Sono
 due domande diverse, e la seconda non può avere una risposta più alta della
-prima. Con tre partite sole, per di più: una media si assesta sul valore vero
-quando i casi mediati sono tanti, e tre non lo sono.
+prima: i valori veri, però, non le medie su tre partite, che possono anche
+sballare per eccesso. Una media si assesta sul valore vero quando i casi
+mediati sono tanti, e tre non lo sono.
 
 ```python
 gamma = 0.9
@@ -344,7 +333,7 @@ funziona dappertutto: tenere da parte una quota di mosse tirate a sorte, nove
 volte su dieci la mossa che il quaderno dice migliore e una volta su dieci una
 qualunque, anche quella che sembra sciocca.
 
-Quella quota si paga, e il conto va detto subito. Un giocatore che una mossa
+Quella quota si paga. Un giocatore che una mossa
 su dieci la tira a sorte non giocherà mai la partita perfetta: arriva al
 meglio fra i giocatori che ogni tanto tirano a sorte, e quel meglio sta sotto
 al meglio in assoluto. Smettere di sorteggiare per giocare perfetto lo
@@ -392,8 +381,8 @@ versione precedente di sé stessi.
 
 Cento fogli di partita su uno scaffale, tutti dello stesso socio del circolo,
 uno che non rischia mai. Vuoi sapere come se la caverebbe uno spericolato, che
-lì non ha mai giocato: le sue partite in quell'archivio sono pochissime, e la
-media dei cento fogli dà il voto al prudente.
+lì non ha mai giocato: in quell'archivio le partite che lui avrebbe giocato
+sono pochissime, e la media dei cento fogli dà il voto al prudente.
 
 Allora si va foglio per foglio, scrivendo accanto a ognuno quanto conta. Vale
 molto la partita che lo spericolato avrebbe giocato spesso e il prudente quasi
@@ -430,8 +419,9 @@ fogli che hai in mano: il voto esce tutto da quell'unico foglio, e col peso a
 mille invece che a otto verrebbe cento volte i punti di quella partita. Dividi
 per la somma dei pesi, otto in tutto, e il voto cade per forza fra il punteggio
 peggiore e il migliore che hai letto. Il primo modo azzecca in media il valore
-giusto, ma solo con moltissimi fogli; il secondo lo sbaglia un po’ e non
-impazzisce mai, ed è quello che si sceglie quasi sempre.
+giusto già con pochi fogli, ma quell'«in media» può nascondere oscillazioni
+enormi; il secondo lo sbaglia un po’ e non impazzisce mai, ed è quello che si
+sceglie quasi sempre.
 
 `````
 
@@ -476,15 +466,16 @@ V_{\text{pes}}(s) = \frac{\sum_{t\in\mathcal{T}(s)} \rho_{t:T-1}\,G_t}
                           {\sum_{t\in\mathcal{T}(s)} \rho_{t:T-1}} .
 $$
 
-Il compromesso fra i due è una lezione statistica che vale oltre il RL.
-L'ordinario è **non distorto** ma la sua varianza può essere illimitata,
-perché un rapporto può valere dieci o mille e moltiplicare un singolo ritorno
-per quella cifra. Il pesato è **distorto** (la distorsione svanisce al crescere
-dei campioni) ma il peso di un singolo ritorno non supera mai $1$ e, purché i
-ritorni siano limitati, la sua varianza converge a zero anche quando quella
-dei rapporti è infinita: un risultato del 2001 di Precup, Sutton e Dasgupta.
-In pratica si preferisce quasi sempre il pesato
-{cite}`sutton2018reinforcement`.
+Il compromesso fra i due è una lezione statistica che vale oltre il RL, e si
+enuncia a prima visita. L'ordinario è **non distorto** ma la sua varianza può
+essere illimitata, perché un rapporto può valere dieci o mille e moltiplicare
+un singolo ritorno per quella cifra. Il pesato è **distorto** (la distorsione
+svanisce al crescere dei campioni) ma il peso di un singolo ritorno non supera
+mai $1$ e, purché i ritorni siano limitati, la sua varianza converge a zero
+anche quando quella dei rapporti è infinita: un risultato del 2001 di Precup,
+Sutton e Dasgupta. A ogni visita sono distorti tutti e due, e per la ragione
+già vista, il denominatore aleatorio. In pratica si preferisce quasi sempre il
+pesato {cite}`sutton2018reinforcement`.
 
 Un esempio piccolo rende concreto il numero. Supponiamo che $b$ scelga fra due
 azioni tirando una moneta ($b(a\mid s) = 0{,}5$ per entrambe) e che $\pi$ sia
@@ -506,8 +497,8 @@ l'off-policy su traiettorie lunghe è fragile.
 
 `````
 
-Questo modo di pesare le partite di un altro non resta in questa sezione: è uno
-degli attrezzi che il libro riusa di più, e conviene sapere dove ricomparirà.
+Pesare così le partite di un altro è uno degli attrezzi più riusati del
+reinforcement learning, e ricompare in tre punti.
 
 ```{admonition} Dove ritorna
 :class: seealso
@@ -521,7 +512,8 @@ degli attrezzi che il libro riusa di più, e conviene sapere dove ricomparirà.
 - Nell’**offline RL**, cioè imparare da un archivio di partite senza poterne
   giocare altre, quell'archivio è tutto ciò che c'è: la condizione appena vista
   (deve contenere tutto quello che la strategia da giudicare potrebbe fare)
-  diventa il problema centrale della sezione che gli è dedicata.
+  diventa il problema centrale della {doc}`sezione sull'offline RL
+  </DeepReinforcementLearning/offline-rl>`.
 - Nell’**RLHF** (*Reinforcement Learning from Human Feedback*), il modo in cui
   gli assistenti conversazionali imparano dai giudizi delle persone su quale di
   due risposte sia migliore, il programma che si sta migliorando si allontana
@@ -608,7 +600,8 @@ dedicata a lei.
 - Per **migliorare** la strategia, e non solo misurarla, l'agente deve
   continuare a giocare mosse che non crede le migliori: se non le prova più,
   quella colonna del quaderno resta per sempre al voto sbagliato del primo
-  tentativo.
+  tentativo. E si paga: chi tira a sorte una mossa su dieci arriva al meglio
+  fra i giocatori che tirano a sorte, che sta sotto al meglio in assoluto.
 - Si può giudicare una strategia con partite giocate da un'altra, purché le si
   **pesi** invece di contarle tutte uguali: una partita che la strategia da
   giudicare avrebbe giocato spesso e l'altra di rado conta molto, una che la
@@ -633,14 +626,16 @@ dedicata a lei.
 - Un metodo **Monte Carlo** stima il valore di uno stato come **media dei
   ritorni** osservati partendo da lì: nessun modello dell'ambiente, solo
   episodi giocati fino in fondo.
-- **A prima visita** conta un ritorno per episodio ed è non distorto; **a ogni
-  visita** li conta tutti. Entrambi convergono, con errore che cala come
-  $1/\sqrt{n}$.
+- **A prima visita** conta un ritorno per episodio, è non distorto e il suo
+  errore cala come $1/\sqrt{n}$; **a ogni visita** li conta tutti ed è distorto
+  per $n$ finito. Convergono tutti e due.
 - Non c'è **bootstrapping**: il bersaglio è il ritorno vero, quindi le stime
   non si contaminano fra loro, ma hanno varianza alta e arrivano solo a
   episodio finito.
 - Per **migliorare** una policy, e non solo misurarla, serve esplorazione:
-  inizi esplorativi (teorici) o policy $\varepsilon$-soft (pratiche).
+  inizi esplorativi (teorici) o policy $\varepsilon$-soft (pratiche), che però
+  fanno convergere alla migliore policy $\varepsilon$-soft, non alla migliore
+  in assoluto.
 - L’**importance sampling** permette di valutare una policy $\pi$ con dati
   generati da un'altra policy $b$, pesando le traiettorie con
   $\rho = \prod \pi(a_k\mid s_k)/b(a_k\mid s_k)$. Le probabilità di transizione

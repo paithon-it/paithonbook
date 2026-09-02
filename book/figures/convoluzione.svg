@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" role="img" aria-label="Un kernel 3x3 su una porzione di griglia di input, con una freccia verso la cella corrispondente della feature map">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" role="img" aria-label="Un filtro 3x3 evidenziato su una porzione di una griglia di ingresso 5x5; una freccia collega la regione alla singola casella corrispondente della mappa dei risultati.">
   <!-- Palette: terracotta #B5532C, teal #2D5A5C, ocra #C9A961, warm-black #1A1A1A, cream #F8F5EE, neutri #5E5852 #8B847C #C9C2B4 #E8E2D5 -->
   <defs>
     <marker id="cnn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
@@ -30,8 +30,7 @@
   <!-- ===== FRECCIA ===== -->
   <line x1="236" y1="190" x2="532" y2="190" stroke="#1A1A1A" stroke-width="2.5" marker-end="url(#cnn-arrow)"/>
   <text x="384" y="176" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="15" fill="#2D5A5C">somma pesata</text>
-  <text x="384" y="212" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="15" fill="#5E5852">+ attivazione</text>
-
+  
   <!-- ===== FEATURE MAP 3x3 ===== -->
   <rect x="540" y="130" width="120" height="120" fill="#F8F5EE" stroke="#C9C2B4" stroke-width="1.5"/>
   <line x1="580" y1="130" x2="580" y2="250" stroke="#C9C2B4" stroke-width="1.5"/>

@@ -8,17 +8,16 @@ leggendo invece che ricordando. Quei pezzi di testo li chiameremo
 frase o un paragrafo. Chi va a cercarli è il **cercatore** (in inglese
 *retriever*), chi poi scrive la risposta è il **generatore**.
 
-«Su cosa salta il gatto nero?». Nel {doc}`capitolo sui Transformer </Transformers/overview>`, nella sezione
-«Cercare per rispondere», il nostro cercatore in miniatura aveva risposto quasi
-bene: al primo posto il passaggio giusto, «Il gatto nero salta sul muro del
-giardino». Ma al secondo posto si era intrufolato un impostore, «Il gatto dorme
-accanto ai fornelli»: vicino per tema, muto sulla domanda. Era il
-**quasi-pertinente**, e non era un incidente di percorso.
+«Su cosa salta il gatto nero?». Nella sezione {doc}`«Cercare per rispondere»
+</Transformers/rag>` il nostro cercatore in miniatura aveva risposto quasi
+bene: al primo posto il passaggio giusto, «Il
+gatto nero salta sul muro del giardino». Ma al secondo posto si era intrufolato
+un impostore, «Il gatto dorme accanto ai fornelli»: vicino per tema, muto sulla
+domanda. Era il **quasi-pertinente**, e non era un incidente di percorso.
 
-Era il sintomo di un limite di fondo, ed è il perno di tutta la sezione. Se il
-passaggio giusto non viene ripescato, il generatore non ha modo di rimediare:
-può solo tornare a ricordare, che è esattamente la cosa che il recupero serviva
-a evitare (ricordando, un modello inventa; leggendo, no). La quota dei passaggi
+Era il sintomo di un limite di fondo. Se il passaggio giusto non viene
+ripescato, il generatore non ha modo di rimediare: gli resta solo ricordare, e
+ricordando un modello inventa, mentre leggendo no. La quota dei passaggi
 giusti che la ricerca riesce a ripescare ha un nome, il *recall*, ed è il
 **tetto** di tutto il sistema: nessun accorgimento applicato dopo può
 recuperare ciò che la ricerca non ha trovato.
@@ -32,8 +31,8 @@ raccolta di domande vere rivolte a un motore di ricerca
 modello, cioè da quello che gli era rimasto impresso in addestramento.
 
 Il numero si legge in due modi, e conviene tenerli tutti e due. In un senso è
-tanto: un sistema che sappia soltanto *ritagliare* la risposta dai documenti
-che ha davanti, senza poterla ricordare, in quei casi prende zero per forza.
+tanto: un sistema che sapesse soltanto *ritagliare* la risposta dai documenti
+che ha davanti, senza poterla ricordare, in quei casi prenderebbe zero.
 In un altro senso è pochissimo: nove volte su dieci, quando la ricerca manca
 il bersaglio, la risposta è persa. È abbastanza poco da fare del recupero il
 posto giusto dove intervenire.
@@ -48,8 +47,8 @@ un ottimo punto di partenza e un pessimo punto di arrivo.
 Questa sezione raccoglie le tecniche che spingono quel tetto più in alto. Sono
 tre, e si distinguono per dove intervengono lungo la catena di passi che porta
 dalla domanda alla risposta (una catena così, in gergo, si chiama
-**pipeline**): **prima** di cercare, migliorando la domanda; **dopo** aver
-cercato, riordinando i candidati; e **attorno** all'intero ciclo, facendo
+**pipeline**): *prima* di cercare, migliorando la domanda; *dopo* aver
+cercato, riordinando i candidati; e *attorno* all'intero ciclo, facendo
 decidere al modello se e quando cercare. Chiudiamo con la domanda che tiene
 onesto tutto il resto: come si misura se un sistema RAG funziona davvero.
 
@@ -65,7 +64,7 @@ riordino.
 ```
 
 Conviene tenere {numref}`fig-rag-avanzato` sott'occhio mentre si legge il
-resto. Dei suoi blocchi, due li sbrighiamo qui sotto in poche righe (la doppia
+resto. Dei suoi blocchi, due li sbrighiamo subito in poche righe (la doppia
 ricerca e la fusione) e gli altri hanno una sezione ciascuno. La regola che
 governa l'insieme è una sola: il recupero grezzo, quello all'inizio, deve
 essere **generoso** (meglio cento candidati mediocri che dieci scelti male,
@@ -97,9 +96,9 @@ punteggi e tenere solo la **posizione** in classifica: chi sta in alto in tutte
 e due le liste sale, chi sta in alto in una sola resta indietro. Basta questo,
 e non serve sapere quanto valgano i due voti né come siano stati calcolati.
 
-Un'ultima immagine, e poi si entra nel merito. Quella qui sotto guarda la
-stessa catena da un'altra angolatura, non *dove* si interviene ma *quando* si
-paga.
+Un'ultima immagine, e poi si entra nel merito. {numref}`fig-rag-due-fasi`
+guarda la stessa catena da un'altra angolatura, non *dove* si interviene ma
+*quando* si paga.
 
 ```{figure} ../figures/extra-rag-spiegato.svg
 :name: fig-rag-due-fasi
@@ -168,8 +167,8 @@ compresa: uno sbaglio di una lo annegano le altre, e la domanda conta come una
 voce fra le quattro, non come quella che comanda. Funziona perché domanda e
 risposta sono scritte in modi diversi (una chiede, l'altra afferma), mentre due
 risposte sullo stesso tema si somigliano: l'esca finta pesca i libri veri
-meglio di quanto li peschi la domanda. Si chiama **HyDE**, «documenti di risposta
-immaginati».
+meglio di quanto li peschi la domanda. Si chiama **HyDE**, dai «documenti
+ipotetici» che si fa scrivere.
 
 Tutto dipende però da chi scrive l'esca. Se le tre paginette le butta giù uno
 che di cani non sa niente, portano lontano dallo scaffale giusto: meglio allora
@@ -217,19 +216,22 @@ risposta finale, servono solo da esca per il recupero.
 
 Il perimetro va dichiarato, perché è la cosa più utile a chi deve decidere se
 adottare il metodo, ed è scritta nel lavoro originale: HyDE nasce per il caso
-in cui **non si hanno etichette di rilevanza**, con un unico encoder
+in cui non si hanno **etichette di rilevanza**, con un unico encoder
 contrastivo non supervisionato usato indifferentemente per query e documenti.
 Gli autori sono espliciti nel dire che l'uso con un retriever messo a punto sul
 proprio dominio *non è quello previsto*.
 
 Il quadro che misurano su quel caso è più sfumato di come lo si racconta di
-solito, e non dipende dalla raccolta ma da **quanto è buono il modello che
-genera le ipotesi**. Con un generatore forte
-HyDE alza anche un retriever addestrato sul dominio, ma in modo asimmetrico: su
-TREC DL19 l'NDCG@10 passa da $62{,}1$ a $67{,}4$, su DL20 da $63{,}2$ a
-$63{,}5$, cioè tre decimi, che è niente. Con generatori più deboli lo
+solito, e a deciderlo sono due cose insieme: quanto è buono il modello che
+genera le ipotesi, che stabilisce se si guadagna o si perde, e la raccolta su
+cui si misura, che stabilisce quanto. Il voto è l’**NDCG@10**, che premia le
+classifiche che mettono in alto, nei primi dieci posti, i documenti giusti, ed
+è qui riportato in centesimi. Con un generatore forte HyDE alza anche un
+retriever addestrato sul dominio, ma in modo asimmetrico: su TREC DL19 passa
+da $62{,}1$ a $67{,}4$, su DL20 da $63{,}2$ a $63{,}5$, cioè tre decimi, che è
+niente. Con generatori più deboli lo
 **peggiora** su entrambe le raccolte, di poco. La lettura onesta è che HyDE
-risolve il problema di chi **non ha etichette di rilevanza**; dove quelle
+risolve il problema di chi non ha etichette di rilevanza; dove quelle
 etichette ci sono, è una cosa da provare e misurare, non un guadagno che si
 somma a occhi chiusi. Gli autori stessi lo inquadrano come una fase: HyDE il
 primo giorno, quando non c'è ancora niente su cui addestrare, e via via che il
@@ -254,8 +256,8 @@ nell'articolo originale) che evita di sovrappesare i primissimi posti.
 Riordinare vuol dire prendere quello che la ricerca ha pescato e rimetterlo in
 fila con più cura. Prima di poterlo fare, però, bisogna capire come pesca un
 archivio vero, perché finora ci siamo limitati a dire «prende i più vicini» e
-non abbiamo mai detto come faccia a trovarli senza guardarli tutti. Sono le
-prossime venti righe, e poi si torna al riordino.
+non abbiamo mai detto come faccia a trovarli senza guardarli tutti. Una
+digressione, e poi si torna al riordino.
 
 Cominciamo dal nome. I punti sulla mappa del significato di cui parliamo
 dall'inizio si chiamano **vettori**, e un vettore è semplicemente una lista di
@@ -268,7 +270,8 @@ l'addestramento.
 Cercare, allora, vuol dire trovare i vettori più vicini a quello della
 domanda, e l'archivio va guardato tutto: nessun passaggio deve essere escluso
 in partenza. Il modo ovvio per farlo sarebbe confrontare la domanda con ogni
-passaggio, a uno a uno: esatto, e impraticabile su milioni di documenti.
+passaggio, a uno a uno: esatto, e insostenibile quando i documenti sono
+milioni e le domande arrivano una dietro l'altra.
 
 Il modo che si usa davvero copre lo stesso archivio ma senza toccarlo tutto,
 procedendo per **scale successive**, come si cerca un indirizzo in una città:
@@ -389,12 +392,14 @@ s(q, d) = \sum_{i \,\in\, q} \max_{j \,\in\, d}\; E(q_i)^\top E(d_j),
 $$
 
 dove $q_i$ è l’$i$-esimo token della query, $d_j$ il $j$-esimo del documento,
-ed $E(\cdot)$ il loro embedding contestuale. Per ogni token della domanda si
-prende la migliore corrispondenza tra i token del documento e si sommano: un
-confronto fine, token-a-token, ma con gli embedding dei documenti
-**precalcolabili offline** come nel bi-encoder. Si guadagna gran parte della
-precisione del cross-encoder senza pagarne il costo a query time, al prezzo di
-un indice molto più grande (un vettore per token, non per passaggio).
+ed $E(\cdot)$ il loro embedding contestuale: qui l'encoder è uno solo, che però
+legge la query e il documento con un marcatore diverso in testa. Per ogni token
+della domanda si prende la migliore corrispondenza tra i token del documento e
+si sommano: un confronto fine, token-a-token, ma con gli embedding dei
+documenti **precalcolabili offline** come nel bi-encoder. Si guadagna gran
+parte della precisione del cross-encoder senza pagarne il costo a query time,
+al prezzo di un indice molto più grande (un vettore per token, non per
+passaggio).
 
 `````
 
@@ -499,15 +504,16 @@ for i in riordino:
 
 # ora che i punteggi sono separati, una soglia ha senso: passa solo chi si
 # avvicina al migliore, invece di riempire a forza un numero fisso di posti.
+# Il minimo assoluto non e' un dettaglio: se nessuno rispondesse varrebbero
+# tutti zero, e meta' di zero lascia passare tutti.
 migliore = cross_encoder(domanda, riordino[0])
-rosa = [i for i in riordino if cross_encoder(domanda, i) >= migliore / 2]
+soglia = max(migliore / 2, 1)
+rosa = [i for i in riordino if cross_encoder(domanda, i) >= soglia]
 
 print("\nAl generatore va solo chi supera meta' del punteggio migliore:")
 for n, i in enumerate(rosa, 1):
     print(f"  [{n}] {passaggi[i]}")
 ```
-
-L'output racconta la storia in due tempi:
 
 ```text
 Stadio 1 - bi-encoder (veloce, tutto l'archivio):
@@ -535,14 +541,16 @@ quanto la risposta. Il cross-encoder li dà a $9{,}0$ contro $1{,}0$, e nove
 volte è un verdetto, non un margine sfumato.
 
 Da lì viene il guadagno vero, che è una decisione diventata possibile. Con
-punteggi indistinguibili l'unica regola disponibile è «prendine i primi
-$k$», e riempiendo i posti si finisce per infilare nel prompt un passaggio
-che non risponde. Con punteggi separati si può mettere una **soglia**: qui
-teniamo chi supera metà del punteggio migliore, cioè $4{,}5$, e l'unico a
-passare è il $9$. Al generatore arriva un passaggio solo, quello giusto, senza
-compagnia fuorviante. Notiamo anche che «Il muro portante sostiene il solaio»,
-che pure condivide una parola con la risposta, finisce a zero, ed è corretto:
-la domanda parlava di un gatto che salta, non di solai.
+punteggi indistinguibili l'unica regola disponibile è «prendine i primi $k$», e
+riempiendo i posti si finisce per infilare nel prompt un passaggio che non
+risponde. Con punteggi separati si può mettere una **soglia**: qui teniamo chi
+supera metà del punteggio migliore, cioè $4{,}5$, e l'unico a passare è il $9$.
+Metà, però, con un minimo assoluto sotto, o una domanda a cui nessun passaggio
+risponde li farebbe passare tutti: metà di zero è zero. Al generatore arriva un
+passaggio solo, quello giusto, senza compagnia fuorviante. Notiamo anche che
+«Il muro portante sostiene il solaio», che pure condivide una parola con la
+risposta, finisce a zero, ed è corretto: la domanda parlava di un gatto che
+salta, non di solai.
 
 Non abbiamo alzato il recall, perché il passaggio giusto era già stato
 recuperato. Abbiamo alzato un'altra cosa, la **precisione**: la quota di roba
@@ -577,27 +585,34 @@ quando e quante volte cercare.
 C'è anche una via diversa al secondo dei due problemi, e non passa dal cercare
 più volte: passa dal cambiare la forma dell'archivio. Invece di paragrafi si
 tengono i fatti in una rete di collegamenti, come una mappa di città unite da
-strade, e allora incrociare due fatti vuol dire percorrere due strade. Il
-capitolo sulle reti neurali su grafo la riprende per esteso.
+strade, e allora incrociare due fatti vuol dire percorrere due strade. La
+sezione {doc}`sui knowledge graph </GraphNeuralNetwork/knowledge-graph>` la
+riprende per esteso.
 
 `````{tab} Elementare
 
 Torniamo allo studente all'esame a libro aperto. Lo studente ingenuo apre il
 libro *a ogni* domanda, anche a «quanto fa sette per otto»: perde tempo e
 rischia di copiare la pagina sbagliata. Lo studente maturo fa tre cose in più.
-Primo, si chiede *se* gli serve il libro, e non se lo chiede una volta sola: a
-metà di una risposta può saltare fuori una data che a memoria non ha, e allora
-apre; alle domande che sa già risponde e basta. Secondo, quando lo apre,
-**rilegge criticamente**, con due domande diverse: «questa pagina risponde alla
-domanda che mi hanno fatto, o l'ho aperta a caso?» e, riga per riga, «quello
-che sto scrivendo sta davvero scritto qui, o l'ho aggiunto io?». Terzo, se una
-pagina non basta, ne apre un'altra, e un'altra ancora, finché non ha in mano
-tutto quello che serve; e se gli vengono in mente due modi di rispondere,
-consegna quello che le pagine aperte reggono meglio, non quello che suona
-meglio. Non è più un gesto automatico (apri, copia) ma un piccolo ciclo di
-decisioni: mi serve cercare? ho trovato la cosa giusta? quello che ho scritto
-sta nelle pagine? mi manca ancora qualcosa? È la differenza tra consultare un
-libro e saperlo consultare.
+
+Si chiede *se* gli serve il libro, e non se lo chiede una volta sola: a metà
+di una risposta può saltare fuori una data che a memoria non ha, e allora
+apre; alle domande che sa già risponde e basta.
+
+Quando lo apre, **rilegge criticamente**, con due domande diverse: «questa
+pagina risponde alla domanda che mi hanno fatto, o l'ho aperta a caso?» e,
+riga per riga, «quello che sto scrivendo sta davvero scritto qui, o l'ho
+aggiunto io?».
+
+E se una pagina non basta ne apre un'altra, e un'altra ancora, finché non ha
+in mano tutto quello che serve; se gli vengono in mente due modi di
+rispondere, consegna quello che le pagine aperte reggono meglio, non quello
+che suona meglio.
+
+Non è più un gesto automatico (apri, copia) ma un piccolo ciclo di decisioni:
+mi serve cercare? ho trovato la cosa giusta? quello che ho scritto sta nelle
+pagine? mi manca ancora qualcosa? È la differenza tra consultare un libro e
+saperlo consultare.
 
 Le due cose hanno un nome. Un modello addestrato a chiedersi da sé se gli serve
 aprire il libro, e a rileggere con occhio critico quello che ha trovato, si
@@ -709,8 +724,9 @@ contesto fa eccezione: per contare i rilevanti *mancati* serve una risposta di
 riferimento annotata, e infatti la libreria la calcola solo se gliene si dà
 una. Il reference-free è comodo perché non richiede un dataset etichettato a
 mano, ma eredita in blocco i limiti
-dell’**LLM-as-a-judge** che vedremo più avanti, nel capitolo su MLOps (il
-*position bias*, il *verbosity bias*, l'auto-preferenza) e va perciò calibrato
+dell’**LLM-as-a-judge** che vedremo più avanti, parlando di
+{doc}`LLMOps </MLOps/llmops>` (il *position bias*, il *verbosity bias*,
+l'auto-preferenza), e va perciò calibrato
 contro un campione di giudizi umani, mai preso per oracolo.
 
 `````
@@ -803,7 +819,7 @@ chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
   passaggi?), pertinenza della risposta, precision/recall del contesto.
   **RAGAS** {cite}`es2024ragas` stima le prime tre senza risposte di
   riferimento, con un LLM-giudice (la recall del contesto vuole una risposta
-  annotata) e con i bias dell’**LLM-as-a-judge** del {doc}`capitolo su MLOps </MLOps/overview>`.
+  annotata) e con i bias dell’**LLM-as-a-judge** di LLMOps.
 - Fedeltà **non è** verità: una risposta fedele a un documento sbagliato è
   sbagliata, e una citazione corretta non salva una risposta che travisa la
   fonte.

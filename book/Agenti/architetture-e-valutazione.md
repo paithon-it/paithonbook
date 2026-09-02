@@ -73,8 +73,8 @@ fino in fondo. Ma un piano rigido non sa reagire a ciò che non aveva previsto
 (un test che rivela un secondo bug, un file che non esiste) e allora serve una
 fase di **re-planning**: quando un sotto-obiettivo fallisce, si torna dal
 pianificatore e si aggiorna la lista. È lo stesso
-spendere-calcolo-per-ragionare che il capitolo sui Transformer chiama
-«spendere calcolo mentre si risponde», ma speso *prima* di agire anziché
+{doc}`spendere calcolo mentre si risponde </Transformers/post-training>`
+incontrato con i Transformer, ma speso *prima* di agire anziché
 durante: la pianificazione è ragionamento su come muoversi, scritto in
 anticipo. Nessuno dei due estremi
 vince sempre; i sistemi robusti mescolano: un piano di massima, rivisto quando
@@ -130,7 +130,9 @@ Con gli agenti funziona uguale. Invece di un modello che fa e si giudica da
 solo, se ne mettono in fila alcuni con compiti diversi, che si scrivono l'un
 l'altro come colleghi in chat: «ecco il piano», «ecco il codice», «ho provato,
 il test 3 non passa, correggi qui». La specializzazione aiuta: un critico
-dedicato pesca errori che l'esecutore non vedeva.
+dedicato pesca errori che l'esecutore non vedeva. Quando c'è: nelle botteghe
+vere il posto del collaudatore è quello che resta scoperto per primo, e il
+lavoro esce lo stesso.
 
 Ma attenzione: più teste vuol dire anche più stipendi. Ogni volta che un
 agente parla, qualcuno da qualche parte fa lavorare un modello, e quel lavoro
@@ -154,7 +156,7 @@ Lo stesso motore linguistico, istanziato con istruzioni diverse, diventa una
 squadra.
 
 L'onestà, qui, è d'obbligo, perché è un terreno dove l'entusiasmo corre più dei
-risultati. Aggiungere agenti **non è gratis** e **non è sempre meglio**. Ogni
+risultati. Aggiungere agenti non è gratis e non è sempre meglio. Ogni
 agente in più è contesto in più da riempire e generazioni in più da pagare: il
 costo cresce con il numero di partecipanti e con i giri di conversazione. E
 moltiplicare gli agenti moltiplica i **modi di sbagliare**: un fraintendimento
@@ -171,20 +173,20 @@ perché nessuno dei partecipanti le vede dal proprio posto.
 
 `````
 
-Chi è andato a controllare se la bottega batte davvero l'artigiano ha trovato
-due cose, e nessuna delle due fa piacere a chi si entusiasma
-{cite}`cemri2025why`. La prima è che il vantaggio di mettere insieme più agenti va misurato ogni
-volta, perché chi è andato a misurarlo sui banchi di prova che aveva a
-disposizione lo ha trovato, spesso, piccolo. La seconda è dove si
-sbaglia: non tanto dentro un agente, che di solito il suo pezzo lo fa, quanto
-**nel passarsi il lavoro**. Ruoli descritti male, agenti che vanno per conto
-proprio, e soprattutto nessuno incaricato di controllare se il risultato finale
-sta in piedi. La regola prudente viene da sé: un ruolo si aggiunge quando
-risolve un problema che con un agente solo restava aperto, non per il gusto
-della squadra.
+Chi è andato a controllare se la bottega batte davvero l'artigiano non ha
+trovato niente che faccia piacere a chi si entusiasma {cite}`cemri2025why`. Il
+vantaggio va misurato ogni volta, perché sui banchi di prova correnti è spesso
+piccolo, ed è l'osservazione da cui quel lavoro parte; e si sbaglia non tanto
+dentro un agente, che di solito il suo
+pezzo lo fa, quanto **nel passarsi il lavoro**: ruoli descritti male, agenti
+che vanno per conto proprio, e nessuno incaricato di controllare se il
+risultato finale sta in piedi. La regola prudente viene da sé: un ruolo si
+aggiunge quando risolve un problema che con un agente solo restava aperto, non
+per il gusto della squadra.
 
 I meccanismi con cui una squadra di agenti si organizza davvero hanno un
-capitolo tutto loro più avanti, *Sistemi multi-agente*: là si vedrà quanto
+capitolo tutto loro più avanti, i {doc}`sistemi multi-agente
+</SistemiMultiAgente/overview>`: là si vedrà quanto
 costa il coordinamento e quando lo ripaga, chi conviene che parli con chi, come
 ci si mette d'accordo quando i partecipanti non sono affidabili, e come si può
 *imparare* a coordinarsi invece di essere programmati per farlo.
@@ -255,8 +257,9 @@ $$
 
 dove $m$ è una memoria e $q$ la situazione corrente: $\text{recency}(m)$ decade
 esponenzialmente con il tempo trascorso dall'ultimo accesso,
-$\text{importance}(m)$ è un voto di salienza (da 1 a 10) che il modello stesso
-assegna alla memoria quando la scrive, e $\text{relevance}(m, q)$ è la
+$\text{importance}(m)$ è un voto di salienza da 1 a 10 che il modello stesso
+assegna alla memoria quando la scrive, e che la normalizzazione riporta in
+scala con gli altri due, e $\text{relevance}(m, q)$ è la
 similarità tra gli embedding della memoria e della query. Nel lavoro originale i
 pesi $\alpha$ valgono tutti 1: tre criteri sommati, non uno solo.
 
@@ -301,16 +304,14 @@ la strada che ha fatto per arrivarci: quali mosse, quante inutili, quanti giri
 a vuoto. Il **costo** è quel che si è consumato per strada, e si conta in
 token (i pezzetti di testo della sezione precedente), in chiamate agli
 strumenti e in secondi di attesa; quest'ultima voce si chiama **latenza**, ed è
-il tempo che l'utente passa a guardare lo schermo.
+il tempo che l'utente passa a guardare lo schermo. E il costo entra nel
+giudizio: un agente che risolve il compito consumando diecimila token e trenta
+passi non è «riuscito» allo stesso modo di uno che lo chiude in quattro.
 
-Il costo entra nel giudizio: un agente che risolve il compito
-consumando diecimila token e trenta passi non è «riuscito» allo stesso modo di
-uno che lo chiude in quattro.
-
-La quarta misura viene diritta dalla terza difficoltà di prima. Se la stessa
-prova ripetuta non dà mai lo stesso esito, un numero solo non vuol dire niente:
-bisogna rifare ogni compito più volte e riportare quanto i risultati **si
-disperdono**, cioè di quanto ballano da una ripetizione all'altra. Un agente
+La quarta è la **dispersione**, e viene diritta dalla terza difficoltà di
+prima. Se la stessa prova ripetuta non dà mai lo stesso esito, un numero solo
+non vuol dire niente: bisogna rifare ogni compito più volte e riportare di
+quanto i risultati ballano da una ripetizione all'altra. Un agente
 che riesce tre volte su cinque, se lo si prova una volta sola, non si distingue
 in alcun modo da uno che riesce sempre.
 
@@ -390,7 +391,7 @@ basta. Immaginiamo di aver fatto girare un agente su un pugno di compiti e di
 aver registrato, per ciascuno, l'esito, i passi, i token e se la traiettoria
 era «pulita». Ogni singola prova, cioè una volta che gli si dà un compito e lo
 si lascia lavorare finché non finisce, la chiameremo un **episodio**, come si
-fa nel {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`.
+fa parlando di {doc}`MDP e funzioni valore </ReinforcementLearning/mdp-valore>`.
 
 ```python
 import math
@@ -423,14 +424,17 @@ print(f"token medi per episodio: {token_medi:.0f}")
 # z = 1.96 e' il numero che corrisponde al "95 per cento di fiducia": lo si
 # legge sulle tavole della distribuzione normale e non si ricava a mano.
 z = 1.96
-p = tasso_successo
-centro = (p + z**2 / (2*n)) / (1 + z**2 / n)
-raggio = z * math.sqrt(p*(1-p)/n + z**2 / (4*n**2)) / (1 + z**2 / n)
+p_succ = tasso_successo          # attenzione: qui e' il tasso di SUCCESSO,
+                                 # non la probabilita' di sbagliare un passo
+centro = (p_succ + z**2 / (2*n)) / (1 + z**2 / n)
+raggio = z * math.sqrt(p_succ*(1-p_succ)/n + z**2 / (4*n**2)) / (1 + z**2 / n)
 print(f"intervallo al 95%: da {centro - raggio:.0%} a {centro + raggio:.0%}")
 
 # e quanti episodi servirebbero perche' l'incertezza scenda a 5 punti
-# percentuali? n = z^2 * p * (1-p) / errore^2, cioe' 3.84 * 0.24 / 0.0025.
-print(f"episodi per +/- 5 punti: {z**2 * p * (1-p) / 0.05**2:.0f}")
+# percentuali? Qui torna comoda la formula ingenua, che per dimensionare un
+# esperimento basta: n = z^2 * p_succ * (1-p_succ) / errore^2, cioe'
+# 3.84 * 0.24 / 0.0025.
+print(f"episodi per +/- 5 punti: {z**2 * p_succ * (1-p_succ) / 0.05**2:.0f}")
 ```
 
 ```text
@@ -505,11 +509,14 @@ segnalazione o nei commenti sotto; e che un'altra quota quasi uguale
 
 Tolte le segnalazioni difettose, il sistema che allora guidava la classifica
 scendeva dal $12{,}47\%$ al $3{,}97\%$: fra il numero pubblicato e quello che
-resta c'è un fattore tre. Non è la prima volta che quei difetti vengono
-notati. Due mesi prima di quel riesame era già uscito **SWE-bench Verified**, una
-versione ripulita del banco di prova, curata da OpenAI nell'agosto 2024: cinquecento segnalazioni rilette una
-per una da sviluppatori professionisti e tenute solo se il problema era posto
-bene e i test erano all'altezza di giudicarlo.
+resta c'è un fattore tre. Non è la prima volta che quei difetti vengono notati.
+Due mesi prima di quel riesame era già uscito **SWE-bench Verified**, una
+versione ripulita del banco di prova, curata da OpenAI nell'agosto 2024:
+cinquecento segnalazioni rilette una per una da sviluppatori professionisti e
+tenute solo se il problema era posto bene e i test erano all'altezza di
+giudicarlo. Nemmeno quella cernita chiude la questione, e a dirlo sono gli
+stessi autori del riesame: i due difetti si ritrovano anche dentro la versione
+verificata.
 
 Niente di tutto ciò toglie valore a SWE-bench, che resta il modo più onesto
 che abbiamo di mettere alla prova un agente su lavoro vero. Sposta però la
@@ -541,26 +548,19 @@ più un sistema di controlli attorno.
 
 ## Uno sguardo onesto
 
- Gli agenti sono
-promettenti: l'idea di un modello che pianifica, usa strumenti, collabora e
-ricorda è potente, e i primi risultati su compiti reali, per quanto modesti,
-erano impensabili pochi anni fa. Ma sono anche **fragili**, e i loro difetti
-sono strutturali, e non dettagli da limare. Gli errori si **accumulano**
-lungo la catena, e un compito lungo li amplifica: se a ogni mossa se ne sbaglia
-una su dieci, arrivare in fondo a dieci mosse senza un solo errore capita poco
-più di una volta su tre, che è il conto $0{,}9^{10}$ dell'apertura del
-capitolo. Quel conto, però, è un modellino, e poggia su due cose che nella
-realtà non sono vere. La prima è che ogni passo vada per conto suo: nei fatti
-un agente che ha imboccato la strada sbagliata tende a restarci, e gli errori
-arrivano a grappoli invece che sparsi. La seconda è che un errore basti a
-rovinare tutto: non è così, e i rimedi che questa sezione ha mostrato
-(rileggersi dopo un fallimento, rifare il piano quando salta) ne recuperano una
-parte, tanto che il tasso di successo vero può stare sopra quel $35\%$. La
-direzione, però, non cambia, ed è tutto quello che al modellino chiediamo. Il
+Gli agenti sono promettenti: l'idea di un modello che pianifica, usa
+strumenti, collabora e ricorda è potente, e i primi risultati su compiti
+reali, per quanto modesti, erano impensabili pochi anni fa. Ma sono anche
+**fragili**, e i loro difetti sono strutturali, non dettagli da limare. Gli
+errori si **accumulano** lungo la catena, e un compito lungo li amplifica. Il
+conto dell'apertura, però, li dava sparsi e ciascuno fatale: nei fatti un
+agente che ha imboccato la strada sbagliata tende a restarci, quindi gli
+errori arrivano a grappoli, e rileggersi dopo un fallimento o rifare il piano
+quando salta ne recupera una parte. La direzione non cambia; il numero sì. Il
 **costo**, intanto, cresce con i passi, con gli agenti, con i giri di
-conversazione. E l’**imprevedibilità**
-che rende versatile un motore linguistico è la stessa che rende difficile
-garantire cosa farà: più libertà d'azione, meno controllo.
+conversazione. E l’**imprevedibilità** che rende versatile un
+motore linguistico è la stessa che rende difficile garantire cosa farà: più
+libertà d'azione, meno controllo.
 
 È, soprattutto, un'area **giovane**: più ricette provate che teoria (le
 euristiche di cui parlavamo in apertura), banchi di prova ancora in
@@ -570,7 +570,8 @@ starci con lucidità, non per starne alla larga: misurare più che sperare,
 aggiungere complessità solo quando paga, e diffidare di ogni
 numero troppo bello. La distanza tra un agente che *sembra* funzionare in una
 dimostrazione e uno di cui *fidarsi* quando lo usa la gente si misura
-esattamente con gli strumenti di questa sezione.
+esattamente con il tasso di successo, la traiettoria, il costo e la
+dispersione.
 
 
 
@@ -631,8 +632,9 @@ esattamente con gli strumenti di questa sezione.
   realtà lo smentisce.
 - I sistemi **multi-agente** (come nel framework **AutoGen**
   {cite}`wu2024autogen`, che li modella come una conversazione tra agenti) non
-  sono gratis né sempre migliori: i guadagni misurati sui benchmark correnti
-  sono spesso piccoli, e delle tre famiglie di modi di fallire che
+  sono gratis né sempre migliori: i guadagni sui benchmark correnti sono
+  spesso piccoli (è la premessa da cui quel lavoro parte, non una sua misura),
+  e delle tre famiglie di modi di fallire che
   {cite}`cemri2025why` ricava da milleseicento tracce, due stanno nel
   **coordinamento** (progetto del sistema, disallineamento fra agenti, verifica
   del risultato). Si aggiunge un ruolo solo quando risolve un problema reale.

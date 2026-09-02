@@ -1,11 +1,10 @@
 # La ciliegina: il dibattito sul rinforzo
 
-Nella torta della prima sezione l'apprendimento per rinforzo è la ciliegina. È
-un'immagine simpatica e una retrocessione severa: due capitoli di questo libro
-sono dedicati a una decorazione. Conviene prenderla sul serio, perché a dirlo
-non sono degli estranei al campo, e perché l'argomento che ci sta sotto è
-esattamente quello della prima sezione: quanto è grande la correzione che il
-modello riceve.
+Nella torta di LeCun l'apprendimento per rinforzo è la ciliegina. È
+un'immagine simpatica e una retrocessione severa: due capitoli interi sono
+dedicati a una decorazione. Conviene prenderla sul serio, perché a dirlo non
+sono degli estranei al campo, e perché l'argomento che ci sta sotto è quello di
+sempre: quanto è grande la correzione che il modello riceve.
 
 Una premessa, che qui conta più del solito: le posizioni che seguono sono di
 persone vive su una questione aperta, e ciascuna arriva con il nome giusto
@@ -13,21 +12,22 @@ attaccato. Come si vedrà, non è banale nemmeno quello.
 
 ## L'argomento, in due mosse
 
-Le critiche che vengono mosse all'apprendimento per rinforzo «puro» sono quattro,
-e due di esse questo libro le ha già affrontate per esteso: il fatto che una
-ricompensa scritta male venga ottimizzata alla lettera (nel {doc}`capitolo sul deep
-reinforcement learning </DeepReinforcementLearning/overview>` e nella sezione sul post-addestramento, dentro il
-{doc}`capitolo sui Transformer </Transformers/overview>`) e il fatto che
-imparare per tentativi nel mondo costi un'enormità di esperienza rispetto a
-imparare dentro un modello del mondo (è la tesi del capitolo che segue questo).
+Le critiche mosse all'apprendimento per rinforzo «puro» sono quattro, e due si
+discutono qui. Vanno viste come **due mosse dello stesso ragionamento**, non
+come due obiezioni separate.
 
-Le altre due sono quelle di questa pagina, ed è utile vederle come **due mosse
-dello stesso ragionamento**, non come due obiezioni separate.
+Le altre due hanno già avuto il loro spazio: la ricompensa scritta male e
+ottimizzata alla lettera sta nel {doc}`capitolo sul deep reinforcement
+learning </DeepReinforcementLearning/overview>` e nella sezione sul
+post-addestramento del
+{doc}`capitolo sui Transformer </Transformers/overview>`; il costo in esperienza
+dell'imparare per tentativi nel mondo, invece che dentro un modello del mondo,
+è la tesi del {doc}`capitolo sui world model </WorldModels/overview>`.
 
 `````{tab} Elementare
 
-Torniamo all'esempio della prima sezione, quella giornata nel bosco al termine
-della quale qualcuno ti dice soltanto «oggi hai fatto bene».
+Torniamo alla giornata nel bosco, quella al termine della quale qualcuno ti
+dice soltanto «oggi hai fatto bene».
 
 La prima obiezione è quella che già conosciamo: è pochissimo. Una frase per una
 giornata intera. Se invece qualcuno ti avesse commentato ogni singolo
@@ -43,11 +43,13 @@ sapendo distinguere, tendi a ripetere tutto, compresa la sosta inutile e il
 rumore.
 
 Rimediare si può, in parte. Confronta la giornata con le tue solite, e un
-«bene» come quello di sempre smette di giustificare tutto. Fatti accompagnare da
-qualcuno che, dopo tante uscite, provi a dirti come sta andando mentre ancora
-cammini. Sono rimedi veri, e aiutano a smistare. Ma nemmeno lui ha mai sentito
-altro che la frase della sera: nessuno dei due inventa quello che nessuno ha
-detto.
+«bene» come quello di sempre smette di giustificare tutto. Fatti accompagnare
+da qualcuno che, dopo tante uscite, provi a dirti come sta andando mentre
+ancora cammini. E da' più peso a quello che hai fatto poco prima di un
+avvistamento riuscito che a quello che avevi fatto sei ore prima, perché a
+quella distanza la colpa e il merito si perdono comunque. Sono rimedi veri, e
+aiutano a smistare. Ma nemmeno chi ti accompagna ha mai sentito altro che la
+frase della sera: nessuno di quei rimedi inventa quello che nessuno ha detto.
 
 Il punto è che le due obiezioni si moltiplicano invece di sommarsi. Poca
 informazione sarebbe già un problema; poca informazione, e da spalmare su
@@ -58,10 +60,10 @@ ordine. E più lunga è la giornata, più sono le decisioni fra cui dividerla.
 
 `````{tab} Superiore
 
-La prima mossa è quantitativa e la sezione di apertura l'ha già misurata: il
-bersaglio nel rinforzo è uno scalare per episodio, cioè al più pochi bit,
+La prima mossa è quantitativa ed è già misurata: il bersaglio nel rinforzo è
+uno scalare per episodio, cioè al più pochi bit,
 mentre nel pre-addestramento auto-supervisionato è dell'ordine di $10^5$ bit per
-esempio. È il rapporto che il programma della prima sezione stampa.
+esempio. È il rapporto che il programma sui bit stampa.
 
 La seconda mossa è strutturale e riguarda **l'assegnazione del credito**
 (*credit assignment*). Un ritorno osservato $R$ alla fine di una traiettoria
@@ -77,7 +79,8 @@ $$
 dove $M$ è il numero di traiettorie campionate e $J(\theta)$ il ritorno atteso
 della politica. Lo scalare $R^{(m)}$ è uno per traiettoria, e moltiplica il
 gradiente di ogni azione di quella traiettoria: le azioni buone e quelle cattive
-di un episodio riuscito ricevono la medesima spinta verso l'alto. La sezione sui
+di un episodio riuscito ricevono lo stesso coefficiente, tutte spinte verso
+l'alto. La sezione sui
 metodi a gradiente di policy, nel capitolo sul deep reinforcement learning,
 mostra come si attenua il problema (una linea di base per ridurre la varianza,
 un critico che stima il vantaggio azione per azione, lo sconto che accorcia
@@ -91,35 +94,36 @@ di decisioni che cresce con la lunghezza dell'episodio.
 
 Il disegno di {numref}`fig-credito-spalmato` mostra la seconda mossa mentre
 avviene, che è l'unico modo di vederla: da ferma sembrerebbe soltanto una fila
-di caselle tutte uguali, ed è proprio quell’«uguali» il problema.
+di riquadri tutti uguali, ed è proprio quell’«uguali» il problema.
 
 ```{figure} ../figures/credito-spalmato.svg
 :name: fig-credito-spalmato
-:alt: Una fila di dodici caselle, i passi di una traiettoria, cinque delle quali bordate di terracotta perché in quei passi l'agente ha sbagliato. Un segnalino percorre la fila un passo alla volta; alla fine compare un solo riquadro con il ritorno, più uno. Da lì partono dodici archi che tornano indietro fino a ogni casella e le riempiono tutte dello stesso colore. Sotto, due righe di numeri: la riga del peso porta più uno dodici volte identiche, la riga del merito alterna più uno e meno uno.
+:alt: Una fila di dodici riquadri, i passi di una traiettoria; cinque sono bordati di terracotta perché in quei passi l'agente ha sbagliato. Una testa percorre la fila da sinistra a destra un passo alla volta; alla fine compare un solo riquadro con il ritorno, più uno. Da lì partono dodici archi che tornano indietro fino a ogni riquadro e li riempiono tutti dello stesso colore. Sotto, due righe di numeri: la riga del peso porta più uno dodici volte identiche, la riga del merito cambia fra più uno e meno uno da un passo all'altro.
 :width: 100%
 
 Un solo numero alla fine, e poi indietro su tutto. La riga del **peso** è quella
 che l'algoritmo applica davvero a ciascun passo, ed è la stessa dappertutto; la
-riga del **merito** è quella che l'algoritmo non vede, e alterna. I passi
-bordati di terracotta sono quelli in cui l'agente ha sbagliato, e ricevono la
-stessa spinta di tutti gli altri.
+riga del **merito** è quella che l'algoritmo non vede, e cambia da passo a
+passo fra più uno e meno uno. I passi bordati di terracotta sono quelli in cui
+l'agente ha sbagliato, e ricevono la stessa spinta di tutti gli altri.
 ```
 
 ## Che cosa propone LeCun al suo posto
 
 Per LeCun la conseguenza di questo argomento non è che il rinforzo sia inutile,
-ma che sia **nel posto sbagliato della pila**: va bene per rifinire una policy
-quando la comprensione del mondo è già stata costruita altrove, e non va bene
-come modo di costruirla.
+ma che sia **nel posto sbagliato**: va bene per rifinire una policy quando la
+comprensione del mondo è già stata costruita altrove, e non va bene come modo
+di costruirla.
 
-Il libro ha già incontrato questa posizione, senza la sua motivazione. Nel
-{doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` c'è l'elenco delle quattro rinunce che LeCun
-ripete nelle sue conferenze, e la quarta dice: abbandonare l'apprendimento per
+Questa posizione è già comparsa, senza la sua motivazione. Nel
+{doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` c'è l'elenco
+delle quattro rinunce che LeCun ripete nelle sue conferenze, e la quarta dice:
+abbandonare l'apprendimento per
 rinforzo in favore del **controllo predittivo basato su modello**, cioè
 costruirsi un modello di come va il mondo, pianificare dentro quello, e ricorrere
 ai tentativi soltanto per correggere il modello quando la previsione sbaglia.
 
-Il conto della prima sezione è il perché di quella riga. Se ogni interazione col
+Quel conto sui bit è il perché di quella riga. Se ogni interazione col
 mondo vero paga pochi bit, allora un sistema che impara *soltanto* interagendo è
 condannato a un numero di interazioni che nessun corpo fisico può permettersi; se
 invece la comprensione del mondo si costruisce guardando, cioè con un segnale
@@ -128,8 +132,8 @@ ed è pochissima. È la stessa aritmetica, letta come progetto di macchina.
 
 Va detto che questa è una **posizione dentro un dibattito aperto**, non un
 risultato: dice come andrebbe costruita una macchina, e le macchine costruite
-così non sono ancora quelle che funzionano meglio. Il capitolo che segue la
-prende sul serio esattamente in questi termini.
+così non sono ancora quelle che funzionano meglio. Il capitolo sui world model
+la prende sul serio esattamente in questi termini.
 
 ## Come lo dice Karpathy
 
@@ -198,8 +202,7 @@ percorsi di ragionamento che il modello aveva già acquisito nel
 pre-addestramento.
 
 È una tesi tecnica precisa, ed è di Yang Yue e colleghi {cite}`yue2025rlvr`.
-È una misura e non un'opinione, e conviene dire come è fatta perché è la
-parte interessante.
+È una misura e non un'opinione, e come è fatta è la parte interessante.
 
 `````{tab} Elementare
 
@@ -215,9 +218,9 @@ a risolvere problemi che l'altro non risolve, e nelle misure degli autori il
 sorpasso arriva già a qualche decina o qualche centinaio di tentativi, non a
 numeri irraggiungibili.
 
-La lettura degli autori è che l'addestramento non abbia insegnato niente di
-nuovo: abbia reso più probabili alcune strade che il modello sapeva già
-percorrere, e nel farlo abbia reso improbabili le altre. Più preciso, e più
+La lettura degli autori è che l'addestramento non abbia quasi mai insegnato
+qualcosa di nuovo: abbia reso più probabili alcune strade che il modello sapeva
+già percorrere, e nel farlo abbia reso improbabili le altre. Più preciso, e più
 stretto.
 
 Attenzione a non tirare la conclusione più in là di dove arriva la misura, e
@@ -237,8 +240,10 @@ campionate indipendentemente alla stessa domanda sia corretta. È una misura del
 azzecca al primo colpo, per $k$ grande premia chi *possiede* la soluzione da
 qualche parte nella propria distribuzione, anche se raramente.
 
-Il risultato, dall'abstract: «l'attuale impostazione di addestramento non
-suscita schemi di ragionamento fondamentalmente nuovi. Mentre i modelli
+Il risultato, dall'abstract (RLVR è il rinforzo con ricompensa **verificabile**,
+quella che un controllo automatico assegna senza il giudizio di nessuno):
+«l'attuale impostazione di addestramento suscita
+di rado schemi di ragionamento fondamentalmente nuovi. Mentre i modelli
 addestrati con RLVR superano i loro modelli base per valori piccoli di $k$ (per
 esempio $k=1$), i modelli base ottengono un punteggio pass@$k$ più alto quando
 $k$ è grande» {cite}`yue2025rlvr`. Gli autori osservano inoltre che il confine
@@ -274,7 +279,7 @@ non troverebbe.
 
 Un capitolo che riportasse solo le critiche darebbe un'impressione falsa, perché
 mentre si discuteva di ciliegine l'apprendimento per rinforzo ha fatto due cose
-grosse, e questo libro le racconta entrambe.
+grosse, e vanno raccontate entrambe.
 
 La prima è che gli assistenti conversazionali che tutti usano sono rifiniti
 così. Il {doc}`capitolo sui Transformer </Transformers/overview>`, nella sezione sul post-addestramento, mostra
@@ -295,8 +300,8 @@ colleghi, e le due cose insieme dicono una terza cosa: l'addestramento sposta
 massa di probabilità verso strade che pagano, e questo è utilissimo **e** non è
 la stessa cosa che insegnare una strada nuova.
 
-C'è infine un argomento di prospettiva da tenere presente. Le critiche di
-questa pagina riguardano il rinforzo **come unico maestro**, cioè l'idea di
+C'è infine un argomento di prospettiva da tenere presente. Le critiche fin qui
+riguardano il rinforzo **come unico maestro**, cioè l'idea di
 costruire un sistema per tentativi ed errori a partire da zero. Nessuno dei
 due critici propone questo: la ciliegina è una ciliegina perché viene
 **dopo**, su una torta già cotta. Criticare il rinforzo come unico maestro non
@@ -305,7 +310,7 @@ vengono scambiate di continuo.
 
 ## Cambiare la quantità, invece di arricchire il premio
 
-Tutte le critiche di questa pagina hanno la stessa forma: il segnale è povero.
+Tutte queste critiche hanno la stessa forma: il segnale è povero.
 La risposta più ovvia è allora arricchirlo, e infatti è quello che si fa (un
 critico che dà un voto passo per passo, un premio interno per la novità, un
 giudice che commenta le soluzioni parziali). C'è però una risposta diversa, che
@@ -314,9 +319,12 @@ merita un posto qui perché è l'unica obiezione di principio, non di rimedio.
 
 Viene da fuori dall'informatica. Nelle neuroscienze teoriche esiste un quadro,
 l’**inferenza attiva**, che descrive percezione, pianificazione e azione come
-un unico problema di inferenza {cite}`parr2022active`. Al posto della ricompensa
-mette una grandezza da minimizzare, l’**energia libera attesa**, e il punto che
-interessa qui è come è fatta: si scompone in due pezzi.
+un unico problema di inferenza {cite}`parr2022active`. Al posto della
+ricompensa mette una grandezza da minimizzare, l’**energia libera attesa**: la
+sorella rivolta al futuro dell'energia libera variazionale nominata in
+apertura, che pesa le osservazioni già arrivate mentre questa pesa quelle che
+un piano farebbe arrivare. Il punto che interessa qui è come è fatta, perché si
+scompone in due pezzi.
 
 `````{tab} Elementare
 
@@ -358,10 +366,12 @@ G(\pi) \;=\; -\,\underbrace{I(\pi)}_{\text{valore epistemico}}
 $$
 
 dove $\tilde{o}$ sono le osservazioni future attese sotto $\pi$, $I(\pi)$ è il
-guadagno di informazione atteso (di quanto quelle osservazioni ridurrebbero
-l'incertezza sugli stati) e $C$ codifica le preferenze dell'agente, cioè quali
-osservazioni si aspetta di incontrare. Minimizzare $G$ significa massimizzare
-tutti e due i pezzi insieme.
+guadagno di informazione atteso, cioè di quanto quelle osservazioni
+ridurrebbero l'incertezza sugli stati, e $C$ codifica le preferenze
+dell'agente, cioè quali osservazioni si aspetta di incontrare. Quel $C$ è la
+lettera con cui la letteratura dell'inferenza attiva scrive le preferenze, e
+non è il compressore $C$ di «Capire è accorciare». Minimizzare $G$ significa
+massimizzare tutti e due i pezzi insieme.
 
 La conseguenza è quella che gli autori enunciano esplicitamente: poiché
 «l'utilità e il valore dell'informazione emergono come due componenti
@@ -380,10 +390,10 @@ due letture: non sono in concorrenza, una è il caso particolare dell'altra.
 `````
 
 Due avvertenze prima di lasciare l'argomento, perché è il punto in cui sarebbe
-facile promettere troppo. La prima: **questo non è oggi il modo in cui si
-addestrano i sistemi di cui parla il libro.** L'inferenza attiva nasce come
-teoria del comportamento biologico, e le sue realizzazioni sono modelli di
-laboratorio, non i sistemi su cui gira il mondo. La seconda la dicono gli autori
+facile promettere troppo. La prima: **non è così che si addestrano oggi i
+sistemi di cui si è parlato fin qui.** L'inferenza attiva nasce come teoria del
+comportamento biologico, e le sue realizzazioni sono modelli di laboratorio,
+non i sistemi su cui gira il mondo. La seconda la dicono gli autori
 stessi in apertura, e conviene riportarla perché evita di trasformarli in
 avversari di qualcuno: il quadro «non mira a rimpiazzare altri quadri di
 riferimento, come la psicologia comportamentale, la teoria delle decisioni e
@@ -400,7 +410,7 @@ comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </Worl
 ```{admonition} Da ricordare
 :class: important
 - Nella torta di LeCun l'apprendimento per rinforzo è la **ciliegina**, e la
-  ragione è quella della prima sezione: il segnale che porta è pochissimo, una
+  ragione è quella del conto sui bit: il segnale che porta è pochissimo, una
   frase per un'intera giornata.
 - A quella si aggiunge una seconda obiezione, che è peggiore perché **moltiplica**
   la prima: quella frase va anche **distribuita** fra le centinaia di cose fatte
@@ -421,6 +431,16 @@ comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </Worl
   giorni sono rifiniti proprio così, e i modelli «ragionanti» si addestrano così
   sui problemi dove la risposta si può verificare. Nessuno propone di buttare il
   rinforzo: si discute se basti a spiegare da dove venga la comprensione.
+- LeCun non dice che sia inutile: dice che è **nel posto sbagliato**, buono per
+  rifinire e non per costruire la comprensione, che va costruita guardando. È
+  una posizione dentro un dibattito aperto, e le macchine fatte così non sono
+  ancora quelle che funzionano meglio.
+- C'è poi una risposta di tipo diverso, che non arricchisce il premio ma
+  **cambia la cosa da massimizzare**: chi vuole un caffè e non sa che giorno è
+  guarda prima il calendario, e quel gesto non porta caffè, porta informazione.
+  Se il valore di sapere sta già dentro la quantità da minimizzare,
+  l'esplorazione non si paga a parte. Non è però così che i sistemi di oggi si
+  addestrano.
 ```
 
 `````
@@ -429,15 +449,18 @@ comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </Worl
 
 ```{admonition} Da ricordare
 :class: important
-- Le critiche al rinforzo «puro» sono quattro; due il libro le tratta altrove
-  (**reward hacking** e **costo campionario**), e le due di questa pagina sono
-  due mosse dello stesso argomento.
-- **Banda**: il bersaglio è uno scalare per episodio, cioè pochi bit, contro
-  l'ordine di $10^5$ bit per esempio del pre-addestramento auto-supervisionato.
+- Le critiche al rinforzo «puro» sono quattro; due sono trattate altrove (la
+  ricompensa scritta male e ottimizzata alla lettera, e il costo in esperienza
+  dell'imparare per tentativi nel mondo), e le due discusse qui sono due mosse
+  dello stesso argomento.
+- **Quanti bit**: il bersaglio è uno scalare per episodio, cioè pochi bit,
+  contro l'ordine di $10^5$ bit per esempio del pre-addestramento
+  auto-supervisionato.
 - **Assegnazione del credito**: nel gradiente di policy elementare lo stesso
   ritorno $R^{(m)}$ moltiplica $\nabla_\theta \log \pi_\theta(a_t \mid s_t)$ per
-  ogni $t$ della traiettoria. Linea di base, critico e sconto attenuano la
-  varianza, ma non fabbricano informazione assente dal segnale.
+  ogni $t$ della traiettoria. La linea di base riduce la varianza, il critico
+  stima il vantaggio azione per azione e lo sconto accorcia l'orizzonte di
+  attribuzione; nessuno dei tre fabbrica informazione assente dal segnale.
 - **Karpathy** {cite}`karpathy2025dwarkesh`: «sucking supervision through a
   straw», e il ritorno finale «trasmesso per radiodiffusione a tutta la
   traiettoria». Nella stessa risposta: il rinforzo resta il meglio disponibile e
@@ -450,11 +473,20 @@ comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </Worl
   verificabili funzionano, e non contraddicono il risultato precedente. Spostare
   massa di probabilità verso strade che pagano è utile **e** non equivale a
   insegnare una strada nuova.
+- **La proposta di LeCun**: il rinforzo va sostituito, come costruttore della
+  comprensione, dal **controllo predittivo basato su modello**, e resta per la
+  rifinitura. È una posizione dentro un dibattito aperto, non un risultato.
+- **Inferenza attiva** {cite}`parr2022active`: l'energia libera attesa $G(\pi)$
+  si scompone in valore epistemico e valore pragmatico, quindi non c'è nessun
+  compromesso fra esplorazione e sfruttamento da regolare a mano; tolte le
+  preferenze resta, cambiata di segno, la **motivazione intrinseca**, cioè il
+  bonus di curiosità come caso particolare. Quadro di laboratorio, non il modo
+  in cui i sistemi si addestrano oggi.
 ```
 
 `````
 
-Da questo capitolo si esce con un criterio più che con una risposta: prima di
+Se ne esce con un criterio più che con una risposta: prima di
 chiedersi se un modo di addestrare funzioni, conviene chiedersi quanta
 informazione porta il segnale su cui si regge, e a quante scelte quel poco va
 poi diviso. Nel {doc}`capitolo sui world model </WorldModels/overview>` il segnale resta la previsione, ma la

@@ -15,16 +15,14 @@ Da qui la scommessa costruttiva opposta a quella delle CPU. Una CPU è fatta per
 finire in fretta *un* programma, cioè per correre lungo un'unica fila di
 istruzioni, e per questo i suoi core sono pochi e complicati. I progettisti
 delle GPU ne misero migliaia, ciascuno lento e limitato, tutti attivi nello
-stesso istante. Per anni fu una scommessa confinata alla grafica; poi CUDA
-aprì quei chip a conti di ogni tipo, AlexNet vinse ImageNet nel 2012 su due
-schede da videogiocatori, e le due storie non si sono più separate: è il
-racconto con cui si è aperto il capitolo.
+stesso istante.
 
-Nella sezione «Prestazioni e scala» del {doc}`capitolo su PyTorch </PyTorch/overview>` abbiamo già
-incontrato l'immagine della GPU come squadra di operai semplici. Qui apriamo
-il cofano: com'è fatta dentro, e (soprattutto) *come esegue* il codice. Perché
-il segreto delle prestazioni non è che ogni operaio sia veloce (non lo è), ma
-come sono organizzati, a squadre, e come si coprono a vicenda i tempi morti.
+Di quella folla, che la sezione «Prestazioni e scala» del {doc}`capitolo su
+PyTorch </PyTorch/overview>` chiamava una squadra di operai semplici, qui
+apriamo il cofano: com'è fatta dentro, e (soprattutto) *come esegue* il codice.
+Perché il segreto delle prestazioni non è che ogni operaio sia veloce (non lo
+è), ma come sono organizzati, a squadre, e come si coprono a vicenda i tempi
+morti.
 
 ## Due filosofie: la lepre e il formicaio
 
@@ -68,8 +66,8 @@ ferma la consegna, perché di lepri ce n'è una.
 La CPU è la lepre: pochi processori potentissimi, pensati per finire in fretta
 il singolo compito. La GPU è il formicaio: tante unità lente, pensate per
 smaltire una montagna di compiti tutti insieme. Per aprire un file o rispondere
-a un clic vuoi la lepre; per fare i sessantaquattro milioni di moltiplicazioni
-tutte uguali di un solo strato di una rete, vuoi il formicaio.
+a un clic vuoi la lepre; per fare i centoventotto milioni di conti tutti
+uguali di un solo strato di una rete, vuoi il formicaio.
 
 `````
 
@@ -112,8 +110,8 @@ un *compito*: «occupati tu del numero in posizione 4173». La parola inglese
 vuol dire «filo», ed è un filo di lavoro da sbrogliare, non qualcosa che si
 possa toccare. Questo spiega il numero che altrimenti non tornerebbe: le ALU di
 una GPU sono migliaia, i thread che ha in carico sono centinaia di migliaia. Ce
-ne sono molti più che postazioni, ed è proprio da lì che verrà, in fondo a
-questa sezione, il trucco che tiene la macchina sempre occupata.
+ne sono molti più che postazioni, ed è proprio da lì che verrà il trucco che
+tiene la macchina sempre occupata.
 
 Fatta questa premessa, ogni SM è una piccola macchina completa, con i suoi
 calcolatori, il suo caposquadra e i suoi ripiani di lavoro. Contiene:
@@ -126,7 +124,7 @@ calcolatori, il suo caposquadra e i suoi ripiani di lavoro. Contiene:
   due tabelloni di numeri, che vedremo in una sezione dedicata;
 - uno o più **warp scheduler**, i caposquadra: decidono, momento per momento,
   quale gruppetto di thread far avanzare (il gruppetto si chiama *warp*, e la
-  sezione qui sotto dice perché);
+  sezione sul SIMT dice perché);
 - un grande **register file**, il taccuino: la memoria velocissima dove ogni
   thread tiene i numeri su cui sta operando in questo istante. In inglese
   *file* qui non vuol dire documento, vuol dire schedario;
@@ -143,9 +141,10 @@ GPU tiene in carico contemporaneamente, cioè qualche decina di compiti per ogni
 postazione.
 
 Da lì si ricavano i numeri che si leggono sulle schede tecniche, e il conto è
-di quelli che si fanno a mente: diecimila postazioni, ciascuna un conto per
-battito, e un metronomo che batte più di un miliardo di volte al secondo, fanno
-più di diecimila miliardi di conti al secondo. È il motivo per cui una GPU
+di quelli che si fanno a mente: diecimila postazioni, ciascuna una
+moltiplicazione-e-somma per battito (che di conti ne vale due), e un metronomo
+che batte più di un miliardo di volte al secondo, fanno qualche decina di
+migliaia di miliardi di conti al secondo. È il motivo per cui una GPU
 divora le moltiplicazioni fra tabelloni di numeri di cui una rete neurale è
 fatta.
 
@@ -290,7 +289,9 @@ Ognuno intanto tiene il segno di dove è arrivato lungo la propria strada, e due
 che si trovano in punti diversi possono anche scambiarsi una parola e
 aspettarsi a un incrocio. Quello che nessuno può fare è marciare su due ordini
 diversi nello stesso istante: gli ordini escono uno per volta, e chi non è
-nominato sta fermo.
+nominato sta fermo. La libertà si paga in disciplina: chi era abituato a darli
+per sempre allineati adesso sbaglia, e se li vuole insieme a un incrocio deve
+chiamare l'appello.
 
 Morale: sulla GPU i bivi in cui i 32 compagni di plotone prendono strade
 diverse costano cari, e il codice più veloce è quello in cui tutti fanno la
@@ -311,8 +312,8 @@ volta solo i thread che seguono quel ramo e mascherando gli altri. Nel caso
 peggiore (32 percorsi distinti) un warp divergente costa fino a 32 volte un
 warp coerente.
 
-Qui è d'obbligo una distinzione storica, perché il meccanismo è cambiato e
-molte spiegazioni in giro descrivono ancora la macchina di prima. **Fino a
+Il meccanismo, qui, è cambiato, e molte spiegazioni in giro descrivono ancora
+la macchina di prima. **Fino a
 Pascal** (2016) il warp aveva un *unico* program counter condiviso dai 32
 thread, più una maschera di attivazione che diceva quali fossero vivi in quel
 momento: i thread di un warp, letteralmente, non potevano trovarsi in due punti
@@ -348,22 +349,23 @@ la sua potenza sarebbe sprecata. La mossa che la salva non è aspettare meno, ma
 
 `````{tab} Elementare
 
-Dieci pentole sui fornelli, e un cuoco solo a girarci intorno. Quel cuoco è il
-caposquadra di una sola officina, e ogni pentola è un plotone da 32.
+Dieci pentole sui fornelli, e un capocuoco solo a girarci intorno: lui non
+cucina, decide a quale pentola dare un giro adesso. È il caposquadra di una
+sola officina, e ogni pentola è un plotone da 32.
 
-La pasta della prima deve bollire dieci minuti, e un cuoco con una pentola sola
+La pasta della prima deve bollire dieci minuti, e chi ne avesse una sola
 se ne starebbe lì a fissare l'acqua. Il nostro invece, mentre la prima bolle,
 mescola la seconda, assaggia la terza, impiatta la quarta. Quando torna alla
 prima, i dieci minuti sono passati «gratis», coperti dal lavoro sulle altre.
 L'attesa c'è stata tutta, e nel conto della serata non si vede. Ma bastano due
-pentole sul fuoco invece di dieci, e il cuoco torna a fissare l'acqua.
+pentole sul fuoco invece di dieci, e il capocuoco torna a fissare l'acqua.
 
 Quante pentole ha sul fuoco un'officina, in rapporto a quante potrebbe averne,
 si chiama **occupancy**, che in italiano suonerebbe «riempimento».
 
 Girare da una pentola all'altra non costa niente, e c'è una ragione. Ogni
 pentola ha il suo tagliere fuori sul ripiano, col coltello e gli ingredienti
-già pronti, e il cuoco non li toglie mai, così si sposta e trova tutto dov'era.
+già pronti, e nessuno li toglie mai, così lui si sposta e trova tutto dov'era.
 Dove invece si sparecchia a ogni cambio, mettere via e rimettere fuori costa
 più della mescolata. Quel ripiano è il taccuino dell'officina, dove ogni
 plotone tiene i numeri con cui sta lavorando finché non ha finito. Ecco perché
@@ -376,15 +378,15 @@ stesso modo per il pezzo di tavolo comune che ogni squadra si tiene occupato.
 Chi cucina se ne accorge da un sintomo strano: cambi una riga della ricetta, e
 all'improvviso i fornelli si svuotano.
 
-Il conto vero non si fa ai fornelli. Si fa nel corridoio fra la cucina e la
-dispensa, dove si forma la coda, e la roba in viaggio si conta. Dieci pentole
-che chiedono un cucchiaio per volta mettono in strada dieci cucchiai. Due
-pentole che chiedono una cassa da cinque cucchiai l'una ne mettono in strada
-dieci anche loro, e il corridoio è pieno uguale con cinque volte meno pentole.
-Riempire i fornelli resta il modo più semplice per riempire il corridoio, e
-un'officina con due pentole accese spreca il suo cuoco; ma a chi si fa portare
-una cassa per volta, o rimacina quello che ha già sul tagliere, di pentole ne
-bastano poche.
+Il conto vero non si fa ai fornelli, si fa nel corridoio: consegna il suo
+massimo solo se non resta mai vuoto, e a tenerlo pieno è la roba che ci cammina
+dentro adesso, più del numero di pentole accese. Dieci pentole che chiedono un
+cucchiaio per volta mettono in strada dieci cucchiai. Due pentole che chiedono
+una cassa da cinque cucchiai l'una ne mettono in strada dieci anche loro, e il
+corridoio è pieno uguale con cinque volte meno pentole. Riempire i fornelli
+resta il modo più semplice per riempire il corridoio, e un'officina con due
+pentole accese spreca il suo capocuoco; ma a chi si fa portare una cassa per
+volta di pentole ne bastano poche.
 
 `````
 
@@ -408,8 +410,9 @@ troppo bassa è quasi sempre un sintomo di potenza sprecata.
 Il «dipende» diventa una regola usabile se si guarda alla quantità giusta, che
 non è il numero di warp ma il numero di **accessi in volo**: per saturare la
 banda servono byte in viaggio pari a banda × latenza (è la legge di Little).
-Su una A100 da 80 GB, con $1{,}935$ TB/s e una latenza HBM dell'ordine dei
-$400$ ns, fanno circa $770$ KB su tutto il chip, cioè circa 7 KB per ciascuno
+Su una A100 80 GB PCIe, con $1{,}935$ TB/s e una latenza HBM che NVIDIA non
+pubblica e che i microbenchmark danno intorno ai $400$ ns, fanno circa $770$ KB
+su tutto il chip, cioè circa 7 KB per ciascuno
 dei 108 SM. Se ogni thread legge 4 byte, un warp in volo ne porta 128 e servono
 una cinquantina di richieste pendenti per SM, cioè quasi tutti i warp residenti:
 occupancy alta. Se invece ogni thread legge un `float4` (16 byte, cioè 512 byte
@@ -451,8 +454,9 @@ prossima sezione.
   sinistra») il plotone si divide e le due strade si percorrono una dopo
   l'altra, nel doppio del tempo. Nel codice per GPU i «se... allora...» che
   dividono i compagni di plotone costano cari.
-- L'attesa non si accorcia, si **nasconde**: come il cuoco con dieci pentole,
-  il caposquadra manda avanti un altro plotone mentre il primo aspetta i dati.
+- L'attesa non si accorcia, si **nasconde**: il caposquadra manda avanti un
+  altro plotone mentre il primo aspetta i dati, come il capocuoco che gira fra
+  dieci pentole.
   Quanti plotoni ha pronti, in rapporto a quanti potrebbe averne, si chiama
   **occupancy**. Tenerla decente è il modo più semplice per non lasciare
   l'officina a mani vuote; quello che conta davvero, però, è che il corridoio

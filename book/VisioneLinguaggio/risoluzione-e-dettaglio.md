@@ -28,7 +28,9 @@ sua conseguenza sul costo dell'attenzione non lo è.
 Prendiamo un encoder che taglia tessere da $14 \times 14$ puntini. Su
 un'immagine da $224 \times 224$ ne stanno $224 : 14 = 16$ per riga e altrettante
 per colonna, quindi $16 \times 16 = 256$ tessere: la nostra immagine è una
-«frase» di 256 pezzi.
+«frase» di 256 pezzi. Con tessere da $16 \times 16$ ne verrebbero 196, ed è il
+conto fatto sul Vision Transformer: a decidere quanti pezzi ha la «frase» è la
+taglia della tessera.
 
 Adesso raddoppiamo il lato, da $224$ a $448$: le tessere diventano $32$ per riga
 e $32$ per colonna, in tutto $32 \times 32 = 1024$. Sono **quadruplicate**, e la
@@ -36,12 +38,13 @@ ragione è che a raddoppiare sono due lati insieme, la larghezza e l'altezza:
 l'immagine ha quattro volte l'area.
 
 Il seguito è meno ovvio. Il modello, per capire ogni tessera, la confronta con
-tutte le altre (è l’**attenzione**, il meccanismo del capitolo sui Transformer):
-con 256 tessere i confronti sono $256 \times 256$, con 1024 sono
-$1024 \times 1024$. Quattro volte i pezzi significa $4 \times 4 = 16$ volte i
-confronti: raddoppiare il lato di una fotografia moltiplica per sedici il lavoro
-dell'attenzione, e raddoppiarlo ancora (da $448$ a $896$) lo moltiplica per
-altri sedici, duecentocinquantasei volte il conto di partenza.
+tutte le altre (è l’**attenzione**, il meccanismo del {doc}`capitolo sui
+Transformer </Transformers/overview>`): con 256 tessere i confronti sono $256
+\times 256$, con 1024 sono $1024 \times 1024$. Quattro volte i pezzi significa
+$4 \times 4 = 16$ volte i confronti: raddoppiare il lato di una fotografia
+moltiplica per sedici il lavoro dell'attenzione, e raddoppiarlo ancora (da
+$448$ a $896$) lo moltiplica per altri sedici, duecentocinquantasei volte il
+conto di partenza.
 
 Il prezzo che si paga per primo, però, sono i posti. Una frase ne ha un numero
 finito, e 1024 tessere ne occupano 1024: alle parole della domanda e della
@@ -76,7 +79,7 @@ $24 N d^2$: il quadratico supera il lineare solo per $N > 6d$, cioè oltre
 $24\,576$ token in un modello con $d = 4096$ (nell'encoder visivo, dove $d$ vale
 circa un migliaio, la soglia scende attorno ai seimila). Quello che si paga
 subito è il **contesto occupato**, il tempo di *prefill* e la cache di chiavi e
-valori; e la FlashAttention del capitolo sulle GPU
+valori; e la FlashAttention del {doc}`capitolo sulle GPU </GPU/overview>`
 {cite}`dao2022flashattention` toglie dal conto la memoria $O(N^2)$, non il
 calcolo: alza il tetto, non cambia l'esponente.
 
@@ -281,13 +284,14 @@ puntini»: il nome è più oscuro della cosa): quattro tessere adiacenti diventa
 un pezzo solo, che porta con sé tutti e quattro i contenuti, uno di fianco
 all'altro. L'informazione si è spostata dai *posti* al *contenuto di ogni posto*.
 
-La cassetta, però, prima di entrare nel modello di linguaggio deve passare per
-una fessura larga sempre uguale: i posti in fila sono tutti della stessa taglia,
-e in quella taglia adesso devono starci quattro tessere invece di una. Il
-rimescolamento in sé non perde niente; la fessura sì. Con una differenza dal
+La cassetta, però, prima di entrare nel modello di linguaggio deve stare in un
+posto della misura di sempre: i posti in fila sono tutti uguali, e in uno solo
+adesso devono entrarci quattro barattoli. Se il posto è abbastanza capiente ci
+stanno tutti; se non lo è, qualcosa resta fuori. Il rimescolamento in sé non
+perde niente: a perdere, semmai, è il farcelo stare. Con una differenza dal
 barattolo mescolato: là il marrone viene deciso in partenza e sempre allo stesso
-modo, qui chi spinge la cassetta nella fessura ha imparato a furia di prove come
-piegarne il contenuto per perdere il meno possibile.
+modo, qui chi impacchetta ha imparato a furia di prove che cosa conviene
+tenere.
 
 `````
 
@@ -392,15 +396,16 @@ mentre la sua trascrizione ne costerebbe attorno al migliaio.
 Il passo successivo riguarda la ricerca. La RAG (cercare in un archivio i pezzi
 che servono e passarli al modello insieme alla domanda) l'abbiamo costruita
 nella {doc}`sezione «Cercare per rispondere» </Transformers/rag>` del capitolo
-sui Transformer, e il capitolo sugli agenti la raffinerà
-nella sezione sul RAG avanzato: non la rispieghiamo. Qui cambia una cosa sola, ma a
-monte di tutto: **che cosa si mette nell'indice**. L'indice è la copia
-riorganizzata dell'archivio su cui la ricerca lavora davvero. È come quello in
-fondo a un libro: non è il libro, ma serve a trovarci dentro le cose, con la
-differenza che qui al posto delle parole ci sono file di numeri. Nessuno cerca
-frugando fra i documenti originali: si cerca lì dentro, e quel che nell'indice
-non è finito, per la ricerca non esiste. In una pipeline classica si indicizza
-il testo estratto, e si eredita ogni decisione dell'OCR prima ancora che una
+sui Transformer, e il {doc}`capitolo sugli agenti </Agenti/overview>` la
+raffinerà nella sezione sul RAG avanzato. Qui cambia una cosa sola, ma a monte
+di tutto: **che cosa si mette nell'indice**. L'indice è la copia riorganizzata
+dell'archivio su cui la ricerca lavora davvero. È come quello in fondo a un
+libro: non è il libro, ma serve a trovarci dentro le cose, con la differenza
+che qui al posto delle parole ci sono file di numeri. Nessuno cerca frugando
+fra i documenti originali: si cerca lì dentro, e quel che nell'indice non è
+finito, per la ricerca non esiste. Nella catena di passaggi che porta dal
+documento all'indice (in gergo, la **pipeline**) di solito si indicizza il
+testo estratto, e si eredita ogni decisione dell'OCR prima ancora che una
 domanda sia stata formulata. L'alternativa è indicizzare la pagina **come
 immagine**, senza trascriverla: si cerca fra le pagine viste invece che fra le
 pagine ribattute, ed è la strada del recupero *vision-native* alla ColPali
@@ -531,20 +536,19 @@ print(f"  con pixel shuffle al modello di linguaggio arrivano {tot_ps} token")
   con pixel shuffle al modello di linguaggio arrivano 1280 token
 ```
 
-L'uscita è il riassunto numerico della sezione: le tre righe della tabella
-sono il vincolo, le quattro sotto sono le due
-contromisure. Il tiling compra un encoder che confronta $3{,}2$ volte meno
-coppie, e lo paga con mille token di ridondanza. Attenzione però a non leggere quel $3{,}2$ come un risparmio di lavoro. I
-confronti fra tessere sono solo una parte di quello che l'encoder fa: c'è anche
-il lavoro che spende su ogni tessera per conto suo, e quello cresce con il
-numero delle tessere e basta, quindi il taglio a riquadri, che di tessere ne
-aggiunge mille, lo peggiora. Messi insieme i due conti (sono gli stessi due
-addendi della soglia $N > 6d$: i confronti fra tessere da una
-parte, il lavoro su ogni tessera dall'altra), il risparmio vero sta
-fra il 5% e il 20%, ed è tanto minore quanto più l'encoder è grosso. Il pixel shuffle, dal canto suo, riporta quei
-$5120$ token a $1280$, meno di un terzo di quanto vedrebbe l'immagine
-monolitica, cioè non tagliata a pezzi. Nessuna delle due ha toccato la prima
-tabella.
+L'uscita è il riassunto numerico della sezione: le tre righe della tabella sono
+il vincolo, le quattro sotto sono le due contromisure. Il tiling compra un
+encoder che confronta $3{,}2$ volte meno coppie, e lo paga con mille token di
+ridondanza. Attenzione però a non leggere quel $3{,}2$ come un risparmio di
+lavoro. I confronti fra tessere sono solo una parte di quello che l'encoder fa:
+c'è anche il lavoro che spende su ogni tessera per conto suo, e quello cresce
+con il numero delle tessere e basta, quindi il taglio a riquadri, che di
+tessere ne aggiunge mille, lo peggiora. Messi insieme i due conti (i confronti
+fra tessere da una parte, il lavoro su ogni tessera dall'altra), il risparmio
+vero sta fra il 5% e il 20%, ed è tanto minore quanto più l'encoder è grosso.
+Il pixel shuffle, dal canto suo, riporta quei $5120$ token a $1280$, meno di un
+terzo di quanto vedrebbe l'immagine monolitica, cioè non tagliata a pezzi.
+Nessuna delle due ha toccato la prima tabella.
 
 ## La risoluzione si decide guardando il mestiere
 
@@ -554,8 +558,8 @@ sistema saprà leggere una bolletta, il numero che conta non sta lì: sta in
 quanti pixel gli si danno da guardare, e quella scelta si fa guardando **cosa il
 modello dovrà leggere**.
 È una manopola che si gira sapendo a che cosa servirà il prodotto finito, non un
-dettaglio interno da lasciare a chi disegna l'architettura. Nel gergo del libro
-è un **iperparametro**, cioè un numero che nessun addestramento sceglie per noi;
+dettaglio interno da lasciare a chi disegna l'architettura. Il nome tecnico è
+**iperparametro**, cioè un numero che nessun addestramento sceglie per noi;
 la novità è che questo non lo sceglie nemmeno chi progetta il modello, lo
 sceglie chi sa che cosa il modello dovrà leggere.
 
@@ -563,7 +567,7 @@ Le tre risposte non eliminano il costo, lo spostano, e ognuna lo lascia in un
 posto diverso. Il tiling lo toglie all'encoder e lo consegna al contesto, dove
 diventa lunghezza di sequenza. La compressione lo toglie al contesto e lo carica
 sui singoli token, dove diventa capacità. Il recupero *vision-native* lo toglie
-alla pipeline di estrazione e lo mette nell'indice, dove diventa spazio su
+alla catena di estrazione e lo mette nell'indice, dove diventa spazio su
 disco. Chi progetta sceglie in quale dei tre posti preferisce pagare, e la risposta
 dipende dal compito.
 
@@ -592,9 +596,9 @@ confortante.
   settima foto, quella sfocata.
 - **I barattoli di tempera**: versarne quattro in uno solo libera i ripiani, ma
   dei quattro colori resta un marrone (è il *pooling*); infilarli in una
-  cassetta a quattro scomparti libera gli stessi ripiani senza perdere un
-  grammo (è il *pixel shuffle*). Nel secondo caso il peso si sposta dal numero
-  di contenitori al peso di ciascuno.
+  cassetta a quattro scomparti libera gli stessi ripiani senza mescolare
+  niente (è il *pixel shuffle*). La cassetta però deve stare in un posto della
+  misura di sempre: a perdere qualcosa, semmai, è il farcelo stare.
 - Per i documenti, **fotocopiare invece di ribattere**: chi ribatte decide in che
   ordine si leggono le colonne, che fare delle tabelle e dei grafici, e lo decide
   prima di sapere che domanda arriverà. Un modello che vede la pagina toglie
@@ -633,10 +637,13 @@ confortante.
   l'indifferenza alle proporzioni. In cambio un oggetto a cavallo di due riquadri
   si spezza, e la miniatura è l'unico posto dove l'insieme resta visibile.
 - Il **pixel shuffle** riduce i token di quattro volte concatenando quattro
-  patch adiacenti lungo i canali: è una permutazione, non butta via niente, e
-  sposta l'informazione dai posti al contenuto di ogni posto. Il **pooling
-  medio**, sullo stesso blocco, ha nucleo di dimensione $3 d_v$: cancella
-  proprio le differenze fra patch vicine, cioè il dettaglio fine.
+  patch adiacenti lungo i canali: è una permutazione, quindi da sola non butta
+  via niente, e sposta l'informazione dai posti al contenuto di ogni posto. La
+  strozzatura si sposta sul proiettore, che deve portare $4 d_v$ in $d_t$, e
+  dove $d_t < 4 d_v$ è quella matrice a decidere che cosa passa, con la
+  differenza che lo ha imparato. Il **pooling medio**, sullo stesso blocco, ha
+  nucleo di dimensione $3 d_v$: cancella proprio le differenze fra patch
+  vicine, cioè il dettaglio fine.
 - Per i documenti la catena **OCR poi testo poi modello** decide l'ordine di
   lettura, la struttura delle tabelle e il destino dei grafici prima di
   conoscere la domanda. Un VLM legge la pagina come immagine e salta la catena;

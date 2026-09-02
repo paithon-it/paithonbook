@@ -40,35 +40,35 @@ regola) e per uno con mille miliardi.
 
 **Il secondo tratto** sono le reti neurali, che hanno cambiato la scala e ci
 hanno costretti a guardare anche sotto il cofano. Con
-[PyTorch](../PyTorch/overview.md) abbiamo impilato
-strati e scritto a mano il ciclo di addestramento (il *training loop*); col
-capitolo sulla [GPU](../GPU/overview.md) abbiamo visto perché una
-moltiplicazione di matrici è veloce solo se i numeri arrivano dalla memoria
-abbastanza in fretta da tenere occupato il processore. Le reti convoluzionali
-hanno insegnato alle macchine a vedere, e lo spartiacque è AlexNet, che nel
-2012 vince la gara di riconoscimento di immagini ImageNet con un errore
-*top-5* (la risposta giusta non è fra le cinque proposte) del 15,3%, ottenuto
-facendo votare insieme sette reti {cite}`krizhevsky2012imagenet`, contro il
-26,2% del secondo classificato. Quel 26,2% era del miglior metodo costruito a mano, cioè con i
-dettagli da guardare scelti da un esperto invece che imparati: è il salto che
-nessuno si aspettava. I modelli di sequenza, e i Transformer dopo di loro,
-hanno insegnato alle macchine a leggere e a scrivere
-{cite}`vaswani2017attention`; e poi a tenere insieme [visione e
-linguaggio](../VisioneLinguaggio/overview.md) nello stesso modello, imparando
-quasi tutto con l’[auto-supervisione](../AutoSupervisione/overview.md), cioè da
-etichette che nessuno scrive perché stanno già dentro i dati. Sono venuti
-poi [il suono](../Audio/overview.md), [la voce](../SpeechRecognition/overview.md),
-[i grafi](../GraphNeuralNetwork/overview.md) (i dati fatti di puntini collegati
-da linee), i
-[sistemi che ti raccomandano cosa
+[PyTorch](../PyTorch/overview.md) abbiamo impilato strati e scritto a mano il
+ciclo di addestramento (il *training loop*); col capitolo sulla
+[GPU](../GPU/overview.md) abbiamo visto perché una moltiplicazione di matrici è
+veloce solo se i numeri arrivano dalla memoria abbastanza in fretta da tenere
+occupato il processore. Le reti convoluzionali hanno insegnato alle macchine a
+vedere, e lo spartiacque è AlexNet, che nel 2012 vince la gara di
+riconoscimento di immagini ImageNet con un errore *top-5* (la risposta giusta
+non è fra le cinque proposte) del 15,3%, ottenuto facendo votare insieme sette
+reti {cite}`krizhevsky2012imagenet`, contro il 26,2% del secondo classificato.
+Quel 26,2% era del miglior metodo costruito a mano, cioè con i dettagli da
+guardare scelti da un esperto invece che imparati: è il salto che nessuno si
+aspettava.
+
+I modelli di sequenza, e i Transformer dopo di loro, hanno insegnato alle
+macchine a leggere e a scrivere {cite}`vaswani2017attention`; e poi a tenere
+insieme [visione e linguaggio](../VisioneLinguaggio/overview.md) nello stesso
+modello, imparando quasi tutto con
+l’[auto-supervisione](../AutoSupervisione/overview.md), cioè da etichette che
+nessuno scrive perché stanno già dentro i dati. Sono venuti poi [il
+suono](../Audio/overview.md), [la voce](../SpeechRecognition/overview.md), [i
+grafi](../GraphNeuralNetwork/overview.md) (i dati fatti di puntini collegati da
+linee), i [sistemi che ti raccomandano cosa
 guardare](../SistemiRaccomandazione/overview.md), le [serie
-temporali](../SerieTemporali/overview.md), le
-[equazioni della fisica](../PINN/overview.md): i capitoli in cui la stessa
-matematica cambia mestiere
-a seconda della forma dei dati. E accanto alle architetture è cresciuto il
-mestiere di farle stare nei conti, l’[efficienza](../Efficienza/overview.md):
-far entrare in una scheda sola, e in una bolletta sola, un modello che non ci
-starebbe.
+temporali](../SerieTemporali/overview.md), le [equazioni della
+fisica](../PINN/overview.md): i capitoli in cui la stessa matematica cambia
+mestiere a seconda della forma dei dati. E accanto alle architetture è
+cresciuto il mestiere di farle stare nei conti,
+l’[efficienza](../Efficienza/overview.md): far entrare in una scheda sola, e in
+una bolletta sola, un modello che non ci starebbe.
 
 **Il terzo tratto** è quello in cui cambia la domanda: non più solo riconoscere
 quello che c'è (questa foto è un gatto), ma generare quello che non c'è (una
@@ -84,15 +84,19 @@ esatta](../VerosimiglianzaEsatta/overview.md), che sa dire quanto è probabile
 ogni singolo esempio e paga quella contabilità con vincoli severi
 sull'architettura; e i [modelli a
 energia](../ModelliEnergia/overview.md), la famiglia più antica e il
-linguaggio in cui la diffusione si può riscrivere per intero, come una
-parente che ha cambiato nome. Poi la
+linguaggio in cui la diffusione si può riscrivere, come una parente che ha
+cambiato nome.
+
+Poi la
 [ricerca](../Ricerca/overview.md), dove la macchina immagina i futuri dentro
 regole che conosce, e il
 [reinforcement learning](../ReinforcementLearning/overview.md), dove l'agente
 le regole non le ha e le risposte giuste nemmeno, e le scopre agendo: è così
 che [AlphaGo](../DeepReinforcementLearning/overview.md), nel
 2016, è diventato più forte dei giocatori umani dalle cui partite aveva
-imparato le prime mosse. E infine le architetture nate da un conto che non si
+imparato le prime mosse.
+
+E infine le architetture nate da un conto che non si
 regge: per capire un testo un Transformer confronta ogni parola con tutte le
 altre, e su un testo lungo quel confronto diventa proibitivo. Da lì
 l’[attenzione
@@ -115,7 +119,7 @@ stanza. Quello che è successo dopo il 2012 è che finalmente c'erano i dati e l
 macchine per far funzionare quelle idee, non che qualcuno le avesse inventate.
 
 Altre invece sono giovanissime: le due reti che si sfidano sono del 2014, e gli
-agenti e i modelli del mondo hanno preso velocità in questi ultimi anni. Nel
+agenti e i modelli del mondo hanno preso velocità dal 2020 in poi. Nel
 terzo tratto stanno fianco a fianco, come vicini di casa, mentre nella storia
 sono nonni e nipoti: l'ordine in cui li si legge segue le domande del libro,
 non il calendario.
@@ -136,9 +140,9 @@ stati, gli agenti, i modelli del mondo).
 Nemmeno l'ordine dell'indice è cronologico, e l'indice è la mappa che il
 lettore ha sotto gli occhi: il reinforcement
 learning è una parte a sé, collocata prima del linguaggio e dei Transformer.
-L'indice segue le domande, non le date. Gli ordini in gioco, quindi, sono tre e
-non due: quello dell'indice, quello di questo ripasso (che raggruppa per
-domanda e non per parte) e quello della storia.
+L'indice segue le domande, non le date. Gli ordini in gioco, quindi, sono tre:
+quello dell'indice, quello di questo ripasso (che raggruppa per domanda e non
+per parte) e quello della storia.
 `````
 
 E poi gli ultimi capitoli, che non parlano di architetture ma di **mestiere**:
@@ -149,8 +153,9 @@ conseguenze ([AI responsabile](../AIResponsabile/overview.md)). Sono la parte
 del lavoro che decide se quello che hai costruito serve a qualcuno o fa danni,
 non appendici morali messe in fondo per buona educazione.
 
-Argomenti diversissimi, e in mezzo quasi settant'anni di storia: dal
-percettrone di Rosenblatt del 1958 ai modelli di oggi. Eppure, sotto, tornano sempre le stesse tre idee.
+Argomenti diversissimi, e in mezzo settant'anni di storia: dal percettrone di
+Rosenblatt del 1958 ai modelli di oggi. Eppure, sotto, tornano sempre le stesse
+tre idee.
 
 ## Tre fili, un solo tessuto
 
@@ -208,8 +213,8 @@ rete abbia visto una sola immagine, e vale qualunque lente le venga poi.
 `````
 
 `````{tab} Superiore
-Una rete profonda è una funzione composta
-$f_\theta = f^{(L)} \circ \dots \circ f^{(1)}$ che trasforma l'input grezzo
+Una rete profonda è una funzione composta di $L$ strati,
+$f_\theta = f^{(L)} \circ \dots \circ f^{(1)}$, che trasforma l'input grezzo
 $\mathbf{x}$ in una sequenza di rappresentazioni intermedie sempre più
 astratte. Gli strati nascosti non sono altro che *feature apprese*: coordinate
 in uno spazio latente dove esempi semanticamente simili finiscono vicini. È il
@@ -247,17 +252,17 @@ passata sola è la [retropropagazione](../RetiNeurali/backpropagation.md), che
 sta nel capitolo sulle reti neurali. Senza, niente di tutto questo sarebbe
 possibile.
 
-Dove ci si ferma è un punto in cui ogni piccolo giro peggiora le cose, e non il
-suono più bello che quel mixer sappia fare. Con le manopole messe in
-tutt'altro modo potrebbe uscire qualcosa di meglio, e nessuno andrà a
-cercarlo.
+Ci si ferma dove ogni piccolo giro peggiora le cose, e quello non è il suono
+più bello che quel mixer sappia fare. Con le manopole messe in tutt'altro modo
+potrebbe uscire qualcosa di meglio, e nessuno andrà a cercarlo.
 
 E non tutti imparano al mixer. Ci sono modelli che lavorano in coppia, uno che
 inventa e uno che smaschera, e quello che cercano è un equilibrio fra i due
 invece di un errore sempre più basso. Ce ne sono che gli esempi devono
 andarseli a prendere agendo, e allora il materiale su cui si esercitano cambia
-mentre imparano. Tutti però cercano il meglio secondo una misura: cambia la
-misura, non la ricerca.
+mentre imparano. Quasi tutti cercano il meglio secondo una misura: cambia la
+misura, non la ricerca. Qualcuno nemmeno quella ce l'ha, e raggruppa i dati
+seguendo una procedura, per vedere che cosa ne esce.
 `````
 
 `````{tab} Superiore
@@ -273,17 +278,17 @@ dove $\theta$ sono i parametri, $\mathcal{L}$ la funzione di costo totale,
 $\ell$ la perdita sul singolo esempio, $f_\theta$ il modello, e
 $\mathbf{x}^{(i)}$, $y^{(i)}$ l'input e il target dell’$i$-esimo degli $m$
 esempi di addestramento. Due avvertenze sulla scrittura, prima di usarla. La
-convenzione è quella fissata nel [capitolo sul machine
-learning](../MachineLearning/apprendimento-supervisionato.md): $\mathcal{L}$
-sta per il costo totale, e il singolo esempio ha la sua lettera, $\ell$. E
-«etichettato» va inteso in
-senso largo: nel pre-addestramento auto-supervisionato l'etichetta esiste, solo
-che non la scrive nessuno, è il token successivo.
+convenzione è quella fissata nella [sezione sull'apprendimento
+supervisionato](../MachineLearning/apprendimento-supervisionato.md):
+$\mathcal{L}$ sta per il costo totale, e il singolo esempio ha la sua lettera,
+$\ell$. E «etichettato» va inteso in senso largo: nel pre-addestramento
+auto-supervisionato l'etichetta esiste, solo che non la scrive nessuno, è il
+token successivo.
 
 Cambia $f_\theta$ e, per i modelli differenziabili (dalla regressione lineare
 al Transformer), la macchina che ci si avvicina è la discesa del gradiente
-stocastica, che su una rete profonda raggiunge un punto stazionario e non il
-minimo globale.
+stocastica, che su una rete profonda si ferma dove il gradiente si annulla,
+senza garanzia che sia il minimo globale.
 
 Il perimetro di quella scrittura, però, va dichiarato, perché è più stretto del
 libro, e le eccezioni sono istruttive. **Le GAN** non ci
@@ -305,12 +310,12 @@ fusione greedy, e nessuno dei due è il minimo di un obiettivo globale; anche un
 albero di decisione cresce con split localmente ottimi, non minimizzando una
 funzione sull'albero finito.
 
-Resta vero che sono tutti problemi di **ottimizzazione**, ed è questo che tiene
-insieme il libro. Quello che cambia da una famiglia all'altra è la natura
-dell'obiettivo (una somma su un campione, un equilibrio fra due giocatori, un
+Resta vero che sono quasi tutti problemi di **ottimizzazione**, ed è questo che
+tiene insieme il libro. Da una famiglia all'altra cambia la natura
+dell'obiettivo: una somma su un campione, un equilibrio fra due giocatori, un
 ritorno atteso lungo traiettorie che il modello stesso genera, una
-verosimiglianza inaccessibile), non il fatto che ce ne sia uno. Tre idee,
-infinite architetture.
+verosimiglianza inaccessibile. E nei casi in fondo alla lista cambia anche se
+un obiettivo ci sia. Tre idee, infinite architetture.
 `````
 
 ## Dove sta andando
@@ -319,43 +324,40 @@ Per capire dove va un campo, la domanda utile non è quale modello sia il più
 bravo adesso: quella risposta scade in pochi mesi. La domanda utile è che cosa
 succede quando si dà a un modello più risorse.
 
-I tre grafici qui sotto rispondono proprio a quella: quanto migliora un modello
-se gli diamo più potenza di calcolo, più dati o più parametri? Ogni retta mostra
-l'errore che il modello commette (la *loss*: più è bassa, meglio è) al crescere
-di una di quelle tre risorse, tenute le altre due così abbondanti da non essere
-loro a frenare. E in nessuno dei tre la retta si piega verso l'orizzontale: non
-c'è, cioè, un punto oltre il quale aggiungere risorse smette di servire. Quella
+Tre grafici rispondono proprio a quella: quanto migliora un modello
+se gli diamo più potenza di calcolo, più dati o più parametri? Ogni retta
+mostra l'errore che il modello commette (la *loss*: più è bassa, meglio è) al
+crescere di una delle tre, con le altre due messe in modo da non frenare la
+discesa. E in nessuno dei tre la retta si piega verso l'orizzontale: non c'è,
+cioè, un punto oltre il quale aggiungere risorse smette di servire. Quella
 piega ha un nome, il "ginocchio", e in questi grafici non compare.
 
 ```{figure} ../figures/scaling-laws-2020.svg
 :name: fig-leggi-di-scala-tre
-:alt: "Tre grafici affiancati, tutti in scala logaritmica su entrambi gli assi e senza numeri sugli assi. In ciascuno la loss cala come una retta discendente al crescere rispettivamente del calcolo, della quantità di dati e del numero di parametri; accanto a ogni retta l'esponente della legge di potenza: meno 0,050 per il calcolo, meno 0,095 per i dati, meno 0,076 per i parametri. Nessuna delle tre rette mostra un ginocchio o un punto di arresto."
+:alt: "Tre grafici affiancati, tutti in scala logaritmica su entrambi gli assi e senza numeri sugli assi. In ciascuno la loss cala come una retta discendente al crescere rispettivamente del calcolo (allocato al meglio, come dice l'etichetta dell'asse), della quantità di dati e del numero di parametri; accanto a ogni retta l'esponente della legge di potenza: meno 0,050 per il calcolo, meno 0,095 per i dati, meno 0,076 per i parametri. Nessuna delle tre rette mostra un ginocchio o un punto di arresto."
 :width: 100%
 
 Tre risorse, tre rette. Gli assi sono in scala logaritmica: un passo lungo
 l'asse non aggiunge una quantità, la moltiplica per dieci. Una retta che scende
 vuol dire quindi che per guadagnare ancora un poco bisogna moltiplicare la
-risorsa, non aggiungerne un pezzetto. Il numeretto scritto accanto a ogni retta
-è la sua pendenza vera, e dice quanto rende quella moltiplicazione (il conto è
-dieci elevato alla meno il numeretto): prendendo
-dieci volte tanto, la loss resta a 0,89 di quanto era, poco meno di nove
-decimi, per il calcolo (primo pannello, numeretto 0,050); a 0,80, quattro
-quinti, per i dati (secondo pannello, 0,095); a 0,84, poco più di cinque
-sesti, per i parametri (terzo, 0,076). Più il numeretto è grande, più quella
-risorsa rende, e le tre rette sono disegnate con inclinazioni proporzionali ai
-tre numeretti: quella dei dati è la più ripida perché 0,095 è il più grande dei
-tre. Schema ridisegnato sugli esponenti misurati da Kaplan e colleghi nel 2020.
-Un'avvertenza sul primo pannello: quel calcolo è il calcolo speso bene, cioè,
-per ogni budget, con la taglia di modello e la durata di addestramento che
-rendono di più; per il calcolo speso comunque, anche male, la misura dà una
-pendenza diversa.
+risorsa, non aggiungerne un pezzetto. Accanto a ogni retta c'è la sua legge di
+potenza, e quanto rende quella moltiplicazione è dieci elevato al suo esponente:
+prendendo dieci volte tanto, la loss resta a 0,89 di quanto era, poco meno di
+nove decimi, per il calcolo; a 0,80, quattro quinti, per i dati; a 0,84, poco
+più di cinque sesti, per i parametri. Le tre rette sono disegnate con
+inclinazioni proporzionali ai tre esponenti, e la più ripida è quella dei dati,
+cioè la risorsa che rende di più. Schema ridisegnato sugli esponenti misurati da
+Kaplan e colleghi nel 2020. Nel primo pannello il calcolo è quello «allocato al
+meglio», come dice l'asse: per ogni budget, con la taglia di modello e la durata
+di addestramento che rendono di più.
 ```
 
 L'assenza di un ginocchio in {numref}`fig-leggi-di-scala-tre` è ciò che ha
 orientato gli anni che sono seguiti, ed è anche il suo limite: quelle rette
 raccontano soltanto il tratto che qualcuno ha davvero misurato. Che prima o poi
 la discesa debba fermarsi lo sappiamo per principio, e lo scrivono gli autori
-stessi di quelle misure: in un testo scritto da esseri umani c'è un tanto di
+stessi di quelle misure {cite}`kaplan2020scaling`: in un testo scritto da
+esseri umani c'è un tanto di
 imprevedibilità che nessun modello potrà mai togliere, e quello è il pavimento.
 Quello che nessuno sa è a che altezza sia. È bene tenerlo a mente in quel che
 segue.
@@ -367,13 +369,10 @@ riadattato a mille compiti), la multimodalità (un modello solo che tratta
 insieme più di un tipo di dato, il testo con le immagini o col suono) e gli
 agenti. Erano le previsioni più prudenti che si potessero scrivere, e il tempo
 le ha superate comunque: tutte e tre sono entrate nel libro, nessuna
-nella forma prevista. La multimodalità ha un capitolo suo per la coppia che
-conta di più (visione e
-linguaggio), mentre il suono e la voce di
-capitoli ne hanno presi due per conto proprio; gli
-agenti ne hanno uno, e altri due sono cresciuti
-accanto a quello (prompt, contesto e loop e i
-sistemi multi-agente).
+nella forma prevista. La multimodalità ha un capitolo suo, per la coppia che
+conta di più, visione e linguaggio; il suono e la voce, invece, hanno preso un
+capitolo per uno, per conto proprio. E gli agenti ne hanno tre: il loro,
+quello sui prompt e quello sui sistemi multi-agente.
 
 I modelli di fondazione, in compenso, hanno fatto una fine più curiosa: non
 sono diventati né un capitolo né una sezione. Si sono sciolti dentro quello sui
@@ -391,18 +390,16 @@ come andrà a finire, e si può controllare.
 Con un avvertimento, perché questa è la sezione più deperibile del libro: è
 scritta al presente, e il presente a cui si riferisce è quello della versione
 che stai leggendo. Trattala come una fotografia con una data sopra, non come
-una previsione. 
+una previsione.
 
 `````{tab} Elementare
-Ecco che cosa il nome «modello di fondazione» teneva insieme, e che ormai
-fanno tutti: non si
-addestra più un modello nuovo per ogni problema. Se ne addestra *uno solo*,
-enorme, su una montagna di testo o immagini, e poi lo si adatta a mille compiti
-diversi con poco sforzo, o riaddestrandolo un altro po’ su qualche migliaio di
-esempi del compito nuovo, o semplicemente spiegandogli a parole che cosa
-vogliamo. Una base unica su cui si costruisce tutto, un po’ come una persona
-con una solida cultura generale che, con una breve formazione, impara mestieri
-molto diversi.
+Non si addestra più un modello nuovo per ogni problema. Se ne addestra *uno
+solo*, enorme, su una montagna di testo o immagini, e poi lo si adatta a mille
+compiti diversi con poco sforzo, o riaddestrandolo un altro po’ su qualche
+migliaio di esempi del compito nuovo, o semplicemente spiegandogli a parole che
+cosa vogliamo. Una base unica su cui si costruisce tutto, un po’ come una
+persona con una solida cultura generale che, con una breve formazione, impara
+mestieri molto diversi.
 
 Le domande aperte, oggi, sono più concrete di quelle di una volta, quando ci si
 chiedeva ancora se una macchina potesse riconoscere un gatto in una foto: a
@@ -412,10 +409,11 @@ in nessuna delle quattro basta fare più grande.
 **Quanto costa.** Per capire un testo, un Transformer confronta fra loro tutte
 le sue parole, e quel confronto costa quanto il quadrato della lunghezza:
 raddoppia il testo e quel pezzo di conto si moltiplica per quattro. Su un testo
-corto è una spesa fra le tante; su un testo lunghissimo diventa la più grossa
-di tutte, in tempo di calcolo e quindi in bolletta. C'è una gara in corso per
-pagare meno, ed è il mestiere del capitolo sull'efficienza e dei due sulle
-architetture nate apposta.
+corto è una spesa fra le tante, e lo resta più a lungo di quanto quel quadrato
+lasci temere: passa in testa a tutte le altre solo da qualche decina di
+migliaia di parole in su, e prima ancora a riempirsi è la memoria, che è un
+guaio diverso. C'è una gara in corso per pagare meno, ed è il mestiere del
+capitolo sull'efficienza e dei due sulle architetture nate apposta.
 
 **Se capisce o indovina.** Un modello che risponde bene non è per forza un
 modello che ha capito, e per saperlo bisogna aprirlo e guardarci dentro. Non è
@@ -423,22 +421,19 @@ facile: quello che ha imparato non sta scritto in chiaro da nessuna parte, è
 spalmato su miliardi di numeri, e un singolo pezzo di rete si accende per cose
 che fra loro non c'entrano niente.
 
-**Se ci si può fidare.** Un agente che agisce da solo per venti passi sbaglia
-in modi che un programma che risponde a una domanda per volta non poteva
-permettersi. Il conto lo puoi fare tu con una calcolatrice. Se ogni singolo
-passo va bene 95 volte su 100, cioè con probabilità 0,95, e se i venti passi
-non si influenzano fra loro, la probabilità che vadano bene *tutti e venti* è
-0,95 elevato alla ventesima, cioè venti fattori 0,95 moltiplicati fra loro: si
-moltiplica perché ogni passo aggiunge una condizione da soddisfare. Viene
-0,3585, appena 36 volte su 100. Nella pratica quel numero è solo il caso più
-semplice, né il migliore né il peggiore. Se l'agente si accorge di uno sbaglio
-e torna sui suoi passi va meglio; se ogni tentativo inciampa su un passo
-diverso va anche peggio; e se i venti passi sbagliano tutti insieme, per la
-stessa ragione, succede una cosa strana: o va tutto bene o va tutto storto in
-blocco, e le volte buone risalgono a 95 su 100. Un agente vero sta in mezzo a
-questi casi, e il conto della calcolatrice serve a vedere la cosa che non
-cambia mai: ogni passo in più è una condizione in più, ed è la ragione per cui
-i compiti lunghi restano difficili.
+**Se ci si può fidare.** Un agente lavora da solo per venti passi di fila, e
+ogni passo gli riesce 95 volte su 100. Quante volte gli riescono tutti e venti?
+Il conto sta in una calcolatrice: si moltiplica, perché ogni passo aggiunge una
+condizione da soddisfare, e 0,95 per venti volte fa 0,3585, appena 36 su 100.
+Quel conto però suppone due cose che per un agente vero non valgono: che un
+solo inciampo rovini tutto, e che i venti passi non si influenzino fra loro. Se
+l'agente si accorge dello sbaglio e torna indietro va meglio; se i passi non
+sbagliano mai insieme, e a rovinare una prova è ogni volta un altro passo, va
+peggio ancora, fino al caso in cui non ne finisce nessuna; se invece sbagliano
+tutti insieme, per la stessa ragione, o va tutto bene o va tutto storto in
+blocco, e le volte buone risalgono a 95 su 100. Il 36 su 100 è quindi il caso
+di riferimento, non il peggiore, e quello che non cambia mai è che ogni passo
+in più è una condizione in più: per questo i compiti lunghi restano difficili.
 
 **Quanto consuma.** Addestrare e far girare questi modelli costa corrente,
 acqua per raffreddare i calcolatori e chip che sanno fabbricare pochissime
@@ -479,10 +474,11 @@ contesto in token e $d$ la dimensione del modello, per strato l'attenzione
 costa $2n^2d$ moltiplicazioni: $n^2 d$ per i punteggi
 $\mathbf{Q}\mathbf{K}^\top$ e altrettante per combinare i valori. Tutto il
 resto ne costa $12nd^2$: $4nd^2$ per le quattro proiezioni (query, chiavi,
-valori, uscita) e $8nd^2$ per il feedforward, la cui dimensione interna è per
-convenzione $4d$. I due termini si pareggiano dove $2n^2d = 12nd^2$, cioè a
-$n = 6d$; e in un decoder, dove la maschera causale rende inutile metà dei
-punteggi, la soglia raddoppia a $n = 12d$, che è la regola scritta anche in
+valori, uscita), tutte $d \times d$, e $8nd^2$ per il feedforward, la cui
+dimensione interna è per convenzione $4d$. I due termini si pareggiano dove
+$2n^2d = 12nd^2$, cioè a $n = 6d$; e in un decoder che elabora il contesto
+tutto insieme, dove la maschera causale rende inutile metà dei punteggi, la
+soglia raddoppia a $n = 12d$, che è la regola scritta anche in
 {cite}`kaplan2020scaling`. Con un $d$ di qualche migliaio siamo comunque a
 decine di migliaia di token, e sotto quella soglia il collo di bottiglia
 aritmetico sta altrove. Quello di memoria no: la cache di chiavi e valori, che
@@ -491,9 +487,9 @@ diverso che conviene non confondere con questo. Da qui l'attenzione lineare e i
 modelli a spazio di
 stati, che sostituiscono l'attenzione softmax con calcoli in forma ricorrente,
 il cui stato occupa una memoria costante nella lunghezza. Le architetture
-ibride alternano i due tipi di strato: il costo resta quadratico, perché basta
-una frazione costante di strati con attenzione piena, ma la costante davanti è
-più piccola.
+ibride alternano i due tipi di strato: il costo resta quadratico, perché
+qualche strato ad attenzione piena resta, ma la costante davanti è più
+piccola.
 
 **La comprensione del modello.** L'interpretabilità meccanicistica prova a
 leggere i circuiti dentro i pesi, ed è lo strumento più diretto per distinguere
@@ -541,9 +537,9 @@ numero, e non c'è da andare a misurarla. Ogni azione costa quasi niente e si
 può ripetere un miliardo di volte. E il giudizio non bisogna chiederlo a
 nessuno, perché sta già dentro il materiale: una partita finita dice chi ha
 vinto, un programma bocciato dai suoi test lo dice al primo lancio, e in una
-frase basta coprire una parola
-e chiedere di indovinarla, che è il trucco visto nell'introduzione (con un
-pezzo di immagine funziona uguale). Infine, sbagliare mentre si impara non
+frase basta nascondere la parola che viene dopo e chiedere di indovinarla, che
+è il trucco visto nell'introduzione. Infine,
+sbagliare mentre si impara non
 rompe niente: si ricomincia. Gli scacchi, il go, il codice dei programmi, il
 testo, le immagini sono tutti mondi fatti di quella sostanza, ed è lì che sono
 arrivati per primi i risultati che hanno fatto notizia. Torna il discorso
@@ -553,35 +549,32 @@ polmone respira a pieno.
 Non è una gara alla pari, è una **partita in casa**. E la cosa da portarsi via
 è che buona parte del vantaggio non viene dall'intelligenza, viene dal terreno.
 
-Questa però è una lettura, non un risultato, e c'è chi la mette
-in fila al contrario. Le curve della sezione «Dove sta andando», qui sopra, non
-si piegano; chi le guarda risponde che il terreno dice soltanto dove è stato
-più facile misurare per primi, e che una bravura cresciuta al chiuso poi esce
-e serve anche all'aperto. Non si stabilisce chi ha ragione discutendone: si
-guarda che
-cosa succede quando la partita si sposta all'aperto, ed è il resto di questa
-sezione.
+Questa però è una lettura, non un risultato, e c'è chi la ribalta. Le rette
+della sezione «Dove sta andando» non si piegano, e chi parte da lì risponde che
+il terreno dice soltanto dove è stato più facile misurare per primi, e che una
+bravura cresciuta al chiuso poi esce e serve anche all'aperto.
+Non si stabilisce chi ha ragione discutendone: si guarda che cosa succede
+quando la partita si sposta all'aperto, ed è il resto di questa sezione.
 
 Fuori, il conto si rovescia, ed è un'osservazione vecchia di decenni. Un
-computer batte il campione del mondo di scacchi dal 1997; costruire il braccio
-che sposta i pezzi sulla scacchiera è rimasta la parte difficile. Nel 1988 Hans
-Moravec lo mise così: dare a un computer le prestazioni di un adulto in un test
-di intelligenza, o a dama, è relativamente facile; dargli le capacità di un
-bambino di un anno nel percepire e nel muoversi è difficile o impossibile
-{cite}`moravec1988mind`.
+computer ha battuto il campione del mondo di scacchi nel 1997; costruire il
+braccio che sposta i pezzi sulla scacchiera è rimasta la parte difficile. Nel
+1988 Hans Moravec lo mise così: dare a un computer le prestazioni di un adulto
+in un test di intelligenza, o a dama, è relativamente facile; dargli le
+capacità di un bambino di un anno nel percepire e nel muoversi è difficile o
+impossibile {cite}`moravec1988mind`.
 
-L'osservazione si ripete da decenni, ma non è mai stata messa alla prova, ed è
-il primo punto di chi la contesta: nessuno ha mai preso un campione di
-compiti, misurato quanto sono difficili per noi e per una macchina, e guardato
-se la correlazione ci sia davvero. La spiegazione che ne diede Moravec è
-un'altra cosa ancora, e va tenuta separata. Moravec la
-attribuiva ai tempi dell'evoluzione: nel vedere e nel muoverci abbiamo dietro
-un miliardo di anni di mestiere, mentre il pensiero astratto è un trucco
-recente, forse di meno di centomila anni. È un racconto che convince, ed è per
-questo che gira. Arvind Narayanan, nel 2026, ha obiettato che quell'osservazione
-dice più su quali problemi la ricerca trovi interessanti che su quali siano
-difficili davvero: i casi facili per tutti, e quelli difficili per tutti, non
-li racconta nessuno {cite}`narayanan2026moravec`.
+Moravec attribuiva la differenza ai tempi dell'evoluzione: nel vedere e nel
+muoverci abbiamo dietro un miliardo di anni di mestiere, mentre il pensiero
+astratto è un trucco recente, forse di meno di centomila anni. È un racconto
+che convince, ed è per questo che gira; ma la spiegazione è una cosa e
+l'osservazione un'altra, e nemmeno l'osservazione è mai stata messa alla prova.
+Nessuno ha mai preso un campione di compiti, misurato quanto sono difficili per
+noi e per una macchina, e guardato se le due difficoltà vadano davvero insieme.
+Arvind Narayanan, nel 2026, ha obiettato che quell'osservazione dice più su
+quali problemi la ricerca trovi interessanti che su quali siano difficili
+davvero: i casi facili per tutti, e quelli difficili per tutti, non li racconta
+nessuno {cite}`narayanan2026moravec`.
 
 Questo libro quella differenza la spiega in un altro modo, ed è il terreno.
 Dove il giudizio è già lì si impara in fretta; dove bisogna andarselo a
@@ -653,7 +646,7 @@ Attenzione però: quella distinzione non è una classifica di bravura
 
 ```{figure} ../figures/open-weights-vs-closed.svg
 :name: fig-aperti-chiusi
-:alt: "Mappa a quadranti. Sull'asse orizzontale il grado di apertura di un modello: a sinistra i chiusi, raggiungibili solo da un'interfaccia; a destra gli aperti, di cui si scaricano i pesi. Sull'asse verticale la capacità, dal basso verso l'alto. I punti stanno in tutti e quattro i quadranti e nessuno dei due lati domina l'altro: ce ne sono di capaci fra i chiusi e fra gli aperti, e di contenuti in entrambi. I punti non portano nomi."
+:alt: "Mappa a quadranti. Sull'asse orizzontale come il modello è messo a disposizione: a sinistra i chiusi, raggiungibili solo da un'interfaccia; a destra gli aperti, di cui si scaricano i pesi. Sull'asse verticale la capacità, dal basso verso l'alto. I punti stanno in tutti e quattro i quadranti e nessuno dei due lati domina l'altro: ce ne sono di capaci fra i chiusi e fra gli aperti, e di contenuti in entrambi. I punti non portano nomi."
 :width: 88%
 
 Ogni punto è un modello. Due assi indipendenti: aperto non vuol dire debole e
@@ -743,10 +736,10 @@ Chollet e Watson {cite}`chollet2025deep` per l'intuizione (la terza edizione si
 legge integralmente online), Goodfellow, Bengio e
 Courville {cite}`goodfellow2016deep` per la teoria, la documentazione di
 scikit-learn e PyTorch come compagne quotidiane. Un'avvertenza sui primi due:
-il loro codice è scritto in Keras, non in PyTorch, anche se il Keras di oggi
-può girare sopra PyTorch. Quello che insegnano non dipende dalla libreria, ma è
-meglio saperlo
-prima di aprirli.
+quando arrivano alle reti neurali usano Keras, non PyTorch, anche se il Keras
+di oggi può girare sopra PyTorch. La prima metà di Géron sta invece su
+scikit-learn, che è la stessa libreria di qui. Quello che insegnano non dipende
+dalla libreria, ma è meglio saperlo prima di aprirli.
 
 E, capitolo per capitolo, questo libro ha già in bibliografia i manuali di
 riferimento, che sui rispettivi argomenti dicono molto più di un generalista:
@@ -798,9 +791,10 @@ mandacelo: i pulsanti che compaiono servono esattamente a questo.
   alla volta.
 - Le "direzioni future" invecchiano in fretta. Modello di fondazione,
   multimodalità e agenti erano le tre previsioni più prudenti che si potessero
-  scrivere, e sono già tutte dentro il libro: due come capitoli, mentre il
-  modello di fondazione è diventato così normale da non avere
-  più bisogno di un nome. Restano varianti delle stesse tre idee, non magia.
+  scrivere, e sono già tutte dentro il libro: la multimodalità con un capitolo,
+  gli agenti con tre, mentre il modello di fondazione è diventato così normale
+  da non avere più bisogno di un nome. Restano varianti di dati,
+  rappresentazioni e ottimizzazione, non magia.
 - I fronti davvero aperti sono quelli in cui **fare più grande non basta**: il
   costo dei testi lunghissimi, il capire *perché* un modello ha risposto così,
   la fiducia in un agente che lavora da solo per una ventina di passi, e il
@@ -830,7 +824,8 @@ mandacelo: i pulsanti che compaiono servono esattamente a questo.
   e agenti sono già testo del
   libro (due capitoli, più altri due cresciuti attorno agli agenti; i foundation
   model non hanno nemmeno una sezione propria, si sono sciolti dentro quello sui
-  Transformer). Restano varianti delle stesse tre idee, non magia.
+  Transformer). Restano varianti di dati, rappresentazioni e ottimizzazione, non
+  magia.
 - I fronti davvero aperti sono quelli in cui **scalare non basta**: il costo
   dell'attenzione sui contesti lunghi, l'interpretabilità, l'affidabilità degli
   agenti, il conto energetico e industriale.
@@ -865,8 +860,8 @@ artificiale non si lascia definire, visto che ogni pezzo capito smette di
 sembrare intelligenza. Smettere di sembrare intelligenza, però, non è smettere
 di funzionare, e nemmeno di contare. Per te queste macchine non sono più una
 scatola nera: sai di che cosa sono fatte, dati, rappresentazioni,
-ottimizzazione. Quello che resta chiuso è quello che ha imparato, non più la
-macchina, e adesso sai anche perché leggerlo sia un problema aperto. Il resto è
+ottimizzazione. Quello che resta chiuso non è più la macchina ma quello che ha
+imparato, e adesso sai anche perché leggerlo sia un problema aperto. Il resto è
 pratica.
 
 Buon lavoro, e in bocca al lupo.

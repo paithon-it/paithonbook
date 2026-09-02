@@ -83,8 +83,9 @@ pareri.
 Un pezzo del sistema giudica *quanto questo suono somiglia alla parola
 «cane»*; un altro pezzo, che
 ha letto montagne di testo italiano, giudica *quanto è plausibile la frase «il
-cane abbaia» rispetto a «il cane abbaglia»*. La trascrizione finale è il
-miglior compromesso fra i due giudizi. Ecco perché il contesto risolve gli
+cane abbaia» rispetto a «il cane abbaglia»*. La trascrizione finale è quella
+che i due giudizi promuovono insieme, e basta che uno dei due la bocci perché
+sia fuori, per quanto l'altro la lodi. Ecco perché il contesto risolve gli
 omofoni: da solo il suono non basta, serve sapere che frasi hanno senso.
 
 `````
@@ -113,8 +114,8 @@ neurali profonde sostituiscono le GMM nel modello acustico
 
 `````
 
-I due pareri hanno un nome, e conviene impararlo qui perché torna in tutto il
-capitolo: il primo, quello che giudica il suono, si chiama **modello
+I due pareri hanno un nome che torna in tutto il capitolo: il primo, quello
+che giudica il suono, si chiama **modello
 acustico**; il secondo, quello che giudica se la frase è italiano plausibile,
 si chiama **modello di linguaggio**. Li ritroveremo anche nell'ultima sezione,
 dove il viaggio si fa al contrario e il modello acustico, invece di ascoltare
@@ -129,19 +130,21 @@ La prima descrive il parlato come una fila di suoni che si susseguono e che
 nessuno vede direttamente: è una recita dietro la tenda, dove si sentono le
 battute ma non si vede chi le dice, e dagli anni Ottanta è il modo standard di
 raccontare una cosa che si svolge nel tempo e che si può solo intuire da fuori.
-Si chiama «modello di Markov nascosto», HMM, e il libro l'ha già raccontata nel
-capitolo sul linguaggio naturale, dove gli attori dietro la tenda erano le
-categorie grammaticali invece dei suoni.
+Si chiama «modello di Markov nascosto», HMM, ed è la stessa macchina di
+{doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`,
+dove gli attori dietro la tenda erano le categorie grammaticali invece dei
+suoni.
 
-La seconda dice che uno stesso suono non è mai due volte identico. Dopo
-l'estrazione delle feature ogni frammento di suono è ridotto a una manciata di
-numeri, cioè, se ti aiuta immaginarlo, a un puntino su una mappa; e la «a» di
-mille persone diverse non cade tutte le volte sullo stesso puntino, cade in una
-nuvola di puntini vicini. Descrivere quella nuvola invece del suo centro è
-esattamente quello che fanno le misture di gaussiane (GMM) incontrate nel
-{doc}`capitolo di Machine Learning </MachineLearning/overview>`, dove servivano a trovare gruppi nei dati:
-«gaussiana» è il nome della forma di nuvola più comune in natura, quella fitta
-al centro e sempre più rada man mano che ci si allontana.
+La seconda dice che uno stesso suono non è mai due volte identico. La prima
+tappa della catena riduce ogni frammento di suono a una manciata di misure,
+cioè, se ti aiuta immaginarlo, a un puntino su una mappa; e la «a» di mille
+persone diverse non cade tutte le volte sullo stesso puntino, cade in una
+nuvola di puntini vicini. Descrivere quella nuvola invece del suo centro, e
+sovrapporne più d'una dove la forma è storta, è esattamente quello che fanno le
+**misture** di gaussiane (GMM) di {doc}`Riduzione e clustering
+</MachineLearning/riduzione-clustering>`, dove servivano a trovare gruppi nei
+dati: «gaussiana» è il nome della forma di nuvola più comune in natura, quella
+fitta al centro e sempre più rada man mano che ci si allontana.
 
 L'ultimo salto è l'approccio **end-to-end** ("da un capo all'altro"): una sola
 rete neurale che impara direttamente il passaggio dall'audio al testo, senza
@@ -157,15 +160,16 @@ L'esempio più noto è **Whisper** di OpenAI (2022): trascrive e traduce
 decine di lingue, italiano compreso, con un unico modello, allenato su circa
 680.000 ore di audio multilingue. Per farsi un'idea di quelle ore: sono
 settantasette anni di parlato ininterrotto, giorno e notte, senza una pausa.
-La rete che ci sta dentro è un **Transformer**, l'architettura a cui il libro
-ha già dedicato un capitolo suo, montata anche lei come encoder e decoder.
+La rete che ci sta dentro è un **Transformer**, l'architettura del
+{doc}`capitolo sui Transformer </Transformers/overview>`, montata anche lei
+come encoder e decoder.
 
 ## La catena di montaggio, passo per passo
 
 Dal microfono al testo il suono passa per alcune tappe, sempre le stesse
-({numref}`fig-asr-pipeline`). Conviene conoscerle anche adesso che sono finite
-tutte dentro un'unica rete e non si vedono più dall'esterno, perché i nomi
-sono rimasti quelli e li useremo per tutto il capitolo. La catena nel suo
+({numref}`fig-asr-pipeline`). Adesso sono finite tutte dentro un'unica rete e
+non si vedono più dall'esterno, ma i nomi sono rimasti quelli e li useremo per
+tutto il capitolo. La catena nel suo
 insieme si chiama **pipeline**, che in inglese è la conduttura, e qui vale
 quello che da noi si chiamerebbe catena di montaggio.
 
@@ -196,8 +200,9 @@ accavallate, così una consonante a cavallo di un taglio non va persa. Questa
 sequenza di istantanee sonore ha un nome, **spettrogramma**, ed è questo che
 il modello acustico ascolta al posto dell'onda. Un tempo lo riceveva anche più
 spremuto, una dozzina di numeri per fettina, perché lavorava bene solo con
-poche misure che non dicessero due volte la stessa cosa; oggi le reti se lo
-prendono così com'è.
+poche misure che non si ripetessero fra loro, e le bande vicine dello
+spettrogramma salgono e scendono quasi insieme; oggi le reti se lo prendono
+così com'è.
 
 `````
 
@@ -231,6 +236,6 @@ sottotitoli automatici che scrivono una parola per un'altra, o che riempiono
 di frasi inventate un pezzo di video in cui nessuno parla, sono la parte
 visibile di limiti precisi, che le prossime sezioni raccontano uno per uno.
 
-E il viaggio, in questo capitolo, ha anche un ritorno: l'ultima sezione
+E il viaggio ha anche un ritorno: l'ultima sezione
 percorre la strada opposta (dal testo all'onda sonora, la **sintesi vocale**)
 chiudendo il cerchio tra ascoltare e parlare.

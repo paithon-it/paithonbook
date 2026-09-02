@@ -13,11 +13,12 @@ insopportabilmente lento. Questa sezione racconta l'idea (sorprendentemente
 semplice nella sostanza) che ha fatto saltare quel muro.
 
 Serve prima sapere che cos'è l'attenzione, il meccanismo su cui i modelli
-linguistici sono costruiti. Il capitolo sui **Transformer** le è dedicato per
-intero e ne racconta il *perché*; qui basta il *che cosa*, in tre passi, perché
-sono i tre passi che si tratta di eseguire in fretta. Primo: ogni parola del testo
-viene confrontata con tutte le altre, e da ogni confronto esce un punteggio di
-somiglianza. È la grande tabella. Secondo: i punteggi di ciascuna riga vengono
+linguistici sono costruiti. Il {doc}`capitolo sui Transformer
+</Transformers/overview>` le è dedicato per intero e ne racconta il *perché*;
+qui basta il *che cosa*, in tre passi, perché sono i tre passi che si tratta di
+eseguire in fretta. Primo: ogni parola del testo viene confrontata con tutte le
+altre, e da ogni confronto esce un punteggio di somiglianza. È la grande
+tabella. Secondo: i punteggi di ciascuna riga vengono
 trasformati in percentuali che sommano a cento, e questa trasformazione ha un
 nome che ricorrerà per tutta la sezione, la **softmax**. Terzo: quelle
 percentuali dicono in che proporzione mescolare. Ogni parola si porta dietro
@@ -96,10 +97,10 @@ portare in capannone: sono una sessantina di conti per ogni byte spostato,
 mentre il pareggio (il punto in cui il lavoro al tavolo dura quanto la corsa)
 con le macchine di oggi sta oltre i centocinquanta. Anche il confronto, che è
 la parte laboriosa, tiene occupato chi lavora sì e no quattro decimi del tempo;
-il resto lo passa ad aspettare. Ed è per questo che non basta sbrigare due
-lavorazioni in un viaggio solo, portandosi dietro il mattarello insieme al
-coltello: la sfoglia in capannone ci va comunque, e comunque la corsa dura più
-del lavoro. L'unica mossa che paga è non portarcela mai.
+il resto lo passa ad aspettare. La mossa che verrebbe in mente, sbrigare due
+lavorazioni in un viaggio solo portandosi dietro il mattarello insieme al
+coltello, non basta: la sfoglia in capannone ci va comunque, e comunque la
+corsa dura più del lavoro. L'unica che paga è non portarcela mai.
 `````
 
 `````{tab} Superiore
@@ -197,10 +198,10 @@ elaborare, tutto il resto del testo deve sfilare daccapo, quindi il viavai
 continua a crescere con il quadrato della lunghezza, come prima. Quello che
 cambia è che ogni carico, una volta arrivato, serve per tutte le parole ferme
 sul tavolo invece che per una sola: con le taglie in uso oggi i viaggi si
-dividono per un numero fra sei e venti, e su un lavoro che passava la vita ad
+dividono per un numero fra sei e ventiquattro, e su un lavoro che passava la
 aspettare è tantissimo.
 
-Il prezzo si paga più tardi, ed è giusto dirlo subito. Quando la rete impara,
+Il prezzo si paga più tardi. Quando la rete impara,
 dopo aver letto il testo in avanti rifà la strada all'indietro per capire quali
 numeri correggere, e in quel secondo passaggio le servirebbero proprio i
 punteggi che sono stati buttati: non avendoli, se li rifà. Qualche conto in più,
@@ -262,17 +263,18 @@ del *gradient checkpointing*, quello con cui si ricalcolano le attivazioni
 invece di conservarle. Conviene per una ragione precisa: i FLOP ricomprati sono
 matmul, cioè la cosa che i tensor core fanno a costo quasi nullo, mentre i byte
 risparmiati sono accessi alla HBM, cioè la risorsa scarsa. È la stessa mossa
-che si ritroverà nel pipeline parallelism della prossima sezione, e che il
-capitolo sui modelli a spazio di stati usa per Mamba: tre nomi diversi per la
-stessa mossa.
+che si ritroverà nel pipeline parallelism della prossima sezione, e che la
+sezione su {doc}`Mamba </StateSpaceModel/mamba>` ritrova a sua volta: tre nomi
+diversi per la stessa mossa.
 
 Anche il traffico verso la HBM crolla: il paper lo conta in
-$\Theta(N^2 d_k^2 / M)$ accessi, dove $M$ è la taglia della memoria on-chip,
-contro il $\Theta(N d_k + N^2)$ dell'attenzione standard. Resta quadratico in
-$N$, ma diviso per un fattore $M/d_k^2$ che si può mettere in cifre, perché il
-paper quantifica $M$: 192 KB di SRAM per SM su A100, cioè poco meno di
-centomila elementi in `float16`. Il fattore vale allora una sestina con
-$d_k = 128$ e una ventina con $d_k = 64$: su un carico memory-bound è tanto. È
+$\Theta(N^2 d_k^2 / M_\text{chip})$ accessi, con lo stesso $M_\text{chip}$ del
+GEMM, la memoria veloce disponibile, contro il $\Theta(N d_k + N^2)$
+dell'attenzione standard. Resta quadratico in $N$, ma diviso per un fattore
+$M_\text{chip}/d_k^2$ che si può mettere in cifre, perché il paper quantifica
+$M_\text{chip}$: 192 KB di SRAM per SM su A100, cioè poco meno di centomila
+elementi in `float16`. Il fattore vale allora sei con $d_k = 128$ e
+ventiquattro con $d_k = 64$: su un carico memory-bound è tanto. È
 l'idea del tiling in shared memory del GEMM, applicata
 all'attenzione: caricare una volta, riusare in tanti, non tornare al
 magazzino.
@@ -393,9 +395,9 @@ $$
 dove $\mathbf{o}$ è la riga di uscita accumulata, cioè la somma pesata dei
 $\mathbf{v}_i$ (un vettore, quindi minuscolo grassetto), e il fattore
 $e^{\,m - m^{\text{new}}}$ corregge ciò che avevamo già sommato quando compare un
-massimo nuovo; alla fine si divide, $\mathbf{o} \leftarrow \mathbf{o}/l$. Tutto
-qui: due scalari di stato per riga, e la matrice $N \times N$ non viene mai
-scritta.
+massimo nuovo; si parte da $m = -\infty$, $l = 0$ e $\mathbf{o} = \mathbf{0}$,
+e alla fine si divide, $\mathbf{o} \leftarrow \mathbf{o}/l$. Tutto qui: due
+scalari di stato per riga, e la matrice $N \times N$ non viene mai scritta.
 `````
 
 ## Cosa si guadagna (e cosa costa)
@@ -424,21 +426,25 @@ conserva quello che ha già letto per non rileggerlo da capo a ogni parola
 del confronto che vanno conservati entrambi).
 
 Quel taccuino cresce in proporzione alla lunghezza del testo, non al suo
-quadrato, ma è pesante, e il conto conviene di farlo con i numeri di un
-modello vero, uno da otto miliardi di numeri imparati. Ha trentadue strati e
-ognuno tiene il proprio taccuino; dentro ogni strato ci sono otto «teste» che
-leggono il testo in parallelo, e ognuna descrive una parola con 128 numeri; di
-ogni parola vanno conservate chiave e valore, quindi due volte tanto; e ogni
-numero occupa due byte. In tutto $2 \times 32 \times 8 \times 128 \times 2$
-byte, cioè $131\,072$ byte, che sono esattamente **128 KB** (un KB è 1024
-byte) **per ogni parola letta**. Su centomila parole di contesto fanno
-**dodici gigabyte**, per una conversazione sola, su una scheda che di gigabyte
-ne ha ottanta. FlashAttention non lo tocca: è un altro mestiere, e lo
-raccontano la sezione sui modelli linguistici del {doc}`capitolo sui Transformer </Transformers/overview>` e
-il {doc}`capitolo su MLOps </MLOps/overview>`, dove si trovano anche le tecniche che quel problema lo
-affrontano davvero. Conviene dire, per onestà, che FlashAttention **non**
-riduce il numero di conti da fare, che resta proporzionale al quadrato della
-lunghezza: quello è il mestiere del capitolo sull'attenzione lineare.
+quadrato, ma è pesante, e il conto si fa meglio con i numeri di un modello
+vero, uno da otto miliardi di numeri imparati. Ha trentadue strati e ognuno
+tiene il proprio taccuino. Dentro uno strato le «teste» che leggono il testo in
+parallelo sono trentadue, ma non ognuna si scrive le proprie chiavi e i propri
+valori: se li spartiscono a gruppi, e i gruppi sono otto, il che ha già diviso
+per quattro il peso del taccuino prima ancora di cominciare a contarlo. Ogni
+gruppo descrive una parola con 128 numeri; di ogni parola vanno conservati
+chiave e valore, quindi due volte tanto; e ogni numero occupa due byte. In
+tutto $2 \times 32 \times 8 \times 128 \times 2$ byte, cioè $131\,072$ **per
+ogni parola letta**. Su centomila parole di contesto fanno **tredici
+gigabyte**, per una conversazione sola, su una scheda che di gigabyte ne ha
+ottanta. FlashAttention non lo tocca: è un altro mestiere, e lo
+raccontano la sezione sui {doc}`grandi modelli linguistici
+</Transformers/llm>` e quella su {doc}`prefill e decodifica
+</MLOps/metriche-di-servizio>`, dove si trovano anche le tecniche che quel
+problema lo affrontano davvero. E FlashAttention non riduce il numero di conti
+da fare, che resta proporzionale al quadrato della lunghezza: quello è il
+mestiere del {doc}`capitolo sull'attenzione lineare
+</AttenzioneLineare/overview>`.
 
 Onestà anche sul codice: quello che in queste pagine sta in un'idea semplice,
 nel codice
@@ -448,9 +454,10 @@ sbirciare quelle che vengono dopo di lei). Non è codice che si scrive a mano pe
 un progetto normale, ed è giusto così. In PyTorch lo usi senza nemmeno saperlo:
 la funzione `scaled_dot_product_attention` sceglie da sé, fra le varie
 implementazioni che ha in casa (in gergo i *backend*), quella più adatta alla
-scheda che ha davanti, e su GPU recenti quella è proprio FlashAttention. Le
-righe qui sotto si possono guardare da lontano: quella che conta è la
-penultima, dove si chiama la funzione; tutto il resto è preparare i numeri.
+scheda che ha davanti, e su GPU recenti quella è proprio FlashAttention. Nelle
+poche righe che seguono quella che conta è la penultima, dove si chiama la
+funzione;
+tutto il resto è preparare i numeri.
 
 ```{code-block} python
 :class: pt-non-eseguibile

@@ -43,8 +43,8 @@ l'elenco completo di quelle risposte, una per manopola.
 
 Nell'addestramento di una rete le manopole erano i numeri interni della rete
 (che si chiamano **pesi**) e l'indicatore era l'errore: girare le manopole nel
-verso che abbassa l'errore *è* l'addestramento, come si è visto nel capitolo
-sulle reti neurali.
+verso che abbassa l'errore *è* l'addestramento, come si è visto nella
+{doc}`sezione sulla backpropagation </RetiNeurali/backpropagation>`.
 
 Adesso puntiamo lo stesso strumento altrove. Teniamo ferme le manopole dei pesi
 e chiamiamo manopola ogni **pixel dell'immagine in ingresso**; l'indicatore da
@@ -121,7 +121,8 @@ della rete produce dei numeri, e quei numeri sono la fotografia di ciò che la
 rete «ha in mente» a quel punto del percorso: si chiamano le **attivazioni** di
 quello strato.
 
-Come abbiamo visto nel capitolo sulla Visione Artificiale, in una rete fatta per
+Come abbiamo visto nella {doc}`sezione su classificazione e transfer learning
+</VisioneArtificiale/classificazione-transfer>`, in una rete fatta per
 le immagini le attivazioni cambiano natura salendo di strato in strato: in basso
 sono puntini e bordi, in alto sono zone che «assomigliano a un muso»,
 «assomigliano a una ruota». Nell'ultimo strato di quel tipo (si chiama
@@ -182,15 +183,15 @@ che ha guidato la decisione.
 Sia la salienza sia Grad-CAM misurano il gradiente in **un solo punto**,
 l'immagine così com'è, e qui si nasconde un problema.
 
-Le funzioni che una rete usa per decidere non salgono all'infinito: crescono
-ripide finché la rete è incerta, e poi si appiattiscono, perché una fiducia non
-può superare il suo massimo. La curva a esse che si comporta così, ripida in
-mezzo e piatta alle due estremità, è la **sigmoide** vista nel capitolo sulle
-reti neurali; e di un neurone arrivato sul tratto piatto si dice che è
-**saturo**. Su un tratto piatto, però, il gradiente è quasi zero: toccare
-l'ingresso non cambia più niente, perché la rete è già convinta. Il paradosso è
-che il gradiente dichiara «questo pixel non conta» proprio quando quel pixel è
-la ragione per cui la rete è così sicura.
+Dentro una rete ci sono funzioni che a un certo punto smettono di reagire:
+crescono ripide finché quello che ricevono è piccolo, e poi si appiattiscono,
+perché quello che restituiscono ha un massimo che non può superare. La curva a
+esse che si comporta così, ripida in mezzo e piatta alle due estremità, è la
+**sigmoide** vista nel capitolo sulle reti neurali; e di un neurone arrivato
+sul tratto piatto si dice che è **saturo**. Su un tratto piatto, però, il
+gradiente è quasi zero: toccare l'ingresso non cambia più niente, perché la
+rete è già convinta. Il paradosso è che il gradiente dichiara «questo pixel non
+conta» proprio quando quel pixel è la ragione per cui la rete è così sicura.
 
 Nel 2017 Sundararajan, Taly e Yan hanno affrontato la questione in un modo
 diverso dal solito {cite}`sundararajan2017axiomatic`. Il metodo che ne è uscito
@@ -205,7 +206,10 @@ Prima di enunciarli, però, serve un oggetto che avrà un ruolo grosso in tutta 
 sezione: un ingresso «vuoto», da cui partire, che per un'immagine sarà
 tipicamente un rettangolo tutto nero. È la situazione in cui il modello non ha
 davanti niente, e si chiama **baseline**, che è l'inglese per «linea di
-partenza».
+partenza». È parente della risposta base delle spiegazioni locali, e i due
+vanno tenuti distinti: là si dava un nome a *quanto risponde* il modello quando
+non sa niente, qui all'*ingresso* che gli si mette davanti per non fargli
+sapere niente.
 
 Il primo assioma è la **sensibilità**, e va enunciato con la sua condizione,
 altrimenti dice il falso. Prendiamo un ingresso e la baseline, e
@@ -376,8 +380,8 @@ non è costante, cala. Bisogna quindi decidere in che punto del pezzetto
 misurarla, e la decisione cambia il risultato.
 
 Nel disegno la si misura **in mezzo** al pezzetto, ed è la scelta buona: il
-totale che ne esce, $0{,}99936$, differisce dal valore vero, $0{,}99933$, di
-appena $0{,}000027$, e a occhio la barra tocca la riga. Se invece la si
+totale che ne esce, $0{,}999356$, differisce dal valore vero, $0{,}999329$,
+di appena $0{,}000027$, e a occhio la barra tocca la riga. Se invece la si
 misurasse **all'inizio** di ciascun pezzetto, cioè dove la salita è ancora la
 più ripida di tutto il tratto, si sopravvaluterebbe ogni volta: il totale
 verrebbe $1{,}249$ invece di $0{,}999$, cioè il $25\%$ di troppo, e la barra
@@ -414,12 +418,14 @@ metodi popolari, la mappa cambia pochissimo, e resta riconoscibile come una
 sagoma dell'oggetto.
 
 Il test però non li boccia tutti. I colpetti pixel per pixel e i faretti di
-Grad-CAM reagiscono, e il test lo superano. A fallirlo del tutto sono due
+Grad-CAM reagiscono, e il test lo superano; i faretti con una precisazione che
+gli autori mettono per esteso, cioè che la mappa cambia quando a essere
+cancellata è la parte di rete che il loro conto attraversa. A fallirlo sono due
 metodi non ancora incontrati, *Guided BackProp* e *Guided Grad-CAM*: sono due
 raffinamenti costruiti sopra i primi due, con qualche accorgimento in più per
 avere mappe visivamente più nitide, e proprio quegli accorgimenti sono ciò che
-li rende ciechi al modello. Le loro mappe restano riconoscibili anche su una
-rete a cui è stato cancellato tutto.
+li rende ciechi al modello: le loro mappe restano riconoscibili anche quando
+alla rete si cancellano gli strati più alti.
 
 Gli **Integrated Gradients** stanno in mezzo, ed è il caso più insidioso. La
 mappa cambia davvero, e cambia parecchio: un pixel che prima spingeva verso la
@@ -517,14 +523,14 @@ morale pratica è quella: sono un indizio, non una prova, e vanno lette come una
 traccia, non come una confessione.
 
 Va però messa un'avvertenza accanto al risultato, perché quel titolo è più
-largo dell'esperimento che lo sostiene. Jain e Wallace guardano modelli con **un
-solo strato di attenzione**, appoggiato per lo più sopra un tipo di rete che
-legge la frase parola per parola nei due sensi, e che non è un Transformer. Un
-Transformer vero, con le sue decine di strati sovrapposti, nel loro articolo non
-compare mai: né come esperimento né come parola. E nel lavoro stesso il risultato **cambia col modello**: sul più semplice fra
-quelli provati, gli stessi criteri assolvono l'attenzione invece di
-condannarla. È quindi un monito metodologico solido, non un teorema sui
-Transformer.
+largo dell'esperimento che lo sostiene. Jain e Wallace guardano modelli con
+**un solo strato di attenzione**, appoggiato per lo più sopra un tipo di rete
+che legge la frase parola per parola nei due sensi, e che non è un Transformer.
+Un Transformer vero, con le sue decine di strati sovrapposti, nel loro articolo
+non compare mai: né come esperimento né come parola. E nel
+lavoro stesso il risultato **cambia col modello**: sul più semplice fra quelli
+provati, gli stessi criteri trattano l'attenzione molto meglio. È
+quindi un monito metodologico solido, non un teorema sui Transformer.
 
 C'è però una domanda tecnica che precede quella filosofica, e che di solito
 viene saltata: **l'attenzione di quale strato?** Un Transformer ne ha decine,
@@ -630,7 +636,9 @@ C'è però un ostacolo curioso. La rete ha meno neuroni dei concetti che deve
 rappresentare, e allora fa come chi ha poche scatole e troppa roba: mette più
 concetti nella stessa scatola. Il risultato è che un singolo neurone si accende
 per cose scollegate fra loro, un po’ per i gatti, un po’ per le automobili, un
-po’ per il colore verde, e diventa illeggibile.
+po’ per il colore verde, e diventa illeggibile: un neurone così si dice
+**polisemantico**, e l'obiettivo è arrivare a caselle che facciano una cosa
+sola, **monosemantiche**.
 
 Il nome tecnico di questa faccenda è **sovrapposizione**, e viene dal modo in
 cui la si disegna: non come scatole, ma come frecce su un foglio. Immagina un
@@ -782,7 +790,8 @@ comportamenti che non vogliamo (raccontare frottole, prendere scorciatoie,
 trattare in modo diverso persone che andrebbero trattate uguale) senza che
 nulla, dall'esterno, lo tradisca. Poter leggere i circuiti interni significherebbe
 accorgersene *prima* che si manifestino: è il ponte, che riprenderemo nel
-capitolo sull'AI responsabile, tra l'interpretabilità come curiosità
+{doc}`capitolo sull'AI responsabile </AIResponsabile/overview>`, tra
+l'interpretabilità come curiosità
 scientifica e l'interpretabilità come strumento di controllo.
 
 Il quadro concettuale finisce qui. Restano i due conti veri, gli Integrated
@@ -896,8 +905,6 @@ print("gradienti  :", tuple(dY.shape))
 print("heatmap    :", tuple(heatmap.shape))
 ```
 
-Le tre righe stampate dicono che cosa è uscito:
-
 ```text
 attivazioni: (1, 512, 7, 7)
 gradienti  : (1, 512, 7, 7)
@@ -952,12 +959,15 @@ volevamo poter vedere.
   (Adebayo e colleghi, 2018) mostrano che, cancellando ciò che il modello ha
   imparato, per parecchi metodi la mappa resta quasi identica: descriveva
   l'immagine, non la rete. I colpetti pixel per pixel e Grad-CAM il test lo
-  superano; a fallirlo sono due varianti più elaborate, *Guided BackProp* e
+  superano, i faretti per la parte di rete che il loro conto attraversa; a
+  fallirlo sono due varianti più elaborate, *Guided BackProp* e
   *Guided Grad-CAM*; e gli Integrated Gradients stanno in mezzo, perché la mappa
   cambia ma la sagoma della foto resta lì a farla sembrare sensata. Una
   spiegazione che sembra sensata non è per questo fedele.
 - Le **quote di attenzione** dei Transformer sono un indizio, non una prova:
-  quote molto diverse possono portare alla stessa risposta. E guardare un solo strato non basta,
+  quote molto diverse possono portare alla stessa risposta, con l'avvertenza che
+  quel risultato viene da modelli con un solo strato di attenzione e non da una
+  pila di decine. E guardare un solo strato non basta comunque,
   perché una parte dell'informazione salta l'attenzione e prende la scorciatoia
   verso il piano di sopra; **attention rollout** e *attention flow* rifanno il
   conto lungo tutta la pila. Il **probing** risponde a un'altra domanda: a

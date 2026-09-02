@@ -1,9 +1,9 @@
 # Introduzione
 
 Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e
-professore al MIT. Nel 1966 presentò al mondo ELIZA, il primo *chatbot* della
-storia: un programma con cui si poteva conversare per iscritto, digitando una
-frase e leggendo la risposta. L'articolo che lo descrive si apre così
+professore al MIT. Nel 1966 presentò al mondo ELIZA, il capostipite dei
+*chatbot*: un programma con cui si poteva conversare per iscritto, digitando
+una frase e leggendo la risposta. L'articolo che lo descrive si apre così
 {cite}`weizenbaum1966eliza`:
 
 >Si dice che spiegare sia dissolvere l'incanto.[^spiegare-via]
@@ -20,7 +20,7 @@ Nei programmi che sembrano intelligenti, osservava, questa massima si compie
 alla perfezione: finché il meccanismo resta nascosto la macchina appare
 prodigiosa; appena qualcuno lo spiega, l'incanto si sgretola. E il meccanismo
 di ELIZA sta in poche righe. Il programma vero e proprio non imitava nessuno:
-era un motore che riconosceva **schemi**: pezzi di frase fatti a stampo,
+era un motore che riconosceva **schemi**, cioè pezzi di frase fatti a stampo,
 del tipo «mi sento ___» o «mia madre ___». La parte da recitare gliela
 assegnava un *copione*, un foglio di regole scritto a parte che si poteva
 cambiare senza toccare il programma. Il copione più celebre si chiamava DOCTOR
@@ -28,9 +28,9 @@ e gli faceva sostenere la conversazione di uno psicoterapeuta: riconosceva nella
 frase dell'utente uno schema noto e gliela rigirava addosso. «Mi sento
 infelice» diventava «pensa che venire qui la aiuterà a non sentirsi infelice?»,
 e alla parola «madre» rispondeva «mi parli della sua famiglia». Nessuna
-comprensione, e come memoria soltanto una pila di risposte costruite su cose
-dette prima, tenute da parte per quando nella frase dell'utente non c'era
-niente a cui agganciarsi.
+comprensione, e come memoria soltanto una pila di risposte già pronte,
+costruite su cose dette prima e tirate fuori quando nella frase nuova non
+c'era nessuno schema a cui agganciarsi.
 
 Quella separazione fra il motore e il foglio delle regole è il primo passo
 della strada che percorreremo. Nel 1966 le regole le
@@ -53,11 +53,11 @@ dice *Artificial Intelligence*, e la sigla **AI** è quella che si legge
 dappertutto. Ogni anno la si perfeziona, e ogni anno sembra sfuggire un po’ di
 più a una definizione precisa.
 
-La prima risposta è breve e deludente: no, non c'era niente di più. ELIZA era
-davvero soltanto una lista di istruzioni. Per certi altri programmi, però, la
-stessa risposta non basta, e la seconda domanda ha bisogno di più spazio: ci
-arriveremo dopo aver visto che cosa distingue un programma scritto riga per
-riga da uno che le sue regole se le trova da solo.
+Su ELIZA la risposta è breve e deludente: no, niente di più, era davvero
+soltanto una lista di istruzioni. Per certi altri programmi non basta, e che
+cosa sia l'intelligenza artificiale ha bisogno di più spazio: ci arriveremo
+dopo aver visto che cosa distingue un programma scritto riga per riga da uno
+che le sue regole se le trova da solo.
 
 ## Le origini dell'intelligenza artificiale
 
@@ -101,22 +101,29 @@ scriverebbero quelle di un gioco.
 Poi bisogna aspettare quasi due millenni, e arrivare al Seicento, quando
 compaiono le prime macchine che fanno di conto. Hobbes ipotizzò che ragionare
 fosse una specie di calcolo, come se dentro la testa eseguissimo addizioni e
-sottrazioni. Pascal costruì una di quelle macchine, la Pascalina, e scrisse che
-la macchina aritmetica produce effetti che sembrano più vicini al pensiero di
-quanto lo sia tutto ciò che fanno gli animali (la prima macchina calcolatrice
-in assoluto risulta però essere quella di Wilhelm Schickard, del 1623).
-Cartesio, infine, tracciò una distinzione netta fra
-mente e materia, sostenendo che il pensiero è fatto di una sostanza diversa dal
-corpo e non obbedisce alle stesse leggi. Una macchina, invece, è materia e
-nient'altro: se Cartesio avesse ragione, nessuna macchina potrebbe mai avere
-una mente. È l'obiezione con cui l'intelligenza artificiale fa i conti da
-quando esiste.
+sottrazioni. Pascal costruì una di quelle macchine, la
+Pascalina,[^schickard] e ne scrisse una frase che va letta per intero: la
+macchina aritmetica produce effetti che sembrano più vicini al pensiero di
+quanto lo sia tutto ciò che fanno gli animali, ma non fa niente che permetta
+di dire che abbia una volontà, come invece ce l'hanno gli animali. Metà elogio
+e metà rifiuto, nella stessa riga. Cartesio, infine, tracciò una distinzione
+netta fra mente e materia, sostenendo che il pensiero è fatto di una sostanza
+diversa dal corpo e non obbedisce alle stesse leggi. Una macchina, invece, è
+materia e nient'altro: se Cartesio avesse ragione, nessuna macchina potrebbe
+mai avere una mente. È l'obiezione con cui l'intelligenza artificiale fa i
+conti da quando esiste.
+
+[^schickard]: Non è la prima di cui si abbia notizia. Nel 1623 Wilhelm
+    Schickard ne descrisse una a Keplero, in due lettere che sono tutto quello
+    che ce ne resta: la macchina andò distrutta in un incendio e la sua
+    esistenza si riscoprì solo tre secoli dopo.
 
 I filosofi hanno esplorato la maggior parte dei concetti riguardanti l'AI, ma
 il passaggio a una scienza vera e propria richiedeva qualcosa che i filosofi
 non davano. Una macchina non capisce le frasi, sa soltanto fare conti: perché
-un'idea le arrivi, bisogna prima ridurla a un calcolo, e nessuno l'aveva mai
-fatto per il ragionamento. A metà del Novecento la matematica aveva già in casa gli strumenti giusti,
+un'idea le arrivi, bisogna prima ridurla a un calcolo, e Aristotele aveva
+scritto quali passaggi fossero leciti, non come farli fare a una macchina.
+A metà del Novecento la matematica aveva già in casa gli strumenti giusti,
 l'algebra e la probabilità, e tre discipline nate per far prendere decisioni.
 La **ricerca operativa** studia come scegliere il piano migliore quando le
 risorse sono poche (quali camion mandare su quali strade); la **teoria del
@@ -194,16 +201,16 @@ aggiornare e non reggevano il mondo vero.
 
 Il modo di lavorare che è succeduto a questo secondo inverno ne è il rovescio
 esatto, e fra poco, quando parleremo di regole che nessuno scrive, si vedrà
-quale. Le reti neurali, che incontreremo per esteso più avanti, hanno invece
-avuto un inverno tutto loro, che comincia nel 1969 con
-*Perceptrons* di Minsky e Papert, che dimostrava quanto poco sapesse fare una
-rete a un solo strato {cite}`minsky1969perceptrons`, e si intreccia con
-l'inverno degli anni Settanta, perché i tagli seguiti al rapporto Lighthill colpirono tutto il
-campo. Si scioglie nel 1986, quando un
-articolo su *Nature* rende finalmente pratico un modo di addestrarle che
-qualcuno aveva già formulato dodici anni prima
-{cite}`rumelhart1986learning,werbos1974beyond`: la racconta per esteso il
-{doc}`capitolo sulle reti neurali </RetiNeurali/overview>`.
+quale. Un inverno tutto loro, intanto, lo hanno avuto le reti neurali, che il
+{doc}`capitolo che porta il loro nome </RetiNeurali/overview>` racconta per
+esteso. Quell'inverno comincia nel 1969, con *Perceptrons* di Minsky e Papert,
+che dimostrava quanto poco sapesse fare la versione più semplice di quelle
+reti {cite}`minsky1969perceptrons`, e si intreccia con l'inverno degli anni
+Settanta, perché i tagli seguiti al rapporto Lighthill colpirono tutto il
+campo. Si scioglie nel 1986, quando un articolo su *Nature* rende finalmente
+pratico un modo di correggerle a partire dai loro errori, che qualcuno aveva
+già formulato dodici anni prima
+{cite}`rumelhart1986learning,werbos1974beyond`.
 
 Meno noto è che una delle auto che si guidavano da sole
 negli anni Novanta girava sulle strade italiane, su una Lancia Thema. A
@@ -214,8 +221,8 @@ le prendeva un computer di bordo del tutto ordinario per l'epoca, un Pentium
 200 MMX: un processore incomparabilmente più lento di quello del telefono che
 oggi tieni in tasca. Sapeva sterzare da sola, restare al centro della corsia e
 accorgersi degli ostacoli davanti. Nel giugno 1998, nella prova «MilleMiglia
-in Automatico», percorse i circa 2.000 km della Mille Miglia su strade e autostrade italiane,
-guidando da sola per il 94% del tragitto.
+in Automatico», percorse quasi 2.000 km sulle autostrade italiane, guidando da
+sola per il 94% del tragitto.
 
 Il primato non è di essere arrivati per primi: negli stessi anni la VaMP di
 Ernst Dickmanns girava sulle autostrade europee e la Navlab 5 della Carnegie
@@ -231,7 +238,7 @@ regola per volta.
 
 Nel 2010 il gruppo di Broggi è riuscito a far guidare da soli dei furgoni
 elettrici dall'Italia alla Cina. La sfida si chiamava VIAC (VisLab
-Intercontinental Autonomous Challenge): più di quindicimila chilometri da
+Intercontinental Autonomous Challenge): quasi sedicimila chilometri da
 Parma a Shanghai, con
 due veicoli in marcia (più due di riserva) e una regola d'ingaggio da dire,
 perché è la parte interessante. I due procedevano in fila: quello di testa
@@ -248,8 +255,8 @@ una lista finita di passi precisi che, eseguiti nell'ordine giusto, portano a
 un risultato. Uno dei primi della storia si può far risalire a Euclide, che
 oltre due millenni fa trovò il modo di calcolare il massimo comune divisore di
 due numeri: applicato a $12$ e $8$, per dire, restituisce $4$. È esattamente il
-procedimento che proveremo a scrivere in Python, appena avremo finito di
-guardarlo da vicino.
+procedimento che proveremo a scrivere nel linguaggio Python, appena avremo
+finito di guardarlo da vicino.
 
 `````{tab} Elementare
 Il massimo comune divisore (MCD) di $12$ e $8$ è il numero più grande che li
@@ -275,15 +282,15 @@ non avanza niente, e quando non avanza niente il lato del quadrato è la
 piastrella cercata.
 
 Il bello è che le divisioni restano poche anche quando i numeri crescono: per
-due numeri lunghi cento cifre ne bastano al massimo cinquecento, mentre provare
-i divisori uno per uno, come si fa a scuola, ne chiederebbe fino a un $1$
+due numeri lunghi cento cifre ne bastano al massimo cinquecento, cinque per
+cifra, mentre provare i divisori uno per uno ne chiederebbe fino a un $1$
 seguito da cento zeri. Per darti la misura di quanto sia grande quel numero:
 gli atomi dell'intero universo osservabile si stimano intorno a un $1$ seguito
 da ottanta zeri, cioè cento miliardi di miliardi di volte di meno.
 
-Poche divisioni, però, non vuol dire poco tempo. Dividere due numeri da cento
-cifre costa molto più che dividerne due da una cifra, e il conto finale cresce
-con la lunghezza dei numeri anche quando i passi restano pochi.
+Poche, però, non vuol dire poco tempo. Le divisioni crescono con la
+*lunghezza* dei numeri, cinque per ogni cifra in più, e ciascuna, su numeri da
+cento cifre, costa molto più che su numeri da una cifra.
 `````
 
 `````{tab} Superiore
@@ -301,10 +308,11 @@ consecutivi (teorema di Lamé, 1844). È per questa efficienza (non solo per
 l'età) che l'idea di Euclide è ancora oggi nelle librerie standard di ogni
 linguaggio. Attenzione però a leggere bene la stima: quelli sono *passi*, e il
 logaritmo è preso sul *valore* di $\min(a, b)$, quindi su due numeri di $n$
-cifre i passi sono $O(n)$, non $O(\log n)$. Su interi lunghi ogni passo costa una divisione,
-il cui prezzo è proporzionale alle cifre del quoziente moltiplicate per quelle
-del divisore; la somma delle cifre di tutti i quozienti resta però $O(n)$,
-perché i quozienti sono quasi sempre di una cifra sola. Da lì il tempo totale
+cifre i passi sono $O(n)$, non $O(\log n)$. Su interi lunghi ogni passo costa
+una divisione, il cui prezzo è proporzionale alle cifre del quoziente
+moltiplicate per quelle del divisore; la somma delle cifre di tutti i
+quozienti resta però $O(n)$, perché il prodotto dei quozienti non supera il
+numero di partenza. Da lì il tempo totale
 $O(n^2)$, e non l’$n^3$ che il prodotto ingenuo dei due fattori farebbe
 temere. È il motivo per cui le librerie non eseguono questo ciclo tale e
 quale, ma sue raffinature (l'algoritmo di Lehmer, in CPython).
@@ -433,8 +441,9 @@ li cambia ancora. Il comportamento viene dietro.
 A un robot aspirapolvere assegni un punteggio: $+1$ per ogni
 briciola raccolta, $-1$ per ogni urto contro un mobile. Se in un giro di
 salotto raccoglie $30$ briciole e sbatte $5$ volte, totalizza $30 - 5 = 25$
-punti. Quel numero è la sua funzione obiettivo: non gli spieghiamo *come*
-pulire, gli diciamo solo *che punteggio* vogliamo veder salire.
+punti. Quel modo di dare i punti è la sua funzione obiettivo: non gli
+spieghiamo *come* pulire, gli diciamo solo *che punteggio* vogliamo veder
+salire.
 
 Dentro, il robot ha una manciata di manopole: quanto sterzare quando il
 sensore davanti si accende, quanto rallentare vicino a un mobile, quanto
@@ -452,7 +461,7 @@ deve ancora vedere: il salotto coi mobili spostati, la casa di un amico. Quei
 giri futuri non si possono misurare oggi: si misurano i giri già fatti, si
 allena il robot su quelli e si spera che le stanze che verranno somiglino a
 quelle già viste. Quanta fiducia meriti quella speranza è la domanda al
-centro del capitolo sul machine learning.
+centro del {doc}`capitolo sul machine learning </MachineLearning/overview>`.
 
 C'è poi una crepa, e ci accompagnerà per tutto il libro: quel punteggio lo
 scriviamo noi, e non è mai *esattamente* la cosa che vogliamo. Un
@@ -460,9 +469,9 @@ aspirapolvere pagato a briciole raccolte, se è abbastanza
 bravo, può scoprire che gli conviene rovesciare il cestino e raccoglierle una
 seconda volta. Ha fatto il punteggio più alto e ha sporcato il salotto: ha
 obbedito alla lettera tradendo l'intenzione. Il fenomeno ha un nome, *reward
-hacking*, e una sezione tutta sua nel {doc}`capitolo sul deep reinforcement
-learning </DeepReinforcementLearning/overview>`, cioè l'imparare per tentativi
-ed errori con le reti neurali.
+hacking*, e lo racconta {doc}`Esplorazione e ricompensa
+</DeepReinforcementLearning/esplorazione-e-ricompensa>`, nelle pagine
+sull'imparare per tentativi ed errori con le reti neurali.
 `````
 
 `````{tab} Superiore
@@ -491,7 +500,7 @@ distribuzione su cui è presa è quella dei casi futuri, l'unica a cui in fase
 di addestramento non si ha accesso. In pratica si massimizza la sua media su
 un campione già raccolto e si spera che le due quantità non siano troppo
 distanti. Misurare quella distanza, e sapere quando fidarsene, è il mestiere
-del capitolo sul machine learning.
+del {doc}`capitolo sul machine learning </MachineLearning/overview>`.
 
 È la cornice dell’**agente razionale** {cite}`russell2020artificial`: un
 sistema che sceglie le azioni che massimizzano l'utilità attesa, date le
@@ -511,12 +520,14 @@ smette di dire se le cose stanno andando bene; i metodi non parametrici come
 il k-NN non hanno una manopola da regolare per addestramento: al posto dei
 parametri conservano i dati stessi. «Non parametrico» significa questo, e non
 che non ci siano numeri da scegliere: significa che ciò che il modello si
-porta dietro cresce con i dati, invece di essere fissato in partenza. Va aggiunta una crepa che
-non è un'eccezione ma un limite della cornice, dichiarato dagli stessi autori
+porta dietro cresce con i dati, invece di essere fissato in partenza. Va
+aggiunta una crepa che non è un'eccezione ma un limite della cornice,
+dichiarato dagli stessi autori
 che l'hanno resa canonica: $J$ è il punteggio che *scriviamo noi*, non quello
 che vogliamo davvero, e un sistema abbastanza bravo massimizza il primo anche
-a spese del secondo. Il fenomeno si chiama *reward hacking* e ha una sezione sua nel
-{doc}`capitolo sul deep reinforcement learning </DeepReinforcementLearning/overview>`.
+a spese del secondo. Il fenomeno si chiama *reward hacking*, e lo tratta
+{doc}`Esplorazione e ricompensa
+</DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 `````
 
 ## Perché proprio adesso
@@ -541,11 +552,11 @@ Google.
 
 Ed è in debito con Internet, che ha fatto molto più che diffondere articoli e
 video: ha reso raccoglibili i **dati** su cui i modelli si addestrano, dalle
-grandi collezioni di immagini già etichettate, come ImageNet, al testo del web. Dati, potenza
-di calcolo e algoritmi maturi sono i tre ingredienti, e il {doc}`capitolo sul deep
-learning </DeepLearning/overview>` li conta uno per uno; quanto pesi ciascuno
-dei tre si può perfino misurare, e lo fa il capitolo sui **Transformer**, i
-modelli nati da quell'articolo del 2017.
+grandi collezioni di immagini già etichettate, come ImageNet, al testo del web.
+Dati, potenza di calcolo e algoritmi maturi: sono questi a essere arrivati
+insieme, e il {doc}`capitolo sul deep learning </DeepLearning/overview>` li
+riprende uno per uno; quanto pesi ciascuno si può perfino misurare, e lo fa il
+capitolo sui **Transformer**, i modelli nati da quell'articolo del 2017.
 
 Su che cosa siano quei dati bisogna fermarsi, perché è la cosa che si
 fraintende più spesso. Il modo di dire corrente li chiama «il petrolio del
@@ -566,12 +577,11 @@ che si studia a scuola. Quel che restava lo buttarono via, ed era **ossigeno**
 anzi un veleno, perché era cresciuta in un mondo che non ne aveva mai avuto.
 
 E per moltissimo tempo non successe niente. I cianobatteri cominciarono forse
-tre miliardi di anni fa (la data si discute ancora) e l'aria restò come prima:
-l'ossigeno finiva subito, mangiato dalle rocce e dai gas che incontrava. Solo
-intorno a due miliardi e trecento milioni di anni fa l'atmosfera cominciò a
-tenerselo, e ai livelli vicini a quelli di oggi ci arrivò altri due miliardi di
-anni più tardi {cite}`lyons2014rise`: qualche centinaio di milioni di anni fa,
-cioè quasi ieri. Lungo quella strada comparve una forma di vita che di quello
+tre miliardi di anni fa, e l'aria restò come prima: l'ossigeno finiva subito,
+mangiato dalle rocce e dai gas che incontrava. Solo intorno a due miliardi e
+trecento milioni di anni fa l'atmosfera cominciò a tenerselo, e ai livelli di
+oggi ci arrivò molto più tardi ancora {cite}`lyons2014rise`: quasi ieri, su
+quella scala. Lungo quella strada comparve una forma di vita che di quello
 scarto faceva il proprio respiro, e da quel respiro ricavava molta più energia
 di qualunque modo di vivere venuto prima. Quella strada è la nostra:
 respiriamo, alla lettera, il rifiuto di qualcun altro.

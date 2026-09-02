@@ -66,9 +66,10 @@ $$
 dove $L$ è il numero di strati e tipicamente $f_\ell(\mathbf{Z}) =
 \sigma(\mathbf{W}_\ell \mathbf{Z} + \mathbf{b}_\ell)$, con la matrice di pesi
 $\mathbf{W}_\ell$, il vettore di bias $\mathbf{b}_\ell$ e la non linearità
-$\sigma$ applicata elemento per elemento (ma incontreremo anche strati di altra
-forma, come il pooling). Tutti i parametri $\theta$, dal primo strato
-all'ultimo, vengono ottimizzati insieme minimizzando la loss $\mathcal{L}$ per
+$\sigma$ applicata elemento per elemento (il bias si somma colonna per colonna,
+e incontreremo anche strati di altra forma, come il pooling). Tutti i parametri
+$\theta$, dal primo strato all'ultimo, vengono ottimizzati insieme minimizzando
+la loss $\mathcal{L}$ per
 retropropagazione (*end-to-end*). L'estrazione delle feature diventa parte del
 modello e viene appresa, invece di stare a monte e fissa. È ciò che si chiama
 *representation learning*.
@@ -194,12 +195,12 @@ Il primo guaio sta nella funzione che ogni neurone applica al numero uscito dai
 suoi conti. Era una curva che fa da rubinetto strozzato: giri quanto vuoi,
 l'acqua che esce è sempre quella. Numero grande o numero piccolo, quello che
 passava era più o meno uguale, e la rete non poteva accorgersi della
-differenza. C'è di peggio. La correzione torna indietro dall'ultimo strato
-verso il primo e attraversa uno di quei rubinetti a ogni strato che risale;
-ognuno ne lascia passare una frazione, e ai primi strati non arrivava quasi
-niente. Il rimedio è un rubinetto che o è chiuso o è spalancato: i numeri
-positivi passano come sono, i negativi diventano zero. Se entra 5 esce 5, se
-entra $-3$ esce 0. Si chiama **ReLU**.
+differenza. C'è di peggio, ed è lo stesso strozzamento visto al ritorno. La
+correzione torna indietro dall'ultimo strato verso il primo e attraversa uno di
+quei rubinetti a ogni strato che risale; ognuno ne lascia passare una frazione,
+e ai primi strati non arrivava quasi niente. Il rimedio è un rubinetto che o è
+chiuso o è spalancato: i numeri positivi passano come sono, i negativi
+diventano zero. Se entra 5 esce 5, se entra $-3$ esce 0. Si chiama **ReLU**.
 
 Il secondo guaio è che la rete si impara a memoria le fotografie
 dell'addestramento. Sembrerebbe un pregio, ed è il modo più sicuro di fallire:
@@ -257,13 +258,14 @@ uscite senza salti bruschi.[^universalita]
 Una condizione c'è, ed è essenziale. La funzione che ogni neurone applica al
 proprio risultato, l’**attivazione** (la ReLU, per esempio, che azzera i numeri
 negativi e lascia passare i positivi), non deve essere un *polinomio*, cioè una
-somma di potenze come $3x^2-x+5$. Il motivo è che sommare e moltiplicare
-polinomi dà sempre e solo altri polinomi: se l'attivazione fosse uno di quelli,
-tutto ciò che la rete sa produrre sarebbe un polinomio, cioè una curva liscia e
-regolare, e le curve lisce non bastano a descrivere qualunque legame fra
-ingresso e uscita. La ReLU non è un polinomio proprio per questo: ha uno
+somma di potenze come $3x^2-x+5$. Il motivo è che sommare polinomi dà sempre e
+solo altri polinomi, e mai di grado più alto: se l'attivazione si ferma al
+quadrato, tutto ciò che la rete sa produrre si ferma al quadrato, per quanti
+neuroni le si mettano. Allargare la rete aggiunge addendi, non alza il grado, e
+chi resta dentro le parabole non arriverà mai a una curva che parabola non è.
+La ReLU non ha questo limite, perché non è una somma di potenze: ha uno
 spigolo, nel punto in cui smette di azzerare e comincia a lasciar passare, e
-nessuna somma di potenze fa un angolo.
+nessuna potenza, né somma di potenze, fa un angolo.
 
 Se una rete "piatta" e larga sa già imitare tutto, perché impilare tanti strati?
 
@@ -333,9 +335,9 @@ Sulla profondità, invece, le separazioni sono nette e dimostrate. Esistono
 famiglie di funzioni rappresentabili da reti profonde con un numero di neuroni
 *polinomiale* nella profondità, ma che richiedono larghezza *esponenziale* se
 ci si limita a un solo strato {cite}`telgarsky2016benefits`; Eldan e Shamir
-{cite}`eldan2016power` esibiscono una funzione che una rete con **due** strati
+{cite}`eldan2016power` esibiscono una funzione che una rete con due strati
 nascosti rappresenta con un numero di neuroni polinomiale nella dimensione
-dell'ingresso, e che una rete con **uno solo** non riesce ad approssimare oltre
+dell'ingresso, e che una rete con uno solo non riesce ad approssimare oltre
 una certa soglia a meno di renderla esponenzialmente larga. Montúfar e colleghi
 {cite}`montufar2014number` mostrano che il numero di regioni lineari che una
 rete ReLU può generare cresce esponenzialmente con la profondità e solo
@@ -360,7 +362,7 @@ model = nn.Sequential(
     nn.Conv2d(64, 128, 3), nn.ReLU(),  # parti più grandi, oggetti
     nn.AdaptiveAvgPool2d(1),           # media di ogni foglio di risultati
     nn.Flatten(),
-    nn.Linear(128, 10),                # la classe finale (un logit per classe)
+    nn.Linear(128, 10),                # la classe finale (un punteggio per classe)
 )
 ```
 
@@ -370,13 +372,11 @@ numeri arrivano (3, cioè rosso, verde e blu), quanti filtri diversi applicare
 pixel). Ognuno di quei filtri produce un foglio di risultati, e quel foglio ha
 un nome che accompagnerà tutto il capitolo: si chiama **feature map**, ed è la
 mappa che segna punto per punto dove nell'immagine il filtro ha trovato ciò che
-cerca (la sezione seguente mostra come nasce). La riga
-`nn.AdaptiveAvgPool2d(1)` riduce ciascuna di quelle mappe a un numero solo, la
-sua media. L'ultima riga produce dieci numeri, uno per classe: si chiamano
-**logit**, sono punteggi grezzi, e vince il più alto (per trasformarli in
-probabilità serve un ultimo passaggio, la *softmax*, che li schiaccia tutti fra
-zero e uno facendo in modo che sommati diano uno). Ogni `nn.Conv2d` più avanti
-nella pila costruisce feature più astratte a partire da quelle dello strato
+cerca. La riga `nn.AdaptiveAvgPool2d(1)` riduce ciascuna di quelle mappe a un
+numero solo, la sua media. L'ultima riga produce dieci numeri, uno per classe:
+si chiamano **logit**, sono punteggi grezzi, e vince il più alto. Ogni
+`nn.Conv2d` più avanti nella pila costruisce feature più astratte a partire da
+quelle dello strato
 precedente: la stessa scala dai bordi agli oggetti della
 {numref}`fig-gerarchia-feature`, resa in poche righe.
 

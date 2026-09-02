@@ -66,9 +66,10 @@ Uno strato moltiplica una matrice di pesi $n \times n$ per un blocco di
 ingressi $n \times k$, dove $k$ è quante cose si elaborano insieme. Le
 operazioni in virgola mobile sono $2 n^2 k$, e il due ha una ragione: per ogni
 casella del risultato si fanno $n$ moltiplicazioni **e altrettante somme**, ed
-è la convenzione con cui il capitolo sulla GPU conta i FLOP. I byte letti dalla
-memoria sono invece $n^2 b / 8$, con $b$ i bit per peso come nel resto del
-capitolo, e **non dipendono da $k$**, perché i pesi sono gli stessi.
+è la convenzione con cui la {doc}`sezione su GEMM e tensor core
+</GPU/gemm-e-tensor-core>` conta i FLOP. I byte letti dalla memoria sono invece
+$n^2 b / 8$, con $b$ i bit per peso come nel resto del capitolo, e **non
+dipendono da $k$**, perché i pesi sono gli stessi.
 
 Il rapporto fra le due quantità,
 
@@ -80,7 +81,7 @@ $$
 capitolo sulla GPU, e il regime in cui si cade (legati alla banda o legati al
 calcolo) lo decide il confronto fra $I$ e il rapporto fra prestazione di picco
 e banda della macchina. Con pesi in sedici bit si semplifica in $I = k$, che è
-la colonna di destra della tabella qui sotto.
+la colonna di destra della tabella dei conti per byte.
 
 Due cose che $n$ semplificandosi nasconde, e che vale la pena dire. La prima:
 $I$ non dipende dalla larghezza dello strato, ma solo perché si stanno contando
@@ -123,10 +124,11 @@ sta fermo ad aspettare i dati, e avere un processore veloce non serve a niente;
 quando è alta i dati fanno in tempo ad arrivare e il processore lavora.
 
 E adesso il punto. Quando un modello **legge** una domanda, la legge tutta
-insieme: se la domanda è di duecento parole, $k$ vale duecento, e l’ultima riga
-della tabella è il regime in cui ci si trova. Quando **scrive** la risposta, la
-scrive una parola alla volta, perché per scegliere la parola dopo deve aver
-scelto quella prima: $k$ vale **uno**, ed è la prima riga.
+insieme: se la domanda è di duecento parole, le cose insieme sono duecento, e
+l’ultima riga della tabella è il regime in cui ci si trova. Quando **scrive**
+la risposta, la scrive una parola alla volta, perché per scegliere la parola
+dopo deve aver scelto quella prima: le cose insieme sono **una**, ed è la
+prima riga.
 
 Sono la stessa moltiplicazione con lo stesso modello, e stanno ai due estremi
 opposti della tabella. Il rapporto fra le due efficienze è, a meno dei byte
@@ -154,24 +156,25 @@ il libro da capo a ogni pagina. Quel deposito di riassunti si chiama **cache
 delle chiavi e dei valori**, e il libro lo costruisce nel capitolo sui
 Transformer (l’architettura di cui quei modelli sono fatti), perché è lì che si
 capisce che cosa siano chiavi e valori. Non risolve il problema della tabella
-qui sopra: sposta il traffico dai pesi al deposito, che cresce a ogni parola
-scritta.
+dei conti per byte: sposta il traffico dai pesi al deposito, che cresce a ogni
+parola scritta.
 
 **Riempire la riga.** Se scrivere una parola per un solo utente sta nella prima
-riga, scriverla per centoventotto utenti insieme sta nell’ultima: i pesi si
+riga, scriverla per duecentocinquantasei utenti insieme sta nell’ultima: i pesi si
 leggono una volta e servono a tutti. È il motivo per cui un servizio che
-risponde a molti costa, a testa, molto meno di uno che risponde a uno, e il
-{doc}`capitolo su MLOps </MLOps/overview>` lo tratta parlando di come si gestiscono le richieste che
-arrivano insieme e la memoria che ciascuna si porta dietro.
+risponde a molti costa, a testa, molto meno di uno che risponde a uno, e la
+{doc}`sezione su LLMOps </MLOps/llmops>` lo tratta parlando di come si
+gestiscono le richieste che arrivano insieme e la memoria che ciascuna si
+porta dietro.
 
 **Indovinare avanti e farsi correggere.** Un modello piccolo butta giù qualche
 parola di seguito, tirando a indovinare; il modello grande le controlla **tutte
-in una passata sola**, che è una passata da $k$ uguale a quanto è lunga la
-bozza invece che a uno. Se la bozza era giusta si sono scritte più parole al
+in una passata sola**, cioè su tutta la bozza insieme invece che su una
+parola sola. Se la bozza era giusta si sono scritte più parole al
 prezzo di una; se era sbagliata si è buttato via il tempo del modello piccolo,
-che è poco. È la **decodifica speculativa**, e sta nel {doc}`capitolo su MLOps </MLOps/overview>`, nella
-sezione sugli LLM in produzione, con la figura che mostra la bozza accettata e
-il punto in cui il modello grande la taglia.
+che è poco. È la **decodifica speculativa**, e sta nella {doc}`sezione su
+LLMOps </MLOps/llmops>`, con la figura che mostra la bozza accettata e il punto
+in cui il modello grande la taglia.
 
 `````{tab} Elementare
 
@@ -199,38 +202,37 @@ il punto in cui il modello grande la taglia.
 
 ```{admonition} Da ricordare
 :class: important
-- Per uno strato $n \times n$ applicato a un blocco $n \times k$ i FLOP sono
-  $2 n^2 k$ (moltiplicazioni **e** somme, come conta il capitolo sulla GPU) e i
-  byte dei pesi $n^2 b/8$: l’**intensità aritmetica** vale $16k/b$, cioè $k$ a
-  sedici bit. Non dipende da $n$ solo finché si trascurano i byte di ingressi e
-  uscite, il che vale per $k \ll n$.
-- La generazione autoregressiva impone $k = 1$ per passo, quindi è
-  strutturalmente **legata alla banda** (a sedici bit $I = 1$, contro un
+- L’**intensità aritmetica** di uno strato $n \times n$ su un blocco
+  $n \times k$ vale $16k/b$, cioè $k$ a sedici bit: i conti crescono con $k$, i
+  byte dei pesi no. Non dipende da $n$ solo finché si trascurano i byte di
+  ingressi e uscite, il che vale per $k \ll n$.
+- Scrivere una parola alla volta (la generazione **autoregressiva**) impone
+  $k = 1$ per passo, quindi è strutturalmente **legata alla banda** (a sedici
+  bit $I = 1$, contro un
   ginocchio che sugli acceleratori sta nell’ordine delle centinaia); l’elaborazione del testo in ingresso
   ha $k$ pari alla lunghezza della sequenza ed è legata al calcolo. Sono lo
   stesso modello nei due regimi opposti, ed è la ragione per cui le due fasi si
   misurano con due grandezze separate.
-- Le tre leve a modello invariato agiscono tutte sullo stesso denominatore: la
+- Le tre mosse a modello invariato agiscono tutte sullo stesso denominatore: la
   **cache delle chiavi e dei valori** elimina il ricalcolo (e sposta il costo
   sulla memoria della cache, che cresce con il contesto), il **raggruppamento
   delle richieste** alza $k$ ammortizzando la lettura dei pesi, la **decodifica
   speculativa** alza $k$ verificando in parallelo una bozza prodotta da un
   modello più economico, senza cambiare la distribuzione di uscita.
 - Nessuna delle tre appartiene a questo capitolo, perché nessuna cambia il
-  modello. La cache la costruisce il {doc}`capitolo sui Transformer </Transformers/overview>`, nella sezione
-  sui grandi modelli linguistici; il raggruppamento delle richieste e la
-  decodifica speculativa il capitolo su MLOps, nella sezione sugli LLM in
-  produzione; e il modo di misurare separatamente i due regimi è ancora in
-  MLOps, nella sezione sulle metriche di servizio.
+  modello. La cache la costruisce la {doc}`sezione sui grandi modelli
+  linguistici </Transformers/llm>`; il raggruppamento delle richieste e la
+  decodifica speculativa la sezione su LLMOps; e il modo di misurare
+  separatamente i due regimi la sezione sulle metriche di servizio, tutte e due
+  in MLOps.
 ```
 
 `````
 
-Il capitolo si chiude qui, e la cosa da portarsi dietro è che ognuna delle tre
-leve **si paga**, più dell’elenco delle tecniche: e che il prezzo si conosce
-solo misurandolo sul proprio modello e sui propri dati. Arrotondare a otto bit
-costa l’uno per cento e a quattro molto di più; potare novanta pesi su cento
-costa un punto di accuratezza e non regala un millisecondo; imitare un maestro
-costa tutti gli errori del maestro. Nessuna delle tre è gratis, e il prezzo
-cambia da un modello all'altro: chi le adotta senza misurarlo sul proprio sta
-scegliendo alla cieca.
+Le tre leve **si pagano**, ed è la cosa da portarsi dietro più dell’elenco
+delle tecniche. Arrotondare a otto bit costa l’uno per cento e a quattro molto
+di più; potare novanta pesi su cento costa un punto di accuratezza e, sul conto
+che quasi tutti eseguono, non regala un millisecondo; imitare un maestro costa
+tutti gli errori del maestro. Il
+prezzo cambia da un modello all'altro, e chi ne adotta una senza misurarlo sul
+proprio sta scegliendo alla cieca.

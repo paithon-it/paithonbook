@@ -92,7 +92,9 @@ def discesa():
         cambiato = False
         for i in rng.permutation(n):
             campo = W[i] @ s
-            nuovo = np.sign(campo) if campo != 0 else s[i]
+            # la tolleranza, e non `campo != 0`, per la ragione scritta nel
+            # blocco del capitolo: i legami sono multipli di 1/25
+            nuovo = np.sign(campo) if abs(campo) > 1e-9 else s[i]
             if nuovo != s[i]:
                 # ΔE = -2|h_i|, la formula del capitolo: la si verifica qui,
                 # dove il campo locale è ancora quello di prima del ribaltamento
@@ -263,8 +265,12 @@ def costruisci() -> Figura:
             titolo = "stato corrotto"
             sotto = f"{QUANTI} pixel su {n} invertiti: la T non si legge più"
         elif k == passi - 1:
+            # l'ultimo aggiornamento e' anche un capovolgimento: se qui si
+            # scrivesse solo «punto fisso» i cambi etichettati sarebbero cinque,
+            # e il capitolo dice che sono sei
             titolo = f"aggiornamento {k}: punto fisso"
-            sotto = "nessun neurone vuole più cambiare, la T è tornata"
+            sotto = ("l'ultimo neurone cambia segno, E scende di "
+                     f"{numero(energie[k - 1] - energie[k])}")
         else:
             titolo = f"aggiornamento {k}"
             sotto = ("un neurone cambia segno, E scende di "

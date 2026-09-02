@@ -82,7 +82,8 @@ nelle regole di aggiornamento di Monte Carlo e del Q-learning è la ricompensa
 Confondere le due vuol dire credere che l'agente conosca una media che invece
 deve stimare.
 
-Infine $\gamma \in [0,1]$ è il fattore di sconto (fra poco). Le transizioni
+Infine $\gamma \in [0,1]$ è il fattore di sconto, che la sezione sul ritorno
+scontato riprende per esteso. Le transizioni
 **possono essere** stocastiche, cioè la stessa azione può condurre in stati
 diversi; il caso deterministico, come l'MDP in miniatura di qualche riga più
 avanti, è il caso particolare in cui $P(s'\mid s,a)$ vale $1$ su un solo stato.
@@ -117,9 +118,10 @@ allora l'unica cosa che resta, e cioè si ricorda le carte già passate e da lì
 si fa un'idea di quello che può esserci sotto («con quelle uscite, un asso ce
 l'ha una volta su tre»). Non una situazione sola, quindi, ma tutte quelle
 possibili con accanto quanto sono probabili: si gioca lo stesso, il conto è
-molto più lungo, e la certezza non arriva mai. Il rimedio economico è guardare
-non l'ultimo istante ma gli ultimi cinque o sei: da una fotografia sola non si
-capisce dove stia andando una palla, da sei fotogrammi di fila sì.
+molto più lungo, e la certezza non arriva mai. Dove invece a mancare è solo il
+movimento, un rimedio economico c'è, e non chiede tutto questo: si guarda non
+l'ultimo istante ma gli ultimi cinque o sei, perché da una fotografia sola non
+si capisce dove stia andando una palla, da sei fotogrammi di fila sì.
 
 `````
 
@@ -165,8 +167,7 @@ il resto.
 
 Sapere in quali stati ci si può trovare non dice ancora *cosa fare*. La regola
 di comportamento dell'agente si chiama **policy**, che è la parola inglese per
-«politica» e in questo libro si alterna con «strategia»: le tre parole indicano
-la stessa cosa.
+«politica»; e con «strategia» fanno tre parole per la stessa cosa.
 
 `````{tab} Elementare
 
@@ -292,14 +293,13 @@ stato-azione* $Q$: come sopra, ma fissando anche l'azione. $Q$ è spesso più
 utile in pratica, perché confrontando le azioni in uno stato mi dice
 direttamente quale conviene.
 
-Una precisazione che serve subito, perché altrimenti le ricette qui sotto
-sembrano tirare fuori un'idea dal nulla. «Quanto mi aspetto di raccogliere»
-dipende da **come gioco**: la stessa casella vale poco per chi si muove a caso
-e molto per chi si muove bene, quindi non c'è un valore solo, ce n'è uno per
-ogni strategia. In questo capitolo, quando non si dice niente, si intende il
-valore **giocando al meglio**, ed è quello che le due ricette qui sotto
-calcolano; dove invece interessa il valore di una strategia particolare, lo
-diremo.
+Una precisazione che serve subito, perché altrimenti le due ricette che vengono
+adesso sembrano tirare fuori un'idea dal nulla. «Quanto mi aspetto di
+raccogliere» dipende da **come gioco**: la stessa casella vale poco per chi si
+muove a caso e molto per chi si muove bene, quindi non c'è un valore solo, ce
+n'è uno per ogni strategia. Nelle due ricette che vengono adesso, quando non si
+dice niente, si intende il valore **giocando al meglio**; dove invece interessa
+il valore di una strategia particolare, lo diremo.
 
 I due numeri, del resto, sono legati proprio dalla strategia: quanto vale una
 casella è la media di quanto valgono le mosse che partono da lì, pesata per
@@ -397,7 +397,7 @@ Sono sistemi di equazioni lineari: relazioni di consistenza fra il valore
 di uno stato (o di una coppia stato-azione) e quello dei successori. Da qui
 partono tutti gli algoritmi
 che incontreremo: a cominciare dalla *value iteration* e dalla *policy
-iteration* qui sotto, fino al *Q-learning* con cui il capitolo si chiude.
+iteration* che vengono adesso, fino al *Q-learning*.
 
 `````
 
@@ -469,23 +469,21 @@ massimo.
 ## La value iteration all'opera
 
 Facciamo davvero i conti, sull'MDP in miniatura della {numref}`fig-mdp` e con
-uno sconto di $0{,}9$. In quel mondo ogni mossa porta sempre nella stessa
-casella (si dice che le transizioni sono **deterministiche**: la stessa mossa fa
-sempre la stessa cosa, e non c'è nessuna media da fare fra esiti diversi),
-quindi la ricetta si legge senza complicazioni: "quanto
-paga la mossa, più $0{,}9$ volte il valore della casella dove si finisce", e si
-tiene la mossa che rende di più. L'obiettivo $s_2$ vale sempre $0$, perché lì la
+uno sconto di $0{,}9$. Le transizioni sono **deterministiche**: la stessa mossa
+porta sempre nella stessa casella, e non c'è nessuna media da fare fra esiti
+diversi. La ricetta si legge allora senza complicazioni: "quanto paga la mossa,
+più $0{,}9$ volte il valore della casella dove si finisce", e si tiene la mossa
+che rende di più. L'obiettivo $s_2$ vale sempre $0$, perché lì la
 partita è finita e non c'è più niente da raccogliere; e si comincia scrivendo
 $0$ anche sulle altre due caselle, tanto per avere un punto di partenza.
 
 `````{tab} Elementare
 
 Vale la regola di prima: dentro un giro si leggono i numeri con cui il giro è
-cominciato.
+cominciato, e quindi l'ordine in cui si visitano le caselle non conta.
 
-**Primo giro.** Cominciamo da $s_1$, la casella accanto all'obiettivo. L'ordine
-non conta, dato che i numeri li leggiamo tutti dalla scheda vecchia: comincia da
-$s_0$ e i risultati sono gli stessi. Scendere paga $10$ subito e porta
+**Primo giro.** Cominciamo da $s_1$, la casella accanto all'obiettivo. Scendere
+paga $10$ subito e porta
 nell'obiettivo, che vale $0$: in tutto $10 + 0{,}9 \times 0 = 10$. Tornare
 indietro costa $1$ e porta in $s_0$, che per adesso vale $0$: in tutto
 $-1 + 0{,}9 \times 0 = -1$. Vince scendere, e su $s_1$ scriviamo $10$. Passiamo
@@ -509,7 +507,7 @@ lo stesso numero non è un mistero: le due mosse costano tutte e due $1$ punto e
 finiscono tutte e due in una casella che vale $9$, quindi il conto è
 letteralmente lo stesso. I numeri si sono fermati, e allora abbiamo finito: è
 questo che si intende con «finché non si assestano», e infatti nella tabella
-qui sotto le ultime due righe sono uguali.
+le ultime due righe sono uguali.
 
 | dopo il giro | $s_0$ vale | $s_1$ vale | $s_2$ vale |
 |:-------------|:----------:|:----------:|:----------:|
@@ -555,8 +553,8 @@ vinto (da $s_0$ salire, da $s_1$ scendere): è lo stesso "colpo d'occhio" di
 prima, solo che adesso è un calcolo che un computer ripete identico su un
 milione di caselle.
 
-Un milione, però, è un tetto, non un vanto, e conviene fissarlo qui perché è la
-ragione per cui esiste il capitolo successivo. La tabella si può scrivere
+Un milione, però, è un tetto e non un vanto, ed è la ragione per cui esiste il
+capitolo successivo. La tabella si può scrivere
 finché le situazioni si possono elencare, e ci sono giochi comunissimi in cui
 non si possono.
 
@@ -569,18 +567,18 @@ matematico John Tromp e dai suoi collaboratori: il Go nel 2016, dove il numero
 dove è una stima.
 
 E poi c'è il caso che chiude il discorso. Prendiamo un solo fotogramma di un
-videogioco Atari, ridotto come lo riducevano quegli agenti: niente colori, solo
-sfumature di grigio, e una griglia di $84$ punti per $84$ (una misura scelta da
-loro, abbastanza piccola da essere maneggiabile e abbastanza grande da vederci
-ancora qualcosa). Sono $7056$ punti, e ognuno può essere in uno di $256$
-grigi, dal nero al bianco. Le combinazioni si contano
-moltiplicando: due punti da $256$ grigi danno $256 \times 256$ immagini
-diverse, tre punti $256 \times 256 \times 256$, e settemila punti danno $256$
-moltiplicato per sé stesso settemila volte, che si scrive $256^{7056}$. È un
-numero di quasi diciassettemila cifre; per contare tutti gli atomi
-dell'universo osservabile ne bastano un'ottantina. Non è che su quei mondi la
-tabella sia lenta: non c'è nessun universo in cui la si possa scrivere. Un
-milione di stati è poco.
+videogioco Atari, ridotto come lo riducevano gli agenti che imparavano a
+giocare guardando lo schermo: niente colori, solo sfumature di grigio, e una
+griglia di $84$ punti per $84$ (una misura scelta da loro, abbastanza piccola
+da essere maneggiabile e abbastanza grande da vederci ancora qualcosa). Sono
+$7056$ punti, e ognuno può essere in uno di $256$ grigi, dal nero al bianco.
+Le combinazioni si contano moltiplicando: due punti da $256$ grigi danno
+$256 \times 256$ immagini diverse, tre punti $256 \times 256 \times 256$, e
+settemila punti danno $256$ moltiplicato per sé stesso settemila volte, che si
+scrive $256^{7056}$. È un numero di quasi diciassettemila cifre; per contare
+tutti gli atomi dell'universo osservabile ne bastano un'ottantina. Non è che
+su quei mondi la tabella sia lenta: non c'è nessun universo in cui la si possa
+scrivere. Un milione di stati è poco.
 
 Il premio, si è visto, non resta fermo dov'è: risale il mondo una casella per
 giro, come un'onda che parte dal traguardo e va all'indietro. Su tre stati
@@ -595,8 +593,9 @@ dentro le caselle si leggono da soli: la casella da cui basta una mossa per
 arrivare vale $1{,}00$, cioè il premio pieno, e ogni passo indietro lo
 moltiplica per $0{,}9$, perché lo stesso premio arriva più tardi: $0{,}90$, poi
 $0{,}81$, e così via. Dopo sei giri i numeri si fermano, e sei sono esattamente
-i passi che separano dall'obiettivo la casella più lontana, quella in basso a
-sinistra: si contino sul disegno, aggirando i muri, e tornano.
+i passi che separano dall'obiettivo le due caselle più lontane: quella in basso
+a sinistra e quella subito sotto il muro più in alto. Si contino sul disegno,
+aggirando i muri, e tornano.
 
 ```{figure} ../figures/iterazione-valore.gif
 :name: fig-iterazione-valore

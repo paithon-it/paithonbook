@@ -11,11 +11,10 @@ strette di mano di distanza.
 
 Questo passaparola a giri è, alla lettera, il modo in cui una rete neurale su
 grafo elabora l'informazione. La sezione «Il mondo come grafo» ha messo il dato
-in forma di tabelle, e per seguire questa sezione basta ricordare che cosa
-dicono: **chi è collegato a chi** e **che cosa c'è scritto su ogni nodo**. Se i
-nomi propri sono scivolati via non fa niente; eccoli comunque, da lasciar
-passare senza fermarsi: la matrice di adiacenza $\mathbf{A}$ (chi è collegato a
-chi), la matrice delle feature dei nodi $\mathbf{X}$ (le file di numeri dei
+in forma di tabelle, e per seguire queste pagine basta ricordare che cosa
+dicono: **chi è collegato a chi** e **che cosa c'è scritto su ogni nodo**. I
+nomi propri sono quattro: la matrice di adiacenza $\mathbf{A}$ (chi è collegato
+a chi), la matrice delle feature dei nodi $\mathbf{X}$ (le file di numeri dei
 nodi), la matrice diagonale dei gradi $\mathbf{D}$ (quanti vicini ha ciascuno) e
 la versione con i cappi $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$ (la
 prima, con ogni nodo dichiarato vicino di sé stesso).
@@ -60,7 +59,8 @@ i *messaggi*). Poi riassume, e siccome i bigliettini sono file di numeri
 anni, gli sport con gli sport. Il riassunto non deve dipendere dall'ordine in
 cui arrivano i bigliettini, perché tra amici non c'è un «primo» e un «ultimo»,
 e la **somma** va bene proprio per questo: cambi l'ordine degli addendi e il
-totale non cambia. Va bene anche la **media**. Infine aggiorna la propria
+totale non cambia. Vanno bene anche la **media** e il **massimo**, cioè il più
+grande dei numeri arrivati in quella casella. Infine aggiorna la propria
 scheda, mettendo insieme il riassunto degli amici e quello che già sapeva di
 sé.
 
@@ -100,8 +100,8 @@ massimo) che produce il messaggio aggregato $\mathbf{m}_v^{(k)}$; e $U_k$ è la
 **funzione di aggiornamento** che fonde lo stato precedente con
 $\mathbf{m}_v^{(k)}$.
 
-Vale la pena dire di che oggetti si parla, perché è il punto su cui la formula
-si legge o non si legge: sono tutti **vettori**. Lo stato è
+Di che oggetti si parla è il punto su cui la formula si legge o non si legge:
+sono tutti **vettori**. Lo stato è
 $\mathbf{h}_v^{(k)} \in \mathbb{R}^{d_k}$, il messaggio è
 $\mathbf{m}_v^{(k)} \in \mathbb{R}^{d_m}$, e quindi
 $M_k \colon \mathbb{R}^{d_{k-1}} \times \mathbb{R}^{d_{k-1}} \times
@@ -224,7 +224,7 @@ normalizzata.
 
 Vale più di mille formule vedere i conti tornare, e conviene farlo subito, su
 un grafo piccolissimo: quattro nodi in fila
-($1 - 2 - 3 - 4$), ciascuno con **un solo numero** sulla scheda invece di una
+(1–2–3–4), ciascuno con **un solo numero** sulla scheda invece di una
 fila, cioè $\mathbf{X} = (1,\, 2,\, 3,\, 4)^\top$. (La $\top$ in alto vuol dire
 solo che quei quattro numeri vanno letti in colonna, uno per nodo, invece che
 in riga: è una convenzione di scrittura e non cambia niente.)
@@ -235,18 +235,14 @@ $\sigma$ uguale all'identità: due modi di dire «per stavolta, lascia le cose
 come stanno»), così quello che si vede è l'effetto della sola raccolta dei
 bigliettini.
 
-Prima di leggere le tabelle conviene sapere che cosa si sta per vedere, perché
-in due righe si dice tutto. Ogni collegamento porta un **peso**, e il peso è
-tanto più piccolo quanti più vicini hanno i due nodi che collega, contando
-anche il cappio che ciascuno ha verso sé stesso. Qui i pesi sono tre: $0{,}500$
-sui due cappi dei nodi di bordo, che di vicini ne hanno uno solo; $0{,}408$ sui
-due archi che uniscono un nodo di bordo a uno interno; $0{,}333$ sull'arco fra
-i due nodi interni e sui loro cappi. Il nuovo valore di un nodo è la somma dei
-valori dei vicini (e del proprio), ciascuno moltiplicato per il peso del
-collegamento: da lì in poi è una moltiplicazione e un'addizione. Le tabelle qui
-sotto sono il conto esatto di quei pesi; chi non ha voglia di rifarlo può
-saltare alla riga dei quattro risultati e non perde niente, perché la morale
-sta lì.
+Ogni collegamento porta un **peso**, e il peso è tanto più piccolo quanti più
+vicini hanno i due nodi che collega, contando anche il cappio che ciascuno ha
+verso sé stesso. Qui i pesi sono tre: $0{,}500$ sui due cappi dei nodi di
+bordo, che di vicini ne hanno uno solo; $0{,}408$ sui due archi che uniscono un
+nodo di bordo a uno interno; $0{,}333$ sull'arco fra i due nodi interni e sui
+loro cappi. Il nuovo valore di un nodo è la somma dei valori dei vicini (e del
+proprio), ciascuno moltiplicato per il peso del collegamento: da lì in poi è
+una moltiplicazione e un'addizione.
 
 La matrice di adiacenza e quella con i cappi
 ($\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$) sono
@@ -285,7 +281,8 @@ dove l'esponente $-1/2$ vuol dire soltanto «uno diviso la radice quadrata»:
 $2^{-1/2} = 1/\sqrt{2} \approx 0{,}707$. Quei quattro numeri, uno per nodo,
 sono la porzione di peso che ciascuno mette in ogni suo collegamento, e il peso
 dell'arco è il prodotto delle porzioni delle due estremità: $0{,}707 \cdot
-0{,}707 = 0{,}5$ fra due nodi di bordo, $0{,}707 \cdot 0{,}577 \approx 0{,}408$
+0{,}707 = 0{,}5$ sul cappio di un nodo di bordo, $0{,}707 \cdot 0{,}577 \approx
+0{,}408$
 fra un bordo e un interno, $0{,}577 \cdot 0{,}577 \approx 0{,}333$ fra due
 interni. La tabella dei pesi così ottenuta si chiama **adiacenza
 normalizzata**, e si scrive $\hat{\mathbf{A}}$, la $\mathbf{A}$ col cappello:
@@ -388,8 +385,8 @@ $\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}\tilde{\mathbf{D}
 in cui il peso dell'arco $(v,u)$ è $1/\sqrt{\tilde{d}_v\,\tilde{d}_u}$: si
 sconta il grado di *entrambi* gli estremi.
 
-Va detto subito che cosa **non** distingue le due, perché è l'argomento che
-viene spontaneo e non regge. Non è la **scala**: le due matrici sono simili,
+L'argomento che viene spontaneo, e che non regge, è la **scala**. Le due
+matrici sono simili,
 
 $$
 \tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}} =
@@ -452,8 +449,9 @@ alte e tiene le basse.
 Su un grafo la stessa parola ha un senso preciso, e basta cambiare che cosa si
 guarda. Una configurazione di numeri sui nodi è a **bassa frequenza** se nodi
 collegati portano valori simili, ad **alta frequenza** se lungo ogni arco il
-valore salta: al minimo tutti lo stesso numero, al massimo una scacchiera, dove
-ogni vicino ha il segno opposto.
+valore salta: al minimo un valore che non salta lungo nessun arco, se non per
+quanti vicini ha ciascuno; al massimo una scacchiera, dove ogni vicino ha il
+segno opposto.
 
 Queste configurazioni, dalla più liscia alla più a scacchiera, hanno un nome
 proprio: si chiamano gli **autovettori del laplaciano** del grafo. È un nome da
@@ -501,8 +499,10 @@ $$
 $$
 
 dove la somma percorre ogni arco non diretto una volta sola. È una somma di
-quadrati di **differenze lungo gli archi**: un autovettore con $\lambda$
-piccolo varia poco fra nodi collegati, uno con $\lambda$ grande alterna. Su un
+quadrati di **differenze lungo gli archi**, e la differenza è fra i valori
+*divisi per la radice del grado*: in un autovettore con $\lambda$ piccolo è
+$x_u/\sqrt{d_u}$ a variare poco fra nodi collegati, in uno con $\lambda$ grande
+ad alternare. Su un
 autovettore di norma unitaria questa quantità *è* l'autovalore stesso, perché
 coincide con il **quoziente di Rayleigh**
 $R(\mathbf{x}) = \mathbf{x}^\top \mathbf{L} \mathbf{x} / \mathbf{x}^\top \mathbf{x}$:
@@ -539,8 +539,8 @@ con $T_k(x) = 2x\,T_{k-1}(x) - T_{k-2}(x)$, $T_0 = 1$, $T_1 = x$. Il guadagno è
 doppio. Primo, poiché
 $\mathbf{U} f(\boldsymbol{\Lambda}) \mathbf{U}^\top = f(\mathbf{L})$ per
 qualunque polinomio $f$, gli autovettori spariscono dal conto: restano prodotti
-fra la matrice sparsa $\mathbf{L}$ e un vettore, cioè $O(|E|)$ invece di
-$O(N^3)$. Secondo, una potenza $\mathbf{L}^k$ è non nulla in $(u,v)$ solo se
+fra la matrice sparsa $\mathbf{L}$ e un vettore, uno per grado, cioè $O(K|E|)$
+invece di $O(N^3)$. Secondo, una potenza $\mathbf{L}^k$ è non nulla in $(u,v)$ solo se
 esiste un cammino di lunghezza $\le k$ fra $u$ e $v$: un polinomio di grado $K$
 è quindi automaticamente **$K$-localizzato**, tocca soltanto i vicini entro $K$
 salti. È ChebNet {cite}`defferrard2016convolutional`, ed è già una GNN: la
@@ -638,20 +638,21 @@ davvero, perché un batch di molecole in PyTorch Geometric *è* un unico grafo
 sconnesso, una componente per molecola, e l'oversmoothing non le mescola fra
 loro.)
 
-Sulla catena di quattro nodi, con
-$\mathbf{X} = (1,2,3,4)^\top$, i quattro autovalori di $\hat{\mathbf{A}}$
-valgono $1$, $0{,}729$, $0{,}167$ e $-0{,}229$. Applicando $\hat{\mathbf{A}}$
-venti volte a $\mathbf{X}$, il rapporto fra il valore di ogni nodo e la radice
-del suo grado con cappio vale $1{,}5714$, $1{,}5724$, $1{,}5739$, $1{,}5748$:
-i quattro nodi, che partivano da valori distinti, coincidono ormai nelle prime
-due cifre decimali. Il divario fra il più alto e il più basso è $3{,}4 \cdot
-10^{-3}$ e si stringe come la potenza $K$-esima del secondo autovalore,
-$0{,}729^K$: a cinquanta applicazioni vale $2{,}6 \cdot 10^{-7}$ e a cento
-$3{,}5 \cdot 10^{-14}$. Anche lì i quattro numeri restano diversi fra loro (in doppia precisione li separano ancora un centinaio scarso di passi
-elementari, il gradino minimo fra due numeri rappresentabili, e quanti
-esattamente dipende dall'ordine in cui si fanno le moltiplicazioni), ma è una
-differenza che nessun modello può più usare: al passo successivo della
-rete, moltiplicata per pesi dell'ordine dell'unità, resta quello che era.
+Sulla catena di quattro nodi, con $\mathbf{X} = (1,2,3,4)^\top$, i quattro
+autovalori di $\hat{\mathbf{A}}$ valgono $1$, $0{,}729$, $0{,}167$ e
+$-0{,}229$. Applicando $\hat{\mathbf{A}}$ venti volte a $\mathbf{X}$, il
+rapporto fra il valore di ogni nodo e la radice del suo grado con cappio vale
+$1{,}5714$, $1{,}5724$, $1{,}5739$, $1{,}5748$: i quattro nodi, che partivano
+da valori distinti, coincidono ormai nelle prime due cifre decimali. Il
+divario fra il più alto e il più basso è $3{,}4 \cdot 10^{-3}$ e si stringe
+come la potenza $K$-esima del secondo autovalore, $0{,}729^K$: a cinquanta
+applicazioni vale $2{,}6 \cdot 10^{-7}$ e a cento $3{,}5 \cdot 10^{-14}$.
+Anche lì i quattro numeri restano diversi fra loro (in doppia precisione li
+separano ancora un centinaio e mezzo di passi elementari, il gradino minimo
+fra due numeri rappresentabili, e quanti esattamente dipende dall'ordine in
+cui si fanno le moltiplicazioni), ma è una differenza che nessun modello può
+più usare: al passo successivo della rete, moltiplicata per pesi dell'ordine
+dell'unità, resta quello che era.
 
 A rigore l'argomento vale per l'operatore lineare $\hat{\mathbf{A}}^K$, cioè
 per la GCN privata di $\mathbf{W}$ e della non linearità. Nella rete completa i
@@ -670,6 +671,39 @@ smussa le differenze (in gergo un
 nessun errore di programmazione da andare a cercare. C'è da decidere quanti
 strati mettere, oppure da cambiare filtro.
 
+Il conto sta in dodici righe, e stampa insieme i quattro valori giro dopo giro,
+i quattro autovalori e il divario che si consuma.
+
+```python
+import numpy as np
+
+# la catena 1–2–3–4: adiacenza, cappi, gradi
+A = np.array([[0., 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]])
+A_tilde = A + np.eye(4)
+d = A_tilde.sum(1)                          # gradi col cappio: [2 3 3 2]
+A_hat = A_tilde / np.sqrt(np.outer(d, d))   # normalizzazione simmetrica
+
+X = np.array([1., 2., 3., 4.])
+for giri in (0, 1, 5, 20):
+    H = np.linalg.matrix_power(A_hat, giri) @ X
+    print(f"{giri:>2} giri: " + "  ".join(f"{v:.2f}" for v in H))
+
+print("autovalori:", np.round(np.sort(np.linalg.eigvalsh(A_hat))[::-1], 3))
+r = (np.linalg.matrix_power(A_hat, 20) @ X) / np.sqrt(d)
+print("valore diviso la radice del grado:", np.round(r, 4))
+print(f"divario fra il più alto e il più basso: {r.max() - r.min():.1e}")
+```
+
+```text
+ 0 giri: 1.00  2.00  3.00  4.00
+ 1 giri: 1.32  2.07  3.30  3.22
+ 5 giri: 1.95  2.57  2.88  2.50
+20 giri: 2.22  2.72  2.73  2.23
+autovalori: [ 1.     0.729  0.167 -0.229]
+valore diviso la radice del grado: [1.5714 1.5724 1.5739 1.5748]
+divario fra il più alto e il più basso: 3.4e-03
+```
+
 ## Impilare gli strati: il campo recettivo a $K$ salti
 
 Come vada a finire se si esagera lo sappiamo già. Resta da dire perché,
@@ -679,7 +713,7 @@ appunto quando gli strati sono più d'uno.
 
 `````{tab} Elementare
 
-Nella catena $1 - 2 - 3 - 4$ il nodo 1 ha un vicino solo, il nodo 2, e al primo
+Nella catena 1–2–3–4 il nodo 1 ha un vicino solo, il nodo 2, e al primo
 giro parla soltanto con lui. Ma nello stesso giro anche il nodo 2 ha parlato col
 nodo 3. Così, al **secondo** giro, quando
 il nodo 1 riascolta il nodo 2, dentro il nodo 2 c'è già un pezzo di nodo 3.
@@ -762,7 +796,7 @@ gioca a scacchi anche lui.
 
 Il trucco è che, pur pagando solo gli errori sui 140 articoli di cui sappiamo
 la risposta, per rispondere su quei 140 la rete ha dovuto far girare
-l'informazione su **tutto** il grafo. Aggiustandosi per i 140, quindi, migliora
+l'informazione su tutto il grafo. Aggiustandosi per i 140, quindi, migliora
 la fila di numeri di tutti: anche quella degli altri articoli, più di
 duemilacinquecento, su cui non le abbiamo mai detto se aveva ragione. Un
 apprendimento che parte da poche
@@ -781,7 +815,7 @@ $$
 \mathbf{Z} = \hat{\mathbf{A}}\,\sigma\!\big(\hat{\mathbf{A}}\,\mathbf{X}\,\mathbf{W}^{(0)}\big)\,\mathbf{W}^{(1)},
 $$
 
-e la loss è la cross-entropia calcolata **solo** sui nodi etichettati:
+e la loss è la cross-entropia calcolata sui soli nodi etichettati:
 
 $$
 \mathcal{L} = -\sum_{v \in \mathcal{V}_{\text{train}}}
@@ -793,8 +827,8 @@ $$
 dove $y_{vc}$ è l'etichetta one-hot del nodo $v$ per la classe $c$ e $C$ il
 numero di classi. Il punto sottile è che $\mathbf{z}_v$ dipende, tramite
 $\hat{\mathbf{A}}$, dalle feature dell'intero vicinato a due salti: il
-gradiente di $\mathcal{L}$ fluisce quindi indietro anche attraverso nodi
-**non** etichettati, che partecipano all'addestramento pur senza comparire
+gradiente di $\mathcal{L}$ fluisce quindi indietro anche attraverso nodi non
+etichettati, che partecipano all'addestramento pur senza comparire
 nella somma. Nel loro articolo Kipf e Welling riportano su Cora l’$81{,}5\%$ di
 accuratezza contro il $75{,}7\%$ del miglior metodo che confrontano: quel salto,
 ottenuto con appena due strati e $140$ nodi etichettati, è la ragione per cui la
@@ -803,11 +837,6 @@ GCN si è imposta.
 `````
 
 ## Uno strato GCN in PyTorch
-
-Quel che resta di questa sezione è per chi programma e vuole vedere la regola
-tradotta in istruzioni. Non c'è nessuna idea nuova, solo la stessa scritta in
-un'altra lingua: chi non programma può saltare i tre riquadri di codice e
-riprendere dall'ultimo paragrafo, che è il ponte verso la sezione seguente.
 
 Tradurre la regola
 $\mathbf{H}^{(l+1)} = \sigma(\hat{\mathbf{A}}\,\mathbf{H}^{(l)}\,\mathbf{W}^{(l)})$
@@ -945,7 +974,7 @@ porta scritto sopra un verbo.
   frequenza se nodi collegati portano valori simili, e gli autovalori del
   laplaciano le misurano. Una convoluzione spettrale costa $O(N^3)$; troncarla
   a un polinomio di Čebyšëv di grado $K$ la rende sparsa e **$K$-localizzata**,
-  e il caso $K=1$ con $\lambda_{\max}\approx 2$ **è** la GCN.
+  e il caso $K=1$ con $\lambda_{\max}\approx 2$ è la GCN.
 - Impilare $K$ strati dà a ogni nodo un **campo recettivo a $K$ salti**,
   l'esatto analogo della profondità nelle CNN. Ma uno strato GCN è un **filtro
   passa-basso**, e applicarlo molte volte lascia sopravvivere solo

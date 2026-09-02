@@ -62,13 +62,14 @@ campione (il *codebook*), e ogni pezzetto di segnale, che l'encoder ha già
 ridotto a una fila di numeri, viene sostituito dal campione del catalogo che gli
 somiglia di più. Di quel pezzetto non si conserva la fila: si conserva il suo
 **numero di catalogo**, e quel numero è il token. Il gesto si chiama
-**quantizzazione vettoriale**, ed è quello del VQ-VAE {cite}`oord2017neural`, le
-cui prime due lettere stanno proprio per questo.
+**quantizzazione vettoriale** (in inglese *vector quantization*), ed è quello
+del VQ-VAE {cite}`oord2017neural`, le cui prime due lettere stanno proprio per
+questo.
 
-Non è un attrezzo dei soli pixel: il capitolo sull'audio lo rimonterà tal quale
-per il suono, nella sezione sui **codec neurali**, perché là il problema avrà la
-stessa forma. Un'onda è continua, e un alfabeto per il suono in natura non
-esiste: va costruito.
+Non è un attrezzo dei soli pixel: il {doc}`capitolo sull'audio
+</Audio/overview>` lo rimonterà tal quale per il suono, nella sezione sui
+**codec neurali**, perché là il problema avrà la stessa forma. Un'onda è
+continua, e un alfabeto per il suono in natura non esiste: va costruito.
 
 Sui pixel il gesto è tutto qui: comprimere, arrotondare al prototipo più
 vicino, tenere l'indice.
@@ -80,7 +81,9 @@ vicino, tenere l'indice.
 
 Da grandezza continua ad alfabeto. L'arrotondamento al prototipo più vicino è
 tutto il trucco: perde qualcosa, ma trasforma un'immagine in una sequenza di
-numeri interi, cioè in qualcosa che un modello di linguaggio sa leggere.
+numeri interi, cioè in qualcosa che un modello di linguaggio sa leggere. La
+freccia tratteggiata è il modo con cui l'addestramento aggira l'arrotondamento,
+facendo finta che non ci sia.
 ```
 
 Il passaggio che conta in {numref}`fig-vq-vae` è l'ultimo, quando del vettore
@@ -213,8 +216,8 @@ costruzione.
 $V$ **all'ingresso**, e da lì in avanti non esistono più due flussi: c'è una
 sequenza sola, $\mathbf{s} = (s_1, \dots, s_n)$ con $s_t \in V$, che un unico
 Transformer attraversa dal primo strato all'ultimo con la stessa attenzione e
-gli stessi pesi. L'obiettivo è quello dei grandi modelli linguistici, visto nel
-capitolo sui Transformer, senza aggiunte:
+gli stessi pesi. L'obiettivo è quello della {doc}`sezione sui grandi modelli
+linguistici </Transformers/llm>`, senza aggiunte:
 
 $$
 \mathcal{L}(\theta) = -\sum_{t=1}^{n} \log p_\theta(s_t \mid s_{<t}),
@@ -392,9 +395,8 @@ seconda del tipo di token che sta trattando. Sul testo, la predizione del token
 successivo di sempre. Sull'immagine, la diffusione: niente catalogo, niente
 arrotondamento, le tessere restano file di numeri, e quel che il modello impara
 è a indovinare il disturbo da togliere. (Per l'esattezza non sono le tessere
-grezze, ma una loro versione più compatta che un altro modello prepara a parte:
-è l'accorgimento con cui lavorano quasi tutti i generatori di immagini, e il
-capitolo sulla diffusione lo spiegherà a suo tempo.)
+grezze, ma una loro versione più compatta preparata a parte, come in quasi
+tutti i generatori di immagini.)
 
 `````{tab} Elementare
 
@@ -451,7 +453,8 @@ calcolata sulle sole posizioni testuali, $\mathcal{L}_{\text{DDPM}}$ è
 l'errore quadratico sul rumore stimato calcolato sulle sole posizioni visive
 (la $\mathbb{E}\lVert \epsilon - \epsilon_\theta(\mathbf{x}_t, t) \rVert^2$ che
 il capitolo sulla diffusione deriverà per esteso: $\epsilon$ è il rumore davvero
-aggiunto, $\epsilon_\theta$ quello che il modello stima di dover togliere)
+aggiunto, $\epsilon_\theta$ quello che il modello stima di dover togliere, e
+questo $t$ è il livello di rumore, non la posizione nella sequenza)
 e $\lambda$ pesa il secondo rispetto al primo (nel lavoro
 originale $\lambda = 5$). Le due perdite non riguardano parametri diversi:
 attraversano gli stessi strati, e ogni peso del Transformer riceve gradienti da

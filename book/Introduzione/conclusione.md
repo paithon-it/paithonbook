@@ -1,24 +1,22 @@
 # Conclusione
 
-
-
 Ogni tanto arriva una tecnologia che non risolve un problema, ma cambia il
 modo in cui si risolvono tutti gli altri: la macchina a vapore, l'elettricità,
 il computer, Internet. Non si riconoscono dal mestiere che svolgono, perché non
 ne svolgono uno solo; si riconoscono da quanti mestieri diversi finiscono per
 attraversare. È la compagnia in cui molti collocano l'intelligenza artificiale,
-e la formula più fortunata è di Andrew Ng, che insegna all'Università di
-Stanford ed è autore di alcuni fra i corsi di machine learning più seguiti al
-mondo:
+e la formula più fortunata è di Andrew Ng:
 
 > L'intelligenza artificiale è la nuova elettricità.
 
 È uno slogan, e come tutti gli slogan funziona perché butta via i distinguo.
-Ng lo ha ripetuto in più occasioni; ma nella conversazione del 2017 da cui la
-formula è stata raccolta il ragionamento per esteso è più cauto, e più
-interessante: «proprio come l'elettricità ha trasformato quasi tutto cento anni
-fa, oggi faccio davvero fatica a pensare a un settore che l'AI non trasformerà
-nei prossimi anni» {cite}`ng2017electricity`. È una previsione, non un
+Ng insegna all'Università di Stanford ed è autore di alcuni fra i corsi di
+machine learning più seguiti al mondo, e la formula l'ha ripetuta in più
+occasioni; ma nella conversazione del 2017 da cui è stata raccolta il
+ragionamento per esteso è più cauto, e più interessante: «proprio come
+l'elettricità ha trasformato quasi tutto cento anni fa, oggi faccio davvero
+fatica a pensare a un settore che l'AI non trasformerà nei prossimi anni»
+{cite}`ng2017electricity`. È una previsione, non un
 bilancio, e come tutte le previsioni andrà verificata; ma qualche esempio
 concreto, di quelli già successi, c'è.
 
@@ -41,11 +39,13 @@ Il secondo è in medicina. Una rete neurale addestrata su più di novantamila
 tracciati, raccolti da oltre cinquantamila pazienti, riconosce le aritmie
 cardiache dal solo elettrocardiogramma con un'accuratezza confrontabile con
 quella di un cardiologo {cite}`hannun2019cardiologist`. Il confronto si fa
-così: si consegnano gli stessi tracciati a un gruppo di cardiologi in carne e
-ossa, e si prende come risposta giusta quella su cui il gruppo converge; poi si
-guarda quanto spesso ci arriva ciascun cardiologo da solo, e quanto spesso ci
-arriva la rete. Il gruppo che l'ha costruita è quello dello stesso Andrew Ng
-citato qui sopra.
+così: un gruppo di cardiologi discute i tracciati finché non converge su una
+risposta, e quella diventa la risposta giusta; poi gli stessi tracciati vanno
+ad altri cardiologi, che li leggono da soli, e si guarda quanto spesso ci
+arriva ciascuno di loro e quanto spesso ci arriva la rete. Chi fissa la
+risposta giusta e chi viene misurato non sono le stesse persone, o il
+confronto non direbbe niente. La rete l'ha costruita il gruppo dello stesso
+Andrew Ng dell'elettricità.
 
 Il terzo è AlphaFold, sempre di DeepMind, che ha imparato a prevedere la forma
 tridimensionale delle proteine {cite}`jumper2021highly`. Il problema era
@@ -77,10 +77,12 @@ due dal non sapere che cosa ci sia dentro, e si curano nello stesso modo:
 andando a guardare. Elencare tutte le regole che un modello si è dato, è vero,
 non può farlo nessuno; ma si può misurare che cosa sbaglia e su quali casi, e
 si può coprire un pezzo alla volta della fotografia che gli si dà da guardare,
-per scoprire quale pezzo gli fa cambiare risposta. È un mestiere vero, e ha il suo capitolo:
-{doc}`Interpretabilità </Interpretabilita/overview>`. Non serve a concludere
+per scoprire quale pezzo gli fa cambiare risposta. È un mestiere vero, e ha il
+suo capitolo: {doc}`Interpretabilità </Interpretabilita/overview>`. Non serve a
+concludere
 che non c'è niente di cui preoccuparsi (qualche problema è reale, e a quelli è
-dedicato il capitolo sull'AI responsabile), ma a sapere quali.
+dedicato il {doc}`capitolo sull'AI responsabile </AIResponsabile/overview>`), ma
+a sapere quali.
 
 E si comincia dagli attrezzi. Il prossimo capitolo è dedicato a **Python**, il
 linguaggio con cui tutto il resto del libro è scritto, e quello dopo alla
@@ -101,7 +103,7 @@ all'AI responsabile.
   a un risultato. Quello di Euclide, per il massimo comune divisore, è fra i
   più antichi che si conoscano e sta in quattro righe di Python.
 - Il salto sta qui: per moltissimi compiti (riconoscere un gatto, tradurre una
-  frase) una ricetta **che regga il mondo vero** nessuno la sa scrivere. Allora
+  frase) una ricetta che regga il mondo vero nessuno la sa scrivere. Allora
   si raccolgono migliaia di **esempi** e si lascia che le regole **emergano dai
   dati**. È questo che significa, qui, dire che un programma *impara*. Gli
   esempi possono portare la risposta scritta accanto da una persona
@@ -121,6 +123,11 @@ all'AI responsabile.
   salire (o un errore da far scendere) e si lascia che sia la macchina a
   scoprire come. Con l'avvertenza che quel punteggio lo scriviamo noi, e non è
   mai esattamente la cosa che volevamo.
+- Il vocabolario che tornerà, quando gli esempi giusti non ci sono: l’**agente**
+  decide, l’**ambiente** risponde con una nuova situazione (lo **stato**) e con
+  un punteggio (la **ricompensa**), e la **policy** è la regola con cui l'agente
+  sceglie, cioè quello che deve imparare. Si allena dentro una simulazione, e
+  far reggere al robot vero quello che ha imparato lì resta un problema aperto.
 - Non è stata una salita continua: fra il 1956 e oggi ci sono **due inverni**,
   e funziona adesso perché sono arrivati insieme tre ingredienti, i **dati**,
   la **potenza di calcolo** e gli **algoritmi**.
@@ -144,17 +151,17 @@ all'AI responsabile.
   l'equilibrio di un gioco fra due reti, i metodi non parametrici (k-NN) non
   hanno parametri da stimare per addestramento, perché al posto dei parametri
   conservano i dati (il che non vuol dire che non ci siano numeri da scegliere:
-  il $k$ va scelto lo stesso). E la cornice ha una crepa nota, il *reward
-  hacking*: $J$ è il punteggio scritto da noi, non l'obiettivo vero.
+  quanti vicini guardare va scelto lo stesso). E la cornice ha una crepa nota,
+  il *reward hacking*: $J$ è il punteggio scritto da noi, non l'obiettivo vero.
 - Il formalismo del reinforcement learning, ripreso nei due capitoli che gli
   sono dedicati: un agente in uno stato $s_t$ sceglie $a_t$ secondo una policy
   $\pi(a \mid s)$, riceve $r_{t+1}$, e massimizza il ritorno scontato
   $\mathbb{E}_{\pi}[\sum_t \gamma^t r_{t+1}]$, finito perché le ricompense sono
-  limitate e $\gamma < 1$.
+  limitate e $0 \le \gamma < 1$.
 - Euclide: $\mathrm{MCD}(a,b) = \mathrm{MCD}(b, a \bmod b)$ converge in
   $O(\log \min(a,b))$ **passi**, cioè $O(n)$ passi su numeri di $n$ cifre; il
-  tempo totale è $O(n^2)$, perché la somma delle cifre dei quozienti resta
-  $O(n)$.
+  tempo totale è $O(n^2)$, perché ogni cifra di quoziente costa $O(n)$ e le
+  cifre dei quozienti sono in tutto $O(n)$.
 ```
 
 `````

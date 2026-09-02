@@ -8,7 +8,7 @@
   warm-black #1A1A1A. Fondo trasparente (light e dark).
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-32 0 752 540" width="100%" role="img"
-     aria-label="Quattro pannelli impilati che condividono l'asse del tempo. Dall'alto: la serie osservata con tendenza e oscillazione; il trend, una linea liscia crescente; la stagionalita, un'onda periodica regolare; il residuo, piccole barrette attorno allo zero.">
+     aria-label="Quattro pannelli impilati che condividono l'asse del tempo. Dall'alto: la serie osservata con tendenza e oscillazione; il trend, una linea liscia crescente; la stagionalità, un'onda periodica regolare; il residuo, piccole barrette attorno allo zero. Ogni pannello è disegnato alla propria scala verticale.">
   <style>
     .frame { fill:none; stroke:#8B847C; stroke-width:1; opacity:0.55; }
     .base  { stroke:#8B847C; stroke-width:1; opacity:0.6; }

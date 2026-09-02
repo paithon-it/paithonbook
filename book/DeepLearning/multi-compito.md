@@ -95,7 +95,9 @@ cui entra nella somma. Quei pesi sono il punto delicato di tutto il metodo.
 L'alternativa è la **condivisione morbida** (*soft sharing*): $T$ reti
 separate, ciascuna con i propri parametri, legate da un termine di
 regolarizzazione che ne penalizza la distanza, per esempio $\sum_{t \neq s}
-\lVert \phi_t - \phi_s \rVert_2^2$. Costa $T$ volte i parametri ma non impone
+\lVert \psi_t - \psi_s \rVert_2^2$, dove $\psi_t$ sono tutti i parametri della
+rete del compito $t$ (qui di tronco condiviso non ce n'è, quindi la $\phi$ di
+sopra non servirebbe). Costa $T$ volte i parametri ma non impone
 una rappresentazione unica: si usa quando i compiti sono affini ma non
 sovrapponibili.
 
@@ -163,10 +165,10 @@ la rete è libera di inventarsi qualunque cosa. Quando gli esempi abbondano le
 scorciatoie comode sono già poche di loro, e il compito in più, invece di
 aggiungere, può cominciare a togliere.
 
-Poi c'è l'attenzione: certi compiti dicono alla rete dove guardare. Se
-per rispondere alla seconda domanda serve un dettaglio che per la prima
-sembrava trascurabile, la rete impara comunque a rappresentarlo, e magari
-scopre che serviva anche alla prima.
+Poi c'è l’**attenzione**, e qui la parola è quella di tutti i giorni: certi
+compiti dicono alla rete dove guardare. Se per rispondere alla seconda domanda
+serve un dettaglio che per la prima sembrava trascurabile, la rete impara
+comunque a rappresentarlo, e magari scopre che serviva anche alla prima.
 
 `````
 
@@ -218,10 +220,10 @@ tempo a oscillare invece di migliorare.
 Il litigio si può smussare invece che subirlo, ed è quello che prova a fare il
 rimedio più noto: a ogni passo si guardano le correzioni che i due compiti
 chiedono al tronco, a ciascuna si toglie la parte che tira contro l'altra, e il
-resto si lascia intatto. L'idea è pulita e la diagnosi che la ispira regge;
-sulla cura si discute ancora. Chi ha rifatto i confronti su larga scala ha
-trovato che la vecchia somma, tenuta in ordine come si terrebbe quella di un
-compito solo, regge il passo o fa meglio.
+resto si lascia intatto: si chiama **PCGrad**. L'idea è pulita e la diagnosi
+che la ispira regge; sulla cura si discute ancora. Chi ha rifatto i confronti
+su larga scala ha trovato che la vecchia somma, purché frenata e tarata come si
+farebbe per un compito solo, regge il passo o fa meglio.
 
 C'è poi un problema più prosaico e altrettanto insidioso, e nasce dal fatto che
 il conto da far scendere è uno: si prende quanto la rete sbaglia sul primo
@@ -305,13 +307,15 @@ non c'entra niente, il cui bersaglio è puro caso e che nessuna rete può
 imparare.
 
 Poi si confrontano tre addestramenti sullo stesso identico tronco: senza
-ausiliario, con quello imparentato, con quello inutile. I tre numeri che il codice stampa sono la risposta, e li commentiamo subito
-dopo.
+ausiliario, con quello imparentato, con quello inutile; poi ancora due volte
+quello inutile, pesato di meno. I numeri che ne escono sono la risposta.
 
 ```python
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+torch.set_num_threads(1)   # su una macchina carica i thread si ostacolano
 
 D, H = 12, 64
 N_ETICHETTATI, N_AUSILIARI, N_TEST = 40, 800, 2000   # poche etichette dove servono
@@ -329,7 +333,7 @@ def dati(seme):
         "rumore":     torch.randn(n, generator=g),
     }
 
-def addestra(X, y, ausiliario, seme, passi=800):
+def addestra(X, y, ausiliario, seme, passi=800, peso=1.0):
     torch.manual_seed(seme)
     tronco = nn.Sequential(nn.Linear(D, H), nn.Tanh(), nn.Linear(H, H), nn.Tanh())
     teste = nn.ModuleDict({k: nn.Linear(H, 1) for k in y})
@@ -340,7 +344,7 @@ def addestra(X, y, ausiliario, seme, passi=800):
         perdita = F.mse_loss(teste["principale"](tronco(X[:N_ETICHETTATI])).squeeze(-1),
                              y["principale"][:N_ETICHETTATI])
         if ausiliario:
-            perdita = perdita + F.mse_loss(
+            perdita = perdita + peso * F.mse_loss(
                 teste[ausiliario](tronco(X[:N_AUSILIARI])).squeeze(-1),
                 y[ausiliario][:N_AUSILIARI])
         ott.zero_grad(); perdita.backward(); ott.step()
@@ -348,16 +352,27 @@ def addestra(X, y, ausiliario, seme, passi=800):
         pred = teste["principale"](tronco(X[N_AUSILIARI:])).squeeze(-1)
         return F.mse_loss(pred, y["principale"][N_AUSILIARI:]).item()
 
-base = None
-# cinque semi per tre configurazioni: qualche minuto di attesa
-for ausiliario in (None, "parente", "rumore"):
-    errori = [addestra(*dati(s)[:2], ausiliario, s) for s in range(5)]
-    media = sum(errori) / len(errori)
-    if base is None:
-        base = media
-    nome = ausiliario or "nessuno"
-    print(f"ausiliario: {nome:<10} errore sul test {media:.4f}"
-          f"   ({100 * (media - base) / base:+.0f}%)")
+def prova(ausiliario, peso=1.0):
+    errori = [addestra(*dati(s)[:2], ausiliario, s, peso=peso) for s in range(5)]
+    return sum(errori) / len(errori)
+
+# cinque semi per configurazione: qualche minuto di attesa
+base = prova(None)
+print(f"ausiliario: {'nessuno':<14} errore sul test {base:.4f}   (  +0%)")
+for ausiliario, peso in (("parente", 1.0), ("rumore", 1.0),
+                         ("rumore", 0.1), ("rumore", 0.01)):
+    media = prova(ausiliario, peso)
+    nome = ausiliario if peso == 1.0 else f"{ausiliario} x{peso}"
+    print(f"ausiliario: {nome:<14} errore sul test {media:.4f}"
+          f"   ({100 * (media - base) / base:+4.0f}%)")
+```
+
+```text
+ausiliario: nessuno        errore sul test 0.2829   (  +0%)
+ausiliario: parente        errore sul test 0.0993   ( -65%)
+ausiliario: rumore         errore sul test 0.3523   ( +25%)
+ausiliario: rumore x0.1    errore sul test 0.3038   (  +7%)
+ausiliario: rumore x0.01   errore sul test 0.2871   (  +1%)
 ```
 
 Ogni numero è la media di cinque prove che differiscono solo per il **seme**,
@@ -385,16 +400,15 @@ può imparare, quindi quello che l'esperimento misura con precisione è la prima
 delle due cause di danno, la capacità del tronco sprecata. Un compito diverso
 ma *imparabile* fa in genere molto meno danno di così.
 
-C'è una seconda cosa che quel $+25\%$ non dice, ed è la manopola che
-l'esperimento non tocca. Nel codice i due errori si sommano con peso uguale,
-cioè $\lambda_1 = \lambda_2 = 1$ (le $\lambda$ sono i pesi con cui i due compiti
-entrano nella somma): la scelta più innocente possibile, e anche la meno
-difendibile, visto che poco fa si è detto che sono proprio quei pesi a comandare
-l'addestramento senza che nessuno l'abbia deciso. Rifacendo le
-stesse cinque prove con l'ausiliario pesato $\lambda = 0{,}1$ il danno scende a
-$+7\%$, e con $\lambda = 0{,}01$ a $+1{,}5\%$. Il trasferimento negativo,
-insomma, è una proprietà della coppia **e** del peso che le si dà, non della
-sola coppia di compiti.
+C'è una seconda cosa che quel $+25\%$ non dice, ed è la manopola. Le prime tre
+righe sommano i due errori con peso uguale, cioè $\lambda_1 = \lambda_2 = 1$ (le
+$\lambda$ sono i pesi con cui i due compiti entrano nella somma): la scelta più
+innocente possibile, e anche la meno difendibile, visto che poco fa si è detto
+che sono proprio quei pesi a comandare l'addestramento senza che nessuno
+l'abbia deciso. Le ultime due rifanno le stesse cinque prove con l'ausiliario
+pesato $\lambda = 0{,}1$ e $\lambda = 0{,}01$: il danno scende a $+7\%$, e poi a
+$+1\%$. Il trasferimento negativo, insomma, è una proprietà della coppia e del
+peso che le si dà, non della sola coppia di compiti.
 
 E per simmetria va detto anche del primo numero, il migliore dei tre. Il compito
 «parente» è imparentato quanto è possibile esserlo: il suo bersaglio si ricava
@@ -470,7 +484,7 @@ provandoli a coppie, più che deducendolo.
   una tecnica neutra. Entrambi i numeri sono estremi (il «parente» è una
   funzione deterministica del bersaglio principale) e valgono a
   $\lambda_t$ uguali: con l'ausiliario pesato $0{,}1$ il danno scende al 7%, con
-  $0{,}01$ all'1,5%.
+  $0{,}01$ all'1%.
 ```
 `````
 

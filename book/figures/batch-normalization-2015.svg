@@ -35,5 +35,5 @@
   <path d="M 585 250 Q 630 155 675 250" fill="none" stroke="#B5532C" stroke-width="2"/>
   <text x="620" y="272" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">riscalata dalla rete</text>
 
-  <text x="340" y="330" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">ogni strato riceve input su una scala prevedibile, non un bersaglio mobile</text>
+  <text x="340" y="330" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">tre distribuzioni entrano, una sola ne esce, e &#947; e &#946; decidono dove rimetterla</text>
 </svg>

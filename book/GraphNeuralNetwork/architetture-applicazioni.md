@@ -120,7 +120,7 @@ Hamilton et al. ne propongono tre varianti:
 - **LSTM**: più espressiva ma, di suo, sensibile all'ordine; la si rende
   utilizzabile applicandola a **permutazioni casuali** dei vicini.
 
-Vale la pena aggiungere una cosa che il risparmio di costo mette in ombra: il
+Il risparmio di costo mette in ombra una cosa: il
 campionamento rende il forward **aleatorio**, e non nello stesso modo per i tre
 aggregatori. La media su un campione stima la media completa **senza
 distorsione**; il massimo su un campione è invece sistematicamente **più basso**
@@ -306,7 +306,7 @@ conv2 = GATConv(hid_dim * 8, out_dim, heads=1, concat=False)
 Finora abbiamo prodotto una fila di numeri *per ogni nodo*. Ma i compiti a
 **livello di grafo** («questa molecola è tossica?», «questo composto uccide i
 batteri?») chiedono un solo verdetto per l'intero grafo. Serve un passo in più:
-comprimere le tante file di numeri dei nodi in **una** sola, quella del grafo.
+comprimere le tante file di numeri dei nodi in una sola, quella del grafo.
 Questo passo si chiama **readout**, letteralmente «lettura finale», e la scelta
 di come farlo decide quali grafi diversi la rete riuscirà a distinguere fra
 loro.
@@ -388,7 +388,7 @@ $$
 
 dove $\succ$ va letto **nel quadro di Xu et al.**, cioè come una gerarchia fra
 le *informazioni* che i tre aggregatori conservano dopo una mappa appresa: la
-somma conserva il multinsieme (feature **e** molteplicità, quanti vicini di
+somma conserva il multinsieme (feature e molteplicità, quanti vicini di
 ciascun tipo); la media lo riduce alla distribuzione, e perde il conteggio; il
 massimo lo riduce all'insieme dei tipi presenti, e perde anche le proporzioni.
 Non è un ordine totale sui numeri reali presi nudi, ed è utile vedere perché in
@@ -404,8 +404,10 @@ $$
 $$
 
 dove $\mathrm{MLP}^{(k)} \colon \mathbb{R}^{d_{k-1}} \to \mathbb{R}^{d_k}$ è un
-piccolo percettrone multistrato ed $\epsilon^{(k)}$ uno scalare (appreso o
-fissato a 0) che dosa il peso del nodo rispetto ai vicini. Quel termine
+piccolo percettrone multistrato ed $\epsilon^{(k)}$ uno scalare appreso che
+dosa il peso del nodo rispetto ai vicini (la variante GIN-0 lo fissa a zero, e
+lì la garanzia cade: il Corollario 6 la dà per infinite scelte di $\epsilon$,
+fra cui tutti gli irrazionali, e zero non è una di quelle). Quel termine
 $(1+\epsilon^{(k)})\mathbf{h}_v^{(k-1)}$ è precisamente il modo in cui GIN si
 compra la seconda delle tre iniettività, quella della combinazione con lo stato
 proprio. La somma sui vicini, seguita da un MLP, è quanto basta perché GIN
@@ -445,9 +447,7 @@ dell'introduzione, i nodi divisi in due squadre e archi solo fra una squadra e
 l'altra.
 PinSage è, nella sostanza, un GraphSAGE portato a scala web: campiona i vicini
 con brevi cammini casuali e li aggrega, girando su un grafo di tre miliardi di
-nodi. Raccomandare, come si è detto all'inizio del capitolo, è *link
-prediction* su un grafo utente-prodotto, ed è il capitolo seguente, dedicato ai
-sistemi di raccomandazione, a riprendere il tema per intero.
+nodi.
 
 **Rilevamento frodi.** Le transazioni finanziarie formano un grafo (conti nei
 nodi, pagamenti negli archi) e le frodi vivono nelle *relazioni*: anelli di
@@ -461,7 +461,8 @@ esercizio.
 
 **Mappe e traffico.** Dal 2020 le stime del **tempo di percorrenza in Google
 Maps** sono calcolate da una GNN sviluppata con DeepMind: la rete stradale è
-il grafo (segmenti di strada nei nodi, incroci a collegarli) e il modello
+il grafo (i segmenti di strada nei nodi, e un arco fra due segmenti che si
+susseguono sulla stessa strada o che si incontrano a un incrocio) e il modello
 prevede i tempi propagando informazione lungo il percorso, migliorando
 l'accuratezza degli arrivi stimati in molte città {cite}`derrowpinion2021eta`.
 
@@ -512,28 +513,30 @@ amici hanno gusti simili). Dove vale il contrario, e chi è connesso è
 
 `````{tab} Superiore
 
-- **Oversmoothing.** Li, Han e Wu {cite}`li2018deeper` mostrano che uno strato GCN è, in
-  sostanza, un passo di *smoothing* laplaciano: iterandolo molte volte le
-  feature dei nodi convergono verso un punto fisso che dipende dai gradi e non
-  dai nodi, rendendoli indistinguibili. La derivazione spettrale della sezione
-  sul message passing lo rende meccanico: $\hat{\mathbf{A}}$ ha autovalori in
-  $[-1,1]$ con il massimo pari a $1$, quindi $\hat{\mathbf{A}}^K$ spegne tutte
-  le componenti tranne quella lungo l'autovettore dominante, che è
-  $\tilde{\mathbf{D}}^{1/2}\mathbf{1}$ e non distingue un nodo dall'altro. È la
-  ragione teorica per cui, oltre pochi strati, l'accuratezza crolla. I rimedi
-  hanno nomi e forme precise, e vale la pena averli in mente perché sono tre
-  risposte diverse alla stessa domanda. **Highway GCN** {cite}`rahimi2018semi` mette un *gate* per strato che decide quanto del vecchio stato lasciar
-  passare accanto al nuovo, e nei loro esperimenti le prestazioni smettono di
-  migliorare attorno ai quattro strati. **Jumping Knowledge Network** {cite}`xu2018jumping` parte da un'osservazione diversa, cioè che nodi diversi
-  vogliono campi recettivi diversi (un hub satura in due salti, un nodo
-  periferico no), e quindi invece di prendere l'uscita dell'ultimo strato le
-  **concatena tutte**, lasciando che sia il modello a scegliere la profondità
-  nodo per nodo. **DeepGCN** {cite}`li2019deepgcns` importa di peso residui e
-  connessioni dense da ResNet e DenseNet contro i gradienti che svaniscono, e
-  aggiunge un vicinato **dilatato** (si prendono i vicini saltandone alcuni)
-  contro l'oversmoothing: con questa ricetta arrivano a 56 strati su nuvole di
-  punti. Restano eccezioni, però: il vincolo pratico alla profondità è ancora
-  la regola.
+- **Oversmoothing.** Li, Han e Wu {cite}`li2018deeper` mostrano che uno strato
+  GCN è, in sostanza, un passo di *smoothing* laplaciano: iterandolo molte
+  volte le feature dei nodi convergono verso un punto fisso che dipende dai
+  gradi e non dai nodi, rendendoli indistinguibili. La derivazione spettrale
+  della sezione sul message passing lo rende meccanico: $\hat{\mathbf{A}}$ ha
+  autovalori in $[-1,1]$ con il massimo pari a $1$, quindi
+  $\hat{\mathbf{A}}^K$ spegne tutte le componenti tranne quella lungo
+  l'autovettore dominante, che è $\tilde{\mathbf{D}}^{1/2}\mathbf{1}$ e non
+  distingue un nodo dall'altro. È la ragione teorica per cui, oltre pochi
+  strati, l'accuratezza crolla. I rimedi hanno nomi e forme precise, e sono
+  tre risposte diverse alla stessa domanda. **Highway GCN**
+  {cite}`rahimi2018semi` mette un *gate* per strato che decide quanto del
+  vecchio stato lasciar passare accanto al nuovo, e nei loro esperimenti le
+  prestazioni smettono di migliorare attorno ai quattro strati. **Jumping
+  Knowledge Network** {cite}`xu2018jumping` parte da un'osservazione diversa,
+  cioè che nodi diversi vogliono campi recettivi diversi (un hub satura in due
+  salti, un nodo periferico no), e quindi invece di prendere l'uscita
+  dell'ultimo strato le **concatena tutte**, lasciando che sia il modello a
+  scegliere la profondità nodo per nodo. **DeepGCN** {cite}`li2019deepgcns`
+  importa di peso residui e connessioni dense da ResNet e DenseNet contro i
+  gradienti che svaniscono, e aggiunge un vicinato **dilatato** (si prendono i
+  vicini saltandone alcuni) contro l'oversmoothing: con questa ricetta
+  arrivano a 56 strati su nuvole di punti. Restano eccezioni, però: il vincolo
+  pratico alla profondità è ancora la regola.
 - **Over-squashing.** Alon e Yahav {cite}`alon2021bottleneck` osservano che il campo recettivo di un
   nodo cresce esponenzialmente con il numero di strati, mentre il vettore che lo
   riassume ha dimensione fissa: l'informazione proveniente da nodi distanti viene
@@ -560,13 +563,12 @@ Viene naturale chiedersi cosa succeda a togliere quel vincolo e a lasciar
 parlare tutti con tutti. La risposta arriva dall'altro capo del libro, ed è
 meno lieta di come la si racconta di solito.
 
-Toglierlo tocca due di quei quattro limiti, e ne guarisce uno solo: conviene
-sapere subito quale. Guarisce l’**over-squashing**, perché se ogni nodo parla con ogni altro non c'è più
-niente da far transitare per strade strette. Non guarisce l’**oversmoothing**,
-anzi. L'oversmoothing non nasce dalla distanza fra i nodi, ma dal fatto che a
-ogni giro si fa una media con i vicini; e se i vicini diventano tutti, la media
-cancella le differenze ancora più in fretta. Togliere il vincolo del vicinato,
-insomma, sul secondo limite **peggiora** le cose.
+Toglierlo tocca l'over-squashing e l'oversmoothing, e ne guarisce uno solo.
+Guarisce l’**over-squashing**, perché se ogni nodo parla con ogni altro non c'è
+più niente da far transitare per strade strette. L’**oversmoothing** invece
+peggiora: non nasce dalla distanza fra i nodi, ma dal fatto che a ogni giro si
+fa una media con i vicini, e se i vicini diventano tutti la media cancella le
+differenze ancora più in fretta.
 
 `````{tab} Elementare
 
@@ -589,7 +591,7 @@ nodo dove sta nel grafo.
 
 Quelle firme esistono già: sono le configurazioni di numeri sui nodi che nella
 sezione sul message passing abbiamo chiamato le frequenze del grafo, dalla più
-liscia (tutti lo stesso numero) alla più a scacchiera, e il cui nome proprio è
+liscia alla più a scacchiera, e il cui nome proprio è
 **autovettori del laplaciano**. La prima dice grossomodo «da che parte del
 grafo stai», le successive con dettaglio via via più fine. Nessuno se le
 inventa: gliele dà la forma del grafo.
@@ -662,9 +664,8 @@ $\mathbf{h}_i^0 = \hat{\mathbf{h}}_i^0 + \mathbf{p}_i^0$), non si concatena: la
 proiezione serve proprio perché $k$ e $d$ non coincidono. È la stessa mossa che
 il capitolo sui Transformer descrive per la codifica sinusoidale, dove la firma
 della posizione si **somma** all'embedding del token invece di affiancarglisi.
-Diverse implementazioni successive concatenano invece; e vale la pena notare
-che la codifica entra **solo allo strato d'ingresso**, non negli strati
-intermedi.
+Diverse implementazioni successive concatenano invece; e la codifica entra
+**solo allo strato d'ingresso**, non negli strati intermedi.
 
 La giustificazione è quella già stabilita in questo capitolo: gli autovettori
 sono i modi di variazione del grafo ordinati per frequenza, e su un grafo a
@@ -709,13 +710,9 @@ canale per il lontano.
 
 Niente di tutto questo va preso sulla fiducia, e non c'è bisogno di prenderlo:
 si verifica su una catena di nodi, che è una sequenza travestita da grafo. Il
-conto qui sotto misura, una alla volta, le due affermazioni che è facile
-confondere: che quelle configurazioni **sono** onde ordinate per frequenza, e
-che **non** sono le stesse onde dei Transformer.
-
-Chi non programma può saltare il riquadro qui sotto e anche i tre paragrafi che
-lo commentano: non c'è niente di nuovo, ci sono solo i numeri che reggono
-quello che si è appena letto.
+conto misura, una alla volta, le due affermazioni che è facile confondere: che
+quelle configurazioni sono onde ordinate per frequenza, e che non sono
+le stesse onde dei Transformer.
 
 ```python
 import numpy as np
@@ -734,6 +731,13 @@ for k in (1, 2, 3):
     onda /= np.linalg.norm(onda)
     print(f"autovettore {k}: |somiglianza| con cos(pi*{k}*(n+0.5)/N) = "
           f"{abs(vec[:, k] @ onda):.4f}   (autovalore {val[k]:.3f})")
+
+# lo stesso con il laplaciano che non pesa i nodi per il grado
+vec_np = np.linalg.eigh(np.diag(d) - A)[1]
+for k in (1, 2, 3):
+    onda = np.cos(np.pi * k * (t + 0.5) / N)
+    onda /= np.linalg.norm(onda)
+    print(f"  con L = D - A, autovettore {k}: {abs(vec_np[:, k] @ onda):.4f}")
 
 print("\ngli autovalori crescono:", np.round(val[:5], 3))
 # l'ambiguità di segno: -v è un autovettore altrettanto valido
@@ -754,9 +758,26 @@ print("colonne di PE piu' simili all'autovettore banale u0:",
 print(f"massima somiglianza con un autovettore non banale: {S[:, 1:].max():.3f}")
 ```
 
+```text
+autovettore 1: |somiglianza| con cos(pi*1*(n+0.5)/N) = 0.9891   (autovalore 0.022)
+autovettore 2: |somiglianza| con cos(pi*2*(n+0.5)/N) = 0.9851   (autovalore 0.086)
+autovettore 3: |somiglianza| con cos(pi*3*(n+0.5)/N) = 0.9785   (autovalore 0.191)
+  con L = D - A, autovettore 1: 1.0000
+  con L = D - A, autovettore 2: 1.0000
+  con L = D - A, autovettore 3: 1.0000
+
+gli autovalori crescono: [0.    0.022 0.086 0.191 0.331]
+il segno è arbitrario: -v risolve la stessa equazione -> True
+
+frequenze degli autovettori (pi*k/N): [0.196 0.393 0.589 0.785]
+frequenze di Vaswani (10000^-2i/d):   [1.    0.316 0.1   0.032]
+colonne di PE piu' simili all'autovettore banale u0: 12 su 16
+massima somiglianza con un autovettore non banale: 0.916
+```
+
 La prima metà del conto dà $0{,}9891$, $0{,}9851$ e $0{,}9785$: sono tre misure
 di somiglianza, e un $1$ vorrebbe dire «la stessa identica onda». I primi tre
-autovettori del laplaciano di una catena **sono** dunque i primi tre coseni, e
+autovettori del laplaciano di una catena sono dunque i primi tre coseni, e
 gli autovalori crescono con la frequenza, esattamente come promesso dalla
 lettura spettrale. Che non facciano $1{,}0000$ ha una ragione precisa e non è
 rumore numerico: la versione del laplaciano usata qui pesa ogni nodo per quanti
@@ -773,7 +794,8 @@ sono $1{,}000$, $0{,}316$, $0{,}100$, $0{,}032$: calano geometricamente e non
 sanno niente di $N$, tanto che su una finestra di sedici posizioni le più basse
 sono così lente da risultare quasi piatte. La conseguenza si misura:
 **dodici colonne su sedici** della codifica del Transformer somigliano più che
-altro all'autovettore *banale*, quello costante, e nessuna coincide con un
+altro all'autovettore *banale*, quello a frequenza zero, e nessuna coincide con
+un
 autovettore vero, la migliore somiglianza fermandosi a $0{,}916$. Due basi di
 onde su una linea, ordinate per frequenza, costruite in due modi diversi: la
 parentela è reale e utile, l'identità no.
@@ -795,10 +817,8 @@ gli arnesi che servono a campionare i vicini e decine di raccolte di dati su cui
 provare. Scrivere una GNN, oggi, è questione di poche righe: proprio come lo è
 diventato scrivere una rete convoluzionale.
 
-Con questo si chiude il capitolo. Il filo, però, non si spezza: l'attenzione
-che qui pesa i vicini di un nodo è la stessa dei Transformer, e i grafi a due
-squadre utente-prodotto di questa sezione sono lo stesso oggetto del capitolo
-sui sistemi di raccomandazione. Le reti su grafo non sono un'isola. Sono il
+Il filo, intanto, non si spezza: l'attenzione che qui pesa i vicini di un nodo
+è la stessa dei Transformer. Le reti su grafo non sono un'isola. Sono il
 punto in cui convoluzione, attenzione e apprendimento di rappresentazioni si
 ritrovano, e si ritrovano lì per una ragione precisa, quella con cui il
 capitolo si era aperto: ciascuna di loro nasce dall'elenco delle cose che si
@@ -888,7 +908,7 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
   **eterofilia**. In pratica le GNN restano **basse**, 2–4 strati.
 - Un **Graph Transformer** sostituisce l'aggregazione sui vicini con
   l'attenzione su tutte le coppie: ogni nodo raggiunge ogni altro in un passo
-  (fine dell'over-squashing, **non** dell'oversmoothing, che sul grafo completo
+  (fine dell'over-squashing, e non dell'oversmoothing, che sul grafo completo
   peggiora perché lì il **secondo autovalore di $\hat{\mathbf{A}}$** vale zero,
   contro lo $0{,}729$ della catena a quattro nodi), al costo di $O(N^2)$ e
   della perdita
@@ -909,7 +929,8 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
 
 Il grafo, da qui in avanti, è una lente più che un caso particolare. Ogni
 volta che i dati sono fatti di cose collegate ad altre cose, la domanda «che
-cosa dicono di questo nodo i suoi vicini?» è già mezza risposta. Il capitolo
-sui sistemi di raccomandazione lavora sul grafo più quotidiano che ci sia,
+cosa dicono di questo nodo i suoi vicini?» è già mezza risposta. Il
+{doc}`capitolo sui sistemi di raccomandazione </SistemiRaccomandazione/overview>`
+lavora sul grafo più quotidiano che ci sia,
 quello di chi ha guardato che cosa, e su un compito che ormai sai riconoscere,
 dire quali collegamenti mancano.

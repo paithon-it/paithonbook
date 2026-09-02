@@ -5,7 +5,7 @@ personaggio si muove, ogni tanto il punteggio sale, e nessuno ti dice quale
 delle decine di mosse fatte abbia meritato quei punti. La sezione precedente ha
 affrontato il problema nel modo più diretto che ci sia: giocare la partita
 intera, guardare quanti punti si sono fatti e usare quel totale per giudicare
-tutte le mosse. E si è fermata su una promessa, che questa sezione mantiene: si
+tutte le mosse. E si è fermata su una promessa, che adesso si mantiene: si
 può correggere la stima strada facendo, senza aspettare la fine. Ne uscirà
 l'algoritmo più celebre del campo.
 
@@ -36,7 +36,7 @@ inganna: qui il numero che si stima è un tempo, e una bella notizia lo fa
 *scendere*. Nel resto del capitolo il numero è un punteggio, e una bella
 notizia lo fa salire. Il meccanismo è lo stesso, cambia solo che cosa si
 conta.) Il TD learning fa esattamente
-questo, correggendo un pezzetto alla volta. E si noti che il primo dei due
+questo, correggendo un pezzetto alla volta. Il primo dei due
 pezzi, quello che è già successo, è l'unico dato vero della faccenda: è quello
 che tiene la correzione ancorata alla realtà invece che a un'altra opinione.
 
@@ -50,8 +50,9 @@ prezzo di non aspettare l'arrivo per correggere.
 
 `````{tab} Superiore
 
-Sia $V(s)$ la stima del valore atteso di uno stato $s$, cioè la ricompensa
-totale futura che ci aspettiamo partendo da lì. Dopo aver osservato la
+Sia $V(s)$ la stima del valore di uno stato $s$ **sotto la politica che si sta
+seguendo**, cioè la ricompensa totale futura che ci aspettiamo partendo da lì e
+continuando a giocare come si sta giocando. Dopo aver osservato la
 transizione $s \to s'$ con ricompensa **osservata** $r$, l'aggiornamento TD(0)
 è
 
@@ -97,7 +98,7 @@ proposito per esplorare, e imparare comunque quali sarebbero le mosse
 migliori. Impara una cosa mentre ne fa un'altra. Per questo si dice
 *off-policy*, cioè "fuori dalla propria strategia".
 
-Il trucco sta in una parola sola della formula, e la si vedrà fra poco: quando
+Il trucco sta in una parola sola della formula: quando
 l'agente corregge il voto di una mossa, guarda dove è finito e prende il voto
 della **migliore** fra le mosse possibili da lì, non di quella che poi farà
 davvero. Quindi anche se subito dopo tira un dado e sbaglia apposta, il conto
@@ -105,9 +106,9 @@ che ha appena scritto parlava di un giocatore che non sbaglia.
 
 Giocando abbastanza a lungo i voti finiscono al posto giusto, e c'è una
 dimostrazione che lo garantisce. In cambio pone delle condizioni. Una è che
-ogni casella della tabella venga provata tante volte, non una o due: una riga
-provata due volte porta un numero che vale quanto un sorteggio. Un'altra è che
-la tabella si possa scrivere per intero, riga per riga.
+ogni casella della tabella venga provata tante volte, non una o due: una
+casella provata due volte porta un numero che vale quanto un sorteggio.
+Un'altra è che la tabella si possa scrivere per intero, riga per riga.
 
 Prendere sempre il voto più alto, però, ha un difetto suo. In una riga dove
 tutte e quattro le mosse valgono davvero zero, i voti scritti ballano un po’
@@ -151,8 +152,8 @@ tabella con una funzione approssimata, la dimostrazione non si trasporta, e il
 deep reinforcement learning nasce per far funzionare in pratica qualcosa che in
 generale non è garantito convergere.
 
-Il $\max$ nel target ha poi un costo che vale la pena nominare, perché il
-capitolo successivo introdurrà un algoritmo apposta per correggerlo. Applicato a
+Il $\max$ nel target ha poi un costo suo, e il capitolo successivo introdurrà
+un algoritmo apposta per correggerlo. Applicato a
 stime rumorose, il massimo è uno stimatore distorto **verso l'alto** del massimo
 dei valori veri: se in uno stato tutte le azioni valgono davvero zero ma le
 stime oscillano attorno allo zero, $\max_{a'}Q(s',a')$ è sistematicamente
@@ -178,8 +179,8 @@ Scritta a parole, la riga è questa:
 
 ed è la stessa forma della regola del quaderno delle leve, in apertura di
 capitolo: una stima vecchia, più una frazione della sorpresa. Dentro ci sono
-quattro pezzi, e conviene chiamarli per nome perché tornano in tutto il resto
-del libro.
+quattro pezzi, e ognuno ha un nome che torna in ogni metodo che impara
+qualcosa.
 
 - Il **voto vecchio**, quello che c'era scritto nella casella della tabella.
 - Il **bersaglio**: quanto quella mossa sembra valere adesso, cioè il premio
@@ -228,13 +229,10 @@ scorciatoie migliori. Deve ogni tanto **esplorare**.
 
 `````{tab} Elementare
 
-È il dilemma del ristorante: torni sempre da quello che conosci e ti piace
-(**sfruttare**), o provi il nuovo che ha appena aperto e potrebbe essere una
-scoperta (**esplorare**)? La ricetta $\varepsilon$-greedy è semplice: nella grande
-maggioranza dei casi vai sul sicuro, ma con una piccola probabilità (chiamata
-$\varepsilon$, epsilon, ad esempio il 10%) tiri un dado e provi una mossa a
-caso. All'inizio esplori molto; man mano che impari, riduci $\varepsilon$ e ti
-affidi sempre più a ciò che sai.
+È di nuovo il dilemma del ristorante, e la ricetta è quella delle leve: quasi
+sempre la mossa che il quaderno dà per migliore, e con una piccola probabilità
+$\varepsilon$ una a caso. All'inizio si esplora molto, e $\varepsilon$ si riduce
+man mano che si impara.
 
 Quanto in fretta lo riduci cambia tutto, e si vede con un conto. Trenta cene
 al mese, e parti con una novità su dieci: tre ristoranti nuovi il primo mese.
@@ -271,10 +269,10 @@ convergenza appena citata vuole ogni coppia $(s,a)$ visitata infinite volte, e
 per assicurarlo serve $\sum_t \varepsilon_t = \infty$, che con
 $\varepsilon_t \propto 1/t$ si ottiene. Questa condizione, unita al fatto che la
 policy diventi greedy nel limite, è ciò che si chiama **GLIE** (*greedy in the
-limit with infinite exploration*), sotto cui anche il SARSA di qui a poco
-converge alla policy ottima {cite}`singh2000convergence`: si noti che
-GLIE è la coppia di requisiti, non la ricetta $\varepsilon_t = 1/t$, che ne è
-soltanto un modo comodo di soddisfarli. Con un $\varepsilon$ che si spegne
+limit with infinite exploration*), sotto cui converge alla policy ottima anche
+il SARSA della prossima sezione {cite}`singh2000convergence`. GLIE è la coppia
+di requisiti, non la ricetta $\varepsilon_t = 1/t$, che ne è soltanto un modo
+comodo di soddisfarli. Con un $\varepsilon$ che si spegne
 esponenzialmente le mosse esplorative sono invece quasi certamente in numero
 finito, perché una serie geometrica di ragione minore di uno ha somma finita.
 In pratica lo scambio
@@ -311,19 +309,22 @@ guarda dove è finito e prende il voto della mossa che farà davvero, dado
 compreso, al posto del voto della migliore di quella riga.
 
 Il risultato tipico si vede su un esperimento classico, che si chiama
-*cammino sul precipizio*: un corridoio di caselle il cui bordo inferiore è un
-burrone, con la partenza e l'arrivo alle due estremità. La strada più corta
-passa proprio sull'orlo, e un passo storto fa cadere di sotto. SARSA impara a salire fin sopra, lontano dal bordo, e ci arriva in qualche
-passo in più senza cadere mai; il
-Q-learning impara a camminare sull'orlo, perché "in teoria" non sbaglierebbe
-mai un passo, e ogni tanto ci casca davvero.
+*cammino sul precipizio*: una griglia di quattro righe per dodici colonne, il
+cui bordo inferiore è un burrone, con la partenza e l'arrivo alle due estremità
+di quel bordo. La strada più corta passa proprio sull'orlo, e un passo storto
+fa cadere di sotto. SARSA impara a salire fin sopra, lontano dal bordo, e ci
+arriva in qualche passo in più senza quasi mai finire di sotto; il Q-learning
+impara a camminare sull'orlo, perché "in teoria" non sbaglierebbe mai un passo,
+e ogni tanto ci casca davvero.
 
 I conti della scena dicono perché la prudenza paga. Ogni passo costa un punto
 e la caduta ne costa cento: la strada alta aggiunge quattro passi a partita, e
 quei quattro punti si ripagano da soli se si finisce di sotto anche una volta
-sola ogni venticinque partite. Con il dado tirato una volta ogni dieci mosse, e
-una decina di caselle affacciate sul vuoto da attraversare, ci si finisce
-quasi in una partita su quattro.
+sola ogni venticinque partite. Il dado si tira una volta ogni dieci mosse e
+sceglie fra quattro direzioni, di cui una sola porta di sotto: ogni casella sul
+bordo fa cadere due volte e mezza su cento, e di caselle affacciate sul vuoto
+ce n'è una decina da attraversare, sicché ci si finisce quasi in una partita su
+quattro.
 
 Se il dado sparisce, sparisce anche la differenza. Un agente che non esplora
 più non ha modo di fare il passo storto, l'orlo torna a essere la strada
@@ -373,7 +374,7 @@ rendere conveniente la strada corta.
 
 La strategia imparata dal Q-learning sulla griglia: in ogni cella la freccia
 indica la mossa che, finite tutte le partite di allenamento, ha il voto più
-alto. È il risultato che stampa il codice di qui a poco. Il disegno mostra il
+alto. È il risultato che stampa il codice della pagina. Il disegno mostra il
 punto d'arrivo, non la strada per arrivarci: quella, cioè il valore della meta
 che retrocede una casella per volta, si vede solo guardando i voti cambiare
 partita dopo partita.
@@ -390,8 +391,8 @@ lì, quindi dalla casella d'arrivo non c'è più niente da aspettarsi. La sorpre
 è tutta lì: si aspettava $0$, ha incassato $1$. Dandole retta a metà, il voto
 dell'ultima mossa passa da $0$ a $0{,}5$.
 
-Alla casella che veniva prima tocca solo una partita dopo, e conviene capire
-perché: quando l'agente ci è passato, in questa partita, il voto della casella
+Alla casella che veniva prima tocca solo una partita dopo. Quando l'agente ci
+è passato, in questa partita, il voto della casella
 in cui è finito era ancora zero, e correggere verso zero non muove niente.
 Adesso invece il $0{,}5$ c'è, e alla prossima partita servirà. Da lì la mossa
 non paga niente, ma porta in una casella la cui riga contiene ormai una mossa
@@ -496,15 +497,18 @@ def voto(cella):
 
 for i in range(RIGHE):
     print(" | ".join(voto((i, j)) for j in range(COLONNE)))
-
-# > 0.81 | > 0.90 | > 1.00 |     +1
-# ^ 0.73 |   muro | ^ 0.90 |     -1
-# ^ 0.66 | > 0.73 | ^ 0.81 | < 0.73
 ```
 
-Ecco che cosa stampa, disposto come la griglia:
+```text
+> 0.81 | > 0.90 | > 1.00 |     +1
+^ 0.73 |   muro | ^ 0.90 |     -1
+^ 0.66 | > 0.73 | ^ 0.81 | < 0.73
+```
 
-| | | | |
+Le stesse tre righe, con le frecce al posto di `^v<>` e i due traguardi
+chiamati per nome:
+
+| colonna 1 | colonna 2 | colonna 3 | colonna 4 |
 |:--|:--|:--|:--|
 | → $0{,}81$ | → $0{,}90$ | → $1{,}00$ | **meta**, $+1$ |
 | ↑ $0{,}73$ | muro | ↑ $0{,}90$ | **trappola**, $-1$ |
@@ -536,7 +540,7 @@ il $0{,}5$ che c'era allora; ma mentre lei ci correva dietro, quel $0{,}5$ è
 salito verso $1$, e quindi il bersaglio è salito verso $0{,}90$. Ogni casella
 insegue un numero che a sua volta sta salendo, e la fila si assesta
 dall'ultima all'indietro. I conti a mano di poco fa dicono da dove parte
-ciascun voto, la tabella qui sopra dice dove arriva.
+ciascun voto, la griglia stampata dice dove arriva.
 
 Tre note sul codice.
 
@@ -548,11 +552,9 @@ migliore.
 Il tasso di apprendimento (`alpha`) qui resta fermo a metà per tutte e
 cinquemila le partite. Un tasso che non si accorcia mai continua per sempre a
 rincorrere le ultime sorprese, invece di posarsi su un numero, ed è una scelta
-che ha un prezzo. Esiste infatti un teorema, di cui la fine della sezione dice
-qualcosa in più, che promette che i voti finiscono prima o poi al posto giusto;
-e fra le cose che chiede c'è proprio un tasso che si riduca col tempo, come il
-passo del quaderno delle leve all'inizio del capitolo. Qui ci si rinuncia, in
-cambio di un algoritmo che
+che ha un prezzo: fra le condizioni del teorema di convergenza c'è proprio un
+tasso che si riduca col tempo, come il passo del quaderno delle leve
+all'inizio del capitolo. Qui ci si rinuncia, in cambio di un algoritmo che
 reagisce in fretta, che nella pratica conviene quasi sempre.
 
 Ogni partita comincia da una casella sorteggiata invece che dalla partenza. Si
@@ -598,29 +600,32 @@ e la manopola che decide quanto in fretta si spenga si chiama $\lambda$
 (lambda), un numero fra zero e uno.
 
 I due estremi si capiscono guardando come si spartisce il peso. La lunghezza
-più corta, guardare avanti un passo, si prende quello che l'eco lascia fuori
-subito, cioè quanto manca a $\lambda$ per arrivare a uno: con
-$\lambda = 0{,}5$ si prende metà di tutto il peso, con $\lambda = 0{,}9$ soltanto
-un decimo. Quel che avanza se lo spartiscono le lunghezze successive, sempre
-con la stessa regola.
+più corta, guardare avanti un passo, si prende quanto manca a $\lambda$ per
+arrivare a uno: con $\lambda = 0{,}5$ metà di tutto il peso, con
+$\lambda = 0{,}9$ soltanto un decimo. Quel che avanza se lo spartiscono le
+lunghezze successive, sempre con la stessa regola.
 
 Con $\lambda = 0$ la prima si prende tutto, e siamo tornati alle differenze
 temporali. Alzando $\lambda$ il peso scivola sempre più in fondo alla fila; e in
 fondo alla fila c'è la fine della partita, dove «guardare avanti dieci passi» e
 «guardarne cento» sono ormai la stessa identica cosa, cioè guardare fino in
-fondo. A $\lambda = 1$ è tutto lì che va a finire: resta il totale della
-partita, e siamo tornati a Monte Carlo. In mezzo c'è tutto il resto.
+fondo: sono infinite lunghezze che valgono tutte un numero solo, e i loro pesi
+si sommano su quello. A $\lambda = 1$ è là che va a finire tutto il peso: resta
+il totale della partita, e siamo tornati a Monte Carlo. In mezzo c'è tutto il
+resto.
 
 Detta così sembra impossibile da fare mentre si gioca, perché quella media
-guarda avanti, e il futuro non lo si conosce. Il trucco è guardare
-dall'altra parte: invece di chiedersi "che cosa succederà dopo questa casella",
-si tiene un elenco delle caselle appena attraversate, ciascuna con un ricordo
-che sfuma a ogni passo. Quel ricordo si chiama **traccia**, e quando arriva una
-sorpresa la si distribuisce a tutta la scia, tanto più forte quanto più recente
-è il passaggio. Che venga davvero lo stesso risultato non è ovvio ed è un conto da fare; l'idea è che dare a ogni casella un
-pezzetto di correzione alla volta, per tutta la partita, alla fine somma
-esattamente quanto le si sarebbe dato in un colpo solo guardando avanti. Il
-guadagno è che così non si aspetta mai la fine.
+guarda avanti, e il futuro non lo si conosce. Il trucco è guardare dall'altra
+parte: invece di chiedersi "che cosa succederà dopo questa casella", si tiene
+un elenco delle caselle appena attraversate, ciascuna con un ricordo che sfuma
+a ogni passo. Quel ricordo si chiama **traccia**, e quando arriva una sorpresa
+la si distribuisce a tutta la scia, tanto più forte quanto più recente è il
+passaggio. Che venga davvero lo stesso risultato non è ovvio ed è un conto da
+fare; l'idea è che dare a ogni casella un pezzetto di correzione alla volta,
+per tutta la partita, alla fine somma esattamente quanto le si sarebbe dato in
+un colpo solo guardando avanti. Il guadagno è doppio: non si aspetta mai la
+fine, e non bisogna tenersi in mente le ultime dieci caselle una per una,
+perché a ogni casella basta un numero, quello che sfuma.
 
 `````
 
@@ -636,8 +641,9 @@ $$
 
 e l'aggiornamento è il solito
 $V(S_t) \leftarrow V(S_t) + \alpha\,[\,G_{t:t+n} - V(S_t)\,]$.
-Per $n=1$ si ritrova TD(0); per $n$ pari o superiore alla durata
-dell'episodio il termine con $V$ sparisce e resta il ritorno Monte Carlo.
+Per $n=1$ si ritrova TD(0); per $n$ pari o superiore ai passi che restano
+fino alla fine dell'episodio il termine con $V$ sparisce e resta il ritorno
+Monte Carlo.
 Il compromesso è quello classico fra distorsione e varianza: $n$ piccolo poca
 varianza e molta distorsione, $n$ grande il contrario. Nei banchi di prova di
 Sutton e Barto l'ottimo sta quasi sempre a valori intermedi, non agli estremi
@@ -700,7 +706,7 @@ bersaglio sia storto, in cambio di quanto farlo ballare di meno.
 
 ## Quando la tabella non basta più
 
-Tutto quello che si è letto in questo capitolo poggia su un'ipotesi che non
+Tutto quello che si è letto finora poggia su un'ipotesi che non
 abbiamo mai dovuto nominare, perché nei nostri esempi era ovvia: che le
 situazioni si possano **elencare**, una riga di tabella ciascuna. Nel labirinto
 sono dodici. In un gioco da tavolo sono più delle molecole d'aria di questa
@@ -715,15 +721,15 @@ incontra non l'ha mai vista prima, quindi la sua riga è ancora vuota, e riempir
 per esperienza diretta ogni riga di una tabella così grande richiederebbe più
 partite di quante se ne possano giocare.
 
-La via d'uscita non è un algoritmo diverso: le idee di questo capitolo (la
+La via d'uscita non è un algoritmo diverso: le idee viste finora (la
 sorpresa che corregge, il bersaglio a un passo, l'esplorazione dosata) restano
 tutte. È una **rappresentazione** diversa. Al posto della tabella serve
 qualcosa che, vista una situazione mai incontrata, sappia indovinarne i voti
 somigliandola a quelle che ha già visto, e quel qualcosa sono le reti neurali
-dei capitoli precedenti. È il capitolo che comincia alla pagina dopo questa, ed
-è la ragione per cui esiste.
+dei capitoli precedenti. È la ragione per cui esiste il
+{doc}`Deep Reinforcement Learning </DeepReinforcementLearning/overview>`.
 
-Con un'avvertenza che conviene portarsi dietro. Che il Q-learning arrivi prima
+Con un'avvertenza. Che il Q-learning arrivi prima
 o poi ai voti giusti non è una speranza, è un teorema, dimostrato nel 1992 da
 Watkins insieme a Peter Dayan; ma quel teorema parla di una tabella, e di una
 tabella soltanto. Buttata via la tabella, la promessa non c'è più. Il deep

@@ -7,7 +7,7 @@
   prefers-reduced-motion) vede la figura conclusa.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 282"
-     role="img" aria-label="Una fila di dodici caselle, i passi di una traiettoria; quattro sono bordate di terracotta perché in quei passi l'agente ha sbagliato. Una testa percorre la fila da sinistra a destra un passo alla volta; alla fine compare un solo riquadro con il ritorno, più uno. Da lì partono dodici archi che tornano indietro fino a ogni casella e le riempiono tutte dello stesso colore. Sotto, due righe di numeri: la riga del peso porta più uno dodici volte identiche, la riga del merito alterna più uno e meno uno.">
+     role="img" aria-label="Una fila di dodici riquadri, i passi di una traiettoria; cinque sono bordati di terracotta perché in quei passi l'agente ha sbagliato. Una testa percorre la fila da sinistra a destra un passo alla volta; alla fine compare un solo riquadro con il ritorno, più uno. Da lì partono dodici archi che tornano indietro fino a ogni riquadro e li riempiono tutti dello stesso colore. Sotto, due righe di numeri: la riga del peso porta più uno dodici volte identiche, la riga del merito cambia fra più uno e meno uno da un passo all'altro.">
   <style>
     svg  { --d: 12.6s; }
     .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }

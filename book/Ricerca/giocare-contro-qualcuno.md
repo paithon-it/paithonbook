@@ -11,10 +11,11 @@ chiedermi «qual è la mossa che regge anche alla risposta peggiore».
 
 ## Ragionare all’indietro dalla fine
 
-Il modo di rispondere si chiama **minimax**, e il nome dice già tutto: c’è un
-punteggio solo sul tavolo, e uno dei due giocatori cerca di farlo salire mentre
-l’altro cerca di farlo scendere. Un punto guadagnato da me è un punto perso da
-lui, esattamente: non esiste una mossa che convenga a tutti e due.
+Il modo di rispondere si chiama **minimax**, e il nome sono le sue due metà:
+c’è un punteggio solo sul tavolo, e uno dei due giocatori cerca di portarlo al
+massimo mentre l’altro cerca di portarlo al minimo. Un punto guadagnato da me è
+un punto perso da lui, esattamente: non esiste una mossa che convenga a tutti e
+due.
 
 `````{tab} Elementare
 
@@ -197,14 +198,15 @@ quasi tutto a seconda dell’ordine.
 
 `````{tab} Superiore
 
-La potatura **alfa-beta** {cite}`knuth1975analysis` porta lungo la ricorsione
-due valori: $\alpha$, il migliore che chi massimizza si è già assicurato lungo
-il cammino corrente, e $\beta$, il migliore per chi minimizza. La regola è
-simmetrica: in un nodo di massimo si interrompe l’esplorazione dei figli non
-appena il valore corrente arriva a $\beta$ o lo supera; in un nodo di minimo,
-non appena scende ad $\alpha$ o sotto. Sono le due condizioni `v >= beta` e
-`v <= alfa`, e la parità conta: con la disuguaglianza stretta il taglio
-scatterebbe meno spesso, e il risparmio si ridurrebbe di parecchio.
+La potatura **alfa-beta**, di cui Knuth e Moore hanno dato l'analisi che si
+cita ancora {cite}`knuth1975analysis`, porta lungo la ricorsione due valori:
+$\alpha$, il migliore che chi massimizza si è già assicurato lungo il cammino
+corrente, e $\beta$, il migliore per chi minimizza. La regola è simmetrica: in
+un nodo di massimo si interrompe l’esplorazione dei figli non appena il valore
+corrente arriva a $\beta$ o lo supera; in un nodo di minimo, non appena scende
+ad $\alpha$ o sotto. Sono le due condizioni `v >= beta` e `v <= alfa`, e il
+caso di uguaglianza conta: con la disuguaglianza stretta il taglio scatterebbe
+meno spesso, e il risparmio si ridurrebbe di parecchio.
 
 La correttezza si vede con un conto di tre righe sull’albero d’esempio, quello
 con foglie $3, 12, 8$ sotto la prima mossa, $2, 4, 6$ sotto la seconda e
@@ -241,7 +243,7 @@ con gli interessi in quelle profonde.
 
 `````
 
-Il conto sul filetto si rifà identico, cambiando solo la funzione.
+Il conto sul tris si rifà identico, cambiando solo la funzione.
 
 ```python
 guardate["alfabeta"] = 0
@@ -288,9 +290,8 @@ altri risparmi di questo capitolo: **non si è rinunciato a niente**. I rami
 non guardati erano rami di cui si era dimostrato, senza guardarli, che non
 potevano cambiare la conclusione.
 
-E l'ordine? Sul filetto si può misurare: basta
-scandire le caselle in un ordine diverso, il che non cambia il gioco di una
-virgola.
+E l'ordine? Sul tris si può misurare: basta guardare le caselle in un ordine
+diverso, il che non cambia il gioco di una virgola.
 
 ```python
 import random
@@ -351,19 +352,18 @@ venti ordini a caso: da 2603 a 13358, e 1 su 20 batte il ragionato
 Sei volte fra il migliore e il peggiore, **sullo stesso gioco, con lo stesso
 algoritmo e con la stessa risposta in fondo**. E l'ordine ragionato non è
 lontano dal migliore che si trovi a tentativi: mettere per primi il centro e
-gli angoli vuol dire provare per prime le caselle che nel filetto contano di
-più, e dei venti ordini pescati a caso uno solo fa meglio, come il blocco
-stampa. I programmi di scacchi fanno la stessa scommessa in un altro modo:
-prima della ricerca vera ne fanno una corta, di poche mosse, e usano quel
-risultato per decidere in che ordine guardare.
-Il conto della potatura, insomma, non si fa una volta per tutte: si fa
-sull’ordine che si è scelto.
+gli angoli vuol dire provare per prime le caselle che nel tris contano di più,
+e dei venti ordini pescati a caso uno solo fa meglio. I programmi di scacchi
+fanno la stessa scommessa in un altro modo: prima della ricerca vera ne fanno
+una corta, di poche mosse, e usano quel risultato per decidere in che ordine
+guardare. Il conto della potatura, insomma, non si fa una volta per tutte: si
+fa sull’ordine che si è scelto.
 
 ## Quando il fondo non si raggiunge
 
-Nel filetto la partita finisce, e il punteggio in fondo c’è scritto. Agli
-scacchi no: dopo dieci mosse per parte si è ancora in mezzo alla partita, e in
-fondo all’albero non c’è nessun numero da leggere.
+Nel tris la partita finisce, e il punteggio in fondo c’è scritto. Agli scacchi
+no: dopo dieci mosse per parte si è ancora in mezzo alla partita, e in fondo
+all’albero non c’è nessun numero da leggere.
 
 Allora si fa la cosa che un giocatore umano fa da sempre: si guarda avanti
 finché si può, ci si ferma, e si **giudica a occhio** la posizione a cui si è
@@ -372,7 +372,7 @@ del punteggio vero. È qui che la ricerca smette di essere esatta.
 
 `````{tab} Elementare
 
-Cinque secondi bastano a un giocatore di club per dire chi sta meglio a metà
+Cinque secondi bastano a un giocatore esperto per dire chi sta meglio a metà
 partita. Conta i pezzi, e una torre vale più di un alfiere; guarda il re, al
 riparo o allo scoperto, i pedoni che si difendono a vicenda, chi tiene le
 caselle in mezzo, da cui si arriva ovunque in fretta. Resta un giudizio, e due
@@ -400,23 +400,25 @@ mai.
 Fermarsi sempre alla stessa distanza ha un costo con un nome: **l’effetto
 orizzonte**. Il mio alfiere è spacciato, comunque giochi fra sei mosse me lo
 prendono, e io guardo avanti cinque mosse, così quella perdita per me non
-esiste. Do allora due scacchi inutili al suo re, regalando un pedone per volta,
-e la cattura slitta a sette mosse, a otto, a nove, fuori dal mio orizzonte.
-Riguardo, l’alfiere è salvo, e concludo che regalare pedoni sia un’ottima idea.
-Nessuno ha sbagliato a programmare: capita a chiunque giudichi il mondo a una
-scadenza fissa, ben oltre gli scacchi. Il disastro sta ancora là, appena oltre
-il punto in cui smetto di guardare, e i pedoni li ho pagati davvero.
+esiste. Do allora due scacchi inutili al suo re, che sotto scacco deve
+rispondere e non può fare altro: ogni scacco gli ruba una mossa, e regalando un
+pedone per volta la cattura slitta a sette mosse, a otto, a nove, fuori dal mio
+orizzonte. Riguardo, l’alfiere è salvo, e concludo che regalare pedoni sia
+un’ottima idea. Nessuno ha sbagliato a programmare: capita a chiunque giudichi
+il mondo a una scadenza fissa, ben oltre gli scacchi. Il disastro sta ancora
+là, appena oltre il punto in cui smetto di guardare, e i pedoni li ho pagati
+davvero.
 
 Un rimedio a metà lo conosce ogni giocatore. Se dove arrivo i pezzi si stanno
 ancora mangiando a vicenda, lì non mi fermo. Tiro avanti finché le acque non si
 calmano, e solo allora compilo il foglietto. L’orizzonte si sposta dove fa meno
 danni; sparire non sparisce.
 
-E c’è fatica da non rifare. Muovo cavallo e poi alfiere, oppure alfiere e poi
-cavallo: la scacchiera davanti è la stessa, e ricompilare il foglietto è tempo
-buttato. Tengo da parte ogni posizione già giudicata col suo voto, e me lo
-riprendo quando la stessa scacchiera ricapita per un’altra strada. Agli scacchi
-tanto basta per scendere due volte più a fondo nello stesso tempo.
+Muovo cavallo e poi alfiere, oppure alfiere e poi cavallo: la scacchiera
+davanti è la stessa, e ricompilare il foglietto sarebbe tempo buttato. Allora
+tengo da parte ogni posizione già giudicata col suo voto, e me lo riprendo
+quando la stessa scacchiera ricapita per un’altra strada. Agli scacchi tanto
+basta per scendere due volte più a fondo nello stesso tempo.
 
 `````
 
@@ -427,17 +429,18 @@ e il test di terminazione con un **test di taglio**, ottenendo il minimax
 euristico
 
 $$
-\mathrm{h\text{-}minimax}(s, d) =
+\mathrm{h\text{-}minimax}(s, k) =
 \begin{cases}
-\mathrm{ev}(s) & \text{se il taglio scatta in } (s,d),\\[2pt]
-\max_a \mathrm{h\text{-}minimax}(\mathrm{ris}(s,a),\, d+1) & \text{se tocca a chi massimizza},\\[2pt]
-\min_a \mathrm{h\text{-}minimax}(\mathrm{ris}(s,a),\, d+1) & \text{se tocca a chi minimizza},
+\mathrm{ev}(s) & \text{se il taglio scatta in } (s,k),\\[2pt]
+\max_a \mathrm{h\text{-}minimax}(\mathrm{ris}(s,a),\, k+1) & \text{se tocca a chi massimizza},\\[2pt]
+\min_a \mathrm{h\text{-}minimax}(\mathrm{ris}(s,a),\, k+1) & \text{se tocca a chi minimizza},
 \end{cases}
 $$
 
-dove $d$ conta i livelli già scesi lungo la ricorsione (vale zero alla radice e
-cresce di uno a ogni mossa giocata), e il taglio scatta quando $d$ arriva al
-limite fissato o la posizione è comunque terminale.
+dove $k$ conta i livelli già scesi lungo la ricorsione (vale zero alla radice e
+cresce di uno a ogni mossa giocata: non è il $d$ della profondità della
+soluzione), e il taglio scatta quando $k$ arriva al limite fissato o la
+posizione è comunque terminale.
 
 Perché $\mathrm{ev}$ sia utile deve concordare con $u$ sugli stati terminali,
 essere calcolabile in fretta, e correlare con la probabilità di vittoria. In
@@ -451,9 +454,12 @@ la teoria pulita si sporca:
 
 - **l’effetto orizzonte**, cioè la tendenza a preferire mosse che rimandano un
   danno inevitabile oltre la profondità di taglio, pagandolo con un danno
-  minore ma reale {cite}`russell2020artificial`. Il rimedio parziale si chiama
-  ricerca di quiescenza: dove la posizione è «agitata» (catture in corso,
-  scacchi) si continua a scendere oltre il taglio finché non si stabilizza;
+  minore ma reale {cite}`russell2020artificial`. I rimedi sono due, e nessuno
+  dei due lo elimina: la **ricerca di quiescenza**, che dove la posizione è
+  «agitata» (catture in corso, scacchi) continua a scendere oltre il taglio
+  finché non si stabilizza, e le **estensioni singolari**, che prolungano la
+  ricerca lungo una mossa chiaramente migliore di tutte le altre, così che le
+  mosse dilatorie non riescano a spingere il danno fuori vista;
 - **le trasposizioni**. L’albero srotolato dall’algoritmo tratta come nuovi
   stati che sono lo stesso stato raggiunto per un ordine diverso di mosse.
   Tenere una tabella dei valori già calcolati, indicizzata sulla posizione,
@@ -476,14 +482,12 @@ spegne: non serve guardarlo, perché a sceglierlo sarebbe l’avversario e
 l’avversario prenderà comunque il minimo.
 ```
 
-{numref}`fig-alfabeta-pota` mostra in movimento il primo dei due risparmi di
-questa sezione, e la ragione per guardarlo è che si veda **quando** i due rami
-si spengono, cosa che su un disegno fermo non si vedrebbe. Messi uno accanto
-all’altro, i due risparmi sono di natura opposta, ed è la cosa da tenere di
-tutta la sezione. **La potatura spegne rami di cui si è dimostrato che non
-possono cambiare la risposta: non costa niente.** La funzione di valutazione,
-invece, sostituisce una risposta vera con un giudizio: costa, e il prezzo si
-chiama effetto orizzonte.
+{numref}`fig-alfabeta-pota` fa vedere **quando** i due rami si spengono, cosa
+che su un disegno fermo non si vedrebbe. E messa accanto alla funzione di
+valutazione, la potatura è di natura opposta: spegne rami di cui si è
+dimostrato che non possono cambiare la risposta, e non costa niente. La
+funzione di valutazione, invece, sostituisce una risposta vera con un giudizio:
+costa, e il prezzo si chiama effetto orizzonte.
 
 `````{tab} Elementare
 
@@ -497,7 +501,7 @@ chiama effetto orizzonte.
   il massimo» dove tocca a me e «prendi il minimo» dove tocca a lui.
 - La **potatura** è la frase «questa strada è già peggio della migliore che ho
   trovato, non la guardo nemmeno». Non è un’approssimazione: la risposta è la
-  stessa, e sul filetto costa quasi trentacinque volte meno.
+  stessa, e sul tris costa quasi trentacinque volte meno.
 - Quanto si pota dipende **dall’ordine in cui si guardano le mosse**: con la
   migliore per prima si scarta quasi tutto, con la migliore per ultima quasi
   niente.
@@ -505,7 +509,7 @@ chiama effetto orizzonte.
   profondità e si **giudica a occhio** la posizione. Questo sì che costa, e il
   prezzo si chiama **effetto orizzonte**: il disastro che sta un passo oltre
   l’ultimo che si è guardato non si vede, e conviene perfino spingercelo
-  pagando qualcosa. Il rimedio è non fermarsi dove i pezzi si stanno ancora
+  pagando qualcosa. Un rimedio è non fermarsi dove i pezzi si stanno ancora
   mangiando: l’orizzonte si sposta dove fa meno danni, e sparire non sparisce.
 ```
 
@@ -529,7 +533,7 @@ chiama effetto orizzonte.
 - Non potendo raggiungere le foglie si sostituisce $u$ con una **funzione di
   valutazione** e il test di fine con un test di taglio. Qui la ricerca smette
   di essere esatta, e compare l’**effetto orizzonte**, che la ricerca di
-  quiescenza attenua senza eliminare.
+  quiescenza e le estensioni singolari attenuano senza eliminare.
 - Le **trasposizioni** riportano l’albero al grafo che era: una tabella dei
   valori già calcolati raddoppia, agli scacchi, la profondità raggiungibile
   {cite}`russell2020artificial`.
@@ -537,8 +541,8 @@ chiama effetto orizzonte.
 
 `````
 
-Fin qui il mondo è stato generoso in tre modi, e nessuno dei tre ci è stato
-chiesto: ci ha lasciato interrogare le regole quante volte volevamo, ci ha
-detto quando eravamo arrivati, e ci ha permesso di scrivere un giudizio sulle
-posizioni intermedie. La sezione che chiude il capitolo toglie quelle tre cose
-una per volta, e guarda che cosa resta in piedi.
+Fin qui il mondo è stato generoso in tre modi: ci ha lasciato interrogare le
+regole quante volte volevamo, ci ha detto quando eravamo arrivati, e ci ha
+permesso di scrivere un giudizio sulle posizioni intermedie. La sezione che
+chiude il capitolo toglie quelle tre cose una per volta, e guarda che cosa
+resta in piedi.

@@ -18,8 +18,9 @@ scrivi dentro si chiama **contesto**. Larga quanto vuoi, resta finita.
 È il cuore di questo capitolo: con un modello di oggi non si programma
 scrivendo codice, si programma scrivendo il contesto. Il modello non si tocca
 e non si modifica; l'unica cosa su cui hai davvero le mani è il testo che gli
-metti davanti. Nel {doc}`capitolo sui Transformer </Transformers/overview>` questa scoperta ha un nome
-inglese, l’*in-context learning*, l'imparare dal contesto: gli descrivi il
+metti davanti. Nella sezione {doc}`sui grandi modelli linguistici
+</Transformers/llm>` questa scoperta ha un nome inglese, l’*in-context
+learning*, l'imparare dal contesto: gli descrivi il
 compito lì dentro, magari con due esempi, e lui lo esegue senza che nessuno
 abbia cambiato una virgola dentro di lui. È un modo di comandare un programma
 scrivendo in italiano invece che in codice, e come tutti i comandi è potente e
@@ -43,8 +44,9 @@ agente che arriva in fondo da uno che si perde.
 
 Qui ne diamo la versione essenziale, quella che serve a un agente: come si
 spende lo spazio, dove il modello legge bene e dove male, e che forme prende
-la memoria. Il tema ha però un capitolo tutto suo più avanti, *Prompt,
-contesto e loop*, che lo allarga oltre l'agente. Là si vedrà come si scrive il
+la memoria. Il tema ha però un capitolo tutto suo più avanti,
+{doc}`Prompt, contesto e loop </IngegneriaLLM/overview>`, che lo allarga oltre
+l'agente. Là si vedrà come si scrive il
 singolo messaggio, in quanti modi un contesto si guasta, e come si costruisce
 il ciclo che quella finestra la ri-riempie a ogni passo. Qui restiamo sul filo
 del ragionamento dell'agente; là si guarda il quadro intero.
@@ -72,8 +74,8 @@ vale per ogni reclamo che arriva: «sei l'assistente dell'assistenza; rispondi
 in modo cortese e conciso; non promettere rimborsi oltre i 30 giorni; ecco tre
 reclami già evasi, con la risposta giusta accanto; scrivi sempre nel formato:
 saluto, soluzione, firma». L'ultima riga serve a chi maneggia la risposta dopo
-di lui, perché quel foglio finisce in archivio, dove la firma si cerca sempre
-allo stesso posto, e uno composto a modo proprio lì si inceppa. Stesso collega,
+di lui: quel foglio finisce in archivio, dove la firma si cerca sempre allo
+stesso posto, e un foglio composto a modo proprio lì si inceppa. Stesso collega,
 nessun corso di formazione, risultati incomparabili. Il briefing è un documento
 di lavoro, e come ogni documento si scrive, si rilegge, si corregge quando
 qualcosa non va.
@@ -88,7 +90,7 @@ interni»); resta identico a ogni richiesta ed è la spina dorsale del
 comportamento. Le **istruzioni** e gli **esempi** (*few-shot*) mostrano il
 compito: qualche coppia richiesta → risposta corretta condiziona il modello
 senza alcun aggiornamento dei pesi. È lo stesso meccanismo dell'in-context
-learning del capitolo sui Transformer: il modello stima
+learning dei Transformer: il modello stima
 
 $$
 \hat{y} = \arg\max_{y}\; P\!\left(y \mid I,\; (x_1, y_1), \dots, (x_k, y_k),\; x\right),
@@ -104,16 +106,16 @@ un umano.
 
 `````
 
-La conseguenza pratica è netta, e la riprenderemo nel {doc}`capitolo su MLOps </MLOps/overview>`: **il
-prompt è codice**. Quella riga d'istruzione che orienta il modello è fragile
-(una parola diversa cambia la risposta) e quindi va trattata come si tratta il
-software. Se ne tiene la **storia**, cioè si conserva ogni versione con la data
-e il motivo del cambiamento, invece di sovrascriverla; la si prova su una
-batteria di casi noti; e prima di sostituirla si fanno girare le due versioni
-in parallelo sugli stessi casi, per vedere quale risponde meglio. È l'unico
-modo di sapere se la modifica di ieri ha migliorato o
-peggiorato le risposte di oggi. Il prompt magico non esiste; esiste il prompt
-*provato*.
+La conseguenza pratica è netta, e la riprenderemo parlando di {doc}`LLMOps
+</MLOps/llmops>`: **il prompt è codice**. Quella riga d'istruzione che orienta
+il modello è fragile (una parola diversa cambia la risposta) e quindi va
+trattata come si tratta il software. Se ne tiene la **storia**, cioè si
+conserva ogni versione con la data e il motivo del cambiamento, invece di
+sovrascriverla; la si prova su una batteria di casi noti; e prima di
+sostituirla si fanno girare le due versioni in parallelo sugli stessi casi, per
+vedere quale risponde meglio. È l'unico modo di sapere se la modifica di ieri
+ha migliorato o peggiorato le risposte di oggi. Il prompt magico non esiste;
+esiste il prompt *provato*.
 
 ## La finestra è piccola e preziosa
 
@@ -127,8 +129,8 @@ Riempirli, poi, non è gratis, e da qui in avanti «quanto costa» vorrà sempre
 dire «quanti token».
 
 Il prezzo si paga in tre valute, e le conosciamo già. In **memoria**, perché
-il segnalibro che il modello si tiene per non rileggere ogni volta da capo (nel
-{doc}`capitolo sui Transformer </Transformers/overview>` lo chiamavamo **KV cache**) cresce con la lunghezza
+il segnalibro che il modello si tiene per non rileggere ogni volta da capo (con
+i Transformer lo chiamavamo **KV cache**) cresce con la lunghezza
 del contesto. In **secondi di attesa**, perché più testo c'è, più tempo passa
 prima che compaia la risposta. E in **denaro**, perché un modello si paga a
 consumo, un tanto per ogni token che entra e per ogni token che esce: quel
@@ -147,7 +149,7 @@ perché il modello lo legge come legge tutto il resto, e quindi si paga.
 
 ```{figure} ../figures/context-window.svg
 :name: fig-context-window
-:alt: "Una barra orizzontale rappresenta il budget di una finestra di contesto da centoventottomila token, ripartita in segmenti di ampiezza diversa e via via crescente: il system prompt (circa seimila token), le descrizioni degli strumenti (diecimila), la cronologia della conversazione (trentacinquemila, e cresce a ogni turno), i documenti allegati (cinquantottomila) e, tratteggiato in coda, lo spazio che resta per la risposta: diciannovemila token. In fondo l'avvertenza che i valori sono indicativi."
+:alt: "Una barra orizzontale rappresenta il budget di una finestra di contesto da centoventottomila token, ripartita in cinque segmenti, i primi quattro via via più larghi: il system prompt (circa seimila token), le descrizioni degli strumenti (diecimila), la cronologia della conversazione (trentacinquemila, e cresce a ogni turno), i documenti allegati (cinquantottomila) e, tratteggiato in coda, lo spazio che resta per la risposta: diciannovemila token. In fondo l'avvertenza che i valori sono indicativi."
 :width: 92%
 
 La finestra come budget da ripartire. Ogni segmento toglie spazio agli altri,
@@ -165,8 +167,8 @@ che nessuno accorcia mai, dieci documenti recuperati dove ne bastavano tre.
 Nessuna di queste è un errore in sé, ma insieme mangiano lo spazio della
 risposta, che è l'ultimo segmento e l'unico che nessuno pensa a contare.
 
-C'è di peggio, e va contro l'intuizione: **anche quando lo spazio ci sarebbe,
-riempirlo può danneggiare la risposta**. Nel 2023 Nelson Liu e colleghi lo
+C'è di peggio, e va contro l'intuizione: anche quando lo spazio ci sarebbe,
+riempirlo può danneggiare la risposta. Nel 2023 Nelson Liu e colleghi lo
 hanno misurato in un lavoro dal titolo eloquente, *Lost in the Middle*
 {cite}`liu2024lost`: i modelli usano bene l'informazione che sta
 all’**inizio** e alla **fine** del contesto, e trascurano quella sepolta **in
@@ -248,16 +250,16 @@ precedenti ne è un esempio) e che vive quanto vive la finestra. La **memoria a
 lungo termine** è esterna e persistente. Tre forme ricorrono. La prima è il
 **database vettoriale**: i ricordi (documenti, scambi passati) vengono
 codificati in embedding e recuperati per similarità quando servono; è
-esattamente il **RAG** visto nel capitolo sui Transformer, letto qui come un
-meccanismo di memoria, non solo di recupero. La seconda è il **riassunto
+esattamente il **RAG** dei Transformer, letto qui come un meccanismo di
+memoria, non solo di recupero. La seconda è il **riassunto
 progressivo**: quando la cronologia della conversazione si allunga, la si
 comprime in un sunto che ne conserva l'essenziale a costo di token molto
 minore, liberando finestra. La terza sono i **fatti strutturati** (preferenze,
 identità, vincoli dell'utente) tenuti a parte e reiniettati quando pertinenti.
-Il nodo difficile è la **politica di rimozione**
-(*eviction*) (cosa promuovere a lungo termine, cosa comprimere, cosa
-dimenticare), perché la finestra è il collo di bottiglia e ogni token speso a
-ricordare è un token in meno per ragionare.
+Il nodo difficile non è però l'archivio, che si allarga quanto si vuole: è la
+**politica di rimozione** (*eviction*), cioè che cosa di tutto quel materiale
+merita la finestra a questo passo. La finestra è il collo di bottiglia, e ogni
+token speso a ricordare è un token in meno per ragionare.
 
 `````
 
@@ -287,9 +289,13 @@ documenti, biglietti: entrano comunque. Per il resto non provi tutte le
 combinazioni possibili di ciò che entra e ciò che no, sono troppe e il taxi è
 sotto; scendi per ordine finché lo spazio dura, prima l'indispensabile, poi il
 molto utile, e fra due cose che servono uguale quella che pesa meno. Ciò che
-resta fuori resta fuori. Se qualcosa quasi ci sta, a volte lo porti a metà,
-sapendo che è un compromesso zoppo: mezzo maglione non tiene caldo, e mezza
-frase non dice niente. E se sai che chi la aprirà guarderà per prima cosa
+resta fuori resta fuori.
+
+Se qualcosa quasi ci sta, a volte lo porti a metà, sapendo che è un
+compromesso zoppo: mezzo maglione non tiene caldo, e mezza frase non dice
+niente.
+
+E se sai che chi la aprirà guarderà per prima cosa
 quello che sta sopra e quello che sta sotto, mentre quello sepolto in mezzo
 rischia di non vederlo, le cose che contano le metti ai due estremi. Il context
 builder fa la valigia del modello: gli obbligatori dentro, il resto per
@@ -326,7 +332,10 @@ riordino porta il nome di *long-context reorder*.
 Un'ultima nota di rigore, che non cambia il risultato ma cambia la regola.
 Avendo ammesso il troncamento, lo zaino è diventato **frazionario**, e per
 quel problema l'ottimo greedy si ottiene ordinando per **densità** $r_i / c_i$
-(rilevanza per token), non per la sola rilevanza $r_i$. Sui numeri dell'esempio
+(rilevanza per token), non per la sola rilevanza $r_i$. Con un'avvertenza che
+il troncamento stesso solleva: lo zaino frazionario assume che mezzo oggetto
+valga mezzo valore, e mezza frase non afferma mezza cosa, quindi la garanzia
+di ottimalità vale sul modello, non sul contesto. Sui numeri dell'esempio
 che segue i due criteri scelgono gli stessi passaggi, ma la regola enunciata
 non è quella che il modello dello zaino richiederebbe.
 
@@ -415,14 +424,21 @@ BUDGET = 58
 prompt, usati = costruisci_contesto(system_prompt, passaggi, domanda, BUDGET)
 print(prompt)
 print(f"\nToken usati: {usati}/{BUDGET}")
+
+# quanto pesa il montaggio: anche i marcatori [fonte 0.95] sono testo
+righe = [r for r in prompt.split("\n") if r.startswith("[fonte")]
+pezzi = (conta_token(system_prompt) + conta_token(f"Domanda: {domanda}")
+         + sum(conta_token(r.split("] ", 1)[1]) for r in righe))
+print(f"i soli pezzi scelti: {pezzi} token; i marcatori: {usati - pezzi}, "
+      f"cioe' il {(usati - pezzi) / pezzi:.0%} in piu'")
 ```
 
 L'esecuzione mostra le decisioni prese: dei cinque passaggi, i due più
 rilevanti entrano interi, il terzo viene troncato per riempire l'ultimo
 spazio, i due meno rilevanti restano fuori. E la disposizione finale ha la
-forma di una **V**: molto ai due estremi, poco nel mezzo. È la risposta
-esatta alla pila di fogli, cioè al fatto che il modello legge bene l'inizio e
-la fine e trascura il centro. Il passaggio decisivo, quello che contiene il
+forma di una **V**: molto ai due estremi, poco nel mezzo. È la U della pila di
+fogli presa alla lettera, il modello legge bene l'inizio e la fine e trascura
+il centro. Il passaggio decisivo, quello che contiene il
 2017, finisce in fondo, a ridosso della domanda; il secondo apre; il frammento
 troncato, che è la parte meno utile perché tagliato a metà non afferma niente,
 finisce nel mezzo, dove perderlo costa meno.
@@ -437,16 +453,15 @@ Sei un assistente che risponde citando solo i passaggi forniti. Se l'informazion
 Domanda: In che anno e' stato pubblicato il paper sui Transformer?
 
 Token usati: 58/58
+i soli pezzi scelti: 51 token; i marcatori: 7, cioe' il 14% in piu'
 ```
 
-Il numero in fondo è il conteggio del prompt **davvero montato**, marcatori
-compresi, non la somma dei pezzi che abbiamo scelto. Quelli, contati a parte,
-pesano cinquantuno token: quindici il system prompt, undici la domanda (dieci
-di testo più la parola «Domanda:»), venticinque i tre passaggi messi in fila.
-I sette che mancano all'appello sono i `[fonte 0.95]` e simili: sette token su
-cinquantuno, cioè quasi il quattordici per cento in più di quanto sembrava di
-aver speso. È esattamente il tipo di sforamento che si scopre tardi, quando il
-modello tronca la risposta a metà.
+Le due righe in fondo sono il punto. Il prompt **davvero montato** costa
+cinquantotto token; i pezzi che abbiamo scelto, contati a parte, ne pesano
+cinquantuno. I sette che mancano all'appello sono i `[fonte 0.95]` e simili,
+cioè un quattordici per cento in più di quanto sembrava di aver speso. È
+esattamente il tipo di sforamento che si scopre tardi, quando il modello tronca
+la risposta a metà.
 
 Alla selezione per sola rilevanza manca però un occhio: i passaggi più
 rilevanti per la stessa domanda tendono a somigliarsi fra loro, e un budget
@@ -456,11 +471,13 @@ di prendere i passaggi in ordine di rilevanza, a ogni giro si sceglie quello
 che massimizza
 
 $$
-\lambda \,\mathrm{sim}(p, q) \;-\; (1-\lambda) \max_{p' \in S} \mathrm{sim}(p, p'),
+\lambda \,\mathrm{sim}(d, q) \;-\; (1-\lambda) \max_{d' \in S} \mathrm{sim}(d, d'),
 $$
 
-cioè la somiglianza con la domanda $q$ **meno** la somiglianza con il più
-vicino fra i passaggi $S$ già scelti, pesate da un $\lambda$ fra zero e uno.
+dove $d$ è il passaggio candidato, $q$ la domanda e $S$ i passaggi già
+scelti: la somiglianza con la domanda **meno** la somiglianza con il più
+vicino fra i già scelti, pesate da un $\lambda$ fra zero e uno (al primo giro
+$S$ è vuoto e quel massimo vale zero).
 Il secondo termine compra la novità: un passaggio rilevantissimo ma fotocopia
 di uno già dentro perde il posto a favore di uno un po’ meno rilevante che
 aggiunge qualcosa. Con $\lambda = 1$ si torna alla pura rilevanza.
@@ -558,7 +575,8 @@ messa dove rende di più.
   conta**.
 - **Memoria**: a breve termine lo *scratchpad* nella finestra; a lungo termine
   una memoria esterna (database vettoriale/RAG, riassunti progressivi, fatti
-  strutturati). Il problema difficile è decidere cosa ricordare e cosa dimenticare.
+  strutturati). Il problema difficile sta a valle: che cosa di quel materiale
+  merita la finestra a questo passo.
 - Assemblare il contesto è un problema di **budget** (uno zaino, e per giunta
   frazionario una volta ammessa la troncatura): obbligatori fissi, passaggi per
   rilevanza finché entrano, e disposizione a **V**, il più rilevante in fondo e

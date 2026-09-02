@@ -161,7 +161,13 @@ def candidati(percorso, overview):
     mio = percorso.relative_to(RADICE).parts[0]
     # Un capitolo gia' linkato in questa pagina conta come visto: se no la
     # SECONDA menzione prende il posto della prima e --verifica non passa mai.
-    visti = {c for c, doc in overview.items() if doc + ">`" in testo}
+    # Vale QUALUNQUE pagina di quel capitolo, non il solo overview: CLAUDE.md
+    # dice di puntare alla SEZIONE che contiene la cosa promessa, quindi una
+    # pagina che linka `</Agenti/context-engineering>` ha gia' fatto il suo
+    # lavoro. Cercando il solo overview lo strumento chiedeva un secondo link
+    # allo stesso capitolo, cioe' proprio il rumore che la regola vieta: erano
+    # 31 delle 102 segnalazioni.
+    visti = {c for c in overview if ("</" + c + "/") in testo}
     fuori = []
     for n, riga in enumerate(testo.splitlines()):
         if n in saltate or "{doc}" in riga or "](../" in riga:

@@ -226,7 +226,8 @@ Toolformer si allena così su se stesso, e il compito su cui si corregge è un
 testo già scritto da altri, di cui conosce ogni parola.
 
 Prende quel testo e, qua e là, prova a infilarci dentro la chiamata a uno
-strumento (per scriverla gli bastano due o tre esempi già fatti). Poi si copre
+strumento (per scriverla gli basta una manciata di esempi già fatti). Poi si
+copre
 il seguito e prova a indovinarlo due volte: una con il risultato dell'attrezzo
 davanti agli occhi, una senza. Prendi «quattrocento su millequattrocento, cioè
 il 29%»: con «0,29» scritto in mezzo, «29%» viene quasi da sé; senza, è un tiro
@@ -259,26 +260,27 @@ immediatamente successivi, rispetto al non chiamare o a un risultato inutile:
 $$
 \mathcal{L}_i^{\text{con}} < \mathcal{L}_i^{\text{senza}} - \tau,
 \qquad
-\mathcal{L}_i = -\sum_{j \ge i} w_{j-i}\, \log p(x_j \mid \dots),
+\mathcal{L}_i(z) = -\sum_{j \ge i} w_{j-i}\, \log p(x_j \mid z,\, x_{<j}),
 $$
 
-dove $\mathcal{L}_i^{\text{con}}$ e $\mathcal{L}_i^{\text{senza}}$ sono la
-perdita futura con e senza la chiamata inserita in posizione $i$
+dove $z$ è ciò che si antepone in posizione $i$ (la chiamata con il suo
+risultato, la chiamata senza, oppure niente) ed è l'unica cosa che cambia fra i
+due termini del confronto: $\mathcal{L}_i^{\text{con}}$ e
+$\mathcal{L}_i^{\text{senza}}$ sono la perdita futura con e senza la chiamata
 ($\mathcal{L}_i^{\text{senza}}$ è il **minimo** fra il non chiamare affatto e
-il chiamare senza ottenere nulla di utile), $x_j$ sono i token che nel testo
-originale seguono quel punto e $p(x_j \mid \dots)$ la probabilità che il
-modello assegna loro, $\tau$ è una soglia di utilità, e i pesi $w_{j-i}$
-dipendono solo dalla distanza dal punto della chiamata: calano linearmente
-fino ad **annullarsi dopo cinque token**. Quei pesi dicono una cosa precisa:
-ciò che si misura è se la chiamata aiuta a scrivere la frase in corso, non il
-resto del documento, ed è la ragione per cui il filtro non annega nel rumore.
-Le chiamate che superano il filtro diventano un dataset aumentato, e il
-modello ci viene messo a punto sopra con il consueto obiettivo
-auto-supervisionato. Il risultato è un modello che, a inferenza, decide *da
-sé* quando emettere una chiamata, perché ha imparato che in quei punti la
-chiamata paga in termini di predizione. Il criterio è puramente interno
-(«l'attrezzo mi aiuta a continuare il testo?») e non richiede alcuna etichetta
-umana su dove usarlo.
+il chiamare ottenendo una risposta vuota), $x_j$ sono i token che nel testo
+originale seguono quel punto e $x_{<j}$ quelli che li precedono, $\tau$ è una
+soglia di utilità, e i pesi $w_{j-i}$ dipendono solo dalla distanza dal punto
+della chiamata: calano linearmente fino ad **annullarsi dopo cinque token**.
+Quei pesi dicono una cosa precisa: ciò che si misura è se la chiamata aiuta a
+scrivere la frase in corso, non il resto del documento, ed è la ragione per cui
+il filtro non annega nel rumore. Le chiamate che superano il filtro diventano
+un dataset aumentato, e il modello ci viene messo a punto sopra con il consueto
+obiettivo auto-supervisionato. Il risultato è un modello che, a inferenza,
+decide *da sé* quando emettere una chiamata, perché ha imparato che in quei
+punti la chiamata paga in termini di predizione. Il criterio è puramente
+interno («l'attrezzo mi aiuta a continuare il testo?») e non richiede alcuna
+etichetta umana su dove usarlo.
 
 Gli autori dichiarano un limite preciso, ed è il confine fra usare uno
 strumento e condurre un compito. Toolformer decide *dove* chiamare,
@@ -436,7 +438,7 @@ probabilità di rifare lo stesso errore.
 
 Nel 2023 Noah Shinn e colleghi propongono un rimedio semplice e umano,
 **Reflexion** {cite}`shinn2023reflexion`: dopo un fallimento, l'agente si ferma
-e **scrive a parole cosa è andato storto**, poi riprova tenendo quella critica
+e scrive a parole cosa è andato storto, poi riprova tenendo quella critica
 sotto gli occhi.
 
 `````{tab} Elementare
@@ -471,16 +473,22 @@ auto-riflessione* che, letta la traccia fallita e il suo esito, produce una
 critica verbale: «l'azione X non ha dato il risultato atteso, conviene provare
 Y». Questa critica finisce in una **memoria episodica** che viene anteposta al
 contesto del tentativo successivo. Sui compiti di programmazione gli autori
-misurano un guadagno netto di *pass@1*: iterare sull'auto-critica, senza
-toccare i pesi, recupera una fetta consistente dei casi inizialmente falliti.
+misurano il *pass@1*, la quota di problemi risolti al primo tentativo, e
+iterare sull'auto-critica senza toccare i pesi lo alza quasi dappertutto: su
+HumanEval in Python da $0{,}80$ a $0{,}91$. Quasi: su MBPP in Python scende da
+$0{,}80$ a $0{,}77$, ed è l'unico banco su cui perde.
 
 La lettera piccola di quel guadagno riguarda chi fa il giudice. Il
 *valutatore* che dice «hai sbagliato» non è, in quegli esperimenti di
 programmazione, un giudice esterno: è una
 batteria di test **generata dal modello stesso**, e gli autori dichiarano che
 può promuovere una soluzione sbagliata (tutti i test passano su un programma
-errato) o bocciarne una giusta. È un segnale d'esito, ma auto-prodotto: il
-caso in cui l'auto-critica ha meno di solido su cui appoggiarsi.
+errato) o bocciarne una giusta. La prima è la peggiore delle due, perché
+l'agente consegna e smette di cercare, ed è quella che spiega l'unica perdita:
+su MBPP i test auto-prodotti promuovono un programma sbagliato nel $16{,}3\%$
+dei casi contro l’$1{,}4\%$ di HumanEval. È un segnale d'esito, ma
+auto-prodotto: il caso in cui l'auto-critica ha meno di solido su cui
+appoggiarsi.
 
 `````
 
@@ -546,7 +554,8 @@ def _operatore(op):
 
 def _valuta(nodo):
     if isinstance(nodo, ast.Constant):        # un numero, e solo un numero
-        if not isinstance(nodo.value, (int, float)):
+        numero = isinstance(nodo.value, (int, float))
+        if not numero or isinstance(nodo.value, bool):   # in Python True e' 1
             raise ValueError("ammessi solo numeri")
         return nodo.value
     if isinstance(nodo, ast.BinOp):           # a operatore b
@@ -595,6 +604,9 @@ def llm_finto(traccia):
     if ultima is None:
         return ("Non conosco a memoria l'anno del paper: lo cerco.",
                 "cerca", "attention is all you need")
+    if ultima == "non trovato":     # la ricerca a vuoto: non si inventa
+        return ("L'archivio non ha quella voce, e a memoria non la so.",
+                "Answer", "non lo so")
     if ultima == "2017":
         return ("Il paper è del 2017. Calcolo quanti anni fa, dal 2026.",
                 "calcola", "2026 - 2017")
@@ -678,8 +690,7 @@ dice «entrare in loop», e *loop* è la stessa parola che indica il ciclo che f
 funzionare l'agente. Stessa parola, due significati opposti: uno è il motore,
 l'altro è il guasto.)
 
-Le sei cose da portarsi via da questa sezione, prima di passare al recupero
-dei documenti.
+Da portarsi via, prima di passare al recupero dei documenti.
 
 `````{tab} Elementare
 
@@ -687,10 +698,9 @@ dei documenti.
 :class: important
 - Un modello da solo è murato: non sa l'ora, sbaglia i conti lunghi, ignora
   quello che è successo dopo il suo addestramento. Il **tool use** gli dà le
-  mani: invece di rispondere di pancia, scrive per uno strumento il
-  **bigliettino d'ordine** che il cuoco passava al cameriere; il programma che
-  gli sta attorno lo esegue e gli riporta il risultato, che il modello ritrova
-  davanti al giro dopo.
+  mani: invece di rispondere di pancia, riempie il **modulo** di uno strumento
+  e lo passa di là; il programma che gli sta attorno lo esegue e gli riporta il
+  risultato, che il modello ritrova davanti al giro dopo.
 - Ogni strumento si presenta con un modulo: come si chiama, a cosa serve, e
   cosa bisogna infilarci dentro perché funzioni. Il modello impara a scegliere
   l'attrezzo giusto e a riempire bene il modulo. **Toolformer**
@@ -733,14 +743,15 @@ dei documenti.
   JSON Schema: `type`, `properties`, `required`); la capacità di sceglierlo e
   compilarne gli argomenti emerge dall'instruction tuning. **Toolformer**
   {cite}`schick2023toolformer` impara *da solo*, con auto-supervisione, dove
-  conviene chiamare un'API: tiene le chiamate che riducono la cross-entropia **pesata** sui cinque token
-  che seguono il punto della chiamata. Non sa però comporre gli strumenti in
-  catena: è il salto che ReAct affronta.
+  conviene chiamare un'API: tiene le chiamate che riducono la cross-entropia
+  **pesata** sui cinque token a partire dal punto della chiamata. Non sa però
+  comporre gli strumenti in catena: è il salto che ReAct affronta.
 - **ReAct** {cite}`yao2023react` intreccia in un loop **Thought → Action →
   Observation**: le osservazioni àncorano il ragionamento a fatti reali e le
   allucinazioni crollano, ma è uno **scambio**, non un guadagno secco (gli
   errori di ragionamento quasi triplicano, dal 16% al 47%, e si aggiunge il
-  fallimento della ricerca a vuoto). La traccia è ispezionabile, **non** fedele
+  fallimento della ricerca a vuoto). La traccia è ispezionabile, ma non
+  **fedele**
   {cite}`turpin2023unfaithful, lanham2023faith`: contano le azioni, non i
   pensieri.
 - **Reflexion** {cite}`shinn2023reflexion` aggiunge una **memoria verbale**

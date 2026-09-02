@@ -28,12 +28,12 @@ avvicinarsi al gemello, quindi, ma anche di allontanarsi dai rivali, e la
 risposta vuota diventa impossibile per costruzione: se descrivo tutto allo
 stesso modo, non distinguo nessun rivale dal gemello e il punteggio crolla.
 
-È la famiglia **contrastiva**, e il libro l'ha già percorsa per intero nel
-capitolo sulla visione artificiale, alla sezione «Imparare a vedere senza
-etichette»: la ricetta di base, il costo dei rivali, e la coda di rivali già
-elaborati che permette di averne molti senza doverli calcolare tutti insieme.
-Qui interessa solo il posto che occupa nello schema: **il collasso lo impedisce
-una forza che allontana**.
+È la famiglia **contrastiva**, già percorsa per intero in
+{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`:
+la ricetta di base, il costo dei rivali, e la coda di rivali già elaborati che
+permette di averne molti senza doverli calcolare tutti insieme. Qui interessa
+solo il posto che occupa nello schema: **il collasso lo impedisce una forza che
+allontana**.
 
 Il prezzo di questa famiglia va ricordato, perché è quello che ha spinto le
 due che seguono a cercare un'altra strada: i rivali costano, e servono a
@@ -48,22 +48,23 @@ niente che allontani; a impedire il collasso è che le due reti **non sono
 intercambiabili**, una impara e l'altra insegue in ritardo, e una sola delle due
 ha un passaggio in più prima del confronto.
 
-Anche questa il libro l'ha già fatta, nello stesso capitolo. Qui basta il posto
-nello schema: **il collasso lo impedisce un'asimmetria**, cioè una differenza
-costruttiva fra i due rami.
+È la famiglia della **distillazione**, perché una rete impara da quello che
+dice l'altra, e anche questa è già stata percorsa in «Imparare a vedere senza
+etichette». Qui basta il posto nello schema: **il collasso lo impedisce
+un'asimmetria**, cioè una differenza costruttiva fra i due rami.
 
-È anche la famiglia di cui si capisce meno *perché* funzioni, e conviene dirlo
-perché è proprio da lì che nasce la terza: **funziona, e la spiegazione è
-arrivata dopo**, un pezzo alla volta e su modelli semplificati
+È anche la famiglia di cui si capisce meno *perché* funzioni, ed è proprio da
+lì che nasce la terza: **funziona, e la spiegazione è arrivata dopo**, un pezzo
+alla volta e su modelli semplificati
 {cite}`tian2021understanding`. Chi non si accontenta di una proprietà che
 spunta fuori da sé mentre il modello si addestra ha una sola strada, ed è
-scrivere l'anti-collasso dentro la formula, dove si può leggere.
+scrivere l'anti-collasso dentro il punteggio, dove si può leggere.
 
 ## La terza: vincolare le statistiche
 
-Qui il libro entra in materia nuova, e conviene dire subito la mossa. Il
-riassunto che il modello produce di ogni foto è una fila di numeri, e ognuno di
-quei numeri sta in una **casella** sua (nel gergo le caselle si chiamano
+Qui si entra in materia nuova, e la mossa è questa. Il riassunto
+che il modello produce di ogni foto è una fila di numeri, e ognuno di quei
+numeri sta in una **casella** sua (nel gergo le caselle si chiamano
 *coordinate*). Invece di allontanare gli esempi gli uni dagli altri, o di
 sperare che un'asimmetria faccia il suo lavoro, si guarda che cosa il modello
 scrive in ciascuna casella e gli si impone una condizione che la risposta vuota
@@ -154,8 +155,8 @@ $\mathbf{Z}^B$: ogni cella di $\mathbf{C}$ vale allora lo stesso numero $c$,
 quello che sta sulla diagonale, e il termine di ridondanza paga
 $\lambda \, D(D-1) \, c^2$, cioè $D(D-1)$ celle piene quanto la diagonale,
 mentre una rappresentazione con la stessa diagonale e coordinate scorrelate
-pagherebbe zero. Non c'è niente da dimostrare sulla dinamica
-dell'ottimizzazione, perché la penalità è scritta nell'obiettivo.
+pagherebbe zero. Non serve un argomento sulla dinamica dell'ottimizzazione:
+la penalità si legge sul valore della perdita, perché è scritta nell'obiettivo.
 
 **VICReg** {cite}`bardes2022vicreg` arriva alla stessa meta con tre termini
 espliciti, varianza, invarianza e covarianza, e la differenza pratica sta nella
@@ -176,13 +177,15 @@ prototipi e **predice l'assegnazione di una vista dalla rappresentazione
 dell'altra**, con un vincolo di equipartizione fra i prototipi che è il pezzo
 anti-collasso. Mathilde Caron firma come prima autrice anche il metodo di
 distillazione della famiglia precedente {cite}`caron2021emerging`, e
-l'equipartizione fa qui il mestiere che là fanno centratura e affilatura:
-impedire che una casella se le prenda tutte.
+l'equipartizione fa qui il mestiere che là fa la **centratura**: impedire che
+una casella se le prenda tutte. Là quel mestiere richiede un contrappeso,
+perché la centratura da sola spinge verso l'uniformità e a tirare dall'altra
+parte serve l'affilatura; qui il vincolo è uno solo.
 
 `````
 
 Che chiedere «otto caselle, otto cose diverse» sia un'operazione e non una
-metafora si vede in una trentina di righe, senza dataset e senza addestrare
+metafora si vede in una cinquantina di righe, senza dataset e senza addestrare
 niente di grosso. Partiamo apposta dal caso interessante, cioè da un modello
 **ridondante**: otto coordinate che all'inizio dicono quasi tutte la stessa
 cosa.
@@ -217,17 +220,18 @@ def barlow(c, lam=0.05):
     fuori = c - torch.diag_embed(diag)
     return ((diag - 1) ** 2).sum() + lam * (fuori ** 2).sum()
 
-def referto(eti):
+def referto(eti, va=None, vb=None):
+    va, vb = (vista_a if va is None else va), (vista_b if vb is None else vb)
     with torch.no_grad():
-        c = correlazione(proiettore(vista_a), proiettore(vista_b))
+        c = correlazione(proiettore(va), proiettore(vb))
         d, f = torch.diagonal(c), c - torch.diag_embed(torch.diagonal(c))
         print(f"{eti:14s} diagonale {d.mean():5.2f}   "
               f"fuori diagonale {f.abs().sum() / (D * D - D):5.2f}")
 
-RUMORE = RUMORE_VISTA
 # La diagonale non potra' arrivare a 1: le due viste hanno rumore indipendente,
 # quindi la loro correlazione ha un tetto, ed e' questo.
-print(f"tetto della diagonale, imposto dal rumore: {1 / (1 + RUMORE ** 2):.2f}\n")
+print(f"tetto della diagonale, imposto dal rumore: "
+      f"{1 / (1 + RUMORE_VISTA ** 2):.2f}\n")
 
 referto("all'inizio")
 ott = torch.optim.SGD(proiettore.parameters(), lr=0.05)
@@ -237,6 +241,14 @@ for passo in range(1, 601):
     ott.step()
     if passo in (100, 600):
         referto(f"dopo {passo}")
+
+# Lo stesso proiettore su esempi MAI VISTI. Serve a separare due cose che sulla
+# diagonale si confondono: il tetto imposto dal rumore delle viste, e il fatto
+# che un proiettore lineare si adatti anche alle 512 righe che ha davanti.
+nuovo = torch.randn(4 * N, D_IN)
+referto("su dati nuovi",
+        nuovo + RUMORE_VISTA * torch.randn(4 * N, D_IN),
+        nuovo + RUMORE_VISTA * torch.randn(4 * N, D_IN))
 ```
 
 ```text
@@ -245,23 +257,35 @@ tetto della diagonale, imposto dal rumore: 0.92
 all'inizio     diagonale  0.92   fuori diagonale  0.70
 dopo 100       diagonale  0.92   fuori diagonale  0.01
 dopo 600       diagonale  0.93   fuori diagonale  0.01
+su dati nuovi  diagonale  0.92   fuori diagonale  0.03
 ```
 
-Le due colonne raccontano due storie diverse, ed è esattamente il punto. La
-colonna della **fuori diagonale**, che misura quanto le coordinate si ripetono
-l'una con l'altra, crolla da $0{,}70$ a $0{,}01$: le otto coordinate smettono di
-ripetersi e cominciano a dire otto cose distinte. La colonna della
-**diagonale**, che misura quanto le due viste ricevono lo stesso riassunto,
-invece non si muove, perché era già al massimo consentito: le due viste hanno
-rumore indipendente, quindi la loro correlazione ha un tetto, che il programma
-calcola e stampa in cima, ed è $0{,}92$. Il valore misurato dopo seicento passi
-è $0{,}93$, cioè lo stesso numero a meno del campione finito.
+Il confronto mette ogni casella della prima vista contro ogni casella della
+seconda, e ne esce una tabella quadrata: sulla **diagonale** ciascuna casella
+sta di fronte a sé stessa, e lì si legge se le due viste hanno ricevuto lo
+stesso riassunto; **fuori diagonale** ciascuna sta di fronte alle altre, e lì
+si legge quanto si ripetono.
 
-Vale la pena fermarsi su questo, perché è la cosa che si sbaglia leggendo la
-formula: la diagonale non deve andare a uno per forza. Deve andare **il più in
-alto che il rumore consente**, e in una situazione reale quel tetto è imposto
-dalle trasformazioni che abbiamo scelto noi. Quello che l'ottimizzazione può
-davvero guadagnare, in questo esempio, è tutto nell'altra colonna.
+Le due colonne stampate raccontano due storie diverse, ed è esattamente il
+punto. La fuori diagonale crolla da $0{,}70$ a $0{,}01$: le otto coordinate
+smettono di ripetersi e cominciano a dire otto cose distinte. La diagonale
+invece parte già in cima e ci resta: le due viste hanno rumore indipendente,
+quindi la loro correlazione ha un tetto, che il programma calcola e stampa
+prima di cominciare, ed è $0{,}92$.
+
+Dopo seicento passi la diagonale si legge $0{,}93$, cioè un centesimo **sopra**
+quel tetto, e il centesimo non è un errore di conto: il punteggio si calcola
+sulle cinquecentododici coppie che il modello ha davanti, non sulla sorgente da
+cui vengono, e su un campione finito un po' di somiglianza in più si trova
+sempre. Che sia questo lo dice l'ultima riga, dove lo stesso proiettore
+descrive esempi che non ha mai visto: lì la diagonale torna a $0{,}92$, e la
+fuori diagonale sale appena, da $0{,}01$ a $0{,}03$.
+
+E la diagonale non deve andare a uno per forza: è l'errore che si fa più
+volentieri. Deve andare **il più in alto che il rumore consente**, e in una
+situazione reale quel tetto è imposto dalle trasformazioni che abbiamo scelto
+noi. Quello che l'ottimizzazione può davvero guadagnare, in questo esempio, è
+tutto nell'altra colonna.
 
 ## La quarta: ricostruire
 
@@ -270,7 +294,7 @@ copre un pezzo di dato e gli chiede di rifarlo. La risposta vuota qui non è
 nemmeno una tentazione: descrivere tutte le immagini allo stesso modo rende
 impossibile ricostruirne una in particolare, e il punteggio se ne accorge subito.
 
-È la famiglia **generativa mascherata**, e il libro l'ha percorsa due volte: sul
+È la famiglia **generativa mascherata**, ed è già stata percorsa due volte: sul
 testo, nel {doc}`capitolo sui Transformer </Transformers/overview>`, e sulle immagini, nel capitolo sulla
 visione. Il posto nello schema: **il collasso lo impedisce il compito stesso**,
 perché ricostruire un dato specifico richiede di averlo descritto in modo
@@ -283,23 +307,24 @@ interessano. È l'obiezione che porterà alla JEPA, nel {doc}`capitolo sui world
 
 ## Una rinuncia annunciata, e chi l'ha firmata
 
-C'è un filo che questo capitolo può finalmente chiudere, e che il libro aveva
-lasciato aperto.
+C'è un filo rimasto aperto, e adesso si può finalmente chiudere.
 
-Nel {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` compare l'elenco delle rinunce che Yann LeCun
-ripete nelle sue conferenze, e la terza dice: abbandonare i metodi contrastivi
-in favore di quelli **regolarizzati**. Cioè, nel lessico di questa pagina:
+In {doc}`Le quattro rinunce </ModelliEnergia/paesaggi-di-oggi>` compare
+l'elenco che Yann LeCun ripete nelle sue conferenze, e una di quelle dice:
+abbandonare i metodi contrastivi
+in favore di quelli **regolarizzati**. Cioè, nel lessico delle quattro famiglie:
 smettere di mostrare al modello dei controesempi da respingere, e costruirlo
 invece in modo che non possa dire di sì a tutto.
 
-I metodi regolarizzati sono la terza famiglia di questa sezione, e conviene
-guardare chi firma i due lavori: Barlow Twins e VICReg hanno **LeCun stesso
-fra gli autori**. La rinuncia e la sua attuazione sono la stessa persona, il
-che non la rende né più né meno vera, ma spiega perché quella riga della
-diapositiva non fosse una previsione generica.
+I metodi regolarizzati sono la terza famiglia, e i due lavori portano una firma
+che dice qualcosa: Barlow Twins e VICReg hanno **LeCun stesso fra gli
+autori**. La
+rinuncia e la sua attuazione sono la stessa persona, il che non la rende né più
+né meno vera, ma spiega perché quella riga della diapositiva non fosse una
+previsione generica.
 
-Se la scommessa sia giusta resta una questione aperta, e il libro non ha motivo
-di chiuderla al posto della ricerca. L'argomento di chi ci scommette è che al
+Se la scommessa sia giusta resta una questione aperta, e non c'è motivo di
+chiuderla al posto della ricerca. L'argomento di chi ci scommette è che al
 crescere della complessità del dato, e soprattutto sul video, le risposte
 possibili diventano così tante che nessuna quantità di controesempi basterebbe a
 puntellare il modello; l'argomento di chi non ci scommette è che i metodi
@@ -324,17 +349,18 @@ dentro il compito.
 
 ## Un avvertimento sulle tassonomie
 
-Le famiglie si possono contare in più di un modo, e conviene sapere quale si
-sta usando qui. Questa pagina taglia secondo **che cosa impedisce la risposta
-vuota**, ed è la colonna di mezzo della tabella; ne escono quattro famiglie.
+Le famiglie si possono contare in più di un modo, e quale sia quello usato qui
+va detto. Il taglio è **che cosa impedisce la risposta vuota**, ed è la
+colonna di mezzo della tabella; ne escono quattro famiglie.
 La colonna di destra, «dove sta la difficoltà», è invece l'asse che usa
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
-e la coincidenza ha una ragione. Nel
-{doc}`capitolo sui world model </WorldModels/overview>` si taglia invece
-secondo **dove avviene la previsione**, cioè se il modello prova a rifare il dato
-(i pixel, i token) oppure il suo riassunto: da lì escono tre famiglie, e la
-terza, quella che predice nello spazio delle rappresentazioni, in questa pagina
-non compare affatto perché non è un modo diverso di evitare il collasso.
+e la coincidenza ha una ragione. In
+{doc}`Tre famiglie per imparare senza etichette </WorldModels/jepa>` si taglia
+invece secondo **dove avviene la previsione**, cioè se il modello prova a
+rifare il dato (i pixel, i token) oppure il suo riassunto: da lì escono tre
+famiglie, e la
+terza, quella che predice nello spazio delle rappresentazioni, qui non compare
+affatto perché non è un modo diverso di evitare il collasso.
 
 Non è una contraddizione ed è utile che sia così: i due assi sono
 indipendenti, e un metodo ha una posizione su ciascuno dei due. Una JEPA, per
@@ -353,9 +379,9 @@ da due lati.
   metodi si distinguono per come lo impediscono, non per come si chiamano.
 - **Respingere**: si mettono in campo dei rivali, e descrivere tutto uguale fa
   perdere. Funziona, ma i rivali servono a migliaia e costano.
-- **Rendere le due reti diverse**: niente rivali, ma allievo e insegnante non
-  sono intercambiabili. Funziona, e la spiegazione del perché è arrivata dopo il
-  risultato.
+- **Rendere le due reti diverse**: niente rivali, ma le due reti non sono
+  intercambiabili, una impara e l'altra la insegue in ritardo. Funziona, e la
+  spiegazione del perché è arrivata dopo il risultato.
 - **Vincolare le statistiche**: si compila una scheda con otto caselle e si
   chiedono due cose insieme, la somiglianza e la varietà. La somiglianza vuole
   che due ritagli della stessa foto diano la stessa scheda; la varietà vuole che
@@ -369,10 +395,10 @@ da due lati.
   vuota non serve nemmeno a niente, perché per rifare *quella* foto bisogna
   averla descritta in modo suo. Si paga altrove: si spreca fatica su dettagli
   che nessuno può indovinare.
-- Trenta righe di codice fanno vedere il vincolo all'opera: le caselle smettono
-  di ripetersi (il numero della ridondanza crolla da $0{,}70$ a $0{,}01$) mentre
-  la somiglianza fra le due schede resta dov'era, perché era già al massimo che
-  il disturbo consentiva.
+- Cinquanta righe di codice fanno vedere il vincolo all'opera: le caselle
+  smettono di ripetersi (il numero della ridondanza crolla da $0{,}70$ a
+  $0{,}01$) mentre la somiglianza fra le due schede resta dov'era, perché era
+  già al massimo che il disturbo consentiva.
 ```
 
 `````
@@ -407,15 +433,18 @@ da due lati.
   come vincolo anti-collasso. Sta a cavallo fra i contrastivi e i metodi che
   vincolano le statistiche.
 - Nell'esperimento con otto coordinate ridondanti la fuori diagonale scende da
-  $0{,}70$ a $0{,}01$ mentre la diagonale non si muove, $0{,}92$ all'inizio e
-  $0{,}93$ dopo seicento passi: è il **tetto imposto dal rumore delle viste**,
-  $1/(1+\sigma^2)$ con $\sigma = 0{,}3$, non un limite dell'ottimizzazione. La
-  diagonale non deve tendere a uno in assoluto, ma al massimo che le
-  trasformazioni consentono.
-- I metodi regolarizzati sono la **terza rinuncia** dell'elenco di LeCun
-  discusso nel {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>`, e Barlow Twins e VICReg hanno
-  LeCun fra gli autori. La scommessa è che sul video nessuna quantità di
-  negativi basti; la questione è aperta.
+  $0{,}70$ a $0{,}01$ mentre la diagonale parte già al **tetto imposto dal
+  rumore delle viste**, $1/(1+\sigma^2) = 0{,}92$ con $\sigma = 0{,}3$, che non è
+  un limite dell'ottimizzazione. Il $0{,}93$ che si legge dopo seicento passi
+  sta un centesimo **sopra** quel tetto, perché la perdita si calcola sulla
+  correlazione empirica del batch: lo stesso proiettore su esempi nuovi torna a
+  $0{,}92$. La diagonale non deve tendere a uno in assoluto, ma al massimo che
+  le trasformazioni consentono.
+- I metodi regolarizzati sono la rinuncia **ai contrastivi** dell'elenco di
+  LeCun discusso in
+  {doc}`Le quattro rinunce </ModelliEnergia/paesaggi-di-oggi>`, e Barlow Twins
+  e VICReg hanno LeCun fra gli autori. La scommessa è che sul video nessuna
+  quantità di negativi basti; la questione è aperta.
 ```
 
 `````

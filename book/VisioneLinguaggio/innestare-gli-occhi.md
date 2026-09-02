@@ -7,7 +7,7 @@ gli interessa. Le due parti hanno storie separate e restano quello che sono: il
 mestiere sta tutto nella saldatura, che è la più piccola delle tre cose e l'unica
 che il vivaista fabbrica davvero.
 
-L'architettura di questa sezione è un innesto in senso letterale, e l'immagine
+L'architettura che segue è un innesto in senso letterale, e l'immagine
 conviene tenerla fino in fondo: fra le giunzioni che sono state provate ha
 resistito la più semplice, non la più ingegnosa.
 
@@ -67,16 +67,23 @@ domanda è una briciola dentro un contesto quasi interamente occupato dalla foto
 
 Peggio: il costo dell'attenzione, il meccanismo con cui ogni pezzo guarda tutti
 gli altri, non cresce come la lunghezza della sequenza, cresce come il suo
-**quadrato** (è il conto fatto nel capitolo sui Transformer: se i pezzi
-raddoppiano, le coppie da confrontare quadruplicano). Se al posto di 576 tessere
-ne passassimo 32 (un numero che qualcuno ha scelto davvero), la sequenza
-scenderebbe da 596 a 52 pezzi, cioè undici volte e mezzo più corta; e siccome il
-costo va col quadrato, undici e mezzo per undici e mezzo fa circa centotrenta
-volte meno.
+**quadrato** (è il conto fatto nel {doc}`capitolo sui Transformer
+</Transformers/overview>`: se i pezzi raddoppiano, le coppie da confrontare
+quadruplicano). Se al posto di 576 tessere ne passassimo 32 (un numero che
+qualcuno ha scelto davvero), la sequenza scenderebbe da 596 a 52 pezzi, cioè
+undici volte e mezzo più corta; e siccome i confronti vanno col quadrato,
+undici e mezzo per undici e mezzo fa circa centotrenta volte meno confronti.
 
-Ecco perché «quanti» pesa: comprimere l'immagine in pochi vettori fa risparmiare
-moltissimo. Quel risparmio si paga in quello che dell'immagine viene buttato
-via.
+Quel centotrenta però vale per i confronti, non per il lavoro. A seicento pezzi
+i confronti sono ancora una briciola del conto, un quarantesimo scarso: il
+grosso lo fa il lavoro che il modello spende su ogni pezzo, uno per uno, e
+quello cala quanto i pezzi, cioè undici volte e mezzo. Il quadrato comanda
+molto più in là, quando i pezzi si contano a decine di migliaia.
+
+Ecco perché «quanti» pesa lo stesso: ogni tessera occupa un posto, i posti
+sono contati, e a ogni domanda il modello deve tenersi in memoria quello che
+ha già letto di tutti. Quel risparmio si paga in quello che dell'immagine
+viene buttato via.
 
 `````
 
@@ -101,8 +108,14 @@ token, il costo dell'attenzione per strato è $O\big((M+T)^2 d_t\big)$, e la
 memoria della cache delle chiavi e dei valori cresce linearmente in $M+T$ per
 ogni strato e ogni testa. Con i valori dell'esempio numerico, $N = 576$ e
 $T = 20$: passare da $M = 32$ a $M = N$ moltiplica il termine quadratico per
-$(596/52)^2 \approx 131$. La compressione, quando si può fare, è ciò
-che rende praticabile allegare un'immagine a ogni richiesta.
+$(596/52)^2 \approx 131$. Quel $131$ però non è il rapporto fra i due costi:
+a $M + T \approx 600$ e $d_t = 4096$ il termine quadratico vale il $2{,}4\%$
+del blocco (è il conto $4N^2 d$ contro $24 N d^2$ che la sezione sulla
+risoluzione fa per esteso), e i FLOP totali per strato scendono di $11{,}7$
+volte, cioè quanto la sequenza. Quello che si paga davvero, a queste
+lunghezze, è il **contesto occupato** e la cache delle chiavi e dei valori,
+che crescono linearmente: è per questo che la compressione, quando si può
+fare, rende praticabile allegare un'immagine a ogni richiesta.
 
 `````
 
@@ -115,7 +128,7 @@ ragione precisa.
 
 ```{figure} ../figures/vlm-connettori.svg
 :name: fig-vlm-connettori
-:alt: Tre architetture affiancate con lo stesso encoder visivo congelato in basso e lo stesso modello di linguaggio congelato in alto; cambia solo il pezzo in mezzo. A sinistra Flamingo, con un Perceiver Resampler che produce 64 token e li inietta in due nuovi strati di cross-attention gated inseriti fra i blocchi congelati del modello di linguaggio. Al centro BLIP-2, con un Q-Former in cui 32 query apprese interrogano l'immagine e ne escono 32 token messi in testa al prompt. A destra LLaVA, con un proiettore che porta ogni patch nello spazio dei token e consegna 576 token in testa al prompt. Il pezzo che si addestra è in terracotta piena, quelli congelati hanno il contorno tratteggiato.
+:alt: Tre architetture affiancate con lo stesso encoder visivo congelato in basso e lo stesso modello di linguaggio congelato in alto; cambia solo il pezzo in mezzo. A sinistra Flamingo, con un Perceiver Resampler che produce 64 token e li inietta in nuovi strati di cross-attention gated inseriti fra i blocchi congelati del modello di linguaggio. Al centro BLIP-2, con un Q-Former in cui 32 query apprese interrogano l'immagine e ne escono 32 token messi in testa al prompt. A destra LLaVA, con un proiettore che porta ogni patch nello spazio dei token e consegna 576 token in testa al prompt. Il pezzo che si addestra è in terracotta piena, quelli congelati hanno il contorno tratteggiato.
 :width: 85%
 
 Gli stessi due modelli congelati, tre saldature diverse. Il conto del connettore
@@ -156,8 +169,9 @@ solo), e conviene guardarla da vicino.
 Un secondo microfono va aggiunto a un impianto audio già tarato bene. Acceso al
 volume che capita, rovina il concerto. Si collega allora con il **volume a
 zero**: l'impianto suona esattamente come prima, come se il microfono non ci
-fosse. Poi la manopola si alza, se e quanto serve, e ha un fondo scala: per
-quanto la si giri, il microfono nuovo non arriverà mai a coprire l'orchestra.
+fosse. Poi la manopola si alza, se e quanto serve, e ha un fondo scala: al
+massimo il microfono nuovo entra a volume pieno, e più di così non lo si può
+amplificare.
 
 Ogni strato nuovo è collegato così: una sua manopola, un unico numero, moltiplica
 tutto quello che lo strato produce prima di sommarlo al resto, e parte da zero.
@@ -173,13 +187,11 @@ qualunque sia la roba che entra. Le 64 righe da riempire ci sono già, fisse, e
 sono le domande che il pezzo ha imparato a fare in addestramento: per ognuna
 guarda tutto quello che è entrato, prende soprattutto da dove trova la risposta e
 scrive lì il riassunto. Che il materiale sia poco o tanto non cambia il numero di
-righe, cambia solo dove ciascuna va a pescare: è un modulo con 64 caselle, non un
-imbuto tarato su una quantità.
+righe, cambia solo dove ciascuna va a pescare: è un modulo prestampato con 64
+righe, non un imbuto tarato su una quantità.
 
 Tutto questo, gli strati nuovi più il pezzo che riempie le 64 righe, pesa
 **miliardi** di numeri da imparare: è un modello dentro il modello.
-
-E un modulo lo si compila prima di sapere che cosa vi verrà cercato dentro.
 
 `````
 
@@ -246,10 +258,11 @@ finissero a chiedere due volte la stessa cosa. Potrebbero essere «che oggetti c
 sono» o «dove stanno l'uno rispetto all'altro», e cose senza nome che a noi non
 verrebbero in mente.
 
-Le ha scritte in due tempi. Prima con le sole foto davanti, correggendo le
-domande finché dalle risposte si capiva quale fotografia stava guardando; solo
-dopo le risposte sono andate a chi doveva scriverci sopra. Facendo tutto insieme
-si otterrebbero 32 risposte gradevoli da leggere e senza rapporto con la foto.
+Le ha scritte in due tempi. Prima con le foto e le loro didascalie, correggendo
+le domande finché dalle risposte si riusciva a risalire alla didascalia giusta;
+solo dopo le risposte sono andate a chi doveva scriverci sopra. Facendo tutto
+insieme si otterrebbero 32 risposte gradevoli da leggere e senza rapporto con
+la foto.
 
 Davanti a ogni nuova foto pone le 32 domande, la guarda per rispondere e consegna
 32 risposte: da lì in poi il modello di linguaggio ha in mano solo quelle, la
@@ -266,9 +279,6 @@ $32 \times 768$ numeri contro $257 \times 1024$, circa undici volte meno.
 
 Il questionario lo compila una macchina sua, che pesa 188 milioni di caselle:
 poca cosa accanto ai due modelli che collega.
-
-Quelle 32 domande sono state fissate prima che qualcuno facesse una richiesta. Se
-ne arriva una a cui non rispondono, non c'è più niente da rileggere.
 
 `````
 
@@ -432,12 +442,13 @@ bottiglia del seq2seq classico è stato sciolto dall'attenzione di Bahdanau
 invece che da un vettore di contesto più grande.
 
 Due onestà, per non trasformare un'osservazione in un dogma. Il prezzo è
-pesante: il termine quadratico calcolato sopra diventa proibitivo su immagini ad
-alta risoluzione, su documenti e sui video, dove il collo di bottiglia torna a
-essere *computazionale* e la compressione torna sensata (è il tema della sezione
-sulla risoluzione). E le query apprese sono un'idea con un dominio
-di validità, e riappaiono proprio dove i token visivi sarebbero
-troppi.
+pesante: su immagini ad alta risoluzione, su documenti e sui video il contesto
+e la cache si riempiono per primi, e più in là, oltre i $6 d_t$ token, il
+termine quadratico calcolato sopra prende il sopravvento. Lì il collo di
+bottiglia torna a essere *computazionale* e la compressione torna sensata (è il
+tema della sezione sulla risoluzione, che quella soglia la ricava). E le query
+apprese sono un'idea con un dominio di validità, e riappaiono proprio dove i
+token visivi sarebbero troppi.
 
 `````
 
@@ -456,9 +467,9 @@ insegna niente di nuovo ai due modelli: si insegna al connettore dove scrivere.
 **Secondo tempo, istruzioni visive.** Si scongela anche il modello di
 linguaggio (l'encoder visivo di norma resta fermo) e si continua su **dialoghi
 che riguardano immagini**. È l'instruction tuning descritto nel capitolo sui
-Transformer, applicato a un modello che adesso ha un occhio, e non lo
-rispieghiamo qui. Vale anche in questa versione la cosa che là sorprende di più:
-rispetto al pre-addestramento serve pochissimo materiale.
+Transformer, applicato a un modello che adesso ha un occhio, e vale anche qui
+quello che là sorprende di più: rispetto al pre-addestramento serve
+pochissimo materiale.
 
 `````{tab} Elementare
 
@@ -612,9 +623,8 @@ qui.
 ```{admonition} Da ricordare
 :class: important
 - Il connettore nasce da un problema di soldi: i modelli che sanno guardare una
-  foto (la tagliano in tessere e descrivono ogni tessera con una lista di
-  numeri) e quelli che sanno scrivere esistono già, e dietro ciascuno ci sono
-  mesi di calcolo, quindi si cerca **il pezzo più piccolo da addestrare** perché
+  foto e quelli che sanno scrivere esistono già, e dietro ciascuno ci sono mesi
+  di calcolo, quindi si cerca **il pezzo più piccolo da addestrare** perché
   comincino a parlarsi.
   Tenere fermi i due modelli è anche una garanzia: riaddestrarli farebbe loro
   dimenticare per strada una parte di quello che sapevano fare.
@@ -626,9 +636,8 @@ qui.
 - **Strati nuovi dentro il modello congelato** {cite}`alayrac2022flamingo`: si
   inseriscono strati in cui il testo chiede e l'immagine risponde, collegati con
   una manopola del volume che parte da zero, così al primo istante il modello
-  suona esattamente come prima; davanti a loro un pezzo riduce qualunque
-  immagine (o video) a 64 vettori sempre, un modulo con 64 righe da compilare
-  prima di sapere che cosa vi verrà cercato dentro.
+  suona esattamente come prima; davanti a loro un pezzo riduce a 64 vettori
+  qualunque cosa entri, una foto o un video intero.
 - **Questionario fisso** {cite}`li2023blip2`: 32 domande scritte una volta per
   tutte in addestramento vengono poste a ogni foto, e ne escono 32 risposte: dai
   257 vettori con cui la foto era stata descritta si scende a 32, e siccome ogni
@@ -660,8 +669,8 @@ qui.
   piccolo addestrabile** che li faccia parlare. Congelare protegge anche dalla
   dimenticanza catastrofica.
 - Deve fare due cose insieme: **cambiare spazio** (da $d_v$ a $d_t$) e
-  **decidere quanti token visivi** entrano nel contesto. Il secondo non è un
-  dettaglio: il costo dell'attenzione cresce con il quadrato della lunghezza
+  **decidere quanti token visivi** entrano nel contesto. Il secondo pesa quanto
+  il primo: il costo dell'attenzione cresce con il quadrato della lunghezza
   della sequenza.
 - **Cross-attention gated** {cite}`alayrac2022flamingo`: strati nuovi inseriti
   fra i blocchi congelati, con un gate $\tanh(\alpha)$ e $\alpha$ inizializzato

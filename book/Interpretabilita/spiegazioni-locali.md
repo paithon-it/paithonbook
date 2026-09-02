@@ -5,9 +5,9 @@ finendo il dottorato, si pose una domanda che con l'intelligenza artificiale
 non c'entrava nulla: se un gruppo di persone collabora a un'impresa e ne ricava
 un guadagno, come si divide il merito «in modo equo» tra chi ha partecipato?
 Alcuni contano di più, alcuni solo in combinazione con altri; non basta guardare
-cosa fa ciascuno da solo. Shapley rispose fissando quattro requisiti così
+cosa fa ciascuno da solo. Shapley rispose fissando pochi requisiti così
 ragionevoli che nessuno li discuterebbe, e dimostrando che un solo modo di
-dividere li rispetta tutti e quattro. Nel 2012 avrebbe vinto il premio Nobel per
+dividere li rispetta tutti. Nel 2012 avrebbe vinto il premio Nobel per
 l'economia, per un altro filone dei suoi studi. Non poteva immaginare che questa
 sua formula sarebbe diventata, più di sessant'anni dopo, uno degli strumenti
 più usati per spiegare la singola decisione di una rete neurale.
@@ -152,7 +152,7 @@ tabellare degli autori i campioni non si generano attorno a $\mathbf{x}_0$, ma
 dalla distribuzione marginale del training set (l'opzione
 `sample_around_instance` è falsa per default, e le colonne continue vengono per
 giunta discretizzate in quartili prima di essere perturbate). La vicinanza a
-$\mathbf{x}_0$ la introduce **solo** il peso $\pi_{\mathbf{x}_0}$, a valle. La
+$\mathbf{x}_0$ la introduce soltanto il peso $\pi_{\mathbf{x}_0}$, a valle. La
 conseguenza è concreta: la fedeltà locale dipende da quanti dei punti generati
 globalmente cadono davvero vicino a $\mathbf{x}_0$, e in alta dimensione sono
 pochi.
@@ -257,29 +257,24 @@ dopo l'altra, ci sono tutte insieme; gli ordini sono un espediente per misurare
 i contributi, e siccome non c'è ragione di preferirne uno, si tengono tutti e si
 fa la media. È esattamente l'idea di equità di Shapley.
 
-Le quattro proprietà con cui Shapley aveva fissato il suo modo di dividere sono
+Le quattro proprietà che fissano quel modo di dividere sono
 cose ovvie come quella appena vista tornare, e ognuna ha il suo nome.
 
 - Che il conto torni senza avanzi, come qui $25 + 15 = 50 - 10$, si chiama
   **efficienza**.
 - Che due colonne che fanno esattamente lo stesso mestiere ricevano lo stesso
-  merito si chiama **simmetria**. È il principio dietro la divisione in due dei
-  dieci punti: rispetto a quel pezzo di guadagno, e solo rispetto a quello, le
-  due colonne facevano lo stesso lavoro. Sull'intero conto no, tant'è che
-  prendono 25 e 15.
+  merito si chiama **simmetria**: è quello che ha diviso a metà i dieci punti.
+  Sull'intero conto le due non lo fanno, e infatti prendono 25 e 15.
 - Che una colonna che non aggiunge mai niente, in nessun ordine, prenda zero si
   chiama **giocatore nullo**. Sembra una banalità e invece torna comoda: quando
   in un conto c'è una colonna che non c'entra, la si può togliere di mezzo e
   fare i conti sulle altre.
-- E poi c'è l’**additività**, la meno intuitiva delle quattro e la più utile. Il
-  punteggio di un cliente potrebbe essere la somma di due pagelle separate, una
-  sulla situazione economica e una sulla storia dei pagamenti, ciascuna con le
-  sue regole. L'additività dice che il merito di una colonna sul punteggio
-  totale è la somma dei meriti che prende su ciascuna pagella, calcolati
-  separatamente: un conto complicato lo si spezza in pezzi, si fanno i conti sui
-  pezzi e si sommano i risultati. È quello che tiene in piedi i conti sui modelli
-  fatti di tanti pezzi, come quelli in cui la risposta finale mette insieme
-  quella di centinaia di alberi di decisione.
+- E poi c'è l’**additività**, la meno intuitiva delle quattro e la più utile. Se
+  il punteggio di Maria fosse la somma di due punteggi calcolati a parte, il
+  merito di una colonna sul totale sarebbe la somma dei due meriti che si prende
+  su ciascuno: un conto complicato lo si spezza, si fanno i conti sui pezzi e si
+  sommano. È quello che tiene in piedi i conti sui modelli in cui a rispondere
+  sono centinaia di alberi che votano.
 
 Sono quattro richieste che nessuno discuterebbe, e la cosa notevole (il motivo
 per cui questa formula del 1953 è ancora qui) è che c'è un solo modo di dividere
@@ -293,10 +288,11 @@ richieste dice quale sia quella giusta.
 `````{tab} Superiore
 
 Sia $N = \{1, \dots, n\}$ l'insieme delle feature e $v(S)$ il valore della
-**coalizione** $S \subseteq N$: la predizione attesa quando si conoscono solo le
-feature in $S$ e si marginalizza sulle altre, con $v(\varnothing) = \mathbb{E}[f]$
-il valore base e $v(N) = f(\mathbf{x}_0)$. Il valore di Shapley della feature $i$ è la
-media dei suoi **contributi marginali** su tutti gli ordini di ingresso:
+**coalizione** $S \subseteq N$: la predizione attesa quando si conoscono solo
+le feature in $S$ e si marginalizza sulle altre, con $v(\varnothing) =
+\mathbb{E}[f(\mathbf{x})]$ il valore base e $v(N) = f(\mathbf{x}_0)$. Il valore
+di Shapley della feature $i$ è la media dei suoi **contributi marginali** su
+tutti gli ordini di ingresso:
 
 $$
 \phi_i = \sum_{S \subseteq N \setminus \{i\}}
@@ -309,7 +305,8 @@ $S$, e il coefficiente combinatorio conta la frazione di permutazioni in cui $i$
 entra proprio dopo l'insieme $S$. Questa è l’**unica** attribuzione che
 soddisfa quattro assiomi:
 
-- **Efficienza**: $\sum_{i} \phi_i = v(N) - v(\varnothing) = f(\mathbf{x}_0) - \mathbb{E}[f]$.
+- **Efficienza**: $\sum_{i} \phi_i = v(N) - v(\varnothing) =
+  f(\mathbf{x}_0) - \mathbb{E}[f(\mathbf{x})]$.
   I contributi sommano esattamente allo scarto della predizione dal valore base:
   niente si crea, niente si perde.
 - **Simmetria**: se due feature danno lo stesso contributo a ogni coalizione
@@ -405,18 +402,18 @@ ai minimi quadrati converge ai valori di Shapley; è la scelta di pesi che
 distingue SHAP da LIME, i cui pesi euristici non hanno questa garanzia.
 
 A pesi giusti, però, resta da calcolare la funzione valore, e lì la garanzia si
-assottiglia. KernelSHAP approssima
-$v(S) = \mathbb{E}\big[f(\mathbf{x}) \mid \mathbf{x}_S\big]$ con l'attesa
-**marginale**, sostituendo le feature assenti con valori pescati da un insieme
-di riferimento: è l'ipotesi di **indipendenza fra le feature**, dichiarata da
-Lundberg e Lee nel passaggio in cui derivano l'approssimazione
-{cite}`lundberg2017unified`. Quando le feature sono correlate le due quantità
-divergono, e la divergenza non è piccola: su due colonne quasi identiche di cui
-il modello ne usa una sola, la versione marginale dà tutto il merito alla
-colonna usata e zero all'altra, quella condizionale lo divide quasi a metà
-{cite}`aas2021explaining`. È ancora la forcella dell'apertura, ed è il punto in
-cui morde: KernelSHAP restituisce sistematicamente la prima risposta, mentre chi
-la legge crede spesso di star leggendo la seconda.
+assottiglia. KernelSHAP approssima $v(S) = \mathbb{E}\big[f(\mathbf{x}) \mid
+\mathbf{x}_S\big]$ con l'attesa **marginale**, sostituendo le feature assenti
+con valori pescati da un insieme di riferimento: è l'ipotesi di **indipendenza
+fra le feature**, dichiarata da Lundberg e Lee nel passaggio in cui derivano
+l'approssimazione {cite}`lundberg2017unified`. Quando le feature sono correlate
+le due quantità divergono {cite}`aas2021explaining`, e la divergenza non è
+piccola: su due colonne quasi identiche di cui il modello ne usa una sola, la
+versione marginale dà tutto il merito alla colonna usata e zero all'altra,
+mentre quella condizionale lo ripartisce fra le due. È ancora la forcella
+dell'apertura, ed è il punto in cui morde: KernelSHAP restituisce
+sistematicamente la prima risposta, mentre chi la legge crede spesso di star
+leggendo la seconda.
 
 TreeSHAP (introdotto in un lavoro successivo degli stessi autori) elimina
 invece il campionamento per i modelli ad albero, con costo $O(T L D^2)$ ($T$
@@ -516,8 +513,8 @@ $$
 dove il primo termine spinge la predizione verso il valore-bersaglio $y'$ (la
 soglia di approvazione) e $d$ misura quanto $\mathbf{x}_{\mathrm{cf}}$ si
 discosta da $\mathbf{x}_0$: nel
-paper è una distanza di Manhattan ($L_1$) pesata, feature per feature, con la
-deviazione assoluta mediana, che favorisce modifiche **sparse** e rende
+paper è una distanza di Manhattan ($L_1$) in cui ogni feature è divisa per la
+propria deviazione assoluta mediana: favorisce modifiche **sparse** e rende
 confrontabili scale diverse. Il moltiplicatore $\lambda$ non è un compromesso
 da regolare a mano: lo si fa **crescere** finché la predizione non rientra in
 una tolleranza fissata attorno a $y'$, così che il primo termine agisca da
@@ -525,16 +522,16 @@ vincolo e, sotto quel vincolo, si minimizzi la distanza. Estensioni successive
 aggiungono vincoli di **plausibilità** (restare sul supporto dei dati) e di
 **azionabilità** (non modificare feature immutabili come l'età o l'etnia).
 
-C'è poi un parallelo tecnico esatto. Cercare la
-perturbazione minima di $\mathbf{x}_0$ che cambia l'uscita del modello è, formalmente,
-lo stesso problema degli **esempi avversari**: le impercettibili modifiche
-d'input che ingannano una rete, studiate da Goodfellow, Shlens e Szegedy
-{cite}`goodfellow2015explaining` e riprese nel capitolo sull'AI responsabile.
-La matematica è la medesima, l'intento opposto: un esempio avversario nasconde
-la perturbazione per **ingannare** il modello; un controfattuale la esibisce
-per **spiegarlo** e offrire una via d'azione. Lo stesso strumento può violare
-o servire l'interesse di chi subisce una decisione, a seconda di come lo si
-usa.
+C'è poi un parallelo tecnico esatto. Cercare la perturbazione minima di
+$\mathbf{x}_0$ che cambia l'uscita del modello è, formalmente, lo stesso
+problema degli **esempi avversari**: le impercettibili modifiche d'input che
+ingannano una rete, studiate da Goodfellow, Shlens e Szegedy
+{cite}`goodfellow2015explaining` e riprese nel {doc}`capitolo sull'AI
+responsabile </AIResponsabile/overview>`. La matematica è la medesima,
+l'intento opposto: un esempio avversario nasconde la perturbazione per
+**ingannare** il modello; un controfattuale la esibisce per **spiegarlo** e
+offrire una via d'azione. Lo stesso strumento può violare o servire l'interesse
+di chi subisce una decisione, a seconda di come lo si usa.
 
 `````
 
@@ -605,7 +602,7 @@ $\operatorname{cov}(A) =
 ricerca procede aggiungendo una condizione alla volta e stimando la precisione
 per campionamento; poiché ogni valutazione costa, il problema di quale
 candidato affinare è formulato come *best-arm identification*, cioè quello che
-i bandit del capitolo sul reinforcement learning risolvono.
+risolvono i {doc}`bandit a più braccia </ReinforcementLearning/banditi>`.
 
 Il guadagno rispetto a LIME è la **fedeltà dichiarata**: un anchor non
 approssima, delimita, e la sua precisione è un numero misurato invece che una
@@ -620,7 +617,7 @@ tutti i problemi di rappresentazione di LIME.
 
 I controfattuali chiedono che cosa cambiare. C'è una domanda gemella e
 asimmetrica da distinguere, perché risponde a un dubbio diverso: non «che cosa
-devo cambiare», ma «che cosa, di ciò che **non** c'è, sta determinando la
+devo cambiare», ma «che cosa, di ciò che non c'è, sta determinando la
 risposta».
 
 `````{tab} Elementare
@@ -676,7 +673,7 @@ plausibilità già incontrato per i controfattuali, imposto qui in modo
 esplicito.
 
 La parentela con i due metodi appena visti è stretta e conviene esplicitarla:
-il negativo pertinente **è** un controfattuale, cercato però solo fra le
+il negativo pertinente *è* un controfattuale, cercato però solo fra le
 perturbazioni additive e presentato come «ciò che manca» invece che come «ciò
 che cambierebbe». Il positivo pertinente, invece, è parente dell'anchor, ma
 risponde alla domanda «che cosa basta» in un altro modo: un anchor fissa
@@ -688,10 +685,8 @@ minima dell'input che conserva la classe da sola.
 
 ## In pratica: i valori di Shapley calcolati da zero
 
-Esistono librerie che calcolano tutto questo in due righe. Qui sotto c'è il
-programma che lo fa, ma chi non programma può saltarlo a piè pari: subito dopo
-il conto lo rifacciamo per intero a mano, con carta e penna, ed è quella la
-parte che conta.
+Esistono librerie che calcolano tutto questo in due righe. Qui il conto si fa
+da zero, e poi si rifà per intero a mano, con carta e penna.
 
 Per capire cosa c'è sotto conviene infatti rifare il conto **provando tutti
 gli ordini a uno a uno**, esattamente come si è fatto con 10, 30, 20 e 50 di
@@ -759,8 +754,6 @@ print("somma dei phi:     ", round(float(phi.sum()), 3))
 print("f(x) - f(base):    ", round(float(f(x) - f(r)), 3))  # assioma di efficienza
 ```
 
-L'output:
-
 ```text
 valori di Shapley: [1.5 2.  0.5]
 somma dei phi:      4.0
@@ -770,12 +763,13 @@ f(x) - f(base):     4.0
 Tre numeri: $1{,}5$, $2{,}0$ e $0{,}5$. Da dove escono? Verrebbe da aspettarsi
 $1$ e $2$, che sono i due numeri scritti nella formula, e niente per la terza
 colonna, che un numero suo non ce l'ha. Il modo più pulito di capire perché non
-è così è rifare il conto con carta e penna, usando tre delle quattro proprietà,
-una dopo l'altra.
+è così è rifare il conto con carta e penna, usando le quattro proprietà, una
+dopo l'altra.
 
-La prima è l’**additività**, quella dell'esempio delle due pagelle: un conto che
-è una somma si può spezzare, fare i conti sui pezzi e sommare i risultati. Qui i
-pezzi sono i tre addendi, e su ciascuno il merito si vede a occhio.
+Si comincia dall’**additività**, quella dell'esempio delle due pagelle: un
+conto che è una somma si può spezzare, fare i conti sui pezzi e sommare i
+risultati. Qui i pezzi sono i tre addendi, e su ciascuno il merito si vede a
+occhio.
 
 - $x_0$ da solo. Accendere la prima colonna porta questo addendo da $0$ a $1$,
   in qualunque ordine, e le altre due colonne non lo toccano mai. Meriti:
@@ -798,7 +792,7 @@ stampati dal programma, ottenuti senza programma. E la terza colonna, che nella
 formula non aveva un numero suo, prende comunque mezzo punto: se l'è guadagnato
 tutto nell'interazione.
 
-La terza proprietà usata è la **simmetria**, e conviene vedere dove è entrata:
+Poi la **simmetria**, e conviene vedere dove è entrata:
 nel terzo pezzo, e solo lì. Dentro $x_0x_2$ le due colonne fanno esattamente
 lo stesso mestiere (nessuna delle due vale niente senza l'altra), e chi
 contribuisce allo stesso modo riceve lo stesso: da qui il mezzo punto a testa.
@@ -807,7 +801,7 @@ colonne non fanno affatto lo stesso mestiere, e infatti prendono $1{,}5$ e
 $0{,}5$. È l'additività a permettere di spezzare, ed è solo dopo aver spezzato
 che la simmetria si può usare, nel pezzo in cui vale.
 
-Resta la quarta, l’**efficienza**, che è quella che il programma verifica nelle
+Resta l’**efficienza**, che è quella che il programma verifica nelle
 ultime due righe: $1{,}5 + 2{,}0 + 0{,}5 = 4{,}0$, che è
 esattamente la risposta vera meno la risposta base. Il conto torna.
 
@@ -852,6 +846,9 @@ definizione, però, è questa.
   combinazioni è impossibile: ne prova solo alcune, se il modello è una scatola
   chiusa qualsiasi, oppure sfrutta la forma degli alberi per farlo in modo
   esatto. Il risultato si legge nel grafico a cascata, una barra per colonna.
+  Con una riserva: spegnendo una casella per volta si finisce per chiedere al
+  modello di clienti che non esistono, e fra due colonne che dicono la stessa
+  cosa il merito va tutto a quella che il modello guarda.
 - I **controfattuali** dicono la modifica più piccola che avrebbe ribaltato la
   risposta («se il tuo reddito fosse stato 30 000 invece di 24 000»): una via
   d'uscita concreta, purché resti vicina alla situazione reale e riguardi

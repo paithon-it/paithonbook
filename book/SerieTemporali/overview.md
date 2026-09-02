@@ -22,15 +22,15 @@ l'orecchio.
 Come metodo sistematico la disciplina nasce nel 1970, con un libro di George
 Box e Gwilym Jenkins destinato a diventare un classico dell'econometria (la
 statistica applicata ai fenomeni economici) e dell'ingegneria
-{cite}`box2015time`. La loro ricetta sta in tre parole: identificare che forma
+{cite}`box2015time`. La loro ricetta sta in tre mosse: identificare che forma
 ha la serie, stimare i numeri del modello, verificare che il modello non abbia
-lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare un
-valore con quelli che lo precedono, e cioè l’**autoregressione**, la faceva già
-George Udny Yule nel 1927, sulle macchie solari. È però la prima **procedura**
-che si possa applicare a una serie qualunque, invece di inventare un metodo
-diverso ogni volta. Mezzo secolo dopo, lo statistico
-greco Spyros Makridakis mette alla prova quei metodi su larga scala con le
-**competizioni M**, gare pubbliche di previsione su decine di migliaia di
+lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare
+un valore con quelli che lo precedono, e cioè l’**autoregressione**, la faceva
+già George Udny Yule nel 1927, sulle macchie solari. È però la prima
+**procedura** che dica come scegliere il modello, invece di lasciare che se ne
+inventi uno diverso ogni volta. Mezzo secolo dopo, lo statistico greco Spyros
+Makridakis mette alla prova quei metodi su larga scala con le **competizioni
+M**, gare pubbliche di previsione su decine e poi centinaia di migliaia di
 serie reali {cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica
 quanto morale: si prevede, sì, ma con umiltà. Nessun modello domina sempre, e
 dichiarare *quanto* siamo incerti conta quanto la previsione stessa.
@@ -116,7 +116,7 @@ Il secondo asse riguarda **quanto lontano** guardiamo. Prevedere il valore di
 domani è un *passo singolo*; prevedere l'intera settimana che verrà è *a più
 passi*.
 
-Per arrivare a domenica ci sono due strade. Una: prevedi lunedì, tratti il
+Per arrivare a domenica le strade di base sono due. Una: prevedi lunedì, tratti il
 lunedì previsto come se l'avessi misurato, e da lì vai a martedì, e così fino in
 fondo. Costa poco, e se su lunedì hai sbagliato di due gradi quei due gradi
 entrano nel conto di martedì e ci restano fino a domenica. L'altra: un metodo
@@ -164,17 +164,19 @@ $$
 dove $j$ è il passo corrente e va da $1$ a $h$. La ricorsiva è economica ma
 soffre di **error compounding**: l'errore al passo $j$ entra nell'input del
 passo $j+1$ e si propaga. Con un modello stimato, o non lineare, questo aggiunge
-una **distorsione** che la strategia diretta non ha, perché reiniettare una
-previsione puntuale in una ricorsione non lineare non restituisce la media
-della distribuzione vera ($\mathbb{E}[f(X)] \neq f(\mathbb{E}[X])$): è la
+una **distorsione** che la strategia diretta non ha, perché la media di una
+funzione non è la funzione della media ($\mathbb{E}[f(X)] \neq f(\mathbb{E}[X])$),
+e questo vale sia sullo stato, in una ricorsione non lineare, sia sui parametri
+stimati, dove $\mathbb{E}[\hat\phi^{\,h}] \neq \phi^h$: è la
 ragione per cui i modelli probabilistici che vedremo campionano invece di
 propagare la media.
 
 Questa distorsione va tenuta separata dalla ragione per cui l'incertezza cresce
 con l'orizzonte, che è un'altra e vale per **tutte** le strategie, diretta
-compresa: fra $T$ e $T+h$ cadono $h$ innovazioni ancora da osservare, e le loro
-varianze si sommano {cite}`hyndman2021forecasting`. Su un processo stazionario
-quella somma converge a un valore finito, e la banda di previsione smette di
+compresa: fra $T$ e $T+h$ cadono $h$ innovazioni ancora da osservare, e i loro
+contributi si sommano, pesati da coefficienti che decadono
+{cite}`hyndman2021forecasting`. Su un processo stazionario quella somma
+converge a un valore finito, e la banda di previsione smette di
 allargarsi; a crescere senza fermarsi è l'incertezza delle serie **non**
 stazionarie.
 
@@ -195,8 +197,8 @@ stessa cosa). La somiglianza si misura mettendo le due file di numeri a coppie,
 il primo con il primo, il secondo con il secondo, e guardando se salgono e
 scendono insieme: quello che ne esce è un numero solo, il **coefficiente di
 autocorrelazione**, ed è il modo più diretto di vedere quanto una serie sia
-lontana dai dati indipendenti del resto del libro. Il codice qui sotto lo calcola su una serie inventata da noi, che sale piano e
-ha un ciclo di dodici passi, e stampa cinque coefficienti.
+lontana dai dati indipendenti del resto del libro. Il conto si fa su una serie
+inventata da noi, che sale piano e ha un ciclo di dodici passi.
 
 ```python
 import numpy as np
@@ -225,6 +227,14 @@ mescolata = rng.permutation(serie)
 print(f"lag 1, date rimescolate:    {autocorr(mescolata, 1):.3f}")
 ```
 
+```text
+autocorrelazione a lag 1:   0.942
+senza tendenza, a lag 1:    0.778
+senza tendenza, a lag 6:    -0.869
+senza tendenza, a lag 12:   0.826
+lag 1, date rimescolate:    0.143
+```
+
 I numeri vanno letti sapendo che scala hanno. Una correlazione vale al massimo
 $+1$, e allora i due profili salgono e scendono insieme, perfettamente; vale $0$
 quando non c'è nessun legame; e arriva a $-1$ quando si muovono capovolti, cioè
@@ -238,8 +248,8 @@ quel numero, per onestà, la mette la salita: in una serie che cresce sempre due
 giorni consecutivi si somigliano più di due giorni presi a caso in tutta la
 storia, e questo succede anche se di memoria vera non ce n'è nessuna. Per
 levarla di mezzo si tira la retta che segue meglio la salita e si tiene, di ogni
-punto, soltanto quanto sta sopra o sotto quella retta: sono due righe di codice,
-e il codice qui sopra le ha già fatte. Su quel che resta il coefficiente scende
+punto, soltanto quanto sta sopra o sotto quella retta: sono due righe di
+codice, e il codice le ha già fatte. Su quel che resta il coefficiente scende
 a $0{,}78$, che è ancora tanto: la dipendenza è vera, non è solo la salita.
 
 La retta va tolta anche per leggere la stagionalità, e per lo stesso motivo:
@@ -250,24 +260,23 @@ avvallamento) e la somiglianza è fortemente **negativa**, $-0{,}87$; a dodici
 passi di ritardo, cioè un ciclo intero, torna **alta**, $0{,}83$, perché il
 fenomeno è tornato dov'era.
 
-E adesso la prova che conta. Rimescoliamo le date: teniamo gli stessi duecento
-numeri e li rimettiamo in fila a caso. Il coefficiente **crolla** a $0{,}14$.
-Non è esattamente zero, e non poteva esserlo: rimescolando duecento numeri
-qualche somiglianza per puro caso ci scappa sempre, di solito di qualche
-centesimo, e questa volta è capitata un po’ più grossa. Ma di quel $0{,}94$ non
-è rimasto niente. Gli stessi identici valori, in un altro ordine, non prevedono
-più niente: quello che rendeva prevedibile la serie non stava nei numeri, stava
-nel loro ordine.
+Rimescoliamo adesso le date: teniamo gli stessi duecento numeri e li rimettiamo
+in fila a caso. Il coefficiente **crolla** a $0{,}14$. Non è esattamente zero,
+e non poteva esserlo: rimescolando duecento numeri qualche somiglianza per puro
+caso ci scappa sempre, di solito di qualche centesimo, e questa volta è
+capitata un po’ più grossa. Ma di quel $0{,}94$ non è rimasto niente. Gli
+stessi identici valori, in un altro ordine, non prevedono più niente: quello
+che rendeva prevedibile la serie non stava nei numeri, stava nel loro ordine.
 
-Ecco perché nel forecasting **futuro e passato non si mescolano mai**. E c'è un
-posto in cui la regola è più facile da dimenticare che altrove, ed è proprio
-quello in cui costa di più: quando si tratta di dare un voto al modello (in
-gergo, la **validazione**). Se per giudicarlo gli si fanno indovinare dei giorni
-che stanno *in mezzo* a quelli su cui si è allenato, gli si sta chiedendo di
-riempire un buco avendo davanti i due bordi, che è tutt'altro mestiere che
-indovinare il seguito. Il voto che ne esce è gonfiato, e non se ne accorge
-nessuno finché il modello non va a lavorare sul futuro vero. La sezione sulla
-validazione temporale è dedicata a questo; per ora basti la regola: ci si allena
+Ecco perché nel forecasting **futuro e passato non si mescolano mai**. La
+regola si dimentica soprattutto dove costa di più, cioè quando si tratta di
+dare un voto al modello (in gergo, la **validazione**). Se per giudicarlo gli
+si fanno indovinare dei giorni che stanno *in mezzo* a quelli su cui si è
+allenato, gli si sta chiedendo di riempire un buco avendo davanti i due bordi,
+che è tutt'altro mestiere che indovinare il seguito. Il voto che ne esce è
+gonfiato, e non se ne accorge nessuno finché il modello non va a lavorare sul
+futuro vero. È il mestiere della {doc}`sezione su validazione e feature
+</SerieTemporali/validazione-e-feature>`; per ora basti la regola: ci si allena
 sul prima, si verifica sul dopo, mai il contrario.
 
 La seconda proprietà è la **non stazionarietà**, ed è quella che manda in crisi
@@ -352,8 +361,10 @@ capitolo è un modo diverso di prenderla sul serio.
 
 ## Dai modelli classici alle reti
 
-Prevedere una serie si è sempre fatto in tre modi, e in quest'ordine sono
-anche la storia della disciplina.
+Prevedere una serie si è sempre fatto in due modi, i classici e le reti, e in
+quest'ordine sono anche la storia della disciplina. Fra i due sta il mestiere
+che dice quale dei due stia funzionando, cioè dare un voto a una previsione
+senza barare col futuro.
 
 1. **Componenti e modelli classici**, come scomporre una serie in tendenza,
    stagionalità e residuo, e i due cavalli di battaglia storici: la famiglia
@@ -363,7 +374,8 @@ anche la storia della disciplina.
    costa.
 2. **Validazione temporale e feature** (le *feature* sono le colonne di una
    tabella, quelle che si danno in pasto a un modello). Perché la *k-fold*
-   mescolata del {doc}`capitolo sul Machine Learning </MachineLearning/overview>` (dividere gli esempi in fette a
+   mescolata della {doc}`sezione su overfitting e validazione
+   </MachineLearning/overfitting-validazione>` (dividere gli esempi in fette a
    caso e provare il modello su una fetta per volta) qui è vietata, e come si
    valida sul tempo facendo scorrere in avanti il confine fra passato e futuro
    (è il *backtesting*). Poi come si trasforma una serie in una tabella di
@@ -373,7 +385,7 @@ anche la storia della disciplina.
 3. **Forecasting neurale**: le reti che possono guardare solo all'indietro
    (**TCN**), quelle che invece di un numero prevedono un ventaglio di futuri
    possibili (**DeepAR**), i **Transformer** adattati alle serie, e infine i
-   **foundation model** (come TimesFM o Chronos), addestrati una volta sola su
+   **foundation model** (come Chronos), addestrati una volta sola su
    collezioni sterminate di serie e poi capaci di prevedere fenomeni che non
    hanno mai visto.
 
@@ -446,9 +458,10 @@ troppo si misura, e la sezione sulla validazione mostra come.
   l'ordine *è* l'informazione: rimescolarli la distrugge.
 - I compiti principali sono **forecasting** (uni/multivariato, a passo singolo o
   a più passi), classificazione di serie, rilevamento di anomalie e imputazione.
-  Nel multi-step l'incertezza cresce con l'orizzonte perché si sommano le
-  varianze delle $h$ innovazioni non ancora osservate, e su un processo
-  stazionario quella somma converge, cioè la banda smette di allargarsi;
+  Nel multi-step l'incertezza cresce con l'orizzonte perché si sommano i
+  contributi delle $h$ innovazioni non ancora osservate, pesati da coefficienti
+  che decadono, e su un processo stazionario quella somma converge, cioè la
+  banda smette di allargarsi;
   l’*error compounding* della strategia ricorsiva è un fenomeno **distinto**, e
   riguarda la distorsione che la reiniezione introduce con modelli stimati o
   non lineari.

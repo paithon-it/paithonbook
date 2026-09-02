@@ -47,16 +47,18 @@ learning; è, sotto mentite spoglie, ciò che addestra i modelli di diffusione;
 ed è il modo più economico che conosciamo per rispondere a una domanda senza
 essere costretti a rispondere, insieme, a tutte le altre.
 
-Quel «senza rispondere a tutte le altre» è il seguito diretto del capitolo
-precedente, e conviene dirlo perché i due si tengono per mano. Là abbiamo
-visto la famiglia che la probabilità la restituisce esatta, e il prezzo che
-paga per riuscirci: chi mette i dati in fila è poi costretto a generarli un
-pezzetto alla volta, chi li deforma non può buttare via niente e quindi non
-può comprimere. In tutti e due i casi se n'è andata la libertà di dare alla
-rete la forma che si vuole. Qui si prende la strada opposta: si rinuncia in
-partenza a normalizzare, si tiene un voto e basta, e quella libertà torna
-indietro. Tutto il capitolo racconta come si vive senza la normalizzazione, e
-quanto costa.
+Quel «senza rispondere a tutte le altre» è il seguito diretto della
+{doc}`verosimiglianza esatta </VerosimiglianzaEsatta/overview>`, e i due si
+tengono per mano. Là abbiamo visto la famiglia che la probabilità la
+restituisce esatta, e il prezzo che paga per riuscirci: i modelli
+autoregressivi, che mettono i dati in fila, sono poi costretti a generarli un
+pezzetto alla volta; i flussi, che li deformano, non possono buttare via niente
+e quindi non possono comprimere. I due prezzi sono diversi, ma la ragione è la
+stessa: perché il conto delle probabilità torni esatto, la rete non si può più
+fare come si vuole, e la forma gliela detta il conto. Qui si prende la strada
+opposta: si rinuncia in partenza a **normalizzare**, cioè a far tornare cento
+le percentuali, e si tiene un voto e basta. Tutto il capitolo racconta come si
+vive senza quel cento per cento, e quanto costa.
 
 ## Un numero al posto di una probabilità
 
@@ -73,11 +75,12 @@ tanto accetta di risalire, e così cambia valle. Sono due mosse per due
 problemi diversi, e il capitolo le incontra in quest'ordine.
 ```
 
-Le due mosse del disegno portano i loro nomi inglesi, e conviene scioglierli
-subito perché nel disegno sembrano dire il contrario di quel che fanno. La
+Le due mosse della {numref}`fig-paesaggio-energia` portano i loro nomi
+inglesi, e nel disegno sembrano dire il contrario di quel che fanno. La
 prima si chiama *hill climbing*, «scalata della collina», e il nome viene da
-dove è nata, cioè da chi cercava il punto più *alto*: qui il paesaggio è
-rovesciato e quella stessa mossa scende, ma il nome le è rimasto addosso. La
+dove è nata, cioè da chi cercava il punto più *alto*. Qui le risposte buone
+stanno in basso, quindi la stessa mossa scende, ma il nome le è rimasto
+addosso. La
 seconda si chiama *simulated annealing*, «ricottura simulata»: si scuote il
 paesaggio, forte all'inizio e poi sempre più piano, e finché la scossa è forte
 la pallina salta fuori anche dalle conche in cui si era infilata per sbaglio.
@@ -193,32 +196,32 @@ scende e quanto ripido. In inglese quella pendenza si chiama *score*, ed è la
 parola che si incontra nei loro articoli. Attraversare quella successione di
 paesaggi, dal più liscio al più dettagliato, *è* generare.
 
-Il {doc}`capitolo sui world model </WorldModels/overview>` racconta i modelli che, invece di ridisegnare il
-mondo, ne confrontano due riassunti: si chiamano **JEPA** (*Joint-Embedding
-Predictive Architecture*). Anche loro sono energie mai trasformate in
-percentuali: giudicano quanto un pezzo di mondo osservato e uno da predire
-stiano bene insieme. Le reti di Hopfield «moderne», poi, richiamano un ricordo
-con lo stesso conto con cui un modello di linguaggio decide a quali parole
-guardare {cite}`ramsauer2021hopfield`. E LeCun chiude da anni le sue
-conferenze con lo stesso elenco: quattro cose a cui il campo dovrebbe
-rinunciare, ciascuna con la sua alternativa (l'ultima sezione le guarda una
-per una). La seconda dice «abbandonare il modello probabilistico in favore dei
-modelli a energia» {cite}`lecun2022path`.
+Il {doc}`capitolo sui world model </WorldModels/overview>` racconta i modelli
+che, invece di ridisegnare il mondo, ne confrontano due riassunti: si chiamano
+**JEPA** (*Joint-Embedding Predictive Architecture*). Anche loro sono energie
+mai trasformate in percentuali: giudicano quanto un pezzo di mondo osservato e
+uno da predire stiano bene insieme. Le reti di Hopfield «moderne», poi,
+richiamano un ricordo con lo stesso conto con cui un modello di linguaggio
+decide a quali parole guardare {cite}`ramsauer2021hopfield`. E LeCun chiude da
+anni le sue conferenze con lo stesso elenco: quattro cose a cui il campo
+dovrebbe rinunciare, ciascuna con la sua alternativa (l'ultima sezione le
+guarda una per una). La seconda chiede di abbandonare il modello probabilistico
+in favore dei modelli a energia; l'argomento disteso sta nel documento di
+posizione del 2022 {cite}`lecun2022path`.
 
 Diffusione, JEPA, Hopfield moderne, il programma di LeCun: sembrano quattro
 argomenti distinti. Sono lo stesso, e questo capitolo lo guarda in faccia.
 
 ## Dal paesaggio all'energia
 
-Cinque tappe, in salita dolce. Si comincia da dove l'idea è nata: la **memoria
-associativa** di Hopfield {cite}`hopfield1982neural`, venticinque neuroni che
-ricostruiscono un ricordo rovinato rotolando in fondo a una valle, con il
-codice per vederlo accadere. Poi la **macchina di Boltzmann**
-{cite}`ackley1985learning`, che aggiunge temperatura e neuroni nascosti,
-trasforma il paesaggio in percentuali e proprio per questo incontra il muro
-contro cui va a sbattere metà del capitolo: per dire che una risposta vale il
-30% bisogna aver pesato tutte le altre, cioè aver misurato il paesaggio
-intero.
+Si comincia da dove l'idea è nata: la **memoria associativa** di Hopfield
+{cite}`hopfield1982neural`, venticinque neuroni che ricostruiscono un ricordo
+rovinato rotolando in fondo a una valle, con il codice per vederlo accadere.
+Poi la **macchina di Boltzmann** {cite}`ackley1985learning`, che aggiunge
+temperatura e neuroni nascosti, trasforma il paesaggio in percentuali e proprio
+per questo incontra il muro contro cui va a sbattere metà del capitolo: per
+dire che una risposta vale il 30% bisogna aver pesato tutte le altre, cioè aver
+misurato il paesaggio intero.
 
 Quel conto porta un nome che spaventa più di quel che vale, ed è la terza
 parola presa in prestito: si chiama **funzione di partizione**. «Partizione»
@@ -228,28 +231,6 @@ partizioni di un disco fisso: il conto dice come il cento per cento si
 lettera con cui i libri lo indicano è $Z$, che in italiano non è l'iniziale di
 niente: arriva dal tedesco *Zustandssumme*, «somma su tutti gli stati», che è
 esattamente quello che quel conto fa.
-
-La terza tappa è quel muro. **Oltre la partizione** mette in fila le tre
-strade che l'hanno aggirato. La prima manda esploratori a caso nel paesaggio e si
-accontenta di
-quello che riportano: è il campionamento, e la ricetta che si usa porta il
-nome di Langevin. La seconda rinuncia alle percentuali e impara soltanto la
-pendenza: si chiama *score matching* {cite}`hyvarinen2005estimation`, e nella
-sua forma su dati sporcati apposta {cite}`vincent2011connection` è quella che,
-un decennio dopo, è finita dentro i modelli di diffusione. La terza cambia
-domanda e chiede «questo viene dai dati o l'ho fabbricato io?»: è la stima
-contrastiva col rumore {cite}`gutmann2010noise`.
-
-La quarta tappa è il gesto di LeCun: il lungo articolo didattico del 2006
-{cite}`lecun2006tutorial` che rilegge quasi ogni modello di apprendimento come
-un giudizio di **compatibilità** fra una domanda e una risposta. Ha una
-promessa (il paesaggio non va mai misurato tutto) e un pericolo: che il
-modello impari a dire di sì a qualunque cosa, e in gergo si chiama
-**collasso**. L'ultima tappa guarda al presente: i modelli a energia
-addestrati sulle immagini vere {cite}`du2019implicit`, il classificatore che
-era un modello a energia senza saperlo {cite}`grathwohl2020your`, e le quattro
-rinunce che LeCun ripete nelle sue conferenze, discusse per quello che sono:
-un programma di ricerca, non un verdetto.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

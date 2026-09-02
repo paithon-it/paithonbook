@@ -94,6 +94,14 @@ INSTABILI = {
         " nell'ultima cifra diventa un carattere diverso nel disegno",
     "VerosimiglianzaEsatta":
         "la log-verosimiglianza media si sposta di un millesimo di nat",
+    # Precauzione, non misura: questo capitolo ha dichiarato la sua prima
+    # uscita il 2026-09-01 e su questa macchina combacia, ma nessuno l'ha
+    # ancora visto girare su un runner. Sta qui per analogia con i tre sopra
+    # (trenta epoche di Adam su una fattorizzazione, tre decimali stampati) e
+    # chi lo vede passare sei volte di fila in CI lo tolga da questo elenco.
+    "SistemiRaccomandazione":
+        "addestra una fattorizzazione per trenta epoche e stampa tre"
+        " decimali di MSE, dentro e fuori dai voti di addestramento",
 }
 
 

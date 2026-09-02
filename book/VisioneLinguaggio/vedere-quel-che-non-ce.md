@@ -73,17 +73,19 @@ $$
 \underbrace{\log \frac{p_\theta\big(y_t \mid y_{<t}, E(\mathbf{I})\big)}{p_\theta\big(y_t \mid y_{<t}\big)}}_{\text{contributo visivo}},
 $$
 
-dove il primo addendo è ciò che il modello direbbe a occhi chiusi. L'identità
-è algebrica e vale sempre; le etichette dei due addendi chiedono un'ipotesi in
+dove il primo addendo è ciò che il modello direbbe a occhi chiusi. L'identità è
+algebrica e vale sempre; le etichette dei due addendi chiedono un'ipotesi in
 più. La rete interrogata senza immagine non calcola il marginale vero
-$\mathbb{E}_{\mathbf{I}}\big[p_\theta(y_t \mid y_{<t}, E(\mathbf{I}))\big]$: è un altro percorso
-di calcolo, mai addestrato a marginalizzare. Nella misura in cui lo
-approssima, il primo addendo stima il priore linguistico e il secondo la
+$\mathbb{E}_{\mathbf{I}}\big[p_\theta(y_t \mid y_{<t}, E(\mathbf{I}))\big]$: è
+un altro percorso di calcolo, mai addestrato a marginalizzare. Nella misura in
+cui lo approssima, il primo addendo stima il priore linguistico e il secondo la
 **mutua informazione puntuale** fra il token e l'immagine, dato il prefisso.
-La riduzione della perdita che il condizionamento sull'immagine può al più
-produrre è la mutua informazione condizionata $\mathcal{I}(Y_t; \mathbf{I} \mid Y_{<t})$:
-dove la didascalia è già prevedibile dal solo testo, quella quantità è piccola,
-e con essa il gradiente che spinge il percorso visivo a servire a qualcosa.
+Per predittori ottimi la riduzione della perdita che il condizionamento
+sull'immagine produce è **esattamente** la mutua informazione condizionata
+$\mathcal{I}(Y_t; \mathbf{I} \mid Y_{<t})$, dove le maiuscole sono i token
+visti come variabili aleatorie: dove la didascalia è già prevedibile dal solo
+testo, quella quantità è piccola, e con essa il gradiente che spinge il
+percorso visivo a servire a qualcosa.
 
 Il punto di partenza dell'ottimizzazione aggrava lo sbilanciamento. Il priore
 arriva già formato da un pre-addestramento testuale enormemente più lungo,
@@ -137,8 +139,8 @@ media e sbaglia sui casi storti, perché inciampa sulle negazioni («non c'è
 nessuna forchetta» contiene la parola «forchetta») e sui riferimenti generici. E
 la quarta: il punteggio dipende da cose che con l'immagine non c'entrano, cioè
 da come è formulata la richiesta e da quanto è lunga la descrizione che ne esce,
-perché più si scrive più si rischia di sbagliare. È l'obiezione che muovono gli autori del protocollo di cui parliamo
-fra poco {cite}`li2023evaluating`, e che li ha portati a cambiare strada.
+perché più si scrive più si rischia di sbagliare. È l'obiezione che muovono gli
+autori di POPE {cite}`li2023evaluating`, e che li ha portati a cambiare strada.
 
 Il risultato è una misura che **si muove per ragioni
 che con l'immagine non c'entrano**. Chiedi al modello una descrizione più lunga
@@ -151,14 +153,15 @@ analizzatore migliore. È cambiare la domanda.
 
 L'impostazione che ha reso il problema trattabile è quella di POPE
 {cite}`li2023evaluating` (le iniziali di *Polling-based Object Probing
-Evaluation*, cioè una valutazione che tasta gli oggetti a forza di domande): non
-si chiede più al modello di descrivere, gli si chiede «c'è una forchetta in
+Evaluation*, cioè una valutazione che tasta gli oggetti a forza di domande):
+non si chiede più al modello di descrivere, gli si chiede «c'è una forchetta in
 questa immagine?» e si accetta solo sì o no. La risposta è una parola sola, la
 verità sta nell'elenco di quel che c'è, e nessun giudice deve interpretare
-niente. È la ragione per cui il protocollo esiste. L'alternativa sarebbe mettere
-a correggere un secondo modello di linguaggio (il modello giudice,
-l’*LLM-as-a-judge* di cui parlerà il capitolo sull'MLOps), e un secondo modello
-si porta dietro i propri difetti proprio là dove si vuole misurarne uno.
+niente. È la ragione per cui il protocollo esiste. L'alternativa sarebbe
+mettere a correggere un secondo modello di linguaggio (il modello giudice,
+l’*LLM-as-a-judge* di cui parlerà la {doc}`sezione su LLMOps </MLOps/llmops>`),
+e un secondo modello si porta dietro i propri difetti proprio là dove si vuole
+misurarne uno.
 
 Il cuore del metodo, però, sta in **come si scelgono gli oggetti assenti**, più
 che nel formato binario. Chiedere «c'è una zebra?» davanti a una cucina non misura
@@ -279,9 +282,9 @@ modello che guarda davvero ma sbaglia due volte su cinque, sia sulle domande a
 cui va risposto sì sia su quelle a cui va risposto no, si ferma a $0{,}60$:
 **meno**.
 
-A leggere il solo F1 si metterebbe in classifica sopra a chi guarda davvero e
-sbaglia due volte su cinque un modello che dell'immagine non ha usato un
-pixel. La quota di sì scioglie l'equivoco in un
+Un modello che dell'immagine non ha usato un pixel, a leggere il solo F1, si
+metterebbe in classifica sopra a chi guarda davvero e sbaglia due volte su
+cinque. La quota di sì scioglie l'equivoco in un
 colpo: $1{,}0$ contro $0{,}5$, e il primo dei due non sta rispondendo, sta
 ripetendo sempre la stessa cosa.
 
@@ -305,10 +308,10 @@ si leggono insieme, e nessuna delle due sostituisce l'altra.
 
 ## Chi controlla il controllore
 
-C'è un piano superiore della stessa domanda, e questa sezione non sarebbe
-onesta a non porlo. Abbiamo chiesto: il modello ha davvero guardato? E abbiamo
-risposto con un protocollo di misura. Ma anche il protocollo può rispondere
-senza aver guardato.
+C'è un piano superiore della stessa domanda, e non porlo sarebbe disonesto.
+Abbiamo chiesto: il modello ha davvero guardato? E abbiamo risposto con un
+protocollo di misura. Ma anche il protocollo può rispondere senza aver
+guardato.
 
 `````{tab} Elementare
 
@@ -325,14 +328,14 @@ spesso nella domanda stessa, nelle alternative proposte accanto («che animale
 c'è nella foto? a) un cane b) una sedia c) un tavolo d) una nuvola») o in cose
 che chiunque sa del mondo.
 
-Per fortuna il controllo che li scopre tutti e due è il più semplice che si possa
-immaginare: rifare l'esame **togliendo l'immagine**. Quello che il modello porta
-a casa a occhi chiusi è quello che non ha imparato guardando. E per sapere quale
-dei due difetti si ha davanti, quel voto si mette accanto a quello di un compagno
-che ha letto gli stessi libri e non ha mai fatto il corso con le fotografie;
-batterlo a occhi chiusi vuol dire che la fotocopia è girata. Chi pubblica un
-punteggio senza aver riportato anche quello sta chiedendo di essere creduto sulla
-parola.
+Per fortuna il controllo che li scopre tutti e due è il più semplice che si
+possa immaginare: rifare l'esame **togliendo l'immagine**. Quello che il
+modello porta a casa a occhi chiusi è quello che non ha imparato guardando. E
+per sapere quale dei due difetti si ha davanti, quel voto si mette accanto a
+quello di un compagno che ha letto gli stessi libri e non ha mai fatto il corso
+con le fotografie: se il modello bendato batte quel compagno, la fotocopia è
+girata anche a lui. Chi pubblica un punteggio senza aver riportato anche quello
+sta chiedendo di essere creduto sulla parola.
 
 `````
 
@@ -624,23 +627,23 @@ foto, uno che li ritaglia sapendo riconoscere anche categorie che non erano nel
 suo elenco, oppure una persona.
 
 Nessuno dei tre elimina il fenomeno, e conviene dirlo senza attenuanti. È la
-conseguenza di come nasce. Finché la funzione di costo premia
-la continuazione plausibile e l'immagine è un condizionamento fra gli altri, il
-priore resta la strada più economica verso una perdita bassa. I rimedi spostano
-il punto di equilibrio, rendono le affermazioni falsificabili, rendono più caro
-dire ciò che si direbbe comunque, mettono un secondo paio di occhi. Riducono,
-non curano. È la domanda che tornerà nel capitolo sull'AI responsabile, posta
-qui a un sistema che vede: quanto è fragile, davvero, una volta messo nel mondo.
-E le pagine che chiudono questa sezione rendono la domanda meno accademica.
+conseguenza di come nasce. Finché la funzione di costo premia la continuazione
+plausibile e l'immagine è un condizionamento fra gli altri, il priore resta la
+strada più economica verso una perdita bassa. I rimedi spostano il punto di
+equilibrio, rendono le affermazioni falsificabili, rendono più caro dire ciò
+che si direbbe comunque, mettono un secondo paio di occhi. Riducono, non
+curano. È la domanda che tornerà nel {doc}`capitolo sull'AI responsabile
+</AIResponsabile/overview>`, posta qui a un sistema che vede: quanto è fragile,
+davvero, una volta messo nel mondo. E un sistema che comanda una mano la rende
+meno accademica.
 
 ## Dalla percezione all'azione
 
 Se un sistema sa mappare pixel e istruzioni in parole, niente gli impedisce di
 mappare pixel e istruzioni in **azioni**, a una condizione: che le azioni si
-possano scrivere. E scriverle si può, con il gesto che questo capitolo ha già
-fatto due volte, per i pezzi d'immagine e poco fa per le coordinate dei
-riquadri: si taglia una grandezza continua in gradini e si dà un nome a ogni
-gradino.
+possano scrivere. E scriverle si può, con il gesto già fatto due volte, per i
+pezzi d'immagine e per le coordinate dei riquadri: si taglia una grandezza
+continua in gradini e si dà un nome a ogni gradino.
 
 `````{tab} Elementare
 
@@ -683,24 +686,23 @@ riusa così com'è, altrimenti si sovrascrivono le 256 voci meno frequenti. La
 politica è allora
 
 $$
-\pi_\theta\big(\mathbf{a} \mid \mathbf{I}, \mathbf{x}\big) = \prod_{j=1}^{8}
+\pi_\theta\big(\mathbf{a}, e \mid \mathbf{I}, \mathbf{x}\big) = \prod_{j=1}^{8}
 p_\theta\big(k_j \mid k_{<j},\, E(\mathbf{I}),\, \mathbf{x}\big),
 $$
 
 dove $k_1, \dots, k_7$ sono i token dei gradini delle sette componenti, $k_8$
-quello di fine episodio, $\mathbf{I}$ l'osservazione ed $\mathbf{x}$
-l'istruzione in lingua naturale. È la fattorizzazione autoregressiva dei
-grandi modelli linguistici, vista nella
-{doc}`pagina sui grandi modelli linguistici </Transformers/llm>`, applicata a una
-sequenza lunga otto, con la stessa cross-entropia
-come perdita. È l'impostazione di RT-2
+quello dell'indicatore $e$ di fine episodio, $\mathbf{I}$ l'osservazione ed
+$\mathbf{x}$ l'istruzione in lingua naturale. È la fattorizzazione
+autoregressiva dei grandi modelli linguistici, vista nella {doc}`pagina sui
+grandi modelli linguistici </Transformers/llm>`, applicata a una sequenza lunga
+otto, con la stessa cross-entropia come perdita. È l'impostazione di RT-2
 {cite}`brohan2023rt2`, che addestra il modello in **co-fine-tuning** su una
 miscela di traiettorie robotiche e di dati visione-linguaggio del web: le
-traiettorie insegnano a muoversi, il resto della miscela impedisce al modello di
-dimenticare quel che sapeva, ed è la ragione per cui un'istruzione mai comparsa
-in nessuna dimostrazione può comunque essere eseguita, dato che il significato
-delle parole viene da altrove. OpenVLA {cite}`kim2024openvla` porta la stessa
-ricetta in una versione aperta e più piccola, con due accorgimenti da
+traiettorie insegnano a muoversi, il resto della miscela impedisce al modello
+di dimenticare quel che sapeva, ed è la ragione per cui un'istruzione mai
+comparsa in nessuna dimostrazione può comunque essere eseguita, dato che il
+significato delle parole viene da altrove. OpenVLA {cite}`kim2024openvla` porta
+la stessa ricetta in una versione aperta e più piccola, con due accorgimenti da
 isolare. Gli estremi $a_j^{\min}$ e $a_j^{\max}$ non sono il minimo e il
 massimo osservati ma i **quantili all'1% e al 99%** delle azioni di
 addestramento, perché un solo campione anomalo allargherebbe la scala e
@@ -780,8 +782,9 @@ trasferisce come si trasferisce un prompt. È lo stesso scarto fra il mondo
 simulato e il mondo vero (il *sim-to-real*) che il capitolo introduttivo nomina
 a proposito di robotica, e nessuna quantità di didascalie lo colma. È anche la
 ragione per cui il capitolo sui **world model**, cioè i modelli che si
-costruiscono una copia mentale del mondo, è il vicino di casa naturale di questa
-pagina: provare in quella copia costa meno che provare sul robot vero.
+costruiscono una copia mentale del mondo, è il vicino di casa naturale di un
+robot che impara: provare in quella copia costa meno che provare sul robot
+vero.
 
 Resta il fatto che il meccanismo è di una economia notevole. Non c'è
 un'architettura per l'azione: c'è la stessa macchina di tutto il capitolo, con

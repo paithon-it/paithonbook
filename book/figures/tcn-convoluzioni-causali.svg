@@ -10,7 +10,7 @@
   Palette-locked, fondo trasparente, tratti scuri leggibili in dark mode.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 440" role="img"
-     aria-label="Schema di una rete convoluzionale temporale con convoluzioni causali dilatate. In basso otto nodi di ingresso disposti lungo l'asse del tempo, dall'istante t meno sette all'istante t. Sopra, tre strati di nodi collegati da archi che saltano sempre all'indietro, verso il passato, con dilatazione crescente uno, due e quattro. Nessun arco punta verso il futuro. Il singolo nodo di uscita in alto a destra, evidenziato in terracotta, riceve informazione da tutti e otto gli ingressi: il campo recettivo, mostrato come cono ombreggiato, e' pari a due elevato alla tre uguale otto istanti.">
+     aria-label="Schema di una rete convoluzionale temporale con convoluzioni causali dilatate. In basso otto nodi di ingresso disposti lungo l'asse del tempo, dall'istante t meno sette all'istante t. Sopra, tre strati di nodi collegati da archi che saltano sempre all'indietro, verso il passato, con dilatazione crescente uno, due e quattro. Nessun arco punta verso il futuro. Il singolo nodo di uscita in alto a destra, evidenziato in terracotta, riceve informazione da tutti e otto gli ingressi: il campo recettivo, mostrato come cono ombreggiato, è pari a due elevato alla tre uguale otto istanti.">
   <style>
     .cone  { fill:#2D5A5C; fill-opacity:0.09; stroke:none; }
     .inp   { fill:#C9A961; stroke:#1A1A1A; stroke-width:1.4; }

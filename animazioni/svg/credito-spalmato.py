@@ -4,13 +4,13 @@ La critica di Karpathy al reinforcement learning non si vede in una figura
 ferma, perche' e' fatta di tempo: prima si spende una traiettoria lunga, poi
 arriva UN numero alla fine, poi quel numero torna indietro e pesa **allo stesso
 modo** ogni passo che c'e' stato, compresi i vicoli ciechi. In un fermo immagine
-si vedrebbe solo il risultato, cioe' una fila di caselle tutte uguali, e sarebbe
-proprio la cosa che non si capisce.
+si vedrebbe solo il risultato, cioe' una fila di riquadri tutti uguali, e
+sarebbe proprio la cosa che non si capisce.
 
-Qui non c'e' niente di disegnato a mano. Le caselle terracotta sono i passi in
-cui l'agente ha davvero sbagliato secondo la verita' di riferimento del compito
-giocattolo, e il peso scritto sotto ogni casella e' il coefficiente vero che lo
-stimatore REINFORCE mette davanti a quel passo,
+Qui non c'e' niente di disegnato a mano. I riquadri bordati di terracotta sono
+i passi in cui l'agente ha davvero sbagliato secondo la verita' di riferimento
+del compito giocattolo, e il peso scritto sotto ogni riquadro e' il
+coefficiente vero che lo stimatore REINFORCE mette davanti a quel passo,
 
     grad J = (1/M) sum_m R^(m) sum_t grad log pi(a_t | s_t),
 
@@ -33,6 +33,13 @@ TITOLO = "un bit alla fine, spalmato su tutta la traiettoria"
 
 PASSI = 12          # lunghezza della traiettoria mostrata
 SEME = 7
+
+# Il testo alternativo dichiara dei conteggi, e li deve prendere dal disegno:
+# scritti a mano si scollano al primo cambio di seme, e il lettore che ascolta
+# la pagina invece di guardarla e' l'unico che non puo' accorgersene.
+A_PAROLE = {1: "uno", 2: "due", 3: "tre", 4: "quattro", 5: "cinque",
+            6: "sei", 7: "sette", 8: "otto", 9: "nove", 10: "dieci",
+            11: "undici", 12: "dodici"}
 
 # --- il compito giocattolo --------------------------------------------------
 # A ogni passo c'e' una mossa giusta e una sbagliata (la verita' di
@@ -177,15 +184,16 @@ def costruisci() -> Figura:
 
     return Figura(
         larghezza=RX + CW + 14 + 40, altezza=ym + 52,
-        alt="Una fila di dodici caselle, i passi di una traiettoria; quattro "
-            "sono bordate di terracotta perché in quei passi l'agente ha "
-            "sbagliato. Una testa percorre la fila da sinistra a destra un "
-            "passo alla volta; alla fine compare un solo riquadro con il "
-            "ritorno, più uno. Da lì partono dodici archi che tornano "
-            "indietro fino a ogni casella e le riempiono tutte dello stesso "
-            "colore. Sotto, due righe di numeri: la riga del peso porta più "
-            "uno dodici volte identiche, la riga del merito alterna più uno e "
-            "meno uno.",
+        alt=f"Una fila di {A_PAROLE[PASSI]} riquadri, i passi di una "
+            f"traiettoria; {A_PAROLE[len(sbagliati)]} sono bordati di "
+            "terracotta perché in quei passi l'agente ha sbagliato. Una testa "
+            "percorre la fila da sinistra a destra un passo alla volta; alla "
+            "fine compare un solo riquadro con il ritorno, più uno. Da lì "
+            f"partono {A_PAROLE[PASSI]} archi che tornano indietro fino a ogni "
+            "riquadro e li riempiono tutti dello stesso colore. Sotto, due "
+            f"righe di numeri: la riga del peso porta più uno {A_PAROLE[PASSI]} "
+            "volte identiche, la riga del merito cambia fra più uno e meno uno "
+            "da un passo all'altro.",
         corpo="".join(corpo),
         stile=f"""    .pas {{ fill:{CREAM}; stroke:{BORDER_STRONG}; stroke-width:1.5; }}
     .pas.err {{ stroke:{TERRACOTTA}; stroke-width:2.5; }}

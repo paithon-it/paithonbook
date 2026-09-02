@@ -29,8 +29,8 @@ fare taglia corto, «sette», con una sicurezza da 0,9999, e i ripensamenti
 restano un borbottio che nessuno sente.
 
 Allora gli si mette davanti una manopola, e più la si alza più lui si dilunga.
-A uno parla come sempre. A sei, quel «0,9999 e nove zeri» diventa «0,7 sul
-sette, 0,15 sull’uno, 0,001 sull’otto», il sette resta il primo e affiora la
+A uno parla come sempre. A quattro, quel «0,9999» diventa «0,9 sul
+sette, 0,1 sull’uno, 0,001 sull’otto», il sette resta il primo e affiora la
 forma del dubbio, come le ombre di una fotografia troppo contrastata quando le
 si schiarisce. Girata a fondo rovina tutto, perché ogni cifra gli sembra
 plausibile e non si capisce più quale avesse scelto. La manopola si chiama
@@ -42,16 +42,16 @@ giusta) e i commenti del maestro, pesate sette parti al maestro e tre al
 registro. Anche questa è una manopola, perché meno ci si fida del maestro più
 peso torna al registro.
 
-La prima manopola però è una sola, e alza pure lo studente. Si dilunga anche
-lui, le due risposte si somigliano di più, e la correzione che gli arriva si fa
-fiacca. Proprio mentre gli si mostrano le sfumature, gli si abbassa la voce. La
-si rimette dov’era moltiplicandola per il quadrato della manopola, a sei per
-trentasei. Quel conto è esatto solo con la manopola girata a fondo, e alle
-posizioni vere rende più di quanto la correzione avesse perso, così lo studente
-ascolta il maestro oltre le sette parti su dieci assegnate. Regge, perché la
-proporzione la si ritocca guardando come vanno le cose, ma chi crede di averla
-messa a sette contro tre ha in mano un numero che non racconta quello che
-succede in classe.
+La manopola però è una sola, e alzandola si dilunga anche lo studente: le due
+risposte si somigliano di più, e la correzione che ne viene si fa fiacca.
+Proprio mentre gli si mostrano le sfumature, gli si abbassa la voce. Per
+rialzarla si moltiplica la correzione per il quadrato della manopola: a
+quattro, per sedici. Sarebbe il conto esatto solo con la manopola girata a
+fondo; alle posizioni vere rialza più di quanto si fosse abbassato, e lo
+studente ascolta il maestro oltre le sette parti su dieci assegnate. Regge,
+perché la proporzione la si ritocca guardando come vanno le cose; ma chi crede
+di averla messa a sette contro tre ha in mano un numero che non racconta quello
+che succede in classe.
 
 Un compito che torna col solo voto insegna una cosa, che quel disegno è un
 sette. Col commento del maestro ne insegna dieci, quanto somiglia a ciascuna
@@ -91,20 +91,21 @@ $$
 + \alpha\,T^2 \,\mathrm{KL}\!\big(p^t(T)\,\|\,p^s(T)\big),
 $$
 
-dove $\mathcal{L}_{\text{dura}}$ è l’entropia incrociata con l’etichetta vera e
-il secondo termine è la divergenza di Kullback-Leibler fra la distribuzione
-morbida del maestro e quella dello studente, calcolate alla stessa temperatura.
+dove $\mathcal{L}_{\text{dura}}$ è l’entropia incrociata con l’etichetta vera,
+calcolata a $T = 1$ e non alla temperatura della distillazione, e il secondo
+termine è la divergenza di Kullback-Leibler fra la distribuzione morbida del
+maestro e quella dello studente, calcolate tutt’e due alla stessa temperatura.
 
 Nel codice qui sotto $\alpha = 0{,}7$ e $T = 4$.
 
 Il fattore $T^2$ non è cosmetico, e la sua derivazione è più fragile di come la
 si racconta. Derivando la divergenza rispetto ai logit dello studente si
 ottiene $\partial \mathrm{KL}/\partial z^s_i = (p^s_i - p^t_i)/T$, cioè un solo
-$1/T$. Il secondo compare linearizzando $p^s_i - p^t_i$, e quella
-linearizzazione vale a **temperatura alta rispetto ai logit**: è il regime in
-cui il lavoro originale la ricava, e in quel regime moltiplicare per $T^2$
-mantiene il termine morbido sulla scala di quello duro, così si può cambiare
-$T$ senza riaggiustare $\alpha$.
+$1/T$. Il secondo compare linearizzando $p^s_i - p^t_i$, e la linearizzazione
+chiede due cose, non una: **temperatura alta rispetto ai logit**, e logit **a
+media nulla** su ciascun esempio. È il regime in cui il lavoro originale la
+ricava, e lì moltiplicare per $T^2$ mantiene il termine morbido sulla scala di
+quello duro, così si può cambiare $T$ senza riaggiustare $\alpha$.
 
 Fuori da quel regime il compenso è approssimativo, e conviene saperlo perché il
 regime buono è più lontano di quanto sembri. Misurato sul maestro che il codice
@@ -116,13 +117,13 @@ cioè alla temperatura che il codice usa, moltiplicare per $T^2$
 dell’esperimento è buono lo stesso, e $\alpha$ assorbe il resto), è il genere
 di dettaglio che distingue una ricetta applicata da una capita.
 
-Vale la pena essere precisi su **dove stia il guadagno**, perché è il punto in
-cui la spiegazione divulgativa si allontana dalla letteratura. L’argomento
-tradizionale è che i bersagli morbidi trasportino informazione sulla struttura
-delle classi (la «conoscenza oscura»: quali classi il maestro confonde e quali
-no) e che questa informazione agisca come un regolarizzatore, riducendo la
-varianza dello studente. Un argomento complementare, altrettanto valido, è che
-i bersagli morbidi si possano calcolare su **dati non etichettati**, e questo
+**Dove stia il guadagno** è il punto in cui il racconto corrente si allontana
+dal lavoro che cita. L’argomento tradizionale è che i bersagli morbidi
+trasportino informazione sulla struttura delle classi (la «conoscenza oscura»:
+quali classi il maestro confonde e quali no) e che questa informazione agisca
+come un regolarizzatore, riducendo la varianza dello studente. Il secondo
+argomento sta nella stessa pagina del lavoro originale e si cita molto meno: i
+bersagli morbidi si possono calcolare su **dati non etichettati**, e questo
 sposta il problema da «quanti esempi ho» a «quanti esempi il maestro può
 commentare». L’esperimento qui sotto misura il secondo, che è quello che si
 riesce a mostrare in modo pulito su un dataset piccolo.
@@ -144,7 +145,8 @@ from torch.nn import functional as F
 from sklearn.datasets import load_digits
 from sklearn.model_selection import train_test_split
 
-# un thread solo: cosi' i numeri stampati sono gli stessi su ogni macchina
+# un thread solo: due esecuzioni di fila danno lo stesso numero. Su un'altra
+# macchina le ultime cifre ballano, perche' cambia l'ordine delle somme
 torch.set_num_threads(1)
 
 dati = load_digits()
@@ -260,7 +262,8 @@ E conviene dire anche che cosa il conto **non** dimostra: non dimostra che
 imitare sia meglio che imparare. Se allo studente si dessero tutte e
 ottocentonovantotto le etichette vere, il vantaggio si assottiglierebbe fino a
 sparire nel rumore. Chi vuole vederlo cambia un solo numero nel codice qui
-sopra, `POCHI`, portandolo da 120 a `len(X)`.
+sopra, `POCHI`, portandolo da 120 a `len(X)`: le ultime due righe diventano
+allora lo stesso esperimento, e le loro etichette vanno lette così.
 
 `````{tab} Elementare
 
@@ -295,17 +298,18 @@ sopra, `POCHI`, portandolo da 120 a `len(X)`.
   fra le probabilità piccole. Sono i **bersagli morbidi**.
 - La perdita è
   $(1-\alpha)\mathcal{L}_{\text{dura}} + \alpha T^2 \mathrm{KL}(p^t(T)\|p^s(T))$
-  {cite}`hinton2015distilling`. Il fattore $T^2$ compensa lo scalamento $1/T^2$
-  dei gradienti del termine morbido, e ometterlo fa concludere che il metodo
-  non funzioni.
+  {cite}`hinton2015distilling`, con il termine duro a $T=1$. Il fattore $T^2$
+  tiene i due termini sulla stessa scala **solo a temperatura alta rispetto ai
+  logit**: a $T=4$ sovracompensa di circa tre volte e mezzo, e a riassorbire lo
+  scarto è $\alpha$.
 - L’ablazione a tre condizioni separa i due contributi: 90,2% senza maestro,
   92,6% col maestro sui soli esempi etichettati, 95,8% col maestro su tutti
   (maestro al 96,9%). La «conoscenza oscura» vale 2,4 punti, l’uso dei dati non
   etichettati 3,2, e il secondo sparirebbe se lo studente avesse già tutte le
   etichette.
 - La distillazione è l’unica delle tre leve in cui il modello finale ha
-  un’**architettura diversa** da quella di partenza, e l’unica che richiede un
-  addestramento vero e proprio invece di una trasformazione dei pesi.
+  un’**architettura diversa** da quella di partenza: le altre due restituiscono
+  la rete che avevano ricevuto, con altri numeri dentro o con dei buchi.
 ```
 
 `````

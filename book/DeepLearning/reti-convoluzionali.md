@@ -3,8 +3,9 @@
 Per un computer una fotografia è una tabella di numeri: uno per ogni pixel, o
 tre se la foto è a colori. Prendi la foto di un gatto e spostalo di dieci pixel
 a destra: per te è ancora, banalmente, un gatto; per la tabella, invece, quasi
-nessun numero è rimasto dov'era, e una rete fatta come quelle del capitolo sulle
-reti neurali si ritrova davanti un ingresso completamente nuovo.
+nessun numero è rimasto dov'era, e una rete fatta come quelle del {doc}`capitolo
+sulle reti neurali </RetiNeurali/overview>` si ritrova davanti un ingresso
+completamente nuovo.
 
 Questo scarto tra come *noi* vediamo un'immagine e come la vede una rete neurale
 ordinaria è il problema che le **reti convoluzionali** (Convolutional Neural
@@ -17,14 +18,12 @@ bancari.
 
 ## Perché uno strato denso non basta
 
-Prima di costruire qualcosa di nuovo conviene capire perché il pezzo che
-abbiamo già, lo strato in cui ogni neurone riceve tutti i numeri che escono dallo strato di
-sotto, quello con cui in {doc}`Reti neurali </RetiNeurali/overview>` erano
-fatte tutte le reti e che qui chiameremo strato **denso**, sulle immagini non
-funziona. Le ragioni sono due, e
-nessuna delle due è un dettaglio: il numero di pesi da imparare, che diventa
-ingestibile, e il fatto che una rete fatta così tratti la stessa forma come due
-cose diverse a seconda di *dove* si trova nell'immagine.
+Il pezzo che abbiamo già è lo strato in cui ogni neurone riceve tutti i numeri
+che escono dallo strato di sotto: con quello erano fatte tutte le reti del
+capitolo sulle reti neurali, e qui lo chiameremo strato **denso**. Sulle
+immagini non funziona, per due ragioni: il numero di pesi da imparare, che
+diventa ingestibile, e il fatto che una rete fatta così tratti la stessa forma
+come due cose diverse a seconda di *dove* si trova nell'immagine.
 
 `````{tab} Elementare
 
@@ -55,10 +54,11 @@ $2\times10^{8}$ parametri, un invito all’*overfitting*.
 
 Soprattutto, lo strato denso non è **equivariante alla traslazione**: un
 pattern spostato di un vettore $\boldsymbol{\Delta}$ attiva pesi diversi,
-perché l'indice
-della componente cambia. Le CNN recuperano l'equivarianza grazie a due vincoli
-architetturali (connettività locale e condivisione dei pesi) che riducono
-anche i parametri: sposti l'input, e l'attivazione si sposta con lui.
+perché l'indice della componente cambia. Le CNN recuperano l'equivarianza
+grazie alla sola **condivisione dei pesi**: sposti l'input, e l'attivazione si
+sposta con lui. L'altro vincolo, la connettività locale, dà i pochi parametri e
+non l'equivarianza: uno strato *locally connected*, che guarda una finestra
+piccola ma con pesi diversi in ogni posizione, equivariante non è.
 Attenzione a non chiamarla invarianza, che è un'altra proprietà (la risposta
 non cambia affatto) e la convoluzione non la dà: semmai la porta la testa
 della rete, con il *global average pooling* che incontreremo parlando di NiN.
@@ -155,8 +155,8 @@ $1$ e lo sfondo $0$. Quando la barra finisce sotto la colonna destra del
 filtro, ogni riga contribuisce $-1$ e le tre righe insieme danno $-3$; quando
 finisce sotto la colonna sinistra, $+3$; quando è al centro, il peso che la
 moltiplica è $0$ e le altre due colonne vedono solo sfondo. Il filtro non
-misura quanto la barra è chiara: misura il **contrasto** tra il lato destro e
-il lato sinistro della propria finestra, e il segno dice da che parte sta il
+misura quanto la barra è chiara: misura il **contrasto** fra il lato sinistro e
+il lato destro della propria finestra, e il segno dice da che parte sta il
 chiaro. È già un abbozzo di ciò che i primi strati di una CNN imparano da
 soli.
 
@@ -211,8 +211,9 @@ astratte (occhi, ruote, volti).
 ## Il pooling: mappe più piccole, e cosa si guadagna
 
 Dopo la convoluzione si applica quasi sempre il **pooling**, che rimpicciolisce
-le feature map tenendo di ogni zona solo il valore più forte. Il più comune è
-il **max pooling**: su ogni finestra (di solito $2\times2$) conserva il massimo.
+le feature map riassumendo ogni zona in un numero solo. Il più comune è il
+**max pooling**, che di ogni finestra (di solito $2\times2$) conserva il
+massimo; l'altro modo, tenere la media, torna col *global average pooling*.
 Su un quadratino che contiene $1$, $7$, $3$ e $2$, esce $7$, e gli altri tre
 numeri si perdono.
 
@@ -263,8 +264,8 @@ Lo schema classico alterna blocchi **conv → ReLU → pool**, ripetuti alcune
 volte, e chiude con uno o più strati densi che trasformano le feature astratte
 in una decisione, cioè nella classe dell'immagine: gatto, cane, tazza da caffè.
 
-La ReLU sta in mezzo, fra il filtro e il pooling, e non è un ornamento: è lei a
-rendere davvero diversi due strati impilati. Una convoluzione è fatta di
+La ReLU sta in mezzo, fra il filtro e il pooling, ed è lei a rendere davvero
+diversi due strati impilati. Una convoluzione è fatta di
 moltiplicazioni e somme, e applicarne una al risultato di un'altra, senza niente
 in mezzo, darebbe ancora moltiplicazioni e somme: una convoluzione sola, un po’
 più larga. È il piegare i numeri (buttare via i negativi) a far sì che il
@@ -298,11 +299,7 @@ C'è anche il modo di allargare la finestra senza aggiungere caselle: le nove
 caselle che legge si distanziano, una ogni due quadretti invece che attaccate.
 Legge sempre nove numeri, ma la fetta che copre è larga cinque quadretti invece
 di tre, e con la solita cornice da uno la mappa esce $26\times26$ invece di
-$28\times28$: guarda più lontano e mangia più bordo.
-
-Il ritmo con cui le mappe si rimpiccioliscono man mano che si sale nella rete è
-una scelta di chi la progetta: più le mappe si stringono, meno conti ci sono da
-fare, ma meno dettaglio resta.
+$28\times28$: guarda più lontano e mangia più bordo. Si chiama **dilatazione**.
 
 `````
 
@@ -351,7 +348,7 @@ In PyTorch l'intera architettura sta in poche righe:
 ```python
 from torch import nn
 
-# input: un batch di immagini in scala di grigi, shape (N, 1, 28, 28)
+# in ingresso: N immagini in scala di grigi da 28x28, shape (N, 1, 28, 28)
 model = nn.Sequential(
     # blocco 1: 32 filtri 3x3, mappe grandi come l'input
     nn.Conv2d(1, 32, 3, padding="same"), nn.ReLU(),
@@ -359,7 +356,7 @@ model = nn.Sequential(
     # blocco 2: più filtri man mano che le mappe rimpiccioliscono
     nn.Conv2d(32, 64, 3, padding="same"), nn.ReLU(),
     nn.MaxPool2d(2),               # 14x14 -> 7x7
-    nn.Flatten(),                  # srotola in un vettore di 64*7*7 = 3136
+    nn.Flatten(),                  # srotola in una fila di 64*7*7 = 3136 numeri
     nn.Linear(64 * 7 * 7, 10),     # 10 classi (logit)
 )
 ```
@@ -401,10 +398,11 @@ a chi progetta la rete, non alla libreria.
   non sono **equivarianti alla traslazione**.
 - La **convoluzione** fa scorrere un piccolo kernel che evidenzia un motivo
   ovunque compaia; l'uscita è una **feature map**.
-- **Campo recettivo locale** + **pesi condivisi** = pochi parametri e risposta
-  **equivariante**: il motivo è riconosciuto ovunque compaia, e l'attivazione
-  si sposta insieme a lui. L'invarianza è un'altra proprietà, e arriva semmai
-  dalla testa della rete (pooling globale), non dalla convoluzione.
+- **Campo recettivo locale** = pochi parametri; **pesi condivisi** = risposta
+  **equivariante**, cioè il motivo riconosciuto ovunque compaia, con
+  l'attivazione che si sposta insieme a lui. L'invarianza è un'altra proprietà,
+  e arriva semmai dalla testa della rete (pooling globale), non dalla
+  convoluzione.
 - Il **max pooling** riduce la risoluzione e baratta l'equivarianza esatta con
   una tolleranza ai piccoli spostamenti; l'architettura tipica alterna conv e
   pool e chiude con strati densi.

@@ -15,18 +15,17 @@ messaggio, ma il **sistema di controllo** che attorno a quel messaggio decide
 quando parte, cosa gli si mette davanti, come si verifica il risultato e cosa
 succede dopo.
 
-Questa sezione sale così al terzo e più esterno dei cerchi da cui è partito il
-capitolo: dopo il **prompt** (il singolo messaggio) e il **contesto** (la
-finestra come sistema), il **loop**. È l'anello in cui il prompt e il contesto
-smettono di essere una cosa che scrivi *tu, adesso* e diventano una cosa che
-un programma monta, esegue e rimette in moto, magari mentre dormi. Peter
-Steinberger lo dice quasi con le stesse parole di Cherny: non si fanno più
-prompt agli agenti che programmano, si progettano i cicli che quei prompt li
-fanno da soli {cite}`steinberger2026loops`. E Addy Osmani ne trae una
-conseguenza che è metà tecnica e metà morale {cite}`osmani2026loop`: il ciclo
-va costruito da
-chi ha intenzione di **restare l'ingegnere**, cioè di continuare a capire e a
-rispondere di quello che esce, non da chi vuole premere «vai» e andarsene.
+Si sale così al terzo e più esterno dei tre cerchi: dopo il **prompt** (il
+singolo messaggio) e il **contesto** (la finestra come sistema), il **loop**. È
+l'anello in cui il prompt e il contesto smettono di essere una cosa che scrivi
+*tu, adesso* e diventano una cosa che un programma monta, esegue e rimette in
+moto, magari mentre dormi. Peter Steinberger lo dice quasi con le stesse parole
+di Cherny: non si fanno più prompt agli agenti che programmano, si progettano i
+cicli che quei prompt li fanno da soli {cite}`steinberger2026loops`. E Addy
+Osmani ne trae una conseguenza che è metà tecnica e metà morale
+{cite}`osmani2026loop`: il ciclo va costruito da chi ha intenzione di **restare
+l'ingegnere**, cioè di continuare a capire e a rispondere di quello che esce,
+non da chi vuole premere «vai» e andarsene.
 
 Il vocabolario del loop engineering lo hanno scritto quasi tutto dei
 praticanti, gente che questi cicli li costruisce, non gruppi di ricerca che li
@@ -87,9 +86,10 @@ esce.
 
 `````{tab} Superiore
 
-Il **loop interno** è il ciclo dell'agente visto negli Agenti: *osserva →
-ragiona → agisci*, con lo stato che vive nella finestra di contesto ed è
-effimero (finita la conversazione, svanisce).
+Il **loop interno** è il ciclo dell'agente visto nelle
+{doc}`architetture degli agenti </Agenti/architetture-e-valutazione>`:
+*osserva → ragiona → agisci*, con lo stato che vive nella finestra di contesto
+ed è effimero (finita la conversazione, svanisce).
 
 Il **loop esterno** è ciò che il loop engineering progetta, e ha proprietà che
 il loop interno non ha:
@@ -98,7 +98,7 @@ il loop interno non ha:
   solo quando un umano digita;
 - ha **stato persistente**, non tiene la memoria nella finestra, ma *fuori*,
   su disco o in un database, così che sopravviva alla singola invocazione (il
-  contrario dello *scratchpad* effimero visto nel context engineering);
+  contrario dello *scratchpad* degli agenti, che vive quanto vive la finestra);
 - ha una **verifica deterministica**, un cancello che decide, con un criterio
   esterno e non con l'autovalutazione del modello, se il ciclo è riuscito;
 - spesso a ogni giro **istanzia un agente fresco**, con contesto pulito,
@@ -205,8 +205,9 @@ sta in quello che ciascuno ha davanti. Il primo ha davanti il compito e tutta
 la strada che ha fatto per svolgerlo; il secondo ha davanti solo il risultato
 e i criteri con cui giudicarlo, e non sa nemmeno di chi sia. Lo hanno misurato.
 Un modello, messo a giudicare, tende a preferire il testo che ha scritto lui,
-e lo preferisce di più quanto meglio lo riconosce come proprio. Toglierglielo
-di mezzo cambia il verdetto. Restano naturalmente i punti ciechi comuni:
+e lo preferisce di più quanto meglio lo riconosce come proprio. Non dirgli di
+chi sia sposta il verdetto e non lo raddrizza, perché il proprio stile lo
+riconosce lo stesso. Restano naturalmente i punti ciechi comuni:
 quello che il modello non sa vedere non lo vede nemmeno da controllore, ed è
 per questo che sopra il controllore c'è sempre un cancello che non è un
 modello.
@@ -307,10 +308,10 @@ raccolta di affermazioni da confrontare con una fonte per dire se reggono, è
 ReAct a passare davanti: 60,9 contro 56,3. Sono scarti piccoli, due punti nel
 primo caso e quasi cinque nel secondo, e la loro piccolezza è il risultato
 interessante: nessuno dei due metodi vince in assoluto, e quale sia il
-migliore dipende dal compito. Il risultato più alto, in tutti e due i casi, arriva dai due usati in coppia,
-uno che parte e l'altro che subentra quando il primo si arena, con la catena
-di pensiero nella sua versione a più tentativi e voto di maggioranza vista
-nella sezione sul prompt; solo che a partire non è sempre lo stesso. Sulle
+migliore dipende dal compito. Il risultato più alto, in tutti e due i casi,
+arriva dai due metodi in coppia: uno parte, l'altro subentra quando il primo si
+arena, e la catena di pensiero è quella a più tentativi con voto di
+maggioranza vista nella sezione sul prompt. A cambiare è chi parte. Sulle
 domande a più passaggi conviene mandare avanti ReAct e chiamare in soccorso la
 catena di pensiero, e si arriva a 35,1; sulle affermazioni da verificare
 conviene l'ordine inverso, e si arriva a 64,6. Sono misure di un modello del
@@ -355,17 +356,14 @@ bruciando token.
 
 `````
 
-Ecco lo scheletro in puro Python, eseguibile. Chi non legge il Python può
-saltare il blocco e guardare le quattro righe di risultato che vengono dopo:
-si vede il cancello che respinge tre volte e si apre alla quarta.
-
-Nel programma il generatore è un finto modello: invece di ragionare, guarda
-l'ultimo motivo di rifiuto e corregge quello. È una caricatura, ma fa la cosa
-che conta in questa sezione, cioè lasciarsi guidare dal **contenuto** del
-fallimento. Il verificatore invece è vero: controlla che uno **slug** rispetti
-tre regole. Slug è il pezzo di indirizzo web che si ricava da un titolo, tutto
-minuscolo e con i trattini al posto degli spazi. Il ciclo va avanti finché il
-cancello si apre o finiscono i tentativi:
+Lo scheletro, in puro Python ed eseguibile. Il generatore è un finto modello:
+invece di ragionare, guarda l'ultimo motivo di rifiuto e corregge quello. È una
+caricatura, ma fa la cosa che conta, cioè lasciarsi guidare dal **contenuto**
+del fallimento. Il verificatore invece è vero: controlla che uno **slug**
+rispetti tre regole. Slug è il pezzo di indirizzo web che si ricava da un
+titolo, tutto minuscolo e con i trattini al posto degli spazi. Il ciclo va
+avanti finché il cancello si apre o finiscono i tentativi, e nel risultato si
+vede il cancello che respinge tre volte e si apre alla quarta:
 
 ```python
 # Un loop generate -> verify -> refine. Il generatore e' un finto LLM;
@@ -412,9 +410,6 @@ def loop(richiesta, max_tentativi=5):
 risultato = loop("crea uno slug per una guida a PyTorch")
 print("accettato:", risultato)
 ```
-
-L'esecuzione mostra il ciclo che si autocorregge, raccogliendo a ogni giro il
-motivo del rifiuto e ripartendo con quello in memoria:
 
 ```text
 tentativo 1: 'Guida Introduttiva a PyTorch' -> deve essere tutto minuscolo
@@ -503,8 +498,9 @@ l'intuito sottovaluta.
 Resta il motivo per cui il **cancello di verifica** non è un lusso, e sta
 proprio in come è definito quel $p$: non è la probabilità di sbagliare, è la
 probabilità di sbagliare **senza che nessuno se ne accorga**. Un cancello
-intercetta, e quindi abbassa $p$; e siccome quel numero viene moltiplicato per
-sé stesso venti volte, abbassarlo un po’ cambia moltissimo il risultato.
+intercetta, e quindi abbassa $p$; e siccome a essere moltiplicato per sé stesso
+venti volte è $1 - p$, abbassare $p$ anche di poco cambia moltissimo il
+risultato.
 
 Il cancello però lavora dentro il ciclo, e contro l'aritmetica c'è una seconda
 difesa che sta invece attorno: non consegnare al loop tutto il potere il primo
@@ -573,10 +569,10 @@ altra cosa che consuma. E siccome lavora quando nessuno lo guarda, va anche
 **sorvegliato**: quante volte è andato a buon fine, quanto è costato ogni
 giro, quante volte è dovuta intervenire una persona, e un allarme che suoni se
 qualcosa comincia a degenerare. Di come si tengano in funzione, giorno dopo
-giorno, i sistemi costruiti sui modelli si occupa il capitolo su **MLOps**. Il
-loop engineering, in
-fondo, sposta la leva dal prompt al sistema; ma un sistema, a differenza di
-una frase, va sorvegliato mentre lavora.
+giorno, i sistemi costruiti sui modelli si occupa il
+{doc}`capitolo su MLOps </MLOps/overview>`. Il loop engineering, in fondo,
+sposta la leva dal prompt al sistema; ma un sistema, a differenza di una frase,
+va sorvegliato mentre lavora.
 
 `````{tab} Elementare
 
@@ -599,9 +595,11 @@ una frase, va sorvegliato mentre lavora.
   che non converge gira per sempre.
 - **Gli errori si moltiplicano.** Un giro lungo con un rischio piccolo a ogni
   passo finisce male più spesso di quanto l'intuito dica: venti passi con il
-  cinque per cento di rischio ciascuno arrivano puliti in fondo trentasei volte
-  su cento, cioè poco più di una su tre. È la ragione per cui il cancello non
-  è un lusso.
+  cinque per cento di rischio ciascuno, se ogni passo sbaglia per conto suo,
+  arrivano puliti in fondo trentasei volte su cento, poco più di una su tre.
+  Nei cicli veri uno sbaglio ne tira dietro altri, e quel conto dà l'ordine di
+  grandezza e non la cifra; l'ordine di grandezza basta a dire perché il
+  cancello non è un lusso.
 - **L'autonomia si concede a scaglioni**, come a un nuovo assunto: prima solo
   relazioni da leggere, poi proposte da approvare, e solo alla fine, e solo
   dentro confini scritti, il permesso di fare da sé. Per le cose che non si
@@ -634,9 +632,12 @@ una frase, va sorvegliato mentre lavora.
   (test, lint, tipi) che il modello non può compiacere. Il modello *propone*
   (riflessione alla Reflexion {cite}`shinn2023reflexion`, azione+ragionamento
   alla ReAct {cite}`yao2023react`), il cancello *dispone*.
-- Gli errori si **moltiplicano** lungo il ciclo, $(1-p)^n$ decade in fretta, e
-  per questo il gate è essenziale. Rollout a fasi: **L1** solo report → **L2**
-  fix assistiti con cancello umano → **L3** non presidiato entro allow-list.
+- Gli errori si **moltiplicano** lungo il ciclo: *se* i passi sono
+  indipendenti $(1-p)^n$ decade in fretta, e dove l'avvelenamento del contesto
+  li correla la formula dà l'ordine di grandezza invece della cifra. In un
+  verso o nell'altro il gate resta essenziale. Rollout a fasi: **L1** solo
+  report → **L2** fix assistiti con cancello umano → **L3** non presidiato
+  entro allow-list.
 - Onestà sui limiti: il **comprehension debt** {cite}`osmani2026comprehension`
   (i loop amplificano il giudizio
   buono *e* cattivo; chi mantiene deve leggere ciò che parte), la sicurezza
@@ -652,7 +653,8 @@ una frase, va sorvegliato mentre lavora.
 Tre cerchi, uno dentro l'altro: la frase, il contesto che le sta intorno, il
 ciclo che di frasi ne produce a ripetizione. E in mezzo un'idea che vale ben
 oltre i modelli di linguaggio, cioè che chi propone non può essere anche chi
-approva. **Sistemi multi-agente** toglie l'ultimo presupposto rimasto in piedi,
+approva. {doc}`Sistemi multi-agente </SistemiMultiAgente/overview>` toglie
+l'ultimo presupposto rimasto in piedi,
 che il ciclo sia uno solo: quando ne girano molti insieme non basta più contare
 gli errori di ogni passo, perché ci si mette anche il modo in cui due che
 decidono si mettono d'accordo, e mettersi d'accordo ha un prezzo suo.

@@ -2,20 +2,20 @@
 
 Una cassa di ingranaggi e contatti elettrici, in una sala di Parigi, gioca a
 scacchi da sola davanti al pubblico. Dentro non c’è nessuno, a differenza del
-famoso Turco che aveva girato l’Europa più di un secolo prima: l’ha costruita
-l’ingegnere spagnolo Leonardo Torres Quevedo, funziona dal 1912, e quel giorno
-del 1914 riconosce da sé dove sono i pezzi, muove i propri e non ha bisogno di
-nessuno che le dica che cosa fare.
+famoso Turco, che un giocatore nascosto ce l’aveva, e con quello aveva girato
+l’Europa più di un secolo prima: l’ha costruita l’ingegnere spagnolo Leonardo
+Torres Quevedo, funziona dal 1912, e quel giorno del 1914 riconosce da sé dove
+sono i pezzi, muove i propri e non ha bisogno di nessuno che le dica che cosa
+fare.
 
 Gioca una situazione sola, e non è l’inizio della partita ma la sua coda,
 quella che negli scacchi si chiama **finale**: da una parte re e torre,
 dall’altra il re avversario e nient’altro. Ma lo gioca contro chiunque, da
 qualunque posizione, e il matto **lo dà sempre**. Non lo dà in fretta: ci mette
 più mosse del necessario, a volte tante che un arbitro, contando le cinquanta
-oltre le quali il regolamento dichiara patta, avrebbe già fermato la partita;
-la macchina il regolamento non lo conosce, e al matto arriva lo stesso. E non è
-questo il punto. Il punto
-è come fa.
+mosse oltre le quali il regolamento dichiara patta (cioè pareggio), avrebbe già
+fermato la partita; la macchina il regolamento non lo conosce, e al matto arriva
+lo stesso. E non è questo il punto. Il punto è come fa.
 
 E come fa è la cosa che a noi serve: **non pensa avanti**. Non immagina le
 mosse dell’avversario, non prova continuazioni, non valuta niente. Guarda dove
@@ -51,11 +51,11 @@ E serve sapere **quando si è arrivati**, cioè riconoscere lo stato di fine.
 Da queste tre cose l’oggetto che nasce è sempre lo stesso. Dallo stato di
 partenza si dipartono tante linee quante sono le mosse possibili; da ciascuno
 degli stati che ne escono, altrettante; e così via. È un **albero**, con la
-radice in alto e i rami che si moltiplicano scendendo. È un albero capovolto
-rispetto a quelli veri: la radice sta in cima, e in fondo, alla punta di ogni
-ramo, ci sono le **foglie**, cioè le situazioni in cui non si va più avanti
-perché la partita è finita. Ogni cammino dalla radice a una foglia è un futuro
-possibile.
+radice in alto e i rami che si moltiplicano scendendo, e ogni situazione che ci
+sta dentro è un **nodo**. È un albero capovolto rispetto a quelli veri: la
+radice sta in cima, e in fondo, alla punta di ogni ramo, ci sono le **foglie**,
+i nodi in cui non si va più avanti perché la partita è finita. Ogni cammino
+dalla radice a una foglia è un futuro possibile.
 
 `````{tab} Elementare
 
@@ -74,7 +74,8 @@ per ciascuna mossa che puoi fare: mettiamo che siano tre, e che restino tre a
 ogni riga. La
 riga dopo ne ha nove, quella dopo ancora ventisette, la quarta ottantuno. Dopo
 quattro righe hai disegnato centoventi caselle e non sei arrivato da nessuna
-parte: la soluzione, per questo rompicapo, sta venti mosse più in basso.
+parte: la soluzione, per un rompicapo mescolato bene, sta una ventina di mosse
+più in basso.
 
 E parecchie di quelle caselle sono lo stesso rompicapo disegnato due volte.
 Fai scivolare il 7 nel buco, poi rimettilo dov’era: le tessere stanno come
@@ -133,17 +134,16 @@ zeri, cioè con più di quaranta cifre in meno. Se ogni atomo fosse un
 calcolatore che esamina una posizione al secondo dal Big Bang a oggi, l’albero
 degli scacchi non sarebbe stato sfiorato.
 
-Questa non è una curiosità da mettere in una didascalia: **è il problema del
-capitolo**. Tutto quello che segue esiste per una ragione sola, e cioè per
-guardare pochissimo di quell’albero e decidere bene lo stesso. Le due strade
-sono quelle che danno il nome alle due sezioni centrali: **guardare nel posto
+Non è una curiosità: **è il problema del capitolo**. Tutto quello che segue
+esiste per una ragione sola, e cioè per guardare pochissimo di quell’albero e
+decidere bene lo stesso. Le strade sono due: **guardare nel posto
 giusto** (e per farlo serve un fiuto, cioè una stima di quanto manca), e
 **smettere di guardare dove non serve** (e per farlo serve accorgersi che un
 ramo è già peggio di uno che si conosce).
 
 ```{figure} ../figures/albero-dei-futuri.svg
 :name: fig-albero-futuri
-:alt: "Un albero disegnato con pallini e linee, la radice in alto e i rami che scendono. A sinistra, una etichetta per ciascuna riga: «adesso» accanto al pallino solo in cima, «dopo una mossa» accanto ai tre della riga sotto, «dopo due mosse» accanto ai nove della riga seguente, «dopo tre mosse» accanto ai ventisette dell’ultima, che sono più piccoli e collegati con linee tratteggiate. Sotto, la scritta «e così via». A destra una colonna intestata «quanti sono» riporta 1, 3, 9, 27 e la nota «per tre a ogni riga»; in fondo, in terracotta, «dopo venti mosse 3.486.784.401, dieci cifre, con tre mosse sole»."
+:alt: "Un albero disegnato con pallini e linee, la radice in alto e i rami che scendono. A sinistra, una etichetta per ciascuna riga: «adesso» accanto al pallino solo in cima, «dopo una mossa» accanto ai tre della riga sotto, «dopo due mosse» accanto ai nove della riga seguente, «dopo tre mosse» accanto ai ventisette dell’ultima, che sono più piccoli e collegati con linee tratteggiate. Sotto, la scritta «e così via». A destra una colonna intestata «quanti sono» riporta 1, 3, 9, 27 e la nota «per tre a ogni riga»; in fondo, in terracotta, «dopo venti mosse» e «3.486.784.401», e sotto, smorzata, «dieci cifre, con tre mosse sole»."
 :width: 92%
 
 Tre mosse per stato sono poche, e bastano. Il numero a destra non aumenta di
@@ -159,16 +159,16 @@ costruire**.
 ## Che cosa si sa del mondo
 
 Da qui in avanti una macchina non si limita a riconoscere quello che ha
-davanti: **decide** che cosa fare. E le cose da decidere si dividono secondo che cosa si sa
-del mondo, in un modo da avere in testa fin da adesso, perché spiega l’ordine
-dei prossimi capitoli.
+davanti: **decide** che cosa fare. E quello che si può decidere dipende da
+quanto si sa del mondo. I casi sono tre, e conviene averli in testa da adesso,
+perché dicono che cosa fa questo capitolo e che cosa fa quello dopo.
 
 **Il mondo si conosce, ed è piccolo.** Si può passare in rassegna ogni
 situazione possibile e calcolare, per ciascuna, quanto vale: se il mondo è un
-labirinto, segnare
-accanto a ogni casella quanto conviene trovarcisi. È quello che
-fa il capitolo seguente nella sua prima metà, e un labirinto ha poche caselle,
-quindi si possono guardare tutte.
+labirinto, segnare accanto a ogni casella quanto conviene trovarcisi. È quello
+che fa nella sua prima metà il {doc}`capitolo sul reinforcement learning
+</ReinforcementLearning/overview>`, e un labirinto ha poche caselle, quindi si
+possono guardare tutte.
 
 **Il mondo si conosce, ed è enorme.** Le situazioni sono più di quante se ne
 possano guardare, e allora non si guardano tutte: si guarda in avanti dalla
@@ -177,8 +177,8 @@ solo la mossa da fare subito. È questo capitolo.
 
 **Il mondo non si conosce.** Nessuno ci dice dove porta una mossa né quanto
 paga: bisogna provare e vedere come va. È l’apprendimento per rinforzo, cioè il
-punto in cui quel capitolo seguente va a finire, ed è la ragione per cui i due
-stanno uno accanto all’altro.
+punto in cui quel capitolo va a finire, ed è la ragione per cui i due stanno uno
+accanto all’altro.
 
 ## Dall'albero dei futuri alle sue potature
 
@@ -198,11 +198,9 @@ ricerche a profondità limitata si portano dietro: il disastro che sta un passo
 oltre l’ultimo che si è guardato.
 
 La terza fa una cosa sola, e la fa alla fine perché prima non si poteva: mette
-in chiaro i tre regali di cui le prime due hanno approfittato senza dirlo (le
-**regole**, che si possono interrogare quante volte si vuole; l’**arrivo**, che
-si sa riconoscere; il **voto**, che si sa dare a una posizione di mezzo) e li
-toglie uno per volta. Ognuno, mancando, porta a un pezzo diverso del libro, e
-il più grosso dei tre porta esattamente al capitolo dopo questo.
+in chiaro le cose che le prime due hanno dato per scontate, e le toglie una per
+volta. Ognuna, mancando, porta a un pezzo diverso del libro, e la più grossa
+porta esattamente al capitolo dopo questo.
 
 `````{tab} Elementare
 
@@ -237,16 +235,18 @@ il più grosso dei tre porta esattamente al capitolo dopo questo.
   stati in cui la stessa situazione si raggiunge per strade diverse.
 - Le due grandezze che governano il costo sono il fattore di ramificazione $b$
   e la profondità: un albero completo fino a $d$ ha $O(b^d)$ nodi. Per gli
-  scacchi $b \approx 35$ e la partita è profonda $m \approx 80$, cioè
-  $35^{80} \approx 3 \cdot 10^{123}$, un numero di centoventiquattro cifre
+  scacchi $b \approx 35$ e una partita dura in media ottanta mosse dei due
+  giocatori insieme, cioè $35^{80} \approx 3 \cdot 10^{123}$, un numero di
+  centoventiquattro cifre
   {cite}`russell2020artificial`.
 - La ricerca è **pianificazione a modello noto**: si assume di poter
   interrogare la funzione di transizione quante volte si vuole, senza pagare
   pegno. È l’ipotesi che il {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>` toglierà.
-- Rispetto alla programmazione dinamica del capitolo seguente, che calcola il
+- Rispetto alla programmazione dinamica di quel capitolo, che calcola il
   valore di **tutti** gli stati, qui si guarda in avanti dal solo stato
-  corrente e si decide una mossa sola: è ricerca **locale nel tempo**, e si
-  paga rifacendola da capo a ogni mossa.
+  corrente. Dove il fondo si raggiunge, come nel rompicapo, ne esce il piano
+  intero; dove non si raggiunge, come nei giochi, ne esce la sola mossa da fare
+  adesso, e il lavoro si rifà da capo alla mossa dopo.
 ```
 
 `````

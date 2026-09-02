@@ -18,7 +18,8 @@ progetto del modello e non una metafora, ed è la ragione per cui riempirla bene
 un mestiere.
 
 Anche «il passo successivo» merita una riga: è la mossa dopo, in un lavoro che
-va avanti a riprese, e vedremo che è lì che la faccenda si fa difficile. Detto
+va avanti a riprese, una richiesta dopo l'altra, ed è lì che la faccenda si fa
+difficile. Detto
 questo, la definizione di Karpathy si legge da sé: poche parole, ma pesano.
 Non dicono «trova la frase magica»: dicono che il lavoro è *riempire bene una
 finestra*, e farlo passo dopo passo.
@@ -63,12 +64,12 @@ muro 41%, tetto 20%, ramo 11%, e via calando fino alle ultime parole del
 vocabolario. La risposta nasce pescando da quella classifica. (Quando la
 sentirai chiamare «distribuzione», da qui o da altri, è di questa classifica
 che si sta parlando: è la parola che usano gli statistici.) Nella figura le
-voci si chiamano
-*token*, che è il pezzo di parola con cui il modello lavora davvero, come
-abbiamo visto nel capitolo sul linguaggio naturale. Diremo «parola» dove la
-differenza non conta, e «token» dove conta: cioè quando si tratta di contarli,
-perché è a token che si misura quanto testo entra nella finestra, ed è a token
-che si paga.
+voci si chiamano *token*, che è il pezzo di parola con cui il modello lavora
+davvero, come abbiamo visto nella {doc}`sezione sui tokenizzatori
+</NaturalLanguageProcessing/tokenizzatori>`. Diremo «parola» dove la differenza
+non conta, e «token» dove conta: cioè quando si tratta di contarli, perché è a
+token che si misura quanto testo entra nella finestra, ed è a token che si
+paga.
 
 Questa classifica dipende dal testo che il modello ha davanti: cambia il testo
 e i numeri si spostano. Ecco perché «programmare a parole» non è un modo di
@@ -90,20 +91,19 @@ quanto, nel software tradizionale, cambierebbe riscrivere una funzione.
 `````{tab} Elementare
 
 Un collaboratore bravissimo e velocissimo, che ha letto mezza biblioteca, è
-appena arrivato e non sa nulla del *tuo* lavoro. Puoi anche mandarlo a un
-corso di formazione, ma è una faccenda lunga e costosa, e
-la vedremo fra poco. Quello che puoi fare subito, ogni giorno, gratis, è
-**parlargli bene**. Se gli dici «occupati dei clienti» otterrai una cosa; se
-gli lasci un foglio con il ruolo, tre esempi di risposte giuste e il tono da
-tenere, ne otterrai un'altra, molto migliore: stesso collaboratore, stesso
-cervello, solo parole diverse. E nota il dettaglio del foglio, perché tornerà
-per tutto il capitolo: quei tre esempi già svolti sono la cosa che lo aiuta di
-più, e lui non ha imparato niente, li ha soltanto letti. Ecco cosa vuol dire
-«programmare a parole»: non si cambia la persona, si cambia ciò che le si
-dice. Una cosa il foglio non te la dà: la stessa risposta due volte.
-Ridaglielo domani e avrai qualcosa di simile, non la copia di oggi, come
-succede con chiunque. E siccome le parole giuste fanno un lavoro giusto e
-quelle sbagliate un disastro, sceglierle diventa un mestiere.
+appena arrivato e non sa nulla del *tuo* lavoro. Puoi anche mandarlo a un corso
+di formazione, ma è una faccenda lunga e costosa. Quello che puoi fare subito,
+ogni giorno, senza spedirlo da nessuna parte, è **parlargli bene**. Se gli dici
+«occupati dei clienti» otterrai una cosa; se gli lasci un foglio con il ruolo,
+tre esempi di risposte giuste e il tono da tenere, ne otterrai un'altra, molto
+migliore: stesso collaboratore, stesso cervello, solo parole diverse. E nota il
+dettaglio del foglio, perché tornerà per tutto il capitolo: quei tre esempi già
+svolti sono la cosa che lo aiuta di più, e lui non ha imparato niente, li ha
+soltanto letti. Ecco cosa vuol dire «programmare a parole»: non si cambia la
+persona, si cambia ciò che le si dice. Una cosa il foglio non te la dà: la
+stessa risposta due volte. Ridaglielo domani e avrai qualcosa di simile, non la
+copia di oggi, come succede con chiunque. E siccome le parole giuste fanno un
+lavoro giusto e quelle sbagliate un disastro, sceglierle diventa un mestiere.
 
 `````
 
@@ -128,15 +128,16 @@ documenti, cronologia) e $\hat{y}$ la risposta, *campionata* da quella
 distribuzione, eventualmente riscalata e troncata dai parametri di decoding
 (temperatura, top_p) che vedremo nella sezione sul prompt: a temperatura non
 nulla, lo stesso $C$ può dare risposte diverse (e non solo a temperatura non
-nulla, come vedremo lì). Programmare significa progettare $C$. Il meccanismo che rende
-possibile tutto questo è l’**in-context learning**, documentato su larga scala
-da Brown e colleghi nel lavoro su GPT-3 {cite}`brown2020language`: bastano poche
-coppie richiesta → risposta nel contesto (il *few-shot*), perché il modello
-esegua un compito nuovo *senza alcun aggiornamento dei pesi*. Gli esempi non
-addestrano: **condizionano**. La scoperta è raccontata nel capitolo sui
-Transformer e ne abbiamo scritto la forma probabilistica nella sezione di
-context engineering del capitolo sugli **Agenti**; qui ci basta la
-conseguenza: la programmazione avviene nel testo.
+nulla, come vedremo lì). Programmare significa progettare $C$. Il meccanismo
+che rende possibile tutto questo è l’**in-context learning**, documentato su
+larga scala da Brown e colleghi nel lavoro su GPT-3 {cite}`brown2020language`:
+bastano poche coppie richiesta → risposta nel contesto (il *few-shot*), perché
+il modello esegua un compito nuovo *senza alcun aggiornamento dei pesi*. Gli
+esempi non addestrano: **condizionano**. La scoperta è raccontata nella
+{doc}`sezione sui grandi modelli linguistici </Transformers/llm>` e ne abbiamo
+scritto la forma probabilistica nel {doc}`context engineering degli agenti
+</Agenti/context-engineering>`; qui ci basta la conseguenza: la programmazione
+avviene nel testo.
 
 `````
 
@@ -251,13 +252,12 @@ vere: che le strade a disposizione **costano**, e in modo diverso; che quello
 che si fa **si misura**, invece di fidarsi a occhio; e che di ogni modifica
 **si tiene traccia**, come si fa col codice.
 
-La prima si vede meglio in una figura. Quando un modello non fa quello che vogliamo,
-davanti abbiamo tre strade, e non costano uguale: riscrivere il messaggio;
-andare a prendere i documenti che al
-modello mancano e metterglieli davanti insieme alla domanda (è il **RAG**);
-oppure riaprire i pesi e riaddestrarlo un po’ sui nostri esempi (il
-**fine-tuning**). Le prime due lasciano il modello com'è, la terza lo cambia,
-ed è la più cara di tutte.
+Il costo si vede meglio in una figura. Quando un modello non fa quello che
+vogliamo, davanti abbiamo tre strade, e non costano uguale: riscrivere il
+messaggio; andare a prendere i documenti che al modello mancano e metterglieli
+davanti insieme alla domanda (è il **RAG**); oppure riaprire i pesi e
+riaddestrarlo un po’ sui nostri esempi (il **fine-tuning**). Le prime due
+lasciano il modello com'è, la terza lo cambia, ed è la più cara di tutte.
 
 ```{figure} ../figures/fine-tuning-rag-o-prompt.svg
 :name: fig-quale-leva
@@ -299,8 +299,8 @@ vecchi si datano e si tengono nel cassetto, così quando il giovedì le risposte
 peggiorano sai che il colpevole è il foglio di mercoledì.
 
 È noioso come tutta l'ingegneria, ed è per questo che funziona. Con
-un'avvertenza: è un mestiere nato ieri. Non ci sono leggi, ci sono regole del
-pollice che spesso funzionano e ogni tanto no. Chi ti promette la frase che
+un'avvertenza: è un mestiere nato ieri. Non ci sono leggi, ci sono regole
+pratiche che spesso funzionano e ogni tanto no. Chi ti promette la frase che
 funziona sempre ti sta vendendo qualcosa.
 
 `````
@@ -308,22 +308,21 @@ funziona sempre ti sta vendendo qualcosa.
 `````{tab} Superiore
 
 Tre proprietà rendono l'attività ingegneristica e non magica. **Primo, i
-vincoli sono reali e quantificabili**: la finestra ha un tetto di token, e
-ogni token pesa su latenza, memoria (la KV cache vista nel capitolo sui
-Transformer) e denaro, e del **costo per token** si occupa la sezione su
-LLMOps, nel capitolo su MLOps. Non si ottimizza «la qualità» in astratto ma la
-qualità *sotto vincolo
-di budget*. **Secondo, si misura**: una versione del prompt o della politica
-di contesto si valuta su una batteria di casi e si confronta (A/B) con la
-precedente prima di sostituirla, senza misura non c'è miglioramento, solo
-opinioni. **Terzo, si versiona**: come abbiamo anticipato nel capitolo sugli
-agenti, *il prompt è codice*, va messo sotto controllo di versione e trattato
-come un artefatto del software, tema che ritroveremo in MLOps. Con una
-avvertenza di onestà intellettuale: è un'ingegneria **giovane**, fatta oggi
-più di euristiche che di garanzie. La terminologia stessa è in assestamento,
-per un buon tratto si è chiamato tutto «prompt engineering», finché non si è
-capito che il problema vero stava un cerchio più in fuori. Chi promette leggi
-certe, in questo campo, sta vendendo qualcosa.
+vincoli sono reali e quantificabili**: la finestra ha un tetto di token, e ogni
+token pesa su latenza, memoria (la KV cache vista nel capitolo sui Transformer)
+e denaro, e del **costo per token** si occupa la {doc}`sezione su LLMOps
+</MLOps/llmops>`. Non si ottimizza «la qualità» in astratto ma la qualità
+*sotto vincolo di budget*. **Secondo, si misura**: una versione del prompt o
+della politica di contesto si valuta su una batteria di casi e si confronta
+(A/B) con la precedente prima di sostituirla, senza misura non c'è
+miglioramento, solo opinioni. **Terzo, si versiona**: come abbiamo anticipato
+nel capitolo sugli agenti, *il prompt è codice*, va messo sotto controllo di
+versione e trattato come un artefatto del software, tema che ritroveremo in
+MLOps. Con una avvertenza di onestà intellettuale: è un'ingegneria **giovane**,
+fatta oggi più di euristiche che di garanzie. La terminologia stessa è in
+assestamento, per un buon tratto si è chiamato tutto «prompt engineering»,
+finché non si è capito che il problema vero stava un cerchio più in fuori. Chi
+promette leggi certe, in questo campo, sta vendendo qualcosa.
 
 `````
 

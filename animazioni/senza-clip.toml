@@ -24,8 +24,10 @@
 ragione = """
 È un capitolo di ripasso, e ogni meccanismo che nomina (la discesa del
 gradiente, le GAN, la diffusione, gli agenti) ha già la sua casa altrove: è
-là che va animato, non qui. Le tre cose temporali che il capitolo cita hanno
-il tempo su un asse (le leggi di scala, il decadimento degli errori lungo una
-catena di passi, la cronologia delle idee), e una figura ferma le mostra
-tutte insieme, cioè meglio di quanto le mostrerebbe una a turno.
+là che va animato, non qui. Delle tre cose temporali che il capitolo cita, due
+hanno il tempo su un asse e una figura ferma le mostra tutte insieme, cioè
+meglio di quanto le mostrerebbe una a turno: le leggi di scala e la cronologia
+delle idee. La terza, il decadimento degli errori lungo una catena di passi,
+una figura non ce l'ha, né ferma né mossa, mentre il conto vive per esteso in
+tutte e due le schede: è il solo candidato aperto del capitolo.
 """

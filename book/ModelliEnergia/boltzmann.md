@@ -49,10 +49,10 @@ I neuroni nascosti sono taccuini interni: caselle che non corrispondono a
 nessuna casella del dato e servono alla rete per annotare regolarità sue
 («qui c'è una riga verticale», «questi due angoli vanno insieme»).
 
-Imparare diventa un confronto fra due modi di stare al mondo. Nella *veglia*
-la macchina guarda i dati veri e segna quali coppie di caselle si accendono
-insieme; le coppie, perché i suoi legami collegano due caselle per volta, e
-quali coppie vanno d'accordo è tutto quello che può imparare. Nel *sogno* la
+Imparare diventa un confronto fra due modi di stare al mondo. Nella *veglia* la
+macchina guarda i dati veri e segna quali coppie di caselle si accendono
+insieme. Le coppie, e non altro: i suoi legami collegano due caselle per volta,
+e quali coppie vanno d'accordo è tutto quello che può imparare. Nel *sogno* la
 si lascia inventare configurazioni per conto suo, e si segna la stessa cosa.
 
 Poi si ritoccano i legami, e ritoccare un legame vuol dire deformare il
@@ -83,8 +83,9 @@ P(s_i = +1) = \sigma\!\left(\frac{2 h_i}{T}\right)
 = \frac{1}{1 + e^{-2 h_i / T}},
 $$
 
-dove $h_i = \sum_j w_{ij} s_j$ è il campo locale, $\sigma$ la sigmoide già
-incontrata nel capitolo sulle reti neurali e $T > 0$ la temperatura. Il
+dove $h_i = \sum_j w_{ij} s_j$ è il campo locale, $\sigma$ la
+{doc}`sigmoide </RetiNeurali/funzioni-attivazione>` e $T > 0$ la
+temperatura. Il
 fattore 2 non è un refuso e non è universale: viene dalla convenzione
 $s_i \in \{-1,+1\}$ ereditata da Hopfield. Il conto è il rapporto di Gibbs fra
 i due stati possibili del neurone, che per la sezione precedente valgono
@@ -114,18 +115,21 @@ Z = \sum_{\mathbf{s}'} e^{-E(\mathbf{s}')/T},
 $$
 
 dove $Z$ (la **funzione di partizione**) somma su tutti i $2^N$ stati
-possibili: è lei che rende la rete un vero modello probabilistico, ed è lei
-che costerà carissima. Anche qui le ipotesi vanno dette, perché sono tre e
-sono tutte necessarie: l'aggiornamento dev'essere **asincrono** (così è
-campionamento di Gibbs, e soddisfa il bilancio dettagliato rispetto a questa
-distribuzione), la temperatura dev'essere $T > 0$ (a $T = 0$ la catena si
-inchioda nel primo minimo) e la scansione dei neuroni dev'essere equa. Con
-l'aggiornamento **sincrono**, quello di Little, la distribuzione stazionaria è
-un'altra, per la stessa differenza che nella sezione precedente faceva cadere
-la garanzia di discesa. I neuroni si dividono in **visibili** (dove si
-presentano i dati) e **nascosti** (variabili latenti che catturano regolarità
-di ordine superiore). L'apprendimento massimizza la verosimiglianza dei dati
-sui visibili, e il gradiente ha una forma di contrasto di rara eleganza:
+possibili: è lei che rende la rete un vero modello probabilistico, ed è lei che
+costerà carissima. Anche qui le ipotesi vanno dette, perché sono quattro e sono
+tutte necessarie: i pesi devono restare **simmetrici** (senza $w_{ij} = w_{ji}$
+questa distribuzione non è stazionaria per niente, e non è la stessa cosa della
+simmetria che nella sezione precedente garantiva la discesa), l'aggiornamento
+dev'essere **asincrono** (così è campionamento di Gibbs, e soddisfa il bilancio
+dettagliato rispetto a questa distribuzione), la temperatura dev'essere $T > 0$
+(a $T = 0$ la catena si inchioda nel primo minimo) e la scansione dei neuroni
+dev'essere equa. Con l'aggiornamento **sincrono**, quello di Little, la
+distribuzione stazionaria è un'altra, per la stessa differenza che nella
+sezione precedente faceva cadere la garanzia di discesa. I neuroni si dividono
+in **visibili** (dove si presentano i dati) e **nascosti** (variabili latenti
+che catturano regolarità di ordine superiore). L'apprendimento massimizza la
+verosimiglianza dei dati sui visibili, e il gradiente ha una forma di contrasto
+di rara eleganza:
 
 $$
 \Delta w_{ij} \;\propto\; \langle s_i s_j \rangle_{\text{dati}}
@@ -141,9 +145,11 @@ stessa correlazione con la rete libera di campionare da sé (fase negativa,
 il «sogno»). Il «$\propto$» nasconde un $1/T$: il tasso di apprendimento
 effettivo dipende dalla temperatura a cui si raccolgono le statistiche. La
 derivazione è quella della sezione sulla partizione, applicata due volte:
-$\partial E/\partial w_{ij} = -s_i s_j$, e poiché i dati vincolano solo i
+$\partial E/\partial w_{ij} = -s_i s_j$ (il fattore 2 che cancella il
+$\tfrac12$ viene dal vincolo di simmetria, che di $w_{ij}$ e $w_{ji}$ fa un
+parametro solo), e poiché i dati vincolano solo i
 visibili bisogna passare alla marginale, cioè sommare la congiunta su tutte le
-configurazioni dei nascosti: compare così una **seconda** media, quella sui
+configurazioni dei nascosti: compare così una seconda media, quella sui
 nascosti dati i visibili. Da lì i due termini.
 
 Nella macchina di Boltzmann originale, a connettività generale, il problema
@@ -187,14 +193,14 @@ la macchina si illude. Si chiama **contrastive divergence persistente**, dove
 «persistente» è il sogno che non viene mai interrotto.
 
 C'è un prezzo, ed è meglio saperlo che credere di aver trovato una scorciatoia
-gratis. Di solito, quando una macchina impara, c'è un numero che dice quanto
-sta sbagliando (non è l'energia, che è il voto dato a una singola risposta: è
-un voto dato all'intera macchina, e si guarda una volta ogni tanto), e
-imparare vuol dire farlo scendere: se scende si è sulla strada giusta, e
-quando smette di scendere si è arrivati. Con il sogno abbreviato quel numero
+gratis. Di solito, quando una macchina impara, c'è un numero che dice quanto sta
+sbagliando. Non è l'energia: l'energia è il voto dato a una singola risposta,
+questo è un voto dato all'intera macchina, e lo si guarda una volta ogni
+tanto. Imparare vuol dire farlo calare: finché cala si è sulla strada giusta,
+e quando smette si è arrivati. Con il sogno abbreviato quel numero
 non c'è, e non perché sia difficile da calcolare o perché nessuno l'abbia
 ancora trovato: un numero del genere qui non esiste, e i ritocchi che la
-macchina fa non stanno scendendo lungo niente. Nessuno può garantire che stia
+macchina fa non stanno calando verso niente. Nessuno può garantire che stia
 andando verso qualcosa invece che in tondo. In pratica, sulle reti di allora,
 funzionava benissimo.
 
@@ -213,8 +219,9 @@ riparare la metà cara di cui sopra; la contrastive divergence accorcia
 l'altra.
 
 Sulla natura di quell'aggiornamento conviene essere precisi, perché la formula
-abbreviata non è «il gradiente giusto, con un errore». Sutskever e Tieleman
-ne danno due dimostrazioni: l'aggiornamento CD1 *noiseless* (cioè con le
+abbreviata non è «il gradiente giusto, con un errore». Sutskever e Tieleman ne
+danno due dimostrazioni, e attribuiscono il risultato a Tieleman (2007):
+l'aggiornamento CD1 *noiseless* (cioè con le
 attese calcolate esattamente, non stimate) per RBM binarie **non è il
 gradiente di alcuna funzione** {cite}`sutskever2010convergence`. Non esiste
 cioè un obiettivo di cui sia una stima, nemmeno distorta; e si può costruire
@@ -294,7 +301,7 @@ paesaggio intero, cioè il gesto che trasforma un'altezza in una percentuale.
   alla macchina un istante solo di fantasia a partire da una cosa vera.
   Funziona, ma è una scorciatoia, non una soluzione: il numero che dice quanto
   la macchina sta sbagliando, qui, non esiste, e i suoi ritocchi non stanno
-  scendendo lungo niente.
+  calando verso niente.
 - Da qui in avanti l'altezza del paesaggio diventa una percentuale, e per
   trasformarla bisognerebbe aver misurato il paesaggio intero, valle per
   valle. È il conto che l'apertura del capitolo chiamava **funzione di

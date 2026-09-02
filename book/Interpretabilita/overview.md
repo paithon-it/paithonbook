@@ -16,8 +16,8 @@ che con l'animale non c'entrava nulla: un rilevatore di neve travestito da
 riconoscitore di canidi.
 
 Poi venne la parte interessante. I tre mostrarono dieci risposte del modello,
-errori compresi, a ventisette studenti universitari che un corso di machine
-learning l'avevano già fatto, e chiesero loro se si
+errori compresi, a ventisette studenti di dottorato e di magistrale che un corso
+di machine learning l'avevano già fatto, e chiesero loro se si
 fidassero e come pensavano che quel programma decidesse. Con le sole risposte
 sotto gli occhi, dieci studenti su ventisette dissero di fidarsi, e meno della
 metà sospettò della neve. Allora i ricercatori diedero loro le *spiegazioni*:
@@ -63,27 +63,27 @@ modello che li organizza a strati, dove il primo strato fa un po’ di conti sui
 dati in arrivo, il secondo rifà i conti sul risultato del primo, e così via fino
 in fondo, si chiama **rete neurale**.
 
-Nessuno di quei numeri, preso da solo, significa qualcosa, e conviene vedere in
-che senso. Il modello non risponde «lupo» e basta: risponde con un punteggio,
-mettiamo 87 su 100 a favore del lupo. Quegli 87 non stanno scritti da nessuna
-parte: sono il risultato di milioni di spintarelle minuscole, alcune verso il
-lupo e altre contro, che si compensano quasi tutte fra loro e lasciano quel
-numero come residuo. Stampare il programma non serve a niente, perché il
-programma *è* quella tabella, e lì dentro la parola «neve» non è scritta da
-nessuna parte. Chiamiamo **interpretabilità** la capacità di capire su che cosa
-si appoggia la risposta di un modello, e questo capitolo raccoglie i modi di
-ottenerla quando il modello non la offre da sé.
+Nessuno di quei numeri, preso da solo, significa qualcosa. Il modello non
+risponde «lupo» e basta: risponde con un punteggio, mettiamo 87 su 100 a favore
+del lupo. Quegli 87 non stanno scritti da nessuna parte: sono il risultato di
+milioni di spintarelle minuscole, alcune verso il lupo e altre contro, che si
+compensano quasi tutte fra loro e lasciano quel numero come saldo. Stampare il
+programma non serve a niente, perché il programma *è* quella tabella, e lì
+dentro la parola «neve» non è scritta da nessuna parte. Chiamiamo
+**interpretabilità** la capacità di capire su che cosa si appoggia la risposta
+di un modello, e questo capitolo raccoglie i modi di ottenerla quando il
+modello non la offre da sé.
 
 Fin quando la posta in gioco è suggerire un film, poco male. Ma quando un
 modello decide se concedere un mutuo, se un tumore è maligno o se rilasciare un
 imputato, la domanda «perché?» diventa una questione di fiducia e di giustizia.
 
-Da qui in avanti gli esempi cambieranno spesso faccia, e conviene sapere come
-sono fatti i dati quando non sono fotografie. Sono una tabella: una **riga** per
-persona, e una **colonna** per ogni informazione che di lei si conosce, il
-reddito, l'età, i debiti in corso. Sono quelle colonne che il capitolo passerà
-il tempo a interrogare, e più avanti le chiameremo anche **feature**, che è il
-termine di mestiere.
+Da qui in avanti gli esempi cambieranno spesso faccia. Quando non sono
+fotografie, i dati stanno in una tabella: una **riga** per persona, e una
+**colonna** per ogni informazione che di lei si conosce, il reddito, l'età, i
+debiti in corso. Sono quelle colonne che il capitolo passerà il tempo a
+interrogare, e più avanti le chiameremo anche **feature**, che è il termine di
+mestiere.
 
 La domanda «perché?», dicevamo, è anche una questione di legge. Il Regolamento generale sulla
 protezione dei dati europeo (GDPR, applicabile dal 2018) detta delle regole
@@ -161,12 +161,13 @@ cerchiamo.
 - **Equità.** Un modello può discriminare per genere o provenienza anche senza
   che quelle informazioni gli siano state date: gli basta una colonna che ne
   faccia le veci, cioè che ne sia una spia. Il quartiere di residenza, in molte
-  città, dice qualcosa sul reddito di chi ci abita, e un modello che rifiuta un
-  prestito «per il quartiere» sta di fatto rifiutandolo per il reddito, che è
+  città, dice qualcosa sull'origine di chi ci abita, e un modello che rifiuta un
+  prestito «per il quartiere» può di fatto rifiutarlo per la provenienza, che è
   proprio la cosa che non gli era stata data. Il modello non ha bisogno di
   sapere che sta discriminando: gli basta trovare la spia nei dati. Solo
   esaminando *su cosa* si basa una decisione si può scoprirlo, ed è un tema che
-  riprenderemo nel capitolo sull'AI responsabile.
+  riprenderemo nel {doc}`capitolo sull'AI responsabile
+  </AIResponsabile/overview>`.
 - **Scoperta scientifica.** Ci sono modelli che indovinano cose che nessuno
   sapeva prevedere: come si ripiega una proteina, se una molecola nuova sarà un
   farmaco. Lì la domanda cambia segno. Non si chiede una spiegazione per
@@ -211,7 +212,7 @@ c'è più nessuno da convincere.
 Doshi-Velez e Kim {cite}`doshi2017towards` insistono su questo:
 l'interpretabilità non è una proprietà monolitica del modello, ma è relativa a
 un **compito a valle** e a un **destinatario**. Ne deriva la loro tassonomia
-della *valutazione* delle spiegazioni, su tre livelli di rigore crescente:
+della *valutazione* delle spiegazioni, su tre livelli di rigore decrescente:
 *application-grounded* (esperti reali sul compito reale; un medico che usa la
 spiegazione in corsia), *human-grounded* (persone non esperte su compiti
 semplificati, per esperimenti controllati), *functionally-grounded* (nessun
@@ -293,7 +294,7 @@ specifici.
 `````
 
 Le tre domande dicono *come* lavora un metodo, non che cosa restituisce. E qui
-conviene mettere in guardia, perché sotto la parola «spiegazione» questo
+c'è una trappola, perché sotto la parola «spiegazione» questo
 capitolo mette oggetti di forma diversissima:
 
 - **una classifica delle colonne**, valida per tutti gli esempi insieme: «in
@@ -318,7 +319,7 @@ dice «spiegazione», la prima domanda utile è quale delle cinque.
 
 C'è poi una quarta domanda, che non riguarda il funzionamento di un metodo ma
 decide quale risposta sia quella giusta: **si vuole spiegare il modello, o il
-mondo?** Sembra la stessa cosa e non lo è, e conviene vederlo su un caso.
+mondo?** Sembra la stessa cosa e non lo è, e su un caso si vede.
 
 Mettiamo che nella tabella ci siano due colonne che dicono quasi la stessa cosa:
 lo stipendio del mese e il reddito dichiarato in un anno. Chi ha l'uno alto ha
@@ -334,27 +335,25 @@ ciascuna delle due colonne, e notiamo che ci sono due domande diverse, non una.
   si riaddestrasse domani potrebbe scegliere l'altra. Non c'è nessuna ragione
   per dare più credito a una che all'altra, quindi si divide in parti uguali.
 
-Nessuna delle due risposte è sbagliata: rispondono a domande diverse, e chi
-usa un metodo senza sapere a quale delle due sta rispondendo si prende il numero
-per quello che non è. Chi cerca un difetto nel modello vuole la prima. Chi cerca
-una causa nel mondo vorrebbe la seconda, e conviene dire subito che nemmeno
-quella gliela darà: un modello ha visto solo cose che vanno insieme (si dice
-che sono **correlate**), non ha mai fatto un esperimento, e due cose che vanno
-insieme non sono per forza l'una la causa dell'altra. Questo bivio tornerà più volte, ogni volta che due metodi entrambi ragionevoli
-daranno due numeri diversi per lo stesso caso.
+Nessuna delle due risposte è sbagliata: rispondono a domande diverse, e chi usa
+un metodo senza sapere a quale delle due sta rispondendo si prende il numero
+per quello che non è. Chi cerca un difetto nel modello vuole la prima. Chi
+cerca una causa nel mondo vorrebbe la seconda, e nemmeno quella gliela darà: un
+modello ha visto solo cose che vanno insieme (si dice che sono **correlate**),
+non ha mai fatto un esperimento, e due cose che vanno insieme non sono per
+forza l'una la causa dell'altra. Questo bivio tornerà più volte, ogni volta che
+due metodi entrambi ragionevoli daranno due numeri diversi per lo stesso caso.
 
 ## Un modello che si spiega da sé
 
 Basta di teoria: guardiamone uno. Della prima delle tre domande abbiamo detto
-che alcuni modelli si leggono da sé e altri no, e conviene vedere in concreto
-che aspetto ha un modello del primo tipo. Ricordiamo il nome che gli diamo:
+che alcuni modelli si leggono da sé e altri no; ecco in concreto che aspetto ha
+un modello del primo tipo. Ricordiamo il nome che gli diamo:
 **trasparente**, e nel resto del capitolo si dirà anche che è interpretabile
 in modo **intrinseco**, che è la stessa cosa detta col termine di mestiere.
 
 L'esempio più pulito è l'albero di decisione già incontrato, tenuto basso, con
-poche domande. Qui sotto lo costruiamo davvero, con qualche riga di codice: chi
-non programma può saltare il riquadro grigio e leggere subito quello che stampa,
-che è il pezzo interessante.
+poche domande, e costruito davvero con qualche riga di codice.
 
 I dati sono un classico, l’`iris`: 150 fiori di iris di tre specie diverse,
 ciascuno descritto da quattro misure in centimetri (lunghezza e larghezza del
@@ -375,8 +374,6 @@ albero.fit(X, y)
 print(export_text(albero, feature_names=list(iris.feature_names)))
 ```
 
-Ecco cosa stampa, per intero:
-
 ```text
 |--- petal width (cm) <= 0.80
 |   |--- class: 0
@@ -396,14 +393,29 @@ aggiunta dopo: il modello *è* la propria spiegazione, e sta in sette righe.
 Adesso il confronto. Al posto di un albero solo se ne possono far crescere
 centinaia, tutti un po’ diversi fra loro, e far votare le loro risposte: si
 chiama **foresta casuale**, ed è il metodo visto nella {doc}`sezione su alberi
-e metodi ensemble </MachineLearning/alberi-ensemble>`. Tanti pareri sbagliano
-meno di uno, e infatti su questi fiori la foresta indovina un po’ più
-dell'alberello: il $96{,}0\%$ contro il $94{,}7\%$. Il modo di misurarlo è
-quello di sempre, e conviene dirlo: si dividono i 150 fiori in dieci gruppi, si
-addestra il modello su nove gruppi e lo si interroga sul decimo, e si ripete
-dieci volte cambiando ogni volta il gruppo tenuto da parte, così che ogni fiore
-prima o poi faccia da esame. La media di quelle dieci prove è il numero scritto
-sopra. La differenza, dunque, è di **un punto e tre**. In cambio, la logica
+e metodi ensemble </MachineLearning/alberi-ensemble>`. Per misurare chi indovina
+di più si fa come sempre: si dividono i 150 fiori in dieci gruppi, si addestra
+il modello su nove e lo si interroga sul decimo, e si ripete dieci volte
+cambiando ogni volta il gruppo tenuto da parte, così che ogni fiore prima o poi
+faccia da esame.
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+
+# dieci gruppi: nove per imparare, uno per l'esame, e si gira dieci volte
+foresta = RandomForestClassifier(n_estimators=300, random_state=0)
+for nome, m in [("alberello", albero), ("foresta casuale", foresta)]:
+    print(f"{nome:16} {cross_val_score(m, X, y, cv=10).mean():.1%}")
+```
+
+```text
+alberello        94.7%
+foresta casuale  96.0%
+```
+
+Tanti pareri sbagliano meno di uno, e infatti la foresta indovina un po’ più
+dell'alberello: la differenza è di **un punto e tre**. In cambio, la logica
 della foresta non si stampa più, perché sono centinaia di ricette che votano
 invece di una sola. È in questo scambio che nascono i metodi del capitolo; su
 questi fiori, però, conviene poco.
@@ -496,8 +508,8 @@ L'argomento è duplice. Primo: una spiegazione infedele è peggio di niente,
 perché dà una falsa sensazione di controllo. Secondo, e più radicale: quello
 scambio, su molti problemi veri, semplicemente non esiste. Quando i dati stanno
 in una tabella e ogni colonna significa qualcosa di preciso (il reddito, l'età,
-la pressione arteriosa), un modello trasparente ben costruito arriva quasi
-sempre dove arriva la scatola nera, e allora l'oscurità è un costo senza
+la pressione arteriosa), un modello trasparente ben costruito arriva spesso
+dove arriva la scatola nera, e allora l'oscurità è un costo senza
 contropartita: si paga e non si compra niente.
 
 Non tutti concordano, e la ragione è che non tutti i dati stanno in una
@@ -516,8 +528,6 @@ esistono spiegazioni «gratis»: esistono spiegazioni verificate e spiegazioni
 che ci raccontiamo.
 
 ## Dai modelli trasparenti ai circuiti
-
-Cominciamo dai modelli trasparenti, quelli che si leggono senza aiuto.
 
 Cominceremo dai **modelli trasparenti**, quelli che si leggono senza aiuto:
 l'albero di poco fa, e i modelli che rispondono facendo una somma, tanti punti
@@ -544,12 +554,12 @@ diverso perché la risposta cambiasse?», e sono le spiegazioni
 Chiuderemo dentro le reti profonde. Lì la domanda diventa quanto ogni pezzo
 dell'ingresso, ogni singolo pixel, ha contribuito a una risposta: quella quota
 di merito si chiama **attribuzione**, e la cartina che la disegna sopra la foto
-(le macchie dell'inizio) si chiama mappa di **salienza**. Quelle mappe promettono più di quanto mantengano, e la stessa domanda vale per
-i pesi di attenzione nati nel
-{doc}`capitolo sui Transformer </Transformers/overview>`: sembrano una
-spiegazione già pronta e non lo sono. E finiremo con il
-tentativo più ambizioso e più giovane, quello di smontare una rete pezzo per pezzo come un
-ingegnere apre un chip per capire che cosa fa ciascun componente: si chiama
+si chiama mappa di **salienza**. Quelle mappe promettono più di quanto
+mantengano, e la stessa domanda vale per i pesi di attenzione della
+{doc}`sezione sul meccanismo di attenzione </Transformers/attenzione>`:
+sembrano una spiegazione già pronta e non lo sono. E finiremo con il tentativo
+più ambizioso e più giovane, quello di smontare una rete pezzo per pezzo come
+un ingegnere apre un chip per capire che cosa fa ciascun componente: si chiama
 **interpretabilità meccanicistica**.
 
 Un filo, sopra a tutto, tiene insieme il capitolo con quello sull’**AI
@@ -577,7 +587,7 @@ guardarci dentro.
   sapere cosa cambiare, all'ingegnere quali colonne pesano, all'ufficio che
   vigila che il sistema non discrimini.
 - Tre domande ordinano tutti i metodi del capitolo: il modello si legge da sé
-  o va interrogato **dopo**? vuoi capire il modello **intero** o **una risposta
+  o va interrogato dopo? vuoi capire il modello **intero** o **una risposta
   sola**? lo strumento serve un solo tipo di modello o va bene per
   **qualunque** modello? E una quarta, che decide chi ha ragione quando due
   metodi discordano: vuoi spiegare **il modello** o **il mondo**? Se due colonne

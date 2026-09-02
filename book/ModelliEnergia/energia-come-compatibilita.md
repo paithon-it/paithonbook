@@ -94,8 +94,8 @@ computazionale.
 
 `````
 
-Due modelli che il capitolo ha già incontrato stanno dentro questa cornice, e
-conviene vedere come, perché i due casi sono diversi. La macchina di Boltzmann
+Due modelli già incontrati stanno dentro questa cornice, e i due casi sono
+diversi. La macchina di Boltzmann
 è quello facile: sull'energia si costruisce una probabilità, ed è proprio il
 caso da cui la cornice si libera.
 
@@ -115,20 +115,18 @@ essere il fondovalle più basso di tutti oppure no.
 
 ## Il collasso, e le due famiglie di rimedi
 
-Il collasso, cioè l'energia bassa dappertutto e il sì a qualunque cosa,
-conviene guardarlo da vicino partendo da come si addestra un modello, perché è
-lì che si previene. Gli si
+Il collasso, cioè l'energia bassa dappertutto e il sì a qualunque cosa, si
+previene in un posto solo, il modo in cui si addestra il modello. Gli si
 mostra una coppia, si guarda che voto le dà, e si ritocca il modello perché
 quel voto somigli di più a quello che volevamo. La regola con cui si decide
 «di quanto ha sbagliato» è una scelta, e di regole possibili ce ne sono
 parecchie: sono quelle a decidere se il collasso è possibile oppure no.
 
 L'articolo di LeCun le mette in fila in una tabella e accanto a ciascuna
-scrive una cosa sola: quanto dislivello quella regola pretende fra una coppia
-giusta e una sbagliata prima di dichiararsi soddisfatta. Quel dislivello ha un
-nome, **margine**, ed è la misura di quanto una regola protegga dal collasso:
-una superficie piatta non ha dislivelli, quindi una regola che ne pretende
-qualcuno non l'accetterà mai.
+scrive una cosa sola: con quale dislivello fra una coppia giusta e una
+sbagliata quella regola basta a tenere lontano il collasso. Quel dislivello ha
+un nome, **margine**: una superficie piatta non ha dislivelli, quindi una
+regola che ne pretende uno qualunque la rifiuta per costruzione.
 
 La prima regola della lista è anche la più ingenua, quella che si limita ad
 abbassare l'energia sui dati veri senza mai guardare nient'altro. Nella sua
@@ -168,7 +166,8 @@ E il fatto che il primo metodo non regga quando le risposte possibili sono
 tantissime (per una foto sono più di quante se ne possano contare) è
 esattamente l'argomento su cui poggia la proposta di LeCun per i *world
 model*, i modelli che si costruiscono un'idea di come va il mondo per poterlo
-prevedere, e a cui è dedicato più avanti un capitolo intero.
+prevedere, e a cui è dedicato per intero il
+{doc}`capitolo sui world model </WorldModels/overview>`.
 
 `````
 
@@ -184,7 +183,7 @@ answer* $\bar{y}$ (la risposta scorretta con l'energia più bassa, cioè la più
 insidiosa) e su di essa costruisce le loss a margine, per esempio la hinge
 
 $$
-\mathcal{L} = \max\!\big(0,\; m + E_\theta(\mathbf{x}, y) - E_\theta(\mathbf{x}, \bar{y})\big),
+\ell = \max\!\big(0,\; m + E_\theta(\mathbf{x}, y) - E_\theta(\mathbf{x}, \bar{y})\big),
 $$
 
 dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. E qui
@@ -204,14 +203,14 @@ superficie.
 
 I **metodi regolarizzati o architetturali** impediscono il collasso per
 costruzione, limitando il *volume* dello spazio a bassa energia invece di
-sollevarlo punto per punto: colli di bottiglia sulle variabili latenti,
-vincoli di sparsità, quantizzazione dei codici (il VQ-VAE del capitolo
-sull'audio è esattamente questo) e termini che impongono varianza o
-decorrelazione alle rappresentazioni. L'intuizione è che un modello con pochi
-gradi di libertà non *può* dare energia bassa a tutto, e allora non serve
-alcun controesempio a impedirglielo. È la famiglia su cui LeCun scommette per
-i world model, ed è il motivo per cui, nel capitolo sui *world model*, la JEPA
-si difende dal collasso senza mai fabbricare un solo controesempio.
+sollevarlo punto per punto: colli di bottiglia sulle variabili latenti, vincoli
+di sparsità, quantizzazione dei codici (il {doc}`VQ-VAE dei codec neurali
+</Audio/codec-neurali>` è esattamente questo) e termini che impongono varianza
+o decorrelazione alle rappresentazioni. L'intuizione è che un modello con pochi
+gradi di libertà non *può* dare energia bassa a tutto, e allora non serve alcun
+controesempio a impedirglielo. È la famiglia su cui LeCun scommette per i world
+model, ed è il motivo per cui, nel capitolo sui *world model*, la JEPA si
+difende dal collasso senza mai fabbricare un solo controesempio.
 
 `````
 

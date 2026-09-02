@@ -36,7 +36,7 @@ quello che racconta anche le due cose che il testo si impegna a dire, e che
 l'obiezione onesta della tab Elementare, «e se il libro pescato a caso era
 proprio uno che gli sarebbe piaciuto?»: al confronto 4 il negativo pescato è E,
 che in questa storia gli sarebbe piaciuto davvero, scende di un posto per
-sbaglio e due confronti dopo è già risalito. Che il modello non lo sappia è il
+sbaglio e al confronto dopo è già risalito. Che il modello non lo sappia è il
 punto: E chiude comunque primo fra i non comprati.
 
 Lo stato di riposo è l'ultimo: i quattro comprati in cima, i sei ignorati sotto,
@@ -151,8 +151,8 @@ def verifica(stati: list[dict]) -> None:
     prima = rango(stati[OCRA_K - 1], OCRA_ITEM)
     assert rango(stati[OCRA_K], OCRA_ITEM) == prima + 1, \
         f"{LETTERE[OCRA_ITEM]} doveva scendere di una tacca al confronto {OCRA_K}"
-    assert rango(stati[OCRA_K + 2], OCRA_ITEM) == prima, \
-        f"{LETTERE[OCRA_ITEM]} non è risalito due confronti dopo"
+    assert rango(stati[OCRA_K + 1], OCRA_ITEM) == prima, \
+        f"{LETTERE[OCRA_ITEM]} non è risalito al confronto dopo"
 
     assert max(rango(stati[k - 1], stati[k]["v"]) - rango(stati[k], stati[k]["v"])
                for k in range(1, GUARDATI + 1)) >= 3, \
@@ -447,8 +447,8 @@ def costruisci() -> Figura:
             "comprato sta già sopra la spinta è quasi nulla e la vetrina non si "
             "muove, se sta sotto sale di uno o più posti e l'ignorato scende. Al "
             f"quarto confronto l'ignorato pescato è {LETTERE[OCRA_ITEM]}, che al "
-            "cliente sarebbe piaciuto: scende di un posto per sbaglio e due "
-            "confronti dopo è già risalito. Dopo ottanta confronti l'ordine è "
+            "cliente sarebbe piaciuto: scende di un posto per sbaglio e al "
+            "confronto dopo è già risalito. Dopo ottanta confronti l'ordine è "
             f"{ordine_finale}: i quattro comprati sono i primi quattro, e il "
             f"primo dei non comprati è proprio {LETTERE[OCRA_ITEM]}. La loss media "
             f"scende da {num(vista[0]['loss'])} a {num(vista[-1]['loss'])}, e "

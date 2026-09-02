@@ -40,8 +40,10 @@ fra due neuroni: due parole, una cosa sola, e da qui in avanti valgono l'una
 per l'altra.
 
 Ogni numero costa spazio, e quanto costa lo dicono i **bit**, le cifre binarie
-con cui un calcolatore scrive tutto. Otto bit fanno un **byte**, quindi un
-numero da trentadue bit occupa quattro byte. Il resto è moltiplicazione.
+con cui un calcolatore scrive tutto. Ogni bit in più raddoppia i valori diversi
+che si riescono a scrivere: con due bit quattro, con quattro sedici, con otto
+duecentocinquantasei. Otto bit fanno un **byte**, quindi un numero da trentadue
+bit occupa quattro byte. Il resto è moltiplicazione.
 
 ```python
 PARAMETRI = 7_000_000_000     # sette miliardi di parametri
@@ -74,9 +76,9 @@ di che cosa si paga in cambio, perché qualcosa si paga sempre.
 
 ## Le tre leve
 
-Un modello troppo grande si può stringere in tre modi, e sono tre modi
-davvero diversi: sono tre operazioni che agiscono su cose diverse, non la
-stessa idea vista da tre angoli, e si possono usare tutte e tre insieme.
+Un modello troppo grande si può stringere in tre modi, e sono tre operazioni
+che agiscono su cose diverse, non la stessa idea vista da tre angoli: si
+possono usare tutte e tre insieme.
 
 **Meno bit per parametro.** I parametri restano tutti, e resta la forma della
 rete: cambia solo quante cifre si tengono di ciascun numero. È la leva del
@@ -103,7 +105,7 @@ sulla forma della griglia.
 
 ```{figure} ../figures/tre-leve.svg
 :name: fig-tre-leve
-:alt: "Quattro griglie affiancate che rappresentano la stessa matrice di pesi. La prima, «com’è», è una griglia otto per otto in cui le caselle hanno decine di sfumature diverse. La seconda, «meno bit», ha la stessa griglia otto per otto ma le sfumature sono soltanto 4, ripetute. La terza, «meno pesi», ha la griglia otto per otto con 33 caselle vuote e tratteggiate e 31 piene. La quarta, «più piccolo», è una griglia quattro per quattro, con le sue sfumature tutte diverse. Sotto ciascuna, quanti pesi restano."
+:alt: "Quattro griglie affiancate che rappresentano la stessa matrice di pesi. La prima, «com’è», è una griglia otto per otto in cui le caselle hanno decine di sfumature diverse. La seconda, «meno bit», ha la stessa griglia otto per otto ma le sfumature sono soltanto 4, ripetute. La terza, «meno pesi», ha la griglia otto per otto con 33 caselle vuote e tratteggiate e 31 piene. La quarta, «più piccolo», è una griglia quattro per quattro, con sfumature sue. Sotto ciascuna, quanti pesi restano."
 :width: 100%
 
 Il primo riquadro è la matrice com’è; gli altri tre sono le tre leve, sulla
@@ -125,14 +127,14 @@ non qui.
 Il libro parla di efficienza in tre punti, e conviene distinguerli subito,
 perché è facile andarli a cercare nel posto sbagliato.
 
-Il capitolo sulla **GPU** spiega l’hardware: com’è fatta la memoria di una
-scheda, perché i byte che viaggiano contano più dei conti che si fanno, come si
-scrive un calcolo che la sfrutti. È il piano di sotto.
+Il {doc}`capitolo sulla **GPU** </GPU/overview>` spiega l’hardware: com’è fatta
+la memoria di una scheda, perché i byte che viaggiano contano più dei conti che
+si fanno, come si scrive un calcolo che la sfrutti. È il piano di sotto.
 
-Il capitolo su **MLOps** spiega il servizio: come si mette un modello dietro a
-un indirizzo a cui altri programmi possano rivolgersi, che cosa si promette a
-chi lo usa, come si misura se sta rispettando la promessa. È il piano di
-sopra.
+Il {doc}`capitolo su **MLOps** </MLOps/overview>` spiega il servizio: come si
+mette un modello dietro a un indirizzo a cui altri programmi possano
+rivolgersi, che cosa si promette a chi lo usa, come si misura se sta
+rispettando la promessa. È il piano di sopra.
 
 Questo capitolo sta in mezzo, e spiega il **meccanismo**: perché quattro bit
 bastino, che cosa si rompe quando non bastano, che cosa perde davvero uno
@@ -177,9 +179,10 @@ perché la cosa che si mette in produzione funziona.
   e un modello quantizzato si pota. Quello che non è componibile è il
   **budget di errore**: ogni leva ne consuma un pezzo, e le perdite non si
   sommano in modo prevedibile.
-- Il tempo di risposta è governato da un’altra grandezza, la **banda di
-  memoria**, e non dalla dimensione in sé: è il modello roofline del capitolo
-  sulla GPU, e l’ultima parte di questo capitolo ci torna sopra.
+- Il tempo di risposta è governato dai **byte che si spostano**, non dai conti
+  che si fanno, ed è il modello roofline del capitolo sulla GPU: stringere il
+  modello aiuta perché sono meno byte, e non basta, perché scrivendo una parola
+  alla volta si resta legati alla banda comunque.
 ```
 
 `````

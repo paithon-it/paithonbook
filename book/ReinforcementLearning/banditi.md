@@ -10,7 +10,7 @@ sicuri alla fine. Thompson si chiede se il prezzo si possa ridurre spostando
 via via l'assegnazione verso il trattamento che sta andando meglio, senza per
 questo smettere di raccogliere prove sull'altro.
 
-Una risposta la diede lui stesso, e conviene anticiparla perché la storia ha
+Una risposta la diede lui stesso, e la anticipiamo perché la storia ha
 un finale. Ogni paziente va assegnato tirando a sorte, ma con un dado
 truccato: il trattamento che ha più probabilità di essere il migliore esce più
 spesso. Quella probabilità non la si conosce, la si stima dalle prove raccolte
@@ -31,8 +31,8 @@ Il nome viene dallo slang americano: la macchinetta da casinò con la leva si
 chiama *one-armed bandit*, il bandito con un braccio solo, perché ti deruba con
 educazione. Una fila di macchinette, ognuna con una probabilità di vincita
 diversa e ignota, è un **bandito a più braccia**, e in inglese *multi-armed
-bandit*: nome che si incontra ovunque, e che il titolo di questa sezione
-abbrevia come fanno tutti, *bandit*. La domanda è quale leva tirare, e quante
+bandit*: nome che si incontra ovunque, e che tutti abbreviano in *bandit*. La
+domanda è quale leva tirare, e quante
 volte, sapendo che ogni tiro speso a informarsi è un tiro non speso a
 guadagnare.
 
@@ -85,7 +85,8 @@ al valore vero anche se la leva non è cambiata di una virgola. Al passo chiedi
 due cose: portare la pagina lontano dallo zero di partenza, e accorciarsi tanto
 in fretta da smettere di rincorrere la fortuna di un tiro solo. Uno diviso il
 numero di tiri le fa tutt'e due, il passo fermo solo la prima, e per questo
-insegue per sempre, che è precisamente quello che gli chiedi.
+insegue per sempre: un difetto se le leve non cambiano mai, e precisamente
+quello che serve se cambiano.
 
 `````
 
@@ -170,7 +171,7 @@ per smentirla.
 
 Quanto costi si misura su un banco di prova, sempre lo stesso: è quello di
 Sutton e Barto {cite}`sutton2018reinforcement`, i due autori del manuale
-classico della materia. Il banco di prova è il loro, ed è sempre lo stesso.
+classico della materia.
 
 `````{tab} Elementare
 
@@ -221,9 +222,9 @@ sbagliata.
 
 Basta pochissimo per cambiare le cose. Con $\varepsilon$-greedy, cioè una leva
 a caso una volta ogni dieci, si sale all’**80,2%**. Un numero da scegliere però
-c'è: $\varepsilon$ lo si sceglie, e poche
-pagine più avanti si vedrà che va scelto guardando quanto dura la partita. Ha
-comunque una virtù: sbagliarlo per difetto costa poco. Azzardare una volta su
+c'è, ed è $\varepsilon$: la prova sui trentamila tiri, in fondo alla sezione,
+dirà che va scelto guardando quanto dura la partita. Ha comunque una virtù:
+sbagliarlo per difetto costa poco. Azzardare una volta su
 cento invece che una su dieci, cioè dieci volte di meno, sullo stesso banco dà
 il **59,1%**: parecchio sotto l'80,2%, ma parecchio sopra il 36,7% di chi non
 azzarda mai. Sbagliarlo per eccesso invece costa carissimo, e il motivo
@@ -260,9 +261,10 @@ via da solo:
 la stima salta di colpo sul numero appena visto, e su quella leva l'ottimismo è
 finito. Resta il giro forzato sulle altre nove, e infatti anche così si arriva
 al **71,3%**, quasi il doppio del 36,7% dell'agente avido. Una parte del
-guadagno però se n'è andata, e conviene misurarla invece di dirla a occhio. Con
+guadagno però se n'è andata, e si misura invece di dirla a occhio. Con
 il passo fisso si arriva all’**86,6%**, quasi cinquanta punti sopra l'avido
-($86{,}6 - 36{,}7 = 49{,}9$), e su mille tiri nessun'altra farà meglio; con la
+($86{,}6 - 36{,}7 = 49{,}9$), e fra le strategie che di ogni leva tengono una
+stima sola, su mille tiri nessun'altra farà meglio; con la
 media se ne guadagnano trentaquattro e mezzo ($71{,}3 - 36{,}7 = 34{,}6$). Quindici
 punti su cinquanta sono rimasti sul tavolo, quasi un terzo.
 
@@ -290,7 +292,7 @@ consuma abbastanza lentamente da arrivare all’**86,6%**.
 
 `````
 
-È un trucco, però, e conviene dire perché. L'ottimismo si esaurisce: dopo che
+È un trucco, però. L'ottimismo si esaurisce: dopo che
 tutte le leve sono state provate abbastanza, la spinta a esplorare sparisce.
 Se le leve rendono sempre allo stesso modo (si dice che il problema è
 **stazionario**) va benissimo; se invece cambiano carattere nel tempo, e
@@ -344,10 +346,12 @@ via un bel pezzo, i secondi cento molto meno, e più la partita va avanti più d
 rado si sbaglia. Chi tira a caso una volta ogni dieci paga invece la stessa
 cifra ogni cento tiri per sempre, e il suo conto cresce in linea retta; su una
 partita lunga la distanza fra i due diventa enorme. Il fatto notevole è che più
-adagio di così non si può andare: nessuna strategia che debba funzionare su
-qualunque fila di macchinette paga meno. Chi promette di pagare meno ha deciso
-in anticipo, e tirare sempre la terza leva costa zero quando la terza è la
-migliore e una fortuna in tutti gli altri casi.
+adagio di così il conto non può crescere: nessuna strategia che debba
+funzionare su qualunque fila di macchinette lo fa crescere più lentamente
+(quanto si paghi a parità di ritmo è un'altra domanda, e torna più avanti). Chi
+promette di crescere più adagio ha deciso in anticipo, e tirare sempre la terza
+leva costa zero quando la terza è la migliore e una fortuna in tutti gli altri
+casi.
 
 Tutto questo però regge finché ha senso tenere il conto dei tiri di ogni leva.
 Se le leve cambiano carattere mentre giochi, i conti accumulati dall'inizio
@@ -390,8 +394,10 @@ $$
 \mathcal{R}_T = T \max_a q_*(a) - \mathbb{E}\!\left[\sum_{t=1}^{T} R_t\right]
 $$
 
-che cresca, asintoticamente, meno che logaritmicamente in $T$: perdere
-qualcosa è inevitabile, la domanda è solo quanto. Auer, Cesa-Bianchi e
+dove $\mathcal{R}_T$, in calligrafico, è il rimpianto accumulato in $T$ tiri, e
+$R_t$ resta la ricompensa del singolo tiro. Quel rimpianto non può crescere,
+asintoticamente, meno che logaritmicamente in $T$: perdere qualcosa è
+inevitabile, la domanda è solo quanto. Auer, Cesa-Bianchi e
 Fischer {cite}`auer2002finite` mostrano che UCB1 raggiunge quella crescita
 logaritmica con una garanzia valida a ogni istante finito, non solo
 asintoticamente; resta però sopra la costante ottima di Lai e Robbins (la
@@ -411,8 +417,9 @@ colleghi corrisponde a $c = \sqrt{2}$ per ricompense in $[0,1]$. Il limite
 pratico è che la formula presuppone un problema stazionario e
 un numero maneggiabile di azioni: portarla di peso nel reinforcement learning
 con approssimazione di funzione, dove "quante volte ho visto questo stato" non
-è nemmeno ben definito, non funziona, ed è il motivo per cui la sezione
-sull'esplorazione nel deep RL dovrà inventarsi altro.
+è nemmeno ben definito, non funziona, ed è il motivo per cui la sezione su
+{doc}`esplorazione e ricompensa
+</DeepReinforcementLearning/esplorazione-e-ricompensa>` dovrà inventarsi altro.
 
 `````
 
@@ -420,10 +427,15 @@ sull'esplorazione nel deep RL dovrà inventarsi altro.
 
 L'ultima strategia della sezione butta via il quaderno delle stime. Per ogni
 leva tiene un voto, e dopo ogni tiro lo sposta un poco nel verso che le sembra
-faccia incassare di più. Il **gradiente** del titolo è quello del capitolo di
-matematica, la direzione lungo cui una quantità cresce più in fretta: qui la
-quantità da far crescere è quanto ci si aspetta di incassare, e i voti sono le
-manopole da girare.
+faccia incassare di più. Il **gradiente** del titolo è quello della
+{doc}`sezione su derivate e discesa del gradiente
+</Matematica/analisi-ottimizzazione>`, la direzione lungo cui una quantità
+cresce più in fretta: qui la quantità da far crescere è quanto ci si aspetta di
+incassare, e i voti sono le manopole da girare.
+
+Questo modo di procedere ha un nome, e non resta ai bandit: è la forma più
+semplice dei metodi che imparano la strategia invece dei valori, e con il suo
+nome, **REINFORCE**, torna nel deep reinforcement learning.
 
 `````{tab} Elementare
 
@@ -502,8 +514,9 @@ la **baseline** (è quello che fa anche il codice più sotto, che aggiorna la
 media dopo averla usata).
 
 Quello che si sta guardando ha già un nome: è **REINFORCE con baseline**, il
-metodo a gradiente di policy del capitolo sul deep reinforcement learning, nel
-caso degenere di un solo stato. La stessa
+metodo della {doc}`sezione sul gradiente di policy
+</DeepReinforcementLearning/policy-gradient>`, nel caso degenere di un solo
+stato. La stessa
 struttura (una distribuzione parametrica sulle azioni, un aggiornamento
 proporzionale alla ricompensa scostata da un riferimento) che là si scriverà
 come $\nabla_\theta \log \pi_\theta(a\mid s)\,\hat{A}_t$, con il vantaggio
@@ -553,7 +566,7 @@ def prova(eps, q0=0.0, c=None, alpha=None):
             a = (Q + bonus).argmax(axis=1)
         r = rng.normal(q_vero[righe, a], 1.0)    # la ricompensa e' rumorosa
         N[righe, a] += 1
-        passo = alpha if alpha else 1.0 / N[righe, a]   # media incrementale
+        passo = alpha if alpha is not None else 1.0 / N[righe, a]  # o media
         Q[righe, a] += passo * (r - Q[righe, a])        # vecchia + passo * errore
         centri[t-1] = (a == ottima).mean()
     return 100 * centri[-100:].mean()
@@ -640,8 +653,8 @@ Il ventaglio si muove a ogni tiro, sempre nello stesso modo: il centro scivola
 verso l'incasso appena visto, i bordi si avvicinano. Quanto scivola dipende da
 quanti tiri pesano già dentro, e il ventaglio di partenza conta come **tiri
 finti**: uno largo come il ventaglio giusto per questo banco ne pesa uno, e
-allora il primo tiro vero sposta il centro di mezzo passo, il decimo di un
-undicesimo, il millesimo quasi di niente.
+allora il primo tiro vero porta il centro a metà strada, il decimo di un
+undicesimo di strada, il millesimo quasi di niente.
 
 La mossa sta qui: prima di ogni tiro, dentro ogni ventaglio si **sorteggia un
 valore**, come si scommettesse su una delle versioni del mondo ancora possibili;
@@ -661,9 +674,11 @@ Ed è il dado truccato del 1933, guardato da vicino. Una leva finisce per essere
 tirata tante volte quante sono quelle in cui, fra tutti i sorteggi, tocca a lei
 uscire più alta; e quel numero è, per come è fatto il sorteggio, quanto è
 probabile che sia lei la migliore secondo ciò che si crede in quel momento. Le
-due frasi dicono la stessa cosa. La cura del paziente che sta perdendo non viene
-mai sospesa del tutto, e la sua quota cala nella misura esatta in cui le prove
-la smentiscono.
+due frasi dicono la stessa cosa, e la dicono finché di ogni leva si crede
+qualcosa che non dipende dalle altre: dove quello che si impara su una dice
+qualcosa anche sulle altre, l'uguaglianza si perde. La cura del paziente che
+sta perdendo non viene mai sospesa del tutto, e la sua quota cala nella misura
+esatta in cui le prove la smentiscono.
 
 Sul solito banco di prova la leva migliore viene azzeccata il **91,8%** delle
 volte, contro l’**85,9%** di UCB e l’**86,6%** dell'ottimismo iniziale. E il
@@ -677,17 +692,18 @@ sperimentazione clinica da cui tutto è partito. Sul banco delle dieci leve, dov
 gli incassi sono numeri qualsiasi, il 91,8% resta una misura e non
 l'illustrazione di un teorema.
 
-Il prezzo va detto, perché non è zero. Per sorteggiare dentro un ventaglio
+Il prezzo non è zero. Per sorteggiare dentro un ventaglio
 bisogna prima dire quanto è largo quello di partenza, prima di aver visto
-niente, e bisogna sapere quanto è ballerino l'incasso di un tiro singolo (qui lo
-si sa, perché è il banco di prova a dichiararlo). Partire vaghi non costa quasi
-nulla: un ventaglio cinque volte più largo del necessario porta al **91,6%**,
-cioè allo stesso posto, perché pesa meno di un tiro finto e il primo tiro vero
-se lo porta via. Partire convinti costa: un ventaglio dieci volte più stretto
-del giusto pesa **cento** tiri finti, e quei cento tiri finti hanno pagato tutti
-**zero**, perché è lì che il ventaglio era centrato. Per convincerlo che una
-leva rende davvero ne servono cento veri. Si scende al **75,2%**, cioè si
-buttano più di sedici punti per una convinzione che nessuno aveva verificato.
+niente, e bisogna sapere quanto è ballerino l'incasso di un tiro singolo (qui
+lo si sa, perché è il banco di prova a dichiararlo). Partire vaghi non costa
+quasi nulla: un ventaglio cinque volte più largo del necessario porta al
+**91,6%**, cioè allo stesso posto, perché pesa meno di un tiro finto e il primo
+tiro vero se lo porta via. Partire convinti costa, e costa col quadrato: un
+ventaglio dieci volte più stretto del giusto pesa **cento** tiri finti, e quei
+cento tiri finti hanno pagato tutti **zero**, perché è lì che il ventaglio era
+centrato. Per convincerlo che una leva rende davvero ne servono cento veri. Si
+scende al **75,2%**, cioè si buttano più di sedici punti per una convinzione
+che nessuno aveva verificato.
 
 Ed è il ventaglio **stretto** a fare danno, non quello spostato in alto: partire
 convinti che tutte le leve siano ottime è il trucco dei valori iniziali
@@ -712,8 +728,8 @@ A_t = \arg\max_{a} \; \tilde{q}_t(a),
 $$
 
 dove $\tilde{q}_t(a)$ è un singolo campione estratto dalla posteriore del
-braccio $a$ (la letteratura scrive $\theta_a$; qui no, perché $\theta$ in
-questo capitolo sono i parametri di una policy). Un campione per braccio, il
+braccio $a$ (la letteratura scrive $\theta_a$; qui no, perché $\theta$ sono già
+i parametri di una policy). Un campione per braccio, il
 massimo vince. La probabilità che così esca $a$ è la probabilità a posteriori
 che $a$ sia il braccio ottimo, e per questo il metodo si chiama anche
 *probability matching*: la frequenza con cui si gioca un'azione insegue la
@@ -752,10 +768,10 @@ Il meccanismo che spegne l'esplorazione è la varianza a posteriori, che va a
 zero come $1/N_t(a)$: i campioni si concentrano sulla media e le azioni
 chiaramente peggiori smettono di vincere il massimo. Attenzione a leggere
 $N_t(a)$ e non $t$: proprio i bracci la cui esplorazione deve spegnersi sono
-quelli tirati $\Theta(\ln t)$ volte, quindi la loro posteriore si stringe come
-$1/\ln t$, ed è quella lentezza a impedire di impegnarsi troppo presto. Non c'è
-nessun iperparametro di esplorazione, né l’$\varepsilon$ né il $c$ di UCB; il
-posto di quel parametro lo prende la scelta del modello.
+quelli tirati $\Theta(\ln t)$ volte, quindi la loro varianza a posteriori cala
+come $1/\ln t$, ed è quella lentezza a impedire di impegnarsi troppo presto.
+Non c'è nessun iperparametro di esplorazione, né l’$\varepsilon$ né il $c$ di
+UCB; il posto di quel parametro lo prende la scelta del modello.
 
 Sulle garanzie il metodo ha aspettato ottant'anni. Chapelle e Li
 {cite}`chapelle2011empirical` lo riportano in circolazione mostrando che regge
@@ -790,7 +806,7 @@ divisa), e da quei due ricava a ogni passo il centro e l'ampiezza del ventaglio.
 Tenere un ventaglio, insomma, non costa più che tenere una stima. La
 `larghezza` è l'ampiezza di partenza: quella giusta per questo banco è $1$,
 perché è così che il banco sorteggia il valore vero delle leve. Ogni caso gira
-con due **semi**, cioè con due sorteggi di partenza diversi del banco: una
+con tre **semi**, cioè con tre sorteggi di partenza diversi del banco: una
 differenza più piccola di quanto il numero balla cambiando seme non è una
 differenza.
 
@@ -818,21 +834,21 @@ def thompson(larghezza, seme):
     return 100 * centri[-100:].mean()
 
 for nome, larghezza in [("giusto (1)", 1.0), ("vago (5)", 5.0), ("convinto (0,1)", 0.1)]:
-    esiti = [thompson(larghezza, seme) for seme in (20260807, 1)]
+    esiti = [thompson(larghezza, seme) for seme in (20260807, 1, 2)]
     print(f"ventaglio {nome:15} " + "  ".join(f"{e:.1f}%" for e in esiti))
 ```
 
 ```text
-ventaglio giusto (1)      91.8%  91.9%
-ventaglio vago (5)        91.6%  91.9%
-ventaglio convinto (0,1)  75.2%  74.0%
+ventaglio giusto (1)      91.8%  91.9%  91.1%
+ventaglio vago (5)        91.6%  91.9%  91.0%
+ventaglio convinto (0,1)  75.2%  74.0%  73.3%
 ```
 
 Le prime due righe si sovrappongono: fra il ventaglio giusto e quello cinque
-volte troppo largo ci sono due decimi di punto su un seme e nessuno sull'altro,
-cioè meno di quanto ciascuno dei due si sposti cambiando seme, e fra loro non
-c'è niente da scegliere. La terza sta un mondo più in basso, con i suoi due
-semi vicini fra loro e lontani da tutto il resto: partire da un ventaglio dieci
+volte troppo largo ci sono al massimo due decimi di punto, mentre ciascuno dei
+due si sposta di sette decimi e più solo cambiando seme, e fra loro non c'è
+niente da scegliere. La terza sta un mondo più in basso, con i suoi tre semi
+vicini fra loro e lontani da tutto il resto: partire da un ventaglio dieci
 volte più stretto del vero costa fra i sedici e i diciotto punti, e li costa
 perché quei cento tiri finti da zero ci mettono un'eternità a lasciarsi
 smentire. Il sorteggio non protegge da una convinzione sbagliata: la esegue.
@@ -849,17 +865,17 @@ sapere quale rende di più: si mostra la prima a metà dei visitatori e la secon
 all'altra metà, fino alla fine dell'esperimento. È la sperimentazione clinica di
 Thompson, con gli stessi costi. Chi lo fa **in modo adattivo** sposta via via i
 visitatori verso la versione che sta vincendo, e il *Thompson sampling* di
-inizio sezione, quello che nessuno aveva guardato per decenni, è una delle
-ricette con cui lo si fa: risparmia il denaro che avrebbe
-buttato sulla versione perdente, e in cambio si complica la vita quando deve
-tirare le somme, perché le due versioni non sono più state mostrate allo stesso
-numero di persone né nello stesso momento, e i conti statistici che si fanno di
-solito presuppongono di sì.
+inizio sezione è una delle ricette con cui lo si fa: risparmia il denaro che
+sarebbe finito sulla versione perdente. In cambio si complica la vita al
+momento di tirare le somme. Le due versioni non sono più state mostrate allo
+stesso numero di persone né negli stessi giorni, e i conti statistici che si
+fanno di solito presuppongono di sì.
 
 **Esplorazione nei sistemi di raccomandazione.** Un catalogo ha continuamente
 oggetti nuovi, di cui nessuno sa nulla: mostrarli è esplorare, e non mostrarli
 mai garantisce che nessuno saprà mai se erano buoni. È il problema che il
-{doc}`capitolo sui sistemi di raccomandazione </SistemiRaccomandazione/overview>`, più avanti nel libro, chiamerà
+{doc}`sezione sul filtraggio collaborativo
+</SistemiRaccomandazione/filtraggio-collaborativo>` chiamerà
 **partenza a freddo**. Là la domanda sarà come descrivere un oggetto di cui non
 si sa niente; qui è che cosa conviene fare mentre non si sa niente.
 
@@ -870,8 +886,9 @@ combinazioni possibili, provarle tutte fino in fondo costerebbe giorni, e allora
 si prova ciascuna un pochino e si insiste sulle più promettenti. Descritto così
 è un bandit, e infatti lo è: ogni combinazione è una leva, e provarla un po’ è
 un tiro. Il *successive halving* («dimezzamento successivo») e **Hyperband**,
-che è costruito sopra il primo, fanno esattamente questo, e il capitolo sul
-machine learning li racconta per esteso. Con una differenza
+che è costruito sopra il primo, fanno esattamente questo, e li racconta per
+esteso la {doc}`sezione sugli iperparametri
+</MachineLearning/iperparametri>`. Con una differenza
 rispetto alla macchinetta del casinò, e ha pure un nome, *best-arm
 identification*: qui non interessa incassare molto lungo la strada, i tiri
 spesi sono solo il costo della ricerca, interessa soltanto indovinare alla fine
@@ -913,8 +930,10 @@ prossima sezione.
   spreca meno, e su una partita abbastanza lunga finisce davanti a chi azzarda
   spesso.
 - Due modi di spenderla meglio: partire da stime **troppo generose**, così che
-  ogni leva deluda e l'agente le giri tutte da solo (86,6%, ma il trucco si
-  consuma e non serve se il mondo cambia); oppure aggiungere a ogni stima un
+  ogni leva deluda e l'agente le giri tutte da solo (86,6%, ma solo tenendo il
+  passo fisso: facendo la media di tutti i tiri l'ottimismo evapora al primo
+  colpo e ci si ferma al 71,3%; e il trucco si consuma, e non serve se il mondo
+  cambia); oppure aggiungere a ogni stima un
   **bonus di ignoranza**, tanto più grande quanto meno si è provata quella leva
   (85,9%).
 - Si può anche non stimare nulla e imparare direttamente dei **voti**, alzando

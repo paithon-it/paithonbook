@@ -43,20 +43,20 @@ diversa.
 
 `````{tab} Elementare
 
-Un professore chiude il registro a giugno, e le interrogazioni di maggio pesano
+Un professore tira le somme a giugno, e le interrogazioni di maggio pesano
 più di quelle di ottobre. Ogni interrogazione porta due cose, il voto e la
 materia; se oggi si parla di storia, l'interrogazione di storia conta più di
 quella di ginnastica, e su questo RetNet non cambia niente. Cambia il peso
 della distanza, che guarda quanto tempo è passato e basta.
 
-Il registro si può chiudere in tre modi, e il totale è sempre lo stesso.
+I conti si possono chiudere in tre modi, e il totale è sempre lo stesso.
 
 Tutto insieme, il professore apre le pagine dell'anno sul tavolo, scrive
 accanto a ogni voto il suo peso e somma in un colpo solo. Con un foglio di
 calcolo che macina moltiplicazioni in parallelo è la strada più rapida, ed è
 quella dell'addestramento.
 
-Uno alla volta, tiene un numero solo a matita in fondo al registro. Finita
+Uno alla volta, tiene un numero solo a matita in fondo alla pagina. Finita
 un'interrogazione, sbiadisce un po’ il numero vecchio e ci somma il voto nuovo.
 Non riapre nessuna pagina, e ogni interrogazione gli costa gli stessi due
 gesti, che sia la prima o la centesima. È la strada dei voti in diretta, uno
@@ -64,12 +64,12 @@ oggi e uno domani, cioè del modello che scrive una parola per volta.
 
 A blocchi, chiude un mese per volta sul tavolo e passa il totale al mese dopo
 sbiadendolo, come il numero a matita. Serve perché al professore il totale di
-giugno non basta: vuole com'era messo lo studente a ottobre, a novembre, a
-dicembre, un totale dopo ogni interrogazione. Averli tutti con le pagine sul
+giugno non basta: vuole un totale dopo ogni interrogazione, com'era messo lo
+studente a ottobre, a novembre, a dicembre. Averli tutti con le pagine sul
 tavolo vuol dire una tabella con una riga per ogni momento dell'anno e una
-colonna per ogni voto, che su un anno intero è di nuovo la tabella grande da
-cui l'attenzione lineare era scappata. Dentro un mese resta piccola, ed è così
-che reggono i testi lunghissimi.
+colonna per ogni voto. Su un anno intero è di nuovo la tabella grande da cui
+l'attenzione lineare era scappata; dentro un mese resta piccola, ed è così che
+reggono i testi lunghissimi.
 
 Che il totale non cambi si controlla con tre numeri. Tre voti in ordine, $6$,
 $7$ e $8$, e a ogni passo quello che c'è già si dimezza.
@@ -86,8 +86,8 @@ $7$ e $8$, e a ogni passo quello che c'è già si dimezza.
 
 Tredici tutte e tre le volte.
 
-E di registri il professore ne tiene parecchi affiancati, ognuno con un ritmo
-di sbiadimento suo. In uno il passato si dimezza a ogni interrogazione, e
+E di numeri a matita il professore ne tiene parecchi affiancati, ognuno con un
+ritmo di sbiadimento suo. In uno il passato si dimezza a ogni interrogazione, e
 contano quasi soltanto le ultime due; in un altro sbiadisce così piano che
 settembre pesa ancora a giugno. Messi in fila dicono come sta lo studente
 adesso e come è andato l'anno, e il modello li legge tutti insieme.
@@ -158,12 +158,11 @@ precedente: è il primo dei tre gradini dello sbiadimento, quello in cui il
 ritmo con cui la memoria si scolora è **deciso una volta per tutte** quando il
 modello viene progettato, uguale per ogni parola e per ogni sua parte. È la
 forma più grossolana di oblio: efficace e a costo nullo, ma cieca al
-contenuto, perché sbiadisce con lo stesso ritmo una data e un intercalare. Gli
-altri due gradini, che abbiamo già incontrato, nascono proprio per superare
-questa cecità: **Mamba-2**, che il ritmo lo ricalcola a ogni parola guardando
-cosa sta leggendo, e **GLA** (*gated linear attention*), che oltre a
-ricalcolarlo lo differenzia zona per zona della memoria. Sono i tre modi di
-decidere quanto dimenticare, dal più rigido al più libero.
+contenuto. Gli altri due gradini, che abbiamo già incontrato, nascono proprio
+per superare questa cecità: **Mamba-2**, che il ritmo lo ricalcola a ogni
+parola guardando cosa sta leggendo, e **GLA** (*gated linear attention*), che
+oltre a ricalcolarlo lo differenzia zona per zona della memoria. Sono i tre
+modi di decidere quanto dimenticare, dal più rigido al più libero.
 
 ## RWKV: reinventare le RNN
 
@@ -179,10 +178,11 @@ Il primo mescola l'informazione **fra le parole**, cioè fa
 il mestiere che nel Transformer fa l'attenzione, ma con una memoria che si
 aggiorna parola per parola invece che con un confronto tutti-contro-tutti: si
 chiama *time-mixing*, mescolamento nel tempo. Il secondo rimescola fra loro i
-numeri con cui è scritta **una singola parola**, senza guardare le altre: sono
-i *canali* di cui si è già detto, le posizioni della fila di numeri con cui il
-modello scrive ogni parola. Questo secondo pezzo si chiama *channel-mixing*, ed
-è il blocco che nel Transformer sta dopo l'attenzione, il *feed-forward*.
+numeri con cui è scritta **una singola parola**: sono i *canali* di cui si è
+già detto, le posizioni della fila di numeri con cui il modello scrive ogni
+parola, e a rimescolarli non serve sapere che cosa dicono le parole lontane.
+Questo secondo pezzo si chiama *channel-mixing*, ed è il blocco che nel
+Transformer sta dopo l'attenzione, il *feed-forward*.
 Entrambi si aprono con un *token-shift*, che è la mossa più semplice del mondo:
 invece di guardare solo la parola corrente, si guarda una miscela fra la parola
 corrente e quella appena prima, un tanto dell'una e un tanto dell'altra. Costa
@@ -288,14 +288,15 @@ grandi laboratori: RWKV-4 è stata scalata fino a 14 miliardi di parametri, i
 numeri che il modello impara e che ne misurano la taglia (era la più grande
 rete ricorrente *densa* del suo tempo, cioè fra quelle che usano tutti i
 propri parametri a ogni parola), e il lavoro che presenta RWKV-7 rilascia
-quattro modelli, da 190 milioni a 2,9 miliardi di parametri, con pesi aperti
+sette modelli, dai 100 milioni ai 2,9 miliardi di parametri, con pesi aperti
 sotto licenza Apache 2.0, cioè scaricabili e riusabili da chiunque. È la
 dimostrazione che un'architettura competitiva può crescere fuori dai recinti
 industriali.
 
 ## xLSTM: il ritorno di Hochreiter
 
-La terza architettura ha il sapore di un ritorno. Nel capitolo sull'NLP abbiamo
+La terza architettura ha il sapore di un ritorno. Fra i
+{doc}`modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>` abbiamo
 studiato la **LSTM** {cite}`hochreiter1997long`: una cella che tiene una
 memoria e la governa con alcuni interruttori, i *gate*. Negli anni Novanta
 risolse un problema che sembrava senza uscita, quello di una rete ricorrente
@@ -313,14 +314,15 @@ creatura e la aggiorna per l'era dei Transformer. Il risultato è **xLSTM**, di
 Beck e colleghi, presentato a NeurIPS 2024 {cite}`beck2024xlstm`.
 
 La domanda di partenza è schietta: che cosa mancava alla LSTM per reggere il
-confronto? Due cose, secondo gli autori. Primo, un modo di **rivedere le
+confronto? Tre cose, secondo gli autori. Un modo di **rivedere le
 decisioni di memoria** in modo più netto, cioè interruttori capaci di
 spalancarsi davvero invece di fermarsi sempre un po’ prima (nei paper si chiama
-*gating esponenziale*). Secondo, una memoria più **capiente** e che si possa
-riempire tutta insieme invece che una casella per volta: da qui il passaggio da
-una cella con un solo posto a una cella a griglia (da *scalare* a
-*matriciale*). xLSTM offre due tipi di blocco, che rispondono a queste due
-esigenze.
+*gating esponenziale*). Una memoria più **capiente**, perché in una cella sola
+l'informazione va compressa in un numero: da qui il passaggio da una cella con
+un solo posto a una cella a griglia (da *scalare* a *matriciale*). E la
+possibilità di riempirla **tutta insieme**, che nella vecchia LSTM non c'era,
+perché i collegamenti da stato a stato costringono a procedere in fila. xLSTM
+offre due tipi di blocco, che rispondono a queste esigenze.
 
 `````{tab} Elementare
 
@@ -340,12 +342,13 @@ quello che stava sullo scaffale fino a ieri finisce sommerso sotto quello di
 oggi.
 
 Quel giro senza fine si paga in due modi. Con le manopole aperte così i numeri
-sul quaderno del carico crescono in fretta e smettono di stare nelle caselle, e
-senza una contromisura apposita il conto salta. Poi c'è la risposta al cliente.
-Il magazziniere prende il mucchio che ha accumulato sullo scaffale e lo divide
-per quanto ne ha fatto entrare, come si fa con la media dei voti, e quello che
-consegna è il rapporto. Così la risposta resta della taglia di un
-articolo anche dopo mille articoli e con le manopole spalancate.
+che il magazziniere segna crescono in fretta, e diventano troppo grandi perché
+il calcolatore li sappia scrivere: senza una contromisura apposita il conto
+salta. Poi c'è la risposta al cliente. Il magazziniere prende il mucchio che ha
+accumulato sullo scaffale e lo divide per quanto ne ha fatto entrare, come si
+fa con la media dei voti, e quella media è quello che consegna. Così la
+risposta resta della taglia di un articolo anche dopo mille articoli e con le
+manopole spalancate.
 
 La seconda bottega (nei paper si chiama **mLSTM**, e sarà quella che conta)
 butta lo scaffale e mette un **archivio a griglia**, un cassetto per ogni
@@ -407,15 +410,19 @@ $$
 $$
 
 dove $\mathbf{q}_t, \mathbf{k}_t, \mathbf{v}_t$ sono query, chiave e valore, $f_t$ e $i_t$ i gate di forget e
-input, e il denominatore normalizza la lettura. Senza *memory mixing*, la mLSTM è
+input, $\mathbf{n}_t$ il normalizzatore che accumula le chiavi pesate dai gate e
+$\mathbf{h}_t$ l'uscita della cella. Attenzione a $\mathbf{o}_t$: nelle LSTM è il nome del
+*gate d'uscita*, ed è quello che vale qui, non l'uscita della lettura, che nella
+retention si scriveva $\mathbf{o}_t = \mathbf{S}_t \mathbf{q}_t$. Senza *memory mixing*, la mLSTM è
 **completamente parallelizzabile**: di fatto è un'attenzione lineare con gate e
 gating esponenziale, in cui la transizione di stato è il decadimento scalare
 $f_t$ moltiplicato per l'identità. È quindi la riga «Mamba-2 / RetNet» della
 tabella unificante (con $f_t$ data-dipendente, come in Mamba-2), non quella di
-GLA, che ha un gate per canale.
+GLA, che ha un gate per canale; con in più un fattore di scrittura $i_t$, che
+nella riga della tabella vale uno.
 
 Resta un problema numerico. Un gate esponenziale $i_t = \exp(\tilde{\imath}_t)$
-può esplodere. La cura è un **stabilizzatore** in scala logaritmica, uno stato
+può esplodere. La cura è uno **stabilizzatore** in scala logaritmica, uno stato
 
 $$
 m_t = \max\!\big(\log f_t + m_{t-1},\; \log i_t\big),
@@ -436,12 +443,11 @@ l'uscita è un'altra. Nella sLSTM il problema non si pone, perché lì la lettur
 `````
 
 La mLSTM, cioè la variante con la memoria a griglia, si è rivelata la variante
-di maggior peso pratico. Nel 2025 gli stessi
-autori presentano **xLSTM-7B** {cite}`beck2025xlstm7b`, un modello da 7 miliardi
-di parametri costruito su **sole celle mLSTM** e addestrato su 2,3 mila miliardi
-di token: la prova che la formula regge alla scala dei grandi modelli linguistici
-di produzione, con l'inferenza a memoria costante che l'architettura ricorrente
-garantisce.
+di maggior peso pratico. Nel 2025 lo stesso gruppo presenta **xLSTM-7B**
+{cite}`beck2025xlstm7b`, un modello da 7 miliardi di parametri costruito su
+**sole celle mLSTM** e addestrato su 2,3 mila miliardi di token: a quella
+taglia va alla pari con i modelli confrontabili, tenendo l'inferenza a memoria
+costante che una ricorrenza porta con sé.
 
 ## Lo stesso scheletro
 
@@ -467,8 +473,8 @@ Che due modelli stiano sullo stesso gradino non vuol dire che siano lo stesso
 modello: vuol dire che scelgono lo stesso modo di far sopravvivere la memoria,
 e poi si distinguono per tutto il resto (come si aprono gli interruttori, che
 cosa si mette attorno alla memoria, come si scrive il codice che gira sulla
-scheda grafica). È il senso di questo capitolo: nomi, sigle e comunità diverse
-raccontano, in fondo, la stessa storia.
+scheda grafica). Nomi, sigle e comunità diverse raccontano, in fondo, la stessa
+storia.
 
 `````{tab} Elementare
 
@@ -543,9 +549,8 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
 - **RWKV** {cite}`peng2023rwkv`, progetto aperto di comunità, alterna due
   blocchi: uno mescola l'informazione fra le parole (il mestiere
   dell'attenzione), l'altro rimescola fra loro i numeri con cui è scritta una
-  singola parola. È la stessa ricetta cucinata in due modi: in addestramento
-  lavora come una catena di montaggio in parallelo, in uso serve un piatto alla
-  volta tenendo un riassunto di taglia fissa.
+  singola parola. Come le altre, si addestra guardando tutto il testo insieme e
+  in uso procede una parola alla volta, tenendo un riassunto di taglia fissa.
 - Le sue versioni successive salgono gli stessi gradini della sezione
   precedente: prima uno sbiadimento fissato una volta per tutte (v4, 2023), poi
   deciso parola per parola e zona per zona (v6, 2024 {cite}`peng2024eagle`),
@@ -600,14 +605,14 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
   {cite}`beck2025xlstm7b` la porta alla scala dei grandi modelli.
 - Il filo comune: RetNet, RWKV e xLSTM (con GLA e DeltaNet) sono la stessa
   **RNN lineare a stato fisso**; cambia **solo la transizione di stato**. Gli
-  State Space Model, che il libro racconta subito dopo, arrivano allo stesso
-  punto da un'altra strada, e Mamba-2 dimostra che sono la stessa cosa.
+  State Space Model arrivano allo stesso punto da un'altra strada, e Mamba-2
+  dimostra che sono la stessa cosa.
 ```
 
 `````
 
-Da portarsi dietro c'è una cosa sola: tutti i modelli di questo capitolo sono
-un riassunto di taglia fissa che si aggiorna parola per parola, e a
+Da portarsi dietro c'è una cosa sola: tutti i modelli che abbiamo incontrato
+sono un riassunto di taglia fissa che si aggiorna parola per parola, e a
 distinguerli è soltanto il modo in cui la memoria di ieri sopravvive a oggi.
 Resta una pagina di verifica, poche righe che rifanno lo stesso conto in due
 modi per vedere se torna lo stesso numero; poi si cambia strada, e non è un

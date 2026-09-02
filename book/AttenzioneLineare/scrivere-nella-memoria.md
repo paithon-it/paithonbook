@@ -10,9 +10,9 @@ testo. È l'immagine che ci accompagnerà per tutta la sezione.
 
 `````{tab} Elementare
 
-Una precisazione sulla rubrica, perché è quella che rende conto di tutto il
-resto. La rubrica non ha una riga per contatto: ha un numero fisso di caselle,
-e ogni voce nuova si somma a quello che c'è già scritto. Quando le chiedi «che
+Una precisazione sulla rubrica, perché è quella che spiega tutto il resto. La
+rubrica non ha una riga per contatto: ha un numero fisso di caselle, e ogni
+voce nuova si somma a quello che c'è già scritto. Quando le chiedi «che
 cosa corrisponde a questa etichetta?», lei non pesca una riga: risponde con un
 miscuglio, in cui pesa soprattutto l'informazione scritta sotto l'etichetta più
 somigliante, più un po’ di tutte le altre. Finché le etichette sono ben diverse
@@ -45,7 +45,7 @@ preciso. E **non corregge**: se una voce era sbagliata, l'unico modo per
 rimediare è scriverne un'altra sopra che la contraddica; la vecchia resta lì a
 disturbare. Da qui due idee semplici e complementari per scrivere *meglio*
 nella memoria: **dimenticare** (i gate) e **correggere** (la delta rule). Sono
-le due mosse da cui nasce, come vedremo, l'intera famiglia di modelli di questo
+le due mosse da cui nasce l'intera famiglia di modelli di questo
 capitolo e del prossimo, quelli che tengono una memoria di taglia fissa e la
 riscrivono a ogni parola (nei paper si chiamano *ricorrenze lineari*).
 
@@ -56,7 +56,8 @@ tramandare la memoria intatta, la si moltiplica a ogni passo per un fattore di
 decadimento minore di uno: ciò che è stato scritto tempo fa pesa sempre meno,
 finché svanisce. È il **gate di dimenticanza**, ed è lo stesso *forget gate*
 che Gers, Schmidhuber e Cummins aggiunsero nel 2000 alle
-LSTM, le celle ricorrenti che abbiamo incontrato nel capitolo sull'NLP
+LSTM, le celle ricorrenti dei
+{doc}`modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>`
 {cite}`gers2000learning`. Qui torna nella sua forma più spoglia, un numero che
 moltiplica.
 
@@ -77,11 +78,10 @@ nella prossima sezione). Nel secondo il modello lo **calcola parola per
 parola** a partire da ciò che sta leggendo: davanti a una cosa importante
 sbiadisce poco, davanti a un intercalare sbiadisce molto (è la strada di
 **Mamba-2**, un modello che incontreremo nel prossimo capitolo e che si
-comporta, da questo lato, esattamente così). La
-differenza fra i due sta tutta lì: nel primo caso il valore è deciso una volta
-sola, in fase di progetto, e la rete se lo tiene così com'è per sempre; nel
-secondo non c'è nessun valore da tenere, perché a essere stato appreso durante
-l'addestramento è il *modo* di ricalcolarlo a ogni parola.
+comporta, da questo lato, esattamente così). E la
+differenza sta tutta qui: nel secondo caso non c'è nessun valore da tenere,
+perché a essere stato appreso durante l'addestramento è il *modo* di
+ricalcolarlo a ogni parola.
 
 E c'è un terzo modo, il più fine. Sbiadire *tutta la lavagna allo stesso
 ritmo* è grossolano: magari in una parte della lavagna c'è un dettaglio che
@@ -258,8 +258,8 @@ stessa. Il fattore $(\mathbf{I} - \beta_t \mathbf{k}_t \mathbf{k}_t^\top)$ agisc
 stato che **cancella la vecchia traccia lungo la direzione $\mathbf{k}_t$** appena prima
 di scriverci quella nuova: se $\beta_t = 1$ sovrascrive del tutto quella chiave,
 se $\beta_t = 0$ lascia la memoria intatta. Perché il fattore sia ben
-condizionato (autovalori in $[0,1]$) le chiavi vanno **normalizzate in norma
-$L_2$**, così che $\mathbf{k}_t^\top \mathbf{k}_t = 1$.
+(autovalori in $[0,1]$, cioè una contrazione) le chiavi vanno **normalizzate in
+norma $L_2$**, così che $\mathbf{k}_t^\top \mathbf{k}_t = 1$.
 
 Una precisazione su quanto anticipato nella sezione precedente: sono proprio
 Schlag e colleghi a compiere il primo passo della scuola «senza $\mathbf{z}_t$».
@@ -268,11 +268,11 @@ trasformate) può crescere senza controllo e diventare instabile, e lo
 **scartano**, normalizzando invece per somma le chiavi e le query trasformate.
 La famiglia di ricorrenze che seguiamo qui (GLA, DeltaNet e le loro parenti)
 porta la rinuncia a compimento: applica una LayerNorm all'uscita, e ottiene lo
-stesso effetto stabilizzante senza il termine $\mathbf{z}_t$. La strada, però, non è la
-stessa per tutte, ed è un dettaglio che vale la pena guardare: la
-normalizzazione $L_2$ delle chiavi è di **DeltaNet**, dove serve a tenere gli
-autovalori della transizione in $[0,1]$, cioè a fare della transizione una
-contrazione; in GLA le chiavi sono una proiezione lineare secca, e a tenere
+stesso effetto stabilizzante senza il termine $\mathbf{z}_t$. La strada, però,
+non è la stessa per tutte: la normalizzazione $L_2$ delle chiavi è di
+**DeltaNet**, dove serve a tenere gli autovalori della transizione in $[0,1]$,
+cioè a fare della transizione una contrazione; in GLA le chiavi sono una
+proiezione lineare secca, e a tenere
 limitato lo stato è il gate $\boldsymbol{\alpha}_t \in (0,1)^d$, cioè la
 contrazione è nella memoria e non nella trasformazione. Due vie diverse per lo
 stesso scopo.
@@ -292,23 +292,26 @@ Il modello con la delta rule è dunque nato subito, ma nato lento. Lo propongono
 nel 2021 gli stessi Schlag, Irie e Schmidhuber, con il nome di **DeltaNet**, e
 lo addestrano davvero come modello linguistico. L'algoritmo che avevano,
 però, procede in fila lungo la sequenza: spreca le schede grafiche e non regge
-oltre le taglie piccole. Nel 2024 Yang e colleghi (NeurIPS 2024)
+oltre le taglie piccole. Nel 2024 Yang e colleghi (al convegno NeurIPS, 2024)
 {cite}`yang2024deltanet` lo sbloccano: un algoritmo **chunk-parallel** che
 spezza la sequenza in blocchi e, dentro ogni blocco, riesce a fare i conti
-tutti insieme, passando al blocco successivo soltanto un riassunto compatto di
-quello appena chiuso (nei paper quel riassunto si chiama forma *WY*). Da
+tutti insieme, perché il prodotto delle correzioni si scrive in forma compatta
+(nei paper è la rappresentazione *WY*) invece di passare per tutte le memorie
+intermedie; al blocco successivo passa solo la memoria di fine blocco. Da
 lì in avanti la delta rule è addestrabile alla scala dei modelli linguistici. E
 il guadagno si vede dove ci si aspetta: quando il compito è ritrovare il valore
 giusto legato a una chiave incontrata prima (il numero di telefono del contatto
-giusto, per restare alla rubrica), DeltaNet fa meglio delle altre memorie di
-taglia fissa di questo capitolo e si avvicina all'attenzione dei Transformer,
-che su quel terreno resta il metro di paragone perché non butta via niente.
+giusto, per restare alla rubrica), e a parità di taglia della memoria correggere
+batte sia accumulare sia sbiadire. Il vantaggio però non cresce insieme al
+modello: su memorie grandi conta più quanto sono capienti che come le si
+aggiorna.
 
 ## Unire oblio e correzione: Gated DeltaNet
 
 A questo punto abbiamo due mosse che risolvono difetti diversi, e la domanda
-si fa naturale: perché scegliere? Il gate **svuota in fretta** la memoria, ma
-in modo **uniforme e indiscriminato**: non sa *cosa* sta buttando via. La
+si fa naturale: perché scegliere? Il gate scalare **svuota in fretta** la
+memoria, ma in modo **uniforme e indiscriminato**: non sa *cosa* sta buttando
+via. La
 delta rule fa **correzioni mirate** su singole chiavi, ma da sola **non
 svuota**: tende a lasciare la memoria piena di tracce, sia pure aggiustate. Le
 due mosse sono dunque **complementari**, e conviene tenerle insieme: è quello
@@ -317,7 +320,7 @@ DeltaNet**, presentato a ICLR nel 2025 {cite}`yang2024gateddelta`.
 
 `````{tab} Elementare
 
-Torniamo alla lavagna e alla rubrica, che qui diventano lo stesso oggetto.
+Torniamo alla lavagna e alla rubrica, che sono lo stesso oggetto con due nomi.
 Ogni volta che arriva una parola nuova si fanno due gesti, in quest'ordine.
 Primo: si passa uno straccio su tutta la lavagna, che sbiadisce quello che
 c'era senza guardare cosa fosse. Secondo: si cerca la voce che riguarda la
@@ -376,15 +379,16 @@ addestrabile su contesti lunghi.
 ## Tutto è regressione online
 
 Accumulo, gate, delta rule e la loro combinazione sembrano trucchi diversi, e
-sono lo **stesso gesto** visto da angolazioni diverse. E quel gesto ha un nome che conosciamo bene dal {doc}`capitolo sul machine
-learning </MachineLearning/overview>`: è un passo di apprendimento.
+sono lo **stesso gesto** visto da angolazioni diverse. E quel gesto ha un nome
+che conosciamo bene dalla {doc}`retta di best fit
+</MachineLearning/apprendimento-supervisionato>`: è un passo di apprendimento.
 
-Il titolo della sezione lo dice con le parole di quel capitolo, e conviene
+«Regressione online» sono due parole prese dal machine learning, e conviene
 scioglierle. **Regressione** è il mestiere di indovinare un numero a partire da
 un altro, quello della retta che si fa passare in mezzo a una nuvola di punti.
 **Online** vuol dire farlo mentre i dati arrivano, uno alla volta, senza poter
-tornare indietro a rileggerli. Tutto questo capitolo, dalla prima riga, ha
-descritto una macchina che fa esattamente questo.
+tornare indietro a rileggerli. È esattamente quello che la rubrica fa dalla
+prima riga: impara mentre legge.
 
 `````{tab} Elementare
 
@@ -401,26 +405,27 @@ meglio, senza poter rileggere il passato. È la versione «in tempo reale» dell
 retta di best fit: non risolvi il problema in blocco, lo aggiusti in
 continuazione a ogni esempio che passa. Il passo lo abbiamo già visto in
 numeri: la rubrica che rispondeva $7$, dopo la correzione risponde $8{,}5$, e
-si avvicina al $10$ senza arrivarci in un colpo solo. Ecco perché la delta rule
-assomigliava a correggere un tiro:
-non *assomiglia* a imparare, è imparare, nell'unico modo in cui una macchina
+si avvicina al $10$ senza arrivarci in un colpo solo. Ecco perché correggere un
+tiro era l'immagine giusta: la delta rule non *assomiglia* a imparare, è
+imparare, nell'unico modo in cui una macchina
 lo fa, cioè guardare di quanto ha sbagliato e spostarsi un po’ in quella
 direzione.
 
-Anche le altre due mosse sono quel passo, fatto con meno cura. Sommare alla
-cieca è il passo di chi non guarda l'errore: scrive l'informazione nuova come
-se sotto quell'etichetta non ci fosse ancora niente. Dà lo stesso risultato
-del passo fatto bene soltanto quando valgono insieme due condizioni:
-l'etichetta di adesso non somiglia a nessuna di quelle già in rubrica, e la
-manopola è girata al massimo. Basta che ne manchi una perché i due modi si
-separino subito: con la manopola a metà, alla prima parola la rubrica scrive
-la metà di quello che avrebbe scritto la somma alla cieca. Sbiadire, poi, è la
-cautela di chi impara di continuo e non si ferma mai: a ogni passo tira un po’
-verso lo zero tutto quello che ha imparato finora, così che i conti vecchi non
-si accumulino senza fine, e di quanto tirare decide parola per parola.
+Anche le altre due mosse stanno in questo racconto. Sommare alla cieca è lo
+stesso passo fatto con meno cura, quello di chi non guarda l'errore: scrive
+l'informazione nuova come se sotto quell'etichetta non ci fosse ancora niente.
+Dà lo stesso risultato del passo fatto bene soltanto quando valgono insieme due
+condizioni: l'etichetta di adesso non somiglia a nessuna di quelle già in
+rubrica, e la manopola è girata al massimo. Basta che ne manchi una perché i
+due modi si separino subito: con la manopola a metà, alla prima parola la
+rubrica scrive la metà di quello che avrebbe scritto la somma alla cieca.
+Sbiadire, poi, è la cautela di chi impara di continuo e non si ferma mai: a
+ogni passo tira un po’ verso lo zero tutto quello che ha imparato finora, così
+che i conti vecchi non si accumulino senza fine, e di quanto tirare decide
+parola per parola.
 
-Sommare, correggere, sbiadire: sono tre modi di fare lo stesso passo, e a
-cambiare è soltanto quanta cura ci si mette.
+Sommare e correggere sono lo stesso passo, con più o meno cura; sbiadire è la
+cautela che gli sta accanto.
 
 `````
 
@@ -453,7 +458,7 @@ passo. L'accumulo puro dell'attenzione lineare scrive $\mathbf{v}_t \mathbf{k}_t
 sottrarre ciò che la memoria già predice: equivale a trascurare il termine
 $\mathbf{S}_{t-1} \mathbf{k}_t$ nel gradiente, cioè a fare il passo esatto (a learning rate
 unitario) sull'obiettivo *linearizzato* $-\mathbf{v}_t^\top \mathbf{S}\, \mathbf{k}_t$. Con
-$\mathcal{L}_t$ coincide solo se valgono **due** condizioni: che la memoria non
+$\mathcal{L}_t$ coincide solo se valgono due condizioni: che la memoria non
 abbia ancora nulla da dire sulla chiave corrente ($\mathbf{S}_{t-1} \mathbf{k}_t = 0$, per
 esempio con chiavi mutuamente ortogonali) *e* che la scrittura sia a piena
 forza, $\beta_t = 1$. La prima da sola non basta, e si vede subito: con chiavi
@@ -481,8 +486,8 @@ Mamba-2, che vedremo da vicino nel prossimo capitolo.)
 :alt: Cinque riquadri in fila, sotto una freccia che va da «accumulo puro» a «oblio + correzione mirata», mostrano la matrice di transizione di stato di ciascuna ricorrenza lineare. Primo riquadro, attenzione lineare, matrice identità I, la sola diagonale piena e il fondo vuoto. Secondo riquadro, RetNet e Mamba-2, alpha per identità, la diagonale uniforme ma di tinta più chiara, cioè scalata da un unico fattore. Terzo riquadro, GLA e RWKV-6, Diag(alpha), la diagonale a segmenti di intensità diversa. Quarto riquadro, DeltaNet, identità meno beta k k trasposto, la diagonale piena su un fondo velato che occupa tutto il quadrato, perché la correzione di rango uno tocca anche fuori dalla diagonale. Quinto riquadro, Gated DeltaNet, alpha per parentesi identità meno beta k k trasposto, con la diagonale scalata del secondo riquadro sopra il fondo velato del quarto.
 :width: 85%
 
-Lo «zoo» delle memorie di questi due capitoli, in fila da quella che sa fare
-meno a quella che sa fare di più. In ogni quadrato è disegnato che cosa resta
+Lo «zoo» delle memorie, in fila da quella che sa fare meno a quella che sa fare
+di più. In ogni quadrato è disegnato che cosa resta
 della memoria di ieri: la diagonale è ciò che sopravvive, e il fondo è ciò che
 viene toccato oltre la diagonale. Diagonale piena vuol dire tenere tutto;
 diagonale scolorita, sbiadire tutto allo stesso modo; diagonale a segmenti,
@@ -554,10 +559,9 @@ chiamano *dualità* quella doppia scrittura.
   circa un terzo). Si può sbiadire tutto allo stesso ritmo, fissato una volta per
   tutte; oppure decidere il ritmo parola per parola, guardando cosa si sta
   leggendo; oppure sbiadire **zona per zona** della lavagna, e anche qui parola
-  per parola, tenendo nitida la zona con le cose che serviranno ancora e
-  cancellando in fretta quella degli appunti di servizio. Sono i tre gradini che
-  vanno dal più grossolano al più selettivo, ed è la differenza tra abbassare le
-  luci di tutta la stanza e regolare ogni lampada singolarmente.
+  per parola. Sono i tre gradini che vanno dal più grossolano al più selettivo,
+  ed è la differenza tra abbassare le luci di tutta la stanza e regolare ogni
+  lampada singolarmente.
 - **Correggere**: prima di scrivere si consulta la rubrica, si legge la risposta
   che dà oggi e si annota soltanto la differenza rispetto a quella giusta, dosata
   da una manopola. Girata al massimo, la voce viene sovrascritta; a zero, resta
@@ -571,20 +575,18 @@ chiamano *dualità* quella doppia scrittura.
   alleggerisce tutto in blocco ma non sa che cosa sta buttando via, correggere
   aggiusta una voce per volta ma non svuota nulla. Insieme dimenticano in fretta
   ciò che non serve *e* aggiustano con precisione ciò che tengono.
-- Il filo che unisce tutto: ogni ricorrenza di questo capitolo è **un passo di
-  apprendimento fatto al volo**, cioè una **regressione online**, un token alla
-  volta, sullo stesso identico compito, «data questa chiave, rispondi con questo
-  valore»: è la retta di best fit aggiustata di continuo invece che calcolata in
-  blocco. Correggere è il passo fatto bene, perché prima guarda l'errore;
-  sommare alla cieca dà lo stesso risultato solo quando valgono insieme due
+- Il filo che unisce tutto: ogni ricorrenza che abbiamo incontrato è **un passo
+  di apprendimento fatto al volo**, cioè una **regressione online**, una parola
+  alla volta, sullo stesso identico compito, «data questa etichetta, rispondi con
+  questa informazione»: è la retta di best fit aggiustata di continuo invece
+  che calcolata in blocco. Correggere è il passo fatto bene, perché prima
+  guarda l'errore; sommare alla cieca dà lo stesso risultato solo quando
+  valgono insieme due
   condizioni, che l'etichetta nuova non somigli a nessuna già scritta *e* che la
   manopola sia girata al massimo; sbiadire serve a non far gonfiare la memoria
   all'infinito.
-- A cambiare, da un'architettura all'altra, è **solo il modo in cui la memoria di
-  ieri sopravvive a oggi**: tenerla intatta, sbiadirla tutta allo stesso ritmo,
-  sbiadirla zona per zona, cancellare la vecchia traccia di una singola voce
-  prima di riscriverla, o le ultime due cose insieme. Tutto il resto della
-  ricorrenza resta identico.
+- A cambiare, da un'architettura all'altra, è **solo il modo in cui la memoria
+  di ieri sopravvive a oggi**. Tutto il resto della ricorrenza resta identico.
 ```
 
 `````
@@ -600,8 +602,9 @@ chiamano *dualità* quella doppia scrittura.
   scalare e fisso in RetNet, scalare e data-dipendente in Mamba-2,
   **diagonale** e data-dipendente in GLA; dal più grossolano al più selettivo,
   canale per canale.
-- La **delta rule** (Widrow–Hoff, dai fast weights di Schlag e colleghi, che nel
-  2021 la portano in **DeltaNet**) scrive solo l’**errore**
+- La **delta rule** (Widrow–Hoff, ritrovata dentro i *fast weight programmer*
+  di Schmidhuber da Schlag e colleghi, che nel 2021 la portano in **DeltaNet**)
+  scrive solo l’**errore**
   $\mathbf{v}_t - \mathbf{S}_{t-1}\mathbf{k}_t$ scalato da $\beta_t$: $\beta_t=1$ sovrascrive la chiave,
   $\beta_t=0$ la ignora. Yang e colleghi (2024) l'hanno resa
   **parallelizzabile** (algoritmo chunk-parallel, rappresentazione WY), e quindi
@@ -609,10 +612,10 @@ chiamano *dualità* quella doppia scrittura.
 - **Gated DeltaNet** combina i due gesti complementari: $\alpha_t$ decade in
   modo globale, $\beta_t$ corregge in modo mirato (dimentica in fretta *e*
   aggiusta con precisione).
-- Il filo che unisce tutto: ogni ricorrenza di questo capitolo è **un passo di
-  apprendimento fatto al volo**, cioè una **regressione online**, un token alla
-  volta, sullo stesso identico compito, «data questa chiave, rispondi con questo
-  valore». La delta rule è il
+- Il filo che unisce tutto: ogni ricorrenza che abbiamo incontrato è **un passo
+  di apprendimento fatto al volo**, cioè una **regressione online**, un token
+  alla volta, sullo stesso identico compito, «data questa chiave, rispondi con
+  questo valore». La delta rule è il
   passo fatto bene, perché prima guarda l'errore e poi corregge; l'accumulo
   puro scrive alla cieca, senza controllare cosa c'era già, e ritrova lo stesso
   passo solo se le chiavi sono mutuamente ortogonali *e* la scrittura è a piena

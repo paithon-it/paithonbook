@@ -74,8 +74,8 @@ Transformer. Conviene richiamarne il gesto, perché tutto il resto ci poggia
 sopra, e sta in due mosse.
 
 La prima: si taglia la fotografia in quadratini tutti uguali, che qui chiameremo
-**tessere** (in inglese *patch*, ed è la parola che si incontra ovunque, questo
-capitolo compreso). La seconda: siccome le tessere, una volta messe in fila, non
+**tessere** (in inglese *patch*, ed è la parola che si incontra ovunque, qui
+compresa). La seconda: siccome le tessere, una volta messe in fila, non
 ricordano più da quale punto della foto venissero, a ciascuna si attacca
 un'etichetta che dice dove stava nella griglia, e quell'etichetta si chiama
 **codifica di posizione**.
@@ -87,7 +87,8 @@ un'etichetta che dice dove stava nella griglia, e quell'etichetta si chiama
 
 Il gesto da richiamare. La codifica di posizione è la parte da non perdere:
 senza, la sequenza sarebbe un mucchio di tessere e l'immagine non avrebbe più
-un sopra e un sotto.
+un sopra e un sotto. La casella `CLS` in testa alla fila non viene da nessuna
+tessera: è il posto in cui si raccoglie il riassunto dell'immagine intera.
 ```
 
 Il passaggio di {numref}`fig-vit-patch-token` merita di essere fissato perché
@@ -161,8 +162,8 @@ cose diverse.
 La prima **allinea due spazi senza fonderli**: due reti separate, una per le
 immagini e una per i testi, imparano a mandare una foto e la sua didascalia in
 due punti vicini di una stessa mappa, e a tenere lontane le coppie che non si
-corrispondono. Vicini rispetto a che cosa, la sezione apposita se lo
-chiede alla fine, perché la risposta è meno ovvia di così. È l'idea di CLIP
+corrispondono. Vicini rispetto a che cosa è meno ovvio di quel che sembra, e la
+risposta chiude la sezione «Allineare due spazi». È l'idea di CLIP
 {cite}`radford2021learning`, addestrato su 400 milioni di coppie di immagine e
 testo raccolte dal web: il modello che ne esce non scrive una riga, ma sa dire
 quanto un'immagine e un testo si somigliano.
@@ -250,8 +251,8 @@ quali sono, una riga ciascuna.
 Dal capitolo sul **linguaggio** serve la **mappa del significato**: l'idea che
 una parola si possa scrivere come una fila di numeri, e che su quella mappa
 *gatto* e *felino* finiscano vicini mentre *gatto* e *mercoledì* finiscono agli
-antipodi, con un numero fra $-1$ e $+1$ a dire quanto. Tutto questo capitolo
-consiste nel far entrare le fotografie in quella stessa mappa.
+antipodi, con un numero fra $-1$ e $+1$ a dire quanto. Far entrare le
+fotografie in quella stessa mappa è il lavoro che comincia adesso.
 
 Dal capitolo sui **Transformer** serve la **cross-attention**. È l'attenzione di
 sempre, con una differenza: chi fa le domande e chi le riceve sono due sequenze

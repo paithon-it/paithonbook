@@ -22,25 +22,25 @@ cui si aprono i rami.
 
 Sei in un labirinto e cerchi l’uscita. Hai due strategie, e sono opposte.
 
-**In ampiezza**: fai un passo in ogni corridoio, poi torni indietro e fai il
-secondo passo in ogni corridoio, poi il terzo. È come se il labirinto si
-allagasse a partire da dove sei, e l’acqua avanzasse di un metro alla volta
-dappertutto. Il vantaggio è enorme: quando l’acqua tocca l’uscita, sei sicuro
-che quella è la strada **più corta**, perché niente ha potuto arrivarci prima.
-Lo svantaggio pure: per allagare devi ricordarti tutti i punti bagnati, e sono
+**In ampiezza**: allaghi. È come se l’acqua entrasse da dove sei e avanzasse di
+un metro alla volta in tutti i corridoi insieme: fai un passo in ogni
+corridoio, poi torni indietro e fai il secondo passo in ogni corridoio, poi il
+terzo. Il vantaggio è enorme: quando l’acqua tocca l’uscita, sei sicuro che
+quella è la strada **più corta**, perché niente ha potuto arrivarci prima. Lo
+svantaggio pure: per allagare devi ricordarti tutti i punti bagnati, e sono
 tantissimi.
 
 **In profondità**: scegli un corridoio e lo segui fino in fondo; se finisce nel
 muro torni all’ultimo bivio e prendi l’altro. È come tenere un filo srotolato
 dietro di sé: non devi ricordarti tutti i punti dove sei stato, solo il filo
 che hai alle spalle, e un filo lungo quanto sei sceso in profondità costa
-pochissimo rispetto ad allagare. In cambio, due difetti. La
-strada che trovi può essere ridicola, e non c’è nessun limite a quanto: ti
-fermi alla prima uscita che incontri, non alla più vicina, e se il primo
-corridoio gira per mezzo edificio prima di sbucare, quella è la tua strada. E
-se un corridoio prosegue e prosegue senza mai finire né chiudersi, tu lo segui
-e basta: non hai nessun motivo per tornare indietro, non ci torni mai, e il
-filo che ti stavi srotolando dietro cresce con te.
+pochissimo rispetto ad allagare. In cambio la strada che trovi può essere
+ridicola, e non c’è nessun limite a quanto: ti fermi alla prima uscita che
+incontri, non alla più vicina, e se il primo corridoio gira per mezzo edificio
+prima di sbucare, quella è la tua strada. E se un corridoio prosegue e prosegue
+senza mai finire né chiudersi, tu lo segui e basta: non hai nessun motivo per
+tornare indietro, non ci torni mai, e il filo che ti stavi srotolando dietro
+cresce con te.
 
 Lo stesso ti capita se quel corridoio gira in tondo e ti riporta a un bivio
 dove eri già stato: il filo non te lo dice, e tu ci giri dentro per sempre.
@@ -49,16 +49,16 @@ appena ritrovi un segno torni indietro. L’uscita, se c’è, adesso la trovi; 
 che i segni te li devi ricordare tutti, e la memoria che il filo ti faceva
 risparmiare hai ricominciato a pagarla.
 
-Le due strategie si possono anche sposare. Giri col filo, ma con un tetto:
-dieci metri, non uno di più, e se l’uscita non salta fuori torni all’inizio e
-rifai tutto con venti, poi con trenta. Rifare ogni volta i primi metri sembra
-uno spreco, e non lo è, perché i bivi vicini all’inizio sono pochissimi
-rispetto a quelli lontani: se da ogni bivio partono dieci corridoi, ogni giro
-costa dieci volte quello prima, e tutti i giri già fatti messi insieme valgono
-poco più di un decimo dell’ultimo. Rifarli, in tutto, costa circa l’undici per
-cento di lavoro in più. In cambio ti tieni la memoria del filo e la garanzia
-dell’acqua: l’uscita che trovi è la più vicina, perché a ogni giro ti sei
-fermato al tetto.
+Le due strategie si possono anche sposare. Giri col filo, ma con un tetto: un
+bivio soltanto, e se l’uscita non salta fuori torni all’inizio e rifai tutto
+con due, poi con tre. Rifare ogni volta i primi corridoi sembra uno spreco, e
+non lo è, perché i bivi vicini all’inizio sono pochissimi rispetto a quelli
+lontani: se da ogni bivio ne partono dieci, ogni giro costa dieci volte quello
+prima, e tutti i giri già fatti messi insieme valgono poco più di un decimo
+dell’ultimo. Rifarli, in tutto, costa circa l’undici per cento di lavoro in
+più. In cambio ti tieni la memoria del filo e la garanzia dell’acqua: l’uscita
+che trovi è la più vicina, perché il giro prima, con un bivio in meno, era
+andato a vuoto.
 
 Nessuna di queste sa niente di dove sia l’uscita. E il difetto vero è quello,
 non la memoria: cercano dappertutto con lo stesso impegno, anche nella
@@ -83,10 +83,10 @@ uscito), e da quella riga sola discendono tutte le proprietà.
 dove $b$ è il fattore di ramificazione, $d$ la profondità della soluzione più
 vicina e $m$ la profondità massima dell’albero. La tabella vale per la ricerca
 **ad albero**, cioè senza tenere memoria degli stati già visti: tenendola (che
-è quello che fa il codice più sotto) la ricerca in profondità diventa completa
-su spazi finiti, perché i cicli si riconoscono, ma si paga la memoria che si
-era risparmiata. La riga che decide è quella
-della memoria: la ricerca in ampiezza tiene in memoria un intero livello, e un
+è quello che fa il programma del rompicapo) la ricerca in profondità diventa
+completa su spazi finiti, perché i cicli si riconoscono, ma si paga la memoria
+che si era risparmiata. La riga che decide, fra tempo e memoria, è quella della
+memoria: la ricerca in ampiezza tiene in memoria un intero livello, e un
 livello cresce come $b^d$. È il vincolo che morde per primo, molto prima del
 tempo.
 
@@ -105,7 +105,7 @@ soluzione, è la scelta di riferimento.
 `````
 
 Il costo di cercare a tentoni si misura, e conviene misurarlo su un problema
-piccolo abbastanza da starci in una pagina.
+piccolo, di quelli che si contano fino in fondo.
 
 ## Un rompicapo con cui contare
 
@@ -129,14 +129,14 @@ sono esattamente la metà. Poche abbastanza da
 poterle guardare tutte, tante abbastanza da far vedere la differenza fra
 guardarle tutte e non guardarle.
 
-Il programma che segue esplora quel rompicapo, e per farlo apre gli stati uno
-alla volta: «aprire» uno stato vuol dire guardare quali mosse ci sono e
-generare le situazioni che ne escono. Sceglie ogni volta lo stato che gli
-sembra più promettente, cioè quello per cui è più piccola la somma fra i passi
-già fatti e una **stima** di quelli che restano. La stima, per adesso, è messa
-a zero: è come dire che non abbiamo nessun fiuto, e il programma è costretto a
-guardarsi intorno in tutte le direzioni allo stesso modo. Che cosa succeda
-quando un fiuto ce l’ha è il resto della sezione.
+Il programma del rompicapo lo esplora aprendo gli stati uno alla volta:
+«aprire» uno stato vuol dire guardare quali mosse ci sono e generare le
+situazioni che ne escono. Sceglie ogni volta lo stato che gli sembra più
+promettente, cioè quello per cui è più piccola la somma fra i passi già fatti e
+una **stima** di quelli che restano. La stima, per adesso, è messa a zero: è
+come dire che non abbiamo nessun fiuto, e il programma è costretto a guardarsi
+intorno in tutte le direzioni allo stesso modo. Che cosa succeda quando un
+fiuto ce l’ha è il resto della sezione.
 
 ```python
 import heapq
@@ -188,16 +188,17 @@ senza nessuna stima:  20 mosse, 48389 stati guardati
 ```
 
 Venti mosse di soluzione, e per trovarle ne sono state esaminate
-quarantottomila e passa: più di un quarto di tutte le posizioni che questo
-rompicapo ha. Con la stima a zero l’algoritmo apre sempre lo stato più vicino
-alla partenza, e quindi si allarga in tutte le direzioni allo stesso modo,
-esattamente come l’acqua del labirinto. Non sbaglia mai la risposta, e paga
-carissimo il non sapere dove sta andando.
+quarantottomila e passa: più di un quarto delle posizioni che questo rompicapo
+può raggiungere. Con la stima a zero l’algoritmo apre sempre lo stato più
+vicino alla partenza, e quindi si allarga in tutte le direzioni allo stesso
+modo, esattamente come l’acqua del labirinto. Non sbaglia mai la risposta, e
+paga carissimo il non sapere dove sta andando.
 
 ## La stima di quanto manca
 
-L’unica cosa che cambia le proporzioni è darle un fiuto, cioè un modo di
-indovinare, guardando uno stato, **quanto lavoro resta** da lì alla fine.
+L’unica cosa che cambia le proporzioni è dare alla ricerca un fiuto, cioè un
+modo di indovinare, guardando uno stato, **quanto lavoro resta** da lì alla
+fine.
 
 Quel fiuto ha un nome, e da qui in avanti il capitolo lo userà sempre: si
 chiama **euristica**, che è una parola greca per «che aiuta a trovare» ed è il
@@ -214,8 +215,8 @@ a una torre che dal tuo incrocio si vede. Quali strade ci portino non lo sai,
 né se sono a senso unico. Sai la direzione, e i metri in linea d’aria.
 
 Puntare alla torre a ogni incrocio non funziona. Quando va bene arrivi per un
-giro più lungo del necessario; quando va male finisci davanti a un muro con la
-torre dietro, e le altre strade le hai lasciate al primo bivio.
+giro più lungo del necessario; quando va male finisci davanti a un muro, con la
+torre dall’altra parte, e le altre strade le hai lasciate al primo bivio.
 
 Allora tiri fuori un foglio e tieni aperte più strade insieme. Accanto a ogni
 punto raggiunto scrivi i passi che ti è costato arrivarci e i metri che restano
@@ -272,16 +273,17 @@ Espandere sempre il nodo con $f$ minimo è l’algoritmo **A\***, di Hart, Nilss
 e Raphael {cite}`hart1968formal`. Con $h \equiv 0$ si riduce alla ricerca a
 costo uniforme, cioè al caso con la stima a zero.
 
-Il prezzo, che la tabella di prima non dice, è scomodo: A\* **tiene in memoria
-tutti i nodi generati**, esattamente come la ricerca in ampiezza. Riduce
-enormemente quanti ne genera, e questo è tutto il guadagno, ma la memoria resta
-il vincolo che morde per primo. Sul rompicapo delle otto tessere non si vede;
-su quello delle quindici, che di posizioni ne ha diecimila miliardi, sì, e la
-via d’uscita è sposare A\* con l’approfondimento iterativo, tenendo un tetto
-sul valore di $f$ invece che sulla profondità. È l’**IDA\*** di Richard Korf
-{cite}`korf1985depth`, ed è stato il primo metodo a trovare, dentro limiti di
-tempo e di memoria praticabili, soluzioni ottime di istanze del quindici
-generate a caso.
+Il prezzo, che la tabella di ampiezza e profondità non dice, è scomodo: A\*
+**tiene in memoria tutti i nodi generati**, esattamente come la ricerca in
+ampiezza. Riduce enormemente quanti ne genera, e questo è tutto il guadagno, ma
+la memoria resta il vincolo che morde per primo. Sul rompicapo delle otto
+tessere non si vede; su quello delle quindici, che di posizioni ne ha diecimila
+miliardi, sì, e la via d’uscita è sposare A\* con l’approfondimento iterativo,
+tenendo un tetto sul valore di $f$ invece che sulla profondità. È l’**IDA\***
+di Richard Korf {cite}`korf1985depth`, ed è stato il primo metodo di uso
+corrente a trovare, dentro limiti di tempo e di memoria praticabili, soluzioni
+ottime di istanze del quindici generate a caso, con una memoria che cresce come
+la profondità e non come il numero di nodi.
 
 La proprietà che serve a $h$ ha un nome: è **ammissibile** se non sovrastima
 mai, cioè se $h(n) \le h^*(n)$ per ogni $n$, dove $h^*(n)$ è il costo vero del
@@ -289,29 +291,30 @@ cammino ottimo da $n$ alla meta. Un’euristica ammissibile è, in altre parole,
 **ottimista**. E con un’euristica ammissibile A\* restituisce una soluzione di
 costo minimo.
 
-La ragione, in poche righe, e con due dettagli che sembrano formalità e non lo
-sono. A\* dichiara di aver finito quando **estrae** dalla frontiera uno stato
-finale, non quando lo genera: se bastasse generarlo, restituirebbe la prima
-soluzione che incontra, che non è la più corta. Detto questo, supponiamo che
-stia per restituire una soluzione peggiore di quella ottima. Sulla frontiera ci
-sarebbe allora il **primo** nodo $n$ non ancora espanso lungo il cammino
-ottimo; il suo predecessore lungo quel cammino è già stato espanso, e lo ha
-generato con $g(n) = g^*(n)$, cioè col costo giusto. Per quel nodo vale quindi
-$f(n) = g^*(n) + h(n) \le g^*(n) + h^*(n) = C^*$, un valore non superiore al
-costo ottimo e quindi inferiore a quello della soluzione peggiore che stiamo per
-restituire. Ma allora A\* avrebbe estratto $n$ prima, perché estrae sempre il
-minimo. È la contraddizione che dimostra il risultato.
+La ragione, in poche righe e per un grafo a costi non negativi, con due
+dettagli che sembrano formalità e non lo sono. A\* dichiara di aver finito
+quando **estrae** dalla frontiera uno stato finale, non quando lo genera: se
+bastasse generarlo, restituirebbe la prima soluzione che incontra, che non è la
+più corta. Detto questo, supponiamo che stia per restituire una soluzione
+peggiore di quella ottima. Sulla frontiera ci sarebbe allora il **primo** nodo
+$n$ non ancora espanso lungo il cammino ottimo; il suo predecessore lungo quel
+cammino è già stato espanso, e lo ha generato con $g(n) = g^*(n)$, cioè col
+costo giusto. Per quel nodo vale quindi $f(n) = g^*(n) + h(n) \le g^*(n) +
+h^*(n) = C^*$, un valore non superiore al costo ottimo e quindi inferiore a
+quello della soluzione peggiore che stiamo per restituire. Ma allora A\*
+avrebbe estratto $n$ prima, perché estrae sempre il minimo. È la contraddizione
+che dimostra il risultato.
 
 Il «primo non ancora espanso» porta tutto il peso dell’argomento: appartenere
 al cammino ottimo non basta, bisogna esserci **arrivati lungo di esso**, e solo
 per il primo dei non espansi questo è garantito dal predecessore.
 
-L’argomento ha però una condizione che resta implicita, ed è il punto in cui
-si sbaglia: presuppone di poter **tornare su uno stato già
-aperto** se salta fuori una strada più corta per arrivarci. Il codice qui sopra
-lo fa (è la riga che riscrive `costo[t]` e rimette lo stato in coda); una
-versione che marchiasse gli stati come «fatti» e non ci tornasse più potrebbe,
-con un’euristica solo ammissibile, restituire una soluzione peggiore di quella
+L’argomento ha però una condizione che resta implicita, ed è il punto in cui si
+sbaglia: presuppone di poter **tornare su uno stato già aperto** se salta fuori
+una strada più corta per arrivarci. Il programma del rompicapo lo fa (è la riga
+che riscrive `costo[t]` e rimette lo stato in coda); una versione che
+marchiasse gli stati come «fatti» e non ci tornasse più potrebbe, con
+un’euristica solo ammissibile, restituire una soluzione peggiore di quella
 ottima.
 
 Una proprietà leggermente più forte si chiama **consistenza**: $h$ è
@@ -332,14 +335,15 @@ In cambio la consistenza dà una cosa pratica, ed è esattamente quella che manc
 sopra: i valori di $f$ non diminuiscono mai lungo un cammino, quindi la prima
 volta che uno stato viene **estratto dalla frontiera** ci si sta arrivando in
 modo ottimo, e allora marcarlo come fatto e non tornarci più è lecito. La
-parola esatta è **estratto**, non raggiunto. Uno stato si può *generare*
-per una strada pessima molto prima di generarlo per quella buona (succede anche
-con $h \equiv 0$, che è consistente ed è l’euristica della ricerca a costo
+parola esatta è **estratto**, non raggiunto. Uno stato si può *generare* per
+una strada pessima molto prima di generarlo per quella buona (succede anche con
+$h \equiv 0$, che è consistente ed è l’euristica della ricerca a costo
 uniforme), e chiudere uno stato alla prima *generazione* può restituire
 soluzioni peggiori dell'ottimo, e basta che succeda una volta perché la
-garanzia non ci sia più. La riga del codice qui sopra che riscrive `costo[t]`
-esiste esattamente per questo, e se la frase valesse alla prima generazione
-quella riga sarebbe codice morto.
+garanzia non ci sia più. La riga che riscrive `costo[t]` esiste esattamente per
+questo. Sul rompicapo non scatta mai, perché lì ogni mossa costa uno e la prima
+generazione è già la migliore; a farla scattare sono i passi che costano
+diversamente, ed è il caso generale che la riga difende.
 
 Le due euristiche di questo capitolo sono tutte e due consistenti, e valgono
 zero sulla configurazione finale.
@@ -349,9 +353,10 @@ zero sulla configurazione finale.
 L’algoritmo che tiene insieme le due cose, il lavoro già fatto e la stima di
 quello che manca, si chiama **A\*** (si legge «a stella»), e ha una data e tre
 nomi: 1968, Peter Hart, Nils Nilsson e Bertram Raphael {cite}`hart1968formal`.
-È quello che il codice qui sopra esegue, ed è quello che, con l’asterisco o
-senza, sta dentro quasi tutto ciò che cerca un percorso: navigatori, robot che
-attraversano una stanza, personaggi di videogioco che aggirano un muro.
+È quello che il programma del rompicapo esegue, ed è quello che, con
+l’asterisco o senza, sta dentro quasi tutto ciò che cerca un percorso:
+navigatori, robot che attraversano una stanza, personaggi di videogioco che
+aggirano un muro.
 
 Le due euristiche classiche per il rompicapo delle otto tessere non sono
 inventate a caso, e conviene vedere da dove escono, perché è il modo
@@ -365,10 +370,9 @@ ciascuna tessera dista dal suo posto contando i passi in orizzontale e in
 verticale: si chiama **distanza a isolati**, e nei testi si trova più spesso
 col nome inglese di **distanza di Manhattan**, che è la stessa cosa, perché è
 il modo in cui si contano i metri in una città a scacchiera, dove non si taglia
-in diagonale. Se si
-cancellano tutt’e due, una tessera vola dove vuole in una mossa, e il costo è
-semplicemente quante **tessere sono fuori posto**. Sono i due nomi che
-compaiono nell’elenco qui sotto.
+in diagonale. Se si cancellano tutt’e due, una tessera vola dove vuole in una
+mossa, e il costo è semplicemente quante **tessere sono fuori posto**. Sono i
+due nomi che il programma mette a confronto.
 
 E qui c’è la garanzia, che è quasi troppo bella: **il costo esatto di un
 problema con meno regole non può mai superare quello del problema vero**,
@@ -407,11 +411,11 @@ tessere fuori posto    20 mosse,  3666 stati guardati   ( 13.2 volte meno)
 distanza a isolati     20 mosse,   282 stati guardati   (171.6 volte meno)
 ```
 
-Tre righe di numeri che dicono tutta la sezione. **La risposta non cambia**:
-venti mosse in tutti e tre i casi, perché tutte e tre le stime sono ottimiste e
-quindi nessuna fa sbagliare strada. Cambia solo quanto si guarda:
-quarantottomila stati senza stima, tremilaseicento con quella grossolana,
-duecentottantadue con quella più fine.
+Tre misure che dicono tutta la sezione. **La risposta non cambia**: venti mosse
+in tutti e tre i casi, perché tutte e tre le stime sono ottimiste e quindi
+nessuna fa sbagliare strada. Cambia solo quanto si guarda: quarantottomila
+stati senza stima, tremilaseicento con quella grossolana, duecentottantadue con
+quella più fine.
 
 Quello che quei numeri non dicono è **dove** siano finite le posizioni
 guardate, ed è la parte che spiega il resto. Si può disegnare: ogni posizione
@@ -419,9 +423,9 @@ aperta si mette su un piano, in orizzontale i passi già fatti per arrivarci e
 in verticale **la stima** di quanti ne mancano ({numref}`fig-frontiera`). In
 verticale c’è la stima e non la distanza vera, e la differenza conta: quello
 che il disegno mostra è che con il fiuto la ricerca non apre mai una posizione
-per cui la somma dei due numeri superi il costo della soluzione, non che stia
-lontana dai vicoli ciechi. Il piano è lo stesso nei due casi, e cambia una cosa
-sola: se l’algoritmo quel secondo numero lo guarda oppure no.
+per cui la somma dei due numeri superi il costo della soluzione. Il piano è lo
+stesso nei due casi, e cambia una cosa sola: se l’algoritmo quel secondo numero
+lo guarda oppure no.
 
 ```{figure} ../figures/frontiera-che-si-allarga.svg
 :name: fig-frontiera
@@ -438,21 +442,17 @@ ci mette piede, ed è proprio la garanzia che A\* dà.
 ```
 
 E qui c’è la cosa che i tre numeri da soli non facevano vedere: la stima non fa
-guardare *meno in giro*, le impedisce di salire sopra quella riga. Con la stima
-a zero la somma dei due numeri è sempre uguale ai soli passi fatti, quindi non
-c’è nessuna riga da non superare, e ogni posizione vale quanto un’altra alla
-stessa distanza dalla partenza.
+guardare *meno in giro*: impedisce alla ricerca di salire sopra quella riga.
+Con la stima a zero la somma dei due numeri è sempre uguale ai soli passi
+fatti, quindi non c’è nessuna riga da non superare, e ogni posizione vale
+quanto un’altra alla stessa distanza dalla partenza.
 
 E il confronto fra le due stime ha una regola sola, che si legge nella loro
 definizione: contare i passi è **sempre almeno quanto** contare le tessere
-fuori posto, perché una tessera fuori posto dista almeno un passo. Tutte e due,
-poi, sono stime senza salti: da una mossa alla successiva cambiano al massimo
-di uno, ed è la proprietà che i matematici chiamano **consistenza**. Fra due
-euristiche consistenti, quella che dà sempre il numero più grande
-**domina** l'altra: A\* non apre mai più stati con la dominante che con
-l'altra, perché apre comunque tutti quelli per cui i passi fatti più la stima
-stanno sotto il costo della soluzione, e alzare la stima quell'insieme lo
-restringe. Cercare una buona
+fuori posto, perché una tessera fuori posto dista almeno un passo. E chi apre
+di meno, fra le due, è chi stima di più: gli stati che si è costretti ad aprire
+sono quelli per cui i passi fatti più la stima stanno sotto il costo della
+soluzione, e alzare la stima quell'insieme lo restringe. Cercare una buona
 euristica vuol dire cercare la stima più alta che non superi mai il vero.
 
 `````{tab} Elementare

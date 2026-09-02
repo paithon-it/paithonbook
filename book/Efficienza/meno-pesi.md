@@ -5,10 +5,10 @@ quasi come prima. Non è un modo di dire: più sotto è misurato, su una rete
 vera, con i numeri stampati dal programma.
 
 È la promessa più grande delle tre, e quello che succede quando la si va a
-riscuotere è meno allegro. Perché
-la rete alleggerita del novanta per cento, sul calcolatore, **non è più veloce
-in proporzione a quanto si è alleggerita**: nella migliore delle ipotesi va
-uguale.
+riscuotere è meno allegro. Perché la rete alleggerita del novanta per cento,
+sul calcolatore, **non è più veloce in proporzione a quanto si è
+alleggerita**: con lo stesso conto di prima va uguale, e cambiare il conto
+conviene solo a certe condizioni.
 
 ## Quali pesi si tolgono
 
@@ -18,10 +18,9 @@ più sbrigativa che ci sia.
 `````{tab} Elementare
 
 Un club vince il campionato e a giugno il presidente deve mandare via nove
-giocatori su dieci. La squadra era già messa nel modo migliore possibile,
-quindi chiunque mandi via, la squadra ci rimette: la domanda è solo chi costa
-meno perdere. Quanto valga davvero ciascuno non lo sa nessuno, e allora si
-guardano i minuti giocati e si manda via chi ne ha di meno.
+giocatori su dieci. Chiunque mandi via, la squadra ci rimette, e la domanda è
+solo chi costa meno perdere. Quanto valga davvero ciascuno non lo sa nessuno, e
+allora si guardano i minuti giocati e si manda via chi ne ha di meno.
 
 In una rete quella cifra c'è già, e sono i pesi. Il peso di un collegamento
 dice quanto quel collegamento conta, e uno vicino a zero non sposta quasi
@@ -29,9 +28,11 @@ niente: tagliarlo sembra gratis. Si ordinano tutti per grandezza, si tiene una
 percentuale dei più grandi, il resto va a zero. Che lavoro faccia ciascun
 collegamento non lo guarda nessuno.
 
-Il presidente scommette tre volte, e perde tutte e tre. Che due giocatori con
-gli stessi minuti lascino lo stesso buco: il portiere gioca quanto un
-difensore e non si rimpiazza con la stessa facilità. Che i buchi si sommino:
+Il presidente scommette quattro volte, e perde tutte e quattro. Scommette che
+la squadra fosse messa nel modo migliore possibile, mentre a giugno sta dove il
+campionato l'ha lasciata. Che due giocatori con gli stessi minuti lascino lo
+stesso buco: il portiere gioca quanto un difensore e non si rimpiazza con la
+stessa facilità. Che i buchi si sommino:
 due che si intendevano bene, tolti insieme, si sentono più della somma dei due
 presi uno per uno. E che il conto regga anche a tagliare in blocco: vale per un
 giocatore alla volta, e di pesi se ne azzerano nove su dieci in un pomeriggio.
@@ -55,8 +56,9 @@ aggiustamento piccolo, e lo regge.
 
 E a un certo punto nemmeno il ritiro basta. Con la metà dei pesi tolti la rete
 non perde niente; con nove su dieci resta indietro di meno di un punto; con
-diciannove su venti di quasi cinque. Una squadra a cui restano sei giocatori
-può allenarsi quanto vuole: in campo ce ne vogliono undici.
+diciannove su venti di quasi cinque. Il ritiro insegna a coprire i buchi, non
+a essere in due dove ne servono undici, e sotto un certo numero di giocatori
+non c'è allenamento che tenga.
 
 `````
 
@@ -64,11 +66,12 @@ può allenarsi quanto vuole: in campo ce ne vogliono undici.
 
 La **potatura per grandezza** azzera i pesi il cui valore assoluto sta sotto
 una soglia, tipicamente scelta per percentile all’interno di ciascuna matrice.
-È il criterio di {cite}`han2015learning`, e la sua giustificazione risale a
-*Optimal Brain Damage* {cite}`lecun1990optimal`.
-La giustificazione è uno sviluppo di Taylor della funzione di costo attorno ai
-pesi addestrati, e seguirlo per intero mostra quante approssimazioni il
-criterio nasconde. Spostando i pesi di
+È il criterio di {cite}`han2015learning`, e *Optimal Brain Damage*
+{cite}`lecun1990optimal` non ne è la giustificazione: è il lavoro scritto per
+scavalcarlo, che si propone di «andare oltre l'approssimazione che grandezza
+uguale importanza» e misura che ordinare per grandezza costa più che ordinare
+per l'importanza stimata. Ricostruire il criterio dentro quel quadro serve
+proprio a vedere quante approssimazioni nasconde. Spostando i pesi di
 $\delta\boldsymbol{\theta}$,
 
 $$
@@ -77,19 +80,23 @@ $$
 + O(\|\delta\boldsymbol{\theta}\|^3),
 $$
 
-con $\mathbf{g}$ il gradiente e $\mathbf{H}$ l’Hessiana. All’ottimo il gradiente
-è nullo, quindi il primo termine che non si annulla è quello del secondo ordine;
-trascurando i termini fuori diagonale il costo si spezza in un addendo per
-peso, $\tfrac{1}{2}h_{ii}\,\delta
-\theta_i^2$, e azzerare il peso $i$-esimo vuol dire $\delta\theta_i = -w_i$,
-cioè un costo $\tfrac{1}{2}h_{ii}w_i^2$. Se poi si assume la diagonale
-**uniforme**, l’ordinamento per $|w_i|$ è l’ordinamento giusto.
+con $\mathbf{g}$ il gradiente e $\mathbf{H}$ l’Hessiana. Di qui in poi OBD
+butta via tre pezzi, e li nomina: si ferma al secondo ordine
+(**quadratica**), pota ad addestramento finito, dove il gradiente è nullo e il
+primo termine sparisce (**estremale**), e trascura i termini fuori diagonale,
+così il costo si spezza in un addendo per peso (**diagonale**),
+$\tfrac{1}{2}h_{ii}\,\delta
+\theta_i^2$; azzerare il peso $i$-esimo vuol dire $\delta\theta_i = -w_i$, cioè
+un costo $\tfrac{1}{2}h_{ii}w_i^2$. L’ordinamento che ne esce non è ancora
+quello per $|w_i|$: lo diventa con una quarta ipotesi, che la diagonale sia
+**uniforme**, e quella OBD non la fa.
 
-Sono tre approssimazioni, non una, e si sanno false tutte e tre: l’Hessiana non
-è diagonale, la sua diagonale non è uniforme, e $\delta\theta_i = -w_i$ non è
-una perturbazione piccola, tanto meno quando si azzerano decine di migliaia di
-pesi **insieme** invece che uno alla volta. La cosa notevole, e che nessuno ha
-davvero spiegato, è che il criterio regga lo stesso.
+Sono quattro approssimazioni, non una, e si sanno false tutte e quattro: il
+costo non è quadratico, una rete fermata da Adam non sta in un minimo,
+l’Hessiana non è diagonale, e la sua diagonale non è uniforme. Gli autori di
+OBD misurano dove si rompono le loro tre: l’accordo con la previsione regge
+fino a circa il **trenta per cento** dei pesi tolti, e potare al novanta è tre
+volte oltre. La cosa notevole è che il criterio regga lo stesso.
 
 Il taglio da solo non basta perché la rete rimasta è fuori dal minimo in cui
 era stata portata: i pesi superstiti sono ottimi rispetto a una funzione che
@@ -101,9 +108,8 @@ in un minimo della funzione ristretta.
 Nella pratica il ciclo si itera: si pota una frazione, si riaddestra, si pota
 ancora {cite}`han2015learning`. La potatura **iterativa** raggiunge, a parità
 di sparsità finale, accuratezze nettamente migliori di quella in un colpo
-solo, e la ragione è la
-stessa: ogni passo chiede alla rete un adattamento piccolo invece che uno
-enorme.
+solo, e la ragione è quella che rende fragile lo sviluppo: ogni passo chiede
+alla rete un adattamento piccolo invece che uno enorme.
 
 `````
 
@@ -119,7 +125,8 @@ from sklearn.datasets import load_digits
 from sklearn.model_selection import train_test_split
 
 torch.manual_seed(0)
-# un thread solo: cosi' i numeri stampati sono gli stessi su ogni macchina
+# un thread solo: due esecuzioni di fila danno lo stesso numero. Su un'altra
+# macchina le ultime cifre ballano, perche' cambia l'ordine delle somme
 torch.set_num_threads(1)
 
 dati = load_digits()
@@ -286,7 +293,7 @@ cose diverse.
 
 C’è un modo di riscuotere anche la seconda, ed è togliere i pesi **a blocchi**
 invece che uno per uno: non il singolo collegamento più debole, ma un neurone
-intero con tutti i collegamenti che ne partono, cioè una riga intera della
+intero con tutti i collegamenti che vi arrivano, cioè una riga intera della
 griglia. Una rete a cui si toglie un neurone intero è letteralmente una rete
 più piccola: la griglia ha una riga in meno, e moltiplicare una griglia più
 piccola costa meno, senza trucchi. Si paga in accuratezza, perché scegliendo a
@@ -308,26 +315,28 @@ ne sono tre di fila, uno dei tre va a zero lo stesso.
 
 Un prodotto matriciale denso è eseguito da un kernel GEMM che opera su
 piastrelle regolari, con accessi alla memoria contigui e prevedibili: è il
-regime per cui l’hardware è costruito, e il capitolo sulla GPU spiega perché
-uscirne costi caro. La sparsità **non strutturata** distrugge esattamente le
-due proprietà che rendono quel kernel veloce, la regolarità dell’accesso e la
-possibilità di riempire le unità vettoriali. Passare a un **formato rado** (CSR
-e simili) vuol dire quindi **cambiare kernel**, non aggiustare quello di prima, e
-se convenga è una domanda empirica, non di principio. Misurato sulla matrice
-rada del conto qui sopra, su CPU e a tempo di processore: il CSR pareggia il
-denso intorno al venti per cento di densità, e al cinque per cento (cioè con i
-novantacinque zeri su cento di quell’esperimento) va dalle cinque alle sette
-volte più veloce, a seconda della macchina. Su GPU la soglia si sposta molto
-più in basso, perché il kernel denso lavora vicino al picco e gli accessi
-irregolari costano di più: è la ragione per cui in pratica la sparsità non
-strutturata si usa poco, e sta nell’hardware, non nell’aritmetica.
+regime per cui l’hardware è costruito, e la {doc}`sezione su GEMM e tensor core
+</GPU/gemm-e-tensor-core>` spiega perché uscirne costi caro. La sparsità **non
+strutturata** distrugge esattamente le due proprietà che rendono quel kernel
+veloce, la regolarità dell’accesso e la possibilità di riempire le unità
+vettoriali. Passare a un **formato rado** (CSR e simili, cioè la matrice
+scritta come l'elenco delle sole posizioni non nulle, riga per riga) vuol dire
+quindi **cambiare kernel**, non aggiustare quello di prima, e se convenga è una
+domanda empirica, non di principio. Misurato sulla matrice rada del conto qui
+sopra, su CPU e a tempo di processore: il CSR pareggia il denso intorno al
+venti per cento di densità, e al cinque per cento (cioè con i novantacinque
+zeri su cento di quell’esperimento) va dalle cinque alle sette volte più
+veloce, a seconda della macchina. Su GPU la soglia si sposta molto più in
+basso, perché il kernel denso lavora vicino al picco e gli accessi irregolari
+costano di più: è la ragione per cui in pratica la sparsità non strutturata si
+usa poco, e sta nell’hardware, non nell’aritmetica.
 
 Da qui la distinzione operativa:
 
 - la **sparsità non strutturata** riduce i parametri e non tocca il tempo **del
   kernel denso**, che è quello che quasi tutti eseguono. È utile per la
   dimensione del file, e come strumento di indagine (è quella che serve nel
-  paragrafo sul biglietto della lotteria, qui sotto);
+  paragrafo sul biglietto della lotteria);
 - la **sparsità strutturata** rimuove unità intere (righe e colonne di una
   matrice, canali di una convoluzione, teste di attenzione, strati). Il
   risultato è un tensore più piccolo e denso, quindi lo stesso kernel di prima
@@ -350,14 +359,14 @@ di un modello: se alla fine mi resta una rete con un decimo dei pesi che
 funziona, perché ho dovuto addestrare quella grande? Perché non parto da quella
 piccola?
 
-La risposta sta nel {doc}`capitolo sul machine learning </MachineLearning/overview>`, nella sezione
-sull’overfitting: quella sottorete funziona **solo se la si riaddestra con i
-numeri di partenza che aveva**, e reinizializzandola a caso non impara
-altrettanto bene. Non era il collegamento a essere buono, era il collegamento
-con quella partenza lì, e da qui il nome che l’idea porta: fra i milioni di
-collegamenti di una rete grande, inizializzati a caso, qualcuno è già disposto
-bene per il compito, e addestrare la rete grande è comprare tutti i biglietti
-insieme per ritrovarsi in mano quello vincente.
+La risposta sta nella {doc}`sezione su overfitting e validazione
+</MachineLearning/overfitting-validazione>`: quella sottorete funziona **solo
+se la si riaddestra con i numeri di partenza che aveva**, e reinizializzandola
+a caso non impara altrettanto bene. Non era il collegamento a essere buono, era
+il collegamento con quella partenza lì, e da qui il nome che l’idea porta: fra
+i milioni di collegamenti di una rete grande, inizializzati a caso, qualcuno è
+già disposto bene per il compito, e addestrare la rete grande è comprare tutti
+i biglietti insieme per ritrovarsi in mano quello vincente.
 
 Qui interessa una conseguenza sola, ed è quella che riguarda l’efficienza: **il
 risparmio che si vorrebbe non è disponibile**. Per sapere quali sono i
@@ -417,18 +426,22 @@ potata e poi a quattro bit: 96.7%
 
 Arrotondare da solo non costa niente (anzi, due decimi in più, che è rumore).
 Potare da solo costa 0,9 punti. Fare tutte e due costa **1,1**, cioè più della
-somma dei due costi presi separatamente. Non è tanto, ed è comunque un ottimo
-affare (un decimo dei pesi, un ottavo dei bit, poco più di un punto di
-accuratezza); ma dice la cosa che l’apertura prometteva, e cioè che il budget
-di errore non si spartisce a tavolino.
+somma dei due costi presi separatamente. Su un campione di prova di
+cinquecentoquaranta cifre quel decimo di scarto in più sono due cifre, e
+ripartendo da un'altra inizializzazione cambia anche di verso: su cinque, in
+due casi comporre costa **meno** della somma. Che sia più o meno non si sa
+prima, ed è esattamente la cosa che l’apertura prometteva: il budget di errore
+non si spartisce a tavolino. Resta comunque un ottimo affare, un decimo dei
+pesi e un ottavo dei bit per poco più di un punto di accuratezza.
 
-C'è però un guasto che si vede solo componendo le due leve, e non dà nessun
-errore: la rete crolla all'otto per cento, cioè al livello di
-chi tira a indovinare, e non per un errore che si accumulava: perché dopo la
-potatura **centottantotto gruppi di sessantaquattro pesi erano interamente
-zeri**, la scala di quei gruppi valeva zero, e dividere per zero riempiva la
-rete di valori non numerici. Senza un avviso, senza un errore: solo una rete
-che smetteva di funzionare. È il motivo della riga di protezione nella funzione
+Componendo le due leve salta fuori un guasto che nessuna delle due mostrava da
+sola, e che non dà nessun errore. Dopo la potatura **duecentouno gruppi di
+sessantaquattro pesi sono interamente zeri**: la scala di quei gruppi vale
+zero, dividere per zero riempie la rete di valori non numerici, e da lì
+`argmax` sceglie sempre la stessa cifra. L'accuratezza si ferma all'8,3%, che
+non è il caso (il caso sarebbe il dieci per cento) ma la frequenza dello zero
+fra gli esempi di prova: la rete risponde «zero» a tutto. Senza un avviso e
+senza un errore. È il motivo della riga di protezione nella funzione
 `quantizza` della sezione precedente, ed è il genere di guasto che si trova
 solo componendo le cose e provandole.
 
@@ -452,8 +465,9 @@ basso, e in mezzo c’è un calcolatore che quella promessa non la sa incassare.
   tempo bisogna togliere i pesi **a blocchi** (un neurone intero, cioè una riga
   intera della griglia): allora la rete è davvero più piccola, ma si buttano
   via anche pesi utili che stavano nella riga sbagliata.
-- Il **biglietto della lotteria**, che il {doc}`capitolo sul machine learning </MachineLearning/overview>` ha già
-  raccontato, dice qui una cosa sola: per sapere quali collegamenti tenere
+- Il **biglietto della lotteria**, che la {doc}`sezione su overfitting e
+  validazione </MachineLearning/overfitting-validazione>` ha già raccontato,
+  dice qui una cosa sola: per sapere quali collegamenti tenere
   bisogna prima addestrare la rete grande. La potatura comprime un modello che
   esiste già, non insegna a farne uno piccolo.
 ```
@@ -465,11 +479,11 @@ basso, e in mezzo c’è un calcolatore che quella promessa non la sa incassare.
 ```{admonition} Da ricordare
 :class: important
 - La **potatura per grandezza** ordina i pesi per $|w_i|$ e azzera sotto una
-  soglia percentile. La sua giustificazione poggia su **tre** approssimazioni,
-  tutte e tre note come false: si trascurano i termini fuori diagonale
-  dell’Hessiana, si assume la diagonale uniforme, e si applica a un taglio di
-  decine di migliaia di pesi insieme uno sviluppo valido per una perturbazione
-  piccola e singola.
+  soglia percentile. Poggia su **quattro** approssimazioni, tutte e quattro
+  note come false: sviluppo fermo al secondo ordine, rete supposta a un minimo,
+  Hessiana supposta diagonale (le tre di *Optimal Brain Damage*, che le nomina
+  per scavalcare proprio l’ordinamento per grandezza) e diagonale supposta
+  uniforme, che è la quarta e serve solo a riportarsi a $|w_i|$.
 - Il **riaddestramento con maschera fissa** è la parte non opzionale: la rete
   potata è fuori dal minimo in cui stava, e i superstiti vanno riportati in un
   minimo della funzione ristretta. Misurato a sparsità 0,9: 39,3% subito,

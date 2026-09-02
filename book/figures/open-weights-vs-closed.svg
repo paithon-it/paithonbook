@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" width="100%" role="img" aria-label="Mappa a quadranti. Sull'asse orizzontale il grado di apertura di un modello, da chiuso e raggiungibile solo via interfaccia, a sinistra, a pesi scaricabili da chiunque, a destra. Sull'asse verticale la capacita', dal basso verso l'alto. I punti sono distribuiti in tutti e quattro i quadranti e nessuno dei due lati domina l'altro: ce ne sono di capaci fra i chiusi e fra gli aperti, e di contenuti in entrambi. I punti non portano nomi.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" width="100%" role="img" aria-label="Mappa a quadranti. Sull'asse orizzontale come il modello è messo a disposizione, da chiuso e raggiungibile solo via interfaccia, a sinistra, a pesi scaricabili da chiunque, a destra. Sull'asse verticale la capacità, dal basso verso l'alto. I punti sono distribuiti in tutti e quattro i quadranti e nessuno dei due lati domina l'altro: ce ne sono di capaci fra i chiusi e fra gli aperti, e di contenuti in entrambi. I punti non portano nomi.">
   <rect x="0" y="0" width="700" height="500" fill="#F8F5EE"/>
   <text x="350" y="38" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1A1A1A">Due assi indipendenti</text>
 
@@ -8,11 +8,11 @@
   <line x1="120" y1="270" x2="620" y2="270" stroke="#C5BEAA" stroke-width="1.5" stroke-dasharray="6 5"/>
 
   <circle cx="236" cy="193" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
-  <circle cx="326" cy="181" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="326" cy="145" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
   <circle cx="246" cy="196" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
   <circle cx="185" cy="187" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
   <circle cx="270" cy="223" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
-  <circle cx="168" cy="159" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
+  <circle cx="168" cy="127" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
   <circle cx="167" cy="225" r="7" fill="#2D5A5C" fill-opacity="0.72"/>
   <circle cx="532" cy="125" r="7" fill="#B5532C" fill-opacity="0.72"/>
   <circle cx="587" cy="245" r="7" fill="#B5532C" fill-opacity="0.72"/>

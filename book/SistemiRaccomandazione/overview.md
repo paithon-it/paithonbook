@@ -40,12 +40,13 @@ streaming, dove prevedere il voto in stelle conta meno di prevedere che cosa
 guarderai stasera. Due ingredienti emersi durante la gara, invece, in
 produzione ci finirono davvero. Uno è una rete che impara a riconoscere le
 combinazioni di gusti che ricorrono fra gli spettatori, e si chiama macchina di
-Boltzmann ristretta: il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` la racconta per intero.
-L'altro è la **fattorizzazione di matrici**, che è la protagonista di questo
-capitolo {cite}`koren2009matrix`.
+Boltzmann ristretta: la
+{doc}`sezione sulle macchine di Boltzmann </ModelliEnergia/boltzmann>` la
+racconta per intero. L'altro è la **fattorizzazione di matrici**, che è la
+protagonista di questo capitolo {cite}`koren2009matrix`.
 Fattorizzare vuol dire scomporre in fattori, come si fa da sempre con i numeri
-($12 = 3 \times 4$): qui si scompone una tabella, e i fattori sono due tabelle
-strette al posto di una larghissima.
+($12 = 3 \times 4$): qui si scompone una tabella, che in matematica si chiama
+**matrice**, e i fattori sono due tabelle strette al posto di una larghissima.
 
 Una parola sul nome, prima di partire, perché in italiano «raccomandazione»
 significa due cose e una delle due è la spintarella. Qui vale l'altra, quella
@@ -212,10 +213,10 @@ preferenze, ma filtrati dalla **politica di esposizione** del sistema stesso:
 osserviamo interazioni solo sugli oggetti che il modello precedente ha deciso
 di mostrare. È un *feedback loop*: il modello al tempo $t$ genera i dati con
 cui si addestra il modello al tempo $t+1$, e i bias si amplificano invece di
-mediarsi. È un caso particolarmente severo del *dataset shift* che abbiamo
-incontrato nella sezione *Quando i dati cambiano* del capitolo di Machine
-Learning {cite}`quinonero2009dataset`, con l'aggravante che qui lo shift non è
-un incidente esterno, ma è prodotto dal sistema stesso. Le contromisure
+mediarsi. È un caso particolarmente severo del *dataset shift* incontrato
+nella sezione {doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`
+{cite}`quinonero2009dataset`, con l'aggravante che qui lo shift non è un
+incidente esterno, ma è prodotto dal sistema stesso. Le contromisure
 (esplorazione controllata, correzioni per propensità) esistono, ma nessuna è
 gratis: esplorare significa mostrare a qualche utente qualcosa che il modello
 non avrebbe scelto.
@@ -278,7 +279,7 @@ smette di essere un consiglio.
 - Il problema è prevedere le preferenze mancanti nella matrice di interazione
   $\mathbf{R}$, utenti per oggetti, di cui si osserva una frazione minima: nel
   Netflix Prize l'1,2% delle celle, nei cataloghi industriali di oggi meno
-  dello 0,1%. Quel vuoto ha un nome, **sparsità**, ed è il vincolo che detta
+  dello 0,1%. Quel vuoto ha un nome, sparsità, ed è il vincolo che detta
   quasi tutte le scelte che seguono.
 - Il segnale è di due specie. **Esplicito**: voti su una scala, cioè un target
   continuo o ordinale su una matrice incompleta, e raro. **Implicito**: click,

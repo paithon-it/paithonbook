@@ -75,7 +75,7 @@ grande). La forma più usata è **simmetrica**: si fissa una
 
 $$
 q = \mathrm{round}\!\left(\frac{w}{s}\right), \qquad \hat{w} = s\,q,
-\qquad s = \frac{\max_i |w_i|}{2^{b-1} - 1},
+\qquad s = \frac{\max_i |w_i|}{2^{b-1} - 1}.
 $$
 
 L’errore di arrotondamento su ciascun peso è limitato da
@@ -97,22 +97,22 @@ un’ipotesi che si dà per scontata e non lo è: un neurone addestrato allinea
 $\mathbf{w}$ alla configurazione che vuole riconoscere, e quando l’ingresso è
 proprio quella configurazione il segnale cresce come $n$ e l’errore relativo
 **migliora**; quando invece l’ingresso è quasi ortogonale ai pesi il segnale
-quasi si annulla e l’errore relativo peggiora di molto. Misurato sulla stessa
-matrice, a parità di errore sui pesi: 13% su ingressi casuali, 0,1% su un
-ingresso allineato, 58% su uno quasi ortogonale.
+quasi si annulla e l’errore relativo peggiora di molto: fra i due estremi, a
+parità di errore sui pesi, ci sono due ordini di grandezza.
 
 L’ipotesi di media nulla sugli arrotondamenti invece regge, e si può
-controllare: fino a tre bit lo scarto medio sta sotto il millesimo del passo e
-la correlazione fra errore e peso è nulla. A due bit crolla (correlazione
+controllare: con una scala sola per tutta la matrice, fino a tre bit lo scarto
+medio sta sotto il millesimo del passo e la correlazione fra errore e peso è
+nulla. A due bit crolla (correlazione
 $-0{,}76$), ma a due bit è già crollato tutto.
 
 Il punto delicato è la definizione della scala, perché $s$ è fissata dal
 **massimo in valore assoluto** del gruppo di numeri che condividono la scala. Un
 singolo elemento molto più grande degli altri allarga $s$ per tutti, e ogni
-altro elemento del gruppo perde risoluzione in proporzione. Il rimedio sta
-sempre nel **cambiare chi condivide la scala**, mai nell’arrotondare meglio:
-si restringe
-il gruppo oppure tenendone fuori i pochi elementi anomali.
+altro elemento del gruppo perde risoluzione in proporzione. Finché si arrotonda
+un numero alla volta il rimedio è uno solo, **cambiare chi condivide la
+scala**: si restringe il gruppo, o se ne tengono fuori i pochi elementi
+anomali.
 
 Questa è la forma **simmetrica**, che dà per scontato che i numeri stiano
 attorno allo zero. Dove non è così (le uscite di una ReLU, per dire, sono tutte
@@ -126,8 +126,9 @@ $$
 
 Il meccanismo è lo stesso e il passo lo dettano sempre gli estremi del gruppo
 (nella forma simmetrica basta il più grande in valore assoluto, qui servono
-tutti e due); cambia solo che il gruppo può stare tutto da una parte. È la forma con
-cui il capitolo su MLOps parla di `int8` in produzione
+tutti e due); cambia solo che il gruppo può stare tutto da una parte. È la
+forma con cui la {doc}`sezione su come si serve un modello
+</MLOps/deployment-e-serving>` parla di `int8` in produzione
 {cite}`jacob2018quantization`, e da qui in avanti si resta sulla simmetrica,
 che ha una formula in meno.
 
@@ -151,7 +152,8 @@ pesi.
 import torch
 
 torch.manual_seed(0)
-# un thread solo: cosi' i numeri stampati sono gli stessi su ogni macchina
+# un thread solo: due esecuzioni di fila danno lo stesso numero. Su un'altra
+# macchina le ultime cifre ballano, perche' cambia l'ordine delle somme
 torch.set_num_threads(1)
 
 
@@ -207,8 +209,8 @@ vettore dei risultati veri, e vuol dire che l’uscita **tipica** dello strato �
 lontana quasi un quinto dal valore che avrebbe dovuto avere. È uno scostamento
 grosso e non un arrotondamento all’ultima cifra, e la rete lo userà come se
 fosse il risultato buono. E la distribuzione è peggiore di quel che il
-numero lascia intendere: misurato, **un’uscita su otto sbaglia di più del
-proprio valore**, e sono le più piccole, cioè proprio quelle su cui una
+numero lascia intendere: misurato, **più di un’uscita su nove sbaglia di più
+del proprio valore**, e sono le più piccole, cioè proprio quelle su cui una
 decisione si gioca per poco. E lo strato dopo prende quei numeri per veri e ci
 aggiunge il suo errore. Non c’è una formula semplice per dire quanto lo
 scostamento cresca lungo una rete di trenta strati (dipende da che cosa
@@ -220,11 +222,11 @@ si arriva **facendo qualcosa di più che arrotondare**, e il resto della sezione
 è quel qualcosa.
 
 La colonna di destra è il primo pezzo, ed è il più economico: invece di una
-scala sola per due milioni di pesi se ne tiene una ogni sessantaquattro. Il
+scala sola per centotrentamila pesi se ne tiene una ogni sessantaquattro. Il
 costo si conta: a quattro bit, sessantaquattro pesi occupano trentadue byte, e
 una scala in sedici bit ne occupa due, cioè il sei per cento in più. In cambio
 l’errore si divide per un fattore **1,74**, e con una costanza notevole: è lo
-stesso a otto bit come a tre, e si vede dividendo le due colonne riga per riga.
+stesso a otto bit come a tre.
 La ragione è quella del carrello: più piccolo è il gruppo che condivide il
 passo, meno un elemento grande può rovinare i suoi vicini.
 
@@ -277,8 +279,8 @@ la componente enorme piu' grande vale  167.6
 Tre colonne su cinquecentododici, cioè lo 0,6 per cento dei numeri, tenute per
 esteso invece che arrotondate, e l’errore passa da poco più del sette per cento
 a due decimi. È la differenza fra un modello che funziona e uno che farnetica,
-e non una rifinitura: e la scoperta che quelle componenti esistano e
-siano poche è la ragione per cui `int8` è diventato praticabile sui modelli
+e non una rifinitura: che quelle componenti siano poche e sempre nelle stesse
+posizioni è la ragione per cui `int8` è diventato praticabile sui modelli
 linguistici {cite}`dettmers2022llmint8`.
 
 `````{tab} Elementare
@@ -298,10 +300,8 @@ numeri appena arriva e si mette da parte tutto quello che supera una soglia. Le
 posizioni tendono a essere sempre le stesse, ed è questo a rendere il rimedio
 economico; ma è una tendenza osservata, non una lista fissa da cui si parte.
 
-Il rimedio completo ha due metà, e la prima si è già vista: stringere il gruppo
-che condivide il passo, una scala ogni sessantaquattro numeri invece di una
-sola per tutti. Tenere fuori dal gruppo le poche componenti larghe è la
-seconda.
+Il rimedio ha due metà: stringere il gruppo che condivide il passo, e tenere
+fuori dal gruppo le poche componenti larghe.
 
 Sotto gli otto bit non bastano nemmeno le due insieme, e i metodi che reggono
 cambiano il gesto dell’arrotondare. Uno arrotonda un prezzo alla volta e tiene
@@ -322,9 +322,12 @@ guardano che cosa quel numero combina nel conto, e non soltanto quanto vale.
 L’osservazione empirica è che nei Transformer, oltre una certa scala, compaiono
 **caratteristiche anomale sistematiche**: un numero piccolo di dimensioni del
 canale nascosto assume valori di ordini di grandezza superiori alle altre, in
-modo consistente fra token e fra ingressi {cite}`dettmers2022llmint8`. Poiché la
-scala di quantizzazione è fissata dal massimo, quelle dimensioni comprimono
-tutte le altre in pochi livelli.
+modo consistente fra token e fra ingressi. Che esistessero si sapeva già; del
+lavoro che ha reso `int8` praticabile {cite}`dettmers2022llmint8` sono la
+misura alla scala (la transizione è netta e cade intorno ai 6,7 miliardi di
+parametri, dove le anomale invadono tutti gli strati concentrandosi in sei
+dimensioni) e il metodo qui sotto. Poiché la scala di quantizzazione è fissata
+dal massimo, quelle dimensioni comprimono tutte le altre in pochi livelli.
 
 Il metodo che ne è nato ha due parti. La prima è la stretta sulla granularità:
 si abbandona la scala unica e se ne tiene una **per ogni prodotto interno**,
@@ -352,7 +355,7 @@ l’errore introdotto sull’uscita, usando l’informazione del secondo ordine
 stimata su un piccolo insieme di dati. **AWQ** {cite}`lin2024awq` parte da
 un’osservazione complementare: non tutti i pesi contano uguale, e quelli che
 moltiplicano le attivazioni grandi vanno protetti riscalando i canali prima di
-arrotondare. In tutti e due i casi la differenza rispetto alla tabella qui sopra
+arrotondare. In tutti e due i casi la differenza rispetto alla tabella dei bit
 sta nel fatto che **si guarda che cosa quel peso fa** invece che soltanto
 quanto vale, e non nella formula dell’arrotondamento.
 
@@ -462,7 +465,9 @@ due salti.
 - Quantizzazione simmetrica a $b$ bit: $\hat{w} = s\,\mathrm{round}(w/s)$ con
   $s = \max|w| / (2^{b-1}-1)$. L’errore per elemento è limitato da $s/2$;
   sull’uscita di un prodotto scalare gli errori indipendenti crescono come
-  $\sqrt{n}$, quindi l’errore **relativo** non si accumula.
+  $\sqrt{n}$. Che l’errore **relativo** non si accumuli richiede in più che
+  cresca così anche il segnale, ed è un’ipotesi sugli **ingressi**, non sugli
+  arrotondamenti.
 - La **granularità** della scala è la leva più economica: per tensore, per riga,
   per gruppo di $g$ elementi. Misurato su un prodotto $256 \times 512$ per
   $512 \times 64$: a quattro bit, 18,71% con una scala per tutto e 10,77% con

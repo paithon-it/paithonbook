@@ -8,7 +8,7 @@
   Palette-locked, fondo trasparente.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 370" role="img"
-     aria-label="A sinistra gli otto strati addestrabili di AlexNet divisi in due colonne, una per ciascuna delle due GPU: cinque strati convolutivi in teal e tre densi in ocra. Fra il primo e il secondo strato, e fra il terzo, il quarto e il quinto, le due colonne restano separate; dopo il secondo strato e su tutti i passaggi fra gli strati densi le connessioni incrociano da una GPU all'altra, disegnate come linee a X. A destra il confronto dell'errore top-5: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet.">
+     aria-label="A sinistra gli otto strati addestrabili di AlexNet divisi in due colonne, una per ciascuna delle due GPU: cinque strati convolutivi in teal e tre densi in ocra. Fra il primo e il secondo strato, e fra il terzo, il quarto e il quinto, le due colonne restano separate; dopo il secondo strato, poi all'ingresso del primo strato denso e su ogni passaggio successivo, le connessioni incrociano da una GPU all'altra, disegnate come linee a X. A destra il confronto dell'errore top-5: 26,2% per i metodi costruiti a mano, 15,3% per AlexNet.">
   <style>
     .tit { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:bold; fill:#1A1A1A; }
     .lbl { font-family:Inter, system-ui, sans-serif; font-size:11px; fill:#1A1A1A; }

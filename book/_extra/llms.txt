@@ -21,7 +21,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Fondamenta
 
-- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e professore al MIT. Nel 1966 presentò al mondo ELIZA, il primo chatbot della storia: un programma con cui si poteva…
+- [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e professore al MIT. Nel 1966 presentò al mondo ELIZA, il capostipite dei chatbot: un programma con cui si poteva conversare…
   - [Python e l'AI](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
   - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)
   - [Conclusione](https://book.paithon.it/main/Introduzione/conclusione.html)
@@ -154,7 +154,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Dopo il pre-addestramento](https://book.paithon.it/main/Transformers/post-training.html)
   - [Retrieval e RAG](https://book.paithon.it/main/Transformers/rag.html)
   - [Tendenze e limiti](https://book.paithon.it/main/Transformers/tendenzefuture.html)
-- [Attenzione lineare](https://book.paithon.it/main/AttenzioneLineare/overview.html): Nel 2020, mentre il mondo dell'intelligenza artificiale celebrava i Transformer come la rottura definitiva con il passato ricorrente, quattro ricercatori fra la Svizzera e gli Stati Uniti…
+- [Attenzione lineare](https://book.paithon.it/main/AttenzioneLineare/overview.html): Centomila parole sono la lunghezza di un romanzo, e per leggerlo un Transformer deve confrontare ogni parola con tutte le altre: centomila per centomila, cioè dieci miliardi di confronti, e non una…
   - [Dalla softmax alla ricorrenza](https://book.paithon.it/main/AttenzioneLineare/dalla-softmax-alla-ricorrenza.html)
   - [Scrivere nella memoria](https://book.paithon.it/main/AttenzioneLineare/scrivere-nella-memoria.html)
   - [Architetture lineari](https://book.paithon.it/main/AttenzioneLineare/architetture-lineari.html)

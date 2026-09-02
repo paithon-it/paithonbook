@@ -11,40 +11,41 @@ acini di una vite. Borges avrebbe potuto farne un genio, e ne fa il contrario:
 quel ragazzo, sospetta chi racconta, non era molto capace di pensare, perché
 «pensare è dimenticare differenze, è generalizzare, astrarre»[^funes].
 
-Il difetto di Funes, detto nel vocabolario di questo libro, è che non sa
-**accorciare**. Per lui il cane visto di profilo alle tre e quattordici e lo
-stesso cane visto di fronte tre minuti dopo sono due cose distinte, e due cose
-distinte vogliono due nomi: il suo mondo non sta in nessuna descrizione più
-breve del mondo stesso. Un modello che impara a memoria il proprio insieme di
-addestramento è un Funes, e la sezione sull'overfitting, nel capitolo di
-machine learning, lo ha già mostrato in azione con altri nomi.
+Il difetto di Funes, detto in una parola, è che non sa **accorciare**. Per lui
+il cane visto di profilo alle tre e quattordici e lo stesso cane visto di
+fronte tre minuti dopo sono due cose distinte, e due cose distinte vogliono due
+nomi: il suo mondo non sta in nessuna descrizione più breve del mondo stesso.
+Un modello che impara a memoria il proprio insieme di addestramento è un Funes,
+e {doc}`Overfitting e validazione </MachineLearning/overfitting-validazione>`
+lo ha già mostrato in azione con altri nomi.
 
-Le pagine precedenti di questo capitolo hanno detto **che cos'è**
-l'auto-supervisione, **come** si fabbrica un pretesto e **che cosa va
-storto**. Nessuna ha risposto alla domanda più imbarazzante di tutte, quella
-che uno studente fa al secondo minuto: perché coprire una parola e farla
-indovinare dovrebbe produrre qualcosa che sa di biologia. Una parte del campo
+Le pagine precedenti hanno detto **che cos'è** l'auto-supervisione, **come** si
+fabbrica un pretesto e **che cosa va storto**. Nessuna ha risposto alla domanda
+più imbarazzante di tutte, quella che uno studente fa al secondo minuto: perché
+coprire una parola e farla indovinare dovrebbe produrre qualcosa che sa di
+biologia. Una parte del campo
 dà a quella domanda una risposta sola, ed è la stessa di Borges: perché per
 prevedere bene bisogna accorciare, e per accorciare bisogna aver capito.
 
-## Dove eravamo rimasti
+## Predire e comprimere sono la stessa operazione
 
-Questa pagina non ricomincia da zero, e conviene dire che cosa dà per acquisito,
-perché è già scritto altrove in questo libro e non si ripete.
+Qui non si ricomincia da zero: quello che si dà per acquisito è già scritto
+altrove e non si ripete.
 
-La prima cosa è che **predire e comprimere sono la stessa operazione**, e la
-regola che le tiene insieme è una sola: più una cosa è attesa, meno costa
-scriverla. La sezione sulla teoria dell'informazione, nei richiami di
-matematica, l'ha ricavata dal teorema di Shannon: il numero di bit che serve
-per scrivere un messaggio con il codice migliore possibile è $-\log_2 p$, dove
-$p$ è la probabilità che il modello assegna a quel messaggio. La formula si
-legge anche senza farne il conto: se il modello dava per quasi certo quello che
-è arrivato, il prezzo va quasi a zero; se lo dava per improbabile, il prezzo si
-impenna. La sezione «A che serve saperlo», nel capitolo sulla verosimiglianza
-esatta, l'ha resa operativa: un modello che sa dire $p(\mathbf{x})$, cioè
-quanto è probabile un dato, **è** un compressore, non per analogia, e infatti
-quella famiglia di modelli si misura in bit per dimensione, cioè in quanti bit
-costa in media ogni singolo numero del dato.
+La prima cosa è appunto che **predire e comprimere sono la stessa operazione**,
+e la regola che le tiene insieme è una sola: più una cosa è attesa, meno costa
+scriverla. La ricava dal teorema di Shannon la sezione
+{doc}`Teoria dell'informazione </Matematica/teoria-informazione>`: il numero di
+bit che serve per scrivere un messaggio con il codice migliore possibile è
+$-\log_2 p$, dove $p$ è la probabilità che il modello assegna a quel messaggio.
+La formula si legge anche senza farne il conto: se il modello dava per quasi
+certo quello che è arrivato, il prezzo va quasi a zero; se lo dava per
+improbabile, il prezzo si impenna. L'ha resa operativa
+{doc}`A che serve saperlo, e dove sbaglia </VerosimiglianzaEsatta/a-che-serve>`:
+un modello che sa dire $p(\mathbf{x})$, cioè quanto è probabile un dato, **è**
+un compressore, non per analogia, e infatti quella famiglia di modelli si
+misura in bit per dimensione, cioè in quanti bit costa in media ogni singolo
+numero del dato.
 
 La seconda è che la quantità che il pre-addestramento auto-supervisionato
 minimizza, la cross-entropia, è quel prezzo lì sommato su tutto il testo.
@@ -206,8 +207,8 @@ dodici, cioè quattro contesti per tre probabilità ciascuno (la quarta è quell
 che avanza per arrivare a uno), e con $N$ pari a duecentomila
 il conto dà $0{,}0005$ contro i $0{,}0004$ misurati. È un'asintotica e
 sovrastima un poco, come si vedrà anche fra due righe, ma l'ordine di grandezza
-è quello. Su questo prezzo torneremo, perché è il punto in cui la tesi di
-questa pagina rischia di rompersi.
+è quello. Su quel prezzo torna «Chi paga il vocabolario», qui in fondo, perché
+è il punto in cui la tesi rischia di rompersi.
 
 Il modello di **ordine 2**, che tiene memoria di due lettere invece di una, fa
 $1{,}4411$: **peggio** di quello di ordine 1. Ha sedici contesti da riempire
@@ -216,10 +217,9 @@ triplo, in cambio di nulla, perché nella lingua non c'è niente oltre la letter
 precedente. Qui i parametri liberi sono quarantotto, e la formula di prima ne
 prevederebbe $0{,}0021$: sovrastima più di prima, perché presuppone che ogni
 parametro abbia a disposizione tutti i dati, mentre qui ciascun contesto vede
-solo la propria fetta. È il rasoio di Occam del {doc}`capitolo sul machine learning </MachineLearning/overview>`,
-la regola per cui a parità di risultato vince la spiegazione più semplice,
-misurato qui in bit su una riga di uscita: un modello più ricco del necessario
-si paga e non rende.
+solo la propria fetta. È il rasoio di Occam, la regola per cui a parità di
+risultato vince la spiegazione più semplice, misurato qui in bit su una riga di
+uscita: un modello più ricco del necessario si paga e non rende.
 
 E infine i due compressori veri, `zlib` e `lzma`, che sono programmi seri
 scritti da persone serie e non sanno niente di questa sorgente. Trovano
@@ -267,10 +267,9 @@ due anni: Ray Solomonoff, che cercava una teoria dell'induzione
 informazione che non passasse dalla probabilità {cite}`kolmogorov1965three`, e
 Gregory Chaitin, che allora era uno studente {cite}`chaitin1966length`. Il
 nome che è rimasto è quello di mezzo, ed è lo stesso Kolmogorov che nel 1933
-aveva dato alla probabilità i suoi tre assiomi, quelli su cui poggiano i
-richiami di matematica di questo libro: trent'anni dopo averla fondata su basi
-solide, stava cercando un modo di misurare l'informazione che ne facesse a
-meno.
+aveva dato alla probabilità i suoi tre assiomi: trent'anni dopo averla fondata
+su basi solide, stava cercando un modo di misurare l'informazione che ne
+facesse a meno.
 
 `````{tab} Elementare
 
@@ -333,6 +332,9 @@ e si ferma:
 $$
 K_U(x) \;=\; \min\{\, |p| \;:\; U(p) = x \,\}.
 $$
+
+(Questo $K$ è la complessità, e da qui in avanti è l'unico: il $K$ del conto
+sull'informazione del bersaglio era il numero di classi.)
 
 Da qui in avanti si intende la variante *prefix*, cioè si chiede in più che
 nessun programma sia prefisso di un altro (che è come dire che $U$ sa da sola
@@ -433,14 +435,14 @@ deve avere dentro qualcosa che somiglia a una conoscenza del mondo.
 
 Nel 2006 Marcus Hutter ci ha messo i soldi. Il premio che porta il suo nome
 paga chi comprime un ritaglio di Wikipedia meglio di chi l'ha preceduto:
-all'inizio cento megabyte, dal 2020 un miliardo di byte (il file si chiama
-`enwik9`; nella stima di Mahoney, a cui il premio rimanda per la scelta della
-taglia, un gigabyte è all'incirca la lingua che una persona elabora in una
-vita, fra letta, scritta, detta e ascoltata),
-con un montepremi passato da cinquantamila a cinquecentomila euro e cinquemila
-euro per ogni punto percentuale guadagnato. La motivazione dichiarata è la
-tesi di questa pagina: se comprimi il testo meglio dei tuoi predecessori, il
-tuo programma con ogni probabilità è più intelligente dei loro.
+all'inizio cento megabyte, dal 2020 un miliardo di byte, in un file che si
+chiama `enwik9`. Il montepremi è passato da cinquantamila a cinquecentomila
+euro, più cinquemila euro per ogni punto percentuale guadagnato. La taglia non
+è casuale, e il premio rimanda per quella scelta a una stima di Mahoney: un
+gigabyte è all'incirca la lingua che una persona elabora in una vita, fra
+letta, scritta, detta e ascoltata. La motivazione dichiarata è esattamente
+quella tesi: se comprimi il testo meglio dei tuoi predecessori, il tuo
+programma con ogni probabilità è più intelligente dei loro.
 
 Hutter non si è fermato al premio. Insieme a Shane Legg ha proposto una
 **definizione formale di intelligenza** costruita esattamente su questi
@@ -527,10 +529,11 @@ farlo pesare il meno possibile.
 
 Ecco: la roba tanta e in sé inutile è il testo di internet, la cosa poca che
 serve davvero è il compito a cui tieni, e fare un bagaglio solo è il
-pre-addestramento. È una scommessa che nel peggiore dei casi va in pari. Quanto
-ci guadagni è quanto la prima valigia conteneva già della seconda, e non lo
-decidi tu: lo decide il mondo, cioè se davvero il testo scritto dalle persone
-contiene qualcosa della biologia.
+pre-addestramento. Con una valigia fatta alla perfezione sarebbe una scommessa
+che nel peggiore dei casi va in pari; chi la fa davvero perfetto non è, e
+capita che riempia male. Quanto ci guadagni è quanto la prima valigia
+conteneva già della seconda, e non lo decidi tu: lo decide il mondo, cioè se
+davvero il testo scritto dalle persone contiene qualcosa della biologia.
 
 E c'è un secondo pezzo. Chi fa la valigia, qui, è la discesa del gradiente e
 non una persona che ragiona: è il metodo con cui una rete aggiusta a piccoli passi
@@ -593,11 +596,14 @@ $$
 L(x_{1:N} \mid \theta) \;=\; -\sum_{i=1}^{N} \log_2 p_\theta(x_i \mid x_{<i}),
 $$
 
-che per il teorema di codifica di sorgente **è** la lunghezza del file
-compresso: la perdita che si minimizza addestrando e la lunghezza di
-descrizione sono lo stesso numero, ed è la ragione per cui qui si scrivono con
-la stessa lettera. ($L(\cdot)$ è qui una lunghezza in bit, non la dimensione
-di un latente; e $X$ e $Y$ sono stringhe, non matrici: restano tonde.)
+che una **codifica aritmetica** trasforma in un file lungo altrettanto, a meno
+di un paio di bit di arrotondamento: la perdita che si minimizza addestrando e
+la lunghezza di descrizione sono lo stesso numero, ed è la ragione per cui qui
+si scrivono con la stessa lettera. Il teorema di codifica di sorgente da solo
+non basterebbe, perché parla della lunghezza **attesa** e dà una
+disuguaglianza, non un'uguaglianza su una stringa particolare. (Qui
+$L(\cdot)$ è una lunghezza in bit, non la dimensione di un latente; e $X$ e $Y$
+sono stringhe, non matrici: restano tonde.)
 
 Il passaggio che chiude l'argomento va scritto per esteso, perché dalla regola
 della catena non segue da solo: minimizzare $K(X,Y)$ non dice **come** il
@@ -633,9 +639,9 @@ si avvicinano al compressore di Kolmogorov, e quindi meno rimpianto hanno.
 
 ## Il rimpianto, che è la parte che regge tutto
 
-La parola tecnica dell'argomento è **rimpianto**, e conviene isolarla perché è
-quella che mette l'auto-supervisione alla pari col supervisionato, ed è anche
-la più fraintesa.
+La parola tecnica dell'argomento è **rimpianto**. È quella che mette
+l'auto-supervisione alla pari col supervisionato, ed è anche la più
+fraintesa.
 
 Il rimpianto non misura quanto sei bravo: misura **quanta parte del valore
 contenuto nei dati non etichettati ti sei lasciato sfuggire**. Avere rimpianto
@@ -659,12 +665,12 @@ pre-addestramento su dati estranei lasci il modello peggiore di come sarebbe
 partito. Rimpianto basso è la proprietà che si vorrebbe; che una rete ce
 l'abbia nessuno l'ha dimostrato, ed è un'ipotesi, non un risultato.
 
-Ed è anche la risposta all'obiezione che a questo capitolo si fa da sempre, e
-che suona così: e se in quei dati non ci fosse proprio niente? Se le lettere
-uscissero da un'urna, a caso, ogni algoritmo auto-supervisionato fallirebbe, e
-non sarebbe un difetto dell'algoritmo: non c'è niente da imparare. Il
-rimpianto è la quantità che distingue le due cose, cioè «non ho trovato niente
-perché non sono capace» da «non ho trovato niente perché non c'era niente».
+Ed è anche la risposta all'obiezione che si fa da sempre, e che suona così: e
+se in quei dati non ci fosse proprio niente? Se le lettere uscissero da
+un'urna, a caso, ogni algoritmo auto-supervisionato fallirebbe, e non sarebbe
+un difetto dell'algoritmo: non c'è niente da imparare. Il rimpianto è la
+quantità che distingue le due cose, cioè «non ho trovato niente perché non sono
+capace» da «non ho trovato niente perché non c'era niente».
 
 E il rimpianto ha un fratello, cioè la quantità di cui misura lo spreco. Il
 divario fra il comprimere insieme e il comprimere separatamente ha un nome
@@ -684,10 +690,11 @@ solo quando la simulazione è **preclusa** da un collo di bottiglia strutturale.
 L'esempio che Sutskever porta è il passaggio dalle reti ricorrenti al
 transformer: una ricorrente fatica a implementare un transformer perché tutto
 il passato le deve passare attraverso uno stato nascosto di dimensione fissa.
-E aggiunge la conseguenza, che è la cosa interessante per chi legge questo
-libro: con uno stato nascosto abbastanza grande, forse una ricorrente
-tornerebbe competitiva. Sono, alla lettera, i due capitoli sull'attenzione
-lineare e sugli *state space model*, che quella strada la percorrono davvero.
+E aggiunge la conseguenza più interessante: con uno stato nascosto abbastanza
+grande, forse una ricorrente tornerebbe competitiva. Sono, alla lettera, i due
+capitoli sull’{doc}`attenzione lineare </AttenzioneLineare/overview>` e sugli
+{doc}`state space model </StateSpaceModel/overview>`, che quella strada la
+percorrono davvero.
 ```
 
 ## Perché la prova va cercata nelle immagini
@@ -749,14 +756,13 @@ della previsione **più difficile**. E aggiunge che lo stesso sospetto dovrebbe
 valere per i modelli di diffusione, il che, se vero, rende il mistero più
 grande invece che più piccolo.
 
-Una nota sulla fonte, perché è di un tipo che questo libro usa di rado. Quello
-di Berkeley è un intervento parlato, non un articolo sottoposto a revisione:
-non ha una versione scritta da citare per pagina, e le sue formule stanno in
+Una nota sulla fonte, perché è di un tipo che qui si usa di rado. Quello di
+Berkeley è un intervento parlato, non un articolo sottoposto a revisione: non
+ha una versione scritta da citare per pagina, e le sue formule stanno in
 diapositive commentate a voce. Le disuguaglianze però non dipendono da lì: sono
 di Kolmogorov e Solomonoff, e stanno nei testi di riferimento del settore
 {cite}`livitanyi2019kolmogorov`. Quello che l'intervento aggiunge, ed è la
-ragione per cui questa pagina esiste, è il gesto di puntarle sul
-pre-addestramento.
+ragione per cui se ne parla, è il gesto di puntarle sul pre-addestramento.
 
 ## Le prove, e quanto valgono
 
@@ -764,20 +770,21 @@ Fin qui la tesi. Dal 2023 esistono due misure che la mettono alla prova, e
 conviene guardarle da vicino perché dicono cose diverse.
 
 La prima chiede: **un modello di linguaggio, usato come compressore, quanto è
-bravo?** La risposta di un gruppo di DeepMind è: molto, e anche fuori dal
-proprio mestiere {cite}`deletang2024language`. Preso Chinchilla da 70 miliardi
-di parametri, addestrato essenzialmente su testo, e usato come predittore
-dentro un codificatore aritmetico (il congegno che trasforma in bit le
-probabilità che il modello dichiara), il gigabyte di Wikipedia scende
+bravo?** La risposta di un gruppo di DeepMind è: molto, e anche fuori dal proprio
+mestiere {cite}`deletang2024language`. Prendono Chinchilla, settanta miliardi
+di parametri addestrati essenzialmente su testo, e lo mettono a fare il
+predittore dentro un codificatore aritmetico, cioè il congegno che trasforma in
+bit le probabilità che il modello dichiara. Il gigabyte di Wikipedia scende
 all’$8{,}3\%$ della dimensione originale, contro il $48{,}1\%$ di `gzip` alle
-stesse condizioni.
-Fin qui nessuna sorpresa: è testo, ed è il suo mestiere. La sorpresa è che lo
-stesso modello, sulle **immagini** di ImageNet, scende al $48{,}0\%$ dove PNG si
-ferma al $61{,}7\%$, e sull’**audio** di LibriSpeech al $21{,}0\%$ dove FLAC si
-ferma al $30{,}3\%$. Un modello addestrato su testo, e sui cui dati di
-addestramento gli autori scrivono che immagini e suoni non ce n'erano (a meno
+stesse condizioni. Fin qui nessuna sorpresa: è testo, ed è il suo mestiere.
+
+La sorpresa è che lo stesso modello, sulle **immagini** di ImageNet, scende al
+$48{,}0\%$ dove PNG si ferma al $61{,}7\%$, e sull’**audio** di LibriSpeech al
+$21{,}0\%$ dove FLAC si ferma al $30{,}3\%$: un modello addestrato su testo che
+batte i formati progettati apposta per quei due mestieri. E sui dati di
+addestramento gli autori scrivono che immagini e suoni non ce n'erano, a meno
 di qualche pagina che ne avesse codificati in caratteri, cosa che ritengono
-improbabile), batte i formati progettati apposta per quei due mestieri.
+improbabile.
 
 Conviene però sapere com'è fatta quella prova, perché a immaginarla male si
 immagina qualcosa di più clamoroso di quel che è. Sono ritagli da 2048 byte, e
@@ -794,25 +801,28 @@ spiegare: dove non c'è struttura non c'è compressione, per nessuno.
 :class: note
 L'abstract di quell'articolo riporta $43{,}4\%$ per ImageNet e $16{,}4\%$ per
 LibriSpeech, mentre la tabella 1 dello stesso articolo dà $48{,}0\%$ e
-$21{,}0\%$. La differenza è il protocollo, e cambia tutte e due le colonne, non
-solo quella del modello: senza tagliare i dati a blocchi il termine di
-confronto su ImageNet è PNG al $58{,}5\%$ invece che al $61{,}7\%$, quindi il
-divario si stringe da 15,1 punti a 13,7. Questa pagina usa i numeri della
-tabella, che sono i più conservativi e i soli confrontabili riga per riga alle
-stesse condizioni. La conclusione non cambia in nessuna delle due letture; il
-numero sì, e chi rifà il conto ha diritto di sapere quale ha in mano.
+$21{,}0\%$, e i due numeri dell'abstract nel corpo non compaiono da nessuna
+parte. Non è il ritaglio dei dati a spiegarli: il modello legge sempre e
+soltanto blocchi da 2048 byte, quanto gli entra nel contesto, quindi la sua
+colonna è la stessa nelle due letture. Cambiano invece i termini di confronto,
+che senza il ritaglio hanno più contesto da sfruttare e rendono meglio: su
+ImageNet PNG passa dal $61{,}7\%$ al $58{,}5\%$, e con quello accanto il divario
+si allarga da 13,7 punti a 15,1. Qui si usano i numeri della tabella, che sono
+i più conservativi e i soli confrontabili riga per riga alle stesse
+condizioni. La conclusione non cambia in nessuna delle due letture; il numero
+sì, e chi rifà il conto ha diritto di sapere quale ha in mano.
 ```
 
 La seconda misura chiede l'inverso: **fra modelli, chi comprime meglio è anche
 più bravo?** Quattro ricercatori fra la HKUST e Tencent hanno preso trentuno
-modelli pubblici di
-organizzazioni diverse e ha confrontato, per ciascuno, quanto comprime un
-corpus esterno (prosa presa dal web per la conoscenza, codice Python per la
-programmazione, articoli di matematica per la matematica) e quanto va bene su
-dodici prove nelle stesse tre aree {cite}`huang2024compression`. Il legame è
-quasi una retta: il coefficiente di correlazione fra bit per carattere e
-punteggio medio vale circa $-0{,}93$ complessivamente e sta fra $-0{,}94$ e
-$-0{,}95$ dentro ciascuna delle tre aree. Quel coefficiente vive fra $-1$ e
+modelli pubblici di organizzazioni diverse. Per ciascuno hanno confrontato due
+cose: quanto comprime un corpus esterno (prosa presa dal web per la conoscenza,
+codice Python per la programmazione, articoli di matematica per la matematica)
+e quanto va bene su dodici prove nelle stesse tre aree
+{cite}`huang2024compression`. Il legame è quasi una retta: il coefficiente di
+correlazione fra bit per carattere e punteggio medio vale circa $-0{,}93$
+complessivamente, e area per area $-0{,}935$ per la conoscenza, $-0{,}937$ per
+il codice e $-0{,}953$ per la matematica. Quel coefficiente vive fra $-1$ e
 $+1$ e tocca gli estremi solo quando i punti stanno esattamente su una retta,
 quindi $-0{,}93$ è un legame forte; forte non vuol dire esatto, perché il suo
 quadrato dice che resta fuori circa un settimo della variabilità dei punteggi.
@@ -829,12 +839,12 @@ una definizione di peso.
 
 ## Chi paga il vocabolario
 
-Adesso l'obiezione seria, che è anche il punto in cui questa pagina si separa
+Adesso l'obiezione seria, che è anche il punto in cui l'argomento si separa
 dalle sue versioni entusiaste.
 
 Un compressore va spedito insieme al file, altrimenti chi riceve non sa
-decomprimere. Nei conti di poche righe fa il modello non è stato contato, e
-quelli sono «bit per carattere» a modello dato. Se lo si conta, la scena cambia in
+decomprimere. Nei conti visti finora il modello non è stato contato, e quelli
+sono «bit per carattere» a modello dato. Se lo si conta, la scena cambia in
 modo drammatico.
 
 `````{tab} Elementare
@@ -993,7 +1003,7 @@ cosa risolta.
 Gli altri quattro sono quelli soliti, e uno lo abbiamo appena finito di
 guardare.
 
-**La contabilità**, che è tutta la sezione qui sopra: senza specificare chi
+**La contabilità**, che è tutto «Chi paga il vocabolario»: senza specificare chi
 paga il modello, «comprime meglio» non è un'affermazione con un valore di
 verità.
 
@@ -1046,35 +1056,32 @@ funzioni è, prima di tutto, un'informazione su dove abitiamo.
   impara a memoria gli esempi ha lo stesso problema.
 - **Prevedere bene e comprimere bene sono la stessa cosa**: chi sa che cosa
   aspettarsi può scrivere le sorprese invece delle parole, e le sorprese sono
-  poche. Il libro l'aveva già stabilito nei richiami di matematica; qui si parte
-  da lì.
+  poche. Era già stabilito nei richiami di matematica.
 - Per ogni sorgente esiste un **fondo**: nessun compressore, in media, può
-  spendere meno di così, e ci arriva solo chi ha capito com'è fatta la
-  sorgente. Nella lingua a quattro lettere ci arriva il modello che guarda la
-  lettera precedente; quello che conta solo le frequenze non guadagna niente, e
-  due compressori veri come `zlib` e `lzma` restano a metà strada.
-- Un modello **più complicato del necessario paga e non rende**: quello che
-  ricorda due lettere invece di una fa peggio di quello che ne ricorda una. È
-  il rasoio di Occam, misurato in bit.
-- Da qui la tesi: **comprimere bene è capire**. C'è chi ci ha messo dei soldi,
-  con un premio da cinquecentomila euro per chi comprime Wikipedia meglio dei
+  spendere meno di così, e ci arriva solo chi ha la forma giusta per ospitarne
+  la regola. Nella lingua a quattro lettere ci arriva il modello che guarda la
+  lettera precedente; quello che ne ricorda due **paga e non rende**, e `zlib` e
+  `lzma`, che cercano ripetizioni, restano a metà strada. È il rasoio di Occam,
+  misurato in bit.
+- Da qui la tesi: **comprimere bene è capire**. C'è chi ci ha messo
+  cinquecentomila euro di premio per chi comprime Wikipedia meglio dei
   predecessori, e chi l'ha usata per spiegare perché il pre-addestramento
   funziona.
-- La garanzia che se ne ricava non è «funzionerà», è **«non ho sprecato
-  niente»**: nessuno, con un compressore migliore del mio, avrebbe cavato da
-  quei dati più aiuto di quanto ne ho cavato io. Vale anche quando i dati non
-  contengono niente di utile, ed è per questo che è una garanzia seria.
+- La garanzia non è «funzionerà», è **«non ho sprecato niente»**: nessuno, con
+  un compressore migliore del mio, avrebbe cavato da quei dati più aiuto di
+  quanto ne ho cavato io. Vale anche quando i dati non contengono niente di
+  utile, ed è per questo che è seria; vale però per la valigia fatta alla
+  perfezione, e che una rete la faccia così si spera, non si è dimostrato.
 - Le prove ci sono: un modello di linguaggio comprime immagini e suoni meglio
-  dei formati fatti apposta, pur non avendone mai visti; e fra trentun modelli
-  diversi, chi comprime meglio va meglio anche a scuola. La prova cercata
-  apposta è del 2020: una rete addestrata solo a **indovinare il pixel dopo**
-  impara da sola a riconoscere le cose che ci sono nelle figure, e più diventa
-  brava a indovinare, meglio le riconosce.
-- **Ma bisogna guardare chi paga il dizionario.** Se al file compresso si
-  aggiunge il modello che serve a leggerlo, quel modello da settanta miliardi
-  di parametri non ha rimpicciolito Wikipedia: l'ha fatta crescere di
-  centoquaranta volte. Il conto torna solo se il modello si costruisce mentre si
-  legge, senza spedirlo mai.
+  dei formati fatti apposta, pur non avendone mai visti, e fra trentun modelli
+  chi comprime meglio va meglio anche a scuola. La prova cercata apposta è del
+  2020: una rete addestrata solo a **indovinare il pixel dopo** impara da sola a
+  riconoscere quello che c'è nelle figure, e più ci diventa brava, meglio le
+  riconosce.
+- **Ma bisogna guardare chi paga il dizionario.** Contando anche il modello che
+  serve a leggerlo, quello da settanta miliardi di parametri non ha
+  rimpicciolito Wikipedia: l'ha fatta crescere di centoquaranta volte. Il conto
+  torna solo se il modello si costruisce mentre si legge, senza spedirlo mai.
 - E resta un punto scomodo: pensare è **dimenticare**, mentre qui si è parlato
   sempre di compressione che non perde niente. Su questo la tesi non ha ancora
   una risposta.
@@ -1118,6 +1125,10 @@ funzioni è, prima di tutto, un'informazione su dove abitiamo.
   vuol dire che nessun compressore avrebbe estratto da $X$ più aiuto per $Y$.
   La garanzia vale anche quando $X$ è inutile (il caso limite dichiarato è la
   distribuzione uniforme), ed è ciò che la mette alla pari col supervisionato.
+  È però una proprietà del compressore **ideale**: che una rete cercata con la
+  discesa del gradiente abbia rimpianto basso è un'ipotesi, non un risultato, e
+  un pre-addestramento su dati estranei può lasciare il modello peggiore del
+  punto di partenza.
 - **Convalida cercata apposta**: sui modelli di linguaggio la tesi non è
   falsificabile, perché il loro comportamento si spiega anche come semplice
   distribuzione condizionata del testo. Di qui iGPT
@@ -1132,8 +1143,9 @@ funzioni è, prima di tutto, un'informazione su dove abitiamo.
   {cite}`deletang2024language`: `enwik9` $8{,}3\%$, ImageNet $48{,}0\%$ (PNG
   $61{,}7\%$), LibriSpeech $21{,}0\%$ (FLAC $30{,}3\%$), dati casuali
   $100{,}8\%$. Su 31 modelli e 12 prove, correlazione di Pearson fra bit per
-  carattere e punteggio medio pari a $-0{,}93$ complessiva e fra $-0{,}94$ e
-  $-0{,}95$ per area {cite}`huang2024compression`.
+  carattere e punteggio medio pari a $-0{,}93$ complessiva, e $-0{,}935$,
+  $-0{,}937$ e $-0{,}953$ per conoscenza, codice e matematica
+  {cite}`huang2024compression`.
 - **La contabilità decide il verdetto.** Il conto a modello dato non è una
   lunghezza di descrizione: contando i parametri, lo stesso Chinchilla 70B passa
   da $8{,}3\%$ a $14\,008{,}3\%$. Il codice **prequenziale** non trasmette i
@@ -1165,10 +1177,10 @@ funzioni è, prima di tutto, un'informazione su dove abitiamo.
 
 `````
 
-Questa sezione ha dato all'auto-supervisione la sua giustificazione più
-ambiziosa: non un espediente per quando le etichette finiscono, ma il modo in
-cui si costruisce una descrizione corta del mondo, con una teoria alle spalle
-che ha sessant'anni. Resta però una cosa fuori dal quadro, e non è piccola:
+L'auto-supervisione ha così la sua giustificazione più ambiziosa: non un
+espediente per quando le etichette finiscono, ma il modo in cui si costruisce
+una descrizione corta del mondo, con una teoria alle spalle che ha
+sessant'anni. Resta però una cosa fuori dal quadro, e non è piccola:
 comprimere un corpus è un'operazione su dati che ci sono già. Non dice niente
 su che cosa fare quando i dati bisogna andarseli a prendere agendo, e
 sbagliando, e ricevendo in cambio un premio o un castigo. Nell'immagine di Yann

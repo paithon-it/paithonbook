@@ -21,13 +21,15 @@ li mostra impilati uno sotto l'altro sullo stesso asse del tempo.
 
 ```{figure} ../figures/serie-decomposizione.svg
 :name: fig-serie-decomposizione
-:alt: Quattro pannelli impilati che condividono l'asse del tempo. Dall'alto la serie osservata con tendenza e oscillazione, poi il trend come linea liscia crescente, poi la stagionalità come onda periodica regolare, infine il residuo come piccole barrette attorno allo zero.
+:alt: Quattro pannelli impilati che condividono l'asse del tempo. Dall'alto: la serie osservata con tendenza e oscillazione; il trend, una linea liscia crescente; la stagionalità, un'onda periodica regolare; il residuo, piccole barrette attorno allo zero. Ogni pannello è disegnato alla propria scala verticale.
 :width: 100%
 
 La serie osservata (in alto) come somma di tre parti: una **tendenza** di fondo
 (in inglese *trend*, ed è il nome che si usa anche in italiano), una
 **stagionalità** che si ripete a intervalli regolari e un **residuo**
-irregolare, che oscilla attorno allo zero.
+irregolare, che oscilla attorno allo zero. I tre pannelli in basso sono
+disegnati ciascuno alla propria scala, per far vedere la forma di ognuno: nella
+serie in alto la stagione pesa circa tre volte e mezzo il residuo.
 ```
 
 `````{tab} Elementare
@@ -68,16 +70,16 @@ una percentuale, quindi cresce con la serie (proprio come i passeggeri delle
 linee aeree). Un modello moltiplicativo si linearizza prendendo il logaritmo,
 $\log x_t = \log T_t + \log S_t + \log R_t$, che riporta al caso additivo.
 
-Attenzione al ritorno, perché è il passo che si dimentica: se si modella
-$\log x_t$ e poi si esponenzia la previsione, quello che si ottiene è la
-**mediana** di $x_{T+h}$, non la media, perché l'esponenziale non commuta col
-valore atteso ($\mathbb{E}[e^X] = e^{\mu+\sigma^2/2}$ per una gaussiana). Con
-$\sigma = 0{,}3$ la differenza è del $4{,}4\%$ verso il basso, e cresce come
-$e^{\sigma^2/2}$. Non è sempre un errore: se si punta alla mediana (ed è il caso
-se si giudica col MAE, o con la *pinball loss* al quantile $0{,}5$ della sezione
-seguente) esponenziare e basta è esattamente giusto; se serve la media, perché
-si sommano le previsioni di più prodotti o perché si giudica con l'RMSE, la
-correzione va applicata {cite}`hyndman2021forecasting`.
+Attenzione al ritorno, perché è il passo che si dimentica: se si modella $\log
+x_t$ e poi si esponenzia la previsione, quello che si ottiene è la **mediana**
+di $x_{T+h}$, non la media, perché l'esponenziale non commuta col valore atteso
+($\mathbb{E}[e^X] = e^{\mu+\sigma^2/2}$ per una gaussiana). Con $\sigma =
+0{,}3$ la differenza è del $4{,}4\%$ verso il basso, e il fattore di correzione
+vale $e^{\sigma^2/2}$. Non è sempre un errore: se si punta alla mediana (ed è
+il caso se si giudica col MAE, o con la *pinball loss* al quantile $0{,}5$
+della sezione seguente) esponenziare e basta è esattamente giusto; se serve la
+media, perché si sommano le previsioni di più prodotti o perché si giudica con
+l'RMSE, la correzione va applicata {cite}`hyndman2021forecasting`.
 
 Le stime pratiche di $T_t$, $S_t$, $R_t$ si ottengono con **medie mobili
 centrate** (ogni istante sostituito dalla media dei suoi vicini: la
@@ -200,11 +202,11 @@ dove è arrivato e non da dove sarebbe dovuto essere.
 Il camminare alla cieca ha un nome, e conviene saperlo perché è quello che si
 trova nei manuali e nel codice: la **passeggiata aleatoria** (*random walk*),
 cioè il processo $x_t = x_{t-1} + \varepsilon_t$, dove ogni valore è il
-precedente più una scossa e nient'altro. Riconoscerla è la stessa procedura di
-questa sezione, letta all'incontrario: se la serie non è stazionaria ma la sua
-differenza prima lo è **e** non ha più nessuna autocorrelazione (l'ACF della
-differenza è piatta), allora quello che resta dopo aver tolto il livello è puro
-rumore, e la serie era una passeggiata aleatoria.
+precedente più una scossa e nient'altro. Riconoscerla è la stessa prova della
+differenziazione, letta all'incontrario: se la serie non è stazionaria ma la
+sua differenza prima lo è **e** non ha più nessuna autocorrelazione, allora
+quello che resta dopo aver tolto il livello è puro rumore, e la serie era una
+passeggiata aleatoria.
 
 Sapere di averne una davanti serve soprattutto a non farsi ingannare da un
 grafico. La previsione a un passo di una passeggiata aleatoria è, per
@@ -236,14 +238,15 @@ c'era: l'abbiamo fabbricata noi differenziando. Un modello che la guardi si
 metterà a spiegarla.
 
 Fatta la prova al computer (trecento punti di retta più rumore, ripetuta su
-venti serie fatte allo stesso modo), i due numeri escono sempre gli stessi. Il
-primo: fra un giorno e il successivo la somiglianza vale $-0{,}50$, cioè
-fortemente negativa, ed è precisamente l'effetto appena descritto. Il secondo:
-gli scarti della differenziata, elevati al quadrato e mediati, sono il **doppio**
-di quelli del rumore che c'era dentro. Il doppio esatto, e non una quantità a
-caso, perché ogni giorno adesso si porta dentro due scossoni invece di uno, e
-quando si sommano due cose che non hanno niente a che vedere fra loro a sommarsi
-sono i loro quadrati.
+venti serie fatte allo stesso modo), i due numeri escono in media sempre
+quelli. Il primo: fra un giorno e il successivo la somiglianza vale $-0{,}50$
+(le singole serie ballano fra $-0{,}41$ e $-0{,}59$), cioè fortemente negativa,
+ed è precisamente l'effetto appena descritto. Il secondo: gli scarti della
+differenziata, elevati al quadrato e mediati, sono il **doppio** di quelli del
+rumore che c'era dentro. Il doppio esatto, e non una quantità a caso, perché
+ogni giorno adesso si porta dentro due scossoni invece di uno, e quando si
+sommano due cose che non hanno niente a che vedere fra loro a sommarsi sono i
+loro quadrati.
 
 La cura del primo caso si chiama **detrendizzazione**: si tira la retta che
 segue la salita e si tengono, di ogni punto, gli scarti da quella retta. È
@@ -461,15 +464,14 @@ sorprese future messe a zero: la risposta è il giorno normale, e lo stesso
 numero per tutti i giorni che seguono. Sul grafico esce una linea piatta.
 
 Piatta non vuol dire ignorante: l'altezza a cui sta è la media degli incassi
-passati, che il modello ha calcolato sul registro, e infatti è il numero che
-stampa per primo qui sotto. Vuol dire che da venerdì in poi il modello risponde
-sempre quella, e chiunque avrebbe potuto rispondere lo stesso guardando la
-media. Il modello non si è rotto: ha finito la memoria, e la memoria dura
-quanti giorni gli si è detto di farla durare.
+passati, che il modello ha calcolato sul registro. Vuol dire che da venerdì in
+poi il modello risponde sempre quella, e chiunque avrebbe potuto rispondere lo
+stesso guardando la media. Il modello non si è rotto: ha finito la memoria, e
+la memoria dura quanti giorni gli si è detto di farla durare.
 
 Chi a venerdì ci vuole arrivare glielo chiede due giorni per volta, e appena gli
 incassi veri arrivano glieli rimette sotto, così ogni volta riparte da qualcosa
-che è successo davvero. Funziona per chi previene la settimana giorno per
+che è successo davvero. Funziona per chi prevede la settimana giorno per
 giorno, mentre i giorni passano; a chi oggi deve consegnare la previsione di
 venerdì non serve, perché mercoledì non è ancora successo.
 
@@ -677,12 +679,12 @@ appaiato misura ($-0{,}04$, più basso in dieci serie su dodici). Chi consegna
 quaranta passi di previsione da un MA(2) sta consegnando, per il novantacinque
 per cento, la linea di base.
 
-Chiederli due per volta cambia registro: $1{,}49$, cioè un terzo in meno della
-linea piatta, con uno scarto di $-0{,}99$ che è più basso in **tutte e dodici**
-le serie. Vale la pena guardare i due margini d'errore accanto alle medie, che
-sono la ragione per cui questi due confronti si leggono in modo diverso: la
-differenza fra $2{,}45$ e $2{,}49$ è piccola ma sistematica, quella fra
-$2{,}45$ e $1{,}49$ è grossa e sistematica, e nessuna delle due si sarebbe
+Chiederli due per volta cambia registro: $1{,}49$, cioè due quinti in meno
+della linea piatta, con uno scarto di $-0{,}99$ che è più basso in **tutte e
+dodici** le serie. Vale la pena guardare i due margini d'errore accanto alle
+medie, che sono la ragione per cui questi due confronti si leggono in modo
+diverso: la differenza fra $2{,}45$ e $2{,}49$ è piccola ma sistematica, quella
+fra $2{,}45$ e $1{,}49$ è grossa e sistematica, e nessuna delle due si sarebbe
 potuta chiamare così guardando una serie sola.
 
 ## Scegliere l'ordine, e poi verificare i residui
@@ -794,9 +796,9 @@ esattamente la soglia sotto la quale l'AIC non distingue niente. Il secondo: il
 $2k$ è una correzione **asintotica**, e in campione corto va sostituita con
 quella esatta, l’**AICc** $= \mathrm{AIC} + \frac{2k(k+1)}{n-k-1}$, che è
 quella che i manuali usano di default sugli ARIMA
-{cite}`hyndman2021forecasting`. Con seicento osservazioni la differenza è di
-sei centesimi; con quaranta, e sei parametri, supera le due unità e cambia la
-scelta.
+{cite}`hyndman2021forecasting`. Con seicento osservazioni e quei quattro
+parametri la differenza è di sette centesimi; con quaranta, e sei parametri,
+supera le due unità e cambia la scelta.
 
 Una nota che vale più della formula: **l'AIC è una quantità relativa**. Il suo
 valore assoluto non significa nulla, contano solo le differenze, e differenze
@@ -1050,9 +1052,10 @@ vuol dire solo che al posto di un numero per volta il modello tratta una fila
 di numeri per volta, una casella per ciascuna serie.
 
 Il VAR conviene a una condizione: che quelle serie **si aiutino davvero** a
-prevedersi. Se non lo fanno, il modello resta lecito, ma non compra previsioni
-migliori, e quei parametri, che crescono col quadrato del numero di serie, li
-paghi lo stesso.
+prevedersi. Se non lo fanno il modello resta lecito, e una cosa continua a
+darla, cioè quanto le serie possono sbagliare *insieme*; quello che non compra
+sono previsioni migliori, e quei parametri, che crescono col quadrato del
+numero di serie, li paghi lo stesso.
 
 Esiste un test per verificarlo, e prende il nome dall'economista Clive Granger.
 Il nome, però, è la cosa più sbagliata che ha: si dice «causalità di Granger»,
@@ -1130,10 +1133,10 @@ soltanto quella. Due serie guidate da una terza causa comune non osservata si
 «Granger-causano» a vicenda allegramente; e una causa vera che agisce più in
 fretta del passo di campionamento non viene rilevata affatto. Il test dice «il
 passato di $A$ aiuta a prevedere $B$», che è un'affermazione sui dati, non sul
-mondo. La **scala della causalità** di Judea Pearl, quella del capitolo di
-matematica, serve esattamente a tenere separate queste due cose: il gradino su
-cui vive un test di Granger è il primo, quello delle associazioni fra dati
-osservati.
+mondo. La **scala della causalità** di Judea Pearl, quella della {doc}`sezione
+su probabilità e statistica </Matematica/probabilita-statistica>`, serve
+esattamente a tenere separate queste due cose: il gradino su cui vive un test
+di Granger è il primo, quello delle associazioni fra dati osservati.
 
 `````
 
@@ -1160,8 +1163,9 @@ Il conto non chiede di tenere il registro di tutti i giorni passati: basta un
 numero, la stima di ieri, che ogni sera si sposta un poco verso quello che è
 appena successo. Quanto poco lo decide una manopola. Girata tutta da un lato, il
 metodo insegue ogni sussulto e dimentica in fretta; tutta dall'altro, è lento a
-cambiare idea. Messa a 30 su 100, la manopola dà a ieri un peso di 30,
-all'altro ieri di 21, al giorno prima di quasi 15, e così a scendere.
+cambiare idea. Messa a 30 su 100, la manopola dà a oggi un peso
+di 30, e a ogni passo indietro il settanta per cento del precedente: 21, poi
+quasi 15, e così a scendere.
 
 La versione base tiene conto solo del **livello** (dove sta la serie ora). Ma se
 la serie sale con costanza, ti serve anche una stima di *quanto* sale: aggiungi
@@ -1214,16 +1218,17 @@ s_t &= \gamma\,(x_t - \ell_{t-1} - b_{t-1}) + (1-\gamma)\,s_{t-m},
 \hat{x}_{t+h} = \ell_t + h\,b_t + s_{t+h-m(k+1)},
 $$
 
-dove $k = \lfloor (h-1)/m \rfloor$: l'indice stagionale ricicla sempre
-l'ultimo ciclo stimato, così anche oltre un periodo intero ($h > m$) la
-previsione non riferisce mai stagioni non ancora osservate. I tre fattori
-$\alpha,\beta,\gamma \in (0,1)$ regolano quanto in fretta livello,
-trend e stagionalità si adeguano ai dati nuovi (qui $\gamma$ è un fattore di
-lisciamento, non l'autocovarianza $\gamma(k)$ dell'ACF di poco fa: è la
-notazione consolidata di questa famiglia, e le due cose non hanno niente a che
-vedere). Questi metodi hanno una veste
-moderna nei modelli **ETS** (*Error, Trend, Seasonal*) in forma spazio-stato,
-che aggiungono un'interpretazione probabilistica e intervalli di previsione
+dove $k = \lfloor (h-1)/m \rfloor$: l'indice stagionale ricicla sempre l'ultimo
+ciclo stimato, così anche oltre un periodo intero ($h > m$) la previsione non
+riferisce mai stagioni non ancora osservate. I tre fattori
+$\alpha,\beta,\gamma$ stanno fra $0$ e $1$, con il vincolo in più $\gamma \le
+1-\alpha$ che questa parametrizzazione porta con sé, e regolano quanto in
+fretta livello, trend e stagionalità si adeguano ai dati nuovi (qui $\gamma$ è
+un fattore di lisciamento, non l'autocovarianza $\gamma(k)$ dell'ACF di poco
+fa: è la notazione consolidata di questa famiglia, e le due cose non hanno
+niente a che vedere). Questi metodi hanno una veste moderna nei modelli **ETS**
+(*Error, Trend, Seasonal*) in forma spazio-stato, che aggiungono
+un'interpretazione probabilistica e intervalli di previsione
 {cite}`hyndman2021forecasting`.
 
 `````
@@ -1249,9 +1254,9 @@ diventa una conseguenza di due incertezze dichiarate.
 
 `````{tab} Elementare
 
-Il magazzino di un ricambista tiene ottomila codici, e per ciascuno ci sono due
-numeri che dicono quanti pezzi ci sono. Il primo lo dà il gestionale, cioè il
-programma che registra i movimenti: ieri erano quaranta, oggi ne sono usciti
+Il magazzino di un ricambista tiene ottomila articoli, e per ciascuno ci sono
+due numeri che dicono quanti pezzi ci sono. Il primo lo dà il gestionale, cioè
+il programma che registra i movimenti: ieri erano quaranta, oggi ne sono usciti
 sei ed è arrivato un bancale da dieci, quindi oggi sono quarantaquattro. Il
 secondo lo dà il magazziniere che, ogni tanto, va allo scaffale e li conta. Il
 conto dà quarantuno. Quei pezzi che ci sono davvero, e che nessuno dei due
@@ -1271,16 +1276,17 @@ lo decide il confronto fra i due margini di errore, quello del gestionale e
 quello del conteggio. Se il magazziniere è preciso e il gestionale è vecchio di
 tre settimane, ci si sposta quasi tutto sul conto; se il conto è stato fatto di
 corsa e il gestionale è stato aggiornato ieri, ci si sposta appena. La
-proporzione con cui ci si sposta ha un nome, **guadagno**, e si ricava dai due
-margini: si fa il quadrato di ciascuno, perché è così che due errori
-indipendenti si mettono insieme (si sommano i quadrati, come i cateti di un
-triangolo rettangolo), e si guarda quanto pesa il quadrato del gestionale sul
-totale. Con un margine di tre pezzi per il gestionale e di uno per il
-conteggio: nove e uno, cioè nove parti su dieci in tutto, guadagno nove
-decimi. La sorpresa, cioè i quarantuno contati meno i quarantaquattro previsti,
-vale meno tre, e nove decimi di meno tre fanno meno due virgola sette: sulla
-scheda va quarantuno virgola tre. Come conteggio di pezzi un numero con la
-virgola non esiste; come stima sì, ed è quello che si sta scrivendo.
+proporzione con cui ci si sposta ha un nome preso dall'ingegneria,
+**guadagno**, e si ricava dai due margini: si fa il quadrato di ciascuno,
+perché è così che due errori indipendenti si mettono insieme (si sommano i
+quadrati, come i cateti di un triangolo rettangolo), e si guarda quanto pesa il
+quadrato del gestionale sul totale. Con un margine di tre pezzi per il
+gestionale e di uno per il conteggio: nove e uno, cioè nove parti su dieci in
+tutto, guadagno nove decimi. La sorpresa, cioè i quarantuno contati meno i
+quarantaquattro previsti, vale meno tre, e nove decimi di meno tre fanno meno
+due virgola sette: sulla scheda va quarantuno virgola tre. Come conteggio di
+pezzi un numero con la virgola non esiste; come stima sì, ed è quello che si
+sta scrivendo.
 
 E non è una via di mezzo ragionevole fra tante. Se i due margini sono
 dichiarati onestamente, quella proporzione è la sola che rende lo sbaglio più
@@ -1288,56 +1294,52 @@ piccolo possibile **sul lungo periodo**: su una singola giornata può capitare
 che spostarsi un po’ di più o un po’ di meno sarebbe stato più fortunato, ma su
 mille giornate nessun'altra proporzione fa meglio.
 
-Fatto questo, c'è un secondo numero da aggiornare, ed è quello che rende la
-faccenda un ciclo invece di una formula: il margine di quello che si è appena
-scritto. Dopo un conteggio si sa di più di prima, quindi il margine si stringe,
-e nell'esempio passa da tre pezzi a circa uno; più era preciso il conteggio,
-più si stringe. Poi ricomincia il giro: si prevede il giorno dopo, e nel
-prevedere il margine si allarga di nuovo, perché un altro giorno di rotture non
-registrate è passato. Il ciclo è sempre lo stesso, tre mosse: prevedi, guarda,
-correggi in proporzione a quanto ti fidi. Ed è per questo che si chiama filtro:
-lascia passare quello che nella misura è informazione e trattiene quello che è
-rumore.
+Fatto questo, c'è un secondo numero da aggiornare: il margine di quello che si
+è appena scritto. Dopo un conteggio si sa di più di prima, quindi il margine si
+stringe, e nell'esempio passa da tre pezzi a circa uno; più era preciso il
+conteggio, più si stringe. Poi ricomincia il giro: si prevede il giorno dopo, e
+nel prevedere il margine si allarga di nuovo, perché un altro giorno di rotture
+non registrate è passato. Il ciclo è sempre lo stesso, tre mosse: prevedi,
+guarda, correggi in proporzione a quanto ti fidi. Ed è per questo che si chiama
+filtro: lascia passare quello che nella misura è informazione e trattiene
+quello che è rumore.
 
-Qui succede la cosa interessante, e si vede su un codice lento, di quelli che
-stanno fermi sullo scaffale per mesi. Lì il gestionale non ha movimenti da
-registrare, quindi la previsione è semplicemente «oggi come ieri»; e se i due
-margini restano gli stessi giorno dopo giorno, il guadagno smette di cambiare e
-si assesta su un valore fisso. La regola diventa: la stima nuova è un pezzetto
-del conto di oggi più tutto il resto della stima di ieri. Che è, parola per
-parola, il lisciamento esponenziale. E la sua manopola non era una questione di
-gusto: la decide il confronto fra quanto si muove la cosa che si vuole
-conoscere e quanto sbaglia lo strumento che la guarda.
+Su un articolo lento, di quelli che stanno fermi sullo scaffale per mesi, il
+gestionale non ha movimenti da registrare, quindi la previsione è semplicemente
+«oggi come ieri»; e se i due margini restano gli stessi giorno dopo giorno, il
+guadagno smette di cambiare e si assesta su un valore fisso. La regola diventa:
+la stima nuova è un pezzetto del conto di oggi più tutto il resto della stima
+di ieri. Che è, parola per parola, il lisciamento esponenziale. E la sua
+manopola non era una questione di gusto: la decide il confronto fra quanto si
+muove la cosa che si vuole conoscere e quanto sbaglia lo strumento che la
+guarda.
 
-I modi di sbagliare sono due, e prima di elencarli va detto che cosa conta
-davvero: il confronto fra i due margini, non la loro grandezza. Dichiararli
-tutti e due doppi non cambia una virgola delle stime, cambia solo l'ampiezza
-che si annuncia attorno a esse. Sbagliare il confronto, invece, si paga.
-Dichiarare il magazziniere più preciso di quanto sia vuol dire riscrivere la
-scheda a ogni conteggio, inseguendo i suoi errori; dichiararlo meno preciso
-vuol dire smettere di ascoltarlo, e allontanarsi piano piano dalla realtà senza
-accorgersene. Non c'è modo di scoprirlo guardando la scheda, e si scopre invece
-tenendo il registro delle sorprese: se i due margini sono dichiarati bene, le
-sorprese devono risultare grandi più o meno quanto quei margini promettevano.
-Sorprese sistematicamente più piccole vogliono dire margini troppo generosi,
-sistematicamente più grandi il contrario.
+Quello che conta, nel dosaggio, è quale dei due margini è più grande.
+Raddoppiali tutti e due e sulla scheda finisce lo stesso numero di prima:
+cambia solo la forchetta che le si scrive accanto. Sbagliare il confronto,
+invece, si paga, e in due modi opposti. Se il magazziniere lo si crede più
+preciso di quanto sia, la scheda viene riscritta a ogni conteggio e insegue i
+suoi errori; se lo si crede meno preciso, lo si smette di ascoltare, e la
+scheda si allontana dal magazzino senza che nessuno se ne accorga. Dalla scheda
+non si vede, e si vede dal registro delle sorprese: con due margini onesti le
+sorprese vengono grandi più o meno quanto quei margini promettevano, e non
+sistematicamente più piccole o più grandi.
 
-Resta un limite, ed è quello che manda fuori strada. Tutto il ragionamento
-regge se la previsione si fa sommando (ieri più gli arrivi meno le uscite) e se
-gli errori sono sparsi attorno allo zero, cioè se sbagliano tanto in eccesso
-quanto in difetto. Se qualcuno si porta via i pezzi, gli errori sbagliano
-sempre nello stesso verso, e nessun dosaggio fra i due numeri lo aggiusta:
-quello è un modello sbagliato, e va cambiato il modello. E c'è un secondo caso
-in cui una stima sola non basta, diverso dal primo: il bancale di stamattina o
-è arrivato o non è arrivato, quindi i pezzi sono quaranta oppure cinquanta.
-Scrivere quarantacinque con un margine largo è una bugia comoda, perché
-quarantacinque non è mai stato possibile. Lì si cambia arnese e si tiene una
-nuvola di ipotesi, mille schede diverse; ogni scheda si porta avanti da sola, e
-quando arriva il conteggio si dà più peso a quelle che lo avevano azzeccato,
-buttando via le peggiori e duplicando le migliori. Si chiama filtro a
-particelle, e il suo prezzo è tutto lì: quante schede servono. Per una
-grandezza sola ne bastano mille; per dieci grandezze insieme ne servono così
-tante che la strada si richiude.
+Tutto questo regge se la previsione si fa sommando (ieri più gli arrivi meno le
+uscite) e se gli errori sono sparsi attorno allo zero, cioè se sbagliano tanto
+in eccesso quanto in difetto. Se qualcuno si porta via i pezzi, gli errori
+sbagliano sempre nello stesso verso, e nessun dosaggio fra i due numeri lo
+aggiusta: quello è un modello sbagliato, e va cambiato il modello. E c'è un
+secondo modo di uscire di strada: il bancale di stamattina o è arrivato o non è
+arrivato, quindi i pezzi sono quaranta oppure cinquanta. Scrivere
+quarantacinque con un margine largo è una bugia comoda, perché quarantacinque
+non è mai stato possibile. Lì si cambia arnese e si tiene una nuvola di
+ipotesi, mille schede diverse; ogni scheda si porta avanti da sola, e quando
+arriva il conteggio si dà più peso a quelle che lo avevano azzeccato, buttando
+via le peggiori e duplicando le migliori. Si chiama filtro a particelle, e il
+suo prezzo è tutto lì: quante schede servono. Per una grandezza sola ne bastano
+mille; per dieci grandezze insieme ne servono così tante che la strada si
+richiude.
 
 `````
 
@@ -1522,7 +1524,7 @@ $0{,}25$, $0{,}23$) e continua a scendere fino ad assestarsi su $0{,}2$, che è
 esattamente il valore che si ricava dalle due larghezze dichiarate. Da lì in
 poi il filtro e il lisciamento esponenziale con la manopola su venti centesimi
 producono le stesse stime: al centesimo passo la differenza è
-$0{,}0000000002$, e la seconda riga stampata dice da dove viene, perché è
+$0{,}0000000002$, e il numero stampato accanto dice da dove viene, perché è
 $0{,}8$ elevato a cento. Le due ricorsioni partono da punti diversi, e la
 distanza fra loro si spegne moltiplicandosi per $0{,}8$ a ogni passo, ed è la
 memoria dell'inizio che si esaurisce, non l'arrotondamento del calcolatore.
@@ -1539,9 +1541,10 @@ dichiarandola venticinque volte meno precisa sale a $0{,}6819$, perché smette
 di ascoltarla. Quale dei due sia peggiore dipende dalla serie e non si decide
 su un esempio solo; quello che si decide è che a sbagliare di venticinque volte
 si perde metà del guadagno e si resta comunque sotto lo $0{,}9752$ della misura
-grezza. Sbagliando di mille il filtro peggiora la misura invece di migliorarla,
-e il verso sordo resta il più insidioso, perché produce una curva liscia e
-convincente che si allontana dalla realtà con calma.
+grezza. È il verso sordo a peggiorare per primo, e a sbagliare di mille supera
+la misura grezza ($1{,}14$ contro $0{,}98$) mentre l'altro le si limita ad
+avvicinarsi da sotto; ed è anche il più insidioso, perché produce una curva
+liscia e convincente che si allontana dalla realtà con calma.
 
 Il giro vale ben oltre il lisciamento esponenziale, ed è la ragione per cui
 questa ricetta sta in mezzo ai modelli classici. Scritti in questa forma, con
@@ -1557,7 +1560,7 @@ Verrebbe da pensare che, con le reti neurali che il capitolo affronta più
 avanti, questi modelli di mezzo secolo fa siano roba da manuale di storia. Non
 è così, e conviene dire perché con onestà. La prova più citata sono le
 **competizioni M** dell'introduzione al capitolo, quelle di Spyros Makridakis.
-Il verdetto, ripetuto edizione dopo edizione, è scomodo per gli entusiasti: i
+Il verdetto è scomodo per gli entusiasti: i
 metodi statistici semplici (ARIMA, Holt-Winters, e loro medie) restano
 difficilissimi da battere, e per molti anni hanno superato reti neurali ben
 più complesse.
@@ -1582,16 +1585,17 @@ tira in ballo il deep learning.
 
 ## In pratica: stimare un AR(1) ai minimi quadrati
 
-Stimare un AR(1) non richiede librerie sofisticate: è una regressione lineare di
-$x_t$ sul suo ritardo $x_{t-1}$, cioè si cerca la retta che passa il più vicino
-possibile a tutte le coppie (valore di ieri, valore di oggi). «Il più vicino
-possibile» in che senso: nel senso che rende minima la somma dei quadrati degli
-scarti, che è lo stesso criterio con cui il {doc}`capitolo sul Machine Learning </MachineLearning/overview>`
-sceglieva la retta che passa meglio in mezzo ai dati. In statistica quel
-criterio ha un nome, il metodo dei **minimi quadrati**. Generiamo una serie dal modello con una
-frazione $\phi$ nota e
-verifichiamo di saperla recuperare, poi facciamo una previsione a un passo.
-Tutto in puro NumPy.
+Stimare un AR(1) non richiede librerie sofisticate: è una regressione lineare
+di $x_t$ sul suo ritardo $x_{t-1}$, cioè si cerca la retta che passa il più
+vicino possibile a tutte le coppie (valore di ieri, valore di oggi). «Il più
+vicino possibile» in che senso: nel senso che rende minima la somma dei
+quadrati degli scarti, che è lo stesso criterio con cui la {doc}`sezione
+sull'apprendimento supervisionato
+</MachineLearning/apprendimento-supervisionato>` sceglieva la retta che passa
+meglio in mezzo ai dati. In statistica quel criterio ha un nome, il metodo dei
+**minimi quadrati**. Generiamo una serie dal modello con una frazione $\phi$
+nota e verifichiamo di saperla recuperare, poi facciamo una previsione a un
+passo. Tutto in puro NumPy.
 
 ```python
 import numpy as np
@@ -1710,20 +1714,12 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
 - Quasi tutti i modelli classici pretendono una serie **stazionaria**, che balli
   sempre allo stesso modo, cioè attorno alla stessa media, con la stessa
   ampiezza, e in cui due giorni si somiglino in base a **quanto** distano e non
-  a **quando** cadono. Per arrivarci ci sono due strade diverse, e vanno tenute
-  distinte: se la serie oscilla attorno a una **retta** si stima la retta e si
-  tengono gli scarti; se invece cammina alla cieca, e ogni scossa le sposta il
-  livello per sempre, si sostituisce ogni valore con la **variazione** rispetto
-  al precedente. Usare la seconda al posto della prima non è gratis: lascia
-  dentro la serie una regolarità che non c'era. Per capire che memoria resta si
-  guardano due grafici a barre: l’**ACF**
-  (la funzione di autocorrelazione), quanto oggi assomiglia ai giorni passati, e
-  la **PACF** (l'autocorrelazione parziale), quanto ci assomiglia al netto degli
-  effetti a catena (il nonno e il nipote, scontato il padre). Si leggono in
-  coppia, perché nessuno dei due da solo dice tutto: quando la memoria è di un
-  tipo solo, quella dei valori passati si riconosce dalla PACF che si schiaccia
-  di colpo, quella degli urti dall'ACF che si schiaccia di colpo, e dove si
-  schiaccia è lì che quella memoria finisce.
+  a **quando** cadono. Per arrivarci ci sono due strade, e non sono
+  intercambiabili: se la serie oscilla attorno a una **retta** si stima la retta
+  e si tengono gli scarti; se invece cammina alla cieca, e ogni scossa le sposta
+  il livello per sempre, si sostituisce ogni valore con la **variazione**
+  rispetto al precedente. Differenziare dove serviva togliere la retta lascia
+  dentro la serie una regolarità che non c'era.
 - Ci sono due memorie. Quella dei **valori** passati (l'autoregressione: domani
   somiglia a oggi, con un rientro verso la media) e quella degli **urti**
   passati (la media mobile: lo sciopero si fa sentire ancora domani, meno
@@ -1731,45 +1727,47 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
   la sigla ci sono solo tre conteggi; **SARIMA** rifà lo stesso gioco sul
   calendario, confrontando dicembre con lo scorso dicembre
   {cite}`box2015time`.
-- La memoria degli urti, però, **dura quanto le si è detto**, e finita quella il
+- La memoria degli urti **dura quanto le si è detto**, e finita quella il
   modello smette di prevedere: chiede due giorni di eco e al terzo risponde il
-  giorno medio, sempre lo stesso, per quanto lontano gli si chieda. Non è un
-  guasto ed è un limite vero: quell'orizzonte, con quel modello, resta scoperto,
-  a meno che i giorni passino davvero e gli incassi veri gli si possano
-  rimettere sotto man mano. (La memoria dei valori invece non si esaurisce mai
-  di colpo: si spegne piano, ed è per questo che l'ARIMA non fa la linea
-  piatta.)
-- Gli ordini non si indovinano guardando i grafici: **si provano tutte le
-  combinazioni** e si sceglie con un criterio che pesa insieme quanto il
-  modello spiega e quanti parametri ha speso (l’**AIC**). Poi, e questo è il
-  passo che quasi tutti saltano, **si guarda quello che resta**: se negli
-  errori si vede ancora una regolarità, il modello se l'è lasciata sfuggire.
-  Il modello sbagliato si riconosce dai suoi errori, non dalle sue previsioni.
+  giorno medio, sempre lo stesso, per quanto lontano gli si chieda. È un limite
+  vero, non un guasto: quell'orizzonte, con quel modello, resta scoperto, a meno
+  che i giorni passino davvero e gli incassi veri gli si possano rimettere sotto
+  man mano. (La memoria dei valori invece non si esaurisce di colpo: si spegne
+  piano, ed è per questo che l'ARIMA non fa la linea piatta.)
+- Per vedere che memoria è rimasta ci sono due grafici a barre, l’**ACF** (la
+  funzione di autocorrelazione: quanto oggi assomiglia ai giorni passati) e la
+  **PACF** (l'autocorrelazione parziale: quanto ci assomiglia al netto degli
+  effetti a catena, il nonno e il nipote scontato il padre). Sui casi da manuale
+  ciascuna delle due memorie lascia la sua firma; sulle serie vere le firme si
+  sovrappongono, ed è per questo che gli ordini non si indovinano guardando i
+  grafici: **si provano tutte le combinazioni** e si sceglie con un criterio che
+  pesa insieme quanto il modello spiega e quanti parametri ha speso (l’**AIC**).
+  Poi, ed è il passo che quasi tutti saltano, **si guarda quello che resta**: se
+  negli errori c'è ancora una regolarità, il modello se l'è lasciata sfuggire, e
+  il modello sbagliato si riconosce dai suoi errori, non dalle sue previsioni.
 - Le informazioni esterne entrano in due modi. Come variabili **esogene** in un
   SARIMAX (il meteo, le promozioni), con la trappola che per prevedere domani
   serve il loro valore di domani; oppure, se più serie si influenzano a
   vicenda, prevedendole tutte insieme con un **VAR**, che però conviene solo se
   quelle serie si aiutano davvero a prevedersi. Lo verifica il test di
-  **Granger**, e il suo nome contiene la trappola più famosa del capitolo: la
-  «causalità di Granger» non è causalità. Dice che il passato di una serie aiuta
-  a indovinarne un'altra, non che la faccia succedere. Gelato e condizionatori
-  si prevedono a vicenda benissimo, ma a farli salire è il caldo.
+  **Granger**, e il nome inganna: la «causalità di Granger» non è causalità,
+  dice che il passato di una serie aiuta a indovinarne un'altra, non che la
+  faccia succedere. Gelato e condizionatori si prevedono a vicenda benissimo, ma
+  a farli salire è il caldo.
 - Il **lisciamento esponenziale** è una media del passato in cui ieri pesa
   molto e ogni passo indietro pesa una frazione in meno, come un ricordo che
   sbiadisce. Tre gradini: solo il livello, poi livello più tendenza, poi
   anche la stagione, e con tutti e tre il metodo si chiama Holt-Winters.
 - Il **filtro di Kalman** tiene separato quello che si vuole conoscere (lo
-  **stato**) da quello che si riesce a misurare, e a ogni passo fa tre mosse:
-  prevede, guarda, e corregge in proporzione a quanto si fida della misura
-  nuova rispetto alla propria previsione. Aggiorna anche il margine di quella
-  stima, che cresce prevedendo e si stringe misurando. Su una grandezza che si
-  sposta a caso e che nessun movimento registrato aiuta a prevedere, dopo un
-  po' di passi la proporzione smette di cambiare e la ricetta diventa proprio
-  il lisciamento esponenziale, di cui spiega la manopola.
-- I modi di sbagliarlo sono dichiarare lo strumento più preciso di quanto sia
-  (si insegue il rumore) o meno preciso (si smette di ascoltarlo), e si
-  scoprono guardando se le sorprese sono grandi quanto i margini promettevano.
-  E tutto regge finché la previsione si fa sommando e gli errori sbagliano
+  **stato**) da quello che si riesce a misurare, e a ogni passo prevede, guarda
+  e corregge in proporzione a quanto si fida della misura nuova rispetto alla
+  propria previsione; aggiorna anche il margine di quella stima, che cresce
+  prevedendo e si stringe misurando. Su una grandezza che si sposta a caso quel
+  ciclo diventa proprio il lisciamento esponenziale, di cui spiega la manopola.
+  Lo si sbaglia dichiarando lo strumento più preciso di quanto sia (si insegue
+  il rumore) o meno preciso (lo si smette di ascoltare), e ci si accorge dal
+  registro delle sorprese, che con margini onesti vengono grandi quanto
+  promettevano. Regge finché la previsione si fa sommando e gli errori sbagliano
   tanto in eccesso quanto in difetto: se sbagliano sempre nello stesso verso il
   modello è sbagliato, e se le possibilità plausibili sono due lontane fra loro
   una stima sola non le può rappresentare.
@@ -1788,13 +1786,16 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning </MachineLearn
 - La **decomposizione** separa una serie in **trend**, **stagionalità** e
   **residuo**, in forma **additiva** ($x_t = T_t + S_t + R_t$, oscillazioni di
   ampiezza costante) o **moltiplicativa** ($x_t = T_t \times S_t \times R_t$,
-  ampiezza proporzionale al livello, linearizzabile col logaritmo).
+  ampiezza proporzionale al livello, linearizzabile col logaritmo, purché al
+  ritorno si ricordi che esponenziare dà la **mediana** e non la media).
 - Quasi tutti i modelli classici richiedono la **stazionarietà**, e lo strumento
   dipende dal tipo di non stazionarietà: **differenziare**
   ($\nabla x_t = x_t - x_{t-1}$) contro un trend **stocastico**,
-  **detrendizzare** contro un trend **deterministico**. Scambiarle
-  sovradifferenzia, cioè lascia $\rho_1 = -0{,}5$ e varianza doppia, con
-  $\theta$ inchiodato sul bordo dell'invertibilità. Si testa con ADF e KPSS, che
+  **detrendizzare** contro un trend **deterministico**, e ciascuna guasta il
+  caso che l'altra risolve: differenziare un trend deterministico
+  **sovradifferenzia**, e lascia $\rho_1 = -0{,}5$, varianza doppia e $\theta$
+  inchiodato sul bordo dell'invertibilità; detrendizzare una radice unitaria la
+  lascia dov'era, cioè non stazionaria. Si testa con ADF e KPSS, che
   hanno ipotesi nulle **opposte**. **ACF** e **PACF** diagnosticano gli ordini
   sui processi **puri**: la PACF si annulla dopo il ritardo $p$ di un AR, l'ACF
   dopo il ritardo $q$ di un MA, e «annullarsi» vuol dire cadere dentro

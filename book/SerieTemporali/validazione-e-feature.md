@@ -9,8 +9,10 @@ prova, «sapeva» dove sarebbe andato il prezzo. Sul passato era un veggente;
 sul futuro, un ciarlatano.
 
 Questa è la trappola numero uno di chi lavora con le serie temporali, e ha un
-nome: **leakage**, la fuga di informazione dal futuro verso il passato. Trend, stagionalità e autocorrelazione dicono che cos'è una serie. Restano due
-domande che decidono se una previsione vale qualcosa: come le si dà un voto
+nome: **leakage**, la fuga di informazione dal futuro verso il passato.
+
+Trend, stagionalità e autocorrelazione dicono che cos'è una serie; a decidere
+se una previsione vale qualcosa sono altre due domande: come le si dà un voto
 senza barare col futuro, e come si rappresenta il tempo perché un normale
 modello tabellare (uno che vuole una tabella di righe, come la regressione o
 gli alberi) possa impararlo. Le colonne di quella tabella si chiamano
@@ -23,13 +25,15 @@ quello che è successo davvero; poi si sposta in avanti quel giorno, e si rifà.
 
 ## Perché mescolare i dati è un errore
 
-Nel {doc}`capitolo sul Machine Learning </MachineLearning/overview>` abbiamo costruito la validazione come un rito.
-Gli esempi si dividono in tre mucchi: uno su cui il modello impara, uno su cui lo
-si mette a punto, uno su cui lo si esamina alla fine e che non si tocca mai
-prima. E prima di dividerli si mescolano, perché se arrivassero già in un ordine
-suo (tutte le foto di gatti in fondo, per dire) i tre mucchi verrebbero diversi
-fra loro senza che sia colpa di nessuno. La **k-fold cross-validation** rifà la
-divisione più volte, a turno, e fa la media: un voto più stabile.
+La {doc}`sezione su overfitting e validazione
+</MachineLearning/overfitting-validazione>` ha costruito la validazione come un
+rito. Gli esempi si dividono in tre mucchi: uno su cui il modello impara, uno
+su cui lo si mette a punto, uno su cui lo si esamina alla fine e che non si
+tocca mai prima. E prima di dividerli si mescolano, perché se arrivassero già in
+un ordine suo (tutte le foto di gatti in fondo, per dire) i tre mucchi
+verrebbero diversi fra loro senza che sia colpa di nessuno. La **k-fold
+cross-validation** rifà la divisione più volte, a turno, e fa la media: un voto
+più stabile.
 
 Con le serie temporali quel rimescolare, che altrove è igiene, qui è veleno.
 
@@ -58,8 +62,7 @@ k-fold con shuffle, mette nel training istanti $t+1, t+3, \dots$ e nel
 validation l'istante $t$: il modello osserva valori *successivi* a quello che
 deve prevedere, e sfrutta l'autocorrelazione per «interpolare» all'indietro. La
 stima dell'errore che ne esce è sistematicamente ottimista: un caso di *data
-leakage*, la stessa fuga di informazione per cui la sezione sulla validazione,
-nel capitolo sul Machine Learning, imponeva di non toccare mai il test.
+leakage*, la stessa fuga di informazione per cui il test non si tocca mai.
 
 La regola è netta: **ogni dato usato per addestrare deve precedere nel tempo ogni
 dato usato per validare**. Il confine tra train e validation è un istante $t_0$,
@@ -103,8 +106,8 @@ come mostra la {numref}`fig-walk-forward-validazione`.
 
 Sia la serie $y_1, \dots, y_n$. La lettera è $y$ e non $x$ perché la serie
 diventa il *target* di un problema supervisionato,
-e le previsioni si scrivono $\hat{y}$, come nel resto del libro. Fissato un
-training minimo e un orizzonte $h$, il
+e le previsioni si scrivono $\hat{y}$, come nel resto del libro; altrove nel
+capitolo la serie resta $x_t$. Fissato un training minimo e un orizzonte $h$, il
 walk-forward produce una sequenza di coppie $(\text{train}, \text{test})$ in cui
 il blocco di test cade sempre dopo il blocco di train. Nella variante
 **espansa** l’$i$-esima iterazione addestra su $y_1, \dots, y_{t_i}$ e valuta su
@@ -370,8 +373,9 @@ mentre c'è: un intervallo dichiarato all'80% ne copre meno dell'80%
 {cite}`hyndman2021forecasting`.
 
 La seconda comodità è che si dà per buono che gli scarti si dispongano secondo
-la campana della statistica classica (la **gaussiana** del capitolo di
-matematica), mentre le serie vere di sorprese davvero grosse ne hanno di più.
+la campana della statistica classica (la **gaussiana** della {doc}`sezione su
+probabilità e statistica </Matematica/probabilita-statistica>`), mentre le
+serie vere di sorprese davvero grosse ne hanno di più.
 Questa seconda, a differenza della prima, non stringe le bande: le allarga o
 le stringe a seconda di quanto larghe le si chiede, e conviene vedere da dove
 viene, perché è controintuitivo.
@@ -387,11 +391,11 @@ finanziari, l'85,6%), mentre una
 forbice larghissima, quella al 99%, ne raccoglie meno del 99% (attorno al 98%),
 perché i pochi mostri le passano oltre.
 
-Le due comodità, quindi, non tirano dalla stessa parte, e il titolo di questa
-sezione resta vero per merito della prima: sulle forbici strette, quelle che si
-usano tutti i giorni, la seconda lavora perfino a favore, e ciò che rimane è lo
-sconto della prima. A dover stare in guardia su tutte e due è chi promette di
-coprire quasi tutto.
+Le due comodità, quindi, non tirano dalla stessa parte, e che le forbici escano
+troppo strette resta vero per merito della prima: sulle forbici strette, quelle
+che si usano tutti i giorni, la seconda lavora perfino a favore, e ciò che
+rimane è lo sconto della prima. A dover stare in guardia su tutte e due è chi
+promette di coprire quasi tutto.
 
 La buona notizia è che tutto questo si misura, e la misura ha un nome,
 **copertura empirica**: si prende il walk-forward di poche righe fa, si conta
@@ -407,9 +411,10 @@ volte.
 Se al modello i due numeri si regalano già giusti, la banda all'80% copre l'80%
 esatto: la promessa è mantenuta. Appena invece glieli si fa ricavare dalla
 storia, la copertura cede: a un passo scende al **77%** con trenta osservazioni
-di storia, e risale al 79% con cento. E cede di più via via che l'orizzonte si allunga, perché
-all'incertezza dell'ultimo passo si somma quella di tutti i passi in mezzo: a
-cinque passi, sempre con trenta osservazioni, resta sotto il **74%**. È la
+di storia, e risale al 79% con cento. E cede di più via via che l'orizzonte si
+allunga, perché l'errore sui due numeri si compone a ogni passo (a parametri
+regalati la banda a cinque passi copre l'80% come a uno): a cinque passi,
+sempre con trenta osservazioni, resta sotto il **74%**. È la
 diagnostica più semplice della previsione probabilistica, costa poche righe più
 del walk-forward che c'è già, e quasi nessuno la fa.
 
@@ -417,16 +422,17 @@ del walk-forward che c'è già, e quasi nessuno la fa.
 
 Ed eccoci alla seconda metà del titolo: *rappresentare*. Buona parte dei
 modelli che conosciamo (la regressione, gli alberi decisionali, le reti) non
-sanno nulla di «tempo». Vogliono una tabella, come quelle del capitolo sul
-Machine Learning: una riga per ogni caso, alcune colonne di domanda (le
-**feature**) e una colonna di risposta giusta (il **target**), e ogni riga deve
-poter essere letta da sola, senza sapere che cosa c'è nelle righe accanto.
-Imparare da una tabella così è ciò che si chiama apprendimento
-**supervisionato**: si chiama così perché per ogni riga qualcuno ha già scritto
-la risposta, e il modello impara confrontandosi con quella. Costruire una
-tabella del genere a partire da una serie si chiama **feature engineering
-temporale**, e serve a questo: una volta fatta, prevedere il futuro torna a
-essere il solito problema tabellare che sappiamo già risolvere.
+sanno nulla di «tempo». Vogliono una tabella, come quelle della {doc}`sezione
+sull'apprendimento supervisionato
+</MachineLearning/apprendimento-supervisionato>`: una riga per ogni caso,
+alcune colonne di domanda (le **feature**) e una colonna di risposta giusta (il
+**target**), e ogni riga deve poter essere letta da sola, senza sapere che cosa
+c'è nelle righe accanto. Imparare da una tabella così è ciò che si chiama
+apprendimento **supervisionato**: si chiama così perché per ogni riga qualcuno
+ha già scritto la risposta, e il modello impara confrontandosi con quella.
+Costruire una tabella del genere a partire da una serie si chiama **feature
+engineering temporale**, e serve a questo: una volta fatta, prevedere il futuro
+torna a essere il solito problema tabellare che sappiamo già risolvere.
 
 `````{tab} Elementare
 
@@ -439,9 +445,9 @@ memoria grezza della serie: spesso «quanto ho venduto ieri» è già un'ottima
 indicazione su oggi.
 
 Le **finestre mobili**: media e deviazione degli ultimi 7 o 30 giorni. La media
-cattura il livello recente lisciando il rumore; la deviazione (quella standard
-del capitolo di matematica, che misura quanto i valori si sparpagliano attorno
-alla loro media) dice quanto la serie è stata mossa di recente.
+cattura il livello recente lisciando il rumore; la deviazione (quella standard,
+che misura quanto i valori si sparpagliano attorno alla loro media) dice quanto
+la serie è stata mossa di recente.
 
 L’**encoding del tempo**, cioè trasformare la data in numeri: dal calendario
 ricaviamo il giorno della settimana, il mese, se è un giorno festivo. Sono le
@@ -451,12 +457,13 @@ novembre.
 I **termini di Fourier**. Per dire al modello a che punto del ciclo annuale
 siamo si potrebbe mettere una colonna per ciascuno dei 365 giorni, con un $1$
 sul giorno giusto e $0$ sugli altri: funziona, ma sono 365 colonne per
-un'informazione sola. C'è un modo più compatto, lo stesso di quando,
-nel capitolo sull'audio, un accordo al pianoforte veniva scomposto nelle poche
-note che lo compongono: una curva che si ripete si
-descrive con poche onde regolari sovrapposte. Quelle onde si chiamano seno e
-coseno, salgono e scendono all'infinito sempre uguali a sé stesse, e bastano due
-o tre coppie per disegnare quasi ogni stagionalità liscia.
+un'informazione sola. C'è un modo più compatto, lo stesso con cui la
+{doc}`sezione dal suono alle feature </Audio/dal-suono-alle-feature>`
+scomponeva un accordo al pianoforte nelle poche note che lo compongono: una
+curva che si ripete si descrive con poche onde regolari sovrapposte. Quelle
+onde si chiamano seno e coseno, salgono e scendono all'infinito sempre uguali a
+sé stesse, e bastano due o tre coppie per disegnare quasi ogni stagionalità
+liscia.
 
 Un guaio resta sul confine fra i giorni d'allenamento e quelli di prova. Le
 ultime righe d'allenamento chiedono di una settimana che cade già di là; e la
@@ -588,8 +595,8 @@ tempo.
 ## In pratica: walk-forward e MASE con NumPy
 
 Mettiamo insieme i due pezzi centrali della sezione, lo split walk-forward e la
-MASE, in poche righe di NumPy (la libreria di calcolo numerico del capitolo su
-Python) e niente altro. La serie è inventata da noi, con una salita leggera e un
+MASE, in poche righe di {doc}`NumPy </Python/numpy>`, la libreria di calcolo
+numerico, e niente altro. La serie è inventata da noi, con una salita leggera e un
 ciclo di sette giorni. Confrontiamo due linee di base: il naive stagionale
 (ripete l'ultima settimana) e il naive semplice (ripete l'ultimo valore).
 
@@ -632,11 +639,17 @@ print(f"MASE medio - naive stagionale: {np.mean(mase_stagionale):.3f}")
 print(f"MASE medio - naive semplice:   {np.mean(mase_semplice):.3f}")
 ```
 
-Il naive stagionale esce **attorno a 1**, e non poteva che essere così: su una
-serie con un ciclo settimanale il metro è lui, quindi sta pareggiando con sé
-stesso. Il naive semplice, cieco alla settimana, sta **sopra 5**: sbaglia cinque
-volte tanto. La morale è che su una serie stagionale il metro giusto è quello,
-e chi non lo batte non ha un modello.
+```text
+iterazioni di walk-forward: 16
+MASE medio - naive stagionale: 1.056
+MASE medio - naive semplice:   5.058
+```
+
+Il naive stagionale esce a **$1{,}06$**, e non poteva che essere altrimenti: su
+una serie con un ciclo settimanale il metro è lui, quindi sta pareggiando con
+sé stesso. Il naive semplice, cieco alla settimana, sta a **$5{,}06$**: sbaglia
+cinque volte tanto. La morale è che su una serie stagionale il metro giusto è
+quello, e chi non lo batte non ha un modello.
 
 La scelta del metro cambia il verdetto, ed è una
 scorciatoia che si incontra spesso: mettendo sotto la linea di frazione il
@@ -664,21 +677,22 @@ vale più della pigrizia, purché si dichiari **quale** pigrizia.
 - Le misure d'errore che dipendono dall'unità della serie (500 è ottimo per il
   PIL e disastroso per la temperatura) non si possono confrontare fra serie
   diverse. Quella che si può è la **MASE**: dice di quanto sbagli rispetto a chi
-  copia e basta. Se viene 1 sbagli quanto lui, se viene $0{,}5$ sbagli la metà.
-  Non è però un duello alla pari: chi copia viene fatto correre a un passo solo,
-  e sulla strada già percorsa, quella su cui ti sei allenato. Sbagliare quanto
-  lui prevedendo dodici giorni avanti è tutt'altra impresa che sbagliare quanto
-  lui prevedendo domani. E va detto **quale** pigrizia si è
-  messa al denominatore: su una serie con un ciclo settimanale il paragone giusto
-  è con chi copia la settimana scorsa, non con chi copia ieri, e cambiando
-  paragone cambia il verdetto.
+  copia e basta, e se viene 1 sbagli quanto lui, se viene $0{,}5$ la metà. Non è
+  però un duello alla pari, perché chi copia corre a un passo solo e sulla
+  strada già percorsa: sbagliare quanto lui su dodici giorni avanti è tutt'altra
+  impresa che su domani. E va detto **quale** pigrizia si è messa al
+  denominatore, perché su una serie con un ciclo settimanale il paragone giusto
+  è con chi copia la settimana scorsa, e cambiando paragone cambia il verdetto.
 - Vanno sempre battute le **linee di base**: chi copia l'ultimo valore, chi copia
   il ciclo precedente, chi prolunga la retta fra il primo e l'ultimo punto. Se il
   modello non le supera, non serve.
 - Una serie si trasforma in una **tabella** dando al modello, per ogni giorno, un
   riassunto del suo passato recente: i valori dei giorni prima, le medie degli
   ultimi giorni, il calendario, e poche onde regolari per dire a che punto del
-  ciclo siamo. Mai niente che venga dal futuro, nemmeno di striscio.
+  ciclo siamo. Mai niente che venga dal futuro, nemmeno di striscio; e al
+  confine fra i giorni d'allenamento e quelli di prova la regola si viola da sé,
+  perché le ultime righe d'allenamento chiedono di giorni che cadono già di là.
+  Si buttano via, ed è la **purga**.
 - Per prevedere molti giorni ci sono tre modi: uno alla volta rimettendo dentro
   la propria previsione (**ricorsivo**: economico, ma l'errore si trascina), un
   modello per ciascun giorno futuro (**diretto**: robusto, ma costa), o un
@@ -710,7 +724,8 @@ vale più della pigrizia, purché si dichiari **quale** pigrizia.
   non un avversario: dichiarare quale $m$ si è usato è parte del numero. Per le
   previsioni **probabilistiche** si usa la **pinball loss**, che è un punteggio
   proprio ma premia insieme calibrazione e finezza: la calibrazione si controlla
-  a parte, con la **copertura empirica**.
+  a parte, con la **copertura empirica**, che a differenza di tutte le altre non
+  si minimizza né si massimizza, deve **coincidere** col livello dichiarato.
 - Vanno sempre battute le **linee di base**: naive, naive stagionale
   ($\hat y_{t+h} = y_{t+h-m(k+1)}$), drift. Se il modello non le supera, non
   serve.
@@ -721,8 +736,11 @@ vale più della pigrizia, purché si dichiari **quale** pigrizia.
 - Per il **multi-step** si sceglie tra strategia **ricorsiva** (economica, ma
   l'errore si accumula), **diretta** (un modello per orizzonte) e **multi-output**
   (un solo modello, tutti i passi).
-- Le bande di previsione sono calcolate a **parametri noti** e sotto ipotesi di
-  normalità: escono sistematicamente troppo strette. Su un AR(1) con trenta
+- Le bande di previsione escono sistematicamente troppo strette, e a stringerle
+  è una sola delle due comodità su cui poggiano: i parametri sono trattati come
+  **noti** mentre sono stimati. La seconda, la **normalità** degli scarti, tira
+  nell'altro verso e dipende dal livello: con code pesanti una banda nominale
+  all'80% ne copre di più e una al 99% di meno. Su un AR(1) con trenta
   osservazioni di storia e parametri stimati ai minimi quadrati, un intervallo
   nominale all'80% ne copre il 77% a un passo e meno del 74% a cinque.
 ```

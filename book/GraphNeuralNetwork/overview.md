@@ -13,13 +13,15 @@ isole, la lunghezza dei ponti: niente di tutto questo contava. Contava solo
 *quale lembo di terra fosse collegato a quale*. Euler ridusse allora la città
 a quattro punti e sette linee (quelli che oggi chiamiamo **nodi** e **archi**)
 e su quello scheletro dimostrò che la passeggiata non poteva esistere. Il suo
-articolo, *Solutio Problematis ad Geometriam Situs Pertinentis*, è considerato
-l'atto di nascita della **teoria dei grafi**: la matematica delle cose
-collegate tra loro.
+articolo, *Solutio Problematis ad Geometriam Situs Pertinentis*, letto
+all'Accademia di San Pietroburgo nel 1735 e stampato sei anni dopo, è
+considerato l'atto di nascita della **teoria dei grafi**: la matematica delle
+cose collegate tra loro.
 
 Quasi tre secoli dopo, quella stessa astrazione fa cose che Euler non avrebbe
-immaginato. Nel 2020, un gruppo del MIT guidato da Jonathan Stokes e James
-Collins pubblica su *Cell* la scoperta di un nuovo antibiotico: hanno
+immaginato. Nel 2020 il gruppo del MIT di James Collins e Regina Barzilay
+pubblica su *Cell*, primo firmatario Jonathan Stokes, la scoperta di un nuovo
+antibiotico: hanno
 addestrato una rete neurale a leggere le molecole come grafi (atomi nei nodi,
 legami chimici negli archi) e a prevedere quali fermassero la crescita dei
 batteri. Le hanno poi fatto passare al setaccio un archivio di migliaia di
@@ -175,7 +177,7 @@ $$
 dove $\mathcal{N}(v)$ è l'insieme dei vicini di $v$ e $\mathrm{AGGREGATE}$ è
 un'operazione **invariante all'ordine** dei vicini (una somma, una media, un
 massimo): proprio perché i vicini non hanno un ordine canonico. Dopo $K$ passi,
-$\mathbf{h}_v^{(K)}$ riassume l'informazione contenuta nel sottografo a
+$\mathbf{h}_v^{(K)}$ riassume l'informazione contenuta nel sottografo entro
 distanza $K$ da $v$. Le funzioni $\mathrm{AGGREGATE}$ e $\mathrm{UPDATE}$ sono
 reti neurali con parametri $\theta$ condivisi da tutti i nodi e tutti i grafi:
 è questa condivisione, unita all'invarianza all'ordine di
@@ -262,19 +264,21 @@ Il capitolo procede dal dato all'architettura.
 - **Oltre la GCN: GraphSAGE, GAT e applicazioni**. Le due varianti che hanno
   reso le GNN utilizzabili su scala reale: *GraphSAGE*, che guarda solo un
   campione dei vicini e regge così grafi enormi, e la *Graph Attention
-  Network* (GAT), che pesa i vicini con l'attenzione incontrata nel capitolo
-  sui Transformer. Poi come si passa dai nodi a un verdetto sull'intero grafo, e
-  la sorpresa che ne viene fuori: esistono coppie di grafi diversi che nessuna
-  rete di questa famiglia riuscirà mai a distinguere. Una carrellata di
-  applicazioni, dalla chimica alla frode, dalle mappe ai sistemi
-  di raccomandazione; i limiti; e infine i *Graph Transformer*, che rifanno la
-  strada in senso inverso: non una rete su grafo che assomiglia a un
-  Transformer, ma un Transformer messo a lavorare su un grafo.
+  Network* (GAT), che pesa i vicini con l'attenzione incontrata nel
+  {doc}`capitolo sui Transformer </Transformers/overview>`. Poi come si passa
+  dai nodi a un verdetto sull'intero grafo, e la sorpresa che ne viene fuori:
+  esistono coppie di grafi diversi che nessuna di queste reti riuscirà mai a
+  distinguere. Una carrellata di applicazioni, dalla chimica alla frode, dalle
+  mappe ai sistemi di raccomandazione; i limiti; e infine i
+  *Graph Transformer*, che rifanno la strada in senso inverso: non una rete su
+  grafo che assomiglia a un Transformer, ma un Transformer messo a lavorare su
+  un grafo.
 
 ## Tre fili che tornano
 
-Il primo è la **convoluzione**. Nel {doc}`capitolo sul deep learning </DeepLearning/overview>` abbiamo visto
-un filtro scorrere su una griglia di pixel, combinando ogni pixel con i suoi
+Il primo è la **convoluzione**. Nella {doc}`sezione sulle reti
+convoluzionali </DeepLearning/reti-convoluzionali>` abbiamo visto un filtro
+scorrere su una griglia di pixel, combinando ogni pixel con i suoi
 vicini. Il message passing è la stessa idea (combinare un elemento con i suoi
 vicini) liberata dal vincolo della griglia: i «vicini» non sono più i quattro
 pixel adiacenti, ma i nodi collegati da un arco, in numero variabile. In questo
@@ -372,7 +376,7 @@ strada al contrario e a mettere un Transformer su un grafo qualunque.
 - Moltissimi dati sono fatti di **cose collegate fra loro** (molecole, reti di
   amicizie, mappe stradali, pagamenti, fatti sul mondo): tutti hanno la stessa
   struttura di **puntini e linee**, cioè **nodi e archi**, l'astrazione che
-  Euler inventò nel 1736 sui ponti di Königsberg.
+  Euler inventò sui ponti di Königsberg.
 - Un grafo non è né una griglia di pixel né una fila di parole, e per tre
   motivi: **l'ordine in cui si elencano i nodi non conta**, ogni nodo ha **un
   numero diverso di vicini** e ogni grafo ha **un numero diverso di nodi**.
@@ -398,7 +402,7 @@ strada al contrario e a mettere un Transformer su un grafo qualunque.
 :class: important
 - Moltissimi dati sono **relazionali** (molecole, social network, mappe,
   transazioni, knowledge graph) e hanno tutti la stessa struttura di **nodi e
-  archi**, l'astrazione che Euler inventò nel 1736 sui ponti di Königsberg.
+  archi**, l'astrazione che Euler inventò sui ponti di Königsberg.
 - Un grafo non è né una griglia (come per le CNN) né una sequenza (come per le
   RNN): i nodi non hanno **ordine canonico**, hanno **grado variabile**, e il
   grafo ha **dimensione variabile**. Serve un modello **invariante alla

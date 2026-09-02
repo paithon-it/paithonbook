@@ -64,7 +64,7 @@
   <line x1="550" y1="215" x2="600" y2="215" stroke="#1A1A1A" stroke-width="2" marker-end="url(#fr-vlm)"/>
 
   <!-- ============ MATRICE N x N ============ -->
-  <text x="740" y="84" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">similarit&#224; coseno, N &#215; N</text>
+  <text x="740" y="84" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">similarit&#224; coseno, B &#215; B</text>
 
   <g font-family="Inter, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">
     <text x="662" y="107">T<tspan dy="3" font-size="9">1</tspan></text>
