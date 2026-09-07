@@ -133,9 +133,20 @@ In pratica, scrivendo una pagina:
   valore scritto a mano accanto a un blocco che non lo produce si scolla al
   primo ritocco, e chi legge esegue e non lo trova;
 - **figure**: solo SVG geometriche in palette (terracotta `#B5532C`, teal
-  `#2D5A5C`, ocra `#C9A961`, warm-black `#1A1A1A`, cream `#F8F5EE`), leggibili
-  anche in tema scuro. Niente immagini generate da AI, niente stock, niente
-  gradienti. Se una figura non aggiunge comprensione, non serve;
+  `#2D5A5C`, ocra `#C9A961`, warm-black `#1A1A1A`, cream `#F8F5EE`). Niente
+  immagini generate da AI, niente stock, niente gradienti. Se una figura non
+  aggiunge comprensione, non serve. In tema scuro la pagina mostra una
+  **seconda copia** della figura, con la palette scura del design system: si
+  ricava dalla chiara, e non si disegna a mano. Dopo aver aggiunto o ritinto
+  una figura:
+
+      python3 scripts/genera-figure-scure.py             # scrive le copie
+      python3 scripts/genera-figure-scure.py --verifica  # ne manca una?
+
+  Il file che ne esce va nella pull request insieme alla figura. Se usi un
+  colore che la mappa in testa a quello script non conosce, si ferma e te lo
+  dice invece di indovinarlo: aggiungi la riga prendendo il valore dai token
+  del design system, e non un colore a occhio;
 - **animazioni**: dove **il tempo è il contenuto** (qualcosa che scorre,
   converge, si accumula, si propaga, si genera passo dopo passo) la figura può
   muoversi, e i generatori stanno in `animazioni/svg/`, uno per figura. Regola

@@ -1,0 +1,41 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../precision-recall-f1.svg
+-->
+<svg viewBox="0 0 760 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Matrice di confusione 2 per 2 con veri positivi, falsi positivi, falsi negativi e veri negativi">
+  <rect x="0" y="0" width="760" height="420" fill="#0E0C0A"/>
+  <!-- Column headers -->
+  <text x="380" y="35" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD" text-anchor="middle">PREVISIONE DEL MODELLO</text>
+  <text x="310" y="70" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1" text-anchor="middle">positivo</text>
+  <text x="530" y="70" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1" text-anchor="middle">negativo</text>
+  <!-- Row headers -->
+  <text x="55" y="200" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD" text-anchor="middle" transform="rotate(-90 55 200)">REALTÀ</text>
+  <text x="120" y="150" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1" text-anchor="middle">positivo</text>
+  <text x="120" y="300" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1" text-anchor="middle">negativo</text>
+  <!-- TP cell -->
+  <rect x="200" y="85" width="220" height="130" rx="8" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="310" y="135" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="bold" fill="#0E0C0A" text-anchor="middle">TP</text>
+  <text x="310" y="162" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0E0C0A" text-anchor="middle">vero positivo</text>
+  <text x="310" y="185" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#DDB874" text-anchor="middle">frode trovata</text>
+  <!-- FN cell -->
+  <rect x="430" y="85" width="220" height="130" rx="8" fill="#E27B52" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="540" y="135" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="bold" fill="#0E0C0A" text-anchor="middle">FN</text>
+  <text x="540" y="162" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0E0C0A" text-anchor="middle">falso negativo</text>
+  <text x="540" y="185" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#0E0C0A" text-anchor="middle">frode sfuggita</text>
+  <!-- FP cell -->
+  <rect x="200" y="235" width="220" height="130" rx="8" fill="#DDB874" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="310" y="285" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="bold" fill="#F4ECDD" text-anchor="middle">FP</text>
+  <text x="310" y="312" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="middle">falso positivo</text>
+  <text x="310" y="335" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">falso allarme</text>
+  <!-- TN cell -->
+  <rect x="430" y="235" width="220" height="130" rx="8" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="540" y="285" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="bold" fill="#F4ECDD" text-anchor="middle">TN</text>
+  <text x="540" y="312" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="middle">vero negativo</text>
+  <text x="540" y="335" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">silenzio giusto</text>
+  <!-- Metric brackets -->
+  <text x="310" y="395" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C" text-anchor="middle">precision = TP / (TP + FP) ↓ colonna</text>
+  <text x="700" y="150" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C" text-anchor="middle" transform="rotate(90 700 150)">recall = TP / (TP + FN) → riga</text>
+</svg>

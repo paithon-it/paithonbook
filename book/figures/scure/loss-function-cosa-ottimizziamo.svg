@@ -1,0 +1,30 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../loss-function-cosa-ottimizziamo.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" width="100%" role="img" aria-label="Confronto tra la curva dell'errore quadratico medio e quella della cross-entropy">
+  <rect width="720" height="320" fill="#0E0C0A"/>
+  <text x="180" y="34" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD" text-anchor="middle" font-weight="bold">MSE</text>
+  <text x="540" y="34" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD" text-anchor="middle" font-weight="bold">cross-entropy</text>
+
+  <!-- Pannello MSE -->
+  <line x1="40" y1="260" x2="320" y2="260" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="180" y1="60" x2="180" y2="260" stroke="#F4ECDD" stroke-width="1.5"/>
+  <path d="M 40,70 Q 180,450 320,70" fill="none" stroke="#E27B52" stroke-width="2"/>
+  <text x="176" y="276" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">0</text>
+  <text x="180" y="296" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">errore (y − ŷ)</text>
+  <text x="52" y="60" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1">loss = errore²</text>
+
+  <!-- Pannello cross-entropy -->
+  <line x1="400" y1="260" x2="680" y2="260" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="400" y1="60" x2="400" y2="260" stroke="#F4ECDD" stroke-width="1.5"/>
+  <path d="M 406,74 C 412,130 425,165 456,196 C 510,235 590,252 680,259" fill="none" stroke="#5BA39C" stroke-width="2"/>
+  <line x1="406" y1="74" x2="406" y2="60" stroke="#5BA39C" stroke-width="2" stroke-dasharray="3 3"/>
+  <text x="404" y="276" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">0</text>
+  <text x="674" y="276" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">1</text>
+  <text x="540" y="296" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">probabilità assegnata alla classe vera</text>
+  <text x="480" y="60" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1">loss = −log p</text>
+</svg>

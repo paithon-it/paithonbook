@@ -49,7 +49,7 @@ Un chip costruito fin dall'inizio proprio su quel principio (tanti piccoli
 esecutori invece di uno solo velocissimo) però esisteva già, e faceva un
 mestiere che con l'intelligenza artificiale sembrava non c'entrare nulla:
 disegnare i videogiochi. Una scena tridimensionale, al computer, è fatta di
-migliaia di **triangoli**: è la forma più semplice che descriva un pezzetto di
+migliaia di triangoli: è la forma più semplice che descriva un pezzetto di
 superficie, e con tanti triangoli piccoli si approssima qualunque sagoma, un
 muro come una faccia. Il mestiere della *Graphics Processing Unit* era prendere
 quei triangoli e riempirli di pixel colorati, decine di volte al secondo
@@ -66,7 +66,7 @@ devono girare sulla scheda video invece che sul processore.
 Da lì la stessa folla di esecutori che coloriva pixel si rivelò perfetta per un
 altro compito fatto di conti tutti dello stesso tipo e indipendenti: addestrare
 reti neurali. Nel 2012 la conferma arrivò a sorpresa da una gara di
-riconoscimento di immagini, ImageNet, vinta da **AlexNet**
+riconoscimento di immagini, ImageNet, vinta da AlexNet
 {cite}`krizhevsky2012imagenet` con un vantaggio enorme sui concorrenti, e
 addestrata non su un supercalcolatore ma su due normali schede da
 videogiocatori. Da allora hardware parallelo e deep learning non si sono più
@@ -111,9 +111,9 @@ di attesa.
 ```
 
 Guardando la {numref}`fig-hardware-e-modelli` si nota una cosa sola, ed è il
-motivo per cui questo capitolo esiste in un libro di machine learning: **fra
+motivo per cui questo capitolo esiste in un libro di machine learning: fra
 un'idea e il momento in cui quell'idea funziona possono passare decenni, e ad
-aspettare non è l'idea, è il calcolo**. Il percettrone è del 1958, la
+aspettare non è l'idea, è il calcolo. Il percettrone è del 1958, la
 backpropagation si diffonde nel 1986, le reti convoluzionali sono in piedi nel
 1998; il primo risultato che sposta tutto arriva nel 2012, cinque anni dopo
 CUDA. Non è una curiosità da tecnici dei computer: per lunghi tratti della
@@ -203,7 +203,7 @@ lavora su quella che ha già ricevuto, e la cucina non si ferma. Il corridoio è
 un'altra faccenda. Di lì passa un numero fisso di cassette al minuto, per
 quanti fattorini ci si mettano, e se i cuochi ne vorrebbero di più è il
 corridoio a decidere la velocità della cucina: i cuochi stanno fermi anche se
-sono i più bravi del mondo. Quel numero di cassette al minuto è la **banda**
+sono i più bravi del mondo. Quel numero di cassette al minuto è la banda
 della memoria, ed è il muro contro cui vanno a sbattere tanti programmi. Una
 GPU è spesso così, una bestia affamata più che un mostro di calcolo.
 
@@ -223,14 +223,14 @@ La memoria di una GPU è una piramide di livelli, ciascuno un compromesso
 diverso fra velocità e capienza: registri velocissimi ma minuscoli, shared
 memory on-chip, cache, e la grande HBM off-chip dove vivono pesi e
 attivazioni. I gruppi di thread nascondono la *latenza* di ogni accesso, ma la
-**banda** (quanti byte al secondo la memoria consegna davvero) è finita, ed è
+banda (quanti byte al secondo la memoria consegna davvero) è finita, ed è
 lei il vero muro. Lo strumento che formalizza tutto questo è il modello
-**roofline** {cite}`williams2009roofline`: mette a confronto l’*intensità
+roofline {cite}`williams2009roofline`: mette a confronto l’*intensità
 aritmetica* di un calcolo (quanti conti fai per ogni byte spostato) con i due
 tetti dell'hardware, la banda e il picco di calcolo, e dice se un programma è
 *memory-bound* o *compute-bound*. Da qui un filo conduttore che ritroverai in
 ogni sezione, accessi coalescenti, riuso in shared memory (*tiling*), fusione
-dei kernel, fino alla **FlashAttention** {cite}`dao2022flashattention`:
+dei kernel, fino alla FlashAttention {cite}`dao2022flashattention`:
 variazioni sullo stesso tema, fare più conti per ogni byte e tenere il byte il
 più vicino possibile ai core.
 `````
@@ -242,63 +242,63 @@ il codice fino a come si addestrano le reti che non entrano in una scheda sola.
 I nomi tecnici che seguono non vanno capiti adesso: ciascuno ha accanto, fra
 parentesi, la cosa che significa, ed è quella la promessa della sezione.
 
-- **Dentro la GPU: come è fatta e come esegue**. La scommessa opposta a quella
-  della CPU; gli **Streaming Multiprocessor** (le officine autonome in cui la
-  GPU è divisa), la gerarchia griglia–blocco–**warp** (l'organizzazione dei
-  lavoratori in operazione, squadre e plotoni da 32), il modello **SIMT** (un
-  ordine solo, trentadue esecuzioni) e l’**occupancy** (quanti gruppi la GPU
+- Dentro la GPU: come è fatta e come esegue. La scommessa opposta a quella
+  della CPU; gli Streaming Multiprocessor (le officine autonome in cui la
+  GPU è divisa), la gerarchia griglia–blocco–warp (l'organizzazione dei
+  lavoratori in operazione, squadre e plotoni da 32), il modello SIMT (un
+  ordine solo, trentadue esecuzioni) e l’occupancy (quanti gruppi la GPU
   tiene pronti per coprire le attese).
-- **La memoria: il vero collo di bottiglia**. La piramide che va dai posti
+- La memoria: il vero collo di bottiglia. La piramide che va dai posti
   minuscoli e vicinissimi ai calcolatori fino alla memoria grande della scheda
-  (la **HBM**, «memoria a banda larga»), gli accessi **coalescenti** (chiedere
-  i dati in fila invece che sparsi) e il **roofline**, il grafico che dice se
+  (la HBM, «memoria a banda larga»), gli accessi coalescenti (chiedere
+  i dati in fila invece che sparsi) e il roofline, il grafico che dice se
   un calcolo è limitato dai byte o dai conti.
-- **Kernel: dare ordini a migliaia di thread**. Che cos'è un *kernel* (il
+- Kernel: dare ordini a migliaia di thread. Che cos'è un *kernel* (il
   programmino che gira sulla GPU) e come lo si scrive, con un mini-esempio in
-  **Triton** (un modo di scriverlo in Python); e perché **fondere** più
+  Triton (un modo di scriverlo in Python); e perché fondere più
   operazioni in un kernel solo taglia i viaggi in memoria.
-- **GEMM: la moltiplicazione di matrici, spremuta**. Una *matrice* è un
+- GEMM: la moltiplicazione di matrici, spremuta. Una *matrice* è un
   tabellone di numeri, e moltiplicarne due è l'operazione su cui ogni rete
-  spende il grosso del tempo: qui si vede il **tiling** (portare i dati sul
-  tavolo di lavoro una volta sola) che la rende veloce, i **tensor core**
+  spende il grosso del tempo: qui si vede il tiling (portare i dati sul
+  tavolo di lavoro una volta sola) che la rende veloce, i tensor core
   (pezzi di silicio che fanno un intero pezzo di quella moltiplicazione a ogni
-  battito di clock) e l’**array sistolico**, la soluzione opposta scelta dai
+  battito di clock) e l’array sistolico, la soluzione opposta scelta dai
   chip costruiti solo per l'AI, dove sono i dati a scorrere fra i calcolatori.
-- **FlashAttention: l'attenzione che non spreca memoria**. L'attenzione dei
+- FlashAttention: l'attenzione che non spreca memoria. L'attenzione dei
   Transformer, cioè il meccanismo con cui ogni parola di un testo viene
   confrontata con tutte le altre, riorganizzata per non scrivere mai la grande
-  tabella di quei confronti: di nuovo **tiling**, più la **online softmax**
+  tabella di quei confronti: di nuovo tiling, più la online softmax
   (calcolare delle percentuali un pezzo per volta, senza aver visto tutti i
   numeri).
-- **Oltre una GPU: parallelismo distribuito**. Quando un modello non entra in
+- Oltre una GPU: parallelismo distribuito. Quando un modello non entra in
   una scheda sola: spartire fra più schede gli esempi, i tabelloni di numeri o
-  gli strati, e infine spartire tutto (**ZeRO/FSDP**: nessuna scheda tiene il
+  gli strati, e infine spartire tutto (ZeRO/FSDP: nessuna scheda tiene il
   modello intero) e come queste strategie si combinano nei modelli di
   frontiera.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il **«pasto gratis» è finito**: da metà anni Duemila un singolo calcolatore
+- Il «pasto gratis» è finito: da metà anni Duemila un singolo calcolatore
   in miniatura (un *core*) non diventa più veloce da solo, e per correre
   bisogna metterne tanti a lavorare insieme. La GPU è il chip fatto così: nata
   per disegnare i videogiochi, aperta ai conti di ogni tipo da CUDA
   {cite}`nickolls2008scalable`, e sposata al deep learning quando AlexNet vinse
   ImageNet su due schede da videogiocatore {cite}`krizhevsky2012imagenet`.
-- **Il genio contro la folla**: la GPU rinuncia ad avere pochi esecutori
+- Il genio contro la folla: la GPU rinuncia ad avere pochi esecutori
   velocissimi e ne mette moltissimi lenti. È un pessimo affare per un lavoro
   che cambia a ogni passo, ed è l'affare perfetto per milioni di conti tutti
   uguali, che è esattamente ciò di cui una rete neurale è fatta.
-- Il vero collo di bottiglia sta quasi sempre nel **portare i numeri** dalla
+- Il vero collo di bottiglia sta quasi sempre nel portare i numeri dalla
   memoria fin sotto ai calcolatori, più che nel fare i conti. Il cuoco è veloce, la
   dispensa è lontana.
 - Da qui il filo conduttore di tutto il capitolo, che tornerà con nomi diversi
-  in ogni sezione: **fare più conti con ogni carico di ingredienti**, e tenere
+  in ogni sezione: fare più conti con ogni carico di ingredienti, e tenere
   gli ingredienti il più vicino possibile a chi cucina.
 - Questo capitolo è il «sotto il cofano» della sezione «Prestazioni e scala»:
   non serve saper programmare una GPU per usarla (PyTorch lo fa al posto tuo),
   ma sapere come è fatta spiega perché un addestramento va veloce o lento.
-- Quando **una scheda non basta**, il lavoro si spartisce fra più schede: è
+- Quando una scheda non basta, il lavoro si spartisce fra più schede: è
   così che nascono i modelli di cui leggiamo i nomi ogni settimana.
 ```
 `````
@@ -306,25 +306,25 @@ parentesi, la cosa che significa, ed è quella la promessa della sezione.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il **«free lunch» è finito**: da metà anni 2000 un core non diventa più
+- Il «free lunch» è finito: da metà anni 2000 un core non diventa più
   veloce da solo, e per correre serve il parallelismo. La GPU è il chip
   parallelo per eccellenza: nato per i videogiochi, aperto al calcolo generico
-  da **CUDA** {cite}`nickolls2008scalable`, sposato al deep learning da
+  da CUDA {cite}`nickolls2008scalable`, sposato al deep learning da
   AlexNet {cite}`krizhevsky2012imagenet`.
-- **Throughput contro latenza**: la GPU baratta la velocità del singolo core con
+- Throughput contro latenza: la GPU baratta la velocità del singolo core con
   il numero di core, ed è perfetta per i conti identici e indipendenti di una rete
   neurale (le moltiplicazioni di matrici).
-- Il vero collo di bottiglia è quasi sempre il **movimento dei dati**, non il
-  calcolo: la banda di memoria è il muro. Il **roofline**
+- Il vero collo di bottiglia è quasi sempre il movimento dei dati, non il
+  calcolo: la banda di memoria è il muro. Il roofline
   {cite}`williams2009roofline` distingue i carichi *memory-bound* da quelli
   *compute-bound*.
-- Un unico filo conduttore lega tutto il capitolo, coalescenza, **tiling**,
-  **kernel fusion**, **FlashAttention** {cite}`dao2022flashattention`: fare
+- Un unico filo conduttore lega tutto il capitolo, coalescenza, tiling,
+  kernel fusion, FlashAttention {cite}`dao2022flashattention`: fare
   più conti per ogni byte spostato, e tenere il byte vicino ai core.
-- Questo capitolo è il **«sotto il cofano»** della sezione «Prestazioni e
+- Questo capitolo è il «sotto il cofano» della sezione «Prestazioni e
   scala»: non serve programmare una GPU per usarla (PyTorch lo fa) ma sapere
   come funziona spiega perché un addestramento va veloce o lento.
-- Quando **una GPU non basta**, il lavoro si divide su più schede (parallelismo
+- Quando una GPU non basta, il lavoro si divide su più schede (parallelismo
   dati, tensor, pipeline, sharding): è così che nascono i modelli di frontiera.
 ```
 `````

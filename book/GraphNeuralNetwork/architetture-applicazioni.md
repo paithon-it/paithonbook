@@ -11,17 +11,17 @@ due limiti che, su un grafo vero, diventano subito ingombranti.
 Il primo riguarda i nodi nuovi. La GCN, così come Kipf e Welling la addestrano,
 si addestra su tutto il grafo in una volta sola, quel grafo lì e nessun altro,
 e non dice cosa fare con chi arriva dopo: è la situazione che la sezione «Il
-mondo come grafo» ha chiamato **transduttiva**. Pensa a un utente che si
+mondo come grafo» ha chiamato transduttiva. Pensa a un utente che si
 iscrive oggi a un social: quando la rete è stata addestrata lui non c'era, e
 per lui non esiste una risposta già pronta.
 
 E il fastidioso è che il muro non è dove sembra. I numeri che la rete ha
 imparato andrebbero benissimo anche per lui, e l'arrivo di un iscritto cambia
 l'elenco dei collegamenti soltanto lì attorno, dove arrivano i suoi archi. A
-non funzionare è la **procedura di addestramento**, che pretende di avere
+non funzionare è la procedura di addestramento, che pretende di avere
 davanti l'intero grafo fin dall'inizio.
 
-Il secondo limite è di **scala**, e si vede seguendo a ritroso il conto. Per
+Il secondo limite è di scala, e si vede seguendo a ritroso il conto. Per
 calcolare un nodo servono tutti i suoi vicini; per calcolare quelli servono i
 vicini dei vicini; e così via, allargandosi di un anello a ogni strato. Su un
 grafo di miliardi di archi, dove qualche nodo-celebrità ha milioni di
@@ -48,16 +48,16 @@ un nodo si guardano i suoi vicini. La GCN, per farlo, ha bisogno di avere
 davanti *tutta* la rete di amicizie, e di averla vista per intero già durante
 l'addestramento. GraphSAGE cambia il punto di vista con una domanda semplice:
 e se, invece di imparare a memoria una fila di numeri per ciascuna persona,
-imparassimo la **ricetta** per costruirla? Una ricetta del tipo «prendi la
+imparassimo la ricetta per costruirla? Una ricetta del tipo «prendi la
 persona, guarda i suoi amici, mescola nel modo giusto». Una ricetta la puoi
 applicare anche a qualcuno che non hai mai visto, purché tu sappia chi sono i
-suoi amici. Questo si chiama modo **induttivo**: la rete non impara *i
+suoi amici. Questo si chiama modo induttivo: la rete non impara *i
 risultati*, impara *come si calcolano*, e quel «come» funziona pure sui nuovi
 arrivati e su reti diverse da quella di addestramento (un antibiotico nuovo,
 un utente iscritto stamattina).
 
 La seconda idea combatte l'ingombro. Se una persona ha diecimila contatti,
-guardarli tutti a ogni giro è impraticabile. E se ne bastasse un **campione**?
+guardarli tutti a ogni giro è impraticabile. E se ne bastasse un campione?
 GraphSAGE, a ogni strato, non prende tutti i vicini ma ne pesca a caso un
 numero fisso (diciamo venticinque) e mescola solo quelli. È come farsi un'idea
 di un quartiere non intervistando tutti gli abitanti, ma un campione a sorte:
@@ -87,8 +87,8 @@ $$
 
 dove $\|$ è la concatenazione, $\sigma$ una non linearità, $\mathbf{W}^{(k)}$ i
 pesi condivisi dello strato $k$, e (cruciale)
-$\mathcal{S}(v) \subseteq \mathcal{N}(v)$ è un **sottoinsieme campionato
-uniformemente** dei vicini, di dimensione fissa. È il campionamento a rendere
+$\mathcal{S}(v) \subseteq \mathcal{N}(v)$ è un sottoinsieme campionato
+uniformemente dei vicini, di dimensione fissa. È il campionamento a rendere
 il costo per nodo indipendente dal grado: con $S$ vicini campionati per strato
 e $K$ strati, il sottografo che alimenta un nodo ha al più $S^K$ foglie,
 comunque grande sia il grafo. E poiché $\mathbf{W}^{(k)}$ e le funzioni di
@@ -101,11 +101,11 @@ Hamilton et al. ne propongono tre varianti:
 
 - **mean**: la media (eventualmente pesata) dei vettori dei vicini. Con una
   piccola modifica (invece di concatenare, si somma $v$ ai suoi vicini prima
-  della media) si ottiene la **variante convoluzionale**, che gli autori stessi
+  della media) si ottiene la variante convoluzionale, che gli autori stessi
   descrivono come «un'approssimazione lineare grossolana» di una convoluzione
   spettrale localizzata. Non è un caso particolare della GCN, ed è utile capire
   perché: quella media è l'operatore
-  $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$, la normalizzazione **per righe**
+  $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$, la normalizzazione per righe
   che la sezione sul message passing aveva scartato in favore della simmetrica
   $\hat{\mathbf{A}}$. Sulla catena di quattro nodi di quella sezione, con
   $\mathbf{X} = (1,2,3,4)^\top$, un passo dei due operatori dà
@@ -118,12 +118,12 @@ Hamilton et al. ne propongono tre varianti:
   $\max\{\sigma(\mathbf{W}_{\text{pool}}\,\mathbf{h}_u + \mathbf{b}) : u \in \mathcal{S}(v)\}$.
   Simmetrico perché il massimo non dipende dall'ordine.
 - **LSTM**: più espressiva ma, di suo, sensibile all'ordine; la si rende
-  utilizzabile applicandola a **permutazioni casuali** dei vicini.
+  utilizzabile applicandola a permutazioni casuali dei vicini.
 
 Il risparmio di costo mette in ombra una cosa: il
-campionamento rende il forward **aleatorio**, e non nello stesso modo per i tre
-aggregatori. La media su un campione stima la media completa **senza
-distorsione**; il massimo su un campione è invece sistematicamente **più basso**
+campionamento rende il forward aleatorio, e non nello stesso modo per i tre
+aggregatori. La media su un campione stima la media completa senza
+distorsione; il massimo su un campione è invece sistematicamente più basso
 del massimo vero, e la distorsione cresce col grado; una somma su campione
 sarebbe distorta di un fattore $S/\deg(v)$. Anche il caso non distorto smette di
 esserlo appena attraversa la non linearità (disuguaglianza di Jensen), ed è la
@@ -131,7 +131,7 @@ ragione per cui esiste tutta la letteratura sulla riduzione della varianza nel
 campionamento su grafo. In pratica, a inferenza si preferisce il vicinato pieno
 quando il grado lo consente. Una precisazione minuta e utile: $\mathcal{S}(v)$
 non è propriamente un sottoinsieme, perché quando la dimensione del campione
-supera il grado si campiona **con reinserimento**.
+supera il grado si campiona con reinserimento.
 
 `````
 
@@ -169,9 +169,9 @@ vicini, scelti a sorte; in quello di destra si tengono tutti, ma pesati.
 :alt: "A sinistra GraphSAGE: un nodo centrale con sei vicini, di cui solo tre campionati (pieni, archi solidi) e tre sbiaditi (archi tratteggiati); si aggrega solo il sottoinsieme campionato. A destra GAT: lo stesso nodo con gli stessi sei vicini tutti presenti, ma gli archi hanno spessore diverso, proporzionale al peso di attenzione, dal più grosso in alto a sinistra al più sottile in basso a sinistra."
 :width: 100%
 
-Due modi di guardare lo stesso vicinato. **GraphSAGE** (sinistra) ne
+Due modi di guardare lo stesso vicinato. GraphSAGE (sinistra) ne
 *campiona* un sottoinsieme e lo aggrega alla pari, per scalare a grafi enormi.
-**GAT** (destra) tiene tutti i vicini ma li **pesa** con l'attenzione: più
+GAT (destra) tiene tutti i vicini ma li pesa con l'attenzione: più
 grosso è il tratto dell'arco, più quel vicino conta.
 ```
 
@@ -180,10 +180,11 @@ grosso è il tratto dell'arco, più quel vicino conta.
 GraphSAGE tratta i vicini campionati alla pari: nella media, ognuno pesa quanto
 gli altri. Ma è ragionevole? In una molecola, non tutti i legami di un atomo
 sono ugualmente informativi; in un social, l'amico stretto conta più del
-contatto occasionale. L'idea di **pesare** i vicini l'abbiamo già incontrata, e
-in grande stile: è l’**attenzione** del {doc}`capitolo sui Transformer </Transformers/overview>`. La *Graph
-Attention Network* (GAT), proposta nel 2018 da Petar Veličković e colleghi, la
-prende pari pari e la porta sui grafi {cite}`velickovic2018graph`.
+contatto occasionale. L'idea di pesare i vicini l'abbiamo già incontrata, e in
+grande stile: è l’attenzione del {doc}`capitolo sui Transformer
+</Transformers/overview>`. La *Graph Attention Network* (GAT), proposta nel
+2018 da Petar Veličković e colleghi, la prende pari pari e la porta sui grafi
+{cite}`velickovic2018graph`.
 
 `````{tab} Elementare
 
@@ -191,7 +192,7 @@ Ricordi l'evidenziatore della
 {doc}`sezione sull'attenzione </Transformers/attenzione>`? Davanti a una parola, il
 modello ripassava tutte le altre e le colorava con intensità diversa, secondo
 quanto contavano. La GAT fa la stessa cosa, ma l'evidenziatore lo passa sui
-**vicini di un nodo nel grafo**. Quando aggiorna un nodo non fa più una media
+vicini di un nodo nel grafo. Quando aggiorna un nodo non fa più una media
 democratica: prima decide, vicino per vicino, *quanto* pesarlo (dà a ognuno un
 voto tra 0 e 1, e i voti sommano a 1) e poi fa la media *pesata* con quei voti,
 cioè moltiplica ogni bigliettino per il voto del suo mittente prima di
@@ -239,10 +240,10 @@ trasformazione lineare condivisa (moltiplica a sinistra, quindi ha le
 dimensioni girate rispetto alla $\mathbf{W}^{(l)}$ della GCN, che moltiplicava
 a destra), $\mathbf{a} \in \mathbb{R}^{2F'}$ è un
 vettore di parametri appreso (la lunghezza è $2F'$ perché deve moltiplicare due
-vettori concatenati, ed è quel che rende il punteggio uno **scalare**),
+vettori concatenati, ed è quel che rende il punteggio uno scalare),
 $\mathrm{LeakyReLU}$ la non linearità usata sul punteggio (pendenza $0{,}2$ per
 gli ingressi negativi) e $\sigma$ quella finale. Il coefficiente $\alpha_{ij}$
-dice **quanto il nodo $i$ pesa il vicino $j$**; la softmax garantisce
+dice quanto il nodo $i$ pesa il vicino $j$; la softmax garantisce
 $\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij} = 1$.
 
 Rispetto alla *scaled dot-product attention* dei Transformer l'ossatura «pesi
@@ -250,7 +251,7 @@ softmax, media pesata» è la stessa, ma due cose cambiano. Cambia il modo di
 calcolare il punteggio (qui una piccola rete con $\mathbf{a}$ e la
 $\mathrm{LeakyReLU}$, lì il prodotto scalare query·key diviso per la radice
 della dimensione delle chiavi, che è la ragione del nome *scaled*). E cambia il
-fatto che nella GAT **non esiste una proiezione separata per i *value***: la stessa
+fatto che nella GAT non esiste una proiezione separata per i *value*: la stessa
 $\mathbf{W}$ fa due mestieri, costruisce il punteggio e produce il vettore che
 poi viene mediato, mentre il Transformer tiene $\mathbf{W}_Q$, $\mathbf{W}_K$ e
 $\mathbf{W}_V$ distinte.
@@ -274,7 +275,7 @@ $$
 I quattro pesi sommano a $1$ come devono: il primo vicino domina
 l'aggregazione (poco più della metà), il terzo è quasi ignorato, e un quinto
 del nuovo stato se lo prende il nodo stesso. Come nei Transformer, si
-usano più **teste** in parallelo (*multi-head*): $H$ meccanismi di attenzione
+usano più teste in parallelo (*multi-head*): $H$ meccanismi di attenzione
 indipendenti, i cui risultati si concatenano negli strati intermedi e si
 mediano nello strato finale; così il modello può pesare i vicini secondo
 criteri diversi contemporaneamente.
@@ -284,7 +285,7 @@ criteri diversi contemporaneamente.
 Anche la GAT, in PyTorch Geometric, è uno strato pronto all'uso. L'argomento
 `heads` dice quanti evidenziatori diversi passare in parallelo sugli stessi
 vicini, ciascuno libero di dare voti secondo un criterio suo: nel capitolo sui
-Transformer si chiamavano **teste** di attenzione, e qui sono la stessa cosa.
+Transformer si chiamavano teste di attenzione, e qui sono la stessa cosa.
 Negli strati intermedi i risultati delle teste si mettono in fila uno dopo
 l'altro (`concat=True`, e infatti l'uscita è tanto più lunga quante sono le
 teste); nell'ultimo strato si fa invece la media, perché lì serve una risposta
@@ -304,7 +305,7 @@ conv2 = GATConv(hid_dim * 8, out_dim, heads=1, concat=False)
 ## Dal nodo al grafo intero, e fin dove si riesce a distinguere
 
 Finora abbiamo prodotto una fila di numeri *per ogni nodo*. Ma i compiti a
-**livello di grafo** («questa molecola è tossica?», «questo composto uccide i
+livello di grafo («questa molecola è tossica?», «questo composto uccide i
 batteri?») chiedono un solo verdetto per l'intero grafo. Serve un passo in più:
 comprimere le tante file di numeri dei nodi in una sola, quella del grafo.
 Questo passo si chiama **readout**, letteralmente «lettura finale», e la scelta
@@ -314,8 +315,8 @@ loro.
 `````{tab} Elementare
 
 Undici voti, uno per giocatore, e ne serve uno solo per la squadra intera. Le
-strade ovvie sono tre. **Sommare** tutti i voti, farne la **media**,
-oppure prendere il **massimo**, cioè il voto del migliore. Sono le tre ricette
+strade ovvie sono tre. Sommare tutti i voti, farne la media,
+oppure prendere il massimo, cioè il voto del migliore. Sono le tre ricette
 del readout, e tutte e tre hanno la proprietà che su un grafo serve: il
 risultato non cambia se i giocatori li elenchi in un altro ordine.
 
@@ -364,29 +365,29 @@ colora iterativamente i nodi impastando la propria etichetta con il
 message passing.
 
 Prima di enunciare il risultato conviene dire che cos'è 1-WL, perché il nome
-«test di isomorfismo» promette più di quel che mantiene: è un’**euristica
-incompleta**, e lo dichiara il paper stesso. Se due grafi ricevono colorazioni
+«test di isomorfismo» promette più di quel che mantiene: è un’euristica
+incompleta, e lo dichiara il paper stesso. Se due grafi ricevono colorazioni
 diverse allora non sono isomorfi; se le ricevono uguali non si può concludere
 niente. Il controesempio è elementare: un ciclo di sei nodi e due triangoli
 separati sono entrambi $2$-regolari, quindi con feature iniziali costanti ogni
 nodo ha lo stesso stato a ogni giro in tutti e due, e 1-WL li dichiara
-indistinguibili. Lo sono di conseguenza anche per **qualunque** GNN a message
+indistinguibili. Lo sono di conseguenza anche per qualunque GNN a message
 passing, con qualunque MLP: non è un limite di GIN, è il tetto.
 
-Xu et al. dimostrano appunto che **nessuna GNN a message passing può
-distinguere due grafi che 1-WL dichiara indistinguibili** (Lemma 2, il tetto
+Xu et al. dimostrano appunto che nessuna GNN a message passing può
+distinguere due grafi che 1-WL dichiara indistinguibili (Lemma 2, il tetto
 teorico) e che una GNN raggiunge quel tetto (Teorema 3) se sono iniettive tutte
-e tre le funzioni in gioco: l'aggregazione sul **multinsieme** dei vicini, la
-**combinazione** con lo stato del nodo stesso, e il **readout** finale; e con
+e tre le funzioni in gioco: l'aggregazione sul multinsieme dei vicini, la
+combinazione con lo stato del nodo stesso, e il readout finale; e con
 abbastanza strati. Sopra tutto sta un'ipotesi che è facile perdere e che regge
-il resto: le feature d'ingresso provengono da un insieme **numerabile**. Da qui
+il resto: le feature d'ingresso provengono da un insieme numerabile. Da qui
 la gerarchia:
 
 $$
 \text{somma} \;\succ\; \text{media} \;\succ\; \text{massimo},
 $$
 
-dove $\succ$ va letto **nel quadro di Xu et al.**, cioè come una gerarchia fra
+dove $\succ$ va letto nel quadro di Xu et al., cioè come una gerarchia fra
 le *informazioni* che i tre aggregatori conservano dopo una mappa appresa: la
 somma conserva il multinsieme (feature e molteplicità, quanti vicini di
 ciascun tipo); la media lo riduce alla distribuzione, e perde il conteggio; il
@@ -430,7 +431,7 @@ risale ai *fingerprint molecolari neurali* di Duvenaud e colleghi del 2015
 molecola da dare in pasto a un modello (quanti anelli, quali gruppi chimici,
 che peso) le sceglieva un chimico a mano, una per una; il lavoro di Duvenaud
 le fa trovare alla rete, che dalla struttura della molecola ricava da sé la
-fila di numeri che la descrive. La punta di diamante è **halicin**, la
+fila di numeri che la descrive. La punta di diamante è halicin, la
 molecola con cui si è aperto il capitolo. Conviene aggiungere solo quello che
 lì non era stato detto: la rete che l'ha pescata è una rete a message passing
 come quelle di queste pagine, e la molecola non funziona su un batterio
@@ -442,7 +443,7 @@ rispondono più).
 sistema che Pinterest mette in produzione nel 2018
 {cite}`ying2018graph` per suggerire contenuti. Il suo grafo ha da una parte le
 immagini salvate dagli utenti e dall'altra le bacheche in cui finiscono, con un
-arco ogni volta che un'immagine sta in una bacheca: è il grafo **bipartito**
+arco ogni volta che un'immagine sta in una bacheca: è il grafo bipartito
 dell'introduzione, i nodi divisi in due squadre e archi solo fra una squadra e
 l'altra.
 PinSage è, nella sostanza, un GraphSAGE portato a scala web: campiona i vicini
@@ -459,8 +460,8 @@ propaga segnale lungo gli archi, sì. È il motivo per cui l'antiriciclaggio e l
 difesa dei pagamenti sono fra i primi luoghi in cui queste reti sono entrate in
 esercizio.
 
-**Mappe e traffico.** Dal 2020 le stime del **tempo di percorrenza in Google
-Maps** sono calcolate da una GNN sviluppata con DeepMind: la rete stradale è
+**Mappe e traffico.** Dal 2020 le stime del tempo di percorrenza in Google
+Maps sono calcolate da una GNN sviluppata con DeepMind: la rete stradale è
 il grafo (i segmenti di strada nei nodi, e un arco fra due segmenti che si
 susseguono sulla stessa strada o che si incontrano a un incrocio) e il modello
 prevede i tempi propagando informazione lungo il percorso, migliorando
@@ -485,15 +486,15 @@ Il difetto più curioso è che impilare troppi strati peggiora le cose. Con
 uno strato ogni nodo ascolta i vicini; con due, anche i vicini dei vicini; ma
 continuando così, dopo un po’ *tutti* finiscono per ascoltare *tutti*, e i nodi
 si somigliano sempre più, come una voce che, passando di bocca in bocca per
-tutto il paese, si uniforma in un unico mormorio. Si chiama **oversmoothing**,
+tutto il paese, si uniforma in un unico mormorio. Si chiama oversmoothing,
 «levigatura eccessiva»: a furia di mediare con i vicini, si cancellano le
 differenze che volevamo cogliere. Ecco perché, in pratica, le GNN restano
-**basse**: due, tre, quattro strati, di rado di più. Per scendere più giù
+basse: due, tre, quattro strati, di rado di più. Per scendere più giù
 servono scorciatoie che portino avanti anche lo stato vecchio, prese dalle reti
 per immagini (che di strati ne impilano centinaia): con quelle si arriva pure a
 cinquanta strati, ma resta l'eccezione.
 
-Un secondo problema è opposto, e riguarda l'informazione che sta **lontana**, a
+Un secondo problema è opposto, e riguarda l'informazione che sta lontana, a
 molti passi di distanza. Il guaio è di capienza. Allargando
 il giro di un passo, i nodi che devono farsi sentire raddoppiano, triplicano,
 decuplicano; ma la fila di numeri su cui il nodo scrive quel che ha sentito ha
@@ -530,10 +531,10 @@ amici hanno gusti simili). Dove vale il contrario, e chi è connesso è
   Knowledge Network** {cite}`xu2018jumping` parte da un'osservazione diversa,
   cioè che nodi diversi vogliono campi recettivi diversi (un hub satura in due
   salti, un nodo periferico no), e quindi invece di prendere l'uscita
-  dell'ultimo strato le **concatena tutte**, lasciando che sia il modello a
+  dell'ultimo strato le concatena tutte, lasciando che sia il modello a
   scegliere la profondità nodo per nodo. **DeepGCN** {cite}`li2019deepgcns`
   importa di peso residui e connessioni dense da ResNet e DenseNet contro i
-  gradienti che svaniscono, e aggiunge un vicinato **dilatato** (si prendono i
+  gradienti che svaniscono, e aggiunge un vicinato dilatato (si prendono i
   vicini saltandone alcuni) contro l'oversmoothing: con questa ricetta
   arrivano a 56 strati su nuvole di punti. Restano eccezioni, però: il vincolo
   pratico alla profondità è ancora la regola.
@@ -548,7 +549,7 @@ amici hanno gusti simili). Dove vale il contrario, e chi è connesso è
   non solo di modelli.
 - **Eterofilia.** Molte GNN presuppongono l’**omofilia** (nodi collegati con
   etichette simili) che l'aggregazione dei vicini sfrutta implicitamente. Sui
-  grafi **eterofili**, dove i nodi collegati tendono a differire, le
+  grafi eterofili, dove i nodi collegati tendono a differire, le
   architetture standard possono fare peggio di un percettrone che ignora la
   struttura, ed è un filone di ricerca attivo.
 
@@ -557,22 +558,22 @@ amici hanno gusti simili). Dove vale il contrario, e chi è connesso è
 ## Graph Transformer: togliere il vincolo del vicinato
 
 Dei limiti appena elencati, l'over-squashing dipende da com'è fatto il grafo: il
-message passing fa parlare **solo i nodi collegati**, quindi l'informazione
+message passing fa parlare solo i nodi collegati, quindi l'informazione
 lontana deve attraversare molti strati e si strozza nei passaggi obbligati.
 Viene naturale chiedersi cosa succeda a togliere quel vincolo e a lasciar
 parlare tutti con tutti. La risposta arriva dall'altro capo del libro, ed è
 meno lieta di come la si racconta di solito.
 
 Toglierlo tocca l'over-squashing e l'oversmoothing, e ne guarisce uno solo.
-Guarisce l’**over-squashing**, perché se ogni nodo parla con ogni altro non c'è
-più niente da far transitare per strade strette. L’**oversmoothing** invece
+Guarisce l’over-squashing, perché se ogni nodo parla con ogni altro non c'è
+più niente da far transitare per strade strette. L’oversmoothing invece
 peggiora: non nasce dalla distanza fra i nodi, ma dal fatto che a ogni giro si
 fa una media con i vicini, e se i vicini diventano tutti la media cancella le
 differenze ancora più in fretta.
 
 `````{tab} Elementare
 
-L'attenzione dei Transformer è, di fatto, passaparola su un **grafo completo**:
+L'attenzione dei Transformer è, di fatto, passaparola su un grafo completo:
 ogni parola parla con tutte le altre. Allora la strada per un grafo è ovvia:
 mettiamoci un Transformer sopra, e ogni nodo parlerà con ogni altro senza
 aspettare che il messaggio faccia il giro lungo gli archi.
@@ -592,7 +593,7 @@ nodo dove sta nel grafo.
 Quelle firme esistono già: sono le configurazioni di numeri sui nodi che nella
 sezione sul message passing abbiamo chiamato le frequenze del grafo, dalla più
 liscia alla più a scacchiera, e il cui nome proprio è
-**autovettori del laplaciano**. La prima dice grossomodo «da che parte del
+autovettori del laplaciano. La prima dice grossomodo «da che parte del
 grafo stai», le successive con dettaglio via via più fine. Nessuno se le
 inventa: gliele dà la forma del grafo.
 
@@ -614,8 +615,8 @@ lontano: il vicinato era un aiuto, non un difetto da togliere.
 `````{tab} Superiore
 
 Un **Graph Transformer** sostituisce l'aggregazione sui vicini con
-un'attenzione su **tutte** le coppie di nodi. Il beneficio è strutturale:
-ogni nodo raggiunge ogni altro in **un solo passo**, quindi l'over-squashing
+un'attenzione su tutte le coppie di nodi. Il beneficio è strutturale:
+ogni nodo raggiunge ogni altro in un solo passo, quindi l'over-squashing
 sparisce per costruzione e non serve profondità per avere portata.
 
 L'affermazione fatta sopra, che l'oversmoothing invece peggiora, si misura in
@@ -623,11 +624,11 @@ una riga. Su un grafo completo con i cappi l'adiacenza $\tilde{\mathbf{A}}$ è
 $\mathbf{J}$, la matrice fatta di soli uno, tutti i gradi valgono $N$ e quindi
 $\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}
 \tilde{\mathbf{D}}^{-1/2} = \mathbf{J}/N$, il cui spettro è $1$ una volta e $0$
-le altre $N-1$ volte: il secondo autovalore è **esattamente zero**, e un solo
-passo porta tutti i nodi allo stesso valore.
-Sulla catena di quattro nodi della sezione sul message passing lo stesso
-autovalore valeva $0{,}729$, cioè servivano decine di passi. Più il grafo è connesso, più
-il collasso è rapido, e il grafo completo è il caso estremo.
+le altre $N-1$ volte: il secondo autovalore è esattamente zero, e un solo passo
+porta tutti i nodi allo stesso valore. Sulla catena di quattro nodi della
+sezione sul message passing lo stesso autovalore valeva $0{,}729$, cioè
+servivano decine di passi. Più il grafo è connesso, più il collasso è rapido, e
+il grafo completo è il caso estremo.
 
 Il costo dell'attenzione piena è altrettanto strutturale del beneficio:
 $O(N^2)$ nel numero di nodi, che su un grafo da milioni di nodi
@@ -635,17 +636,17 @@ non è praticabile senza le stesse approssimazioni sparse viste nel capitolo sui
 Transformer (e il cerchio si chiude, perché quelle approssimazioni erano
 descritte proprio come sparsificazione di un grafo).
 
-Il problema da risolvere è che l'attenzione piena **non prende $\mathbf{A}$ in
-ingresso**: la sua uscita è funzione del solo multinsieme delle feature dei
+Il problema da risolvere è che l'attenzione piena non prende $\mathbf{A}$ in
+ingresso: la sua uscita è funzione del solo multinsieme delle feature dei
 nodi, ed è quindi la stessa qualunque siano gli archi, o se non ce ne fosse
 nessuno. Senza informazione aggiuntiva il modello non distingue un anello da
 una stella. Attribuirlo all'invarianza alle permutazioni sarebbe un errore:
 quella è un'altra cosa, ed è la proprietà *desiderabile* di cui si è parlato
 finora. Anche una GNN è equivariante alle permutazioni, e non è affatto cieca
 alla topologia. Sono due simmetrie diverse. La GNN è equivariante rispetto alle
-permutazioni che riordinano $(\mathbf{A}, \mathbf{X})$ **insieme**; il
-Transformer nudo lo è rispetto a quelle che riordinano $\mathbf{X}$ **da
-solo**, qualunque cosa faccia $\mathbf{A}$, ed è una simmetria molto più
+permutazioni che riordinano $(\mathbf{A}, \mathbf{X})$ insieme; il
+Transformer nudo lo è rispetto a quelle che riordinano $\mathbf{X}$ da
+solo, qualunque cosa faccia $\mathbf{A}$, ed è una simmetria molto più
 grande: pretenderla costringe la funzione a ignorare $\mathbf{A}$. È
 un'informazione che non entra, più che un difetto di simmetria, e la si deve
 reiniettare: le due strade sono quelle che il capitolo sui Transformer già
@@ -656,34 +657,34 @@ non banali del laplaciano normalizzato
 $\mathbf{L} = \mathbf{U}\boldsymbol{\Lambda} \mathbf{U}^\top$ e si prende la
 riga $i$-esima di $\mathbf{U}_{:,1:k}$ come firma del nodo $i$, che chiamiamo
 $\mathbf{p}_i$. Nel lavoro che ha introdotto la costruzione
-{cite}`dwivedi2020generalization` quella firma **si somma** alle feature del
+{cite}`dwivedi2020generalization` quella firma si somma alle feature del
 nodo dopo una proiezione lineare
 ($\mathbf{p}_i^0 = \mathbf{C}^0\mathbf{p}_i + \mathbf{c}^0$ con
 $\mathbf{C}^0 \in \mathbb{R}^{d \times k}$, poi
 $\mathbf{h}_i^0 = \hat{\mathbf{h}}_i^0 + \mathbf{p}_i^0$), non si concatena: la
 proiezione serve proprio perché $k$ e $d$ non coincidono. È la stessa mossa che
 il capitolo sui Transformer descrive per la codifica sinusoidale, dove la firma
-della posizione si **somma** all'embedding del token invece di affiancarglisi.
+della posizione si somma all'embedding del token invece di affiancarglisi.
 Diverse implementazioni successive concatenano invece; e la codifica entra
-**solo allo strato d'ingresso**, non negli strati intermedi.
+solo allo strato d'ingresso, non negli strati intermedi.
 
 La giustificazione è quella già stabilita in questo capitolo: gli autovettori
 sono i modi di variazione del grafo ordinati per frequenza, e su un grafo a
 catena sono sinusoidi. È in questo senso che la costruzione spettrale
-**generalizza a un grafo qualunque** l'idea della codifica posizionale
+generalizza a un grafo qualunque l'idea della codifica posizionale
 sinusoidale, ed è esattamente ciò che gli autori rivendicano («*naturally
 generalize*»). Non è però un'identità, e conviene dire dove le due famiglie si
 separano, perché sono differenze misurabili: le frequenze degli autovettori del
-cammino sono $\pi k/N$, **spaziate linearmente** e legate alla lunghezza $N$,
-mentre quelle di Vaswani sono $10000^{-2i/d}$, **geometriche** e indipendenti
+cammino sono $\pi k/N$, spaziate linearmente e legate alla lunghezza $N$,
+mentre quelle di Vaswani sono $10000^{-2i/d}$, geometriche e indipendenti
 dalla lunghezza (è la proprietà per cui il Transformer estrapola a frasi mai
-viste); sul cammino gli autovettori sono soli **coseni**, mentre la codifica
+viste); sul cammino gli autovettori sono soli coseni, mentre la codifica
 sinusoidale accoppia un seno e un coseno per frequenza; e un autovettore è
-definito **a meno del segno**, una colonna di codifica posizionale no. Parenti
+definito a meno del segno, una colonna di codifica posizionale no. Parenti
 stretti, insomma, non lo stesso oggetto.
 
-Due avvertenze pratiche, entrambe reali. Gli autovettori sono definiti **a meno
-del segno** ($-\mathbf{u}$ è altrettanto valido), e su autovalori ripetuti a
+Due avvertenze pratiche, entrambe reali. Gli autovettori sono definiti a meno
+del segno ($-\mathbf{u}$ è altrettanto valido), e su autovalori ripetuti a
 meno di una rotazione dentro l'autospazio: si rimedia campionando il segno a
 caso in addestramento, così il modello impara a non dipenderne. E la
 decomposizione costa $O(N^3)$, quindi si calcola una volta sola in
@@ -692,15 +693,15 @@ preprocessing e solo per i primi $k$ autovettori.
 La seconda strada è il **bias di attenzione**: invece di aggiungere qualcosa
 ai nodi, si modifica il punteggio di attenzione fra due nodi in funzione della
 loro relazione. È la scelta di **Graphormer** {cite}`ying2021transformers`, che
-somma ai logit un termine appreso dipendente dalla **distanza sul grafo** fra i
+somma ai logit un termine appreso dipendente dalla distanza sul grafo fra i
 due nodi (più un termine sul grado e uno sugli archi lungo il cammino).
 Formalmente è una variante di attenzione relativa, la stessa famiglia di idee
 delle codifiche posizionali relative sulle sequenze, e gli autori mostrano che
-con questi accorgimenti molte GNN classiche diventano **casi particolari** del
+con questi accorgimenti molte GNN classiche diventano casi particolari del
 modello.
 
 Le due strade non sono alternative: l'impostazione oggi prevalente le combina,
-tenendo un ramo di message passing **accanto** all'attenzione globale, così che
+tenendo un ramo di message passing accanto all'attenzione globale, così che
 il primo curi la struttura locale e la seconda la portata
 {cite}`rampasek2022recipe`. È il riconoscimento onesto che il vicinato non era
 un difetto da rimuovere ma un *prior* utile, e che quello che mancava era un
@@ -793,7 +794,7 @@ lavoro che ha introdotto i Transformer {cite}`vaswani2017attention`
 sono $1{,}000$, $0{,}316$, $0{,}100$, $0{,}032$: calano geometricamente e non
 sanno niente di $N$, tanto che su una finestra di sedici posizioni le più basse
 sono così lente da risultare quasi piatte. La conseguenza si misura:
-**dodici colonne su sedici** della codifica del Transformer somigliano più che
+dodici colonne su sedici della codifica del Transformer somigliano più che
 altro all'autovettore *banale*, quello a frequenza zero, e nessuna coincide con
 un
 autovettore vero, la migliore somiglianza fermandosi a $0{,}916$. Due basi di
@@ -809,8 +810,8 @@ caso.
 ## L'ecosistema, e dove andare da qui
 
 Chi voglia mettere le mani in pasta non parte da zero: due librerie coprono
-quasi tutto. **PyTorch Geometric** (PyG, quella degli esempi di questa sezione)
-e la **Deep Graph Library** (DGL) offrono, sopra PyTorch, uno strato già pronto
+quasi tutto. PyTorch Geometric (PyG, quella degli esempi di questa sezione)
+e la Deep Graph Library (DGL) offrono, sopra PyTorch, uno strato già pronto
 per ciascuno dei modelli incontrati qui (`GCNConv` per la GCN, `SAGEConv` per
 GraphSAGE, `GATConv` per la GAT, `GINConv` per la variante che somma i vicini),
 gli arnesi che servono a campionare i vicini e decine di raccolte di dati su cui
@@ -829,50 +830,50 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
 
 ```{admonition} Da ricordare
 :class: important
-- **GraphSAGE** impara la **ricetta** con cui si costruisce la descrizione di un
+- GraphSAGE impara la ricetta con cui si costruisce la descrizione di un
   nodo, non la descrizione già fatta: una ricetta la si applica anche a chi non
   c'era durante l'addestramento (l'utente iscritto stamattina) e a reti diverse
-  da quella su cui si è imparato, ed è questo che si chiama modo **induttivo**.
+  da quella su cui si è imparato, ed è questo che si chiama modo induttivo.
   In più, invece di ascoltare tutti i vicini ne pesca a caso un numero fisso
   (venticinque, per dire) e mescola solo quelli: come ci si fa un'idea di un
   quartiere intervistandone un campione a sorte, invece di bussare a ogni porta.
-- La **GAT** passa l'evidenziatore sui vicini: prima decide, vicino per vicino,
+- La GAT passa l'evidenziatore sui vicini: prima decide, vicino per vicino,
   quanto pesarlo (a ognuno un voto tra 0 e 1, e i voti sommano a 1), poi fa la
   media pesata con quei voti, che non scrive nessuno a mano ma impara la rete. È
   il gesto dell'attenzione dei Transformer, con un conto diverso per assegnare i
   voti; e là ogni parola guarda tutte le altre, qui ogni nodo guarda solo i
   vicini a cui è davvero collegato.
-- Per un verdetto sull’**intero grafo** («questa molecola è tossica?») i valori
+- Per un verdetto sull’intero grafo («questa molecola è tossica?») i valori
   di tutti i nodi vanno ridotti a uno solo, come si ricava il voto di una squadra
   dai voti dei giocatori: sommandoli, mediandoli o prendendo il massimo. La
-  **somma** è la scelta più fine perché è l'unica che ricorda **quanti** sono i
+  somma è la scelta più fine perché è l'unica che ricorda quanti sono i
   nodi: se gli atomi di due molecole portano tutti lo stesso valore, ma una
   molecola ne ha tre e l'altra sei, la somma dà il triplo di quel valore nella
   prima e il sestuplo nella seconda, mentre la media e il massimo danno lo stesso
   risultato per entrambe e le confondono. Nemmeno la somma però arriva
   dappertutto: un anello di sei atomi e due triangoli separati restano
   indistinguibili per qualunque rete a passaparola.
-- Applicazioni reali: farmaci (**halicin**, 2020), raccomandazione (**PinSage**
-  di Pinterest, 2018), rilevamento frodi, tempi di percorrenza in **Google Maps**
+- Applicazioni reali: farmaci (halicin, 2020), raccomandazione (PinSage
+  di Pinterest, 2018), rilevamento frodi, tempi di percorrenza in Google Maps
   (DeepMind, 2020–21), simulazioni di fluidi e previsioni meteo.
 - Limiti aperti: troppi strati appiattiscono i nodi fino a renderli
-  indistinguibili (**oversmoothing**), l'informazione che sta lontana si perde
-  passando per imbuti stretti (**over-squashing**), i grafi da miliardi di
+  indistinguibili (oversmoothing), l'informazione che sta lontana si perde
+  passando per imbuti stretti (over-squashing), i grafi da miliardi di
   collegamenti restano cari da addestrare, e quasi tutte queste reti danno per
   scontato che chi è collegato si somigli (gli amici hanno gusti simili): nelle
   reti dove vale il contrario, dove chi è connesso è diverso, rendono molto meno.
-  In pratica le GNN restano **basse**: due, tre, quattro strati, di rado di
+  In pratica le GNN restano basse: due, tre, quattro strati, di rado di
   più.
-- I **Graph Transformer** tolgono il vincolo del vicinato e lasciano parlare
+- I Graph Transformer tolgono il vincolo del vicinato e lasciano parlare
   ogni nodo con ogni altro. Così l'informazione lontana non si perde più per
   strada; ma dei due difetti ne curano uno solo, perché appiattire i nodi fino
   a renderli indistinguibili, con tutti collegati a tutti, viene ancora più in
   fretta. E in più il grafo smette di contare, perché un modello che collega
   tutti con tutti non guarda mai chi è collegato a chi davvero. La struttura va
-  ridata, assegnando a ogni nodo una **firma** che dica dove sta nel grafo:
+  ridata, assegnando a ogni nodo una firma che dica dove sta nel grafo:
   sono le configurazioni di numeri che qui abbiamo chiamato le frequenze del
-  grafo (gli **autovettori del laplaciano**), e su una fila di nodi sono onde
-  di frequenza crescente, **parenti** di quelle con cui i Transformer segnano
+  grafo (gli autovettori del laplaciano), e su una fila di nodi sono onde
+  di frequenza crescente, parenti di quelle con cui i Transformer segnano
   la posizione delle parole, non le stesse.
 ```
 
@@ -882,43 +883,43 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
 
 ```{admonition} Da ricordare
 :class: important
-- **GraphSAGE** rende la GNN **induttiva** (impara *funzioni* di aggregazione, non
-  embedding fissi: generalizza a nodi e grafi mai visti) e **scalabile**
-  (**campiona** un sottoinsieme di vicini a ogni strato). Aggregatori: mean, pool
+- GraphSAGE rende la GNN induttiva (impara *funzioni* di aggregazione, non
+  embedding fissi: generalizza a nodi e grafi mai visti) e scalabile
+  (campiona un sottoinsieme di vicini a ogni strato). Aggregatori: mean, pool
   (max), LSTM.
-- La **GAT** pesa i vicini con l’**attenzione**: coefficienti $\alpha_{ij}$
+- La GAT pesa i vicini con l’attenzione: coefficienti $\alpha_{ij}$
   appresi e normalizzati con softmax sul vicinato ($\sum_j \alpha_{ij}=1$), con
   più teste in parallelo. Ha l'ossatura della self-attention dei Transformer
   (pesi softmax, media pesata) su un grafo qualunque anziché completo, ma
   calcola il punteggio con una piccola rete e non tiene una proiezione separata
   per i *value*.
-- I compiti a **livello di grafo** richiedono un **readout** (somma, media,
-  massimo). La **somma** è la più espressiva perché conserva la molteplicità dei
-  vicini: **GIN** la usa per eguagliare il test **1-WL** di
-  **Weisfeiler–Lehman**, che è il tetto del potere espressivo di una GNN a
+- I compiti a livello di grafo richiedono un readout (somma, media,
+  massimo). La somma è la più espressiva perché conserva la molteplicità dei
+  vicini: GIN la usa per eguagliare il test 1-WL di
+  Weisfeiler–Lehman, che è il tetto del potere espressivo di una GNN a
   message passing. Il teorema chiede però tre iniettività (aggregazione,
   combinazione, readout), abbastanza strati e feature da un insieme
   numerabile; e quel tetto è un'euristica incompleta, che non distingue per
   esempio un ciclo di sei nodi da due triangoli.
-- Applicazioni reali: farmaci (**halicin**, 2020), raccomandazione (**PinSage**,
-  Pinterest 2018), rilevamento frodi, tempi di percorrenza in **Google Maps**
+- Applicazioni reali: farmaci (halicin, 2020), raccomandazione (PinSage,
+  Pinterest 2018), rilevamento frodi, tempi di percorrenza in Google Maps
   (DeepMind, 2020–21), simulazioni fisiche e meteo.
-- Limiti aperti: **oversmoothing** (troppi strati → nodi indistinguibili),
-  **over-squashing** (informazione lontana schiacciata), **scalabilità**,
-  **eterofilia**. In pratica le GNN restano **basse**, 2–4 strati.
-- Un **Graph Transformer** sostituisce l'aggregazione sui vicini con
+- Limiti aperti: oversmoothing (troppi strati → nodi indistinguibili),
+  over-squashing (informazione lontana schiacciata), scalabilità,
+  eterofilia. In pratica le GNN restano basse, 2–4 strati.
+- Un Graph Transformer sostituisce l'aggregazione sui vicini con
   l'attenzione su tutte le coppie: ogni nodo raggiunge ogni altro in un passo
   (fine dell'over-squashing, e non dell'oversmoothing, che sul grafo completo
-  peggiora perché lì il **secondo autovalore di $\hat{\mathbf{A}}$** vale zero,
+  peggiora perché lì il secondo autovalore di $\hat{\mathbf{A}}$ vale zero,
   contro lo $0{,}729$ della catena a quattro nodi), al costo di $O(N^2)$ e
   della perdita
   della topologia, perché l'attenzione piena non prende $\mathbf{A}$ in ingresso. La
-  struttura si reinietta come **codifica posizionale** con i primi autovettori
+  struttura si reinietta come codifica posizionale con i primi autovettori
   del laplaciano, sommati alle feature dopo una proiezione lineare e solo allo
-  strato d'ingresso, e definiti a meno del **segno**, che in addestramento si
-  campiona; oppure come **bias di attenzione** dipendente dalla distanza sul
-  grafo (**Graphormer**). Sulla catena quegli autovettori sono sinusoidi, e in
-  questo senso la costruzione **generalizza** la codifica sinusoidale a un
+  strato d'ingresso, e definiti a meno del segno, che in addestramento si
+  campiona; oppure come bias di attenzione dipendente dalla distanza sul
+  grafo (Graphormer). Sulla catena quegli autovettori sono sinusoidi, e in
+  questo senso la costruzione generalizza la codifica sinusoidale a un
   grafo qualunque; non la contiene però come caso particolare, perché le
   frequenze sono $\pi k/N$ e non $10000^{-2i/d}$. Le impostazioni attuali
   tengono i due canali insieme, message passing per il locale e attenzione per

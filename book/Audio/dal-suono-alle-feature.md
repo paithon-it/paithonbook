@@ -23,11 +23,11 @@ avanti e indietro seguendo la pressione dell'aria. Per portare quel movimento
 dentro un computer dobbiamo misurarlo.
 
 Prima però conviene fissare una parola, perché regge tutto il resto del
-capitolo. Quel movimento è un'oscillazione, e **quante volte al secondo la
-membrana va avanti e indietro si chiama frequenza**: si misura in hertz (Hz), e
+capitolo. Quel movimento è un'oscillazione, e quante volte al secondo la
+membrana va avanti e indietro si chiama **frequenza**: si misura in hertz (Hz), e
 mille hertz fanno un kilohertz (kHz). La traduzione da tenere a mente è
-semplice: **frequenza alta vuol dire suono acuto, frequenza bassa vuol dire
-suono grave**. Il la del diapason oscilla 440 volte al secondo, cioè 440 Hz; la
+semplice: frequenza alta vuol dire suono acuto, frequenza bassa vuol dire
+suono grave. Il la del diapason oscilla 440 volte al secondo, cioè 440 Hz; la
 stessa nota un'ottava sopra ne fa il doppio, 880.
 
 `````{tab} Elementare
@@ -51,8 +51,8 @@ righello, e le tacche sono in numero fisso, deciso una volta per tutte.
 
 Il suono è un segnale continuo $x(t)$: l'ampiezza dell'onda di pressione in
 funzione del tempo. La digitalizzazione compie due operazioni. Il
-**campionamento** discretizza il tempo, misurando $x$ a intervalli regolari
-$T_s$ e ottenendo la sequenza $x[n] = x(nT_s)$. La **quantizzazione**
+campionamento discretizza il tempo, misurando $x$ a intervalli regolari
+$T_s$ e ottenendo la sequenza $x[n] = x(nT_s)$. La quantizzazione
 discretizza l'ampiezza su un numero finito di livelli: con la codifica PCM a
 16 bit ogni campione è un intero su $2^{16} = 65536$ valori. Un secondo di
 audio "CD" è quindi, per ogni canale, un vettore di $44\,100$ interi.
@@ -71,9 +71,9 @@ La domanda è: quante volte al secondo dobbiamo misurare per non perdere
 informazione? Troppo poche e il suono si deforma; troppe e sprechiamo memoria.
 
 Attenzione, però, a un tranello di vocabolario, perché da qui in avanti la
-parola «frequenza» fa due mestieri diversi. Uno lo conosciamo già: **la
-frequenza di un suono**, quante volte al secondo oscilla l'aria, quella che dice
-se è acuto o grave. L'altro è nuovo: **la frequenza di campionamento**, quante
+parola «frequenza» fa due mestieri diversi. Uno lo conosciamo già: la
+frequenza di un suono, quante volte al secondo oscilla l'aria, quella che dice
+se è acuto o grave. L'altro è nuovo: la **frequenza di campionamento**, quante
 volte al secondo *noi* andiamo a guardare dov'è la membrana. Il suono oscilla da
 sé, e non gliene importa niente di noi; noi decidiamo ogni quanto guardare. Sono
 due cose distinte, ma si scrivono tutte e due in hertz, ed è lì che ci si
@@ -88,7 +88,7 @@ Nei film le ruote delle auto ogni tanto sembrano girare al contrario, o stare
 ferme: capita perché la telecamera scatta troppe poche foto al secondo per
 tenere il passo del giro. Con il suono succede la stessa cosa, e la battuta
 finale è altrettanto strana. Un fischio troppo acuto per il numero di
-misure che stiamo prendendo non sparisce: si **traveste**, e torna indietro più
+misure che stiamo prendendo non sparisce: si traveste, e torna indietro più
 grave di quanto era, come una nota che nessuno ha mai suonato.
 
 Dalla pellicola, poi, non si torna indietro: quella ruota che sembra girare al
@@ -96,8 +96,8 @@ rovescio non si distingue più da una ruota che girava davvero al rovescio.
 Ecco perché il fischio troppo acuto si spegne prima di cominciare a misurare, e
 non dopo.
 
-La regola che tiene lontano il travestimento è semplice: misurare **più del
-doppio** delle volte rispetto alla vibrazione più rapida che vogliamo
+La regola che tiene lontano il travestimento è semplice: misurare più del
+doppio delle volte rispetto alla vibrazione più rapida che vogliamo
 catturare. L'orecchio
 umano arriva a circa $20\,000$ oscillazioni al secondo (20 kHz), quindi servono
 più di $40\,000$ misure al secondo: i CD ne fanno $44\,100$, che stanno larghi
@@ -232,14 +232,14 @@ gradini, ed è esattamente l'informazione che la trasformata del file intero non
 saprebbe dare.
 ```
 
-Le finestre a cavallo fra una nota e l'altra mostrano **entrambe** le frequenze,
+Le finestre a cavallo fra una nota e l'altra mostrano entrambe le frequenze,
 ed è la cosa più istruttiva del disegno: è il compromesso su cui la trasformata
 a finestre è costruita, non una sbavatura. Una finestra lunga distingue bene le
 frequenze e male gli istanti, perché dentro ci finiscono due note; una corta fa
 il contrario. Non esiste una lunghezza che vinca su tutti e due i fronti, ed è
 per questo che sceglierla è una decisione e non un dettaglio.
 
-Una parola sulla **forma** della finestra, perché nel disegno è gonfia in mezzo
+Una parola sulla forma della finestra, perché nel disegno è gonfia in mezzo
 e va a zero ai bordi, invece del rettangolo che «finestrella» lascia
 immaginare.
 Tagliare di netto un pezzo di onda creerebbe due gradini artificiali agli
@@ -297,7 +297,7 @@ $$
 X[m,k] = \sum_{n} x[n]\, w[n - mH]\, e^{-\,i\,2\pi kn/N},
 $$
 
-dove $\mathbf{w}$ è la **finestra** (lunga $N$ campioni), $H$ il **passo** (*hop*) di cui
+dove $\mathbf{w}$ è la finestra (lunga $N$ campioni), $H$ il passo (*hop*) di cui
 essa avanza da una colonna alla successiva, $m$ l'indice della colonna e $k$
 quello del bin di frequenza. Con frequenza di campionamento $f_s$ la trasformata restituisce bin spaziati
 di $f_s/N$ hertz e una colonna ogni $H/f_s$ secondi. Sono i passi con cui
@@ -311,7 +311,7 @@ $N = 400$ campioni e $H = 160$, cioè
 `n_fft=400` e `hop_length=160` per `librosa`), perché i fonemi durano decine di
 millisecondi e una finestra più lunga ne mescolerebbe due.
 
-Il compromesso è **teorico** e non pratico: viene dalla relazione di
+Il compromesso è teorico e non pratico: viene dalla relazione di
 indeterminazione di Gabor (1946), l'analogo per l'analisi di Fourier del
 principio di indeterminazione di Heisenberg,
 
@@ -322,7 +322,7 @@ $$
 dove $\sigma_t$ e $\sigma_f$ sono le deviazioni standard dell'energia della
 finestra nel tempo e in frequenza. L'uguaglianza vale per la finestra
 gaussiana; per la finestra di Hann il prodotto vale $0{,}0817$ contro il limite
-$1/(4\pi) = 0{,}0796$, ed è **costante al variare della lunghezza**: la Hann da
+$1/(4\pi) = 0{,}0796$, ed è costante al variare della lunghezza: la Hann da
 25 ms ha $\sigma_t \approx 3{,}54$ ms e $\sigma_f \approx 23{,}1$ Hz, quella da
 100 ms $\sigma_t \approx 14{,}1$ ms e $\sigma_f \approx 5{,}77$ Hz. Quadruplicare la
 finestra quadruplica $\sigma_t$ e divide $\sigma_f$ per quattro, senza sconti.
@@ -355,7 +355,7 @@ sciolgono una a una.
 «Cepstrale» non è un refuso per «spettrale». È un gioco di parole degli
 ingegneri che negli anni Sessanta inventarono il metodo: rovesciarono le prime
 lettere di *spectrum* (*spec* diventa *ceps*) per dire che allo spettro si
-applica una **seconda** trasformata, dopo quella di Fourier. La prima scompone
+applica una seconda trasformata, dopo quella di Fourier. La prima scompone
 il suono nelle sue frequenze; la seconda prende quella scomposizione e ne ricava
 un riassunto ancora più corto. Il termine è rimasto.
 
@@ -380,7 +380,7 @@ serviva a un'altra cosa ancora: quelle macchine davano per buono che i 13 numeri
 raccontassero ciascuno un fatto suo, indipendente dagli altri. Righe vicine
 dell'immagine invece si somigliano parecchio, e l'ultimo passaggio del riassunto
 rimescola tutto apposta per togliere di mezzo quella somiglianza. Le reti di
-oggi non chiedono niente del genere e si fermano **un passo prima**: prendono
+oggi non chiedono niente del genere e si fermano un passo prima: prendono
 l'immagine riletta a orecchio e saltano il riassunto finale. Anzi, quel
 riassunto le danneggerebbe, perché mescolando frequenze lontane cancella la
 vicinanza fra righe che stanno accanto, che è proprio ciò su cui una rete
@@ -391,7 +391,7 @@ La parte «mel» è la riscrittura delle frequenze a orecchio. La parte «log» 
 stessa idea applicata alle *intensità*: fra un sussurro e un concerto ci passa
 un fattore diecimila, e sulla stessa immagine il sussurro sparirebbe sotto
 l'altro. Allora si schiacciano, in modo che passare da 1 a 10 conti quanto
-passare da 10 a 100 e da 100 a 1.000. È il trucco dei **decibel**, la scala con
+passare da 10 a 100 e da 100 a 1.000. È il trucco dei decibel, la scala con
 cui si misurano i rumori: quel fattore diecimila diventa la distanza fra 30 (una
 biblioteca) e 110 (un concerto), due numeri vicini per due mondi lontanissimi.
 Uno spettrogramma log-mel è l'immagine del suono con le frequenze riscritte a
@@ -402,7 +402,7 @@ orecchio e le intensità schiacciate allo stesso modo.
 `````{tab} Superiore
 
 La conversione da hertz a mel comprime le alte frequenze in modo logaritmico.
-Le formule in circolazione però sono **più d'una**, perché la scala mel è
+Le formule in circolazione però sono più d'una, perché la scala mel è
 un'interpolazione di dati sperimentali di ascolto e non una legge fisica: non
 esiste *la* conversione. La più diffusa, dovuta a O'Shaughnessy (1987) e
 adottata da HTK, è
@@ -433,14 +433,14 @@ nascosti (HMM).
 Il punto (4) merita una spiegazione che di solito manca, perché senza di essa la
 DCT sembra un accorgimento di buon senso valido sempre. Non lo è: serviva a una
 cosa precisa e datata. I sistemi GMM-HMM modellavano ogni stato con gaussiane a
-**covarianza diagonale**, per costo e per scarsità di dati, e una covarianza
+covarianza diagonale, per costo e per scarsità di dati, e una covarianza
 diagonale su feature correlate è un modello sbagliato; le bande mel si
 sovrappongono, quindi correlate lo sono parecchio. Decorrelare le rendeva
 lecite. Caduta l'ipotesi, è caduta la ragione: una rete non chiede feature
 scorrelate, e la DCT le fa pagare un prezzo, perché mescolando tutte le bande in
-ogni coefficiente **distrugge la località in frequenza** su cui una convoluzione
-lavora. Per questo dagli anni Dieci si è tornati allo **spettrogramma log-mel
-grezzo**, mentre i 13 MFCC restano una feature d'archivio, ancora comoda dove
+ogni coefficiente distrugge la località in frequenza su cui una convoluzione
+lavora. Per questo dagli anni Dieci si è tornati allo spettrogramma log-mel
+grezzo, mentre i 13 MFCC restano una feature d'archivio, ancora comoda dove
 serve un vettore piccolo (HuBERT li usa proprio per il primo raggruppamento).
 
 Da qui in poi le strade si dividono, e la divisione attraversa tutto il resto
@@ -470,10 +470,10 @@ che distingue un suono dall'altro.
 I sistemi più recenti, come wav2vec 2.0 {cite}`baevski2020wav2vec` o Whisper
 {cite}`radford2022robust`, tendono a imparare le feature direttamente dai dati.
 Ma non partono dal nulla: Whisper, per esempio, riceve in input proprio uno
-**spettrogramma log-mel**. La scala mel, ispirata al nostro orecchio, resta il
+spettrogramma log-mel. La scala mel, ispirata al nostro orecchio, resta il
 punto di partenza più diffuso anche nell'era del deep learning.
 
-La parola **feature**, quella del titolo, qui cambia padrone. Fin dal
+La parola feature, quella del titolo, qui cambia padrone. Fin dal
 {doc}`capitolo sul machine learning </MachineLearning/overview>` le feature
 erano *scelte da noi*: qualcuno decideva quali numeri estrarre da ogni esempio,
 e quella decisione era metà del lavoro. Da questa pagina in poi saranno quasi
@@ -525,27 +525,27 @@ assi dei tempi diversi e un errore di dimensione incomprensibile.
 - Per un computer un suono è una lunghissima lista di numeri: la posizione
   della membrana del microfono, annotata migliaia di volte al secondo come fa
   un sismografo.
-- **Frequenza** vuol dire quante volte al secondo qualcosa oscilla, e si misura
+- Frequenza vuol dire quante volte al secondo qualcosa oscilla, e si misura
   in hertz: tanta frequenza è un suono acuto, poca è un suono grave. Da non
-  confondere con la **frequenza di campionamento**, che è quante volte al
+  confondere con la frequenza di campionamento, che è quante volte al
   secondo *noi* misuriamo.
-- Bisogna misurare più del **doppio** delle volte rispetto alla vibrazione più
+- Bisogna misurare più del doppio delle volte rispetto alla vibrazione più
   rapida che vogliamo catturare: sotto quella soglia il suono si deforma, come
   la ruota che nei film sembra girare al contrario.
-- La **trasformata di Fourier** è il prisma che scompone l'onda nelle sue
+- La trasformata di Fourier è il prisma che scompone l'onda nelle sue
   frequenze pure; applicata a tante finestrelle brevi una dopo l'altra dà lo
-  **spettrogramma**, l'immagine del suono (tempo in orizzontale, frequenze in
+  spettrogramma, l'immagine del suono (tempo in orizzontale, frequenze in
   verticale).
 - Le finestrelle non si possono avere insieme corte e precise sulle note:
   allungarle di quattro volte fa guadagnare quattro sulle note e perdere quattro
   sugli istanti, e il prodotto delle due precisioni resta lo stesso. Sceglierne
   la lunghezza vuol dire decidere quale delle due si compra.
-- La **scala mel** e gli **MFCC** rileggono quell'immagine come la sente un
+- La scala mel e gli MFCC rileggono quell'immagine come la sente un
   orecchio (preciso sui suoni gravi, approssimativo sugli acuti) e la
   riassumono in pochi numeri per finestrella: meno dati, ma quelli che contano
   davvero, e il modello ha un compito più facile.
-- I modelli di oggi però si fermano **un passo prima**: prendono l'immagine
-  riletta a orecchio (lo spettrogramma **log-mel**, con anche le intensità
+- I modelli di oggi però si fermano un passo prima: prendono l'immagine
+  riletta a orecchio (lo spettrogramma log-mel, con anche le intensità
   schiacciate) e saltano il riassunto finale. Quel riassunto serviva a macchine
   con molta meno memoria, che per giunta pretendevano numeri indipendenti l'uno
   dall'altro; a una rete non serve, e anzi le cancella la vicinanza fra righe
@@ -560,26 +560,26 @@ assi dei tempi diversi e un errore di dimensione incomprensibile.
 
 ```{admonition} Da ricordare
 :class: important
-- Un suono digitale è una sequenza di numeri (**ampiezza nel tempo**),
+- Un suono digitale è una sequenza di numeri (ampiezza nel tempo),
   $x[n] = x(nT_s)$: campionamento del tempo e quantizzazione dell'ampiezza (PCM
   a 16 bit).
-- Il **teorema di Nyquist** impone $f_s > 2 f_{\max}$: sotto quella soglia
+- Il teorema di Nyquist impone $f_s > 2 f_{\max}$: sotto quella soglia
   compare l'aliasing, e serve un filtro passa-basso *prima* di campionare.
-- La **trasformata di Fourier** passa dal tempo alle frequenze (DFT, calcolata
+- La trasformata di Fourier passa dal tempo alle frequenze (DFT, calcolata
   con la FFT in $O(N\log N)$); applicata a finestre brevi (STFT) produce lo
-  **spettrogramma**, l'immagine del suono.
-- La finestra impone un **limite**, non un compromesso negoziabile:
+  spettrogramma, l'immagine del suono.
+- La finestra impone un limite, non un compromesso negoziabile:
   $\sigma_t \cdot \sigma_f \ge 1/(4\pi)$ (Gabor, 1946). Per una finestra di Hann
   il prodotto vale $0{,}0817$ a ogni lunghezza: raddoppiare la finestra
   dimezza $\sigma_f$ e raddoppia $\sigma_t$, senza sconti.
-- La **scala mel** è un adattamento a dati percettivi, non una legge: di formule
+- La scala mel è un adattamento a dati percettivi, non una legge: di formule
   ne esiste più d'una (HTK contro Slaney) e danno bande diverse, quindi la
   scelta va dichiarata.
-- Gli **MFCC** (banco di filtri, logaritmo, DCT, primi $\sim 13$ coefficienti)
-  sono una feature **d'archivio**: la DCT serviva a rendere lecita la covarianza
+- Gli MFCC (banco di filtri, logaritmo, DCT, primi $\sim 13$ coefficienti)
+  sono una feature d'archivio: la DCT serviva a rendere lecita la covarianza
   diagonale delle GMM, e con le reti profonde quell'ipotesi non c'è più. Chi in
-  uscita ha un'etichetta o del testo mangia **log-mel grezzo**; chi produce
-  suono parte dai **campioni**, perché il log-mel non si inverte.
+  uscita ha un'etichetta o del testo mangia log-mel grezzo; chi produce
+  suono parte dai campioni, perché il log-mel non si inverte.
 ```
 
 `````

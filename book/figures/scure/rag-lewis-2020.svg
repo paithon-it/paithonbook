@@ -1,0 +1,59 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../rag-lewis-2020.svg
+-->
+<svg viewBox="0 0 760 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema di RAG: la domanda entra nel retriever, che pesca i passaggi piu rilevanti dall'indice di Wikipedia; i passaggi selezionati e la domanda entrano nel generatore, che produce la risposta">
+  <rect x="0" y="0" width="760" height="380" fill="#0E0C0A"/>
+  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Recupero e generazione, in fila</text>
+
+  <!-- domanda -->
+  <rect x="24" y="150" width="120" height="60" rx="6" fill="#E27B52"/>
+  <text x="84" y="176" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0E0C0A">domanda</text>
+  <text x="84" y="194" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">dell'utente</text>
+
+  <!-- arrow domanda -> retriever -->
+  <line x1="144" y1="180" x2="196" y2="180" stroke="#F4ECDD" stroke-width="2"/>
+  <path d="M196 180 L 186 175 L 186 185 Z" fill="#F4ECDD"/>
+
+  <!-- retriever -->
+  <rect x="196" y="150" width="130" height="60" rx="6" fill="#5BA39C"/>
+  <text x="261" y="176" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#0E0C0A">retriever</text>
+  <text x="261" y="194" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">(DPR)</text>
+
+  <!-- indice: stack of docs -->
+  <text x="261" y="256" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">indice Wikipedia · 21M passaggi</text>
+  <g stroke="#F4ECDD" stroke-width="1.5">
+    <rect x="176" y="268" width="34" height="44" rx="3" fill="#0E0C0A"/>
+    <rect x="216" y="268" width="34" height="44" rx="3" fill="#DDB874"/>
+    <rect x="256" y="268" width="34" height="44" rx="3" fill="#DDB874"/>
+    <rect x="296" y="268" width="34" height="44" rx="3" fill="#0E0C0A"/>
+    <rect x="336" y="268" width="34" height="44" rx="3" fill="#DDB874"/>
+  </g>
+  <!-- retriever <-> indice -->
+  <line x1="261" y1="210" x2="261" y2="264" stroke="#F4ECDD" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- top-k selezionati -->
+  <text x="470" y="256" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">i k passaggi piu rilevanti</text>
+  <g stroke="#F4ECDD" stroke-width="1.5">
+    <rect x="422" y="268" width="34" height="44" rx="3" fill="#DDB874"/>
+    <rect x="462" y="268" width="34" height="44" rx="3" fill="#DDB874"/>
+    <rect x="502" y="268" width="34" height="44" rx="3" fill="#DDB874"/>
+  </g>
+  <!-- arrow indice selez -> generatore -->
+  <path d="M479 268 C 500 220, 560 205, 596 200" fill="none" stroke="#DDB874" stroke-width="3"/>
+  <path d="M596 200 L 585 199 L 590 209 Z" fill="#DDB874"/>
+
+  <!-- arrow retriever -> generatore (query passa oltre) -->
+  <path d="M326 168 C 430 150, 520 150, 596 165" fill="none" stroke="#F4ECDD" stroke-width="2"/>
+  <path d="M596 165 L 585 161 L 587 171 Z" fill="#F4ECDD"/>
+
+  <!-- generatore -->
+  <rect x="598" y="140" width="138" height="70" rx="6" fill="#E27B52"/>
+  <text x="667" y="168" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#0E0C0A">generatore</text>
+  <text x="667" y="186" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">(BART) &#8594; risposta</text>
+
+  <text x="380" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">la risposta è condizionata insieme dalla domanda e dai passaggi recuperati</text>
+</svg>

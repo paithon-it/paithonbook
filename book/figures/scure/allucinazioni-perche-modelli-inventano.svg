@@ -1,0 +1,36 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../allucinazioni-perche-modelli-inventano.svg
+-->
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: il modello sceglie tra token in base alla probabilità, senza collegamento ai fatti">
+  <rect x="0" y="0" width="720" height="340" fill="#0E0C0A"/>
+  <text x="30" y="36" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD" font-weight="bold">Prompt: «La capitale dell'Australia è …»</text>
+  <rect x="30" y="56" width="300" height="34" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="45" y="78" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">contesto → prossimo token?</text>
+  <line x1="330" y1="73" x2="390" y2="73" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="390,73 380,68 380,78" fill="#F4ECDD"/>
+  <text x="400" y="60" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1">distribuzione di probabilità</text>
+  <text x="400" y="90" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Sydney</text>
+  <rect x="480" y="78" width="168" height="16" fill="#E27B52"/>
+  <text x="654" y="91" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#E27B52">0,42</text>
+  <text x="400" y="118" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Canberra</text>
+  <rect x="480" y="106" width="140" height="16" fill="#5BA39C"/>
+  <text x="626" y="119" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">0,35</text>
+  <text x="400" y="146" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Melbourne</text>
+  <rect x="480" y="134" width="60" height="16" fill="#DDB874"/>
+  <text x="546" y="147" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8E8676">0,15</text>
+  <text x="400" y="174" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">altro…</text>
+  <rect x="480" y="162" width="32" height="16" fill="#DDB874" opacity="0.6"/>
+  <text x="518" y="175" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8E8676">0,08</text>
+  <rect x="30" y="220" width="300" height="80" fill="none" stroke="#E27B52" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="50" y="250" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#E27B52" font-weight="bold">Mondo reale / fatti verificati</text>
+  <text x="50" y="274" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">Canberra ✓ (ma il modello</text>
+  <text x="50" y="292" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">non lo consulta mai)</text>
+  <line x1="330" y1="260" x2="470" y2="150" stroke="#E27B52" stroke-width="2" stroke-dasharray="4 6"/>
+  <line x1="390" y1="195" x2="415" y2="220" stroke="#E27B52" stroke-width="2"/>
+  <line x1="415" y1="195" x2="390" y2="220" stroke="#E27B52" stroke-width="2"/>
+  <text x="30" y="326" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8E8676">Il collegamento tra probabilità e verità non esiste nel meccanismo di generazione.</text>
+</svg>

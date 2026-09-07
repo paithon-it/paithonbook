@@ -1,0 +1,48 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../ereditarieta-polimorfismo.svg
+-->
+<svg viewBox="0 0 700 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gerarchia di classi: Dataset in cima con il contratto dei due metodi, tre sottoclassi che lo rispettano leggendo immagini, CSV e audio, e in basso il DataLoader che chiama sempre gli stessi due metodi">
+  <rect x="0" y="0" width="700" height="400" fill="#0E0C0A"/>
+  <!-- classe base -->
+  <rect x="235" y="28" width="230" height="86" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="235" y="28" width="230" height="30" fill="#E27B52"/>
+  <text x="350" y="48" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A" text-anchor="middle">Dataset</text>
+  <text x="350" y="80" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="middle">__len__()</text>
+  <text x="350" y="100" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5BA39C" text-anchor="middle">__getitem__()</text>
+  <!-- linee di ereditarieta -->
+  <line x1="350" y1="114" x2="350" y2="150" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="120" y1="150" x2="580" y2="150" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="120" y1="150" x2="120" y2="188" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="350" y1="150" x2="350" y2="188" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="580" y1="150" x2="580" y2="188" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="120,188 114,178 126,178" fill="#F4ECDD"/>
+  <polygon points="350,188 344,178 356,178" fill="#F4ECDD"/>
+  <polygon points="580,188 574,178 586,178" fill="#F4ECDD"/>
+  <!-- sottoclassi -->
+  <rect x="30" y="188" width="180" height="80" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="30" y="188" width="180" height="28" fill="#5BA39C"/>
+  <text x="120" y="207" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#0E0C0A" text-anchor="middle">DatasetImmagini</text>
+  <text x="120" y="236" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#E27B52" text-anchor="middle">apre un file .jpg</text>
+  <text x="120" y="256" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#8E8676" text-anchor="middle">stessi due metodi</text>
+  <rect x="260" y="188" width="180" height="80" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="260" y="188" width="180" height="28" fill="#5BA39C"/>
+  <text x="350" y="207" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#0E0C0A" text-anchor="middle">DatasetCSV</text>
+  <text x="350" y="236" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#E27B52" text-anchor="middle">legge una riga</text>
+  <text x="350" y="256" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#8E8676" text-anchor="middle">stessi due metodi</text>
+  <rect x="490" y="188" width="180" height="80" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="490" y="188" width="180" height="28" fill="#5BA39C"/>
+  <text x="580" y="207" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#0E0C0A" text-anchor="middle">DatasetAudio</text>
+  <text x="580" y="236" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#E27B52" text-anchor="middle">apre un file .wav</text>
+  <text x="580" y="256" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#8E8676" text-anchor="middle">stessi due metodi</text>
+  <!-- polimorfismo -->
+  <rect x="130" y="316" width="440" height="52" fill="#DDB874" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="350" y="338" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD" text-anchor="middle">DataLoader(dati, batch_size=32)</text>
+  <text x="350" y="358" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#F4ECDD" text-anchor="middle">chiede sempre le stesse due cose, e non sa che cosa ha davanti</text>
+  <line x1="120" y1="268" x2="210" y2="316" stroke="#BCB3A1" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <line x1="350" y1="268" x2="350" y2="316" stroke="#BCB3A1" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <line x1="580" y1="268" x2="490" y2="316" stroke="#BCB3A1" stroke-width="1.5" stroke-dasharray="5 4"/>
+</svg>

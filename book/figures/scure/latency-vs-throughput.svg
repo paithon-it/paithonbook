@@ -1,0 +1,35 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../latency-vs-throughput.svg
+-->
+<svg viewBox="0 0 760 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva del compromesso tra latenza e throughput al variare della dimensione del batch">
+  <rect x="0" y="0" width="760" height="380" fill="#0E0C0A"/>
+  <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Il compromesso latenza / throughput</text>
+  <!-- assi -->
+  <line x1="90" y1="320" x2="700" y2="320" stroke="#F4ECDD" stroke-width="2"/>
+  <line x1="90" y1="320" x2="90" y2="60" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="395" y="360" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">latenza per richiesta →</text>
+  <text x="40" y="190" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" transform="rotate(-90 40 190)">throughput (token/s) →</text>
+  <!-- curva: sale ripida poi plateau -->
+  <path d="M 120 300 C 220 180, 320 110, 460 95 C 560 85, 640 82, 680 80" fill="none" stroke="#5BA39C" stroke-width="2.5"/>
+  <!-- punto batch=1 -->
+  <circle cx="120" cy="300" r="7" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="132" y="298" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F4ECDD">batch = 1</text>
+  <text x="132" y="314" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">latenza minima, GPU quasi vuota</text>
+  <!-- punto batch grande -->
+  <circle cx="680" cy="80" r="7" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="668" y="70" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F4ECDD">batch grande</text>
+  <text x="668" y="86" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">throughput massimo, GPU satura</text>
+  <!-- linea budget latenza (SLO) -->
+  <line x1="430" y1="60" x2="430" y2="320" stroke="#E27B52" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="438" y="150" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#E27B52">budget di latenza</text>
+  <text x="438" y="166" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52">(SLO: non si va oltre)</text>
+  <!-- punto operativo ottimale sull'intersezione -->
+  <circle cx="430" cy="100" r="8" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="418" y="105" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F4ECDD">punto operativo</text>
+  <!-- regione utile -->
+  <text x="265" y="262" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5BA39C">↑ throughput utile: dentro il budget</text>
+</svg>

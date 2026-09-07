@@ -38,6 +38,18 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-4)=
+
+## 1.12.4 · 7 settembre 2026
+
+### Correzioni
+
+- **Meno grassetto in quattro capitoli.** Nella GPU, nell'Audio, nelle Serie temporali e nelle Reti neurali su grafo il neretto marcava clausole intere, parole comuni e lo stesso termine a ogni ricomparsa, e a forza di stare dappertutto non segnalava più niente. Adesso segna un termine la prima volta che compare e poi lo lascia stare: le parole sono le stesse, a cambiare è soltanto che cosa è in grassetto.
+
+### Impianto
+
+- **Le figure si leggono anche in tema scuro.** Sono disegnate sulla palette chiara del libro, e in tema scuro finivano dentro un rettangolo bianco con i colori spenti, un ritaglio di carta in mezzo a una pagina nera. Adesso ogni figura, animazioni comprese, ha la sua versione scura, con gli stessi colori portati sul fondo scuro. Sulla carta non cambia niente: il PDF resta chiaro.
+
 (v1-12-3)=
 
 ## 1.12.3 · 2 settembre 2026

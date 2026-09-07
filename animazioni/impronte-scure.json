@@ -1,0 +1,56 @@
+{
+ "attenzione-mascherata": {
+  "impronta": "7163d5cbc10498e0",
+  "fotogrammi": 114,
+  "larghezza": 800,
+  "fps": 15
+ },
+ "backpropagation": {
+  "impronta": "f671d9c44709319f",
+  "fotogrammi": 125,
+  "larghezza": 800,
+  "fps": 15
+ },
+ "convoluzione": {
+  "impronta": "7171686960342eea",
+  "fotogrammi": 113,
+  "larghezza": 800,
+  "fps": 15
+ },
+ "diffusione-denoising": {
+  "impronta": "25a2b2534a4d1ea8",
+  "fotogrammi": 104,
+  "larghezza": 720,
+  "fps": 10
+ },
+ "generazione-autoregressiva": {
+  "impronta": "aeee4949cebdc9f5",
+  "fotogrammi": 131,
+  "larghezza": 800,
+  "fps": 15
+ },
+ "iterazione-valore": {
+  "impronta": "07879d668443563d",
+  "fotogrammi": 113,
+  "larghezza": 800,
+  "fps": 15
+ },
+ "limite-centrale": {
+  "impronta": "4d0c7fb6a17147a4",
+  "fotogrammi": 111,
+  "larghezza": 800,
+  "fps": 15
+ },
+ "message-passing": {
+  "impronta": "cc95e60110817b9b",
+  "fotogrammi": 123,
+  "larghezza": 800,
+  "fps": 15
+ },
+ "stato-ricorrente": {
+  "impronta": "191dfc8be4fd94d1",
+  "fotogrammi": 131,
+  "larghezza": 800,
+  "fps": 15
+ }
+}

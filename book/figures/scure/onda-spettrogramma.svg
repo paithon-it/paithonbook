@@ -1,0 +1,133 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../onda-spettrogramma.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 400" role="img" aria-label="Dalla forma d'onda allo spettrogramma" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#E27B52"/>
+    </marker>
+    <marker id="axis" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#BCB3A1"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Titoli ===== -->
+  <text x="180" y="38" text-anchor="middle" font-size="18" font-weight="700" fill="#F4ECDD">Onda audio</text>
+  <text x="180" y="56" text-anchor="middle" font-size="12" fill="#BCB3A1">dominio del tempo</text>
+  <text x="626" y="38" text-anchor="middle" font-size="18" font-weight="700" fill="#F4ECDD">Spettrogramma</text>
+  <text x="626" y="56" text-anchor="middle" font-size="12" fill="#BCB3A1">tempo – frequenza</text>
+
+  <!-- ===== Pannello sinistro: forma d'onda ===== -->
+  <!-- asse ampiezza -->
+  <text x="48" y="166" text-anchor="middle" font-size="12" fill="#BCB3A1" transform="rotate(-90 48 166)">ampiezza</text>
+  <!-- linea di zero -->
+  <line x1="60" y1="166" x2="300" y2="166" stroke="#34302A" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <!-- barre -->
+  <g stroke="#E27B52" stroke-width="6" stroke-linecap="round">
+    <line x1="70" y1="158" x2="70" y2="174"/>
+    <line x1="84" y1="146" x2="84" y2="186"/>
+    <line x1="98" y1="132" x2="98" y2="200"/>
+    <line x1="112" y1="118" x2="112" y2="214"/>
+    <line x1="126" y1="136" x2="126" y2="196"/>
+    <line x1="140" y1="152" x2="140" y2="180"/>
+    <line x1="154" y1="158" x2="154" y2="174"/>
+    <line x1="168" y1="144" x2="168" y2="188"/>
+    <line x1="182" y1="126" x2="182" y2="206"/>
+    <line x1="196" y1="114" x2="196" y2="218"/>
+    <line x1="210" y1="122" x2="210" y2="210"/>
+    <line x1="224" y1="140" x2="224" y2="192"/>
+    <line x1="238" y1="154" x2="238" y2="178"/>
+    <line x1="252" y1="136" x2="252" y2="196"/>
+    <line x1="266" y1="122" x2="266" y2="210"/>
+    <line x1="280" y1="146" x2="280" y2="186"/>
+  </g>
+  <!-- asse tempo (sinistra) -->
+  <line x1="60" y1="238" x2="300" y2="238" stroke="#BCB3A1" stroke-width="1.5" marker-end="url(#axis)"/>
+  <text x="180" y="256" text-anchor="middle" font-size="12" fill="#BCB3A1">tempo</text>
+
+  <!-- ===== Freccia di trasformazione ===== -->
+  <line x1="312" y1="166" x2="432" y2="166" stroke="#E27B52" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="370" y="150" text-anchor="middle" font-size="12" font-weight="700" fill="#E27B52">Fourier</text>
+  <text x="370" y="188" text-anchor="middle" font-size="11" fill="#BCB3A1">a finestre (STFT)</text>
+
+  <!-- ===== Pannello destro: spettrogramma ===== -->
+  <!-- asse frequenza -->
+  <line x1="482" y1="262" x2="482" y2="66" stroke="#BCB3A1" stroke-width="1.5" marker-end="url(#axis)"/>
+  <text x="466" y="166" text-anchor="middle" font-size="12" fill="#BCB3A1" transform="rotate(-90 466 166)">frequenza</text>
+  <!-- griglia di celle 8 x 6 -->
+  <g stroke="#0E0C0A" stroke-width="1">
+    <!-- riga 0 (alta freq) y=70 -->
+    <rect x="490" y="70" width="34" height="32" fill="#0E0C0A"/>
+    <rect x="524" y="70" width="34" height="32" fill="#221F1A"/>
+    <rect x="558" y="70" width="34" height="32" fill="#221F1A"/>
+    <rect x="592" y="70" width="34" height="32" fill="#0E0C0A"/>
+    <rect x="626" y="70" width="34" height="32" fill="#0E0C0A"/>
+    <rect x="660" y="70" width="34" height="32" fill="#221F1A"/>
+    <rect x="694" y="70" width="34" height="32" fill="#221F1A"/>
+    <rect x="728" y="70" width="34" height="32" fill="#0E0C0A"/>
+    <!-- riga 1 y=102 -->
+    <rect x="490" y="102" width="34" height="32" fill="#221F1A"/>
+    <rect x="524" y="102" width="34" height="32" fill="#DDB874"/>
+    <rect x="558" y="102" width="34" height="32" fill="#DDB874"/>
+    <rect x="592" y="102" width="34" height="32" fill="#221F1A"/>
+    <rect x="626" y="102" width="34" height="32" fill="#0E0C0A"/>
+    <rect x="660" y="102" width="34" height="32" fill="#221F1A"/>
+    <rect x="694" y="102" width="34" height="32" fill="#DDB874"/>
+    <rect x="728" y="102" width="34" height="32" fill="#221F1A"/>
+    <!-- riga 2 y=134 -->
+    <rect x="490" y="134" width="34" height="32" fill="#221F1A"/>
+    <rect x="524" y="134" width="34" height="32" fill="#DDB874"/>
+    <rect x="558" y="134" width="34" height="32" fill="#E27B52"/>
+    <rect x="592" y="134" width="34" height="32" fill="#DDB874"/>
+    <rect x="626" y="134" width="34" height="32" fill="#221F1A"/>
+    <rect x="660" y="134" width="34" height="32" fill="#DDB874"/>
+    <rect x="694" y="134" width="34" height="32" fill="#E27B52"/>
+    <rect x="728" y="134" width="34" height="32" fill="#DDB874"/>
+    <!-- riga 3 y=166 -->
+    <rect x="490" y="166" width="34" height="32" fill="#DDB874"/>
+    <rect x="524" y="166" width="34" height="32" fill="#E27B52"/>
+    <rect x="558" y="166" width="34" height="32" fill="#E27B52"/>
+    <rect x="592" y="166" width="34" height="32" fill="#DDB874"/>
+    <rect x="626" y="166" width="34" height="32" fill="#221F1A"/>
+    <rect x="660" y="166" width="34" height="32" fill="#DDB874"/>
+    <rect x="694" y="166" width="34" height="32" fill="#E27B52"/>
+    <rect x="728" y="166" width="34" height="32" fill="#DDB874"/>
+    <!-- riga 4 y=198 -->
+    <rect x="490" y="198" width="34" height="32" fill="#DDB874"/>
+    <rect x="524" y="198" width="34" height="32" fill="#E27B52"/>
+    <rect x="558" y="198" width="34" height="32" fill="#5BA39C"/>
+    <rect x="592" y="198" width="34" height="32" fill="#E27B52"/>
+    <rect x="626" y="198" width="34" height="32" fill="#DDB874"/>
+    <rect x="660" y="198" width="34" height="32" fill="#E27B52"/>
+    <rect x="694" y="198" width="34" height="32" fill="#5BA39C"/>
+    <rect x="728" y="198" width="34" height="32" fill="#E27B52"/>
+    <!-- riga 5 (bassa freq) y=230 -->
+    <rect x="490" y="230" width="34" height="32" fill="#E27B52"/>
+    <rect x="524" y="230" width="34" height="32" fill="#5BA39C"/>
+    <rect x="558" y="230" width="34" height="32" fill="#5BA39C"/>
+    <rect x="592" y="230" width="34" height="32" fill="#E27B52"/>
+    <rect x="626" y="230" width="34" height="32" fill="#DDB874"/>
+    <rect x="660" y="230" width="34" height="32" fill="#E27B52"/>
+    <rect x="694" y="230" width="34" height="32" fill="#5BA39C"/>
+    <rect x="728" y="230" width="34" height="32" fill="#E27B52"/>
+  </g>
+  <!-- cornice griglia -->
+  <rect x="490" y="70" width="272" height="192" fill="none" stroke="#34302A" stroke-width="1.5"/>
+  <!-- asse tempo (destra) -->
+  <line x1="490" y1="278" x2="762" y2="278" stroke="#BCB3A1" stroke-width="1.5" marker-end="url(#axis)"/>
+  <text x="626" y="296" text-anchor="middle" font-size="12" fill="#BCB3A1">tempo</text>
+
+  <!-- ===== Legenda intensità ===== -->
+  <text x="490" y="336" font-size="12" fill="#BCB3A1">intensità:</text>
+  <text x="556" y="336" font-size="11" fill="#8E8676">bassa</text>
+  <rect x="600" y="326" width="22" height="14" fill="#0E0C0A" stroke="#34302A" stroke-width="1"/>
+  <rect x="624" y="326" width="22" height="14" fill="#221F1A"/>
+  <rect x="648" y="326" width="22" height="14" fill="#DDB874"/>
+  <rect x="672" y="326" width="22" height="14" fill="#E27B52"/>
+  <rect x="696" y="326" width="22" height="14" fill="#5BA39C"/>
+  <text x="724" y="336" font-size="11" fill="#8E8676">alta</text>
+</svg>

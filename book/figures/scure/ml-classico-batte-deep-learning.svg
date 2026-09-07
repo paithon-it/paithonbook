@@ -1,0 +1,71 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../ml-classico-batte-deep-learning.svg
+-->
+<svg viewBox="0 0 680 430" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A sinistra dati tabellari dove vince il ML classico, a destra dati non strutturati dove vince il deep learning">
+  <rect x="0" y="0" width="680" height="430" fill="#0E0C0A"/>
+  <line x1="340" y1="44" x2="340" y2="392" stroke="#DDB874" stroke-width="1.5" stroke-dasharray="4 6"/>
+  <text x="176" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">dati tabellari</text>
+  <text x="504" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">dati non strutturati</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="10">
+    <rect x="40" y="58" width="272" height="128" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
+    <rect x="40" y="58" width="272" height="30" fill="#5BA39C"/>
+    <line x1="108" y1="58" x2="108" y2="186" stroke="#F4ECDD" stroke-width="1"/>
+    <line x1="176" y1="58" x2="176" y2="186" stroke="#F4ECDD" stroke-width="1"/>
+    <line x1="244" y1="58" x2="244" y2="186" stroke="#F4ECDD" stroke-width="1"/>
+    <line x1="40" y1="88" x2="312" y2="88" stroke="#F4ECDD" stroke-width="1"/>
+    <line x1="40" y1="121" x2="312" y2="121" stroke="#F4ECDD" stroke-width="1"/>
+    <line x1="40" y1="154" x2="312" y2="154" stroke="#F4ECDD" stroke-width="1"/>
+    <text x="74" y="78" text-anchor="middle" fill="#0E0C0A">età</text>
+    <text x="142" y="78" text-anchor="middle" fill="#0E0C0A">città</text>
+    <text x="210" y="78" text-anchor="middle" fill="#0E0C0A">reddito</text>
+    <text x="278" y="78" text-anchor="middle" fill="#0E0C0A">churn</text>
+    <text x="74" y="108" text-anchor="middle" fill="#F4ECDD">34</text>
+    <text x="142" y="108" text-anchor="middle" fill="#F4ECDD">Roma</text>
+    <text x="210" y="108" text-anchor="middle" fill="#F4ECDD">28k</text>
+    <text x="278" y="108" text-anchor="middle" fill="#E27B52">s&#236;</text>
+    <text x="74" y="141" text-anchor="middle" fill="#F4ECDD">51</text>
+    <text x="142" y="141" text-anchor="middle" fill="#F4ECDD">Bari</text>
+    <text x="210" y="141" text-anchor="middle" fill="#F4ECDD">44k</text>
+    <text x="278" y="141" text-anchor="middle" fill="#5BA39C">no</text>
+    <text x="74" y="174" text-anchor="middle" fill="#F4ECDD">29</text>
+    <text x="142" y="174" text-anchor="middle" fill="#F4ECDD">Torino</text>
+    <text x="210" y="174" text-anchor="middle" fill="#F4ECDD">61k</text>
+    <text x="278" y="174" text-anchor="middle" fill="#5BA39C">no</text>
+  </g>
+  <rect x="40" y="212" width="272" height="40" rx="8" fill="none" stroke="#5BA39C" stroke-width="2"/>
+  <text x="176" y="230" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">vince il ML classico</text>
+  <text x="176" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">gradient boosting, random forest</text>
+  <g>
+    <rect x="392" y="60" width="96" height="60" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
+    <rect x="392" y="60" width="24" height="20" fill="#E27B52"/>
+    <rect x="440" y="60" width="24" height="20" fill="#DDB874"/>
+    <rect x="416" y="80" width="24" height="20" fill="#5BA39C"/>
+    <rect x="464" y="80" width="24" height="20" fill="#E27B52"/>
+    <rect x="392" y="100" width="24" height="20" fill="#DDB874"/>
+    <rect x="440" y="100" width="24" height="20" fill="#5BA39C"/>
+    <text x="440" y="136" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">immagine (pixel)</text>
+  </g>
+  <g>
+    <polyline points="512,90 524,66 536,108 548,74 560,102 572,70 584,110 596,80 608,96 620,72 632,100 644,86" fill="none" stroke="#5BA39C" stroke-width="1.5"/>
+    <text x="578" y="136" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">audio (onda)</text>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif" font-size="11">
+    <rect x="392" y="156" width="36" height="22" rx="4" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="410" y="171" text-anchor="middle" fill="#F4ECDD">il</text>
+    <rect x="436" y="156" width="58" height="22" rx="4" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="465" y="171" text-anchor="middle" fill="#F4ECDD">gatto</text>
+    <rect x="502" y="156" width="58" height="22" rx="4" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="531" y="171" text-anchor="middle" fill="#F4ECDD">dorme</text>
+    <text x="504" y="196" text-anchor="middle" font-size="10" fill="#BCB3A1">testo (sequenza)</text>
+  </g>
+  <rect x="368" y="212" width="272" height="40" rx="8" fill="none" stroke="#E27B52" stroke-width="2"/>
+  <text x="504" y="230" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">vince il deep learning</text>
+  <text x="504" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">CNN, transformer</text>
+  <text x="340" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">colonne eterogenee e senza geografia</text>
+  <text x="340" y="320" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">vs. struttura spaziale, sequenziale, percettiva</text>
+  <text x="340" y="360" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8E8676">non &#232; l'algoritmo pi&#249; nuovo a vincere: &#232; la forma dei dati a scegliere lo strumento</text>
+</svg>

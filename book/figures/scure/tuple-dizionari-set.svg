@@ -1,0 +1,76 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../tuple-dizionari-set.svg
+-->
+<svg viewBox="0 0 720 430" width="100%" role="img" aria-label="Tabella decisionale dei contenitori Python: per lista, tupla, dizionario e set sono indicate le proprietà ordinato, modificabile, duplicati ammessi e tipo di accesso, con la domanda guida per ciascuno" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="720" height="430" fill="#0E0C0A"/>
+  <text x="360" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Quale contenitore? La tabella decisionale</text>
+
+  <!-- intestazioni colonne -->
+  <g font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="bold" fill="#F4ECDD" text-anchor="middle">
+    <text x="240" y="78">ordinato?</text>
+    <text x="352" y="78">modificabile?</text>
+    <text x="464" y="78">duplicati?</text>
+    <text x="590" y="78">domanda guida</text>
+  </g>
+  <line x1="40" y1="90" x2="680" y2="90" stroke="#F4ECDD" stroke-width="2"/>
+
+  <!-- griglia orizzontale -->
+  <g stroke="#34302A" stroke-width="1.5">
+    <line x1="40" y1="170" x2="680" y2="170"/>
+    <line x1="40" y1="250" x2="680" y2="250"/>
+    <line x1="40" y1="330" x2="680" y2="330"/>
+  </g>
+  <line x1="40" y1="410" x2="680" y2="410" stroke="#F4ECDD" stroke-width="2"/>
+
+  <!-- riga LIST -->
+  <rect x="52" y="112" width="120" height="36" fill="#E27B52"/>
+  <text x="112" y="136" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A">list  [ ]</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="16" text-anchor="middle">
+    <text x="240" y="136" fill="#5BA39C" font-weight="bold">sì</text>
+    <text x="352" y="136" fill="#5BA39C" font-weight="bold">sì</text>
+    <text x="464" y="136" fill="#5BA39C" font-weight="bold">sì</text>
+  </g>
+  <text x="590" y="130" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">sequenza che cresce</text>
+  <text x="590" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">e cambia?</text>
+
+  <!-- riga TUPLE -->
+  <rect x="52" y="192" width="120" height="36" fill="#5BA39C"/>
+  <text x="112" y="216" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A">tuple  ( )</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="16" text-anchor="middle">
+    <text x="240" y="216" fill="#5BA39C" font-weight="bold">sì</text>
+    <text x="352" y="216" fill="#E27B52" font-weight="bold">no</text>
+    <text x="464" y="216" fill="#5BA39C" font-weight="bold">sì</text>
+  </g>
+  <text x="590" y="210" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">valori che viaggiano</text>
+  <text x="590" y="226" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">insieme, sigillati?</text>
+
+  <!-- riga DICT -->
+  <rect x="52" y="272" width="120" height="36" fill="#DDB874"/>
+  <text x="112" y="296" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD">dict  {k: v}</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="16" text-anchor="middle">
+    <text x="240" y="296" fill="#5BA39C" font-weight="bold">sì*</text>
+    <text x="352" y="296" fill="#5BA39C" font-weight="bold">sì</text>
+    <text x="464" y="290" fill="#E27B52" font-weight="bold">no</text>
+  </g>
+  <text x="464" y="308" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">(chiavi uniche)</text>
+  <text x="590" y="290" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">cerchi per nome,</text>
+  <text x="590" y="306" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">non per posizione?</text>
+
+  <!-- riga SET -->
+  <rect x="52" y="352" width="120" height="36" fill="#F4ECDD"/>
+  <text x="112" y="376" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A">set  { }</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="16" text-anchor="middle">
+    <text x="240" y="376" fill="#E27B52" font-weight="bold">no</text>
+    <text x="352" y="376" fill="#5BA39C" font-weight="bold">sì</text>
+    <text x="464" y="376" fill="#E27B52" font-weight="bold">no</text>
+  </g>
+  <text x="590" y="370" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">contano solo</text>
+  <text x="590" y="386" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">le presenze uniche?</text>
+
+  <!-- nota -->
+  <text x="52" y="425" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">* da Python 3.7 il dict conserva l'ordine di inserimento delle chiavi</text>
+</svg>

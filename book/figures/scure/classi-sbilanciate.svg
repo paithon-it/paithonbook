@@ -1,0 +1,41 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../classi-sbilanciate.svg
+-->
+<svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dataset sbilanciato 99 a 1: griglia di cento punti con un solo caso positivo">
+  <rect width="720" height="400" fill="#0E0C0A"/>
+  <text x="360" y="34" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD" text-anchor="middle">Un dataset 99 / 1: cento esempi, un solo caso positivo</text>
+  <!-- griglia 10x10 di cerchi: teal = classe negativa, terracotta = positivo in posizione (riga4,col7) -->
+  <g>
+    <!-- righe generate: 10 colonne x 10 righe, passo 34, origine (207,66) -->
+    <g fill="#5BA39C">
+      <circle cx="207" cy="66" r="9"/><circle cx="241" cy="66" r="9"/><circle cx="275" cy="66" r="9"/><circle cx="309" cy="66" r="9"/><circle cx="343" cy="66" r="9"/><circle cx="377" cy="66" r="9"/><circle cx="411" cy="66" r="9"/><circle cx="445" cy="66" r="9"/><circle cx="479" cy="66" r="9"/><circle cx="513" cy="66" r="9"/>
+      <circle cx="207" cy="100" r="9"/><circle cx="241" cy="100" r="9"/><circle cx="275" cy="100" r="9"/><circle cx="309" cy="100" r="9"/><circle cx="343" cy="100" r="9"/><circle cx="377" cy="100" r="9"/><circle cx="411" cy="100" r="9"/><circle cx="445" cy="100" r="9"/><circle cx="479" cy="100" r="9"/><circle cx="513" cy="100" r="9"/>
+      <circle cx="207" cy="134" r="9"/><circle cx="241" cy="134" r="9"/><circle cx="275" cy="134" r="9"/><circle cx="309" cy="134" r="9"/><circle cx="343" cy="134" r="9"/><circle cx="377" cy="134" r="9"/><circle cx="411" cy="134" r="9"/><circle cx="445" cy="134" r="9"/><circle cx="479" cy="134" r="9"/><circle cx="513" cy="134" r="9"/>
+      <circle cx="207" cy="168" r="9"/><circle cx="241" cy="168" r="9"/><circle cx="275" cy="168" r="9"/><circle cx="309" cy="168" r="9"/><circle cx="343" cy="168" r="9"/><circle cx="377" cy="168" r="9"/><circle cx="445" cy="168" r="9"/><circle cx="479" cy="168" r="9"/><circle cx="513" cy="168" r="9"/>
+      <circle cx="207" cy="202" r="9"/><circle cx="241" cy="202" r="9"/><circle cx="275" cy="202" r="9"/><circle cx="309" cy="202" r="9"/><circle cx="343" cy="202" r="9"/><circle cx="377" cy="202" r="9"/><circle cx="411" cy="202" r="9"/><circle cx="445" cy="202" r="9"/><circle cx="479" cy="202" r="9"/><circle cx="513" cy="202" r="9"/>
+      <circle cx="207" cy="236" r="9"/><circle cx="241" cy="236" r="9"/><circle cx="275" cy="236" r="9"/><circle cx="309" cy="236" r="9"/><circle cx="343" cy="236" r="9"/><circle cx="377" cy="236" r="9"/><circle cx="411" cy="236" r="9"/><circle cx="445" cy="236" r="9"/><circle cx="479" cy="236" r="9"/><circle cx="513" cy="236" r="9"/>
+      <circle cx="207" cy="270" r="9"/><circle cx="241" cy="270" r="9"/><circle cx="275" cy="270" r="9"/><circle cx="309" cy="270" r="9"/><circle cx="343" cy="270" r="9"/><circle cx="377" cy="270" r="9"/><circle cx="411" cy="270" r="9"/><circle cx="445" cy="270" r="9"/><circle cx="479" cy="270" r="9"/><circle cx="513" cy="270" r="9"/>
+      <circle cx="207" cy="304" r="9"/><circle cx="241" cy="304" r="9"/><circle cx="275" cy="304" r="9"/><circle cx="309" cy="304" r="9"/><circle cx="343" cy="304" r="9"/><circle cx="377" cy="304" r="9"/><circle cx="411" cy="304" r="9"/><circle cx="445" cy="304" r="9"/><circle cx="479" cy="304" r="9"/><circle cx="513" cy="304" r="9"/>
+      <circle cx="207" cy="338" r="9"/><circle cx="241" cy="338" r="9"/><circle cx="275" cy="338" r="9"/><circle cx="309" cy="338" r="9"/><circle cx="343" cy="338" r="9"/><circle cx="377" cy="338" r="9"/><circle cx="411" cy="338" r="9"/><circle cx="445" cy="338" r="9"/><circle cx="479" cy="338" r="9"/><circle cx="513" cy="338" r="9"/>
+      <circle cx="207" cy="372" r="9"/><circle cx="241" cy="372" r="9"/><circle cx="275" cy="372" r="9"/><circle cx="309" cy="372" r="9"/><circle cx="343" cy="372" r="9"/><circle cx="377" cy="372" r="9"/><circle cx="411" cy="372" r="9"/><circle cx="445" cy="372" r="9"/><circle cx="479" cy="372" r="9"/><circle cx="513" cy="372" r="9"/>
+    </g>
+    <!-- l'unico positivo, evidenziato -->
+    <circle cx="411" cy="168" r="11" fill="#E27B52" stroke="#F4ECDD" stroke-width="2"/>
+  </g>
+  <!-- legenda -->
+  <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">
+    <circle cx="566" cy="120" r="8" fill="#5BA39C"/>
+    <text x="582" y="125">99 negativi</text>
+    <circle cx="566" cy="150" r="8" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="582" y="155">1 positivo</text>
+    <text x="556" y="210" font-size="12" fill="#F4ECDD">Il modello che dice</text>
+    <text x="556" y="227" font-size="12" fill="#F4ECDD">sempre "negativo"</text>
+    <text x="556" y="244" font-size="12" fill="#F4ECDD">sbaglia solo qui →</text>
+    <text x="556" y="272" font-size="14" font-weight="bold" fill="#DDB874">accuracy: 99%</text>
+    <text x="556" y="292" font-size="14" font-weight="bold" fill="#E27B52">recall: 0%</text>
+  </g>
+</svg>

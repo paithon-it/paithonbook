@@ -1,0 +1,55 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../codice-pythonic-stile.svg
+-->
+<svg viewBox="0 0 720 430" width="100%" role="img" aria-label="Confronto tra due versioni dello stesso programma: partono dagli stessi quattro valori; a sinistra la versione goffa, otto righe con due cicli a indice e due variabili di appoggio; a destra la versione Pythonic, due sole istruzioni di cui una list comprehension; entrambe producono lo stesso output" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="720" height="430" fill="#0E0C0A"/>
+  <defs>
+    <marker id="fr202" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#F4ECDD"/></marker>
+  </defs>
+  <text x="360" y="32" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="bold" fill="#F4ECDD" text-anchor="middle">Stesso codice, due stili</text>
+
+  <!-- pannello sinistro: goffo -->
+  <rect x="40" y="56" width="300" height="240" rx="10" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <rect x="40" y="56" width="300" height="38" rx="10" fill="#E27B52"/>
+  <text x="190" y="80" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A" text-anchor="middle">Funziona, ma rema contro</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">
+    <text x="58" y="112">temperature = [21.3, 18.6, 15.1, 17.9]</text>
+    <text x="58" y="129">somma = 0</text>
+    <text x="58" y="146">for i in range(0, len(temperature)):</text>
+    <text x="78" y="163">somma = somma + temperature[i]</text>
+    <text x="58" y="180">media = somma / len(temperature)</text>
+    <text x="58" y="197">sopra_media = []</text>
+    <text x="58" y="214">for i in range(0, len(temperature)):</text>
+    <text x="78" y="231">if temperature[i] &gt; media:</text>
+    <text x="98" y="248">sopra_media.append(temperature[i])</text>
+  </g>
+  <text x="190" y="280" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">8 righe · 2 variabili di appoggio · indici ovunque</text>
+
+  <!-- pannello destro: pythonic -->
+  <rect x="380" y="56" width="300" height="240" rx="10" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <rect x="380" y="56" width="300" height="38" rx="10" fill="#5BA39C"/>
+  <text x="530" y="80" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A" text-anchor="middle">Pythonic</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">
+    <text x="398" y="112">temperature = [21.3, 18.6, 15.1, 17.9]</text>
+    <text x="398" y="140">media = sum(temperature) /</text>
+    <text x="418" y="158">len(temperature)</text>
+    <text x="398" y="190">sopra_media = [t for t in temperature</text>
+    <text x="418" y="208">if t &gt; media]</text>
+  </g>
+  <rect x="398" y="222" width="264" height="2" fill="#DDB874"/>
+  <text x="530" y="248" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">2 righe · nessuna variabile di appoggio</text>
+  <text x="530" y="266" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">si legge come una frase</text>
+
+  <!-- frecce verso output comune -->
+  <line x1="190" y1="300" x2="320" y2="356" stroke="#F4ECDD" stroke-width="2" marker-end="url(#fr202)"/>
+  <line x1="530" y1="300" x2="400" y2="356" stroke="#F4ECDD" stroke-width="2" marker-end="url(#fr202)"/>
+
+  <!-- output -->
+  <rect x="230" y="360" width="260" height="46" rx="23" fill="#DDB874"/>
+  <text x="360" y="382" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F4ECDD" text-anchor="middle">stesso output</text>
+  <text x="360" y="398" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD" text-anchor="middle">[21.3, 18.6]</text>
+</svg>

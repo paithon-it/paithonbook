@@ -43,8 +43,8 @@ hai *un* pacco urgente, la lepre è imbattibile. Ma se ne hai diecimila, quella
 corsa avanti e indietro non basta più. Il formicaio funziona all'opposto: ogni
 formica è lenta, ma sono migliaia e partono tutte insieme. Il primo pacco
 arriverà un po’ più tardi che con la lepre (nessuna formica è veloce) ma nello
-stesso tempo ne arrivano diecimila. La lepre ha la **latenza** più bassa (il
-singolo pacco arriva prestissimo), il formicaio il **throughput** più alto
+stesso tempo ne arrivano diecimila. La lepre ha la latenza più bassa (il
+singolo pacco arriva prestissimo), il formicaio il throughput più alto
 (nella giornata ne arrivano molti di più).
 
 Perché allora non si tengono diecimila lepri? Perché una lepre costa. Le
@@ -78,7 +78,7 @@ complessi, con grandi cache per tenere i dati vicini, predizione dei salti ed
 esecuzione fuori ordine per non fermarsi mai su un singolo flusso di
 istruzioni. Gran parte del silicio è spesa in logica di controllo e memoria,
 non in unità di calcolo. Una GPU è *throughput-oriented*: rovescia il
-bilancio. Il silicio va quasi tutto in **ALU** (le unità aritmetiche, i «CUDA
+bilancio. Il silicio va quasi tutto in ALU (le unità aritmetiche, i «CUDA
 core»), pochissimo in controllo e cache per core. Il singolo thread è lento e
 non ha trucchi per nascondere le proprie attese; la GPU nasconde la latenza in
 un altro modo, statisticamente: tiene *moltissimi* thread pronti e, quando uno
@@ -116,11 +116,11 @@ tiene la macchina sempre occupata.
 Fatta questa premessa, ogni SM è una piccola macchina completa, con i suoi
 calcolatori, il suo caposquadra e i suoi ripiani di lavoro. Contiene:
 
-- molte **ALU**, le unità aritmetiche che fanno materialmente i conti (una
+- molte ALU, le unità aritmetiche che fanno materialmente i conti (una
   moltiplicazione, una somma): NVIDIA le chiama «CUDA core», anche se non sono
   calcolatori completi come i core di una CPU, ma proprio soltanto le
   postazioni dove il conto avviene. Sulle schede recenti accanto a esse ci sono
-  anche i **tensor core**, unità costruite apposta per moltiplicare fra loro
+  anche i tensor core, unità costruite apposta per moltiplicare fra loro
   due tabelloni di numeri, che vedremo in una sezione dedicata;
 - uno o più **warp scheduler**, i caposquadra: decidono, momento per momento,
   quale gruppetto di thread far avanzare (il gruppetto si chiama *warp*, e la
@@ -128,15 +128,15 @@ calcolatori, il suo caposquadra e i suoi ripiani di lavoro. Contiene:
 - un grande **register file**, il taccuino: la memoria velocissima dove ogni
   thread tiene i numeri su cui sta operando in questo istante. In inglese
   *file* qui non vuol dire documento, vuol dire schedario;
-- un blocco di **shared memory**, il tavolo comune: una memoria di lavoro
+- un blocco di shared memory, il tavolo comune: una memoria di lavoro
   condivisa fra i thread della stessa squadra. La incontreremo in dettaglio
   nella prossima sezione, perché è la chiave delle prestazioni.
 
 Gli ordini di grandezza aiutano a fissare le proporzioni, senza inseguire il
 numero esatto di un modello specifico (che cambia a ogni generazione). Da
-parecchie decine a oltre un centinaio di **SM** per GPU; dentro ogni SM un
-centinaio di **ALU**, per un totale di migliaia o decine di migliaia sul chip;
-e sopra tutte queste postazioni, **centinaia di migliaia di thread** che la
+parecchie decine a oltre un centinaio di SM per GPU; dentro ogni SM un
+centinaio di ALU, per un totale di migliaia o decine di migliaia sul chip;
+e sopra tutte queste postazioni, centinaia di migliaia di thread che la
 GPU tiene in carico contemporaneamente, cioè qualche decina di compiti per ogni
 postazione.
 
@@ -149,7 +149,7 @@ divora le moltiplicazioni fra tabelloni di numeri di cui una rete neurale è
 fatta.
 
 Quei conti hanno un nome che ricorrerà per tutto il capitolo. Sono
-**operazioni in virgola mobile**, cioè conti sui numeri con la virgola, che
+operazioni in virgola mobile, cioè conti sui numeri con la virgola, che
 sono quelli di cui una rete neurale è fatta; l'inglese le chiama *floating-point
 operations* e da lì viene la sigla **FLOP**. Un FLOP è *un* conto elementare,
 una moltiplicazione o una somma: quando serve dire quanti se ne fanno al
@@ -164,16 +164,16 @@ decine di migliaia di istruzioni diverse? La risposta di CUDA
 {cite}`nickolls2008scalable` è organizzarli su tre livelli, come si organizza
 un'operazione che coinvolge molta gente: l'operazione intera, le squadre in cui
 è divisa, i singoli. I loro nomi tecnici sono **griglia**, **blocco** e
-**thread**, e la {numref}`fig-gpu-esecuzione` li mette in fila.
+thread, e la {numref}`fig-gpu-esecuzione` li mette in fila.
 
 `````{tab} Elementare
 
 In una città si fa il censimento, e bisogna bussare a tutte le porte. Il
-**thread** è il singolo rilevatore, che si occupa di *una* casa. Per non
-impazzire, i rilevatori si organizzano in **squadre** (i «blocchi»): quelli di
+thread è il singolo rilevatore, che si occupa di *una* casa. Per non
+impazzire, i rilevatori si organizzano in squadre (i «blocchi»): quelli di
 una squadra lavorano nello stesso quartiere, si passano informazioni e si
-coordinano tra loro. Tutte le squadre insieme formano l’**operazione
-cittadina** (la «griglia»), che copre l'intera città. Il capo del censimento
+coordinano tra loro. Tutte le squadre insieme formano l’operazione
+cittadina (la «griglia»), che copre l'intera città. Il capo del censimento
 non dà ordini a ogni singolo rilevatore: dice «voglio una griglia di 100
 squadre da 256 rilevatori l'una», e lascia che l'organizzazione si dispieghi da
 sola.
@@ -192,7 +192,7 @@ guardare le carte l'una dell'altra, cosa che con un ufficio dall'altra parte
 della città non si può fare.
 
 C'è poi un dettaglio che viene dall'hardware: dentro ogni squadra i
-rilevatori marciano in **plotoni da 32**, che ricevono l'ordine tutti nello
+rilevatori marciano in plotoni da 32, che ricevono l'ordine tutti nello
 stesso istante. Una squadra da 256 rilevatori, quindi, sono otto plotoni, e i
 conti tornano sempre così: le squadre si scelgono di una taglia che sia un
 multiplo di 32, altrimenti l'ultimo plotone parte mezzo vuoto. Ricordati quel
@@ -204,11 +204,11 @@ multiplo di 32, altrimenti l'ultimo plotone parte mezzo vuoto. Ricordati quel
 
 Il modello di programmazione CUDA espone tre livelli:
 
-- **thread**: l'unità elementare, esegue il *kernel* (il programma che la GPU
+- thread: l'unità elementare, esegue il *kernel* (il programma che la GPU
   manda in esecuzione) su un proprio pezzo di dato;
-- **block** (o *CTA*, Cooperative Thread Array): un gruppo di thread che
+- block (o *CTA*, Cooperative Thread Array): un gruppo di thread che
   condividono la shared memory dell'SM e possono sincronizzarsi tra loro;
-- **grid**: l'insieme di tutti i blocchi lanciati per un kernel.
+- grid: l'insieme di tutti i blocchi lanciati per un kernel.
 
 Dalle GPU **Hopper** in poi (compute capability 9.0) fra griglia e blocco c'è
 un quarto livello, facoltativo: il **thread block cluster**, un gruppetto di
@@ -220,12 +220,12 @@ Il programmatore sceglie forma e dimensione di griglia e blocchi al momento del
 lancio; l'hardware assegna ciascun blocco a uno SM e lo tiene lì fino alla fine.
 Un SM può ospitare più blocchi in parallelo, se le risorse (registri, shared
 memory) bastano; i blocchi che non entrano restano in coda e partono quando un
-SM si libera. Questo rende un programma CUDA **scalabile in modo trasparente**:
+SM si libera. Questo rende un programma CUDA scalabile in modo trasparente:
 lo stesso codice gira su una GPU con 20 SM o con 120, distribuendo gli stessi
 blocchi su più o meno officine, senza cambiare una riga.
 
 Sotto il blocco c'è un livello ulteriore, che il programmatore non specifica ma
-non può ignorare: l'hardware esegue i thread di un blocco in **warp** da 32. Un
+non può ignorare: l'hardware esegue i thread di un blocco in warp da 32. Un
 blocco da 256 thread è, fisicamente, 8 warp. Il warp è l'unità di
 *schedulazione*: il warp scheduler non muove un thread alla volta, muove un
 warp intero.
@@ -238,8 +238,8 @@ warp intero.
 :width: 100%
 
 Gli stessi tre livelli in figura, dall'operazione intera al singolo. In alto
-come li pensa chi scrive il programma: una **griglia** di **blocchi**, ogni
-blocco fatto di **warp** da 32, ogni warp fatto di 32 **thread**, ognuno su un
+come li pensa chi scrive il programma: una griglia di blocchi, ogni
+blocco fatto di warp da 32, ogni warp fatto di 32 thread, ognuno su un
 proprio dato. In basso come li esegue la macchina: ogni blocco finisce su una
 delle officine (gli Streaming Multiprocessor) e lì avanza un warp per volta.
 ```
@@ -313,12 +313,12 @@ peggiore (32 percorsi distinti) un warp divergente costa fino a 32 volte un
 warp coerente.
 
 Il meccanismo, qui, è cambiato, e molte spiegazioni in giro descrivono ancora
-la macchina di prima. **Fino a
-Pascal** (2016) il warp aveva un *unico* program counter condiviso dai 32
+la macchina di prima. Fino a
+Pascal (2016) il warp aveva un *unico* program counter condiviso dai 32
 thread, più una maschera di attivazione che diceva quali fossero vivi in quel
 momento: i thread di un warp, letteralmente, non potevano trovarsi in due punti
-diversi del programma. **Da Volta** (2017) ogni thread ha program counter e
-stack di chiamata **propri** (*independent thread scheduling*), e a raggruppare
+diversi del programma. Da Volta (2017) ogni thread ha program counter e
+stack di chiamata propri (*independent thread scheduling*), e a raggruppare
 per l'emissione i thread che eseguono la stessa istruzione pensa uno *schedule
 optimizer*. L'esecuzione resta SIMT e la divergenza costa ancora, perché rami
 diversi non possono essere emessi nello stesso ciclo; ciò che cambia è che
@@ -345,7 +345,7 @@ sono meno di un milionesimo di secondo, ma per la GPU è come se noi, che di
 conti ne facciamo uno al secondo, restassimo fermi otto minuti davanti a una
 porta chiusa. Se si fermasse a ogni attesa, tutta
 la sua potenza sarebbe sprecata. La mossa che la salva non è aspettare meno, ma
-**avere sempre qualcos'altro da fare**.
+avere sempre qualcos'altro da fare.
 
 `````{tab} Elementare
 
@@ -392,9 +392,9 @@ volta di pentole ne bastano poche.
 
 `````{tab} Superiore
 
-La misura di «quanti warp l'SM tiene in volo» si chiama **occupancy**: il
+La misura di «quanti warp l'SM tiene in volo» si chiama occupancy: il
 rapporto tra i warp attivi su un SM e il massimo che potrebbe ospitarne. Il
-passaggio da un warp all'altro è a **costo zero**, perché a differenza della
+passaggio da un warp all'altro è a costo zero, perché a differenza della
 CPU la GPU non salva e ripristina il contesto: i registri di *tutti* i warp
 residenti restano allocati contemporaneamente nel register file dell'SM. Ecco
 perché il register file è così grande. Ma è anche una risorsa finita, e da qui
@@ -426,7 +426,7 @@ con pochi warp che leggono largo.
 Abbiamo così il quadro dell’*esecuzione*: una GPU è una federazione di SM,
 ogni SM macina warp da 32 thread in stile SIMT, e nasconde le attese tenendo
 in volo tanti warp insieme. Ma quelle attese (l'abbiamo nominate a ogni passo)
-di cosa sono attese? Di **dati che arrivano dalla memoria**. È qui il vero
+di cosa sono attese? Di dati che arrivano dalla memoria. È qui il vero
 collo di bottiglia: molto più spesso di quanto si creda, una GPU non è lenta
 perché calcola poco, ma perché resta a corto di dati da calcolare. Come è
 organizzata la memoria della GPU, e come tenerla rifornita, è il tema della
@@ -435,35 +435,35 @@ prossima sezione.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- CPU e GPU sono la **lepre e il formicaio**. La CPU ha pochi calcolatori
+- CPU e GPU sono la lepre e il formicaio. La CPU ha pochi calcolatori
   velocissimi e finisce in fretta il singolo compito (bassa *latenza*, cioè
   poca attesa); la GPU ne ha migliaia lenti e smaltisce montagne di conti
   uguali (alto *throughput*, cioè tanta roba per ora).
-- Una GPU è una federazione di **officine** e non un blocco unico (gli
+- Una GPU è una federazione di officine e non un blocco unico (gli
   *Streaming Multiprocessor*), da qualche decina a oltre un centinaio, ognuna
   con i propri calcolatori, il proprio caposquadra e il proprio tavolo di
   lavoro. Insieme tengono al lavoro centinaia di migliaia di lavoratori.
-- I lavoratori si chiamano **thread** e non sono pezzi di ferro: un thread è un
+- I lavoratori si chiamano thread e non sono pezzi di ferro: un thread è un
   *compito*, «occupati tu di questo numero», e ce n'è qualche decina per ogni
   postazione di lavoro vera. Sono organizzati come in un censimento:
   l'operazione intera (la *griglia*), le squadre di quartiere (i *blocchi*) e,
-  dentro ogni squadra, i **plotoni da 32** (i *warp*). Il 32 è arbitrario ma
+  dentro ogni squadra, i plotoni da 32 (i *warp*). Il 32 è arbitrario ma
   non cambia da vent'anni: se lo ricordi, ricordi metà del capitolo.
-- Il sergente dà **un ordine solo** a tutto il plotone. Efficientissimo finché
+- Il sergente dà un ordine solo a tutto il plotone. Efficientissimo finché
   tutti fanno la stessa mossa; a un bivio («se pari a destra, se dispari a
   sinistra») il plotone si divide e le due strade si percorrono una dopo
   l'altra, nel doppio del tempo. Nel codice per GPU i «se... allora...» che
   dividono i compagni di plotone costano cari.
-- L'attesa non si accorcia, si **nasconde**: il caposquadra manda avanti un
+- L'attesa non si accorcia, si nasconde: il caposquadra manda avanti un
   altro plotone mentre il primo aspetta i dati, come il capocuoco che gira fra
   dieci pentole.
   Quanti plotoni ha pronti, in rapporto a quanti potrebbe averne, si chiama
-  **occupancy**. Tenerla decente è il modo più semplice per non lasciare
+  occupancy. Tenerla decente è il modo più semplice per non lasciare
   l'officina a mani vuote; quello che conta davvero, però, è che il corridoio
   verso la memoria sia sempre pieno di roba in viaggio, e ci si arriva anche
   con pochi plotoni che chiedono molto per volta.
-- Le attese che si nascondono così sono attese di **dati che arrivano dalla
-  memoria**: è il vero collo di bottiglia, ed è l'argomento della sezione
+- Le attese che si nascondono così sono attese di dati che arrivano dalla
+  memoria: è il vero collo di bottiglia, ed è l'argomento della sezione
   successiva.
 ```
 `````
@@ -475,26 +475,26 @@ prossima sezione.
   (pochi core complessi, finisce in fretta il singolo compito), la GPU è
   *throughput-oriented* (migliaia di ALU semplici, smaltisce montagne di
   conti identici e indipendenti).
-- La GPU è una federazione di **Streaming Multiprocessor** (SM): da parecchie
+- La GPU è una federazione di Streaming Multiprocessor (SM): da parecchie
   decine a oltre un centinaio di SM, per un totale di migliaia o decine di
   migliaia di CUDA core e centinaia di migliaia di thread residenti. Ogni SM ha
   ALU, warp scheduler, un grande register file e la shared memory.
-- Il programmatore lancia una **griglia** di **blocchi** di **thread**;
-  l'hardware assegna ogni blocco a uno SM e lo esegue in **warp da 32
-  thread**: l'unità di schedulazione. Lo stesso codice scala su GPU con più o
+- Il programmatore lancia una griglia di blocchi di thread;
+  l'hardware assegna ogni blocco a uno SM e lo esegue in warp da 32
+  thread: l'unità di schedulazione. Lo stesso codice scala su GPU con più o
   meno SM {cite}`nickolls2008scalable`.
-- In stile **SIMT** i 32 thread di un warp eseguono la stessa istruzione su
-  dati diversi. I rami condizionali che li mandano su strade diverse (**warp
-  divergence**) vengono serializzati: costano. Fino a Pascal il warp aveva un
-  program counter unico; **da Volta** ogni thread ha PC e stack propri
+- In stile SIMT i 32 thread di un warp eseguono la stessa istruzione su
+  dati diversi. I rami condizionali che li mandano su strade diverse (warp
+  divergence) vengono serializzati: costano. Fino a Pascal il warp aveva un
+  program counter unico; da Volta ogni thread ha PC e stack propri
   (*independent thread scheduling*), il costo della divergenza resta ma i
   thread di un warp possono sincronizzarsi fra loro.
-- La GPU nasconde la latenza della memoria con l’**occupancy**: tanti warp
+- La GPU nasconde la latenza della memoria con l’occupancy: tanti warp
   residenti, così che mentre uno aspetta un altro lavora. Il cambio di warp è a
   costo zero perché i registri restano tutti allocati. Ciò che va davvero
-  tenuto alto sono gli **accessi in volo** (banda × latenza): tanti warp, o
+  tenuto alto sono gli accessi in volo (banda × latenza): tanti warp, o
   pochi warp che leggono largo.
-- Le attese che l'occupancy nasconde sono attese di **memoria**: il collo di
+- Le attese che l'occupancy nasconde sono attese di memoria: il collo di
   bottiglia più frequente, e l'argomento della sezione successiva.
 ```
 `````

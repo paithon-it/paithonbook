@@ -1,0 +1,47 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../adam-ottimizzatore.svg
+-->
+<svg viewBox="0 0 760 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: learning rate adattivi per peso in Adam">
+  <rect x="0" y="0" width="760" height="380" fill="#0E0C0A"/>
+  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Un learning rate effettivo per ogni peso</text>
+  <!-- SGD side -->
+  <text x="190" y="70" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#5BA39C">SGD: passo uguale per tutti</text>
+  <rect x="60" y="90" width="260" height="180" fill="none" stroke="#5BA39C" stroke-width="2" rx="8"/>
+  <!-- three weights, same arrow length -->
+  <text x="85" y="130" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">w1</text>
+  <line x1="120" y1="125" x2="220" y2="125" stroke="#5BA39C" stroke-width="2"/>
+  <polygon points="220,125 208,119 208,131" fill="#5BA39C"/>
+  <text x="85" y="180" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">w2</text>
+  <line x1="120" y1="175" x2="220" y2="175" stroke="#5BA39C" stroke-width="2"/>
+  <polygon points="220,175 208,169 208,181" fill="#5BA39C"/>
+  <text x="85" y="230" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">w3</text>
+  <line x1="120" y1="225" x2="220" y2="225" stroke="#5BA39C" stroke-width="2"/>
+  <polygon points="220,225 208,219 208,231" fill="#5BA39C"/>
+  <text x="190" y="295" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">stesso η per ogni parametro</text>
+  <!-- Adam side -->
+  <text x="560" y="70" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#E27B52">Adam: passo scalato da √v</text>
+  <rect x="430" y="90" width="260" height="180" fill="none" stroke="#E27B52" stroke-width="2" rx="8"/>
+  <!-- w1: big gradients -> small step -->
+  <text x="455" y="130" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">w1</text>
+  <line x1="490" y1="125" x2="535" y2="125" stroke="#E27B52" stroke-width="2"/>
+  <polygon points="535,125 523,119 523,131" fill="#E27B52"/>
+  <text x="640" y="129" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">grad. grandi → passo corto</text>
+  <!-- w2: medium -->
+  <text x="455" y="180" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">w2</text>
+  <line x1="490" y1="175" x2="575" y2="175" stroke="#DDB874" stroke-width="2"/>
+  <polygon points="575,175 563,169 563,181" fill="#DDB874"/>
+  <text x="640" y="179" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">gradienti medi</text>
+  <!-- w3: rare gradients -> big step -->
+  <text x="455" y="230" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">w3</text>
+  <line x1="490" y1="225" x2="640" y2="225" stroke="#E27B52" stroke-width="2"/>
+  <polygon points="640,225 628,219 628,231" fill="#E27B52"/>
+  <text x="585" y="250" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">grad. rari → passo lungo</text>
+  <text x="560" y="295" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">passo ∝ m / (√v + ε), diverso per peso</text>
+  <!-- formula band -->
+  <rect x="60" y="320" width="630" height="40" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.5" rx="6"/>
+  <text x="375" y="345" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">m = media dei gradienti (direzione) · v = media dei gradienti² (scala) → ogni peso ha il suo passo</text>
+</svg>

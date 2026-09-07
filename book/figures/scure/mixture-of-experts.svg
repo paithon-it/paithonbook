@@ -1,0 +1,57 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../mixture-of-experts.svg
+-->
+<svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema di un layer Mixture of Experts: un token entra nel router, che seleziona 2 esperti su 8; le uscite vengono combinate.">
+  <rect x="0" y="0" width="720" height="400" fill="#0E0C0A"/>
+  <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Un layer Mixture of Experts</text>
+  <!-- token in ingresso -->
+  <rect x="30" y="175" width="110" height="50" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="85" y="196" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">token</text>
+  <text x="85" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">in ingresso</text>
+  <line x1="140" y1="200" x2="185" y2="200" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="185,195 195,200 185,205" fill="#F4ECDD"/>
+  <!-- router -->
+  <rect x="200" y="160" width="110" height="80" rx="6" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="255" y="195" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#0E0C0A">Router</text>
+  <text x="255" y="215" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">sceglie i top-2</text>
+  <!-- esperti -->
+  <!-- attivi: 2 e 6 -->
+  <g font-family="Inter, system-ui, sans-serif" font-size="12">
+    <rect x="420" y="45"  width="130" height="34" rx="6" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <text x="485" y="67"  text-anchor="middle" fill="#8E8676">Esperto 1</text>
+    <rect x="420" y="87"  width="130" height="34" rx="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="2"/>
+    <text x="485" y="109" text-anchor="middle" fill="#0E0C0A" font-weight="bold">Esperto 2 · attivo</text>
+    <rect x="420" y="129" width="130" height="34" rx="6" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <text x="485" y="151" text-anchor="middle" fill="#8E8676">Esperto 3</text>
+    <rect x="420" y="171" width="130" height="34" rx="6" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <text x="485" y="193" text-anchor="middle" fill="#8E8676">Esperto 4</text>
+    <rect x="420" y="213" width="130" height="34" rx="6" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <text x="485" y="235" text-anchor="middle" fill="#8E8676">Esperto 5</text>
+    <rect x="420" y="255" width="130" height="34" rx="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="2"/>
+    <text x="485" y="277" text-anchor="middle" fill="#0E0C0A" font-weight="bold">Esperto 6 · attivo</text>
+    <rect x="420" y="297" width="130" height="34" rx="6" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <text x="485" y="319" text-anchor="middle" fill="#8E8676">Esperto 7</text>
+    <rect x="420" y="339" width="130" height="34" rx="6" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+    <text x="485" y="361" text-anchor="middle" fill="#8E8676">Esperto 8</text>
+  </g>
+  <!-- frecce router -> esperti attivi -->
+  <line x1="310" y1="185" x2="412" y2="106" stroke="#E27B52" stroke-width="2"/>
+  <polygon points="408,103 420,104 411,112" fill="#E27B52"/>
+  <text x="345" y="130" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52">peso 0,7</text>
+  <line x1="310" y1="215" x2="412" y2="270" stroke="#E27B52" stroke-width="2"/>
+  <polygon points="408,264 420,272 410,276" fill="#E27B52"/>
+  <text x="340" y="265" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52">peso 0,3</text>
+  <!-- combinazione -->
+  <line x1="550" y1="104" x2="600" y2="185" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="550" y1="272" x2="600" y2="215" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="612" cy="200" r="18" fill="#DDB874" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="612" y="206" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">+</text>
+  <line x1="630" y1="200" x2="668" y2="200" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="668,195 678,200 668,205" fill="#F4ECDD"/>
+  <text x="655" y="230" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">output</text>
+  <text x="485" y="392" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#8E8676">6 esperti su 8 restano spenti per questo token</text>
+</svg>

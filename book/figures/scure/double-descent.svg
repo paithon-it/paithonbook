@@ -1,0 +1,30 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../double-descent.svg
+-->
+<svg viewBox="0 0 680 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva del double descent: l'errore di test disegna una U, sale fino a un picco alla soglia di interpolazione e poi riscende nel regime sovraparametrizzato; l'errore di training scende a zero e resta a zero">
+  <rect x="0" y="0" width="680" height="380" fill="#0E0C0A"/>
+  <line x1="60" y1="320" x2="640" y2="320" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="60" y1="320" x2="60" y2="40" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="350" y="358" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">capacità del modello (numero di parametri)</text>
+  <text x="30" y="180" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" transform="rotate(-90 30 180)">errore</text>
+  <line x1="330" y1="320" x2="330" y2="55" stroke="#DDB874" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="330" y="45" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">soglia di interpolazione</text>
+  <path d="M 80 90 C 140 200 200 235 250 225 C 290 217 310 150 330 90 C 350 150 420 230 500 258 C 560 276 610 283 630 285" fill="none" stroke="#E27B52" stroke-width="2"/>
+  <path d="M 80 130 C 150 240 220 300 300 316 L 330 319 L 630 319" fill="none" stroke="#5BA39C" stroke-width="2"/>
+  <circle cx="250" cy="225" r="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <text x="250" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#E27B52">minimo classico</text>
+  <circle cx="330" cy="90" r="6" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="395" y="88" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#E27B52">picco</text>
+  <circle cx="600" cy="284" r="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+  <text x="580" y="265" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#E27B52">seconda discesa</text>
+  <text x="195" y="70" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">regime classico</text>
+  <text x="500" y="70" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">regime sovraparametrizzato</text>
+  <line x1="90" y1="120" x2="120" y2="120" stroke="#E27B52" stroke-width="2"/>
+  <text x="128" y="124" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">errore di test</text>
+  <line x1="90" y1="142" x2="120" y2="142" stroke="#5BA39C" stroke-width="2"/>
+  <text x="128" y="146" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">errore di training</text>
+</svg>

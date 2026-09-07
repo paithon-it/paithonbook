@@ -1,0 +1,122 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../vq-vae-rappresentazioni-discrete.svg
+-->
+<svg viewBox="0 0 780 440" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema del VQ-VAE: l'immagine passa nell'encoder, che produce una griglia di vettori continui; ogni vettore viene sostituito dalla tessera piu vicina scelta da un codebook appreso, ottenendo una griglia di codici discreti; il decoder li trasforma nella ricostruzione. Un arco tratteggiato indica che il gradiente viene copiato indietro saltando la discretizzazione.">
+  <rect x="0" y="0" width="780" height="440" fill="#0E0C0A"/>
+  <text x="390" y="26" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">VQ-VAE: dal continuo a un alfabeto di tessere</text>
+
+  <!-- straight-through gradient arc -->
+  <text x="378" y="50" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52">gradiente copiato indietro · straight-through</text>
+  <path d="M474 101 C 470 60, 286 60, 282 101" fill="none" stroke="#E27B52" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <path d="M282 104 L 278 96 L 286 96 Z" fill="#E27B52"/>
+
+  <!-- input image -->
+  <rect x="24" y="96" width="96" height="92" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <circle cx="52" cy="124" r="12" fill="#E27B52"/>
+  <path d="M32 176 L 60 146 L 88 176 Z" fill="#DDB874"/>
+  <rect x="30" y="172" width="84" height="12" fill="#5BA39C"/>
+  <text x="72" y="206" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">immagine  x</text>
+
+  <!-- arrow to encoder -->
+  <line x1="120" y1="142" x2="146" y2="142" stroke="#F4ECDD" stroke-width="1.5"/>
+  <path d="M148 142 L 141 138 L 141 146 Z" fill="#F4ECDD"/>
+
+  <!-- encoder -->
+  <rect x="150" y="100" width="64" height="80" rx="6" fill="#5BA39C"/>
+  <text x="182" y="145" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0E0C0A">encoder</text>
+
+  <!-- arrow to z_e -->
+  <line x1="216" y1="142" x2="242" y2="142" stroke="#F4ECDD" stroke-width="1.5"/>
+  <path d="M244 142 L 237 138 L 237 146 Z" fill="#F4ECDD"/>
+
+  <!-- z_e continuous grid -->
+  <g stroke="#F4ECDD" stroke-width="0.6">
+    <rect x="246" y="104" width="24" height="24" fill="#E27B52" fill-opacity="0.7"/>
+    <rect x="270" y="104" width="24" height="24" fill="#5BA39C" fill-opacity="0.55"/>
+    <rect x="294" y="104" width="24" height="24" fill="#DDB874" fill-opacity="0.8"/>
+    <rect x="246" y="128" width="24" height="24" fill="#5BA39C" fill-opacity="0.75"/>
+    <rect x="270" y="128" width="24" height="24" fill="#E27B52" fill-opacity="0.5"/>
+    <rect x="294" y="128" width="24" height="24" fill="#5BA39C" fill-opacity="0.6"/>
+    <rect x="246" y="152" width="24" height="24" fill="#DDB874" fill-opacity="0.6"/>
+    <rect x="270" y="152" width="24" height="24" fill="#E27B52" fill-opacity="0.85"/>
+    <rect x="294" y="152" width="24" height="24" fill="#DDB874" fill-opacity="0.7"/>
+  </g>
+  <text x="282" y="192" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">z_e(x) · continuo</text>
+
+  <!-- arrow to snap -->
+  <line x1="320" y1="140" x2="354" y2="140" stroke="#F4ECDD" stroke-width="1.5"/>
+  <path d="M356 140 L 349 136 L 349 144 Z" fill="#F4ECDD"/>
+
+  <!-- snap diamond -->
+  <path d="M378 120 L 398 140 L 378 160 L 358 140 Z" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="378" y="144" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#E27B52">≈</text>
+
+  <!-- arrow snap to z_q -->
+  <line x1="400" y1="140" x2="434" y2="140" stroke="#F4ECDD" stroke-width="1.5"/>
+  <path d="M436 140 L 429 136 L 429 144 Z" fill="#F4ECDD"/>
+
+  <!-- connector snap to codebook -->
+  <line x1="378" y1="160" x2="378" y2="248" stroke="#F4ECDD" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <text x="388" y="208" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">1-di-K</text>
+
+  <!-- z_q discrete grid -->
+  <g stroke="#F4ECDD" stroke-width="0.6">
+    <rect x="438" y="104" width="24" height="24" fill="#E27B52"/>
+    <rect x="462" y="104" width="24" height="24" fill="#5BA39C"/>
+    <rect x="486" y="104" width="24" height="24" fill="#DDB874"/>
+    <rect x="438" y="128" width="24" height="24" fill="#5BA39C"/>
+    <rect x="462" y="128" width="24" height="24" fill="#E27B52"/>
+    <rect x="486" y="128" width="24" height="24" fill="#F4ECDD"/>
+    <rect x="438" y="152" width="24" height="24" fill="#DDB874"/>
+    <rect x="462" y="152" width="24" height="24" fill="#E27B52"/>
+    <rect x="486" y="152" width="24" height="24" fill="#8E8676"/>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle">
+    <text x="450" y="120" fill="#0E0C0A">7</text>
+    <text x="474" y="120" fill="#0E0C0A">3</text>
+    <text x="498" y="120" fill="#F4ECDD">5</text>
+    <text x="450" y="144" fill="#0E0C0A">3</text>
+    <text x="474" y="144" fill="#0E0C0A">7</text>
+    <text x="498" y="144" fill="#0E0C0A">1</text>
+    <text x="450" y="168" fill="#F4ECDD">5</text>
+    <text x="474" y="168" fill="#0E0C0A">7</text>
+    <text x="498" y="168" fill="#F4ECDD">9</text>
+  </g>
+  <text x="474" y="192" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">z_q(x) · discreto</text>
+
+  <!-- arrow to decoder -->
+  <line x1="512" y1="140" x2="544" y2="140" stroke="#F4ECDD" stroke-width="1.5"/>
+  <path d="M546 140 L 539 136 L 539 144 Z" fill="#F4ECDD"/>
+
+  <!-- decoder -->
+  <rect x="548" y="100" width="64" height="80" rx="6" fill="#5BA39C"/>
+  <text x="580" y="145" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0E0C0A">decoder</text>
+
+  <!-- arrow to recon -->
+  <line x1="614" y1="140" x2="646" y2="140" stroke="#F4ECDD" stroke-width="1.5"/>
+  <path d="M648 140 L 641 136 L 641 144 Z" fill="#F4ECDD"/>
+
+  <!-- reconstruction image -->
+  <rect x="650" y="96" width="96" height="92" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <circle cx="678" cy="124" r="13" fill="#E27B52"/>
+  <path d="M658 176 L 690 144 L 720 176 Z" fill="#DDB874"/>
+  <rect x="656" y="172" width="84" height="12" fill="#5BA39C"/>
+  <text x="698" y="206" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">ricostruzione</text>
+
+  <!-- codebook -->
+  <rect x="250" y="250" width="256" height="82" rx="8" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="378" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F4ECDD">codebook: le K tessere apprese</text>
+  <g stroke="#F4ECDD" stroke-width="0.8">
+    <rect x="268" y="284" width="28" height="26" fill="#E27B52"/>
+    <rect x="302" y="284" width="28" height="26" fill="#5BA39C"/>
+    <rect x="336" y="284" width="28" height="26" fill="#DDB874"/>
+    <rect x="370" y="284" width="28" height="26" fill="#F4ECDD"/>
+    <rect x="404" y="284" width="28" height="26" fill="#8E8676"/>
+  </g>
+  <text x="462" y="303" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD">…</text>
+  <text x="378" y="326" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">durante l'addestramento le tessere si spostano verso i colori richiesti</text>
+</svg>

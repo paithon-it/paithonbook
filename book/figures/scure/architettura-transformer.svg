@@ -1,0 +1,48 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../architettura-transformer.svg
+-->
+<svg viewBox="0 0 720 460" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema annotato di un blocco transformer">
+  <rect x="0" y="0" width="720" height="460" fill="#0E0C0A"/>
+  <text x="360" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Un blocco transformer, annotato</text>
+  <!-- flusso centrale -->
+  <line x1="360" y1="430" x2="360" y2="52" stroke="#F4ECDD" stroke-width="2"/>
+  <polygon points="354,58 366,58 360,46" fill="#F4ECDD"/>
+  <!-- input label -->
+  <text x="360" y="450" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">embedding in ingresso (token + posizione)</text>
+  <!-- LayerNorm 1 -->
+  <rect x="290" y="368" width="140" height="34" fill="#0E0C0A" stroke="#DDB874" stroke-width="2" rx="6"/>
+  <text x="360" y="390" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">layer norm</text>
+  <!-- Attention -->
+  <rect x="260" y="296" width="200" height="46" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5" rx="6"/>
+  <text x="360" y="324" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#0E0C0A">multi-head attention</text>
+  <!-- residual 1 -->
+  <path d="M 360 412 L 200 412 L 200 264 L 344 264" fill="none" stroke="#5BA39C" stroke-width="2" stroke-dasharray="6 4"/>
+  <circle cx="360" cy="264" r="13" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <text x="360" y="269" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#5BA39C">+</text>
+  <text x="192" y="336" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">connessione residua:</text>
+  <text x="192" y="352" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">l'input scavalca il blocco</text>
+  <!-- LayerNorm 2 -->
+  <rect x="290" y="200" width="140" height="34" fill="#0E0C0A" stroke="#DDB874" stroke-width="2" rx="6"/>
+  <text x="360" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">layer norm</text>
+  <!-- FFN -->
+  <rect x="260" y="128" width="200" height="46" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5" rx="6"/>
+  <text x="360" y="156" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#0E0C0A">feed-forward</text>
+  <!-- residual 2 -->
+  <path d="M 360 246 L 200 246 L 200 96 L 344 96" fill="none" stroke="#5BA39C" stroke-width="2" stroke-dasharray="6 4"/>
+  <circle cx="360" cy="96" r="13" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+  <text x="360" y="101" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#5BA39C">+</text>
+  <!-- annotations right -->
+  <text x="480" y="315" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#E27B52">i token si scambiano</text>
+  <text x="480" y="331" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#E27B52">informazioni tra loro</text>
+  <text x="480" y="146" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">ogni token viene elaborato</text>
+  <text x="480" y="162" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">da solo (~2/3 dei parametri)</text>
+  <text x="480" y="385" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#DDB874">riporta i valori</text>
+  <text x="480" y="401" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#DDB874">su scala standard</text>
+  <!-- ripetizione -->
+  <rect x="240" y="72" width="240" height="356" fill="none" stroke="#8E8676" stroke-width="1.5" stroke-dasharray="3 5" rx="10"/>
+  <text x="360" y="68" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8E8676">questo blocco si ripete L volte (32, 64, 100+)</text>
+</svg>

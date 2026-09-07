@@ -536,6 +536,23 @@ figure {
   max-width: 100%;
 }
 
+/*
+ * La didascalia di una figura che ha anche la resa scura.
+ *
+ * Il tema nasconde la didascalia che SEGUE l'immagine del tema sbagliato
+ * (`html[data-theme=light] .only-dark ~ figcaption`), e ha ragione nel caso
+ * per cui e' scritta: due `{figure}` separate, ciascuna con la propria
+ * didascalia, di cui se ne mostra una. Qui la coppia la mette in build
+ * `_ext/pt_scuro.py` DENTRO la stessa figura, quindi la didascalia e' una
+ * sola e segue tutte e due le immagini: la regola del tema la coglieva in
+ * pieno e la faceva sparire in tutti e due i temi. Misurato, non dedotto:
+ * `display: none` e altezza zero sia in chiaro sia in scuro.
+ */
+.bd-article figure > .only-light ~ figcaption,
+.bd-article figure > .only-dark ~ figcaption {
+  display: block !important;
+}
+
 /* Il link che Sphinx avvolge intorno all'immagine ("apri l'originale") è un
    inline: senza questo la figura eredita l'interlinea e si porta dietro
    qualche pixel di discesa sotto il bordo inferiore. */

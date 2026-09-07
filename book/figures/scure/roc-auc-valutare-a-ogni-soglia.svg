@@ -1,0 +1,37 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../roc-auc-valutare-a-ogni-soglia.svg
+-->
+<svg viewBox="0 0 560 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva ROC di un buon modello confrontata con la diagonale del caso">
+  <rect x="0" y="0" width="560" height="420" fill="#0E0C0A"/>
+  <!-- axes -->
+  <line x1="80" y1="350" x2="500" y2="350" stroke="#F4ECDD" stroke-width="2"/>
+  <line x1="80" y1="350" x2="80" y2="40" stroke="#F4ECDD" stroke-width="2"/>
+  <!-- axis labels -->
+  <text x="290" y="395" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD" text-anchor="middle">False Positive Rate</text>
+  <text x="32" y="195" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD" text-anchor="middle" transform="rotate(-90 32 195)">True Positive Rate</text>
+  <!-- ticks -->
+  <text x="80" y="370" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">0</text>
+  <text x="500" y="370" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="middle">1</text>
+  <text x="68" y="46" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1" text-anchor="end">1</text>
+  <!-- AUC shading under ROC curve -->
+  <path d="M 80 350 C 110 180, 160 100, 260 68 C 360 45, 450 42, 500 40 L 500 350 Z" fill="#DDB874" opacity="0.25"/>
+  <!-- random diagonal -->
+  <line x1="80" y1="350" x2="500" y2="40" stroke="#BCB3A1" stroke-width="1.5" stroke-dasharray="7 6"/>
+  <text x="330" y="245" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1" transform="rotate(-36 330 245)">caso (AUC = 0,5)</text>
+  <!-- ROC curve -->
+  <path d="M 80 350 C 110 180, 160 100, 260 68 C 360 45, 450 42, 500 40" fill="none" stroke="#E27B52" stroke-width="2"/>
+  <text x="150" y="120" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#E27B52">modello (AUC ≈ 0,9)</text>
+  <!-- threshold points -->
+  <circle cx="128" cy="212" r="5" fill="#5BA39C"/>
+  <text x="140" y="208" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">soglia alta</text>
+  <circle cx="260" cy="68" r="5" fill="#5BA39C"/>
+  <text x="268" y="92" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">soglia media</text>
+  <circle cx="440" cy="43" r="5" fill="#5BA39C"/>
+  <text x="430" y="68" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C" text-anchor="end">soglia bassa</text>
+  <!-- AUC label -->
+  <text x="330" y="300" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">area sotto la curva = AUC</text>
+</svg>

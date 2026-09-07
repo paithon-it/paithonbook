@@ -1,0 +1,60 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../fine-tuning-rag-o-prompt.svg
+-->
+<svg viewBox="0 0 720 620" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Albero di decisione: si parte sempre dal prompt, che è la leva più economica; se non basta e al modello mancano fatti o documenti propri si aggiunge il RAG; se non basta e serve un comportamento costante su molti casi si passa al fine-tuning; altrimenti si torna a riscrivere il prompt e a misurare">
+  <rect x="0" y="0" width="720" height="620" fill="#0E0C0A"/>
+  <text x="360" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Da dove cominciare, e quando salire</text>
+
+  <rect x="250" y="52" width="220" height="52" rx="10" fill="none" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="360" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Il modello non fa</text>
+  <text x="360" y="94" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">quello che voglio</text>
+  <line x1="360" y1="104" x2="360" y2="128" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="360,138 354,126 366,126" fill="#F4ECDD"/>
+
+  <!-- 1: il prompt, la leva piu' economica: si prova per prima -->
+  <rect x="260" y="140" width="200" height="52" rx="10" fill="#E27B52"/>
+  <text x="360" y="172" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A">1 · Prompt</text>
+  <text x="478" y="160" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1">istruzioni, esempi, formato:</text>
+  <text x="478" y="177" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1">costa meno, si prova per prima</text>
+  <text x="378" y="214" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F4ECDD">non basta</text>
+  <line x1="360" y1="192" x2="360" y2="228" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="360,238 354,226 366,226" fill="#F4ECDD"/>
+
+  <!-- 2: mancano fatti? -->
+  <polygon points="360,242 480,300 360,358 240,300" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="360" y="295" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">Gli mancano fatti</text>
+  <text x="360" y="312" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">o documenti tuoi?</text>
+  <line x1="480" y1="300" x2="556" y2="300" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="566,300 554,294 554,306" fill="#F4ECDD"/>
+  <text x="518" y="291" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#5BA39C">sì</text>
+  <rect x="568" y="274" width="120" height="52" rx="10" fill="#5BA39C"/>
+  <text x="628" y="306" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A">2 · RAG</text>
+  <text x="378" y="382" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">no</text>
+  <line x1="360" y1="358" x2="360" y2="396" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="360,406 354,394 366,394" fill="#F4ECDD"/>
+
+  <!-- 3: comportamento costante che il prompt non tiene? -->
+  <polygon points="360,410 500,478 360,546 220,478" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="360" y="464" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">Serve un comportamento</text>
+  <text x="360" y="481" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">costante che il prompt</text>
+  <text x="360" y="498" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">non riesce a tenere?</text>
+  <line x1="500" y1="478" x2="556" y2="478" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="566,478 554,472 554,484" fill="#F4ECDD"/>
+  <text x="528" y="469" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#DDB874">sì</text>
+  <rect x="568" y="452" width="130" height="52" rx="10" fill="#DDB874"/>
+  <text x="633" y="476" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F4ECDD">3 · Fine-</text>
+  <text x="633" y="493" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F4ECDD">tuning</text>
+
+  <line x1="220" y1="478" x2="150" y2="478" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="140,478 152,472 152,484" fill="#F4ECDD"/>
+  <text x="184" y="469" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">no</text>
+  <rect x="14" y="452" width="126" height="52" rx="10" fill="none" stroke="#E27B52" stroke-width="2"/>
+  <text x="77" y="476" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#E27B52">riscrivi il prompt</text>
+  <text x="77" y="493" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#E27B52">e misura</text>
+
+  <text x="360" y="588" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#BCB3A1">Si sale solo quando serve: il fine-tuning non è più avanzato del prompt, è più caro.</text>
+</svg>

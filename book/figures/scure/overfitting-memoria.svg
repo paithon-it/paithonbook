@@ -1,0 +1,30 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../overfitting-memoria.svg
+-->
+<svg viewBox="0 0 720 440" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico con punti dati, una curva semplice che coglie la tendenza e una curva nervosa che insegue ogni punto">
+  <rect width="720" height="440" fill="#0E0C0A"/>
+  <line x1="60" y1="380" x2="680" y2="380" stroke="#F4ECDD" stroke-width="2"/>
+  <line x1="60" y1="380" x2="60" y2="40" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="640" y="404" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" text-anchor="end">input x</text>
+  <text x="52" y="52" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" text-anchor="end" transform="rotate(-90 52 52)" >output y</text>
+  <path d="M60,318 C260,285 460,175 660,100" fill="none" stroke="#5BA39C" stroke-width="2"/>
+  <path d="M60,330 C70,340 70,310 80,300 C95,285 120,240 140,260 C155,275 185,300 200,285 C215,270 240,195 260,210 C275,222 305,250 320,235 C335,220 362,150 380,165 C395,178 425,210 440,195 C455,180 482,112 500,125 C515,135 545,170 560,155 C575,140 605,95 620,105 C632,111 648,92 660,88" fill="none" stroke="#E27B52" stroke-width="2"/>
+  <circle cx="80" cy="300" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="140" cy="260" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="200" cy="285" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="260" cy="210" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="320" cy="235" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="380" cy="165" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="440" cy="195" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="500" cy="125" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="560" cy="155" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <circle cx="620" cy="105" r="5" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="410" y1="58" x2="450" y2="58" stroke="#5BA39C" stroke-width="2"/>
+  <text x="458" y="63" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">modello semplice: coglie la tendenza</text>
+  <line x1="410" y1="84" x2="450" y2="84" stroke="#E27B52" stroke-width="2"/>
+  <text x="458" y="89" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD">modello overfit: insegue ogni punto</text>
+</svg>

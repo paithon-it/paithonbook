@@ -1,0 +1,36 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../quantizzazione-modelli.svg
+-->
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra precisione numerica e memoria occupata per un modello da 7 miliardi di parametri">
+  <rect x="0" y="0" width="720" height="340" fill="#0E0C0A"/>
+  <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD">Precisione vs memoria: modello da 7 miliardi di parametri</text>
+
+  <!-- FP32 -->
+  <text x="120" y="80" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">FP32 · 32 bit</text>
+  <rect x="140" y="62" width="480" height="28" fill="#F4ECDD" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="632" y="81" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">~28 GB</text>
+
+  <!-- FP16 -->
+  <text x="120" y="135" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">FP16 · 16 bit</text>
+  <rect x="140" y="117" width="240" height="28" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="392" y="136" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">~14 GB</text>
+
+  <!-- INT8 -->
+  <text x="120" y="190" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">INT8 · 8 bit</text>
+  <rect x="140" y="172" width="120" height="28" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="272" y="191" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">~7 GB</text>
+
+  <!-- INT4 -->
+  <text x="120" y="245" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">INT4 · 4 bit</text>
+  <rect x="140" y="227" width="60" height="28" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="212" y="246" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">~3,5 GB, entra in un portatile</text>
+
+  <!-- Quality axis note -->
+  <line x1="140" y1="285" x2="620" y2="285" stroke="#5BA39C" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="140" y="310" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1">&#8592; meno memoria, più approssimazione</text>
+  <text x="620" y="310" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1">più precisione, più memoria &#8594;</text>
+</svg>

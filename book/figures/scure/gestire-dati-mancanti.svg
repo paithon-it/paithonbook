@@ -1,0 +1,60 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../gestire-dati-mancanti.svg
+-->
+<svg viewBox="0 0 760 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tre strategie per i dati mancanti a confronto: eliminare le righe, imputare un valore fisso, ricostruire dal contesto">
+  <rect x="0" y="0" width="760" height="380" fill="#0E0C0A"/>
+  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">La stessa tabella bucata, tre strategie</text>
+
+  <!-- Panel 1: elimina -->
+  <text x="140" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#E27B52">1 · Elimina (dropna)</text>
+  <g stroke="#F4ECDD" stroke-width="1.5">
+    <rect x="50" y="90" width="60" height="34" fill="#0E0C0A"/><rect x="110" y="90" width="60" height="34" fill="#0E0C0A"/><rect x="170" y="90" width="60" height="34" fill="#0E0C0A"/>
+    <rect x="50" y="124" width="60" height="34" fill="#0E0C0A" stroke-dasharray="5 4" stroke="#E27B52"/><rect x="110" y="124" width="60" height="34" fill="#0E0C0A" stroke-dasharray="5 4" stroke="#E27B52"/><rect x="170" y="124" width="60" height="34" fill="#0E0C0A" stroke-dasharray="5 4" stroke="#E27B52"/>
+    <rect x="50" y="158" width="60" height="34" fill="#0E0C0A"/><rect x="110" y="158" width="60" height="34" fill="#0E0C0A"/><rect x="170" y="158" width="60" height="34" fill="#0E0C0A"/>
+    <rect x="50" y="192" width="60" height="34" fill="#0E0C0A" stroke-dasharray="5 4" stroke="#E27B52"/><rect x="110" y="192" width="60" height="34" fill="#0E0C0A" stroke-dasharray="5 4" stroke="#E27B52"/><rect x="170" y="192" width="60" height="34" fill="#0E0C0A" stroke-dasharray="5 4" stroke="#E27B52"/>
+  </g>
+  <line x1="46" y1="128" x2="234" y2="154" stroke="#E27B52" stroke-width="2"/>
+  <line x1="46" y1="154" x2="234" y2="128" stroke="#E27B52" stroke-width="2"/>
+  <line x1="46" y1="196" x2="234" y2="222" stroke="#E27B52" stroke-width="2"/>
+  <line x1="46" y1="222" x2="234" y2="196" stroke="#E27B52" stroke-width="2"/>
+  <text x="140" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">righe con buchi: via</text>
+  <text x="140" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#E27B52">semplice, ma perdi dati</text>
+  <text x="140" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#E27B52">(e rischi un campione distorto)</text>
+
+  <!-- Panel 2: imputa fisso -->
+  <text x="393" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#DDB874">2 · Riempi con un valore fisso</text>
+  <g stroke="#F4ECDD" stroke-width="1.5">
+    <rect x="303" y="90" width="60" height="34" fill="#0E0C0A"/><rect x="363" y="90" width="60" height="34" fill="#0E0C0A"/><rect x="423" y="90" width="60" height="34" fill="#0E0C0A"/>
+    <rect x="303" y="124" width="60" height="34" fill="#0E0C0A"/><rect x="363" y="124" width="60" height="34" fill="#DDB874"/><rect x="423" y="124" width="60" height="34" fill="#0E0C0A"/>
+    <rect x="303" y="158" width="60" height="34" fill="#0E0C0A"/><rect x="363" y="158" width="60" height="34" fill="#0E0C0A"/><rect x="423" y="158" width="60" height="34" fill="#0E0C0A"/>
+    <rect x="303" y="192" width="60" height="34" fill="#DDB874"/><rect x="363" y="192" width="60" height="34" fill="#0E0C0A"/><rect x="423" y="192" width="60" height="34" fill="#0E0C0A"/>
+  </g>
+  <text x="393" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F4ECDD">media</text>
+  <text x="333" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F4ECDD">media</text>
+  <text x="393" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">ogni buco = stesso valore</text>
+  <text x="393" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#DDB874">veloce e robusto,</text>
+  <text x="393" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#DDB874">ma riduce lo sparpagliamento</text>
+
+  <!-- Panel 3: contesto -->
+  <text x="633" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#5BA39C">3 · Ricostruisci dal contesto</text>
+  <g stroke="#F4ECDD" stroke-width="1.5">
+    <rect x="543" y="90" width="60" height="34" fill="#0E0C0A"/><rect x="603" y="90" width="60" height="34" fill="#0E0C0A"/><rect x="663" y="90" width="60" height="34" fill="#0E0C0A"/>
+    <rect x="543" y="124" width="60" height="34" fill="#0E0C0A"/><rect x="603" y="124" width="60" height="34" fill="#5BA39C"/><rect x="663" y="124" width="60" height="34" fill="#0E0C0A"/>
+    <rect x="543" y="158" width="60" height="34" fill="#0E0C0A"/><rect x="603" y="158" width="60" height="34" fill="#0E0C0A"/><rect x="663" y="158" width="60" height="34" fill="#0E0C0A"/>
+    <rect x="543" y="192" width="60" height="34" fill="#5BA39C"/><rect x="603" y="192" width="60" height="34" fill="#0E0C0A"/><rect x="663" y="192" width="60" height="34" fill="#0E0C0A"/>
+  </g>
+  <text x="633" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A">simili</text>
+  <text x="573" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A">simili</text>
+  <path d="M 633 100 C 620 112, 612 118, 620 130" fill="none" stroke="#5BA39C" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <path d="M 573 168 C 566 178, 564 184, 570 196" fill="none" stroke="#5BA39C" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="633" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">ogni buco = valore dei simili</text>
+  <text x="633" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">più fedele ai dati,</text>
+  <text x="633" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">ma più costoso</text>
+
+  <rect x="50" y="322" width="673" height="40" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="386" y="347" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Regola d'oro: il valore con cui riempi si calcola SOLO sui dati con cui il modello impara</text>
+</svg>

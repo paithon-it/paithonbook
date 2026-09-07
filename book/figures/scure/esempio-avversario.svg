@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../esempio-avversario.svg
+-->
+<!--
+  paithon book - figura: la ricetta di un esempio avversario (schema, non una foto).
+  Tre riquadri teal in fila, collegati da "+" e "=".
+  (1) una sagoma schematica e flat di panda, etichetta "panda: 58%";
+  (2) una griglia di rumore impercettibile, etichetta "rho per il segno del gradiente";
+  (3) la STESSA sagoma, ma con l'etichetta errata "gibbone: 99%" in terracotta.
+  Palette-locked, fondo trasparente, leggibile anche in dark mode (tratti scuri,
+  volto in cream). Nessuna immagine reale.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 300" role="img"
+     aria-label="La ricetta di un esempio avversario in tre riquadri collegati da un piu e da un uguale. Nel primo riquadro una sagoma stilizzata di panda con l'etichetta panda 58 per cento. Nel secondo una griglia di rumore impercettibile con l'etichetta rho per il segno del gradiente, cioe' la mappa di dove spingere ogni pixel. Nel terzo la stessa identica sagoma di panda, indistinguibile a occhio, con l'etichetta errata in terracotta gibbone 99 per cento.">
+  <defs>
+    <g id="panda">
+      <!-- orecchie -->
+      <circle cx="95"  cy="76" r="20" fill="#F4ECDD"/>
+      <circle cx="165" cy="76" r="20" fill="#F4ECDD"/>
+      <!-- volto -->
+      <circle cx="130" cy="128" r="56" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="3"/>
+      <!-- macchie occhi -->
+      <ellipse cx="108" cy="118" rx="14" ry="19" fill="#F4ECDD" transform="rotate(-18 108 118)"/>
+      <ellipse cx="152" cy="118" rx="14" ry="19" fill="#F4ECDD" transform="rotate(18 152 118)"/>
+      <circle cx="110" cy="116" r="4.5" fill="#0E0C0A"/>
+      <circle cx="150" cy="116" r="4.5" fill="#0E0C0A"/>
+      <!-- naso e bocca -->
+      <ellipse cx="130" cy="150" rx="8" ry="6" fill="#F4ECDD"/>
+      <path d="M 130,156 C 122,166 118,166 112,162 M 130,156 C 138,166 142,166 148,162"
+            fill="none" stroke="#F4ECDD" stroke-width="2.2" stroke-linecap="round"/>
+    </g>
+  </defs>
+  <style>
+    .box   { fill:none; stroke:#5BA39C; stroke-width:3; }
+    .op    { font-family:Fraunces, Georgia, serif; font-size:44px; fill:#F4ECDD; text-anchor:middle; }
+    .lbl   { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:700; fill:#F4ECDD; text-anchor:middle; }
+    .lblw  { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:700; fill:#E27B52; text-anchor:middle; }
+    .cap   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#5BA39C; text-anchor:middle; }
+  </style>
+
+  <!-- ===== Riquadro 1: input "panda" ===== -->
+  <rect class="box" x="30" y="40" width="200" height="200" rx="12"/>
+  <use href="#panda" x="0" y="0"/>
+  <text class="lbl" x="130" y="268">panda: 58%</text>
+
+  <!-- + -->
+  <text class="op" x="255" y="152">+</text>
+
+  <!-- ===== Riquadro 2: rumore = rho * segno del gradiente ===== -->
+  <rect class="box" x="280" y="40" width="200" height="200" rx="12"/>
+  <g>
+    <!-- griglia di rumore impercettibile: celle 28px, 6x6, colori di palette a bassa opacita -->
+    <rect x="296" y="56"  width="28" height="28" fill="#5BA39C" fill-opacity="0.30"/>
+    <rect x="324" y="56"  width="28" height="28" fill="#DDB874" fill-opacity="0.22"/>
+    <rect x="352" y="56"  width="28" height="28" fill="#F4ECDD" fill-opacity="0.18"/>
+    <rect x="380" y="56"  width="28" height="28" fill="#5BA39C" fill-opacity="0.18"/>
+    <rect x="408" y="56"  width="28" height="28" fill="#DDB874" fill-opacity="0.30"/>
+    <rect x="436" y="56"  width="28" height="28" fill="#5BA39C" fill-opacity="0.24"/>
+    <rect x="296" y="84"  width="28" height="28" fill="#DDB874" fill-opacity="0.20"/>
+    <rect x="324" y="84"  width="28" height="28" fill="#F4ECDD" fill-opacity="0.22"/>
+    <rect x="352" y="84"  width="28" height="28" fill="#5BA39C" fill-opacity="0.28"/>
+    <rect x="380" y="84"  width="28" height="28" fill="#DDB874" fill-opacity="0.26"/>
+    <rect x="408" y="84"  width="28" height="28" fill="#5BA39C" fill-opacity="0.16"/>
+    <rect x="436" y="84"  width="28" height="28" fill="#F4ECDD" fill-opacity="0.16"/>
+    <rect x="296" y="112" width="28" height="28" fill="#F4ECDD" fill-opacity="0.16"/>
+    <rect x="324" y="112" width="28" height="28" fill="#5BA39C" fill-opacity="0.26"/>
+    <rect x="352" y="112" width="28" height="28" fill="#DDB874" fill-opacity="0.30"/>
+    <rect x="380" y="112" width="28" height="28" fill="#5BA39C" fill-opacity="0.20"/>
+    <rect x="408" y="112" width="28" height="28" fill="#F4ECDD" fill-opacity="0.20"/>
+    <rect x="436" y="112" width="28" height="28" fill="#DDB874" fill-opacity="0.24"/>
+    <rect x="296" y="140" width="28" height="28" fill="#5BA39C" fill-opacity="0.24"/>
+    <rect x="324" y="140" width="28" height="28" fill="#DDB874" fill-opacity="0.18"/>
+    <rect x="352" y="140" width="28" height="28" fill="#5BA39C" fill-opacity="0.30"/>
+    <rect x="380" y="140" width="28" height="28" fill="#F4ECDD" fill-opacity="0.22"/>
+    <rect x="408" y="140" width="28" height="28" fill="#DDB874" fill-opacity="0.28"/>
+    <rect x="436" y="140" width="28" height="28" fill="#5BA39C" fill-opacity="0.16"/>
+    <rect x="296" y="168" width="28" height="28" fill="#DDB874" fill-opacity="0.26"/>
+    <rect x="324" y="168" width="28" height="28" fill="#5BA39C" fill-opacity="0.20"/>
+    <rect x="352" y="168" width="28" height="28" fill="#F4ECDD" fill-opacity="0.18"/>
+    <rect x="380" y="168" width="28" height="28" fill="#DDB874" fill-opacity="0.30"/>
+    <rect x="408" y="168" width="28" height="28" fill="#5BA39C" fill-opacity="0.28"/>
+    <rect x="436" y="168" width="28" height="28" fill="#F4ECDD" fill-opacity="0.16"/>
+    <rect x="296" y="196" width="28" height="28" fill="#5BA39C" fill-opacity="0.18"/>
+    <rect x="324" y="196" width="28" height="28" fill="#DDB874" fill-opacity="0.24"/>
+    <rect x="352" y="196" width="28" height="28" fill="#5BA39C" fill-opacity="0.30"/>
+    <rect x="380" y="196" width="28" height="28" fill="#F4ECDD" fill-opacity="0.20"/>
+    <rect x="408" y="196" width="28" height="28" fill="#DDB874" fill-opacity="0.20"/>
+    <rect x="436" y="196" width="28" height="28" fill="#5BA39C" fill-opacity="0.26"/>
+  </g>
+  <text class="lbl" x="380" y="262">ρ · segno del gradiente</text>
+  <text class="cap" x="380" y="282">la mappa di dove spingere ogni pixel</text>
+
+  <!-- = -->
+  <text class="op" x="505" y="150">=</text>
+
+  <!-- ===== Riquadro 3: stesso input, etichetta errata ===== -->
+  <rect class="box" x="530" y="40" width="200" height="200" rx="12"/>
+  <use href="#panda" x="500" y="0"/>
+  <text class="lblw" x="630" y="268">gibbone: 99%</text>
+</svg>

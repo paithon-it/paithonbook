@@ -2,7 +2,7 @@
 
 La sezione precedente ci ha lasciato in mano l'alfabeto: un codec neurale sa
 ridurre un secondo di suono a qualche centinaio di simboli, e sa rifare il suono
-a partire da quelli. Finora l'abbiamo usato per **comprimere**, cioè per
+a partire da quelli. Finora l'abbiamo usato per comprimere, cioè per
 riscrivere un suono che già esisteva. Ma quei simboli non sanno da dove
 arrivano: se qualcuno gliene passa una fila inventata, il decoder la trasforma
 in suono lo stesso. Prendiamo l'idea alla lettera. Se un secondo di
@@ -44,7 +44,7 @@ sei indietro di un decimo di secondo. Avanti non guardi mai, perché avanti il f
 è bianco.
 
 WaveNet fa esattamente questo, ma i
-puntini da mettere sono **sedicimila al secondo**: tanti quante sono le
+puntini da mettere sono sedicimila al secondo: tanti quante sono le
 misure al secondo con cui si tratta di solito la voce (i $16\,000$ della prima
 sezione). Disegnare un minuto di musica vuol dire
 piazzarne quasi un milione, uno dopo l'altro, in fila: e siccome ognuno
@@ -70,14 +70,14 @@ $$
 dove $x_t$ è il campione audio al passo $t$ (è la forma d'onda campionata della
 prima sezione, dove i singoli campioni si scrivevano $x[n]$). Due scelte
 architetturali rendono
-il tutto praticabile. La prima è la **quantizzazione**: predire un valore
+il tutto praticabile. La prima è la quantizzazione: predire un valore
 reale continuo sarebbe scomodo, così l'ampiezza viene ridotta a $256$ livelli
 (un byte per campione) con la compansione **$\mu$-law** (di cui diciamo tra
 poco) e la rete emette una softmax su quelle $256$ classi. La seconda sono le
 **convoluzioni causali dilatate**: «causali» perché ogni campione vede solo il
 passato (mai il futuro, che non esiste ancora), «dilatate» perché a ogni
 strato il filtro salta un numero crescente di campioni ($1, 2, 4, 8, \dots$)
-raddoppiando. Così il **campo recettivo** cresce in modo *esponenziale* con la
+raddoppiando. Così il campo recettivo cresce in modo *esponenziale* con la
 profondità: pochi strati bastano a coprire migliaia di campioni, cioè
 centinaia di millisecondi di contesto, senza il costo di una convoluzione
 fitta su tutta la finestra. Resta però il limite strutturale
@@ -113,7 +113,7 @@ delicate, dove quello a tacche uguali la affoga nel fruscio.
 Il rovescio della medaglia insegna qualcosa sulle misure. Le tacche larghe
 che la $\mu$-law lascia sui picchi
 fanno sì che, sul singolo errore più grosso di tutto il brano, il righello a
-tacche uguali sia **cinque volte migliore**. Una misura peggiora di cinque
+tacche uguali sia cinque volte migliore. Una misura peggiora di cinque
 volte, e il suono migliora lo stesso: perché quell'errore più grosso capita
 dove c'è un colpo forte, e un colpo forte copre da sé il proprio difetto,
 mentre nel silenzio non c'è niente che copra niente.
@@ -195,7 +195,7 @@ picco-picco (il segnale vive in $[-1, 1]$, quindi l'escursione è 2 e l'errore
 $0{,}0201$): con un solo byte per campione l'onda torna indietro quasi intatta.
 Si noti però
 il rovescio, che è la parte istruttiva: sull'errore *massimo* la quantizzazione
-lineare è **cinque volte migliore** ($0{,}0039$ contro $0{,}0201$), perché la
+lineare è cinque volte migliore ($0{,}0039$ contro $0{,}0201$), perché la
 $\mu$-law spende i suoi gradini sulle ampiezze piccole e ne lascia di più larghi
 sui picchi. È il baratto voluto, ed è anche una lezione sulle metriche: qui una
 misura peggiora di cinque volte e il suono migliora. Il
@@ -209,10 +209,10 @@ percettiva: una softmax su $256$ classi è trattabile, una sui $65\,536$
 livelli dei $16$ bit no; la compansione serve a rendere quel risparmio quasi
 indolore sul parlato. Non è un pranzo gratis: i successori ad alta fedeltà
 torneranno ai $16$ bit, ma per strade diverse. Parallel WaveNet abbandona la
-softmax e modella il campione con una **miscela di logistiche discretizzata**,
+softmax e modella il campione con una miscela di logistiche discretizzata,
 una densità continua integrata su ciascun livello, che non ha quindi bisogno di
 una classe per livello; WaveRNN resta invece
-sulla softmax e la **sdoppia**, una sugli $8$ bit più significativi (la parte
+sulla softmax e la sdoppia, una sugli $8$ bit più significativi (la parte
 *grossolana*) e una sugli $8$ meno significativi (la parte *fine*),
 condizionata sulla prima: due distribuzioni da $256$ classi al posto di una da
 $65\,536$.
@@ -224,14 +224,14 @@ $65\,536$.
 Il problema di WaveNet non è *cosa* genera, ma *quanti* passi gli servono: uno
 per campione, oltre sedicimila al secondo. E se invece di predire il campione
 grezzo predicessimo un'unità molto più «densa»: un token che riassume diversi
-millisecondi di suono? È esattamente ciò che offre un **codec neurale**: un
+millisecondi di suono? È esattamente ciò che offre un codec neurale: un
 autoencoder addestrato a comprimere la forma d'onda in una sequenza *corta* di
 token discreti e a ricostruirla da quelli. I token nascono dallo stesso
 principio di quantizzazione visto nella sezione precedente, portato alle sue
 conseguenze: l'audio diventa qualche centinaio di simboli al secondo invece di
 decine di migliaia di campioni.
 
-Ma il numero che conta davvero è quanti **passi in fila** servono, perché è la
+Ma il numero che conta davvero è quanti passi in fila servono, perché è la
 fila a costare. Prendiamo il codec di MusicGen, il generatore di musica che
 l'ultima sezione del capitolo racconta per esteso. È lo stesso EnCodec dei
 codec neurali, regolato però per la musica: taglia il suono in 50 frame al
@@ -239,7 +239,7 @@ secondo invece di 75, e per ogni frame produce quattro token invece di otto.
 Quei quattro il modello li tira fuori in un colpo solo, con l'accorgimento che
 sfalsa i flussi come le voci di un canone. Quindi i passi in fila sono una
 cinquantina per ogni secondo di musica, contro i 16.000 di WaveNet: sedicimila
-diviso cinquanta fa **trecentoventi**.
+diviso cinquanta fa trecentoventi.
 
 Una precisazione onesta, perché il numero non va preso alla lettera: i passi non
 costano uguale, e un passo di Transformer è ben più pesante di un passo di
@@ -248,12 +248,12 @@ grandezza è quello, ed è la differenza fra una strada percorribile e una che n
 lo è.
 
 Con l'audio ridotto a token, la generazione cambia natura. Non serve più una
-rete su misura per le onde: basta un **Transformer** che li produca in
+rete su misura per le onde: basta un Transformer che li produca in
 sequenza, e poi il *decoder* del codec li ritrasforma in suono. Il modo in cui
 li produce lo abbiamo già visto per il testo: il modello indovina il token
 successivo, quel token gli rientra davanti insieme a tutti i precedenti, e si
-ricomincia da capo. Si chiama generazione **autoregressiva**, ed è il motore dei
-grandi modelli di linguaggio (gli **LLM**, *large language model*). Il giro
+ricomincia da capo. Si chiama generazione autoregressiva, ed è il motore dei
+grandi modelli di linguaggio (gli LLM, *large language model*). Il giro
 completo sta in {numref}`fig-generare-token-audio`: il codec comprime, il
 Transformer continua la fila, il decoder la ritrasforma in suono.
 
@@ -292,8 +292,8 @@ detto o suonato, in che ordine. I secondi (i token del **suono**) aggiungono
 il dettaglio fine: la voce precisa, il colore, la grana. Il modello genera
 prima la struttura, dall'inizio alla fine, e solo dopo la riveste di suono. Il
 risultato ha insieme le due qualità che, prese da sole, si escludevano:
-**coerenza** (il brano ha un filo, non deraglia dopo pochi secondi) e
-**fedeltà** (suona come audio vero, non come un'imitazione metallica).
+coerenza (il brano ha un filo, non deraglia dopo pochi secondi) e
+fedeltà (suona come audio vero, non come un'imitazione metallica).
 
 `````
 
@@ -302,15 +302,15 @@ risultato ha insieme le due qualità che, prese da sole, si escludevano:
 La novità di AudioLM sta proprio qui: mettere insieme i **token semantici** di
 un modello auto-supervisionato e i **token acustici** di un codec neurale, due
 famiglie con ruoli complementari, in quello che il paper chiama uno *schema di
-tokenizzazione ibrido*. I **token
-semantici** provengono da un modello auto-supervisionato della famiglia vista in
+tokenizzazione ibrido*. I token
+semantici provengono da un modello auto-supervisionato della famiglia vista in
 [Imparare dal suono senza etichette](rappresentazioni-auto-supervisionate.md);
 nel paper è w2v-BERT, parente stretto di wav2vec 2.0
 e HuBERT: catturano il contenuto fonetico e la struttura a lungo termine, ma
-buttano via gran parte del dettaglio acustico. I **token acustici** vengono
+buttano via gran parte del dettaglio acustico. I token acustici vengono
 invece dal codec neurale (SoundStream): codificano il segnale in modo da
 poterlo *ricostruire* fedelmente (timbro, identità di chi parla, condizioni di
-registrazione). La generazione è **gerarchica**, una cascata che si può
+registrazione). La generazione è gerarchica, una cascata che si può
 leggere come una fattorizzazione della probabilità dell'audio:
 
 $$
@@ -350,8 +350,8 @@ AudioLM genera *continuazioni*: gli dai un inizio, lo prosegue. Ma la domanda
 che ha reso la generazione musicale un fenomeno è un'altra: posso *descrivere
 a parole* la musica che voglio e ottenerla? La risposta più netta arriva nel
 2023 da Meta con **MusicGen** {cite}`copet2023simple`, il cui titolo (*Simple
-and Controllable Music Generation*) rivendica proprio la semplicità: **un
-singolo** Transformer autoregressivo, non una cascata, che genera i token di
+and Controllable Music Generation*) rivendica proprio la semplicità: un
+singolo Transformer autoregressivo, non una cascata, che genera i token di
 un codec (EnCodec) condizionato da una descrizione testuale.
 
 Guidare una generazione con una descrizione scritta si chiama
@@ -366,7 +366,7 @@ l'ingegno.
 `````{tab} Elementare
 
 C'è un intoppo pratico. Per comprimere bene la musica, un codec non descrive
-ogni istante con un solo token, ma con una **pila** di token: il primo dà
+ogni istante con un solo token, ma con una pila di token: il primo dà
 l'abbozzo grezzo del suono, il secondo corregge ciò che il primo ha sbagliato,
 il terzo affina ancora, e così via, come un pittore che parte da una macchia di
 colore e la ripassa più volte per avvicinarsi alla tinta giusta. Ottima idea
@@ -392,7 +392,7 @@ fila non si allunga di quattro volte: si allunga di tre posizioni in tutto.
 
 `````{tab} Superiore
 
-EnCodec usa la **quantizzazione vettoriale residua** (RVQ): ogni frame è
+EnCodec usa la quantizzazione vettoriale residua (RVQ): ogni frame è
 codificato da $N$ codebook in cascata (la $N$ della sezione sui codec), dove
 ciascun codebook quantizza il *residuo* lasciato dai precedenti. Il risultato
 è che ogni passo temporale $t$
@@ -401,10 +401,10 @@ di MusicGen, $N = 4$, con codebook da $2048$ voci (undici bit l'uno, non i
 dieci del gemello a 24 kHz). Un modello autoregressivo deve decidere in quale
 ordine
 attraversare questa griglia tempo × codebook. Le due opzioni ingenue sono
-entrambe cattive: la **linearizzazione** completa
+entrambe cattive: la linearizzazione completa
 ($c_1^1, c_1^2, c_1^3, c_1^4, c_2^1, \dots$) moltiplica la lunghezza della
-sequenza per $N$, con costo quadratico che esplode; la predizione **totalmente
-parallela** (tutti gli $N$ token di un frame in un colpo) è veloce ma assume
+sequenza per $N$, con costo quadratico che esplode; la predizione totalmente
+parallela (tutti gli $N$ token di un frame in un colpo) è veloce ma assume
 l'indipendenza tra codebook, che è falsa; il residuo dipende per costruzione
 da ciò che lo precede. MusicGen adotta invece un **pattern di interleaving**
 dei codebook, in particolare uno schema a **ritardo** (*delay*) che sfasa i
@@ -421,14 +421,14 @@ addestramento, controllabile a parole.
 
 ## Lo spartito invece del suono
 
-Tutto quello che abbiamo visto finora genera **suono**: onde, oppure token che
+Tutto quello che abbiamo visto finora genera suono: onde, oppure token che
 un decoder trasforma in onde. C'è una seconda strada, più vecchia e molto più
 leggera, e genera lo **spartito**: non la registrazione, le istruzioni. La
 differenza si misura. Tre minuti di musica registrati senza compressione sono
 circa trenta milioni di byte ($44\,100$ misure al secondo come su un CD, due
 byte ciascuna, due canali per lo stereo); gli stessi tre minuti scritti come
 note stanno in qualche decina di migliaia. Chi sceglie questa strada non chiede
-alla rete di inventare un timbro: le chiede di inventare la **musica**, e a
+alla rete di inventare un timbro: le chiede di inventare la musica, e a
 fare il suono penserà uno strumento, vero o campionato.
 
 Il formato in cui questa strada si scrive esiste dal 1983 e si chiama **MIDI**:
@@ -442,7 +442,7 @@ meccaniche di inizio Novecento, dove i buchi erano le note e la carta scorreva.
 E qui arriva il problema vero, che sta tutto nella parola «sequenza». Un
 modello che indovina il prossimo token vuole una fila: un simbolo, poi un
 altro, poi un altro. La musica una fila non lo è. In un accordo tre note
-partono **insieme**, e ciascuna dura per conto proprio: la linea di basso tiene
+partono insieme, e ciascuna dura per conto proprio: la linea di basso tiene
 una nota lunga mentre quella acuta ne fa passare otto. Ognuna di queste linee,
 in musica, si chiama **voce**, anche quando a suonarla è uno strumento e non
 qualcuno che canta. Mettere più voci su una riga sola è la domanda tecnica di
@@ -458,7 +458,7 @@ istante, secondo istante, e via, ed ecco la fila. Funziona, ed è la cosa più
 semplice da programmare.
 
 Ha però due difetti, e sono di quelli che si scoprono tardi. Il primo: una
-fotografia dice che cosa **sta suonando**, non che cosa è **cominciato**. Un
+fotografia dice che cosa sta suonando, non che cosa è cominciato. Un
 SOL tenuto per una battuta intera e lo stesso SOL suonato due volte di seguito
 danno esattamente la stessa sequenza di fotografie, mentre all'orecchio sono
 due cose diverse. Un rimedio ci sarebbe, aggiungere un simbolo che dica «questa
@@ -470,7 +470,7 @@ più fine, e la fila si allunga per tutti, anche per le battute che di terzine
 non ne hanno nessuna.
 
 La seconda risposta è **raccontare** invece di fotografare. Non si dice che
-cosa c'è, si dice che cosa **accade**: «parte il SOL», «finisce il SOL»,
+cosa c'è, si dice che cosa accade: «parte il SOL», «finisce il SOL»,
 «aspetta mezzo secondo». Tre soli tipi di frase, e ci si scrive qualunque
 polifonia: le note che partono insieme sono semplicemente due frasi di fila,
 senza attesa in mezzo. Sparisce il primo difetto, perché ora «comincia» e «sta
@@ -498,7 +498,7 @@ stato** e una codifica **di evento**.
 Nella prima, la *griglia*, il tempo è discretizzato in $T$ passi e a ogni
 passo si registra l'altezza suonata da ciascuna delle $V$ voci: la sequenza è
 la serializzazione di una matrice $T \times V$ e ha lunghezza $T \cdot V$. La
-codifica è **ambigua sugli attacchi**: una nota tenuta per $2k$ passi e due
+codifica è ambigua sugli attacchi: una nota tenuta per $2k$ passi e due
 note uguali da $k$ passi ciascuna producono la stessa matrice, quindi la mappa
 non è iniettiva e nessun modello addestrato su questa codifica può imparare la
 distinzione, perché nei dati non c'è più. Il rimedio consueto è un simbolo
@@ -524,7 +524,7 @@ pianistiche della Piano-e-Competition, un minuto di musica a risoluzione di
 $10$ ms sta in circa $2000$ eventi, contro i $6000$–$18\,000$ di una griglia
 fissa che porti gli stessi attributi espressivi {cite}`huang2019music`. Il
 prezzo è che la lunghezza della sequenza non è
-più proporzionale al tempo ma alla **densità di eventi**: un passaggio
+più proporzionale al tempo ma alla densità di eventi: un passaggio
 virtuosistico occupa molti più token di una nota lunga, e la finestra di
 contesto si consuma in modo non uniforme. E ce n'è un secondo, più sottile: con
 il solo `TIME_SHIFT` il metro non compare da nessuna parte, e sulla musica a
@@ -592,7 +592,7 @@ a eventi:  5 e 8 token, e sono identici? False
 la stessa battuta, se la griglia deve reggere le terzine: 96 token invece di 32
 ```
 
-La prima riga è il difetto: trentadue token per parte, **e sono gli stessi**,
+La prima riga è il difetto: trentadue token per parte, e sono gli stessi,
 cioè la griglia ha buttato via una differenza che qualunque orecchio sente. La
 seconda mostra il rimedio: cinque token contro otto, e questa volta diversi. Il
 punto esatto in cui differiscono si legge nelle due righe successive, ed è il
@@ -607,7 +607,7 @@ lascia crescere le due file una sotto l'altra. La griglia si allunga di due
 caselle a ogni sedicesimo, che ci sia o non ci sia qualcosa da dire; gli
 eventi restano fermi per mezza battuta e poi ne aggiungono tre in un colpo
 solo, quando il SOL finisce e riparte. È la differenza fra una fila
-proporzionale al **tempo** e una proporzionale a **quanto accade**, ed è la
+proporzionale al tempo e una proporzionale a quanto accade, ed è la
 ragione per cui un passaggio fitto di note, nella seconda, riempie la fila
 molto più in fretta di una nota lunga.
 
@@ -634,7 +634,7 @@ altrove, e la dice il titolo del lavoro che l'ha portata nella musica: *Music
 Transformer: Generating Music with Long-Term Structure*, di Cheng-Zhi Anna
 Huang e colleghi, preprint del settembre 2018 e poi ICLR 2019
 {cite}`huang2019music`. La musica è fatta di
-**ritorni**: un tema si ripresenta dopo trenta secondi, e trenta secondi sono
+ritorni: un tema si ripresenta dopo trenta secondi, e trenta secondi sono
 circa mille simboli. Una rete ricorrente, che porta con sé un riassunto e lo
 aggiorna a ogni passo, a quel punto il tema l'ha dimenticato; l'attenzione può
 andarselo a rileggere, ed è lo stesso collo di bottiglia da cui era nata,
@@ -648,7 +648,7 @@ d'ingegneria: l'idea giusta era già pubblicata, e non entrava in memoria.
 L'idea era guardare a *quanto indietro* nella fila sta un simbolo, invece che
 al posto preciso che occupa, e per la musica è proprio ciò che serve: una
 battuta fa lo stesso effetto all'inizio o alla fine del pezzo. Il modo in cui
-era scritta, però, chiedeva di tenere da parte un appunto per **ogni coppia**
+era scritta, però, chiedeva di tenere da parte un appunto per ogni coppia
 di simboli della fila, e con brani da duemila simboli quel foglio di appunti
 pesa $8{,}5$ GB per ogni strato della rete: in una scheda grafica non ci sta,
 quindi non si fa. Huang e colleghi si accorgono che il foglio grande non serve
@@ -664,7 +664,7 @@ di un minuto, attorno ai duemila simboli, con i temi che tornano davvero.
 
 `````{tab} Superiore
 
-L'attenzione **relativa** di Shaw e colleghi {cite}`shaw2018self` modula i logit
+L'attenzione relativa di Shaw e colleghi {cite}`shaw2018self` modula i logit
 dell'attenzione con la distanza fra le posizioni, ma per farlo materializza un tensore di
 rappresentazioni relative indicizzato su ogni coppia, di costo $O(L^2 D)$ in
 memoria: per $L = 2048$ e $D = 512$ sono $8{,}5$ GB per strato ($1{,}1$ GB per
@@ -696,7 +696,7 @@ sopravvive benissimo dove il risultato dev'essere modificato (accompagnamenti,
 composizione assistita, colonne sonore da rimaneggiare), mentre la frase che
 diventa canzone passa per i token audio e non per lo spartito. E c'è una
 morale che vale oltre la musica: la parte difficile non era il modello, era
-**decidere come scrivere i dati in fila**. La stessa domanda, con risposte
+decidere come scrivere i dati in fila. La stessa domanda, con risposte
 diverse, torna ogni volta che qualcosa che non è testo va dato in pasto a una
 macchina che predice il simbolo successivo.
 
@@ -711,17 +711,17 @@ sporca di rumore un po’ alla volta,
 finché non resta che rumore; poi si addestra una rete a fare il percorso
 inverso, a togliere rumore un passo per volta. Fatto questo, si può partire da
 rumore puro e arrivare a un dato nuovo, che nessuno ha mai visto. Il dato,
-nell'audio, raramente è l'onda grezza: di solito è il suo **spettrogramma**
+nell'audio, raramente è l'onda grezza: di solito è il suo spettrogramma
 (l'immagine tempo-frequenza costruita nella prima sezione del capitolo), che
 si può trattare quasi come una figura, oppure il riassunto compatto che
 l'encoder di un codec produce prima di arrotondarlo in token, quello che nella
-sezione precedente abbiamo chiamato **latente** (è la stessa strategia della
+sezione precedente abbiamo chiamato latente (è la stessa strategia della
 diffusione latente di Stable Diffusion, trasferita al suono). I due filoni
 corrono paralleli, e quale dei due convenga dipende dal compito più che
 dall'anno.
 
 Detto ciò che funziona, l'onestà impone di dire ciò che ancora non funziona.
-La **coerenza a lungo termine** resta fragile: un modello sa produrre trenta
+La coerenza a lungo termine resta fragile: un modello sa produrre trenta
 secondi convincenti, ma tenere in piedi la struttura di un brano intero (con
 temi che tornano, uno sviluppo, una chiusura) è tuttora un problema aperto, e
 il ricorso a token semantici o gerarchie serve proprio ad attenuarlo, non a
@@ -731,8 +731,8 @@ attacchi delle note impastati invece che netti, code di riverbero che non
 suonano come suonerebbe una stanza vera. Un orecchio allenato li riconosce.
 
 Ma la questione più grande non è tecnica. I modelli di questa sezione imparano
-da enormi cataloghi di musica registrata, e questo apre un nodo di **copyright
-e consenso** (con le sue cause legali sui dati di addestramento) che
+da enormi cataloghi di musica registrata, e questo apre un nodo di copyright
+e consenso (con le sue cause legali sui dati di addestramento) che
 ritroveremo per le immagini generate (nella {doc}`sezione su Stable Diffusion
 </ModelliDiffusione/stable-diffusion>`) e per la clonazione vocale (in quella
 sulla sintesi vocale). A chi appartiene
@@ -748,41 +748,41 @@ gioco sono ancora tutte da scrivere.
 
 ```{admonition} Da ricordare
 :class: important
-- **WaveNet** {cite}`oord2016wavenet` (2016) disegna l'onda puntino per
+- WaveNet {cite}`oord2016wavenet` (2016) disegna l'onda puntino per
   puntino, come su carta millimetrata, guardando indietro a occhiate sempre più
   distanti. Suona benissimo, ma i puntini sono più di sedicimila al secondo e
   vanno in fila uno dopo l'altro: il difetto sta nel ritmo del pennino, non
   nella qualità.
-- Per farceli stare in $256$ possibilità ciascuno (cioè in un **byte**) si
-  sposta il **righello**: tacche fitte dove il suono è debole, più rade dove è
+- Per farceli stare in $256$ possibilità ciascuno (cioè in un byte) si
+  sposta il righello: tacche fitte dove il suono è debole, più rade dove è
   forte, così anche i sussurri vengono arrotondati con cura. Curiosamente il
   singolo errore più grosso peggiora di cinque volte, e il suono migliora lo
   stesso: capita dove c'è un colpo forte, che il proprio difetto se lo copre da
   solo.
-- La svolta è smettere di disegnare puntini e scrivere **token**: un codec
+- La svolta è smettere di disegnare puntini e scrivere token: un codec
   riassume il suono in poche centinaia di simboli al secondo, e una macchina che
   indovina il simbolo successivo (la stessa che scrive testo) li produce in
   sequenza. Poi il codec li ritrasforma in suono.
-- **AudioLM** {cite}`borsos2023audiolm` scopre che di token ne servono due tipi,
-  e in quest'ordine: prima quelli della **struttura** (dove va il pezzo), poi
-  quelli del **suono** (che timbro ha). Come un musicista che abbozza prima e
+- AudioLM {cite}`borsos2023audiolm` scopre che di token ne servono due tipi,
+  e in quest'ordine: prima quelli della struttura (dove va il pezzo), poi
+  quelli del suono (che timbro ha). Come un musicista che abbozza prima e
   riempie dopo.
-- **MusicGen** {cite}`copet2023simple` compone a partire da una **descrizione a
-  parole**. A ogni istante il codec produce quattro token sovrapposti, e
+- MusicGen {cite}`copet2023simple` compone a partire da una descrizione a
+  parole. A ogni istante il codec produce quattro token sovrapposti, e
   MusicGen li sfalsa di un passo l'uno dall'altro, come le voci di un canone.
-- Si può anche generare lo **spartito** invece del suono, e allora la domanda
+- Si può anche generare lo spartito invece del suono, e allora la domanda
   difficile è una sola: come si mette su una riga qualcosa in cui più note
   suonano insieme e ciascuna dura per conto suo. Fotografare istante per
   istante è semplice ma confonde una nota lunga con due corte uguali; elencare
-  quel che **accade** («parte il SOL», «finisce il SOL», «aspetta») non le
+  quel che accade («parte il SOL», «finisce il SOL», «aspetta») non le
   confonde, ed è quello che si usa, a patto di rimetterci dentro il battere,
   che la griglia dava gratis.
-- C'è anche una seconda strada, la **diffusione**: invece di scrivere token, si
+- C'è anche una seconda strada, la diffusione: invece di scrivere token, si
   parte da rumore puro e lo si ripulisce un passo alla volta finché non ne esce
   un suono.
-- Ciò che ancora non funziona: i brani **lunghi** perdono il filo, restano
-  **difetti** che un orecchio allenato sente, e soprattutto c'è la questione di
-  **chi possiede** la musica su cui questi modelli hanno imparato, e lo stile
+- Ciò che ancora non funziona: i brani lunghi perdono il filo, restano
+  difetti che un orecchio allenato sente, e soprattutto c'è la questione di
+  chi possiede la musica su cui questi modelli hanno imparato, e lo stile
   degli artisti che imitano.
 ```
 
@@ -792,41 +792,41 @@ gioco sono ancora tutte da scrivere.
 
 ```{admonition} Da ricordare
 :class: important
-- **WaveNet** {cite}`oord2016wavenet` (2016) genera l'onda **campione per
-  campione** in modo autoregressivo, con **convoluzioni causali dilatate** (campo
+- WaveNet {cite}`oord2016wavenet` (2016) genera l'onda campione per
+  campione in modo autoregressivo, con convoluzioni causali dilatate (campo
   recettivo esponenziale) e ampiezza su $256$ livelli via compansione
-  **$\mu$-law**. Qualità altissima, ma migliaia di passi sequenziali al secondo:
+  $\mu$-law. Qualità altissima, ma migliaia di passi sequenziali al secondo:
   lentissimo.
-- La svolta è generare **token** invece di campioni: un **codec neurale**
-  comprime l'audio in una sequenza corta di simboli, e un **Transformer** li
+- La svolta è generare token invece di campioni: un codec neurale
+  comprime l'audio in una sequenza corta di simboli, e un Transformer li
   produce come un LLM produce parole (poi il decoder del codec li ritrasforma
-  in suono). Il guadagno vero è nei **passi sequenziali**: 50 al secondo con il
+  in suono). Il guadagno vero è nei passi sequenziali: 50 al secondo con il
   codec di MusicGen contro i 16.000 di WaveNet, un fattore ~300.
-- **AudioLM** {cite}`borsos2023audiolm` usa due livelli di token in cascata:
-  **semantici** (struttura a lungo termine, da modelli auto-supervisionati) e
-  **acustici** (dettaglio del suono, dal codec), per avere insieme **coerenza** e
-  **fedeltà**.
-- **MusicGen** {cite}`copet2023simple` genera i token di EnCodec con un solo
-  Transformer condizionato dal **testo**. A ogni istante il codec produce
-  quattro token sovrapposti: MusicGen li **sfasa di un passo** l'uno dall'altro,
+- AudioLM {cite}`borsos2023audiolm` usa due livelli di token in cascata:
+  semantici (struttura a lungo termine, da modelli auto-supervisionati) e
+  acustici (dettaglio del suono, dal codec), per avere insieme coerenza e
+  fedeltà.
+- MusicGen {cite}`copet2023simple` genera i token di EnCodec con un solo
+  Transformer condizionato dal testo. A ogni istante il codec produce
+  quattro token sovrapposti: MusicGen li sfasa di un passo l'uno dall'altro,
   come le voci di un canone che entrano una dopo l'altra, invece di metterli
   tutti in fila (lento) o di produrli insieme fingendoli indipendenti (falso).
-- Nel **simbolico** (MIDI, non audio) il nodo è la codifica. La *griglia*
+- Nel simbolico (MIDI, non audio) il nodo è la codifica. La *griglia*
   serializza una matrice $T \times V$ ma è ambigua sugli attacchi (nota tenuta
   $2k$ e due note da $k$ danno la stessa matrice) e fissa $\Delta t$ a priori.
-  La codifica **a eventi** {cite}`oore2018time` la sostituisce con $388$
+  La codifica a eventi {cite}`oore2018time` la sostituisce con $388$
   simboli ($128$ `NOTE_ON`, $128$ `NOTE_OFF`, $100$ `TIME_SHIFT` a $10$ ms,
   $32$ `VELOCITY`): polifonia e durate esplicite, lunghezza proporzionale alla
-  densità di eventi, e metro non rappresentato (che **REMI** rimette fra gli
-  eventi con `Bar`/`Position`). Il **Music Transformer** {cite}`huang2019music`
+  densità di eventi, e metro non rappresentato (che REMI rimette fra gli
+  eventi con `Bar`/`Position`). Il Music Transformer {cite}`huang2019music`
   ci mette sopra l'attenzione relativa, con lo *skewing* che porta il termine
-  intermedio da $8{,}5$ GB a $4{,}2$ MB **per strato** ($L = 2048$, $D = 512$;
+  intermedio da $8{,}5$ GB a $4{,}2$ MB per strato ($L = 2048$, $D = 512$;
   per testa, da $1{,}1$ GB a $0{,}52$ MB), e arriva a brani di un minuto.
-- La via dei token non è l'unica: c'è anche la **diffusione**, che parte da
+- La via dei token non è l'unica: c'è anche la diffusione, che parte da
   rumore puro e lo ripulisce un passo alla volta finché non ne esce un suono. I
   limiti
-  aperti: **coerenza a lungo termine** fragile, **artefatti**, e soprattutto le
-  questioni di **copyright e consenso** sulla musica di addestramento e sullo
+  aperti: coerenza a lungo termine fragile, artefatti, e soprattutto le
+  questioni di copyright e consenso sulla musica di addestramento e sullo
   stile degli artisti.
 ```
 

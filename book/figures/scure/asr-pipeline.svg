@@ -1,0 +1,53 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../asr-pipeline.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" role="img" aria-label="Pipeline del riconoscimento vocale automatico in cinque stadi: audio, estrazione delle feature, modello acustico, modello di linguaggio, testo">
+  <defs>
+    <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#E27B52"/>
+    </marker>
+  </defs>
+
+  <!-- stadio 1: audio -->
+  <rect x="15" y="60" width="130" height="100" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <polyline points="32,92 44,74 54,106 64,78 74,100 84,82 94,102 104,76 114,98 124,88 130,92" fill="none" stroke="#E27B52" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="80" y="140" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD" text-anchor="middle">Audio</text>
+
+  <!-- stadio 2: feature -->
+  <rect x="190" y="60" width="130" height="100" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="206" y="90"  width="12" height="28" fill="#5BA39C"/>
+  <rect x="223" y="72"  width="12" height="46" fill="#DDB874"/>
+  <rect x="240" y="98"  width="12" height="20" fill="#E27B52"/>
+  <rect x="257" y="78"  width="12" height="40" fill="#5BA39C"/>
+  <rect x="274" y="86"  width="12" height="32" fill="#DDB874"/>
+  <rect x="291" y="94"  width="12" height="24" fill="#E27B52"/>
+  <text x="255" y="140" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD" text-anchor="middle">Feature</text>
+
+  <!-- stadio 3: modello acustico -->
+  <rect x="365" y="60" width="130" height="100" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="430" y="104" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD" text-anchor="middle">Modello</text>
+  <text x="430" y="126" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD" text-anchor="middle">acustico</text>
+
+  <!-- stadio 4: modello di linguaggio -->
+  <rect x="540" y="60" width="130" height="100" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="605" y="104" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD" text-anchor="middle">Modello di</text>
+  <text x="605" y="126" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD" text-anchor="middle">linguaggio</text>
+
+  <!-- stadio 5: testo -->
+  <rect x="715" y="60" width="130" height="100" rx="6" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="780" y="116" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#F4ECDD" text-anchor="middle">Testo</text>
+
+  <!-- frecce -->
+  <line x1="148" y1="110" x2="185" y2="110" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ah)"/>
+  <line x1="323" y1="110" x2="360" y2="110" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ah)"/>
+  <line x1="498" y1="110" x2="535" y2="110" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ah)"/>
+  <line x1="673" y1="110" x2="710" y2="110" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ah)"/>
+
+  <!-- output di esempio -->
+  <line x1="780" y1="162" x2="780" y2="186" stroke="#E27B52" stroke-width="2.5" marker-end="url(#ah)"/>
+  <text x="780" y="212" font-family="Fraunces, Georgia, serif" font-size="17" font-style="italic" fill="#E27B52" text-anchor="middle">&#171;che ore sono?&#187;</text>
+</svg>

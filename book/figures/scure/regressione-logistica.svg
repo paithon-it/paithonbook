@@ -1,0 +1,28 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../regressione-logistica.svg
+-->
+<svg viewBox="0 0 640 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva sigmoide con soglia di decisione a 0,5: sotto la soglia classe 0, sopra la soglia classe 1">
+  <rect x="0" y="0" width="640" height="400" fill="#0E0C0A"/>
+  <line x1="60" y1="340" x2="600" y2="340" stroke="#F4ECDD" stroke-width="1.5"/>
+  <line x1="60" y1="340" x2="60" y2="50" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="46" y="345" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="end">0</text>
+  <text x="46" y="205" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="end">0,5</text>
+  <text x="46" y="70" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="end">1</text>
+  <text x="330" y="378" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#F4ECDD" text-anchor="middle">punteggio z = w · x + b</text>
+  <line x1="60" y1="200" x2="600" y2="200" stroke="#DDB874" stroke-width="2" stroke-dasharray="6 4"/>
+  <line x1="330" y1="340" x2="330" y2="60" stroke="#DDB874" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="340" y="78" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#DDB874">soglia 0,5</text>
+  <path d="M 70 336 C 190 334, 260 320, 330 200 C 400 80, 470 66, 590 64" fill="none" stroke="#F4ECDD" stroke-width="2"/>
+  <circle cx="130" cy="333" r="6" fill="#5BA39C"/>
+  <circle cx="200" cy="326" r="6" fill="#5BA39C"/>
+  <circle cx="265" cy="295" r="6" fill="#5BA39C"/>
+  <circle cx="395" cy="105" r="6" fill="#E27B52"/>
+  <circle cx="460" cy="75" r="6" fill="#E27B52"/>
+  <circle cx="530" cy="67" r="6" fill="#E27B52"/>
+  <text x="180" y="270" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5BA39C">classe 0</text>
+  <text x="430" y="145" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#E27B52">classe 1</text>
+</svg>

@@ -1,0 +1,59 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../drl-pixel-to-q.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 330" font-family="'Inter', system-ui, sans-serif">
+  <!-- SCHERMO DI GIOCO (stile Breakout) -->
+  <rect x="40" y="66" width="172" height="172" rx="5" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="3"/>
+  <!-- mattoncini -->
+  <rect x="52" y="82" width="28" height="11" fill="#E27B52"/>
+  <rect x="84" y="82" width="28" height="11" fill="#DDB874"/>
+  <rect x="116" y="82" width="28" height="11" fill="#5BA39C"/>
+  <rect x="148" y="82" width="28" height="11" fill="#E27B52"/>
+  <rect x="180" y="82" width="20" height="11" fill="#DDB874"/>
+  <rect x="52" y="97" width="28" height="11" fill="#DDB874"/>
+  <rect x="84" y="97" width="28" height="11" fill="#5BA39C"/>
+  <rect x="116" y="97" width="28" height="11" fill="#E27B52"/>
+  <rect x="148" y="97" width="28" height="11" fill="#DDB874"/>
+  <rect x="180" y="97" width="20" height="11" fill="#5BA39C"/>
+  <!-- pallina -->
+  <circle cx="132" cy="162" r="6" fill="#F4ECDD"/>
+  <!-- racchetta -->
+  <rect x="104" y="212" width="52" height="10" rx="3" fill="#E27B52"/>
+  <text x="126" y="262" text-anchor="middle" font-size="16" fill="#F4ECDD">schermo di gioco</text>
+  <text x="126" y="282" text-anchor="middle" font-size="13" fill="#BCB3A1">stato <tspan font-weight="700">s</tspan> = pixel grezzi</text>
+
+  <!-- freccia 1 -->
+  <line x1="218" y1="152" x2="278" y2="152" stroke="#8E8676" stroke-width="3"/>
+  <polygon points="278,146 290,152 278,158" fill="#8E8676"/>
+
+  <!-- RETE NEURALE (stack convoluzionale) -->
+  <rect x="300" y="100" width="36" height="104" rx="4" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="348" y="116" width="36" height="72" rx="4" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
+  <rect x="396" y="128" width="36" height="48" rx="4" fill="#5BA39C" stroke="#F4ECDD" stroke-width="2"/>
+  <text x="366" y="262" text-anchor="middle" font-size="16" fill="#F4ECDD">rete neurale</text>
+  <text x="366" y="282" text-anchor="middle" font-size="13" fill="#BCB3A1">(convoluzionale)</text>
+
+  <!-- freccia 2 -->
+  <line x1="440" y1="152" x2="512" y2="152" stroke="#8E8676" stroke-width="3"/>
+  <polygon points="512,146 524,152 512,158" fill="#8E8676"/>
+
+  <!-- OUTPUT: valori Q per azione -->
+  <text x="636" y="92" text-anchor="middle" font-size="15" fill="#F4ECDD" font-weight="700">Q(s, a) per ogni azione</text>
+  <!-- barra sinistra -->
+  <text x="612" y="128" text-anchor="end" font-size="13" fill="#BCB3A1">sinistra</text>
+  <rect x="620" y="114" width="64" height="20" rx="3" fill="#34302A"/>
+  <text x="692" y="129" font-size="13" fill="#8E8676">3</text>
+  <!-- barra ferma -->
+  <text x="612" y="160" text-anchor="end" font-size="13" fill="#BCB3A1">ferma</text>
+  <rect x="620" y="146" width="40" height="20" rx="3" fill="#34302A"/>
+  <text x="668" y="161" font-size="13" fill="#8E8676">1</text>
+  <!-- barra destra (scelta) -->
+  <text x="612" y="192" text-anchor="end" font-size="13" fill="#F4ECDD" font-weight="700">destra</text>
+  <rect x="620" y="178" width="150" height="20" rx="3" fill="#E27B52"/>
+  <text x="778" y="193" font-size="13" fill="#E27B52" font-weight="700">8</text>
+  <text x="620" y="224" font-size="13" fill="#E27B52">azione scelta: valore più alto</text>
+</svg>

@@ -5,8 +5,8 @@ una sequenza di simboli discreti (un «alfabeto sonoro»
 finito) potremmo generarne di nuovo esattamente come un modello di linguaggio
 genera testo, un simbolo alla volta. Ma il testo quell'alfabeto ce l'ha già,
 regalato dalla lingua: ventuno lettere e via. L'audio no. È un'onda continua,
-e un alfabeto per il suono in natura non esiste: va **costruito**. Questa
-sezione racconta chi lo costruisce (i **codec neurali**) e come. È la chiave
+e un alfabeto per il suono in natura non esiste: va costruito. Questa
+sezione racconta chi lo costruisce (i codec neurali) e come. È la chiave
 di volta della generazione audio moderna: senza un buon alfabeto, non c'è
 nulla su cui scrivere.
 
@@ -14,16 +14,16 @@ nulla su cui scrivere.
 
 La parola *codec* non è nuova. Ogni volta che ascoltate un brano in streaming
 o salvate un vocale, un codec ha ridotto l'audio a una frazione della sua
-dimensione. Il più famoso, l’**MP3** (il cui progetto fu completato nel 1992 e
+dimensione. Il più famoso, l’MP3 (il cui progetto fu completato nel 1992 e
 pubblicato come standard ISO l'anno dopo), comprime
 buttando via ciò che l'orecchio non sente: si appoggia a un modello
-psicoacustico (un insieme di **regole fisse**, scritte a mano da ingegneri)
+psicoacustico (un insieme di regole fisse, scritte a mano da ingegneri)
 che decide quali frequenze sono coperte da altre e quindi eliminabili. È un
 ottimo mestiere artigianale, ma è *congelato*: quelle regole non cambiano, non
 imparano, non si adattano ai dati.
 
-Un codec **neurale** ribalta l'approccio. Invece di scrivere le regole, le fa
-**imparare** a una rete. La struttura ha un nome, **autoencoder**, e una forma
+Un codec neurale ribalta l'approccio. Invece di scrivere le regole, le fa
+imparare a una rete. La struttura ha un nome, **autoencoder**, e una forma
 da guardare: un **encoder** che stringe quello che entra fino a farlo diventare
 un pugno di numeri, e un **decoder** che da quel pugno di numeri cerca di
 ritirare fuori l'originale. I due si addestrano *insieme*, con un'unica regola:
@@ -53,7 +53,7 @@ che esce. Il pugno di numeri che sopravvive nella strozzatura si chiama
 perché quei numeri non li ha scelti nessuno e non dicono niente a guardarli, ma
 dentro c'è tutto ciò che serve per rifare il suono. E siccome un pugno di numeri
 si può sempre immaginare come un punto, l'insieme di tutti i latenti possibili
-prende il nome di **spazio latente**: il magazzino dove la rete tiene i suoi
+prende il nome di spazio latente: il magazzino dove la rete tiene i suoi
 riassunti. È un nome che nel libro tornerà ogni volta che un modello preferisce
 lavorare sulla versione compressa dei dati invece che sui dati. Le lettere sono
 le abbreviazioni consuete ($\mathbf{x}$ l'ingresso, $\hat{\mathbf{x}}$ la sua
@@ -87,7 +87,7 @@ tornare a casa la valigia il più intatta possibile.
 
 La vera sorpresa, però, non è la compressione in sé: l'MP3 già comprime bene.
 È che quel riassunto compatto, imparato dalla rete, possiamo poi
-**arrotondarlo** a un piccolo insieme di valori-tipo. E un valore-tipo è un
+arrotondarlo a un piccolo insieme di valori-tipo. E un valore-tipo è un
 simbolo: un numero intero. È il ponte che stavamo cercando, dall'onda continua
 all'alfabeto.
 
@@ -97,20 +97,20 @@ all'alfabeto.
 
 Un codec neurale è un autoencoder addestrato per la ricostruzione. L'encoder
 $E$ mappa la forma d'onda $\mathbf{x}$ in una sequenza di vettori latenti
-$\mathbf{Z} = E(\mathbf{x})$ a **frequenza di frame** molto più bassa del tasso di campionamento
-(un vettore ogni poche centinaia di campioni); il decoder $D$ ricostruisce
-$\hat{\mathbf{x}} = D(\mathbf{Z})$. L'obiettivo minimizza una perdita di ricostruzione, spesso
-combinando errore nel dominio del tempo e nello spettro (multi-scala
-tempo–frequenza), ed è tipicamente affiancato da un **discriminatore** in stile
-GAN (il capitolo dedicato, più avanti, ne racconta il meccanismo per intero)
-che spinge $\hat{\mathbf{x}}$ a suonare realistico, non solo a minimizzare
-l'errore medio.
+$\mathbf{Z} = E(\mathbf{x})$ a frequenza di frame molto più bassa del tasso di
+campionamento (un vettore ogni poche centinaia di campioni); il decoder $D$
+ricostruisce $\hat{\mathbf{x}} = D(\mathbf{Z})$. L'obiettivo minimizza una
+perdita di ricostruzione, spesso combinando errore nel dominio del tempo e
+nello spettro (multi-scala tempo–frequenza), ed è tipicamente affiancato da un
+discriminatore in stile GAN (il capitolo dedicato, più avanti, ne racconta il
+meccanismo per intero) che spinge $\hat{\mathbf{x}}$ a suonare realistico, non
+solo a minimizzare l'errore medio.
 
-Fin qui è compressione con rappresentazione **continua**: ogni $\mathbf{z}$ è un vettore di
-numeri reali. La novità che ci interessa è renderla **discreta**: sostituire
-ogni vettore latente con un simbolo preso da un insieme finito. È il passaggio
-che trasforma un compressore in un *tokenizzatore* del suono, e apre la porta
-ai modelli di linguaggio sull'audio. Il come è il mestiere della
+Fin qui è compressione con rappresentazione continua: ogni $\mathbf{z}$ è un
+vettore di numeri reali. La novità che ci interessa è renderla discreta:
+sostituire ogni vettore latente con un simbolo preso da un insieme finito. È il
+passaggio che trasforma un compressore in un *tokenizzatore* del suono, e apre
+la porta ai modelli di linguaggio sull'audio. Il come è il mestiere della
 quantizzazione, prima con un codebook solo e poi con una cascata di codebook.
 
 `````
@@ -119,7 +119,7 @@ quantizzazione, prima con un codebook solo e poi con una cascata di codebook.
 
 Il latente che esce dall'encoder è ancora fatto di numeri che possono valere
 qualunque cosa, e a noi serve un elenco finito di simboli, come le lettere:
-serve, dicono i matematici, passare dal **continuo** al **discreto**. Lo
+serve, dicono i matematici, passare dal continuo al discreto. Lo
 strumento che fa quel passaggio si chiama, all'inglese, **vector
 quantization** (VQ). L'hanno portato nelle reti neurali van den Oord, Vinyals
 e Kavukcuoglu nel 2017, con il **VQ-VAE** {cite}`oord2017neural`. L'idea è
@@ -134,19 +134,19 @@ più spesso, e quella tavolozza resta poi la stessa per tutte. Per ogni pixel
 scegli il colore della tavolozza che gli somiglia di più e lo sostituisci: la
 foto diventa un po’ più «a blocchi», ma la riconosci ancora. E adesso il colpo
 di genio: invece di salvare per ogni pixel i suoi tre numeri di colore, salvi
-**un solo numero** (la *posizione* nella tavolozza, da 0 a 15). La tavolozza la
+un solo numero (la *posizione* nella tavolozza, da 0 a 15). La tavolozza la
 conosciamo già, ci basta l'indice. E quanti colori tenere è una scelta che si
 paga: con quattro la foto si sfalda e i volti diventano macchie; con mille torna
 quasi perfetta, ma la posizione da scrivere è un numero più lungo, e va scritto
 per ogni pixel.
 
 La *vector quantization* fa esattamente questo, ma invece dei colori dei pixel
-tratta i **pezzetti di suono** così come escono dall'encoder: ognuno è un
+tratta i pezzetti di suono così come escono dall'encoder: ognuno è un
 gruppetto di numeri, come un colore è un gruppetto di tre numeri. La
 «tavolozza» si chiama **codebook**: un elenco di pezzetti-tipo, i
 *prototipi*. Ogni pezzetto di audio, dopo l'encoder, viene avvicinato al
 prototipo più simile, e di lui si tiene solo il numero di posizione nell'elenco.
-Quel numero è il **token**: il nostro simbolo dell'alfabeto sonoro. E l'operazione
+Quel numero è il token: il nostro simbolo dell'alfabeto sonoro. E l'operazione
 che abbiamo appena fatto, sostituire una cosa qualsiasi con la più vicina di un
 elenco prestabilito, si chiama **quantizzare**: vuol dire arrotondare, né più
 né meno.
@@ -155,11 +155,10 @@ né meno.
 
 `````{tab} Superiore
 
-Sia $\mathcal{C} = \{\mathbf{e}_1, \dots, \mathbf{e}_K\}$ un **codebook** di $K$
-vettori-prototipo, appresi
-durante l'addestramento. Dato un vettore latente $\mathbf{z}$ prodotto dall'encoder, la
-quantizzazione sceglie il prototipo più vicino (in norma euclidea) e ne
-restituisce l’**indice**:
+Sia $\mathcal{C} = \{\mathbf{e}_1, \dots, \mathbf{e}_K\}$ un codebook di $K$
+vettori-prototipo, appresi durante l'addestramento. Dato un vettore latente
+$\mathbf{z}$ prodotto dall'encoder, la quantizzazione sceglie il prototipo più
+vicino (in norma euclidea) e ne restituisce l’indice:
 
 $$
 k^\star = \arg\min_{k \in \{1,\dots,K\}} \lVert \mathbf{z} - \mathbf{e}_k \rVert^2,
@@ -223,10 +222,10 @@ $$
 \lVert \mathbf{z} - \mathbf{e}_4\rVert^2 = 0{,}85.
 $$
 
-Il più vicino è $\mathbf{e}_2$: il token è **2**, e il pezzetto arrotondato è
+Il più vicino è $\mathbf{e}_2$: il token è 2, e il pezzetto arrotondato è
 $(1,0)$. Facciamo lo stesso con $\mathbf{u} = (0{,}2,\ 0{,}9)$: le distanze sono
 $0{,}85$, $1{,}45$, $0{,}05$, $0{,}65$, il più vicino è $\mathbf{e}_3$, token
-**3**. Abbiamo sostituito due pezzetti fatti di numeri qualsiasi con due soli
+3. Abbiamo sostituito due pezzetti fatti di numeri qualsiasi con due soli
 numeri interi, `2` e `3`.
 
 Guadagnare, si guadagna, anche se qui non si vede a occhio: un numero
@@ -238,7 +237,7 @@ scrivere l'audio in un alfabeto.
 ## Residual vector quantization: strati di precisione
 
 C'è un problema, e lo si vede proprio nell'esempio. Sostituire
-$(0{,}8,\ 0{,}1)$ con $(1,0)$ è comodo ma **grossolano**: ci siamo persi lo
+$(0{,}8,\ 0{,}1)$ con $(1,0)$ è comodo ma grossolano: ci siamo persi lo
 scarto, cioè $0{,}2$ nella prima casella e $0{,}1$ nella seconda. Per l'audio,
 uno scarto del genere è la differenza tra una voce naturale e una voce
 metallica da citofono. La soluzione ovvia sarebbe allargare il codebook,
@@ -250,13 +249,13 @@ Serve prima la parola con cui si misura il costo. Un **bit** è una risposta
 sì/no. Con 3 bit, cioè tre risposte sì/no in fila, si distinguono
 $2 \times 2 \times 2 = 8$ casi; con 10 bit se ne distinguono 1024. Per dire a
 quale prototipo si riferisce, un token deve spendere tanti bit quanti bastano a
-distinguere le voci dell'elenco: quindi **raddoppiare** l'elenco costa una
+distinguere le voci dell'elenco: quindi raddoppiare l'elenco costa una
 risposta in più, non il doppio. E quanti bit al secondo servano in tutto a un
 codec si chiama **bitrate**, e si misura in kbps, migliaia di bit al secondo:
 un CD non compresso viaggia sui 1.400 kbps, un MP3 di buona qualità sui 128, e
 i codec neurali di questa sezione scendono sotto i 10. Attenzione al verso,
 perché è il contrario di quasi tutti gli altri numeri che abbiamo incontrato:
-qui **più è basso, meglio è**, perché vuol dire meno roba da trasmettere a
+qui più è basso, meglio è, perché vuol dire meno roba da trasmettere a
 parità di suono.
 
 Adesso il conto si può fare al contrario, ed è lì che l'idea di allargare si
@@ -272,7 +271,7 @@ da 1024 voci spendono esattamente gli stessi 80 bit, e di prototipi ne hanno
 La soluzione, elegante, è la **residual vector quantization** (RVQ), introdotta
 per i codec neurali da **SoundStream** {cite}`zeghidour2021soundstream`, di
 Google, e poi da **EnCodec** {cite}`defossez2023high`, di Meta: invece di un solo
-codebook enorme, si mettono in **cascata** più codebook piccoli, ciascuno che
+codebook enorme, si mettono in cascata più codebook piccoli, ciascuno che
 corregge l'errore lasciato dal precedente.
 
 `````{tab} Elementare
@@ -304,10 +303,9 @@ monete, tagli scelti male ti lasciano molto più lontano.
 
 `````{tab} Superiore
 
-La RVQ applica $N$ quantizzatori in cascata sul **residuo**. Posto
-$\mathbf{r}_0 = \mathbf{z}$, al
-livello $i$ si quantizza il residuo corrente con il codebook $\mathcal{C}^{(i)}$ e si
-aggiorna il residuo:
+La RVQ applica $N$ quantizzatori in cascata sul residuo. Posto $\mathbf{r}_0 =
+\mathbf{z}$, al livello $i$ si quantizza il residuo corrente con il codebook
+$\mathcal{C}^{(i)}$ e si aggiorna il residuo:
 
 $$
 k_i^\star = \arg\min_{k} \big\lVert \mathbf{r}_{i-1} - \mathbf{e}_k^{(i)} \big\rVert^2,
@@ -315,17 +313,16 @@ k_i^\star = \arg\min_{k} \big\lVert \mathbf{r}_{i-1} - \mathbf{e}_k^{(i)} \big\r
 \mathbf{r}_i = \mathbf{r}_{i-1} - \mathbf{e}_{k_i^\star}^{(i)}.
 $$
 
-La ricostruzione finale è la somma dei prototipi scelti,
-$q(\mathbf{z}) = \sum_{i=1}^{N} \mathbf{e}_{k_i^\star}^{(i)}$, e il token di quel frame diventa la
-tupla di indici $(k_1^\star, \dots, k_N^\star)$: **$N$ flussi paralleli** di
-interi. Ogni stadio quantizza ciò che è avanzato, ma questo da solo non basta
-a garantire un miglioramento: l'errore non può crescere con $N$ se ogni
-codebook contiene il vettore nullo, perché scegliere lo zero equivale a non
-correggere (è il motivo per cui il secondo codebook dell'esempio in NumPy lo
-include). In pratica, con codebook appresi sui dati, l'errore
-decresce a ogni stadio.
+La ricostruzione finale è la somma dei prototipi scelti, $q(\mathbf{z}) =
+\sum_{i=1}^{N} \mathbf{e}_{k_i^\star}^{(i)}$, e il token di quel frame diventa
+la tupla di indici $(k_1^\star, \dots, k_N^\star)$: $N$ flussi paralleli di
+interi. Ogni stadio quantizza ciò che è avanzato, ma questo da solo non basta a
+garantire un miglioramento: l'errore non può crescere con $N$ se ogni codebook
+contiene il vettore nullo, perché scegliere lo zero equivale a non correggere
+(è il motivo per cui il secondo codebook dell'esempio in NumPy lo include). In
+pratica, con codebook appresi sui dati, l'errore decresce a ogni stadio.
 
-Il conto del **bitrate** è pulito. Con $N$ quantizzatori, codebook di $K$ voci
+Il conto del bitrate è pulito. Con $N$ quantizzatori, codebook di $K$ voci
 ciascuno e frequenza di frame $f_r$:
 
 $$
@@ -334,13 +331,13 @@ $$
 
 dove $\log_2 K$ sono i bit per indice. EnCodec a $24$ kHz usa codebook di
 $K = 1024$ voci ($10$ bit) a $f_r = 75$ frame al secondo: con $N = 8$
-quantizzatori si ottengono $8 \cdot 10 \cdot 75 = 6000$ bit/s, cioè **6 kbps**.
+quantizzatori si ottengono $8 \cdot 10 \cdot 75 = 6000$ bit/s, cioè 6 kbps.
 Variando $N$ si sceglie il compromesso: da $1{,}5$ kbps ($N=2$) fino a $24$ kbps
 ($N=32$).
 
 Due cautele sui numeri, perché è facile ricordarseli storti. La prima riguarda
 il paragone con l'MP3, che si legge dappertutto: la parità a 64 kbps è del
-**gemello a 48 kHz stereo**, non di questo modello a 24 kHz monofonico, i cui
+gemello a 48 kHz stereo, non di questo modello a 24 kHz monofonico, i cui
 termini di confronto nel paper sono Opus, EVS e Lyra-v2. E quel gemello arriva
 ai 6 kbps per un'altra strada: a 48 kHz l'encoder produce 150 passi latenti al
 secondo invece di 75, quindi sono $4 \cdot 10 \cdot 150$, non gli
@@ -359,9 +356,9 @@ bitrate dice quanto costa, non quanto suona bene.
 
 `````
 
-Il risultato è una tabella con due direzioni. Lungo il **tempo**, il suono viene
+Il risultato è una tabella con due direzioni. Lungo il tempo, il suono viene
 tagliato a fettine, e ogni fettina si chiama **frame**: dura una manciata di
-millesimi di secondo. Lungo la **profondità**, ogni frame porta non un token ma
+millesimi di secondo. Lungo la profondità, ogni frame porta non un token ma
 la pila di token della cascata, uno per codebook.
 {numref}`fig-audio-codec-rvq` mostra la seconda direzione, che è quella nuova:
 un frame solo, la pila di token che ne esce, l'encoder che li produce e il
@@ -369,7 +366,7 @@ decoder che li rilegge.
 
 Il conto, con i valori che usa EnCodec sull'audio misurato 24.000 volte al
 secondo, viene così: 75 frame in ogni secondo di audio, 8 token per ogni frame,
-cioè **600 simboli al secondo** al posto di 24.000 misure. È il salto che rende
+cioè 600 simboli al secondo al posto di 24.000 misure. È il salto che rende
 possibile tutto il resto del capitolo.
 
 Da quei 600 numeri il decoder tira fuori un suono che *suona* come l'originale,
@@ -383,7 +380,7 @@ soltanto qualcosa di numericamente vicino all'originale (è il meccanismo delle
 Sotto quella pressione il decoder diventa a tutti gli effetti un piccolo
 generatore, guidato dai token che riceve. A bitrate bassi il dettaglio più fine
 (la grana, le code di riverbero, le frequenze più alte) non viene recuperato:
-viene **reinventato** in modo credibile. Ecco perché la fedeltà misurata
+viene reinventato in modo credibile. Ecco perché la fedeltà misurata
 campione per campione crolla mentre la qualità che si sente regge. Ed ecco anche
 perché, nella prossima sezione, questo stesso decoder potrà fare da generatore
 senza cambiare una riga: a quel punto la differenza fra un codec e un modello
@@ -411,7 +408,7 @@ sei pezzetti finti da due numeri ciascuno, presi a caso, e stampa i due
 stadio.
 
 Due avvertenze prima di leggerlo, per non inciampare sui numeri. Qui i prototipi
-sono numerati a partire da **zero**, come conta Python, mentre nella formula
+sono numerati a partire da zero, come conta Python, mentre nella formula
 partivano da uno: è solo un modo di contare. E gli elenchi qui sotto non sono
 quelli dell'esempio a mano di poco fa, quindi i token che ne escono non devono
 coincidere con il `2` e il `3` di prima.
@@ -489,11 +486,11 @@ elenchi migliaia di voci e gli stadi sono otto o più, ma la meccanica è
 precisamente questa, ed è quella che il codice qui sopra esegue.
 
 Gli elenchi qui sopra li abbiamo scritti noi; nei codec veri i prototipi si
-**imparano** insieme all'encoder e al decoder. La regola con cui si imparano è semplice: ogni prototipo viene
-spostato ogni tanto nel mezzo dei pezzetti che l'hanno scelto, così da
-rappresentarli meglio (è lo stesso meccanismo del **k-means**, l'algoritmo di
-raggruppamento della {doc}`sezione su riduzione e clustering
-</MachineLearning/riduzione-clustering>`).
+imparano insieme all'encoder e al decoder. La regola con cui si imparano è
+semplice: ogni prototipo viene spostato ogni tanto nel mezzo dei pezzetti che
+l'hanno scelto, così da rappresentarli meglio (è lo stesso meccanismo del
+k-means, l'algoritmo di raggruppamento della {doc}`sezione su riduzione e
+clustering </MachineLearning/riduzione-clustering>`).
 
 E quella regola porta con sé il guasto caratteristico di tutta la famiglia. Una
 voce che nessun pezzetto sceglie non viene mai spostata, quindi resta dov'è e
@@ -508,20 +505,20 @@ stanno nei codec citati qui sopra: EnCodec {cite}`defossez2023high` sostituisce
 le voci mai usate con pezzetti presi dal mucchietto che sta processando in quel
 momento, dandogli così un posto dove sono utili (si chiama *restart*); altri
 arrotondano in uno spazio più piccolo e riportano prototipi e pezzetti alla
-stessa scala. Un codebook va sempre misurato per quante voci **usa davvero**,
+stessa scala. Un codebook va sempre misurato per quante voci usa davvero,
 non per quante ne dichiara.
 
 Sulla misura della qualità serve poi una distinzione che il gergo tende a
-cancellare, e conviene dirla in ordine. **Primo**: l'errore quadratico medio sui
+cancellare, e conviene dirla in ordine. Primo: l'errore quadratico medio sui
 campioni non è il criterio giusto nemmeno per addestrare, perché non ha
 orecchio, e i codec veri usano invece perdite calcolate sullo spettrogramma,
 più il discriminatore di cui abbiamo parlato, che premiano ciò che *suona*
 bene.
-**Secondo**, ed è il punto: quelli sono obiettivi di addestramento. Dicono al
+Secondo, ed è il punto: quelli sono obiettivi di addestramento. Dicono al
 modello dove andare, non dicono a noi dove è arrivato, e un discriminatore che
 promuove il proprio generatore è metà di una partita, non un verdetto.
 
-**Misurare** la qualità è un problema diverso, e ancora aperto. Esistono voti
+Misurare la qualità è un problema diverso, e ancora aperto. Esistono voti
 che una macchina può dare da sola, e vanno letti in due versi opposti: in PESQ,
 STOI e ViSQOL il numero alto è quello buono, mentre la FAD è una distanza,
 quindi lì il numero buono è il basso. Sono tutti approssimazioni, ognuna tarata
@@ -539,25 +536,25 @@ la qualità.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **codec neurale** non segue una lista di regole scritte da qualcuno, come
-  fa l'MP3: impara a comprimere **provando**, come il viaggiatore che a ogni
+- Un codec neurale non segue una lista di regole scritte da qualcuno, come
+  fa l'MP3: impara a comprimere provando, come il viaggiatore che a ogni
   viaggio chiude meglio la valigia. Nessuno gli dice cosa buttare: glielo impone
   la strettoia in mezzo.
-- Il passo che serve a noi è la **tavolozza**: si tiene un elenco di
+- Il passo che serve a noi è la tavolozza: si tiene un elenco di
   pezzetti-tipo e di ogni pezzetto di suono si salva solo il *numero di
-  posizione* nell'elenco. Quel numero è il **token**, cioè la lettera
+  posizione* nell'elenco. Quel numero è il token, cioè la lettera
   dell'alfabeto sonoro.
 - Una tavolozza sola è troppo grossolana, e per raffinarla servirebbero
-  tantissimi colori. Meglio fare come con il **resto in monete**: una prima
+  tantissimi colori. Meglio fare come con il resto in monete: una prima
   tavolozza dà l'approssimazione grossa, una seconda copre quel che è avanzato,
   una terza quel che avanza ancora. Ogni pezzetto di suono diventa così una
-  **pila** di token invece di uno solo.
+  pila di token invece di uno solo.
 - Il risultato è che un secondo di musica si scrive con qualche centinaio di
   numeri invece che con decine di migliaia di misure. Quanti bit al secondo
-  servono si chiama **bitrate**, e qui più è basso meglio è.
+  servono si chiama bitrate, e qui più è basso meglio è.
 - Attenzione a due parole. Il decoder non «ricostruisce» l'originale: a bitrate
-  bassi il dettaglio più fine se lo **reinventa** in modo credibile. E la
-  qualità, alla fine, la decidono ancora delle **persone che ascoltano**: i
+  bassi il dettaglio più fine se lo reinventa in modo credibile. E la
+  qualità, alla fine, la decidono ancora delle persone che ascoltano: i
   numeri automatici sono indizi, non verdetti.
 ```
 
@@ -567,28 +564,28 @@ la qualità.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **codec neurale** non applica regole fisse come l'MP3: è un autoencoder che
-  **impara** a comprimere l'audio (encoder → latente → decoder), addestrato sulla
+- Un codec neurale non applica regole fisse come l'MP3: è un autoencoder che
+  impara a comprimere l'audio (encoder → latente → decoder), addestrato sulla
   ricostruzione.
-- La **vector quantization** {cite}`oord2017neural` rende la rappresentazione
-  *discreta*: un **codebook** di prototipi, ogni latente sostituito dal più
-  vicino, e il suo **indice** diventa il **token** (l'alfabeto sonoro).
-- Un solo codebook è troppo grossolano. La **residual vector quantization**
+- La vector quantization {cite}`oord2017neural` rende la rappresentazione
+  *discreta*: un codebook di prototipi, ogni latente sostituito dal più
+  vicino, e il suo indice diventa il token (l'alfabeto sonoro).
+- Un solo codebook è troppo grossolano. La residual vector quantization
   {cite}`zeghidour2021soundstream` {cite}`defossez2023high` mette più codebook in
-  **cascata**: ognuno quantizza il **residuo** del precedente, come dare il resto
+  cascata: ognuno quantizza il residuo del precedente, come dare il resto
   con monete via via più piccole.
-- L'audio diventa così una **griglia di token** (tempo × profondità della
+- L'audio diventa così una griglia di token (tempo × profondità della
   cascata): con EnCodec a 24 kHz, 600 simboli per secondo a 6 kbps. Il bitrate è
   $N \cdot \log_2 K \cdot f_r$, ma non è una manopola monotona: nelle prove
   MUSHRA 12 e 24 kbps sono indistinguibili, e a parità di bit codec diversi
   distano decine di punti.
-- Il decoder non ricostruisce, **risintetizza**: addestrato con un
+- Il decoder non ricostruisce, risintetizza: addestrato con un
   discriminatore è un generatore condizionato, e a bitrate bassi inventa il
   dettaglio fine in modo plausibile.
-- Due trappole di misura. Il **codebook collapse**: una voce mai scelta non
+- Due trappole di misura. Il codebook collapse: una voce mai scelta non
   viene più aggiornata e muore, quindi il codebook effettivo si riduce mentre il
   bitrate nominale resta (rimedio: il *restart* delle voci morte). E perdite
-  spettrali e discriminatori sono **obiettivi di addestramento**, non metriche:
+  spettrali e discriminatori sono obiettivi di addestramento, non metriche:
   gli indicatori oggettivi (PESQ, STOI e ViSQOL si massimizzano, la FAD si
   minimizza) sono surrogati d'ambito, e il giudizio resta MUSHRA.
 - Con due soli stadi, nell'esempio in NumPy, l'errore di ricostruzione più che si

@@ -1,0 +1,47 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../llm-as-judge.svg
+-->
+<svg viewBox="0 0 700 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema del confronto a coppie: la stessa domanda genera due risposte da due modelli diversi; un terzo modello, il giudice, le legge entrambe ed emette un verdetto">
+  <rect x="0" y="0" width="700" height="420" fill="#0E0C0A"/>
+  <text x="350" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Il confronto a coppie</text>
+
+  <!-- domanda -->
+  <rect x="275" y="46" width="150" height="48" rx="10" fill="none" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="350" y="75" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Stessa domanda</text>
+
+  <!-- frecce dalla domanda alle due risposte -->
+  <line x1="320" y1="94" x2="185" y2="148" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="180,150 193,146 187,157" fill="#F4ECDD"/>
+  <line x1="380" y1="94" x2="515" y2="148" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="520,150 507,157 513,146" fill="#F4ECDD"/>
+
+  <!-- risposta A -->
+  <rect x="60" y="150" width="190" height="72" rx="10" fill="#5BA39C"/>
+  <text x="155" y="181" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#0E0C0A">Risposta A</text>
+  <text x="155" y="203" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">dal modello 1</text>
+
+  <!-- risposta B -->
+  <rect x="450" y="150" width="190" height="72" rx="10" fill="#DDB874"/>
+  <text x="545" y="181" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD">Risposta B</text>
+  <text x="545" y="203" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">dal modello 2</text>
+
+  <!-- frecce verso il giudice -->
+  <line x1="155" y1="222" x2="300" y2="288" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="305,290 292,290 298,281" fill="#F4ECDD"/>
+  <line x1="545" y1="222" x2="400" y2="288" stroke="#F4ECDD" stroke-width="1.5"/>
+  <polygon points="395,290 402,281 408,290" fill="#F4ECDD"/>
+
+  <!-- giudice -->
+  <rect x="255" y="290" width="190" height="66" rx="10" fill="#E27B52"/>
+  <text x="350" y="319" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#0E0C0A">Giudice</text>
+  <text x="350" y="340" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">un terzo modello</text>
+
+  <!-- freccia al verdetto -->
+  <line x1="350" y1="356" x2="350" y2="388" stroke="#F4ECDD" stroke-width="2"/>
+  <polygon points="350,398 344,386 356,386" fill="#F4ECDD"/>
+  <text x="460" y="408" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-style="italic" fill="#F4ECDD">verdetto: vince A</text>
+</svg>

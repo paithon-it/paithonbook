@@ -1,0 +1,72 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../deep-learning-gpu.svg
+-->
+<svg viewBox="0 0 760 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Due linee del tempo parallele su uno stesso asse degli anni. Sopra, il calcolo disponibile: CPU sequenziali nel 1958, CUDA e le GPU aperte a conti di ogni tipo nel 2007, i chip dedicati all'AI dal 2017. Sotto, i modelli: il percettrone nel 1958, la backpropagation resa popolare nel 1986, LeNet-5 nel 1998, AlexNet su due GPU nel 2012, Transformer e modelli linguistici dal 2017. Una banda chiara copre il tratto dal 1958 al 2007 con la scritta: cinquant'anni di attesa, le idee ci sono e il calcolo no.">
+  <rect x="0" y="0" width="760" height="340" fill="#0E0C0A"/>
+  <text x="380" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#F4ECDD">Due storie che si inseguono</text>
+  <!-- asse centrale -->
+  <line x1="60" y1="170" x2="700" y2="170" stroke="#F4ECDD" stroke-width="2"/>
+  <!-- etichette lane -->
+  <text x="60" y="70" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#5BA39C">HARDWARE</text>
+  <text x="60" y="290" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#E27B52">MODELLI</text>
+  <!-- tacche anni -->
+  <g font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD" text-anchor="middle">
+    <line x1="90" y1="164" x2="90" y2="176" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="90" y="192">1958</text>
+    <line x1="215" y1="164" x2="215" y2="176" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="215" y="192">1986</text>
+    <line x1="330" y1="164" x2="330" y2="176" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="330" y="192">1998</text>
+    <line x1="445" y1="164" x2="445" y2="176" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="445" y="192">2007</text>
+    <line x1="560" y1="164" x2="560" y2="176" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="560" y="192">2012</text>
+    <line x1="670" y1="164" x2="670" y2="176" stroke="#F4ECDD" stroke-width="1.5"/>
+    <text x="670" y="192">2017+</text>
+  </g>
+  <!-- hardware (sopra) -->
+  <g font-family="Inter, system-ui, sans-serif" font-size="11">
+    <line x1="90" y1="130" x2="90" y2="164" stroke="#5BA39C" stroke-width="1.5"/>
+    <rect x="50" y="86" width="80" height="44" rx="4" fill="#0E0C0A" stroke="#5BA39C" stroke-width="1.5"/>
+    <text x="90" y="104" text-anchor="middle" fill="#F4ECDD">CPU</text>
+    <text x="90" y="120" text-anchor="middle" fill="#F4ECDD">sequenziali</text>
+    <line x1="445" y1="130" x2="445" y2="164" stroke="#5BA39C" stroke-width="1.5"/>
+    <rect x="400" y="86" width="90" height="44" rx="4" fill="#5BA39C" stroke="#5BA39C" stroke-width="1.5"/>
+    <text x="445" y="104" text-anchor="middle" fill="#0E0C0A">CUDA</text>
+    <text x="445" y="120" text-anchor="middle" fill="#0E0C0A">GPU generiche</text>
+    <line x1="670" y1="130" x2="670" y2="164" stroke="#5BA39C" stroke-width="1.5"/>
+    <rect x="622" y="86" width="96" height="44" rx="4" fill="#0E0C0A" stroke="#5BA39C" stroke-width="1.5"/>
+    <text x="670" y="104" text-anchor="middle" fill="#F4ECDD">chip dedicati</text>
+    <text x="670" y="120" text-anchor="middle" fill="#F4ECDD">all&#8217;AI</text>
+  </g>
+  <!-- modelli (sotto) -->
+  <g font-family="Inter, system-ui, sans-serif" font-size="11">
+    <line x1="90" y1="176" x2="90" y2="210" stroke="#E27B52" stroke-width="1.5"/>
+    <rect x="48" y="210" width="84" height="44" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="1.5"/>
+    <text x="90" y="228" text-anchor="middle" fill="#F4ECDD">Perceptron</text>
+    <text x="90" y="244" text-anchor="middle" fill="#F4ECDD">(Rosenblatt)</text>
+    <line x1="215" y1="176" x2="215" y2="210" stroke="#E27B52" stroke-width="1.5"/>
+    <rect x="170" y="210" width="90" height="44" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="1.5"/>
+    <text x="215" y="228" text-anchor="middle" fill="#F4ECDD">Backprop</text>
+    <text x="215" y="244" text-anchor="middle" fill="#F4ECDD">popolarizzata</text>
+    <line x1="330" y1="176" x2="330" y2="210" stroke="#E27B52" stroke-width="1.5"/>
+    <rect x="290" y="210" width="80" height="44" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="1.5"/>
+    <text x="330" y="228" text-anchor="middle" fill="#F4ECDD">LeNet-5</text>
+    <text x="330" y="244" text-anchor="middle" fill="#F4ECDD">(LeCun)</text>
+    <line x1="560" y1="176" x2="560" y2="210" stroke="#E27B52" stroke-width="1.5"/>
+    <rect x="516" y="210" width="88" height="44" rx="4" fill="#E27B52" stroke="#E27B52" stroke-width="1.5"/>
+    <text x="560" y="228" text-anchor="middle" fill="#0E0C0A">AlexNet</text>
+    <text x="560" y="244" text-anchor="middle" fill="#0E0C0A">su 2 GPU</text>
+    <line x1="670" y1="176" x2="670" y2="210" stroke="#E27B52" stroke-width="1.5"/>
+    <rect x="624" y="210" width="92" height="44" rx="4" fill="#0E0C0A" stroke="#E27B52" stroke-width="1.5"/>
+    <text x="670" y="228" text-anchor="middle" fill="#F4ECDD">Transformer,</text>
+    <text x="670" y="244" text-anchor="middle" fill="#F4ECDD">LLM</text>
+  </g>
+  <!-- zona attesa -->
+  <rect x="130" y="150" width="290" height="40" fill="#DDB874" opacity="0.25"/>
+  <text x="275" y="152" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#F4ECDD" dy="-6">~50 anni di attesa: le idee ci sono, il calcolo no</text>
+</svg>

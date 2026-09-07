@@ -16,7 +16,7 @@ forecasting statistico a quello neurale.
 
 Le sezioni precedenti hanno costruito la cassetta degli attrezzi classica
 (ARIMA, Holt-Winters) e hanno insistito su un punto scomodo: quei metodi di
-mezzo secolo fa restano una **linea di base durissima da battere**. Questa
+mezzo secolo fa restano una linea di base durissima da battere. Questa
 sezione racconta l'altra famiglia, quella delle reti neurali: quando conviene
 davvero, come si è evoluta dalle reti ricorrenti alle convoluzioni causali
 fino ai Transformer, e dove sta arrivando oggi con i *foundation model*. Con
@@ -34,7 +34,7 @@ Un unico negozio di quartiere ha una storia di vendite corta e ballerina, e un
 modello troppo sofisticato ci si perde: con tanti numeri da regolare e pochi
 giorni su cui regolarli, finisce per imparare a memoria anche gli sbalzi
 capitati per caso, che domani non si ripeteranno. Un buon vecchio ARIMA fa
-altrettanto bene con molta meno fatica. Ora prendi una **catena** con
+altrettanto bene con molta meno fatica. Ora prendi una catena con
 diecimila negozi. Molti pattern sono condivisi: il picco del sabato, il crollo
 di Ferragosto, l'effetto di una promozione. Una rete neurale può impararli
 *una volta sola* guardando tutti i negozi insieme, e poi applicarli anche al
@@ -59,7 +59,7 @@ certo punto sale meno: dove cambiarla lo decide guardando i dati). Una o più
 stagionalità, disegnate con le poche onde regolari (seno e coseno) che la
 sezione sulle feature ha appena introdotto, e possono essercene due
 sovrapposte, la settimana lavorativa e il ciclo annuale insieme. E gli effetti
-delle **festività**, che sono strappi su date dichiarate a mano.
+delle festività, che sono strappi su date dichiarate a mano.
 
 Il programma più usato di questa famiglia si chiama **Prophet** ed è stato
 pubblicato nel 2018 da due ricercatori di Facebook, Sean Taylor e Benjamin
@@ -80,23 +80,23 @@ l'informazione più preziosa, e perde contro un ARIMA banale.
 
 `````{tab} Superiore
 
-Il vantaggio strutturale è il **modello globale**: un'unica funzione
+Il vantaggio strutturale è il modello globale: un'unica funzione
 parametrica $f_\theta$ addestrata sull'intero insieme di $N$ serie
 $\{\mathbf{x}^{(i)}_{1:T_i}\}_{i=1}^N$, in luogo di $N$ modelli locali
 indipendenti.
 Con $N$ grande, $\theta$ vede molti più esempi e può permettersi capacità che
 una singola serie non giustificherebbe, catturando pattern condivisi
 (stagionalità tipiche, effetti di calendario) e regolarizzando le serie corte
-con quelle lunghe. Le altre tre leve sono la **non linearità** (mappe che un
-ARMA lineare non rappresenta), le **covariate esogene** $\mathbf{z}_t$
+con quelle lunghe. Le altre tre leve sono la non linearità (mappe che un
+ARMA lineare non rappresenta), le covariate esogene $\mathbf{z}_t$
 integrate nell'input,
 $\hat{x}_{t+1} = f_\theta(\mathbf{x}_{1:t}, \mathbf{z}_{1:t+1})$, e l'uscita
-**probabilistica**
+probabilistica
 $p_\theta(\mathbf{x}_{t+1:t+h}\mid \mathbf{x}_{1:t}, \mathbf{z})$, non una
 stima puntuale.
 
-L'onestà impone il rovescio della medaglia. Con **poche** serie o serie
-**corte** il regime dati non regge la varianza di un modello ad alta capacità,
+L'onestà impone il rovescio della medaglia. Con poche serie o serie
+corte il regime dati non regge la varianza di un modello ad alta capacità,
 e i metodi statistici (robusti, frugali, interpretabili) tengono il campo,
 come mostrano ripetutamente le competizioni M discusse nell'introduzione al
 capitolo. La regola resta quella: si batte prima la linea di base classica,
@@ -111,28 +111,28 @@ $$
 y(t) = g(t) + s(t) + h(t) + \varepsilon_t ,
 $$
 
-con $g$ una tendenza lineare **a tratti**, i cui punti di svolta sono stimati
+con $g$ una tendenza lineare a tratti, i cui punti di svolta sono stimati
 dai dati (è la notazione dell'articolo: questa $g$ non ha niente a che vedere
-con il $g_\theta$ di DeepAR); $s$ una somma di **serie di
-Fourier troncate** a $K$ armoniche (le stesse colonne $\sin(2\pi kt/m)$ e
+con il $g_\theta$ di DeepAR); $s$ una somma di serie di
+Fourier troncate a $K$ armoniche (le stesse colonne $\sin(2\pi kt/m)$ e
 $\cos(2\pi kt/m)$ della sezione sulle feature, il che permette di sovrapporre
 più periodi e di regolare la flessibilità scegliendo $K$); $h$ gli effetti
 puntuali su date dichiarate (è la notazione dell'articolo: $h(t)$ è una
 funzione del tempo, non l'orizzonte di previsione che $h$ indica altrove);
 e $\varepsilon_t$ il residuo. Il modello è scritto in forma bayesiana, ma di
-norma la stima si ferma al **massimo a posteriori** invece di campionare
+norma la stima si ferma al massimo a posteriori invece di campionare
 l'intera distribuzione. Anche gli intervalli non vengono da una formula chiusa:
 si ottengono simulando in avanti cambi di pendenza con la stessa frequenza e la
 stessa ampiezza di quelli visti nel passato, che è un'ipotesi forte, e che gli
 autori dichiarano per quello che è.
 
 Il punto che la distingue dalle altre due, e che vale più della formula, è che
-$y$ è una regressione **sul tempo**, non sui valori passati: non c'è nessuno
+$y$ è una regressione sul tempo, non sui valori passati: non c'è nessuno
 stato, nessuna dipendenza fra $y(t)$ e $y(t-1)$. È una curva interpolata e non
 un processo stocastico. Da qui vengono insieme il pregio (i dati mancanti e gli
 *outlier* non rompono niente, perché non c'è nessuna ricorsione da interrompere,
-e la stima è veloce) e il limite: il modello **non sfrutta l'autocorrelazione a
-breve**, che è precisamente ciò che rende prevedibile una serie molto correlata,
+e la stima è veloce) e il limite: il modello non sfrutta l'autocorrelazione a
+breve, che è precisamente ciò che rende prevedibile una serie molto correlata,
 ed è la ragione per cui su quelle serie perde contro un ARIMA banale.
 
 `````
@@ -147,7 +147,7 @@ riassunto si chiama **stato nascosto**, ed è tutta la memoria che la rete ha.
 Le **reti ricorrenti** (RNN) funzionano così; la **LSTM** di Sepp Hochreiter e
 Jürgen Schmidhuber {cite}`hochreiter1997long` è la versione che a ogni passo
 decide anche che cosa di quel riassunto conviene tenere e che cosa buttare
-(sono i suoi **cancelli**). Lì il problema era il linguaggio, qui è una serie
+(sono i suoi cancelli). Lì il problema era il linguaggio, qui è una serie
 di numeri, ma il meccanismo è lo stesso: una serie temporale, in fondo, è una
 frase di numeri.
 
@@ -160,7 +160,7 @@ chiedi un numero solo, quello di domani. Si addestra come qualunque modello che
 deve indovinare un numero: in ingresso la finestra di giorni, come risposta
 giusta il giorno dopo. Per andare più in là di domani si riapplica la rete a
 catena, rimettendole dentro le sue stesse previsioni: è la strategia
-**ricorsiva** della sezione precedente, con il suo errore che si trascina.
+ricorsiva della sezione precedente, con il suo errore che si trascina.
 
 Il secondo: una prima rete legge tutta la storia e ne fa un riassunto, una
 seconda srotola da quel riassunto l'intera settimana futura in un colpo solo. È
@@ -169,9 +169,9 @@ trattamento del linguaggio, è nata l'idea di lasciare che il modello decida da
 sé a quali pezzi del passato dare peso.
 
 Ci sono però due guai, e nel forecasting pesano più che altrove. Il primo è che
-la memoria di queste reti **si consuma**: più il passato è lontano, meno ne
+la memoria di queste reti si consuma: più il passato è lontano, meno ne
 resta nel riassunto, e le LSTM migliorano le cose senza risolverle. Il secondo è
-che queste reti si addestrano **in fila indiana**, perché il giorno $t$ non si
+che queste reti si addestrano in fila indiana, perché il giorno $t$ non si
 può calcolare finché non è finito il $t-1$: il lavoro non si può spartire fra le
 migliaia di unità di calcolo di una GPU, e l'addestramento è lento.
 
@@ -184,7 +184,7 @@ uno») la rete legge la finestra dei giorni passati, cioè gli ultimi $w$ valori
 $x_{t-w+1}, \dots, x_t$, dove $w$ è quanto la si vuole lunga, e produce un solo
 valore, la previsione del prossimo passo: si allena come una regressione, con la
 finestra come input e $x_{t+1}$ come bersaglio. Per prevedere più in là si
-riapplica la rete in modo **ricorsivo**, reiniettando le proprie stime, con
+riapplica la rete in modo ricorsivo, reiniettando le proprie stime, con
 l'accumulo dell'errore già visto nell'introduzione. Nel **seq-to-seq**, invece,
 una prima rete (l’*encoder*) riassume tutta la storia in una manciata di numeri,
 e una seconda (il *decoder*) srotola da quel riassunto l'intero orizzonte futuro
@@ -192,9 +192,9 @@ in un colpo, esattamente come una traduzione genera l'intera frase d'uscita. È 
 schema che, nell'NLP, ha fatto nascere il meccanismo di attenzione.
 
 I limiti, però, sono gli stessi del capitolo NLP, e nel forecasting pesano
-persino di più. La memoria delle RNN semplici si **dissolve** su orizzonti
+persino di più. La memoria delle RNN semplici si dissolve su orizzonti
 lunghi (il gradiente che svanisce) e le LSTM lo mitigano ma non lo cancellano;
-l'addestramento è **sequenziale**, mal parallelizzabile sulle GPU perché il
+l'addestramento è sequenziale, mal parallelizzabile sulle GPU perché il
 passo $t$ aspetta il $t-1$.
 
 `````
@@ -204,12 +204,12 @@ la ricorrenza. La prima risposta arriva, curiosamente, dalle convoluzioni.
 
 ## TCN: convoluzioni che guardano solo indietro
 
-Una **convoluzione** è l'operazione della {doc}`sezione sulle reti
+Una convoluzione è l'operazione della {doc}`sezione sulle reti
 convoluzionali </DeepLearning/reti-convoluzionali>`: una piccola finestra che
 scorre sui dati e a ogni posizione fa sempre lo stesso conto, prendere i valori
 che ha sotto, pesarli e sommarli. Là scorreva su un'immagine, qui scorre su una
 fila di giorni. Il vantaggio, rispetto a una rete che legge un giorno per
-volta, è che tutte le posizioni si possono calcolare **insieme**, perché
+volta, è che tutte le posizioni si possono calcolare insieme, perché
 nessuna aspetta il risultato di un'altra.
 
 Nel 2018 Shaojie Bai, Zico Kolter e Vladlen Koltun pubblicarono un confronto
@@ -232,8 +232,8 @@ giorni distanziati, e la distanza raddoppia salendo. La
 :alt: Schema di una rete convoluzionale temporale con convoluzioni causali dilatate. In basso otto nodi di ingresso disposti lungo l'asse del tempo, dall'istante t meno sette all'istante t. Sopra, tre strati di nodi collegati da archi che saltano sempre all'indietro, verso il passato, con dilatazione crescente uno, due e quattro. Nessun arco punta verso il futuro. Il singolo nodo di uscita in alto a destra, evidenziato in terracotta, riceve informazione da tutti e otto gli ingressi: il campo recettivo, mostrato come cono ombreggiato, è pari a due elevato alla tre uguale otto istanti.
 :width: 100%
 
-Una TCN con convoluzioni **causali** (nessun arco viene dal futuro) e
-**dilatate** (i salti raddoppiano a ogni strato: 1, 2, 4). Ogni nodo guarda due
+Una TCN con convoluzioni causali (nessun arco viene dal futuro) e
+dilatate (i salti raddoppiano a ogni strato: 1, 2, 4). Ogni nodo guarda due
 soli nodi dello strato sotto, ma bastano tre strati perché il nodo in cima ne
 raccolga $2^3 = 8$: quanto passato arriva a un singolo nodo di uscita si chiama
 **campo recettivo**, e cresce in modo esponenziale con la profondità.
@@ -247,7 +247,7 @@ all'indietro è la causalità. Coprire tanti giorni con pochi strati, invece, è
 questione di salti che si allargano: il primo strato guarda ieri e oggi, il
 secondo salta di due giorni, il terzo di quattro, il quarto di otto. Quattro
 strati arrivano così a sedici giorni indietro, dieci a più di mille. È la
-**dilatazione**.
+dilatazione.
 
 Uno strato non riscrive il diario da capo: si tiene accanto la pagina com'era e
 ci annota soltanto quello che ha da aggiungere, e anche una pila alta di strati
@@ -259,9 +259,9 @@ in fila.
 
 `````{tab} Superiore
 
-Una convoluzione 1-D **causale** con kernel di dimensione $k$ calcola l'uscita
+Una convoluzione 1-D causale con kernel di dimensione $k$ calcola l'uscita
 al tempo $t$ usando solo $x_t, x_{t-1}, \dots, x_{t-(k-1)}$. Aggiungendo un
-fattore di **dilatazione** $d$, i campioni vengono presi a distanza $d$:
+fattore di dilatazione $d$, i campioni vengono presi a distanza $d$:
 
 $$
 y_t = \sum_{i=0}^{k-1} w_i \, x_{t - i\cdot d},
@@ -269,21 +269,21 @@ $$
 
 dove $w_0, \dots, w_{k-1}$ sono i pesi del filtro (condivisi lungo tutta la
 sequenza) e $d$ è il passo di dilatazione. Impilando $L$ strati con dilatazioni
-$d_\ell = 2^{\ell}$ per $\ell = 0, \dots, L-1$, il **campo recettivo** è
+$d_\ell = 2^{\ell}$ per $\ell = 0, \dots, L-1$, il campo recettivo è
 
 $$
 r = 1 + (k-1)\sum_{\ell=0}^{L-1} 2^{\ell} = 1 + (k-1)\,(2^{L}-1),
 $$
 
-cioè cresce **esponenzialmente** con la profondità $L$: con $k=2$ e $L=3$ si
+cioè cresce esponenzialmente con la profondità $L$: con $k=2$ e $L=3$ si
 ha $r = 8$, come in figura; con $k=3$ e $L=6$ si arriva a $r = 127$ istanti.
-La formula vale per **una** convoluzione per livello, che è la forma del codice
-più avanti; l'implementazione originale di Bai e colleghi ne mette **due** per
+La formula vale per una convoluzione per livello, che è la forma del codice
+più avanti; l'implementazione originale di Bai e colleghi ne mette due per
 blocco residuo, e allora il campo recettivo raddoppia,
 $1 + 2(k-1)(2^L-1)$, cioè quel $127$ diventa $253$. Chi applica la formula
 sbagliata a una TCN vera ne sottostima il campo recettivo di un fattore due.
 
-In pratica ogni blocco aggiunge una **connessione residua** (nello spirito
+In pratica ogni blocco aggiunge una connessione residua (nello spirito
 delle ResNet) per addestrare pile profonde senza che il gradiente svanisca.
 Qui «residua» vuol dire un'altra cosa ancora rispetto ai residui statistici del
 capitolo: non «quello che avanza dopo aver tolto trend e stagione», ma una
@@ -299,13 +299,14 @@ Torniamo al problema di Amazon con cui si è aperta la sezione. **DeepAR**
 {cite}`salinas2020deepar` è la risposta neurale, e porta due idee da tenere
 distinte.
 
-La prima è il modello **globale**, già discusso: una rete sola, addestrata su
-tutte le serie insieme, che legge un giorno per volta e si porta dietro il
-proprio riassunto del passato (è una LSTM, quella del {doc}`capitolo sul Natural
-Language Processing </NaturalLanguageProcessing/overview>`). A ogni passo riceve due cose, il valore del giorno prima e
-le informazioni esterne di quel giorno: il calendario, il prezzo, una promozione
-già decisa. Sono le variabili **esogene** della sezione sui modelli classici, che
-in questa letteratura cambiano nome e si chiamano **covariate**.
+La prima è il modello globale, già discusso: una rete sola, addestrata su tutte
+le serie insieme, che legge un giorno per volta e si porta dietro il proprio
+riassunto del passato (è una LSTM, quella del {doc}`capitolo sul Natural
+Language Processing </NaturalLanguageProcessing/overview>`). A ogni passo
+riceve due cose, il valore del giorno prima e le informazioni esterne di quel
+giorno: il calendario, il prezzo, una promozione già decisa. Sono le variabili
+esogene della sezione sui modelli classici, che in questa letteratura cambiano
+nome e si chiamano **covariate**.
 
 La seconda idea è più sottile: DeepAR non predice un *numero*, predice un
 ventaglio di valori possibili con le loro probabilità. Un oggetto del genere, in
@@ -315,7 +316,7 @@ statistica, si chiama **distribuzione**.
 
 Un bollettino serio non dice «domani piove»: dice «70% di probabilità di
 pioggia». DeepAR fa lo stesso con le vendite. A ogni passo, invece di sputare
-una cifra, descrive un **ventaglio di futuri plausibili**: il valore più
+una cifra, descrive un ventaglio di futuri plausibili: il valore più
 probabile e quanto ci si può discostare. E un bollettino così si giudica da
 quanta probabilità aveva dato a quello che poi è successo davvero: alzare quel
 punteggio, su tutte le serie insieme, è tutto l'addestramento della rete. E
@@ -338,7 +339,7 @@ previsione seria è un numero *con la sua incertezza*.
 
 `````{tab} Superiore
 
-A ogni passo la rete emette i **parametri** $\boldsymbol{\lambda}_t$ di una
+A ogni passo la rete emette i parametri $\boldsymbol{\lambda}_t$ di una
 distribuzione di verosimiglianza $p(x_t \mid \boldsymbol{\lambda}_t)$: una
 gaussiana, e allora $\boldsymbol{\lambda}_t=(\mu_t,\sigma_t)$, per dati reali;
 una **binomiale negativa** per conteggi non negativi (come le vendite). È in
@@ -360,16 +361,16 @@ dei dati.
 
 C'è poi un pezzo senza il quale un modello globale non sta in piedi, e che il
 racconto di solito salta: prima di entrare nella rete ogni serie viene divisa per
-una sua **scala** (tipicamente la media dei suoi valori), e la previsione viene
+una sua scala (tipicamente la media dei suoi valori), e la previsione viene
 rimoltiplicata per la stessa. Senza, una serie da trentamila unità e una da tre
 non possono stare nella stessa rete, e la seconda sparisce nel gradiente della
 prima.
 
-La previsione multi-passo avviene per **campionamento ancestrale**, e siccome
+La previsione multi-passo avviene per campionamento ancestrale, e siccome
 si lavora su una serie alla volta l'indice $i$ resta d'ora in poi sottinteso:
 si estrae $\hat{x}_{t+1}\sim p(\cdot\mid \boldsymbol{\lambda}_{t+1})$, lo si
 reinietta come input, si ripete fino all'orizzonte; molte traiettorie così
-ottenute forniscono, per ogni passo, i **quantili** della previsione. Nessuna
+ottenute forniscono, per ogni passo, i quantili della previsione. Nessuna
 formula chiusa per gli intervalli: è Monte Carlo.
 
 `````
@@ -430,7 +431,7 @@ regola resta uguale a sé stesso, $\mu = 4/(1-0{,}6) = 10$. E si vede la banda
 allargarsi: la distanza fra i suoi due estremi, che il programma stampa in
 fondo a ogni riga, passa da $2{,}56$ a $3{,}01$ a $3{,}15$.
 
-Poi, dal terzo giorno in poi, la salita **quasi si spegne**: $3{,}149$,
+Poi, dal terzo giorno in poi, la salita quasi si spegne: $3{,}149$,
 $3{,}159$, $3{,}166$, cioè meno di un centesimo per volta. Ed è la ragione per
 cui la banda va stampata con tre decimali e non con due: arrotondata al
 centesimo, la crescita degli ultimi tre giorni sparirebbe, e si concluderebbe
@@ -444,7 +445,7 @@ centrale non può diventare indefinitamente imprevedibile, e la sua banda si
 assesta su quella di lungo periodo.
 
 A crescere senza fermarsi è invece l'incertezza delle serie che un valore
-centrale non ce l'hanno, le **non stazionarie** dell'introduzione al capitolo.
+centrale non ce l'hanno, le non stazionarie dell'introduzione al capitolo.
 E ci sarebbe da aggiungere l'incertezza sul modello stesso, che qui non c'è per
 un motivo un po’ furbesco: la regola con cui la serie viene generata è la stessa
 con cui la prevediamo, perché l'abbiamo scritta noi da tutte e due le parti. Su
@@ -466,7 +467,7 @@ probabilistica dichiara e una puntuale nasconde.
 Nel 2019 Boris Oreshkin e colleghi mostrarono che per battere i metodi
 statistici non servivano né ricorrenza né convoluzioni. Bastavano gli strati
 più ordinari che ci siano, quelli in cui ogni neurone guarda tutti quelli dello
-strato precedente (i **percettroni** della {doc}`sezione sul percettrone
+strato precedente (i percettroni della {doc}`sezione sul percettrone
 </RetiNeurali/percettrone>`), montati con la giusta architettura
 {cite}`oreshkin2020nbeats`.[^date-nbeats] **N-BEATS**
 (*Neural Basis Expansion Analysis for Time Series*) è fatto solo di quelli, e la
@@ -475,18 +476,18 @@ sua eleganza sta in un'idea di contabilità: il **doppio residuo**.
 `````{tab} Elementare
 
 Una serie si spiega a strati, come si pela una cipolla. Il primo blocco guarda
-la finestra passata e produce due cose: una **ricostruzione** di
-ciò che ha capito del passato (il *backcast*) e un pezzo di **previsione** del
+la finestra passata e produce due cose: una ricostruzione di
+ciò che ha capito del passato (il *backcast*) e un pezzo di previsione del
 futuro (il *forecast*). A questo punto si *sottrae* la ricostruzione dal
 passato: ciò che resta è quello che il primo blocco non ha saputo spiegare, e
 passa al secondo blocco, che ripete il gioco su quel residuo. Blocco dopo
 blocco, ogni strato spiega un pezzo in più; le previsioni parziali si
-**sommano** a formare quella finale.
+sommano a formare quella finale.
 
 Il bello viene quando a qualche blocco si lega la mano. A uno si concede di
 disegnare soltanto curve dolci, e finisce per occuparsi della tendenza di
 fondo; a un altro soltanto onde che si ripetono, e finisce sui cicli. Così la
-rete non solo prevede, ma **mostra** quanto della previsione è tendenza e
+rete non solo prevede, ma mostra quanto della previsione è tendenza e
 quanto è ciclo (cosa rara per una rete neurale).
 
 `````
@@ -497,15 +498,15 @@ Ogni blocco $b$ riceve un residuo $\mathbf{x}^{(b)}$ e, tramite una pila di
 strati densi seguita da una proiezione su una base, produce due uscite: un
 **backcast** $\hat{\mathbf{x}}^{(b)}$ (la parte d'ingresso che sa spiegare) e un
 **forecast** $\hat{\mathbf{y}}^{(b)}$ (il suo contributo alla previsione). Il
-**doppio residuo** li combina così:
+doppio residuo li combina così:
 
 $$
 \mathbf{x}^{(b+1)} = \mathbf{x}^{(b)} - \hat{\mathbf{x}}^{(b)}, \qquad
 \hat{\mathbf{y}} = \sum_{b} \hat{\mathbf{y}}^{(b)},
 $$
 
-dove l'ingresso del blocco successivo è ciò che il blocco corrente **non** ha
-saputo spiegare, e la previsione finale è la **somma** dei contributi. Nella
+dove l'ingresso del blocco successivo è ciò che il blocco corrente non ha
+saputo spiegare, e la previsione finale è la somma dei contributi. Nella
 variante *interpretabile* la base è vincolata (polinomi di grado basso per il
 trend, termini di Fourier per la stagionalità), così che i due stack
 restituiscano componenti leggibili; in quella *generica* la base è appresa
@@ -520,8 +521,8 @@ dalla decomposizione, era l'errore che avanzava da un modello stimato, e adesso
 è «ciò che non è stato spiegato», e cambia solo chi ha provato a spiegarlo.
 
 La variante in cui alcuni blocchi si occupano della tendenza e altri della
-stagione si chiama **interpretabile**, e riallaccia il forecasting neurale alla
-**decomposizione classica** della prima sezione, chiudendo il cerchio con i
+stagione si chiama interpretabile, e riallaccia il forecasting neurale alla
+decomposizione classica della prima sezione, chiudendo il cerchio con i
 modelli statistici. Per arrivarci, mostrò N-BEATS, non serviva innestare pezzi
 di statistica dentro la rete, come faceva l'ibrido che aveva vinto la M4 (quello
 dell'introduzione al capitolo): contro l'opinione corrente di allora, come
@@ -533,11 +534,11 @@ scrivono gli autori, i mattoni del deep learning si bastavano da soli
 Nella {doc}`sezione sul meccanismo di attenzione </Transformers/attenzione>` il
 libro ha raccontato una rete che, invece di leggere una sequenza un pezzo per
 volta, guarda tutti i pezzi in una volta sola e decide da sé a quali dare peso:
-quel «decidere a quali dare peso» è l’**attenzione**, e nel trattamento del
+quel «decidere a quali dare peso» è l’attenzione, e nel trattamento del
 linguaggio ha spazzato via le reti che leggevano in fila
 {cite}`vaswani2017attention`. Portarla nelle serie temporali era una tentazione
 irresistibile, per una ragione precisa: un Transformer mette in comunicazione
-due giorni lontanissimi con **un solo passaggio**, mentre una rete ricorrente
+due giorni lontanissimi con un solo passaggio, mentre una rete ricorrente
 deve trascinarsi l'informazione attraverso tutti i giorni in mezzo, ed è per
 questo che se la dimentica.
 
@@ -548,7 +549,7 @@ confronti, e più si allunga la finestra più il conto esplode. **Informer** tag
 i confronti, e ne fa solo una parte, scelta bene, invece di tutti.
 **Autoformer** cambia proprio domanda: invece di confrontare coppie di giorni
 cerca le somiglianze della serie con sé stessa fatta scivolare indietro, cioè
-l’**autocorrelazione** della prima sezione, da cui viene il nome. Per
+l’autocorrelazione della prima sezione, da cui viene il nome. Per
 calcolarle tutte in fretta usa la trasformata di Fourier, quella con cui la
 {doc}`sezione dal suono alle feature </Audio/dal-suono-alle-feature>` scomponeva
 un accordo nelle sue note, e da cui vengono anche il seno e il coseno dei
@@ -561,7 +562,7 @@ Poi, nel 2022, una doccia fredda.
 
 Un gruppo di ricercatori pose una domanda scomoda già nel titolo: «I
 Transformer servono davvero, per prevedere le serie temporali?». La risposta,
-sui banchi di prova più usati, fu spiazzante: dei modelli **lineari**
+sui banchi di prova più usati, fu spiazzante: dei modelli lineari
 semplicissimi, poco più di una retta tirata sui dati, battevano quei Transformer
 sofisticati. Ne provarono più d'uno: il più elaborato della famiglia separa
 prima la serie in tendenza e stagionalità e poi tira una retta su ciascuna delle
@@ -603,7 +604,7 @@ motivato le varianti efficienti (Informer, Autoformer, FEDformer). Zeng e
 colleghi {cite}`zeng2023transformers` proposero come confronto una famiglia di
 modelli lineari: il più semplice è una singola mappa
 $\hat{\mathbf{x}}_{t+1:t+h} = \mathbf{W}\,\mathbf{x}_{t-w+1:t}$, e la
-variante **DLinear** decompone prima la serie in trend e stagionalità e applica
+variante DLinear decompone prima la serie in trend e stagionalità e applica
 una mappa a ciascuna componente. Su nove dataset di forecasting a lungo
 orizzonte quella famiglia eguaglia o supera i Transformer dedicati.
 
@@ -614,7 +615,7 @@ modello lineare semplice, ed è a quello che si riferiscono i numeri.
 *La prima è il mescolamento dell'ingresso.* Se un modello usa davvero l'ordine
 temporale, rimescolare a caso le posizioni della finestra passata deve
 rovinarlo. Sui tassi di cambio le prestazioni dei metodi basati su Transformer
-**non si muovono** (lo scostamento medio è dell'ordine di un decimo di punto
+non si muovono (lo scostamento medio è dell'ordine di un decimo di punto
 percentuale, e per due dei tre è perfino in meglio) mentre lo stesso
 trattamento
 fa perdere il 27% al modello lineare: lì il tempo lo sta usando la retta.
@@ -635,12 +636,12 @@ sui tassi di cambio, dicono gli autori, la finestra lunga non aiuta nemmeno
 loro). Messe insieme, le due
 prove dicono che su quei banchi di prova l'attenzione non stava estraendo le
 relazioni temporali che dichiarava di estrarre, il che è una critica al
-**metodo di valutazione** prima che all'architettura.
+metodo di valutazione prima che all'architettura.
 
 Non è la condanna dei Transformer: il **Temporal Fusion Transformer** di Lim e
-colleghi {cite}`lim2021temporal` resta forte quando servono **covariate
-multiple** (statiche, note nel futuro, osservate nel passato) e
-**interpretabilità**, grazie alle reti di selezione delle variabili, alla
+colleghi {cite}`lim2021temporal` resta forte quando servono covariate
+multiple (statiche, note nel futuro, osservate nel passato) e
+interpretabilità, grazie alle reti di selezione delle variabili, alla
 scomposizione dell'importanza per orizzonte e a pesi di attenzione
 ispezionabili. Su quest'ultimo punto vale la cautela della {doc}`sezione su
 attribuzione e meccanicistica
@@ -655,8 +656,8 @@ onesta.
 ## Foundation model: la «GPT delle serie»
 
 L'ultima frontiera prende in prestito l'idea che ha reso possibili i grandi
-modelli linguistici: pre-addestrare **un** modello enorme su una collezione
-sterminata di serie, e poi usarlo per prevedere serie **mai viste**, senza
+modelli linguistici: pre-addestrare un modello enorme su una collezione
+sterminata di serie, e poi usarlo per prevedere serie mai viste, senza
 riaddestrarlo. È il forecasting *zero-shot*, e il nome che gira è, appunto, «la
 GPT delle serie temporali».
 
@@ -666,9 +667,9 @@ Come un modello linguistico impara la lingua leggendo miliardi di frasi e poi
 sa scrivere su argomenti nuovi, un *foundation model* per le serie impara la
 «grammatica» dei fenomeni temporali (tendenze, cicli, picchi) leggendo milioni
 di serie di ogni tipo. Poi gli dai una serie che non ha mai incontrato, per
-esempio le vendite del tuo negozio, e lui prevede il seguito **senza
-addestrarsi da capo**. Il modello Chronos, di Amazon, usa un trucco
-sorprendente: trasforma i numeri in **parole**. Si sceglie un vocabolario di
+esempio le vendite del tuo negozio, e lui prevede il seguito senza
+addestrarsi da capo. Il modello Chronos, di Amazon, usa un trucco
+sorprendente: trasforma i numeri in parole. Si sceglie un vocabolario di
 qualche migliaio di simboli e si stabilisce che ciascuno copre una fettina di
 valori, così «$23{,}7$ gradi» diventa, mettiamo, il simbolo numero $1372$;
 a quel punto una serie è una frase, e prevedere il seguito è completare la
@@ -686,17 +687,17 @@ compito non sta improvvisando.
 
 `````{tab} Superiore
 
-**Chronos** {cite}`ansari2024chronos` scala e **quantizza** i valori reali in
+**Chronos** {cite}`ansari2024chronos` scala e quantizza i valori reali in
 un vocabolario finito di *token*, poi addestra un modello linguistico della
 famiglia T5 con la consueta *cross-entropy* sul token successivo, su un grande
 corpus di serie reali e sintetiche. In inferenza campiona traiettorie di token
-e le riconverte in valori, ottenendo una previsione **probabilistica** senza
+e le riconverte in valori, ottenendo una previsione probabilistica senza
 architetture ad hoc. Un'alternativa è **TimesFM** di Google, *decoder-only*
 che lavora su *patch* di istanti, pre-addestrato su ordini di grandezza di
 miliardi di punti temporali. Entrambi mostrano uno *zero-shot* competitivo con
 modelli allenati sul singolo compito: un risultato notevole. La cautela, però,
 è d'obbligo: il campo ha pochi anni, la valutazione soffre di possibili
-**contaminazioni** tra corpus di pre-addestramento e benchmark, e su serie
+contaminazioni tra corpus di pre-addestramento e benchmark, e su serie
 corte o molto specifiche i metodi classici restano spesso preferibili.
 Promettente, non risolto.
 
@@ -710,10 +711,10 @@ poi quello dell'implementazione originale.
 
 Il problema è questo. Una finestra che scorre su una fila di numeri, arrivata al
 primo giorno, non ha niente alla sua sinistra: le mancano dei valori, e la
-libreria li mette a zero. Solo che li mette **da tutte e due le parti**, anche a
+libreria li mette a zero. Solo che li mette da tutte e due le parti, anche a
 destra, dove il tempo non è ancora arrivato, e così il risultato viene più lungo
 dell'ingresso. La soluzione è chiedere gli zeri lo stesso e
-poi **tagliare via la coda a destra**: quello che resta è come se gli zeri
+poi tagliare via la coda a destra: quello che resta è come se gli zeri
 fossero stati messi soltanto a sinistra, la sequenza è lunga quanto prima e
 l'uscita del giorno $t$ non ha mai pescato nel futuro.
 
@@ -778,7 +779,7 @@ le sue uscite verso i valori giusti, misurando la distanza con l'errore
 quadratico (`nn.MSELoss`) e lasciando che a correggere i pesi ci pensi
 `torch.optim.Adam`.
 
-Basta poco per farne un modello **probabilistico**, nello spirito di DeepAR:
+Basta poco per farne un modello probabilistico, nello spirito di DeepAR:
 invece di far uscire dalla rete un numero solo se ne fanno uscire due, il valore
 centrale e quanto ci si può discostare, e si cambia il bersaglio
 dell'addestramento. Non più «avvicina la previsione al valore vero», ma «rendi
@@ -787,46 +788,46 @@ dichiarando»: in gergo, si sostituisce la MSE con la log-verosimiglianza
 gaussiana cambiata di segno. La rete impara così anche a dire quando non sa.
 
 Dalle reti ricorrenti ai foundation model le architetture cambiano, ma i due
-comandamenti del capitolo restano gli stessi: prevedere significa **dichiarare
-l'incertezza**, e nessun modello, per quanto profondo, è dispensato dal
-confronto con la **linea di base** classica.
+comandamenti del capitolo restano gli stessi: prevedere significa dichiarare
+l'incertezza, e nessun modello, per quanto profondo, è dispensato dal
+confronto con la linea di base classica.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Il deep learning conviene quando hai **tante serie collegate** fra loro (la
+- Il deep learning conviene quando hai tante serie collegate fra loro (la
   catena di diecimila negozi, non il negozio di quartiere), quando i legami non
   sono semplici proporzioni, quando ci sono cause esterne che aiutano, e quando
-  ti serve non un numero ma una forbice. Su poche serie corte i **classici**
+  ti serve non un numero ma una forbice. Su poche serie corte i classici
   spesso vincono ancora.
 - Fra le due famiglie ce n'è una terza, e su moltissimi problemi aziendali
-  basta: **Prophet** non insegue la regola con cui un giorno genera il
+  basta: Prophet non insegue la regola con cui un giorno genera il
   successivo, prende il calendario e ci disegna sopra una curva fatta di pezzi
   che si guardano uno per uno (una tendenza spezzata, le stagioni, le
   festività). Per questo i buchi nei dati non lo rompono. E per lo stesso
   motivo, su una serie in cui oggi somiglia molto a ieri, butta via
   l'informazione migliore che ha e perde contro un ARIMA banale
   {cite}`taylor2018forecasting`.
-- Le **reti ricorrenti** leggono la serie un giorno per volta portandosi dietro
+- Le reti ricorrenti leggono la serie un giorno per volta portandosi dietro
   una memoria, ma su storie lunghe se la dimenticano e sono lente da addestrare.
-  Le **TCN** {cite}`bai2018empirical` risolvono entrambe le cose rileggendo il
-  diario **a salti che raddoppiano**: quattro strati vedono sedici giorni, dieci
+  Le TCN {cite}`bai2018empirical` risolvono entrambe le cose rileggendo il
+  diario a salti che raddoppiano: quattro strati vedono sedici giorni, dieci
   ne vedono più di mille, e nessuno strato può sbirciare in avanti.
-- **DeepAR** {cite}`salinas2020deepar` addestra **una sola rete su tutte le
-  serie insieme** e non prevede un numero, prevede un ventaglio di futuri
+- DeepAR {cite}`salinas2020deepar` addestra una sola rete su tutte le
+  serie insieme e non prevede un numero, prevede un ventaglio di futuri
   possibili: tira i dadi tante volte, ogni volta ripartendo dal valore appena
   tirato, e poi legge il ventaglio. Su una serie che rientra sempre verso la
-  propria media, quel ventaglio si allarga per qualche passo e poi **si ferma**.
-- **N-BEATS** {cite}`oreshkin2020nbeats` pela la serie a strati come una
+  propria media, quel ventaglio si allarga per qualche passo e poi si ferma.
+- N-BEATS {cite}`oreshkin2020nbeats` pela la serie a strati come una
   cipolla: ogni blocco spiega quello che può e passa al successivo quello che
   resta. Con un vantaggio raro per una rete: si può fare in modo che mostri
   quanto della previsione è tendenza e quanto è ciclo.
-- Sui **Transformer** per le serie conviene la cautela: una retta ben usata li
+- Sui Transformer per le serie conviene la cautela: una retta ben usata li
   ha battuti su molti banchi di prova {cite}`zeng2023transformers`, e su alcuni
   di quei banchi, mescolando l'ordine dei giorni, i Transformer non se ne sono
-  nemmeno accorti: il tempo, lì, non lo stavano usando. I **foundation model**
-  come **Chronos**
+  nemmeno accorti: il tempo, lì, non lo stavano usando. I foundation model
+  come Chronos
   {cite}`ansari2024chronos` imparano la «grammatica» dei fenomeni temporali su
   milioni di serie e poi prevedono serie mai viste: campo promettente e giovane,
   non risolto.
@@ -838,37 +839,37 @@ confronto con la **linea di base** classica.
 
 ```{admonition} Da ricordare
 :class: important
-- Il deep learning conviene con **molte serie collegate**, relazioni **non
-  lineari**, **covariate esterne** e quando serve una **previsione
-  probabilistica**; su poche serie corte i **classici** spesso vincono ancora.
-  Fra le due famiglie stanno i **modelli additivi decomponibili** (Prophet
+- Il deep learning conviene con molte serie collegate, relazioni non
+  lineari, covariate esterne e quando serve una previsione
+  probabilistica; su poche serie corte i classici spesso vincono ancora.
+  Fra le due famiglie stanno i modelli additivi decomponibili (Prophet
   {cite}`taylor2018forecasting`), che regrediscono sul tempo e non sui valori
   passati: robusti ai buchi, ciechi all'autocorrelazione a breve.
-- Le **RNN/LSTM** {cite}`hochreiter1997long` fanno forecasting *seq-to-one* o
+- Le RNN/LSTM {cite}`hochreiter1997long` fanno forecasting *seq-to-one* o
   *seq-to-seq*, ma soffrono orizzonti lunghi e addestramento sequenziale. Le
-  **TCN** {cite}`bai2018empirical` usano convoluzioni **causali dilatate**: campo
+  TCN {cite}`bai2018empirical` usano convoluzioni causali dilatate: campo
   recettivo esponenziale, $1+(k-1)(2^L-1)$ con una convoluzione per livello e il
   doppio meno uno con le due del blocco originale, e calcolo parallelizzabile.
-- **DeepAR** {cite}`salinas2020deepar` è una RNN autoregressiva **globale** (una
-  rete per molte serie) che emette una **distribuzione**; la previsione
+- DeepAR {cite}`salinas2020deepar` è una RNN autoregressiva globale (una
+  rete per molte serie) che emette una distribuzione; la previsione
   multi-passo è per campionamento ancestrale. La banda si allarga con
-  l'orizzonte **se** il processo non è stazionario; se lo è, converge alla
+  l'orizzonte se il processo non è stazionario; se lo è, converge alla
   varianza di lungo periodo e si ferma.
-- **N-BEATS** {cite}`oreshkin2020nbeats` usa blocchi di soli **MLP**
-  (percettroni multistrato: pile di strati densi) con **doppio residuo**
+- N-BEATS {cite}`oreshkin2020nbeats` usa blocchi di soli MLP
+  (percettroni multistrato: pile di strati densi) con doppio residuo
   backcast/forecast, ed è interpretabile quando la base è vincolata. Il suo
   contributo è di meccanismo: per battere gli ibridi statistico-neurali non
   serviva innestare statistica dentro la rete.
-- Sui Transformer per le serie, cautela: la famiglia **LTSF-Linear** di Zeng e
+- Sui Transformer per le serie, cautela: la famiglia LTSF-Linear di Zeng e
   colleghi (il lineare semplice e la sua variante con decomposizione,
-  **DLinear**) li eguaglia o supera su nove dataset
+  DLinear) li eguaglia o supera su nove dataset
   {cite}`zeng2023transformers`, e le due prove che lo spiegano, fatte sul
   lineare semplice (su una serie mescolare l'ingresso non li scalfisce, e
   allungare la finestra non li migliora), dicono che su quei banchi l'ordine
-  temporale non era quello che stavano sfruttando. Il **TFT**
+  temporale non era quello che stavano sfruttando. Il TFT
   {cite}`lim2021temporal` resta utile per covariate multiple e interpretabilità,
   purché i suoi pesi di attenzione si leggano come indizio e non come prova
-  {cite}`jain2019attention`. I **foundation model** come **Chronos**
+  {cite}`jain2019attention`. I foundation model come Chronos
   {cite}`ansari2024chronos` promettono forecasting *zero-shot*: campo promettente
   ma giovane, non risolto.
 ```

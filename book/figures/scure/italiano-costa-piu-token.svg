@@ -1,0 +1,52 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../italiano-costa-piu-token.svg
+-->
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto di tokenizzazione tra la stessa frase in inglese e in italiano">
+  <rect x="0" y="0" width="720" height="340" fill="#0E0C0A"/>
+  <text x="360" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="bold" fill="#F4ECDD">Stessa frase, due bollette</text>
+  <text x="40" y="76" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#5BA39C">EN: "The cat is on the table"</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">
+    <rect x="40" y="90" width="58" height="34" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+    <text x="69" y="112" text-anchor="middle">The</text>
+    <rect x="106" y="90" width="58" height="34" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+    <text x="135" y="112" text-anchor="middle">cat</text>
+    <rect x="172" y="90" width="48" height="34" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+    <text x="196" y="112" text-anchor="middle">is</text>
+    <rect x="228" y="90" width="52" height="34" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+    <text x="254" y="112" text-anchor="middle">on</text>
+    <rect x="288" y="90" width="58" height="34" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+    <text x="317" y="112" text-anchor="middle">the</text>
+    <rect x="354" y="90" width="66" height="34" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
+    <text x="387" y="112" text-anchor="middle">table</text>
+  </g>
+  <text x="440" y="112" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#5BA39C">= 6 token</text>
+  <text x="40" y="176" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#E27B52">IT: "Il gatto sta sul tavolo"</text>
+  <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">
+    <rect x="40" y="190" width="40" height="34" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+    <text x="60" y="212" text-anchor="middle">Il</text>
+    <rect x="88" y="190" width="34" height="34" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+    <text x="105" y="212" text-anchor="middle">g</text>
+    <rect x="130" y="190" width="56" height="34" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+    <text x="158" y="212" text-anchor="middle">atto</text>
+    <rect x="194" y="190" width="40" height="34" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+    <text x="214" y="212" text-anchor="middle">st</text>
+    <rect x="242" y="190" width="34" height="34" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+    <text x="259" y="212" text-anchor="middle">a</text>
+    <rect x="284" y="190" width="46" height="34" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+    <text x="307" y="212" text-anchor="middle">sul</text>
+    <rect x="338" y="190" width="34" height="34" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+    <text x="355" y="212" text-anchor="middle">t</text>
+    <rect x="380" y="190" width="40" height="34" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+    <text x="400" y="212" text-anchor="middle">av</text>
+    <rect x="428" y="190" width="46" height="34" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
+    <text x="451" y="212" text-anchor="middle">olo</text>
+  </g>
+  <text x="494" y="212" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#E27B52">= 9 token</text>
+  <line x1="40" y1="256" x2="680" y2="256" stroke="#DDB874" stroke-width="1.5"/>
+  <text x="40" y="286" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Le parole rare nel corpus vengono spezzate in frammenti: ogni frammento è un token,</text>
+  <text x="40" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">e ogni token si paga (in denaro, latenza e finestra di contesto).</text>
+</svg>

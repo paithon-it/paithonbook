@@ -206,31 +206,31 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/overview.html</loc>
-    <lastmod>2026-09-01T21:36:07+00:00</lastmod>
+    <lastmod>2026-09-07T09:14:16+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/architettura-gpu.html</loc>
-    <lastmod>2026-09-01T21:41:14+00:00</lastmod>
+    <lastmod>2026-09-07T09:14:57+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/gerarchia-memoria.html</loc>
-    <lastmod>2026-09-01T21:32:44+00:00</lastmod>
+    <lastmod>2026-09-07T09:15:29+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/kernel-e-cuda.html</loc>
-    <lastmod>2026-09-01T21:36:07+00:00</lastmod>
+    <lastmod>2026-09-07T09:15:47+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/gemm-e-tensor-core.html</loc>
-    <lastmod>2026-09-01T21:33:54+00:00</lastmod>
+    <lastmod>2026-09-07T09:18:46+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/flash-attention.html</loc>
-    <lastmod>2026-09-01T21:36:07+00:00</lastmod>
+    <lastmod>2026-09-07T09:19:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GPU/parallelismo-distribuito.html</loc>
-    <lastmod>2026-09-01T21:33:54+00:00</lastmod>
+    <lastmod>2026-09-07T09:20:15+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Efficienza/overview.html</loc>
@@ -606,27 +606,27 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/overview.html</loc>
-    <lastmod>2026-08-30T18:57:51+00:00</lastmod>
+    <lastmod>2026-09-07T09:06:51+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/dal-suono-alle-feature.html</loc>
-    <lastmod>2026-08-30T18:55:04+00:00</lastmod>
+    <lastmod>2026-09-07T09:07:00+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/classificazione-audio.html</loc>
-    <lastmod>2026-08-30T19:00:41+00:00</lastmod>
+    <lastmod>2026-09-07T09:17:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/rappresentazioni-auto-supervisionate.html</loc>
-    <lastmod>2026-08-30T19:01:55+00:00</lastmod>
+    <lastmod>2026-09-07T09:11:10+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/codec-neurali.html</loc>
-    <lastmod>2026-08-30T19:05:10+00:00</lastmod>
+    <lastmod>2026-09-07T09:13:30+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/Audio/generazione-audio.html</loc>
-    <lastmod>2026-08-30T19:01:55+00:00</lastmod>
+    <lastmod>2026-09-07T09:15:22+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SpeechRecognition/overview.html</loc>
@@ -790,23 +790,23 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/overview.html</loc>
-    <lastmod>2026-09-02T07:41:06+00:00</lastmod>
+    <lastmod>2026-09-02T23:45:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/dati-a-grafo.html</loc>
-    <lastmod>2026-09-02T07:20:15+00:00</lastmod>
+    <lastmod>2026-09-02T23:45:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/message-passing.html</loc>
-    <lastmod>2026-09-02T07:46:59+00:00</lastmod>
+    <lastmod>2026-09-02T23:45:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/knowledge-graph.html</loc>
-    <lastmod>2026-09-02T07:41:06+00:00</lastmod>
+    <lastmod>2026-09-02T23:45:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/GraphNeuralNetwork/architetture-applicazioni.html</loc>
-    <lastmod>2026-09-02T07:45:36+00:00</lastmod>
+    <lastmod>2026-09-02T23:45:31+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SistemiRaccomandazione/overview.html</loc>
@@ -822,19 +822,19 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/SerieTemporali/overview.html</loc>
-    <lastmod>2026-09-02T04:57:18+00:00</lastmod>
+    <lastmod>2026-09-02T23:45:22+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SerieTemporali/componenti-e-classici.html</loc>
-    <lastmod>2026-09-02T04:55:46+00:00</lastmod>
+    <lastmod>2026-09-02T23:43:53+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SerieTemporali/validazione-e-feature.html</loc>
-    <lastmod>2026-09-02T04:57:18+00:00</lastmod>
+    <lastmod>2026-09-02T23:36:33+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/SerieTemporali/forecasting-neurale.html</loc>
-    <lastmod>2026-09-02T04:57:18+00:00</lastmod>
+    <lastmod>2026-09-02T23:39:02+00:00</lastmod>
   </url>
   <url>
     <loc>https://book.paithon.it/main/PINN/overview.html</loc>
@@ -926,6 +926,6 @@
   </url>
   <url>
     <loc>https://book.paithon.it/main/aggiornamenti.html</loc>
-    <lastmod>2026-09-02T18:26:35+00:00</lastmod>
+    <lastmod>2026-09-07T09:56:23+00:00</lastmod>
   </url>
 </urlset>

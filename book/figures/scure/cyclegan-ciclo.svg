@@ -1,0 +1,43 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../cyclegan-ciclo.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 300" width="100%" role="img" aria-label="Ciclo di CycleGAN: la foto x viene tradotta in stile Monet da G e riportata a foto da F, ottenendo F(G(x)) che deve coincidere con x.">
+  <defs>
+    <marker id="cg-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#DDB874"/>
+    </marker>
+  </defs>
+
+  <!-- Box 1: foto reale x (dominio X) -->
+  <rect x="20" y="70" width="150" height="110" rx="8" fill="#0E0C0A" stroke="#E27B52" stroke-width="2.5"/>
+  <text x="95" y="120" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="30" font-weight="700" fill="#F4ECDD">x</text>
+  <text x="95" y="150" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#BCB3A1">foto reale</text>
+
+  <!-- Box 2: G(x) stile Monet (dominio Y) -->
+  <rect x="265" y="70" width="150" height="110" rx="8" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2.5"/>
+  <text x="340" y="120" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="26" font-weight="700" fill="#F4ECDD">G(x)</text>
+  <text x="340" y="150" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#BCB3A1">stile Monet</text>
+
+  <!-- Box 3: F(G(x)) foto ricostruita (dominio X) -->
+  <rect x="510" y="70" width="150" height="110" rx="8" fill="#0E0C0A" stroke="#E27B52" stroke-width="2.5"/>
+  <text x="585" y="120" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="24" font-weight="700" fill="#F4ECDD">F(G(x))</text>
+  <text x="585" y="150" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#BCB3A1">foto ricostruita</text>
+
+  <!-- Arrow G: box1 -> box2 -->
+  <line x1="170" y1="125" x2="258" y2="125" stroke="#DDB874" stroke-width="3" marker-end="url(#cg-arrow)"/>
+  <text x="214" y="110" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#F4ECDD">G</text>
+  <text x="214" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8E8676">X&#8594;Y</text>
+
+  <!-- Arrow F: box2 -> box3 -->
+  <line x1="415" y1="125" x2="503" y2="125" stroke="#DDB874" stroke-width="3" marker-end="url(#cg-arrow)"/>
+  <text x="459" y="110" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#F4ECDD">F</text>
+  <text x="459" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#8E8676">Y&#8594;X</text>
+
+  <!-- Cycle-consistency bracket linking box1 and box3 -->
+  <path d="M95,190 L95,225 L585,225 L585,190" fill="none" stroke="#BCB3A1" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="340" y="258" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD"><tspan font-weight="700">cycle-consistency:</tspan>  F(G(x)) deve coincidere con x</text>
+</svg>

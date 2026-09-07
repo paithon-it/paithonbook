@@ -286,6 +286,7 @@ sphinx:
     pt_conteggi: _ext
     pt_meta: _ext
     pt_figure: _ext
+    pt_scuro: _ext
     pt_stampa: _ext
 
 # `sphinx-jupyterbook-latex` resta ACCESA, ma le si disfano tre cose.

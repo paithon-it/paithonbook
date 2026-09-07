@@ -70,7 +70,7 @@ nessuno vuole come risultato, e che pure vanno scritti per intero.
 
 Il primo istinto è pensare che l'attenzione sia lenta perché fa *tanti conti*.
 È vero solo a metà. Il vero collo di bottiglia, come quasi sempre su una GPU,
-sta nel **movimento dei dati** e non nel calcolo (la stessa lezione della
+sta nel movimento dei dati e non nel calcolo (la stessa lezione della
 gerarchia di memoria e del roofline delle sezioni precedenti).
 
 `````{tab} Elementare
@@ -108,7 +108,7 @@ Per una sequenza di lunghezza $N$ e teste di dimensione $d_k$, l'attenzione
 materializza due matrici $N \times N$: i punteggi
 $\mathbf{S} = \mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ e i
 pesi $\mathbf{P} = \text{softmax}(\mathbf{S})$. Il calcolo è $O(N^2 d_k)$ FLOP,
-ma il dato che uccide le prestazioni è la **memoria**: $\mathbf{S}$ e
+ma il dato che uccide le prestazioni è la memoria: $\mathbf{S}$ e
 $\mathbf{P}$ occupano $O(N^2)$ byte e
 vengono scritte e rilette dalla HBM più volte (produci $\mathbf{S}$, la rileggi
 per la softmax, scrivi $\mathbf{P}$, la rileggi per il prodotto con
@@ -118,7 +118,7 @@ elementi; in
 `float16` (2 byte) sono circa $134$ MB (*per testa, per strato*). La memoria
 cresce quadraticamente, e con essa il traffico verso la HBM.
 
-Sul roofline questa è l'operazione tipicamente **memory-bound**, e al banco va
+Sul roofline questa è l'operazione tipicamente memory-bound, e al banco va
 messo l'imputato giusto, perché la spiegazione che si legge più
 spesso (i due matmul sarebbero compute-bound, e a rovinare tutto sarebbe la
 softmax in mezzo) è sbagliata di suo. Un matmul che produce un'uscita
@@ -127,7 +127,7 @@ qui è $d_k$, cioè 64 o 128: al crescere di $N$ il traffico è dominato dalla
 scrittura di $\mathbf{S}$ e l'intensità tende a $2N^2 d_k / (2N^2) = d_k$
 esatti. Con
 $N = 8192$, $d_k = 64$ in `float16` fa 63 FLOP/byte, contro un ginocchio di
-161 su A100 e 295 su H100: **anche i due matmul, da soli, sono memory-bound**,
+161 su A100 e 295 su H100: anche i due matmul, da soli, sono memory-bound,
 e userebbero al più il 39 % del picco. Con $d_k = 128$ si arriva a 124, e resta
 sotto il ginocchio di entrambe le schede.
 
@@ -140,10 +140,10 @@ secondo, più una manciata di operazioni per elemento della softmax, in tutto
 circa $17{,}5$ GFLOP; i byte sono quattro passaggi della matrice $N \times N$
 (scrivi $\mathbf{S}$, la rileggi, scrivi $\mathbf{P}$, la rileggi) a 2 byte per
 elemento, più le briciole di $\mathbf{Q}$, $\mathbf{K}$, $\mathbf{V}$ e
-dell'uscita, in tutto circa $541$ MB. Il rapporto fa **32 FLOP/byte**: è lì che
+dell'uscita, in tutto circa $541$ MB. Il rapporto fa 32 FLOP/byte: è lì che
 sta l'attenzione intera, non fusa. La conclusione onesta è che nella forma
 standard, in attenzione,
-**niente** è compute-bound; e quindi la cura non è fondere la softmax con i
+niente è compute-bound; e quindi la cura non è fondere la softmax con i
 matmul, è non far mai atterrare $\mathbf{S}$ in HBM. Non serve una GPU più
 potente nei FLOP: serve *non spostare* quei byte.
 `````
@@ -156,10 +156,10 @@ $N \times N$ è solo un *intermedio*: alla fine ci serve l'output, non la
 tabella dei punteggi. E allora perché scriverla? L'algoritmo è **IO-aware**
 («IO» sta per *input/output*, l'entrata e l'uscita dei dati dalla memoria):
 ottimizza il movimento dei dati, non i conti, e (dettaglio cruciale) dà il
-**risultato esatto**, non un'approssimazione.
+risultato esatto, non un'approssimazione.
 
 Due ingredienti lo rendono possibile ({numref}`fig-flash-attention`). Il primo
-è il **tiling**, cioè lo stesso «carica una tessera, riusala» della sezione
+è il tiling, cioè lo stesso «carica una tessera, riusala» della sezione
 precedente. Qui le tessere si ritagliano non nella tabella dei confronti, che
 non esisterà mai, ma nell'elenco delle parole di partenza: si tiene ferma una
 manciata di parole e si fa scorrere davanti a loro tutto il resto, un
@@ -221,7 +221,7 @@ Formalmente, si spezzano $\mathbf{Q}$, $\mathbf{K}$, $\mathbf{V}$ in blocchi di
 righe. Fissato il blocco
 di query $\mathbf{Q}_i$, si itera sui blocchi $(\mathbf{K}_j, \mathbf{V}_j)$:
 si carica $\mathbf{K}_j, \mathbf{V}_j$ in
-**shared memory**, si calcola il tile di punteggi
+shared memory, si calcola il tile di punteggi
 $\mathbf{S}_{ij} = \mathbf{Q}_i \mathbf{K}_j^\top/\sqrt{d_k}$, e si
 aggiorna l'output *sul posto*, senza mai scrivere l'intera matrice $\mathbf{S}$
 in HBM.
@@ -237,8 +237,8 @@ quello reso canonico dalla seconda versione dell'algoritmo, che incontreremo a
 breve; l'articolo del 2022 li annidava al contrario, ma l'idea non cambia.) La
 memoria on-chip trattiene solo i tile correnti; la HBM vede scorrere
 $\mathbf{K},\mathbf{V}$ una
-volta per ogni blocco di query, e la matrice $\mathbf{S}$ mai. La **memoria
-extra**
+volta per ogni blocco di query, e la matrice $\mathbf{S}$ mai. La memoria
+extra
 scende così da $O(N^2)$ a $O(N)$: da scrivere restano solo l'output e le
 statistiche di riga.
 
@@ -247,18 +247,18 @@ avanti i conti sono quelli di prima, a meno del riscalamento dell'accumulatore
 a ogni blocco (ed è proprio quel di più, non-matmul, che FlashAttention-2 andrà
 a limitare). All'indietro no: non avendo salvato $\mathbf{S}$ e $\mathbf{P}$,
 il `backward` deve
-**ricalcolarle** da $\mathbf{Q}, \mathbf{K}, \mathbf{V}$, ed è esattamente il
+ricalcolarle da $\mathbf{Q}, \mathbf{K}, \mathbf{V}$, ed è esattamente il
 motivo per cui bastava
 salvare l'output e due statistiche per riga. Il conto: in avanti $4N^2 d_k$
 FLOP, all'indietro $8N^2 d_k$ nella versione standard e $10 N^2 d_k$ qui, cioè
-**un quarto in più sul passaggio all'indietro** e un sesto in più sul totale.
+un quarto in più sul passaggio all'indietro e un sesto in più sul totale.
 Il paper misura $+12{,}9\,\%$ di FLOP su GPT-2 medium (75,2 contro 66,6 GFLOP)
 a fronte di un traffico verso la HBM che scende di circa nove volte (4,4 contro
 40,3 GB) e di un tempo che scende di quasi sei (7,3 contro 41,7 ms), e lo scrive
 senza giri di parole:
 «even with the increased FLOPs due to recomputation».
 
-Il baratto è dunque **calcolo in cambio di traffico**, ed è lo stesso baratto
+Il baratto è dunque calcolo in cambio di traffico, ed è lo stesso baratto
 del *gradient checkpointing*, quello con cui si ricalcolano le attivazioni
 invece di conservarle. Conviene per una ragione precisa: i FLOP ricomprati sono
 matmul, cioè la cosa che i tensor core fanno a costo quasi nullo, mentre i byte
@@ -287,7 +287,7 @@ punteggi un pezzo per volta, e qui entra la online softmax.
 
 ### La online softmax, con i numeri
 
-Il perno di tutto è calcolare le percentuali vedendo i punteggi **a blocchi**,
+Il perno di tutto è calcolare le percentuali vedendo i punteggi a blocchi,
 senza mai averli tutti sotto gli occhi insieme, e ottenendo comunque il
 risultato esatto. Bastano due numeri di riepilogo: $m$, il punteggio più alto
 visto finora, e $l$, il totale accumulato finora. In
@@ -326,14 +326,14 @@ in una volta sola. Nessuna approssimazione: la stessa somma, fatta a rate.
 I foglietti però sono due, non uno, e il secondo è la parte meno ovvia. Nel
 calcolo vero i punteggi, prima di essere sommati, non vengono presi così come
 sono: si passa prima per un'operazione che li ingigantisce, e che ha una regola
-semplice, **ogni punto in più moltiplica per 2,7 circa**. Un punteggio di due punti più alto pesa quindi $2{,}7 \times 2{,}7$, più di
-sette volte tanto; dieci
+semplice, ogni punto in più moltiplica per 2,7 circa. Un punteggio di due punti
+più alto pesa quindi $2{,}7 \times 2{,}7$, più di sette volte tanto; dieci
 punti più alto pesa ventiduemila volte tanto. Con punteggi anche moderatamente
 alti si arriva a numeri che il computer non riesce più a scrivere.
 
 Il rimedio è quello delle classifiche: invece del punteggio assoluto si segna
 la distanza dal primo, «a tre punti dal record». Serve dunque un secondo
-foglietto con **il punteggio più alto visto finora**, e ogni cosa si misura
+foglietto con il punteggio più alto visto finora, e ogni cosa si misura
 rispetto a lui.
 
 Da qui l'unico momento in cui la faccenda si fa interessante. Se in un
@@ -372,7 +372,7 @@ Ora *a blocchi di due*, $[1,3]$ poi $[2,4]$, tenendo aggiornati $m$ e $l$:
 
 - **Blocco 1** $[1,3]$:  $\ m_1 = 3$,  $\ l_1 = e^{1-3}+e^{3-3} = e^{-2}+1 \approx 1{,}135$.
 - **Blocco 2** $[2,4]$:  il massimo del blocco è $4$, quindi $m_2 = \max(3,4) = 4$.
-  Il vecchio totale va **ri-scalato** al nuovo massimo con il fattore di
+  Il vecchio totale va ri-scalato al nuovo massimo con il fattore di
   correzione $\alpha = e^{m_1 - m_2} = e^{-1} \approx 0{,}368$:
 
 $$
@@ -380,7 +380,7 @@ l_2 = \alpha\, l_1 + \big(e^{2-4}+e^{4-4}\big)
     = 0{,}368 \cdot 1{,}135 + e^{-2}+1 \approx 1{,}553.
 $$
 
-Il totale $l_2 \approx 1{,}553$ coincide **esattamente** con la somma calcolata in
+Il totale $l_2 \approx 1{,}553$ coincide esattamente con la somma calcolata in
 un colpo solo: la online softmax dà gli stessi pesi. In generale, arrivando un
 nuovo blocco con massimo locale $\tilde m$, le regole di aggiornamento sono
 
@@ -413,7 +413,7 @@ lavoratori e riduce le operazioni che i tensor core non sanno accelerare,
 quelle diverse dalla moltiplicazione fra tabelle. Ne esce un tempo di
 esecuzione grosso modo dimezzato rispetto alla prima versione.
 
-Va però detto con precisione **che cosa** tutto questo risolve, perché è facile
+Va però detto con precisione che cosa tutto questo risolve, perché è facile
 attribuirgli un merito che è di un'altra tecnica. Ci sono due momenti in cui la
 tabella dei confronti viene costruita per intero: mentre il modello impara, e
 nella prima passata con cui legge la domanda che gli abbiamo fatto. In tutti e
@@ -434,9 +434,9 @@ valori: se li spartiscono a gruppi, e i gruppi sono otto, il che ha già diviso
 per quattro il peso del taccuino prima ancora di cominciare a contarlo. Ogni
 gruppo descrive una parola con 128 numeri; di ogni parola vanno conservati
 chiave e valore, quindi due volte tanto; e ogni numero occupa due byte. In
-tutto $2 \times 32 \times 8 \times 128 \times 2$ byte, cioè $131\,072$ **per
-ogni parola letta**. Su centomila parole di contesto fanno **tredici
-gigabyte**, per una conversazione sola, su una scheda che di gigabyte ne ha
+tutto $2 \times 32 \times 8 \times 128 \times 2$ byte, cioè $131\,072$ per
+ogni parola letta. Su centomila parole di contesto fanno tredici
+gigabyte, per una conversazione sola, su una scheda che di gigabyte ne ha
 ottanta. FlashAttention non lo tocca: è un altro mestiere, e lo
 raccontano la sezione sui {doc}`grandi modelli linguistici
 </Transformers/llm>` e quella su {doc}`prefill e decodifica
@@ -485,8 +485,8 @@ generazione.
 
 FlashAttention è l'esempio più limpido di un filo conduttore che attraversa
 tutto questo capitolo, ed è il modo migliore per chiuderlo dal lato
-dell'hardware: **la storia della velocità sulle GPU è la storia di come
-nascondere il movimento dei dati**. Ogni tecnica incontrata fin qui è una
+dell'hardware: la storia della velocità sulle GPU è la storia di come
+nascondere il movimento dei dati. Ogni tecnica incontrata fin qui è una
 variazione sullo stesso tema: chiedere i dati in fila invece che sparsi,
 portare una tessera sul tavolo e riusarla, fare tre conti in un viaggio invece
 che in tre, e adesso non scrivere affatto una tabella che serviva solo di
@@ -500,14 +500,14 @@ livello concettuale (niente istruzioni di basso livello) le leve sono tre.
 Sono le tre mosse di una catena di montaggio ben organizzata, e le vediamo in
 quest’ordine.
 
-**La prima: andare a prendere i pezzi mentre si lavora.** Nelle GPU più
+La prima: andare a prendere i pezzi mentre si lavora. Nelle GPU più
 recenti, mentre un gruppo di operai lavora sui pezzi che ha già sul banco, un
 *altro* gruppo è già andato a prendere i pezzi successivi dal magazzino: quando
 i primi finiscono, il materiale nuovo è lì pronto, e nessuno resta mai fermo ad
 aspettare. La copia dal magazzino e il lavoro sul banco avvengono *nello stesso
 momento*, sovrapposti, invece che uno dopo l'altro.
 
-**La seconda: macchine più potenti, e pezzi più piccoli.** Le macchine sono i
+La seconda: macchine più potenti, e pezzi più piccoli. Le macchine sono i
 *tensor core*, i timbri della sezione sul GEMM, che a ogni generazione stampano
 più tabelline per battito; i pezzi più piccoli sono i numeri scritti con ancora
 meno cifre binarie (dopo i sedici della mezza precisione sono arrivati gli
@@ -515,7 +515,7 @@ otto), che occupano metà spazio e viaggiano in metà tempo. C'è però un
 rovescio, ed è la morale di tutto il capitolo: più la macchina è veloce, più è
 facile che a mancare siano i pezzi e non le braccia.
 
-**La terza: dare a ciascuno un ruolo fisso.** Invece di far fare a ogni squadra
+La terza: dare a ciascuno un ruolo fisso. Invece di far fare a ogni squadra
 un po’ di tutto, alcune squadre fanno *solo* i portapacchi e altre *solo* il
 montaggio, come in una catena vera: un operaio dedicato a un compito lo fa
 meglio di uno che salta di continuo da un lavoro all'altro, e così le macchine
@@ -569,17 +569,17 @@ capitolo.
 :class: important
 - Per confrontare ogni parola con ogni altra, l'attenzione costruisce una
   tabella grande quanto il testo per il testo: raddoppia le parole e la tabella
-  quadruplica. Il tempo però non se ne va nei conti: se ne va nei **viaggi** fra
+  quadruplica. Il tempo però non se ne va nei conti: se ne va nei viaggi fra
   il magazzino lento e il tavolo di lavoro veloce.
-- **FlashAttention** {cite}`dao2022flashattention` quella tabella non la scrive
+- FlashAttention {cite}`dao2022flashattention` quella tabella non la scrive
   mai: tiene ferma sul tavolo una manciata di parole e fa scorrere le altre a
-  **blocchetti**, uno per volta, buttando via ogni blocchetto appena usato. Il
+  blocchetti, uno per volta, buttando via ogni blocchetto appena usato. Il
   risultato è lo stesso identico numero di prima, e non un'approssimazione.
-- A rendere possibile il lavoro a blocchetti è la **online softmax**, il gesto
+- A rendere possibile il lavoro a blocchetti è la online softmax, il gesto
   di chi pesa i sacchi due per volta tenendo un foglietto con il totale finora:
   qui i foglietti sono due, il totale e il punteggio più alto visto fin lì, e
   alla fine danno le stesse percentuali del calcolo in un colpo unico.
-- Non fa **meno** conti degli altri: ne fa altrettanti, e nel viaggio di
+- Non fa meno conti degli altri: ne fa altrettanti, e nel viaggio di
   ritorno (quello in cui la rete impara dai propri errori) qualcuno in più,
   perché avendo buttato i blocchetti se li deve rifare. È un baratto voluto:
   si spende un po’ di calcolo, che costa poco, per risparmiare tanti viaggi,
@@ -588,15 +588,15 @@ capitolo.
   testo ma in proporzione ad essa, e sui testi lunghi (dove prima la GPU
   si fermava per memoria esaurita) il salto è grande. Attenzione però a non
   dargli meriti di altri: questo vale mentre il modello *impara* e mentre
-  *legge*. Mentre **scrive** la risposta il peso è un altro, il taccuino di
+  *legge*. Mentre scrive la risposta il peso è un altro, il taccuino di
   ciò che ha già letto, e quello resta. Una seconda
-  versione, **FlashAttention-2** {cite}`dao2023flashattention2`, ripartisce
+  versione, FlashAttention-2 {cite}`dao2023flashattention2`, ripartisce
   ancora meglio il lavoro. In PyTorch basta chiamare
   `scaled_dot_product_attention`.
 - I kernel più veloci di oggi (i dati che viaggiano dal magazzino *mentre* si
   lavora, tavoli di lavoro sempre più potenti che usano numeri più corti, operai
   con ruoli fissi fra chi porta i pezzi e chi li monta) girano tutti attorno
-  alla stessa idea: **nascondere il movimento dei dati** dietro il calcolo, così
+  alla stessa idea: nascondere il movimento dei dati dietro il calcolo, così
   che nessuno resti fermo ad aspettare.
 ```
 `````
@@ -607,31 +607,31 @@ capitolo.
 - L'attenzione materializza due matrici $N \times N$
   ($\mathbf{S} = \mathbf{Q}\mathbf{K}^\top/\sqrt{d_k}$ e
   $\mathbf{P} = \text{softmax}(\mathbf{S})$): $O(N^2)$ memoria e traffico HBM. Il collo di
-  bottiglia è la **memoria**, non i FLOP, e lo è per intero: anche i due matmul,
+  bottiglia è la memoria, non i FLOP, e lo è per intero: anche i due matmul,
   avendo dimensione interna $d_k$, stanno a $\approx 63$ FLOP/byte contro un
-  ginocchio di 161 su A100. Nella forma standard **niente** è compute-bound.
-- **FlashAttention** {cite}`dao2022flashattention` è **IO-aware**: con il
-  **tiling** di $\mathbf{Q},\mathbf{K},\mathbf{V}$ in shared memory e la
-  **online softmax** non scrive mai la matrice $N \times N$ in HBM. Il risultato
-  è **esatto**, non approssimato.
-- La **online softmax** normalizza i punteggi a blocchi tenendo due scalari di
+  ginocchio di 161 su A100. Nella forma standard niente è compute-bound.
+- FlashAttention {cite}`dao2022flashattention` è IO-aware: con il
+  tiling di $\mathbf{Q},\mathbf{K},\mathbf{V}$ in shared memory e la
+  online softmax non scrive mai la matrice $N \times N$ in HBM. Il risultato
+  è esatto, non approssimato.
+- La online softmax normalizza i punteggi a blocchi tenendo due scalari di
   stato (massimo corrente $m$ e somma corrente $l$) e ri-scalando ciò che ha
   già sommato quando compare un massimo nuovo: dà gli stessi pesi del calcolo
   in un colpo solo.
-- Non fa **meno** FLOP: in avanti altrettanti, e nel backward $10N^2 d_k$
-  contro $8N^2 d_k$, perché $\mathbf{S}$ e $\mathbf{P}$ non sono salvate e vanno **ricalcolate**
+- Non fa meno FLOP: in avanti altrettanti, e nel backward $10N^2 d_k$
+  contro $8N^2 d_k$, perché $\mathbf{S}$ e $\mathbf{P}$ non sono salvate e vanno ricalcolate
   ($+25\,\%$ sul backward, $+12{,}9\,\%$ misurati sul totale nel paper). È il
   baratto calcolo-per-traffico del *gradient checkpointing*, e conviene perché
   i FLOP ricomprati sono matmul e i byte risparmiati sono HBM.
 - Il guadagno: memoria da $O(N^2)$ a $O(N)$, grande accelerazione a sequenze
-  lunghe **in addestramento e in prefill**. In decodifica il vincolo è un
-  altro, la **KV cache**, lineare in $N$ ma pesante, e FlashAttention non la
+  lunghe in addestramento e in prefill. In decodifica il vincolo è un
+  altro, la KV cache, lineare in $N$ ma pesante, e FlashAttention non la
   tocca (né rende l'attenzione sub-quadratica nei FLOP: quello è l'argomento
-  del capitolo sull'attenzione lineare). **FlashAttention-2**
+  del capitolo sull'attenzione lineare). FlashAttention-2
   {cite}`dao2023flashattention2` migliora ancora la ripartizione del lavoro. In
   PyTorch lo si usa via `scaled_dot_product_attention`.
 - La frontiera dei kernel veloci (movimento asincrono dei dati con TMA, tensor
-  core e formati come FP8, **warp specialization**) è tutta una variazione sullo
-  stesso tema: **nascondere il movimento dei dati** dietro il calcolo.
+  core e formati come FP8, warp specialization) è tutta una variazione sullo
+  stesso tema: nascondere il movimento dei dati dietro il calcolo.
 ```
 `````

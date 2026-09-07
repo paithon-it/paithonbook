@@ -1,0 +1,36 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../rl-ciclo-interazione.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" font-family="Inter, system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="rl-arrow-terra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/>
+    </marker>
+    <marker id="rl-arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5BA39C"/>
+    </marker>
+  </defs>
+
+  <!-- Agente -->
+  <rect x="60" y="120" width="180" height="100" rx="14" fill="#0E0C0A" stroke="#E27B52" stroke-width="3"/>
+  <text x="150" y="164" text-anchor="middle" font-size="27" font-weight="700" fill="#F4ECDD">Agente</text>
+  <text x="150" y="192" text-anchor="middle" font-size="14" fill="#BCB3A1">chi decide</text>
+
+  <!-- Ambiente -->
+  <rect x="480" y="120" width="180" height="100" rx="14" fill="#0E0C0A" stroke="#5BA39C" stroke-width="3"/>
+  <text x="570" y="164" text-anchor="middle" font-size="27" font-weight="700" fill="#F4ECDD">Ambiente</text>
+  <text x="570" y="192" text-anchor="middle" font-size="14" fill="#BCB3A1">il mondo</text>
+
+  <!-- Freccia superiore: Agente -> Ambiente (Azione) -->
+  <path d="M 240 140 C 315 66, 405 66, 480 140" fill="none" stroke="#E27B52" stroke-width="3" marker-end="url(#rl-arrow-terra)"/>
+  <text x="360" y="56" text-anchor="middle" font-size="18" font-weight="600" fill="#E27B52">Azione <tspan font-style="italic">a</tspan><tspan font-size="13" dy="4">t</tspan></text>
+
+  <!-- Freccia inferiore: Ambiente -> Agente (Stato + Ricompensa) -->
+  <path d="M 480 200 C 405 274, 315 274, 240 200" fill="none" stroke="#5BA39C" stroke-width="3" marker-end="url(#rl-arrow-teal)"/>
+  <text x="360" y="292" text-anchor="middle" font-size="18" font-weight="600" fill="#5BA39C">Nuovo stato <tspan font-style="italic">s</tspan><tspan font-size="13" dy="4">t+1</tspan></text>
+  <text x="360" y="316" text-anchor="middle" font-size="18" font-weight="600" fill="#DDB874">Ricompensa <tspan font-style="italic">r</tspan><tspan font-size="13" dy="4">t+1</tspan></text>
+</svg>

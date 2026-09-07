@@ -1,0 +1,48 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../nlp-parabola-storica.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-label="Linea del tempo del Natural Language Processing in quattro tappe">
+  <defs>
+    <marker id="nlp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F4ECDD"/>
+    </marker>
+  </defs>
+
+  <!-- asse temporale -->
+  <line x1="70" y1="150" x2="760" y2="150" stroke="#F4ECDD" stroke-width="2.5" marker-end="url(#nlp-arrow)"/>
+
+  <!-- Tappa 1: Regole -->
+  <circle cx="120" cy="150" r="15" fill="#5BA39C"/>
+  <text x="120" y="96" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#F4ECDD">Regole</text>
+  <text x="120" y="116" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">anni '50–'80</text>
+  <text x="120" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">grammatiche</text>
+  <text x="120" y="223" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">scritte a mano</text>
+
+  <!-- Tappa 2: Statistica -->
+  <circle cx="330" cy="150" r="15" fill="#DDB874"/>
+  <text x="330" y="96" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#F4ECDD">Statistica</text>
+  <text x="330" y="116" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">anni '90–2000</text>
+  <text x="330" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">conteggi su</text>
+  <text x="330" y="223" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">grandi corpora</text>
+
+  <!-- Tappa 3: Reti neurali -->
+  <circle cx="540" cy="150" r="15" fill="#E27B52"/>
+  <text x="540" y="96" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#F4ECDD">Reti neurali</text>
+  <text x="540" y="116" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">dal 2013</text>
+  <text x="540" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">word2vec,</text>
+  <text x="540" y="223" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">embedding densi</text>
+
+  <!-- Tappa 4: Transformer -->
+  <circle cx="720" cy="150" r="17" fill="#E27B52" stroke="#F4ECDD" stroke-width="2.5"/>
+  <text x="720" y="96" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="18" font-weight="700" fill="#F4ECDD">Transformer</text>
+  <text x="720" y="116" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">dal 2017</text>
+  <text x="720" y="205" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">attention,</text>
+  <text x="720" y="223" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#F4ECDD">BERT, GPT</text>
+
+  <!-- nota trasversale -->
+  <text x="415" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-style="italic" fill="#8E8676">meno regole scritte a mano, più conoscenza appresa dai dati</text>
+</svg>

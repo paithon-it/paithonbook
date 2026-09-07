@@ -1,0 +1,43 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../red-teaming.svg
+-->
+<svg viewBox="0 0 720 460" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Il ciclo del red teaming: policy, attacco, scoperta delle falle, patch, e di nuovo policy">
+  <rect x="0" y="0" width="720" height="460" fill="#0E0C0A"/>
+  <text x="360" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Il ciclo attacco → patch</text>
+  <!-- Frecce circolari -->
+  <path d="M 360 78 A 150 150 0 0 1 505 190" fill="none" stroke="#F4ECDD" stroke-width="2"/>
+  <polygon points="466,126 452,120 460,112" fill="#F4ECDD"/>
+  <path d="M 505 270 A 150 150 0 0 1 360 382" fill="none" stroke="#F4ECDD" stroke-width="2"/>
+  <polygon points="466,338 472,324 480,332" fill="#F4ECDD"/>
+  <path d="M 215 270 A 150 150 0 0 0 360 382" fill="none" stroke="#F4ECDD" stroke-width="2" transform="translate(0,0)"/>
+  <path d="M 360 78 A 150 150 0 0 0 215 190" fill="none" stroke="#F4ECDD" stroke-width="2"/>
+  <polygon points="254,126 248,140 240,132" fill="#F4ECDD"/>
+  <polygon points="254,338 268,344 260,352" fill="#F4ECDD"/>
+  <!-- Nodo 1: Policy (alto) -->
+  <rect x="270" y="52" width="180" height="52" rx="26" fill="#F4ECDD"/>
+  <text x="360" y="74" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A">1 · POLICY</text>
+  <text x="360" y="92" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#34302A">cosa NON deve fare</text>
+  <!-- Nodo 2: Attacco (destra) -->
+  <rect x="475" y="185" width="180" height="90" rx="10" fill="#E27B52"/>
+  <text x="565" y="215" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A">2 · ATTACCO</text>
+  <text x="565" y="236" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">jailbreak, injection,</text>
+  <text x="565" y="253" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">attacchi automatizzati</text>
+  <!-- Nodo 3: Scoperta (basso) -->
+  <rect x="255" y="356" width="210" height="70" rx="10" fill="#DDB874"/>
+  <text x="360" y="384" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F4ECDD">3 · SCOPERTA</text>
+  <text x="360" y="404" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">falle documentate e classificate</text>
+  <!-- Nodo 4: Patch (sinistra) -->
+  <rect x="65" y="185" width="180" height="90" rx="10" fill="#5BA39C"/>
+  <text x="155" y="215" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#0E0C0A">4 · PATCH</text>
+  <text x="155" y="236" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">fine-tuning, filtri,</text>
+  <text x="155" y="253" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">system prompt</text>
+  <!-- Centro -->
+  <circle cx="360" cy="232" r="62" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="360" y="226" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F4ECDD">si ricomincia:</text>
+  <text x="360" y="245" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">ogni patch invita</text>
+  <text x="360" y="261" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">un nuovo attacco</text>
+</svg>

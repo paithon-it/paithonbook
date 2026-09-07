@@ -1,0 +1,39 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../deepfake-watermarking.svg
+-->
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: la firma statistica di un watermark nel testo generato">
+  <rect x="0" y="0" width="760" height="400" fill="#0E0C0A"/>
+  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Una firma statistica: parole "verdi" in eccesso</text>
+
+  <!-- Left: natural text -->
+  <text x="190" y="70" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#F4ECDD">Testo naturale</text>
+  <line x1="70" y1="300" x2="310" y2="300" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="82" y="200" width="26" height="100" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="118" y="196" width="26" height="104" fill="#F4ECDD"/>
+  <rect x="154" y="204" width="26" height="96" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="190" y="198" width="26" height="102" fill="#F4ECDD"/>
+  <rect x="226" y="202" width="26" height="98" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="262" y="200" width="26" height="100" fill="#F4ECDD"/>
+  <text x="190" y="326" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#BCB3A1">verdi circa 50%: nessuna traccia</text>
+
+  <!-- Right: watermarked text -->
+  <text x="570" y="70" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#5BA39C">Testo con watermark</text>
+  <line x1="450" y1="300" x2="690" y2="300" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="462" y="150" width="26" height="150" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="498" y="232" width="26" height="68" fill="#F4ECDD"/>
+  <rect x="534" y="158" width="26" height="142" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="570" y="238" width="26" height="62" fill="#F4ECDD"/>
+  <rect x="606" y="146" width="26" height="154" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
+  <rect x="642" y="242" width="26" height="58" fill="#F4ECDD"/>
+  <text x="570" y="326" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5BA39C">verdi circa 70%: eccesso rilevabile</text>
+
+  <!-- legend -->
+  <rect x="250" y="356" width="16" height="16" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="274" y="369" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">parole della "lista verde"</text>
+  <rect x="470" y="356" width="16" height="16" fill="#F4ECDD"/>
+  <text x="494" y="369" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">parole della "lista rossa"</text>
+</svg>

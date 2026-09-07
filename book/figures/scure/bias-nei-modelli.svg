@@ -1,0 +1,41 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../bias-nei-modelli.svg
+-->
+<svg viewBox="0 0 760 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: il bias entra dai dati storici, attraversa il modello che lo amplifica e riappare negli output; una freccia di feedback mostra che gli output diventano i dati del futuro">
+  <rect x="0" y="0" width="760" height="400" fill="#0E0C0A"/>
+  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Come il bias attraversa la catena</text>
+
+  <!-- boxes -->
+  <rect x="45" y="150" width="185" height="90" rx="8" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="137" y="192" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#0E0C0A">DATI</text>
+  <text x="137" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">il mondo, così com'è</text>
+
+  <rect x="288" y="150" width="185" height="90" rx="8" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="380" y="192" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">MODELLO</text>
+  <text x="380" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">impara e amplifica</text>
+
+  <rect x="531" y="150" width="185" height="90" rx="8" fill="#E27B52" stroke="#F4ECDD" stroke-width="1.5"/>
+  <text x="623" y="192" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#0E0C0A">OUTPUT</text>
+  <text x="623" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#0E0C0A">decisioni, punteggi</text>
+
+  <!-- arrows between boxes -->
+  <line x1="230" y1="195" x2="284" y2="195" stroke="#F4ECDD" stroke-width="2"/>
+  <polygon points="284,195 274,190 274,200" fill="#F4ECDD"/>
+  <line x1="473" y1="195" x2="527" y2="195" stroke="#F4ECDD" stroke-width="2"/>
+  <polygon points="527,195 517,190 517,200" fill="#F4ECDD"/>
+
+  <!-- bias entering at data -->
+  <text x="137" y="95" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">il passato storto e i</text>
+  <text x="137" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">gruppi poco visti entrano qui</text>
+  <line x1="137" y1="120" x2="137" y2="146" stroke="#E27B52" stroke-width="2"/>
+  <polygon points="137,150 132,140 142,140" fill="#E27B52"/>
+
+  <!-- feedback loop -->
+  <path d="M 623 244 C 623 330, 137 330, 137 244" fill="none" stroke="#5BA39C" stroke-width="2" stroke-dasharray="5 5"/>
+  <polygon points="137,244 132,254 142,254" fill="#5BA39C"/>
+  <text x="380" y="352" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#5BA39C">il feedback: le decisioni di oggi diventano i dati di domani</text>
+</svg>

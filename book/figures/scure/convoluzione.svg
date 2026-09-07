@@ -1,0 +1,54 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../convoluzione.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" role="img" aria-label="Un filtro 3x3 evidenziato su una porzione di una griglia di ingresso 5x5; una freccia collega la regione alla singola casella corrispondente della mappa dei risultati.">
+  <!-- Palette: terracotta #E27B52, teal #5BA39C, ocra #DDB874, warm-black #F4ECDD, cream #0E0C0A, neutri #BCB3A1 #8E8676 #34302A #221F1A -->
+  <defs>
+    <marker id="cnn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F4ECDD"/>
+    </marker>
+  </defs>
+
+  <!-- ===== INPUT GRID 5x5 ===== -->
+  <rect x="60" y="90" width="200" height="200" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+  <!-- linee verticali -->
+  <line x1="100" y1="90" x2="100" y2="290" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="140" y1="90" x2="140" y2="290" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="180" y1="90" x2="180" y2="290" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="220" y1="90" x2="220" y2="290" stroke="#34302A" stroke-width="1.5"/>
+  <!-- linee orizzontali -->
+  <line x1="60" y1="130" x2="260" y2="130" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="60" y1="170" x2="260" y2="170" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="60" y1="210" x2="260" y2="210" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="60" y1="250" x2="260" y2="250" stroke="#34302A" stroke-width="1.5"/>
+
+  <!-- kernel 3x3 evidenziato: finestra centrale (righe 2-4, colonne 2-4) -->
+  <rect x="100" y="130" width="120" height="120" fill="#E27B52" fill-opacity="0.16" stroke="#E27B52" stroke-width="3.5"/>
+
+  <!-- etichetta kernel -->
+  <text x="160" y="120" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#E27B52">kernel 3×3</text>
+  <!-- titolo input -->
+  <text x="160" y="318" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="17" fill="#F4ECDD">Input (griglia di pixel)</text>
+
+  <!-- ===== FRECCIA ===== -->
+  <line x1="236" y1="190" x2="532" y2="190" stroke="#F4ECDD" stroke-width="2.5" marker-end="url(#cnn-arrow)"/>
+  <text x="384" y="176" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="15" fill="#5BA39C">somma pesata</text>
+  
+  <!-- ===== FEATURE MAP 3x3 ===== -->
+  <rect x="540" y="130" width="120" height="120" fill="#0E0C0A" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="580" y1="130" x2="580" y2="250" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="620" y1="130" x2="620" y2="250" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="540" y1="170" x2="660" y2="170" stroke="#34302A" stroke-width="1.5"/>
+  <line x1="540" y1="210" x2="660" y2="210" stroke="#34302A" stroke-width="1.5"/>
+
+  <!-- cella di output corrispondente (centrale) -->
+  <rect x="580" y="170" width="40" height="40" fill="#5BA39C" fill-opacity="0.30" stroke="#5BA39C" stroke-width="3"/>
+
+  <!-- titolo feature map -->
+  <text x="600" y="278" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="17" fill="#F4ECDD">Feature map</text>
+  <text x="600" y="120" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="15" fill="#5BA39C">una cella</text>
+</svg>
