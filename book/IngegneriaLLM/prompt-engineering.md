@@ -6,7 +6,7 @@ farti diventare *prompt engineer* in un weekend, immagini di istruzioni lunghe
 una pagina spacciate come formule alchemiche. È l'equivalente moderno delle
 parole magiche: si crede che esista *la* frase giusta, e che chi la conosce
 comandi la macchina. Conviene sgombrare il campo subito. Il prompt è il
-**primo livello** con cui si programma un modello di
+primo livello con cui si programma un modello di
 linguaggio: il più immediato, quello che vedi e scrivi nella casella della
 chat. Sopra di esso, come abbiamo anticipato aprendo questo capitolo, ci sono
 il contesto e il loop; ma è da qui che si comincia, perché è qui che nascono
@@ -52,12 +52,12 @@ eventuali passaggi recuperati; la guida DAIR.AI chiama questa componente
 *context*, ma in questo capitolo «contesto» è già il nome dell'intera finestra,
 e usare la stessa parola per il contenitore e per una delle cose contenute
 sarebbe un modo sicuro di non capirsi più); **dato d'ingresso** (l'input
-specifico su cui operare); **indicatore d'output** (il segnale che innesca e formatta la
-generazione, un `Traduzione:` finale, l'inizio di un blocco JSON, un'etichetta
-attesa). Non è uno schema rigido: molti prompt utili contengono solo
-istruzione e input. Ma la distinzione è operativa, perché ciascuna parte si
-può isolare e migliorare da sola, e perché separare nettamente **istruzione**
-e **dato** è una difesa contro un problema concreto, la *prompt injection*
+specifico su cui operare); **indicatore d'output** (il segnale che innesca e
+formatta la generazione, un `Traduzione:` finale, l'inizio di un blocco JSON,
+un'etichetta attesa). Non è uno schema rigido: molti prompt utili contengono
+solo istruzione e input. Ma la distinzione è operativa, perché ciascuna parte
+si può isolare e migliorare da sola, e perché separare nettamente istruzione
+e dato è una difesa contro un problema concreto, la *prompt injection*
 (istruzioni ostili nascoste dentro il materiale su cui il modello deve
 lavorare), che vedremo in fondo alla sezione.
 
@@ -95,10 +95,10 @@ formulazione giusta lo porta fuori strada, e ogni tanto ci riesce.
 
 `````{tab} Superiore
 
-Il messaggio **system** fissa il comportamento invariante (ruolo, tono,
+Il messaggio system fissa il comportamento invariante (ruolo, tono,
 politiche, formato) e resta identico a ogni turno: è la spina dorsale su cui
-il programma costruisce il resto. I messaggi **user** contengono le richieste
-dell'utente finale; i messaggi **assistant** contengono le risposte del
+il programma costruisce il resto. I messaggi user contengono le richieste
+dell'utente finale; i messaggi assistant contengono le risposte del
 modello, e riinserire i turni passati è ciò che dà continuità alla
 conversazione. La gerarchia non è puramente convenzionale: i modelli sono
 addestrati (via RLHF e tecniche affini) a dare priorità alle istruzioni di
@@ -120,8 +120,8 @@ campionare vuol dire pescarne una da quella classifica invece di prendere
 sempre la prima. Le due manopole governano il modo di pescare.
 
 Una precisazione prima di girarle, perché è la prima cosa che un lettore va a
-cercare e non la trova: queste due manopole **non stanno nella casella della
-chat**. Le interfacce conversazionali non le espongono; si regolano quando si
+cercare e non la trova: queste due manopole non stanno nella casella della
+chat. Le interfacce conversazionali non le espongono; si regolano quando si
 chiama il modello da un programma, o da una pagina di prova che i fornitori
 mettono a disposizione, ed è per questo che appartengono a chi costruisce
 l'applicazione più che a chi la usa. Chiederle a parole dentro il messaggio
@@ -129,11 +129,11 @@ l'applicazione più che a chi la usa. Chiederle a parole dentro il messaggio
 della chiamata, non del testo, e il modello quella frase la legge come legge
 tutte le altre.
 
-Che cosa fanno, in breve. La **temperatura** cambia quanto contano le
+Che cosa fanno, in breve. La temperatura cambia quanto contano le
 differenze fra i candidati: a temperatura vicina a zero il modello prende
 quasi sempre il primo della classifica; a 1 pesca seguendo le percentuali così
 come sono; sopra 1 le appiattisce, e anche i candidati bassi hanno
-la loro speranza (il valore si può di solito girare fra 0 e 2). Il **top_p**
+la loro speranza (il valore si può di solito girare fra 0 e 2). Il top_p
 invece taglia: si tiene i candidati più probabili finché le loro percentuali,
 sommate una dopo l'altra, non arrivano alla soglia che gli abbiamo dato (la
 *p* sta per probabilità, e 0,9 vuol dire il 90 per cento), e butta via tutti
@@ -151,22 +151,46 @@ avvengono in fila, non in parallelo, e per questo non sono indipendenti.
 ```
 
 La riga in fondo alla figura è il punto in cui l'intuizione comune sbaglia. I
-due gesti non avvengono in parallelo, avvengono **in fila**: prima la
+due gesti non avvengono in parallelo, avvengono in fila: prima la
 temperatura ripesa tutti i candidati, poi il top_p taglia su quella classifica
 *già ripesata*. Ne segue che le due manopole non sono indipendenti, e la
 figura lo fa vedere: alla temperatura normale le prime tre parole arrivano al
 91 per cento e il nucleo è di tre; a temperatura 2 le percentuali si
-riavvicinano fra loro, le prime tre restano poco sotto l'80 e non bastano più, così
-il nucleo diventa di quattro, senza che nessuno abbia toccato la soglia.
+riavvicinano fra loro, le prime tre restano poco sotto l'80 e non bastano
+più, così il nucleo diventa di quattro, senza che nessuno abbia toccato la
+soglia.
 
-E più candidati ci sono, più lo scarto cresce. Il conto si rifà in tre righe di
-Python, e con cinquanta candidati (presi a caso, ma sempre gli stessi per
+E più candidati ci sono, più lo scarto cresce. Il conto si rifà in poche righe
+di Python, e con cinquanta candidati (presi a caso, ma sempre gli stessi per
 tutte le prove) la stessa soglia di 0,9 ne lascia passare due a temperatura
-0,2 e trentotto a temperatura 3. Il vocabolario di un modello vero, di
-candidati, ne ha decine di migliaia. Girare le due manopole insieme nella
-stessa direzione, insomma, non fa la somma dei due effetti: li mette uno sopra
-l'altro, e il risultato smette di essere prevedibile a mente. Da qui la regola
-pratica di muoverne una per volta.
+0,2, sedici a temperatura 1 e trentotto a temperatura 3. Il vocabolario di un
+modello vero, di candidati, ne ha decine di migliaia. Girare le due manopole
+insieme nella stessa direzione, insomma, non fa la somma dei due effetti: li
+mette uno sopra l'altro, e il risultato smette di essere prevedibile a mente.
+Da qui la regola pratica di muoverne una per volta.
+
+```python
+import numpy as np
+
+# Cinquanta candidati con logit estratti a caso una volta sola: il seme li
+# tiene fissi per tutte le prove.
+logit = np.random.default_rng(0).normal(scale=2, size=50)
+
+def nucleo(logit, T, p=0.9):
+    """Quanti token entrano nel nucleo top_p, a temperatura T."""
+    prob = np.exp(logit / T - (logit / T).max())
+    prob = np.sort(prob / prob.sum())[::-1]        # dal piu' probabile in giu'
+    return int(np.searchsorted(np.cumsum(prob), p) + 1)   # i primi che arrivano a p
+
+for T in (0.2, 1, 3):
+    print(f"T = {T}: nucleo di {nucleo(logit, T)} token")
+```
+
+```text
+T = 0.2: nucleo di 2 token
+T = 1: nucleo di 16 token
+T = 3: nucleo di 38 token
+```
 
 Come si passi da una classifica di probabilità alla parola scelta, e come la
 temperatura riscali quella classifica, l'abbiamo visto nella
@@ -177,7 +201,7 @@ chiamata.
 
 `````{tab} Elementare
 
-La **temperatura** è quanto lo lasci «osare»; il **top_p** è quanta parte della
+La temperatura è quanto lo lasci «osare»; il top_p è quanta parte della
 classifica resta in gara.
 
 Quale girare, allora? Se vuoi un fatto, un'estrazione precisa, del codice
@@ -209,11 +233,11 @@ parecchie di là.
 
 `````{tab} Superiore
 
-La **temperatura** $T$ riscala i logit prima della softmax: $T \to 0$
+La temperatura $T$ riscala i logit prima della softmax: $T \to 0$
 concentra la massa sull'argmax (*greedy*, deterministico a meno di pareggi),
 $T > 1$ appiattisce la distribuzione aumentando l'entropia del campionamento.
 Attenzione a non leggere in quel «deterministico» una garanzia di
-**riproducibilità**: è deterministica la *regola di scelta*, non il *servizio*
+riproducibilità: è deterministica la *regola di scelta*, non il *servizio*
 che la esegue. Su un endpoint condiviso la stessa richiesta a $T = 0$ può dare
 uscite diverse fra un'esecuzione e l'altra, a parità di modello e di seme,
 perché i kernel di normalizzazione, matmul e attenzione non sono invarianti
@@ -222,23 +246,23 @@ chiamando in quell'istante {cite}`he2025nondeterminism`. Ha una conseguenza
 diretta sul «secondo, si misura» dell'apertura del capitolo: un confronto A/B
 fra due versioni di prompt non si fa a una esecuzione per lato, si fa a più
 campioni e con un intervallo attorno alla differenza.
-Il **top_p** (*nucleus sampling* {cite}`holtzman2020curious`) tronca invece la
+Il top_p (*nucleus sampling* {cite}`holtzman2020curious`) tronca invece la
 distribuzione al più piccolo insieme di token la cui probabilità cumulata
 raggiunge la soglia $p$, ridistribuendo la massa su quel nucleo: adatta
 dinamicamente il numero di candidati alla forma della distribuzione, cosa che
 un semplice *top-k* fisso non fa. Si legge spesso che i due parametri agiscono
 «su assi diversi», uno sulla forma della distribuzione e l'altro sul supporto
 ammesso, e la conclusione che se ne trae è che si possano regolare
-indipendentemente. **Non è così**, e la ragione sta nell'ordine: il nucleo si
+indipendentemente. Non è così, e la ragione sta nell'ordine: il nucleo si
 calcola sulla distribuzione *già riscalata*, quindi la sua cardinalità è
-funzione di $T$ a $p$ fissato. È verificabile in tre righe, e il protocollo va
+funzione di $T$ a $p$ fissato. È verificabile in poche righe, e il protocollo va
 scritto perché il numero dipende da quanto è appuntita la distribuzione di
 partenza: con cinquanta logit estratti da una gaussiana di deviazione standard
 2 (in NumPy, `default_rng(0).normal(scale=2, size=50)`) e $p = 0{,}9$, il
 nucleo contiene 2 token a $T = 0{,}2$, 16 a $T = 1$ e 38 a $T = 3$. Con logit
 più concentrati i tre numeri cambiano; il fatto che crescano con $T$ no, ed è
 quello il punto. La raccomandazione della guida DAIR.AI di regolarne
-**uno solo** per volta resta quindi valida, ma non perché gli effetti si
+uno solo per volta resta quindi valida, ma non perché gli effetti si
 confondano nella testa di chi guarda: perché si compongono davvero. La
 derivazione completa e il confronto con *top-k* e *beam search* sono nel
 capitolo sui Transformer.
@@ -247,8 +271,8 @@ capitolo sui Transformer.
 
 ## Mostrare esempi: zero-shot, one-shot, few-shot
 
-La leva più potente del prompt engineering è anche la più semplice: **mostrare
-al modello degli esempi svolti**. I nomi che si incontrano contano una cosa
+La leva più potente del prompt engineering è anche la più semplice: mostrare
+al modello degli esempi svolti. I nomi che si incontrano contano una cosa
 sola, quanti esempi gli si mostrano: nessuno (*zero-shot*), uno (*one-shot*),
 qualcuno (*few-shot*). *Shot* qui è un tentativo mostrato e non uno sparo; e
 vedremo che gli esempi non insegnano niente al modello, gli fanno capire che
@@ -264,13 +288,13 @@ il modello li rilegge insieme alla domanda, e i pesi sono gli stessi prima e
 dopo.
 ```
 
-L'etichetta «pesi invariati» in {numref}`fig-few-shot` è la ragione per cui questa
-tecnica è di *ingegneria* e non di addestramento. Il modello non ha imparato
-il compito: ha riconosciuto uno schema nel testo che sta leggendo e lo ha
-proseguito. Ed è anche il limite, perché gli esempi occupano contesto a ogni
-singola chiamata, e si pagano ogni volta. La differenza tra chiedere a freddo e chiedere
-dopo aver mostrato due o tre casi risolti è spesso la differenza tra una risposta
-sbagliata e una giusta.
+L'etichetta «pesi invariati» in {numref}`fig-few-shot` è la ragione per cui
+questa tecnica è di *ingegneria* e non di addestramento. Il modello non ha
+imparato il compito: ha riconosciuto uno schema nel testo che sta leggendo e
+lo ha proseguito. Ed è anche il limite, perché gli esempi occupano contesto a
+ogni singola chiamata, e si pagano ogni volta. La differenza tra chiedere a
+freddo e chiedere dopo aver mostrato due o tre casi risolti è spesso la
+differenza tra una risposta sbagliata e una giusta.
 
 - **Zero-shot**: solo l'istruzione, nessun esempio. «Dimmi se questa recensione
   è positiva, negativa o neutra» (in gergo: classificarne il *sentiment*, cioè
@@ -288,7 +312,7 @@ sbagliata e una giusta.
 (zero-shot) e sperare che afferri. Oppure gli mostri una mano giocata:
 «guarda, con queste carte si fa così». Dopo due o tre mani d'esempio ha capito
 il ritmo, il formato, cosa conta, e gioca da solo. Gli esempi non gli hanno
-cambiato il cervello: gli hanno mostrato lo **schema**. Col modello è identico.
+cambiato il cervello: gli hanno mostrato lo schema. Col modello è identico.
 Se voglio che etichetti frasi come positive o negative, gliene mostro qualcuna
 già etichettata:
 
@@ -314,8 +338,8 @@ vanno rimostrati per intero a ogni domanda nuova.
 
 `````{tab} Superiore
 
-Il *few-shot prompting* è la manifestazione più diretta dell’**in-context
-learning**, la capacità (documentata su larga scala da Brown e colleghi con
+Il *few-shot prompting* è la manifestazione più diretta dell’in-context
+learning, la capacità (documentata su larga scala da Brown e colleghi con
 GPT-3 {cite}`brown2020language`) di apprendere un compito dai soli esempi
 presenti nel contesto, senza fine-tuning. La formalizzazione (la stima
 $\arg\max_y P(y \mid I, (x_1,y_1),\dots,(x_k,y_k), x)$) è quella già vista nel
@@ -329,10 +353,10 @@ $\propto P^{1/T}$, e con il top_p da quella troncata al nucleo). Qui basti
 ricordare che gli esempi agiscono come
 **condizionamento**, spostando la distribuzione condizionata del modello verso
 lo stile e il formato mostrati, non come dati d'addestramento. Alcune
-avvertenze empiriche contano nella pratica: la **scelta** degli esempi, il
-loro **ordine** e persino il **formato** dell'etichetta influenzano il
+avvertenze empiriche contano nella pratica: la scelta degli esempi, il
+loro ordine e persino il formato dell'etichetta influenzano il
 risultato; gli esempi vanno bilanciati tra le classi per non indurre un *bias*
-verso quella più frequente; e **nel regime a pochi esempi** il rendimento
+verso quella più frequente; e nel regime a pochi esempi il rendimento
 marginale cala presto, mentre il costo in token cresce. Quest'ultima
 osservazione va però datata: è quella di GPT-3, legata alle finestre di
 allora, e con le finestre lunghe il quadro cambia. Agarwal e colleghi
@@ -349,7 +373,7 @@ entra la catena di pensiero.
 ## Far ragionare a voce alta: chain-of-thought
 
 Chiedi a un modello «Quanto fa 17 × 24?» e potresti ricevere un numero secco,
-spesso sbagliato. Chiedigli di **mostrare i passaggi** e la musica cambia: se
+spesso sbagliato. Chiedigli di mostrare i passaggi e la musica cambia: se
 scrive «17 × 24 = 17 × 20 + 17 × 4 = 340 + 68 = 408», arriva alla risposta
 giusta molto più spesso. È l'idea della **chain-of-thought**, la catena di
 pensiero, proposta da Wei e colleghi nel 2022 {cite}`wei2022chain`: far
@@ -405,26 +429,26 @@ generazione condizioni ogni passo sui precedenti. Wei e colleghi la ottengono
 con esempi *few-shot* in cui la risposta è mostrata *insieme al ragionamento*
 che la produce; il guadagno è marcato sui compiti aritmetici e simbolici,
 molto meno altrove (torniamo sul perimetro esatto più avanti, quando parleremo
-di che cosa è stato misurato), e (dato interessante) **emerge con la scala**:
-sui modelli
-piccoli la CoT aiuta poco o nulla, sui grandi produce salti netti di
-accuratezza. Esiste anche una variante che elimina del tutto gli esempi:
-Kojima e colleghi {cite}`kojima2022zeroshot` mostrano che basta aggiungere
+di che cosa è stato misurato), ed emerge con la scala: sui modelli piccoli la
+CoT non aiuta e può perfino nuocere (catene fluenti ma illogiche, sotto il
+prompt standard), sui grandi produce salti netti di accuratezza. Esiste anche
+una variante che elimina del tutto gli esempi: Kojima e colleghi
+{cite}`kojima2022zeroshot` mostrano che basta aggiungere
 alla domanda una singola frase-innesco (l'ormai celebre «*Let's think step by
 step*», «ragioniamo passo per passo») per attivare un ragionamento a più passi
-anche in **zero-shot**. Una riga di testo, nessun esempio, e su diversi
-benchmark di ragionamento l'accuratezza sale di parecchi punti. Vista con gli
+anche in zero-shot. Una riga di testo, nessun esempio, e su MultiArith, con
+InstructGPT, le risposte esatte passano da 17,7 a 78,7 su cento. Vista con gli
 occhi del capitolo sugli Agenti, la CoT è anche *context engineering*: si
 spende deliberatamente parte del budget in token di «pensiero» per comprare
 qualità.
 
-Una cautela che gli autori stessi pongono, e che vale la pena non perdere per
-strada: che la catena *assomigli* a un ragionamento non dice che *sia* il
+Una cautela che gli autori stessi pongono, e da non perdere per strada: che la
+catena *assomigli* a un ragionamento non dice che *sia* il
 ragionamento che ha prodotto la risposta, e Wei e colleghi lasciano la
 questione esplicitamente aperta. Misurata dopo, la risposta è severa. Turpin e
 colleghi {cite}`turpin2023unfaithful` inseriscono nel prompt few-shot una
 caratteristica di bias (riordinare le opzioni perché la risposta sia sempre la
-prima) e trovano che i modelli producono catene che **razionalizzano** la
+prima) e trovano che i modelli producono catene che razionalizzano la
 risposta sbagliata senza mai nominare la causa che li ha spostati, con cali di
 accuratezza fino al 36% su tredici compiti di BIG-Bench Hard. Lanham e colleghi
 {cite}`lanham2023faith` intervengono direttamente sulla catena (vi
@@ -441,7 +465,7 @@ torna, non come spiegazione di che cosa è successo davvero.
 
 ## Molte teste sono meglio di una: self-consistency
 
-La catena di ragionamento ha un tallone d'Achille: è **una sola** catena. Se il
+La catena di ragionamento ha un tallone d'Achille: è una sola catena. Se il
 modello imbocca la strada sbagliata al primo passo, la trascina fino in fondo
 con sicurezza. Wang e colleghi {cite}`wang2023selfconsistency` propongono un
 rimedio tanto semplice quanto efficace: fargli risolvere lo stesso problema più
@@ -477,8 +501,8 @@ non corregge l'errore, lo conferma con dieci voti invece che con uno.
 
 La self-consistency sostituisce il *decoding* greedy della chain-of-thought con
 un procedimento in tre tempi: (1) si campionano $N$ catene di ragionamento
-indipendenti con temperatura $T > 0$; (2) da ciascuna si estrae la **risposta
-finale**, scartando i passaggi intermedi; (3) si **marginalizza** sul
+indipendenti con temperatura $T > 0$; (2) da ciascuna si estrae la risposta
+finale, scartando i passaggi intermedi; (3) si marginalizza sul
 ragionamento tenendo la risposta di maggioranza, $\hat{y} = \arg\max_{y}
 \sum_{i=1}^{N} \mathbb{1}[\,a_i = y\,]$, dove $a_i$ è la risposta della
 $i$-esima catena. L'intuizione statistica: le derivazioni corrette tendono a
@@ -498,13 +522,13 @@ spendendo campioni.
 
 Sotto all’«intuizione statistica» c'è un'ipotesi che il testo di solito tace, e
 non è innocua: il voto premia la risposta
-giusta **solo se gli errori sono poco correlati fra le catene**. Le $N$ catene
+giusta solo se gli errori sono poco correlati fra le catene. Le $N$ catene
 non sono $N$ ragionatori indipendenti, sono $N$ campioni dalla stessa
 $P_\theta$ con lo stesso contesto, e l'unica sorgente di variazione è il
 rumore di campionamento. Per gli scivoloni di calcolo l'ipotesi è ragionevole,
 e infatti è il regime in cui il metodo è stato misurato. Non lo è per gli
 errori indotti dal prompt, che per costruzione sono gli stessi in tutte le
-catene: lì la maggioranza non corregge, **conferma**, e un bias condiviso
+catene: lì la maggioranza non corregge, conferma, e un bias condiviso
 raccoglie $N$ voti invece di uno {cite}`turpin2023unfaithful`. La
 self-consistency compra affidabilità contro il rumore, non contro il bias.
 
@@ -542,7 +566,7 @@ sbagliano ciascuna a modo suo e non fanno numero.
 
 L'idea si spinge anche oltre la catena dritta. Invece di generare catene
 separate e votare alla fine, si possono esplorare i passaggi intermedi come i
-rami di un **albero**, giudicandoli via via e tornando indietro da quelli che
+rami di un albero, giudicandoli via via e tornando indietro da quelli che
 non promettono bene. È il **Tree of Thoughts**, l'albero dei pensieri
 {cite}`yao2023tree`, già incontrato nel capitolo sugli Agenti, e qui basta il
 richiamo: stessa idea di fondo, far lavorare il modello di più per farlo
@@ -551,13 +575,13 @@ ragionare meglio, con una ricerca fatta meglio.
 ## Chiedere una risposta che il programma sappia leggere
 
 Finché il lettore è un umano, va bene la prosa. Ma se la risposta del modello
-deve essere letta da un **altro pezzo di programma** (salvata in un archivio,
+deve essere letta da un altro pezzo di programma (salvata in un archivio,
 passata a un'altra funzione, mostrata in una pagina), la prosa non basta più:
 serve una forma prevedibile, sempre la stessa, che il programma sappia aprire
 senza doverla interpretare.
 
 La leva è chiedere esplicitamente un **output strutturato**, cioè una risposta
-divisa in **campi** con un nome ciascuno, come le caselle di un modulo. Il
+divisa in campi con un nome ciascuno, come le caselle di un modulo. Il
 formato più usato per scriverli si chiama **JSON**, ed è semplicemente un modo
 concordato di mettere per iscritto coppie nome-valore, con le parentesi
 graffe attorno e i due punti in mezzo:
@@ -574,14 +598,14 @@ formato voluto, che è di nuovo la stessa leva degli esempi di prima.
 `````{tab} Elementare
 
 È la differenza fra chiedere a qualcuno «raccontami com'è andata» e
-consegnargli un **modulo da compilare**. Il racconto libero lo capisci tu, ma
+consegnargli un modulo da compilare. Il racconto libero lo capisci tu, ma
 un archivio no: dove sta il nome? dov'è la data? Il modulo, invece, ha le
 caselle già stampate, e chi lo riceve sa esattamente dove guardare, sempre
 nello stesso punto. Chiedere una risposta strutturata è stampare le caselle
 prima di fare la domanda.
 
 Il modulo, però, non risolve tutto: un modulo compilato bene non è un modulo
-compilato **giusto**. Se nella casella «giudizio» c'è scritto «positivo» su una
+compilato giusto. Se nella casella «giudizio» c'è scritto «positivo» su una
 stroncatura, il modulo è perfetto e la risposta è sbagliata. La forma la puoi
 imporre; il contenuto va comunque controllato dopo.
 
@@ -598,24 +622,23 @@ calma, e riportare davanti, nelle caselle, soltanto la conclusione.
 Molte API offrono una modalità *JSON* o uno *schema* imposto: invece di
 sperare che il modello rispetti il formato, il decoder viene vincolato a
 generare solo sequenze conformi a una grammatica, e il formato diventa una
-garanzia invece che un auspicio. Vale la pena essere precisi su che cosa
-garantisce, perché è meno di quanto la formula «togliere il problema alla
-radice» lascerebbe credere: garantisce la validità **sintattica** rispetto
-allo schema, cioè che i campi ci siano e siano del tipo dichiarato. Non
-garantisce che dicano il vero: `{"sentiment": "positivo"}` su una stroncatura
-è output perfettamente conforme. Toglie di mezzo la classe di errori più
-fastidiosa (la risposta che non si riesce ad aprire), non quella di contenuto,
-che resta da verificare a valle.
+garanzia invece che un auspicio. Garantisce però meno di quanto la formula
+«togliere il problema alla radice» lascerebbe credere: la validità sintattica
+rispetto allo schema, cioè che i campi ci siano e siano del tipo dichiarato.
+Non garantisce che dicano il vero: `{"sentiment": "positivo"}` su una
+stroncatura è output perfettamente conforme. Toglie di mezzo la classe di
+errori più fastidiosa (la risposta che non si riesce ad aprire), non quella di
+contenuto, che resta da verificare a valle.
 
 E il vincolo non è gratuito. Tam e colleghi {cite}`tam2024format` confrontano
 decoding vincolato, istruzioni di formato e conversione a posteriori su più
 modelli e dataset, e osservano «un calo significativo delle capacità di
 ragionamento sotto restrizioni di formato», tanto più marcato quanto più
-stretto è il vincolo. Il quadro non è uniforme: i formati rigidi **aiutano** i
+stretto è il vincolo. Il quadro non è uniforme: i formati rigidi aiutano i
 compiti di classificazione, dove restringere le risposte possibili toglie modi
 di sbagliare, e danneggiano quelli che richiedono passaggi (i problemi di
-aritmetica, le manipolazioni di simboli), cioè proprio quelli per cui le due
-sezioni precedenti hanno insegnato a spendere token in ragionamento. La
+aritmetica, le manipolazioni di simboli), cioè proprio quelli per cui la catena
+di pensiero e la self-consistency spendono token in ragionamento. La
 raccomandazione degli autori è di conseguenza asimmetrica: vincolo stretto dove
 si classifica, vincolo lasco dove si ragiona. E dove servono tutt'e due le
 cose, la strada che il paper esamina è la più ovvia: far ragionare libero e
@@ -624,7 +647,7 @@ generazione.
 
 `````
 
-Alcuni servizi permettono di **imporre** il formato, obbligando il modello a
+Alcuni servizi permettono di imporre il formato, obbligando il modello a
 scrivere solo risposte fatte come devono. Dove questo non si può fare, la
 difesa migliore resta quella di sempre: mostrargli un esempio della risposta
 che vogliamo, compilato come vogliamo noi. In un modo o nell'altro, una
@@ -645,8 +668,8 @@ famose» ma «cosa è venuto fuori quando qualcuno le ha misurate».
 
 La distinzione di {numref}`fig-prove-prompting` è ciò che separa questa
 disciplina dal folklore che le è cresciuto attorno, e si legge in fondo prima
-che in cima. **In fondo non ci sono tecniche non verificate: ci sono tecniche
-verificate che non funzionano.** Mance, minacce e la cortesia non sono cadute
+che in cima. In fondo non ci sono tecniche non verificate: ci sono tecniche
+verificate che non funzionano. Mance, minacce e la cortesia non sono cadute
 nella fascia bassa per mancanza di prove, ma perché studi controllati le hanno
 provate e non hanno trovato niente di consistente.
 Mancia e minaccia sono da prendere alla
@@ -672,15 +695,15 @@ lavori, che è quello che si chiama una **meta-analisi**, il conto di quelli
 già fatti invece di un esperimento nuovo; e poi hanno rifatto le prove per
 conto proprio, venti raccolte su quattordici modelli diversi, per vedere se il
 quadro reggeva anche fuori dai lavori altrui. Il conto si fa in risposte
-esatte su cento. Chiedere i passaggi ne fa guadagnare in media 14,2
-sul **ragionamento simbolico** (contare, sostituire, applicare regole formali)
-e 12,3 sulla **matematica**; sul ragionamento logico si scende già a 6,9, e su
-tutto il resto la media passa da 56,1 risposte esatte su cento senza catena a
-56,8 con, cioè non si muove. Su MMLU, per dirne una (una
+esatte su cento. Nei lavori riletti, chiedere i passaggi ne fa guadagnare in
+media 14,2 sul ragionamento simbolico (contare, sostituire, applicare regole
+formali) e 12,3 sulla matematica; sul ragionamento logico si scende già a 6,9,
+e su tutto il resto la media passa da 56,1 senza catena a 56,8 con, cioè non
+si muove. Le prove rifatte confermano il quadro. Su MMLU, per dirne una (una
 batteria di domande a scelta multipla su cinquantasette materie, dalla storia
 alla medicina, con cui si misura quanto un modello sa in generale), chiedere i
 passaggi dà quasi esattamente la stessa accuratezza del rispondere di getto,
-**tranne** quando la domanda o la risposta del modello contengono un segno di
+tranne quando la domanda o la risposta del modello contengono un segno di
 uguale. La regola pratica che ne
 esce è netta: se il compito ha dentro un calcolo o una manipolazione di
 simboli, i passaggi servono; se è una domanda di conoscenza o di giudizio, si
@@ -689,23 +712,23 @@ stanno pagando token per niente.
 Dietro le tecniche c'è un pugno di principi che la guida DAIR.AI ripete, e che
 valgono più di ogni «prompt segreto»:
 
-- **Sii specifico.** «Riassumi» è vago; «riassumi in tre punti elenco, per un
+- Sii specifico. «Riassumi» è vago; «riassumi in tre punti elenco, per un
   lettore non tecnico, massimo 40 parole» dice al modello esattamente il
   bersaglio. La genericità è una causa ricorrente di risposte deludenti.
-- **Dai esempi.** Un esempio del formato o dello stile voluto vale più di un
+- Dai esempi. Un esempio del formato o dello stile voluto vale più di un
   paragrafo di descrizione: mostra invece di spiegare.
-- **Di’ cosa fare, non (solo) cosa non fare.** «Non essere prolisso» lascia il
+- Di’ cosa fare, non (solo) cosa non fare. «Non essere prolisso» lascia il
   modello a indovinare; «rispondi in una frase» gli dà una direzione. Un
   divieto dice dove non andare, un'istruzione positiva dice dove andare.
-- **Separa le istruzioni dai dati.** Tieni nettamente distinto ciò che il
+- Separa le istruzioni dai dati. Tieni nettamente distinto ciò che il
   modello deve *fare* da ciò su cui deve *operare*, marcando dove finisce
   l'uno e comincia l'altro (virgolette triple, un'etichetta, una sezione a
   parte). Oltre a chiarire, è una prima difesa contro un attacco che vedremo
   fra poche righe, la *prompt injection*.
 
 A questi quattro consigli conviene applicare lo stesso metro che
-{numref}`fig-prove-prompting` ha appena applicato alle tecniche altrui. Il
-secondo è quello con le prove migliori, perché è la stessa cosa misurata da
+{numref}`fig-prove-prompting` ha appena applicato alle tecniche altrui. «Dai
+esempi» è quello con le prove migliori, perché è la stessa cosa misurata da
 Brown e colleghi {cite}`brown2020language`, ed è infatti l'unico dei quattro
 che nella figura compare, in cima. Gli altri tre sono regole di buona
 scrittura: sensate, usate ovunque, e senza una misura alle spalle. Nella figura
@@ -752,21 +775,21 @@ il loop, che affrontiamo nelle sezioni seguenti.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **messaggio è il primo livello**, il più immediato: potente, ma non un
+- Il messaggio è il primo livello, il più immediato: potente, ma non un
   incantesimo. La frase magica non esiste; esiste il messaggio scritto bene.
 - Un buon messaggio tiene distinte quattro cose invece di impastarle:
-  **l'ordine** (cosa fare), **lo sfondo** (con quale tono, per chi, con quali
-  regole), **il materiale** su cui lavorare e **il segnale di via**, cioè il
+  l'ordine (cosa fare), lo sfondo (con quale tono, per chi, con quali
+  regole), il materiale su cui lavorare e il segnale di via, cioè il
   punto in cui lasci la penna al modello.
 - Chi costruisce l'applicazione può regolare due manopole che nella chat non
-  ci sono: quanto lasciarlo **osare** e quanto **restringere il ventaglio**
+  ci sono: quanto lasciarlo osare e quanto restringere il ventaglio
   delle parole possibili. Bassa audacia per i fatti e per il codice, più alta
   per inventare; e si muove una manopola per volta, perché la seconda lavora
   su quello che le ha lasciato la prima.
-- **Mostrare esempi già svolti** dentro il messaggio è la leva più affidabile
+- Mostrare esempi già svolti dentro il messaggio è la leva più affidabile
   di tutte: il modello non impara niente di nuovo, ma capisce che cosa vuoi e
   in che forma lo vuoi.
-- **Chiedere i passaggi** invece del risultato secco aiuta davvero, ma non
+- Chiedere i passaggi invece del risultato secco aiuta davvero, ma non
   dappertutto: aiuta quando c'è un conto o dei simboli da manipolare, e non
   sposta quasi nulla sulle domande di conoscenza o di giudizio. E quei
   passaggi sono un racconto plausibile messo insieme dopo, non il verbale di
@@ -776,14 +799,14 @@ il loop, che affrontiamo nelle sezioni seguenti.
   distrazioni, che cadono ogni volta in un punto diverso; non a una domanda
   scritta male, che porta fuori strada tutte le volte, e allora il conteggio
   conferma l'errore invece di correggerlo.
-- Se la risposta la deve leggere un programma, **chiedi le caselle** invece del
+- Se la risposta la deve leggere un programma, chiedi le caselle invece del
   racconto: la forma la puoi imporre, il contenuto va comunque controllato. Le
   caselle aiutano dove basta sceglierne una fra poche; dove c'è da fare un
   conto tolgono lo spazio per farlo, e allora conviene lasciar raccontare
   prima e riempirle dopo.
 - Tre cose da sapere e non temere: nel testo che gli dai possono nascondersi
   istruzioni scritte da altri, le regole di sicurezza si possono aggirare con
-  formulazioni astute, e un modello **inventa** con la stessa sicurezza con cui
+  formulazioni astute, e un modello inventa con la stessa sicurezza con cui
   dice il vero. Chiedergli le fonti aiuta; verificare aiuta di più.
 ```
 
@@ -793,13 +816,13 @@ il loop, che affrontiamo nelle sezioni seguenti.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **prompt è il primo livello**, il più immediato: potente, ma non un
+- Il prompt è il primo livello, il più immediato: potente, ma non un
   incantesimo. Il «prompt magico» non esiste; esiste il prompt costruito bene.
-- Un prompt ha quattro parti (**istruzione, sfondo, dato d'ingresso,
-  indicatore d'output**) e vive in un formato a ruoli **system / user /
-  assistant**, con priorità (morbida) al system. «Sfondo» e non «contesto»
+- Un prompt ha quattro parti (istruzione, sfondo, dato d'ingresso,
+  indicatore d'output) e vive in un formato a ruoli system / user /
+  assistant, con priorità (morbida) al system. «Sfondo» e non «contesto»
   perché in questo capitolo il contesto è l'intera finestra.
-- **Temperatura** e **top_p** regolano il campionamento: bassa per fatti e
+- Temperatura e top_p regolano il campionamento: bassa per fatti e
   codice, alta per creatività; muovi una manopola per volta, perché non sono
   indipendenti (il nucleo si calcola sulla distribuzione già riscalata). Non
   sono esposte nelle interfacce di chat. E `T = 0` rende deterministica la
@@ -807,23 +830,23 @@ il loop, che affrontiamo nelle sezioni seguenti.
   prompt vuole più di una esecuzione per lato. La matematica del
   decoding è nella
   {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`.
-- Gli **esempi** condizionano il modello senza addestrarlo (*in-context
+- Gli esempi condizionano il modello senza addestrarlo (*in-context
   learning*, GPT-3 {cite}`brown2020language`): zero-shot, one-shot, few-shot.
-- Far **ragionare a voce alta** aiuta, ma **dove**: chain-of-thought
+- Far ragionare a voce alta aiuta, ma dove: chain-of-thought
   {cite}`wei2022chain`, e in zero-shot il «ragioniamo passo per passo»
   {cite}`kojima2022zeroshot`, valgono circa +12 punti in matematica e +14 sul
   simbolico, poco meno di 7 sul ragionamento logico e quasi nulla altrove
   {cite}`sprague2025cot`. La catena è una
-  **traccia ispezionabile**, non una spiegazione: la fedeltà è misurata bassa e
-  **cala** con la scala {cite}`turpin2023unfaithful, lanham2023faith`.
-  La **self-consistency** {cite}`wang2023selfconsistency` campiona più catene e
+  traccia ispezionabile, non una spiegazione: la fedeltà, misurata, è
+  incostante e cala con la scala {cite}`turpin2023unfaithful, lanham2023faith`.
+  La self-consistency {cite}`wang2023selfconsistency` campiona più catene e
   vota la risposta più frequente (estensione ad albero: Tree of Thoughts
   {cite}`yao2023tree`); corregge il rumore di campionamento, non un bias
   condiviso da tutte le catene.
-- Chiedi **output strutturato** (JSON/campi) per la lettura a valle: garantisce
+- Chiedi output strutturato (JSON/campi) per la lettura a valle: garantisce
   la validità sintattica, non quella di contenuto, e sui compiti a ragionamento
-  il vincolo di formato **costa** accuratezza {cite}`tam2024format`. E ricorda
-  i rischi (**prompt injection, jailbreak, allucinazioni**) che riprenderemo
+  il vincolo di formato costa accuratezza {cite}`tam2024format`. E ricorda
+  i rischi (prompt injection, jailbreak, allucinazioni) che riprenderemo
   nella sezione su LLMOps.
 ```
 

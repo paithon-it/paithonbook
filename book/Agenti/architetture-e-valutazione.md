@@ -1,7 +1,7 @@
 # Architetture di agenti e come valutarli
 
 Nella sezione sul ciclo dell'agente ne abbiamo costruito uno e l'abbiamo fatto
-girare: pensa, agisce, osserva, ripete, e quello schema si chiamava **ReAct**.
+girare: pensa, agisce, osserva, ripete, e quello schema si chiamava ReAct.
 Su un compito ben delimitato (trova un dato, fai un conto, rispondi) quel ciclo
 va sorprendentemente lontano.
 
@@ -12,13 +12,13 @@ smarrisce: troppe mosse, troppe strade, troppe occasioni per perdere il filo.
 Un agente che gira da solo non basta più.
 
 Da qui due mosse, ed è di queste che parla la sezione. La prima è
-**pianificare in anticipo** invece di reagire un passo alla volta. La seconda
-è **comporre più agenti**, ciascuno con un mestiere, come si mette insieme una
+pianificare in anticipo invece di reagire un passo alla volta. La seconda
+è comporre più agenti, ciascuno con un mestiere, come si mette insieme una
 squadra.
 
 E dietro entrambe si nasconde la domanda più scomoda del campo, quella che
-nessuno ha davvero chiuso: come si fa a sapere se un agente **funziona
-davvero**? Già dare un voto a un modello che si limita a rispondere è
+nessuno ha davvero chiuso: come si fa a sapere se un agente funziona
+davvero? Già dare un voto a un modello che si limita a rispondere è
 difficile, quando la risposta è libera e non esiste una soluzione unica con cui
 confrontarla; lo vedremo più avanti, nel {doc}`capitolo su MLOps </MLOps/overview>`, che è il mestiere
 di portare un modello dal laboratorio all'uso di tutti i giorni. Dare un voto
@@ -30,7 +30,7 @@ piedi, è molto più difficile ancora.
 ReAct ragiona e agisce *un passo alla volta*: decide la mossa, la esegue, guarda
 com'è andata, decide la prossima. È flessibile, ma su un compito lungo rischia
 di procedere a naso, senza una visione d'insieme, e di infilarsi in vicoli
-ciechi. L'alternativa è ribaltare l'ordine: prima **scomporre** il problema in
+ciechi. L'alternativa è ribaltare l'ordine: prima scomporre il problema in
 un piano di sotto-compiti, poi eseguirli. Questo modo di procedere si chiama
 **plan-and-execute**, «pianifica ed esegui».
 
@@ -41,7 +41,7 @@ decidere scaffale per scaffale, guardandoti intorno: prendo la pasta, ah già
 mi serviva anche il latte, torno indietro… Funziona per due o tre cose, ma per
 una spesa grossa giri a vuoto, dimentichi metà roba e ti ritrovi tre volte
 davanti al
-banco frigo. L'altro modo è scrivere **la lista prima di entrare**: la dividi
+banco frigo. L'altro modo è scrivere la lista prima di entrare: la dividi
 per reparto, e dentro segui l'ordine senza pensarci. Fai meno strada, non
 dimentichi niente.
 
@@ -57,15 +57,15 @@ spostato) e vada rifatta a metà strada.
 
 `````{tab} Superiore
 
-**ReAct** intreccia ragionamento e azione a ogni passo: la policy sceglie
+ReAct intreccia ragionamento e azione a ogni passo: la policy sceglie
 $a_t$ guardando solo lo stato corrente $s_t$, senza un piano globale
 esplicito. È reattivo (si adatta bene alle sorprese) ma su orizzonti lunghi
 tende a perdere coerenza, ripetere azioni o divagare. Il pattern
-**plan-and-execute** separa due ruoli: un *pianificatore* produce in un colpo
+plan-and-execute separa due ruoli: un *pianificatore* produce in un colpo
 solo una sequenza di sotto-obiettivi $g_1, \dots, g_k$ che decompongono il
 compito, e un *esecutore* li affronta uno per uno (spesso con un mini-loop
 ReAct dentro ciascuno). Il piano dà struttura, coerenza globale e spesso
-**meno chiamate al modello** per il ragionamento di alto livello.
+meno chiamate al modello per il ragionamento di alto livello.
 
 Il compromesso è netto e va dichiarato. Pianificare in anticipo conviene
 quando il compito è *decomponibile* e l'ambiente *prevedibile*: il piano regge
@@ -86,8 +86,8 @@ la realtà lo smentisce.
 
 Finora un agente, un modello. Ma se un compito ha nature diverse (pianificare,
 scrivere codice, criticarlo), perché affidarlo a un solo generalista? Nasce
-l'idea dei **sistemi multi-agente**: più agenti, ciascuno con un **ruolo
-specializzato**, che si passano il lavoro e conversano tra loro.
+l'idea dei **sistemi multi-agente**: più agenti, ciascuno con un ruolo
+specializzato, che si passano il lavoro e conversano tra loro.
 
 ```{figure} ../figures/sistemi-multi-agente.svg
 :name: fig-orchestratore-worker
@@ -109,9 +109,9 @@ istruzioni diversi (il *prompt* della sezione precedente). «Multi-agente»
 descrive come è organizzato il lavoro, non quanti modelli diversi ci sono
 sotto.
 
-Nel disegno i ruoli sono divisi per **mestiere**, cioè per lo strumento che
+Nel disegno i ruoli sono divisi per mestiere, cioè per lo strumento che
 ciascuno ha in mano: uno cerca sul web, uno interroga un archivio di dati, uno
-legge documenti. Ma si possono dividere anche per **momento del lavoro**, e
+legge documenti. Ma si possono dividere anche per momento del lavoro, e
 questa seconda divisione tornerà spesso: un *pianificatore* scompone il
 compito, un *esecutore* lo svolge, un *critico* rilegge il risultato e segnala
 gli errori, e il giro ricomincia finché il critico è soddisfatto.
@@ -148,7 +148,7 @@ fraintendersi. Non sempre la bottega batte il buon artigiano.
 
 Un framework che ha reso concreto questo schema è **AutoGen**
 {cite}`wu2024autogen`, che modella un sistema multi-agente come una
-**conversazione** tra agenti *conversabili*: ognuno ha un ruolo e un prompt di
+conversazione tra agenti *conversabili*: ognuno ha un ruolo e un prompt di
 sistema che lo definisce (assistente, esecutore di codice, revisore, proxy
 umano), e l'orchestrazione è il protocollo con cui si scambiano messaggi
 (sequenziale, a turni, o con un agente «manager» che decide chi parla dopo).
@@ -159,14 +159,14 @@ L'onestà, qui, è d'obbligo, perché è un terreno dove l'entusiasmo corre più
 risultati. Aggiungere agenti non è gratis e non è sempre meglio. Ogni
 agente in più è contesto in più da riempire e generazioni in più da pagare: il
 costo cresce con il numero di partecipanti e con i giri di conversazione. E
-moltiplicare gli agenti moltiplica i **modi di sbagliare**: un fraintendimento
+moltiplicare gli agenti moltiplica i modi di sbagliare: un fraintendimento
 che si propaga, due agenti che entrano in un ping-pong senza convergere,
 l'errore di uno che diventa la premessa dell'altro. Non è una preoccupazione di
 principio: Cemri e colleghi {cite}`cemri2025why` raccolgono oltre
 milleseicento tracce di esecuzione da sette framework multi-agente e ne
 ricavano una tassonomia di quattordici modi di fallire, raggruppati in tre
-famiglie: **come è stato progettato il sistema** (ruoli e specifiche ambigue),
-**il disallineamento fra gli agenti** e **la verifica del risultato** (nessuno
+famiglie: come è stato progettato il sistema (ruoli e specifiche ambigue),
+il disallineamento fra gli agenti e la verifica del risultato (nessuno
 che controlli se il lavoro è fatto). Due famiglie su tre stanno nelle giunture,
 non dentro il singolo agente, e sono anche le più difficili da correggere,
 perché nessuno dei partecipanti le vede dal proprio posto.
@@ -178,7 +178,7 @@ trovato niente che faccia piacere a chi si entusiasma {cite}`cemri2025why`. Il
 vantaggio va misurato ogni volta, perché sui banchi di prova correnti è spesso
 piccolo, ed è l'osservazione da cui quel lavoro parte; e si sbaglia non tanto
 dentro un agente, che di solito il suo
-pezzo lo fa, quanto **nel passarsi il lavoro**: ruoli descritti male, agenti
+pezzo lo fa, quanto nel passarsi il lavoro: ruoli descritti male, agenti
 che vanno per conto proprio, e nessuno incaricato di controllare se il
 risultato finale sta in piedi. La regola prudente viene da sé: un ruolo si
 aggiunge quando risolve un problema che con un agente solo restava aperto, non
@@ -195,7 +195,7 @@ ci si mette d'accordo quando i partecipanti non sono affidabili, e come si può
 
 Nella sezione sul contesto abbiamo detto che un agente ha bisogno di uno
 schedario fuori dalla finestra, e che la sua bravura sta nel pescarne solo la
-pagina che serve adesso. Restava una domanda: **come sceglie quale pagina**?
+pagina che serve adesso. Restava una domanda: come sceglie quale pagina?
 Adesso possiamo rispondere, e la risposta è più interessante di quanto sembri,
 perché non è una sola regola ma tre criteri messi insieme.
 
@@ -209,7 +209,7 @@ fanno colazione, vanno al lavoro, si incontrano, chiacchierano. Nessuno ha
 scritto la loro giornata a mano: ciascuno è un modello di linguaggio che
 decide cosa fare in base a ciò che ricorda. Il risultato più citato è un
 comportamento che nessuno aveva programmato e che è venuto fuori da sé (si dice
-che è **emerso**): un agente decide di dare una festa di San Valentino, ne
+che è emerso): un agente decide di dare una festa di San Valentino, ne
 parla a qualcuno, l'invito si propaga di bocca in bocca per il paese, e la
 sera diversi agenti si presentano, essendosi coordinati senza che nessuno
 avesse scritto una riga per farli coordinare. La domanda interessante non è «è
@@ -245,7 +245,7 @@ comportamento coerente.
 `````{tab} Superiore
 
 L'architettura ha tre pezzi. Il **memory stream** è un registro append-only di
-osservazioni in linguaggio naturale, ciascuna con un timestamp. Il **recupero**
+osservazioni in linguaggio naturale, ciascuna con un timestamp. Il recupero
 seleziona, a ogni decisione, le memorie rilevanti con un punteggio che combina
 tre segnali normalizzati:
 
@@ -263,16 +263,16 @@ scala con gli altri due, e $\text{relevance}(m, q)$ è la
 similarità tra gli embedding della memoria e della query. Nel lavoro originale i
 pesi $\alpha$ valgono tutti 1: tre criteri sommati, non uno solo.
 
-Il terzo pezzo è la **riflessione**: periodicamente l'agente sintetizza dalle
+Il terzo pezzo è la riflessione: periodicamente l'agente sintetizza dalle
 memorie recenti alcune inferenze di livello più alto (proposizioni astratte
 come «Klaus è appassionato di ricerca») e le riscrive *nel* memory stream come
 nuove memorie, recuperabili a loro volta. Si forma così un albero:
 osservazioni grezze in basso, riflessioni via via più astratte in alto. La
-**pianificazione** traduce infine queste sintesi in piani giornalieri,
+pianificazione traduce infine queste sintesi in piani giornalieri,
 decomposti dal grossolano al fine. Il punto architetturale generale, oltre
 l'esperimento: la memoria a lungo termine di un agente non è «tenere tutto nel
-contesto», ma **memorizzare fuori, recuperare il pertinente, e ogni tanto
-ricomprimere in astrazioni** (lo stesso schema recupera-e-condensa che governa
+contesto», ma memorizzare fuori, recuperare il pertinente, e ogni tanto
+ricomprimere in astrazioni (lo stesso schema recupera-e-condensa che governa
 il RAG e il context engineering).
 
 `````
@@ -282,17 +282,17 @@ il RAG e il context engineering).
 Arriviamo alla domanda scomoda, e conviene partire dal caso facile per capire
 quanto questo sia difficile. Si prenda un programma che deve dire se una foto
 ritrae un gatto o un cane. Gli si dà una fotografia che una persona ha già
-catalogato, e quella catalogazione si chiama **etichetta**; si confronta la sua
+catalogato, e quella catalogazione si chiama etichetta; si confronta la sua
 risposta con l'etichetta; si contano gli errori. Fine. Un programma così si
-chiama **classificatore**, e valutarlo è banale perché la risposta giusta
+chiama classificatore, e valutarlo è banale perché la risposta giusta
 esiste, è una sola, ed è scritta lì accanto.
 
 Con un agente non torna niente di tutto questo, per tre ragioni che si
-sommano. Primo: spesso non esiste **una** sola risposta giusta; a un compito
+sommano. Primo: spesso non esiste una sola risposta giusta; a un compito
 come «sistema questo errore» corrispondono molte soluzioni valide. Secondo: il
-compito è fatto di **molti passi**, e un agente può arrivare al risultato
+compito è fatto di molti passi, e un agente può arrivare al risultato
 giusto per la strada sbagliata, o fallire dopo aver fatto quasi tutto bene.
-Terzo: l’**ambiente cambia** sotto i suoi piedi (una ricerca sul web dà
+Terzo: l’ambiente cambia sotto i suoi piedi (una ricerca sul web dà
 risultati diversi oggi e domani) e quindi la stessa prova, ripetuta, non è mai
 identica a se stessa.
 
@@ -303,7 +303,7 @@ portati a termine? È un sì o no, e ignora tutto il resto. La **traiettoria** �
 la strada che ha fatto per arrivarci: quali mosse, quante inutili, quanti giri
 a vuoto. Il **costo** è quel che si è consumato per strada, e si conta in
 token (i pezzetti di testo della sezione precedente), in chiamate agli
-strumenti e in secondi di attesa; quest'ultima voce si chiama **latenza**, ed è
+strumenti e in secondi di attesa; quest'ultima voce si chiama latenza, ed è
 il tempo che l'utente passa a guardare lo schermo. E il costo entra nel
 giudizio: un agente che risolve il compito consumando diecimila token e trenta
 passi non è «riuscito» allo stesso modo di uno che lo chiude in quattro.
@@ -318,15 +318,15 @@ in alcun modo da uno che riesce sempre.
 `````{tab} Elementare
 
 Come giudichi uno chef? Non dal singolo piatto assaggiato di sfuggita. Lo
-giudichi dal **servizio di un'intera serata**: gli ordini sono usciti giusti?
+giudichi dal servizio di un'intera serata: gli ordini sono usciti giusti?
 quanti sono tornati indietro? il tavolo otto ha aspettato un'ora?
 
 Con un agente è lo stesso. Non basta guardare la risposta finale di *una*
 prova: gli si danno tanti compiti e si conta la frazione portata a termine
-davvero (il **tasso di successo**). Ma un buon capocuoco guarda anche la
+davvero (il tasso di successo). Ma un buon capocuoco guarda anche la
 cucina, non solo i piatti in uscita: se un piatto è venuto bene per puro caso,
 in mezzo a un caos di padelle bruciate, non è un successo su cui contare
-domani. Per questo si ispeziona anche **come** l'agente ci è arrivato (la
+domani. Per questo si ispeziona anche come l'agente ci è arrivato (la
 traiettoria) e quanto è costato in tempo e fatica. Risultato giusto, strada
 pulita e conto ragionevole non sono la stessa cosa, e si guardano uno per uno.
 
@@ -346,14 +346,14 @@ vassoio sulla soglia della sala aveva fatto tutto bene fino a lì.
 
 `````{tab} Superiore
 
-Il **tasso di successo** (*success rate*) è la frazione di compiti risolti su un
+Il tasso di successo (*success rate*) è la frazione di compiti risolti su un
 insieme di prove: la metrica principe, ma grossolana, perché è un sì/no che
-ignora *come* si è arrivati e nasconde i successi fortunati. La **valutazione
-della traiettoria** (*trajectory evaluation*) guarda la sequenza di azioni:
+ignora *come* si è arrivati e nasconde i successi fortunati. La valutazione
+della traiettoria (*trajectory evaluation*) guarda la sequenza di azioni:
 erano quelle giuste? quante non hanno prodotto informazione nuova? e quando
 l'agente è finito in un vicolo cieco, se n'è accorto e ne è uscito? Va evitata
 la tentazione di chiedere che *ogni* passo avvicini all'obiettivo: sarebbe un
-criterio di progresso **monotono**, e punirebbe esattamente le mosse mature di
+criterio di progresso monotono, e punirebbe esattamente le mosse mature di
 un agente, cioè il re-planning quando un sotto-obiettivo fallisce, il tornare
 indietro dai rami che non promettono del Tree of Thoughts, il tentativo
 fallito che Reflexion usa per orientare il successivo. Il fallimento tipico di
@@ -363,7 +363,7 @@ sbagliarla dopo una traiettoria impeccabile (l'ultimo passo va storto):
 guardare solo il risultato finale confonde questi casi, e per capire davvero
 *dove* un agente rompe serve la traccia.
 
-Sotto tutto c'è la fragilità dei **compiti lunghi**, già incontrata:
+Sotto tutto c'è la fragilità dei compiti lunghi, già incontrata:
 l'accumulo di errori. Un modellino illustrativo: se a ogni passo la
 probabilità di sbagliare la mossa è $p$, e i passi sono indipendenti, la
 probabilità di una traiettoria di $n$ passi senza un solo errore è
@@ -390,7 +390,7 @@ Un frammento di codice rende concreto perché il solo tasso di successo non
 basta. Immaginiamo di aver fatto girare un agente su un pugno di compiti e di
 aver registrato, per ciascuno, l'esito, i passi, i token e se la traiettoria
 era «pulita». Ogni singola prova, cioè una volta che gli si dà un compito e lo
-si lascia lavorare finché non finisce, la chiameremo un **episodio**, come si
+si lascia lavorare finché non finisce, la chiameremo un episodio, come si
 fa parlando di {doc}`MDP e funzioni valore </ReinforcementLearning/mdp-valore>`.
 
 ```python
@@ -449,25 +449,25 @@ episodi per +/- 5 punti: 369
 I numeri raccontano più del solo «60%». Un compito è riuscito *per caso*, con
 una traiettoria sporca (nove passi, cammino non valido): conta come successo,
 ma non è un comportamento su cui fare affidamento. E un fallimento è arrivato
-dopo una traiettoria **valida**: l'agente ha fatto le mosse giuste ed è
+dopo una traiettoria valida: l'agente ha fatto le mosse giuste ed è
 inciampato all'ultimo; un caso ben diverso da chi ha sbagliato tutto. Il tasso
 di successo da solo appiattisce queste differenze; costo e traiettoria le
 fanno riemergere.
 
 Detto questo, il primo di quei numeri va guardato con sospetto, ed è il
 difetto che il codice illustra suo malgrado, calcolandoselo da sé nelle ultime
-due righe: **cinque episodi non misurano niente**. Provate cinque volte, e il
+due righe: cinque episodi non misurano niente. Provate cinque volte, e il
 caso da solo può farvi sembrare bravi o scarsi, senza che ci sia modo di
 distinguere le due cose.
 
-Il conto che lo dice si chiama **intervallo di confidenza**. Si prende il
+Il conto che lo dice si chiama intervallo di confidenza. Si prende il
 risultato osservato e ci si chiede fra quali due valori possa stare davvero
 quello vero, tenuto conto di quanto poche sono le prove. «Al 95%» vuol dire
-che si accetta di sbagliarsi una volta su venti: fatto cento volte
-l'esperimento, in novantacinque casi il valore vero cadrà dentro l'intervallo
-che abbiamo calcolato. (La formula usata nel codice è una fra le tante possibili
-e si chiama intervallo di Wilson: è quella che regge anche quando le prove sono
-pochissime.)
+che si accetta di sbagliarsi una volta su venti, e la promessa vale sul
+metodo: rifatto cento volte l'esperimento, e rifatto ogni volta il conto, in
+novantacinque casi l'intervallo che ne esce contiene il valore vero. (La
+formula usata nel codice è una fra le tante possibili e si chiama intervallo
+di Wilson: è quella che regge anche quando le prove sono pochissime.)
 
 Su tre successi su cinque quell'intervallo va dal 23% all'88%: quel «60%» è
 compatibile sia con un agente che fallisce tre volte su quattro, sia con uno
@@ -476,34 +476,34 @@ caso.
 
 E per stringerlo? Per sapere che il tasso di successo sta fra il 55% e il 65%,
 cioè con cinque punti percentuali di margine, di episodi ne servirebbero
-**trecentosessantanove**, non cinque. Il numero esce dalla formula nell'ultima
-riga del codice, e in quella formula il margine sta al denominatore **elevato
-al quadrato**: da lì una conseguenza che conviene sapere prima di progettare un
+trecentosessantanove, non cinque. Il numero esce dalla formula nell'ultima
+riga del codice, e in quella formula il margine sta al denominatore elevato
+al quadrato: da lì una conseguenza che conviene sapere prima di progettare un
 esperimento, cioè che dimezzare il margine costa quattro volte le prove. È la
 ragione per cui i banchi di prova seri riportano l'incertezza, e non un numero
 solo.
 
-Quei banchi di prova, che in inglese si chiamano **benchmark**, costruiscono
+Quei banchi di prova, che in inglese si chiamano benchmark, costruiscono
 proprio su queste idee. **AgentBench** {cite}`liu2023agentbench` mette i
-modelli alla prova come agenti in **otto ambienti diversi** (un sistema
+modelli alla prova come agenti in otto ambienti diversi (un sistema
 operativo da manovrare, un archivio di dati da interrogare, una casa simulata,
 un negozio online da navigare, e altri) e misura quanti compiti ciascuno porta
 a termine. Il verdetto era un utile bagno di umiltà: alla pubblicazione, anche
 i modelli migliori restavano lontani dal risolverli tutti.
 
-**SWE-bench** {cite}`jimenez2024swebench` alza ancora l'asticella: sono le
+SWE-bench {cite}`jimenez2024swebench` alza ancora l'asticella: sono le
 2.294 segnalazioni di errore vere che abbiamo incontrato all'inizio del
 capitolo, e risolverne una significa produrre una modifica al codice che fa
 passare i test del progetto. Al momento della pubblicazione i sistemi migliori
-ne chiudevano **pochi punti percentuali**.
+ne chiudevano pochi punti percentuali.
 
 La lezione, però, non è quella cifra, che un sistema nuovo può migliorare da un
-mese all'altro. È che **un banco di prova va messo alla prova anche lui**, e
+mese all'altro. È che un banco di prova va messo alla prova anche lui, e
 qui torna la promessa dell'apertura del capitolo, quando avevamo detto che su
 quei pochi punti percentuali ci sarebbe stato da ridire. Riesaminando a mano i
 successi di SWE-bench, Aleithan e colleghi {cite}`aleithan2024swebenchplus`
 hanno trovato che circa una correzione riuscita su tre ($32{,}67\%$) non era
-stata risolta ma **letta**, perché la soluzione era già scritta nella
+stata risolta ma letta, perché la soluzione era già scritta nella
 segnalazione o nei commenti sotto; e che un'altra quota quasi uguale
 ($31{,}08\%$) passava grazie a test troppo deboli per bocciare alcunché.
 
@@ -527,8 +527,8 @@ della prova con cui lo si è ottenuto, e non soltanto dell'agente.
 C'è infine una faccia della valutazione che non è una misura ma una rete di
 sicurezza. Un agente non solo *risponde*: *agisce*, e un'azione può fare danni
 veri, perché esegue codice, spende soldi, scrive su archivi. Valgono qui, in
-forma rafforzata, le stesse difese che vedremo parlando di modelli messi **in
-produzione**, cioè in mano a chi li userà davvero e non più a chi li sta
+forma rafforzata, le stesse difese che vedremo parlando di modelli messi in
+produzione, cioè in mano a chi li userà davvero e non più a chi li sta
 provando.
 
 La prima difesa sono i **guardrail**, che prendono il nome dalle barriere di
@@ -539,7 +539,7 @@ l'agente sta per fare e blocca le azioni pericolose prima che partano.
 
 La seconda si chiama **LLM-as-a-judge**, cioè un secondo modello promosso a
 esaminatore: utile per dare un voto a migliaia di traiettorie in poco tempo,
-purché si ricordi che ha delle **inclinazioni sistematiche** da cui non si
+purché si ricordi che ha delle inclinazioni sistematiche da cui non si
 libera. Tende a preferire la risposta che ha letto per prima, a premiare le
 risposte lunghe perché sembrano più complete, e a dare ragione a se stesso
 quando è lui l'autore di ciò che sta giudicando. La valutazione di un agente,
@@ -551,18 +551,18 @@ più un sistema di controlli attorno.
 Gli agenti sono promettenti: l'idea di un modello che pianifica, usa
 strumenti, collabora e ricorda è potente, e i primi risultati su compiti
 reali, per quanto modesti, erano impensabili pochi anni fa. Ma sono anche
-**fragili**, e i loro difetti sono strutturali, non dettagli da limare. Gli
-errori si **accumulano** lungo la catena, e un compito lungo li amplifica. Il
+fragili, e i loro difetti sono strutturali, non dettagli da limare. Gli
+errori si accumulano lungo la catena, e un compito lungo li amplifica. Il
 conto dell'apertura, però, li dava sparsi e ciascuno fatale: nei fatti un
 agente che ha imboccato la strada sbagliata tende a restarci, quindi gli
 errori arrivano a grappoli, e rileggersi dopo un fallimento o rifare il piano
 quando salta ne recupera una parte. La direzione non cambia; il numero sì. Il
-**costo**, intanto, cresce con i passi, con gli agenti, con i giri di
-conversazione. E l’**imprevedibilità** che rende versatile un
+costo, intanto, cresce con i passi, con gli agenti, con i giri di
+conversazione. E l’imprevedibilità che rende versatile un
 motore linguistico è la stessa che rende difficile garantire cosa farà: più
 libertà d'azione, meno controllo.
 
-È, soprattutto, un'area **giovane**: più ricette provate che teoria (le
+È, soprattutto, un'area giovane: più ricette provate che teoria (le
 euristiche di cui parlavamo in apertura), banchi di prova ancora in
 costruzione, poche certezze su cosa funzioni e perché {cite}`xi2023rise`. Chi
 lavora con gli agenti oggi costruisce su terreno che si muove. È un motivo per
@@ -579,43 +579,43 @@ dispersione.
 
 ```{admonition} Da ricordare
 :class: important
-- Oltre al ciclo passo-passo, due mosse per i compiti grossi: scrivere **la
-  lista prima di entrare** (prima il piano dei sotto-compiti, poi
-  l'esecuzione) e mettere in fila **più agenti** con mestieri diversi (chi
+- Oltre al ciclo passo-passo, due mosse per i compiti grossi: scrivere la
+  lista prima di entrare (prima il piano dei sotto-compiti, poi
+  l'esecuzione) e mettere in fila più agenti con mestieri diversi (chi
   progetta, chi costruisce, chi collauda). Il piano dà una visione d'insieme,
   ma una lista scritta al buio va rifatta quando la realtà la smentisce.
 - Più teste non sono gratis e non sono sempre meglio: ogni agente in più è
   lavoro da pagare e un modo in più di fraintendersi. Chi è andato a guardare
   come falliscono davvero questi sistemi {cite}`cemri2025why` ha trovato
   guadagni spesso modesti, e ha trovato che si sbaglia soprattutto nel
-  **mettersi d'accordo**, non dentro il singolo agente. Si aggiunge un ruolo
+  mettersi d'accordo, non dentro il singolo agente. Si aggiunge un ruolo
   solo quando risolve un problema vero.
-- La **memoria che dura** è un diario tenuto
+- La memoria che dura è un diario tenuto
   fuori, da cui si ripesca solo la pagina che conta adesso. Gli agenti di
   Smallville {cite}`park2023generative` la ripescano con tre criteri sommati
-  insieme (quanto è **recente** il ricordo, quanto è **importante**, quanto
-  **c'entra** con la situazione di adesso), e ogni tanto si fermano a
-  **riflettere**, ricavando dagli appunti una conclusione più alta che
+  insieme (quanto è recente il ricordo, quanto è importante, quanto
+  c'entra con la situazione di adesso), e ogni tanto si fermano a
+  riflettere, ricavando dagli appunti una conclusione più alta che
   riscrivono nel diario.
-- **Dare un voto** a un agente è più duro che darlo a un classificatore: non
+- Dare un voto a un agente è più duro che darlo a un classificatore: non
   c'è una risposta unica, il compito è fatto di molti passi e l'ambiente cambia
-  sotto i piedi. Servono il **tasso di successo**, uno sguardo alla **strada**
+  sotto i piedi. Servono il tasso di successo, uno sguardo alla strada
   che ha fatto (non solo al risultato) e il conto di quanto è costato in tempo
   e denaro. E una prova sola non basta: cinque tentativi non distinguono chi
   riesce sempre da chi riesce a metà.
-- I banchi di prova **AgentBench** {cite}`liu2023agentbench` (otto ambienti
-  diversi) e **SWE-bench** {cite}`jimenez2024swebench` (segnalazioni di errore
+- I banchi di prova AgentBench {cite}`liu2023agentbench` (otto ambienti
+  diversi) e SWE-bench {cite}`jimenez2024swebench` (segnalazioni di errore
   vere) mostrano risultati inizialmente modesti: un promemoria di onestà. Ma un
   benchmark misura anche se stesso: rileggendo a mano i successi di SWE-bench
   si è scoperto che una correzione riuscita su tre non era stata risolta, era
-  stata **copiata** dalla segnalazione {cite}`aleithan2024swebenchplus`.
-- Gli errori si **sommano** sui compiti lunghi: se sbagli una mossa su dieci e
+  stata copiata dalla segnalazione {cite}`aleithan2024swebenchplus`.
+- Gli errori si sommano sui compiti lunghi: se sbagli una mossa su dieci e
   le mosse sono dieci, la probabilità di non sbagliarne nessuna è
   $0{,}9^{10} \approx 0{,}35$, cioè poco più di una volta su tre. È un
   modellino, e nella pratica va un po’ meglio, perché non tutti gli errori sono
   fatali e perché rileggersi e ripianificare ne recuperano una parte. Gli
   agenti sono promettenti ma
-  fragili, e restano un campo **giovane** {cite}`xi2023rise`. Misurare più che
+  fragili, e restano un campo giovane {cite}`xi2023rise`. Misurare più che
   sperare.
 ```
 
@@ -626,41 +626,43 @@ dispersione.
 ```{admonition} Da ricordare
 :class: important
 - Oltre il ReAct passo-passo, due mosse per i compiti complessi:
-  **plan-and-execute** (prima un piano di sotto-compiti, poi l'esecuzione) e i
-  sistemi **multi-agente** con ruoli specializzati (pianificatore, esecutore,
+  plan-and-execute (prima un piano di sotto-compiti, poi l'esecuzione) e i
+  sistemi multi-agente con ruoli specializzati (pianificatore, esecutore,
   critico). Pianificare dà struttura ma un piano rigido va rifatto quando la
   realtà lo smentisce.
-- I sistemi **multi-agente** (come nel framework **AutoGen**
+- I sistemi multi-agente (come nel framework AutoGen
   {cite}`wu2024autogen`, che li modella come una conversazione tra agenti) non
   sono gratis né sempre migliori: i guadagni sui benchmark correnti sono
   spesso piccoli (è la premessa da cui quel lavoro parte, non una sua misura),
   e delle tre famiglie di modi di fallire che
-  {cite}`cemri2025why` ricava da milleseicento tracce, due stanno nel
-  **coordinamento** (progetto del sistema, disallineamento fra agenti, verifica
-  del risultato). Si aggiunge un ruolo solo quando risolve un problema reale.
-- La **memoria a lungo termine** non è tenere tutto nel contesto: i
-  **generative agents** {cite}`park2023generative` memorizzano fuori,
-  **recuperano** il pertinente combinando recenza, salienza e pertinenza, e
-  **riflettono** condensando le memorie in astrazioni (lo stesso schema
+  {cite}`cemri2025why` ricava da milleseicento tracce, due stanno nelle
+  giunture, il disallineamento fra agenti e la verifica del risultato, mentre
+  la terza è il progetto del sistema. Si aggiunge un ruolo solo quando
+  risolve un problema reale.
+- La memoria a lungo termine non è tenere tutto nel contesto: i
+  generative agents {cite}`park2023generative` memorizzano fuori,
+  recuperano il pertinente combinando recenza, salienza e pertinenza, e
+  riflettono condensando le memorie in astrazioni (lo stesso schema
   recupera-e-condensa del RAG).
-- **Valutare** un agente è più duro che valutare un classificatore: nessuna
-  risposta unica, compito multi-passo, ambiente che cambia. Servono **tasso di
-  successo**, valutazione della **traiettoria** (che non deve pretendere un
-  progresso monotono, o punirebbe il backtracking), **costo/latenza** e la
-  **dispersione** su ripetizioni: su $3/5$ l'intervallo di Wilson al 95% va dal
+- Valutare un agente è più duro che valutare un classificatore: nessuna
+  risposta unica, compito multi-passo, ambiente che cambia. Servono tasso di
+  successo, valutazione della traiettoria (che non deve pretendere un
+  progresso monotono, o punirebbe il backtracking), costo/latenza e la
+  dispersione su ripetizioni: su $3/5$ l'intervallo di Wilson al 95% va dal
   23% all'88%.
-- I benchmark **AgentBench** {cite}`liu2023agentbench` (otto ambienti) e
-  **SWE-bench** {cite}`jimenez2024swebench` (issue reali di GitHub) mostrano
+- I benchmark AgentBench {cite}`liu2023agentbench` (otto ambienti) e
+  SWE-bench {cite}`jimenez2024swebench` (issue reali di GitHub) mostrano
   tassi di successo inizialmente modesti, ma la cifra misura anche il
-  benchmark: SWE-Bench+ trova il $32{,}67\%$ di soluzioni già presenti nella
-  issue {cite}`aleithan2024swebenchplus`. In produzione valgono i **guardrail**
-  e l’**LLM-as-a-judge** di LLMOps, con i suoi bias.
-- Gli errori si **accumulano** sui compiti lunghi: *se* i passi sono
+  benchmark: di tutte le correzioni date per riuscite, SWE-Bench+ ne trova il
+  $32{,}67\%$ con la soluzione già scritta nella issue
+  {cite}`aleithan2024swebenchplus`. In produzione valgono i guardrail
+  e l’LLM-as-a-judge di LLMOps, con i suoi bias.
+- Gli errori si accumulano sui compiti lunghi: *se* i passi sono
   indipendenti, una traiettoria senza errori ha probabilità $(1-p)^n$, dove $p$
   è la probabilità di sbagliare un passo e $n$ il numero di passi, e precipita
   con $n$ (nel modellino illustrativo; nella pratica i passi sono correlati e
   riflessione e re-planning ne recuperano una parte). Gli agenti sono
-  promettenti ma fragili, e restano un'area **giovane** {cite}`xi2023rise`.
+  promettenti ma fragili, e restano un'area giovane {cite}`xi2023rise`.
   Misurare più che sperare.
 ```
 

@@ -119,8 +119,10 @@ eventuali feature di arco si raccolgono in un tensore analogo indicizzato dalle
 coppie.
 
 Il grado di un nodo è il numero dei suoi vicini, cioè la somma della sua
-riga: $\deg(i) = \sum_{j} A_{ij}$. I gradi si radunano nella **matrice dei
-gradi** $\mathbf{D} \in \mathbb{R}^{N \times N}$, diagonale, con
+riga: $\deg(i) = \sum_{j} A_{ij}$ (su un grafo diretto quella somma è il grado
+*uscente*, e il grado entrante è la somma della colonna; su uno pesato è la
+somma dei pesi). I gradi si radunano nella **matrice dei gradi**
+$\mathbf{D} \in \mathbb{R}^{N \times N}$, diagonale, con
 
 $$
 D_{ii} = \deg(i) = \sum_{j} A_{ij}, \qquad D_{ij} = 0 \ \text{ per } i \neq j,
@@ -242,10 +244,10 @@ esempio se una molecola è tossica.
 - **Livello-arco.** Si prevede se un arco esiste, o esisterà, tra due nodi: la
   link prediction. È il motore del «forse conosci…» di un social e del «chi
   ha comprato questo…» di un negozio online. È anche, alla lettera, la forma
-  del problema che il {doc}`capitolo sui sistemi di raccomandazione </SistemiRaccomandazione/overview>`
-  affronterà per intero: un grafo con gli utenti da una parte e i prodotti
-  dall'altra, e consigliare un film vuol dire prevedere un arco che ancora non
-  c'è.
+  del problema che il {doc}`capitolo sui sistemi di raccomandazione
+  </SistemiRaccomandazione/overview>` affronterà per intero: un grafo con gli
+  utenti da una parte e i prodotti dall'altra, e consigliare un film vuol dire
+  prevedere un arco che ancora non c'è.
 - **Livello-grafo.** Si prevede una proprietà dell’*intero* grafo, riassunto in
   un solo verdetto. L'esempio principe è la chimica: una molecola è un grafo di
   atomi e legami, e vogliamo prevedere se è solubile, tossica, o efficace come
@@ -414,9 +416,9 @@ collegati. Quello che segue è la figura di prima scritta in un altro modo, e
 costruirla è solo contare vicini e riportare i conti. La sostanza sta nelle
 righe di testo fra una tabella e l'altra.
 
-I suoi archi sono: 1–2, 1–3, 2–3, 3–4 e 4–5. È un grafo non diretto e non
-pesato, quindi la matrice di adiacenza $\mathbf{A}$ è simmetrica e fatta di
-soli 0 e 1. Riga per riga, mettiamo un 1 dove due nodi sono collegati:
+Gli archi di quel grafo sono 1–2, 1–3, 2–3, 3–4 e 4–5. È un grafo non diretto
+e non pesato, quindi la matrice di adiacenza $\mathbf{A}$ è simmetrica e fatta
+di soli 0 e 1. Riga per riga, mettiamo un 1 dove due nodi sono collegati:
 
 $$
 \mathbf{A} =

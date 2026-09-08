@@ -1,7 +1,7 @@
 # Giocare contro qualcuno: minimax, potatura, orizzonte
 
-Nel labirinto della sezione precedente i corridoi stanno fermi. Se ne provo uno
-e non porta da nessuna parte, il labirinto non si riorganizza per dispetto.
+In un labirinto i corridoi stanno fermi. Se ne provo uno e non porta da nessuna
+parte, il labirinto non si riorganizza per dispetto.
 
 Con un avversario davanti cambia tutto, e cambia in un punto solo: **metà delle
 mosse non le scelgo io**. L’albero è lo stesso, i rami sono gli stessi, ma un
@@ -399,15 +399,14 @@ mai.
 
 Fermarsi sempre alla stessa distanza ha un costo con un nome: **l’effetto
 orizzonte**. Il mio alfiere è spacciato, comunque giochi fra sei mosse me lo
-prendono, e io guardo avanti cinque mosse, così quella perdita per me non
-esiste. Do allora due scacchi inutili al suo re, che sotto scacco deve
-rispondere e non può fare altro: ogni scacco gli ruba una mossa, e regalando un
-pedone per volta la cattura slitta a sette mosse, a otto, a nove, fuori dal mio
-orizzonte. Riguardo, l’alfiere è salvo, e concludo che regalare pedoni sia
-un’ottima idea. Nessuno ha sbagliato a programmare: capita a chiunque giudichi
-il mondo a una scadenza fissa, ben oltre gli scacchi. Il disastro sta ancora
-là, appena oltre il punto in cui smetto di guardare, e i pedoni li ho pagati
-davvero.
+prendono, e io guardo avanti otto mosse: quella perdita la vedo, e mi pesa. Do
+allora tre scacchi inutili al suo re, che sotto scacco deve rispondere e non può
+fare altro: ogni scacco gli ruba una mossa, e regalando un pedone per volta la
+cattura slitta a sette mosse, a otto, a nove, fuori dal mio orizzonte. Riguardo,
+l’alfiere è salvo, e concludo che regalare pedoni sia un’ottima idea. Nessuno ha
+sbagliato a programmare: capita a chiunque giudichi il mondo a una scadenza
+fissa, ben oltre gli scacchi. Il disastro sta ancora là, appena oltre il punto
+in cui smetto di guardare, e i pedoni li ho pagati davvero.
 
 Un rimedio a metà lo conosce ogni giocatore. Se dove arrivo i pezzi si stanno
 ancora mangiando a vicenda, lì non mi fermo. Tiro avanti finché le acque non si

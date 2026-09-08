@@ -911,7 +911,7 @@ Qual è, lo dice la sezione seguente.
   massimizzarlo migliora modello ed encoder insieme.
 - Forma operativa:
   $\mathcal{E} = \mathbb{E}_{q_\phi}[\log p_\theta(\mathbf{x} \mid \mathbf{z})]
-  - D_{\mathrm{KL}}(q_\phi(\mathbf{z} \mid \mathbf{x}) \,\|\, p(\mathbf{z}))$.
+  {} - D_{\mathrm{KL}}(q_\phi(\mathbf{z} \mid \mathbf{x}) \,\|\, p(\mathbf{z}))$.
   Con prior $\mathcal{N}(\mathbf{0}, \mathbf{I})$ e posterior gaussiana
   diagonale il secondo termine è in forma chiusa e si annulla se e solo se
   l’encoder restituisce il prior.

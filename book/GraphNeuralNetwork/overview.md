@@ -183,8 +183,8 @@ reti neurali con parametri $\theta$ condivisi da tutti i nodi e tutti i grafi:
 è questa condivisione, unita all'invarianza all'ordine di
 $\mathrm{AGGREGATE}$, a garantire l'equivarianza alla permutazione, ed è
 ancora la condivisione a rendere il modello indipendente dalla taglia del
-grafo. La sezione sul message passing sviscera questo schema e ne ricava la
-sua incarnazione più celebre, la *Graph Convolutional Network* (GCN).
+grafo. La sezione sul message passing sviscera questo schema e ne ricava
+l'incarnazione più celebre, la *Graph Convolutional Network* (GCN).
 
 `````
 

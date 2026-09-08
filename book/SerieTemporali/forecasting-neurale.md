@@ -359,6 +359,10 @@ anch'essi propri di quella serie) e $\theta$ i parametri *condivisi* fra tutte
 le serie: minimizzare $\mathcal{L}$ equivale a massimizzare la verosimiglianza
 dei dati.
 
+È la ricetta di
+{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`, applicata a
+un passo temporale alla volta.
+
 C'è poi un pezzo senza il quale un modello globale non sta in piedi, e che il
 racconto di solito salta: prima di entrare nella rete ogni serie viene divisa per
 una sua scala (tipicamente la media dei suoi valori), e la previsione viene
@@ -574,7 +578,7 @@ giorni passati da dare in pasto al modello e li rimisero in ordine sparso. Un
 modello che usa davvero l'ordine del tempo, così, dovrebbe crollare. Sui cambi
 fra valute i Transformer non se ne accorsero per niente, mentre la retta
 peggiorò di un quarto: lì il tempo lo stava usando lei. Su altre serie, invece,
-mescolare fa male a tutti quanti. Che è già una lezione: quanto un modello usi
+mescolare fa male quasi a tutti. Che è già una lezione: quanto un modello usi
 l'ordine del tempo non è una sua proprietà fissa, e si scopre misurandola,
 banco di prova per banco di prova.
 
@@ -878,8 +882,10 @@ confronto con la linea di base classica.
 
 In tutto il capitolo l'unica conoscenza a disposizione è stata la storia del
 fenomeno. Nessuno ha spiegato al modello perché la marea sale, e la marea si
-prevede lo stesso, finché le regolarità tengono. Il {doc}`capitolo sulle PINN </PINN/overview>` parte dal caso opposto, quello in cui la legge che governa il fenomeno si conosce
-benissimo e a scarseggiare sono le misure.
+prevede lo stesso, finché le regolarità tengono. Il
+{doc}`capitolo sulle PINN </PINN/overview>` parte dal caso opposto, quello in
+cui la legge che governa il fenomeno si conosce benissimo e a scarseggiare sono
+le misure.
 
 [^banda-limite]: I conti, per chi li vuole. Un AR(1) con $|\phi|<1$ ha
     varianza di lungo periodo $\sigma^2/(1-\phi^2)$, che con $\sigma=1$ e

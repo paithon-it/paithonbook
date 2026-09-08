@@ -3,10 +3,10 @@
 Quando pronunci la parola «casa», il microfono del telefono non registra
 quattro lettere: registra circa sedicimila numeri al secondo. Ogni numero è la
 pressione dell'aria misurata in un istante, si chiama **campione**, e messi in
-fila quei numeri raccontano come l'aria ha vibrato. Sedicimila è una scelta, non una legge: bastano a rendere una voce senza
-sprecare spazio, e chi
-registra musica ne usa quasi il triplo, perché lì servono anche gli acuti che
-nel parlato non ci sono.
+fila quei numeri raccontano come l'aria ha vibrato. Sedicimila è una scelta,
+non una legge: bastano a rendere una voce senza sprecare spazio, e chi registra
+musica ne usa quasi il triplo, perché lì servono anche gli acuti che nel
+parlato non ci sono.
 
 Il compito del riconoscimento vocale automatico (*Automatic Speech
 Recognition*, ASR) è tradurre quel fiume di numeri in una manciata di
@@ -19,17 +19,10 @@ costruiscono questi modelli.
 Prima di dare in pasto l'audio a una rete lo trasformiamo in uno
 **spettrogramma**: tagliamo il segnale in finestrelle di circa 25 millesimi di
 secondo, una nuova ogni 10, e per ciascuna misuriamo quanta energia c'è a ogni
-frequenza, cioè a ogni altezza sonora. Ogni finestrella è un *frame*, e un
-secondo di parlato diventa così un centinaio di frame.
-
-Le finestrelle si sovrappongono, e non è una svista. Il taglio non lo diamo
-netto come con le forbici: ai bordi di ciascuna abbassiamo apposta il suono
-fino quasi a zero, e la ragione la conosci se hai mai staccato di colpo una
-canzone. Quel «tac» che si sente non c'era nella canzone: l'ha fatto lo
-stacco. Un taglio brusco aggiunge un suono suo, e in una misura che serve
-proprio a dire quali suoni ci sono è l'ultima cosa che vogliamo. Sfumiamo i
-bordi per evitarlo; ma allora ai bordi il suono conta quasi niente, e senza
-sovrapposizione quello che capita lì andrebbe perso.
+frequenza, cioè a ogni altezza sonora. È la finestra di Hann di {doc}`Dal suono
+alle feature </Audio/dal-suono-alle-feature>`, con i bordi sfumati e il passo
+che la fa sovrapporre alla vicina. Ogni finestrella è un *frame*, e un secondo
+di parlato diventa così un centinaio di frame.
 
 La trascrizione, invece, è lunga poche decine di caratteri. Due sequenze di
 lunghezza molto diversa, e nessuno ci dice quale frame corrisponde a quale

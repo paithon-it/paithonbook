@@ -37,11 +37,11 @@ poi il tempo lo passi a pensare a *cosa* dire, non a *come* scriverlo. Per chi
 arriva dalla matematica, dalla fisica o dalla biologia e vuole esprimere un
 ragionamento, è una liberazione.
 
-A questo si aggiungono due cose decisive: è **gratuito** e ha una **comunità**
+A questo si aggiungono due cose decisive: è gratuito e ha una comunità
 enorme. Per quasi ogni problema (leggere un file, disegnare un grafico,
-addestrare una rete neurale), qualcuno ha già scritto una **libreria** pronta:
+addestrare una rete neurale), qualcuno ha già scritto una libreria pronta:
 un pacchetto di istruzioni già confezionate da altri, che ti risparmia il
-lavoro. Non devi reinventare la ruota: la **importi** e la usi. Importare vuol
+lavoro. Non devi reinventare la ruota: la importi e la usi. Importare vuol
 dire scrivere una riga in cima al programma, `import numpy`, per dire a Python
 «da qui in poi voglio usare anche questa»: da quel momento tutti gli strumenti
 della libreria sono a disposizione. La libreria deve però essere già presente
@@ -64,7 +64,7 @@ tira su chi ha gli attrezzi per farlo in fretta.
 
 `````{tab} Superiore
 
-Python è un linguaggio **interpretato** e **dinamicamente tipizzato**: paghi
+Python è un linguaggio interpretato e dinamicamente tipizzato: paghi
 in velocità di esecuzione ciò che guadagni in velocità di sviluppo. La chiave
 del suo successo scientifico è però che aggira il *problema dei due
 linguaggi*. Le operazioni pesanti non girano affatto in Python puro: NumPy è
@@ -89,7 +89,7 @@ stesso, e basta un'istruzione per farsela stampare:
 import this   # stampa lo "Zen of Python"
 ```
 
-Metà di quella riga non è un'istruzione: il **cancelletto `#`** apre un
+Metà di quella riga non è un'istruzione: il cancelletto `#` apre un
 *commento*, e tutto ciò che lo segue sulla stessa riga è scritto per chi legge,
 non per il computer, che lo salta. I commenti dicono che cosa fa la riga
 accanto, e la freccia `->` dentro un commento significa «e viene fuori questo».
@@ -122,28 +122,28 @@ La forza di Python nell'AI non è il linguaggio da solo, ma la torre di
 librerie costruite l'una sull'altra ({numref}`fig-stack-python`; in inglese
 quella torre si chiama *stack*). Ognuna fa una cosa e la fa bene.
 
-- **NumPy**: il fondamento. Introduce l’*array* N-dimensionale, il blocco di
-  numeri su cui i conti si fanno tutti insieme, e rende veloce l’**algebra
-  lineare**, cioè la matematica delle tabelle di numeri; quasi tutto il resto
+- NumPy: il fondamento. Introduce l’*array* N-dimensionale, il blocco di
+  numeri su cui i conti si fanno tutti insieme, e rende veloce l’algebra
+  lineare, cioè la matematica delle tabelle di numeri; quasi tutto il resto
   poggia su di lui.
-- **Pandas**: dati tabellari. Il `DataFrame` è un foglio di calcolo
+- Pandas: dati tabellari. Il `DataFrame` è un foglio di calcolo
   programmabile: caricare, pulire e trasformare i dati prima di darli in pasto
   a un modello.
-- **Matplotlib**: visualizzazione. I grafici con cui esplori i dati e racconti
+- Matplotlib: visualizzazione. I grafici con cui esplori i dati e racconti
   i risultati.
-- **scikit-learn**: la cassetta degli attrezzi del machine learning *classico*,
+- scikit-learn: la cassetta degli attrezzi del machine learning *classico*,
   quello che viene prima delle reti neurali. Dentro ci sono decine di modelli
   diversi, e li si comanda tutti con le stesse due parole: `fit` (impara da
   questi dati) e `predict` (adesso prevedi). Imparato a usarne uno, li sai
-  usare tutti, ed è quel che si intende con **API uniforme** (l'API di una
+  usare tutti, ed è quel che si intende con API uniforme (l'API di una
   libreria è l'insieme dei comandi con cui le si parla).
-- **PyTorch** (Facebook AI Research, oggi Meta), deep learning: costruisce reti
+- PyTorch (Facebook AI Research, oggi Meta), deep learning: costruisce reti
   neurali e le addestra, calcolando da sé le correzioni da fare ai numeri
   interni della rete ogni volta che sbaglia, e quei conti li scarica sulla GPU.
   Con lui la torre finisce e comincia un edificio accanto: il calcolo se lo fa
   per conto proprio, con un motore in C++ tutto suo, e a NumPy chiede soltanto
   di scambiarsi i dati, cosa che i due fanno affacciandosi alla stessa finestra
-  invece di ricopiarseli. Il suo concorrente storico è **TensorFlow** (Google,
+  invece di ricopiarseli. Il suo concorrente storico è TensorFlow (Google,
   2015), che accanto alla torre sta allo stesso modo.
 
 ```{figure} ../figures/stack-scientifico-python.svg
@@ -175,7 +175,7 @@ guadagno è meno ovvio di quanto sembri.
 Dieci centesimi di pedaggio non sono cari. Un milione di volte, sì.
 
 Con il solo Python, raddoppiare un milione di numeri vuol dire percorrerli uno
-per uno in un **ciclo** (un'istruzione che si ripete tante volte, spiegata fra
+per uno in un ciclo (un'istruzione che si ripete tante volte, spiegata fra
 le basi del linguaggio), e a ogni giro Python paga il suo pedaggio: apre la
 casella, guarda che cosa c'è dentro, si ricorda che quello è un numero, cerca
 come si moltiplicano i numeri, e solo alla fine moltiplica. La moltiplicazione
@@ -268,7 +268,7 @@ Il codice si può leggere, ma è fatto per essere provato. Ecco come, in concret
 
 ### Senza installare niente
 
-Ogni capitolo esiste anche come notebook su **Google Colab**, con tutte le sue
+Ogni capitolo esiste anche come notebook su Google Colab, con tutte le sue
 celle in ordine e già pronte: gira nel browser, le librerie sono già
 installate, e per eseguire una cella si preme il triangolino che ha accanto. Il
 collegamento sta in testa a ogni capitolo su `book.paithon.it/main`, e non
@@ -277,15 +277,15 @@ provare gli esempi mentre si legge.
 
 ### Sul proprio computer
 
-Serve un **terminale**, cioè la finestra in cui si
-scrivono comandi al computer invece di cliccare: si chiama *Terminale* su macOS
-e Linux, *Prompt dei comandi* (o *PowerShell*) su Windows. Su Linux Python c'è già. Su macOS no: `/usr/bin/python3` è un segnaposto che
-al primo uso propone di installare gli strumenti da sviluppatore di Xcode, e
-conviene accettare, oppure scaricare Python da `python.org` come su Windows.
-Su Windows si scarica da `python.org`, ricordando di spuntare
-«Add Python to PATH» durante l'installazione: è la casella che dice al
-terminale dove Python è stato messo, e senza di essa il terminale risponderà
-che Python non lo trova. Poi, quattro gesti:
+Serve un **terminale**, cioè la finestra in cui si scrivono comandi al
+computer invece di cliccare: si chiama *Terminale* su macOS e Linux, *Prompt
+dei comandi* (o *PowerShell*) su Windows. Su Linux Python c'è già. Su macOS
+no: `/usr/bin/python3` è un segnaposto che al primo uso propone di installare
+gli strumenti da sviluppatore di Xcode, e conviene accettare, oppure scaricare
+Python da `python.org` come su Windows. Su Windows si scarica da `python.org`,
+ricordando di spuntare «Add Python to PATH» durante l'installazione: è la
+casella che dice al terminale dove Python è stato messo, e senza di essa il
+terminale risponderà che Python non lo trova. Poi, quattro gesti:
 
 ```text
 python3 --version        # c'è? risponde con il numero, per esempio "Python 3.12.3"
@@ -303,13 +303,13 @@ un programma lo si scrive in un file di testo con estensione `.py` (per esempio
 `primo.py`, con dentro `print("ciao")`) e lo si esegue con `python3 primo.py`.
 Il file lo si può scrivere con qualunque editor di testo, ma conviene
 usarne uno che conosca Python e segnali gli errori mentre scrivi: i due più
-diffusi sono **Visual Studio Code** e **PyCharm**, gratuiti entrambi. Se un
+diffusi sono Visual Studio Code e PyCharm, gratuiti entrambi. Se un
 programma non finisce più (capita: basta un ciclo scritto male) si ferma
 premendo `Ctrl+C`.
 
 ### Le librerie, e la scatola in cui metterle
 
-Le librerie non arrivano con Python: si installano una volta con **`pip`**,
+Le librerie non arrivano con Python: si installano una volta con `pip`,
 il programma che va a prenderle in rete e le mette al posto giusto (dentro
 l'ambiente virtuale di cui fra un attimo, `pip` c'è sempre). E conviene
 installarle dentro
@@ -330,7 +330,7 @@ significa «questo lo faccio da amministratore», e il terminale chiederà la
 password: serve perché stiamo aggiungendo qualcosa al computer intero, e non al
 singolo progetto.
 
-Due parole sui comandi. Il `-m` vuol dire «esegui il **modulo** che si chiama
+Due parole sui comandi. Il `-m` vuol dire «esegui il modulo che si chiama
 così», dove un modulo è un file di Python che si può tanto eseguire quanto
 importare; è il modo di lanciare uno strumento che viaggia dentro Python invece
 che un file scritto da te, e `venv` è quello strumento. `source` esegue le
@@ -388,21 +388,21 @@ primo modello, ed è la stessa cassetta di attrezzi che aprono il
   libreria pronta e perché lo usa moltissima gente. Veloce non lo è, e non ne
   ha bisogno: i conti pesanti li fa fare a librerie scritte in linguaggi più
   vicini alla macchina, e si limita a dare gli ordini.
-- Le librerie sono una **torre**: NumPy alla base (i numeri), sopra Pandas
-  (le tabelle), Matplotlib (i grafici) e scikit-learn. **PyTorch**, con cui si
+- Le librerie sono una torre: NumPy alla base (i numeri), sopra Pandas
+  (le tabelle), Matplotlib (i grafici) e scikit-learn. PyTorch, con cui si
   costruiscono le reti neurali, sta accanto alla torre più che sopra: i conti
   se li fa da sé, e con NumPy si limita a scambiarsi i dati.
 - Il guadagno di scrivere il conto sul blocco intero invece che numero per
   numero sta nel pedaggio che Python paga a ogni giro di un ciclo, e che così
   si paga una volta sola.
-- Il codice si prova in tre posti: l’**interprete** (scrivi una riga, risponde
-  subito), i **notebook** (quaderni fatti di celle) e **Colab**, che dà
+- Il codice si prova in tre posti: l’interprete (scrivi una riga, risponde
+  subito), i notebook (quaderni fatti di celle) e Colab, che dà
   notebook e schede grafiche gratis nel browser.
 - Nei notebook le celle condividono la memoria, e c'è un tranello: eseguirle in
   disordine può far comparire un risultato che, rileggendo la pagina, non
   torna. Si rimedia rieseguendo tutto dall'alto in basso.
-- Sul proprio computer le librerie di ogni progetto vanno in un **ambiente
-  virtuale** (`python3 -m venv`), una cartella-scatola che le tiene separate da
+- Sul proprio computer le librerie di ogni progetto vanno in un ambiente
+  virtuale (`python3 -m venv`), una cartella-scatola che le tiene separate da
   quelle di tutti gli altri progetti.
 ```
 
@@ -412,19 +412,19 @@ primo modello, ed è la stessa cassetta di attrezzi che aprono il
 
 ```{admonition} Da ricordare
 :class: important
-- Python domina l'AI per **leggibilità**, **ecosistema** e **comunità** più che
+- Python domina l'AI per leggibilità, ecosistema e comunità più che
   per velocità bruta: fa da collante a librerie compilate in C/C++/CUDA.
-- Lo **stack scientifico** è a strati: NumPy alla base, poi Pandas, Matplotlib
+- Lo stack scientifico è a strati: NumPy alla base, poi Pandas, Matplotlib
   e scikit-learn, che su di lui poggiano davvero. PyTorch e TensorFlow stanno
   invece a fianco: hanno un motore di calcolo proprio, e con NumPy si limitano
   a scambiare i dati.
-- Il guadagno della **vettorizzazione** viene dall’*overhead* dell'interprete
+- Il guadagno della vettorizzazione viene dall’*overhead* dell'interprete
   che sparisce a ogni iterazione: due o tre ordini di grandezza sul ciclo
-  Python equivalente. I prodotti fra matrici passano per **BLAS**.
-- Si lavora nell’**interprete**, nei **notebook Jupyter** (un *kernel* che
+  Python equivalente. I prodotti fra matrici passano per BLAS.
+- Si lavora nell’interprete, nei notebook Jupyter (un *kernel* che
   mantiene lo stato, da cui i tranelli dell'esecuzione fuori ordine) e su
-  **Colab**, che offre GPU gratuite nel browser; in locale, un **ambiente
-  virtuale** per progetto (`python3 -m venv`) tiene separate le dipendenze.
+  Colab, che offre GPU gratuite nel browser; in locale, un ambiente
+  virtuale per progetto (`python3 -m venv`) tiene separate le dipendenze.
 ```
 
 `````

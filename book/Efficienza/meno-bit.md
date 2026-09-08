@@ -71,7 +71,7 @@ un numero fisso di livelli interi, che con la scala presa dal massimo sono
 $2^b - 1$ (quindici a quattro bit: il livello più negativo non viene mai
 raggiunto, perché la scala è tarata proprio sul valore assoluto più
 grande). La forma più usata è **simmetrica**: si fissa una
-**scala** $s$ e si pone
+scala $s$ e si pone
 
 $$
 q = \mathrm{round}\!\left(\frac{w}{s}\right), \qquad \hat{w} = s\,q,
@@ -89,14 +89,14 @@ prodotto scalare $\sum_i w_i x_i$ l’errore è $\sum_i (\hat{w}_i - w_i) x_i$,
 una somma di $n$ termini che, se gli arrotondamenti sono approssimativamente
 indipendenti e a media nulla, cresce come $\sqrt{n}$.
 
-Perché l’errore **relativo** non si accumuli serve però che anche il segnale
-cresca come $\sqrt{n}$, e questa è un’ipotesi **sugli ingressi**, non sugli
+Perché l’errore relativo non si accumuli serve però che anche il segnale
+cresca come $\sqrt{n}$, e questa è un’ipotesi sugli ingressi, non sugli
 arrotondamenti: vale se i termini $w_i x_i$ sono incoerenti fra loro, cioè si
 cancellano in parte come farebbe una somma di numeri a segno casuale. È
 un’ipotesi che si dà per scontata e non lo è: un neurone addestrato allinea
 $\mathbf{w}$ alla configurazione che vuole riconoscere, e quando l’ingresso è
 proprio quella configurazione il segnale cresce come $n$ e l’errore relativo
-**migliora**; quando invece l’ingresso è quasi ortogonale ai pesi il segnale
+migliora; quando invece l’ingresso è quasi ortogonale ai pesi il segnale
 quasi si annulla e l’errore relativo peggiora di molto: fra i due estremi, a
 parità di errore sui pesi, ci sono due ordini di grandezza.
 
@@ -107,14 +107,14 @@ nulla. A due bit crolla (correlazione
 $-0{,}76$), ma a due bit è già crollato tutto.
 
 Il punto delicato è la definizione della scala, perché $s$ è fissata dal
-**massimo in valore assoluto** del gruppo di numeri che condividono la scala. Un
+massimo in valore assoluto del gruppo di numeri che condividono la scala. Un
 singolo elemento molto più grande degli altri allarga $s$ per tutti, e ogni
 altro elemento del gruppo perde risoluzione in proporzione. Finché si arrotonda
-un numero alla volta il rimedio è uno solo, **cambiare chi condivide la
-scala**: si restringe il gruppo, o se ne tengono fuori i pochi elementi
+un numero alla volta il rimedio è uno solo, cambiare chi condivide la
+scala: si restringe il gruppo, o se ne tengono fuori i pochi elementi
 anomali.
 
-Questa è la forma **simmetrica**, che dà per scontato che i numeri stiano
+Questa è la forma simmetrica, che dà per scontato che i numeri stiano
 attorno allo zero. Dove non è così (le uscite di una ReLU, per dire, sono tutte
 non negative, e metà dei livelli andrebbe sprecata) si usa la forma
 **asimmetrica**, che aggiunge un intero $z$, lo *zero-point*, cioè il livello
@@ -139,12 +139,12 @@ che ha una formula in meno.
 La domanda si misura, e la risposta non è quella che si sente ripetere.
 
 Si prende una matrice di pesi, la si arrotonda a un certo numero di bit, e si
-guarda di quanto cambia **il risultato della moltiplicazione**, che è l’unica
+guarda di quanto cambia il risultato della moltiplicazione, che è l’unica
 cosa che il resto della rete vedrà.
 
 Da qui in avanti il passo ha il suo nome tecnico, **scala**: è la
 stessa identica cosa, la larghezza di un gradino, e la parola serve perché
-adesso comincia a contare **chi la condivide**. Il conto si fa in due modi: con
+adesso comincia a contare chi la condivide. Il conto si fa in due modi: con
 una scala sola per tutta la matrice, e con una scala ogni sessantaquattro
 pesi.
 
@@ -200,17 +200,17 @@ for bit in (8, 6, 4, 3):
 ```
 
 Otto bit costano l’uno per cento, e a sei bit si è ancora sotto il cinque: fin
-lì si può dire che arrotondare sia quasi gratis. **A quattro bit no**, ed è la
+lì si può dire che arrotondare sia quasi gratis. A quattro bit no, ed è la
 riga da guardare due volte.
 
 Quel diciotto e sette per cento conviene tradurlo, perché da solo non dice
 niente. È il rapporto fra la lunghezza del vettore degli errori e quella del
-vettore dei risultati veri, e vuol dire che l’uscita **tipica** dello strato è
+vettore dei risultati veri, e vuol dire che l’uscita tipica dello strato è
 lontana quasi un quinto dal valore che avrebbe dovuto avere. È uno scostamento
 grosso e non un arrotondamento all’ultima cifra, e la rete lo userà come se
 fosse il risultato buono. E la distribuzione è peggiore di quel che il
-numero lascia intendere: misurato, **più di un’uscita su nove sbaglia di più
-del proprio valore**, e sono le più piccole, cioè proprio quelle su cui una
+numero lascia intendere: misurato, più di un’uscita su nove sbaglia di più
+del proprio valore, e sono le più piccole, cioè proprio quelle su cui una
 decisione si gioca per poco. E lo strato dopo prende quei numeri per veri e ci
 aggiunge il suo errore. Non c’è una formula semplice per dire quanto lo
 scostamento cresca lungo una rete di trenta strati (dipende da che cosa
@@ -218,14 +218,14 @@ ciascuno fa), ma la direzione è una sola, e non è verso il basso.
 
 Quindi la frase che si sente dire, «i modelli girano a quattro bit», non
 significa che quattro bit bastino ad arrotondare. Significa che a quattro bit
-si arriva **facendo qualcosa di più che arrotondare**, e il resto della sezione
+si arriva facendo qualcosa di più che arrotondare, e il resto della sezione
 è quel qualcosa.
 
 La colonna di destra è il primo pezzo, ed è il più economico: invece di una
 scala sola per centotrentamila pesi se ne tiene una ogni sessantaquattro. Il
 costo si conta: a quattro bit, sessantaquattro pesi occupano trentadue byte, e
 una scala in sedici bit ne occupa due, cioè il sei per cento in più. In cambio
-l’errore si divide per un fattore **1,74**, e con una costanza notevole: è lo
+l’errore si divide per un fattore 1,74, e con una costanza notevole: è lo
 stesso a otto bit come a tre.
 La ragione è quella del carrello: più piccolo è il gruppo che condivide il
 passo, meno un elemento grande può rovinare i suoi vicini.
@@ -233,9 +233,9 @@ passo, meno un elemento grande può rovinare i suoi vicini.
 ## Le poche componenti enormi
 
 Sui pesi il problema del carrello si vede poco, perché i pesi di una rete
-addestrata sono distribuiti in modo abbastanza regolare. Sulle **attivazioni**,
+addestrata sono distribuiti in modo abbastanza regolare. Sulle attivazioni,
 cioè sui numeri che scorrono da uno strato all’altro, no: nei modelli
-linguistici grandi ci sono poche **componenti** (una componente è uno dei
+linguistici grandi ci sono poche componenti (una componente è uno dei
 numeri della fila che passa da uno strato al successivo, sempre nella stessa
 posizione) che arrivano a valere fino a venti volte tutte le altre
 {cite}`dettmers2022llmint8`. Nell’esperimento qui sotto il rapporto è tarato
@@ -293,7 +293,7 @@ fosse stato sparso, spostarne tre su cinquecentododici non avrebbe cambiato
 niente.
 
 E non dice che il problema si risolva sempre così. Funziona perché le
-componenti enormi sono **poche**: se fossero tante non ci sarebbe niente da
+componenti enormi sono poche: se fossero tante non ci sarebbe niente da
 mettere da parte, e si tornerebbe al passo grosso per tutti. Qui le tre erano
 note in partenza, ma nei modelli veri non si elencano: si guarda ogni fila di
 numeri appena arriva e si mette da parte tutto quello che supera una soglia. Le
@@ -330,7 +330,7 @@ dimensioni) e il metodo qui sotto. Poiché la scala di quantizzazione è fissata
 dal massimo, quelle dimensioni comprimono tutte le altre in pochi livelli.
 
 Il metodo che ne è nato ha due parti. La prima è la stretta sulla granularità:
-si abbandona la scala unica e se ne tiene una **per ogni prodotto interno**,
+si abbandona la scala unica e se ne tiene una per ogni prodotto interno,
 cioè si stringe al massimo il gruppo che condivide il passo. La seconda è la
 decomposizione a precisione mista, che tratta separatamente i due sottospazi:
 
@@ -340,8 +340,8 @@ $$
 + \underbrace{\mathbf{X}_{\bar{\mathcal{O}}}\mathbf{W}_{\bar{\mathcal{O}}}^{\top}}_{\text{a 8 bit}},
 $$
 
-dove $\mathcal{O}$ è l’insieme delle dimensioni anomale, determinato **a ogni
-prodotto** come l’insieme delle dimensioni che contengono almeno un valore
+dove $\mathcal{O}$ è l’insieme delle dimensioni anomale, determinato a ogni
+prodotto come l’insieme delle dimensioni che contengono almeno un valore
 sopra una soglia (nel lavoro originale $\alpha = 6{,}0$), non fissato una volta
 per tutte. Il costo è che una
 frazione minuscola del prodotto resta in virgola mobile; il guadagno è che la
@@ -356,7 +356,7 @@ stimata su un piccolo insieme di dati. **AWQ** {cite}`lin2024awq` parte da
 un’osservazione complementare: non tutti i pesi contano uguale, e quelli che
 moltiplicano le attivazioni grandi vanno protetti riscalando i canali prima di
 arrotondare. In tutti e due i casi la differenza rispetto alla tabella dei bit
-sta nel fatto che **si guarda che cosa quel peso fa** invece che soltanto
+sta nel fatto che si guarda che cosa quel peso fa invece che soltanto
 quanto vale, e non nella formula dell’arrotondamento.
 
 `````
@@ -381,7 +381,7 @@ addestramento intero, e per questo si fa solo quando si scende in basso coi bit
 e arrotondare a cose fatte non regge.
 
 C’è una difficoltà, ed è graziosa: arrotondare è un’operazione a gradini, e una
-funzione a gradini è **piatta** dappertutto tranne che nei salti. Una rete
+funzione a gradini è piatta dappertutto tranne che nei salti. Una rete
 impara seguendo la pendenza, e sul piano di un gradino non c’è nessuna pendenza
 da seguire: il segnale d’apprendimento morirebbe subito. Il rimedio è una
 piccola finzione: si fanno i conti in avanti con i valori arrotondati e
@@ -416,7 +416,7 @@ $$
 \end{cases}
 $$
 
-È un gradiente **sbagliato** per costruzione, e la giustificazione è empirica:
+È un gradiente sbagliato per costruzione, e la giustificazione è empirica:
 punta nella direzione giusta abbastanza spesso da far convergere
 l’ottimizzazione. Il costo di QAT è un addestramento completo, e la regola
 pratica è la solita: si usa PTQ, si misura, e si passa a QAT solo quando la
@@ -425,8 +425,8 @@ misura dice che non basta.
 `````
 
 Messe in fila, le cose di questa sezione dicono una cosa sola, e conviene
-tenersi quella invece dell’elenco: **la domanda giusta non è quanti bit, è chi
-condivide il passo**. Cambiando chi lo condivide si passa dal 18,7% al 10,8% a
+tenersi quella invece dell’elenco: la domanda giusta non è quanti bit, è chi
+condivide il passo. Cambiando chi lo condivide si passa dal 18,7% al 10,8% a
 parità di bit; togliendo dal gruppo tre numeri su cinquecentododici si passa
 dal 7,28% allo 0,20%. Il numero di bit, da solo, non ha spiegato nessuno dei
 due salti.
@@ -436,21 +436,21 @@ due salti.
 ```{admonition} Da ricordare
 :class: important
 - Arrotondare i pesi funziona per due ragioni: l’errore su ciascun numero è al
-  massimo **metà passo**, e sommando tanti numeri gli errori vanno in su e in
-  giù e si **compensano**. Una rete somma sempre tanti numeri insieme, e questa
+  massimo metà passo, e sommando tanti numeri gli errori vanno in su e in
+  giù e si compensano. Una rete somma sempre tanti numeri insieme, e questa
   è la sua fortuna.
-- Il passo lo decide il numero **più grande** del gruppo che lo condivide.
-  Quindi la domanda vera è **chi condivide il passo**, più che «quanti bit»:
+- Il passo lo decide il numero più grande del gruppo che lo condivide.
+  Quindi la domanda vera è chi condivide il passo, più che «quanti bit»:
   misurato, una scala ogni sessantaquattro pesi taglia l’errore di un fattore
   1,74 rispetto a una scala sola per tutta la matrice, e lo stesso fattore vale
   a otto bit come a tre.
 - Otto bit costano circa l’uno per cento e si possono considerare gratis.
-  **Quattro bit, arrotondando e basta, costano quasi il venti**: chi dice che i
+  Quattro bit, arrotondando e basta, costano quasi il venti: chi dice che i
   modelli girano a quattro bit sta parlando di metodi che fanno molto più che
   arrotondare.
 - Nei modelli linguistici poche componenti valgono decine di volte le altre e
-  rovinano il passo per tutti. Tenendo intere **tre componenti su
-  cinquecentododici** l’errore passa dal 7,28% allo 0,20%.
+  rovinano il passo per tutti. Tenendo intere tre componenti su
+  cinquecentododici l’errore passa dal 7,28% allo 0,20%.
 - Si può arrotondare a modello finito (economico, e per otto bit basta) oppure
   dirlo alla rete mentre impara, così si sposta da sola dove l’arrotondamento
   le fa meno male (costa un addestramento intero).
@@ -465,23 +465,23 @@ due salti.
 - Quantizzazione simmetrica a $b$ bit: $\hat{w} = s\,\mathrm{round}(w/s)$ con
   $s = \max|w| / (2^{b-1}-1)$. L’errore per elemento è limitato da $s/2$;
   sull’uscita di un prodotto scalare gli errori indipendenti crescono come
-  $\sqrt{n}$. Che l’errore **relativo** non si accumuli richiede in più che
-  cresca così anche il segnale, ed è un’ipotesi sugli **ingressi**, non sugli
+  $\sqrt{n}$. Che l’errore relativo non si accumuli richiede in più che
+  cresca così anche il segnale, ed è un’ipotesi sugli ingressi, non sugli
   arrotondamenti.
-- La **granularità** della scala è la leva più economica: per tensore, per riga,
+- La granularità della scala è la leva più economica: per tensore, per riga,
   per gruppo di $g$ elementi. Misurato su un prodotto $256 \times 512$ per
   $512 \times 64$: a quattro bit, 18,71% con una scala per tutto e 10,77% con
   una scala ogni 64.
-- Le **caratteristiche anomale** dei Transformer {cite}`dettmers2022llmint8`
+- Le caratteristiche anomale dei Transformer {cite}`dettmers2022llmint8`
   dettano la scala e schiacciano tutto il resto. La decomposizione a precisione
   mista le tiene fuori: 7,28% contro 0,20% sullo stesso prodotto.
 - Sotto gli otto bit servono metodi che non trattino l’arrotondamento come
-  locale: **GPTQ** {cite}`frantar2023gptq` compensa sull’uscita l’errore già
-  commesso, **AWQ** {cite}`lin2024awq` protegge i canali che moltiplicano le
+  locale: GPTQ {cite}`frantar2023gptq` compensa sull’uscita l’errore già
+  commesso, AWQ {cite}`lin2024awq` protegge i canali che moltiplicano le
   attivazioni grandi.
-- **PTQ** contro **QAT**: la seconda mette la quantizzazione nel passaggio in
+- PTQ contro QAT: la seconda mette la quantizzazione nel passaggio in
   avanti durante l’addestramento e aggira la derivata nulla di
-  $\mathrm{round}$ con lo **stimatore diretto**
+  $\mathrm{round}$ con lo stimatore diretto
   {cite}`bengio2013estimating`, cioè un gradiente deliberatamente sbagliato che
   funziona.
 ```
@@ -490,5 +490,5 @@ due salti.
 
 Questa leva lascia la rete esattamente com’è: stessi collegamenti, stessa
 forma, numeri scritti più corti. La leva che segue fa il contrario, e va a
-toccare i collegamenti: ne toglie una parte e li lascia dove sono, che è una
-promessa più grande e, come si vedrà, molto più difficile da riscuotere.
+toccare i collegamenti: ne toglie una parte e lascia gli altri dove sono, che è
+una promessa più grande e, come si vedrà, molto più difficile da riscuotere.

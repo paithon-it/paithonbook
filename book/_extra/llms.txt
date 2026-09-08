@@ -62,6 +62,7 @@ della sezione e URL), non si ridistribuisce il testo.
 - [Reti neurali](https://book.paithon.it/main/RetiNeurali/overview.html): C'è un'immagine che accompagna le reti neurali fin dal loro battesimo: quella del cervello. Miliardi di cellule che si scambiano segnali, e da quel brulichio emergono la memoria, il linguaggio, il…
   - [Il percettrone](https://book.paithon.it/main/RetiNeurali/percettrone.html)
   - [Funzioni di attivazione](https://book.paithon.it/main/RetiNeurali/funzioni-attivazione.html)
+  - [Da dove viene la loss](https://book.paithon.it/main/RetiNeurali/da-dove-viene-la-loss.html)
   - [Backpropagation](https://book.paithon.it/main/RetiNeurali/backpropagation.html)
 
 ## Strumenti e hardware
@@ -146,6 +147,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Il meccanismo di attenzione](https://book.paithon.it/main/Transformers/attenzione.html)
   - [La struttura del Transformer](https://book.paithon.it/main/Transformers/architettura.html)
   - [Confronto coi modelli precedenti](https://book.paithon.it/main/Transformers/confronti.html)
+  - [L'attenzione in pratica](https://book.paithon.it/main/Transformers/attenzione-in-pratica.html)
   - [Esempi pratici](https://book.paithon.it/main/Transformers/esempi.html)
   - [Multimodalità](https://book.paithon.it/main/Transformers/multimodalita.html)
   - [Una rete, cento lingue](https://book.paithon.it/main/Transformers/multilingua.html)
@@ -269,7 +271,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [LLMOps](https://book.paithon.it/main/MLOps/llmops.html)
   - [Misurare un servizio](https://book.paithon.it/main/MLOps/metriche-di-servizio.html)
   - [Il conto in energia](https://book.paithon.it/main/MLOps/energia-e-impronta.html)
-- [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Túlio Ribeiro, Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
+- [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Tulio Ribeiro, Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
   - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)
   - [Spiegazioni locali](https://book.paithon.it/main/Interpretabilita/spiegazioni-locali.html)
   - [Attribuzione e meccanicistica](https://book.paithon.it/main/Interpretabilita/attribuzione-e-meccanicistica.html)

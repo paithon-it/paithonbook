@@ -22,7 +22,7 @@ sistemi reali il guadagno più grande si ottiene quasi sempre migliorando i
 *dati*: etichette più coerenti, esempi più rappresentativi, meno rumore.
 
 Se è così, i dati non possono restare un allegato del codice: vanno trattati
-come **cittadini di prima classe**, versionati, testati e sorvegliati con la
+come cittadini di prima classe, versionati, testati e sorvegliati con la
 stessa disciplina. La sezione precedente ha stabilito che riprodurre un
 modello richiede tre artefatti: codice, dati, modello. Questa entra nel più
 grande e trascurato dei tre, e nel sistema di tubature che lo trasporta
@@ -34,7 +34,7 @@ Se non sai *quali* dati hanno prodotto un modello, non puoi riprodurlo, non
 puoi capire perché una predizione è quella che è, e non puoi tornare indietro
 quando un nuovo addestramento peggiora le cose. Del codice `git` conserva ogni
 versione da decenni, ma sui dati, per il motivo già visto nella pagina
-d'apertura, non funziona: una raccolta di dati (un **dataset**) è enorme e non è
+d'apertura, non funziona: una raccolta di dati (un dataset) è enorme e non è
 fatta di righe da confrontare, e metterci dentro dieci gigabyte di immagini
 gonfia il progetto fino a renderlo inservibile. Per i dati serve quindi qualcosa
 di diverso, che faccia lo stesso mestiere.
@@ -75,11 +75,11 @@ una funzione che mappa una sequenza arbitraria di byte in una stringa di
 lunghezza fissa, deterministica e sensibile a ogni bit. Su questa idea si
 costruisce il **content-addressable storage**: l'indirizzo di un dato *è*
 l'hash del suo contenuto, non un percorso né un nome scelto a mano. Ne
-discendono tre proprietà preziose. **Immutabilità**: un dato non si modifica
+discendono tre proprietà preziose. Immutabilità: un dato non si modifica
 «sul posto», si scrive una nuova versione con un nuovo indirizzo; le vecchie
 restano raggiungibili, e un esperimento passato non cambia sotto i piedi.
-**Deduplicazione**: file identici hanno lo stesso hash e occupano spazio una
-volta sola. **Integrità**: ricalcolare l'hash verifica che il dato non si sia
+Deduplicazione: file identici hanno lo stesso hash e occupano spazio una
+volta sola. Integrità: ricalcolare l'hash verifica che il dato non si sia
 corrotto in transito.
 
 Nel repository si versiona allora solo un *puntatore* (un piccolo file di
@@ -99,20 +99,20 @@ predizione?») risalendo la catena fino al singolo dato grezzo.
 ## Le pipeline di dati
 
 Un dataset pronto per l'addestramento non nasce così: è il prodotto finale di
-una catena di trasformazioni. Si **estrae** il dato grezzo, cioè come arriva
+una catena di trasformazioni. Si estrae il dato grezzo, cioè come arriva
 dal mondo, da una o più sorgenti (un archivio, un flusso di eventi, dei file);
-si **pulisce**, buttando via i doppioni e sistemando le caselle vuote e i
-formati incoerenti; si costruiscono le **feature**, cioè le poche grandezze che
+si pulisce, buttando via i doppioni e sistemando le caselle vuote e i
+formati incoerenti; si costruiscono le feature, cioè le poche grandezze che
 si mettono davanti al modello al posto del dato grezzo («la spesa media
 dell'ultimo mese», «quante volte ha comprato di notte»); e solo alla fine si
-**addestra**. È la *pipeline* annunciata nella pagina d'apertura: il dato entra
+addestra. È la *pipeline* annunciata nella pagina d'apertura: il dato entra
 da un capo, attraversa una stazione dopo l'altra e ne esce pronto. Ognuno di
 questi passaggi si scrive con gli attrezzi per maneggiare tabelle già visti in
 {doc}`Pandas e Matplotlib </Python/pandas-matplotlib>`.
 
 Il salto di qualità, però, è organizzativo prima che tecnico, e chiede due cose
-alla catena. Che sia **riproducibile**, cioè che rilanciandola sugli stessi
-dati grezzi si riottenga lo stesso identico dataset. E che sia **orchestrata**,
+alla catena. Che sia riproducibile, cioè che rilanciandola sugli stessi
+dati grezzi si riottenga lo stesso identico dataset. E che sia orchestrata,
 cioè che l'ordine dei passaggi sia scritto una volta in un file, e sia un
 programma a farli partire in quell'ordine, invece di una persona che li lancia
 a mano in un notebook e ogni tanto ne salta uno.
@@ -204,7 +204,7 @@ un cliente. Oppure **per colonna**, cioè un elenco di tutte le età, poi un
 elenco di tutte le città, e così via.
 
 Quale conviene dipende da cosa fai. E quello che si fa per addestrare un
-modello è sempre lo stesso: leggere **tre colonne su ottanta**, per tutti. Con
+modello è sempre lo stesso: leggere tre colonne su ottanta, per tutti. Con
 l'archivio per riga devi attraversare l'intero milione di schede e scartare il
 $96\%$ di ciò che leggi (77 voci buttate ogni 80): il disco consegna blocchi
 interi, e le tre voci che ti servono stanno sparse una qui e una là. Con
@@ -241,8 +241,8 @@ niente.
 
 `````{tab} Superiore
 
-Un formato **orientato alle righe** (CSV, JSON Lines, Avro) memorizza i record
-uno dopo l'altro; uno **orientato alle colonne** (**Parquet**, ORC) memorizza
+Un formato orientato alle righe (CSV, JSON Lines, Avro) memorizza i record
+uno dopo l'altro; uno orientato alle colonne (Parquet, ORC) memorizza
 insieme tutti i valori di una stessa colonna. La differenza produce tre effetti
 che contano tutti in un carico di lavoro analitico.
 
@@ -254,24 +254,24 @@ di ML, dove si leggono poche colonne di tabelle larghe, è la voce dominante.
 per contenuto, il che abilita codifiche specializzate (dizionario per le
 categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
 timestamp) prima ancora della compressione generica. Rispetto al CSV
-equivalente il guadagno è di **qualche volta**, e a decidere quante è la
+equivalente il guadagno è di qualche volta, e a decidere quante è la
 codifica a dizionario. I numeri che seguono vengono da tabelle di duecentomila
 righe, con il `.csv` e il `.parquet` scritti da Pandas 3 e PyArrow 25 con le
 impostazioni di serie. Sei colonne di categorie con sei valori
-distinti (nomi di città) stanno in un file **diciotto volte** più piccolo,
+distinti (nomi di città) stanno in un file diciotto volte più piccolo,
 perché il dizionario sostituisce ogni stringa con un indice, e quante volte lo
 decide la lunghezza delle stringhe. Sei colonne di numeri casuali con la
-virgola scendono a **poco più di due volte**, perché lì non c'è niente da
+virgola scendono a poco più di due volte, perché lì non c'è niente da
 riconoscere, e una tabella mista come quelle su cui si addestra di solito sta
 fra il due e il tre a seconda di quante colonne siano categoriche.
 
 Le colonne ordinate, che l'intuizione metterebbe in alto, non ci vanno, e la
 ragione è istruttiva: la codifica che le comprimerebbe davvero (memorizzare le
-differenze fra un valore e il precedente, la *delta encoding*) **non è quella
-che la libreria sceglie da sola**. Su una colonna di istanti che crescono di
-pochi secondi alla volta il default resta **sotto il tre**, perché il
+differenze fra un valore e il precedente, la *delta encoding*) non è quella
+che la libreria sceglie da sola. Su una colonna di istanti che crescono di
+pochi secondi alla volta il default resta sotto il tre, perché il
 dizionario, su valori quasi tutti diversi, non ha niente da riusare; chiedendo
-esplicitamente la delta si sale a **una decina di volte e oltre**, e quanto
+esplicitamente la delta si sale a una decina di volte e oltre, e quanto
 esattamente lo decide la regolarità degli scarti (con incrementi fra uno e tre
 secondi si arriva sopra il venti, con incrementi fino a un minuto si resta
 sotto il dieci). È il caso da tenere a mente ogni volta che si dichiara che
@@ -280,7 +280,7 @@ tavolo un fattore fra il tre e l'otto.
 
 **Predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
 statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
-un filtro `data > 2026-01-01` può **saltare interi blocchi** senza
+un filtro `data > 2026-01-01` può saltare interi blocchi senza
 decomprimerli.
 
 A questo si aggiunge una cosa che il CSV strutturalmente non ha: uno **schema**
@@ -291,8 +291,8 @@ convenzione locale, il campo vuoto che diventa `NaN` oppure la stringa
 `"NA"` a seconda del lettore).
 
 **Apache Arrow** risolve un problema ortogonale: è una specifica di
-rappresentazione **in memoria**, colonnare, indipendente dal linguaggio. Il suo
-valore è l'eliminazione della **serializzazione** ai confini: due processi, o
+rappresentazione in memoria, colonnare, indipendente dal linguaggio. Il suo
+valore è l'eliminazione della serializzazione ai confini: due processi, o
 due librerie in linguaggi diversi, che parlano Arrow si scambiano una tabella
 senza copiarla né convertirla. È la ragione per cui lo stesso formato compare
 sotto motori che non si somigliano affatto, ed è anche ciò che sta sotto il
@@ -302,15 +302,15 @@ appoggiato ad Arrow quando PyArrow è installato, e quella differenza (con il
 vecchio `object` di NumPy era sostanziale) è ormai il comportamento normale
 della libreria, e non un'opzione da attivare.
 
-La regola pratica, sintetica: **CSV per scambiare con un umano, Parquet per
-tutto il resto**; e se una tabella attraversa un confine di processo o di
+La regola pratica, sintetica: CSV per scambiare con un umano, Parquet per
+tutto il resto; e se una tabella attraversa un confine di processo o di
 linguaggio, Arrow.
 
 `````
 
 ## Il feature store
 
-C'è un punto della pipeline che merita un discorso a sé: le **feature**. Una
+C'è un punto della pipeline che merita un discorso a sé: le feature. Una
 stessa feature («spesa media dell'utente negli ultimi 30 giorni», «numero di
 transazioni nell'ultima ora») serve a più modelli. E soprattutto va calcolata
 in *due momenti diversi*: una volta mentre il modello impara, su montagne di
@@ -388,7 +388,7 @@ dovrebbero coincidere.
 sopra in once. Nessun errore lampeggia sullo schermo: i numeri arrivano,
 sembrano plausibili, e il risultato è semplicemente sbagliato.
 
-Il caso da manuale è la **normalizzazione**, il gesto con cui si porta ogni
+Il caso da manuale è la normalizzazione, il gesto con cui si porta ogni
 variabile su una scala confrontabile prima di darla al modello. Invece del
 valore grezzo, al modello si dice di quanto quel valore sta sopra o sotto la
 media degli altri, e quel «di quanto» si conta in sbalzi abituali, cioè in
@@ -411,7 +411,7 @@ quello bacato la differenza è una riga sola.
 
 Sia $x$ una feature e $z = (x - \mu)/\sigma$ la sua versione standardizzata,
 dove $\mu$ e $\sigma$ sono media e deviazione standard. La regola vincolante è
-che $\mu$ e $\sigma$ siano **statistiche del training**, stimate una volta e
+che $\mu$ e $\sigma$ siano statistiche del training, stimate una volta e
 *congelate*: fanno parte del modello tanto quanto i pesi. Usarle in
 addestramento e ricalcolarle in produzione su un altro campione viola
 l'ipotesi sotto cui il modello è stato ottimizzato. La versione corretta
@@ -475,7 +475,7 @@ Lo stesso identico modello, sugli stessi identici dati, dà due risposte
 opposte. La pipeline corretta riconosce il lotto come sospetto: probabilità
 media di frode $0{,}97$, cioè un allarme netto. Quella bacata, ricentrando ogni
 lotto su sé stesso, cancella l'anomalia e scende a $0{,}45$, che non vuol dire
-«innocuo»: vuol dire **testa o croce**, ed è anche peggio, perché un sistema
+«innocuo»: vuol dire testa o croce, ed è anche peggio, perché un sistema
 antifrode tarato per intervenire sopra una certa soglia adesso ne lascia
 passare la maggior parte. Su singole transazioni la differenza fra le due
 risposte arriva a $0{,}79$. Nessun errore, nessun avviso: solo predizioni
@@ -490,8 +490,8 @@ unità di misura, una colonna che di colpo si riempie di valori nulli, un codice
 prodotto che non era mai comparso. Nel software normale un input malformato fa
 esplodere il programma, e l'errore si nota subito. Un modello, invece, un numero
 lo restituisce *sempre*: dagli in pasto spazzatura e ti darà una predizione
-dall'aria rispettabile. Per questo i dati in ingresso vanno **validati
-esplicitamente**, come si controlla la merce alla porta del magazzino prima di
+dall'aria rispettabile. Per questo i dati in ingresso vanno validati
+esplicitamente, come si controlla la merce alla porta del magazzino prima di
 metterla a scaffale.
 
 `````{tab} Elementare
@@ -499,11 +499,11 @@ metterla a scaffale.
 Al ricevimento merci di un supermercato qualcuno controlla ogni bancale: è il
 prodotto giusto? La quantità è quella dell'ordine? Ci sono confezioni rotte o
 scadute? Chi non passa il controllo non entra. La validazione dei dati fa lo
-stesso, e verifica quattro cose. Lo **schema**: ci sono tutte le colonne
+stesso, e verifica quattro cose. Lo schema: ci sono tutte le colonne
 attese, e del tipo giusto (un'età è un numero, non la parola «trenta»)? Il
-**range**: i valori sono plausibili (un'età tra 0 e 120, un importo non
-negativo)? I **valori mancanti**: quante caselle sono vuote, e possiamo
-permettercelo? Le **distribuzioni**: i numeri di oggi somigliano a quelli di
+range: i valori sono plausibili (un'età tra 0 e 120, un importo non
+negativo)? I valori mancanti: quante caselle sono vuote, e possiamo
+permettercelo? Le distribuzioni: i numeri di oggi somigliano a quelli di
 ieri, come valore tipico e come quanto sono sparpagliati, e le categorie
 arrivano nelle stesse proporzioni? Schema, range e caselle vuote si controllano
 su ogni singola scheda (in gergo un *record*), e costano pochissimo; le
@@ -514,16 +514,16 @@ non ha una media.
 
 `````{tab} Superiore
 
-La validazione dei dati è uno dei quattro assi della **ML Test Score**
+La validazione dei dati è uno dei quattro assi della ML Test Score
 {cite}`breck2017ml`, la rubrica di collaudo che misura la maturità di un
 sistema di ML: include test sullo schema delle feature, sui loro intervalli e
 sul fatto che ogni feature apporti davvero valore. Conviene distinguere due
-livelli. I controlli **puntuali** (tipo, obbligatorietà, intervallo, assenza di
+livelli. I controlli puntuali (tipo, obbligatorietà, intervallo, assenza di
 `NaN`) si applicano a ogni record isolato e sono economici: sono quelli che il
-codice mette in pratica. I controlli **distribuzionali** (la media di una
+codice mette in pratica. I controlli distribuzionali (la media di una
 feature è slittata? la proporzione di una categoria è raddoppiata?) richiedono
 di confrontare un lotto con una *baseline* di riferimento, ed è qui che la
-validazione statica sfuma nel **monitoraggio** del *dataset shift*
+validazione statica sfuma nel monitoraggio del *dataset shift*
 {cite}`quinonero2009dataset`: lo abbiamo inquadrato in termini statistici in
 {doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`, e il suo
 lato operativo, sorvegliare le distribuzioni nel tempo e decidere quando
@@ -620,19 +620,19 @@ questo: dargli un contratto, e farlo rispettare.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Nel machine learning il codice sta quasi fermo e i **dati** sono la piena:
+- Nel machine learning il codice sta quasi fermo e i dati sono la piena:
   per questo si conservano, si controllano e si sorvegliano con la stessa cura
   che di solito si riserva al programma.
-- **Versionare i dati** vuol dire tenere la cronologia di una tabella come
+- Versionare i dati vuol dire tenere la cronologia di una tabella come
   quella di un documento condiviso, senza duplicare montagne di file: si passa
   il dataset in un tritatutto che ne ricava un codicino, e si conserva quello.
   Se cambia anche un pixel, il codicino cambia del tutto.
-- Una **pipeline** è una filiera per i dati: passaggi collegati, ognuno con un
+- Una pipeline è una filiera per i dati: passaggi collegati, ognuno con un
   compito e con il suo controllo, sempre nello stesso ordine, senza ritocchi a
   mano che non lascino traccia. Altrimenti diventa una giungla di tubature che nessuno
   sa più dove portino.
-- Conta anche il **formato** in cui i dati aspettano fra una stazione e
-  l'altra: l'archivio **per colonna** (**Parquet**) legge solo le poche voci
+- Conta anche il formato in cui i dati aspettano fra una stazione e
+  l'altra: l'archivio per colonna (Parquet) legge solo le poche voci
   che servono invece di attraversare tutte le schede, e si comprime meglio,
   perché un valore che si ripete si scrive una volta sola; dove di ripetuto non
   c'è niente, come in una colonna di orari sempre diversi, quel risparmio va
@@ -641,9 +641,9 @@ questo: dargli un contratto, e farlo rispettare.
 - Il bug più costoso del mestiere è calcolare una stessa informazione in un
   modo mentre si impara e in un modo appena diverso mentre si risponde: nessun
   errore compare a schermo, solo predizioni sbagliate. La cura è definirla in
-  un posto solo (la **dispensa comune**, il *feature store*) e usarla di lì da
+  un posto solo (la dispensa comune, il *feature store*) e usarla di lì da
   tutte e due le parti.
-- I dati in ingresso si **controllano alla porta**, come la merce al
+- I dati in ingresso si controllano alla porta, come la merce al
   ricevimento di un supermercato: ci sono tutte le colonne? i valori sono
   plausibili? quante caselle sono vuote? Chi non passa finisce in un registro
   invece che dentro il modello. E il guardiano va scritto con cura, perché
@@ -655,38 +655,38 @@ questo: dargli un contratto, e farlo rispettare.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Nel ML il codice è spesso la parte stabile e i **dati** la parte viva:
-  l'approccio **data-centric** sposta l'attenzione dal limare il modello al
+- Nel ML il codice è spesso la parte stabile e i dati la parte viva:
+  l'approccio data-centric sposta l'attenzione dal limare il modello al
   migliorare i dati, e li tratta come artefatti di prima classe (versionati,
   testati, sorvegliati {cite}`huyen2022designing`).
-- **Versionare i dati**: `git` non basta (file grandi e binari); si usa
-  l’**hash del contenuto** come indirizzo (*content-addressable storage*), da
-  cui immutabilità, deduplicazione e **lineage** che lega ogni modello ai dati
+- Versionare i dati: `git` non basta (file grandi e binari); si usa
+  l’hash del contenuto come indirizzo (*content-addressable storage*), da
+  cui immutabilità, deduplicazione e lineage che lega ogni modello ai dati
   esatti che l'hanno prodotto. Gli strumenti che lo fanno cambiano; il
   meccanismo è quello con cui `git` indirizza i propri oggetti.
-- Una **pipeline di dati** (estrazione → pulizia → feature → training) va
-  resa **riproducibile e orchestrata** (un DAG di stadi idempotenti), per non
+- Una pipeline di dati (estrazione → pulizia → feature → training) va
+  resa riproducibile e orchestrata (un DAG di stadi idempotenti), per non
   degenerare nella *pipeline jungle*; automatizzarla per intero è il cuore della
   CD4ML {cite}`sato2019continuous`.
-- Conta anche il **formato** in cui i dati stanno fra uno stadio e l'altro: uno
-  **colonnare** (**Parquet**) legge solo le colonne che servono, comprime
+- Conta anche il formato in cui i dati stanno fra uno stadio e l'altro: uno
+  colonnare (Parquet) legge solo le colonne che servono, comprime
   meglio perché i valori simili sono vicini (diciotto volte su colonne
   categoriche, poco più di due su float casuali, fra due e tre su una tabella
   mista, e sotto il tre su istanti ordinati finché non si chiede la *delta
   encoding*, che porta a una decina di volte e oltre), salta interi blocchi
-  grazie alle statistiche, e ha uno **schema con i tipi** che al CSV manca.
-  **Arrow** fa la stessa cosa **in memoria**, e serve a passarsi una tabella
+  grazie alle statistiche, e ha uno schema con i tipi che al CSV manca.
+  Arrow fa la stessa cosa in memoria, e serve a passarsi una tabella
   fra processi o linguaggi senza convertirla. CSV per un umano, Parquet per
   tutto il resto.
-- Il **feature store** centralizza la definizione delle feature: stessa ricetta
+- Il feature store centralizza la definizione delle feature: stessa ricetta
   in addestramento (*offline*) e in produzione (*online*), riuso tra modelli,
-  freschezza e **point-in-time correctness** contro il *leakage* temporale.
-- Il **training–serving skew** è il bug silenzioso per eccellenza: una feature
+  freschezza e point-in-time correctness contro il *leakage* temporale.
+- Il training–serving skew è il bug silenzioso per eccellenza: una feature
   calcolata diversamente in training e in produzione (es. normalizzare col
   batch invece che con le statistiche congelate del training) sballa le
   predizioni senza sollevare alcun errore.
-- **Validare i dati in ingresso** (schema, tipi, range, valori mancanti,
-  distribuzioni) è un asse della **ML Test Score** {cite}`breck2017ml`. I
+- Validare i dati in ingresso (schema, tipi, range, valori mancanti,
+  distribuzioni) è un asse della ML Test Score {cite}`breck2017ml`. I
   controlli puntuali fermano il record malformato; quelli distribuzionali
   sfumano nel monitoraggio del *dataset shift* {cite}`quinonero2009dataset`.
   Attenzione al controllo di tipo: `isinstance` accetta i sottotipi, e in

@@ -67,7 +67,7 @@ che spezzano l'indice per aree.
 | 2 | **Python** | Le basi del linguaggio, NumPy, pandas e matplotlib |
 | 3 | **Richiami di matematica** | Algebra lineare, sistemi lineari, ortogonalità e proiezioni, determinante, ottimizzazione, probabilità, disuguaglianze di concentrazione, catene di Markov, teoria dell'informazione, analisi numerica, e la matematica che sta dentro un modello linguistico |
 | 4 | **Machine Learning** | Apprendimento supervisionato, overfitting, metriche, iperparametri, spline e modelli additivi, alberi e metodi ensemble (Random Forest, gradient boosting, XGBoost), bootstrap, SVM e kernel trick, classificatori generativi (naive Bayes, analisi discriminante), riduzione della dimensionalità e clustering (PCA, t-SNE/UMAP, k-means, DBSCAN) con le metriche per valutarlo, distribution shift, processi gaussiani |
-| 5 | **Reti Neurali** | Percettrone, funzioni di attivazione, backpropagation |
+| 5 | **Reti Neurali** | Percettrone, funzioni di attivazione, da dove viene la loss, backpropagation |
 | 6 | **PyTorch** | Tensori, autograd, `nn.Module`, training loop, `Dataset` e `DataLoader`, i tre errori più comuni, dal notebook agli script, replicare un paper, prestazioni e scala |
 | 7 | **GPU e calcolo parallelo** | Sotto il cofano: architettura ed esecuzione, gerarchia di memoria, kernel e Triton, GEMM e tensor core, Flash Attention, parallelismo dati/tensor/pipeline e FSDP |
 | 8 | **Efficienza** | Il modello che si addestra non è quello che si usa: quantizzazione (scala e granularità, componenti anomale degli LLM, PTQ e QAT, GPTQ e AWQ), potatura e sparsità strutturata, ipotesi del biglietto della lotteria, distillazione e bersagli morbidi, e perché starci in memoria non sia rispondere in fretta |

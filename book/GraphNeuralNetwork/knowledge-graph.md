@@ -290,7 +290,7 @@ imponendo che le $\mathbf{W}_r$ siano combinazioni di poche matrici di base
 condivise, il che è una forma di condivisione dei pesi fra relazioni simili. La
 differenza rispetto a TransE è che qui l'embedding di un'entità si calcola
 dal suo vicinato invece di essere una riga di tabella: è la stessa differenza
-fra DeepWalk e le GNN vista all'inizio del capitolo. Il vantaggio
+fra DeepWalk e le GNN vista nella sezione «Il mondo come grafo». Il vantaggio
 dell'induttività, però, arriva solo se i nodi portano feature proprie da cui
 partire: nel paper originale le entità non ne hanno, lo stato iniziale è a sua
 volta un embedding appreso per ciascuna entità, e senza quella riga di tabella

@@ -24,14 +24,14 @@ disciplina: «Ma sul mio computer funzionava».
 
 Attenzione: il disordine di quelle celle non è un peccato in sé. Mentre si
 esplora, saltare avanti e indietro è esattamente il modo giusto di lavorare, ed
-è per questo che il notebook esiste. Il peccato è **consegnare** quel disordine,
+è per questo che il notebook esiste. Il peccato è consegnare quel disordine,
 cioè lasciare che il risultato buono viva soltanto nella memoria di una
 sessione che qualcuno prima o poi chiuderà.
 
 Fra quel notebook e un sistema che dà previsioni a persone vere, ogni giorno,
-senza sorprese, c'è quindi un abisso. Colmarlo è il mestiere dell’**MLOps**. Che cosa cambia davvero, passando «dal
-mio computer» al mondo, e con quali attrezzi si attraversa: si comincia da
-qui.
+senza sorprese, c'è quindi un abisso. Colmarlo è il mestiere dell’MLOps. Che
+cosa cambia davvero, passando «dal mio computer» al mondo, e con quali attrezzi
+si attraversa: si comincia da qui.
 
 ## Il divario ricerca–produzione
 
@@ -66,7 +66,7 @@ In un prototipo conta quasi solo un **requisito funzionale**: il modello è
 accurato? In produzione dominano i **requisiti non-funzionali**, che nella
 fase di ricerca sono invisibili: affidabilità, latenza, throughput,
 scalabilità, riproducibilità, manutenibilità nel tempo. Uno studio-intervista
-con professionisti del settore riassume in **tre V** ciò che separa i team che
+con professionisti del settore riassume in tre V ciò che separa i team che
 ci riescono {cite}`shankar2022operationalizing`:
 
 - **Velocity**, la capacità di iterare in fretta: cambiare un'idea,
@@ -90,11 +90,11 @@ Il primo malinteso da smontare è che addestrare il modello sia il cuore del
 lavoro. Nel codice di un sistema di ML reale, la parte di apprendimento vero e
 proprio è una frazione minima; tutto il resto è raccogliere dati, ripulirli,
 trasformarli, distribuire il modello e sorvegliarlo. E soprattutto: non è una
-linea retta con un traguardo, ma un **ciclo** che si percorre molte volte.
+linea retta con un traguardo, ma un ciclo che si percorre molte volte.
 
 Prima di guardare il ciclo intero, però, conviene guardare da vicino un suo
 pezzo, quello che si ripete più spesso ({numref}`fig-cicd-ml`): il viaggio che
-compie **una singola modifica**, da quando qualcuno la propone a quando finisce
+compie una singola modifica, da quando qualcuno la propone a quando finisce
 sotto gli occhi del pubblico. Quel viaggio, preso da solo, è dritto.
 
 ```{figure} ../figures/cicd-machine-learning.svg
@@ -124,23 +124,23 @@ Uno studio di ingegneria del software condotto in Microsoft mette in fila nove
 fasi ricorrenti di un progetto di machine learning
 {cite}`amershi2019software`, che qui raggruppiamo in sei momenti:
 
-1. **Dati**: raccolta, pulizia, etichettatura. È dove si consuma la maggior
+1. Dati: raccolta, pulizia, etichettatura. È dove si consuma la maggior
    parte del tempo, e dove nasce la maggior parte degli errori.
-2. **Feature**, costruzione delle variabili di input a partire dai dati grezzi
+2. Feature, costruzione delle variabili di input a partire dai dati grezzi
    (*feature engineering*): la forma in cui il modello «vede» il mondo.
-3. **Training**: l'addestramento vero e proprio. È il ciclo di ottimizzazione
+3. Training: l'addestramento vero e proprio. È il ciclo di ottimizzazione
    che abbiamo scritto a mano nel {doc}`capitolo su PyTorch </PyTorch/overview>` (si veda [Il training
    loop](../PyTorch/addestramento.md)): qui è solo *una* delle fasi.
-4. **Valutazione**: la misura onesta delle prestazioni su dati mai visti, con
+4. Valutazione: la misura onesta delle prestazioni su dati mai visti, con
    la disciplina di train/validation/test già discussa nel capitolo sul
    machine learning (si veda [Overfitting e
    validazione](../MachineLearning/overfitting-validazione.md)).
-5. **Deploy**: mettere il modello in un servizio che risponde a richieste
+5. Deploy: mettere il modello in un servizio che risponde a richieste
    reali, dietro un’**API** o dentro un'applicazione. Un'API è una specie di
    sportello elettronico: un indirizzo a cui un altro programma manda una
    domanda e da cui riceve la risposta, senza sapere né dover sapere che cosa
    c'è dietro.
-6. **Monitoraggio**, sorvegliare il modello in esercizio: le prestazioni
+6. Monitoraggio, sorvegliare il modello in esercizio: le prestazioni
    reggono? I dati in ingresso somigliano ancora a quelli di addestramento?
 
 La freccia importante è quella che torna indietro. Il monitoraggio scopre che
@@ -158,7 +158,7 @@ correggerlo quando sbaglia, e non puoi tornare a quello buono quando il nuovo
 peggiora. E qui è più difficile che nel software normale, perché il risultato
 non dipende solo dal codice.
 
-Le cose da conservare sono gli **artefatti** nominati nella pagina d'apertura,
+Le cose da conservare sono gli artefatti nominati nella pagina d'apertura,
 e conservarne ogni versione invece dell'ultima soltanto è ciò che in gergo si
 dice **versionare**: la parola torna in tutto il capitolo, e vuol dire questo e
 nient'altro.
@@ -166,8 +166,8 @@ nient'altro.
 `````{tab} Elementare
 
 Una torta viene uguale a quella di ieri solo se tre cose coincidono: la
-**ricetta** (i passaggi), gli **ingredienti** (con le dosi esatte) e il
-**forno** (la stessa temperatura, lo stesso tempo). Sbaglia uno solo dei tre e
+ricetta (i passaggi), gli ingredienti (con le dosi esatte) e il
+forno (la stessa temperatura, lo stesso tempo). Sbaglia uno solo dei tre e
 il risultato cambia. Nel software tradizionale, di solito, basta congelare la
 ricetta: stesso codice, stesso risultato. Nel machine learning no: lo stesso
 codice, addestrato su dati anche solo un po’ diversi, produce un modello
@@ -176,7 +176,7 @@ più, va segnato pure il lancio dei dadi, perché qui dentro c'è del caso.
 
 Tradotta dalla cucina al mestiere, l'analogia dice così: la ricetta è il
 programma, gli ingredienti sono i dati, e la torta è il modello addestrato. Il
-forno è il computer con sopra le sue **librerie**, cioè i pacchi di programmi
+forno è il computer con sopra le sue librerie, cioè i pacchi di programmi
 già fatti che il nostro programma usa senza riscriverli (uno che sa fare i
 conti sui numeri, uno che sa addestrare le reti); e come un forno vero, una
 libreria di marca diversa, o della stessa marca ma di un altro anno, cuoce in
@@ -184,7 +184,7 @@ modo un po’ diverso.
 
 E la torta si conserva anche lei, non solo la ricetta: rifarla identica costa
 ore di forno, e chi la deve mangiare non può aspettarle. Da tenere sotto
-chiave, allora, sono **codice, dati e modello**, con il forno (le librerie)
+chiave, allora, sono codice, dati e modello, con il forno (le librerie)
 come condizione da non dimenticare. Nel quaderno delle ricette, però, non ci
 stanno i sacchi di farina né le torte: chi ce li forzasse dentro avrebbe un
 quaderno che non si sfoglia più. Sul quaderno va il cartellino, quel sacco lì,
@@ -195,22 +195,22 @@ basta, un anno dopo la torta non la sa più rifare.
 
 `````{tab} Superiore
 
-Per riprodurre un modello occorre versionare **tre artefatti** distinti, più il
+Per riprodurre un modello occorre versionare tre artefatti distinti, più il
 contesto in cui sono stati combinati:
 
-- **Codice**: sorgente del modello, delle trasformazioni e della pipeline. Qui
+- Codice: sorgente del modello, delle trasformazioni e della pipeline. Qui
   `git` fa benissimo il suo mestiere.
-- **Dati**: l'esatto insieme di addestramento e valutazione. Si versiona
+- Dati: l'esatto insieme di addestramento e valutazione. Si versiona
   fissandone un’**impronta** (l'hash del contenuto) e conservando lo
   *snapshot* in un archivio dedicato.
-- **Modello**: i pesi addestrati (in PyTorch lo `state_dict` visto nel
+- Modello: i pesi addestrati (in PyTorch lo `state_dict` visto nel
   capitolo PyTorch), catalogati in un **model registry** che ne traccia
   versione, metriche e provenienza.
 
-A questi si aggiungono l’**ambiente**, versioni esatte di Python e delle
+A questi si aggiungono l’ambiente, versioni esatte di Python e delle
 librerie, *pinnate* (`pip freeze > requirements.txt`, un lockfile, un'immagine
 container), perché una minor version diversa di una libreria può cambiare i
-risultati, e la **configurazione**: iperparametri e, cruciale, i **semi**
+risultati, e la configurazione: iperparametri e, cruciale, i semi
 casuali. Il punto delicato è che `git` da solo non basta: è pensato per file
 di testo piccoli e diffabili, mentre dati e modelli sono grandi, binari e
 opachi. Versionarli dentro un repository lo gonfia e lo rende inutilizzabile;
@@ -250,8 +250,8 @@ def fissa_seed(seed: int = 42) -> None:
 
 Fissare il seme è il primo passo, non l'ultimo. Restano di mezzo le versioni
 delle librerie, che cambiando cambiano i risultati, e un fatto sorprendente
-dell'aritmetica dei calcolatori: **sommare gli stessi numeri in ordine diverso
-non dà esattamente lo stesso totale**. Si può verificare in tre secondi con una
+dell'aritmetica dei calcolatori: sommare gli stessi numeri in ordine diverso
+non dà esattamente lo stesso totale. Si può verificare in tre secondi con una
 calcolatrice che non sia quella della mente: chiedendo a Python
 `(0.1 + 0.2) + 0.3` si ottiene `0.6000000000000001`, mentre
 `0.1 + (0.2 + 0.3)` dà `0.6` tondo. Gli addendi sono gli stessi, il totale no.
@@ -291,7 +291,7 @@ significato.
 Durante l'esplorazione non si prova una configurazione sola: se ne provano
 decine, poi centinaia. Si cambia la velocità con cui il modello impara, si
 cambia la forma della rete, si cambia quali informazioni le si danno in pasto:
-sono gli **iperparametri**, le manopole che decide una persona e che il modello
+sono gli iperparametri, le manopole che decide una persona e che il modello
 non impara da sé. E senza un registro, dopo una settimana, nessuno ricorda più
 *quale* combinazione aveva dato quel 94%.
 
@@ -328,7 +328,7 @@ cartellino a un intero archivio di dati.
 
 `````{tab} Superiore
 
-Il cuore è un’**impronta** della configurazione: si serializza il dizionario
+Il cuore è un’impronta della configurazione: si serializza il dizionario
 degli iperparametri in una forma canonica e se ne prende un hash, così da
 riconoscere quando stiamo ripetendo un esperimento già fatto. `sort_keys=True`
 è ciò che rende irrilevante l'ordine in cui le chiavi sono state scritte, ed è
@@ -336,13 +336,13 @@ la proprietà che l'esempio dimostra.
 
 La promessa larga («stessa configurazione, stesso identificativo») non è però
 quella che il codice consegna: la stabilità di quell'impronta ha un perimetro
-stretto. `json.dumps` conserva la **rappresentazione** dei valori, non il loro
+stretto. `json.dumps` conserva la rappresentazione dei valori, non il loro
 valore numerico: `epoche=5` ed `epoche=5.0` danno due
 impronte diverse pur essendo lo stesso esperimento, una tupla e una lista si
 serializzano uguali e quindi collidono, e un valore non serializzabile (un
 `torch.dtype`, una classe) solleva un'eccezione. In un impianto vero i valori
-si normalizzano prima di serializzarli; qui l'impronta è stabile **rispetto
-all'ordine delle chiavi**, che è già sufficiente a riconoscere il duplicato più
+si normalizzano prima di serializzarli; qui l'impronta è stabile rispetto
+all'ordine delle chiavi, che è già sufficiente a riconoscere il duplicato più
 frequente, cioè la stessa configurazione riscritta in un altro ordine.
 
 `````
@@ -396,7 +396,7 @@ risultati finiscano da qualche parte che sopravviva alla chiusura del notebook.
 C'è un'ultima verità, la più scomoda, e la mette a fuoco un paper del 2015:
 *Hidden Technical Debt in Machine Learning Systems*
 {cite}`sculley2015hidden`, di un gruppo di Google. La tesi è che i
-sistemi di ML accumulano **debito tecnico** (le scorciatoie di oggi che si
+sistemi di ML accumulano debito tecnico (le scorciatoie di oggi che si
 pagano con gli interessi domani) più in fretta e in modi più insidiosi del
 software normale.
 
@@ -415,7 +415,7 @@ mantenute per anni, e intanto diventano tantissime: tubi aggiunti uno sopra
 l'altro, con rubinetti che nessuno sa più a che cosa servano e che nessuno osa
 chiudere.
 
-E c'è un motivo più profondo: un modello dipende dai **dati**, non solo dal
+E c'è un motivo più profondo: un modello dipende dai dati, non solo dal
 codice, e dentro un modello nulla è separato da nulla. Basta cambiare una delle
 informazioni che gli si danno in pasto perché il modello rifaccia i suoi
 equilibri e sposti le risposte anche dove nessuno se lo aspettava. Cambiare
@@ -444,16 +444,15 @@ Sculley e colleghi catalogano le forme di debito specifiche dell'ML, tra cui:
   opzioni, soglie) senza controllo né validazione.
 - **Data dependencies**, le dipendenze dai dati sono più insidiose di quelle
   dal codice, perché sono *silenziose*: nessun compilatore si lamenta se una
-  feature a monte cambia distribuzione. Da qui il principio **CACE**:
+  feature a monte cambia distribuzione. Da qui il principio CACE:
   *Changing Anything Changes Everything*.
 
 Come si misura se un sistema è pronto per la produzione? Una rubrica nota come
 **ML Test Score** mette in fila 28 controlli concreti su quattro aree (dati e
 feature, sviluppo del modello, infrastruttura, monitoraggio)
 {cite}`breck2017ml`. Il voto complessivo è dettato dall'area più debole: non
-basta un modello brillante se il monitoraggio è assente. All'estremo opposto
-della maturità sta la **Continuous Delivery for Machine Learning**, in sigla
-**CD4ML**
+basta un modello brillante se il monitoraggio è assente. In cima a quella
+scala sta la Continuous Delivery for Machine Learning, in sigla **CD4ML**
 {cite}`sato2019continuous`, che estende al ML le pratiche di consegna continua
 del software: automatizzare l'intero ciclo (dati, training, valutazione,
 deploy), così che qualunque modello sia riproducibile e rilasciabile in modo
@@ -472,7 +471,7 @@ contare.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Fra il **notebook** e la **produzione** c'è un abisso, ed è quello fra
+- Fra il notebook e la produzione c'è un abisso, ed è quello fra
   cucinare un piatto una sera per gli amici e metterlo nel menù: in
   esplorazione conta solo che venga buono, in servizio deve venire identico la
   centesima volta, uscire in fretta e reggere il sabato sera.
@@ -480,16 +479,16 @@ contare.
   se non sai rifare un modello non puoi confrontarlo, correggerlo, né tornare
   a quello buono quando il nuovo peggiora.
 - Le cose da conservare sono tre (il programma, i dati, il modello), e a
-  queste tre vanno aggiunte due condizioni: le **librerie** con cui si è
-  cucinato e il **seme**, cioè il punto da cui parte il sorteggio. Fissare il
+  queste tre vanno aggiunte due condizioni: le librerie con cui si è
+  cucinato e il seme, cioè il punto da cui parte il sorteggio. Fissare il
   seme è il primo passo e non basta da solo: due
   esecuzioni possono ancora differire nelle ultime cifre, e va bene così,
   purché le conclusioni non cambino.
-- **Segnare ogni prova** appena la si lancia: che cosa si era impostato e com'è
+- Segnare ogni prova appena la si lancia: che cosa si era impostato e com'è
   andata, in un posto che sopravviva alla chiusura del programma. È la
   differenza fra un laboratorio con i quaderni e uno dove si va a memoria.
-- Le scorciatoie prese oggi si pagano con gli interessi domani (il **debito
-  tecnico**), e in questo mestiere si pagano più care, perché un modello
+- Le scorciatoie prese oggi si pagano con gli interessi domani (il debito
+  tecnico), e in questo mestiere si pagano più care, perché un modello
   dipende dai dati e i dati cambiano da soli, senza che nessuno tocchi una
   riga.
 ```
@@ -498,27 +497,27 @@ contare.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Tra un **notebook** e la **produzione** c'è un abisso: cambiano i requisiti
+- Tra un notebook e la produzione c'è un abisso: cambiano i requisiti
   non-funzionali (affidabilità, latenza, scala, riproducibilità,
   manutenibilità) invisibili nella fase di ricerca.
 - I team che ci riescono bilanciano tre spinte {cite}`shankar2022operationalizing`:
-  **Velocity** (iterare in fretta), **Validation** (testare presto e in
-  automatico), **Versioning** (conservare le versioni).
-- Il **ciclo di vita** (dati, feature, training, valutazione, deploy,
+  Velocity (iterare in fretta), Validation (testare presto e in
+  automatico), Versioning (conservare le versioni).
+- Il ciclo di vita (dati, feature, training, valutazione, deploy,
   monitoraggio {cite}`amershi2019software`) non è una retta ma un anello: il
   monitoraggio rimanda ai dati, un sistema di ML si coltiva.
-- La **riproducibilità** richiede tre artefatti versionati (**codice, dati,
-  modello**) più ambiente e semi casuali. `git` da solo non basta: dati e
+- La riproducibilità richiede tre artefatti versionati (codice, dati,
+  modello) più ambiente e semi casuali. `git` da solo non basta: dati e
   modelli sono grandi e binari, se ne versiona un'impronta. Distinguere la
-  riproducibilità **bit a bit** (che si paga in prestazioni e che il batching
-  dinamico rinuncia a dare) da quella **statistica**, che è quella che serve.
-- L’**experiment tracking** registra iperparametri, metriche e artefatti di ogni
+  riproducibilità bit a bit (che si paga in prestazioni e che il batching
+  dinamico rinuncia a dare) da quella statistica, che è quella che serve.
+- L’experiment tracking registra iperparametri, metriche e artefatti di ogni
   run: un'impronta della configurazione, stabile rispetto all'ordine delle
   chiavi, riconosce la stessa configurazione riscritta in un altro ordine, non
   ogni duplicato (`epoche=5` ed `epoche=5.0` danno due impronte diverse).
-- Il ML accumula **debito tecnico** in fretta {cite}`sculley2015hidden` (glue
+- Il ML accumula debito tecnico in fretta {cite}`sculley2015hidden` (glue
   code, pipeline jungle, dipendenze dai dati); la maturità si misura con rubriche
-  come la **ML Test Score** {cite}`breck2017ml` e si automatizza con la CD4ML
+  come la ML Test Score {cite}`breck2017ml` e si automatizza con la CD4ML
   {cite}`sato2019continuous`.
 ```
 `````

@@ -76,7 +76,7 @@ Sculley e colleghi inquadrano il fenomeno con il linguaggio del **debito
 tecnico** {cite}`sculley2015hidden`. Nel software tradizionale le scorciatoie
 prese in fretta si pagano con gli interessi più avanti; un sistema di
 apprendimento automatico ne accumula uno *aggiuntivo* e più insidioso, perché
-nasconde la propria complessità nei **dati** e non solo nel codice. Il sistema
+nasconde la propria complessità nei dati e non solo nel codice. Il sistema
 in produzione comprende pipeline di raccolta e validazione dei dati,
 estrazione e trasformazione delle *feature*, un livello di *serving* che
 espone il modello, monitoraggio, gestione della configurazione e delle
@@ -117,7 +117,7 @@ una sola, il codice; qui i pezzi che compongono il lavoro finito (gli
 dei tre non sono testo. Gli strumenti con cui il software tiene la propria
 cronologia da decenni sono fatti apposta per il testo: sanno dire quale riga è
 cambiata fra ieri e oggi. Su una cartella di immagini, o sul file che contiene
-i **pesi** del modello (i milioni di numeri che l'addestramento ha aggiustato,
+i pesi del modello (i milioni di numeri che l'addestramento ha aggiustato,
 e che *sono* quello che il modello ha imparato), quel confronto non vuol dire
 niente: sono file enormi, e dentro non ci sono righe da confrontare.
 
@@ -149,8 +149,8 @@ accorgersi in tempo se qualcosa va storto.
 
 `````{tab} Superiore
 
-La definizione operativa poggia su una tripletta versionata: **dati + codice +
-modello** {cite}`kreuzberger2023machine`. Rendere un esperimento riproducibile
+La definizione operativa poggia su una tripletta versionata: dati + codice +
+modello {cite}`kreuzberger2023machine`. Rendere un esperimento riproducibile
 significa poter ricostruire una predizione a partire da (a) la versione esatta
 del dataset di addestramento, (b) la versione del codice e degli
 iperparametri, (c) i pesi del modello che ne sono risultati. Da qui le
@@ -159,13 +159,13 @@ pratiche cardine: *data versioning* e *feature store* per gli ingressi,
 per i modelli, pipeline automatizzate che rieseguono l'intero percorso (da
 dato grezzo a modello servito) con un comando solo.
 
-L'obiettivo non è la sofisticazione, ma l’**automazione** e la
-**tracciabilità**: ridurre il lavoro che si rifà a mano ogni volta, rendere
+L'obiettivo non è la sofisticazione, ma l’automazione e la
+tracciabilità: ridurre il lavoro che si rifà a mano ogni volta, rendere
 ogni rilascio ripetibile e ogni predizione riconducibile agli artefatti che
 l'hanno prodotta. È la tesi di fondo dei testi che hanno sistematizzato la
 disciplina, *Designing Machine Learning Systems* fra i primi
 {cite}`huyen2022designing`: un modello in produzione è un
-**processo** da tenere in vita, più che un risultato.
+processo da tenere in vita, più che un risultato.
 
 `````
 
@@ -175,7 +175,7 @@ Ed è proprio la parola «processo» a segnare la differenza più importante.
 Siamo abituati a pensare al machine learning come a una linea retta: si
 raccolgono i dati, si addestra, si valuta, si consegna. Fine. Ma la consegna
 è il punto in cui il modello incontra il mondo reale, e il
-mondo reale cambia. Un modello in produzione va **sorvegliato**, perché prima o
+mondo reale cambia. Un modello in produzione va sorvegliato, perché prima o
 poi i dati che incontra smettono di somigliare a quelli su cui è stato
 addestrato. Quello scivolamento lento ha un nome inglese che useremo sempre,
 *drift*, e vuol dire deriva: è la stessa cosa di cui parla
@@ -213,19 +213,19 @@ conosci già. Il gesto nuovo è tornare a guardare, e quando l'occhio in
 produzione vede che i dati sono cambiati tira la freccia che riporta
 all'inizio. E le strade di ritorno del giardino sono parecchie. Il basilico
 cresce e non profuma: potare non serve, quel guaio si ripara a monte, nel
-terreno e nella scelta dei semi. Trovi i sacchetti dei semi con le etichette scambiate: quello che è
-cresciuto è rigoglioso e inservibile, e si ricomincia dal sacchetto. Ogni
-freccia indietro torna al punto in cui il guaio è nato.
+terreno e nella scelta dei semi. Trovi i sacchetti dei semi con le etichette
+scambiate: quello che è cresciuto è rigoglioso e inservibile, e si ricomincia
+dal sacchetto. Ogni freccia indietro torna al punto in cui il guaio è nato.
 
 `````
 
 `````{tab} Superiore
 
 Uno studio condotto in Microsoft ha formalizzato il flusso di lavoro del ML in
-**nove fasi** {cite}`amershi2019software`: definizione dei requisiti del
+nove fasi {cite}`amershi2019software`: definizione dei requisiti del
 modello, raccolta dei dati, pulizia dei dati, etichettatura, *feature
 engineering*, addestramento, valutazione, deployment e monitoraggio. Il punto
-qualificante non è l'elenco, ma la sua **topologia**: le fasi non formano una
+qualificante non è l'elenco, ma la sua topologia: le fasi non formano una
 catena lineare ma un grafo con molti cicli di ritorno. Il monitoraggio
 retroagisce sulla raccolta dei dati (è la freccia del *drift*); una
 valutazione insoddisfacente rimanda al *feature engineering* o alla raccolta;
@@ -234,7 +234,7 @@ un errore nell'etichettatura obbliga a rivedere i dati a monte.
 Rispetto a DevOps ci sono due retroazioni specifiche del ML, assenti nel
 software tradizionale: la dipendenza dai dati (che cambiano nel tempo e
 degradano il modello senza che una riga di codice sia stata toccata) e la
-necessità di **riaddestrare** come operazione ordinaria, non come eccezione. È
+necessità di riaddestrare come operazione ordinaria, non come eccezione. È
 questa la ragione strutturale per cui il ciclo è un anello e non un segmento.
 
 `````
@@ -303,7 +303,7 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
   accorgersi della deriva di cui si diceva poco fa e decidere *quando*
   rimettere mano al modello.
 - {doc}`LLMOps </MLOps/llmops>`, come cambiano le regole del gioco con i grandi
-  modelli linguistici (in sigla **LLM**, *large language model*): modelli che
+  modelli linguistici (in sigla LLM, *large language model*): modelli che
   non si addestrano ma si *interrogano*, testi da giudicare senza che esista
   una risposta giusta sola, e un conto che si paga a pezzetti di testo (i
   *token*).
@@ -320,20 +320,20 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Addestrare un modello è **la punta dell'iceberg**: è il piatto del cuoco, e
+- Addestrare un modello è la punta dell'iceberg: è il piatto del cuoco, e
   il ristorante è tutto il resto (le forniture, la cucina, il servizio in
   sala). Nel disegno del 2015 di Sculley e colleghi, il pezzo di cui parlano i
   libri è un rettangolino, e tutto intorno ci sono scatole più grandi.
-- **In produzione** vuol dire che il modello ha smesso di essere un
+- In produzione vuol dire che il modello ha smesso di essere un
   esperimento: lo stanno usando persone vere, adesso, e la distanza fra le due
   cose è quasi tutta fuori dal modello.
-- Ci sono **tre cose** da conservare, non una: il programma, i dati e il
+- Ci sono tre cose da conservare, non una: il programma, i dati e il
   modello addestrato. Nel software normale basta il primo, ed è per questo che
   gli strumenti del software normale qui non bastano.
 - Nulla è davvero separato da nulla: cambiare un ingrediente sposta il
   risultato ovunque, anche dove non te lo aspetti. È il motivo per cui un
   sistema del genere si sorveglia invece di darlo per finito.
-- Il percorso non è una linea con un traguardo ma un **anello**: dati,
+- Il percorso non è una linea con un traguardo ma un anello: dati,
   addestramento, valutazione, apertura al pubblico, sorveglianza, e da lì di
   nuovo ai dati. Un modello è un giardino, non un quadro appeso.
 ```
@@ -342,24 +342,24 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Addestrare un modello è **la punta dell'iceberg**: nel sistema reale il
+- Addestrare un modello è la punta dell'iceberg: nel sistema reale il
   «codice ML» è un rettangolino minuscolo circondato da dati, feature,
   serving, monitoraggio e configurazione {cite}`sculley2015hidden`. Portare un
   modello dal prototipo al servizio reale è un problema d'ingegneria a sé,
   costellato di ostacoli a ogni tappa {cite}`paleyes2022challenges`.
-- **MLOps** porta la cultura DevOps (automazione, CI/CD, monitoraggio) al
-  ciclo di vita del ML, aggiungendo i **dati** e il **modello** come artefatti
+- MLOps porta la cultura DevOps (automazione, CI/CD, monitoraggio) al
+  ciclo di vita del ML, aggiungendo i dati e il modello come artefatti
   da versionare accanto al codice {cite}`kreuzberger2023machine`.
-- Il **debito tecnico** del ML è aggravato dall’**entanglement** (principio
+- Il debito tecnico del ML è aggravato dall’entanglement (principio
   CACE: *Changing Anything Changes Everything*): nessuna feature è davvero
   indipendente dalle altre.
-- Il ciclo di vita è un **anello**, non una linea: dati → addestramento →
+- Il ciclo di vita è un anello, non una linea: dati → addestramento →
   valutazione → deploy → monitoraggio → (drift) → di nuovo dati. Lo studio di
   Microsoft lo descrive in nove fasi con molte retroazioni
   {cite}`amershi2019software`.
-- Un **notebook non basta**: manca il serving, il monitoraggio, la
+- Un notebook non basta: manca il serving, il monitoraggio, la
   tracciabilità e il riaddestramento. Un modello in produzione è un
-  **processo** da tenere in vita {cite}`huyen2022designing`, non un risultato
+  processo da tenere in vita {cite}`huyen2022designing`, non un risultato
   da archiviare.
 ```
 `````

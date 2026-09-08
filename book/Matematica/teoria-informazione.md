@@ -315,7 +315,10 @@ prospettive (minimizzare la cross-entropia, avvicinare $q_\theta$ a $p$ nel
 senso della KL, massimizzare la verosimiglianza) sono la stessa operazione. È
 ciò che fa `nn.CrossEntropyLoss`, la loss $\mathcal{L}=-\log \hat{y}_c$ (dove
 $\hat{y}_c$ è la probabilità che il modello assegna alla classe corretta $c$)
-che useremo nei capitoli sulle reti neurali e su PyTorch.
+che useremo nei capitoli sulle reti neurali e su PyTorch. Che quella loss esca
+da una distribuzione categorica sull'uscita, e non sia una scelta a sé, lo
+mostra la sezione
+{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`.
 
 `````
 

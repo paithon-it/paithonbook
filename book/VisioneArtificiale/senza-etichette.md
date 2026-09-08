@@ -14,19 +14,19 @@ mestiere all'altro, e per moltissimi settori non esiste affatto. Le immagini
 *senza* etichetta, al contrario, sono praticamente infinite.
 
 Da questa asimmetria nasce la domanda: si può insegnare a una rete a descrivere
-bene un'immagine **senza che nessuno dica mai che cosa c'è nella foto**? Quella
+bene un'immagine senza che nessuno dica mai che cosa c'è nella foto? Quella
 descrizione, la lista di numeri in cui la rete riassume un'immagine, si chiama
 la sua **rappresentazione**, ed è la cosa che vogliamo: il resto si costruisce
 sopra. La risposta è sì, e per arrivarci bisogna rovesciare l'uso di uno
 strumento appena costruito. Nella {doc}`sezione sulla data augmentation
 </VisioneArtificiale/data-augmentation>` le trasformazioni erano un freno, un
 modo di impedire alla rete di imparare a memoria. Qui non frenano niente: qui
-l'augmentation **è il segnale di addestramento**.
+l'augmentation è il segnale di addestramento.
 
 ## Un compito la cui risposta è già nei dati
 
 Fin qui, nel libro, una rete imparava perché qualcuno le diceva la risposta:
-si chiama apprendimento **supervisionato**, come uno studente con l'insegnante
+si chiama apprendimento supervisionato, come uno studente con l'insegnante
 accanto che corregge. Il meccanismo di questa sezione si chiama invece
 **auto-supervisionato** perché la correzione se la dà da sé, e la definizione
 sta in una riga: si inventa un compito (un **pretesto**, *pretext task*) la cui
@@ -42,20 +42,20 @@ struttura del parlato da migliaia di ore mai trascritte.
 Sul testo un buon pretesto si trova subito: si copre una parola e si chiede di
 indovinarla, e la risposta giusta è la parola che si è coperta. Un'immagine non
 ha parole, e quel che segue è la ricerca di un pretesto altrettanto buono per i
-pixel, in due famiglie: rendere il modello **indifferente** alle trasformazioni
-che non cambiano il contenuto, oppure fargli **ricostruire** ciò che è
+pixel, in due famiglie: rendere il modello indifferente alle trasformazioni
+che non cambiano il contenuto, oppure fargli ricostruire ciò che è
 nascosto.
 
 ## Due viste della stessa foto
 
 La prima famiglia si chiama **contrastiva**, perché il modello impara mettendo
 a confronto: non basta avvicinare due cose, bisogna insieme allontanarne
-altre. Si prende un'immagine e la si trasforma **due volte**, a caso e in modo
+altre. Si prende un'immagine e la si trasforma due volte, a caso e in modo
 indipendente: due ritagli diversi, due variazioni di colore, magari una
 sfocatura. Si ottengono due *viste* della stessa scena, e al modello si chiede
 una cosa sola: che le due viste della stessa immagine vengano descritte in modo
 simile fra loro, e diverso da come descrive le viste di tutte le altre immagini
-del gruppo che sta guardando in quel momento (il **batch**, cioè la manciata di
+del gruppo che sta guardando in quel momento (il batch, cioè la manciata di
 esempi che si elaborano insieme). Quelle altre viste, i rivali da cui il gemello
 va distinto, hanno un nome che tornerà spesso: si chiamano i **negativi**. È la
 ricetta di SimCLR {cite}`chen2020simple`, il lavoro che nel 2020 ha mostrato
@@ -142,7 +142,7 @@ $\mathrm{sim}$ è la similarità coseno e $\tau > 0$ la temperatura, che regola
 quanto il denominatore sia dominato dai termini più simili all'ancora: al
 calare di $\tau$ pesano quasi soltanto i rivali che al gemello assomigliano di
 più. La somma corre sulle altre $2N-1$ viste del batch, cioè la gemella
-$\mathbf{z}_j$ e le $2N-2$ che fanno da **negativi**. La perdita totale è la
+$\mathbf{z}_j$ e le $2N-2$ che fanno da negativi. La perdita totale è la
 media di $\ell_{i,j}$ su tutte le $2N$ coppie ordinate. È la stessa InfoNCE che
 il libro usa per allineare immagini e didascalie, con una differenza
 sostanziale: là il positivo è la didascalia
@@ -152,7 +152,7 @@ La supervisione non viene dal linguaggio, viene dalla trasformazione.
 `````
 
 In PyTorch tutto questo sta in una decina di righe, e la parte da guardare è
-**da dove esce la risposta giusta**: non la scrive nessuno, viene fuori
+da dove esce la risposta giusta: non la scrive nessuno, viene fuori
 soltanto dall'ordine in cui abbiamo impilato le viste. Se le prime $N$ righe
 sono le viste A e le seconde $N$ sono le viste B nello stesso ordine, la
 gemella della riga $i$ è la riga $i+N$, e questo il computer lo sa fare da sé.
@@ -181,15 +181,15 @@ le due viste.
 
 Ed eccoci al rovesciamento annunciato. Nella sezione sulla data augmentation le
 trasformazioni servivano a non far imparare a memoria, e la regola era: sono
-ammesse se **non cambiano l'etichetta**. Qui un'etichetta non c'è, e le
-trasformazioni non decorano il compito, lo **definiscono**: chiedere che due
+ammesse se non cambiano l'etichetta. Qui un'etichetta non c'è, e le
+trasformazioni non decorano il compito, lo definiscono: chiedere che due
 viste finiscano vicine significa dire al modello *a che cosa deve essere
 indifferente*. Se ruotiamo, gli insegniamo che l'orientamento non conta; se
 cambiamo colore, che il colore non conta. L'elenco delle trasformazioni
 ammesse è la specifica di ciò che il modello considererà «la stessa cosa».
 
-La coppia che conta, negli esperimenti di SimCLR, è **ritaglio casuale più
-disturbo del colore**, e la ragione per cui il secondo è indispensabile è la
+La coppia che conta, negli esperimenti di SimCLR, è ritaglio casuale più
+disturbo del colore, e la ragione per cui il secondo è indispensabile è la
 lezione più generale di questa sezione.
 
 `````{tab} Elementare
@@ -223,8 +223,8 @@ sola, produce rappresentazioni utili, mentre la loro composizione sì
 {cite}`chen2020simple`.
 
 La regola che se ne ricava vale ben oltre questo caso. In un compito
-auto-supervisionato **le invarianze imposte e le scorciatoie disponibili sono la
-stessa cosa vista da due lati**: ogni trasformazione applicata toglie un
+auto-supervisionato le invarianze imposte e le scorciatoie disponibili sono la
+stessa cosa vista da due lati: ogni trasformazione applicata toglie un
 indizio, e l'indizio che *non* togliamo diventa la strada che il modello
 prenderà.
 
@@ -233,7 +233,7 @@ prenderà.
 Che la scorciatoia esista si verifica in una ventina di righe, senza addestrare
 nulla. Costruiamo duecento immagini finte, ciascuna con una propria dominante di
 colore, ne estraiamo due ritagli casuali a testa e proviamo ad accoppiarli
-usando **soltanto** l’**istogramma** dei colori, cioè il conto di quanti pixel
+usando soltanto l’istogramma dei colori, cioè il conto di quanti pixel
 di ogni tinta ci sono in un ritaglio, senza sapere dove stanno. È la carta
 d'identità cromatica di un'immagine, e ignora completamente la forma.
 
@@ -314,8 +314,8 @@ calcolo.
 Da qui la mossa che scioglie il nodo, e conviene dire subito che è arrivata
 prima: MoCo è di qualche mese anteriore a SimCLR, e non nasce come sua
 risposta ma come attacco allo stesso problema, già noto. La mossa è staccare
-l'una dall'altra due cose che fin qui erano la stessa, **quanti rivali il
-modello vede** e **quante immagini si elaborano insieme**. Perché mai i
+l'una dall'altra due cose che fin qui erano la stessa, quanti rivali il
+modello vede e quante immagini si elaborano insieme. Perché mai i
 negativi devono essere per forza i compagni di batch?
 
 `````{tab} Elementare
@@ -338,22 +338,22 @@ scatola resti confrontabile.
 
 `````{tab} Superiore
 
-**MoCo** {cite}`he2020momentum` riformula l'apprendimento contrastivo come la
+MoCo {cite}`he2020momentum` riformula l'apprendimento contrastivo come la
 costruzione di un **dizionario dinamico**. Il preprint è del novembre 2019,
 quello di SimCLR del febbraio 2020: il termine di paragone di allora erano i
 *memory bank* della generazione precedente. La vista-ancora passa in un encoder
 $f_{\theta_q}$ che produce la *query* $\mathbf{q}$; le altre viste passano in un secondo
-encoder $f_{\theta_k}$ che produce le *chiavi*, accumulate in una **coda** FIFO
+encoder $f_{\theta_k}$ che produce le *chiavi*, accumulate in una coda FIFO
 di dimensione fissa (nel lavoro originale $K = 65\,536$ elementi): a ogni passo
 si accodano le chiavi del mini-batch corrente e si scartano le più vecchie. La
 perdita è una InfoNCE il cui denominatore somma sulla coda, non sul batch: il
 numero di negativi non dipende più dalla dimensione del batch.
 
-Resta il problema della **coerenza**: se $\theta_k$ cambiasse a ogni passo come
+Resta il problema della coerenza: se $\theta_k$ cambiasse a ogni passo come
 $\theta_q$, chiavi accodate in momenti diversi sarebbero prodotte da encoder
 diversi e i loro prodotti scalari non sarebbero confrontabili. La soluzione è
 non addestrare l'encoder delle chiavi per retropropagazione, ma mantenerlo come
-**media mobile esponenziale** di quello delle query:
+media mobile esponenziale di quello delle query:
 
 $$
 \theta_k \;\leftarrow\; m\, \theta_k + (1 - m)\, \theta_q,
@@ -391,7 +391,7 @@ l'uscita dell'altra. E non collassa.
 
 Ci sono un allievo e un insegnante. Guardano la stessa foto, ma da due ritagli
 diversi. L'insegnante compila la sua scheda; l'allievo, con davanti soltanto il
-proprio ritaglio, deve **indovinare che cosa ha scritto l'insegnante**, e il
+proprio ritaglio, deve indovinare che cosa ha scritto l'insegnante, e il
 punteggio misura quanto le due schede combaciano. Nient'altro in gioco: nessuna
 foto rivale da respingere, nessuna penalità, solo «avvicinati a quello che dice
 lui».
@@ -402,11 +402,11 @@ Schede identiche, punteggio pieno, e nessuno dei due che abbia mai guardato
 davvero. È il collasso di cui si diceva, e a impedirlo qui non c'è nessuna forza
 che allontani: ci sono due dissimmetrie.
 
-La prima riguarda l'insegnante, che è una **copia lenta dell'allievo** e non
+La prima riguarda l'insegnante, che è una copia lenta dell'allievo e non
 una seconda rete assunta a parte, i suoi criteri rimescolati poco alla volta con
 quelli dell'allievo di oggi. Verrebbe da chiedersi che cosa si possa mai
 imparare da una copia di sé stessi, e la risposta è che l'insegnante non sa di
-più: sa **un'altra cosa**, perché sta guardando l'altro ritaglio. Il sapere non
+più: sa un'altra cosa, perché sta guardando l'altro ritaglio. Il sapere non
 arriva da lui, arriva dal confronto fra due sguardi diversi sulla stessa scena;
 lui serve a tenere fermo il metro mentre l'allievo si muove. E siccome non
 prende punteggio, non ha alcun motivo di semplificarsi la vita: non può mettersi
@@ -416,7 +416,7 @@ in capitolo.
 La seconda sta nel percorso della risposta: solo l'allievo ha una **testa di
 predizione**, un passaggio in più con cui rielaborare la propria scheda prima
 del confronto. Non gli si chiede di scrivere la scheda dell'insegnante, gli si
-chiede di scriverne una **da cui** quella dell'insegnante si possa ricavare. È
+chiede di scriverne una da cui quella dell'insegnante si possa ricavare. È
 una richiesta più debole, come chiedere l'indirizzo di casa invece del percorso
 esatto per arrivarci: chi dà l'indirizzo ha detto abbastanza, e resta libero di
 averci pensato per una strada tutta sua. Le due schede possono così restare
@@ -431,7 +431,7 @@ riproducibile, la spiegazione è arrivata dopo, un pezzo alla volta.
 `````{tab} Superiore
 
 BYOL mantiene due reti. Quella **online**, di parametri $\theta$, è fatta di
-encoder, proiettore e **testa di predizione** $q_\theta$; quella **target**, di
+encoder, proiettore e testa di predizione $q_\theta$; quella **target**, di
 parametri $\xi$, ha solo encoder e proiettore. Date due viste $\mathbf{v}$ e
 $\mathbf{v}'$ della
 stessa immagine, si minimizza l'errore quadratico fra la predizione della rete
@@ -481,9 +481,9 @@ degenere; una dimostrazione per il caso generale ancora non c'è.
 
 C'è un terzo modo di formulare la stessa idea, e cambia quello che le due reti
 si scambiano: non più una scheda di numeri da far somigliare, ma una
-**ripartizione di fiducia** fra molte caselle, da riprodurre com'è (in termini
+ripartizione di fiducia fra molte caselle, da riprodurre com'è (in termini
 tecnici, una *distribuzione di probabilità*). È lo schema della
-**distillazione**, cioè un modello che impara imitando le risposte di un altro
+distillazione, cioè un modello che impara imitando le risposte di un altro
 invece delle etichette vere, con la
 particolarità che l'insegnante non è un modello più grande già addestrato, ma di
 nuovo la copia lenta dello studente. Da qui il nome, DINO
@@ -587,7 +587,7 @@ sfondo, e l'obiettivo premia le rappresentazioni che lo isolano.
 ## Nascondere tre quarti dell'immagine
 
 L'altra grande famiglia non chiede al modello di riconoscere niente: gli chiede
-di **ricostruire**. È il gioco della parola coperta, quello con cui si
+di ricostruire. È il gioco della parola coperta, quello con cui si
 pre-addestrano i modelli di linguaggio, trasportato sui pixel: la stessa idea
 che nell'audio muove wav2vec 2.0 e HuBERT. Sulle immagini l'operazione è stata a
 lungo deludente, e il MAE (*masked autoencoder*, cioè una rete che impara a
@@ -599,7 +599,7 @@ che il problema era la dose.
 Se copro una parola su sette in una pagina, per indovinarle serve conoscere bene
 la lingua. Se copro un pixel su sette in una fotografia, per indovinarli non
 serve sapere niente: basta guardare i pixel intorno e fare una media, perché un
-pixel somiglia moltissimo ai suoi vicini. Le immagini sono **ridondanti** nello
+pixel somiglia moltissimo ai suoi vicini. Le immagini sono ridondanti nello
 spazio in un modo in cui il testo non lo è: ogni parola porta informazione sua,
 ogni pixel ripete in gran parte quella del pixel accanto.
 
@@ -611,7 +611,7 @@ indovinare che cosa c'è sotto un rettangolo enorme bisogna aver capito la scena
 un esercizio di ritocco e diventa un esercizio di comprensione.
 
 Il lavoro è diviso fra due pezzi, ed è qui il regalo. Il primo, quello grosso,
-guarda **soltanto le tessere rimaste scoperte**, cioè un quarto del totale, e
+guarda soltanto le tessere rimaste scoperte, cioè un quarto del totale, e
 si costruisce l'idea della scena; il secondo, molto più piccolo, prende quella
 idea e disegna quello che c'era sotto le tessere coperte. Al pezzo grosso, che
 è quello caro, tocca dunque un quarto del materiale, e finito il gioco è
@@ -631,7 +631,7 @@ spende una parte della sua capacità anche lì.
 
 L'immagine è divisa in patch come in un ViT {cite}`dosovitskiy2021image` e se ne
 maschera una frazione molto alta, campionata uniformemente a caso (nel lavoro
-originale il 75%). L'architettura è deliberatamente **asimmetrica**: l'encoder,
+originale il 75%). L'architettura è deliberatamente asimmetrica: l'encoder,
 grande, riceve in ingresso *soltanto* le patch visibili, senza alcun segnaposto
 per quelle mancanti; il decoder, molto più leggero, riceve la sequenza completa,
 cioè le rappresentazioni delle patch visibili più un token appreso ripetuto in
@@ -645,12 +645,12 @@ interpolazione locale, senza alcuna rappresentazione semantica; per lo stesso
 motivo il testo, discreto e denso di informazione, si accontenta del 15% di BERT
 {cite}`devlin2019bert`, e il parlato sta nel mezzo (wav2vec 2.0 maschera circa
 la metà dei tratti). E poiché l'encoder elabora solo il 25% dei token, il costo
-del passaggio in avanti scende **all'incirca in proporzione**, e appena di più.
+del passaggio in avanti scende all'incirca in proporzione, e appena di più.
 Il quadratico dell'attenzione fa spesso dire più di quanto sia vero. Siano
 $N_{\text{tok}}$ il numero di token e $d$ la dimensione delle rappresentazioni
 interne (il batch qui non entra: il conto è per sequenza). In un blocco
 Transformer quasi tutte le moltiplicazioni (proiezioni $\mathbf{Q}$,
-$\mathbf{K}$, $\mathbf{V}$, proiezione d'uscita, MLP) sono **lineari** in
+$\mathbf{K}$, $\mathbf{V}$, proiezione d'uscita, MLP) sono lineari in
 $N_{\text{tok}}$, e solo il prodotto $N_{\text{tok}} \times N_{\text{tok}}$ fra
 query e chiavi è quadratico. È quest'ultimo, e soltanto lui, a scendere a un
 sedicesimo quando i token si riducono a un quarto; ma alle taglie in gioco pesa
@@ -667,7 +667,7 @@ numero misurato è il tempo di addestramento nel suo complesso, e il decoder, ch
 la sequenza la riceve completa, dal mascheramento non guadagna nulla. Resta il
 punto: il compito diventa più difficile e insieme più economico.
 
-La differenza di fondo rispetto ai metodi contrastivi è **dove** finisce la
+La differenza di fondo rispetto ai metodi contrastivi è dove finisce la
 difficoltà. Là stava nelle trasformazioni scelte a mano, cioè nelle invarianze
 imposte dal progettista; qui in una sola manopola, la frazione mascherata, e
 nessuna augmentation artigianale è necessaria (il MAE usa poco più del ritaglio
@@ -697,7 +697,7 @@ che sa fare è tracciare una linea dritta fra i riassunti che l'encoder produce
 (i gatti di qua, i cani di là), aiutandosi con le etichette di un insieme di
 foto di prova. Se un giudice così sprovveduto supera l'esame, il merito non
 può essere suo: vuol dire che nei riassunti dell'encoder gatti e cani erano
-**già** separati. La debolezza del giudice è la garanzia dell'esame.
+già separati. La debolezza del giudice è la garanzia dell'esame.
 
 C'è però un limite: l'esame promuove solo ciò che si separa con una linea
 dritta. Un encoder potrebbe aver capito tutto e averlo scritto in una forma più
@@ -714,7 +714,7 @@ le rappresentazioni si addestra un solo strato lineare con softmax, usando le
 etichette di un dataset di valutazione. Nient'altro: nessun gradiente entra
 nell'encoder, nessuna non linearità viene aggiunta. Se basta un iperpiano (una
 retta, quando le dimensioni sono due) a separare le classi, allora
-l'informazione era **già dentro** la rappresentazione, e in una forma
+l'informazione era già dentro la rappresentazione, e in una forma
 direttamente utilizzabile, perché il classificatore lineare non ha nessuna
 capacità di costruirla da sé. La debolezza dello strumento è il suo pregio.
 
@@ -730,7 +730,7 @@ a $k$ vicini più prossimi, che non addestra proprio niente.
 
 `````
 
-La prova più severa è però un'altra: **cambiare compito**. Il
+La prova più severa è però un'altra: cambiare compito. Il
 {doc}`rilevamento e la segmentazione </VisioneArtificiale/detection-segmentazione>`
 non chiedono di dire che cosa c'è nella foto, chiedono di dire *dove*: e per
 rispondere non basta un
@@ -751,14 +751,14 @@ coperto (il MAE, e si chiamano **generativi** proprio perché il compito è
 produrre di nuovo un pezzo di immagine) risolvono lo stesso problema:
 fabbricare un compito la cui risposta è già nei dati e che sia abbastanza
 difficile da non poter essere risolto per scorciatoia. Quello che li distingue è
-**dove** mettono la difficoltà.
+dove mettono la difficoltà.
 
-I contrastivi la mettono nelle **trasformazioni**: il compito è facile per
+I contrastivi la mettono nelle trasformazioni: il compito è facile per
 costruzione (riconoscere il gemello) e diventa difficile perché le due viste
 sono state rese diverse apposta. Siamo noi a decidere quali differenze il
 modello deve imparare a ignorare, e quella decisione è conoscenza nostra sul
 problema, messa a mano dentro il compito. I generativi la mettono nella
-**quantità di informazione tolta**: nessuna invarianza scelta da noi, una sola
+quantità di informazione tolta: nessuna invarianza scelta da noi, una sola
 manopola da girare, quanto si copre. Il prezzo è che il conto lo si paga sui
 pixel, e ricostruire i pixel vuol dire dover indovinare anche il granello di
 polvere e il riflesso, cioè spendere fatica su dettagli che a nessuno
@@ -768,7 +768,7 @@ sono fatte diverse l'una dall'altra, ed è quella differenza a tenere il sistema
 lontano dalla risposta vuota.
 
 Tre posti, ma non sono tutti, e conviene dirlo subito. Ce n'è un quarto, e sta
-dove nessuno dei tre guarda: la difficoltà si mette **dentro il riassunto**,
+dove nessuno dei tre guarda: la difficoltà si mette dentro il riassunto,
 chiedendo che i numeri che lo compongono dicano ciascuno una cosa propria invece
 di ripetersi a vicenda. Niente rivali da allontanare, e nessun bisogno che le
 due reti siano fatte diverse: la condizione che tiene lontana la risposta vuota
@@ -780,10 +780,10 @@ rispondere sempre la stessa cosa.
 
 Da qui il libro prosegue in due direzioni che chiudono il cerchio. Nel capitolo
 sui world model la JEPA porta la difficoltà in un posto ancora diverso: si
-maschera come nel MAE, ma si predice la **rappresentazione** della parte
+maschera come nel MAE, ma si predice la rappresentazione della parte
 nascosta invece dei suoi pixel, e le augmentation artigianali spariscono del
 tutto. Nel {doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>` il gemello da ritrovare non è più
-una seconda vista della stessa foto ma la sua **didascalia**: si mescolano sul
+una seconda vista della stessa foto ma la sua didascalia: si mescolano sul
 tavolo le immagini e le frasi, e si chiede di riappaiarle. È lo stesso gioco,
 con lo stesso identico conto dietro, e cambia soltanto da dove viene il
 segnale: non da una deformazione che abbiamo applicato noi, ma dal fatto che
@@ -794,28 +794,28 @@ qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa c'era.
 ```{admonition} Da ricordare
 :class: important
 - Le etichette le scrivono delle persone, costano, e non bastano mai; le foto
-  senza etichetta sono infinite. L'idea è **inventare un gioco la cui risposta
-  giusta la conosciamo per costruzione**, senza che nessuno debba scriverla, e
+  senza etichetta sono infinite. L'idea è inventare un gioco la cui risposta
+  giusta la conosciamo per costruzione, senza che nessuno debba scriverla, e
   tenere quello che il modello è stato costretto a capire per vincerlo.
 - Il gioco più semplice: ritagliare da ogni foto due pezzi e chiedere, in mezzo
-  a centinaia di ritagli mescolati, di **ritrovare il gemello**. Gli altri
+  a centinaia di ritagli mescolati, di ritrovare il gemello. Gli altri
   ritagli, i rivali, si chiamano *negativi*.
-- Qui le deformazioni non servono più a non far imparare a memoria: **sono il
-  compito**. Scegliendole diciamo al modello a che cosa deve essere
+- Qui le deformazioni non servono più a non far imparare a memoria: sono il
+  compito. Scegliendole diciamo al modello a che cosa deve essere
   indifferente, e ogni indizio che dimentichiamo di togliere diventa una
-  **scorciatoia**: senza disturbare i colori, due ritagli della stessa foto si
+  scorciatoia: senza disturbare i colori, due ritagli della stessa foto si
   riconoscono dalla sola tinta media, e il modello vince senza aver capito
   niente.
-- Avere tanti rivali è utile ma costa: si può tenerli in una **scatola-coda**,
+- Avere tanti rivali è utile ma costa: si può tenerli in una scatola-coda,
   alimentata da una copia lenta di sé stessi perché le descrizioni vecchie e
   nuove restino confrontabili. Oppure toglierli del tutto, mettendo di fronte
   un allievo e un insegnante che è una copia lenta dell'allievo: sorprende che
   non collassi sulla risposta vuota, ma non collassa.
-- L'altra grande famiglia non chiede di riconoscere, chiede di **ricostruire**:
+- L'altra grande famiglia non chiede di riconoscere, chiede di ricostruire:
   si copre tre quarti dell'immagine e si fa indovinare cosa c'era sotto. Tanto
   serve, perché un pixel somiglia troppo ai suoi vicini: con pochi buchi basta
   fare una media e non si impara nulla.
-- Per capire se ha funzionato si usa un **esame con le mani legate**: si blocca
+- Per capire se ha funzionato si usa un esame con le mani legate: si blocca
   il modello e gli si affianca un giudice così debole da non poter aggiungere
   niente di suo. Se passa l'esame, il merito è del modello. La prova più severa
   però è un'altra: cambiare compito.
@@ -828,30 +828,30 @@ qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa c'era.
 ```{admonition} Da ricordare
 :class: important
 - Le etichette costano e non scalano; le immagini non etichettate sono
-  abbondanti. L'apprendimento **auto-supervisionato** inventa un **pretesto** la
+  abbondanti. L'apprendimento auto-supervisionato inventa un pretesto la
   cui risposta è ricavabile dai dati, e ne conserva l'encoder, non il compito.
-- Nel metodo **contrastivo** {cite}`chen2020simple` due viste della stessa
+- Nel metodo contrastivo {cite}`chen2020simple` due viste della stessa
   immagine devono avvicinarsi fra loro e allontanarsi da quelle delle altre
-  (perdita **NT-Xent**, una InfoNCE con temperatura $\tau$ sulle $2N$ viste).
-- Qui la **data augmentation non regolarizza: definisce il compito**. Scegliere
+  (perdita NT-Xent, una InfoNCE con temperatura $\tau$ sulle $2N$ viste).
+- Qui la data augmentation non regolarizza: definisce il compito. Scegliere
   le trasformazioni significa dire al modello a che cosa essere indifferente, e
-  ogni indizio non rimosso diventa una **scorciatoia**: senza disturbo del
+  ogni indizio non rimosso diventa una scorciatoia: senza disturbo del
   colore, due ritagli della stessa foto si appaiano dal solo istogramma.
-- I negativi costano batch enormi. **MoCo** {cite}`he2020momentum` li mette in
-  una **coda** alimentata da un encoder aggiornato per **media mobile**, così
-  restano numerosi e coerenti nel tempo; **BYOL** {cite}`grill2020bootstrap` li
-  elimina e non collassa grazie all’**asimmetria** fra le due reti (testa di
+- I negativi costano batch enormi. MoCo {cite}`he2020momentum` li mette in
+  una coda alimentata da un encoder aggiornato per media mobile, così
+  restano numerosi e coerenti nel tempo; BYOL {cite}`grill2020bootstrap` li
+  elimina e non collassa grazie all’asimmetria fra le due reti (testa di
   predizione da un lato, media mobile e stop-gradient dall'altro), un fatto
   robusto la cui spiegazione è arrivata dopo il risultato.
-- **DINO** {cite}`caron2021emerging` distilla lo studente da una copia lenta di
-  sé, con **centering** e **sharpening** che si bilanciano contro le due forme
+- DINO {cite}`caron2021emerging` distilla lo studente da una copia lenta di
+  sé, con centering e sharpening che si bilanciano contro le due forme
   di collasso; nelle mappe di attenzione del ViT emergono i contorni degli
   oggetti, senza che nessuna segmentazione sia stata fornita.
-- Il **MAE** {cite}`he2022masked` maschera circa il 75% delle patch (contro il
-  15% di BERT: le immagini sono spazialmente **ridondanti**, e con pochi buchi
+- Il MAE {cite}`he2022masked` maschera circa il 75% delle patch (contro il
+  15% di BERT: le immagini sono spazialmente ridondanti, e con pochi buchi
   il compito si risolve per interpolazione) e ricostruisce i pixel con un
   encoder che vede solo le patch visibili e un decoder leggero, poi buttato via.
-- La valutazione canonica è il **sondaggio lineare** sull'encoder congelato: se
+- La valutazione canonica è il sondaggio lineare sull'encoder congelato: se
   una retta separa le classi, l'informazione era già nella rappresentazione.
   Misura la separabilità lineare, non tutto; la prova più severa è il
   trasferimento a rilevamento e segmentazione.

@@ -7,7 +7,7 @@ diversa dello stesso oggetto, e da quella manciata di occhiate il concetto di
 "tazza" esce solidissimo. Una rete neurale non ha mani. Ma possiamo girare noi
 l'oggetto al posto suo: prendere ogni fotografia del training set e
 mostrargliela specchiata, ritagliata, un po’ ruotata, più chiara o più scura.
-Si chiama **data augmentation** (letteralmente "aumento dei dati") ed è il modo
+Si chiama data augmentation (letteralmente "aumento dei dati") ed è il modo
 più economico che esista per moltiplicare gli esempi senza raccoglierne di
 nuovi. Non è un'idea recente: fra le {doc}`architetture storiche del deep
 learning </DeepLearning/architetture-storiche>` abbiamo visto che già AlexNet,
@@ -27,7 +27,7 @@ sostanza non cambia.)
 ## Cambiare i pixel, non l'etichetta
 
 Tutto il trucco sta in un vincolo, che va capito bene: una trasformazione è
-ammessa solo se cambia l'immagine ma **non cambia l'etichetta**. Le
+ammessa solo se cambia l'immagine ma non cambia l'etichetta. Le
 trasformazioni buone catturano le *invarianze* del compito: i modi in cui il
 mondo può variare senza che la risposta giusta vari. E qui serve onestà:
 nessuna trasformazione è innocente in assoluto.
@@ -59,7 +59,7 @@ Sia $(\mathbf{x}, y)$ una coppia immagine-etichetta. Una trasformazione $T$ è
 ammessa per il compito se la coppia $(T(\mathbf{x}), y)$ è ancora un esempio
 plausibile della stessa distribuzione: l'etichetta resta valida e l'immagine trasformata
 somiglia a qualcosa che il modello potrà davvero incontrare. L'insieme delle
-trasformazioni ammesse è **conoscenza a priori sul dominio** che iniettiamo
+trasformazioni ammesse è conoscenza a priori sul dominio che iniettiamo
 nel modello: il flip orizzontale appartiene alle invarianze di "gatto contro
 cane", non a quelle del riconoscimento di cifre (un 3 specchiato non è
 nessuna cifra, e nemmeno le rotazioni ampie sono innocue: il 6 capovolto è
@@ -85,19 +85,19 @@ molte: tutte diverse per la rete, tutte identiche per l'etichettatore.
 ## Ogni epoca un'immagine nuova, ma mai all'esame
 
 In pratica le trasformazioni non si applicano una volta per tutte: si
-estraggono **a caso, al volo**, ogni volta che un'immagine viene caricata. La
+estraggono a caso, al volo, ogni volta che un'immagine viene caricata. La
 raccolta di foto sul disco non cresce di un byte, ma la rete non rivede mai due
 volte la stessa identica immagine. Un giro completo su tutte le foto si chiama
-**epoca**, e a ogni epoca le stesse foto tornano deformate in modo diverso.
+epoca, e a ogni epoca le stesse foto tornano deformate in modo diverso.
 
 E c'è una regola d'oro che non ammette eccezioni disinvolte. Le foto sono
-divise in tre mucchi: quelle su cui la rete si allena (il **training set**),
+divise in tre mucchi: quelle su cui la rete si allena (il training set),
 quelle su cui controlliamo strada facendo come sta andando per aggiustare le
-nostre scelte (il **validation set**) e quelle che restano chiuse in un
-cassetto fino alla fine, per il giudizio conclusivo (il **test set**).
-L'augmentation si applica **solo al primo mucchio**. Sugli altri due si fanno
+nostre scelte (il validation set) e quelle che restano chiuse in un
+cassetto fino alla fine, per il giudizio conclusivo (il test set).
+L'augmentation si applica solo al primo mucchio. Sugli altri due si fanno
 soltanto le operazioni che danno sempre lo stesso risultato: ridimensionare,
-ritagliare al centro e **normalizzare**, che vuol dire riportare i numeri dei
+ritagliare al centro e normalizzare, che vuol dire riportare i numeri dei
 pixel su una scala fissa, la stessa per tutte le immagini, così che una foto
 scattata in controluce e una scattata al sole partano dallo stesso metro.
 
@@ -193,7 +193,7 @@ ha già messo mano due volte: nella {doc}`sezione su overfitting e validazione
 affidano troppo a pochi numeri grossi (la regolarizzazione $\ell_2$), in quella
 sul deep learning spegnendo a caso una parte della rete a ogni passo, il
 dropout {cite}`srivastava2014dropout`. Tutti questi freni si chiamano
-**regolarizzazioni**, e l'augmentation è uno di loro, con una differenza:
+regolarizzazioni, e l'augmentation è uno di loro, con una differenza:
 agisce sui dati invece che sulla rete.
 
 `````{tab} Elementare
@@ -219,7 +219,7 @@ $$
 $$
 
 dove $\mathcal{T}$ è la distribuzione sulle trasformazioni ammesse. In altre parole
-**allarga il supporto della distribuzione empirica**: invece di esigere la
+allarga il supporto della distribuzione empirica: invece di esigere la
 risposta giusta in $n$ punti isolati, la esige su interi intorni, e questo
 spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte (un
 vincolo che riduce l'overfitting con lo stesso effetto di un termine di
@@ -307,7 +307,7 @@ una moltiplicazione miracolosa: le varianti di una foto portano *meno*
 informazione di altrettante foto nuove, perché raccontano sempre la stessa
 scena.
 
-Soprattutto, l'augmentation **non cura lo shift di dominio**. Se il modello è
+Soprattutto, l'augmentation non cura lo shift di dominio. Se il modello è
 addestrato su foto diurne e in produzione arrivano riprese notturne, se il
 nuovo ospedale usa uno scanner diverso da quello del training set, nessuno
 specchio e nessun ritaglio colmerà quella distanza: è il problema di
@@ -327,21 +327,21 @@ risponde.
 :class: important
 - L'augmentation fabbrica varianti di ogni foto (specchiata, ritagliata,
   ruotata, più chiara) e le conta come esempi nuovi. Le domande da farsi sono
-  due: **la risposta giusta non deve cambiare** (lo specchio va bene per i
+  due: la risposta giusta non deve cambiare (lo specchio va bene per i
   gatti e rovina i cartelli stradali, e non è solo lo specchio: un 6 capovolto
   diventa un 9), e la foto che ne esce dev'essere una foto che potrebbe
   capitare davvero.
-- Si applica **solo alle foto su cui la rete si allena**, e cambia a ogni
+- Si applica solo alle foto su cui la rete si allena, e cambia a ogni
   passaggio. Sulle foto d'esame si fanno solo operazioni che danno sempre lo
   stesso risultato, altrimenti il voto non misura più niente.
-- Serve a impedire di **imparare a memoria**: se il compito non è mai due volte
+- Serve a impedire di imparare a memoria: se il compito non è mai due volte
   identico, memorizzarlo non conviene più, e l'unica strada che resta è capire.
-- Ci sono modi più spregiudicati: **mescolare due foto** (e mescolare nelle
-  stesse proporzioni la risposta), **coprire un rettangolo a caso** come con un
+- Ci sono modi più spregiudicati: mescolare due foto (e mescolare nelle
+  stesse proporzioni la risposta), coprire un rettangolo a caso come con un
   post-it, oppure lasciare che sia un algoritmo a cercare la combinazione
   migliore.
-- Non è una moltiplicazione miracolosa, e soprattutto **non serve a niente se
-  le foto vere sono di un altro tipo**: se ci si è allenati di giorno e in
+- Non è una moltiplicazione miracolosa, e soprattutto non serve a niente se
+  le foto vere sono di un altro tipo: se ci si è allenati di giorno e in
   produzione arrivano riprese notturne, servono foto nuove, non deformazioni
   di quelle vecchie.
 ```
@@ -353,18 +353,18 @@ risponde.
 ```{admonition} Da ricordare
 :class: important
 - L'augmentation genera varianti di ogni immagine con trasformazioni che
-  **preservano l'etichetta** e restano plausibili nel dominio: quali siano
+  preservano l'etichetta e restano plausibili nel dominio: quali siano
   dipende dal compito (lo specchio va bene per i gatti, non per cartelli o
   cifre), e conta anche l'intensità (5 gradi di rotazione su una foto di
   strada sì, 90 no).
-- Si applica **solo al training set**, al volo, a ogni epoca; su validation e
+- Si applica solo al training set, al volo, a ogni epoca; su validation e
   test solo operazioni deterministiche (resize, crop centrale, normalize).
-- È una **regolarizzazione**: allarga il supporto della distribuzione
+- È una regolarizzazione: allarga il supporto della distribuzione
   empirica e contrasta l'overfitting, come il dropout e la penalità $\ell_2$.
-- Varianti moderne: **mixup** (interpolazione di immagini ed etichette),
-  **cutout/random erasing** (occlusioni casuali), **policy apprese**
+- Varianti moderne: mixup (interpolazione di immagini ed etichette),
+  cutout/random erasing (occlusioni casuali), policy apprese
   (AutoAugment, RandAugment).
-- Non risolve lo **shift di dominio**: se i dati di produzione sono diversi
+- Non risolve lo shift di dominio: se i dati di produzione sono diversi
   da quelli di training, servono dati nuovi, non trasformazioni.
 ```
 

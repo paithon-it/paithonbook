@@ -1,6 +1,6 @@
 # Classificazione e transfer learning
 
-Nell'autunno del 2012 una rete neurale chiamata **AlexNet** vinse la
+Nell'autunno del 2012 una rete neurale chiamata AlexNet vinse la
 competizione ImageNet portando l'errore top-5 dal 26% al 15% circa (un salto
 che nessun metodo precedente aveva nemmeno avvicinato). *Top-5* dice come si
 contano gli errori: il modello dà le cinque etichette che ritiene più
@@ -24,7 +24,7 @@ dalla foto all'etichetta.
 `````{tab} Elementare
 
 L'immagine entra come una griglia di pixel. La rete la fa passare attraverso
-una pila di **strati convoluzionali**, quelli del capitolo precedente: ognuno
+una pila di strati convoluzionali, quelli del capitolo precedente: ognuno
 passa sull'immagine una lente piccola, sempre la stessa, e segna dove trova il
 disegno che quella lente cerca. I primi riconoscono cose semplici (bordi,
 angoli, macchie di colore), quelli più profondi combinano questi pezzetti in
@@ -62,7 +62,7 @@ a un vettore $\mathbf{z}\in\mathbb{R}^d$ (le reti della prima generazione,
 AlexNet e VGG, appiattivano invece la mappa e la mandavano in tre strati densi
 pesantissimi: in AlexNet sono il 96% dei parametri, ed è il motivo per cui
 «sostituire la testa» vuol dire due cose molto diverse sulle due famiglie), che
-uno strato *fully-connected* con **softmax**
+uno strato *fully-connected* con softmax
 mappa in una distribuzione sulle $K$ classi:
 
 $$
@@ -81,18 +81,18 @@ tutti i parametri $\theta$ della rete.
 
 ## Perché partire da zero costa caro
 
-Una CNN moderna ha da qualche milione a decine di milioni di **parametri**: i
+Una CNN moderna ha da qualche milione a decine di milioni di parametri: i
 numeri interni che la rete regola mentre impara, un po’ come le manopole di un
 impianto che si tarano una a una finché il suono non è giusto. Più manopole ci
 sono, più esempi servono per trovare la posizione giusta di tutte. Per
-regolarle senza andare in **overfitting**, cioè senza che la rete impari a
+regolarle senza andare in overfitting, cioè senza che la rete impari a
 memoria gli esempi mostrati invece della regola che li spiega, servono
 moltissimi esempi etichettati e molta potenza di calcolo. Con le poche
 migliaia di foto di un progetto reale
 (le lastre di un ambulatorio, i difetti su una linea di produzione, le specie
 di una guida botanica), una rete addestrata da zero fa esattamente così: sulle
 foto di addestramento risponde benissimo, su tutte le altre sbaglia. Il collo
-di bottiglia, quasi sempre, sono i **dati** e il **tempo**, non l'algoritmo.
+di bottiglia, quasi sempre, sono i dati e il tempo, non l'algoritmo.
 
 ## Prendere in prestito: transfer learning
 
@@ -150,7 +150,7 @@ di essa montiamo una testa nuova (in terracotta) per il nostro compito.
 
 Come mostra {numref}`fig-transfer`, teniamo la **base convoluzionale**
 addestrata su ImageNet (nei diagrammi in inglese la troverete chiamata
-*backbone*, la «spina dorsale») e ci attacchiamo sopra una **testa** nuova, con
+*backbone*, la «spina dorsale») e ci attacchiamo sopra una testa nuova, con
 tante uscite quante sono le nostre categorie: se le nostre foto vanno divise in
 cinque gruppi, cinque uscite invece delle mille di ImageNet. Restano due modi
 di procedere.
@@ -161,7 +161,7 @@ di procedere.
 :width: 100%
 
 Le griglie si rimpiccioliscono, il significato cresce. Perdere risoluzione non
-è un effetto collaterale del **pooling** (il passaggio che riassume ogni
+è un effetto collaterale del pooling (il passaggio che riassume ogni
 quadratino di griglia in un numero solo, e così la rimpicciolisce): è il modo
 in cui la rete smette di guardare i pixel e comincia a guardare le cose.
 ```
@@ -195,17 +195,18 @@ con cui si allena la testa.
 
 E la base congelata riserva una sorpresa: continua a cambiare da sola. Dentro
 ci sono delle centraline che, prima di passare i numeri allo strato dopo, li
-rimettono in scala su quanto erano chiare e variegate le foto viste fin lì,
-come la macchina fotografica che regola da sé la luce sulla media di quello che
-ha inquadrato. Quella media è un appunto della rete, non una delle sue
-manopole, e si aggiorna da sola ogni volta che una foto attraversa la rete,
-anche dopo che le manopole sono state bloccate tutte. Chi si ferma lì manda
-dentro le proprie mille lastre e si ritrova, senza essersene accorto, una base
-tarata sulle lastre: la testa impara inseguendo un bersaglio che si sposta, e i
-numeri di stamattina non sono confrontabili con quelli di ieri. Perché la base
-resti ferma davvero bisogna dire anche a quelle centraline di smettere di
-prendere appunti; lo si dice pure quando si sbloccano gli ultimi strati, perché
-una media presa su poche foto alla volta salta da un gruppetto all'altro.
+rimettono in scala su quanto sono chiare e variegate le foto che la rete sta
+guardando in quel momento, come la macchina fotografica che regola da sé la
+luce sulla media di quello che ha inquadrato. Di quelle medie la rete tiene
+anche un appunto, che non è una delle sue manopole e si aggiorna da sé ogni
+volta che una foto la attraversa, anche dopo che le manopole sono state
+bloccate tutte. Chi si ferma lì manda dentro le proprie mille lastre e si
+ritrova, senza essersene accorto, una base tarata sulle lastre: la testa impara
+inseguendo un bersaglio che si sposta, e i numeri di stamattina non sono
+confrontabili con quelli di ieri. Perché la base resti ferma davvero bisogna
+dire anche a quelle centraline di smettere di prendere appunti; lo si dice pure
+quando si sbloccano gli ultimi strati, perché una media presa su poche foto
+alla volta salta da un gruppetto all'altro.
 
 `````
 
@@ -223,7 +224,7 @@ fermarla davvero, i moduli BatchNorm vanno messi in modalità valutazione
 (`.eval()`).
 
 Nel **fine-tuning** riattiviamo il gradiente sugli strati alti della base e
-riprendiamo l'ottimizzazione con un learning rate **molto basso** (tipicamente
+riprendiamo l'ottimizzazione con un learning rate molto basso (tipicamente
 $10^{-5}$ contro $10^{-3}$): passi grandi sovrascriverebbero le
 rappresentazioni utili. Due accortezze: si scongelano solo gli strati alti (i
 bassi sono i più generici) e i BatchNorm restano anche qui in `.eval()`, per
@@ -236,7 +237,7 @@ su ImageNet.
 
 `torchvision.models`, la libreria di visione che accompagna PyTorch, include
 decine di reti già addestrate su ImageNet, pronte da scaricare. Usiamo
-**ResNet-18** {cite}`he2016deep`, dove il numero è semplicemente il conto degli
+ResNet-18 {cite}`he2016deep`, dove il numero è semplicemente il conto degli
 strati: compatta, collaudata, e il modello più leggero della sua famiglia.
 Il compito è dividere le foto in cinque categorie. Prima la feature extraction.
 
@@ -308,17 +309,17 @@ testa si chiama `classifier[1]` e non `fc`, e gli strati alti stanno dentro
   colore, gli ultimi forme e oggetti interi. Alla fine tutto si riduce a una
   lista di numeri, e l'ultimo passaggio la trasforma in percentuali, una per
   classe: vince la più alta.
-- Costruire una rete del genere da zero costa **troppe foto e troppo tempo**.
-  Il **transfer learning** è la scorciatoia: si prende una rete che qualcun
+- Costruire una rete del genere da zero costa troppe foto e troppo tempo.
+  Il transfer learning è la scorciatoia: si prende una rete che qualcun
   altro ha già addestrato su milioni di immagini e le si cambia solo la punta.
 - Il cuoco che sa già tagliare e soffriggere deve imparare solo la ricetta
   nuova: i primi strati (le tecniche di base) valgono per qualunque
   fotografia, gli ultimi (la ricetta) no, e sono quelli da rifare.
-- Due modi di procedere. **Bloccare** tutta la base e allenare solo la punta:
+- Due modi di procedere. Bloccare tutta la base e allenare solo la punta:
   veloce, e basta poco materiale; bloccarla davvero però vuol dire due cose e
   non una, fermare le manopole e dire anche alle centraline che rimettono in
-  scala i numeri di smettere di prendere appunti. Oppure **sbloccare anche gli
-  ultimi strati** della base e ritoccarli a passi piccolissimi: rende di più,
+  scala i numeri di smettere di prendere appunti. Oppure sbloccare anche gli
+  ultimi strati della base e ritoccarli a passi piccolissimi: rende di più,
   ma vuole più foto e più cautela, perché a passi grandi la rete dimentica
   quello che sapeva.
 ```
@@ -330,14 +331,14 @@ testa si chiama `classifier[1]` e non `fc`, e gli strati alti stanno dentro
 ```{admonition} Da ricordare
 :class: important
 - Una CNN classifica estraendo caratteristiche via via più astratte e
-  chiudendo con **softmax** sulle classi.
-- Addestrare da zero è spesso proibitivo: servono troppi **dati** e troppo
-  **tempo**. Il transfer learning riusa una base già addestrata su ImageNet.
-- **Feature extraction**: base congelata, si allena solo la testa (veloce,
+  chiudendo con softmax sulle classi.
+- Addestrare da zero è spesso proibitivo: servono troppi dati e troppo
+  tempo. Il transfer learning riusa una base già addestrata su ImageNet.
+- Feature extraction: base congelata, si allena solo la testa (veloce,
   pochi dati). Congelarla davvero vuol dire due cose, non una: togliere i
   gradienti *e* mettere i BatchNorm in `.eval()`, perché le loro statistiche
   sono buffer e in `train()` deriverebbero comunque verso il nuovo dominio.
-  **Fine-tuning**: si scongelano gli strati alti con learning rate piccolo
+  Fine-tuning: si scongelano gli strati alti con learning rate piccolo
   (più preciso, più dati), BatchNorm sempre in `.eval()`.
 ```
 

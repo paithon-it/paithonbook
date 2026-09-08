@@ -14,7 +14,7 @@ stessi test che avevano approvato la correzione scritta, a suo tempo, da uno
 sviluppatore in carne e ossa. È un compito che nessun completamento di testo,
 per quanto fluente, chiude in un colpo solo: bisogna trovare i file giusti,
 provare, sbagliare, rileggere il messaggio d'errore, correggere. I primi
-sistemi ci riuscivano in una **piccola frazione** dei casi, pochi punti
+sistemi ci riuscivano in una piccola frazione dei casi, pochi punti
 percentuali. Un numero così basso è la notizia, non la delusione: è la misura
 che ha reso visibile a tutti quanto costi tenere insieme molte mosse di fila.
 Sull'affidabilità di quella misura, però, l'ultima sezione avrà qualcosa da
@@ -31,13 +31,13 @@ guardando soltanto la fotografia di adesso e l'istruzione ricevuta. Da un
 comando al successivo non si porta dietro il ricordo di che cosa ha già provato.
 
 È lì che si apre lo spazio di questo capitolo. La domanda non è se un modello
-possa agire, ma chi decide **quando** agire e con quale strumento, chi sceglie
-la **sequenza** delle mosse, e chi tiene il conto di **quello che è già
-successo** mentre il lavoro va avanti.
+possa agire, ma chi decide quando agire e con quale strumento, chi sceglie
+la sequenza delle mosse, e chi tiene il conto di quello che è già
+successo mentre il lavoro va avanti.
 
 Un esempio piccolo lo dice meglio di una definizione. Se chiedi a un modello che
 tempo farà domani a Roma non ne ha idea, perché quel dato non esisteva nei mesi
-in cui ha studiato (in gergo si dice che è stato **addestrato**: gli si è fatta
+in cui ha studiato (in gergo si dice che è stato addestrato: gli si è fatta
 leggere una montagna di testo finché non ha imparato a proseguirlo). Può
 inventare la risposta, con la stessa sicurezza con cui ne direbbe una vera,
 oppure fermarsi a metà, andare a *guardare* il meteo e riprendere da lì. La
@@ -64,7 +64,7 @@ dedicato all'automobile.
 Il primo passo di un modello fuori da se stesso è stato piccolo e si è visto
 nella sezione {doc}`«Cercare per rispondere» </Transformers/rag>`: prima di
 rispondere, il modello va a cercare qualcosa in un archivio di documenti e se
-lo rilegge. Quella mossa ha un nome, **RAG**, e {numref}`fig-rag-lewis` è lo
+lo rilegge. Quella mossa ha un nome, RAG, e {numref}`fig-rag-lewis` è lo
 schema con cui è stata presentata al mondo.
 
 ```{figure} ../figures/rag-lewis-2020.svg
@@ -89,7 +89,7 @@ precedente diretto di tutto questo capitolo.
 Il «fuori di sé» va preso alla lettera, e conviene fermarsi un istante, perché
 è la frattura da cui nasce tutto il resto. Quello che un modello sa lo tiene
 in un enorme mucchio di numeri, fissati durante l'addestramento e non più
-modificabili: si chiamano i **pesi**, e sono la sua memoria di fabbrica. La
+modificabili: si chiamano i pesi, e sono la sua memoria di fabbrica. La
 RAG è la prima volta che una parte della conoscenza esce da lì e va a vivere
 in un archivio che si può correggere e aggiornare senza riaddestrare niente.
 
@@ -163,14 +163,14 @@ Un ingrediente aiuta il ciclo: far «ragionare ad alta voce» il modello prima
 di agire. Invece di saltare all'azione, il modello scrive il proprio
 ragionamento (*«prima di correggere devo capire quale pezzo del programma si è
 lamentato»*) e solo dopo sceglie la mossa. Questa catena di ragionamento
-scritta ha un nome inglese che incontrerai dappertutto, **chain-of-thought**
+scritta ha un nome inglese che incontrerai dappertutto, chain-of-thought
 {cite}`wei2022chain`, e nel capitolo sui Transformer l'abbiamo vista far
 salire il numero di risposte giuste sui problemi che richiedono più passaggi.
 
 Conviene però dire subito dove quel guadagno è stato misurato davvero, perché
 è più stretto di come lo si racconta di solito. Una rassegna che rimette
 insieme i risultati di oltre cento lavori lo trova concentrato sui compiti
-**matematici e simbolici**, quelli in cui si manipolano numeri e regole (un
+matematici e simbolici, quelli in cui si manipolano numeri e regole (un
 conto, un'espressione algebrica, un problema di logica), e piccolo altrove
 {cite}`sprague2025cot`. In un agente il pensiero scritto serve soprattutto a
 un'altra cosa: dare al modello un posto dove annotare a che punto è del
@@ -182,7 +182,7 @@ non una cura generale.
 Smontiamo l'automobile. Al di là delle mille varianti, ogni agente ha quattro
 ingredienti, e conviene tenerli distinti perché ognuno ha problemi suoi.
 
-- Il **modello** è il cervello: legge il contesto, ragiona, decide la prossima
+- Il modello è il cervello: legge il contesto, ragiona, decide la prossima
   azione. È l'unico pezzo che «pensa»; tutto il resto è impalcatura attorno.
 - Gli **strumenti** (in inglese *tool*) sono le mani: una ricerca sul web, un
   programma che esegue del codice al posto suo, un'interrogazione a un archivio
@@ -197,11 +197,11 @@ ingredienti, e conviene tenerli distinti perché ognuno ha problemi suoi.
   raccoglie il risultato e decide se continuare o fermarsi. In inglese si dice
   *loop*, ed è la parola che si sente più spesso.
 - La **memoria** è ciò che l'agente si porta dietro. Nel breve termine è la
-  **finestra di contesto**: quanto testo il modello riesce a tenere davanti
+  finestra di contesto: quanto testo il modello riesce a tenere davanti
   agli occhi in una volta sola, prima di scrivere. È larga ma finita, e nel
   capitolo sui Transformer l'abbiamo studiata da vicino, insieme al segnalibro
   con cui il modello evita di rileggere ogni volta da capo ciò che ha già letto
-  (là si chiama **KV cache**). Nel lungo termine è invece una memoria
+  (là si chiama KV cache). Nel lungo termine è invece una memoria
   *esterna*: un archivio di documenti o di ricordi passati da cui pescare
   quando serve, senza tenere tutto in testa.
 
@@ -222,12 +222,12 @@ come un'osservazione che rientra nel contesto. Il pezzo più sottile è proprio
 questo, l'uso degli strumenti (in inglese **tool use**, ed è il nome che
 troverai ovunque). Come fa un modello che sa solo *scrivere testo* a mettere
 in moto un pezzo di programma? In informatica un pezzo di programma con un
-nome, che fa una cosa quando qualcuno lo invoca, si chiama **funzione**: la
+nome, che fa una cosa quando qualcuno lo invoca, si chiama funzione: la
 domanda, detta in gergo, è come faccia un modello a *chiamare una funzione*.
 
 `````{tab} Elementare
 
-Il trucco è che il modello non esegue niente: **scrive un bigliettino
+Il trucco è che il modello non esegue niente: scrive un **bigliettino
 d'ordine**. Un cuoco chiuso in cucina non può uscire in sala: quando gli serve
 qualcosa scrive un ordine su un foglietto («portami due uova») e lo passa a un
 cameriere. Il cameriere va, prende le uova, torna e le posa sul bancone. Il
@@ -258,15 +258,15 @@ Meccanicamente, una chiamata a strumento è **testo strutturato** che il
 modello impara a produrre. Al modello si descrivono, nel prompt, gli strumenti
 disponibili (nome, cosa fanno, quali argomenti accettano) di solito con uno
 schema formale (spesso JSON). Quando decide di usarne uno, il modello non
-esegue nulla: **emette** una stringa che rappresenta la chiamata, per esempio
+esegue nulla: emette una stringa che rappresenta la chiamata, per esempio
 
 ```text
 cerca_sul_web(query="previsioni meteo Roma domani")
 ```
 
 Il *runtime* dell'agente intercetta questa stringa, la interpreta, esegue
-davvero la funzione corrispondente nel codice ospite, e **appende
-l'osservazione** (l'esito della funzione) al contesto. Al passo successivo il
+davvero la funzione corrispondente nel codice ospite, e appende
+l'osservazione (l'esito della funzione) al contesto. Al passo successivo il
 modello vede la propria richiesta *e* la risposta, e prosegue il ragionamento.
 
 Due conseguenze pratiche. Primo: la separazione è netta, il modello *propone*,
@@ -283,16 +283,16 @@ riempie in fretta, come vedremo parlando di context engineering.
 Tre dei quattro ingredienti appena elencati (qualcosa che decide, degli
 strumenti, un ciclo che li mette in moto) non sono un'idea nuova.
 L'intelligenza artificiale classica, quella fatta di regole scritte a mano da
-un programmatore, costruiva agenti così già fra gli anni Sessanta e Settanta,
-e fra poco ne vedremo due. Il quarto ingrediente, la memoria, ce l'avevano in
-forma minima, e fra poco vedremo anche quella.
+un programmatore, costruiva agenti così già fra gli anni Sessanta e Settanta.
+La sezione sui chatbot a regole ne racconta due, e con loro il quarto
+ingrediente, la memoria, che quei sistemi avevano in forma minima.
 
 Perché allora gli agenti *basati su LLM* nascono solo ora? Le tre lettere
 stanno per *large language model*, «grande modello di linguaggio», e sono la
 sigla con cui d'ora in poi chiameremo il modello che completa il testo: quando
 leggi «LLM» pensa sempre a quello. La risposta è una capacità che questi
 modelli hanno acquisito da poco: capire ed eseguire una consegna scritta come
-la scriveresti a una persona, cioè in **linguaggio naturale** (che è il modo in
+la scriveresti a una persona, cioè in linguaggio naturale (che è il modo in
 cui i tecnici chiamano l'italiano, l'inglese e le altre lingue che parliamo,
 per distinguerle dai linguaggi di programmazione).
 
@@ -322,10 +322,10 @@ rendere possibili gli agenti, non un trucco di programmazione in più.
 `````{tab} Superiore
 
 Due proprietà, entrambe discusse nel capitolo sui Transformer, si combinano.
-La prima è l’**instruction tuning**: la fase di post-training in cui il modello
+La prima è l’instruction tuning: la fase di post-training in cui il modello
 viene addestrato su coppie *istruzione → buona risposta*, imparando a trattare
 una consegna in linguaggio naturale come qualcosa da *eseguire*, non solo da
-continuare. La seconda è l’**in-context learning**: la capacità, emersa con la
+continuare. La seconda è l’in-context learning: la capacità, emersa con la
 scala, di adattarsi a un compito descritto (magari con qualche esempio) nel
 solo prompt, senza toccare i pesi. Messe insieme, rendono *eseguibile* una
 consegna come «ecco gli strumenti a tua disposizione, usali per raggiungere
@@ -334,13 +334,13 @@ l'obiettivo»: il prompt diventa la specifica del comportamento dell'agente.
 `````
 
 Due avvertenze prima di andare avanti, e sono l'onestà su cui insiste il resto
-del libro. La prima: gli agenti sono un campo **giovane e in rapido
-movimento** {cite}`xi2023rise`. Non c'è una teoria consolidata sotto, ci sono
+del libro. La prima: gli agenti sono un campo giovane e in rapido
+movimento {cite}`xi2023rise`. Non c'è una teoria consolidata sotto, ci sono
 ricette che qualcuno ha provato e che sembrano funzionare (di una ricetta così,
-che non garantisce niente ma spesso va, si dice che è un’**euristica**).
+che non garantisce niente ma spesso va, si dice che è un’euristica).
 
-La seconda avvertenza è un problema strutturale: gli errori si **sommano lungo
-il ciclo**. Se il modello sbaglia una mossa su dieci, dieci mosse di fila
+La seconda avvertenza è un problema strutturale: gli errori si sommano lungo
+il ciclo. Se il modello sbaglia una mossa su dieci, dieci mosse di fila
 senza un solo inciampo gli riescono poco più di una volta su tre. Il conto
 è quello che sembra: chiamiamo $p$ la probabilità di sbagliare un passo e $n$
 il numero di passi, e la probabilità di attraversarli tutti senza errori vale
@@ -359,26 +359,26 @@ capitolo sul Natural Language Processing, parlando di {doc}`dialogo e chatbot
 </NaturalLanguageProcessing/dialogo-chatbot>`, abbiamo incontrato i primi
 programmi capaci di sostenere una conversazione.
 
-Il primo è **ELIZA**, che negli anni Sessanta rispondeva rigirando le parole
-dell'interlocutore con **schemi scritti a mano**, del tipo «se la frase
+Il primo è ELIZA, che negli anni Sessanta rispondeva rigirando le parole
+dell'interlocutore con schemi scritti a mano, del tipo «se la frase
 contiene *mia madre*, rispondi *mi parli della sua famiglia*». Il secondo è
-**GUS**, del 1977, che faceva l'agente di viaggio: conduceva la conversazione
+GUS, del 1977, che faceva l'agente di viaggio: conduceva la conversazione
 riempiendo le caselle di un modulo (*dove*, *quando*, *quanti*) con domande
-mirate, e a modulo completo prenotava. I sistemi fatti così si chiamano **a
-modulo**, o *a frame* dalla parola inglese, e quel modulo mezzo pieno era la
+mirate, e a modulo completo prenotava. I sistemi fatti così si chiamano a
+modulo, o *a frame* dalla parola inglese, e quel modulo mezzo pieno era la
 loro piccola memoria: l'unica cosa che si portavano dietro da una battuta
 all'altra.
 
 Erano già agenti, a modo loro. Avevano una percezione, cioè quello che arriva
 dall'esterno; avevano delle azioni, cioè le risposte da dare e la prenotazione
 da fare; e in mezzo avevano una regola che, vista la situazione, sceglieva la
-mossa successiva. Quella regola si chiama **politica** (in inglese *policy*),
+mossa successiva. Quella regola si chiama politica (in inglese *policy*),
 ed è la stessa parola del {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`, l'apprendimento
 per tentativi e ricompense.
 
 `````{tab} Elementare
 
-Il limite di quei sistemi era la **rigidità**. Un assistente a moduli sa fare
+Il limite di quei sistemi era la rigidità. Un assistente a moduli sa fare
 benissimo ciò che è previsto: chiede dove, quando, quanti, e a modulo pieno
 prenota. «Vorrei il finestrino, ma solo se il viaggio dura più di tre ore» non
 ha nessuna casella dove entrare, e lui resta lì senza sapere che pesci
@@ -402,8 +402,8 @@ pagare gli si fa comunque riempire il modulo, casella per casella.
 
 `````{tab} Superiore
 
-Il salto è da una **policy scritta a mano** a una **policy espressa in
-linguaggio**. Nei sistemi a frame la logica di controllo era una macchina a
+Il salto è da una policy scritta a mano a una policy espressa in
+linguaggio. Nei sistemi a frame la logica di controllo era una macchina a
 stati esplicita: slot tipizzati, una domanda per ogni slot vuoto, transizioni
 codificate da un ingegnere. Robusta e prevedibile (nessuna risposta inventata,
 errori localizzabili, successo misurabile) ma incapace di uscire dallo spazio
@@ -441,8 +441,8 @@ abbiamo solo montato insieme.
   discorso su SWE-bench {cite}`jimenez2024swebench` cominciato in apertura. Il
   problema gemello, come si dà un voto a un modello che si limita a rispondere
   quando non esiste una risposta giusta sola, ha invece un posto suo più
-  avanti: il capitolo su **MLOps**, che è il mestiere di portare un modello dal
-  laboratorio all'uso di tutti i giorni.
+  avanti: il {doc}`capitolo su MLOps </MLOps/overview>`, che è il mestiere di
+  portare un modello dal laboratorio all'uso di tutti i giorni.
 
 
 
@@ -450,29 +450,30 @@ abbiamo solo montato insieme.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **modello** indovina come continua un testo; un **agente** è il *sistema*
+- Un modello indovina come continua un testo; un agente è il *sistema*
   che gli mette attorno delle mani e un metodo di lavoro, così che non risponda
-  soltanto ma **agisca**: cerchi, esegua, prenoti, corregga il codice. Il
+  soltanto ma agisca: cerchi, esegua, prenoti, corregga il codice. Il
   modello è il motore, l'agente è l'automobile.
-- Il cuore è un **ciclo** che si ripete, **osserva → ragiona → agisci →
-  osserva**, con il modello nel ruolo di chi sceglie la mossa. Farlo «ragionare
-  ad alta voce» prima di agire (la **catena di ragionamento**, in inglese
+- Il cuore è un ciclo che si ripete, osserva → ragiona → agisci →
+  osserva, con il modello nel ruolo di chi sceglie la mossa. Farlo «ragionare
+  ad alta voce» prima di agire (la catena di ragionamento, in inglese
   *chain-of-thought* {cite}`wei2022chain`) aiuta, ma soprattutto sui conti e
   sui problemi di logica {cite}`sprague2025cot`.
-- I quattro ingredienti: il **modello** (il cervello), gli **strumenti** (le
+- I quattro ingredienti: il modello (il cervello), gli strumenti (le
   mani: cercare sul web, far girare del codice, interrogare un servizio
-  esterno), il **ciclo di controllo** (guarda, agisci, riguarda) e la
-  **memoria** (quello che tiene sott'occhio adesso, più un archivio esterno). Il
+  esterno), il ciclo di controllo (guarda, agisci, riguarda) e la
+  memoria (quello che tiene sott'occhio adesso, più un archivio esterno). Il
   modello scrive il bigliettino d'ordine; il programma che gli sta attorno lo
   esegue.
-- Gli agenti nascono **adesso** perché i modelli hanno imparato a capire una
+- Gli agenti nascono adesso perché i modelli hanno imparato a capire una
   consegna scritta a parole: basta descrivere lo strumento e l'obiettivo, e
   mostrare un caso già risolto, invece di programmare ogni caso. È però un
   campo giovane {cite}`xi2023rise`, e i piccoli errori si sommano lungo il
   ciclo: nove mosse giuste su dieci vogliono dire arrivare in fondo a dieci
   mosse poco più di una volta su tre.
-- I **chatbot a regole** del capitolo sul linguaggio (ELIZA, i sistemi a
-  modulo) sono gli antenati rigidi: bravissimi dentro il previsto, muti fuori.
+- I chatbot a regole della sezione su dialogo e chatbot (ELIZA, i sistemi
+  a modulo) sono gli antenati rigidi: bravissimi dentro il previsto, muti
+  fuori.
   L'agente guadagna versatilità e perde prevedibilità: è uno scambio, non un
   regalo.
 - Nel resto del capitolo: come il modello chiama davvero gli strumenti, come si
@@ -488,30 +489,30 @@ abbiamo solo montato insieme.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **modello** predice la continuazione di un testo; un **agente** è il
+- Un modello predice la continuazione di un testo; un agente è il
   *sistema* che gli mette attorno strumenti e un ciclo di controllo, così che
-  non risponda soltanto ma **agisca**: cerchi, esegua, prenoti, corregga il
+  non risponda soltanto ma agisca: cerchi, esegua, prenoti, corregga il
   codice.
-- Il cuore è un ciclo **osserva → ragiona → agisci → osserva**, con l'LLM nel
+- Il cuore è un ciclo osserva → ragiona → agisci → osserva, con l'LLM nel
   ruolo di *policy*: sceglie l'azione dato il contesto. Farlo «ragionare ad alta
-  voce» (**chain-of-thought** {cite}`wei2022chain`) aiuta, ma i guadagni
+  voce» (chain-of-thought {cite}`wei2022chain`) aiuta, ma i guadagni
   misurati si concentrano su matematica e ragionamento simbolico
   {cite}`sprague2025cot`.
-- I quattro ingredienti: il **modello** (il cervello), gli **strumenti** (le
-  mani: web, codice, API), il **loop di controllo** (percezione-azione) e la
-  **memoria** (contesto + memoria esterna). Il modello *propone* le azioni; il
+- I quattro ingredienti: il modello (il cervello), gli strumenti (le
+  mani: web, codice, API), il loop di controllo (percezione-azione) e la
+  memoria (contesto + memoria esterna). Il modello *propone* le azioni; il
   runtime le *esegue*.
-- Gli agenti diventano possibili **adesso** perché gli LLM istruiti sanno
-  seguire una consegna in linguaggio naturale: **instruction tuning** e
-  **in-context learning** rendono eseguibile «usa questo strumento». È però
+- Gli agenti diventano possibili adesso perché gli LLM istruiti sanno
+  seguire una consegna in linguaggio naturale: instruction tuning e
+  in-context learning rendono eseguibile «usa questo strumento». È però
   un'area giovane {cite}`xi2023rise`, e gli errori si accumulano lungo il
   loop.
-- I **chatbot a regole** della {doc}`sezione su dialogo e chatbot
+- I chatbot a regole della {doc}`sezione su dialogo e chatbot
   </NaturalLanguageProcessing/dialogo-chatbot>` (ELIZA, sistemi a frame) sono
   gli antenati rigidi: l'agente LLM generalizza la stessa idea con un motore
   linguistico flessibile, guadagnando versatilità e perdendo prevedibilità.
-- Nel resto del capitolo: **tool use**, **RAG avanzato**, **context
-  engineering**, **architetture e valutazione**; di quest'ultima, SWE-bench
+- Nel resto del capitolo: tool use, RAG avanzato, context
+  engineering, architetture e valutazione; di quest'ultima, SWE-bench
   {cite}`jimenez2024swebench` è un banco di prova su compiti reali.
 ```
 

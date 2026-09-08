@@ -12,8 +12,8 @@ frase. Sono l'anima non lineare della rete.
 ## Perché serve una non linearità
 
 Ogni strato di una rete fa una cosa sola: moltiplica ciascun numero che riceve
-per il proprio **peso** (l'importanza che gli assegna), somma i risultati e
-aggiunge un numero fisso suo, il **bias**. È un'operazione *lineare*, e il
+per il proprio peso (l'importanza che gli assegna), somma i risultati e
+aggiunge un numero fisso suo, il bias. È un'operazione *lineare*, e il
 problema è che comporre due operazioni lineari dà ancora un'operazione lineare:
 mille non cambierebbero nulla.
 
@@ -86,7 +86,7 @@ Non basta però che $g$ sia non lineare, ed è un punto su cui si scivola spesso
 Se $g$ fosse un polinomio, per esempio $g(x)=x^2$, uno strato nascosto
 calcolerebbe $\sum_i c_i\,(w_i x + b_i)^2 + d$, dove $w_i$ e $b_i$ sono peso e
 bias dell’$i$-esimo neurone nascosto, $c_i$ il peso con cui l'uscita lo
-raccoglie e $c_0$ il bias d'uscita: comunque si scelgano quei parametri resta
+raccoglie e $d$ il bias d'uscita: comunque si scelgano quei parametri resta
 un polinomio di grado al più $2$, e aggiungere neuroni non servirebbe a
 niente. Provato ai minimi quadrati su $x^3$ in $[-1,1]$ (duemila punti
 equispaziati, uno strato nascosto, Adam per quattromila passi con
@@ -107,7 +107,7 @@ la larghezza compra davvero qualcosa: con lo stesso addestramento dieci neuroni
 scendono a $3{,}0\cdot 10^{-2}$ e ottocento a $1{,}3\cdot 10^{-3}$, cioè oltre
 cento volte sotto quel muro.
 
-La condizione esatta è che $g$ **non sia un polinomio** (per la classe di
+La condizione esatta è che $g$ non sia un polinomio (per la classe di
 funzioni in cui il risultato è enunciato: attivazioni continue a tratti e
 localmente limitate), e sotto quella
 condizione la rete è un **approssimatore universale**: con abbastanza neuroni
@@ -132,12 +132,13 @@ passo non cambia niente.
 Adesso il punto che riguarda noi. Quella domanda non se la pone un peso alla
 volta e in un posto solo: parte dall'uscita della rete, dove l'errore si vede,
 e risale gli strati all'indietro, uno dopo l'altro, fino ai primi. È il
-meccanismo della sezione dopo, e qui basta sapere che il messaggio viaggia
-all'indietro. Ogni volta che attraversa una funzione di attivazione, quel
-messaggio viene moltiplicato per la pendenza **di quella funzione**, presa nel
-punto in cui il neurone stava lavorando. Se lì la funzione è ripida, il
-messaggio passa; se lì la funzione è **piatta**, la sua pendenza vale quasi
-zero, e moltiplicare per quasi zero spegne il messaggio.
+meccanismo della {doc}`backpropagation </RetiNeurali/backpropagation>`, e qui
+basta sapere che il messaggio viaggia all'indietro. Ogni volta che attraversa
+una funzione di attivazione, quel messaggio viene moltiplicato per la pendenza
+di quella funzione, presa nel punto in cui il neurone stava lavorando. Se
+lì la funzione è ripida, il messaggio passa; se lì la funzione è piatta, la
+sua pendenza vale quasi zero, e moltiplicare per quasi zero spegne il
+messaggio.
 
 Una buona funzione di attivazione è una che non spegne il messaggio mentre lo
 lascia passare.
@@ -155,7 +156,7 @@ la softmax, che fa un altro mestiere e lavora solo sull'ultimo strato.
 Le tre funzioni di attivazione classiche, in tre grafici affiancati. In
 orizzontale il numero che entra nella funzione, in verticale quello che ne
 esce; l'incrocio degli assi è lo zero in entrambe le direzioni. Da guardare
-soprattutto dove ciascuna curva è **piatta**: è lì che il messaggio che risale
+soprattutto dove ciascuna curva è piatta: è lì che il messaggio che risale
 la rete si spegne.
 ```
 
@@ -236,19 +237,18 @@ reti profonde gli strati vicini all'ingresso smettono di ricevere segnale e non
 apprendono. A ciò si aggiunge che l'uscita non è centrata nello zero (sempre
 positiva), il che rallenta la convergenza della discesa del gradiente.
 
-La via d'uscita che viene in mente per prima non funziona, e la porta va
-chiusa subito: non si rimedia alzando i pesi per compensare il fattore
-$1/4$. Pesi più grandi spingono $z$ nelle code, dove $\sigma'$ è ancora più
-piccola, e i due effetti si mangiano a vicenda. In una rete di venti strati da
-$128$ unità, pesi estratti con l'inizializzazione di Glorot, ingressi normali
-standard, e per «fattore» si intende il rapporto fra la norma del gradiente che
-esce da uno strato verso l'ingresso e quella del gradiente che vi è entrato
-dall'uscita, mediato sugli strati. Con quel protocollo il fattore medio per
-strato viene $0{,}24$, in linea con il tetto di $1/4$; quadruplicando la
-scala dei pesi sale soltanto a $0{,}6$, perché nel frattempo
-$\mathbb{E}[\sigma'(z)]$ scende da $0{,}23$ a $0{,}13$. Si guadagna sul modulo
-di $\mathbf{W}$ e si perde sulla saturazione, e il fattore resta sotto $1$
-comunque: la sigmoide perde da entrambi i lati.
+La via d'uscita che viene in mente per prima non funziona, e la porta va chiusa
+subito: non si rimedia alzando i pesi per compensare il fattore $1/4$. Pesi più
+grandi spingono $z$ nelle code, dove $\sigma'$ è ancora più piccola, e i due
+effetti si mangiano a vicenda. Si prende una rete di venti strati da $128$
+unità, pesi estratti con l'inizializzazione di Glorot e ingressi normali
+standard, e si chiama «fattore» il rapporto fra la norma del gradiente che esce
+da uno strato verso l'ingresso e quella del gradiente che vi è entrato
+dall'uscita, mediato sugli strati. Il fattore medio per strato viene $0{,}24$,
+in linea con il tetto di $1/4$; quadruplicando la scala dei pesi sale soltanto
+a $0{,}6$, perché nel frattempo $\mathbb{E}[\sigma'(z)]$ scende da $0{,}23$ a
+$0{,}13$. Si guadagna sul modulo di $\mathbf{W}$ e si perde sulla saturazione,
+e il fattore resta sotto $1$ comunque: la sigmoide perde da entrambi i lati.
 
 `````
 
@@ -287,7 +287,7 @@ $$
 \tanh'(x) = 1-\tanh^2(x).
 $$
 
-L'uscita è **centrata nello zero**, quindi i gradienti dei pesi non hanno un
+L'uscita è centrata nello zero, quindi i gradienti dei pesi non hanno un
 segno sistematico: la convergenza è più regolare che con la sigmoide
 {cite}`lecun1998efficient`. La derivata arriva fino a $1$ nell'origine, contro
 il $0{,}25$ della sigmoide, ma satura comunque agli estremi. Per anni la `tanh`
@@ -354,13 +354,13 @@ $$
 $$
 
 I due casi non coprono tutta la retta, e l'omissione è voluta: in $x=0$ la
-derivata **non esiste**, perché il rapporto incrementale vale $0$ arrivando da
+derivata non esiste, perché il rapporto incrementale vale $0$ arrivando da
 sinistra e $1$ arrivando da destra. Le librerie ne scelgono una per convenzione
 (PyTorch restituisce $0$; per `leaky_relu` restituisce $\alpha$), ed è una scelta
-innocua: i punti in cui la pre-attivazione è **esattamente** zero sono un
+innocua: i punti in cui la pre-attivazione è esattamente zero sono un
 insieme trascurabile, e qualunque valore fra $0$ e $1$ è un sotto-gradiente
 legittimo. C'è però una conseguenza pratica che vale un pomeriggio a chi
-controlla i conti a mano: verificando il gradiente con le **differenze finite**
+controlla i conti a mano: verificando il gradiente con le differenze finite
 proprio in zero si trova $0{,}5$, cioè la media dei due lati, mentre autograd
 dà $0$. I due numeri non coincidono e nessuno dei due è sbagliato: è il punto in
 cui la derivata non c'è, non un errore nel codice.
@@ -369,16 +369,16 @@ Per $x>0$ il gradiente è esattamente $1$: niente saturazione, niente *vanishing
 lungo i cammini attivi. Ciò ha reso addestrabili reti molto profonde
 ({cite}`nair2010rectified`; {cite}`glorot2011deep`; AlexNet,
 {cite}`krizhevsky2012imagenet`) e
-induce attivazioni **sparse** (molti neuroni esattamente a zero). Il rovescio è
-il *dying ReLU*: un neurone la cui **pre-attivazione** $z$ resta negativa su
+induce attivazioni sparse (molti neuroni esattamente a zero). Il rovescio è
+il *dying ReLU*: un neurone la cui pre-attivazione $z$ resta negativa su
 tutti i dati ha gradiente esattamente nullo sui propri pesi e smette di
 aggiornarsi. Attenzione a leggerlo bene: la condizione è su $z$, non
 sull'ingresso $\mathbf{x}$ (a valle di uno strato ReLU gli ingressi sono
-$\ge 0$ per costruzione). E «non si aggiorna più» vale per i **suoi**
+$\ge 0$ per costruzione). E «non si aggiorna più» vale per i suoi
 parametri, non per il suo destino: in uno strato nascosto $z$ continua a
 muoversi perché cambiano gli strati a monte, e il neurone può risvegliarsi
 senza che nessuno dei suoi pesi si sia mosso. Solo nel primo strato, dove
-l'ingresso è il dato e non cambia, la morte è definitiva. La **Leaky ReLU**
+l'ingresso è il dato e non cambia, la morte è definitiva. La Leaky ReLU
 introduce una pendenza $\alpha$ piccola (tipicamente $0{,}01$) sul ramo
 negativo:
 
@@ -387,9 +387,9 @@ $$
 $$
 
 Sulla stessa idea nascono PReLU (con $\alpha$ appreso), ELU e, nei Transformer
-moderni, la **GELU** {cite}`hendrycks2016gaussian`, cioè $x\,\Phi(x)$: una ReLU
-ammorbidita in cui il gradino secco è sostituito da $\Phi$, la **funzione di
-ripartizione** della normale standard. Da non confondere con la densità, che
+moderni, la GELU {cite}`hendrycks2016gaussian`, cioè $x\,\Phi(x)$: una ReLU
+ammorbidita in cui il gradino secco è sostituito da $\Phi$, la funzione di
+ripartizione della normale standard. Da non confondere con la densità, che
 qui chiamiamo $\Phi'$ per non tirare in ballo la $\varphi$ (nel resto del
 capitolo $\varphi$ è l'attivazione dello strato d'uscita, e un simbolo con
 due mestieri è un errore che aspetta): $x\,\Phi'(x)$ è tutt'altra funzione,
@@ -403,7 +403,7 @@ ottiene un disegno diverso.
 Le funzioni viste finora lavorano su un numero alla volta, negli strati
 nascosti. Sull'ultimo strato serve un'altra cosa, quando la rete deve scegliere
 fra più risposte possibili: qualcosa che guardi *tutte* le uscite insieme e le
-trasformi in percentuali che sommano a $100$. È la **softmax**.
+trasformi in percentuali che sommano a $100$. È la softmax.
 
 `````{tab} Elementare
 
@@ -444,7 +444,7 @@ $$
 $$
 
 È la generalizzazione multiclasse della sigmoide e si accompagna alla loss di
-**cross-entropia**. Attenzione: l'esponenziale di logit grandi va facilmente
+cross-entropia. Attenzione: l'esponenziale di logit grandi va facilmente
 in overflow. La soluzione standard è sottrarre il massimo,
 $z_i \leftarrow z_i - \max_j z_j$, che non cambia il risultato ma lo rende
 numericamente stabile: il trucco del *log-sum-exp*, discusso nella sezione di
@@ -458,12 +458,12 @@ Una guida ragionevole per la maggior parte dei casi:
 
 | Dove | Scelta consigliata | Perché |
 |---|---|---|
-| Strati nascosti (scelta di partenza) | **ReLU** | veloce, il messaggio non si spegne, ottimo punto di partenza |
-| Strati nascosti, neuroni "morti" | **Leaky ReLU** | un po’ di pendenza anche sui negativi |
-| Celle ricorrenti (le LSTM e le GRU della sezione sui modelli di sequenza, nel capitolo sul linguaggio naturale) | **tanh** + sigmoide | uscita centrata; la sigmoide fa da rubinetto, perché moltiplicare per un numero fra $0$ e $1$ è decidere quanta informazione lasciar passare |
-| Uscita, scelta fra due risposte (classificazione binaria) | **sigmoide** | una probabilità, mai esattamente $0$ né $1$ |
-| Uscita, scelta fra più risposte (classificazione multiclasse) | **softmax** | una percentuale per ciascuna delle classi in gioco |
-| Uscita, previsione di un numero (regressione) | **nessuna** (lineare) | il valore può essere qualunque numero |
+| Strati nascosti (scelta di partenza) | ReLU | veloce, il messaggio non si spegne, ottimo punto di partenza |
+| Strati nascosti, neuroni "morti" | Leaky ReLU | un po’ di pendenza anche sui negativi |
+| Celle ricorrenti (le LSTM e le GRU della sezione sui modelli di sequenza, nel capitolo sul linguaggio naturale) | tanh + sigmoide | uscita centrata; la sigmoide fa da rubinetto, perché moltiplicare per un numero fra $0$ e $1$ è decidere quanta informazione lasciar passare |
+| Uscita, scelta fra due risposte (classificazione binaria) | sigmoide | una probabilità, mai esattamente $0$ né $1$ |
+| Uscita, scelta fra più risposte (classificazione multiclasse) | softmax | una percentuale per ciascuna delle classi in gioco |
+| Uscita, previsione di un numero (regressione) | nessuna (lineare) | il valore può essere qualunque numero |
 
 La regola pratica di oggi: negli strati nascosti parti da ReLU, cambia solo se
 i risultati non convincono. Sull'uscita, invece, la funzione la detta il
@@ -516,20 +516,20 @@ stabile.
 
 ```{admonition} Da ricordare
 :class: important
-- Fra uno strato e l'altro ci vuole una **piega**: senza, mettere in fila dieci
+- Fra uno strato e l'altro ci vuole una piega: senza, mettere in fila dieci
   strati equivale a metterne uno, e tutta la profondità non serve a niente. E
   non una piega qualunque: con una parabola, allargare lo strato smette di
   servire, perché sommare parabole non porta oltre la parabola.
-- **Sigmoide** e **tanh** schiacciano i numeri fra due estremi, e proprio agli
+- Sigmoide e tanh schiacciano i numeri fra due estremi, e proprio agli
   estremi diventano piatte: lì la rete non trova più nessuna pendenza da
   seguire e smette di imparare. La tanh è un po’ meglio perché è centrata sullo
   zero. E alzare i pesi per compensare non aiuta: li spinge proprio verso le
   code, dove la curva è ancora più piatta.
-- La **ReLU** ("se è positivo lascialo passare, altrimenti zero") dal lato
+- La ReLU ("se è positivo lascialo passare, altrimenti zero") dal lato
   positivo non si appiattisce mai, e costa un confronto: è la scelta di
-  partenza, ed è ciò che ha reso possibili le reti profonde. La **Leaky ReLU**
+  partenza, ed è ciò che ha reso possibili le reti profonde. La Leaky ReLU
   cura i neuroni che restano bloccati a zero.
-- Sull'ultimo strato di un classificatore c'è la **softmax**, che trasforma i
+- Sull'ultimo strato di un classificatore c'è la softmax, che trasforma i
   punteggi grezzi in percentuali che sommano a $100$.
 ```
 
@@ -539,18 +539,18 @@ stabile.
 
 ```{admonition} Da ricordare
 :class: important
-- Senza una **non linearità** tra gli strati, una rete profonda collassa in un
+- Senza una non linearità tra gli strati, una rete profonda collassa in un
   singolo strato lineare: la profondità sarebbe inutile. E non basta che sia
-  non lineare: deve essere **non polinomiale**, altrimenti la larghezza non
+  non lineare: deve essere non polinomiale, altrimenti la larghezza non
   compra niente.
-- **Sigmoide** e **tanh** saturano agli estremi e soffrono il *vanishing
+- Sigmoide e tanh saturano agli estremi e soffrono il *vanishing
   gradient*; la tanh almeno è centrata nello zero. Alzare i pesi per
   compensare non aiuta: sposta il problema dal modulo di $\mathbf{W}$ alla
   saturazione.
-- La **ReLU** ($\max(0,x)$) non satura dal lato positivo ed è velocissima: è ciò
-  che ha reso addestrabili le reti profonde. La **Leaky ReLU** cura i neuroni
+- La ReLU ($\max(0,x)$) non satura dal lato positivo ed è velocissima: è ciò
+  che ha reso addestrabili le reti profonde. La Leaky ReLU cura i neuroni
   "morti", cioè quelli con pre-attivazione negativa su tutto il dataset.
-- La **softmax** trasforma i logit dell'ultimo strato in probabilità che sommano
+- La softmax trasforma i logit dell'ultimo strato in probabilità che sommano
   a $1$; va calcolata nella forma numericamente stabile.
 ```
 

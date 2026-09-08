@@ -3,7 +3,7 @@
 Chiedi a chi lavora con le reti neurali qual è la parte difficile, e quasi
 nessuno risponderà "scrivere il modello". Il modello sono venti righe, e le
 sezioni precedenti le hanno già mostrate tutte: tensori, `nn.Module`, il loop
-dei cinque passi. La parte difficile è **l'ordine delle mosse**: sapere che
+dei cinque passi. La parte difficile è l'ordine delle mosse: sapere che
 cosa si guarda per primo, che cosa si cambia quando il numero non sale, e
 quando fermarsi. È un mestiere, e come tutti i mestieri ha una sua sequenza
 fissa che si impara una volta e poi si ripete su qualunque problema: che si
@@ -46,7 +46,7 @@ dimenticano sempre: che cosa vorrà dire «venuto bene» (salato al punto
 giusto? cotto al punto giusto?) e di quanto aggiusterai per volta, un pizzico
 o mezza manciata.
 Poi cucini (4). Poi (ed è il passaggio che distingue chi cucina bene)
-**assaggi** (5), e l'assaggio non lo fai sul cucchiaio che hai già leccato: usi
+assaggi (5), e l'assaggio non lo fai sul cucchiaio che hai già leccato: usi
 una porzione che non hai ancora toccato, altrimenti ti convinci che sia buono
 solo perché lo hai fatto tu. Se manca sale, torni indietro e cambi *una cosa
 sola*, altrimenti al secondo assaggio non saprai se è merito del sale o del
@@ -67,9 +67,9 @@ una funzione di perdita $\mathcal{L}$ e un algoritmo di ottimizzazione; si
 stima $\theta$ minimizzando il rischio empirico sul training set; si misura il
 rischio su un campione indipendente per stimare la generalizzazione. Le
 stazioni 3–5 sono un ciclo di ricerca su iperparametri e architettura, guidato
-dalla metrica di **validazione**, e ogni decisione presa guardando quel numero
+dalla metrica di validazione, e ogni decisione presa guardando quel numero
 lo consuma un po’, perché il set di validazione diventa a poco a poco parte
-dell'addestramento. Per questo il test set si tocca **una volta sola**, alla
+dell'addestramento. Per questo il test set si tocca una volta sola, alla
 fine: è l'unica stima onesta che rimane. Il capitolo sul machine learning
 tratta per esteso questa contabilità in [overfitting e
 validazione](../MachineLearning/overfitting-validazione.md).
@@ -84,11 +84,11 @@ con una formula nota (una retta di pendenza $0{,}7$ e intercetta $0{,}3$) e
 poi buttiamo via la formula, lasciando al modello solo i punti.
 
 Quei due nomi meritano una sosta, perché è il punto migliore
-di tutto il capitolo per capire che cosa sia davvero un peso. La **pendenza**
+di tutto il capitolo per capire che cosa sia davvero un peso. La pendenza
 di una retta è quanto la retta sale ogni volta che ci si sposta di uno verso
-destra; l’**intercetta** è l'altezza a cui la retta taglia l'asse verticale, il
+destra; l’intercetta è l'altezza a cui la retta taglia l'asse verticale, il
 punto da cui parte. Nel vocabolario delle reti neurali quei due numeri si
-chiamano **peso** e **bias**, ed è la stessa cosa: il peso dice quanto
+chiamano peso e bias, ed è la stessa cosa: il peso dice quanto
 l'ingresso conta, il bias dove si parte. Una rete vera ne ha milioni invece di
 due, ma il mestiere di ciascuno è questo.
 
@@ -110,7 +110,7 @@ X_test,  y_test  = X[taglio:], y[taglio:]       # (10, 1)
 ```
 
 Due dettagli meritano attenzione, perché tornano in ogni progetto.
-`unsqueeze(dim=1)` trasforma la fila di cinquanta numeri in una **tabella** di
+`unsqueeze(dim=1)` trasforma la fila di cinquanta numeri in una tabella di
 cinquanta righe e una colonna: gli strati di PyTorch vogliono una riga per
 esempio, e su ogni riga le **caratteristiche** di quell'esempio (in inglese
 *feature*, ed è la parola che si troverà nel codice: `in_features`,
@@ -199,7 +199,7 @@ con certezza che la macchina funziona.
 
 Guardando la tabella si nota che le ultime righe si ripetono: $0{,}0103$ e
 $0{,}0013$ tornano a turno. Ed è la cosa più istruttiva di tutto l'esempio:
-verso la fine la perdita non si ferma su un valore, **alterna** fra quei due,
+verso la fine la perdita non si ferma su un valore, alterna fra quei due,
 un giro sì e un giro no.
 
 Perché lo faccia si dice in una riga. Questa misura dell'errore corregge sempre
@@ -218,7 +218,7 @@ sull'ottimo mentre gli sta girando attorno. Col $199$ i due piedi si vedono
 tutti e due, ed è la verità.
 
 `````{tab} Elementare
-La `L1Loss` conta gli sbagli così come sono: è la **distanza media** tra quello
+La `L1Loss` conta gli sbagli così come sono: è la distanza media tra quello
 che il modello dice e quello che dovrebbe dire. Se stampa $0{,}05$ e stiamo
 predicendo dei prezzi in euro, il modello sbaglia in media di cinque centesimi,
 un numero che si può raccontare a chiunque.
@@ -335,7 +335,7 @@ alla furbizia non conviene più.
 
 `````{tab} Superiore
 `BCEWithLogitsLoss` e `CrossEntropyLoss` incorporano rispettivamente la
-sigmoide e la log-softmax, e vanno alimentate con i **logit**. Il motivo è
+sigmoide e la log-softmax, e vanno alimentate con i logit. Il motivo è
 numerico: il calcolo congiunto usa il *log-sum-exp trick*, che evita
 l'underflow di $\log(\hat{y})$ quando $\hat{y} \to 0$. Le versioni "nude"
 (`nn.BCELoss`, `nn.NLLLoss`) esistono per i casi in cui la normalizzazione è
@@ -412,8 +412,8 @@ stai girando le manopole sbagliate.
 Formalmente si sta esplorando lo spazio degli iperparametri con un budget
 limitato, e la sensibilità non è uniforme: il learning rate domina, seguito
 dalla dimensione del batch e dalla capacità del modello, mentre molte altre
-scelte contano poco. Da qui due pratiche standard. La prima è la **ricerca
-casuale** invece della ricerca a griglia: con $n$ prove, la casuale campiona
+scelte contano poco. Da qui due pratiche standard. La prima è la ricerca
+casuale invece della ricerca a griglia: con $n$ prove, la casuale campiona
 $n$ valori distinti *per ogni* iperparametro, la griglia molti meno, e con
 sensibilità così sbilanciate questo cambia tutto. La seconda è il *learning
 rate range test*: si fa crescere $\eta$ esponenzialmente per poche centinaia
@@ -434,9 +434,9 @@ alla produzione](../MLOps/dal-notebook-alla-produzione.md).
 
 Il modello è addestrato. Arriva un dato mai visto e va dato in pasto alla
 rete: è il gesto più semplice del capitolo, ed è quello che fallisce più
-spesso. Il dato nuovo deve soddisfare **tre condizioni** (stesso dispositivo,
-stesso tipo, stessa forma dei dati di addestramento) e vanno azionati **due
-interruttori**.
+spesso. Il dato nuovo deve soddisfare tre condizioni (stesso dispositivo,
+stesso tipo, stessa forma dei dati di addestramento) e vanno azionati due
+interruttori.
 
 ```python
 modello.eval()                                  # interruttore 1: modalità esame
@@ -468,23 +468,23 @@ dà più lavoro di tutti: i dati.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il flusso di lavoro ha **sei stazioni**: che cosa voglio predire, con quali
+- Il flusso di lavoro ha sei stazioni: che cosa voglio predire, con quali
   dati, quale modello, addestrarlo, assaggiarlo, usarlo. Le tre centrali si
   ripetono in circolo, ed è lì che va tutto il tempo.
-- Costruirsi un **problema con la risposta nota** (punti generati da una retta
+- Costruirsi un problema con la risposta nota (punti generati da una retta
   che si conosce) è il modo più rapido per verificare che la propria macchina
   funzioni davvero: alla fine i due numeri devono tornare.
 - La domanda che si fa al modello decide l'ultimo strato e la misura
   dell'errore: quanto? sì o no? quale fra tanti? quali fra tanti? Sbagliare
   questa riga è metà degli errori di chi comincia.
-- Nel migliorare un modello si cambia **una cosa alla volta**, e in ordine:
+- Nel migliorare un modello si cambia una cosa alla volta, e in ordine:
   prima più dati, poi più tempo, poi un modello più grande, poi la manopola
   del passo, poi i freni, e solo alla fine si cambia strada.
 - Prima di girare qualunque manopola, il collaudo che costa cinque minuti: il
-  modello deve riuscire a **mandare a memoria dieci esempi**. Se non ci
+  modello deve riuscire a mandare a memoria dieci esempi. Se non ci
   riesce, l'errore è nel codice e non in una manopola.
-- Per dare al modello un dato nuovo servono **tre condizioni** (stesso posto,
-  stesso tipo di numeri, stessa forma) e **due interruttori** (modalità esame,
+- Per dare al modello un dato nuovo servono tre condizioni (stesso posto,
+  stesso tipo di numeri, stessa forma) e due interruttori (modalità esame,
   niente appunti).
 ```
 `````
@@ -492,21 +492,21 @@ dà più lavoro di tutti: i dati.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il flusso di lavoro ha **sei stazioni**: problema, dati, modello,
+- Il flusso di lavoro ha sei stazioni: problema, dati, modello,
   addestramento, valutazione, uso. Le tre centrali si ripetono in ciclo, ed è
   lì che va il tempo.
-- Costruirsi un **problema con la risposta nota** (dati generati da una
+- Costruirsi un problema con la risposta nota (dati generati da una
   formula) è il modo più rapido per verificare che la propria macchina
   funzioni davvero.
-- Loss e ultimo strato si scelgono dal **tipo di problema**:
+- Loss e ultimo strato si scelgono dal tipo di problema:
   `MSELoss`/`L1Loss` per la regressione, `BCEWithLogitsLoss` per il sì/no,
-  `CrossEntropyLoss` per le $K$ classi; le ultime due **vogliono i logit**.
-- Nel ciclo di miglioramento si cambia **una leva alla volta**, in ordine:
+  `CrossEntropyLoss` per le $K$ classi; le ultime due vogliono i logit.
+- Nel ciclo di miglioramento si cambia una leva alla volta, in ordine:
   dati, durata, capacità, learning rate, regolarizzazione, architettura.
 - Prima di ottimizzare qualunque cosa: verifica che il modello riesca a
-  mandare a memoria **dieci esempi**. Se non ci riesce, è un bug, non un
+  mandare a memoria dieci esempi. Se non ci riesce, è un bug, non un
   iperparametro.
-- Per predire su dati nuovi servono **tre condizioni** (device, dtype, shape)
-  e **due interruttori** (`eval()`, `no_grad()`).
+- Per predire su dati nuovi servono tre condizioni (device, dtype, shape)
+  e due interruttori (`eval()`, `no_grad()`).
 ```
 `````

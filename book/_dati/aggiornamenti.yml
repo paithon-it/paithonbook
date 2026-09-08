@@ -48,6 +48,42 @@
 
 versioni:
 
+- versione: "1.12.5"
+  data: 2026-09-08
+  voci:
+
+  - tipo: nuovo
+    pagina: Transformers/attenzione-in-pratica.md
+    testo: >
+      **L'attenzione in pratica.** Una sezione nuova nel capitolo sui
+      Transformer: la stessa formula costa in modo diverso quando si addestra
+      e quando si genera, la KV cache, e le varianti che la riducono (MQA,
+      GQA, MLA), con i conti in memoria rifatti riga per riga.
+
+  - tipo: nuovo
+    pagina: RetiNeurali/da-dove-viene-la-loss.md
+    testo: >
+      **Da dove viene la loss.** Una sezione nuova nel capitolo sulle reti
+      neurali: la funzione di perdita non si sceglie a occhio, si ricava dalla
+      distribuzione che la rete dichiara sull'uscita; i minimi quadrati e la
+      cross-entropy come due casi della stessa mossa.
+
+  - tipo: corretto
+    testo: >
+      **Una rilettura a due lettori su ventisei capitoli.** Ogni pagina è
+      stata riletta due volte, come lettore alle prime armi e come lettore
+      esperto, con le formule rifatte, il codice rieseguito e le fonti aperte.
+      Corretti errori di fatto (un cancello attribuito al ramo sbagliato, un
+      conto di memoria, una frase che la scheda gemella smentiva), termini
+      usati prima di essere spiegati e rimandi a sezioni che non esistono.
+
+  - tipo: corretto
+    testo: >
+      **Meno grassetto in altri sedici capitoli.** La passata iniziata nella
+      1.12.4 è arrivata a venti capitoli su trentotto: il neretto segna un
+      termine la prima volta che compare e poi lo lascia stare. Le parole
+      sono le stesse.
+
 - versione: "1.12.4"
   data: 2026-09-07
   voci:

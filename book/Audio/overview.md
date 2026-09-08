@@ -4,10 +4,10 @@ Un mattino di primavera, punti il telefono verso una siepe e apri
 un'applicazione. Un merlo canta, invisibile tra le foglie, e sullo schermo
 compare un nome: *Turdus merula*. L'app si chiama BirdNET, nasce dal
 laboratorio di ornitologia della Cornell University insieme all'università
-tecnica di Chemnitz, e fa una cosa che cinquant'anni fa sarebbe sembrata magia: riconosce
-centinaia di specie di uccelli dal solo canto (un compito che a un umano
-richiede anni di orecchio allenato). Nessuna parola, nessuna frase: solo un
-fischio modulato, e un modello che sa a chi appartiene.
+tecnica di Chemnitz, e fa una cosa che cinquant'anni fa sarebbe sembrata magia:
+riconosce centinaia di specie di uccelli dal solo canto (un compito che a un
+umano richiede anni di orecchio allenato). Nessuna parola, nessuna frase: solo
+un fischio modulato, e un modello che sa a chi appartiene.
 
 Il canto degli uccelli è solo un angolo di un mondo enorme. C'è la musica che
 un modello genera su richiesta, un brano al pianoforte che non è mai stato
@@ -25,8 +25,8 @@ al suono di una chitarra elettrica. Poi hanno riempito quelle caselle
 ritagliando frammenti da dieci secondi da video di YouTube ed etichettandoli a
 mano, e oggi i frammenti raccolti sono oltre due milioni. Di categorie ne
 hanno usate 527 delle 632: settantotto non sono mai state date da etichettare
-(troppo oscure, o ambigue, o semplici caselle intermedie dell'albero), e delle
-rimanenti non si sono trovate abbastanza registrazioni.
+(troppo oscure, o ambigue, o semplici caselle intermedie dell'albero), e per le
+ventisette che restano non si sono trovate abbastanza registrazioni.
 
 Un elenco così lungo dice una cosa sola: il suono che non è parola non è un
 rumore indistinto. Ha regole sue, riconoscibili, come le ha una lingua. Un
@@ -166,8 +166,7 @@ scriverlo con dei simboli.
 
 C'è infatti un secondo modo di guardare l'audio, ed è il vero filo conduttore di
 questo capitolo. Poggia su due parole che conviene fissare subito, perché
-torneranno in ogni sezione. Riguardano i valori che un numero può prendere,
-non quanti numeri ci sono. Una grandezza è **discreta** quando i valori
+torneranno in ogni sezione. Una grandezza è **discreta** quando i valori
 possibili si possono contare a uno a uno: le lettere dell'alfabeto sono ventuno,
 e fra la A e la B non c'è niente in mezzo. È **continua** quando non si può: fra
 $0{,}3$ e $0{,}4$ ci sono infiniti numeri, e fra due sfumature di grigio ce n'è

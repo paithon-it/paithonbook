@@ -12,13 +12,13 @@ e la formula più fortunata è di Andrew Ng:
 È uno slogan, e come tutti gli slogan funziona perché butta via i distinguo.
 Ng insegna all'Università di Stanford ed è autore di alcuni fra i corsi di
 machine learning più seguiti al mondo, e la formula l'ha ripetuta in più
-occasioni; ma nella conversazione del 2017 da cui è stata raccolta il
-ragionamento per esteso è più cauto, e più interessante: «proprio come
-l'elettricità ha trasformato quasi tutto cento anni fa, oggi faccio davvero
-fatica a pensare a un settore che l'AI non trasformerà nei prossimi anni»
-{cite}`ng2017electricity`. È una previsione, non un
-bilancio, e come tutte le previsioni andrà verificata; ma qualche esempio
-concreto, di quelli già successi, c'è.
+occasioni; ma nell'intervento del 2017 da cui è stata raccolta il ragionamento
+per esteso è più cauto, e più interessante: «proprio come l'elettricità ha
+trasformato quasi tutto cento anni fa, oggi faccio davvero fatica a pensare a
+un settore che l'AI non trasformerà nei prossimi anni»
+{cite}`ng2017electricity`. È una previsione, non un bilancio, e come tutte le
+previsioni andrà verificata; ma qualche esempio concreto, di quelli già
+successi, c'è.
 
 Il primo riguarda l'elettricità per davvero. I servizi che usiamo ogni giorno
 girano dentro capannoni pieni di computer accesi giorno e notte, i **centri di

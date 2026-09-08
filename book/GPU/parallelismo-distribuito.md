@@ -192,7 +192,7 @@ strategie che seguono, che invece di replicare spezzano.
 ## Spezzare la matrice: il tensor parallelism
 
 La prima idea è tagliare il modello dove è più grosso. Un modello, dentro, è
-fatto in buona parte delle stesse matrici della sezione precedente: una per
+fatto in buona parte delle stesse matrici della sezione sul GEMM: una per
 strato, e farla lavorare vuol dire moltiplicare i numeri che entrano per i
 numeri della matrice. Invece di tenerne una copia intera su ogni GPU, se ne
 mette un pezzo su ciascuna, e ognuna calcola la propria fetta del

@@ -55,7 +55,7 @@ print(immagine.shape, etichetta)  # torch.Size([3, 224, 224]) 0
 ```
 
 Un dettaglio che sembra burocratico e non lo è: l'associazione classe → numero
-segue l’**ordine alfabetico** delle cartelle, non quello in cui le abbiamo in
+segue l’ordine alfabetico delle cartelle, non quello in cui le abbiamo in
 testa. Quando poi si legge una predizione, `dati_train.classes[indice]` è
 l'unico modo corretto di tradurla in una parola. Scrivere a mano una lista di
 nomi in un altro ordine è un classico modo di ottenere un modello che sembra
@@ -66,7 +66,7 @@ sbagliare tutto mentre invece funziona benissimo.
 `ImageFolder` copre il caso fortunato. Appena i dati stanno in un CSV, in un
 database, in file audio con le etichette in un foglio a parte (o appena
 servono più informazioni della sola classe), si scrive la propria classe. È
-meno lavoro di quanto sembri: si scrivono **tre metodi**, e due soli di quelli
+meno lavoro di quanto sembri: si scrivono tre metodi, e due soli di quelli
 sono il contratto vero, cioè le domande che PyTorch verrà davvero a farci; il
 terzo è il costruttore, che serve a noi per prepararci.
 
@@ -141,8 +141,8 @@ quelli davanti. Chi lavora così mescola come può, tenendo da parte un cesto di
 qualche centinaio di pezzi e pescando lì dentro, e l'ordine si rompe almeno
 dentro il cesto.
 
-La regola pratica sta tutta in questa divisione del lavoro: **in `__init__` le
-cose pesanti, in `__getitem__` le cose leggere**. Se in `__init__` carichi in
+La regola pratica sta tutta in questa divisione del lavoro: in `__init__` le
+cose pesanti, in `__getitem__` le cose leggere. Se in `__init__` carichi in
 memoria tutte le immagini, un dataset da 200 GB non parte nemmeno; se in
 `__getitem__` riapri un file CSV di 300 MB per leggere una riga,
 l'addestramento diventa lentissimo, e la GPU, che aspetta i dati, resterà
@@ -174,7 +174,7 @@ dei crash con `num_workers > 0`, qualunque sia il modo di avvio. Si apre
 *pigramente*, al primo accesso, dentro il worker. La seconda: deve restituire
 tensori (o tipi che il *collate* di default sa impilare); il default gestisce
 tensori, numeri, stringhe, dizionari e tuple annidate, ma pretende che tutti
-gli elementi del batch abbiano la **stessa forma**.
+gli elementi del batch abbiano la stessa forma.
 `````
 
 ## Le trasformazioni: preparare, e moltiplicare
@@ -227,7 +227,7 @@ La media da sola non basta, e si vede con due materie. In italiano i voti
 stanno quasi tutti fra 5 e 7, in matematica vanno dal 2 al 10, e un 8 nella
 prima non è la stessa impresa di un 8 nella seconda. Allora lo scarto dalla
 media si divide per quanto quei voti si sparpagliano di solito, e lo
-sparpagliamento si chiama **deviazione standard**. Con media 6 e sparpagliamento
+sparpagliamento si chiama deviazione standard. Con media 6 e sparpagliamento
 1 quell'8 diventa 2, con media 6 e sparpagliamento 4 diventa 0,5.
 
 Le materie di `Normalize` sono i colori. Per il rosso, il verde e il blu tiene
@@ -365,7 +365,7 @@ calcolo. Su Windows e macOS, dove i worker nascono per *spawn* e non per
 far ripartire il programma, e Python lo ferma sul nascere con un
 `RuntimeError`.
 
-Infine `shuffle=True` e l'argomento `sampler` sono **mutuamente esclusivi**:
+Infine `shuffle=True` e l'argomento `sampler` sono mutuamente esclusivi:
 `shuffle` è di fatto una scorciatoia per `RandomSampler`. Chi passa un sampler
 personalizzato deve togliere `shuffle`.
 `````
@@ -406,30 +406,31 @@ def raggruppa(batch):
                              padding_value=0)
     return imbottite, lunghezze, torch.tensor(etichette)
 
+torch.manual_seed(0)   # frasi e mescolamento sorteggiati sempre uguali
 dati = DatasetSequenze()
 loader = DataLoader(dati, batch_size=32, shuffle=True, collate_fn=raggruppa)
 
 imbottite, lunghezze, etichette = next(iter(loader))
 print(imbottite.shape, lunghezze.shape, etichette.shape)
-# le lunghezze vere sono tutte diverse, la larghezza del batch e' la massima:
+# le lunghezze vere sono una per frase, la larghezza del batch e' la massima:
 print(lunghezze[:8].tolist(), "-> larghezza", imbottite.shape[1])
 ```
 
-I numeri cambiano a ogni esecuzione, perché le frasi sono sorteggiate, e
+I numeri cambiano da un vassoio all'altro, perché le frasi sono sorteggiate, e
 cambia con loro la larghezza del vassoio, che è la lunghezza della frase più
 lunga capitata dentro. Quello che non cambia sono le tre forme: trentadue
 righe, trentadue lunghezze, trentadue etichette.
 
 ```text
-torch.Size([32, 39]) torch.Size([32]) torch.Size([32])
-[20, 14, 14, 32, 36, 15, 39, 9] -> larghezza 39
+torch.Size([32, 37]) torch.Size([32]) torch.Size([32])
+[37, 10, 7, 14, 8, 30, 5, 31] -> larghezza 37
 ```
 
 Trentadue frasi portate tutte alla larghezza della più lunga del vassoio, qui
-trentanove; e accanto le trentadue lunghezze vere, tutte diverse. La frase che
-ne aveva nove è arrivata a trentanove con trenta zeri in coda.
+trentasette; e accanto le trentadue lunghezze vere, una per frase. La frase che
+ne aveva cinque è arrivata a trentasette con trentadue zeri in coda.
 
-Le **lunghezze** vanno restituite insieme ai dati e non sono un dettaglio.
+Le lunghezze vanno restituite insieme ai dati e non sono un dettaglio.
 Dopo l'imbottitura tutte le frasi del vassoio hanno la stessa larghezza, e gli
 zeri aggiunti in coda sono indistinguibili da parole vere: senza sapere dove
 finisce la frase, il modello imparerebbe che lo zero è una parola come le
@@ -498,13 +499,13 @@ sotto_train, sotto_val = random_split(dati_train, [n_train, n_val],
 
 `````{tab} Elementare
 La divisione a caso funziona solo se gli esempi sono davvero indipendenti. Non
-lo sono, per esempio, se il dataset contiene **dieci fotografie dello stesso
-paziente**, o dieci fotogrammi consecutivi dello stesso video: dividendo a
+lo sono, per esempio, se il dataset contiene dieci fotografie dello stesso
+paziente, o dieci fotogrammi consecutivi dello stesso video: dividendo a
 caso, alcune finiscono nell'addestramento e altre nel test, il modello
 riconosce il paziente invece della malattia, e il voto d'esame risulta
 splendido (fino al giorno in cui arriva un paziente nuovo).
 
-La regola è: **si divide per gruppo, non per esempio**. Tutti i dati di un
+La regola è: si divide per gruppo, non per esempio. Tutti i dati di un
 paziente stanno o di qua o di là. E se i dati hanno una data, si divide per
 data: si addestra sul passato e si valuta sul futuro, perché è così che
 funzionerà davvero.
@@ -529,7 +530,7 @@ Per dati temporali vale l'analogo temporale (*forward chaining*), trattato in
 [serie temporali](../SerieTemporali/validazione-e-feature.md).
 
 Un secondo tranello, più sottile: le statistiche di normalizzazione e ogni
-altro parametro di preprocessing vanno calcolati **solo sul training set** e
+altro parametro di preprocessing vanno calcolati solo sul training set e
 poi applicati agli altri. Calcolare media e deviazione standard su tutto il
 dataset prima di dividere lascia filtrare informazione dal test: un errore che
 gonfia i risultati di poco, ma abbastanza da falsare un confronto.
@@ -540,7 +541,7 @@ gonfia i risultati di poco, ma abbastanza da falsare un confronto.
 Un'ultima cosa, la meno intuitiva, ed è forse la più utile della sezione.
 Quando un addestramento è lento, l'istinto dice che la colpa è del modello.
 Nella maggior parte dei progetti che non riguardano i modelli giganti, la
-colpa è invece del **caricamento dei dati**: la cucina finisce il vassoio e
+colpa è invece del caricamento dei dati: la cucina finisce il vassoio e
 resta ferma ad aspettare il successivo. Conviene tenerlo a mente, perché è la
 diagnosi che quasi nessuno prova per prima e quasi sempre è quella giusta.
 
@@ -556,16 +557,16 @@ soltanto i dati. Se i due tempi si somigliano, il modello non c'entra.
 `````{tab} Elementare
 I rimedi, dal più efficace al meno:
 
-**Più aiutanti.** Alzare `num_workers`: se il problema è che nessuno prepara i
+Più aiutanti. Alzare `num_workers`: se il problema è che nessuno prepara i
 vassoi mentre la cucina cucina, è la prima cosa da provare.
 
-**Ritagliare le foto una volta sola.** Se ogni epoca ridimensiona quattromila
+Ritagliare le foto una volta sola. Se ogni epoca ridimensiona quattromila
 fotografie da dodici megapixel a 224 pixel per lato, quel lavoro lo si sta
 rifacendo identico decine di volte. Farlo una volta e salvare le immagini già
 piccole su disco è un pomeriggio che si ripaga in un'ora.
 
-**Meno file, più grandi.** Questo è il rimedio che stupisce, perché la ragione
-non è quella che si immagina: il costo grosso sta nell’**aprirle**, più che nel
+Meno file, più grandi. Questo è il rimedio che stupisce, perché la ragione
+non è quella che si immagina: il costo grosso sta nell’aprirle, più che nel
 *leggerle*. Aprire un file è come chiedere al bibliotecario di andare a
 prendere un volume: il tempo lo fa il tragitto, non la lettura, e per un
 milione di volumi si fa un milione di tragitti. Impacchettare le immagini in
@@ -574,7 +575,7 @@ scaffale intero in una volta. La differenza è enorme, e diventa drammatica
 quando i file non stanno sul computer ma su un disco raggiunto attraverso la
 rete.
 
-**Spostare le trasformazioni pesanti sulla scheda grafica**, che le fa più in
+Spostare le trasformazioni pesanti sulla scheda grafica, che le fa più in
 fretta della CPU.
 `````
 
@@ -584,14 +585,14 @@ La diagnosi si fa con `nvidia-smi` a occhio o, meglio, con il profiler
 kernel.
 
 I rimedi, in ordine di efficacia: alzare `num_workers`; ridimensionare le
-immagini **una volta** su disco invece che a ogni epoca; usare formati che si
+immagini una volta su disco invece che a ogni epoca; usare formati che si
 leggono in blocco (`.npy`, WebDataset, LMDB) invece di milioni di piccoli file;
 spostare le trasformazioni pesanti sulla GPU (`torchvision.transforms.v2`
 lavora su batch di tensori, quindi anche su device).
 
 Il rimedio dei file impacchettati guadagna per una ragione precisa. Su una
 collezione grande il costo
-dominante sta nell’**aprirli**, più che nel decodificarli: ogni `open()` è una
+dominante sta nell’aprirli, più che nel decodificarli: ogni `open()` è una
 chiamata di sistema e un accesso ai metadati del filesystem, e un milione di
 file piccoli produce un milione di accessi minuscoli e sparsi, che è lo schema
 peggiore per qualunque disco e disastroso su uno storage di rete, dove ogni
@@ -601,13 +602,13 @@ sequenza sposta il lavoro dove l'hardware è veloce.
 
 C'è poi un secondo motivo per impacchettare i file, che si paga una volta e
 serve per sempre. Mentre si scorre tutta la collezione per riscriverla, la si sta già
-leggendo: costa zero calcolare intanto **media e deviazione standard di ogni
-colore**, cioè i sei numeri che servono a `Normalize` e che qualche pagina fa
+leggendo: costa zero calcolare intanto media e deviazione standard di ogni
+colore, cioè i sei numeri che servono a `Normalize` e che qualche pagina fa
 avevamo preso in prestito da ImageNet. Sui propri dati si calcolano, e vengono
 meglio.
 
 Due avvertenze, e sono le stesse di sempre. La prima: quei sei numeri si
-calcolano **solo sulle foto di addestramento**, mai su tutte. Calcolarli su
+calcolano solo sulle foto di addestramento, mai su tutte. Calcolarli su
 tutte vuol dire far entrare nelle mie decisioni anche le foto d'esame, e il
 voto smette di essere onesto, per la stessa perdita di informazione della
 divisione fatta a caso su esempi che si assomigliano, e la {doc}`sezione su
@@ -627,47 +628,47 @@ del calcolo.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un `Dataset` si scrive con **tre metodi**: la preparazione, che avviene una
+- Un `Dataset` si scrive con tre metodi: la preparazione, che avviene una
   volta sola e dove va messo il lavoro lento; e le due domande che il
   `DataLoader` gli farà davvero, quanti esempi hai e dammi il numero 137 (la
   seconda gli verrà chiesta milioni di volte, quindi dev'essere veloce).
 - Se le foto stanno in una cartella per classe, `ImageFolder` fa tutto da sé.
-  I nomi delle classi li assegna in **ordine alfabetico**: vanno riletti da
+  I nomi delle classi li assegna in ordine alfabetico: vanno riletti da
   lui, mai riscritti a mano in un altro ordine.
-- Le trasformazioni servono a due cose: **preparare** (stessa misura, stessa
-  scala di numeri) e **moltiplicare** (girare, specchiare, schiarire). Si
+- Le trasformazioni servono a due cose: preparare (stessa misura, stessa
+  scala di numeri) e moltiplicare (girare, specchiare, schiarire). Si
   moltiplica solo in addestramento, mai durante l'esame.
 - Il `DataLoader` ha una manopola che conta più delle altre, il numero di
-  **aiutanti** che preparano i vassoi in parallelo; e una regola: o si mescola
+  aiutanti che preparano i vassoi in parallelo; e una regola: o si mescola
   a caso, o si passa un modo di pescare proprio, non tutti e due.
 - Se gli esempi hanno lunghezze diverse (frasi, suoni) si allungano tutti alla
-  stessa misura con degli zeri, e si restituiscono anche le **lunghezze vere**,
+  stessa misura con degli zeri, e si restituiscono anche le lunghezze vere,
   altrimenti il modello studia l'imbottitura.
-- Si divide **per gruppo** (tutte le foto dello stesso paziente di qua o di
+- Si divide per gruppo (tutte le foto dello stesso paziente di qua o di
   là), o per data, mai a caso su esempi che si assomigliano: è il modo più
   comune di darsi un bel voto senza meritarlo.
-- Se l'addestramento è lento, **sospetta i dati prima del modello**.
+- Se l'addestramento è lento, sospetta i dati prima del modello.
 ```
 `````
 
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Un `Dataset` è un contratto di **tre metodi**: `__init__` (lavoro pesante,
+- Un `Dataset` è un contratto di tre metodi: `__init__` (lavoro pesante,
   una volta), `__len__`, `__getitem__` (lavoro leggero, milioni di volte).
 - `ImageFolder` copre il caso "una cartella per classe"; l'indice delle classi
-  segue l’**ordine alfabetico**, e va riletto da `.classes`, mai riscritto a
+  segue l’ordine alfabetico, e va riletto da `.classes`, mai riscritto a
   mano.
-- Le trasformazioni **preparano** (resize, `ToTensor`, `Normalize`) e
-  **moltiplicano** (augmentation): moltiplicare solo in addestramento, mai in
+- Le trasformazioni preparano (resize, `ToTensor`, `Normalize`) e
+  moltiplicano (augmentation): moltiplicare solo in addestramento, mai in
   valutazione.
 - Nel `DataLoader` contano `num_workers`, `pin_memory`, `drop_last`,
   `persistent_workers`; `shuffle` e `sampler` si escludono a vicenda.
-- Con esempi di lunghezza diversa serve un **`collate_fn`** che imbottisce e
+- Con esempi di lunghezza diversa serve un `collate_fn` che imbottisce e
   restituisce le lunghezze vere.
-- Si divide **per gruppo** (paziente, video, utente) o per data, mai a caso su
+- Si divide per gruppo (paziente, video, utente) o per data, mai a caso su
   esempi correlati: è la forma più comune di *data leakage*.
-- Se l'addestramento è lento, sospetta il **caricamento dei dati** prima del
+- Se l'addestramento è lento, sospetta il caricamento dei dati prima del
   modello.
 ```
 `````

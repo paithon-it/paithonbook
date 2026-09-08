@@ -113,6 +113,8 @@ parts:
       title: Il percettrone
     - file: RetiNeurali/funzioni-attivazione.md
       title: Funzioni di attivazione
+    - file: RetiNeurali/da-dove-viene-la-loss.md
+      title: Da dove viene la loss
     - file: RetiNeurali/backpropagation.md
       title: Backpropagation
 
@@ -279,6 +281,8 @@ parts:
       title: La struttura del Transformer
     - file: Transformers/confronti.md
       title: Confronto coi modelli precedenti
+    - file: Transformers/attenzione-in-pratica.md
+      title: L'attenzione in pratica
     - file: Transformers/esempi.md
       title: Esempi pratici
     - file: Transformers/multimodalita.md

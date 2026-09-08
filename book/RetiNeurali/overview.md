@@ -6,7 +6,7 @@ brulichio emergono la memoria, il linguaggio, il riconoscere il volto di un
 amico in mezzo alla folla. L'idea, vecchia quasi quanto i computer, è
 seducente: se il cervello *è* fatto di neuroni, forse per costruire una
 macchina che impara basta costruire neuroni artificiali e collegarli fra loro.
-Da questa intuizione nasce tutto il **deep learning**, che è poi il nome che si
+Da questa intuizione nasce tutto il deep learning, che è poi il nome che si
 dà all'apprendimento automatico quando i neuroni artificiali si impilano in
 molte file: «profondo» vuol dire questo, e nient'altro. Ma conviene sgombrare
 subito il campo da un equivoco.
@@ -54,11 +54,11 @@ $$
 z = \mathbf{w}^\top \mathbf{x} + b, \qquad a = \sigma(z).
 $$
 
-Qui $\mathbf{w}$ è il vettore dei **pesi** (una "importanza" per ciascun
+Qui $\mathbf{w}$ è il vettore dei pesi (una "importanza" per ciascun
 ingresso), $b$ è il **bias** (che sposta la soglia), $z$ è la
 **pre-attivazione** (la somma pesata), $a$ l’**attivazione** che ne esce e
-$\sigma$ è la **funzione di
-attivazione** che introduce la non linearità: un gradino, una sigmoide o,
+$\sigma$ è la funzione di
+attivazione che introduce la non linearità: un gradino, una sigmoide o,
 oggi, quasi sempre la ReLU $\max(0,z)$. Il cuore del calcolo,
 $\mathbf{w}^\top\mathbf{x}$, è il prodotto scalare della
 {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`.
@@ -123,7 +123,7 @@ b \leftarrow b + \eta\,(y - \hat{y}),
 $$
 
 dove $y\in\{0,1\}$ è l'etichetta corretta, $\hat{y}$ la predizione ed
-$\eta>0$ il **tasso di apprendimento**. C'è poi il *teorema di convergenza*: se
+$\eta>0$ il tasso di apprendimento. C'è poi il *teorema di convergenza*: se
 i dati sono linearmente separabili, questa regola trova in un numero finito di
 passi un iperpiano che li separa. Non è nell'articolo del 1958, che presenta il
 modello: la dimostrazione arriva con *Principles of Neurodynamics* del 1962
@@ -163,7 +163,7 @@ $(1,1)$. Le prime due cifre le mettiamo in orizzontale su un foglio a
 quadretti, le seconde in verticale, e i quattro casi diventano i quattro angoli
 di un quadrato. I due "veri", $(0,1)$ e $(1,0)$, finiscono su angoli opposti; i
 due "falsi", $(0,0)$ e $(1,1)$, sugli altri due, di nuovo opposti fra loro. Ora
-prova a separare i veri dai falsi con **una sola retta**: è impossibile,
+prova a separare i veri dai falsi con una sola retta: è impossibile,
 qualunque riga tu tracci ne lascia sempre uno dalla parte sbagliata.
 
 E perché mai un neurone dovrebbe essere legato a una retta? Perché fa una cosa
@@ -184,9 +184,9 @@ Le quattro coppie sono $(0,0)\to 0$, $(0,1)\to 1$, $(1,0)\to 1$, $(1,1)\to 0$.
 Un percettrone realizza un separatore lineare $\mathbf{w}^\top\mathbf{x}+b=0$,
 cioè un iperpiano; può risolvere solo problemi **linearmente separabili**. Lo
 XOR non lo è: poiché il gradino risponde $1$ quando $z\ge 0$, servirebbero
-$\mathbf{w}$ e $b$ tali che $w_1 x_1 + w_2 x_2 + b$ risulti **non negativo** sui
-due punti con etichetta $1$ e **negativo** sugli altri due, e non esistono. La
-soluzione (impilare più neuroni in **strati**) era nota già
+$\mathbf{w}$ e $b$ tali che $w_1 x_1 + w_2 x_2 + b$ risulti non negativo sui
+due punti con etichetta $1$ e negativo sugli altri due, e non esistono. La
+soluzione (impilare più neuroni in strati) era nota già
 allora, ma mancava un modo efficiente per addestrarla, ed è questa la ragione
 che gli stessi Minsky e Papert indicheranno per la lunga pausa che seguì. Il
 libro contribuì a raffreddare gli entusiasmi e a spostare risorse verso l'AI
@@ -200,9 +200,9 @@ storiografia recente invita a non attribuirlo a un libro solo
 ## La rinascita: la backpropagation (1986)
 
 La chiave era là da vedere: se un neurone solo non basta, se ne mettono di
-più, in **strati**. Resta però una domanda: che risposta dovrebbero dare i
+più, in strati. Resta però una domanda: che risposta dovrebbero dare i
 neuroni in mezzo? Per quelli in fondo lo sappiamo, perché ogni esempio di
-addestramento si porta dietro la risposta giusta (si chiama **etichetta**:
+addestramento si porta dietro la risposta giusta (si chiama etichetta:
 «questa foto è un gatto»). Per quelli in mezzo non l'ha scritta nessuno. La
 risposta è la
 **backpropagation** (retropropagazione dell'errore), resa celebre nel 1986 da
@@ -243,7 +243,7 @@ non si affacciano né sull'ingresso né sull'uscita.
 
 `````{tab} Superiore
 
-Si definisce una funzione di **loss** $\mathcal{L}(\hat{\mathbf{y}},
+Si definisce una funzione di loss $\mathcal{L}(\hat{\mathbf{y}},
 \mathbf{y})$ derivabile e si aggiornano tutti i parametri $\theta$ (pesi e
 bias di ogni strato) scendendo lungo il gradiente:
 
@@ -252,7 +252,7 @@ $$
 $$
 
 Il gradiente rispetto ai pesi degli strati profondi si calcola applicando la
-**regola della catena** strato per strato, propagando l'errore dall'uscita
+regola della catena strato per strato, propagando l'errore dall'uscita
 verso l'ingresso. È efficiente perché riusa i calcoli condivisi: il costo di
 una passata all'indietro è dello stesso ordine di una in avanti.
 
@@ -262,7 +262,7 @@ una passata all'indietro è dello stesso ordine di una in avanti.
 
 Il modello che nasce da questa storia è il **percettrone multistrato** (MLP,
 *multilayer perceptron*). I neuroni si mettono in fila, e ogni fila è uno
-**strato**: l'uscita di uno strato è l'ingresso del prossimo. Il primo strato è
+strato: l'uscita di uno strato è l'ingresso del prossimo. Il primo strato è
 la porta da cui entrano i dati e si chiama **strato di input**, l'ultimo
 produce la risposta e si chiama **strato di output**, e quelli in mezzo sono i
 nascosti di poco fa ({numref}`fig-percettrone-multistrato`). Nel disegno ogni
@@ -281,7 +281,7 @@ a destra.
 
 Quanti neuroni mettere in mezzo, e quanti strati, non lo dice nessuna formula:
 il 3-4-2 della figura è un esempio, e nella pratica quelle misure si scelgono
-provando. Ciò che cambia davvero, aggiungendo strati, è la **forma** del
+provando. Ciò che cambia davvero, aggiungendo strati, è la forma del
 confine con cui la rete separa i casi ({numref}`fig-confini-multistrato`).
 
 ```{figure} ../figures/reti-multistrato.svg
@@ -300,7 +300,7 @@ I quattro punti del disegno sono un caso più facile dello XOR, che una riga
 sola risolve benissimo, e stanno lì per far vedere che cosa si guadagna
 mano a mano che gli strati aumentano. Lo XOR risolto arriva nella prossima
 sezione. Il senso però è lo stesso: il guaio del percettrone era che una riga
-sola non può separare **i quattro casi dello XOR** per quanto bene la si giri,
+sola non può separare i quattro casi dello XOR per quanto bene la si giri,
 non che imparasse male. Serviva un secondo strato, non un
 addestramento migliore.
 
@@ -318,15 +318,15 @@ fanno profonde.
 
 `````{tab} Elementare
 
-Tre strati, tre ruoli. Lo **strato di input** non calcola nulla: è la porta da
-cui entrano i dati (i tre numeri che descrivono l'esempio). Gli **strati
-nascosti** sono la fabbrica: ogni neurone combina ciò che riceve e passa avanti
+Tre strati, tre ruoli. Lo strato di input non calcola nulla: è la porta da
+cui entrano i dati (i tre numeri che descrivono l'esempio). Gli strati
+nascosti sono la fabbrica: ogni neurone combina ciò che riceve e passa avanti
 qualcosa di più elaborato di quello che ha ricevuto. In una rete che guarda
 fotografie, per dire, i neuroni del primo strato reagiscono a cose minime, un
 bordo chiaro-scuro, una macchia di colore; quelli del secondo mettono insieme
 quei bordi e reagiscono a un angolo, a un cerchietto; più avanti si arriva a un
 occhio, a un muso, a una faccia intera. Nessuno glielo ha insegnato: viene
-fuori così dall'addestramento. Lo **strato di output** tira le somme e
+fuori così dall'addestramento. Lo strato di output tira le somme e
 produce la risposta: qui due numeri, per esempio quanto la rete è convinta di
 ciascuna delle due risposte possibili ("gatto" o "cane").
 
@@ -360,7 +360,7 @@ le matrici dei pesi, $\mathbf{b}^{[1]}, \mathbf{b}^{[2]}$ i bias, $\sigma$ la
 non linearità nascosta (tipicamente ReLU) e $\varphi$ l'attivazione d'uscita
 (per esempio softmax). L'indice fra parentesi quadre in alto è il numero dello
 strato, e resta questo per tutto il libro: la parentesi tonda serve per
-distinguere gli **esempi**, come in $\hat{y}^{(i)}$.
+distinguere gli esempi, come in $\hat{y}^{(i)}$.
 
 È l'impilamento di trasformazioni lineari e non lineari
 a dare la potenza: il *teorema di approssimazione universale* garantisce che
@@ -371,7 +371,7 @@ compatto. Dimostrato prima per attivazioni limitate, come la sigmoide
 ogni $\sigma$ non polinomiale, ReLU compresa ({cite}`leshno1993multilayer`).
 È però un teorema di esistenza: dice che i pesi giusti ci sono, non che la
 discesa del gradiente li trovi. E c'è una seconda cosa che non dice, altrettanto
-importante: **quanto ampio**. Nell'enunciato "abbastanza ampio" non è
+importante: quanto ampio. Nell'enunciato "abbastanza ampio" non è
 quantificato, e per una funzione qualsiasi di $d$ variabili il numero di neuroni
 necessari cresce esponenzialmente in $d$: la garanzia c'è, il conto è fuori
 portata già per un'immagine piccola. È il vero motivo per cui il teorema
@@ -403,20 +403,22 @@ attivazioni derivabili come la sigmoide o la tangente iperbolica.
 
 `````
 
-## Il mattone, la piega, la correzione
+## Il mattone, la piega, il bersaglio, la correzione
 
-Da qui in avanti smontiamo l'MLP pezzo per pezzo, in tre sezioni.
+Da qui in avanti smontiamo l'MLP pezzo per pezzo, in quattro sezioni.
 
-La prima torna sul **percettrone**, il neurone singolo, e sulla regola con cui
+La prima torna sul percettrone, il neurone singolo, e sulla regola con cui
 impara: è il mattone, e il suo limite è la ragione di tutto il resto. La
-seconda sono le **funzioni di attivazione**, cioè proprio quel qualcosa che
+seconda sono le funzioni di attivazione, cioè proprio quel qualcosa che
 deve succedere fra uno strato e l'altro perché impilarne dieci non equivalga a
-impilarne uno. La terza è la **backpropagation**, il meccanismo con cui
-l'errore risale la rete e dice a ogni peso di quanto muoversi; e con essa la
-**discesa del gradiente**, il modo in cui quelle correzioni si fanno davvero,
-un passettino alla volta, sempre nella direzione che fa scendere l'errore
-(«gradiente» è il nome che prende, tutto insieme, l'elenco di quelle
-direzioni).
+impilarne uno. La terza è il bersaglio, la loss: il numero che dice quanto
+la rete ha sbagliato, e che va costruito prima di poterlo far scendere, perché
+la sua forma la decide il tipo di risposta che stiamo chiedendo. La quarta è la
+backpropagation, il meccanismo con cui l'errore risale la rete e dice a
+ogni peso di quanto muoversi; e con essa la discesa del gradiente, il modo
+in cui quelle correzioni si fanno davvero, un passettino alla volta, sempre
+nella direzione che fa scendere l'errore («gradiente» è il nome che prende,
+tutto insieme, l'elenco di quelle direzioni).
 
 Restano fuori due scelte pratiche, che riprende il {doc}`capitolo sul deep learning </DeepLearning/overview>`:
 da dove far partire i pesi, e come impedire a una rete di imparare a memoria
@@ -435,12 +437,12 @@ sono percettroni multistrato cresciuti, specializzati e resi profondi.
 - McCulloch e Pitts, nel 1943, scrivono il neurone come una regoletta di
   calcolo; Rosenblatt, nel 1958, lo fa *imparare*: gli mostri esempi e lui
   aggiusta da solo le importanze.
-- Un neurone da solo sa dividere i casi con **una riga dritta**, e sullo
-  **XOR** quella riga non esiste: nel 1969 il libro di Minsky e Papert lo
+- Un neurone da solo sa dividere i casi con una riga dritta, e sullo
+  XOR quella riga non esiste: nel 1969 il libro di Minsky e Papert lo
   ricorda a tutti. Agli anni di disinteresse e di fondi tagliati che seguirono
   quel libro contribuì, ma non li decise da solo. E intanto le reti restavano
   ferme per una ragione tecnica: nessuno sapeva correggere i neuroni in mezzo.
-- La **backpropagation** (1986) risolve la domanda che teneva ferma la
+- La backpropagation (1986) risolve la domanda che teneva ferma la
   faccenda: come si correggono i neuroni in mezzo, quelli a cui nessuno dice
   quale fosse la risposta giusta.
 - Una rete è una pila: i dati entrano, attraversano uno o più strati che li
@@ -460,17 +462,17 @@ sono percettroni multistrato cresciuti, specializzati e resi profondi.
 - McCulloch e Pitts {cite}`mcculloch1943logical` formalizzano il neurone;
   Rosenblatt {cite}`rosenblatt1958perceptron` lo fa *imparare* con il
   percettrone.
-- Un percettrone singolo è un **classificatore lineare** e non risolve lo
-  **XOR**. *Perceptrons* {cite}`minsky1969perceptrons` non dimostra questo (era
+- Un percettrone singolo è un classificatore lineare e non risolve lo
+  XOR. *Perceptrons* {cite}`minsky1969perceptrons` non dimostra questo (era
   noto): dimostra che nel suo modello il costo di certi predicati cresce con la
   taglia dell'ingresso, e sul multistrato avanza una congettura, non un
   teorema.
-- La **backpropagation** (Rumelhart, Hinton, Williams, 1986) rende
+- La backpropagation (Rumelhart, Hinton, Williams, 1986) rende
   addestrabili gli strati nascosti: è la rinascita del campo.
-- Un **MLP** impila input → strati nascosti → output, alternando
+- Un MLP impila input → strati nascosti → output, alternando
   trasformazioni lineari e non linearità. Il teorema di approssimazione
-  universale garantisce l'esistenza dei pesi giusti per ogni attivazione **non
-  polinomiale**, non che la discesa del gradiente li trovi.
+  universale garantisce l'esistenza dei pesi giusti per ogni attivazione non
+  polinomiale, non che la discesa del gradiente li trovi.
 ```
 
 `````

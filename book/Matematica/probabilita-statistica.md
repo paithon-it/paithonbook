@@ -1158,7 +1158,7 @@ stato negato; glielo avrebbero dato con mille euro di reddito in più?»: si
 chiamano **spiegazioni controfattuali**. Il secondo gradino ha il suo capitolo
 nel {doc}`reinforcement learning </ReinforcementLearning/overview>`; le
 spiegazioni controfattuali stanno nel capitolo
-sull'{doc}`interpretabilità </Interpretabilita/overview>`.
+sull’{doc}`interpretabilità </Interpretabilita/overview>`.
 
 ## Dalla probabilità all'apprendimento
 
@@ -1242,7 +1242,10 @@ $y \mid x \sim \mathcal{N}(\hat{y},\sigma^2)$
 con varianza fissa, massimizzare la log-verosimiglianza equivale a
 **minimizzare l'errore quadratico medio**; sotto ipotesi di
 Bernoulli/categoriche equivale a minimizzare la **cross-entropy**. Le loss
-$\mathcal{L}$ sono verosimiglianze travestite, non scelte arbitrarie.
+$\mathcal{L}$ sono verosimiglianze travestite, non scelte arbitrarie: a
+svestirle una per una, e a farne una procedura applicabile a una
+distribuzione qualsiasi, è
+{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`.
 
 `````
 

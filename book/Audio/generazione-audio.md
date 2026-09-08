@@ -40,8 +40,8 @@ decidere dove metterlo guardi indietro, ai puntini che hai già segnato, così l
 curva resta coerente. Riguardarli tutti a uno a uno sarebbe impossibile: dai
 un'occhiata all'ultimo puntino, una a quello di due posti prima, una a quello di
 quattro, e la distanza raddoppia ogni volta, così dopo una dozzina di occhiate
-sei indietro di un decimo di secondo. Avanti non guardi mai, perché avanti il foglio
-è bianco.
+sei indietro di un quarto di secondo. Avanti non guardi mai, perché avanti il
+foglio è bianco.
 
 WaveNet fa esattamente questo, ma i
 puntini da mettere sono sedicimila al secondo: tanti quante sono le
@@ -232,10 +232,10 @@ conseguenze: l'audio diventa qualche centinaio di simboli al secondo invece di
 decine di migliaia di campioni.
 
 Ma il numero che conta davvero è quanti passi in fila servono, perché è la
-fila a costare. Prendiamo il codec di MusicGen, il generatore di musica che
-l'ultima sezione del capitolo racconta per esteso. È lo stesso EnCodec dei
-codec neurali, regolato però per la musica: taglia il suono in 50 frame al
-secondo invece di 75, e per ogni frame produce quattro token invece di otto.
+fila a costare. Prendiamo il codec di MusicGen, il generatore di musica che il
+paragrafo *Testo → musica* racconta per esteso. È lo stesso EnCodec dei codec
+neurali, regolato però per la musica: taglia il suono in 50 frame al secondo
+invece di 75, e per ogni frame produce quattro token invece di otto.
 Quei quattro il modello li tira fuori in un colpo solo, con l'accorgimento che
 sfalsa i flussi come le voci di un canone. Quindi i passi in fila sono una
 cinquantina per ogni secondo di musica, contro i 16.000 di WaveNet: sedicimila

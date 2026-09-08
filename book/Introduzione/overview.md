@@ -113,10 +113,10 @@ materia e nient'altro: se Cartesio avesse ragione, nessuna macchina potrebbe
 mai avere una mente. È l'obiezione con cui l'intelligenza artificiale fa i
 conti da quando esiste.
 
-[^schickard]: Non è la prima di cui si abbia notizia. Nel 1623 Wilhelm
-    Schickard ne descrisse una a Keplero, in due lettere che sono tutto quello
-    che ce ne resta: la macchina andò distrutta in un incendio e la sua
-    esistenza si riscoprì solo tre secoli dopo.
+[^schickard]: Non è la prima di cui si abbia notizia. Wilhelm Schickard ne
+    descrisse una a Keplero nel 1623 e di nuovo l'anno dopo, in due lettere che
+    sono quasi tutto quello che ce ne resta: la macchina andò distrutta in un
+    incendio e la sua esistenza si riscoprì solo tre secoli dopo.
 
 I filosofi hanno esplorato la maggior parte dei concetti riguardanti l'AI, ma
 il passaggio a una scienza vera e propria richiedeva qualcosa che i filosofi
@@ -133,12 +133,13 @@ continuo, ed è la matematica del termostato e del pilota automatico; la
 decide a sua volta.
 
 Guardati da vicino, i tre facevano in fondo la stessa cosa. Ognuno inventava un
-punteggio che dice quanto bene sta andando (quanto costa il giro dei camion, di
-quanto la temperatura si scosta da quella voluta, quanto si guadagna in una
-partita) e poi cercava le mosse che lo fanno salire. Quel punteggio ha un nome,
-ed è uno dei pochi da imparare adesso: si chiama **funzione
-obiettivo**. È a grandi linee anche lo scopo dell'AI, costruire sistemi che
-agiscono «nel modo migliore possibile».
+punteggio che dice come sta andando (quanto costa il giro dei camion, di quanto
+la temperatura si scosta da quella voluta, quanto si guadagna in una partita).
+Il costo e lo scarto si vogliono piccoli, il guadagno grande, ma il mestiere è
+lo stesso, cercare le mosse che spingono il punteggio dalla parte giusta. Quel
+punteggio ha un nome, ed è uno dei pochi da imparare adesso: si chiama
+**funzione obiettivo**. È a grandi linee anche lo scopo dell'AI, costruire
+sistemi che agiscono «nel modo migliore possibile».
 
 Detto questo, l'AI non è una costola della teoria del controllo: nacque anzi
 proprio per superarne i limiti {cite}`russell2020artificial`. Quella matematica
@@ -427,10 +428,10 @@ programmi possono fare {doc}`AI responsabile </AIResponsabile/overview>`.
 ## Il punteggio da far salire
 
 Le regole emergono dai dati, ma qualcosa deve pur dire al programma se sta
-andando meglio o peggio. È di nuovo la funzione obiettivo, il punteggio che la
-ricerca operativa e il termostato usavano per sapere se il piano stava
-funzionando; solo che adesso a cercare le mosse che lo fanno salire non è un
-ingegnere, è l'addestramento.
+andando meglio o peggio. È di nuovo la funzione obiettivo, quella con cui la
+ricerca operativa e il termostato sapevano se il piano stava funzionando; solo
+che questa volta il punteggio si vuole alto, e a cercare le mosse che lo fanno
+salire non è un ingegnere, è l'addestramento.
 
 Quello che l'addestramento tocca, però, è una cosa sola. Dentro un programma
 che impara c'è un elenco di numeri, spesso lunghissimo, e si chiamano
@@ -589,10 +590,9 @@ respiriamo, alla lettera, il rifiuto di qualcun altro.
 I dati stanno alle macchine come l'ossigeno sta a noi. Sono l'avanzo del nostro
 passaggio nel mondo digitale, prodotto senza volerlo e in quantità che nessuno
 ha deciso; e sopra quell'avanzo è cresciuta una cosa che di lì trae il proprio
-respiro. L'algoritmo è il polmone, i dati sono l'aria, e un polmone nel vuoto non è
-niente. E torna la domanda di questa sezione, «perché proprio adesso»:
-come l'ossigeno, i dati sono rimasti lì un pezzo prima che qualcosa imparasse a
-respirarli.
+respiro. L'algoritmo è il polmone, i dati sono l'aria, e un polmone nel vuoto
+non è niente. E torna la domanda «perché proprio adesso»: come l'ossigeno, i
+dati sono rimasti lì un pezzo prima che qualcosa imparasse a respirarli.
 
 C'è però una parte scomoda, e vale quanto l'altra. Quello scarto, prima di
 diventare respiro, fu un veleno, e chi non seppe conviverci non sparì del

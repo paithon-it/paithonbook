@@ -35,13 +35,13 @@ come si continua, che è esattamente l'esercizio da fare per imparare a
 scrivere.
 
 `````{tab} Elementare
-Tre studenti si preparano allo stesso esame in tre modi diversi. **GPT** studia
+Tre studenti si preparano allo stesso esame in tre modi diversi. GPT studia
 coprendo con la mano il resto della pagina. Legge "Il gatto nero salta sul..." e
 prova a indovinare la parola dopo, milioni di volte, e così diventa bravissimo a
-*continuare* un testo, cioè a scrivere. **BERT** studia con gli esercizi a
+*continuare* un testo, cioè a scrivere. BERT studia con gli esercizi a
 buchi. Riceve "Il gatto ___ salta sul muro" e indovina la parola mancante
 guardando sia prima che dopo il buco, e così diventa bravissimo a *capire* le
-frasi, meno a scriverle. **T5** trasforma ogni compito in un tema. Scrive in
+frasi, meno a scriverle. T5 trasforma ogni compito in un tema. Scrive in
 cima al foglio "traduci:" oppure "riassumi:", e la risposta è sempre un testo,
 qualunque sia la domanda. Quando ChatGPT ti risponde, sotto c'è il metodo di
 GPT, coprire e indovinare, con miliardi di esempi alle spalle.
@@ -77,17 +77,17 @@ bozze.
 `````
 
 `````{tab} Superiore
-**GPT** (OpenAI, 2018) è un Transformer *decoder-only* con maschera causale,
+GPT (OpenAI, 2018) è un Transformer *decoder-only* con maschera causale,
 addestrato come modello di linguaggio autoregressivo: massimizza
 $\prod_t p(x_t \mid x_1, \dots, x_{t-1})$, dove $x_t$ è il token in posizione
 $t$ e il prodotto corre su tutta la sequenza. La linea di scala culmina in GPT-3
 {cite}`brown2020language` (175 miliardi di parametri), che mostra capacità
 *few-shot*: adattarsi a un compito descritto nel prompt, senza aggiornare i
-pesi. **BERT** {cite}`devlin2019bert` (Google) è *encoder-only* e
+pesi. BERT {cite}`devlin2019bert` (Google) è *encoder-only* e
 bidirezionale, pre-addestrato con *masked language modeling* (predire il ~15%
 di token mascherati) e *next sentence prediction*; eccelle nei compiti di
 comprensione (classificazione, estrazione di risposte) previo fine-tuning.
-**T5** (Google, 2019) mantiene l'encoder–decoder completo e riformula ogni
+T5 (Google, 2019) mantiene l'encoder–decoder completo e riformula ogni
 task NLP come *text-to-text*, mostrando che un solo formato copre traduzione,
 sintesi, classificazione. La lezione comune: pre-addestramento
 auto-supervisionato su corpora enormi + adattamento leggero (il *transfer
@@ -98,15 +98,15 @@ modeling: mascherando il $15\%$ dei token, il segnale di addestramento arriva
 solo da quel $15\%$. La sostituisce con la ***replaced token detection***. Un
 **generatore** piccolo (un MLM ordinario) rimpiazza i token mascherati con
 campioni plausibili; il **discriminatore**, che è ELECTRA, riceve la sequenza
-così corrotta e classifica **ogni posizione** come originale o sostituita. Il
+così corrotta e classifica ogni posizione come originale o sostituita. Il
 segnale viene da tutta la sequenza, il compito binario è più economico del
 softmax sul vocabolario, e a valle si getta il generatore e si rifinisce il
 discriminatore. Il guadagno che gli autori misurano è tutto sull'asse del
-**calcolo**: alla scala grande ELECTRA arriva alla resa dei modelli mascherati
+calcolo: alla scala grande ELECTRA arriva alla resa dei modelli mascherati
 confrontabili dell'epoca spendendo meno di un quarto del loro addestramento, e
 la versione piccola, quattro giorni su una sola GPU, se la cava meglio di un
 modello autoregressivo che di calcolo ne aveva consumato trenta volte tanto.
-È una vittoria di **obiettivo** e non di architettura: la stessa
+È una vittoria di obiettivo e non di architettura: la stessa
 rete impara di più dalle stesse frasi perché le viene chiesto qualcosa su ogni
 posizione invece che su una su sette.
 
@@ -165,15 +165,16 @@ tessere e le tratta come parole. Da lì in poi è lo stesso encoder del testo.
 ```
 
 Il passaggio mostrato in {numref}`fig-vit` è meno innocente di quanto sembri.
-Le reti per le immagini del {doc}`capitolo sul deep learning </DeepLearning/overview>` (le *convoluzioni*, i
-filtri che guardano un pezzetto di foto alla volta) hanno una regola scritta
-dentro: i puntini vicini fra loro sono imparentati, e vanno guardati insieme.
-Tagliare la foto in tessere e metterle in fila butta via quella regola, perché
-per l'attenzione due tessere lontanissime e due tessere adiacenti sono
-esattamente sullo stesso piano. La parentela fra vicini, allora, il Vision
-Transformer deve **impararla**, e imparare qualcosa costa esempi: è la ragione
-per cui regge il confronto solo se gli si dà da studiare molta più roba.
-Quando i dati sono pochi, la regola scritta a mano vince.
+Le reti per le immagini del {doc}`capitolo sul deep learning
+</DeepLearning/overview>` (le *convoluzioni*, i filtri che guardano un pezzetto
+di foto alla volta) hanno una regola scritta dentro: i puntini vicini fra loro
+sono imparentati, e vanno guardati insieme. Tagliare la foto in tessere e
+metterle in fila butta via quella regola, perché per l'attenzione due tessere
+lontanissime e due tessere adiacenti sono esattamente sullo stesso piano. La
+parentela fra vicini, allora, il Vision Transformer deve impararla, e imparare
+qualcosa costa esempi: è la ragione per cui regge il confronto solo se gli si
+dà da studiare molta più roba. Quando i dati sono pochi, la regola scritta a
+mano vince.
 
 `````{tab} Elementare
 E le immagini? Il trucco è di una semplicità disarmante: si taglia la foto in
@@ -199,7 +200,7 @@ un modulo e gli chiedi di spiegartelo.
 `````
 
 `````{tab} Superiore
-Il **Vision Transformer** (ViT {cite}`dosovitskiy2021image`) suddivide
+Il Vision Transformer (ViT {cite}`dosovitskiy2021image`) suddivide
 l'immagine in patch (tipicamente $16 \times 16$ pixel), le proietta
 linearmente in embedding e le tratta come token, con un positional encoding
 per la posizione spaziale. La cosa da portarsi via è la condizione: senza il
@@ -212,7 +213,7 @@ e testi tramite addestramento contrastivo su coppie immagine–didascalia; i
 modelli generativi di immagini come DALL·E e Stable Diffusion usano componenti
 Transformer per condizionare la generazione sul testo; e modelli come GPT-4
 (2023) accettano input misti testo+immagine. Il filo conduttore tecnico:
-qualunque dato riducibile a una **sequenza di token** (parole, patch,
+qualunque dato riducibile a una sequenza di token (parole, patch,
 frammenti audio) è terreno di gioco per l'attenzione.
 `````
 
@@ -242,8 +243,8 @@ era un problema aperto da mezzo secolo. Nel novembre 2020, alla CASP14, la gara
 biennale in cui i programmi che ci provano si sfidano su proteine di cui la
 risposta è nota solo agli organizzatori, **AlphaFold 2**
 {cite}`jumper2021highly` ha predetto quelle forme con un'accuratezza
-confrontabile con quella delle misure fatte in laboratorio **nella maggior
-parte dei casi**, e per le proteine formate da una catena sola.
+confrontabile con quella delle misure fatte in laboratorio nella maggior
+parte dei casi, e per le proteine formate da una catena sola.
 
 Le due clausole non sono prudenza di maniera. Restano fuori le proteine fatte di
 più catene incastrate, i tratti che una forma stabile non ce l'hanno affatto,
@@ -331,8 +332,8 @@ Le due si aggiornano a vicenda a ogni blocco: quel che si scopre nell'MSA
 raffina le coppie, e viceversa. Sulla rappresentazione di coppia agisce la
 **triangle attention**, che aggiorna $(i,j)$ guardando i cammini attraverso un
 terzo residuo $k$. Serve a rendere esprimibile un vincolo che l'attenzione
-ordinaria non vede: le distanze devono rispettare la **disuguaglianza
-triangolare**, perché sono distanze in uno spazio reale, non affinità
+ordinaria non vede: le distanze devono rispettare la disuguaglianza
+triangolare, perché sono distanze in uno spazio reale, non affinità
 arbitrarie. L'architettura non impone il vincolo: lo rende rappresentabile,
 facendo dipendere ogni arco dagli altri due lati del triangolo. Che venga poi
 rispettato è cosa che la rete impara dai dati, non una garanzia strutturale.
@@ -342,7 +343,7 @@ residuo come un sistema di riferimento rigido, e il tutto viene ripassato più
 volte (*recycling*): l'uscita rientra come ingresso e la struttura si affina.
 
 Due conseguenze da tenere a mente. La prima: il modello stima anche la
-**propria confidenza** (pLDDT), e le regioni a bassa confidenza corrispondono
+propria confidenza (pLDDT), e le regioni a bassa confidenza corrispondono
 spesso a parti realmente disordinate della proteina; un raro caso in cui
 l'incertezza dichiarata ha un significato fisico. La seconda: dipendendo
 dall'MSA, il metodo è più debole dove la storia evolutiva è povera (proteine
@@ -364,17 +365,17 @@ questi modelli reggono testi lunghi senza dimenticare l'inizio, si addestrano
 spartendo il lavoro fra migliaia di processori, e una sola architettura basta
 per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
 
-- **Risorse**: addestrare un grande modello richiede centinaia di schede
+- Risorse: addestrare un grande modello richiede centinaia di schede
   grafiche che lavorano insieme per mesi, con i consumi elettrici che ne
   seguono; anche solo *eseguirlo* può richiedere macchine fuori dalla portata di
   un laboratorio piccolo.
-- **Dati**: i *corpora* (cioè le grandi raccolte di testi su cui i modelli
+- Dati: i *corpora* (cioè le grandi raccolte di testi su cui i modelli
   studiano) da miliardi di parole contengono errori, stereotipi e contenuti
   tossici, e i modelli li assorbono. Se in quei testi le infermiere sono sempre
   donne e gli ingegneri sempre uomini, il modello impara quella regola come
   impara la grammatica: sono i **bias**, cioè le distorsioni sistematiche dei
   dati, che diventano distorsioni del modello.
-- **Affidabilità**: un modello **autoregressivo** (che scrive una parola alla
+- Affidabilità: un modello autoregressivo (che scrive una parola alla
   volta, ogni volta scegliendo la continuazione più probabile di quello che ha
   già scritto) produce la continuazione più plausibile, non necessariamente
   quella *vera*: le "allucinazioni" (risposte fluenti e sbagliate) sono un
@@ -383,15 +384,15 @@ per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Tre modi di studiare, tre mestieri. **GPT** copre la pagina con la mano e
-  indovina la parola dopo: diventa bravo a scrivere. **BERT** fa gli esercizi a
-  buchi guardando prima e dopo: diventa bravo a capire. **T5** riscrive ogni
+- Tre modi di studiare, tre mestieri. GPT copre la pagina con la mano e
+  indovina la parola dopo: diventa bravo a scrivere. BERT fa gli esercizi a
+  buchi guardando prima e dopo: diventa bravo a capire. T5 riscrive ogni
   compito come un tema, con il nome del compito davanti.
 - La ricetta è sempre la stessa: prima si studia tantissimo per conto proprio,
   su montagne di testo e senza nessuno che corregga; poi si aggiusta il tiro sul
   compito che serve, con pochi esempi o solo con le istruzioni scritte davanti
   (il *prompt*).
-- **ELECTRA** cambia l'esercizio invece dell'architettura: fa il correttore di
+- ELECTRA cambia l'esercizio invece dell'architettura: fa il correttore di
   bozze su ogni parola invece di indovinarne una su sette, e a parità di
   fatica impara molto di più.
 - Le immagini entrano nello stesso meccanismo tagliandole in tessere e
@@ -408,18 +409,18 @@ per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- **GPT** = decoder-only, indovina la parola successiva, forte nel generare;
-  **BERT** = encoder-only bidirezionale, forte nel capire; **T5** = tutto
+- GPT = decoder-only, indovina la parola successiva, forte nel generare;
+  BERT = encoder-only bidirezionale, forte nel capire; T5 = tutto
   come text-to-text.
-- La ricetta comune è **pre-addestramento** auto-supervisionato su corpora
+- La ricetta comune è pre-addestramento auto-supervisionato su corpora
   enormi + adattamento (fine-tuning o prompt).
-- **ELECTRA** mostra che l'obiettivo conta quanto l'architettura: sostituire
-  qualche token e far dire alla rete, **per ogni posizione**, se è originale o
+- ELECTRA mostra che l'obiettivo conta quanto l'architettura: sostituire
+  qualche token e far dire alla rete, per ogni posizione, se è originale o
   intrusa, dà segnale su tutta la sequenza invece che sul solo $15\%$
   mascherato, e a parità di calcolo rende molto di più.
-- **ViT** tratta l'immagine come una frase di tessere $16\times16$, e paga in
-  **dati** la località che le CNN hanno gratis nell'architettura; i modelli
-  **multimodali** (CLIP, GPT-4) allineano testo e immagini.
+- ViT tratta l'immagine come una frase di tessere $16\times16$, e paga in
+  dati la località che le CNN hanno gratis nell'architettura; i modelli
+  multimodali (CLIP, GPT-4) allineano testo e immagini.
 - Costi computazionali, bias nei dati e allucinazioni sono limiti
   strutturali, da mettere in conto quanto i vantaggi.
 ```

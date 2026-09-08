@@ -1,0 +1,552 @@
+{
+ "_": "Le due curve misurate del grokking, disegnate da animazioni/svg/grokking-tarda.py. Non si scrive a mano: la riscrive `python3 animazioni/svg/genera.py --misura grokking-tarda`, che prima di scrivere collauda che il fenomeno ci sia.",
+ "data": "2026-09-07",
+ "configurazione": {
+  "compito": "addizione modulo 97, tutte le 9409 coppie",
+  "p": 97,
+  "frazione": 0.3,
+  "larghezza": 128,
+  "passi": 26000,
+  "campione": 250,
+  "lr": 0.001,
+  "weight_decay": 1.0,
+  "betas": [
+   0.9,
+   0.98
+  ],
+  "seme": 0,
+  "seme_split": 0,
+  "thread": 1
+ },
+ "versioni": {
+  "python": "3.12.3",
+  "torch": "2.13.0+cpu"
+ },
+ "campioni": [
+  {
+   "passo": 0,
+   "viste": 0.744153,
+   "nuove": 1.093062
+  },
+  {
+   "passo": 250,
+   "viste": 100.0,
+   "nuove": 0.015181
+  },
+  {
+   "passo": 500,
+   "viste": 100.0,
+   "nuove": 0.0
+  },
+  {
+   "passo": 750,
+   "viste": 100.0,
+   "nuove": 0.015181
+  },
+  {
+   "passo": 1000,
+   "viste": 100.0,
+   "nuove": 0.015181
+  },
+  {
+   "passo": 1250,
+   "viste": 100.0,
+   "nuove": 0.030363
+  },
+  {
+   "passo": 1500,
+   "viste": 100.0,
+   "nuove": 0.060726
+  },
+  {
+   "passo": 1750,
+   "viste": 100.0,
+   "nuove": 0.045544
+  },
+  {
+   "passo": 2000,
+   "viste": 100.0,
+   "nuove": 0.045544
+  },
+  {
+   "passo": 2250,
+   "viste": 100.0,
+   "nuove": 0.030363
+  },
+  {
+   "passo": 2500,
+   "viste": 100.0,
+   "nuove": 0.030363
+  },
+  {
+   "passo": 2750,
+   "viste": 100.0,
+   "nuove": 0.045544
+  },
+  {
+   "passo": 3000,
+   "viste": 100.0,
+   "nuove": 0.045544
+  },
+  {
+   "passo": 3250,
+   "viste": 100.0,
+   "nuove": 0.045544
+  },
+  {
+   "passo": 3500,
+   "viste": 100.0,
+   "nuove": 0.045544
+  },
+  {
+   "passo": 3750,
+   "viste": 100.0,
+   "nuove": 0.045544
+  },
+  {
+   "passo": 4000,
+   "viste": 100.0,
+   "nuove": 0.045544
+  },
+  {
+   "passo": 4250,
+   "viste": 100.0,
+   "nuove": 0.045544
+  },
+  {
+   "passo": 4500,
+   "viste": 100.0,
+   "nuove": 0.060726
+  },
+  {
+   "passo": 4750,
+   "viste": 100.0,
+   "nuove": 0.060726
+  },
+  {
+   "passo": 5000,
+   "viste": 100.0,
+   "nuove": 0.060726
+  },
+  {
+   "passo": 5250,
+   "viste": 100.0,
+   "nuove": 0.060726
+  },
+  {
+   "passo": 5500,
+   "viste": 100.0,
+   "nuove": 0.060726
+  },
+  {
+   "passo": 5750,
+   "viste": 100.0,
+   "nuove": 0.060726
+  },
+  {
+   "passo": 6000,
+   "viste": 100.0,
+   "nuove": 0.075907
+  },
+  {
+   "passo": 6250,
+   "viste": 100.0,
+   "nuove": 0.091089
+  },
+  {
+   "passo": 6500,
+   "viste": 100.0,
+   "nuove": 0.10627
+  },
+  {
+   "passo": 6750,
+   "viste": 100.0,
+   "nuove": 0.121451
+  },
+  {
+   "passo": 7000,
+   "viste": 100.0,
+   "nuove": 0.121451
+  },
+  {
+   "passo": 7250,
+   "viste": 100.0,
+   "nuove": 0.10627
+  },
+  {
+   "passo": 7500,
+   "viste": 100.0,
+   "nuove": 0.136633
+  },
+  {
+   "passo": 7750,
+   "viste": 100.0,
+   "nuove": 0.151814
+  },
+  {
+   "passo": 8000,
+   "viste": 100.0,
+   "nuove": 0.151814
+  },
+  {
+   "passo": 8250,
+   "viste": 100.0,
+   "nuove": 0.166996
+  },
+  {
+   "passo": 8500,
+   "viste": 100.0,
+   "nuove": 0.166996
+  },
+  {
+   "passo": 8750,
+   "viste": 100.0,
+   "nuove": 0.197358
+  },
+  {
+   "passo": 9000,
+   "viste": 100.0,
+   "nuove": 0.21254
+  },
+  {
+   "passo": 9250,
+   "viste": 100.0,
+   "nuove": 0.21254
+  },
+  {
+   "passo": 9500,
+   "viste": 100.0,
+   "nuove": 0.273266
+  },
+  {
+   "passo": 9750,
+   "viste": 100.0,
+   "nuove": 0.258084
+  },
+  {
+   "passo": 10000,
+   "viste": 100.0,
+   "nuove": 0.288447
+  },
+  {
+   "passo": 10250,
+   "viste": 100.0,
+   "nuove": 0.349173
+  },
+  {
+   "passo": 10500,
+   "viste": 100.0,
+   "nuove": 0.409898
+  },
+  {
+   "passo": 10750,
+   "viste": 100.0,
+   "nuove": 0.576894
+  },
+  {
+   "passo": 11000,
+   "viste": 100.0,
+   "nuove": 0.592075
+  },
+  {
+   "passo": 11250,
+   "viste": 100.0,
+   "nuove": 0.667982
+  },
+  {
+   "passo": 11500,
+   "viste": 100.0,
+   "nuove": 0.759071
+  },
+  {
+   "passo": 11750,
+   "viste": 100.0,
+   "nuove": 0.865341
+  },
+  {
+   "passo": 12000,
+   "viste": 100.0,
+   "nuove": 1.108244
+  },
+  {
+   "passo": 12250,
+   "viste": 100.0,
+   "nuove": 1.229695
+  },
+  {
+   "passo": 12500,
+   "viste": 100.0,
+   "nuove": 1.351146
+  },
+  {
+   "passo": 12750,
+   "viste": 100.0,
+   "nuove": 1.594049
+  },
+  {
+   "passo": 13000,
+   "viste": 100.0,
+   "nuove": 1.852133
+  },
+  {
+   "passo": 13250,
+   "viste": 100.0,
+   "nuove": 2.201306
+  },
+  {
+   "passo": 13500,
+   "viste": 100.0,
+   "nuove": 2.641567
+  },
+  {
+   "passo": 13750,
+   "viste": 100.0,
+   "nuove": 2.914832
+  },
+  {
+   "passo": 14000,
+   "viste": 100.0,
+   "nuove": 3.370275
+  },
+  {
+   "passo": 14250,
+   "viste": 100.0,
+   "nuove": 3.916806
+  },
+  {
+   "passo": 14500,
+   "viste": 100.0,
+   "nuove": 4.38743
+  },
+  {
+   "passo": 14750,
+   "viste": 100.0,
+   "nuove": 4.903598
+  },
+  {
+   "passo": 15000,
+   "viste": 100.0,
+   "nuove": 5.343859
+  },
+  {
+   "passo": 15250,
+   "viste": 100.0,
+   "nuove": 5.99666
+  },
+  {
+   "passo": 15500,
+   "viste": 100.0,
+   "nuove": 6.740549
+  },
+  {
+   "passo": 15750,
+   "viste": 100.0,
+   "nuove": 7.514802
+  },
+  {
+   "passo": 16000,
+   "viste": 100.0,
+   "nuove": 8.364961
+  },
+  {
+   "passo": 16250,
+   "viste": 100.0,
+   "nuove": 9.169576
+  },
+  {
+   "passo": 16500,
+   "viste": 100.0,
+   "nuove": 10.050099
+  },
+  {
+   "passo": 16750,
+   "viste": 100.0,
+   "nuove": 11.24943
+  },
+  {
+   "passo": 17000,
+   "viste": 100.0,
+   "nuove": 12.646121
+  },
+  {
+   "passo": 17250,
+   "viste": 100.0,
+   "nuove": 14.118719
+  },
+  {
+   "passo": 17500,
+   "viste": 100.0,
+   "nuove": 15.439501
+  },
+  {
+   "passo": 17750,
+   "viste": 100.0,
+   "nuove": 16.957644
+  },
+  {
+   "passo": 18000,
+   "viste": 100.0,
+   "nuove": 19.128586
+  },
+  {
+   "passo": 18250,
+   "viste": 100.0,
+   "nuove": 21.648702
+  },
+  {
+   "passo": 18500,
+   "viste": 100.0,
+   "nuove": 24.715349
+  },
+  {
+   "passo": 18750,
+   "viste": 100.0,
+   "nuove": 28.207076
+  },
+  {
+   "passo": 19000,
+   "viste": 100.0,
+   "nuove": 32.275695
+  },
+  {
+   "passo": 19250,
+   "viste": 100.0,
+   "nuove": 37.103385
+  },
+  {
+   "passo": 19500,
+   "viste": 100.0,
+   "nuove": 42.234704
+  },
+  {
+   "passo": 19750,
+   "viste": 100.0,
+   "nuove": 47.123122
+  },
+  {
+   "passo": 20000,
+   "viste": 100.0,
+   "nuove": 52.345526
+  },
+  {
+   "passo": 20250,
+   "viste": 100.0,
+   "nuove": 58.736908
+  },
+  {
+   "passo": 20500,
+   "viste": 100.0,
+   "nuove": 64.839834
+  },
+  {
+   "passo": 20750,
+   "viste": 100.0,
+   "nuove": 70.274782
+  },
+  {
+   "passo": 21000,
+   "viste": 100.0,
+   "nuove": 75.770456
+  },
+  {
+   "passo": 21250,
+   "viste": 100.0,
+   "nuove": 80.582964
+  },
+  {
+   "passo": 21500,
+   "viste": 100.0,
+   "nuove": 84.454226
+  },
+  {
+   "passo": 21750,
+   "viste": 100.0,
+   "nuove": 88.037044
+  },
+  {
+   "passo": 22000,
+   "viste": 100.0,
+   "nuove": 90.648246
+  },
+  {
+   "passo": 22250,
+   "viste": 100.0,
+   "nuove": 92.849553
+  },
+  {
+   "passo": 22500,
+   "viste": 100.0,
+   "nuove": 94.823134
+  },
+  {
+   "passo": 22750,
+   "viste": 100.0,
+   "nuove": 96.128738
+  },
+  {
+   "passo": 23000,
+   "viste": 100.0,
+   "nuove": 97.176254
+  },
+  {
+   "passo": 23250,
+   "viste": 100.0,
+   "nuove": 98.0416
+  },
+  {
+   "passo": 23500,
+   "viste": 100.0,
+   "nuove": 98.603308
+  },
+  {
+   "passo": 23750,
+   "viste": 100.0,
+   "nuove": 99.013209
+  },
+  {
+   "passo": 24000,
+   "viste": 100.0,
+   "nuove": 99.332017
+  },
+  {
+   "passo": 24250,
+   "viste": 100.0,
+   "nuove": 99.574918
+  },
+  {
+   "passo": 24500,
+   "viste": 100.0,
+   "nuove": 99.757099
+  },
+  {
+   "passo": 24750,
+   "viste": 100.0,
+   "nuove": 99.863368
+  },
+  {
+   "passo": 25000,
+   "viste": 100.0,
+   "nuove": 99.924093
+  },
+  {
+   "passo": 25250,
+   "viste": 100.0,
+   "nuove": 99.984819
+  },
+  {
+   "passo": 25500,
+   "viste": 100.0,
+   "nuove": 100.0
+  },
+  {
+   "passo": 25750,
+   "viste": 100.0,
+   "nuove": 100.0
+  },
+  {
+   "passo": 26000,
+   "viste": 100.0,
+   "nuove": 100.0
+  }
+ ]
+}

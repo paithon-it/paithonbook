@@ -8,10 +8,10 @@ appresa, si dà il ritocco finale. Tanto basta a classificare i nodi di un grafo
 meglio di quanto facessero i cammini casuali. Ma quella eleganza si paga con
 due limiti che, su un grafo vero, diventano subito ingombranti.
 
-Il primo riguarda i nodi nuovi. La GCN, così come Kipf e Welling la addestrano,
-si addestra su tutto il grafo in una volta sola, quel grafo lì e nessun altro,
-e non dice cosa fare con chi arriva dopo: è la situazione che la sezione «Il
-mondo come grafo» ha chiamato transduttiva. Pensa a un utente che si
+Il primo riguarda i nodi nuovi. La GCN, nel modo in cui Kipf e Welling la
+addestrano, vede tutto il grafo in una volta sola, quel grafo lì e nessun
+altro, e non dice cosa fare con chi arriva dopo: è la situazione che la sezione
+«Il mondo come grafo» ha chiamato transduttiva. Pensa a un utente che si
 iscrive oggi a un social: quando la rete è stata addestrata lui non c'era, e
 per lui non esiste una risposta già pronta.
 
@@ -468,15 +468,16 @@ prevede i tempi propagando informazione lungo il percorso, migliorando
 l'accuratezza degli arrivi stimati in molte città {cite}`derrowpinion2021eta`.
 
 **Scienza e fisica.** Le GNN sono diventate *simulatori*: rappresentando un
-fluido o un materiale come un grafo di particelle interagenti, reti come quelle di Sanchez-Gonzalez e colleghi
-{cite}`sanchezgonzalez2020learning` imparano a prevederne l'evoluzione nel
-tempo. La stessa impalcatura muove GraphCast {cite}`lam2023graphcast`, che modella il
-pianeta come un grafo di punti sulla superficie terrestre per la previsione
-meteorologica, e diversi analizzatori di collisioni nella fisica delle particelle.
+fluido o un materiale come un grafo di particelle interagenti, reti come quelle
+di Sanchez-Gonzalez e colleghi {cite}`sanchezgonzalez2020learning` imparano a
+prevederne l'evoluzione nel tempo. La stessa impalcatura muove GraphCast
+{cite}`lam2023graphcast`, che modella il pianeta come un grafo di punti sulla
+superficie terrestre per la previsione meteorologica, e diversi analizzatori di
+collisioni nella fisica delle particelle.
 
 ## I limiti, senza nasconderli
 
-Le GNN non sono una bacchetta magica, e la letteratura è onesta sui loro punti
+Le GNN non sono una bacchetta magica; la letteratura è onesta sui loro punti
 deboli, e conoscerli prima di innamorarsene fa risparmiare tempo. Una rassegna
 d'insieme è quella di Wu e colleghi {cite}`wu2021comprehensive`.
 
@@ -531,19 +532,23 @@ amici hanno gusti simili). Dove vale il contrario, e chi è connesso è
   Knowledge Network** {cite}`xu2018jumping` parte da un'osservazione diversa,
   cioè che nodi diversi vogliono campi recettivi diversi (un hub satura in due
   salti, un nodo periferico no), e quindi invece di prendere l'uscita
-  dell'ultimo strato le concatena tutte, lasciando che sia il modello a
+  dell'ultimo strato le tiene tutte e le combina in un ultimo passo, per
+  concatenazione, per massimo elemento per elemento o con un'attenzione fra
+  gli strati. La concatenazione, con pesi uguali per tutti i nodi, sceglie una
+  profondità sola per l'intero grafo; nelle altre due forme è il modello a
   scegliere la profondità nodo per nodo. **DeepGCN** {cite}`li2019deepgcns`
   importa di peso residui e connessioni dense da ResNet e DenseNet contro i
   gradienti che svaniscono, e aggiunge un vicinato dilatato (si prendono i
   vicini saltandone alcuni) contro l'oversmoothing: con questa ricetta
   arrivano a 56 strati su nuvole di punti. Restano eccezioni, però: il vincolo
   pratico alla profondità è ancora la regola.
-- **Over-squashing.** Alon e Yahav {cite}`alon2021bottleneck` osservano che il campo recettivo di un
-  nodo cresce esponenzialmente con il numero di strati, mentre il vettore che lo
-  riassume ha dimensione fissa: l'informazione proveniente da nodi distanti viene
-  «schiacciata» attraverso colli di bottiglia topologici, penalizzando i compiti a
-  lungo raggio. Profondità e portata sono così in tensione: servirebbero più
-  strati per raggiungere nodi lontani, ma più strati innescano l'oversmoothing.
+- **Over-squashing.** Alon e Yahav {cite}`alon2021bottleneck` osservano che il
+  campo recettivo di un nodo cresce esponenzialmente con il numero di strati,
+  mentre il vettore che lo riassume ha dimensione fissa: l'informazione
+  proveniente da nodi distanti viene «schiacciata» attraverso colli di
+  bottiglia topologici, penalizzando i compiti a lungo raggio. Profondità e
+  portata sono così in tensione: servirebbero più strati per raggiungere nodi
+  lontani, ma più strati innescano l'oversmoothing.
 - **Scalabilità.** Il campionamento di GraphSAGE e PinSage attenua il costo, ma
   addestrare su grafi da miliardi di nodi resta un problema aperto di sistemi,
   non solo di modelli.
@@ -912,18 +917,17 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
   (fine dell'over-squashing, e non dell'oversmoothing, che sul grafo completo
   peggiora perché lì il secondo autovalore di $\hat{\mathbf{A}}$ vale zero,
   contro lo $0{,}729$ della catena a quattro nodi), al costo di $O(N^2)$ e
-  della perdita
-  della topologia, perché l'attenzione piena non prende $\mathbf{A}$ in ingresso. La
-  struttura si reinietta come codifica posizionale con i primi autovettori
-  del laplaciano, sommati alle feature dopo una proiezione lineare e solo allo
-  strato d'ingresso, e definiti a meno del segno, che in addestramento si
-  campiona; oppure come bias di attenzione dipendente dalla distanza sul
-  grafo (Graphormer). Sulla catena quegli autovettori sono sinusoidi, e in
-  questo senso la costruzione generalizza la codifica sinusoidale a un
-  grafo qualunque; non la contiene però come caso particolare, perché le
-  frequenze sono $\pi k/N$ e non $10000^{-2i/d}$. Le impostazioni attuali
-  tengono i due canali insieme, message passing per il locale e attenzione per
-  il lontano.
+  della perdita della topologia, perché l'attenzione piena non prende
+  $\mathbf{A}$ in ingresso. La struttura si reinietta come codifica
+  posizionale con i primi autovettori del laplaciano, sommati alle feature
+  dopo una proiezione lineare e solo allo strato d'ingresso, e definiti a meno
+  del segno, che in addestramento si campiona; oppure come bias di attenzione
+  dipendente dalla distanza sul grafo (Graphormer). Sulla catena quegli
+  autovettori sono sinusoidi, e in questo senso la costruzione generalizza la
+  codifica sinusoidale a un grafo qualunque; non la contiene però come caso
+  particolare, perché le frequenze sono $\pi k/N$ e non $10000^{-2i/d}$. Le
+  impostazioni attuali tengono i due canali insieme, message passing per il
+  locale e attenzione per il lontano.
 ```
 
 `````

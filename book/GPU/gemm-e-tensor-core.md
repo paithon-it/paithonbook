@@ -146,14 +146,14 @@ cucinare; contando quello che il cassetto serve da sé, il trasporto scende
 sotto un decimo della cottura. Stesso lavoro, stessi piatti: nel primo conto
 comanda la dispensa, nel secondo i cuochi.
 
-Dentro quel viaggio i programmi veri ne infilano un secondo. Ogni cuoco prende
-dal ripiano sedici numeri, otto di una tabella e otto dell'altra, e da quegli
-otto per otto ricava sessantaquattro prodotti senza tornare al ripiano nemmeno
-una volta. Quei sedici numeri non
-risparmiano un solo viaggio in dispensa, che quelli li decide la cassetta
-grande. Servono contro una coda diversa: al ripiano ci vanno tutte le mani
-della squadra, e se ognuna ci torna per ogni singolo prodotto si fa la fila.
-Stessa mossa, scala diversa.
+Sotto quella mossa i programmi veri ne infilano una seconda, più in piccolo.
+Ogni cuoco prende dal ripiano sedici numeri, otto di una tabella e otto
+dell'altra, e da quegli otto per otto ricava sessantaquattro prodotti senza
+tornare al ripiano nemmeno una volta. Quei sedici numeri non risparmiano un
+solo viaggio in dispensa, che quelli li decide la cassetta grande. Servono
+contro una coda diversa: al ripiano ci vanno tutte le mani della squadra, e se
+ognuna ci torna per ogni singolo prodotto si fa la fila. Stessa mossa, scala
+diversa.
 `````
 
 `````{tab} Superiore
@@ -224,10 +224,10 @@ capiente che ci sia.
 Il fatto generale, più della gerarchia in sé, è questo: c'è un roofline per
 ogni livello della piramide, ciascuno con la sua banda e il suo ginocchio, e
 ogni livello di tiling esiste per superare il proprio. Quanto al tetto, l’$n/6$
-del roofline è un *ideale* che richiederebbe le tre matrici intere on-chip, e
-per fortuna non serve raggiungerlo: l'intensità realmente raggiungibile non
-cresce con $n$, ma con la radice della memoria veloce disponibile (è il
-risultato classico di Hong e Kung sulla complessità di I/O
+del roofline è un *ideale* che richiederebbe $\mathbf{A}$ e $\mathbf{B}$ intere
+on-chip, e per fortuna non serve raggiungerlo: l'intensità realmente
+raggiungibile non cresce con $n$, ma con la radice della memoria veloce
+disponibile (è il risultato classico di Hong e Kung sulla complessità di I/O
 {cite}`hongkung1981io`, che dà $\Omega(n^3/\sqrt{M_\text{chip}})$ trasferimenti
 e quindi $I = O(\sqrt{M_\text{chip}})$, dove $M_\text{chip}$ è la memoria
 veloce disponibile e non va confusa con le $M$ righe di $\mathbf{A}$).

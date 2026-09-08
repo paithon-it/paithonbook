@@ -1,7 +1,7 @@
 # Il conto in energia
 
 Di un modello si dichiara quasi tutto: quanti parametri ha, quanti conti costa
-una passata (in gergo quanti **FLOP**, cioè quante singole operazioni
+una passata (in gergo quanti FLOP, cioè quante singole operazioni
 aritmetiche, una moltiplicazione o una somma), quanto è accurato, quanti
 millisecondi impiega a rispondere. Una cosa non si dichiara quasi mai, ed è
 quanta elettricità consuma.
@@ -9,7 +9,7 @@ quanta elettricità consuma.
 La domanda è entrata nel dibattito tecnico nel 2019, quando Strubell, Ganesh e
 McCallum hanno provato a mettere un numero sull'addestramento di un modello di
 linguaggio {cite}`strubell2019energy`. I loro numeri sono stati poi discussi e
-corretti, e **le cifre di questa materia invecchiano in fretta**, perché
+corretti, e le cifre di questa materia invecchiano in fretta, perché
 dipendono dall'hardware di quell'anno, dal centro dati e perfino dall'ora del
 giorno. Quello che non invecchia è la catena che porta da
 un'operazione aritmetica a un grammo di anidride carbonica, e sono i suoi
@@ -31,8 +31,8 @@ corrente. Il contatore, quasi sempre, dice un'altra cosa.
 
 I due numeri li ha messi in fila un ingegnere di Stanford, Mark Horowitz, e
 sono facili da tenere a mente. Fare un conto dentro il processore (una
-moltiplicazione e la somma che la segue) costa **poco meno di cinque**. Andare
-a prendere un numero nella memoria che sta fuori dal chip costa **circa 640**,
+moltiplicazione e la somma che la segue) costa poco meno di cinque. Andare
+a prendere un numero nella memoria che sta fuori dal chip costa circa 640,
 più di cento volte tanto. L'unità non conta (è il picojoule, troppo piccolo
 perché immaginarlo abbia senso): conta il rapporto fra i due.
 
@@ -46,7 +46,7 @@ tavolo di lavoro e la memoria di fuori l'armadio in fondo alla stanza, come nel
 capitolo sulle GPU: chi attraversa la stanza per copiare un numero solo passa
 la giornata in piedi, chi torna con un foglio da cui ricava trecento conti non
 si accorge nemmeno del tragitto. Dividendo i due prezzi si trova la soglia, ed
-è attorno ai **centoquaranta conti** per ogni numero preso da fuori: sotto, la
+è attorno ai centoquaranta conti per ogni numero preso da fuori: sotto, la
 corrente se ne va nei viaggi; sopra, se ne va nei conti.
 
 Generare una parola alla volta sta molto sotto la soglia: il calcolatore
@@ -67,31 +67,34 @@ in un nodo tecnologico a 45 nm, compilata da Horowitz e resa nota dalla sua
 relazione sul problema energetico del calcolo {cite}`horowitz2014computing`.
 Quella tabella circola in più versioni, e la più citata non è quella della
 relazione ma la sua ripresa nella letteratura successiva sulle reti compresse:
-i singoli valori differiscono un poco (la moltiplicazione in virgola mobile a
-32 bit è data ora $3{,}7$ ora $4$ picojoule, la lettura dalla DRAM ora $640$
-picojoule ora qualche nanojoule),
-mentre i **rapporti** non differiscono affatto, ed è quello che conta qui. Chi
-rifà i conti con l'altra versione trova il pareggio a sessantacinque FLOP per
-byte invece che a settanta: la morale non cambia, ma il numero sì, e conviene
-sapere da dove viene il proprio.
+i singoli valori differiscono (la moltiplicazione in virgola mobile a 32 bit è
+data ora $3{,}7$ ora $4$ picojoule; la lettura dalla DRAM $640$ picojoule
+nella ripresa, e fra $1{,}3$ e $2{,}6$ nanojoule nella tabella della relazione
+originale). Quello che regge in tutte e due è il salto: oltre due ordini di
+grandezza fra l'aritmetica e la DRAM. Il pareggio invece si sposta, e non di
+poco. Chi rifà i conti cambiando la sola moltiplicazione lo trova a
+sessantacinque FLOP per byte invece che a settanta; chi prende i nanojoule
+della relazione lo trova da due a quattro volte più in alto. La morale non
+cambia, perché la generazione sta a uno e la lettura di un prompt a qualche
+migliaio, ma il numero sì, e conviene sapere da dove viene il proprio.
 
 Una moltiplicazione-accumulo in `float32` mette insieme una moltiplicazione
-($3{,}7$ picojoule) e un'addizione ($0{,}9$), quindi costa **poco meno di
-cinque picojoule**, mentre **leggere un dato a 32 bit dalla DRAM ne costa circa
-640**:
+($3{,}7$ picojoule) e un'addizione ($0{,}9$), quindi costa poco meno di
+cinque picojoule, mentre leggere un dato a 32 bit dalla DRAM ne costa circa
+640:
 più di due ordini di grandezza. Un accesso alla memoria che sta *dentro* il
 chip costa invece quanto l'aritmetica stessa, dell'ordine dei $5$ pJ, e il
-salto dei due ordini di grandezza è tutto nell’**uscita dal chip**. Finché il
+salto dei due ordini di grandezza è tutto nell’uscita dal chip. Finché il
 dato resta nel silicio, toccarlo costa quanto calcolarci sopra; appena esce,
 costa cento volte tanto. I valori assoluti dipendono dal nodo e dal progetto,
 ma il rapporto è la cosa robusta, e nel tempo è peggiorato: la densità dei
 transistor è migliorata più in fretta dell'energia per bit trasportato.
 
 Da un rapporto fra costi unitari, però, non segue ancora niente sul budget
-totale. Per sapere dove finisce l'energia serve sapere **quante operazioni si
-fanno per ogni byte letto**, cioè l'intensità aritmetica del modello roofline,
+totale. Per sapere dove finisce l'energia serve sapere quante operazioni si
+fanno per ogni byte letto, cioè l'intensità aritmetica del modello roofline,
 la stessa grandezza con cui la sezione sulle metriche di servizio ha distinto
-prefill e decode. Il pareggio cade **attorno ai settanta FLOP/byte**, e il
+prefill e decode. Il pareggio cade attorno ai settanta FLOP/byte, e il
 conto è breve: 640 picojoule ogni quattro byte fanno 160 pJ per byte, mentre
 una moltiplicazione-accumulo da $4{,}6$ pJ vale due operazioni, cioè $2{,}3$ pJ
 per FLOP.
@@ -152,14 +155,14 @@ effetto sul conto finale.
 
 E non pesano uguale. Un gruppo di ricerca di Google, guidato da David
 Patterson, ha messo un numero accanto a quattro decisioni, contando la corrente
-che serve ad **addestrare** un modello grande. Conta di più **quale modello**:
+che serve ad addestrare un modello grande. Conta di più quale modello:
 fra uno che per rispondere si accende tutto e uno a scomparti, che ne sveglia
 due o tre e lascia spenti gli altri, a parità di qualità il primo
-può consumare dieci volte tanto. Le sta vicino **dove** si esegue, cioè su
+può consumare dieci volte tanto. Le sta vicino dove si esegue, cioè su
 quale rete, che sposta le emissioni da cinque a dieci volte anche restando
-nello stesso paese. Più sotto **su che macchina** (una fatta apposta fa da due
-a cinque volte i conti di una generica con la stessa corrente) e **in che
-edificio** (da 1,4 a 2 volte, ed è il raffreddamento di poco fa).
+nello stesso paese. Più sotto su che macchina (una fatta apposta fa da due
+a cinque volte i conti di una generica con la stessa corrente) e in che
+edificio (da 1,4 a 2 volte, ed è il raffreddamento di poco fa).
 
 Sono misure del 2021 sull'addestramento, e scadono come tutte le misure.
 L'ordine però regge anche dal lato del rispondere, perché in gioco ci sono le
@@ -185,12 +188,12 @@ I tre fattori si governano con leve diverse e da attori diversi. $E_{\text{IT}}$
 è la leva di chi scrive il modello e il codice; il PUE è la leva di chi
 progetta il centro dati (nelle strutture efficienti sta fra $1{,}1$ e $1{,}3$,
 in quelle mal progettate supera $2$, e la differenza è quasi tutta
-raffreddamento); $I_{\text{rete}}$ è la leva di chi sceglie **dove** e
-**quando** eseguire, e varia di oltre un ordine di grandezza fra reti diverse,
+raffreddamento); $I_{\text{rete}}$ è la leva di chi sceglie dove e
+quando eseguire, e varia di oltre un ordine di grandezza fra reti diverse,
 e di alcune volte fra ore diverse della stessa rete.
 
 Una precisazione sul PUE, perché la formula insegna a fare un conto ed è così
-che il conto sbaglia. Il PUE è un rapporto **di struttura, annualizzato**:
+che il conto sbaglia. Il PUE è un rapporto di struttura, annualizzato:
 riguarda tutto l'edificio su tutto l'anno. Moltiplicarlo per l’$E_{\text{IT}}$
 di *un* singolo carico di lavoro assume che il contorno cresca in proporzione
 al carico, mentre una quota rilevante (illuminazione, gruppi di continuità a
@@ -202,20 +205,20 @@ confrontare due lavori sulla stessa macchina.
 
 L'analisi di Patterson e colleghi {cite}`patterson2021carbon` mette in fila le
 ampiezze delle quattro leve, e non sono affatto uguali fra loro. Sui modelli
-che avevano sottomano, nel 2021, pesava di più la scelta del **modello**: una
-rete grande ma ad attivazione **sparsa** (una in cui, per rispondere, si accende
+che avevano sottomano, nel 2021, pesava di più la scelta del modello: una
+rete grande ma ad attivazione sparsa (una in cui, per rispondere, si accende
 ogni volta solo una piccola parte della rete, invece che tutta come in una
 rete *densa*) poteva consumare meno di un decimo di una densa a parità di
-qualità. Le stava vicina la **collocazione geografica**, cioè in quale rete
+qualità. Le stava vicina la collocazione geografica, cioè in quale rete
 elettrica si esegue il lavoro, che sposta le emissioni di un fattore fra cinque
 e dieci, anche restando dentro lo stesso paese e la stessa organizzazione. Più
-sotto le altre due, che il paper tiene distinte: l’**hardware** specializzato
+sotto le altre due, che il paper tiene distinte: l’hardware specializzato
 per il machine learning rende da due a cinque volte più di un sistema generico,
 e un centro dati progettato bene è da 1,4 a 2 volte più efficiente di uno
 tipico (è il PUE di poco fa).
 
 Quei quattro numeri sono misure su architetture di quell'anno, e come tutte le
-misure hanno una scadenza; quello che regge è la loro **morale**, ed è già
+misure hanno una scadenza; quello che regge è la loro morale, ed è già
 abbastanza forte. Le leve di progetto (quanto modello serve, e dove lo si
 esegue) contano più di quelle di implementazione, e nessuna delle due sta dove
 di solito si cerca: non nella micro-ottimizzazione del codice, che sposta molto
@@ -229,9 +232,9 @@ scelta del luogo è di qualcun altro.
 C'è un errore di prospettiva che quasi tutti fanno all'inizio, e nasce dal
 fatto che addestrare fa notizia e rispondere no.
 
-Addestrare è un costo che si paga **una volta sola**: grande, ben visibile, si
+Addestrare è un costo che si paga una volta sola: grande, ben visibile, si
 può misurare, si può datare, si può scrivere in un articolo scientifico.
-Rispondere è un costo **minuscolo moltiplicato per un numero enorme**: una
+Rispondere è un costo minuscolo moltiplicato per un numero enorme: una
 singola risposta consuma pochissimo, ma se il modello risponde a milioni di
 richieste al giorno per due anni, il totale supera facilmente l'addestramento
 che l'ha prodotto. C'è quindi un momento, nella vita di un modello, in cui la
@@ -243,8 +246,8 @@ il proprio caso. Quello che è stabile è l'ordine di priorità che ne discende,
 e conviene tenerlo in mente quando si sceglie fra un modello grande e uno
 piccolo rifinito bene.
 
-Ne segue che **le leve che contano sono quelle del rispondere, non quelle
-dell'addestrare**. E la buona notizia è che sono le
+Ne segue che le leve che contano sono quelle del rispondere, non quelle
+dell'addestrare. E la buona notizia è che sono le
 stesse leve già viste per risparmiare denaro e tempo, cioè
 alleggerire il modello (la quantizzazione e la potatura della sezione su
 LLMOps), servire molte richieste in una volta sola, e non ricalcolare ciò che è
@@ -253,11 +256,11 @@ servizio). Là erano modi di spendere meno e rispondere prima; sono la stessa
 cosa vista da un'altra finestra.
 
 Se ne aggiunge una, ed è la più radicale, perché non alleggerisce il modello:
-lo sostituisce. Si chiama **distillazione** e consiste nell'addestrare un
+lo sostituisce. Si chiama distillazione e consiste nell'addestrare un
 modello piccolo a imitare le risposte di uno grande, per poi mandare in
-servizio soltanto il piccolo. La incontra
-{doc}`Tendenze e limiti </Transformers/tendenzefuture>`, nel capitolo sui
-Transformer.
+servizio soltanto il piccolo. La costruisce
+{doc}`Un modello piccolo che imita </Efficienza/un-modello-piccolo-che-imita>`,
+nel capitolo sull'efficienza.
 
 ## Il carbonio che c'è già dentro
 
@@ -272,8 +275,8 @@ fra gli impianti industriali più energivori che esistano, per trasportare il
 prodotto. Si chiama **carbonio incorporato**, ed è la parte dell'impronta che
 un dispositivo si porta dietro dalla nascita.
 
-Quanto pesi dipende da due cose: **per quale frazione della sua vita quel chip
-lavora davvero**, e per quanti anni quella vita dura. Una scheda da centro dati
+Quanto pesi dipende da due cose: per quale frazione della sua vita quel chip
+lavora davvero, e per quanti anni quella vita dura. Una scheda da centro dati
 (un *acceleratore*, cioè un chip costruito apposta per fare i conti del machine
 learning e nient'altro) macina calcoli ventiquattr'ore al giorno per cinque
 anni: consumando così tanto e così a lungo, quello che ha speso per nascere
@@ -290,7 +293,7 @@ cambiarla appena ne esce una che fa gli stessi conti con meno corrente: quasi
 tutto il suo conto è la corrente che berrà da domani, e fabbricare quella nuova
 si ripaga in fretta. Con il sensore va al rovescio: sostituirlo vuol dire
 pagare da capo la fabbrica per risparmiare briciole, e la scelta ambientale che
-conta diventa **tenerlo in servizio più a lungo**, perché un programma che
+conta diventa tenerlo in servizio più a lungo, perché un programma che
 continua a girare sul dispositivo vecchio è un dispositivo nuovo che non si
 costruisce.
 
@@ -320,7 +323,7 @@ dell'uno per cento è dominato dall'incorporato.
 La conseguenza progettuale è che le due categorie richiedono ottimizzazioni
 opposte. Nel centro dati si ottimizza il joule per inferenza, e sostituire
 l'hardware con una generazione più efficiente conviene anche
-ambientalmente. Sull’*edge* si ottimizza la **longevità**: un modello che
+ambientalmente. Sull’*edge* si ottimizza la longevità: un modello che
 continua a funzionare su hardware vecchio evita un ricambio, e quel ricambio
 pesa più di anni di funzionamento.
 
@@ -329,13 +332,13 @@ pesa più di anni di funzionamento.
 ## Che cosa si può fare, e che cosa non funziona
 
 Tirando le somme, le leve sono cinque. Le prime tre sono le prime tre della
-classifica di poco fa, nello stesso ordine: **quanto** modello serve davvero
+classifica di poco fa, nello stesso ordine: quanto modello serve davvero
 (uno a scomparti, o uno dieci volte più piccolo purché basti allo scopo, batte
-qualunque limatura del programma), **dove** si esegue, cioè quanto è pulita
-l'elettricità di quella rete, e **su cosa** si esegue, cioè una macchina fatta
+qualunque limatura del programma), dove si esegue, cioè quanto è pulita
+l'elettricità di quella rete, e su cosa si esegue, cioè una macchina fatta
 apposta contro una generica. Le altre due la classifica non le misurava:
-**quando** si esegue, spostando ciò che può aspettare nelle ore in cui la rete
-è pulita, e infine **come** è scritto il codice, che è la leva che conta meno di
+quando si esegue, spostando ciò che può aspettare nelle ore in cui la rete
+è pulita, e infine come è scritto il codice, che è la leva che conta meno di
 tutte. Fuori dall'elenco resta la quarta voce della classifica, la qualità
 dell'edificio, e non per distrazione: quella non la sceglie chi costruisce il
 modello, la sceglie chi costruisce il centro dati.
@@ -350,21 +353,21 @@ paradosso di Jevons. Non è però una legge, ed è onesto dire che la questione 
 aperta. C'è almeno un caso, e non piccolo, in cui l'efficienza la crescita l'ha
 assorbita davvero. Lo ha misurato un gruppo guidato da Eric Masanet, su
 *Science* nel 2020, ricontando quanta elettricità consumano i centri dati del
-mondo: fra il 2010 e il 2018 quel consumo è cresciuto di **circa il sei per
-cento**, mentre nello stesso periodo il lavoro che ci girava dentro si è
-**moltiplicato per più di sei**. Attenzione a non confondere le due cifre: la
+mondo: fra il 2010 e il 2018 quel consumo è cresciuto di circa il sei per
+cento, mentre nello stesso periodo il lavoro che ci girava dentro si è
+moltiplicato per più di sei. Attenzione a non confondere le due cifre: la
 prima è un pochino in più, la seconda è sei volte tanto. In otto anni il mondo
 ha chiesto ai centri dati sei volte il lavoro, e loro hanno consumato quasi
 uguale: lì l'efficienza la crescita se l'è mangiata tutta.
 
 È un caso solo, e per giunta precedente all'ondata dei grandi modelli,
 quindi non dimostra niente sul futuro. Serve a dire che il rimbalzo è un
-effetto frequente e **non una legge**.
+effetto frequente e non una legge.
 L'argomento, insomma, colpisce il crederla sufficiente da sola, non
 l'efficienza.
 
 La seconda riguarda i numeri. Quasi tutte le cifre pubblicate su questo tema
-sono **stime**, ottenute da ipotesi su hardware, utilizzo e mix energetico che
+sono stime, ottenute da ipotesi su hardware, utilizzo e mix energetico che
 raramente sono dichiarate per intero; confrontarle fra due lavori diversi
 significa quasi sempre confrontare due insiemi di ipotesi, non due sistemi. La
 misura seria si fa in casa propria, con i contatori dell'hardware che si ha,
@@ -376,14 +379,14 @@ molto.
 :class: important
 - Prendere un numero dalla memoria esterna costa più di cento volte una
   moltiplicazione, ma da quel prezzo non segue ancora dove finisca la bolletta:
-  dipende da **quanti conti si fanno per ogni numero preso**, e la soglia sta
+  dipende da quanti conti si fanno per ogni numero preso, e la soglia sta
   attorno ai centoquaranta. Generare una parola alla volta ci sta molto sotto, e
   lì la corrente se ne va nei viaggi: è la frase del capitolo sulle GPU a
   proposito del collo di bottiglia, riletta con la bolletta in mano, cioè
   andare più veloci e consumare meno sono la stessa cosa.
   Leggere un prompt lungo e addestrare stanno invece sopra la soglia, e lì
   limare i viaggi sposta poco.
-- L'impronta finale è il prodotto di **tre fattori**: l'energia che consumano i
+- L'impronta finale è il prodotto di tre fattori: l'energia che consumano i
   calcolatori, il sovrapprezzo dell'edificio (raffreddamento e perdite: un
   edificio moderno aggiunge dal dieci al trenta per cento, uno vecchio può
   arrivare a raddoppiare il conto) e quanto sporca è l'elettricità di quella
@@ -391,10 +394,10 @@ molto.
   un'ora e l'altra della stessa rete. Il sovrapprezzo però è la media di tutto
   l'edificio su tutto l'anno: addebitarlo per intero a un singolo lavoro fa il
   conto più caro del vero.
-- **Rispondere costa più che addestrare**, quando il modello resta in servizio
+- Rispondere costa più che addestrare, quando il modello resta in servizio
   a lungo: rimpicciolirlo, servire più richieste in una volta sola e riusare
   ciò che è già stato calcolato sono leve ambientali oltre che economiche.
-- Un chip ha già un'impronta **prima di essere acceso** (fabbricazione):
+- Un chip ha già un'impronta prima di essere acceso (fabbricazione):
   trascurabile per un acceleratore che macina calcoli sempre, dominante per un
   oggetto che si accende di rado. Là conviene consumare meno, qui durare di
   più.
@@ -409,8 +412,8 @@ molto.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- L'energia non se ne va nei conti ma nel **movimento dei dati**, a una
-  condizione: che l’**intensità aritmetica** sia bassa. Leggere dalla DRAM costa
+- L'energia non se ne va nei conti ma nel movimento dei dati, a una
+  condizione: che l’intensità aritmetica sia bassa. Leggere dalla DRAM costa
   più di due ordini di grandezza rispetto a una moltiplicazione-accumulo
   {cite}`horowitz2014computing` (mentre un accesso *on-chip* costa quanto
   l'aritmetica: il salto è nell'uscita dal chip), e il pareggio cade attorno a
@@ -419,17 +422,17 @@ molto.
   contatore invece che col cronometro.
 - La catena completa è
   $\text{gCO}_2\text{e} = E_{\text{IT}} \times \text{PUE} \times I_{\text{rete}}$:
-  il **PUE** misura il costo dell'edificio (da $1{,}1$ a oltre $2$, quasi tutto
-  raffreddamento), l’**intensità di rete** varia di oltre un ordine di
+  il PUE misura il costo dell'edificio (da $1{,}1$ a oltre $2$, quasi tutto
+  raffreddamento), l’intensità di rete varia di oltre un ordine di
   grandezza fra luoghi, e di alcune volte fra le ore della stessa rete. Il PUE
   però è una media annuale di struttura: applicato a un singolo carico
   sovrastima, perché una parte del contorno è fissa.
-- **L'inferenza supera l'addestramento** quando il modello è servito a lungo:
+- L'inferenza supera l'addestramento quando il modello è servito a lungo:
   quantizzazione e potatura (sezione su LLMOps), *batching*, cache del prefisso
   (sezione sulle metriche di servizio) e distillazione sono leve ambientali
   oltre che economiche.
-- Il **carbonio incorporato** (fabbricazione) è trascurabile per un
-  acceleratore molto usato e **dominante** per un dispositivo poco usato: là si
+- Il carbonio incorporato (fabbricazione) è trascurabile per un
+  acceleratore molto usato e dominante per un dispositivo poco usato: là si
   ottimizza il joule, qui la durata.
 - Le cifre pubblicate sono stime con ipotesi spesso implicite: si misura in
   casa propria. E l'efficienza da sola non basta, perché il risparmio tende a

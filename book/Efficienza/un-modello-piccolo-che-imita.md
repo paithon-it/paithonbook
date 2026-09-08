@@ -6,7 +6,7 @@ che poteva farlo scambiare per un 1, e in nessun caso lo si sarebbe potuto
 prendere per un 8».
 
 Il secondo maestro ha detto la stessa cosa del primo più qualcos’altro, e quel
-qualcos’altro non riguarda il compito: riguarda **come sono fatte le cifre**.
+qualcos’altro non riguarda il compito: riguarda come sono fatte le cifre.
 Che 7 e 1 si somiglino, e che 7 e 8 no, è una cosa che il maestro ha imparato
 in anni di compiti corretti, e che l’etichetta «7» da sola non trasmette.
 
@@ -17,7 +17,7 @@ perché sia più di quanto ci sia nei dati.
 
 Le due leve precedenti stringevano un modello già fatto. Qui si fa un’altra
 cosa: si costruisce un modello nuovo, piccolo fin dall’inizio, e lo si addestra
-non sulle risposte giuste ma su **quello che il modello grande risponderebbe**,
+non sulle risposte giuste ma su quello che il modello grande risponderebbe,
 dubbi compresi.
 
 `````{tab} Elementare
@@ -30,7 +30,7 @@ restano un borbottio che nessuno sente.
 
 Allora gli si mette davanti una manopola, e più la si alza più lui si dilunga.
 A uno parla come sempre. A quattro, quel «0,9999» diventa «0,9 sul
-sette, 0,1 sull’uno, 0,001 sull’otto», il sette resta il primo e affiora la
+sette, 0,09 sull’uno, 0,001 sull’otto», il sette resta il primo e affiora la
 forma del dubbio, come le ombre di una fotografia troppo contrastata quando le
 si schiarisce. Girata a fondo rovina tutto, perché ogni cifra gli sembra
 plausibile e non si capisce più quale avesse scelto. La manopola si chiama
@@ -42,16 +42,16 @@ giusta) e i commenti del maestro, pesate sette parti al maestro e tre al
 registro. Anche questa è una manopola, perché meno ci si fida del maestro più
 peso torna al registro.
 
-La manopola però è una sola, e alzandola si dilunga anche lo studente: le due
-risposte si somigliano di più, e la correzione che ne viene si fa fiacca.
-Proprio mentre gli si mostrano le sfumature, gli si abbassa la voce. Per
-rialzarla si moltiplica la correzione per il quadrato della manopola: a
-quattro, per sedici. Sarebbe il conto esatto solo con la manopola girata a
-fondo; alle posizioni vere rialza più di quanto si fosse abbassato, e lo
-studente ascolta il maestro oltre le sette parti su dieci assegnate. Regge,
-perché la proporzione la si ritocca guardando come vanno le cose; ma chi crede
-di averla messa a sette contro tre ha in mano un numero che non racconta quello
-che succede in classe.
+Quella della temperatura però è una sola per tutti e due, e alzandola si
+dilunga anche lo studente: le due risposte si somigliano di più, e la
+correzione che ne viene si fa fiacca. Proprio mentre gli si mostrano le
+sfumature, gli si abbassa la voce. Per rialzarla si moltiplica la correzione
+per il quadrato della manopola: a quattro, per sedici. Sarebbe il conto esatto
+solo con la manopola girata a fondo; alle posizioni vere rialza più di quanto
+si fosse abbassato, e lo studente ascolta il maestro oltre le sette parti su
+dieci assegnate. Regge, perché la proporzione la si ritocca guardando come
+vanno le cose; ma chi crede di averla messa a sette contro tre ha in mano un
+numero che non racconta quello che succede in classe.
 
 Un compito che torna col solo voto insegna una cosa, che quel disegno è un
 sette. Col commento del maestro ne insegna dieci, quanto somiglia a ciascuna
@@ -71,7 +71,7 @@ maestro sbagliato è peggio di nessun maestro.
 
 `````{tab} Superiore
 
-Un classificatore produce dei **logit** $z_i$ che la softmax trasforma in
+Un classificatore produce dei logit $z_i$ che la softmax trasforma in
 probabilità. La distillazione {cite}`hinton2015distilling` introduce una
 **temperatura** $T$ nella softmax:
 
@@ -102,8 +102,8 @@ Il fattore $T^2$ non è cosmetico, e la sua derivazione è più fragile di come 
 si racconta. Derivando la divergenza rispetto ai logit dello studente si
 ottiene $\partial \mathrm{KL}/\partial z^s_i = (p^s_i - p^t_i)/T$, cioè un solo
 $1/T$. Il secondo compare linearizzando $p^s_i - p^t_i$, e la linearizzazione
-chiede due cose, non una: **temperatura alta rispetto ai logit**, e logit **a
-media nulla** su ciascun esempio. È il regime in cui il lavoro originale la
+chiede due cose, non una: temperatura alta rispetto ai logit, e logit a
+media nulla su ciascun esempio. È il regime in cui il lavoro originale la
 ricava, e lì moltiplicare per $T^2$ mantiene il termine morbido sulla scala di
 quello duro, così si può cambiare $T$ senza riaggiustare $\alpha$.
 
@@ -113,17 +113,17 @@ qui sotto addestra (logit con scarto tipico intorno a undici), l’esponente
 locale $\kappa$ di $\|\nabla\| \propto T^{-\kappa}$ vale $1{,}05$ fra $T=1$ e
 $T=2$, $1{,}09$ fra $2$ e $4$, e arriva a $2$ soltanto oltre $T=16$. A $T=4$,
 cioè alla temperatura che il codice usa, moltiplicare per $T^2$
-**sovracompensa di circa tre volte e mezzo**. Non è un guasto (il risultato
+sovracompensa di circa tre volte e mezzo. Non è un guasto (il risultato
 dell’esperimento è buono lo stesso, e $\alpha$ assorbe il resto), è il genere
 di dettaglio che distingue una ricetta applicata da una capita.
 
-**Dove stia il guadagno** è il punto in cui il racconto corrente si allontana
+Dove stia il guadagno è il punto in cui il racconto corrente si allontana
 dal lavoro che cita. L’argomento tradizionale è che i bersagli morbidi
 trasportino informazione sulla struttura delle classi (la «conoscenza oscura»:
 quali classi il maestro confonde e quali no) e che questa informazione agisca
 come un regolarizzatore, riducendo la varianza dello studente. Il secondo
 argomento sta nella stessa pagina del lavoro originale e si cita molto meno: i
-bersagli morbidi si possono calcolare su **dati non etichettati**, e questo
+bersagli morbidi si possono calcolare su dati non etichettati, e questo
 sposta il problema da «quanti esempi ho» a «quanti esempi il maestro può
 commentare». L’esperimento qui sotto misura il secondo, che è quello che si
 riesce a mostrare in modo pulito su un dataset piccolo.
@@ -135,8 +135,8 @@ riesce a mostrare in modo pulito su un dataset piccolo.
 Il maestro è una rete larga, addestrata su tutte le etichette. Lo studente è
 una rete minuscola, e vede pochissime etichette: centoventi esempi su
 ottocentonovantotto. La domanda è che cosa cambi se, oltre a quelle centoventi
-etichette, allo studente si lasciano leggere anche i **commenti del maestro**
-su tutti gli esempi, **compresi quelli di cui non ha l’etichetta**.
+etichette, allo studente si lasciano leggere anche i commenti del maestro
+su tutti gli esempi, compresi quelli di cui non ha l’etichetta.
 
 ```python
 import torch
@@ -243,13 +243,13 @@ stessa cosa. Lo studente col maestro arriva a un punto dal maestro stesso,
 avendo in mano duecentoquarantanove volte meno parametri e centoventi etichette
 invece di ottocentonovantotto.
 
-La riga di mezzo è quella che conviene aver misurato, perché **separa due cose
-che di solito si raccontano come una sola**. Con il maestro che commenta
+La riga di mezzo è quella che conviene aver misurato, perché separa due cose
+che di solito si raccontano come una sola. Con il maestro che commenta
 soltanto i centoventi esempi che lo studente ha già etichettati, si guadagnano
-**2,4 punti**: quello è il valore puro dei dubbi, cioè di sapere che un certo
+2,4 punti: quello è il valore puro dei dubbi, cioè di sapere che un certo
 sette somigliava a un uno e non a un otto. Lasciando al maestro commentare
 anche gli altri settecentosettantotto, che lo studente non può usare perché
-non ne ha l’etichetta, se ne guadagnano altri **3,2**.
+non ne ha l’etichetta, se ne guadagnano altri 3,2.
 
 Quindi la spiegazione bella («il maestro dice dieci cose per esempio invece di
 una») è vera e vale meno della metà del risultato. L’altra metà, la maggiore,
@@ -258,7 +258,7 @@ Le due cose insieme fanno la distillazione, e chi ne racconta solo la prima
 attribuisce a un meccanismo elegante un guadagno che viene soprattutto da un
 meccanismo banale.
 
-E conviene dire anche che cosa il conto **non** dimostra: non dimostra che
+E conviene dire anche che cosa il conto non dimostra: non dimostra che
 imitare sia meglio che imparare. Se allo studente si dessero tutte e
 ottocentonovantotto le etichette vere, il vantaggio si assottiglierebbe fino a
 sparire nel rumore. Chi vuole vederlo cambia un solo numero nel codice qui
@@ -269,20 +269,20 @@ allora lo stesso esperimento, e le loro etichette vanno lette così.
 
 ```{admonition} Da ricordare
 :class: important
-- Un modello non risponde «7»: risponde con **dieci numeri** che dicono quanto
+- Un modello non risponde «7»: risponde con dieci numeri che dicono quanto
   ci crede. L’etichetta vera ne contiene uno; la risposta del maestro li
   contiene tutti e dieci.
 - Un maestro ben addestrato è troppo sicuro di sé e i numeri interessanti si
-  perdono nelle cifre lontane. Si **ammorbidiscono** le sue risposte, come si
+  perdono nelle cifre lontane. Si ammorbidiscono le sue risposte, come si
   schiariscono le ombre di una fotografia troppo contrastata: il soggetto resta
   il più chiaro di tutti, e intanto nel buio ricompare quello che c’era.
 - Misurato, e in tre condizioni perché il guadagno si spezza in due: uno
   studente minuscolo con centoventi etichette sta al 90,2%; con i commenti del
-  maestro **sugli stessi centoventi esempi** sale a 92,6% (sono i dubbi, +2,4);
+  maestro sugli stessi centoventi esempi sale a 92,6% (sono i dubbi, +2,4);
   con i commenti anche sugli esempi di cui non ha l’etichetta arriva a 95,8%
   (+3,2 in più). La parte grossa non viene dai dubbi, viene dal poter usare
   dati che nessuno ha etichettato.
-- Lo studente eredita anche gli **errori** del maestro, e li impara meglio di
+- Lo studente eredita anche gli errori del maestro, e li impara meglio di
   quanto imparerebbe la risposta giusta. Un maestro sbagliato è peggio di
   nessun maestro.
 ```
@@ -293,29 +293,30 @@ allora lo stesso esperimento, e le loro etichette vanno lette così.
 
 ```{admonition} Da ricordare
 :class: important
-- La **temperatura** nella softmax, $p_i(T) = e^{z_i/T} / \sum_j e^{z_j/T}$,
+- La temperatura nella softmax, $p_i(T) = e^{z_i/T} / \sum_j e^{z_j/T}$,
   appiattisce la distribuzione e rende numericamente significativi i rapporti
-  fra le probabilità piccole. Sono i **bersagli morbidi**.
+  fra le probabilità piccole. Sono i bersagli morbidi.
 - La perdita è
   $(1-\alpha)\mathcal{L}_{\text{dura}} + \alpha T^2 \mathrm{KL}(p^t(T)\|p^s(T))$
   {cite}`hinton2015distilling`, con il termine duro a $T=1$. Il fattore $T^2$
-  tiene i due termini sulla stessa scala **solo a temperatura alta rispetto ai
-  logit**: a $T=4$ sovracompensa di circa tre volte e mezzo, e a riassorbire lo
+  tiene i due termini sulla stessa scala solo a temperatura alta rispetto ai
+  logit: a $T=4$ sovracompensa di circa tre volte e mezzo, e a riassorbire lo
   scarto è $\alpha$.
 - L’ablazione a tre condizioni separa i due contributi: 90,2% senza maestro,
   92,6% col maestro sui soli esempi etichettati, 95,8% col maestro su tutti
   (maestro al 96,9%). La «conoscenza oscura» vale 2,4 punti, l’uso dei dati non
   etichettati 3,2, e il secondo sparirebbe se lo studente avesse già tutte le
   etichette.
-- La distillazione è l’unica delle tre leve in cui il modello finale ha
-  un’**architettura diversa** da quella di partenza: le altre due restituiscono
-  la rete che avevano ricevuto, con altri numeri dentro o con dei buchi.
+- La distillazione è l’unica delle tre leve in cui l’architettura finale si
+  sceglie invece di ereditarla: la quantizzazione restituisce la rete che ha
+  ricevuto con altri numeri dentro, la potatura la stessa rete con dei buchi, o
+  con qualche riga in meno dove il taglio è strutturato.
 ```
 
 `````
 
 Le tre leve del capitolo finiscono qui, e hanno una cosa in comune da dire
-adesso: agiscono tutte e tre **sul modello**. Ma un modello che ci sta in
+adesso: agiscono tutte e tre sul modello. Ma un modello che ci sta in
 memoria non è ancora un modello che risponde in fretta, e la parte che segue
 spiega perché siano due domande diverse, e a quali capitoli il libro affidi la
 seconda.

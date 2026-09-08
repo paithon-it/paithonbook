@@ -199,7 +199,7 @@ continua a crescere con il quadrato della lunghezza, come prima. Quello che
 cambia è che ogni carico, una volta arrivato, serve per tutte le parole ferme
 sul tavolo invece che per una sola: con le taglie in uso oggi i viaggi si
 dividono per un numero fra sei e ventiquattro, e su un lavoro che passava la
-aspettare è tantissimo.
+vita ad aspettare è tantissimo.
 
 Il prezzo si paga più tardi. Quando la rete impara,
 dopo aver letto il testo in avanti rifà la strada all'indietro per capire quali
@@ -446,11 +446,10 @@ da fare, che resta proporzionale al quadrato della lunghezza: quello è il
 mestiere del {doc}`capitolo sull'attenzione lineare
 </AttenzioneLineare/overview>`.
 
-Onestà anche sul codice: quello che in queste pagine sta in un'idea semplice,
-nel codice
-è un kernel notoriamente complicato (indici, gestione della shared memory, casi
-limite della **maschera causale**, la regola che impedisce a ogni parola di
-sbirciare quelle che vengono dopo di lei). Non è codice che si scrive a mano per
+Onestà anche sul codice: l'idea è semplice, il kernel che la realizza è
+notoriamente complicato (indici, gestione della shared memory, casi limite
+della **maschera causale**, la regola che impedisce a ogni parola di sbirciare
+quelle che vengono dopo di lei). Non è codice che si scrive a mano per
 un progetto normale, ed è giusto così. In PyTorch lo usi senza nemmeno saperlo:
 la funzione `scaled_dot_product_attention` sceglie da sé, fra le varie
 implementazioni che ha in casa (in gergo i *backend*), quella più adatta alla

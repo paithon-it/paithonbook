@@ -125,8 +125,8 @@ ogni passo: bianco, nero, bianco, nero. I due interruttori scattano insieme.
 Per riportare il buco dove stava (sul suo colore) servono quindi mosse in
 numero pari, cioè scambi in numero pari, e le disposizioni col buco al suo
 posto che chiederebbero un numero dispari di scambi non si raggiungono mai:
-sono esattamente la metà. Poche abbastanza da
-poterle guardare tutte, tante abbastanza da far vedere la differenza fra
+sono esattamente la metà. Le altre, quelle raggiungibili, sono poche abbastanza
+da poterle guardare tutte e tante abbastanza da far vedere la differenza fra
 guardarle tutte e non guardarle.
 
 Il programma del rompicapo lo esplora aprendo gli stati uno alla volta:
@@ -191,7 +191,7 @@ Venti mosse di soluzione, e per trovarle ne sono state esaminate
 quarantottomila e passa: più di un quarto delle posizioni che questo rompicapo
 può raggiungere. Con la stima a zero l’algoritmo apre sempre lo stato più
 vicino alla partenza, e quindi si allarga in tutte le direzioni allo stesso
-modo, esattamente come l’acqua del labirinto. Non sbaglia mai la risposta, e
+modo, esattamente come la ricerca in ampiezza. Non sbaglia mai la risposta, e
 paga carissimo il non sapere dove sta andando.
 
 ## La stima di quanto manca
@@ -441,10 +441,10 @@ tempo perso. Senza la stima la ricerca ci finisce di continuo; con la stima non
 ci mette piede, ed è proprio la garanzia che A\* dà.
 ```
 
-E qui c’è la cosa che i tre numeri da soli non facevano vedere: la stima non fa
-guardare *meno in giro*: impedisce alla ricerca di salire sopra quella riga.
-Con la stima a zero la somma dei due numeri è sempre uguale ai soli passi
-fatti, quindi non c’è nessuna riga da non superare, e ogni posizione vale
+E qui c’è la cosa che i tre numeri da soli non facevano vedere. La stima non fa
+guardare *un po’ meno dappertutto*: impedisce alla ricerca di salire sopra
+quella riga. Con la stima a zero la somma dei due numeri è sempre uguale ai soli
+passi fatti, quindi non c’è nessuna riga da non superare, e ogni posizione vale
 quanto un’altra alla stessa distanza dalla partenza.
 
 E il confronto fra le due stime ha una regola sola, che si legge nella loro

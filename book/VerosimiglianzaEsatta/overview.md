@@ -10,10 +10,9 @@ Il falsario ha imparato a **produrre**, non a **valutare**: il numero che
 misura quanto un dato è plausibile non compare da nessuna parte nel suo
 addestramento, e non c'è modo di estrarlo dai suoi pesi. Il
 {doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`, appena
-chiuso, sta un gradino più in là: lì quel numero
-esiste, ma quello che il modello ottimizza non è quel numero: è una stima
-prudente che gli sta sotto, e per avere il valore vero bisogna fare un secondo
-lavoro, lungo e a parte.
+chiuso, sta un gradino più in là: lì quel numero esiste, ma non è quello che il
+modello ottimizza. Ottimizza una stima prudente che gli sta sotto, e per avere
+il valore vero bisogna fare un secondo lavoro, lungo e a parte.
 
 Questo capitolo racconta la terza risposta: la famiglia di modelli che quel
 numero lo restituisce **esatto**, con un solo passaggio della rete, perché è
@@ -33,8 +32,9 @@ dall'altro capo, a modello ormai fissato: è il valore che quel modello assegna
 a un dato, letto come «quanto mi aspettavo di vedere una cosa così». Alta se il
 dato è di quelli su cui il modello avrebbe scommesso, bassa se lo coglie di
 sorpresa. Il nome è scomodo e il concetto no: è un voto, e a differenza
-dell'energia del {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` è un voto **normalizzato**, cioè sommato su
-tutti i dati possibili fa esattamente uno.
+dell'energia del {doc}`capitolo sui modelli a energia
+</ModelliEnergia/overview>` è **normalizzato**, cioè sommato su tutti i dati
+possibili fa esattamente uno.
 
 Quel «fa esattamente uno» è tutto il problema, ed è il filo che tiene insieme
 questo capitolo e il prossimo. Sommare su tutti i dati possibili non si può, e
@@ -74,8 +74,8 @@ quale di due dati è più plausibile, non per stampare una percentuale. I
 **modelli di diffusione** addestrano su un limite come i VAE; nella loro
 formulazione continua il valore esatto si può ottenere {cite}`song2021score`,
 ma passando per la soluzione di un'equazione differenziale e per una stima
-fatta a campione di un pezzo per cui una formula chiusa non esiste, cioè con un
-lavoro che nessuno fa a ogni immagine.
+fatta a campione di un termine che calcolare per intero costerebbe troppo, cioè
+con un lavoro che nessuno fa a ogni immagine.
 
 **Ce l'ha esatta.** Il modello restituisce $\log p(\mathbf{x})$, giusto, in un
 passaggio. Due strade portano lì, e sono le prime due sezioni. La
@@ -103,8 +103,8 @@ Un flusso paga altrove. Perché la trasformazione si possa invertire, ogni
 strato dev'essere invertibile, e questo esclude quasi tutto quello che il libro
 ha usato finora (non si può schiacciare, non si può buttare via niente, non si
 può nemmeno cambiare il numero di coordinate). Un flusso non comprime: entra
-con un milione di numeri ed esce con un milione di numeri. Ed è, come vedremo,
-la ragione strutturale per cui ha perso.
+con un milione di numeri ed esce con un milione di numeri. Ed è la ragione
+strutturale per cui ha perso.
 
 `````{tab} Elementare
 

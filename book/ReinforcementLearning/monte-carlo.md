@@ -4,8 +4,8 @@ Nel 1946, a Los Alamos, Stanisław Ulam era in convalescenza e passava le
 giornate a fare solitari. A un certo punto si chiese quale fosse la
 probabilità che un solitario venisse. Provò a calcolarla con la combinatoria,
 si arenò, e gli venne l'idea che avrebbe cambiato mezzo secolo di scienza
-applicata: invece di calcolare la probabilità, **giocare cento partite e
-contare quante finiscono bene**. Ne parlò con John von Neumann, e Nicholas
+applicata: invece di calcolare la probabilità, giocare cento partite e
+contare quante finiscono bene. Ne parlò con John von Neumann, e Nicholas
 Metropolis propose per il metodo un nome preso dal casinò dove uno zio di Ulam
 andava a perdere i soldi presi in prestito dai parenti
 {cite}`metropolis1987beginning`.
@@ -20,9 +20,9 @@ come sono andate, e fare la media.
 
 ## Giocare, e poi fare la media
 
-Il **ritorno** è quello definito nella sezione precedente: quanto si raccoglie
+Il ritorno è quello definito nella sezione precedente: quanto si raccoglie
 in tutto da un certo istante fino alla fine della partita, contando meno ciò
-che arriva tardi. Il **valore** di una situazione è il ritorno *medio* partendo
+che arriva tardi. Il valore di una situazione è il ritorno *medio* partendo
 da lì, e una media si stima nel modo più ovvio che ci sia: si prendono tanti
 casi e si fa la loro media. Qui i casi sono le partite giocate.
 
@@ -37,7 +37,7 @@ di vittorie, e se è alta la posizione è buona.
 I metodi **Monte Carlo** fanno questo, e la parola difficile non nasconde
 niente di più. L'agente gioca una partita dall'inizio alla fine, poi torna
 indietro con la matita e, per ogni situazione attraversata, si annota quanto
-ha raccolto **da lì in avanti**. Ripetuto molte volte, quel quaderno di
+ha raccolto da lì in avanti. Ripetuto molte volte, quel quaderno di
 annotazioni diventa la stima del valore di ogni situazione: si fa la media
 delle righe che parlano della stessa casella.
 
@@ -57,7 +57,7 @@ quattrocento, non duecento.
 Sul quaderno non finisce mai una stima: ogni riga è il conto dei punti che
 quella partita ha davvero portato a casa. Nessuna mappa, nessuna formula
 sull'ambiente: solo partite giocate e una media. Il prezzo è dichiarato
-subito: bisogna arrivare **alla fine** della partita prima di poter scrivere
+subito: bisogna arrivare alla fine della partita prima di poter scrivere
 qualsiasi cosa.
 
 `````
@@ -77,17 +77,17 @@ dove $\mathcal{T}(s)$ è l'insieme degli istanti in cui $s$ è stato visitato
 (solo le prime visite, nella variante a prima visita).
 
 La versione a prima visita ha una giustificazione immediata: i ritorni raccolti
-sono variabili aleatorie **indipendenti e identicamente distribuite** con media
+sono variabili aleatorie indipendenti e identicamente distribuite con media
 $V^\pi(s)$ e varianza finita, quindi per la legge dei grandi numeri la media
 converge al valore vero, e l'errore standard cala come $1/\sqrt{n}$ con $n$
-ritorni mediati. Ogni stima è **non distorta**.
+ritorni mediati. Ogni stima è non distorta.
 
 La variante a ogni visita è invece distorta per $n$ finito, e la spiegazione
-naturale della distorsione è sbagliata. **Non** viene
+naturale della distorsione è sbagliata. Non viene
 dal fatto che i ritorni di uno stesso episodio siano correlati: una media di
 variabili correlate, in numero fissato e con la stessa media marginale, resta
 non distorta, e la correlazione muove la varianza, non il valore atteso. Viene
-dal fatto che il **denominatore è aleatorio**. Il numero di visite non è deciso
+dal fatto che il denominatore è aleatorio. Il numero di visite non è deciso
 in anticipo ed è correlato con il numeratore, perché un episodio che passa
 molte volte per lo stesso stato contribuisce molte righe, e quelle righe non
 sono un campione qualunque dei ritorni possibili. È il classico
@@ -98,7 +98,7 @@ un esempio e non una regola. La distorsione svanisce al crescere degli episodi,
 e la variante si estende meglio a quando il quaderno diventa una rete neurale
 {cite}`sutton2018reinforcement`.
 
-Il punto strutturale: qui **non c'è bootstrapping**. Il bersaglio è il ritorno
+Il punto strutturale: qui non c'è bootstrapping. Il bersaglio è il ritorno
 osservato, non una stima costruita a partire da altre stime. Ogni stato si
 stima per conto proprio, e la stima di uno stato non dipende dalla stima degli
 altri.
@@ -107,39 +107,39 @@ altri.
 
 ## Che cosa cambia rispetto alla programmazione dinamica
 
-**Programmazione dinamica** è il nome che Bellman diede al modo di procedere
+Programmazione dinamica è il nome che Bellman diede al modo di procedere
 della sezione precedente (con lo scrivere programmi per il computer non
 c'entra niente: «programmazione», per lui, voleva dire pianificazione), quello
 che trova i valori girando e rigirando su tutte le caselle con la mappa in
 mano: da qui in avanti lo useremo come nome collettivo delle sue due ricette,
 l'iterazione dei valori e quella della pagella (*value iteration* e *policy
 iteration*). Conviene metterlo accanto a Monte Carlo, perché la differenza fra
-i due non è di efficienza ma di **che cosa serve sapere**.
+i due non è di efficienza ma di che cosa serve sapere.
 
-La programmazione dinamica guarda **un passo in avanti ma in tutte le
-direzioni**: per calcolare il valore di una casella tiene conto di tutte le
+La programmazione dinamica guarda un passo in avanti ma in tutte le
+direzioni: per calcolare il valore di una casella tiene conto di tutte le
 caselle in cui quella mossa potrebbe far finire, dando a ciascuna un peso pari
 alla sua probabilità. Quei pesi le servono, e quindi le serve conoscere le
 probabilità; in cambio non le deve stimare.
 
-Monte Carlo guarda **in una direzione sola ma fino in fondo**: segue la
+Monte Carlo guarda in una direzione sola ma fino in fondo: segue la
 traiettoria realmente accaduta, dall'inizio alla fine dell'episodio, e ignora
 le strade non prese. Non ha bisogno di sapere nulla dell'ambiente, e in cambio
-paga in **rumore**: è la parola che si usa per il fatto che una misura,
+paga in rumore: è la parola che si usa per il fatto che una misura,
 ripetuta, non dà mai due volte lo stesso numero.
 
 Da questa differenza discendono tre conseguenze pratiche.
 
-- Monte Carlo funziona anche quando l'ambiente è una **scatola nera** o un
+- Monte Carlo funziona anche quando l'ambiente è una scatola nera o un
   simulatore: basta saperci giocare, non saperlo descrivere. Scrivere un
   programma che simula un gioco è spesso molto più facile che compilare
   l'elenco, mossa per mossa e con tutte le probabilità, di dove quel gioco può
   portare.
-- Il costo di stimare un singolo stato **non dipende dal numero di stati**. Se
+- Il costo di stimare un singolo stato non dipende dal numero di stati. Se
   interessa il valore di una manciata di posizioni, si giocano partite da
   quelle e basta, senza passare in rassegna tutte le altre come fa la
   programmazione dinamica.
-- Gli errori **non si propagano**. Il voto di una casella esce solo da quello
+- Gli errori non si propagano. Il voto di una casella esce solo da quello
   che è successo davvero nelle partite, e nessun'altra casella se ne serve per
   calcolare il proprio: un voto sbagliato resta sbagliato dov'è, e non contagia
   i vicini.
@@ -150,7 +150,7 @@ Riprendiamo il mondo a tre caselle della {numref}`fig-mdp`, quello in cui
 salire non costa nulla, restare fermi o tornare indietro costano $1$, e
 arrivare all'obiettivo paga $10$. Vale lo stesso sconto di prima, $0{,}9$: un
 premio che arriva una mossa più tardi conta nove decimi. Stavolta però fingiamo
-di **non** conoscere dove porta ogni mossa. L'agente si limita a giocare,
+di non conoscere dove porta ogni mossa. L'agente si limita a giocare,
 seguendo una strategia che di norma sale verso l'obiettivo ma ogni tanto
 tentenna, ed ecco tre sue partite, con le ricompense incassate lungo la strada.
 
@@ -166,7 +166,7 @@ senza incassare nulla, e da $s_1$ si arriva all'obiettivo incassando $+10$.
 
 `````{tab} Elementare
 
-I punti raccolti si contano **all'indietro**, ed è il modo comodo di farlo: si
+I punti raccolti si contano all'indietro, ed è il modo comodo di farlo: si
 parte dalla fine, dove il totale è $0$ perché dopo l'arrivo non c'è più niente
 da raccogliere, e a ogni passo indietro si moltiplica per $0{,}9$ il totale che
 si aveva e ci si aggiunge la ricompensa di quel passo.
@@ -195,11 +195,11 @@ in un posto che vale $7{,}1$, quindi $0 + 0{,}9 \times 7{,}1 = 6{,}39$.
 | 2 | $7{,}1$ la prima volta, $9$ la seconda | $10$ |
 | 3 | $6{,}39$ la prima volta, $9$ la seconda | $7{,}1$ la prima volta, $10$ la seconda |
 
-Adesso la media, e ci sono due modi di farla. Il primo conta **una riga per
-partita**, quella della prima volta che si è passati di lì, e si chiama *a prima
+Adesso la media, e ci sono due modi di farla. Il primo conta una riga per
+partita, quella della prima volta che si è passati di lì, e si chiama *a prima
 visita*: per $s_0$ si mediano $9$, $7{,}1$ e $6{,}39$, cioè
 $22{,}49 : 3 = 7{,}4966\ldots$; per $s_1$ si mediano $10$, $10$ e $7{,}1$, cioè
-$27{,}1 : 3 = 9{,}0333\ldots$. Il secondo conta **tutte le righe**, ripassaggi
+$27{,}1 : 3 = 9{,}0333\ldots$. Il secondo conta tutte le righe, ripassaggi
 compresi, e si chiama *a ogni visita*: per $s_0$ i numeri diventano cinque
 ($9 + 7{,}1 + 9 + 6{,}39 + 9 = 40{,}49$, diviso $5$ fa $8{,}098$) e per $s_1$
 quattro ($10 + 10 + 7{,}1 + 10 = 37{,}1$, diviso $4$ fa $9{,}275$). Da qui in
@@ -210,7 +210,7 @@ parte, $8{,}10$ e $9{,}28$ dall'altra, ma i numeri veri sono questi.
 
 `````{tab} Superiore
 
-I ritorni si calcolano **all'indietro**, che è il modo economico di farlo:
+I ritorni si calcolano all'indietro, che è il modo economico di farlo:
 partendo dalla fine, $G \leftarrow r + \gamma\,G$ a ogni passo indietro.
 Nel secondo episodio, per esempio: dall'ultimo $s_1$ il ritorno è $10$; dal
 secondo $s_0$ è $0 + 0{,}9 \times 10 = 9$; dal primo $s_0$ è
@@ -222,7 +222,7 @@ $-1 + 0{,}9 \times 9 = 7{,}1$.
 | 2 | $G(s_0) = 7{,}1$, poi $G(s_0) = 9$; $G(s_1) = 10$ |
 | 3 | $G(s_0) = 6{,}39$, poi $G(s_0) = 9$; $G(s_1) = 7{,}1$, poi $G(s_1) = 10$ |
 
-Adesso la media. **A prima visita** si conta una riga per episodio:
+Adesso la media. A prima visita si conta una riga per episodio:
 
 $$
 V(s_0) = \frac{9 + 7{,}1 + 6{,}39}{3} = \frac{22{,}49}{3} \simeq 7{,}50,
@@ -230,7 +230,7 @@ V(s_0) = \frac{9 + 7{,}1 + 6{,}39}{3} = \frac{22{,}49}{3} \simeq 7{,}50,
 V(s_1) = \frac{10 + 10 + 7{,}1}{3} = \frac{27{,}1}{3} \simeq 9{,}03 .
 $$
 
-**A ogni visita** entrano tutte le righe, cinque per $s_0$ e quattro per $s_1$:
+A ogni visita entrano tutte le righe, cinque per $s_0$ e quattro per $s_1$:
 
 $$
 V(s_0) = \frac{9 + 7{,}1 + 9 + 6{,}39 + 9}{5} = 8{,}098,
@@ -254,8 +254,8 @@ risultato, perché tutti e due finiscono sul valore vero.
 
 Tutti e quattro i numeri, però, restano sotto quelli che la sezione precedente
 aveva calcolato sullo stesso mondo, che erano $9$ per $s_0$ e $10$ per $s_1$:
-là si calcolava il valore della strategia **migliore possibile**, qui si misura
-quello della strategia **che ha giocato davvero**, tentennamenti compresi. Sono
+là si calcolava il valore della strategia migliore possibile, qui si misura
+quello della strategia che ha giocato davvero, tentennamenti compresi. Sono
 due domande diverse, e la seconda non può avere una risposta più alta della
 prima: i valori veri, però, non le medie su tre partite, che possono anche
 sballare per eccesso. Una media si assesta sul valore vero quando i casi
@@ -349,7 +349,7 @@ Il problema è che $Q^\pi(s,a)$ si può stimare solo per le coppie $(s,a)$ che
 compaiono nei dati, e una policy deterministica ne genera una sola per stato.
 Ci sono due rimedi classici.
 
-Il primo è l'ipotesi degli **inizi esplorativi**: ogni episodio comincia da una
+Il primo è l'ipotesi degli inizi esplorativi: ogni episodio comincia da una
 coppia $(s,a)$ estratta a caso, con probabilità non nulla per tutte. È comoda
 nella teoria e quasi sempre inapplicabile, perché richiede di poter piazzare
 l'agente dove si vuole.
@@ -361,8 +361,8 @@ improvement theorem* continua a valere ristretto a questa classe, quindi
 l'alternanza valuta-migliora converge, ma converge alla migliore policy
 $\varepsilon$-soft, non alla migliore in assoluto {cite}`sutton2018reinforcement`.
 
-La rinuncia è reale, e la via d'uscita è separare la policy che **genera** i
-dati da quella che si sta **valutando**.
+La rinuncia è reale, e la via d'uscita è separare la policy che genera i
+dati da quella che si sta valutando.
 
 `````
 
@@ -447,7 +447,7 @@ $$
 = \prod_{k=t}^{T-1} \frac{\pi(A_k\mid S_k)}{b(A_k\mid S_k)} .
 $$
 
-Le probabilità di transizione **si cancellano**, identiche a numeratore e
+Le probabilità di transizione si cancellano, identiche a numeratore e
 denominatore. Il correttore non dipende dall'MDP, che infatti non conosciamo:
 dipende solo dalle due policy e dalle azioni osservate. È il motivo per cui
 l'off-policy è possibile senza modello.
@@ -467,9 +467,9 @@ V_{\text{pes}}(s) = \frac{\sum_{t\in\mathcal{T}(s)} \rho_{t:T-1}\,G_t}
 $$
 
 Il compromesso fra i due è una lezione statistica che vale oltre il RL, e si
-enuncia a prima visita. L'ordinario è **non distorto** ma la sua varianza può
+enuncia a prima visita. L'ordinario è non distorto ma la sua varianza può
 essere illimitata, perché un rapporto può valere dieci o mille e moltiplicare
-un singolo ritorno per quella cifra. Il pesato è **distorto** (la distorsione
+un singolo ritorno per quella cifra. Il pesato è distorto (la distorsione
 svanisce al crescere dei campioni) ma il peso di un singolo ritorno non supera
 mai $1$ e, purché i ritorni siano limitati, la sua varianza converge a zero
 anche quando quella dei rapporti è infinita: un risultato del 2001 di Precup,
@@ -502,19 +502,19 @@ reinforcement learning, e ricompare in tre punti.
 
 ```{admonition} Dove ritorna
 :class: seealso
-- Nel **PPO** (*Proximal Policy Optimization*), uno degli algoritmi più usati
+- Nel PPO (*Proximal Policy Optimization*), uno degli algoritmi più usati
   del capitolo successivo, il peso è il rapporto fra quanto la strategia nuova
   e quella che ha raccolto i dati avrebbero giocato la stessa mossa: lo stesso
   oggetto di qui, calcolato su una mossa
   sola invece che su tutta la partita. E siccome un peso che esplode è il
   difetto appena visto, PPO gli mette attorno una fascia, sopra e sotto, oltre
   la quale il peso viene tosato (*clipping*).
-- Nell’**offline RL**, cioè imparare da un archivio di partite senza poterne
+- Nell’offline RL, cioè imparare da un archivio di partite senza poterne
   giocare altre, quell'archivio è tutto ciò che c'è: la condizione appena vista
   (deve contenere tutto quello che la strategia da giudicare potrebbe fare)
   diventa il problema centrale della {doc}`sezione sull'offline RL
   </DeepReinforcementLearning/offline-rl>`.
-- Nell’**RLHF** (*Reinforcement Learning from Human Feedback*), il modo in cui
+- Nell’RLHF (*Reinforcement Learning from Human Feedback*), il modo in cui
   gli assistenti conversazionali imparano dai giudizi delle persone su quale di
   due risposte sia migliore, il programma che si sta migliorando si allontana
   passo dopo passo da quello che aveva prodotto le risposte giudicate: è la
@@ -528,43 +528,42 @@ reinforcement learning, e ricompare in tre punti.
 
 Restano due difetti, e sono quelli che la prossima sezione viene a risolvere.
 
-Il primo è che bisogna **arrivare alla fine**. Un metodo Monte Carlo non
+Il primo è che bisogna arrivare alla fine. Un metodo Monte Carlo non
 aggiorna niente finché l'episodio non termina, il che lo esclude dai compiti
 continui (un impianto che non si spegne mai, un agente che non muore) e lo
 rende lento quando gli episodi sono lunghi.
 
-Il secondo è che i numeri **ballano**. Il ritorno di una singola partita è la
+Il secondo è che i numeri ballano. Il ritorno di una singola partita è la
 somma di molte ricompense, ognuna con la sua dose di caso: in media è giusto, ma
 preso una volta sola può capitare lontanissimo dal vero, e servono molti episodi
-perché la media si assesti. Quanto ballano lo misura la **varianza**, cioè
+perché la media si assesti. Quanto ballano lo misura la varianza, cioè
 quanto i valori si sparpagliano attorno alla loro media.
 
 L'idea che li risolve entrambi è di una semplicità irritante: invece di
-aspettare il ritorno vero, usare la ricompensa del prossimo passo più la
-**stima già disponibile** della situazione in cui si finisce. Si aggiorna
-subito, e si sostituisce una somma rumorosa di molti termini con un termine
-osservato e una stima sola. Usare una propria stima per aggiornarne un'altra ha
-un nome, **bootstrapping** (alla lettera "tirarsi su per i lacci delle
-scarpe"), e ha un costo: la stima presa come bersaglio può essere sbagliata, e
-allora la correzione tira nella direzione sbagliata. E non tira a caso, tira
-sempre dalla stessa parte, almeno finché le stime non si assestano: nel
-labirinto tutte le caselle partono da zero, che è meno del loro valore vero,
-quindi ogni bersaglio costruito su di esse è più basso del vero, e ogni
-correzione tira verso il basso. Un errore che ha un verso non si cancella
-facendo la media di tante correzioni, e per questo ha un nome suo, la
-**distorsione**; è il prezzo di
-non aspettare la fine: numeri molto più stabili, appoggiati però a un bersaglio
-che potrebbe non essere quello giusto. Nasce così l'apprendimento per
-**differenze temporali**, in inglese *temporal-difference*, che tutti abbreviano
-in **TD**.
+aspettare il ritorno vero, usare la ricompensa del prossimo passo più la stima
+già disponibile della situazione in cui si finisce. Si aggiorna subito, e si
+sostituisce una somma rumorosa di molti termini con un termine osservato e una
+stima sola. Usare una propria stima per aggiornarne un'altra ha un nome,
+**bootstrapping** (alla lettera "tirarsi su per i lacci delle scarpe"), e ha un
+costo: la stima presa come bersaglio può essere sbagliata, e allora la
+correzione tira nella direzione sbagliata. E non tira a caso, tira sempre dalla
+stessa parte, almeno finché le stime non si assestano: nel labirinto tutte le
+caselle partono da zero, che è meno del loro valore vero, quindi ogni bersaglio
+costruito su di esse è più basso del vero, e ogni correzione tira più in basso
+di quanto dovrebbe. Un errore che ha un verso non si cancella facendo la media
+di tante correzioni, e per questo ha un nome suo, la **distorsione**; è il
+prezzo di non aspettare la fine: numeri molto più stabili, appoggiati però a un
+bersaglio che potrebbe non essere quello giusto. Nasce così l'apprendimento per
+differenze temporali, in inglese *temporal-difference*, che tutti abbreviano in
+TD.
 
 Le tre famiglie si dispongono allora su due assi, ed è la mappa da tenere a
 mente per tutto il resto del capitolo:
 
 | | quanto guarda avanti | serve la mappa dell'ambiente? | si corregge appoggiandosi alle proprie stime (*bootstrapping*) |
 |:--|:--|:--|:--|
-| Programmazione dinamica | un passo, su **tutte** le caselle in cui si può finire | sì | sì |
-| Monte Carlo | **fino alla fine**, su una partita sola | no | no |
+| Programmazione dinamica | un passo, su tutte le caselle in cui si può finire | sì | sì |
+| Monte Carlo | fino alla fine, su una partita sola | no | no |
 | Differenze temporali | un passo, su una partita sola | no | sì |
 
 In quella tabella manca una riga, ed è quella in mezzo: guardare avanti non un
@@ -577,13 +576,13 @@ dedicata a lei.
 
 ```{admonition} Da ricordare
 :class: important
-- Un metodo **Monte Carlo** stima quanto vale una situazione nel modo più
+- Un metodo Monte Carlo stima quanto vale una situazione nel modo più
   diretto che ci sia: si giocano molte partite intere, e per ogni situazione
-  attraversata ci si segna sul quaderno quanto si è raccolto **da lì in
-  avanti**. Il valore è la media di quelle righe. Nessuna mappa dell'ambiente,
+  attraversata ci si segna sul quaderno quanto si è raccolto da lì in
+  avanti. Il valore è la media di quelle righe. Nessuna mappa dell'ambiente,
   solo partite giocate fino in fondo.
-- Rispetto al metodo della sezione precedente cambia **che cosa bisogna
-  sapere**: quello guarda un passo avanti in tutte le direzioni possibili e
+- Rispetto al metodo della sezione precedente cambia che cosa bisogna
+  sapere: quello guarda un passo avanti in tutte le direzioni possibili e
   pretende la mappa dell'ambiente, Monte Carlo guarda in una direzione sola ma
   fino in fondo e non pretende niente. Basta saper giocare, non saper
   descrivere il gioco. E se interessano poche situazioni, si giocano partite
@@ -597,13 +596,13 @@ dedicata a lei.
   calcolare il proprio. Il prezzo sono i due difetti dichiarati fin dall'inizio:
   i numeri ballano parecchio (una partita sola è una somma di tanti colpi di
   fortuna) e non si scrive niente finché la partita non è finita.
-- Per **migliorare** la strategia, e non solo misurarla, l'agente deve
+- Per migliorare la strategia, e non solo misurarla, l'agente deve
   continuare a giocare mosse che non crede le migliori: se non le prova più,
   quella colonna del quaderno resta per sempre al voto sbagliato del primo
   tentativo. E si paga: chi tira a sorte una mossa su dieci arriva al meglio
   fra i giocatori che tirano a sorte, che sta sotto al meglio in assoluto.
 - Si può giudicare una strategia con partite giocate da un'altra, purché le si
-  **pesi** invece di contarle tutte uguali: una partita che la strategia da
+  pesi invece di contarle tutte uguali: una partita che la strategia da
   giudicare avrebbe giocato spesso e l'altra di rado conta molto, una che la
   prima non farebbe mai non conta niente. Il peso è solo il rapporto fra quanto
   erano probabili quelle mosse per l'una e per l'altra, e per questo non serve
@@ -623,24 +622,24 @@ dedicata a lei.
 
 ```{admonition} Da ricordare
 :class: important
-- Un metodo **Monte Carlo** stima il valore di uno stato come **media dei
-  ritorni** osservati partendo da lì: nessun modello dell'ambiente, solo
+- Un metodo Monte Carlo stima il valore di uno stato come media dei
+  ritorni osservati partendo da lì: nessun modello dell'ambiente, solo
   episodi giocati fino in fondo.
-- **A prima visita** conta un ritorno per episodio, è non distorto e il suo
-  errore cala come $1/\sqrt{n}$; **a ogni visita** li conta tutti ed è distorto
+- A prima visita conta un ritorno per episodio, è non distorto e il suo
+  errore cala come $1/\sqrt{n}$; a ogni visita li conta tutti ed è distorto
   per $n$ finito. Convergono tutti e due.
-- Non c'è **bootstrapping**: il bersaglio è il ritorno vero, quindi le stime
+- Non c'è bootstrapping: il bersaglio è il ritorno vero, quindi le stime
   non si contaminano fra loro, ma hanno varianza alta e arrivano solo a
   episodio finito.
-- Per **migliorare** una policy, e non solo misurarla, serve esplorazione:
+- Per migliorare una policy, e non solo misurarla, serve esplorazione:
   inizi esplorativi (teorici) o policy $\varepsilon$-soft (pratiche), che però
   fanno convergere alla migliore policy $\varepsilon$-soft, non alla migliore
   in assoluto.
-- L’**importance sampling** permette di valutare una policy $\pi$ con dati
+- L’importance sampling permette di valutare una policy $\pi$ con dati
   generati da un'altra policy $b$, pesando le traiettorie con
   $\rho = \prod \pi(a_k\mid s_k)/b(a_k\mid s_k)$. Le probabilità di transizione
-  si cancellano, quindi non serve il modello. Serve la **copertura**.
-- La variante **pesata** dell'importance sampling è distorta ma molto più
+  si cancellano, quindi non serve il modello. Serve la copertura.
+- La variante pesata dell'importance sampling è distorta ma molto più
   stabile di quella ordinaria, e in pratica si preferisce.
 ```
 

@@ -1,6 +1,6 @@
 # Dal notebook agli script
 
-Un **notebook** è il quaderno interattivo con cui si lavora quasi sempre
+Un notebook è il quaderno interattivo con cui si lavora quasi sempre
 quando si sperimenta: una pagina divisa in **celle**, ciascuna con dentro un
 pezzo di codice, che si eseguono una alla volta premendo un tasto e che
 lasciano il risultato stampato lì sotto. È lo stesso oggetto che si apre
@@ -17,12 +17,12 @@ che nel frattempo è stata cancellata; la funzione buona è la terza versione,
 ma le prime due sono ancora lì sotto; il modello che ha dato il risultato
 migliore è stato addestrato con un learning rate che nessuno ha annotato, e
 che ora non è più nel codice. Il notebook ha fatto il suo mestiere di
-**laboratorio**, e a un certo punto il laboratorio va trasformato in un
+laboratorio, e a un certo punto il laboratorio va trasformato in un
 prodotto.
 
 Questa sezione mostra come, restando dentro PyTorch e senza aggiungere alcuno
 strumento: cinque file di Python semplice, e un comando che si lancia dal
-**terminale**, cioè quella finestra in cui, invece di cliccare, si scrivono
+terminale, cioè quella finestra in cui, invece di cliccare, si scrivono
 comandi e il computer risponde. È già la soglia di quello che nel mestiere si
 chiama «mandare un modello in produzione», cioè metterlo al lavoro sul serio
 per qualcuno che non sia chi l'ha scritto: il
@@ -137,7 +137,7 @@ def passo_valutazione(modello, loader, criterio, device):
 ```
 
 Due dettagli che pagano subito. La moltiplicazione `* X.size(0)` serve perché
-la loss restituita da PyTorch è già una **media sul batch**, e la media delle
+la loss restituita da PyTorch è già una media sul batch, e la media delle
 medie non è la media. Con i numeri: due vassoi, il primo con dieci esempi che
 sbagliano in media di $1$, il secondo con due esempi che sbagliano in media di
 $4$. La media vera sui dodici esempi è $(10 \cdot 1 + 2 \cdot 4)/12 = 1{,}5$;
@@ -150,7 +150,7 @@ serve anche se è mezzo vuoto, quindi c'è quasi sempre un batch più piccolo
 degli altri.
 
 Il secondo dettaglio è la riga `@torch.no_grad()` scritta sopra la seconda
-funzione. Quella chiocciola in Python si chiama **decoratore**: è una riga che
+funzione. Quella chiocciola in Python si chiama decoratore: è una riga che
 avvolge la funzione e ne cambia il comportamento senza toccarne il corpo. Qui
 dice «tutto quello che succede qui dentro succede a registratore spento», ed
 evita di dover ricordare il blocco `with` a ogni chiamata. La funzione *è* una
@@ -308,7 +308,7 @@ def salva_modello(modello, ottimizzatore, epoca, percorso, classi, argomenti):
 Delle cinque voci che finiscono nel file, quelle che di solito mancano sono
 `"ottimizzatore"` ed `"epoca"`, ed è la distinzione già vista nella sezione
 [sul training loop](addestramento.md): senza lo stato dell'ottimizzatore il
-file serve a **ripartire da capo**, non a **riprendere**.
+file serve a ripartire da capo, non a riprendere.
 
 ```{figure} ../figures/salvare-ricaricare-confrontare-modelli.svg
 :name: fig-serializzazione
@@ -337,7 +337,7 @@ niente.
 Prima però conviene sapere che cosa sia un seme, perché il codice qui sotto
 senza quello è indecifrabile. Il caso, in un computer, non esiste: quello che
 c'è è una lunghissima sequenza di numeri prestabilita, calcolata con una
-formula, che *sembra* casuale. Il **seme** è il punto da cui si comincia a
+formula, che *sembra* casuale. Il seme è il punto da cui si comincia a
 leggerla. Stesso seme, stesso punto di partenza, stessa sequenza, e quindi
 stessi pesi iniziali e stesso ordine di mescolamento dei dati: stesso
 risultato, oggi e fra un anno.
@@ -362,7 +362,7 @@ def fissa_seme(seme: int = 42) -> None:
 
 `````{tab} Elementare
 Attenzione a che cosa significa e a che cosa non significa. Fissare il seme
-serve a **confrontare**: se cambio il learning rate e il risultato migliora, con
+serve a confrontare: se cambio il learning rate e il risultato migliora, con
 il seme fisso so che il merito è del learning rate. Non serve a dire che il
 modello è buono: un risultato ottenuto con un solo seme fortunato non è un
 risultato. Per quello si ripete l'esperimento con tre o cinque semi diversi e si
@@ -426,8 +426,8 @@ bit-a-bit ai casi in cui serve davvero, come il debugging di una regressione.
 
 ## Quando *non* modularizzare
 
-Vale la pena dirlo, perché il consiglio opposto è più comune: si può
-modularizzare troppo presto. Un'idea che non si sa ancora se funzioni non ha
+Il consiglio che si sente più spesso è l'opposto, ma si può modularizzare
+troppo presto. Un'idea che non si sa ancora se funzioni non ha
 bisogno di cinque file, di un parser degli argomenti e di una gerarchia di
 classi; ha bisogno di essere provata in venti minuti. La divisione in moduli è
 un investimento che si ripaga quando qualcosa si ripete, e non prima.
@@ -445,7 +445,7 @@ esperimento smetta di essere un ricordo.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il notebook è una **cucina di prova**, lo script è la **ricetta scritta**. Il
+- Il notebook è una cucina di prova, lo script è la ricetta scritta. Il
   segnale che è ora di passare dall'uno all'altro è sempre lo stesso: "sto
   rilanciando la stessa cosa cambiando un numero".
 - La divisione standard è in cinque file, uno per mestiere: i dati, il
@@ -453,23 +453,23 @@ esperimento smetta di essere un ricordo.
   lancia. Il terzo non sa nulla del problema, e per questo si riusa ovunque.
 - Quando si sommano gli errori di più vassoi bisogna pesarli per quanti esempi
   contengono: la media delle medie non è la media.
-- Tutto ciò che cambia da un esperimento all'altro si passa **da terminale**,
+- Tutto ciò che cambia da un esperimento all'altro si passa da terminale,
   non modificando il codice: così resta scritto nella cronologia.
-- Nel file salvato vanno **i pesi, i nomi delle classi, la configurazione** e
+- Nel file salvato vanno i pesi, i nomi delle classi, la configurazione e
   la memoria dell'ottimizzatore: senza, fra sei mesi quel file non dice né che
   cosa predice, né come è stato ottenuto, né da dove ripartire.
-- Fissare il **seme** del caso serve a confrontare due esperimenti fra loro.
+- Fissare il seme del caso serve a confrontare due esperimenti fra loro.
   Non serve a dire che il modello è buono: per quello si ripete con tre o
   cinque semi diversi.
-- Non dividere in file troppo presto: la regola delle **tre volte**.
+- Non dividere in file troppo presto: la regola delle tre volte.
 ```
 `````
 
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il notebook è un **laboratorio** (stato implicito, ordine invisibile), lo
-  script è un **prodotto** (un punto d'ingresso, tutto dichiarato). Il segnale
+- Il notebook è un laboratorio (stato implicito, ordine invisibile), lo
+  script è un prodotto (un punto d'ingresso, tutto dichiarato). Il segnale
   del passaggio è: "sto rilanciando la stessa cosa cambiando un numero".
 - La divisione standard è in cinque file: `data_setup`, `model_builder`,
   `engine`, `utils`, `train` (dove `engine` contiene il loop, indipendente dal
@@ -478,11 +478,11 @@ esperimento smetta di essere un ricordo.
   PyTorch è già una media sul batch.
 - `argparse` più `if __name__ == "__main__":` (quest'ultimo indispensabile
   anche per i worker del `DataLoader` su Windows e macOS).
-- Si salvano **pesi, classi, configurazione e stato dell'ottimizzatore**
+- Si salvano pesi, classi, configurazione e stato dell'ottimizzatore
   insieme: uno `state_dict` nudo fra sei mesi non dice che cosa predice, e da
   solo non permette di riprendere.
-- Fissare i semi serve a **confrontare** gli esperimenti; il determinismo
+- Fissare i semi serve a confrontare gli esperimenti; il determinismo
   bit-a-bit su GPU si chiede a parte e si paga in prestazioni.
-- Non modularizzare troppo presto: la regola delle **tre volte**.
+- Non modularizzare troppo presto: la regola delle tre volte.
 ```
 `````

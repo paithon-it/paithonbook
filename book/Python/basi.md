@@ -1,7 +1,7 @@
 # Le basi di Python
 
 La grammatica di Python sta in poche pagine, e ci sta apposta: qualche decina
-di **parole chiave** invece di centinaia, e una manciata di idee che si
+di parole chiave invece di centinaia, e una manciata di idee che si
 combinano invece di una regola speciale per ogni caso. Le parole chiave sono
 quelle che il linguaggio si tiene per sé, come `if`, `for` e `def`, e che
 quindi non puoi usare per altro. Imparate quelle, il tempo si passa a decidere
@@ -35,7 +35,7 @@ Tre forme di contenitore. La differenza che conta non è cosa contengono ma se
 si può cambiarne il contenuto: la lista sì, la stringa no.
 ```
 
-Nel disegno le caselle della lista sono numerate **a partire da zero**: la
+Nel disegno le caselle della lista sono numerate a partire da zero: la
 prima è la numero 0, la seconda la numero 1. Sembra una stranezza, ed è invece
 la convenzione che fa tornare i conti: il numero di una casella dice *quanti
 passi fare dall'inizio* per arrivarci, e sulla prima sei già.
@@ -58,9 +58,9 @@ attiva = True        # bool  -> vero (True) o falso (False)
 
 Sono i quattro tipi di partenza: interi (`int`), decimali (`float`), stringhe
 (`str`) e booleani (`bool`, cioè i due soli valori `True` e `False`). Per
-sapere di che tipo è un valore si **chiama** `type`: chiamare vuol dire
+sapere di che tipo è un valore si chiama `type`: chiamare vuol dire
 scriverne il nome e mettere fra parentesi ciò su cui deve lavorare, e in
-risposta si ottiene un valore (le cose che si chiamano così si chiamano
+risposta si ottiene un valore (le cose che si usano così si chiamano
 *funzioni*, e la sezione che porta il loro nome le riprende per bene).
 
 ```python
@@ -90,7 +90,7 @@ tondo: chiedere una divisione vuol dire dichiarare che accetti un risultato
 decimale. (Se ti serve invece il quoziente intero esiste la doppia barra:
 `36 // 2` dà `18`.)
 
-Dentro le graffe può stare qualsiasi **espressione**, cioè qualunque cosa che
+Dentro le graffe può stare qualsiasi espressione, cioè qualunque cosa che
 Python sappia ridurre a un valore: un conto, il nome di una variabile, una
 chiamata a una funzione. E dopo i due punti si mette
 il formato, comodissimo per stampare numeri leggibili. Il formato è fatto di
@@ -107,7 +107,7 @@ f"accuratezza: {0.8723:.1%}"     # -> 'accuratezza: 87.2%'  una cifra, in percen
 
 `````{tab} Elementare
 
-Una variabile è un’**etichetta adesiva** attaccata a un valore.
+Una variabile è un’etichetta adesiva attaccata a un valore.
 `nome = "Ada"` vuol dire "d'ora in poi l'etichetta `nome` sta su questa
 stringa". La cosa comoda è che puoi spostare l'etichetta su un valore di tipo
 diverso quando vuoi:
@@ -143,10 +143,10 @@ nome. Un nome è solo un riferimento; `x = 5` lega il nome `x` all'oggetto
 intero `5`. Ogni valore è un oggetto con un tipo a runtime, e lo stesso nome può
 essere rilegato a oggetti di tipo diverso in momenti diversi.
 
-Dettagli che contano più avanti: gli `int` hanno **precisione arbitraria**
+Dettagli che contano più avanti: gli `int` hanno precisione arbitraria
 (non c'è overflow a 64 bit), i `float` sono double IEEE 754 a 64 bit
 (attenzione agli errori di arrotondamento), le `str` sono sequenze Unicode
-**immutabili**, e `bool` è una sottoclasse di `int`, infatti `True == 1` e
+immutabili, e `bool` è una sottoclasse di `int`, infatti `True == 1` e
 `False == 0`. Dalla stessa premessa, il tipo che appartiene all'oggetto, viene
 lo stile *duck typing*: conta cosa un oggetto *sa fare*, non a quale classe
 appartiene.
@@ -167,7 +167,7 @@ che è esattamente il motivo per cui non va usato così).
 ## Le strutture dati di ogni giorno
 
 Quattro contenitori coprono quasi tutto quello che si fa ogni giorno: la
-**lista**, la **tupla**,
+lista, la **tupla**,
 il **dizionario** e l’**insieme**. Nel codice si scrivono con i nomi inglesi
 (`list`, `tuple`, `dict`, `set`), e ciascuno si riconosce dalle parentesi che
 usa:
@@ -214,7 +214,7 @@ sembra soltanto una lista con qualcosa in meno. La prima garanzia è che nessuna
 altra parte del programma può cambiartela sotto il naso: se scrivi le
 coordinate di Milano in una tupla, quelle restano.
 
-La seconda è che una tupla può fare da **chiave di un dizionario**, e una lista
+La seconda è che una tupla può fare da chiave di un dizionario, e una lista
 no. La ragione è che il dizionario ritrova un valore andando dritto al posto
 che alla chiave compete, e quel posto lo calcola dal contenuto della chiave: se
 il contenuto cambiasse, il valore resterebbe in un posto in cui nessuno lo
@@ -234,23 +234,23 @@ cose che le mancavano.
 
 Le analogie aiutano ({numref}`fig-strutture-dati`):
 
-- **list**, la lista della spesa: elementi in fila, che aggiungi e togli.
-- **tuple**, le coordinate scritte a penna: una coppia fissa, non si cancella.
-- **dict**, il guardaroba di un teatro: consegni il cappotto (il valore) e ti
+- list, la lista della spesa: elementi in fila, che aggiungi e togli.
+- tuple, le coordinate scritte a penna: una coppia fissa, non si cancella.
+- dict, il guardaroba di un teatro: consegni il cappotto (il valore) e ti
   danno un numero (la chiave). Il guardarobiere non scorre i ganci uno per uno:
   dal numero ricava il posto e ci va dritto, che i cappotti appesi siano dieci
   o diecimila. In una lista, invece, per trovare qualcosa bisogna passarla
   tutta, e più è lunga più costa. Ed è anche il motivo per cui un numero
   cancellabile non funzionerebbe: il gancio si ricava da quello, e cambiandolo
   il cappotto resterebbe appeso dove nessuno lo cerca più.
-- **set**, un sacchetto in cui i doppioni si fondono: mettere due volte lo
+- set, un sacchetto in cui i doppioni si fondono: mettere due volte lo
   stesso elemento non cambia nulla.
 
 `````
 
 `````{tab} Superiore
 
-La differenza tecnica è **mutabilità** e **hashabilità**. `list`, `dict` e
+La differenza tecnica è mutabilità e **hashabilità**. `list`, `dict` e
 `set` sono mutabili; `tuple` è immutabile, ed è *hashable* solo se lo sono
 anche i suoi elementi: solo in quel caso può fare da chiave di dizionario.
 `dict` e `set` sono tabelle hash: l'accesso e il test di appartenenza sono in
@@ -280,11 +280,11 @@ len(unici)           # quanti elementi    -> 3
 
 La terza riga introduce la **fetta** (in inglese *slice*), che è il modo di
 prendere un pezzo di una lista invece di un elemento solo: si scrivono due
-indici separati dai due punti, e il secondo è **escluso**. L'estremo escluso
+indici separati dai due punti, e il secondo è escluso. L'estremo escluso
 costa una scortesia e fa guadagnare due comodità: la lunghezza della fetta è
 la differenza dei due numeri, e due fette scritte di seguito, `[0:3]` e
 `[3:6]`, si incastrano senza sovrapporsi e senza buchi. Una fetta di una lista
-è sempre una **copia**: modificarla non tocca l'originale, e con NumPy non
+è sempre una copia: modificarla non tocca l'originale, e con NumPy non
 sarà più così, che è una delle differenze che fa più danni.
 
 In quelle sei righe convivono due scritture diverse, e conviene separarle
@@ -295,15 +295,15 @@ passa la cosa su cui lavorare.
 
 `numeri.append(9)` invece si legge da sinistra a destra come una frase, «alla
 lista `numeri`, aggiungi 9». Il punto vuol dire «di»: prima c'è la cosa (una
-lista, una tabella, una libreria intera), e dopo qualcosa che quella cosa **sa
-fare**, che si chiama *metodo*. Righe come `df.head()`, `np.array(...)` o
+lista, una tabella, una libreria intera), e dopo qualcosa che quella cosa sa
+fare, che si chiama *metodo*. Righe come `df.head()`, `np.array(...)` o
 `modello.fit(...)` sono tutte di questa seconda forma.
 
 ## Decidere e ripetere: il controllo di flusso
 
 Qui si vede la scelta di stile più visibile di Python. Un **blocco** è un
 gruppo di righe che vanno insieme (quelle da eseguire se una condizione è vera,
-per esempio), e in Python si segna facendolo **rientrare** verso destra: due
+per esempio), e in Python si segna facendolo rientrare verso destra: due
 punti, si va a capo, si spinge il testo dentro di qualche spazio. Quegli spazi
 sono sintassi a tutti gli effetti: sono loro a dire dove il blocco comincia e
 dove finisce, e sbagliarli è un errore come sbagliare una parola.
@@ -373,10 +373,10 @@ comincia e dove finisce.
 
 Il rombo è il punto in cui si annidano quasi tutti i cicli infiniti dei primi
 giorni. Nel `while` di poco fa a far scendere il sipario è `i += 1`: senza
-quella riga `i` resterebbe zero, la condizione `i < 3` sarebbe vera per sempre, e la
-freccia di ritorno non porterebbe da nessuna parte. Un programma finito così
-non si schianta: continua, e basta. Lo si ferma premendo `Ctrl+C` nella
-finestra in cui gira.
+quella riga `i` resterebbe zero, la condizione `i < 3` sarebbe vera per
+sempre, e la freccia di ritorno non porterebbe da nessuna parte. Un programma
+finito così non si schianta: continua, e basta. Lo si ferma premendo `Ctrl+C`
+nella finestra in cui gira.
 
 `````{tab} Elementare
 
@@ -415,7 +415,7 @@ Il `for` di Python è un *for-each* costruito sul **protocollo di iterazione**:
 funziona su qualunque oggetto *iterabile* perché sa chiedergli un iteratore e
 poi, a ripetizione, l'elemento successivo. Liste, tuple, stringhe, dizionari e
 generatori rispondono tutti a quel protocollo, e il ciclo non sa nulla di come
-sono fatti dentro. `range(n)` lo implementa in modo **pigro**, producendo gli
+sono fatti dentro. `range(n)` lo implementa in modo pigro, producendo gli
 indici a richiesta senza materializzare la lista; `enumerate` dà
 `(indice, valore)` e `zip` allinea più sequenze, fermandosi sulla più corta:
 
@@ -466,10 +466,11 @@ saluta("Ada")             # -> "Ciao, Ada!"
 saluta("Ada", "Salve")    # -> "Salve, Ada!"
 ```
 
-A chi restituisce, `return`? A chi ha scritto la chiamata. Quando `area_rettangolo(3, 4)` finisce, quella scritta
-*diventa* il numero 12, lì dove sta, come se avessi scritto 12 con le tue mani.
-Da quel momento ci fai quello che vuoi: gli dai un nome, lo sommi, lo passi a
-un'altra funzione, lo stampi.
+A chi restituisce, `return`? A chi ha scritto la chiamata. Quando
+`area_rettangolo(3, 4)` finisce, quella scritta *diventa* il numero 12, lì
+dove sta, come se avessi scritto 12 con le tue mani. Da quel momento ci fai
+quello che vuoi: gli dai un nome, lo sommi, lo passi a un'altra funzione, lo
+stampi.
 
 ```python
 risultato = area_rettangolo(3, 4)   # il 12 va a finire in 'risultato'
@@ -483,7 +484,7 @@ niente a nessuno, `return` consegna un valore al programma e non scrive niente.
 Una funzione che stampasse invece di restituire sarebbe inutilizzabile dentro
 un conto più grande.
 
-Gli argomenti si possono anche passare **con il loro nome davanti**, e allora
+Gli argomenti si possono anche passare con il loro nome davanti, e allora
 l'ordine non conta più:
 
 ```python
@@ -495,7 +496,7 @@ saluta(saluto="Salve", nome="Ada")   # -> "Salve, Ada!"
 
 `````{tab} Elementare
 
-Una funzione lavora come una **macchinetta**: dentro metti gli ingredienti
+Una funzione lavora come una macchinetta: dentro metti gli ingredienti
 (gli argomenti), esce un risultato. `area_rettangolo` prende base e altezza,
 restituisce l'area.
 
@@ -532,8 +533,8 @@ modificata e la stringa no. Quando una funzione ti cambia i dati sotto il naso
 senza che tu l'abbia chiesto, la causa è quasi sempre questa.
 
 Lo stesso fenomeno ha un rovescio, e tocca proprio il valore preimpostato di
-poco fa. Se quel valore è una lista, la lista viene fabbricata **una volta
-sola**, quando la funzione nasce, e resta la stessa a ogni chiamata: chi ci
+poco fa. Se quel valore è una lista, la lista viene fabbricata una volta
+sola, quando la funzione nasce, e resta la stessa a ogni chiamata: chi ci
 aggiunge qualcosa se la ritrova già piena al giro dopo. Per questo un valore
 preimpostato è quasi sempre un numero, una stringa, oppure `None`.
 
@@ -546,9 +547,9 @@ dice «da me non torna indietro niente».
 
 `````{tab} Superiore
 
-Gli argomenti si passano per **posizione** o per **nome** (keyword):
+Gli argomenti si passano per posizione o per nome (keyword):
 `saluta(nome="Ada", saluto="Salve")` è equivalente ma esplicito. Fra i
-parametri **posizionali**, quelli con un default vengono dopo quelli
+parametri posizionali, quelli con un default vengono dopo quelli
 obbligatori (`def g(a=1, b)` è un errore di sintassi). Dopo un `*` nudo
 cominciano invece i parametri *keyword-only*, che si passano solo per nome e
 che possono essere obbligatori anche venendo dopo dei default: `def f(a=1, *,
@@ -558,7 +559,7 @@ asterisco solitario in mezzo: costringere a scrivere il nome degli argomenti
 rende leggibile il codice di chi chiama e permette di aggiungere parametri senza
 rompere il codice altrui.
 
-Una trappola classica: il valore di default è valutato **una sola volta**, alla
+Una trappola classica: il valore di default è valutato una sola volta, alla
 definizione. Non usare mai un oggetto mutabile come default (`def f(x, acc=[])`)
 o l’`acc` sarà condiviso tra le chiamate. Le funzioni in Python sono
 *first-class*: si assegnano a variabili, si passano ad altre funzioni, si
@@ -622,7 +623,7 @@ quadrati = [n ** 2 for n in range(10)]
 pari = [n for n in range(10) if n % 2 == 0]    # -> [0, 2, 4, 6, 8]
 ```
 
-Tre segni nuovi, tutti nell'ultima riga. `%` è il **resto** della divisione
+Tre segni nuovi, tutti nell'ultima riga. `%` è il resto della divisione
 (`7 % 2` fa 1); `==` chiede «sono uguali?», ed è doppio proprio per non
 confondersi con l'uguale singolo, che invece assegna; messi insieme,
 `n % 2 == 0` significa «il resto della divisione di `n` per due è zero», cioè
@@ -661,7 +662,7 @@ Traceback (most recent call last):
 KeyError: 'Carla'
 ```
 
-Un traceback si legge **dal fondo**. L'ultima riga dice *che cosa* è successo:
+Un traceback si legge dal fondo. L'ultima riga dice *che cosa* è successo:
 `KeyError: 'Carla'`, cioè «ho cercato la chiave `Carla` e non c'era». Le righe
 sopra dicono *dove*: ogni coppia «`File`, `line`» è una tappa del viaggio che
 il programma stava facendo, dalla prima chiamata in cima fino alla riga
@@ -682,7 +683,7 @@ traceback.
 
 `````{tab} Elementare
 
-Si può fare di meglio che schiantarsi: mettere un **paracadute** attorno
+Si può fare di meglio che schiantarsi: mettere un paracadute attorno
 alla riga che può cadere. Si scrive `try:` («prova»), e sotto, con `except`
 («se è andata male»), che cosa fare invece, nominando l'incidente che ci si
 aspetta: `except KeyError:` si legge «se la chiave non c'era». Il paracadute si
@@ -695,7 +696,7 @@ gli errori che avresti voluto vedere.
 `````{tab} Superiore
 
 Il paracadute, in codice, è il costrutto `try`/`except`, e la regola d'oro è
-catturare **poco**:
+catturare poco:
 
 - si dichiara sempre *quale* eccezione si sta aspettando (`except KeyError:`),
   perché un `except:` nudo prende qualunque cosa, compreso il `Ctrl+C` con cui
@@ -705,7 +706,7 @@ catturare **poco**:
 - `raise` senza argomenti, dentro un `except`, rilancia l'eccezione appena
   catturata: si usa quando si vuole registrare il guasto ma non nasconderlo;
 - i rami facoltativi: `else` gira solo se il `try` è filato liscio, `finally`
-  gira **comunque**, ed è il posto delle pulizie (chiudere un file, rilasciare
+  gira comunque, ed è il posto delle pulizie (chiudere un file, rilasciare
   una risorsa). Il mestiere di `finally` è esattamente quello che il
   costrutto `with` automatizza.
 
@@ -788,7 +789,7 @@ p.distanza_origine()     # -> 5.0   (il triangolo 3, 4, 5 di Pitagora)
 
 `````{tab} Elementare
 
-Una classe è come uno **stampo per biscotti**: `Punto` è lo stampo, ogni `p`
+Una classe è come uno stampo per biscotti: `Punto` è lo stampo, ogni `p`
 che crei è un biscotto diverso fatto con lo stesso stampo. I *metodi* (come
 `distanza_origine`) sono le cose che l'oggetto sa fare; gli *attributi* (`x`,
 `y`) sono ciò che l'oggetto ricorda. La parola `self` è il modo in cui
@@ -813,7 +814,7 @@ comportamenti riusando il codice della classe base.
 Questo pattern è ovunque nell'ecosistema: uno stimatore di scikit-learn è un
 oggetto che addestri chiamandone i metodi (`modello.fit(X, y)`,
 `modello.predict(X)`), e in PyTorch ogni rete neurale è una classe che
-**eredita** da `nn.Module`, con i suoi attributi (i pesi) e i suoi metodi.
+eredita da `nn.Module`, con i suoi attributi (i pesi) e i suoi metodi.
 Capire le classi ora rende familiare tutto il codice di machine learning che
 verrà.
 
@@ -919,7 +920,7 @@ custode. È un fastidio piccolo finché il programma funziona, e diventa grosso
 quando si va a cercare un guasto.
 
 `@torch.no_grad()` mette al banco un custode di un altro mestiere: per la
-durata della visita tiene spento il calcolo dei **gradienti**, le quantità con
+durata della visita tiene spento il calcolo dei gradienti, le quantità con
 cui una rete neurale impara, e all'uscita lo riaccende. Serve quando la rete
 deve solo rispondere e non più imparare.
 
@@ -959,7 +960,7 @@ addestra.__name__             # 'addestra', non 'involucro'
 ```
 
 Le parentesi di `@torch.no_grad()`, però, hanno un'altra origine.
-`torch.no_grad` è una **classe**, e non una funzione.
+`torch.no_grad` è una classe, e non una funzione.
 `torch.no_grad()` costruisce un oggetto, e quell'oggetto sa fare due mestieri
 perché definisce sia `__enter__`/`__exit__` (e allora sta dopo `with`) sia
 `__call__` (e allora sta dopo `@`). È per questo che le due forme sono la
@@ -970,7 +971,7 @@ stessa cosa, e infatti PyTorch accetta anche `@torch.no_grad` senza parentesi
 funzioni che *restituiscono* il decoratore, quindi parametri, funzione,
 chiamata.
 
-Il parente stretto è **`@property`**, che fa sembrare attributo il risultato di
+Il parente stretto è `@property`, che fa sembrare attributo il risultato di
 un metodo. Serve quando un valore è derivato o va validato, ma si vuole
 continuare a scrivere `oggetto.valore` invece di `oggetto.get_valore()`:
 
@@ -998,7 +999,7 @@ interfaccia, e dice se quel valore è un dato o un lavoro.
 ### Il parente stretto: `with`
 
 C'è un secondo modo di dire «per la durata di questo blocco, cambia qualcosa e
-poi rimetti a posto», ed è la parola chiave **`with`**. L'esempio classico è
+poi rimetti a posto», ed è la parola chiave `with`. L'esempio classico è
 leggere un file dal disco: `open` lo apre e restituisce un oggetto da cui il
 testo si tira fuori con `f.read()`, e un file aperto va sempre richiuso,
 altrimenti resta occupato.
@@ -1019,7 +1020,7 @@ L'oggetto usato con `with` si chiama *context manager* («gestore di
 contesto»): definisce cosa fare all'ingresso e cosa all'uscita del blocco. Il
 valore sta tutto nella seconda metà, cioè nel rimettere a posto: chiudere il
 file, liberare la memoria, riaccendere ciò che si era spento. E avviene
-**comunque**, anche quando il programma, dentro il blocco, incontra un guasto e
+comunque, anche quando il programma, dentro il blocco, incontra un guasto e
 solleva un'eccezione. Chiudere un file a mano è facile da dimenticare; con
 `with` non serve ricordarsene.
 
@@ -1038,7 +1039,7 @@ un blocco. Molte API offrono entrambe le forme proprio per questo.
 
 ## Un lavoratore alla volta: il GIL
 
-Un computer di oggi ha quattro, otto, sedici **nuclei di calcolo**, cioè
+Un computer di oggi ha quattro, otto, sedici nuclei di calcolo, cioè
 altrettanti conti che possono davvero avvenire nello stesso istante, e viene
 naturale pensare che per andare più in fretta basti dividere il lavoro fra
 loro. Con Python non funziona così, e la ragione ha tre lettere.
@@ -1060,13 +1061,13 @@ aggiornassero insieme lo rovinerebbero.
 I cuochi, in un programma, si chiamano **thread**: sono le linee di lavoro che
 procedono in parallelo dentro lo stesso programma, e condividono tutto, come
 quattro cuochi nella stessa cucina. Il coltello è il permesso di eseguire
-istruzioni Python, e ce n'è uno solo: **un thread alla volta**. Da cui la
+istruzioni Python, e ce n'è uno solo: un thread alla volta. Da cui la
 regola pratica, che è tutto ciò che serve ricordare:
 
-- se il lavoro è **aspettare** (scaricare pagine, leggere file, interrogare un
+- se il lavoro è aspettare (scaricare pagine, leggere file, interrogare un
   database), i thread aiutano eccome: mentre uno aspetta posa il coltello, e
   gli altri lavorano;
-- se il lavoro è **calcolare**, i thread non servono a niente. Per usare
+- se il lavoro è calcolare, i thread non servono a niente. Per usare
   davvero più nuclei bisogna avviare **processi** separati, che sono cucine
   diverse, ciascuna con il suo coltello.
 
@@ -1077,8 +1078,8 @@ lavoro.
 
 E c'è un'ultima cosa, che è il motivo per cui in pratica il problema si sente
 molto meno di quanto la cucina con un coltello solo faccia temere: quando il
-conto vero avviene dentro NumPy o PyTorch, quelle librerie **posano il
-coltello** prima di mettersi a calcolare, perché il calcolo lo fanno in C e
+conto vero avviene dentro NumPy o PyTorch, quelle librerie posano il
+coltello prima di mettersi a calcolare, perché il calcolo lo fanno in C e
 non hanno bisogno dell'interprete. Nel codice che addestra modelli e macina
 numeri, insomma, il lucchetto è aperto quasi sempre.
 
@@ -1091,8 +1092,8 @@ di Python (CPython) che protegge lo stato interno dell'interprete, in
 particolare il **conteggio dei riferimenti** con cui ogni oggetto tiene traccia
 di quanti nomi lo puntano (è il meccanismo primario con cui CPython libera la
 memoria; il `gc` vero e proprio gli sta sopra e serve a raccogliere i cicli).
-La sua conseguenza è netta: **un solo thread per interprete esegue bytecode
-Python in un dato istante**. Resta una scelta di implementazione e non una
+La sua conseguenza è netta: un solo thread per interprete esegue bytecode
+Python in un dato istante. Resta una scelta di implementazione e non una
 proprietà del linguaggio, tanto che Jython e IronPython il GIL non ce l'hanno;
 ma è la scelta dell'interprete che tutti usano.
 
@@ -1107,14 +1108,14 @@ risolvono problemi diversi:
   e il proprio GIL, quindi parallelismo reale sui nuclei. Il costo è che la
   memoria non è condivisa: gli argomenti e i risultati attraversano una
   serializzazione (`pickle`), che per tensori grandi può dominare il guadagno.
-- **`asyncio`**: un solo thread, multitasking **cooperativo** su un ciclo di
+- **`asyncio`**: un solo thread, multitasking cooperativo su un ciclo di
   eventi. Un `await` cede il controllo esplicitamente. Nessun parallelismo di
   calcolo, ma scala a decine di migliaia di attese contemporanee senza il costo
   di altrettanti thread. È il modello dei server, ed è quello dei client verso
   le API dei modelli, dove il tempo se ne va aspettando la rete.
 
-La ragione per cui il GIL, in pratica, morde meno di quanto sembri: **NumPy e
-PyTorch lo rilasciano** durante le operazioni pesanti, che girano in codice C o
+La ragione per cui il GIL, in pratica, morde meno di quanto sembri: NumPy e
+PyTorch lo rilasciano durante le operazioni pesanti, che girano in codice C o
 in kernel BLAS/CUDA già multi-thread al loro interno. Una moltiplicazione fra
 matrici usa tutti i nuclei anche da un solo thread Python. Il GIL torna a
 mordere sul codice Python puro: i cicli sui campioni, la decodifica delle
@@ -1125,17 +1126,17 @@ che pilota più GPU da un solo processo, è sconsigliato in favore di
 
 ```{admonition} Il GIL non è per sempre
 :class: note
-Con la **PEP 703** il GIL sta diventando opzionale. CPython 3.13 ha introdotto
-una *build* sperimentale senza GIL (*free-threading*); con la **PEP 779**
+Con la PEP 703 il GIL sta diventando opzionale. CPython 3.13 ha introdotto
+una *build* sperimentale senza GIL (*free-threading*); con la PEP 779
 quella build passa da sperimentale a ufficialmente supportata in CPython 3.14,
 pur non essendo ancora quella predefinita. Resta un costo sul codice a thread
 singolo, che la documentazione di CPython 3.14 dà «attorno al 5-10%, a seconda
 della piattaforma e del compilatore C» (la PEP 779, scritta prima, riportava
 circa il 10%, e circa il 3% su macOS). Nel 3.13 era molto più alto, e il salto
-viene soprattutto dall’**interprete adattivo** della PEP 659, che nella build
+viene soprattutto dall’interprete adattivo della PEP 659, che nella build
 senza GIL adesso è acceso e in quella del 3.13 non lo era. Farne il default è
 una terza fase annunciata ma non ancora datata. È materia in movimento: quel che
-resta vero, e che conviene portarsi via, è la **distinzione** fra lavoro che
+resta vero, e che conviene portarsi via, è la distinzione fra lavoro che
 aspetta e lavoro che calcola, e il fatto che condividere memoria e condividere
 nuclei sono due problemi diversi.
 ```
@@ -1144,14 +1145,14 @@ nuclei sono due problemi diversi.
 
 Che i thread non aiutino a calcolare, e aiutino invece ad aspettare, si può
 vedere in una ventina di righe, con una misura da fare una volta con le
-proprie mani. Il programma che segue stampa i numeri che contano, e i primi
-quattro sono stampati due volte, perché i tempi da guardare sono due; per i
-processi basta il primo, che il tempo di CPU dei figli il padre non lo vede. Il
-**tempo di parete**
-è quello dell'orologio appeso al muro, cioè quanto si è aspettato; il **tempo
-di CPU** è quanto lavoro ha fatto davvero il processore, sommato su tutti i
-lavoratori. È la differenza fra «quanto ci ha messo» e «quanta fatica ha
-fatto», e senza la seconda misura questo esperimento non dimostra niente.
+proprie mani. Il programma che segue prova quattro casi, e di ciascuno stampa
+due tempi, perché i tempi da guardare sono due; nel quinto caso, quello dei
+processi, basta il primo, che il tempo di CPU dei figli il padre non lo vede.
+Il **tempo di parete** è quello dell'orologio appeso al muro, cioè quanto si è
+aspettato; il **tempo di CPU** è quanto lavoro ha fatto davvero il processore,
+sommato su tutti i lavoratori. È la differenza fra «quanto ci ha messo» e
+«quanta fatica ha fatto», e senza la seconda misura questo esperimento non
+dimostra niente.
 
 ```python
 import multiprocessing as mp
@@ -1233,15 +1234,15 @@ CPU, con 4 processi : parete 0.12 s
 ```
 
 I numeri assoluti dipendono dalla macchina, ma la grandezza da guardare è
-sempre la stessa: il **tempo di parete con quattro thread confrontato con
-quello in sequenza**. Sul lavoro di calcolo non scende: resta lì dov'era, e da
+sempre la stessa: il tempo di parete con quattro thread confrontato con
+quello in sequenza. Sul lavoro di calcolo non scende: resta lì dov'era, e da
 un'esecuzione all'altra oscilla di qualche centesimo in su o in giù, perché
-passarsi il turno ha un costo dello stesso ordine del rumore della misura: i quattro thread non stanno lavorando
-in quattro, si stanno alternando, ed è esattamente ciò che significa GIL.
-Sull'attesa scende invece a un quarto, da un secondo tondo a 0,25, perché lì il
-lucchetto è posato e nessuno si ostacola. Con i processi accelera anche il
-calcolo, quanto lo permettono i nuclei disponibili. Tre confronti, e la regola
-resta in mente.
+passarsi il turno ha un costo dello stesso ordine del rumore della misura. I
+quattro thread non stanno lavorando in quattro, si stanno alternando, ed è
+esattamente ciò che significa GIL. Sull'attesa scende invece a un quarto, da un
+secondo tondo a 0,25, perché lì il lucchetto è posato e nessuno si ostacola.
+Con i processi accelera anche il calcolo, quanto lo permettono i nuclei
+disponibili. Tre confronti, e la regola resta in mente.
 
 L'esperimento vale solo su una
 macchina scarica, e per accorgersi che non lo è basta la prima riga. Se il
@@ -1255,53 +1256,53 @@ tempo di CPU resta identico), ma con quattro candidati pronti in coda capita
 più spesso che almeno uno di loro abbia il turno. È un effetto
 instabile, e un motivo in più per misurare a macchina scarica.
 
-Il **tempo di CPU** stampato accanto serve a distinguere le due situazioni in
+Il tempo di CPU stampato accanto serve a distinguere le due situazioni in
 cui la parete non scende, e va letto con una cautela da dire: `process_time()`
 somma il lavoro di tutti i thread, quindi resta all'incirca uguale sia quando
 i thread si alternano sia quando lavorano davvero insieme, e da solo non
-dimostra nulla. Quello che dice è un'altra cosa, utile: se la parete non
-scende **e** la CPU è alta, si sta calcolando a turno (il caso del GIL); se la
-parete non scende e la CPU è quasi zero, si sta solo aspettando.
+dimostra nulla. Quello che dice è un'altra cosa, utile: quando la parete non
+scende, una CPU alta vuol dire che si sta calcolando a turno, ed è il caso del
+GIL; una CPU quasi a zero, che si sta soltanto aspettando.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Il **tipo** di un valore lo decide il valore, non tu: si assegna con `=` e si
+- Il tipo di un valore lo decide il valore, non tu: si assegna con `=` e si
   va avanti. I mattoni sono i numeri interi (`int`), quelli con la virgola
   (`float`), il testo (`str`) e il vero-o-falso (`bool`).
-- Quattro contenitori coprono quasi tutto: **list** (fila ordinata, si
-  modifica), **tuple** (fila fissa), **dict** (si cerca per nome, cioè per
-  chiave), **set** (senza doppioni). Nel dizionario il valore si trova in un
+- Quattro contenitori coprono quasi tutto: list (fila ordinata, si
+  modifica), tuple (fila fissa), dict (si cerca per nome, cioè per
+  chiave), set (senza doppioni). Nel dizionario il valore si trova in un
   colpo, qualunque sia la sua taglia; in una lista bisogna scorrerla tutta.
-- Alcuni valori si cambiano **sul posto** e altri no: una lista sì, una stringa
+- Alcuni valori si cambiano sul posto e altri no: una lista sì, una stringa
   e una tupla no. Da qui vengono quasi tutte le sorprese dei primi giorni: due
   nomi possono stare sulla stessa lista, e una funzione può modificarti la
   lista che le passi. Se vuoi una lista a parte, la copia si chiede
   (`a.copy()`).
-- I blocchi si delimitano **rientrando** le righe: `if`/`elif`/`else` per
+- I blocchi si delimitano rientrando le righe: `if`/`elif`/`else` per
   decidere, `for` e `while` per ripetere. `print` è ciò che fa uscire un valore
   sullo schermo: senza, il programma calcola e tace.
-- Una **funzione** (`def` … `return`) è un pezzo di lavoro con un nome, da
-  riusare; una **list comprehension** costruisce una lista in una riga; una
-  **classe** è uno stampo per fabbricare oggetti su misura, ciascuno con i
+- Una funzione (`def` … `return`) è un pezzo di lavoro con un nome, da
+  riusare; una list comprehension costruisce una lista in una riga; una
+  classe è uno stampo per fabbricare oggetti su misura, ciascuno con i
   propri dati e le proprie azioni.
-- Le **f-string** (`f"{nome} ha {eta} anni"`) infilano valori dentro il testo, e
+- Le f-string (`f"{nome} ha {eta} anni"`) infilano valori dentro il testo, e
   dopo i due punti si dice che aspetto devono avere: `f"{loss:.3f}"` sono tre
   cifre dopo la virgola.
-- Un **traceback** si legge dal fondo: l'ultima riga dice *che cosa* è
-  successo, risalendo si scopre *dove*. E il **paracadute** (`try`/`except`)
+- Un traceback si legge dal fondo: l'ultima riga dice *che cosa* è
+  successo, risalendo si scopre *dove*. E il paracadute (`try`/`except`)
   si mette attorno alla riga fragile, non attorno a tutto il programma.
-- Un **decoratore** (`@qualcosa`) avvolge una funzione senza toccarla:
+- Un decoratore (`@qualcosa`) avvolge una funzione senza toccarla:
   `@cronometra` è solo `f = cronometra(f)`. `with` fa la stessa cosa su un
   blocco, e garantisce che alla fine si rimetta tutto a posto anche se qualcosa
   va storto.
-- Il **GIL** lascia eseguire istruzioni Python a **un thread alla volta**: i
+- Il GIL lascia eseguire istruzioni Python a un thread alla volta: i
   thread aiutano quando il lavoro è *aspettare* (rete, disco), non quando è
-  *calcolare*. Per usare più nuclei servono **processi**, cucine separate che
+  *calcolare*. Per usare più nuclei servono processi, cucine separate che
   però non condividono niente e devono impacchettare e spedirsi tutto quello
-  che si scambiano. NumPy e PyTorch, mentre fanno i conti pesanti, **posano il
-  coltello**: è per questo che in pratica il problema morde molto meno di
+  che si scambiano. NumPy e PyTorch, mentre fanno i conti pesanti, posano il
+  coltello: è per questo che in pratica il problema morde molto meno di
   quanto sembri.
 ```
 
@@ -1311,38 +1312,38 @@ parete non scende e la CPU è quasi zero, si sta solo aspettando.
 
 ```{admonition} Da ricordare
 :class: important
-- Python è **dinamicamente tipizzato**: assegni un valore e il tipo si deduce
+- Python è dinamicamente tipizzato: assegni un valore e il tipo si deduce
   da solo. I mattoni sono `int`, `float`, `str`, `bool`.
-- Quattro strutture dati coprono quasi tutto: **list** (ordinata, modificabile),
-  **tuple** (immutabile), **dict** (chiave → valore, accesso in media $O(1)$
-  contro l’$O(n)$ della ricerca in lista), **set** (senza duplicati). Chiavi e
+- Quattro strutture dati coprono quasi tutto: list (ordinata, modificabile),
+  tuple (immutabile), dict (chiave → valore, accesso in media $O(1)$
+  contro l’$O(n)$ della ricerca in lista), set (senza duplicati). Chiavi e
   elementi devono essere *hashable*.
-- La **mutabilità** decide più di quanto sembri: `b = a` dà un secondo nome
+- La mutabilità decide più di quanto sembri: `b = a` dà un secondo nome
   allo stesso oggetto (per copiare, `a.copy()` o `copy.deepcopy`); il default
-  di una funzione è valutato **una sola volta**, quindi mai un oggetto mutabile
+  di una funzione è valutato una sola volta, quindi mai un oggetto mutabile
   come `acc=[]`; e `is` chiede «stesso oggetto?» mentre `==` chiede «stesso
   valore?», con `if x is None` come unico uso di `is` da tenere a memoria.
-- I blocchi sono definiti dall’**indentazione**; `if/elif/else`, `for` e `while`
+- I blocchi sono definiti dall’indentazione; `if/elif/else`, `for` e `while`
   bastano per il controllo di flusso.
-- Le **funzioni** (`def` … `return`) e le **list comprehension** rendono il
-  codice conciso; le **classi** modellano oggetti su misura: la stessa forma
+- Le funzioni (`def` … `return`) e le list comprehension rendono il
+  codice conciso; le classi modellano oggetti su misura: la stessa forma
   di scikit-learn e PyTorch.
-- Le **f-string** (`f"{nome} ha {eta} anni"`) inseriscono valori nel testo, con
+- Le f-string (`f"{nome} ha {eta} anni"`) inseriscono valori nel testo, con
   il formato dopo i due punti: `f"{loss:.3f}"`.
-- Le eccezioni si gestiscono con `try`/`except` **stretto** (mai `except:`
+- Le eccezioni si gestiscono con `try`/`except` stretto (mai `except:`
   nudo), `else`/`finally` per il seguito e le pulizie, `raise` per rilanciare:
   è lo stile EAFP, e il traceback si legge dall'ultima riga risalendo la pila
   delle chiamate.
-- Un **decoratore** (`@qualcosa`) avvolge una funzione senza modificarla:
+- Un decoratore (`@qualcosa`) avvolge una funzione senza modificarla:
   `@cronometra` è solo `f = cronometra(f)`. `with` fa la stessa cosa su un
   blocco invece che su una funzione, e garantisce la pulizia anche in caso di
   errore.
-- Il **GIL** lascia eseguire codice Python a **un thread alla volta**: i thread
+- Il GIL lascia eseguire codice Python a un thread alla volta: i thread
   aiutano quando il lavoro è *aspettare* (rete, disco), non quando è
-  *calcolare*. Per usare più nuclei servono **processi**, che però non
+  *calcolare*. Per usare più nuclei servono processi, che però non
   condividono la memoria e devono serializzare ciò che si scambiano;
   `asyncio` è la terza via, un solo thread che gestisce molte attese. NumPy e
-  PyTorch **rilasciano il GIL** durante i conti pesanti, ed è per questo che in
+  PyTorch rilasciano il GIL durante i conti pesanti, ed è per questo che in
   pratica morde molto meno di quanto sembri.
 ```
 

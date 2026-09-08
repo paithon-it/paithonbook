@@ -349,8 +349,8 @@ valutazioni; nei modelli veri sta fra le dieci e le venti, ed è il motivo per
 cui le librerie predefiniscono il secondo ordine e non il terzo.
 
 **Guida forte.** Con classifier-free guidance la quantità integrata è
-$\tilde{\boldsymbol{\epsilon}} = \boldsymbol{\epsilon}_\varnothing
-+ w\,(\boldsymbol{\epsilon}_c-\boldsymbol{\epsilon}_\varnothing)$, dove
+$\tilde{\boldsymbol{\epsilon}} = \boldsymbol{\epsilon}_\varnothing +
+w\,(\boldsymbol{\epsilon}_c-\boldsymbol{\epsilon}_\varnothing)$, dove
 $\boldsymbol{\epsilon}_\varnothing$ e $\boldsymbol{\epsilon}_c$ sono la
 predizione senza e con il testo e $w$ è la forza della guida (un numero, non il
 peso $w(t)$ della loss). La norma di $\tilde{\boldsymbol{\epsilon}}$ cresce

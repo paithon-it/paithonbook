@@ -2,26 +2,27 @@
 
 Nel giugno del 2017 otto ricercatori, tutti passati per Google Brain e Google
 Research, pubblicano un *paper* (un articolo scientifico: il modo in cui chi fa
-ricerca racconta agli altri quello che ha trovato) dal titolo che suona come una
-battuta: *Attention Is All You Need* {cite}`vaswani2017attention`
+ricerca racconta agli altri quello che ha trovato) dal titolo che suona come
+una battuta: *Attention Is All You Need* {cite}`vaswani2017attention`
 («l'attenzione è tutto ciò che serve», eco di *All You Need Is Love* dei
-Beatles). Dentro c'è un'architettura di rete neurale nuova, il **Transformer**,
-che fa una scommessa radicale: per capire il linguaggio non servono né la
+Beatles). Dentro c'è un'architettura di rete neurale nuova, il **Transformer**, che
+fa una scommessa radicale: per capire il linguaggio non servono né la
 ricorrenza delle RNN (leggere una parola alla volta, portandosi dietro un
 riassunto di quel che è venuto prima) né le convoluzioni (i filtri che scorrono
-su un testo o su un'immagine guardando solo i vicini, del {doc}`capitolo sul deep
-learning </DeepLearning/overview>`); basta il meccanismo di **attenzione**, usato fino ad allora come
-accessorio. La scommessa è vinta oltre ogni previsione: oggi il Transformer è la
-base di quasi tutti i grandi modelli linguistici, e quella «T» è la stessa che
-trovi nel nome di GPT e di ChatGPT.
+su un testo o su un'immagine guardando solo i vicini, del {doc}`capitolo sul
+deep learning </DeepLearning/overview>`); basta il meccanismo di attenzione,
+usato fino ad allora come accessorio. La scommessa è vinta oltre ogni
+previsione: oggi il Transformer è la base di quasi tutti i grandi modelli
+linguistici, e quella «T» è la stessa che trovi nel nome di GPT e di ChatGPT.
 
 ## Il problema: leggere una frase tutta insieme
 
-I modelli che abbiamo incontrato nel {doc}`capitolo sul Natural Language Processing </NaturalLanguageProcessing/overview>`
-leggono il testo una parola alla volta, portandosi dietro un riassunto di quel
-che è venuto prima: sono le **reti ricorrenti** (in sigla RNN) e la loro
-versione più raffinata, quella con un taccuino su cui annotare e cancellare
-(le **LSTM**). Funziona, ma con due difetti strutturali.
+I modelli che abbiamo incontrato nel {doc}`capitolo sul Natural Language
+Processing </NaturalLanguageProcessing/overview>` leggono il testo una parola
+alla volta, portandosi dietro un riassunto di quel che è venuto prima: sono le
+reti ricorrenti (in sigla RNN) e la loro versione più raffinata, quella con un
+taccuino su cui annotare e cancellare (le LSTM). Funziona, ma con due difetti
+strutturali.
 
 `````{tab} Elementare
 Un romanzo letto attraverso una fessura che scopre una parola alla volta, con
@@ -58,10 +59,10 @@ lunga $n$ attraversa $O(n)$ passaggi di stato: il segnale si degrada (gradiente
 che svanisce, come visto nella {doc}`sezione sulle funzioni di attivazione
 </RetiNeurali/funzioni-attivazione>`) e le dipendenze
 lunghe si perdono, problema che LSTM e GRU mitigano ma non eliminano. Inoltre
-la ricorrenza è intrinsecamente **sequenziale**: il passo $t$ richiede il passo
+la ricorrenza è intrinsecamente sequenziale: il passo $t$ richiede il passo
 $t-1$, e l'hardware parallelo (le GPU) resta sottoutilizzato in addestramento.
 
-Nel Transformer la **self-attention** collega ogni coppia di posizioni in un
+Nel Transformer la self-attention collega ogni coppia di posizioni in un
 solo passo, lunghezza di cammino $O(1)$, e l'elaborazione di tutte le
 posizioni è un prodotto tra matrici, parallelizzabile per costruzione. È
 questa seconda proprietà, più ancora della prima, ad aver cambiato la scala
@@ -78,36 +79,39 @@ ordine particolarmente felice. Chi ha letto i {doc}`capitoli sulla matematica
 </Matematica/overview>` e sulle reti neurali ritroverà i pezzi con i loro nomi:
 matrici, prodotti scalari, softmax.
 
-Il capitolo segue la scia dell'articolo del 2017. Si comincia dal **meccanismo
-di attenzione**: cos'è, come si calcola, perché funziona. Poi si monta
-l’**architettura** completa, cioè come i blocchi di attenzione diventano una
-rete vera. Segue un confronto onesto con i **modelli precedenti**, quelli che
-leggevano in fila, inclusi i punti dove il Transformer è più debole, e poi due
-**esempi pratici** che si possono eseguire.
+Il capitolo segue la scia dell'articolo del 2017. Si comincia dal meccanismo
+di attenzione: cos'è, come si calcola, perché funziona. Poi si monta
+l’architettura completa, cioè come i blocchi di attenzione diventano una
+rete vera. Segue un confronto onesto con i modelli precedenti, quelli che
+leggevano in fila, inclusi i punti dove il Transformer è più debole. Poi
+l'attenzione in pratica: come la stessa formula gira quando il modello
+genera una parola per volta, che cosa si conserva fra un token e il
+successivo, e quanto costa. E infine due esempi pratici che si possono
+eseguire.
 
 Da lì in poi si guarda che cosa è cresciuto su quell'architettura. Le
-**famiglie di modelli** (GPT, BERT, T5) e l'estensione alle immagini. Che cosa
-succede quando lo stesso modello impara **cento lingue insieme**, compreso il
+famiglie di modelli (GPT, BERT, T5) e l'estensione alle immagini. Che cosa
+succede quando lo stesso modello impara cento lingue insieme, compreso il
 fatto tutt'altro che ovvio che si possa rifinirlo in inglese e usarlo in
-italiano. I **grandi modelli linguistici**: quanto conviene ingrandirli, e come
-si sceglie davvero la parola da scrivere. I **modelli a esperti**, che sanno
+italiano. I grandi modelli linguistici: quanto conviene ingrandirli, e come
+si sceglie davvero la parola da scrivere. I modelli a esperti, che sanno
 moltissimo ma per ogni parola accendono solo un pezzetto di sé, e costano quindi
-molto meno di quanto siano grandi. Il **post-training**, cioè come un
-completatore di frasi diventa un assistente che risponde. E il **retrieval**,
+molto meno di quanto siano grandi. Il post-training, cioè come un
+completatore di frasi diventa un assistente che risponde. E il retrieval,
 cioè come si insegna a un modello a cercare prima di rispondere. Chiude uno
-sguardo alle **tendenze**, con i limiti, che non mancano.
+sguardo alle tendenze, con i limiti, che non mancano.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Il **Transformer** (Vaswani e colleghi, 2017, *Attention Is All You Need*)
+- Il Transformer (Vaswani e colleghi, 2017, *Attention Is All You Need*)
   toglie di mezzo sia la lettura in fila sia i filtri che guardano solo i
-  vicini: tutta l'architettura si regge sul meccanismo di **attenzione**.
+  vicini: tutta l'architettura si regge sul meccanismo di attenzione.
 - Attacca alla radice i due guai delle reti che leggono una parola alla volta.
-  Le **dipendenze lunghe**: ogni parola guarda direttamente ogni altra, e il
+  Le dipendenze lunghe: ogni parola guarda direttamente ogni altra, e il
   ricordo dell'inizio non sbiadisce più per strada. E la
-  **parallelizzazione**: le parole si elaborano tutte insieme invece che in
+  parallelizzazione: le parole si elaborano tutte insieme invece che in
   fila, e i cento amici di prima servono davvero, perché è quello che permette
   di addestrare questi modelli su macchine con migliaia di processori.
 - Il conto si paga sulle coppie: ogni parola guarda ogni altra, quindi
@@ -125,8 +129,8 @@ sguardo alle **tendenze**, con i limiti, che non mancano.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **Transformer** (Vaswani et al., 2017, *Attention Is All You Need*)
-  sostituisce ricorrenza e convoluzione con la **self-attention**. La Tabella 1
+- Il Transformer (Vaswani et al., 2017, *Attention Is All You Need*)
+  sostituisce ricorrenza e convoluzione con la self-attention. La Tabella 1
   dell'articolo mette in fila il guadagno: il cammino massimo fra due posizioni
   qualsiasi scende da $O(n)$ di uno strato ricorrente a $O(1)$, ed è questa la
   ragione per cui le dipendenze lunghe si imparano meglio.
@@ -134,7 +138,7 @@ sguardo alle **tendenze**, con i limiti, che non mancano.
   una dopo l'altra passano da $O(n)$ a $O(1)$, quindi l'intera sequenza si
   elabora in parallelo e l'addestramento sfrutta l'hardware a molti core.
 - Il prezzo sta nell'altra colonna della stessa tabella: il costo per strato è
-  $O(n^2 \cdot d)$, cioè **quadratico** nella lunghezza $n$ della sequenza; ed
+  $O(n^2 \cdot d)$, cioè quadratico nella lunghezza $n$ della sequenza; ed
   è quadratica in $n$ anche la memoria per i punteggi, $O(n^2)$, senza il
   fattore $d$. È il conto che il capitolo nomina e non salda.
 - Su questa architettura poggiano i grandi modelli linguistici (GPT, BERT,

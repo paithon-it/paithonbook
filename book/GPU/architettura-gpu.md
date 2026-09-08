@@ -213,8 +213,7 @@ Il modello di programmazione CUDA espone tre livelli:
 Dalle GPU **Hopper** in poi (compute capability 9.0) fra griglia e blocco c'è
 un quarto livello, facoltativo: il **thread block cluster**, un gruppetto di
 blocchi che l'hardware garantisce residenti su SM vicini e che possono leggere
-e scrivere la shared memory l'uno dell'altro (*distributed shared memory*). È
-il livello su cui poggiano le tecniche di FlashAttention di oggi.
+e scrivere la shared memory l'uno dell'altro (*distributed shared memory*).
 
 Il programmatore sceglie forma e dimensione di griglia e blocchi al momento del
 lancio; l'hardware assegna ciascun blocco a uno SM e lo tiene lì fino alla fine.

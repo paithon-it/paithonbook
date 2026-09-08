@@ -25,8 +25,8 @@ Ma se c'è un posto in cui l'alchimia si vede a occhio nudo sono loro: ricette
 tramandate di laboratorio in laboratorio, dosi aggiustate a occhio, risultati
 che arrivano senza che nessuno sappia spiegare fino in fondo perché.
 
-Un iperparametro è una **scelta che facciamo noi prima di cominciare e che
-l'addestramento non cambia**. Sono le manopole del modello, e nessun
+Un iperparametro è una scelta che facciamo noi prima di cominciare e che
+l'addestramento non cambia. Sono le manopole del modello, e nessun
 addestramento le gira da solo. Qualche esempio già incontrato: quanto è lungo
 il passo della discesa del gradiente (il *learning rate* della sezione
 sull'apprendimento supervisionato) e quanto è tirato il freno alla
@@ -34,14 +34,14 @@ memorizzazione (la $\lambda$, la lettera greca *lambda*, della sezione sulla
 regolarizzazione). Qualche esempio che incontreremo: quante domande di fila può
 fare un albero di decisione, quanti strati ha una rete.
 
-Non vanno confusi con i **parametri**: quelli sono i numeri interni che
+Non vanno confusi con i parametri: quelli sono i numeri interni che
 l'addestramento aggiusta da sé, girando finché il modello sbaglia il meno
 possibile. Le manopole, invece, restano dove le abbiamo messe noi, e da dove le
 mettiamo dipende, spesso in
 modo drammatico, la qualità del risultato. Nella sezione su overfitting e
 validazione abbiamo già stabilito *dove* giudicare queste scelte: sul
 validation set, o meglio in cross-validation, mai sul test. Resta la domanda
-difficile: **come esplorare** lo spazio delle combinazioni.
+difficile: come esplorare lo spazio delle combinazioni.
 Girare le manopole a mano finché "funziona" è l'alchimia di cui parlava
 Rahimi; farlo per bene è un problema di ricerca (nel senso letterale di
 *search*) con i suoi algoritmi, i suoi conti e le sue trappole.
@@ -49,11 +49,11 @@ Rahimi; farlo per bene è un problema di ricerca (nel senso letterale di
 ## Provarle tutte: la grid search
 
 L'idea più naturale è la forza bruta: per ogni manopola si sceglie una manciata
-di valori candidati e si prova **ogni combinazione**, tenendo quella con il
+di valori candidati e si prova ogni combinazione, tenendo quella con il
 punteggio di validazione migliore. È la *grid search*, la ricerca a griglia:
 semplice, esaustiva entro la griglia, e facilissima da spalmare su più
 calcolatori, perché ogni combinazione è indipendente dalle altre e nessuno deve
-aspettare nessuno (è quel che si intende con «si esegue **in parallelo**»). E
+aspettare nessuno (è quel che si intende con «si esegue in parallelo»). E
 con un difetto che non perdona.
 
 `````{tab} Elementare
@@ -116,11 +116,11 @@ candidati vanno disposti in progressione geometrica
 ## Il caso batte la griglia: la random search
 
 La prima alternativa sembra una resa: invece di una griglia ordinata, estrarre
-le combinazioni **a caso** dentro gli stessi intervalli. Nel 2012 James
+le combinazioni a caso dentro gli stessi intervalli. Nel 2012 James
 Bergstra e Yoshua Bengio mostrarono che questa mossa apparentemente pigra è,
 quasi sempre, la più efficiente {cite}`bergstra2012random`. Il motivo sta in
-un fatto empirico: in quasi tutti i problemi **poche manopole contano
-davvero**, e non sappiamo in anticipo quali.
+un fatto empirico: in quasi tutti i problemi poche manopole contano
+davvero, e non sappiamo in anticipo quali.
 
 {numref}`fig-grid-vs-random` mostra il caso più semplice, due sole manopole di
 cui una decisiva e l'altra ininfluente. Il quadrato è lo spazio delle prove
@@ -178,8 +178,8 @@ $N^{1/d}$ distinti su ciascun asse, mentre $N$ punti casuali ne proiettano $N$
 {cite}`bergstra2012random`. C'è anche una garanzia indipendente da $d$: se
 esiste una regione "buona" che copre il 5% del volume dello spazio di ricerca,
 la probabilità che $N$ estrazioni indipendenti la manchino tutte è
-$(1-0{,}05)^N = 0{,}95^N$; quindi la probabilità di centrarla **almeno una
-volta** è il complementare, $1 - 0{,}95^N$, che per $N = 60$ vale $0{,}954$:
+$(1-0{,}05)^N = 0{,}95^N$; quindi la probabilità di centrarla almeno una
+volta è il complementare, $1 - 0{,}95^N$, che per $N = 60$ vale $0{,}954$:
 sessanta prove la centrano con il 95% di confidenza, in qualunque dimensione.
 Se la regione buona copre l'1% del volume, le stesse sessanta prove la centrano
 con probabilità $1 - 0{,}99^{60} = 0{,}453$.
@@ -193,7 +193,7 @@ con cui cade tra $10^{-2}$ e $10^{-1}$.
 
 ## Tornei a eliminazione: successive halving e Hyperband
 
-Griglia e caso condividono uno spreco: dedicano lo **stesso tempo** a ogni
+Griglia e caso condividono uno spreco: dedicano lo stesso tempo a ogni
 candidato, anche a quelli che dopo pochissimo allenamento sono già palesemente
 senza speranza. C'è una famiglia di metodi che ribalta la logica: prove brevi e
 grossolane per scremare, prove lunghe e accurate solo per i pochi che si sono
@@ -243,7 +243,7 @@ poi.
 Il *successive halving* è di Karnin, Koren e Somekh (ICML 2013)
 {cite}`karnin2013almost`, che lo introdussero per il bandit stocastico a pura
 esplorazione; Jamieson e Talwalkar {cite}`jamieson2016non` ne definiscono la
-variante **non stocastica** e la portano agli iperparametri, ed è la forma che
+variante non stocastica e la portano agli iperparametri, ed è la forma che
 si usa qui. Con fattore di eliminazione
 $\eta$ (tipicamente 3): date $n$ configurazioni con budget iniziale $r$
 ciascuna (epoche, o frazione del dataset), a ogni round tiene le migliori
@@ -251,13 +251,13 @@ $1/\eta$ e moltiplica per $\eta$ il budget individuale. I round sono
 $\lfloor \log_\eta n \rfloor + 1$ e ognuno costa circa $n \cdot r$: per
 $n=81$, $r=1$, $\eta=3$, 405 epoche-modello contro le $81 \times 81 = 6\,561$
 della valutazione completa. L'analisi inquadra il problema come *best-arm
-identification* in un **bandit** non stocastico (la famiglia di problemi che il
+identification* in un bandit non stocastico (la famiglia di problemi che il
 capitolo sul reinforcement learning introduce per prima, dove ogni
 configurazione è una leva e addestrarla per un'epoca è un tiro): basta che le
 classifiche parziali
 siano abbastanza indicative di quelle finali, ed è proprio questa l'ipotesi
 fragile, perché una configurazione a convergenza lenta viene eliminata da
-giovane. **Hyperband** {cite}`li2018hyperband` aggira il dilemma tra molte
+giovane. Hyperband {cite}`li2018hyperband` aggira il dilemma tra molte
 configurazioni e molto budget per testa eseguendo $s_{\max}+1$ istanze di
 successive halving (i *bracket*, $s_{\max} = \lfloor \log_\eta R \rfloor$ con
 $R$ budget massimo per configurazione), dalla più aggressiva
@@ -297,7 +297,7 @@ nessuno fermo, ed è quasi sempre il baratto giusto.
 ## Cercare con giudizio: l'ottimizzazione bayesiana
 
 Griglia, caso e tornei condividono un ultimo difetto, il più profondo: ogni
-prova **ignora ciò che le precedenti hanno scoperto**. Se dieci esperimenti
+prova ignora ciò che le precedenti hanno scoperto. Se dieci esperimenti
 hanno già mostrato che con un passo troppo lungo l'errore, invece di scendere,
 schizza fuori controllo (si dice che il modello *diverge*: rimbalza da un
 fianco all'altro della valle e se ne allontana),
@@ -350,7 +350,7 @@ n'è.
 Due ingredienti. Il **modello surrogato** è una distribuzione di probabilità
 sulla funzione ignota $f(\lambda)$ (l'errore di validazione della
 configurazione $\lambda$) aggiornata dopo ogni osservazione; il surrogato
-standard è il **processo gaussiano** {cite}`rasmussen2006gaussian`, che per
+standard è il processo gaussiano {cite}`rasmussen2006gaussian`, che per
 ogni $\lambda$ fornisce una media $\mu(\lambda)$ e una deviazione standard
 $\sigma(\lambda)$: la stima e la sua incertezza. (Li racconta per esteso {doc}`Processi gaussiani <processi-gaussiani>`.) La **funzione di acquisizione**
 traduce stima e incertezza in una decisione; la più usata è l’*expected
@@ -377,7 +377,7 @@ La formula premia sia $\mu(\lambda)$ basso (sfruttamento) sia
 $\sigma(\lambda)$ alto (esplorazione); la prossima prova è
 $\lambda_{\text{next}} = \arg\max_\lambda \mathrm{EI}(\lambda)$:
 un'ottimizzazione a sua volta, ma sul surrogato, che risponde in millisecondi.
-Il prezzo è la natura essenzialmente **sequenziale** del metodo (ogni scelta
+Il prezzo è la natura essenzialmente sequenziale del metodo (ogni scelta
 attende l'esito della precedente) e la dipendenza dalle ipotesi del surrogato,
 a cominciare dalla scelta del kernel.
 
@@ -435,7 +435,7 @@ print(ricerca_casuale.score(X_test, y_test))
 ```
 
 Il trucco di `loguniform` merita una riga, perché tornerà ogni volta che si
-sceglie un learning rate: **si sorteggia l'esponente, non il valore**. Invece
+sceglie un learning rate: si sorteggia l'esponente, non il valore. Invece
 di estrarre un numero a caso fra $0{,}00001$ e $1$, che nel $99\%$ dei casi
 darebbe qualcosa di grande, si estrae un numero a caso fra $-5$ e $0$, poniamo
 $-3{,}2$, e si usa $10^{-3{,}2}$. Così ogni ordine di grandezza ha le stesse
@@ -444,7 +444,7 @@ probabilità degli altri.
 scikit-learn implementa
 anche il successive halving (`HalvingGridSearchCV` e `HalvingRandomSearchCV`,
 ancora marcati come sperimentali); per l'ottimizzazione bayesiana e i tornei
-in versione moderna la libreria di riferimento è **Optuna**, in cui lo spazio
+in versione moderna la libreria di riferimento è Optuna, in cui lo spazio
 di ricerca si descrive direttamente nel codice e le prove peggiori vengono
 interrotte in corsa.
 
@@ -452,7 +452,7 @@ interrotte in corsa.
 
 Tre avvertenze, prima di chiudere.
 
-La prima è il **costo**. Ogni combinazione provata non costa un addestramento
+La prima è il costo. Ogni combinazione provata non costa un addestramento
 ma cinque, perché la si giudica in cross-validation su cinque blocchi, e quel
 fattore cinque non lo toglie nessun algoritmo: i metodi furbi lo spendono
 meglio, non lo evitano. Griglia e caso hanno almeno il vantaggio di spalmarsi
@@ -462,7 +462,7 @@ Esistono varianti che ne lanciano un gruppo alla volta (già Snoek e colleghi ne
 proponevano una {cite}`snoek2012practical`), ma ogni prova, presa da sola,
 rende meno.
 
-La seconda è la **riproducibilità**. Un computer non sa tirare a caso davvero:
+La seconda è la riproducibilità. Un computer non sa tirare a caso davvero:
 produce numeri che *sembrano* casuali partendo da un numero iniziale, il
 **seme** (in inglese *seed*, il `random_state` di scikit-learn). Stesso
 seme, stessa sequenza di numeri «a caso», stesso risultato domani e sul
@@ -481,7 +481,7 @@ Se mille persone lanciano una moneta dieci volte, una decina di loro farà nove
 teste. Nessuna di quelle dieci ha un dono: sono le più fortunate di mille. Lo
 stesso vale per le configurazioni: il punteggio di validazione della vincitrice
 di una ricerca con centinaia di prove è in parte merito e in parte fortuna, e
-tende a essere **troppo ottimista**. Più a lungo cerchi, più il validation set
+tende a essere troppo ottimista. Più a lungo cerchi, più il validation set
 si consuma: proprio come il test set che avevamo giurato di non sbirciare. Il
 rimedio è lo stesso di sempre: il numero da raccontare al mondo si misura una
 sola volta, alla fine, sul test rimasto intatto.
@@ -514,8 +514,8 @@ che è il prodotto dei due anelli.
 `````
 
 Le tre avvertenze hanno un'unica morale, ed è il modo migliore di chiudere il
-cerchio aperto da Rahimi: **una ricerca degli iperparametri è essa stessa un
-addestramento**, e come ogni addestramento può imparare a memoria. Chi la
+cerchio aperto da Rahimi: una ricerca degli iperparametri è essa stessa un
+addestramento, e come ogni addestramento può imparare a memoria. Chi la
 tratta come tale, dichiarando spazio di ricerca, budget e semi, e tenendo il
 test chiuso fino all'ultimo, ha già tolto dall'alchimia la parte che faceva più
 danno.
@@ -524,23 +524,23 @@ danno.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **iperparametro** è una manopola che giriamo noi prima di cominciare e che
+- Un iperparametro è una manopola che giriamo noi prima di cominciare e che
   l'addestramento non tocca. Si sceglie provando, e si giudica sui dati di
   prova, mai su quelli d'esame.
-- Provare **tutte le combinazioni** è la cosa più ovvia e la meno praticabile:
+- Provare tutte le combinazioni è la cosa più ovvia e la meno praticabile:
   la macchina del caffè con quattro manopole a cinque livelli chiede 3 125
   assaggi. Ogni manopola in più *moltiplica* le prove.
-- Provarle **a caso** conviene quasi sempre, ed è la cosa che sorprende di più:
+- Provarle a caso conviene quasi sempre, ed è la cosa che sorprende di più:
   se una sola manopola conta davvero (la sintonia, non il volume), nove
   tentativi a caso provano nove sintonie diverse, mentre nove disposti in
   griglia ne provano tre.
-- I **tornei a eliminazione** danno a tutti un allenamento breve, poi solo ai
+- I tornei a eliminazione danno a tutti un allenamento breve, poi solo ai
   migliori uno lungo: si spende dove serve. Il rischio è tagliare fuori i
   «diesel», quelli che partono piano e finirebbero forte.
-- Il metodo più furbo **impara dalle prove già fatte**, come il geologo che
+- Il metodo più furbo impara dalle prove già fatte, come il geologo che
   sceglie dove scavare il prossimo pozzo: un po’ dove la mappa promette bene,
   un po’ dove la mappa è ancora bianca.
-- Il punteggio del vincitore è **troppo bello**: fra mille che lanciano una
+- Il punteggio del vincitore è troppo bello: fra mille che lanciano una
   moneta, qualcuno fa nove teste per fortuna. Il numero da raccontare al mondo
   si misura una volta sola, alla fine, sui dati d'esame rimasti intatti.
 ```
@@ -551,20 +551,20 @@ danno.
 
 ```{admonition} Da ricordare
 :class: important
-- Gli iperparametri non si imparano con il gradiente: si **cercano**, e si
+- Gli iperparametri non si imparano con il gradiente: si cercano, e si
   giudicano su validation o cross-validation, mai sul test.
-- La **grid search** è esaustiva ma esponenziale nel numero di manopole:
+- La grid search è esaustiva ma esponenziale nel numero di manopole:
   ragionevole solo per una o due dimensioni.
-- La **random search** a parità di prove esplora più valori di ogni singola
+- La random search a parità di prove esplora più valori di ogni singola
   dimensione: vince quando poche manopole contano davvero
   {cite}`bergstra2012random`. Parametri di scala in log-uniforme.
-- **Successive halving** e **Hyperband** sono tornei a eliminazione: poco
+- Successive halving e Hyperband sono tornei a eliminazione: poco
   budget a molti, molto budget a pochi
   {cite}`karnin2013almost,jamieson2016non,li2018hyperband`.
-- L’**ottimizzazione bayesiana** usa un surrogato (tipicamente un processo
+- L’ottimizzazione bayesiana usa un surrogato (tipicamente un processo
   gaussiano) e una funzione di acquisizione per imparare dalle prove passate
   {cite}`snoek2012practical`.
-- Il punteggio del vincitore è **ottimista**: numero finale solo dal test
+- Il punteggio del vincitore è ottimista: numero finale solo dal test
   intatto, seed fissati, spazio e budget dichiarati.
 ```
 

@@ -32,7 +32,7 @@ Uno strato denso collega *ogni* pixel a *ogni* neurone. Sembra generoso, ma
 triplo: ogni pixel ne porta tre, uno per il rosso, uno per il verde e uno
 per il blu, e $256 \times 256 \times 3$ fa 196.608, quasi 200.000. Uno strato
 denso con 1000 neuroni ha un peso per ogni coppia (numero in ingresso,
-neurone): $196.608 \times 1000$, cioè quasi **200 milioni** di pesi da
+neurone): $196.608 \times 1000$, cioè quasi 200 milioni di pesi da
 imparare, solo per il primo strato. Troppi. Con tanti numeri da regolare, la
 rete ha modo di imparare a memoria le foto che le mostri invece di quello che
 hanno in comune: sulle foto già viste va benissimo, sulla prima foto nuova
@@ -55,13 +55,14 @@ $2\times10^{8}$ parametri, un invito all’*overfitting*.
 Soprattutto, lo strato denso non è **equivariante alla traslazione**: un
 pattern spostato di un vettore $\boldsymbol{\Delta}$ attiva pesi diversi,
 perché l'indice della componente cambia. Le CNN recuperano l'equivarianza
-grazie alla sola **condivisione dei pesi**: sposti l'input, e l'attivazione si
+grazie alla sola condivisione dei pesi: sposti l'input, e l'attivazione si
 sposta con lui. L'altro vincolo, la connettività locale, dà i pochi parametri e
 non l'equivarianza: uno strato *locally connected*, che guarda una finestra
 piccola ma con pesi diversi in ogni posizione, equivariante non è.
 Attenzione a non chiamarla invarianza, che è un'altra proprietà (la risposta
 non cambia affatto) e la convoluzione non la dà: semmai la porta la testa
-della rete, con il *global average pooling* che incontreremo parlando di NiN.
+della rete, con il *global average pooling* di Network in Network, che
+incontreremo in {doc}`Architetture storiche <architetture-storiche>`.
 
 `````
 
@@ -87,7 +88,7 @@ impara a formulare da sé.
 
 Il filtro (o *kernel*) di $3\times3$ copre nove caselle dell'immagine per
 volta: i nove valori vengono moltiplicati ciascuno per il proprio peso e poi
-sommati, e il totale diventa **una** casella del foglio dei risultati, che si
+sommati, e il totale diventa una casella del foglio dei risultati, che si
 chiama *feature map*. Facendo scorrere la finestra si riempie l'intera mappa.
 ```
 
@@ -140,7 +141,7 @@ per canale $c$ e posizione $(m,n)$, $a_{i,j}$ l'attivazione risultante.
 :alt: "Animazione: una finestra 3x3 scorre sulle nove posizioni di un'immagine 5x5 che contiene una barra verticale; a ogni posizione si riempie la cella corrispondente della mappa 3x3, con valori -3 sulla colonna di sinistra, 0 al centro e +3 a destra."
 :width: 90%
 
-La stessa operazione in movimento, con un filtro che cerca **bordi verticali**.
+La stessa operazione in movimento, con un filtro che cerca bordi verticali.
 Sotto i tre riquadri, la regola scritta in simboli, che dice questo: moltiplica
 i nove valori sotto la finestra per i nove pesi del filtro, e somma tutto. La
 barra è spessa
@@ -155,7 +156,7 @@ $1$ e lo sfondo $0$. Quando la barra finisce sotto la colonna destra del
 filtro, ogni riga contribuisce $-1$ e le tre righe insieme danno $-3$; quando
 finisce sotto la colonna sinistra, $+3$; quando è al centro, il peso che la
 moltiplica è $0$ e le altre due colonne vedono solo sfondo. Il filtro non
-misura quanto la barra è chiara: misura il **contrasto** fra il lato sinistro e
+misura quanto la barra è chiara: misura il contrasto fra il lato sinistro e
 il lato destro della propria finestra, e il segno dice da che parte sta il
 chiaro. È già un abbozzo di ciò che i primi strati di una CNN imparano da
 soli.
@@ -202,11 +203,11 @@ lo spazio delle ipotesi e quindi il rischio di overfitting.
 
 `````
 
-L'uscita di un filtro è una **feature map**: una mappa che segna, punto per
-punto, *dove* nell'immagine è presente il motivo cercato. Uno strato convoluzionale, in inglese *layer*, produce una pila di feature
-map, una per filtro; i primi strati imparano motivi
-elementari (bordi, angoli), i più profondi li combinano in parti sempre più
-astratte (occhi, ruote, volti).
+L'uscita di un filtro è una feature map: una mappa che segna, punto per
+punto, *dove* nell'immagine è presente il motivo cercato. Uno strato
+convoluzionale, in inglese *layer*, produce una pila di feature map, una per
+filtro; i primi strati imparano motivi elementari (bordi, angoli), i più
+profondi li combinano in parti sempre più astratte (occhi, ruote, volti).
 
 ## Il pooling: mappe più piccole, e cosa si guadagna
 
@@ -260,7 +261,7 @@ praticamente mai. È un baratto e non un'aggiunta gratuita.
 
 ## L'architettura tipica
 
-Lo schema classico alterna blocchi **conv → ReLU → pool**, ripetuti alcune
+Lo schema classico alterna blocchi conv → ReLU → pool, ripetuti alcune
 volte, e chiude con uno o più strati densi che trasformano le feature astratte
 in una decisione, cioè nella classe dell'immagine: gatto, cane, tazza da caffè.
 
@@ -330,7 +331,7 @@ l'ultima finestra incompleta. Con $n=61$ e $k=s=2$ la prima dà $30$ e la
 seconda $31$, e due reti che si credono uguali si ritrovano con mappe di
 dimensione diversa.
 
-La seconda: la formula assume **dilatazione 1**, cioè un filtro i cui pesi
+La seconda: la formula assume dilatazione 1, cioè un filtro i cui pesi
 guardano pixel adiacenti. Con dilatazione $d$ i pesi si distanziano fra loro e
 il filtro copre $d(k-1)+1$ pixel invece di $k$, quindi
 
@@ -375,16 +376,16 @@ a chi progetta la rete, non alla libreria.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Uno strato denso sull'immagine intera ha **troppi pesi** da imparare (quasi
+- Uno strato denso sull'immagine intera ha troppi pesi da imparare (quasi
   200 milioni per una sola foto a colori e mille neuroni), e per di più non ha
   nessuna idea che *un motivo sia lo stesso ovunque appaia*.
-- La **convoluzione** fa scorrere sull'immagine un filtro piccolo e scrive su
+- La convoluzione fa scorrere sull'immagine un filtro piccolo e scrive su
   un foglio nuovo, punto per punto, quanto quel motivo c'è: quel foglio si
   chiama *feature map*.
-- Pochi pesi, riusati in ogni punto: la rete impara **cosa** cercare, non
-  **dove**. Se il motivo si sposta, si sposta con lui anche il segnale che lo
+- Pochi pesi, riusati in ogni punto: la rete impara cosa cercare, non
+  dove. Se il motivo si sposta, si sposta con lui anche il segnale che lo
   indica.
-- Il **max pooling** tiene, di ogni quadratino, solo il valore più forte:
+- Il max pooling tiene, di ogni quadratino, solo il valore più forte:
   rimpicciolisce le mappe e dà un po’ di tolleranza agli spostamenti minimi, in
   cambio della precisione su dove le cose stanno. L'architettura tipica alterna
   convoluzione e pooling, e chiude con gli strati densi che decidono la classe.
@@ -394,16 +395,16 @@ a chi progetta la rete, non alla libreria.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Gli strati densi falliscono sulle immagini per **troppi parametri** e perché
-  non sono **equivarianti alla traslazione**.
-- La **convoluzione** fa scorrere un piccolo kernel che evidenzia un motivo
-  ovunque compaia; l'uscita è una **feature map**.
-- **Campo recettivo locale** = pochi parametri; **pesi condivisi** = risposta
-  **equivariante**, cioè il motivo riconosciuto ovunque compaia, con
+- Gli strati densi falliscono sulle immagini per troppi parametri e perché
+  non sono equivarianti alla traslazione.
+- La convoluzione fa scorrere un piccolo kernel che evidenzia un motivo
+  ovunque compaia; l'uscita è una feature map.
+- Campo recettivo locale = pochi parametri; pesi condivisi = risposta
+  equivariante, cioè il motivo riconosciuto ovunque compaia, con
   l'attivazione che si sposta insieme a lui. L'invarianza è un'altra proprietà,
   e arriva semmai dalla testa della rete (pooling globale), non dalla
   convoluzione.
-- Il **max pooling** riduce la risoluzione e baratta l'equivarianza esatta con
+- Il max pooling riduce la risoluzione e baratta l'equivarianza esatta con
   una tolleranza ai piccoli spostamenti; l'architettura tipica alterna conv e
   pool e chiude con strati densi.
 ```

@@ -7,8 +7,9 @@ altri due.
 
 ## Primo: comprimere
 
-Il legame è così stretto da essere la stessa cosa detta in due modi, e la
-sezione sulla teoria dell'informazione, nei richiami di matematica, l'ha già
+Sapere quanto un dato è probabile e saperlo comprimere sono la stessa cosa
+detta in due modi, e la {doc}`sezione sulla teoria dell'informazione
+</Matematica/teoria-informazione>`, nei richiami di matematica, l'ha già
 stabilito: il numero di bit che servono per scrivere un messaggio con il codice
 migliore possibile è $-\log_2 p$ del messaggio. Non «all'incirca a meno di un
 fattore»: proprio quella grandezza lì, con uno scarto di un paio di bit su
@@ -259,7 +260,7 @@ discendente più usato oggi ha vinto **buttandola via**, e tenendo solo la
 parte geometrica, il movimento. La proprietà, però, resta lì: un modello a
 flow matching, se qualcuno vuole pagare il conto dell'equazione differenziale,
 la verosimiglianza la sa ancora dare. È una rinuncia di comodo, non di
-struttura, ed è per questo da sapere da dove viene la parola.
+struttura, e la parola dice ancora da dove viene.
 
 `````{tab} Elementare
 

@@ -99,14 +99,14 @@ agli scacchi non è così che si è vinto.
 La mossa è sostituire la valutazione statica $\mathrm{ev}(s)$ con una stima
 **campionaria**: da $s$ si simulano $N$ partite fino alla fine con una politica
 rapida (nella versione più semplice, uniforme sulle mosse legali, con
-l’eccezione di quelle che nel Go riempirebbero un proprio occhio: senza quel
-divieto le partite a caso rischiano di non finire) e si usa la frazione di
-vittorie come stima del valore. Stimare una quantità che non si sa calcolare
-campionando a caso e facendo la media si chiama **metodo Monte Carlo**, ed è un
-attrezzo che il libro riuserà in tre posti diversi: qui su un albero di gioco,
-nel capitolo sul reinforcement learning per stimare il valore di uno stato
-dalle partite giocate, e nei modelli generativi per stimare integrali che non
-hanno forma chiusa.
+l’eccezione di quelle che nel Go riempirebbero un proprio *occhio*, cioè un
+incrocio vuoto circondato da sassolini propri: senza quel divieto le partite a
+caso rischiano di non finire) e si usa la frazione di vittorie come stima del
+valore. Stimare una quantità che non si sa calcolare campionando a caso e
+facendo la media si chiama **metodo Monte Carlo**, ed è un attrezzo che il libro
+riuserà in tre posti diversi: qui su un albero di gioco, nel capitolo sul
+reinforcement learning per stimare il valore di uno stato dalle partite giocate,
+e nei modelli generativi per stimare integrali che non hanno forma chiusa.
 
 Resta da dire come si distribuisce il budget di simulazioni fra i figli della
 radice, e la risposta è **esattamente** il dilemma fra esplorare e sfruttare
@@ -114,17 +114,17 @@ che il capitolo sul reinforcement learning introdurrà con i bandit a più
 braccia. Dare più prove a ciò che finora rende, senza smettere di provare ciò
 di cui si sa poco, e con una regola che quantifichi quel «senza smettere».
 
-Valutare una posizione giocando partite a caso non è un’idea del 2006, e nel Go
-ci era arrivato per primo Bernd Brügmann {cite}`brugmann1993monte`, che nel
-1993, senza dare al programma nessuna conoscenza oltre alle regole, sul nove
-per nove aveva raggiunto la forza di un principiante, ed è Coulom stesso a
-citarlo. Quello che nasce in quegli anni è la **fusione** delle due cose, e
-nasce in due tempi. Prima l’albero che cresce **una simulazione alla volta**,
-con un modo di risalire i valori che comincia facendo la media e finisce
-facendo il minimax {cite}`coulom2006efficient`. Poi la regola che decide dove
-spendere la simulazione successiva, cioè la stessa regola dei bandit (si chiama
-UCB1, e sceglie il ramo col miglior compromesso fra quanto ha reso finora e
-quanto poco lo si è provato) applicata a ogni nodo dell’albero
+Valutare una posizione giocando partite a caso non è un’idea del 2006: nel Go ci
+era arrivato per primo Bernd Brügmann {cite}`brugmann1993monte`, che nel 1993,
+senza dare al programma nessuna conoscenza oltre alle regole, sul nove per nove
+aveva raggiunto la forza di un principiante. Quello che nasce in quegli anni è
+la **fusione** delle due cose, e nasce in due tempi. Prima l’albero che cresce
+**una simulazione alla volta**, con un modo di risalire i valori che comincia
+facendo la media e finisce facendo il minimax: è di Rémi Coulom
+{cite}`coulom2006efficient`, che fra i propri riferimenti mette Brügmann. Poi la
+regola che decide dove spendere la simulazione successiva, cioè la stessa regola
+dei bandit (si chiama UCB1, e sceglie il ramo col miglior compromesso fra quanto
+ha reso finora e quanto poco lo si è provato) applicata a ogni nodo dell’albero
 {cite}`kocsis2006bandit`: è la seconda a dare al metodo le sue garanzie di
 convergenza, che però dicono che la stima arriva, non quanto in fretta.
 
@@ -138,13 +138,13 @@ linea forzata, le simulazioni casuali sono rumore puro.
 Questa idea ha un nome, **ricerca ad albero Monte Carlo** (in inglese *Monte
 Carlo tree search*, abbreviata in MCTS). «Monte Carlo» è il nome che i
 matematici danno da ottant’anni ai metodi che stimano per sorteggio quello che
-non si sa calcolare, e da dove venga quel nome lo racconta il {doc}`capitolo
-sul reinforcement learning </ReinforcementLearning/overview>`, che sui metodi
-Monte Carlo ha una sezione sua. Ma il metodo non si esaurisce nel contare le
-partite: quello che lo rende praticabile è non spartire le simulazioni in parti
-uguali, perché darne mille a una mossa palesemente perdente è tempo buttato. E
-la stessa scelta si rifà più sotto, dentro la mossa che sta rendendo: è di lì
-che viene l’albero del nome.
+non si sa calcolare, e da dove venga quel nome lo racconta la {doc}`sezione sui
+metodi Monte Carlo </ReinforcementLearning/monte-carlo>`, nel capitolo sul
+reinforcement learning. Ma il metodo non si esaurisce nel contare le partite:
+quello che lo rende praticabile è non spartire le simulazioni in parti uguali,
+perché darne mille a una mossa palesemente perdente è tempo buttato. E la stessa
+scelta si rifà più sotto, dentro la mossa che sta rendendo: è di lì che viene
+l’albero del nome.
 
 Il libro la costruisce per intero nella {doc}`sezione su MCTS e AlphaGo
 </DeepReinforcementLearning/mcts-alphago>`, dove serve a raccontare come una

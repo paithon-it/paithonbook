@@ -2,20 +2,20 @@
 
 Nel 1959 due neuroscienziati, David Hubel e Torsten Wiesel
 {cite}`hubel1959receptive`, infilarono un sottile elettrodo nella corteccia
-visiva di un gatto e proiettarono forme luminose davanti ai suoi occhi. Scoprirono che certi neuroni si accendevano
-solo quando sullo schermo compariva una linea con una precisa inclinazione:
-rivelatori di bordi in carne e ossa. Altri neuroni, più a valle, combinavano
-quelle risposte in configurazioni più complesse. Quel lavoro valse loro il
-premio Nobel nel 1981 e, senza che nessuno potesse immaginarlo, descriveva già
-il funzionamento delle reti neurali profonde. Il deep learning, in fondo,
-riscopre la stessa idea: costruire la percezione a strati, dal semplice al
-complesso.
+visiva di un gatto e proiettarono forme luminose davanti ai suoi occhi.
+Scoprirono che certi neuroni si accendevano solo quando sullo schermo compariva
+una linea con una precisa inclinazione: rivelatori di bordi in carne e ossa.
+Altri neuroni, più a valle, combinavano quelle risposte in configurazioni più
+complesse. Quel lavoro valse loro il premio Nobel nel 1981 e, senza che nessuno
+potesse immaginarlo, descriveva già il funzionamento delle reti neurali
+profonde. Il deep learning, in fondo, riscopre la stessa idea: costruire la
+percezione a strati, dal semplice al complesso.
 
 ## Le feature si imparano, non si scrivono a mano
 
 La differenza tra machine learning classico e deep learning non sta in una
 matematica esoterica: sta in *chi* decide quali caratteristiche dei dati
-contano. Quelle caratteristiche, in gergo, si chiamano **feature**: sono i
+contano. Quelle caratteristiche, in gergo, si chiamano feature: sono i
 numeri che descrivono un dato e su cui il modello, cioè il programma che impara
 dagli esempi, fa i suoi conti.
 
@@ -78,15 +78,15 @@ modello e viene appresa, invece di stare a monte e fissa. È ciò che si chiama
 
 ## Rappresentazioni gerarchiche: dai bordi agli oggetti
 
-Una rete profonda è fatta di **strati**: gruppi di neuroni messi in fila, dove
+Una rete profonda è fatta di strati: gruppi di neuroni messi in fila, dove
 il primo riceve i numeri dell'immagine e ognuno dei successivi riceve quello che
 ha prodotto quello prima di lui. (Un neurone, qui, è un pezzetto di conto e non
 una cellula: prende dei numeri, li somma dopo averli pesati e ne restituisce
 uno.) Cosa impara davvero uno strato?
 
 Nel 2014 Zeiler e Fergus {cite}`zeiler2014visualizing` trovarono il modo di
-"visualizzarlo", cioè di risalire, per ogni neurone di una **rete
-convoluzionale** (il tipo di rete fatto apposta per le immagini, di cui parla
+"visualizzarlo", cioè di risalire, per ogni neurone di una rete
+convoluzionale (il tipo di rete fatto apposta per le immagini, di cui parla
 la sezione che segue), alla forma che lo fa accendere. Il risultato somigliava
 in modo sorprendente alla corteccia di Hubel e Wiesel: i primi strati reagiscono
 a bordi e linee orientate; gli strati intermedi a parti riconoscibili (un
@@ -137,18 +137,20 @@ un pomeriggio ha finito.
 La chiave è la **composizionalità**. Ogni mappa di feature dello strato $\ell$
 è una funzione non lineare delle mappe dello strato precedente, quindi la
 complessità delle forme rilevabili cresce con la profondità. In una rete
-convoluzionale cresce anche il **campo recettivo** (*receptive field*): un
+convoluzionale cresce anche il campo recettivo (*receptive field*): un
 neurone dello strato $\ell$ "vede" una porzione di immagine tanto più ampia
 quanto più $\ell$ è profondo, perché aggrega l'output di neuroni che a loro
 volta aggregano porzioni più piccole.
 
 Formalmente, la rappresentazione allo strato $\ell$ è
-$\mathbf{Z}^{[\ell]} = f_\ell(\mathbf{Z}^{[\ell-1]})$, con $\mathbf{Z}^{[0]} = \mathbf{X}$ l'immagine di ingresso.
-Le $\mathbf{Z}^{[\ell]}$ superficiali codificano feature locali e generiche (bordi,
-condivisi tra compiti diversi); le $\mathbf{Z}^{[\ell]}$ profonde codificano feature
-astratte e specifiche del compito (categorie di oggetti). È questa gerarchia a
-rendere così efficace il *transfer learning*: i primi strati, appresi su un
-dataset enorme, si riusano quasi invariati su problemi nuovi.
+$\mathbf{Z}^{[\ell]} = f_\ell(\mathbf{Z}^{[\ell-1]})$, con
+$\mathbf{Z}^{[0]} = \mathbf{X}$ l'immagine di ingresso. Le
+$\mathbf{Z}^{[\ell]}$ superficiali codificano feature locali e generiche
+(bordi, condivisi tra compiti diversi); le $\mathbf{Z}^{[\ell]}$ profonde
+codificano feature astratte e specifiche del compito (categorie di oggetti). È
+questa gerarchia a rendere così efficace il *transfer learning*: i primi
+strati, appresi su un dataset enorme, si riusano quasi invariati su problemi
+nuovi.
 
 `````
 
@@ -160,12 +162,12 @@ retropropagazione, l'algoritmo che addestra queste reti, fu resa celebre nel
 ancora più vecchia[^backprop-storia].
 Se l'algoritmo esisteva da decenni, perché il deep learning
 è esploso solo dopo il 2012? Perché servivano tre ingredienti tutti insieme:
-**dati**, **potenza di calcolo** e **algoritmi maturi**. Il momento-simbolo è
-l'autunno del 2012, la competizione **ImageNet**: una gara annuale in cui i
+dati, potenza di calcolo e algoritmi maturi. Il momento-simbolo è
+l'autunno del 2012, la competizione ImageNet: una gara annuale in cui i
 gruppi di ricerca di mezzo mondo provavano i propri programmi sulle stesse
 fotografie, più di un milione, con lo stesso compito (dire che cosa
 c'è dentro, scegliendo fra mille categorie) e una classifica finale. Quell'anno
-la vince, con un margine mai visto prima, una rete profonda: **AlexNet**, dal
+la vince, con un margine mai visto prima, una rete profonda: AlexNet, dal
 nome del primo dei suoi autori, Alex Krizhevsky.
 
 `````{tab} Elementare
@@ -174,20 +176,20 @@ Per accendere un fuoco servono la legna, l'aria e una scintilla: se manca uno
 solo dei tre, non parte. Il deep learning aveva l'idea da decenni ed è rimasto
 spento lo stesso.
 
-La legna sono i **dati**: milioni di fotografie **etichettate**, cioè con
+La legna sono i dati: milioni di fotografie etichettate, cioè con
 scritto accanto, a mano, che cosa c'è dentro. Ne servono milioni perché AlexNet
 aveva sessanta milioni di numeri da regolare, e a regolarli sono le foto, una
 dopo l'altra. Prima di Internet quella catasta non esisteva: descrivere una per
 una milioni di immagini era un lavoro fuori portata.
 
-L'aria è il **calcolo**. Le schede grafiche (GPU) sono nate per i videogiochi e
+L'aria è il calcolo. Le schede grafiche (GPU) sono nate per i videogiochi e
 si sono rivelate perfette per i conti di una rete: un videogioco chiede la
 stessa moltiplicazione su un milione di punti dello schermo nello stesso
 istante, una rete la chiede su milioni di pesi. La scheda non vede la
 differenza e le sbriga in un colpo solo. AlexNet ha bruciato la sua legna su
 due schede da videogiocatore.
 
-La scintilla sono gli **algoritmi**. Una scintilla su legna buona può benissimo
+La scintilla sono gli algoritmi. Una scintilla su legna buona può benissimo
 spegnersi, ed è quello che succedeva: reti profonde che non imparavano. A farla
 attaccare sono tre accorgimenti, ciascuno contro un guaio preciso.
 
@@ -200,7 +202,7 @@ correzione torna indietro dall'ultimo strato verso il primo e attraversa uno di
 quei rubinetti a ogni strato che risale; ognuno ne lascia passare una frazione,
 e ai primi strati non arrivava quasi niente. Il rimedio è un rubinetto che o è
 chiuso o è spalancato: i numeri positivi passano come sono, i negativi
-diventano zero. Se entra 5 esce 5, se entra $-3$ esce 0. Si chiama **ReLU**.
+diventano zero. Se entra 5 esce 5, se entra $-3$ esce 0. Si chiama ReLU.
 
 Il secondo guaio è che la rete si impara a memoria le fotografie
 dell'addestramento. Sembrerebbe un pregio, ed è il modo più sicuro di fallire:
@@ -219,10 +221,10 @@ legna, l'aria e la scintilla ci sono tutte insieme.
 
 `````{tab} Superiore
 
-Nel 2009 Fei-Fei Li e collaboratori pubblicano **ImageNet**, un dataset di
+Nel 2009 Fei-Fei Li e collaboratori pubblicano ImageNet, un dataset di
 milioni di immagini etichettate da persone; la sua competizione annuale, la
 **ILSVRC**, ne usa un sottoinsieme di circa 1,2 milioni di immagini di
-addestramento distribuite su 1000 categorie. Nel 2012 **AlexNet** (Krizhevsky,
+addestramento distribuite su 1000 categorie. Nel 2012 AlexNet (Krizhevsky,
 Sutskever, Hinton) vince proprio la ILSVRC portando l'errore *top-5* dal 26,2%
 del miglior metodo classico al 15,3%. Il confronto va letto per quello che è:
 il 15,3% è il punteggio della sottomissione, che media le predizioni di sette
@@ -231,11 +233,11 @@ il salto è senza precedenti.
 
 I tre ingredienti, in numeri:
 
-- **Dati**: un dataset abbastanza grande da addestrare una rete con circa 60
+- Dati: un dataset abbastanza grande da addestrare una rete con circa 60
   milioni di parametri senza overfittare in modo catastrofico.
-- **Calcolo**: l'addestramento gira su due GPU NVIDIA GTX 580, sfruttando la
+- Calcolo: l'addestramento gira su due GPU NVIDIA GTX 580, sfruttando la
   parallelizzazione dei prodotti tra matrici (`cuda`).
-- **Algoritmi**: attivazione ReLU $\sigma(x)=\max(0,x)$ per attenuare il
+- Algoritmi: attivazione ReLU $\sigma(x)=\max(0,x)$ per attenuare il
   *vanishing gradient*, *dropout* come regolarizzazione, *data augmentation*.
 
 Nessuna di queste idee era nuova in senso stretto; nuova era la loro
@@ -256,7 +258,7 @@ imitare con la precisione che si vuole qualunque regola che leghi ingressi e
 uscite senza salti bruschi.[^universalita]
 
 Una condizione c'è, ed è essenziale. La funzione che ogni neurone applica al
-proprio risultato, l’**attivazione** (la ReLU, per esempio, che azzera i numeri
+proprio risultato, l’attivazione (la ReLU, per esempio, che azzera i numeri
 negativi e lascia passare i positivi), non deve essere un *polinomio*, cioè una
 somma di potenze come $3x^2-x+5$. Il motivo è che sommare polinomi dà sempre e
 solo altri polinomi, e mai di grado più alto: se l'attivazione si ferma al
@@ -281,7 +283,7 @@ e sapere che il traguardo c'è non dice da che parte muoversi per raggiungerlo,
 né quante foto bisognerà guardare per arrivarci.
 
 Il prezzo alto ha una ragione precisa. Quello che manca alla rete piatta è la
-possibilità di **costruire sopra**. In
+possibilità di costruire sopra. In
 una rete a un solo strato ogni neurone guarda i pixel grezzi e nient'altro:
 nessuno può partire da una forma che un altro ha già trovato per comporla con
 una seconda. Un occhio va descritto ogni volta a partire dai pixel, e le
@@ -318,16 +320,16 @@ contribuisce all'uscita.
 Due avvertenze sul quantificatore, che è dove il teorema promette meno di quanto
 sembri. La prima: è un risultato di **esistenza**, cioè di densità. Dice che la
 rete c'è, non che la discesa del gradiente la trovi, né quanti esempi servano
-per impararla. La seconda: il teorema da solo non dà **nessun limite** su $N$,
+per impararla. La seconda: il teorema da solo non dà nessun limite su $N$,
 il numero di neuroni. Quel limite dipende dalla classe di funzioni che si vuole
 approssimare, e conviene non generalizzare la frase che si sente più spesso.
 Per le classi definite dalla sola regolarità (derivate limitate fino a un certo
-ordine) il numero di neuroni cresce esponenzialmente nella **dimensione
-dell'ingresso**, ed è la maledizione della dimensionalità, che colpisce
+ordine) il numero di neuroni cresce esponenzialmente nella dimensione
+dell'ingresso, ed è la maledizione della dimensionalità, che colpisce
 qualunque schema di approssimazione lineare e non le reti in particolare. Ma
 non è una legge universale: Barron {cite}`barron1993universal` individua una
 classe più ristretta, definita da una condizione sulla trasformata di Fourier,
-per cui l'errore quadratico scende come $O(1/N)$ **senza** dipendere dalla
+per cui l'errore quadratico scende come $O(1/N)$ senza dipendere dalla
 dimensione. La crescita esponenziale è una proprietà della classe di funzioni,
 non delle reti a uno strato in quanto tali.
 
@@ -346,9 +348,160 @@ espressiva. È più economico comporre trasformazioni che allargarne una sola.
 
 `````
 
-Questa gerarchia si legge anche nel codice. Una piccola rete convoluzionale scritta in {doc}`PyTorch </PyTorch/overview>`
-è letteralmente una pila di strati che vanno dal semplice al complesso. Di che cosa faccia ciascuno
-di quegli strati parla la sezione seguente: qui conta solo vedere la pila.
+## Quante regioni taglia una rete
+
+Che la profondità arrivi allo stesso risultato con molti meno neuroni è, fin
+qui, una frase; sotto c'è un conto, e con la ReLU si può fare a mano, perché
+una rete di ReLU è **lineare a tratti**: lo spazio d'ingresso si divide in
+**regioni lineari**, e dentro ciascuna la rete è una funzione affine, cioè una
+retta (o un piano, o un iperpiano) e basta. Tutta la sua capacità di curvare
+sta nel numero e nella disposizione di quelle regioni, quindi contarle è un
+modo di misurare quanto una rete può essere complicata. Il confronto
+interessante è a parità di parametri: quante regioni compra una rete, con un
+bilancio dato, spendendolo in larghezza oppure in profondità.
+
+`````{tab} Elementare
+
+Prendi una striscia di carta lunga e dritta. Il tuo compito è farla a pezzi, e
+lo strumento che hai è una matita: ogni tratto che tiri attraversa la striscia
+in un punto solo e la divide lì. Conta che il tratto sia netto, perché è il
+tratto a fare il pezzo: con un pennarello che sfuma non ci sarebbe niente da
+contare. Dieci tratti fanno undici pezzi, cento tratti ne fanno centouno. Ogni
+pezzo in più costa un tratto in più, e non c'è modo di fare meglio: la striscia
+è distesa, e ogni tratto la tocca in un posto solo.
+
+Adesso il secondo modo. Prima di tirare i tratti, pieghi la striscia a
+fisarmonica: dieci pieghe, e i fogli si accatastano uno sull'altro, undici
+strati sovrapposti. Ora un tratto solo, tirato con forza, attraversa tutti gli
+undici strati insieme, e quando riapri la striscia quel tratto ha lasciato
+undici segni invece di uno. Dieci tratti su una striscia piegata fanno il
+lavoro di centodieci tratti su una distesa. Piega di nuovo, e i segni si
+moltiplicano di nuovo.
+
+Piegare però non è gratis, e qui sta il confronto vero. Un tratto in più costa
+una cosa sola. Una piega in più costa molto di più, perché per piegare bene
+bisogna decidere come ciascuno dei dieci fogli deve stare rispetto a ciascuno
+degli altri dieci: è un costo che va come dieci per dieci, non come dieci. La
+domanda diventa quindi se convenga spendere il proprio budget in tratti o in
+pieghe, e la risposta è che a parità di spesa le pieghe vincono, e vincono di
+molto.
+
+Tre avvertenze, però, e sono la parte che di solito si salta. La prima: quel
+numero è quanto le pieghe potrebbero fare, piegando alla perfezione. Piegate
+male, due segni cadono nello stesso posto e i pezzi sono meno. La seconda: i
+pezzi che escono da una piega sono copie l'uno dell'altro, perché sono
+nati dallo stesso tratto passato attraverso più fogli; una striscia distesa,
+di tratti indipendenti, ne fa pochi ma li mette dove vuole. La terza, che è la
+più importante: avere un milione di pezzi non vuol dire aver disegnato la cosa
+giusta. Se quello che serve è una curva liscia, i pezzi contano solo se cadono
+dove serve, e il conto dei pezzi su questo non dice niente.
+
+Un'ultima cosa sul tavolo di gioco: qui la carta è una striscia, cioè una cosa
+lunga e basta. Con un foglio, che è quello che succede appena gli ingressi
+sono più di uno, contare i pezzi diventa molto più difficile, e il vantaggio
+delle pieghe cresce ancora.
+
+`````
+
+`````{tab} Superiore
+
+Con un ingresso e un'uscita il conto è elementare. In una rete a uno strato
+nascosto di $D$ unità ReLU, ogni unità ha un punto in cui la sua
+pre-attivazione cambia segno: uno spigolo sulla retta d'ingresso. Al massimo
+$D$ spigoli distinti tagliano la retta in
+
+$$
+N_1 = D + 1
+$$
+
+tratti, e su ciascuno la rete è affine. I parametri sono $D$ pesi d'ingresso,
+$D$ bias, $D$ pesi d'uscita e un bias finale, cioè $3D+1$: il numero di
+regioni cresce linearmente con il numero di parametri.
+
+Con $K$ strati da $D$ unità l'argomento si ripete per induzione. Dentro una
+regione già formata dai primi $k-1$ strati, ogni pre-attivazione dello strato
+$k$ è affine in $x$, quindi ciascuna delle $D$ unità vi aggiunge al più uno
+spigolo: quella regione si divide in al più $D+1$ sottoregioni. Perciò
+
+$$
+N_K \le (D+1)^K ,
+\qquad
+P_K = 3D + 1 + (K-1)\,D\,(D+1) ,
+$$
+
+con $P_K$ il numero di parametri (per $K=1$ la seconda formula restituisce
+$3D+1$, come dev'essere). Le due quantità sono conteggi puri, adimensionali, e
+si confrontano solo a parità di $P$: a profondità $K$ fissata, $D$ cresce come
+$\sqrt{P/(K-1)}$ e le regioni come $P^{K/2}$, cioè polinomialmente nei
+parametri con grado che cresce con la profondità, contro il grado uno della
+rete piatta.
+
+Il conto usa quattro ipotesi, e ciascuna limita che cosa se ne può concludere.
+L'attivazione è ReLU, o comunque lineare a tratti con un solo spigolo: con
+la sigmoide la rete non è lineare a tratti e le regioni non esistono.
+L'ingresso ha una sola dimensione: con $D_i$ ingressi il conto si complica, e
+Montúfar e colleghi {cite}`montufar2014number` prendono la cosa dall'altro
+capo, esibendo reti (di larghezza $D \ge D_i$) che di regioni ne fanno almeno
+$\Omega\big((D/D_i)^{(K-1)D_i} D^{D_i}\big)$: stesso verso, divario più largo.
+Il $(D+1)^K$ è invece un limite superiore, che le costruzioni a ripiegamento
+avvicinano senza toccarlo, e a cui una rete addestrata non si avvicina
+affatto. E soprattutto: il numero di regioni misura
+l’**espressività**, cioè quali funzioni la rete può rappresentare, e non dice
+niente su quale la discesa del gradiente troverà né su come si comporterà sui
+dati nuovi. Le regioni di una rete profonda portano dipendenze e simmetrie
+(sono, letteralmente, copie ripiegate le une delle altre), quindi tante
+regioni non equivalgono a tanta libertà, e non equivalgono in nessun modo a
+generalizzare meglio. Quanto poco le due cose siano legate lo dice la doppia
+discesa della {doc}`sezione su overfitting e validazione
+</MachineLearning/overfitting-validazione>`: una rete con più parametri che
+esempi generalizza meglio proprio dopo aver superato il punto in cui riesce a
+memorizzarli tutti.
+
+`````
+
+Il confronto si fa in aritmetica, contando i parametri di una rete profonda
+piccola e poi quanti neuroni una rete piatta ci mette a spendere altrettanto.
+
+```python
+# Un ingresso, un'uscita, K strati nascosti da D neuroni ReLU ciascuno.
+def parametri(D, K):
+    return 3 * D + 1 + (K - 1) * D * (D + 1)
+
+def regioni(D, K):        # quante ne puo' fare al massimo
+    return (D + 1) ** K
+
+bilancio = parametri(10, 5)
+print(f"profonda: K=5, D=10 -> {bilancio} parametri, {regioni(10, 5)} regioni")
+
+# La rete a uno strato piu' piccola che quel bilancio se lo puo' permettere.
+D = next(d for d in range(1, 10_000) if parametri(d, 1) >= bilancio)
+print(f"piatta:   K=1, D={D} -> {parametri(D, 1)} parametri, "
+      f"{regioni(D, 1)} regioni")
+print(f"rapporto: {regioni(10, 5) / regioni(D, 1):.0f} volte")
+```
+
+```text
+profonda: K=5, D=10 -> 471 parametri, 161051 regioni
+piatta:   K=1, D=157 -> 472 parametri, 158 regioni
+rapporto: 1019 volte
+```
+
+Cinque strati da dieci neuroni costano $471$ parametri e hanno per tetto
+$161.051$ regioni. La rete a uno strato che spende quei parametri, anzi uno in
+più, di tetto ne ha $158$: mille volte meno, con la stessa spesa. Il confronto
+è fra tetti, e i due non sono ugualmente stretti: quello della rete piatta si
+tocca, perché con un solo strato bastano $D$ spigoli distinti, quello della
+profonda nessuna costruzione nota lo raggiunge. E vale per quello che la rete
+può rappresentare, non per quello che imparerà.
+
+## La pila, in codice
+
+La gerarchia dai bordi agli oggetti si legge anche nel codice. Una piccola
+rete convoluzionale scritta in {doc}`PyTorch </PyTorch/overview>` è
+letteralmente una pila di strati che vanno dal semplice al complesso. Di che
+cosa faccia ciascuno di quegli strati parla la
+{doc}`sezione sulle reti convoluzionali </DeepLearning/reti-convoluzionali>`:
+qui conta solo vedere la pila.
 
 ```python
 from torch import nn
@@ -374,7 +527,7 @@ un nome che accompagnerà tutto il capitolo: si chiama **feature map**, ed è la
 mappa che segna punto per punto dove nell'immagine il filtro ha trovato ciò che
 cerca. La riga `nn.AdaptiveAvgPool2d(1)` riduce ciascuna di quelle mappe a un
 numero solo, la sua media. L'ultima riga produce dieci numeri, uno per classe:
-si chiamano **logit**, sono punteggi grezzi, e vince il più alto. Ogni
+si chiamano logit, sono punteggi grezzi, e vince il più alto. Ogni
 `nn.Conv2d` più avanti nella pila costruisce feature più astratte a partire da
 quelle dello strato
 precedente: la stessa scala dai bordi agli oggetti della
@@ -385,13 +538,13 @@ precedente: la stessa scala dai bordi agli oggetti della
 :class: important
 - Nel machine learning classico è una persona a decidere quali caratteristiche
   dei dati contano, e a scriverle nel codice. Una rete profonda se le
-  **inventa da sola**, partendo dai dati grezzi.
-- Le costruisce **a strati**, dal semplice al complesso: prima bordi e linee,
+  inventa da sola, partendo dai dati grezzi.
+- Le costruisce a strati, dal semplice al complesso: prima bordi e linee,
   poi pezzi riconoscibili (un occhio, una ruota), infine l'oggetto intero.
 - Non è esplosa prima del 2012 perché servivano tre cose insieme, come la
-  legna, l'aria e la scintilla: milioni di **fotografie già etichettate**,
-  **schede grafiche** abbastanza veloci e tre accorgimenti precisi (la **ReLU**
-  al posto delle funzioni che spegnevano il segnale, il **dropout** contro
+  legna, l'aria e la scintilla: milioni di fotografie già etichettate,
+  schede grafiche abbastanza veloci e tre accorgimenti precisi (la ReLU
+  al posto delle funzioni che spegnevano il segnale, il dropout contro
   l'imparare a memoria, il moltiplicare le foto con ritagli e specchiature).
   Nel 2012 c'erano tutte e tre, e alla gara di ImageNet vinse AlexNet.
   (La ReLU è la regola più semplice possibile: i numeri positivi passano come
@@ -399,7 +552,7 @@ precedente: la stessa scala dai bordi agli oggetti della
 - Uno strato solo, se lo si facesse enorme, in teoria basterebbe: il teorema
   però dice che una rete così *esiste*, non che l'addestramento la sappia
   trovare. E la profondità arriva allo stesso risultato con molti meno neuroni,
-  perché ogni strato può **costruire sopra** quello che ha trovato il
+  perché ogni strato può costruire sopra quello che ha trovato il
   precedente, invece di descrivere ogni forma a partire dai pixel.
 ```
 `````
@@ -407,14 +560,14 @@ precedente: la stessa scala dai bordi agli oggetti della
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il deep learning **apprende** le feature dai dati grezzi, invece di
+- Il deep learning apprende le feature dai dati grezzi, invece di
   richiederle ingegnerizzate a mano come il ML classico.
-- Le rappresentazioni sono **gerarchiche**: bordi → texture e parti → oggetti,
+- Le rappresentazioni sono gerarchiche: bordi → texture e parti → oggetti,
   un livello di astrazione per strato.
-- È esploso dopo il 2012 (ImageNet, AlexNet) grazie alla triade **dati + GPU +
-  algoritmi**, non a una singola idea nuova.
+- È esploso dopo il 2012 (ImageNet, AlexNet) grazie alla triade dati + GPU +
+  algoritmi, non a una singola idea nuova.
 - Una rete larga e piatta è universale in teoria (con un'attivazione non
-  polinomiale), ma la **profondità** ottiene la stessa espressività con molti
+  polinomiale), ma la profondità ottiene la stessa espressività con molti
   meno neuroni: comporre conviene. L'universalità però è un'esistenza, non
   un'apprendibilità.
 ```
@@ -422,7 +575,7 @@ precedente: la stessa scala dai bordi agli oggetti della
 
 [^backprop-storia]: Il conto che sta sotto la retropropagazione (partire
     dall'errore in fondo alla rete e risalire all'indietro, strato per strato,
-    per sapere quanto ciascun **peso**, cioè ciascuno dei numeri regolabili
+    per sapere quanto ciascun peso, cioè ciascuno dei numeri regolabili
     della rete, ha contribuito) era già noto ai matematici dal 1970, quando
     Seppo Linnainmaa lo descrisse in tutta generalità: è quella che oggi si
     chiama *differenziazione automatica in modalità inversa*. Paul Werbos la

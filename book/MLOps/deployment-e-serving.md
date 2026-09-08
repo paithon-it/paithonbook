@@ -11,7 +11,7 @@ di volte al minuto.
 Le due sezioni precedenti (*Dal notebook alla produzione* e *Dati e pipeline*)
 si sono fermate sul punto in cui i tre pezzi (dati, codice, pesi) sono
 tracciabili e riproducibili. Questa affronta il passo successivo, il quarto
-nodo dell'anello: **consegnare** il modello
+nodo dell'anello: consegnare il modello
 al mondo, cioè metterlo in un posto dove chi ne ha il diritto possa
 interrogarlo. In inglese consegnarlo si dice *deployment*; tenere acceso quel
 posto, giorno dopo giorno, si dice *serving*. Sono le due parole che nel gergo
@@ -36,19 +36,19 @@ fondamentali sono tre.
 
 Il forno di un panificio li fa tutti e tre.
 
-C'è il pane **in blocco**: di notte, quando il negozio è chiuso, il fornaio
+C'è il pane in blocco: di notte, quando il negozio è chiuso, il fornaio
 prepara in un colpo solo tutto il pane che servirà l'indomani. Nessuno aspetta
 al bancone, quindi non importa se ci mette due ore: conta solo sfornarne
 tanto. Questo è il regime *batch*: si accumula un mucchio di richieste e le si
 smaltisce tutte insieme, quando fa comodo (di notte, offline).
 
-C'è poi il **panino al momento**: un cliente entra, ordina, e vuole il suo
+C'è poi il panino al momento: un cliente entra, ordina, e vuole il suo
 panino *adesso*, non domani. Qui conta la fretta: ogni singola richiesta deve
 avere risposta in pochi secondi, mentre la persona aspetta. E se la fila si
 allunga il fornaio non fa un panino più grande: chiama qualcuno al banco.
 Questo è il regime *online*: una richiesta, una risposta, subito.
 
-E c'è il **nastro trasportatore** del sushi: i piatti scorrono senza sosta e
+E c'è il nastro trasportatore del sushi: i piatti scorrono senza sosta e
 tu prendi al volo quello che passa. Nessuno «ordina» e nessuno «finisce»: è un
 flusso continuo che non si ferma mai. Questo è lo *streaming*: eventi che
 arrivano ininterrottamente (clic, transazioni, sensori) e il modello li lavora
@@ -64,8 +64,8 @@ chi arriva, si fa sul momento.
 
 `````{tab} Superiore
 
-I tre regimi si distinguono lungo due assi: **latenza** (quanto tempo passa tra
-una richiesta e la sua risposta) e **throughput** (quante richieste al secondo
+I tre regimi si distinguono lungo due assi: latenza (quanto tempo passa tra
+una richiesta e la sua risposta) e throughput (quante richieste al secondo
 il sistema smaltisce). Sono in tensione, e ogni regime ottimizza uno sacrificando
 l'altro.
 
@@ -93,8 +93,8 @@ serve l'online.
 Batch e online sono i due estremi che si incontrano più spesso, ed è utile
 vederli affiancati ({numref}`fig-mlops-serving`): stessa scatola «modello» al
 centro, priorità opposte ai due lati. Le due priorità hanno un nome. La
-**latenza** è quanto si aspetta una risposta, il tempo che passa fra la domanda
-e la risposta; il **throughput** è quante risposte il sistema riesce a sfornare
+latenza è quanto si aspetta una risposta, il tempo che passa fra la domanda
+e la risposta; il throughput è quante risposte il sistema riesce a sfornare
 in un secondo.
 
 ```{figure} ../figures/mlops-serving.svg
@@ -111,7 +111,7 @@ si aspetta.
 ## Il modello dietro un'API
 
 Nel regime online (il più comune e il più esigente) il modello vive dietro
-l’**API** di cui parlava *Dal notebook alla produzione*: lo sportello elettronico
+l’API di cui parlava *Dal notebook alla produzione*: lo sportello elettronico
 a cui un altro programma manda la domanda e da cui riceve la risposta, senza
 sapere né dover sapere che cosa c'è dietro.
 
@@ -147,7 +147,7 @@ usa e getta, e tutto ciò che deve sopravvivere sta nel volume.
 Questa distinzione è ciò che rende un
 servizio riproducibile: se l'immagine contiene l'ambiente per intero, la stessa
 identica versione del modello gira sul portatile di chi sviluppa e sul
-**server** di produzione, cioè sul computer sempre acceso che risponde alle
+server di produzione, cioè sul computer sempre acceso che risponde alle
 richieste del mondo. E il container si può buttare e ricreare senza pensarci,
 il che torna utile quando si sostituisce un modello con uno nuovo: è quello che
 permette di tenere in piedi due versioni del modello nello stesso momento, o di
@@ -179,7 +179,7 @@ ogni richiesta esegue solo il *forward*, in modalità inferenza. Sopra questa
 logica si appoggia un livello di trasporto (REST/JSON per semplicità, o gRPC
 per la bassa latenza e i payload binari) che però è, in sostanza, contorno.
 
-Il problema serio sta nel renderlo **riproducibile**, più che nell'esporlo. Un
+Il problema serio sta nel renderlo riproducibile, più che nell'esporlo. Un
 modello dipende da una versione precisa di PyTorch, delle librerie di
 pre-processing, perfino di CUDA: la stessa trappola del «sul mio computer
 funzionava» vista in *Dal notebook alla produzione*, spostata
@@ -194,7 +194,7 @@ carico) è il livello successivo, di competenza dell'infrastruttura.
 
 Lo scheletro di un servizio d'inferenza, tolto tutto ciò che riguarda il
 traffico in arrivo, sta in poche righe. La sostanza è tutta in tre gesti:
-caricare i pesi **una volta sola**, dire alla rete che ha finito di studiare, e
+caricare i pesi una volta sola, dire alla rete che ha finito di studiare, e
 spegnere il meccanismo che le serviva solo per imparare.
 
 ```{code-block} python
@@ -224,7 +224,7 @@ sono i due che si dimenticano più spesso.
 
 `````{tab} Elementare
 
-Il secondo gesto è dire alla rete che **ha finito di studiare**. Sembra strano
+Il secondo gesto è dire alla rete che ha finito di studiare. Sembra strano
 doverglielo dire, e invece serve, perché alcuni suoi pezzi si comportano in due
 modi diversi a seconda che stiano imparando o rispondendo.
 
@@ -280,7 +280,7 @@ La prima leva è il **batching dinamico**, e qui la parola *batch* torna con un
 significato diverso da quello di poco fa: qui è il mazzetto di richieste che il
 server mette insieme prima di passarle al modello. Il motivo è che la scheda
 grafica che fa i conti
-(la **GPU**) è costruita per eseguire migliaia di operazioni identiche nello
+(la GPU) è costruita per eseguire migliaia di operazioni identiche nello
 stesso istante, e a servirle una richiesta per volta la si tiene quasi ferma: è
 il punto su cui è costruito il {doc}`capitolo sulle GPU </GPU/overview>`. Il server
 allora accumula per qualche millisecondo le richieste che arrivano, ne fa un
@@ -288,7 +288,7 @@ mazzetto e lo passa al modello in un colpo solo. Chi era arrivato per primo
 aspetta quei pochi millisecondi in più; in cambio, nello stesso secondo, il
 sistema ne serve molte di più.
 
-La seconda leva è **ridurre la precisione** dei numeri, cioè scriverli con meno
+La seconda leva è ridurre la precisione dei numeri, cioè scriverli con meno
 cifre. Dentro un calcolatore ogni informazione è fatta di cifre binarie, i
 *bit*, che valgono zero o uno, e un numero con la virgola di solito ne occupa
 trentadue. Scendendo a sedici (è la scrittura che il capitolo PyTorch chiamava
@@ -299,7 +299,7 @@ processore: i numeri restano tanti quanti erano, sono più corti. Ed è proprio
 lo scorrere dei byte, quasi sempre, il vero collo di bottiglia. Si perde
 qualche cifra dopo la virgola, ed è quasi gratis.
 
-La terza leva spinge oltre, fino agli **interi**: la **quantizzazione** a
+La terza leva spinge oltre, fino agli interi: la quantizzazione a
 `int8` {cite}`jacob2018quantization`. Con la seconda non si somma, perché è la
 stessa manopola girata più in là: si decide quanti bit dare a ogni numero, e il
 conto si fa sempre rispetto ai trentadue di partenza, sedici bit due volte più
@@ -310,7 +310,7 @@ grandi e numeri più corti sono due guadagni indipendenti.
 
 È il trucco di quando mandi una foto su una chat: l'app la spedisce un po’
 sgranata. Non la rimpicciolisce, i pixel restano tutti al loro posto: sono i
-**colori** a diventare più grossolani, e a occhio quasi non si vede. In cambio
+colori a diventare più grossolani, e a occhio quasi non si vede. In cambio
 il file pesa un quarto e parte in un lampo.
 
 Quantizzare un modello è la stessa idea applicata ai suoi numeri: restano
@@ -319,7 +319,7 @@ tante cifre dopo la virgola. Quantizzare vuol dire tenerne pronti
 soltanto 256, come i gradini di una scala. Il 256 non è scelto a caso: le
 macchine maneggiano i bit a gruppi di otto, e con otto bit si scrivono
 $2^8 = 256$ valori diversi. Ogni peso sale sul gradino più vicino, e al suo
-posto si scrive il **numero del gradino**, che è un intero piccolo. Della scala
+posto si scrive il numero del gradino, che è un intero piccolo. Della scala
 vanno segnate due cose, o non la si sa più rileggere: quanto è alto un gradino
 e quale gradino vale zero, perché i pesi scendono anche sotto. Nessun peso si
 sposta più di mezzo gradino: quello è tutto l'errore che si fa.
@@ -350,7 +350,7 @@ la larghezza del gradino la detti l'elemento più grande fra quelli che
 condividono la scala) è costruito per esteso in
 {doc}`Meno bit </Efficienza/meno-bit>`
 {cite}`jacob2018quantization`, insieme alle due conseguenze che qui si danno
-per acquisite: che la **granularità** della scala sia la leva più economica, e
+per acquisite: che la granularità della scala sia la leva più economica, e
 che nei modelli linguistici poche componenti anomale la dettino per tutte le
 altre. Qui interessa la parte di servizio, cioè che cosa si scrive e che cosa
 si misura.
@@ -377,7 +377,7 @@ torch.onnx.export(modello, (esempio,), "modello.onnx")  # lo stesso, in ONNX
 
 La `quantize_dynamic` è la variante più indolore (nessun dato di calibrazione
 richiesto, adatta agli strati lineari), e va usata sapendo due cose. La prima è
-che sui **pesi** PyTorch adotta lo schema **simmetrico**, cioè quello con lo
+che sui pesi PyTorch adotta lo schema **simmetrico**, cioè quello con lo
 zero-point fissato a zero (sulle attivazioni, quantizzate al volo, no): è il
 caso particolare della mappa affine, quello in cui la scala basta da sola, ed è
 anche la forma su cui il capitolo sull’efficienza costruisce tutto il
@@ -390,7 +390,7 @@ Sull'esportazione, invece, è cambiato il rapporto fra i due strumenti.
 l'ha addestrato; ONNX è un formato aperto con cui quel grafo si consegna a un
 motore d'inferenza di terzi. Non sono due strade alternative, e chi le ha
 imparate ai tempi di PyTorch 1.x se lo ricorda al contrario: da PyTorch 2.9
-l'esportatore ONNX **passa** per `torch.export` (il parametro `dynamo` vale
+l'esportatore ONNX passa per `torch.export` (il parametro `dynamo` vale
 `True` di serie) e delega a lui la cattura del grafo. Ne discende una
 conseguenza pratica che coglie tutti di sorpresa: la traduzione in ONNX vive in
 un pacchetto a parte, `onnxscript`, che non viene più installato insieme a
@@ -399,35 +399,35 @@ un pacchetto a parte, `onnxscript`, che non viene più installato insieme a
 tornare all'esportatore vecchio.
 
 Vale infine la stessa disciplina della precisione mista: la quantizzazione va
-sempre **misurata** su un insieme di validazione, perché il calo di accuratezza
+sempre misurata su un insieme di validazione, perché il calo di accuratezza
 dipende dal modello e non è mai garantito trascurabile a priori.
 
 `````
 
 ## Latenza e throughput: cosa promettere
 
-Ottimizzato il servizio, resta la domanda più scomoda: che cosa **promettere** a
+Ottimizzato il servizio, resta la domanda più scomoda: che cosa promettere a
 chi lo userà? Le due grandezze in ballo sono sempre latenza e throughput, e
 tirano in direzioni opposte: per questo vanno promesse insieme. Ma prima di
 promettere qualcosa bisogna decidere *quale numero* guardare, e qui il gergo
 confonde tre cose diverse.
 
-Le tre cose sono quelle di qualunque promessa: **che cosa si guarda**, **che
-cosa ci si impegna a fare** e **che cosa succede se non lo si fa**. Un treno le
+Le tre cose sono quelle di qualunque promessa: che cosa si guarda, che
+cosa ci si impegna a fare e che cosa succede se non lo si fa. Un treno le
 ha tutte e tre: si guarda il ritardo all'arrivo, ci si impegna a stare sotto i
 cinque minuti, e se si sfora il biglietto viene rimborsato.
 
-La prima è la grandezza che si **misura**, e in gergo si chiama **SLI**,
+La prima è la grandezza che si misura, e in gergo si chiama **SLI**,
 *Service Level Indicator*. Sceglierla è già una decisione: la latenza media è
 un indicatore legittimo ed è quello sbagliato, per una ragione che arriva fra
 poco, e al suo posto si prende il tempo entro cui risponde la stragrande
 maggioranza delle richieste, per esempio il 99%.
 
-La seconda è il **bersaglio** che i tecnici si danno da soli su quella
+La seconda è il bersaglio che i tecnici si danno da soli su quella
 grandezza: «il tempo entro cui risponde il 99% delle richieste sta sotto i 200
 millisecondi». È lo **SLO**, *Service Level Objective*.
 
-La terza è il **contratto** firmato con il cliente, che su quel bersaglio si
+La terza è il contratto firmato con il cliente, che su quel bersaglio si
 appoggia e stabilisce il rimborso se la promessa salta: lo **SLA**, *Service
 Level Agreement*.
 
@@ -465,15 +465,15 @@ davanti al bancone: il lavoro pianificato di notte serve apposta a non far
 aspettare nessuno, qui invece l'attesa è tutto il problema. E con dei numeri.
 Un'infornata da una pagnotta sola richiede mezz'ora, quindi il forno ne sforna
 due all'ora; una da cento richiede quaranta minuti, un po’ di più, ma di
-pagnotte ne consegna centocinquanta all'ora. Adesso mettiamo che i clienti che entrano nel negozio siano sessanta
-all'ora.
+pagnotte ne consegna centocinquanta all'ora. Adesso mettiamo che i clienti che
+entrano nel negozio siano sessanta all'ora.
 
-Con il forno da una pagnotta la fila **non smette mai di allungarsi**: entrano
+Con il forno da una pagnotta la fila non smette mai di allungarsi: entrano
 sessanta persone e ne escono due, quindi ogni ora ne restano dentro
 cinquantotto in più, e chi arriva alle undici aspetta più di chi è arrivato
 alle dieci, per sempre. Con il forno da cento, che ne fa centocinquanta contro
 sessanta, la fila si smaltisce e nessuno aspetta più di due infornate. La
-singola infornata è più lenta, e ciononostante **tutti aspettano meno**.
+singola infornata è più lenta, e ciononostante tutti aspettano meno.
 
 Ci sono quindi tre situazioni, non due, e conviene tenerle distinte. Finché il
 forno non sta dietro ai clienti, ingrandire l'infornata migliora tutto: sforna
@@ -526,16 +526,16 @@ difficile da rispettare, perché lascia fuori cinque volte meno gente della p95.
 
 `````{tab} Superiore
 
-Si descrive la latenza con i suoi **percentili**, non con la media. La p50
-(mediana) è il tempo entro cui risponde metà delle richieste; la **p95** e la
-**p99** i tempi entro cui ne risponde il 95% e il 99%. La *coda* della
+Si descrive la latenza con i suoi percentili, non con la media. La p50
+(mediana) è il tempo entro cui risponde metà delle richieste; la p95 e la
+p99 i tempi entro cui ne risponde il 95% e il 99%. La *coda* della
 distribuzione, la p99, la p99.9: è ciò che governa l'esperienza reale sotto
 carico, perché in un sistema che compone più servizi anche una piccola
 frazione di richieste lente si propaga e degrada l'insieme. Uno SLO serio si
 scrive sui percentili alti: «p99 sotto i 200 ms», non «latenza media 80 ms»,
 che nasconde la coda.
 
-Il secondo numero da promettere è il **throughput** sostenibile (richieste al
+Il secondo numero da promettere è il throughput sostenibile (richieste al
 secondo), che con la latenza forma il classico compromesso: più batch grandi
 alzano il throughput ma allungano la coda della latenza. Il terzo è economico,
 il **costo per richiesta** (tempo di calcolo moltiplicato per il prezzo orario
@@ -563,37 +563,37 @@ portavano sottoterra per accorgersi del gas prima degli uomini.
 Il terzo grado espone metà. Un test *A/B* divide gli utenti in due gruppi e
 misura su richieste vere quale delle due versioni funziona meglio.
 
-Le tre tornano in «Monitoraggio e drift», ciascuna con la sua analogia e con la
-domanda a cui risponde. È il lato «serving» della stessa
+Le tre tornano in «Sorvegliare un modello vivo», ciascuna con la sua analogia
+e con la domanda a cui risponde. È il lato «serving» della stessa
 prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- **Inferenza** è il modello che risponde, non che impara, e ci sono tre modi
+- Inferenza è il modello che risponde, non che impara, e ci sono tre modi
   di organizzarla: tutto insieme quando fa comodo (il pane sfornato di notte),
   una richiesta per volta mentre qualcuno aspetta (il panino al momento), o su
   un flusso che non si ferma mai (il nastro del sushi).
-- Il modello sta dietro uno **sportello**: chi lo interroga non sa e non deve
+- Il modello sta dietro uno sportello: chi lo interroga non sa e non deve
   sapere che cosa c'è dietro. E l'impiegato allo sportello si siede una volta
   sola la mattina: i pesi si caricano all'avvio del servizio, non a ogni
   richiesta.
 - Perché lo sportello funzioni uguale ovunque, il modello si chiude in una
-  scatola sigillata con dentro tutto quello che gli serve (l’**immagine**); una
-  sua copia in funzione (il **container**) è usa e getta, e ciò che deve
+  scatola sigillata con dentro tutto quello che gli serve (l’immagine); una
+  sua copia in funzione (il container) è usa e getta, e ciò che deve
   sopravvivere si tiene fuori.
 - Per andare più veloci: servire più richieste in un colpo solo, scrivere i
   numeri con meno cifre, e al limite arrotondarli ai 256 gradini di una scala
-  (la **quantizzazione**, come l'app che manda la foto un po’ sgranata senza
-  toglierle un pixel). Quattro volte più leggero, un pizzico meno preciso, **da
-  misurare ogni volta**.
-- Non si promette il tempo **medio** di risposta, che non lo vive quasi
+  (la quantizzazione, come l'app che manda la foto un po’ sgranata senza
+  toglierle un pixel). Quattro volte più leggero, un pizzico meno preciso, da
+  misurare ogni volta.
+- Non si promette il tempo medio di risposta, che non lo vive quasi
   nessuno: si promette il caso quasi peggiore, «il 95% entro dieci minuti».
   Quel numero si chiama percentile, e il cliente scontento è quello del
   gruppetto lento, non quello medio.
 - Una versione nuova non si accende di colpo per tutti, ma per gradi: prima la
-  si fa girare **in ombra**, senza servirne le risposte a nessuno; poi la si fa
-  provare a **pochi**; e infine si dividono gli utenti in due gruppi, si dà a
+  si fa girare in ombra, senza servirne le risposte a nessuno; poi la si fa
+  provare a pochi; e infine si dividono gli utenti in due gruppi, si dà a
   ciascun gruppo una versione diversa, e si guarda quale va meglio.
 ```
 `````
@@ -601,38 +601,38 @@ prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Un modello in produzione va scelto per **regime di inferenza**: *batch* (in
+- Un modello in produzione va scelto per regime di inferenza: *batch* (in
   blocco, offline, massimizza il throughput), *online* (sincrono, budget di
   latenza stretto), *streaming* (flusso continuo di eventi)
   {cite}`huyen2022designing`.
-- Nel serving online il modello vive dietro un **endpoint** gestito da un **model
-  server** che carica i pesi **una volta sola**; il **container** Docker congela
+- Nel serving online il modello vive dietro un endpoint gestito da un model
+  server che carica i pesi una volta sola; il container Docker congela
   l'ambiente e lo rende riproducibile {cite}`kreuzberger2023machine`.
 - Lo scheletro d'inferenza corretto in PyTorch è: `load_state_dict` all'avvio,
   `model.eval()` (per *dropout* e *BatchNorm*), `torch.no_grad()` per non costruire
   il grafo del backward.
-- Le leve per accelerare sono il **batching dinamico**, la **riduzione di
-  precisione** (`float16`, come nel capitolo PyTorch) e la **quantizzazione a
-  `int8`** con la mappa affine $r = S(q - Z)$, cioè scala e livello dello zero
-  {cite}`jacob2018quantization`: circa 4× di memoria in meno **sui pesi che si
-  quantizzano** (con `quantize_dynamic` e i soli `nn.Linear`, su una rete mista
+- Le leve per accelerare sono il batching dinamico, la riduzione di
+  precisione (`float16`, come nel capitolo PyTorch) e la quantizzazione a
+  `int8` con la mappa affine $r = S(q - Z)$, cioè scala e livello dello zero
+  {cite}`jacob2018quantization`: circa 4× di memoria in meno sui pesi che si
+  quantizzano (con `quantize_dynamic` e i soli `nn.Linear`, su una rete mista
   il guadagno complessivo è molto minore), al prezzo di un piccolo calo di
-  accuratezza, **da
-  misurare** sempre. La scala **per canale** costa una manciata di scalari per
+  accuratezza, da
+  misurare sempre. La scala per canale costa una manciata di scalari per
   strato ed evita che un solo canale anomalo allarghi il gradino di tutti.
 - L'esportazione stacca il modello dal codice che l'ha addestrato:
-  `torch.export` cattura il grafo, e da PyTorch 2.9 **l'esportatore ONNX passa
-  di lì** invece di essere la sua alternativa (serve `onnxscript`, che non è più
+  `torch.export` cattura il grafo, e da PyTorch 2.9 l'esportatore ONNX passa
+  di lì invece di essere la sua alternativa (serve `onnxscript`, che non è più
   una dipendenza di `torch`).
-- I termini sono tre: l’**SLI** è ciò che si misura (la p99 della latenza),
-  lo **SLO** la soglia che il team si impone su quell'indicatore, lo **SLA** il
-  contratto con le penali. Uno SLO serio si scrive sui **percentili alti**
-  (p95, p99), non sulla media, e va bilanciato con **throughput** e **costo per
-  richiesta**.
-- Il compromesso fra latenza e throughput vale **oltre il punto in cui la
-  capacità copre il carico**: sotto quel punto la coda è instabile, e batch più
+- I termini sono tre: l’SLI è ciò che si misura (la p99 della latenza),
+  lo SLO la soglia che il team si impone su quell'indicatore, lo SLA il
+  contratto con le penali. Uno SLO serio si scrive sui percentili alti
+  (p95, p99), non sulla media, e va bilanciato con throughput e costo per
+  richiesta.
+- Il compromesso fra latenza e throughput vale oltre il punto in cui la
+  capacità copre il carico: sotto quel punto la coda è instabile, e batch più
   grandi migliorano tutte e due le grandezze insieme.
-- Le nuove versioni si rilasciano **per gradi di esposizione** (*shadow*, che
+- Le nuove versioni si rilasciano per gradi di esposizione (*shadow*, che
   non serve nessuno; *canary*, che serve pochi; A/B, che divide il traffico a
   metà) per non rompere niente in produzione.
 ```

@@ -1,7 +1,7 @@
 # PyTorch: costruire reti in pratica
 
 C'è stato un periodo, tra il 2011 e il 2016, in cui per fare deep learning
-all'avanguardia conveniva imparare **Lua**, un linguaggio di scripting nato in
+all'avanguardia conveniva imparare Lua, un linguaggio di scripting nato in
 Brasile e famoso soprattutto per gli *addon* di World of Warcraft. Il motivo
 si chiamava **Torch**, una libreria di calcolo scientifico potente e veloce. Il
 termine tornerà spesso: una *libreria*, in informatica, è una cassetta di
@@ -39,7 +39,7 @@ si scrive il programma, non solo da offrire funzioni pronte) funzionavano nel
 primo modo: prima descrivevi *tutta* la rete, cioè scrivevi tutto il grafo, poi
 la consegnavi al motore ed eseguivi, e se qualcosa andava storto capirlo era
 un'impresa. PyTorch funziona come il navigatore: ogni riga di codice viene
-eseguita **subito**, puoi fermarti a guardare i numeri in qualunque punto, e
+eseguita subito, puoi fermarti a guardare i numeri in qualunque punto, e
 correggere è facile come in qualsiasi programma Python.
 
 Col navigatore acceso il viaggio cambia forma mentre lo fai. Piove, e prendi la
@@ -65,7 +65,7 @@ filato. PyTorch lo fa dal 2023, e buona parte di quel ritardo se n'è andata.
 `````{tab} Superiore
 È il paradigma **define-by-run** (reso popolare dal framework giapponese
 Chainer nel 2015): il grafo delle operazioni non viene dichiarato in anticipo
-ma **costruito dinamicamente** durante l'esecuzione, registrando le operazioni
+ma costruito dinamicamente durante l'esecuzione, registrando le operazioni
 man mano che avvengono. Il contrario del *define-and-run* di TensorFlow 1.x,
 dove si compilava un grafo statico da eseguire in una `Session`. Le
 conseguenze pratiche: il *control flow* è normale Python (`if`, `for`,
@@ -81,7 +81,7 @@ punto la storia ha dato ragione a PyTorch.
 
 ## Perché ha vinto nella ricerca
 
-Nel 2017 il posto di PyTorch era già occupato. Lo teneva **TensorFlow**
+Nel 2017 il posto di PyTorch era già occupato. Lo teneva TensorFlow
 {cite}`abadi2016tensorflow`, la
 libreria di Google, uscita nel 2015 e allora usata praticamente da tutti: era
 lei lo strumento con cui si faceva deep learning, e PyTorch era l'ultimo
@@ -98,7 +98,7 @@ buono. Attorno a questa comodità è cresciuto un circolo virtuoso: i
 paper pubblicano codice PyTorch, chi vuole riprodurli usa PyTorch, le librerie
 di alto livello (Hugging Face Transformers, PyTorch Lightning, torchvision)
 nascono PyTorch-first. Nel 2022 Meta ha ceduto il progetto alla neonata
-**PyTorch Foundation** sotto la Linux Foundation: da progetto aziendale a bene
+PyTorch Foundation sotto la Linux Foundation: da progetto aziendale a bene
 comune dell'ecosistema, com'era successo a Linux stesso.
 
 Onestà impone di dire che non ha vinto *ovunque*: TensorFlow resta diffuso
@@ -150,12 +150,12 @@ PyTorch si lavora su blocchi interi di numeri, e non su un numero per volta.
 `````{tab} Superiore
 L'API Python (`torch`, `torch.nn`, `torch.optim`, `torch.utils.data`) è un
 guscio sottile sopra **ATen**, la libreria C++ dei tensori, e sopra il motore
-**autograd** che registra le operazioni e calcola i gradienti. Un *dispatcher*
+autograd che registra le operazioni e calcola i gradienti. Un *dispatcher*
 smista ogni operazione al kernel giusto per il dispositivo del tensore: BLAS
 e simili su CPU, kernel CUDA/cuDNN su GPU NVIDIA, Metal Performance Shaders
 (MPS) su Apple Silicon. Per il passaggio in produzione: `torch.compile`
-(fusione e compilazione JIT dei kernel), l'esportazione in **ONNX** verso
-runtime esterni, ed **ExecuTorch** per mobile ed embedded. La divisione del
+(fusione e compilazione JIT dei kernel), l'esportazione in ONNX verso
+runtime esterni, ed ExecuTorch per mobile ed embedded. La divisione del
 lavoro è netta: Python decide *cosa* calcolare, il motore C++ decide *come*.
 `````
 
@@ -169,7 +169,7 @@ parlano (per questo nel codice il dispositivo si chiamerà `"cuda"` e non
 `"gpu"`). La prossima sezione riprende entrambe con calma.
 
 PyTorch si installa come qualunque pacchetto Python, cioè scrivendo una riga
-nel **terminale**, la finestra in cui si danno comandi scritti al computer; sul
+nel terminale, la finestra in cui si danno comandi scritti al computer; sul
 sito ufficiale (`pytorch.org`) un selettore genera la riga adatta al proprio
 sistema operativo e alla propria scheda. Per tutto questo capitolo basta la
 versione senza GPU:
@@ -191,7 +191,7 @@ quello per la sola CPU, e la riga si accorcia a
 `pip install torch torchvision`.
 
 Ed ecco il primo contatto, un assaggio delle due cose che vedremo nelle
-prossime sezioni: i **tensori** (le scatole in cui PyTorch tiene i numeri) e i
+prossime sezioni: i tensori (le scatole in cui PyTorch tiene i numeri) e i
 gradienti automatici.
 
 ```python
@@ -207,13 +207,13 @@ print(x.grad)                              # la derivata di y in x=3 -> tensor(8
 ```
 
 Niente da dichiarare in anticipo e niente da preparare prima di partire: si
-scrivono i conti come si scriverebbero su un foglio, e la **derivata** esce da
+scrivono i conti come si scriverebbero su un foglio, e la derivata esce da
 sola. Se il termine non ti dice niente, basta questo: la derivata misura quanto
 cambia il risultato quando l'ingresso si sposta di un soffio. Qui vale $8$, e
 $8$ vuol dire questo: sposta $x$ da $3$ a $3{,}01$, cioè di un centesimo, e $y$
 cresce di circa otto centesimi, otto volte tanto. Il conto si può rifare a
 mano: $y$ vale $15$ in $x = 3$ e $15{,}0801$ in $x = 3{,}01$. Quel numero, nel
-mestiere, si chiama **gradiente**, ed è quello che la riga `y.backward()`
+mestiere, si chiama gradiente, ed è quello che la riga `y.backward()`
 calcola e che PyTorch deposita in `x.grad`;
 chi ricorda le regole del capitolo di richiami matematici riconoscerà che la
 derivata di $x^2 + 2x$ è $2x + 2$, che in $x = 3$ vale appunto $8$. In
@@ -223,23 +223,23 @@ miniatura, è il meccanismo che addestra ogni rete neurale di questo libro.
 
 Due movimenti, dal mattone al mestiere.
 
-Il primo mette in mano gli attrezzi, e sono tre. I **tensori**, le scatole di
+Il primo mette in mano gli attrezzi, e sono tre. I tensori, le scatole di
 numeri su cui tutto si appoggia, insieme al meccanismo che calcola le derivate
-da solo. I **moduli**, cioè come si mette insieme un modello pezzo per pezzo, e
-come si misura quanto sbaglia. L’**addestramento**, cioè il giro di cinque
+da solo. I moduli, cioè come si mette insieme un modello pezzo per pezzo, e
+come si misura quanto sbaglia. L’addestramento, cioè il giro di cinque
 mosse che in PyTorch si scrive a mano invece di chiederlo a un comando, e che
 qui si vede all'opera su un problema vero: leggere cifre scritte a mano.
 
-Il secondo insegna a usarli su un problema che non è un esercizio. Il **flusso
-di lavoro**, cioè l'ordine delle mosse che si ripete in ogni progetto e il
-ciclo con cui un modello si migliora. I **dati su misura**: come si porta
+Il secondo insegna a usarli su un problema che non è un esercizio. Il flusso
+di lavoro, cioè l'ordine delle mosse che si ripete in ogni progetto e il
+ciclo con cui un modello si migliora. I dati su misura: come si porta
 dentro la rete una cartella di file propri, con `Dataset`, `DataLoader` e
-trasformazioni. I **tre errori più comuni** (forma, tipo, dispositivo), che da
-soli si prendono metà del tempo perso da chi comincia. Il passaggio **dal
-notebook agli script**, quando un esperimento va reso ripetibile. E infine
-**replicare un paper**, cioè un articolo scientifico: il metodo per
+trasformazioni. I tre errori più comuni (forma, tipo, dispositivo), che da
+soli si prendono metà del tempo perso da chi comincia. Il passaggio dal
+notebook agli script, quando un esperimento va reso ripetibile. E infine
+replicare un paper, cioè un articolo scientifico: il metodo per
 trasformare quattro equazioni in codice che gira. Chiude il capitolo una
-sezione sulle **prestazioni**, per quando il modello funziona ma è troppo
+sezione sulle prestazioni, per quando il modello funziona ma è troppo
 lento.
 
 L'obiettivo è che a fine capitolo tu sappia leggere, e scrivere, il codice con
@@ -259,10 +259,10 @@ Un ripasso, prima di aprire la scatola dei tensori.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- **PyTorch** nasce nel 2016 nei laboratori di Facebook (oggi Meta) come
-  versione in Python di un vecchio strumento chiamato **Torch**, che si usava
+- PyTorch nasce nel 2016 nei laboratori di Facebook (oggi Meta) come
+  versione in Python di un vecchio strumento chiamato Torch, che si usava
   con un altro linguaggio; oggi non appartiene più a un'azienda sola.
-- Ogni riga viene **eseguita subito**, come su una calcolatrice: puoi fermarti
+- Ogni riga viene eseguita subito, come su una calcolatrice: puoi fermarti
   a guardare i numeri in qualunque punto, e correggere un errore è come
   correggerlo in un normale programma Python.
 - Python è la sala del ristorante; la cucina è scritta in un linguaggio più
@@ -278,13 +278,13 @@ Un ripasso, prima di aprire la scatola dei tensori.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- **PyTorch** nasce nel 2016 a Facebook AI Research (oggi Meta AI) come
-  interfaccia Python del vecchio motore **Torch** (Lua); beta pubblica a
-  inizio 2017, dal 2022 governato dalla **PyTorch Foundation**.
-- Filosofia **define-by-run**: ogni operazione è eseguita subito e il grafo
+- PyTorch nasce nel 2016 a Facebook AI Research (oggi Meta AI) come
+  interfaccia Python del vecchio motore Torch (Lua); beta pubblica a
+  inizio 2017, dal 2022 governato dalla PyTorch Foundation.
+- Filosofia define-by-run: ogni operazione è eseguita subito e il grafo
   dei calcoli si costruisce dinamicamente; debugging e control flow sono
   normale Python.
-- Python è la superficie: sotto lavorano **ATen** e **autograd** in C++, con
+- Python è la superficie: sotto lavorano ATen e autograd in C++, con
   kernel dedicati per CPU, GPU (CUDA) e Apple Silicon (MPS);
   `torch.compile` (PyTorch 2.0) aggiunge la compilazione JIT.
 - È lo standard *de facto* della ricerca; TensorFlow resta un onesto

@@ -38,6 +38,20 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-5)=
+
+## 1.12.5 · 8 settembre 2026
+
+### Sezioni nuove
+
+- {doc}`L'attenzione in pratica </Transformers/attenzione-in-pratica>` (Transformer). **L'attenzione in pratica.** Una sezione nuova nel capitolo sui Transformer: la stessa formula costa in modo diverso quando si addestra e quando si genera, la KV cache, e le varianti che la riducono (MQA, GQA, MLA), con i conti in memoria rifatti riga per riga.
+- {doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>` (Reti neurali). **Da dove viene la loss.** Una sezione nuova nel capitolo sulle reti neurali: la funzione di perdita non si sceglie a occhio, si ricava dalla distribuzione che la rete dichiara sull'uscita; i minimi quadrati e la cross-entropy come due casi della stessa mossa.
+
+### Correzioni
+
+- **Una rilettura a due lettori su ventisei capitoli.** Ogni pagina è stata riletta due volte, come lettore alle prime armi e come lettore esperto, con le formule rifatte, il codice rieseguito e le fonti aperte. Corretti errori di fatto (un cancello attribuito al ramo sbagliato, un conto di memoria, una frase che la scheda gemella smentiva), termini usati prima di essere spiegati e rimandi a sezioni che non esistono.
+- **Meno grassetto in altri sedici capitoli.** La passata iniziata nella 1.12.4 è arrivata a venti capitoli su trentotto: il neretto segna un termine la prima volta che compare e poi lo lascia stare. Le parole sono le stesse.
+
 (v1-12-4)=
 
 ## 1.12.4 · 7 settembre 2026

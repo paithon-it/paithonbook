@@ -1,17 +1,15 @@
 # Sorvegliare un modello vivo
 
-Nella sezione «Quando i dati cambiano» avevamo chiuso con un'immagine: un
-modello acceso, che sta rispondendo a persone vere, va trattato «come un
-impianto, non come un quadro
-appeso». Un quadro, una volta appeso, non chiede più niente a nessuno; un
-impianto invece vive, consuma, si scalda, si stara, e va sorvegliato con una
-sala di controllo piena di spie e manometri. Lì l'immagine era servita a dire
-*perché* serve monitorare. Restava tutto il seguito: quali strumenti montare
-su quell'impianto, dove piazzare le spie, a che soglia farle scattare e cosa
-fare quando una si accende. È il mestiere di questa sezione: il lato operativo
-del problema che
-{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>` aveva posto
-in termini statistici.
+{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>` aveva
+lasciato un'immagine: un modello acceso, che sta rispondendo a persone vere,
+va trattato «come un impianto, non come un quadro appeso». Un quadro, una
+volta appeso, non chiede più niente a nessuno; un impianto invece vive,
+consuma, si scalda, si stara, e va sorvegliato con una sala di controllo
+piena di spie e manometri. Lì l'immagine era servita a dire *perché* serve
+monitorare. Restava tutto il seguito: quali strumenti montare su
+quell'impianto, dove piazzare le spie, a che soglia farle scattare e cosa
+fare quando una si accende. È il mestiere di questa sezione: il lato
+operativo di quel problema, che là era posto in termini statistici.
 
 Il guaio dei modelli, rispetto a un impianto industriale, è che quando si
 guastano non fanno rumore. Una pompa che si rompe fischia, perde, si ferma; un
@@ -23,7 +21,7 @@ fischio che manca.
 ## Che cosa si misura
 
 La prima domanda è banale solo in apparenza: che cosa mettiamo, esattamente,
-sui manometri? Le cose da tenere d'occhio stanno su **tre livelli**, che vanno
+sui manometri? Le cose da tenere d'occhio stanno su tre livelli, che vanno
 dal più facile e immediato al più prezioso e lento. Impararli separati è
 importante, perché ciascuno risponde a una domanda diversa e ha tempi diversi.
 
@@ -32,7 +30,7 @@ importante, perché ciascuno risponde a una domanda diversa e ha tempi diversi.
 Il cruscotto di un’auto ha tre famiglie di indicatori, e ti dicono cose
 diverse.
 
-Il **primo quadrante** sono le spie di base: motore acceso, temperatura,
+Il primo quadrante sono le spie di base: motore acceso, temperatura,
 livello della benzina. Ti dicono se la macchina *funziona come macchina*: si
 accende, non fuma, risponde all'acceleratore. Per un modello è la stessa cosa:
 il servizio è vivo? Risponde in fretta? Ogni tanto va in errore? Queste spie
@@ -41,14 +39,14 @@ andando. E «in fretta» non si misura sulla media: una macchina che parte al
 primo colpo novantanove volte su cento, e alla centesima ti pianta in mezzo
 all'incrocio, in media parte benissimo.
 
-Il **secondo quadrante** ti dice come stai guidando *adesso*: che tipo di
+Il secondo quadrante ti dice come stai guidando *adesso*: che tipo di
 strada è, quante curve, quanto vai piano. Per un modello: che tipo di
 richieste stanno arrivando, e che tipo di risposte sta dando. Se ieri gli
 arrivavano email lunghe in media 80 parole e oggi ne arrivano da 200, o se
 ieri segnalava spam il 20% dei messaggi e oggi il 45%, il quadrante te lo
 mostra subito: anche se non sai ancora se sia un bene o un male.
 
-Il **terzo quadrante** è il più importante e il più lento: *sei arrivato dove
+Il terzo quadrante è il più importante e il più lento: *sei arrivato dove
 volevi?* Lo scopri solo alla fine del viaggio, confrontando dove sei con dove
 volevi andare. Per un modello è la qualità vera: aveva ragione? E la risposta
 giusta (l'utente ha davvero cliccato, il paziente era davvero malato) spesso
@@ -67,16 +65,16 @@ I tre livelli corrispondono a due famiglie di metriche molto diverse per natura
 e per latenza {cite}`breck2017ml`.
 
 1. **Metriche di sistema** (salute del servizio). Sono le stesse dell'ingegneria
-   dei sistemi distribuiti: **latenza** (di norma i percentili, $p_{50}$ e
-   soprattutto $p_{99}$, non la media, che nasconde le code lente), **tasso di
-   errore** (risposte 5xx, eccezioni, timeout), **throughput** e **uptime**.
+   dei sistemi distribuiti: latenza (di norma i percentili, $p_{50}$ e
+   soprattutto $p_{99}$, non la media, che nasconde le code lente), tasso di
+   errore (risposte 5xx, eccezioni, timeout), throughput e uptime.
    Non dicono nulla sulla *correttezza* delle predizioni, ma sono disponibili in
    tempo reale e sono la prima cosa che si rompe.
 
 2. **Proprietà statistiche di input e output**. Le distribuzioni delle
    *feature* in ingresso e delle predizioni in uscita: media, varianza,
    quantili, frazione di valori mancanti per ogni *feature*; e, per un
-   classificatore, il **tasso di ciascuna classe predetta**
+   classificatore, il tasso di ciascuna classe predetta
    $\hat{p}_c = \frac{1}{N}\sum_{i=1}^{N}\mathbb{1}[\hat{y}_i = c]$, dove $N$ è il
    numero di richieste nella finestra e $\hat{y}_i$ la classe predetta per la
    $i$-esima. Non richiedono le etichette vere: si calcolano sul traffico così
@@ -84,7 +82,7 @@ e per latenza {cite}`breck2017ml`.
 
 3. **Qualità vera** (metriche di modello: accuratezza, F1, calibrazione,
    errore di regressione). Sono ciò che davvero ci interessa, ma richiedono le
-   **etichette vere**, e qui sta il problema strutturale del **label delay**
+   etichette vere, e qui sta il problema strutturale del **label delay**
    {cite}`huyen2022designing`: l'etichetta arriva in ritardo (il rimborso del
    prestito si scopre a mesi, la diagnosi confermata a settimane) o non arriva
    affatto. La qualità vera è quindi una metrica *ritardata*, e per questo i
@@ -122,30 +120,30 @@ mentre la risposta corretta è diventata un'altra.
 Qui ci interessa il gesto operativo: come ci si *accorge* che uno di questi è
 in corso, mentre accade.
 
-Lo strumento l'abbiamo già incontrato: il **classificatore-detective**. Si
+Lo strumento l'abbiamo già incontrato: il classificatore-detective. Si
 addestra un modello a distinguere i dati di ieri da quelli di oggi, e si
 guarda quanto ci riesce. Il numero con cui si misura quanto ci riesce è
-l’**AUC**, incontrata parlando di {doc}`metriche </MachineLearning/metriche>`, e
+l’AUC, incontrata parlando di {doc}`metriche </MachineLearning/metriche>`, e
 qui va letta così: vale $1$ quando il detective indovina sempre da quale dei
 due periodi viene un dato, e vale $0{,}5$ quando sta tirando a indovinare,
 perché a caso, fra un dato di ieri e uno di oggi, quale sia quale lo si azzecca
 una volta su due.
 
 Un'AUC vicina a $0{,}5$ dice quindi che i due periodi sono indistinguibili *per
-lui*. È una rassicurazione, non una prova: uno scostamento piccolo, o distribuito su molte colonne senza spiccare su
-nessuna, resta sotto il rumore di quel classificatore e non gli fa alzare
-l'AUC di un centesimo. (Le colonne dei dati, nel gergo
-di questo capitolo, sono le **feature**: è la parola che il codice più avanti
-userà, e vuol dire esattamente quello.)
+lui*. È una rassicurazione, non una prova: uno scostamento piccolo, o
+distribuito su molte colonne senza spiccare su nessuna, resta sotto il rumore
+di quel classificatore e non gli fa alzare l'AUC di un centesimo. (Le colonne
+dei dati, nel gergo di questo capitolo, sono le feature: è la parola che il
+codice più avanti userà, e vuol dire esattamente quello.)
 
 Nel capitolo di Machine Learning il detective era una diagnosi fatta una volta
-sola. Per un impianto acceso va invece trasformato in una **sorveglianza
-continua**, e questo obbliga a decidere tre cose. Primo, **che cosa si
-confronta con che cosa**: si sceglie un periodo in cui il modello stava bene (è
+sola. Per un impianto acceso va invece trasformato in una sorveglianza
+continua, e questo obbliga a decidere tre cose. Primo, che cosa si
+confronta con che cosa: si sceglie un periodo in cui il modello stava bene (è
 la *finestra di riferimento*, e resta ferma) e lo si paragona a quello appena
 trascorso, che invece scorre in avanti giorno dopo giorno (la *finestra
-corrente*). Secondo, **quanto in alto mettere l'asticella**: sopra quale valore
-dell'AUC far scattare l'allarme. Terzo, **come capire dove**, cioè quale
+corrente*). Secondo, quanto in alto mettere l'asticella: sopra quale valore
+dell'AUC far scattare l'allarme. Terzo, come capire dove, cioè quale
 colonna dei dati è cambiata, perché sapere soltanto che qualcosa è cambiato non
 dice a nessuno che cosa fare.
 
@@ -191,7 +189,7 @@ cambia). Le tre decisioni operative sono:
   (finestre che quel classificatore non distingue) a $1$ (perfettamente
   separabili); per rumore campionario, senza alcuno shift, oscilla attorno a
   $0{,}5$, anche sotto. Si sceglie quindi una soglia (per esempio $0{,}65$)
-  oltre la quale scatta l'allarme, calibrata sul tasso di **falsi allarmi**
+  oltre la quale scatta l'allarme, calibrata sul tasso di falsi allarmi
   accettabile.
 - **Test per singola *feature***. Il detective è un test *multivariato*: dice
   *se* qualcosa è cambiato, non *cosa*. Per localizzare si affianca un test
@@ -214,7 +212,7 @@ cambia). Le tre decisioni operative sono:
   deviazione standard, su $n = 2000$ per finestra, dà tipicamente
   $p \sim 10^{-7}$, e il rifiuto arriva su ogni finestra simulata. Il problema
   non è la molteplicità dei test ma la
-  **taglia del campione**, e correggere per Bonferroni non lo tocca, perché i
+  taglia del campione, e correggere per Bonferroni non lo tocca, perché i
   $p$-value stanno molti ordini di grandezza sotto
   qualunque soglia, altro che al limite. L'allarme va quindi fondato
   sull’**ampiezza** ($D$, o una
@@ -237,7 +235,7 @@ cambia). Le tre decisioni operative sono:
   $i$: una divergenza simmetrica fra le due ripartizioni, che la pratica
   legge con soglie di mestiere (sotto $0{,}1$ quiete, oltre $0{,}25$ deriva
   da guardare). E copre anche il caso a cui la KS non si applica, le colonne
-  **categoriche**: lì la stessa somma si fa con le categorie al posto delle
+  categoriche: lì la stessa somma si fa con le categorie al posto delle
   fasce, oppure si usa un test chi-quadro sulle frequenze, con la stessa
   avvertenza di prima sull'eccesso di potenza.
 
@@ -253,8 +251,8 @@ Le due curve del disegno non sono i valori grezzi ma la loro **cumulata**: a
 ogni punto dell'asse orizzontale, la curva dice quale frazione dei dati sta
 sotto quel valore. Comincia da zero a sinistra, arriva a uno a destra, e se i
 dati scivolano verso destra la curva scivola con loro. Il numero che misura la
-deriva è allora il più semplice possibile: **quanto le due curve si allontanano
-nel punto in cui sono più lontane**, che nel disegno è il segmento verticale.
+deriva è allora il più semplice possibile: quanto le due curve si allontanano
+nel punto in cui sono più lontane, che nel disegno è il segmento verticale.
 Si chiama $D$, e il controllo che lo calcola porta il nome dei due statistici
 che l'hanno inventato, Kolmogorov e Smirnov, in sigla **KS**.
 
@@ -274,7 +272,7 @@ Due cose il disegno le mostra e il numero $D$, da solo, non direbbe. La prima è
 *dove* cade il segmento: non ai bordi, perché lì le due curve tornano comunque
 a coincidere, l'una partendo da zero e l'altra arrivando a uno, ma nel mezzo,
 esattamente a metà strada fra il centro di ieri e il centro di oggi. La seconda
-è che la soglia disegnata, quel $0{,}10$, è una soglia **sull'ampiezza** del
+è che la soglia disegnata, quel $0{,}10$, è una soglia sull'ampiezza del
 segmento, decisa su quanto si è disposti a lasciar scivolare le cose prima di
 preoccuparsi.
 
@@ -284,17 +282,17 @@ restituisce, e prenderlo per la soglia è l'errore più comune del mestiere.
 `````{tab} Elementare
 
 Il controllo, oltre a $D$, restituisce un secondo numero, che si chiama
-**$p$-value** e che dice **quanto sarebbe improbabile vedere uno scarto così
-grande se in realtà non fosse cambiato niente**. Se quel numero è minuscolo, si
+$p$-value e che dice quanto sarebbe improbabile vedere uno scarto così
+grande se in realtà non fosse cambiato niente. Se quel numero è minuscolo, si
 conclude che qualcosa è cambiato davvero. Sembra la spia perfetta, e invece è
 una spia che, con i numeri di un servizio vero, suona sempre.
 
 Il motivo è che il $p$-value non dipende solo da quanto le cose sono cambiate:
-dipende anche da **quanti dati hai guardato**. Con pochi dati un piccolo scarto
+dipende anche da quanti dati hai guardato. Con pochi dati un piccolo scarto
 può benissimo essere frutto del caso; con moltissimi dati, lo stesso identico
 piccolo scarto non può più esserlo, e il controllo lo dichiara reale.
 
-Lo si vede sul **mese 1** della figura, quello in cui la deriva è appena
+Lo si vede sul mese 1 della figura, quello in cui la deriva è appena
 cominciata: lì il segmento $D$ vale sei centesimi, cioè molto meno dei dieci
 centesimi della soglia. Adesso immagina di rifare la misura di quello stesso
 mese duemila volte, ripescando ogni volta dati diversi. Con duemila dati
@@ -312,11 +310,11 @@ soltanto l'ampiezza del segmento.
 
 `````{tab} Superiore
 
-L'altro numero è il **$p$-value**, e l'eccesso di potenza si legge sui sei mesi
+L'altro numero è il $p$-value, e l'eccesso di potenza si legge sui sei mesi
 della deriva in un caso solo. Il valore critico al cinque per cento, che per
 finestre di uguale taglia vale circa $1{,}36\sqrt{2/n}$, a
 $n = 2000$ scende a $0{,}043$: meno della metà della soglia di ampiezza
-disegnata, e già sotto il $D$ del **mese 1**, che vale $0{,}060$. Cioè il test
+disegnata, e già sotto il $D$ del mese 1, che vale $0{,}060$. Cioè il test
 rifiuta quando l'occhio non vede ancora niente.
 
 Il conto, su quel mese (due normali di uguale varianza sfalsate di $0{,}15$
@@ -388,7 +386,7 @@ dell'indicatore di drift su cui si possono appendere gli allarmi. Ha però due
 semplificazioni didattiche che in un impianto vero si pagano care, e conviene
 nominarle proprio perché il codice è breve e viene copiato.
 
-La prima è il cancello: qui i test per singola *feature* girano **solo se**
+La prima è il cancello: qui i test per singola *feature* girano solo se
 l'indicatore globale ha superato la soglia. Comodo da leggere, pericoloso da
 copiare. Un cambiamento concentrato su una colonna sola fra molte può lasciare
 l'indicatore globale appena sotto soglia, e allora il programma non guarda
@@ -399,7 +397,7 @@ l'interruttore che decide se guardare.
 
 La seconda è che il controllo colonna per colonna è necessario ma non
 sufficiente. Guarda una colonna alla volta, quindi è cieco ai cambiamenti che
-vivono nel **rapporto** fra le colonne: se altezza e peso continuano ciascuna a
+vivono nel rapporto fra le colonne: se altezza e peso continuano ciascuna a
 distribuirsi come prima ma smettono di crescere insieme, ogni singola colonna
 risulta innocente mentre il detective, che le guarda insieme, grida. Quando
 capita questo, la conclusione giusta non è «falso allarme» ma un cambiamento
@@ -407,7 +405,7 @@ nelle dipendenze, da cercare con strumenti che le guardino
 (le importanze del detective stesso, le correlazioni a coppie).
 
 Una cautela finale, la stessa della sezione statistica ma più severa di come la
-si racconta di solito. Il detective è addestrato **sui soli ingressi**: quello
+si racconta di solito. Il detective è addestrato sui soli ingressi: quello
 che rileva è che è cambiato il tipo di richieste che arrivano, e nient'altro.
 Non distingue un cambiamento innocuo da uno che rovina le predizioni; e non
 distingue nemmeno le tre famiglie fra loro. Anche un puro cambio di proporzioni
@@ -415,7 +413,7 @@ fra le risposte giuste (il *label shift*) lo fa suonare, e la ragione è
 semplice: se le frodi passano da una su cento a una su dieci, in mezzo alle
 richieste in arrivo ce ne sono dieci volte tante che *assomigliano* a una
 frode. Il detective non vede le risposte, ma vede quelle richieste, e le nota.
-Del **concept shift** puro, poi, non vede
+Del concept shift puro, poi, non vede
 niente: lì gli ingressi restano identici ed è la regola giusta a essere
 cambiata sotto. Per separare i tre casi non c'è scorciatoia: servono le
 etichette vere del terzo livello, o almeno le predizioni aggregate. Il
@@ -428,8 +426,8 @@ organizza come una **piramide**, dal gesto più economico e automatico al più
 costoso e delicato, e la regola d'oro è che la risposta sia *proporzionata* alla
 prova: la maggior parte degli allarmi non deve arrivare in cima.
 
-Alla base c'è l’**allarme**: automatico, a costo quasi nullo, tanto abbondante
-quanto lo consente una buona soglia. Sopra c'è l’**indagine**: un umano guarda
+Alla base c'è l’allarme: automatico, a costo quasi nullo, tanto abbondante
+quanto lo consente una buona soglia. Sopra c'è l’indagine: un umano guarda
 *quale* *feature* è cambiata e prova a capire se è un artefatto (un sensore
 rotto, un bug nella *pipeline* dei dati; più spesso è questo che un vero
 mutamento del mondo), un covariate shift benigno o l'inizio di un concept
@@ -450,7 +448,7 @@ vecchio). Rispondere sempre col gesto più drastico è come cambiare il motore
 ogni volta che si accende una spia: costoso, e spesso inutile.
 
 C'è poi una scelta di fondo su *quando* rimettere mano al modello. Un'officina
-può fare due cose: il tagliando **a scadenza fissa** (ogni diecimila chilometri,
+può fare due cose: il tagliando a scadenza fissa (ogni diecimila chilometri,
 che tu abbia problemi o no) oppure l'intervento a chiamata, quando qualcosa si
 guasta. Il tagliando è prevedibile e semplice, ma quello che si rompe il giorno
 dopo resta rotto fino al prossimo; la chiamata risparmia lavoro e vale quanto
@@ -483,21 +481,21 @@ Sul *quando* riaddestrare, due strategie {cite}`shankar2022operationalizing`:
   supera una soglia. Reagisce a ciò che serve, ma dipende interamente dalla
   qualità degli allarmi.
 
-Il punto delicato è l’**automazione** del retraining, che è il sogno di ogni
-*pipeline* MLOps ma nasconde una trappola già incontrata: il **feedback
-loop**. Se le predizioni del modello concorrono a generare i dati futuri (un
+Il punto delicato è l’automazione del retraining, che è il sogno di ogni
+*pipeline* MLOps ma nasconde una trappola già incontrata: il feedback
+loop. Se le predizioni del modello concorrono a generare i dati futuri (un
 sistema di credito che nega prestiti non vedrà mai come sarebbero andati quei
 clienti, un sistema di raccomandazione raccoglie clic solo su ciò che ha
 deciso di mostrare), riaddestrare *automaticamente* su quei dati non
-corregge il modello: ne **amplifica** i bias, cementandoli a ogni ciclo
+corregge il modello: ne amplifica i bias, cementandoli a ogni ciclo
 {cite}`huyen2022designing`. È la stessa dinamica che aveva ingannato Google
 Flu Trends, dove era anche il motore di ricerca, aggiornandosi, a cambiare i
 dati che il suo stesso modello leggeva {cite}`lazer2014parable`. Un
 *retraining loop* senza sorveglianza umana è un amplificatore puntato sul
 proprio ingresso: prima o poi fischia. Per questo anche le *pipeline* più
 automatizzate tengono un umano *nell'anello* alle soglie alte della piramide,
-e valutano ogni candidato al retraining su dati **freschi e possibilmente non
-contaminati** dalle scelte del modello in carica. Il caso limite, in cui il
+e valutano ogni candidato al retraining su dati freschi e possibilmente non
+contaminati dalle scelte del modello in carica. Il caso limite, in cui il
 feedback loop non è un incidente ma la struttura stessa del problema, lo
 abbiamo già visto nel
 {doc}`capitolo sui sistemi di raccomandazione </SistemiRaccomandazione/overview>`:
@@ -510,7 +508,7 @@ decide che cosa l'utente può vedere, e quindi che cosa potrà mai cliccare.
 
 Supponiamo che l'indagine abbia dato ragione all'allarme e il retraining abbia
 prodotto un modello nuovo, che sui dati di test sembra migliore. Resta il
-passo più rischioso di tutti: **sostituire** il modello vivo con quello nuovo.
+passo più rischioso di tutti: sostituire il modello vivo con quello nuovo.
 Un modello che va benissimo in laboratorio può comportarsi in modo pessimo
 davanti agli utenti veri: su richieste mai viste, con tempi di risposta
 diversi, con effetti che nessuna prova fatta a tavolino cattura. Rimpiazzarlo
@@ -525,17 +523,17 @@ Hai inventato un piatto nuovo per il tuo ristorante. Non lo metti nel menù di
 colpo per tutti: se qualcosa non va, hai rovinato la serata a duecento
 clienti. Fai una cosa più furba, in tre modi.
 
-Il primo: lo **cucini in parallelo** senza servirlo (il cuoco lo prepara
+Il primo: lo cucini in parallelo senza servirlo (il cuoco lo prepara
 insieme al vecchio, tu lo assaggi in cucina, al tavolo arriva ancora il
 vecchio). Nessun cliente corre rischi. Si chiama *shadow*, cioè «in ombra».
 
-Il secondo: lo **fai assaggiare a pochi tavoli**. Lo metti nel piatto di due
+Il secondo: lo fai assaggiare a pochi tavoli. Lo metti nel piatto di due
 tavoli su cento, tieni d'occhio le loro facce, e se funziona allarghi a dieci, a
 cinquanta, a tutti; se storcono il naso, lo ritiri e nessun danno è fatto. È il
 *canary*, dal canarino che i minatori si portavano sottoterra: se il gas c'era,
 lo sentiva lui per primo.
 
-Il terzo: **due metà della sala**, stesso momento, piatto vecchio a una metà e
+Il terzo: due metà della sala, stesso momento, piatto vecchio a una metà e
 nuovo all'altra, e a fine serata conti chi ha lasciato il piatto pulito. Chi va
 in quale metà lo tira a sorte il cameriere, se no stai confrontando i tavoli
 alla finestra con quelli vicino alla cucina. E se il piatto nuovo torna
@@ -557,26 +555,26 @@ stesso momento. Di solito si fanno tutti e tre in fila, in quest'ordine.
 Le tre tecniche, in ordine crescente di esposizione {cite}`huyen2022designing`:
 
 - **Shadow deployment**: il modello nuovo riceve *tutto* il traffico reale e
-  produce le sue predizioni **in parallelo**, ma le sue risposte non vengono
+  produce le sue predizioni in parallelo, ma le sue risposte non vengono
   mai servite all'utente; si registrano e si confrontano offline con quelle
   del modello in carica. Rischio per l'utente nullo; costo: si paga il calcolo
   doppio e non si misurano gli effetti sul comportamento reale (nessuno
   *agisce* sulle predizioni ombra).
-- **Canary release**: il modello nuovo serve davvero, ma solo una **piccola
-  quota** del traffico (l'1%, il 5%). Si sorvegliano le metriche sulla quota
+- **Canary release**: il modello nuovo serve davvero, ma solo una piccola
+  quota del traffico (l'1%, il 5%). Si sorvegliano le metriche sulla quota
   canary e, se reggono, si aumenta gradualmente fino al
   100%; al primo segnale cattivo si torna indietro (*rollback*) avendo esposto
   pochi utenti.
 - **A/B test**: due gruppi di utenti, assegnati a caso, ricevono
   contemporaneamente il modello A (vecchio) e il B (nuovo); si confronta una
-  metrica di business su un orizzonte definito e si decide con un **test
-  statistico**, verificando che la differenza sia significativa e non rumore
+  metrica di business su un orizzonte definito e si decide con un test
+  statistico, verificando che la differenza sia significativa e non rumore
   campionario. È lo strumento per rispondere a *«il nuovo è davvero meglio?»*,
   mentre shadow e canary rispondono a *«il nuovo è sicuro da servire?»*.
 
 Le tre non sono alternative ma un percorso: shadow per verificare che non si
 rompa nulla, canary per limitare l'esposizione, A/B per decidere con rigore se
-promuoverlo. Dietro tutte c'è il prerequisito che il modello sia **versionato**,
+promuoverlo. Dietro tutte c'è il prerequisito che il modello sia versionato,
 così che il *rollback* al precedente sia sempre un'operazione di un istante.
 
 `````
@@ -592,17 +590,17 @@ modello serve.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un modello che si guasta **non fa rumore**: continua a rispondere con la
+- Un modello che si guasta non fa rumore: continua a rispondere con la
   stessa prontezza e la stessa aria sicura, solo che le risposte, poco alla
   volta, diventano sbagliate. Il monitoraggio è l'orecchio che sostituiamo al
   fischio che manca.
-- Si guarda un cruscotto a **tre quadranti**: il servizio è vivo e risponde in
+- Si guarda un cruscotto a tre quadranti: il servizio è vivo e risponde in
   fretta? che tipo di richieste stanno arrivando, e che risposte sta dando? e
   infine, la più importante e la più lenta, aveva ragione? L'ultima si scopre
   solo quando arriva la risposta giusta, che spesso arriva con settimane di
   ritardo e a volte non arriva mai.
 - Per accorgersi che il mondo è cambiato si mette al lavoro un
-  **classificatore-detective**, che funziona come il metal detector
+  classificatore-detective, che funziona come il metal detector
   dell'aeroporto: prova a distinguere i dati di ieri da quelli di oggi, e se ci
   riesce vuol dire che qualcosa è cambiato; se tira a indovinare, no. Va
   tarato: troppo sensibile suona per tutti, e dopo il decimo falso allarme
@@ -610,12 +608,12 @@ modello serve.
 - Il detective dice *che* qualcosa è cambiato, non *cosa* e nemmeno *se è
   grave*. Soprattutto, non vede il caso peggiore: quello in cui le richieste
   sembrano identiche a quelle di ieri ma è cambiata la risposta giusta.
-- Quando suona, si risponde **per gradi**, come con la spia dell'olio: prima si
+- Quando suona, si risponde per gradi, come con la spia dell'olio: prima si
   guarda, poi si controlla, poi semmai si riaddestra, e solo in emergenza si
   torna al modello vecchio. Rispondere sempre col gesto più drastico è come
   cambiare il motore ogni volta che si accende una spia.
 - Riaddestrare da soli su dati che il modello stesso ha contribuito a produrre
-  non lo corregge: **ne amplifica gli errori**, a ogni giro. Serve una persona
+  non lo corregge: ne amplifica gli errori, a ogni giro. Serve una persona
   nell'anello e dati freschi.
 - Un modello nuovo non si accende di colpo per tutti: prima in ombra, poi a
   pochi tavoli, poi metà sala contro metà sala.
@@ -625,35 +623,35 @@ modello serve.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Si misura su **tre livelli**, dal più rapido al più prezioso: (1) salute del
+- Si misura su tre livelli, dal più rapido al più prezioso: (1) salute del
   servizio (latenza, errori, uptime), (2) proprietà statistiche di input e
   output (distribuzioni, tasso di ciascuna classe predetta), (3) qualità vera,
-  che richiede le etichette e soffre di **label delay** (arriva tardi o mai
+  che richiede le etichette e soffre di label delay (arriva tardi o mai
   {cite}`breck2017ml`).
-- I proxy statistici del livello 2 sono un **allarme anticipato**: si accendono
+- I proxy statistici del livello 2 sono un allarme anticipato: si accendono
   *prima* che il degrado sia misurabile con le etichette vere.
-- Il **detective** della sezione «Quando i dati cambiano» diventa sorveglianza
-  continua con tre scelte operative: **finestre** (riferimento vs corrente
-  scorrevole), **soglia** sull'AUC (tarata sui falsi allarmi) e **test per
-  *feature*** per localizzare il drift: Kolmogorov–Smirnov sulle colonne
-  numeriche, e sulle categoriche, a cui non si applica, il **PSI** o un chi
+- Il detective della sezione «Quando i dati cambiano» diventa sorveglianza
+  continua con tre scelte operative: finestre (riferimento vs corrente
+  scorrevole), soglia sull'AUC (tarata sui falsi allarmi) e test per
+  *feature* per localizzare il drift: Kolmogorov–Smirnov sulle colonne
+  numeriche, e sulle categoriche, a cui non si applica, il PSI o un chi
   quadro. Essendo addestrato
-  sui soli ingressi, rileva un cambiamento della **marginale $P(X)$**, che
+  sui soli ingressi, rileva un cambiamento della marginale $P(X)$, che
   covariate shift e label shift condividono, ed è cieco al *concept shift*
   puro.
-- L'allarme si fonda sull’**ampiezza** dello scostamento, non sul $p$-value: a
+- L'allarme si fonda sull’ampiezza dello scostamento, non sul $p$-value: a
   taglie di produzione il KS rifiuta su differenze che nessun modello sente. E
   il test per colonna è necessario ma non sufficiente: uno shift che vive nella
   struttura congiunta lascia tutte le marginali intatte.
-- La risposta è una **piramide** proporzionata: allarme → indagine → retraining →
-  rollback. Retraining **periodico** (a cadenza fissa) o **innescato** (a
+- La risposta è una piramide proporzionata: allarme → indagine → retraining →
+  rollback. Retraining periodico (a cadenza fissa) o innescato (a
   soglia); i sistemi reali fanno entrambi.
-- Il **retraining automatico** su dati generati dal modello stesso amplifica i
-  bias del **feedback loop** invece di correggerli: serve un umano nell'anello e
+- Il retraining automatico su dati generati dal modello stesso amplifica i
+  bias del feedback loop invece di correggerli: serve un umano nell'anello e
   dati freschi non contaminati {cite}`huyen2022designing`.
-- Un modello nuovo si introduce **senza rompere**: **shadow** (risponde in
-  parallelo, non serve), **canary** (piccola quota di traffico) e **A/B test**
-  (confronto statistico), tutti poggiati sul modello **versionato** per un
+- Un modello nuovo si introduce senza rompere: shadow (risponde in
+  parallelo, non serve), canary (piccola quota di traffico) e A/B test
+  (confronto statistico), tutti poggiati sul modello versionato per un
   rollback immediato.
 ```
 `````

@@ -222,11 +222,11 @@ di un numero. Il disegno è in {numref}`fig-matrix-factorization`.
 Tre lettere danno il nome alle tabelle: R è quella dei voti, enorme e quasi
 tutta vuota; P raccoglie una scheda di pochi numeri per ogni utente (nel
 disegno, il suo «profilo»); Q fa lo stesso per ogni film. Il voto previsto è il
-confronto voce per voce fra due schede, una riga di P e una colonna di Q. Il
-segno in mezzo è un «circa» e non un uguale, perché due tabelle strette non
-possono riprodurre esattamente la grande, ed è lo scopo, perché costringere il
-modello a dire tanto con pochi numeri è ciò che lo obbliga a cercare i tratti
-che contano invece di ricopiare i voti. Il disegno si ferma
+confronto voce per voce fra due schede, una riga di P e una colonna di Q
+trasposta. Il segno in mezzo è un «circa» e non un uguale, perché due tabelle
+strette non possono riprodurre esattamente la grande, ed è lo scopo, perché
+costringere il modello a dire tanto con pochi numeri è ciò che lo obbliga a
+cercare i tratti che contano invece di ricopiare i voti. Il disegno si ferma
 poi al confronto: nel modello completo si sommano anche due correzioni, quanto
 quella persona vota alto in generale e quanto quel film è apprezzato in
 generale. La piccola «T» accanto alla Q dice solo che quella tabella è girata
@@ -317,8 +317,9 @@ Attenzione a non promuovere questa frase a proprietà generale della
 raccomandazione, perché sull'implicito il metodo canonico fa l'opposto. Hu,
 Koren e Volinsky osservano che concentrarsi sul solo feedback raccolto
 lascerebbe in mano *soltanto* esempi positivi, e che il segnale negativo, tale
-e quale, sta proprio nelle celle mancanti {cite}`hu2008collaborative`. Il loro modello introduce allora due quantità distinte, e per non far
-collidere le lettere chiamiamo $\pi_{ui}$ la prima: una **preferenza**
+e quale, sta proprio nelle celle mancanti {cite}`hu2008collaborative`. Il loro
+modello introduce allora due quantità distinte, e per non far collidere le
+lettere chiamiamo $\pi_{ui}$ la prima: una **preferenza**
 $\pi_{ui} = \mathbb{1}[n_{ui} > 0]$, che vale $1$ se un'interazione c'è stata,
 e una **confidenza** $c_{ui} = 1 + \alpha\, n_{ui}$, che dice quanto crediamo
 a quella preferenza (chi ha guardato una serie dieci volte è un caso più solido
@@ -357,7 +358,7 @@ I fattori latenti non hanno un nome perché nessuno gliel'ha dato: sono le
 coordinate che l'ottimizzazione ha trovato comode, non etichette. È il motivo
 per cui una raccomandazione fattorizzata non si sa raccontare, e per cui le
 spiegazioni che si leggono davvero («perché hai visto X») vengono quasi sempre
-dal lato oggetto-oggetto della pagina precedente.
+dal lato oggetto-oggetto del filtraggio a vicini.
 
 ## Il modello in PyTorch
 
@@ -450,10 +451,11 @@ voti tenuti da parte su celle gia' viste: 91 su 1200
 
 I voti si pescano a caso, quindi la stessa coppia (utente, film) può uscire due
 volte, e in effetti succede. Sono pochi e non spostano le conclusioni, ma quei
-91 voti meritano un nome, perché è lo stesso che la sezione sulle metriche
-darà a un difetto di mezza letteratura: sono una **fuga di informazione**. Su
-quelle celle il modello non deve indovinare niente, gli basta ricordare, e
-l'errore che leggeremo fra poco è di quel tanto più basso del vero.
+91 voti meritano un nome, perché è lo stesso che la sezione su come si misura
+una classifica darà a un difetto di mezza letteratura: sono una **fuga di
+informazione**. Su quelle celle il modello non deve indovinare niente, gli
+basta ricordare, e l'errore che leggeremo fra poco è di quel tanto più basso
+del vero.
 
 L'addestramento è un normale ciclo PyTorch. A ogni giro completo sui voti, e un
 giro si chiama **epoca**, il modello prevede, si misura di quanto ha sbagliato
@@ -499,11 +501,15 @@ Tre scostamenti dalla formula, piccoli ma reali. Il `weight_decay` penalizza a
 ogni passo *tutti* i fattori, non i soli $\mathbf{p}_u, \mathbf{q}_i$ che
 compaiono nel batch. Tocca anche la media globale $\mu$, che il regolarizzatore
 della loss non include, e la attira verso zero invece che verso la media dei
-voti. E in Adam la penalità entra nel gradiente, dove viene riscalata dai
-momenti adattivi: non coincide quindi con un termine $L_2$ sommato alla loss,
-che è l'osservazione da cui nasce AdamW {cite}`loshchilov2019decoupled`. Per gli
-scopi di questo esempio la differenza è irrilevante; chi la volesse annullare
-esclude $\mu$ dalla penalità con i *param group* e passa a `torch.optim.AdamW`.
+voti. E in Adam la penalità entra nel gradiente, dove i momenti adattivi la
+riscalano insieme a tutto il resto: la stessa $\lambda$ frena ogni parametro in
+misura diversa, e non è più il freno di forza uniforme che la formula lascia
+immaginare. È l'osservazione da cui nasce AdamW
+{cite}`loshchilov2019decoupled`, che il decadimento lo applica ai pesi invece
+che al gradiente. Per gli scopi di questo esempio la differenza è irrilevante;
+chi volesse la formula alla lettera scrive la penalità dentro la loss, sui soli
+fattori del batch e senza $\mu$, mentre `torch.optim.AdamW` chiude il terzo
+scostamento e lascia i primi due.
 
 `````
 

@@ -14,7 +14,7 @@ semplicemente *Multitask Learning* {cite}`caruana1997multitask`.
 La tesi è netta. Si addestra una rete su più compiti collegati, tutti insieme, e
 si fa in modo che partano dallo stesso lavoro preliminare: gli stessi numeri
 intermedi, calcolati una volta sola, da cui poi ciascun compito ricava la sua
-risposta. È la **rappresentazione condivisa**. Il risultato è che **ciascuno**
+risposta. È la **rappresentazione condivisa**. Il risultato è che ciascuno
 dei compiti funziona meglio su esempi mai visti, che è quello che chiamiamo
 *generalizzazione*. Non è un trucco per risparmiare memoria: è il compito in più
 che insegna qualcosa al compito principale.
@@ -62,8 +62,8 @@ conto. Sono due uffici distinti che però tengono le procedure allineate. Costa
 di più, perché le reti sono due, ma non obbliga due compiti diversi a usare per
 forza la stessa identica preparazione.
 
-Nella pratica si finisce quasi sempre in mezzo: **condiviso in basso, separato
-in alto**. In basso una rete impara cose generiche (i bordi, le forme, la
+Nella pratica si finisce quasi sempre in mezzo: condiviso in basso, separato
+in alto. In basso una rete impara cose generiche (i bordi, le forme, la
 struttura della frase) che servono a chiunque; in alto cose specifiche del
 compito, che è giusto restino separate.
 
@@ -105,7 +105,7 @@ Le forme miste condividono gli strati bassi e lasciano divergere gli alti, ed è
 quasi sempre la scelta pratica, per la ragione già vista parlando di
 rappresentazioni gerarchiche: le feature generiche
 stanno in basso e quelle specifiche in alto, quindi il punto in cui separare le
-teste è una decisione su **quanto in alto arriva la parentela** fra i compiti.
+teste è una decisione su quanto in alto arriva la parentela fra i compiti.
 
 Il *transfer learning* già incontrato è lo stesso schema disteso
 nel tempo: là i compiti si affrontano in sequenza (si pre-addestra su uno, si
@@ -120,7 +120,7 @@ parallelo no, perché il primo è ancora nella loss.
 :alt: "Tre modi di far imparare più compiti a una rete, affiancati. A sinistra, «un tronco, tante teste»: dall'ingresso sale un unico blocco condiviso e da lì partono tre frecce verso tre teste, una per compito. Al centro, «due reti tenute vicine»: due colonne separate, ciascuna con il proprio ingresso e la propria testa, collegate da tre frecce tratteggiate a doppia punta, la penalità che impedisce loro di allontanarsi. A destra, «condiviso sotto, separato sopra»: un tronco comune in basso che si biforca a metà in due rami distinti, ciascuno con la sua testa."
 :width: 96%
 
-Le tre forme, una accanto all'altra. Quello che cambia è **dove** passa la
+Le tre forme, una accanto all'altra. Quello che cambia è dove passa la
 linea fra ciò che i compiti fanno insieme e ciò che ciascuno fa per conto suo:
 nel primo disegno passa in cima, nel secondo non passa affatto (le due reti non
 condividono niente), nel terzo passa a metà altezza.
@@ -141,8 +141,8 @@ su quando aspettarsi un guadagno e quando no.
 
 `````{tab} Elementare
 
-Il più ovvio è **più segnale**. Il compito in più porta con sé altre
-**etichette**, cioè altre risposte giuste scritte accanto agli esempi, come «in
+Il più ovvio è più segnale. Il compito in più porta con sé altre
+etichette, cioè altre risposte giuste scritte accanto agli esempi, come «in
 questa foto c'è un gatto». Le etichette costano, perché quasi sempre è una
 persona a doverle scrivere una per una, e a volte sono semplicemente rare (di
 persone che comprano ce ne sono molte meno di persone che guardano). Ogni
@@ -152,12 +152,12 @@ contorno ne ha tante. Al contrario, se del compito principale abbiamo già
 esempi in abbondanza, questo vantaggio si assottiglia fino a sparire.
 
 Più sottile, e il vero motivo per cui la cosa funziona: il compito in più fa da
-**freno**. Una rete lasciata sola con un compito trova la scorciatoia più
+freno. Una rete lasciata sola con un compito trova la scorciatoia più
 comoda per risolverlo, e le scorciatoie sono proprio ciò che non
 generalizza. Se la stessa rappresentazione deve servire anche a un secondo
 compito, quelle scorciatoie smettono di essere convenienti, perché al secondo
 non servono. La rete è spinta verso soluzioni più generali, e questo è
-esattamente ciò che in gergo si chiama **regolarizzazione**: qualunque
+esattamente ciò che in gergo si chiama regolarizzazione: qualunque
 accorgimento che, restringendo le strade che la rete può prendere, la costringa
 a una risposta che vale in generale invece che a una perfetta sugli esempi già
 visti. Un freno rende dove c'è da frenare, cioè quando gli esempi sono pochi e
@@ -165,7 +165,7 @@ la rete è libera di inventarsi qualunque cosa. Quando gli esempi abbondano le
 scorciatoie comode sono già poche di loro, e il compito in più, invece di
 aggiungere, può cominciare a togliere.
 
-Poi c'è l’**attenzione**, e qui la parola è quella di tutti i giorni: certi
+Poi c'è l’attenzione, e qui la parola è quella di tutti i giorni: certi
 compiti dicono alla rete dove guardare. Se per rispondere alla seconda domanda
 serve un dettaglio che per la prima sembrava trascurabile, la rete impara
 comunque a rappresentarlo, e magari scopre che serviva anche alla prima.
@@ -174,22 +174,22 @@ comunque a rappresentarlo, e magari scopre che serviva anche alla prima.
 
 `````{tab} Superiore
 
-L'argomento di Caruana è **statistico**, non ingegneristico: i compiti
+L'argomento di Caruana è statistico, non ingegneristico: i compiti
 condividono un **bias induttivo**. Ogni algoritmo di apprendimento ne ha uno,
 cioè un insieme di assunzioni implicite che rendono preferibili certe ipotesi;
 addestrare su più compiti significa cercare l'ipotesi che soddisfa *tutti* i
 loro bias insieme, il che restringe lo spazio delle soluzioni ammissibili.
 
-Restringere lo spazio delle ipotesi con informazione **vera** è la definizione
+Restringere lo spazio delle ipotesi con informazione vera è la definizione
 operativa di regolarizzazione: il rumore specifico di un compito viene mediato
 via, la struttura comune sopravvive. Nei termini del compromesso
 bias-varianza già incontrato, si accetta un po’ di bias in cambio di molta
 varianza in meno, ed è per questo che il guadagno è massimo dove la varianza è
-alta, cioè con **pochi dati per il compito principale**. Con dataset
+alta, cioè con pochi dati per il compito principale. Con dataset
 abbondanti l'effetto si assottiglia fino a sparire, e a volte si inverte.
 
-Una nota a margine: la **distinzione fra multi-compito e
-apprendimento auto-supervisionato è meno netta di quanto sembri**. Un compito
+Una nota a margine: la distinzione fra multi-compito e
+apprendimento auto-supervisionato è meno netta di quanto sembri. Un compito
 inventato apposta perché la rete impari qualcosa (predire la rotazione di
 un'immagine, ricostruire una parte mascherata) è un compito ausiliario a tutti
 gli effetti, con la comodità che le sue etichette sono gratis. Le due
@@ -204,12 +204,12 @@ sempre.
 
 `````{tab} Elementare
 
-Funziona **se i compiti sono imparentati**. Se non lo sono, si contendono la
+Funziona se i compiti sono imparentati. Se non lo sono, si contendono la
 stessa rappresentazione e finiscono peggio di quando erano separati. Studiare
 latino aiuta l'italiano; studiare latino la sera prima di una gara di nuoto
 non aiuta il nuoto, e toglie ore all'allenamento.
 
-Il meccanismo del danno è concreto. Il tronco ha una **capacità** finita: i
+Il meccanismo del danno è concreto. Il tronco ha una capacità finita: i
 numeri che può regolare sono tanti, ma sono un numero preciso, e quello che
 riesce a tenere a mente è limitato da quanti sono. Ogni pezzo di quella capacità
 speso per un compito che non c'entra è un pezzo tolto a quello che conta.
@@ -253,38 +253,50 @@ $\nabla\mathcal{L}_i \cdot \nabla\mathcal{L}_j < 0$, proietta ciascun gradiente
 sul piano ortogonale all'altro prima di sommarli, rimuovendo la sola componente
 distruttiva e lasciando intatto il resto.
 
-Il beneficio pratico di questa famiglia di metodi è però **contestato**:
+Il beneficio pratico di questa famiglia di metodi è però contestato:
 confronti su larga scala trovano che la somma pesata semplice, purché
 regolarizzata e stabilizzata come si farebbe per un compito solo, li eguaglia o
 li batte {cite}`kurin2022defense`, e che su compiti di visione e di linguaggio
 non producono guadagni oltre l'ottimizzazione ordinaria {cite}`xin2022current`.
-Il conflitto fra gradienti resta una buona **diagnosi**; che proiettarli sia la
-**cura** è meno stabilito di quanto la letteratura sui metodi lasci pensare.
+Il conflitto fra gradienti resta una buona diagnosi; che proiettarli sia la
+cura è meno stabilito di quanto la letteratura sui metodi lasci pensare.
 
 Una cautela metodologica su questa diagnosi, perché è facile misurarla male: il
-prodotto scalare fra gradienti va guardato **durante** l'addestramento e sui
+prodotto scalare fra gradienti va guardato durante l'addestramento e sui
 parametri condivisi, non all'inizializzazione. All'inizio le teste sono
 casuali e possono assorbire un cambio di segno senza che il tronco se ne
 accorga, quindi un conflitto vero fra compiti può benissimo non comparire
 come coseno negativo.
 
 Resta il problema dei pesi $\lambda_t$, insidioso perché le loss di compiti
-diversi hanno **unità e scale diverse** (una cross-entropia e un errore in
+diversi hanno unità e scale diverse (una cross-entropia e un errore in
 metri non sono commensurabili) e cercarli a mano è un'ottimizzazione in $T-1$
 dimensioni, ciascuna delle quali costa un addestramento. La soluzione di
 Kendall, Gal e Cipolla {cite}`kendall2018multi` li tratta come funzione
 dell’**incertezza omoschedastica** di ciascun compito, parametrizzata da un
-$\sigma_t$ **appreso**:
+$\sigma_t$ appreso. Omoschedastica perché quel $\sigma_t$ dipende dal
+compito e non dall'esempio, al contrario della regressione eteroschedastica di
+{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`, da cui
+prende però la stessa forma. Per compiti tutti di regressione:
 
 $$
-\mathcal{L} = \sum_t \frac{1}{2\sigma_t^2}\,\mathcal{L}_t + \log \sigma_t ,
+\mathcal{L} = \sum_t \left[\frac{1}{2\sigma_t^2}\,\mathcal{L}_t
++ \log \sigma_t\right] ,
 $$
 
 dove il primo termine abbassa il peso dei compiti rumorosi e il secondo
 impedisce la soluzione degenere $\sigma_t \to \infty$, che li azzererebbe
 tutti. I pesi smettono di essere iperparametri e diventano parametri.
 
-Sulla domanda a monte, **quali compiti stiano bene insieme**, non c'è una
+Il fattore però cambia con il tipo di compito, ed è la parte che si ricopia
+sbagliata. In un compito di classificazione $\sigma_t$ fa un altro mestiere, la
+temperatura di una softmax, e il peso che ne discende è $1/\sigma_t^2$, senza
+il $2$: la loss congiunta di una regressione e di una classificazione è
+$\frac{1}{2\sigma_1^2}\mathcal{L}_1 + \frac{1}{\sigma_2^2}\mathcal{L}_2 +
+\log\sigma_1 + \log\sigma_2$, e l'ultimo passaggio che le dà questa forma è
+un'approssimazione, esatta soltanto per $\sigma_2 = 1$.
+
+Sulla domanda a monte, quali compiti stiano bene insieme, non c'è una
 teoria utilizzabile: le misure di affinità fra compiti sono un'area di ricerca
 aperta, e in pratica si procede empiricamente, provando i compiti a coppie e
 tenendo quelli che aiutano.
@@ -297,7 +309,7 @@ L'affermazione «un compito imparentato aiuta, uno che non c'entra niente
 danneggia» si può verificare, e l'esperimento sta in una pagina.
 
 L'impianto è questo. Si inventa una **quantità nascosta**: un numero che non si
-vede, ricavato dall'ingresso con una regola fissa. Il compito **principale**,
+vede, ricavato dall'ingresso con una regola fissa. Il compito principale,
 quello che ci sta a cuore, chiede di indovinare proprio quel numero, e di
 esempi etichettati ne ha pochissimi, quaranta. Accanto gli si mette un compito
 **ausiliario**, cioè un compito di contorno che serve solo ad aiutare il primo,
@@ -375,26 +387,26 @@ ausiliario: rumore x0.1    errore sul test 0.3038   (  +7%)
 ausiliario: rumore x0.01   errore sul test 0.2871   (  +1%)
 ```
 
-Ogni numero è la media di cinque prove che differiscono solo per il **seme**,
+Ogni numero è la media di cinque prove che differiscono solo per il seme,
 cioè per il punto da cui parte il generatore di numeri casuali: pesi iniziali
 diversi, dati diversi. Una prova sola misurerebbe anche la fortuna. E i numeri
 presi da soli non dicono niente, perché dipendono da quanto sono grandi le
 quantità che stiamo cercando di indovinare, che le abbiamo scelte noi: conta il
 confronto fra i tre.
 
-- **nessun ausiliario**: errore $0{,}2829$. Quaranta esempi sono pochi, e si
+- nessun ausiliario: errore $0{,}2829$. Quaranta esempi sono pochi, e si
   vede;
-- **ausiliario imparentato**: $0{,}0993$, cioè **il 65% di errore in meno**. Il
+- ausiliario imparentato: $0{,}0993$, cioè il 65% di errore in meno. Il
   secondo compito non condivide le etichette del primo, condivide la *quantità
   nascosta* da cui entrambi dipendono, e ottocento esempi su quella quantità
   hanno insegnato al tronco quello che quaranta non bastavano a insegnare;
-- **ausiliario che non ha niente da insegnare**: $0{,}3523$, cioè **il 25% di
-  errore in più**, cioè peggio che non averlo. La capacità del tronco
+- ausiliario che non ha niente da insegnare: $0{,}3523$, cioè il 25% di
+  errore in più, cioè peggio che non averlo. La capacità del tronco
   spesa a inseguire quel bersaglio è capacità sottratta al compito che contava.
 
 Il terzo numero è il più importante dei tre, perché è quello che di solito non
 si racconta: il multi-compito non è una tecnica che si aggiunge e male che
-vada non fa niente. **Male che vada fa danno.** Va però letto per quello che è:
+vada non fa niente. Male che vada fa danno. Va però letto per quello che è:
 il bersaglio del terzo braccio è rumore puro, un caso estremo che nessuna rete
 può imparare, quindi quello che l'esperimento misura con precisione è la prima
 delle due cause di danno, la capacità del tronco sprecata. Un compito diverso
@@ -428,27 +440,27 @@ provandoli a coppie, più che deducendolo.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Una rete può imparare **più cose insieme**: un **tronco** comune, che legge
-  l'ingresso una volta sola per tutti, e in cima una **testa** per ogni
+- Una rete può imparare più cose insieme: un tronco comune, che legge
+  l'ingresso una volta sola per tutti, e in cima una testa per ogni
   risposta da dare. È l'ufficio con l'archivio comune e gli sportelli
   specializzati.
-- Il compito in più aiuta per tre motivi diversi: porta **altri esempi**;
-  fa da **freno**, perché le scorciatoie comode per un compito solo smettono di
+- Il compito in più aiuta per tre motivi diversi: porta altri esempi;
+  fa da freno, perché le scorciatoie comode per un compito solo smettono di
   convenire quando la stessa preparazione deve servire anche a un altro; e
-  **indica dove guardare**, cioè quali dettagli valeva la pena notare.
-- Aiuta soprattutto quando del compito che ci sta a cuore abbiamo **pochi
-  esempi**. Se ne abbiamo tanti, il vantaggio si assottiglia fino a sparire.
-- Ma solo **se i compiti sono imparentati**. Se non lo sono si contendono lo
+  indica dove guardare, cioè quali dettagli valeva la pena notare.
+- Aiuta soprattutto quando del compito che ci sta a cuore abbiamo pochi
+  esempi. Se ne abbiamo tanti, il vantaggio si assottiglia fino a sparire.
+- Ma solo se i compiti sono imparentati. Se non lo sono si contendono lo
   stesso tronco e finiscono peggio di quando erano separati: il latino aiuta
   l'italiano, non il nuoto. E non c'è una formula per saperlo prima: si prova.
-- Un altro problema pratico è **quanto pesa ciascun compito** nel conto
+- Un altro problema pratico è quanto pesa ciascun compito nel conto
   dell'errore: se uno misura metri e l'altro una probabilità, quello con i
   numeri più grossi comanda l'addestramento senza che nessuno l'abbia deciso.
   Si può regolare a mano, oppure lasciare che sia la rete a fidarsi di meno dei
   compiti su cui è più incerta.
 - Misurato su un caso costruito apposta: un compito ausiliario imparentato ha
-  tolto il **65%** dell'errore, uno fatto di numeri casuali ne ha **aggiunto il
-  25%**. Non è una tecnica neutra. Sono però i due estremi, e contati dando ai
+  tolto il 65% dell'errore, uno fatto di numeri casuali ne ha aggiunto il
+  25%. Non è una tecnica neutra. Sono però i due estremi, e contati dando ai
   due compiti lo stesso peso nella somma: dando all'ausiliario un peso dieci
   volte minore, il danno scende dal 25% al 7%.
 ```
@@ -457,30 +469,31 @@ provandoli a coppie, più che deducendolo.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- L’**apprendimento multi-compito** addestra una rete su più compiti insieme
-  con una rappresentazione condivisa: un **tronco** comune e una **testa** per
+- L’apprendimento multi-compito addestra una rete su più compiti insieme
+  con una rappresentazione condivisa: un tronco comune e una testa per
   compito (*condivisione dura*), oppure reti separate tenute vicine da una
   penalità (*condivisione morbida*).
-- Il guadagno ha tre sorgenti distinte: **più segnale** (soprattutto se il
-  compito principale ha poche etichette), un effetto di **regolarizzazione**
+- Il guadagno ha tre sorgenti distinte: più segnale (soprattutto se il
+  compito principale ha poche etichette), un effetto di regolarizzazione
   (le scorciatoie che servono a un compito solo smettono di convenire) e un
-  effetto di **attenzione** (un compito indica alla rete cosa conviene
+  effetto di attenzione (un compito indica alla rete cosa conviene
   rappresentare).
-- L'argomento di Caruana è statistico: i compiti condividono un **bias
-  induttivo**, e cercare l'ipotesi che li soddisfa tutti restringe lo spazio
+- L'argomento di Caruana è statistico: i compiti condividono un bias
+  induttivo, e cercare l'ipotesi che li soddisfa tutti restringe lo spazio
   delle soluzioni. È regolarizzazione, quindi rende di più dove la varianza è
   alta, cioè con pochi dati.
-- Il rovescio è il **trasferimento negativo**: compiti non imparentati si
+- Il rovescio è il trasferimento negativo: compiti non imparentati si
   contendono la rappresentazione e peggiorano il risultato. La diagnosi
-  meccanica sono i **gradienti in conflitto**; proiettarli (**PCGrad**) è il
+  meccanica sono i gradienti in conflitto; proiettarli (PCGrad) è il
   rimedio più noto, ma che serva davvero è contestato dai confronti su larga
   scala.
 - I pesi $\lambda_t$ delle loss non sono commensurabili fra compiti; si
-  possono **apprendere** trattandoli come incertezza di ciascun compito
-  ($\mathcal{L} = \sum_t \frac{1}{2\sigma_t^2}\mathcal{L}_t + \log\sigma_t$),
-  invece di cercarli a mano.
-- Misurato su un caso costruito: un ausiliario imparentato toglie il **65%**
-  dell'errore, un ausiliario fatto di puro rumore ne **aggiunge il 25%**. Non è
+  possono apprendere trattandoli come incertezza di ciascun compito
+  ($\mathcal{L} = \sum_t [\mathcal{L}_t/(2\sigma_t^2) + \log\sigma_t]$ per una
+  regressione, con $1/\sigma_t^2$ al posto di $1/(2\sigma_t^2)$ per una
+  classificazione), invece di cercarli a mano.
+- Misurato su un caso costruito: un ausiliario imparentato toglie il 65%
+  dell'errore, un ausiliario fatto di puro rumore ne aggiunge il 25%. Non è
   una tecnica neutra. Entrambi i numeri sono estremi (il «parente» è una
   funzione deterministica del bersaglio principale) e valgono a
   $\lambda_t$ uguali: con l'ausiliario pesato $0{,}1$ il danno scende al 7%, con

@@ -2,7 +2,7 @@
 
 Dentro PyTorch ogni cosa è un tensore: l'immagine da classificare, la frase
 tradotta in numeri, e ognuno dei numeri che la rete si tiene dentro e che
-impara col tempo, i suoi **pesi**. Il nome stesso della libreria lo porta
+impara col tempo, i suoi pesi. Il nome stesso della libreria lo porta
 scritto: *Torch*, la torcia, era la libreria di partenza, e *Py* dice che
 adesso si guida da Python. Accanto ai tensori vive il secondo protagonista,
 più discreto ma decisivo: **autograd**, il meccanismo che osserva i calcoli
@@ -32,13 +32,13 @@ fila, a una griglia, a una pila di griglie.
 Un tensore è un contenitore di numeri con un certo numero di "assi", cioè di
 direzioni lungo cui si estende ({numref}`fig-tensori-scala`):
 
-- un **numero solo** (per esempio la temperatura, $23{,}5$) è un tensore a zero
+- un numero solo (per esempio la temperatura, $23{,}5$) è un tensore a zero
   assi: uno *scalare*;
-- una **fila di numeri** (i voti di uno studente) è un tensore a un asse: un
+- una fila di numeri (i voti di uno studente) è un tensore a un asse: un
   *vettore*;
-- una **tabella** di numeri (i pixel di una foto in scala di grigi) ha due
+- una tabella di numeri (i pixel di una foto in scala di grigi) ha due
   assi: una *matrice*;
-- una **pila di tabelle** (una foto a colori: una griglia per il rosso, una
+- una pila di tabelle (una foto a colori: una griglia per il rosso, una
   per il verde, una per il blu) ha tre assi.
 
 Gli assi si contano in un modo solo: sono le coordinate che devi dare per
@@ -89,7 +89,7 @@ soltanto la struttura dati: un array $n$-dimensionale con un `dtype` omogeneo
 
 Un tensore si può fabbricare in tre modi: scrivendo i numeri a mano in una
 lista Python, chiedendo a PyTorch di riempirlo lui (`zeros`, `ones`, `randn`, fra un
-attimo), oppure partendo da un array di **NumPy**, la libreria di calcolo
+attimo), oppure partendo da un array di NumPy, la libreria di calcolo
 numerico della {doc}`sezione su NumPy </Python/numpy>`. Con
 quest'ultima PyTorch va d'accordo così bene che i due si passano i dati senza
 nemmeno ricopiarli.
@@ -138,10 +138,10 @@ calcolatrice, senza "avviare" nulla.
 Il simbolo `@` è quello del prodotto fra matrici, e su due semplici file di
 numeri come queste fa la cosa più elementare che quel prodotto sappia fare,
 cioè moltiplicarle a due a due e sommare tutto
-($1 \cdot 10 + 2 \cdot 20 + 3 \cdot 30 = 140$); è il **prodotto scalare**, e
+($1 \cdot 10 + 2 \cdot 20 + 3 \cdot 30 = 140$); è il prodotto scalare, e
 il conto è scritto per esteso nel commento apposta perché lo si possa rifare.
 
-Il **broadcasting**, che conosciamo già da NumPy, funziona identico. Se scrivi
+Il broadcasting, che conosciamo già da NumPy, funziona identico. Se scrivi
 `a + 5`, PyTorch capisce da solo che vuoi sommare $5$ a *ciascuno* dei tre
 numeri, come un insegnante che aggiunge lo stesso bonus a tutti i compiti della
 classe senza riscrivere la regola una volta per studente: il risultato è
@@ -176,7 +176,7 @@ nascosto.
 `````{tab} Superiore
 
 L'interoperabilità con NumPy è alla pari: `torch.from_numpy(arr)` e
-`t.numpy()` convertono nei due sensi **condividendo la memoria** (nessuna
+`t.numpy()` convertono nei due sensi condividendo la memoria (nessuna
 copia: modificare l'uno modifica l'altro). Le regole di broadcasting sono le
 stesse di NumPy, gli assi si allineano da destra e le dimensioni compatibili
 (uguali, o pari a 1) si espandono virtualmente: una matrice $(3, 4)$ più un
@@ -267,17 +267,17 @@ deep learning. Il codice resta identico; cambia solo la velocità.
 ## Autograd: la derivata calcolata da sola
 
 Addestrare una rete significa girare le sue tante manopole interne (i
-**parametri**, cioè i pesi di cui si diceva in apertura) finché l'errore che
+parametri, cioè i pesi di cui si diceva in apertura) finché l'errore che
 commette non diventa piccolo. Quell'errore ha un nome che ricorrerà per tutto
-il libro: si chiama **loss**, la perdita.
+il libro: si chiama loss, la perdita.
 
-Per sapere da che parte girare ciascuna manopola serve il **gradiente**. È di
+Per sapere da che parte girare ciascuna manopola serve il gradiente. È di
 nuovo una derivata, ma stavolta la cosa che si sposta di un soffio è la
 manopola, non più il dato che entra. Il gradiente dice, per ogni singolo peso,
 che cosa succede alla loss se quel peso lo si alza appena: sale o scende, e di
 quanto. Chi vuole meno errore gira ogni manopola dalla parte in cui il numero
 scende. Farlo a mano per una rete con milioni di pesi è impensabile, e qui
-entra la **differenziazione automatica** (*autodiff*), il vero cuore di
+entra la differenziazione automatica (*autodiff*), il vero cuore di
 PyTorch.
 
 ```{figure} ../figures/extra-backpropagation-spiegata.svg
@@ -292,15 +292,15 @@ correzione per ogni peso incontrato.
 
 Nella {numref}`fig-autograd-due-passate` c'è però una cosa che il disegno non
 può mostrare, e che spiega un comportamento di PyTorch altrimenti sorprendente:
-per poter tornare indietro, l'andata deve **ricordare**. Una rete è
-fatta di **strati**, cioè di stazioni in fila: i dati entrano dalla prima,
+per poter tornare indietro, l'andata deve ricordare. Una rete è
+fatta di strati, cioè di stazioni in fila: i dati entrano dalla prima,
 ognuna li trasforma un po’ e passa il risultato alla successiva, finché
 dall'ultima esce la risposta. Il viaggio di andata si chiama **passata in
 avanti** (in inglese *forward pass*).
 
 Ora, quel viaggio non si limita a calcolare la risposta: a ogni stazione
 appunta anche il risultato di passaggio, perché al ritorno servirà. Quindi più
-stazioni ha la rete, cioè più è **profonda**, più appunti restano in memoria
+stazioni ha la rete, cioè più è profonda, più appunti restano in memoria
 durante l'andata.
 
 Ecco come si accende tutto questo, sull'esempio più piccolo possibile: un solo
@@ -372,8 +372,9 @@ niente.
 Autograd implementa la differenziazione automatica in modalità *reverse*
 (*reverse-mode autodiff*). Ogni operazione su tensori con
 `requires_grad=True` aggiunge un nodo al grafo dinamico delle computazioni;
-`y.backward()` percorre il grafo a ritroso applicando la **regola della
-catena** vista nel capitolo di analisi e ottimizzazione:
+`y.backward()` percorre il grafo a ritroso applicando la regola della
+catena vista nella {doc}`sezione su analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>`:
 
 $$
 \frac{\partial \mathcal{L}}{\partial \theta}
@@ -387,27 +388,27 @@ $$
 
 dove $\mathbf{z}$ raccoglie le $m$ quantità intermedie che dipendono da
 $\theta$, $\partial \mathbf{z} / \partial \theta$ è la matrice delle loro
-derivate (la **Jacobiana**) e $\nabla_{\mathbf{z}} \mathcal{L}$ è il gradiente
+derivate (la Jacobiana) e $\nabla_{\mathbf{z}} \mathcal{L}$ è il gradiente
 già calcolato a valle. Composta lungo tutto il grafo, questa regola è
-precisamente l'algoritmo di **backpropagation** del capitolo precedente.
+precisamente l'algoritmo di backpropagation del capitolo precedente.
 
-Nella riga qui sopra ci sono due cose che una catena a un solo cammino non
+Nella forma vettoriale ci sono due cose che una catena a un solo cammino non
 direbbe, e sono esattamente le due che contano nella pratica. La prima è la
-**trasposta**: la modalità reverse non costruisce mai la Jacobiana, calcola
+trasposta: la modalità reverse non costruisce mai la Jacobiana, calcola
 direttamente il prodotto fra la sua trasposta e il vettore che arriva da valle
 (un *vector-Jacobian product*, uno per nodo), ed è da lì che viene il costo di
 una sola passata, quale che sia il numero di parametri. Materializzare la
 Jacobiana costerebbe una passata per ciascuna uscita. La seconda è la
-**sommatoria**: un parametro che alimenta più rami riceve un contributo per
+sommatoria: un parametro che alimenta più rami riceve un contributo per
 ramo, e i contributi si sommano. È la ragione strutturale per cui `.grad` è un
 `+=` e non un `=`, e il punto in cui il grafo smette di essere una catena.
 
 Quattro dettagli operativi che incontreremo di continuo. I gradienti si
-**accumulano**: una `backward()` successiva, su un nuovo forward, somma in
+accumulano: una `backward()` successiva, su un nuovo forward, somma in
 `x.grad` invece di sovrascrivere, per questo il training loop azzera i
 gradienti a ogni passo. Ripetere la *stessa* chiamata sullo stesso grafo,
 invece, solleva un errore, e la ragione dice che cosa `backward()` faccia
-davvero: percorrendolo **libera** i valori intermedi salvati durante l'andata,
+davvero: percorrendolo libera i valori intermedi salvati durante l'andata,
 quelli della {numref}`fig-autograd-due-passate`. Il grafo resta, gli appunti
 per percorrerlo no. Chiederli in prestito è `retain_graph=True`, e serve tutte
 le volte che da una sola passata in avanti partono due passate all'indietro
@@ -426,8 +427,8 @@ possono invalidare i valori salvati per la passata a ritroso.
 
 `````
 
-Resta da dire che cosa succede quando il registratore non serve, ed è il
-caso più comune di tutti: il modello ha finito di imparare e lo si sta soltanto
+Resta da dire che cosa succede quando autograd non serve, ed è il caso più
+comune di tutti: il modello ha finito di imparare e lo si sta soltanto
 usando. Gli si dà una foto, lui risponde, e nessuno ha intenzione di correggere
 niente. Lì tutti quegli appunti sono peso morto, e si può dire in anticipo di
 non prenderli: è il comando `torch.no_grad()`, che si scrive attorno al pezzo
@@ -442,17 +443,17 @@ capitolo: dalla prossima sezione non si farà che comporli.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un **tensore** è una scatola di numeri con un certo numero di assi: un
+- Un tensore è una scatola di numeri con un certo numero di assi: un
   numero solo, una fila, una tabella, una pila di tabelle. Il numero di assi si
-  chiama **rank**, le lunghezze lungo gli assi sono la **shape**. Una foto a
+  chiama rank, le lunghezze lungo gli assi sono la shape. Una foto a
   colori è una pila di tre tabelle, una per colore.
-- Ogni riga di conti viene eseguita **subito**, con i numeri già dentro, e le
+- Ogni riga di conti viene eseguita subito, con i numeri già dentro, e le
   regole sono quelle di {doc}`NumPy </Python/numpy>`: sommare un numero a
   tutta una fila si scrive una volta sola.
-- Ogni tensore vive su un **dispositivo**, la CPU o la scheda grafica: i conti
+- Ogni tensore vive su un dispositivo, la CPU o la scheda grafica: i conti
   avvengono dove stanno i numeri, e il codice non cambia, cambia solo la
   velocità.
-- **Autograd** è il registratore: `requires_grad=True` lo accende su un
+- Autograd è il registratore: `requires_grad=True` lo accende su un
   tensore, `.backward()` riavvolge il nastro e deposita la derivata. Nessuna
   formula scritta a mano.
 ```
@@ -461,18 +462,18 @@ capitolo: dalla prossima sezione non si farà che comporli.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Un **tensore** generalizza scalari, vettori e matrici a un numero qualunque
-  di assi: lo descrivono **rank** (numero di assi) e **shape** (forma). In
+- Un tensore generalizza scalari, vettori e matrici a un numero qualunque
+  di assi: lo descrivono rank (numero di assi) e shape (forma). In
   PyTorch le immagini sono *channels-first*: $(N, C, H, W)$.
 - L'esecuzione è immediata e le regole (broadcasting compreso) sono quelle di
   NumPy, con cui i tensori si scambiano dati senza copie.
-- Ogni tensore vive su un **device** (`"cpu"`, `"cuda"`, `"mps"`): i conti
+- Ogni tensore vive su un device (`"cpu"`, `"cuda"`, `"mps"`): i conti
   avvengono dove stanno i numeri, e il codice non cambia.
-- **Autograd** calcola i gradienti da solo: `requires_grad=True` accende il
+- Autograd calcola i gradienti da solo: `requires_grad=True` accende il
   registratore, `.backward()` riavvolge il nastro; è la backpropagation, cioè
   la regola della catena applicata a ritroso sul grafo dei calcoli.
 - `t.view(...)` pretende una vista e passa solo se la nuova forma è compatibile
-  con gli **stride**, non solo sui tensori contigui; `reshape` copia quando non
+  con gli stride, non solo sui tensori contigui; `reshape` copia quando non
   può fare altrimenti.
 ```
 `````

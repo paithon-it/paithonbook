@@ -17,9 +17,9 @@ al giorno in cui è finito l'addestramento, e riscriverlo (riaddestrare il
 modello) costa settimane di calcolo e cifre con molti zeri.
 
 L'idea di questa sezione è dare al modello il libro aperto, e insegnargli a
-consultarlo. Servono due mestieri diversi: **cercare** (ed è il territorio
+consultarlo. Servono due mestieri diversi: cercare (ed è il territorio
 dell’*information retrieval*, una disciplina che ha mezzo secolo di vantaggio
-sui modelli di linguaggio) e **rispondere** usando ciò che si è trovato. La
+sui modelli di linguaggio) e rispondere usando ciò che si è trovato. La
 combinazione dei due ha un nome che oggi si sente ovunque: **RAG**,
 *Retrieval-Augmented Generation*. Ma per capirla davvero conviene partire dal
 primo mestiere, il più antico.
@@ -111,7 +111,7 @@ $\mathrm{idf}(t) = \log\frac{N - \mathrm{df}(t) + 0{,}5}{\mathrm{df}(t) + 0{,}5}
 con $N$ documenti totali e $\mathrm{df}(t)$ quelli contenenti $t$; $|d|$ è la
 lunghezza del documento e $\bar{\ell}$ la lunghezza media nella collezione;
 $k_1$ e $b$ sono due manopole. Un avviso a chi la implementa: così scritta,
-l'idf diventa **negativa** per ogni termine presente in più di metà della
+l'idf diventa negativa per ogni termine presente in più di metà della
 collezione (basta che $\mathrm{df}(t) > N/2$), e un contributo negativo
 significa che contenere il termine *peggiora* il punteggio. È un'anomalia nota,
 che le implementazioni correnti (Lucene, e quindi quasi tutti i BM25 in
@@ -139,9 +139,9 @@ posto).
 
 ## Quando le parole non bastano: cercare per significato
 
-L'indice invertito ha un difetto congenito: cerca **parole**, non significati.
+L'indice invertito ha un difetto congenito: cerca parole, non significati.
 Chi scrive «abitazione» non trova il documento che dice «casa». Il rimedio è la
-stessa **mappa del significato** incontrata parlando delle cento lingue: ogni
+stessa mappa del significato incontrata parlando delle cento lingue: ogni
 parola, e poi ogni frase, diventa un punto su una mappa, con la regola che cose
 che vogliono dire cose simili finiscono in punti vicini. Cercare, allora,
 diventa misurare distanze invece che confrontare parole. Il modo di cercare
@@ -150,8 +150,7 @@ chiama **retrieval denso**, dove «denso» sta per il tipo di indirizzi che usa:
 non una casella per ogni parola del vocabolario, quasi tutte vuote, ma poche
 centinaia di numeri tutti pieni e tutti significativi.
 
-Su una mappa del genere si possono perfino fare dei conti, ed è quello che
-mostra la figura qui sotto.
+Su una mappa del genere si possono perfino fare dei conti.
 
 ```{figure} ../figures/word2vec-2013.svg
 :name: fig-aritmetica-vettori
@@ -170,14 +169,14 @@ possono sommare e sottrarre. Per cercare basta la metà debole di questa
 proprietà, cioè la vicinanza; ma conviene vedere la metà forte, perché è la
 prova che quella mappa non è disposta a caso.
 
-Nell'overview del {doc}`capitolo sul NLP </NaturalLanguageProcessing/overview>` avevamo elencato i sinonimi tra le insidie
-della lingua: «auto», «macchina» e «vettura» indicano lo stesso oggetto. Ma
-per un indice invertito sono tre chiavi diverse: la query «manutenzione della
-vettura» non troverà mai il documento che parla solo di «tagliando dell'auto»,
-perché non condividono una sola parola. Il rimedio ha un nome, ed è quello che
-la {doc}`sezione su come si rappresenta il testo
-</NaturalLanguageProcessing/rappresentare-testo>` dà agli indirizzi su quella
-mappa: gli **embedding**.
+Nell'overview del {doc}`capitolo sul NLP </NaturalLanguageProcessing/overview>`
+avevamo elencato i sinonimi tra le insidie della lingua: «auto», «macchina» e
+«vettura» indicano lo stesso oggetto. Ma per un indice invertito sono tre
+chiavi diverse: la query «manutenzione della vettura» non troverà mai il
+documento che parla solo di «tagliando dell'auto», perché non condividono una
+sola parola. Il rimedio ha un nome, ed è quello che la {doc}`sezione su come si
+rappresenta il testo </NaturalLanguageProcessing/rappresentare-testo>` dà agli
+indirizzi su quella mappa: gli embedding.
 
 `````{tab} Elementare
 
@@ -187,11 +186,11 @@ libraio ha letto tutto: gli chiedi «qualcosa sull'educazione del cucciolo» e
 ti mette in mano *Come allenare il tuo cane* (nessuna parola in comune, tema
 identico).
 
-Il **retrieval denso** costruisce un libraio artificiale. Ogni passaggio
+Il retrieval denso costruisce un libraio artificiale. Ogni passaggio
 dell'archivio viene trasformato in un punto sulla mappa del significato: la
 stessa idea degli embedding di parole, ma per frasi intere. La domanda, quando
 arriva, diventa anch'essa un punto sulla stessa mappa: i passaggi pertinenti
-sono semplicemente **i punti più vicini**, parole in comune o no.
+sono semplicemente i punti più vicini, parole in comune o no.
 
 Attenzione però a non pensionare il catalogo. Se cerchi «errore E-52 della
 lavatrice», vuoi *esattamente* E-52, non «un errore simile»: sui codici, sui
@@ -211,24 +210,24 @@ ingresso diversi: due encoder Transformer (o uno
 condiviso), $E_q$ per le query ed $E_z$ per i passaggi, producono vettori in
 $\mathbb{R}^d$, e la rilevanza fra una query $q$ e un passaggio $z$ è il
 prodotto scalare
-$\mathrm{sim}(q, z) = E_q(q)^\top E_z(z)$, che coincide con la **similarità
-del coseno**, già incontrata nella
+$\mathrm{sim}(q, z) = E_q(q)^\top E_z(z)$, che coincide con la similarità
+del coseno, già incontrata nella
 {doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>`, quando i
 vettori sono
 normalizzati. Il vantaggio computazionale è decisivo: gli embedding dei
-passaggi si calcolano **una volta sola**, offline; a query time restano una
+passaggi si calcolano una volta sola, offline; a query time restano una
 codifica e una ricerca di vicini più prossimi, che su milioni di vettori si fa
-con indici approssimati (ANN); è il servizio che oggi vendono i **database
-vettoriali**.
+con indici approssimati (ANN); è il servizio che oggi vendono i database
+vettoriali.
 
-Il risultato che ha sdoganato l'approccio è **DPR** (*Dense Passage
+Il risultato che ha sdoganato l'approccio è DPR (*Dense Passage
 Retrieval*) {cite}`karpukhin2020dense`: due BERT addestrati in modo
 contrastivo, avvicinare le coppie domanda–passaggio corrette, allontanare i
 negativi, riciclando come negativi gli altri esempi del batch (*in-batch
 negatives*). Il salto misurato dagli autori sulle raccolte di question
 answering a dominio aperto dell'epoca è ampio (dai 9 ai 19 punti di
 accuratezza top-20 sopra un BM25 ben tarato), ma quel che resta valido oltre
-quei numeri è il **perché**: il denso recupera ciò che è detto con altre
+quei numeri è il perché: il denso recupera ciò che è detto con altre
 parole, il lessicale ciò che è scritto con quelle esatte. E infatti su termini
 rari, sigle ed entità fuori distribuzione il lessicale regge, e gli ibridi
 BM25 + denso restano una scelta di buon senso.
@@ -237,7 +236,7 @@ Un raffinamento chiude il quadro: il bi-encoder codifica query e passaggio
 *separatamente*, mentre un **cross-encoder** li concatena in un unico
 Transformer (l'attenzione confronta i token dei due testi uno a uno) ed è più
 accurato ma troppo costoso per scandagliare l'archivio, quindi si usa come
-**reranker**: riordina i migliori $k$ candidati proposti dal retriever.
+reranker: riordina i migliori $k$ candidati proposti dal retriever.
 
 `````
 
@@ -247,7 +246,7 @@ Cercare non basta: la parte che cerca (in inglese il *retriever*, che è la
 parola che si trova scritta ovunque e che qui traduciamo con «il cercatore»)
 restituisce passaggi, non risposte. Trasformare un testo trovato in una
 risposta alla domanda è il compito che nell'overview del capitolo sul NLP
-avevamo chiamato **question answering**, uno dei compiti classici della
+avevamo chiamato question answering, uno dei compiti classici della
 disciplina. Ha avuto persino il suo momento televisivo: nel
 febbraio 2011 Watson di IBM, un sistema costruito proprio su ricerca più
 analisi della domanda, batté i campioni umani del quiz *Jeopardy!*.
@@ -255,10 +254,10 @@ analisi della domanda, batté i campioni umani del quiz *Jeopardy!*.
 `````{tab} Elementare
 
 Ci sono due modi di rispondere avendo il testo sotto gli occhi. Il primo è
-l’**evidenziatore**: la risposta è già
+l’evidenziatore: la risposta è già
 scritta nel brano, basta sottolinearla. «Su cosa salta il gatto nero?»: il
 brano dice «il gatto nero salta sul muro», evidenzi «sul muro», fine. È il QA
-**estrattivo**. Il secondo è la **penna**: la risposta va composta con parole
+**estrattivo**. Il secondo è la penna: la risposta va composta con parole
 tue, magari cucendo insieme più punti del testo. È il QA **generativo**, più
 flessibile, ma con la libertà arriva il rischio: chi scrive di suo può anche
 scrivere cose che nel testo non ci sono.
@@ -280,9 +279,9 @@ valuta con *exact match* e F1 sui token. Nel giro di un paio d'anni i modelli
 della famiglia BERT {cite}`devlin2019bert` hanno superato su questo benchmark
 le prestazioni degli annotatori umani: un risultato vero, da leggere però per
 quello che misura (trovare uno span in *un* paragrafo già dato, non rispondere
-a domande nel mondo). Il QA **generativo** rimuove il vincolo dello span: un
+a domande nel mondo). Il QA generativo rimuove il vincolo dello span: un
 modello seq2seq (o un decoder autoregressivo) *scrive* la risposta,
-condizionata su domanda e contesto. E il QA **a dominio aperto** rimuove anche
+condizionata su domanda e contesto. E il QA a dominio aperto rimuove anche
 il paragrafo dato: prima si recuperano i passaggi da una collezione, poi si
 legge quel che si è trovato, ed è la catena su cui poggia la RAG.
 
@@ -291,7 +290,7 @@ legge quel che si è trovato, ed è la catena su cui poggia la RAG.
 ## Il libro aperto: la RAG
 
 Tutti i pezzi sono sul tavolo: un cercatore che trova i passaggi giusti e un
-modello di linguaggio che sa scrivere. La **Retrieval-Augmented Generation**,
+modello di linguaggio che sa scrivere. La Retrieval-Augmented Generation,
 «generazione aumentata dal recupero», li mette semplicemente in fila, ed è la
 catena di {numref}`fig-rag-pipeline`. La domanda va al cercatore, che consulta
 l'archivio e restituisce i passaggi più pertinenti. Domanda e passaggi vengono
@@ -319,9 +318,9 @@ pagine giuste, le tiene sotto gli occhi e scrive la risposta *da lì*,
 annotando a margine «pag. 214». Le altre seicento pagine non le apre nemmeno,
 perché l'indice dice che non c'entrano; e fra le due che ha davanti dà più
 retta a quella che l'indice segnalava con più decisione. I vantaggi sono
-concreti. La risposta è **controllabile**: chi corregge può andare a pagina 214
+concreti. La risposta è controllabile: chi corregge può andare a pagina 214
 e verificare, cosa impossibile con una risposta recitata a memoria. E il sapere
-è **aggiornabile**: se esce l'edizione nuova del libro basta sostituirla sullo
+è aggiornabile: se esce l'edizione nuova del libro basta sostituirla sullo
 scaffale, e nessuno deve rimandare lo studente a scuola. Nei sistemi reali è la
 differenza tra aggiornare un archivio stanotte e riaddestrare un modello per
 settimane.
@@ -359,7 +358,7 @@ $$
 dove $x$ è la domanda, $y$ la risposta generata, $z$ uno dei $k$ passaggi
 recuperati, $\eta$ i parametri del retriever e $\theta$ quelli del
 generatore. Il segno di «circa» non è una sciatteria: la somma esatta correrebbe
-su **tutti** i passaggi dell'archivio, e si tronca ai primi $k$ perché per gli
+su tutti i passaggi dell'archivio, e si tronca ai primi $k$ perché per gli
 altri $p_\eta(z \mid x)$ è trascurabile.
 
 Il tutto si addestra end-to-end sulle sole coppie
@@ -374,7 +373,7 @@ Oggi il termine RAG indica più spesso la variante leggera, senza addestramento
 congiunto: recupero, poi *prompt augmentation* verso un modello già istruito
 col post-training della sezione precedente; è proprio l'instruction tuning a
 rendergli eseguibile una consegna come «rispondi usando solo i passaggi e cita
-le fonti». I limiti però non cambiano: il recall del retriever è il **tetto** di
+le fonti». I limiti però non cambiano: il recall del retriever è il tetto di
 ciò che il sistema può dire in modo fondato e citabile (quel che non viene
 recuperato non può entrare nella risposta *a partire dai documenti*; il modello
 può sempre rispondere di suo, ma allora è tornato all'esame a libro chiuso, e
@@ -385,12 +384,12 @@ il contenuto.
 
 `````
 
-Conviene fissare il bilancio, senza hype. La RAG **mitiga** le allucinazioni
-(su ciò che sta nell'archivio, il modello non deve più inventare) ma **non le
-elimina**: un recupero sbagliato produce una risposta sbagliata con le fonti
+Conviene fissare il bilancio, senza hype. La RAG mitiga le allucinazioni
+(su ciò che sta nell'archivio, il modello non deve più inventare) ma non le
+elimina: un recupero sbagliato produce una risposta sbagliata con le fonti
 in bella vista. In cambio offre due cose che i pesi da soli non daranno mai:
-la **citabilità**, perché una risposta con la fonte si può verificare e una
-senza fonte no; e l’**aggiornabilità**, perché quando i documenti cambiano si
+la citabilità, perché una risposta con la fonte si può verificare e una
+senza fonte no; e l’aggiornabilità, perché quando i documenti cambiano si
 reindicizza l'archivio, non si riaddestra il modello. Quando, nella prossima
 sezione, troverai «il recupero di fonti esterne» tra le mitigazioni del
 problema dell'affidabilità, saprai esattamente che cosa c'è dietro, e perché è
@@ -410,7 +409,7 @@ funzione.
 Due righe per capire i numeri che escono. Ogni passaggio è un punto sulla
 mappa, e un punto sulla mappa si
 può guardare anche come una freccia che parte dall'origine e arriva lì: la
-**similarità del coseno** misura quanto due di quelle frecce puntano nella
+similarità del coseno misura quanto due di quelle frecce puntano nella
 stessa direzione. Dà $1$ quando la direzione è identica, $0$ quando le due non
 hanno niente a che vedere, e valori intermedi in mezzo; si legge come una
 percentuale di somiglianza, ed è tutto quel che serve per leggere l'uscita del
@@ -482,7 +481,7 @@ Risposta:
 
 Il primo passaggio è quello giusto, con una somiglianza di $0{,}99$, cioè
 quasi perfetta. Ma guarda il secondo, che sta a $0{,}78$: parla di gatti, ed è
-per questo *vicino* alla domanda sulla mappa, eppure **non risponde**. È il
+per questo *vicino* alla domanda sulla mappa, eppure non risponde. È il
 quasi-pertinente, l'insidia tipica della ricerca per significato: la vicinanza
 di tema non è pertinenza alla domanda. Nei
 sistemi reali è qui che interviene un secondo lettore, più lento e più
@@ -499,7 +498,7 @@ insieme a mettere vicine le domande e i passaggi che le soddisfano. Al posto
 delle sei righe ci vanno milioni di passaggi, ottenuti spezzando i documenti in
 blocchi (il *chunking*) e serviti da un indice che sa trovare i punti vicini su
 una mappa di milioni di punti senza confrontarli tutti: si accontenta dei
-quasi-vicini in cambio della velocità, e per questo si chiama **approssimato**.
+quasi-vicini in cambio della velocità, e per questo si chiama approssimato.
 Al posto del `print` finale ci va la chiamata a un modello istruito. La
 struttura (si codifica, si misura il coseno, si tengono i primi $k$, si monta
 il prompt) è esattamente quella che hai appena eseguito.
@@ -507,24 +506,24 @@ il prompt) è esattamente quella che hai appena eseguito.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un modello da solo risponde **a libro chiuso**: quello che non ha in testa se
+- Un modello da solo risponde a libro chiuso: quello che non ha in testa se
   lo inventa in modo plausibile, e rifargli studiare il libro costa settimane.
   Il recupero gli apre il libro.
-- **Cercare per parole** è il mestiere antico: l’**indice analitico** dice
+- Cercare per parole è il mestiere antico: l’indice analitico dice
   subito in quali pagine compare una parola, senza doverle sfogliare tutte;
   poi si ordinano i risultati dando più peso alle parole rare, contando le
   ripetizioni sempre meno man mano che aumentano, e penalizzando i
   documenti-fiume.
-- **Cercare per significato** è il mestiere nuovo: ogni passaggio diventa un
+- Cercare per significato è il mestiere nuovo: ogni passaggio diventa un
   punto su una mappa dove le cose che vogliono dire cose simili stanno vicine,
   e la domanda diventa un punto sulla stessa mappa. Vince sui sinonimi
   («auto» trova «vettura»), perde sui codici e sui nomi esatti, dove serve la
   parola precisa: per questo i sistemi seri usano tutti e due.
-- **Rispondere** avendo il testo sotto gli occhi si fa in due modi:
+- Rispondere avendo il testo sotto gli occhi si fa in due modi:
   l'evidenziatore (la risposta è già scritta, basta sottolinearla) o la penna
   (la risposta si compone con parole proprie, più libera e più rischiosa).
-- La **RAG** mette in fila le due cose: si cerca, si mettono i passaggi
-  trovati davanti al modello, e il modello risponde da lì, citando. **Attenua**
+- La RAG mette in fila le due cose: si cerca, si mettono i passaggi
+  trovati davanti al modello, e il modello risponde da lì, citando. Attenua
   le risposte inventate ma non le elimina (se si apre la pagina sbagliata, la
   risposta è sbagliata con tanto di fonte in bella vista); in cambio si può
   verificare, e si aggiorna cambiando l'archivio invece del modello.
@@ -534,22 +533,22 @@ il prompt) è esattamente quella che hai appena eseguito.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Un LLM da solo risponde **a libro chiuso**: ciò che non è nei pesi viene
+- Un LLM da solo risponde a libro chiuso: ciò che non è nei pesi viene
   completato in modo plausibile (allucinazioni), e aggiornare i pesi costa un
   riaddestramento. Il retrieval gli apre il libro.
-- L’**information retrieval** classico cerca per parole: indice invertito per
-  non leggere tutto, **BM25** {cite}`robertson2009probabilistic` per ordinare
-  (un TF-IDF evoluto con **saturazione** della term frequency e
+- L’information retrieval classico cerca per parole: indice invertito per
+  non leggere tutto, BM25 {cite}`robertson2009probabilistic` per ordinare
+  (un TF-IDF evoluto con saturazione della term frequency e
   normalizzazione per lunghezza). Qualità misurata con precision@$k$ e MRR.
-- Il **retrieval denso** {cite}`karpukhin2020dense` cerca per significato:
+- Il retrieval denso {cite}`karpukhin2020dense` cerca per significato:
   bi-encoder, embedding di passaggi, similarità del coseno. Vince sui
   sinonimi («auto»/«vettura»), perde su sigle e nomi esatti: gli ibridi e il
-  reranking con **cross-encoder** correggono il tiro.
-- Il **question answering** (già tra i compiti del capitolo NLP) è
-  **estrattivo** (evidenziare lo span: SQuAD {cite}`rajpurkar2016squad`) o
-  **generativo** (scrivere la risposta).
-- La **RAG** {cite}`lewis2020retrieval` incatena recupero, prompt aumentato e
-  generazione con fonti: **mitiga** le allucinazioni ma non le elimina (il
+  reranking con cross-encoder correggono il tiro.
+- Il question answering (già tra i compiti del capitolo NLP) è
+  estrattivo (evidenziare lo span: SQuAD {cite}`rajpurkar2016squad`) o
+  generativo (scrivere la risposta).
+- La RAG {cite}`lewis2020retrieval` incatena recupero, prompt aumentato e
+  generazione con fonti: mitiga le allucinazioni ma non le elimina (il
   recall del retriever è il tetto), e offre citabilità e aggiornabilità;
   l'archivio si cambia, il modello no.
 ```

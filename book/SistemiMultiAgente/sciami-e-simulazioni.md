@@ -4,8 +4,8 @@ Gli storni con cui si è aperto il capitolo non stanno risolvendo niente: volano
 La loro regola dei sei o sette vicini serve a restare insieme sopra il posatoio,
 non a calcolare qualcosa. Ma la domanda che quello spettacolo mette in testa a
 un informatico è vecchia e precisa: se una regola locale elementare basta a
-tenere in aria migliaia di uccelli, può bastare anche a **risolvere un
-problema**?
+tenere in aria migliaia di uccelli, può bastare anche a risolvere un
+problema?
 
 Per una trentina d'anni la risposta a questa domanda ha occupato una fetta
 grossa della ricerca multi-agente, e conviene dirlo perché oggi lo si dimentica:
@@ -17,7 +17,7 @@ erano partecipanti costosi e chiacchieroni; qui la situazione si ribalta. I
 partecipanti sono centinaia, non costano quasi niente, non ragionano e non si
 scrivono messaggi. L'idea comune resta però quella dell'apertura:
 molte unità quasi banali, nessun controllore centrale, e una soluzione che
-**emerge** dall'interazione invece di essere calcolata da qualcuno.
+emerge dall'interazione invece di essere calcolata da qualcuno.
 
 ## Le formiche del Politecnico
 
@@ -95,15 +95,15 @@ $\eta$ del resto del libro), $\mathcal{A}_k$ è l'insieme dei nodi che la formic
 $k$ non ha ancora visitato, tenuto da una lista di nodi proibiti che le vieta di
 tornare dove è già passata ed è ciò che rende legale il giro, e gli esponenti
 $\alpha, \beta \ge 0$ pesano i due
-termini l'uno contro l'altro. La formula è un compromesso fra **esperienza
-collettiva** ($\tau$: quante formiche sono passate di qui e quanto bene è
-andata) ed **euristica locale** ($\eta$: quanto è vicino il prossimo nodo). I
+termini l'uno contro l'altro. La formula è un compromesso fra esperienza
+collettiva ($\tau$: quante formiche sono passate di qui e quanto bene è
+andata) ed euristica locale ($\eta$: quanto è vicino il prossimo nodo). I
 due casi limite lo chiariscono: con $\alpha = 0$ il feromone sparisce dal conto
 e resta un algoritmo goloso stocastico, cioè una colonia di formiche che non
 comunicano; con $\beta = 0$ resta solo il passaparola, senza nessuna
 informazione sul problema.
 
-Il rinforzo arriva a giro finito, ed è proporzionale alla **qualità** della
+Il rinforzo arriva a giro finito, ed è proporzionale alla qualità della
 soluzione costruita:
 
 $$
@@ -127,7 +127,7 @@ fissa (*ant-density*) o inversamente proporzionale alla lunghezza del singolo
 arco (*ant-quantity*). Sono due usi di informazione locale, e infatti vanno
 peggio: chi ha fatto un giro corto deve lasciare più feromone di chi ne ha fatto
 uno lungo, e per saperlo bisogna che il giro sia finito. Così la traccia non
-registra il traffico, registra il **merito**.
+registra il traffico, registra il merito.
 
 `````
 
@@ -157,11 +157,11 @@ da cinquanta su cento e diventa, giro dopo giro, sessantasei, settantatré,
 settantasette, ottanta, ottantadue: il salto grosso è il primo, sedici punti,
 contro i sette del secondo e i quattro del terzo. Ed è il salto che avviene
 quando le due strade sono ancora percorse dallo stesso numero di formiche: lì a
-fare la differenza è **soltanto** quanto ciascuna lascia alla fine del giro, e
+fare la differenza è soltanto quanto ciascuna lascia alla fine del giro, e
 siccome un giro è lungo la metà dell'altro, chi lo fa lascia il doppio di chi fa
 l'altro. Da lì in poi il vantaggio si rinforza da sé.
 
-La seconda è che **anche la strada lunga si ispessisce**. Il difetto sta nel
+La seconda è che anche la strada lunga si ispessisce. Il difetto sta nel
 meccanismo, non nel disegno. Finché le formiche passano, il feromone si
 accumula dappertutto e non se ne va più; quello che cresce è il *divario*, non
 la differenza fra una traccia e nessuna traccia. Un sistema fatto così sa
@@ -181,7 +181,7 @@ buona: nel gergo dell'articolo è il **comportamento di stagnazione**, la
 situazione in cui tutte le formiche fanno lo stesso giro e nessuna cerca più
 niente.
 
-La cura è una sola parola: il feromone **evapora**.
+La cura è una sola parola: il feromone evapora.
 
 `````{tab} Elementare
 
@@ -238,14 +238,14 @@ $$
 \sum_{s=1}^{t} (1-\rho)^{\,t-s}\;\Delta\tau_{ij}(s),
 $$
 
-cioè una **media mobile esponenziale** della qualità recente di quell'arco, con
+cioè una media mobile esponenziale della qualità recente di quell'arco, con
 i contributi vecchi pesati sempre meno; il primo addendo è la traccia iniziale,
 una costantina positiva uguale su tutti gli archi, e si spegne da sé nei primi
 cicli. Due conseguenze quantitative. La prima:
 la traccia non diverge. Se un arco riceve un deposito costante $\Delta$ a ogni
 ciclo, la serie geometrica converge al punto fisso $\tau^{\ast} = \Delta/\rho$,
 che con $\rho = 0{,}5$ vale il doppio di un singolo deposito. La seconda: la
-somma dei pesi è $1/\rho$, quindi **$1/\rho$ è l'orizzonte di memoria** in
+somma dei pesi è $1/\rho$, quindi $1/\rho$ è l'orizzonte di memoria in
 cicli. Con $\rho$ vicino a zero la colonia ricorda tutto e si fossilizza sul
 primo ottimo locale; con $\rho$ vicino a uno dimentica a ogni giro e le formiche
 tornano a essere golose e scorrelate. Il valore che gli autori trovano migliore
@@ -253,25 +253,25 @@ per questa variante sta esattamente in mezzo, $\rho = 0{,}5$ (l'unico numero che
 vale lo stesso nelle due convenzioni, appunto perché sta in mezzo), cioè un
 orizzonte di due cicli; e la ragione che ne danno è la migliore descrizione in
 una riga del compromesso esplorazione-sfruttamento: l'algoritmo ha bisogno di
-poter **dimenticare parte dell'esperienza passata** per sfruttare l'informazione
+poter dimenticare parte dell'esperienza passata per sfruttare l'informazione
 globale che sta arrivando adesso.
 
 `````
 
 ## La memoria non sta negli individui
 
-Adesso il punto che rende questa sezione parte di questo capitolo e non del
-capitolo sull'ottimizzazione. Le formiche artificiali non si scambiano un solo
+Adesso il punto che rende questa sezione parte di questo capitolo e non di un
+manuale di ottimizzazione. Le formiche artificiali non si scambiano un solo
 messaggio. Non si conoscono, non si nominano, non sanno nemmeno in quante
-sono. Tutto quello che una formica sa delle altre lo legge **per terra**: la
+sono. Tutto quello che una formica sa delle altre lo legge per terra: la
 loro esperienza è diventata una proprietà fisica dell'ambiente, e la traccia
 sopravvive alle singole formiche che l'hanno lasciata.
 
 Gli autori lo dicono in una frase che potrebbe stare in un manuale di sistemi
-distribuiti: nell'Ant System le formiche comunicano **modificando un pezzo di
-memoria comune**. Chi ha letto la sezione sulle topologie ha già riconosciuto la
-forma e ha già il nome: è la **lavagna condivisa** di Hearsay-II, ed è la
-**stigmergia** che lì abbiamo definito, il coordinamento attraverso le tracce
+distribuiti: nell'Ant System le formiche comunicano modificando un pezzo di
+memoria comune. Chi ha letto la sezione sulle topologie ha già riconosciuto la
+forma e ha già il nome: è la lavagna condivisa di Hearsay-II, ed è la
+stigmergia che lì abbiamo definito, il coordinamento attraverso le tracce
 lasciate in uno spazio comune invece che attraverso messaggi diretti. Tornano
 tutte e tre le sue proprietà. Aggiungere una formica non obbliga a modificare
 nessun'altra, perché nessuna sa dell'esistenza delle altre. Al centro c'è
@@ -285,8 +285,8 @@ documento che tutti possono leggere e riscrivere, sta facendo esattamente
 questo: non si scrivono messaggi, si modifica uno spazio comune e si reagisce a
 come lo si trova. Cambia la taglia (il feromone è un numero, una nota è un
 paragrafo) ma i problemi da risolvere sono gli stessi: che cosa succede se due
-scrivono insieme, come si tiene traccia di chi ha scritto che cosa, e **che cosa
-fa dimenticare** allo spazio comune ciò che non serve più. Le formiche
+scrivono insieme, come si tiene traccia di chi ha scritto che cosa, e che cosa
+fa dimenticare allo spazio comune ciò che non serve più. Le formiche
 quest'ultima cosa ce l'hanno per costruzione; una cartella di file cresce e
 basta.
 
@@ -300,7 +300,7 @@ sono i due autori spiega già mezza storia: uno psicologo sociale e un ingegnere
 elettrotecnico. Erano partiti provando a simulare uno stormo, ispirandosi ai
 *boids* di Reynolds {cite}`reynolds1987flocks` e ai modelli di volo coordinato
 di Heppner e Grenander, e hanno scoperto che quel giocattolo, tolti i pezzi
-giusti, **risolveva problemi**.
+giusti, risolveva problemi.
 
 Il racconto delle amputazioni è la parte istruttiva. Via la «pazzia», cioè il
 rumore aggiunto a mano per rendere il volo credibile: non serviva. Via
@@ -365,7 +365,7 @@ regolabile la introducono Shi ed Eberhart nel 1998, perché $w$ grande favorisce
 l'esplorazione e $w$ piccolo la convergenza. E il valore originale
 $c_1 = c_2 = 2$ non è arbitrario: moltiplicando per $2$ un numero uniforme in
 $[0,1]$ si ottiene un fattore di media $1$, così che ciascuna delle due spinte,
-**in media**, porti la particella esattamente sul proprio attrattore, e quindi
+in media, porti la particella esattamente sul proprio attrattore, e quindi
 la faccia sorpassare circa una volta su due. Il sorpasso è deliberato: gli
 autori riportano che togliendo il termine di velocità precedente, che nel 1995
 chiamano *momentum* (cioè sostituendo la velocità invece di correggerla),
@@ -377,10 +377,10 @@ solo dove è già andato bene smette di cercare.
 
 ## Rimescolare invece di muoversi: gli algoritmi genetici
 
-Formiche e particelle si **spostano**: c'è uno spazio, e ogni individuo ha una
+Formiche e particelle si spostano: c'è uno spazio, e ogni individuo ha una
 posizione che aggiorna. La terza famiglia di questa cassetta degli attrezzi
 rinuncia anche a quello, e cambia il verbo. Gli individui non si muovono: si
-**riproducono**.
+riproducono.
 
 `````{tab} Elementare
 
@@ -392,14 +392,14 @@ destra».
 Un algoritmo genetico parte da una popolazione di zaini riempiti a caso, quasi
 tutti mediocri, e ripete tre gesti che vengono dalla biologia.
 
-**Selezione.** Chi vale di più ha più probabilità di fare figli. Il modo più
+Selezione. Chi vale di più ha più probabilità di fare figli. Il modo più
 semplice è il torneo: si pescano due individui a caso e passa il migliore.
 
-**Incrocio.** Da due genitori si fa un figlio prendendo il primo pezzo
+Incrocio. Da due genitori si fa un figlio prendendo il primo pezzo
 dell'elenco dall'uno e il resto dall'altro. È il gesto che le formiche e le
 particelle non hanno: loro si spostano, questi si mescolano.
 
-**Mutazione.** Ogni tanto, a caso, si ribalta una scelta: un oggetto che c'era
+Mutazione. Ogni tanto, a caso, si ribalta una scelta: un oggetto che c'era
 esce, uno che non c'era entra. Serve a non restare prigionieri del materiale
 genetico di partenza, ed è la stessa funzione dell'evaporazione nelle formiche
 e dell'inerzia nelle particelle.
@@ -448,7 +448,7 @@ un'argomentazione euristica più che un teorema, e il suo limite ha un nome
 preciso, **epistasi**: quando il contributo di un gene dipende fortemente dagli
 altri, spezzare il genotipo distrugge proprio l'informazione che si voleva
 trasmettere, e il crossover degrada a mutazione macroscopica. La codifica non
-è quindi un dettaglio implementativo: **è il progetto dell'algoritmo**, perché
+è quindi un dettaglio implementativo: è il progetto dell'algoritmo, perché
 decide quali pezzi sono separabili.
 
 Rispetto alle altre due famiglie della sezione, la differenza operativa è che
@@ -471,7 +471,7 @@ degli obiettivi in anticipo e rilanciare la ricerca per ogni compromesso.
 
 Lo zaino è il tipo di problema su cui il metodo
 solito, quello che cerca il punto più basso sentendo da che parte scende il
-terreno (la **discesa del gradiente**, di cui si parla fra due pagine), non ha
+terreno (la discesa del gradiente, di cui si parla fra due pagine), non ha
 proprio dove appoggiarsi. Nel codice che segue i
 venti oggetti, con i loro pesi e i loro valori, sono sorteggiati una volta sola e
 poi restano quelli; e siccome sono soltanto venti possiamo permetterci il lusso
@@ -531,7 +531,7 @@ esatta, mentre le altre due volte si ferma a duecentoventiquattro contro
 duecentoventotto, cioè meno del due per cento sotto. Per un problema in cui non esiste
 alcuna pendenza da seguire, è molto. La seconda è
 che quel «otto volte su dieci» non si può eliminare. Un algoritmo genetico non
-dà garanzie, e soprattutto **non dice quanto gli è mancato**: qui lo sappiamo
+dà garanzie, e soprattutto non dice quanto gli è mancato: qui lo sappiamo
 solo perché venti oggetti si possono enumerare a mano. Con quaranta oggetti il
 confronto non esisterebbe, e la risposta trovata avrebbe esattamente lo stesso
 aspetto.
@@ -541,9 +541,9 @@ Nel machine learning questa famiglia compare in due punti. Il primo è la
 perché si confondono spesso. La rete base di EfficientNet, ricordata fra le
 {doc}`architetture storiche </DeepLearning/architetture-storiche>` del deep
 learning, viene da una ricerca automatica multi-obiettivo
-guidata dal **reinforcement learning**, non dall'evoluzione. L'evoluzione è
+guidata dal reinforcement learning, non dall'evoluzione. L'evoluzione è
 l'altra strada principale, e il suo esemplare è AmoebaNet
-{cite}`real2019regularized`, dove le architetture **mutano** e le migliori
+{cite}`real2019regularized`, dove le architetture mutano e le migliori
 sopravvivono, con una selezione a torneo che scarta anche le più vecchie.
 Quell'algoritmo l'incrocio non ce l'ha, ed è coerente con la scommessa
 dichiarata poche righe fa: in un'architettura i pezzi non sono separabili,
@@ -556,7 +556,7 @@ ottimizzare una pipeline di preelaborazione.
 ## Perché non usare il gradiente
 
 Sia le formiche sia le particelle hanno una proprietà che va guardata in faccia:
-non usano mai la **derivata** della funzione da minimizzare, cioè la sua
+non usano mai la derivata della funzione da minimizzare, cioè la sua
 pendenza. Vedono solo il suo
 valore, in un punto alla volta. La sezione di matematica su
 {doc}`analisi e ottimizzazione </Matematica/analisi-ottimizzazione>` ha spiegato
@@ -600,24 +600,24 @@ punto più basso della valle o soltanto il più basso che ha visto.
 Formiche, sciami e algoritmi genetici sono metodi **senza derivate**:
 interrogano la funzione obiettivo come una scatola nera e non ne richiedono né
 differenziabilità né continuità. Il loro dominio proprio è dove il gradiente non c'è, non si calcola
-o non informa: funzioni non differenziabili, spazi **combinatori** (il commesso
-viaggiatore non ha un gradiente: ha permutazioni), valutazioni **rumorose** o
+o non informa: funzioni non differenziabili, spazi combinatori (il commesso
+viaggiatore non ha un gradiente: ha permutazioni), valutazioni rumorose o
 prodotte da una simulazione, e paesaggi molto multimodali dove il gradiente è
 informativo solo dentro il bacino in cui si nasce.
 
-Il prezzo si paga in **valutazioni della funzione obiettivo**, e in alta
+Il prezzo si paga in valutazioni della funzione obiettivo, e in alta
 dimensione diventa proibitivo, per una ragione precisa. Con la
 retropropagazione una sola passata all'indietro produce tutte le $d$ derivate
 parziali di $\mathcal{L}$ rispetto ai parametri $\theta$, a un costo
 dell'ordine di una passata in avanti: l'informazione per passo cresce con $d$
-mentre il costo no. Un metodo senza derivate deve invece **stimare** una
+mentre il costo no. Un metodo senza derivate deve invece stimare una
 direzione utile a partire da valori scalari, e le valutazioni necessarie
 crescono almeno linearmente con $d$. È il motivo per cui nessuno addestra con
 uno sciame una rete da centinaia di milioni di parametri, e insieme il motivo
 per cui gli sciami restano vivi dove $d$ è piccolo e ogni valutazione è cara
 (taratura di iperparametri, progettazione ingegneristica, instradamento,
-schedulazione). Va aggiunto, per onestà, che di questi metodi **non esiste una
-garanzia di convergenza all'ottimo globale** in tempo utile: sono euristiche,
+schedulazione). Va aggiunto, per onestà, che di questi metodi non esiste una
+garanzia di convergenza all'ottimo globale in tempo utile: sono euristiche,
 funzionano bene su molte istanze e nessuno può promettere che funzionino sulla
 prossima. Chi li presenta come alternativa generale alla discesa del gradiente
 sta vendendo qualcosa.
@@ -693,7 +693,7 @@ trovano le sue particelle; i giri sono sessanta, più la misura iniziale, quindi
 in tutto milleottocentotrenta misure. In due dimensioni sono niente. In mille
 dimensioni sarebbero ancora milleottocentotrenta, e non basterebbero.
 
-E il risultato **non è garantito**. Il programma qui sopra parte da posizioni
+E il risultato non è garantito. Il programma qui sopra parte da posizioni
 sorteggiate, e ripetendolo con sorteggi diversi le cose vanno diversamente. Se
 lo si rifà trecento volte, cambiando ogni volta soltanto il sorteggio, lo sciame
 arriva al fondo vero in duecentosettantasette casi su trecento: poco più di nove
@@ -702,15 +702,15 @@ volte su dieci, non sempre.
 ### Il confronto che si legge in giro, e quello onesto
 
 Adesso il paragone con il metodo che segue la pendenza, che è il punto in cui la
-divulgazione su questi argomenti imbroglia quasi sempre. Fatta partire da **un
-solo** punto preso a caso, e lasciata scendere per duemila passi, una discesa
+divulgazione su questi argomenti imbroglia quasi sempre. Fatta partire da un
+solo punto preso a caso, e lasciata scendere per duemila passi, una discesa
 lungo la pendenza arriva al fondo vero due volte su trecento; nelle altre
 duecentonovantotto si ferma ordinatamente nella fossetta in cui è nata.
 Duecentosettantasette contro due: un confronto splendido e scorretto, perché
 schiera trenta esploratori contro uno solo, e viola la clausola che il «Costo
-del coordinamento» ha dichiarato vincolante, **a parità di spesa**.
+del coordinamento» ha dichiarato vincolante, a parità di spesa.
 
-Rifacciamolo per bene. Alla discesa si danno **trenta ripartenze** per prova,
+Rifacciamolo per bene. Alla discesa si danno trenta ripartenze per prova,
 cioè esattamente gli stessi trenta punti iniziali che ha lo sciame, e si tiene
 il migliore dei trenta risultati. Allora arriva al fondo vero sessantasette volte
 su trecento, cioè poco più di una su cinque, contro le nove su dieci dello
@@ -721,7 +721,7 @@ passi, contro le milleottocentotrenta misure dello sciame.
 
 E si può capire da dove venga quel sessantasette, il che è più interessante del
 numero. Le partenze singole in tutto sono novemila, cioè trecento prove per
-trenta punti ciascuna, e ne riescono settantadue: **otto su mille**, che è la
+trenta punti ciascuna, e ne riescono settantadue: otto su mille, che è la
 misura della fossetta centrale. È larga circa uno per uno dentro un quadrato di
 lato dieci e un quarto, quindi occupa poco meno dell'uno per cento dell'area, e
 nascere lì dentro è appunto un tiro di dado che va bene una volta ogni cento e
@@ -731,7 +731,7 @@ Ogni punto iniziale, insomma, è un biglietto della lotteria che vince otto volt
 su mille, e ogni prova ne compra trenta. Attenzione a non sommarli: trenta per
 otto farebbe ventiquattro su cento, ma una prova in cui due biglietti vincono
 resta una prova riuscita, e nel conto va contata una volta sola. La domanda
-giusta è al contrario: quante prove **perdono tutti e trenta** i biglietti? Il
+giusta è al contrario: quante prove perdono tutti e trenta i biglietti? Il
 conto lo si fa una volta e dà poco più di una prova su cinque che va a segno,
 cioè sessantaquattro su trecento. Ne escono sessantasette.
 
@@ -747,9 +747,9 @@ meglio: sotto la soglia oltre la quale la discesa diventa instabile il
 risultato non cambia di una prova, sopra crolla a zero su trecento.)
 
 Tutti i numeri di questa sezione escono da un blocco solo, che rifà le
-trecento prove per intero — stessi sorteggi, stessa soglia, che qui smette di
-essere sottintesa: «arrivare al fondo vero» vuol dire scendere sotto un
-centesimo.
+trecento prove per intero, con gli stessi sorteggi e la stessa soglia, che qui
+smette di essere sottintesa: «arrivare al fondo vero» vuol dire scendere sotto
+un centesimo.
 
 ```python
 # Le trecento prove del confronto: semi 0..299. Ogni prova usa gli STESSI
@@ -817,7 +817,7 @@ spinte (tirare dritto per dove stavo andando, tornare dove sono stato meglio io,
 andare dove è stato meglio il gruppo). Non sono i valori del 1995 ma quelli oggi
 standard, e non sono stati trovati provando: vengono da un conto di Clerc e
 Kennedy del 2002, il **fattore di costrizione**, che dice per quali valori la
-velocità delle particelle **non esplode**. Il conto dà due numeri, uno per
+velocità delle particelle non esplode. Il conto dà due numeri, uno per
 l'inerzia e uno per le altre due spinte, che sono uguali fra loro: arrotondati,
 sono lo `0.73` e i due `1.50` del programma. Con spinte troppo forti lo sciame si
 sparpaglia e non torna più; con questi valori sta insieme da sé, e nessuno deve
@@ -845,12 +845,12 @@ ricava una conclusione più generale, che riscrive fra i propri ricordi.
 Conviene guardare da vicino il pezzo che regge tutto, e che è anche il più
 imitato senza capirlo: la **funzione di recupero a tre termini**. Risponde
 alla domanda di qualunque memoria grande: fra diecimila ricordi, quali sono i
-pochi che vanno messi nel contesto **adesso**?
+pochi che vanno messi nel contesto adesso?
 
 `````{tab} Elementare
 
-Tre criteri, e nessuno dei tre basta da solo. Quanto è **recente** il ricordo,
-quanto è **importante**, e quanto **c'entra** con quello che sto facendo. Chi
+Tre criteri, e nessuno dei tre basta da solo. Quanto è recente il ricordo,
+quanto è importante, e quanto c'entra con quello che sto facendo. Chi
 guarda solo l'orologio si ricorda l'ultima cosa successa; chi guarda solo
 l'importanza si ripete addosso sempre lo stesso trauma; chi guarda solo
 l'attinenza pesca frasi che somigliano alla domanda ma sono di sei mesi fa.
@@ -911,12 +911,12 @@ s(e, q) \;=\; \alpha_{\text{rec}}\,\widetilde{\text{rec}}(e)
 $$
 
 dove $e$ è un ricordo, $q$ la situazione corrente e la tilde indica che ogni
-termine è stato riscalato con un **min-max** nell'intervallo $[0,1]$ prima della
+termine è stato riscalato con un min-max nell'intervallo $[0,1]$ prima della
 somma. Nel lavoro originale i tre pesi valgono tutti $1$, il che rende la
 normalizzazione l'unico meccanismo che impedisce al termine con l'escursione
 più ampia di dominare: sommare direttamente un voto in $[1,10]$ e due grandezze
 in $[0,1]$ equivale a ordinare per il solo voto. E poiché il riscalamento è
-relativo all'insieme dei candidati, il punteggio **non è assoluto**: lo stesso
+relativo all'insieme dei candidati, il punteggio non è assoluto: lo stesso
 ricordo vale diversamente a seconda della compagnia.
 
 I tre segnali. La **recenza** decade esponenzialmente nel tempo simulato
@@ -929,11 +929,11 @@ istruttivo: la colonia dimentica in due cicli perché deve continuare a
 esplorare, un agente in duecento ore perché deve restare la stessa persona.
 La **pertinenza** (*relevance*) è la similarità del coseno fra l'embedding del
 ricordo e quello della query, cioè il recupero denso già visto nel RAG.
-L’**importanza** è l'unica anomala: non si calcola, si **chiede al modello**,
+L’**importanza** è l'unica anomala: non si calcola, si chiede al modello,
 che assegna alla memoria un voto di salienza da 1 a 10 nel momento in cui la
 scrive, con tutti i pregiudizi che ha su che cosa conti in una vita.
 
-Sopra i tre segnali sta un quarto meccanismo, la **riflessione**, e ciò che
+Sopra i tre segnali sta un quarto meccanismo, la riflessione, e ciò che
 merita attenzione è quando scatta: non a orario fisso, ma quando la somma delle
 importanze degli eventi recenti supera una soglia (150 nella loro
 implementazione, che nei loro esperimenti si traduce in due o tre riflessioni al
@@ -941,7 +941,7 @@ giorno). La cadenza è quindi guidata dagli eventi e non dall'orologio: una
 giornata piatta non produce riflessioni, una densa ne produce diverse. L'agente
 si pone allora le domande più salienti sul proprio periodo recente, risponde con
 proposizioni astratte e
-le **riscrive nel flusso** come ricordi nuovi, con la loro importanza e la loro
+le riscrive nel flusso come ricordi nuovi, con la loro importanza e la loro
 recenza. È una retroazione: le sintesi competono con le osservazioni grezze nel
 recupero successivo, e sopra le prime riflessioni se ne formano altre. Ne esce
 un albero di astrazioni costruito dal basso, ed è anche il punto delicato
@@ -965,7 +965,7 @@ linguaggio da cui provengono, non un risultato dell'esperimento. Un modello
 addestrato su enormi quantità di testo umano è, per costruzione, una macchina
 per produrre continuazioni verosimili di testo umano; quando gli si chiede di
 comportarsi come una persona, il fatto che il risultato somigli a una persona
-**è la specifica**, non una scoperta. Peggio: la nostra sensazione di aver
+è la specifica, non una scoperta. Peggio: la nostra sensazione di aver
 visto qualcosa di vero cresce proprio con la qualità del modello, cioè con la
 sua abilità a produrre testo convincente, che è la variabile meno legata alla
 verità di tutte. Le mani avanti se le mettono gli autori stessi, in una nota a
@@ -975,7 +975,7 @@ volere, decidere o capire davvero.
 
 Credibile non vuol dire predittivo, ed è la solita distinzione fra somigliare e
 prevedere. Perché una simulazione dicesse qualcosa sulle società reali dovrebbe
-riprodurre non i singoli comportamenti verosimili, ma le **distribuzioni** di
+riprodurre non i singoli comportamenti verosimili, ma le distribuzioni di
 quei comportamenti: quante persone su venticinque davvero verrebbero alla festa,
 e in quali condizioni nessuna. Su questo non c'è nessuna garanzia, e ce ne sono
 anzi di contrarie: un modello di linguaggio riflette le proporzioni del proprio
@@ -1026,39 +1026,39 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
 ```{admonition} Da ricordare
 :class: important
 - Prima dei modelli di linguaggio il multi-agente era soprattutto
-  **ottimizzazione**: tante unità quasi banali, nessuno che comanda, e una
-  soluzione che emerge dall'interazione. Il capostipite è l’**ottimizzazione a
-  colonia di formiche** {cite}`dorigo1996ant`, nata al Politecnico di Milano fra
+  ottimizzazione: tante unità quasi banali, nessuno che comanda, e una
+  soluzione che emerge dall'interazione. Il capostipite è l’ottimizzazione a
+  colonia di formiche {cite}`dorigo1996ant`, nata al Politecnico di Milano fra
   il 1991 e il 1992 (un articolo di convegno e la tesi di dottorato di Marco
   Dorigo). Fra due strade verso lo stesso cibo, quella corta si percorre più
   spesso e accumula più traccia: è il tempo a fare la misura, senza che nessuna
   formica confronti niente. E si lascia traccia in quantità proporzionale a
   quanto è buono il giro appena finito, così la traccia registra il merito e non
   il traffico.
-- L’**evaporazione è l'esplorazione**. Se ogni sera metà della traccia se ne va
+- L’evaporazione è l'esplorazione. Se ogni sera metà della traccia se ne va
   da sola, una strada che continua a essere usata non se ne accorge e una strada
   abbandonata sparisce in una settimana; quanto lentamente evapora dice per
   quanti giri il gruppo ricorda. Senza evaporazione la prima strada trovata per
   caso resta la più marcata per sempre e la colonia si fossilizza.
-- La memoria del gruppo non sta negli individui, sta nell’**ambiente**: è la
-  **stigmergia**, cioè la lavagna condivisa della sezione sulle topologie. Una
+- La memoria del gruppo non sta negli individui, sta nell’ambiente: è la
+  stigmergia, cioè la lavagna condivisa della sezione sulle topologie. Una
   squadra di agenti che si coordina lasciando file in una cartella comune fa
   esattamente questo, con gli stessi problemi (chi scrive mentre un altro
   scrive, chi ha messo lì una certa cosa, e che cosa fa dimenticare allo stato
   comune ciò che non serve più).
-- Nello **sciame di particelle** {cite}`kennedy1995particle`, nato togliendo
+- Nello sciame di particelle {cite}`kennedy1995particle`, nato togliendo
   pezzi a una simulazione di stormo {cite}`reynolds1987flocks`, ognuno cerca il
   punto più basso della valle nella nebbia tirando un po’ verso il proprio
   ricordo, un po’ verso il punto migliore che ha trovato il gruppo, e un po’
   dritto per dove stava già andando. È quest'ultima spinta a far superare il
   punto migliore conosciuto e a guardare appena più in là: senza, il metodo
   smette di trovare i minimi buoni.
-- Gli **algoritmi genetici** {cite}`holland1975adaptation` cambiano verbo: gli
+- Gli algoritmi genetici {cite}`holland1975adaptation` cambiano verbo: gli
   individui non si spostano, si riproducono (selezione, incrocio, mutazione, più
   il migliore che passa sempre alla generazione dopo). L'incrocio è una
   scommessa dichiarata, che una buona soluzione sia fatta di buoni pezzi
-  staccabili, e cade quando ogni scelta dipende troppo da tutte le altre: **come
-  si scrive la soluzione è il progetto** dell'algoritmo. In cambio a questi
+  staccabili, e cade quando ogni scelta dipende troppo da tutte le altre: come
+  si scrive la soluzione è il progetto dell'algoritmo. In cambio a questi
   algoritmi non serve nessuna pendenza da seguire: basta saper mescolare due
   soluzioni e cambiarne un pezzo a caso. Va bene quindi anche una soluzione che
   è un elenco di sì e no, come gli oggetti da mettere nello zaino, o un ordine,
@@ -1067,26 +1067,26 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   sia partito vicino alla risposta giusta. Sullo zaino a venti oggetti trova la
   risposta esatta otto volte su dieci provando meno di mezzo per cento delle
   combinazioni, e non dice mai quanto gli è mancato.
-- Questi metodi **non sentono la pendenza**: provano un punto e misurano la
+- Questi metodi non sentono la pendenza: provano un punto e misurano la
   quota. Servono dove la pendenza non c'è, non si calcola o non informa
   (terreni pieni di buche, misure rumorose, scelte in cui non ci si può
   spostare di un millimetro, come l'ordine in cui visitare venti città), e si
   pagano in tentativi: sulla valle piena di fossette dell'esempio lo sciame
   trova il fondo vero in 277 prove su 300. Il confronto va però fatto
-  **a parità di esploratori**, altrimenti si bara: una discesa del gradiente
+  a parità di esploratori, altrimenti si bara: una discesa del gradiente
   lanciata da un punto solo ci arriva due volte su trecento, ma lanciata dagli
   stessi trenta punti dello sciame ci arriva poco più di una volta su cinque.
   Lo sciame vince quattro volte, non centoquaranta. E quando le variabili sono
   tantissime il rapporto si rovescia: non sono un'alternativa generale.
-- Nelle **società simulate** {cite}`park2023generative` il pezzo da capire è
+- Nelle società simulate {cite}`park2023generative` il pezzo da capire è
   come si scelgono i ricordi da rimettere davanti all'agente: quanto è recente,
   quanto è importante, quanto c'entra con quello che sta facendo, e i tre
-  criteri vanno messi **sulla stessa scala** prima di sommarli, altrimenti vince
+  criteri vanno messi sulla stessa scala prima di sommarli, altrimenti vince
   sempre quello con i numeri più grandi. Le riflessioni scattano per accumulo di
   cose importanti, non a orologio, e rientrano in memoria. Ma quegli agenti
-  producono comportamenti **credibili** (*believable*), che è ciò che un modello
+  producono comportamenti credibili (*believable*), che è ciò che un modello
   di linguaggio sa fare per costruzione e non una scoperta sul comportamento
-  umano: valgono come **generatore di ipotesi**, non come **prova**, perché sono
+  umano: valgono come generatore di ipotesi, non come prova, perché sono
   convincenti proprio in quanto il modello è addestrato a convincere.
 ```
 
@@ -1096,61 +1096,61 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
 
 ```{admonition} Da ricordare
 :class: important
-- Prima degli LLM il multi-agente era soprattutto **ottimizzazione**: molte
+- Prima degli LLM il multi-agente era soprattutto ottimizzazione: molte
   unità quasi banali, nessun controllore centrale, e una soluzione che emerge
-  dall'interazione. Il capostipite è l’**ottimizzazione a colonia di formiche**
+  dall'interazione. Il capostipite è l’ottimizzazione a colonia di formiche
   {cite}`dorigo1996ant`, nata al Politecnico di Milano fra il 1991 e il 1992 (un
   articolo di convegno e la tesi di dottorato di Marco Dorigo). Una formica
   sceglie l'arco con probabilità
   $p_{ij} \propto \tau_{ij}^{\alpha}\eta_{ij}^{\beta}$ (feromone contro
   visibilità) e deposita $Q/L_k$, tanto più quanto è buono il giro che ha
   costruito: la traccia registra il merito, non il traffico.
-- L’**evaporazione è l'esplorazione**. Con
+- L’evaporazione è l'esplorazione. Con
   $\tau_{ij} \leftarrow (1-\rho)\tau_{ij} + \Delta\tau_{ij}$ la traccia è una
   media mobile esponenziale con orizzonte $1/\rho$ cicli; senza evaporazione il
   rinforzo positivo fossilizza la colonia sul primo cammino trovato per caso
   (comportamento di stagnazione).
-- La memoria del gruppo non sta negli individui, sta nell’**ambiente**: è la
-  **stigmergia**, cioè la lavagna condivisa della sezione sulle topologie. Una
+- La memoria del gruppo non sta negli individui, sta nell’ambiente: è la
+  stigmergia, cioè la lavagna condivisa della sezione sulle topologie. Una
   squadra di agenti che si coordina lasciando file in una cartella condivisa fa
   esattamente questo, con gli stessi problemi (contesa, provenienza, e che cosa
   fa dimenticare allo stato comune ciò che non serve più).
-- Nella **particle swarm optimization** {cite}`kennedy1995particle`, nata
+- Nella particle swarm optimization {cite}`kennedy1995particle`, nata
   togliendo pezzi a una simulazione di stormo alla Reynolds
   {cite}`reynolds1987flocks`, ogni particella combina inerzia, attrazione verso
   il proprio miglior punto e verso il miglior punto del gruppo. Il sorpasso è
   voluto: senza inerzia il metodo smette di trovare gli ottimi buoni.
-- Gli **algoritmi genetici** {cite}`holland1975adaptation` cambiano verbo: gli
+- Gli algoritmi genetici {cite}`holland1975adaptation` cambiano verbo: gli
   individui non si spostano, si ricombinano (selezione, incrocio, mutazione,
   più l'elitismo). L'incrocio è una scommessa esplicita, che una buona
   soluzione sia fatta di buoni pezzi separabili, e cade quando i geni
-  interagiscono troppo (*epistasi*): la **codifica è il progetto**
+  interagiscono troppo (*epistasi*): la codifica è il progetto
   dell'algoritmo. In cambio non serve una metrica sullo spazio, quindi si
   applica a permutazioni, alberi e programmi, e la popolazione permette di
-  inseguire un intero **fronte di Pareto** invece di un punto solo
+  inseguire un intero fronte di Pareto invece di un punto solo
   {cite}`deb2002fast`. Sullo zaino a venti oggetti trova l'ottimo esatto otto
   volte su dieci provando meno di mezzo per cento delle combinazioni, e non
   dice mai quanto gli è mancato.
-- Questi metodi **non usano il gradiente**, quindi servono dove il gradiente non
+- Questi metodi non usano il gradiente, quindi servono dove il gradiente non
   esiste, non si calcola o non informa (funzioni non differenziabili,
   valutazioni rumorose, spazi combinatori), e pagano in valutazioni della
   funzione obiettivo: sulla Rastrigin in due dimensioni lo sciame trova il
   minimo globale in 277 prove su 300 con 1830 valutazioni. Il termine di
-  paragone va preso **a parità di budget**, come impone la regola prudente del
+  paragone va preso a parità di budget, come impone la regola prudente del
   «Costo del coordinamento»: la discesa del gradiente a partenza singola chiude
   2 prove su 300, ma con trenta ripartenze, cioè con gli stessi trenta punti
   iniziali dello sciame, ne chiude 67: 66 sono i semi che avevano un punto nato
   nella conca giusta, e riescono tutti, uno solo ce la fa da fuori. In alta
   dimensione il rapporto si
   rovescia, e non sono un'alternativa generale.
-- Nelle **società simulate** {cite}`park2023generative` il pezzo da capire è il
-  recupero a tre termini (recenza, importanza, pertinenza) **normalizzati** e
+- Nelle società simulate {cite}`park2023generative` il pezzo da capire è il
+  recupero a tre termini (recenza, importanza, pertinenza) normalizzati e
   sommati con pesi uguali: senza normalizzazione vince sempre il termine con
   l'escursione più ampia. Le riflessioni scattano per accumulo di importanza,
   non a orologio, e rientrano in memoria. Ma gli agenti producono comportamenti
-  **credibili** (*believable*), che è una proprietà del modello di linguaggio e
-  non una scoperta sul comportamento umano: legittime come **generatore di
-  ipotesi**, prive di valore come **prova**, perché sono convincenti proprio in
+  credibili (*believable*), che è una proprietà del modello di linguaggio e
+  non una scoperta sul comportamento umano: legittime come generatore di
+  ipotesi, prive di valore come prova, perché sono convincenti proprio in
   quanto il modello è addestrato a convincere.
 ```
 

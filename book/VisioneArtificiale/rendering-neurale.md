@@ -9,21 +9,21 @@ digitale), ma il vincolo che conta era fisico: se la telecamera doveva passare
 per un punto, in quel punto ci doveva essere una macchina fotografica. Il
 *bullet time* costò una sala di posa e un impianto costruito apposta, ed è la
 risposta di forza bruta a una domanda che la visione artificiale si pone da
-sempre: **come si ottiene l'immagine da un punto di vista in cui nessuno è
-mai stato?**
+sempre: come si ottiene l'immagine da un punto di vista in cui nessuno è
+mai stato?
 
 La domanda si chiama *sintesi di nuove viste*, ed è il rovescio esatto di
 quella della sezione precedente. Là partivamo dalle immagini per ricavare la
 geometria; qui vogliamo tornare alle immagini, da posizioni nuove. Per
 trent'anni la strada è stata una sola: ricostruire un modello tridimensionale
 (una superficie fatta di triangoli, con le fotografie incollate sopra come si
-incolla la carta da parati) e poi **renderizzarlo**, cioè calcolare che aspetto
+incolla la carta da parati) e poi renderizzarlo, cioè calcolare che aspetto
 avrebbe visto da una certa posizione, con la grafica tradizionale. Funziona, e
 fallisce esattamente dove il mondo non è fatto di superfici nette: capelli,
 foglie, fumo, vetro, riflessi.
 
 Nel 2020 un articolo di sei autori di Berkeley, San Diego e Google propose di
-smettere di ricostruire l'oggetto e di **addestrare una funzione**
+smettere di ricostruire l'oggetto e di addestrare una funzione
 {cite}`mildenhall2020nerf`. «Funzione», qui, vuol dire quello che vuol dire
 sempre: una macchinetta che riceve dei numeri e ne restituisce altri. La
 differenza è che nessuno la scrive, la si addestra, esattamente come si
@@ -44,20 +44,20 @@ questo triangolo sta qui, quest'altro là, sopra ci va questa immagine. È un
 archivio, e come tutti gli archivi ha una risoluzione: più triangoli, più
 dettaglio, più memoria.
 
-Un **campo di radianza** è un'altra cosa. Non è un elenco, è una **risposta a
-una domanda**. La domanda è: «se mi metto in questo punto dello spazio e
+Un **campo di radianza** è un'altra cosa. Non è un elenco, è una risposta a
+una domanda. La domanda è: «se mi metto in questo punto dello spazio e
 guardo in questa direzione, che colore vedo, e c'è qualcosa di solido qui?».
 La scena diventa un oggetto che sa rispondere a quella domanda in ogni punto
 e per ogni direzione, e la risposta la dà una piccola rete neurale.
 
 Due conseguenze, che è il caso di sentire come strane prima di trovarle
-normali. La prima: **la scena non ha una risoluzione**. Puoi chiedere il colore
+normali. La prima: la scena non ha una risoluzione. Puoi chiedere il colore
 in un punto qualsiasi, non c'è una griglia sotto. L'immagine che ne ricavi, sì:
 quella la disegni tu, con tutti i pixel che vuoi, e se ne vuoi il doppio fai il
 doppio di domande. È la differenza fra una fotografia, che ha i pixel che ha,
 e una formula, a cui puoi chiedere quanti valori ti pare. La seconda: la rete
 non è addestrata su altre scene e non "sa" cosa siano gli alberi o le sedie.
-**Viene addestrata su questa scena e su nient'altro**, a partire dalle foto
+Viene addestrata su questa scena e su nient'altro, a partire dalle foto
 che le hai dato, e quando hai finito quella rete *è* quella scena. È quella
 stanza lì, scritta in forma di pesi, e non un modello di come sono fatte le
 stanze.
@@ -91,15 +91,15 @@ Due scelte architetturali del lavoro originale sono cariche di significato.
 La prima è che $\sigma$ dipende solo da $\mathbf{x}$, mentre $\mathbf{c}$
 dipende da entrambi: è un vincolo imposto a mano che impedisce alla rete di
 inventare geometria diversa per ogni punto di vista, ed è ciò che costringe la
-forma a essere coerente. La seconda è che la direzione entra **tardi**, negli
+forma a essere coerente. La seconda è che la direzione entra tardi, negli
 ultimi strati, così che il grosso della capacità sia speso sulla struttura e
 non sull'aspetto.
 
-La rappresentazione è **implicita** e **continua**: non esiste una griglia,
+La rappresentazione è implicita e continua: non esiste una griglia,
 non esiste una risoluzione, e la memoria occupata è quella dei pesi (nel
 lavoro originale una manciata di megabyte per scena, contro i gigabyte di una
-griglia voxel di pari qualità). In cambio, $F_\theta$ è ottimizzata **per una
-singola scena**: è una compressione con perdita di quel particolare insieme di
+griglia voxel di pari qualità). In cambio, $F_\theta$ è ottimizzata per una
+singola scena: è una compressione con perdita di quel particolare insieme di
 fotografie, più che un modello che generalizza, in una forma che si può
 interrogare da punti di vista nuovi.
 
@@ -113,7 +113,7 @@ il meccanismo, ed è fisica ottocentesca invece che una rete: per la precisione
 la legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
 nomi di Beer e Lambert e ha quasi due secoli.
 
-**Differenziabile** vuol dire che di ogni numero in gioco si può sempre
+Differenziabile vuol dire che di ogni numero in gioco si può sempre
 chiedere: «se questo fosse un pochino più grande, il risultato finale come
 cambierebbe?», e la risposta non è un'opinione, si calcola. È la condizione che
 permette di partire da un pixel venuto male e risalire la catena all'indietro
@@ -211,7 +211,7 @@ Chi conosce la grafica riconoscerà l’*alpha compositing* classico: la forma
 discreta è esattamente il "sopra" di Porter e Duff, con l'opacità ricavata
 dalla densità. I pesi $w_i = T_i \alpha_i$ formano una distribuzione lungo il
 raggio, e la loro massa $\sum_i w_i$ è l'opacità totale, mentre $\sum_i w_i
-t_i$ è la profondità attesa: **una mappa di profondità si ottiene gratis**,
+t_i$ è la profondità attesa: una mappa di profondità si ottiene gratis,
 senza averla mai addestrata. Attenzione però che quella è una somma pesata, non
 una media: i $w_i$ sommano a uno solo se il raggio è completamente opaco, e
 dove non lo è la profondità va divisa per $\sum_i w_i$, altrimenti risulta
@@ -228,12 +228,12 @@ $$
 Ogni operazione della catena (interrogazione della rete, esponenziali,
 prodotti cumulati, somma pesata) è derivabile, quindi $\nabla_\theta
 \mathcal{L}$ si ottiene per differenziazione automatica come per qualunque
-altra rete del libro. **Il rendering differenziabile è tutto il trucco**: la
+altra rete del libro. Il rendering differenziabile è tutto il trucco: la
 supervisione arriva solo dalle immagini, e la struttura tridimensionale emerge
 come unica spiegazione coerente con tutte insieme.
 
 Restano due accorgimenti pratici del lavoro originale. I campioni si prendono
-**stratificati** e casuali dentro ogni intervallo, non a posizioni fisse,
+stratificati e casuali dentro ogni intervallo, non a posizioni fisse,
 altrimenti la rete viene valutata sempre negli stessi punti e la
 rappresentazione discretizza. E si campiona in due fasi (*hierarchical
 sampling*): una rete grossolana individua dove stanno i pesi, una fine mette i
@@ -259,7 +259,7 @@ fra il muro e la finestra, o la trama del legno, quasi mai. Il risultato è una
 scena giusta ma smarrita nella nebbia.
 
 Il rimedio è sorprendente: invece di dare alla rete le coordinate, le si danno
-**molte onde di quelle coordinate**. Onde regolari come quelle disegnate su un
+molte onde di quelle coordinate. Onde regolari come quelle disegnate su un
 sismografo (in matematica si chiamano seno e coseno): la coordinata entra in
 un'onda e ne esce un numero fra $-1$ e $1$, che dice a che punto dell'onda si
 trova. Di onde se ne usano una decina, ciascuna fitta il doppio della
@@ -273,8 +273,8 @@ opposta, ben sopra lo zero: due valori lontanissimi. La rete non deve più
 spaccare il capello, le basta guardare l'onda giusta.
 
 È esattamente lo stesso trucco che il
-{doc}`capitolo sui Transformer </Transformers/overview>` chiamerà **codifica
-posizionale**: là serve a dare un'identità a ciascuna posizione dentro una
+{doc}`capitolo sui Transformer </Transformers/overview>` chiamerà codifica
+posizionale: là serve a dare un'identità a ciascuna posizione dentro una
 frase, qui a darne una a ciascun punto dello spazio. Stesso problema, stessa
 soluzione, due campi che non si parlavano.
 
@@ -313,7 +313,7 @@ rappresentare.
 
 ## Il costo, e come è crollato
 
-Il NeRF originale era splendido e proibitivo: **uno o due giorni** di
+Il NeRF originale era splendido e proibitivo: uno o due giorni di
 addestramento su una GPU per una scena sola, e decine di secondi per rendere
 un fotogramma. Con quei numeri il metodo è un articolo, non una tecnologia. In
 due anni sono diventati secondi e millisecondi, e la ragione per cui è
@@ -324,7 +324,7 @@ successo è istruttiva.
 Il conto è impietoso: per ogni pixel servono decine di interrogazioni della
 rete, e un'immagine ha un milione di pixel. Se la rete è grande, non si
 finisce più. L'idea che ha sbloccato tutto è stata smettere di chiedere alla
-rete di ricordare **anche dove stanno le cose**, e darle un aiuto.
+rete di ricordare anche dove stanno le cose, e darle un aiuto.
 
 Sulla scena si appoggia una griglia, e in ogni nodo della griglia c'è un
 foglietto con sopra qualche numero. Quando si chiede il colore di un punto, non
@@ -352,8 +352,8 @@ tutte le altre. Quando invece a dividersi il foglietto sono due nodi che stanno
 tutti e due su una superficie, quel livello lì non sa più a chi dare ragione,
 e il dettaglio lo devono recuperare gli altri.
 
-È lo stesso baratto che si incontra ovunque nell'informatica: **memoria contro
-calcolo**, come tenere le tabelline scritte su un foglio invece di rifare la
+È lo stesso baratto che si incontra ovunque nell'informatica: memoria contro
+calcolo, come tenere le tabelline scritte su un foglio invece di rifare la
 moltiplicazione ogni volta. Qui la memoria costa poco e il calcolo costava
 tantissimo, e spostare il peso da una parte all'altra ha accorciato
 l'addestramento di diversi ordini di grandezza.
@@ -367,12 +367,12 @@ multirisoluzione**: una sequenza di livelli di griglia a risoluzioni
 geometricamente crescenti, ciascuno con una tabella di vettori di feature
 addestrabili indicizzata da una funzione hash spaziale. Per un punto si
 interpolano trilinearmente i vettori degli otto vertici di ogni livello, si
-concatenano, e si dà il risultato a due MLP **minuscoli**: uno per la densità,
+concatenano, e si dà il risultato a due MLP minuscoli: uno per la densità,
 con un solo strato nascosto da 64 unità, e uno per il colore, con due
 {cite}`muller2022instant`.
 
-La parte controintuitiva è che le collisioni della tabella hash **non si
-risolvono**: si lasciano. Il gradiente medio di due punti che collidono è
+La parte controintuitiva è che le collisioni della tabella hash non si
+risolvono: si lasciano. Il gradiente medio di due punti che collidono è
 dominato da quello dove c'è densità, perché la regione vuota contribuisce
 poco alla loss, e i livelli a risoluzione diversa collidono in modi diversi,
 quindi l'ambiguità di un livello viene sciolta dagli altri. Il risultato è un
@@ -380,8 +380,8 @@ addestramento di ordini di grandezza più veloce, con qualità paragonabile, e u
 fotogramma in alta definizione reso in qualche decina di millisecondi.
 
 Il passaggio va letto per quello che è: una parte sostanziale della
-rappresentazione si è spostata dai **pesi** a una **struttura dati esplicita e
-addestrabile**. Il campo continuo resta, ma non è più tutto dentro l'MLP.
+rappresentazione si è spostata dai pesi a una struttura dati esplicita e
+addestrabile. Il campo continuo resta, ma non è più tutto dentro l'MLP.
 
 `````
 
@@ -417,7 +417,7 @@ che conviene andare a cercare i difetti.
 Il risultato è che la scena si guarda in tempo reale, muovendosi liberamente,
 con la stessa qualità di prima. E l'addestramento resta quello di sempre:
 confronta con le foto, correggi. Solo che qui a essere corretti sono
-**posizione, forma, colore e trasparenza dei granelli**, non i pesi di una
+posizione, forma, colore e trasparenza dei granelli, non i pesi di una
 rete,
 e ogni tanto si aggiungono granelli dove il dettaglio manca e si tolgono dove
 sono inutili.
@@ -436,12 +436,12 @@ coefficienti di armoniche sferiche per il colore dipendente dalla direzione
 
 La proiezione di una gaussiana 3D sul piano immagine è ancora, con buona
 approssimazione, una gaussiana 2D, il che rende il rendering una
-**rasterizzazione** invece di un *ray
+rasterizzazione invece di un *ray
 marching*: si ordina per profondità, si compone con la stessa formula di
 $\alpha$-blending vista sopra, e si sfrutta appieno l'hardware grafico. Con una
 precisazione che il metodo non nasconde: sotto la prospettiva vera, che divide
 per $Z$, l'immagine di una gaussiana non è una gaussiana. Lo diventa se la
-proiezione si **linearizza localmente**, e la covarianza proiettata è allora
+proiezione si linearizza localmente, e la covarianza proiettata è allora
 $\boldsymbol{\Sigma}' = \mathbf{J}\mathbf{W}\boldsymbol{\Sigma}\mathbf{W}^\top
 \mathbf{J}^\top$, dove $\mathbf{W}$ è la trasformazione di vista e $\mathbf{J}$
 lo jacobiano dell'approssimazione affine della proiezione (è la ricetta dello
@@ -453,11 +453,11 @@ addestramento competitivi.
 
 L'ottimizzazione alterna discesa del gradiente sui parametri e un
 **controllo adattivo della densità**: le gaussiane con gradiente di posizione
-grande vengono clonate (se piccole, la scena è **sotto**-ricostruita: manca
+grande vengono clonate (se piccole, la scena è sotto-ricostruita: manca
 geometria e serve coprirla) o divise (se grandi, la scena è
-**sovra**-ricostruita: una sola gaussiana copre un'area larga dentro cui c'è
+sovra-ricostruita: una sola gaussiana copre un'area larga dentro cui c'è
 dettaglio da articolare), e quelle quasi trasparenti vengono
-rimosse. È una rappresentazione **esplicita** che si comporta come una
+rimosse. È una rappresentazione esplicita che si comporta come una
 continua, e chiude il cerchio: il pendolo torna verso le primitive
 geometriche, ma con la loss differenziabile del rendering neurale.
 
@@ -468,36 +468,36 @@ geometriche, ma con la loss differenziabile del rendering neurale.
 Conviene dire con precisione che cosa è stato risolto, perché intorno a questi
 metodi la retorica è abbondante.
 
-**Cosa funziona.** Servono da qualche decina a un centinaio di fotografie di
+Cosa funziona. Servono da qualche decina a un centinaio di fotografie di
 una scena ferma, cioè quello che si raccoglie girandoci attorno col telefono in
 un paio di minuti, e bisogna sapere da dove sono state scattate. Con qualche
 minuto di calcolo se ne ricava una rappresentazione che la fa guardare da punti
 di vista nuovi, con realismo fotografico, trasparenze e riflessi compresi, in
 tempo reale. Dieci anni fa era fantascienza.
 
-**Cosa serve, e viene dalla sezione precedente.** Le **pose** delle
+Cosa serve, e viene dalla sezione precedente. Le pose delle
 fotocamere. Praticamente ogni pipeline le ottiene da una ricostruzione
 *structure from motion*, e quando quella sbaglia il campo di radianza non
 sbaglia un po’: produce una nuvola incoerente. La geometria classica è
 diventata l'infrastruttura su cui il metodo poggia.
 
-**Cosa resta aperto.** Tre cose, e conviene distinguerle.
+Cosa resta aperto. Tre cose, e conviene distinguerle.
 
-- **Si addestra una scena alla volta.** Non c'è nessun transfer: il modello di
+- Si addestra una scena alla volta. Non c'è nessun transfer: il modello di
   ieri non aiuta la scena di oggi. I lavori che generalizzano da poche viste,
   o addirittura da una sola, esistono, ma pagano in qualità e sono un altro
   problema, più vicino ai modelli generativi che alla ricostruzione.
-- **Le scene sono statiche.** Estendere al tempo (persone che si muovono,
+- Le scene sono statiche. Estendere al tempo (persone che si muovono,
   foglie che oscillano) è possibile ed è materia di ricerca attiva, ma
   aggiunge una dimensione a un problema già mal posto.
-- **Modificare è difficile.** Una **mesh** (l'elenco di triangoli di cui si
+- Modificare è difficile. Una **mesh** (l'elenco di triangoli di cui si
   diceva all'inizio) si modifica: si sposta un vertice, si
   cambia una texture. Un campo di radianza è una funzione appresa, e "sposta
   quella sedia" non è un'operazione che abbia un senso ovvio. Lo splatting,
   essendo esplicito, sta un po’ meglio, ed è una delle ragioni della sua
   fortuna.
 
-Su una cosa conviene non lasciarsi trascinare: questi metodi **non capiscono**
+Su una cosa conviene non lasciarsi trascinare: questi metodi non capiscono
 la scena. Non sanno che c'è una sedia, non sanno che il tavolo continua dietro
 il vaso, non sanno cosa succederebbe spingendolo. Sono un'interpolazione
 straordinariamente buona fra le fotografie che hanno visto. La differenza fra
@@ -511,7 +511,7 @@ Il cuore del metodo, la somma pesata lungo il raggio, sono cinque righe di
 NumPy e si può guardare da vicino senza addestrare niente. Costruiamo un raggio
 che attraversa sei metri di vuoto con una superficie opaca a quattro metri, e
 guardiamo quanto conta ciascun punto. Attenzione a una parola che qui cambia
-mestiere: nel codice si chiamano **pesi** i numeri che dicono quanto ogni punto
+mestiere: nel codice si chiamano pesi i numeri che dicono quanto ogni punto
 del raggio conta nel colore finale, e non hanno niente a che vedere con i pesi
 di una rete.
 
@@ -548,7 +548,7 @@ print("massa con la nebbia:", round(float(pesi2.sum()), 4),
 
 Tre numeri da leggere con attenzione.
 
-**Quanto conta, in tutto, il raggio?** Se si sommano i pesi di tutti i sessanta
+Quanto conta, in tutto, il raggio? Se si sommano i pesi di tutti i sessanta
 punti viene $0{,}9975$: la superficie ferma il $99{,}75\%$ della luce e il
 restante quarto di punto percentuale passa oltre. È fisica, non un errore di
 calcolo. La luce che attraversa qualcosa di torbido non si spegne di colpo: cala
@@ -560,11 +560,11 @@ riduce a $0{,}368$ di quel che era, e sei tagli la riducono a $0{,}368$
 moltiplicato per sé stesso sei volte, cioè a $0{,}0025$: un quattrocentesimo.
 Quello che passa.
 
-**A che distanza sta la superficie?** Il codice non l'ha mai calcolato, eppure
+A che distanza sta la superficie? Il codice non l'ha mai calcolato, eppure
 lo sa: basta fare la media delle distanze dei sessanta punti pesandole per
 quanto ciascun punto conta. I punti che contano zero non spostano niente, quello
 sulla superficie si prende tutto, e viene $3{,}99$ metri. È così che da un campo
-di radianza esce **gratis** anche una mappa di profondità.
+di radianza esce gratis anche una mappa di profondità.
 
 Non viene esattamente quattro, e la ragione merita di essere detta perché è un
 errore che si fa davvero. I pesi sommano a $0{,}9975$ e non a uno, quindi
@@ -574,7 +574,7 @@ la superficie sta davvero. Chi salta quella divisione ottiene mappe di
 profondità sistematicamente più corte del vero, e tanto più corte quanto più la
 scena è semitrasparente.
 
-**E se non c'è nessuna superficie?** Nel caso della nebbia il punto che conta
+E se non c'è nessuna superficie? Nel caso della nebbia il punto che conta
 di più conta $0{,}044$, contro lo $0{,}9975$ di prima: nessuno comanda, il
 contributo si spalma su tutto il raggio. È la firma numerica di «qui non c'è un
 muro, c'è del torbido», ed è la ragione per cui questi metodi rendono bene il
@@ -585,9 +585,9 @@ pesci pigliare.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **campo di radianza** è una **risposta a una domanda** e non un elenco di
+- Un campo di radianza è una risposta a una domanda e non un elenco di
   triangoli: «da qui, guardando di là, che colore vedo, e c'è qualcosa di
-  solido?». A rispondere è una piccola rete, addestrata **su quella scena sola**
+  solido?». A rispondere è una piccola rete, addestrata su quella scena sola
   e su nient'altro: finito l'addestramento, quella rete *è* quella scena.
 - Il colore di un pixel si ottiene lanciando un raggio e sommando i colori dei
   punti che incontra, ciascuno per quel che pesa: conta poco chi è trasparente,
@@ -599,18 +599,18 @@ pesci pigliare.
   superfici: la forma compare da sola, perché è l'unica che mette d'accordo
   tutte le fotografie insieme.
 - Se alla rete si danno le coordinate nude, la scena esce sfocata: bisogna
-  darle **molte onde** di quelle coordinate, sempre più fitte, così che due
+  darle molte onde di quelle coordinate, sempre più fitte, così che due
   punti vicini smettano di somigliarsi. È lo stesso trucco della codifica
   posizionale dei Transformer.
-- I tempi sono crollati in due mosse: affiancare alla rete una **tabella di
-  appunti** indicizzata per posizione, così che la rete possa essere minuscola;
+- I tempi sono crollati in due mosse: affiancare alla rete una tabella di
+  appunti indicizzata per posizione, così che la rete possa essere minuscola;
   e poi smettere di cercare la materia lungo i raggi, rappresentandola come
-  milioni di **granelli sfumati** da proiettare sullo schermo (è quello che le
+  milioni di granelli sfumati da proiettare sullo schermo (è quello che le
   schede grafiche sanno fare da trent'anni).
-- Serve sapere **dove stava e da che parte guardava** ogni fotocamera, e lo dice
+- Serve sapere dove stava e da che parte guardava ogni fotocamera, e lo dice
   la sezione precedente: se quelle posizioni sono sbagliate, il risultato è una
   nuvola confusa, non solo impreciso.
-- Questi metodi **non capiscono** la scena: la sanno rifare. Non sanno che c'è
+- Questi metodi non capiscono la scena: la sanno rifare. Non sanno che c'è
   una sedia, né che il tavolo continua dietro il vaso.
 ```
 
@@ -620,29 +620,29 @@ pesci pigliare.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **campo di radianza** rappresenta una scena come una *funzione*
+- Un campo di radianza rappresenta una scena come una *funzione*
   $(\mathbf{x}, \mathbf{d}) \mapsto (\mathbf{c}, \sigma)$, non come un elenco
-  di triangoli: continua, senza risoluzione, e addestrata **su una scena sola**.
-- Il colore di un pixel si ottiene per **composizione volumetrica** lungo un
+  di triangoli: continua, senza risoluzione, e addestrata su una scena sola.
+- Il colore di un pixel si ottiene per composizione volumetrica lungo un
   raggio, $\hat{C} = \sum_i T_i \alpha_i \mathbf{c}_i$: legge di
   Beer-Lambert, cioè l’$\alpha$-blending della grafica. I pesi $w_i = T_i
   \alpha_i$ danno gratis anche la profondità, purché si ricordi che è una somma
   pesata e va normalizzata per la loro massa.
-- Tutta la catena è **differenziabile**, quindi basta confrontare i pixel resi
+- Tutta la catena è differenziabile, quindi basta confrontare i pixel resi
   con le foto vere: la geometria emerge da sola, come unica spiegazione
   coerente con tutte le immagini insieme. Nessuno la supervisiona.
-- Senza **codifica posizionale** il metodo produce nebbia: è lo *spectral
+- Senza codifica posizionale il metodo produce nebbia: è lo *spectral
   bias*, lo stesso limite che il capitolo sulle PINN descrive, e la soluzione
   è la stessa forma sinusoidale della codifica posizionale dei Transformer.
 - Il costo è crollato spostando la rappresentazione dai pesi a una struttura
-  dati addestrabile (**Instant-NGP**, codifica hash multirisoluzione) e poi
-  passando dai raggi ai granelli (**3D Gaussian Splatting**), che rasterizza
+  dati addestrabile (Instant-NGP, codifica hash multirisoluzione) e poi
+  passando dai raggi ai granelli (3D Gaussian Splatting), che rasterizza
   invece di marciare e rende in tempo reale, al prezzo di linearizzare
   localmente la prospettiva.
-- Le **pose** delle fotocamere restano un ingresso obbligatorio, e vengono
+- Le pose delle fotocamere restano un ingresso obbligatorio, e vengono
   dalla *structure from motion*: la geometria classica è diventata
   l'infrastruttura.
-- Questi metodi **non capiscono** la scena: la sanno rigenerare. È
+- Questi metodi non capiscono la scena: la sanno rigenerare. È
   un'interpolazione eccellente fra le viste osservate, non un modello del
   mondo.
 ```

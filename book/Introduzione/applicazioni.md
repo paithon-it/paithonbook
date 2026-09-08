@@ -130,7 +130,7 @@ centrale di questo campo, e i due capitoli dedicati non fanno altro che
 girargli attorno.
 
 Fuori dai corpi meccanici, poi, l'intelligenza artificiale sconfina sempre più
-spesso in campi dove la ricerca sembrava arrivata a un punto morto:
-raffreddare un capannone pieno di computer accesi, leggere un
-elettrocardiogramma, e un problema di biologia rimasto aperto per mezzo
-secolo. Sono i tre esempi da cui {doc}`si riparte </Introduzione/conclusione>`.
+spesso in campi lontani dal suo: raffreddare un capannone pieno di computer
+accesi, leggere un elettrocardiogramma, e un problema di biologia rimasto
+aperto per mezzo secolo. Sono i tre esempi da cui {doc}`si riparte
+</Introduzione/conclusione>`.

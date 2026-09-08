@@ -10,18 +10,18 @@ mai è stato così chiaro quanto costa farla funzionare.
 
 Tre cantieri, su tutti, e conviene nominarli prima di scendere in uno.
 
-Il primo è **fare di più con meno**: i grandi modelli sono motori potentissimi
+Il primo è fare di più con meno: i grandi modelli sono motori potentissimi
 che consumano moltissimo, e buona parte della ricerca è una gara di efficienza,
 per farli stare in un telefono invece che in un centro di calcolo. Il secondo è
-**unire i sensi**: modelli che leggono, guardano e ascoltano insieme, come
+unire i sensi: modelli che leggono, guardano e ascoltano insieme, come
 l'assistente a cui mostri una foto e fai una domanda a voce. Il terzo è
-**superare i limiti dell'architettura stessa**: l'assemblea in cui ogni parola
+superare i limiti dell'architettura stessa: l'assemblea in cui ogni parola
 parla con ogni altra costa troppo sui testi lunghi, perché raddoppiando le
 parole le conversazioni quadruplicano, e questo spinge a cercare modi più
 economici di far comunicare le parti di un testo.
 
 Del primo cantiere conviene vedere da vicino il metodo più elegante, che si
-chiama **distillazione**: si prende un modello grande e bravo, lo si mette a
+chiama distillazione: si prende un modello grande e bravo, lo si mette a
 fare il maestro, e se ne addestra uno piccolo a imitarlo.
 
 ```{figure} ../figures/distillazione-insegnante-allievo.svg
@@ -35,7 +35,7 @@ ragionevoli, e quella è informazione in più.
 ```
 
 Il dettaglio di {numref}`fig-distillazione` che fa funzionare la distillazione
-è **che cosa** passa dal maestro all'allievo. Non la risposta, ma l'intera
+è che cosa passa dal maestro all'allievo. Non la risposta, ma l'intera
 graduatoria: davanti a una foto di gatto il maestro non dice «gatto», dice
 «gatto quasi certamente, lince un pochino, camion per niente». È
 un'informazione che nessun elenco di risposte giuste conterrebbe, perché quella
@@ -73,10 +73,10 @@ il post-training, che nel frattempo è diventato una disciplina a sé.
 
 `````{tab} Superiore
 Sul fronte dell'efficienza, e per il meccanismo si rimanda al capitolo che gli
-è dedicato: **distillazione** (un modello piccolo addestrato a imitare le
-uscite di uno grande), **quantizzazione** (pesi a 8 o 4 bit invece che a 32,
+è dedicato: distillazione (un modello piccolo addestrato a imitare le
+uscite di uno grande), quantizzazione (pesi a 8 o 4 bit invece che a 32,
 dove a quattro bit la perdita smette di essere trascurabile e servono metodi
-che facciano più che arrotondare), **pruning**, e architetture
+che facciano più che arrotondare), pruning, e architetture
 *mixture-of-experts* che attivano solo una frazione dei parametri per ogni
 token. Sul fronte del contesto lungo: attenzioni sparse e lineari,
 ottimizzazioni di memoria come FlashAttention, e gli *state space model*
@@ -84,7 +84,7 @@ ottimizzazioni di memoria come FlashAttention, e gli *state space model*
 capitoli che seguono. Sul fronte multimodale: spazi di rappresentazione
 condivisi tra testo, immagini e audio, con l'addestramento contrastivo su
 coppie immagine-didascalia alla CLIP come collante. A cui si aggiunge il filone
-dell’**allineamento**: tecniche (come il fine-tuning con feedback umano) per
+dell’allineamento: tecniche (come il fine-tuning con feedback umano) per
 rendere i modelli più
 utili e meno dannosi, che è oggi un'area di ricerca a pieno titolo, non un
 ritocco finale.
@@ -147,7 +147,7 @@ successo davvero nella stanza, però, non è detto.
 L’**Universal Transformer** {cite}`dehghani2019universal` (l'articolo è del
 luglio 2018, presentato a ICLR l'anno successivo, che è la data della voce in
 bibliografia) sostituisce gli $L$
-strati distinti con **un solo blocco applicato ricorrentemente in profondità**,
+strati distinti con un solo blocco applicato ricorrentemente in profondità,
 cioè con i pesi legati fra le iterazioni. La motivazione dichiarata è
 recuperare il *bias induttivo* ricorrente che il Transformer aveva buttato via
 insieme alla ricorrenza temporale, e che serve sui compiti a struttura
@@ -155,16 +155,16 @@ gerarchica e sulla generalizzazione a lunghezze non viste in addestramento.
 
 Sopra ci mettono l’**Adaptive Computation Time** di Graves
 {cite}`graves2016adaptive`: a ogni iterazione,
-per **ogni posizione**, una piccola unità emette una probabilità di
+per ogni posizione, una piccola unità emette una probabilità di
 arresto; le posizioni che si fermano vengono copiate invariate mentre le altre
 continuano a essere aggiornate, e una penalità sul numero di passi (il *ponder
 cost*) impedisce di pensare all'infinito. Il calcolo diventa così
-**condizionato all'ingresso** invece che fissato dall'architettura.
+condizionato all'ingresso invece che fissato dall'architettura.
 
 C'è un punto che il titolo lascia intuire, e va detto con precisione, insieme a
 quanto sia solido. Gli autori dimostrano che
 legare i pesi e iterare rende il modello **Turing-completo**, ma la loro stessa
-formulazione lo dice **sotto certe ipotesi**, e l'ipotesi che porta il peso è
+formulazione lo dice sotto certe ipotesi, e l'ipotesi che porta il peso è
 la solita: un numero di passi non limitato a priori. Il ragionamento è che un
 Transformer standard esegue un numero di passi sequenziali fissato
 dall'architettura, mentre una ricorrenza in profondità lo fa dipendere dai dati.
@@ -174,7 +174,7 @@ standard come un fatto assodato, perché la letteratura contiene anche il
 risultato opposto: Pérez, Barceló e Marinković {cite}`perez2021attention`
 dimostrano che il Transformer
 encoder-decoder è Turing-completo, con precisione aritmetica arbitraria e un
-numero **illimitato di passi di decodifica**. E quell'ultima ipotesi è
+numero illimitato di passi di decodifica. E quell'ultima ipotesi è
 esattamente la generazione autoregressiva, cioè la strada che percorrono oggi i
 modelli lasciati scrivere finché serve. Le due prove non si contraddicono,
 cambiano le ipotesi;
@@ -184,12 +184,12 @@ un'architettura, senza le sue ipotesi accanto, è quasi sempre una frase
 sbagliata.
 
 L'idea è rimasta a lungo marginale e oggi è di nuovo centrale, arrivata però
-dall'altra parte. I modelli che **ragionano** allocando più calcolo in
-inferenza fanno la stessa cosa nello **spazio dei token** invece che nello
+dall'altra parte. I modelli che ragionano allocando più calcolo in
+inferenza fanno la stessa cosa nello spazio dei token invece che nello
 spazio latente: generano una catena di passi intermedi, e più il problema è
 difficile più ne generano. Le due vie hanno un compromesso opposto e non
 risolto. Il calcolo latente è più economico (nessun token da produrre e
-rileggere) e **non è ispezionabile**; quello in token costa di più, è più
+rileggere) e non è ispezionabile; quello in token costa di più, è più
 facile da addestrare con la supervisione esistente, e lascia una traccia che si
 può leggere, il che nel {doc}`capitolo sull'interpretabilità
 </Interpretabilita/overview>` è tutt'altro che un dettaglio. Che la traccia sia
@@ -202,19 +202,19 @@ risposta corrente è: non necessariamente.
 
 Un elenco onesto, da tenere accanto agli entusiasmi:
 
-- **Costo**: addestramento e inferenza dei modelli maggiori richiedono risorse
+- Costo: addestramento e inferenza dei modelli maggiori richiedono risorse
   (economiche, energetiche, di hardware) concentrate in poche aziende; la
   ricerca indipendente lavora per necessità su scala ridotta.
-- **Dati**: le grandi raccolte di testo prese dal web (i *corpora*) si stanno
+- Dati: le grandi raccolte di testo prese dal web (i *corpora*) si stanno
   esaurendo come fonte gratuita di materiale di qualità, e portano con sé le
-  distorsioni sistematiche di ciò che è stato scritto online, i **bias**, che i
+  distorsioni sistematiche di ciò che è stato scritto online, i bias, che i
   modelli assorbono insieme al resto.
-- **Affidabilità**: le allucinazioni (risposte fluenti ma false) derivano dal
+- Affidabilità: le allucinazioni (risposte fluenti ma false) derivano dal
   mestiere stesso di questi modelli, che è scrivere una parola alla volta
   scegliendo ogni volta la continuazione più probabile; probabile non vuol dire
   vero, e nulla nel meccanismo distingue le due cose. Mitigarle (con il
   recupero di fonti esterne, la verifica, la calibrazione) è un problema aperto.
-- **Comprensione**: su cosa i modelli *capiscano* davvero il dibattito
+- Comprensione: su cosa i modelli *capiscano* davvero il dibattito
   scientifico è tutt'altro che chiuso, e attribuire loro intenzioni o
   ragionamento senza prove è un errore prima ancora che una scortesia verso i
   fatti. Prudenza, qui, è il modo in cui si tratta
@@ -231,28 +231,28 @@ del significato dove le cose simili stanno vicine, il provare-e-correggere che
 sistema i numeri un'inezia alla volta: se hai seguito queste immagini hai
 seguito tutto, e questi sono i loro nomi propri, quelli che troverai scritti
 altrove (attenzione, positional encoding, feed-forward, embedding, discesa del
-gradiente). È la lezione migliore di questa storia: le "rivoluzioni" dell'AI, viste da vicino,
-sono quasi sempre ricombinazioni ingegnose di idee semplici, rese possibili da
-più dati e più calcolo. Chi conosce le idee semplici non insegue le mode: le
-legge.
+gradiente). È la lezione migliore di questa storia: le "rivoluzioni" dell'AI,
+viste da vicino, sono quasi sempre ricombinazioni ingegnose di idee semplici,
+rese possibili da più dati e più calcolo. Chi conosce le idee semplici non
+insegue le mode: le legge.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- La ricerca punta su **efficienza** (la *distillazione*, cioè l'apprendista
+- La ricerca punta su efficienza (la *distillazione*, cioè l'apprendista
   che impara dal maestro; la *quantizzazione*, cioè scrivere ogni numero con
   meno cifre per farlo stare in un telefono; e i modelli che tengono acceso
-  solo un pezzo di sé per ogni parola), **contesto lungo** (modi più economici
+  solo un pezzo di sé per ogni parola), contesto lungo (modi più economici
   di far parlare fra loro le parti di un testo, fino ai modelli a spazio di
   stato)
-  e **multimodalità** (leggere, guardare e ascoltare con lo stesso meccanismo).
-- Un Transformer spende **lo stesso calcolo** su ogni ingresso, facile o
+  e multimodalità (leggere, guardare e ascoltare con lo stesso meccanismo).
+- Un Transformer spende lo stesso calcolo su ogni ingresso, facile o
   difficile che sia. Nel 2018 si provò a togliere quel vincolo con un piano
   solo riapplicato più volte, lasciando a ogni parola il diritto di dire «io ho
   finito» e fermarsi. Allora non prese piede, e l'idea è tornata attuale dalla
   parte opposta: i modelli che ragionano spendono più calcolo sulle difficili
-  **scrivendo** i passi invece di girare in silenzio. La prima strada costa
+  scrivendo i passi invece di girare in silenzio. La prima strada costa
   meno, la seconda lascia una traccia da leggere, che però non è detto racconti
   quello che è successo davvero.
 - I limiti sono strutturali: costi concentrati, bias dei dati, e il fatto che
@@ -269,21 +269,21 @@ legge.
 
 ```{admonition} Da ricordare
 :class: important
-- Le direzioni di frontiera: **efficienza** (distillazione, quantizzazione a 8
+- Le direzioni di frontiera: efficienza (distillazione, quantizzazione a 8
   o 4 bit, pruning, architetture *mixture-of-experts* che attivano solo una
-  frazione dei parametri per token), **contesto lungo** (attenzioni sparse e
+  frazione dei parametri per token), contesto lungo (attenzioni sparse e
   lineari, ottimizzazioni di memoria come FlashAttention, *state space model*)
-  e **multimodalità** (spazi di rappresentazione condivisi fra testo, immagini
-  e audio). A cui si aggiunge l’**allineamento**, che è oggi un'area di ricerca
+  e multimodalità (spazi di rappresentazione condivisi fra testo, immagini
+  e audio). A cui si aggiunge l’allineamento, che è oggi un'area di ricerca
   a pieno titolo e non un ritocco finale.
-- Il calcolo **condizionato all'ingresso**: l’*Universal Transformer*
+- Il calcolo condizionato all'ingresso: l’*Universal Transformer*
   {cite}`dehghani2019universal` lega i pesi fra le iterazioni, e sopra ci mette
   l’*Adaptive Computation Time* {cite}`graves2016adaptive`, che a ogni giro dà
   a ogni posizione una probabilità di arresto. La Turing-completezza che ne
-  segue vale **sotto ipotesi**, e quella che pesa è il numero di passi non
+  segue vale sotto ipotesi, e quella che pesa è il numero di passi non
   limitato a priori.
 - Lo stesso filone è tornato dalla porta opposta: invece di iterare in
-  silenzio dentro la pila, i modelli che ragionano allungano la **generazione**
+  silenzio dentro la pila, i modelli che ragionano allungano la generazione
   e scrivono i passi. Si paga in token prodotti, si guadagna una traccia
   leggibile, che però non è necessariamente fedele al calcolo svolto.
 - Limiti aperti: il costo quadratico $O(n^2)$ dell'attenzione piena e
@@ -298,6 +298,6 @@ C'è però un conto che questo capitolo nomina e non salda. Se ogni parola guard
 tutte le altre, il lavoro cresce col quadrato della lunghezza, e mentre il
 modello scrive l'archivio dei suoi appunti si allunga a ogni parola prodotta:
 sono i due prezzi dell'attenzione, e li paga chi vuole leggere lungo. Da lì
-riparte **Attenzione lineare**, che per abbassarli mette le mani sull'unico
+riparte Attenzione lineare, che per abbassarli mette le mani sull'unico
 pezzo che qui non abbiamo mai discusso, quello che decide come l'attenzione si
 spartisce fra le parole.

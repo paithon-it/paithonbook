@@ -126,6 +126,7 @@ sphinx:
       - PyTorch
       - Python
       - ReinforcementLearning
+      - RetiNeurali
       - Ricerca
       - SerieTemporali
       - SistemiMultiAgente

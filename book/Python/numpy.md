@@ -9,7 +9,7 @@ modelli.
 
 Nasce da una riappacificazione. Nel 2005 Travis Oliphant unisce due librerie
 rivali, *Numeric* e *Numarray*, in un solo progetto, che l'anno seguente
-rilascia come **NumPy 1.0**: una di quelle scelte silenziose che cambiano un
+rilascia come NumPy 1.0: una di quelle scelte silenziose che cambiano un
 intero campo, perché mettono tutti a parlare la stessa lingua. Quanto a
 *vettorizzato*, che sta nel titolo, per ora vuol dire fare un conto su un
 blocco intero di numeri in una volta sola invece che su un numero per volta.
@@ -35,7 +35,7 @@ bigliettino che invece del numero porta scritto l'indirizzo in cui il numero
 si trova) è quella che gli riesce peggio. Su chi ne beneficia bisogna però
 essere precisi, perché la confusione è facile e costa cara: la compattezza
 serve al motore interno di NumPy, che è scritto in
-**C** (un linguaggio molto più vicino alla macchina di Python, veloce da
+C (un linguaggio molto più vicino alla macchina di Python, veloce da
 eseguire e scomodo da scrivere) e che attraversa l'array tutto insieme; non
 serve a un ciclo scritto in Python.
 
@@ -53,8 +53,8 @@ ogni elemento è una scatola separata sparsa nella memoria, e per raddoppiare un
 milione di numeri deve visitarle una a una, chiedendosi ogni volta "che cos'è
 questo?".
 
-L’`ndarray` fa il patto opposto: tutti gli elementi sono dello **stesso tipo** e
-stanno **uno accanto all'altro** in un blocco compatto di memoria. Perde la
+L’`ndarray` fa il patto opposto: tutti gli elementi sono dello stesso tipo e
+stanno uno accanto all'altro in un blocco compatto di memoria. Perde la
 libertà di mescolare tipi diversi, ma in cambio le operazioni sui numeri
 diventano corte da scrivere e molto più veloci da eseguire.
 
@@ -68,7 +68,7 @@ che c'è già.
 
 `````{tab} Superiore
 
-Un `ndarray` è una **vista tipizzata su un blocco di memoria**: un `dtype`
+Un `ndarray` è una vista tipizzata su un blocco di memoria: un `dtype`
 omogeneo (per esempio `float64` o `int32`), una *forma* (`shape`) e un insieme
 di *stride* che dicono di quanti byte spostarsi per passare all'elemento
 successivo lungo ogni asse. Quando gli stride sono esattamente quelli che si
@@ -82,13 +82,12 @@ F-contigua ma non C-contigua. Questa struttura permette due cose.
 Primo: slice e trasposizione sono sempre *viste*, ricalcoli di stride a costo
 zero senza copia dei dati (ed è proprio perché la contiguità non è garantita
 che gli stride esistono); `reshape` è una vista quando gli stride della forma
-nuova si possono ricavare da quelli vecchi, e altrimenti copia. Secondo: le operazioni
-elemento-per-elemento sono delegate a cicli in C compilati e vettorizzati
-(istruzioni SIMD), che
-saltano l’*overhead* dell'interprete su ogni iterazione; l'algebra lineare
-vera e propria (i prodotti tra matrici) passa invece per librerie BLAS
-ottimizzate. È la differenza fra un milione di numeri ciascuno impacchettato
-nel proprio oggetto, sparsi dove capita, e un
+nuova si possono ricavare da quelli vecchi, e altrimenti copia. Secondo: le
+operazioni elemento-per-elemento sono delegate a cicli in C compilati e
+vettorizzati (istruzioni SIMD), che saltano l’*overhead* dell'interprete su
+ogni iterazione; l'algebra lineare vera e propria (i prodotti tra matrici)
+passa invece per librerie BLAS ottimizzate. È la differenza fra un milione di
+numeri ciascuno impacchettato nel proprio oggetto, sparsi dove capita, e un
 array C nudo.
 
 `````
@@ -110,7 +109,7 @@ rng = np.random.default_rng(0)   # generatore con seme, per risultati riproducib
 rng.normal(size=(2, 2))          # tabella 2×2 di numeri casuali "a campana"
 ```
 
-Nell'ultima riga `size=(2, 2)` è un argomento passato **con il suo nome**, la
+Nell'ultima riga `size=(2, 2)` è un argomento passato con il suo nome, la
 scrittura vista nella sezione sulle funzioni: dice quanto dev'essere grande il
 risultato. E «a campana» è la forma che si vede disegnando quanti numeri escono
 vicino a ciascun valore: quasi tutti vicino allo zero, sempre meno man mano che
@@ -201,10 +200,10 @@ M[:, 0]     # tutte le righe, colonna 0 -> array([0, 4, 8])
 M[0]        # prima riga intera -> array([0, 1, 2, 3])
 ```
 
-Tre convenzioni, in tre righe. Si conta **da zero**, quindi l'indice `1` è il
+Tre convenzioni, in tre righe. Si conta da zero, quindi l'indice `1` è il
 secondo elemento e `M[1, 2]` sta nella seconda riga, terza colonna. Un indice
-**negativo** conta dalla fine, e `x[-1]` è l'ultimo qualunque sia la lunghezza.
-E in una *slice* il secondo estremo è **escluso**, `x[1:4]` dà tre elementi:
+negativo conta dalla fine, e `x[-1]` è l'ultimo qualunque sia la lunghezza.
+E in una *slice* il secondo estremo è escluso, `x[1:4]` dà tre elementi:
 vale la stessa regola delle liste, e per la stessa ragione.
 
 Sulla forma di ciò che viene stampato: `np.int64(10)` non è un numero
@@ -228,7 +227,7 @@ x > 25            # array([False, False,  True,  True,  True])
 x[x > 25]         # array([30, 40, 50])  tieni solo i "True"
 ```
 
-Quello che torna è un array **nuovo**, con dentro ricopiati i valori scelti:
+Quello che torna è un array nuovo, con dentro ricopiati i valori scelti:
 qui la regola delle fette non vale, e scriverci sopra non tocca `x`. Se invece
 la condizione la metti a sinistra dell'uguale, allora sì che stai scrivendo
 sull'originale, ed è il modo di correggere un mucchio di valori in un colpo:
@@ -309,7 +308,7 @@ a + b                             # tabella 3x4, senza un solo for
 
 Guarda le quadre di `b`, che sono doppie: `[1, 2, 3]` sarebbe una *riga* di
 tre numeri, mentre `[[1], [2], [3]]` è fatto di tre righe da un numero
-ciascuna, cioè una **colonna**. Le parentesi esterne racchiudono la
+ciascuna, cioè una colonna. Le parentesi esterne racchiudono la
 tabella, quelle interne una riga per volta.
 
 La regola pratica: se una delle due forme ha $1$ dove l'altra ha $n$, quel lato
@@ -325,7 +324,7 @@ sovrapprezzo vada con quale prezzo.
 
 `````{tab} Superiore
 
-Il broadcasting allinea le forme **da destra**. Due assi sono compatibili se
+Il broadcasting allinea le forme da destra. Due assi sono compatibili se
 sono uguali oppure se uno dei due vale $1$: quel lato viene esteso senza copia.
 Con `a` di forma $(4,)$ e `b` di forma $(3,1)$ (nomi del codice, quindi in
 tondo: il grassetto matematico è per vettori e matrici, non per gli
@@ -341,7 +340,7 @@ trasmesso lungo l'altra dimensione. Il risultato è equivalente a
 $C_{ij}=a_j+b_i$ ma è calcolato in C, senza materializzare le copie: gli stride
 del lato "trasmesso" sono posti a $0$, così lo stesso dato viene riletto più
 volte. Con stride nullo più celle guardano lo stesso byte, e da qui la vista
-che `np.broadcast_to` restituisce è in **sola lettura**: assegnarci dentro
+che `np.broadcast_to` restituisce è in sola lettura: assegnarci dentro
 solleva `ValueError: assignment destination is read-only`, perché
 un'assegnazione non saprebbe quale delle celle sovrapposte debba vincere. È il
 meccanismo che permette, per esempio, di sottrarre la media di colonna da
@@ -390,18 +389,18 @@ lista = x.tolist()              # gli stessi numeri, in una lista Python
 %timeit [2 * v for v in x]      # ~85 millisecondi: stesso ciclo, altro contenitore
 ```
 
-Le ultime due righe non sono Python: `%timeit` è un comando dei notebook (una
+`%timeit` non è un'istruzione del linguaggio. È un comando dei notebook (una
 *magic* di IPython, il motore che sta sotto le celle) che cronometra
-un'istruzione ripetendola molte volte e riportando il tempo medio e di quanto
-le singole ripetizioni se ne scostano (`mean ± std. dev.`), insieme al numero
-di ripetizioni. In un normale file `.py` non funziona: lì si usa il modulo
-`timeit` della libreria standard.
+l'istruzione scritta accanto, ripetendola molte volte e riportando il tempo
+medio e di quanto le singole ripetizioni se ne scostano (`mean ± std. dev.`),
+insieme al numero di ripetizioni. In un normale file `.py` non funziona: lì si
+usa il modulo `timeit` della libreria standard.
 
 `````{tab} Elementare
 
 Le due misure riguardano la stessa cosa (raddoppiare un milione di numeri) ma
-la seconda strada è tipicamente **centinaia di volte più veloce**, e la ragione
-sta tutta nel ciclo che **sparisce**. Il ciclo Python paga un piccolo pedaggio
+la seconda strada è tipicamente centinaia di volte più veloce, e la ragione
+sta tutta nel ciclo che sparisce. Il ciclo Python paga un piccolo pedaggio
 a ogni giro, un milione di volte; `2 * x` è una sola richiesta, e a scorrere il
 blocco è il motore in C, che quel pedaggio non lo paga. Che i numeri stiano in
 fila serve a lui, che li prende a manciate, e non a un ciclo scritto in Python.
@@ -426,7 +425,7 @@ sposta il ciclo dentro codice C compilato che opera su memoria contigua, con
 buona località di cache e, dove disponibile, vettorizzazione SIMD.
 
 Le ultime due misure servono a isolare quale dei due fattori pesi, ed è la
-domanda su cui la conclusione sbagliata è a portata di mano. **Lo stesso**
+domanda su cui la conclusione sbagliata è a portata di mano. Lo stesso
 ciclo Python, che legge un elemento per volta, impiega dal doppio al triplo del
 tempo (a seconda della macchina) quando legge da un `ndarray` invece che da una
 lista, e fra le due righe l'unica cosa che cambia è il contenitore letto. La
@@ -479,22 +478,22 @@ modello, sotto, fa milioni di volte.
 
 ```{admonition} Da ricordare
 :class: important
-- In un `ndarray` i valori sono tutti dello **stesso tipo** e stanno **uno
-  accanto all'altro**, ed è la condizione che permette di scrivere il conto sul
+- In un `ndarray` i valori sono tutti dello stesso tipo e stanno uno
+  accanto all'altro, ed è la condizione che permette di scrivere il conto sul
   blocco intero in una volta. Il guadagno però nasce dal `for` che sparisce,
   non dal contenitore: un `for` scritto a mano su un `ndarray` è più lento
   dello stesso `for` su una lista.
 - `array`, `zeros`, `ones`, `arange`, `linspace`, `default_rng` creano array; le
-  parentesi quadre ne scelgono un pezzo, e una **condizione fra le quadre**
+  parentesi quadre ne scelgono un pezzo, e una condizione fra le quadre
   (`x[x > 25]`) fa da colino, tenendo solo gli elementi che la soddisfano.
-- Prendere una **fetta** di un array non fabbrica niente: è una finestra sugli
+- Prendere una fetta di un array non fabbrica niente: è una finestra sugli
   stessi numeri, e scriverci dentro cambia l'originale (con una lista era il
   contrario). Il colino invece una copia la fa, e di una fetta la copia si
   chiede con `.copy()`.
-- Il **broadcasting** permette di sommare forme diverse: dove una delle due
+- Il broadcasting permette di sommare forme diverse: dove una delle due
   misura 1 e l'altra misura *n*, quel lato viene steso fino a *n*, senza
   copiare niente.
-- **Vettorizzare** vuol dire sostituire un `for` con un'operazione su tutto
+- Vettorizzare vuol dire sostituire un `for` con un'operazione su tutto
   l'array: il codice è più corto e da cento a mille volte più veloce, perché il
   ciclo sparisce.
 - Il segno `@` fa i prodotti fra vettori e matrici e `np.linalg` raccoglie il
@@ -509,16 +508,16 @@ modello, sotto, fa milioni di volte.
 
 ```{admonition} Da ricordare
 :class: important
-- L’`ndarray` è una **vista tipizzata** su un blocco di memoria, contigua
+- L’`ndarray` è una vista tipizzata su un blocco di memoria, contigua
   quando gli stride sono quelli della forma: da qui il fatto che una slice
   resti una vista, e la possibilità di far scendere il ciclo nel codice
   compilato, che è dove nasce il guadagno.
 - `array`, `zeros`, `ones`, `arange`, `linspace`, `default_rng` creano array;
-  slicing e **indicizzazione booleana** li selezionano senza cicli (lo slicing
+  slicing e indicizzazione booleana li selezionano senza cicli (lo slicing
   dà una vista, la maschera booleana una copia).
-- Il **broadcasting** allinea le forme da destra ed espande gli assi di
+- Il broadcasting allinea le forme da destra ed espande gli assi di
   dimensione $1$: somma forme diverse senza copiare dati.
-- **Vettorizzare** (sostituire un `for` con un'operazione sull'array) rende il
+- Vettorizzare (sostituire un `for` con un'operazione sull'array) rende il
   codice più corto e da cento a mille volte più veloce (due o tre ordini di
   grandezza). Il guadagno sta nel ciclo che sparisce, non nel contenitore: un
   `for` su un `ndarray` è più lento dello stesso `for` su una lista.

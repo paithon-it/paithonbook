@@ -58,7 +58,7 @@ problema, così com'è, sembra però costoso: se $\phi$ manda in uno spazio a
 migliaia di dimensioni, calcolare e conservare tutti quei
 $\phi(\mathbf{x}_i)$ diventa proibitivo.
 
-Il **kernel trick** è l'osservazione che salva tutto, ed è la ragione vera
+Il kernel trick è l'osservazione che salva tutto, ed è la ragione vera
 per cui [la strada più larga](svm.md) ha percorso il duale passo per passo:
 là dentro, e nella regola
 di decisione, gli esempi compaiono *solo* attraverso prodotti scalari
@@ -70,7 +70,7 @@ k(\mathbf{x}, \mathbf{z}) = \phi(\mathbf{x})^\top\phi(\mathbf{z}),
 $$
 
 allora non serve mai costruire $\phi$: si lavora nello spazio ad alta dimensione
-*senza mai visitarlo*. La funzione $k$ è il **kernel**
+*senza mai visitarlo*. La funzione $k$ è il kernel
 {cite}`scholkopf2002learning`. I più usati:
 
 $$
@@ -84,7 +84,7 @@ $$
 $$
 
 dove $d$ è il grado del polinomio, $c \ge 0$ un termine costante e $\gamma > 0$
-il parametro di ampiezza del kernel gaussiano, che **stringe** la campana al
+il parametro di ampiezza del kernel gaussiano, che stringe la campana al
 crescere. La larghezza è la deviazione standard equivalente $\sigma$, e vale
 $\sigma = 1/\sqrt{2\gamma}$, cioè $\gamma = 1/(2\sigma^2)$: $\gamma$ va quindi
 come l'inverso del *quadrato* della larghezza, e per dimezzare la campana va
@@ -95,7 +95,7 @@ da costruire, eppure $k$ si calcola in una riga.
 Un'ultima clausola, quella che fa del trucco un teorema invece che una
 speranza. La frase «se esiste una funzione $k$ che calcola quel prodotto
 scalare» rovescia l'ordine dei fatti: in pratica non si parte da $\phi$ per
-cercare $k$, si **sceglie** $k$ e si spera che un $\phi$ esista. Esiste se e
+cercare $k$, si sceglie $k$ e si spera che un $\phi$ esista. Esiste se e
 solo se $k$ è simmetrica e **semidefinita positiva**, cioè se ogni matrice di
 Gram $\mathbf{K}$, quella di elementi $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$,
 ha autovalori non negativi: è il
@@ -126,7 +126,7 @@ Fra i kernel c'è un preferito, e si chiama **RBF** (sono le iniziali di
 *radial basis function*, «funzione a base radiale»: radiale perché guarda solo
 la distanza fra due punti, in qualunque direzione). Ha una manopola sola, che
 nelle formule si chiama $\gamma$, «gamma», e conviene capire che cosa fa,
-perché è il **raggio d'influenza** di ogni punto.
+perché è lei a fissare il **raggio d'influenza** di ogni punto.
 
 `````{tab} Elementare
 
@@ -182,7 +182,7 @@ validazione.
 
 ## Non solo classificare: la regressione con le SVM
 
-Lo stesso principio si ribalta per la **regressione** (SVR, *Support Vector
+Lo stesso principio si ribalta per la regressione (SVR, *Support Vector
 Regression*). Nella classificazione la SVM vuole il corridoio più largo *tra*
 le classi; nella regressione vuole un tubo che contenga *quanti più punti
 possibile*.
@@ -274,13 +274,13 @@ in cui l'ha guardato.
 La one-class SVM di Schölkopf e colleghi {cite}`scholkopf2001estimating`
 adatta l'idea del margine al caso non supervisionato: mappati i dati nello
 spazio delle feature con un kernel (di solito RBF), cerca l'iperpiano che
-separa i punti dall’**origine** con il massimo margine. Ricondotto allo spazio
+separa i punti dall’origine con il massimo margine. Ricondotto allo spazio
 originale, questo equivale a racchiudere i dati normali in una regione
 compatta; ciò che cade fuori è novità/anomalia. Il parametro $\nu \in (0,1]$
 ha un doppio significato preciso: è un limite *superiore* alla frazione di
 esempi di addestramento classificati come anomali (i *margin error*) e un
 limite *inferiore* alla frazione di vettori di supporto. La distingue dalla
-classificazione binaria un'assenza: in addestramento **non** c'è la classe
+classificazione binaria un'assenza: in addestramento non c'è la classe
 «anomalo»: si impara solo la forma del normale. Un parente stretto è la
 **Support Vector Data Description** (SVDD) di Tax e Duin, che invece della
 separazione dall'origine cerca la *ipersfera* minima che racchiude i dati; e
@@ -298,7 +298,7 @@ classificazione con kernel, `LinearSVC` per la versione lineare veloce, `SVR`
 per la regressione, `OneClassSVM` per la novelty detection. Due avvertenze
 valgono per tutte, e non sono opzionali.
 
-**Standardizzare sempre le feature**, cioè riportare tutte le colonne alla
+Standardizzare sempre le feature, cioè riportare tutte le colonne alla
 stessa scala prima di dare i dati al modello: si sottrae a ogni colonna la sua
 media e la si divide per la sua ampiezza tipica, così che i metri quadri (che
 valgono decine) e il numero di stanze (che vale unità) contino allo stesso
@@ -307,7 +307,7 @@ grandi domina il conto e schiaccia le altre, esattamente come
 succede al k-NN. Si antepone quindi sempre uno `StandardScaler` in una `Pipeline`, come si è
 fatto per il k-NN e per Ridge.
 
-**Attenzione ai numeri grandi.** Il costo di addestramento cresce assai più in
+Attenzione ai numeri grandi. Il costo di addestramento cresce assai più in
 fretta del numero di esempi: raddoppiando gli esempi il lavoro non raddoppia,
 si moltiplica per quattro o per otto. Nella notazione con cui si scrivono
 queste crescite (si legge «ordine di») è circa fra $O(m^2)$ e $O(m^3)$ nel
@@ -371,7 +371,7 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **kernel trick** rende curva la frontiera: gli stessi punti si guardano in
+- Il kernel trick rende curva la frontiera: gli stessi punti si guardano in
   uno spazio con una dimensione in più, e lì tornano separabili da un taglio
   dritto. È il bersaglio sollevato in aria, ogni punto tanto più in alto quanto
   più è lontano dal centro, finché una lastra di vetro orizzontale divide il
@@ -379,11 +379,11 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
   guardiamo. Il modo più usato di misurare quanto due punti si somigliano è
   quello «a lampione», dove ogni punto illumina i vicini: luce corta, frontiera
   frastagliata; luce lunga, frontiera morbida.
-- La stessa idea serve anche a **prevedere numeri** (un tubo di tolleranza
+- La stessa idea serve anche a prevedere numeri (un tubo di tolleranza
   attorno alla curva: finché il punto ci sta dentro, l'errore conta zero) e a
-  **riconoscere le anomalie** (un recinto attorno ai dati normali, e chi cade
+  riconoscere le anomalie (un recinto attorno ai dati normali, e chi cade
   fuori è sospetto, senza aver mai visto una frode).
-- In pratica: portare **sempre** tutte le caratteristiche alla stessa scala,
+- In pratica: portare sempre tutte le caratteristiche alla stessa scala,
   perché la SVM ragiona per distanze; e ricordare che il conto cresce assai più
   in fretta del numero di esempi, tanto che oltre le decine di migliaia la SVM
   con kernel diventa impraticabile.
@@ -395,18 +395,18 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **kernel trick** rende non lineare la SVM: mappa i dati in uno spazio più
+- Il kernel trick rende non lineare la SVM: mappa i dati in uno spazio più
   ampio dove diventano separabili, calcolando i prodotti scalari con un
-  **kernel** $k(\mathbf{x},\mathbf{z})=\phi(\mathbf{x})^\top\phi(\mathbf{z})$
-  senza costruirlo: funziona perché nel **duale** gli esempi compaiono solo
+  kernel $k(\mathbf{x},\mathbf{z})=\phi(\mathbf{x})^\top\phi(\mathbf{z})$
+  senza costruirlo: funziona perché nel duale gli esempi compaiono solo
   dentro prodotti scalari, e vale se e solo se $k$ è simmetrica e semidefinita
   positiva (Mercer). Kernel principali: lineare, polinomiale, RBF, dove
-  $\gamma$ **stringe** la campana al crescere ($\gamma = 1/(2\sigma^2)$).
-- La **SVR** regredisce con un tubo $\epsilon$-insensitive; la **one-class SVM**
-  impara la regione dei dati normali per la **novelty/anomaly detection**, senza
+  $\gamma$ stringe la campana al crescere ($\gamma = 1/(2\sigma^2)$).
+- La SVR regredisce con un tubo $\epsilon$-insensitive; la one-class SVM
+  impara la regione dei dati normali per la novelty/anomaly detection, senza
   vedere esempi anomali, e il suo $\nu$ è un limite *superiore* alla frazione di
   anomalie e *inferiore* a quella dei vettori di supporto.
-- In pratica: **standardizzare sempre** le feature; il costo $O(m^2)$–$O(m^3)$
+- In pratica: standardizzare sempre le feature; il costo $O(m^2)$–$O(m^3)$
   sconsiglia la SVM con kernel oltre le decine di migliaia di esempi.
 ```
 

@@ -61,9 +61,9 @@ audio "CD" è quindi, per ogni canale, un vettore di $44\,100$ interi.
 
 Ognuna di quelle annotazioni si chiama **campione**: una singola misura della
 posizione della membrana, presa in un istante preciso. Un suono digitale è una
-fila di campioni, e le due domande che vengono subito dopo sono quanti
-prenderne al secondo e quanto precisa debba essere ciascuna misura. La prima ha
-la sezione qui sotto; alla seconda rispondiamo in due righe alla fine.
+fila di campioni, e restano due domande: quanti prenderne al secondo e quanto
+precisa debba essere ciascuna misura. Alla prima risponde il teorema di
+Nyquist; alla seconda bastano due righe.
 
 ## Quanti campioni al secondo? Il teorema di Nyquist
 
@@ -123,7 +123,7 @@ perdita un segnale la cui frequenza massima è $f_{\max}$, la frequenza di
 campionamento deve soddisfare
 
 $$
-f_s > 2\,f_{\max}.
+f_s > 2\,f_{\max},
 $$
 
 dove $f_{\max}$ è la frequenza oltre la quale lo **spettro** del segnale (la
@@ -405,7 +405,7 @@ La conversione da hertz a mel comprime le alte frequenze in modo logaritmico.
 Le formule in circolazione però sono più d'una, perché la scala mel è
 un'interpolazione di dati sperimentali di ascolto e non una legge fisica: non
 esiste *la* conversione. La più diffusa, dovuta a O'Shaughnessy (1987) e
-adottata da HTK, è
+adottata dal toolkit HTK, è
 
 $$
 f_{\text{mel}} = 2595\,\log_{10}\!\Big(1 + \frac{f}{700}\Big),
@@ -447,10 +447,11 @@ Da qui in poi le strade si dividono, e la divisione attraversa tutto il resto
 del capitolo. Chi in uscita ha un'etichetta o del testo parte dal log-mel:
 l'AST della prossima sezione ne prende 128 bande, Whisper, che è del capitolo
 dopo, ne prende 80, e 128 nelle versioni più recenti. Chi in uscita ha del
-*suono* parte invece dai campioni, perché il log-mel butta via la fase e non si
-torna indietro: sono i codec e i generatori delle ultime due sezioni. E chi
-vuole imparare tutto dai dati sceglie i campioni comunque, e il banco di filtri
-che qui abbiamo disegnato a mano se lo costruisce da sé.
+*suono* lavora invece sui campioni, o ci ritorna con una rete addestrata
+apposta (un *vocoder*), perché il log-mel butta via la fase e per rifare l'onda
+la fase va ricostruita: sono i codec e i generatori delle ultime due sezioni. E
+chi vuole imparare tutto dai dati sceglie i campioni comunque, e il banco di
+filtri che qui abbiamo disegnato a mano se lo costruisce da sé.
 
 `````
 
@@ -579,7 +580,8 @@ assi dei tempi diversi e un errore di dimensione incomprensibile.
   sono una feature d'archivio: la DCT serviva a rendere lecita la covarianza
   diagonale delle GMM, e con le reti profonde quell'ipotesi non c'è più. Chi in
   uscita ha un'etichetta o del testo mangia log-mel grezzo; chi produce
-  suono parte dai campioni, perché il log-mel non si inverte.
+  suono lavora sui campioni, o ci torna con un vocoder, perché il log-mel
+  butta via la fase.
 ```
 
 `````

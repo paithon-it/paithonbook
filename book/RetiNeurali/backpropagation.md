@@ -16,13 +16,13 @@ finlandese Seppo Linnainmaa, nella tesi di laurea del 1970
 Paul Werbos la porta sulle reti neurali nella tesi di dottorato del 1974
 {cite}`werbos1974beyond`.
 
-L'idea sta in due movimenti, come un respiro. **In avanti** la rete produce una
-risposta; **all'indietro** misura di quanto ha sbagliato e distribuisce la
+L'idea sta in due movimenti, come un respiro. In avanti la rete produce una
+risposta; all'indietro misura di quanto ha sbagliato e distribuisce la
 "colpa" a ogni peso. Vediamo i due movimenti uno per uno.
 
 ## Il forward pass: dai dati all'uscita
 
-Un dato di partenza (in gergo un **esempio**: una foto, una frase, una riga di
+Un dato di partenza (in gergo un esempio: una foto, una frase, una riga di
 tabella) entra nella rete e attraversa gli strati uno dopo l'altro, finché
 l'ultimo non emette una previsione. Ogni strato prende ciò che riceve, lo
 combina con i propri pesi e lo passa avanti.
@@ -31,9 +31,9 @@ combina con i propri pesi e lo passa avanti.
 
 In una catena di montaggio, alla prima postazione arrivano i dati grezzi (per
 esempio i pixel di una foto). Ogni postazione ha un pannello di "manopole" (i
-**pesi**) con cui mescola ciò che riceve, poi fa passare il risultato nel
-passaggio della sezione precedente (la funzione di attivazione, la "piega") e
-lo consegna alla postazione successiva.
+pesi) con cui mescola ciò che riceve, poi fa passare il risultato nel
+passaggio delle {doc}`funzioni di attivazione </RetiNeurali/funzioni-attivazione>`
+(la "piega") e lo consegna alla postazione successiva.
 
 Di manopole ce n'è una per ogni coppia formata da un pezzo che entra e un pezzo
 che esce, così ogni uscita ha la sua manopola su ciascuno degli ingressi: una
@@ -70,16 +70,15 @@ $$
 
 Qui $\mathbf{W}^{[l]}$ è la matrice dei pesi dello strato $l$,
 $\mathbf{b}^{[l]}$ il vettore di bias, $\mathbf{z}^{[l]}$ la pre-attivazione e
-$\mathbf{a}^{[l]}$ l'attivazione. Come
-nell'overview, $\sigma$ è l'attivazione degli strati nascosti (per esempio la
-ReLU, $\sigma(z)=\max(0,z)$) e $\varphi$ quella dello strato d'uscita, che di
-norma è un'altra: softmax per la classificazione, identità per la regressione.
-L'uscita finale è la previsione $\hat{\mathbf{y}} = \mathbf{a}^{[L]}$. Ogni
-strato non è che il
-prodotto matrice-vettore già incontrato in algebra lineare, "avvolto" in una
-non linearità.
+$\mathbf{a}^{[l]}$ l'attivazione. Come nell'apertura del capitolo, $\sigma$ è
+l'attivazione degli strati nascosti (per esempio la ReLU,
+$\sigma(z)=\max(0,z)$) e $\varphi$ quella dello strato d'uscita, che di norma è
+un'altra: softmax per la classificazione, identità per la regressione. L'uscita
+finale è la previsione $\hat{\mathbf{y}} = \mathbf{a}^{[L]}$. Ogni strato non è
+che il prodotto matrice-vettore già incontrato in algebra lineare, "avvolto" in
+una non linearità.
 
-Conviene fissare subito anche le **forme**, che rendono verificabile a mano
+Conviene fissare subito anche le forme, che rendono verificabile a mano
 ogni formula che segue, a partire dalla
 trasposta che comparirà nel passaggio all'indietro. Se lo strato $l$ ha $n_l$
 neuroni, allora
@@ -99,9 +98,12 @@ forme non combaciano, la formula è sbagliata, e non serve altro per accorgersen
 ## Quanto abbiamo sbagliato: la funzione di loss
 
 La previsione da sola non basta: serve un numero che dica *quanto* la rete ha
-sbagliato rispetto alla risposta giusta. Quel numero è la **loss** (in inglese
+sbagliato rispetto alla risposta giusta. Quel numero è la loss (in inglese
 «perdita»; il nome italiano si usa poco), e imparare significa renderlo il più
-piccolo possibile.
+piccolo possibile. Da dove venga la sua forma lo ricava
+{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`: qui si
+prende quella forma per data, e si guarda che cosa succede quando ci si deriva
+sopra, perché è di derivate che vive tutto il resto della sezione.
 
 `````{tab} Elementare
 
@@ -110,13 +112,14 @@ per un attimo, perché con i soldi il conto si vede meglio che con i gatti.
 Mettiamo che la rete debba stimare il prezzo di una casa: la casa vale davvero
 200.000 € e lei
 ne prevede 170.000, quindi l'errore è di 30.000. Poi quell'errore si eleva al
-quadrato: $30.000 \times 30.000 = 900$ milioni. Perché al quadrato? Per punire
-di più gli sbagli grossi, e si vede subito confrontando due casi: sbagliare di
-60.000, cioè il doppio, dà $3.600$ milioni, cioè quattro volte tanto.
-Raddoppiare l'errore ne quadruplica il costo, e la rete impara a evitare le
-cantonate prima delle imprecisioni. La cifra in sé conta poco: se tutte le
-penalità si dimezzassero, resterebbe identico quale sbaglio costa più di quale,
-e la rete andrebbe a finire nello stesso posto.
+quadrato: $30.000 \times 30.000 = 900$ milioni. Il quadrato arriva dalla forma
+a campana con cui si è deciso di descrivere gli errori, e l'effetto che
+produce si vede confrontando due casi: sbagliare di 60.000, cioè il doppio, dà
+$3.600$ milioni, cioè quattro volte tanto. Raddoppiare l'errore ne quadruplica
+il costo, e la rete impara a evitare le cantonate prima delle imprecisioni. La
+cifra in sé conta poco: se tutte le penalità si dimezzassero, resterebbe
+identico quale sbaglio costa più di quale, e la rete andrebbe a finire nello
+stesso posto.
 
 Più la previsione è vicina al vero, più la loss è piccola; se fossero
 identiche, la loss sarebbe zero. E le case non sono una sola: la penalità si
@@ -145,7 +148,7 @@ volte tanto. Chi ha torto marcio si corregge meno di chi era soltanto incerto,
 ed è l'ultima cosa che si vorrebbe.
 
 Ecco perché, quando la risposta è una scelta fra nomi, la penalità si conta in
-un altro modo, la **cross-entropia**: è fatta apposta perché il fattore dello
+un altro modo, la cross-entropia: è fatta apposta perché il fattore dello
 schiacciamento si semplifichi e sparisca dal conto. Resta soltanto la
 lontananza dalla verità, 0,99 contro 0,5, e chi sbaglia di più riceve la spinta
 più forte.
@@ -154,13 +157,13 @@ più forte.
 
 `````{tab} Superiore
 
-Per la regressione si usa spesso l’**errore quadratico medio** su $m$ esempi:
+Per la regressione si usa spesso l’errore quadratico medio su $m$ esempi:
 
 $$
 \mathcal{L} = \frac{1}{m} \sum_{i=1}^{m} \left(\hat{y}^{(i)} - y^{(i)}\right)^2 .
 $$
 
-Per la classificazione si preferisce la **cross-entropia**, che confronta la
+Per la classificazione si preferisce la cross-entropia, che confronta la
 distribuzione prevista $\hat{\mathbf{y}}$ con l'etichetta $\mathbf{y}$:
 $\mathcal{L} = -\sum_{k} y_k \log \hat{y}_k$, dove $k$ scorre le classi, $y_k$
 vale $1$ per quella giusta e $0$ per tutte le altre, e $\hat{y}_k$ è la
@@ -169,9 +172,9 @@ una funzione dei parametri
 $\theta = \{\mathbf{W}^{[l]}, \mathbf{b}^{[l]}\}$: cambiando i pesi
 cambia la loss, e il nostro obiettivo è trovare i $\theta$ che la minimizzano.
 
-Che per la classificazione si «preferisca» la cross-entropia merita una
-ragione, e non è solo che si accorda con l'interpretazione probabilistica. È
-meccanica, e riguarda proprio il gradiente. Prendiamo il caso più piccolo, una
+Che per la classificazione si «preferisca» la cross-entropia ha una ragione in
+più di quella probabilistica da cui la si è ricavata, e questa è meccanica:
+riguarda proprio il gradiente. Prendiamo il caso più piccolo, una
 sola uscita sigmoide $\hat{y} = \sigma(z)$, e scriviamo la MSE su quel singolo
 esempio con un $\tfrac{1}{2}$ davanti. Quel mezzo non c'era nella definizione di
 poco fa ed è messo qui apposta, perché si semplifica con il $2$ che scende
@@ -186,10 +189,10 @@ $$
 $$
 
 Ma $\sigma'(z) = \sigma(z)(1-\sigma(z))$ vale quasi zero agli estremi, cioè
-**proprio quando il neurone è sicuro e sbagliato**: il modello che ha torto
+proprio quando il neurone è sicuro e sbagliato: il modello che ha torto
 marcio è quello che impara più lentamente, che è l'esatto contrario di quel che
 serve. Sostituiamo allora la MSE con la cross-entropia dello stesso caso a due
-classi, la **cross-entropia binaria**: è quella di poco fa quando le classi
+classi, la cross-entropia binaria: è quella di poco fa quando le classi
 sono due e l'uscita è una sola, perché allora la probabilità della seconda
 classe è $1-\hat{y}$ e la somma su $k$ ha due soli termini. Quel fattore si
 semplifica:
@@ -199,7 +202,7 @@ $$
 = \sigma(z) - y,
 $$
 
-e il gradiente diventa **proporzionale all'errore**: più si sbaglia, più si
+e il gradiente diventa proporzionale all'errore: più si sbaglia, più si
 corregge. È lo stesso fenomeno di saturazione che nella sezione sulle funzioni
 di attivazione motivava l'abbandono della sigmoide, visto però dal lato della
 loss invece che da quello dell'attivazione: la scelta della funzione di costo
@@ -282,10 +285,10 @@ parte: basta questo, e girare le manopole è il gesto dopo.
 
 `````{tab} Superiore
 
-Il meccanismo è la **regola della catena** di
+Il meccanismo è la regola della catena di
 {doc}`Analisi e ottimizzazione </Matematica/analisi-ottimizzazione>`, qui
 allungata di un anello per strato e percorsa a ritroso. Scriviamo tutto per un
-**singolo esempio**: il gradiente della loss media di un mini-batch (il
+singolo esempio: il gradiente della loss media di un mini-batch (il
 gruppetto di esempi su cui si fa un aggiornamento per volta) è la media di questi contributi, uno per
 esempio.
 
@@ -364,7 +367,7 @@ passaggio all'indietro basta a calcolare tutti i gradienti. È questo che rende
 l'addestramento praticabile su reti enormi.
 
 Che il verso giusto sia questo ha una ragione, ed è il contenuto della
-**differenziazione automatica**. Derivare automaticamente si può in due modi.
+differenziazione automatica. Derivare automaticamente si può in due modi.
 Nel **modo diretto** si propaga in avanti, insieme al calcolo, la derivata
 rispetto a una direzione fissata dei parametri: una passata dà la derivata
 lungo *quella* direzione, e per il gradiente completo servono $n$ passate, una
@@ -376,17 +379,17 @@ funzione, qualunque sia il numero di parametri: è il *cheap gradient
 principle*. La backpropagation è il modo inverso applicato a una rete: quello
 generale è di Linnainmaa (1970), Werbos (1974) è chi lo porta qui.
 
-Il conto però non è gratis, e il prezzo è in **memoria**. Per calcolare
+Il conto però non è gratis, e il prezzo è in memoria. Per calcolare
 $\partial\mathcal{L}/\partial \mathbf{W}^{[l]} =
 \boldsymbol{\delta}^{[l]}(\mathbf{a}^{[l-1]})^{\!\top}$ serve l'attivazione
-$\mathbf{a}^{[l-1]}$: il forward deve quindi **conservare** le attivazioni di
+$\mathbf{a}^{[l-1]}$: il forward deve quindi conservare le attivazioni di
 tutti gli strati finché il gradiente non torna indietro a prenderle. È l'unica
 voce che cresce con la profondità e insieme con la dimensione del batch,
 mentre i
 pesi restano gli stessi. Quanto pesi rispetto al modello si stima a mente, su
 una rete di venti strati da $512$ unità: i pesi sono venti matrici
-$512\times512$, le attivazioni trattenute venti vettori da $512$ numeri **per
-ciascun esempio del batch** (l'ingresso di ogni strato; quella dell'ultimo non
+$512\times512$, le attivazioni trattenute venti vettori da $512$ numeri per
+ciascun esempio del batch (l'ingresso di ogni strato; quella dell'ultimo non
 serve a nessun gradiente), quindi con $B$ esempi per batch il rapporto è
 esattamente $B/512$, e a
 $B=512$ le due voci si pareggiano: a batch $32$ le attivazioni pesano un
@@ -404,15 +407,15 @@ ricalcola in avanti quando serve: memoria contro tempo.
 :width: 85%
 
 I due movimenti, uno dopo l'altro: il segnale va avanti fino all'errore, poi la
-colpa torna indietro. Tornando, a ogni strato che attraversa **viene
-moltiplicata per un pezzo in più**, come nella sezione sulle attivazioni: sullo
+colpa torna indietro. Tornando, a ogni strato che attraversa viene
+moltiplicata per un pezzo in più, come nella sezione sulle attivazioni: sullo
 schermo è il prodotto che si allunga, e ogni suo fattore è il contributo di uno
 strato.
 ```
 
 La {numref}`fig-backpropagation-animata` fa vedere anche perché questo conto è
 sostenibile: un modello grosso si addestra ripetendo il giro milioni di volte,
-quindi il **tempo** che il giro costa decide se addestrarlo è possibile oppure
+quindi il tempo che il giro costa decide se addestrarlo è possibile oppure
 no. Il ritorno costa più o meno quanto un paio di andate; una rete di cento
 strati costa naturalmente più di una da dieci, ma il *rapporto* fra ritorno e
 andata resta quello, perché niente viene ricalcolato da capo: a ogni strato si
@@ -422,13 +425,13 @@ l'immagine del prodotto che si allunga, che è la stessa cosa.
 
 ## Aggiornare i pesi: discesa del gradiente e learning rate
 
-La "colpa" di un peso e la sua **pendenza** sono la stessa identica cosa. La
+La "colpa" di un peso e la sua pendenza sono la stessa identica cosa. La
 quota di colpa di un peso dice di quanto cambierebbe l'errore se muovessi quel
-peso di pochissimo. Ed è la definizione di pendenza data nella sezione
-precedente, applicata all'errore: quanto l'errore sale o scende per ogni
-passettino che fa quel peso. Due nomi, una cosa sola.
+peso di pochissimo. Ed è la definizione di pendenza data a proposito
+delle funzioni di attivazione, applicata all'errore: quanto l'errore sale o
+scende per ogni passettino che fa quel peso. Due nomi, una cosa sola.
 
-Il **gradiente**, poi, non è che l'elenco completo di queste pendenze, una per
+Il gradiente, poi, non è che l'elenco completo di queste pendenze, una per
 peso. Quindi la backpropagation, che distribuisce le colpe, e la discesa in cui
 stiamo per entrare, che segue le pendenze, sono la
 prima metà e la seconda metà dello stesso gesto.
@@ -456,7 +459,7 @@ Non vedi lontano, ma puoi sentire la pendenza sotto i piedi e fare un passo
 nella direzione più ripida verso il basso. Ripeti, passo dopo passo.
 
 Quanto è lungo il passo lo decidono due cose insieme: la pendenza che senti
-sotto i piedi, e un moltiplicatore fisso che scegli tu, il **learning rate**
+sotto i piedi, e un moltiplicatore fisso che scegli tu, il learning rate
 (di solito un numero piccolo, $0{,}01$ o $0{,}001$). La pendenza è quella che
 accorcia i passi da sola vicino al fondo, come nella
 {numref}`fig-discesa-passi`; il moltiplicatore è la manopola che hai in mano.
@@ -478,19 +481,19 @@ ripeti.
 
 `````{tab} Superiore
 
-L'aggiornamento è la **discesa del gradiente**:
+L'aggiornamento è la discesa del gradiente:
 
 $$
 \theta \leftarrow \theta - \eta \, \nabla_{\theta} \mathcal{L},
 $$
 
 dove $\theta$ sono i parametri, $\nabla_{\theta}\mathcal{L}$ il gradiente
-calcolato dalla backpropagation ed $\eta > 0$ il **learning rate** (o tasso di
+calcolato dalla backpropagation ed $\eta > 0$ il learning rate (o tasso di
 apprendimento). Un $\eta$ troppo grande fa divergere la loss; troppo piccolo
 rende la convergenza lentissima o la blocca in un minimo mediocre. Gli
 ottimizzatori moderni aggiungono memoria delle direzioni già prese (Momentum,
 che però conserva un solo $\eta$ per tutti i parametri) oppure un passo diverso
-per ciascun parametro (RMSProp, **Adam** {cite}`kingma2015adam`), ma il cuore
+per ciascun parametro (RMSProp, Adam {cite}`kingma2015adam`), ma il cuore
 resta questo.
 
 `````
@@ -511,7 +514,7 @@ Calcolare il gradiente su *tutti* i dati a ogni passo sarebbe accuratissimo ma
 lentissimo. In pratica l'insieme dei dati si divide in gruppetti, i
 **mini-batch** (per esempio 32 o 64 esempi per volta): per ciascuno si fa
 un'andata, un ritorno e un aggiornamento dei pesi. Un giro completo su tutti i
-gruppetti è un’**epoca**, e un addestramento ne conta decine o centinaia.
+gruppetti è un’epoca, e un addestramento ne conta decine o centinaia.
 
 Ogni gruppetto però è solo un campioncino dei dati, preso a caso, quindi la
 pendenza che si misura è una stima un po’ storta, e storta in modo diverso ogni
@@ -538,9 +541,9 @@ ripete come se fosse assodata.
 
 L'obiezione è che "larga" e "stretta", misurate così, non dicono niente sul
 modello. In una rete con la ReLU si possono moltiplicare per dieci i pesi di
-uno strato, bias compreso, e dividere per dieci soltanto i **pesi** dello
+uno strato, bias compreso, e dividere per dieci soltanto i pesi dello
 strato dopo, lasciandone il bias dov'era, e la rete calcola
-**la stessa identica funzione**: la ReLU lascia passare i fattori positivi
+la stessa identica funzione: la ReLU lascia passare i fattori positivi
 (dieci volte l'ingresso dà dieci volte l'uscita), quindi quel dieci attraversa
 lo strato e si semplifica con la divisione per dieci che trova subito dopo. Il
 bias del secondo strato resta fermo perché non moltiplica niente: si aggiunge
@@ -567,8 +570,8 @@ raggiungere i primi strati, e lungo il tragitto può degradarsi.
 
 Il gradiente si spegne tornando indietro. Gli strati vicini all'uscita
 ricevono un segnale forte e imparano; i primi, quelli che dovrebbero imparare
-le cose elementari di cui parlava l'introduzione del capitolo (in una foto: i
-bordi, le macchie di colore), quasi non lo sentono.
+le cose più elementari (in una foto: i bordi, le macchie di colore), quasi non
+lo sentono.
 ```
 
 C'è un dettaglio crudele in {numref}`fig-gradienti-svaniscono`: la rete non
@@ -577,14 +580,15 @@ strati. Si arrangiano su quello che i primi strati passano loro, che è rimasto
 quasi com'era all'inizio, cioè quasi a caso. Dal di fuori sembra addestramento;
 dal di dentro, metà della rete è ferma.
 
-"A caso" è da prendere alla lettera, ed è l'occasione per dire da dove parte una
-rete: i pesi si estraggono a sorte, piccoli, non si mettono a zero. Il
-percettrone di due sezioni fa poteva permetterselo perché aveva un neurone solo;
-in uno strato di cento, con tutti i pesi a zero i cento neuroni calcolerebbero
-lo stesso identico numero, riceverebbero la stessa identica correzione e
-resterebbero uguali fra loro per sempre. Il caso iniziale serve a rompere quella
-simmetria. Quanto piccoli, e con quale regola, è una scelta che pesa parecchio,
-e se ne occupa per esteso il {doc}`capitolo sul deep learning </DeepLearning/overview>`.
+"A caso" è da prendere alla lettera, ed è l'occasione per dire da dove parte
+una rete: i pesi si estraggono a sorte, piccoli, non si mettono a zero. Il
+percettrone, nella sezione che porta il suo nome, poteva permetterselo perché
+aveva un neurone solo; in uno strato di cento, con tutti i pesi a zero i cento
+neuroni calcolerebbero lo stesso identico numero, riceverebbero la stessa
+identica correzione e resterebbero uguali fra loro per sempre. Il caso iniziale
+serve a rompere quella simmetria. Quanto piccoli, e con quale regola, è una
+scelta che pesa parecchio, e se ne occupa per esteso il {doc}`capitolo sul deep
+learning </DeepLearning/overview>`.
 
 `````{tab} Elementare
 
@@ -618,8 +622,8 @@ centomiliardesimi, cioè un bisbiglio, benché a ogni passaggio qualcosa venisse
 raddoppiato.
 
 Per essere certi della valanga servirebbe che ogni passaggio alzasse tutte le
-parole, nessuna esclusa, e nelle reti che usano la **ReLU** (la piega della
-sezione precedente, quella che azzera tutto ciò che arriva negativo) non
+parole, nessuna esclusa, e nelle reti che usano la ReLU (la piega delle
+funzioni di attivazione, quella che azzera tutto ciò che arriva negativo) non
 capita mai: a ogni strato una parte dei neuroni è spenta, e quello che passa di
 lì viene azzerato invece che alzato. Ne basta uno spento perché la certezza
 salti. Lo svanire, allora, si può
@@ -639,14 +643,14 @@ saltano gli strati) sono il mestiere del capitolo sul deep learning.
 
 Il gradiente verso i primi strati è un prodotto di molti fattori: le Jacobiane
 $\mathbf{J}^{[l]}$ strato per strato, cioè le derivate dell'uscita di uno
-strato rispetto al suo ingresso, la cui "grandezza" si misura con i **valori
-singolari** (e non con gli autovalori, perché sono matrici diverse l'una
+strato rispetto al suo ingresso, la cui "grandezza" si misura con i valori
+singolari (e non con gli autovalori, perché sono matrici diverse l'una
 dall'altra e non c'è
 nessuna potenza di una matrice sola da diagonalizzare: è l'avvertimento della
 {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`, ed è qui che
 serviva).
 
-Se i valori singolari **massimi** restano sistematicamente sotto $1$, il
+Se i valori singolari massimi restano sistematicamente sotto $1$, il
 prodotto tende a zero esponenzialmente con la profondità (*vanishing
 gradient*), e la garanzia è immediata: la norma di un prodotto non supera il
 prodotto delle norme,
@@ -654,13 +658,13 @@ $\lVert\prod_l \mathbf{J}^{[l]}\rVert \le \prod_l \sigma_{\max}(\mathbf{J}^{[l]}
 \le c^{\,L}$, dove $c<1$ è il maggiorante comune dei valori singolari massimi
 e $L$ il numero di strati attraversati.
 
-Nell'altro verso, però, **non c'è simmetria**, ed è l'errore che si fa a
+Nell'altro verso, però, non c'è simmetria, ed è l'errore che si fa a
 scrivere la frase di getto. Che ogni fattore allunghi qualche direzione non
 basta a far esplodere niente, perché lo strato successivo può accorciare proprio
 quella: il prodotto di trenta matrici con $\sigma_{\max}=2$ ciascuna può avere
 norma $3\cdot10^{-11}$ (basta alternare $\mathrm{diag}(2;\,0{,}1)$ e
 $\mathrm{diag}(0{,}1;\,2)$). A garantire l'esplosione è il valore singolare
-**minimo** sopra $1$, che è una condizione molto più forte: allora
+minimo sopra $1$, che è una condizione molto più forte: allora
 $\lVert\prod_l \mathbf{J}^{[l]}\,\mathbf{v}\rVert \ge \prod_l
 \sigma_{\min}(\mathbf{J}^{[l]})\,
 \lVert\mathbf{v}\rVert$ e non c'è scampo.
@@ -672,17 +676,17 @@ esattamente zero: in uno strato da $64$ unità con ingressi casuali le spente
 sono decine, e il prodotto si ritrova $\sigma_{\min}=0$ per costruzione. La
 condizione è sufficiente e non necessaria, e su queste reti è vacua: non esiste
 un criterio comodo che dica in anticipo se il gradiente esploderà. Ecco perché
-i due guasti si trattano in modi opposti: lo svanire si **previene** a monte,
-scegliendo attivazioni e inizializzazione, mentre l'esplodere si **tampona** a
+i due guasti si trattano in modi opposti: lo svanire si previene a monte,
+scegliendo attivazioni e inizializzazione, mentre l'esplodere si tampona a
 valle quando accade, con il *gradient clipping*, che taglia la norma del
 gradiente sopra una soglia.
 
 L'analisi è quella resa celebre da Hochreiter
 {cite}`hochreiter1991untersuchungen` e da Bengio {cite}`bengio1994learning`
-sulle reti ricorrenti. I rimedi standard: attivazioni **ReLU** al posto della
-sigmoide {cite}`glorot2011deep`, **inizializzazione** accorta dei pesi
-({cite}`glorot2010understanding`, {cite}`he2015delving`), **batch
-normalization** {cite}`ioffe2015batch`, **connessioni residue** delle ResNet
+sulle reti ricorrenti. I rimedi standard: attivazioni ReLU al posto della
+sigmoide {cite}`glorot2011deep`, inizializzazione accorta dei pesi
+({cite}`glorot2010understanding`, {cite}`he2015delving`), batch
+normalization {cite}`ioffe2015batch`, connessioni residue delle ResNet
 {cite}`he2016deep` e, appunto, il *gradient clipping*. Sono queste tecniche ad
 aver reso addestrabili reti da centinaia di strati.
 
@@ -732,11 +736,11 @@ Le righe dentro il ciclo sono cinque e sono esattamente i movimenti che
 abbiamo descritto: i dati avanzano, la loss misura l'errore, `loss.backward()`
 fa tornare indietro il gradiente, `optimizer.step()` aggiorna i pesi. La
 quinta, `optimizer.zero_grad()`, è una pulizia, e conviene capirla perché
-dimenticarla è l'errore da principianti più comune: PyTorch **somma** i
+dimenticarla è l'errore da principianti più comune: PyTorch somma i
 gradienti nuovi a quelli che trova, invece di sostituirli, quindi senza quella
 riga il gruppetto di adesso si porterebbe addosso anche le colpe di quello di
-prima. Il `nn.ReLU()` fra i due `nn.Linear`, invece, è la piega della sezione
-precedente messa dove va messa: fra uno strato e l'altro. Manca invece la
+prima. Il `nn.ReLU()` fra i due `nn.Linear`, invece, è la piega delle funzioni
+di attivazione messa dove va messa: fra uno strato e l'altro. Manca invece la
 softmax che la stessa sezione mette in fondo a un classificatore, e non è una
 dimenticanza: ce l'ha dentro `nn.CrossEntropyLoss`, che la applica lei ai
 punteggi grezzi. Chi la mette anche fuori la applica due volte, e non se ne
@@ -760,21 +764,21 @@ per riga.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **forward pass** è la catena di montaggio: i dati passano di postazione in
+- Il forward pass è la catena di montaggio: i dati passano di postazione in
   postazione, ognuna li mescola con le proprie manopole, e all'ultima esce la
-  previsione. La **loss** dice quanto quella previsione è lontana dalla verità.
-- La **backpropagation** riparte dal fondo e chiede a ogni strato quanto ha
+  previsione. La loss dice quanto quella previsione è lontana dalla verità.
+- La backpropagation riparte dal fondo e chiede a ogni strato quanto ha
   contribuito all'errore: la risposta di uno serve a calcolare quella dello
   strato prima, e un solo giro all'indietro basta per tutte le manopole.
 - La quota di colpa di una manopola è la sua pendenza, cioè di quanto
   cambierebbe l'errore muovendola di pochissimo. Sono la stessa cosa in due
-  parole diverse, e l'elenco di tutte queste pendenze si chiama **gradiente**.
+  parole diverse, e l'elenco di tutte queste pendenze si chiama gradiente.
 - Poi ogni manopola si sposta di poco nel verso che fa calare la loss, ed è la
-  **discesa del gradiente**. Il passo è lungo quanto la pendenza moltiplicata
-  per il **learning rate**, che è l'unica manopola in mano a noi: decide se si
+  discesa del gradiente. Il passo è lungo quanto la pendenza moltiplicata
+  per il learning rate, che è l'unica manopola in mano a noi: decide se si
   scende a valle, se si rimbalza o se non si arriva mai.
-- Si procede a piccoli gruppi di esempi (i **mini-batch**), ripassando più volte
-  su tutti i dati (le **epoche**). Nelle reti molto profonde il messaggio che
+- Si procede a piccoli gruppi di esempi (i mini-batch), ripassando più volte
+  su tutti i dati (le epoche). Nelle reti molto profonde il messaggio che
   torna indietro può affievolirsi fino a non insegnare più niente ai primi
   strati, oppure amplificarsi fino a diventare assordante e mandare tutto in
   tilt; e le due cose non si somigliano, perché lo svanire si può prevedere e
@@ -789,21 +793,21 @@ per riga.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **forward pass** trasforma i dati in una previsione, strato per strato; la
-  **loss** misura di quanto quella previsione sbaglia.
-- La **backpropagation** è la regola della catena applicata all'indietro, cioè
-  il **modo inverso** della differenziazione automatica: con una sola passata dà
+- Il forward pass trasforma i dati in una previsione, strato per strato; la
+  loss misura di quanto quella previsione sbaglia.
+- La backpropagation è la regola della catena applicata all'indietro, cioè
+  il modo inverso della differenziazione automatica: con una sola passata dà
   tutte le derivate, perché l'uscita è una sola e gli ingressi sono milioni. In
-  tempo costa un paio di andate; in **memoria** costa le attivazioni di tutti gli
+  tempo costa un paio di andate; in memoria costa le attivazioni di tutti gli
   strati, che crescono con la profondità e con il batch.
-- I pesi si aggiornano con la **discesa del gradiente**,
-  $\theta \leftarrow \theta - \eta\,\nabla_\theta\mathcal{L}$; il **learning
-  rate** $\eta$ dosa il passo, la cui lunghezza è
+- I pesi si aggiornano con la discesa del gradiente,
+  $\theta \leftarrow \theta - \eta\,\nabla_\theta\mathcal{L}$; il learning
+  rate $\eta$ dosa il passo, la cui lunghezza è
   $\eta\,\lVert\nabla_\theta\mathcal{L}\rVert$.
-- Si lavora a **mini-batch** ed **epoche** (SGD), e il rumore del
+- Si lavora a mini-batch ed epoche (SGD), e il rumore del
   campionamento aiuta a staccarsi da selle e altipiani, non tanto dai minimi
   locali.
-- Nelle reti profonde i gradienti possono **svanire o esplodere**, ma le due
+- Nelle reti profonde i gradienti possono svanire o esplodere, ma le due
   cose non sono simmetriche: $\sigma_{\max} < 1$ su ogni Jacobiana basta a
   garantire lo svanire, mentre per garantire l'esplodere servirebbe
   $\sigma_{\min} > 1$, che con la ReLU non capita mai (una sola unità spenta lo

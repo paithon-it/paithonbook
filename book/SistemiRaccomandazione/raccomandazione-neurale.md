@@ -5,13 +5,13 @@ immagini e stava conquistando il linguaggio, e la domanda era nell'aria: una
 rete al posto del confronto voce per voce farebbe meglio? Quel confronto, il
 prodotto scalare della sezione precedente, è pur sempre una regola di calcolo
 fissa, decisa a tavolino da chi ha scritto il modello, mentre una rete la
-regola se la cerca da sé. E può cercarla molto lontano: il {doc}`capitolo sul Deep
-Learning </DeepLearning/overview>` racconta che una rete abbastanza grande sa imitare, con la precisione
-che si vuole, quasi qualunque legame fra un ingresso e un'uscita. Il paper che
-diede forma alla domanda è *Neural Collaborative Filtering*
-{cite}`he2017neural`, e la risposta è più interessante di un semplice «sì»: è
-un piccolo caso di studio su cosa significa davvero «più potente» in machine
-learning.
+regola se la cerca da sé. E può cercarla molto lontano: il
+{doc}`capitolo sul Deep Learning </DeepLearning/overview>` racconta che una
+rete abbastanza grande sa imitare, con la precisione che si vuole, quasi
+qualunque legame fra un ingresso e un'uscita. Il paper che diede forma alla
+domanda è *Neural Collaborative Filtering* {cite}`he2017neural`, e la risposta
+è più interessante di un semplice «sì»: è un piccolo caso di studio su cosa
+significa davvero «più potente» in machine learning.
 
 ## Dal prodotto scalare alla rete
 

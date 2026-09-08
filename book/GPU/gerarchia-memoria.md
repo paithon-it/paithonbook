@@ -436,10 +436,10 @@ Due esempi concreti, con dati in `float32` (4 byte):
   saldamente compute-bound. Attenzione però a che cosa vuol dire «riuso
   perfetto»: leggere ogni elemento di $\mathbf{A}$ e $\mathbf{B}$ *una volta
   sola*, cioè tenerle intere in memoria veloce. Per $n = 4096$ in `float32`
-  sarebbero 201 MB, contro i poco meno di 120 MB che una H100 ha on-chip in tutto (50 di cache L2,
-  34 di shared e L1, 34 di registri): quell’$n/6$
-  è un tetto ideale, non un traguardo. Ci si torna nella sezione sul GEMM, dove
-  si vede quanto ci si arriva davvero (e perché non serve arrivarci).
+  sarebbero 134 MB, contro i poco meno di 120 MB che una H100 ha on-chip in
+  tutto (50 di cache L2, 34 di shared e L1, 34 di registri): quell’$n/6$ è un
+  tetto ideale, non un traguardo. Ci si torna nella sezione sul GEMM, dove si
+  vede quanto ci si arriva davvero (e perché non serve arrivarci).
 
 Ora è chiaro *perché* la kernel fusion paga: fondere tre operazioni
 elemento-per-elemento in un solo kernel significa leggere gli input una volta

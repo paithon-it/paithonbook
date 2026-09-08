@@ -4,13 +4,13 @@ Immagina di affiancare per una settimana un agente immobiliare esperto. Non ti
 spiega nessuna formula: ti mostra centinaia di case già vendute (metri quadri,
 numero di stanze, quartiere) e accanto a ciascuna il prezzo finale. Dopo un
 po’, davanti a un appartamento mai visto, sai già sparare una cifra
-ragionevole. Hai imparato **dagli esempi etichettati**. È, in una frase, ciò
+ragionevole. Hai imparato dagli esempi etichettati. È, in una frase, ciò
 che fa l'apprendimento supervisionato: mostragli abbastanza coppie
 *domanda–risposta* e imparerà a rispondere da solo.
 
 ## Imparare una funzione dagli esempi
 
-I dati di partenza sono quasi sempre una **tabella**: una riga per esempio (un
+I dati di partenza sono quasi sempre una tabella: una riga per esempio (un
 appartamento, un'email, un paziente) e una colonna per caratteristica. Ma non
 tutte le colonne sono fatte della stessa pasta, e la differenza sta in che cosa
 ha senso farci sopra:
@@ -38,14 +38,14 @@ Decidere di quale dei tre tipi è ciascuna colonna, come in
 {numref}`fig-tipi-di-feature`, è la prima decisione di ogni progetto, e non la
 prende il modello: la
 prende chi prepara i dati. Se al quartiere «Milano» assegniamo il numero 1 e a
-«Roma» il 2 per poterli dare in pasto a un programma (si dice **codificare**
+«Roma» il 2 per poterli dare in pasto a un programma (si dice codificare
 una colonna), quella colonna per il modello è numerica a tutti gli effetti: ci
 farà sopra medie e differenze, e crederà che Roma sia il doppio di Milano e che
 fra le due ci sia qualcosa a 1,5. È un ordine, e sono delle distanze, che
 nessuno intendeva metterci.
 
 Di ogni appartamento teniamo tre numeri in fila (metri quadri, stanze, piano):
-un elenco ordinato di numeri si chiama **vettore**, ed è lo stesso oggetto della
+un elenco ordinato di numeri si chiama vettore, ed è lo stesso oggetto della
 {doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>`. Lo scriviamo
 $\mathbf{x}$, in grassetto minuscolo, proprio per ricordare che non è un numero
 solo. A ciascun appartamento associamo poi un'etichetta $y$ (il prezzo). Il
@@ -58,15 +58,15 @@ registrato la risposta giusta.
 
 Prendi una tabella con due sole colonne: metri quadri e prezzo. Puoi disegnarla
 su un foglio a quadretti, con i metri quadri sull'asse orizzontale e il prezzo
-su quello verticale: ogni appartamento diventa **un punto**, e la tabella
+su quello verticale: ogni appartamento diventa un punto, e la tabella
 diventa una nuvola di punti. Con tre colonne servirebbe una scatola invece di
 un foglio, e i punti starebbero sospesi in aria. Con quattro colonne non
 riusciamo più a disegnarla, e tuttavia i conti si fanno lo stesso, identici a
 prima: si continua a parlare di punti, di distanze fra punti, di rette che li
 separano.
 
-Quindi: **ogni colonna della tabella è una direzione dello spazio, ogni riga è
-un punto in quello spazio.** Una tabella con cento colonne descrive punti in
+Quindi: ogni colonna della tabella è una direzione dello spazio, ogni riga è
+un punto in quello spazio. Una tabella con cento colonne descrive punti in
 uno spazio a cento dimensioni, e «dimensione» vuol dire esattamente questo,
 niente di più misterioso. Ridurre le dimensioni vorrà dire togliere direzioni;
 «spazio delle caratteristiche» sarà il nome di quello spazio lì; e frasi come
@@ -77,7 +77,7 @@ simili in tutte le colonne insieme.
 `````{tab} Elementare
 
 Abbiamo tante coppie *(descrizione, risposta)*: la descrizione è la nostra
-$\mathbf{x}$, la risposta è la $y$. L'obiettivo è trovare una **regola** che,
+$\mathbf{x}$, la risposta è la $y$. L'obiettivo è trovare una regola che,
 data una nuova descrizione, indovini la risposta. Chiamiamo questa regola $f$:
 
 $$
@@ -117,7 +117,7 @@ $$
 e cerchiamo una funzione $f:\mathcal{X}\to\mathcal{Y}$ che approssimi la
 relazione ignota tra ingressi e uscite, con $\hat{y}=f(\mathbf{x})$. La qualità
 di $f$ si misura con una **funzione di costo** (o *loss*), e i due oggetti che
-portano quel nome vanno tenuti distinti: $\ell$ è il costo di **una**
+portano quel nome vanno tenuti distinti: $\ell$ è il costo di una
 predizione, $\mathcal{L}$ è quello sull'intero insieme, cioè la media dei
 primi. L'addestramento è il problema di ottimizzazione
 
@@ -168,7 +168,7 @@ attacca un numero che dice quanto quella caratteristica conta: si chiama
 caratteristica per il suo peso, si sommano i risultati, e la somma è la
 risposta. Nient'altro: niente potenze, niente caratteristiche moltiplicate fra
 loro. Una risposta ottenuta così, moltiplicando e sommando e basta, in gergo si
-chiama **combinazione lineare** delle caratteristiche, e la parola «lineare»
+chiama combinazione lineare delle caratteristiche, e la parola «lineare»
 tornerà spessissimo con questo significato.
 
 `````{tab} Elementare
@@ -176,7 +176,7 @@ tornerà spessissimo con questo significato.
 Guardando i soli metri quadri, l'agente se la cava con una regola sola:
 duemila euro al metro quadro più cinquantamila di partenza. Un appartamento di
 $80$ m² viene $2\,000 \cdot 80 + 50\,000 = 210\,000$ €. Con le lettere, quella
-regola è una **retta**:
+regola è una retta:
 
 $$
 \hat{y} = w\,x + b
@@ -213,8 +213,8 @@ l'altezza del terreno è quanto quella retta sbaglia sulle case dell'archivio.
 Camminare vuol dire cambiare $w$ e $b$, scendere vuol dire sbagliare meno. Il
 piede, qui, si risparmia: l'errore è scritto in una formula, e da una formula
 la pendenza si calcola stando fermi, come l'inclinazione di una rampa dalle
-sue misure. La direzione di massima discesa si chiama **gradiente**, e la
-camminata che ripete il passo **discesa del gradiente**. La lunghezza del
+sue misure. La direzione di massima discesa si chiama gradiente, e la
+camminata che ripete il passo discesa del gradiente. La lunghezza del
 passo la decidiamo noi, e cambia tutto, perché una corta ci mette un'eternità
 e una lunga scavalca il fondovalle e rimbalza da un fianco all'altro. Si
 chiama **learning rate** (il *tasso di apprendimento*), e a come si sceglie è
@@ -307,7 +307,7 @@ compreso fra $0$ e $1$. Un punteggio molto positivo esce vicino a $1$ («quasi
 certo spam»), uno molto negativo vicino a $0$, e lo zero cade esattamente a
 metà, $0{,}5$.
 
-Quel numero fra zero e uno lo leggiamo come una **probabilità**: non la
+Quel numero fra zero e uno lo leggiamo come una probabilità: non la
 probabilità del lancio di un dado, ma la sicurezza del modello. $0{,}9$ vuol
 dire «ci scommetterei»; $0{,}52$ vuol dire «non ne ho idea, ma se proprio devo
 dico sì».
@@ -380,7 +380,7 @@ una piccola sorpresa.
 Quando in scikit-learn si scrive `LogisticRegression()` e basta, non si ottiene
 la regressione logistica «pura», quella fatta di punteggio, schiacciamento e
 nient'altro. La libreria ci aggiunge di
-suo un **freno**, cioè quel prezzo alla complessità che vedremo nella prossima
+suo un freno, cioè quel prezzo alla complessità che vedremo nella prossima
 sezione: senza dire niente, tiene i pesi più piccoli di quanto sarebbero.
 
 È quasi sempre un bene. Con dati così
@@ -410,13 +410,13 @@ di massima verosimiglianza: scikit-learn aggiunge di suo una
 penalità $\ell_2$ sui
 pesi, di intensità `C=1.0` (in quella parametrizzazione $C$ è l’*inverso* della
 forza del freno, come nelle SVM). Il modello che esce, quindi, minimizza la
-cross-entropy **più** quella penalità, e la differenza non è cosmetica: sui
+cross-entropy più quella penalità, e la differenza non è cosmetica: sui
 quattro punti $x = -2, -1, 1, 2$ con etichette $0, 0, 1, 1$ (una dimensione,
 linearmente separabili) il coefficiente
 stimato vale $1{,}01$ con i default e $8{,}85$ chiedendo `C=np.inf`. Il secondo
 non è il numero «giusto»: sotto separazione perfetta il massimo di
 verosimiglianza
-**non esiste**, i pesi vorrebbero andare all'infinito, e ciò che li ferma è
+non esiste, i pesi vorrebbero andare all'infinito, e ciò che li ferma è
 proprio il freno. Chi vuole la stima non regolarizzata deve chiederla
 sapendo che cosa sta chiedendo.
 
@@ -459,7 +459,7 @@ quattrocento.
 La seconda mossa è dove le tre risposte si separano. Per un prezzo il punteggio
 si legge così com'è. Per un sì o no lo si schiaccia fra zero e uno con la curva
 a esse. Per un conteggio si fa una terza cosa: si prende quel punteggio come
-**logaritmo** del numero di clienti, e per tornare al numero si fa il conto
+logaritmo del numero di clienti, e per tornare al numero si fa il conto
 all'incontrario, cioè si eleva a quel punteggio il numero $e$ (che vale circa
 $2{,}718$, e che la {doc}`sezione su analisi e ottimizzazione
 </Matematica/analisi-ottimizzazione>` racconta insieme al logaritmo). Il
@@ -470,7 +470,7 @@ essere meno tre clienti.
 Il prezzo di questa scelta va detto subito, perché cambia il senso dei pesi.
 Nel punteggio i pesi si sommano, come sempre; ma disfare un logaritmo
 trasforma le somme in prodotti, e quindi sui clienti quei pesi
-**moltiplicano**. Un peso che vale un mezzo non aggiunge mezzo cliente:
+moltiplicano. Un peso che vale un mezzo non aggiunge mezzo cliente:
 moltiplica per la radice quadrata di $2{,}718$, cioè per $1{,}65$. Il sabato
 non aggiunge dodici clienti: il sabato raddoppia.
 
@@ -485,7 +485,7 @@ Resta il terzo pezzo, quello sull'irregolarità, e cambia la terza cosa: la
 regola con cui si misura lo scarto. Un conteggio non si sparpaglia come un
 prezzo. Se in media entrano due clienti l'ora, i giorni oscillano fra zero e
 cinque; se ne entrano cento, oscillano fra ottanta e centoventi. In proporzione
-l'oscillazione si stringe, e in valore assoluto cresce come la **radice** della
+l'oscillazione si stringe, e in valore assoluto cresce come la radice della
 media: da due a cento la media si moltiplica per cinquanta e l'oscillazione per
 poco più di sette, che è la radice di cinquanta. È la regola dei conteggi che
 capitano ciascuno per conto proprio, quella che porta il nome di Poisson, e
@@ -516,7 +516,7 @@ l'irregolarità separatamente dalla media, e si chiama binomiale negativa.
 
 `````{tab} Superiore
 
-Un **modello lineare generalizzato** (GLM) si specifica con tre pezzi
+Un modello lineare generalizzato (GLM) si specifica con tre pezzi
 {cite}`nelder1972generalized`. Una **distribuzione** per $y \mid \mathbf{x}$
 scelta nella famiglia esponenziale; un **predittore lineare** $\eta =
 \mathbf{w}^\top\mathbf{x} + b$; e una **funzione di legame** $g$ che li unisce,
@@ -540,14 +540,14 @@ $$
 A'(\theta) = \mathbb{E}[y], \qquad A''(\theta) = \operatorname{Var}[y] .
 $$
 
-Tre casi bastano qui. La gaussiana a **varianza unitaria** ha $\theta = \mu$ e
+Tre casi bastano qui. La gaussiana a varianza unitaria ha $\theta = \mu$ e
 $A(\theta) = \theta^2/2$, quindi media $\theta$ e varianza $1$; con una
 varianza nota diversa da uno servono $\theta = \mu/\sigma^2$ e
 $A(\theta) = \sigma^2\theta^2/2$, oppure la forma con un parametro di
 dispersione a parte. La Bernoulli ha $\theta = \log\frac{\mu}{1-\mu}$ (il
 *logit*) e $A(\theta) = \log(1+e^{\theta})$, quindi
 $A'(\theta) = \sigma(\theta)$: la sigmoide, dunque, è la derivata della
-log-partizione. La distribuzione di **Poisson**, che descrive un conteggio di
+log-partizione. La distribuzione di Poisson, che descrive un conteggio di
 eventi indipendenti in una finestra fissa con $P(y=k) = e^{-\mu}\mu^k/k!$, ha
 $\theta = \log\mu$ e $A(\theta) = e^{\theta}$, da cui
 $A'(\theta) = A''(\theta) = \mu$: media e varianza coincidono, e quindi
@@ -559,10 +559,10 @@ Con quella scelta, e assumendo le $y_i$ indipendenti date le $\mathbf{x}_i$, la
 log-verosimiglianza di $m$ osservazioni è
 
 $$
-\ell(\mathbf{w}) = \sum_{i=1}^{m}
+\log L(\mathbf{w}) = \sum_{i=1}^{m}
 \big(\eta_i\, y_i - A(\eta_i)\big) + \text{cost.},
 \qquad
-\nabla_{\mathbf{w}}\,\ell = \sum_{i=1}^{m}
+\nabla_{\mathbf{w}}\,\log L = \sum_{i=1}^{m}
 \big(y_i - \mu_i\big)\,\mathbf{x}_i ,
 $$
 
@@ -577,7 +577,7 @@ $\mu_i = A'(\eta_i)$ non appartiene allo span delle colonne e non c'è nessun
 teorema di Pitagora da invocare.
 
 Due garanzie discendono da $A''>0$. La log-verosimiglianza è concava in
-$\mathbf{w}$, quindi non ci sono ottimi locali e il massimo, **quando esiste**,
+$\mathbf{w}$, quindi non ci sono ottimi locali e il massimo, quando esiste,
 è unico a meno di colonne collineari: che esista non è garantito, ed è di nuovo
 il caso della separazione perfetta appena visto per la logistica. E l'Hessiana
 $-\sum_i A''(\eta_i)\mathbf{x}_i\mathbf{x}_i^\top$ si scrive come una matrice
@@ -600,15 +600,15 @@ coefficienti restano consistenti, e a uscire sbagliati sono gli errori
 standard, troppo piccoli di un fattore $\sqrt{\hat\phi}$, con $\hat\phi$ la
 dispersione stimata. Il rimedio più diretto è quindi correggere quelli, per
 quasi-verosimiglianza o con uno stimatore sandwich, senza toccare le stime; il
-rimedio che cambia modello è la **binomiale negativa**, che aggiunge un
+rimedio che cambia modello è la binomiale negativa, che aggiunge un
 parametro di dispersione (e a dispersione libera non è più un GLM nel senso
 appena definito). Torna come distribuzione di uscita di una rete nella
 {doc}`sezione sul forecasting neurale </SerieTemporali/forecasting-neurale>`.
 
 `````
 
-I tre difetti della retta sui conteggi si vedono in un blocco solo, e con essi
-il modo in cui il legame logaritmico li ripara.
+I due difetti della retta sui conteggi si vedono in un blocco solo, insieme
+al modo in cui il legame logaritmico li ripara e al limite che resta dopo.
 
 ```python
 import numpy as np
@@ -777,9 +777,9 @@ $k$ grande liscia troppo. La distanza euclidea, inoltre, impone di
 normalizzare le feature, altrimenti quella con la scala più ampia domina il
 conto.
 
-Due raffinamenti sono già in scikit-learn. Il **voto pesato**
+Due raffinamenti sono già in scikit-learn. Il voto pesato
 (`weights="distance"`) fa contare di più i vicini più prossimi invece di dare
-a tutti e $k$ lo stesso peso. Le **strutture di indicizzazione** (KD-tree,
+a tutti e $k$ lo stesso peso. Le strutture di indicizzazione (KD-tree,
 ball-tree) partizionano lo spazio in anticipo e abbattono il numero di distanze
 da calcolare, da $m$ a circa $\log m$. Proprio quegli indici, però, smettono di
 essere utili oltre poche decine di dimensioni, dove le distanze fra i punti si
@@ -796,7 +796,7 @@ semplicemente «tante colonne»: cento misure per ogni paziente, mille parole
 contate per ogni email. Lassù quell'idea si sgretola, e la ragione si capisce
 coi dadi.
 
-La distanza fra due punti si ottiene **sommando** gli scarti su *tutte* le
+La distanza fra due punti si ottiene sommando gli scarti su *tutte* le
 colonne. Con una colonna sola quella somma ha un addendo, e due esempi possono
 essere identici o lontanissimi: il caso decide tutto. Con mille colonne gli
 addendi sono mille, e succede quello che succede lanciando mille dadi: il
@@ -812,21 +812,21 @@ $k$ vicini diventa un voto casuale.
 
 Per questo k-NN va quasi sempre preceduto da un lavoro che riduca le colonne,
 o tenendo solo quelle che servono o riassumendole in poche. Il fenomeno, con i
-conti, è la **maledizione della dimensionalità**, ed è il punto di partenza
+conti, è la maledizione della dimensionalità, ed è il punto di partenza
 della sezione su riduzione e clustering.
 ```
 
 ## Un'ombra all'orizzonte: l'overfitting
 
-C'è un tranello in agguato. Un modello abbastanza **flessibile** (cioè capace
+C'è un tranello in agguato. Un modello abbastanza flessibile (cioè capace
 di piegarsi a qualsiasi forma: una curva contorta lo è, una retta no) può
 imparare *a memoria* gli esempi di addestramento, rumore compreso, e poi
 fallire su dati nuovi. Attenzione a non confonderlo con lo studente
 dell'apertura del capitolo, quello che studia con le soluzioni a fianco: là
-guardare le soluzioni era il metodo giusto, qui il guaio è **ricopiarle senza
-averle capite**, e accorgersene è possibile solo interrogandolo su un esercizio
+guardare le soluzioni era il metodo giusto, qui il guaio è ricopiarle senza
+averle capite, e accorgersene è possibile solo interrogandolo su un esercizio
 che non ha mai visto.
-È l’**overfitting**, il problema centrale del machine learning applicato: lo
+È l’overfitting, il problema centrale del machine learning applicato: lo
 affrontiamo nella sezione dedicata, insieme all'idea di tenere sempre da parte
 dati che il modello non ha mai visto per misurarne l'onestà.
 
@@ -861,16 +861,16 @@ per tutto il resto del libro.
 
 ```{admonition} Da ricordare
 :class: important
-- **Supervisionato** vuol dire imparare da esempi che portano già con sé la
+- Supervisionato vuol dire imparare da esempi che portano già con sé la
   risposta giusta: tante coppie *(descrizione, risposta)*, e una regola da
   trovare che leghi le une alle altre.
-- Ogni **colonna** della tabella è una direzione, ogni **riga** un punto in
+- Ogni colonna della tabella è una direzione, ogni riga un punto in
   quello spazio. Con due colonne il disegno sta su un foglio; con cento no, ma
   i conti sono gli stessi, e «vicini» continua a voler dire «simili».
-- Se la risposta è un **numero** si cerca una retta che passi *in mezzo* ai
-  punti; se è un **sì o no** si cerca una linea che li *separi*, dopo aver
+- Se la risposta è un numero si cerca una retta che passi *in mezzo* ai
+  punti; se è un sì o no si cerca una linea che li *separi*, dopo aver
   trasformato il punteggio in una probabilità e aver scelto dove tagliare.
-- E se la risposta è un **conteggio** («quante volte») non va bene nessuna
+- E se la risposta è un conteggio («quante volte») non va bene nessuna
   delle due: il punteggio si legge come il logaritmo del numero atteso, così la
   previsione non può venire negativa e i pesi moltiplicano invece di sommare.
   Le tre risposte sono la stessa macchina con tre impostazioni. Attenzione però
@@ -878,12 +878,12 @@ per tutto il resto del libro.
   ammetta: i pesi restano giusti, la fiducia dichiarata no.
 - La retta buona si può trovare con un conto diretto, che però con tanti dati
   costa più della passeggiata: allora si parte da una qualsiasi e la si sposta
-  a piccoli passi nella direzione in cui l'errore cala (la **discesa del
-  gradiente**), decidendo quanto lunghi sono i passi.
-- Il **k-NN** non impara niente: tiene in memoria tutti gli esempi e, alla
+  a piccoli passi nella direzione in cui l'errore cala (la discesa del
+  gradiente), decidendo quanto lunghi sono i passi.
+- Il k-NN non impara niente: tiene in memoria tutti gli esempi e, alla
   domanda, fa votare i $k$ più simili. Semplicissimo, ma va in crisi quando le
   colonne sono troppe, perché allora tutti i punti sono lontani uguale.
-- L'insidia di tutto il capitolo è imparare **a memoria** invece che capire
+- L'insidia di tutto il capitolo è imparare a memoria invece che capire
   (l’*overfitting*): è la prossima sezione.
 ```
 
@@ -893,13 +893,13 @@ per tutto il resto del libro.
 
 ```{admonition} Da ricordare
 :class: important
-- Supervisionato significa imparare $f:\mathcal{X}\to\mathcal{Y}$ da **esempi
-  già etichettati**, minimizzando una loss $\mathcal{L}$ su $m$ coppie
+- Supervisionato significa imparare $f:\mathcal{X}\to\mathcal{Y}$ da esempi
+  già etichettati, minimizzando una loss $\mathcal{L}$ su $m$ coppie
   $(\mathbf{x}^{(i)}, y^{(i)})$.
-- **Regressione** = uscita continua (MSE, retta di best fit); **classificazione**
+- Regressione = uscita continua (MSE, retta di best fit); classificazione
   = uscita discreta (sigmoide, confine di decisione $\mathbf{w}^\top\mathbf{x}+b=0$).
-- I **modelli lineari generalizzati** {cite}`nelder1972generalized` mettono i
-  due casi (e la **Poisson** per i conteggi) sotto un solo impianto:
+- I modelli lineari generalizzati {cite}`nelder1972generalized` mettono i
+  due casi (e la Poisson per i conteggi) sotto un solo impianto:
   distribuzione nella famiglia esponenziale, predittore lineare
   $\eta=\mathbf{w}^\top\mathbf{x}+b$, legame $g(\mu)=\eta$. Con il legame
   canonico $g=(A')^{-1}$ la log-verosimiglianza è concava e il gradiente vale
@@ -909,12 +909,12 @@ per tutto il resto del libro.
 - Il tipo di ogni colonna (numerica, categorica, ordinale) è una decisione di
   chi prepara i dati: una categorica codificata come intero acquista un ordine
   e delle distanze che nessuno intendeva metterci.
-- **k-NN** è non parametrico: non stima parametri, ricorda i dati e li fa votare.
+- k-NN è non parametrico: non stima parametri, ricorda i dati e li fa votare.
   Costo $O(mn)$ per query ($m$ distanze da $n$ coordinate ciascuna), che gli
   indici spaziali (KD-tree, ball-tree) portano a circa $O(n\log m)$ sotto le
   poche decine di dimensioni; sopra, la concentrazione delle distanze affossa
   gli indici e il metodo insieme.
-- Attenzione all’**overfitting**: imparare a memoria non è capire. Ne parliamo
+- Attenzione all’overfitting: imparare a memoria non è capire. Ne parliamo
   nella sezione dedicata.
 ```
 

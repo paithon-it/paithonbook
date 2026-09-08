@@ -30,13 +30,13 @@ Il neural style transfer combina il *contenuto* di una foto (cosa c'è) con lo
 ## L'idea capovolta: si ottimizza l'immagine, non la rete
 
 Fin qui "addestrare" ha voluto dire una cosa sola: si
-correggono a piccoli passi i **pesi** della rete, cioè i numeri interni che
+correggono a piccoli passi i pesi della rete, cioè i numeri interni che
 decidono come si comporta, finché le sue risposte non migliorano. Il neural
-style transfer capovolge lo schema. La rete, una **VGG** (il nome viene dal
+style transfer capovolge lo schema. La rete, una VGG (il nome viene dal
 laboratorio di Oxford che la costruì) già addestrata a riconoscere oggetti sul
 grande archivio di foto etichettate ImageNet {cite}`simonyan2015very`, non
-impara nulla: i suoi pesi restano **congelati**. A muoversi, un piccolo passo
-alla volta, sono i **pixel dell'immagine**.
+impara nulla: i suoi pesi restano congelati. A muoversi, un piccolo passo
+alla volta, sono i pixel dell'immagine.
 
 `````{tab} Elementare
 
@@ -50,7 +50,7 @@ due giudizi. Alla fine la tela è la tua foto, ma dipinta.
 Una domanda che viene naturale: da che cosa si parte, la prima volta? Da quello
 che si vuole, ed è una scelta che conta. Si può partire dalla foto stessa, e
 allora il critico ha già metà del lavoro fatto. Oppure da una tela di puntini a
-caso, quello che si chiama **rumore**, come uno schermo televisivo senza
+caso, quello che si chiama rumore, come uno schermo televisivo senza
 segnale: ci vuole più pazienza.
 
 Il critico è la rete convoluzionale: ha già imparato a "vedere" su milioni di
@@ -68,7 +68,7 @@ $$
 \hat{\theta} = \arg\min_{\theta} \; \mathcal{L}(\theta;\, \mathbf{X}) ;
 $$
 
-qui cerchiamo l’**immagine** migliore a parametri fissati:
+qui cerchiamo l’immagine migliore a parametri fissati:
 
 $$
 \hat{\mathbf{X}} = \arg\min_{\mathbf{X}} \; \mathcal{L}(\mathbf{X};\, \theta),
@@ -76,18 +76,17 @@ $$
 
 dove $\mathbf{X}$ è il tensore-immagine che stiamo generando e $\theta$ sono i
 pesi (congelati) della VGG. Per autograd non fa differenza: basta dichiarare
-$\mathbf{X}$
-come foglia con `requires_grad_(True)` e la backpropagation restituisce
-$\partial \mathcal{L} / \partial \mathbf{X}$, il gradiente della loss
-**rispetto ai pixel**. È lo stesso meccanismo che rende possibili gli *esempi avversari*
-(immagini ritoccate in modo impercettibile apposta per ingannare una rete) qui
-usato a fin di bene.
+$\mathbf{X}$ come foglia con `requires_grad_(True)` e la backpropagation
+restituisce $\partial \mathcal{L} / \partial \mathbf{X}$, il gradiente della
+loss rispetto ai pixel. È lo stesso meccanismo che rende possibili gli *esempi
+avversari* (immagini ritoccate in modo impercettibile apposta per ingannare una
+rete) qui usato a fin di bene.
 
 `````
 
 Perché proprio una rete già addestrata? Perché, come abbiamo visto nel
 {doc}`capitolo sul Deep Learning </DeepLearning/overview>` e ritrovato nella
-sezione sul transfer learning, i suoi strati formano una **gerarchia**. Ogni
+sezione sul transfer learning, i suoi strati formano una gerarchia. Ogni
 strato è fatto di rilevatori che si accendono quando trovano quello che cercano,
 e più si va in profondità più quello che cercano è grande: i primi si accendono
 su bordi, colori e piccole trame, quelli profondi su parti di oggetti e su
@@ -99,7 +98,7 @@ la pennellata, agli ultimi il campanile.
 ## Contenuto e stile: cosa c'è, come è dipinto
 
 La scoperta di Gatys e colleghi è che dentro questa gerarchia contenuto e
-stile vivono in posti diversi, e quindi si possono **separare** e ricombinare.
+stile vivono in posti diversi, e quindi si possono separare e ricombinare.
 
 `````{tab} Elementare
 
@@ -123,7 +122,7 @@ Il "come è dipinto" abita invece in una domanda diversa, e conviene arrivarci
 per gradi. Prendi uno dei primi strati: dentro ci sono qualche decina o
 centinaio di rilevatori, e ciascuno si accende su una cosa diversa, uno sulle
 righe oblique, uno sul giallo acceso, uno sulle curve strette, uno sul blu
-scuro. Quelli sono i **motivi elementari**: non li ha scelti nessuno, se li è
+scuro. Quelli sono i motivi elementari: non li ha scelti nessuno, se li è
 costruiti la rete addestrandosi su ImageNet, e sono gli stessi qualunque quadro
 le si metta davanti.
 
@@ -132,7 +131,7 @@ stessi punti del quadro?* Nella *Notte stellata* «curva stretta» e «blu scuro
 si accendono quasi sempre nello stesso posto, perché van Gogh disegna le
 spirali col blu; «riga obliqua» e «giallo» pure. Si prendono allora tutte le
 coppie possibili di rilevatori e si conta, per ciascuna, quanto spesso e con
-quanta forza i due si accendono insieme, **senza segnarsi dove**. Quella
+quanta forza i due si accendono insieme, senza segnarsi dove. Quella
 tabella di conteggi è la carta d'identità della mano del pittore: dice quali
 ingredienti vanno assieme e non dice niente su dove stiano, ed è esattamente
 per questo che si può appiccicare a un'altra scena.
@@ -172,7 +171,7 @@ solo le correlazioni.
 
 Per fondere le due cose serve un numero che dica quanto la tela è ancora
 sbagliata, e che sommi i due giudizi del critico. Quel numero, in tutto il
-libro, si chiama **loss** (alla lettera «perdita»): più è alto, più c'è da
+libro, si chiama loss (alla lettera «perdita»): più è alto, più c'è da
 correggere, e il gradiente serve appunto ad abbassarlo. Qui la loss, scritta
 $\mathcal{L}$, è la somma di due voci, una per giudice:
 
@@ -244,7 +243,7 @@ $$
 dove $\mathbf{G}^{(l)}$ e $\mathbf{A}^{(l)}$ sono le Gram dell'immagine
 generata e del quadro di
 stile allo strato $l$, $w_l$ è il peso dello strato e il fattore
-$1/(4 N_l^2 M_l^2)$ va come l'inverso del **quadrato** del numero di canali e
+$1/(4 N_l^2 M_l^2)$ va come l'inverso del quadrato del numero di canali e
 di posizioni, perché le entrate della Gram crescono con $M_l$ e la loro
 differenza al quadrato con $M_l^2$. Usare
 più strati cattura lo stile a più scale: dai granelli di colore alle volute
@@ -326,7 +325,7 @@ for passo in range(300):
 Tre dettagli pratici, e sono anche le tre differenze rispetto all'articolo
 originale di Gatys.
 
-**Da dove si parte.** Qui si parte dalla foto, mentre nell'articolo si partiva
+Da dove si parte. Qui si parte dalla foto, mentre nell'articolo si partiva
 dai puntini a caso. Partire dalla foto fa arrivare al risultato in meno passi e
 piega un po’ l'esito verso la struttura della foto, ma non lo rende «più
 fedele» in generale: gli autori osservano che il punto di partenza incide poco
@@ -334,14 +333,14 @@ sull'esito finale. Quello a cui si rinuncia è la varietà, perché da una
 partenza sempre uguale esce sempre la stessa immagine, mentre dai puntini a
 caso se ne possono generare quante se ne vuole.
 
-**Chi decide i passi.** Il ritocco della tela è affidato a un ottimizzatore,
+Chi decide i passi. Il ritocco della tela è affidato a un ottimizzatore,
 cioè al pezzo di codice che, saputo di quanto si è sbagliato, decide come
 muovere i pixel. Gli autori usavano L-BFGS, che su un problema come questo
 arriva in meno passi ma va richiamato in un modo tutto suo; noi usiamo Adam,
 che è lo stesso del {doc}`ciclo di addestramento </PyTorch/addestramento>` già
 visto, e funziona benissimo.
 
-**Un ritocco alla rete.** Gli autori, dove la VGG tiene solo il valore più
+Un ritocco alla rete. Gli autori, dove la VGG tiene solo il valore più
 grande di ogni quadratino, preferivano tenerne la media
 (`MaxPool2d` sostituito da `nn.AvgPool2d(2, 2)`), che a loro dire dà risultati
 leggermente più gradevoli, e le immagini famose sono fatte così. Qui usiamo la
@@ -353,7 +352,7 @@ Il limite del metodo di Gatys è strutturale: ogni immagine è un problema di
 ottimizzazione a sé, centinaia di passi di gradiente ogni volta. Johnson,
 Alahi e Fei-Fei {cite}`johnson2016perceptual` lo aggirarono con una mossa
 elegante: usare la loss di Gatys non per generare un'immagine, ma per
-**addestrare una rete** feed-forward che trasforma qualunque foto in un dato
+addestrare una rete feed-forward che trasforma qualunque foto in un dato
 stile. L'ottimizzazione costosa si paga una volta sola, in fase di
 addestramento; dopo, applicare lo stile è una singola passata in avanti: circa
 mille volte più veloce (tre ordini di grandezza), abbastanza per un video in
@@ -365,9 +364,9 @@ La storia poi è proseguita altrove. Per insegnare a un programma a tradurre una
 foto in un quadro il modo ovvio sarebbe mostrargli tante coppie, la stessa
 identica scena fotografata e dipinta, e nessuno le ha: Monet è morto e non torna
 a dipingere su commissione. CycleGAN {cite}`zhu2017unpaired` ha risolto il
-problema imparando **senza coppie**, da due mucchi separati e non
+problema imparando senza coppie, da due mucchi separati e non
 corrispondenti, tante foto da una parte e tanti Monet dall'altra. E oggi il
-trasferimento di stile è una delle tante abilità dei **modelli di diffusione**,
+trasferimento di stile è una delle tante abilità dei modelli di diffusione,
 che con un'istruzione scritta ridipingono un'immagine in qualunque maniera
 {cite}`rombach2022high`. Di tutti e due parla la
 {doc}`sezione sulle evoluzioni delle GAN </GAN/applicazioni-evoluzioni>` (GAN
@@ -379,11 +378,11 @@ rete, nasce qui, da una passeggiata sul Neckar.
 
 ```{admonition} Da ricordare
 :class: important
-- Qui **non si addestra la rete**: il critico d'arte (una rete che ha già
+- Qui non si addestra la rete: il critico d'arte (una rete che ha già
   imparato a vedere) non cambia mai idea, e a essere ritoccata centinaia di
-  volte è la **tela**, cioè l'immagine stessa.
-- Il **contenuto** (*cosa* c'è: la casa, il cipresso) si legge negli strati
-  profondi della rete; lo **stile** (*come* è dipinto) sta in quali motivi
+  volte è la tela, cioè l'immagine stessa.
+- Il contenuto (*cosa* c'è: la casa, il cipresso) si legge negli strati
+  profondi della rete; lo stile (*come* è dipinto) sta in quali motivi
   elementari si accendono insieme, e con quanta forza: è la carta d'identità
   della mano del pittore, e non dipende da dove quei motivi si trovino
   nell'immagine.
@@ -391,7 +390,7 @@ rete, nasce qui, da una passeggiata sul Neckar.
   pennellata, pesate da due manopole: alzando quella dello stile le pennellate
   prendono il sopravvento, alzando quella del contenuto la foto resta quasi
   intatta.
-- Chi ha fretta fa la fatica **una volta sola**: invece di ritoccare la tela
+- Chi ha fretta fa la fatica una volta sola: invece di ritoccare la tela
   per ogni foto, addestra una rete apposta per un solo stile, e da quel momento
   dipingere una foto qualunque è questione di un istante, abbastanza da stare
   dietro anche a un video. Il prezzo è che per un altro stile serve un altro
@@ -404,15 +403,15 @@ rete, nasce qui, da una passeggiata sul Neckar.
 
 ```{admonition} Da ricordare
 :class: important
-- Nel neural style transfer **non si addestra la rete**: i pesi della VGG
-  restano congelati e il gradiente scende **sui pixel** dell'immagine.
-- Il **contenuto** vive nelle attivazioni degli strati profondi (*cosa* c'è);
-  lo **stile** nelle correlazioni tra canali, riassunte dalla **matrice di
-  Gram** $\mathbf{G} = \mathbf{F}\mathbf{F}^{\top}$ (*come* è dipinto).
+- Nel neural style transfer non si addestra la rete: i pesi della VGG
+  restano congelati e il gradiente scende sui pixel dell'immagine.
+- Il contenuto vive nelle attivazioni degli strati profondi (*cosa* c'è);
+  lo stile nelle correlazioni tra canali, riassunte dalla matrice di
+  Gram $\mathbf{G} = \mathbf{F}\mathbf{F}^{\top}$ (*come* è dipinto).
 - La loss è composita:
   $\mathcal{L} = \alpha\,\mathcal{L}_{\text{contenuto}} + \beta\,\mathcal{L}_{\text{stile}}$,
   con $\alpha$ e $\beta$ a bilanciare fedeltà e pennellata.
-- Il **fast style transfer** sposta il costo nell'addestramento di una rete
+- Il fast style transfer sposta il costo nell'addestramento di una rete
   feed-forward: stile applicato in una sola passata, in tempo reale.
 ```
 

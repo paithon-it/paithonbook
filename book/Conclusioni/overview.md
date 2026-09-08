@@ -314,8 +314,8 @@ Resta vero che sono quasi tutti problemi di **ottimizzazione**, ed è questo che
 tiene insieme il libro. Da una famiglia all'altra cambia la natura
 dell'obiettivo: una somma su un campione, un equilibrio fra due giocatori, un
 ritorno atteso lungo traiettorie che il modello stesso genera, una
-verosimiglianza inaccessibile. E nei casi in fondo alla lista cambia anche se
-un obiettivo ci sia. Tre idee, infinite architetture.
+verosimiglianza inaccessibile. Per DBSCAN, il clustering gerarchico e gli alberi
+cambia anche se un obiettivo ci sia. Tre idee, infinite architetture.
 `````
 
 ## Dove sta andando
@@ -382,8 +382,7 @@ fare](../Transformers/post-training.md) sono due sezioni separate. La cosa c'è
 ancora, e conta più che mai; è il nome che ha smesso di servire, perché quando
 tutti i modelli si costruiscono così non c'è più niente da distinguere.
 
-È il motivo
-per cui qui sotto non troverai profezie ma i fronti su cui si lavora davvero:
+È il motivo per cui non troverai profezie ma i fronti su cui si lavora davvero:
 dire su che cosa si sta lavorando è un'affermazione molto più piccola che dire
 come andrà a finire, e si può controllare.
 
@@ -425,15 +424,15 @@ che fra loro non c'entrano niente.
 ogni passo gli riesce 95 volte su 100. Quante volte gli riescono tutti e venti?
 Il conto sta in una calcolatrice: si moltiplica, perché ogni passo aggiunge una
 condizione da soddisfare, e 0,95 per venti volte fa 0,3585, appena 36 su 100.
-Quel conto però suppone due cose che per un agente vero non valgono: che un
-solo inciampo rovini tutto, e che i venti passi non si influenzino fra loro. Se
+Quel conto però suppone due cose che per un agente vero non valgono: che un solo
+inciampo rovini tutto, e che i venti passi non si influenzino fra loro. Se
 l'agente si accorge dello sbaglio e torna indietro va meglio; se i passi non
 sbagliano mai insieme, e a rovinare una prova è ogni volta un altro passo, va
-peggio ancora, fino al caso in cui non ne finisce nessuna; se invece sbagliano
-tutti insieme, per la stessa ragione, o va tutto bene o va tutto storto in
-blocco, e le volte buone risalgono a 95 su 100. Il 36 su 100 è quindi il caso
-di riferimento, non il peggiore, e quello che non cambia mai è che ogni passo
-in più è una condizione in più: per questo i compiti lunghi restano difficili.
+peggio, fino al caso in cui non ne finisce nessuna; se invece sbagliano tutti
+insieme, per la stessa ragione, o va tutto bene o va tutto storto in blocco, e
+le volte buone risalgono a 95 su 100. Il 36 su 100 è quindi il caso di
+riferimento, non il peggiore, e quello che non cambia mai è che ogni passo in
+più è una condizione in più: per questo i compiti lunghi restano difficili.
 
 **Quanto consuma.** Addestrare e far girare questi modelli costa corrente,
 acqua per raffreddare i calcolatori e chip che sanno fabbricare pochissime
@@ -552,9 +551,9 @@ Non è una gara alla pari, è una **partita in casa**. E la cosa da portarsi via
 Questa però è una lettura, non un risultato, e c'è chi la ribalta. Le rette
 della sezione «Dove sta andando» non si piegano, e chi parte da lì risponde che
 il terreno dice soltanto dove è stato più facile misurare per primi, e che una
-bravura cresciuta al chiuso poi esce e serve anche all'aperto.
-Non si stabilisce chi ha ragione discutendone: si guarda che cosa succede
-quando la partita si sposta all'aperto, ed è il resto di questa sezione.
+bravura cresciuta al chiuso poi esce e serve anche all'aperto. Non si stabilisce
+chi ha ragione discutendone: si guarda che cosa succede quando la partita si
+sposta all'aperto.
 
 Fuori, il conto si rovescia, ed è un'osservazione vecchia di decenni. Un
 computer ha battuto il campione del mondo di scacchi nel 1997; costruire il
@@ -628,8 +627,8 @@ chiediti se giocava in casa.
 Sarebbe disonesto chiudere con il solo entusiasmo. Questi sistemi hanno limiti
 che non sono incidenti passeggeri in attesa della prossima versione: dipendono
 da come sono fatti, e restano. Un modello dà per veri fatti che non esistono, e
-si porta dietro i pregiudizi dei testi da cui ha imparato; qui sotto vediamo
-perché nessuna delle due cose sia una sorpresa.
+si porta dietro i pregiudizi dei testi da cui ha imparato; nessuna delle due
+cose è una sorpresa, e la ragione di tutt'e due sta in come viene addestrato.
 
 Prima però una domanda che si fa di rado: chi è nella posizione di
 accorgersene? Dipende da come il modello viene messo a disposizione, e i modi
@@ -731,15 +730,16 @@ guarda che cosa si rompe. È lo stesso mestiere, a un decimo della fatica, e
 insegna più di una lettura.
 :::
 
-Tieni i classici a portata: Géron {cite}`geron2022hands` per la pratica,
-Chollet e Watson {cite}`chollet2025deep` per l'intuizione (la terza edizione si
-legge integralmente online), Goodfellow, Bengio e
-Courville {cite}`goodfellow2016deep` per la teoria, la documentazione di
-scikit-learn e PyTorch come compagne quotidiane. Un'avvertenza sui primi due:
-quando arrivano alle reti neurali usano Keras, non PyTorch, anche se il Keras
-di oggi può girare sopra PyTorch. La prima metà di Géron sta invece su
-scikit-learn, che è la stessa libreria di qui. Quello che insegnano non dipende
-dalla libreria, ma è meglio saperlo prima di aprirli.
+Tieni i classici a portata: Géron {cite}`geron2022hands` per la pratica, Chollet
+e Watson {cite}`chollet2025deep` per l'intuizione (la terza edizione si legge
+integralmente online), Goodfellow, Bengio e Courville {cite}`goodfellow2016deep`
+per la teoria, la documentazione di scikit-learn e PyTorch come compagne
+quotidiane. Un'avvertenza sulle librerie: Géron, arrivato alle reti neurali,
+lavora in Keras su TensorFlow, mentre la sua prima metà sta su scikit-learn, che
+è la stessa libreria di qui; Chollet e Watson scrivono in Keras 3, che non è
+legato a un motore solo, e la terza edizione gli esempi li dà anche in PyTorch.
+Quello che insegnano non dipende dalla libreria, ma è meglio saperlo prima di
+aprirli.
 
 E, capitolo per capitolo, questo libro ha già in bibliografia i manuali di
 riferimento, che sui rispettivi argomenti dicono molto più di un generalista:

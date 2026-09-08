@@ -185,8 +185,8 @@ La riparazione, nello stesso lavoro, è dividere il filtro in due pile che
 lavorano in parallelo: una **verticale**, che guarda tutte le righe di sopra
 senza nessuna maschera e quindi cresce a rettangolo, e una **orizzontale**, che
 guarda solo la riga corrente da sinistra. Le due uscite si sommano dopo ogni
-strato, e insieme «catturano l'intero campo recettivo». Il punto cieco
-sparisce, e la verosimiglianza migliora; quel lavoro cambia però anche le
+strato, e insieme arrivano dovunque l'ordine di lettura permetta. Il punto
+cieco sparisce, e la verosimiglianza migliora; quel lavoro cambia però anche le
 funzioni di attivazione, quindi il miglioramento misurato è delle due modifiche
 insieme.
 
@@ -267,17 +267,17 @@ corrente; l'uscita della verticale entra nell'orizzontale con una $1\times1$, e
 i due rami si sommano dopo ogni blocco. Lo stesso lavoro sostituisce la ReLU
 con un'unità *gated* in stile LSTM, e aggiunge il condizionamento su un vettore
 esterno, che è il motivo per cui il titolo parla di generazione
-**condizionale**. Le due modifiche insieme portano il PixelCNN, su CIFAR-10, da
-$3{,}14$ a $3{,}03$ bit per dimensione (quanti bit costa in media ogni numero
-dell'immagine: più basso è meglio), a un soffio dal $3{,}00$ del PixelRNN, che
-però è il modello lento.
+**condizionale**. Le due pile e le unità *gated* insieme portano il PixelCNN, su
+CIFAR-10, da $3{,}14$ a $3{,}03$ bit per dimensione (quanti bit costa in media
+ogni numero dell'immagine: più basso è meglio), a un soffio dal $3{,}00$ del
+PixelRNN, che però è il modello lento.
 
 Fra i successori, **PixelCNN++** {cite}`salimans2017pixelcnn` sostituisce la
 categorica su 256 livelli con una **miscela di logistiche discretizzate**: per
 una categorica il livello 128 e il 129 sono due simboli senza alcuna relazione,
 mentre una miscela continua e poi discretizzata recupera l'ordinamento dei
-valori; gli autori riportano che così l'addestramento accelera, e il conto su
-CIFAR-10 scende a $2{,}92$.
+valori; gli autori riportano che così l'addestramento accelera. Questa e altre
+quattro modifiche insieme portano il conto su CIFAR-10 a $2{,}92$.
 
 `````
 

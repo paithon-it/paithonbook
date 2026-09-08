@@ -13,7 +13,7 @@ Come si misura davvero, allora, se un modello è bravo?
 ## La matrice di confusione
 
 Tutto, nella valutazione di un classificatore, parte da qui: contare i quattro
-esiti possibili di una previsione **binaria**, cioè con due sole risposte in
+esiti possibili di una previsione binaria, cioè con due sole risposte in
 gioco, sì o no.
 
 Prima però va tolta di mezzo una parola che confonde tutti. Delle due risposte,
@@ -54,7 +54,7 @@ Per un problema binario con classe *positiva* e *negativa*, ogni predizione
 cade in una delle quattro celle: $\text{VP}$, $\text{FP}$, $\text{FN}$,
 $\text{VN}$ (con $m = \text{VP}+\text{FP}+\text{FN}+\text{VN}$ esempi totali).
 Da questi quattro numeri si ricava ogni metrica di classificazione. La prima,
-l’**accuratezza**, è semplicemente la frazione di predizioni corrette:
+l’accuratezza, è semplicemente la frazione di predizioni corrette:
 
 $$
 \text{accuratezza} = \frac{\text{VP}+\text{VN}}{\text{VP}+\text{FP}+\text{FN}+\text{VN}} .
@@ -63,7 +63,7 @@ $$
 Il numeratore è la diagonale della matrice, il denominatore il totale. Per
 problemi con più di due classi la matrice diventa $K \times K$ e l'accuratezza
 resta la somma della diagonale sul totale; le metriche che seguono, invece,
-sono definite sul caso **binario** e per estenderle a $K$ classi bisogna
+sono definite sul caso binario e per estenderle a $K$ classi bisogna
 scegliere come mediarle, questione tutt'altro che innocua.
 
 `````
@@ -83,7 +83,7 @@ Sulla diagonale (i veri positivi e i veri negativi) le risposte esatte; fuori
 
 Una parola sull'orientamento, perché è una tabella che si trova disegnata in
 tutti i modi possibili e non c'è una convenzione universale. In
-{numref}`fig-matrice-confusione` le **colonne** sono la verità, le **righe**
+{numref}`fig-matrice-confusione` le colonne sono la verità, le righe
 sono la predizione, e la classe positiva viene per prima: il vero positivo
 finisce in alto a sinistra. In `scikit-learn` l'orientamento è
 esattamente il contrario su entrambi i fronti, ed è un dettaglio che va saputo
@@ -95,12 +95,12 @@ il senso: sulla diagonale le risposte giuste, fuori gli errori.
 Torniamo al modello che dice sempre "sano". Su 100 pazienti, 99 sani e 1
 malato, fa $\text{VN}=99$, $\text{FN}=1$, e $\text{VP}=\text{FP}=0$:
 accuratezza del 99%, eppure zero malati trovati. Quando le classi sono
-**sbilanciate** (una molto più frequente dell'altra), l'accuratezza premia chi
+sbilanciate (una molto più frequente dell'altra), l'accuratezza premia chi
 si limita a predire sempre la classe maggioritaria. È il tranello più comune,
 e la ragione per cui non ci si ferma mai alla sola accuratezza. Servono
 metriche che guardino separatamente ai due tipi di errore.
 
-L'analogia che chiarisce la posta in gioco è una **guardia notturna** valutata
+L'analogia che chiarisce la posta in gioco è una guardia notturna valutata
 sul numero di notti "gestite correttamente". Se i furti avvengono una notte su
 cento, la guardia che dorme sempre ottiene una valutazione del $99\%$:
 identica sulla carta a quella di un collega scrupoloso, e del tutto inutile
@@ -169,7 +169,7 @@ $$
 
 La precision penalizza i falsi positivi (denominatore con $\text{FP}$), la
 recall i falsi negativi (denominatore con $\text{FN}$). Per combinarle si usa la
-loro **media armonica**, la $F_1$:
+loro media armonica, la $F_1$:
 
 $$
 F_1 = 2\cdot\frac{\text{precision}\cdot\text{recall}}{\text{precision}+\text{recall}} .
@@ -196,14 +196,14 @@ quale i due errori pesano uguale, e in quel senso $\beta = 2$ vuol dire «recall
 due volte più importante». Stesso $\beta$, due letture, e conviene dichiarare
 quale si sta usando; per $\beta = 1$ coincidono e si ritrova la $F_1$.
 
-**Con più di due classi va scelta una media, e la scelta è tutto.** Precision,
+Con più di due classi va scelta una media, e la scelta è tutto. Precision,
 recall e $F_\beta$ presuppongono una classe «positiva»: con $K$ classi si calcolano
-precision, recall e $F_1$ **una per classe** e poi si aggregano. I modi di
+precision, recall e $F_1$ una per classe e poi si aggregano. I modi di
 aggregare sono tre, e non sono intercambiabili.
 
 - **micro**: si sommano VP, FP e FN su tutte le classi *prima* di fare il
   rapporto. Con etichetta singola (ogni esempio appartiene a esattamente una
-  classe) $\text{micro-}F_1$ **coincide identicamente con l'accuratezza**, e
+  classe) $\text{micro-}F_1$ coincide identicamente con l'accuratezza, e
   ne eredita quindi tutti i difetti: l'antidoto proposto contro l'accuratezza,
   in questa variante, *è* l'accuratezza. È il motivo per cui
   `classification_report` non stampa nessuna riga «micro»: al suo posto scrive
@@ -223,18 +223,18 @@ che si è deciso di fargli.
 
 `````
 
-Quale privilegiare dipende da **quale errore fa più male**. Nello screening di
+Quale privilegiare dipende da quale errore fa più male. Nello screening di
 una malattia grave un falso negativo (un malato dichiarato sano) è
-inaccettabile: si punta sulla **recall**, accettando qualche falso allarme in
+inaccettabile: si punta sulla recall, accettando qualche falso allarme in
 più. In un filtro antispam è il contrario: un falso positivo butta nel cestino
-un'email importante, quindi si privilegia la **precision**, tollerando che
+un'email importante, quindi si privilegia la precision, tollerando che
 qualche spam passi. Stessa matrice, priorità opposte.
 
 ## La curva ROC e l'AUC
 
 Ecco il numero che sposta la bilancia. Come si è visto parlando di regressione
 logistica, molti classificatori non restituiscono un secco «sì/no» ma una
-probabilità, un numero fra $0$ e $1$; siamo noi a fissare la **soglia** oltre
+probabilità, un numero fra $0$ e $1$; siamo noi a fissare la soglia oltre
 la quale dichiararlo positivo, e per abitudine si parte da $0{,}5$. Cambiare
 soglia cambia l'equilibrio tra i due errori, senza toccare il modello, e la
 curva ROC li mostra tutti in un colpo solo.
@@ -261,7 +261,7 @@ fissare una.
 Sposta lentamente la soglia dal più basso al più alto, cioè da
 sospettosissimo (segnalo tutto, anche col $10\%$ di probabilità) a fiducioso
 (segnalo solo se sono quasi certo).
-Per ogni posizione segni due numeri, ed entrambi sono **quote**, non conteggi:
+Per ogni posizione segni due numeri, ed entrambi sono quote, non conteggi:
 la frazione dei malati che riesci a pescare (su tutti i malati che ci sono) e
 la frazione dei sani che disturbi per niente (su tutti i sani che ci sono). Per
 questo negli assi della figura si legge «tasso»: sono percentuali, e stanno
@@ -269,7 +269,7 @@ tutte e due fra $0$ e $1$. Unendo i punti ottieni la **curva ROC**. Un modello
 che distingue bene le due classi disegna una curva che sale subito verso
 l'angolo in alto a sinistra; uno che tira a caso segue la diagonale.
 
-L’**AUC** è semplicemente l'area sotto quella curva. Siccome il grafico è un
+L’AUC è semplicemente l'area sotto quella curva. Siccome il grafico è un
 quadrato di lato $1$, l'area totale disponibile vale $1$, e la diagonale lo
 taglia esattamente a metà: ecco perché chi tira a caso prende $0{,}5$ e non
 $0$. È un voto unico fra $0$ e $1$, dove $1$ è la separazione perfetta e
@@ -294,18 +294,18 @@ darebbe del bugiardo al calcolatore.
 
 `````{tab} Superiore
 
-La curva ROC (*Receiver Operating Characteristic*) traccia il **tasso di veri
-positivi** contro il **tasso di falsi positivi** al variare della soglia:
+La curva ROC (*Receiver Operating Characteristic*) traccia il tasso di veri
+positivi contro il tasso di falsi positivi al variare della soglia:
 
 $$
 \text{TPR} = \frac{\text{VP}}{\text{VP}+\text{FN}} \;(=\text{recall}), \qquad
 \text{FPR} = \frac{\text{FP}}{\text{FP}+\text{VN}} .
 $$
 
-L’**AUC** (*Area Under the Curve*) è l'area sottesa, in $[0,1]$. Ha una lettura
+L’AUC (*Area Under the Curve*) è l'area sottesa, in $[0,1]$. Ha una lettura
 probabilistica elegante: è la probabilità che il modello assegni a un positivo
-scelto a caso uno score più alto che a un negativo scelto a caso, **contando
-mezzo punto quando i due score coincidono**:
+scelto a caso uno score più alto che a un negativo scelto a caso, contando
+mezzo punto quando i due score coincidono:
 
 $$
 \text{AUC} = P(s^+ > s^-) + \tfrac{1}{2}\,P(s^+ = s^-),
@@ -413,17 +413,17 @@ perché i conti tornano, e tornano troppo belli.
 
 `````{tab} Superiore
 
-Sul ricampionamento vale un'avvertenza che si dimentica spesso: **va applicato
-solo al training set, dentro la cross-validation**. Ricampionare prima dello
+Sul ricampionamento vale un'avvertenza che si dimentica spesso: va applicato
+solo al training set, dentro la cross-validation. Ricampionare prima dello
 split significa che copie sintetiche dello stesso positivo finiscono sia in
 train sia in validation: il modello riconosce esempi che ha già visto e la
 stima delle prestazioni diventa ottimistica in modo invisibile. In pratica lo
-si ottiene con la libreria **imbalanced-learn** (è sua sia l'implementazione di
+si ottiene con la libreria imbalanced-learn (è sua sia l'implementazione di
 SMOTE sia una `Pipeline` compatibile con scikit-learn): il campionatore va
 messo dentro quella pipeline, non applicato al dataset prima; la `Pipeline` di
 scikit-learn, da sola, non ammette passi che cambiano il numero di esempi.
 
-Un secondo punto: il ricampionamento **distorce le probabilità predette**. Un
+Un secondo punto: il ricampionamento distorce le probabilità predette. Un
 modello addestrato su dati riequilibrati stima $P(y=1\mid x)$ rispetto alla
 distribuzione riequilibrata, non a quella reale. La tentazione, a questo punto,
 è di cavarsela preferendo i pesi di classe al ricampionamento, e non funziona:
@@ -438,12 +438,12 @@ con `class_weight="balanced"` e $0{,}253$ duplicando i positivi fino a
 pareggiare le due classi: le due correzioni
 sono indistinguibili. Se servono probabilità calibrate (per una soglia basata
 sui costi, o per combinarle con altre stime) va ricalibrato in ogni caso; in
-alternativa si lascia il modello sbilanciato com'è e si sposta la **soglia**
+alternativa si lascia il modello sbilanciato com'è e si sposta la soglia
 secondo i costi.
 
 Infine il criterio decisionale corretto quando i costi sono noti: non "massimizza
 F1" ma minimizza il costo atteso. Con $c_{\text{FN}}$ e $c_{\text{FP}}$ i costi
-dei due errori, e **posto a zero il costo delle due decisioni corrette**, la
+dei due errori, e posto a zero il costo delle due decisioni corrette, la
 soglia ottimale è
 
 $$
@@ -492,8 +492,8 @@ ripara, è quello che segue.
 
 Alla fine del mese sul tavolo dell'antifrode si è accumulato un mazzo di
 operazioni chiuse, di cui ormai si sa com'è andata. Per giudicare i numeri che
-il modello aveva dato si fa una cosa sola: si divide il mazzo in **dieci
-cassetti**, uno per ogni decimo della scala. Dieci è una scelta di chi fa il
+il modello aveva dato si fa una cosa sola: si divide il mazzo in dieci
+cassetti, uno per ogni decimo della scala. Dieci è una scelta di chi fa il
 conto, non una legge: con cinque cassetti si vede meno, con cinquanta ciascuno
 resta quasi vuoto e i conti ballano. Nel primo finiscono le operazioni segnate
 sotto il dieci per cento, nell'ultimo quelle sopra il novanta. Poi, cassetto
@@ -518,9 +518,9 @@ compito con le risposte in mano), si guarda cassetto per cassetto quanto
 sbaglia, e si scrive la regola che porta il detto sul vero: dove dice
 novantaquattro, il cassetto di sopra dice che le frodi erano sessantuno, e
 sessantuno si scrive. Le forme di quella tavola sono due. La prima è una
-**curva liscia** con due manopole, una che allarga o stringe la scala e una che
+curva liscia con due manopole, una che allarga o stringe la scala e una che
 la sposta tutta in su o in giù (e ne esiste una versione ridotta, con la sola
-prima manopola); la seconda è una **scaletta** libera di salire come vuole,
+prima manopola); la seconda è una scaletta libera di salire come vuole,
 purché salga sempre. La scaletta si adatta meglio, ma con poche operazioni su
 cui impararla copia le loro coincidenze invece della regola, e allora conviene
 la curva.
@@ -546,7 +546,7 @@ modello viene pagato.
 
 `````{tab} Superiore
 
-Un modello che produce $\hat{p}(\mathbf{x}) \in [0,1]$ è **calibrato** se
+Un modello che produce $\hat{p}(\mathbf{x}) \in [0,1]$ è calibrato se
 
 $$
 P\big(y = 1 \;\big|\; \hat{p}(\mathbf{x}) = q\big) = q
@@ -762,10 +762,10 @@ delle quantità, perché racconta l'altra metà: dopo la conversione i cassetti
 alti si svuotano (undici operazioni nel penultimo, una nell'ultimo), e lo
 scarto più grosso che resta è proprio nel penultimo, $0{,}842$ contro
 $0{,}636$, cioè su undici casi. Il voto scende da $0{,}2409$ a $0{,}0047$ con
-la curva liscia e a $0{,}0035$ con la scaletta, e con la curva l'AUC resta
-$0{,}9064$, identica, perché una conversione che non scavalca non riordina
-niente; la scaletta ne perde un pelo ($0{,}9050$), ed è il prezzo dei pari
-merito che introduce.
+la curva liscia (il metodo di Platt) e a $0{,}0035$ con la scaletta (la
+regressione isotonica), e con la curva l'AUC resta $0{,}9064$, identica,
+perché una conversione che non scavalca non riordina niente; la scaletta ne
+perde un pelo ($0{,}9050$), ed è il prezzo dei pari merito che introduce.
 
 Fra $0{,}0047$ e $0{,}0035$, però, non si può scegliere, e le ultime righe
 stampate dicono perché: rifacendo lo stesso conto con cinque, quindici e trenta
@@ -803,7 +803,7 @@ libro e le librerie li usano tutti.
 
 Se il modello non classifica ma prevede una quantità continua (il prezzo di
 una casa, la temperatura di domani), la matrice di confusione non serve:
-contano gli **scarti** tra valore previsto $\hat{y}$ e valore reale $y$.
+contano gli scarti tra valore previsto $\hat{y}$ e valore reale $y$.
 
 `````{tab} Elementare
 
@@ -813,7 +813,7 @@ in media, di quanti euro sbagliamo il prezzo. Il **RMSE** (*root mean squared
 error*, radice dell'errore quadratico medio) è simile, ma prima di
 mediare eleva al quadrato gli errori, e alla fine ne fa la radice quadrata.
 Il quadrato serve a
-**punire di più i grandi svarioni**: sbagliare una volta di $100$ costa
+punire di più i grandi svarioni: sbagliare una volta di $100$ costa
 $100^2 = 10\,000$, mentre sbagliare due volte di $50$ costa
 $50^2 + 50^2 = 5\,000$, cioè la metà, benché l'errore totale sia lo stesso. La
 radice serve a rimettere il numero nell'unità di
@@ -822,7 +822,7 @@ si leggono entrambi in euro.
 
 L’**R²** invece è un voto, e si legge «erre quadro». Vale $1$ se la
 previsione è perfetta e $0$ se il modello non fa meglio di chi risponde sempre
-la media di tutti i valori; e sì, può anche scendere **sotto zero**, se fa
+la media di tutti i valori; e sì, può anche scendere sotto zero, se fa
 peggio di così. Un esempio: se rispondendo sempre la media si sbaglia in media
 di $40\,000$ € al quadrato e il modello scende a $10\,000$, ne ha risparmiati
 tre quarti e l'R² vale $0{,}75$. È il vantaggio dell'R² sulle altre due: non è
@@ -844,7 +844,7 @@ $$
 
 L'MSE eleva al quadrato gli scarti, quindi pesa di più gli errori grandi ed è
 più sensibile agli *outlier*; la radice (RMSE) riporta il valore nell'unità del
-target. Il **coefficiente di determinazione** $R^2$ confronta l'errore del
+target. Il coefficiente di determinazione $R^2$ confronta l'errore del
 modello con quello del predittore banale "media di $y$":
 
 $$
@@ -861,9 +861,9 @@ possibili e segnalano un modello peggiore della semplice media.
 ## Quando il target ha un ordine ma non una distanza
 
 Fra la categoria e il numero c'è un caso intermedio che si incontra spesso e
-che quasi sempre viene trattato male: il target **ordinale**. La fascia d'età,
+che quasi sempre viene trattato male: il target ordinale. La fascia d'età,
 le stelle di una recensione, la classe energetica, la gravità di una diagnosi:
-sono categorie, ma **in fila**.
+sono categorie, ma in fila.
 
 `````{tab} Elementare
 
@@ -912,12 +912,12 @@ c'è pochissimo spazio e fra altre due moltissimo.
 
 `````{tab} Superiore
 
-Un target ordinale ha $K$ classi con un ordine totale ma **senza una metrica**
+Un target ordinale ha $K$ classi con un ordine totale ma senza una metrica
 data: sappiamo che $c_1 \prec c_2 \prec c_3$ ma non che la distanza fra le
 prime due sia pari a quella fra le seconde. Trattarlo come nominale butta via
 l'ordine; trattarlo come numerico gli impone una distanza che non ha.
 
-Sul fronte delle **metriche**, l'accuratezza è insensibile all'ordine. Una
+Sul fronte delle metriche, l'accuratezza è insensibile all'ordine. Una
 correzione grossolana ma usata è l'accuratezza *one-off*, che conta corretta
 anche la classe adiacente ($|\hat{y}-y| \leq 1$): utile per dichiarare quanto
 un sistema è «quasi giusto», ma arbitraria, perché la soglia a uno non ha
@@ -931,12 +931,12 @@ $$
 
 dove $\mathbf{O}$ è la matrice di confusione osservata ed $\mathbf{E}$ quella
 attesa per caso date le marginali. I pesi quadratici fanno pagare l'errore in
-proporzione al **quadrato** della distanza fra le classi, ed è la ragione per
+proporzione al quadrato della distanza fra le classi, ed è la ragione per
 cui diverse competizioni su diagnosi a stadi l'hanno adottata.
 
 Attenzione però a che cosa fa la normalizzazione per $\mathbf{E}$: corregge
-l'accordo dovuto al caso **su quel dataset**, e proprio per questo il valore
-**dipende dalle marginali**. È il cosiddetto «paradosso del kappa»
+l'accordo dovuto al caso su quel dataset, e proprio per questo il valore
+dipende dalle marginali. È il cosiddetto «paradosso del kappa»
 {cite}`feinstein1990high`: a parità di meccanismo d'errore, il kappa crolla
 quando le classi si sbilanciano. Prendiamo un modello che sbaglia sempre allo
 stesso modo, cioè sposta la risposta di una classe nel $20\%$ dei casi, in su o
@@ -952,7 +952,7 @@ Va letta come misura interna a un dataset, non come voto trasportabile:
 due sistemi valutati su popolazioni con prevalenze diverse non hanno kappa
 confrontabili.
 
-Sul fronte del **modello**, la soluzione elegante è la **regressione
+Sul fronte del modello, la soluzione elegante è la **regressione
 ordinale**: invece di $K$ probabilità indipendenti si stima una variabile
 latente continua e $K-1$ soglie, e la probabilità cumulata
 $P(y \leq k) = \sigma(\tau_k - f(\mathbf{x}))$ è monotona per costruzione, dove
@@ -960,7 +960,7 @@ $f(\mathbf{x})$ è la variabile latente stimata, $\tau_1 < \dots < \tau_{K-1}$
 sono le soglie apprese (un'altra cosa dalla soglia di decisione $\tau^\star$
 dei costi) e $\sigma$ è la sigmoide. Il
 vantaggio pratico rispetto alla regressione seguita da arrotondamento è che le
-soglie sono **apprese** invece che imposte equidistanti, quindi il modello può
+soglie sono apprese invece che imposte equidistanti, quindi il modello può
 scoprire che fra due classi c'è poco spazio e fra altre due molto.
 
 `````
@@ -978,7 +978,7 @@ diamo al modello, e la si sceglie prima di addestrarlo.
 
 Una metrica riassume in un numero il comportamento del modello su migliaia di
 esempi, e per farlo li tratta tutti allo stesso modo. C'è però un ordine fra
-quegli esempi che il numero butta via, ed è quello che dice **quanto** il
+quegli esempi che il numero butta via, ed è quello che dice quanto il
 modello ha sbagliato su ciascuno. Recuperarlo costa due righe e cambia il
 mestiere: dal misurare al capire che cosa fare.
 
@@ -1009,7 +1009,7 @@ probabilistico è la log-loss del singolo campione,
 $\ell_i = -\log \hat{p}_i(y_i)$, cioè la sorpresa del modello davanti
 all'etichetta vera: cresce senza limite man mano che la probabilità assegnata a
 quella classe tende a zero, e per questo pone in cima alla graduatoria gli
-esempi su cui il modello ha sbagliato **con convinzione**, che sono i soli
+esempi su cui il modello ha sbagliato con convinzione, che sono i soli
 informativi.
 
 L'ordinamento per $\ell_i$ decrescente separa due popolazioni che si
@@ -1024,8 +1024,8 @@ riconoscono aprendo gli esempi:
 
 La coda opposta della stessa graduatoria ha un uso suo: gli esempi con $\ell_i$
 minima sono quelli su cui il modello è più sicuro, e una $\ell_i$ quasi nulla
-su un esempio che *dovrebbe* essere difficile è la firma di una **perdita di
-informazione dal futuro**, cioè di una feature che contiene il bersaglio.
+su un esempio che *dovrebbe* essere difficile è la firma di una perdita di
+informazione dal futuro, cioè di una feature che contiene il bersaglio.
 
 Il costo del gesto è nullo: la perdita per esempio è già stata calcolata per
 ottenere la metrica, e l'unica cosa che si aggiunge è non sommarla.
@@ -1088,7 +1088,7 @@ Le etichette guaste sono il $2{,}8\%$ della validazione, e pescando a caso
 sarebbe quella la probabilità di incontrarne una. Fra i dieci esempi con la
 perdita più alta sono l’$80\%$: ventotto volte più dense. E il numero che
 serve davvero a chi deve decidere quanto tempo spenderci è l'ultimo:
-**aprendone cinquanta se ne ritrovano venti su ventidue**, cioè il novanta per
+aprendone cinquanta se ne ritrovano venti su ventidue, cioè il novanta per
 cento delle etichette guaste in un'ora di lavoro invece che ottocento.
 
 L'accuratezza, intanto, dice $0{,}899$ e non dice niente di tutto questo. Non è
@@ -1109,10 +1109,12 @@ from sklearn.metrics import (confusion_matrix, classification_report,
 # --- classificazione ---
 # Attenzione all'orientamento: scikit-learn mette la VERITÀ in riga e la
 # PREDIZIONE in colonna, ed elenca le etichette in ordine crescente, quindi la
-# classe 0 (negativa) per prima. Esce [[VN, FP], [FN, VP]]: la figura di questa
-# sezione, che ha VP in alto a sinistra, è quella stessa matrice ruotata.
+# classe 0 (negativa) per prima. Esce [[VN, FP], [FN, VP]]: la figura della
+# matrice di confusione porta gli stessi quattro numeri, con VP e VN
+# scambiati di posto.
 print(confusion_matrix(y_test, y_pred))
-# con labels=[1, 0] l'ordine torna quello della figura, VP in alto a sinistra
+# con labels=[1, 0] VP passa in alto a sinistra come nella figura, ma i due
+# errori restano scambiati fra loro, perché la verità resta in riga
 print(confusion_matrix(y_test, y_pred, labels=[1, 0]))
 
 # precision, recall e F1 per classe; le righe "macro avg" e "weighted avg"
@@ -1132,35 +1134,35 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
 
 ```{admonition} Da ricordare
 :class: important
-- Tutto parte dal contare i **quattro esiti** del rilevatore di fumo: allarme
+- Tutto parte dal contare i quattro esiti del rilevatore di fumo: allarme
   giusto, falso allarme, incendio mancato, silenzio giusto. Da quei quattro
   numeri si ricava ogni altra misura.
-- La percentuale di risposte giuste (l’**accuratezza**) **inganna** quando una
+- La percentuale di risposte giuste (l’accuratezza) inganna quando una
   risposta è molto più frequente dell'altra: la guardia che dorme sempre prende
   99 su 100 e non ha mai fermato un ladro.
 - Due domande diverse: *quando dice sì, quanto spesso ci azzecca?* (la
-  **precision**) e *di tutti i casi veri, quanti ne trova?* (la **recall**).
-  Alzare l'una abbassa l'altra; la **F1** è un voto unico, alto solo se lo sono
+  precision) e *di tutti i casi veri, quanti ne trova?* (la recall).
+  Alzare l'una abbassa l'altra; la F1 è un voto unico, alto solo se lo sono
   entrambe. Nello screening medico conta di più trovarli tutti, nell'antispam
   conta di più non cestinare un'email buona.
 - Spostando la soglia si cambia il compromesso senza riaddestrare niente; la
-  **curva ROC** li mostra tutti insieme e l'area sotto di essa (l’**AUC**) è un
+  curva ROC li mostra tutti insieme e l'area sotto di essa (l’AUC) è un
   voto fra $0$ e $1$: $1$ è perfetto, $0{,}5$ è quanto prende chi tira a caso,
   e sotto quel valore il modello sta scambiando le due classi.
 - Un «novantaquattro per cento» non si giudica su un caso solo, si giudica sul
   gruppo: si mettono i casi in dieci cassetti secondo quello che il modello ha
   detto e si conta, cassetto per cassetto, quanti lo erano davvero. È la
-  **calibrazione**, e si ripara senza riaddestrare, con una tavola di
+  calibrazione, e si ripara senza riaddestrare, con una tavola di
   conversione imparata su casi mai visti, che non scavalca e quindi lascia la
   graduatoria com'era (la scaletta a gradini può però creare dei pari merito).
   Chi risponde sempre lo stesso numero è calibrato e inutile: onestà e capacità
   di distinguere sono due virtù separate.
-- Se la risposta è un numero: **MAE** e **RMSE** dicono di quanto sbagliamo,
+- Se la risposta è un numero: MAE e RMSE dicono di quanto sbagliamo,
   nella stessa unità del target (euro, gradi), e l'RMSE è più severo con i
-  grandi svarioni; di questi due si cerca il valore **più basso**. L’**R²**
+  grandi svarioni; di questi due si cerca il valore più basso. L’R²
   invece dice quanto siamo meglio di chi risponde sempre la media, e lì si
-  cerca il **più alto**.
-- La metrica si sceglie **prima** di addestrare, guardando quale dei due errori
+  cerca il più alto.
+- La metrica si sceglie prima di addestrare, guardando quale dei due errori
   costa di più. È il modo in cui diciamo al modello che cosa significa
   «riuscire».
 ```
@@ -1171,24 +1173,24 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
 
 ```{admonition} Da ricordare
 :class: important
-- La **matrice di confusione** conta i quattro esiti (VP, FP, FN, VN): da lì
+- La matrice di confusione conta i quattro esiti (VP, FP, FN, VN): da lì
   nasce ogni metrica di classificazione. L'orientamento non è universale:
   `scikit-learn` usa verità in riga, predizione in colonna, classe $0$ per
   prima.
-- L’**accuratezza inganna** con classi sbilanciate: premia chi predice sempre la
+- L’accuratezza inganna con classi sbilanciate: premia chi predice sempre la
   classe maggioritaria.
-- **Precision** (pochi falsi allarmi) vs **recall** (pochi casi mancati): la
+- Precision (pochi falsi allarmi) vs recall (pochi casi mancati): la
   $F_1$ le riassume. Privilegia la recall nello screening medico, la precision
-  nell'antispam. Con $K$ classi va dichiarata la **media**: la *micro* coincide
+  nell'antispam. Con $K$ classi va dichiarata la media: la *micro* coincide
   con l'accuratezza, la *macro* è quella che dà voce alle classi rare.
-- **AUC**: qualità del classificatore indipendente dalla soglia, in $[0,1]$,
+- AUC: qualità del classificatore indipendente dalla soglia, in $[0,1]$,
   con $0{,}5$ come punteggio del caso e non come minimo. È
   $P(s^+>s^-) + \tfrac12 P(s^+=s^-)$: il mezzo punto sui pareggi non è
   opzionale.
 - Con costi noti la soglia ottimale è $c_{\text{FP}}/(c_{\text{FP}} +
-  c_{\text{FN}})$ **se** le decisioni corrette non costano né rendono nulla;
+  c_{\text{FN}})$ se le decisioni corrette non costano né rendono nulla;
   altrimenti contano le differenze fra costi e guadagni.
-- **Calibrazione**: $P(y=1\mid\hat{p}=q)=q$, stimata a intervalli con il
+- Calibrazione: $P(y=1\mid\hat{p}=q)=q$, stimata a intervalli con il
   diagramma di affidabilità e riassunta dall'ECE, che dipende dalla partizione
   e va dichiarato insieme a essa. Si corregge dopo, su dati indipendenti
   (Platt, temperatura, isotonica); una trasformazione crescente in senso
@@ -1197,10 +1199,10 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
   costante è calibrato con AUC $0{,}5$: il criterio è massimizzare la finezza
   (quanta poca incertezza le previsioni dichiarano) sotto vincolo di
   calibrazione.
-- Per la **regressione**: MAE e RMSE nell'unità del target (RMSE punisce di più
-  i grandi errori) **si minimizzano**; $R^2$, frazione di varianza spiegata, si
+- Per la regressione: MAE e RMSE nell'unità del target (RMSE punisce di più
+  i grandi errori) si minimizzano; $R^2$, frazione di varianza spiegata, si
   massimizza, ed è negativo se il modello fa peggio della media.
-- Per un target **ordinale**, kappa di Cohen pesato quadraticamente, ricordando
+- Per un target ordinale, kappa di Cohen pesato quadraticamente, ricordando
   che dipende dalle marginali e non si confronta fra popolazioni diverse.
 - La metrica va scelta *prima*, in base al problema e al costo degli errori.
 ```

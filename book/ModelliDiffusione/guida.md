@@ -86,8 +86,8 @@ fuori distribuzione.
 
 **Classifier-free guidance** {cite}`ho2022classifier`. Si osserva che, per la
 stessa riga di Bayes,
-$\nabla\log p_t(c\mid\mathbf{x}) = \nabla\log p_t(\mathbf{x}\mid c)
-- \nabla\log p_t(\mathbf{x})$, cioè la differenza fra le due predizioni della
+$\nabla\log p_t(c\mid\mathbf{x}) = \nabla\log p_t(\mathbf{x}\mid c) -
+\nabla\log p_t(\mathbf{x})$, cioè la differenza fra le due predizioni della
 stessa rete. Da qui
 
 $$

@@ -4,8 +4,8 @@ La sezione precedente ha lavorato su un mondo che non si muove: davanti
 all'agente c'era una fila di leve sempre uguale, e tirarne una non cambiava in
 nulla quello che si sarebbe trovato davanti al tiro dopo. Il mondo vero non è
 così. Un bambino che impara ad andare in bicicletta prova, oscilla, cade; e la
-pedalata storta non gli costa soltanto un brutto voto, gli **sposta la
-bicicletta**: quello che potrà fare fra un istante dipende da quello che ha
+pedalata storta non gli costa soltanto un brutto voto, gli sposta la
+bicicletta: quello che potrà fare fra un istante dipende da quello che ha
 fatto ora, e si ritrova in una situazione che si è creato da sé.
 
 Rimettere al suo posto la situazione che cambia è il passo che resta da fare, e
@@ -17,12 +17,12 @@ Quell'impalcatura, formalizzata da Richard Bellman nel 1957 e diventata la
 spina dorsale del testo di riferimento di Sutton e Barto
 {cite}`sutton2018reinforcement`, si chiama **processo
 decisionale di Markov**: in inglese *Markov Decision Process*, che tutti
-abbreviano in **MDP**, ed è la sigla che d'ora in poi si incontra dappertutto.
+abbreviano in MDP, ed è la sigla che d'ora in poi si incontra dappertutto.
 
 ## Il ciclo: stati, azioni, ricompense
 
-A ogni istante l'agente si trova in uno **stato**, sceglie un’**azione**,
-l'ambiente lo trasporta in un nuovo stato e gli consegna una **ricompensa**
+A ogni istante l'agente si trova in uno stato, sceglie un’azione,
+l'ambiente lo trasporta in un nuovo stato e gli consegna una ricompensa
 numerica. Poi il ciclo riparte. Tutto il reinforcement learning abita dentro
 questo giro.
 
@@ -75,16 +75,16 @@ $$
 
 minuscola perché, a differenza della ricompensa aleatoria $R_{t+1}$ che
 l'ambiente estrae a ogni passo, è una funzione deterministica di stato e azione.
-Attenzione al doppio uso, che è una trappola vera: $r(s,a)$ **con i suoi
-argomenti** è sempre la ricompensa attesa, mentre la $r$ nuda che comparirà
+Attenzione al doppio uso, che è una trappola vera: $r(s,a)$ con i suoi
+argomenti è sempre la ricompensa attesa, mentre la $r$ nuda che comparirà
 nelle regole di aggiornamento di Monte Carlo e del Q-learning è la ricompensa
 *osservata* in una singola transizione, cioè una realizzazione di $R_{t+1}$.
 Confondere le due vuol dire credere che l'agente conosca una media che invece
 deve stimare.
 
-Infine $\gamma \in [0,1]$ è il fattore di sconto, che la sezione sul ritorno
+Infine $\gamma \in [0,1]$ è il fattore di sconto, che il paragrafo sul ritorno
 scontato riprende per esteso. Le transizioni
-**possono essere** stocastiche, cioè la stessa azione può condurre in stati
+possono essere stocastiche, cioè la stessa azione può condurre in stati
 diversi; il caso deterministico, come l'MDP in miniatura di qualche riga più
 avanti, è il caso particolare in cui $P(s'\mid s,a)$ vale $1$ su un solo stato.
 
@@ -96,8 +96,8 @@ Il nome non è un vezzo: rende onore ad Andrej Markov, il matematico russo che
 fra Otto e Novecento studiò le sequenze di eventi in cui ciò che viene dopo
 dipende soltanto da ciò che c'è adesso. E dice una richiesta molto precisa. Lo
 stato deve bastare da solo, deve cioè riassumere tutto quello che serve per
-decidere il futuro: **il futuro dipende solo dal presente, non dall'intera
-storia passata**.
+decidere il futuro: il futuro dipende solo dal presente, non dall'intera
+storia passata.
 
 `````{tab} Elementare
 
@@ -141,32 +141,32 @@ la proprietà vale: è esattamente ciò che farà il DQN impilando quattro frame
 consecutivi di un videogioco per catturare le velocità.
 
 Quel caso ha un nome, perché è la regola e non l'eccezione. Quando l'agente non
-osserva lo stato ma solo una sua **funzione parziale e rumorosa**, il modello
+osserva lo stato ma solo una sua funzione parziale e rumorosa, il modello
 si chiama **POMDP** (*Partially Observable MDP*): oltre a stati, azioni e
-ricompense c'è un insieme di **osservazioni** e una distribuzione
+ricompense c'è un insieme di osservazioni e una distribuzione
 $\Pr(o \mid s)$ che dice cosa si riesce a vedere. Un robot con sensori
 limitati, un sistema di raccomandazione che non conosce l'umore dell'utente, un
 giocatore di poker che non vede le carte altrui: tutti POMDP.
 
-Il fatto scomodo è che in un POMDP **la policy ottima non può dipendere solo
-dall'osservazione corrente**. La soluzione teorica è ragionare su una
+Il fatto scomodo è che in un POMDP la policy ottima non può dipendere solo
+dall'osservazione corrente. La soluzione teorica è ragionare su una
 distribuzione di probabilità sugli stati possibili (il *belief state*), che
 però vive in uno spazio continuo anche quando gli stati sono pochi, e rende il
-problema molto più duro. In pratica si fa una di due cose: si **impila una
-finestra** di osservazioni recenti, come il DQN con i quattro fotogrammi,
-oppure si dà all'agente una **memoria**,
-cioè una rete ricorrente il cui stato nascosto fa da riassunto approssimato di
-tutto ciò che si è visto finora. È la ragione per cui, nel capitolo sui *world
-model*, l'agente sceglie l'azione leggendo due cose e non una: ciò che vede in
-questo istante, e lo stato nascosto di una rete ricorrente che ha visto tutto
-il resto.
+problema molto più duro. In pratica si fa una di due cose: si impila una
+finestra di osservazioni recenti, come il DQN con i quattro fotogrammi, oppure
+si dà all'agente una memoria, cioè una rete ricorrente il cui stato nascosto fa
+da riassunto approssimato di tutto ciò che si è visto finora. È la ragione per
+cui, nel {doc}`capitolo sui world model </WorldModels/mondi-in-miniatura>`,
+l'agente sceglie l'azione leggendo due cose e non una: ciò che vede in questo
+istante, e lo stato nascosto di una rete ricorrente che ha visto tutto il
+resto.
 
 `````
 
 ## La policy: la strategia dell'agente
 
 Sapere in quali stati ci si può trovare non dice ancora *cosa fare*. La regola
-di comportamento dell'agente si chiama **policy**, che è la parola inglese per
+di comportamento dell'agente si chiama policy, che è la parola inglese per
 «politica»; e con «strategia» fanno tre parole per la stessa cosa.
 
 `````{tab} Elementare
@@ -198,7 +198,7 @@ la policy che massimizza la ricompensa accumulata nel tempo.
 ## Quanto vale il futuro: il ritorno scontato
 
 Una ricompensa da sola dice poco: conta la *somma* delle ricompense lungo tutto
-il percorso. Quella somma è il **ritorno** annunciato nella panoramica: non
+il percorso. Quella somma è il ritorno annunciato nella panoramica: non
 quanto si incassa adesso, ma quanto si incasserà in tutto da qui alla fine. Ma
 un premio subito vale più dello stesso premio fra dieci mosse, e quindi nella
 somma i premi lontani entrano ridotti: da qui il nome **ritorno scontato**, che
@@ -228,7 +228,7 @@ da sommare finiscono anche loro: lì lo sconto si può lasciare da parte.
 
 `````{tab} Superiore
 
-Il **ritorno** al tempo $t$ è la somma scontata delle ricompense future:
+Il ritorno al tempo $t$ è la somma scontata delle ricompense future:
 
 $$
 G_t = R_{t+1} + \gamma\, R_{t+2} + \gamma^2 R_{t+3} + \cdots
@@ -237,10 +237,10 @@ $$
 
 Con $0 \le \gamma < 1$, e se le ricompense sono limitate, la serie converge
 anche su orizzonti infiniti, il che rende il problema ben posto. È il motivo per
-cui nei compiti **continui**, quelli che non finiscono mai, lo sconto è
-obbligatorio. Nei compiti **episodici** la somma ha invece un numero finito di
-termini, perché l'episodio termina, e $\gamma = 1$ è ammesso: è il caso di metà
-degli esempi classici, compreso il *cliff walking* che incontreremo nella
+cui nei compiti continui, quelli che non finiscono mai, lo sconto è
+obbligatorio. Nei compiti episodici la somma ha invece un numero finito di
+termini, perché l'episodio termina, e $\gamma = 1$ è ammesso: è il caso di molti
+esempi classici, compreso il *cliff walking* che incontreremo nella
 sezione sul Q-learning. Nell'uno e nell'altro caso $\gamma$ non è un semplice
 trucco matematico: codifica *quanto lontano* nel futuro all'agente conviene
 guardare.
@@ -280,7 +280,7 @@ cioè in una partita giocata dall'inizio alla fine, dipende da come è andata
 quella volta: dalle mosse scelte, che possono essere state tirate a sorte, e
 dal mondo, che alla stessa mossa può rispondere in modi diversi (una pedalata
 non fa sempre lo stesso effetto). Rigiocando viene un numero diverso. Quello
-che serve è il ritorno **medio**: quanto promette, in media, trovarsi in una
+che serve è il ritorno medio: quanto promette, in media, trovarsi in una
 certa situazione e comportarsi in un certo modo. È il mestiere delle **funzioni
 valore**.
 
@@ -295,10 +295,10 @@ direttamente quale conviene.
 
 Una precisazione che serve subito, perché altrimenti le due ricette che vengono
 adesso sembrano tirare fuori un'idea dal nulla. «Quanto mi aspetto di
-raccogliere» dipende da **come gioco**: la stessa casella vale poco per chi si
+raccogliere» dipende da come gioco: la stessa casella vale poco per chi si
 muove a caso e molto per chi si muove bene, quindi non c'è un valore solo, ce
 n'è uno per ogni strategia. Nelle due ricette che vengono adesso, quando non si
-dice niente, si intende il valore **giocando al meglio**; dove invece interessa
+dice niente, si intende il valore giocando al meglio; dove invece interessa
 il valore di una strategia particolare, lo diremo.
 
 I due numeri, del resto, sono legati proprio dalla strategia: quanto vale una
@@ -423,7 +423,7 @@ riusando le risposte già trovate ai suoi pezzi piccoli.
 La ricetta, nel labirinto: scrivi $0$ su ogni casella. Poi, casella per
 casella, guarda tutte le mosse possibili e chiediti: "quanto rende ciascuna,
 contando la ricompensa immediata più il valore (scontato) della casella dove
-finirei?". Scrivi sulla casella il risultato della mossa **migliore**, perché
+finirei?". Scrivi sulla casella il risultato della mossa migliore, perché
 il valore che stiamo calcolando è quello di chi gioca al meglio. Finito il
 giro, ricomincia da capo con i numeri nuovi, e poi ancora, finché i numeri
 smettono di muoversi. A quel punto ogni casella dice quanto vale *davvero*, e
@@ -469,7 +469,7 @@ massimo.
 ## La value iteration all'opera
 
 Facciamo davvero i conti, sull'MDP in miniatura della {numref}`fig-mdp` e con
-uno sconto di $0{,}9$. Le transizioni sono **deterministiche**: la stessa mossa
+uno sconto di $0{,}9$. Le transizioni sono deterministiche: la stessa mossa
 porta sempre nella stessa casella, e non c'è nessuna media da fare fra esiti
 diversi. La ricetta si legge allora senza complicazioni: "quanto paga la mossa,
 più $0{,}9$ volte il valore della casella dove si finisce", e si tiene la mossa
@@ -482,7 +482,7 @@ $0$ anche sulle altre due caselle, tanto per avere un punto di partenza.
 Vale la regola di prima: dentro un giro si leggono i numeri con cui il giro è
 cominciato, e quindi l'ordine in cui si visitano le caselle non conta.
 
-**Primo giro.** Cominciamo da $s_1$, la casella accanto all'obiettivo. Scendere
+Primo giro. Cominciamo da $s_1$, la casella accanto all'obiettivo. Scendere
 paga $10$ subito e porta
 nell'obiettivo, che vale $0$: in tutto $10 + 0{,}9 \times 0 = 10$. Tornare
 indietro costa $1$ e porta in $s_0$, che per adesso vale $0$: in tutto
@@ -493,12 +493,12 @@ non si legge), quindi rende $0$; restare fermi costa $1$ e lascia dove si è,
 cioè in $s_0$, che vale $0$, quindi rende $-1$. Vince salire, e su $s_0$
 scriviamo $0$. Il premio è entrato in $s_1$, ma in $s_0$ non è ancora arrivato.
 
-**Secondo giro.** Su $s_1$ non cambia niente, resta $10$. Su $s_0$ invece salire
+Secondo giro. Su $s_1$ non cambia niente, resta $10$. Su $s_0$ invece salire
 adesso porta in una casella che vale $10$, quindi rende
 $0 + 0{,}9 \times 10 = 9$, contro il $-1$ di restare fermi: scriviamo $9$. Il
 premio ha fatto un altro passo all'indietro.
 
-**Terzo giro.** Rifacendo gli stessi conti non si muove più niente. Da $s_0$
+Terzo giro. Rifacendo gli stessi conti non si muove più niente. Da $s_0$
 salire rende ancora $9$, mentre restare fermi adesso costa $1$ e lascia in una
 casella che vale $9$, cioè $-1 + 0{,}9 \times 9 = 7{,}1$: meno di $9$, quindi
 si sale ancora. Da $s_1$ scendere rende ancora $10$, mentre tornare costa $1$ e
@@ -520,18 +520,18 @@ le ultime due righe sono uguali.
 
 `````{tab} Superiore
 
-**Prima iterazione.** In $s_1$: scendere rende $10 + 0{,}9 \times 0 = 10$,
+Prima iterazione. In $s_1$: scendere rende $10 + 0{,}9 \times 0 = 10$,
 tornare rende $-1 + 0{,}9 \times 0 = -1$; vince scendere, quindi
 $V_1(s_1) = 10$. In $s_0$: salire rende $0 + 0{,}9 \times 0 = 0$, restare
 $-1 + 0{,}9 \times 0 = -1$; quindi $V_1(s_0) = 0$. Il $+10$ dell'obiettivo è
 "entrato" in $s_1$, ma non ha ancora raggiunto $s_0$.
 
-**Seconda iterazione.** In $s_1$ non cambia nulla: $V_2(s_1) = 10$. In $s_0$,
+Seconda iterazione. In $s_1$ non cambia nulla: $V_2(s_1) = 10$. In $s_0$,
 però, salire ora rende $0 + 0{,}9 \times 10 = 9$ contro il $-1$ di restare:
 quindi $V_2(s_0) = 9$. Il valore dell'obiettivo è retrocesso di un altro
 passo verso l'inizio.
 
-**Terza iterazione.** Rifacendo i conti non si muove più niente: salire da
+Terza iterazione. Rifacendo i conti non si muove più niente: salire da
 $s_0$ rende ancora $9$, restare renderebbe $-1 + 0{,}9 \times 9 = 7{,}1$;
 scendere da $s_1$ rende ancora $10$, tornare $-1 + 0{,}9 \times 9 = 7{,}1$.
 Quindi $V_3(s_0) = 9$ e $V_3(s_1) = 10$: l'algoritmo si è fermato, e quel punto
@@ -717,7 +717,7 @@ prossime due sezioni prendono in ordine.
 Il primo è il più diretto che si possa immaginare. Si gioca una partita intera,
 si guarda quanti punti si sono fatti, e si usa quel totale per dare un voto a
 tutte le caselle attraversate. Poi un'altra partita, e un'altra ancora, e si fa
-la media. Sono i **metodi Monte Carlo**, dal nome del casinò, perché tutto si
+la media. Sono i metodi Monte Carlo, dal nome del casinò, perché tutto si
 regge sul ripetere molte volte una cosa che ogni volta va a finire
 diversamente.
 
@@ -727,9 +727,9 @@ numero provvisorio, magari sbagliato, ma è quello che si ha) e con quello
 corregge subito il numero della casella da cui era partito. Correggere una
 propria stima appoggiandosi a un'altra propria stima sembra un trucco da
 illusionisti, e per certi versi lo è; funziona, e si chiama apprendimento per
-**differenze temporali**, perché la correzione nasce dalla differenza fra
+differenze temporali, perché la correzione nasce dalla differenza fra
 quello che si credeva un istante fa e quello che si crede adesso. Il suo
-esemplare più famoso è il **Q-learning**, con cui il capitolo si chiude.
+esemplare più famoso è il Q-learning, con cui il capitolo si chiude.
 
 `````{tab} Elementare
 
@@ -738,16 +738,16 @@ esemplare più famoso è il **Q-learning**, con cui il capitolo si chiude.
 - Tutto il reinforcement learning sta dentro un giro solo: l'agente si trova in
   una situazione (il robot in una casella del labirinto), sceglie una mossa,
   finisce da qualche parte e incassa un punteggio. Poi si ricomincia.
-- La situazione deve **bastare da sola**: come la foto di una partita a
+- La situazione deve bastare da sola: come la foto di una partita a
   scacchi, deve dire tutto ciò che serve per decidere, senza che occorra sapere
   come ci si è arrivati. Se non basta, si allarga l'inquadratura; e dove non si
   può, come con le carte coperte degli altri, ci si fa un'idea di quello che c'è
   sotto e si gioca lo stesso.
-- La **strategia** è l'abitudine dell'agente (in questa casella vado a destra),
+- La strategia è l'abitudine dell'agente (in questa casella vado a destra),
   eventualmente truccata come un dado quando conviene provare altro. E il
   futuro pesa meno del presente: dieci euro oggi valgono più di dieci euro
   l'anno prossimo, e il fattore di sconto misura questa impazienza.
-- Il **valore** di una casella è il punteggio che ci si aspetta di raccogliere
+- Il valore di una casella è il punteggio che ci si aspetta di raccogliere
   da lì in avanti; il valore di una mossa fa lo stesso fissando anche la prima
   mossa. Ogni valore si appoggia al successivo come i pioli di una scala: è
   così che il premio dell'uscita risale il labirinto, una casella per volta.
@@ -769,19 +769,19 @@ esemplare più famoso è il **Q-learning**, con cui il capitolo si chiude.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **MDP** $(\mathcal{S},\mathcal{A},P,r,\gamma)$ formalizza un agente che
+- Un MDP $(\mathcal{S},\mathcal{A},P,r,\gamma)$ formalizza un agente che
   sceglie azioni, transita fra stati e raccoglie ricompense.
-- La **proprietà di Markov**: il futuro dipende solo dallo stato presente, non
+- La proprietà di Markov: il futuro dipende solo dallo stato presente, non
   dall'intera storia.
-- La **policy** $\pi(a\mid s)$ è la strategia; il **ritorno scontato** $G_t$
+- La policy $\pi(a\mid s)$ è la strategia; il ritorno scontato $G_t$
   pesa il futuro con $\gamma$.
-- $V^\pi$ e $Q^\pi$ misurano il ritorno *atteso*; l’**equazione di Bellman** li
+- $V^\pi$ e $Q^\pi$ misurano il ritorno *atteso*; l’equazione di Bellman li
   definisce in modo ricorsivo, ed è la base di ogni algoritmo di RL.
-- Con il modello ($P$ e $r$) noto, **value iteration** e **policy iteration**
+- Con il modello ($P$ e $r$) noto, value iteration e policy iteration
   calcolano valori e policy ottimi iterando Bellman; quando il modello manca
   bisogna imparare dall'esperienza, coi metodi Monte Carlo o con le differenze
   temporali.
-- Tutto l'impianto presuppone $\mathcal{S}$ **enumerabile**, una casella di
+- Tutto l'impianto presuppone $\mathcal{S}$ enumerabile, una casella di
   tabella per stato: $10^6$ stati si trattano, $10^{44}$ (scacchi) o $10^{170}$
   (Go) no. È l'ipotesi che il capitolo seguente dovrà abbandonare.
 ```

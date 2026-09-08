@@ -11,19 +11,19 @@ in quegli anni si sentiva dappertutto: adesso che ogni gesto lascia una traccia
 in rete, perché fare sondaggi lenti e costosi, quando i dati arrivano da soli?
 
 Poi arrivò l'inverno 2012–2013. A febbraio 2013 Google Flu Trends stimava una
-quota di visite mediche per sintomi influenzali **più che doppia** rispetto a
+quota di visite mediche per sintomi influenzali più che doppia rispetto a
 quella registrata dai CDC. E non era un incidente isolato: tra l'agosto 2011 e
-il settembre 2013 il servizio aveva sovrastimato l'influenza in **100
-settimane su 108**. Nel 2014 un gruppo di ricercatori firmò su *Science*
+il settembre 2013 il servizio aveva sovrastimato l'influenza in 100
+settimane su 108. Nel 2014 un gruppo di ricercatori firmò su *Science*
 l'autopsia del progetto, con un titolo diventato proverbiale: *The Parable of
 Google Flu* (la "parabola", nel senso del racconto che ammonisce
 {cite}`lazer2014parable`). Nell'agosto 2015 Google chiuse il servizio.
 
-Che cosa era andato storto? Il modello non si era rotto: era **invecchiato**.
+Che cosa era andato storto? Il modello non si era rotto: era invecchiato.
 Il modo di cercare in rete era cambiato, e Google stessa aggiornava il motore:
-dal giugno 2011 cominciò a **proporre altri termini da cercare** (a chi
+dal giugno 2011 cominciò a proporre altri termini da cercare (a chi
 chiedeva dell'influenza suggeriva di cercarne le cure), dal febbraio 2012 a
-**rispondere alle ricerche sui sintomi con le diagnosi possibili** (chi cercava
+rispondere alle ricerche sui sintomi con le diagnosi possibili (chi cercava
 «febbre» o «tosse» si vedeva proporre l'influenza). Erano due spinte verso
 l'influenza che arrivavano anche a chi stava benissimo, e la catena si chiude
 da sé: più suggerimenti, più ricerche sull'influenza; e siccome il modello
@@ -70,7 +70,7 @@ manciata, e sull'urna intera quella domanda non dice niente. È l'overfitting
 visto dal lato dell'urna, e ci si difende allo stesso modo, tenendo corto
 l'elenco delle domande che ci si concede prima di pescare.
 
-Una parola su questa urna, che ha anche un nome tecnico. La **distribuzione**
+Una parola su questa urna, che ha anche un nome tecnico. La distribuzione
 di una cosa è, semplicemente, il resoconto di quanto spesso ciascun valore
 capita: le palline rosse al 30% e le altre al 70% *sono* la distribuzione dei
 colori in quell'urna. «La distribuzione degli input è cambiata» vuol dire
@@ -85,7 +85,7 @@ significa.
 
 Formalmente, assumiamo che le coppie $(\mathbf{x}^{(i)}, y^{(i)})$ del
 training e quelle che il modello vedrà in produzione siano estratte in modo
-**indipendente e identicamente distribuito** (i.i.d.) da un'unica
+indipendente e identicamente distribuito (i.i.d.) da un'unica
 distribuzione congiunta $P(X, y)$. Sotto questa ipotesi l'errore misurato sul
 campione converge, per la legge dei grandi numeri, all'errore atteso di
 qualunque modello *fissato in anticipo*. Perché la stessa garanzia valga per
@@ -126,8 +126,8 @@ quotidiani, perché la diagnosi giusta suggerisce il rimedio giusto.
 i dati nuovi arrivano in una zona che l'addestramento ha quasi ignorato. Il
 grafico va letto in un modo nuovo rispetto a quelli visti finora, dove i punti
 erano esempi: qui sull'asse orizzontale c'è il valore di una caratteristica (i
-metri quadri, l'età, il numero di ricerche) e sulla verticale **quanto
-spesso** quel valore capita, così che dove la curva è alta ci sono tanti
+metri quadri, l'età, il numero di ricerche) e sulla verticale quanto
+spesso quel valore capita, così che dove la curva è alta ci sono tanti
 esempi e dove è schiacciata quasi nessuno. Due curve sfalsate vogliono dire
 che i valori frequenti ieri non sono quelli frequenti oggi.
 
@@ -145,7 +145,7 @@ visti.
 
 `````{tab} Elementare
 
-**Cambiano le domande** (*covariate shift*). Un'app che riconosce le piante,
+Cambiano le domande (*covariate shift*). Un'app che riconosce le piante,
 addestrata su foto scattate d'estate, viene usata d'inverno: luce bassa, rami
 spogli, neve sullo sfondo. Le foto che arrivano sono diverse da quelle viste a
 lezione, ma attenzione: un abete resta un abete. La *regola* che collega foto
@@ -154,7 +154,7 @@ ramo spoglio nella neve una risposta la dà lo stesso, e la dà su un caso che
 d'estate non poteva capitarle, allungando quello che sa oltre il punto in cui
 l'ha imparato.
 
-**Cambiano le proporzioni delle risposte** (*label shift*). Un modello aiuta a
+Cambiano le proporzioni delle risposte (*label shift*). Un modello aiuta a
 diagnosticare una malattia che, quando è stato addestrato, colpiva una persona
 su mille. Arriva un'epidemia e diventa una su cinquanta. I sintomi della
 malattia sono identici a prima: cambia solo *quanto spesso* la risposta giusta
@@ -168,7 +168,7 @@ sintomi molto chiari. Davanti a un caso dubbio resterà prudente e dirà «sano�
 il che era la scommessa giusta ieri ed è quella sbagliata oggi, che i malati
 sono venti volte tanti.
 
-**Cambia la regola stessa** (*concept shift*, o *concept drift*). Che cos'è lo
+Cambia la regola stessa (*concept shift*, o *concept drift*). Che cos'è lo
 spam? Le stesse parole ("offerta", "clicca qui", "solo per oggi") che nel 2005
 gridavano truffa, oggi arrivano da negozi legittimi; e intanto i truffatori
 hanno imparato a scrivere come una banca. Qui non cambiano solo le domande:
@@ -195,7 +195,7 @@ tre famiglie canoniche sono {cite}`quinonero2009dataset`:
   invernali hanno una distribuzione diversa da quelle estive, ma la mappa
   immagine $\to$ specie è la stessa. È il caso della figura: il modello è
   accurato dove $p_{\text{train}}(\mathbf{x})$ è densa, e viene interrogato
-  dove è quasi nulla (di fatto, un’**estrapolazione**).
+  dove è quasi nulla (di fatto, un’estrapolazione).
 - **Label shift** (o *prior probability shift*): cambia $P(y)$, resta
   invariata $P(X \mid y)$. La malattia si presenta come prima, ma la sua
   prevalenza è diversa. Un classificatore bayesiano tarato sul *prior* vecchio
@@ -214,8 +214,8 @@ etichette nuove tardano ad arrivare.
 
 Obiezione naturale: "ma noi le pagine sulla validazione le abbiamo studiate!
 Validation set, test chiuso nel cassetto, cross-validation…". Tutto vero, e
-tutto necessario. Ma c'è un punto cieco: **il validation set viene dallo
-stesso passato del training set**.
+tutto necessario. Ma c'è un punto cieco: il validation set viene dallo
+stesso passato del training set.
 
 `````{tab} Elementare
 
@@ -231,7 +231,7 @@ onesto; era la domanda a essere sbagliata. La validazione risponde a "quanto
 sbaglierò su dati *come questi*?", non a "quanto sbaglierò *domani*?".
 
 C'è però un modo di rendere onesta anche la domanda, e vale ogni volta che i
-dati hanno una data sopra: invece di tagliarli a caso, si taglia **nel tempo**.
+dati hanno una data sopra: invece di tagliarli a caso, si taglia nel tempo.
 Il modello studia su gennaio-ottobre e viene interrogato su novembre-dicembre,
 che al momento dell'addestramento erano il futuro. Se già lì peggiora, in
 mezzo al mondo vero peggiorerà di sicuro; se non peggiora non è una garanzia,
@@ -244,7 +244,7 @@ il domani.
 
 La stima di validazione approssima
 $\mathbb{E}_{(X,y)\sim P_{\text{train}}}\!\left[\ell\big(f_\theta(X), y\big)\right]$:
-un valore atteso **sotto la distribuzione di addestramento**. Se la
+un valore atteso sotto la distribuzione di addestramento. Se la
 distribuzione operativa è un'altra, questo numero non vincola in alcun modo
 l'errore reale: può restare ottimo mentre l'errore sotto $P_{\text{test}}$
 diverge.
@@ -266,23 +266,23 @@ Non esiste la bacchetta magica: nessun algoritmo rende un modello immune al
 tempo. I rimedi più efficaci non sono matematici ma *organizzativi*, e sono
 tre:
 
-1. **Sorvegliare il modello mentre lavora.** «In produzione» vuol dire proprio
+1. Sorvegliare il modello mentre lavora. «In produzione» vuol dire proprio
    questo: non più le prove in laboratorio, ma il modello acceso sul serio, con
    utenti veri e dati che arrivano ogni giorno. Un modello in produzione va
    trattato come un impianto, non come un quadro appeso, e le cose da tenere
    d'occhio sono tre: come sono fatte le domande che arrivano, come sono fatte
    le risposte che dà, e, appena si scopre qual era la risposta giusta, quanto
    ha sbagliato davvero.
-2. **Riaddestrare a intervalli regolari** (in gergo *retraining*) su dati
+2. Riaddestrare a intervalli regolari (in gergo *retraining*) su dati
    recenti, così che la "fotografia" non invecchi troppo.
-3. **Giudicarlo su dati freschi**: su un campione *nuovo*, raccolto dopo
+3. Giudicarlo su dati freschi: su un campione *nuovo*, raccolto dopo
    l'addestramento, non sull'ennesimo ritaglio del mucchio di esempi di
    partenza.
 
 `````{tab} Elementare
 
 Un modello in produzione è come la bilancia del mercato, che per legge va
-**ritarata periodicamente**, perché con l'uso e il tempo si starano tutte, ed
+ritarata periodicamente, perché con l'uso e il tempo si starano tutte, ed
 è meglio accorgersene prima del cliente. In pratica si tengono d'occhio tre
 cose. Gli ingressi, per cominciare. Se un filtro antispam riceveva email
 lunghe in media 80 parole e ora ne arrivano da 200, è un campanello. Poi le
@@ -320,7 +320,7 @@ fasce quasi vuote si moltiplicano appena si ripesa per più cose insieme, età e
 regione e titolo di studio e reddito, perché più le caselle sono strette e
 meno gente ci finisce dentro.
 
-Da qui viene anche il permesso di **passare la mano**. Davanti a un caso che
+Da qui viene anche il permesso di passare la mano. Davanti a un caso che
 non somiglia a nulla di già visto, meglio dire "non lo so, decida un umano"
 che sparare una risposta sicura e sbagliata.
 
@@ -360,8 +360,8 @@ distribuzione tendono a essere *confidenti e sbagliate* insieme.
 C'è un trucco pratico per accorgersene, e usa solo strumenti che già
 conosciamo. Si mescolano i dati di addestramento con quelli raccolti mentre il
 modello lavorava, si cancella qualsiasi altra etichetta e si addestra un
-secondo modello a rispondere a una domanda sola: **questo esempio viene da ieri
-o da oggi?** Se ci riesce, ieri e oggi sono distinguibili, cioè la deriva c'è; e
+secondo modello a rispondere a una domanda sola: questo esempio viene da ieri
+o da oggi? Se ci riesce, ieri e oggi sono distinguibili, cioè la deriva c'è; e
 il suo punteggio dice pure quanto è grossa.
 
 Il punteggio giusto da guardare qui è l'AUC della sezione sulle metriche, che
@@ -370,7 +370,7 @@ tirando a indovinare, cioè che i due mucchi gli sembrano identici, e $1$ vuol
 dire che li separa senza sbagliare un colpo.
 
 Attenzione però a leggere il silenzio. Un'AUC vicina a $0{,}5$ dice che le due
-epoche sono indistinguibili **per lui**, che è una conclusione più debole di
+epoche sono indistinguibili per lui, che è una conclusione più debole di
 «va tutto bene», per due ragioni. La prima è che questo detective guarda
 soltanto le domande in arrivo, non le risposte: del cambio di regola, dove le
 domande restano le stesse e a cambiare è la risposta giusta, non può
@@ -449,28 +449,28 @@ un effetto collaterale ma la struttura stessa del problema.
 ```{admonition} Da ricordare
 :class: important
 - Tutto il libro poggia su un'ipotesi tacita: che i dati di ieri e quelli di
-  domani vengano **dalla stessa urna**. Il mondo non ha firmato quel contratto.
+  domani vengano dalla stessa urna. Il mondo non ha firmato quel contratto.
 - Tre modi in cui l'urna cambia, e vanno distinti perché chiedono rimedi
-  diversi: **cambiano le domande** (l'app che riconosce le piante, addestrata
+  diversi: cambiano le domande (l'app che riconosce le piante, addestrata
   d'estate e usata d'inverno: le foto sono altre, ma un abete resta un abete);
-  **cambiano le proporzioni delle risposte** (la malattia rara che diventa
-  un'epidemia: i sintomi sono gli stessi, la loro frequenza no); **cambia la
-  regola** (le parole che nel 2005 gridavano truffa e oggi arrivano da un
+  cambiano le proporzioni delle risposte (la malattia rara che diventa
+  un'epidemia: i sintomi sono gli stessi, la loro frequenza no); cambia la
+  regola (le parole che nel 2005 gridavano truffa e oggi arrivano da un
   negozio serio). L'ultimo è il peggiore, perché nessuna quantità di dati
   vecchi può insegnare una regola nuova.
-- La **validazione classica non protegge**, perché studio, prove ed esame sono
+- La validazione classica non protegge, perché studio, prove ed esame sono
   tre ritagli della stessa vecchia fotografia: è guidare guardando lo
   specchietto retrovisore. Se i dati hanno una data, la prova onesta è
   addestrare sul passato e verificare sul futuro.
-- I rimedi che funzionano non sono formule ma abitudini: **sorvegliare** il
+- I rimedi che funzionano non sono formule ma abitudini: sorvegliare il
   modello mentre lavora (gli ingressi somigliano a quelli di ieri? le risposte
-  sono cambiate di colpo?), **riaddestrarlo** ogni tanto su dati recenti,
-  **giudicarlo su dati freschi**. E dargli il permesso di dire «non lo so».
-- Attenzione a quando è il modello stesso a **fabbricare i dati di domani**: se
+  sono cambiate di colpo?), riaddestrarlo ogni tanto su dati recenti,
+  giudicarlo su dati freschi. E dargli il permesso di dire «non lo so».
+- Attenzione a quando è il modello stesso a fabbricare i dati di domani: se
   mostra solo certi contenuti, vedrà solo clic su quelli; se nega il prestito,
   non saprà mai chi avrebbe restituito. Da lì in avanti non guarda più il
   mondo, guarda le conseguenze delle proprie decisioni.
-- **Google Flu Trends** è la parabola da ricordare: un modello eccellente sul
+- Google Flu Trends è la parabola da ricordare: un modello eccellente sul
   passato può invecchiare in silenzio, restando bravissimo agli esami che si dà
   da solo.
 ```
@@ -482,19 +482,19 @@ un effetto collaterale ma la struttura stessa del problema.
 ```{admonition} Da ricordare
 :class: important
 - Tutto il libro poggia su un'ipotesi tacita: dati di addestramento e dati
-  reali vengono dalla **stessa distribuzione** (i.i.d.). Il mondo non ha
+  reali vengono dalla stessa distribuzione (i.i.d.). Il mondo non ha
   firmato quel contratto.
-- Tre famiglie di **dataset shift**: *covariate shift* (cambia $P(X)$: le
+- Tre famiglie di dataset shift: *covariate shift* (cambia $P(X)$: le
   domande), *label shift* (cambia $P(y)$: le proporzioni delle risposte),
   *concept shift* (cambia $P(y \mid X)$, cioè la regola stessa; la barra
   verticale si legge «dato», quindi $P(y \mid X)$ è la probabilità della
   risposta *dato* l'input).
-- La **validazione classica non protegge**: validation e test sono ritagli
+- La validazione classica non protegge: validation e test sono ritagli
   dello stesso passato. Con dati temporali, meglio lo split temporale.
-- Rimedi onesti: **monitoraggio in produzione**, **retraining periodico**,
-  **validazione su dati freschi**; l’*importance weighting* corregge il
+- Rimedi onesti: monitoraggio in produzione, retraining periodico,
+  validazione su dati freschi; l’*importance weighting* corregge il
   covariate shift ma solo con supporti sovrapposti e densità stimabili.
-- Attenzione ai **feedback loop**: quando le decisioni del modello generano i
+- Attenzione ai feedback loop: quando le decisioni del modello generano i
   dati futuri (raccomandazioni, credito), il modello smette di osservare il
   mondo e inizia a osservare se stesso.
 - Google Flu Trends resta la parabola di riferimento: un modello eccellente

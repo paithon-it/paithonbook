@@ -15,7 +15,7 @@ subito dopo.
 ## `nn.Module`: il mattone di ogni rete
 
 In PyTorch qualunque pezzo di rete (un singolo strato, un blocco, il modello
-intero) è un **modulo**, cioè una classe che **eredita** da `nn.Module`. (Il
+intero) è un **modulo**, cioè una classe che eredita da `nn.Module`. (Il
 `nn` che si incontrerà in ogni riga di questo capitolo sta per *neural
 networks*: è la parte di PyTorch che contiene i pezzi con cui si montano le
 reti.) È la scelta di design più caratteristica della libreria: il modello non
@@ -106,7 +106,7 @@ appoggiava a quei controlli resta muto.
 `````
 
 `````{tab} Superiore
-`nn.Module` fornisce la contabilità dei **parametri**: ogni attributo che sia
+`nn.Module` fornisce la contabilità dei parametri: ogni attributo che sia
 a sua volta un modulo (o un `nn.Parameter`) viene registrato automaticamente,
 e `model.parameters()` restituisce l'iteratore su tutti i parametri
 registrati, anche su quelli con `requires_grad=False` (è quello che passeremo
@@ -174,7 +174,7 @@ Per MNIST la pila lineare basta e avanza.
 
 ## Quanti parametri ha questa rete?
 
-I **parametri** sono i numeri che il modello impara, quelli che l'addestramento
+I parametri sono i numeri che il modello impara, quelli che l'addestramento
 regolerà: pesi e bias tutti insieme, cioè le manopole di cui si è parlato
 nella sezione sui tensori. Contarli è il primo controllo da fare su qualunque
 modello, prima ancora di addestrarlo: se il numero non è quello che ci si
@@ -219,7 +219,7 @@ non sta nel modello: dove stia lo dicono le prossime righe.
 
 Il modello ora esiste, ma è ignorante: i pesi sono numeri casuali. Per
 addestrarlo serve prima di tutto un modo di misurare *quanto sbaglia*: la
-funzione di perdita, o **loss**. `torch.nn` le offre come moduli pronti, e le
+funzione di perdita, o loss. `torch.nn` le offre come moduli pronti, e le
 due che useremo più spesso coprono i due grandi casi: quando la risposta
 giusta è un numero, e quando è una scelta fra categorie.
 
@@ -270,7 +270,7 @@ e dieci, e paga secondo quanta ne aveva data a quella vera. Alla cifra vera il
 90%, e la multa è $0{,}11$; il 10%, cioè fiducia in parti uguali su tutte e
 dieci, tirando a indovinare, e la multa è $2{,}3$; l'1%, e la multa è $4{,}6$.
 La penalità non cresce in proporzione, precipita verso l'alto man mano che
-l'impiegata esclude la risposta vera. È la **cross-entropy**, la misura per
+l'impiegata esclude la risposta vera. È la cross-entropy, la misura per
 quando la risposta è una scelta fra categorie, quale cifra o quale animale. Di
 multa ce n'è una per modulo, e con dieci moduli in una volta esce la media di
 quelle dieci.
@@ -296,15 +296,15 @@ $$
 $$
 
 dove $i$ scorre gli $N$ esempi del batch e $k$ le $D$ uscite di ciascun
-esempio: la media è su **tutti gli elementi** del tensore, non sugli esempi.
-Quando l'uscita è una sola, come qui, le due letture coincidono e la
-distinzione non si vede; in regressione multi-uscita no. Chi somma i quadrati
-di un esempio e poi media sugli esempi ottiene un numero $D$ volte più grande
-di quello che restituisce il modulo: misurato su forme $(4, 3)$, $6{,}7676$
-contro $2{,}2559$. Il punto di minimo è lo stesso, la scala del gradiente no,
-e con essa il learning rate che serviva. Per la classificazione a $K$ classi,
-`nn.CrossEntropyLoss` combina in un solo modulo `LogSoftmax` e `NLLLoss`: dati
-i logit $z_1, \dots, z_K$ e la classe vera $c$ di un singolo esempio,
+esempio: la media è su tutti gli elementi del tensore, non sugli esempi.
+Quando l'uscita è una sola le due letture coincidono e la distinzione non si
+vede; in regressione multi-uscita no. Chi somma i quadrati di un esempio e poi
+media sugli esempi ottiene un numero $D$ volte più grande di quello che
+restituisce il modulo. Il punto di minimo è lo stesso, la scala del gradiente
+no, e con essa il learning rate che serviva. Per la classificazione a $K$
+classi, `nn.CrossEntropyLoss` combina in un solo modulo `LogSoftmax` e
+`NLLLoss`: dati i logit $z_1, \dots, z_K$ e la classe vera $c$ di un singolo
+esempio,
 
 $$
 \ell = -\log \hat{y}_c,
@@ -313,8 +313,8 @@ $$
 $$
 
 dove qui $k$ e $j$ scorrono le $K$ classi, non gli esempi, e $\ell$ è il costo
-di **una** predizione, quello che sta dentro la somma. Sul batch il modulo
-restituisce la $\mathcal{L}$, cioè la **media** di questi termini sugli $N$
+di una predizione, quello che sta dentro la somma. Sul batch il modulo
+restituisce la $\mathcal{L}$, cioè la media di questi termini sugli $N$
 esempi (`reduction='mean'`, il default): è il "numero solo" del codice, e qui
 la media è davvero per esempio, perché di termini ce n'è uno per esempio.
 Applicarla ai logit, e non a probabilità già normalizzate, non è un
@@ -329,8 +329,8 @@ shape $(N,)$ e dtype `int64`, non serve il one-hot.
 Le due penalità che abbiamo appena visto in cifre hanno anche una forma, e
 metterle una accanto all'altra dice in un colpo d'occhio quello che i numeri
 dicono uno alla volta ({numref}`fig-mse-vs-crossentropy`). Attenzione a come si
-legge: **sono due disegni distinti, con due cose diverse sull'asse
-orizzontale**, e non due curve sovrapposte. A sinistra scorre l'errore, cioè di
+legge: sono due disegni distinti, con due cose diverse sull'asse
+orizzontale, e non due curve sovrapposte. A sinistra scorre l'errore, cioè di
 quanto la predizione ha mancato il valore vero; a destra scorre la fiducia che
 il modello ha dato alla risposta giusta, da zero (l'ha esclusa) a uno (ne era
 certo). In verticale, in tutti e due, la penalità.
@@ -356,17 +356,17 @@ correggerlo, ed è l'argomento della sezione seguente.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Ogni pezzo di rete è un **modulo**: in `__init__` si elencano i componenti,
+- Ogni pezzo di rete è un modulo: in `__init__` si elencano i componenti,
   in `forward` si dice che strada fanno i dati. È normale codice Python, quindi
   ci si può mettere un `print` per sbirciare.
-- **`nn.Sequential`** è la scorciatoia quando la rete è una catena di
+- `nn.Sequential` è la scorciatoia quando la rete è una catena di
   montaggio; se ci sono rami o scorciatoie, si torna a scrivere `forward` a
   mano.
 - Uno strato che collega $d$ ingressi a $u$ neuroni ha $u \cdot d + u$ numeri
   da imparare: un peso per collegamento, più un aggiustamento per neurone.
   Contarli è il primo controllo da fare su qualunque modello, e costa una
   moltiplicazione per strato.
-- La **funzione di perdita** misura quanto il modello sbaglia: `nn.MSELoss`
+- La funzione di perdita misura quanto il modello sbaglia: `nn.MSELoss`
   quando la risposta è un numero, `nn.CrossEntropyLoss` quando è una scelta fra
   categorie. A quest'ultima si danno i punteggi grezzi, non le probabilità: la
   trasformazione la fa lei.
@@ -376,16 +376,16 @@ correggerlo, ed è l'argomento della sezione seguente.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Ogni pezzo di rete è un **`nn.Module`**: in `__init__` i componenti, in
+- Ogni pezzo di rete è un `nn.Module`: in `__init__` i componenti, in
   `forward` la strada dei dati (normale Python, ispezionabile riga per riga).
-- **`nn.Sequential`** è la scorciatoia per le catene semplici; per topologie
+- `nn.Sequential` è la scorciatoia per le catene semplici; per topologie
   con rami si scrive il `forward` a mano.
 - `nn.Linear(d, u)` calcola $\mathbf{W}\mathbf{x}+\mathbf{b}$ e ha
   $u \cdot d + u$ parametri; `model.parameters()` li consegna
   all'ottimizzatore, il componente che nella prossima sezione applicherà le
   correzioni.
 - Le loss sono moduli: `nn.MSELoss` per la regressione, `nn.CrossEntropyLoss`
-  per la classificazione; quest'ultima **vuole i logit**, la softmax ce l'ha
+  per la classificazione; quest'ultima vuole i logit, la softmax ce l'ha
   dentro.
 ```
 `````

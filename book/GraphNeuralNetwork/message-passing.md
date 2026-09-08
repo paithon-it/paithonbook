@@ -121,7 +121,7 @@ L'invarianza di $\bigoplus$ è ciò che garantisce l’equivarianza alla
 permutazione anticipata nell'introduzione: rinumerare i nodi non cambia i
 messaggi, perché una somma non ha un primo addendo. Ed è la stessa forma
 astratta («aggrega dai vicini, poi aggiorna») dello schema
-$\mathrm{AGGREGATE}$/$\mathrm{UPDATE}$ visto nell'overview del capitolo, qui
+$\mathrm{AGGREGATE}$/$\mathrm{UPDATE}$ visto in apertura del capitolo, qui
 resa esplicita nelle sue tre componenti apprendibili.
 
 `````
@@ -414,18 +414,20 @@ $\hat{\mathbf{A}}$ è autoaggiunta, quindi ha autovalori reali e una base di
 autovettori ortonormale, mentre $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$
 non è simmetrica e i suoi autovettori non sono ortogonali. È questa proprietà,
 e non il controllo delle scale, a rendere lecito tutto ciò che segue:
-decomporre un segnale sui nodi nelle sue «frequenze», moltiplicarle una per una
-e ricomporre con $\mathbf{U}^\top$ presuppone una base ortonormale, e senza di
-essa la lettura spettrale non sta in piedi.
+decomporre un segnale sui nodi nelle sue «frequenze» con $\mathbf{U}^\top$,
+moltiplicarle una per una e ricomporre con $\mathbf{U}$ presuppone una base
+ortonormale, e senza di essa la lettura spettrale non sta in piedi.
 
 Ed è anche la ragione per cui quella forma è caduta dal conto invece di
 essere scelta. Qui sta il secondo punto, l’origine spettrale. La GCN nasce come
 approssimazione al prim'ordine di una convoluzione definita nel dominio
 spettrale del grafo: i filtri polinomiali di Čebyšëv di Defferrard, Bresson e
 Vandergheynst {cite}`defferrard2016convolutional`. Troncare quel polinomio al
-primo grado e riordinare i termini restituisce esattamente $\hat{\mathbf{A}}$:
-è da qui che la normalizzazione simmetrica «cade» naturalmente, non è una
-scelta arbitraria. Rispetto al modello originale di Scarselli e colleghi
+primo grado e legare i due coefficienti che restano lascia
+$\mathbf{I}_N + \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2}$, che il
+*renormalization trick* sostituisce con $\hat{\mathbf{A}}$: è da lì che la
+normalizzazione simmetrica «cade» dal conto, e non è una scelta arbitraria.
+Rispetto al modello originale di Scarselli e colleghi
 {cite}`scarselli2009graph`, che iterava fino a un punto fisso, la GCN fissa un
 numero piccolo di strati e si addestra come una qualunque rete profonda.
 
@@ -670,7 +672,7 @@ smussa le differenze (in gergo un
 nessun errore di programmazione da andare a cercare. C'è da decidere quanti
 strati mettere, oppure da cambiare filtro.
 
-Il conto sta in dodici righe, e stampa insieme i quattro valori giro dopo giro,
+Il conto sta in poche righe, e stampa insieme i quattro valori giro dopo giro,
 i quattro autovalori e il divario che si consuma.
 
 ```python
@@ -769,9 +771,9 @@ l'oversmoothing.
 
 Con lo schema in mano, addestrare una GCN non richiede niente di nuovo: si
 misura quanto la rete sbaglia, si calcola in che direzione muovere i pesi per
-sbagliare meno e ci si muove di un passo, esattamente come nella sezione
-sull'addestramento delle reti (sono la *loss*, il *gradiente* e la
-*backpropagation* di quel capitolo). Cambia solo la forma del dato.
+sbagliare meno e ci si muove di un passo. Sono la *loss*, il *gradiente* e la
+*backpropagation* del {doc}`capitolo sulle reti neurali
+</RetiNeurali/overview>`. Cambia solo la forma del dato.
 
 Il banco di prova classico è **Cora**, ed è un grafo di articoli scientifici.
 I nodi sono circa 2700 articoli e gli archi le citazioni: c'è un arco ogni

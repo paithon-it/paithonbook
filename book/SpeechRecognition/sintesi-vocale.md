@@ -68,12 +68,12 @@ Perché tante tappe, invece di andare dritti dal testo all'onda? Perché l'onda
 è lunghissima. Dentro un computer è la fila di **campioni** di cui parlavamo
 nella sezione precedente: la pressione dell'aria misurata a intervalli
 regolari, migliaia di volte al secondo. In **Tacotron 2**, il modello che
-vedremo fra poco, un secondo di parlato sono ventiquattromila campioni in fila. Lo stesso
-secondo, disegnato come immagine a bande, sta in ottanta colonne: una ogni
-dodici millesimi e mezzo di secondo, e siccome in un secondo di millesimi ce
-ne sono mille, mille diviso dodici e mezzo fa appunto ottanta. (Anche le bande
-di ciascuna colonna sono ottanta: è una coincidenza dei numeri di Tacotron 2,
-non la stessa grandezza contata due volte.)
+vedremo fra poco, un secondo di parlato sono ventiquattromila campioni in
+fila. Lo stesso secondo, disegnato come immagine a bande, sta in ottanta
+colonne: una ogni dodici millesimi e mezzo di secondo, e siccome in un secondo
+di millesimi ce ne sono mille, mille diviso dodici e mezzo fa appunto ottanta.
+(Anche le bande di ciascuna colonna sono ottanta: è una coincidenza dei numeri
+di Tacotron 2, non la stessa grandezza contata due volte.)
 
 Ventiquattromila contro ottanta: trecento volte meno. Attenzione a cosa dice
 davvero questo trecento. Non dice che l'immagine sia trecento volte più
@@ -213,11 +213,11 @@ Le ricette migliori le scrisse **Dennis Klatt**, al MIT, e per scriverle prese
 a modello la propria voce: la misurò, e mise nelle regole le frequenze che ci
 aveva trovato. Non è una registrazione (nessun pezzo di Klatt finisce nella
 macchina) ma il risultato gli somiglia, ed è la voce che tutti conoscono come
-*Perfect Paul*. Klatt la mise nel **DECtalk** (1984), il sintetizzatore più
-famoso di quella generazione; e dallo stesso suo lavoro derivava anche un
-apparecchio di un'altra ditta, il CallText 5010 di Speech Plus, che ha una
-voce della stessa famiglia. Fu quest'ultimo a entrare nella storia, perché era
-quello di Stephen Hawking.
+*Perfect Paul*. Quelle regole, prese in licenza, finirono nel **DECtalk**
+(1984), il sintetizzatore più famoso di quella generazione; e dallo stesso suo
+lavoro derivava anche un apparecchio di un'altra ditta, il CallText 5010 di
+Speech Plus, che ha una voce della stessa famiglia. Fu quest'ultimo a entrare
+nella storia, perché era quello di Stephen Hawking.
 
 Hawking era il fisico più famoso del mondo, e una malattia degenerativa dei
 nervi gli aveva tolto prima l'uso delle gambe, poi delle mani, infine la voce.
@@ -299,8 +299,8 @@ una sintesi più veloce di ordini di grandezza (cioè decine o centinaia di
 volte, non del venti per cento), e senza balbuzie. In cambio, la melodia della
 frase va decisa in anticipo invece di venir fuori strada facendo: è per questo
 che FastSpeech 2 si porta dietro anche un pezzo che stima l'intonazione e uno
-che stima il volume, suono per suono. È la scelta tipica quando la voce deve
-rispondere all'istante.
+che stima il volume, colonna per colonna. È la scelta tipica quando la voce
+deve rispondere all'istante.
 
 `````
 
@@ -380,11 +380,12 @@ costruisce mattone su mattone. **WaveNet** (l'abbiamo già incontrata in
 {doc}`Generare suono e musica </Audio/generazione-audio>`, quando generava
 musica) lavora come un amanuense: scrive l'onda un campione alla volta,
 sedicimila al secondo, decidendo ognuno sulla base di quelli che ha già
-scritto. Qualità mai sentita prima, ma una lentezza proverbiale: *Parallel
-WaveNet*, il seguito dell'anno dopo, misura l'originale a centosettantadue
-campioni al secondo su una scheda grafica del 2017, cioè un minuto e mezzo di
-calcolo per un secondo di parlato. **HiFi-GAN** risolve il problema con
-una gara fra falsario ed esperti d'arte. È l'idea delle **GAN**, le reti
+scritto. Qualità mai sentita prima, ma una lentezza proverbiale. Il seguito
+dell'anno dopo, *Parallel WaveNet*, la cronometra su una scheda grafica di
+allora: centosettantadue campioni al secondo, su un'onda che ne conta
+ventiquattromila per ogni secondo di suono. Sono più di due minuti di calcolo
+per un secondo di parlato. **HiFi-GAN** risolve il problema con una gara fra
+falsario ed esperti d'arte. È l'idea delle **GAN**, le reti
 avversarie generative, a cui più avanti è dedicato un capitolo intero: qui
 basta il gioco. Una rete-falsario impara a produrre l'onda intera
 in un colpo solo, e delle reti-esperto provano a distinguere l'audio vero da

@@ -34,15 +34,15 @@ Questo capitolo è su come si costruisce la farfalla.
 Prima di parlare di rimedi conviene guardare la malattia, e per una volta si
 guarda con un conto che si fa a mente.
 
-Un modello ha dei **parametri**, e un parametro è semplicemente un numero che
-la rete ha imparato e che va tenuto da qualche parte. Si chiamano anche **pesi**, perché ciascuno dice quanto conta un collegamento
-fra due neuroni: due parole, una cosa sola, e da qui in avanti valgono l'una
-per l'altra.
+Un modello ha dei parametri, e un parametro è semplicemente un numero che la
+rete ha imparato e che va tenuto da qualche parte. Si chiamano anche pesi,
+perché ciascuno dice quanto conta un collegamento fra due neuroni: due parole,
+una cosa sola, e da qui in avanti valgono l'una per l'altra.
 
-Ogni numero costa spazio, e quanto costa lo dicono i **bit**, le cifre binarie
+Ogni numero costa spazio, e quanto costa lo dicono i bit, le cifre binarie
 con cui un calcolatore scrive tutto. Ogni bit in più raddoppia i valori diversi
 che si riescono a scrivere: con due bit quattro, con quattro sedici, con otto
-duecentocinquantasei. Otto bit fanno un **byte**, quindi un numero da trentadue
+duecentocinquantasei. Otto bit fanno un byte, quindi un numero da trentadue
 bit occupa quattro byte. Il resto è moltiplicazione.
 
 ```python
@@ -63,9 +63,9 @@ int8         8     7.0 GB   sì
 int4         4     3.5 GB   sì
 ```
 
-Le due righe agli estremi sono lo **stesso modello**, con gli stessi parametri,
+Le due righe agli estremi sono lo stesso modello, con gli stessi parametri,
 addestrato una volta sola. Nella prima non ci sta; nell’ultima ci starebbe
-quattro volte e mezzo. (La colonna di destra conta i soli **pesi**: per far
+quattro volte e mezzo. (La colonna di destra conta i soli pesi: per far
 girare davvero il modello serve dell’altro spazio, e la riga a sedici bit, che
 lascia due gigabyte scarsi di margine, nella pratica è più stretta di quanto
 sembri.) Fra le due non c’è nessun addestramento in più: c’è solo un modo
@@ -80,24 +80,24 @@ Un modello troppo grande si può stringere in tre modi, e sono tre operazioni
 che agiscono su cose diverse, non la stessa idea vista da tre angoli: si
 possono usare tutte e tre insieme.
 
-**Meno bit per parametro.** I parametri restano tutti, e resta la forma della
+Meno bit per parametro. I parametri restano tutti, e resta la forma della
 rete: cambia solo quante cifre si tengono di ciascun numero. È la leva del
 conto qui sopra, si chiama **quantizzazione**, ed è quella che rende di più
 per quanto costa.
 
-**Meno parametri.** La rete resta grande com’è, ma una parte dei suoi
+Meno parametri. La rete resta grande com’è, ma una parte dei suoi
 collegamenti viene messa a zero e non serve più tenerla né moltiplicarla. Si
 chiama **potatura**, ed è la leva che promette di più e mantiene meno, per una
 ragione che riguarda il modo in cui i calcolatori fanno i conti.
 
-**Un modello più piccolo che impara dal grande.** Qui non si stringe niente: si
+Un modello più piccolo che impara dal grande. Qui non si stringe niente: si
 costruisce un secondo modello, piccolo dall’inizio, e gli si insegna a
 comportarsi come il primo. Si chiama **distillazione**, ed è l’unica delle tre
 in cui il modello finale è un oggetto nuovo.
 
-Le tre si vedono meglio disegnate su una **matrice** di pesi
+Le tre si vedono meglio disegnate su una matrice di pesi
 ({numref}`fig-tre-leve`). Matrice è solo il nome che si dà a una griglia di
-numeri, righe e colonne come una tabella: uno strato di rete neurale **è** una
+numeri, righe e colonne come una tabella: uno strato di rete neurale è una
 di quelle griglie, e far lavorare lo strato vuol dire moltiplicare la griglia
 per i numeri che le arrivano. Sulla stessa griglia si vede subito che le tre
 leve agiscono su cose diverse: una sulle sfumature, una sulle caselle, una
@@ -116,7 +116,7 @@ svuota le caselle. Fare un modello più piccolo cambia la griglia.
 ```
 
 C’è poi una quarta cosa che si fa per andare più veloci, ed è di natura
-diversa: **non tocca il modello**. Riguarda come lo si fa lavorare mentre
+diversa: non tocca il modello. Riguarda come lo si fa lavorare mentre
 risponde, ed è materia di due capitoli che vengono più avanti, quello sui
 Transformer e quello su MLOps, che la costruiscono ciascuno per una ragione
 sua. L’ultima parte di questo capitolo dice quali sono, e perché stiano lì e
@@ -127,16 +127,16 @@ non qui.
 Il libro parla di efficienza in tre punti, e conviene distinguerli subito,
 perché è facile andarli a cercare nel posto sbagliato.
 
-Il {doc}`capitolo sulla **GPU** </GPU/overview>` spiega l’hardware: com’è fatta
+Il {doc}`capitolo sulla GPU </GPU/overview>` spiega l’hardware: com’è fatta
 la memoria di una scheda, perché i byte che viaggiano contano più dei conti che
 si fanno, come si scrive un calcolo che la sfrutti. È il piano di sotto.
 
-Il {doc}`capitolo su **MLOps** </MLOps/overview>` spiega il servizio: come si
+Il {doc}`capitolo su MLOps </MLOps/overview>` spiega il servizio: come si
 mette un modello dietro a un indirizzo a cui altri programmi possano
 rivolgersi, che cosa si promette a chi lo usa, come si misura se sta
 rispettando la promessa. È il piano di sopra.
 
-Questo capitolo sta in mezzo, e spiega il **meccanismo**: perché quattro bit
+Questo capitolo sta in mezzo, e spiega il meccanismo: perché quattro bit
 bastino, che cosa si rompe quando non bastano, che cosa perde davvero uno
 studente che imita il maestro. Non dice come si mette in produzione: dice
 perché la cosa che si mette in produzione funziona.
@@ -145,16 +145,16 @@ perché la cosa che si mette in produzione funziona.
 
 ```{admonition} Da ricordare
 :class: important
-- Addestrare e rispondere sono **due mestieri diversi**: il primo può essere
+- Addestrare e rispondere sono due mestieri diversi: il primo può essere
   lento quanto vuole, il secondo deve stare in una macchina e rispondere subito.
   Quasi sempre però si mette in produzione lo stesso identico modello che si è
   addestrato.
 - Il conto che spiega tutto: un modello da sette miliardi di parametri pesa 28
   GB se ogni parametro si scrive con trentadue bit, e 3,5 GB se se ne usano
-  quattro. È lo **stesso modello**, scritto in un altro modo.
-- Le tre leve per stringerlo sono davvero tre cose diverse: **meno bit** per
-  parametro (la quantizzazione), **meno parametri** (la potatura), oppure un
-  **modello nuovo e più piccolo** che impara dal grande (la distillazione).
+  quattro. È lo stesso modello, scritto in un altro modo.
+- Le tre leve per stringerlo sono davvero tre cose diverse: meno bit per
+  parametro (la quantizzazione), meno parametri (la potatura), oppure un
+  modello nuovo e più piccolo che impara dal grande (la distillazione).
 - Qualcosa si paga sempre, e la parte utile di questo capitolo è quella: non
   che le tre leve esistano, ma che cosa costano.
 ```
@@ -165,21 +165,21 @@ perché la cosa che si mette in produzione funziona.
 
 ```{admonition} Da ricordare
 :class: important
-- I **pesi** di un modello occupano $P \cdot b / 8$ byte, con $P$ il numero di
+- I pesi di un modello occupano $P \cdot b / 8$ byte, con $P$ il numero di
   parametri e $b$ i bit per parametro: passare da $b = 32$ a $b = 4$ è un
   fattore otto a parità di $P$. Non è tutta la memoria che serve, e il capitolo
   lo aggiunge man mano: la quantizzazione a gruppi si porta dietro le sue scale
   (il sei per cento in più a quattro bit con gruppi da sessantaquattro), e in
   servizio ci sono le attivazioni e la cache che cresce con la conversazione.
 - Le tre leve agiscono su fattori diversi dello stesso prodotto: la
-  **quantizzazione** su $b$, la **potatura** e la **distillazione** su $P$. Le
+  quantizzazione su $b$, la potatura e la distillazione su $P$. Le
   ultime due lo fanno però in modi opposti: la potatura svuota una matrice che
   resta della sua forma, la distillazione cambia la forma.
 - Sono componibili e si compongono davvero: un modello distillato si quantizza,
   e un modello quantizzato si pota. Quello che non è componibile è il
   **budget di errore**: ogni leva ne consuma un pezzo, e le perdite non si
   sommano in modo prevedibile.
-- Il tempo di risposta è governato dai **byte che si spostano**, non dai conti
+- Il tempo di risposta è governato dai byte che si spostano, non dai conti
   che si fanno, ed è il modello roofline del capitolo sulla GPU: stringere il
   modello aiuta perché sono meno byte, e non basta, perché scrivendo una parola
   alla volta si resta legati alla banda comunque.

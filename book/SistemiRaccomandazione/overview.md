@@ -15,8 +15,8 @@ mezzo c'è la media, e serve a riportare il risultato sulla scala delle stelle.
 Con due sole previsioni, sbagliate di 1 e di 3 stelle, il conto fa
 $(1 + 9) / 2 = 5$ e poi $\sqrt{5} \approx 2{,}24$: più della media semplice,
 che sarebbe 2, ed è proprio quello che si voleva. Questo metro ha un nome che
-ritroverai ovunque, **RMSE**, e la {doc}`sezione sulle metriche </MachineLearning/metriche>` lo definisce
-per
+ritroverai ovunque, **RMSE**, e la
+{doc}`sezione sulle metriche </MachineLearning/metriche>` lo definisce per
 esteso. Misurato così, l'errore di Cinematch valeva $0{,}9525$ stelle: togliere
 il 10% vuol dire scendere sotto $0{,}8572$, ed è quella la soglia dell'assegno.
 

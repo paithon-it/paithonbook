@@ -577,8 +577,8 @@ la qualità.
 - L'audio diventa così una griglia di token (tempo × profondità della
   cascata): con EnCodec a 24 kHz, 600 simboli per secondo a 6 kbps. Il bitrate è
   $N \cdot \log_2 K \cdot f_r$, ma non è una manopola monotona: nelle prove
-  MUSHRA 12 e 24 kbps sono indistinguibili, e a parità di bit codec diversi
-  distano decine di punti.
+  MUSHRA del gemello a 48 kHz, 12 e 24 kbps sono indistinguibili, e a parità di
+  bit codec diversi distano decine di punti.
 - Il decoder non ricostruisce, risintetizza: addestrato con un
   discriminatore è un generatore condizionato, e a bitrate bassi inventa il
   dettaglio fine in modo plausibile.

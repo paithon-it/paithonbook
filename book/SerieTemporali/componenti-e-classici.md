@@ -16,8 +16,9 @@ storie separatamente prima di provare a prevederle.
 ## Scomporre una serie: trend, stagionalità, residuo
 
 La prima mossa, più vecchia dei calcolatori, è la **decomposizione**: separare
-una serie nei suoi ingredienti. Ce ne sono tre, e la {numref}`fig-serie-decomposizione`
-li mostra impilati uno sotto l'altro sullo stesso asse del tempo.
+una serie nei suoi ingredienti. Ce ne sono tre, e la
+{numref}`fig-serie-decomposizione` li mostra impilati uno sotto l'altro sullo
+stesso asse del tempo.
 
 ```{figure} ../figures/serie-decomposizione.svg
 :name: fig-serie-decomposizione
@@ -476,22 +477,23 @@ che è successo davvero. Funziona per chi prevede la settimana giorno per
 giorno, mentre i giorni passano; a chi oggi deve consegnare la previsione di
 venerdì non serve, perché mercoledì non è ancora successo.
 
-Le due memorie si possono usare insieme: quella dei valori (l'AR appena visto)
-e quella degli urti (il MA). E siccome le serie vere quasi mai stanno ferme
-attorno a un valore, prima si raddrizza la serie e poi si modella ciò che
+Le due memorie si possono usare insieme: quella dei valori (l'AR appena visto) e
+quella degli urti (il MA). E insieme la linea piatta non c'è più: la memoria dei
+valori non finisce di colpo, si spegne piano, e la previsione scende verso il
+giorno normale senza mai arrivarci. Siccome poi le serie vere quasi mai stanno
+ferme attorno a un valore, prima si raddrizza la serie e poi si modella ciò che
 resta. Raddrizzare, qui, vuol dire il trucco già incontrato per le serie che
 camminano alla cieca: sostituire ogni valore con la variazione rispetto al
 giorno prima. (Quando invece la serie oscilla attorno a una retta, la retta si
 toglie prima, fuori dal modello.) Il tutto insieme si chiama **ARIMA**, il
-modello di punta di Box e Jenkins, e la sigla è
-la somma dei tre pezzi: **AR** la memoria dei valori, **I** (*integrated*) il
-raddrizzamento, **MA** la memoria degli urti. Dietro non ci sono che tre
-conteggi, quanti valori passati guardare, quante volte raddrizzare la serie,
-per quanti giorni far durare l'eco degli urti, e i manuali li scrivono in
-quest'ordine fra parentesi, ARIMA($p,d,q$). Se c'è anche una stagionalità, si
-rifà lo stesso gioco sul calendario (dicembre si confronta con lo scorso
-dicembre): è la
-variante **SARIMA**, dove la S sta per *seasonal*, stagionale.
+modello di punta di Box e Jenkins, e la sigla è la somma dei tre pezzi: **AR**
+la memoria dei valori, **I** (*integrated*) il raddrizzamento, **MA** la memoria
+degli urti. Dietro non ci sono che tre conteggi, quanti valori passati guardare,
+quante volte raddrizzare la serie, per quanti giorni far durare l'eco degli
+urti, e i manuali li scrivono in quest'ordine fra parentesi, ARIMA($p,d,q$). Se
+c'è anche una stagionalità, si rifà lo stesso gioco sul calendario (dicembre si
+confronta con lo scorso dicembre): è la variante **SARIMA**, dove la S sta per
+*seasonal*, stagionale.
 
 `````
 
@@ -569,7 +571,8 @@ l’ARIMA($p,d,q$) {cite}`box2015time`. Le tre lettere:
 
 - AR($p$), l'ordine autoregressivo, quanti valori passati;
 - I($d$), *integrated*, quante volte si differenzia la serie per renderla
-  stazionaria ($d=1$ toglie un trend lineare, $d=2$ una curvatura);
+  stazionaria ($d=1$ basta per una passeggiata aleatoria, con o senza
+  deriva; $d=2$ serve quando a camminare a caso è anche la pendenza);
 - MA($q$): l'ordine a media mobile, quanti errori passati.
 
 In pratica si differenzia la serie $d$ volte, si adatta un ARMA($p,q$) al
@@ -682,11 +685,11 @@ per cento, la linea di base.
 
 Chiederli due per volta cambia registro: $1{,}49$, cioè due quinti in meno
 della linea piatta, con uno scarto di $-0{,}99$ che è più basso in tutte e
-dodici le serie. Vale la pena guardare i due margini d'errore accanto alle
-medie, che sono la ragione per cui questi due confronti si leggono in modo
-diverso: la differenza fra $2{,}45$ e $2{,}49$ è piccola ma sistematica, quella
-fra $2{,}45$ e $1{,}49$ è grossa e sistematica, e nessuna delle due si sarebbe
-potuta chiamare così guardando una serie sola.
+dodici le serie. I due margini d'errore accanto alle medie sono la ragione per
+cui questi due confronti si leggono in modo diverso: la differenza fra $2{,}45$
+e $2{,}49$ è piccola ma sistematica, quella fra $2{,}45$ e $1{,}49$ è grossa e
+sistematica, e nessuna delle due si sarebbe potuta chiamare così guardando una
+serie sola.
 
 ## Scegliere l'ordine, e poi verificare i residui
 
@@ -762,17 +765,17 @@ e non due: concordi in un senso, concordi nell'altro, e i due casi in cui non
 concordano, che sono i più informativi, perché dicono che con questi dati la
 domanda non si decide e conviene guardare il grafico.
 
-Va aggiunto che il verdetto dipende dai termini deterministici che si
-mettono nella regressione ausiliaria del test. Si riprenda la serie di prova di
-poco fa, una retta più rumore: di radici unitarie non ne ha nessuna. Con la sola
-costante l'ADF non rifiuta (su venti repliche di quella serie il $p$ medio è
-$0{,}96$), e chi segue la ricetta alla lettera differenzia, cioè
-sovradifferenzia. Mettendo il trend nella specificazione, la stessa serie sugli
-stessi dati dà il verdetto opposto, con un $p$ praticamente nullo. Lo stesso
-vale per il KPSS, che a seconda della specificazione ha per ipotesi nulla la
-stazionarietà attorno a una costante oppure attorno a un trend: di entrambi i
-test va saputo quale delle due domande si è posta. I test non hanno difetti:
-stanno rispondendo a domande diverse.
+Il verdetto dipende anche dai termini deterministici che si mettono nella
+regressione ausiliaria del test. Si riprenda la serie di prova di poco fa, una
+retta più rumore: di radici unitarie non ne ha nessuna. Con la sola costante
+l'ADF non rifiuta (su venti repliche di quella serie il $p$ medio è $0{,}96$), e
+chi segue la ricetta alla lettera differenzia, cioè sovradifferenzia. Mettendo
+il trend nella specificazione, la stessa serie sugli stessi dati dà il verdetto
+opposto, con un $p$ praticamente nullo. Lo stesso vale per il KPSS, che a
+seconda della specificazione ha per ipotesi nulla la stazionarietà attorno a una
+costante oppure attorno a un trend: di entrambi i test va saputo quale delle due
+domande si è posta. I test non hanno difetti: stanno rispondendo a domande
+diverse.
 
 **2. Scegliere gli ordini con un criterio di informazione.** Si stimano tutte
 le combinazioni di $(p,q)$ entro una griglia e si prende quella che minimizza
@@ -842,12 +845,12 @@ $$
 
 con $n$ il numero di osservazioni, $\ell$ il numero di ritardi esaminati e
 $\hat\rho_k$ l'autocorrelazione campionaria al ritardo $k$. Sotto l'ipotesi
-nulla di assenza di autocorrelazione, $Q$ si distribuisce *asintoticamente*
-come una $\chi^2$: è un'approssimazione per $n$ grande, e regge se i ritardi
+nulla di assenza di autocorrelazione, $Q$ si distribuisce *asintoticamente* come
+una $\chi^2$: è un'approssimazione per $n$ grande, e regge se i ritardi
 esaminati sono pochi rispetto alle osservazioni. Quanti: la regola d'uso è
 $\ell = 10$ su una serie senza stagionalità e $\ell = 2m$ su una che ce l'ha,
 comunque non oltre $n/5$, e comunque più di $p+q$, altrimenti i gradi di libertà
-del prossimo paragrafo diventano zero o negativi
+con cui il test si legge diventano zero o negativi
 {cite}`hyndman2021forecasting`.
 
 Con quanti gradi di libertà, però, cambia tutto. Applicato ai residui di
@@ -1626,15 +1629,24 @@ print(f"ultima osservazione x_T = {x[-1]:.3f}")
 print(f"previsione   x_(T+1)    = {x_next:.3f}")
 ```
 
-Il $\phi$ stimato cade vicino a $0{,}6$ e la costante vicino a $4$: con
-cinquecento osservazioni i minimi quadrati ricostruiscono bene i parametri del
-processo che ha generato la serie. La previsione a un passo è semplicemente la
-formula del modello applicata all'ultimo valore osservato. Da qui in avanti si
-può ripetere il conto in avanti per prevedere più giorni (quanto lontano si
-guarda si chiama **orizzonte**). Ricadendo, però, in un guaio: dal secondo
-giorno in poi il conto non parte più da un valore osservato, parte da una
-previsione, cioè da un numero che può già essere sbagliato, e quello sbaglio si
-trascina fino in fondo. La sezione seguente lo riprende per esteso.
+```text
+phi vero = 0.60   phi stimato = 0.635
+c vero   = 4.00   c stimato   = 3.636
+ultima osservazione x_T = 7.363
+previsione   x_(T+1)    = 8.315
+```
+
+Il $\phi$ stimato cade a $0{,}635$ e la costante a $3{,}636$, uno un po’ alto e
+l’altra un po’ bassa, e i due scarti vanno insieme: frazione e quota fissa
+entrano tutte e due nella media di lungo periodo $c/(1-\phi)$, ed è quella che
+con cinquecento osservazioni i minimi quadrati ricostruiscono bene. La
+previsione a un passo è semplicemente la formula del modello applicata
+all'ultimo valore osservato. Da qui in avanti si può ripetere il conto in
+avanti per prevedere più giorni (quanto lontano si guarda si chiama
+**orizzonte**). Ricadendo, però, in un guaio: dal secondo giorno in poi il
+conto non parte più da un valore osservato, parte da una previsione, cioè da un
+numero che può già essere sbagliato, e quello sbaglio si trascina fino in
+fondo. La sezione seguente lo riprende per esteso.
 
 `````{tab} Elementare
 

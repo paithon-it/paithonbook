@@ -30,9 +30,9 @@ già George Udny Yule nel 1927, sulle macchie solari. È però la prima
 procedura che dica come scegliere il modello, invece di lasciare che se ne
 inventi uno diverso ogni volta. Mezzo secolo dopo, lo statistico greco Spyros
 Makridakis mette alla prova quei metodi su larga scala con le **competizioni
-M**, gare pubbliche di previsione su decine e poi centinaia di migliaia di
-serie reali {cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica
-quanto morale: si prevede, sì, ma con umiltà. Nessun modello domina sempre, e
+M**, gare pubbliche di previsione su migliaia e poi su centomila serie reali
+{cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica quanto
+morale: si prevede, sì, ma con umiltà. Nessun modello domina sempre, e
 dichiarare *quanto* siamo incerti conta quanto la previsione stessa.
 
 ## Che cos'è una serie temporale
@@ -346,7 +346,7 @@ attorno a una retta) si stima la retta e si tengono i residui. La sezione
 seguente mostra perché scambiare le due non è affatto neutro. Per decidere
 esistono test appositi, ADF e KPSS, che hanno ipotesi nulle opposte e vanno
 letti insieme; li usa, al suo primo passo, la procedura in tre tempi di Box e
-Jenkins. Nessuno dei due, però,
+Jenkins nella forma in cui la si pratica oggi. Nessuno dei due, però,
 «dimostra» la stazionarietà, esattamente come nessuna diagnostica dimostra che
 un modello sia giusto: dicono soltanto se i dati contengono prove contro di
 essa.
@@ -381,7 +381,8 @@ senza barare col futuro.
    (è il *backtesting*). Poi come si trasforma una serie in una tabella di
    quelle: una colonna per il valore di ieri, una per la media degli ultimi
    giorni, una per il giorno della settimana, e a quel punto la sanno leggere
-   tutti i modelli del {doc}`capitolo sul Machine Learning </MachineLearning/overview>`.
+   tutti i modelli del
+   {doc}`capitolo sul Machine Learning </MachineLearning/overview>`.
 3. **Forecasting neurale**: le reti che possono guardare solo all'indietro
    (TCN), quelle che invece di un numero prevedono un ventaglio di futuri
    possibili (DeepAR), i Transformer adattati alle serie, e infine i

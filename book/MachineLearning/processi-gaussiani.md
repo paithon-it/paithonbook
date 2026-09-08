@@ -9,9 +9,9 @@ rispondono alla prima maniera: un numero, prendere o lasciare. Ne esiste
 uno che risponde alla seconda: il **processo
 gaussiano**.
 
-Il nome, per una volta, si spiega in una riga. **Gaussiano** perché tutto ciò
+Il nome, per una volta, si spiega in una riga. Gaussiano perché tutto ciò
 che il modello dice ha la forma della curva a campana di Gauss, quella con un
-valore centrale e un margine attorno. E **processo** non nel senso del
+valore centrale e un margine attorno. E processo non nel senso del
 tribunale né del tempo che scorre: è il termine con cui in statistica si
 indica un'intera famiglia di quantità imparentate fra loro, qui i valori che la
 curva vera può assumere in ogni punto.
@@ -33,8 +33,8 @@ degli strumenti più eleganti del machine learning
 
 La regressione lineare dell'inizio del capitolo impara *una* curva: la retta
 di best fit, e basta. Il processo gaussiano fa una scelta più ambiziosa e più
-onesta: invece di impegnarsi su una sola curva, tiene in mano **tutte le curve
-compatibili con i dati**, ciascuna con il suo grado di plausibilità.
+onesta: invece di impegnarsi su una sola curva, tiene in mano tutte le curve
+compatibili con i dati, ciascuna con il suo grado di plausibilità.
 
 `````{tab} Elementare
 
@@ -66,7 +66,7 @@ indovinare.
 
 `````{tab} Superiore
 
-Un processo gaussiano è una distribuzione di probabilità **sulle funzioni**:
+Un processo gaussiano è una distribuzione di probabilità sulle funzioni:
 
 $$
 f \sim \mathcal{GP}\big(\mu(\mathbf{x}),\, k(\mathbf{x}, \mathbf{x}')\big),
@@ -74,7 +74,7 @@ $$
 
 dove $\mu(\mathbf{x})$ è la funzione media (spesso posta a zero dopo aver
 centrato i dati) e $k(\mathbf{x}, \mathbf{x}')$ è la funzione di covarianza, o
-**kernel**. La proprietà che
+kernel. La proprietà che
 lo definisce: per *qualunque* insieme finito di $q$ punti
 $\mathbf{x}_1, \dots, \mathbf{x}_q$, il vettore dei valori
 $\big(f(\mathbf{x}_1), \dots, f(\mathbf{x}_q)\big)$ ha distribuzione
@@ -91,7 +91,7 @@ restringe il fascio, e il risultato è ancora un processo gaussiano
 
 Che cosa tiene insieme il fascio? Da dove sa, il modello, che le curve devono
 essere lisce e non impazzite? Tutta la "personalità" di un processo gaussiano
-sta in un unico ingrediente, il **kernel**: una regola che dice quanto i
+sta in un unico ingrediente, il kernel: una regola che dice quanto i
 valori in due punti devono somigliarsi.
 
 `````{tab} Elementare
@@ -102,7 +102,7 @@ duecento chilometri più giù, quella lettura ci dice ormai poco. Il kernel mett
 la faccenda in numeri fra 0 e 1: quasi 1 per due città a un passo, quasi 0 per
 due lontanissime.
 
-Fin dove arriva una lettura lo decide una manopola, il **raggio d'influenza**.
+Fin dove arriva una lettura lo decide una manopola, il raggio d'influenza.
 Corto, Modena non impegna Bologna, che resta libera di segnare qualunque cosa,
 e fra un termometro e l'altro la curva zigzaga. Lungo, Modena tiene stretta
 Bologna e Bologna tiene Ferrara: una catena del genere non fa scatti bruschi, e
@@ -143,7 +143,7 @@ valico, con due misure lì accanto, resta stretta e sbagliata.
 
 `````{tab} Superiore
 
-Il kernel più usato è l’**RBF** (*Radial Basis Function*, o gaussiano):
+Il kernel più usato è l’RBF (*Radial Basis Function*, o gaussiano):
 
 $$
 k(\mathbf{x}, \mathbf{x}') = \sigma^2
@@ -179,9 +179,9 @@ kernel), $\mathbf{I}$ la matrice identità e $m$ il numero di esempi.
 
 Il primo termine premia l'aderenza ai dati, il secondo (il logaritmo del
 determinante) penalizza i kernel «capaci», quelli che ammettono troppe funzioni
-diverse. È il **rasoio di Occam scritto dentro il criterio**: qui non serve un
+diverse. È il rasoio di Occam scritto dentro il criterio: qui non serve un
 validation set per punire la complessità, ci pensa la formula. Con una
-avvertenza pratica: quella funzione **non è concava** negli iperparametri e ha
+avvertenza pratica: quella funzione non è concava negli iperparametri e ha
 massimi locali {cite}`rasmussen2006gaussian`, ed è la ragione per cui
 l'ottimizzazione si fa ripartire cinque volte da inizializzazioni sorteggiate
 (`n_restarts_optimizer=5` in `scikit-learn`, che di suo non ne fa nessuna: il
@@ -257,7 +257,7 @@ nuovi, $\mathbf{K}_{**}$ quella tra i punti nuovi,
 $\sigma_n^2$ la varianza del rumore di misura, $\mathbf{y}$ il vettore delle
 osservazioni e $\mathbf{I}$ la matrice identità. Le
 due formule si leggono bene. La media $\boldsymbol{\mu}_*$ è una
-**combinazione pesata delle osservazioni** $\mathbf{y}$, con pesi dettati dal
+combinazione pesata delle osservazioni $\mathbf{y}$, con pesi dettati dal
 kernel: il kriging di Krige, appunto. La covarianza $\boldsymbol{\Sigma}_*$ è
 la varianza del prior ($\mathbf{K}_{**}$)
 *meno*
@@ -265,10 +265,10 @@ ciò che i dati spiegano: vicino ai dati la sottrazione mangia quasi tutto e
 l'incertezza crolla; lontano non sottrae nulla e si torna all'incertezza del
 prior.
 
-La banda al 95% **sulla funzione** è $\boldsymbol{\mu}_* \pm
+La banda al 95% sulla funzione è $\boldsymbol{\mu}_* \pm
 2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*)}$, ed è quella che
 `scikit-learn` restituisce con `return_std=True`. Attenzione a non confonderla
-con l'intervallo su una **nuova osservazione**, che è un'altra cosa: lì al
+con l'intervallo su una nuova osservazione, che è un'altra cosa: lì al
 posteriore sulla funzione va aggiunto il rumore di misura, cioè
 $\boldsymbol{\mu}_* \pm 2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*) +
 \sigma_n^2}$. La differenza non è cosmetica: dove le misure si infittiscono la
@@ -310,7 +310,7 @@ y_train = np.sin(X_train).ravel() + rng.normal(0, 0.1, size=8)
 # Kernel RBF; alpha è la varianza del rumore delle osservazioni
 kernel = 1.0 * RBF(length_scale=1.0)
 gp = GaussianProcessRegressor(kernel=kernel, alpha=0.1**2,
-                              n_restarts_optimizer=5)
+                              n_restarts_optimizer=5, random_state=0)
 gp.fit(X_train, y_train)          # stima anche sigma e l dai dati
 
 # Previsione CON incertezza: media e deviazione standard
@@ -330,7 +330,7 @@ x = 8.0  ->  f(x) = +0.12 ± 1.38
 ```
 
 La riga chiave è `return_std=True`: accanto a ogni previsione arriva la sua
-**deviazione standard**, cioè di quanto il valore vero, tipicamente, si scosta
+deviazione standard, cioè di quanto il valore vero, tipicamente, si scosta
 dalla stima. Nella stampa la raddoppiamo, e non a caso: in una curva a campana,
 fra due deviazioni standard sotto la media e due sopra cade circa il $95\%$ dei
 casi. È una proprietà della campana, non una scelta nostra, ed è la ragione per
@@ -346,13 +346,13 @@ allarga già a $\pm 0{,}36$, quasi il doppio, pur restando utile. A $x = 8{,}0$,
 fuori da tutto ciò che il modello ha visto, si spalanca a $\pm 1{,}38$, cioè
 quasi quanto era prima di vedere qualsiasi dato. È la lezione della sezione:
 l'incertezza non
-distingue «dentro» da «fuori», distingue **vicino a un dato** da **lontano da
-un dato**. E il modello non finge di sapere: allarga le braccia.
+distingue «dentro» da «fuori», distingue vicino a un dato da lontano da
+un dato. E il modello non finge di sapere: allarga le braccia.
 
 ## Il conto da pagare, e dove conviene
 
 Tanta eleganza ha un prezzo, e va detto senza giri di parole: il processo
-gaussiano **regge male i dati tanti**.
+gaussiano regge male i dati tanti.
 
 `````{tab} Elementare
 
@@ -363,11 +363,11 @@ qualche centinaio di pazienti funziona benissimo; verso le decine di migliaia
 comincia a non stare più in piedi; con un milione non se ne parla.
 
 E il conto è peggiore di quanto l'immagine suggerisca. Confrontare tutte le
-coppie sarebbe già un lavoro che cresce col **quadrato** del numero di
+coppie sarebbe già un lavoro che cresce col quadrato del numero di
 pazienti: raddoppiandoli, le coppie quadruplicano. Ma non basta guardarle una
 per una: quelle somiglianze vanno risolte tutte insieme, come un sistema di
 equazioni in cui ogni riga tira le altre, e questo aggiunge un fattore. Il
-risultato è che il lavoro cresce col **cubo**: raddoppiare i dati lo moltiplica
+risultato è che il lavoro cresce col cubo: raddoppiare i dati lo moltiplica
 per otto ($2 \times 2 \times 2$), e passare da mille a diecimila punti lo
 moltiplica per mille. È il motivo per cui non
 addestreremo mai un processo gaussiano sulle foto di tutto internet.
@@ -396,11 +396,11 @@ aggiunge la sensibilità alla scelta del kernel, che incorpora ipotesi forti
 
 `````
 
-Il suo territorio, allora, è l'opposto del big data: **pochi dati costosi**.
+Il suo territorio, allora, è l'opposto del big data: pochi dati costosi.
 Esperimenti di laboratorio dove ogni misura vale una giornata di lavoro,
 simulazioni ingegneristiche da ore di calcolo l'una, prove sul campo che non
-si possono ripetere. E il caso che abbiamo già incontrato: l’**ottimizzazione
-bayesiana degli iperparametri** {cite}`snoek2012practical`, dove ogni "dato" è
+si possono ripetere. E il caso che abbiamo già incontrato: l’ottimizzazione
+bayesiana degli iperparametri {cite}`snoek2012practical`, dove ogni "dato" è
 un intero addestramento e il processo gaussiano fa da mappa (stima più
 incertezza) per decidere quale configurazione provare dopo.
 {doc}`Trovare gli iperparametri <iperparametri>` racconta quel meccanismo dal
@@ -410,22 +410,22 @@ lato di chi lo usa, e il processo gaussiano ne è il motore.
 
 ```{admonition} Da ricordare
 :class: important
-- Un processo gaussiano non sceglie **una** curva: tiene in mano tutte quelle
+- Un processo gaussiano non sceglie una curva: tiene in mano tutte quelle
   che i dati non hanno ancora escluso, e per ogni punto risponde con due
   numeri, la stima e quanto fidarsene. «Domani tra 21 e 27», non «domani 24».
-- L'ingrediente che tiene insieme il fascio è la regola del buon senso: **punti
-  vicini hanno valori simili**. Quanto lontano arrivi l'effetto di una misura
+- L'ingrediente che tiene insieme il fascio è la regola del buon senso: punti
+  vicini hanno valori simili. Quanto lontano arrivi l'effetto di una misura
   lo decide una sola manopola, il raggio d'influenza: corto, curve nervose;
   lungo, curve morbide.
-- La **banda d'incertezza** si stringe accanto ai dati e si riapre dove
+- La banda d'incertezza si stringe accanto ai dati e si riapre dove
   mancano, compresi i buchi *in mezzo* alle misure. A distinguere una
   previsione affidabile da una azzardata è avere o non avere un dato vicino,
   più che stare dentro o fuori dall'intervallo esplorato.
 - Una banda larghissima vale come ammissione: il modello dichiara di non
   sapere, e pochi altri metodi lo fanno.
-- Il prezzo è che **non scala**: a ogni previsione riapre l'archivio di tutte
+- Il prezzo è che non scala: a ogni previsione riapre l'archivio di tutte
   le misure e le confronta fra loro, e raddoppiare i dati moltiplica il lavoro
-  per otto. È perfetto quando i dati sono **pochi e costosi** (un esperimento,
+  per otto. È perfetto quando i dati sono pochi e costosi (un esperimento,
   una simulazione, un addestramento intero da provare) e impensabile quando
   sono milioni.
 ```
@@ -437,21 +437,21 @@ lato di chi lo usa, e il processo gaussiano ne è il motore.
 ```{admonition} Da ricordare
 :class: important
 - Un processo gaussiano non impara una curva sola: mantiene una distribuzione
-  su **tutte le curve compatibili con i dati** e per ogni punto restituisce
+  su tutte le curve compatibili con i dati e per ogni punto restituisce
   una media e un'incertezza; «tra 21 e 27», non «24 e basta».
-- Il **kernel** codifica la somiglianza ("punti vicini hanno valori simili");
+- Il kernel codifica la somiglianza ("punti vicini hanno valori simili");
   la lunghezza-scala $\ell$ decide fin dove arriva l'influenza di
   un'osservazione. I suoi iperparametri si stimano massimizzando la
-  **verosimiglianza marginale**, che contiene già il rasoio di Occam ma non è
+  verosimiglianza marginale, che contiene già il rasoio di Occam ma non è
   concava: da qui le ripartenze multiple.
-- La **banda d'incertezza** si stringe sui punti osservati e si riapre dove i
+- La banda d'incertezza si stringe sui punti osservati e si riapre dove i
   dati mancano, buchi interni compresi: il modello dichiara quanto non sa.
   $\boldsymbol{\mu}_* \pm
-  2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*)}$ è la banda **sulla
-  funzione**; per una nuova osservazione va aggiunto $\sigma_n^2$.
-- Il costo cresce come il **cubo del numero di esempi**: raddoppiare i dati
+  2\sqrt{\operatorname{diag}(\boldsymbol{\Sigma}_*)}$ è la banda sulla
+  funzione; per una nuova osservazione va aggiunto $\sigma_n^2$.
+- Il costo cresce come il cubo del numero di esempi: raddoppiare i dati
   costa otto volte il tempo. Improponibile sui grandi dataset, perfetto con
-  **pochi dati costosi** (esperimenti, simulazioni, ottimizzazione bayesiana
+  pochi dati costosi (esperimenti, simulazioni, ottimizzazione bayesiana
   degli iperparametri).
 ```
 

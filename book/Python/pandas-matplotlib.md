@@ -51,7 +51,7 @@ df = pd.DataFrame({
 })
 ```
 
-Quello fra le graffe è un **dizionario**, lo stesso delle basi del linguaggio: le
+Quello fra le graffe è un dizionario, lo stesso delle basi del linguaggio: le
 chiavi diventano i nomi delle colonne, e il valore di ciascuna è la lista dei
 dati di quella colonna, dall'alto in basso. Ogni colonna è una Series; tutte
 insieme formano la tabella. E dentro una colonna i valori sono tutti della
@@ -77,14 +77,14 @@ Ogni colonna ha un proprio `dtype` omogeneo (`int64`, `float64`, `str`,
 `category`, `datetime64`), il che permette a Pandas di appoggiarsi a NumPy per
 le operazioni vettoriali colonna per colonna. Il dtype del testo è cambiato di
 recente, e la rete è piena di materiale che descrive ancora quello vecchio: da
-**pandas 3.0** una colonna di testo ha dtype `str`,
+pandas 3.0 una colonna di testo ha dtype `str`,
 sostenuto da Arrow quando `pyarrow` è installato, ed è molto più compatto e
 veloce del vecchio `object`, in cui ogni cella era un oggetto Python a sé.
 `object` esiste ancora, ma è diventato il dtype delle colonne che mescolano
 tipi. L'indice è una struttura etichettata (anche gerarchica, `MultiIndex`)
 usata per l'allineamento automatico, e il numero di riga ne è solo il caso più
 semplice. Quando sommi due Series, Pandas non
-allinea per posizione ma **per etichetta**, inserendo `NaN` dove le etichette
+allinea per posizione ma per etichetta, inserendo `NaN` dove le etichette
 non combaciano: comportamento che evita interi errori "off-by-one" tipici
 degli array grezzi.
 
@@ -127,7 +127,8 @@ scritta a mano: il nome è lo stesso perché `df` (da *dataframe*) è il
 nome che quasi tutti danno alla tabella su cui stanno lavorando in quel
 momento. La tabella su cui girano le righe che seguono ha sei clienti e
 quattro colonne (nome, età, città, spesa), con un paio di caselle lasciate
-vuote di proposito, perché i dati veri sono quasi sempre così. Ecco che cosa risponde la prima:
+vuote di proposito, perché i dati veri sono quasi sempre così. Ecco che cosa
+risponde la prima:
 
 ```text
     nome   eta   citta  spesa
@@ -139,7 +140,7 @@ vuote di proposito, perché i dati veri sono quasi sempre così. Ecco che cosa r
 ```
 
 Da leggere ci sono due cose oltre ai dati. La colonna senza intestazione a
-sinistra, con 0, 1, 2, 3, 4, è l’**indice**: le etichette di riga di cui si
+sinistra, con 0, 1, 2, 3, 4, è l’indice: le etichette di riga di cui si
 parlava poco fa, che qui pandas ha messo da sé perché il file non ne aveva. E
 quei due `NaN` sono le caselle vuote. Sono anche il motivo per cui l'età
 compare come 34.0 invece che come 34: una casella vuota non è un numero
@@ -204,7 +205,7 @@ posizione esistono gli accessor `.loc[righe, colonne]` (per etichetta) e
 ambiguo di indicizzare.
 
 Da qui la regola che evita l'errore più frequente del mestiere: per *leggere*
-va bene qualunque forma, per **scrivere** si usa `.loc`. `df[df["eta"] > 30]`
+va bene qualunque forma, per scrivere si usa `.loc`. `df[df["eta"] > 30]`
 è un oggetto nuovo, quindi `df[df["eta"] > 30]["spesa"] = 0` modifica quello e
 lascia `df` com'era. Pandas 3 lo segnala con un `ChainedAssignmentError` che,
 malgrado il nome, è un avviso e non un'eccezione: il programma non si
@@ -284,8 +285,8 @@ sezione loro.
 `````{tab} Elementare
 
 `groupby("citta")` mette in scatole separate tutte le righe di Milano, tutte
-quelle di Roma, e così via. Poi `.mean()` calcola la media dentro ogni scatola.
-Il risultato è una tabellina con una riga per città: il riassunto che
+quelle di Torino, e così via. Poi `.mean()` calcola la media dentro ogni
+scatola. Il risultato è una tabellina con una riga per città: il riassunto che
 cercavi. In Excel la stessa cosa si fa con le *tabelle pivot*, trascinando
 colonne con il mouse; qui è una riga di codice, che si rilegge e si riesegue.
 
@@ -301,7 +302,7 @@ $$
 \bar{x}_g = \frac{1}{n_g}\sum_{i=1}^{n_g} x_i ,
 $$
 
-dove $n_g$ conta i valori **presenti** nel gruppo, e non le sue righe: con
+dove $n_g$ conta i valori presenti nel gruppo, e non le sue righe: con
 `skipna=True`, che è il default, `mean` scarta i mancanti prima di sommare e
 prima di dividere. Su un gruppo che non ha nemmeno un valore la somma resta
 senza divisore, ed è da lì che viene il `NaN` di Napoli. Oltre a `mean` sono
@@ -339,7 +340,7 @@ qualcosa, e riempirla con la media cancella proprio quel qualcosa.
 
 `````{tab} Elementare
 
-Hai due strade. Puoi **buttare via** le righe incomplete, oppure **riempirle**
+Hai due strade. Puoi buttare via le righe incomplete, oppure riempirle
 con un valore ragionevole, la media della colonna o la sua mediana (il valore
 che sta in mezzo quando li si mette in fila):
 
@@ -443,8 +444,9 @@ quel punto, ed è la quantità che ogni modello cercherà di rendere piccola.
 
 Costruire quattro insiemi di dati che coincidono su tutte e quattro queste
 misure è un lavoro di precisione, ed è il punto: sono fabbricati apposta
-{cite}`anscombe1973graphs`, e sulla carta restano indistinguibili. Ma basta disegnarli ({numref}`fig-anscombe`) per scoprire
-che raccontano quattro storie completamente diverse.
+{cite}`anscombe1973graphs`, e sulla carta restano indistinguibili. Ma basta
+disegnarli ({numref}`fig-anscombe`) per scoprire che raccontano quattro storie
+completamente diverse.
 
 ```{figure} ../figures/quartetto-anscombe.svg
 :name: fig-anscombe
@@ -463,8 +465,8 @@ la pendenza. Nessuna
 di queste patologie emerge dai numeri riassuntivi: solo l'occhio le coglie.
 
 Matplotlib è lo strumento per farlo. Tre grafici bastano per l'esplorazione
-iniziale: la **dispersione** per due variabili, l’**istogramma** per la
-distribuzione di una, la **linea** per un andamento nel tempo. («Variabile»,
+iniziale: la dispersione per due variabili, l’istogramma per la
+distribuzione di una, la linea per un andamento nel tempo. («Variabile»,
 qui, non è la variabile di Python: in statistica è una grandezza misurata, cioè
 una colonna della tabella.)
 
@@ -473,8 +475,8 @@ una colonna della tabella.)
 :alt: "Un grafico Matplotlib annotato con i nomi delle sue parti: la Figure è il foglio che contiene tutto, gli Axes sono l'area di disegno delimitata dai due assi, e su di essi sono marcati il titolo, le etichette degli assi, i tick con i loro valori, la legenda e le linee tracciate."
 :width: 96%
 
-I nomi delle parti. La distinzione che serve subito è fra la **Figure**, cioè
-il foglio, e gli **Axes**, cioè il riquadro dove si disegna: quasi tutti i
+I nomi delle parti. La distinzione che serve subito è fra la Figure, cioè
+il foglio, e gli Axes, cioè il riquadro dove si disegna: quasi tutti i
 metodi appartengono ai secondi.
 ```
 
@@ -544,14 +546,14 @@ nella sostanza.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **DataFrame** è il foglio di calcolo programmabile di Pandas: ogni colonna
+- Il DataFrame è il foglio di calcolo programmabile di Pandas: ogni colonna
   tiene valori di un solo tipo, e tutte le colonne condividono le stesse
   etichette di riga.
-- L'ordine di lavoro è sempre lo stesso: **carichi** (`read_csv`), **guardi**
-  (`head`, `info`, `describe`), **filtri** con il colino di una condizione e
-  aggiungi colonne calcolate, **raggruppi** (`groupby`) per avere un riassunto
+- L'ordine di lavoro è sempre lo stesso: carichi (`read_csv`), guardi
+  (`head`, `info`, `describe`), filtri con il colino di una condizione e
+  aggiungi colonne calcolate, raggruppi (`groupby`) per avere un riassunto
   per categoria.
-- Il colino restituisce una copia. Per **cambiare** i valori nella tabella vera
+- Il colino restituisce una copia. Per cambiare i valori nella tabella vera
   c'è `.loc`, e fra le sue quadre si scrive prima la condizione sulle righe e
   poi il nome della colonna: `df.loc[df["eta"] > 30, "spesa"] = 0`. Senza, il
   programma non protesta e la modifica finisce nella ciotola sbagliata.
@@ -560,12 +562,12 @@ nella sostanza.
   a partire dai dati, quel valore va calcolato solo sui dati con cui il modello
   impara, mai su quelli con cui lo si giudica: altrimenti stai facendo copiare
   il modello durante l'esame.
-- Per guardarli bastano tre grafici: la **dispersione** per due grandezze
-  insieme, l’**istogramma** per la forma di una sola, la **linea** per un
+- Per guardarli bastano tre grafici: la dispersione per due grandezze
+  insieme, l’istogramma per la forma di una sola, la linea per un
   andamento nel tempo. Il foglio (`Figure`) e il riquadro in cui si disegna
   (`Axes`) sono due oggetti distinti, e quasi tutti i metodi appartengono al
   secondo: da lì nasce l'errore più comune dei primi tempi.
-- **Guarda i dati prima di modellare**: il quartetto di Anscombe mostra che
+- Guarda i dati prima di modellare: il quartetto di Anscombe mostra che
   quattro insiemi di dati con gli stessi numeri riassuntivi a due decimali
   possono essere completamente diversi, e che a vederlo è l'occhio, non la
   media.
@@ -577,21 +579,21 @@ nella sostanza.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **DataFrame** è la tabella programmabile di Pandas: colonne (`Series`)
+- Il DataFrame è la tabella programmabile di Pandas: colonne (`Series`)
   tipizzate, allineate su un indice etichettato.
-- Il flusso tipico è **carica** (`read_csv`) → **ispeziona** (`head`, `info`,
-  `describe`) → **filtra e trasforma** (maschere booleane, nuove colonne) →
-  **aggrega** (`groupby`).
-- Per **leggere** va bene qualunque forma, per **scrivere** si usa `.loc`:
+- Il flusso tipico è carica (`read_csv`) → ispeziona (`head`, `info`,
+  `describe`) → filtra e trasforma (maschere booleane, nuove colonne) →
+  aggrega (`groupby`).
+- Per leggere va bene qualunque forma, per scrivere si usa `.loc`:
   `df[maschera]["col"] = 0` assegna a una copia, e pandas 3 lo segnala con un
   `ChainedAssignmentError` che, malgrado il nome, è un avviso e lascia
   proseguire il programma.
-- I **valori mancanti** (`NaN`) vanno gestiti secondo il meccanismo di mancanza
+- I valori mancanti (`NaN`) vanno gestiti secondo il meccanismo di mancanza
   (MCAR, MAR, MNAR), imputando solo sul training set per evitare *data leakage*.
-- **Matplotlib**: `scatter`, `hist` e `plot` per l'esplorazione, e la coppia
+- Matplotlib: `scatter`, `hist` e `plot` per l'esplorazione, e la coppia
   `Figure`/`Axes` come modello a oggetti (`fig, ax = plt.subplots()`), che è la
   forma da preferire appena i grafici sono più d'uno.
-- **Visualizza prima di modellare**: il quartetto di Anscombe mostra che
+- Visualizza prima di modellare: il quartetto di Anscombe mostra che
   statistiche che a due decimali coincidono possono nascondere dati
   radicalmente diversi.
 ```

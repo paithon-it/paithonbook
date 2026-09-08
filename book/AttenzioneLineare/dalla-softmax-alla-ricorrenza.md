@@ -1,19 +1,21 @@
 # Dalla softmax alla ricorrenza
 
-Il {doc}`capitolo sui Transformer </Transformers/overview>` si chiude con un paradosso. Il meccanismo che ha
-vinto la partita (l'attenzione, che lascia ogni parola libera di guardare
-tutte le altre) vince *proprio perché* guarda tutte le altre; ed è esattamente
-questo il suo conto da pagare. I conti sono due. Il primo è il lavoro,
-che cresce col quadrato della lunghezza (gli informatici lo scrivono $O(n^2)$,
-che è solo un modo compatto di dirlo). Il secondo è il segnalibro che il
-modello si tiene mentre scrive, con dentro le etichette e le informazioni già
-calcolate per non rifare ogni volta gli stessi conti: quel segnalibro si
-allunga a ogni parola generata, e si chiama **KV cache**.
+Il {doc}`capitolo sui Transformer </Transformers/overview>` si chiude con un
+paradosso. Il meccanismo che ha vinto la partita (l'attenzione, che lascia ogni
+parola libera di guardare tutte le altre) vince *proprio perché* guarda tutte
+le altre; ed è esattamente questo il suo conto da pagare. I conti sono due. Il
+primo è il lavoro, che cresce col quadrato della lunghezza (gli informatici lo
+scrivono $O(n^2)$, che è solo un modo compatto di dirlo). Il secondo è
+l'archivio di appunti che il modello si tiene mentre scrive, con dentro le
+etichette e le informazioni già calcolate per non rifare ogni volta gli stessi
+conti: quell'archivio si allunga a ogni parola generata, si chiama KV cache, e
+la {doc}`sezione sull'attenzione in pratica
+</Transformers/attenzione-in-pratica>` lo smonta pezzo per pezzo.
 
 Le reti ricorrenti che abbiamo studiato prima dei Transformer non avevano
 nessuno di questi due problemi: leggevano in fila, a costo lineare, con uno
 stato di dimensione *fissa* che non cresceva mai. Le avevamo abbandonate per
-un difetto altrettanto grave, la **sequenzialità**: ogni passo deve aspettare
+un difetto altrettanto grave, la sequenzialità: ogni passo deve aspettare
 quello prima, e le schede grafiche (le GPU), che sono fatte per macinare
 montagne di conti tutti insieme, restano a guardare. La domanda è se si possano
 avere entrambe le cose: distribuire il lavoro su tanti conti simultanei quando
@@ -31,8 +33,8 @@ numero due dipende anche da tutte le altre, e finché è così nessuna casella s
 può calcolare per conto suo.
 
 La via d'uscita è cambiare il modo di misurare la somiglianza. Serve una misura
-che, invece di nascere dal confronto di una coppia, si **spezzi in due pezzi
-indipendenti**: uno che riguarda solo chi fa la domanda, uno che riguarda solo
+che, invece di nascere dal confronto di una coppia, si spezzi in due pezzi
+indipendenti: uno che riguarda solo chi fa la domanda, uno che riguarda solo
 chi risponde. (Ogni parola fa tutte e due le parti: interroga le altre con la
 propria domanda, e alle domande delle altre risponde con la propria etichetta.)
 Se la somiglianza si spezza così, i conti si possono riordinare, e riordinarli
@@ -54,7 +56,7 @@ tuo.
 
 Tre persone hanno da consegnare $2$, $5$ e $9$. Prima chi voleva farsi un'idea
 doveva incontrarle tutte e tre, e ne usciva con
-$3\times 2 + 7\times 5 + 4\times 9$: tre pesi diversi, tre incontri, tre
+$1\times 2 + 6\times 5 + 8\times 9$: tre pesi diversi, tre incontri, tre
 caselle della tabella grande. Adesso invece nel numero che ciascuno consegna il
 proprio cartellino è già conteggiato, e a chi ascolta resta soltanto il numero
 suo, sempre quello:
@@ -82,7 +84,7 @@ cartellino azzerato trova un totale nullo, non ha niente per cui dividere, ed
 è lì che il meccanismo si pianta.
 
 Un modo di misurare la somiglianza che si spezza in due pezzi, in matematica,
-si chiama **kernel**.
+si chiama kernel.
 
 `````
 
@@ -92,7 +94,7 @@ Nell'attenzione dei Transformer {cite}`vaswani2017attention` l'uscita (non
 normalizzata) per la query $i$ è una somma dei value pesati dalla somiglianza
 esponenziale $\exp(\mathbf{q}_i^\top \mathbf{k}_j)$ (il fattore di scala $1/\sqrt{d}$ lo
 consideriamo assorbito in query e chiavi). Il guaio è che quell'esponenziale
-*non si spezza*: non esiste una fattorizzazione esatta **a dimensione finita**
+*non si spezza*: non esiste una fattorizzazione esatta a dimensione finita
 in un prodotto di una funzione della sola $\mathbf{q}_i$ per una funzione della sola
 $\mathbf{k}_j$. Una feature map che lo riproduca c'è, ma con infinite componenti, e in
 pratica la si può solo approssimare: è la strada delle *random features* del
@@ -140,7 +142,7 @@ $\phi(\mathbf{q}_i)^\top \phi(\mathbf{k}_j)$ è la matrice $n \times n$, costo $
 costruire $\mathbf{S}$ una volta e applicarla a ogni query costa $O(n d^2)$: una
 matrice $d \times d$ al posto di una $n \times n$. Quando $n \gg d$ (sequenze
 lunghe), la seconda vince nettamente, ed è il passaggio da $O(n^2 d)$ a
-$O(n d^2)$, cioè da quadratico a **lineare** nella lunghezza (lo stesso
+$O(n d^2)$, cioè da quadratico a lineare nella lunghezza (lo stesso
 $O(n d^2)$ delle ricorrenti che avevamo incontrato nel confronto fra
 Transformer e RNN). In forma matriciale compatta, per tutte le query insieme,
 è l'identità
@@ -181,7 +183,7 @@ $\mathbf{o}_i = \mathbf{S}\,\phi(\mathbf{q}_i) \,/\, \big(\mathbf{z}^\top \phi(\
 Fin qui abbiamo ragionato come se tutte le parole fossero disponibili insieme.
 Ma quando il modello scrive vale una regola in più: ogni parola può guardare
 solo quelle che la precedono, non quelle che verranno, e questo si dice
-**causale**. Allora il registro non è più uno solo, compilato alla fine: ce
+causale. Allora il registro non è più uno solo, compilato alla fine: ce
 n'è una versione a ogni passo, e ogni parola nuova aggiunge il suo contributo a
 quello che c'è già scritto. Attenzione a non fraintendere: a cambiare sono i
 numeri scritti nelle caselle, non il numero di caselle, che resta quello.
@@ -199,7 +201,7 @@ aggiungi uno scontrino alla pila. Non butti via niente, e questo è comodo (hai
 tutto) ma la pila cresce, e a fine giornata occupa mezzo tavolo. Ogni parola
 nuova ne aggiunge un'altra.
 
-Il secondo è un **foglio-registro di dimensione fissa**. Non aggiungi
+Il secondo è un foglio-registro di dimensione fissa. Non aggiungi
 scontrini: aggiorni le stesse caselle. Quando qualcuno parla, sommi il suo
 contributo a ciò che c'è già scritto, e il foglio resta un foglio: sempre lo
 stesso, che tu sia alla decima o alla decimillesima parola. Per rispondere a
@@ -249,16 +251,16 @@ tre impostazioni diverse, che è meglio non mescolare: nelle prossime sezioni le
 teniamo distinte e, parlando delle architetture moderne, usiamo l'ultima, cioè
 feature map $\phi$ posta all'identità e nessun $\mathbf{z}_t$ nelle formule.
 
-Guardiamo bene questa ricorrenza. È **esattamente una RNN**, ma con due
+Guardiamo bene questa ricorrenza. È esattamente una RNN, ma con due
 differenze rispetto alle celle dei
 {doc}`modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>`.
-La prima: lo stato non è un vettore $\mathbf{h}_t$ ma una **matrice**
+La prima: lo stato non è un vettore $\mathbf{h}_t$ ma una matrice
 $\mathbf{S}_t$ (una memoria molto più capiente). La
-seconda, decisiva: la transizione di stato è **lineare**, anzi è l'identità
+seconda, decisiva: la transizione di stato è lineare, anzi è l'identità
 ($\mathbf{S}_{t-1}$ passa intatto, gli si somma soltanto un termine nuovo). Non c'è
 nessuna $\tanh$ o non-linearità *sullo stato*, come invece in
 $\mathbf{h}_t = \tanh(\mathbf{W}_{hh} \mathbf{h}_{t-1} + \dots)$. L'aggiornamento costa $O(d^2)$ per
-token e la memoria è **costante**: la matrice $d \times d$ non cambia
+token e la memoria è costante: la matrice $d \times d$ non cambia
 dimensione, che siamo al decimo o al milionesimo token.
 
 È il senso, volutamente ironico, del titolo del paper di Katharopoulos et al.,
@@ -364,7 +366,7 @@ valanga.
 
 `````{tab} Superiore
 
-**In addestramento** si usa la forma parallela, e qui serve un momento di
+In addestramento si usa la forma parallela, e qui serve un momento di
 onestà sui costi. La strada più diretta è il prodotto fra matrici *mascherato*
 dalla causalità, $\big(\phi(\mathbf{Q})\,\phi(\mathbf{K})^\top \odot \mathbf{M}\big)\mathbf{V}$ con $\mathbf{M}$ la
 maschera triangolare: parallelo esattamente come un Transformer, ma la
@@ -380,7 +382,7 @@ della forma ricorrente, e il traffico da e verso la memoria della GPU si mangia
 il guadagno del parallelismo (con $n = 8192$ e $d = 64$ per testa sono più di
 33 milioni di valori per testa e per strato, contro i 4096 dello stato).
 Nessuna delle due forme dà insieme le due cose; la conciliazione usata in
-pratica è il calcolo **a blocchi** (*chunkwise*): parallelo dentro ogni blocco,
+pratica è il calcolo a blocchi (*chunkwise*): parallelo dentro ogni blocco,
 ricorrente fra un blocco e l'altro, costo $O(nBd + nd^2)$ con blocchi di
 ampiezza $B$, cioè lineare in $n$. Lo ritroveremo, formalizzato, in RetNet e
 DeltaNet.
@@ -392,15 +394,15 @@ scritto in modo ingenuo perde il confronto. Il vantaggio si raccoglie quando il
 contesto cresce, ed è il motivo per cui buona parte del lavoro su queste
 architetture è lavoro di implementazione, non di formule.
 
-**In inferenza autoregressiva** si usa la forma ricorrente: si aggiorna $\mathbf{S}_t$
+In inferenza autoregressiva si usa la forma ricorrente: si aggiorna $\mathbf{S}_t$
 sul posto e si legge $\mathbf{o}_t$, con costo $O(d^2)$ per token e memoria $O(d^2)$
-**costante**. Nessuna KV cache che si allunga: lo stato è sempre la stessa
+costante. Nessuna KV cache che si allunga: lo stato è sempre la stessa
 matrice $d \times d$. In un Transformer, ricordiamo, la cache cresce di una
 coppia $(\mathbf{k}_t, \mathbf{v}_t)$ per token e per strato, e il costo di generare l’$n$-esimo
 token sale con la lunghezza del prefisso; qui resta piatto.
 
 È da questo contrasto che nasce l'accelerazione più spettacolare riportata da
-Katharopoulos et al.: fino a circa **quattromila volte** più veloce nella
+Katharopoulos et al.: fino a circa quattromila volte più veloce nella
 generazione autoregressiva di sequenze *molto* lunghe. Va letta con onestà (è
 un caso limite, riguarda solo l'inferenza e non l'addestramento) ma misura
 bene il vantaggio della memoria costante quando $n$ diventa enorme.
@@ -436,7 +438,7 @@ scala; anche lui è di taglia fissa.)
 ## Il limite dell'accumulo
 
 Tanta eleganza ha un prezzo, ed è bene dirlo subito e senza sconti. Il registro
-dell'attenzione lineare sa fare una cosa sola: **sommare**. Non cancella e non
+dell'attenzione lineare sa fare una cosa sola: sommare. Non cancella e non
 corregge. Ogni parola che passa lascia la sua traccia sul foglio, sommata a
 tutte le altre, e lì resta per sempre.
 
@@ -475,13 +477,13 @@ modello, ma si paga. Un foglio più largo vuol dire più caselle da aggiornare e
 da rileggere a ogni parola, quindi più conti e più memoria: allargandolo
 abbastanza si torna a spendere quanto un Transformer, e il vantaggio che
 eravamo venuti a cercare svanisce. Il gioco di tutto il resto del capitolo è
-un altro: tenere il foglio piccolo e imparare a **scriverci meglio**.
+un altro: tenere il foglio piccolo e imparare a scriverci meglio.
 
 `````
 
 `````{tab} Superiore
 
-Il limite è di **capacità**, ed è una conseguenza della dimensione finita. Lo
+Il limite è di capacità, ed è una conseguenza della dimensione finita. Lo
 stato $\mathbf{S}$ è una matrice $d \times d$: in uno spazio di dimensione $d$ non
 esistono più di $d$ vettori mutuamente ortogonali. Se le key $\phi(\mathbf{k}_1), \dots$ fossero esattamente ortogonali e di
 norma uno, leggere con $\phi(\mathbf{q})$ recupererebbe il value giusto pulito
@@ -496,8 +498,8 @@ del richiamo (media su tutte le chiavi scritte e su duemila estrazioni) è
 $0{,}99$ a $N=d$ e $0{,}46$ a $N=d/4$, in accordo con l'andamento atteso
 $\sqrt{(N-1)/d}$, cioè $\sqrt{N/d}$ a meno del contributo della chiave che si
 sta interrogando. Il richiamo pulito vuole quindi
-$N$ **ben minore** di $d$, non $N \le d$. Ed essendo la transizione l'identità, non
-c'è modo di **dimenticare**: una scrittura spuria fatta all'inizio resta a
+$N$ ben minore di $d$, non $N \le d$. Ed essendo la transizione l'identità, non
+c'è modo di dimenticare: una scrittura spuria fatta all'inizio resta a
 disturbare per sempre. È la ragione per cui l'attenzione lineare pura, così
 com'è, resta indietro rispetto all'attenzione softmax proprio sui compiti di
 richiamo preciso.
@@ -538,9 +540,9 @@ N=32  errore relativo medio = 0.99   (andamento atteso ~0.98)
 
 Da qui in avanti l'intero capitolo è un tentativo di curare questi due mali
 tenendo però il dono della memoria che non cresce. Servono due ingredienti: un
-modo per **dimenticare**, cioè un interruttore (in inglese *gate*) che lasci
+modo per dimenticare, cioè un interruttore (in inglese *gate*) che lasci
 sbiadire quello che è vecchio invece di tenerlo eterno; e un modo per
-**correggere** invece di sommare alla cieca, cioè andare a vedere che cosa il
+correggere invece di sommare alla cieca, cioè andare a vedere che cosa il
 foglio risponde già a quella etichetta e scriverci sopra solo la differenza (è
 la *regola delta*). Sono esattamente i due fili della prossima sezione.
 
@@ -550,18 +552,18 @@ la *regola delta*). Sono esattamente i due fili della prossima sezione.
 :class: important
 - Far parlare ogni parola con tutte le altre è un'esplosione di conversazioni:
   mille parole sono quasi mezzo milione di scambi. Sostituire quel confronto a
-  due a due con un **registro riassuntivo**, che ciascuno aggiorna una volta
+  due a due con un registro riassuntivo, che ciascuno aggiorna una volta
   sola, porta il conto a mille aggiornamenti, ciascuno grande quanto il registro
   e sempre uguale a sé: da esplosivo a proporzionale alla lunghezza del testo,
-  ed è esattamente ciò che si intende per costo **lineare**.
-- Il registro è un **foglio di dimensione fissa**: ogni parola ci scrive la
+  ed è esattamente ciò che si intende per costo lineare.
+- Il registro è un foglio di dimensione fissa: ogni parola ci scrive la
   propria informazione sotto la propria etichetta, e per rispondere a una
   domanda lo si rilegge, invece di rovistare nella pila degli scontrini.
 - Letto parola per parola, quel foglio è il riassunto di una vecchia rete
   ricorrente: si aggiorna sommando, costa sempre lo stesso a ogni parola e non
   cresce mai, che si sia alla decima o alla milionesima. È l'ironia del titolo
   *Transformers are RNNs* (Katharopoulos e colleghi, 2020).
-- Stesso risultato, **due modi di ottenerlo**: tutto insieme quando il testo c'è
+- Stesso risultato, due modi di ottenerlo: tutto insieme quando il testo c'è
   già (studiare un libro che si ha in mano, cioè addestrare, e in pratica si fa
   a blocchi) e una parola alla volta quando il testo si sta inventando
   (raccontarlo a voce, cioè generare), senza la pila che si allunga. La stessa
@@ -574,8 +576,8 @@ la *regola delta*). Sono esattamente i due fili della prossima sezione.
   torna sbagliata di circa metà del suo valore, e a trentadue lo sbaglio è
   grande quanto la risposta. Prendere un foglio più grande si può, ma costa conti e
   memoria a ogni parola, e a quel punto tanto vale un Transformer.
-- I due rimedi delle sezioni successive: un modo per **sbiadire** ciò che è
-  vecchio e un modo per **correggere** invece di sommare alla cieca.
+- I due rimedi delle sezioni successive: un modo per sbiadire ciò che è
+  vecchio e un modo per correggere invece di sommare alla cieca.
 ```
 
 `````
@@ -584,31 +586,31 @@ la *regola delta*). Sono esattamente i due fili della prossima sezione.
 
 ```{admonition} Da ricordare
 :class: important
-- La softmax dei Transformer costa $O(n^2 d)$ perché non si fattorizza **in
-  dimensione finita**; sostituirla con una somiglianza
+- La softmax dei Transformer costa $O(n^2 d)$ perché non si fattorizza in
+  dimensione finita; sostituirla con una somiglianza
   $\text{sim}(\mathbf{q},\mathbf{k})=\phi(\mathbf{q})^\top\phi(\mathbf{k})$ e
-  ri-associare il prodotto porta il costo a $O(n d^2)$, cioè **lineare** nella
+  ri-associare il prodotto porta il costo a $O(n d^2)$, cioè lineare nella
   lunghezza.
-- Il calcolo si condensa in uno **stato-matrice**
+- Il calcolo si condensa in uno stato-matrice
   $\mathbf{S} = \sum_j \mathbf{v}_j\,\phi(\mathbf{k}_j)^\top$
   di dimensione fissa $d \times d$: una memoria chiave→valore che si legge con
   $\mathbf{S}\,\phi(\mathbf{q})$.
-- In forma causale è una **ricorrenza**,
+- In forma causale è una ricorrenza,
   $\mathbf{S}_t = \mathbf{S}_{t-1} + \mathbf{v}_t\,\phi(\mathbf{k}_t)^\top$:
-  cioè una **RNN a stato matriciale**
+  cioè una RNN a stato matriciale
   con transizione lineare (l'identità), aggiornamento $O(d^2)$ per token e
-  memoria **costante**; da cui l'ironia di *Transformers are RNNs*
+  memoria costante; da cui l'ironia di *Transformers are RNNs*
   (Katharopoulos et al., 2020).
-- Stessa funzione, **due forme**: parallela per addestrare, ricorrente per
+- Stessa funzione, due forme: parallela per addestrare, ricorrente per
   generare a memoria costante, senza la KV cache che invece cresce. La stessa
   dualità tornerà per gli State Space Model. Lineare non vuol dire però subito
   più veloce: sotto qualche migliaio di token una implementazione ingenua perde
   contro un'attenzione softmax ben scritta.
 - Il difetto dell'accumulo puro: non dimentica e non corregge. Con chiavi
-  casuali l'interferenza (**crosstalk**) cresce come $\sqrt{N/d}$ fin da
+  casuali l'interferenza (crosstalk) cresce come $\sqrt{N/d}$ fin da
   subito e a $N \approx d$ pareggia il segnale: il richiamo pulito vuole $N$
   ben minore di $d$.
-- I due rimedi (un **gate** che dimentica e una **regola delta** che corregge
+- I due rimedi (un gate che dimentica e una regola delta che corregge
   invece di sommare) sono il filo delle sezioni successive.
 ```
 

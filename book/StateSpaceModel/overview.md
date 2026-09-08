@@ -2,17 +2,17 @@
 
 C'è un'idea che l'ingegneria usa da oltre mezzo secolo per descrivere
 qualunque sistema che evolve nel tempo: un termostato, la traiettoria di un
-razzo, un circuito elettrico. Si chiama **modello a spazio degli stati**
+razzo, un circuito elettrico. Si chiama modello a spazio degli stati
 (*state space model*, in sigla **SSM**, che è l'abbreviazione che useremo da
 qui in avanti): un pugno di equazioni che riassumono tutto il passato di un
-**segnale** (una grandezza che cambia nel tempo: il livello dell'acqua in una
+segnale (una grandezza che cambia nel tempo: il livello dell'acqua in una
 vasca, un suono, una sequenza di parole) in uno **stato** interno, e da quello
 prevedono il futuro. È la matematica dei filtri di Kalman che portarono
 l'Apollo sulla Luna. Che cosa ci fa in un libro sull'intelligenza artificiale?
 
 Ci fa che risolve il problema lasciato aperto dal {doc}`capitolo sui Transformer </Transformers/overview>`.
 Là, per capire una frase, ogni parola guarda tutte le altre: raddoppiare la
-lunghezza del testo **quadruplica** il lavoro, e su un testo molto lungo il
+lunghezza del testo quadruplica il lavoro, e su un testo molto lungo il
 conto diventa proibitivo. Serve una macchina che legga lungo restando veloce,
 cioè che quando il testo raddoppia raddoppi il lavoro e basta. È questo che si
 intende, in tutto il capitolo, con **costo lineare** (o «a tempo lineare»): il
@@ -21,11 +21,11 @@ lavoro cresce di pari passo con la lunghezza, non più in fretta di lei.
 La risposta arriva nel 2021, quando Albert Gu, Karan Goel e Christopher Ré
 prendono quelle equazioni vecchie di sessant'anni, le impacchettano in uno
 strato di rete neurale e le mettono alla prova sul *Long Range Arena*, il
-banco di prova delle **dipendenze a lunghissimo raggio**: i legami fra parti
+banco di prova delle dipendenze a lunghissimo raggio: i legami fra parti
 lontane di una sequenza (in un giallo, per capire l'ultima pagina bisogna
 ricordare il nome che compariva alla prima). Il loro modello, **S4**
 {cite}`gu2022s4`, riesce là dove Transformer e reti ricorrenti si arrendevano:
-riconosce strutture che si estendono per **sedicimila** passi, dove un «passo»
+riconosce strutture che si estendono per sedicimila passi, dove un «passo»
 è un elemento della sequenza (una parola, un campione audio, un pixel). È
 l'atto di nascita di una seconda strada verso il modello di sequenze a costo
 lineare: non quella dell'attenzione resa economica del capitolo precedente, ma
@@ -71,7 +71,7 @@ Proprio perché la regola non cambia mai, a quel 3,875 ci si arriva per due
 strade. Passo dopo passo, dal livello di prima a quello di adesso, una parola
 alla volta. Oppure tutto insieme, sommando i getti entrati fin qui, ciascuno
 sbiadito secondo quanto tempo fa è entrato: 2 + 1 + 0,5 + 0,25 + 0,125 fa lo
-stesso numero. Quella fila di sbiadimenti è un **filtro** che si fa scorrere
+stesso numero. Quella fila di sbiadimenti è un filtro che si fa scorrere
 in un colpo solo sull'intera sequenza. Sono la stessa identica cosa vista da
 due lati, ed è la **doppia natura**. Si addestra il modello nel secondo modo,
 veloce perché fa tutti i conti in una volta, e lo si usa nel primo, economico
@@ -95,13 +95,13 @@ $$
 
 La matrice $\mathbf{A}$ governa la dinamica interna (come lo stato evolve da solo), $\mathbf{B}$
 come l'ingresso vi entra, $\mathbf{C}$ come se ne legge l'uscita. Per usarlo su una
-sequenza discreta lo si **discretizza** con un passo $\Delta$, ottenendo una
+sequenza discreta lo si discretizza con un passo $\Delta$, ottenendo una
 ricorrenza $\mathbf{h}_t = \bar{\mathbf{A}}\, \mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$, dove $x_t$ è l'ingresso
 campionato al passo $t$ e $\bar{\mathbf{A}}, \bar{\mathbf{B}}$ sono le versioni discrete di $\mathbf{A}$
 e $\mathbf{B}$. E qui sta la ricchezza:
-finché i parametri sono costanti nel tempo, questa ricorrenza ha una **doppia
-natura**; si può calcolare passo per passo come una RNN (inferenza a costo
-costante) oppure tutta in una volta come una **convoluzione** (addestramento
+finché i parametri sono costanti nel tempo, questa ricorrenza ha una doppia
+natura; si può calcolare passo per passo come una RNN (inferenza a costo
+costante) oppure tutta in una volta come una convoluzione (addestramento
 parallelo). È la stessa dualità parallelo/ricorrente che muove il capitolo
 sull'attenzione lineare, raggiunta però dalla teoria dei segnali.
 
@@ -111,7 +111,7 @@ sull'attenzione lineare, raggiunta però dalla teoria dei segnali.
 
 L'attenzione lineare del capitolo precedente e gli *state space model* di
 questo nascono da mondi diversi, e arrivano alla stessa macchina. È quella
-appena descritta: tiene un riassunto di taglia sempre uguale (lo **stato**) e a
+appena descritta: tiene un riassunto di taglia sempre uguale (lo stato) e a
 ogni parola lo aggiorna con una regola semplice, in cui il nuovo riassunto è il
 vecchio, un po’ sbiadito, più ciò che entra adesso. Si addestra lavorando su
 tutta la sequenza in una volta sola, e poi genera una parola alla volta senza
@@ -135,24 +135,24 @@ sopra, decidendo di volta in volta che cosa vale la pena scrivere.
 
 Il confronto di {numref}`fig-attenzione-vs-ssm` mostra anche dove sta il
 prezzo. Un riassunto di taglia fissa deve, prima o poi, dimenticare qualcosa.
-Il primo dei due fili che attraversano il capitolo è la **selettività** (il
+Il primo dei due fili che attraversano il capitolo è la selettività (il
 rombo sul lato destro della figura): decidere *cosa* scrivere nello stato, e
 cosa lasciar cadere, in funzione di ciò che sta arrivando. È facile chiedere
 troppo alla selettività: cambia *come* si usa lo spazio del riassunto, non lo
 allarga. Il tetto di un riassunto di taglia fissa resta, ed è l'argomento di
 {doc}`Panorama e limiti </StateSpaceModel/panorama-e-limiti>`.
 
-Il secondo filo è una parentela. Alla fine, con **Mamba-2**
+Il secondo filo è una parentela. Alla fine, con Mamba-2
 {cite}`dao2024mamba2`, vedremo che non è una somiglianza vaga: un *state space
-model* di forma opportuna *è* un’**attenzione mascherata**, cioè
+model* di forma opportuna *è* un’attenzione mascherata, cioè
 un'attenzione che guarda solo all'indietro, in cui il confronto fra due parole
 è pesato da quanto della prima è sopravvissuto nel frattempo. Le due famiglie
 che raccontiamo in due capitoli sono, in fondo, due viste dello stesso
 disegno.
 
 Ma prima c'è una tensione da sciogliere. La doppia natura «passo dopo passo» /
-«tutto insieme» vale solo se il sistema è **invariante nel tempo**: le stesse
-regole a ogni passo. Ed è proprio questa rigidità che **Mamba** romperà,
+«tutto insieme» vale solo se il sistema è invariante nel tempo: le stesse
+regole a ogni passo. Ed è proprio questa rigidità che Mamba romperà,
 rendendo il sistema *selettivo*, per dargli qualcosa che a S4 mancava: la
 capacità di scegliere, in base al contenuto, cosa ricordare e cosa dimenticare
 {cite}`gu2023mamba`.
@@ -176,29 +176,29 @@ fretta. Poi le tre messe a punto più recenti, con Mamba-3.
 
 **Panorama e limiti**: una mappa che tiene insieme questo capitolo e il
 precedente, che cosa un riassunto di taglia fissa non potrà mai fare, e le
-architetture **ibride** che oggi mettono insieme il meglio delle due strade.
+architetture ibride che oggi mettono insieme il meglio delle due strade.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Un **modello a spazio degli stati** (in sigla **SSM**) riassume tutto quello
-  che ha letto in una specie di foglio di dimensione **sempre uguale**, e a
+- Un modello a spazio degli stati (in sigla SSM) riassume tutto quello
+  che ha letto in una specie di foglio di dimensione sempre uguale, e a
   ogni parola lo aggiorna. Sono le stesse equazioni con cui l'ingegneria
-  descrive un termostato o la traiettoria di un razzo; **S4** {cite}`gu2022s4`
+  descrive un termostato o la traiettoria di un razzo; S4 {cite}`gu2022s4`
   le porta dentro una rete neurale, ed è il primo a riconoscere legami fra
-  parti di una sequenza distanti **sedicimila** passi.
+  parti di una sequenza distanti sedicimila passi.
 - Il problema che vengono a risolvere: far guardare ogni parola a tutte le
-  altre costa **al quadrato** (testo doppio, lavoro quadruplo). Qui il costo
+  altre costa al quadrato (testo doppio, lavoro quadruplo). Qui il costo
   cresce di pari passo con la lunghezza, ed è ciò che nel libro si chiama
-  **costo lineare**.
+  costo lineare.
 - Finché le regole non cambiano da un passo all'altro, lo stesso calcolo si può
-  fare in due modi: **passo dopo passo** (economico per generare) oppure
-  **tutto insieme** (parallelo, veloce per addestrare). È la **doppia natura**,
+  fare in due modi: passo dopo passo (economico per generare) oppure
+  tutto insieme (parallelo, veloce per addestrare). È la doppia natura,
   la stessa già vista con l'attenzione lineare.
-- **Mamba** {cite}`gu2023mamba` rompe quella regola fissa: lascia decidere alla
-  parola in arrivo quanto scrivere e quanto dimenticare (è la **selettività**).
-  **Mamba-2** {cite}`dao2024mamba2` mostra poi che, nella sua versione più
+- Mamba {cite}`gu2023mamba` rompe quella regola fissa: lascia decidere alla
+  parola in arrivo quanto scrivere e quanto dimenticare (è la selettività).
+  Mamba-2 {cite}`dao2024mamba2` mostra poi che, nella sua versione più
   semplice, questa macchina è un'attenzione che guarda solo all'indietro:
   le due famiglie si incontrano su quel gradino.
 - Il percorso: dai sistemi dinamici a S4 → Mamba (scegliere, e restare veloci)
@@ -211,15 +211,15 @@ architetture **ibride** che oggi mettono insieme il meglio delle due strade.
 
 ```{admonition} Da ricordare
 :class: important
-- Uno **state space model** riassume il passato in uno **stato di dimensione
-  fissa**, con equazioni che l'ingegneria usa da decenni per i sistemi dinamici;
-  **S4** {cite}`gu2022s4` le porta nel deep learning e conquista le dipendenze a
+- Uno state space model riassume il passato in uno stato di dimensione
+  fissa, con equazioni che l'ingegneria usa da decenni per i sistemi dinamici;
+  S4 {cite}`gu2022s4` le porta nel deep learning e conquista le dipendenze a
   lunghissimo raggio (fino a $16\,384$ passi sul *Long Range Arena*).
-- Discretizzato, un SSM invariante nel tempo ha una **doppia natura**:
+- Discretizzato, un SSM invariante nel tempo ha una doppia natura:
   ricorrente (inferenza a costo costante) e convoluzionale (addestramento
   parallelo) (la stessa dualità dell'attenzione lineare, da un'altra strada).
-- **Mamba** {cite}`gu2023mamba` rompe l'invarianza temporale con la
-  **selettività**; **Mamba-2** {cite}`dao2024mamba2` mostra che un SSM di forma
+- Mamba {cite}`gu2023mamba` rompe l'invarianza temporale con la
+  selettività; Mamba-2 {cite}`dao2024mamba2` mostra che un SSM di forma
   opportuna *è* un'attenzione mascherata: le due famiglie si incontrano su quel
   gradino.
 - Il percorso: dai sistemi dinamici a S4 → Mamba (selezione e scan) → la dualità

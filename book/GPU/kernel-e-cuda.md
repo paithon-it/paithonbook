@@ -10,8 +10,8 @@ tutti insieme. Quel programma ha un nome: **kernel**.
 (Un tensore, se serve un ripasso, è la scatola in cui il deep learning tiene i
 numeri: una lunga fila di valori, o una tabella, o una pila di tabelle,
 comunque tanti numeri raccolti sotto un nome solo. `a + b` somma i due mucchi
-posizione per posizione.) È l'unità di lavoro che gira davvero sulla GPU, e
-finora l'abbiamo solo nominata. Nella sezione sull'architettura abbiamo
+posizione per posizione.) Il kernel è l'unità di lavoro che gira davvero sulla
+GPU, e finora l'abbiamo solo nominata. Nella sezione sull'architettura abbiamo
 visto *chi* esegue (gli Streaming Multiprocessor, i warp da 32 thread); in quella
 sulla memoria, *da dove* arrivano i dati. Qui vediamo *cosa* eseguono: il
 kernel, appunto, e come lo si scrive.

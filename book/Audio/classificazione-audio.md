@@ -203,7 +203,7 @@ macchina attorno a cui tutto il resto era costruito
 :width: 100%
 
 Lo spettrogramma tagliato in tessere, e le tessere messe in fila: il colpo e
-la sua eco, lontani sulla lastra, si guardano direttamente.
+la sua eco, lontani nel tempo, si guardano direttamente.
 ```
 
 `````{tab} Elementare

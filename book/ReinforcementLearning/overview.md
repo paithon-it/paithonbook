@@ -5,20 +5,20 @@ contrazioni muscolari. Il bambino ci prova, oscilla, cade, si rialza, fa un
 passo e cade di nuovo. Ogni tentativo il mondo gli restituisce un giudizio
 implicito (un tonfo doloroso oppure un metro guadagnato verso il divano) e
 settimana dopo settimana quel giudizio scolpisce un modo di muoversi che
-nessun manuale ha mai descritto. Questo è, in una frase, il **reinforcement
-learning** (apprendimento per rinforzo, spesso abbreviato in RL): imparare a
+nessun manuale ha mai descritto. Questo è, in una frase, il reinforcement
+learning (apprendimento per rinforzo, spesso abbreviato in RL): imparare a
 comportarsi non da esempi già etichettati, ma dalle conseguenze delle proprie
 azioni.
 
 ## Agente, ambiente, ricompensa
 
-Tre ingredienti bastano, e non ne servono altri. C'è un **agente**, cioè chi
+Tre ingredienti bastano, e non ne servono altri. C'è un agente, cioè chi
 decide (il bambino, un robot, un programma che gioca a scacchi). C'è un
-**ambiente**, cioè tutto il resto: il mondo che l'agente non controlla ma con
-cui interagisce. E c'è una **ricompensa**, un numero che l'ambiente restituisce
+ambiente, cioè tutto il resto: il mondo che l'agente non controlla ma con
+cui interagisce. E c'è una ricompensa, un numero che l'ambiente restituisce
 per dire "bene" o "male". L'agente guarda la situazione in cui si trova (lo
-**stato**: tutto ciò che in questo istante vede del mondo), sceglie
-un’**azione**, l'ambiente passa a un nuovo stato e gli consegna una ricompensa;
+stato: tutto ciò che in questo istante vede del mondo), sceglie
+un’azione, l'ambiente passa a un nuovo stato e gli consegna una ricompensa;
 poi il ciclo ricomincia ({numref}`fig-rl-ciclo`). Quello che l'agente cerca di
 rendere più grande possibile non è la ricompensa di adesso, ma la somma di
 tutte quelle che verranno da qui alla fine: quella somma ha un nome, **ritorno**
@@ -48,7 +48,7 @@ ricompensa) e il numeretto è il conto dei passi. L'azione la si compie al passo
 $t$, lo stato nuovo e la ricompensa arrivano subito dopo, al passo $t+1$.
 ```
 
-Una domanda viene prima di ogni algoritmo: **chi decide la ricompensa?** Non
+Una domanda viene prima di ogni algoritmo: chi decide la ricompensa? Non
 l'agente, e nemmeno il mondo: la scrive chi imposta il problema. In un
 videogioco il punteggio esiste già e si prende quello; per un robot che deve
 imparare a camminare qualcuno deve stabilire che cadere vale $-5$ e che un
@@ -64,7 +64,7 @@ racconta la sezione su {doc}`esplorazione e ricompensa
 </DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 
 La regola con cui l'agente sceglie, situazione per situazione, si chiama
-**politica**, all'inglese **policy**. Le due parole indicano la stessa cosa e si
+**politica**, all'inglese policy. Le due parole indicano la stessa cosa e si
 alterneranno: è la sola cosa che l'agente cerca di migliorare.
 
 `````{tab} Elementare
@@ -100,12 +100,12 @@ fidarsi di quello che dicono.
 
 `````{tab} Superiore
 
-Formalmente l'interazione è un **processo decisionale di Markov** (*Markov
+Formalmente l'interazione è un processo decisionale di Markov (*Markov
 Decision Process*, MDP). A ogni passo $t$ l'agente osserva lo stato $S_t$,
 sceglie un'azione $A_t$ secondo la sua politica $\pi(a \mid s)$, e l'ambiente
 transita in $S_{t+1}$ restituendo una ricompensa scalare $R_{t+1}$ (maiuscole
 per le variabili aleatorie, minuscole $s$, $a$, $r$ per i valori che assumono).
-L'obiettivo è massimizzare non la ricompensa immediata ma il **ritorno**
+L'obiettivo è massimizzare non la ricompensa immediata ma il ritorno
 (*return*) scontato:
 
 $$
@@ -129,7 +129,7 @@ atteso partendo da $s$, giocando $a$ e poi seguendo $\pi$.
 ## Cosa lo distingue dall'apprendimento supervisionato
 
 Nell'apprendimento supervisionato ogni esempio arriva con la sua risposta
-corretta, la sua **etichetta**: questa foto è un gatto, quella casa vale
+corretta, la sua etichetta: questa foto è un gatto, quella casa vale
 300 000 euro. Il programma deve solo imparare a imitare quelle risposte. Nel
 reinforcement learning le risposte corrette non esistono: nessuno le conosce.
 
@@ -166,10 +166,10 @@ risale indietro di posizione in posizione fino all'apertura.
 
 La differenza è strutturale. Nel supervisionato i dati $(\mathbf{x}, y)$ sono
 indipendenti e l'etichetta $y$ è il segnale di errore diretto. Nel RL il segnale
-è una ricompensa scalare, potenzialmente **ritardata** e **sparsa**, e i dati
+è una ricompensa scalare, potenzialmente ritardata e sparsa, e i dati
 non sono indipendenti: l'azione di adesso determina lo stato successivo, quindi
 la distribuzione degli esempi dipende dalla politica stessa. L'assegnazione del
-merito temporale si affronta con i metodi a **differenza temporale**
+merito temporale si affronta con i metodi a differenza temporale
 (*temporal-difference*, TD) e con l'equazione di Bellman, che spezza il ritorno
 in premio immediato più valore scontato dello stato futuro:
 
@@ -217,7 +217,7 @@ promettono di più, invece di trattarli tutti allo stesso modo.
 
 `````{tab} Superiore
 
-Il compromesso si formalizza con strategie come **$\varepsilon$-greedy**: con
+Il compromesso si formalizza con strategie come $\varepsilon$-greedy: con
 probabilità $1-\varepsilon$ l'agente sceglie l'azione stimata migliore, con
 probabilità $\varepsilon$ ne prende una a caso.
 
@@ -256,7 +256,7 @@ adottarono.
 
 Nel 2015 DeepMind, un laboratorio londinese, pubblicò su *Nature*, una delle
 riviste scientifiche più importanti che esistano, il **DQN**. Era un agente che
-imparava a giocare a decine di videogiochi della vecchia console **Atari**
+imparava a giocare a decine di videogiochi della vecchia console Atari
 partendo dai soli pixel dello schermo e dal punteggio, senza sapere nulla delle
 regole. Le tre lettere del nome stanno per *Deep Q-Network*: la Q è il voto che
 l'agente dà a ogni mossa, il filo che tiene insieme tutto il resto; *network* è
@@ -272,10 +272,10 @@ valore), e molti davano quel risultato lontano un decennio.
 ## Dalla leva sola al mondo che cambia
 
 Cominciamo da una versione del problema spogliata di tutto tranne il dilemma
-appena descritto: i **bandit a più braccia**, dove la situazione non cambia mai
+appena descritto: i bandit a più braccia, dove la situazione non cambia mai
 e l'unica domanda è quale leva tirare. Poi rimettiamo al suo posto la situazione
-che cambia, e con essa la domanda che tiene insieme tutto il resto: **quanto
-vale trovarsi in un certo punto**, cioè quanti punti ci si può aspettare di
+che cambia, e con essa la domanda che tiene insieme tutto il resto: quanto
+vale trovarsi in un certo punto, cioè quanti punti ci si può aspettare di
 raccogliere da lì in avanti.
 
 Dopo i bandit restano tre sezioni, e sono tre risposte a quella domanda, in
@@ -283,11 +283,11 @@ ordine di quanto pretendono di sapere. La prima pretende la mappa del mondo, e
 con la mappa in mano calcola quei valori senza giocare nemmeno una partita. La
 seconda non pretende niente: gioca partite intere e fa la media di com'è
 andata. La terza non aspetta nemmeno la fine della partita e corregge a ogni
-mossa, ed è la strada dell'algoritmo più famoso del campo, il **Q-learning**.
+mossa, ed è la strada dell'algoritmo più famoso del campo, il Q-learning.
 Tutte e tre riempiono la stessa cosa: una grande tabella con una casella per
 ogni situazione.
 
-Il passo verso il **deep reinforcement learning**, dove reti neurali stimano
+Il passo verso il deep reinforcement learning, dove reti neurali stimano
 quei valori o direttamente la politica, è una necessità e non un ampliamento
 facoltativo, perché la tabella smette di stare in piedi appena le situazioni
 possibili sono tante, e va sostituita da qualcosa che sappia indovinare il
@@ -301,15 +301,15 @@ l'esperienza.
 
 ```{admonition} Da ricordare
 :class: important
-- Servono tre cose e basta: qualcuno che **decide** (l'agente), un mondo che
-  **risponde** (l'ambiente) e un punteggio che dice se è andata bene o male (la
-  **ricompensa**). Si agisce, il mondo cambia e paga, si ricomincia.
+- Servono tre cose e basta: qualcuno che decide (l'agente), un mondo che
+  risponde (l'ambiente) e un punteggio che dice se è andata bene o male (la
+  ricompensa). Si agisce, il mondo cambia e paga, si ricomincia.
 - Nessuno dice mai qual era la mossa giusta: il punteggio dice *quanto* è
   andata bene, non *cosa* si doveva fare. E spesso arriva tardi, molte mosse
   dopo quella che lo ha meritato: capire chi ringraziare è la difficoltà
   centrale.
 - Quel che si vuole rendere grande non è il punteggio del momento ma il totale
-  da qui alla fine (il **ritorno**). Di solito i premi lontani contano meno di
+  da qui alla fine (il ritorno). Di solito i premi lontani contano meno di
   quelli vicini, e nei giochi che non finiscono mai contarli meno è
   obbligatorio: altrimenti il totale non si ferma su nessun numero.
 - Chi decide i punti è chi imposta il problema, non il mondo: numeri scelti
@@ -317,8 +317,8 @@ l'esperienza.
 - Bisogna sempre scegliere fra tornare dove si sa che si sta bene e provare
   qualcosa di nuovo (il dilemma del ristorante): quasi sempre il noto, ogni
   tanto una prova a caso.
-- Tre risultati che hanno fatto la storia: **TD-Gammon** a backgammon, **DQN**
-  sui vecchi videogiochi **Atari**, **AlphaGo** al Go nel 2016.
+- Tre risultati che hanno fatto la storia: TD-Gammon a backgammon, DQN
+  sui vecchi videogiochi Atari, AlphaGo al Go nel 2016.
 ```
 
 `````
@@ -327,20 +327,20 @@ l'esperienza.
 
 ```{admonition} Da ricordare
 :class: important
-- Il RL si regge su tre elementi: un **agente** che decide, un **ambiente** che
-  risponde, una **ricompensa** che valuta. Il ciclo azione → nuovo stato +
+- Il RL si regge su tre elementi: un agente che decide, un ambiente che
+  risponde, una ricompensa che valuta. Il ciclo azione → nuovo stato +
   ricompensa si ripete.
 - A differenza del supervisionato non ci sono etichette, ma un segnale scalare
-  spesso **ritardato**: da qui il problema dell'assegnazione del merito.
-- L'obiettivo è massimizzare il **ritorno** scontato $G_t$, non la ricompensa
+  spesso ritardato: da qui il problema dell'assegnazione del merito.
+- L'obiettivo è massimizzare il ritorno scontato $G_t$, non la ricompensa
   immediata; il fattore $\gamma$ regola quanto conta il futuro ed è
   obbligatoriamente $<1$ solo nei compiti continui.
-- Ogni agente deve bilanciare **esplorazione** e **sfruttamento** (per esempio
+- Ogni agente deve bilanciare esplorazione e sfruttamento (per esempio
   con $\varepsilon$-greedy).
 - La funzione di ricompensa è una scelta di progetto, non un dato
   dell'ambiente: l'agente ottimizza ciò che è scritto, non ciò che si intendeva.
-- Tappe simbolo: **TD-Gammon** (backgammon), **DQN** sui giochi **Atari**,
-  **AlphaGo** (Go, 2016).
+- Tappe simbolo: TD-Gammon (backgammon), DQN sui giochi Atari,
+  AlphaGo (Go, 2016).
 ```
 
 `````

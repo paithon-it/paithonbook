@@ -13,7 +13,7 @@ Quello «davanti al modello» ha un nome preciso ed è il perno di questa
 sezione. Un modello legge tutto in un colpo solo, e quanto testo riesca a
 tenere davanti agli occhi in una volta è un numero fisso, deciso da chi l'ha
 costruito. Quello spazio si chiama **finestra di contesto**, e ciò che ci
-scrivi dentro si chiama **contesto**. Larga quanto vuoi, resta finita.
+scrivi dentro si chiama contesto. Larga quanto vuoi, resta finita.
 
 È il cuore di questo capitolo: con un modello di oggi non si programma
 scrivendo codice, si programma scrivendo il contesto. Il modello non si tocca
@@ -31,12 +31,12 @@ del contesto, ed è l'arte di riempire bene quella finestra. Per un po’ lo si 
 chiamato *prompt engineering*, come se il problema fosse trovare la formula
 magica, la frase che sblocca il modello. Chi costruisce applicazioni ha
 imparato che il problema vero è un altro: non la frase perfetta, ma il governo
-di **tutto** ciò che entra nella finestra, a ogni passo, con i vincoli e i
+di tutto ciò che entra nella finestra, a ogni passo, con i vincoli e i
 compromessi di qualunque problema di ingegneria.
 
 E per un agente il problema è ancora più acuto. Come abbiamo visto nelle
-sezioni precedenti, il ciclo osserva → ragiona → agisci **riempie il contesto
-da sé**: ogni pensiero, ogni chiamata a uno strumento, ogni osservazione di
+sezioni precedenti, il ciclo osserva → ragiona → agisci riempie il contesto
+da sé: ogni pensiero, ogni chiamata a uno strumento, ogni osservazione di
 ritorno è testo che si accumula. Dopo dieci passi la finestra trabocca di
 cronologia, cioè dell'elenco di tutto quel che si è detto e fatto finora, e
 decidere cosa tenere e cosa buttare è ciò che distingue un
@@ -59,7 +59,7 @@ un'applicazione vera fra l'utente e il modello c'è di mezzo un programma, ed è
 quel programma a comporre il testo che il modello riceve: prende l'ultima cosa
 scritta dall'utente e le cuce attorno tutto il resto, ogni volta da capo.
 
-Il prompt, allora, è un **oggetto montato a pezzi** e non una frase scritta di
+Il prompt, allora, è un oggetto montato a pezzi e non una frase scritta di
 getto, e i pezzi hanno ruoli diversi. Le istruzioni di fondo, gli esempi che
 mostrano il comportamento voluto, il formato preciso in cui vogliamo la
 risposta, e solo alla fine la richiesta dell'utente.
@@ -69,7 +69,7 @@ risposta, e solo alla fine la richiesta dell'utente.
 Un collega nuovo arriva il lunedì e gli affidi i reclami dei clienti. Puoi
 buttargli lì un ordine di corsa («rispondi ai reclami») e sperare bene: farà
 del suo meglio, ma a modo suo, e non ti stupire se sbaglia tono o inventa una
-regola. Oppure gli lasci un **briefing scritto**, che resta sulla scrivania e
+regola. Oppure gli lasci un briefing scritto, che resta sulla scrivania e
 vale per ogni reclamo che arriva: «sei l'assistente dell'assistenza; rispondi
 in modo cortese e conciso; non promettere rimborsi oltre i 30 giorni; ecco tre
 reclami già evasi, con la risposta giusta accanto; scrivi sempre nel formato:
@@ -87,7 +87,7 @@ qualcosa non va.
 Un prompt strutturato ha almeno tre strati. Il **system prompt** fissa il ruolo
 e le regole invarianti («sei un assistente di supporto; non riveli dati
 interni»); resta identico a ogni richiesta ed è la spina dorsale del
-comportamento. Le **istruzioni** e gli **esempi** (*few-shot*) mostrano il
+comportamento. Le istruzioni e gli esempi (*few-shot*) mostrano il
 compito: qualche coppia richiesta → risposta corretta condiziona il modello
 senza alcun aggiornamento dei pesi. È lo stesso meccanismo dell'in-context
 learning dei Transformer: il modello stima
@@ -100,16 +100,16 @@ dove $I$ sono le istruzioni, le coppie $(x_i, y_i)$ sono i $k$ esempi svolti,
 $x$ è la richiesta corrente e $\hat{y}$ la risposta generata. Gli esempi non
 addestrano nulla: sono *condizionamento*, contesto che sposta la distribuzione
 del modello verso lo stile e il formato desiderati. Il terzo strato è il
-**formato dell'output**, spesso uno schema (JSON, campi obbligatori), che
+formato dell'output, spesso uno schema (JSON, campi obbligatori), che
 rende la risposta interpretabile dal programma a valle, non solo leggibile da
 un umano.
 
 `````
 
 La conseguenza pratica è netta, e la riprenderemo parlando di {doc}`LLMOps
-</MLOps/llmops>`: **il prompt è codice**. Quella riga d'istruzione che orienta
+</MLOps/llmops>`: il prompt è codice. Quella riga d'istruzione che orienta
 il modello è fragile (una parola diversa cambia la risposta) e quindi va
-trattata come si tratta il software. Se ne tiene la **storia**, cioè si
+trattata come si tratta il software. Se ne tiene la storia, cioè si
 conserva ogni versione con la data e il motivo del cambiamento, invece di
 sovrascriverla; la si prova su una batteria di casi noti; e prima di
 sostituirla si fanno girare le due versioni in parallelo sugli stessi casi, per
@@ -120,7 +120,7 @@ esiste il prompt *provato*.
 ## La finestra è piccola e preziosa
 
 La finestra di contesto ha una misura, e la misura è un numero preciso. Non si
-conta in parole né in pagine, ma in **token**: i pezzetti in cui una frase
+conta in parole né in pagine, ma in token: i pezzetti in cui una frase
 viene tagliata prima di entrare nel modello, ciascuno grande all'incirca una
 parola, spesso un po’ meno. Ogni modello dichiara quanti token riesce a
 leggere in una volta, e oltre quel numero non si va.
@@ -128,11 +128,11 @@ leggere in una volta, e oltre quel numero non si va.
 Riempirli, poi, non è gratis, e da qui in avanti «quanto costa» vorrà sempre
 dire «quanti token».
 
-Il prezzo si paga in tre valute, e le conosciamo già. In **memoria**, perché
+Il prezzo si paga in tre valute, e le conosciamo già. In memoria, perché
 il segnalibro che il modello si tiene per non rileggere ogni volta da capo (con
-i Transformer lo chiamavamo **KV cache**) cresce con la lunghezza
-del contesto. In **secondi di attesa**, perché più testo c'è, più tempo passa
-prima che compaia la risposta. E in **denaro**, perché un modello si paga a
+i Transformer lo chiamavamo KV cache) cresce con la lunghezza
+del contesto. In secondi di attesa, perché più testo c'è, più tempo passa
+prima che compaia la risposta. E in denaro, perché un modello si paga a
 consumo, un tanto per ogni token che entra e per ogni token che esce: quel
 listino si chiama *costo per token*, e sarà uno dei temi del capitolo su
 MLOps. Un prompt gonfio è una bolletta più salata e una risposta più lenta, e
@@ -171,15 +171,15 @@ C'è di peggio, e va contro l'intuizione: anche quando lo spazio ci sarebbe,
 riempirlo può danneggiare la risposta. Nel 2023 Nelson Liu e colleghi lo
 hanno misurato in un lavoro dal titolo eloquente, *Lost in the Middle*
 {cite}`liu2024lost`: i modelli usano bene l'informazione che sta
-all’**inizio** e alla **fine** del contesto, e trascurano quella sepolta **in
-mezzo**.
+all’inizio e alla fine del contesto, e trascurano quella sepolta in
+mezzo.
 
 `````{tab} Elementare
 
 Sulla tua scrivania ci sta solo un certo numero di fogli davanti a te: oltre
 quelli finiscono nel cassetto e li dimentichi. C'è poi un secondo effetto, più
 sottile, che chiunque abbia studiato conosce: di una pila di
-fogli, l'occhio cade sul **primo** e sull’**ultimo**. Quelli in mezzo li
+fogli, l'occhio cade sul primo e sull’ultimo. Quelli in mezzo li
 sfogli distrattamente, e più la pila cresce più quel centro si allarga. Se
 metti l'informazione che conta proprio lì, rischi di non «vederla» nemmeno se
 ce l'hai sotto il naso: rispondi come se quel foglio non l'avessi mai avuto, e
@@ -192,9 +192,9 @@ centro di un contesto lungo.
 
 `````{tab} Superiore
 
-Liu e colleghi variano la **posizione** del documento che contiene la risposta
+Liu e colleghi variano la posizione del documento che contiene la risposta
 dentro un contesto di molti documenti, e misurano l'accuratezza al variare di
-quella posizione. La curva non è piatta: ha una forma a **U**. Detta $j$ la
+quella posizione. La curva non è piatta: ha una forma a U. Detta $j$ la
 posizione del passaggio rilevante su $n$ passaggi totali, l'accuratezza è
 massima agli estremi ($j = 1$ e $j = n$) e cala vistosamente verso il centro
 ($j \approx n/2$): in alcuni casi il modello con l'informazione a metà
@@ -202,7 +202,7 @@ contesto fa *peggio* dello stesso modello a cui quell'informazione non viene
 data affatto. Il calo si accentua man mano che il contesto si allunga. Due
 implicazioni operative dirette. Primo: allungare il contesto non è un pasto
 gratis; più passaggi si infilano, più è probabile seppellire quello giusto in
-una zona cieca. Secondo: **l'ordine conta**. Se recuperiamo dei passaggi (per
+una zona cieca. Secondo: l'ordine conta. Se recuperiamo dei passaggi (per
 esempio con un sistema RAG) e ne conosciamo la rilevanza stimata, conviene
 collocare i più importanti in testa o in coda, non nel ventre molle del
 contesto.
@@ -244,13 +244,13 @@ davanti al modello quando c'entrano.
 
 `````{tab} Superiore
 
-La **memoria a breve termine** è lo *scratchpad*: uno spazio nel contesto in
+La memoria a breve termine è lo *scratchpad*: uno spazio nel contesto in
 cui l'agente scrive i propri stati intermedi (la traccia ReAct delle sezioni
-precedenti ne è un esempio) e che vive quanto vive la finestra. La **memoria a
-lungo termine** è esterna e persistente. Tre forme ricorrono. La prima è il
+precedenti ne è un esempio) e che vive quanto vive la finestra. La memoria a
+lungo termine è esterna e persistente. Tre forme ricorrono. La prima è il
 **database vettoriale**: i ricordi (documenti, scambi passati) vengono
 codificati in embedding e recuperati per similarità quando servono; è
-esattamente il **RAG** dei Transformer, letto qui come un meccanismo di
+esattamente il RAG dei Transformer, letto qui come un meccanismo di
 memoria, non solo di recupero. La seconda è il **riassunto
 progressivo**: quando la cronologia della conversazione si allunga, la si
 comprime in un sunto che ne conserva l'essenziale a costo di token molto
@@ -309,28 +309,29 @@ priorità fino a esaurire il budget, e il più prezioso mai nel mezzo.
 sottoinsieme di passaggi che massimizza la rilevanza totale $\sum_i r_i$ sotto
 il vincolo che la somma dei costi in token $\sum_i c_i$ non superi il budget
 disponibile, con system prompt e domanda pre-allocati come costi fissi. La
-soluzione esatta è combinatoria; in pratica si usa un'euristica **greedy**
+soluzione esatta è combinatoria; in pratica si usa un'euristica greedy
 (passaggi in ordine di rilevanza decrescente, accettati finché entrano) con
 due raffinamenti che vengono diritti dalle sezioni precedenti.
 
-Il primo: l'ultimo passaggio che sfora viene **troncato** per riempire lo
+Il primo: l'ultimo passaggio che sfora viene troncato per riempire lo
 spazio residuo invece di essere buttato del tutto. Il raffinamento è
 discutibile: un troncamento a metà frase occupa token e restituisce un
 frammento che non afferma niente, quindi spesso conviene tagliare a confine di
 frase, e scartare il passaggio se non ne resta almeno una intera.
 
-Il secondo: i passaggi scelti vengono **riordinati**, e non semplicemente
-messi in ordine crescente di rilevanza. La curva di Liu e colleghi è una **U**,
-si legge bene all'inizio *e* alla fine, quindi disporre per rilevanza crescente
+Il secondo: i passaggi scelti vengono riordinati, e non semplicemente messi in
+ordine crescente di rilevanza. La curva di Liu e colleghi è una U, si legge
+bene all'inizio *e* alla fine, quindi disporre per rilevanza crescente
 ottimizzerebbe un estremo solo e regalerebbe l'altro, quello di apertura, al
-pezzo peggiore. La disposizione che segue la curva è a **V**: i due passaggi migliori ai due
-estremi, e i meno rilevanti sepolti nel mezzo, dove costano meno perderli.
-Quale dei due estremi meriti il migliore la curva non lo dice, e qui il più
-rilevante va in fondo, a ridosso della domanda, mentre il secondo va in testa. Nelle librerie di RAG questo
-riordino porta il nome di *long-context reorder*.
+pezzo peggiore. La disposizione che segue la curva è a V: i due passaggi
+migliori ai due estremi, e i meno rilevanti sepolti nel mezzo, dove costano
+meno perderli. Quale dei due estremi meriti il migliore la curva non lo dice, e
+qui il più rilevante va in fondo, a ridosso della domanda, mentre il secondo va
+in testa. Nelle librerie di RAG questo riordino porta il nome di *long-context
+reorder*.
 
 Un'ultima nota di rigore, che non cambia il risultato ma cambia la regola.
-Avendo ammesso il troncamento, lo zaino è diventato **frazionario**, e per
+Avendo ammesso il troncamento, lo zaino è diventato frazionario, e per
 quel problema l'ottimo greedy si ottiene ordinando per **densità** $r_i / c_i$
 (rilevanza per token), non per la sola rilevanza $r_i$. Con un'avvertenza che
 il troncamento stesso solleva: lo zaino frazionario assume che mezzo oggetto
@@ -344,7 +345,7 @@ non è quella che il modello dello zaino richiederebbe.
 Ecco il context builder in puro Python, nessuna libreria, il conteggio dei
 token approssimato contando le parole, così che il meccanismo resti in piena
 vista. Una cautela che sembra un dettaglio e non lo è: nel budget entrano anche
-i **marcatori** che il montaggio aggiunge (`[fonte 0.95]` e simili). Sono
+i marcatori che il montaggio aggiunge (`[fonte 0.95]` e simili). Sono
 testo, il modello li legge, e un budget che non conta ciò che il montaggio
 aggiunge non è un budget.
 
@@ -456,7 +457,7 @@ Token usati: 58/58
 i soli pezzi scelti: 51 token; i marcatori: 7, cioe' il 14% in piu'
 ```
 
-Le due righe in fondo sono il punto. Il prompt **davvero montato** costa
+Le due righe in fondo sono il punto. Il prompt davvero montato costa
 cinquantotto token; i pezzi che abbiamo scelto, contati a parte, ne pesano
 cinquantuno. I sette che mancano all'appello sono i `[fonte 0.95]` e simili,
 cioè un quattordici per cento in più di quanto sembrava di aver speso. È
@@ -475,7 +476,7 @@ $$
 $$
 
 dove $d$ è il passaggio candidato, $q$ la domanda e $S$ i passaggi già
-scelti: la somiglianza con la domanda **meno** la somiglianza con il più
+scelti: la somiglianza con la domanda meno la somiglianza con il più
 vicino fra i già scelti, pesate da un $\lambda$ fra zero e uno (al primo giro
 $S$ è vuoto e quel massimo vale zero).
 Il secondo termine compra la novità: un passaggio rilevantissimo ma fotocopia
@@ -487,7 +488,7 @@ scelte di progetto: cosa è obbligatorio, cosa entra per priorità, dove va il
 pezzo più importante. In un sistema reale la rilevanza non è un numero scritto
 a mano ma esce dalla ricerca nell'archivio della sezione precedente; il
 conteggio dei token non si fa a parole ma con lo stesso programma che li taglia
-davvero per quel modello, il **tokenizzatore**; e le politiche sono più ricche.
+davvero per quel modello, il tokenizzatore; e le politiche sono più ricche.
 Ma l'ossatura è questa, ed è questa a fare la differenza tra le due squadre da
 cui siamo partiti.
 
@@ -496,21 +497,21 @@ cui siamo partiti.
 Un'ultima osservazione chiude il cerchio. Nelle sezioni precedenti abbiamo
 fatto «ragionare ad alta voce» l'agente prima di agire, cioè scrivere i
 passaggi intermedi nel contesto prima della conclusione: è la catena di
-ragionamento, la **chain-of-thought** {cite}`wei2022chain`. Vista con gli occhi
+ragionamento, la chain-of-thought {cite}`wei2022chain`. Vista con gli occhi
 di questa sezione, quella catena è *anch'essa* ingegneria del contesto: si
 spende deliberatamente una parte del budget in token di «pensiero» per
 comprarne qualità di risposta. Il ragionamento non è gratis, perché occupa
 finestra e fa aspettare, ma spesso rende più di quanto costa.
 
 L'idea si può spingere oltre. Invece di seguire un unico filo fino in fondo, si
-possono aprire **più strade di ragionamento**, guardare dove portano e tenere
+possono aprire più strade di ragionamento, guardare dove portano e tenere
 solo le migliori: è il **Tree of Thoughts** («albero di pensieri»)
 {cite}`yao2023tree`. L'immagine è quella di chi risolve un labirinto: a ogni
 bivio si prova una strada, e se dopo qualche passo non promette niente di
 buono si torna al bivio e si prende l'altra, invece di andare avanti per
 inerzia. Le strade si possono anche tentare tutte insieme, ma la cosa che
-conta è un'altra, ed è quella che il filo unico non permette: poter **tornare
-indietro** da una strada che non promette. Il guadagno in problemi che richiedono
+conta è un'altra, ed è quella che il filo unico non permette: poter tornare
+indietro da una strada che non promette. Il guadagno in problemi che richiedono
 pianificazione è reale; il prezzo pure, ed è sempre lo stesso: più token, più
 tempo, più costo. È il compromesso di fondo del context engineering, in una
 forma nuova: la finestra è un budget, e ogni cosa che ci metti (istruzioni,
@@ -524,34 +525,34 @@ messa dove rende di più.
 ```{admonition} Da ricordare
 :class: important
 - Con un modello istruito non si programma scrivendo codice, ma scrivendo il
-  **contesto**: quello che gli metti davanti prima di fargli la domanda è
+  contesto: quello che gli metti davanti prima di fargli la domanda è
   l'unico comando che hai. Il mestiere di riempire bene quello spazio vale più
   di qualunque «frase magica».
-- Il **prompt** è un **documento di lavoro** montato a
+- Il prompt è un documento di lavoro montato a
   pezzi, non un incantesimo: le istruzioni di fondo, qualche esempio svolto, il
   formato in cui si
   vuole la risposta, e solo alla fine la richiesta. E siccome una parola diversa
   cambia il risultato, va trattato come si tratta il software: se ne conserva
   la storia, lo si prova su casi noti, si confrontano due versioni prima di
   sostituirne una.
-- La finestra è **piccola e costosa**: ogni parola che ci metti la paghi in
-  memoria, in attesa e in denaro. E c'è la trappola dei **fogli in mezzo alla
-  pila** (in inglese *lost in the middle* {cite}`liu2024lost`): il modello usa
+- La finestra è piccola e costosa: ogni parola che ci metti la paghi in
+  memoria, in attesa e in denaro. E c'è la trappola dei fogli in mezzo alla
+  pila (in inglese *lost in the middle* {cite}`liu2024lost`): il modello usa
   bene l'inizio e la fine di quello che legge, e trascura il centro. Quindi
-  l’**ordine conta**.
-- **Memoria**: a breve termine il **foglio di brutta** dentro la finestra, dove
-  l'agente scrive i conti a metà; a lungo termine uno **schedario esterno** da
+  l’ordine conta.
+- Memoria: a breve termine il foglio di brutta dentro la finestra, dove
+  l'agente scrive i conti a metà; a lungo termine uno schedario esterno da
   cui pescare solo la pagina che serve adesso (i documenti recuperati, i
   riassunti di quello che si è detto, i fatti sull'utente tenuti a parte). Il
-  problema difficile è decidere cosa **lasciare fuori** dalla
+  problema difficile è decidere cosa lasciare fuori dalla
   finestra adesso: ogni riga spesa a ricordare è una riga in meno per ragionare.
-- Assemblare il contesto è come fare la **valigia con un limite di peso**:
+- Assemblare il contesto è come fare la valigia con un limite di peso:
   prima l'indispensabile, poi il resto per priorità finché entra, e quel che
   quasi ci sta lo porti a metà. La cosa più importante va messa dove la
   ritrovi, cioè in fondo, appena prima della domanda.
-- Anche **pensare costa**: far ragionare il modello a voce alta prima di
+- Anche pensare costa: far ragionare il modello a voce alta prima di
   rispondere {cite}`wei2022chain`, o fargli provare più strade e tornare
-  indietro da quelle che non promettono (**Tree of Thoughts**
+  indietro da quelle che non promettono (Tree of Thoughts
   {cite}`yao2023tree`), compra qualità spendendo spazio nella finestra. Come
   ogni spesa, va fatta dove rende.
 ```
@@ -562,27 +563,27 @@ messa dove rende di più.
 
 ```{admonition} Da ricordare
 :class: important
-- Con un LLM istruito non si programma col codice ma col **contesto**: ciò che
-  metti nella finestra prima di chiedere è l'interfaccia. Il **context
-  engineering** è il mestiere di riempirla bene: più del «prompt magico».
-- Il **prompt** è un artefatto strutturato (system prompt, esempi *few-shot*
-  come condizionamento, formato dell'output), non un incantesimo. Ed è **codice**:
+- Con un LLM istruito non si programma col codice ma col contesto: ciò che
+  metti nella finestra prima di chiedere è l'interfaccia. Il context
+  engineering è il mestiere di riempirla bene: più del «prompt magico».
+- Il prompt è un artefatto strutturato (system prompt, esempi *few-shot*
+  come condizionamento, formato dell'output), non un incantesimo. Ed è codice:
   va versionato, testato e confrontato, come vedremo in LLMOps.
-- La finestra è **finita e costosa**: ogni token pesa su KV cache e costo per
+- La finestra è finita e costosa: ogni token pesa su KV cache e costo per
   token, e nel budget vanno contati anche i marcatori che il montaggio
-  aggiunge. E c'è il **lost in the middle** {cite}`liu2024lost`: i modelli usano
-  bene l'inizio e la fine del contesto, male il centro. Quindi l’**ordine
-  conta**.
-- **Memoria**: a breve termine lo *scratchpad* nella finestra; a lungo termine
+  aggiunge. E c'è il lost in the middle {cite}`liu2024lost`: i modelli usano
+  bene l'inizio e la fine del contesto, male il centro. Quindi l’ordine
+  conta.
+- Memoria: a breve termine lo *scratchpad* nella finestra; a lungo termine
   una memoria esterna (database vettoriale/RAG, riassunti progressivi, fatti
   strutturati). Il problema difficile sta a valle: che cosa di quel materiale
   merita la finestra a questo passo.
-- Assemblare il contesto è un problema di **budget** (uno zaino, e per giunta
+- Assemblare il contesto è un problema di budget (uno zaino, e per giunta
   frazionario una volta ammessa la troncatura): obbligatori fissi, passaggi per
-  rilevanza finché entrano, e disposizione a **V**, il più rilevante in fondo e
+  rilevanza finché entrano, e disposizione a V, il più rilevante in fondo e
   il secondo in testa, perché la curva del *lost in the middle* è a U.
-- Anche il **ragionamento** è context engineering: chain-of-thought
-  {cite}`wei2022chain` e la sua estensione ad albero, il **Tree of Thoughts**
+- Anche il ragionamento è context engineering: chain-of-thought
+  {cite}`wei2022chain` e la sua estensione ad albero, il Tree of Thoughts
   {cite}`yao2023tree`, comprano qualità spendendo token di «pensiero».
 ```
 

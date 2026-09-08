@@ -6,7 +6,7 @@ La risposta ovvia è la meno utile. Si prende una rete già addestrata su tutti 
 compiti conosciuti e le si dà una ripassata sui dieci esempi. Funziona quando i
 compiti si somigliano molto, e quando la famiglia è varia funziona male per una
 ragione controintuitiva: una rete addestrata su tutti i compiti insieme impara
-la loro **media**, e la media di una famiglia varia può non somigliare a nessuno
+la loro media, e la media di una famiglia varia può non somigliare a nessuno
 dei suoi membri.
 
 C'è un'altra strada, e il nome che porta dice già la mossa: si chiama
@@ -32,18 +32,18 @@ l'arco in una posizione da cui il contrabbasso è a cinque minuti di distanza.
 La differenza con l'apprendimento multi-compito è tutta qui, ed è una
 differenza su che cosa si è allenato. Là si imparavano più strumenti insieme
 per suonarli tutti; qui non interessa suonare bene i tre di prima. Interessa
-arrivare a essere uno **da cui il quarto si impara in fretta**.
+arrivare a essere uno da cui il quarto si impara in fretta.
 
 Detta così sembra un gioco di parole, e invece cambia l'allenamento. Chi vuole
 suonare bene i tre strumenti si esercita sui tre strumenti. Chi vuole arrivare
 pronto al quarto deve esercitarsi in un modo strano: prendere ogni tanto uno
-strumento messo da parte, darsi cinque minuti, e poi guardare **come suona
-dopo quei cinque minuti**. Se suona male, a essere corretta non è la tecnica di
+strumento messo da parte, darsi cinque minuti, e poi guardare come suona
+dopo quei cinque minuti. Se suona male, a essere corretta non è la tecnica di
 quei cinque minuti ma la posizione di partenza da cui li si era cominciati.
 
 Che è anche la ragione per cui l'altra strada fallisce sulle famiglie varie.
 Chi si esercita sempre e solo a suonare bene i tre strumenti che ha, senza mai
-provare a **ripartire da zero** su un quarto, finisce per aggiustarsi addosso
+provare a ripartire da zero su un quarto, finisce per aggiustarsi addosso
 una posizione buona per quei tre e per nient'altro: comoda, e ferma. Da lì i
 cinque minuti non bastano.
 
@@ -51,7 +51,7 @@ E c'è un modo in cui va anche peggio, che è la cosa più sorprendente di tutte
 e più avanti si vede in numeri. Quella posizione comoda è comoda *perché* è un
 punto di equilibrio: chi ci sta dentro e prova a muoversi in fretta verso il
 contrabbasso non ci arriva a metà strada, esce dall'equilibrio e basta, e dopo
-i cinque minuti suona **peggio** di quando ha cominciato. Chi invece la
+i cinque minuti suona peggio di quando ha cominciato. Chi invece la
 posizione se l'è scelta apposta per potersi muovere, in cinque minuti si
 avvicina.
 
@@ -59,7 +59,7 @@ E c'è un confine da tenere presente, perché è netto. Tutto questo vale finch�
 il quarto strumento è ancora un arco. Metti in mano a quella persona una
 tromba, e la posizione delle mani non serve a niente: nel migliore dei casi è
 neutra, nel peggiore ha abitudini da disimparare, e cinque minuti diventano
-sei mesi. Una posizione di partenza è buona **per una famiglia**, e quale sia
+sei mesi. Una posizione di partenza è buona per una famiglia, e quale sia
 quella famiglia lo decide chi allena: è lui che sceglie da quale mucchio pescare
 gli strumenti dell'allenamento, e quel mucchio è la promessa che sta facendo.
 
@@ -67,7 +67,7 @@ gli strumenti dell'allenamento, e quel mucchio è la promessa che sta facendo.
 
 `````{tab} Superiore
 
-**MAML** sta per *Model-Agnostic Meta-Learning* {cite}`finn2017maml`, e
+MAML sta per *Model-Agnostic Meta-Learning* {cite}`finn2017maml`, e
 model-agnostic vuol dire che non prescrive un'architettura: si applica a
 qualunque modello addestrato per discesa del gradiente, e infatti gli autori lo
 provano su regressione, classificazione e apprendimento per rinforzo.
@@ -84,7 +84,7 @@ $$
 $$
 
 dove $\alpha$ è il passo interno. Il **ciclo esterno** aggiorna $\theta$
-guardando quanto valgono i parametri **adattati**, e non $\theta$ stesso:
+guardando quanto valgono i parametri adattati, e non $\theta$ stesso:
 
 $$
 \theta \leftarrow \theta - \beta \nabla_\theta
@@ -104,7 +104,7 @@ La valutazione ha una forma sua, **$N$-way $k$-shot**: si costruisce un compito
 con $N$ classi e $k$ esempi per classe, si dà al modello l’**insieme di
 supporto** (i $N \cdot k$ esempi su cui adattarsi) e lo si interroga
 sull’**insieme di interrogazione**. Quello che si misura è la prestazione
-**dopo l'adattamento**, che è una grandezza diversa dalla prestazione del
+dopo l'adattamento, che è una grandezza diversa dalla prestazione del
 modello, e per questo la generalizzazione ordinaria fra addestramento e prova
 non basta a descriverla.
 
@@ -137,7 +137,7 @@ sono lontane.
 ### In pratica: dieci punti su un'onda mai vista
 
 L'esperimento con cui questa idea fu presentata usa la famiglia più semplice
-che si possa disegnare: le **onde**, o *sinusoidi*, cioè le curve che salgono e
+che si possa disegnare: le onde, o *sinusoidi*, cioè le curve che salgono e
 scendono regolarmente, tutte della stessa forma ma ciascuna con la propria
 altezza e il proprio punto di partenza. Sono un buon banco di prova perché si
 somigliano (sono tutte onde) e sono diverse (una è alta e comincia in cima,
@@ -155,7 +155,7 @@ Si confrontano tre punti di partenza, dando a tutti e tre lo stesso
 adattamento, cioè cinque passi di aggiustamento sui dieci punti: una rete presa
 a caso, una allenata su tutte le onde insieme, e una meta-addestrata. Dare a
 tutti e tre lo stesso adattamento è precisamente il confronto che interessa,
-perché la domanda è da quale partenza **quei passi lì** funzionano.
+perché la domanda è da quale partenza quei passi lì funzionano.
 
 ```python
 import torch
@@ -274,17 +274,16 @@ Senza adattamento la rete meta-addestrata ($2{,}08$) e quella allenata su tutte
 le onde ($2{,}12$) prendono lo stesso voto, e nessuna delle due è una buona
 previsione: sono due curve quasi ferme accanto a onde che salgono e scendono, e
 infatti la seconda oscilla fra $-0{,}96$ e $1{,}84$, cioè attorno alla curva
-media di poco fa. **Il meta-addestramento non ha prodotto un modello
-migliore.**
+media di poco fa. Il meta-addestramento non ha prodotto un modello
+migliore.
 
 La differenza sta tutta nella colonna dopo. Cinque passi di aggiustamento sui
 dieci punti portano la rete meta-addestrata da $2{,}08$ a $1{,}74$, e la
 migliorano in settantasette onde su cento. Portano quella allenata su tutte da
 $2{,}12$ a $5{,}34$, e la migliorano in diciassette: da quel punto di partenza
-quegli stessi passi fanno **danno**, ed è il peggioramento annunciato dalla
-scena. La curva media è un posto comodo dove stare fermi, e cinque passi
-lanciati verso un'onda precisa la portano fuori di lì senza arrivare da nessuna
-parte.
+quegli stessi passi fanno danno. La curva media è un posto comodo dove stare
+fermi, e cinque passi lanciati verso un'onda precisa la portano fuori di lì
+senza arrivare da nessuna parte.
 
 La riga della rete presa a caso va letta con un'avvertenza, perché sembra
 contraddirsi: migliora in cinquantanove casi su cento e ha il numero peggiore.
@@ -297,28 +296,28 @@ Quello che il meta-addestramento ha ottimizzato, insomma, non si vede
 guardando la rete ferma: si vede soltanto guardando che cosa le succede quando
 impara. Ed è proprio così che era stata definita la cosa da migliorare.
 
-La tabella riporta **mediane**, e non medie, perché con passi di dimensione
+La tabella riporta mediane, e non medie, perché con passi di dimensione
 fissa capita che su qualche onda i cinque passi non convergano affatto: basta
 uno di quei casi, e la media di cento numeri la decide lui.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il **meta-apprendimento** non allena una rete a risolvere i compiti che ha
-  visto: la allena a essere un **buon punto di partenza** per il compito
+- Il meta-apprendimento non allena una rete a risolvere i compiti che ha
+  visto: la allena a essere un buon punto di partenza per il compito
   successivo, quello di cui esistono dieci esempi.
 - L'allenamento è strano apposta: si prende un compito messo da parte, ci si
   concede qualche passo di adattamento, e si guarda com'è andata dopo
   quei passi. È quel «dopo» a essere migliorato, non il «prima».
 - La strada ovvia (allenare una rete sola su tutti i compiti insieme e poi
   ripassarla) fallisce quando la famiglia è varia, perché quella rete impara la
-  **media** dei compiti, e la media di solito non somiglia a nessuno di loro:
+  media dei compiti, e la media di solito non somiglia a nessuno di loro:
   sulle onde della prova è un'onda bassa e sempre la stessa, e le altre non le
   somigliano.
   E fallisce due volte, perché quella curva media è un posto comodo dove stare
   fermi: i pochi passi di aggiustamento la portano fuori di lì e la lasciano a
   metà, cioè peggiorano invece di migliorare.
-- Il confine è la **famiglia**: una buona posizione di partenza lo è per gli
+- Il confine è la famiglia: una buona posizione di partenza lo è per gli
   strumenti che le somigliano. Su un compito che sta fuori non aiuta, e può
   perfino portarsi dietro abitudini da disimparare.
 ```
@@ -327,7 +326,7 @@ uno di quei casi, e la media di cento numeri la decide lui.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- **MAML** {cite}`finn2017maml` ottimizza un'inizializzazione $\theta$ a due
+- MAML {cite}`finn2017maml` ottimizza un'inizializzazione $\theta$ a due
   livelli: il ciclo interno adatta,
   $\theta_i' = \theta - \alpha\nabla_\theta\mathcal{L}_{\mathcal{T}_i}(\theta)$,
   e il ciclo esterno aggiorna $\theta$ sul valore di $\mathcal{L}$ calcolata in
@@ -339,9 +338,9 @@ uno di quei casi, e la media di cento numeri la decide lui.
 - *Model-agnostic* vuol dire che serve solo che il modello si addestri per
   discesa del gradiente: gli autori lo provano su regressione, classificazione
   e rinforzo.
-- La valutazione è **$N$-way $k$-shot** con insieme di supporto e di
-  interrogazione, perché quello che va misurato è la **velocità di
-  adattamento** e non la generalizzazione ordinaria.
+- La valutazione è $N$-way $k$-shot con insieme di supporto e di
+  interrogazione, perché quello che va misurato è la velocità di
+  adattamento e non la generalizzazione ordinaria.
 - Il punto di rottura sta nella distribuzione $p(\mathcal{T})$: fuori da essa
   l'inizializzazione non ha ragione di aiutare, e può nuocere.
 ```

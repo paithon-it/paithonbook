@@ -6,12 +6,12 @@ ventinove restano sullo scaffale. Possedere una conoscenza e consultarla sono
 due costi diversi, e nessuno si sognerebbe di confonderli.
 
 Il Transformer che abbiamo montato nella sezione sull'architettura fa
-esattamente il contrario. Ogni **token** (uno dei mattoncini in cui il testo
+esattamente il contrario. Ogni token (uno dei mattoncini in cui il testo
 viene spezzato, di solito una parola o un pezzo di parola) viene moltiplicato
-per **tutti** i numeri che la rete ha imparato, a ogni piano: quelli
+per tutti i numeri che la rete ha imparato, a ogni piano: quelli
 dell'attenzione e quelli della rete feed-forward, dal primo piano fino in cima,
 senza saltarne uno. (Quei numeri stanno in tabelle di righe e colonne, che in
-matematica si chiamano *matrici*, e presi tutti insieme sono i **parametri**
+matematica si chiamano *matrici*, e presi tutti insieme sono i parametri
 del modello, quelli che si contano quando si dice «un modello da sette
 miliardi».) Da qui un'aritmetica spietata: raddoppiare i parametri raddoppia il
 calcolo per ogni parola, sia mentre il modello studia sia quando scrive.
@@ -24,18 +24,18 @@ ogni singola parola cresce insieme al modello, e a un certo punto smette di
 essere pagabile.
 
 La domanda di questa sezione è se le due cose si possano separare. Esiste un
-modello **grande in conoscenza** e **piccolo in calcolo per token**? Si può
-comprare capacità senza comprare, nella stessa misura, aritmetica? La risposta
-è sì, ha un nome (*mixture of experts*, miscela di esperti) ed è la ragione per cui capita di leggere due numeri di parametri per lo
-stesso modello. Come
-sempre, però, non è un pasto gratis: il conto non sparisce, cambia voce.
+modello grande in conoscenza e piccolo in calcolo per token? Si può comprare
+capacità senza comprare, nella stessa misura, aritmetica? La risposta è sì, ha
+un nome (*mixture of experts*, miscela di esperti) ed è la ragione per cui
+capita di leggere due numeri di parametri per lo stesso modello. Come sempre,
+però, non è un pasto gratis: il conto non sparisce, cambia voce.
 
 ## Molti blocchi al posto di uno
 
 Se si vuole risparmiare calcolo, conviene farlo dove il calcolo è più grosso.
 Nella sezione sull'architettura abbiamo visto che ogni piano del Transformer
 alterna la riunione (l'attenzione, dove le parole si scambiano informazione) e
-il lavoro individuale (la **rete feed-forward**, dove ogni parola rielabora per
+il lavoro individuale (la rete feed-forward, dove ogni parola rielabora per
 conto suo), e che il secondo momento, pur essendo il più semplice da capire,
 contiene due terzi dei numeri imparati di un piano. Il conto stava lì: quattro
 tabelle di una certa taglia nell'attenzione, contro due tabelle grandi il
@@ -60,9 +60,9 @@ apre una terza via, e il prezzo di quella via (un router che può sbagliare, e
 memoria per esperti che quasi sempre stanno fermi) è l'argomento delle pagine
 che seguono.
 
-L'idea sta in una riga: **sostituire l'unica rete feed-forward di ogni strato**
+L'idea sta in una riga: sostituire l'unica rete feed-forward di ogni strato
 («strato» è il nome tecnico di quelli che nella torre della sezione
-sull'architettura avevamo chiamato piani) **con $N$ copie indipendenti**, gli
+sull'architettura avevamo chiamato piani) con $N$ copie indipendenti, gli
 *esperti*, e aggiungere davanti un piccolo
 **router** che per ogni token ne sceglie $k$, di solito uno o due.
 L'attenzione resta esattamente com'era. Il modello possiede i parametri di
@@ -99,7 +99,7 @@ casa al posto di un tuttologo. Se lo rileggono in due si arriva a cinque, una
 volta e mezza abbondante; per tornare a tre si assumono redattori a mezzo
 servizio, così che due di loro costino quanto il tuttologo.
 
-Separare quanto la redazione **sa** da quanto **fatica** su ogni pezzo: la
+Separare quanto la redazione sa da quanto fatica su ogni pezzo: la
 miscela di esperti è tutta qui. Il prezzo si vede in busta paga, e non lo
 sconta nessuno: gli otto lo stipendio lo prendono tutti, anche quelli che oggi
 non hanno scritto una riga. La redazione costa diciassette; il pezzo, quando
@@ -132,14 +132,14 @@ sull'architettura, resta identico. In nessuno dei due casi cambiano i rapporti
 che seguono.
 
 Ora sostituiamo ogni FFN con $N = 8$ esperti della stessa taglia. I parametri
-**totali** diventano
+totali diventano
 
 $$
 L\,\bigl(N \cdot 2\,d_{\text{model}}\,d_{\text{ff}} + 4\,d_{\text{model}}^2\bigr)
 = 32 \times (8 \times 134{,}2 + 67{,}1)\text{ M} = 36{,}5 \text{ miliardi},
 $$
 
-mentre i parametri **attivi**, quelli che un singolo token attraversa
+mentre i parametri attivi, quelli che un singolo token attraversa
 davvero, con $k = 1$ valgono
 
 $$
@@ -147,12 +147,12 @@ L\,\bigl(k \cdot 2\,d_{\text{model}}\,d_{\text{ff}} + 4\,d_{\text{model}}^2\bigr
 = 32 \times (134{,}2 + 67{,}1)\text{ M} = 6{,}44 \text{ miliardi},
 $$
 
-cioè **esattamente** quanto il modello denso di partenza. Quasi sei volte i
-parametri ($36{,}5 / 6{,}44 \approx 5{,}7$) a parità di aritmetica per
-token. Con $k = 2$ ed esperti della stessa taglia gli attivi salgono a
-$10{,}7$ miliardi, $1{,}7$ volte il denso; per pareggiare del tutto si riduce
-la $d_{\text{ff}}$ di ciascun esperto, così che due esperti dimezzati costino quanto
-una FFN intera.
+cioè esattamente quanto il modello denso di partenza. Quasi sei volte i
+parametri ($36{,}5 / 6{,}44 \approx 5{,}7$) a parità di aritmetica per token.
+Con $k = 2$ ed esperti della stessa taglia gli attivi salgono a $10{,}7$
+miliardi, $1{,}7$ volte il denso; per pareggiare del tutto si riduce la
+$d_{\text{ff}}$ di ciascun esperto, così che due esperti dimezzati costino
+quanto una FFN intera.
 
 Il router, in tutto questo, è rumore di fondo: una matrice
 $\mathbf{W}_g \in \mathbb{R}^{N \times d_{\text{model}}}$ per strato, cioè
@@ -172,9 +172,9 @@ Un esempio con numeri veri, perché la differenza sorprende. Si parte da un
 modello denso normale, di quelli «da sette miliardi»: 6,44 miliardi di
 parametri, contando i piani e non il vocabolario. Se ne prende il momento di
 lavoro individuale, che vale 134 milioni per piano, e lo si moltiplica per
-otto: il modello arriva a **36,5 miliardi** di parametri totali. Ma ogni parola
-ne attraversa uno solo degli otto, quindi i parametri **attivi** restano
-**6,44 miliardi**, cioè esattamente quelli del modello di partenza. Quasi sei
+otto: il modello arriva a 36,5 miliardi di parametri totali. Ma ogni parola
+ne attraversa uno solo degli otto, quindi i parametri attivi restano
+6,44 miliardi, cioè esattamente quelli del modello di partenza. Quasi sei
 volte la conoscenza, la stessa bolletta a parola. Confondere i due numeri è
 l'errore più comune quando si leggono le schede tecniche di questi modelli, e
 conviene prendere l'abitudine di citarli sempre in coppia.
@@ -208,7 +208,7 @@ Con $k = 2$ si tengono i due migliori, l'esperto 1 e l'esperto 3, e gli altri
 due si buttano via: per questo token semplicemente non esistono. Restano da
 decidere le proporzioni della miscela, cioè da trasformare due punteggi
 ($2{,}0$ e $1{,}5$) in due percentuali che sommino a cento. La ricetta standard
-si chiama **softmax**, ed è una divisione con un passaggio in più: si prende il
+si chiama softmax, ed è una divisione con un passaggio in più: si prende il
 numero $e = 2{,}718\ldots$, lo si eleva a ciascun punteggio, e si divide
 ciascun risultato per la somma di tutti. Sui nostri due, $e^{2{,}0} = 7{,}39$ e
 $e^{1{,}5} = 4{,}48$, che sommati fanno $11{,}87$; quindi
@@ -289,7 +289,7 @@ precauzione contro la tendenza del router a servirsi sempre dai soliti pochi.
 `````
 
 C'è un punto sottile e importante.
-La scelta dei $k$ esperti è **discreta**: si ordina, si taglia, e un taglio non
+La scelta dei $k$ esperti è discreta: si ordina, si taglia, e un taglio non
 ha vie di mezzo, perché un esperto è dentro o è fuori, mai «dentro per il tre
 per cento in più». Il modo in cui una rete impara, invece, è tutto fatto di vie
 di mezzo: si guarda com'è andata e ci si chiede, per ogni numero interno, «se
@@ -298,7 +298,7 @@ sposta di un'inezia nella direzione buona. Su un taglio quella domanda non ha
 risposta: alzare di pochissimo un punteggio, quasi sempre, non cambia chi entra
 e chi resta fuori. Come fa allora il router a imparare a smistare?
 
-La risposta è che impara dall'altro pezzo, i **pesi della miscela**, i due
+La risposta è che impara dall'altro pezzo, i pesi della miscela, i due
 numeri calcolati poco fa. Quelli sì che rispondono a variazioni piccole, e
 dipendono direttamente dai punteggi del router. Se l'esperto 1 ha dato una
 risposta utile, conviene alzare il suo peso; per alzare il suo peso bisogna
@@ -316,7 +316,7 @@ caratteristico di tutta la famiglia.
 
 ## Il collasso del router
 
-Un modello a esperti, lasciato a sé stesso, tende a **collassare**: dopo
+Un modello a esperti, lasciato a sé stesso, tende a collassare: dopo
 qualche migliaio di passi il router manda quasi tutti i token agli stessi due
 o tre esperti, e gli altri restano dei blocchi di parametri inerti. È la
 dinamica naturale del sistema, non un bug di implementazione.
@@ -380,15 +380,15 @@ $$
 
 dove $p(\mathbf{x})$ è la distribuzione softmax del router sul token
 $\mathbf{x}$, $f_i$ è la
-**frazione di token effettivamente instradati** all'esperto $i$ (un
-conteggio), $P_i$ la **probabilità media** che il router gli ha assegnato (una
+frazione di token effettivamente instradati all'esperto $i$ (un
+conteggio), $P_i$ la probabilità media che il router gli ha assegnato (una
 quantità continua) e $\alpha$ il peso della penalità, $10^{-2}$ nel paper.
 
 Perché quel prodotto spinge verso il carico uniforme? Entrambi i vettori $f$ e
 $P$ stanno sul simplesso ($\sum_i f_i = \sum_i P_i = 1$) e tendono a essere
-**allineati**, perché l'instradamento segue l’$\arg\max$ delle stesse
+allineati, perché l'instradamento segue l’$\arg\max$ delle stesse
 probabilità che compongono $P$: gli esperti con $P_i$ alto sono di norma
-quelli con $f_i$ alto. In quel regime si può **sostituire** $f_i$ con $P_i$
+quelli con $f_i$ alto. In quel regime si può sostituire $f_i$ con $P_i$
 (una sostituzione dichiarata, non una conseguenza: è lecita solo dove
 l’$\arg\max$ è netto) e il prodotto scalare si comporta come $\sum_i P_i^2$.
 Su quella somma vale Cauchy-Schwarz, applicata a $P$ e al vettore di tutti
@@ -416,7 +416,7 @@ $f = (0{,}625;\ 0{,}25;\ 0{,}125;\ 0)$ e
 $P = (0{,}55;\ 0{,}25;\ 0{,}15;\ 0{,}05)$ danno
 $4 \times 0{,}425 = 1{,}70$, contro l’$1{,}00$ del caso uniforme.
 
-Il dettaglio elegante è **dove passa il gradiente**. Il conteggio $f_i$ non è
+Il dettaglio elegante è dove passa il gradiente. Il conteggio $f_i$ non è
 differenziabile (è la stessa selezione discreta di prima), quindi la derivata
 scorre solo attraverso $P_i$:
 
@@ -424,7 +424,7 @@ $$
 \frac{\partial \mathcal{L}_{\text{aux}}}{\partial P_i} = \alpha\,N\,f_i ,
 $$
 
-cioè una spinta verso il basso **proporzionale al carico già ricevuto**. Gli
+cioè una spinta verso il basso proporzionale al carico già ricevuto. Gli
 esperti affollati si vedono abbassare i punteggi in proporzione a quanto sono
 affollati; quelli vuoti non ricevono alcuna spinta negativa e risalgono per
 differenza. A instradamento fissato la penalità è lineare in $P$, e in quel
@@ -439,7 +439,7 @@ fra le cose che si osservano, non fra quelle che si dimostrano.
 ### La capacità, e i token che cadono
 
 Il bilanciamento è una spinta statistica, non una garanzia: in un mucchietto di
-token qualunque (nel gergo un **batch**, cioè il gruppo di esempi che il
+token qualunque (nel gergo un batch, cioè il gruppo di esempi che il
 modello elabora in una volta sola) un esperto può comunque ricevere più token
 di quanti ne possa elaborare. Per questo l'implementazione fissa in anticipo
 una **capacità**, cioè il numero massimo di token che ciascun esperto accetta
@@ -461,23 +461,23 @@ fa $3$. Un esperto che si vedesse assegnare cinque token ne elabora dunque tre
 e ne lascia cadere due.
 
 Cosa succede ai token caduti? Nulla di drammatico e nulla di visibile. Lo
-strato non produce niente per quel token, e qui torna comoda la **scorciatoia**
+strato non produce niente per quel token, e qui torna comoda la scorciatoia
 della sezione sull'attenzione, quella che porta la lista di numeri intatta
 accanto al blocco e la somma all'uscita: se l'uscita è zero, resta la
-scorciatoia, e il token attraversa lo strato **immutato**, come se lì non ci
+scorciatoia, e il token attraversa lo strato immutato, come se lì non ci
 fosse. Nessun errore, nessun messaggio: solo un po’ di qualità in meno,
 distribuita in modo silenzioso. Alzare $c$ riduce i token caduti ma alloca
 buffer più grandi, cioè spreca memoria per posti mai occupati. E c'è una
-conseguenza più insidiosa: **il destino di un token dipende dagli altri token
-del batch**, quindi lo stesso identico input, in compagnia diversa, può
+conseguenza più insidiosa: il destino di un token dipende dagli altri token
+del batch, quindi lo stesso identico input, in compagnia diversa, può
 ricevere un trattamento diverso. Un modello sparso non è una funzione del
 singolo esempio, e chi ne debugga il comportamento farebbe bene a saperlo.
 
 ## Il conto si sposta, non sparisce
 
 Fin qui la parte lieta. Adesso quella onesta, che è anche il motivo per cui la
-mixture of experts non è la fine della storia: **si risparmia calcolo, non
-memoria**. Gli esperti che nessun token attraversa non consumano aritmetica,
+mixture of experts non è la fine della storia: si risparmia calcolo, non
+memoria. Gli esperti che nessun token attraversa non consumano aritmetica,
 ma devono comunque esistere da qualche parte, caricati e pronti, perché il
 token successivo potrebbe chiederli.
 
@@ -491,10 +491,10 @@ diverse sparse per la città, e allora lavorare su un pezzo costa poco ma
 suo specialista, e la riattraversa per andare in stampa.
 
 Le sedi sparse per la città sono vere. Un modello di questa taglia in un
-computer solo non ci sta: lo si spezza fra decine o centinaia di **schede
-grafiche**, i processori specializzati nel fare tanti conti insieme, e gli
+computer solo non ci sta: lo si spezza fra decine o centinaia di schede
+grafiche, i processori specializzati nel fare tanti conti insieme, e gli
 esperti finiscono su schede diverse. Il lavoro risparmiato torna allora come
-**traffico**, due traversate della città per ogni piano, andata e ritorno.
+traffico, due traversate della città per ogni piano, andata e ritorno.
 
 I furgoni, poi, non si possono caricare la sera prima. Quanti pezzi tocchino
 a ciascuna sede lo decide lo smistatore la mattina stessa, un articolo alla
@@ -530,7 +530,7 @@ contro i $12{,}9$ GB del modello denso che gli costa la stessa aritmetica per
 token. Quasi sei volte la memoria per lo stesso calcolo: il baratto è
 esplicito.
 
-In addestramento distribuito la strategia naturale è l’**expert parallelism**,
+In addestramento distribuito la strategia naturale è l’expert parallelism,
 già nominato nella sezione sul parallelismo distribuito accanto agli assi
 dati, tensor e pipeline: gli esperti di ciascuno strato si spartiscono fra le
 schede, una manciata per GPU. Il pattern di comunicazione che ne nasce non è
@@ -545,9 +545,9 @@ l'esperto più affollato detta il ritmo a tutte le altre. Questa, e non solo la
 qualità del modello, è la ragione economica della loss di bilanciamento.
 
 In inferenza vale il quadro che la sezione su LLMOps riprenderà in dettaglio:
-la generazione è **memory-bound**, e il tempo per token è dominato dalla
+la generazione è memory-bound, e il tempo per token è dominato dalla
 lettura dei pesi dalla memoria della GPU, non dall'aritmetica. La
-sparsità qui aiuta in modo condizionato, e la condizione è il **batch**. Con
+sparsità qui aiuta in modo condizionato, e la condizione è il batch. Con
 poche sequenze in volo si leggono davvero solo i $k$ esperti selezionati, e la
 latenza per token è quella del modello piccolo: un vantaggio reale. Ma appena
 il batch cresce, token diversi scelgono esperti diversi, e con qualche
@@ -561,7 +561,7 @@ direzioni opposte.
 `````
 
 Riassumendo in una frase: la mixture of experts sposta il collo di bottiglia dal
-**calcolo** alla **memoria e alla comunicazione**. È un ottimo affare per chi
+calcolo alla memoria e alla comunicazione. È un ottimo affare per chi
 addestra su un parco di macchine collegate fra loro da cavi veloci, e per chi
 deve rispondere in fretta a poche richieste per volta; è un affare molto meno
 ovvio per chi deve stipare il modello in una macchina sola, o per chi ne serve
@@ -577,7 +577,7 @@ reti separate, e una **gating network** (letteralmente «rete cancello»: è il
 nonno del router) che impara a pesarle a seconda di quello che le arriva
 davanti, così che ciascuna si specializzi su un tipo di dati invece di fare un
 compromesso mediocre su tutto. Manca però il pezzo che ci interessa qui: la
-miscela era **densa**, cioè si facevano lavorare tutti gli esperti e poi si
+miscela era densa, cioè si facevano lavorare tutti gli esperti e poi si
 faceva la media delle loro risposte. Un buon modo di organizzare
 l'apprendimento, non un modo di risparmiare conto.
 
@@ -585,7 +585,7 @@ Il salto è del 2017, con *Outrageously Large Neural Networks: The
 Sparsely-Gated Mixture-of-Experts Layer* di Noam Shazeer e colleghi
 {cite}`shazeer2017outrageously`, lo stesso anno di *Attention Is All You Need*
 {cite}`vaswani2017attention` e con un autore in comune. Qui il gating diventa
-**sparso**: si calcolano solo i $k$ esperti scelti, e la miscela smette di
+sparso: si calcolano solo i $k$ esperti scelti, e la miscela smette di
 essere un modo di combinare modelli per diventare un modo di comprare
 parametri senza comprare aritmetica. Lo strato viene infilato fra strati LSTM
 (l'articolo esce a gennaio, i Transformer arriveranno cinque mesi dopo) e
@@ -604,11 +604,11 @@ capacità con i token che cadono, e gli esperti sparsi su centinaia di schede ch
 si scambiano token in continuazione. Poco più di sei mesi dopo, nel gennaio
 2021, Switch Transformer {cite}`fedus2022switch` (uscito su rivista l'anno
 dopo, che è la
-data in bibliografia) fa la mossa controintuitiva: **un solo esperto per
-token**. Il ragionamento del 2017 diceva che ne servivano almeno due, altrimenti
+data in bibliografia) fa la mossa controintuitiva: un solo esperto per
+token. Il ragionamento del 2017 diceva che ne servivano almeno due, altrimenti
 lo smistatore avrebbe perso il segnale con cui impara (quella domanda «se avessi
 alzato di pochissimo il punteggio, sarebbe andata meglio?», che in gergo si
-chiama il **gradiente**): con un solo scelto e le proporzioni rinormalizzate su
+chiama il gradiente): con un solo scelto e le proporzioni rinormalizzate su
 di lui, il suo peso varrebbe sempre uno, qualunque punteggio gli sia stato
 assegnato, e lo smistatore non avrebbe più modo di accorgersi di niente.
 
@@ -650,7 +650,7 @@ ottimizzazioni vere (lo smistamento dei token fra le schede, i buffer di
 capacità preallocati), e il ciclo `for` sugli esperti sarebbe
 inaccettabile su scala; ma la struttura è quella, e si legge. Manca però anche
 una cosa che non è un'ottimizzazione, ed è bene dirlo forte perché è la sola
-che riguarda la **correttezza**: non c'è la loss di bilanciamento. Chi prendesse
+che riguarda la correttezza: non c'è la loss di bilanciamento. Chi prendesse
 questo strato e lo addestrasse così com'è otterrebbe, puntualmente, il collasso
 del router. Calcolarla sarebbe questione di poche righe a
 partire da `indici` e `punteggi`, che il `forward` ha già in mano.
@@ -723,7 +723,7 @@ smistatore, che tiene una lista da 64 numeri per ciascuno degli otto, ne
 aggiunge $512$; totale $265\,216$.
 
 Ogni token, però, ne attraversa soltanto due esperti, cioè $33\,088 \times 2 =
-66\,176$: **un quarto**, che è poi la frazione $k/N = 2/8$ degli esperti che
+66\,176$: un quarto, che è poi la frazione $k/N = 2/8$ degli esperti che
 lavorano. Lo strato sa quattro volte quello che gli costa lavorare una parola.
 (A voler essere pignoli il rapporto non è $4$ esatto ma $4{,}008$, perché nel
 totale ci sono anche i $512$ dello smistatore, che negli attivi non li abbiamo
@@ -737,44 +737,44 @@ in fretta: è un pezzo di ricambio più che un'architettura nuova.
 Nulla di tutto questo, però, cambia *cosa* il modello ha imparato a fare.
 Denso o sparso, quello che esce dal pre-addestramento resta un completatore di
 testo, e per trasformarlo in un interlocutore serve la fase successiva, il
-**post-training**, di cui parla la sezione che segue.
+post-training, di cui parla la sezione che segue.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La miscela di esperti prende il momento di **lavoro individuale** di ogni
+- La miscela di esperti prende il momento di lavoro individuale di ogni
   strato (quello dove sta la maggior parte di ciò che il modello ha imparato:
   due terzi buoni) e lo moltiplica: molti blocchi in parallelo, gli esperti,
-  più uno **smistatore** che per ogni parola ne sceglie uno o due. Un modello
-  così non si racconta con un numero solo: uno dice quanto **sa**, cioè quanta
-  memoria occupa; l'altro quanto **fatica** su ogni parola, cioè quanto costa
+  più uno smistatore che per ogni parola ne sceglie uno o due. Un modello
+  così non si racconta con un numero solo: uno dice quanto sa, cioè quanta
+  memoria occupa; l'altro quanto fatica su ogni parola, cioè quanto costa
   farlo scrivere.
 - Lo smistatore dà un voto a ciascun esperto, tiene i migliori e mescola le
   loro risposte in proporzione ai voti (il $62\%$ di uno, il $38\%$
   dell'altro). La scelta in sé è un taglio netto, e da un taglio non si impara
-  nulla: lo smistatore migliora guardando **com'è andata a chi ha mandato il
-  pezzo**, cioè attraverso le proporzioni della miscela.
-- Lasciato a sé, lo smistatore **collassa**: manda tutto ai soliti due o tre,
+  nulla: lo smistatore migliora guardando com'è andata a chi ha mandato il
+  pezzo, cioè attraverso le proporzioni della miscela.
+- Lasciato a sé, lo smistatore collassa: manda tutto ai soliti due o tre,
   che lavorando migliorano ancora, mentre gli altri non toccano un articolo e
   non impareranno mai. La cura è amministrativa: una voce in più nella pagella
   del modello che punisce lo sbilanciamento (un incentivo, non una garanzia).
   C'è poi un tetto ai pezzi che un esperto accetta per turno: quelli in
-  eccesso attraversano lo strato **senza essere lavorati**, in silenzio.
-- Si risparmia **fatica**, non **spazio**: i redattori fermi prendono lo
+  eccesso attraversano lo strato senza essere lavorati, in silenzio.
+- Si risparmia fatica, non spazio: i redattori fermi prendono lo
   stipendio e occupano una scrivania lo stesso. Quando stanno in edifici
   diversi il costo si sposta sul viavai, perché ogni articolo attraversa la
   città per arrivare al suo specialista e poi torna indietro. E quando il
   modello scrive, il tempo se ne va più ad andare a prendere quello che sa che
   a fare i conti: uno che sa moltissimo e fatica poco su ogni parola attacca
-  il lato sbagliato del problema. Quanto pesi dipende però da **quante
-  richieste si servono insieme**: una alla volta il vantaggio si sente tutto,
+  il lato sbagliato del problema. Quanto pesi dipende però da quante
+  richieste si servono insieme: una alla volta il vantaggio si sente tutto,
   a centinaia insieme sparisce.
 - L'idea è del 1991 {cite}`jacobs1991adaptive`, ma allora ogni pezzo passava
   per tutti gli esperti e delle loro risposte si faceva la media: un buon modo
   di organizzare il lavoro, non di risparmiarlo. Il salto è del 2017
   {cite}`shazeer2017outrageously`, quando si calcolano davvero solo gli
   esperti scelti; poi Switch Transformer {cite}`fedus2022switch` mostra che
-  **uno solo per parola** basta e semplifica tutto.
+  uno solo per parola basta e semplifica tutto.
 - «Esperti» è una metafora comoda: quello in cui ciascuno si specializza è
   raramente riconoscibile, e questi modelli sono più delicati da rifinire su
   compiti piccoli.
@@ -784,33 +784,33 @@ testo, e per trasformarlo in un interlocutore serve la fase successiva, il
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- La mixture of experts sostituisce la **rete feed-forward** di uno strato con
-  $N$ esperti paralleli più un **router** che per ogni token ne sceglie $k$
+- La mixture of experts sostituisce la rete feed-forward di uno strato con
+  $N$ esperti paralleli più un router che per ogni token ne sceglie $k$
   (uno o due). Un modello sparso si descrive con due numeri e non con uno:
-  **parametri totali** (la memoria) e **parametri attivi** (il calcolo per
+  parametri totali (la memoria) e parametri attivi (il calcolo per
   token).
 - Il router è uno strato lineare:
   $G(\mathbf{x}) = \operatorname{softmax}(\text{top-}k(\mathbf{W}_g \mathbf{x}))$
   e $\mathbf{y} = \sum_{i \in \text{top-}k} G(\mathbf{x})_i E_i(\mathbf{x})$.
   La selezione è discreta e non differenziabile: il gradiente arriva al router
-  **attraverso i pesi** $G(\mathbf{x})_i$ degli esperti scelti.
-- Senza contromisure il router **collassa** su pochi esperti, in un circolo
-  che si rinforza da solo. La cura è una **loss ausiliaria**
+  attraverso i pesi $G(\mathbf{x})_i$ degli esperti scelti.
+- Senza contromisure il router collassa su pochi esperti, in un circolo
+  che si rinforza da solo. La cura è una loss ausiliaria
   $\alpha N \sum_i f_i P_i$ {cite}`fedus2022switch`, che resta bassa quando il
   lavoro è distribuito in parti uguali e cresce quando si concentra su pochi
   esperti (un incentivo, non una garanzia: l'argomento regge finché
-  l’$\arg\max$ tiene allineati $f$ e $P$); la **capacità** limita i token per
+  l’$\arg\max$ tiene allineati $f$ e $P$); la capacità limita i token per
   esperto e quelli in eccesso attraversano lo strato immutati grazie alla
   connessione residua.
-- Si risparmia **calcolo**, non **memoria**: tutti gli esperti devono
+- Si risparmia calcolo, non memoria: tutti gli esperti devono
   risiedere da qualche parte. In addestramento il costo si sposta sulla
-  comunicazione (**expert parallelism**, all-to-all); in inferenza resta il
+  comunicazione (expert parallelism, all-to-all); in inferenza resta il
   limite di banda della generazione autoregressiva, tanto più stringente
   quanto più grande è il batch.
-- La linea storica va dalla miscela **densa** del 1991
-  {cite}`jacobs1991adaptive` allo strato **sparso** del 2017
+- La linea storica va dalla miscela densa del 1991
+  {cite}`jacobs1991adaptive` allo strato sparso del 2017
   {cite}`shazeer2017outrageously`, fino a Switch Transformer
-  {cite}`fedus2022switch`, che mostra come **un solo esperto per token** basti
+  {cite}`fedus2022switch`, che mostra come un solo esperto per token basti
   e semplifichi tutto.
 - «Esperti» è una metafora comoda: la specializzazione che emerge è raramente
   interpretabile, e i modelli sparsi sono più delicati da rifinire su compiti

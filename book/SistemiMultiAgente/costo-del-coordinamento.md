@@ -13,11 +13,11 @@ a tenersi aggiornati si mangia il tempo guadagnato lavorando in più.
 Chi mette al lavoro più agenti si trova davanti un conto della stessa forma, ma
 di origine diversa. Qui a moltiplicarsi non sono i canali fra le persone ma la
 conversazione, che si allunga a ogni intervento e che ogni agente rilegge da
-capo prima di parlare. Quello che si rilegge sono **token**, cioè i pezzetti in
+capo prima di parlare. Quello che si rilegge sono token, cioè i pezzetti in
 cui un modello di linguaggio spezza il testo per digerirlo: in italiano un token
 vale grosso modo mezza parola, e una pagina come questa ne contiene sette o
 ottocento. I token sono anche l'unità in cui si paga, perché chi mette a
-disposizione il modello li conta e li fattura, e li conta **due volte**: quelli
+disposizione il modello li conta e li fattura, e li conta due volte: quelli
 che il modello scrive e quelli che gli si fanno leggere. Il capitolo sugli
 Agenti ha già detto, a parole, che una squadra costa più di un solista e
 moltiplica i modi di sbagliare. Questa sezione trasforma quell'avvertimento in
@@ -64,7 +64,7 @@ con l'ultimo: uno più otto fa nove, due più sette fa nove, e di coppie da nove
 ce ne sono quattro. Trentasei. Con trentadue interventi le coppie diventano
 sedici e ciascuna vale trentatré: cinquecentoventotto.
 
-Quattro volte gli interventi, quasi **quindici** volte le righe lette. E il
+Quattro volte gli interventi, quasi quindici volte le righe lette. E il
 quindici non arriva tutto insieme: si arriva a trentadue interventi passando per
 sedici, dove le righe lette sono centotrentasei, cioè quasi quattro volte
 trentasei; e da centotrentasei a cinquecentoventotto è di nuovo quasi quattro
@@ -105,12 +105,12 @@ $$
 $$
 
 perché $T = NR$. Due conseguenze da tenere ferme. La prima: l'esponente sta
-sui **turni**, non sugli agenti; un sistema con due agenti molto loquaci può
+sui turni, non sugli agenti; un sistema con due agenti molto loquaci può
 costare più di uno con otto agenti che dicono una frase a testa. La seconda:
 poiché $T$ è proporzionale a $N$, il costo *è* comunque quadratico nel numero
 di agenti. Cresce come i canali $n(n-1)/2$ di Brooks, ma per un'altra ragione:
-qui il quadrato non viene dalle coppie che si parlano, viene dalla **rilettura
-cumulativa** di una trascrizione che si allunga, ed è quadratico nei turni
+qui il quadrato non viene dalle coppie che si parlano, viene dalla rilettura
+cumulativa di una trascrizione che si allunga, ed è quadratico nei turni
 anche per un solista che lavori da solo abbastanza a lungo. Stessa forma,
 meccanismo diverso.
 
@@ -124,7 +124,7 @@ $$
 N^{2}\,\bar{m}\,\frac{R(R-1)}{2},
 $$
 
-cioè lo **stesso ordine** $O(\bar{m}N^2R^2)$ **con la stessa costante di testa**:
+cioè lo stesso ordine $O(\bar{m}N^2R^2)$ con la stessa costante di testa:
 lo sconto sta in un termine di grado inferiore, e quindi si vede sui numeri
 piccoli e sparisce al crescere dei turni. Con quattro agenti e otto giri a testa
 ($N = 4$, $R = 8$) fa $304.000$ token contro i
@@ -132,11 +132,11 @@ $328.000$ del turno a turno, il 7% in meno; a $R = 64$ il rapporto è già
 $0{,}99$. Resta sotto uno per
 ogni squadra di almeno due agenti, ma sempre meno. Attenzione a non leggerlo
 come un risparmio: la ragione dello
-sconto è che dentro un giro **nessuno legge gli altri**. Chi parla per $t$-esimo
+sconto è che dentro un giro nessuno legge gli altri. Chi parla per $t$-esimo
 nel regime a turni ha già davanti i $t-1$ interventi del giro in corso; in
 *broadcast* tutti leggono la stessa trascrizione, ferma al giro precedente, e
 quello che manca dal conto è esattamente l'informazione che manca a chi lavora.
-Ciò che il *broadcast* compra davvero è la **latenza**, $R$ giri invece di $NR$
+Ciò che il *broadcast* compra davvero è la latenza, $R$ giri invece di $NR$
 turni, perché gli interventi di un giro si producono in parallelo; e la compra
 al prezzo di un giro di ritardo nel reagire a quello che ha appena detto un
 altro.
@@ -147,7 +147,7 @@ Mettiamo delle taglie tonde: duemila token di istruzioni iniziali (due o tre
 pagine di regole, che ciascuno si rilegge sempre uguali a ogni turno), messaggi
 da cinquecento token l'uno (mezza paginetta), otto giri di parola a testa. Una
 colonna della tabella dice quanto è largo il testo che si ritrova davanti chi
-parla per ultimo, e la chiamiamo la sua **finestra**: è tutto ciò di cui
+parla per ultimo, e la chiamiamo la sua finestra: è tutto ciò di cui
 dispone, e fra poco si vedrà che la sua larghezza è un problema a sé. Poche
 righe di Python, che non fanno altro che eseguire la somma, rendono la crescita
 visibile:
@@ -187,8 +187,8 @@ agenti  turni  token letti  finestra finale  costo
 ```
 
 Il caso da tenere a mente è la terza riga. Quattro agenti che si parlano per
-otto giri leggono **328.000 token** contro i 34.000 di un solista che lavora
-otto turni: non quattro volte tanto, quasi **dieci** volte tanto. I token
+otto giri leggono 328.000 token contro i 34.000 di un solista che lavora
+otto turni: non quattro volte tanto, quasi dieci volte tanto. I token
 *scritti*, invece, sono esattamente quattro volte (32 turni per 500 token fanno
 16.000, contro gli 8 per 500 del solista, cioè 4.000): tutto
 lo scarto sta sul lato della lettura, la parte del conto che nessuno guarda
@@ -231,14 +231,14 @@ assumendo gente lo si allunga.
 Con quattro persone le sette ore di scrittura diventano un'ora e tre quarti, e
 il lavoro dura tre ore più un'ora e tre quarti: quattro ore e tre quarti.
 Quante volte si è andati più veloci lo dice dieci diviso quattro e tre quarti:
-poco più di **due volte**, non quattro.
+poco più di due volte, non quattro.
 
 Con otto persone la scrittura scende a poco meno di un'ora e il lavoro dura
-tre ore e cinquantadue minuti e mezzo: poco più di **due volte e mezzo**. I
+tre ore e cinquantadue minuti e mezzo: poco più di due volte e mezzo. I
 quattro assunti in più hanno comprato mezza volta di velocità; i primi quattro
 ne avevano comprata una intera. E per quanta gente si assuma, le tre ore di
 scaletta e rilettura restano lì: sotto le tre ore quel rapporto non scende,
-cioè più di **tre volte e un terzo** non si va nemmeno con un milione di
+cioè più di tre volte e un terzo non si va nemmeno con un milione di
 persone.
 
 A quel tetto, poi, non ci si arriva, perché fin qui chi arriva non costava
@@ -253,10 +253,10 @@ accorciarlo: qui è sei, e le sei chiudono in cinque ore e dieci.
 
 `````{tab} Superiore
 
-Sia $s \in [0,1]$ la frazione **intrinsecamente seriale** del lavoro (quella
+Sia $s \in [0,1]$ la frazione intrinsecamente seriale del lavoro (quella
 che va svolta da un solo esecutore, indipendentemente da quanti ce ne siano) e
 $1-s$ la frazione parallelizzabile. L'ipotesi nascosta, e conviene dirla perché
-è quella che si viola più spesso, è che il problema abbia **taglia fissa**: si
+è quella che si viola più spesso, è che il problema abbia taglia fissa: si
 divide sempre lo stesso lavoro fra più esecutori, non se ne fa di più.
 Normalizzando a 1 il tempo del singolo
 esecutore, con $N$ esecutori il tempo è $s + (1-s)/N$ e l'accelerazione vale
@@ -277,12 +277,12 @@ verso il tetto è di quelle che si spengono in fretta:
 | $S(N)$ | $1{,}00$ | $1{,}54$ | $2{,}11$ | $2{,}58$ | $2{,}91$ | $3{,}33$ |
 
 Per arrivare al $90\%$ del tetto servono $N = 21$ agenti; per arrivare al
-tetto, infiniti. Ma questa curva è un **limite superiore ottimistico**, perché
+tetto, infiniti. Ma questa curva è un limite superiore ottimistico, perché
 assume che coordinare non costi nulla, e il conto dei token ha
 appena mostrato che costa. Se si aggiunge una penale di coordinamento lineare,
 cioè un tempo $\kappa(N-1)$ che ogni agente in più impone a tutti gli altri, il
 tempo diventa $s + (1-s)/N + \kappa(N-1)$ e la curva non si limita ad
-appiattirsi: **torna giù**, e l'ottimo si trova annullando la derivata,
+appiattirsi: torna giù, e l'ottimo si trova annullando la derivata,
 
 $$
 N^{*} \;=\; \sqrt{\frac{1-s}{\kappa}},
@@ -291,7 +291,7 @@ $$
 dove $\kappa$ è il costo di sincronizzazione per agente aggiunto, espresso
 nella stessa unità del tempo totale. Con $s = 0{,}3$ e $\kappa = 0{,}02$ (ogni
 agente in più aggiunge il $2\%$ del tempo originario in coordinamento) si
-ottiene $N^{*} = \sqrt{35} \approx 5{,}9$: l'ottimo è a **sei** agenti,
+ottiene $N^{*} = \sqrt{35} \approx 5{,}9$: l'ottimo è a sei agenti,
 l'accelerazione massima è $1{,}94\times$ (contro un tetto di Amdahl di
 $3{,}33$), e a sedici agenti si è già scesi a $1{,}55\times$, peggio che con
 quattro. Il ginocchio della curva, non il tetto, è il numero che conta. E la
@@ -308,11 +308,11 @@ vale l’*ultimo* agente aggiunto, rispetto a quello che costa?».
 
 Il rapporto e la squadra della tabella sono due esempi diversi, uno fatto di ore
 e l'altro di token, e non c'è modo di sommarli; ma c'è una cosa che si può fare,
-ed è guardare che cosa succede in tutti e due nel passare **dalle stesse quattro
-alle stesse otto** persone. Da una parte si guadagna mezza volta di velocità.
+ed è guardare che cosa succede in tutti e due nel passare dalle stesse quattro
+alle stesse otto persone. Da una parte si guadagna mezza volta di velocità.
 Dall'altra il conto sale da dieci a trentaquattro volte quello di un solista.
 Nessuna aritmetica sensata approva quella spesa. E quella mezza volta è ancora
-la stima **generosa**, perché è il guadagno che si otterrebbe se coordinarsi non
+la stima generosa, perché è il guadagno che si otterrebbe se coordinarsi non
 costasse niente: contando anche il tempo che ogni nuovo arrivato fa perdere agli
 altri, gli otto non guadagnano quasi più nulla rispetto ai quattro.
 
@@ -326,7 +326,7 @@ Il terzo conto è quello che manda a picco le catene lunghe di agenti, ed è il
 più semplice dei tre. Se un lavoro passa di mano in mano, e ogni passaggio
 riesce o fallisce per conto proprio, quanto è affidabile l'insieme sta molto
 sotto la media di quanto sono affidabili i passaggi, perché per arrivare in
-fondo devono riuscire **tutti**.
+fondo devono riuscire tutti.
 
 `````{tab} Elementare
 
@@ -345,7 +345,7 @@ riesca nove volte su dieci, ogni bambino dovrebbe sbagliare meno di sei volte
 su mille: nessun sistema reale ci arriva, sui compiti in cui non c'è una
 risposta sola già prevista.
 
-Ora però mettiamo un arbitro **a ogni passaggio**: uno che, senza sapere qual è
+Ora però mettiamo un arbitro a ogni passaggio: uno che, senza sapere qual è
 la frase giusta, sa dire se quella che ha appena sentito sta in piedi, e in caso
 contrario fa ripetere. Non deve nemmeno essere infallibile. Diciamo che di dieci
 parole cambiate se ne accorge otto: la fila di venti passaggi torna a riuscire
@@ -367,7 +367,7 @@ meno di quello che il conto promette.
 
 `````{tab} Superiore
 
-Sia $p$ la probabilità che un singolo passo sia **corretto**, e siano gli $n$
+Sia $p$ la probabilità che un singolo passo sia corretto, e siano gli $n$
 passi indipendenti. La probabilità che l'intera catena lo sia vale
 
 $$
@@ -389,7 +389,7 @@ per garantire $p^{20} \ge 0{,}90$ servirebbe
 $p \ge 0{,}90^{1/20} \approx 0{,}9947$, cioè poco più di cinque errori ogni
 mille passi: un requisito che nessun modello linguistico soddisfa su compiti
 non banali. Questa, e non l'incapacità dei singoli agenti, è la ragione
-**strutturale** per cui le pipeline lunghe falliscono: l'affidabilità non si
+strutturale per cui le pipeline lunghe falliscono: l'affidabilità non si
 somma, si moltiplica.
 
 La stessa formula dice però come uscirne, e la via non è «modelli migliori».
@@ -407,18 +407,18 @@ un errore non è correggerlo, e $p'$ è la probabilità che il passo sia corrett
 *oppure* che l'errore sia stato segnalato. Per leggerla come correttezza
 efficace serve un'ipotesi in più, che conviene dichiarare: il passo
 intercettato viene rifatto, e rifatto bene. È l'ipotesi giusta nella pratica,
-perché la distinzione che conta è fra il fallimento **silenzioso**, che si
-propaga travestito da dato di partenza, e quello **segnalato**, che è
+perché la distinzione che conta è fra il fallimento silenzioso, che si
+propaga travestito da dato di partenza, e quello segnalato, che è
 recuperabile. Con $p = 0{,}95$ e un verificatore che ne pesca
 l’$80\%$ si ottiene $p' = 0{,}99$, e su venti passi
 $0{,}99^{20} = 0{,}818$ invece di $0{,}358$: da due catene su tre che
-falliscono a una su cinque, cambiando **non il modello ma il ponteggio**.
+falliscono a una su cinque, cambiando non il modello ma il ponteggio.
 
-Tre avvertenze per onestà. La prima è che $r$ **da solo non caratterizza un
-verificatore**, e il modo più rapido di vederlo è portarlo all'estremo: con
+Tre avvertenze per onestà. La prima è che $r$ da solo non caratterizza un
+verificatore, e il modo più rapido di vederlo è portarlo all'estremo: con
 $r = 1$ la formula dà $p' = 1$, cioè una catena lunga a piacere che non fallisce
 mai qualunque sia la qualità dei passi. Ma $r = 1$ lo realizza anche il cancello
-degenere che **rifiuta tutto**, il quale non verifica niente. Alla formula manca
+degenere che rifiuta tutto, il quale non verifica niente. Alla formula manca
 il tasso di falso allarme, $P(\text{rifiuto} \mid \text{passo corretto})$: sotto
 l'ipotesi appena dichiarata, che il passo intercettato venga rifatto, ogni falso
 allarme è un passo rifatto per niente, ed è quel numero, non $r$, a dire quanto
@@ -434,14 +434,14 @@ stesso ragionamento; contarli come prove indipendenti sovrastima il guadagno.
 `````
 
 Il meccanismo di controllo non va reinventato: è l'arbitro del gioco di poco fa.
-Cioè un controllo **esterno**, che dà sempre la stessa risposta sullo stesso caso
+Cioè un controllo esterno, che dà sempre la stessa risposta sullo stesso caso
 e non si lascia convincere da come gliela si racconta. E si noti che cosa non gli
 serve: non deve conoscere la risposta giusta, deve solo saper riconoscere una
 risposta che non sta in piedi. Sono cose come un programma di prova che si esegue
 e o passa o non passa, un conto che deve tornare, un modulo che deve avere tutte
 le caselle riempite. Nella sezione sul
 {doc}`loop engineering </IngegneriaLLM/loop-engineering>` quel controllo si
-chiama **cancello di verifica** (in inglese *validation gate*), e il nome dice
+chiama cancello di verifica (in inglese *validation gate*), e il nome dice
 il mestiere: chi non è in regola non passa.
 
 Quello che i conti di questa sezione aggiungono è la ragione per cui il cancello
@@ -456,7 +456,7 @@ Fatti i tre conti, resta la domanda utile: esiste un caso in cui la squadra
 vince? Sì, ne esistono tre, e conviene diffidare di chiunque ne elenchi un
 quarto.
 
-**Primo: il compito si decompone.** Se il lavoro si spezza in parti quasi
+Primo: il compito si decompone. Se il lavoro si spezza in parti quasi
 indipendenti (analizzare cinquanta documenti, provare otto ipotesi diverse,
 tradurre venti capitoli) allora la parte che non si può dividere è piccolissima,
 e il tetto di poco fa sta molto in alto. C'è anche il caso migliore di tutti: se
@@ -468,7 +468,7 @@ distingue i due casi è preciso: le parti non devono scambiarsi informazioni
 continuo, quella non è decomposizione ma la chat di gruppo del primo conto con
 un altro nome, e il conto è quello.
 
-**Secondo: serve un giudizio indipendente da chi ha prodotto.** Qui il valore
+Secondo: serve un giudizio indipendente da chi ha prodotto. Qui il valore
 aggiunto sta tutto nell'indipendenza: chi ha scritto il codice
 ha già deciso, mentre lo scriveva, che è giusto. Separare chi fa da chi
 controlla (nel loop engineering, *maker* e *checker*) serve esattamente a
@@ -487,11 +487,11 @@ se ne accorge una volta su dieci: nove errori su dieci gli sfuggono e arrivano
 in fondo, quindi di cinque su cento ne restano quattro e mezzo. Se invece a
 rileggere è un altro, che parte dal risultato e non conosce il ragionamento che
 c'è dietro, a sfuggirgli sono tre errori su dieci invece di nove: in fondo ne
-arriva uno e mezzo su cento, **tre volte meno**. Stesso modello, stessa bravura,
+arriva uno e mezzo su cento, tre volte meno. Stesso modello, stessa bravura,
 stesso numero di controlli: cambia solo chi controlla.
 
 Qui sta la cosa da non sbagliare mai. Quel vantaggio non viene dall'avere due
-teste, viene dal fatto che la seconda **non sa** come è stato fatto il lavoro. Se
+teste, viene dal fatto che la seconda non sa come è stato fatto il lavoro. Se
 al controllore si passa tutto il ragionamento del primo, la sua scrivania torna a
 essere quella del primo, e il vantaggio sparisce insieme all'ignoranza.
 
@@ -513,9 +513,9 @@ primo: a quel punto i due contesti tornano a coincidere.
 
 `````
 
-**Terzo: i contesti sono in conflitto.** È il caso più sottovalutato, e merita
+Terzo: i contesti sono in conflitto. È il caso più sottovalutato, e merita
 di essere detto senza mezzi termini: qui il multi-agente è un argomento di
-**gestione del contesto**, prima che di intelligenza.
+gestione del contesto, prima che di intelligenza.
 
 `````{tab} Elementare
 
@@ -548,7 +548,7 @@ una. Quello che nessuno porta di là, l'altro non lo saprà mai.
 `````{tab} Superiore
 
 L'argomento si legge nel conto dei token, girato al contrario.
-Con $N$ agenti a **contesti separati**, ciascuno con la propria finestra e
+Con $N$ agenti a contesti separati, ciascuno con la propria finestra e
 nessuna trascrizione condivisa (solo una sintesi che attraversa il confine
 alla fine), il costo totale è $N$ volte quello di un agente singolo:
 
@@ -560,13 +560,13 @@ $$
 
 lineare in $N$ anziché quadratico. Con i numeri di prima ($N = 4$, $R = 8$,
 $c_0 = 2000$, $\bar{m} = 500$) si passa da $328.000$ token a
-$4 \times 34.000 = 136.000$: **quasi due volte e mezzo meno**, e il rapporto
+$4 \times 34.000 = 136.000$: quasi due volte e mezzo meno, e il rapporto
 rispetto al singolo agente torna a essere esattamente $4\times$, cioè quello
 che l'intuizione si aspettava fin dall'inizio. In più la finestra massima
 scende da $18.000$ a $6.000$ token, tre volte più stretta, il che sposta ogni
 agente fuori dal regime in cui il *lost in the middle* morde.
 
-Il punto architetturale generale è che **la topologia decide l'esponente**: la
+Il punto architetturale generale è che la topologia decide l'esponente: la
 stessa squadra di quattro agenti costa $O(N^2R^2)$ se tutti leggono tutto e
 $O(NR^2)$ se ciascuno legge solo il proprio, e la differenza non è nel modello
 ma in chi parla con chi. Il prezzo da pagare è che gli agenti sanno meno l'uno
@@ -597,13 +597,13 @@ che sta per «tassonomia dei fallimenti dei sistemi multi-agente»: quattordici
 modi ricorrenti raggruppati in tre famiglie, e sono le famiglie la parte da
 ricordare, perché dicono *dove* guardare.
 
-La prima è quella delle **specifiche e del progetto del sistema**. L'agente
-esegue alla lettera un compito enunciato a metà, o esce dal ruolo assegnato, o
-ripete un passo già fatto, o non riconosce la condizione in cui deve fermarsi.
-Il tratto comune è che il difetto non sta nel modello: sta in ciò che gli è
-stato scritto (o non scritto) all'inizio. Un compito enunciato male produce
-un'esecuzione impeccabile della cosa sbagliata, ed è il modo di fallire più
-frequente e meno spettacolare.
+La prima è quella delle **specifiche e del progetto del sistema**. L'agente non
+rispetta un vincolo che il compito gli aveva posto, o esce dal ruolo assegnato,
+o ripete un passo già fatto, o non riconosce la condizione in cui deve fermarsi.
+Il tratto comune è che il difetto non sta nel modello: sta in come la squadra è
+stata montata, cioè nei ruoli, nel flusso di lavoro e in ciò che è stato scritto
+(o non scritto) all'inizio. È la più numerosa delle tre famiglie, e la meno
+spettacolare.
 
 La seconda è il **disallineamento fra agenti**. Ognuno ha in testa una sua
 versione di come stanno le cose, le versioni si allontanano, e nessuno se ne
@@ -635,12 +635,12 @@ Il capitolo sugli Agenti chiudeva con una formula da rendere verificabile: si
 aggiunge un ruolo solo quando risolve un problema reale, cioè un problema che
 un agente da solo non risolveva. La versione operativa ha quattro clausole.
 
-**Il problema deve essere documentato, non intuito.** Prima di aggiungere il
+Il problema deve essere documentato, non intuito. Prima di aggiungere il
 critico bisogna poter esibire i casi in cui il solista sbagliava e il critico
 avrebbe intercettato. Se quei casi non si trovano fra le trascrizioni di quello
 che il sistema ha già fatto, il ruolo sta risolvendo un problema immaginario.
 
-**Il confronto è contro un singolo agente ben progettato.** È la clausola che
+Il confronto è contro un singolo agente ben progettato. È la clausola che
 salta più spesso, e senza di essa qualunque architettura vince. Un solista con
 un buon foglio di istruzioni, gli strumenti giusti e un cancello di verifica è
 un avversario ben diverso da un solista improvvisato, ed è contro di lui che il
@@ -651,7 +651,7 @@ paragone elementare: chiedere la stessa cosa più volte allo stesso modello e
 tenere la risposta migliore secondo un verificatore {cite}`cemri2025why`. Ed è
 una letteratura giovane, ancora lontana da un verdetto netto {cite}`xi2023rise`.
 
-**A parità di budget.** Se la squadra consuma 328.000 token, il termine di
+A parità di budget. Se la squadra consuma 328.000 token, il termine di
 paragone onesto non è il solista da 34.000: è il solista a cui si danno gli
 stessi 328.000, spesi facendogli rifare la stessa domanda molte volte e tenendo
 la risposta che esce più spesso, o lasciandolo ragionare più a lungo, o dandogli
@@ -659,7 +659,7 @@ più tentativi contro il cancello di verifica. Molti guadagni attribuiti al
 multi-agente sono, misurati così, guadagni dovuti al calcolo in più, e si
 sarebbero ottenuti anche senza squadra.
 
-**Il ruolo si tiene solo se una misura lo conferma.** La prova è semplice: si
+Il ruolo si tiene solo se una misura lo conferma. La prova è semplice: si
 toglie il ruolo, si rimisura, e se il numero non si muove il ruolo esce. Le
 misure sono quelle già viste per gli agenti, e vanno lette tutte insieme e mai
 una sola: quante volte il compito riesce, quanto è pulita la strada che il
@@ -677,15 +677,15 @@ solista non chiudeva.
 
 ```{admonition} Da ricordare
 :class: important
-- Con una **trascrizione condivisa** (la chat di gruppo in cui, prima di
+- Con una trascrizione condivisa (la chat di gruppo in cui, prima di
   scrivere, si rilegge tutto dall'inizio) a ogni raddoppio degli interventi le
   righe da leggere si quadruplicano, perché ogni messaggio nuovo dovrà essere
   riletto da tutti quelli che parleranno dopo. Sul conto vero, che comprende
   anche le istruzioni di partenza, la crescita è un po’ più mite ma resta
   spaventosa: quattro agenti per otto giri leggono 328.000 token contro i 34.000
-  di un solista, cioè **quasi dieci volte**, non quattro.
-- La parte di lavoro che **non si può dividere** mette un tetto: è la **legge di
-  Amdahl**. Se su dieci ore di rapporto tre servono a decidere la scaletta e a
+  di un solista, cioè quasi dieci volte, non quattro.
+- La parte di lavoro che non si può dividere mette un tetto: è la legge di
+  Amdahl. Se su dieci ore di rapporto tre servono a decidere la scaletta e a
   rileggere alla fine, nessun numero di collaboratori chiude quel rapporto in
   meno di tre ore, e più veloci di tre volte e un terzo non si va. Anche quel
   poco, poi, si assottiglia in fretta: da quattro persone a otto si guadagna meno
@@ -693,29 +693,29 @@ solista non chiudeva.
   collaboratore in più fa perdere tempo anche agli altri: contando anche quello,
   gli otto guadagnano pochi minuti sui quattro, e oltre la sesta persona assumere
   allunga il lavoro invece di accorciarlo.
-- Gli errori si **moltiplicano**, non si mediano: è il telefono senza fili. Con
+- Gli errori si moltiplicano, non si mediano: è il telefono senza fili. Con
   partecipanti che riferiscono bene novantacinque volte su cento, dieci passaggi
   lasciano la frase intatta sei volte su dieci e venti passaggi poco più di tre.
-  Basta però un controllo esterno a ogni passaggio (il **cancello di verifica**)
+  Basta però un controllo esterno a ogni passaggio (il cancello di verifica)
   che intercetti otto errori su dieci e faccia rifare il passaggio, e i venti
   passaggi tornano a riuscire otto volte su dieci: la verifica esterna è
   ciò che spezza la catena.
-- Si guadagna davvero in **tre casi soli**: il compito si spezza in parti che
-  non hanno bisogno di parlarsi mentre lavorano; serve un **giudizio
-  indipendente** da chi ha prodotto (il valore sta nel non aver già deciso, non
-  nella potenza aggiunta); due lavori si **disturbano a vicenda** e conviene
+- Si guadagna davvero in tre casi soli: il compito si spezza in parti che
+  non hanno bisogno di parlarsi mentre lavorano; serve un giudizio
+  indipendente da chi ha prodotto (il valore sta nel non aver già deciso, non
+  nella potenza aggiunta); due lavori si disturbano a vicenda e conviene
   dare a ciascuno la sua scrivania, cioè un contesto pulito. In quest'ultimo
   caso, per giunta, il conto smette di esplodere: nessuno legge la roba degli
   altri, e quattro agenti costano quattro volte un solista invece di dieci.
 - I fallimenti reali {cite}`cemri2025why` si raggruppano in tre famiglie:
-  **specifiche e progetto** (esecuzione impeccabile di un compito detto male),
-  **disallineamento fra agenti** (ognuno ha una versione diversa di che cosa sta
-  succedendo, sotto una conversazione perfettamente fluente), **verifica e
-  terminazione** (si approva senza poter davvero controllare, o ci si ferma
-  troppo presto).
-- La **regola prudente**: il problema va documentato e non intuito, il confronto
-  si fa contro un **singolo agente ben progettato** e **a parità di token
-  spesi**, e il ruolo si tiene solo se togliendolo il risultato peggiora davvero
+  specifiche e progetto (un vincolo del compito o del ruolo non rispettato, un
+  passo rifatto per niente: è la più numerosa), disallineamento fra agenti
+  (ognuno ha una versione diversa di che cosa sta succedendo, sotto una
+  conversazione perfettamente fluente), verifica e terminazione (si approva
+  senza poter davvero controllare, o ci si ferma troppo presto).
+- La regola prudente: il problema va documentato e non intuito, il confronto
+  si fa contro un singolo agente ben progettato e a parità di token
+  spesi, e il ruolo si tiene solo se togliendolo il risultato peggiora davvero
   {cite}`xi2023rise`.
 ```
 
@@ -725,32 +725,33 @@ solista non chiudeva.
 
 ```{admonition} Da ricordare
 :class: important
-- Con una **trascrizione condivisa** il costo va come il quadrato dei turni,
+- Con una trascrizione condivisa il costo va come il quadrato dei turni,
   $\sum_{t=1}^{T}(c_0 + t\bar{m}) = O(\bar{m}T^2)$, e siccome $T = NR$ è
   quadratico anche negli agenti. Quattro agenti per otto giri leggono
-  $328.000$ token contro i $34.000$ di un solista: **quasi dieci volte**, non
+  $328.000$ token contro i $34.000$ di un solista: quasi dieci volte, non
   quattro.
-- La **legge di Amdahl** mette un tetto: con una frazione seriale $s$
+- La legge di Amdahl mette un tetto: con una frazione seriale $s$
   l'accelerazione è al più $1/(s + (1-s)/N)$, cioè $1/s$ per $N \to \infty$.
   Con $s = 0{,}3$ nessun numero di agenti supera $3{,}3\times$; e con una
   penale di coordinamento la curva torna giù dopo $N^{*}=\sqrt{(1-s)/\kappa}$.
-- Gli errori si **compongono**: $n$ passi corretti con probabilità $p$ danno
+- Gli errori si compongono: $n$ passi corretti con probabilità $p$ danno
   $p^n$. Con $p = 0{,}95$, dieci passi danno $0{,}60$ e venti $0{,}36$. Un
-  **validation gate** che intercetta l’$80\%$ degli errori (e fa rifare il
+  validation gate che intercetta l’$80\%$ degli errori (e fa rifare il
   passo intercettato) porta $p'$ a $0{,}99$ e i venti passi a $0{,}82$: il
   gate è ciò che spezza la catena moltiplicativa.
-- Si guadagna davvero in **tre casi soli**: il compito si decompone in parti
-  quasi indipendenti; serve un **giudizio indipendente** (il valore è nella
-  decorrelazione, non nella potenza aggiunta); i **contesti sono in conflitto**
+- Si guadagna davvero in tre casi soli: il compito si decompone in parti
+  quasi indipendenti; serve un giudizio indipendente (il valore è nella
+  decorrelazione, non nella potenza aggiunta); i contesti sono in conflitto
   e conviene separarli, e allora il multi-agente è gestione del contesto (costo
   $O(NR^2)$ invece di $O(N^2R^2)$: la topologia decide l'esponente).
 - I fallimenti reali {cite}`cemri2025why` si raggruppano in tre famiglie:
-  **specifiche e progetto** (esecuzione impeccabile di un compito
-  sottospecificato), **disallineamento fra agenti** (stati del mondo divergenti
-  sotto una conversazione fluente), **verifica e terminazione** (si approva
-  senza poter provare, o ci si ferma troppo presto).
-- La **regola prudente**: problema documentato, confronto contro un **singolo
-  agente ben progettato** e **a parità di budget di token**, e il ruolo si
+  specifiche e progetto (vincoli di compito e di ruolo disattesi, passi
+  ripetuti, condizioni di arresto non riconosciute: è la più numerosa),
+  disallineamento fra agenti (stati del mondo divergenti sotto una
+  conversazione fluente), verifica e terminazione (si approva senza poter
+  provare, o ci si ferma troppo presto).
+- La regola prudente: problema documentato, confronto contro un singolo
+  agente ben progettato e a parità di budget di token, e il ruolo si
   tiene solo se l'ablazione lo conferma {cite}`xi2023rise`.
 ```
 

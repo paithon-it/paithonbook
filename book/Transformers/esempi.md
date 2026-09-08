@@ -17,20 +17,20 @@ cassetta degli attrezzi già pronta che un programma può aprire e usare.
 Sotto c'è PyTorch, lo strumento con cui in questo libro si costruiscono le reti.
 
 Dei due esempi conta soprattutto il secondo, e non per quello che indovina:
-per quello che **sbaglia**. Il prezzo dell'architettura si è visto in astratto,
+per quello che sbaglia. Il prezzo dell'architettura si è visto in astratto,
 contando le coppie; qui si tocca un errore concreto, su una frase italiana di
 quattro parole.
 
 ## Traduzione automatica
 
 Il compito per cui il Transformer è nato, e quello con cui la sezione
-sull'architettura ce l'ha presentato: la torre che legge (l’**encoder**) si
-prende la frase di partenza, la torre che scrive (il **decoder**) compone
+sull'architettura ce l'ha presentato: la torre che legge (l’encoder) si
+prende la frase di partenza, la torre che scrive (il decoder) compone
 quella d'arrivo, e mentre la compone torna continuamente a guardare
 l'originale.
 
 Quel «tornare a guardare» ha un nome che tornerà spesso, la
-**cross-attention**, ed è l'attenzione di sempre applicata fra le due torri
+cross-attention, ed è l'attenzione di sempre applicata fra le due torri
 invece che dentro una: le domande (le *query*, cioè «che cosa mi serve
 adesso?») le pone la torre che scrive, e le etichette e le informazioni con cui
 si risponde (le *key* e i *value*) vengono da quella che ha letto.
@@ -86,9 +86,9 @@ la compie il modello, perché la rappresentazione di quel token è stata
 costruita pesando anche «river».
 
 Le tre righe di lavoro sono i tre passaggi visti nei capitoli precedenti, qui
-scritti in chiaro: **tokenizzazione** (la frase diventa una sequenza di id di
-token), **inferenza** con `generate` (encoder e decoder Transformer, con
-generazione autoregressiva e maschera causale) e **decodifica** (dagli id di
+scritti in chiaro: tokenizzazione (la frase diventa una sequenza di id di
+token), inferenza con `generate` (encoder e decoder Transformer, con
+generazione autoregressiva e maschera causale) e decodifica (dagli id di
 token al testo). La libreria offre anche una scorciatoia, `pipeline`, che li
 incapsula in una riga; qui li teniamo separati perché sono esattamente i pezzi
 che il capitolo ha spiegato, e perché i nomi delle scorciatoie cambiano tra
@@ -130,18 +130,20 @@ esce identico, un nome di casella e nient'altro, mentre le due situazioni non
 si somigliano. Chiedere la fila completa, casella per casella, distingue la
 macchina sicura da quella in bilico.
 
-Le frasi facili però le indovinano tutti, ed è sulle altre che si capisce quanto
-un modello abbia davvero capito. Il caso classico in italiano è il complimento
-detto negando il contrario, "non è affatto male": nessuna delle tre parole è un
-elogio, eppure la frase lo è. Lì il modello sbaglia, e sbaglia per un soffio:
-la casella accanto, quella più benevola, resta indietro di pochi gettoni.
+Le frasi facili però le indovinano tutti, ed è sulle altre che si capisce
+quanto un modello abbia davvero capito. Il caso classico in italiano è il
+complimento detto negando il contrario, "non è affatto male": nessuna delle tre
+parole è un elogio, eppure la frase lo è. Lì il modello sbaglia, e il verdetto
+è in bilico: la casella accanto, di poco più benevola, resta indietro di pochi
+gettoni. Ma in bilico ci sono due modi di sbagliare: le caselle che di un
+complimento sarebbero la lettura giusta restano quasi vuote tutte e due.
 `````
 
 `````{tab} Superiore
 ```{code-block} python
 :class: pt-lento
 
-# come sopra, e qui il modello da scaricare e' di 669 MB.
+# come sopra, e qui il modello da scaricare è di 669 MB.
 from transformers import pipeline
 
 # modello multilingue (italiano compreso) che assegna da 1 a 5 stelle.
@@ -194,7 +196,7 @@ delle altre tre righe, dove la seconda classe resta indietro di centocinquanta
 millesimi o più: `top_k=None` tiene visibile la differenza fra un verdetto
 comodo e uno in bilico.
 
-Il punteggio della classe vincente è la **confidenza** del modello, e da solo
+Il punteggio della classe vincente è la confidenza del modello, e da solo
 non dice niente sulla qualità del classificatore: quella si valuta con le
 metriche della {doc}`sezione su come si valuta un modello
 </MachineLearning/metriche>` (accuratezza, precision/recall), e su
@@ -204,7 +206,7 @@ prestazioni calano sensibilmente.
 
 Quell'errore sulla terza frase merita di stare nel testo per tutti, perché è la
 cosa più utile che questa pagina abbia da dare. Il modello dà a «non è affatto
-male» **due stelle su cinque**, cioè lo legge come una recensione scontenta,
+male» due stelle su cinque, cioè lo legge come una recensione scontenta,
 mentre a «non è male», la stessa frase senza l'avverbio, ne dà tre.
 
 Il bello è che il verdetto non è netto come sembra. Il modello non sceglie una
@@ -232,15 +234,15 @@ questa pagina l'ha appena dimostrato su sé stessa.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La **traduzione** usa il Transformer intero: la torre che legge, la torre che
+- La traduzione usa il Transformer intero: la torre che legge, la torre che
   scrive, e il continuo rileggersi l'originale mentre si traduce.
 - Per capire una recensione basta la torre che legge, con in cima un giudice
   che dà il voto (qui, da una a cinque stelle). In gergo è la famiglia
-  *encoder-only*, e il capostipite si chiama **BERT**.
+  *encoder-only*, e il capostipite si chiama BERT.
 - Non serve costruire niente da zero: esistono cassette degli attrezzi (la
   libreria `transformers`) piene di modelli già addestrati da altri, che si
   usano in poche righe.
-- I risultati vanno sempre provati **sui propri testi**: ironia, modi di dire e
+- I risultati vanno sempre provati sui propri testi: ironia, modi di dire e
   complimenti detti al contrario restano difficili, come mostra il "non è
   affatto male" di questa pagina.
 ```
@@ -249,14 +251,14 @@ questa pagina l'ha appena dimostrato su sé stessa.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- La **traduzione** usa il Transformer completo: encoder che legge, decoder
+- La traduzione usa il Transformer completo: encoder che legge, decoder
   che genera, cross-attention che li allinea.
-- L’**analisi del sentiment** usa un *encoder-only* (stile BERT) con una testa
+- L’analisi del sentiment usa un *encoder-only* (stile BERT) con una testa
   di classificazione: capire, non generare.
 - La libreria `transformers` di Hugging Face (su PyTorch) dà accesso a
   modelli pre-addestrati per entrambi i compiti in poche righe: sotto, sono
   `nn.Module` come quelli della sezione sui moduli di PyTorch.
-- I risultati vanno **validati sul proprio dominio**: ironia, gergo e litoti
+- I risultati vanno validati sul proprio dominio: ironia, gergo e litoti
   restano difficili, e la demo di questa pagina ne fornisce il controesempio in
   casa.
 ```

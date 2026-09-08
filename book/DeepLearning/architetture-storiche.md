@@ -1,12 +1,12 @@
 # Le architetture che hanno fatto la storia
 
 Ogni autunno, tra il 2010 e il 2017, i laboratori di visione artificiale di
-mezzo mondo si sfidavano su **ImageNet**: oltre un milione di fotografie da
+mezzo mondo si sfidavano su ImageNet: oltre un milione di fotografie da
 classificare in mille categorie, dal cane pastore alla tazza da caffè. C'era una
 classifica, e quella classifica racconta una storia.
 
 Una parola sulla regola, perché senza non si capiscono i numeri. Ogni programma
-poteva proporre **cinque** etichette per fotografia, e la risposta contava
+poteva proporre cinque etichette per fotografia, e la risposta contava
 giusta se fra quelle cinque c'era quella vera. Non è generosità: in una
 fotografia di solito c'è più di una cosa, e fra mille categorie ce ne sono di
 vicinissime (il pastore tedesco e il pastore belga sono due voci distinte),
@@ -27,14 +27,15 @@ perché conoscerle significa capire come si progetta una rete profonda.
 
 ## LeNet-5: dove tutto comincia
 
-Molto prima di ImageNet, a partire dalla fine degli anni '80, **Yann LeCun**
+Molto prima di ImageNet, a partire dalla fine degli anni '80, Yann LeCun
 e colleghi ai Bell Labs progettavano reti per leggere i codici di avviamento
 postale e le cifre scritte a mano sugli assegni bancari. Una loro rete più
 semplice, costruita nel 1989, leggeva già i codici postali scritti a mano
 sulle buste della posta americana[^zip1989], ed è il primo caso in cui una
 rete di questo tipo ha davvero funzionato su un lavoro vero e non su un
-esercizio da laboratorio. **LeNet-5** {cite}`lecun1998gradient` è quella arrivata dopo, la
-più matura della serie, ed è la versione che si studia ancora oggi.
+esercizio da laboratorio. **LeNet-5** {cite}`lecun1998gradient` è quella
+arrivata dopo, la più matura della serie, ed è la versione che si studia
+ancora oggi.
 
 `````{tab} Elementare
 Una piccola lente scorre sull'immagine di una cifra, un pezzetto alla volta,
@@ -54,19 +55,19 @@ meglio di qualsiasi programma scritto a regole.
 `````
 
 `````{tab} Superiore
-LeNet-5 alterna strati **convoluzionali** (che condividono i pesi su tutta
-l'immagine) e strati di **sottocampionamento** (l'antenato del *pooling*),
+LeNet-5 alterna strati convoluzionali (che condividono i pesi su tutta
+l'immagine) e strati di sottocampionamento (l'antenato del *pooling*),
 seguiti da strati *fully-connected* per la classificazione finale, con
 attivazioni $\tanh$. Ha circa $60\,000$ parametri (minuscola per gli standard
 odierni) ed è addestrata con la *backpropagation* sul dataset di cifre
-manoscritte **MNIST**. Introduce già i tre principi delle CNN: connettività
+manoscritte MNIST. Introduce già i tre principi delle CNN: connettività
 locale, condivisione dei pesi (da cui l'equivarianza alla traslazione) e
 sottocampionamento, che aggiunge una tolleranza approssimata a spostamenti e
 piccole deformazioni.
 
 Un dettaglio che ritorna: lo strato convoluzionale C3 non
 collega ogni mappa in uscita a tutte quelle in ingresso, ma segue una tabella
-di connessione **sparsa**, scritta a mano. LeCun ne dà due ragioni, e la prima
+di connessione sparsa, scritta a mano. LeCun ne dà due ragioni, e la prima
 è economica: tenere il numero di connessioni entro limiti ragionevoli (la
 seconda è rompere la simmetria, così che mappe diverse imparino cose diverse).
 Già nel 1998, insomma, il costo del calcolo entrava nel disegno della rete.
@@ -75,20 +76,19 @@ Già nel 1998, insomma, il costo del calcolo entrava nel disegno della rete.
 ## AlexNet: la notte in cui il deep learning vinse
 
 Per oltre un decennio le reti convoluzionali restarono una curiosità. La svolta
-arriva nel 2012, quando **AlexNet** {cite}`krizhevsky2012imagenet` vince la
+arriva nel 2012, quando AlexNet {cite}`krizhevsky2012imagenet` vince la
 sfida ImageNet con un margine imbarazzante: errore top-5 del 15,3%, contro il
 26,2% del secondo classificato, che usava ancora tecniche "artigianali".
 
-Quel 15,3%, però, è il punteggio di ciò che il gruppo ha **consegnato alla
-gara**, e non è una rete sola. Sono sette reti fatte lavorare insieme: per ogni
+Quel 15,3%, però, è il punteggio di ciò che il gruppo ha consegnato alla
+gara, e non è una rete sola. Sono sette reti fatte lavorare insieme: per ogni
 fotografia ciascuna assegna un punteggio a ciascuna delle mille categorie, i
 sette punteggi si mediano categoria per categoria, e le cinque categorie col
 totale più alto sono la risposta. Due delle sette avevano in più un allenamento
 preliminare su un archivio di immagini dieci volte più grande. La singola rete
-descritta nell'articolo, quella di cui parlano i prossimi paragrafi, si ferma al
-18,2%. Anche così il salto è tale che fu il momento in cui il resto del campo
-capì che il deep learning funzionava. (La stessa distinzione fra la rete e la
-squadra tornerà con ResNet.)
+descritta nell'articolo si ferma al 18,2%. Anche così il salto è tale che fu
+il momento in cui il resto del campo capì che il deep learning funzionava. (La
+stessa distinzione fra la rete e la squadra tornerà con ResNet.)
 
 ```{figure} ../figures/alexnet-2012.svg
 :name: fig-alexnet
@@ -113,11 +113,11 @@ Non è la prima volta che il costo del calcolo disegna una rete: già in LeNet-5
 quattordici anni prima, LeCun aveva rinunciato a collegare ogni pezzo di uno
 strato a tutto quello che stava sotto, e la prima delle due ragioni che ne dà è
 tenere basso il numero di collegamenti. Ma è la prima volta che il vincolo si
-vede nella **forma** dell'architettura, e non sarà l'ultima.
+vede nella forma dell'architettura, e non sarà l'ultima.
 
 `````{tab} Elementare
 AlexNet è, in fondo, una LeNet cresciuta: molti più strati, molte più
-"lenti", e l'addestramento su schede grafiche (le **GPU**, le schede nate per
+"lenti", e l'addestramento su schede grafiche (le GPU, le schede nate per
 far girare i videogiochi) invece che su normali processori.
 
 Cambia anche il modo in cui ogni neurone decide quanto accendersi. La regola
@@ -152,9 +152,9 @@ variante più snella che Krizhevsky ridisegnò nel 2014 in un secondo articolo,
 quello sulla parallelizzazione (i primi due strati passano da 96 e 256 filtri a
 64 e 192, il quarto da 384 a 256): è la versione che quasi tutti eseguono
 credendo di eseguire quella dell'articolo del 2012. Le tre scelte decisive:
-attivazioni **ReLU** al posto di $\tanh$ (gradienti che non saturano,
-addestramento molto più rapido), **dropout** negli strati densi per contenere
-l'overfitting, e **data augmentation** aggressiva (ritagli, riflessioni,
+attivazioni ReLU al posto di $\tanh$ (gradienti che non saturano,
+addestramento molto più rapido), dropout negli strati densi per contenere
+l'overfitting, e data augmentation aggressiva (ritagli, riflessioni,
 perturbazioni di colore). Non concetti nuovi in assoluto, ma messi insieme alla
 scala giusta sul dataset giusto.
 `````
@@ -202,7 +202,7 @@ in network*. All'altro capo della rete, il **global average pooling** elimina
 gli strati *fully-connected* finali: l'ultimo strato convoluzionale produce
 una mappa di attivazione per classe, ogni mappa viene ridotta alla propria
 media spaziale e il vettore risultante va dritto alla softmax. Zero parametri
-dove AlexNet ne concentrava il **94%**, e meno overfitting. È un numero che si
+dove AlexNet ne concentrava il 94%, e meno overfitting. È un numero che si
 conta a mano in una riga: le tre matrici dense sono $9216\times4096$,
 $4096\times4096$ e $4096\times1000$, cioè $58\,621\,952$ pesi, che con i
 rispettivi bias fanno $58\,631\,144$ parametri, il 94% dei $62\,378\,344$ della
@@ -249,7 +249,7 @@ profondità costa poco; il finale no.
 `````{tab} Superiore
 Due convoluzioni $3\times 3$ in serie hanno lo stesso *campo recettivo* di una
 $5\times 5$, tre in serie di una $7\times 7$, ma con più non-linearità
-intermedie e **meno parametri**. Su $C$ canali, un filtro $5\times 5$ costa
+intermedie e meno parametri. Su $C$ canali, un filtro $5\times 5$ costa
 $25C^2$ pesi, due filtri $3\times 3$ solo $2\cdot 9C^2 = 18C^2$. VGG-16 e
 VGG-19 spingono la profondità a 16–19 strati e diventano il punto di
 riferimento per il *transfer learning* degli anni successivi.
@@ -269,7 +269,7 @@ arrivano a $5$, esattamente come una $5\times5$, e tre a $7$. È il conto che
 giustifica l'intera scelta di VGG.
 
 Il prezzo, però, non sta dove ci si aspetta. VGG-16 ha $138\,357\,544$
-parametri, **2,3 volte** AlexNet, e l’$89{,}4\%$ è ancora nei tre strati densi
+parametri, 2,3 volte AlexNet, e l’$89{,}4\%$ è ancora nei tre strati densi
 finali: esattamente il difetto che *Network in Network* aveva appena mostrato
 come evitare, e che VGG non raccoglie. Per dare la misura: gli stessi 138
 milioni sono 2,3 volte anche una ResNet-152 ($60\,192\,808$ parametri), che di
@@ -305,9 +305,9 @@ $15\,872$.
 `````
 
 `````{tab} Superiore
-Ogni modulo esegue in **parallelo** convoluzioni $1\times 1$, $3\times 3$,
+Ogni modulo esegue in parallelo convoluzioni $1\times 1$, $3\times 3$,
 $5\times 5$ e un *pooling*, poi concatena le uscite lungo i canali,
-elaborando così l'immagine a **più scale** simultaneamente. Le convoluzioni
+elaborando così l'immagine a più scale simultaneamente. Le convoluzioni
 $1\times 1$ fungono da collo di bottiglia che riduce i canali prima delle
 convoluzioni costose. Risultato: 22 strati con pesi e, dichiara l'articolo,
 dodici volte meno parametri di AlexNet, cioè circa $5$ milioni, con
@@ -321,7 +321,7 @@ ne dichiara $6\,624\,904$: la differenza sta nel ramo $5\times5$, che
 **classificatori ausiliari** (i rami intermedi che durante l'addestramento
 iniettano un segnale di supervisione a metà rete) si arriva a $13\,004\,888$,
 più del doppio. Il rapporto con i $60\,965\,224$ parametri di AlexNet è quindi fra
-**8,7 e 9,2 volte**, non dodici: resta un ordine di grandezza risparmiato, che
+8,7 e 9,2 volte, non dodici: resta un ordine di grandezza risparmiato, che
 è il punto, ma il numero preciso dipende da che cosa si conta.
 `````
 
@@ -373,7 +373,7 @@ L'idea è quasi banale e per questo geniale ({numref}`fig-skip-connection`).
 Invece di chiedere a un blocco di strati di ricostruire da capo tutto il
 segnale, gli si affianca una "scorciatoia" che porta l'input intatto fino
 all'uscita, dove viene ri-sommato. Così il blocco deve imparare solo la
-**correzione** da apportare, non l'intera risposta. E se non serve correggere
+correzione da apportare, non l'intera risposta. E se non serve correggere
 nulla, può lasciar passare l'input senza rovinarlo: aggiungere strati non fa
 più danni.
 
@@ -418,7 +418,7 @@ termine additivo $\mathbf{x}$ apre una via diretta al gradiente durante la
 *backpropagation*.
 
 Quella somma ha però una precondizione che l'equazione nasconde:
-$\mathcal{F}(\mathbf{x})$ e $\mathbf{x}$ devono avere la **stessa forma**.
+$\mathcal{F}(\mathbf{x})$ e $\mathbf{x}$ devono avere la stessa forma.
 Quando un blocco raddoppia i canali o dimezza la risoluzione con uno stride,
 sommarli dà un errore di dimensione e basta (`RuntimeError`), non
 un'approssimazione. L'articolo lo prevede nella sua equazione (2), dove la
@@ -454,7 +454,7 @@ degradazione, che è l'inversione di causa più diffusa su ResNet: gli autori
 la escludono espressamente, perché le reti lisce con cui fanno il confronto
 erano addestrate con batch normalization e i loro gradienti all'indietro
 avevano norme sane. Il problema che le connessioni residue risolvono è di
-**ottimizzazione**, non di gradiente che svanisce; perché esattamente
+ottimizzazione, non di gradiente che svanisce; perché esattamente
 funzionino resta materia di studio.
 `````
 
@@ -465,8 +465,8 @@ Tsinghua e Facebook AI Research (Gao Huang, Zhuang Liu, Laurens van der Maaten
 e Kilian Weinberger) la percorre fino in fondo con **DenseNet**
 {cite}`huang2017densely`, premiata (a pari merito con un altro lavoro) come
 miglior articolo della CVPR, il congresso principale della visione
-artificiale. Se ResNet **somma** l'input all'uscita del
-blocco, DenseNet li **affianca**: dentro un
+artificiale. Se ResNet somma l'input all'uscita del
+blocco, DenseNet li affianca: dentro un
 blocco denso ogni strato riceve le feature di tutti gli strati precedenti,
 messe una accanto all'altra invece che sommate (l'operazione si chiama
 *concatenazione*).
@@ -479,7 +479,7 @@ messe una accanto all'altra invece che sommate (l'operazione si chiama
 Il blocco denso: ogni strato riceve, affiancate, le feature di
 tutti gli strati precedenti (non una sola scorciatoia come nel blocco residuo,
 ma tutte). Le mappe che uno strato produce, una per filtro, sono le «opinioni»
-raccolte in ogni punto, e il loro nome tecnico è **canali**: affiancarle vuol
+raccolte in ogni punto, e il loro nome tecnico è canali: affiancarle vuol
 dire tenerle tutte una accanto all'altra invece di sommarle, e nel disegno ogni
 strato ne aggiunge alla pila un numero fisso, sempre lo stesso, che si chiama
 $k$.
@@ -514,13 +514,13 @@ dove $[\cdot]$ indica la concatenazione lungo i canali, $\mathbf{x}_0$ è
 l'input del blocco e $H_\ell$ una sequenza batch normalization → ReLU →
 convoluzione $3\times 3$. Ogni strato produce solo $k$ mappe nuove (il
 **growth rate**, tipicamente $k=12$ o $k=32$), così lo strato $\ell$ riceve
-$k_0 + k(\ell-1)$ canali, dove $k_0$ sono quelli dell'input. Il **riuso delle
-feature** rende la rete efficiente nei parametri (a parità di accuratezza su
+$k_0 + k(\ell-1)$ canali, dove $k_0$ sono quelli dell'input. Il riuso delle
+feature rende la rete efficiente nei parametri (a parità di accuratezza su
 ImageNet, all'incirca la metà di una ResNet comparabile) e la concatenazione
 apre a ogni strato un percorso diretto verso il gradiente della loss. Poiché
 concatenare richiede mappe della stessa dimensione spaziale, i blocchi densi
 sono separati da *strati di transizione* (convoluzione $1\times 1$ e pooling),
-che dimezzano la risoluzione. Il conto da pagare è la **memoria** in
+che dimezzano la risoluzione. Il conto da pagare è la memoria in
 addestramento: in un'implementazione ingenua le attivazioni concatenate
 crescono col quadrato della profondità del blocco, e a parità di accuratezza
 una ResNet ne consuma un po' meno. Le implementazioni parsimoniose ricalcolano
@@ -533,7 +533,7 @@ calcolo.
 
 Fin qui la corsa è stata verso l'alto: più strati, più connessioni, più
 accuratezza, e pazienza per il costo. Attorno al 2016 una parte della ricerca
-gira la domanda: **a parità di accuratezza, quanto poco si può spendere?** Non
+gira la domanda: a parità di accuratezza, quanto poco si può spendere? Non
 è una curiosità da risparmiatori, è la condizione perché la visione artificiale
 esca dai centri di calcolo ed entri in un telefono, in una telecamera, in
 un'automobile. La risposta più fruttuosa nasce da un'osservazione sulla
@@ -541,13 +541,13 @@ convoluzione stessa.
 
 `````{tab} Elementare
 Una convoluzione ordinaria fa due lavori in una volta sola, e non ce ne
-accorgiamo perché li fa insieme. Il primo è **guardarsi intorno**: prendere un
-quadratino di $3\times3$ pixel e cercarci una forma. Il secondo è **mettere
-d'accordo i canali**: combinare quello che dicono tutte le opinioni raccolte in
+accorgiamo perché li fa insieme. Il primo è guardarsi intorno: prendere un
+quadratino di $3\times3$ pixel e cercarci una forma. Il secondo è mettere
+d'accordo i canali: combinare quello che dicono tutte le opinioni raccolte in
 quel punto (il bordo, il colore, la trama) in una nuova opinione.
 
-L'idea è di smettere di farli insieme. Prima si guarda intorno, ma **un canale
-per volta**: ogni opinione viene esaminata nel suo quadratino, per conto suo,
+L'idea è di smettere di farli insieme. Prima si guarda intorno, ma un canale
+per volta: ogni opinione viene esaminata nel suo quadratino, per conto suo,
 senza mescolarsi con le altre. Poi, separatamente, si mettono d'accordo i
 canali con una lente che guarda un solo punto: è la convoluzione $1\times1$ di
 *Network in Network*, che abbiamo incontrato poco fa e che qui trova il suo
@@ -562,7 +562,7 @@ non si supera mai.
 Il motivo è semplice. Nella versione ordinaria ogni combinazione «quale pixel
 del quadratino» per «quale opinione di partenza» per «quale opinione di arrivo»
 ha il suo peso, e quei tre elenchi si moltiplicano fra loro:
-$9 \times 64 \times 128$. Separando, due dei tre si **sommano** invece di
+$9 \times 64 \times 128$. Separando, due dei tre si sommano invece di
 moltiplicarsi: $9 \times 64$, più $64 \times 128$.
 
 Qualcosa si perde, però. Le combinazioni che mescolavano in un colpo solo il
@@ -578,8 +578,8 @@ canali ha $k^2 C_{\text{in}} C_{\text{out}}$ pesi e costa, per pixel d'uscita,
 altrettante moltiplicazioni-accumulo. La **convoluzione separabile in
 profondità** (*depthwise separable*) la fattorizza in due passi:
 
-1. **depthwise**: una convoluzione $k \times k$ applicata **a ciascun canale
-   indipendentemente** (in PyTorch, `groups=C_in`), con $k^2 C_{\text{in}}$
+1. **depthwise**: una convoluzione $k \times k$ applicata a ciascun canale
+   indipendentemente (in PyTorch, `groups=C_in`), con $k^2 C_{\text{in}}$
    pesi. Filtra nello spazio senza mescolare i canali;
 2. **pointwise**: una convoluzione $1 \times 1$ da $C_{\text{in}}$ a
    $C_{\text{out}}$, con $C_{\text{in}} C_{\text{out}}$ pesi. Mescola i canali
@@ -600,7 +600,7 @@ rapporto vale $7{,}0$, cioè il 78% del limite; a $128$ canali $8{,}4$; a $256$
 ancora soltanto $8{,}7$. Il «quasi nove volte» è la promessa asintotica, e
 con i 128 canali in uscita dell'esempio numerico si sta misurabilmente al di
 sotto. Da notare che è la
-**fattorizzazione** a produrre il guadagno, non un taglio: il tensore d'uscita
+fattorizzazione a produrre il guadagno, non un taglio: il tensore d'uscita
 ha esattamente la stessa forma, e ciò che si perde è l'espressività delle
 combinazioni spazio-canale congiunte, che l'esperienza mostra essere in gran
 parte ridondanti.
@@ -614,10 +614,10 @@ in stile Inception, leggendola come l'ipotesi estrema che correlazioni spaziali
 e correlazioni fra canali si possano trattare del tutto separatamente.
 
 **MobileNetV2** {cite}`sandler2018mobilenetv2` aggiunge il pezzo che manca e
-che è arrivato fino a oggi: il **residuo invertito** con **collo di bottiglia
-lineare**. Il blocco *espande* i canali con una $1\times1$, applica la
+che è arrivato fino a oggi: il **residuo invertito** con collo di bottiglia
+lineare. Il blocco *espande* i canali con una $1\times1$, applica la
 depthwise nello spazio espanso, poi *ricomprime* con un'altra $1\times1$
-**senza non-linearità finale** (perché una ReLU su uno spazio a poche
+senza non-linearità finale (perché una ReLU su uno spazio a poche
 dimensioni distrugge informazione che non si recupera), e la connessione
 residua collega i due estremi stretti anziché quelli larghi, che è l'opposto di
 ResNet e serve a tenere basso il consumo di memoria. Quel blocco si chiama
@@ -672,14 +672,14 @@ risparmio            : 8.41x
 previsto dalla formula: 8.41x   (limite: 9x)
 ```
 
-Da $73\,728$ pesi a $8\,768$, cioè **$8{,}41$ volte meno**, e il risultato ha
+Da $73\,728$ pesi a $8\,768$, cioè $8{,}41$ volte meno, e il risultato ha
 esattamente la stessa forma di prima. Il numero misurato coincide fino
 all'ultima cifra con quello che si ottiene sulla carta, perché qui non c'è
 niente di sperimentale: è aritmetica.
 
 Un avvertimento su come si usa quel numero, perché è l'errore più comune di chi
 progetta reti per il telefono: il fattore nove sta nei pesi e nelle
-moltiplicazioni, **non nei secondi**. La parte che guarda un canale per volta
+moltiplicazioni, non nei secondi. La parte che guarda un canale per volta
 fa pochissimi conti per ogni numero che deve andare a prendere in memoria,
 quindi il tempo se ne va nel trasferire i dati più che nel calcolarli, e su una
 macchina vera il guadagno misurato è una frazione di quello teorico, a volte
@@ -698,8 +698,8 @@ che nel 2019 le dà una risposta precisa, il *compound scaling*.
 `````{tab} Elementare
 Per fare una torta doppia non si raddoppia solo la farina: si aumentano tutti
 gli ingredienti in proporzione, o il risultato è immangiabile. Una rete può
-crescere in tre modi: più strati (la **profondità**), più lenti per strato (la
-**larghezza**), immagini d'ingresso più grandi (la **risoluzione**). Invece di
+crescere in tre modi: più strati (la profondità), più lenti per strato (la
+larghezza), immagini d'ingresso più grandi (la risoluzione). Invece di
 puntare tutto su uno solo, EfficientNet li fa crescere insieme, in proporzioni
 fisse trovate una volta per tutte: ogni volta che si accetta di spendere il
 doppio in conti, la profondità aumenta di circa il 20%, la larghezza del 10% e
@@ -740,7 +740,7 @@ che sarebbe impossibile: ne prova alcune, guarda quali vanno meglio e da quelle
 ricava le prossime da provare. La rete base di EfficientNet è stata trovata
 proprio così, non disegnata a mano. E la storia non è finita:
 dal 2020 i **Vision Transformer** {cite}`dosovitskiy2021image`, reti basate
-sull’**attenzione** (è il nome di un meccanismo preciso, non la parola di tutti
+sull’attenzione (è il nome di un meccanismo preciso, non la parola di tutti
 i giorni) e nate per il linguaggio, hanno dimostrato di poter competere
 con le CNN quando i dati abbondano. Oggi in visione artificiale le due
 famiglie convivono e si scambiano idee; ne riparleremo nel {doc}`capitolo
@@ -749,7 +749,7 @@ dedicato ai Transformer </Transformers/overview>`.
 ## L'architettura conta quanto i dati
 
 Nessuna di queste reti ha vinto solo con più esempi o più GPU. Ogni salto è nato
-da un’**idea strutturale** su come far scorrere l'informazione dentro la rete:
+da un’idea strutturale su come far scorrere l'informazione dentro la rete:
 dove farla passare, dove farla saltare, dove farla incontrare con se stessa. E
 quasi tutte quelle idee sono nate dal vincolo opposto a quello che uno si
 aspetterebbe, cioè non da «come faccio a metterci più roba» ma da «come faccio a
@@ -763,35 +763,35 @@ arriva, ed è una lezione che vale ancora oggi, dai Transformer in poi.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- **LeNet-5** (1998): la piccola lente che scorre sull'immagine un pezzetto
+- LeNet-5 (1998): la piccola lente che scorre sull'immagine un pezzetto
   alla volta, sempre la stessa in ogni punto, e impara a leggere le cifre
   scritte a mano.
-- **AlexNet** (2012): la stessa idea cresciuta (molti più strati, molte più
+- AlexNet (2012): la stessa idea cresciuta (molti più strati, molte più
   lenti), addestrata su schede grafiche, con la regola sbrigativa che sotto lo
-  zero spegne e sopra lascia passare il numero com'è (la **ReLU**) e con due
+  zero spegne e sopra lascia passare il numero com'è (la ReLU) e con due
   accorgimenti per non imparare a memoria: spegnere neuroni a caso a ogni
   passata, e non mostrare mai la stessa fotografia due volte uguale. Nel 2012
   vince ImageNet e convince tutti.
-- **NiN** (2013): una lente che guarda un solo punto ma legge tutte le
+- NiN (2013): una lente che guarda un solo punto ma legge tutte le
   opinioni raccolte lì e le fonde; e un finale che, invece di un enorme
   ufficio di neuroni, tiene una mappa per categoria e premia la più accesa.
-- **VGG** (2014): il principio del mattoncino Lego, tante lenti piccole e
+- VGG (2014): il principio del mattoncino Lego, tante lenti piccole e
   uguali impilate una dopo l'altra al posto di poche lenti grandi. Il risparmio
   però riguarda le lenti: quasi nove decimi dei suoi centotrentotto milioni di
   numeri stanno nell'enorme ufficio di neuroni con cui la rete chiude, quello
   che NiN aveva appena mostrato come togliere.
-- **Inception/GoogLeNet** (2014): guardare lo stesso punto con lenti di misure
+- Inception/GoogLeNet (2014): guardare lo stesso punto con lenti di misure
   diverse nello stesso istante, tenendo basso il conto grazie alla lente che
   guarda un punto solo.
-- **ResNet** (2015): la scorciatoia che porta l'input intatto fino all'uscita,
+- ResNet (2015): la scorciatoia che porta l'input intatto fino all'uscita,
   dove viene ri-sommato; al blocco resta da imparare solo la correzione, e
   così si addestrano reti di centinaia di strati. Dove la rete cambia formato i
   due pezzi non si sommano, e la scorciatoia porta una versione riadattata
   dell'input, con numeri da imparare anche lei.
-- **DenseNet** (2017): non una scorciatoia ma tutte, come una chat di gruppo
+- DenseNet (2017): non una scorciatoia ma tutte, come una chat di gruppo
   in cui ogni strato ha sotto gli occhi l'intera conversazione (pochi pesi,
   molta memoria).
-- La **convoluzione separabile** (MobileNet, 2017) smette di fare due lavori
+- La convoluzione separabile (MobileNet, 2017) smette di fare due lavori
   insieme: prima guarda intorno un canale per volta, poi mette d'accordo i
   canali con la lente che guarda un punto solo. Stessa forma in uscita e poco
   più di otto volte meno pesi (nove volte è il tetto, e ci si avvicina solo con
@@ -806,30 +806,30 @@ arriva, ed è una lezione che vale ancora oggi, dai Transformer in poi.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- **LeNet-5** (1998): la convoluzione che legge le cifre (connettività locale,
+- LeNet-5 (1998): la convoluzione che legge le cifre (connettività locale,
   pesi condivisi, pooling).
-- **AlexNet** (2012): ReLU, dropout e GPU portano le CNN a vincere ImageNet.
-- **NiN** (2013): convoluzioni $1\times 1$ come mini-rete pixel per pixel e
+- AlexNet (2012): ReLU, dropout e GPU portano le CNN a vincere ImageNet.
+- NiN (2013): convoluzioni $1\times 1$ come mini-rete pixel per pixel e
   *global average pooling* al posto degli strati densi.
-- **VGG** (2014): profondità con soli filtri $3\times 3$ impilati (campo
+- VGG (2014): profondità con soli filtri $3\times 3$ impilati (campo
   recettivo $r_\ell = r_{\ell-1} + (k_\ell-1)\prod_{i<\ell}s_i$), ma
   $138$ milioni di parametri, l’$89{,}4\%$ nei tre densi finali.
-- **Inception/GoogLeNet** (2014): elaborare a più scale in parallelo, con
+- Inception/GoogLeNet (2014): elaborare a più scale in parallelo, con
   colli di bottiglia $1\times 1$.
-- **ResNet** (2015): la connessione residua $\mathbf{y}=\mathcal{F}(\mathbf{x})+\mathbf{x}$
-  rende addestrabili reti di centinaia di strati; dove le forme non
-  coincidono la scorciatoia porta una proiezione $\mathbf{W}_s\mathbf{x}$, e
-  dalla ResNet-50 in su il blocco è a **collo di bottiglia**
-  ($1\times1$, $3\times3$, $1\times1$).
-- **DenseNet** (2017): ogni strato riceve, concatenate, le feature di
+- ResNet (2015): la connessione residua
+  $\mathbf{y}=\mathcal{F}(\mathbf{x})+\mathbf{x}$ rende addestrabili reti di
+  centinaia di strati; dove le forme non coincidono la scorciatoia porta una
+  proiezione $\mathbf{W}_s\mathbf{x}$, e dalla ResNet-50 in su il blocco è a
+  collo di bottiglia ($1\times1$, $3\times3$, $1\times1$).
+- DenseNet (2017): ogni strato riceve, concatenate, le feature di
   tutti i precedenti (pochi parametri, molta memoria).
-- La **convoluzione separabile in profondità** (MobileNet, Xception) fattorizza
+- La convoluzione separabile in profondità (MobileNet, Xception) fattorizza
   la convoluzione in *depthwise* ($k^2 C_{\text{in}}$ pesi) più *pointwise*
   $1\times1$ ($C_{\text{in}}C_{\text{out}}$): il costo scende di un fattore
   $k^2 C_{\text{out}} / (k^2 + C_{\text{out}}) \to k^2$. MobileNetV2 vi
-  aggiunge il **residuo invertito** con collo di bottiglia lineare
-  (**MBConv**), che è il blocco base di EfficientNet.
-- Dopo l'artigianato, il metodo: il **compound scaling** di EfficientNet fa
+  aggiunge il residuo invertito con collo di bottiglia lineare
+  (MBConv), che è il blocco base di EfficientNet.
+- Dopo l'artigianato, il metodo: il compound scaling di EfficientNet fa
   crescere insieme profondità, larghezza e risoluzione; la *neural
   architecture search* automatizza il progetto.
 ```
