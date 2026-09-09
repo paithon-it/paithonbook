@@ -39,7 +39,7 @@ possono valere tutte insieme.
 
 Il pregiudizio algoritmico non nasce dal codice, che è cieco e indifferente:
 nasce prima, nei dati, e nelle scelte con cui li abbiamo raccolti e poi
-**etichettati**, cioè con cui accanto a ogni esempio abbiamo scritto la
+etichettati, cioè con cui accanto a ogni esempio abbiamo scritto la
 risposta che il modello doveva imparare a dare («questo candidato era bravo»,
 «questa persona ha commesso un reato»).
 
@@ -69,18 +69,18 @@ passato dai suoi capi, e non chiede mai se fossero giuste. Erediterà la loro
 bravura, e anche le loro storture. Con i dati succede lo stesso, e le storture
 arrivano da quattro porte.
 
-- **Il passato è ingiusto.** Se per anni i prestiti sono andati soprattutto
+- Il passato è ingiusto. Se per anni i prestiti sono andati soprattutto
   agli abitanti di certi quartieri, un modello addestrato su quello storico
   imparerà a dire di sì agli stessi e di no agli altri: non perché siano meno
   affidabili, ma perché *storicamente* hanno avuto meno occasioni.
-- **Il campione non rappresenta tutti.** Se le foto per allenare un
+- Il campione non rappresenta tutti. Se le foto per allenare un
   riconoscitore di volti ritraggono in gran parte persone dalla pelle chiara, il
   sistema funzionerà peggio su tutti gli altri: non li ha quasi mai visti.
-- **Le etichette sono distorte.** Spesso la «risposta giusta» che diamo in
+- Le etichette sono distorte. Spesso la «risposta giusta» che diamo in
   pasto al modello non è la verità, ma una sua approssimazione imperfetta: «è
   stato arrestato» al posto di «ha commesso un reato», e l'arresto dipende
   anche da *dove* e *chi* la polizia controlla di più.
-- **Il modello si morde la coda.** Se un sistema manda più pattuglie in un
+- Il modello si morde la coda. Se un sistema manda più pattuglie in un
   quartiere, lì si registreranno più reati, il che convince il sistema a
   mandarcene ancora di più. Il pregiudizio si auto-conferma.
 
@@ -144,7 +144,7 @@ abbreviati, `TPR` e `FPR`, dalle iniziali inglesi, e le quattro caselle della
 tabella si chiamano `VP`, `FP`, `FN`, `VN`. «Tasso» vuol dire soltanto «quanti
 su cento», scritto però come numero fra zero e uno: $0{,}80$ sta per ottanta su
 cento. La differenza rispetto a quel capitolo è una sola, ed è decisiva: qui i
-conti si fanno **separatamente per ciascun gruppo** e poi si confrontano
+conti si fanno separatamente per ciascun gruppo e poi si confrontano
 ({numref}`fig-equita-tassi`).
 
 ```{figure} ../figures/equita-tassi.svg
@@ -162,8 +162,8 @@ modo diverso a seconda del gruppo.
 
 `````{tab} Elementare
 
-«Sì» vuol dire **il modello ha detto la cosa che stavamo
-prevedendo**, e quella cosa non è per forza bella. Nel prestito il «sì» è «te
+«Sì» vuol dire il modello ha detto la cosa che stavamo
+prevedendo, e quella cosa non è per forza bella. Nel prestito il «sì» è «te
 lo diamo»; nel software dei tribunali è «questa persona è ad alto rischio». E
 «l'esito è accaduto» vuol dire che è successo davvero quel che il modello
 prevedeva, buono o brutto che sia. Parole neutre, per un conto che si fa uguale
@@ -172,12 +172,12 @@ nei due casi.
 Ci sono tre modi diversi di chiedere «il modello è equo?», e portano a tre
 richieste distinte.
 
-- **Stessa quota di sì**, in gergo *parità demografica*. Il modello dice «sì»
+- Stessa quota di sì, in gergo *parità demografica*. Il modello dice «sì»
   alla stessa percentuale di persone in ogni gruppo. Se approva il 40% degli
   uomini, deve approvare il 40% delle donne: a prescindere da tutto il resto. E
   il «a prescindere» va preso alla lettera: la richiesta resta soddisfatta
   anche scegliendo i migliori fra gli uomini e tirando a sorte fra le donne.
-- **Stessi errori per tutti**, in gergo *equalized odds* (che si potrebbe
+- Stessi errori per tutti, in gergo *equalized odds* (che si potrebbe
   rendere con «pari probabilità di sbagliare»: gli *odds* sono il modo in cui
   gli scommettitori dicono una probabilità, il rapporto fra le volte che una
   cosa capita e quelle che non capita). Sono due condizioni in una: il
@@ -187,8 +187,8 @@ richieste distinte.
   modello, due comportamenti. Chi teme soprattutto di lasciare indietro qualcuno
   può pretendere la sola parità sulle persone a cui l'esito è capitato, in gergo
   *equal opportunity*.
-- **Stesso significato del punteggio**, in gergo *calibrazione*. Il punteggio
-  è una **previsione di probabilità** e non un voto. «70» non vuol dire
+- Stesso significato del punteggio, in gergo *calibrazione*. Il punteggio
+  è una previsione di probabilità e non un voto. «70» non vuol dire
   «bravo sette su dieci», vuol dire «di persone come questa, secondo me,
   l'esito capita a settanta su cento».
   Calibrato vuol dire che quella promessa viene mantenuta, e mantenuta allo
@@ -203,8 +203,8 @@ d'accordo è impossibile più spesso di quanto chiunque si aspetterebbe.
 `````{tab} Superiore
 
 Fissiamo la notazione: $A$ è l’**attributo protetto** che identifica il gruppo
-(per esempio $A=a$ e $A=b$), $Y \in \{0,1\}$ è l’**esito reale**, $\hat{Y}$ è la
-**decisione** del modello e $S \in [0,1]$ il **punteggio** da cui la decisione
+(per esempio $A=a$ e $A=b$), $Y \in \{0,1\}$ è l’esito reale, $\hat{Y}$ è la
+decisione del modello e $S \in [0,1]$ il punteggio da cui la decisione
 si ottiene fissando una soglia. Un criterio enunciato su $S$ e lo stesso
 criterio enunciato su $\hat{Y}$ sono affermazioni diverse, e la distinzione fra
 i due torna a ogni risultato di impossibilità.
@@ -232,7 +232,7 @@ $$
 P(\hat{Y}=1 \mid Y=y,\, A=a) \;=\; P(\hat{Y}=1 \mid Y=y,\, A=b), \qquad y\in\{0,1\}.
 $$
 
-Per $y=1$ questa è l'uguaglianza dei **TPR**, per $y=0$ quella dei **FPR**: il
+Per $y=1$ questa è l'uguaglianza dei TPR, per $y=0$ quella dei FPR: il
 modello deve avere lo stesso tasso di veri positivi *e* lo stesso tasso di falsi
 positivi in ogni gruppo. La {numref}`fig-equita-tassi` illustra una violazione:
 $\text{TPR}_a=0{,}80 \neq \text{TPR}_b=0{,}60$ e
@@ -270,8 +270,8 @@ Learning. È il criterio che Northpointe rivendicava a difesa di COMPAS
 ## I risultati di impossibilità
 
 Arriviamo al nodo, e alle tre richieste viste finora va affiancata una quarta.
-Somiglia moltissimo alla calibrazione e non è la stessa cosa: **quando il
-modello dice sì, ci prende ugualmente spesso in ogni gruppo**, e in gergo si
+Somiglia moltissimo alla calibrazione e non è la stessa cosa: quando il
+modello dice sì, ci prende ugualmente spesso in ogni gruppo, e in gergo si
 chiama *parità del valore predittivo*. La differenza con la calibrazione è
 sottile e conta: la calibrazione riguarda il punteggio, il «70» che deve voler
 dire settanta su cento per tutti; questa riguarda il sì e il no che si
@@ -279,12 +279,12 @@ ottengono tagliando quel punteggio a una certa altezza. È quest'ultima, non la
 calibrazione, quella che l'azienda di COMPAS rivendicava.
 
 Queste quattro richieste non entrano in conflitto per caso: alcune di esse sono
-**matematicamente incompatibili** ogni volta che i gruppi partono da tassi di
+matematicamente incompatibili ogni volta che i gruppi partono da tassi di
 base diversi, cioè ogni volta che l'esito, nei dati, è più frequente in un
 gruppo che nell'altro.
 
 Conviene però dire subito una cosa che si legge di continuo detta male. Non c'è
-**un** teorema di impossibilità: ce ne sono tre, dimostrati da persone diverse,
+un teorema di impossibilità: ce ne sono tre, dimostrati da persone diverse,
 e riguardano combinazioni diverse di criteri. Assomigliano abbastanza da essere
 scambiati l'uno per l'altro, e quando si scambiano si finisce per affermare
 cose false. Cominciamo dal primo, che è quello del caso COMPAS, e prendiamoci
@@ -301,26 +301,26 @@ tutto.
 
 Pretendiamo due cose sensate, e per il momento otteniamole. La prima: che il
 modello prenda la stessa quota di persone a cui l'esito è poi capitato. Diciamo
-il settanta per cento, cioè **35 delle 50** in tutti e due i gruppi. La seconda:
+il settanta per cento, cioè 35 delle 50 in tutti e due i gruppi. La seconda:
 che quando dice sì ci prenda ugualmente spesso, sempre il settanta per cento.
 
-E qui succede la cosa che conta: il numero dei falsi allarmi **non lo
-scegliamo più noi**. Perché 35 sì giusti siano il settanta per cento dei sì, i
+E qui succede la cosa che conta: il numero dei falsi allarmi non lo
+scegliamo più noi. Perché 35 sì giusti siano il settanta per cento dei sì, i
 sì totali devono essere 50; e se i sì sono 50 e quelli giusti 35, i falsi
-allarmi sono **15**. In tutti e due i gruppi, per forza, perché in tutti e due
+allarmi sono 15. In tutti e due i gruppi, per forza, perché in tutti e due
 abbiamo preteso gli stessi due settanta per cento.
 
 Ecco il punto, ed è aritmetica da terza media. Quei 15 falsi allarmi sono lo
 stesso numero, ma non sono presi dallo stesso mucchio. Nel Gruppo A le persone
-a cui l'esito non è capitato sono 50, quindi 15 su 50: **tre su dieci** si
+a cui l'esito non è capitato sono 50, quindi 15 su 50: tre su dieci si
 prendono un'accusa ingiusta. Nel Gruppo B quelle stesse persone sono 150,
-quindi 15 su 150: **uno su dieci**. Tre volte più spesso, e nessuno l'ha
+quindi 15 su 150: uno su dieci. Tre volte più spesso, e nessuno l'ha
 voluto: il tre viene dal 50 contro 150, cioè da quante sono di qua e di là le
 persone che un falso allarme lo possono ricevere.
 
 Il teorema dice esattamente questo, in generale: quando i tassi di base sono
 diversi, tre richieste non stanno insieme. Sono la parità del valore
-predittivo, la parità del **tasso** di falsi allarmi (non del numero: il
+predittivo, la parità del tasso di falsi allarmi (non del numero: il
 numero, come si è appena visto, può benissimo coincidere) e la parità di quelli
 che sfuggono. Quest'ultima è la pretesa di prendere la stessa quota, girata al
 contrario: se delle cinquanta persone a cui l'esito è capitato il modello ne
@@ -339,7 +339,7 @@ Ed è il cuore della disputa su COMPAS. L'inchiesta di ProPublica guardava i
 falsi allarmi e li trovava molto più alti fra gli imputati neri: la colonna dei
 15 su 50. L'azienda guardava quanto spesso il suo «alto rischio» ci prendeva
 davvero e lo trovava uguale nei due gruppi: la riga del settanta per cento.
-Avevano ragione **entrambe**, ed è proprio questo il punto.
+Avevano ragione entrambe, ed è proprio questo il punto.
 
 Teoremi di questa famiglia ce ne sono altri due, e nei giornali finiscono
 regolarmente scambiati con questo. Uno guarda i punteggi invece dei sì: la
@@ -356,7 +356,7 @@ bisogna lasciare andare.
 
 `````{tab} Superiore
 
-**Primo teorema: Chouldechova (2017), parità del valore predittivo.** La chiave
+Primo teorema: Chouldechova (2017), parità del valore predittivo. La chiave
 è un'identità algebrica esatta che lega, all'interno di un gruppo, quattro
 grandezze: la prevalenza $p = P(Y=1)$, il valore predittivo positivo
 $\text{VPP}$ (la *precision* del capitolo di Machine Learning), il tasso di falsi
@@ -367,14 +367,14 @@ $$
 \text{FPR} \;=\; \frac{p}{1-p}\cdot\frac{1-\text{VPP}}{\text{VPP}}\cdot\bigl(1-\text{FNR}\bigr).
 $$
 
-Qui $p$ è la frazione reale di positivi nel gruppo, $\text{VPP}=P(Y=1\mid\hat{Y}=1)$
-è la probabilità che un positivo predetto sia davvero positivo, e $\text{FNR}$ e
-$\text{FPR}$ sono i due tassi di errore. L'identità si ricava contando i
-quattro pezzi della matrice di confusione e vale sempre. La sua conseguenza è
-drastica: **fissati $\text{VPP}$ e $\text{FNR}$ uguali fra due gruppi, se le
-prevalenze $p_a \neq p_b$ differiscono, allora i $\text{FPR}$ sono per forza
-diversi**, fuori dai casi degeneri in cui il prodotto si annulla
-($\text{VPP}=1$, cioè nessun falso positivo da nessuna parte, oppure
+Qui $p$ è la frazione reale di positivi nel gruppo,
+$\text{VPP}=P(Y=1\mid\hat{Y}=1)$ è la probabilità che un positivo predetto sia
+davvero positivo, e $\text{FNR}$ e $\text{FPR}$ sono i due tassi di errore.
+L'identità si ricava contando i quattro pezzi della matrice di confusione e
+vale sempre. La sua conseguenza è drastica: fissati $\text{VPP}$ e $\text{FNR}$
+uguali fra due gruppi, se le prevalenze $p_a \neq p_b$ differiscono, allora i
+$\text{FPR}$ sono per forza diversi, fuori dai casi degeneri in cui il prodotto
+si annulla ($\text{VPP}=1$, cioè nessun falso positivo da nessuna parte, oppure
 $\text{FNR}=1$, cioè nessun positivo preso).
 
 Un esempio numerico lo rende palpabile. Siano due gruppi con prevalenze
@@ -392,11 +392,11 @@ $$
 Stesso valore predittivo, stesso tasso di veri positivi, eppure il tasso di
 falsi positivi è tre volte più alto nel gruppo con prevalenza maggiore:
 $0{,}30$ contro $0{,}10$. È esattamente la forma del caso COMPAS
-{cite}`angwin2016machine`. Si noti che cosa **non** compare in questo enunciato:
+{cite}`angwin2016machine`. Si noti che cosa non compare in questo enunciato:
 la calibrazione. Il teorema di Chouldechova parla di $\text{VPP}$, che è una
 proprietà della decisione $\hat{Y}$, non di $S$.
 
-**Secondo teorema: Kleinberg, Mullainathan e Raghavan (2017), calibrazione.**
+Secondo teorema: Kleinberg, Mullainathan e Raghavan (2017), calibrazione.
 Il risultato gemello, indipendente e quasi simultaneo (i due preprint escono a
 un mese di distanza, nel settembre e nell'ottobre del 2016), riguarda i
 punteggi continui {cite}`kleinberg2017inherent`. Le tre condizioni in gioco
@@ -404,41 +404,41 @@ sono la calibrazione e i due **bilanciamenti di classe**: che il punteggio *medi
 ricevuto dai positivi sia lo stesso nei due gruppi, e che lo stesso valga per i
 negativi. Coesistono solo nei casi degeneri (prevalenze identiche o predizione
 perfetta). È un enunciato sui punteggi medi, non sui tassi della matrice di
-confusione: il bilanciamento della classe positiva **non** è l'uguaglianza dei
+confusione: il bilanciamento della classe positiva non è l'uguaglianza dei
 TPR, e chiamarlo «bilanciamento dei falsi negativi» significa cambiarlo.
 
-**Terzo teorema: Pleiss e colleghi (2017), calibrazione più equalized odds.**
+Terzo teorema: Pleiss e colleghi (2017), calibrazione più equalized odds.
 Resta la domanda che i due precedenti lasciano aperta: calibrazione ed
 equalized odds possono valere insieme? La risposta è nel lavoro di Geoff
-Pleiss e colleghi {cite}`pleiss2017fairness`, e non è né sì né no: **stanno
-insieme solo con un vincolo d'errore alla volta**, o i falsi positivi o i falsi
+Pleiss e colleghi {cite}`pleiss2017fairness`, e non è né sì né no: stanno
+insieme solo con un vincolo d'errore alla volta, o i falsi positivi o i falsi
 negativi, non entrambi, salvo prevalenze uguali o predittore perfetto.
 Sull'ipotesi conviene essere precisi, perché non è quella che verrebbe da
 immaginare: non si chiede affatto che il classificatore sia uno solo, dato che
 nel loro impianto ce n'è già uno per gruppo, e il rimedio che propongono ne
 fabbrica un terzo. Si chiede che il classificatore di cui si pareggiano gli
-errori sia **esso stesso calibrato**, e che quegli errori siano
+errori sia esso stesso calibrato, e che quegli errori siano
 *generalizzati*, cioè medie del punteggio che quel classificatore restituisce e
 non conteggi di decisioni binarie.
 
 Che peso abbiano quelle ipotesi si vede lasciandole cadere: l'incompatibilità
-sparisce. Si prendano due gruppi con un punteggio calibrato **per costruzione** in entrambi
-(l'etichetta estratta con probabilità pari al punteggio, quindi
+sparisce. Si prendano due gruppi con un punteggio calibrato per costruzione in
+entrambi (l'etichetta estratta con probabilità pari al punteggio, quindi
 $P(Y=1\mid S=s, A=a)=s$ esattamente) e punteggi distribuiti come due Beta,
 $\text{Beta}(3;\,3)$ e $\text{Beta}(2{,}7;\,3{,}3)$, la cui media (che qui *è*
 la prevalenza) vale $0{,}50$ e $0{,}45$. Con una soglia per gruppo, $0{,}584$ e
-$0{,}537$, si ottiene $\text{TPR}=0{,}489$ e $\text{FPR}=0{,}202$ in **tutti e
-due**, cioè equalized odds pieno, con la calibrazione intatta perché le soglie
-non toccano $S$. A divergere è il valore predittivo, $0{,}708$ contro $0{,}664$:
-esattamente come impone l'identità di Chouldechova. Non è una smentita di
-Pleiss, e capire perché è la parte che insegna. Calibrato, qui, è il punteggio
-$S$; il classificatore di cui abbiamo pareggiato gli errori è il sì o no che si
-ottiene tagliandolo, e *quello* calibrato non è, perché quando dice sì ci
-prende nel $70{,}8\%$ dei casi in un gruppo e nel $66{,}4\%$ nell'altro, mentre
-un sì o no calibrato dovrebbe prenderci sempre, cioè essere perfetto.
-L'ipotesi non è caduta: l'abbiamo aggirata cambiando oggetto, e il prezzo si
-vede subito nel valore predittivo. Il post-processing di Hardt, Price e Srebro
-vive proprio in questo spiraglio.
+$0{,}537$, si ottiene $\text{TPR}=0{,}489$ e $\text{FPR}=0{,}202$ in tutti e
+due, cioè equalized odds pieno, con la calibrazione intatta perché le soglie
+non toccano $S$. A divergere è il valore predittivo, $0{,}708$ contro
+$0{,}664$: esattamente come impone l'identità di Chouldechova. Non è una
+smentita di Pleiss, e capire perché è la parte che insegna. Calibrato, qui, è
+il punteggio $S$; il classificatore di cui abbiamo pareggiato gli errori è il
+sì o no che si ottiene tagliandolo, e *quello* calibrato non è, perché quando
+dice sì ci prende nel $70{,}8\%$ dei casi in un gruppo e nel $66{,}4\%$
+nell'altro, mentre un sì o no calibrato dovrebbe prenderci sempre, cioè essere
+perfetto. L'ipotesi non è caduta: l'abbiamo aggirata cambiando oggetto, e il
+prezzo si vede subito nel valore predittivo. Il post-processing di Hardt, Price
+e Srebro vive proprio in questo spiraglio.
 
 Quei numeri si rifanno in forma chiusa, senza bisogno di simulare: per
 $S \sim \text{Beta}(\alpha,\beta)$ la massa di punteggio sopra la soglia vale
@@ -453,13 +453,13 @@ vera e $0$ altrimenti. Da lì il TPR si ottiene dividendo quella massa per la
 prevalenza $p$; il FPR sottraendola da $P(S \ge t)$ e dividendo per $1-p$; il
 VPP dividendola per $P(S \ge t)$.
 
-**E la terna dei criteri statistici.** Per *independence*, *separation* e
+E la terna dei criteri statistici. Per *independence*, *separation* e
 *sufficiency* il risultato è più severo, come riassumono Barocas, Hardt e
-Narayanan {cite}`barocas2023fairness`: sono incompatibili già **a due a due**,
+Narayanan {cite}`barocas2023fairness`: sono incompatibili già a due a due,
 fuori dai casi degeneri. Independence e separation coesistono solo se
 $A \perp Y$ oppure $\hat{Y} \perp Y$; independence e sufficiency solo se
 $A \perp Y$; separation e sufficiency solo se $A \perp Y$ o la predizione è
-perfetta. Qui però le tre condizioni sono enunciate sullo **stesso** predittore:
+perfetta. Qui però le tre condizioni sono enunciate sullo stesso predittore:
 è la ragione per cui il controesempio con le due Beta non le contraddice, dato che
 lì la calibrazione riguarda $S$ e l'equalized odds riguarda un $\hat{Y}$
 ottenuto con due soglie.
@@ -471,11 +471,11 @@ ottenuto con due soglie.
 Tutti e tre i risultati partono dallo stesso presupposto, ed è il punto in cui
 il ragionamento fatto finora rischia di dare una mano proprio a ciò che ha appena
 denunciato. Il conflitto si accende quando i tassi di base differiscono. Ma
-«tasso di base» è la frequenza di un esito **così come lo abbiamo misurato**,
+«tasso di base» è la frequenza di un esito così come lo abbiamo misurato,
 e non un dato di natura: è esattamente la grandezza che il bias di
 misura, quello delle etichette storte, può distorcere.
 In COMPAS il tasso di base non è la frequenza dei reati: è la frequenza dei
-**riarresti**. Se gli arresti dipendono anche da dove passano le pattuglie,
+riarresti. Se gli arresti dipendono anche da dove passano le pattuglie,
 allora la difesa «il nostro punteggio è affidabile allo stesso modo rispetto a
 quel tasso di base» è una difesa rispetto a un numero che porta dentro il
 problema che si voleva misurare.
@@ -517,13 +517,13 @@ problema mal posto.
 L'osservazione viene da dentro la letteratura, ed è di Chouldechova stessa.
 Fogliato, G'Sell e Chouldechova {cite}`fogliato2020fairness` studiano la
 valutazione dell'equità quando l'etichetta osservata è una versione rumorosa e
-**sistematicamente distorta** di quella d'interesse, ed è precisamente il caso
+sistematicamente distorta di quella d'interesse, ed è precisamente il caso
 dell'arresto usato come proxy del reato. La conclusione è che anche piccole
 distorsioni nell'etichetta osservata possono rovesciare le conclusioni di
 un'analisi condotta su di essa.
 
 Il meccanismo si vede con una costruzione minima. Si prendano due gruppi con
-tasso di base **vero identico** e una sola differenza, la probabilità che il
+tasso di base vero identico e una sola differenza, la probabilità che il
 fatto venga rilevato ($0{,}90$ nel primo, $0{,}50$ nel secondo). Il punteggio
 resta calibrato per costruzione sull'etichetta osservata in entrambi. Le
 prevalenze vere coincidono; le prevalenze *osservate* no, e a quel punto il
@@ -550,15 +550,15 @@ prodotte.
 `````{tab} Elementare
 
 In una gara di corsa un gruppo parte più indietro. Puoi intervenire
-in tre momenti. **Prima** della gara, sistemando la linea di partenza: correggi
+in tre momenti. Prima della gara, sistemando la linea di partenza: correggi
 i dati, ripesando gli esempi finché nel mucchio pesato l'esito e il gruppo
 smettono di andare insieme, o raccogliendone altri, e la linea sistemata vale
 per tutte le gare che verranno.
-**Durante** la gara, cambiando le regole: al modello si chiede di sbagliare il
+Durante la gara, cambiando le regole: al modello si chiede di sbagliare il
 meno possibile, e gli si aggiunge una penale ogni volta che sbaglia più su un
 gruppo che sull'altro, come un giudice che toglie punti a
 chi taglia la strada; quanti punti togliere lo decidiamo noi, ed è la manopola
-con cui si sceglie quanta accuratezza spendere. **Dopo** la gara, spostando il
+con cui si sceglie quanta accuratezza spendere. Dopo la gara, spostando il
 traguardo: il modello resta com'è, ma il punteggio oltre il quale si dice sì
 viene fissato più in alto per un gruppo e più in basso per l'altro, finché i
 due tassi di errore coincidono.
@@ -582,23 +582,23 @@ discriminazione a sua volta, e la discussione è aperta anche fra i giuristi.
   sotto-rappresentati, o rimozione/decorrelazione delle feature che fungono da
   *proxy* dell'attributo protetto. Vantaggio: agnostico al modello a valle.
 - **In-processing.** Si modifica l'obiettivo di addestramento aggiungendo un
-  **vincolo** o un termine di **regolarizzazione** di equità, per esempio
+  vincolo o un termine di regolarizzazione di equità, per esempio
   minimizzare $\mathcal{L}_{\text{pred}} + \lambda\,\mathcal{L}_{\text{fair}}$
   dove $\mathcal{L}_{\text{fair}}$ penalizza il divario di TPR/FPR fra i gruppi
   e $\lambda$ regola il compromesso equità-accuratezza. Adversarial debiasing e
   ottimizzazione vincolata rientrano qui.
 - **Post-processing.** Si lascia intatto il modello e si aggiustano le
-  **soglie**: Hardt, Price e Srebro {cite}`hardt2016equality` mostrano come
+  soglie: Hardt, Price e Srebro {cite}`hardt2016equality` mostrano come
   derivare soglie per-gruppo (eventualmente randomizzate) che raggiungono
   l'equalized odds a partire da un qualsiasi punteggio già addestrato (una
   costruzione geometrica sulle curve ROC dei due gruppi).
 
-I risultati di impossibilità della sezione precedente restano sullo sfondo, e
-il post-processing è il posto in cui si vede meglio che cosa comprano davvero
-queste tecniche. Le soglie per gruppo raggiungono l'equalized odds senza toccare
-il punteggio, quindi senza toccarne la calibrazione; ciò che non possono fare è
-tenere fermo anche il valore predittivo, che si separa fra i gruppi non appena
-le prevalenze differiscono. Nessuna delle tre leve annulla il conflitto: sposta
+I risultati di impossibilità restano sullo sfondo, e il post-processing è il
+posto in cui si vede meglio che cosa comprano davvero queste tecniche. Le
+soglie per gruppo raggiungono l'equalized odds senza toccare il punteggio,
+quindi senza toccarne la calibrazione; ciò che non possono fare è tenere fermo
+anche il valore predittivo, che si separa fra i gruppi non appena le
+prevalenze differiscono. Nessuna delle tre leve annulla il conflitto: sposta
 *quale* criterio privilegiare, e quel «quale» non è una scelta tecnica.
 
 `````
@@ -616,7 +616,7 @@ il gruppo si indovina da tutto il resto.
 
 `````{tab} Elementare
 
-L'idea è intuitiva: **due persone simili devono ricevere esiti simili**. Se due
+L'idea è intuitiva: due persone simili devono ricevere esiti simili. Se due
 candidati hanno percorso, competenze ed esperienza quasi identici, il modello non
 può approvarne uno e bocciare l'altro solo perché appartengono a gruppi diversi.
 E la pretesa cresce con la somiglianza: due candidati lontanissimi possono
@@ -639,7 +639,7 @@ le stesse distorsioni che volevamo eliminare.
 Formalmente, dato un metro di distanza fra individui
 $d(\mathbf{x}_i, \mathbf{x}_j)$ e una distanza fra distribuzioni di esito $D$,
 il classificatore (che a ogni individuo associa una distribuzione sugli esiti)
-deve essere **Lipschitz** {cite}`dwork2012fairness`:
+deve essere Lipschitz {cite}`dwork2012fairness`:
 
 $$
 D\bigl(M(\mathbf{x}_i),\, M(\mathbf{x}_j)\bigr) \;\le\; d(\mathbf{x}_i, \mathbf{x}_j),
@@ -659,8 +659,8 @@ elegante ma di rado applicabile tale e quale.
 ## Il conflitto, coi numeri
 
 Chiudiamo il cerchio con un esperimento riproducibile. Inventiamo due gruppi
-di persone e diamo a ciascuna un punteggio di rischio onesto **per
-costruzione**: se il punteggio dice $0{,}7$, l'esito accade davvero sette
+di persone e diamo a ciascuna un punteggio di rischio onesto per
+costruzione: se il punteggio dice $0{,}7$, l'esito accade davvero sette
 volte su dieci, in entrambi i gruppi allo stesso modo (è la calibrazione di
 prima). L'unica differenza è che l'esito è complessivamente più frequente in
 un gruppo che nell'altro: i tassi di base diversi da cui parte il teorema. Poi
@@ -758,9 +758,9 @@ Le colonne dicono, per ciascun gruppo: quanto è frequente davvero l'esito
 (`base`) e a quante persone il modello dice sì (`selection`). Poi vengono
 `TPR` e `VPP`, che sono la stessa frazione guardata da due parti diverse, e
 siccome è su quella differenza che poggia tutto il teorema, rallentiamo. Il
-`TPR` parte **dalle persone**: prendi tutte quelle a cui l'esito è poi
+`TPR` parte dalle persone: prendi tutte quelle a cui l'esito è poi
 capitato davvero, e conta a quante il modello aveva detto sì. Il `VPP` (sta
-per *valore predittivo positivo*) parte **dai sì**: prendi tutti i sì che il
+per *valore predittivo positivo*) parte dai sì: prendi tutti i sì che il
 modello ha detto, e conta a quanti di quelli l'esito è poi capitato davvero.
 Lo stesso mucchietto di persone al numeratore, due mucchi diversi al
 denominatore: il primo numero dice quanti ne prendi, il secondo quanto vale la
@@ -769,7 +769,7 @@ fra chi non c'entrava niente.
 
 Le due righe della calibrazione si leggono così: `[0.0,0.2)->0.16` vuol dire
 che alle persone con punteggio fra zero e zero virgola due l'esito è poi
-capitato nel $16\%$ dei casi. Sono **essenzialmente identiche**: in ogni
+capitato nel $16\%$ dei casi. Sono essenzialmente identiche: in ogni
 fascia di punteggio la frazione è pressoché la stessa nei due gruppi, e
 coincide con la media dei punteggi *delle persone che stanno in quella fascia*
 (non con il centro della fascia: nella prima, che va da zero a zero virgola
@@ -789,7 +789,7 @@ tre righe stampate fanno esattamente questo, con una soglia diversa per
 gruppo, e li allineano bene ($0{,}215$ contro $0{,}219$ e $0{,}056$ contro
 $0{,}055$), senza toccare il punteggio e senza toccare le frequenze di base,
 che restano $0{,}50$ e $0{,}33$. Quel che si sposta, e che con la soglia unica
-passava inosservato, è il **valore predittivo**: $0{,}795$ nel Gruppo A contro
+passava inosservato, è il valore predittivo: $0{,}795$ nel Gruppo A contro
 $0{,}660$ nel Gruppo B. Cioè: quando il modello dice sì, ci prende molto più
 spesso in un gruppo che nell'altro.
 
@@ -827,8 +827,8 @@ La configurazione a soglia unica riproduce la struttura del caso COMPAS
 Quella a due soglie riproduce il post-processing di Hardt, Price e Srebro
 {cite}`hardt2016equality`, e mostra il prezzo che si paga a valle, la
 separazione del VPP, che è il criterio rivendicato da Northpointe
-{cite}`dieterich2016compas`. Resta il caveat della sezione precedente, e vale
-anche qui: nella simulazione i tassi di base sono noti per costruzione, mentre
+{cite}`dieterich2016compas`. Resta il caveat sui tassi di base come grandezze
+misurate, e vale anche qui: nella simulazione sono noti per costruzione, mentre
 su dati veri sono stimati da etichette che possono essere a loro volta distorte.
 
 `````
@@ -838,7 +838,7 @@ su dati veri sono stimati da etichette che possono essere a loro volta distorte.
 Se c'è una lezione da portare via, è questa: la domanda «questo modello è
 equo?» è mal posta finché non specifichiamo *secondo quale criterio*. Parità
 demografica, equalized odds, calibrazione ed equità individuale sono definizioni
-**diverse e in tensione**, e non approssimazioni successive di un'unica verità
+diverse e in tensione, e non approssimazioni successive di un'unica verità
 nascosta: ciascuna è sensata in certi contesti e inaccettabile
 in altri. In un esame di massa per una malattia grave conta non mancare i
 malati, e allora si pretende lo stesso tasso di veri positivi; nella
@@ -858,36 +858,36 @@ privacy e la robustezza dei modelli; e chi vuole lo strumento che rende queste s
 
 ```{admonition} Da ricordare
 :class: important
-- Qui **bias** vuol dire *pregiudizio*: non è il numero dentro il neurone né
+- Qui bias vuol dire *pregiudizio*: non è il numero dentro il neurone né
   l'errore di un modello troppo semplice, che nel libro portano lo stesso nome.
-- Il pregiudizio non nasce nel codice, entra **prima**, da quattro porte: il
+- Il pregiudizio non nasce nel codice, entra prima, da quattro porte: il
   passato è ingiusto; di qualche gruppo ci sono pochi esempi; quello che è
   scritto nei dati non è la cosa che credevamo («arrestato» al posto di «ha
   commesso un reato»); e il modello si morde la coda, perché le sue decisioni
   di oggi diventano i dati di domani.
 - Per misurarlo si usa la tabella a quattro caselle del capitolo di Machine
-  Learning, compilata **un gruppo alla volta**, e si confrontano due numeri:
+  Learning, compilata un gruppo alla volta, e si confrontano due numeri:
   quanti dei casi veri il modello prende, e quanti falsi allarmi dà.
 - Ci sono più idee di equità, tutte ragionevoli: stessa quota di sì per tutti;
   stessi errori per tutti; stesso significato del punteggio, che non è un voto
   ma una previsione di probabilità; e che quando il modello dice sì ci prenda
   ugualmente spesso in ogni gruppo. Quando l'esito è più frequente in un gruppo
-  che nell'altro, **non si possono avere tutte insieme**, e il muro è preciso:
+  che nell'altro, non si possono avere tutte insieme, e il muro è preciso:
   fra l'affidabilità del sì, il tasso di falsi allarmi e la quota di persone
-  che sfuggono se ne comprano **due alla volta**, mai tre.
+  che sfuggono se ne comprano due alla volta, mai tre.
 - Il conto che lo mostra si fa a mano, ed è quello dei due gruppi da cento e
   duecento persone. Se pretendi di prendere la stessa quota di persone a cui
   l'esito è poi capitato *e* di avere la stessa affidabilità quando dici sì, i
-  falsi allarmi ti vengono **15 in tutti e due i gruppi**: stesso numero, ma da
+  falsi allarmi ti vengono 15 in tutti e due i gruppi: stesso numero, ma da
   una parte sono 15 innocenti su 50 e dall'altra 15 su 150. Il *tasso* di falsi
   allarmi è tre volte più alto, e non l'hai scelto tu.
-- E quella frequenza è un numero **misurato** da qualcuno, non un dato di
+- E quella frequenza è un numero misurato da qualcuno, non un dato di
   natura: se è la frequenza degli arresti invece che dei reati, il conto che ti
   costringe a scegliere è stato fatto su una misura storta.
-- Si può **attenuare**, non risolvere, e si può farlo in tre momenti: prima
+- Si può attenuare, non risolvere, e si può farlo in tre momenti: prima
   della gara (sistemando i dati), durante (cambiando le regole
   dell'addestramento) o dopo (usando una soglia diversa per gruppo).
-- Quale garanzia pretendere è una **decisione** e non un calcolo, e va presa
+- Quale garanzia pretendere è una decisione e non un calcolo, e va presa
   alla luce del sole.
 ```
 
@@ -897,36 +897,36 @@ privacy e la robustezza dei modelli; e chi vuole lo strumento che rende queste s
 
 ```{admonition} Da ricordare
 :class: important
-- Il bias non nasce nel codice ma **a monte**, nei dati: passato iniquo,
+- Il bias non nasce nel codice ma a monte, nei dati: passato iniquo,
   campione non rappresentativo, etichette-proxy distorte e *feedback loop* che
   si auto-conferma. *Bias in, bias out* {cite}`mehrabi2021survey`.
-- L'equità di gruppo si misura riusando la **matrice di confusione** del capitolo
-  di Machine Learning, ma *separatamente per gruppo*. Tre criteri: **parità
-  demografica** (stessa quota di sì), **equalized odds** (stessi TPR e FPR)
-  {cite}`hardt2016equality`, **calibrazione** (stesso significato del punteggio,
+- L'equità di gruppo si misura riusando la matrice di confusione del capitolo
+  di Machine Learning, ma *separatamente per gruppo*. Tre criteri: parità
+  demografica (stessa quota di sì), equalized odds (stessi TPR e FPR)
+  {cite}`hardt2016equality`, calibrazione (stesso significato del punteggio,
   proprietà di $S$ e non di $\hat{Y}$).
-- **Tre risultati di impossibilità distinti**, da non confondere:
-  Chouldechova {cite}`chouldechova2017fair`, parità del **valore predittivo**
+- Tre risultati di impossibilità distinti, da non confondere:
+  Chouldechova {cite}`chouldechova2017fair`, parità del valore predittivo
   più i due tassi d'errore, due su tre; Kleinberg, Mullainathan e Raghavan
-  {cite}`kleinberg2017inherent`, calibrazione più i due **bilanciamenti di
-  classe** (punteggi medi, non tassi); Pleiss e colleghi
-  {cite}`pleiss2017fairness`, calibrazione più equalized odds, ma con **un solo
-  vincolo d'errore alla volta** e sotto l'ipotesi che il classificatore di cui si
-  pareggiano gli errori sia **esso stesso calibrato**. È il nodo del caso COMPAS
+  {cite}`kleinberg2017inherent`, calibrazione più i due bilanciamenti di
+  classe (punteggi medi, non tassi); Pleiss e colleghi
+  {cite}`pleiss2017fairness`, calibrazione più equalized odds, ma con un solo
+  vincolo d'errore alla volta e sotto l'ipotesi che il classificatore di cui si
+  pareggiano gli errori sia esso stesso calibrato. È il nodo del caso COMPAS
   {cite}`angwin2016machine`, dove ProPublica e Northpointe
   {cite}`dieterich2016compas` avevano ragione entrambe.
-- I **tassi di base** che accendono il conflitto sono grandezze *misurate*: su
+- I tassi di base che accendono il conflitto sono grandezze *misurate*: su
   COMPAS sono riarresti, non reati, e il bias di misura le tocca
   {cite}`fogliato2020fairness`. Il teorema resta vero; quel che non è dato è
   che le sue premesse siano neutrali.
-- Si può **attenuare**, non risolvere, intervenendo in pre-processing
+- Si può attenuare, non risolvere, intervenendo in pre-processing
   (riequilibrio dei dati), in-processing (vincoli/regolarizzazione di equità) o
   post-processing (soglie per gruppo: raggiungono l'equalized odds lasciando
   intatta la calibrazione, al prezzo di separare il VPP).
-- L’**equità individuale** {cite}`dwork2012fairness` chiede esiti simili per
+- L’equità individuale {cite}`dwork2012fairness` chiede esiti simili per
   individui simili, ma sposta la difficoltà sul definire «simile».
 - Nessuna metrica è «quella giusta»: scegliere il criterio di equità è una
-  **decisione di valore**, non un calcolo.
+  decisione di valore, non un calcolo.
 ```
 
 `````

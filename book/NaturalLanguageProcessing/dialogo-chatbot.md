@@ -16,7 +16,7 @@ erano cose private.
 
 Sessant'anni dopo, milioni di persone conversano ogni giorno con delle
 macchine. In quest'ultima sezione mettiamo insieme gli attrezzi del capitolo e
-li puntiamo sul compito più antico e ambizioso dell'NLP, il **dialogo**.
+li puntiamo sul compito più antico e ambizioso dell'NLP, il dialogo.
 Vedremo perché una conversazione è più di una fila di frasi, come sono fatte
 le tre famiglie di sistemi di dialogo, come si dà loro un voto, e perché la
 storia della segretaria non è un aneddoto d'epoca ma una questione ancora
@@ -119,7 +119,7 @@ la politica di conferma è una scelta di progetto.
 (quantità, qualità, relazione, modo) da cui i parlanti derivano i sottintesi:
 «Quanti siete?» «Quattro» funziona perché la risposta dà esattamente
 l'informazione richiesta. E i legami anaforici («ne», «lo») attraversano i
-turni: risolverli richiede uno **stato del dialogo** (entità menzionate,
+turni: risolverli richiede uno stato del dialogo (entità menzionate,
 impegni presi, dati accettati). Conclusione operativa: un interlocutore non è
 una funzione ultima-frase → risposta, ma una macchina con memoria.
 
@@ -135,8 +135,8 @@ storica: tutte e tre sono vive, spesso dentro lo stesso prodotto.
 ### Lo specchio di regole: dentro ELIZA
 
 Della prima famiglia conosciamo già il capostipite. Nella sezione sulla
-cassetta degli attrezzi abbiamo aperto il cofano di ELIZA e trovato **pattern
-matching**: lo schema «mi sento X» agganciato e rigirato in «Da quanto tempo
+cassetta degli attrezzi abbiamo aperto il cofano di ELIZA e trovato pattern
+matching: lo schema «mi sento X» agganciato e rigirato in «Da quanto tempo
 ti senti X?». ELIZA era in realtà un impianto a copioni intercambiabili, e il
 copione celebre (DOCTOR) imitava uno psicoterapeuta di scuola rogersiana,
 quella che invece di dare consigli rimanda al paziente le sue stesse parole.
@@ -148,7 +148,8 @@ i due programmi furono perfino messi a conversare fra loro attraverso ARPANET,
 la rete di calcolatori americana da cui sarebbe nata internet.)
 
 È il programma più istruttivo del capitolo, e bastano le espressioni regolari
-della prima sezione e una tabellina di sostituzioni. Ecco una mini-ELIZA italiana:
+della prima sezione e una tabellina di sostituzioni. Ecco una mini-ELIZA
+italiana:
 
 ```python
 import re
@@ -262,24 +263,24 @@ chiamate) e cadono nel vuoto un millimetro fuori.
 
 `````{tab} Superiore
 
-Un **frame** è una struttura dati con **slot** tipizzati; a ogni slot sono
+Un frame è una struttura dati con **slot** tipizzati; a ogni slot sono
 associati una domanda per elicitarlo e vincoli sul valore (LUOGO: città; DATA:
 anche relativa, «domani»; PERSONE: intero). Il dialogo è governato dal
 riempimento: domande per gli slot vuoti, riempimenti multipli in un turno,
 anche fuori ordine (*iniziativa mista*), azione a modulo completo. GUS gestiva
 già date relative, ellissi e semplici anafore: nel 1977.
 
-L'erede moderno è l'architettura a **stato di dialogo**, una catena di
+L'erede moderno è l'architettura a stato di dialogo, una catena di
 componenti costruita in gran parte con gli attrezzi del capitolo:
 
-1. **NLU**: classificazione dell’**intento** (un classificatore di testo come
+1. NLU: classificazione dell’**intento** (un classificatore di testo come
    quelli visti per il sentiment) e **slot filling**, cioè etichettatura di
    sequenze con schema BIO, identica al NER: in «che tempo fa domani a Roma»,
    *domani* → `B-DATA`, *Roma* → `B-LUOGO`, intento = `previsioni_meteo`.
-2. **Tracker dello stato**: accumula gli slot riempiti e confermati (la
+2. Tracker dello stato: accumula gli slot riempiti e confermati (la
    memoria della partita).
-3. **Policy**: decide la mossa (chiedere, confermare, eseguire).
-4. **NLG**: genera la risposta, spesso ancora per *template* riempiti con i
+3. Policy: decide la mossa (chiedere, confermare, eseguire).
+4. NLG: genera la risposta, spesso ancora per *template* riempiti con i
    valori degli slot.
 
 I punti di forza spiegano la longevità: comportamento controllabile (nessuna
@@ -341,7 +342,7 @@ su corpora web {cite}`brown2020language`) ma soprattutto con il
 modella $P(\text{continuazione} \mid \text{prefisso})$, non «rispondi in modo
 utile e onesto». La ricetta è in due tempi {cite}`ouyang2022training`:
 **instruction tuning** (fine-tuning supervisionato su coppie richiesta → buona
-risposta scritte da persone) e **RLHF** (*reinforcement learning from human
+risposta scritte da persone) e RLHF (*reinforcement learning from human
 feedback*), dove un modello di ricompensa addestrato sulle preferenze umane
 guida l'ottimizzazione della generazione. È questo passaggio a trasformare un
 modello di linguaggio in un interlocutore; i dettagli (e i limiti, a partire
@@ -408,7 +409,7 @@ giudizi umani, proprio per la molteplicità delle risposte valide (Liu et al.,
 motivo si legge nella definizione stessa: BLEU conta $n$-grammi condivisi con
 il riferimento, e due risposte ottime alla stessa domanda possono non
 condividerne nemmeno uno. La perplessità misura la fluidità, non la qualità del
-dialogo. Restano i **giudizi umani**, per dimensioni separate (coerenza,
+dialogo. Restano i giudizi umani, per dimensioni separate (coerenza,
 specificità, correttezza fattuale, interesse) o per confronto a coppie; di
 recente si usano anche LLM come giudici, pratica economica ma con bias
 documentati (come la preferenza per le risposte lunghe) che impone cautela.
@@ -457,7 +458,7 @@ cosa *dobbiamo* affidare loro.
 Cinquant'anni dopo, la questione si è fatta concreta su tre fronti, e merita
 un tono sobrio: né allarme, né alzata di spalle.
 
-- **Antropomorfizzazione**, cioè la nostra abitudine ad attribuire qualità
+- Antropomorfizzazione, cioè la nostra abitudine ad attribuire qualità
   umane a ciò che umano non è, dal cane di casa alla macchina che «non vuole
   partire». I sistemi attuali sono incomparabilmente più fluenti di ELIZA, e la
   fluidità amplifica l'effetto: scambiare la forma del linguaggio per
@@ -469,12 +470,12 @@ un tono sobrio: né allarme, né alzata di spalle.
   chatbot dice «io», ha un nome proprio e fa finta di esitare come farebbe una
   persona, quel riflesso non lo subisce: lo asseconda, per scelta di chi
   l'ha costruito.
-- **Privacy.** Chi protestò per i registri di ELIZA era in anticipo di
+- Privacy. Chi protestò per i registri di ELIZA era in anticipo di
   sessant'anni. A un interlocutore che non giudica si confidano cose che non
   si scrivono in un modulo: oggi quelle conversazioni sono dati, che possono
   essere conservati, riletti, usati per addestrare altri modelli. Riservatezza
   percepita e riservatezza effettiva raramente coincidono.
-- **Dipendenza emotiva.** Esistono applicazioni progettate per la compagnia,
+- Dipendenza emotiva. Esistono applicazioni progettate per la compagnia,
   con milioni di utenti. Un interlocutore disponibile a ogni ora, mai stanco,
   mai in disaccordo, può essere un sollievo reale nella solitudine, e insieme
   un allenamento ingannevole, perché una relazione senza attriti né bisogni
@@ -495,32 +496,32 @@ scrivere: come conteggi in un sacchetto, come punti su una mappa di
 significati, come riassunto che scorre dentro una rete che legge in fila.
 L'ultimo passo, l'architettura che ha mandato in pensione quella lettura in
 fila e ha reso possibili gli interlocutori artificiali di oggi, merita un
-capitolo intero, ed è quello sui **Transformer**.
+capitolo intero, ed è quello sui Transformer.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
 - Una conversazione non è una fila di frasi. Ci si dà il turno senza
-  accavallarsi; si **fanno cose** con le parole («sai l'ora?» non è una domanda
+  accavallarsi; si fanno cose con le parole («sai l'ora?» non è una domanda
   a cui rispondere sì); ci si conferma di continuo che si sta seguendo (il
   «mh-mh» del ristoratore, e la ricevuta riletta ad alta voce); e le parole
   piccole («ne», «lo») pescano il senso nelle battute già dette. Per dialogare
   non basta capire l'ultima frase: bisogna ricordare la partita.
-- Tre famiglie di interlocutori artificiali, tutte e tre ancora vive. **A
-  regole**, come ELIZA: aggancia uno schema nelle tue parole e te le rigira,
-  nessuna memoria, nessun mondo. **A moduli**, come lo sportello che riempie le
+- Tre famiglie di interlocutori artificiali, tutte e tre ancora vive. A
+  regole, come ELIZA: aggancia uno schema nelle tue parole e te le rigira,
+  nessuna memoria, nessun mondo. A moduli, come lo sportello che riempie le
   caselle di un formulario facendo domande solo per quelle vuote: è ancora
   l'ossatura degli assistenti vocali, bravissimi dentro il modulo e nel vuoto
-  un millimetro fuori. **Generativi**, che scrivono la risposta parola per
+  un millimetro fuori. Generativi, che scrivono la risposta parola per
   parola dopo aver letto milioni di dialoghi.
 - Chi impara a *continuare* i testi non sa ancora *rispondere*: serve una
   seconda scuola, fatta di esempi di buone risposte e di giudizi umani, ed è la
   storia del {doc}`capitolo sui Transformer </Transformers/overview>`.
-- **Il dettato e il tema**: un sistema a moduli si corregge come un dettato (la
+- Il dettato e il tema: un sistema a moduli si corregge come un dettato (la
   prenotazione è andata a buon fine, sì o no?), un chatbot aperto come un tema,
   e per il tema serve un giudice che legga. Costoso e un po’ soggettivo, ma non
   c'è di meglio per una cosa fatta per gli umani.
-- L’**effetto ELIZA**: attribuiamo comprensione a qualunque cosa parli la
+- L’effetto ELIZA: attribuiamo comprensione a qualunque cosa parli la
   nostra lingua, ed è un riflesso, non ingenuità. È il monito di Weizenbaum, ed
   è più attuale del suo programma: sapere che dall'altra parte non c'è nessuno,
   per quanto forte sia l'impressione contraria.
@@ -530,24 +531,25 @@ capitolo intero, ed è quello sui **Transformer**.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Una conversazione non è una fila di frasi: **turni**, **atti linguistici**
-  (dire è fare: «sai l'ora?» non chiede un sì/no), **grounding** (i segnali
-  di conferma reciproca) e **sottintesi** anaforici richiedono uno *stato del
+- Una conversazione non è una fila di frasi: turni, atti linguistici
+  (dire è fare: «sai l'ora?» non chiede un sì/no), grounding (i segnali
+  di conferma reciproca) e sottintesi anaforici richiedono uno *stato del
   dialogo*, una memoria della partita.
-- Tre famiglie: sistemi **a regole** (ELIZA {cite}`weizenbaum1966eliza`:
-  espressioni regolari e riflessione dei pronomi, nessuno stato), **a frame**
+- Tre famiglie: sistemi a regole (ELIZA {cite}`weizenbaum1966eliza`:
+  espressioni regolari e riflessione dei pronomi, nessuno stato), a frame
   (GUS {cite}`bobrow1977gus`: slot da riempire con domande mirate; ancora
-  l'ossatura degli assistenti vocali), **generativi** (dal seq2seq agli LLM).
+  l'ossatura degli assistenti vocali), generativi (dal seq2seq agli LLM).
 - Un modello di linguaggio impara a *continuare* i testi; a *rispondere* lo
-  si insegna col **post-training** (instruction tuning e RLHF
-  {cite}`ouyang2022training`), sviluppato nel {doc}`capitolo sui Transformer </Transformers/overview>`.
+  si insegna col post-training (instruction tuning e RLHF
+  {cite}`ouyang2022training`), sviluppato nel {doc}`capitolo sui Transformer
+  </Transformers/overview>`.
 - Valutare il dialogo è difficile perché non esiste *la* risposta giusta:
-  successo del compito per i sistemi a frame, **giudizi umani** per i chatbot
+  successo del compito per i sistemi a frame, giudizi umani per i chatbot
   aperti. Le metriche di sovrapposizione (BLEU {cite}`papineni2002bleu`) non
   reggono, perché due risposte ottime possono non condividere un $n$-gramma;
   il test di Turing {cite}`turing1950computing` è una cornice
   storica, non una metrica.
-- L’**effetto ELIZA** (attribuire comprensione a ciò che parla) è il riflesso
+- L’effetto ELIZA (attribuire comprensione a ciò che parla) è il riflesso
   su cui i chatbot fanno leva, volenti o nolenti: il monito di Weizenbaum
   {cite}`weizenbaum1976computer` su antropomorfizzazione, privacy e deleghe da
   non dare è più attuale del suo programma.
@@ -557,6 +559,6 @@ capitolo intero, ed è quello sui **Transformer**.
 Quello che resta in mano, arrivati qui, è un catalogo di problemi più che di
 modelli. Dove si taglia un testo, come una parola diventa numeri,
 come si giudica una macchina che parla quando la risposta giusta non è una
-sola. Il capitolo sui **Transformer** eredita quelle domande per intero: a
+sola. Il capitolo sui Transformer eredita quelle domande per intero: a
 cambiare è la macchina che prova a rispondere, non le domande, e chi le ha
 lette qui riconoscerà là dentro i problemi di sempre sotto nomi nuovi.

@@ -5,8 +5,8 @@ arriva in un istante. Eppure fra qui e là ci sono milioni di incroci, e le
 strade che li collegano sono ancora di più: se il telefono le provasse tutte,
 non finirebbe entro sera.
 
-Non le prova tutte, e non perché sia veloce: perché **guarda quasi solo nella
-direzione giusta**. Questa sezione racconta come si fa, e la racconta partendo
+Non le prova tutte, e non perché sia veloce: perché guarda quasi solo nella
+direzione giusta. Questa sezione racconta come si fa, e la racconta partendo
 dal caso in cui nessuno rema contro, cioè da un mondo che non ha avversari e
 in cui l’unica difficoltà è la dimensione. L’avversario arriva nella sezione
 dopo, e cambia le regole.
@@ -22,15 +22,15 @@ cui si aprono i rami.
 
 Sei in un labirinto e cerchi l’uscita. Hai due strategie, e sono opposte.
 
-**In ampiezza**: allaghi. È come se l’acqua entrasse da dove sei e avanzasse di
+In ampiezza: allaghi. È come se l’acqua entrasse da dove sei e avanzasse di
 un metro alla volta in tutti i corridoi insieme: fai un passo in ogni
 corridoio, poi torni indietro e fai il secondo passo in ogni corridoio, poi il
 terzo. Il vantaggio è enorme: quando l’acqua tocca l’uscita, sei sicuro che
-quella è la strada **più corta**, perché niente ha potuto arrivarci prima. Lo
+quella è la strada più corta, perché niente ha potuto arrivarci prima. Lo
 svantaggio pure: per allagare devi ricordarti tutti i punti bagnati, e sono
 tantissimi.
 
-**In profondità**: scegli un corridoio e lo segui fino in fondo; se finisce nel
+In profondità: scegli un corridoio e lo segui fino in fondo; se finisce nel
 muro torni all’ultimo bivio e prendi l’altro. È come tenere un filo srotolato
 dietro di sé: non devi ricordarti tutti i punti dove sei stato, solo il filo
 che hai alle spalle, e un filo lungo quanto sei sceso in profondità costa
@@ -115,7 +115,7 @@ che gli stanno accanto. I modi di disporre nove cose in nove caselle sono
 $9! = 362\,880$ (il punto esclamativo si legge «fattoriale» e vuol dire
 $9 \times 8 \times 7 \times \ldots \times 1$: nove scelte per la prima casella,
 otto per la seconda, e così via). Di quelle disposizioni, però, solo la metà si
-può raggiungere facendo scorrere le tessere: **181.440**. La ragione è graziosa
+può raggiungere facendo scorrere le tessere: 181.440. La ragione è graziosa
 e si controlla su un foglio. Ogni mossa scambia il buco con una tessera, cioè
 scambia due cose fra loro, e a ogni scambio una proprietà della disposizione
 che i matematici chiamano parità si inverte, come un interruttore: pari,
@@ -133,7 +133,7 @@ Il programma del rompicapo lo esplora aprendo gli stati uno alla volta:
 «aprire» uno stato vuol dire guardare quali mosse ci sono e generare le
 situazioni che ne escono. Sceglie ogni volta lo stato che gli sembra più
 promettente, cioè quello per cui è più piccola la somma fra i passi già fatti e
-una **stima** di quelli che restano. La stima, per adesso, è messa a zero: è
+una stima di quelli che restano. La stima, per adesso, è messa a zero: è
 come dire che non abbiamo nessun fiuto, e il programma è costretto a guardarsi
 intorno in tutte le direzioni allo stesso modo. Che cosa succeda quando un
 fiuto ce l’ha è il resto della sezione.
@@ -197,7 +197,7 @@ paga carissimo il non sapere dove sta andando.
 ## La stima di quanto manca
 
 L’unica cosa che cambia le proporzioni è dare alla ricerca un fiuto, cioè un
-modo di indovinare, guardando uno stato, **quanto lavoro resta** da lì alla
+modo di indovinare, guardando uno stato, quanto lavoro resta da lì alla
 fine.
 
 Quel fiuto ha un nome, e da qui in avanti il capitolo lo userà sempre: si
@@ -220,7 +220,7 @@ torre dall’altra parte, e le altre strade le hai lasciate al primo bivio.
 
 Allora tiri fuori un foglio e tieni aperte più strade insieme. Accanto a ogni
 punto raggiunto scrivi i passi che ti è costato arrivarci e i metri che restano
-in linea d’aria. Poi allunghi di un passo la strada con la **somma** più
+in linea d’aria. Poi allunghi di un passo la strada con la somma più
 piccola, e solo quella.
 
 La somma, non uno dei due numeri. Coi soli passi fatti ti allargheresti in
@@ -246,7 +246,7 @@ venti chilometri: torni indietro appena la somma lo supera, e se la casa non
 salta fuori alzi il tetto e riparti da capo. La strada che trovi resta la più
 corta.
 
-Quei metri in linea d’aria sono la **stima**, e non sono mai più dei metri
+Quei metri in linea d’aria sono la stima, e non sono mai più dei metri
 veri. Le strade girano, la linea d’aria no, e non capita che dica «due
 chilometri» dove la strada ne fa uno e mezzo.
 
@@ -260,7 +260,7 @@ eccesso costa la strada giusta.
 
 `````{tab} Superiore
 
-Si introduce una funzione $h(n) \ge 0$, l’**euristica**, che stima il costo del
+Si introduce una funzione $h(n) \ge 0$, l’euristica, che stima il costo del
 cammino ottimo da $n$ alla meta, e si combina con il costo già pagato $g(n)$:
 
 $$
@@ -269,12 +269,12 @@ $$
 
 dove $g(n)$ è il costo del cammino trovato finora dalla partenza a $n$ e $f(n)$
 è quindi la stima del costo totale del miglior cammino che passa per $n$.
-Espandere sempre il nodo con $f$ minimo è l’algoritmo **A\***, di Hart, Nilsson
+Espandere sempre il nodo con $f$ minimo è l’algoritmo A\*, di Hart, Nilsson
 e Raphael {cite}`hart1968formal`. Con $h \equiv 0$ si riduce alla ricerca a
 costo uniforme, cioè al caso con la stima a zero.
 
 Il prezzo, che la tabella di ampiezza e profondità non dice, è scomodo: A\*
-**tiene in memoria tutti i nodi generati**, esattamente come la ricerca in
+tiene in memoria tutti i nodi generati, esattamente come la ricerca in
 ampiezza. Riduce enormemente quanti ne genera, e questo è tutto il guadagno, ma
 la memoria resta il vincolo che morde per primo. Sul rompicapo delle otto
 tessere non si vede; su quello delle quindici, che di posizioni ne ha diecimila
@@ -285,18 +285,18 @@ corrente a trovare, dentro limiti di tempo e di memoria praticabili, soluzioni
 ottime di istanze del quindici generate a caso, con una memoria che cresce come
 la profondità e non come il numero di nodi.
 
-La proprietà che serve a $h$ ha un nome: è **ammissibile** se non sovrastima
+La proprietà che serve a $h$ ha un nome: è ammissibile se non sovrastima
 mai, cioè se $h(n) \le h^*(n)$ per ogni $n$, dove $h^*(n)$ è il costo vero del
 cammino ottimo da $n$ alla meta. Un’euristica ammissibile è, in altre parole,
-**ottimista**. E con un’euristica ammissibile A\* restituisce una soluzione di
+ottimista. E con un’euristica ammissibile A\* restituisce una soluzione di
 costo minimo.
 
 La ragione, in poche righe e per un grafo a costi non negativi, con due
 dettagli che sembrano formalità e non lo sono. A\* dichiara di aver finito
-quando **estrae** dalla frontiera uno stato finale, non quando lo genera: se
+quando estrae dalla frontiera uno stato finale, non quando lo genera: se
 bastasse generarlo, restituirebbe la prima soluzione che incontra, che non è la
 più corta. Detto questo, supponiamo che stia per restituire una soluzione
-peggiore di quella ottima. Sulla frontiera ci sarebbe allora il **primo** nodo
+peggiore di quella ottima. Sulla frontiera ci sarebbe allora il primo nodo
 $n$ non ancora espanso lungo il cammino ottimo; il suo predecessore lungo quel
 cammino è già stato espanso, e lo ha generato con $g(n) = g^*(n)$, cioè col
 costo giusto. Per quel nodo vale quindi $f(n) = g^*(n) + h(n) \le g^*(n) +
@@ -306,11 +306,11 @@ avrebbe estratto $n$ prima, perché estrae sempre il minimo. È la contraddizion
 che dimostra il risultato.
 
 Il «primo non ancora espanso» porta tutto il peso dell’argomento: appartenere
-al cammino ottimo non basta, bisogna esserci **arrivati lungo di esso**, e solo
+al cammino ottimo non basta, bisogna esserci arrivati lungo di esso, e solo
 per il primo dei non espansi questo è garantito dal predecessore.
 
 L’argomento ha però una condizione che resta implicita, ed è il punto in cui si
-sbaglia: presuppone di poter **tornare su uno stato già aperto** se salta fuori
+sbaglia: presuppone di poter tornare su uno stato già aperto se salta fuori
 una strada più corta per arrivarci. Il programma del rompicapo lo fa (è la riga
 che riscrive `costo[t]` e rimette lo stato in coda); una versione che
 marchiasse gli stati come «fatti» e non ci tornasse più potrebbe, con
@@ -326,14 +326,14 @@ h(n) \le c(n, a, n') + h(n'),
 $$
 
 che è una disuguaglianza triangolare: la stima da qui non può superare il costo
-di un passo più la stima da lì. Ogni euristica consistente **che valga zero
-sugli stati finali** è anche ammissibile, e non viceversa; la condizione sugli
+di un passo più la stima da lì. Ogni euristica consistente che valga zero
+sugli stati finali è anche ammissibile, e non viceversa; la condizione sugli
 stati finali serve davvero, perché $h \equiv 5$ soddisfa la disuguaglianza
 triangolare su qualunque grafo a costi non negativi e ammissibile non è.
 
 In cambio la consistenza dà una cosa pratica, ed è esattamente quella che manca
 sopra: i valori di $f$ non diminuiscono mai lungo un cammino, quindi la prima
-volta che uno stato viene **estratto dalla frontiera** ci si sta arrivando in
+volta che uno stato viene estratto dalla frontiera ci si sta arrivando in
 modo ottimo, e allora marcarlo come fatto e non tornarci più è lecito. La
 parola esatta è **estratto**, non raggiunto. Uno stato si può *generare* per
 una strada pessima molto prima di generarlo per quella buona (succede anche con
@@ -362,7 +362,7 @@ Le due euristiche classiche per il rompicapo delle otto tessere non sono
 inventate a caso, e conviene vedere da dove escono, perché è il modo
 principale in cui si inventa un’euristica.
 
-Si prende il problema e gli si **tolgono delle regole**. Nel rompicapo vero una
+Si prende il problema e gli si tolgono delle regole. Nel rompicapo vero una
 tessera si può spostare solo in una casella adiacente e solo se quella casella
 è vuota. Se si cancella la seconda regola, una tessera può andare in qualunque
 casella adiacente, e il costo per rimettere tutto a posto è la somma di quanto
@@ -371,11 +371,11 @@ verticale: si chiama **distanza a isolati**, e nei testi si trova più spesso
 col nome inglese di **distanza di Manhattan**, che è la stessa cosa, perché è
 il modo in cui si contano i metri in una città a scacchiera, dove non si taglia
 in diagonale. Se si cancellano tutt’e due, una tessera vola dove vuole in una
-mossa, e il costo è semplicemente quante **tessere sono fuori posto**. Sono i
+mossa, e il costo è semplicemente quante tessere sono fuori posto. Sono i
 due nomi che il programma mette a confronto.
 
-E qui c’è la garanzia, che è quasi troppo bella: **il costo esatto di un
-problema con meno regole non può mai superare quello del problema vero**,
+E qui c’è la garanzia, che è quasi troppo bella: il costo esatto di un
+problema con meno regole non può mai superare quello del problema vero,
 perché tutto quello che si poteva fare prima si può fare ancora, e magari
 qualcosa in più. Quindi un problema alleggerito, risolto esattamente, dà
 sempre un numero che sta sotto (o al più pari) a quello vero: è cioè
@@ -411,16 +411,16 @@ tessere fuori posto    20 mosse,  3666 stati guardati   ( 13.2 volte meno)
 distanza a isolati     20 mosse,   282 stati guardati   (171.6 volte meno)
 ```
 
-Tre misure che dicono tutta la sezione. **La risposta non cambia**: venti mosse
+Tre misure che dicono tutta la sezione. La risposta non cambia: venti mosse
 in tutti e tre i casi, perché tutte e tre le stime sono ottimiste e quindi
 nessuna fa sbagliare strada. Cambia solo quanto si guarda: quarantottomila
 stati senza stima, tremilaseicento con quella grossolana, duecentottantadue con
 quella più fine.
 
-Quello che quei numeri non dicono è **dove** siano finite le posizioni
+Quello che quei numeri non dicono è dove siano finite le posizioni
 guardate, ed è la parte che spiega il resto. Si può disegnare: ogni posizione
 aperta si mette su un piano, in orizzontale i passi già fatti per arrivarci e
-in verticale **la stima** di quanti ne mancano ({numref}`fig-frontiera`). In
+in verticale la stima di quanti ne mancano ({numref}`fig-frontiera`). In
 verticale c’è la stima e non la distanza vera, e la differenza conta: quello
 che il disegno mostra è che con il fiuto la ricerca non apre mai una posizione
 per cui la somma dei due numeri superi il costo della soluzione. Il piano è lo
@@ -448,7 +448,7 @@ passi fatti, quindi non c’è nessuna riga da non superare, e ogni posizione va
 quanto un’altra alla stessa distanza dalla partenza.
 
 E il confronto fra le due stime ha una regola sola, che si legge nella loro
-definizione: contare i passi è **sempre almeno quanto** contare le tessere
+definizione: contare i passi è sempre almeno quanto contare le tessere
 fuori posto, perché una tessera fuori posto dista almeno un passo. E chi apre
 di meno, fra le due, è chi stima di più: gli stati che si è costretti ad aprire
 sono quelli per cui i passi fatti più la stima stanno sotto il costo della
@@ -459,7 +459,7 @@ euristica vuol dire cercare la stima più alta che non superi mai il vero.
 
 ```{admonition} Da ricordare
 :class: important
-- Cercare **a tentoni** si può fare in due modi: allagando il labirinto un
+- Cercare a tentoni si può fare in due modi: allagando il labirinto un
   metro alla volta (si trova la strada più corta, e si consuma una memoria
   enorme) oppure seguendo un corridoio fino in fondo con un filo dietro (il
   filo costa pochissimo, la strada trovata può essere assurda, e dove i
@@ -471,13 +471,13 @@ euristica vuol dire cercare la stima più alta che non superi mai il vero.
   del filo e la garanzia dell’acqua.
 - Il difetto vero del cercare a tentoni è che si cerca dappertutto con lo
   stesso impegno, anche dalla parte sbagliata, e non la memoria.
-- La cosa che cambia le proporzioni è una **stima di quanto manca**: la
+- La cosa che cambia le proporzioni è una stima di quanto manca: la
   distanza in linea d’aria dalla torre vicino a casa dell’amico. Non dice
   quale strada prendere, dice solo da che parte guardare per primo.
-- La stima deve **stare sotto** al vero, mai sopra. Se sbaglia per difetto si
+- La stima deve stare sotto al vero, mai sopra. Se sbaglia per difetto si
   guarda qualcosa di troppo; se sbaglia per eccesso si scarta la strada buona
   e si arriva più lunghi, senza nemmeno accorgersene.
-- Una stima si inventa **togliendo regole al problema**: risolto esattamente,
+- Una stima si inventa togliendo regole al problema: risolto esattamente,
   un problema con meno regole non può mai costare più di quello vero (al
   massimo costa uguale), quindi la sua soluzione è automaticamente una stima
   che non esagera.
@@ -494,23 +494,23 @@ euristica vuol dire cercare la stima più alta che non superi mai il vero.
 :class: important
 - Ampiezza e profondità differiscono per la disciplina della frontiera (coda o
   pila). L’ampiezza è completa e ottima a costi uniformi ma costa $O(b^d)$ di
-  **memoria**, che è il vincolo che morde per primo; la profondità costa
-  $O(bm)$ ma non è né completa né ottima. L’**approfondimento iterativo** le
+  memoria, che è il vincolo che morde per primo; la profondità costa
+  $O(bm)$ ma non è né completa né ottima. L’approfondimento iterativo le
   unisce pagando solo un fattore $b/(b-1)$ di lavoro in più.
-- **A\*** {cite}`hart1968formal` espande il nodo di $f(n) = g(n) + h(n)$
-  minimo. Con $h$ **ammissibile** ($h \le h^*$, cioè ottimista) restituisce una
-  soluzione di costo minimo; con $h$ **consistente**
+- A\* {cite}`hart1968formal` espande il nodo di $f(n) = g(n) + h(n)$
+  minimo. Con $h$ ammissibile ($h \le h^*$, cioè ottimista) restituisce una
+  soluzione di costo minimo; con $h$ consistente
   ($h(n) \le c(n,a,n') + h(n')$, disuguaglianza triangolare) i valori di $f$
-  non decrescono lungo un cammino e ogni stato viene **estratto** dalla
+  non decrescono lungo un cammino e ogni stato viene estratto dalla
   frontiera in modo ottimo la prima volta (estratto, non generato: per una
   strada pessima lo si genera anche molto prima).
-- Le euristiche ammissibili si costruiscono **rilassando** il problema: il
+- Le euristiche ammissibili si costruiscono rilassando il problema: il
   costo esatto di un problema con vincoli in meno è un limite inferiore a
   quello del problema vero, quindi è ammissibile per costruzione. Le due del
   rompicapo (tessere fuori posto, distanza a isolati) sono i rilassamenti che
   cancellano rispettivamente due vincoli e uno.
-- Fra due euristiche **consistenti**, quella con valori sempre maggiori
-  **domina** l’altra, e A\* con la dominante non espande mai più nodi
+- Fra due euristiche consistenti, quella con valori sempre maggiori
+  domina l’altra, e A\* con la dominante non espande mai più nodi
   dell’altra (con l’eccezione dei nodi a $f = C^*$, dove decide il criterio con
   cui si rompono i pari). L’ipotesi è la consistenza e non la sola
   ammissibilità, perché la dimostrazione passa per «ogni nodo con

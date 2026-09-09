@@ -3,7 +3,7 @@
 Il sorpasso sulle GAN del 2021 lo firmano Prafulla Dhariwal e Alex Nichol
 {cite}`dhariwal2021diffusion`, e lo devono per metà a un'architettura migliore
 e per metà a un'aggiunta che, a leggerla, sembra un espediente: si addestra un
-classificatore a riconoscere le categorie **su immagini rumorose**, e durante
+classificatore a riconoscere le categorie su immagini rumorose, e durante
 la generazione si spinge l'immagine, a ogni passo, nella direzione che al
 classificatore piace di più.
 
@@ -25,9 +25,9 @@ Quello che manca è una seconda bussola, che indichi la direzione verso ciò che
 si è chiesto.
 
 Il conto che le mette insieme è quello che si fa ogni volta che si aggiorna
-un'opinione con un indizio, e sta in una riga: **la direzione verso «immagini
+un'opinione con un indizio, e sta in una riga: la direzione verso «immagini
 credibili che contengono un gatto» è la direzione verso «immagini credibili»
-più la direzione verso «cose che a un riconoscitore di gatti sembrano gatti»**.
+più la direzione verso «cose che a un riconoscitore di gatti sembrano gatti».
 Due bussole che si sommano, e la somma è la strada.
 
 Da qui le due ricette. La prima, quella del 2021, prende la seconda bussola da
@@ -48,7 +48,7 @@ togliere.
 Resta però un punto che quel racconto lascia in ombra. La riga di Bayes dice
 di sommare le due bussole così come sono, senza moltiplicare la seconda per
 niente; nella pratica la si moltiplica per sette, o per dieci. Quel numero si
-chiama la **forza della guida**, il conto non lo prevede, ed è stato aggiunto
+chiama la forza della guida, il conto non lo prevede, ed è stato aggiunto
 perché funziona. Quello che fa alla distribuzione dei risultati si può
 misurare invece che raccontare.
 
@@ -72,7 +72,7 @@ modi diversi di procurarsi quel secondo termine.
 
 **Classifier guidance** {cite}`dhariwal2021diffusion`. Si addestra un
 classificatore $p_\psi(c\mid
-\mathbf{x}_t, t)$ sui dati **rumorosi** a tutti i livelli, e si usa
+\mathbf{x}_t, t)$ sui dati rumorosi a tutti i livelli, e si usa
 
 $$
 \tilde{\boldsymbol{\epsilon}} = \boldsymbol{\epsilon}_\theta
@@ -192,8 +192,8 @@ che alzando la forza fino a sette e mezzo il centro si sposti di otto millesimi
 e la larghezza cali di un centesimo, cioè quasi niente.
 
 Quello che succede davvero è un'altra storia, e sono due cose insieme. La
-distribuzione **si restringe**: da $0{,}5$ scende a $0{,}31$ e poi a $0{,}25$,
-cioè a metà. E **si sposta**: il centro passa da $1{,}5$ a $2{,}02$ e poi a
+distribuzione si restringe: da $0{,}5$ scende a $0{,}31$ e poi a $0{,}25$,
+cioè a metà. E si sposta: il centro passa da $1{,}5$ a $2{,}02$ e poi a
 $2{,}57$, che è nella coda della distribuzione vera, dove di esempi ce n'era
 uno su sessanta.
 
@@ -205,14 +205,14 @@ sette e mezzo, che è il valore con cui Stable Diffusion esce di serie, i
 campioni non vengono dalla distribuzione dei dati con quell'etichetta: vengono
 da una distribuzione più stretta della metà e centrata un'unità più in là.
 
-Le cure che si usano derivano tutte da questa lettura. Si può **rimettere in
-scala** l'immagine guidata, riportandone l'ampiezza a quella che aveva la
+Le cure che si usano derivano tutte da questa lettura. Si può rimettere in
+scala l'immagine guidata, riportandone l'ampiezza a quella che aveva la
 bussola condizionata da sola: si smorza l'esagerazione senza cambiare la
 direzione, e in pratica si mescolano le due versioni, perché il riscalamento
-puro dà immagini spente. Si può **tagliare i valori estremi** a ogni passo, non
+puro dà immagini spente. Si può tagliare i valori estremi a ogni passo, non
 a una soglia decisa una volta per tutte ma a un livello scelto ogni volta
-guardando quanto sono grandi i valori di quell'immagine. E si può **accendere
-la guida solo in un tratto** del percorso invece che lungo tutto: non costa
+guardando quanto sono grandi i valori di quell'immagine. E si può accendere
+la guida solo in un tratto del percorso invece che lungo tutto: non costa
 niente, e per scegliere il tratto bisogna sapere dove il danno nasce.
 
 Detto tutto questo, la guida non è un difetto da togliere. Senza, i generatori
@@ -233,8 +233,8 @@ campionamento dalla condizionata.
 Per $w>1$ divergono, e non di poco. Il campionatore produce media $2{,}57$ e
 deviazione $0{,}247$ a $w=7{,}5$, contro $1{,}508$ e $0{,}490$ della
 distribuzione inclinata: la media è spostata di più di due deviazioni
-standard dei dati veri, e la larghezza è dimezzata. **La guida applicata lungo
-la traiettoria non campiona dalla distribuzione inclinata**, e la formula che
+standard dei dati veri, e la larghezza è dimezzata. La guida applicata lungo
+la traiettoria non campiona dalla distribuzione inclinata, e la formula che
 si cita per giustificarla descrive un oggetto diverso da quello che si ottiene.
 
 La ragione è che l'operazione di inclinazione e quella di diffusione non
@@ -246,7 +246,7 @@ ogni passo e produce una deriva sistematica verso l'esterno del supporto.
 Le mitigazioni in uso derivano tutte da questa diagnosi:
 
 - **CFG rescale** {cite}`lin2024common`: si riporta la deviazione standard
-  della predizione guidata a quella della predizione **condizionata**, non
+  della predizione guidata a quella della predizione condizionata, non
   della non condizionata, e si mescola il risultato con la predizione guidata
   secondo un peso $\phi$, perché il riscalamento puro spegne le immagini.
   Corregge la deriva di scala senza toccare la direzione.
@@ -275,8 +275,8 @@ diverso dal subirlo.
 `````{tab} Elementare
 
 La riga di Bayes non chiede che la seconda bussola venga da un classificatore.
-Chiede solo che ci sia un modo di dire **quanto un'immagine è vicina a quello
-che si vuole**, e che quel modo si possa derivare, cioè che sappia rispondere
+Chiede solo che ci sia un modo di dire quanto un'immagine è vicina a quello
+che si vuole, e che quel modo si possa derivare, cioè che sappia rispondere
 alla domanda «in che direzione ritoccare i pixel per migliorare un po'?».
 
 Quel modo può essere qualsiasi cosa. La somiglianza a una fotografia di
@@ -289,8 +289,8 @@ ritoccare i pixel bisogna ripercorrere la rete all'indietro, e un passo guidato
 è un'andata più un ritorno, contro la sola andata di un passo normale.
 
 C'è un accorgimento che fa la differenza fra funzionare e non funzionare, ed è
-istruttivo. La misura va applicata **non all'immagine rumorosa che si ha in
-mano, ma alla stima dell'immagine pulita** che il modello sa già produrre in
+istruttivo. La misura va applicata non all'immagine rumorosa che si ha in
+mano, ma alla stima dell'immagine pulita che il modello sa già produrre in
 ogni istante. Un misuratore di qualità estetica davanti a un'immagine mezza
 distrutta risponde a caso, e la sua indicazione sarebbe rumore; davanti alla
 stima di come quell'immagine finirà, risponde sensatamente. È il motivo per cui
@@ -350,7 +350,7 @@ grande. È la ragione formale per cui la guida si applica con peso crescente
 verso la fine, e per cui i metodi migliori stimano anche la covarianza della
 posteriore invece di usare la sola media.
 
-La famiglia copre i **problemi inversi** in modo uniforme. Con
+La famiglia copre i problemi inversi in modo uniforme. Con
 $h(\mathbf{x}) = -\lVert \mathbf{A}\mathbf{x}-\mathbf{y}\rVert^2$ e
 $\mathbf{A}$ l'operatore di misura si ottengono inpainting (maschera),
 super-risoluzione (sottocampionamento), deblurring (convoluzione) e ricostruzione
@@ -381,28 +381,28 @@ alti. Il voto può venire da un giudice automatico addestrato a prevedere il
 gradimento umano, o da una misura oggettiva come «quanto il testo descrive
 davvero l'immagine».
 
-Il secondo evita del tutto il giudice. Si raccolgono **coppie**: due immagini
+Il secondo evita del tutto il giudice. Si raccolgono coppie: due immagini
 per la stessa richiesta, e l'indicazione di quale delle due piace di più. Poi
 si addestra il modello a rendere più probabile la preferita e meno probabile
 l'altra. Il vantaggio è che si salta il passaggio più fragile dell'intera
 catena, cioè addestrare un giudice che rimanga onesto.
 
 C'è un accorgimento che tiene in piedi la cosa. Non si guarda quanto il modello
-trova probabile la preferita, ma **di quanto** la trova più probabile di come
+trova probabile la preferita, ma di quanto la trova più probabile di come
 la trovava prima di cominciare: si tiene da parte una copia congelata del
 modello di partenza e si misura sempre la differenza rispetto a quella. Senza
 il paragone, il modo più rapido di rendere probabile la preferita sarebbe
 dimenticare tutto il resto.
 
 Il pericolo però non sparisce, cambia solo indirizzo. Un modello addestrato a
-massimizzare un voto impara a massimizzare **quel voto**, non la cosa che il
+massimizzare un voto impara a massimizzare quel voto, non la cosa che il
 voto doveva misurare: se il giudice premia i colori saturi perché nei dati di
 addestramento le foto belle erano sature, il modello impara a saturare tutto;
 se premia le immagini con molti dettagli, impara a riempirle di dettagli
 inutili. Nel secondo metodo il giudice non c'è, ma il voto sì, nascosto dentro
 le coppie: la preferenza raccolta è quella di chi ha guardato, e il modello
 impara a piacere a quelle persone in quelle condizioni. Il fenomeno ha un nome,
-**reward hacking**, e lo racconta per esteso la
+reward hacking, e lo racconta per esteso la
 {doc}`sezione sull'esplorazione e la ricompensa
 </DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 
@@ -433,7 +433,7 @@ Il costo per coppia resta quello di un addestramento ordinario moltiplicato per
 le quattro valutazioni di rete che servono: due modelli, quello corrente e
 quello di riferimento, su due immagini.
 
-**Il fallimento tipico** è il *reward hacking*. Il modello di ricompensa è una
+Il fallimento tipico è il *reward hacking*. Il modello di ricompensa è una
 funzione appresa su una distribuzione di immagini, e l'ottimizzazione la porta
 fuori da quella distribuzione, dove il punteggio è alto e la qualità no; nella
 seconda famiglia la ricompensa non è un modello a parte ma resta implicita nel
@@ -495,7 +495,7 @@ for da, a in ((0.8, 1.0), (0.6, 0.8), (0.4, 0.6), (0.2, 0.4), (0.0, 0.2)):
 
 La misura dice una cosa netta e una che il banco di prova non può dire.
 
-Quella netta: **il danno si fa in mezzo alla strada**, e le due colonne di
+Quella netta: il danno si fa in mezzo alla strada, e le due colonne di
 destra si muovono insieme. Accendendo la guida soltanto nel primo quinto, dove
 il rumore è massimo, il centro si sposta di $0{,}161$, e le due bussole lì
 distano $0{,}028$; soltanto nell'ultimo, dove i dati sono vicini, lo
@@ -515,7 +515,7 @@ accumularsi.
 
 Quella che il banco non può dire è dove convenga accendere la guida davvero.
 Chi la usa sui modelli veri fa l'opposto di quello che questi numeri
-suggeriscono: la accende **in mezzo** e la spegne ai due estremi
+suggeriscono: la accende in mezzo e la spegne ai due estremi
 {cite}`kynkaanniemi2024guidance`. La contraddizione è apparente, perché qui
 manca metà del conto. Due gaussiane ad alto rumore si confondono del tutto,
 mentre in un modello vero la richiesta decide la composizione fin dai primi
@@ -533,7 +533,7 @@ sola per classe non lo può mostrare affatto.
   credibili» più la direzione verso «cose che sembrano gatti». Il primo pezzo
   il modello lo sa; il secondo è tutto quello che il condizionamento aggiunge.
 - Quella riga autorizza a sommare le due bussole così come sono. Alzare la
-  **forza della guida** oltre l'uno vuol dire spingersi oltre quello che il
+  forza della guida oltre l'uno vuol dire spingersi oltre quello che il
   conto autorizza, e ha un prezzo misurabile: sul banco di prova la
   distribuzione si restringe alla metà e il suo centro finisce nella coda,
   dove di esempi ce n'era uno su sessanta.
@@ -544,11 +544,11 @@ sola per classe non lo può mostrare affatto.
   un tratto del percorso. Sul banco lo scarto si concentra in mezzo alla
   strada, dove le due bussole divergono di più; ai due estremi, dove indicano
   quasi la stessa direzione, la guida non sposta quasi niente.
-- La seconda bussola può venire da **qualunque misura** che sappia dire in che
+- La seconda bussola può venire da qualunque misura che sappia dire in che
   direzione ritoccare i pixel: somiglianza a una foto, rispetto di un contorno,
   gradimento estetico, energia di una molecola. Nessun riaddestramento, ma ogni
   passo costa quasi il doppio. L'accorgimento decisivo è applicare la misura
-  alla **stima dell'immagine pulita**, non a quella rumorosa.
+  alla stima dell'immagine pulita, non a quella rumorosa.
 - Se la guida non basta si cambia il modello, con il reinforcement learning o
   con le preferenze a coppie. Il pericolo è sempre lo stesso: un modello che
   massimizza un voto impara a massimizzare quel voto, non la cosa che il voto
@@ -560,28 +560,28 @@ sola per classe non lo può mostrare affatto.
 ```{admonition} Da ricordare
 :class: important
 - $\nabla\log p_t(\mathbf{x}\mid c) = \nabla\log p_t(\mathbf{x}) +
-  \nabla\log p_t(c\mid\mathbf{x})$: **classifier guidance** stima il secondo
+  \nabla\log p_t(c\mid\mathbf{x})$: classifier guidance stima il secondo
   termine con un classificatore addestrato sui dati rumorosi,
-  **classifier-free** con la differenza fra due predizioni della stessa rete.
+  classifier-free con la differenza fra due predizioni della stessa rete.
 - Per $w=1$ la guida senza classificatore campiona dalla condizionata; per
   $w>1$ non campiona da $q_w\propto p\,p(c\mid\cdot)^w$, contrariamente a
   quanto si legge spesso, perché inclinazione e diffusione non commutano
   {cite}`bradley2024classifier`. A $w=7{,}5$ il campionatore dà media
   $2{,}570$ e deviazione $0{,}247$ contro $1{,}508$ e $0{,}490$ dell'inclinata.
-- Mitigazioni: **CFG rescale** (riporta la scala a quella della predizione
-  condizionata, mescolando), **dynamic thresholding** (satura a un quantile),
-  **intervallo di guida** (guida solo in un tratto). Sul banco lo scarto si
+- Mitigazioni: CFG rescale (riporta la scala a quella della predizione
+  condizionata, mescolando), dynamic thresholding (satura a un quantile),
+  intervallo di guida (guida solo in un tratto). Sul banco lo scarto si
   concentra a metà percorso: guidare soltanto nell'ultimo quinto lo riduce da
   $1{,}070$ a $0{,}046$. Nei modelli veri la fascia utile è quella centrale,
   perché lì il divario fra le due predizioni non si annulla come qui.
-- **Guida senza addestramento**: si sostituisce il secondo termine con
+- Guida senza addestramento: si sostituisce il secondo termine con
   $\nabla h(\hat{\mathbf{x}}_0)$ per una $h$ qualsiasi derivabile. Copre
   inpainting, super-risoluzione, deblurring e tomografia con lo stesso codice.
   Poggia su due gradini: la formula di Tweedie, che è esatta, e lo scambio
   $\mathbb{E}[h(\mathbf{x}_0)]\approx h(\mathbb{E}[\mathbf{x}_0])$, che è un
   salto di Jensen, esatto solo per $h$ affine e tanto peggiore quanto più la
   posteriore è larga.
-- **Allineamento**: gradiente di policy sulla catena di denoising vista come
+- Allineamento: gradiente di policy sulla catena di denoising vista come
   MDP, oppure ottimizzazione diretta della preferenza su coppie. Il fallimento
   tipico è il *reward hacking*, che la regolarizzazione KL rallenta senza
   risolvere.

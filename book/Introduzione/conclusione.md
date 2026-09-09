@@ -21,8 +21,8 @@ previsioni andrà verificata; ma qualche esempio concreto, di quelli già
 successi, c'è.
 
 Il primo riguarda l'elettricità per davvero. I servizi che usiamo ogni giorno
-girano dentro capannoni pieni di computer accesi giorno e notte, i **centri di
-elaborazione dati**, che scaldano al punto da doverli raffreddare in
+girano dentro capannoni pieni di computer accesi giorno e notte, i centri di
+elaborazione dati, che scaldano al punto da doverli raffreddare in
 continuazione: il condizionatore è una voce enorme della loro bolletta. Già nel
 2016 DeepMind, il laboratorio di ricerca sull'intelligenza artificiale di
 Google, aveva usato le proprie reti neurali per ridurre fino al 40% l'energia
@@ -84,7 +84,7 @@ che non c'è niente di cui preoccuparsi (qualche problema è reale, e a quelli �
 dedicato il {doc}`capitolo sull'AI responsabile </AIResponsabile/overview>`), ma
 a sapere quali.
 
-E si comincia dagli attrezzi. Il prossimo capitolo è dedicato a **Python**, il
+E si comincia dagli attrezzi. Il prossimo capitolo è dedicato a Python, il
 linguaggio con cui tutto il resto del libro è scritto, e quello dopo alla
 manciata di matematica che serve davvero: se hai in mano le frazioni, le
 potenze e le percentuali, il resto lo impari qui, strada facendo. Poi si entra
@@ -99,38 +99,38 @@ all'AI responsabile.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **algoritmo** è una ricetta: una lista finita di passi precisi che portano
+- Un algoritmo è una ricetta: una lista finita di passi precisi che portano
   a un risultato. Quello di Euclide, per il massimo comune divisore, è fra i
   più antichi che si conoscano e sta in quattro righe di Python.
 - Il salto sta qui: per moltissimi compiti (riconoscere un gatto, tradurre una
   frase) una ricetta che regga il mondo vero nessuno la sa scrivere. Allora
-  si raccolgono migliaia di **esempi** e si lascia che le regole **emergano dai
-  dati**. È questo che significa, qui, dire che un programma *impara*. Gli
+  si raccolgono migliaia di esempi e si lascia che le regole emergano dai
+  dati. È questo che significa, qui, dire che un programma *impara*. Gli
   esempi possono portare la risposta scritta accanto da una persona
-  (l’**etichetta**), oppure averla già dentro di sé, come la parola che in una
+  (l’etichetta), oppure averla già dentro di sé, come la parola che in una
   frase viene dopo.
-- Dentro il programma c'è un elenco di numeri, i **parametri**, e sono l'unica
+- Dentro il programma c'è un elenco di numeri, i parametri, e sono l'unica
   cosa che l'addestramento cambia: il comportamento viene dietro.
-- I tre nomi da tenere distinti: **machine learning** è ricavare le regole dagli
-  esempi; **deep learning** è farlo con reti a molti strati; **reinforcement
-  learning** è imparare dalle conseguenze delle proprie azioni, con un
+- I tre nomi da tenere distinti: machine learning è ricavare le regole dagli
+  esempi; deep learning è farlo con reti a molti strati; reinforcement
+  learning è imparare dalle conseguenze delle proprie azioni, con un
   punteggio al posto degli esempi. I tre non stanno uno dentro l'altro allo
   stesso modo: il deep learning sta dentro il machine learning, il
   reinforcement learning taglia per un altro verso, e l'intelligenza
   artificiale è più larga di tutti e tre, perché comprende anche i programmi
   che ragionano su regole scritte a mano.
-- Buona parte di tutto questo funziona così: si sceglie un **punteggio** da far
+- Buona parte di tutto questo funziona così: si sceglie un punteggio da far
   salire (o un errore da far scendere) e si lascia che sia la macchina a
   scoprire come. Con l'avvertenza che quel punteggio lo scriviamo noi, e non è
   mai esattamente la cosa che volevamo.
-- Il vocabolario che tornerà, quando gli esempi giusti non ci sono: l’**agente**
-  decide, l’**ambiente** risponde con una nuova situazione (lo **stato**) e con
-  un punteggio (la **ricompensa**), e la **policy** è la regola con cui l'agente
+- Il vocabolario che tornerà, quando gli esempi giusti non ci sono: l’agente
+  decide, l’ambiente risponde con una nuova situazione (lo stato) e con
+  un punteggio (la ricompensa), e la policy è la regola con cui l'agente
   sceglie, cioè quello che deve imparare. Si allena dentro una simulazione, e
   far reggere al robot vero quello che ha imparato lì resta un problema aperto.
-- Non è stata una salita continua: fra il 1956 e oggi ci sono **due inverni**,
-  e funziona adesso perché sono arrivati insieme tre ingredienti, i **dati**,
-  la **potenza di calcolo** e gli **algoritmi**.
+- Non è stata una salita continua: fra il 1956 e oggi ci sono due inverni,
+  e funziona adesso perché sono arrivati insieme tre ingredienti, i dati,
+  la potenza di calcolo e gli algoritmi.
 ```
 
 `````
@@ -143,7 +143,7 @@ all'AI responsabile.
   con $\theta$, se ne misura la qualità con $J(\theta) = \mathbb{E}[U \mid
   \theta]$ e si cerca $\theta^\star \in \arg\max_\theta J(\theta)$, cioè
   $\arg\min_\theta \mathcal{L}$ con $\mathcal{L} = -J$.
-- Quell'attesa **non è calcolabile**, perché è presa sui casi futuri: in
+- Quell'attesa non è calcolabile, perché è presa sui casi futuri: in
   pratica si ottimizza la media su un campione già raccolto. La distanza fra le
   due quantità è la differenza fra *ottimizzare* e *imparare*, ed è l'oggetto
   del {doc}`capitolo sul machine learning </MachineLearning/overview>`.
@@ -159,7 +159,7 @@ all'AI responsabile.
   $\mathbb{E}_{\pi}[\sum_t \gamma^t r_{t+1}]$, finito perché le ricompense sono
   limitate e $0 \le \gamma < 1$.
 - Euclide: $\mathrm{MCD}(a,b) = \mathrm{MCD}(b, a \bmod b)$ converge in
-  $O(\log \min(a,b))$ **passi**, cioè $O(n)$ passi su numeri di $n$ cifre; il
+  $O(\log \min(a,b))$ passi, cioè $O(n)$ passi su numeri di $n$ cifre; il
   tempo totale è $O(n^2)$, perché ogni cifra di quoziente costa $O(n)$ e le
   cifre dei quozienti sono in tutto $O(n)$.
 ```

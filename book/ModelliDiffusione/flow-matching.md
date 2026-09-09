@@ -16,8 +16,8 @@ parte c'è un mucchio di terra a forma di «tutte le fotografie di gatti»,
 dall'altra un mucchio a forma di «rumore»: generare significa spostare il
 secondo sul primo. La sezione precedente ha ottenuto un piano di trasporto per
 una via indiretta, costruendo un processo che rovina i dati e poi invertendolo.
-La domanda è se non si possa fare la cosa ovvia: **scegliere il percorso,
-invece di ereditarlo dal modo in cui si è deciso di rovinare le immagini**.
+La domanda è se non si possa fare la cosa ovvia: scegliere il percorso,
+invece di ereditarlo dal modo in cui si è deciso di rovinare le immagini.
 
 La risposta è sì, il metodo si chiama **flow matching**, e la strada più
 semplice fra due punti risulta essere anche la più economica da percorrere.
@@ -28,12 +28,12 @@ semplice fra due punti risulta essere anche la più economica da percorrere.
 
 Cambia il punto di vista, e cambiano le domande che vengono naturali.
 
-Nel punto di vista della diffusione si decide **come rovinare**: si stabilisce
+Nel punto di vista della diffusione si decide come rovinare: si stabilisce
 quanto rumore aggiungere e a che ritmo, e quel che segue è determinato. Il
 percorso che i dati fanno per diventare rumore lo si subisce, ed è quello che il
 programma di rumore impone.
 
-Nel punto di vista del trasporto si decide **il percorso**. Si dice: questa
+Nel punto di vista del trasporto si decide il percorso. Si dice: questa
 fotografia deve trasformarsi in questo particolare mucchio di rumore, e ci
 arriverà passando di qui. Fatta la scelta, quello che resta da imparare è una
 sola cosa, un **campo di velocità**: in ogni punto dello spazio e in ogni
@@ -89,7 +89,7 @@ oggetto determinato da $\mathbf{f}$, $g$ e dal punteggio. Qui si fissa
 direttamente il percorso $p_t$ che interpola fra $p_0 = p_{\text{dati}}$ e
 $p_1 = p_{\text{prior}}$, e si cerca un $\mathbf{u}_t$ compatibile con esso.
 
-Il campo compatibile **non è unico**: all'equazione di continuità si può
+Il campo compatibile non è unico: all'equazione di continuità si può
 aggiungere qualunque campo $\mathbf{w}$ con $\nabla\!\cdot\!(p_t\mathbf{w})=0$
 senza cambiare l'evoluzione delle densità. Il flow matching ne sceglie uno, e a
 parità di percorso gaussiano quello che sceglie coincide con la PF-ODE della
@@ -105,7 +105,7 @@ il percorso, non un campo diverso da percorrere.
 
 L'idea di far imparare a una rete il campo dei venti si scontra subito con un
 ostacolo. Per insegnarle qualcosa bisogna poterle dire che cosa avrebbe dovuto
-rispondere; e la velocità giusta in un punto dipende da **tutti** i modi in cui
+rispondere; e la velocità giusta in un punto dipende da tutti i modi in cui
 ci si può arrivare. In quel punto passano infinite fotografie diverse in
 viaggio verso infiniti rumori diversi, ciascuna con la sua velocità, e quella
 giusta è la loro media. Calcolarla vorrebbe dire fare un integrale su tutto
@@ -113,19 +113,19 @@ l'archivio, per ogni punto e per ogni istante.
 
 Il trucco che sblocca la situazione è lo stesso con cui la rete ha imparato il
 verso della salita, ed è uno dei più usati in tutto il machine learning. Invece
-di chiedere alla rete la velocità **media** su tutti i viaggi che passano di
-lì, le si chiede la velocità di **un** viaggio specifico: si prende una
+di chiedere alla rete la velocità media su tutti i viaggi che passano di
+lì, le si chiede la velocità di un viaggio specifico: si prende una
 fotografia, si sorteggia un rumore di arrivo, si decide che quei due sono gli
 estremi del viaggio, e a quel punto la velocità è banale da scrivere, perché il
 viaggio lo abbiamo disegnato noi.
 
 Il fatto sorprendente, e il motivo per cui il metodo funziona, è che
-**allenarsi sulla velocità del singolo viaggio porta esattamente allo stesso
-posto** che allenarsi su quella media. Non è un'approssimazione: le due
+allenarsi sulla velocità del singolo viaggio porta esattamente allo stesso
+posto che allenarsi su quella media. Non è un'approssimazione: le due
 funzioni di costo hanno lo stesso punto di minimo. La ragione è quella che
 rende speciale l'errore quadratico: chi cerca di indovinare un numero
 sorteggiato, e viene giudicato su quanto sbaglia al quadrato, ha come strategia
-migliore rispondere **la media** di quel numero. Quindi una rete allenata a
+migliore rispondere la media di quel numero. Quindi una rete allenata a
 indovinare le singole velocità, proprio perché non può indovinarle tutte,
 finisce per rispondere la loro media, che è quello che ci serviva.
 
@@ -133,7 +133,7 @@ finisce per rispondere la loro media, che è quello che ci serviva.
 
 `````{tab} Superiore
 
-L'obiettivo naturale sarebbe il **flow matching** puro,
+L'obiettivo naturale sarebbe il flow matching puro,
 
 $$
 \mathcal{L}_{\text{FM}} = \mathbb{E}_{t,\;\mathbf{x}\sim p_t}
@@ -145,7 +145,7 @@ inutilizzabile perché $\mathbf{u}_t$ è definito da una marginalizzazione che
 non si sa calcolare. Si introduce allora una variabile di condizionamento
 $\mathbf{z}$ (tipicamente il dato $\mathbf{x}_0$, oppure la coppia
 $(\mathbf{x}_0,\mathbf{x}_1)$ di estremi del viaggio) tale che il percorso e la
-velocità **condizionati** siano noti in forma chiusa, e si minimizza il
+velocità condizionati siano noti in forma chiusa, e si minimizza il
 **conditional flow matching**
 
 $$
@@ -173,7 +173,7 @@ $$
 
 La dimostrazione è un conto di due righe che usa una sola proprietà: il minimo
 di $\mathbb{E}[\lVert a - Y\rVert^2]$ rispetto ad $a$ è $\mathbb{E}[Y]$. È
-esattamente la struttura del **denoising score matching** di Vincent, dove il
+esattamente la struttura del denoising score matching di Vincent, dove il
 bersaglio intrattabile (il punteggio della marginale) veniva sostituito dal
 bersaglio banale (il rumore iniettato), con la stessa garanzia. Riconoscere che
 sono lo stesso teorema applicato due volte fa risparmiare metà della
@@ -194,7 +194,7 @@ di una singola fotografia verso il suo rumore, quello che viene fuori è una
 strada tortuosa.
 
 Ma niente obbliga a quel percorso. Si può stabilire che il viaggio sia la
-**linea retta**: al tempo zero la fotografia, al tempo uno il rumore, e in
+linea retta: al tempo zero la fotografia, al tempo uno il rumore, e in
 mezzo la miscela che sta esattamente a metà strada quando il tempo è a metà.
 Con questa scelta la velocità del viaggio è costantissima e si scrive senza
 pensarci: è la differenza fra il punto di arrivo e quello di partenza, uguale
@@ -204,7 +204,7 @@ Questa è l'idea del **flusso rettificato**, ed è la strada che i generatori di
 immagini più recenti hanno preso.
 
 C'è però un'insidia da capire bene, perché il metodo si spiega spesso male.
-Ogni singolo viaggio è una retta; il **campo dei venti** che ne risulta no. In
+Ogni singolo viaggio è una retta; il campo dei venti che ne risulta no. In
 un punto in cui passano molti viaggi diretti in posti diversi, la freccia è la
 loro media, e seguendo le medie non si percorre nessuna delle rette: si fa una
 curva. È come una folla in cui ciascuno cammina dritto verso casa propria: il
@@ -221,7 +221,7 @@ passo, o due, bastano.
 
 `````{tab} Superiore
 
-Un percorso condizionato **gaussiano** si scrive in generale
+Un percorso condizionato gaussiano si scrive in generale
 
 $$
 p_t(\mathbf{x}\mid\mathbf{x}_0)
@@ -243,7 +243,7 @@ varianti:
 
 Nel caso rettificato l'interpolazione è
 $\mathbf{x}_t = (1-t)\mathbf{x}_0 + t\,\boldsymbol{\epsilon}$ e la velocità
-condizionata è **costante nel tempo**, il che rende l'obiettivo
+condizionata è costante nel tempo, il che rende l'obiettivo
 
 $$
 \mathcal{L} = \mathbb{E}_{t,\mathbf{x}_0,\boldsymbol{\epsilon}}
@@ -254,7 +254,7 @@ $$
 
 cioè tre righe di codice {cite}`liu2023rectified`.
 
-**La rettitudine è condizionata, non marginale.** Il campo marginale
+La rettitudine è condizionata, non marginale. Il campo marginale
 $\mathbf{u}_t(\mathbf{x}) = \mathbb{E}[\boldsymbol{\epsilon}-\mathbf{x}_0\mid
 \mathbf{x}_t=\mathbf{x}]$ è una media su tutti gli accoppiamenti compatibili, e
 le sue traiettorie sono curve anche quando ogni traiettoria condizionata è una
@@ -263,7 +263,7 @@ retta. È il punto in cui la divulgazione del metodo scivola più spesso.
 Il **reflow** rimedia iterando. Dal modello addestrato si ricava
 l'accoppiamento deterministico $(\boldsymbol{\epsilon},
 \Phi(\boldsymbol{\epsilon}))$ indotto dalla ODE, e si riaddestra usando
-**quelle coppie** invece di accoppiamenti indipendenti. L'accoppiamento indotto
+quelle coppie invece di accoppiamenti indipendenti. L'accoppiamento indotto
 non fa incrociare le traiettorie, quindi il nuovo campo marginale è più vicino
 a quello condizionato; iterando, le traiettorie si raddrizzano e il numero di
 passi necessari crolla. Il prezzo è che ogni giro di reflow richiede di
@@ -271,7 +271,7 @@ generare un insieme di coppie con il modello corrente, e che l'accuratezza si
 degrada leggermente a ogni giro.
 
 Un avvertimento sulla parentela con il trasporto ottimo, perché il nome
-inganna. Un accoppiamento che non fa incrociare le traiettorie è **monotono**,
+inganna. Un accoppiamento che non fa incrociare le traiettorie è monotono,
 e in una dimensione la mappa monotona è effettivamente la soluzione del
 problema di Monge con costo quadratico. In più dimensioni questo non basta: il
 reflow non fa crescere il costo di trasporto a ogni giro, ma il limite non è in
@@ -343,7 +343,7 @@ for passi in (1, 2, 4, 8, 16, 64, 256):
 
 La tabella dice due cose, e la seconda è la più istruttiva.
 
-La prima è il risultato atteso: con il percorso rettificato **otto passi**
+La prima è il risultato atteso: con il percorso rettificato otto passi
 bastano ad arrivare più vicino di quanto il percorso della diffusione arrivi
 con duecentocinquantasei. Sull'ultima riga, però, il confronto va letto con una
 riserva: le due colonne non hanno lo stesso pavimento. A un millesimo dalla
@@ -357,7 +357,7 @@ integrazione ma il tempo che si ferma a un millesimo invece che a zero: a
 quell'istante il segnale è ancora rimpicciolito di un millesimo, e
 $1{,}5\times0{,}001$ fa esattamente $0{,}0015$.
 
-La seconda è che con **un passo solo** il percorso rettificato fa peggio della
+La seconda è che con un passo solo il percorso rettificato fa peggio della
 diffusione, e finisce a metà strada fra i due modi. È la conferma numerica
 dell'insidia: al tempo uno la freccia, che è una media, punta verso la media
 dei dati, perché a quell'istante l'immagine di partenza è del tutto dimenticata
@@ -377,7 +377,7 @@ print(np.round(arrivo, 4))            # -> [-1.5013 -1.4996 -1.4973  1.4973  1.4
 print(bool(np.all(np.diff(arrivo) > 0)))          # la mappa e' monotona -> True
 ```
 
-La mappa che il campo induce è **monotona**: chi parte più a destra arriva più
+La mappa che il campo induce è monotona: chi parte più a destra arriva più
 a destra, e le traiettorie non si scavalcano mai. L'unica eccezione è il punto
 esattamente a zero, dove i due modi si equivalgono e la velocità è nulla: è lo
 spartiacque fra i due bacini, un punto solo su tutta la retta. È questa
@@ -427,15 +427,15 @@ volta un peso $w(t)$.
 
 Le tre differenze che restano sono operative e sostanziali:
 
-- **Libertà nel percorso.** $(\alpha_t,\sigma_t)$ diventano una scelta di
+- Libertà nel percorso. $(\alpha_t,\sigma_t)$ diventano una scelta di
   progetto invece che una conseguenza del programma di rumore, e si sceglie il
   percorso che minimizza la curvatura delle traiettorie.
-- **Estremi arbitrari.** Il conditional flow matching non richiede
+- Estremi arbitrari. Il conditional flow matching non richiede
   $p_1=\mathcal{N}(\mathbf{0},\mathbf{I})$: basta poter campionare da entrambe
   le sponde e disporre di un accoppiamento. Da qui la traduzione fra domini e i
   ponti fra distribuzioni, che con la formulazione a SDE richiedevano
   costruzioni ad hoc.
-- **Semplicità della loss.** Nessun programma di rumore da tarare, nessun peso
+- Semplicità della loss. Nessun programma di rumore da tarare, nessun peso
   da riequilibrare a mano, un solo campo da regredire.
 
 Sono queste tre ragioni, e non un vantaggio teorico, ad aver portato le
@@ -457,22 +457,22 @@ nomi diversi.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Nel flow matching si **sceglie il percorso** fra i dati e il rumore, invece di
+- Nel flow matching si sceglie il percorso fra i dati e il rumore, invece di
   ereditarlo dal modo in cui si è deciso di rovinare le immagini. Quello che
-  la rete impara è un **campo di venti**: in ogni punto e in ogni istante,
+  la rete impara è un campo di venti: in ogni punto e in ogni istante,
   dove andare e quanto in fretta.
 - La velocità giusta in un punto è la media su tutti i viaggi che ci passano, e
   quella media non si sa calcolare. Il trucco è chiedere alla rete la velocità
-  di **un solo viaggio**, che è banale perché il viaggio lo abbiamo disegnato
+  di un solo viaggio, che è banale perché il viaggio lo abbiamo disegnato
   noi: allenarsi così porta esattamente allo stesso risultato, perché chi deve
   indovinare un numero sorteggiato e viene giudicato sul quadrato dell'errore
   risponde la media.
-- Il percorso più semplice è la **retta**, e la sua velocità è costante: la
+- Il percorso più semplice è la retta, e la sua velocità è costante: la
   differenza fra arrivo e partenza. A quattro passi la retta sbaglia quasi
   venti volte meno del percorso della diffusione, a otto sessanta volte meno.
-- Ma la retta è quella del **singolo viaggio**: il campo che ne risulta,
+- Ma la retta è quella del singolo viaggio: il campo che ne risulta,
   essendo una media, curva ancora. Con un passo solo si finisce a metà strada
-  fra i due gruppi di dati. Il rimedio è il **raddrizzamento**: si guarda dove
+  fra i due gruppi di dati. Il rimedio è il raddrizzamento: si guarda dove
   il modello porta ciascuna partenza, e si riaddestra su quelle coppie.
 - Diffusione e flow matching sono la stessa famiglia in due linguaggi. Quello
   che il secondo aggiunge sono tre libertà pratiche: scegliere il percorso,
@@ -485,24 +485,24 @@ nomi diversi.
 ```{admonition} Da ricordare
 :class: important
 - Un flusso è generato da $\dot\Phi_t = \mathbf{u}_t(\Phi_t)$, e la coppia
-  $(p_t,\mathbf{u}_t)$ deve soddisfare l’**equazione di continuità**
+  $(p_t,\mathbf{u}_t)$ deve soddisfare l’equazione di continuità
   $\partial_t p_t + \nabla\!\cdot\!(p_t\mathbf{u}_t)=0$. Il campo compatibile
   con un dato $p_t$ non è unico, e la PF-ODE è un'altra sua soluzione.
 - $\mathcal{L}_{\text{FM}}$ è intrattabile; $\mathcal{L}_{\text{CFM}}$, che
-  regredisce sulla velocità **condizionata**, ha lo stesso gradiente e lo
+  regredisce sulla velocità condizionata, ha lo stesso gradiente e lo
   stesso minimo, che è $\mathbb{E}[\mathbf{u}_t(\mathbf{x}\mid\mathbf{z})\mid
   \mathbf{x}_t]$. È il teorema del denoising score matching applicato di nuovo.
-- Percorso **rettificato**: $\alpha_t=1-t$, $\sigma_t=t$, velocità condizionata
+- Percorso rettificato: $\alpha_t=1-t$, $\sigma_t=t$, velocità condizionata
   $\boldsymbol{\epsilon}-\mathbf{x}_0$, costante nel tempo. La rettitudine è
-  **condizionata**: il campo marginale è una media e le sue traiettorie
-  curvano ancora. Il **reflow** riaddestra sull'accoppiamento indotto dalla ODE
+  condizionata: il campo marginale è una media e le sue traiettorie
+  curvano ancora. Il reflow riaddestra sull'accoppiamento indotto dalla ODE
   e le raddrizza, a costo di generare le coppie e di degradare un poco.
 - Il legame con il punteggio è
   $\mathbf{u}_t = \frac{\dot\alpha_t}{\alpha_t}\mathbf{x} +
   (\frac{\dot\alpha_t}{\alpha_t}\sigma_t^2 - \dot\sigma_t\sigma_t)
   \nabla\log p_t$, quindi le due formulazioni differiscono per una
   riparametrizzazione e un peso.
-- **Non è trasporto ottimo.** La mappa monotona coincide con la soluzione di
+- Non è trasporto ottimo. La mappa monotona coincide con la soluzione di
   Monge solo in dimensione uno; in dimensione maggiore il reflow abbassa il
   costo di trasporto senza raggiungere l'ottimo.
 ```

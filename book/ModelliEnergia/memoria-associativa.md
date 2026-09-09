@@ -1,9 +1,9 @@
 # La memoria associativa di Hopfield
 
-La memoria di un computer funziona per **indirizzo**: ogni dato abita in una
+La memoria di un computer funziona per indirizzo: ogni dato abita in una
 casella numerata, e per recuperarlo bisogna conoscere il numero esatto, sbagli
 una cifra e ottieni un dato qualsiasi. La memoria umana funziona per
-**contenuto**: bastano tre note stonate fischiettate da un passante per farti
+contenuto: bastano tre note stonate fischiettate da un passante per farti
 riaffiorare l'intera canzone, un profumo per restituirti una cucina di
 trent'anni fa, mezza faccia intravista da un autobus per completare nome e
 cognome. Non forniamo indirizzi: forniamo *frammenti*, e il ricordo si
@@ -20,20 +20,20 @@ pezzi che nei ricordi vanno d'accordo: le propongono, tutti nel 1972 e ognuno
 per conto suo, Teuvo Kohonen, Kaoru Nakano, James Anderson e Shun-ichi Amari,
 il cui lavoro è quello che il libro cita {cite}`amari1972learning`. E nel 1974
 William Little descrive una rete in cui i neuroni si accendono tutti nello
-stesso istante, ciascuno con una **probabilità** che cresce con la spinta
+stesso istante, ciascuno con una probabilità che cresce con la spinta
 ricevuta, e mostra che una rete così può conservare a lungo una traccia di dov'è
 passata: non una configurazione in cui si ferma, ma una somiglianza fra
 configurazioni lontane nel tempo, che lui chiama *stato persistente*
 {cite}`little1974existence`. Quello che Hopfield
 aggiunge, e che fa ripartire
-il campo da lui, è l’**energia**: un solo numero associato a ogni
+il campo da lui, è l’energia: un solo numero associato a ogni
 configurazione della rete, più la dimostrazione che il modo in cui la rete si
 aggiorna non lo fa mai salire. Da quel momento i ricordi sono minimi, e
 ricordare è una discesa.
 
 La sua mossa è quella di un fisico. Prendiamo un gruppo di neuroni che possono
-stare solo «accesi» o «spenti» (in gergo si dicono **binari**, come una fila
-di interruttori), collegati fra loro da **pesi**: numeri che dicono quanto due
+stare solo «accesi» o «spenti» (in gergo si dicono binari, come una fila
+di interruttori), collegati fra loro da pesi: numeri che dicono quanto due
 neuroni tendono a stare d'accordo, positivi se preferiscono trovarsi nella
 stessa posizione, negativi se preferiscono l'opposta. E i pesi siano
 **simmetrici**, cioè il legame fra due neuroni valga lo stesso nei due versi.
@@ -118,7 +118,7 @@ uno scalino.
 `````{tab} Superiore
 
 La rete è un vettore di $N$ neuroni binari $s_i \in \{-1, +1\}$, collegati da
-pesi **simmetrici** ($w_{ij} = w_{ji}$) e senza auto-connessioni
+pesi simmetrici ($w_{ij} = w_{ji}$) e senza auto-connessioni
 ($w_{ii} = 0$). A ogni stato $\mathbf{s}$ è associata l'energia
 
 $$
@@ -126,7 +126,7 @@ E(\mathbf{s}) = -\frac{1}{2}\, \mathbf{s}^\top \mathbf{W} \mathbf{s} = -\frac{1}
 $$
 
 dove $\mathbf{W}$ è la matrice dei pesi e la somma percorre le coppie
-**ordinate** (ogni coppia di neuroni compare due volte, una per verso: è da lì
+ordinate (ogni coppia di neuroni compare due volte, una per verso: è da lì
 che viene il $\tfrac12$ davanti). Una coppia collegata da peso positivo
 abbassa l'energia quando i due neuroni
 concordano, e la alza quando discordano (per pesi negativi vale l'opposto).
@@ -142,8 +142,8 @@ $\{-1,+1\}$), lasciando tutto il resto fermo.
 Che l'energia non possa salire si mostra in tre passaggi, e ciascuno usa
 un'ipotesi diversa. Primo: si isolano i termini che
 contengono $s_i$. Sono due somme, $-\tfrac12\sum_{l \neq i} w_{il}s_i s_l$ e
-$-\tfrac12\sum_{k \neq i} w_{ki} s_k s_i$, che **grazie alla simmetria** sono
-uguali e si raccolgono in $-s_i h_i$; e $h_i$ non dipende da $s_i$ **grazie a**
+$-\tfrac12\sum_{k \neq i} w_{ki} s_k s_i$, che grazie alla simmetria sono
+uguali e si raccolgono in $-s_i h_i$; e $h_i$ non dipende da $s_i$ grazie a
 $w_{ii} = 0$. Dunque $E = -s_i h_i + \text{cost}$, dove la costante non
 coinvolge $s_i$. Secondo: se il neurone si capovolge, $s_i \to -s_i$, l'energia
 varia di $\Delta E = 2\, s_i h_i$. Terzo: il capovolgimento avviene solo quando
@@ -153,14 +153,14 @@ $$
 \Delta E = -2\,|h_i| \le 0 .
 $$
 
-**Ogni aggiornamento fa scendere l'energia o la lascia invariata, mai salire**:
+Ogni aggiornamento fa scendere l'energia o la lascia invariata, mai salire:
 invariata quando il neurone resta com'è (anche in caso di parità, $h_i = 0$),
 più bassa di $2|h_i|$ quando si capovolge. Tolta la simmetria il conto
 non torna: su una rete casuale con $\mathbf{W}$ asimmetrica si misurano
 capovolgimenti con $\Delta E$ positivo, e alcune reti asimmetriche si mettono
 davvero a girare in tondo senza fermarsi mai.
 
-Per concludere che la discesa **termina** serve un'ipotesi in più, che di
+Per concludere che la discesa termina serve un'ipotesi in più, che di
 solito si tace: che ogni neurone venga visitato infinitamente spesso. Gli
 stati sono in numero finito ($2^N$), quindi $E$ assume un numero finito di
 valori e non può scendere per sempre; ma senza una scansione equa i
@@ -187,7 +187,7 @@ E(\mathbf{s}) = -\frac{1}{2N} \sum_{\mu=1}^{M}
 \big(\boldsymbol{\xi}^{\mu} \cdot \mathbf{s}\big)^2 + \frac{M}{2},
 $$
 
-cioè ogni ricordo abbassa l'energia in proporzione al **quadrato** della sua
+cioè ogni ricordo abbassa l'energia in proporzione al quadrato della sua
 sovrapposizione con lo stato (il $M/2$ è la diagonale che $w_{ii} = 0$ toglie,
 ed è una costante). Che la regola renda $\boldsymbol{\xi}^\mu$ un minimo locale di
 $E$ si vede in un conto solo, ed è il conto da cui discende tutto il resto
@@ -202,7 +202,7 @@ $$
 
 perché $(\xi_j^\mu)^2 = 1$ per ogni $j$. Il primo termine tira il neurone
 esattamente dove il pattern lo vuole; il secondo è la somma delle
-sovrapposizioni con **tutti gli altri** ricordi, e il bit resta al suo posto
+sovrapposizioni con tutti gli altri ricordi, e il bit resta al suo posto
 finché quel disturbo, moltiplicato per $\xi_i^\mu$, non scende sotto
 $-(N-1)/N$. Da qui vengono, in un colpo solo, tre cose: che i pattern quasi
 ortogonali (interferenza piccola) siano stabili; che aggiungerne troppi faccia
@@ -219,7 +219,7 @@ sotto la formula e nei due grafici, e circa $0{,}14$ nel sommario e nella
 conclusione.
 
 Le ipotesi contano, perché sono ciò che rende quel numero un teorema e non
-un'osservazione: pattern **casuali e non correlati**, rete completamente
+un'osservazione: pattern casuali e non correlati, rete completamente
 connessa, limite termodinamico $N \to \infty$ a carico $M/N$ fisso,
 temperatura nulla, simmetria di replica, e una tolleranza per una piccola
 frazione di bit errati nel richiamo. Fuori di lì il numero va
@@ -441,8 +441,8 @@ scelta pesa più di quanto sembri.
 Nelle altre la rete si ferma altrove, e non sempre dove ci si aspetterebbe. Su
 dieci fallimenti quasi nove finiscono in una conca a metà strada fra due
 lettere, che nessuno ha mai memorizzato. Il decimo si divide in due, e la parte
-più grossa è l'immagine capovolta di un'altra lettera; il resto è **un'altra
-lettera**.
+più grossa è l'immagine capovolta di un'altra lettera; il resto è un'altra
+lettera.
 
 Che le lettere capovolte compaiano è inevitabile, e capire perché aiuta:
 scambiando acceso e spento dappertutto, le caselle che andavano d'accordo
@@ -470,21 +470,21 @@ dunque.
 E questo conta, perché è proprio la somiglianza fra i ricordi a far fondere i
 fianchi delle valli: la capienza di cui si diceva è calcolata su ricordi presi
 a caso e su reti grandi, e qui i ricordi a caso non sono e la rete grande non
-è. Quel 92%, allora, non è merito del codice: è merito della forma di questo
+è. Quel 93%, allora, non è merito del codice: è merito della forma di questo
 paesaggio, e la forma l'abbiamo scelta noi scegliendo le lettere.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Una **memoria associativa** si interroga con un frammento, non con un
+- Una memoria associativa si interroga con un frammento, non con un
   indirizzo: tre note fischiettate da un passante e la canzone riaffiora
   intera.
-- Nella **rete di Hopfield** ogni ricordo memorizzato è una valle scavata nel
+- Nella rete di Hopfield ogni ricordo memorizzato è una valle scavata nel
   paesaggio. L'indizio dice dove posare la pallina, la pallina rotola (può
   soltanto scendere) e il fondo in cui si ferma è il ricordo completo: la
   regola che scava le valli si limita a legare fra loro le caselle che nei
   ricordi vanno d'accordo.
-- La **capienza** è limitata, e per le reti grandi si sa di quanto: circa il
+- La capienza è limitata, e per le reti grandi si sa di quanto: circa il
   14% del numero di neuroni. Superata quella quota il richiamo non peggiora un
   poco alla volta, crolla tutto insieme.
 - Su una rete piccola come la nostra quel 14% non si applica, e non c'è
@@ -502,13 +502,13 @@ paesaggio, e la forma l'abbiamo scelta noi scegliendo le lettere.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Una **memoria associativa** si interroga con un frammento, non con un
+- Una memoria associativa si interroga con un frammento, non con un
   indirizzo: il ricordo si completa da solo.
-- Nella **rete di Hopfield** {cite}`hopfield1982neural` i ricordi sono minimi
+- Nella rete di Hopfield {cite}`hopfield1982neural` i ricordi sono minimi
   dell'energia $E(\mathbf{s}) = -\tfrac{1}{2}\, \mathbf{s}^\top \mathbf{W} \mathbf{s}$;
   la regola di Hebb scava le valli e l'aggiornamento asincrono (che non fa mai
   salire $E$) completa i ricordi corrotti scendendo nel minimo più vicino.
-- La **capienza** è di circa il 14% del numero di neuroni
+- La capienza è di circa il 14% del numero di neuroni
   ($\alpha_c = 0{,}138$) {cite}`amit1985storing`, e oltre soglia il
   richiamo non degrada: crolla. È però un risultato asintotico, per pattern
   casuali e non correlati: su reti piccole la transizione è sfumata e la

@@ -2,10 +2,10 @@
 
 Finora la strategia ha sempre risposto d'istinto: la situazione entra da un lato
 della rete, la mossa esce dall'altro, e in mezzo non c'è nessuna riflessione. Ma
-un giocatore forte, prima di muovere, **pensa**: prova mentalmente qualche
+un giocatore forte, prima di muovere, pensa: prova mentalmente qualche
 continuazione, valuta dove porta, sceglie.
 
-Quel pensare ha un algoritmo, e si chiama **ricerca ad albero Monte Carlo**
+Quel pensare ha un algoritmo, e si chiama ricerca ad albero Monte Carlo
 (MCTS, dalle iniziali inglesi; e «Monte Carlo», come al casinò, è il nome che
 i matematici danno ai metodi che fanno i conti tirando a sorte). Torna in
 AlphaGo, in AlphaZero, in MuZero, e nei modelli linguistici (i programmi che
@@ -75,7 +75,7 @@ si è mai entrati non si sa niente.
 La formulazione standard è **UCT** (*Upper Confidence bounds applied to
 Trees*), di Kocsis e Szepesvári {cite}`kocsis2006bandit`, costruita sopra il
 framework di ricerca di Coulom {cite}`coulom2006efficient`. L'idea è di
-trattare **ogni nodo come un bandit indipendente** sulle sue mosse, e in fase
+trattare ogni nodo come un bandit indipendente sulle sue mosse, e in fase
 di selezione scegliere
 
 $$
@@ -86,11 +86,11 @@ $$
 dove $N(s)$ è il numero di visite al nodo, $N(s,a)$ quelle al figlio,
 $Q(s,a) = W(s,a)/N(s,a)$ la media dei ritorni osservati passando di lì e
 $c>0$ la costante che decide quanto pesa il secondo termine. È
-**letteralmente UCB1**, la formula della
+letteralmente UCB1, la formula della
 {doc}`sezione sui bandit </ReinforcementLearning/banditi>`, applicata a ogni
 bivio: stesso ottimismo di fronte all'incertezza, stesso decadimento
 logaritmico. Il contributo di UCT è mostrare che applicandola ricorsivamente
-la stima alla radice converge a quella minimax, con garanzie **asintotiche**
+la stima alla radice converge a quella minimax, con garanzie asintotiche
 sull'errore di campionamento. Asintotiche va preso alla lettera: sono garanzie
 sul limite, non sul caso peggiore. Coquelin e Munos
 {cite}`coquelin2007bandit` mostrarono l'anno dopo che l'ottimismo di UCT può
@@ -105,7 +105,7 @@ cattivo per l'avversario. A ricerca finita, alla radice si gioca l'azione più
 visitata e non quella con $Q(s,a)$ massimo: un conteggio è meno sensibile di
 una media alla manciata di ritorni fortunati che l'ha gonfiata.
 
-**AlphaGo e i suoi successori cambiano due dei quattro passi**, ed è lì che
+AlphaGo e i suoi successori cambiano due dei quattro passi, ed è lì che
 entrano le reti. Il termine di esplorazione diventa **PUCT**, pesato da una
 probabilità a priori fornita dalla rete di policy,
 
@@ -120,9 +120,9 @@ aveva in UCT. La probabilità a priori pesa soprattutto all'inizio: il
 denominatore $1 + N(s,a)$ ne diluisce il contributo man mano che le visite vere
 si accumulano, e da lì in poi a decidere è $Q(s,a)$.
 
-Il secondo cambiamento riguarda la valutazione della foglia, e avviene in **due
-tappe** da non confondere. AlphaGo (2016) non butta via la
-simulazione casuale: le **affianca** la rete di valore e media i due giudizi in
+Il secondo cambiamento riguarda la valutazione della foglia, e avviene in due
+tappe da non confondere. AlphaGo (2016) non butta via la
+simulazione casuale: le affianca la rete di valore e media i due giudizi in
 parti uguali,
 
 $$
@@ -135,7 +135,7 @@ $\lambda$ della *generalized advantage estimation* incontrata col
 [gradiente di policy](policy-gradient.md): qui è
 soltanto il peso con cui si mescolano due giudizi). Rete di valore
 e partita giocata a caso pesano quindi identico. La simulazione
-casuale sparisce del tutto solo con **AlphaGo Zero** (2017), dove la rete di
+casuale sparisce del tutto solo con AlphaGo Zero (2017), dove la rete di
 valore basta da sola: è la stessa tappa in cui spariscono le partite umane, e
 non è una coincidenza, perché entrambe le cose diventano superflue quando la
 rete è abbastanza buona da giudicare da sé.
@@ -143,14 +143,14 @@ rete è abbastanza buona da giudicare da sé.
 La distribuzione delle visite alla
 radice, normalizzata, è una policy migliorata rispetto a $P(s,\cdot)$, e
 diventa il bersaglio su cui la rete si addestra. MCTS, in questa lettura, è un
-**operatore di miglioramento della policy**: lo stesso ruolo che nella
+operatore di miglioramento della policy: lo stesso ruolo che nella
 programmazione dinamica ha il passo di *policy improvement*, ottenuto con la
 ricerca invece che con un massimo esatto.
 
 `````
 
 L'idea è più generale del gioco da tavolo, ed è il motivo per cui conviene
-averla in tasca: **quando si può simulare, si può pensare**. Il programma
+averla in tasca: quando si può simulare, si può pensare. Il programma
 MuZero, per esempio, la usa senza nemmeno conoscere le regole del gioco: se le
 costruisce da solo, guardando le partite. E il modello che si costruisce non
 ridisegna la scacchiera pezzo per pezzo, ne tiene solo un riassunto interno, il
@@ -167,19 +167,19 @@ bivi in fila, cioè $2\times2\times2\times2 = 16$ finali possibili, ognuno con i
 suo valore. Un valore alto lo piantiamo noi, nascosto in mezzo agli altri, e
 qual è il migliore dei sedici lo sappiamo comunque: l'algoritmo no, e il gioco
 è vedere se ci arriva.
-Due parole di gergo, che tornano nel codice e nei risultati: la **radice** è il
-punto di partenza dell'albero, le **foglie** sono le sue punte, cioè i sedici
+Due parole di gergo, che tornano nel codice e nei risultati: la radice è il
+punto di partenza dell'albero, le foglie sono le sue punte, cioè i sedici
 finali.
 
 Una precauzione, prima di leggere i numeri, e vale per tutto il resto del
 capitolo. Se lancio un dado una volta e fa sei, non posso dire che quel dado fa
 sempre sei: ho misurato quel lancio, non il dado. Lo stesso vale per un
 algoritmo che a ogni passo tira a sorte. Quindi la ricerca qui sotto si lancia
-**sessanta volte**, cambiando ogni volta il *seme*, cioè il numero da cui parte
+sessanta volte, cambiando ogni volta il *seme*, cioè il numero da cui parte
 il sorteggio (dentro un computer il caso è una sequenza calcolata e non vero
 caso, che dipende tutta da quel numero iniziale, e cambiarlo è il modo di
 rifare l'esperimento daccapo). Di ciò che ne esce non si guarda un risultato: si
-guardano il valore di mezzo (la **mediana**: la metà delle sessanta prove sta
+guardano il valore di mezzo (la mediana: la metà delle sessanta prove sta
 sotto, l'altra metà sopra) e gli estremi.
 
 ```python
@@ -279,16 +279,16 @@ print(f"          in quei semi la foglia migliore batte l'altro ramo di "
 ```
 
 Sul seme $7$, quello dell'esempio, il ramo che porta alla foglia buona riceve
-**1922 visite su 2000** e l'altro $78$: dopo poche decine di prove la ricerca ha
+1922 visite su 2000 e l'altro $78$: dopo poche decine di prove la ricerca ha
 smesso di sprecare tempo di là. In fondo all'albero, il $58\%$ di tutte le
 visite finisce sulla foglia migliore, contro il $6{,}2\%$ che le toccherebbe
 tirando a caso, cioè una foglia su sedici.
 
-Su sessanta semi, però, quella quota ha **mediana $50{,}5\%$** e oscilla fra il
+Su sessanta semi, però, quella quota ha mediana $50{,}5\%$ e oscilla fra il
 $16\%$ e l’$89\%$; scartando le quindici prove più basse e le quindici più alte,
 le trenta di mezzo stanno fra il $33\%$ e il $60\%$. Le visite al ramo giusto
 hanno mediana $1582$ e vanno da $593$ a $1965$, cioè il $1922$ del seme $7$ è
-vicino al massimo osservato. In **nove semi su sessanta** il ramo più visitato alla
+vicino al massimo osservato. In nove semi su sessanta il ramo più visitato alla
 radice non è quello che contiene la foglia migliore. Guardati da vicino, però,
 quei nove sono pareggi e non errori. Là dove la regola «si gioca la mossa
 più visitata» sceglie l'altro ramo, la foglia migliore lo batte di $0{,}004$,
@@ -331,7 +331,7 @@ primo che i successori toglieranno.
 
 Il ciclo di {numref}`fig-alphago` è il motivo per cui i successori di AlphaGo
 poterono fare a meno delle partite umane, e poggia su un fatto da enunciare da
-solo: **la ricerca gioca meglio delle due reti che la guidano**. Se ci si
+solo: la ricerca gioca meglio delle due reti che la guidano. Se ci si
 pensa è quasi ovvio. La rete propone di getto, guardando la posizione; la
 ricerca, prima di decidere, prova per davvero migliaia di continuazioni.
 Quindi la mossa che esce dalla ricerca è quasi sempre migliore di quella che
@@ -357,7 +357,7 @@ apprendimento per rinforzo, ricerca ad albero e reti profonde.
 Lo stesso meccanismo (aumentare la probabilità di ciò che riceve un giudizio
 positivo) è oggi al cuore dell'addestramento dei modelli linguistici.
 
-**Allineare** un modello vuol dire portarlo a fare ciò che chi lo interroga
+Allineare un modello vuol dire portarlo a fare ciò che chi lo interroga
 intende davvero. Non è scontato, perché un modello linguistico nasce sapendo
 fare una cosa sola: indovinare come prosegue un testo. A «spiegami perché il
 cielo è azzurro» un continuatore di testi può rispondere benissimo con un'altra
@@ -376,7 +376,7 @@ tradurre quell'ordine in un punteggio che l'ottimizzazione sa usare.
 ```
 
 Il dettaglio di {numref}`fig-instructgpt` da notare è il primo riquadro: alle
-persone si chiede di **ordinare**, non di valutare. Confrontare due risposte è
+persone si chiede di ordinare, non di valutare. Confrontare due risposte è
 un giudizio che gli esseri umani danno con buona coerenza fra loro; assegnare
 un voto da uno a dieci molto meno, e su scale diverse. Nell’**RLHF**
 (*Reinforcement Learning from Human Feedback*, cioè apprendimento per rinforzo
@@ -390,28 +390,29 @@ rispondere in modo utile e onesto.
 
 Il disegno comincia dagli ordinamenti, ma prima c'è un passo che non si vede:
 il modello viene addestrato a imitare risposte scritte da persone, cioè a
-copiare quello che avrebbe fatto qualcuno di bravo. Si chiama **clonazione
-comportamentale**, ed è la scorciatoia più ovvia di tutte: la sezione
-sull'imitazione ci torna sopra per esteso, e spiega perché da sola non basta.
+copiare quello che avrebbe fatto qualcuno di bravo. Si chiama clonazione
+comportamentale, ed è la scorciatoia più ovvia di tutte: la
+{doc}`sezione sull'imitazione <imitazione>` ci torna sopra per esteso, e spiega
+perché da sola non basta.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La **ricerca ad albero Monte Carlo** è il "pensare prima di muovere":
+- La ricerca ad albero Monte Carlo è il "pensare prima di muovere":
   migliaia di volte si scende nell'albero delle possibilità scegliendo dove
   conviene, si prova un ramo nuovo, si tira fino alla fine e si riporta
-  indietro il risultato. L'albero cresce **storto di proposito**, profondo
-  dove promette e appena accennato altrove, e la mossa scelta è la **più
-  visitata**, non quella con la media più alta. È però una regola pratica e non
+  indietro il risultato. L'albero cresce storto di proposito, profondo
+  dove promette e appena accennato altrove, e la mossa scelta è la più
+  visitata, non quella con la media più alta. È però una regola pratica e non
   un teorema, e a garantirla è soltanto il comportamento alla lunga: su
   sessanta ripetizioni l'albero cresce storto sempre, ma *quanto* storto
   cambia parecchio, e nei nove casi in cui la mossa più visitata non porta
   alla foglia migliore i due rami valgono quasi lo stesso. È il motivo per
   cui i risultati si contano su molte prove e non su una.
-- **AlphaGo** e **AlphaZero** uniscono la strategia, la stima di chi sta
+- AlphaGo e AlphaZero uniscono la strategia, la stima di chi sta
   vincendo e quella esplorazione ad albero. Nel 2016 la ricerca si fidava a
   metà della rete e a metà delle partite tirate a caso; solo con AlphaGo Zero,
-  l'anno dopo, la rete basta da sola. Con l’**RLHF** lo stesso meccanismo,
+  l'anno dopo, la rete basta da sola. Con l’RLHF lo stesso meccanismo,
   guidato dalle preferenze delle persone, allinea i modelli linguistici.
 ```
 `````
@@ -419,15 +420,15 @@ sull'imitazione ci torna sopra per esteso, e spiega perché da sola non basta.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- **MCTS/UCT** applica UCB1 a ogni nodo dell'albero,
+- MCTS/UCT applica UCB1 a ogni nodo dell'albero,
   $Q(s,a) + c\sqrt{\ln N(s)/N(s,a)}$, e alterna selezione, espansione,
   simulazione e risalita; le garanzie sono asintotiche, non sul caso peggiore.
-  AlphaGo sostituisce il termine di esplorazione con **PUCT**, pesato dalla
+  AlphaGo sostituisce il termine di esplorazione con PUCT, pesato dalla
   policy a priori, e *media* rete di valore e rollout ($\lambda=0{,}5$); la
   simulazione casuale sparisce solo con AlphaGo Zero. La distribuzione delle
-  visite alla radice è una **policy migliorata**: è l'operatore che rende
+  visite alla radice è una policy migliorata: è l'operatore che rende
   possibile il *self-play*.
-- **AlphaGo/AlphaZero** uniscono policy, valore e ricerca ad albero; **RLHF**
+- AlphaGo/AlphaZero uniscono policy, valore e ricerca ad albero; RLHF
   applica PPO all'allineamento degli LLM.
 ```
 `````

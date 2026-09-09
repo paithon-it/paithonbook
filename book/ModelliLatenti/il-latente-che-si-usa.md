@@ -1,7 +1,7 @@
 # Il latente che si usa
 
 Con un archivio ben fatto si può fare una cosa che ha l’aria di un gioco di
-prestigio: si prende la scheda di un quadro, si cambia **un numero solo**, si
+prestigio: si prende la scheda di un quadro, si cambia un numero solo, si
 richiama il copista, e il quadro che ridipinge è quello di prima con una cosa
 sola diversa. Più luce. La stessa faccia girata di lato. Lo stesso volto con gli
 occhiali.
@@ -36,17 +36,18 @@ luce, una sola per l’inclinazione, invece di spargere ogni cosa un po’
 dappertutto.
 
 Il modo in cui obbedisce ha una parte che sorprende: non accorcia soltanto le
-righe, ne **spegne** qualcuna del tutto, lasciando cadere per intero quelle che
+righe, ne spegne qualcuna del tutto, lasciando cadere per intero quelle che
 gli rendono meno e concentrando su quelle che restano. Fin qui è proprio il
 mestiere che gli abbiamo chiesto.
 
 Ma quel mestiere ha un punto in cui si rovescia, ed è lo stesso di cui la
 sezione precedente aveva già avvertito. A un archivista a cui la scrittura
-costa troppo non conviene più essere sintetico: conviene **smettere di
-scrivere**. Prima cadono le righe che servivano meno, poi quelle che servivano
-un po’, e alla fine consegna schede vuote. A quel punto il copista dipinge sempre lo
-stesso quadro, che è la media di tutti quelli che ha visto, e cambiare i numeri
-della scheda non cambia più niente perché non c’è più niente da cambiare.
+costa troppo non conviene più essere sintetico: conviene smettere di
+scrivere. Prima cadono le righe che servivano meno, poi quelle che servivano
+un po’, e alla fine consegna schede vuote. A quel punto il copista dipinge
+sempre lo stesso quadro, che è la media di tutti quelli che ha visto, e
+cambiare i numeri della scheda non cambia più niente perché non c’è più niente
+da cambiare.
 
 In certi casi, poi, la manopola c’era già, senza che nessuno l’avesse chiamata
 così, il che le toglie l’aria della trovata. Quando il metro con cui si giudica
@@ -80,14 +81,14 @@ quella luce la manopola diventa il prezzo ombra di un vincolo di capacità sul
 canale latente.
 
 Due osservazioni che tolgono al parametro l’aria di magia. La prima: $\beta$ era
-**già lì**, nascosto nella scelta della verosimiglianza. Con un decoder
-gaussiano il cui rumore ha varianza $\sigma^2$ **fissata** (è il $\sigma^2$
+già lì, nascosto nella scelta della verosimiglianza. Con un decoder
+gaussiano il cui rumore ha varianza $\sigma^2$ fissata (è il $\sigma^2$
 dell’apertura del capitolo, non la larghezza della zona proposta
 dall’encoder), il termine di ricostruzione porta
 davanti a sé un fattore $1/(2\sigma^2)$; moltiplicando l’obiettivo per
 $2\sigma^2$, che è positivo e quindi non sposta l’ottimo, si ottiene
 esattamente l’obiettivo del $\beta$-VAE con $\beta = 2\sigma^2$. Due riserve,
-però, e la seconda morde qui: se $\sigma^2$ viene **appreso** invece che
+però, e la seconda morde qui: se $\sigma^2$ viene appreso invece che
 fissato, il termine additivo $-\tfrac{D}{2}\log(2\pi\sigma^2)$ non è più una
 costante e la manopola libera sparisce; e il decoder di questo capitolo non è
 gaussiano ma di Bernoulli, cioè un $\sigma^2$ da girare non ce l’ha affatto.
@@ -95,7 +96,7 @@ Nell’esperimento delle quattro tacche, quindi, $\beta$ è un parametro vero e
 non è assorbito da niente.
 
 La seconda: l’effetto atteso è che le componenti latenti si specializzino, e il
-meccanismo per cui dovrebbe succedere è la pressione a **spegnerne** alcune.
+meccanismo per cui dovrebbe succedere è la pressione a spegnerne alcune.
 Ogni componente con $D_{\mathrm{KL}}$ vicino a zero è una componente che
 l’encoder ha rinunciato a usare, e in cui $q_\phi(z_j \mid \mathbf{x}) \approx
 p(z_j)$: è il collasso della posterior della sezione precedente, che qui compare
@@ -165,33 +166,33 @@ for beta in (0.5, 1, 2, 4):
 
 La tabella dice tre cose.
 
-**Il baratto va sempre nella stessa direzione**, almeno sulle quattro tacche
+Il baratto va sempre nella stessa direzione, almeno sulle quattro tacche
 provate. Più la manopola sale, meno si spende in scheda e peggio si
 ricostruisce: da 18,6 nat a 27,1. Su nessuna delle quattro si guadagna da tutte
 e due le parti, il che suggerisce una cosa importante: non esiste un valore
 «giusto» da trovare, c’è solo una scala su cui scegliere dove stare, e la
 scelta dipende da che cosa serve.
 
-**Le righe si spengono, e non a una per volta.** Già al valore standard,
+Le righe si spengono, e non a una per volta. Già al valore standard,
 quello di tutta la sezione precedente, quattro delle otto righe della scheda
 portano zero nat: la rete ha scelto da sé di usarne quattro. Alzando la
 manopola ne resta una in meno, e alla tacca dopo cadono le ultime tre insieme.
 Chi si aspettava che il latente usasse tutto lo spazio disponibile ha
-un’informazione in più: **la dimensione del latente è
-quella che la rete decide di pagare**, non quella che si dichiara.
+un’informazione in più: la dimensione del latente è
+quella che la rete decide di pagare, non quella che si dichiara.
 
-**A quattro, l’archivista ha smesso di scrivere.** Costo zero su tutte le
+A quattro, l’archivista ha smesso di scrivere. Costo zero su tutte le
 righe: è il collasso della posterior, arrivato non per sfortuna ma perché lo
 abbiamo comprato girando una manopola. E c’è una conferma indipendente, che
-viene da due sezioni fa: la ricostruzione a $\beta = 4$ vale **27,1 nat**, che
+viene da due sezioni fa: la ricostruzione a $\beta = 4$ vale 27,1 nat, che
 è lo stesso costo di chi non guarda la cifra e dichiara per ogni pixel il
 grigio medio di tutte. Non è una coincidenza. A scheda vuota il copista non
 può fare altro che dipingere sempre la stessa cosa, e la cosa che gli conviene
-dipingere è proprio quella media: i due numeri **devono** coincidere. La prova
+dipingere è proprio quella media: i due numeri devono coincidere. La prova
 del collasso, però, non è il 27,1, è la colonna del costo, che a quella tacca
 vale zero su tutte e otto le righe; il 27,1 è la conferma che arriva da fuori.
 E dice una cosa da portarsi via: il collasso non è un modello
-brutto, è **nessun modello**.
+brutto, è nessun modello.
 
 Il blocco che segue lo fa vedere nel modo più diretto, cioè provando a usare la
 scheda.
@@ -253,7 +254,7 @@ sezione. A sinistra c’è uno zero, con il buco aperto
 in mezzo; spostandosi verso destra il buco si chiude, la figura si stringe e
 si sposta di lato, e l’ultima immagine non è più uno zero né si riesce a dire
 che cifra sia. Sono cambiate insieme la forma del tratto, la posizione e
-l’identità della cifra, e non **una** cosa sola. Quella riga della scheda è una
+l’identità della cifra, e non una cosa sola. Quella riga della scheda è una
 direzione lungo la quale parecchie cose si muovono insieme, e non «lo
 spessore» né «l’inclinazione».
 
@@ -265,11 +266,11 @@ proposte fino ad allora, per rispondere a una domanda sola: la manopola separa
 davvero i fattori? La risposta ha due parti, ed è una delle poche dimostrazioni
 di impossibilità che il libro incontra {cite}`locatello2019challenging`.
 
-La prima parte è teorica: **senza ipotesi in più sul modello e sui dati,
-separare i fattori senza supervisione è impossibile**, e non per difficoltà
+La prima parte è teorica: senza ipotesi in più sul modello e sui dati,
+separare i fattori senza supervisione è impossibile, e non per difficoltà
 pratica. La ragione si vede con un esempio. Metti che l’archivista ci sia
 riuscito: la prima riga della scheda dice quanto la testa è girata, la seconda
-quanta luce c’è. Adesso prendi quelle due righe e **falle ruotare insieme**,
+quanta luce c’è. Adesso prendi quelle due righe e falle ruotare insieme,
 come si gira di sbieco una coppia di assi disegnata su un foglio: al posto di
 «inclinazione» e «luce» restano due righe che ne portano un po’ per una.
 
@@ -282,20 +283,20 @@ più giusta di quella girata: sono due descrizioni ugualmente buone, e la
 macchina non ha modo di preferire quella che a noi sembra sensata.
 
 La seconda parte è sperimentale, ed è la più scomoda. Fra i dodicimila modelli,
-a contare non era **quale** metodo si fosse scelto. Contavano il sorteggio con
+a contare non era quale metodo si fosse scelto. Contavano il sorteggio con
 cui la rete era stata inizializzata, cioè i suoi numeri interni prima di
-imparare, e quanto forte fosse la manopola. E senza etichette non c’è modo di
-scegliere né l’uno né l’altra: si può solo provare e sperare.
+imparare, e quanto forte fosse la manopola. E un modo di sceglierli senza
+etichette, in quello studio, non si è trovato: per adesso si prova e si spera.
 
 Il che non rende la manopola inutile. La rende quello che è: un modo di
-comprare **spazio sulla scheda**, non un modo di comprare significato.
+comprare spazio sulla scheda, non un modo di comprare significato.
 
 ## Quando il latente è fatto di simboli
 
 C’è un’altra cosa che si può chiedere alla scheda, ed è la più conseguente di
-tutte per il resto del libro: che invece di numeri porti **simboli**, presi da
+tutte per il resto del libro: che invece di numeri porti simboli, presi da
 un elenco finito di cui decidiamo in anticipo soltanto quanto sia lungo. La
-macchina che lo fa si chiama **VQ-VAE**, e le due lettere in più dicono proprio
+macchina che lo fa si chiama VQ-VAE, e le due lettere in più dicono proprio
 questo, che si sceglie da un catalogo.
 
 `````{tab} Elementare
@@ -307,7 +308,7 @@ suono. Le caselle gliele contiamo noi; a riempirle, con le descrizioni-tipo che
 tornano più spesso nei quadri, pensa lui. E da lì in poi non descrive più
 niente: guarda il quadro, cerca la casella che gli somiglia di più, e scrive
 quel numero. La scheda smette di essere una fila di misure e diventa una fila
-di **numeri di catalogo**. E la manopola non fa più presa: una casella costa
+di numeri di catalogo. E la manopola non fa più presa: una casella costa
 quanto le altre, quindi la scheda costa uguale comunque la si scriva.
 
 Il guadagno è enorme, e il libro lo ha già incassato due volte. Una fila di
@@ -332,7 +333,7 @@ stessa idea serve per le immagini.
 
 `````{tab} Superiore
 
-Il **VQ-VAE** {cite}`oord2017neural` sostituisce il latente continuo con uno
+Il VQ-VAE {cite}`oord2017neural` sostituisce il latente continuo con uno
 discreto: l’uscita dell’encoder viene sostituita dalla voce più vicina di un
 dizionario appreso di $K$ vettori, e la scheda diventa una sequenza di indici in
 $\{1, \dots, K\}$. Il libro lo spiega per esteso nel capitolo sull’audio, dove
@@ -340,14 +341,14 @@ serve a fabbricare un alfabeto per il suono, e lo riprende nel capitolo sulle
 GAN, dove diventa la base di VQ-GAN; qui interessa solo la sua posizione in
 questa famiglia.
 
-La posizione è questa. Con un latente categorico la riparametrizzazione **non è
-disponibile**: non esiste una scrittura $\mathbf{z} = g(\boldsymbol{\epsilon},
+La posizione è questa. Con un latente categorico la riparametrizzazione non è
+disponibile: non esiste una scrittura $\mathbf{z} = g(\boldsymbol{\epsilon},
 \phi, \mathbf{x})$ derivabile in $\phi$, perché la mappa da $\phi$ a un indice è
 costante a tratti e ha derivata nulla quasi ovunque. Restano tre strade, e il
-libro le incontra tutte e tre in punti diversi: lo **stimatore a punteggio**
+libro le incontra tutte e tre in punti diversi: lo stimatore a punteggio
 della sezione precedente, che si applica ma paga in varianza; un
-**rilassamento continuo** come la Gumbel-softmax, che il capitolo sull’audio usa
-per wav2vec 2.0; e lo **straight-through estimator**, cioè copiare all’indietro
+rilassamento continuo come la Gumbel-softmax, che il capitolo sull’audio usa
+per wav2vec 2.0; e lo straight-through estimator, cioè copiare all’indietro
 il gradiente saltando la quantizzazione, che è la scelta di VQ-VAE.
 
 Dell’ELBO, poi, resta poco. Con prior uniforme sugli indici e
@@ -375,9 +376,9 @@ cui il trucco delle correzioni della sezione precedente non si applica.
 </DeepReinforcementLearning/offline-rl>`**, dove si impara a decidere da
 partite già giocate senza poterne giocare di nuove, per l’uso più insolito dei
 quattro: là questa macchina non serve né a generare né a comprimere, serve a
-**recintare**. Le si danno in pasto le mosse che nei dati compaiono davvero, e
+recintare. Le si danno in pasto le mosse che nei dati compaiono davvero, e
 lei dice quali mosse siano plausibili in una certa situazione; il programma poi
-sceglie la migliore soltanto **fra quelle**, invece che fra tutte, così non va
+sceglie la migliore soltanto fra quelle, invece che fra tutte, così non va
 a fantasticare su mosse che nessuno ha mai visto. È un modello che fabbrica,
 usato come guardiano.
 
@@ -388,8 +389,8 @@ che cosa c’è dentro.
 stare un generatore di immagini in un computer di casa. Là all’archivista non
 si chiede affatto di inventare: gli si chiede solo di rimpicciolire le immagini
 di quarantotto volte, così che il generatore vero e proprio possa lavorare su
-qualcosa di piccolo. L’archivista impara prima, da solo, e poi **smette di
-imparare**; e la seconda voce di spesa, quella che tiene le schede raccolte, è
+qualcosa di piccolo. L’archivista impara prima, da solo, e poi smette di
+imparare; e la seconda voce di spesa, quella che tiene le schede raccolte, è
 tenuta apposta piccolissima. È il caso in cui il difetto misurato in questo
 capitolo, lo scarto fra il vocabolario comune e l’insieme vero delle schede,
 non si risolve: si aggira, perché a decidere che cosa esce dalla scheda pensa
@@ -406,26 +407,26 @@ corrisponde nessuna immagine, e il sogno si spezzerebbe dopo pochi passi.
 
 ```{admonition} Da ricordare
 :class: important
-- Si può mettere una **manopola** sul costo della scheda e chiedere
+- Si può mettere una manopola sul costo della scheda e chiedere
   all’archivista di essere ancora più sintetico. Sulle quattro tacche provate il
   baratto va sempre nella stessa direzione: la scheda costa meno e la copia
   peggiora, e su nessuna si guadagna da tutte e due le parti.
-- Girando la manopola le righe della scheda **si spengono**, a una a una o a
+- Girando la manopola le righe della scheda si spengono, a una a una o a
   gruppi: già al valore normale, quattro righe su otto portano zero. La
   dimensione del latente la decide la rete, pagandola, e non la
   dichiarazione.
 - Girata troppo, l’archivista smette di scrivere: la scheda non governa più
   niente e il copista dipinge sempre lo stesso quadro.
-- La manopola compra **spazio sulla scheda, non significato**: muovendo una
+- La manopola compra spazio sulla scheda, non significato: muovendo una
   riga cambiano più cose insieme. Che senza aiuti dall’esterno separare gli
-  ingredienti di un dato **non si possa**, e non per difficoltà pratica, è una
+  ingredienti di un dato non si possa, e non per difficoltà pratica, è una
   dimostrazione. E che in pratica conti più il sorteggio iniziale del metodo
   scelto lo hanno mostrato, nel 2019, dodicimila modelli.
-- La scheda può essere fatta di **simboli** invece che di numeri, e allora
+- La scheda può essere fatta di simboli invece che di numeri, e allora
   diventa un testo su cui si può mettere al lavoro la macchina del linguaggio.
   Costa un’altra idea, perché con i simboli il trucco delle correzioni non
   funziona più.
-- Questa macchina il libro la monta in **quattro** posti, due già letti e due
+- Questa macchina il libro la monta in quattro posti, due già letti e due
   che verranno: fabbrica l’alfabeto dei codec audio, fa da recinto attorno alle
   mosse ammissibili quando si impara da partite già giocate, comprime per
   Stable Diffusion, riassume i fotogrammi dei mondi in miniatura.
@@ -437,33 +438,33 @@ corrisponde nessuna immagine, e il sogno si spezzerebbe dopo pochi passi.
 
 ```{admonition} Da ricordare
 :class: important
-- **$\beta$-VAE** {cite}`higgins2017beta`: il termine
+- $\beta$-VAE {cite}`higgins2017beta`: il termine
   $D_{\mathrm{KL}}(q_\phi \,\|\, p)$ pesato da $\beta$, ricavabile come
   lagrangiana di «massimizza la ricostruzione con $D_{\mathrm{KL}} \le
-  \varepsilon$». Con decoder gaussiano di varianza $\sigma^2$ **fissata** non è
+  \varepsilon$». Con decoder gaussiano di varianza $\sigma^2$ fissata non è
   nemmeno un parametro nuovo, perché $\beta = 2\sigma^2$; con $\sigma^2$
   appreso l’equivalenza cade, e con un decoder di Bernoulli come quello di
   questo capitolo un $\sigma^2$ da girare non c’è affatto: qui $\beta$ è un
   parametro vero.
 - Su cifre 8x8 con $L = 8$, passando da $\beta = 0{,}5$ a $\beta = 4$,
   la ricostruzione va da 18,6 a 27,1 nat e le componenti con
-  $D_{\mathrm{KL}} > 0{,}05$ passano da 6 a 0. La **dimensione effettiva** del
+  $D_{\mathrm{KL}} > 0{,}05$ passano da 6 a 0. La dimensione effettiva del
   latente la sceglie l’ottimizzatore, non chi scrive `LATENTE = 8`.
 - La separazione dei fattori non è comprabile con la manopola:
   {cite}`locatello2019challenging` dimostra che senza ipotesi induttive sul
-  modello **e** sui dati è **impossibile** in modo non supervisionato, e misura
+  modello e sui dati è impossibile in modo non supervisionato, e misura
   su oltre 12 000 modelli che a contare sono il seme e gli iperparametri più
   della scelta del metodo, e che nello studio non si è trovato nessun modo, in
   assenza di etichette, di fissare né gli uni né gli altri: per gli autori la
   selezione del modello senza supervisione resta un problema aperto.
-- Latente **discreto** (VQ-VAE {cite}`oord2017neural`): la riparametrizzazione
+- Latente discreto (VQ-VAE {cite}`oord2017neural`): la riparametrizzazione
   non si applica (mappa costante a tratti). Le tre alternative che il libro
   incontra sono lo stimatore a punteggio, la Gumbel-softmax e lo
   *straight-through*. Nell’obiettivo del VQ-VAE il termine di divergenza vale
   $\log K$ ed è quindi costante, cioè resta lì senza avere gradiente, e
-  **accanto** compaiono due termini estranei all’ELBO che allineano dizionario
+  accanto compaiono due termini estranei all’ELBO che allineano dizionario
   ed encoder. Ma lo scostamento che conta è un altro: lo
-  *straight-through* dà un gradiente **distorto**, quindi non si sta più
+  *straight-through* dà un gradiente distorto, quindi non si sta più
   ottimizzando un limite in senso stretto.
 - Quattro usi nel libro, due già letti e due che verranno: tokenizzazione del
   suono (codec neurali) e vincolo di supporto sulle azioni (offline RL); poi

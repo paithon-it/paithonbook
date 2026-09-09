@@ -3,8 +3,9 @@
 C'è un'ironia nascosta nella storia raccontata fin qui. Il cuore di ogni
 modello di diffusione che abbiamo incontrato (il DDPM del 2020, lo Stable
 Diffusion del 2022) è la U-Net {cite}`ronneberger2015u`: un'architettura nata
-nel 2015 a Friburgo per **segmentare cellule al microscopio**, come ricordiamo
-dal capitolo sulla visione artificiale. Per anni nessuno l'ha messa in
+nel 2015 a Friburgo per segmentare cellule al microscopio, come ricordiamo
+dalla {doc}`sezione su detection e segmentazione
+</VisioneArtificiale/detection-segmentazione>`. Per anni nessuno l'ha messa in
 discussione: le si è aggiunta un po’ di attenzione, le si è appesa l'etichetta
 con il numero del passo, ma l'impalcatura (guardare da lontano e poi da vicino,
 con i ponti diretti fra le due viste) è rimasta quella del microscopio.
@@ -29,10 +30,11 @@ passo: via la U-Net, dentro un Transformer. Il mestiere del restauratore resta
 identico, cambia la persona che lo esercita.
 
 Un Transformer, però, mangia sequenze: parole in fila, una dopo l'altra, che in
-gergo si chiamano **token**. Una scheda invece è una griglia di caselle. Come
-si dà in pasto una griglia a chi sa leggere solo in fila? La mossa è già nel
-nostro repertorio: è la stessa, identica, del Vision Transformer incontrato
-nel {doc}`capitolo sui Transformer </Transformers/overview>` {cite}`dosovitskiy2021image`.
+gergo si chiamano token. Una scheda invece è una griglia di caselle. Come si dà
+in pasto una griglia a chi sa leggere solo in fila? La mossa è già nel nostro
+repertorio: è la stessa, identica, del Vision Transformer incontrato nel
+{doc}`capitolo sui Transformer </Transformers/overview>`
+{cite}`dosovitskiy2021image`.
 
 `````{tab} Elementare
 
@@ -43,7 +45,7 @@ ci sono quattro numeri, come già là: i quattro valori con cui l'archivista
 descrive quel pezzetto di quadro.
 
 Il Vision Transformer ci ha insegnato il trucco per trasformare una griglia in
-una frase: tagliarla in **tessere**, come un mosaico, e mettere le tessere in
+una frase: tagliarla in tessere, come un mosaico, e mettere le tessere in
 fila come se fossero parole. Qui le tessere sono quadratini di 2 caselle per
 lato, quindi ne vengono $32 : 2 = 16$ per lato e $16 \times 16 = 256$ in tutto:
 una "frase" di 256 parole. Con un'accortezza: mettendo le tessere in fila si
@@ -54,20 +56,20 @@ sarebbero 64 invece di 256, e leggerle costerebbe quattro volte meno. È la
 manopola con cui si decide quanto far lavorare la torre.
 
 Da qui in poi il lavoro lo conosciamo dal capitolo sui Transformer: la torre di
-lettori, con i suoi piani (in gergo si chiamano **blocchi**). I lettori sono le
+lettori, con i suoi piani (in gergo si chiamano blocchi). I lettori sono le
 tessere: a ogni piano ce n'è uno per tessera, duecentocinquantasei in fila, e
-ciascuno tiene i suoi appunti,
-una lista di numeri lunga sempre uguale. A ogni piano, ogni tessera guarda
-*tutte* le altre (per capire quanto rumore c'è sull'orecchio del gatto aiuta guardare
-anche la tessera con la coda, dall'altra parte della scheda) e poi rielabora
-per conto suo quello che ha visto. All'ultimo piano, ogni tessera riconsegna
-la propria porzione di rumore stimato, e le porzioni ricomposte formano la
-mappa completa: la torre di lettori, tutta insieme, *è* il restauratore, e
-quella mappa è la sua risposta a ogni passo di pulitura. La differenza con la
-U-Net è di principio: le convoluzioni, cioè il modo di guardare che rende una
-rete di visione una rete di visione, davano la precedenza ai vicini di casa per
-costruzione; il Transformer non privilegia nessuno, e dove conviene guardare lo
-impara da solo, tessera per tessera.
+ciascuno tiene i suoi appunti, una lista di numeri lunga sempre uguale. A ogni
+piano, ogni tessera guarda *tutte* le altre (per capire quanto rumore c'è
+sull'orecchio del gatto aiuta guardare anche la tessera con la coda, dall'altra
+parte della scheda) e poi rielabora per conto suo quello che ha visto.
+All'ultimo piano, ogni tessera riconsegna la propria porzione di rumore
+stimato, e le porzioni ricomposte formano la mappa completa: la torre di
+lettori, tutta insieme, *è* il restauratore, e quella mappa è la sua risposta a
+ogni passo di pulitura. La differenza con la U-Net è di principio: le
+convoluzioni, cioè il modo di guardare che rende una rete di visione una rete
+di visione, davano la precedenza ai vicini di casa per costruzione; il
+Transformer non privilegia nessuno, e dove conviene guardare lo impara da solo,
+tessera per tessera.
 
 `````
 
@@ -133,15 +135,15 @@ parte, che vedremo fra poco.
 La torre di lettori ha una regia, collegata con l'auricolare a ogni piano. La
 regia non suggerisce parole: dà istruzioni di *regolazione*. A
 ogni piano dice quanto alzare o abbassare il volume di ciò che passa, come
-spostarne il tono, e soprattutto **quanto di quel piano deve finire nel
-risultato**. Quest'ultima manopola misura l'intervento del piano, non il
+spostarne il tono, e soprattutto quanto di quel piano deve finire nel
+risultato. Quest'ultima manopola misura l'intervento del piano, non il
 volume del segnale: a fondo scala il piano interviene a piena forza, a zero
 non interviene affatto e quello che ha ricevuto prosegue intatto. Le istruzioni
 dipendono dal momento: se siamo ai primi passi della pulitura (quasi tutto
 rumore) o agli ultimi ritocchi, se si sta disegnando un gatto o un faro.
 
 Il "-zero" del nome è un'astuzia da cantiere: il primo giorno di addestramento
-tutte le manopole d'intervento sono a **zero**, e quindi nessun piano tocca
+tutte le manopole d'intervento sono a zero, e quindi nessun piano tocca
 niente. Ogni piano impara poi strada facendo quanto farsi sentire. Sembra
 pigrizia, ma è il modo
 più stabile di cominciare: nessun piano rovina il lavoro degli altri prima
@@ -153,7 +155,7 @@ di aver imparato il proprio.
 
 Ricordiamo dal capitolo sui Transformer la layer normalization: normalizza
 ogni token a media zero e varianza uno, poi riscala con un guadagno e un bias
-appresi, uguali per tutti gli input. L’**adaptive layer norm** (adaLN) rende
+appresi, uguali per tutti gli input. L’adaptive layer norm (adaLN) rende
 guadagno e bias *funzioni del condizionamento*: un piccolo MLP riceve
 $\mathbf{c} = \mathrm{emb}(t) + \mathrm{emb}(y)$ (embedding sinusoidale del
 passo più embedding della classe) e produce, per ciascun sotto-strato di
@@ -174,12 +176,12 @@ dettate dal condizionamento, $\odot$ è il prodotto elemento per elemento e
 $\boldsymbol{\alpha}_c$ è un *gate* che dosa il contributo
 del sotto-strato prima della somma residua. Il pedice $c$ non è decorativo e
 va letto: $\boldsymbol{\alpha}_c, \boldsymbol{\beta}_c, \boldsymbol{\gamma}_c$
-vengono dal **condizionamento** e non
+vengono dal condizionamento e non
 hanno niente a che vedere con $\alpha_t$ e $\beta_t$, che in questo capitolo
 sono lo schedule del rumore. Il suffisso *zero* sta
 nell'inizializzazione: l'ultimo strato dell'MLP parte azzerato, quindi
 $\boldsymbol{\gamma}_c = \boldsymbol{\beta}_c = \boldsymbol{\alpha}_c = 0$ e
-ogni blocco all'inizio è l’**identità**;
+ogni blocco all'inizio è l’identità;
 la rete comincia come un tubo vuoto e i blocchi si accendono gradualmente.
 L'idea di modulare le normalizzazioni ha un precedente illustre che
 conosciamo: l'AdaIN con cui StyleGAN {cite}`karras2019style` inietta lo stile
@@ -194,17 +196,17 @@ all'attenzione.
 
 E qui arriva il risultato che ha fatto scuola, e che vale più di qualunque
 punteggio abbia ottenuto il modello vincente. Peebles e Xie non costruiscono un
-DiT solo: ne costruiscono **dodici**, di taglie diverse, e li mettono in fila
-non per grandezza ma per **quanto lavoro fanno**. In quell'ordine la qualità
+DiT solo: ne costruiscono dodici, di taglie diverse, e li mettono in fila
+non per grandezza ma per quanto lavoro fanno. In quell'ordine la qualità
 delle immagini migliora con una regolarità impressionante, e non importa *da
-dove* quel lavoro venga. È l'eco delle **leggi di scala** viste per i modelli
+dove* quel lavoro venga. È l'eco delle leggi di scala viste per i modelli
 di linguaggio (le regolarità con cui la qualità di un modello cresce al
 crescere della sua taglia, dei suoi dati e del calcolo speso)
 {cite}`kaplan2020scaling,hoffmann2022training`.
 
 Due parole sulle unità di misura, perché da qui in avanti torneranno spesso. Il
-lavoro si conta in **Gflops**, i miliardi di operazioni che costa far passare
-un'immagine dall'ingresso all'uscita; la grandezza si conta in **parametri**,
+lavoro si conta in Gflops, i miliardi di operazioni che costa far passare
+un'immagine dall'ingresso all'uscita; la grandezza si conta in parametri,
 cioè quanti numeri interni ha la rete; e la qualità delle immagini si misura
 con il FID incontrato all'apertura del capitolo, che confronta il mucchio delle
 immagini generate con il mucchio di quelle vere.
@@ -216,7 +218,7 @@ cambia un pezzo solo e si guarda che effetto fa) sul modo di far entrare il
 condizionamento, e a Gflops sostanzialmente pari quel modo cambia la qualità in
 misura tutt'altro che marginale: è lì che adaLN-zero vince. Le due
 affermazioni stanno insieme senza contraddirsi, a patto di enunciarle con
-precisione: **fra modelli costruiti tutti allo stesso modo**, il calcolo
+precisione: fra modelli costruiti tutti allo stesso modo, il calcolo
 predice la qualità meglio della taglia o del numero di tessere presi da soli.
 Come è fatto un piano della torre resta una scelta, e sbagliarla costa; la
 regolarità dice dove spendere il prossimo Gflop, non che l'ingegneria sia
@@ -237,7 +239,7 @@ ceduto il passo ai Vision Transformer, e adesso si ripete dentro la diffusione.
 
 `````{tab} Elementare
 
-Un risultato prezioso proprio perché **prevedibile**: se so quanto
+Un risultato prezioso proprio perché prevedibile: se so quanto
 miglioro raddoppiando il lavoro, so anche se conviene raddoppiarlo, prima di
 spendere i soldi.
 
@@ -246,11 +248,11 @@ Le misure di torre sono quattro, e più grande è la torre più sono i piani e p
 lunghi gli appunti; i modi di tagliare il mosaico sono tre, e più piccole sono
 le tessere più sono i lettori seduti a ogni piano. Quattro per tre fa dodici.
 
-Ora mettile in fila non per quanto sono grandi, ma per **quanto lavoro fanno**:
+Ora mettile in fila non per quanto sono grandi, ma per quanto lavoro fanno:
 quante operazioni servono a far passare un'immagine dall'ingresso all'uscita.
 In quell'ordine, i risultati migliorano quasi in linea retta. E la sorpresa non
-è che chi lavora di più faccia meglio, che sarebbe ovvio: è che **non conta
-come** quel lavoro è stato speso. Una torre alta e stretta e una bassa e larga,
+è che chi lavora di più faccia meglio, che sarebbe ovvio: è che non conta
+come quel lavoro è stato speso. Una torre alta e stretta e una bassa e larga,
 se fanno la stessa quantità di lavoro, arrivano più o meno allo stesso punto.
 Le tre cose che puoi girare (i piani, la lunghezza degli appunti, la misura
 delle tessere) diventano una sola davanti al risultato, e restano tre davanti
@@ -270,9 +272,9 @@ modo di costruire la torre, da lì in poi conta quanto la fai lavorare.
 
 L'affermazione va delimitata, perché è il tipo di regolarità che si generalizza
 troppo in fretta. La correlazione fra Gflops e qualità è misurata
-su **una sola famiglia** (i dodici DiT), su **un solo compito** (generazione
-condizionata alla classe), a **un solo budget di addestramento** e **senza
-guidance**. La cifra titolare del lavoro, invece, è ottenuta *con* la
+su una sola famiglia (i dodici DiT), su un solo compito (generazione
+condizionata alla classe), a un solo budget di addestramento e senza
+guidance. La cifra titolare del lavoro, invece, è ottenuta *con* la
 classifier-free guidance, e non sta su quella curva: sono due misure diverse, e
 confonderle è l'errore più comune quando si cita questo risultato.
 
@@ -323,7 +325,7 @@ non riprodurre correttamente la fisica delle interazioni più elementari.
 L'esempio che sceglie è il vetro che si rompe, e il filmato mostrato è un
 bicchiere che si rovescia senza rompersi mentre il liquido lo attraversa.
 Generare video credibili significa aver *capito* il mondo, o solo averne
-imparato le apparenze? È la domanda del capitolo sui **World Model**, più
+imparato le apparenze? È la domanda del capitolo sui World Model, più
 avanti nel libro, dove i video generativi verranno discussi proprio come
 candidati simulatori. Qui registriamo il fatto architetturale: le tessere del
 Vision Transformer, passate per DiT, sono arrivate al cinema.
@@ -339,19 +341,19 @@ di profondità crescente.
 
 La prima è l'architettura, battezzata **MM-DiT** (*multimodal DiT*, cioè DiT a
 più modalità: il testo e l'immagine sono due modalità), e riguarda il rapporto
-fra le due. In Stable Diffusion il testo era un consulente esterno. La rete che lo
-leggeva era quella di **CLIP** {cite}`radford2021learning`, un modello del
-{doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>` addestrato a mettere in corrispondenza
-immagini e didascalie; trasformava la richiesta una volta per tutte in una fila
-di numeri, e da lì in poi la U-Net poteva soltanto
-*consultarlo*; l'informazione andava in un senso solo. In MM-DiT il testo e
-l'immagine diventano **due file di tessere alla pari**: due corsie che
-conservano ciascuna i propri pesi ma si incontrano nell'attenzione, così che a
-ogni piano della torre le parole guardino le tessere dell'immagine e viceversa.
-La famiglia arriva fino a 8 miliardi di numeri interni, e la scala si comporta
-anche qui in modo regolare e prevedibile. L'impostazione ha fatto scuola: la
-riprende, tra gli altri, FLUX (2024), del gruppo di autori originali di Stable
-Diffusion.
+fra le due. In Stable Diffusion il testo era un consulente esterno. La rete che
+lo leggeva era quella di CLIP {cite}`radford2021learning`, un modello del
+{doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>`
+addestrato a mettere in corrispondenza immagini e didascalie; trasformava la
+richiesta una volta per tutte in una fila di numeri, e da lì in poi la U-Net
+poteva soltanto *consultarlo*; l'informazione andava in un senso solo. In
+MM-DiT il testo e l'immagine diventano due file di tessere alla pari: due
+corsie che conservano ciascuna i propri pesi ma si incontrano nell'attenzione,
+così che a ogni piano della torre le parole guardino le tessere dell'immagine e
+viceversa. La famiglia arriva fino a 8 miliardi di numeri interni, e la scala
+si comporta anche qui in modo regolare e prevedibile. L'impostazione ha fatto
+scuola: la riprende, tra gli altri, FLUX (2024), del gruppo di autori originali
+di Stable Diffusion.
 
 `````{tab} Elementare
 
@@ -394,7 +396,7 @@ elaborate.
 `````
 
 La seconda novità è la meno appariscente e riguarda l'archivista, non il
-restauratore: il latente passa da 4 a **16 canali**, cioè da quattro a sedici
+restauratore: il latente passa da 4 a 16 canali, cioè da quattro a sedici
 numeri per ogni casella della scheda. È la correzione diretta
 del limite discusso nella sezione precedente, cioè il soffitto che il
 compressore impone alla qualità finale; a parità di fattore di compressione,
@@ -424,7 +426,7 @@ tanti e piccoli.
 ```
 
 {numref}`fig-traiettorie-dritte` mostra la cosa in un colpo d'occhio, e dice
-anche dove sta il guadagno: nel **tempo** che serve a fare l'immagine, non
+anche dove sta il guadagno: nel tempo che serve a fare l'immagine, non
 nella bellezza dell'immagine che ne esce. Il numero di fermate necessarie non
 dipende da quanto la meta sia lontana, ma da quanto la strada curvi:
 raddrizzarla non cambia dove si arriva, cambia quante volte bisogna fermarsi a
@@ -439,8 +441,8 @@ rimescolamento a ogni tappa lo scuote ancora. Per questo le tappe devono essere
 tante e corte: chi tiene la direzione per troppo tempo esce di strada.
 
 L'idea nuova è quasi insolente: perché seguire una strada tortuosa? Prendi la
-scheda tutta rumore e la scheda dell'immagine finita, traccia una **linea
-dritta** tra le due, e insegna alla rete una sola cosa: in ogni punto della
+scheda tutta rumore e la scheda dell'immagine finita, traccia una linea
+dritta tra le due, e insegna alla rete una sola cosa: in ogni punto della
 linea, *in che direzione si cammina*. La lezione è facile da preparare, perché
 la risposta giusta la sappiamo già: la linea l'abbiamo tracciata noi, e la sua
 direzione è sempre la stessa.
@@ -474,7 +476,7 @@ differenza fra un tornante di montagna e una provinciale con qualche curva.
 
 Si fissa una scala continua $t \in [0, 1]$ (dato pulito a $t = 0$, rumore puro
 a $t = 1$, coerente con il verso del capitolo) e si collega ogni dato al
-rumore con un’**interpolazione lineare**:
+rumore con un’interpolazione lineare:
 
 $$
 \mathbf{x}_t = (1 - t)\,\mathbf{x}_0 + t\,\boldsymbol{\epsilon},
@@ -496,7 +498,7 @@ $$
 
 dove $\mathbf{v}_\theta$ è il campo di velocità appreso, con parametri
 $\theta$, e l'attesa è su un dato, un rumore e un istante estratti a caso. È
-l'obiettivo **condizionato**, quello che si sa calcolare, e ha la stessa
+l'obiettivo condizionato, quello che si sa calcolare, e ha la stessa
 struttura da «regressione con bersaglio noto» della loss di DDPM, con la
 velocità al posto del rumore. Per generare si integra l'ODE
 $\mathrm{d}\mathbf{x}/\mathrm{d}t = \mathbf{v}_\theta(\mathbf{x}, t)$ da
@@ -610,7 +612,7 @@ print((blocco(x, c) - x).abs().max().item())   # 0.0
 ```
 
 Quell'ultima riga vale più delle due che la precedono, e conviene dire perché.
-La prima stampa le misure del risultato, e resterebbe **identica** anche
+La prima stampa le misure del risultato, e resterebbe identica anche
 togliendo tutti e quattro i piani della torre, o cambiando il passo e la
 classe: dice che i tubi sono collegati, non che l'acqua ci passi giusta. La
 seconda conta i numeri interni, e almeno cambierebbe togliendo dei piani, ma
@@ -642,7 +644,7 @@ non pubblica né costi né dimensioni. La grandezza
 dicono senza giri di parole.
 
 Usare un modello già addestrato, però, è un'altra storia, e in gergo si chiama
-**inferenza**, che vuol dire semplicemente far girare un modello già fatto
+inferenza, che vuol dire semplicemente far girare un modello già fatto
 invece di costruirlo: si scaricano i pesi, si fanno girare sulla GPU di un
 computer da videogiochi, e il rectified flow ha reso la generazione più veloce,
 non più lenta. L'asimmetria vista per Stable Diffusion (addestrare è per pochi,
@@ -652,7 +654,7 @@ Resta un fatto che questa storia ripete a ogni tappa. Nel
 2015 la diffusione nasce da un'analogia termodinamica; nel 2024 genera un
 minuto di video da una frase. In mezzo, nessun colpo di genio isolato, ma
 quattro mattoni presi da scaffali diversi. L'autoencoder variazionale è del
-2014, ed era nato per **inventare** immagini nuove e non per comprimerle,
+2014, ed era nato per inventare immagini nuove e non per comprimerle,
 sorteggiando una scheda a caso e facendola ridipingere al copista. Qui gli
 tocca il ruolo del compressore, e a inventare pensa qualcun altro. La U-Net
 è del 2015 ed era nata per i microscopi {cite}`ronneberger2015u`. L'attenzione
@@ -670,32 +672,32 @@ senza fermarci.
 
 ```{admonition} Da ricordare
 :class: important
-- **DiT** manda in pensione la rete di visione e mette al suo posto la torre di
+- DiT manda in pensione la rete di visione e mette al suo posto la torre di
   lettori del capitolo sui Transformer. La scheda dell'archivista si taglia a
   tessere, le tessere si mettono in fila come parole, e ogni tessera guarda
   tutte le altre invece dei soli vicini di casa. L'archivista e il lavoro sulle
   schede compresse restano quelli della sezione precedente.
 - Le istruzioni (a che punto della pulitura siamo, che cosa disegnare) non
-  entrano nella conversazione: arrivano da una **regia** che a ogni piano
+  entrano nella conversazione: arrivano da una regia che a ogni piano
   regola le manopole. E il primo giorno tutte le manopole sono a zero, così
   ogni piano parte lasciando passare tutto e impara strada facendo quanto
   farsi sentire.
 - Il risultato che ha fatto scuola: mettendo in fila dodici modelli (quattro
   taglie di torre per tre misure di tessera) per
-  **quanto lavoro fanno**, la qualità migliora quasi in linea retta, e non
+  quanto lavoro fanno, la qualità migliora quasi in linea retta, e non
   conta *come* quel lavoro sia stato speso. Non vuol dire che l'architettura
   non conti: a parità di lavoro, il modo di dare le istruzioni cambia ancora
   molto. Vuol dire che, scelto un buon disegno, da lì in poi comanda il
   calcolo.
-- **Sora** applica la stessa ricetta ai video, tagliando tessere che si
+- Sora applica la stessa ricetta ai video, tagliando tessere che si
   estendono nello spazio *e nel tempo*. Se questo basti a dire che ha «capito»
   il mondo è la domanda del {doc}`capitolo sui World Model </WorldModels/overview>`.
-- **Stable Diffusion 3** fa tre cose: mette testo e immagine allo stesso
+- Stable Diffusion 3 fa tre cose: mette testo e immagine allo stesso
   tavolo invece che uno a consulenza dell'altro, dà all'archivista quattro
   volte più spazio per le sue schede, e sostituisce il sentiero tortuoso con
-  una **linea dritta**, che si percorre a grandi falcate e quindi in molti
+  una linea dritta, che si percorre a grandi falcate e quindi in molti
   meno passi.
-- Allenare questi modelli resta roba da centri di calcolo; **usarli** no. Ed è
+- Allenare questi modelli resta roba da centri di calcolo; usarli no. Ed è
   una storia di mattoni ricombinati, non di rivoluzioni improvvise.
 ```
 
@@ -705,32 +707,32 @@ senza fermarci.
 
 ```{admonition} Da ricordare
 :class: important
-- **DiT** {cite}`peebles2023scalable` sostituisce la U-Net con un
+- DiT {cite}`peebles2023scalable` sostituisce la U-Net con un
   Transformer: il latente si affetta in patch-token come nel ViT
   {cite}`dosovitskiy2021image`, l'attenzione rimpiazza le convoluzioni; il
   VAE e la diffusione nel latente restano quelli di
   {cite}`rombach2022high`.
-- Il condizionamento su $t$ e classe entra via **adaLN-zero**: scala,
+- Il condizionamento su $t$ e classe entra via adaLN-zero: scala,
   traslazione e gate della layer norm generati da un MLP del condizionamento,
   con inizializzazione a zero (ogni blocco parte come identità).
-- Risultato chiave: **dentro la famiglia DiT** la qualità scala con i Gflops in
+- Risultato chiave: dentro la famiglia DiT la qualità scala con i Gflops in
   modo regolare, comunque li si spenda, e le leggi di scala
   {cite}`kaplan2020scaling` arrivano alla diffusione. Non è la fine
   dell'architettura: le ablazioni dello stesso lavoro mostrano che a Gflops
   pari il disegno del blocco cambia ancora molto il risultato.
-- **Sora** {cite}`brooks2024video` dichiara un diffusion transformer su
+- Sora {cite}`brooks2024video` dichiara un diffusion transformer su
   *spacetime patches* di video compressi, con qualità che cresce col
   calcolo: la ricetta DiT estesa al tempo. Se ciò faccia dei video
   generativi dei "simulatori di mondo" è la domanda del capitolo sui World
   Model.
-- **Stable Diffusion 3** {cite}`esser2024scaling` cambia tre cose: l'MM-DiT
+- Stable Diffusion 3 {cite}`esser2024scaling` cambia tre cose: l'MM-DiT
   (testo e immagine come due flussi di token alla pari), il latente da 4 a 16
   canali (che alza il soffitto di ricostruzione discusso nella sezione
-  precedente) e il passaggio al **rectified flow** {cite}`liu2023rectified`,
+  precedente) e il passaggio al rectified flow {cite}`liu2023rectified`,
   della famiglia del *flow matching* {cite}`lipman2023flow`: interpolazioni
   lineari dato–rumore, una velocità appresa per regressione, generazione
   integrando un'ODE in poche decine di passi.
-- Addestrare resta un affare da data center; **usare** no: i pesi aperti e
+- Addestrare resta un affare da data center; usare no: i pesi aperti e
   il latente compresso tengono l'inferenza alla portata di una GPU
   domestica. La storia del capitolo è ricombinazione di mattoni noti, non
   una rivoluzione improvvisa.

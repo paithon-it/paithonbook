@@ -5,8 +5,8 @@ rivista di processi stocastici un articolo di quattordici pagine intitolato
 *Reverse-time diffusion equation models* {cite}`anderson1982reverse`. Il
 problema che aveva per le mani era di tutt'altro genere: dato un segnale
 rumoroso osservato fino a un certo istante, stimare che cosa fosse successo
-prima. Il risultato che ottiene è generale: **un processo casuale che si
-diffonde in avanti nel tempo si può percorrere all'indietro**, e l'equazione
+prima. Il risultato che ottiene è generale: un processo casuale che si
+diffonde in avanti nel tempo si può percorrere all'indietro, e l'equazione
 che lo descrive è la stessa di prima più un termine correttivo.
 
 Quel termine correttivo dice, in ogni punto, da che parte stanno le zone dove i
@@ -32,8 +32,8 @@ di scrivere lo stesso oggetto.
 Le due ricette per rovinare un'immagine, quella che aggiunge rumore sempre più
 forte e quella che a ogni passo restringe un po' l'immagine e ci aggiunge un
 pizzico di rumore, sembrano diverse. Scritte una sotto l'altra hanno però la
-stessa forma: **il nuovo valore è il vecchio, più uno spostamento sistematico,
-più uno scossone sorteggiato**. Cambia solo quanto valgono i due pezzi.
+stessa forma: il nuovo valore è il vecchio, più uno spostamento sistematico,
+più uno scossone sorteggiato. Cambia solo quanto valgono i due pezzi.
 
 Ora immagina di prendere quella ricetta e di applicarla non mille volte, ma un
 milione, con passi mille volte più corti. Quello che si ottiene al limite è una
@@ -45,7 +45,7 @@ trascinato; il secondo si chiama **diffusione** e dice quanto trema.
 Sul tremore serve una precisazione, perché è controintuitiva. Gli scossoni non
 si accumulano come uno spostamento normale: sommando cento scossoni a caso, chi
 va a destra e chi a sinistra si compensano parecchio, e quello che resta cresce
-come la **radice** del numero di scossoni, non come il numero. Ecco perché
+come la radice del numero di scossoni, non come il numero. Ecco perché
 nella ricetta il tremore compare con una radice quadrata del passo, mentre la
 deriva compare con il passo intero. È lo stesso fatto della legge dei grandi
 numeri, visto al contrario: la media di tante prove si stabilizza come uno
@@ -77,7 +77,7 @@ notazione: gli incrementi di un processo di Wiener hanno varianza proporzionale
 al tempo, quindi deviazione standard proporzionale alla sua radice.
 
 Per $\Delta t\to 0$ la ricorrenza converge all'equazione differenziale
-stocastica **in avanti**
+stocastica in avanti
 
 $$
 \mathrm{d}\mathbf{x}(t) = \mathbf{f}(\mathbf{x}(t),t)\,\mathrm{d}t
@@ -91,8 +91,8 @@ nulla e varianza $t-s$. È continuo ovunque e derivabile in nessun punto, ed è
 la ragione per cui la scrittura $\mathrm{d}\mathbf{w}$ non si può dividere per
 $\mathrm{d}t$.
 
-La cosa che rende trattabile tutto il resto è la scelta di una **deriva
-affine**, $\mathbf{f}(\mathbf{x},t) = f(t)\,\mathbf{x}$ con $f$ scalare. Sotto
+La cosa che rende trattabile tutto il resto è la scelta di una deriva
+affine, $\mathbf{f}(\mathbf{x},t) = f(t)\,\mathbf{x}$ con $f$ scalare. Sotto
 questa ipotesi il processo condizionato al dato iniziale resta gaussiano a ogni
 istante, e il **nucleo di perturbazione** ha forma chiusa:
 
@@ -126,13 +126,13 @@ succede alla larghezza della nuvola dei dati.
 
 `````{tab} Elementare
 
-**La prima famiglia non tocca l'immagine e ci versa sopra rumore sempre più
-forte.** Non c'è nessuna deriva: il dato resta dov'è, e attorno a esso la
+La prima famiglia non tocca l'immagine e ci versa sopra rumore sempre più
+forte. Non c'è nessuna deriva: il dato resta dov'è, e attorno a esso la
 nuvola si allarga senza limite. Alla fine il rumore è così forte che
 dell'immagine non si distingue più niente, ma tecnicamente c'è ancora, sepolta.
 Il nome dice il comportamento: la varianza esplode.
 
-**La seconda famiglia invece restringe l'immagine mentre aggiunge rumore**, e
+La seconda famiglia invece restringe l'immagine mentre aggiunge rumore, e
 lo fa con un dosaggio preciso: quanto toglie di segnale, tanto aggiunge di
 rumore, così che la larghezza complessiva della nuvola resti sempre più o meno
 uguale a uno. È la ricetta di DDPM, e il nome dice anche questo: la varianza si
@@ -257,16 +257,16 @@ larghezza loro, essendo due punti a distanza tre.
 Riavvolgere una diffusione sembra impossibile, e per una singola traiettoria lo
 è: il fumo che esce da un camino non rientra, e da una nuvola di fumo non si
 ricostruisce la scintilla che l'ha prodotta. Il risultato di Anderson dice una
-cosa più sottile e più utile: **la singola traiettoria non si riavvolge, ma la
-distribuzione sì**. Non si può sapere da quale scintilla venga quel fumo lì; si
+cosa più sottile e più utile: la singola traiettoria non si riavvolge, ma la
+distribuzione sì. Non si può sapere da quale scintilla venga quel fumo lì; si
 può però costruire un processo che, partendo da nuvole di fumo, produce
 scintille distribuite esattamente come quelle vere.
 
 L'equazione all'indietro ha la stessa forma di quella in avanti, con un termine
 in più: in ogni punto, oltre alla deriva e al tremore, c'è una spinta che punta
 verso le zone dove i dati sono più densi. Quella spinta è il **punteggio**, il
-verso della salita di cui si parlava, e la cosa importante è che è **l'unica
-cosa ignota**. Deriva e tremore li abbiamo scelti noi quando abbiamo deciso
+verso della salita di cui si parlava, e la cosa importante è che è l'unica
+cosa ignota. Deriva e tremore li abbiamo scelti noi quando abbiamo deciso
 come rovinare le immagini: sono nostri, li conosciamo esattamente. Della strada
 del ritorno manca un pezzo solo, ed è quello che la rete impara.
 
@@ -274,7 +274,7 @@ C'è una cosa che sorprende. Andando all'indietro si continua ad aggiungere
 rumore. Sembra assurdo, visto che si sta cercando di ripulire; e invece i due
 termini lavorano insieme. La spinta verso le zone dense tira verso i dati, il
 rumore permette di esplorare invece di precipitare sul primo posto buono, e il
-tremore **si spegne** man mano che si procede: all'inizio del ritorno è forte e
+tremore si spegne man mano che si procede: all'inizio del ritorno è forte e
 si vaga, verso la fine è quasi nullo e comanda solo la spinta. È esattamente la
 ricetta con cui i fisici campionano una distribuzione complicata, con una
 temperatura che si abbassa piano piano finché il sistema non si posa.
@@ -297,12 +297,12 @@ $$
 
 integrata da $t=T$ a $t=0$ (quindi $\mathrm{d}t<0$), con
 $\bar{\mathbf{w}}$ un processo di Wiener nel tempo invertito. Qui
-$\nabla_{\mathbf{x}}\log p_t(\mathbf{x})$ è il **punteggio** (*score*) della
+$\nabla_{\mathbf{x}}\log p_t(\mathbf{x})$ è il punteggio (*score*) della
 marginale all'istante $t$, cioè il gradiente rispetto a $\mathbf{x}$ del
 logaritmo della densità dei dati rumorosi.
 
 Il contenuto del teorema è forte e va enunciato con precisione: le marginali
-del processo invertito **coincidono** con quelle del processo in avanti a ogni
+del processo invertito coincidono con quelle del processo in avanti a ogni
 istante, come uguaglianza e non come approssimazione asintotica. Le
 singole traiettorie invece non si corrispondono, ed è la ragione per cui il
 generatore non ricostruisce l'immagine da cui il rumore era partito.
@@ -328,7 +328,7 @@ $$
 dove $\pi_s := p_{T-s}$ è la densità bersaglio a quell'istante. Ha la forma
 della dinamica di Langevin con cui i {doc}`modelli a energia
 </ModelliEnergia/oltre-la-partizione>` campionano, e le differenze sono tre. La
-temperatura $\tau(s)$ **decresce** lungo il percorso (è un *annealing*, non una
+temperatura $\tau(s)$ decresce lungo il percorso (è un *annealing*, non una
 temperatura fissa); il bersaglio cambia a ogni istante invece di essere sempre
 lo stesso; e la deriva è il doppio di quella di Langevin, che a parità di
 diffusione vuole $\tau\nabla\log\pi$. E la differenza morde: con la temperatura
@@ -350,8 +350,8 @@ Immagina due modi di riportare a casa una folla dispersa in una piazza. Il
 primo dà a ciascuno una spinta verso casa e lo lascia anche barcollare un po';
 il secondo assegna a ogni punto della piazza una direzione precisa e chiede a
 tutti di seguirla senza sbandare. I percorsi individuali sono diversissimi, e
-tuttavia si può fare in modo che **in ogni istante la folla sia sparpagliata
-allo stesso modo**: stessa densità in ogni punto della piazza, a ogni ora.
+tuttavia si può fare in modo che in ogni istante la folla sia sparpagliata
+allo stesso modo: stessa densità in ogni punto della piazza, a ogni ora.
 
 Questo secondo modo esiste, e si costruisce a partire dal primo togliendo il
 tremore e dimezzando la spinta: metà è esattamente quanto serve a rimpiazzare
@@ -359,7 +359,7 @@ il rimescolamento che si è tolto. Le conseguenze sono tre.
 
 *Si può percorrere nei due sensi.* Senza caso, il percorso è una linea
 tracciata: dai dati al rumore e dal rumore ai dati si passa lungo la stessa
-strada. Ogni immagine ha quindi il **suo** rumore, quello da cui si ottiene, e
+strada. Ogni immagine ha quindi il suo rumore, quello da cui si ottiene, e
 lo si può trovare percorrendo la strada all'incontrario. È così che si modifica
 un'immagine esistente invece di generarne una da zero: la si porta indietro
 fino al suo rumore, si cambia qualcosa nella richiesta, e la si riporta avanti.
@@ -390,7 +390,7 @@ del caso all'inizio e nessuno alla fine.
 
 `````{tab} Superiore
 
-Accanto alla SDE all'indietro esiste un'equazione **deterministica** con le
+Accanto alla SDE all'indietro esiste un'equazione deterministica con le
 stesse marginali a ogni istante, la **ODE del flusso di probabilità**
 (*probability flow ODE*, PF-ODE):
 
@@ -409,18 +409,18 @@ compensare il contributo diffusivo che si è tolto.
 
 Le tre conseguenze, in forma precisa:
 
-- **Invertibilità.** La PF-ODE definisce un flusso deterministico
+- Invertibilità. La PF-ODE definisce un flusso deterministico
   $\Phi_{t\to s}$, quindi una biiezione fra la distribuzione dei dati e il
   prior. Da qui l’*inversione DDIM*, che serve a editing, interpolazione nello
   spazio del rumore e attribuzione.
-- **Verosimiglianza esatta.** Trattando la PF-ODE come un
+- Verosimiglianza esatta. Trattando la PF-ODE come un
   {doc}`flusso normalizzante continuo </VerosimiglianzaEsatta/a-che-serve>` si
   ottiene
   $\log p_0(\mathbf{x}_0) = \log p_T(\mathbf{x}_T) + \int_0^T
   \nabla\!\cdot\!\mathbf{v}_t(\mathbf{x}_t)\,\mathrm{d}t$,
   con $\mathbf{v}_t$ il campo di velocità della ODE e la divergenza stimata
   alla Hutchinson. È il conto che la SDE non permette.
-- **Errore di discretizzazione.** Un integratore di ordine $p$ su una
+- Errore di discretizzazione. Un integratore di ordine $p$ su una
   traiettoria liscia accumula errore $O(h^p)$ con $h$ il passo; le traiettorie
   della SDE hanno regolarità di Hölder $1/2$ e i metodi stocastici si fermano a
   ordini bassi. È la ragione strutturale per cui i campionatori a pochi passi
@@ -513,10 +513,10 @@ apparentemente diverse. Sono la stessa rete.
 Data un'immagine rovinata, ci sono quattro domande che si possono fare, e
 rispondere a una qualsiasi permette di rispondere a tutte le altre.
 
-- **Qual era il disturbo?** È la domanda di DDPM.
-- **Qual era l'immagine pulita?** È la domanda che sembra più naturale.
-- **In che direzione salire?** È il punteggio.
-- **Con quale velocità muoversi?** È una combinazione delle prime due, e si
+- Qual era il disturbo? È la domanda di DDPM.
+- Qual era l'immagine pulita? È la domanda che sembra più naturale.
+- In che direzione salire? È il punteggio.
+- Con quale velocità muoversi? È una combinazione delle prime due, e si
   chiama velocità.
 
 Sono quattro forme della stessa informazione perché l'immagine rovinata è fatta
@@ -552,7 +552,7 @@ $$
 
 dove $\hat{\boldsymbol{\epsilon}}$ è la predizione del rumore,
 $\hat{\mathbf{x}}_0$ quella del dato pulito, $\mathbf{s}_\theta$ il punteggio e
-$\hat{\mathbf{v}}$ la **velocità**. Una rete addestrata su una qualsiasi delle
+$\hat{\mathbf{v}}$ la velocità. Una rete addestrata su una qualsiasi delle
 quattro si converte nelle altre senza riaddestramento, e le librerie infatti
 espongono un parametro di configurazione per sceglierla.
 
@@ -615,24 +615,24 @@ quella di partenza. Le quattro domande sono la stessa domanda.
 :class: important
 - Le due ricette per rovinare un'immagine hanno la stessa forma (valore
   vecchio, più uno spostamento sistematico, più uno scossone sorteggiato) e nel
-  limite dei passi infinitamente corti diventano **una sola equazione** con due
-  manopole: la **deriva**, che dice dove il valore è trascinato, e la
-  **diffusione**, che dice quanto trema.
+  limite dei passi infinitamente corti diventano una sola equazione con due
+  manopole: la deriva, che dice dove il valore è trascinato, e la
+  diffusione, che dice quanto trema.
 - Le due famiglie storiche sono due scelte di quelle manopole: una lascia
   l'immagine ferma e fa esplodere il rumore, l'altra restringe l'immagine
   mentre aggiunge rumore così che la larghezza resti sempre attorno a uno. La
   seconda tiene i numeri in una scala comoda senza doverli riscalare.
-- La strada del ritorno esiste ed è **la stessa equazione con un termine in
-  più**, la spinta verso le zone dense. Quella spinta è l'unica cosa ignota, e
+- La strada del ritorno esiste ed è la stessa equazione con un termine in
+  più, la spinta verso le zone dense. Quella spinta è l'unica cosa ignota, e
   la rete impara solo quella. Andando all'indietro il tremore c'è ancora ma si
   spegne piano piano, come una temperatura che si abbassa.
-- Accanto alla strada casuale ce n'è una **deterministica** che attraversa le
+- Accanto alla strada casuale ce n'è una deterministica che attraversa le
   stesse nuvole negli stessi istanti. Si percorre nei due sensi (quindi ogni
   immagine ha il suo rumore, e si può modificare un'immagine esistente),
   permette di dire quanto è probabile ciò che si genera, e si accorcia con meno
   passi. In cambio dà campioni un po' meno vari.
 - Le quattro cose che una rete può predire (il disturbo, l'immagine pulita, la
-  direzione di salita, la velocità) sono **la stessa informazione**: sapendone
+  direzione di salita, la velocità) sono la stessa informazione: sapendone
   una si ricavano le altre tre. Cambia solo dove i conti restano precisi.
 ```
 `````
@@ -642,19 +642,19 @@ quella di partenza. Le quattro domande sono la stessa domanda.
 :class: important
 - Il limite $\Delta t\to 0$ dà $\mathrm{d}\mathbf{x} =
   \mathbf{f}(\mathbf{x},t)\mathrm{d}t + g(t)\mathrm{d}\mathbf{w}$. Con deriva
-  **affine** il nucleo è gaussiano in forma chiusa,
+  affine il nucleo è gaussiano in forma chiusa,
   $p_t(\mathbf{x}_t\mid\mathbf{x}_0)=\mathcal{N}(\alpha_t\mathbf{x}_0,
   \sigma_t^2\mathbf{I})$, e il campionamento è *simulation-free*.
-- **VE**: $\mathbf{f}=\mathbf{0}$, $g=\sqrt{\mathrm{d}\sigma^2/\mathrm{d}t}$.
-  **VP**: $\mathbf{f}=-\tfrac12\beta\mathbf{x}$, $g=\sqrt{\beta}$, con
+- VE: $\mathbf{f}=\mathbf{0}$, $g=\sqrt{\mathrm{d}\sigma^2/\mathrm{d}t}$.
+  VP: $\mathbf{f}=-\tfrac12\beta\mathbf{x}$, $g=\sqrt{\beta}$, con
   $\alpha_t^2+\sigma_t^2=1$. Le due differiscono per come fanno scendere il
   rapporto segnale-rumore e per il riscalamento.
-- **Anderson (1982)**: $\mathrm{d}\bar{\mathbf{x}} = [\mathbf{f} -
+- Anderson (1982): $\mathrm{d}\bar{\mathbf{x}} = [\mathbf{f} -
   g^2\nabla\log p_t]\mathrm{d}t + g\,\mathrm{d}\bar{\mathbf{w}}$, con marginali
-  **identiche** a quelle del processo in avanti. Il punteggio è l'unico termine
+  identiche a quelle del processo in avanti. Il punteggio è l'unico termine
   ignoto; con $\mathbf{f}=\mathbf{0}$ l'equazione è una dinamica di Langevin con
   temperatura $\tau(s)=\tfrac12 g^2(T-s)$ che decresce.
-- **PF-ODE**: $\dot{\tilde{\mathbf{x}}} = \mathbf{f} -
+- PF-ODE: $\dot{\tilde{\mathbf{x}}} = \mathbf{f} -
   \tfrac12 g^2\nabla\log p_t$, stesse marginali, traiettorie deterministiche.
   Dà invertibilità, verosimiglianza esatta alla Hutchinson e traiettorie lisce
   (quindi integratori di ordine alto). La SDE resta preferibile per la

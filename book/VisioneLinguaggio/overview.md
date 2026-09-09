@@ -57,10 +57,10 @@ dei pixel e contenuto identico. Le invarianze che ci interessano (traslazione,
 illuminazione, punto di vista, scala) sono esattamente quelle rispetto a cui la
 metrica nativa non è invariante.
 
-Servono quindi due decisioni, e conviene tenerle separate: **come
-rappresentare l'immagine come sequenza** di vettori di dimensione fissa, in uno
-spazio dove la vicinanza sia somiglianza semantica, e **dove i due flussi si
-incontrano**, cioè a quale profondità del sistema informazione visiva e
+Servono quindi due decisioni, e conviene tenerle separate: come
+rappresentare l'immagine come sequenza di vettori di dimensione fissa, in uno
+spazio dove la vicinanza sia somiglianza semantica, e dove i due flussi si
+incontrano, cioè a quale profondità del sistema informazione visiva e
 informazione linguistica smettono di essere separate.
 
 `````
@@ -69,7 +69,7 @@ informazione linguistica smettono di essere separate.
 
 La prima delle due cose da fare, dare all'immagine dei pezzi, ha una risposta
 condivisa da quasi tutti i sistemi di oggi, e il lettore la conosce già: il
-**Vision Transformer** {cite}`dosovitskiy2021image` del capitolo sui
+Vision Transformer {cite}`dosovitskiy2021image` del capitolo sui
 Transformer. Conviene richiamarne il gesto, perché tutto il resto ci poggia
 sopra, e sta in due mosse.
 
@@ -78,7 +78,7 @@ La prima: si taglia la fotografia in quadratini tutti uguali, che qui chiameremo
 compresa). La seconda: siccome le tessere, una volta messe in fila, non
 ricordano più da quale punto della foto venissero, a ciascuna si attacca
 un'etichetta che dice dove stava nella griglia, e quell'etichetta si chiama
-**codifica di posizione**.
+codifica di posizione.
 
 ```{figure} ../figures/vit-2020.svg
 :name: fig-vit-patch-token
@@ -150,7 +150,7 @@ quadruplica $N$ e moltiplica per sedici quel costo.
 `````
 
 Risolta quella, resta l'altra, ed è la domanda che ha generato le architetture
-di cui parleremo: **in quale punto** l'immagine e il testo si incontrano.
+di cui parleremo: in quale punto l'immagine e il testo si incontrano.
 
 ## Tre modi di far incontrare due flussi
 
@@ -159,7 +159,7 @@ due sono diventati una fila di pezzi. Le risposte che hanno resistito sono tre,
 e non sono tre epoche destinate a superarsi a vicenda: convivono, e servono a
 cose diverse.
 
-La prima **allinea due spazi senza fonderli**: due reti separate, una per le
+La prima allinea due spazi senza fonderli: due reti separate, una per le
 immagini e una per i testi, imparano a mandare una foto e la sua didascalia in
 due punti vicini di una stessa mappa, e a tenere lontane le coppie che non si
 corrispondono. Vicini rispetto a che cosa è meno ovvio di quel che sembra, e la
@@ -168,12 +168,12 @@ risposta chiude la sezione «Allineare due spazi». È l'idea di CLIP
 testo raccolte dal web: il modello che ne esce non scrive una riga, ma sa dire
 quanto un'immagine e un testo si somigliano.
 
-La seconda **innesta un occhio su un modello di linguaggio già addestrato**:
+La seconda innesta un occhio su un modello di linguaggio già addestrato:
 fra un encoder visivo e un modello che parla bene si costruisce un raccordo (un
-**connettore**) che traduce le patch in qualcosa che il modello sappia leggere.
+connettore) che traduce le patch in qualcosa che il modello sappia leggere.
 Il grosso dei pesi resta congelato, si addestra il raccordo.
 
-La terza rinuncia alla distinzione: **un solo modello, un solo vocabolario**.
+La terza rinuncia alla distinzione: un solo modello, un solo vocabolario.
 L'immagine viene ridotta a simboli presi da un elenco finito, token come le
 parole, e un unico
 Transformer li legge e li scrive tutti insieme.
@@ -188,7 +188,7 @@ cavano in tre modi diversi.
 
 Il primo modo fa a meno delle parole. I due non si parlano affatto: hanno però
 imparato, ciascuno per conto suo, a segnare quel che hanno in mano su una
-stessa **mappa**, vicino se le due cose si somigliano e lontano se non
+stessa mappa, vicino se le due cose si somigliano e lontano se non
 c'entrano niente. Nessuno dei due sa che cosa abbia scritto l'altro, ma i
 segni restano lì e si misurano con un righello, e tanto basta per ritrovare le
 cose («quale di queste diecimila foto è il gatto nero sul muro?»). Per fare
@@ -215,7 +215,7 @@ sola mescolati insieme.
 
 `````{tab} Superiore
 
-Il criterio che le distingue è **la profondità alla quale avviene la fusione**.
+Il criterio che le distingue è la profondità alla quale avviene la fusione.
 
 *Tardiva, nello spazio delle rappresentazioni.* Due encoder producono due
 vettori nello stesso $\mathbb{R}^{d}$, e l'unica interazione fra le modalità è
@@ -248,21 +248,21 @@ suggerisca, e i sistemi reali sono spesso ibridi.
 Il capitolo poggia su cose viste altrove e non le rispiega. Conviene dire
 quali sono, una riga ciascuna.
 
-Dal capitolo sul **linguaggio** serve la **mappa del significato**: l'idea che
+Dal capitolo sul linguaggio serve la mappa del significato: l'idea che
 una parola si possa scrivere come una fila di numeri, e che su quella mappa
 *gatto* e *felino* finiscano vicini mentre *gatto* e *mercoledì* finiscono agli
 antipodi, con un numero fra $-1$ e $+1$ a dire quanto. Far entrare le
 fotografie in quella stessa mappa è il lavoro che comincia adesso.
 
-Dal capitolo sui **Transformer** serve la **cross-attention**. È l'attenzione di
+Dal capitolo sui Transformer serve la cross-attention. È l'attenzione di
 sempre, con una differenza: chi fa le domande e chi le riceve sono due sequenze
 diverse. Le domande (in gergo, le *query*) vengono dal testo; quel che si va a
 consultare (le *chiavi*, per trovare il punto giusto, e i *valori*, cioè quel che
 si porta via) viene dall'immagine. È il meccanismo con cui il testo interroga
-l'immagine. Dallo stesso capitolo serve l’**instruction tuning**, che trasforma
+l'immagine. Dallo stesso capitolo serve l’instruction tuning, che trasforma
 un modello che descrive immagini in un modello a cui si fanno domande.
 
-Dal capitolo sulla **visione artificiale** serve il **transfer learning**,
+Dal capitolo sulla visione artificiale serve il transfer learning,
 riusare una rete pre-addestrata congelandone i pesi: qui è la strategia
 dominante.
 
@@ -291,10 +291,10 @@ bene impara a farne a meno.
 Un modello che genera testo condizionato a un'immagine minimizza
 $\mathcal{L}(\theta) = -\sum_t \log p_\theta(y_t \mid y_{<t}, \mathbf{I})$, dove $y_t$ è
 il token al passo $t$ e $\mathbf{I}$ l'immagine. Nulla in questa funzione di costo
-obbliga il modello a *usare* $\mathbf{I}$: se il **priore linguistico** concentra già la
+obbliga il modello a *usare* $\mathbf{I}$: se il priore linguistico concentra già la
 massa di probabilità sulla parola corretta, il gradiente che spinge a sfruttare
 l'informazione visiva è debole, e il modello impara la statistica delle
-didascalie invece della scena. È il meccanismo dell’**allucinazione visiva**:
+didascalie invece della scena. È il meccanismo dell’allucinazione visiva:
 non un incidente, ma quel che l'obiettivo premia.
 
 `````
@@ -331,22 +331,22 @@ che il sistema abbia davvero guardato.
 - La pipa di Magritte dice il problema in un colpo: il disegno non è la cosa,
   la parola non è il disegno, e a tenere insieme i tre pezzi è la nostra testa.
   Insegnare quel salto a una macchina è ciò di cui parla il capitolo.
-- Le due materie prime hanno nature opposte: una pagina scritta arriva **già
-  tagliata a pezzi**, le parole, sempre le stesse per tutti; una fotografia è un
-  **tappeto di puntini colorati** senza cuciture, e il confine fra il gatto e il
+- Le due materie prime hanno nature opposte: una pagina scritta arriva già
+  tagliata a pezzi, le parole, sempre le stesse per tutti; una fotografia è un
+  tappeto di puntini colorati senza cuciture, e il confine fra il gatto e il
   muro lo vediamo noi, nei numeri non c'è.
-- Il primo passo è sempre lo stesso: tagliare la foto in **tessere** e metterle
+- Il primo passo è sempre lo stesso: tagliare la foto in tessere e metterle
   in fila come le parole di una frase, attaccando a ciascuna un'etichetta che
   dice dove stava. Da lì in poi immagine e testo sono due file di pezzi, e le
   file sappiamo già come si mettono insieme. Il prezzo si paga sul numero di
   tessere: se raddoppiano, il lavoro quadruplica.
-- La domanda che genera tutto il capitolo è **dove i due flussi si incontrano**,
+- La domanda che genera tutto il capitolo è dove i due flussi si incontrano,
   e le risposte che hanno retto sono tre: due che non si parlano ma segnano le
-  cose sulla stessa mappa (**cerca**), un interprete che sussurra a chi sa già
-  parlare (**conversa**), una lingua sola insegnata a tutti e due dall'inizio
-  (**produce**). Non si superano a vicenda.
+  cose sulla stessa mappa (cerca), un interprete che sussurra a chi sa già
+  parlare (conversa), una lingua sola insegnata a tutti e due dall'inizio
+  (produce). Non si superano a vicenda.
 - Il rischio da tenere presente fin da subito: un modello che vede e parla può
-  parlare benissimo **senza aver guardato**, come lo studente che ha letto
+  parlare benissimo senza aver guardato, come lo studente che ha letto
   migliaia di didascalie di spiaggia e ti nomina gli ombrelloni anche quando non
   ci sono. È quello che l'addestramento premia.
 ```
@@ -357,21 +357,21 @@ che il sistema abbia davvero guardato.
 
 ```{admonition} Da ricordare
 :class: important
-- Il problema non è di formato ma di **raccordo fra rappresentazioni**: quello
+- Il problema non è di formato ma di raccordo fra rappresentazioni: quello
   che manca è uno spazio in cui la vicinanza voglia dire
   la stessa cosa per una misura di luce e per una parola.
-- Testo e immagine hanno nature opposte: il testo è **discreto e già
-  simbolico**, l'immagine un reticolo **continuo** senza unità naturali, dove
+- Testo e immagine hanno nature opposte: il testo è discreto e già
+  simbolico, l'immagine un reticolo continuo senza unità naturali, dove
   la distanza fra i pixel non misura la distanza fra i significati.
-- Il **ViT** {cite}`dosovitskiy2021image` rende l'immagine una sequenza
+- Il ViT {cite}`dosovitskiy2021image` rende l'immagine una sequenza
   tagliandola in patch: con $224 \times 224$ e patch $16 \times 16$ sono 196
   token, e il costo dell'attenzione cresce con $N^2$.
-- **Dove i due flussi si incontrano** genera tre famiglie: allineare due spazi
+- Dove i due flussi si incontrano genera tre famiglie: allineare due spazi
   senza fonderli (CLIP {cite}`radford2021learning`), innestare un connettore su
   un modello di linguaggio già addestrato, o trattare pixel e parole come token
   di un unico vocabolario. Non si superano a vicenda: la prima cerca, la
   seconda conversa, la terza produce.
-- L'obiettivo di addestramento non obbliga il modello a **guardare**: quando il
+- L'obiettivo di addestramento non obbliga il modello a guardare: quando il
   priore linguistico (la statistica delle didascalie, appresa prima e
   indipendentemente dall'immagine) basta a indovinare la didascalia nasce
   l'allucinazione visiva, un limite strutturale e non un caso sfortunato.

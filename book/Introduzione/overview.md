@@ -20,7 +20,7 @@ Nei programmi che sembrano intelligenti, osservava, questa massima si compie
 alla perfezione: finché il meccanismo resta nascosto la macchina appare
 prodigiosa; appena qualcuno lo spiega, l'incanto si sgretola. E il meccanismo
 di ELIZA sta in poche righe. Il programma vero e proprio non imitava nessuno:
-era un motore che riconosceva **schemi**, cioè pezzi di frase fatti a stampo,
+era un motore che riconosceva schemi, cioè pezzi di frase fatti a stampo,
 del tipo «mi sento ___» o «mia madre ___». La parte da recitare gliela
 assegnava un *copione*, un foglio di regole scritto a parte che si poteva
 cambiare senza toccare il programma. Il copione più celebre si chiamava DOCTOR
@@ -66,7 +66,7 @@ scienza che ci prova davvero, invece, è giovane: nasce nel decennio successivo
 alla Seconda Guerra Mondiale, quando per la prima volta ci sono delle macchine
 su cui provare.
 
-Nella vita di tutti i giorni è entrata **due volte**. Negli anni Dieci (il
+Nella vita di tutti i giorni è entrata due volte. Negli anni Dieci (il
 decennio 2010–2019) ci è entrata senza farsi notare, dentro il traduttore
 automatico, i suggerimenti di un negozio online, il riconoscimento dei volti
 nelle fotografie: la usavano tutti e quasi nessuno la chiamava per nome. Dal
@@ -265,7 +265,7 @@ divide entrambi senza resto. Puoi immaginarlo così: hai un pavimento
 rettangolare di $12 \times 8$ mattonelle e vuoi ricoprirlo con piastrelle
 quadrate, tutte uguali e senza tagliarne nessuna; la piastrella più grande che
 funziona è quella da $4 \times 4$. Il trucco di Euclide per trovarlo è
-elegante: dividi il numero grande per il piccolo e guarda il **resto**. $12$
+elegante: dividi il numero grande per il piccolo e guarda il resto. $12$
 diviso $8$ dà resto $4$; ora ripeti con $8$ e $4$: resto $0$. Appena compare
 il resto zero, l'ultimo numero *per cui* hai diviso (qui $4$) è il MCD. Niente
 elenchi di divisori, niente tentativi: due divisioni e hai finito. E se il
@@ -356,7 +356,7 @@ occhi in un decimo di secondo.
 E allora si cambia mestiere. Invece di scrivere le regole, si raccolgono gli
 **esempi** (migliaia di fotografie con scritto accanto «gatto» oppure «non
 gatto») e si lascia che sia il programma a trovare da solo che cosa distingue
-le une dalle altre. Le regole non le scrive nessuno: **emergono dai dati**. È
+le une dalle altre. Le regole non le scrive nessuno: emergono dai dati. È
 questo che significa, in questo libro, dire che un programma *impara*, ed è la
 ragione per cui qui i dati contano quanto il codice.
 
@@ -385,7 +385,7 @@ questo punto si dicono in una riga ciascuno:
   numeri dello strato precedente una descrizione un po’ più astratta (dai
   pixel ai bordi, dai bordi alle forme, dalle forme al gatto). «Profondo» vuol
   dire proprio questo, e nient'altro: che gli strati sono tanti, uno sopra
-  l'altro, e per questo si dicono anche **reti profonde**. Qui basta l'idea che
+  l'altro, e per questo si dicono anche reti profonde. Qui basta l'idea che
   siano molti passaggi semplici, uno dopo l'altro, e che nessuno abbia scritto
   a mano che cosa ciascuno debba cercare;
 - il **reinforcement learning** (apprendimento per rinforzo) è il caso in cui
@@ -404,8 +404,8 @@ programmi che ragionano su regole scritte a mano, cioè la sua metà classica,
 quella dei sistemi esperti del secondo inverno.
 
 Da qui una definizione da tenersi in tasca, provvisoria come tutte quelle
-buone: **l'intelligenza artificiale si occupa dei compiti per cui nessuno sa
-scrivere una ricetta che regga il mondo vero**. È la riga che tiene fuori la
+buone: l'intelligenza artificiale si occupa dei compiti per cui nessuno sa
+scrivere una ricetta che regga il mondo vero. È la riga che tiene fuori la
 lavatrice. Anche una lavatrice decide da sola quando fermare il risciacquo, ma
 per quella decisione la ricetta c'è, sta in poche righe e funziona; un tecnico
 ha stabilito quale sensore leggere e sopra quale soglia fermarsi, e non serve
@@ -557,12 +557,12 @@ grandi collezioni di immagini già etichettate, come ImageNet, al testo del web.
 Dati, potenza di calcolo e algoritmi maturi: sono questi a essere arrivati
 insieme, e il {doc}`capitolo sul deep learning </DeepLearning/overview>` li
 riprende uno per uno; quanto pesi ciascuno si può perfino misurare, e lo fa il
-capitolo sui **Transformer**, i modelli nati da quell'articolo del 2017.
+capitolo sui Transformer, i modelli nati da quell'articolo del 2017.
 
 Su che cosa siano quei dati bisogna fermarsi, perché è la cosa che si
 fraintende più spesso. Il modo di dire corrente li chiama «il petrolio del
 nostro secolo», cioè un giacimento che qualcuno è andato a scavare. I dati
-sono piuttosto uno **scarto**. Non che nessuno li produca apposta: le fotografie
+sono piuttosto uno scarto. Non che nessuno li produca apposta: le fotografie
 con scritto accanto «gatto» le ha etichettate una persona, a mano, ed è un
 mestiere pagato. Ma quella è la fetta piccola, e costa cara proprio perché è
 l'eccezione. Il grosso non lo produce nessuno di proposito: lo lasciamo dietro
@@ -572,8 +572,8 @@ minuto. È la traccia di un passaggio, non il prodotto di un'intenzione.
 
 C'è un precedente, ed è successo su scala planetaria. Certi batteri, i
 cianobatteri, impararono a spezzare l'acqua con la luce del sole per prendersi
-la parte che serviva loro a costruirsi il cibo: è la **fotosintesi**, quella
-che si studia a scuola. Quel che restava lo buttarono via, ed era **ossigeno**
+la parte che serviva loro a costruirsi il cibo: è la fotosintesi, quella
+che si studia a scuola. Quel che restava lo buttarono via, ed era ossigeno
 {cite}`lyons2014rise`. A loro non serviva a niente. Per la vita di allora era
 anzi un veleno, perché era cresciuta in un mondo che non ne aveva mai avuto.
 
@@ -598,7 +598,7 @@ C'è però una parte scomoda, e vale quanto l'altra. Quello scarto, prima di
 diventare respiro, fu un veleno, e chi non seppe conviverci non sparì del
 tutto: si ritirò. Gli organismi che l'ossigeno avvelena esistono ancora, ma
 solo dove l'aria non arriva, nel fango dei fondali e dentro il nostro
-intestino. Nel nostro caso quella parte si chiama **privacy**: ciò che
+intestino. Nel nostro caso quella parte si chiama privacy: ciò che
 lasciamo per strada senza pensarci è esattamente ciò di cui vive qualcuno che
 non abbiamo scelto (di solito un'azienda di cui non abbiamo mai sentito il
 nome), e i posti dove non si lascia niente si fanno più stretti.
@@ -609,7 +609,7 @@ Il debito con l'informatica, peraltro, è stato ripagato con gli interessi
 {cite}`russell2020artificial`: parecchie idee nate nei laboratori di
 intelligenza artificiale hanno poi fatto il giro dell'informatica intera e oggi
 si usano ovunque senza ricordarne la provenienza. La più diffusa è la
-**gestione automatica della memoria**. Un programma, mentre gira, chiede
+gestione automatica della memoria. Un programma, mentre gira, chiede
 continuamente al computer un po’ di spazio in cui mettere quello che sta
 maneggiando, e quello spazio prima o poi va restituito, altrimenti si esaurisce
 e tutto si ferma. Per anni tenerne il conto è stato un lavoro di chi

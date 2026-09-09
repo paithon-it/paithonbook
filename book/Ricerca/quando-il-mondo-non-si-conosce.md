@@ -52,7 +52,7 @@ arriva al punto in cui bisogna fermarsi, e lì non c’è niente da leggere.
 
 `````{tab} Elementare
 
-Non sai giudicare una posizione? E allora **non giudicarla**: da lì, gioca la
+Non sai giudicare una posizione? E allora non giudicarla: da lì, gioca la
 partita fino in fondo tirando le mosse a caso, e guarda come finisce. Poi
 rifallo. Poi rifallo mille volte. Alla fine non hai un giudizio, hai un
 conteggio: da questa posizione, tirando a caso, ho vinto (mettiamo)
@@ -97,7 +97,7 @@ agli scacchi non è così che si è vinto.
 `````{tab} Superiore
 
 La mossa è sostituire la valutazione statica $\mathrm{ev}(s)$ con una stima
-**campionaria**: da $s$ si simulano $N$ partite fino alla fine con una politica
+campionaria: da $s$ si simulano $N$ partite fino alla fine con una politica
 rapida (nella versione più semplice, uniforme sulle mosse legali, con
 l’eccezione di quelle che nel Go riempirebbero un proprio *occhio*, cioè un
 incrocio vuoto circondato da sassolini propri: senza quel divieto le partite a
@@ -109,7 +109,7 @@ reinforcement learning per stimare il valore di uno stato dalle partite giocate,
 e nei modelli generativi per stimare integrali che non hanno forma chiusa.
 
 Resta da dire come si distribuisce il budget di simulazioni fra i figli della
-radice, e la risposta è **esattamente** il dilemma fra esplorare e sfruttare
+radice, e la risposta è esattamente il dilemma fra esplorare e sfruttare
 che il capitolo sul reinforcement learning introdurrà con i bandit a più
 braccia. Dare più prove a ciò che finora rende, senza smettere di provare ciò
 di cui si sa poco, e con una regola che quantifichi quel «senza smettere».
@@ -118,8 +118,8 @@ Valutare una posizione giocando partite a caso non è un’idea del 2006: nel Go
 era arrivato per primo Bernd Brügmann {cite}`brugmann1993monte`, che nel 1993,
 senza dare al programma nessuna conoscenza oltre alle regole, sul nove per nove
 aveva raggiunto la forza di un principiante. Quello che nasce in quegli anni è
-la **fusione** delle due cose, e nasce in due tempi. Prima l’albero che cresce
-**una simulazione alla volta**, con un modo di risalire i valori che comincia
+la fusione delle due cose, e nasce in due tempi. Prima l’albero che cresce
+una simulazione alla volta, con un modo di risalire i valori che comincia
 facendo la media e finisce facendo il minimax: è di Rémi Coulom
 {cite}`coulom2006efficient`, che fra i propri riferimenti mette Brügmann. Poi la
 regola che decide dove spendere la simulazione successiva, cioè la stessa regola
@@ -129,8 +129,8 @@ ha reso finora e quanto poco lo si è provato) applicata a ogni nodo dell’albe
 convergenza, che però dicono che la stima arriva, non quanto in fretta.
 
 C’è un limite, e il metodo se lo porta dietro: la stima campionaria è tanto
-più informativa quanto più il valore di una posizione è **robusto rispetto
-alla qualità del gioco**. Nei domini in cui il valore dipende da una singola
+più informativa quanto più il valore di una posizione è robusto rispetto
+alla qualità del gioco. Nei domini in cui il valore dipende da una singola
 linea forzata, le simulazioni casuali sono rumore puro.
 
 `````
@@ -172,7 +172,7 @@ sono gli spostamenti che la migliorano un po’, e a un certo punto si smette
 perché è ora di cena. Nessuno ha finito: uno ha smesso.
 
 Questa famiglia di metodi il libro la incontra altrove sotto altri nomi. È
-quello che fa la **discesa del gradiente** dei {doc}`richiami di matematica
+quello che fa la discesa del gradiente dei {doc}`richiami di matematica
 </Matematica/analisi-ottimizzazione>`, cioè il modo in cui una rete neurale
 impara: si parte da una configurazione qualunque, si guarda da che parte
 migliora, ci si sposta di un passo, e nessuno dice mai che si è arrivati. Ed è
@@ -199,7 +199,7 @@ mosse. Non c’è potatura, perché non ci sono rami. Non c’è nemmeno il modo
 guardare avanti di un passo.
 
 Quello che resta, all’inizio, è una cosa sola: provare, vedere com’è andata, e
-**ricordarsi** com’è andata. Chi ha fatto una mossa mille volte in situazioni
+ricordarsi com’è andata. Chi ha fatto una mossa mille volte in situazioni
 simili sa, senza conoscere le regole, che di solito finisce bene. Non ha una
 mappa: ha un’esperienza.
 
@@ -218,24 +218,24 @@ davvero al tavolo.
 Formalmente cade la disponibilità di $\mathrm{ris}(s,a)$ e di $c(s,a,s')$: la
 funzione di transizione e la funzione di costo esistono ma non sono
 interrogabili, se non eseguendo davvero l’azione e osservando l’esito. È la
-condizione dell’**apprendimento per rinforzo**, e la differenza operativa non è
-di grado ma di natura: la ricerca spende **calcolo** per guardare futuri
-immaginati, il rinforzo spende **esperienza** per stimare valori da futuri
+condizione dell’apprendimento per rinforzo, e la differenza operativa non è
+di grado ma di natura: la ricerca spende calcolo per guardare futuri
+immaginati, il rinforzo spende esperienza per stimare valori da futuri
 davvero accaduti.
 
 Le due cose non sono alternative, e i capitoli che seguono lo mostrano in tre
-modi. Se il modello manca ma lo si può **imparare**, si ricade nel caso di
+modi. Se il modello manca ma lo si può imparare, si ricade nel caso di
 questo capitolo usando il modello appreso al posto di quello vero: è la
 {doc}`famiglia dei metodi basati su modello
 </DeepReinforcementLearning/model-based>`, col rischio che gli errori del
 modello si accumulino lungo i rami immaginati. Se
-esiste una rete che **suggerisce dove guardare**, la ricerca smette di essere
+esiste una rete che suggerisce dove guardare, la ricerca smette di essere
 cieca e diventa quella di AlphaGo e dei suoi successori
 {cite}`silver2016mastering`. E se il modello non c’è affatto, restano i metodi
 del capitolo sul reinforcement learning.
 
 Resta un punto di contatto: anche a modello
-ignoto, **pensare prima di rispondere paga**. Il calcolo speso al momento
+ignoto, pensare prima di rispondere paga. Il calcolo speso al momento
 della risposta invece che durante l’addestramento è
 una forma di ricerca, e la {doc}`sezione sul post-addestramento
 </Transformers/post-training>` la tratterà per esteso, parlando dei modelli che
@@ -244,8 +244,8 @@ scrivono una lunga brutta copia prima di rispondere.
 `````
 
 Conviene guardare i tre casi tutti insieme, perché messi in fila dicono una
-cosa che presa uno per uno non si vede: **non sono tre difficoltà, sono tre
-destinazioni**. Senza il voto si arriva alla ricerca ad albero Monte Carlo;
+cosa che presa uno per uno non si vede: non sono tre difficoltà, sono tre
+destinazioni. Senza il voto si arriva alla ricerca ad albero Monte Carlo;
 senza l’arrivo si finisce nell’ottimizzazione, cioè nel migliorare senza mai
 arrivare, quella della discesa del gradiente dei richiami di matematica e degli
 sciami; senza le regole da interrogare, all’apprendimento per rinforzo. Un
@@ -256,24 +256,24 @@ ci hanno tolto.
 
 ```{admonition} Da ricordare
 :class: important
-- Tutta la ricerca di questo capitolo poggia su tre regali: **le regole**, che
+- Tutta la ricerca di questo capitolo poggia su tre regali: le regole, che
   si possono interrogare quante volte si vuole per provare le mosse nella
-  propria testa; **l’arrivo**, che si sa riconoscere; e **il voto**, che si sa
+  propria testa; l’arrivo, che si sa riconoscere; e il voto, che si sa
   dare a una posizione di mezzo.
-- Se manca **il voto** (è il caso del Go, dove nessuno è mai riuscito a
+- Se manca il voto (è il caso del Go, dove nessuno è mai riuscito a
   scriverlo), lo si sostituisce con un conteggio: da qui, gioca mille partite a
   caso e guarda quante ne vinci. Le partite non si spartiscono in parti uguali
   fra le mosse candidate: ne va di più a quelle che stanno rendendo, e qualcuna
   resta sempre per quelle provate poco. Funziona nei giochi in cui una
   posizione comoda resta comoda anche giocando male, e non funziona dove esiste
   una sola continuazione che salva.
-- Se manca **l’arrivo**, la ricerca smette di cercare una strada e si mette a
+- Se manca l’arrivo, la ricerca smette di cercare una strada e si mette a
   migliorare quello che ha, fermandosi quando scade il tempo, come si fa
   sistemando i mobili in una stanza.
-- Se mancano **le regole** da interrogare, all’inizio casca tutto: non c’è
+- Se mancano le regole da interrogare, all’inizio casca tutto: non c’è
   albero, non c’è potatura, non c’è niente da guardare avanti. Resta provare
-  per davvero e ricordarsi com’è andata, e questo ha un nome: **apprendimento
-  per rinforzo**. Poi il regolamento comincia a intravedersi, e si torna a
+  per davvero e ricordarsi com’è andata, e questo ha un nome: apprendimento
+  per rinforzo. Poi il regolamento comincia a intravedersi, e si torna a
   provare le mosse nella testa su quello indovinato: di una mossa o due
   funziona, di dieci incatenate ogni pezzo storto si somma a quelli di prima.
 ```
@@ -287,18 +287,18 @@ ci hanno tolto.
 - Le tre ipotesi implicite della ricerca classica sono: modello interrogabile
   ($\mathrm{ris}$ e $c$ disponibili a costo nullo), test di terminazione
   definito, valutazione degli stati intermedi scrivibile.
-- Cade la **valutazione**: si sostituisce $\mathrm{ev}(s)$ con una stima
+- Cade la valutazione: si sostituisce $\mathrm{ev}(s)$ con una stima
   campionaria ottenuta simulando partite fino in fondo, e si distribuiscono le
   simulazioni risolvendo un problema di esplorazione contro sfruttamento.
   È la ricerca ad albero Monte Carlo {cite}`coulom2006efficient,kocsis2006bandit`,
   che il libro costruisce nella {doc}`sezione su MCTS e AlphaGo
   </DeepReinforcementLearning/mcts-alphago>`.
-- Cade il **test di terminazione**: il problema diventa di ottimizzazione, non
+- Cade il test di terminazione: il problema diventa di ottimizzazione, non
   di ricerca di un cammino.
-- Cade il **modello interrogabile**: si entra nell’apprendimento per rinforzo.
-  La distinzione operativa è che la ricerca spende **calcolo** su futuri
+- Cade il modello interrogabile: si entra nell’apprendimento per rinforzo.
+  La distinzione operativa è che la ricerca spende calcolo su futuri
   immaginati e il
-  rinforzo spende **esperienza** su futuri accaduti; il ponte fra i due sono i
+  rinforzo spende esperienza su futuri accaduti; il ponte fra i due sono i
   metodi che imparano il modello e poi ci cercano dentro.
 ```
 

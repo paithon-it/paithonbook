@@ -7,8 +7,8 @@ riconoscere le posizioni e a fare la mossa giusta senza calcolare niente: ha
 sostituito il ragionamento con la memoria della sua conclusione.
 
 Questi metodi fanno esattamente questo. C'è un modello che sa percorrere bene
-la traiettoria, un passo alla volta, e ce n'è un altro che impara a **saltare**
-da un capo all'altro. Il mestiere si chiama **distillazione**, come nella
+la traiettoria, un passo alla volta, e ce n'è un altro che impara a saltare
+da un capo all'altro. Il mestiere si chiama distillazione, come nella
 {doc}`sezione sul modello piccolo che imita
 </Efficienza/un-modello-piccolo-che-imita>`, con una differenza da mettere
 subito in chiaro: là a rimpicciolire era la rete, qui la rete resta grande
@@ -16,7 +16,7 @@ uguale e a rimpicciolire è il numero di passi. Non si tratta di percorrere
 meglio, che era il mestiere della {doc}`sezione sui campionatori veloci
 </ModelliDiffusione/campionatori-veloci>` e ha un limite invalicabile: si
 tratta di cambiare l'oggetto che si impara. E il risultato è che oggi
-un'immagine può uscire da **una sola** valutazione della rete.
+un'immagine può uscire da una sola valutazione della rete.
 
 ## Insegnare a fare in un passo quello che il maestro fa in due
 
@@ -24,7 +24,7 @@ un'immagine può uscire da **una sola** valutazione della rete.
 
 La ricetta più diretta è anche la prima che ha funzionato, e sta in una riga:
 si prende il modello che sa fare mille passi, gli si chiede di farne due, e si
-addestra un secondo modello a ottenere lo stesso risultato con **un** passo
+addestra un secondo modello a ottenere lo stesso risultato con un passo
 solo. Il secondo modello a quel punto sa fare in cinquecento passi quello che
 il primo faceva in mille.
 
@@ -77,9 +77,9 @@ $1$.
 
 Due dettagli tecnici sono decisivi e vanno riportati.
 
-Il primo è la **parametrizzazione**. Con passi lunghi, a $t$ **grande**
-l'obiettivo sul rumore ha varianza esplosiva perché lì $\alpha_t\to 0$, e
-ricostruire
+Il primo è la parametrizzazione. Con passi lunghi, a $t$ grande è
+l'immagine ricavata dal rumore predetto ad avere varianza esplosiva, perché lì
+$\alpha_t\to 0$ e ricostruire
 $\hat{\mathbf{x}}_0 = (\mathbf{x}_t-\sigma_t\hat{\boldsymbol{\epsilon}})/\alpha_t$
 amplifica ogni errore di $\hat{\boldsymbol{\epsilon}}$ di $1/\alpha_t$;
 all'altro estremo vale il contrario. La $\mathbf{v}$-prediction,
@@ -89,13 +89,13 @@ estremi, dove le altre degenerano. Gli autori riportano che anche la predizione
 diretta di $\mathbf{x}_0$ regge la distillazione; la $\mathbf{v}$ è quella che
 si è imposta.
 
-Il secondo è il **programma di rumore a SNR terminale nullo**. Se all'ultimo
+Il secondo è il programma di rumore a SNR terminale nullo. Se all'ultimo
 passo $\alpha_T$ non è esattamente zero, il modello a un passo riceve un
 ingresso che contiene ancora un residuo di segnale, che in generazione non
 c'è: la discrepanza fra addestramento e uso è invisibile con mille passi e
 diventa dominante con uno.
 
-Il limite del metodo è strutturale: lo studente insegue le **traiettorie** del
+Il limite del metodo è strutturale: lo studente insegue le traiettorie del
 maestro, quindi ne eredita gli errori e non può superarlo. Il tetto è la
 qualità del maestro, e ogni giro ci si avvicina da sotto.
 
@@ -109,14 +109,14 @@ Inseguire le traiettorie ha un difetto che si capisce con un'immagine.
 Immagina di dover imparare a disegnare copiando i tratti di un maestro, uno per
 uno, nell'ordine esatto in cui li fa. Se il maestro sbaglia un tratto tu lo
 copi, e il tuo massimo è la sua bravura. Ma quello che al committente interessa
-è il **disegno finito**, non la sequenza dei tratti: se ne arrivi con uno
+è il disegno finito, non la sequenza dei tratti: se ne arrivi con uno
 altrettanto bello per un'altra strada, va bene uguale, e magari meglio.
 
 Da qui la seconda famiglia di metodi. Invece di chiedere allo studente di
 ripercorrere il cammino del maestro, gli si chiede che le immagini che produce
-**siano distribuite come** quelle del maestro. È una richiesta più debole sui
+siano distribuite come quelle del maestro. È una richiesta più debole sui
 singoli casi e più forte nell'insieme, e ha una conseguenza notevole: uno
-studente così può risultare **migliore** del maestro, perché non è obbligato a
+studente così può risultare migliore del maestro, perché non è obbligato a
 riprodurne gli errori.
 
 Come si misuri se due mucchi di immagini sono distribuiti allo stesso modo è il
@@ -141,7 +141,7 @@ D_{\mathrm{KL}}\big(p_\phi \,\|\, p_\theta\big),
 $$
 
 il cui gradiente rispetto ai parametri dello studente dipende dalle due
-distribuzioni **solo attraverso i loro punteggi**:
+distribuzioni solo attraverso i loro punteggi:
 
 $$
 \nabla_\phi D_{\mathrm{KL}}
@@ -158,7 +158,7 @@ su un piccolo insieme di coppie per ancorare lo studente, e spesso un
 discriminatore avversario che accelera la convergenza.
 
 La differenza sostanziale rispetto alla distillazione progressiva è che il
-vincolo è **a livello di distribuzione** e non di traiettoria. Ne segue che lo
+vincolo è a livello di distribuzione e non di traiettoria. Ne segue che lo
 studente può superare il maestro, cosa impossibile per costruzione nella
 famiglia precedente, ed è stato osservato: modelli a uno o due passi che
 battono il maestro a molti passi su punteggi percettivi, pur avendo una
@@ -182,7 +182,7 @@ stessa destinazione.
 
 Sembra un'ovvietà, ed è invece una richiesta fortissima quando la si impone a
 una funzione da imparare. Si chiede a una rete di rispondere «dove si va a
-finire da qui», e si pretende che risponda **la stessa cosa** per tutti i punti
+finire da qui», e si pretende che risponda la stessa cosa per tutti i punti
 di una stessa traiettoria. Una rete che soddisfa questa richiesta è, per
 definizione, un generatore a un passo: le si dà un rumore qualsiasi e risponde
 direttamente l'immagine.
@@ -208,7 +208,7 @@ $$
 \quad\text{per ogni } s,t \text{ sulla stessa traiettoria},
 $$
 
-con la **condizione al contorno**
+con la condizione al contorno
 $\mathbf{f}_\phi(\mathbf{x},\varepsilon) = \mathbf{x}$, dove $\varepsilon$ è un
 istante piccolo e fissato in cui la traiettoria si ferma invece di arrivare a
 zero (e non ha niente a che vedere con il rumore $\boldsymbol{\epsilon}$). La
@@ -267,7 +267,7 @@ moltiplicazione. Un passo solo, e il risultato è esatto invece che
 approssimato, perché la media è definita proprio così.
 
 Da qui la famiglia generale, che invece di una destinazione sola impara la
-mappa fra **due istanti qualsiasi**: dove si arriva partendo da qui a
+mappa fra due istanti qualsiasi: dove si arriva partendo da qui a
 quest'ora e viaggiando fino a quell'altra. Chi impara questa mappa può fare un
 passo solo, due, o venti, con lo stesso modello, e scegliere di volta in volta
 quanto pagare. I metodi che portano nomi diversi negli articoli sono casi
@@ -299,8 +299,8 @@ o una sua restrizione. Le famiglie si collocano così:
 
 L'ultima riga rende evidente perché un passo basti: per definizione
 $\Phi_{t\to s}(\mathbf{x}) = \mathbf{x} + (s-t)\,\bar{\mathbf{u}}$, quindi un
-singolo passo di Eulero con la velocità **media** è esatto, mentre lo stesso
-passo con la velocità **istantanea** ha errore $O((s-t)^2)$. Tutto il guadagno
+singolo passo di Eulero con la velocità media è esatto, mentre lo stesso
+passo con la velocità istantanea ha errore $O((s-t)^2)$. Tutto il guadagno
 sta in questa sostituzione, e tutto il costo sta nel fatto che
 $\bar{\mathbf{u}}$ dipende da due tempi invece che da uno, quindi la rete ha un
 ingresso in più e un problema più difficile da approssimare.
@@ -378,9 +378,9 @@ print(np.round(z + (T_MIN - 1.0) * campo(z, 1.0), 4))
 ```
 
 Le due righe dicono tutto quello che c'è da dire sui generatori a un passo. Un
-solo passo con la velocità **media** riproduce la destinazione cifra per cifra,
+solo passo con la velocità media riproduce la destinazione cifra per cifra,
 perché la media è definita esattamente così; lo stesso passo con la velocità
-**istantanea** finisce ovunque tranne che sui due modi. La difficoltà non sta
+istantanea finisce ovunque tranne che sui due modi. La difficoltà non sta
 nel campionare, sta nell'imparare quella media.
 
 ## Che cosa si perde
@@ -388,34 +388,34 @@ nel campionare, sta nell'imparare quella media.
 Il conto va chiuso onestamente, perché i modelli a pochi passi hanno tre costi
 che i confronti pubblicati non sempre mettono in evidenza.
 
-Il primo è la **varietà**. Comprimere mille passi in uno significa affidare a
+Il primo è la varietà. Comprimere mille passi in uno significa affidare a
 una sola valutazione tutta la scelta, e le distribuzioni che ne escono sono
 sistematicamente più concentrate: i giudizi sulla qualità visiva restano buoni,
 ma il modello copre meno tipi di immagine diversi. Sui volti la cosa si vede a
 occhio, generando qualche centinaio di campioni.
 
-Il secondo è la **controllabilità**. Le tecniche della {doc}`sezione su guida e
+Il secondo è la controllabilità. Le tecniche della {doc}`sezione su guida e
 allineamento </ModelliDiffusione/guida>` agiscono modificando la direzione a
 ogni passo; con un passo solo il punto in cui intervenire è uno, e la guida va
 incorporata nella distillazione invece che applicata al momento. È il motivo
 per cui un modello distillato arriva spesso con la forza della guida già
 fissata dentro.
 
-Il terzo è che **il confronto onesto si fa a parità di valutazioni della
-rete**, e non a parità di passi. Un metodo a due passi che ne usa due per passo
+Il terzo è che il confronto onesto si fa a parità di valutazioni della
+rete, e non a parità di passi. Un metodo a due passi che ne usa due per passo
 costa quanto uno a quattro passi, e le tabelle degli articoli non sempre lo
 dichiarano.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La prima ricetta è la **distillazione progressiva**: uno studente impara a
+- La prima ricetta è la distillazione progressiva: uno studente impara a
   fare in un passo quello che il maestro fa in due, poi diventa maestro a sua
   volta. Dieci giri portano da mille passi a uno, e nel complesso costano
   quanto addestrare il modello di partenza; lo studente però non può superare
   il maestro, perché ne copia i tratti.
 - La seconda chiede una cosa più debole sul singolo caso e più forte
-  nell'insieme: che le immagini prodotte **siano distribuite come** quelle del
+  nell'insieme: che le immagini prodotte siano distribuite come quelle del
   maestro. Così lo studente può risultare migliore, perché non è obbligato a
   copiarne gli errori.
 - La terza parte da un'ovvietà: da qualunque punto di una traiettoria, la
@@ -423,9 +423,9 @@ dichiarano.
   cosa lungo una traiettoria la trasforma in un generatore a un passo, e
   l'ancora che impedisce la risposta banale è il punto di arrivo, dove la
   risposta si conosce.
-- Tutte e tre fanno la stessa mossa: invece della **velocità istantanea**
+- Tutte e tre fanno la stessa mossa: invece della velocità istantanea
   imparano qualcosa che contiene già l'integrale, cioè la destinazione o la
-  **velocità media** sul tratto. Un passo con la velocità media è esatto per
+  velocità media sul tratto. Un passo con la velocità media è esatto per
   definizione; con quella istantanea non lo è, e il conto lo mostra.
 - I costi: meno varietà nelle immagini, guida più difficile da applicare
   dopo, e confronti che vanno letti a parità di valutazioni della rete e non
@@ -436,25 +436,25 @@ dichiarano.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- **Distillazione progressiva**: lo studente riproduce in un passo due passi
+- Distillazione progressiva: lo studente riproduce in un passo due passi
   DDIM del maestro, e si itera; $K$ giri dividono i passi per $2^K$. Vuole una
   parametrizzazione ben condizionata a entrambi gli estremi, di solito la
   $\mathbf{v}$-prediction, e un programma di rumore a SNR terminale nullo; ha
   come tetto la qualità del maestro.
-- **Corrispondenza di distribuzione**: si minimizza
+- Corrispondenza di distribuzione: si minimizza
   $D_{\mathrm{KL}}(p_\phi\|p_\theta)$, il cui gradiente dipende dalle due
   distribuzioni solo attraverso i punteggi; il secondo si stima con un modello
   ausiliario addestrato in linea. Il vincolo è distribuzionale, quindi lo
   studente può superare il maestro.
-- **Consistency model**: $\mathbf{f}_\phi(\mathbf{x}_t,t)=
+- Consistency model: $\mathbf{f}_\phi(\mathbf{x}_t,t)=
   \mathbf{f}_\phi(\mathbf{x}_s,s)$ lungo la PF-ODE, con
   $\mathbf{f}_\phi(\mathbf{x},\varepsilon)=\mathbf{x}$ imposta dalla
   parametrizzazione $c_{\text{skip}}\mathbf{x}+c_{\text{out}}F_\phi$. Si
   addestra per distillazione o da zero, con una rete bersaglio a media mobile.
-- Il quadro unificante è quello delle **mappe di flusso**: si apprende
+- Il quadro unificante è quello delle mappe di flusso: si apprende
   $\Phi_{t\to s}$ invece di $\mathbf{u}_t$. Poiché $\Phi_{t\to s}(\mathbf{x}) =
   \mathbf{x}+(s-t)\bar{\mathbf{u}}$, un passo di Eulero con la velocità
-  **media** è esatto, mentre con quella istantanea l'errore è $O((s-t)^2)$. La
+  media è esatto, mentre con quella istantanea l'errore è $O((s-t)^2)$. La
   consistenza in tempo continuo è
   $\partial_t\Phi + (\nabla_{\mathbf{x}}\Phi)\mathbf{u}_t=\mathbf{0}$, un
   prodotto Jacobiano-vettore.
@@ -465,7 +465,7 @@ dichiarano.
 `````
 
 Resta l'ultima domanda pratica, quella che separa un generatore da uno
-strumento: come si dice a un modello **che cosa** generare. Fin qui il modello
+strumento: come si dice a un modello che cosa generare. Fin qui il modello
 produce campioni dalla distribuzione che ha imparato, e basta; la sezione su
 guida e allineamento mostra come si piega quella distribuzione verso ciò che si
 vuole, e quanto è possibile piegarla prima che si rompa.

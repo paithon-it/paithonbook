@@ -16,8 +16,8 @@ uscito da un dipartimento di fisica: *Deep Unsupervised Learning using
 Nonequilibrium Thermodynamics* {cite}`sohl2015deep`. L'ispirazione viene
 davvero dalla termodinamica di non equilibrio, e l'idea è di un'eleganza
 spudorata: se distruggere è facile e costruire da zero non lo sa fare nessuno,
-filmiamo la distruzione e insegniamo a una rete a **proiettare il film al
-contrario**. Prendi una fotografia e aggiungile del **rumore**, cioè numeri
+filmiamo la distruzione e insegniamo a una rete a proiettare il film al
+contrario. Prendi una fotografia e aggiungile del **rumore**, cioè numeri
 sorteggiati a caso che si sommano ai colori veri e li sporcano di puntini: un
 pizzico alla volta, finché non resta che pulviscolo. Questo è il verso facile,
 la goccia che si disperde. Poi addestra una rete a percorrere la pellicola
@@ -29,7 +29,7 @@ diversa.
 
  Due parole sul vocabolario. «Rumore» è il termine tecnico, ed è quello che
  compare nelle formule; quando raccontiamo la
-cosa a parole diremo anche **disturbo**, **pulviscolo**, **grana** o **sporco**,
+cosa a parole diremo anche disturbo, pulviscolo, grana o sporco,
 ma è sempre lui, e sempre la stessa quantità. E già che ci siamo: si chiamano
 modelli di **diffusione** proprio per la goccia d'inchiostro con cui si è
 aperto il capitolo, perché il verso facile è quello che diffonde la goccia
@@ -45,7 +45,7 @@ non uno, e nella prossima sezione si vedrà perché servono tutti e due). Il
 fotogramma sporco, *quanto rumore c'è qui sopra?*
 
 Su quella domanda conviene essere precisi subito. Alla rete non si chiede il
-pizzico dell'ultimo passo, ma **tutto il rumore accumulato** da quando la
+pizzico dell'ultimo passo, ma tutto il rumore accumulato da quando la
 fotografia era pulita: la distanza fra il fotogramma che ha davanti e
 l'originale. E quello che la rete risponde è una mappa e non un'immagine: per
 ogni punto del fotogramma, di quanto quel punto è stato spostato. Come si passi
@@ -72,7 +72,7 @@ foto cinquecento volte di seguito: la dose di sporco che spetta al passo 500 si
 sa calcolare in anticipo e si stende in un gesto solo. La risposta esatta la
 conosciamo sempre: lo sporco l'abbiamo messo noi.
 
-Per **generare** un'immagine nuova si parte dalla fine: si sorteggia del
+Per generare un'immagine nuova si parte dalla fine: si sorteggia del
 pulviscolo nuovo (dado alla mano, come per rovinare la foto, solo che qui
 sotto non c'è nessuna foto) e si ripete mille volte il giro di domanda e
 risposta, dal passo 1.000 al passo 1. A ogni passo emerge qualcosa (una massa
@@ -83,8 +83,8 @@ Verrebbe da immaginare che a ogni giro si sollevi un velo di sporco, e che dopo
 mille veli il quadro sia pulito. Non è così: a ogni giro se ne toglie
 pochissimo, e se ne getta sopra dell'altro, sorteggiato di nuovo. Una delle due
 ragioni per cui l'immagine emerge lo stesso: quel poco che si toglie è
-**mirato** (ogni giro spinge il quadro un pochino più verso una figura sensata),
-quello che si getta è **sorteggiato**, e mille spintine tutte concordi si
+mirato (ogni giro spinge il quadro un pochino più verso una figura sensata),
+quello che si getta è sorteggiato, e mille spintine tutte concordi si
 sommano mentre mille spintoni a casaccio si disfano fra loro. La seconda
 ragione richiede i numeri, e ce li prendiamo nella prossima sezione.
 
@@ -118,18 +118,18 @@ rumore puro.
 
 Il risultato che rende tutto possibile viene dall'analisi dei processi di
 diffusione: se i passi $\beta_t$ sono piccoli, anche il processo inverso
-$q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ è approssimativamente gaussiano. Non viene
-dal deep learning e lo precede di decenni: lo si deve a William Feller, che lo
-pubblica nel 1949
-{cite}`feller1949theory`; Sohl-Dickstein e colleghi lo riprendono e ci
-costruiscono sopra il modello {cite}`sohl2015deep`.
-Ha quindi senso modellare il processo inverso con una gaussiana
-parametrizzata da una rete,
-$p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$, con parametri appresi $\theta$. Il contributo
-di DDPM {cite}`ho2020denoising` è una parametrizzazione che riduce ogni cosa
-a una regressione: la rete $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ predice il rumore
-$\boldsymbol{\epsilon}$ della scorciatoia in forma chiusa, cioè quello **accumulato** da
-$\mathbf{x}_0$ a $\mathbf{x}_t$ e non l'incremento del solo passo $t$, con la loss
+$q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ è approssimativamente gaussiano. Non
+viene dal deep learning e lo precede di decenni: lo si deve a William Feller,
+che lo pubblica nel 1949 {cite}`feller1949theory`; Sohl-Dickstein e colleghi lo
+riprendono e ci costruiscono sopra il modello {cite}`sohl2015deep`. Ha quindi
+senso modellare il processo inverso con una gaussiana parametrizzata da una
+rete, $p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$, con parametri appresi
+$\theta$. Il contributo di DDPM {cite}`ho2020denoising` è una parametrizzazione
+che riduce ogni cosa a una regressione: la rete
+$\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ predice il rumore
+$\boldsymbol{\epsilon}$ della scorciatoia in forma chiusa, cioè quello
+accumulato da $\mathbf{x}_0$ a $\mathbf{x}_t$ e non l'incremento del solo passo
+$t$, con la loss
 
 $$
 \mathcal{L} = \mathbb{E}_{\mathbf{x}_0,\, \boldsymbol{\epsilon},\, t}\!\left[\,\big\lVert \boldsymbol{\epsilon}
@@ -164,7 +164,7 @@ un compito facile, e la difficoltà si distribuisce sull'intera catena.
 
 La figura rende evidente anche il conto da pagare, che il capitolo ripeterà
 spesso. Se la generazione è una catena di centinaia di passi, ogni passo vuole
-la sua risposta dalla rete: per **una** immagine bisogna interrogarla centinaia
+la sua risposta dalla rete: per una immagine bisogna interrogarla centinaia
 di volte, non una. Nel resto del capitolo questa operazione (dare in pasto alla
 rete un fotogramma e raccoglierne la risposta) la chiameremo sempre allo stesso
 modo, **una valutazione della rete**, e conteremo quante ne servono.
@@ -173,7 +173,7 @@ Il secondo atto è del 2020. Jonathan Ho, Ajay Jain e Pieter Abbeel, a
 Berkeley, ripuliscono la formulazione e la battezzano **DDPM**, *Denoising
 Diffusion Probabilistic Models* {cite}`ho2020denoising`. L'addestramento si
 riduce a «indovina il rumore», e la rete che lo indovina è presa in prestito
-dalla visione artificiale: si chiama **U-Net** e la incontreremo per esteso
+dalla visione artificiale: si chiama U-Net e la incontreremo per esteso
 nella prossima sezione. Per la prima volta le immagini prodotte reggono il
 confronto con le migliori GAN, e non a occhio: c'è un metro apposta, il FID
 (*Fréchet Inception Distance*, definito nel capitolo sulle GAN), che confronta
@@ -182,17 +182,18 @@ i due si somigliano. Più è basso, meglio è.
 
 Il terzo atto arriva un anno dopo, e il titolo dice tutto: *Diffusion Models
 Beat GANs on Image Synthesis* {cite}`dhariwal2021diffusion`. La diffusione
-supera le GAN migliori in due modi. Nella qualità delle singole immagini, e nella **varietà** di quelle che sa
-produrre: una GAN può affezionarsi a un pugno di soggetti e ripetere sempre
-quelli, ed è il difetto raccontato per esteso in {doc}`GAN </GAN/overview>`.
+supera le GAN migliori in due modi, nella qualità delle singole immagini e
+nella varietà di quelle che sa produrre: una GAN può affezionarsi a un
+pugno di soggetti e ripetere sempre quelli, ed è il difetto raccontato per
+esteso in {doc}`GAN </GAN/overview>`.
 
 Poi c'è l'epilogo che non è più storia della ricerca ma storia e basta: il
 2022. Nel giro di pochi mesi OpenAI presenta DALL·E 2 (aprile), Google
 risponde con Imagen (maggio, annunciato ma non accessibile al pubblico),
 Midjourney apre la beta a tutti (luglio) e soprattutto, in agosto, arriva
-**Stable Diffusion**: nato dai *latent diffusion models* del gruppo di Björn
-Ommer a Monaco di Baviera {cite}`rombach2022high` e rilasciato **con i pesi
-aperti**: i pesi sono i milioni di numeri che una rete si ritrova dentro dopo
+Stable Diffusion: nato dai *latent diffusion models* del gruppo di Björn
+Ommer a Monaco di Baviera {cite}`rombach2022high` e rilasciato con i pesi
+aperti: i pesi sono i milioni di numeri che una rete si ritrova dentro dopo
 l'addestramento, cioè tutto quello che ha imparato, e rilasciarli vuol dire
 mettere in rete un file che chiunque può scaricare e far girare a casa propria.
 Per la prima volta si può scrivere «un gatto nero che salta sul muro, in stile
@@ -279,7 +280,7 @@ anche la copertura della distribuzione dei dati. (Attenzione a non appoggiare
 questo argomento al limite variazionale: la loss che si usa davvero non è un
 bound, come vedremo nella prossima sezione. Regge da sé.)
 
-**Costo di campionamento.** Una GAN genera con **una** valutazione della rete;
+**Costo di campionamento.** Una GAN genera con una valutazione della rete;
 un DDPM ne richiede $T$ (mille, in origine), perché il campionamento percorre
 l'intera catena inversa. È il rovescio della medaglia, e ha aperto un filone
 di ricerca sui campionatori accelerati (a partire da DDIM, che riduce i passi
@@ -293,7 +294,7 @@ con una sola valutazione della rete, un DDPM con molte, e la diffusione paga
 in tempo ciò che guadagna in stabilità dell'addestramento e in copertura della
 varietà. Da lì in poi, buona parte del lavoro sulla diffusione è servito ad
 accorciare quel conto, e nel farlo ha spesso rimesso in gioco un
-**discriminatore**, che è il nome tecnico del detective del capitolo
+discriminatore, che è il nome tecnico del detective del capitolo
 precedente: il duello è rientrato come attrezzo di servizio dentro una macchina
 che di suo non ne ha bisogno, invece di sparire. L'impianto dei generatori di
 immagini arrivati al pubblico dal 2022 in poi, però, è questo e non quello, ed
@@ -301,39 +302,48 @@ immagini arrivati al pubblico dal 2022 in poi, però, è questo e non quello, ed
 
 ## Dal rumore all'immagine
 
-Tre tappe. Prima **come funziona davvero**: i due processi di DDPM
+Tre tappe portanti. Prima come funziona davvero: i due processi di DDPM
 {cite}`ho2020denoising` visti da vicino, come si dà un voto alla rete quando
 sbaglia la sua risposta, che rete sia (una vecchia conoscenza della visione
 artificiale) e tutto il meccanismo in miniatura, funzionante, in poche righe di
-Python. Poi il **salto di scala**: come si può far lavorare la rete non sulla
+Python. Poi il salto di scala: come si può far lavorare la rete non sulla
 fotografia ma su una sua versione compressa decine di volte, che è il segreto
 per cui Stable Diffusion {cite}`rombach2022high` gira su un computer di casa, e
 come si fa a ordinargli che cosa disegnare scrivendolo a parole. Infine
-**l'incontro con i Transformer** {cite}`vaswani2017attention`, quelli del
+l'incontro con i Transformer {cite}`vaswani2017attention`, quelli del
 capitolo che porta il loro nome: si può buttare via la rete di visione e
 mettere al suo posto uno di loro {cite}`peebles2023scalable`? La risposta è sì,
 e ha cambiato il modo in cui questi modelli si costruiscono. Ha aperto anche
 una porta che non ci aspettavamo: la stessa ricetta, applicata a blocchi di
-fotogrammi invece che a fotografie singole, genera **video**, ed è da lì che
+fotogrammi invece che a fotografie singole, genera video, ed è da lì che
 arrivano i filmati generati a partire da una frase.
+
+Attorno a queste tre stanno le pagine che le reggono e ne tirano le
+conseguenze. Prima del salto di scala vengono il limite continuo, che dei mille
+passi fa una sola equazione differenziale, e il flow matching, che il percorso
+lo sceglie invece di ereditarlo dal modo in cui si è deciso di rovinare le
+immagini. Dopo i Transformer vengono i campionatori che portano i passi a
+qualche decina, i generatori che li portano a uno, la guida con cui si decide
+quanto il risultato debba obbedire alla richiesta, e infine la stessa ricetta
+applicata a uno stato fatto di simboli invece che di numeri, cioè al testo.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Un **modello di diffusione** impara a proiettare al contrario il film di una
+- Un modello di diffusione impara a proiettare al contrario il film di una
   rovina: l'andata (aggiungere un pizzico di disturbo mille volte, finché non
   resta che pulviscolo) è una ricetta fissa che sa eseguire un dado; il
   ritorno è l'unica cosa che si apprende, e quello che si impara è una domanda
   sola, «quanto disturbo c'è qui sopra?», dove il disturbo da misurare è
-  **tutto** quello accumulato dalla foto pulita in poi, non il pizzico
+  tutto quello accumulato dalla foto pulita in poi, non il pizzico
   dell'ultimo passo. L'idea viene da un'osservazione di fisica: disfare è
   facile, rifare per caso è così improbabile da non accadere mai.
-- **DDPM** rende l'addestramento facile perché non chiede il capolavoro ma una
+- DDPM rende l'addestramento facile perché non chiede il capolavoro ma una
   cosa umile: «dimmi quanto disturbo ho steso su questa foto». La
   risposta esatta la conosciamo sempre, visto che il disturbo l'abbiamo messo
   noi: è come studiare su un libro di esercizi con le soluzioni in fondo.
-- Nel 2021 un lavoro di riferimento misura che la diffusione **batte le GAN**
+- Nel 2021 un lavoro di riferimento misura che la diffusione batte le GAN
   migliori in qualità e in varietà dei risultati; nel 2022, con DALL·E 2,
   Imagen, Midjourney e soprattutto Stable Diffusion, scaricabile da chiunque,
   diventa un fenomeno di massa.
@@ -343,7 +353,7 @@ arrivano i filmati generati a partire da una frase.
   restauratore ripete il suo giro centinaia di volte. È un baratto e non una
   classifica: tempo in cambio di stabilità e varietà.
 - Nel resto del capitolo: DDPM in dettaglio; il trucco che fa lavorare la rete
-  su una **versione compressa** della fotografia invece che sui pixel, ed è il
+  su una versione compressa della fotografia invece che sui pixel, ed è il
   motivo per cui Stable Diffusion gira in casa; un Transformer, cioè
   l'architettura del capitolo che porta quel nome, messo al posto della rete di
   visione; e i modelli che con la stessa ricetta generano video.
@@ -355,28 +365,28 @@ arrivano i filmati generati a partire da una frase.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **modello di diffusione** impara a invertire una degradazione:
+- Un modello di diffusione impara a invertire una degradazione:
   l'andata (aggiungere rumore in tanti piccoli passi) è fissa e banale, il
-  ritorno è l'unica cosa che si apprende, ed è la **stima** del rumore
+  ritorno è l'unica cosa che si apprende, ed è la stima del rumore
   presente, non la sua rimozione. L'idea nasce dalla termodinamica di non
   equilibrio {cite}`sohl2015deep`; il risultato che la sostiene (per passi
   piccoli l'inverso è approssimativamente gaussiano) è di Feller
   {cite}`feller1949theory`.
-- **DDPM** {cite}`ho2020denoising` riduce l'addestramento a una regressione,
+- DDPM {cite}`ho2020denoising` riduce l'addestramento a una regressione,
   predire il rumore iniettato, loss
   $\mathbb{E}\lVert\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t,t)\rVert^2$,
   stabile come un problema supervisionato.
-- Nel 2021 la diffusione **supera le GAN** in qualità e copertura dei modi
+- Nel 2021 la diffusione supera le GAN in qualità e copertura dei modi
   {cite}`dhariwal2021diffusion`; nel 2022, con DALL·E 2, Imagen, Midjourney
   e lo Stable Diffusion open source {cite}`rombach2022high`, diventa un
   fenomeno pubblico.
 - Rispetto alle GAN: niente duello, niente *mode collapse*, addestramento
   stabile, ma il campionamento costa molti passi di rete invece di uno.
-- Nel resto del capitolo: DDPM in dettaglio, il **limite continuo** che ne fa
-  un'equazione differenziale, il **flow matching** che sceglie il percorso
-  invece di ereditarlo, la diffusione **latente** di Stable Diffusion, i
-  **diffusion Transformer**, i campionatori che tagliano i passi, i
-  **generatori a un passo**, la **guida** e infine la diffusione sui simboli,
+- Nel resto del capitolo: DDPM in dettaglio, il limite continuo che ne fa
+  un'equazione differenziale, il flow matching che sceglie il percorso
+  invece di ereditarlo, la diffusione latente di Stable Diffusion, i
+  diffusion Transformer, i campionatori che tagliano i passi, i
+  generatori a un passo, la guida e infine la diffusione sui simboli,
   cioè sul testo.
 ```
 

@@ -9,8 +9,8 @@ esteso la {doc}`sezione su esplorazione e ricompensa
 riparte tutto il resto. Quell'agente aveva fatto esattamente ciò che gli
 avevamo chiesto. Non ciò che intendevamo.
 
-Questa distanza (tra la **lettera** di un obiettivo e la sua **intenzione**) è
-il cuore del problema dell’**allineamento**. La parola dice quello che sembra
+Questa distanza (tra la lettera di un obiettivo e la sua intenzione) è
+il cuore del problema dell’allineamento. La parola dice quello che sembra
 dire: due cose sono allineate quando si sovrappongono, come due righe messe una
 sull'altra, e un sistema è allineato quando quello che fa combacia con quello
 che volevamo. (Nella sezione sulla traduzione automatica, dentro il capitolo di
@@ -28,17 +28,17 @@ tutto entro binari accettabili (la governance).
 ## Il problema dell'allineamento
 
 L'aneddoto del motoscafo ha un nome tecnico, anzi due per la stessa cosa:
-**reward hacking**, «scassinare la ricompensa», e **specification
-gaming**, il «giocare» con la specifica, cioè con la descrizione precisa di ciò
+reward hacking, «scassinare la ricompensa», e specification
+gaming, il «giocare» con la specifica, cioè con la descrizione precisa di ciò
 che abbiamo chiesto. Nell'apprendimento per rinforzo il guaio si incontra a
 ogni ricompensa mal scritta, e torna identico nell'ultima fase con cui si
-rifiniscono i grandi modelli di linguaggio (gli **LLM**, dall'inglese *large
+rifiniscono i grandi modelli di linguaggio (gli LLM, dall'inglese *large
 language model*).
 
 La formula da tenere a mente è questa: quando ottimizzi un **surrogato** del
 tuo vero obiettivo, prima o poi ottieni il surrogato e perdi l'obiettivo.
 Surrogato, o *proxy*, sono le due parole con cui d'ora in poi si chiamerà una
-**imitazione** di ciò che volevamo davvero: un numero che gli somiglia
+imitazione di ciò che volevamo davvero: un numero che gli somiglia
 abbastanza da poterlo misurare, e che proprio per questo non è la cosa vera.
 Il punteggio del videogioco era il surrogato di «vinci la gara».
 
@@ -96,7 +96,7 @@ interessa, $r^*$. L’**inner alignment** riguarda ciò che il modello finisce
 per perseguire *internamente* una volta addestrato: anche con una specifica
 perfetta, un sistema ottimizzato su una distribuzione può interiorizzare un
 obiettivo che generalizza male fuori da essa (*goal misgeneralization*). Sul
-primo pesa la **legge di Goodhart**, nella formulazione resa celebre da
+primo pesa la legge di Goodhart, nella formulazione resa celebre da
 Marilyn Strathern {cite}`strathern1997improving`: «quando una misura diventa un
 obiettivo, cessa di essere una buona misura». Formalmente, ottimizziamo un
 proxy $\tilde{r} \approx r^*$; ma $\arg\max_y \tilde{r}(y)$ e
@@ -131,8 +131,8 @@ ereditano dalle persone da cui hanno imparato, e gliel'abbiamo data noi. E c'è
 il **tremolio**: il giudice sbaglia anche a caso, di poco, come chiunque dia
 molti voti di fila.
 
-Quel che l'esperimento misura è un'altra cosa, e non è affatto ovvia: **quanto
-danno fa quel difetto al crescere della pressione con cui si ottimizza**. La
+Quel che l'esperimento misura è un'altra cosa, e non è affatto ovvia: quanto
+danno fa quel difetto al crescere della pressione con cui si ottimizza. La
 pressione qui si simula generando $k$ risposte, tenendo quella che il giudice
 preferisce, e poi alzando $k$.
 
@@ -178,16 +178,16 @@ for k in (1, 3, 10, 30, 100, 1000):
 ```
 
 La colonna della qualità vera è la storia, e non è la storia che ci si
-aspetta. All'inizio ottimizzare il giudice **funziona**: da un candidato solo
+aspetta. All'inizio ottimizzare il giudice funziona: da un candidato solo
 a tre, la qualità vera sale da $0{,}373$ a $0{,}495$. Il motivo è che fra tre
 risposte prese a caso le differenze di merito sono grosse e quelle di
 lunghezza contano poco, quindi scegliere quella che piace al giudice vuol dire
 quasi sempre scegliere quella che vale di più.
 
-Poi la salita si ferma attorno a $0{,}50$, e la colonna **scende**: a mille
+Poi la salita si ferma attorno a $0{,}50$, e la colonna scende: a mille
 candidati la qualità vera è $0{,}267$, peggio che non ottimizzare affatto. Il
 motivo si legge nelle altre due colonne, ed è la cosa più istruttiva della
-tabella: **salgono tutte e due, ma una sola può salire per sempre**. Il merito
+tabella: salgono tutte e due, ma una sola può salire per sempre. Il merito
 delle risposte scelte va da $0{,}499$ a $0{,}953$ e poi si arena, perché più di
 uno non può valere: fra cento candidati e mille guadagna appena diciannove
 millesimi. La lunghezza invece continua per la sua strada, da $0{,}501$ a
@@ -213,7 +213,7 @@ sta nella {doc}`sezione sul post-training </Transformers/post-training>`; qui
 restano i due passaggi che servono a leggere il resto, e il tassello che là non
 c'era.
 
-La prima mossa storica è l’**RLHF** (*Reinforcement Learning from Human
+La prima mossa storica è l’RLHF (*Reinforcement Learning from Human
 Feedback*, apprendimento per rinforzo dai giudizi delle persone). L'idea di far
 imparare a un sistema da confronti umani circola dai primi anni Dieci (Akrour e
 colleghi nel 2011, Wilson e colleghi nel 2012); quello che succede nel 2017 è
@@ -254,7 +254,7 @@ possibile.
 Il procedimento è in due tempi. I confronti umani addestrano un **reward
 model** che impara a dare voti; quel modello fa poi da giudice mentre la
 *policy* del linguaggio (cioè il modello generativo, visto come la regola che
-sceglie il prossimo token) viene ottimizzata con **PPO**, l'algoritmo di
+sceglie il prossimo token) viene ottimizzata con PPO, l'algoritmo di
 reinforcement learning descritto nel {doc}`capitolo sul deep reinforcement
 learning </DeepReinforcementLearning/overview>`,
 sotto una **penalità KL** che misura quanto la policy si è allontanata da
@@ -274,7 +274,7 @@ tutto l'uso conversazionale.
 
 Tutto questo funziona, ma è un cantiere pesante: due addestramenti in fila, il
 giudice da tirare su e poi il modello da allenare contro di lui. Nel 2023 la
-**DPO** (*Direct Preference Optimization*, «ottimizzazione diretta dalle
+DPO (*Direct Preference Optimization*, «ottimizzazione diretta dalle
 preferenze») di Rafailov e colleghi {cite}`rafailov2023direct` mostra che il
 giudice si può togliere di mezzo. Le stesse coppie di risposte, con scritto
 quale delle due era migliore, si danno direttamente al modello che parla,
@@ -284,12 +284,12 @@ meno quella scartata. Un passaggio solo, e nessun giudice da costruire.
 Su che cosa esattamente sia dimostrato, però, conviene essere precisi, perché
 la formula con cui la DPO viene di solito riassunta («stessa destinazione, due
 tappe in meno») dice più del vero. Quello che il lavoro dimostra è che i due
-metodi, se portati fino in fondo, arrivano **allo stesso punto migliore**. Non
+metodi, se portati fino in fondo, arrivano allo stesso punto migliore. Non
 dimostra che ci arrivino per la stessa strada, né che sbaglino nello stesso
 modo. E una differenza c'è: nella ricetta col giudice il modello, mentre
 impara, produce risposte nuove e se le fa valutare, mentre la DPO legge
 soltanto le coppie raccolte in partenza, e su tutto ciò che sta fuori da
-quelle non viene mai messa alla prova. Ha modi di sbagliare **suoi**, non
+quelle non viene mai messa alla prova. Ha modi di sbagliare suoi, non
 versioni più leggere di quelli della ricetta precedente.
 
 ```{figure} ../figures/dpo-allineare-senza-reward-model.svg
@@ -316,7 +316,7 @@ può usare un gruppo qualsiasi, ed è il motivo per cui l'allineamento ha smesso
 di essere una cosa che si fa in tre posti al mondo.
 
 C'è però un limite che nessuna delle due tocca: le preferenze restano
-**umane**, e raccoglierne a sufficienza (specie sui temi delicati della
+umane, e raccoglierne a sufficienza (specie sui temi delicati della
 sicurezza) è lento e costoso. Il tassello nuovo prova a ridurre proprio
 questo.
 
@@ -366,7 +366,7 @@ tiene vicina (il termine di normalizzazione si cancella nella differenza).
 
 Quel «di norma» porta con sé un'ipotesi, ed è la stessa su cui poggia
 l'equivalenza fra DPO e RLHF:
-Bradley-Terry assume che esista **un unico punteggio scalare** da cui
+Bradley-Terry assume che esista un unico punteggio scalare da cui
 tutte le preferenze discendono, quindi che siano transitive e omogenee fra
 annotatori. Preferenze intransitive, o popolazioni con valori diversi, non sono
 rappresentabili in quel modello e vengono compresse nella media.
@@ -375,8 +375,8 @@ La domanda successiva è: *chi* produce le etichette $y_w \succ y_l$? La
 **Constitutional AI** {cite}`bai2022constitutional` (Anthropic, 2022)
 risponde: un modello, guidato da un insieme scritto di principi. Il metodo ha
 due fasi. Nella prima, supervisionata, il modello genera una risposta, la
-**critica** rispetto a un principio campionato dalla costituzione e la
-**riscrive**; si fa poi fine-tuning sulle risposte riviste. Nella seconda si
+critica rispetto a un principio campionato dalla costituzione e la
+riscrive; si fa poi fine-tuning sulle risposte riviste. Nella seconda si
 applica l’**RLAIF** (*RL from AI Feedback*): un modello confronta coppie di
 risposte alla luce dei principi e produce le etichette di preferenza, che
 addestrano il preference model usato poi in RL. Il risultato empirico
@@ -429,12 +429,12 @@ plausibile, e la plausibilità non è la verità.
 
 `````{tab} Elementare
 
-Conviene separare due tipi di guaio. Il primo sono gli **errori onesti**: il
+Conviene separare due tipi di guaio. Il primo sono gli errori onesti: il
 modello, che in fondo è un generatore di testo plausibile, a volte inventa;
 cita un libro che non esiste, sbaglia una data con perfetta sicurezza. Si
-chiamano **allucinazioni**, e non nascono da cattiva volontà: nascono dal
+chiamano allucinazioni, e non nascono da cattiva volontà: nascono dal
 fatto che «suonare vero» e «essere vero» non sono la stessa cosa. Il secondo
-tipo sono gli **attacchi**: qualcuno costruisce apposta l'input per far
+tipo sono gli attacchi: qualcuno costruisce apposta l'input per far
 comportare male il modello. Con un gioco di ruolo astuto lo si convince ad
 aggirare le sue regole (*jailbreak*); oppure si nasconde un ordine dentro un
 testo che il modello deve solo leggere (una pagina web, una mail) e lui lo
@@ -457,11 +457,11 @@ mani: si chiama **uso duale**.
 
 `````{tab} Superiore
 
-Le allucinazioni sono un limite **intrinseco** dei modelli generativi:
+Le allucinazioni sono un limite intrinseco dei modelli generativi:
 campionano da $P(\text{testo})$, non da un archivio di fatti verificati, e la
 fluidità non è una prova di verità. Nessun prompt le azzera; si mitigano con
 recupero da fonti (RAG), richiesta di citazioni e verifica esterna. Jailbreak
-e **prompt injection** sono invece problemi **avversari**: sfruttano il fatto
+e prompt injection sono invece problemi avversari: sfruttano il fatto
 che la gerarchia *system > user* è morbida e che il modello non distingue in
 modo affidabile *istruzioni* da *dati*. La prompt injection in particolare
 (testo non fidato che entra nel contesto e viene interpretato come comando) è
@@ -508,7 +508,7 @@ due modi complementari, ed è la coppia già vista: una squadra che si comporta
 da avversario e inventa le domande più insidiose (meglio scoprirlo in
 laboratorio che sui giornali), e una lista di prove ripetibili con un voto
 finale, che dice se la versione nuova è più o meno sicura della precedente. Il
-**red-teaming** cerca la falla nuova; le **evals** controllano che le vecchie
+red-teaming cerca la falla nuova; le evals controllano che le vecchie
 non tornino.
 
 Un esame superato, però, dice meno di quel che sembra. Con i modelli le
@@ -522,23 +522,22 @@ pensato nessuno, del vento di traverso non si sa ancora niente.
 
 `````{tab} Superiore
 
-Il **red-teaming** è la ricerca adversariale di *failure*: manuale (esperti
-che sondano capacità pericolose, jailbreak, fughe di dati) o
-**automatizzato**, con un LLM istruito a generare attacchi contro un altro. Le
-**evals** sono suite di benchmark riproducibili; si distinguono quelle di
-*capacità* (cosa il modello sa fare) da quelle di *sicurezza* (tossicità,
-rifiuto di richieste illecite, resistenza ai jailbreak, propensione alle
-allucinazioni), spesso riassunte in metriche che si leggono in versi opposti:
-l’*attack success rate*, la quota di attacchi andati a segno, che si vuole
-**basso**, e il tasso di rifiuto appropriato, che si vuole **alto**. Due avvertenze di metodo, entrambe corollari di
-Goodhart. Primo: un benchmark è un proxy, e ottimizzare *per* il benchmark
-(magari perché finito nei dati di addestramento) gonfia il punteggio senza
-migliorare la sicurezza reale, per questo contano i *test adversariali tenuti
-nascosti*. Secondo: passare le evals dimostra l'assenza dei fallimenti
-*cercati*, non la sicurezza in assoluto. L'assenza di prove non è prova
-d'assenza, ed è il motivo per cui la valutazione resta un processo continuo
-invece di un timbro una tantum. L'AI Act ne fa un obbligo per i modelli più
-capaci.
+Il red-teaming è la ricerca adversariale di *failure*: manuale (esperti che
+sondano capacità pericolose, jailbreak, fughe di dati) o automatizzato, con un
+LLM istruito a generare attacchi contro un altro. Le evals sono suite di
+benchmark riproducibili; si distinguono quelle di *capacità* (cosa il modello
+sa fare) da quelle di *sicurezza* (tossicità, rifiuto di richieste illecite,
+resistenza ai jailbreak, propensione alle allucinazioni), spesso riassunte in
+metriche che si leggono in versi opposti: l’*attack success rate*, la quota di
+attacchi andati a segno, che si vuole basso, e il tasso di rifiuto appropriato,
+che si vuole alto. Due avvertenze di metodo, entrambe corollari di Goodhart.
+Primo: un benchmark è un proxy, e ottimizzare *per* il benchmark (magari perché
+finito nei dati di addestramento) gonfia il punteggio senza migliorare la
+sicurezza reale, per questo contano i *test adversariali tenuti nascosti*.
+Secondo: passare le evals dimostra l'assenza dei fallimenti *cercati*, non la
+sicurezza in assoluto. L'assenza di prove non è prova d'assenza, ed è il motivo
+per cui la valutazione resta un processo continuo invece di un timbro una
+tantum. L'AI Act ne fa un obbligo per i modelli più capaci.
 
 `````
 
@@ -578,13 +577,13 @@ documentazione tecnica lo toglierebbe.
 
 Non regoliamo tutti i prodotti allo stesso modo: un giocattolo di plastica e
 un farmaco seguono controlli diversissimi, perché diverso è il danno che
-possono fare. L’**AI Act** europeo applica la stessa idea all'intelligenza
-artificiale: guarda anzitutto al **rischio** di ogni suo impiego, più che alla
+possono fare. L’AI Act europeo applica la stessa idea all'intelligenza
+artificiale: guarda anzitutto al rischio di ogni suo impiego, più che alla
 tecnologia in astratto, e lo dispone su una piramide a quattro gradini.
 
-In cima, il rischio *inaccettabile*: gli usi semplicemente **vietati**, che
+In cima, il rischio *inaccettabile*: gli usi semplicemente vietati, che
 sono pochi. Uno riguarda la vita di chiunque vada a scuola, e conviene
-cominciare da lì. **Riconoscere le emozioni sul luogo di lavoro e a scuola**: usare
+cominciare da lì. Riconoscere le emozioni sul luogo di lavoro e a scuola: usare
 l'intelligenza artificiale per dedurre dal volto o dalla voce di uno studente
 se è attento, annoiato, nervoso, è vietato in Europa, con eccezioni strette
 come i motivi medici. Se stai leggendo da un banco, quella legge esiste anche
@@ -595,25 +594,25 @@ Gli altri.
 - Dare a ogni cittadino un **punteggio sociale**: un voto unico calcolato dal
   suo comportamento in un ambito, che poi decide cosa può fare in un altro,
   prendere un treno, affittare una casa, iscrivere un figlio da qualche parte.
-- **Raccogliere facce da internet o dalle telecamere** senza cercare una
+- Raccogliere facce da internet o dalle telecamere senza cercare una
   persona in particolare, per costruire archivi che servono poi a riconoscere
   la gente dal viso. Riconoscere qualcuno da una caratteristica del corpo, il
   volto, la voce, le impronte, si dice **biometrico**.
-- **Prevedere chi commetterà un reato** dal solo profilo di una persona, dove
+- Prevedere chi commetterà un reato dal solo profilo di una persona, dove
   vive e che tratti ha, invece che da fatti concreti: è il parente stretto del
   software da cui il capitolo è partito.
-- **Manipolare** le persone con tecniche che aggirano la loro consapevolezza, o
-  **sfruttare le vulnerabilità** di chi è fragile per età, disabilità o
+- Manipolare le persone con tecniche che aggirano la loro consapevolezza, o
+  sfruttare le vulnerabilità di chi è fragile per età, disabilità o
   condizione economica.
-- **Fabbricare immagini intime di una persona riconoscibile senza il suo
-  consenso**, e il materiale di abuso sessuale su minori. È la voce aggiunta
-  nel 2026, e colpisce le applicazioni che «spogliano» una fotografia per quello
-  che producono, non per come sono fatte. Il divieto è scritto ma non ancora in
-  vigore: si applica dal dicembre 2026.
-- Dedurre da un volto la **razza, le opinioni politiche, la religione o
-  l'orientamento sessuale** di qualcuno.
-- **Riconoscere i volti in tempo reale nei luoghi pubblici**, ma attenzione:
-  questo divieto vale per le **forze dell'ordine**, non per chiunque. Fuori da
+- Fabbricare immagini intime di una persona riconoscibile senza il suo
+  consenso, e il materiale di abuso sessuale su minori. È la voce aggiunta al
+  regolamento nel 2026, e si applica dal 2 dicembre di quell'anno; colpisce le
+  applicazioni che «spogliano» una fotografia per quello che producono, non per
+  come sono fatte.
+- Dedurre da un volto la razza, le opinioni politiche, la religione o
+  l'orientamento sessuale di qualcuno.
+- Riconoscere i volti in tempo reale nei luoghi pubblici, ma attenzione:
+  questo divieto vale per le forze dell'ordine, non per chiunque. Fuori da
   quel caso il riconoscimento biometrico resta permesso, ma sorvegliato.
 
 Sotto c'è l’*alto rischio*, ed è il gradino che riguarda le decisioni serie:
@@ -624,7 +623,7 @@ sistema decide, garantire che una persona in carne e ossa possa intervenire e
 farsi certificare da fuori. Sembrano adempimenti da ufficio, finché non tocca a
 te sentirti dire di no da una macchina.
 
-Più giù, il *rischio limitato*: basta la **trasparenza**, cioè avvisare le
+Più giù, il *rischio limitato*: basta la trasparenza, cioè avvisare le
 persone («stai parlando con un'AI», «questo video è generato»). In fondo, il
 *rischio minimo*: la stragrande maggioranza dei sistemi, senza obblighi
 particolari.
@@ -643,13 +642,13 @@ gradino la legge smette di misurare l'uso e misura la potenza.
 
 `````{tab} Superiore
 
-L’**AI Act** {cite}`euaiact2024`, entrato in vigore nell'agosto 2024, struttura
+L’AI Act {cite}`euaiact2024`, entrato in vigore nell'agosto 2024, struttura
 gli obblighi su quattro livelli di rischio. I numeri di articolo sono la sola
 cosa che permette a chi legge di andare a
 verificare, e sono anche la parte più stabile del testo. Stabile non vuol dire
 immobile: il regolamento è già stato emendato una volta, nel luglio del 2026
 (il regolamento (UE) 2026/1744, il *digital omnibus*), che ha allungato
-l'elenco delle pratiche vietate e rinviato alcune scadenze. Le **date** di
+l'elenco delle pratiche vietate e rinviato alcune scadenze. Le date di
 applicazione, in particolare, sono scaglionate e si sono già spostate: quelle
 vanno guardate sul testo consolidato, non su un libro.
 
@@ -659,14 +658,14 @@ vanno guardate sul testo consolidato, non su un libro.
   di una persona identificabile senza il suo consenso (ba) e di materiale
   pedopornografico (bb), le due voci inserite dal *digital omnibus* e
   applicabili dal 2 dicembre 2026, *social scoring* da parte di enti pubblici o
-  privati (c), **polizia predittiva** basata unicamente sulla profilazione o
+  privati (c), polizia predittiva basata unicamente sulla profilazione o
   sui tratti di personalità (d), scraping non mirato di volti da internet o da
   telecamere per costruire archivi di riconoscimento (e), riconoscimento delle
   emozioni sul luogo di lavoro e negli istituti di istruzione (f),
   categorizzazione biometrica per dedurre razza, opinioni politiche,
   appartenenza sindacale, convinzioni religiose o vita sessuale (g), e
   l'identificazione biometrica remota *in tempo reale* negli spazi accessibili
-  al pubblico **a fini di attività di contrasto** (h), con tre eccezioni
+  al pubblico a fini di attività di contrasto (h), con tre eccezioni
   tassative. Quest'ultima qualificazione è quella che si perde più spesso nei
   riassunti, ed è più grande delle eccezioni: fuori dall'ambito delle forze
   dell'ordine il riconoscimento biometrico remoto non è fra le pratiche
@@ -675,10 +674,10 @@ vanno guardate sul testo consolidato, non su un libro.
 - **alto rischio** (art. 6 e allegato III, più i componenti di sicurezza di
   prodotti): credito, occupazione, istruzione, giustizia, infrastrutture
   critiche, migrazione. Permessi ma con sistema di gestione del rischio,
-  governance dei dati, documentazione tecnica, tracciabilità, **sorveglianza
-  umana**, accuratezza e robustezza, e valutazione di conformità prima
+  governance dei dati, documentazione tecnica, tracciabilità, sorveglianza
+  umana, accuratezza e robustezza, e valutazione di conformità prima
   dell'immissione sul mercato;
-- **rischio limitato** (art. 50): obblighi di **trasparenza**, dichiarare
+- **rischio limitato** (art. 50): obblighi di trasparenza, dichiarare
   l'interazione con un'AI, etichettare i contenuti sintetici e i deepfake;
 - **rischio minimo**: nessun obbligo (la maggior parte dei sistemi).
 
@@ -686,18 +685,18 @@ Un capo a parte è dedicato ai **GPAI** (*general-purpose AI*), i modelli di uso
 generale: per tutti valgono obblighi di documentazione tecnica, informazione
 agli sviluppatori a valle e sintesi pubblica dei dati di addestramento (art.
 53); per quelli con **rischio sistemico** si aggiungono valutazione del modello,
-**adversarial testing**, cioè il red-teaming, mitigazione dei
+adversarial testing, cioè il red-teaming, mitigazione dei
 rischi sistemici, cybersicurezza e segnalazione degli incidenti gravi (art. 55).
 Le sanzioni per le pratiche vietate arrivano fino a 35 milioni di euro o al 7%
 del fatturato mondiale annuo (art. 99(3)).
 
 Fermiamoci un attimo su come si stabilisce quel «rischio sistemico»,
-perché è il punto in cui il regolamento **cambia asse** e contraddice la
+perché è il punto in cui il regolamento cambia asse e contraddice la
 formula con cui si riassume di solito («non regola la tecnologia, regola
 l'uso»). La presunzione scatta oltre una soglia di calcolo di addestramento di
 $10^{25}$ FLOP (art. 51(2)), dove FLOP sta per *floating point operations*, il
 conto totale delle operazioni aritmetiche fatte per addestrare il modello. È un
-criterio di **capacità**, applicato al fornitore, prima e indipendentemente da
+criterio di capacità, applicato al fornitore, prima e indipendentemente da
 qualunque impiego a valle: della sfera dell'uso non c'è più niente. Che sia
 stato necessario dipende dalla natura dell'oggetto, non da una scrittura
 difettosa: un modello generalista gli usi non li sceglie, quindi un criterio
@@ -717,7 +716,7 @@ cambia in fretta).
 `````
 
 Resta una domanda che questo capitolo ha rimandato a lungo, ed è la prima che
-farebbe chiunque si trovi dall'altra parte: **e poi con chi ci si lamenta?**
+farebbe chiunque si trovi dall'altra parte: e poi con chi ci si lamenta?
 La risposta onesta è che dipende, e che fino a ieri spesso non c'era nessuno.
 Le persone scartate dal selezionatore automatico di Amazon, quello che apre la
 sezione sull'equità e che penalizzava i curriculum delle donne, non lo hanno
@@ -736,11 +735,11 @@ che viene appena prima.
 Dietro le regole c'è poi un dibattito che va reso esplicito, perché divide
 anche gli addetti ai lavori: è quello annunciato all'inizio del capitolo,
 quando si è detto che qui ci saremmo occupati dei danni misurabili adesso. Da
-un lato chi mette al centro i **danni presenti e documentati** (i pregiudizi,
+un lato chi mette al centro i danni presenti e documentati (i pregiudizi,
 le violazioni di privacy, gli esempi avversari di cui parla il resto di questo
 capitolo) e teme che l'attenzione ai rischi lontani distolga risorse da
 ingiustizie che colpiscono persone reali *oggi*. Dall'altro chi punta sui
-**rischi catastrofici futuri** di sistemi molto più capaci di quelli attuali,
+rischi catastrofici futuri di sistemi molto più capaci di quelli attuali,
 e sostiene che prevenirli richieda cominciare adesso. Non è una disputa che
 si possa chiudere adesso; ma è onesto notare che non sono alternative: un
 ponte va progettato sia contro le crepe di oggi sia contro il terremoto che
@@ -751,7 +750,7 @@ forse verrà, e le due cose competono per lo stesso budget di attenzione.
 Chiudiamo dove il capitolo intero insiste. L'allineamento è oggi un'area di
 ricerca a pieno titolo, non un ritocco finale: abbiamo strumenti per
 *orientare* il comportamento dei modelli (RLHF, DPO, Constitutional AI,
-red-teaming, evals), non **garanzie** sul risultato. Sotto tutto corre una
+red-teaming, evals), non garanzie sul risultato. Sotto tutto corre una
 tensione strutturale, che nessuna tecnica ha sciolto: le stesse capacità che
 rendono un modello utile lo rendono difficile da controllare, e più un sistema
 è potente, più il divario tra ciò che gli chiediamo e ciò che fa può costare.
@@ -765,12 +764,12 @@ noi.
 
 ```{admonition} Da ricordare
 :class: important
-- **Allineato** vuol dire che quello che il sistema fa combacia con quello che
+- Allineato vuol dire che quello che il sistema fa combacia con quello che
   volevamo. Il guaio è che noi non gli diamo il desiderio, gli diamo un numero
   da far salire, e lui quel numero lo fa salire davvero: come il genio della
   lampada, che esaudisce le parole e non l'intenzione.
-- Il numero che gli diamo è sempre un’**imitazione** di ciò che ci interessa,
-  un *surrogato*. E spremerla **all'inizio funziona e poi peggiora le cose**:
+- Il numero che gli diamo è sempre un’imitazione di ciò che ci interessa,
+  un *surrogato*. E spremerla all'inizio funziona e poi peggiora le cose:
   non è vero che ottimizzare di più sia sempre meglio.
 - Come si orienta un modello: gli si mostrano tante coppie di risposte con
   scritto quale delle due è migliore, si addestra un giudice automatico a
@@ -779,23 +778,23 @@ noi.
   giudice si sbaglia. C'è anche una versione in cui i confronti li scrive
   un'altra AI seguendo un elenco di princìpi: la persona non sparisce, cambia
   mestiere, da chi giudica caso per caso a chi scrive le regole.
-- **Rischi**: le **allucinazioni** (il modello inventa in buona fede, perché
+- Rischi: le allucinazioni (il modello inventa in buona fede, perché
   «suonare vero» non è «essere vero») si combattono verificando a valle; gli
-  **attacchi** si combattono difendendo un perimetro. E le stesse capacità che
+  attacchi si combattono difendendo un perimetro. E le stesse capacità che
   rendono un modello utile lo rendono utile anche a chi vuole nuocere, ed è la
   capacità stessa vista dall'altro lato.
 - Si può attaccare il proprio sistema apposta per trovarne le falle, e si
   possono fare esami ripetibili per controllare che le falle vecchie non
-  tornino. Ma **passare un esame non vuol dire essere sicuri**: vuol dire non
+  tornino. Ma passare un esame non vuol dire essere sicuri: vuol dire non
   aver fallito le prove che qualcuno ha pensato di fare.
-- L’**AI Act** europeo regola in base a quanto un uso può ferire: pochissimi usi
+- L’AI Act europeo regola in base a quanto un uso può ferire: pochissimi usi
   vietati del tutto (fra cui riconoscere le emozioni degli studenti a scuola),
   alcuni sorvegliati, alcuni con l'obbligo di dire «stai parlando con un'AI», e
   tutto il resto libero. Con i modelli buoni-per-tutto, che un impiego proprio
   non ce l'hanno, il criterio cambia: per i più grossi si guarda quanto calcolo
   è servito a costruirli, e di quello che ci si fa non si guarda niente.
-- Nessuna soluzione definitiva: strumenti per orientare, non garanzie. **A quali
-  valori** allineare un sistema è una domanda che tocca a noi, non a un
+- Nessuna soluzione definitiva: strumenti per orientare, non garanzie. A quali
+  valori allineare un sistema è una domanda che tocca a noi, non a un
   teorema.
 ```
 
@@ -805,34 +804,34 @@ noi.
 
 ```{admonition} Da ricordare
 :class: important
-- **Allineamento**: far sì che il sistema persegua ciò che *intendiamo*, non la
-  lettera dell'obiettivo. *Specification gaming* / **reward hacking** e legge di
-  **Goodhart** (il proxy $\tilde{r}$ diverge dal vero $r^*$ proprio dove
+- Allineamento: far sì che il sistema persegua ciò che *intendiamo*, non la
+  lettera dell'obiettivo. *Specification gaming* / reward hacking e legge di
+  Goodhart (il proxy $\tilde{r}$ diverge dal vero $r^*$ proprio dove
   l'ottimizzatore cerca il massimo); si distinguono *outer* e *inner* alignment.
-- La curva dell’**overottimizzazione** non è monotona: al crescere della
+- La curva dell’overottimizzazione non è monotona: al crescere della
   pressione la qualità vera prima sale, poi ripiega e scende sotto il punto di
   partenza, mentre il punteggio surrogato continua a salire
   {cite}`gao2023scaling`. La penalità KL dell'RLHF è la difesa contro questo, e
   insieme l'ammissione che il reward model è un surrogato.
-- Allineare gli LLM: **RLHF** {cite}`christiano2017deep`,
+- Allineare gli LLM: RLHF {cite}`christiano2017deep`,
   {cite}`ouyang2022training` (reward model dalle preferenze + PPO sotto vincolo
-  KL); **DPO** {cite}`rafailov2023direct` (stesso *ottimo*, sotto le ipotesi di
+  KL); DPO {cite}`rafailov2023direct` (stesso *ottimo*, sotto le ipotesi di
   Bradley-Terry e con la stessa policy di riferimento, senza reward model
-  esplicito: non gli stessi modi di fallire); **Constitutional AI / RLAIF**
+  esplicito: non gli stessi modi di fallire); Constitutional AI / RLAIF
   {cite}`bai2022constitutional` (principi scritti e feedback dell'AI per ridurre
   il giudizio umano).
-- **Rischi**: allucinazioni (errore intrinseco → verifica a valle) contro
-  jailbreak e **prompt injection** (attacchi → difesa di perimetro); e l’**uso
-  duale**, proprietà della capacità, non bug da correggere.
-- **Valutare la sicurezza**: **red-teaming** (cercare le falle da avversari) ed
-  **evals**/benchmark (esami ripetibili). Ma passare un test è un proxy: assenza
+- Rischi: allucinazioni (errore intrinseco → verifica a valle) contro
+  jailbreak e prompt injection (attacchi → difesa di perimetro); e l’uso
+  duale, proprietà della capacità, non bug da correggere.
+- Valutare la sicurezza: red-teaming (cercare le falle da avversari) ed
+  evals/benchmark (esami ripetibili). Ma passare un test è un proxy: assenza
   di prove non è prova d'assenza.
-- **Governance**: l’**AI Act** {cite}`euaiact2024` regola per *rischio*
+- Governance: l’AI Act {cite}`euaiact2024` regola per *rischio*
   (inaccettabile/vietato art. 5, alto art. 6 e allegato III,
-  limitato/trasparenza art. 50, minimo), con obblighi extra per i **GPAI**
+  limitato/trasparenza art. 50, minimo), con obblighi extra per i GPAI
   (artt. 53 e 55) a rischio sistemico, presunto oltre $10^{25}$ FLOP (art.
   51(2)): ed è il punto in cui il regolamento passa da un criterio d'uso a un
-  criterio di **capacità**. Il **NIST AI RMF** è la controparte federale
+  criterio di capacità. Il NIST AI RMF è la controparte federale
   volontaria.
 - Nessuna soluzione definitiva: strumenti per orientare, non garanzie. *A quali
   valori* allineare e *quanto* controllo pretendere sono scelte umane, non

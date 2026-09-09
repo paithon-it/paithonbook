@@ -26,8 +26,8 @@ giusta: la parola che veniva davvero dopo, l'onda che quella frase aveva
 davvero. Chi deve disegnare un gatto mai esistito non ce l'ha e non può
 averla: non c'è nessun originale da mettere accanto al risultato per vedere,
 punto per punto, di quanto ci si è allontanati. La domanda di questo capitolo è
-proprio questa: come si insegna a una rete a **fabbricare dati nuovi e
-plausibili** quando non c'è niente con cui confrontarli.
+proprio questa: come si insegna a una rete a fabbricare dati nuovi e
+plausibili quando non c'è niente con cui confrontarli.
 
 Una risposta il libro l'ha appena data, ed è quella del {doc}`capitolo sui modelli
 latenti </ModelliLatenti/overview>`: si scrive una formula che dice quanto è
@@ -47,13 +47,13 @@ che aspetto ha una foto di gatto, e può cucinarne di nuove all'infinito.
 
 I numeri casuali sono la sua materia prima. Sono una manciata (un centinaio, di
 solito), e glieli diamo noi tirandoli a sorte, quasi tutti piccoli e vicini
-allo zero, con qualcuno più grosso ogni tanto. Che debbano essere **diversi**
+allo zero, con qualcuno più grosso ogni tanto. Che debbano essere diversi
 ogni volta si capisce: ad addestramento finito la rete non cambia più, resta
 quella, e quei numeri sono l'unica cosa che la distingue da una richiesta
 all'altra. È da lì che viene la varietà: numeri diversi in ingresso, gatti
 diversi in uscita.
 
-Che debbano essere **a sorte**, e non scelti da noi, è una faccenda diversa.
+Che debbano essere a sorte, e non scelti da noi, è una faccenda diversa.
 Durante l'addestramento alla rete arrivano solo manciate sorteggiate così, e
 lei impara a cavarsela dove quelle manciate cadono. Una manciata scelta a mano
 (i numeri tutti uguali, o in fila 1, 2, 3…) cade quasi sempre lontano, in un
@@ -66,11 +66,11 @@ addestramento, e va rispettato anche dopo.
 `````{tab} Superiore
 
 Un modello discriminativo apprende la probabilità condizionata $p(y \mid \mathbf{x})$
-di un'etichetta $y$ dato l'input $\mathbf{x}$. Un modello **generativo** apprende,
+di un'etichetta $y$ dato l'input $\mathbf{x}$. Un modello generativo apprende,
 esplicitamente o implicitamente, la distribuzione dei dati $p_{\text{dati}}(\mathbf{x})$,
 così da poterne campionare esempi nuovi. Una GAN la apprende in modo
 *implicito*: non stima una densità in forma chiusa, ma costruisce un
-**campionatore** $G(\mathbf{z})$ che trasforma un rumore semplice $\mathbf{z} \sim p_z$
+campionatore $G(\mathbf{z})$ che trasforma un rumore semplice $\mathbf{z} \sim p_z$
 (tipicamente gaussiano) in campioni che l'addestramento spinge a diventare
 indistinguibili da quelli reali; la distribuzione da cui questi campioni
 provengono si indica con $p_G$.
@@ -95,7 +95,7 @@ che nemmeno l'esperto sa più distinguerli. Il **generatore** è il falsario, il
 
 Qui c'è però una domanda da fare subito, perché è il cuore di tutto il
 capitolo: il falsario impara *che cosa*? Se l'esperto si limitasse a dire
-"falso", il falsario saprebbe di aver sbagliato ma non saprebbe **dove**, ed è
+"falso", il falsario saprebbe di aver sbagliato ma non saprebbe dove, ed è
 la stessa differenza che passa fra un professore che scrive "no" in fondo al
 compito e uno che sottolinea le righe da rifare. L'esperto di questa storia
 appartiene al secondo tipo: non dice "falso", dice "falso, e soprattutto per
@@ -123,7 +123,7 @@ $\tilde{\mathbf{x}} = G(\mathbf{z})$, cioè $\partial \mathcal{L}_G /
 \partial \tilde{\mathbf{x}}$: non un numero ma un vettore, con una componente per ogni
 numero del dato, che dice in che verso spostare ciascuna di quelle componenti
 perché il verdetto cambi. È una direzione, non un voto, e la sua esistenza
-richiede che $D$ sia **derivabile rispetto al proprio ingresso**: la sezione
+richiede che $D$ sia derivabile rispetto al proprio ingresso: la sezione
 seguente riprende il punto con la regola della catena.
 
 `````
@@ -185,7 +185,7 @@ tornano nella stessa sezione.
 
 `````{tab} Superiore
 
-Goodfellow formula l'addestramento come un problema **minimax** su una funzione
+Goodfellow formula l'addestramento come un problema minimax su una funzione
 valore $V(D,G)$:
 
 $$
@@ -210,12 +210,12 @@ sull'addestramento avversario li riprende uno per uno.
 ## Perché ce ne importa
 
 Le GAN hanno spostato il confine di ciò che una macchina può *fabbricare*. Da
-questa idea nascono i **volti fotorealistici** di persone inesistenti: la
-famiglia StyleGAN di NVIDIA {cite}`karras2019style` alimenta siti come *This
-Person Does Not Exist*, dove ogni ricarica mostra un volto sintetico che a un
-primo sguardo non si distingue da una fotografia. Da qui arrivano anche i
-**deepfake** (volti sostituiti nei video) con tutto il loro carico di rischi
-per disinformazione e consenso. E arriva l’**arte generata**, con un ritratto prodotto da una GAN battuto
+questa idea nascono i volti fotorealistici di persone inesistenti: la famiglia
+StyleGAN di NVIDIA {cite}`karras2019style` alimenta siti come *This Person Does
+Not Exist*, dove ogni ricarica mostra un volto sintetico che a un primo sguardo
+non si distingue da una fotografia. Da qui arrivano anche i **deepfake** (volti
+sostituiti nei video) con tutto il loro carico di rischi per disinformazione e
+consenso. E arriva l’arte generata, con un ritratto prodotto da una GAN battuto
 all'asta da Christie's nel 2018: l'episodio, e la questione di chi ne sia
 l'autore, tornano nella sezione sulle applicazioni.
 
@@ -230,17 +230,17 @@ falsi convincenti. Ragione in più per capirne bene il funzionamento.
 Dall'intuizione passiamo alla pratica. La sezione seguente smonta il
 meccanismo: che cosa entra e che cosa esce da ciascuna delle due reti, come si
 collegano, che cosa esattamente l'una restituisce all'altra, e come da
-quell'unico punteggio ciascuna ricavi la propria **loss**, cioè il conto del
+quell'unico punteggio ciascuna ricavi la propria loss, cioè il conto del
 proprio errore. Poi il ciclo di addestramento a turni, scritto riga per riga in
 PyTorch, con le sue insidie: il duello che non si stabilizza, e il *mode
 collapse*, cioè il falsario che scopre un solo quadro capace di ingannare
 l'esperto e si limita a rifare sempre quello. Da lì una domanda tutt'altro che
-ovvia, come si faccia a **misurare** se una GAN sta funzionando, visto che la
+ovvia, come si faccia a misurare se una GAN sta funzionando, visto che la
 sua loss non lo dice.
 
-L'ultima sezione racconta le **varianti** che hanno fatto la storia, dalla
+L'ultima sezione racconta le varianti che hanno fatto la storia, dalla
 DCGAN alle GAN condizionali fino a StyleGAN, e chiude sul passaggio di
-testimone ai **modelli di diffusione**. Sono un altro modo di far disegnare le
+testimone ai modelli di diffusione. Sono un altro modo di far disegnare le
 macchine: invece di mettere due reti l'una contro l'altra, insegnano a una rete
 sola a partire da una macchia di puntini casuali e a ripulirla un poco alla
 volta finché non ne esce un'immagine. È la famiglia che dal 2021 ha tolto alle

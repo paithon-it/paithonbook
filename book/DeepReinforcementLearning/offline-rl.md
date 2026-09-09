@@ -101,7 +101,7 @@ Il target del Q-learning è
 $y = r + \gamma \max_{a'} Q_\theta(s', a')$. Il problema è l'operatore
 $\max_{a'}$: spazia su *tutte* le azioni, comprese quelle che $\pi_\beta$ non ha
 mai eseguito in $s'$. Su quelle azioni *out-of-distribution* (OOD) la rete
-$Q_\theta$ non ha mai visto dati e non fa che **estrapolare**; i suoi errori di
+$Q_\theta$ non ha mai visto dati e non fa che estrapolare; i suoi errori di
 estrapolazione sono casuali, ma il $\max$ non è casuale: seleziona
 sistematicamente i valori più alti, cioè proprio le sovrastime. Il target
 risulta gonfiato, la policy insegue quelle azioni fantasma, e per bootstrapping
@@ -127,10 +127,10 @@ quanto più ci si allontana da quel punto. Zero è il massimo, insomma, e i voti
 sono numeri negativi.
 
 Chi ha raccolto i dati, però, è stato prudente: ha provato soltanto la fetta fra
-$-1{,}0$ e $-0{,}2$, quaranta volte in tutto. **La mossa migliore, nell'archivio,
-non c'è**, e tutto l'esempio serve a mostrare che cosa succede per questo. Il
+$-1{,}0$ e $-0{,}2$, quaranta volte in tutto. La mossa migliore, nell'archivio,
+non c'è, e tutto l'esempio serve a mostrare che cosa succede per questo. Il
 programma qui sotto fa passare una curva per quei quaranta punti e poi le chiede
-il voto di **tutte** le mosse, comprese quelle mai provate.
+il voto di tutte le mosse, comprese quelle mai provate.
 
 ```python
 import numpy as np
@@ -195,11 +195,11 @@ David Meger e Doina Precup {cite}`fujimoto2019off`, presentato nel 2019.
 
 `````{tab} Elementare
 
-Come fa BCQ a sapere quali mosse siano plausibili? Impara a **imitare chi ha
-raccolto i dati**. Da una parte addestra una rete a rispondere alla domanda «in
+Come fa BCQ a sapere quali mosse siano plausibili? Impara a imitare chi ha
+raccolto i dati. Da una parte addestra una rete a rispondere alla domanda «in
 una serata come questa, che cosa avrebbe cucinato la nonna?», e quella rete
 propone una manciata di ricette possibili, tutte del genere che nei quaderni
-compare davvero. Dall'altra parte la rete dei voti giudica **soltanto quelle**,
+compare davvero. Dall'altra parte la rete dei voti giudica soltanto quelle,
 e si tiene la migliore.
 
 La differenza è tutta qui: alle ricette che nessuno ha mai scritto non viene mai
@@ -218,8 +218,8 @@ mezzo al nulla.
 
 `````{tab} Superiore
 
-Per sapere quali azioni siano plausibili, BCQ addestra un **modello
-generativo** (un *variational autoencoder*: una rete che strozza i dati in
+Per sapere quali azioni siano plausibili, BCQ addestra un modello
+generativo (un *variational autoencoder*: una rete che strozza i dati in
 poche variabili e da quelle li ricostruisce, derivata per esteso nel capitolo
 sui modelli latenti) sulle coppie $(s, a)$ del
 dataset: dato uno stato, genera azioni simili a quelle che $\pi_\beta$ avrebbe
@@ -307,13 +307,13 @@ target di Bellman e $\alpha>0$ dosa la conservatività. Il primo termine tira
 *giù* i $Q$ delle azioni pescate da $\mu$ (tipicamente OOD), mentre il secondo
 li tira *su* sulle azioni realmente presenti in $\mathcal{D}$. Kumar e
 colleghi dimostrano che, per $\alpha$ abbastanza grande e con $\mu$ agganciata
-alla policy che si sta valutando, il **valore atteso** delle azioni sotto la
+alla policy che si sta valutando, il valore atteso delle azioni sotto la
 $Q$ così ottenuta minora in ogni stato il vero valore della policy: un limite
 inferiore *in valore*, non punto per punto (la singola stima $Q(s,a)$ può
 ancora eccedere quella vera).
 
 La prudenza sull'ignoto resta quindi una garanzia formale e non un'euristica,
-ma conviene dire dove la garanzia vive: nel caso **tabellare**, e per un
+ma conviene dire dove la garanzia vive: nel caso tabellare, e per un
 $\alpha$ abbastanza grande rispetto all'errore di campionamento, che dipende da
 quante volte la coppia $(s,a)$ compare nel dataset. Con una rete al posto della
 tabella la dimostrazione non si trasferisce, perché l'errore di approssimazione
@@ -345,7 +345,7 @@ Come si fa a scegliere bene senza mai considerare piatti mai cucinati? IQL
 cambia la domanda che rivolge ai quaderni. Non chiede più «quanto varrebbe
 questa ricetta ipotetica?», che è la domanda da cui nascono i voti di
 fantasia: chiede «nelle serate come questa, quanto hanno reso le ricette
-*migliori* fra quelle davvero provate?», e quella risposta è il **metro** della
+*migliori* fra quelle davvero provate?», e quella risposta è il metro della
 situazione. È come giudicare il potenziale di una cucina dai suoi piatti più
 riusciti, senza fantasticare su menù mai esistiti.
 
@@ -388,13 +388,13 @@ $$
 V(s') - Q(s,a)\big)^2\Big].
 $$
 
-Dove $\tau \in (0,1)$ è l’**expectile** (in pratica $\tau \approx 0{,}7$–$0{,}9$;
+Dove $\tau \in (0,1)$ è l’expectile (in pratica $\tau \approx 0{,}7$–$0{,}9$;
 questo $\tau$ è il livello dell'asimmetria, e non ha niente a che vedere né con
 la traiettoria né con il peso dello scorrimento di DDPG):
 la perdita asimmetrica $L_2^\tau$ pesa di più i residui positivi, spingendo $V$
 verso l'alto della distribuzione dei $Q$ nel dataset. Un dettaglio che sembra di
-implementazione e non lo è: il $Q$ dentro $\mathcal{L}_V$ è una **copia
-ritardata**, come la rete-target di DQN. Senza, le due regressioni si
+implementazione e non lo è: il $Q$ dentro $\mathcal{L}_V$ è una copia
+ritardata, come la rete-target di DQN. Senza, le due regressioni si
 inseguirebbero a vicenda senza niente di fermo a cui aggrapparsi, ed è il punto
 esatto in cui una reimplementazione di IQL smette di funzionare. Il target di
 $\mathcal{L}_Q$
@@ -426,8 +426,8 @@ def expectile_loss(q, v, tau=0.8):
 Fin qui abbiamo curato il Q-learning perché sopravvivesse ai dati fissi. Nel 2021
 un gruppo di Berkeley (Lili Chen, Kevin Lu e colleghi) propone di cambiare
 proprio domanda {cite}`chen2021decision`: e se smettessimo di stimare valori e
-trattassimo l'apprendimento offline come un problema di **modellazione di
-sequenze**, lo stesso su cui eccellono i **Transformer**, il tipo di rete con
+trattassimo l'apprendimento offline come un problema di modellazione di
+sequenze, lo stesso su cui eccellono i Transformer, il tipo di rete con
 cui oggi si costruiscono i modelli linguistici?
 
 `````{tab} Elementare
@@ -472,7 +472,7 @@ poi. Un Transformer causale in stile GPT (la stessa architettura ad
 auto-attenzione mascherata descritta nel {doc}`capitolo sui Transformer
 </Transformers/overview>`) predice in modo autoregressivo l'azione $a_t$
 condizionando sui token precedenti, cioè su return desiderato, stati e azioni
-fino a $s_t$. L'addestramento è puramente **supervisionato**: minimizza
+fino a $s_t$. L'addestramento è puramente supervisionato: minimizza
 l'errore (cross-entropy per azioni discrete, MSE per continue) tra l'azione
 predetta e quella nel dataset. È clonazione comportamentale, cioè imitazione
 delle azioni osservate, con in più il condizionamento sul ritorno desiderato.
@@ -506,7 +506,7 @@ learning si può riformulare come apprendimento supervisionato di sequenze.
 ## Un filo che torna: le preferenze dell'RLHF
 
 Questa prospettiva illumina qualcosa che abbiamo già incontrato. In fondo alla
-{doc}`sezione sulla ricerca ad albero <mcts-alphago>` abbiamo visto l’**RLHF**,
+{doc}`sezione sulla ricerca ad albero <mcts-alphago>` abbiamo visto l’RLHF,
 il modo in cui si addestrano oggi gli assistenti conversazionali
 {cite}`ouyang2022training`: delle persone confrontano a due a due le risposte
 del modello e dicono quale preferiscono; da quei confronti si costruisce un
@@ -541,7 +541,7 @@ possiamo fidarci di ciò che non abbiamo mai visto?
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il **RL offline** impara da un archivio chiuso di esperienze già accadute,
+- Il RL offline impara da un archivio chiuso di esperienze già accadute,
   come i quaderni di ricette della nonna: qualcun altro ha agito e ha lasciato
   scritto com'è andata. Nessun assaggio nuovo, nessuna prova sul campo.
 - Il metodo classico, applicato così com'è, fallisce quasi sempre. L'agente
@@ -549,15 +549,15 @@ possiamo fidarci di ciò che non abbiamo mai visto?
   proprio sulle mosse mai provate, quelle su cui il modello può solo tirare a
   indovinare (il risotto al peperoncino da dieci e lode). Nessuna prova può
   smentire quel voto gonfiato, che anzi contagia le stime vicine.
-- **BCQ** costruisce un recinto: valuta solo le mosse plausibili secondo
-  l'archivio, generate imitando chi i dati li ha raccolti. **CQL** non vieta
+- BCQ costruisce un recinto: valuta solo le mosse plausibili secondo
+  l'archivio, generate imitando chi i dati li ha raccolti. CQL non vieta
   nulla, insegna prudenza: abbassa i voti di ciò che non è mai stato provato e
   alza quelli di ciò che è documentato. La garanzia che se ne ricava è sulla
   media delle mosse che poi sceglierà, non su ogni singolo voto: uno gonfiato
-  può ancora scapparci. **IQL** toglie proprio l'occasione di sbagliare: chiede
+  può ancora scapparci. IQL toglie proprio l'occasione di sbagliare: chiede
   solo quanto hanno reso, in situazioni come questa, le mosse migliori fra
   quelle davvero fatte, e non nomina mai un'azione fuori dal diario.
-- Il **Decision Transformer** cambia domanda: tratta la partita come una frase
+- Il Decision Transformer cambia domanda: tratta la partita come una frase
   da completare e si allena sui diari a predire la mossa successiva. Gli si
   dice anche quanto punteggio si vuole ancora totalizzare, e lui produce le
   mosse che di solito portano lì. Nessun voto da stimare, quindi nessun voto
@@ -572,23 +572,23 @@ possiamo fidarci di ciò che non abbiamo mai visto?
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il **RL offline** (batch RL) impara da un dataset fisso di transizioni
+- Il RL offline (batch RL) impara da un dataset fisso di transizioni
   $\mathcal{D}=\{(s,a,r,s')\}$ raccolto da una policy comportamentale
-  $\pi_\beta$, **senza** alcuna nuova interazione con l'ambiente.
-- Il Q-learning off-policy naive fallisce per **distributional shift**:
+  $\pi_\beta$, senza alcuna nuova interazione con l'ambiente.
+- Il Q-learning off-policy naive fallisce per distributional shift:
   l'operatore $\max$ sovrastima le azioni fuori distribuzione (errore di
   estrapolazione), la policy le insegue e (senza prove che smascherino
   l'errore) la sovrastima si propaga {cite}`fujimoto2019off`.
-- **BCQ** vincola le azioni valutate a quelle plausibili secondo un modello
-  generativo del dataset; **CQL** aggiunge un termine conservativo che abbassa i
+- BCQ vincola le azioni valutate a quelle plausibili secondo un modello
+  generativo del dataset; CQL aggiunge un termine conservativo che abbassa i
   $Q$ delle azioni OOD e alza quelli nel dataset, ottenendo un limite inferiore
-  del valore {cite}`kumar2020conservative`; **IQL** stima $V$ per regressione
+  del valore {cite}`kumar2020conservative`; IQL stima $V$ per regressione
   expectile e non interroga mai azioni fuori dai dati
   {cite}`kostrikov2022offline`.
-- Il **Decision Transformer** riformula l'RL come modellazione di sequenze:
+- Il Decision Transformer riformula l'RL come modellazione di sequenze:
   condiziona sul *return-to-go* desiderato e predice l'azione con un Transformer,
   in modo puramente supervisionato {cite}`chen2021decision`.
-- I dati di preferenza dell’**RLHF** sono anch'essi un dataset raccolto a
+- I dati di preferenza dell’RLHF sono anch'essi un dataset raccolto a
   tornate e fermo fra una tornata e l'altra: stesso problema, stessi rimedi
   (restare vicini alla distribuzione dei dati {cite}`ouyang2022training`).
 ```

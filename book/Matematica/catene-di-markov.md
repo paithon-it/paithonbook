@@ -38,8 +38,8 @@ una regola del tipo «chi è già finito in prigione una volta, la seconda volta
 esce subito», il patto sarebbe rotto: la casella da sola non basterebbe più a
 decidere il futuro. Ma basta cambiare che cosa si chiama stato. Invece della
 sola casella si prende la coppia (casella, sei già stato in prigione?), e il
-patto torna valido, con il doppio degli stati. **Quasi ogni sistema si può
-rendere markoviano allargando la definizione di stato**, e il prezzo è che gli
+patto torna valido, con il doppio degli stati. Quasi ogni sistema si può
+rendere markoviano allargando la definizione di stato, e il prezzo è che gli
 stati si moltiplicano.
 
 Descritto il gioco, quello che si vuole sapere è dove si finisce. Non in che
@@ -66,7 +66,7 @@ $\mathbf{P}\in\mathbb{R}^{n\times n}$.
 
 Una convenzione va fissata subito perché i testi si dividono. Qui
 $\mathbf{P}$ è **stocastica per colonne**: $P_{ij}$ è la probabilità di andare
-in $i$ **partendo da** $j$, quindi ogni colonna è una distribuzione di
+in $i$ partendo da $j$, quindi ogni colonna è una distribuzione di
 probabilità e somma a $1$. Con questa scelta lo stato del sistema è un vettore
 colonna $\mathbf{x}_t\in\mathbb{R}^n$ di probabilità, e l'evoluzione è la
 moltiplicazione a sinistra che il resto del capitolo usa dappertutto:
@@ -83,7 +83,7 @@ stocastiche, vettori riga, $\boldsymbol{\pi}_{t+1} = \boldsymbol{\pi}_t
 che parte sta la somma a uno.
 
 L'ipotesi di Markov è meno restrittiva di quanto sembri, per via
-dell’**allargamento dello stato**: un processo che dipende dagli ultimi $k$
+dell’allargamento dello stato: un processo che dipende dagli ultimi $k$
 istanti diventa markoviano prendendo come stato la $k$-upla degli ultimi $k$
 valori, al prezzo di $n^k$ stati. È esattamente la costruzione dei modelli
 $n$-gram, e la stessa che porta dai processi decisionali di Markov alle loro
@@ -109,14 +109,14 @@ linka, ci arriva in un passo solo e poi non si muove più.
 
 Applicare la regola una volta cambia la distribuzione. Applicarla di nuovo la
 cambia ancora, ma di meno. Andando avanti si arriva quasi sempre a una
-distribuzione che la regola **lascia com'è**: applicandola, non succede più
+distribuzione che la regola lascia com'è: applicandola, non succede più
 niente. Quella si chiama distribuzione **stazionaria**, e
 {numref}`fig-catena-si-assesta` la mostra come la riga tratteggiata verso cui
 le colonne si assestano.
 
 Va sottolineata una cosa che il disegno rende evidente e che a parole si perde:
 il sistema continua a muoversi. I singoli giocatori continuano a cambiare
-casella a ogni turno; è la **fotografia d'insieme** che smette di cambiare,
+casella a ogni turno; è la fotografia d'insieme che smette di cambiare,
 perché quanti entrano in una casella e quanti ne escono si pareggiano. Nessuno
 sta fermo, e nondimeno il quadro è immobile.
 
@@ -151,25 +151,25 @@ negative, e senza di essa l'autovettore potrebbe avere segni misti.
 
 Vale inoltre $|\lambda|\le 1$ per ogni autovalore, e il motivo va enunciato sul
 vettore giusto, perché gli autovettori non sono distribuzioni: una matrice
-stocastica non allunga la norma $\ell_1$ di **nessun** vettore, dato che
+stocastica non allunga la norma $\ell_1$ di nessun vettore, dato che
 $\sum_i \big|\sum_j P_{ij} x_j\big| \le \sum_j |x_j| \sum_i P_{ij} = \sum_j |x_j|$,
 e un autovettore con $|\lambda|>1$ la violerebbe. Lo spettro sta quindi nel
 disco unitario, con almeno un punto sul bordo.
 
 Il calcolo si può fare in tre modi, tutti usati:
 
-- **decomposizione spettrale**, prendendo l'autovettore di autovalore $1$ e
+- decomposizione spettrale, prendendo l'autovettore di autovalore $1$ e
   normalizzandolo a somma uno;
-- **sistema lineare** $(\mathbf{P}-\mathbf{I})\boldsymbol{\pi}=\mathbf{0}$ con
+- sistema lineare $(\mathbf{P}-\mathbf{I})\boldsymbol{\pi}=\mathbf{0}$ con
   il vincolo $\mathbf{1}^\top\boldsymbol{\pi}=1$, che è un sistema
   indeterminato reso determinato dalla normalizzazione, esattamente nella forma
   della {doc}`sezione sui sistemi lineari </Matematica/sistemi-lineari>`;
-- **iterazione della potenza**, applicando $\mathbf{P}$ ripetutamente a una
+- iterazione della potenza, applicando $\mathbf{P}$ ripetutamente a una
   distribuzione qualsiasi. È il metodo che si usa sulle matrici enormi, dove
   fattorizzare è fuori discussione e moltiplicare per una matrice sparsa costa
   poco.
 
-L'equilibrio è **dinamico**: la catena continua a saltare da uno stato
+L'equilibrio è dinamico: la catena continua a saltare da uno stato
 all'altro, ed è il flusso complessivo a pareggiarsi. Una condizione più forte,
 il **bilancio dettagliato** $P_{ij}\pi_j = P_{ji}\pi_i$, chiede che si pareggi
 ogni singola coppia di stati; non è necessaria perché $\boldsymbol{\pi}$ sia
@@ -186,14 +186,14 @@ partenza ne chiede due, e si capiscono meglio da come si rompono.
 
 `````{tab} Elementare
 
-**Prima condizione: da ogni stato si deve poter arrivare a ogni altro.** Se il
+Prima condizione: da ogni stato si deve poter arrivare a ogni altro. Se il
 tabellone è fatto di due zone senza passaggi fra loro, chi parte nella prima ci
 resta per sempre, e le distribuzioni di equilibrio sono almeno due: una per
 zona. Chiedere «dove finisce il sistema» non ha una risposta sola, perché
 dipende da dove è partito. È il caso di un web fatto di due gruppi di pagine
 che non si citano a vicenda, ed è più comune di quanto si creda.
 
-**Seconda condizione: non deve esserci un ritmo fisso.** Immagina due stanze
+Seconda condizione: non deve esserci un ritmo fisso. Immagina due stanze
 collegate da una porta girevole che a ogni passo ti obbliga a cambiare stanza.
 Partendo dalla prima sarai nella seconda a ogni turno dispari e nella prima a
 ogni turno pari, per sempre: la distribuzione oscilla fra due valori e non si
@@ -202,8 +202,8 @@ possibilità di restare fermi, o un giro che torni al punto di partenza in un
 numero dispari di passi, per rompere il ritmo e far convergere tutto.
 
 Con tutte e due le condizioni la garanzia è forte, e va enunciata con
-precisione perché è quella su cui si conta: esiste **una sola** distribuzione
-di equilibrio, e la catena ci arriva **da qualunque punto di partenza**. La
+precisione perché è quella su cui si conta: esiste una sola distribuzione
+di equilibrio, e la catena ci arriva da qualunque punto di partenza. La
 memoria dell'inizio si consuma, e quello che resta dipende soltanto dalla
 regola. È il motivo per cui un mazzo mescolato abbastanza a lungo non ricorda
 più com'era ordinato all'inizio.
@@ -253,7 +253,7 @@ autovalore.
 `````{tab} Elementare
 
 Lo scarto fra la distribuzione di adesso e quella di equilibrio si accorcia a
-ogni passo, e a lungo andare lo fa sempre della **stessa frazione**: cento
+ogni passo, e a lungo andare lo fa sempre della stessa frazione: cento
 passi la applicano cento volte, come l'interesse composto al contrario. Fra due
 passi vicini il rapporto oscilla, e a essere costante è la media su molti
 passi: è quella la velocità della catena.
@@ -305,7 +305,7 @@ $$
 
 Il logaritmo dice che guadagnare una cifra decimale costa sempre lo stesso
 numero di passi, e il fattore davanti dice quanti. Attenzione però a come si
-misura: $\lambda_2$ può essere **complesso**, e allora il decadimento è
+misura: $\lambda_2$ può essere complesso, e allora il decadimento è
 geometrico soltanto in modulo, con una rotazione sovrapposta. Il rapporto fra
 due passi consecutivi oscilla, e la stima onesta di $|\lambda_2|$ si prende
 come media geometrica su molti passi. Un gap piccolo (una catena
@@ -349,7 +349,7 @@ Nella formulazione originale succede circa una volta ogni sette clic.
 
 Questo salto fa tre cose insieme, e conviene contarle. Rende il web
 attraversabile da qualunque punto (prima condizione), toglie ogni ritmo fisso
-(seconda condizione), e per giunta **accelera** la convergenza: più spesso il
+(seconda condizione), e per giunta accelera la convergenza: più spesso il
 navigatore si annoia, prima il conto si stabilizza. Un difetto di
 modellazione riparato con una toppa che risulta essere anche la ragione per cui
 il calcolo è possibile su miliardi di pagine.
@@ -360,13 +360,13 @@ il calcolo è possibile su miliardi di pagine.
 
 Sia $\mathbf{M}$ la matrice del web resa stocastica per colonne
 ($M_{ij}=1/\ell_j$ se la pagina $j$ linka la $i$, con $\ell_j$ il numero di
-link uscenti da $j$). La **matrice di Google** è
+link uscenti da $j$). La matrice di Google è
 
 $$
 \mathbf{G} = d\,\mathbf{M} + \frac{1-d}{n}\,\mathbf{1}\mathbf{1}^\top ,
 $$
 
-con $d\approx 0{,}85$ il **fattore di smorzamento** e $n$ il numero di pagine.
+con $d\approx 0{,}85$ il fattore di smorzamento e $n$ il numero di pagine.
 Il secondo termine è il teletrasporto uniforme; le pagine senza link uscenti si
 trattano a parte, sostituendo la loro colonna nulla con la distribuzione
 uniforme.
@@ -453,7 +453,7 @@ La prima riga smentisce quello che ci si aspettava: il rapporto fra due passi
 consecutivi non è costante, oscilla, e con un ritmo che si ripete ogni quattro
 passi. La ragione sta nei due autovalori appena stampati, quelli che portano
 il pezzo scritto «$+0{,}425\mathrm{j}$»: quel pezzo in più li rende una coppia
-che non si limita ad accorciare lo scarto, lo fa anche **ruotare**, di tre
+che non si limita ad accorciare lo scarto, lo fa anche ruotare, di tre
 ottavi di giro a ogni passo. Dopo quattro passi ha girato di un giro e mezzo,
 cioè punta esattamente al contrario; e siccome uno scarto misurato in valore
 assoluto non distingue una direzione dalla sua opposta, il ritmo che si vede è
@@ -515,21 +515,21 @@ dell'autovettore, quello che è davvero una distribuzione.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Una **catena di Markov** è un sistema in cui il prossimo passo dipende solo
+- Una catena di Markov è un sistema in cui il prossimo passo dipende solo
   da dove ti trovi adesso, e non da come ci sei arrivato. Quando la regola
-  sembra ricordare qualcosa di più, quasi sempre basta **allargare la
-  definizione di stato** e il patto torna valido.
+  sembra ricordare qualcosa di più, quasi sempre basta allargare la
+  definizione di stato e il patto torna valido.
 - Applicando la regola molte volte la distribuzione si assesta su una
   configurazione che la regola lascia identica: la distribuzione
-  **stazionaria**. Il sistema continua a muoversi, è la fotografia d'insieme a
+  stazionaria. Il sistema continua a muoversi, è la fotografia d'insieme a
   fermarsi.
 - Trovarla vuol dire cercare una direzione che la matrice non devia, cioè un
-  **autovettore** con fattore di allungamento uguale a uno.
-- La meta è **una sola** se da ogni stato si può raggiungere ogni altro; e ci
+  autovettore con fattore di allungamento uguale a uno.
+- La meta è una sola se da ogni stato si può raggiungere ogni altro; e ci
   si arriva da ovunque solo se in più non c'è un ritmo fisso. Due stanze e una
   porta girevole che obbliga a cambiare stanza hanno una meta sola, metà e
   metà, e non ci si assestano mai.
-- **Quanto ci si mette** lo dice il secondo fattore di allungamento della
+- Quanto ci si mette lo dice il secondo fattore di allungamento della
   matrice: lo scarto dall'equilibrio si riduce, in media, di quella frazione a
   ogni passo.
   Nel PageRank quel numero è tenuto sotto controllo dal salto casuale del
@@ -541,22 +541,22 @@ dell'autovettore, quello che è davvero una distribuzione.
 ```{admonition} Da ricordare
 :class: important
 - $\Pr[S_{t+1}\mid S_t,\dots,S_0]=\Pr[S_{t+1}\mid S_t]$ definisce la catena; con
-  $\mathbf{P}$ stocastica **per colonne** l'evoluzione è
+  $\mathbf{P}$ stocastica per colonne l'evoluzione è
   $\mathbf{x}_t=\mathbf{P}^t\mathbf{x}_0$. Un processo con memoria $k$ diventa
   markoviano su $n^k$ stati.
 - La stazionaria è l'autovettore di autovalore $1$:
   $\mathbf{P}\boldsymbol{\pi}=\boldsymbol{\pi}$. Esiste sempre (le colonne
   sommano a uno) e tutti gli autovalori stanno nel disco unitario.
-- **Perron-Frobenius**: se $\mathbf{P}$ è irriducibile e aperiodica,
+- Perron-Frobenius: se $\mathbf{P}$ è irriducibile e aperiodica,
   l'autovalore $1$ è semplice, $\boldsymbol{\pi}$ è unica e positiva, e
   $\mathbf{P}^t\mathbf{x}_0\to\boldsymbol{\pi}$ da ogni partenza.
   $\mathbf{P}=\mathbf{I}$ rompe la prima ipotesi,
   $\begin{pmatrix}0&1\\1&0\end{pmatrix}$ la seconda.
-- La velocità è il **gap spettrale** $1-|\lambda_2|$: lo scarto decade come
+- La velocità è il gap spettrale $1-|\lambda_2|$: lo scarto decade come
   $|\lambda_2|^t$ e $t_{\text{mix}}(\varepsilon)=O\big(\log(1/\varepsilon)/
-  (1-|\lambda_2|)\big)$. Alcune famiglie mostrano **cutoff**, cioè un crollo in
+  (1-|\lambda_2|)\big)$. Alcune famiglie mostrano cutoff, cioè un crollo in
   una finestra stretta, e lì $|\lambda_2|$ da solo descrive male il transitorio.
-- **PageRank**: $\mathbf{G}=d\mathbf{M}+\frac{1-d}{n}\mathbf{1}\mathbf{1}^\top$
+- PageRank: $\mathbf{G}=d\mathbf{M}+\frac{1-d}{n}\mathbf{1}\mathbf{1}^\top$
   è positiva, quindi la stazionaria esiste ed è unica; e
   $|\lambda_2(\mathbf{G})|\le d$ indipendentemente dal grafo, il che rende
   l'iterazione della potenza praticabile su miliardi di pagine.

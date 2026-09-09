@@ -21,7 +21,7 @@ nome è il modo in cui in matematica si chiama una pendenza: la direzione lungo
 cui una quantità cresce più in fretta, e quindi la direzione in cui conviene
 fare un passo. Qui la quantità che si vuole far crescere è la ricompensa.
 
-E a fare il passo sono i **pesi** di una rete neurale: i numeri, dentro la rete,
+E a fare il passo sono i pesi di una rete neurale: i numeri, dentro la rete,
 che decidono come una situazione si trasforma in una decisione. In tutta questa
 sezione, quando si dice che «la strategia cambia» o che «si fa un passo», si
 intende sempre questo: qualche milione di numeri che si sposta un pochino.
@@ -47,7 +47,7 @@ probabili i comportamenti che in passato hanno fruttato un premio, meno
 probabili quelli finiti male. Non calcoliamo un punteggio per poi decidere:
 regoliamo direttamente le probabilità con cui l'animale sceglie.
 
-Una **policy** è esattamente questo: data una situazione, dice con quale
+Una policy è esattamente questo: data una situazione, dice con quale
 probabilità compiere ciascuna azione. In italiano si direbbe «strategia», ed è
 quello che vuol dire; *policy* è la parola che si legge dappertutto, e le due
 valgono l'una per l'altra.
@@ -67,7 +67,7 @@ interessa è la media su tante sedute, mai su una sola.
 Una policy parametrica $\pi_\theta(a \mid s)$ è una distribuzione di
 probabilità sulle azioni $a$ condizionata allo stato $s$, controllata dai
 parametri $\theta$ (i pesi di una rete neurale). L'obiettivo è massimizzare il
-**ritorno atteso**:
+ritorno atteso:
 
 $$
 J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}\big[ R(\tau) \big],
@@ -81,7 +81,7 @@ ottimizzare $\pi_\theta$ direttamente gestisce con naturalezza gli spazi di
 azioni continui e le policy stocastiche.
 
 Un avviso sulla notazione, perché da qui in avanti cambia. Questa è la
-convenzione dei lavori di deep RL: $r_t$ è la ricompensa che **segue** l'azione
+convenzione dei lavori di deep RL: $r_t$ è la ricompensa che segue l'azione
 $a_t$, cioè esattamente ciò che il capitolo precedente indicava con $R_{t+1}$;
 e stati e azioni si scrivono in minuscolo, perché la maiuscola $A_t$ qui serve
 al *vantaggio*, come annunciato nella
@@ -109,12 +109,12 @@ volte, questo semplice riflesso spinge il comportamento verso le mosse buone
 senza che nessuno debba mai spiegare *perché* siano buone.
 
 Il difetto salta subito all'occhio, ed è quello da cui nasce tutto il seguito:
-il giudizio arriva **solo alla fine**, ed è uno solo per tutta la partita. Se
+il giudizio arriva solo alla fine, ed è uno solo per tutta la partita. Se
 hai vinto, l'algoritmo rende più probabili anche le due o
 tre mosse pessime che avevi fatto per strada; se hai perso, rende meno probabili
 anche quelle buone. E due partite giocate con la stessa identica strategia
 possono finire in modi opposti per puro caso, con la correzione che cambia
-segno di conseguenza. Il risultato è un apprendimento che **balla**: va nella
+segno di conseguenza. Il risultato è un apprendimento che balla: va nella
 direzione giusta in media, ma a strattoni, e ci mette moltissimo.
 
 Un primo ritocco costa niente. Quando i punti si segnano per strada, e non solo
@@ -173,11 +173,11 @@ da lì in avanti, $G_t$.
 L'enunciato vale sotto le ipotesi consuete ($\pi_\theta$ differenziabile in
 $\theta$, ritorni limitati, distribuzione stazionaria degli stati ben definita)
 e sotto una in più, che conviene tenere a mente perché tornerà fra poche pagine:
-il teorema è **on-policy**. Nella forma originale al posto di $G_t$ compare
+il teorema è on-policy. Nella forma originale al posto di $G_t$ compare
 $Q^\pi(s_t,a_t)$, e sostituirvi il ritorno osservato è lecito solo perché
 $\mathbb{E}[G_t \mid s_t, a_t] = Q^\pi(s_t,a_t)$, il che richiede che il seguito
-della traiettoria sia stato generato **dalla stessa policy che stiamo
-derivando**. È esattamente l'ipotesi che PPO dovrà rattoppare con un rapporto di
+della traiettoria sia stato generato dalla stessa policy che stiamo
+derivando. È esattamente l'ipotesi che PPO dovrà rattoppare con un rapporto di
 importance sampling per riusare i dati della policy vecchia.
 
 Il termine $\nabla_\theta \log \pi_\theta(a_t\mid s_t)$ indica *come*
@@ -201,7 +201,7 @@ riconosce la struttura: il *bandit a gradiente* era esattamente questo, in un
 mondo con un solo stato, dove la softmax sulle preferenze $H(a)$ faceva le
 veci di $\pi_\theta(a\mid s)$. Anche il rimedio che segue è già comparso là.
 
-Il punto debole è la **varianza**:
+Il punto debole è la varianza:
 $G_t$ dipende dall'intero seguito casuale della partita, e le stime risultano
 rumorose e lente a convergere.
 
@@ -260,7 +260,7 @@ e ricorda.
 
 `````{tab} Superiore
 
-Nell'architettura **Actor-Critic** convivono due reti. L’*attore* è la policy
+Nell'architettura Actor-Critic convivono due reti. L’*attore* è la policy
 $\pi_\theta(a\mid s)$; il *critico* stima la funzione valore $V_\phi(s)$. Al
 ritorno grezzo $G_t$ si sostituisce il **vantaggio** (*advantage*), che è per
 definizione
@@ -286,7 +286,7 @@ $A_t$ misura di quanto l'azione compiuta ha superato le *aspettative*
 codificate dal critico: è positivo se l'esito è stato migliore del previsto. La
 regola diventa $\nabla_\theta \log\pi_\theta(a_t\mid s_t)\,A_t$, e la varianza
 scende per due vie che conviene distinguere. Sottrarre la *baseline*
-$V_\phi(s_t)$ **non distorce** il gradiente, e il conto sta in due righe:
+$V_\phi(s_t)$ non distorce il gradiente, e il conto sta in due righe:
 
 $$
 \mathbb{E}_{a\sim\pi_\theta}\big[\nabla_\theta\log\pi_\theta(a\mid s)\, b(s)\big]
@@ -300,14 +300,14 @@ $\pi_\theta\,\nabla_\theta\log\pi_\theta = \nabla_\theta \pi_\theta$, che è la
 stessa che fa comparire il $\log$ nel teorema di poco fa; il secondo scambia la
 derivata con la somma. È scritto per azioni discrete, e nel continuo la somma
 diventa un integrale e lo scambio va giustificato, ma la conclusione non cambia.
-L'unica cosa che serve è che $b$ **non dipenda dall'azione**: qualunque
+L'unica cosa che serve è che $b$ non dipenda dall'azione: qualunque
 funzione del solo stato si può sottrarre gratis. Sostituire il ritorno $G_t$ con
 $r_t+\gamma V_\phi(s_{t+1})$ è invece *bootstrapping*, e rende la stima
 distorta finché il critico è impreciso. Si scambia varianza con *bias*: è il
 compromesso al cuore dell'actor-critic.
 
 Il vantaggio scritto sopra è la scelta più economica del compromesso, cioè
-l'errore TD a **un passo**: poca varianza e parecchio bias. All'altro estremo
+l'errore TD a un passo: poca varianza e parecchio bias. All'altro estremo
 c'è il ritorno completo di REINFORCE, che è non distorto e ballerino. Fra i due
 non c'è un salto ma una famiglia continua, governata da un parametro $\lambda$
 che regola quanto lontano si guarda avanti prima di affidarsi al critico: detto
@@ -345,8 +345,8 @@ vantaggio, e in parallelo senza aspettarsi a vicenda, cioè le tre cose appena
 dette.
 
 **PPO** (*Proximal Policy Optimization* {cite}`schulman2017proximal`) è
-l'algoritmo che oggi si prova per primo, e la ragione è che **perdona la
-taratura**, più che la potenza: cioè funziona ragionevolmente su una
+l'algoritmo che oggi si prova per primo, e la ragione è che perdona la
+taratura, più che la potenza: cioè funziona ragionevolmente su una
 gamma larga di problemi senza che qualcuno passi giorni a regolarne le manopole.
 
 ```{figure} ../figures/ppo-2017.svg
@@ -436,14 +436,14 @@ dove $\rho_t = \dfrac{\pi_\theta(a_t\mid
 s_t)}{\pi_{\theta_{\text{old}}}(a_t\mid s_t)}$ è il rapporto tra la nuova e la
 vecchia policy, e $\epsilon$ (tipicamente $0{,}2$) fissa la larghezza della
 fascia entro cui lo spostamento continua a fruttare. Quel rapporto è il
-**rapporto di importance sampling** incontrato nel capitolo precedente e non un
+rapporto di importance sampling incontrato nel capitolo precedente e non un
 espediente inventato qui: quello che permette di valutare una policy con dati
 generati da un'altra, troncato a un passo solo. E il suo difetto è lo stesso
 già visto là: può assumere valori enormi e mandare in aria la stima. Il
-*clipping* **toglie il premio**, campione per campione, a chi spinge $\rho_t$
+*clipping* toglie il premio, campione per campione, a chi spinge $\rho_t$
 fuori dall'intervallo $[1-\epsilon,1+\epsilon]$.
 
-Ma lo toglie **da un lato solo**, e quale lato dipende dal segno del vantaggio:
+Ma lo toglie da un lato solo, e quale lato dipende dal segno del vantaggio:
 è il dettaglio che il nome nasconde, e conviene fare il conto invece di fidarsi.
 Se l'azione è andata meglio del previsto ($A_t>0$) il $\min$ morde a destra:
 oltre $1+\epsilon$ l'obiettivo si appiattisce e il gradiente si annulla, mentre
@@ -458,15 +458,15 @@ banda (vantaggio positivo o negativo, rapporto sopra o sotto la fascia), in due
 la tosatura non interviene affatto.
 
 Conviene dire con precisione che cosa questo garantisce, perché è meno di quanto
-il nome suggerisca. È un'euristica **del primo ordine e per campione**, non un
+il nome suggerisca. È un'euristica del primo ordine e per campione, non un
 vincolo: niente impedisce a $\rho_t$ di finire fuori dall'intervallo, il
 gradiente si annulla solo dove il campione è già stato tosato (e si è appena
 visto in quali casi non lo sia), e PPO fa più
 epoche di minibatch sugli stessi dati. Ancora prima: al primo passo di ogni
 aggiornamento la nuova policy coincide con la vecchia, tutti i rapporti valgono
-$1$ e **nulla è tosato**, quindi quel passo è esattamente quello dell'obiettivo
+$1$ e nulla è tosato, quindi quel passo è esattamente quello dell'obiettivo
 non vincolato. E misurato sul serio il recinto non tiene: Engstrom e colleghi
-{cite}`engstrom2020implementation` verificano che **nessuno** dei tre algoritmi
+{cite}`engstrom2020implementation` verificano che nessuno dei tre algoritmi
 che confrontano riesce a tenere i rapporti dentro l'intervallo
 $[1-\epsilon,1+\epsilon]$, PPO compreso, che pure è addestrato con un obiettivo
 che quei rapporti li tosa. Attenzione però a quale recinto si sta misurando:
@@ -476,9 +476,9 @@ costruzione, e che gli stessi autori misurano e trovano rispettata.
 
 Detto così il tosaggio sembra un trucco, e invece è l'approssimazione
 economica di un'idea precisa che lo precede. **TRPO** (*Trust Region Policy Optimization*) {cite}`schulman2015trust` pone
-il problema come massimizzazione **vincolata**: si
+il problema come massimizzazione vincolata: si
 massimizza lo stesso obiettivo con importance sampling, ma imponendo che la
-nuova policy resti vicina alla vecchia in **divergenza di Kullback-Leibler**,
+nuova policy resti vicina alla vecchia in divergenza di Kullback-Leibler,
 
 $$
 \max_\theta\ \mathbb{E}\big[\rho_t A_t\big]
@@ -508,28 +508,28 @@ normale ottimizzatore del primo ordine.
 
 A rigore l'obiettivo che si implementa non è
 solo $L^{\text{CLIP}}$: gli si sommano la perdita del critico e un piccolo
-**bonus di entropia**,
+bonus di entropia,
 
 $$
 L^{\text{CLIP}} - c_1 L^{\text{VF}} + c_2\, \mathcal{H}[\pi_\theta],
 $$
 
 dove $L^{\text{VF}}$ è l'errore quadratico del critico, $\mathcal{H}[\pi_\theta]$
-è l'entropia media della policy (la stessa $\mathcal{H}$ che la sezione sul
-controllo continuo definirà come $-\mathbb{E}_{a\sim\pi}[\log\pi(a\mid s)]$) e
-$c_1, c_2$ sono due pesi fissi. Il terzo termine tiene la policy dal collassare
-troppo presto su un'unica azione: è lo stesso ingrediente che diventerà il
-segno distintivo di SAC, qui con un peso molto più piccolo e uno scopo più
-modesto.
+è l'entropia media della policy (la stessa $\mathcal{H}$ che la
+{doc}`sezione sul controllo continuo <controllo-continuo>` definirà come
+$-\mathbb{E}_{a\sim\pi}[\log\pi(a\mid s)]$) e $c_1, c_2$ sono due pesi fissi. Il
+terzo termine tiene la policy dal collassare troppo presto su un'unica azione:
+è lo stesso ingrediente che diventerà il segno distintivo di SAC, qui con un
+peso molto più piccolo e uno scopo più modesto.
 
 Sarebbe comodo chiudere dicendo che PPO ha vinto perché il tosaggio è
 «abbastanza corretto», ma è una spiegazione data a posteriori che la letteratura
 non regge, e conviene guardarla in faccia per due ragioni.
 
 La prima è che il confronto con TRPO non è fra un'euristica e un teorema. Il
-teorema di miglioramento monotono chiede il **massimo** della KL su tutti gli
+teorema di miglioramento monotono chiede il massimo della KL su tutti gli
 stati e un coefficiente di penalità; la formula scritta qui sopra, quella che si
-implementa, è già il suo rilassamento con la KL **media**. Anche TRPO, così
+implementa, è già il suo rilassamento con la KL media. Anche TRPO, così
 com'è usato, ha già rinunciato alla garanzia.
 
 La seconda è che il vantaggio empirico di PPO su TRPO, misurato, viene in
@@ -538,7 +538,7 @@ larghissima parte da altro. Engstrom e colleghi
 implementazione della versione di riferimento (normalizzazione e clipping delle
 osservazioni, scalatura e clipping della ricompensa, clipping della value
 function, inizializzazione ortogonale, annealing del passo di Adam, attivazioni
-tanh, clipping globale del gradiente) e trovano che sono **loro** a rendere
+tanh, clipping globale del gradiente) e trovano che sono loro a rendere
 conto della maggior parte del guadagno, non l'obiettivo tosato. Lo studio
 indipendente di Andrychowicz e colleghi {cite}`andrychowicz2021what`, su più di
 250.000 agenti addestrati, parte dalla stessa constatazione. È una lezione più
@@ -555,19 +555,19 @@ via quello che funzionava.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- I metodi a gradiente di policy imparano **direttamente a decidere**: invece
+- I metodi a gradiente di policy imparano direttamente a decidere: invece
   di dare un voto a ogni mossa e poi scegliere la migliore, regolano la
   *tendenza* dell'agente, come si allena un cane rendendo più probabili i
   comportamenti che hanno fruttato un premio. È la via naturale quando le
   mosse possibili non sono un menu di poche voci.
-- **REINFORCE** è il "prova e ricorda": si gioca una partita intera e, se è
+- REINFORCE è il "prova e ricorda": si gioca una partita intera e, se è
   andata bene, si rende più probabile tutto ciò che si è fatto. Semplice, ma
   lento e altalenante, perché il giudizio arriva solo alla fine.
-- **Actor-Critic** affianca al giocatore un allenatore a bordo campo che
+- Actor-Critic affianca al giocatore un allenatore a bordo campo che
   commenta ogni mossa ("meglio del previsto", "peggio del previsto"):
   l'apprendimento diventa più rapido e più stabile, al prezzo che finché
-  l'allenatore è inesperto i suoi commenti sono storti. **A3C** fa giocare
-  molti attori in parallelo; **PPO** scoraggia i passi lunghi invece di
+  l'allenatore è inesperto i suoi commenti sono storti. A3C fa giocare
+  molti attori in parallelo; PPO scoraggia i passi lunghi invece di
   vietarli: a chi si allontana troppo dalla strategia che ha giocato le
   partite toglie il premio, non la possibilità. È quello che si prova per
   primo, perché perdona gli errori di taratura più degli altri.
@@ -577,13 +577,13 @@ via quello che funzionava.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- I metodi a gradiente di policy apprendono **direttamente**
+- I metodi a gradiente di policy apprendono direttamente
   $\pi_\theta(a\mid s)$: adatti ad azioni continue e strategie stocastiche.
-- **REINFORCE** aumenta la probabilità delle azioni seguite da ritorni alti,
+- REINFORCE aumenta la probabilità delle azioni seguite da ritorni alti,
   ma soffre di varianza elevata.
-- **Actor-Critic** aggiunge un critico $V_\phi(s)$ che fornisce il *vantaggio*
+- Actor-Critic aggiunge un critico $V_\phi(s)$ che fornisce il *vantaggio*
   $A_t$, riducendo la varianza: la baseline non distorce (basta che non dipenda
-  dall'azione), il bootstrapping sì. **A3C** parallelizza gli attori; **PPO**
+  dall'azione), il bootstrapping sì. A3C parallelizza gli attori; PPO
   scoraggia i passi lunghi con il *clipping*, che è un'euristica del primo
   ordine e non un vincolo di trust region; il suo vantaggio misurato su
   TRPO viene in larga parte dalle ottimizzazioni di implementazione

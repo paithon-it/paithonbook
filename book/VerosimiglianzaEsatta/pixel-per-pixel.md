@@ -24,7 +24,7 @@ Servono due cose, e la seconda è tutto il mestiere.
 ## Primo: un ordine
 
 Una frase un ordine ce l'ha, un'immagine no. Bisogna sceglierne uno e non
-cambiarlo più: si va **riga per riga, da sinistra a destra**, come quando si
+cambiarlo più: si va riga per riga, da sinistra a destra, come quando si
 legge, e dentro un pixel a colori si mette anche un ordine fra i tre canali,
 cioè fra il rosso, il verde e il blu.
 La scelta è arbitraria e nessuno pretende che sia la migliore: pretende solo di
@@ -39,18 +39,19 @@ uno, non un punteggio da normalizzare chissà come.
 
 ## Secondo: una convoluzione che guarda solo indietro
 
-Qui arriva l'ostacolo, e ha una forma precisa. Il {doc}`capitolo sul deep learning </DeepLearning/overview>` ha
-speso pagine per spiegare perché su un'immagine si usa una convoluzione e non
-uno strato denso: perché una convoluzione guarda un intorno, cioè i vicini di
-casa in **tutte** le direzioni. Ma «tutte le direzioni» qui è esattamente ciò
-che non si può fare: se nel prevedere un pixel la rete sbircia quelli che
-vengono dopo, sta barando, e la probabilità che ne esce non vale niente.
+Qui arriva l'ostacolo, e ha una forma precisa. Il {doc}`capitolo sul deep
+learning </DeepLearning/overview>` ha speso pagine per spiegare perché su
+un'immagine si usa una convoluzione e non uno strato denso: perché una
+convoluzione guarda un intorno, cioè i vicini di casa in tutte le direzioni. Ma
+«tutte le direzioni» qui è esattamente ciò che non si può fare: se nel
+prevedere un pixel la rete sbircia quelli che vengono dopo, sta barando, e la
+probabilità che ne esce non vale niente.
 
-Il rimedio è brutale e funziona: si prende il filtro e si **azzerano** le
+Il rimedio è brutale e funziona: si prende il filtro e si azzerano le
 caselle che guardano nel futuro. Il filtro resta un quadrato, ma metà del
 quadrato è spenta per sempre.
 
-E qui serve una distinzione che sembra un cavillo e non lo è. Al **primo**
+E qui serve una distinzione che sembra un cavillo e non lo è. Al primo
 strato, fra le caselle da spegnere c'è anche quella centrale, cioè il pixel
 stesso che stiamo cercando di indovinare: se restasse accesa, la rete
 imparerebbe in tre secondi a copiare la risposta dalla domanda, e avremmo un
@@ -144,13 +145,13 @@ campo visivo con 24 strati ('#' visto, '.' passato mai visto, ' ' futuro):
 ```
 
 La prima colonna dei numeri è la buona notizia, e va letta come una prova: a
-qualunque profondità, **zero** pixel del futuro entrano nel conto. Le maschere
+qualunque profondità, zero pixel del futuro entrano nel conto. Le maschere
 fanno il loro mestiere.
 
 La seconda colonna è la sorpresa. Con sei strati ventiquattro pixel del passato
 restano fuori, e ci si sta: la rete non arriva così lontano, basta farla più
 profonda. Con dodici ne restano fuori sei. Con ventiquattro ne restano fuori
-**ancora sei**. Non è una questione di profondità: c'è una zona che quelle
+ancora sei. Non è una questione di profondità: c'è una zona che quelle
 maschere non raggiungeranno mai, per quanto si insista, ed è il triangolo che
 nella mappa sale a destra del pixel da indovinare. Si chiama **punto cieco**
 (*blind spot*), e il lavoro che l'ha diagnosticato lo dice in una riga: le
@@ -204,7 +205,7 @@ aveva vietate.
 Sono due difetti diversi. Con sei strati la rete non arriva lontano abbastanza:
 è miopia, e si cura con la profondità. Con ventiquattro la portata basta e
 restano fuori sempre gli stessi sei pixel: il punto cieco. Lì la profondità non
-serve più a niente, perché il limite sta nella **forma** dello strumento, e si
+serve più a niente, perché il limite sta nella forma dello strumento, e si
 sposta soltanto cambiando quella. La riparazione del 2016 è mettere due
 finestre al posto di una: una guarda tutte le righe di sopra per intero,
 l'altra la riga corrente da sinistra.
@@ -235,7 +236,7 @@ con $x_i$ l’$i$-esimo valore in ordine di scansione e $D$ il numero di valori
 che compongono il dato: $n^2$ per un'immagine $n \times n$ in scala di grigi,
 $3n^2$ a colori, dove i tre canali stanno ordinati dentro ciascun pixel. Ogni
 fattore è una categorica su 256 livelli,
-quindi normalizzata per costruzione: $\log p(\mathbf{x})$ è **esatta** e si
+quindi normalizzata per costruzione: $\log p(\mathbf{x})$ è esatta e si
 ottiene in un solo passaggio in avanti, perché durante l'addestramento tutti i
 contesti sono disponibili insieme (*teacher forcing*). È l'asimmetria
 caratteristica della famiglia: valutare costa un passaggio, campionare ne costa
@@ -260,14 +261,14 @@ di coprire tutto il semipiano che l'ordinamento consentirebbe, e ciò che resta
 fra quella retta e il bordo dell'immagine non è raggiungibile a nessuna
 profondità: con filtri $3 \times 3$ il punto cieco arriva a coprire, dicono gli
 autori, «fino a un quarto del campo recettivo potenziale». La riparazione
-di {cite}`oord2016conditional` fattorizza il filtro in **due pile**: la
+di {cite}`oord2016conditional` fattorizza il filtro in due pile: la
 verticale, non mascherata, sulle righe strettamente superiori (campo
 rettangolare, nessun punto cieco), e l'orizzontale, mascherata, sulla riga
 corrente; l'uscita della verticale entra nell'orizzontale con una $1\times1$, e
 i due rami si sommano dopo ogni blocco. Lo stesso lavoro sostituisce la ReLU
 con un'unità *gated* in stile LSTM, e aggiunge il condizionamento su un vettore
 esterno, che è il motivo per cui il titolo parla di generazione
-**condizionale**. Le due pile e le unità *gated* insieme portano il PixelCNN, su
+condizionale. Le due pile e le unità *gated* insieme portano il PixelCNN, su
 CIFAR-10, da $3{,}14$ a $3{,}03$ bit per dimensione (quanti bit costa in media
 ogni numero dell'immagine: più basso è meglio), a un soffio dal $3{,}00$ del
 PixelRNN, che però è il modello lento.
@@ -284,7 +285,7 @@ quattro modifiche insieme portano il conto su CIFAR-10 a $2{,}92$.
 ## Perché non ha vinto sulle immagini, e dove è tornata
 
 Il conto è impietoso, ed è tutto nel campionamento. Valutare la probabilità di
-un'immagine costa **un** passaggio della rete; generarne una ne costa uno per
+un'immagine costa un passaggio della rete; generarne una ne costa uno per
 pixel, in fila, perché il pixel numero mille ha bisogno che il
 novecentonovantanovesimo sia già stato deciso. Su una fotografia a colori di
 $256 \times 256$ sono $256 \times 256 \times 3 = 196.608$ passaggi sequenziali
@@ -304,7 +305,7 @@ spostata di un piano, dai pixel ai token, ed è la forma in cui oggi si trova
 dentro i modelli che disegnano e parlano.
 
 Resta però una cosa che si perde in quel trasloco, e riguarda proprio questo
-capitolo: la verosimiglianza che si calcola sui token è quella dei **token**,
+capitolo: la verosimiglianza che si calcola sui token è quella dei token,
 non quella dell'immagine. Il passaggio dal catalogo ai pixel è una perdita, e
 oltre quella perdita il numero non parla più. Chi vuole $\log p$ dell'immagine
 vera deve restare sui pixel, o cambiare famiglia: ed è la sezione che segue.
@@ -313,17 +314,17 @@ vera deve restare sui pixel, o cambiare famiglia: ed è la sezione che segue.
 
 ```{admonition} Da ricordare
 :class: important
-- È la ricetta del testo, applicata a una griglia. Si sceglie un **ordine**
+- È la ricetta del testo, applicata a una griglia. Si sceglie un ordine
   (riga per riga, come si legge), e la probabilità di un'immagine è il prodotto
   di quella di ogni pixel dato tutto quello che viene prima. Nessuna
   approssimazione, e per misurarla basta un passaggio solo.
-- Il costo è mettere il bavaglio alla convoluzione: si **spengono** le caselle
+- Il costo è mettere il bavaglio alla convoluzione: si spengono le caselle
   del filtro che guardano nel futuro. Al primo strato si spegne anche quella
   centrale, perché lì c'è il pixel che stiamo cercando di indovinare, e vederlo
   sarebbe copiare la risposta dalla domanda.
 - Il bavaglio si porta dietro un guasto suo: un triangolo
   di pixel che vengono prima e che la rete non guarderà mai, per quanto la
-  si faccia profonda. Si chiama **punto cieco**, e non si cura con la
+  si faccia profonda. Si chiama punto cieco, e non si cura con la
   profondità: si cura cambiando la forma della finestra, cioè mettendone due.
 - Generare costa carissimo, perché va fatto un pixel alla volta e in fila: su
   una fotografia sono quasi duecentomila passaggi, contro l'unico di una GAN.
@@ -341,25 +342,25 @@ vera deve restare sui pixel, o cambiare famiglia: ed è la sezione che segue.
 :class: important
 - $\log p(\mathbf{x}) = \sum_i \log p(x_i \mid \mathbf{x}_{<i})$ su un
   ordinamento totale dei pixel, ogni fattore una categorica su 256 livelli:
-  normalizzazione per costruzione, verosimiglianza **esatta**, valutazione in un
+  normalizzazione per costruzione, verosimiglianza esatta, valutazione in un
   passaggio (*teacher forcing*), campionamento in $D$ passaggi sequenziali,
   uno per valore del dato.
-- Causalità imposta **sui pesi**: $\mathbf{W} \leftarrow \mathbf{W} \odot
+- Causalità imposta sui pesi: $\mathbf{W} \leftarrow \mathbf{W} \odot
   \mathbf{M}$, maschera di tipo A al primo strato (azzera il centro) e di tipo
   B dopo. La causalità è chiusa per composizione, e il test sul gradiente la
   verifica invece di darla per buona.
-- Il **punto cieco** {cite}`oord2016conditional` è un artefatto della
+- Il punto cieco {cite}`oord2016conditional` è un artefatto della
   realizzazione, non del vincolo: il bordo destro del campo recettivo sale a
   $45^\circ$ invece di coprire il semipiano che l'ordinamento consentirebbe, e
   con filtri $3 \times 3$ arriva a un quarto del campo potenziale.
-  Riparazione: fattorizzare in pila **verticale** (non mascherata) e
-  **orizzontale** (mascherata), sommate dopo ogni blocco; su CIFAR-10, con le
+  Riparazione: fattorizzare in pila verticale (non mascherata) e
+  orizzontale (mascherata), sommate dopo ogni blocco; su CIFAR-10, con le
   unità *gated*, da $3{,}14$ a $3{,}03$ bit per dimensione.
-- **PixelCNN++** {cite}`salimans2017pixelcnn` sostituisce la softmax a 256 vie
-  con una **miscela di logistiche discretizzate**, che recupera l'ordinamento
+- PixelCNN++ {cite}`salimans2017pixelcnn` sostituisce la softmax a 256 vie
+  con una miscela di logistiche discretizzate, che recupera l'ordinamento
   fra livelli adiacenti perso dalla categorica: $2{,}92$ su CIFAR-10.
 - Il collo di bottiglia è il campionamento sequenziale. Spostando
-  l'autoregressione dai pixel a **token discreti** (VQ-GAN) si passa da
+  l'autoregressione dai pixel a token discreti (VQ-GAN) si passa da
   $196.608$ a $256$ passaggi, al prezzo di una verosimiglianza che è quella dei
   token e non dell'immagine.
 ```

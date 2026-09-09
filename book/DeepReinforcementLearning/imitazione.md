@@ -7,14 +7,14 @@ di una telecamera e la lettura di un telemetro laser (uno strumento che misura
 a che distanza sono le cose), e restituiva l'angolo di sterzata
 {cite}`pomerleau1989alvinn`. Non aveva imparato per tentativi ed errori, il che
 sarebbe stato imprudente su una strada vera: era stato addestrato a
-**riprodurre, per ogni immagine di strada, l'angolo di sterzata corretto**. Gli
+riprodurre, per ogni immagine di strada, l'angolo di sterzata corretto. Gli
 si mostrava la risposta giusta e lo si correggeva finché non la indovinava, che
 è il modo di imparare più comune di tutti e si chiama apprendimento
 supervisionato.
 
 C'è un dettaglio di quella storia che sembra un'inezia ed è invece tutto il
 problema, arrivato con trent'anni di anticipo. Le immagini su cui ALVINN
-imparò, nel lavoro del 1989, erano **simulate**. Quando Pomerleau passò alle
+imparò, nel lavoro del 1989, erano simulate. Quando Pomerleau passò alle
 registrazioni di un guidatore vero, due anni dopo, si trovò davanti a un
 ostacolo che dovette aggirare a mano: un guidatore bravo non esce mai dalla
 corsia, quindi nelle sue registrazioni non c'è un solo fotogramma che mostri
@@ -29,7 +29,7 @@ conviene capire bene perché non basta. Nei capitoli precedenti l'agente impara
 da una ricompensa, e la ricompensa è la parte difficile: scriverla per una
 guida sicura o per una risposta utile è un problema aperto. Se però qualcuno
 sa già fare il compito, quel problema si può aggirare. Non gli si chiede di
-scrivere una funzione di ricompensa: gli si chiede di **fare vedere**.
+scrivere una funzione di ricompensa: gli si chiede di fare vedere.
 
 ## Clonare un comportamento è apprendimento supervisionato
 
@@ -75,7 +75,7 @@ fatta, e le mosse di chi ha imparato non sono quelle dell'esperto.
 `````{tab} Superiore
 
 Dato un insieme di dimostrazioni $\mathcal{D} = \{(s_i, a_i)\}$ prodotte da una
-politica esperta $\pi^\star$, la **clonazione comportamentale** stima
+politica esperta $\pi^\star$, la clonazione comportamentale stima
 
 $$
 \hat\pi = \arg\min_{\pi} \; \mathbb{E}_{(s,a)\sim\mathcal{D}}
@@ -84,7 +84,7 @@ $$
 
 con $\ell$ la cross-entropia per azioni discrete o l'errore quadratico per
 azioni continue. Non compaiono ricompense, non compare l'equazione di Bellman,
-non compare il bootstrapping: è **regressione o classificazione**, con tutto
+non compare il bootstrapping: è regressione o classificazione, con tutto
 ciò che ne consegue in termini di stabilità e di strumenti già noti.
 
 La stessa mossa compare in tre punti del libro, e conviene riconoscerla. Nella
@@ -98,9 +98,9 @@ componente supervisionata del Decision Transformer è la stessa cosa,
 condizionata sul ritorno desiderato.
 
 L'assunzione nascosta, che è tutto il problema, è quella di ogni apprendimento
-supervisionato: **dati indipendenti e identicamente distribuiti**. Qui non lo
+supervisionato: dati indipendenti e identicamente distribuiti. Qui non lo
 sono, perché gli stati che l'agente incontrerà dipendono dalle azioni che
-avrà scelto. La distribuzione degli stati è **indotta dalla politica** e non
+avrà scelto. La distribuzione degli stati è indotta dalla politica e non
 fissata dal mondo, e quella dell'allievo non è quella del maestro.
 
 `````
@@ -183,7 +183,7 @@ fattore $T$ in più rispetto all'ideale $O(\epsilon T)$ è esattamente la
 composizione degli errori. Su orizzonti lunghi la differenza fra $T$ e $T^2$ è
 tutta la differenza fra un sistema che funziona e uno che no.
 
-**DAgger** (*Dataset Aggregation*), proposto da Ross, Gordon e Bagnell nel
+DAgger (*Dataset Aggregation*), proposto da Ross, Gordon e Bagnell nel
 2011 {cite}`ross2011reduction`, rimuove il termine in più con un'idea
 semplice: iterare. Si addestra una politica sulle dimostrazioni, la si
 esegue per raccogliere gli stati che *lei* visita, si chiede all'esperto
@@ -197,7 +197,7 @@ $$
 C(\hat\pi) \;\le\; C(\pi^\star) + u\,T\,\epsilon_N + O(1),
 $$
 
-dove $C$ è il **costo** atteso di una politica sull'orizzonte $T$, cioè un
+dove $C$ è il costo atteso di una politica sull'orizzonte $T$, cioè un
 danno da contenere e non un ritorno da massimizzare: per questo $C(\hat\pi)$
 sta a sinistra della disuguaglianza (nel lavoro originale è chiamato $J$).
 Quanto a $\epsilon_N$, è l'errore della migliore politica *col senno di poi* e
@@ -210,7 +210,7 @@ politiche prodotte lungo la sequenza e non necessariamente l'ultima, ed è il
 motivo per cui in pratica si sceglie su un insieme di validazione quale tenere.
 
 Quanto a $u$, misura di quanto un singolo errore può peggiorare il
-costo-per-andare dell'esperto. Nei compiti **recuperabili** $u$ è $O(1)$ e la
+costo-per-andare dell'esperto. Nei compiti recuperabili $u$ è $O(1)$ e la
 garanzia è
 effettivamente lineare; ma se un errore porta in uno stato da cui non si torna
 (l'auto ribaltata nel fosso, che nessuna sterzata riporta in corsia) $u$ può
@@ -230,8 +230,8 @@ dei casi pratici quell'esperto è una persona, il che sposta il costo dai dati a
 tempo umano.
 
 La clonazione ha un parente che risolve lo stesso problema in un altro modo, e
-i due si tengono distinti. Nell’**apprendimento per rinforzo inverso** non si
-impara la politica, si impara la **ricompensa** che rende ottimo il
+i due si tengono distinti. Nell’apprendimento per rinforzo inverso non si
+impara la politica, si impara la ricompensa che rende ottimo il
 comportamento osservato, e poi la si ottimizza con i metodi dei capitoli
 precedenti. È più costoso, ed è più robusto per una ragione precisa: una
 ricompensa è una descrizione compatta e trasferibile dell'obiettivo, mentre
@@ -266,7 +266,7 @@ scritta in numeri, e i numeri sono pochissimi.
 
 Di quanto siamo fuori posto lo dice un numero solo, che chiameremo $s$: zero
 vuol dire dritti in mezzo alla corsia, e più cresce (in positivo o in negativo)
-più siamo storti. Il sistema è **instabile**, cioè lasciato a sé peggiora invece
+più siamo storti. Il sistema è instabile, cioè lasciato a sé peggiora invece
 di rimettersi a posto: senza correzioni quel numero, a ogni passo, si moltiplica
 per $1{,}25$. La correzione che diamo la chiameremo $a$, e si somma: al passo
 dopo lo scarto vale $1{,}25\,s + a$.
@@ -274,7 +274,7 @@ dopo lo scarto vale $1{,}25\,s + a$.
 Da qui esce il numero che conta in tutta la sezione. Il sistema, da solo,
 aggiunge allo scarto un quarto di se stesso ($1{,}25 - 1 = 0{,}25$). Perché
 l'auto si raddrizzi invece di storcersi ancora, la correzione deve come minimo
-cancellare quell'aggiunta: deve cioè valere almeno **un quarto dello scarto**.
+cancellare quell'aggiunta: deve cioè valere almeno un quarto dello scarto.
 
 L'esperto è un controllore che sa cosa fare ovunque, anche lontanissimo da
 zero: la sua regola è correggere in proporzione allo scarto, così da riportarlo
@@ -378,41 +378,41 @@ I numeri raccontano la storia meglio di qualunque spiegazione. (Nelle stampe,
 guardare se siamo storti da una parte o dall'altra.)
 
 L'esperto vive in una fascia strettissima, fra $-1{,}00$ e $+0{,}71$. Su quella
-fascia la clonazione impara **perfettamente**: l'errore per singolo passo è
+fascia la clonazione impara perfettamente: l'errore per singolo passo è
 $0{,}000000$, e qualunque valutazione fatta sui dati di addestramento direbbe
 che il modello è impeccabile.
 
 A $s = 3{,}0$, però, dove non è mai stata, l'esperto correggerebbe di $1{,}200$
-e la clonazione propone $0{,}824$: una correzione **più debole di quasi un
-terzo**.
+e la clonazione propone $0{,}824$: una correzione più debole di quasi un
+terzo.
 (Da qui in poi guardiamo solo quanto è grande la correzione e non il suo segno,
 perché la direzione è sempre la stessa: verso il centro della corsia.) Sembra
 poco, e invece siamo sul filo. Il minimo che serve a raddrizzarsi, a $s = 3$, è
 un quarto di $3$, cioè $0{,}75$: la clonazione lo copre appena.
 
 Poco più in là non lo copre più, perché fuori dalla fascia che ha visto la rete
-non cresce insieme allo scarto, si **appiattisce**: a $s = 4$ propone $0{,}904$
+non cresce insieme allo scarto, si appiattisce: a $s = 4$ propone $0{,}904$
 dove ne servirebbe $1{,}00$, e a $s = 20$ propone ancora $1{,}015$ dove ne
 servirebbero $5{,}00$. Da lì in poi lo scarto cresce, e più cresce più si
 allontana da ciò che la clonazione conosce. La folata, che vale $4{,}0$, la
 scaraventa esattamente di là.
 
-Il risultato: dopo la folata l'esperto torna a $0{,}071$ e **la clonazione
-finisce a $74{,}6$**. Mille volte più lontano dal centro della corsia, partendo
+Il risultato: dopo la folata l'esperto torna a $0{,}071$ e la clonazione
+finisce a $74{,}6$. Mille volte più lontano dal centro della corsia, partendo
 da un errore per passo pari a zero.
 
 Poi i tre giri di DAgger: $0{,}102$, $0{,}077$, $0{,}082$. Riportare
-l'esperto a etichettare gli stati in cui era finito **l'allievo** basta a
+l'esperto a etichettare gli stati in cui era finito l'allievo basta a
 tornare al livello del maestro. E si noti cosa è cambiato: non il modello, non
 il modo di misurare l'errore, non il procedimento con cui lo si riduce. Sono
-cambiati **quali situazioni stanno nel mucchio degli esempi**.
+cambiati quali situazioni stanno nel mucchio degli esempi.
 
 ### Che cosa questo esperimento dimostra, e che cosa no
 
-Primo, quel $74{,}6$ è **un seme**, cioè una singola ripetizione, quella che
+Primo, quel $74{,}6$ è un seme, cioè una singola ripetizione, quella che
 esce dal numero da cui è partito il sorteggio interno. Rifacendo tutto da capo
 con otto semi diversi, lo stato finale della clonazione dopo la folata ha
-mediana $322$ e va da $76$ a $473$: il numero del racconto sta perfino **sotto**
+mediana $322$ e va da $76$ a $473$: il numero del racconto sta perfino sotto
 il più mite degli otto, e la mediana è più di quattro volte più grande. La
 conclusione qualitativa non cambia di una virgola (la clonazione finisce fuori
 strada in tutti e otto i casi, finendo cento o mille volte più lontano
@@ -420,61 +420,61 @@ dell'esperto), ma la cifra precisa è una proprietà di quella ripetizione e non
 dell'algoritmo, e per giunta quella che fa apparire il guaio
 più piccolo di com'è.
 
-Secondo, e conta di più: **senza la folata non succede niente**. Sugli stessi
+Secondo, e conta di più: senza la folata non succede niente. Sugli stessi
 otto semi, lasciata a sé, la clonazione chiude con mediana $0{,}0285$ (fra
 $0{,}024$ e $0{,}031$) e l'esperto con mediana $0{,}0318$: non solo sono dello
 stesso ordine, ma su questi otto semi l'allievo sta perfino un filo meglio del
 maestro, che è quanto dire che la differenza è rumore. Il fosso arriva solo
 quando qualcosa porta l'allievo fuori dalla fascia dimostrata, e in questo
-esperimento a portarcelo è una perturbazione **esterna**, che gli diamo noi, e
+esperimento a portarcelo è una perturbazione esterna, che gli diamo noi, e
 che in un colpo solo lo scaraventa a quattro volte il bordo della fascia.
 
-Nel racconto della guida, invece, fuori dalla fascia l'allievo ci arriva **da
-solo**, un errore alla volta. E qui conviene contare, perché il conto è la parte
+Nel racconto della guida, invece, fuori dalla fascia l'allievo ci arriva da
+solo, un errore alla volta. E qui conviene contare, perché il conto è la parte
 sorprendente. Le occasioni di sbagliare sono tante quanti i passi del percorso;
 e ogni singolo sbaglio non si paga una volta sola, perché lascia l'allievo in
 una zona che non conosce per tutti i passi che restano. Tanti inciampi
 possibili, e ciascuno che si paga a lungo: le due quantità si moltiplicano fra
-loro invece di sommarsi, e il danno cresce come il **quadrato** della durata del
+loro invece di sommarsi, e il danno cresce come il quadrato della durata del
 percorso invece che in proporzione a essa. Su un tragitto dieci volte più lungo
 il danno non decuplica: si moltiplica per cento.
 
 Qui la spinta iniziale è un espediente, il modo più rapido di mettere l'allievo
 dove non è mai stato per mostrare cosa succede una volta che ci si trova. Quello
 che l'esperimento dimostra, e lo dimostra bene, è la seconda metà del
-ragionamento: **fuori dalle situazioni che il maestro ha mostrato l'allievo
+ragionamento: fuori dalle situazioni che il maestro ha mostrato l'allievo
 sbaglia in modo sistematico, e su un sistema instabile sbagliare in modo
-sistematico è irrecuperabile.** La prima metà, cioè che a portarlo fuori bastino
+sistematico è irrecuperabile. La prima metà, cioè che a portarlo fuori bastino
 i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La **clonazione comportamentale** è la scorciatoia più ovvia: si registra
+- La clonazione comportamentale è la scorciatoia più ovvia: si registra
   qualcuno che il lavoro lo sa fare, si annota «in questa situazione, questa
   mossa», e da lì in poi il problema diventa indovinare la risposta giusta,
   invece di imparare per tentativi. Stabile, sicura, parca di dati, e già
   incontrata due volte senza chiamarla per nome.
 - La crepa sta in un'assunzione che nessuno dichiara: che le situazioni siano
-  sempre le stesse, decise dal mondo. Non è così, perché **le situazioni che
-  incontri dipendono dalle mosse che hai fatto**, e le mosse dell'allievo non
+  sempre le stesse, decise dal mondo. Non è così, perché le situazioni che
+  incontri dipendono dalle mosse che hai fatto, e le mosse dell'allievo non
   sono quelle del maestro.
-- Da qui la **composizione degli errori**: un errore piccolo ti porta in un
+- Da qui la composizione degli errori: un errore piccolo ti porta in un
   posto che conosci meno, dove sbagli di più, che ti porta ancora più lontano.
   L'errore non si somma, si compone, e su un percorso lungo è la differenza fra
   un sistema che funziona e uno che no.
-- Il paradosso da ricordare: **più l'esperto è bravo, meno insegna a
-  rimediare**, perché non si trova mai nella condizione di doverlo fare. Il
+- Il paradosso da ricordare: più l'esperto è bravo, meno insegna a
+  rimediare, perché non si trova mai nella condizione di doverlo fare. Il
   pilota che non esce mai di corsia non ti fa mai vedere come si raddrizza
   l'auto.
-- Il rimedio si chiama **DAgger**: far provare l'allievo, guardare dove va a
+- Il rimedio si chiama DAgger: far provare l'allievo, guardare dove va a
   finire, e chiedere al maestro cosa avrebbe fatto *lì*. Non cambia il modello e
   non cambia il modo di allenarlo: cambia quali situazioni finiscono nel mucchio
   degli esempi. Il prezzo è che serve un maestro disponibile a rispondere, non
   soltanto un archivio di registrazioni; e funziona finché dallo sbaglio si può
   tornare, perché dall'auto finita contro il guard rail non riporta indietro
   nessuno.
-- C'è un'altra strada: invece della strategia, imparare la **ricompensa**, cioè
+- C'è un'altra strada: invece della strategia, imparare la ricompensa, cioè
   che cosa l'esperto stesse cercando di ottenere. Costa di più e regge meglio se
   il mondo cambia un po’, perché descrive l'obiettivo e non solo le reazioni. Ha
   un difetto suo, però: di obiettivi che spiegano lo stesso comportamento ce n'è
@@ -485,29 +485,29 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- La **clonazione comportamentale** trasforma il controllo in apprendimento
+- La clonazione comportamentale trasforma il controllo in apprendimento
   supervisionato: coppie (situazione, azione dell'esperto), e si minimizza
   l'errore. Stabile, efficiente nei dati, sicura, e già usata due volte nel
   libro senza il suo nome (la policy iniziale di AlphaGo, la fase supervisionata
   che precede l'RLHF).
-- L'assunzione che salta è quella di dati **i.i.d.**: la distribuzione degli
-  stati è **indotta dalla politica** e non fissata dal mondo, e quella
+- L'assunzione che salta è quella di dati i.i.d.: la distribuzione degli
+  stati è indotta dalla politica e non fissata dal mondo, e quella
   dell'allievo non è quella del maestro.
-- Da qui la **composizione degli errori**: un errore piccolo porta in uno stato
+- Da qui la composizione degli errori: un errore piccolo porta in uno stato
   poco familiare, dove l'errore è più grande, e così via. Il costo cresce come
   $O(\epsilon T^2)$ invece di $O(\epsilon T)$.
-- Il paradosso da ricordare: **più l'esperto è bravo, meno insegna a
-  rimediare**, perché non si trova mai nella condizione di doverlo fare.
-- **DAgger** rimuove il termine in più iterando: esegui la politica, chiedi
-  all'esperto cosa fare **negli stati che lei visita**, aggiungi, riaddestra.
+- Il paradosso da ricordare: più l'esperto è bravo, meno insegna a
+  rimediare, perché non si trova mai nella condizione di doverlo fare.
+- DAgger rimuove il termine in più iterando: esegui la politica, chiedi
+  all'esperto cosa fare negli stati che lei visita, aggiungi, riaddestra.
   Serve un esperto interrogabile, non solo un archivio; e la garanzia lineare
-  vale a patto che il compito sia **recuperabile**, altrimenti la costante $u$
+  vale a patto che il compito sia recuperabile, altrimenti la costante $u$
   del bound cresce con $T$ e si torna al quadrato.
-- L’**RL inverso** risolve lo stesso problema per un'altra strada: impara la
-  **ricompensa** invece della politica. Costa di più ed è più trasferibile,
+- L’RL inverso risolve lo stesso problema per un'altra strada: impara la
+  ricompensa invece della politica. Costa di più ed è più trasferibile,
   perché una ricompensa descrive l'obiettivo mentre una politica descrive solo
   delle reazioni. È la ragione per cui l'RLHF non si ferma alla fase
-  supervisionata. È però **mal posto**: dalla sola politica osservata le
+  supervisionata. È però mal posto: dalla sola politica osservata le
   ricompense compatibili formano un poliedro (la nulla compresa), e anche
   imponendo di preservare l'ordinamento di *tutte* le politiche non si va oltre
   una scala positiva e un termine di shaping potential-based.

@@ -10,7 +10,7 @@ Apri un terminale Python e prova la cosa più innocente del mondo:
 ```
 
 Succede su qualunque calcolatore, e non per un difetto di Python. Un computer non
-conserva i numeri reali, ma loro approssimazioni con un numero **finito** di
+conserva i numeri reali, ma loro approssimazioni con un numero finito di
 cifre. Di solito la differenza è invisibile; a volte no. Il 4 giugno 1996 un
 numero troppo grande, convertito in un formato più piccolo, "straripò" a bordo
 del razzo europeo Ariane 5: successe $37$ secondi dopo l'accensione dei
@@ -26,7 +26,7 @@ dividendo zero per zero.
 
 ## La virgola mobile: un budget fisso di cifre
 
-Un calcolatore conserva ogni numero in una fila di **bit**, cioè di caselle che
+Un calcolatore conserva ogni numero in una fila di bit, cioè di caselle che
 possono valere solo $0$ o $1$. È lo stesso bit della sezione sulla teoria
 dell'informazione, guardato dal lato della memoria invece che da quello della
 sorpresa: una casella che vale $0$ o $1$ risponde esattamente a una domanda sì
@@ -36,11 +36,11 @@ ridotti. Quelle caselle vengono spartite in tre gruppi, come nella
 notazione scientifica che si impara a scuola quando si scrive $3{,}0\cdot10^8$
 invece di $300\,000\,000$:
 
-- una casella sola per il **segno**, positivo o negativo;
-- un gruppo per l’**esponente**, cioè il «per dieci alla…» che dice **fin
-  dove** si può arrivare, verso il grandissimo e verso il piccolissimo;
-- il gruppo più lungo per la **mantissa**, cioè le cifre significative
-  ($3{,}0$ nell'esempio), che dicono con **quanta finezza** il numero è
+- una casella sola per il segno, positivo o negativo;
+- un gruppo per l’esponente, cioè il «per dieci alla…» che dice fin
+  dove si può arrivare, verso il grandissimo e verso il piccolissimo;
+- il gruppo più lungo per la mantissa, cioè le cifre significative
+  ($3{,}0$ nell'esempio), che dicono con quanta finezza il numero è
   descritto.
 
 Spartire le caselle è un baratto: quelle date all'esponente non sono date alla
@@ -74,7 +74,7 @@ scala sì.
 
 Il display di una calcolatrice tascabile mostra solo una decina
 di cifre. Se le chiedi $1/3$ ti risponde $0{,}3333333$ e si ferma: le altre
-cifre le butta via. I computer fanno lo stesso, in binario, con un **budget**
+cifre le butta via. I computer fanno lo stesso, in binario, con un budget
 fisso di cifre per ogni numero.
 
 Con questo budget si scrive un numero come nella notazione scientifica ("tante
@@ -107,7 +107,7 @@ distanza fra $1$ e il numero rappresentabile immediatamente successivo, pari a
 $2^{-23}\approx 1{,}19\cdot10^{-7}$ per `float32` e
 $2^{-52}\approx 2{,}22\cdot10^{-16}$ per `float64`. Ogni operazione arrotonda
 al numero rappresentabile più vicino, e l'errore relativo che ne deriva è
-limitato dall’**unità di arrotondamento** $u=\varepsilon/2$ (metà del gradino,
+limitato dall’unità di arrotondamento $u=\varepsilon/2$ (metà del gradino,
 perché si arrotonda all'estremo più vicino). Le reti neurali si addestrano
 spesso in precisione ridotta (`float32` o perfino `float16`) per risparmiare
 memoria e tempo: più veloci, ma con meno cifre di margine.
@@ -125,7 +125,7 @@ solito non si associa alla matematica.
 I bit in memoria non sono eterni. Una particella ionizzante, un disturbo
 elettromagnetico, una cella difettosa: ogni tanto un bit si ribalta senza che
 nessuno lo abbia chiesto, cioè passa da $0$ a $1$ o viceversa. Su un computer
-da scrivania è un evento raro; su decine di migliaia di **acceleratori** (le
+da scrivania è un evento raro; su decine di migliaia di acceleratori (le
 schede di calcolo specializzate su cui si addestrano i modelli grandi) che
 macinano per settimane, diventa un'occorrenza ordinaria, e i grandi operatori
 la trattano come tale.
@@ -135,7 +135,7 @@ della mantissa, l'effetto è invisibile: il numero cambia nella settima cifra,
 un peso che valeva $0{,}5$ diventa $0{,}50000006$. Se a girarsi è il bit del
 segno, quel peso diventa $-0{,}5$: cambia verso, ma resta della stessa taglia,
 e una rete se ne accorge poco. Il caso che conta davvero è il terzo: se a
-passare da $0$ a $1$ è il **primo bit dell'esponente**, quello che vale di
+passare da $0$ a $1$ è il primo bit dell'esponente, quello che vale di
 più, il peso non cambia un po’, cambia scala. Da $0{,}5$ salta a
 $1{,}7\cdot10^{38}$, cioè a metà del più grande numero che quel formato
 riesca a scrivere.
@@ -159,21 +159,21 @@ capace, da solo, di spazzare via oltre il novanta per cento dell'accuratezza.
 Per una ResNet50 (una rete per il riconoscimento di immagini, fra le più usate
 come termine di paragone) vuol dire scendere dal suo $76\%$ di risposte
 corrette su ImageNet, la raccolta di fotografie etichettate su cui si misurano
-questi modelli, a **meno dell'otto per cento**: un bit solo, e la rete non
+questi modelli, a meno dell'otto per cento: un bit solo, e la rete non
 riconosce quasi più niente.
 
-La differenza rispetto al software tradizionale è che qui **non si vede**. Un
-bit sbagliato in un programma normale di solito produce un crash o un risultato
+La differenza rispetto al software tradizionale è che qui non si vede. Un bit
+sbagliato in un programma normale di solito produce un crash o un risultato
 palesemente assurdo; in una rete produce una risposta plausibile e sbagliata,
 indistinguibile da una risposta giusta se non si conosce quella giusta. È il
 motivo per cui il tema ha un nome tutto suo, *corruzione silenziosa dei dati*,
 e per cui la robustezza di un sistema di ML ha due facce distinte. C'è quella
-ai **dati**, che a sua volta si sdoppia: il mondo può cambiare sotto il modello (è la *deriva*, e ne parla
-{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`) oppure
-qualcuno può sottoporgli apposta immagini costruite per ingannarlo (sono gli
-*esempi avversari*, e ne parla
-{doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>`). E c'è quella
-all’**hardware**, che non riguarda il modello ma il silicio su cui gira.
+ai dati, che a sua volta si sdoppia: il mondo può cambiare sotto il modello (è
+la *deriva*, e ne parla {doc}`Quando i dati cambiano
+</MachineLearning/dati-che-cambiano>`) oppure qualcuno può sottoporgli apposta
+immagini costruite per ingannarlo (sono gli *esempi avversari*, e ne parla
+{doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>`). E c'è
+quella all’hardware, che non riguarda il modello ma il silicio su cui gira.
 ```
 
 ## Overflow e underflow: i bordi del mondo rappresentabile
@@ -195,7 +195,7 @@ All'estremo opposto, $e^{-120}$ è così vicino a zero che un `float32` lo
 registra proprio come $0$: non «molto piccolo», proprio zero. Il guaio arriva
 subito dopo, perché ci sono due operazioni che con lo zero non si possono
 fare. Se *dividi* per quel numero diventato zero, il risultato è infinito; se
-ne fai il **logaritmo**, cioè chiedi «a che esponente devo elevare per
+ne fai il logaritmo, cioè chiedi «a che esponente devo elevare per
 ottenere zero», la risposta non esiste. In entrambi i casi esce infinito o
 `NaN`, e da lì in poi ogni conto che tocca quel valore diventa `NaN` a sua
 volta: l'addestramento si rompe, e spesso senza dire dove.
@@ -286,7 +286,7 @@ $$
 
 Da qui la log-probabilità della classe corretta,
 $\log \hat{p}_i = z_i - \operatorname{logsumexp}(\mathbf{z})$, si calcola senza mai
-formare $e^{z_i}$ crudo; la **cross-entropy** è semplicemente il suo opposto,
+formare $e^{z_i}$ crudo; la cross-entropy è semplicemente il suo opposto,
 $\operatorname{logsumexp}(\mathbf{z}) - z_i$. È per stabilità numerica, e non
 per pigrizia d'API, che i framework espongono `log_softmax` e loss che
 lavorano direttamente sui logit (come la `nn.CrossEntropyLoss` di PyTorch,
@@ -326,7 +326,7 @@ due termini sono quasi uguali e la sottrazione perde quasi tutte le cifre
 significative (può perfino dare un valore negativo). Le librerie evitano
 la formula ingenua: NumPy calcola prima la media e poi la media degli scarti
 quadratici, in due passate; quando i dati arrivano in flusso e di passata se ne
-può fare una sola, si usa l'algoritmo di **Welford**, numericamente stabile.
+può fare una sola, si usa l'algoritmo di Welford, numericamente stabile.
 Regola generale: riformula le espressioni per non sottrarre grandezze vicine;
 la stessa quantità matematica può perdere molte o poche cifre a seconda di
 *come* la si calcola.
@@ -344,7 +344,7 @@ non se ne accorge nessuno. Ogni tanto arriva davanti, e allora conviene sapere
 da dove viene.
 
 Il colpevole è una proprietà che a scuola si dà per acquisita e in virgola
-mobile è falsa: **l’addizione non è associativa**. $(a+b)+c$ e $a+(b+c)$ sono
+mobile è falsa: l’addizione non è associativa. $(a+b)+c$ e $a+(b+c)$ sono
 lo stesso numero in matematica e due numeri diversi nel calcolatore, perché
 ogni somma parziale viene arrotondata al gradino più vicino, e i gradini non
 cadono negli stessi punti.
@@ -404,7 +404,7 @@ tenere, e a decidere in quante colonne si divide la somma è il processore: le
 sue istruzioni lavorano su due, quattro o otto numeri per volta, e la
 libreria di calcolo, appena parte, sceglie la versione fatta apposta per il
 processore che si trova sotto. Quella versione ha un nome: si chiama
-**kernel**, la stessa parola che il {doc}`capitolo sulle GPU </GPU/overview>`
+kernel, la stessa parola che il {doc}`capitolo sulle GPU </GPU/overview>`
 usa per il programma che gira sulla scheda grafica. Il senso è quello: un pezzo
 di codice specializzato per il ferro su cui deve girare.
 
@@ -413,8 +413,8 @@ di codice specializzato per il ferro su cui deve girare.
 `````{tab} Superiore
 
 Una libreria di algebra lineare non contiene una sola implementazione di
-ciascuna routine: ne contiene molte, compilate ciascuna per un **insieme di
-istruzioni vettoriali**, cioè per una delle SIMD di cui parla il
+ciascuna routine: ne contiene molte, compilate ciascuna per un insieme di
+istruzioni vettoriali, cioè per una delle SIMD di cui parla il
 {doc}`capitolo su Python </Python/numpy>`. Su un processore x86 sono
 generazioni successive, e a distinguerle è la
 larghezza dei registri su cui lavorano: 128 bit per SSE2, 256 per AVX2, 512
@@ -430,7 +430,7 @@ operazioni su CPU fra più varianti compilate.
 La larghezza dei registri decide quanti accumulatori parziali la riduzione
 tiene aperti insieme: sommare $N$ numeri con quattro accumulatori è un albero
 di somme diverso dal sommarli con otto, e due alberi diversi arrotondano in
-punti diversi. Lo standard IEEE 754 garantisce che **ogni singola operazione**
+punti diversi. Lo standard IEEE 754 garantisce che ogni singola operazione
 sia arrotondata correttamente, non che una riduzione abbia un ordine canonico;
 per la stessa ragione conta anche il numero di thread, perché una riduzione
 parallela spezza la somma in tanti pezzi quanti sono gli esecutori.
@@ -504,7 +504,7 @@ primo.
 
 `````{tab} Superiore
 
-Il condizionamento è una proprietà del **problema**, non dell'algoritmo: su un
+Il condizionamento è una proprietà del problema, non dell'algoritmo: su un
 problema mal condizionato anche il codice perfetto fatica, perché eredita
 l'errore di arrotondamento già presente negli input. Per un sistema lineare
 $\mathbf{A}\mathbf{x} = \mathbf{b}$ lo si misura con il **numero di
@@ -586,12 +586,12 @@ rimedio più economico che ci sia: due righe di codice.
 
 `````{tab} Superiore
 
-Prima di dare i dati a un modello quasi sempre li **standardizziamo**,
+Prima di dare i dati a un modello quasi sempre li standardizziamo,
 sottraendo la media e dividendo per la deviazione standard: al posto di ogni
 valore $x$ si scrive $(x - \mu)/\sigma$, dove $\mu$ e $\sigma$ sono la media e
 la deviazione standard della colonna. Così ogni caratteristica (*feature*) ha
 media $0$ e scala $1$. Il motivo è la stabilità: è un intervento sul
-**condizionamento del problema**, non sull'algoritmo.
+condizionamento del problema, non sull'algoritmo.
 
 Se una feature vale in migliaia di euro e un'altra in numero di stanze, i loro
 prodotti dentro la rete stanno su scale lontanissime (invito all'overflow) e
@@ -604,7 +604,7 @@ riducono i $\sigma_{\max}/\sigma_{\min}$ dell'Hessiana nel punto, e con essi il
 fattore che moltiplica ogni errore.
 
 Non è una cura completa, perché mette tutte le feature sulla stessa scala ma
-non cambia la loro **correlazione**: se due di esse crescono e calano quasi
+non cambia la loro correlazione: se due di esse crescono e calano quasi
 sempre insieme, la matrice resta mal condizionata fuori dagli assi, la valle
 resta un po’ storta e qualche zig-zag la discesa lo fa ancora (a togliere anche
 quella servirebbe una trasformazione che decorrela, come lo *sbiancamento*).
@@ -654,15 +654,15 @@ euro.
 - Un calcolatore non conserva i numeri con tutte le loro cifre, ma con un
   numero fisso di caselle: per questo `0.1 + 0.2` non fa esattamente `0.3`, e
   per questo esistono un numero troppo grande da scrivere (si va in
-  **overflow**) e uno troppo piccolo, che diventa zero (**underflow**).
-- Le caselle si dividono fra **portata** (fin dove si arriva) e **precisione**
+  overflow) e uno troppo piccolo, che diventa zero (underflow).
+- Le caselle si dividono fra portata (fin dove si arriva) e precisione
   (con quante cifre): darne di più all'una vuol dire darne di meno all'altra,
   ed è la scelta che distingue i formati ridotti fra loro.
 - Due conti si riscrivono sempre nello stesso modo, per non uscire di strada:
   la softmax si calcola sottraendo prima il punteggio più grande
-  (**log-sum-exp**), e le quantità piccole non si ricavano mai come differenza
+  (log-sum-exp), e le quantità piccole non si ricavano mai come differenza
   di due quantità grandi (la barca e il capitano).
-- **Standardizzare** i dati, cioè portare ogni caratteristica a centro zero e
+- Standardizzare i dati, cioè portare ogni caratteristica a centro zero e
   larghezza uno, rende la valle da scendere più tonda, e quindi la discesa più
   svelta.
 - Lo stesso programma, sugli stessi dati, può stampare ultime cifre diverse su
@@ -674,20 +674,20 @@ euro.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- I numeri in **virgola mobile** hanno precisione finita: `0.1 + 0.2` non fa
-  esattamente `0.3`, ed esiste un limite oltre il quale si va in **overflow**
-  o **underflow**.
+- I numeri in virgola mobile hanno precisione finita: `0.1 + 0.2` non fa
+  esattamente `0.3`, ed esiste un limite oltre il quale si va in overflow
+  o underflow.
 - La softmax e le verosimiglianze si calcolano nel dominio logaritmico con il
-  trucco **log-sum-exp** (sottrai il massimo) per evitare che gli esponenziali
+  trucco log-sum-exp (sottrai il massimo) per evitare che gli esponenziali
   straripino.
-- **Condizionamento** e **stabilità** sono due cause indipendenti di un
+- Condizionamento e stabilità sono due cause indipendenti di un
   risultato sbagliato: il primo è del problema ($\kappa_2 =
   \sigma_{\max}/\sigma_{\min}$), la seconda dell'algoritmo, e l'errore finale
-  è **al più** il prodotto delle due.
-- **Standardizzare** i dati non è solo buona educazione statistica: riduce il
+  è al più il prodotto delle due.
+- Standardizzare i dati non è solo buona educazione statistica: riduce il
   condizionamento del problema e fa convergere l'ottimizzazione molto più in
   fretta.
-- L’addizione in virgola mobile **non è associativa**: l’ordine della riduzione
+- L’addizione in virgola mobile non è associativa: l’ordine della riduzione
   dipende dal kernel che la libreria sceglie per la CPU e dal numero di thread,
   quindi la riproducibilità bit a bit fra macchine diverse non è garantita. Due
   risultati si confrontano con una tolleranza, non con `==`.

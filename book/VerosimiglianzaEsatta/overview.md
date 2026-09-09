@@ -6,7 +6,7 @@ quelle che gli abbiamo fatto finora. Non «fammi un volto», ma: prendi *questa*
 fotografia, guardala, e dimmi quanto è probabile.
 
 Non è che risponde male. Non ha uno sportello a cui rivolgere quella domanda.
-Il falsario ha imparato a **produrre**, non a **valutare**: il numero che
+Il falsario ha imparato a produrre, non a valutare: il numero che
 misura quanto un dato è plausibile non compare da nessuna parte nel suo
 addestramento, e non c'è modo di estrarlo dai suoi pesi. Il
 {doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`, appena
@@ -15,7 +15,7 @@ modello ottimizza. Ottimizza una stima prudente che gli sta sotto, e per avere
 il valore vero bisogna fare un secondo lavoro, lungo e a parte.
 
 Questo capitolo racconta la terza risposta: la famiglia di modelli che quel
-numero lo restituisce **esatto**, con un solo passaggio della rete, perché è
+numero lo restituisce esatto, con un solo passaggio della rete, perché è
 costruita apposta. La cosa conviene non per pignoleria, ma perché quel numero
 è la stessa cosa di tre mestieri diversi (comprimere, mettere in fila delle
 ipotesi, accorgersi che è arrivata roba diversa da quella su cui il modello è
@@ -38,11 +38,11 @@ possibili fa esattamente uno.
 
 Quel «fa esattamente uno» è tutto il problema, ed è il filo che tiene insieme
 questo capitolo e il prossimo. Sommare su tutti i dati possibili non si può, e
-il capitolo sui modelli a energia mostrerà quanto quel conto sia fuori
-portata.
+il capitolo sui modelli a energia mostrerà quanto quel conto sia fuori portata.
 Le strade sono allora due: rinunciare alla normalizzazione e cavarsela lo
-stesso (è il capitolo sui modelli a energia), oppure **costruire il modello in modo che
-venga normalizzato da sé**, senza mai fare quel conto. È la strada di questo.
+stesso (è il capitolo sui modelli a energia), oppure costruire il modello in
+modo che venga normalizzato da sé, senza mai fare quel conto. È la strada di
+questo.
 
 ## La mappa
 
@@ -50,41 +50,41 @@ I capitoli generativi del libro sono cinque, e per la prima volta li mettiamo
 tutti insieme: {doc}`modelli latenti </ModelliLatenti/overview>`,
 le GAN, la diffusione,
 questo e i modelli a energia. L'asse su cui li
-ordiniamo è uno solo: **che rapporto ha il modello con la probabilità del
-dato**. È un taglio fra i tanti possibili, e altrove nel libro le stesse cose
+ordiniamo è uno solo: che rapporto ha il modello con la probabilità del
+dato. È un taglio fra i tanti possibili, e altrove nel libro le stesse cose
 sono ordinate secondo altri assi (le quattro famiglie dell'auto-supervisione si
 ordinano secondo che cosa impedisce la risposta vuota, che è tutta un'altra
 domanda). Qui contano solo tre risposte.
 
-**Non ce l'ha affatto.** Il modello sa produrre campioni e nient'altro; la
-probabilità non compare in nessuna delle sue formule. È il caso delle **GAN**:
+Non ce l'ha affatto. Il modello sa produrre campioni e nient'altro; la
+probabilità non compare in nessuna delle sue formule. È il caso delle GAN:
 si dice che definiscono una **densità implicita**, dove densità è il nome
 tecnico di quel voto e implicita vuol dire esattamente «c'è ma non si può
 guardare». Se ne può stimare qualche proprietà generando tanti campioni e
 misurandoli, che è quello che fa il FID, ma la probabilità di un singolo dato
 no.
 
-**Ce l'ha approssimata.** Il modello ha di che parlare di probabilità, ma quel
-che ottimizza e quel che sa dire è un surrogato. I **VAE**, gli autoencoder
+Ce l'ha approssimata. Il modello ha di che parlare di probabilità, ma quel
+che ottimizza e quel che sa dire è un surrogato. I VAE, gli autoencoder
 variazionali del capitolo sui modelli latenti, danno un limite inferiore,
 l'ELBO: si sa
-che il valore vero sta più in alto, non di quanto. I **modelli a energia**
+che il valore vero sta più in alto, non di quanto. I modelli a energia
 danno il voto a meno di una costante che nessuno conosce: bastano per dire
 quale di due dati è più plausibile, non per stampare una percentuale. I
-**modelli di diffusione** addestrano su un limite come i VAE; nella loro
+modelli di diffusione addestrano su un limite come i VAE; nella loro
 formulazione continua il valore esatto si può ottenere {cite}`song2021score`,
 ma passando per la soluzione di un'equazione differenziale e per una stima
 fatta a campione di un termine che calcolare per intero costerebbe troppo, cioè
 con un lavoro che nessuno fa a ogni immagine.
 
-**Ce l'ha esatta.** Il modello restituisce $\log p(\mathbf{x})$, giusto, in un
+Ce l'ha esatta. Il modello restituisce $\log p(\mathbf{x})$, giusto, in un
 passaggio. Due strade portano lì, e sono le prime due sezioni. La
 prima spezza il dato in pezzi e li mette in fila, moltiplicando le probabilità
-uno dopo l'altro: sono i **modelli autoregressivi**, che il libro conosce da
+uno dopo l'altro: sono i modelli autoregressivi, che il libro conosce da
 tempo sul testo e sull'audio, e che qui incontriamo sulle immagini. La seconda
-non spezza niente e deforma: costruisce una trasformazione **invertibile** dai
-dati a una gaussiana, e legge la probabilità di là. Sono i **flussi
-normalizzanti**, e sono la famiglia da cui il *rectified flow* del capitolo
+non spezza niente e deforma: costruisce una trasformazione invertibile dai
+dati a una gaussiana, e legge la probabilità di là. Sono i flussi
+normalizzanti, e sono la famiglia da cui il *rectified flow* del capitolo
 precedente ha preso il nome.
 
 ## Il prezzo
@@ -114,17 +114,17 @@ strutturale per cui ha perso.
   fare: «questa fotografia, quanto è probabile?». Non risponde male, non ha
   proprio lo sportello. Ha imparato a fabbricare, non a giudicare.
 - I modelli si mettono in fila secondo che cosa sanno dire di quel numero.
-  Alcuni **niente** (le GAN). Alcuni **un numero prudente**: i modelli
+  Alcuni niente (le GAN). Alcuni un numero prudente: i modelli
   latenti e quelli a diffusione danno un valore che sta di sicuro sotto a
   quello vero, senza dire di quanto; nel caso della diffusione il valore vero
   si può anche ottenere, ma con un secondo lavoro lungo e a parte. Alcuni
-  **soltanto un confronto**: i modelli a energia sanno dire
+  soltanto un confronto: i modelli a energia sanno dire
   quale di due dati è più plausibile, non stampare una percentuale, perché al
   loro voto manca una costante che nessuno conosce. E alcuni lo sanno
-  **esatto**, ed è la famiglia di questo capitolo.
-- Le strade per saperlo esatto sono due. **A pezzi in fila**: si taglia il
+  esatto, ed è la famiglia di questo capitolo.
+- Le strade per saperlo esatto sono due. A pezzi in fila: si taglia il
   dato in pezzetti, si mette in fila e si moltiplicano le probabilità, come si
-  fa da sempre con il testo. **Per deformazione**: si costruisce una macchina
+  fa da sempre con il testo. Per deformazione: si costruisce una macchina
   che si può usare nei due sensi e che porta i dati su una nuvola semplice, la
   probabilità si legge di là, e si tiene conto di quanto la macchina ha stirato
   o schiacciato proprio in quel punto.
@@ -139,22 +139,22 @@ strutturale per cui ha perso.
 
 ```{admonition} Da ricordare
 :class: important
-- Asse di classificazione: **il rapporto del modello con $p(\mathbf{x})$**.
-  Densità **implicita** (GAN: campionamento sì, valutazione no); densità
-  **esplicita approssimata** (VAE: ELBO, cioè limite inferiore; EBM:
+- Asse di classificazione: il rapporto del modello con $p(\mathbf{x})$.
+  Densità implicita (GAN: campionamento sì, valutazione no); densità
+  esplicita approssimata (VAE: ELBO, cioè limite inferiore; EBM:
   $-E_\theta(\mathbf{x})$ a meno di una costante di normalizzazione ignota;
   diffusione: bound
   variazionale, con il valore esatto ottenibile via probability-flow ODE
-  {cite}`song2021score` a costo non trascurabile); densità **esplicita
-  trattabile** (autoregressivi e flussi).
-- **Autoregressivi**: $\log p(\mathbf{x}) = \sum_i \log p(x_i \mid
+  {cite}`song2021score` a costo non trascurabile); densità esplicita
+  trattabile (autoregressivi e flussi).
+- Autoregressivi: $\log p(\mathbf{x}) = \sum_i \log p(x_i \mid
   \mathbf{x}_{<i})$, ogni fattore una softmax normalizzata. Valutazione in un
   passaggio (*teacher forcing*), campionamento in $D$ passaggi sequenziali,
   con $D$ il numero di valori che compongono il dato.
-- **Flussi**: $\log p(\mathbf{x}) = \log p_Z(f(\mathbf{x})) + \log \lvert \det
+- Flussi: $\log p(\mathbf{x}) = \log p_Z(f(\mathbf{x})) + \log \lvert \det
   \partial f / \partial \mathbf{x} \rvert$, con $f$ invertibile. Valutazione e
   campionamento entrambi in un passaggio; in cambio $f$ è vincolata a essere
-  un diffeomorfismo, quindi a **conservare la dimensione**.
+  un diffeomorfismo, quindi a conservare la dimensione.
 - Nessuna delle due paga in fedeltà del modello di probabilità: pagano in
   vincoli architetturali. È il baratto che il capitolo mette a fuoco, e la
   ragione per cui la famiglia ha perso la corsa alle immagini senza perdere
@@ -165,10 +165,10 @@ strutturale per cui ha perso.
 
 ## Due meccanismi, e un bilancio
 
-Prima gli **autoregressivi sulle immagini**: come
+Prima gli autoregressivi sulle immagini: come
 si impone un ordine a una griglia di pixel, come si costringe una convoluzione
 a guardare solo indietro, e il difetto famoso che quella costrizione porta con
-sé. Poi i **flussi normalizzanti**: il cambio di variabile che è tutta la
+sé. Poi i flussi normalizzanti: il cambio di variabile che è tutta la
 matematica del capitolo, il vincolo di invertibilità e il modo furbo di
 soddisfarlo, e perché il determinante, che in generale costa un'eternità, qui
 si legge in un colpo d'occhio. Infine il bilancio: a che cosa serve davvero

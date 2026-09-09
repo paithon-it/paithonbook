@@ -15,24 +15,25 @@ numeri alti, e fin qui nessuno si stupisce: i bravi sono bravi.
 Poi Spearman fa una cosa che con la scuola non c’entra niente. Mette gli stessi
 ragazzi davanti a due suoni quasi identici e chiede quale dei due sia più
 acuto. È un compito da orecchio, non da studio: non si copia, non si ripassa la
-sera prima, e l’unico allenamento che conta è la musica. E il risultato mette in fila le quattro materie
-**nello stesso ordine di prima**: 0,60 con le materie classiche, 0,56 col
-francese, 0,45 con l’inglese, 0,39 con la matematica. (Sono le correlazioni
-grezze su tutta la scuola; restringendole ai ventidue ragazzi che studiavano
-musica salgono tutte, e l’ordine resta identico.)
+sera prima, e l’unico allenamento che conta è la musica. E il risultato mette
+in fila le quattro materie nello stesso ordine di prima: 0,60 con le
+materie classiche, 0,56 col francese, 0,45 con l’inglese, 0,39 con la
+matematica. (Sono le correlazioni grezze su tutta la scuola; restringendole ai
+ventidue ragazzi che studiavano musica salgono tutte, e l’ordine resta
+identico.)
 
 Distinguere due note non ha niente a che vedere con declinare *rosa*, e non ha
 niente a che vedere con risolvere un’equazione. Eppure chi fa meglio l’una
 tende a fare meglio anche le altre, e sempre nella stessa graduatoria. La
 spiegazione che Spearman propone nel 1904 è tutta nella sua forma: sotto a
-tutte queste prove c’è **una quantità sola**, che nessuno ha misurato e che
+tutte queste prove c’è una quantità sola, che nessuno ha misurato e che
 nessuno misurerà mai, e ogni prova è quella quantità più il proprio scarto. Le
 materie non si somigliano fra loro: si somigliano perché sono figlie della
 stessa cosa.
 
 Se quella quantità esista davvero, e che cosa sia, è oggetto di una discussione
 che dura da oltre un secolo, e il libro non prende posizione: quello
-che ci serve è **la mossa**, non la conclusione. La mossa è sopravvissuta
+che ci serve è la mossa, non la conclusione. La mossa è sopravvissuta
 alla discussione, ha preso un nome (**variabile latente**, dal latino *latere*,
 «stare nascosto») e ha una macchina matematica che la rende operativa, che
 Spearman inventò per sostenere la sua tesi e che oggi si chiama analisi
@@ -53,8 +54,8 @@ scoraggiante: scrivere una formula per la probabilità di un dato. Quanto è
 probabile *questa* fotografia?
 
 La domanda suona strana, perché una fotografia c’è o non c’è, e la
-sciogliamo subito, perché regge tutto il capitolo: vuol dire **quanto ci si
-aspettava di vedere una cosa così**. La foto di un gatto nero su un muro è
+sciogliamo subito, perché regge tutto il capitolo: vuol dire quanto ci si
+aspettava di vedere una cosa così. La foto di un gatto nero su un muro è
 probabile; la stessa foto con il muro fatto di puntini colorati a caso non lo
 è. E chi sa rispondere sa anche fabbricare, perché sapere quali immagini sono
 attese è sapere quali produrre.
@@ -66,7 +67,7 @@ quasi sempre lo stesso colore, tranne sui contorni, e dove passano i contorni
 dipende da che cosa c’è nella foto.
 
 La mossa della variabile latente è cambiare domanda. Invece di descrivere il
-dato, si descrive **come è nato**: prima si sorteggia qualcosa che non si vede,
+dato, si descrive come è nato: prima si sorteggia qualcosa che non si vede,
 e poi, a partire da quel qualcosa, si sorteggia il dato. Il modello si scrive
 allora in due pezzi, e sono due pezzi semplici; la complicazione che si vede
 nasce dal fatto che il primo dei due non lo si osserva mai.
@@ -107,7 +108,7 @@ che può anche non pagare.
 
 `````{tab} Superiore
 
-Un **modello a variabile latente** non scrive $p(\mathbf{x})$ direttamente:
+Un modello a variabile latente non scrive $p(\mathbf{x})$ direttamente:
 scrive una distribuzione congiunta su ciò che si osserva e su ciò che non si
 osserva, e ottiene la prima **marginalizzando** la seconda, cioè sommando su
 tutti i valori che la variabile nascosta poteva prendere:
@@ -117,9 +118,9 @@ p_\theta(\mathbf{x}) = \int p_\theta(\mathbf{x} \mid \mathbf{z})\, p(\mathbf{z})
 $$
 
 dove $\mathbf{x}$ è il dato osservato, $\mathbf{z}$ la variabile latente,
-$p(\mathbf{z})$ il **prior** (la distribuzione da cui $\mathbf{z}$ viene
+$p(\mathbf{z})$ il prior (la distribuzione da cui $\mathbf{z}$ viene
 sorteggiato, scelta da noi e di solito semplicissima), $p_\theta(\mathbf{x}
-\mid \mathbf{z})$ la **verosimiglianza** del dato dato il latente, e $\theta$ i
+\mid \mathbf{z})$ la verosimiglianza del dato dato il latente, e $\theta$ i
 parametri del modello generativo. L’integrale diventa una somma quando
 $\mathbf{z}$ è discreto.
 
@@ -149,13 +150,13 @@ Il caso continuo generalizza la stessa costruzione: se $p(\mathbf{z}) =
 \mathbf{I}\big)$, dove $f_\theta$ è una rete neurale e $\sigma^2$ la varianza
 del rumore che il decoder aggiunge (da non confondere con la varianza della
 zona proposta dall’encoder, che comparirà nella sezione sull’ELBO), allora
-$p_\theta(\mathbf{x})$ è una **mistura infinita** di gaussiane sferiche, i cui
+$p_\theta(\mathbf{x})$ è una mistura infinita di gaussiane sferiche, i cui
 centri sono le uscite della rete e i cui pesi sono dati dal prior. Una rete
 deterministica più due gaussiane elementari bastano quindi a descrivere una
 distribuzione che non si saprebbe scrivere in nessun altro modo.
 
-Con $f_\theta$ **affine** il modello diventa la PCA probabilistica, la cui
-soluzione a massima verosimiglianza individua il **sottospazio** generato dalle
+Con $f_\theta$ affine il modello diventa la PCA probabilistica, la cui
+soluzione a massima verosimiglianza individua il sottospazio generato dalle
 prime $L$ componenti principali e non le singole direzioni (con $f_\theta$
 affine, cioè $f_\theta(\mathbf{z}) = \mathbf{W}\mathbf{z} + \boldsymbol{\mu}$ e
 $\mathbf{z}$ di dimensione $L$, la matrice $\mathbf{W}$ è determinata a meno di
@@ -217,7 +218,7 @@ La freccia tratteggiata di {numref}`fig-modello-latente` costa in due modi
 diversi, che è bene tenere separati perché il capitolo li affronta con due
 strumenti distinti.
 
-**Prima difficoltà: la somma.** Per sapere quanto è probabile un dato bisogna
+Prima difficoltà: la somma. Per sapere quanto è probabile un dato bisogna
 considerare tutti i valori che la causa nascosta poteva prendere, e sommarli
 pesandoli. Con due sacchetti sono due addendi. Ma la causa nascosta di cui
 parleremo è una fila di numeri (nel capitolo ne useremo otto, che è quanto
@@ -227,15 +228,15 @@ che di per sé non sarebbe un guaio, perché somme di infiniti addendi si fanno
 da secoli, purché la cosa da sommare sia semplice.
 
 Il guaio è un altro. A trasformare la causa nascosta nel dato ci pensa una
-**rete neurale**, cioè la macchina dei capitoli precedenti: milioni di numeri
+rete neurale, cioè la macchina dei capitoli precedenti: milioni di numeri
 messi in fila che si moltiplicano e si sommano, e che nessuno saprebbe
-riassumere in una formula. Con quella in mezzo, la somma **non si sa scrivere**
+riassumere in una formula. Con quella in mezzo, la somma non si sa scrivere
 in nessun modo utile; e provare a tentoni, misurandola in tanti punti sparsi,
 chiede un numero di punti che si moltiplica a ogni numero in più della causa
 nascosta.
 
-**Seconda difficoltà, ed è quella che sorprende: neanche tirare a sorte
-funziona.** La via d’uscita ovvia sarebbe sorteggiare un po’ di valori del
+Seconda difficoltà, ed è quella che sorprende: neanche tirare a sorte
+funziona. La via d’uscita ovvia sarebbe sorteggiare un po’ di valori del
 latente, guardare quanto ciascuno spiega bene il dato, e fare la media. In
 poche dimensioni si fa. In molte no, e la ragione è che quasi tutti i valori
 sorteggiati spiegano il dato in modo pessimo: la media di mille numeri quasi
@@ -244,7 +245,7 @@ pescare. La sezione sull’ELBO lo misura invece di dirlo.
 
 ## La stessa idea, dentro quattro macchine
 
-Questa idea il libro la mette al lavoro in **quattro** punti, e in nessuno dei
+Questa idea il libro la mette al lavoro in quattro punti, e in nessuno dei
 quattro la spiega fino in fondo. Due sono già passati: quando trasforma il
 suono in simboli per poterlo scrivere come si scrive un testo, nel capitolo
 sull’audio, e quando recinta le mosse che un programma può permettersi di
@@ -271,18 +272,18 @@ storia della sezione sull’ELBO.
 
 ```{admonition} Da ricordare
 :class: important
-- La mossa di questo capitolo è **spiegare quello che si vede con qualcosa che
-  non si vede**: prima si sorteggia una causa nascosta, poi da quella si
-  sorteggia il dato. La cosa nascosta si chiama **variabile latente**.
-- Il guadagno è che **pezzi semplici danno un risultato complicato**: due
+- La mossa di questo capitolo è spiegare quello che si vede con qualcosa che
+  non si vede: prima si sorteggia una causa nascosta, poi da quella si
+  sorteggia il dato. La cosa nascosta si chiama variabile latente.
+- Il guadagno è che pezzi semplici danno un risultato complicato: due
   sacchetti con una gobba ciascuno, se le misure tipiche dei due sono abbastanza
   lontane, producono un istogramma a due gobbe, e nessuno ha dovuto scrivere la
   forma a due gobbe.
-- Il prezzo è che per sapere quanto è probabile un dato bisogna **considerare
-  tutte le cause nascoste possibili**, e quando sono tante quel conto non si
+- Il prezzo è che per sapere quanto è probabile un dato bisogna considerare
+  tutte le cause nascoste possibili, e quando sono tante quel conto non si
   fa. Non si fa nemmeno tirando a sorte, perché quasi tutte le cause
   sorteggiate spiegano il dato malissimo.
-- Il libro monta questa idea in **quattro** punti senza mai spiegarla fino in
+- Il libro monta questa idea in quattro punti senza mai spiegarla fino in
   fondo, due già letti e due che verranno; l’ultima sezione dice quali. È il
   buco che questo capitolo riempie.
 ```
@@ -293,25 +294,25 @@ storia della sezione sull’ELBO.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **modello a variabile latente** definisce
+- Un modello a variabile latente definisce
   $p_\theta(\mathbf{x}) = \int p_\theta(\mathbf{x} \mid \mathbf{z})\,
   p(\mathbf{z})\, \mathrm{d}\mathbf{z}$: prior semplice, verosimiglianza
   condizionale semplice, marginale arbitrariamente complicata.
 - Con $p(\mathbf{z}) = \mathcal{N}(\mathbf{0}, \mathbf{I})$ e
   $p_\theta(\mathbf{x} \mid \mathbf{z}) = \mathcal{N}(\mathbf{x};
-  f_\theta(\mathbf{z}), \sigma^2 \mathbf{I})$ si ottiene una **mistura infinita
-  di gaussiane** con centri $f_\theta(\mathbf{z})$. La mistura di gaussiane
+  f_\theta(\mathbf{z}), \sigma^2 \mathbf{I})$ si ottiene una mistura infinita
+  di gaussiane con centri $f_\theta(\mathbf{z})$. La mistura di gaussiane
   finita della {doc}`sezione su riduzione e clustering
   </MachineLearning/riduzione-clustering>` è lo stesso oggetto con
   $\mathbf{z}$ discreto; con $f_\theta$ affine si ottiene la PCA
   probabilistica, e l’analisi fattoriale è la variante con una varianza di
   rumore per ciascuna componente osservata.
-- La marginale è **intrattabile**: nessuna forma chiusa, e la stima Monte Carlo
+- La marginale è intrattabile: nessuna forma chiusa, e la stima Monte Carlo
   dal prior ha varianza che esplode con la dimensione di $\mathbf{z}$, perché
   quasi tutti i campioni cadono dove
   $p_\theta(\mathbf{x} \mid \mathbf{z})$ è trascurabile.
 - Da qui il programma del capitolo: rinunciare al valore esatto di
-  $\log p_\theta(\mathbf{x})$ e ottimizzare un **limite inferiore**, che si
+  $\log p_\theta(\mathbf{x})$ e ottimizzare un limite inferiore, che si
   paga con un secondo modello (l’encoder) e si guadagna in trattabilità.
 ```
 
@@ -320,16 +321,16 @@ storia della sezione sull’ELBO.
 ## Comprimere, ricostruire, usare
 
 Tre sezioni, e ciascuna toglie un pezzo al problema. La prima parte dalla
-strada più corta, l’**autoencoder**, cioè una rete che impara a comprimere e a
+strada più corta, l’autoencoder, cioè una rete che impara a comprimere e a
 ricostruire senza che nessuno le parli di probabilità: funziona benissimo per
 comprimere e fallisce per generare, e il perché di quel fallimento è il modo
 migliore per capire che cosa manchi. La seconda è il cuore: la
-**verosimiglianza intrattabile**, il limite inferiore che la sostituisce
-(l’**ELBO**), i suoi due termini letti come ricostruzione e costo di
+verosimiglianza intrattabile, il limite inferiore che la sostituisce
+(l’ELBO), i suoi due termini letti come ricostruzione e costo di
 descrizione, e un trucco senza il quale la macchina non si potrebbe addestrare
 in un tempo ragionevole, perché in mezzo c’è un sorteggio e le correzioni, da
-sole, un sorteggio non lo attraversano. La terza guarda che cosa si fa con quel riassunto
-nascosto una volta che c’è: la manopola con cui gli si può chiedere di tenere
-separate le cose di cui il dato è fatto (la luce, l’inclinazione, il soggetto),
-il riassunto fatto di simboli invece che di numeri, e i quattro punti del libro
-in cui questa macchina è al lavoro.
+sole, un sorteggio non lo attraversano. La terza guarda che cosa si fa con quel
+riassunto nascosto una volta che c’è: la manopola con cui gli si può chiedere
+di tenere separate le cose di cui il dato è fatto (la luce, l’inclinazione, il
+soggetto), il riassunto fatto di simboli invece che di numeri, e i quattro
+punti del libro in cui questa macchina è al lavoro.

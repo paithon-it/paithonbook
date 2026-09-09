@@ -3,8 +3,8 @@
 In un labirinto i corridoi stanno fermi. Se ne provo uno e non porta da nessuna
 parte, il labirinto non si riorganizza per dispetto.
 
-Con un avversario davanti cambia tutto, e cambia in un punto solo: **metà delle
-mosse non le scelgo io**. L’albero è lo stesso, i rami sono gli stessi, ma un
+Con un avversario davanti cambia tutto, e cambia in un punto solo: metà delle
+mosse non le scelgo io. L’albero è lo stesso, i rami sono gli stessi, ma un
 livello sì e uno no li sceglie qualcuno che vuole esattamente il contrario di
 quello che voglio io. Non posso più chiedermi «qual è la strada migliore»: devo
 chiedermi «qual è la mossa che regge anche alla risposta peggiore».
@@ -59,8 +59,8 @@ parte, le partite da srotolare sono un numero di trenta cifre.
 
 `````{tab} Superiore
 
-Per un gioco a due giocatori, **deterministico**, a somma zero e a
-**informazione perfetta** (cioè in cui ciascuno vede tutta la posizione: è
+Per un gioco a due giocatori, deterministico, a somma zero e a
+informazione perfetta (cioè in cui ciascuno vede tutta la posizione: è
 un’altra cosa dall’«informazione completa» della teoria dei giochi, che
 riguarda il conoscere i guadagni dell’avversario), il valore minimax di uno
 stato $s$ è definito ricorsivamente:
@@ -142,7 +142,7 @@ partite portate fino in fondo: 255168
 
 Lo zero è la patta, ed è la risposta giusta. Il numero sotto va letto con
 attenzione, perché è il conto che serve: sono duecentocinquantacinquemila
-**partite intere** e non *posizioni diverse* (di quelle un gioco da nove
+partite intere e non *posizioni diverse* (di quelle un gioco da nove
 caselle ne ha molte meno), giocate una per una dalla prima mossa all’ultima.
 Sono meno delle $9! = 362\,880$ sequenze con cui si possono riempire nove
 caselle, perché una partita si ferma appena qualcuno allinea tre simboli, anche
@@ -152,7 +152,7 @@ il problema.
 
 ## Smettere di guardare: la potatura
 
-C’è un modo di ottenere **esattamente lo stesso numero** srotolando una
+C’è un modo di ottenere esattamente lo stesso numero srotolando una
 frazione di quelle partite, e senza nessuna approssimazione: basta accorgersi
 che certi rami, qualunque cosa contengano, non possono cambiare la risposta.
 
@@ -161,19 +161,19 @@ che certi rami, qualunque cosa contengano, non possono cambiare la risposta.
 Torniamo all’alberello di prima, e stavolta guardiamo le foglie una per volta,
 da sinistra, come farebbe qualcuno che le scopre a mano a mano.
 
-Della mia **prima** mossa scopro 3, 12, 8: lui sceglierebbe il minimo, quindi
-quella mossa vale 3. Adesso so una cosa che non mollo più: **qualunque cosa
-succeda, non accetterò meno di 3**.
+Della mia prima mossa scopro 3, 12, 8: lui sceglierebbe il minimo, quindi
+quella mossa vale 3. Adesso so una cosa che non mollo più: qualunque cosa
+succeda, non accetterò meno di 3.
 
-Passo alla mia **seconda** mossa. Scopro la prima risposta di lui: 2. E qui mi
+Passo alla mia seconda mossa. Scopro la prima risposta di lui: 2. E qui mi
 fermo, perché ho già finito di ragionare. Lui, su questa mossa, prenderà il
 minimo fra 2 e le altre due che non ho ancora guardato: quindi al massimo
 prenderà 2, e forse meno. Comunque vada, questa mossa non vale più di 2, cioè
-**meno del 3 che ho già in tasca**. Le altre due risposte non le guardo
+meno del 3 che ho già in tasca. Le altre due risposte non le guardo
 nemmeno: non c’è nessun numero che possano contenere capace di farmi cambiare
 idea. Anche se ci fosse un milione, lui non me lo lascerebbe prendere.
 
-Passo alla **terza**. Scopro 14: non basta a decidere, perché lui prenderà il
+Passo alla terza. Scopro 14: non basta a decidere, perché lui prenderà il
 minimo e potrebbe esserci di peggio. Scopro 5: idem. Scopro 2: adesso so che
 questa mossa vale 2, meno di 3. Anche questa scartata.
 
@@ -188,7 +188,7 @@ a se stessi guardando la seconda mossa: «questa strada è già peggio della
 migliore che ho trovato, non la guardo nemmeno».
 
 Il punto di rottura, che conta moltissimo in pratica: quanto si pota dipende
-**dall’ordine in cui si guardano le mosse**. Se la mossa buona capita per prima,
+dall’ordine in cui si guardano le mosse. Se la mossa buona capita per prima,
 tutte le altre si scartano in fretta perché c’è già un metro alto da superare;
 se capita per ultima, il metro resta basso a lungo e non si scarta quasi
 niente. Lo stesso algoritmo, sullo stesso albero, può guardare pochissimo o
@@ -218,24 +218,24 @@ $$
 = \max\big(3,\ z,\ 2\big), \qquad z = \min(2,x,y) \le 2,
 $$
 
-e siccome $z \le 2 < 3$ il massimo vale 3 **indipendentemente da $x$ e $y$**.
+e siccome $z \le 2 < 3$ il massimo vale 3 indipendentemente da $x$ e $y$.
 Non è un’approssimazione: alfa-beta restituisce sempre lo stesso valore di
 minimax alla radice.
 
 Il guadagno dipende dall’ordinamento delle mosse. Nel caso migliore, cioè
 esaminando per prima la mossa migliore in ogni nodo, alfa-beta esamina
-$O(b^{m/2})$ nodi invece di $O(b^m)$: il fattore di ramificazione **effettivo**
+$O(b^{m/2})$ nodi invece di $O(b^m)$: il fattore di ramificazione effettivo
 diventa $\sqrt{b}$, che agli scacchi vuol dire circa 6 invece di 35, ossia la
-possibilità di guardare **il doppio più a fondo** nello stesso tempo. Con
+possibilità di guardare il doppio più a fondo nello stesso tempo. Con
 ordinamento casuale, e per $b$ moderati, si scende a circa $O(b^{3m/4})$
 {cite}`russell2020artificial`.
 
 Da qui il fatto che nei programmi di gioco l’ordinamento delle mosse non è una
 rifinitura ma una parte dell’algoritmo. Due tecniche classiche: provare per
-prime, in un nodo, le mosse che hanno già prodotto un taglio **alla stessa
-profondità** in un altro ramo dell’albero (le **killer move**: se una mossa ha
+prime, in un nodo, le mosse che hanno già prodotto un taglio alla stessa
+profondità in un altro ramo dell’albero (le **killer move**: se una mossa ha
 confutato una linea, spesso ne confuta anche una parallela), e usare
-l’**approfondimento iterativo** della sezione precedente non
+l’approfondimento iterativo della sezione precedente non
 solo per gestire il tempo, ma per ordinare: si cerca a profondità uno, si
 ordinano le mosse secondo quel risultato, si cerca a profondità due partendo da
 quell’ordine, e così via. Il tempo speso nelle passate superficiali si ripaga
@@ -286,7 +286,7 @@ rapporto: 34.8 volte meno
 
 Stessa risposta, quasi trentacinque volte meno lavoro. E conviene insistere su
 «stessa risposta», perché è la cosa che rende la potatura diversa da tutti gli
-altri risparmi di questo capitolo: **non si è rinunciato a niente**. I rami
+altri risparmi di questo capitolo: non si è rinunciato a niente. I rami
 non guardati erano rami di cui si era dimostrato, senza guardarli, che non
 potevano cambiare la conclusione.
 
@@ -349,8 +349,8 @@ bordi per primi:                         17002
 venti ordini a caso: da 2603 a 13358, e 1 su 20 batte il ragionato
 ```
 
-Sei volte fra il migliore e il peggiore, **sullo stesso gioco, con lo stesso
-algoritmo e con la stessa risposta in fondo**. E l'ordine ragionato non è
+Sei volte fra il migliore e il peggiore, sullo stesso gioco, con lo stesso
+algoritmo e con la stessa risposta in fondo. E l'ordine ragionato non è
 lontano dal migliore che si trovi a tentativi: mettere per primi il centro e
 gli angoli vuol dire provare per prime le caselle che nel tris contano di più,
 e dei venti ordini pescati a caso uno solo fa meglio. I programmi di scacchi
@@ -366,7 +366,7 @@ no: dopo dieci mosse per parte si è ancora in mezzo alla partita, e in fondo
 all’albero non c’è nessun numero da leggere.
 
 Allora si fa la cosa che un giocatore umano fa da sempre: si guarda avanti
-finché si può, ci si ferma, e si **giudica a occhio** la posizione a cui si è
+finché si può, ci si ferma, e si giudica a occhio la posizione a cui si è
 arrivati. Quel giudizio è una **funzione di valutazione**, e prende il posto
 del punteggio vero. È qui che la ricerca smette di essere esatta.
 
@@ -423,7 +423,7 @@ basta per scendere due volte più a fondo nello stesso tempo.
 
 `````{tab} Superiore
 
-Si sostituisce l’utilità terminale $u(s)$ con una **valutazione** $\mathrm{ev}(s)$
+Si sostituisce l’utilità terminale $u(s)$ con una valutazione $\mathrm{ev}(s)$
 e il test di terminazione con un **test di taglio**, ottenendo il minimax
 euristico
 
@@ -481,7 +481,7 @@ spegne: non serve guardarlo, perché a sceglierlo sarebbe l’avversario e
 l’avversario prenderà comunque il minimo.
 ```
 
-{numref}`fig-alfabeta-pota` fa vedere **quando** i due rami si spengono, cosa
+{numref}`fig-alfabeta-pota` fa vedere quando i due rami si spengono, cosa
 che su un disegno fermo non si vedrebbe. E messa accanto alla funzione di
 valutazione, la potatura è di natura opposta: spegne rami di cui si è
 dimostrato che non possono cambiare la risposta, e non costa niente. La
@@ -492,21 +492,21 @@ costa, e il prezzo si chiama effetto orizzonte.
 
 ```{admonition} Da ricordare
 :class: important
-- Con un avversario davanti, **metà delle mosse le sceglie lui**, e le sceglie
+- Con un avversario davanti, metà delle mosse le sceglie lui, e le sceglie
   per farci del male. Il valore di una posizione non è il numero più alto che
   ci si vede sotto: è quello che si ottiene supponendo che da lì in poi
   giochino bene tutti e due.
-- Il conto si fa **all’indietro**, dalle foglie alla radice, alternando «prendi
+- Il conto si fa all’indietro, dalle foglie alla radice, alternando «prendi
   il massimo» dove tocca a me e «prendi il minimo» dove tocca a lui.
-- La **potatura** è la frase «questa strada è già peggio della migliore che ho
+- La potatura è la frase «questa strada è già peggio della migliore che ho
   trovato, non la guardo nemmeno». Non è un’approssimazione: la risposta è la
   stessa, e sul tris costa quasi trentacinque volte meno.
-- Quanto si pota dipende **dall’ordine in cui si guardano le mosse**: con la
+- Quanto si pota dipende dall’ordine in cui si guardano le mosse: con la
   migliore per prima si scarta quasi tutto, con la migliore per ultima quasi
   niente.
 - Nelle partite vere il fondo non si raggiunge, quindi ci si ferma a una certa
-  profondità e si **giudica a occhio** la posizione. Questo sì che costa, e il
-  prezzo si chiama **effetto orizzonte**: il disastro che sta un passo oltre
+  profondità e si giudica a occhio la posizione. Questo sì che costa, e il
+  prezzo si chiama effetto orizzonte: il disastro che sta un passo oltre
   l’ultimo che si è guardato non si vede, e conviene perfino spingercelo
   pagando qualcosa. Un rimedio è non fermarsi dove i pezzi si stanno ancora
   mangiando: l’orizzonte si sposta dove fa meno danni, e sparire non sparisce.
@@ -518,22 +518,22 @@ costa, e il prezzo si chiama effetto orizzonte.
 
 ```{admonition} Da ricordare
 :class: important
-- **Minimax** definisce il valore di uno stato per ricorsione, alternando
-  massimo e minimo, e restituisce il valore esatto **dato l’albero completo**.
+- Minimax definisce il valore di uno stato per ricorsione, alternando
+  massimo e minimo, e restituisce il valore esatto dato l’albero completo.
   Costa $O(b^m)$, cioè è impraticabile su un gioco vero.
-- **Alfa-beta** {cite}`knuth1975analysis` porta lungo il cammino i due limiti
+- Alfa-beta {cite}`knuth1975analysis` porta lungo il cammino i due limiti
   $\alpha$ e $\beta$ e taglia i rami che non possono influire. Restituisce lo
   stesso valore di minimax alla radice: nel caso migliore $O(b^{m/2})$, cioè
   ramificazione effettiva $\sqrt{b}$ (agli scacchi 6 invece di 35, ossia il
   doppio della profondità a parità di tempo); con ordinamento casuale e $b$
   moderati, circa $O(b^{3m/4})$.
-- L’ordinamento delle mosse è quindi parte dell’algoritmo: **killer move** e
+- L’ordinamento delle mosse è quindi parte dell’algoritmo: killer move e
   approfondimento iterativo usato come ordinatore.
-- Non potendo raggiungere le foglie si sostituisce $u$ con una **funzione di
-  valutazione** e il test di fine con un test di taglio. Qui la ricerca smette
-  di essere esatta, e compare l’**effetto orizzonte**, che la ricerca di
+- Non potendo raggiungere le foglie si sostituisce $u$ con una funzione di
+  valutazione e il test di fine con un test di taglio. Qui la ricerca smette
+  di essere esatta, e compare l’effetto orizzonte, che la ricerca di
   quiescenza e le estensioni singolari attenuano senza eliminare.
-- Le **trasposizioni** riportano l’albero al grafo che era: una tabella dei
+- Le trasposizioni riportano l’albero al grafo che era: una tabella dei
   valori già calcolati raddoppia, agli scacchi, la profondità raggiungibile
   {cite}`russell2020artificial`.
 ```

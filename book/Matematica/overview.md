@@ -32,7 +32,7 @@ L'aneddoto è tramandato, non documentato: lo raccontò Shannon stesso, a voce,
 nel 1961, e a stampa arrivò dieci anni più tardi, riferito da chi glielo aveva
 sentito dire. Va preso con la cautela che meritano le battute riportate. Ma
 dice una cosa giusta, ed è la cosa da mettere in chiaro prima di cominciare:
-**spaventa più il nome della cosa**. L'entropia, sotto quel nome
+spaventa più il nome della cosa. L'entropia, sotto quel nome
 greco, è la sorpresa che ti aspetti in media da quello che sta per succedere.
 Si spiega in una riga, e in una riga l'abbiamo appena spiegata. Con gradiente,
 vettore e verosimiglianza funziona allo stesso modo.
@@ -52,7 +52,7 @@ Il compito più classico dell'AI è questo: guardare una foto e dire se contiene
 un gatto. Per un calcolatore quella foto è una griglia di numeri (l'intensità
 di ogni pixel), non un gatto. Metterli in fila ordinata è **algebra lineare**.
 Poi quei numeri vengono trasformati più volte di seguito, e ogni passaggio è
-uno **strato**: prende la lista di numeri che gli arriva e ne produce un'altra,
+uno strato: prende la lista di numeri che gli arriva e ne produce un'altra,
 fino a che dall'ultimo esce la risposta «gatto / non gatto». Anche questo è
 algebra lineare, con in mezzo qualche piccola funzione che *piega* i numeri:
 sommare e moltiplicare, ripetuto cento volte, resta un sommare e moltiplicare
@@ -90,30 +90,30 @@ Cinque attrezzi, e ciascuno risponde a una domanda che si può fare a voce.
 Alcuni occupano più di una sezione, perché la domanda si articola; una sezione
 finale li rimette al lavoro tutti insieme su un oggetto solo.
 
-- **Algebra lineare**: come si mettono i numeri in fila, e come si trasformano
+- Algebra lineare: come si mettono i numeri in fila, e come si trasformano
   tutti insieme. Sono quattro sezioni: *vettori, matrici, prodotti e norme*
   per cominciare; i *sistemi lineari*, cioè che cosa succede quando i dati
   impongono dei vincoli e quando quei vincoli non bastano; *ortogonalità e
   proiezioni*, che rispondono quando una risposta esatta non esiste; e il
   *determinante*, che misura di quanto una trasformazione gonfia lo spazio.
-- **Analisi e ottimizzazione**: come si capisce da che parte migliorare, e come
+- Analisi e ottimizzazione: come si capisce da che parte migliorare, e come
   ci si arriva un passo alla volta (derivate, gradiente, discesa del gradiente).
-- **Probabilità e statistica**: come si convive con l'incertezza, e come si
+- Probabilità e statistica: come si convive con l'incertezza, e come si
   aggiorna un'opinione quando arrivano dati nuovi (fino al teorema di Bayes).
   Seguono due sezioni che ne tirano le conseguenze: *quanto può sbagliare una
   media*, che dice quante prove servono per fidarsi di un numero misurato, e le
   *catene di Markov*, dove la probabilità incontra l'algebra lineare e la
   domanda «dove finisce, andando avanti per sempre?» ha una risposta esatta.
-- **Teoria dell'informazione**: come si misura la sorpresa con un numero solo.
+- Teoria dell'informazione: come si misura la sorpresa con un numero solo.
   È da lì che viene il punteggio d'errore con cui si addestra quasi ogni
   modello che deve scegliere fra alternative (entropia e cross-entropia).
-- **Analisi numerica**: che cosa cambia quando i conti li fa una macchina che
+- Analisi numerica: che cosa cambia quando i conti li fa una macchina che
   scrive solo poche cifre per numero, e come si evita che il conto vada fuori
   strada.
 
 L'ultima sezione non aggiunge un sesto attrezzo, rimette al lavoro i cinque
 insieme su un oggetto solo: un modello linguistico (in inglese *large language
-model*, da cui la sigla **LLM** che si incontra ovunque), smontato con i soli
+model*, da cui la sigla LLM che si incontra ovunque), smontato con i soli
 attrezzi di questo capitolo, che sono poi gli unici che servono.
 
 I nomi fra parentesi sono le etichette tecniche, e nessuna di esse è data per

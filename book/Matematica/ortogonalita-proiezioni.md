@@ -12,7 +12,7 @@ ventiquattro: ci sono quattro volte più equazioni che incognite, e nessuna
 orbita passa esattamente per tutti i punti osservati, perché ogni misura porta
 con sé il suo errore. Il ventiquattrenne Carl Friedrich Gauss risolve il
 problema cambiando la domanda: se nessuna orbita azzera gli scarti, si prende
-quella che rende **minima la somma dei loro quadrati**. Cerere viene ritrovata
+quella che rende minima la somma dei loro quadrati. Cerere viene ritrovata
 in dicembre, quasi dove il conto diceva.
 
 Il metodo, pubblicato da Adrien-Marie Legendre nel 1805 e da Gauss nel 1809,
@@ -28,7 +28,7 @@ vettori vanno d'accordo, e ha un valore speciale che merita un nome.
 
 `````{tab} Elementare
 
-Se il prodotto scalare di due liste di numeri fa **zero**, le due frecce
+Se il prodotto scalare di due liste di numeri fa zero, le due frecce
 corrispondenti sono perpendicolari. Il nome tecnico è **ortogonali**, dal greco
 per «ad angolo retto», e la cosa importante è quello che significa in pratica:
 spostarsi lungo una delle due non ti sposta di un millimetro lungo l'altra.
@@ -36,9 +36,9 @@ spostarsi lungo una delle due non ti sposta di un millimetro lungo l'altra.
 Un esempio con due frecce sul foglio: $(3, 0)$ punta a destra, $(0, 5)$ punta
 in alto, il loro prodotto scalare fa $3\cdot 0 + 0\cdot 5 = 0$. Quanto vai a est
 e quanto vai a nord sono due conti separati, e ciascuno si fa senza guardare
-l'altro. Senza tirare la conclusione più grossa: due direzioni perpendicolari
-non si intralciano, e questo non vuol dire che due grandezze misurate lungo di
-esse non abbiano niente da dirsi.
+l'altro. La conclusione più grossa, però, non si tira: due direzioni
+perpendicolari non si intralciano, e questo non vuol dire che due grandezze
+misurate lungo di esse non abbiano niente da dirsi.
 
 Quando in un gruppo le direzioni sono tutte perpendicolari a due a due, e
 lunghe uno, il gruppo si dice **ortonormale** e diventa comodissimo. Il motivo
@@ -87,7 +87,7 @@ $$
 \mathbf{v} = \sum_{i=1}^{k} (\mathbf{q}_i^\top\mathbf{v})\,\mathbf{q}_i ,
 $$
 
-cioè i coefficienti si **leggono** con un prodotto scalare ciascuno, invece di
+cioè i coefficienti si leggono con un prodotto scalare ciascuno, invece di
 risolvere un sistema. Con una base qualunque $\{\mathbf{a}_i\}$ i coefficienti
 sono la soluzione di $\mathbf{A}\mathbf{c}=\mathbf{v}$, e costano
 $\Theta(k^3)$.
@@ -99,7 +99,7 @@ calcoli. Le trasformazioni ortogonali conservano prodotti scalari, lunghezze e
 angoli ($\lVert\mathbf{Q}\mathbf{x}\rVert_2 = \lVert\mathbf{x}\rVert_2$), cioè
 sono rotazioni e riflessioni. Sono anche perfettamente condizionate: detto
 $\kappa_2(\mathbf{A})=\sigma_{\max}/\sigma_{\min}$ il rapporto fra il massimo e
-il minimo allungamento, che si chiama **numero di condizionamento**, per una
+il minimo allungamento, che si chiama numero di condizionamento, per una
 matrice ortogonale tutti i valori singolari valgono uno e quindi
 $\kappa_2(\mathbf{Q})=1$. Ed è la ragione per cui gli algoritmi numerici seri
 sono costruiti a partire da esse.
@@ -121,8 +121,8 @@ della matita che il tavolo «vede». La parte che sparisce è quella verticale,
 cioè quella nella direzione perpendicolare al tavolo.
 
 Questa divisione in due pezzi è la cosa da portare via. Ogni vettore si spacca
-in modo unico in **quello che sta nella direzione scelta** più **quello che le
-è perpendicolare**, e i due pezzi non si parlano. Il primo si chiama
+in modo unico in quello che sta nella direzione scelta più quello che le
+è perpendicolare, e i due pezzi non si parlano. Il primo si chiama
 proiezione, il secondo scarto (o residuo).
 
 Un caso di questa mossa lo usi già tutti i giorni senza saperlo. Hai misurato
@@ -133,7 +133,7 @@ quella di $(1,1,1,1,1)$. Cercare il numero unico che rappresenta meglio le
 cinque misure significa cercare, su quella direzione, il punto più vicino alla
 lista vera: cioè farne l'ombra.
 
-Il conto dà esattamente la **media aritmetica**, e la scena spiega perché: la
+Il conto dà esattamente la media aritmetica, e la scena spiega perché: la
 media è l'ombra delle misure sulla direzione in cui tutte le misure sono
 uguali. Lo
 scarto, cioè quello che l'ombra non registra, è la lista delle differenze fra
@@ -151,7 +151,7 @@ sporgono.
 
 `````{tab} Superiore
 
-Sia $\mathbf{a}\neq\mathbf{0}$. La **proiezione ortogonale** di $\mathbf{b}$
+Sia $\mathbf{a}\neq\mathbf{0}$. La proiezione ortogonale di $\mathbf{b}$
 sulla retta generata da $\mathbf{a}$ è
 
 $$
@@ -185,7 +185,7 @@ $$
 cioè la media campionaria, e il residuo $\mathbf{y}-\bar{y}\mathbf{1}$ ha per
 costruzione somma nulla. La sua norma al quadrato è
 $\sum_i (y_i-\bar{y})^2 = n\,\hat{\sigma}^2$, con $\hat{\sigma}^2$ la varianza
-calcolata dividendo per $n$. La media è quindi il **coefficiente** dell'ombra
+calcolata dividendo per $n$. La media è quindi il coefficiente dell'ombra
 lungo $\mathbf{1}$, e la varianza è la lunghezza al quadrato di ciò che resta
 divisa per $n$: la
 {doc}`sezione su probabilità e statistica </Matematica/probabilita-statistica>`
@@ -213,7 +213,7 @@ print(round(r @ r, 10), round(5 * y.var(), 10))  # -> 0.0034 0.0034
 
 Una direzione sola basta di rado. Il caso che interessa è quello in cui le
 direzioni disponibili sono parecchie, e insieme formano un sottospazio: nel
-linguaggio della sezione precedente, l’**immagine** di una matrice.
+linguaggio della sezione precedente, l’immagine di una matrice.
 
 ```{figure} ../figures/proiezione-minimi-quadrati.svg
 :name: fig-proiezione
@@ -229,7 +229,7 @@ con $\mathbf{b}$ l'ipotenusa di un triangolo rettangolo, e quindi dista di più.
 `````{tab} Elementare
 
 Torniamo al colorificio della sezione precedente, con una differenza: il colore
-del cliente **non si può fare**. I barattoli disponibili producono un
+del cliente non si può fare. I barattoli disponibili producono un
 repertorio di tinte, e quella richiesta ne sta fuori. Mandare via il cliente
 sarebbe scortese, e la mossa sensata è un'altra: fra tutte le tinte che si
 possono davvero preparare, scegliere quella che gli somiglia di più.
@@ -242,9 +242,9 @@ diverso dall'ombra, la distanza dal colore chiesto è l'ipotenusa di un
 triangolo rettangolo che ha per cateto quella distanza minima. E l'ipotenusa è
 sempre più lunga del cateto.
 
-Da qui viene una regola pratica che si usa senza pensarci. **Quando la
+Da qui viene una regola pratica che si usa senza pensarci. Quando la
 soluzione migliore è stata trovata, l'errore che resta è perpendicolare a tutto
-ciò che si poteva fare.** Se non lo fosse, l'errore avrebbe una componente
+ciò che si poteva fare. Se non lo fosse, l'errore avrebbe una componente
 lungo una direzione disponibile, e spostandosi un po' in quella direzione si
 farebbe meglio: segno che non si era ancora al minimo. Perpendicolarità
 dell'errore ed essere arrivati al minimo sono la stessa cosa detta in due modi.
@@ -252,7 +252,7 @@ dell'errore ed essere arrivati al minimo sono la stessa cosa detta in due modi.
 Da questa geometria discendono due conseguenze. La prima:
 rifare l'ombra di un'ombra non cambia niente, perché l'ombra sta già distesa
 sul piano e la sua ombra è sé stessa. La seconda riguarda una scelta che finora
-è passata liscia. Prendere la somma dei **quadrati** degli scarti, invece della
+è passata liscia. Prendere la somma dei quadrati degli scarti, invece della
 somma dei loro valori assoluti, è una decisione, e ha un prezzo: un errore
 doppio pesa quattro volte, quindi un solo dato molto sbagliato tira la risposta
 verso di sé molto più di dieci dati sbagliati di poco. In compenso i quadrati
@@ -313,7 +313,7 @@ corrispondenze più usate del mestiere.
 Due avvertenze. Se il rango non è pieno, la soluzione di minimo esiste ancora
 ma non è unica: differisce per elementi di $\ker(\mathbf{A})$, e la convenzione
 è scegliere quella di norma minima (ciò che restituisce
-`numpy.linalg.lstsq`). E il minimo dei quadrati è una **scelta**, non un
+`numpy.linalg.lstsq`). E il minimo dei quadrati è una scelta, non un
 obbligo: minimizzare la somma dei valori assoluti dà un'altra retta, meno
 sensibile ai valori anomali, e la {doc}`sezione sulle metriche
 </MachineLearning/metriche>` mostra quanto le due risposte possano divergere.
@@ -365,7 +365,7 @@ quasi lo stesso risultato.
 C'è una grandezza che misura questo equilibrismo, e più è grande più i conti
 sono delicati. Il guaio delle equazioni normali è che, nel passaggio da
 $\mathbf{A}$ al prodotto per la sua trasposta, quella grandezza viene
-**elevata al quadrato**: un problema un po' delicato diventa molto delicato, e
+elevata al quadrato: un problema un po' delicato diventa molto delicato, e
 uno molto delicato diventa impossibile. Sull'esempio degli appartamenti si
 passa da circa trecentocinquanta a più di centoventimila.
 
@@ -377,7 +377,7 @@ metri quadri vale attorno a ottanta, quella delle costanti vale uno, e già solo
 questa sproporzione fa danni: centrare i metri quadri porta il numero da
 trecentocinquanta a ventidue.
 
-La seconda faccia è più profonda e consiste nel **raddrizzare le colonne**
+La seconda faccia è più profonda e consiste nel raddrizzare le colonne
 prima di usarle. Si prende la prima direzione così com'è; alla seconda si toglie
 la sua ombra sulla prima, e quel che resta è perpendicolare alla prima; alla
 terza si tolgono le ombre sulle prime due, e così via. Alla fine si hanno
@@ -484,7 +484,7 @@ sbaglia a tenere quelle?
 
 Alla prima domanda si risponde d'istinto, a patto di avere un procedimento che
 ordini le direzioni per importanza. Quel procedimento esiste ed è la
-**decomposizione ai valori singolari**, cioè la riscrittura di una tabella come
+decomposizione ai valori singolari, cioè la riscrittura di una tabella come
 somma di pezzi elementari, ciascuno con il proprio peso: si tengono i primi $k$
 pezzi e si buttano gli altri. L'istinto ha ragione, e non è ovvio che ce
 l'abbia, perché le tabelle di rango $k$ sono infinite e nessuna legge di natura
@@ -590,7 +590,7 @@ stesso $\mathbf{A}_k$ minimizza qualunque norma invariante per trasformazioni
 ortogonali {cite}`mirsky1960symmetric`, cioè che il troncamento non è una
 risposta tarata su un modo particolare di misurare l'errore.
 
-L'unicità invece **dipende dalla norma**, e vale la pena non confonderle. In
+L'unicità invece dipende dalla norma, e vale la pena non confonderle. In
 norma di Frobenius il minimo è unico se e solo se $\sigma_k > \sigma_{k+1}$: a
 valori singolari pari il sottospazio da tenere non è determinato. In norma
 spettrale di minimi ce ne sono quasi sempre infiniti, perché conta solo il
@@ -628,7 +628,7 @@ $\lVert(\mathbf{A}-\mathbf{A}_k)^\top\mathbf{c}_j\rVert_2 \le
 \lVert\mathbf{A}-\mathbf{A}_k\rVert_2 = \sigma_{k+1}$, dove $\mathbf{c}_j$ è
 il vettore che vale uno nella posizione $j$ e zero altrove.
 
-Da qui discendono tre fatti che tornano di continuo. La **PCA** è il
+Da qui discendono tre fatti che tornano di continuo. La PCA è il
 troncamento della decomposizione della matrice dei dati centrata per colonne:
 i vettori singolari destri di $\mathbf{X}$ sono gli autovettori di
 $\mathbf{X}^\top\mathbf{X}$, cioè della covarianza campionaria a meno di un
@@ -639,13 +639,13 @@ la prima; senza il centraggio si ottiene invece il migliore sottospazio
 passante per l'origine, che in generale è un altro. Il rango numerico è la
 stessa mossa letta al contrario: azzerare i $\sigma_i$ sotto una soglia $\tau$
 significa sostituire $\mathbf{A}$ con il troncamento che dista da essa meno di
-$\tau$ **in norma spettrale** (in Frobenius la distanza è
+$\tau$ in norma spettrale (in Frobenius la distanza è
 $\sqrt{\sum_{i>k}\sigma_i^2}$ e può superare $\tau$ quanto si vuole). E un
 collo di bottiglia lineare addestrato su un errore quadratico ha in
 $\mathbf{A}_k$ il proprio ottimo globale; che la discesa del gradiente ci
 arrivi è un fatto in più, dovuto a Baldi e Hornik, che mostrano come su questa
 superficie non esistano minimi locali spuri, e come la soluzione sia
-determinata solo **a meno di un cambio di base** nel latente
+determinata solo a meno di un cambio di base nel latente
 ($\mathbf{W}_2 = \mathbf{U}_k\mathbf{C}$ e
 $\mathbf{W}_1 = \mathbf{C}^{-1}\mathbf{U}_k^\top$, con $\mathbf{C}$
 invertibile qualunque): un autoencoder lineare ritrova il sottospazio della
@@ -822,7 +822,7 @@ $$
 = \mathbf{A}^{+} .
 $$
 
-Il termine $\lambda\mathbf{I}$ è la penalità **ridge**, cioè il prezzo messo
+Il termine $\lambda\mathbf{I}$ è la penalità ridge, cioè il prezzo messo
 sulla grandezza dei coefficienti che la
 {doc}`sezione su overfitting e validazione
 </MachineLearning/overfitting-validazione>` tratta per esteso: farla svanire
@@ -902,19 +902,19 @@ modelli.
 Sul foglio, due frecce prese a caso formano spesso angoli piccoli: capita di
 continuo che puntino più o meno dalla stessa parte. Salendo di dimensione la
 faccenda cambia, e cambia in fretta. In uno spazio a mille dimensioni due
-direzioni prese a caso sono quasi sempre **quasi perpendicolari**: il loro
+direzioni prese a caso sono quasi sempre quasi perpendicolari: il loro
 prodotto scalare, misurato su vettori di lunghezza uno, si aggira intorno a
 due centesimi e mezzo invece che intorno a mezzo.
 
 La ragione si intuisce contando le occasioni di essere diversi. Perché due
-frecce puntino nella stessa direzione devono andare d'accordo su **tutte** le
+frecce puntino nella stessa direzione devono andare d'accordo su tutte le
 coordinate contemporaneamente; con mille coordinate sorteggiate a caso, che
 vadano d'accordo su tutte è un colpo di fortuna astronomico, e la somma dei
 mille contributi (metà positivi, metà negativi) si compensa quasi
 perfettamente.
 
 La conseguenza pratica cambia il modo di pensare agli spazi grandi. In mille
-dimensioni si possono sistemare **molte più di mille** direzioni tutte quasi
+dimensioni si possono sistemare molte più di mille direzioni tutte quasi
 perpendicolari fra loro: rinunciando alla perpendicolarità esatta e
 accontentandosi di «quasi», la capienza esplode. È il motivo per cui una rete
 può tenere in uno spazio di poche migliaia di dimensioni un numero di concetti
@@ -924,8 +924,8 @@ disturbino poco. La {doc}`sezione sull'interpretabilità meccanicistica
 quando invece si disturbano.
 
 Il rovescio della medaglia va detto subito, perché è il punto in cui questa
-materia inganna di più: **l'intuizione costruita su tre dimensioni sbaglia in
-modo sistematico**, e non di poco. Cose che nel piano sembrano rare (due
+materia inganna di più: l'intuizione costruita su tre dimensioni sbaglia in
+modo sistematico, e non di poco. Cose che nel piano sembrano rare (due
 direzioni quasi perpendicolari) là dentro sono la norma, e cose che nel piano
 sembrano normali (due direzioni quasi allineate) là dentro non capitano mai per
 caso. Quando un ragionamento su uno spazio grande poggia su un disegno fatto
@@ -949,14 +949,14 @@ $$
 
 e da questa stima, con l'unione sulle coppie, segue che si possono collocare
 $N$ direzioni con coseni tutti sotto $\varepsilon$ finché
-$N \lesssim e^{d\varepsilon^2/4}$, cioè un numero **esponenziale** nella
+$N \lesssim e^{d\varepsilon^2/4}$, cioè un numero esponenziale nella
 dimensione. È lo stesso conto che regge il lemma di Johnson-Lindenstrauss sulle
 proiezioni casuali che quasi conservano le distanze.
 
 Le conseguenze per il deep learning sono due, e vanno tenute insieme. La prima
 è che uno spazio di rappresentazione a $d$ dimensioni ospita molte più di $d$
 feature distinguibili, purché si accetti una sovrapposizione piccola: è
-l'ipotesi della **sovrapposizione**, che la {doc}`sezione
+l'ipotesi della sovrapposizione, che la {doc}`sezione
 sull'interpretabilità meccanicistica
 </Interpretabilita/attribuzione-e-meccanicistica>` discute per esteso. La
 seconda è un avvertimento sulla geometria dell'alta dimensione: l'intuizione
@@ -1022,28 +1022,28 @@ e se serve la proiezione la si ottiene come `A @ coefficienti`.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Due direzioni sono **perpendicolari** quando il loro prodotto scalare fa
+- Due direzioni sono perpendicolari quando il loro prodotto scalare fa
   zero, e allora sapere quanto vale l'una non dice niente sull'altra. Con
   direzioni perpendicolari e lunghe uno ogni coefficiente si legge con un
   prodotto scalare, senza risolvere nessun sistema.
-- La **proiezione** è l'ombra a picco: ogni vettore si spacca in modo unico
+- La proiezione è l'ombra a picco: ogni vettore si spacca in modo unico
   nella parte che sta nella direzione scelta più la parte perpendicolare. La
-  **media aritmetica** è esattamente l'ombra delle misure sulla direzione in
+  media aritmetica è esattamente l'ombra delle misure sulla direzione in
   cui sono tutte uguali, e questo spiega perché gli scarti dalla media si
   compensano.
 - Quando il colore chiesto non si può fare, si prende quello più vicino fra
-  quelli possibili, cioè l'ombra. Il segno di aver finito è che **l'errore
-  rimasto è perpendicolare a tutto ciò che si poteva fare**: se non lo fosse,
+  quelli possibili, cioè l'ombra. Il segno di aver finito è che l'errore
+  rimasto è perpendicolare a tutto ciò che si poteva fare: se non lo fosse,
   spostandosi si migliorerebbe ancora.
 - Colonne quasi allineate rendono i conti equilibristici, e la formula più
   immediata peggiora le cose elevando al quadrato quella delicatezza. Le due
   cure sono centrare le colonne dei dati, non quella delle costanti (una riga
-  di codice), e **raddrizzarle**
+  di codice), e raddrizzarle
   togliendo a ciascuna l'ombra sulle precedenti, che è quello che fanno
   Gram-Schmidt e la scomposizione QR.
 - Quando di una tabella si può tenere solo un pezzo, il pezzo migliore si
   ottiene ordinando le direzioni per importanza e tenendo le prime: nessun'altra
-  scelta le si avvicina di più. Lo sbaglio si conosce **prima**, perché sta
+  scelta le si avvicina di più. Lo sbaglio si conosce prima, perché sta
   scritto nei pesi scartati: quadrato di ciascuno, somma, radice. Vale anche
   caso per caso, perché nessuna riga sbaglia più del peso più grosso fra quelli
   buttati. Se i pesi sono tutti simili non c'è niente da guadagnare, e se
@@ -1053,7 +1053,7 @@ e se serve la proiezione la si ottiene come `A @ coefficienti`.
   più piccola. Due direzioni quasi identiche vanno contate come una sola, sotto
   una soglia che qualcuno deve dichiarare.
 - In uno spazio con tante dimensioni due direzioni a caso sono quasi sempre
-  **quasi perpendicolari**, e ce ne stanno molte più di quante siano le
+  quasi perpendicolari, e ce ne stanno molte più di quante siano le
   dimensioni. È così che un modello dà una direzione propria a un numero
   enorme di concetti.
 ```
@@ -1070,20 +1070,20 @@ e se serve la proiezione la si ottiene come `A @ coefficienti`.
   \frac{\mathbf{a}^\top\mathbf{b}}{\mathbf{a}^\top\mathbf{a}}\mathbf{a}$; con
   $\mathbf{a}=\mathbf{1}$ si ottiene la media campionaria, e la norma al
   quadrato del residuo è $n$ volte la varianza.
-- **Teorema della proiezione**: $\hat{\mathbf{x}}$ minimizza
+- Teorema della proiezione: $\hat{\mathbf{x}}$ minimizza
   $\lVert\mathbf{A}\mathbf{x}-\mathbf{b}\rVert_2$ se e solo se
   $\mathbf{A}^\top(\mathbf{b}-\mathbf{A}\hat{\mathbf{x}})=\mathbf{0}$, da cui
-  le **equazioni normali** $\mathbf{A}^\top\mathbf{A}\hat{\mathbf{x}} =
+  le equazioni normali $\mathbf{A}^\top\mathbf{A}\hat{\mathbf{x}} =
   \mathbf{A}^\top\mathbf{b}$ e il proiettore
   $\mathbf{P}=\mathbf{A}(\mathbf{A}^\top\mathbf{A})^{-1}\mathbf{A}^\top$, con
   $\mathbf{P}^2=\mathbf{P}=\mathbf{P}^\top$. La stessa condizione è
   l'annullamento del gradiente.
-- **Gram-Schmidt** ortonormalizza togliendo a ogni colonna le proiezioni sulle
+- Gram-Schmidt ortonormalizza togliendo a ogni colonna le proiezioni sulle
   precedenti e dà $\mathbf{A}=\mathbf{Q}\mathbf{R}$; si preferisce alle
   equazioni normali perché
   $\kappa_2(\mathbf{A}^\top\mathbf{A})=\kappa_2(\mathbf{A})^2$. Usare la
   variante modificata, o meglio Householder.
-- **Schmidt-Eckart-Young-Mirsky**: fra le matrici di rango $\le k$, il
+- Schmidt-Eckart-Young-Mirsky: fra le matrici di rango $\le k$, il
   troncamento $\mathbf{A}_k=\sum_{i\le k}\sigma_i\mathbf{u}_i\mathbf{v}_i^\top$
   minimizza ogni norma invariante per trasformazioni ortogonali, con
   $\lVert\mathbf{A}-\mathbf{A}_k\rVert_F=\sqrt{\sum_{i>k}\sigma_i^2}$ e
@@ -1091,7 +1091,7 @@ e se serve la proiezione la si ottiene come `A @ coefficienti`.
   minimo è unico se e solo se $\sigma_k>\sigma_{k+1}$; in norma spettrale i
   minimi sono in genere infiniti. Diventa inutile se lo spettro non decade, e
   cade se la norma è pesata o ristretta alle celle osservate.
-- La **pseudoinversa**
+- La pseudoinversa
   $\mathbf{A}^{+}=\mathbf{V}\boldsymbol{\Sigma}^{+}\mathbf{U}^\top$ dà il
   minimizzatore di $\lVert\mathbf{A}\mathbf{x}-\mathbf{b}\rVert_2$ di norma
   minima, coincide con $(\mathbf{A}^\top\mathbf{A})^{-1}\mathbf{A}^\top$ a

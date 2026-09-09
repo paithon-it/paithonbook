@@ -9,13 +9,13 @@ lo strumento che sente la pendenza sotto i piedi è la **derivata**.
 
 ## La derivata: la pendenza istante per istante
 
-Una **funzione** è una regola che, dato un numero in ingresso, ne restituisce
+Una funzione è una regola che, dato un numero in ingresso, ne restituisce
 uno in uscita, sempre lo stesso a parità di ingresso: «raddoppia» è una
 funzione, «il prezzo del biglietto per un viaggio di tanti chilometri» è una
 funzione, e anche «di quanto sbaglia questo modello, se le sue manopole sono
 regolate così» è una funzione. Disegnarla si può: si mette l'ingresso
 sull'asse orizzontale e l'uscita su quello verticale, e l'insieme dei punti
-che ne viene fuori è il **grafico**, di solito una curva che sale e scende. La
+che ne viene fuori è il grafico, di solito una curva che sale e scende. La
 derivata risponde a una domanda sola: *se muovo l'ingresso di un pelo, di
 quanto cambia l'uscita?*
 
@@ -27,12 +27,12 @@ della posizione.
 
 Sul grafico si vede ancora meglio. Appoggia un righello alla curva in un
 punto e giralo finché, lì attorno, righello e curva si sovrappongono: quella è
-la retta **tangente**, e la sua inclinazione (di quanto sale ogni volta che si
+la retta tangente, e la sua inclinazione (di quanto sale ogni volta che si
 avanza di un passo verso destra) è la derivata lì. Dove la curva sale ripida il
 righello è ripido e la derivata è grande e positiva; dove scende, il righello
 punta in giù e la derivata è negativa; in cima a una gobba o in fondo a una
 conca, dove per un istante il terreno è piatto, il righello è orizzontale e la
-derivata vale **zero**.
+derivata vale zero.
 
 `````
 
@@ -45,7 +45,7 @@ f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}.
 $$
 
 Misura la pendenza della retta tangente al grafico in $x$. I punti in cui
-$f'(x) = 0$ si dicono **stazionari**: massimi, minimi o flessi a tangente
+$f'(x) = 0$ si dicono stazionari: massimi, minimi o flessi a tangente
 orizzontale (in più variabili, punti di sella). Sono esattamente i candidati
 che cerchiamo quando vogliamo minimizzare una loss.
 
@@ -60,8 +60,8 @@ ovunque nel machine learning.
 
 `````{tab} Elementare
 
-Le tre "solite sospette" sono le **potenze**, l’**esponenziale** e il
-**logaritmo**. La prima famiglia la conosci già. La parabola $x^2$, cioè «il
+Le tre "solite sospette" sono le potenze, l’esponenziale e il
+logaritmo. La prima famiglia la conosci già. La parabola $x^2$, cioè «il
 numero moltiplicato per sé stesso», è la forma dell'errore quadratico, quello
 che si minimizza quando il modello deve prevedere un numero. Le altre due
 stanno dentro un libretto di risparmio.
@@ -94,13 +94,13 @@ cioè $100$ per $e \approx 2{,}718$. Quel simbolo indica sempre lo stesso numero
 come $\pi$ vale $3{,}14$, e la curva $e^x$ che ne viene fuori in ogni punto
 cresce esattamente quanto vale: con $5$ sul conto gli interessi maturano al
 ritmo di $5$, con $10$ al ritmo doppio. Fuori dal libretto l'esponenziale sta
-dentro la **sigmoide** e la **softmax**, due ricette che prendono i punteggi
+dentro la sigmoide e la softmax, due ricette che prendono i punteggi
 grezzi sputati da un modello (numeri qualsiasi, anche negativi) e li
 restituiscono come probabilità fra zero e uno: la sigmoide un punteggio alla
 volta, quando la domanda è sì o no e le due risposte si spartiscono da sé
 l'intero; la softmax tutti insieme, quando le alternative sono più di due e le
 loro probabilità devono sommare a uno. Il logaritmo, dal canto suo,
-compare nella **cross-entropy**, il costo con cui si addestrano i
+compare nella cross-entropy, il costo con cui si addestrano i
 classificatori, di cui parla per esteso la sezione sulla teoria
 dell'informazione.
 
@@ -109,7 +109,7 @@ dell'area del cerchio, senza dimostrarle. La pendenza di $x^2$ è $2x$, quindi
 nel punto $x=3$ la parabola sale con pendenza $6$. Quella di $e^x$ è di nuovo
 $e^x$, che è la regola del libretto detta in simboli, ed è il motivo per cui
 l'esponenziale rende i conti sopportabili: derivandola, resta identica a sé
-stessa. E la pendenza del **logaritmo naturale**, quello che ha per base
+stessa. E la pendenza del logaritmo naturale, quello che ha per base
 proprio $e$, è «uno diviso il numero a cui si è arrivati»: su un conto da
 $1000$ euro un euro in più sposta il conteggio di un millesimo, che è lo
 schiacciamento dei numeri enormi visto dal lato della pendenza.
@@ -140,7 +140,7 @@ tutti insieme. Con due parametri il costo non è più una curva ma una
 superficie, un paesaggio di colline e conche in cui ogni punto del terreno è
 una coppia di regolazioni e la quota è l'errore che ne viene fuori. Un modo
 comodo di disegnare un paesaggio su un foglio è quello delle carte
-escursionistiche: guardarlo dall'alto e tracciare le **curve di livello**,
+escursionistiche: guardarlo dall'alto e tracciare le curve di livello,
 cioè le linee che uniscono i punti alla stessa quota. Dove le linee sono
 fitte, il terreno è ripido; dove sono larghe, è pianeggiante.
 
@@ -179,7 +179,7 @@ zigzaga da una parete all'altra e avanza poco.
 La **derivata parziale** è semplice: tieni fermi tutti i parametri tranne uno
 e misura la pendenza rispetto a quello, come chiudere gli occhi su tutte le
 manopole di un mixer tranne una e ascoltare l'effetto di quella sola. Metti in
-fila tutte queste pendenze e ottieni il **gradiente**: un vettore che punta
+fila tutte queste pendenze e ottieni il gradiente: un vettore che punta
 nella direzione in cui il costo cresce più in fretta (la salita più ripida).
 Per *scendere*, ci basta andare nel verso opposto. È lo stesso oggetto che
 nella sezione di algebra lineare risaliva la pila di tavole come messaggio di
@@ -211,7 +211,7 @@ $$
 
 ```{admonition} Una convenzione, dichiarata una volta per tutte
 :class: note
-Da qui in avanti vale il **layout al denominatore**: la derivata di uno
+Da qui in avanti vale il layout al denominatore: la derivata di uno
 scalare
 rispetto a un oggetto ha sempre la stessa forma di quell'oggetto. Il
 gradiente rispetto a un vettore è quindi un vettore colonna, e
@@ -224,11 +224,11 @@ compongono catene di derivate con questa convenzione, e chi le
 rifà a mano deve poterle attaccare senza trasposte a sorpresa.
 ```
 
-Vale un fatto centrale: $\nabla\mathcal{L}$ indica la direzione di **massima
-crescita** di $\mathcal{L}$, quindi $-\nabla\mathcal{L}$ è la direzione di
+Vale un fatto centrale: $\nabla\mathcal{L}$ indica la direzione di massima
+crescita di $\mathcal{L}$, quindi $-\nabla\mathcal{L}$ è la direzione di
 massima discesa. È il verso in cui muoveremo i parametri, e si dimostra in due
 righe. La variazione di $\mathcal{L}$ nella direzione di un versore
-$\mathbf{u}$ (la **derivata direzionale**) è
+$\mathbf{u}$ (la derivata direzionale) è
 $D_\mathbf{u}\mathcal{L} = \nabla\mathcal{L}^\top\mathbf{u}$; per la
 disuguaglianza di Cauchy–Schwarz vale
 $|\nabla\mathcal{L}^\top\mathbf{u}| \le \lVert\nabla\mathcal{L}\rVert$, con
@@ -241,7 +241,7 @@ $\frac{d}{dt}\mathcal{L}(\gamma(t)) = \nabla\mathcal{L}^\top \gamma'(t) = 0$:
 il gradiente è ortogonale a ogni direzione tangente all'insieme di livello.
 
 Un'avvertenza: quel primato è relativo alla
-**norma euclidea**. «Il passo di lunghezza fissata che fa scendere di più»
+norma euclidea. «Il passo di lunghezza fissata che fa scendere di più»
 dipende da come si misura la lunghezza di un passo, e cambiando metrica cambia
 la direzione più ripida. Adam,
 riscalando ogni coordinata, e i metodi del secondo ordine, misurando i passi
@@ -283,7 +283,7 @@ ha un nome che si incontra ovunque: si chiama *backpropagation*, cioè
 Tre ingranaggi in fila: A muove B, B muove C. Se B gira due volte più in fretta
 di A, e C una volta e mezza più in fretta di B, allora C gira rispetto ad A di
 $2 \times 1{,}5 = 3$ volte. Gli effetti lungo la catena si
-**moltiplicano**.
+moltiplicano.
 
 E un ingranaggio è una derivata travestita, perché «quanti giri fa B per ogni
 giro di A» è esattamente la domanda della derivata: *se muovo un po’
@@ -307,7 +307,7 @@ $$
 il prodotto tra la pendenza della funzione esterna $f$ (valutata in $g(w)$) e
 quella della funzione interna $g$. In una rete profonda la catena si allunga
 di un anello per strato, e le derivate si moltiplicano una dopo l'altra. Il
-**backpropagation** applica questa regola in
+backpropagation applica questa regola in
 ordine inverso (dall'uscita agli ingressi) riutilizzando i fattori condivisi
 tra i cammini. È ciò che permette di calcolare il gradiente rispetto a milioni
 di parametri in un'unica passata all'indietro, invece di derivare ogni peso da
@@ -359,7 +359,7 @@ fondo.
 Il meccanismo di {numref}`fig-valle-allungata` si chiama **momento**
 (*momentum*), e sotto il nome fisico c'è una ricetta più semplice
 dell'immagine della pallina che rotola: invece di muoversi lungo la pendenza
-sentita adesso, ci si muove lungo una **media delle ultime pendenze sentite**.
+sentita adesso, ci si muove lungo una media delle ultime pendenze sentite.
 Il perché funzioni si vede senza formule. In una valle stretta la pendenza ha
 due parti: quella che attraversa la valle, che a ogni passo cambia verso
 perché si sbatte prima contro una parete e poi contro l'altra, e quella che
@@ -400,8 +400,8 @@ $$
 Qui $\theta$ sono i parametri, $\nabla\mathcal{L}(\theta)$ il gradiente della
 loss e $\eta > 0$ il **learning rate**, che dosa l'ampiezza del passo. Nella
 pratica il gradiente non si calcola su tutti i dati a ogni passo, ma su un
-piccolo lotto (*mini-batch*) di esempi: è la **discesa stocastica del
-gradiente** (SGD), più rumorosa ma molto più veloce, e base di ottimizzatori
+piccolo lotto (*mini-batch*) di esempi: è la discesa stocastica del
+gradiente (SGD), più rumorosa ma molto più veloce, e base di ottimizzatori
 moderni come Adam.
 
 `````
@@ -440,7 +440,7 @@ c'è modo di distinguerlo, dall'esterno, da un problema difficile.
 Dipende dal paesaggio. Se è una scodella liscia, con un'unica valle, non ci
 sono conche secondarie in cui restare intrappolati: da qualunque punto si
 parta si scende verso quell'unico fondo, purché il passo non sia troppo lungo.
-È il caso **convesso**, il più comodo. Due guasti restano possibili anche
+È il caso convesso, il più comodo. Due guasti restano possibili anche
 qui. Se lontano dal centro le pareti si impennano
 sempre di più, partire troppo in alto rovina tutto: il passo si allunga dove
 è più ripido, quindi il primo balzo scavalca l'intera conca e atterra sul
@@ -452,7 +452,7 @@ senza arrivare da nessuna parte.
 
 Se invece il paesaggio è una catena montuosa piena
 di conche, si può finire intrappolati in una conca che non è la più profonda:
-un **minimo locale**, un
+un minimo locale, un
 buon posto ma non il migliore. Nei paesaggi delle reti grandi, però,
 abbondano conche profonde quasi quanto la più profonda, e fermarsi in una di
 loro dà ottimi risultati.
@@ -469,9 +469,9 @@ locale è anche globale: nessuna conca secondaria in cui restare intrappolati.
 
 La convergenza della discesa del gradiente, però, richiede due ipotesi in più,
 e senza di esse l'affermazione è falsa. La
-prima è che il gradiente sia **lipschitziano** di costante $L$ (cioè che la
+prima è che il gradiente sia lipschitziano di costante $L$ (cioè che la
 curvatura sia limitata da $L$), e allora ogni passo fisso $\eta < 2/L$ va
-bene. La seconda è che **il minimo esista**. Nessuna delle due è gratis:
+bene. La seconda è che il minimo esista. Nessuna delle due è gratis:
 $f(x)=x^4$ è convessa e liscia, ma $f''(x)=12x^2$ è illimitata, e per *ogni*
 $\eta$ fissato la discesa diverge se si parte abbastanza lontano (la soglia è
 $|x_0| > 1/\sqrt{2\eta}$: con $\eta=10^{-9}$ basta partire da $x_0 = 23\,000$);
@@ -481,7 +481,7 @@ le ipotesi, un passo troppo lungo diverge in una scodella perfetta: su
 $\mathcal{L}(\theta)=(\theta-3)^2$ basta $\eta > 1$ perché ogni passo
 allontani dal minimo, oscillando da un fianco all'altro.
 
-Le loss del deep learning, poi, sono quasi sempre **non convesse**: nessuna
+Le loss del deep learning, poi, sono quasi sempre non convesse: nessuna
 garanzia. La buona
 notizia empirica è che per reti molto grandi i minimi locali "buoni" sono
 tantissimi e quasi equivalenti al globale; gli ostacoli veri sono più i punti
@@ -503,39 +503,42 @@ import numpy as np
 def grad(theta):
     return 2 * (theta - 3)          # derivata della loss
 
-theta = -4.0                        # punto di partenza sul fianco della scodella
-eta = 0.1                           # learning rate
+# eta e' il learning rate; theta parte sul fianco della scodella
+def scendi(eta, theta=-4.0, passi=20):
+    for _ in range(passi):
+        theta = theta - eta * grad(theta)   # un passo di discesa del gradiente
+    return theta
 
-for _ in range(20):
-    theta = theta - eta * grad(theta)   # un passo di discesa del gradiente
-
-print(round(theta, 3))              # -> 2.919, ormai vicino al minimo 3
+print(round(scendi(0.1), 3))        # -> 2.919, ormai vicino al minimo 3
+print(round(scendi(0.01), 3))       # -> -1.673, il passo corto non ci arriva
+print(round(scendi(1.1), 3))        # -> -265.363, il passo lungo scappa via
 ```
 
-Cambia `eta` e osserva. Con un valore piccolo (`0.01`) l'avvicinamento al
-minimo, che in gergo si chiama **convergenza**, rallenta: dopo venti passi
-$\theta$ è a $-1{,}67$, ancora lontano. Con uno troppo grande (`1.1`) $\theta$
-**diverge**, cioè scappa via invece di avvicinarsi, saltando a ogni passo da
-una parte all'altra del minimo e sempre più lontano; dopo venti passi vale
-$-265$. È la stessa dinamica, in scala minima, che governa l'addestramento di
-una rete con miliardi di pesi.
+Il valore di `eta` decide tutto, e le tre righe lo mostrano. Con `0.1`
+l'avvicinamento al minimo, che in gergo si chiama convergenza, si compie in
+venti passi; con `0.01` rallenta, e dopo gli stessi venti passi $\theta$ è a
+$-1{,}673$, ancora lontano. Con `1.1` invece $\theta$ diverge, cioè scappa
+via anziché avvicinarsi, saltando a ogni passo da una parte all'altra del
+minimo e sempre più lontano: dopo venti passi vale $-265{,}363$. È la stessa
+dinamica, in scala minima, che governa l'addestramento di una rete con miliardi
+di pesi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La **derivata** misura la pendenza: di quanto cambia l'uscita se muovo di
+- La derivata misura la pendenza: di quanto cambia l'uscita se muovo di
   poco l'ingresso, come il tachimetro dice quanto in fretta cambia la
   posizione. Dove il terreno è piatto (in cima a una gobba, in fondo a una
   conca) vale zero.
-- Il **gradiente** mette in fila la pendenza rispetto a ogni parametro preso da
+- Il gradiente mette in fila la pendenza rispetto a ogni parametro preso da
   solo, una manopola alla volta: indica la direzione in cui il costo cresce più
   in fretta, e per scendere si va nel verso opposto.
-- La **discesa del gradiente** è l'escursionista nella nebbia: un passo verso il
+- La discesa del gradiente è l'escursionista nella nebbia: un passo verso il
   basso, si risente la pendenza, si ripete. Il passo è tanto più lungo quanto
-  più è ripido, moltiplicato per una manopola che si chiama **learning rate**:
+  più è ripido, moltiplicato per una manopola che si chiama learning rate:
   quella è la scelta delicata, perché con la manopola troppo alta si rimbalza da
   una parete all'altra e con quella troppo bassa si arriva dopo un'eternità.
-- La **regola della catena** moltiplica fra loro le pendenze anello per anello,
+- La regola della catena moltiplica fra loro le pendenze anello per anello,
   come ingranaggi che si trascinano: è così che la correzione risale
   dall'uscita fino ai primi strati (il *backpropagation*).
 - Il paesaggio di una rete profonda non è una scodella liscia ma una catena
@@ -547,14 +550,14 @@ una rete con miliardi di pesi.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- La **derivata** misura la pendenza: di quanto cambia l'uscita se muovo di
+- La derivata misura la pendenza: di quanto cambia l'uscita se muovo di
   poco l'ingresso. È zero nei punti stazionari.
-- Il **gradiente** $\nabla\mathcal{L}$ è il vettore delle derivate parziali:
+- Il gradiente $\nabla\mathcal{L}$ è il vettore delle derivate parziali:
   punta verso la massima crescita del costo, e noi andiamo nel verso opposto.
-- La **discesa del gradiente** aggiorna i parametri con
-  $\theta \leftarrow \theta - \eta\,\nabla\mathcal{L}(\theta)$; il **learning
-  rate** $\eta$ dosa la lunghezza del passo.
-- La **regola della catena** propaga le derivate lungo gli strati: è il cuore
+- La discesa del gradiente aggiorna i parametri con
+  $\theta \leftarrow \theta - \eta\,\nabla\mathcal{L}(\theta)$; il learning
+  rate $\eta$ dosa la lunghezza del passo.
+- La regola della catena propaga le derivate lungo gli strati: è il cuore
   del *backpropagation*.
 - In deep learning la loss non è convessa, ma un minimo "abbastanza buono"
   basta quasi sempre.

@@ -7,7 +7,7 @@ ma mostrare che *quasi ogni modello di apprendimento può essere letto come una
 funzione di energia*.
 
 La ricetta è di una generalità spiazzante. Invece di dare un'energia a una
-configurazione sola, la si dà a una **coppia**: da una parte quello che si ha
+configurazione sola, la si dà a una coppia: da una parte quello che si ha
 davanti (una foto, una frase, il presente), dall'altra una risposta possibile
 (la parola che descrive la foto, la traduzione della frase, il fotogramma
 successivo). Energia bassa se i due sono **compatibili**, cioè se stanno bene
@@ -17,8 +17,8 @@ in alto. In simboli si scrive $E(\mathbf{x}, y)$, dove $\mathbf{x}$ è quello
 che si ha davanti e $y$ la risposta candidata.
 
 Rispondere, allora, significa cercare la risposta che rende l'energia minima;
-imparare significa dare forma al paesaggio, **abbassare** l'energia delle
-coppie giuste e **alzarla**, o tenerla alta, su quelle sbagliate. È una
+imparare significa dare forma al paesaggio, abbassare l'energia delle
+coppie giuste e alzarla, o tenerla alta, su quelle sbagliate. È una
 cornice molto più larga di quel che sembra, e contiene una liberazione.
 
 `````{tab} Elementare
@@ -80,7 +80,7 @@ P_\theta(y \mid \mathbf{x}) = \frac{e^{-\beta E_\theta(\mathbf{x}, y)}}
 $$
 
 dove $\beta > 0$ è una temperatura inversa e il denominatore è la funzione di
-partizione **condizionata** $Z_\theta(\mathbf{x})$, l'integrale (o la somma) su
+partizione condizionata $Z_\theta(\mathbf{x})$, l'integrale (o la somma) su
 *tutte* le risposte possibili: un parente stretto della $Z(\theta)$ della
 sezione precedente, ma non lo stesso oggetto, perché lì si integrava sui dati
 e qui sulle risposte. Quando $\mathcal{Y}$ è grande o continuo e ad alta
@@ -188,8 +188,8 @@ $$
 
 dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. E qui
 c'è un costo che di solito passa sotto silenzio: $\bar{y}$ è a sua volta un
-$\arg\min$ su $\mathcal{Y}$, cioè **un'inferenza completa a ogni passo di
-addestramento**. Il problema dei metodi contrastivi sta soprattutto nel fatto
+$\arg\min$ su $\mathcal{Y}$, cioè un'inferenza completa a ogni passo di
+addestramento. Il problema dei metodi contrastivi sta soprattutto nel fatto
 che trovarne uno *buono* costa quanto rispondere, prima ancora che nel loro
 numero. La massima verosimiglianza appartiene alla stessa famiglia: il suo
 termine contrastivo è la log-partizione, che solleva l'energia di *ogni*
@@ -197,7 +197,7 @@ risposta con forza proporzionale alla sua verosimiglianza, e nel limite $\beta
 \to \infty$ la loss NLL degenera nella loss del percettrone generalizzata, che
 ne solleva una sola, quella a energia minima {cite}`lecun2006tutorial`.
 Contrastive divergence, NCE e le loss a margine sono tutte varianti di una
-stessa domanda: **quali risposte tirare su, e con che forza**. Il male comune,
+stessa domanda: quali risposte tirare su, e con che forza. Il male comune,
 in alta dimensione, è che i controesempi non bastano mai a puntellare un'intera
 superficie.
 
@@ -223,7 +223,7 @@ altre.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un modello a energia può giudicare **coppie**: questo con questo sta bene
+- Un modello a energia può giudicare coppie: questo con questo sta bene
   insieme, questo con quest'altro no. È il buttafuori davanti alla festa, e
   gli basta un giudizio alla volta: non deve conoscere tutta la città né
   compilare la classifica di tutti gli abbinamenti possibili con le
@@ -231,7 +231,7 @@ altre.
 - Rispondere, allora, è cercare la risposta che sta meglio con quello che si
   ha davanti. Imparare è abbassare il terreno sotto le coppie giuste e
   alzarlo sotto quelle sbagliate.
-- Il pericolo ha un nome, il **collasso**, ed è il buttafuori pigro che dice
+- Il pericolo ha un nome, il collasso, ed è il buttafuori pigro che dice
   sempre sì. Se durante l'addestramento si premia soltanto il sì alle coppie
   giuste, la scorciatoia perfetta è dire sì a tutti: nessuno si lamenta, e il
   giudizio non vale più niente.
@@ -247,17 +247,17 @@ altre.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- La cornice dell’**energy-based learning** {cite}`lecun2006tutorial`: ogni
+- La cornice dell’energy-based learning {cite}`lecun2006tutorial`: ogni
   modello è una $E(\mathbf{x}, y)$ che misura la compatibilità fra input e risposta;
   inferire è $\arg\min_y E$, imparare è abbassare l'energia delle coppie
   giuste e alzarla sulle sbagliate. I modelli probabilistici sono il caso
   particolare normalizzato, e $Z$ è il costo che conviene evitare.
-- Il pericolo è il **collasso**: energia bassa ovunque. Nella tabella delle
+- Il pericolo è il collasso: energia bassa ovunque. Nella tabella delle
   loss del tutorial, quella che si limita ad abbassare l'energia sui dati ha
   margine «none», cioè non protegge affatto con un'architettura qualunque.
-- Due famiglie di rimedi: **contrastivi** (alzare l'energia su risposte
+- Due famiglie di rimedi: contrastivi (alzare l'energia su risposte
   sbagliate, a partire dalla *most offending incorrect answer*) e
-  **regolarizzati/architetturali** (limitare per costruzione il volume dello
+  regolarizzati/architetturali (limitare per costruzione il volume dello
   spazio a bassa energia). I primi non scalano in alta dimensione; i secondi
   sono la scommessa di LeCun per i world model.
 - Vista da qui, la massima verosimiglianza è un metodo contrastivo: solleva

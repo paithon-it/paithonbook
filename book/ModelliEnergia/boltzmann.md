@@ -12,7 +12,7 @@ centro. Di una rete che non ha caselle libere per queste annotazioni si dice
 che non ha **rappresentazioni interne**.
 
 La risposta a tutti e due i limiti si chiama **macchina di Boltzmann**, e
-aggiunge alla rete di Hopfield esattamente due ingredienti: la **temperatura**
+aggiunge alla rete di Hopfield esattamente due ingredienti: la temperatura
 (la scossa di cui si diceva in apertura di capitolo) e i **neuroni nascosti**,
 che sono quelle caselle libere per gli appunti. Il nome compare già nel 1983,
 in un lavoro di Scott Fahlman, Geoffrey Hinton e Terrence Sejnowski;
@@ -96,8 +96,8 @@ P(s_i = +1) = \frac{e^{h_i/T}}{e^{h_i/T} + e^{-h_i/T}}
 = \frac{1}{1 + e^{-2h_i/T}} .
 $$
 
-È quel salto di $2h_i$, e non $h_i$, a produrre il 2. **Chi confronta con
-altre fonti tenga d'occhio la convenzione**: l'articolo originale di Ackley,
+È quel salto di $2h_i$, e non $h_i$, a produrre il 2. Chi confronta con
+altre fonti tenga d'occhio la convenzione: l'articolo originale di Ackley,
 Hinton e Sejnowski usa unità in $\{0,1\}$, dove il salto è $h_i$ e la formula
 è $\sigma(h_i/T)$ senza il fattore, ed è la stessa forma che tornerà per le
 RBM fra poco.
@@ -114,19 +114,19 @@ P(\mathbf{s}) = \frac{e^{-E(\mathbf{s})/T}}{Z},
 Z = \sum_{\mathbf{s}'} e^{-E(\mathbf{s}')/T},
 $$
 
-dove $Z$ (la **funzione di partizione**) somma su tutti i $2^N$ stati
+dove $Z$ (la funzione di partizione) somma su tutti i $2^N$ stati
 possibili: è lei che rende la rete un vero modello probabilistico, ed è lei che
 costerà carissima. Anche qui le ipotesi vanno dette, perché sono quattro e sono
-tutte necessarie: i pesi devono restare **simmetrici** (senza $w_{ij} = w_{ji}$
+tutte necessarie: i pesi devono restare simmetrici (senza $w_{ij} = w_{ji}$
 questa distribuzione non è stazionaria per niente, e non è la stessa cosa della
 simmetria che nella sezione precedente garantiva la discesa), l'aggiornamento
-dev'essere **asincrono** (così è campionamento di Gibbs, e soddisfa il bilancio
+dev'essere asincrono (così è campionamento di Gibbs, e soddisfa il bilancio
 dettagliato rispetto a questa distribuzione), la temperatura dev'essere $T > 0$
 (a $T = 0$ la catena si inchioda nel primo minimo) e la scansione dei neuroni
-dev'essere equa. Con l'aggiornamento **sincrono**, quello di Little, la
+dev'essere equa. Con l'aggiornamento sincrono, quello di Little, la
 distribuzione stazionaria è un'altra, per la stessa differenza che nella
 sezione precedente faceva cadere la garanzia di discesa. I neuroni si dividono
-in **visibili** (dove si presentano i dati) e **nascosti** (variabili latenti
+in visibili (dove si presentano i dati) e nascosti (variabili latenti
 che catturano regolarità di ordine superiore). L'apprendimento massimizza la
 verosimiglianza dei dati sui visibili, e il gradiente ha una forma di contrasto
 di rara eleganza:
@@ -211,7 +211,7 @@ funzionava benissimo.
 Invece di far girare la catena fino all'equilibrio, la si fa partire *dai
 dati* e la si ferma dopo un solo passo (o pochi), usando quel sogno appena
 abbozzato come surrogato della fase negativa. Funziona soprattutto sulle
-**macchine di Boltzmann ristrette** (RBM), la variante in cui i collegamenti
+macchine di Boltzmann ristrette (RBM), la variante in cui i collegamenti
 esistono solo tra strato visibile e strato nascosto: lì i nascosti sono
 indipendenti fra loro dati i visibili (e viceversa), quindi la fase positiva
 ha forma chiusa e ogni strato si campiona in blocco, in parallelo. È l'RBM a
@@ -222,8 +222,8 @@ Sulla natura di quell'aggiornamento conviene essere precisi, perché la formula
 abbreviata non è «il gradiente giusto, con un errore». Sutskever e Tieleman ne
 danno due dimostrazioni, e attribuiscono il risultato a Tieleman (2007):
 l'aggiornamento CD1 *noiseless* (cioè con le
-attese calcolate esattamente, non stimate) per RBM binarie **non è il
-gradiente di alcuna funzione** {cite}`sutskever2010convergence`. Non esiste
+attese calcolate esattamente, non stimate) per RBM binarie non è il
+gradiente di alcuna funzione {cite}`sutskever2010convergence`. Non esiste
 cioè un obiettivo di cui sia una stima, nemmeno distorta; e si può costruire
 un termine di penalità (artificioso, ma legittimo) che lo fa ciclare
 all'infinito invece di fermarsi, mentre con la penalità $L^2$ di tutti i
@@ -282,49 +282,49 @@ paesaggio intero, cioè il gesto che trasforma un'altezza in una percentuale.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La **macchina di Boltzmann** aggiunge alla rete di Hopfield due cose: la
+- La macchina di Boltzmann aggiunge alla rete di Hopfield due cose: la
   possibilità di risalire ogni tanto (si scuote il paesaggio, e quella scossa
-  si chiama **temperatura**) e qualche neurone in più che non corrisponde a
+  si chiama temperatura) e qualche neurone in più che non corrisponde a
   nessun pixel, buono per annotarsi le regolarità del dato.
 - Si scuote forte all'inizio e sempre più piano: così la pallina esce dalle
   conche mediocri finché può, e si assesta in una valle profonda quando la
   calma torna. È la *ricottura simulata* nominata in apertura di capitolo.
-- Imparare è un confronto fra **veglia e sogno**: si guarda che cosa succede
+- Imparare è un confronto fra veglia e sogno: si guarda che cosa succede
   nella rete quando le si mostrano i dati veri, poi che cosa succede quando la
   si lascia fantasticare da sola, e si ritoccano i legami per rinforzare la
   prima e indebolire la seconda. Si smette quando i sogni sono
   indistinguibili dalla veglia.
 - Il guaio è il tempo, e sono cari tutti e due i gesti: la veglia va rifatta
-  da capo con ogni dato, e il sogno fatto per bene non finisce mai. La **rete
-  ristretta** (in sigla **RBM**: i taccuini interni scollegati fra loro)
-  sistema la veglia; la **contrastive divergence** bara sul sogno, concedendo
+  da capo con ogni dato, e il sogno fatto per bene non finisce mai. La rete
+  ristretta (in sigla RBM: i taccuini interni scollegati fra loro)
+  sistema la veglia; la contrastive divergence bara sul sogno, concedendo
   alla macchina un istante solo di fantasia a partire da una cosa vera.
   Funziona, ma è una scorciatoia, non una soluzione: il numero che dice quanto
   la macchina sta sbagliando, qui, non esiste, e i suoi ritocchi non stanno
   calando verso niente.
 - Da qui in avanti l'altezza del paesaggio diventa una percentuale, e per
   trasformarla bisognerebbe aver misurato il paesaggio intero, valle per
-  valle. È il conto che l'apertura del capitolo chiamava **funzione di
-  partizione**, ed è il personaggio a cui è intitolata la prossima sezione.
+  valle. È il conto che l'apertura del capitolo chiamava funzione di
+  partizione, ed è il personaggio a cui è intitolata la prossima sezione.
 ```
 `````
 
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- La **macchina di Boltzmann** {cite}`ackley1985learning` aggiunge a Hopfield
-  la **temperatura** (aggiornamenti stocastici, quindi la possibilità di
-  risalire e uscire dai minimi sbagliati) e i **neuroni nascosti**
+- La macchina di Boltzmann {cite}`ackley1985learning` aggiunge a Hopfield
+  la temperatura (aggiornamenti stocastici, quindi la possibilità di
+  risalire e uscire dai minimi sbagliati) e i neuroni nascosti
   (rappresentazioni interne, non solo pixel).
 - All'equilibrio la rete campiona dalla distribuzione di Boltzmann–Gibbs
   $P(\mathbf{s}) = e^{-E(\mathbf{s})/T}/Z$: da qui in avanti l'energia definisce una
-  probabilità, e con essa arriva la **funzione di partizione** $Z$.
-- L'apprendimento è un **contrasto** fra fase positiva (dati) e fase negativa
+  probabilità, e con essa arriva la funzione di partizione $Z$.
+- L'apprendimento è un contrasto fra fase positiva (dati) e fase negativa
   (campioni del modello). Nella macchina originale entrambe richiedono una
   catena portata all'equilibrio, e la positiva va rifatta per ogni dato:
   l'RBM rende chiusa la prima, e resta la seconda come collo di bottiglia.
-- La **contrastive divergence** {cite}`hinton2002training` accorcia la catena
-  a uno o pochi passi partendo dai dati; la **persistent CD**
+- La contrastive divergence {cite}`hinton2002training` accorcia la catena
+  a uno o pochi passi partendo dai dati; la persistent CD
   {cite}`tieleman2008training` la fa proseguire fra un aggiornamento e
   l'altro. L'aggiornamento CD1 non è il gradiente di nessuna funzione
   {cite}`sutskever2010convergence`: funziona in pratica, ma non esiste un

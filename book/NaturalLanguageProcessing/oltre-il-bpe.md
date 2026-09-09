@@ -59,9 +59,9 @@ compare 5 volte, passa davanti a `ro`, che ne compare 14.
 `````{tab} Superiore
 
 Il criterio del lavoro originale è: a ogni passo si aggiunge al vocabolario
-l'unità ottenuta combinandone due esistenti che **aumenta di più la
-verosimiglianza dei dati** sotto il modello di linguaggio. Nella forma in cui
-l'algoritmo si è poi diffuso quel modello è un **unigramma**, cioè un modello
+l'unità ottenuta combinandone due esistenti che aumenta di più la
+verosimiglianza dei dati sotto il modello di linguaggio. Nella forma in cui
+l'algoritmo si è poi diffuso quel modello è un unigramma, cioè un modello
 che assegna a una segmentazione $x = (x_1, \dots, x_\ell)$ la probabilità
 $P(x) = \prod_i p(x_i)$ con $p$ stimata per frequenza relativa. Sotto questo
 modello, il guadagno esatto di log-verosimiglianza di una fusione cresce
@@ -88,8 +88,9 @@ $\mathrm{PMI}(a,b) = \log \frac{p(ab)}{p(a)\,p(b)}$: il rapporto vale
 $1$ (e la PMI zero) quando i due simboli si incontrano esattamente come
 farebbero per caso, più di $1$ quando si attirano.
 
-Sul corpus giocattolo dell'esempio svolto, al primo passo (frequenze dei simboli:
-`s` 50, `o` 44, `t` 14, `r` 14, `b` 11, `a` 8, `e` 5, su 146 caratteri):
+Sul corpus giocattolo dell'esempio svolto, al primo passo (frequenze dei
+simboli: `s` 50, `o` 44, `t` 14, `r` 14, `b` 11, `a` 8, `e` 5, su 146
+caratteri):
 
 | coppia | $\mathrm{freq}(ab)$ | $\mathrm{freq}(a)$ | $\mathrm{freq}(b)$ | punteggio |
 |---|---|---|---|---|
@@ -104,15 +105,15 @@ vince `b a`, che ha un terzo delle occorrenze ma due componenti rari. Il
 denominatore è esattamente il correttivo: penalizza le coppie che devono la
 loro frequenza alla diffusione dei pezzi.
 
-Sul piano pratico, nell'implementazione resa popolare da BERT i pezzi **non
-iniziali** portano il prefisso `##`, così che `bassetto` possa uscire come
+Sul piano pratico, nell'implementazione resa popolare da BERT i pezzi non
+iniziali portano il prefisso `##`, così che `bassetto` possa uscire come
 `bass`, `##etto` e la ricomposizione sia priva di ambiguità (`##etto` non è lo
 stesso token di `etto` a inizio parola: la distinzione fra prefissi e suffissi
 è codificata nel vocabolario, non ricostruita a valle; il lavoro del 2012
 otteneva lo stesso effetto con un marcatore di spazio attaccato alle unità).
 BERT usa un vocabolario di circa $30\,000$ token così costruiti. In fase di
 codifica, inoltre, quella implementazione non replica una lista di fusioni ma
-applica una scansione **greedy del prefisso più lungo** presente nel
+applica una scansione greedy del prefisso più lungo presente nel
 vocabolario: differenza sottile che può produrre segmentazioni diverse da
 quelle che il replay di BPE darebbe a parità di vocabolario.
 
@@ -121,7 +122,7 @@ quelle che il replay di BPE darebbe a parità di vocabolario.
 ## SentencePiece e i byte: togliere gli ultimi presupposti
 
 BPE e WordPiece, così come li abbiamo descritti, danno per scontata una cosa:
-che il testo arrivi **già diviso in parole**. Entrambi partono da un
+che il testo arrivi già diviso in parole. Entrambi partono da un
 dizionario parola $\to$ frequenza, e quel dizionario qualcuno lo deve
 costruire, tagliando il testo sugli spazi e sulla punteggiatura. È un
 presupposto innocuo in italiano e in inglese, e falso in giapponese, in cinese
@@ -131,8 +132,8 @@ in più da mantenere e una fonte in più di errori.
 
 **SentencePiece**, presentato da Taku Kudo e John Richardson nel 2018
 {cite}`kudo2018sentencepiece`, toglie il presupposto nel modo più diretto
-possibile: non tratta il testo come una lista di parole, ma come un **flusso
-grezzo di caratteri** in cui lo spazio è un carattere come gli altri.
+possibile: non tratta il testo come una lista di parole, ma come un flusso
+grezzo di caratteri in cui lo spazio è un carattere come gli altri.
 
 `````{tab} Elementare
 
@@ -149,7 +150,7 @@ com'era, apostrofi e punteggiatura compresi: uguale a come la si era uniformata
 prima di infilare, se quel passaggio si è fatto.
 
 I pezzi si possono anche scegliere al rovescio di BPE. Invece di partire dalle
-lettere e incollare, si parte da un cassetto **troppo pieno**: dentro ci sono
+lettere e incollare, si parte da un cassetto troppo pieno: dentro ci sono
 tutti i frammenti che nel testo ricorrono un po’, molti più di quanti ce ne
 stiano. Poi si toglie. Si prende uno spezzone, si rifanno senza di lui tutte
 le collane del testo, e se nessuna ne sente la mancanza si butta; si rifà il
@@ -169,7 +170,7 @@ un simbolo matematico, un'emoji uscita ieri, e in mano resta un `<UNK>`, lo
 stesso buco intravisto con `rossellini`.
 
 Guardate una perlina più da vicino: anche quella che sembra una lettera è
-l'incastro di perline più piccole, e queste hanno un nome, **byte**. Ne esistono
+l'incastro di perline più piccole, e queste hanno un nome, byte. Ne esistono
 256 tipi, tante quante le file di otto caselle da zero o uno con cui un computer
 scrive qualunque cosa: non 256 nei testi che si sono visti, 256 e basta, e non
 le ha scelte nessuno. Un ideogramma ne occupa tre, un'emoji quattro, ma sempre
@@ -191,7 +192,7 @@ SentencePiece è insieme un formato e una libreria, e va guardato su due piani:
 come tratta il testo in ingresso, e con quale algoritmo costruisce il
 vocabolario.
 
-Il primo piano è la **normalizzazione e la reversibilità**. L'input è trattato
+Il primo piano è la normalizzazione e la reversibilità. L'input è trattato
 come una sequenza Unicode, passata per una normalizzazione (NFKC nella
 configurazione predefinita), in cui lo spazio è rimpiazzato dal meta-simbolo
 `▁` (U+2581, LOWER ONE EIGHTH BLOCK) prefisso al segmento che segue. La
@@ -209,9 +210,9 @@ pipeline basate su tokenizzatori dipendenti dalla lingua non è garantita,
 perché la detokenizzazione è lì una collezione di regole ad hoc.
 
 Il secondo piano è l'algoritmo di costruzione del vocabolario, dove
-SentencePiece offre BPE e in alternativa il modello **unigram**
+SentencePiece offre BPE e in alternativa il modello unigram
 {cite}`kudo2018subword`, che procede al contrario: si parte da un vocabolario
-candidato ampio $V$ e lo si **pota**. A $V$ fissato, il modello è lo stesso
+candidato ampio $V$ e lo si pota. A $V$ fissato, il modello è lo stesso
 unigramma già incontrato con WordPiece, cioè assegna a una segmentazione
 $x = (x_1,\dots,x_\ell)$ di una stringa la probabilità $P(x) = \prod_i p(x_i)$,
 ma qui la verosimiglianza di una stringa $s$ è la somma su tutte le
@@ -226,7 +227,7 @@ elimina la frazione di token meno utili.
 Si itera fino alla taglia voluta. La segmentazione di una stringa nuova è
 quella di massima probabilità, trovata con Viterbi in tempo lineare nella
 lunghezza. Due proprietà distinguono unigram da BPE: è un modello
-**probabilistico**, quindi sa dire *quanto* una segmentazione è buona e
+probabilistico, quindi sa dire *quanto* una segmentazione è buona e
 campionarne di alternative (la *subword regularization*, che addestrando su
 segmentazioni diverse della stessa frase fa da regolarizzatore), e non dipende
 da un ordine di fusioni.
@@ -236,7 +237,7 @@ prime due, è il **BPE a livello di byte**, adottato da GPT-2
 {cite}`radford2019language`: si applica BPE non ai caratteri Unicode (che sono
 oltre centomila, un alfabeto di base già proibitivo) ma alla codifica UTF-8 del
 testo. L'alfabeto di base ha allora esattamente $|\Sigma| = 256$ elementi, e il
-tasso di `<UNK>` è **zero per costruzione**, su qualunque input: testo, codice
+tasso di `<UNK>` è zero per costruzione, su qualunque input: testo, codice
 sorgente, dati binari mascherati. Il prezzo è che un carattere fuori ASCII
 occupa da 2 a 4 byte, e se le sue sequenze non sono abbastanza frequenti da
 meritare una fusione, un singolo ideogramma può costare più token di una parola
@@ -255,7 +256,7 @@ quattro effetti visibili a chiunque usi un modello di linguaggio, e nessuno
 dei quattro è una curiosità: sono tutti conseguenze dirette dell'algoritmo
 appena descritto.
 
-**Primo: i numeri si spezzano in modo irregolare, e l'aritmetica ne soffre.**
+Primo: i numeri si spezzano in modo irregolare, e l'aritmetica ne soffre.
 Le fusioni si scelgono per frequenza, e le cifre non fanno eccezione. Le
 sequenze numeriche comuni sul web (gli anni recenti, i numeri tondi, `100`,
 `000`, le cifre singole) si guadagnano un token tutto loro; quelle rare no.
@@ -274,7 +275,7 @@ calcolo dei modelli, ma è un contributo strutturale e riconosciuto: tanto che
 vari tokenizzatori recenti forzano la segmentazione delle cifre, una per una o
 a gruppi fissi di tre, proprio per restituire al modello una griglia regolare.
 
-**Secondo: l'italiano costa più token dell'inglese, a parità di significato.**
+Secondo: l'italiano costa più token dell'inglese, a parità di significato.
 
 ```{figure} ../figures/italiano-costa-piu-token.svg
 :name: fig-italiano-token
@@ -302,18 +303,18 @@ quasi tutte. Più rara vuol dire meno probabile che si meriti un token suo.
 
 E in che valuta si paga? In tre.
 
-- **In denaro.** I servizi che danno accesso a un modello di linguaggio (un
+- In denaro. I servizi che danno accesso a un modello di linguaggio (un
   programma che, dato un testo, scommette su come continua: è il tema di una
   sezione più avanti) fanno pagare un tanto a token. La stessa richiesta
   scritta in italiano costa dunque più della stessa richiesta in inglese, e di
   quanto dipende dal tokenizzatore: nella frase della figura, spezzata dal
   tokenizzatore di GPT-2, sono nove token contro sei, cioè la metà in più (con
   tokenizzatori più recenti il rapporto scende, ma il verso non cambia mai).
-- **In posti occupati.** Un modello può tenere davanti agli occhi solo una
+- In posti occupati. Un modello può tenere davanti agli occhi solo una
   certa quantità di testo per volta, misurata anch'essa in token: è la sua
   **finestra di contesto**. Un documento che in inglese ci sta, in italiano può
   non starci.
-- **In lavoro.** E qui il conto non è proporzionale, per via del costo
+- In lavoro. E qui il conto non è proporzionale, per via del costo
   quadratico dell'attenzione, che confronta ogni posizione con ogni altra:
   quel 50 per cento di token in più fa costare l'attenzione
   $1{,}5^2 = 2{,}25$ volte tanto.
@@ -322,7 +323,7 @@ E in che valuta si paga? In tre.
 composizione di un corpus, e che si corregge solo addestrando il tokenizzatore
 su dati più bilanciati.
 
-**Terzo: uno spazio in più o in meno cambia i token.** Nei tokenizzatori
+Terzo: uno spazio in più o in meno cambia i token. Nei tokenizzatori
 moderni lo spazio è attaccato al token che lo segue, invece di fare da
 separatore invisibile: `▁gatto` e `gatto` sono due voci diverse del
 vocabolario, con due posizioni diverse sulla mappa e due storie diverse alle
@@ -332,7 +333,7 @@ spazio davanti, cioè quasi mai.
 
 Ne segue una cosa che sorprende chiunque non l'abbia mai sentita. Il testo che
 si scrive a un modello per farlo lavorare (una domanda, un'istruzione, l'inizio
-di un documento da completare) si chiama **prompt**. Se il vostro prompt
+di un documento da completare) si chiama prompt. Se il vostro prompt
 finisce con uno spazio, quello spazio l'avete già speso voi, e al modello
 tocca continuare con un token *senza* barretta iniziale, cioè con la variante
 rara, quella su cui ha molta meno esperienza. Un solo carattere invisibile in
@@ -340,13 +341,13 @@ coda alla richiesta, e la risposta può peggiorare senza che si capisca il
 perché. La fragilità non è del modello: gli avete dato in ingresso una sequenza
 diversa da quella che credevate.
 
-**Quarto: il vocabolario si fissa prima dell'addestramento e non si cambia
-dopo.** Questa è la conseguenza più vincolante, e riguarda com'è fatto il
-modello per dentro. In ingresso c'è una tabella con **una riga per ogni token
-del vocabolario**: la riga contiene i numeri con cui quel pezzo di parola viene
+Quarto: il vocabolario si fissa prima dell'addestramento e non si cambia
+dopo. Questa è la conseguenza più vincolante, e riguarda com'è fatto il
+modello per dentro. In ingresso c'è una tabella con una riga per ogni token
+del vocabolario: la riga contiene i numeri con cui quel pezzo di parola viene
 rappresentato, ed è quella che si chiama *matrice di embedding*. In uscita ce
 n'è una seconda che fa il lavoro opposto, e infatti è girata di novanta gradi:
-ha **una colonna per ogni token**, e serve a dare a ciascun pezzo un punteggio
+ha una colonna per ogni token, e serve a dare a ciascun pezzo un punteggio
 per decidere quale scrivere. Una per entrare, una per uscire. Aggiungere un
 token al vocabolario vuol dire allora aggiungere una riga e una colonna vuote a
 due tabelle che l'addestramento ha già riempito: numeri che nessuno ha mai
@@ -364,7 +365,7 @@ scelta del tokenizzatore va fatta all'inizio e con calma.
 ## Un'idea che vale oltre il testo
 
 Conviene chiudere allargando lo sguardo. Tutto quello che avete letto serve a
-una cosa sola: costruire un **alfabeto discreto** su cui possa lavorare un
+una cosa sola: costruire un alfabeto discreto su cui possa lavorare un
 modello che scrive un pezzo per volta, guardando quelli che ha già scritto (è
 ciò che si intende con *autoregressivo*). Discreto vuol dire fatto di pezzi
 separati e contabili, come le lettere di un alfabeto e non come le sfumature
@@ -381,7 +382,7 @@ la registrazione un pezzetto alla volta, si cerca nel catalogo il campione che
 somiglia di più a quello che si ha davanti, e al posto del suono si scrive il
 suo numero di catalogo. L'onda diventa così una fila di numeri fra mille, cioè
 un testo in un alfabeto di mille lettere. Questo mestiere ha un nome, il
-**codec neurale**, e il capitolo sull'audio gli dedica {doc}`una sezione
+codec neurale, e il capitolo sull'audio gli dedica {doc}`una sezione
 </Audio/codec-neurali>`; il pezzo che sceglie il campione più vicino si
 chiama *quantizzatore vettoriale*. Il problema è lo stesso della
 tokenizzazione del testo, la soluzione è diversa perché diversa è la materia
@@ -396,21 +397,21 @@ paga.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- **WordPiece** cambia una cosa sola rispetto a BPE: non incolla la coppia più
+- WordPiece cambia una cosa sola rispetto a BPE: non incolla la coppia più
   frequente, ma quella che sta insieme più di quanto ci si aspetterebbe per
   caso («acqua minerale» contro «di un»).
-- **SentencePiece** tratta il testo come una collana ininterrotta di simboli,
+- SentencePiece tratta il testo come una collana ininterrotta di simboli,
   con lo spazio scritto come `▁`: non c'è bisogno di tagliarlo prima in
   parole, che per cinese e giapponese, dove gli spazi non ci sono, è l'unica
   strada praticabile; e il testo si ricompone identico. Sotto i caratteri ci
-  sono i **byte**, che sono 256 comunque vada: partendo da lì non resta fuori
+  sono i byte, che sono 256 comunque vada: partendo da lì non resta fuori
   più niente, mai.
-- Le conseguenze si toccano con mano: **i numeri** vengono spezzati secondo la
+- Le conseguenze si toccano con mano: i numeri vengono spezzati secondo la
   frequenza e non secondo il posto delle cifre, e i conti ne soffrono;
-  **l'italiano costa più token dell'inglese**, cioè più soldi e più posti
-  occupati nella finestra di contesto; **uno spazio di troppo** in fondo a una
+  l'italiano costa più token dell'inglese, cioè più soldi e più posti
+  occupati nella finestra di contesto; uno spazio di troppo in fondo a una
   richiesta cambia davvero la domanda; e il vocabolario, una volta scelto,
-  **non si cambia più**, perché fa parte del modello quanto i numeri che ha
+  non si cambia più, perché fa parte del modello quanto i numeri che ha
   imparato.
 ```
 `````
@@ -418,21 +419,21 @@ paga.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- **WordPiece** {cite}`schuster2012japanese` ha la stessa struttura di BPE ma
+- WordPiece {cite}`schuster2012japanese` ha la stessa struttura di BPE ma
   sceglie la coppia che massimizza
   $\mathrm{freq}(ab)/(\mathrm{freq}(a)\,\mathrm{freq}(b))$: non ciò che ricorre,
   ma ciò che ricorre più di quanto ci si aspetterebbe dal caso.
-- **SentencePiece** {cite}`kudo2018sentencepiece` tratta il testo come flusso
+- SentencePiece {cite}`kudo2018sentencepiece` tratta il testo come flusso
   grezzo con lo spazio marcato da `▁`: nessun bisogno di pre-segmentare in
   parole (il che lo rende usabile per cinese e giapponese, dove gli spazi fra
-  le parole non esistono) e detokenizzazione esatta. A livello di **carattere**
+  le parole non esistono) e detokenizzazione esatta. A livello di carattere
   l'assenza di `<UNK>` dipende da quali caratteri stavano nel corpus; il
-  **livello dei byte** la rende una proprietà per costruzione, perché i byte
+  livello dei byte la rende una proprietà per costruzione, perché i byte
   sono 256 e basta.
-- Le conseguenze si vedono a valle: **numeri** segmentati in modo irregolare
-  (e aritmetica fragile), **lingue non inglesi** che consumano più token e più
-  contesto, **spazi** che cambiano la sequenza in ingresso, e un vocabolario
-  **congelato** prima dell'addestramento, perché è parte del modello quanto i
+- Le conseguenze si vedono a valle: numeri segmentati in modo irregolare
+  (e aritmetica fragile), lingue non inglesi che consumano più token e più
+  contesto, spazi che cambiano la sequenza in ingresso, e un vocabolario
+  congelato prima dell'addestramento, perché è parte del modello quanto i
   suoi pesi.
 ```
 `````

@@ -13,7 +13,7 @@ percettibile al pulviscolo che ha inghiottito tutto. Mille non è un numero
 sacro (fra poco vedremo come si scende a un centinaio, o a venti) ma è
 quello del lavoro che ha reso famoso il metodo, e per adesso teniamolo.
 Chi sa rispondere a *ogni* livello ha in mano qualcosa di più di un
-restauratore: ha una **scala**. Può prendere del pulviscolo qualsiasi, dirsi
+restauratore: ha una scala. Può prendere del pulviscolo qualsiasi, dirsi
 «questo è il livello mille», chiedersi quanto disturbo c'è sopra, toglierne un
 pochino e ritrovarsi al livello 999; e così, gradino dopo gradino, arrivare al
 livello zero, che è quello senza disturbo. Sotto quel
@@ -43,8 +43,8 @@ generatore di numeri casuali. Ma è una distruzione *dosata* e non qualsiasi, e
 i dosaggi sono scelti con cura, perché è su di essi
 che il ritorno farà affidamento.
 
-L'ingrediente è sempre lo stesso: numeri sorteggiati dalla **campana di
-Gauss**, la distribuzione normale incontrata nei richiami di statistica. È la
+L'ingrediente è sempre lo stesso: numeri sorteggiati dalla campana di
+Gauss, la distribuzione normale incontrata nei richiami di statistica. È la
 curva che descrive il modo più comune in cui i valori si distribuiscono attorno
 a una media: quasi tutti vicini allo zero, qualcuno un po’ più in là, quasi
 nessuno lontanissimo. E non è una scelta di comodo, perché questa curva ha una
@@ -61,10 +61,10 @@ rumore che ci si somma; a noi 0 e 1 tornano più comodi, e non cambia niente di
 quello che segue.) Seguiamo un solo pixel, un grigio chiaro che vale 0,8. A ogni passo la
 ricetta prevede due gesti:
 
-1. **attenua** il valore, moltiplicandolo per un numero appena sotto 1. Nel
+1. attenua il valore, moltiplicandolo per un numero appena sotto 1. Nel
    passo che prendiamo a esempio è 0,99, e il pixel scende a
    $0{,}8 \times 0{,}99 = 0{,}792$;
-2. **aggiungi** un piccolo numero sorteggiato dalla campana di Gauss,
+2. aggiungi un piccolo numero sorteggiato dalla campana di Gauss,
    rimpicciolito di un fattore piccolo, qui 0,14. Se il sorteggio dà $-0{,}7$,
    il contributo è $-0{,}7 \times 0{,}14 \approx -0{,}10$, e il pixel finisce a
    circa $0{,}69$. Con un sorteggio diverso, poniamo $+0{,}3$, sarebbe finito
@@ -105,7 +105,7 @@ direzione e ti ritrovi a un chilometro; falli in direzioni sorteggiate a caso e
 ti ritrovi a una trentina di metri, perché ogni passo disfa in parte quello di
 prima. Per riempire la tazza servono quindi versate molto più abbondanti dei
 cucchiaini che togli, ed è la ragione per cui a bilanciarsi non sono i due
-numeri ma i loro **quadrati**:
+numeri ma i loro quadrati:
 $0{,}99^2 + 0{,}14^2 = 0{,}9801 + 0{,}0196 \approx 1$. Chi decide quanto
 attenuare ha già deciso, senza poter fare altrimenti, quanto disturbo
 aggiungere.
@@ -181,7 +181,7 @@ ancora di cominciare. La {numref}`fig-diffusione-avanti` ne mostra sei.
 
 Il verso facile, in sei tacche della manopola. Sotto ogni riquadro le due dosi:
 quanto disegno è rimasto e quanto disturbo c'è sopra. Non sono due fette di
-una torta, e infatti sommate non fanno 1: a fare 1 sono i loro **quadrati**,
+una torta, e infatti sommate non fanno 1: a fare 1 sono i loro quadrati,
 $0{,}95^2 + 0{,}32^2 \approx 1$. La cosa più utile
 della figura è dove si incontrano, cioè poco dopo la tacca 250 e non a metà
 catena: già alla 450 del disegno è rimasto un terzo, e da lì in poi la manopola
@@ -204,7 +204,7 @@ DDPM {cite}`ho2020denoising` funziona così bene. (Il nome per esteso è
 *Denoising Diffusion Probabilistic Models*, «modelli probabilistici di
 diffusione che tolgono il rumore»; nel resto del capitolo useremo la sigla.)
 
-Il rumore che la rete deve indicare, va ripetuto, è **tutto** quello accumulato
+Il rumore che la rete deve indicare, va ripetuto, è tutto quello accumulato
 da quando la foto era pulita, non il pizzico dell'ultimo passo: la manopola
 dell'andata è arrivata alla tacca 700 in un colpo solo, e quello che si chiede
 alla rete è di dire quanto disturbo quella manopola ha messo in tutto. La
@@ -227,7 +227,7 @@ rete è lontana da quella giusta, si elevano al quadrato tutte queste distanze
 (perché contino uguale se si sbaglia in più o in meno) e se ne fa la media. Un
 solo numero, che vale zero se la rete ha indovinato tutto e cresce quanto più
 sbaglia; il mestiere dell'addestramento è farlo scendere, ritoccando poco alla
-volta i **pesi**, cioè i milioni di numeri che la rete si porta dentro e che
+volta i pesi, cioè i milioni di numeri che la rete si porta dentro e che
 decidono le sue risposte. Milioni di carte dopo, la rete ha imparato a
 rispondere a ogni livello di rovina.
 
@@ -254,15 +254,15 @@ saper rispondere all'una vorrebbe dire saper rispondere all'altra, e al passo
 900 sono tutte e due da veggente.
 
 La differenza non sta nella risposta esatta, che nessuno può dare, ma
-nell’**errore**. Alla rete non chiediamo di indovinare: chiediamo la migliore
+nell’errore. Alla rete non chiediamo di indovinare: chiediamo la migliore
 approssimazione che sa dare, e le due approssimazioni si comportano in modo
 diverso. Quella sul disturbo sbaglia sempre più o meno della stessa quantità,
 perché il bersaglio ha sempre la stessa taglia. Quella sulla foto pulita no:
 per ricavare la foto bisogna dividere per la parte di disegno sopravvissuta, e
 al passo 1000 ne è sopravvissuto sei millesimi, quindi lo stesso errore
-sull'una diventa un errore **centocinquanta volte più grosso** sull'altra. E
-siccome la risposta non serve per saltare in fondo ma per fare **un solo
-piccolo passo** (lo vedremo fra poco), una stima imprecisa ma sempre della
+sull'una diventa un errore centocinquanta volte più grosso sull'altra. E
+siccome la risposta non serve per saltare in fondo ma per fare un solo
+piccolo passo (lo vedremo fra poco), una stima imprecisa ma sempre della
 stessa taglia è esattamente quello che serve.
 
 `````
@@ -283,7 +283,7 @@ p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t) = \mathcal{N}\!\left(\mathbf{x}_{t-
 $$
 
 dove $\theta$ sono i parametri della rete e $\sigma_t^2$ è una varianza
-fissata, non appresa. DDPM ne prova **due**, $\sigma_t^2 = \beta_t$ e la
+fissata, non appresa. DDPM ne prova due, $\sigma_t^2 = \beta_t$ e la
 varianza del posteriore
 $\tilde{\beta}_t = \frac{1-\bar{\alpha}_{t-1}}{1-\bar{\alpha}_t}\beta_t$,
 e le trova sperimentalmente equivalenti sui mille passi; qui useremo la prima,
@@ -295,7 +295,7 @@ con una gaussiana è legittimata dal risultato di Feller citato in apertura di
 capitolo: per passi
 $\beta_t$ piccoli, il vero inverso $q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ è
 approssimativamente gaussiano. Il contributo chiave di Ho, Jain e Abbeel
-{cite}`ho2020denoising` è la **riparametrizzazione** della media: invece di
+{cite}`ho2020denoising` è la riparametrizzazione della media: invece di
 far predire alla rete $\boldsymbol{\mu}_\theta$ direttamente (o la ricostruzione
 $\hat{\mathbf{x}}_0$), la si scrive in funzione del rumore stimato,
 
@@ -327,13 +327,14 @@ quindi scala costante e ben condizionata.
 L'ablazione di DDPM su questo punto va letta con attenzione, perché dice
 qualcosa di più stretto del solito «predire il rumore è meglio». A parità di
 obiettivo e di varianza, cioè addestrando entrambe sul bound variazionale
-completo con $\sigma_t^2$ fissata, le due parametrizzazioni
-**si equivalgono**. Il salto di qualità arriva soltanto
-dalla *coppia*: $\boldsymbol{\epsilon}$ insieme alla $\mathcal{L}_{\text{semplice}}$. E
-la coppia speculare, $\boldsymbol{\mu}$ insieme alla loss semplificata, il paper la marca
-come instabile in addestramento. La lettura corretta è quindi più forte, non
-più debole: predire $\boldsymbol{\epsilon}$ non è tanto un bersaglio migliore in sé, quanto
-la sola parametrizzazione con cui la loss semplificata addestri davvero.
+completo con $\sigma_t^2$ fissata, le due parametrizzazioni si equivalgono. Il
+salto di qualità arriva soltanto dalla *coppia*: $\boldsymbol{\epsilon}$
+insieme alla $\mathcal{L}_{\text{semplice}}$. E la coppia speculare,
+$\boldsymbol{\mu}$ insieme alla loss semplificata, il paper la marca come
+instabile in addestramento. La lettura corretta è quindi più forte, non più
+debole: predire $\boldsymbol{\epsilon}$ non è tanto un bersaglio migliore in
+sé, quanto la sola parametrizzazione con cui la loss semplificata addestri
+davvero.
 
 `````
 
@@ -358,8 +359,8 @@ del nuovo. Nessuno ha disegnato il 3: è emerso da mille rimescolamenti.
 
 La {numref}`fig-diffusione-denoising` comprime in pochi passi ciò che nel DDPM
 originale ne richiede mille. Il gesto vero, però, non è quello che il buon
-senso si aspetta, e conviene guardarlo da vicino: **non è una ripulitura
-progressiva**. A ogni passo si toglie molto meno di quanto si rimetta, e ciò
+senso si aspetta, e conviene guardarlo da vicino: non è una ripulitura
+progressiva. A ogni passo si toglie molto meno di quanto si rimetta, e ciò
 che fa emergere l'immagine è un'altra cosa. Si vede anche nella clip, dove il
 disturbo non cala in modo liscio ma resta lì a lungo e se ne va tardi.
 
@@ -369,19 +370,19 @@ Un rituale in tre mosse, ripetuto mille volte. Si parte da una manciata di
 pulviscolo appena sorteggiato, mai visto prima; poi, dal passo 1.000 al passo
 1:
 
-1. **correggi**: mostra alla rete la schermata e il numero del passo, fatti
+1. correggi: mostra alla rete la schermata e il numero del passo, fatti
    dire dov'è il disturbo, e cancellane una scheggia;
-2. **alza il volume** di tutto quello che c'è sullo schermo, moltiplicandolo
+2. alza il volume di tutto quello che c'è sullo schermo, moltiplicandolo
    per un numero appena sopra 1: al passo 1000 è 1,010, al passo 1 è 1,00005.
    Sono gli stessi numeri dell'andata rovesciati (là si moltiplicava per 0,99 e
    per 0,99995), e infatti questa mossa è l'attenuazione dell'andata rifatta al
    contrario. Sale l'immagine che sta sotto e sale il rumore che le sta sopra,
    insieme;
-3. **rimescola**: getta sopra una manciata di rumore nuovo, sorteggiato adesso.
+3. rimescola: getta sopra una manciata di rumore nuovo, sorteggiato adesso.
    All'ultimo passo, e solo lì, questa terza mossa si salta.
 
 Sulla prima mossa c'è subito da chiedersi una cosa: se la rete ci ha appena
-detto **tutto** il disturbo che c'è, perché toglierne solo una scheggia invece
+detto tutto il disturbo che c'è, perché toglierne solo una scheggia invece
 di toglierlo tutto e chiudere la partita in un passo? Perché toglierlo tutto
 darebbe sì un'immagine, ma sempre la stessa specie di immagine: una macchia
 sfocata, la media di tutte le fotografie compatibili con quel pulviscolo. La
@@ -396,17 +397,17 @@ buon senso si aspetta, ed è la cosa più importante di tutto il ritorno. Diamo
 un numero a metà viaggio, al passo 500, misurando quanto ciascuna mossa sposta
 il valore tipico di un pixel: la scheggia cancellata lo sposta di 0,0105, la
 manciata di rumore nuovo di 0,1002, nove volte e mezzo tanto. E vale in
-generale: **la manciata è dalle
-sette alle dieci volte più grande della scheggia**, e lo è per i primi
+generale: la manciata è dalle
+sette alle dieci volte più grande della scheggia, e lo è per i primi
 novecento passi su mille; solo nell'ultimo decimo del percorso si rimpicciolisce
 fino a pareggiare la scheggia, e sull'ultimo gradino sparisce del tutto.
 
 Come fa allora a uscirne un'immagine, se a ogni giro si toglie poco e si
 rimette molto? Per una differenza che non sta nella quantità ma nella
-*direzione*. La scheggia che si cancella è **mirata**: non punta ogni volta
+*direzione*. La scheggia che si cancella è mirata: non punta ogni volta
 dalla stessa parte (il disturbo si sposta, e la rete lo insegue) ma punta ogni
-volta dalla parte **giusta**, e i suoi effetti quindi si sommano invece di
-elidersi. Il rumore che si getta è **sorteggiato**, e ogni volta in una
+volta dalla parte giusta, e i suoi effetti quindi si sommano invece di
+elidersi. Il rumore che si getta è sorteggiato, e ogni volta in una
 direzione diversa: è la stessa storia dei passi a caso in direzioni sorteggiate,
 mille spintarelle si disfano fra loro e ti lasciano più o meno
 dove sei, mentre mille spintarelle concordi ti portano lontano. Piccola e
@@ -415,7 +416,7 @@ costante batte grande e a casaccio, purché si ripeta abbastanza.
 Resta da guardare la seconda mossa, ed è qui che si scopre la cosa meno
 raccontata. Il volume sale a ogni passo e nessuno lo contrasta: a forza di
 moltiplicare per quei numeri appena sopra 1, sull'intera catena tutto quello
-che sta sullo schermo viene ingrandito **centocinquanta volte**. Tutto: il
+che sta sullo schermo viene ingrandito centocinquanta volte. Tutto: il
 disegno che si va formando e il disturbo che lo copre.
 
 E allora, se il volume alza anche il disturbo, come fa il disturbo a calare? Il
@@ -423,7 +424,7 @@ punto è che sul disturbo, e solo su di lui, agisce anche la correzione. Messe
 insieme le tre mosse, a metà viaggio il livello di disturbo passa da 0,9599 a
 0,9595: quattro decimillesimi in meno, un'inezia, ma sempre dallo stesso lato.
 Mille inezie tutte dallo stesso lato ribaltano il conto, e alla fine dei mille
-passi il disturbo è **cento volte più piccolo** di com'era, invece che
+passi il disturbo è cento volte più piccolo di com'era, invece che
 centocinquanta volte più grande. Il disegno, invece, non perde niente per
 strada: quello che le cancellature vi depositano si tiene tutte e
 centocinquanta le volte di ingrandimento.
@@ -435,10 +436,11 @@ ripulito un velo alla volta: perché si è alzata la voce di quello che via via
 si andava decidendo, mentre il disturbo perdeva un'inezia per volta.
 
 Il rimescolamento, quindi, non è una svista da tollerare, e fra poco lo vedremo
-sparire. Serve perché **fa parte della definizione del passo**: la ricetta non dice «da qui vai lì», dice «da qui
-sorteggia dove andare, in questa zona», e il rumore fresco *è* quel sorteggio.
-Toglierlo da questa procedura non vorrebbe dire semplificarla, vorrebbe dire
-eseguirla sbagliata, e i risultati sarebbero peggiori.
+sparire. Serve perché fa parte della definizione del passo: la ricetta non dice
+«da qui vai lì», dice «da qui sorteggia dove andare, in questa zona», e il
+rumore fresco *è* quel sorteggio. Toglierlo da questa procedura non vorrebbe
+dire semplificarla, vorrebbe dire eseguirla sbagliata, e i risultati sarebbero
+peggiori.
 
 Una conseguenza gradevole c'è, ed è che il risultato cambia a ogni esecuzione
 per due motivi invece che per uno: pulviscolo di partenza diverso e scossoni
@@ -475,8 +477,8 @@ $$
 = \frac{\sqrt{\alpha_t\,(1-\bar{\alpha}_t)}}{\sqrt{\beta_t}},
 $$
 
-che con lo schedule di DDPM vale **da 7 a 10 per i primi novecento passi della
-generazione**, cioè da $t = 1000$ fino a $t = 100$ (7,0 a $t = 1000$, 9,5 a
+che con lo schedule di DDPM vale da 7 a 10 per i primi novecento passi della
+generazione, cioè da $t = 1000$ fino a $t = 100$ (7,0 a $t = 1000$, 9,5 a
 $t = 500$, 9,7 a $t = 250$, 7,0 a $t = 100$, con il massimo di 10,0 attorno a
 $t = 350$). Per il novanta per cento del viaggio, dunque, il rumore iniettato
 sposta il punto di quasi un ordine di grandezza più di quanto lo sposti la
@@ -500,7 +502,7 @@ termini lo tocca, e $\sqrt{\bar{\alpha}_t} \to \sqrt{\bar{\alpha}_{t-1}}$
 a ogni passo. Dalla coda della catena a $t = 1$ il rapporto segnale/rumore
 passa da $\sqrt{\bar{\alpha}_T / (1-\bar{\alpha}_T)} = 0{,}0064$ a
 $\sqrt{\bar{\alpha}_1 / (1-\bar{\alpha}_1)} = 100$, un fattore quindicimila, di
-cui **157 dall'amplificazione del segnale** e 100 dalla riduzione del rumore.
+cui 157 dall'amplificazione del segnale e 100 dalla riduzione del rumore.
 Descrivere il campionamento come «togliere un velo di rumore alla volta»
 racconta quindi metà del guadagno e circa un decimo del gesto (a $t = 500$ la
 correzione vale $0{,}0105$ su uno spostamento complessivo di $0{,}1008$), e
@@ -583,38 +585,39 @@ capito che stavano costruendo lo stesso oggetto con due linguaggi diversi.
 `````{tab} Superiore
 
 **Da dove viene la loss.** Come per ogni modello a variabili latenti, la
-log-verosimiglianza $\log p_\theta(\mathbf{x}_0)$ (l’*evidenza*) non è calcolabile
-direttamente, ma ammette un limite inferiore variazionale (ELBO). Nella
-convenzione del libro, dove $\mathcal{L}$ si minimizza, si lavora con il suo
-opposto, $\mathcal{L}_{\text{var}} = -\mathrm{ELBO}$ (un limite *superiore*
+log-verosimiglianza $\log p_\theta(\mathbf{x}_0)$ (l’*evidenza*) non è
+calcolabile direttamente, ma ammette un limite inferiore variazionale (ELBO).
+Nella convenzione del libro, dove $\mathcal{L}$ si minimizza, si lavora con il
+suo opposto, $\mathcal{L}_{\text{var}} = -\mathrm{ELBO}$ (un limite *superiore*
 sulla log-verosimiglianza negativa), ed è questa quantità che si decompone in
 $T-1$ divergenze KL, una per ciascun passo interno della catena, più due
-termini di bordo: una ricostruzione $-\log p_\theta(\mathbf{x}_0 \mid \mathbf{x}_1)$ e
-un confronto sul prior, $D_{KL}\big(q(\mathbf{x}_T \mid \mathbf{x}_0)\,\|\,p(\mathbf{x}_T)\big)$, che
-non contiene parametri e si può ignorare. Ogni KL confronta il **posteriore
-condizionato al dato**, $q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)$, con il passo appreso
-$p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$; attenzione a non confonderlo con l'inverso vero
-$q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ incontrato sopra, gaussiano solo per approssimazione:
-condizionando anche su $\mathbf{x}_0$, la distribuzione diventa gaussiana *esatta* e
-nota in forma chiusa. Tra
-gaussiane, ogni KL si riduce a una distanza quadratica tra medie; con la
-riparametrizzazione di $\boldsymbol{\mu}_\theta$ vista sopra, ogni termine diventa
-$\lVert \boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta \rVert^2$ moltiplicato per un peso
-dipendente da $t$. La $\mathcal{L}_{\text{semplice}}$ è questo obiettivo con i
-pesi posti a 1: non più un bound, ma una sua versione ripesata che nella
-pratica produce campioni migliori {cite}`ho2020denoising`.
+termini di bordo: una ricostruzione $-\log p_\theta(\mathbf{x}_0 \mid
+\mathbf{x}_1)$ e un confronto sul prior, $D_{KL}\big(q(\mathbf{x}_T \mid
+\mathbf{x}_0)\,\|\,p(\mathbf{x}_T)\big)$, che non contiene parametri e si può
+ignorare. Ogni KL confronta il posteriore condizionato al dato,
+$q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)$, con il passo appreso
+$p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$; attenzione a non confonderlo
+con l'inverso vero $q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ incontrato sopra,
+gaussiano solo per approssimazione: condizionando anche su $\mathbf{x}_0$, la
+distribuzione diventa gaussiana *esatta* e nota in forma chiusa. Tra gaussiane,
+ogni KL si riduce a una distanza quadratica tra medie; con la
+riparametrizzazione di $\boldsymbol{\mu}_\theta$ vista sopra, ogni termine
+diventa $\lVert \boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta \rVert^2$
+moltiplicato per un peso dipendente da $t$. La $\mathcal{L}_{\text{semplice}}$
+è questo obiettivo con i pesi posti a 1: non più un bound, ma una sua versione
+ripesata che nella pratica produce campioni migliori {cite}`ho2020denoising`.
 
 La riponderazione ha un prezzo, e il prezzo va messo in chiaro: senza,
 resterebbe in piedi come premessa una proprietà che qui viene ritirata. Il peso
 che l'ELBO assegna al passo $t$ è
 $\lambda_t = \beta_t^2 / \big(2\sigma_t^2\alpha_t(1-\bar{\alpha}_t)\big)$,
 e con lo schedule di DDPM vale $0{,}500$ al passo 1 contro $0{,}0102$ al passo
-1000: porli tutti a 1 significa moltiplicare per circa **cinquanta** il peso
+1000: porli tutti a 1 significa moltiplicare per circa cinquanta il peso
 relativo dei passi ad alto rumore rispetto a quelli quasi puliti. È voluto, e
 Ho e colleghi lo dichiarano (la loss semplificata sottopesa i termini a $t$
 piccolo, «così che la rete possa concentrarsi sui compiti di denoising più
 difficili a $t$ grande»). La conseguenza è che un modello addestrato con
-$\mathcal{L}_{\text{semplice}}$ **non massimizza più la verosimiglianza**: la
+$\mathcal{L}_{\text{semplice}}$ non massimizza più la verosimiglianza: la
 sua verosimiglianza è misurabilmente peggiore di quella dello stesso modello
 addestrato sul bound vero, e resta lontana da quella dei modelli
 autoregressivi, come gli autori scrivono senza girarci intorno. È il
@@ -654,8 +657,8 @@ processo continuo: una sola teoria, due dialetti.
 Mille passi per un'immagine sono tanti, e la prima scorciatoia importante non
 si fa attendere: arriva a meno di quattro mesi da DDPM, nell'ottobre del 2020,
 e sono i *Denoising Diffusion Implicit Models* (DDIM) di Jiaming Song, Chenlin
-Meng e Stefano Ermon {cite}`song2021denoising`. La promessa è notevole: **lo
-stesso identico modello già addestrato**, nessun riaddestramento, e campioni
+Meng e Stefano Ermon {cite}`song2021denoising`. La promessa è notevole: lo
+stesso identico modello già addestrato, nessun riaddestramento, e campioni
 di qualità paragonabile in un centinaio di passi invece di mille, o anche in
 venti se si accetta di perdere qualcosa: dieci volte più veloce nel primo caso,
 cinquanta nel secondo, ed è proprio l'intervallo che gli autori dichiarano.
@@ -663,7 +666,7 @@ cinquanta nel secondo, ed è proprio l'intervallo che gli autori dichiarano.
 `````{tab} Elementare
 
 DDIM scopre che la scala di mille gradini appena scesa non è l'unica che porta
-laggiù. Ce n'è tutta una **famiglia**: procedure diverse
+laggiù. Ce n'è tutta una famiglia: procedure diverse
 che attraversano gli stessi livelli di rovina e che si possono percorrere con
 la stessa rete già addestrata, senza cambiarle una virgola. La procedura di
 DDPM, scossoni compresi, è una di loro; e nella famiglia ce n'è una che di
@@ -688,7 +691,7 @@ sempre, esattamente, la stessa immagine. La varietà resta tutta affidata al
 sorteggio iniziale.
 
 Il che, invece di essere una perdita, si rivela un regalo. Il pulviscolo di
-partenza diventa una specie di **codice** dell'immagine: quel mucchio di
+partenza diventa una specie di codice dell'immagine: quel mucchio di
 puntini, e solo quello, apre quella figura. E siccome un codice è una lista di
 numeri, si può camminare da un codice all'altro un pochino per volta, e a ogni
 tappa chiedere l'immagine corrispondente: si ottiene un volto che si trasforma
@@ -701,13 +704,13 @@ in un altro con continuità, invece di due immagini che non c'entrano niente.
 L'osservazione chiave è che $\mathcal{L}_{\text{semplice}}$ dipende dal
 processo in avanti solo attraverso le marginali $q(\mathbf{x}_t \mid
 \mathbf{x}_0)$: mai attraverso la struttura congiunta della catena. Esiste
-allora un'intera famiglia di processi **non markoviani** con le *stesse*
+allora un'intera famiglia di processi non markoviani con le *stesse*
 marginali, per i quali la rete già addestrata è altrettanto valida; Song, Meng
 ed Ermon la parametrizzano con un grado di stocasticità $\eta$: per $\eta = 1$
-si recupera il campionamento ancestrale di DDPM **nella variante con
-$\sigma_t^2 = \tilde{\beta}_t$**, la varianza del posteriore, non in quella con
+si recupera il campionamento ancestrale di DDPM nella variante con
+$\sigma_t^2 = \tilde{\beta}_t$, la varianza del posteriore, non in quella con
 $\sigma_t^2 = \beta_t$ usata sopra; per $\eta = 0$ il passo inverso diventa
-**deterministico**; dato $\mathbf{x}_T$, l'uscita $\mathbf{x}_0$ è una
+deterministico; dato $\mathbf{x}_T$, l'uscita $\mathbf{x}_0$ è una
 funzione, non un campione. Qui la distinzione fra le due varianti, irrilevante
 sui mille passi, diventa decisiva: a una cinquantina di passi la scelta
 $\sigma_t^2 = \beta_t$ produce campioni molto peggiori della variante con
@@ -739,10 +742,11 @@ associata alla SDE di {cite}`song2021score`.
 Fin qui la rete è stata una scatola con due ingressi (l'immagine rovinata e il
 numero del passo) e un'uscita della stessa forma dell'immagine. Ma quale
 architettura? Guardiamo i requisiti: entra un'immagine ed esce un'immagine (la
-mappa del rumore stimato, pixel per pixel, alla stessa risoluzione). Il
-capitolo sulla visione artificiale ci ha già dato lo
-strumento su misura: la **U-Net** di Ronneberger, Fischer e Brox
-{cite}`ronneberger2015u`, nata nel 2015 per segmentare immagini biomediche.
+mappa del rumore stimato, pixel per pixel, alla stessa risoluzione). La
+{doc}`sezione su detection e segmentazione
+</VisioneArtificiale/detection-segmentazione>` ci ha già dato lo strumento su
+misura: la U-Net di Ronneberger, Fischer e Brox {cite}`ronneberger2015u`,
+nata nel 2015 per segmentare immagini biomediche.
 
 `````{tab} Elementare
 
@@ -785,7 +789,7 @@ trasformato da un piccolo MLP e sommato alle feature di *ogni* blocco della
 U-Net. Così una sola rete serve tutti i mille livelli di rumore: $t$ le dice
 a quale punto della scala sta lavorando, se sgrossare forme globali (rumore
 alto) o rifinire texture (rumore basso). La U-Net di DDPM aggiunge infine
-blocchi di self-attention a **una sola** risoluzione intermedia (nei modelli
+blocchi di self-attention a una sola risoluzione intermedia (nei modelli
 $32 \times 32$, la mappa $16 \times 16$, e non le due più basse), dove i pixel
 sono già pochi abbastanza perché guardarli tutti insieme costi poco, ma non
 così pochi da non avere più struttura da confrontare.
@@ -848,7 +852,7 @@ def rumorizza(x0, t, eps):
 ```
 
 La successione dei mille dosaggi (le variabili `beta`, `alpha` e `alpha_bar`)
-si chiama in gergo lo **schedule** del rumore, ed è la manopola con le mille
+si chiama in gergo lo schedule del rumore, ed è la manopola con le mille
 tacche di cui si diceva sopra, scritta una volta per tutte prima di cominciare.
 
 Una cosa il giocattolo la lascia correre, e conviene dirla perché il capitolo
@@ -962,14 +966,14 @@ print(f"generato -> archivio: {da_archivio.median():.3f}   "
 
 Disegnando `nuovi` con un grafico a dispersione si vede la spirale riemergere
 dalla nuvola informe, e i due numeri stampati dicono la stessa cosa senza
-bisogno di disegnare. Sono due **mediane**, cioè il valore che sta esattamente
+bisogno di disegnare. Sono due mediane, cioè il valore che sta esattamente
 in mezzo alla fila quando si ordinano tutte le distanze dalla più piccola alla
 più grande: metà stanno sotto, metà sopra. Un punto generato dista dal punto
 d'archivio più vicino $0{,}009$; due punti d'archivio vicini distano fra loro
 $0{,}006$; le distanze sono misurate sul piano dove sta la spirale, che è largo
 circa due unità. Non sono
 uguali, e non devono esserlo: quello che conta è che siano dello stesso ordine,
-perché è la differenza fra «i generati cadono **in mezzo** agli originali» e «i
+perché è la differenza fra «i generati cadono in mezzo agli originali» e «i
 generati sono copie» (in quel caso il primo numero sarebbe stato vicino a zero,
 non una volta e mezza il secondo). Punti *nuovi*, quindi, non copie dei duemila
 di partenza.
@@ -993,26 +997,26 @@ carattere per carattere.
 
 ```{admonition} Da ricordare
 :class: important
-- L’**andata** non si impara, è una ricetta fissa: a ogni passo il valore di
+- L’andata non si impara, è una ricetta fissa: a ogni passo il valore di
   ogni pixel si attenua un pochino e riceve un pizzico di disturbo casuale,
   come nella tazza sempre piena in cui a ogni giro un cucchiaino di caffè
   lascia il posto a uno di latte. Dopo mille giri resta solo pulviscolo,
   e c'è una scorciatoia per arrivare a un livello di rovina qualsiasi senza
   ripercorrere i passi uno per uno.
-- La rete impara a indicare **il disturbo**, non l'immagine pulita, e non il
+- La rete impara a indicare il disturbo, non l'immagine pulita, e non il
   pizzico dell'ultimo passo ma tutto quello accumulato dalla foto pulita in
   poi. È una domanda dello stesso tipo a ogni livello di rovina, e la risposta
   esatta la conosciamo sempre, perché il disturbo l'abbiamo fabbricato noi (il
   mazzo di carte con le soluzioni sul retro).
-- **Generare** vuol dire partire da un pulviscolo mai visto e
+- Generare vuol dire partire da un pulviscolo mai visto e
   ripetere mille volte tre mosse: cancella la scheggia di disturbo che la rete
   ti indica, alza il volume di tutto quello che resta, getta sopra una
   manciata di rumore nuovo (tranne all'ultimo passo, dove la terza mossa si
   salta). Si toglie solo una scheggia perché togliere tutto il disturbo in un
   colpo darebbe una macchia sfocata, la media di tutte le immagini possibili
   sotto quel pulviscolo.
-- La cosa da non dimenticare è che **quella manciata è dalle sette alle dieci
-  volte più grande della scheggia** (al passo 500: 0,1002 contro 0,0105), e lo
+- La cosa da non dimenticare è che quella manciata è dalle sette alle dieci
+  volte più grande della scheggia (al passo 500: 0,1002 contro 0,0105), e lo
   è per i primi novecento passi su mille; poi cala, e sull'ultimo gradino le
   due si pareggiano. Il passo non «solleva un velo»: rimescola molto più di
   quanto pulisca. L'immagine esce fuori lo stesso per due ragioni che vanno
@@ -1021,21 +1025,21 @@ carattere per carattere.
   centocinquanta volte tutto quello che le cancellature hanno depositato. Alla
   fine il disegno è cresciuto di centocinquanta volte e il disturbo è calato di
   cento: quindicimila volte di guadagno, e nessuna ripulitura.
-- Sotto il cofano la rete sta imparando il **verso della salita**: su una mappa
+- Sotto il cofano la rete sta imparando il verso della salita: su una mappa
   sterminata in cui ogni punto è un'immagine possibile e l'altezza è la sua
   credibilità, in ogni punto la direzione in cui spostarsi per guadagnare
   quota. Le due scuole che hanno lavorato in parallelo per anni («insegniamo a
   togliere il rumore» e «insegniamo il verso della salita») stavano costruendo
   lo stesso oggetto.
-- **DDIM** cambia procedura, non modello. La scala di mille gradini non è
+- DDIM cambia procedura, non modello. La scala di mille gradini non è
   l'unica che attraversa quei livelli di rovina: ce n'è una famiglia, tutte
   percorribili con la stessa rete già addestrata, e una di loro non ha scossoni
   e si può percorrere saltando (qualche decina di fermate invece di mille).
   La varietà resta tutta affidata al pulviscolo di partenza, che
-  diventa così un **codice** dell'immagine: dallo stesso pulviscolo esce sempre
+  diventa così un codice dell'immagine: dallo stesso pulviscolo esce sempre
   la stessa figura, e camminando da un codice all'altro un'immagine sfuma
   nell'altra.
-- La rete che indovina il disturbo è la **U-Net** già vista nella
+- La rete che indovina il disturbo è la U-Net già vista nella
   segmentazione, che guarda la foto da lontano e poi da vicino tenendo dei
   ponti fra le due viste; il numero del passo entra come un'etichetta
   attaccata alla foto, che la rete si ripete a ogni stadio del lavoro. Più
@@ -1048,44 +1052,44 @@ carattere per carattere.
 
 ```{admonition} Da ricordare
 :class: important
-- L’**andata** è fissa: $q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) =
+- L’andata è fissa: $q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) =
   \mathcal{N}(\sqrt{1-\beta_t}\,\mathbf{x}_{t-1},\ \beta_t \mathbf{I})$ con
   schedule $\beta_t$; la forma chiusa $\mathbf{x}_t =
   \sqrt{\bar{\alpha}_t}\,\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}$
   salta da $\mathbf{x}_0$ a qualunque passo, e $\mathbf{x}_T$ è rumore
   gaussiano puro.
-- La rete $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ impara a predire **il rumore**,
+- La rete $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ impara a predire il rumore,
   non l'immagine: bersaglio a scala costante per ogni $t$, loss MSE
   $\mathbb{E}\lVert\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta\rVert^2$ {cite}`ho2020denoising`
   (una regressione, stabile come un problema supervisionato).
 - Generare = partire da $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$ e risalire la
-  catena in $T$ passi, e ogni passo fa **tre** cose: sottrae una frazione del
+  catena in $T$ passi, e ogni passo fa tre cose: sottrae una frazione del
   rumore stimato, riscala per $1/\sqrt{\alpha_t}$, inietta rumore fresco di
   deviazione standard $\sigma_t$ (tranne all'ultimo).
 - Il rapporto fra iniezione e sottrazione è
-  $\sqrt{\alpha_t(1-\bar{\alpha}_t)}/\sqrt{\beta_t}$, cioè **da 7 a 10 per i
-  primi novecento passi** (scende a 1 solo negli ultimi cento): si inietta
+  $\sqrt{\alpha_t(1-\bar{\alpha}_t)}/\sqrt{\beta_t}$, cioè da 7 a 10 per i
+  primi novecento passi (scende a 1 solo negli ultimi cento): si inietta
   molto più di quanto si sottragga. Il livello di rumore cala lo stesso, ma
   pochissimo per passo (quattro decimillesimi a $t = 500$), perché la
   sottrazione è allineata al rumore mentre l'iniezione si somma in varianza. E
   metà del guadagno sul rapporto segnale/rumore (fattore $157$ su $15\,000$
-  complessivi) non viene dalla sottrazione ma dalla **riscalatura**.
+  complessivi) non viene dalla sottrazione ma dalla riscalatura.
 - Sotto il cofano: la loss è una versione ripesata di $-\mathrm{ELBO}$
-  (il **bound variazionale** da minimizzare, con i passi ad alto rumore
+  (il bound variazionale da minimizzare, con i passi ad alto rumore
   favoriti di un fattore ~50, al prezzo di verosimiglianze peggiori), e
   predire il rumore
-  equivale a stimare lo **score** $\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t)$;
+  equivale a stimare lo score $\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t)$;
   DDPM e modelli score-based sono due discretizzazioni della stessa SDE
   {cite}`song2021score`.
-- **DDIM** {cite}`song2021denoising`: stesso modello, campionamento
+- DDIM {cite}`song2021denoising`: stesso modello, campionamento
   deterministico ($\eta = 0$) su 20–50 passi; possibile perché la loss dipende
   solo dalle marginali $q(\mathbf{x}_t \mid \mathbf{x}_0)$, non dalla catena
   markoviana. Con $\eta = 1$ si ritrova il campionatore ancestrale nella
   variante $\sigma_t^2 = \tilde{\beta}_t$, non in quella
   $\sigma_t^2 = \beta_t$ usata qui.
-- $\boldsymbol{\epsilon}_\theta$ è una **U-Net** {cite}`ronneberger2015u` (la stessa della
-  segmentazione) con il passo $t$ iniettato come embedding sinusoidale; nella
-  sezione su DiT verrà sostituita da un Transformer.
+- $\boldsymbol{\epsilon}_\theta$ è una U-Net {cite}`ronneberger2015u` (la
+  stessa della segmentazione) con il passo $t$ iniettato come embedding
+  sinusoidale; nella sezione su DiT verrà sostituita da un Transformer.
 ```
 
 `````

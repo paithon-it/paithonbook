@@ -20,7 +20,7 @@ discorso), uno dei compiti più antichi del NLP; suo cugino stretto è il
 **NER**, da *named entity recognition*, e che abbiamo già incontrato nella
 panoramica del capitolo. Li raccontiamo insieme perché condividono la forma
 (un'etichetta per ogni parola) e la stessa storia: prima i modelli
-probabilistici degli anni Novanta, la **seconda tappa** della parabola
+probabilistici degli anni Novanta, la seconda tappa della parabola
 storica del capitolo, poi le reti ricorrenti delle sezioni precedenti.
 
 ## Il mestiere di ogni parola
@@ -49,7 +49,7 @@ Perché il gioco funzioni tra lingue diverse serve però un inventario di
 categorie condiviso: è il contributo del progetto **Universal Dependencies**
 {cite}`nivre2016universal`, un'impresa collettiva di linguisti che prendono
 testi veri e ci scrivono sopra, parola per parola, l'analisi giusta (si dice
-che li **annotano**), sempre con gli stessi criteri e nella stessa notazione.
+che li annotano), sempre con gli stessi criteri e nella stessa notazione.
 Alla presentazione del 2016 le lingue erano 33; oggi sono più di
 centocinquanta. Il nome parla di «dipendenze» e non di categorie perché il
 grosso di quel lavoro riguarda un piano più su, quello della struttura della
@@ -93,7 +93,7 @@ nell'ambiguità: le parole ambigue sono una minoranza del vocabolario, però
 sono tra le più frequenti, tanto che in un testo inglese corrente oltre la
 metà delle occorrenze ammette più di un'etichetta.
 
-Lo standard di riferimento è il tagset **universale** di Universal
+Lo standard di riferimento è il tagset universale di Universal
 Dependencies {cite}`nivre2016universal`, 17 categorie valide per tutte le
 lingue del progetto:
 
@@ -118,18 +118,18 @@ valutazione.
 
 E a che cosa serve, oggi, un'etichetta grammaticale? A tre cose almeno.
 
-Alla **lemmatizzazione**, che abbiamo incontrato nella prima sezione: ricondurre
+Alla lemmatizzazione, che abbiamo incontrato nella prima sezione: ricondurre
 una parola alla forma con cui la si cerca sul vocabolario, il suo *lemma*. Per
 «porta» le forme di dizionario sono due, e per scegliere devi sapere prima se
 è il nome (e allora il lemma è *porta*) o il verbo (e allora è *portare*).
 
-Alla **sintesi vocale**, cioè ai programmi che leggono un testo ad alta voce,
+Alla sintesi vocale, cioè ai programmi che leggono un testo ad alta voce,
 il percorso inverso del riconoscimento vocale che incontreremo nel capitolo
 dedicato alla voce: un lettore automatico davanti ad «ancora» deve scegliere
 tra *àncora* e *ancóra*, e l'accento giusto lo decide la categoria
 grammaticale.
 
-E all’**analisi sintattica**: le etichette POS sono i mattoni con cui, nella
+E all’analisi sintattica: le etichette POS sono i mattoni con cui, nella
 prossima sezione, si costruisce l'impalcatura della frase.
 
 ## Chi, dove, quando: le entità nominate
@@ -137,10 +137,10 @@ prossima sezione, si costruisce l'impalcatura della frase.
 Il secondo compito lo abbiamo già visto all'opera nella panoramica del
 capitolo: in «Enrico Fermi nacque a Roma nel 1901» un sistema NER etichetta
 *Enrico Fermi* come persona, *Roma* come luogo, *1901* come data. Il
-**riconoscimento di entità nominate** (la sigla nasce alle *Message
+riconoscimento di entità nominate (la sigla nasce alle *Message
 Understanding Conference* degli anni Novanta) cerca nel testo persone, luoghi
 e organizzazioni, più date, cifre e importi. Serve ogni volta che da un mucchio
-di testo bisogna ricavare delle **schede**: chi è nato dove e quando, quale
+di testo bisogna ricavare delle schede: chi è nato dove e quando, quale
 azienda ha comprato quale altra, quali farmaci compaiono in una cartella
 clinica. È anche il primo passo per anonimizzare un documento, perché per
 cancellare i nomi bisogna prima sapere quali parole sono nomi di persona.
@@ -154,7 +154,7 @@ se lo *continua*, o se lì fuori non c'è niente. Le tre lettere sono le
 iniziali inglesi di quelle tre parole (*begin*, *inside*, *outside*). Lo schema
 nasce nel 1995 con il lavoro di Lance Ramshaw e Mitchell Marcus sugli spezzoni
 di frase, e nella versione che si usa oggi il segnale di «comincia» si mette in
-testa a **ogni** entità, anche quando non ce ne sarebbe bisogno per distinguerla
+testa a ogni entità, anche quando non ce ne sarebbe bisogno per distinguerla
 dalla precedente: costa un'etichetta in più e in cambio rende ogni parola
 leggibile per conto suo.
 
@@ -163,8 +163,8 @@ leggibile per conto suo.
 Tre evidenziatori colorati: giallo per le persone, azzurro per i luoghi, verde
 per le date. La penna però ce l'ha una persona all'altro capo del telefono, e
 tu devi dettarle dove passa, parola per parola. Bastano tre segnali: «qui
-**comincio** un'evidenziatura gialla», «qui la **continuo**», «qui la penna è
-**sollevata**». Sulla frase di Fermi: *Enrico* = comincio-giallo, *Fermi* =
+comincio un'evidenziatura gialla», «qui la continuo», «qui la penna è
+sollevata». Sulla frase di Fermi: *Enrico* = comincio-giallo, *Fermi* =
 continuo-giallo, *nacque, a* = penna su, *Roma* = comincio-azzurro, *nel* =
 penna su, *1901* = comincio-verde.
 
@@ -197,7 +197,7 @@ codifica due persone consecutive; `B-PER I-PER` una sola entità di due token.
 
 Due varianti vengono spesso confuse, e la differenza cade proprio su quel
 punto. Nello schema originale del 1995 (oggi
-chiamato **IOB1**) la `B` era parsimoniosa: compariva **solo** quando un
+chiamato **IOB1**) la `B` era parsimoniosa: compariva solo quando un
 segmento ne seguiva immediatamente un altro dello stesso tipo, cioè solo dove
 serviva davvero a separarli. Sotto IOB1 la frase di Fermi si etichetta
 `I-PER I-PER`, non `B-PER I-PER`, e la `B` fa esattamente e soltanto il lavoro
@@ -249,8 +249,8 @@ probabile, ed è quella che scrivi.
 
 `````{tab} Superiore
 
-Un HMM per il tagging ha come **stati nascosti** le etichette
-$t_1, \dots, t_n$ e come **osservazioni** le parole $w_1, \dots, w_n$. Due
+Un HMM per il tagging ha come stati nascosti le etichette
+$t_1, \dots, t_n$ e come osservazioni le parole $w_1, \dots, w_n$. Due
 assunzioni lo definiscono: ogni etichetta dipende solo dalla precedente
 (catena di Markov del primo ordine) e ogni parola dipende solo dalla
 propria etichetta. La probabilità congiunta si fattorizza allora in
@@ -272,7 +272,7 @@ $$
 $$
 
 dove la seconda uguaglianza segue dalla regola di Bayes: il denominatore
-$P(w_{1:n})$ non dipende dalle etichette. È un modello **generativo**:
+$P(w_{1:n})$ non dipende dalle etichette. È un modello generativo:
 descrive come etichette e parole vengono prodotte insieme, e la lettura
 d'obbligo resta il tutorial di Rabiner {cite}`rabiner1989tutorial`.
 
@@ -284,7 +284,7 @@ e parla di riconoscimento del parlato: gli HMM hanno retto la trascrizione
 automatica per trent'anni, e li ritroveremo nel capitolo dedicato.
 
 Cambia solo il cast della recita, e conviene vedere come. Dietro la tenda non
-ci sono più le categorie grammaticali, ci sono i **suoni elementari** della
+ci sono più le categorie grammaticali, ci sono i suoni elementari della
 lingua, quelli che distinguono «pane» da «cane»: loro sono gli attori. E in
 platea non arrivano parole, arriva il suono, che un programma taglia in
 fettine da pochi millesimi di secondo e riduce a un pugno di numeri per fetta,
@@ -302,8 +302,8 @@ già a $17 \times 17$; con venti parole le combinazioni sono $17^{20}$, cioè
 circa quattro milioni di miliardi di miliardi. Provarle tutte è fuori
 discussione: non c'è computer che finisca.
 
-La salvezza sta in una proprietà che il modello ha per costruzione: **ogni
-etichetta dipende solo da quella immediatamente precedente**, e non da tutte
+La salvezza sta in una proprietà che il modello ha per costruzione: ogni
+etichetta dipende solo da quella immediatamente precedente, e non da tutte
 quelle prima ancora. È la stessa regola del patto di Markov, ed è il motivo per
 cui questi modelli si dicono «a catena»: come in una catena, ogni anello tocca
 solo il precedente e il successivo.
@@ -314,7 +314,7 @@ sapere, per ciascuna delle 17 categorie possibili, qual era il modo migliore
 di arrivarci alla parola 11. Tutto il resto si può buttare, perché non
 influenzerà nulla di ciò che viene dopo. Questo modo di procedere (calcolare
 una volta sola ogni pezzo che servirà più volte, e tenerselo da parte invece
-di rifarlo) si chiama **programmazione dinamica**, e nel libro torna spesso:
+di rifarlo) si chiama programmazione dinamica, e nel libro torna spesso:
 la griglia della distanza di edit, nella prima sezione, era la stessa idea.
 
 L'algoritmo che la applica qui porta il nome di Andrew Viterbi
@@ -326,11 +326,11 @@ algoritmo ha poi viaggiato dentro i telefoni cellulari di mezzo mondo.
 Facciamo i conti fino in fondo su un modello giocattolo: tre categorie
 (`DET`, `NOME`, `VERBO`) e la frase «la porta cigola», dove «porta» ha la
 stessa doppiezza dell'aggancio di questa sezione. I numeri delle due tabelle
-qui sotto sono **inventati per l'esempio**, scelti tondi perché i conti si
+qui sotto sono inventati per l'esempio, scelti tondi perché i conti si
 possano rifare a mente: in un sistema vero verrebbero dai conteggi su un
 corpus già etichettato, come si è detto poco fa.
 
-Ecco il primo dei due libretti, quello che dice **chi passa la scena a chi**.
+Ecco il primo dei due libretti, quello che dice chi passa la scena a chi.
 Si legge riga per riga: la riga «inizio frase» dice che sei frasi su dieci
 cominciano con un articolo, tre con un nome e una con un verbo; la riga `DET`
 dice che dopo un articolo arriva un nome sette volte su dieci, un verbo due e
@@ -343,7 +343,7 @@ un altro articolo una.
 | `NOME` | 0,2 | 0,3 | 0,5 |
 | `VERBO` | 0,4 | 0,4 | 0,2 |
 
-E il secondo libretto, quello che dice **chi pronuncia che cosa**. Si chiama
+E il secondo libretto, quello che dice chi pronuncia che cosa. Si chiama
 delle *emissioni*, perché quelle sono le parole che ciascun attore emette
 quando è in scena:
 
@@ -464,8 +464,8 @@ Field** (CRF) {cite}`lafferty2001conditional`, che rinunciano a raccontare come
 parole ed etichette nascano insieme e si addestrano soltanto a scegliere
 l'etichetta giusta. È la stessa distinzione dei due periti della sezione sulla
 classificazione, quello che studia lo stile di ciascun pittore e quello che
-impara solo i dettagli che li distinguono: **generativo** il primo,
-**discriminativo** il secondo, e qui applicata alle sequenze invece che ai
+impara solo i dettagli che li distinguono: generativo il primo,
+discriminativo il secondo, e qui applicata alle sequenze invece che ai
 documenti. Il guadagno è che un CRF può guardare indizi che a un HMM sfuggono,
 per esempio la maiuscola iniziale, le ultime tre lettere della parola, la
 presenza di un trattino; e per oltre un decennio sono stati il modo migliore di
@@ -474,15 +474,15 @@ fare NER. Per trovare il percorso migliore, però, chiamano sempre Viterbi.
 ## La via neurale: una BiLSTM per etichettare
 
 E le reti ricorrenti? Nella sezione sulla traduzione abbiamo stabilito una
-regola: la lettura **bidirezionale** vale solo per *capire* un testo che
+regola: la lettura bidirezionale vale solo per *capire* un testo che
 esiste già tutto intero, non per generarlo. L'etichettatura è il caso ideale:
 la frase è lì, completa, e per decidere l'etichetta di «porta» servono tanto
-le parole prima quanto quelle dopo («la porta **cigola**» contro «la porta **a
-scuola**»). Un etichettatore neurale minimo (in gergo lo si chiama *tagger*,
+le parole prima quanto quelle dopo («la porta cigola» contro «la porta a
+scuola»). Un etichettatore neurale minimo (in gergo lo si chiama *tagger*,
 dall'inglese *tag*, cartellino) è quindi fatto di tre pezzi, tutti già
 incontrati: si trasforma ogni parola nella sua fila di numeri (l'embedding), la
 si dà in pasto a una LSTM che legge nei due sensi, e in cima si mette una
-bilancia che per **ogni** parola assegna un punteggio a ciascuna delle 17
+bilancia che per ogni parola assegna un punteggio a ciascuna delle 17
 etichette possibili. Vince l'etichetta col punteggio più alto.
 
 ```python
@@ -538,7 +538,7 @@ Oggi però lo standard del NER è un'altra strada: prendere un modello già
 addestrato su montagne di testo, come BERT {cite}`devlin2019bert`, appoggiargli
 sopra la stessa testa che assegna un punteggio a ogni etichetta, e proseguire
 l'addestramento per pochi giri sul compito specifico. Questa seconda fase corta
-si chiama **fine-tuning**, «rifinitura»: non si riparte da zero, si parte da un
+si chiama fine-tuning, «rifinitura»: non si riparte da zero, si parte da un
 modello che la lingua la sa già e gli si insegna soltanto il mestiere nuovo,
 con una frazione dei dati e del tempo. Ne parleremo nel capitolo sui
 Transformer, dove la lettura nei due sensi, che qui abbiamo dovuto costruire a
@@ -557,13 +557,14 @@ ricevuto l'etichetta giusta, su cento. Ma attenzione alle percentuali gonfiate.
 Prova a immaginare il sistema più stupido possibile: per ogni parola guarda
 qual è il mestiere che quella parola fa più spesso nei testi già etichettati,
 e scrive sempre quello, senza mai guardare il contesto. Un sistema così, che
-non ha capito niente di niente, sull'inglese dei giornali azzecca già **92 parole su cento**, perché tantissime
-parole sono facili: «il» è quasi sempre un articolo, «velocemente» quasi sempre
-un avverbio. Le parole ambigue sono meno numerose, ma sono quelle che si usano
-di più, e in un testo vero coprono più della metà delle parole scritte.
-I sistemi seri stanno oltre il **97**. Ecco perché quei numeri vanno letti
-sapendo da dove si parte: fra il 92 e il 97 c'è tutto il lavoro, e ci sono tutte
-le parole ambigue, cioè le uniche su cui valga la pena discutere.
+non ha capito niente di niente, sull'inglese dei giornali azzecca già
+92 parole su cento, perché tantissime parole sono facili: «il» è quasi
+sempre un articolo, «velocemente» quasi sempre un avverbio. Le parole ambigue
+sono meno numerose, ma sono quelle che si usano di più, e in un testo vero
+coprono più della metà delle parole scritte. I sistemi seri stanno oltre il
+97. Ecco perché quei numeri vanno letti sapendo da dove si parte: fra il 92
+e il 97 c'è tutto il lavoro, e ci sono tutte le parole ambigue, cioè le uniche
+su cui valga la pena discutere.
 
 Per le entità quel voto diventa una trappola. Prendi un testo di 100 parole
 che contiene una sola entità, «Enrico Fermi». Un sistema pigro che non
@@ -596,7 +597,7 @@ frequente nel corpus» supera già il 92% sull'inglese giornalistico, quindi lo
 spazio reale di miglioramento (dal 92% al 97% e oltre) sta tutto nelle
 occorrenze ambigue, le più difficili.
 
-Per il NER si usano precisione, richiamo e F1 **a livello di entità**, con
+Per il NER si usano precisione, richiamo e F1 a livello di entità, con
 il criterio dell’*exact match* reso standard dalle campagne di valutazione
 CoNLL dei primi anni Duemila: un'entità predetta conta come corretta solo
 se coincidono sia i confini del segmento sia il tipo. Dette $C$ le entità
@@ -637,22 +638,22 @@ imparato a mettere.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il **POS tagging** dà a ogni parola il suo mestiere nella frase (nome,
+- Il POS tagging dà a ogni parola il suo mestiere nella frase (nome,
   verbo, articolo): la lista condivisa fra le lingue è quella dei 17 mestieri
   di Universal Dependencies. Le parole con due mestieri («porta», «ancora»)
   sono una minoranza del vocabolario ma tornano di continuo nei testi, e a
   decidere quale sia in servizio è sempre il contesto.
-- Il **NER** cerca persone, luoghi, organizzazioni e date. Lo **schema BIO** è
+- Il NER cerca persone, luoghi, organizzazioni e date. Lo schema BIO è
   il modo di dettare al telefono dove passa l'evidenziatore, con tre soli
   segnali per parola (qui comincio, qui continuo, qui la penna è sollevata):
   così due persone di fila restano due persone e non diventano una sola.
-- Lo **HMM** è la recita dietro la tenda: le parole sono le battute che senti,
+- Lo HMM è la recita dietro la tenda: le parole sono le battute che senti,
   le categorie grammaticali gli attori che non vedi, e si passano la scena
   secondo abitudini fisse, ciascuno con il proprio copione di parole tipiche.
   I due libretti di abitudini si imparano contando su frasi già etichettate a
   mano. La stessa macchina, con i suoni al posto delle categorie, ha retto il
   riconoscimento vocale per trent'anni.
-- **Viterbi** è il navigatore che a ogni incrocio, per ogni corsia, conserva
+- Viterbi è il navigatore che a ogni incrocio, per ogni corsia, conserva
   solo il modo migliore di arrivarci e butta via gli altri: invece di provarli
   tutti, che sono quei quattro milioni di miliardi di miliardi, ne visita poche
   centinaia di caselle, e trova comunque
@@ -679,26 +680,27 @@ imparato a mettere.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il **POS tagging** assegna a ogni parola la sua categoria grammaticale:
-  lo standard è il tagset **universale** a 17 categorie di Universal
+- Il POS tagging assegna a ogni parola la sua categoria grammaticale:
+  lo standard è il tagset universale a 17 categorie di Universal
   Dependencies. Le parole ambigue («porta», «ancora») sono poche nel
   vocabolario ma frequentissime nei testi: decide il contesto.
-- Il **NER** trova persone, luoghi, organizzazioni e date; lo **schema
-  BIO** (`B-X`, `I-X`, `O`) lo trasforma in un'etichetta per token e tiene
+- Il NER trova persone, luoghi, organizzazioni e date; lo schema
+  BIO (`B-X`, `I-X`, `O`) lo trasforma in un'etichetta per token e tiene
   distinte le entità adiacenti.
-- Lo **HMM** è un modello generativo con stati nascosti (le etichette) e
-  osservazioni (le parole): $P(t,w) = \prod_i P(t_i \mid t_{i-1}) P(w_i \mid t_i)$;
-  transizioni ed emissioni si contano su un corpus annotato. La stessa
-  macchina, con i suoni al posto delle etichette, regge l'ASR storico.
-- L'algoritmo di **Viterbi** trova la sequenza di stati ottima con la
+- Lo HMM è un modello generativo con stati nascosti (le etichette) e
+  osservazioni (le parole):
+  $P(t,w) = \prod_i P(t_i \mid t_{i-1}) P(w_i \mid t_i)$; transizioni ed
+  emissioni si contano su un corpus annotato. La stessa macchina, con i suoni
+  al posto delle etichette, regge l'ASR storico.
+- L'algoritmo di Viterbi trova la sequenza di stati ottima con la
   programmazione dinamica sul traliccio: $O(n\,T^2)$ invece di $O(T^n)$,
-  tenendo in ogni casella solo il miglior cammino in arrivo. I **CRF** sono
+  tenendo in ogni casella solo il miglior cammino in arrivo. I CRF sono
   la variante discriminativa.
-- Il tagger neurale è una **BiLSTM** con testa lineare per token e
+- Il tagger neurale è una BiLSTM con testa lineare per token e
   cross-entropia per token: la bidirezionalità è legittima perché il testo
   è tutto disponibile. Oggi il NER di punta è fine-tuning di BERT.
-- Valutazione: **accuratezza per token** per il POS (con baseline già oltre il
-  92%), **F1 a livello di entità** con exact match per il NER; perché mezza
+- Valutazione: accuratezza per token per il POS (con baseline già oltre il
+  92%), F1 a livello di entità con exact match per il NER; perché mezza
   entità è un'entità sbagliata.
 ```
 `````

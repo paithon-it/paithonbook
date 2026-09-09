@@ -7,31 +7,31 @@ qualcosa lo si scopre chiamando un copista, dandogli una scheda e nient’altro,
 e guardando se il quadro che ridipinge somiglia a quello di partenza. Se
 somiglia, la scheda conteneva l’essenziale.
 
-I due imparano insieme, ed è il punto: una scheda è buona **rispetto a chi la
-deve leggere**, mai in assoluto. Se il copista sa già dipingere una
+I due imparano insieme, ed è il punto: una scheda è buona rispetto a chi la
+deve leggere, mai in assoluto. Se il copista sa già dipingere una
 cornice dorata, l’archivista non ha bisogno di annotarla; se non lo sa, quella
 riga sulla scheda va spesa. Nessuno dei due ha ricevuto istruzioni su che cosa
 sia importante in un quadro: se lo sono divisi lavorando, e questo capitolo
 li tiene per mano fino in fondo.
 
 Questa macchina il libro l’ha già montata nella {doc}`sezione sui codec neurali
-</Audio/codec-neurali>`, per comprimere il suono: si chiama **autoencoder**, e
+</Audio/codec-neurali>`, per comprimere il suono: si chiama autoencoder, e
 ha la forma di una **clessidra**, larga alle due estremità e strettissima in
 mezzo ({numref}`fig-autoencoder-clessidra`, che sta là). «Clessidra» è il nome
 che useremo da qui in avanti. I nomi tecnici delle sue due metà sono quelli
-inglesi che si trovano nel codice: l’archivista è l’**encoder**, «chi
-codifica», e il copista è il **decoder**, «chi decodifica»; la scheda si chiama
-**codice**, o **latente**. Useremo le due serie di parole come sinonimi, perché
+inglesi che si trovano nel codice: l’archivista è l’encoder, «chi
+codifica», e il copista è il decoder, «chi decodifica»; la scheda si chiama
+**codice**, o latente. Useremo le due serie di parole come sinonimi, perché
 sono la stessa cosa detta in due modi.
 
 Un’ultima cosa prima di cominciare, e serve per tutto il resto del capitolo.
 Una scheda è una fila di numeri, e una fila di numeri si può sempre immaginare
-come un **punto**: due numeri sono un punto su un foglio, tre un punto in una
+come un punto: due numeri sono un punto su un foglio, tre un punto in una
 stanza, otto un punto in un posto che non si disegna ma che si tratta allo
-stesso modo. Quindi le schede dell’archivio non stanno in un cassetto disordinato:
-stanno su una mappa, alcune vicine e altre lontane, e da qui in avanti diremo
-tranquillamente «due schede vicine», «una scheda a metà strada fra due» e
-«camminare da una scheda all’altra».
+stesso modo. Quindi le schede dell’archivio non stanno in un cassetto
+disordinato: stanno su una mappa, alcune vicine e altre lontane, e da qui in
+avanti diremo tranquillamente «due schede vicine», «una scheda a metà strada
+fra due» e «camminare da una scheda all’altra».
 
 Qui la riprendiamo per una ragione diversa da quella dell’audio, e la domanda è
 una sola: se un archivista sa riassumere tutti i quadri del museo, sa anche
@@ -42,7 +42,7 @@ l’archivista.
 
 ## La strozzatura è il compito
 
-Della clessidra, qui, serve la **scheda** più che la compressione. E la parte
+Della clessidra, qui, serve la scheda più che la compressione. E la parte
 stretta in mezzo, quella da cui deve passare tutto, si chiama **strozzatura**,
 e la chiameremo anche «il collo stretto», che è la stessa cosa.
 
@@ -56,7 +56,7 @@ si prende un quadro, si guarda la copia che ne esce, si scrive il voto, si
 passa al successivo. Il cassetto con tutte le schede dentro nessuno lo apre mai
 per vedere come stanno messe.
 
-Il collo stretto non è un limite tecnico da subire: **è la richiesta**. Se
+Il collo stretto è la richiesta, non un limite tecnico da subire. Se
 all’archivista fosse concesso scrivere una scheda lunga quanto il quadro, la
 scriverebbe uguale al quadro, il copista la ricopierebbe, e i due avrebbero
 imparato a fotocopiare. È dovendo stare in poche righe che l’archivista è
@@ -87,19 +87,20 @@ $$
 $$
 
 dove $\mathbf{x}_i$ è l’$i$-esimo esempio, $D$ la dimensione del dato, $L$
-quella del **codice** $\mathbf{z}_i = e_\phi(\mathbf{x}_i)$, $N$ il numero di
-esempi e $\ell$ una misura di scarto fra dato e ricostruzione, **sommata sulle
-$D$ componenti** (errore quadratico, oppure cross-entropia per componente come
+quella del codice $\mathbf{z}_i = e_\phi(\mathbf{x}_i)$, $N$ il numero di
+esempi e $\ell$ una misura di scarto fra dato e ricostruzione, sommata sulle
+$D$ componenti (errore quadratico, oppure cross-entropia per componente come
 nell’addestramento sulle cifre scritte a mano: è la somma sui pixel a fare del
-risultato un costo «per cifra» e non «per pixel»). Il vincolo $L \ll D$ è la strozzatura, e senza di essa il problema è vuoto: con $L \ge D$
-basta prendere $d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per
-dire) e la loss va a zero senza che nessuno abbia imparato niente.
+risultato un costo «per cifra» e non «per pixel»). Il vincolo $L \ll D$ è la
+strozzatura, e senza di essa il problema è vuoto: con $L \ge D$ basta prendere
+$d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per dire) e la loss
+va a zero senza che nessuno abbia imparato niente.
 
 Due osservazioni che tornano utili subito. La prima: in questa scrittura non
-compare **nessuna distribuzione**. Non c’è un $p(\mathbf{x})$, non c’è un
+compare nessuna distribuzione. Non c’è un $p(\mathbf{x})$, non c’è un
 $p(\mathbf{z})$, non c’è niente da cui campionare; c’è una funzione che
 comprime, una che decomprime e uno scarto da minimizzare. La seconda: la loss
-vincola i codici solo **uno per uno**, tramite la propria ricostruzione, e non
+vincola i codici solo uno per uno, tramite la propria ricostruzione, e non
 dice nulla su come i codici stiano fra loro. Nessuna delle due è una
 dimenticanza da correggere in un secondo momento: sono la definizione, e da lì
 discende tutto il resto della sezione.
@@ -121,7 +122,7 @@ Mettiamo che all’archivista sia vietato essere creativo: le sue schede devono
 essere una combinazione fissa dei pixel, «tanto di questo più tanto di quello»,
 la stessa per tutti, senza nessuna decisione presa caso per caso. In queste
 condizioni non gli resta niente da inventare, e il meglio che può fare è già
-noto: schiacciare i quadri sul **piano** lungo cui differiscono di più, che è
+noto: schiacciare i quadri sul piano lungo cui differiscono di più, che è
 la cosa che nella sezione su riduzione e clustering si chiamava analisi delle
 componenti principali. Quale coppia di direzioni scelga dentro quel piano non è
 deciso: conta il piano, non gli assi che ci disegna sopra.
@@ -142,11 +143,11 @@ approssimare.
 
 `````{tab} Superiore
 
-Con $e_\phi$ e $d_\theta$ **affini** e $\ell$ l’errore quadratico, il minimo
-della loss si raggiunge quando la **ricostruzione**
+Con $e_\phi$ e $d_\theta$ affini e $\ell$ l’errore quadratico, il minimo
+della loss si raggiunge quando la ricostruzione
 $d_\theta(e_\phi(\mathbf{x}))$ è la proiezione ortogonale di $\mathbf{x}$ sul
 sottospazio affine che passa per la media dei dati ed è generato dalle prime
-$L$ componenti principali dei dati **centrati**
+$L$ componenti principali dei dati centrati
 {cite}`bourlard1988auto,baldi1989neural`, e il
 codice ne è un sistema di coordinate.
 E la centratura conta: con mappe puramente lineari e
@@ -154,8 +155,8 @@ dati non centrati il minimo è il sottospazio dei primi $L$ vettori singolari
 della matrice grezza, che passa per l'origine e in generale non coincide con
 quello della PCA. A farsene carico è il termine additivo, ed è la ragione per
 cui le `nn.Linear` della `Clessidra` ce l'hanno. Con una
-precisazione che conta: la soluzione è unica solo **a meno di un cambio di
-base** nel latente, cioè l’autoencoder lineare recupera il *sottospazio* di
+precisazione che conta: la soluzione è unica solo a meno di un cambio di
+base nel latente, cioè l’autoencoder lineare recupera il *sottospazio* di
 massima varianza, non le singole direzioni principali né il loro ordinamento;
 per ritrovare quelle serve un vincolo in più, che la PCA impone e l’autoencoder
 no.
@@ -166,13 +167,13 @@ della PCA probabilistica nel limite di rumore infinitesimo, mentre l’analisi
 fattoriale di Spearman è la stessa famiglia con una varianza di rumore per
 ciascuna componente osservata, e lì una soluzione in forma chiusa non c’è.
 
-Attenzione poi a **dove** vanno messe le non linearità, perché il vincolo è
+Attenzione poi a dove vanno messe le non linearità, perché il vincolo è
 asimmetrico. Bourlard e Kamp dimostrano la metà negativa della faccenda, ed è
 quella che sorprende: in una rete a tre strati con uscita lineare, mettere una
 non linearità nello strato nascosto non serve a niente, il minimo resta quello
 lineare. La ragione è che le ricostruzioni sono l’immagine del decoder, e con
 un decoder affine quell’immagine è un sottospazio affine comunque sia fatto
-l’encoder. **A piegare la superficie è il decoder**; la non linearità
+l’encoder. A piegare la superficie è il decoder; la non linearità
 dell’encoder serve ad atterrarci sopra meglio. La `Clessidra` addestrata sulle
 cifre scritte a mano ce l’ha da tutte e due le parti, e tutto il resto (la
 strozzatura, la loss, l’assenza di probabilità) è identico.
@@ -180,8 +181,8 @@ strozzatura, la loss, l’assenza di probabilità) è identico.
 `````
 
 Da qui in avanti la clessidra è curva, e la curva la mette il copista: dentro
-di lui c’è un passaggio in più rispetto alla semplice somma pesata, la **non
-linearità** del {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`, ed
+di lui c’è un passaggio in più rispetto alla semplice somma pesata, la non
+linearità del {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`, ed
 è quella a permettere ai quadri ridipinti di stare su una superficie piegata
 invece che su un piano. Anche l’archivista ne ha una, e gli serve a trovare su
 quella superficie il punto giusto. Adesso la guardiamo lavorare su dati veri.
@@ -189,10 +190,10 @@ quella superficie il punto giusto. Adesso la guardiamo lavorare su dati veri.
 ## Trenta righe, e funziona
 
 Le cifre scritte a mano di `scikit-learn` sono immagini di 8 pixel per lato,
-cioè 64 numeri, e sono 1797. Le comprimiamo in **otto** numeri, che è un ottavo
+cioè 64 numeri, e sono 1797. Le comprimiamo in otto numeri, che è un ottavo
 del dato, e chiediamo alla rete di rifarle.
 
-Il voto che le diamo è la **cross-entropia**, il metro della {doc}`sezione
+Il voto che le diamo è la cross-entropia, il metro della {doc}`sezione
 sulla teoria dell’informazione </Matematica/teoria-informazione>`, presa un
 pixel alla volta: invece di contare i grigi di differenza fra originale e
 copia, misura quanto il copista si è sbilanciato su quel pixel e quanto ci ha
@@ -254,17 +255,17 @@ errore di ricostruzione:   16.3 nat per cifra
 chi non guarda la cifra:  27.1 nat per cifra
 ```
 
-L’errore si misura in **nat**, l’unità di informazione dei richiami di
+L’errore si misura in nat, l’unità di informazione dei richiami di
 matematica: sono i nat che si sprecano in media su una cifra scommettendo male
 invece di conoscerla già, e più sono, peggio si è scommesso. (Con una riserva:
 su grigi che non sono zeri e uni questo conto è un surrogato, e i suoi nat
 vanno letti come un metro di confronto fra due macchine, non come una misura
 assoluta.) Da solo il 16,3 non direbbe niente, e per questo c’è la seconda
 riga. Il confronto giusto non è con chi tira a caso, che è un bersaglio troppo
-facile, ma con chi ha guardato bene **tutte** le cifre e non guarda quella che
+facile, ma con chi ha guardato bene tutte le cifre e non guarda quella che
 deve rifare: per ogni pixel dichiara il grigio che quel pixel ha in media, e
 nient’altro. Quello spende 27,1 nat. La clessidra, con otto numeri, ne spende
-16,3: **tre quinti**, avendo compresso la cifra in un ottavo dello spazio. Quel
+16,3: tre quinti, avendo compresso la cifra in un ottavo dello spazio. Quel
 27,1 tornerà, e in un posto che non ci si aspetta.
 
 ```python
@@ -312,14 +313,15 @@ le stesse, rifatte a partire da otto numeri
 
 Le quattro cifre vere sono uno zero, un uno, un due e un tre; le prime due si
 leggono a colpo d’occhio, il due si riconosce dalla base larga nella penultima
-riga, il tre bisogna proprio saperlo. Ma non è questo il punto. Il punto è che la riga di sotto **ripete la riga di sopra**,
-tratto per tratto, e ci arriva partendo da otto numeri soli. La compressione
-funziona, e il resto della sezione non la mette in dubbio.
+riga, il tre bisogna proprio saperlo. Ma non è questo il punto. Il punto è che
+la riga di sotto ripete la riga di sopra, tratto per tratto, e ci arriva
+partendo da otto numeri soli. La compressione funziona, e il resto della
+sezione non la mette in dubbio.
 
 ## Il cammino che si perde
 
 Adesso la domanda che ci interessa. Prendiamo due cifre vere, guardiamo i loro
-otto numeri, e camminiamo **in linea retta** dall’una all’altra, fermandoci
+otto numeri, e camminiamo in linea retta dall’una all’altra, fermandoci
 lungo la strada a far dipingere il copista. Camminare in linea retta fra due
 file di numeri vuol dire fare la stessa cosa su ciascuna posizione: se la prima
 scheda comincia con 3 e la seconda con 7, a metà strada quel numero vale 5, a
@@ -350,8 +352,8 @@ Agli estremi ci sono lo zero e l’uno, riconoscibili. In mezzo l’anello dello
 zero si stringe e si riempie di grigio a poco a poco, senza mai chiudersi del
 tutto; poi si storce; poi resta una barra spessa che non è ancora un uno. La
 prima delle tre tappe intermedie è ancora uno zero, uno zero che si sta
-sfaldando; le altre due non si lasciano chiamare per nome: **non sono cifre**. Il copista, in quei punti, non c’è mai stato,
-e dipinge quello che gli riesce.
+sfaldando; le altre due non si lasciano chiamare per nome: non sono cifre.
+Il copista, in quei punti, non c’è mai stato, e dipinge quello che gli riesce.
 
 Lo stesso succede, e peggio, provando a inventare da zero. «Inventare» qui vuol
 dire una cosa precisa: si guarda dove stanno i codici veri (il loro centro, e
@@ -414,10 +416,10 @@ quarta hanno tratti che si interrompono a
 metà, la prima è un anello troppo grasso, la terza una forma piena, e nessuna
 delle quattro si lascia chiamare per nome. Ma il numero conta più delle
 immagini,
-perché dice il **perché** invece del sintomo. I codici veri stanno a poco più
+perché dice il perché invece del sintomo. I codici veri stanno a poco più
 di due unità l’uno dall’altro; un codice sorteggiato dista più di cinque dal
 più vicino dei codici veri. Sorteggiare in quello spazio vuol dire finire, di
-norma, a **più del doppio** della distanza che separa due schede vere. È terra
+norma, a più del doppio della distanza che separa due schede vere. È terra
 mai battuta, ed è la regola più che l’eccezione. E non dipende dal modo
 semplice di pescare: guardando anche come le posizioni vanno d’accordo fra
 loro il divario scende da 2,2 spaziature a 1,8, e non sparisce. La forma
@@ -439,7 +441,7 @@ che non si chiede non si ottiene, e qui non è stato chiesto.
 
 E c’è un motivo per aspettarsi anche di peggio, che non è dimostrato ma è
 plausibile: se l’unica cosa che conta è che ogni quadro torni indietro
-riconoscibile, all’archivista conviene tenere **lontani fra loro i gruppi** di
+riconoscibile, all’archivista conviene tenere lontani fra loro i gruppi di
 schede, perché più sono distanti, meno rischia che il copista li confonda. E
 allontanare i gruppi, a parità di schede, vuol dire allargare i vuoti in
 mezzo. Il cassetto ne esce con le schede addossate in
@@ -467,7 +469,7 @@ $$
 
 dove $\delta$ è la delta di Dirac (l’encoder qui è deterministico, quindi ogni
 dato contribuisce un punto solo) e $p_{\text{dati}}$ la distribuzione da cui
-gli esempi provengono, è definibile ma **inutilizzabile**: nessuno l’ha
+gli esempi provengono, è definibile ma inutilizzabile: nessuno l’ha
 vincolata, non se ne conosce la forma, e soprattutto non ci si sa campionare.
 Ma generare richiede esattamente quello, cioè una distribuzione da cui pescare
 $\mathbf{z}$ prima di decodificare. (Nella sezione seguente lo stesso simbolo
@@ -483,47 +485,48 @@ codici. L’argomento è
 euristico: a parità del resto, codici più distanti fra loro si
 ricostruiscono meglio, perché il decoder ha meno occasioni di confonderli, e
 nella loss non compare nessun termine che paghi quella distanza. Si dice, con
-formula spiccia, che il latente **non è regolarizzato**, e la regolarizzazione
+formula spiccia, che il latente non è regolarizzato, e la regolarizzazione
 che manca riguarda la distribuzione dei codici, non i pesi.
 
 Da qui il programma della sezione seguente. Servono due cose insieme, e sono le
 due che il nome «autoencoder variazionale» tiene una per parola: una
-distribuzione bersaglio $p(\mathbf{z})$ **scelta in anticipo** (così si sa dove
+distribuzione bersaglio $p(\mathbf{z})$ scelta in anticipo (così si sa dove
 pescare) e un termine nella loss che spinga i codici a distribuirsi come lei.
 La sorpresa, e il motivo per cui la sezione è lunga, è che quel termine non si
-inventa: **cade fuori da solo** dal tentativo, tutt’altro, di massimizzare la
+inventa: cade fuori da solo dal tentativo, tutt’altro, di massimizzare la
 verosimiglianza dei dati.
 
 `````
 
-Prima di tirare le somme, una precisazione su che cosa non è in
-discussione. La clessidra resta il modo giusto di comprimere, ed è così che il
-libro la usa quando le chiede di comprimere: nel {doc}`capitolo sull’audio
-</Audio/overview>` per
-fabbricare un alfabeto del suono, e più avanti per rimpicciolire un’immagine
-di quarantotto volte. (In quei due posti la clessidra ha
-in più il pezzo che la sezione seguente aggiunge, ma il mestiere che le si
-chiede è questo.) Il difetto misurato qui riguarda
-un mestiere diverso, fabbricare dati nuovi, che a un compressore nessuno ha mai
-chiesto e che nessuna quantità di addestramento gli fa venire.
+Prima di tirare le somme, una precisazione su che cosa non è in discussione. La
+clessidra resta il modo giusto di comprimere, ed è così che il libro la usa
+quando le chiede di comprimere: nel {doc}`capitolo sull’audio
+</Audio/overview>` per fabbricare un alfabeto del suono, e più avanti per
+rimpicciolire un’immagine di quarantotto volte. (In quei due posti la clessidra
+ha in più qualcosa che qui non c’è, e non è la stessa cosa nei due: per
+l’immagine il pezzo che aggiunge la sezione seguente, per il suono la scheda
+fatta di simboli dell’ultima. Il mestiere che le si chiede, però, è questo.) Il
+difetto misurato qui riguarda un mestiere diverso, fabbricare dati nuovi, che a
+un compressore nessuno ha mai chiesto e che nessuna quantità di addestramento
+gli fa venire.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Un **autoencoder** è un archivista e un copista che si allenano insieme: il
+- Un autoencoder è un archivista e un copista che si allenano insieme: il
   primo riduce ogni dato a una scheda di pochi numeri, il secondo ricostruisce
   il dato dalla sola scheda, e il voto è uno solo, quanto la copia somiglia
   all’originale.
-- La **strozzatura è la richiesta**, non un limite: potendo scrivere una scheda
+- La strozzatura è la richiesta, non un limite: potendo scrivere una scheda
   lunga quanto il quadro, i due imparerebbero a fotocopiare.
 - Comprimere funziona: otto numeri bastano a rifare una cifra scritta a mano in
   modo che si riconosca.
-- **Generare no.** Camminando in linea retta fra due schede vere si incontrano
+- Generare no. Camminando in linea retta fra due schede vere si incontrano
   punti che non vogliono dire niente, e pescando una scheda a caso si finisce,
   di norma, a più del doppio della distanza che separa due schede vere.
 - La colpa non è dell’archivista: nella sua pagella non compariva l’ordine del
-  cassetto. Quello che manca è **una regola su dove vanno messe le schede**, ed
+  cassetto. Quello che manca è una regola su dove vanno messe le schede, ed
   è fatta di due pezzi, una forma decisa in anticipo per il cassetto e un voto
   che quella forma la pretenda; la sezione seguente li ricava senza inventarli.
 ```
@@ -535,14 +538,14 @@ chiesto e che nessuna quantità di addestramento gli fa venire.
 ```{admonition} Da ricordare
 :class: important
 - Un autoencoder addestra $e_\phi$ e $d_\theta$ sulla sola ricostruzione, con
-  $L \ll D$. Nella sua definizione **non compare nessuna distribuzione**.
-- Con $e_\phi$ e $d_\theta$ **affini** ed errore quadratico ritrova il
+  $L \ll D$. Nella sua definizione non compare nessuna distribuzione.
+- Con $e_\phi$ e $d_\theta$ affini ed errore quadratico ritrova il
   sottospazio affine che passa per la media dei dati ed è generato dalle prime
   $L$ componenti principali {cite}`bourlard1988auto,baldi1989neural`, a meno
   di un cambio di
   base: è la PCA della sezione su riduzione e clustering. Senza il termine
   additivo, su dati non centrati, quel sottospazio passa per l’origine e in
-  generale non è quello della PCA. Basta una non linearità nel **decoder**
+  generale non è quello della PCA. Basta una non linearità nel decoder
   perché cada il vincolo di affinità e la superficie che ritrova possa essere
   curva.
 - La ricostruzione riesce (16,3 nat per cifra contro i 27,1 di chi dichiara il
@@ -550,7 +553,7 @@ chiesto e che nessuna quantità di addestramento gli fa venire.
   64 pixel compresse in 8 numeri); il campionamento no: un codice sorteggiato
   dista dai codici veri $2{,}2$ volte la loro spaziatura tipica.
 - La causa è strutturale: l’aggregato $q_\phi(\mathbf{z})$ non è vincolato da
-  nulla, e **niente nella loss paga la distanza fra i codici**, quindi niente
+  nulla, e niente nella loss paga la distanza fra i codici, quindi niente
   si oppone a un latente dilatato e pieno di vuoti.
 - Serve quindi un prior $p(\mathbf{z})$ dichiarato e un termine che avvicini i
   codici a lui. La sezione seguente non lo aggiunge a mano: lo ricava.
@@ -558,31 +561,29 @@ chiesto e che nessuna quantità di addestramento gli fa venire.
 
 `````
 
-Resta una cosa da dire prima di andare avanti, ed è un avvertimento che
-da tenere. Quello che abbiamo appena visto è un esperimento **andato
-benissimo**, che ha risposto a una domanda diversa da quella che avevamo in
-testa. Chiedere «la copia somiglia
-all’originale?» e sperare in un archivio ordinato è la versione in miniatura di
-un errore che nel libro torna spesso, e cioè scambiare la cosa che si
-misura con la cosa che si vuole. La sezione seguente non aggiusta la clessidra:
-cambia la domanda.
+Resta un avvertimento, prima di andare avanti. Quello che abbiamo appena visto
+è un esperimento andato benissimo, che ha risposto a una domanda diversa da
+quella che avevamo in testa. Chiedere «la copia somiglia all’originale?» e
+sperare in un archivio ordinato è la versione in miniatura di un errore che nel
+libro torna spesso, e cioè scambiare la cosa che si misura con la cosa che si
+vuole. La sezione seguente non aggiusta la clessidra: cambia la domanda.
 
 
-[^thread]: Il motivo è che **le somme in virgola mobile non sono associative**:
+[^thread]: Il motivo è che le somme in virgola mobile non sono associative:
 sommando gli stessi numeri in un ordine diverso il risultato cambia nell’ultima
 cifra, perché a ogni passo il totale parziale viene arrotondato a quante cifre
 il formato può tenere, e arrotondare un totale grande insieme a un addendo
 piccolo ne perde un pezzo. PyTorch, per andare più veloce, spezza ogni somma
 lunga fra i nuclei di calcolo disponibili e poi rimette insieme i pezzi: quanti
-sono i pezzi dipende da quanti nuclei ha la macchina, quindi **macchine diverse
-sommano in ordini diversi**. Su una rete addestrata per quattromila passi
+sono i pezzi dipende da quanti nuclei ha la macchina, quindi macchine diverse
+sommano in ordini diversi. Su una rete addestrata per quattromila passi
 quelle ultime cifre si accumulano, e alla fine si vedono: il costo di
 descrizione dell’ultima sezione, senza quella riga, vale 6,04 lasciando
 lavorare quattro nuclei e 6,03 usandone uno solo. La regola è più larga di
-PyTorch: **fissare il seme non basta**, dato che il seme
+PyTorch: fissare il seme non basta, dato che il seme
 governa i sorteggi e non l’ordine delle somme. E la riparazione non costa
 niente, anzi. Su tensori piccoli come questi (1797 cifre da 64 numeri) un
-thread solo è **più veloce**, e di parecchio. Non è un paradosso: spartire il
+thread solo è più veloce, e di parecchio. Non è un paradosso: spartire il
 lavoro e rimettere insieme i pezzi ha un costo fisso, che qui si paga
 quattromila volte, e ogni volta a ciascun nucleo tocca un pezzo di conto
 talmente piccolo che il tempo per consegnarglielo supera il tempo per farlo. Il

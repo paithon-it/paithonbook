@@ -15,9 +15,9 @@ vanno solo in avanti». Vogliono in ingresso sempre la stessa quantità di roba,
 e fra una risposta e l'altra non si ricordano niente.
 
 Un modello che vuole capire o generare testo deve invece fare due cose in più:
-accettare una **sequenza** di lunghezza qualsiasi (le frasi non hanno tutte lo
-stesso numero di parole) e portarsi dietro una **memoria di quello che ha già
-letto** man mano che avanza. Questa sezione racconta come, tra gli anni Ottanta
+accettare una sequenza di lunghezza qualsiasi (le frasi non hanno tutte lo
+stesso numero di parole) e portarsi dietro una memoria di quello che ha già
+letto man mano che avanza. Questa sezione racconta come, tra gli anni Ottanta
 e il 2017, si è passati dalle prime reti con memoria fino alla vigilia dei
 Transformer, che sono l'architettura su cui oggi si costruiscono i grandi
 modelli linguistici, e che hanno un capitolo tutto loro subito dopo questo.
@@ -35,7 +35,7 @@ fuori: è un appunto che la rete tiene per sé.
 Prima del disegno, due parole che ricorrono da qui in avanti. Il blocchetto di
 conti che si ripete si chiama **cella**, ed è l'unico pezzo di rete che esiste
 davvero. Dentro la cella ci sono dei numeri regolabili, ed è con quelli che si
-moltiplica tutto ciò che entra: si chiamano **pesi**, e sono ciò che la rete
+moltiplica tutto ciò che entra: si chiamano pesi, e sono ciò che la rete
 impara. Sono anche tutto ciò che la rete possiede: quando si dice che un
 modello «ha sette miliardi di parametri» si sta contando quei numeri lì.
 
@@ -51,7 +51,7 @@ guarda lo stato passare di mano in mano.
 :width: 95%
 
 Una RNN «srotolata» nel tempo. È
-**sempre la stessa cella**, applicata a ogni passo: riceve la parola di turno e
+sempre la stessa cella, applicata a ogni passo: riceve la parola di turno e
 il riassunto di tutto quello che è venuto prima, e produce il riassunto
 aggiornato più la sua scommessa (qui indicata con $\hat{y}$: a seconda del
 compito sarà la parola successiva, o l'etichetta di quella corrente). Le tre
@@ -63,7 +63,7 @@ copie del disegno sono tre momenti diversi, non tre pezzi diversi di rete.
 Un foglietto accanto al libro, su cui scrivi riga dopo riga un riassunto di ciò
 che è successo finora. Per ogni nuova frase fai sempre lo stesso gesto: guardi
 la frase, guardi il foglietto, e riscrivi il foglietto aggiornato. Il foglietto
-è lo **stato nascosto**; il gesto che ripeti è la cella della RNN. È «la stessa
+è lo stato nascosto; il gesto che ripeti è la cella della RNN. È «la stessa
 mano» che lavora a ogni riga, per questo la rete ha bisogno di pochi parametri
 anche per testi lunghissimi: non impara un gesto diverso per ogni parola, ne
 impara uno solo e lo riusa.
@@ -103,8 +103,8 @@ $$
 
 Qui $\mathbf{h}_t \in \mathbb{R}^d$ è lo stato nascosto, $\mathbf{x}_t$ l'input
 al passo $t$, mentre $\mathbf{W}_{hh}, \mathbf{W}_{xh}, \mathbf{W}_{hy}$ sono
-matrici di pesi e $\mathbf{b}_h$ il bias. Il punto cruciale è che **queste
-matrici non dipendono da $t$**: sono *condivise* su tutta la sequenza (*weight
+matrici di pesi e $\mathbf{b}_h$ il bias. Il punto cruciale è che queste
+matrici non dipendono da $t$: sono *condivise* su tutta la sequenza (*weight
 sharing*). L'addestramento avviene con la *backpropagation through time*, cioè
 la retropropagazione applicata alla rete srotolata.
 
@@ -113,13 +113,13 @@ Srotolare, però, ha un costo: la rete srotolata su una sequenza di mille passi
 memoria tutte le attivazioni intermedie. Su un testo lungo, o su un flusso che
 non finisce mai, la cosa non sta in piedi. Il rimedio si chiama **BPTT
 troncato**: si spezza la sequenza in blocchi di lunghezza fissa (tipicamente
-qualche decina di passi), si retropropaga dentro un blocco e **si stacca lo
-stato nascosto** al confine, passandolo al blocco successivo come un valore
+qualche decina di passi), si retropropaga dentro un blocco e si stacca lo
+stato nascosto al confine, passandolo al blocco successivo come un valore
 qualunque, senza la sua storia. In PyTorch è letteralmente una chiamata,
 `h = h.detach()`.
 
-Il prezzo è dichiarato: il gradiente non attraversa mai il confine, quindi **la
-rete non può imparare dipendenze più lunghe del blocco**. Lo stato in avanti
+Il prezzo è dichiarato: il gradiente non attraversa mai il confine, quindi la
+rete non può imparare dipendenze più lunghe del blocco. Lo stato in avanti
 sì, continua a propagarsi e a portare informazione; è il segnale di
 apprendimento che si ferma. Quando si legge che una ricorrente «fatica sulle
 dipendenze lunghe», una parte del problema è matematica, ed è il gradiente che
@@ -132,7 +132,7 @@ entrare l'addestramento in memoria.
 
 Sulla carta una RNN potrebbe collegare la prima parola all'ultima. Nella
 pratica fatica. Nella frase «Le chiavi che ho lasciato ieri sul tavolo della
-cucina di mia nonna… **sono** sparite», per accordare il verbo la rete deve
+cucina di mia nonna… sono sparite», per accordare il verbo la rete deve
 ricordare «chiavi» attraverso una dozzina di parole. Più cresce la distanza,
 più la memoria si sbiadisce.
 
@@ -174,13 +174,14 @@ $$
 $$
 
 un prodotto di $k$ fattori. Se questi fattori hanno norma tipicamente minore di
-1, il prodotto tende a $0$ in modo esponenziale (**gradiente che svanisce**,
+1, il prodotto tende a $0$ in modo esponenziale (gradiente che svanisce,
 *vanishing gradient*); se maggiore di 1, il gradiente *può* crescere fino a
 esplodere. La norma dei fattori, infatti, dà solo un maggiorante del prodotto:
 che sia maggiore di 1 è condizione necessaria perché il gradiente esploda, non
-sufficiente {cite}`pascanu2013difficulty`. Che le RNN «semplici» non riescano ad apprendere dipendenze su
-molti passi è un risultato dimostrato formalmente già nel 1994 da Yoshua
-Bengio, Patrice Simard e Paolo Frasconi {cite}`bengio1994learning`.
+sufficiente {cite}`pascanu2013difficulty`. Che le RNN «semplici» non riescano
+ad apprendere dipendenze su molti passi è un risultato dimostrato formalmente
+già nel 1994 da Yoshua Bengio, Patrice Simard e Paolo Frasconi
+{cite}`bengio1994learning`.
 
 `````
 
@@ -193,14 +194,14 @@ memoria di lavoro che però dura).
 
 L'intuizione è di dare alla cella due memorie invece di una. La prima è quella
 che già c'era, il riassunto riscritto da capo a ogni passo. La seconda è un
-**taccuino protetto**, che a ogni passo non viene riscritto: viene ritoccato,
+taccuino protetto, che a ogni passo non viene riscritto: viene ritoccato,
 con piccole aggiunte e piccole cancellature. Quello che ci si scrive resta lì
 finché qualcuno non decide di toglierlo, e proprio per questo un'informazione
 può sopravvivere a cento parole di distanza. A decidere che cosa scriverci e
 che cosa leggerne sono due **cancelli**, cioè due manopole che la rete impara
 ad aprire e chiudere da sé.
 
-Il terzo cancello, quello che decide che cosa **cancellare**, nel lavoro del
+Il terzo cancello, quello che decide che cosa cancellare, nel lavoro del
 1997 non c'era: arriva tre anni dopo, con Felix Gers, Jürgen Schmidhuber e Fred
 Cummins {cite}`gers2000learning`, e nasce da un difetto scoperto all'uso. Se il
 taccuino si può solo scrivere e mai cancellare, prima o poi si riempie, e da
@@ -224,7 +225,7 @@ Il dettaglio decisivo di {numref}`fig-cella-lstm` è la linea orizzontale che
 passa da sinistra a destra quasi indisturbata, ed è quella il taccuino. Perché
 sia decisiva richiede tre passaggi, e conviene farli.
 
-**Primo: che cosa vuol dire «riscrivere il riassunto».** Fin qui l'abbiamo
+Primo: che cosa vuol dire «riscrivere il riassunto». Fin qui l'abbiamo
 detto a parole, ma dentro il computer quel riassunto è una fila di numeri. E
 anche la parola nuova è una fila di numeri: prima di entrare nella rete, ogni
 parola viene sostituita dalle sue coordinate sulla mappa dei significati,
@@ -234,26 +235,26 @@ numeri della parola nuova. Non è una metafora: a ogni passo i numeri del
 riassunto vengono letteralmente moltiplicati per gli stessi numeri, quelli
 della cella, che è sempre la stessa.
 
-**Secondo: perché ripetere una moltiplicazione fa danni.** Una rete impara
+Secondo: perché ripetere una moltiplicazione fa danni. Una rete impara
 correggendo i propri pesi, e per correggerli deve poter risalire all'indietro
 fino al punto in cui l'errore è nato. Quel segnale di ritorno si chiama
-**gradiente**, e dice a ogni pezzo della rete quanto e in che verso spostarsi.
+gradiente, e dice a ogni pezzo della rete quanto e in che verso spostarsi.
 Tornando indietro di cento passi, però, il gradiente attraversa cento volte la
 stessa moltiplicazione, e ripetere cento volte una moltiplicazione porta o a
 zero o all'infinito: $0{,}9$ elevato a cento fa $0{,}000027$, e $1{,}1$ elevato
 a cento fa quasi quattordicimila. Il segnale di ritorno o si spegne o esplode,
 e la rete non impara più niente sulle cose lontane.
 
-**Terzo: perché le somme salvano.** Nella LSTM la strada principale, quella del
-taccuino, funziona per **aggiunte**: al passo dopo il taccuino è quello di
+Terzo: perché le somme salvano. Nella LSTM la strada principale, quella del
+taccuino, funziona per aggiunte: al passo dopo il taccuino è quello di
 prima più una piccola correzione.
 
 E su una somma il segnale di ritorno passa intero. Il perché si tocca con mano
 con due numeri. Se scrivo $b = 0{,}9 \times a$ e poi cambio $a$ di un
 centesimo, $b$ cambia di nove millesimi: il cambiamento è arrivato attenuato, e
 ripetendo cento volte non arriva più niente, come abbiamo appena visto. Se
-invece scrivo $b = a + c$ e cambio $a$ di un centesimo, $b$ cambia di **un
-centesimo esatto**: la somma non tocca la parte che le passa attraverso, si
+invece scrivo $b = a + c$ e cambio $a$ di un centesimo, $b$ cambia di un
+centesimo esatto: la somma non tocca la parte che le passa attraverso, si
 limita ad aggiungerle qualcosa accanto. Il segnale di ritorno funziona allo
 stesso modo, all'incontrario: attraversando cento somme arriva com'era partito,
 attraversando cento moltiplicazioni per $0{,}9$ arriva ridotto a meno di un
@@ -261,7 +262,7 @@ trentamillesimo.
 
 Guardando la figura si vede che una moltiplicazione c'è anche lì, sulla
 sinistra: è il cancello che dimentica, e serve appunto a cancellare. Ma è una
-sola per passo, e soprattutto è **una manopola che la rete controlla**: se
+sola per passo, e soprattutto è una manopola che la rete controlla: se
 quello che c'è scritto sul taccuino serve ancora, la rete tiene il cancello
 spalancato, quella moltiplicazione è per uno, e non attenua niente. Nella RNN
 semplice invece la moltiplicazione è obbligatoria e sempre la stessa, e nessuno
@@ -384,7 +385,7 @@ di ritorno anche da lontano, il foglietto riscritto da capo no.
 
 LSTM e GRU hanno dominato l'NLP per quasi un decennio: traduzione automatica,
 riconoscimento vocale, generazione di testo. Ma restava un limite strutturale,
-questa volta nel **calcolo**.
+questa volta nel calcolo.
 
 `````{tab} Elementare
 
@@ -394,7 +395,7 @@ avanti». Su una frase lunga significa cento passi obbligatoriamente in fila,
 uno dopo l'altro.
 
 Perché è un guaio? Perché le macchine su cui girano queste reti sono fatte
-apposta per il contrario. Una **scheda grafica** (la stessa che nel computer di
+apposta per il contrario. Una scheda grafica (la stessa che nel computer di
 casa disegna i videogiochi, e che in gergo si chiama GPU) è brava a fare
 *migliaia di conti facili tutti insieme*, più che un conto difficile.
 Metterle davanti una rete ricorrente è come una catena di montaggio con una
@@ -412,7 +413,7 @@ passaggi, e imparare un legame così lontano resta difficile.
 `````{tab} Superiore
 
 La ricorrenza $\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$ è
-intrinsecamente **sequenziale**: il calcolo su una sequenza di lunghezza $n$
+intrinsecamente sequenziale: il calcolo su una sequenza di lunghezza $n$
 richiede $O(n)$ passi che non possono essere parallelizzati lungo l'asse
 temporale. Questo mal si sposa con le GPU, progettate per eseguire in parallelo
 enormi moltiplicazioni tra matrici. Inoltre il segnale tra due token distanti
@@ -425,9 +426,9 @@ gate) l'apprendimento di dipendenze molto lunghe.
 
 Le celle ricorrenti che abbiamo costruito qui sono i mattoni del passo
 successivo: mettere due RNN una di fronte all'altra (una che legge, una che
-scrive) e farle **tradurre una frase intera**. È la storia della prossima
+scrive) e farle tradurre una frase intera. È la storia della prossima
 sezione, ed è proprio lì, per rimediare ai limiti di questa architettura, che
-nascerà il meccanismo di **attenzione**: la possibilità, per ogni parola in
+nascerà il meccanismo di attenzione: la possibilità, per ogni parola in
 uscita, di tornare a guardare tutte le parole in ingresso e pesare da sola
 quali contano.
 
@@ -444,51 +445,51 @@ corrente poca.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il testo è una **sequenza**: l'ordine è significato, e per capirlo serve
+- Il testo è una sequenza: l'ordine è significato, e per capirlo serve
   ricordare quello che si è già letto.
-- Il **foglietto dei riassunti**: una rete ricorrente legge una parola alla
+- Il foglietto dei riassunti: una rete ricorrente legge una parola alla
   volta e a ogni parola riscrive un foglietto che riassume tutto il pregresso.
   È sempre la stessa mano a riscriverlo, e per questo la rete resta piccola
   anche su testi lunghissimi.
 - Ogni riscrittura però perde un pochino del vecchio, e dopo cento righe di
   pagina uno non resta quasi niente; e la correzione, mentre risale le righe
   all'indietro, si accorcia a ogni passaggio finché in cima non sposta più
-  niente. Sono le **dipendenze lontane** che si dissolvono.
-- La **LSTM** affianca al foglietto un taccuino protetto, che non viene
+  niente. Sono le dipendenze lontane che si dissolvono.
+- La LSTM affianca al foglietto un taccuino protetto, che non viene
   riscritto da capo a ogni passo ma solo ritoccato, e tre manopole che decidono
   quanto del taccuino dimenticare, quanta parte dell'appunto annotarci e quanto
   mostrarne sul foglietto: così un'informazione può restare intatta finché
   serve. Si girano poco per volta, come il rubinetto dell'acqua.
   Curiosamente quella che *dimentica* è arrivata tre anni dopo le altre due, ed
-  è la più importante quando il testo non finisce mai. La **GRU** è la stessa
+  è la più importante quando il testo non finisce mai. La GRU è la stessa
   idea in versione più snella, due manopole invece di tre e un foglio solo
   invece di due.
-- Il limite che resta è di **tempo**: una rete ricorrente legge in fila, e per
+- Il limite che resta è di tempo: una rete ricorrente legge in fila, e per
   fare il passo cento deve aver fatto il novantanove. È una catena di montaggio
   con una postazione sola, e non c'è computer che la possa mandare più veloce.
   La fila lunga si paga due volte, perché per legare la riga cento con la riga
   uno la correzione deve risalire tutte quelle di mezzo. È il collo di
-  bottiglia che i **Transformer** toglieranno di mezzo.
+  bottiglia che i Transformer toglieranno di mezzo.
 ```
 `````
 
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il testo è una **sequenza**: l'ordine è significato, e serve **memoria del
-  contesto**.
-- Una **RNN** riusa la stessa cella a ogni passo, facendo scorrere lo stato
+- Il testo è una sequenza: l'ordine è significato, e serve memoria del
+  contesto.
+- Una RNN riusa la stessa cella a ogni passo, facendo scorrere lo stato
   nascosto $\mathbf{h}_t$ nel tempo.
 - Le RNN semplici perdono le dipendenze a lungo termine per due ragioni
-  distinte: il **gradiente che svanisce**, che è matematica, e il **BPTT
-  troncato**, che è ingegneria. Staccando lo stato al confine del blocco
+  distinte: il gradiente che svanisce, che è matematica, e il BPTT
+  troncato, che è ingegneria. Staccando lo stato al confine del blocco
   (`h.detach()`) il gradiente non lo attraversa, quindi un legame più lungo
   del blocco la rete non lo impara mai.
-- **LSTM** e **GRU** introducono i **gate**, che decidono cosa ricordare e cosa
+- LSTM e GRU introducono i gate, che decidono cosa ricordare e cosa
   dimenticare, proteggendo la memoria. L'architettura del 1997
   {cite}`hochreiter1997long` ne aveva due; il *forget gate* è del 2000
   {cite}`gers2000learning`.
-- Il limite residuo è la **sequenzialità** (poca parallelizzazione): è ciò che
-  i **Transformer**, con l'attenzione, superano.
+- Il limite residuo è la sequenzialità (poca parallelizzazione): è ciò che
+  i Transformer, con l'attenzione, superano.
 ```
 `````

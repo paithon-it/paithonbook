@@ -56,7 +56,7 @@ nella prima delle tre vie, e ogni volta si finisce in una valle diversa. A
 cambiare, da un mestiere all'altro, è solo il vincolo con cui si scende.
 
 L'anno dopo arriva l'osservazione che ribalta la prospettiva. Will Grathwohl
-e colleghi notano che **un classificatore è già un modello a energia**, e
+e colleghi notano che un classificatore è già un modello a energia, e
 nessuno se n'era accorto {cite}`grathwohl2020your`.
 
 `````{tab} Elementare
@@ -154,8 +154,8 @@ addestramento più fragile, che è il difetto ereditario di tutta la famiglia.
 ## I due ritorni non dichiarati
 
 Il primo lo abbiamo già incontrato nella sezione sulla funzione di partizione,
-ed è il ponte più solido del capitolo: **i modelli di diffusione sono modelli
-a energia che hanno smesso di dirlo**. Il
+ed è il ponte più solido del capitolo: i modelli di diffusione sono modelli
+a energia che hanno smesso di dirlo. Il
 compito con cui si addestrano è quello della seconda delle tre vie, quella che
 rinuncia alle percentuali e impara soltanto la pendenza: «indovina il rumore
 che ti ho aggiunto» {cite}`vincent2011connection`.
@@ -167,7 +167,7 @@ l'immagine è ancora tutta rumore il paesaggio è liscio, con poche valli larghe
 in cui è difficile sbagliare direzione; scendendo di grado diventa più
 dettagliato, con valli più strette, quelle che distinguono un volto
 dall'altro. Quello che il modello impara, per ogni grado di sporco, è la
-pendenza del paesaggio corrispondente; e generare è una **discesa rumorosa**
+pendenza del paesaggio corrispondente; e generare è una discesa rumorosa
 lungo quella successione di paesaggi, parente stretta della dinamica di
 Langevin {cite}`song2021score`.
 
@@ -178,7 +178,7 @@ numero appena sopra uno, che ingrandisce insieme il disegno e lo sporco che
 lo copre; e si getta sopra una manciata di rumore appena sorteggiato.
 La terza mossa mette dentro molto più disturbo di quanto la prima ne tolga, e
 viene da chiedersi come faccia lo sporco a calare. La risposta è in due pezzi.
-Il primo: la scheggia cancellata è **mirata**, punta sempre dalla stessa
+Il primo: la scheggia cancellata è mirata, punta sempre dalla stessa
 parte giro dopo giro, mentre le manciate di rumore sono sorteggiate ogni volta
 in una direzione diversa e a lungo andare si disfano fra loro. Piccola e
 costante batte grande e a casaccio, purché si ripeta abbastanza. Il secondo:
@@ -211,12 +211,11 @@ A riportarla nel deep learning sono Dmitry Krotov e lo stesso Hopfield, nel
 2016 {cite}`krotov2016dense`, riprendendo un filone di fisica statistica dei
 tardi anni Ottanta che loro stessi citano. Nella formula del 1982 ogni ricordo
 abbassa l'energia in proporzione al quadrato della sua somiglianza con lo stato
-della rete; alzando quel quadrato a una potenza più alta la memoria diventa più
-capiente. Con l'esponente due si ritrova la rete di sempre, in cui la capienza
-cresce in proporzione al numero di neuroni: raddoppiando i neuroni si
-raddoppiano i ricordi. Con l'esponente tre cresce come il *quadrato* dei
-neuroni:
-raddoppiandoli, i ricordi diventano quattro volte tanti.
+della rete; sostituendo a quel quadrato una potenza più alta la memoria
+diventa più capiente. Con l'esponente due si ritrova la rete di sempre, in cui
+la capienza cresce in proporzione al numero di neuroni: raddoppiando i neuroni
+si raddoppiano i ricordi. Con l'esponente tre cresce come il *quadrato* dei
+neuroni: raddoppiandoli, i ricordi diventano quattro volte tanti.
 
 Mete Demircigil e colleghi, l'anno dopo, spingono la stessa idea fino in fondo
 {cite}`demircigil2017model`, e la capienza cambia proprio modo di crescere.
@@ -238,7 +237,7 @@ chiama *query*, i ricordi in archivio sono le *key*, e un passo di attenzione
 
 «A meno di un passaggio» non è una formula di cortesia. È il punto in cui la
 battuta del titolo va presa meno alla lettera di quanto si direbbe. L'identità
-vale a tre condizioni. La prima: che si faccia **un solo** passo di
+vale a tre condizioni. La prima: che si faccia un solo passo di
 aggiornamento, invece di ripetere il passo fino in fondo come farebbe una rete
 di Hopfield normale. La seconda: che la temperatura della memoria, cioè quanto
 forte la si scuote, sia fissata esattamente al valore che i Transformer usano
@@ -252,7 +251,7 @@ sono quegli stessi ricordi dopo quella moltiplicazione.
 C'è poi un risultato che questo capitolo tiene volentieri, perché è più
 interessante della battuta. L'attenzione di un Transformer non è un blocco
 solo: dentro ogni strato ce ne sono parecchie copie che lavorano in parallelo,
-e ciascuna copia si chiama **testa**. Puntando questa lente sulle teste di un
+e ciascuna copia si chiama testa. Puntando questa lente sulle teste di un
 modello di linguaggio addestrato davvero (nell'articolo è BERT), gli autori
 trovano che nei primi strati la maggior parte di
 esse non sta richiamando nessun ricordo singolo: sta facendo una media su
@@ -345,24 +344,24 @@ una profezia.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un paesaggio si può scavare anche su **immagini vere**, e allora un solo
+- Un paesaggio si può scavare anche su immagini vere, e allora un solo
   modello fa quattro mestieri: genera, completa un'immagine a cui manca un
   pezzo, segnala quello che è fuori posto e mescola concetti. Sono la stessa
   cosa: cercare il punto più basso, con vincoli diversi.
-- Un **classificatore è già un modello a energia** senza saperlo: dal più alto
+- Un classificatore è già un modello a energia senza saperlo: dal più alto
   dei punteggi che dà alle classi, corretto un poco verso l'alto quando anche
   gli altri gli stanno vicino, si ottiene quanto quell'immagine è plausibile,
   non quale classe sia. Addestrarlo a fare bene anche questo lo rende più
   prudente: dice quando è incerto, riconosce le cose mai viste ed è più
   difficile da ingannare.
-- I **modelli di diffusione** sono modelli a energia che non lo dichiarano:
+- I modelli di diffusione sono modelli a energia che non lo dichiarano:
   imparano la pendenza di un paesaggio per ogni grado di sporco, e generare
   un'immagine è scendere, con addosso il rumore, lungo quella fila di
   paesaggi, dal più liscio (dove è difficile sbagliare direzione) al più
   dettagliato. Con la riserva delle quattro frecce in tondo: imparano le
   pendenze, e che siano le pendenze di un paesaggio vero nessuno lo
   garantisce.
-- Le **reti di Hopfield di oggi** tengono in memoria molti più ricordi di
+- Le reti di Hopfield di oggi tengono in memoria molti più ricordi di
   quelle del 1982, e il modo in cui li richiamano è, a un passaggio di
   distanza, l'attenzione dei Transformer: la domanda che si fa alla memoria è
   la stessa cosa che nell'attenzione decide a quali parole guardare. Con una
@@ -370,7 +369,7 @@ una profezia.
   nei primi strati quasi nessuna testa richiama un ricordo solo, ne fa la media
   di moltissimi; più avanti la media si stringe, e solo a metà rete qualcuna
   arriva vicino a un ricordo singolo.
-- Le **quattro rinunce** di Yann LeCun: via i modelli che rifanno il dato
+- Le quattro rinunce di Yann LeCun: via i modelli che rifanno il dato
   pezzo per pezzo (meglio reti che si limitano a confrontare due riassunti,
   invece di ridisegnare ogni pixel), via le probabilità (meglio l'energia), via il
   mostrare al modello anche gli esempi sbagliati perché impari a respingerli
@@ -385,21 +384,21 @@ una profezia.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Gli **EBM sulle immagini** {cite}`du2019implicit` addestrano una rete come
+- Gli EBM sulle immagini {cite}`du2019implicit` addestrano una rete come
   $E_\theta$ con campioni negativi da Langevin e un serbatoio persistente: un
   solo modello genera, completa, rileva anomalie e compone concetti.
-- **JEM** {cite}`grathwohl2020your`: un classificatore è già un EBM, con
+- JEM {cite}`grathwohl2020your`: un classificatore è già un EBM, con
   $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$.
   Addestrarlo anche come tale migliora calibrazione, rilevamento del fuori
   distribuzione e robustezza.
-- I **modelli di diffusione** sono modelli a energia che non lo dichiarano:
+- I modelli di diffusione sono modelli a energia che non lo dichiarano:
   loss di denoising score matching (riponderata per livello di rumore), campo
   dello score $-\nabla_{\mathbf{x}} E_t(\mathbf{x})$ a ogni livello $t$,
   campionamento parente di Langevin lungo la successione di paesaggi, dal più
   liscio al più dettagliato. Con la riserva detta nella sezione sulla
   partizione: imparano le frecce, e che siano la pendenza di una superficie
   vera nessuno lo garantisce.
-- Le **Hopfield moderne** hanno energia riprogettata {cite}`krotov2016dense`,
+- Le Hopfield moderne hanno energia riprogettata {cite}`krotov2016dense`,
   capienza esponenziale {cite}`demircigil2017model` e, agli stati continui,
   una regola di aggiornamento che è la *scaled dot-product attention*
   {cite}`ramsauer2021hopfield`: con $\beta = 1/\sqrt{d_k}$ (la temperatura è
@@ -410,7 +409,7 @@ una profezia.
   moltissimi pattern, negli strati intermedi compaiono stati metastabili
   stretti, fino al quasi-richiamo di un ricordo solo, e negli ultimi prevalgono
   stati metastabili di ampiezza media.
-- Le **quattro rinunce** di LeCun {cite}`lecun2022path`: generativo →
+- Le quattro rinunce di LeCun {cite}`lecun2022path`: generativo →
   incorporamento congiunto, probabilistico → energia, contrastivo →
   regolarizzato, RL → controllo predittivo. La seconda è la tesi di questo
   capitolo; la prima resta una scommessa, e il {doc}`capitolo sui world model </WorldModels/overview>` la

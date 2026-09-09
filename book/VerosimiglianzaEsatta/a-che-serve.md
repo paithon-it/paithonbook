@@ -71,7 +71,7 @@ piacere): si aggiunge allora rumore uniforme ai pixel, cioè si
 **dequantizza**, e quel che si ottiene è la verosimiglianza esatta dei dati
 dequantizzati. Il legame con il numero che interessa lo dà una disuguaglianza
 di Jensen {cite}`theis2016note`: la log-verosimiglianza media del modello
-continuo sta **sotto** quella del corrispondente modello discreto, quindi i bit
+continuo sta sotto quella del corrispondente modello discreto, quindi i bit
 per dimensione riportati per un flusso sono un limite *superiore* al costo di
 codifica vero. Conservativo, il che va benissimo, ma non è la stessa cosa.
 
@@ -202,7 +202,7 @@ risultato meno paradossale di quanto sembri: la massa di
 probabilità di una gaussiana non sta nel punto di densità massima ma in un
 guscio a distanza $\approx \sqrt{D}$ dall'origine (su CIFAR-10, dove
 $D = 3.072$, la norma di un campione gaussiano standard vale in media
-$55{,}4$). Un campione **tipico** non
+$55{,}4$). Un campione tipico non
 è quindi un campione ad alta densità, e i due concetti divergono tanto più
 quanto $D$ cresce. Cercare l'atipico guardando la densità è, letteralmente,
 guardare l'asse sbagliato, ed è la strada che lo stesso gruppo prende subito
@@ -218,33 +218,32 @@ Resta un debito, aperto nella sezione precedente e prima ancora dalla
 «flusso» del *rectified flow*. Adesso la
 si può saldare, e la parentela è più stretta di quanto sembri.
 
-Un flusso, come l'abbiamo costruito, è una **composizione di tanti passi
-invertibili**, e ogni passo ha dovuto rinunciare a qualcosa per restare
+Un flusso, come l'abbiamo costruito, è una composizione di tanti passi
+invertibili, e ogni passo ha dovuto rinunciare a qualcosa per restare
 invertibile e per avere un determinante leggibile. Domanda naturale: e se
 invece di comporre venti passi grossi ne componessimo infiniti
 infinitamente piccoli? La composizione diventa un'equazione differenziale: si
-dichiara una **velocità** in ogni punto dello spazio e in ogni istante, si
+dichiara una velocità in ogni punto dello spazio e in ogni istante, si
 lascia scorrere, e il punto di partenza arriva dove deve. La deformazione
 diventa un movimento continuo, invece di una scala di gradini.
 
 Il guadagno è enorme. In quel limite il logaritmo del determinante si riduce
-all'integrale nel tempo della **traccia** della jacobiana, cioè della sola
-diagonale: è il risultato
-delle *neural ODE* di Ricky Chen e colleghi {cite}`chen2018neural`, che al posto di una pila di
-strati mettono l'integrazione di un'equazione differenziale. Quella traccia
-però va ancora calcolata, e calcolarla per intero costa quanto il quadrato
-delle dimensioni; a toglierla di mezzo arriva FFJORD
-{cite}`grathwohl2019ffjord`, che la **stima** invece di calcolarla: uno
-stimatore stocastico dà una stima non distorta della log-densità «permettendo
-architetture di rete senza restrizioni». Tutti i vincoli di questa sezione
-cadono in un colpo: niente accoppiamenti, niente metà ferme, niente
-determinanti triangolari da costruire a mano.
+all'integrale nel tempo della traccia della jacobiana, cioè della sola
+diagonale: è il risultato delle *neural ODE* di Ricky Chen e colleghi
+{cite}`chen2018neural`, che al posto di una pila di strati mettono
+l'integrazione di un'equazione differenziale. Quella traccia però va ancora
+calcolata, e calcolarla per intero costa quanto il quadrato delle dimensioni; a
+toglierla di mezzo arriva FFJORD {cite}`grathwohl2019ffjord`, che la stima
+invece di calcolarla: uno stimatore stocastico dà una stima non distorta della
+log-densità «permettendo architetture di rete senza restrizioni». Tutti i
+vincoli di questa sezione cadono in un colpo: niente accoppiamenti, niente metà
+ferme, niente determinanti triangolari da costruire a mano.
 
-Il prezzo, però, si sposta: per avere la verosimiglianza bisogna **risolvere
-l'equazione differenziale**, ogni volta, e per ogni esempio. Da vincolo
+Il prezzo, però, si sposta: per avere la verosimiglianza bisogna risolvere
+l'equazione differenziale, ogni volta, e per ogni esempio. Da vincolo
 architetturale a costo di calcolo.
 
-E qui arriva la mossa che ha vinto, ed è una rinuncia. Il **flow matching**
+E qui arriva la mossa che ha vinto, ed è una rinuncia. Il flow matching
 {cite}`lipman2023flow` osserva che, se quello che si vuole è generare, la
 verosimiglianza durante l'addestramento non serve affatto: basta che la
 velocità sia quella giusta. E la velocità giusta si può insegnare per
@@ -256,7 +255,7 @@ capitolo precedente.
 
 Il cerchio si chiude con un'ironia da registrare. La famiglia di questo
 capitolo esiste per una proprietà sola, la verosimiglianza esatta; il suo
-discendente più usato oggi ha vinto **buttandola via**, e tenendo solo la
+discendente più usato oggi ha vinto buttandola via, e tenendo solo la
 parte geometrica, il movimento. La proprietà, però, resta lì: un modello a
 flow matching, se qualcuno vuole pagare il conto dell'equazione differenziale,
 la verosimiglianza la sa ancora dare. È una rinuncia di comodo, non di
@@ -266,17 +265,17 @@ struttura, e la parola dice ancora da dove viene.
 
 ```{admonition} Da ricordare
 :class: important
-- **Sapere quanto è probabile un dato è la stessa cosa che saperlo
-  comprimere.** Il numero di bit che serve per scriverlo con il codice migliore
+- Sapere quanto è probabile un dato è la stessa cosa che saperlo
+  comprimere. Il numero di bit che serve per scriverlo con il codice migliore
   è $-\log_2$ della sua probabilità, e non per analogia: è quella grandezza lì,
   a un paio di bit su tutto il file. Per questo qui la qualità si misura in
   bit: su una figurina di CIFAR-10 un buon modello costa meno di 3 bit per
   numero, contro gli 8 di chi non sa niente.
-- Quel numero però **non dice se le immagini generate sono belle**. I due
+- Quel numero però non dice se le immagini generate sono belle. I due
   giudizi possono andare per conto loro, ed è documentato dal 2016: un modello
   può avere una verosimiglianza ottima e campioni mediocri.
 - L'uso più ovvio, «se la probabilità è bassa allora è roba che non ho mai
-  visto», **non funziona**. Modelli addestrati su fotografie di cani e camion
+  visto», non funziona. Modelli addestrati su fotografie di cani e camion
   danno una probabilità *più alta* a fotografie di numeri civici, che non
   hanno mai visto. Il motivo: quelle immagini sono più lisce, e per un modello
   «facile» vuol dire «probabile». «Quanto è probabile» e «l'ho già visto» sono
@@ -284,7 +283,7 @@ struttura, e la parola dice ancora da dove viene.
 - Il seguito della storia: se invece di comporre tanti passi grossi si lascia
   scorrere un movimento continuo, tutti i vincoli di progetto cadono, ma
   calcolare la probabilità diventa caro. Il metodo che oggi disegna le immagini
-  (il *flow matching*, quello di Stable Diffusion 3) ha vinto **rinunciando** a
+  (il *flow matching*, quello di Stable Diffusion 3) ha vinto rinunciando a
   calcolarla e tenendo solo il movimento. Ecco da dove viene quella parola,
   «flusso».
 ```
@@ -297,20 +296,20 @@ struttura, e la parola dice ancora da dove viene.
 :class: important
 - $-\log_2 p(\mathbf{x})$ è la lunghezza di codice ottima: verosimiglianza e
   compressione sono la stessa quantità, ed è il motivo per cui la metrica
-  standard della famiglia sono i **bit per dimensione**, $-\log p(\mathbf{x}) /
+  standard della famiglia sono i bit per dimensione, $-\log p(\mathbf{x}) /
   (D \ln 2)$. Su CIFAR-10 si va da $4{,}48$ (NICE) a $2{,}92$ (PixelCNN++),
   contro $8{,}00$ del modello che non sa niente; per un flusso quel numero è un
-  limite **superiore**, perché la densità è misurata su dati dequantizzati.
+  limite superiore, perché la densità è misurata su dati dequantizzati.
 - Verosimiglianza e qualità dei campioni sono criteri largamente indipendenti
   in alta dimensione {cite}`theis2016note`: vanno scelti in funzione
   dell'applicazione, non estrapolati l'uno dall'altro.
-- **Fallimento OOD** {cite}`nalisnick2019do`: flussi, VAE e PixelCNN addestrati
-  su CIFAR-10 assegnano log-densità **più alta** a SVHN. La densità in alta
+- Fallimento OOD {cite}`nalisnick2019do`: flussi, VAE e PixelCNN addestrati
+  su CIFAR-10 assegnano log-densità più alta a SVHN. La densità in alta
   dimensione è dominata dalla complessità dell'input, non dall'appartenenza al
   supporto; e in $\mathbb{R}^D$ l'insieme tipico non coincide con la regione ad
   alta densità (il guscio a $\approx\sqrt{D}$). $p_\theta$ alto non implica
   $\mathbf{x} \in \operatorname{supp} p_{\text{dati}}$.
-- **Limite continuo** (*neural ODE* {cite}`chen2018neural`): la composizione di
+- Limite continuo (*neural ODE* {cite}`chen2018neural`): la composizione di
   passi discreti diventa una ODE sul campo di velocità e
   $\log\lvert\det\mathbf{J}\rvert$ si riduce a
   $\int_0^T \operatorname{tr} (\partial \mathbf{v}_t / \partial \mathbf{x}_t)\,
@@ -320,7 +319,7 @@ struttura, e la parola dice ancora da dove viene.
   esatta costa $\mathcal{O}(D^2)$; lo stimatore stocastico di FFJORD
   {cite}`grathwohl2019ffjord` la porta a $\mathcal{O}(D)$ e toglie così ogni
   vincolo architetturale, al prezzo dell'integrazione numerica.
-- **Flow matching** {cite}`lipman2023flow` rinuncia alla verosimiglianza in
+- Flow matching {cite}`lipman2023flow` rinuncia alla verosimiglianza in
   addestramento e regredisce direttamente il campo di velocità su cammini
   prescritti; il *rectified flow* {cite}`liu2023rectified` sceglie cammini
   rettilinei ed è la scelta di Stable Diffusion 3. La verosimiglianza resta

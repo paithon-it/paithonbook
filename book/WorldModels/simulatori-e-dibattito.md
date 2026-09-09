@@ -98,7 +98,7 @@ un vocabolario finito invece di 32 numeri continui); $f_\phi$ è un encoder che 
 transizione dal fotogramma $t$ al $t+1$; $q$ è una quantizzazione vettoriale
 su un codebook di appena $|\mathcal{A}| = 8$ codici (un tetto fissato dagli autori perché il joystick resti
 maneggiabile per un giocatore umano); e $g_\theta$ è il modello di dinamica,
-che predice i **token** del fotogramma successivo a partire dai token del
+che predice i token del fotogramma successivo a partire dai token del
 passato *e* dall'azione latente $\tilde{a}_t$. A riportare i token in pixel è
 il decoder del tokenizer: il modello di dinamica non vede mai un pixel e non ne
 produce mai uno. Il collo di
@@ -121,7 +121,7 @@ Due passi contano. Il primo,
 **Genie 2** (dicembre 2024), esce dal piatto del disegno a due dimensioni: da una singola
 immagine genera mondi a tre dimensioni, esplorabili con tastiera e mouse, con
 acqua, fumo e gravità. Il secondo, **Genie 3** (agosto 2025), passa dal
-differito al **tempo reale**: il mondo si genera mentre lo si attraversa, non
+differito al tempo reale: il mondo si genera mentre lo si attraversa, non
 dopo, e si possono richiamare eventi con una frase («fa’ piovere», «aggiungi un
 cane»).
 
@@ -141,7 +141,7 @@ funzione. La domanda si fa più spinosa quando la voltiamo verso i modelli di
 linguaggio, i grandi modelli di linguaggio dell'apertura, gli LLM
 {cite}`brown2020language`, addestrati a fare
 una cosa sola: indovinare la parola che viene dopo (per la precisione il
-**token** successivo, cioè il pezzetto di parola con cui questi modelli
+token successivo, cioè il pezzetto di parola con cui questi modelli
 lavorano). L'apertura del capitolo ha lasciato in sospeso un esperimento,
 citandolo di sfuggita: è il momento di raccontarlo, perché è il tentativo più
 pulito di rispondere con i dati anziché con gli slogan.
@@ -205,7 +205,7 @@ seconda dello strato, appena meglio del 26–29% che si ottiene sondando una ret
 con pesi casuali), quelle *non lineari* (un MLP a uno strato nascosto) arrivano
 all'1,7% di errore al settimo strato degli otto: lo stato della partita è
 ricostruibile quasi per intero dalle attivazioni. Poiché una sonda potrebbe leggere una correlazione senza
-ruolo causale, il passo decisivo è l’**intervento**: si modificano le
+ruolo causale, il passo decisivo è l’intervento: si modificano le
 attivazioni con una discesa di gradiente finché la sonda vi legge una
 scacchiera contraffatta, si lascia proseguire il calcolo e si osserva che la
 distribuzione sulle mosse legali si adegua alla scacchiera modificata, non
@@ -257,18 +257,18 @@ partita senza tifare.
 
 ## Applicazioni con i piedi per terra
 
-Mentre il dibattito continua, i world model lavorano. In **robotica** la
+Mentre il dibattito continua, i world model lavorano. In robotica la
 strada l'abbiamo già vista nella sezione precedente: V-JEPA 2, nella variante
 condizionata sulle azioni, usa le previsioni nello spazio delle
 rappresentazioni per *pianificare* (provare mentalmente i comandi possibili,
 uno alla volta, e scegliere quello che avvicina il braccio all'obiettivo) su
-robot mai visti in addestramento. Nella **guida autonoma** il problema sono gli
+robot mai visti in addestramento. Nella guida autonoma il problema sono gli
 scenari rari: il bambino che sbuca tra due auto, il carico che cade dal camion. Raccoglierli
 su strada è impraticabile, oltre che inaccettabile; un world model generativo
 li produce in quantità e in sicurezza, ed è dal 2023 la scommessa di più di un
 laboratorio del settore (GAIA-1 di Wayve è stato fra i primi a mostrarla in
 pubblico).
-Nei **videogiochi e negli ambienti di addestramento**, infine,
+Nei videogiochi e negli ambienti di addestramento, infine,
 il cerchio si chiude: DeepMind presenta Genie 2 esplicitamente come generatore
 di ambienti illimitati in cui addestrare e valutare agenti; il rimedio a un
 vizio storico dell'apprendimento per rinforzo, dove i programmi che imparano
@@ -335,23 +335,23 @@ Le JEPA: prevedere sì, ma nello spazio delle rappresentazioni, lasciando
 cadere i dettagli che non contano. E infine Sora e Genie: la previsione fatta
 spettacolo, fotogrammi interi di futuro. Il filo che attraversa ottant'anni è
 uno solo, e conviene dirlo in chiaro: in questa tradizione di ricerca
-**l'intelligenza è la capacità di prevedere**, e di usare le previsioni per
+l'intelligenza è la capacità di prevedere, e di usare le previsioni per
 agire.
 
 Che cosa manca, lo si può dire con la stessa calma. Manca la
-**composizionalità**: i simulatori attuali sanno muoversi *fra* le scene che
+composizionalità: i simulatori attuali sanno muoversi *fra* le scene che
 hanno visto, mescolandole e sfumando dall'una all'altra (in gergo si dice che
 le **interpolano**), ma ricombinare pezzi noti in situazioni radicalmente
 nuove, che è il forte delle menti biologiche, resta fragile. Manca la
-**causalità**: prevedere ciò che *segue* non è capire ciò che *provoca*. Un
+causalità: prevedere ciò che *segue* non è capire ciò che *provoca*. Un
 bambino la differenza la esplora da sé, rovesciando bicchieri apposta: vedere
 due cose che vanno sempre insieme è un conto, andarne a toccare una per vedere
 che ne è dell'altra è un altro. Nei modelli quella differenza è ancora poco
-marcata. E manca la **pianificazione a lungo orizzonte**: l'errore dei modelli
+marcata. E manca la pianificazione a lungo orizzonte: l'errore dei modelli
 si accumula passo dopo passo, ed è il difetto che il capitolo ha incontrato
 per primo, quando l'agente si allenava dentro una copia imprecisa del gioco
 (in gergo si chiama *model bias*, la piega sistematica del modello). I sogni
-dentro cui si può ancora pianificare sono **corti**: una quindicina di passi
+dentro cui si può ancora pianificare sono corti: una quindicina di passi
 immaginati per i Dreamer, gli eredi del sogno di Ha e Schmidhuber, e un passo
 solo per il world model che guida il braccio robotico. I minuti di cui si
 parla per i simulatori generativi sono un'altra cosa: sono la lunghezza di un
@@ -373,17 +373,17 @@ esattamente ciò per cui conviene studiarle.
   fenomeno e possederne il meccanismo restano due cose diverse, come per i
   pittori fiamminghi che rendevano la luce nei calici senza sapere niente di
   ottica.
-- **Genie** {cite}`bruce2024genie` è un videogioco senza motore di gioco:
+- Genie {cite}`bruce2024genie` è un videogioco senza motore di gioco:
   guardando trentamila ore di partite altrui, e senza che nessuno gli abbia
   mai detto quali tasti si premessero, si è inventato da solo un joystick a
   otto pulsanti. Le versioni successive fanno lo stesso in tre dimensioni e in
   tempo reale, ma sono dimostrazioni scelte da chi le pubblica, non prodotti.
-- **Othello-GPT** è la pagina da ricordare: una rete che ha solo «ascoltato»
+- Othello-GPT è la pagina da ricordare: una rete che ha solo «ascoltato»
   radiocronache di partite si è costruita in testa una scacchiera. Lo si
   dimostra in due mosse, e la seconda è quella che conta: prima un lettore del
   pensiero indovina dove sono le pedine guardando l'attività interna della rete
   (uno rozzo sbaglia una casella su cinque, uno più sveglio meno di 2 su 100),
-  poi il test del **falso ricordo**, in cui gli sperimentatori spostano una
+  poi il test del falso ricordo, in cui gli sperimentatori spostano una
   pedina *nella mente* della rete e le mosse cambiano di conseguenza. Non è un
   pappagallo: dentro c'è un piccolo mondo, e lo usa.
 - Ma un'altra rete, allenata sui percorsi dei taxi di New York, dà indicazioni
@@ -416,13 +416,13 @@ esattamente ciò per cui conviene studiarle.
   senza versare). È un documento aziendale con dimostrazioni scelte, non un
   articolo passato da revisione. Imitare le apparenze non equivale a
   possedere il meccanismo.
-- **Genie** {cite}`bruce2024genie` genera *ambienti interattivi* da 30.000 ore
+- Genie {cite}`bruce2024genie` genera *ambienti interattivi* da 30.000 ore
   di video di platform senza etichette: 8 azioni latenti apprese da sole
   (quantizzazione con collo di bottiglia) più un modello di dinamica
-  autoregressivo che vive sui **token** del tokenizer video, non sui pixel.
+  autoregressivo che vive sui token del tokenizer video, non sui pixel.
   Genie 2 e Genie 3 estendono a mondi 3D in tempo reale: annunci via blog con
   demo selezionate, non ancora prodotti.
-- **Othello-GPT** {cite}`li2023emergent`: un GPT addestrato solo su sequenze
+- Othello-GPT {cite}`li2023emergent`: un GPT addestrato solo su sequenze
   di mosse sviluppa una rappresentazione interna della scacchiera, leggibile
   con sonde (1,7% di errore con sonde non lineari) e *causalmente* efficace
   (interventi sulle attivazioni cambiano le mosse). La rappresentazione è poi

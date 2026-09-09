@@ -12,7 +12,7 @@ Fuori da quell'elenco non esiste niente. Un tram non esiste, una radiografia
 non esiste, e «un gatto nero che salta sul muro» non esiste nemmeno come
 domanda: è una frase, non una classe.
 
-La via d'uscita standard è il **transfer learning**, costruito nella
+La via d'uscita standard è il transfer learning, costruito nella
 {doc}`sezione sulla classificazione
 </VisioneArtificiale/classificazione-transfer>`: si prende una rete
 pre-addestrata, si toglie la testa (l'ultimo strato, quello che sceglie fra le
@@ -25,28 +25,28 @@ servizio. Quello che il sistema sa dire viene deciso una volta per tutte, prima
 di partire.
 
 La domanda, allora, è se si possa costruire un modello a cui le classi
-si dicano **a parole**, nel momento in cui servono. La risposta comincia da un
+si dicano a parole, nel momento in cui servono. La risposta comincia da un
 cambio di domanda.
 
 ## Non «che cosa è», ma «quale di queste»
 
 Prima dell'idea serve un attrezzo, e il libro lo ha già costruito. Nel capitolo
-sul linguaggio abbiamo visto che una parola si può scrivere come un **vettore**,
-cioè una fila di numeri, e che quelle file di numeri formano una **mappa del
-significato**: *gatto* e *felino* finiscono vicini, *gatto* e *mercoledì*
+sul linguaggio abbiamo visto che una parola si può scrivere come un vettore,
+cioè una fila di numeri, e che quelle file di numeri formano una mappa del
+significato: *gatto* e *felino* finiscono vicini, *gatto* e *mercoledì*
 lontanissimi, e quanto due cose siano vicine lo dice un solo numero fra $-1$ e
 $+1$: più è alto, più le due cose si somigliano. Lo spazio che serve qui è
 quella mappa, con un'aggiunta:
 dentro non ci vanno soltanto le parole, ci vanno anche le fotografie. La foto di
-un gatto nero su un muro deve finire **più vicina** alla frase «un gatto nero su
+un gatto nero su un muro deve finire più vicina alla frase «un gatto nero su
 un muro» di quanto sia a «una scodella di minestra». Più vicina, si badi, non
 sovrapposta: è una differenza che tornerà a farsi sentire alla fine della
 sezione.
 
 L'idea, resa celebre da CLIP {cite}`radford2021learning` nel 2021, è di
-addestrare due reti separate, un **encoder di immagini** e un **encoder di
-testo**, a scrivere le loro uscite su quell'unica mappa (in gergo: nello stesso
-**spazio vettoriale**). Il compito diventa appaiare invece che assegnare
+addestrare due reti separate, un encoder di immagini e un encoder di
+testo, a scrivere le loro uscite su quell'unica mappa (in gergo: nello stesso
+spazio vettoriale). Il compito diventa appaiare invece che assegnare
 un'etichetta.
 Dato un mucchietto di immagini e il mucchietto mescolato delle loro didascalie,
 il modello deve dire chi va con chi.
@@ -76,7 +76,7 @@ con del testo attaccato, la frase sotto la foto, la descrizione alternativa che
 serve a chi non vede, il titolo del prodotto in un catalogo. Sono coppie
 già appaiate, gratis, a milioni: per addestrare CLIP ne sono state raccolte
 quattrocento milioni. Nessuno le ha etichettate, nessuno ha deciso una lista di
-categorie. È supervisione, ma **naturale**: viene dal fatto che gli esseri
+categorie. È supervisione, ma naturale: viene dal fatto che gli esseri
 umani, quando pubblicano un'immagine, ci scrivono accanto che cosa c'è.
 
 `````
@@ -89,7 +89,7 @@ spazio di rappresentazione $\mathbb{R}^d$ (in CLIP, tramite una proiezione
 lineare posta in cima a ciascun encoder). L'encoder visivo è una CNN o un
 Vision Transformer {cite}`dosovitskiy2021image`; quello testuale è un
 Transformer con maschera causale, da cui si preleva la rappresentazione
-dell'ultimo token. Le uscite vengono **normalizzate**,
+dell'ultimo token. Le uscite vengono normalizzate,
 
 $$
 \mathbf{I}_i = \frac{f_{\text{img}}(\tilde{\mathbf{I}}_i)}{\lVert f_{\text{img}}(\tilde{\mathbf{I}}_i) \rVert_2},
@@ -115,7 +115,7 @@ Il compito di pretesto è una classificazione a $B$ vie *definita dal batch
 stesso*: data l'immagine $i$, indovinare quale delle $B$ didascalie presenti sia
 la sua. Non c'è alcuna ontologia fissata a priori, e il «vocabolario» delle
 descrizioni è aperto quanto la lingua. È un caso di apprendimento
-auto-supervisionato di famiglia **contrastiva**, quella che il capitolo sui
+auto-supervisionato di famiglia contrastiva, quella che il capitolo sui
 world model metterà accanto alla generativa e alla predittiva nello spazio
 latente: si impara una geometria, avvicinando ciò che va insieme e
 allontanando ciò che non va insieme.
@@ -123,7 +123,7 @@ allontanando ciò che non va insieme.
 `````
 
 Adesso che il gioco è chiaro, la griglia di {numref}`fig-clip-matrice` dice
-perché conti tanto la dimensione del **batch**, cioè quante coppie si mettono
+perché conti tanto la dimensione del batch, cioè quante coppie si mettono
 sul tavolo insieme a ogni passo di addestramento. Con $B$ coppie ogni riga
 porta una risposta giusta e $B - 1$ sbagliate: raddoppiare il batch raddoppia
 le alternative sbagliate che ogni immagine deve scartare, e l'esame si fa più
@@ -143,19 +143,19 @@ sembra.
 ```
 
 La {numref}`fig-vlm-contrastivo` mostra la struttura che ne esce, ed è tutta la
-sezione in un disegno. Le due reti (si chiamano **torri**, perché ciascuna è una
-pila di strati che lavora per conto suo) non si scambiano niente durante il
-calcolo, e si incontrano solo alla fine, in un prodotto scalare. Da un batch di $B$ coppie nasce una matrice $B \times B$ di
-similarità: sulla diagonale le coppie vere, ovunque altrove i **negativi**,
-cioè gli abbinamenti sbagliati che il caso ha messo insieme nello stesso batch.
+sezione in un disegno. Le due reti (si chiamano **torri**, perché ciascuna è
+una pila di strati che lavora per conto suo) non si scambiano niente durante il
+calcolo, e si incontrano solo alla fine, in un prodotto scalare. Le caselle
+fuori dalla diagonale hanno un nome, i negativi: sono gli abbinamenti
+sbagliati che il caso ha messo insieme nello stesso batch.
 
 ## L'esame si fa in due sensi
 
-A questo punto serve una **funzione di costo** che dica al modello che cosa fare
+A questo punto serve una funzione di costo che dica al modello che cosa fare
 di quella tabella (in inglese si chiama *loss*, ed è il nome che si sente più
 spesso; le due parole indicano la stessa cosa). La richiesta è
 semplice da enunciare: i numeri sulla diagonale devono salire, tutti gli altri
-scendere. Il modo di ottenerlo è la **cross-entropy**, che misura quanto si
+scendere. Il modo di ottenerlo è la cross-entropy, che misura quanto si
 paga caro sbagliare una domanda a risposta multipla; e qui la domanda a
 risposta multipla se la costruisce il batch da solo.
 
@@ -174,18 +174,18 @@ quello che manca alla didascalia giusta se l'è preso qualcun altro, e quasi
 sempre è la didascalia sbagliata che le somiglia di più. È su quella che il
 modello lavora, mentre le due che non c'entravano niente le lascia stare.
 
-Poi si rifà lo stesso identico esame guardando le **colonne**: «ecco la
+Poi si rifà lo stesso identico esame guardando le colonne: «ecco la
 didascalia numero uno, quale delle quattro immagini descrive?». Le due
 interrogazioni non sono la stessa cosa, perché una didascalia potrebbe essere
 la più adatta a una foto senza che quella foto sia la più adatta a lei. Si
-fanno entrambe e si fa la media: da qui l'aggettivo **simmetrica** che si
+fanno entrambe e si fa la media: da qui l'aggettivo simmetrica che si
 attacca a questa loss.
 
 `````
 
 `````{tab} Superiore
 
-La forma generale è la **InfoNCE**, introdotta da van den Oord e colleghi per
+La forma generale è la InfoNCE, introdotta da van den Oord e colleghi per
 il contrastive predictive coding {cite}`oord2018representation`:
 
 $$
@@ -197,7 +197,7 @@ $$
 dove $\mathbf{u}$ è l'ancora, $\mathbf{v}^{+}$ il suo positivo,
 $\mathbf{v}_1, \dots, \mathbf{v}_B$ l'insieme dei
 candidati (il positivo più $B-1$ negativi), $s(\cdot, \cdot)$ una misura di
-compatibilità e $\tau > 0$ la **temperatura**. È, letteralmente, una
+compatibilità e $\tau > 0$ la temperatura. È, letteralmente, una
 cross-entropy su un problema di classificazione a $B$ vie in cui la classe
 corretta è «il positivo». (Nel testo originale la compatibilità è una funzione
 di punteggio qualsiasi; la $\tau$ esplicita è della variante su similarità
@@ -243,7 +243,7 @@ concorrenti credibili.
 
 ## Quattro coppie, fatte a mano
 
-Adesso i numeri, perché la **temperatura**, la manopola che amplifica le
+Adesso i numeri, perché la temperatura, la manopola che amplifica le
 differenze fra le somiglianze prima di trasformarle in percentuali, fa una
 differenza che a parole
 non si apprezza. Prendiamo un batch minuscolo, $B = 4$: quattro immagini e le
@@ -266,7 +266,7 @@ $0{,}15$):
 `````{tab} Elementare
 
 Nella prima riga la coppia giusta somiglia $0{,}30$, la migliore delle
-sbagliate $0{,}10$. Differenze piccole, e il mestiere della **temperatura** è
+sbagliate $0{,}10$. Differenze piccole, e il mestiere della temperatura è
 decidere quanto pesano: è una manopola che amplifica le differenze fra i
 punteggi prima di trasformarli in percentuali di fiducia, ed è girata
 all'incontrario: più il suo numero è basso, più amplifica.
@@ -276,11 +276,11 @@ vantaggio viene ingigantito, e i passaggi si possono rifare con una
 calcolatrice. Primo: si divide ogni somiglianza per la temperatura, cioè per
 $0{,}07$, che è come moltiplicarla per quattordici e rotti: la riga diventa
 $4{,}29$, poi $1{,}43$, $0{,}71$ e $0{,}29$. Secondo: quei numeri si
-trasformano in fiducia con l’**esponenziale**, il tasto $e^x$, che gonfia i
+trasformano in fiducia con l’esponenziale, il tasto $e^x$, che gonfia i
 grandi molto più dei piccoli: $4{,}29$ diventa $73$ mentre $1{,}43$ diventa
 appena $4{,}2$ (poi $2{,}0$ e $1{,}3$). Terzo: si guarda che fetta è ciascuno
 del totale, che è poco più di $80$: alla coppia giusta ne vanno $73$, cioè il
-**91%** della fiducia.
+91% della fiducia.
 
 Il costo della riga si ricava da quella fetta con il logaritmo naturale (il
 tasto $\ln$, che disfa quello che fa l'esponenziale), cambiato di segno perché
@@ -312,7 +312,7 @@ come vuole la forma esponenziale della softmax). Ripetendo per le altre tre
 righe e mediando, la loss in direzione immagine → testo vale $0{,}147$; quella
 sulle colonne $0{,}148$; la loss simmetrica $0{,}148$.
 
-Ora rifacciamo il conto **senza cambiare una sola similarità**, solo alzando la
+Ora rifacciamo il conto senza cambiare una sola similarità, solo alzando la
 temperatura a $\tau = 0{,}5$. La prima riga diventa $0{,}351$, $0{,}235$,
 $0{,}213$, $0{,}201$: la coppia giusta è ancora in testa, ma di un soffio, e la
 loss simmetrica sale a $1{,}082$. Per confronto, un modello che tirasse a caso
@@ -342,7 +342,7 @@ $0{,}15$ con l'esaminatore severo, che quel piccolo vantaggio l'ha visto e
 premiato, e $1{,}08$ con quello mite, che non se n'è nemmeno accorto.
 
 Questa severità non la sceglie chi progetta: è un numero che il modello
-**impara** insieme a tutto il resto, come i pesi. E siccome abbassarla fa
+impara insieme a tutto il resto, come i pesi. E siccome abbassarla fa
 scendere il costo da sola, senza che il modello abbia imparato niente, le si
 mette un fondo sotto il quale non può andare. CLIP parte da $0{,}07$ e finisce
 l'addestramento appoggiato a quel fondo, a $0{,}01$, sette volte più severo di
@@ -369,7 +369,7 @@ grandi.
 
 `````{tab} Superiore
 
-In CLIP $\tau$ è **appresa**. In pratica il parametro ottimizzato è il
+In CLIP $\tau$ è appresa. In pratica il parametro ottimizzato è il
 logaritmo del fattore di scala $1/\tau$, così che la scala resti positiva senza
 vincoli espliciti; lo si inizializza al valore corrispondente a $\tau = 0{,}07$
 e si impedisce alla scala di superare $100$, perché l'ottimizzazione tenderebbe
@@ -378,10 +378,10 @@ la loss arbitrariamente piccola sulle coppie già ordinate bene, e instabile il
 gradiente: nel lavoro originale il tetto è motivato proprio dall'instabilità
 osservata in addestramento). L'effetto di $\tau$ sulla distribuzione dei pesi è
 quello visto nei conti: al calare della temperatura la softmax si fa più
-**piccata** e la penalità si concentra sui negativi difficili, quelli con
+piccata e la penalità si concentra sui negativi difficili, quelli con
 coseno vicino a quello del positivo. Il $0{,}07$ è un punto di partenza e non
 un regime di esercizio: nel modello pubblicato la scala appresa sta
-**appoggiata al tetto**,
+appoggiata al tetto,
 cioè $\tau = 1/100 = 0{,}01$, sette volte più piccata di come è partita.
 L'ottimizzazione, lasciata libera, va a sbattere contro il vincolo e ci resta; ci
 servirà fra poco, quando si tratterà di capire perché due nuvole di punti non si
@@ -551,7 +551,7 @@ mescolano in un'unica soglia. La seconda: le operazioni che presuppongono uno
 spazio omogeneo (il centroide fra un'immagine e un testo, un $k$-means su
 vettori misti, una soglia assoluta di appartenenza) restituiscono risultati che
 sembrano sensati e non lo sono. Quel che è lecito, ed è quanto basta a tutto il
-resto della sezione, è l’$\arg\max$ **dentro** una modalità sola.
+resto della sezione, è l’$\arg\max$ dentro una modalità sola.
 
 `````
 
@@ -612,7 +612,7 @@ $$
 $$
 
 L'osservazione strutturale, fatta nel paper originale
-{cite}`radford2021learning`, è che questa è **letteralmente** una
+{cite}`radford2021learning`, è che questa è letteralmente una
 classificazione lineare: la matrice $[\mathbf{T}_1; \dots; \mathbf{T}_K] \in \mathbb{R}^{K \times d}$
 è una matrice di pesi, e l'encoder di testo si comporta come una rete che
 *genera* i pesi del classificatore a partire da una descrizione, invece di
@@ -621,10 +621,10 @@ delle classi significa rigenerare quella matrice, un'operazione che costa una
 forward pass per classe.
 
 Due fenomeni rendono la scelta del prompt non neutrale. Il primo è la
-**polisemia**: un'etichetta isolata non disambigua i suoi sensi (l'italiano
+polisemia: un'etichetta isolata non disambigua i suoi sensi (l'italiano
 «gru» copre l'uccello e la macchina da cantiere, e nei dataset di visione casi
 simili sono la norma), mentre un contesto testuale lo fa. Il secondo è uno
-**scarto di distribuzione**: nel corpus di pre-addestramento il testo appaiato
+scarto di distribuzione: nel corpus di pre-addestramento il testo appaiato
 a un'immagine è quasi sempre una frase, quindi un input costituito da una sola
 parola cade in una regione poco frequentata dello spazio testuale. Il rimedio,
 un template fisso come `A photo of a {label}.`, vale nel paper originale un
@@ -688,7 +688,7 @@ può spendere sul resto.
 
 «Questa immagine e questa didascalia vanno insieme?» è un problema di
 classificazione binaria, e la funzione che gli corrisponde non è la softmax ma la
-**sigmoide**:
+sigmoide:
 
 $$
 \mathcal{L}_{\text{sig}} = - \frac{1}{B} \sum_{i=1}^{B} \sum_{j=1}^{B}
@@ -712,7 +712,7 @@ si consumerebbero tutte a correggerlo, invece che a imparare.[^siglip-segno]
 $\log\frac{1}{1+e^{z_{ij}(-t\,\langle \mathbf{I}_i, \mathbf{T}_j \rangle + b)}}$,
 che sviluppata dà
 $\log\sigma\big(z_{ij}(t\,\langle \mathbf{I}_i, \mathbf{T}_j \rangle - b)\big)$:
-a cambiare rispetto a questa è il segno del **bias**, non quello della
+a cambiare rispetto a questa è il segno del bias, non quello della
 similarità. La forma scritta
 qui è quella dello pseudocodice degli autori e dell'implementazione di
 riferimento, ed è l'unica compatibile con la motivazione che loro stessi danno
@@ -797,21 +797,21 @@ mappa) sono i primi a rimanere fuori.
 Che sia davvero il gioco a produrre quel comportamento, e non un difetto delle
 reti, lo si è dimostrato con un esperimento di una semplicità disarmante
 {cite}`yuksekgonul2023when`: si prendono le didascalie di un archivio, se ne
-**mescolano le parole**, si rifà la ricerca per immagini, e il risultato non
+mescolano le parole, si rifà la ricerca per immagini, e il risultato non
 peggiora. Se l'ordine si può buttare via senza pagare pegno, l'ordine il compito
 non lo chiedeva. Lo stesso lavoro mostra anche il rovescio, che è la parte utile:
-aggiungendo al mucchio, come didascalie sbagliate, la **didascalia giusta con le
-parole rimescolate**, la stessa identica rete impara l'ordine. Il limite
+aggiungendo al mucchio, come didascalie sbagliate, la didascalia giusta con le
+parole rimescolate, la stessa identica rete impara l'ordine. Il limite
 stava in quello che le si chiedeva di distinguere, non nell'architettura.
 
 Due precisazioni, per onestà. La prima è che quegli esempi, scelti a mano
 perché siano difficili, lo sono anche per altre ragioni (alcuni chiedono
 conoscenza del mondo, altri sono visivamente ostici
 {cite}`diwan2022why`), e quindi quel che misurano è il
-saper mettere insieme i pezzi di una frase (la **composizionalità**) più
+saper mettere insieme i pezzi di una frase (la composizionalità) più
 qualcos'altro. Il fenomeno è solido, la sua quantificazione esatta lo è
 meno. La seconda è che un limite parallelo viene
-dalla forma della rappresentazione: un'intera immagine finisce in **una sola**
+dalla forma della rappresentazione: un'intera immagine finisce in una sola
 fila di qualche centinaio di numeri, e una fila sola non può portare insieme la
 scena, la posizione di ogni oggetto e il testo scritto su un cartello. Il dettaglio fine e i documenti sono un problema a parte, e li
 affronta la sezione sulla risoluzione.
@@ -833,19 +833,19 @@ che sa solo leggere è la prossima sezione.
 - Nessuno prepara le risposte: le didascalie sono già attaccate alle immagini del
   web, e per addestrare CLIP ne sono state raccolte quattrocento milioni.
 - Il gioco si fa in due sensi, per righe e per colonne, e si fa la media. Due
-  numeri decidono quanto è severo: la **manopola** che amplifica le differenze
-  fra le somiglianze prima di trasformarle in percentuali, e **quante didascalie
-  sbagliate ci sono nel mucchio**, perché indovinare fra quattro è facile e
+  numeri decidono quanto è severo: la manopola che amplifica le differenze
+  fra le somiglianze prima di trasformarle in percentuali, e quante didascalie
+  sbagliate ci sono nel mucchio, perché indovinare fra quattro è facile e
   indovinare fra trentamila no.
 - Il regalo che ne esce: per costruire un classificatore bastano tre frasi
   scritte a mano, e domani la quarta si aggiunge in un secondo, senza una sola
-  fotografia. Conta però **come** si scrive la frase, e conviene scriverne
+  fotografia. Conta però come si scrive la frase, e conviene scriverne
   ottanta e fare la media.
 - Nella variante «sì o no» si smette di chiedere «quale di queste quattro» e si
   chiede a ogni casella «voi due andate insieme?»: nessuno deve più radunare
   tutta la riga, e il mucchio enorme non serve più.
-- Immagini e parole finiscono sulla stessa mappa, ma in **due quartieri
-  separati**: per una foto la didascalia giusta è la più vicina fra tutte le
+- Immagini e parole finiscono sulla stessa mappa, ma in due quartieri
+  separati: per una foto la didascalia giusta è la più vicina fra tutte le
   frasi, e questo basta a farla vincere, ma nessuna frase le è mai vicina
   quanto le è vicina una fotografia qualunque. I numeri si confrontano fra
   pari, mai una foto con una frase in assoluto.
@@ -862,12 +862,12 @@ che sa solo leggere è la prossima sezione.
 :class: important
 - Un classificatore chiuso sa dire solo le classi su cui è stato addestrato, e
   aggiungerne una costa rietichettatura e riaddestramento. L'addestramento
-  **contrastivo** immagine-testo {cite}`radford2021learning` sostituisce la
+  contrastivo immagine-testo {cite}`radford2021learning` sostituisce la
   domanda «che cosa è» con «quale di queste didascalie è la sua».
-- La supervisione è **naturale**: le coppie immagine-didascalia esistono già
+- La supervisione è naturale: le coppie immagine-didascalia esistono già
   sul web (quattrocento milioni per CLIP), nessuno le etichetta e nessuna lista
   di categorie viene decisa in anticipo.
-- La loss è una **InfoNCE simmetrica** {cite}`oord2018representation`:
+- La loss è una InfoNCE simmetrica {cite}`oord2018representation`:
   embedding normalizzati, matrice $B \times B$ di coseni divisi per la
   temperatura $\tau$, cross-entropy sulle righe e sulle colonne con la diagonale
   come risposta corretta.
@@ -876,29 +876,31 @@ che sa solo leggere è la prossima sezione.
   tetto, cioè $\tau$ al suo valore minimo, $0{,}01$. Decide
   quanto la distribuzione è piccata, e i negativi vengono dal batch, quindi un
   batch piccolo rende il compito troppo facile. A crescere con $B^2$ non è il
-  calcolo, che accanto ai due encoder è trascurabile, ma la **memoria** della
-  matrice e l’**all-gather** fra i dispositivi.
-- Le due modalità restano in **due regioni disgiunte** dello spazio condiviso, il
+  calcolo, che accanto ai due encoder è trascurabile, ma la memoria della
+  matrice. E la normalizzazione di riga obbliga a un all-gather degli
+  embedding fra i dispositivi a ogni passo.
+- Le due modalità restano in due regioni disgiunte dello spazio condiviso, il
   *modality gap* {cite}`liang2022mind`: il contrastivo ottimizza un ordinamento
   dentro il batch, che è invariante per traslazione di una delle due nuvole.
   Conseguenza operativa: un coseno cross-modale non si confronta con un coseno
   intra-modale.
-- La **classificazione zero-shot** è una conseguenza, non una funzione in più:
+- La classificazione zero-shot è una conseguenza, non una funzione in più:
   si scrive una didascalia per classe e si prende la più simile. La forma del
   prompt conta perché il modello ha imparato su frasi, non su parole isolate.
   La stessa geometria dà il recupero di immagini per descrizione.
-- **SigLIP** {cite}`zhai2023sigmoid` sostituisce la softmax di riga con una
+- SigLIP {cite}`zhai2023sigmoid` sostituisce la softmax di riga con una
   sigmoide per coppia: niente normalizzazione globale, niente raduno degli
   embedding fra le GPU, buon addestramento anche con batch piccoli.
-  **ALIGN** {cite}`jia2021scaling` mostra che il metodo regge un miliardo di
+  ALIGN {cite}`jia2021scaling` mostra che il metodo regge un miliardo di
   coppie raccolte dal web senza curatela.
 - Allineare non è capire: la loss premia il riconoscimento degli oggetti e non
   le relazioni fra loro, e il modello si comporta in buona parte come un
-  **sacco di concetti**. Winoground {cite}`thrush2022winoground` rende visibile
-  il fallimento, ARO {cite}`yuksekgonul2023when` ne isola la causa (mescolare le
-  parole della didascalia non peggiora il recupero) e mostra che con negativi
-  permutati la stessa rete impara l'ordine: il limite è dell'obiettivo, non
-  dell'architettura. Da qui le architetture delle sezioni successive.
+  sacco di concetti. Winoground {cite}`thrush2022winoground` rende visibile
+  il fallimento, e l'esperimento delle didascalie con le parole mescolate
+  {cite}`yuksekgonul2023when` ne isola la causa (il recupero non peggiora) e
+  mostra che con negativi permutati la stessa rete impara l'ordine: il limite è
+  dell'obiettivo, non dell'architettura. Da qui le architetture delle sezioni
+  successive.
 ```
 
 `````

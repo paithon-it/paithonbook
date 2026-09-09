@@ -4,7 +4,7 @@ Dentro PyTorch c'è un registratore. La sezione
 {doc}`sui tensori e su autograd </PyTorch/tensori>` lo ha raccontato così:
 annota i calcoli mentre li fai e poi li riavvolge all'indietro, e a ogni
 addestramento di questo libro ha risposto sempre alla stessa domanda, *se
-ritocco questo peso, quanto cambia l'errore?* Si chiama **autograd**, e finora
+ritocco questo peso, quanto cambia l'errore?* Si chiama autograd, e finora
 ha fatto un mestiere solo: milioni di volte la stessa domanda, per addestrare
 classificatori, traduttori, generatori.
 
@@ -18,7 +18,7 @@ esempio la posizione di un oggetto in quell'istante: disegnata su un foglio, è
 una curva. Ora chiediamo al registratore, invece del solito «di quanto cambia
 l'errore se ritocco questo peso», quest'altro: «di quanto cambia il numero in
 uscita se sposto di pochissimo l'istante che ti ho dato?». La risposta è la
-**pendenza** della curva in quel punto, cioè quanto in fretta sta salendo o
+pendenza della curva in quel punto, cioè quanto in fretta sta salendo o
 scendendo proprio lì. Se la risposta è 2, vuol dire che nell'intorno di
 quell'istante la curva sale di due quadretti ogni quadretto che si va a
 destra; se è $-0{,}5$, scende di mezzo quadretto; se è 0, lì è in piano. E
@@ -57,11 +57,11 @@ scorre verso destra; la riga di mezzo è il riposo, sopra il corpo è più in
 alto, sotto più in basso. Nessuna tabella di valori da copiare. Solo tre
 vincoli:
 
-1. la curva deve **partire dal punto giusto** (la molla è stata tirata fino
+1. la curva deve partire dal punto giusto (la molla è stata tirata fino
    a una certa altezza);
-2. deve partire **in piano**, cioè con pendenza zero (il corpo è stato
+2. deve partire in piano, cioè con pendenza zero (il corpo è stato
    lasciato andare da fermo: se non si muove, la curva non sale né scende);
-3. in **ogni punto del foglio** deve rispettare la regola della molla: quanto
+3. in ogni punto del foglio deve rispettare la regola della molla: quanto
    la curva piega in quel punto dev'essere coerente con quanto è alta e con
    quanto sta scendendo lì («coerente» vuol dire che c'è una formula che lega
    le tre cose, e la scriveremo con i numeri veri).
@@ -79,8 +79,8 @@ la soluzione*. Il professore sa solo verificare la regola. Eppure alla fine la
 curva giusta salta fuori, perché tra tutte le curve possibili quella vera è
 l'unica che parte così *e* rispetta la regola dappertutto. Una PINN è
 esattamente questo studente: la curva è la rete, i punti persi sono la loss, e
-gli istanti su cui il professore punta il dito si chiamano **punti di
-collocazione**.
+gli istanti su cui il professore punta il dito si chiamano punti di
+collocazione.
 
 Su quel «dappertutto» conviene tenere un dito, perché è la parola su cui si
 gioca tutto. La curva vera rispetta la regola in ogni singolo punto del
@@ -95,7 +95,7 @@ Sia $u_\theta : [0, T] \to \mathbb{R}$ una rete neurale con parametri
 $\theta$, candidata a risolvere un'equazione differenziale che scriviamo in
 forma compatta $\mathcal{N}[u](t) = 0$, dove $\mathcal{N}$ raccoglie
 l'operatore differenziale dell'equazione, con condizioni iniziali
-$u(0) = u_0$ e $u'(0) = v_0$. Il **residuo** della candidata è
+$u(0) = u_0$ e $u'(0) = v_0$. Il residuo della candidata è
 $r_\theta(t) = \mathcal{N}[u_\theta](t)$: vale zero esattamente dove la rete
 rispetta l'equazione. La loss da minimizzare è
 
@@ -107,15 +107,15 @@ $$
 + \big(u_\theta'(0) - v_0\big)^2 \Big]}_{\text{condizioni iniziali}},
 $$
 
-dove i $t_j$ sono gli $N_c$ **punti di collocazione** (istanti sparsi nel
+dove i $t_j$ sono gli $N_c$ punti di collocazione (istanti sparsi nel
 dominio, casuali o equispaziati, nei quali esigiamo il rispetto
 dell'equazione) e $\lambda_0 > 0$ bilancia i due termini. Lo chiamiamo
 $\lambda_0$, e non $\lambda$, perché non è lo stesso peso della loss vista in
 apertura di capitolo: là $\lambda$ moltiplicava il termine di fisica, qui il
 peso sta sulle condizioni iniziali. Dove metterlo è convenzione; ciò che
 conta è il rapporto fra i termini. Per una PDE su un
-dominio spaziale si aggiunge un termine identico per le **condizioni al
-contorno**, con punti campionati sul bordo; e se esistono misure $(t_i, u_i)$
+dominio spaziale si aggiunge un termine identico per le condizioni al
+contorno, con punti campionati sul bordo; e se esistono misure $(t_i, u_i)$
 si aggiunge il termine dati
 $\frac{1}{N_d}\sum_{i=1}^{N_d} \big(u_\theta(t_i) - u_i\big)^2$, come nella
 loss vista in apertura di capitolo. Tutte le derivate che compaiono in
@@ -126,7 +126,7 @@ incrementali né passo di discretizzazione.
 Un dettaglio che sembra pedante e non lo è: il termine di fisica, da solo,
 ha un minimo banale, perché la funzione $u \equiv 0$ risolve l'equazione
 omogenea con residuo nullo ovunque. Il termine sulle condizioni iniziali
-serve dunque a **selezionare**, dentro la famiglia delle soluzioni
+serve dunque a selezionare, dentro la famiglia delle soluzioni
 dell'equazione (per una lineare del secondo ordine come quella della molla che
 ci farà da banco di prova, uno spazio a due dimensioni), proprio la nostra:
 senza di esso nulla
@@ -134,8 +134,8 @@ distingue la traiettoria che parte da $u(0)=1$ da quella che se ne sta ferma
 a zero.
 Attenzione però a non promettere troppo: nemmeno con quel termine il
 minimizzatore della loss è unico in senso stretto. Con $N_c$ punti di
-collocazione *finiti*, infinite funzioni annullano il residuo **in quei
-punti** e rispettano le due condizioni iniziali; la soluzione vera è l'unico
+collocazione *finiti*, infinite funzioni annullano il residuo in quei
+punti e rispettano le due condizioni iniziali; la soluzione vera è l'unico
 minimo globale se ci si restringe alle soluzioni dell'equazione, ovvero nel
 limite in cui il residuo è controllato su tutto il dominio e non solo sul
 campione. Nel mezzo dovrebbe pensarci la regolarità della rete, che a rigore
@@ -153,7 +153,7 @@ nella direzione dettata dalla fisica, trascurando l'unico ancoraggio che c'è.
 Le ragioni per cui succede sono due, e conviene tenerle distinte perché non
 agiscono sempre insieme.
 
-La prima è l’**ampiezza dei gradienti**. Il residuo si ottiene applicando alla
+La prima è l’ampiezza dei gradienti. Il residuo si ottiene applicando alla
 rete degli operatori differenziali, e i gradienti che tornano indietro da quel
 ramo *possono* essere di ordini di grandezza più grandi di quelli del termine
 sulle condizioni iniziali. Succede sulle PDE con operatori di ordine alto e
@@ -170,7 +170,7 @@ $\lambda_0$, sui semi da 0 a 19) ha mediana $2{,}4$, e in quattro semi su
 venti è addirittura rovesciato. Su una ODE del secondo ordine con due scalari
 imposti al tempo zero, «ordini di grandezza» sarebbe una parola grossa.
 
-La seconda, ed è quella che qui morde davvero, è la **copertura del dominio**:
+La seconda, ed è quella che qui morde davvero, è la copertura del dominio:
 le condizioni iniziali riguardano un istante soltanto, mentre il residuo tira
 sull'intera curva in tutti i punti di collocazione e finisce per dettare quasi
 da solo come cambiare i pesi. Il punto non sta nel numero dei termini sommati
@@ -203,13 +203,14 @@ la correzione torna indietro fino ai pesi della rete.
 In {numref}`fig-pinn-schema` c'è il metodo per intero, e le poche scritte in
 formula dicono cose che ormai abbiamo in mano: $\mathcal{L}$, la «L» decorata,
 è il punteggio, cioè la loss; $\theta$ sono i pesi; «autograd» è il
-registratore di cui parlavamo in apertura. L'unico simbolo nuovo è
-$\partial$, quella «d» arrotondata: è il modo di scrivere una pendenza quando
-la grandezza cambia per più di un motivo insieme. La sbarra di ferro della
-pagina precedente, scaldata a un capo, è il caso tipico: la sua temperatura
-cambia sia da un punto all'altro della sbarra sia da un istante al successivo,
-e $\partial u / \partial t$ vuol dire «quanto cambia col tempo, tenendo fermo
-il punto in cui guardo».
+registratore di cui parlavamo in apertura. Il simbolo nuovo è $\partial$,
+quella «d» arrotondata: è il modo di scrivere una pendenza quando la grandezza
+cambia per più di un motivo insieme. La sbarra di ferro della pagina
+precedente, scaldata a un capo, è il caso tipico: la sua temperatura cambia
+sia da un punto all'altro della sbarra sia da un istante al successivo, e
+$\partial u / \partial t$ vuol dire «quanto cambia col tempo, tenendo fermo il
+punto in cui guardo». La $g$ del riquadro in basso è il valore che la
+soluzione deve assumere sul bordo.
 
 Lo scarto fra i due membri dell'equazione, quello che il ramo in alto calcola,
 si chiama **residuo**: è lo stesso oggetto che nel racconto del compito in
@@ -218,7 +219,7 @@ tornerà utile: nel resto della sezione «residuo» indicherà quasi sempre il
 *punteggio* che se ne ricava, cioè la media dei residui elevati al quadrato
 sui punti di controllo. Il quadrato serve a due cose, a contare uguale una
 violazione in su e una in giù, e a far pesare di più quelle grosse; e la
-conseguenza da tenere a mente è che quel punteggio cresce con il **quadrato**
+conseguenza da tenere a mente è che quel punteggio cresce con il quadrato
 della violazione, quindi un punteggio cento volte più alto vuol dire una
 violazione dieci volte più grossa.
 
@@ -258,8 +259,8 @@ molla: $m = 1$, $c = 0{,}4$, $k = 4$.
 
 Prima di leggere l'equazione, saldiamo i due vocabolari. La curva sul foglio
 *è* il movimento del corpo appeso: la sua
-pendenza è la **velocità** (quanto in fretta il corpo si sposta) e la sua
-curvatura è l’**accelerazione** (quanto in fretta cambia quella velocità).
+pendenza è la velocità (quanto in fretta il corpo si sposta) e la sua
+curvatura è l’accelerazione (quanto in fretta cambia quella velocità).
 Due nomi diversi, un oggetto solo. È il
 motivo per cui una regola sul moto di un corpo si può far rispettare a una
 linea tracciata su un foglio.
@@ -281,8 +282,8 @@ giù, e ogni oscillazione è più bassa della precedente, perché l'attrito ruba
 energia a ogni passaggio. Dieci volte quell'attrito è la soglia esatta a cui i
 rimbalzi spariscono: lì il corpo tornerebbe piano al centro e si fermerebbe,
 senza un solo rimbalzo. Con i nostri tre numeri, invece, un'oscillazione
-completa dura **3,16 secondi**, e dopo 10 secondi l'ampiezza (l'altezza del
-rimbalzo, misurata dalla posizione di riposo) è scesa al **13,5%** di quella
+completa dura 3,16 secondi, e dopo 10 secondi l'ampiezza (l'altezza del
+rimbalzo, misurata dalla posizione di riposo) è scesa al 13,5% di quella
 di partenza.
 
 Nessuno dei due valori viene da un laboratorio: escono dai tre numeri della
@@ -343,7 +344,7 @@ Questa formula sarà la pagella con cui giudicheremo la PINN.
 Prima di scrivere la rete c'è una scelta da fare, e in ogni altro capitolo del
 libro sarebbe stata automatica. Una rete non è fatta solo di somme: fra uno
 strato e l'altro ogni numero passa attraverso una funzioncina che lo piega, la
-**funzione di attivazione**, ed è lei a decidere che forma possono avere le
+funzione di attivazione, ed è lei a decidere che forma possono avere le
 curve che la rete sa disegnare. Dalla {doc}`sezione sulle funzioni di
 attivazione </RetiNeurali/funzioni-attivazione>` in poi abbiamo usato quasi
 sempre la stessa, la ReLU, che è la scelta giusta praticamente ovunque. Qui è
@@ -351,7 +352,7 @@ squalificata in partenza, e il motivo è istruttivo.
 
 `````{tab} Elementare
 
-**La curva dev'essere liscia**, e la ReLU non sa disegnare curve lisce. La
+La curva dev'essere liscia, e la ReLU non sa disegnare curve lisce. La
 ReLU è fatta di due tratti dritti attaccati in un angolo, e una rete di sole
 ReLU produce curve fatte così: segmenti dritti incollati uno dopo l'altro,
 come una spezzata. Una spezzata però non ha curvatura da nessuna parte,
@@ -373,8 +374,8 @@ in pensione; qui si prende la rivincita.
 `````{tab} Superiore
 
 La ReLU è fatta di due semirette: una rete di sole ReLU calcola una funzione
-*lineare a tratti*, la cui derivata prima è a gradini e la cui **derivata
-seconda è zero quasi ovunque** ("quasi" perché nei punti di piega non esiste
+*lineare a tratti*, la cui derivata prima è a gradini e la cui derivata
+seconda è zero quasi ovunque ("quasi" perché nei punti di piega non esiste
 affatto, e sono un insieme di misura nulla). Ma nel nostro residuo compare
 $u''$: per una rete ReLU sarebbe identicamente nullo, e il termine principale
 dell'equazione diventerebbe invisibile alla loss. E il
@@ -427,11 +428,11 @@ ottimizzatore = torch.optim.Adam(rete.parameters(), lr=1e-3)
 ```
 
 Due righe meritano una sosta. `t_c.requires_grad_(True)` accende il
-registratore di autograd **sull'input**, non su un peso: è l'inversione di
+registratore di autograd sull'input, non su un peso: è l'inversione di
 prospettiva da cui siamo partiti. E la rete è minuscola, tre strati nascosti
 da 32 neuroni, perché la funzione da rappresentare è una curva liscia in una
 dimensione, non ImageNet. È la pila di strati densi che dal capitolo sulle
-reti neurali chiamiamo **MLP** (*multi-layer perceptron*, percettrone
+reti neurali chiamiamo MLP (*multi-layer perceptron*, percettrone
 multistrato), la più semplice delle architetture di questo libro. E `shape`,
 nei commenti, è la forma della tabella di numeri: qui 200 righe per una
 colonna.
@@ -439,7 +440,7 @@ colonna.
 Il cuore del metodo sono due chiamate a `torch.autograd.grad`, con due
 argomenti che non avevamo mai usato. Il ciclo che le contiene ripete
 trentamila volte lo stesso giro di correzione, e ciascuno di quei giri si
-chiama **epoca**:
+chiama epoca:
 
 ```python
 for epoca in range(30_000):
@@ -512,7 +513,7 @@ Che la faccenda sia seria si tocca con mano abbassando quel moltiplicatore a
 arrivato a un residuo di $2 \cdot 10^{-5}$ sui suoi duecento punti, cioè due
 centomillesimi; con il moltiplicatore a 100, sulla stessa misura e sullo
 stesso seme, il residuo si ferma a $8 \cdot 10^{-3}$, otto millesimi,
-**quattrocento volte più alto**. Verrebbe da dire che con 1 è andata meglio.
+quattrocento volte più alto. Verrebbe da dire che con 1 è andata meglio.
 
 Invece è andata molto peggio, e si vede solo andando a confrontare la curva
 con la risposta vera, che qui per fortuna conosciamo. Fra le due si apre uno
@@ -523,14 +524,14 @@ meno.
 
 Il tranello però non sta dove verrebbe da cercarlo. La partenza quella rete la
 rispetta lo stesso, $u_\theta(0) = 0{,}999$; quello che ha fatto è azzerare il
-residuo **dove veniva controllata** e lasciarlo correre altrove. Se glielo si
+residuo dove veniva controllata e lasciarlo correre altrove. Se glielo si
 va a misurare in cinquecento istanti che non aveva mai visto, stesi fitti e in
-fila lungo tutto l'intervallo (una **griglia**, come quella dei metodi
+fila lungo tutto l'intervallo (una griglia, come quella dei metodi
 classici, ma qui usata solo per controllare, non per calcolare), il suo
 residuo vale $2{,}8$: più di centomila volte quello dei suoi duecento punti.
 Il $100$, insomma, non serve a tenere la curva
 attaccata alla partenza, perché lì ci resta comunque: serve a rendere meno
-conveniente quella scorciatoia. E la rende meno conveniente, **non la vieta**:
+conveniente quella scorciatoia. E la rende meno conveniente, non la vieta:
 fra poche pagine ne vedremo la prova.
 
 Trentamila epoche dopo, ecco il verdetto. A guidare l'addestramento è Adam
@@ -626,8 +627,8 @@ secondi lo scarto dalla formula esatta non arriva a otto centesimi
 dell'ampiezza iniziale. Per una curva ricostruita da una regola e da due
 numeri, è molto.
 
-La seconda è che quella curva **non è accurata quanto il residuo lascerebbe
-credere**. Sui 200 punti in cui la regola è stata controllata il residuo vale
+La seconda è che quella curva non è accurata quanto il residuo lascerebbe
+credere. Sui 200 punti in cui la regola è stata controllata il residuo vale
 $8 \cdot 10^{-3}$, cioè la molla risulta obbedita quasi alla lettera; ma lo
 scarto massimo dalla soluzione vera è $0{,}154$, il 15% dello spostamento di
 partenza, e le due curve messe una sull'altra si distinguono benissimo.
@@ -679,7 +680,7 @@ piccolo e l'errore grande.
 C'è una riga del programma che non abbiamo commentato: `torch.manual_seed(42)`,
 in cima al primo blocco. Una rete comincia sempre con i pesi sorteggiati a
 caso, perché partendo tutti uguali i neuroni resterebbero uguali per sempre, e
-il sorteggio dipende da un numero di partenza che si chiama **seme**: dando lo
+il sorteggio dipende da un numero di partenza che si chiama seme: dando lo
 stesso seme si ottiene lo stesso sorteggio, e quindi lo stesso risultato.
 Fissarlo, per tutto il resto del libro, è una cortesia al lettore, che così
 rifacendo il conto ritrova i nostri numeri. Qui è molto di più: cambiando quel
@@ -752,10 +753,11 @@ assert res_griglia_7 > res_griglia, (
 )
 ```
 
-Ecco che cosa stampa la corsa con il **seme 7**. Nella colonna «errore vero» c'è la distanza massima
-fra la curva della rete e la formula esatta, sempre in frazioni dello
-spostamento di partenza, che vale 1: 0,879 vuol dire che in qualche istante la
-rete sbaglia di quasi tutto lo spostamento da cui il corpo era partito.
+Ecco che cosa stampa la corsa con il seme 7. Nella colonna «errore vero»
+c'è la distanza massima fra la curva della rete e la formula esatta, sempre in
+frazioni dello spostamento di partenza, che vale 1: 0,879 vuol dire che in
+qualche istante la rete sbaglia di quasi tutto lo spostamento da cui il corpo
+era partito.
 
 | epoca | residuo | errore vero |
 |---:|---:|---:|
@@ -776,7 +778,7 @@ Si guardi la seconda metà della tabella, perché è il punto di tutta la
 sezione. Fra le 17 500 e le 27 500 epoche il residuo si divide per seicento,
 da $3{,}3 \cdot 10^{-2}$ a $5 \cdot 10^{-5}$: chiunque guardasse soltanto la
 loss direbbe che proprio lì l'addestramento ha fatto un salto di qualità.
-Nello stesso tratto l'errore vero **peggiora**, da 0,43 a 0,72, cioè da mezzo
+Nello stesso tratto l'errore vero peggiora, da 0,43 a 0,72, cioè da mezzo
 spostamento di partenza a quasi tutto. Le due colonne, che dovrebbero
 raccontare la stessa storia, vanno in direzioni opposte.
 
@@ -804,9 +806,9 @@ errore vero                  0.154       0.720
 ```
 
 Sui duecento istanti in cui è stata controllata, la rete del seme 7 prende un
-punteggio di fisica **sedici volte più basso** di quella del seme 42. Sulla
+punteggio di fisica sedici volte più basso di quella del seme 42. Sulla
 griglia fitta di istanti che non ha mai visto, il suo punteggio è
-**quarantamila volte più alto**. E fra i suoi due punteggi, quello dove è
+quarantamila volte più alto. E fra i suoi due punteggi, quello dove è
 stata guardata e quello dove non lo è stata, corre un fattore di due milioni e
 mezzo: stessa rete, stesso momento, due giudizi opposti. (Questi sono rapporti
 fra *punteggi*, e un punteggio è una media di quadrati: per risalire a quanto
@@ -821,8 +823,8 @@ del gradiente non scende sempre, e negli ultimi duemilacinquecento giri quel
 termine è risalito. Non cambia niente di quello che segue.
 
 Non è dunque soltanto che il residuo basso non garantisce la soluzione giusta:
-è che quel residuo basso è stato ottenuto **proprio e soltanto nei punti che
-si stanno guardando**. La rete ha imparato a essere impeccabile all'esame e
+è che quel residuo basso è stato ottenuto proprio e soltanto nei punti che
+si stanno guardando. La rete ha imparato a essere impeccabile all'esame e
 sregolata fuori.
 
 `````{tab} Elementare
@@ -841,7 +843,7 @@ conto. Il professore non controlla dappertutto:
 controlla duecento istanti, sempre gli stessi. Lo studente lo ha capito, e ha
 imparato a stare in riga *esattamente lì*.
 
-E adesso guardiamo che cosa fa **in mezzo**, perché c'è da restare a bocca
+E adesso guardiamo che cosa fa in mezzo, perché c'è da restare a bocca
 aperta. Due dei suoi punti di controllo cadono a 1,205 e a 1,415 secondi: fra
 loro corrono due decimi di secondo, quattro volte il passo medio del campione,
 che con duecento punti su dieci secondi è un ventesimo di secondo: quei punti
@@ -850,7 +852,7 @@ scendendo, tocca il fondo a $-0{,}57$ e in quei due decimi di secondo risale
 fino a sfiorare lo zero, dove resta per tutto il tempo che avanza: mezzo
 foglio risalito di scatto fra un controllo e l'altro.
 È lo strappo con cui smette di oscillare. Proprio perché è così stretto, lì la
-curva **piega** in modo mostruoso, e la regola della molla parla soprattutto
+curva piega in modo mostruoso, e la regola della molla parla soprattutto
 di quanto la curva piega. Se il professore ci mettesse il dito, quel compito
 verrebbe stracciato.
 
@@ -867,18 +869,19 @@ guarda, e nulla in quel punteggio gli chiede di comportarsi anche altrove.
 
 Due meccanismi distinti si sommano qui, e conviene separarli.
 
-Il primo è la **degenerazione del termine di fisica**, già annotata quando abbiamo scritto la loss: $u \equiv 0$ risolve esattamente l'equazione omogenea,
-quindi il minimo del solo residuo è degenere e la soluzione banale ne fa
-parte. Il termine sulle condizioni iniziali dovrebbe selezionare la nostra fra
-le infinite soluzioni, ma agisce su un singolo istante, e $\lambda_0 = 100$
-**rende quella scorciatoia meno attraente, non la vieta**: la rete infatti la
-paga per intero, $u_\theta(0) = 0{,}9993$, e si tiene il residuo quasi nullo
-nei punti in cui viene interrogata. È il fenomeno che la prossima sezione
-chiamerà mancanza di **ordine causale**: la loss somma residui su punti sparsi
-nel dominio e nulla obbliga la rete a propagare in avanti nel tempo
-l'informazione della partenza.
+Il primo è la degenerazione del termine di fisica, già annotata quando
+abbiamo scritto la loss: $u \equiv 0$ risolve esattamente l'equazione
+omogenea, quindi il minimo del solo residuo è degenere e la soluzione banale
+ne fa parte. Il termine sulle condizioni iniziali dovrebbe selezionare la
+nostra fra le infinite soluzioni, ma agisce su un singolo istante, e
+$\lambda_0 = 100$ rende quella scorciatoia meno attraente, non la vieta:
+la rete infatti la paga per intero, $u_\theta(0) = 0{,}9993$, e si tiene il
+residuo quasi nullo nei punti in cui viene interrogata. È il fenomeno che la
+prossima sezione chiamerà mancanza di ordine causale: la loss somma
+residui su punti sparsi nel dominio e nulla obbliga la rete a propagare in
+avanti nel tempo l'informazione della partenza.
 
-Il secondo è il **campionamento finito**, ed è il posto in cui si tocca con
+Il secondo è il campionamento finito, ed è il posto in cui si tocca con
 mano l'avvertenza di poco fa: fra un punto di collocazione e il
 successivo la regolarità della rete non le impedisce affatto di oscillare.
 Qui infatti oscilla: misurato su una griglia da
@@ -887,8 +890,8 @@ $6{,}6 \cdot 10^2$ a $t = 1{,}263$, con un picco largo $0{,}02$ secondi a
 metà altezza. I
 due punti di collocazione che se lo trovano in mezzo stanno a $1{,}205$ e a
 $1{,}415$: fra loro corrono $0{,}21$ secondi, quattro volte il passo medio del
-campione. **Il picco sta nel buco fra due punti di controllo, ed è largo un
-decimo di quel buco.** E non è un'increspatura invisibile nella soluzione:
+campione. Il picco sta nel buco fra due punti di controllo, ed è largo un
+decimo di quel buco. E non è un'increspatura invisibile nella soluzione:
 dentro quello stesso intervallo $u_\theta$ tocca il fondo a $-0{,}565$ e
 risale a $-0{,}007$, un salto di $0{,}56$ compiuto per intero fra due istanti
 in cui la rete non viene interrogata. È lì che la rete abbandona la discesa e
@@ -906,7 +909,7 @@ che infittendo i punti la cosa si chiude, non che sia già chiusa.
 Il seme 7 non è nemmeno un caso isolato. Rilanciamo lo stesso programma sei
 volte, cambiando ogni volta soltanto il seme. Di ciascuna corsa prendiamo il
 residuo sui suoi duecento punti, quello della prima riga del confronto qui
-sopra, e mettiamo le sei in fila **dal punteggio migliore al peggiore**:
+sopra, e mettiamo le sei in fila dal punteggio migliore al peggiore:
 
 | seme | residuo finale | errore massimo | attraversamenti dello zero |
 |---:|---:|---:|---:|
@@ -917,7 +920,7 @@ sopra, e mettiamo le sei in fila **dal punteggio migliore al peggiore**:
 | 0 | $2{,}7 \cdot 10^{-2}$ | 0,259 | 5 |
 | 2 | $3{,}1 \cdot 10^{-2}$ | 0,289 | 5 |
 
-Le due corse con il residuo **più basso in assoluto** sono le due sbagliate, e
+Le due corse con il residuo più basso in assoluto sono le due sbagliate, e
 sono anche quelle che restano più lontane dai sei attraversamenti dello zero
 della soluzione vera: uno e quattro, contro i cinque o sei delle altre. Solo
 il seme 42 li fa tutti. Fra le altre quattro il residuo torna a essere una
@@ -929,7 +932,7 @@ risolverlo. Due corse su sei, su un'equazione che si risolve a mano in mezza
 pagina.
 
 Due conseguenze pratiche, e sono le più utili di tutta la sezione. La prima:
-in una PINN **la loss non è una pagella**. In un problema di apprendimento
+in una PINN la loss non è una pagella. In un problema di apprendimento
 ordinario un punteggio che scende è una buona notizia; qui il residuo può
 scendere allontanandosi dalla risposta, e nella loss che si sta minimizzando
 non c'è niente che lo segnali. Confrontare con la soluzione vera, come abbiamo
@@ -941,8 +944,8 @@ fra loro, che è l'unica cosa che si può fare quando la risposta giusta non si
 conosce.
 
 E una terza, che costa pochissimo e che i due punteggi affiancati suggeriscono
-da sé: **il residuo va sempre misurato anche dove la rete non è stata
-addestrata**, su una griglia fitta o su punti estratti di nuovo. È lo stesso
+da sé: il residuo va sempre misurato anche dove la rete non è stata
+addestrata, su una griglia fitta o su punti estratti di nuovo. È lo stesso
 motivo per cui, nei capitoli sull'apprendimento, un modello si giudica su dati
 tenuti da parte e mai visti in addestramento: un punteggio calcolato dove il
 modello si è allenato misura anche quanto bene ha imparato a compiacere quel
@@ -958,8 +961,8 @@ riconoscibile, partendo da un punto e da una regola, il che resta notevole. Ma
 «di solito funziona» non è una garanzia, e su un problema da manuale, con
 soluzione nota, tre parametri e una sola variabile, a separare la corsa buona
 da quella fallita è stato il seme del generatore casuale. È il motivo per cui
-la prossima sezione mette in fila i limiti prima delle applicazioni, e non
-dopo.
+nella prossima sezione la rassegna dei limiti è più lunga di quella delle
+applicazioni.
 
 ## Non unire i puntini, non calcolarli: una terza via
 
@@ -967,18 +970,18 @@ Fermiamoci a guardare che cosa è successo, perché è facile passarci sopra.
 
 `````{tab} Elementare
 
-Confrontiamo con i due mestieri che già conosciamo. La **regressione** della
+Confrontiamo con i due mestieri che già conosciamo. La regressione della
 {doc}`sezione sull'apprendimento supervisionato
 </MachineLearning/apprendimento-supervisionato>` è unire i puntini: senza
 puntini non parte nemmeno, e per disegnare questa curva le sarebbero servite
 decine di misure sparse su tutti i 10 secondi. La nostra rete ha ricevuto
-**zero misure**: un punto di partenza, una regola, fine; la fisica ha fatto il
+zero misure: un punto di partenza, una regola, fine; la fisica ha fatto il
 lavoro dei dati. Il
-**solutore classico** visto in apertura di capitolo, il conto a passettini del
+solutore classico visto in apertura di capitolo, il conto a passettini del
 caffè, la curva la sa calcolare; ma la calcola su una griglia di istanti, e i
 valori in mezzo li ricostruisce interpolando fra quelli che ha in mano (i
 solutori maturi lo fanno bene, non tirando una retta fra due puntini). La PINN
-invece restituisce una **funzione**: chiedile il valore a $3{,}7$ secondi, o
+invece restituisce una funzione: chiedile il valore a $3{,}7$ secondi, o
 quanto sta salendo lì, o le due cose in qualunque altro punto, e risponde,
 perché la soluzione ormai abita dentro la rete.
 
@@ -995,7 +998,7 @@ dati e legge vanno mescolati, come vedremo tra un attimo.
 [^tolleranze]: Quei cinque centomiliardesimi non sono un numero di targa: a un
     solutore si dice quanta precisione si vuole, e la nostra è questa. Il
     conto è fatto con `solve_ivp` di SciPy
-    stringendo **entrambe** le tolleranze, la relativa (`rtol=1e-10`) e
+    stringendo entrambe le tolleranze, la relativa (`rtol=1e-10`) e
     l'assoluta (`atol=1e-12`); lasciando l'assoluta al valore di default lo
     scarto sale a $1{,}7 \cdot 10^{-6}$, più di quattro ordini di grandezza
     più largo, e resta comunque quasi centomila volte più piccolo del nostro. La
@@ -1006,18 +1009,18 @@ dati e legge vanno mescolati, come vedremo tra un attimo.
 
 `````{tab} Superiore
 
-Rispetto alla **regressione pura**: minimizzare solo il termine dati richiede
+Rispetto alla regressione pura: minimizzare solo il termine dati richiede
 $N_d$ grande e non promette nulla tra un campione e l'altro, mentre qui il
 residuo vincola $u_\theta$ nei punti di collocazione, e per il loro tramite,
 con le riserve appena viste, l'intero dominio: bastano le condizioni iniziali,
 e il termine di fisica agisce come una regolarizzazione informata dalla
-legge. Rispetto a un **integratore classico** (Eulero, Runge–Kutta):
+legge. Rispetto a un integratore classico (Eulero, Runge–Kutta):
 quello discretizza il tempo con passo $h$, propaga sequenzialmente e offre
 garanzie di convergenza con errore $O(h^p)$ (sotto le ipotesi del caso:
 stabilità dello schema e soluzione abbastanza regolare); la PINN sostituisce
 la propagazione con un'ottimizzazione globale non convessa: nessuna garanzia
 formale, costo superiore di ordini di grandezza su un problema standard come
-questo, ma soluzione *mesh-free* e continua, valutabile e **derivabile** in
+questo, ma soluzione *mesh-free* e continua, valutabile e derivabile in
 qualunque punto. Su quest'ultimo vantaggio conviene non calcare troppo: un
 integratore a passo adattivo offre da decenni l’*output denso*, cioè
 un'interpolante di ordine appena inferiore a quello del metodo, richiamabile
@@ -1029,8 +1032,8 @@ inverso.
 Quanto alla storia, un'onestà dovuta: l'idea non nasce nel 2019, e nemmeno
 nel 1998. La loss delle PINN, esattamente com'è scritta qui (un MLP che
 approssima la soluzione, il residuo minimizzato ai punti di collocazione e le
-condizioni imposte **come penalità nella stessa funzione obiettivo**), è di
-Dissanayake e Phan-Thien nel **1994** {cite}`dissanayake1994neural`, e reti
+condizioni imposte come penalità nella stessa funzione obiettivo), è di
+Dissanayake e Phan-Thien nel 1994 {cite}`dissanayake1994neural`, e reti
 neurali messe a risolvere equazioni differenziali compaiono già in Lee e Kang
 nel 1990, con un impianto però diverso: lì la rete non rappresenta la
 soluzione come funzione delle coordinate, minimizza l'errore di uno schema
@@ -1053,8 +1056,8 @@ riscritta per ogni geometria e ogni tipo di condizione) ma che, come abbiamo
 appena visto con il seme sfortunato e come vedremo nella prossima sezione, ha
 un costo. Ma nel 1994 le derivate della rete andavano ricavate con
 formule scritte a mano, caso per caso, e l'ottimizzazione girava su CPU
-dell'epoca: l'idea restò di nicchia per vent'anni. Quando Maziar Raissi, Paris
-Perdikaris e George Karniadakis la rilanciano nel 2019
+dell'epoca: l'idea restò di nicchia per un quarto di secolo. Quando Maziar
+Raissi, Paris Perdikaris e George Karniadakis la rilanciano nel 2019
 {cite}`raissi2019physics` (il nome «physics-informed neural networks» lo
 avevano già usato nei due preprint del 2017 da cui quel lavoro nasce), la
 differenza non è concettuale ma
@@ -1070,7 +1073,7 @@ Chiudiamo con la variazione promessa in apertura di capitolo: quella che, più
 di ogni altra, giustifica l'esistenza delle PINN. Finora abbiamo fatto il
 percorso in un verso: legge nota, e da lì la curva. Adesso lo percorriamo
 all'incontrario, curva osservata e da lì un pezzo di legge, ed è per questo
-che si chiama **problema inverso**.
+che si chiama problema inverso.
 
 Ecco la situazione. La molla è dentro una scatola chiusa e la sua rigidezza
 $k$ non la sappiamo; in compenso un sensore ci passa 25 misure della
@@ -1123,7 +1126,7 @@ seme diverso la porta a $3{,}75$, che è un buon promemoria di quello che
 abbiamo appena finito di dire: una corsa sola non è una misura.
 
 E c'è un dettaglio da raccogliere, dopo la brutta figura di poco fa. Qui la
-traiettoria ricostruita è **più accurata** di quella che avevamo ottenuto
+traiettoria ricostruita è più accurata di quella che avevamo ottenuto
 conoscendo la legge per intero, pur essendo il problema più difficile dei due:
 lo scarto massimo dalla curva vera è circa $0{,}07$, e circa $0{,}08$
 rilanciando con il seme 7, quello sfortunato, contro lo $0{,}15$ di prima. Il
@@ -1142,7 +1145,7 @@ stesse, che sulla loro peggiore stanno a $0{,}11$ dalla curva vera, ha una
 ragione: chi si limita a unire i puntini ne ricopia anche gli errori, e più
 preciso dei puntini che ha non può diventare.
 
-La PINN invece si ferma attorno a $0{,}07$, cioè **sotto** lo scarto delle
+La PINN invece si ferma attorno a $0{,}07$, cioè sotto lo scarto delle
 misure che le sono state date: sbaglia meno di quanto sbagli il sensore da cui
 ha imparato. A permetterglielo è la legge: fra tutte le
 curve che passano vicino a quei venticinque punti, tiene solo quelle che una
@@ -1161,21 +1164,21 @@ PINN» non vuol dire «meglio di tutti».
 ```{admonition} Da ricordare
 :class: important
 - Il colpo di scena: lo stesso meccanismo che finora diceva di quanto
-  ritoccare ciascun peso sa dire anche **quanto la curva della rete sale o
-  scende** in un istante, e quanto in fretta cambia quella pendenza, senza
+  ritoccare ciascun peso sa dire anche quanto la curva della rete sale o
+  scende in un istante, e quanto in fretta cambia quella pendenza, senza
   approssimazioni. La rete diventa una curva liscia, alla quale si può
   chiedere di rispettare una regola.
 - Il punteggio da abbassare somma due voci: le violazioni della regola negli
-  istanti di controllo scelti a caso, i **punti di collocazione**, e gli
+  istanti di controllo scelti a caso, i punti di collocazione, e gli
   scarti sulla partenza, cioè il punto da cui si parte e la pendenza con cui
   si parte (dove conta anche lo spazio, come nella sbarra che si scalda, entra
   qui pure quello che succede ai bordi). Alla partenza si dà più peso, perché
   quando altro non c'è è l'unico ancoraggio.
-- **La curva dev'essere liscia**: se è fatta di segmenti dritti incollati uno
+- La curva dev'essere liscia: se è fatta di segmenti dritti incollati uno
   dopo l'altro, come quelli che escono dalla ReLU, non ha curvatura da nessuna
   parte, e il professore non vedrebbe più il pezzo più importante della
   regola. Per questo qui si torna alla vecchia S centrata nello zero.
-- **Il registratore deve annotare anche i propri conti**
+- Il registratore deve annotare anche i propri conti
   (`create_graph=True`): la pendenza appena calcolata serve altre due volte,
   per ricavarne la curvatura e per far arrivare la correzione fino ai pesi. È
   il motivo per cui un giro di addestramento di una PINN costa più di uno
@@ -1189,18 +1192,18 @@ PINN» non vuol dire «meglio di tutti».
   (0,070 sui primi cinque secondi, 0,154 sugli ultimi), lontano dall'unico
   ancoraggio: alla fine dell'intervallo l'oscillazione vera vale ormai quanto
   lo scarto, e là la rete ha smesso di seguirla.
-- **Un punteggio basso non vuol dire risposta giusta**, ed è la lezione da
+- Un punteggio basso non vuol dire risposta giusta, ed è la lezione da
   portarsi via. Su sei ripartenze dello stesso identico programma, le due che
   ottengono il punteggio migliore sono le due che sbagliano di più: stanno in
-  riga **dove il professore guarda** e si lasciano andare in mezzo, fino a
+  riga dove il professore guarda e si lasciano andare in mezzo, fino a
   spegnere del tutto l'oscillazione nel caso peggiore. Con una regola sola e
   nessuna misura fra un controllo e l'altro, rispettare la regola non basta a
   inchiodare la risposta.
-- Alla fine resta una **curva intera**, non una tabella di valori: le si
+- Alla fine resta una curva intera, non una tabella di valori: le si
   chiede il valore a 3,7 secondi, o quanto sta salendo lì, in qualunque punto
   si voglia. Il valore fra due istanti calcolati lo dà bene anche un solutore
   maturo; della rete resta la curva liscia, con le sue pendenze.
-- **Problema inverso**: se un pezzo della regola manca (quanto è rigida la
+- Problema inverso: se un pezzo della regola manca (quanto è rigida la
   molla), diventa una manopola in più che l'addestramento gira insieme alla
   curva, e bastano poche misure rumorose. Sono loro, allora, a fare da
   ancoraggio al posto della partenza. È la mossa che rende uniche le PINN.
@@ -1213,14 +1216,14 @@ PINN» non vuol dire «meglio di tutti».
 ```{admonition} Da ricordare
 :class: important
 - Il colpo di scena tecnico: le stesse derivate automatiche usate finora sui
-  pesi, calcolate **rispetto all'input**, rendono la rete $u_\theta$ una
+  pesi, calcolate rispetto all'input, rendono la rete $u_\theta$ una
   funzione derivabile su cui si può imporre un'equazione differenziale.
-- La loss di una PINN somma: media dei **residui** sui punti di
-  collocazione (la fisica) + scarti su **condizioni iniziali/al contorno**
+- La loss di una PINN somma: media dei residui sui punti di
+  collocazione (la fisica) + scarti su condizioni iniziali/al contorno
   (+ eventuali dati), con pesi che proteggono i pochi ancoraggi.
-- **`tanh`, non ReLU**: la ReLU ha derivata seconda nulla quasi ovunque e
+- `tanh`, non ReLU: la ReLU ha derivata seconda nulla quasi ovunque e
   renderebbe cieco il residuo; servono attivazioni lisce.
-- **`create_graph=True`** è la chiave pratica: mantiene derivabile la
+- `create_graph=True` è la chiave pratica: mantiene derivabile la
   derivata, per poter calcolare $u''$ e per far passare `backward()`
   attraverso il residuo.
 - Sull'oscillatore smorzato ($m=1$, $c=0{,}4$, $k=4$) la PINN si avvicina alla
@@ -1228,18 +1231,18 @@ PINN» non vuol dire «meglio di tutti».
   0{,}1005\,\sin\omega_d t)$, $\omega_d=\sqrt{3{,}96}$, senza aver visto un
   solo dato oltre le condizioni iniziali; ma con uno scarto massimo di
   $\approx 0{,}15$, non di $10^{-3}$, concentrato nella coda dell'intervallo.
-- **Residuo piccolo non implica soluzione corretta.** Su sei semi, le due
+- Residuo piccolo non implica soluzione corretta. Su sei semi, le due
   corse con $\mathcal{L}_{\text{fisica}}$ più bassa ($4{,}8\cdot10^{-4}$ e
   $1{,}7\cdot10^{-3}$) sono quelle con l'errore più grande (0,72 e 0,63):
   $u \equiv 0$ annulla il residuo dell'equazione omogenea, e $\lambda_0=100$
   rende quella scorciatoia meno attraente ma non la vieta. Corollario
-  operativo: **più semi**, e mai fidarsi della sola loss.
+  operativo: più semi, e mai fidarsi della sola loss.
 - L'idea è del 1994 {cite}`dissanayake1994neural` (vincolo *soft*, penalità
   nella loss), con antecedenti al 1990 {cite}`lee1990neural`; Lagaris 1998
   {cite}`lagaris1998artificial` è la variante a vincolo *hard*. L'esplosione
   del 2019 {cite}`raissi2019physics` arriva quando autograd e GPU la rendono
   praticabile.
-- **Problema inverso**: basta promuovere un coefficiente a `nn.Parameter`
+- Problema inverso: basta promuovere un coefficiente a `nn.Parameter`
   per stimarlo da poche misure rumorose, insieme alla soluzione. È la mossa
   che rende uniche le PINN.
 ```

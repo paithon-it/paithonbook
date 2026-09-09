@@ -14,8 +14,8 @@ Taylor voleva misurare i lettori. Sessantasei anni dopo, lo stesso identico
 gioco (coprire una parola e farla indovinare) è diventato il modo in cui si
 addestrano i modelli di linguaggio, e gli autori di BERT lo dicono in chiaro,
 rimandando proprio a Taylor: quel loro esercizio, scrivono, in letteratura si
-chiama *compito cloze* {cite}`devlin2019bert`. Nel mezzo sono cambiati **chi lo
-fa** e **a che scopo**, non l'esercizio. Non si misura più il lettore, si
+chiama *compito cloze* {cite}`devlin2019bert`. Nel mezzo sono cambiati chi lo
+fa e a che scopo, non l'esercizio. Non si misura più il lettore, si
 fabbrica il lettore.
 
 Quella mossa è comparsa già cinque volte, con cinque nomi diversi e senza che
@@ -33,7 +33,7 @@ pretesto si butta via.
 
 La differenza con l'apprendimento supervisionato dei capitoli precedenti non
 sta nell'algoritmo, che è lo stesso, e nemmeno nella rete, che è la stessa.
-Sta in **chi scrive la risposta giusta**. Là la scriveva una persona, una per
+Sta in chi scrive la risposta giusta. Là la scriveva una persona, una per
 esempio, a mano; qui la si ricava dal dato con un'operazione meccanica: quale
 parola avevo coperto, quale pezzo di immagine avevo ritagliato, quale
 fotogramma viene dopo. La risposta c'era già, e noi l'abbiamo solo nascosta per
@@ -45,7 +45,7 @@ Detta così sembra un trucco contabile. Non lo è, e la ragione è aritmetica.
 
 Le tre grandi famiglie di apprendimento (supervisionato, per rinforzo,
 auto-supervisionato) si distinguono di solito per come sono fatte. Conviene
-invece guardarle da un'altra parte: per **quanto dice** la risposta con cui il
+invece guardarle da un'altra parte: per quanto dice la risposta con cui il
 modello si corregge. Non quanto è giusta: quanto è *grande*.
 
 `````{tab} Elementare
@@ -73,7 +73,7 @@ dato erano quelli buoni? Nessuno te lo dice.
 La fotografia con la sua parola è l'apprendimento supervisionato. La giornata
 nel bosco è l'apprendimento per rinforzo. Il buco da riempire è
 l'auto-supervisione, ed è il solo dei tre in cui la correzione che ricevi è
-**grande quanto la cosa che stai guardando**.
+grande quanto la cosa che stai guardando.
 
 `````
 
@@ -81,23 +81,23 @@ l'auto-supervisione, ed è il solo dei tre in cui la correzione che ricevi è
 
 La quantità da guardare è l'informazione portata dal **bersaglio**, cioè dalla
 risposta corretta su cui si calcola la perdita. Una scelta fra $K$ possibilità
-equiprobabili porta al più $\log_2 K$ bit, che è la definizione di entropia
-applicata al caso uniforme, e la ricava
+porta al più $\log_2 K$ bit, che è l'entropia del caso equiprobabile e il tetto
+di tutti gli altri, e la ricava
 {doc}`Teoria dell'informazione </Matematica/teoria-informazione>`.
 
-Da qui tre conti, e sono conti di **tetto**, non di sostanza:
+Da qui tre conti, e sono conti di tetto, non di sostanza:
 
 - un'etichetta su $K = 1000$ classi porta al più $\log_2 1000 \approx 10$ bit,
-  e li porta **per immagine**;
+  e li porta per immagine;
 - un token su un vocabolario di $V = 128\,000$ porta al più
-  $\log_2 128\,000 \approx 17$ bit, ma li porta **per token**, e un esempio di
+  $\log_2 128\,000 \approx 17$ bit, ma li porta per token, e un esempio di
   pre-addestramento è una finestra di migliaia di token;
-- una ricompensa binaria porta **1 bit**, e lo porta **per episodio**, cioè per
+- una ricompensa binaria porta 1 bit, e lo porta per episodio, cioè per
   l'intera traiettoria, comunque lunga sia.
 
 L'ultima riga è quella che decide tutto, e non per la dimensione del numero ma
 per il denominatore: nel supervisionato e nell'auto-supervisionato il bersaglio
-si misura per esempio o per token, nel rinforzo per **episodio**. Un episodio
+si misura per esempio o per token, nel rinforzo per episodio. Un episodio
 può essere una mossa oppure diecimila.
 
 `````
@@ -153,7 +153,7 @@ vale 0.0001 bit per passo
 ```
 
 Le due righe da confrontare non sono la prima e l'ultima, che stanno in un
-rapporto di dieci a uno: sono la **terza** e l'ultima. La terza riga è il brano
+rapporto di dieci a uno: sono la terza e l'ultima. La terza riga è il brano
 di testo che il modello legge in un colpo solo, ottomila pezzetti di parola:
 vale quasi quattordicimila etichette e centotrentanovemila verdetti di fine
 partita, e sono i due rapporti che il programma stampa in fondo. È la ragione
@@ -166,7 +166,7 @@ quei numeri prometterebbero più di quanto possono mantenere.
 
 `````{tab} Elementare
 
-Quei numeri dicono **quanto è grande la risposta giusta**, non quanto il
+Quei numeri dicono quanto è grande la risposta giusta, non quanto il
 modello ne ha capito. Sono il diametro del tubo, non l'acqua che ci passa.
 
 E il diametro è già generoso. Il conto tratta ogni dettaglio della metà coperta
@@ -182,7 +182,7 @@ male; solo che il momento giusto è la parte difficile, perché nel bosco quella
 frase arriva la sera, quando gli sguardi da correggere sono ormai centinaia.
 
 Il confronto regge sui rapporti grossi, quelli da dieci volte in su, e sulla
-tendenza; non sui decimali. E va usato per quello: dice dove c'è **spazio** per
+tendenza; non sui decimali. E va usato per quello: dice dove c'è spazio per
 imparare, non quanto si impara davvero.
 
 `````
@@ -191,7 +191,7 @@ imparare, non quanto si impara davvero.
 
 Tre precisazioni, e sono tutte nella stessa direzione.
 
-La prima: $\log_2 K$ è l'entropia della distribuzione **uniforme**, cioè un
+La prima: $\log_2 K$ è l'entropia della distribuzione uniforme, cioè un
 massimo. Le etichette reali non sono uniformi e i token nemmeno: l'entropia
 condizionata di un token dato il contesto è molto minore di $\log_2 V$, ed è il
 limite verso cui un buon modello linguistico spinge la propria perdita, senza
@@ -208,7 +208,7 @@ e non impara niente.
 
 La terza, ed è quella che il dibattito sul rinforzo userà: la povertà del
 segnale nel rinforzo non è solo una questione di quantità. Un bit per episodio
-va anche **assegnato**, cioè distribuito fra i passi che hanno contribuito, e
+va anche assegnato, cioè distribuito fra i passi che hanno contribuito, e
 quel problema (l'assegnazione del credito) è duro in modo indipendente dal
 numero di bit.
 
@@ -220,13 +220,13 @@ L'argomento ha una forma celebre, e la sua storia dice qualcosa sul campo.
 
 Nel dicembre del 2016, a un convegno, Yann LeCun mostra una diapositiva con
 una fetta di torta e una frase: «se l'intelligenza è una torta, il grosso della
-torta è l'apprendimento **non supervisionato**, la glassa è l'apprendimento
+torta è l'apprendimento non supervisionato, la glassa è l'apprendimento
 supervisionato, e la ciliegina è l'apprendimento per rinforzo»
 {cite}`lecun2016cake`. L'immagine fa il giro del mondo, e la ciliegina diventa
 un modo di dire.
 
 Nel 2019, alla stessa diapositiva, LeCun cambia una parola: dove diceva «non
-supervisionato» adesso dice «**auto**-supervisionato». Non è una limatura. La
+supervisionato» adesso dice «auto-supervisionato». Non è una limatura. La
 ragione l'ha scritta lui stesso, insieme a Ishan Misra, in un testo del 2021
 che è la formulazione più chiara di tutta questa faccenda
 {cite}`lecun2021darkmatter`: «non supervisionato» è un termine mal definito e
@@ -239,8 +239,8 @@ dalla persona che l'ha disegnata, la torta.
 
 Conviene essere precisi su che cosa quell'obiezione colpisce, perché «non
 supervisionato» resta una parola giusta in un caso e fuorviante nell'altro.
-Colpisce l'uso del termine per i metodi che **prevedono una parte del dato a
-partire dal resto**: là un segnale di correzione c'è, ed è quello che rende
+Colpisce l'uso del termine per i metodi che prevedono una parte del dato a
+partire dal resto: là un segnale di correzione c'è, ed è quello che rende
 l'espressione fuorviante. Non colpisce i metodi che non prevedono niente e si
 limitano a descrivere la forma dei dati, cioè il raggruppamento, la riduzione
 della dimensionalità e la stima di densità: lì la supervisione manca davvero,
@@ -261,9 +261,8 @@ cronologia, non come prova.
 ## Cinque pretesti, un solo meccanismo
 
 Se l'auto-supervisione è il paradigma, di pretesti se ne sono già costruiti
-parecchi senza chiamarli per nome, e la tabella che segue li mette in fila. Le
-prime quattro righe sono strada percorsa; l'ultima è quella che viene subito
-dopo.
+parecchi senza chiamarli per nome, e messi in fila stanno così. Le prime quattro
+righe sono strada percorsa; l'ultima è quella che viene subito dopo.
 
 | dove | il pretesto | che cosa se ne tiene |
 |---|---|---|
@@ -299,22 +298,22 @@ sistema che sappiamo imparare davvero, e che noi abbiamo raggiunto per un'altra
 strada.
 
 Una nota di vocabolario, per non inciampare più avanti. Lo stesso obiettivo, in
-quella letteratura, circola sotto molti nomi: minimizzare la **sorpresa**,
-l’**entropia**, l’**errore di predizione** oppure l’**energia libera
-variazionale**. Sono quattro modi di dire la stessa cosa, e la scelta
+quella letteratura, circola sotto molti nomi: minimizzare la sorpresa,
+l’entropia, l’errore di predizione oppure l’energia libera
+variazionale. Sono quattro modi di dire la stessa cosa, e la scelta
 dipende dal mestiere di chi parla: «errore di predizione» dove si spiegano
 segnali cerebrali, «energia libera variazionale» dove si fa apprendimento
 automatico.
 
-Da qui il capitolo prosegue in quattro sezioni. Prima le **famiglie**: i quattro
+Da qui il capitolo prosegue in quattro sezioni. Prima le famiglie: i quattro
 modi di fabbricare un pretesto, letti tutti come risposte diverse a una sola
 domanda, che è come si impedisce al modello di rispondere sempre la stessa
-cosa. Poi il **collasso e la misura**: che cosa va storto, e come si fa a
+cosa. Poi il collasso e la misura: che cosa va storto, e come si fa a
 sapere se ha funzionato quando non c'è nessun punteggio da guardare. Poi
-**capire è accorciare**, che affronta la domanda che le prime due si lasciano
+capire è accorciare, che affronta la domanda che le prime due si lasciano
 alle spalle, cioè *perché* tutto questo funzioni: la risposta che una parte del
 campo dà è che prevedere bene obbliga a comprimere, e comprimere obbliga a
-capire. Infine la **ciliegina**, cioè il dibattito su quanto conti
+capire. Infine la ciliegina, cioè il dibattito su quanto conti
 l'apprendimento per rinforzo rispetto alla torta dell'auto-supervisione, che è
 la parte in cui persone molto autorevoli non sono d'accordo fra loro, e qui
 gli argomenti si riportano con i loro nomi giusti e basta.
@@ -323,15 +322,15 @@ gli argomenti si riportano con i loro nomi giusti e basta.
 
 ```{admonition} Da ricordare
 :class: important
-- **Auto-supervisione** vuol dire inventarsi un esercizio la cui risposta
+- Auto-supervisione vuol dire inventarsi un esercizio la cui risposta
   giusta è già dentro i dati: coprire una parola e farla indovinare, ritagliare
   un pezzo di foto e farlo ritrovare. Nessuno scrive la risposta, si nasconde e
   basta. L'esercizio si butta via; quello che il modello ha dovuto capire per
   farlo si tiene.
 - Il gioco è più vecchio dei calcolatori: nel 1953 serviva a misurare quanto un
   testo fosse facile da leggere. Oggi serve a fabbricare chi lo legge.
-- La differenza che conta con gli altri modi di imparare è **quanto è grande la
-  correzione** che il modello riceve. Una parola sola («cardellino») per una
+- La differenza che conta con gli altri modi di imparare è quanto è grande la
+  correzione che il modello riceve. Una parola sola («cardellino») per una
   fotografia intera; oppure mezza fotografia da ricostruire, cioè migliaia di
   dettagli; oppure un «bravo» a fine giornata, che vale per tutta la giornata.
 - Il conto lo fa per bene un programma che si può rilanciare, e lo fa su un
@@ -340,10 +339,10 @@ gli argomenti si riportano con i loro nomi giusti e basta.
   sotto una foto e centotrentanovemila «bravo» di fine giornata, cioè quattro
   zeri di differenza da una parte e cinque dall'altra. La parola e il «bravo»,
   invece, distano appena dieci volte.
-- Attenzione a non chiedere troppo a quei numeri: dicono quanto è **grande** la
+- Attenzione a non chiedere troppo a quei numeri: dicono quanto è grande la
   risposta, non quanto il modello ne ha capito. Sono il diametro del tubo, non
   l'acqua che ci passa.
-- L'immagine famosa è la **torta** di Yann LeCun: il grosso è
+- L'immagine famosa è la torta di Yann LeCun: il grosso è
   l'auto-supervisione, la glassa è imparare dalle etichette, la ciliegina è
   imparare per tentativi e premi. Nel 2016 la fetta grossa si chiamava «non
   supervisionata»; è LeCun stesso ad averle cambiato nome, perché di
@@ -356,24 +355,24 @@ gli argomenti si riportano con i loro nomi giusti e basta.
 
 ```{admonition} Da ricordare
 :class: important
-- L'apprendimento **auto-supervisionato** costruisce un **pretesto** il cui
+- L'apprendimento auto-supervisionato costruisce un pretesto il cui
   bersaglio è ricavabile dal dato con un'operazione meccanica, e ne conserva
-  l’**encoder**, non il compito. Algoritmo e architettura restano quelli del
+  l’encoder, non il compito. Algoritmo e architettura restano quelli del
   supervisionato: cambia chi produce il bersaglio.
-- Il criterio discriminante è l’**informazione del bersaglio**, e soprattutto il
-  suo denominatore: $\log_2 K \approx 10$ bit **per immagine** per
-  un'etichetta su $K = 1000$ classi; $\log_2 V \approx 17$ bit **per token**
+- Il criterio discriminante è l’informazione del bersaglio, e soprattutto il
+  suo denominatore: $\log_2 K \approx 10$ bit per immagine per
+  un'etichetta su $K = 1000$ classi; $\log_2 V \approx 17$ bit per token
   per un vocabolario da $V = 128\,000$, cioè circa $1{,}4 \cdot 10^5$ bit per
-  una finestra da 8192 token; 1 bit **per episodio** per una ricompensa
+  una finestra da 8192 token; 1 bit per episodio per una ricompensa
   binaria, indipendentemente dalla lunghezza dell'episodio.
-- Sono **limiti superiori** in ipotesi uniforme, quindi tetti e non misure:
+- Sono limiti superiori in ipotesi uniforme, quindi tetti e non misure:
   l'entropia condizionata reale è più bassa, e fra informazione del bersaglio e
   informazione acquisita ci sono ottimizzazione, architettura e qualità del
   pretesto. Il confronto vale sugli ordini di grandezza.
 - Nel rinforzo alla scarsità si somma un problema indipendente,
-  l’**assegnazione del credito** fra i passi di una traiettoria: pochi bit, e
+  l’assegnazione del credito fra i passi di una traiettoria: pochi bit, e
   per giunta da distribuire.
-- La **torta** di LeCun {cite}`lecun2016cake` data la cornice al 2016 e la sua
+- La torta di LeCun {cite}`lecun2016cake` data la cornice al 2016 e la sua
   revisione al 2019, quando *unsupervised* diventa *self-supervised*. La
   motivazione è scritta in {cite}`lecun2021darkmatter`: «unsupervised» è
   fuorviante perché l'auto-supervisione «usa molti più segnali di correzione»

@@ -84,8 +84,8 @@ $\hat{x}_{ui}$ per un punteggio di ranking (BPR), dove conta solo l'ordine e
 non il valore assoluto.
 
 Il paper propone anche una variante che affianca i due mondi (*NeuMF*): un
-ramo con il prodotto elemento per elemento e un ramo MLP, **ciascuno con la
-propria coppia di tabelle di embedding**, fusi concatenando l'ultimo strato
+ramo con il prodotto elemento per elemento e un ramo MLP, ciascuno con la
+propria coppia di tabelle di embedding, fusi concatenando l'ultimo strato
 nascosto. Che le tabelle siano separate conta, ed è il paper stesso ad
 argomentarlo: condividerle costringerebbe i due rami alla
 stessa dimensione degli embedding, e gli autori scrivono che questo potrebbe
@@ -108,7 +108,7 @@ Qui serve una dose di onestà intellettuale, e non riguarda un paper solo. Nel
 Klagenfurt hanno provato a rifare i conti di diciotto metodi neurali per la
 raccomandazione, presentati alle conferenze principali {cite}`dacrema2019are`.
 Solo sette si sono lasciati riprodurre con uno sforzo ragionevole, e di quei
-sette **sei venivano spesso battuti da metodi molto più semplici**: i vicini
+sette sei venivano spesso battuti da metodi molto più semplici: i vicini
 della sezione precedente, o le tecniche su grafo di cui parleremo fra poco. Il
 settimo batteva chiaramente quei metodi semplici, ma non riusciva a battere in
 modo costante un metodo lineare, cioè senza reti neurali, tarato con cura. Il
@@ -124,7 +124,7 @@ riprodurre un confronto voce per voce, partendo da dati sparsi, è
 sorprendentemente difficile.
 
 La morale non è «le reti non servono», ma qualcosa di più fine, e conviene
-dirla in italiano prima che in gergo: **più libertà non è gratis**. Lasciare al
+dirla in italiano prima che in gergo: più libertà non è gratis. Lasciare al
 modello la libertà di scoprire da sé come confrontare due schede sembra un
 regalo, e invece gli toglie l'unica cosa che sapeva già di sicuro, cioè che le
 voci vanno confrontate a coppie. Il confronto voce per voce è un'ipotesi
@@ -132,7 +132,7 @@ giusta sul problema, non una rigidità arbitraria, e su dati scarsi un'ipotesi
 giusta vale più di mille parametri in più.
 
 E il confronto voce per voce ha un secondo pregio, che con la qualità non
-c'entra: è l'unica forma di punteggio che permette di **non** calcolarne uno
+c'entra: è l'unica forma di punteggio che permette di non calcolarne uno
 per ogni titolo del catalogo. Su cataloghi da milioni di titoli è questo, più
 della qualità, a decidere se il sistema sta in piedi. Il motivo in breve: le
 schede dei titoli si possono preparare tutte
@@ -153,7 +153,7 @@ C'è un secondo modo di andare oltre il confronto voce per voce, e non consiste
 nel rendere più furba la regola che confronta le due schede: consiste nel darle
 più cose da guardare. Per vederlo basta riscrivere lo stesso dato in un'altra
 forma, e la parola nuova del titolo è la seconda: il disegno di pallini e linee
-che stiamo per fare si chiama **grafo**.
+che stiamo per fare si chiama grafo.
 
 `````{tab} Elementare
 
@@ -164,13 +164,13 @@ sono i *nodi* e le linee gli *archi*, le parole del
 {doc}`capitolo sulle reti neurali su grafo </GraphNeuralNetwork/overview>`;
 qui continueremo a dire pallini e linee, che si vedono meglio. Non hai
 aggiunto né tolto niente: è lo stesso dato, disegnato. Ma adesso si vede una
-cosa che nella tabella era nascosta, e cioè che **raccomandare vuol dire
-indovinare le linee che ancora non ci sono**.
+cosa che nella tabella era nascosta, e cioè che raccomandare vuol dire
+indovinare le linee che ancora non ci sono.
 
 Vista così, la fattorizzazione guarda vicino: la scheda di ognuno riassume le
 linee che partono dal suo pallino, e per giudicare una coppia si confrontano
 quelle due schede. Non è poco (le schede sono proprio la mossa che permette di
-confrontare due persone senza film in comune) ma è **un passo solo** di
+confrontare due persone senza film in comune) ma è un passo solo di
 distanza. Il metodo dei vicini della sezione precedente arriva più in là: da
 te, ai film che hai visto, alle persone che li hanno visti, e da lì ai film che
 loro hanno visto e tu no. Sono tre passi. E poi? Perché fermarsi lì? Un film
@@ -197,7 +197,7 @@ gli ha tolto dei pezzi, scoprendo che così andava meglio.
 La matrice di interazione $\mathbf{R} \in \{0,1\}^{n \times m}$, qui binaria e
 non più a stelle, dove $n$ è il numero degli utenti e $m$ quello degli oggetti
 (le stesse lettere della figura della sezione precedente), è la matrice di
-adiacenza di un grafo **bipartito**
+adiacenza di un grafo bipartito
 utente-oggetto, a meno di riscriverla in forma simmetrica:
 
 $$
@@ -238,7 +238,7 @@ combinando poi gli strati con pesi uniformi
 $\mathbf{e}_u = \sum_{\ell=0}^{L} \frac{1}{L+1} \mathbf{e}_u^{(\ell)}$ e
 tornando al prodotto scalare per il punteggio. Solo embedding e propagazione:
 nessun peso da imparare oltre alla tabella iniziale. Costa molto meno, e
-funziona meglio **di NGCF**: circa il 16% di miglioramento relativo medio, a
+funziona meglio di NGCF: circa il 16% di miglioramento relativo medio, a
 parità di protocollo sperimentale. È il termine di paragone da tenere a mente,
 perché è interno alla famiglia dei metodi a grafo: il paper non sta dicendo che
 LightGCN batte una fattorizzazione ben tarata, sta dicendo che togliere pezzi a
@@ -254,8 +254,8 @@ fatta persone diverse da chi il metodo l'aveva proposto, ritarando con cura
 gli avversari e facendoli correre di nuovo. La seconda è il paper di LightGCN,
 cioè i suoi autori che riportano la propria vittoria: è quello che fa chiunque
 pubblichi, ed è proprio per questo che da sola pesa meno. Detto questo, la
-direzione è la stessa, ed è quella già incontrata: **più libertà non è
-gratis**. NCF mette una rete al posto del confronto voce per voce e non
+direzione è la stessa, ed è quella già incontrata: più libertà non è
+gratis. NCF mette una rete al posto del confronto voce per voce e non
 guadagna niente; LightGCN toglie la rete, tiene solo il camminare, e batte il
 modello più complicato da cui è stato ricavato. Camminare sul grafo, in fondo,
 è un modo di dire al modello una cosa che il confronto voce per voce non sa:
@@ -277,12 +277,12 @@ quelle bastano: camminando su di esse il film raccoglie qualcosa da tutti gli
 altri film dello stesso regista, e si presenta al sistema con una scheda
 sensata prima ancora che qualcuno lo guardi. Un film senza spettatori è un film
 di cui sappiamo tutto tranne la cosa che ci interessa. Un grafo con più tipi di
-pallini e di linee si dice **eterogeneo**.
+pallini e di linee si dice eterogeneo.
 
 Riformulare la raccomandazione come *link prediction*, cioè come il compito di
 prevedere gli archi che mancano, è la lettura che rende disponibile tutto
 l'armamentario delle reti su grafo, e non un gioco di parole. Il caso più
-noto, **PinSage** {cite}`ying2018graph`, è raccontato dalla
+noto, PinSage {cite}`ying2018graph`, è raccontato dalla
 {doc}`sezione oltre la GCN </GraphNeuralNetwork/architetture-applicazioni>`,
 insieme al campionamento dei vicini che lo rende praticabile a scala web.
 Leggere la raccomandazione come link prediction non è però *la definizione*
@@ -398,7 +398,7 @@ già risalito. Alla fine i quattro comprati sono i primi quattro, e nessuno ha
 mai dato un voto.
 ```
 
-In PyTorch la misura di quanto il modello sta sbagliando (la **loss**), quella
+In PyTorch la misura di quanto il modello sta sbagliando (la loss), quella
 che muove la vetrina della {numref}`fig-vetrina-si-ordina`, è una riga, e si
 innesta sul modello di fattorizzazione della sezione precedente senza
 toccarlo. È un frammento, non un programma completo: `modello`, `u` e
@@ -469,9 +469,9 @@ uno. I metri buoni per una classifica guardano solo la lista dei primi dieci o
 venti suggerimenti, perché è l'unica cosa che l'utente vedrà.
 
 Prima del metro, però, c'è una domanda che si salta quasi sempre e che pesa più
-del metro: **su che cosa si misura**. Nessuno può dire se ti sarebbe piaciuto
+del metro: su che cosa si misura. Nessuno può dire se ti sarebbe piaciuto
 un titolo che non hai mai visto, quindi si procede per finta: si prende la
-storia di un utente, si **nasconde** una parte di ciò che ha davvero guardato,
+storia di un utente, si nasconde una parte di ciò che ha davvero guardato,
 si addestra il modello su quel che resta, e poi si guarda quanti dei titoli
 nascosti il modello rimette in cima alla lista. I titoli nascosti sono il metro
 di verità: si sa che gli interessavano, perché li ha guardati, e si sa che il
@@ -481,15 +481,15 @@ tutti i trucchi funziona finché si ricorda che è un trucco.
 `````{tab} Elementare
 
 I titoli nascosti sono 6, il sistema ne mostra 10, e 3 di quei 10 stanno fra i
-nascosti. La **precision@10** (la chiocciola si legge «sui primi dieci») è la
-frazione di consigli azzeccati: $3/10 = 0{,}3$. Il **recall@10** misura invece
+nascosti. La precision@10 (la chiocciola si legge «sui primi dieci») è la
+frazione di consigli azzeccati: $3/10 = 0{,}3$. Il recall@10 misura invece
 quanti dei 6 nascosti ne ha ritrovati: $3/6 = 0{,}5$. Le due metriche tirano in
 direzioni opposte: sparare consigli a raffica alza il recall e affonda la
 precision.
 
 C'è però un dettaglio che entrambe ignorano: *dove* stanno i colpi
 azzeccati. Un successo al primo posto vale più di uno al decimo, perché al
-decimo posto forse non arrivi mai. La **NDCG** è la metrica che ne tiene
+decimo posto forse non arrivi mai. La NDCG è la metrica che ne tiene
 conto: premia le classifiche che mettono i titoli giusti in cima, come un
 giornale che sceglie bene la prima pagina. In cifre: un titolo giusto vale $1$
 al primo posto, poi $0{,}63$, $0{,}50$, $0{,}43$, $0{,}39$,
@@ -506,13 +506,13 @@ più.
 Finiamo l'esempio di prima. I 3 titoli azzeccati stiano ai posti 1, 4 e 7:
 valgono $1 + 0{,}43 + 0{,}33 = 1{,}76$. La classifica perfetta avrebbe messo
 tutti e 6 i nascosti in cima, dal primo al sesto posto, cioè i sei sconti più
-alti, che sommano a $3{,}3$. La **NDCG@10** è $1{,}76 / 3{,}3 = 0{,}53$.
+alti, che sommano a $3{,}3$. La NDCG@10 è $1{,}76 / 3{,}3 = 0{,}53$.
 
 E nascondere si può fare in più modi, che non sono equivalenti. Togliere un
-pezzo di storia **a caso** è comodo e imbroglia: il modello si addestra anche
+pezzo di storia a caso è comodo e imbroglia: il modello si addestra anche
 su cose successe *dopo* quelle su cui viene interrogato, e nella vita vera il
-futuro non è disponibile. Nascondere **l'ultima cosa** che ciascuno ha guardato
-è più onesto. **Tagliare a una data** è il più severo, e l'unico che somiglia
+futuro non è disponibile. Nascondere l'ultima cosa che ciascuno ha guardato
+è più onesto. Tagliare a una data è il più severo, e l'unico che somiglia
 alla situazione vera: fa comparire anche chi a quella data era appena arrivato,
 cioè proprio le persone su cui si sbaglia di più. Cambiando modo di nascondere,
 la classifica dei metodi può ribaltarsi.
@@ -552,10 +552,10 @@ mette $2^{\mathrm{rel}_j} - 1$ al numeratore, e le due forme coincidono solo
 nel caso binario) e $\mathrm{IDCG@}k$ è la DCG della classifica ideale, che
 normalizza il punteggio tra utenti con numeri diversi di item rilevanti. Lo
 sconto logaritmico penalizza dolcemente: la posizione 2 vale
-$1/\log_2 3 \approx 0{,}63$ della posizione 1. Quando il test ha **un solo**
+$1/\log_2 3 \approx 0{,}63$ della posizione 1. Quando il test ha un solo
 item rilevante per utente, che è il caso del protocollo *leave-one-out* con cui
 è valutato NCF, la recall@k degenera nella *hit rate* HR@k ed è con quel nome
-che la si trova nei paper; la metrica naturale diventa allora la **MRR**
+che la si trova nei paper; la metrica naturale diventa allora la MRR
 (*mean reciprocal rank*), $\frac{1}{|\mathcal{U}|}\sum_u 1/\mathrm{rank}_u$,
 cioè la media dell'inverso della posizione in cui è finito l'unico item
 giusto.
@@ -564,11 +564,11 @@ Tutte queste metriche si mediano sugli utenti; e tutte ereditano il difetto
 della valutazione offline: misurano il recupero di interazioni passate,
 avvenute sotto l'esposizione del vecchio sistema, non il gradimento futuro.
 
-**Come si nasconde.** «Nascondere una parte delle interazioni» sotto-specifica
+Come si nasconde. «Nascondere una parte delle interazioni» sotto-specifica
 la decisione che sposta i risultati più di qualunque scelta di modello, e le
 opzioni in uso sono tre, con costi diversi. *Split casuale sulle interazioni*:
 comodo, ed è la scelta maggioritaria in letteratura, ma mette
-nell'addestramento interazioni **successive** a quelle di test, cioè addestra
+nell'addestramento interazioni successive a quelle di test, cioè addestra
 il modello su un futuro che al momento della predizione non esisteva
 {cite}`ji2023critical`; è una fuga di informazione.
 *Leave-one-out* sull'ultima interazione di ciascun utente: rispetta la
@@ -580,7 +580,7 @@ storia. La differenza non è di livello ma di ordine: passando da split casuale
 a temporale la graduatoria dei metodi può rovesciarsi, in buona parte proprio
 per via di quegli utenti freddi, e non c'è modo di prevedere in che verso.
 
-**Su quanti candidati.** Seconda decisione tacita, e stessa morale. La
+Su quanti candidati. Seconda decisione tacita, e stessa morale. La
 precision, la recall e la NDCG, così definite, suppongono di ordinare l'intero
 catalogo non interagito, e ordinarlo tutto costa: molti lavori mettono in
 classifica l'item di test contro poche decine o centinaia di negativi
@@ -588,7 +588,7 @@ campionati (è, alla lettera, il protocollo con cui sono prodotti i numeri di
 NCF: 100 negativi per utente). Le due
 quantità portano lo stesso nome e non sono confrontabili, perché battere cento
 concorrenti è molto più facile che batterne un milione. Il guaio peggiore però
-è un altro: il gonfiamento **non è uguale per tutti i modelli**,
+è un altro: il gonfiamento non è uguale per tutti i modelli,
 quindi la metrica campionata può invertire l'ordine fra due sistemi
 {cite}`krichene2020sampled`. Leggendo un Recall@10 in un paper, conviene sempre
 cercare prima su quanti candidati è stato calcolato.
@@ -636,7 +636,7 @@ rapidissima e grossolana, che da un milione ne tiene qualche centinaio, e poi
 la giuria vera ascolta solo quelli. Chi consiglia i video fa la stessa cosa, e
 la fa da capo ogni volta che apri l'app, in una frazione di secondo.
 
-**Il primo tempo** (nel gergo, il primo *stadio*) è la scrematura, e deve
+Il primo tempo (nel gergo, il primo *stadio*) è la scrematura, e deve
 essere velocissima, quindi il lavoro grosso è già stato fatto la notte prima:
 per ogni titolo del catalogo la scheda di numeri è già lì, calcolata e messa in
 uno scaffale ordinato. Conta da che cosa è fatta, quella scheda: se la si
@@ -646,13 +646,13 @@ visioni, un film che nessuno ha ancora guardato resta senza. Quando arrivi tu,
 si calcola solo la *tua* scheda, tenendo conto anche di quello che hai
 guardato oggi, e poi si cerca sullo scaffale quali schede di titoli le
 somigliano di più. Questa
-ricerca è **approssimata** nel senso che non le guarda tutte: sullo scaffale le
+ricerca è approssimata nel senso che non le guarda tutte: sullo scaffale le
 schede che si somigliano stanno vicine, e questo permette di scartare interi
 ripiani senza aprirli. Ogni tanto ci si perde per strada un titolo buono, e in
 cambio si va enormemente più veloci: è un baratto che conviene quasi sempre, e
 quello che si perde qui non lo recupera nessuno più avanti.
 
-**Il secondo tempo** è la giuria: sulle poche centinaia di superstiti si può
+Il secondo tempo è la giuria: sulle poche centinaia di superstiti si può
 finalmente spendere del calcolo, e lì entra tutto ciò che il primo tempo non
 poteva guardare, cioè che ore sono, da che dispositivo stai guardando, quante
 volte quel titolo ti è già stato messo davanti senza che tu lo aprissi. È qui
@@ -678,10 +678,10 @@ vuole, con centinaia di feature di contesto (ora, dispositivo, storia
 recente).
 
 Le attribuzioni vanno separate, perché la letteratura le confonde
-spesso. Covington et al. 2016 descrivono i **due stadi** e il recupero per
+spesso. Covington et al. 2016 descrivono i due stadi e il recupero per
 prodotto scalare con vicini approssimati, e in quel paper il modello di
 candidate generation è una rete sola, sull'utente: i vettori dei video sono i
-**pesi dello strato softmax di uscita**, non l'uscita di una seconda torre. La
+pesi dello strato softmax di uscita, non l'uscita di una seconda torre. La
 two-tower propriamente detta, con una rete anche sul lato item e la correzione
 del bias di campionamento che la rende addestrabile su cataloghi enormi, si
 afferma negli anni successivi {cite}`yi2019sampling`. La differenza non è
@@ -711,7 +711,7 @@ dei giornali che legge: si può allora misurare quanto due lettori sono lontani.
 Chi arriva agli articoli passando da un motore di ricerca o dai social risulta,
 in media, più lontano dagli altri lettori di chi va dritto sul sito del
 giornale: quei canali dividono di più, e fin qui la bolla c'è. Ma le stesse
-persone, proprio passando di lì, finiscono **più spesso** anche su articoli
+persone, proprio passando di lì, finiscono più spesso anche su articoli
 della parte politica che gradiscono meno {cite}`flaxman2016filter`. Le due cose
 non si contraddicono, perché non misurano la stessa cosa: la prima dice quanto i
 lettori sono distanti fra loro, la seconda quanto ciascuno di loro incontra
@@ -724,7 +724,7 @@ Il punto critico non è la tecnica, è la metrica. Un sistema addestrato a
 massimizzare i minuti di visione imparerà, con perfetta onestà matematica, a
 mostrare tutto ciò che ci tiene incollati allo schermo: l'indignazione e il
 sensazionalismo compresi, se funzionano. Chi sceglie il metro su cui il sistema
-viene premiato (la **funzione obiettivo**, come si dice in gergo) sceglie, in
+viene premiato (la funzione obiettivo, come si dice in gergo) sceglie, in
 ultima analisi, il
 comportamento che il sistema coltiverà nei suoi utenti: è qui che passa il
 confine tra suggerire e pilotare. Le contromisure esistono e sono concrete. Si
@@ -751,7 +751,7 @@ smettere di prendere la vetrina per il catalogo.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **NCF** cambia il giudice: invece di confrontare le due schede voce per
+- Il NCF cambia il giudice: invece di confrontare le due schede voce per
   voce con una regola fissa, le incolla una sotto l'altra e lascia decidere a
   una piccola rete. In teoria vede combinazioni che la regola fissa non coglie;
   alla prova dei fatti il vecchio confronto, tarato con cura, resta un
@@ -759,26 +759,26 @@ smettere di prendere la vetrina per il catalogo.
   rifacendo i conti di diciotto metodi neurali, sette si sono lasciati
   riprodurre e sei di quei sette perdevano contro metodi molto più semplici.
 - La tabella dei voti si può disegnare: utenti da una parte, film dall'altra,
-  una linea per ogni visione. Raccomandare vuol dire **indovinare le linee che
-  ancora non ci sono**. Camminando sul disegno per più passi si raccoglie anche
-  il segnale lontano, e **LightGCN** mostra che per farlo non serve una rete
+  una linea per ogni visione. Raccomandare vuol dire indovinare le linee che
+  ancora non ci sono. Camminando sul disegno per più passi si raccoglie anche
+  il segnale lontano, e LightGCN mostra che per farlo non serve una rete
   sopra: basta camminare.
 - Quando non ci sono voti ma solo ciò che l'utente ha guardato, non si prevede
   un numero, si sistema una vetrina: ciò che ha scelto deve stare più in alto
-  di un titolo preso a caso fra i mille che ha ignorato (**BPR**). Conta
+  di un titolo preso a caso fra i mille che ha ignorato (BPR). Conta
   l'ordine, non quanto gli piace ogni titolo.
 - Una classifica si misura su quanti dei consigli mostrati sono azzeccati
-  (**precision**), su quanti dei titoli buoni ha ritrovato (**recall**) e su
-  quanto in alto li ha messi (**NDCG**). Ma prima ancora conta **su che cosa**
+  (precision), su quanti dei titoli buoni ha ritrovato (recall) e su
+  quanto in alto li ha messi (NDCG). Ma prima ancora conta su che cosa
   si misura: si nasconde
   una parte di ciò che l'utente ha davvero guardato e si controlla se il
   modello la ritrova. Ribaltano la classifica dei metodi sia il modo di
   nascondere, sia il numero di titoli contro cui il nascosto deve farsi largo,
   ed è la parte più fragile del mestiere.
-- Quella tabella **non ha un orologio**: il film di ieri sera e quello di dieci
+- Quella tabella non ha un orologio: il film di ieri sera e quello di dieci
   anni fa pesano uguale, mentre chi ha appena comprato una tenda da campeggio
   è, per qualche giorno, una persona diversa.
-- I sistemi veri lavorano in **due tempi**: un primo filtro rapido e grossolano
+- I sistemi veri lavorano in due tempi: un primo filtro rapido e grossolano
   che da milioni di titoli ne tiene qualche centinaio, poi un giudizio accurato
   sui soli superstiti.
 - Il metro che scegli plasma il sistema, e chi lo usa: premiato sui minuti di
@@ -792,35 +792,35 @@ smettere di prendere la vetrina per il catalogo.
 
 ```{admonition} Da ricordare
 :class: important
-- Il **NCF** sostituisce il prodotto scalare con un MLP sulla concatenazione
+- Il NCF sostituisce il prodotto scalare con un MLP sulla concatenazione
   degli embedding: più espressivo in teoria, ma un prodotto scalare ben tarato
   resta un avversario durissimo. Il prodotto scalare è un ottimo *bias
   induttivo* per questo problema, e su dati sparsi un buon bias induttivo vale
   più di parametri in più. Che il fenomeno sia sistemico, e non aneddotico, lo
   documenta un riesame di diciotto metodi neurali: dei sette riproducibili, sei
   perdevano contro euristiche semplici.
-- La matrice di interazione **è** il grafo bipartito utente-oggetto, e leggerla
-  come **link prediction** (prevedere gli archi mancanti) è una riformulazione
+- La matrice di interazione è il grafo bipartito utente-oggetto, e leggerla
+  come link prediction (prevedere gli archi mancanti) è una riformulazione
   feconda, non la definizione del problema. Propagare
-  sul grafo raccoglie segnale a più salti; **LightGCN** mostra che basta la
+  sul grafo raccoglie segnale a più salti; LightGCN mostra che basta la
   propagazione, senza rete sopra, e il suo +16% è misurato su NGCF, non su una
   fattorizzazione ritarata.
-- Con feedback implicito si impara a **ordinare**, non a prevedere voti:
-  la loss **BPR** $-\log\sigma(\hat{x}_{uv}-\hat{x}_{uw})$ chiede solo che
+- Con feedback implicito si impara a ordinare, non a prevedere voti:
+  la loss BPR $-\log\sigma(\hat{x}_{uv}-\hat{x}_{uw})$ chiede solo che
   l'item scelto superi quello ignorato (in codice, `-F.logsigmoid(·)`, che non
   esplode).
-- Le classifiche si misurano con **precision@k**, **recall@k** e **NDCG**,
+- Le classifiche si misurano con precision@k, recall@k e NDCG,
   che premia i successi in cima alla lista. Due decisioni tacite le governano:
-  **come** si costruisce il test (casuale, leave-one-out, taglio temporale) e
-  **su quanti candidati** si ordina (catalogo intero o negativi campionati).
+  come si costruisce il test (casuale, leave-one-out, taglio temporale) e
+  su quanti candidati si ordina (catalogo intero o negativi campionati).
   Entrambe possono invertire l'ordine fra due modelli.
-- La matrice di interazione non ha un asse dei tempi: la **raccomandazione
-  sequenziale** prevede la prossima interazione come un modello di linguaggio
+- La matrice di interazione non ha un asse dei tempi: la raccomandazione
+  sequenziale prevede la prossima interazione come un modello di linguaggio
   prevede la parola dopo, e il settore ne ha ripercorso la parabola, dalle
   ricorrenti alla self-attention.
-- I sistemi reali sono a **due stadi**: retrieval con vicini approssimati su
+- I sistemi reali sono a due stadi: retrieval con vicini approssimati su
   embedding precalcolati, poi ranking fine sui candidati superstiti. I due
-  stadi sono di Covington et al. 2016; la **two-tower** con una rete anche sul
+  stadi sono di Covington et al. 2016; la two-tower con una rete anche sul
   lato item, che è quella che dà un embedding a un item mai visto, viene dopo.
 - La metrica scelta plasma il comportamento del sistema, e degli utenti: il
   confine tra suggerire e pilotare passa dalla funzione obiettivo.

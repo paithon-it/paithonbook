@@ -29,7 +29,7 @@ arriva. Poi si sposta il traguardo in un'altra stanza, e ricomincia da capo,
 compresa la parte che sapeva già a memoria: come uscire dalla stanza in cui si
 trova, che ha percorso mille volte e che non è cambiata di un pixel.
 
-Il guaio è nel **formato** di ciò che ha imparato. Quello che ha in mano è la
+Il guaio è nel formato di ciò che ha imparato. Quello che ha in mano è la
 tabella dei valori del
 {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`,
 un voto per ogni coppia (casella, mossa), e quei voti dicono quanto conviene
@@ -43,7 +43,7 @@ vale per tutti i traguardi che stanno di là.
 `````{tab} Elementare
 
 In una partita di pallacanestro nessuno decide dove mettere il piede. Si
-decide **lo schema**: quello che in settimana la squadra ha provato cento
+decide lo schema: quello che in settimana la squadra ha provato cento
 volte, e che poi in campo esce come un gesto solo.
 
 Uno schema ha tre cose. C'è un momento in cui lo si può chiamare, e non è
@@ -64,7 +64,7 @@ schema, in quei dieci secondi, non decide affatto: esegue.
 
 `````{tab} Superiore
 
-Il quadro delle **opzioni** {cite}`sutton1999options` formalizza la cosa in una
+Il quadro delle opzioni {cite}`sutton1999options` formalizza la cosa in una
 tripla. Un'opzione $\omega = \langle I_\omega, \pi_\omega, \beta_\omega\rangle$
 è fatta di
 
@@ -100,8 +100,8 @@ quell'esponente: lo sconto si applica $k$ volte invece che una, perché fra le
 due decisioni è passato $k$ e non $1$.
 
 Da qui i problemi che il campo si porta dietro, e conviene tenerli distinti
-perché hanno risposte diverse: trovare i **sotto-obiettivi**, trovare la
-**politica sulle opzioni**, trovare le **sotto-politiche**.
+perché hanno risposte diverse: trovare i sotto-obiettivi, trovare la
+politica sulle opzioni, trovare le sotto-politiche.
 
 `````
 
@@ -121,22 +121,22 @@ giocatori che li hanno imparati altrove.
 
 Il conto da pagare c'è, e nessuna delle sue voci è piccola.
 
-C'è il costo di **inventarli**: gli schemi non nascono da soli, e chi li
+C'è il costo di inventarli: gli schemi non nascono da soli, e chi li
 prepara deve già sapere dove il gioco si blocca e quali movimenti lo sbloccano.
 
-C'è il costo di **sceglierli**, che è diverso dal primo: provarli tutti è fuori
+C'è il costo di sceglierli, che è diverso dal primo: provarli tutti è fuori
 discussione, perché con quattro gesti possibili le sequenze lunghe dieci sono
 più di un milione, e in una settimana se ne provano una dozzina. Qualunque
 repertorio è una scommessa su quali dodici.
 
-E c'è il costo che si dimentica, quello sulla **qualità del gioco**. Uno schema
+E c'è il costo che si dimentica, quello sulla qualità del gioco. Uno schema
 porta dove porta, e ci mette il suo tempo: chi gioca soltanto a schemi non vede
 il pallone perso dall'avversario con il canestro libero davanti, chiama la sua
 sequenza, la esegue per bene, e arriva dall'altra parte tre secondi dopo che
 sarebbe potuto arrivare da solo in due passi. Giocare a gesti grossi fa perdere
 le scorciatoie, sempre.
 
-Da quest'ultimo viene la sola scelta sensata: gli schemi si **aggiungono** al
+Da quest'ultimo viene la sola scelta sensata: gli schemi si aggiungono al
 gioco libero e non lo sostituiscono. Chi ha in mano tutti e due chiama lo
 schema quando il campo è chiuso e va da solo quando la strada è aperta, e così
 quel terzo costo non lo paga più.
@@ -145,27 +145,27 @@ quel terzo costo non lo paga più.
 
 `````{tab} Superiore
 
-Il guadagno principale è in **campioni**: una sotto-politica appresa una volta
+Il guadagno principale è in campioni: una sotto-politica appresa una volta
 si riusa per traguardi diversi e per compiti diversi, quindi la gerarchia è
 anzitutto una forma di transfer. Il secondo guadagno è
-sull’**esplorazione**: esplorare avviando opzioni copre distanze che una
+sull’esplorazione: esplorare avviando opzioni copre distanze che una
 passeggiata casuale di azioni elementari non copre quasi mai, e questo è il
 motivo per cui la gerarchia si incontra sempre insieme al problema delle
 ricompense rade.
 
 I costi sono di tre specie, e l'ultima è quella che si dimentica.
 
-- **La conoscenza del dominio.** Il quadro originale dà i sotto-obiettivi per
+- La conoscenza del dominio. Il quadro originale dà i sotto-obiettivi per
   scontati. Quando non lo sono, trovarli è il problema, e non un
   preliminare.
-- **La complessità combinatoria.** Il numero di macro cresce in modo
+- La complessità combinatoria. Il numero di macro cresce in modo
   esponenziale nella loro lunghezza, quindi enumerarle è escluso e la politica
   di alto livello va approssimata come tutto il resto.
-- **La qualità.** Una politica che contiene macro può essere **peggiore** di una
+- La qualità. Una politica che contiene macro può essere peggiore di una
   fatta di sole azioni elementari, perché una macro scavalca percorsi più corti
   che le azioni singole avrebbero trovato. La causa non sta nell'algoritmo ma
   nell'aver ristretto l'insieme delle traiettorie percorribili. Da
-  qui la scelta di progetto standard, che le opzioni si **aggiungano**
+  qui la scelta di progetto standard, che le opzioni si aggiungano
   all'insieme delle azioni elementari invece di rimpiazzarlo: così l'ottimo
   raggiungibile resta quello di prima, e le opzioni possono solo far arrivare
   prima.
@@ -184,8 +184,8 @@ Poi si allenano tre agenti sullo stesso problema, dando a ogni passo elementare
 una ricompensa di $-1$: il segno negativo fa sì che l'agente, cercando il
 massimo, cerchi la strada più corta, e i valori che impara si leggono come
 «quanti passi mi mancano, cambiato di segno». Il primo agente ha le sole
-quattro mosse, il secondo le mosse **più** le opzioni, il terzo le sole
-opzioni. Ogni **episodio** parte da una casella sorteggiata e finisce quando
+quattro mosse, il secondo le mosse più le opzioni, il terzo le sole
+opzioni. Ogni episodio parte da una casella sorteggiata e finisce quando
 l'agente tocca il traguardo.
 
 ```python
@@ -355,7 +355,7 @@ anche le opzioni $21{,}6$, cioè un quarto. È il risparmio di esperienza, e vie
 tutto da un fatto: una decisione al posto di una stanza intera.
 
 Nella stessa tabella l'ultima riga va letta con prudenza. L'agente che ha
-**solo** le opzioni impara ancora più in fretta ($15{,}7$) e poi si ferma su una
+solo le opzioni impara ancora più in fretta ($15{,}7$) e poi si ferma su una
 politica da $14{,}7$ passi contro gli $8{,}5$ possibili, ma quel $14{,}7$ non è il
 limite del suo repertorio: qui il traguardo è una porta, l'opzione in corso si
 ferma appena ci arriva, e anche con le sole opzioni la strada da $8{,}5$ esiste.
@@ -364,7 +364,7 @@ dei tre: le opzioni comprano velocità, non un cammino più corto.
 
 Il prezzo del repertorio lo dice la seconda tabella. Il traguardo è in un
 angolo di stanza, dove nessuna opzione conduce, e l'agente a sole opzioni
-**non ci arriva mai**: i suoi $300{,}5$ passi sono la sbarra che il conto si dà
+non ci arriva mai: i suoi $300{,}5$ passi sono la sbarra che il conto si dà
 per non girare all'infinito (poco più di trecento, perché la sbarra ferma
 l'agente alla fine dell'opzione in corso e non nel mezzo). Chi ha le mosse
 insieme alle opzioni arriva, e con la politica migliore delle tre ($17{,}2$),
@@ -377,18 +377,18 @@ Nel banco di prova qui sopra i sotto-obiettivi, cioè le porte, li ha trovati
 una regola di due righe: sono le caselle con due soli vicini. È un lusso della
 pianta a stanze. Nel mondo vero il repertorio non lo detta nessuno, e trovarlo
 è il problema, non il preliminare. Le risposte si dividono in due famiglie, e
-si distinguono per **chi decide che cosa**.
+si distinguono per chi decide che cosa.
 
 La prima famiglia non decide niente in anticipo: fa imparare le opzioni
-**insieme** alla politica che le sceglie. L’**option-critic**
+insieme alla politica che le sceglie. L’**option-critic**
 {cite}`bacon2017optioncritic` applica alle opzioni il metodo del
 {doc}`gradiente di policy </DeepReinforcementLearning/policy-gradient>`, e lo
 usa per aggiustare tre cose alla volta: che cosa fa
 un'opzione, quando finisce, e quale opzione conviene chiamare. Nessuno deve
-scrivere un sotto-obiettivo; bisogna solo dire **quante** opzioni si vogliono,
+scrivere un sotto-obiettivo; bisogna solo dire quante opzioni si vogliono,
 che è come dire a una squadra «preparatene otto» invece di dettargliele.
 
-La seconda famiglia divide i compiti: il livello alto **nomina** un obiettivo,
+La seconda famiglia divide i compiti: il livello alto nomina un obiettivo,
 il livello basso lo raggiunge come crede. L'immagine è quella di un feudo, dove
 il signore assegna il territorio e non entra nel merito di come lo si lavora, e
 il nome se lo portano dietro le **FeUdal Networks** {cite}`vezhnevets2017feudal`,
@@ -410,18 +410,18 @@ un pezzo.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un’**opzione** è un pezzo di comportamento che si chiama per nome, come uno
+- Un’opzione è un pezzo di comportamento che si chiama per nome, come uno
   schema in una partita: si sa da dove lo si può far partire, che cosa succede
-  dentro, e soprattutto **quando è finito**. È quest'ultima cosa a distinguerlo
+  dentro, e soprattutto quando è finito. È quest'ultima cosa a distinguerlo
   da una sequenza di mosse qualunque.
-- Chi comanda decide **di rado** (quale schema), chi esegue non decide affatto,
+- Chi comanda decide di rado (quale schema), chi esegue non decide affatto,
   e il guadagno sta tutto lì: un pezzo imparato una volta si riusa per obiettivi
   diversi, invece di rimpararlo da capo a ogni cambio di traguardo.
 - Il conto da pagare ha tre voci: qualcuno gli schemi li deve inventare;
-  provarli tutti è impossibile; e chi gioca a gesti grossi **perde le
-  scorciatoie**, perché lo schema porta dove porta anche quando bastavano due
+  provarli tutti è impossibile; e chi gioca a gesti grossi perde le
+  scorciatoie, perché lo schema porta dove porta anche quando bastavano due
   passi.
-- Per questo gli schemi si **aggiungono** al gioco libero e non lo
+- Per questo gli schemi si aggiungono al gioco libero e non lo
   sostituiscono: chi ha in mano tutti e due chiama lo schema quando serve e va
   da solo quando la strada è aperta. Nelle quattro stanze si vede in numeri:
   chi ha solo gli schemi impara prima di tutti e poi resta fermo a quasi il
@@ -433,26 +433,26 @@ un pezzo.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Un’**opzione** {cite}`sutton1999options` è la tripla
+- Un’opzione {cite}`sutton1999options` è la tripla
   $\omega = \langle I_\omega, \pi_\omega, \beta_\omega\rangle$: insieme di
   avvio, sotto-politica, condizione di terminazione. L'agente ha due livelli,
   la politica sulle opzioni $\pi_\Omega(\omega \mid s)$ e le sotto-politiche
   $\pi_\omega(a \mid s)$.
 - Un'opzione dura $k$ passi con $k$ casuale, quindi il processo visto dall'alto
-  è un **semi-MDP** e l'aggiornamento porta $\gamma^{k}$ al posto di $\gamma$,
+  è un semi-MDP e l'aggiornamento porta $\gamma^{k}$ al posto di $\gamma$,
   con le ricompense del tratto accumulate e scontate.
-- I guadagni sono l’**efficienza in campioni** (una sotto-politica appresa una
-  volta si riusa e si trasferisce) e l’**esplorazione**, perché avviare opzioni
+- I guadagni sono l’efficienza in campioni (una sotto-politica appresa una
+  volta si riusa e si trasferisce) e l’esplorazione, perché avviare opzioni
   copre distanze che una passeggiata di azioni elementari non copre.
-- Il costo che si dimentica è la **qualità**: una politica con macro può essere
+- Il costo che si dimentica è la qualità: una politica con macro può essere
   peggiore di una di sole azioni elementari, perché scavalca percorsi più corti.
   Per questo le opzioni si aggiungono all'insieme delle azioni invece di
   rimpiazzarlo, e l'ottimo raggiungibile resta quello di prima.
-- Trovare i sotto-obiettivi è il problema aperto: l’**option-critic**
+- Trovare i sotto-obiettivi è il problema aperto: l’option-critic
   {cite}`bacon2017optioncritic` impara sotto-politiche e terminazioni con un
   teorema del gradiente di policy per le opzioni, chiedendo solo *quante*
-  opzioni; le **FeUdal Networks** {cite}`vezhnevets2017feudal` separano un
-  manager lento che fissa obiettivi da un worker che li esegue; l’**h-DQN**
+  opzioni; le FeUdal Networks {cite}`vezhnevets2017feudal` separano un
+  manager lento che fissa obiettivi da un worker che li esegue; l’h-DQN
   {cite}`kulkarni2016hdqn` innesta i due livelli su una ricompensa intrinseca.
 ```
 `````

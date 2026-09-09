@@ -79,7 +79,7 @@ $$
 \det\mathbf{A} = \det\begin{pmatrix} a & b\\ c & d\end{pmatrix} = ad - bc ,
 $$
 
-ed è l’**area con segno** del parallelogramma generato dalle due colonne. In
+ed è l’area con segno del parallelogramma generato dalle due colonne. In
 $\mathbb{R}^n$ è il volume con segno del parallelepipedo generato dalle $n$
 colonne, e la definizione che rende tutto immediato è quella assiomatica: il
 determinante è l'unica funzione $\mathbb{R}^{n\times n}\to\mathbb{R}$ che sia
@@ -197,11 +197,12 @@ $$
 \det\mathbf{A} = \sum_{j=1}^{n} (-1)^{i+j} A_{ij}\,\det \mathbf{M}_{ij},
 $$
 
-dove $\mathbf{M}_{ij}$ è il minore ottenuto cancellando riga $i$ e colonna $j$,
-ha costo $\Theta(n!)$ e serve solo a dimostrare teoremi. La via praticabile è
-la fattorizzazione $\mathbf{P}\mathbf{A}=\mathbf{L}\mathbf{U}$ prodotta
-dall'eliminazione con pivoting: poiché $\det\mathbf{L}=1$ e il determinante di
-una matrice triangolare è il prodotto della diagonale,
+dove $i$ è una riga qualsiasi, tenuta fissa, e $\mathbf{M}_{ij}$ è il minore
+ottenuto cancellando riga $i$ e colonna $j$, ha costo $\Theta(n!)$ e serve solo
+a dimostrare teoremi. La via praticabile è la fattorizzazione
+$\mathbf{P}\mathbf{A}=\mathbf{L}\mathbf{U}$ prodotta dall'eliminazione con
+pivoting: poiché $\det\mathbf{L}=1$ e il determinante di una matrice
+triangolare è il prodotto della diagonale,
 
 $$
 \det\mathbf{A} = (-1)^{s}\prod_{i=1}^{n} U_{ii},
@@ -267,7 +268,7 @@ stiramento uniforme, e il determinante di quello stiramento locale dice quanto
 la vernice si assottiglia lì.
 
 Questo conto è quello che permette a certi generatori di immagini di dire
-**quanto è probabile** ciò che hanno prodotto, invece di limitarsi a produrlo.
+quanto è probabile ciò che hanno prodotto, invece di limitarsi a produrlo.
 Funzionano così: partono da una nuvola di punti semplicissima e la deformano,
 con una trasformazione che si può disfare, finché non somiglia ai dati veri.
 Per sapere quanto è denso il risultato in un punto bisogna sapere quanto la
@@ -291,8 +292,8 @@ trasformazione è stata piegata al conto, e non il contrario.
 `````{tab} Superiore
 
 Sia $\mathbf{f}:\mathbb{R}^n\to\mathbb{R}^n$ una trasformazione invertibile e
-differenziabile, e $\mathbf{y}=\mathbf{f}(\mathbf{x})$. La **formula del cambio
-di variabile** per una densità è
+differenziabile, e $\mathbf{y}=\mathbf{f}(\mathbf{x})$. La formula del cambio
+di variabile per una densità è
 
 $$
 p_Y(\mathbf{y}) = p_X(\mathbf{x})\,
@@ -317,13 +318,13 @@ $$
 $$
 
 e componendo $K$ trasformazioni i termini si sommano, perché il determinante di
-un prodotto è il prodotto dei determinanti. È l'ossatura dei **flussi
-normalizzanti**, che il {doc}`capitolo sulla verosimiglianza esatta
+un prodotto è il prodotto dei determinanti. È l'ossatura dei flussi
+normalizzanti, che il {doc}`capitolo sulla verosimiglianza esatta
 </VerosimiglianzaEsatta/overview>` sviluppa per intero.
 
 Il vincolo di progetto discende dal costo. Un determinante generico costa
 $\Theta(n^3)$ per passo, insostenibile per $n$ dell'ordine di $10^5$. Le
-architetture si costruiscono quindi perché la jacobiana sia **triangolare**:
+architetture si costruiscono quindi perché la jacobiana sia triangolare:
 imponendo che $f_i$ dipenda solo da $x_1,\dots,x_i$, tutti gli elementi sopra
 la diagonale sono nulli e
 
@@ -343,8 +344,9 @@ metodo cubico nel numero di osservazioni.
 `````
 
 Il caso opposto chiude il discorso. Una rete
-neurale ordinaria non è invertibile: la funzione di attivazione più diffusa
-manda a zero tutti i valori negativi, e da uno zero non si risale al numero di
+neurale ordinaria non è invertibile: la funzione di attivazione, cioè quella
+che piega i numeri fra uno strato e l'altro, nella forma più diffusa manda a
+zero tutti i valori negativi, e da uno zero non si risale al numero di
 partenza. Il determinante della sua jacobiana è nullo su intere regioni, e
 quindi la formula del cambio di variabile non si applica. È il prezzo che
 separa i modelli capaci di dire quanto è probabile ciò che generano da quelli
@@ -373,20 +375,20 @@ parallelepipedo, e i lati sono $n$.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il **determinante** è di quante volte una trasformazione cambia le aree (o i
+- Il determinante è di quante volte una trasformazione cambia le aree (o i
   volumi), ed è lo stesso numero per qualunque figura, perché lo stiramento è
   lo stesso dappertutto.
-- Il **segno** dice se la trasformazione ha anche ribaltato il foglio. Il
-  valore **zero** dice che ha schiacciato tutto su una retta: da lì non si
+- Il segno dice se la trasformazione ha anche ribaltato il foglio. Il
+  valore zero dice che ha schiacciato tutto su una retta: da lì non si
   torna indietro, ed è lo stesso caso in cui un sistema non ha una sola
   soluzione.
-- Due trasformazioni di fila **moltiplicano** i loro fattori, e disfarne una
+- Due trasformazioni di fila moltiplicano i loro fattori, e disfarne una
   divide per il suo.
 - La regola che si impara a scuola su venti righe chiederebbe settantasette
   anni di conti: si calcola con l'eliminazione, portando la tabella a scaletta
   e moltiplicando la diagonale. E poiché quel prodotto diventa subito enorme,
-  nel codice si usa il **logaritmo** del determinante invece del determinante.
-- Quello che è distribuito nello spazio si **assottiglia** dove lo spazio si
+  nel codice si usa il logaritmo del determinante invece del determinante.
+- Quello che è distribuito nello spazio si assottiglia dove lo spazio si
   allarga, esattamente del fattore dato dal determinante. È il conto che
   permette a certi generatori di dire quanto è probabile ciò che producono, e
   li obbliga a una forma in cui quel conto costa poco.
@@ -413,7 +415,7 @@ parallelepipedo, e i lati sono $n$.
 - Cambio di variabile: $\log p_Y(\mathbf{y}) = \log p_X(\mathbf{x}) -
   \log|\det\mathbf{J}_{\mathbf{f}}(\mathbf{x})|$, e componendo trasformazioni i
   termini si sommano. È l'ossatura dei flussi normalizzanti, e la ragione per
-  cui le loro jacobiane si costruiscono **triangolari**, portando il costo da
+  cui le loro jacobiane si costruiscono triangolari, portando il costo da
   $\Theta(n^3)$ a $\Theta(n)$.
 - Lo stesso $\log\det$ compare nella normalizzazione della gaussiana
   multivariata e nella verosimiglianza dei processi gaussiani, dove è il

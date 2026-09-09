@@ -10,8 +10,8 @@ schermo e il punteggio. Da lì, per tentativi, in tre di quei sette
 (*Breakout*, *Enduro* e *Pong*) arrivava a superare un umano esperto
 {cite}`mnih2013playing`. Due anni dopo il
 risultato finì sulla
-copertina di *Nature* {cite}`mnih2015human`. Quel programma si chiama **Deep
-Q-Network**, DQN.
+copertina di *Nature* {cite}`mnih2015human`. Quel programma si chiama Deep
+Q-Network, DQN.
 
 Nel capitolo precedente abbiamo incontrato il *Q-learning*: un agente impara una
 funzione $Q(s,a)$ che stima quanto è conveniente, nel lungo periodo, compiere
@@ -27,8 +27,8 @@ casella pesasse un atomo.
 
 ## Dalla tabella alla rete
 
-La mossa di DQN è tanto semplice quanto radicale: **buttiamo via la tabella e
-mettiamo al suo posto una rete neurale**.
+La mossa di DQN è tanto semplice quanto radicale: buttiamo via la tabella e
+mettiamo al suo posto una rete neurale.
 
 `````{tab} Elementare
 
@@ -42,7 +42,7 @@ non ha mai visto prima, perché ha imparato a riconoscere le somiglianze.
 Quell'esperto è la rete neurale.
 
 Dentro la rete ci sono dei numeri, qualche milione, che decidono come una
-schermata si trasforma in un voto: si chiamano **pesi**, e sono le uniche cose
+schermata si trasforma in un voto: si chiamano pesi, e sono le uniche cose
 che cambiano mentre la rete impara. Addestrare la rete vuol dire ritoccarli, un
 pochino alla volta, finché i voti non diventano sensati.
 
@@ -82,10 +82,10 @@ ogni mossa. L'agente sceglie l'azione con il valore più alto.
 ## Perché divergeva: la triade fatale
 
 Mettere una rete al posto della tabella non era, di per sé, un'idea nuova.
-**TD-Gammon** lo faceva dal 1992, con una rete addestrata a suon di partite di
+TD-Gammon lo faceva dal 1992, con una rete addestrata a suon di partite di
 backgammon giocate contro se stessa; nella versione descritta tre anni dopo
 giocava quasi come i più forti campioni del mondo {cite}`tesauro1995temporal`.
-Eppure il Q-learning con una rete, per anni, **divergeva**: i valori stimati
+Eppure il Q-learning con una rete, per anni, divergeva: i valori stimati
 crescevano senza fermarsi, invece di assestarsi.
 
 Fra i due c'è una differenza sola, e conviene guardarla da vicino perché torna
@@ -95,7 +95,7 @@ e impara un altro modo. Ogni tanto, apposta, tira una mossa a caso per vedere
 che succede; ma quando poi si segna il voto di quella situazione non ci scrive
 quanto vale la mossa a caso, ci scrive quanto vale la mossa *migliore* fra
 quelle disponibili lì. Gioca da esploratore e prende appunti da campione. Si
-chiama **off-policy**, ed è comodissimo, perché permette di imparare da
+chiama off-policy, ed è comodissimo, perché permette di imparare da
 qualunque partita: anche da una giocata male, anche da una giocata da un altro
 molto tempo prima.
 
@@ -112,13 +112,13 @@ segna quanto promette bene. Ha tre abitudini.
 
 Non tiene un foglio per ogni schermata, giudica a somiglianza: ci rimette in
 precisione sulla singola, e in cambio ha un voto anche per quelle che non ha
-mai visto. È l’**approssimazione**.
+mai visto. È l’approssimazione.
 
 Non aspetta la fine della partita. Una mossa gli frutta $1$ punto, valuta $7$
 la schermata in cui si ritrova, e scrive subito i due numeri messi insieme,
-il secondo contato per nove decimi: $7{,}3$, ed è il **bersaglio** verso cui
+il secondo contato per nove decimi: $7{,}3$, ed è il bersaglio verso cui
 correggerà. Aggiustare un voto
-con un altro voto si chiama **bootstrapping**, e separa le differenze
+con un altro voto si chiama bootstrapping, e separa le differenze
 temporali del capitolo precedente, il TD, dai metodi Monte Carlo, che
 aspettano il fischio finale per tirare le somme.
 
@@ -163,26 +163,26 @@ gli serve, e i voti salgono invece di posarsi.
 
 La **triade fatale** {cite}`sutton2018reinforcement` è la coesistenza di:
 
-1. **approssimazione di funzione**, cioè una rappresentazione parametrica che
+1. approssimazione di funzione, cioè una rappresentazione parametrica che
    generalizza fra stati invece di trattarli come voci indipendenti;
-2. **bootstrapping**, cioè bersagli che contengono stime correnti (TD,
+2. bootstrapping, cioè bersagli che contengono stime correnti (TD,
    programmazione dinamica) invece dei soli ritorni osservati;
-3. **addestramento off-policy**, cioè una distribuzione degli aggiornamenti
+3. addestramento off-policy, cioè una distribuzione degli aggiornamenti
    diversa da quella indotta dalla policy che si sta valutando.
 
 Con due soli dei tre l'instabilità si può evitare; con tutti e tre no,
-e la divergenza si osserva già nel caso della sola **predizione**, senza
+e la divergenza si osserva già nel caso della sola predizione, senza
 controllo né miglioramento della policy. Non dipende nemmeno
 dall'incertezza sull'ambiente: si manifesta identica nella programmazione
 dinamica, dove il modello è noto per intero.
 
-Il **controesempio di Baird** lo esibisce in forma minima: sette stati, due
+Il controesempio di Baird lo esibisce in forma minima: sette stati, due
 azioni, ricompensa sempre nulla, $\gamma = 0{,}99$, e una policy di
 comportamento che visita gli stati in modo uniforme mentre la policy bersaglio
 ne concentra tutta la massa su uno solo. La funzione valore vera è
-identicamente zero ed è **esattamente rappresentabile** dai parametri
+identicamente zero ed è esattamente rappresentabile dai parametri
 disponibili; il TD semi-gradiente, ciononostante, fa divergere i pesi. Il
-fattore decisivo è la **distribuzione degli aggiornamenti**: uniforme sugli
+fattore decisivo è la distribuzione degli aggiornamenti: uniforme sugli
 stati, mentre la policy bersaglio li visiterebbe in proporzioni tutte diverse.
 Non basta osservare che l'aggiornamento semi-gradiente non è il gradiente di
 nessuna funzione obiettivo (si deriva rispetto alla stima ma non rispetto al
@@ -195,10 +195,10 @@ non lineari come le reti si conoscono controesempi di divergenza perfino
 on-policy.
 
 Sutton e Barto passano poi in rassegna i tre elementi chiedendosi a quale si
-possa rinunciare, ed è la lettura più utile per chi progetta. All’**approssimazione**
-no: senza, non si scala. Al **bootstrapping** si può, usando Monte Carlo, e si
+possa rinunciare, ed è la lettura più utile per chi progetta. All’approssimazione
+no: senza, non si scala. Al bootstrapping si può, usando Monte Carlo, e si
 paga in efficienza computazionale (bisogna conservare tutto fino alla fine
-dell'episodio) e in efficienza di dati. All’**off-policy** si può, sostituendo
+dell'episodio) e in efficienza di dati. All’off-policy si può, sostituendo
 il Q-learning con Sarsa, e si perde la possibilità di imparare da un archivio
 di esperienze altrui, che è però proprio la premessa del replay buffer.
 
@@ -206,8 +206,8 @@ di esperienze altrui, che è però proprio la premessa del replay buffer.
 
 ## Due accorgimenti per non far esplodere l'addestramento
 
-DQN non rinuncia a nessuno dei tre ingredienti. Ne addolcisce due, uno per
-accorgimento, e sono gli accorgimenti che seguono.
+DQN non rinuncia a nessuno dei tre ingredienti: li tiene tutti e tre, e ne
+rende praticabile la convivenza con i due accorgimenti che seguono.
 
 ### Experience replay
 
@@ -217,7 +217,7 @@ Un agente che impara sui fotogrammi *nell'ordine in cui li vive* è come uno
 studente che rilegge cento volte la stessa pagina di seguito: fotogrammi
 consecutivi si somigliano troppo e la rete finisce per "fissarsi". La memoria
 di replay è un grande quaderno degli appunti: ogni esperienza vissuta viene
-annotata e, per allenarsi, l'agente pesca **a caso** vecchie esperienze dal
+annotata e, per allenarsi, l'agente pesca a caso vecchie esperienze dal
 quaderno. Così mescola situazioni lontane nel tempo e impara in modo più
 equilibrato, e riutilizza ogni esperienza molte volte, non una sola.
 
@@ -241,7 +241,7 @@ ogni transizione in molti aggiornamenti.
 
 C'è un secondo problema: la rete deve inseguire un bersaglio che lei stessa
 sposta a ogni passo, come cercare di colpire la propria ombra. La soluzione è
-tenere **due copie** della rete: una che impara di continuo e una "congelata"
+tenere due copie della rete: una che impara di continuo e una "congelata"
 che fornisce il bersaglio e viene aggiornata solo ogni tanto. Il bersaglio
 resta fermo abbastanza a lungo perché la rete che apprende riesca a
 raggiungerlo.
@@ -261,7 +261,7 @@ $$
 $$
 
 Qui $r$ è la ricompensa immediata, $\gamma\in[0,1)$ il fattore di sconto, e il
-termine $r + \gamma \max_{a'} Q(s', a'; \theta^{-})$ è il **bersaglio**,
+termine $r + \gamma \max_{a'} Q(s', a'; \theta^{-})$ è il bersaglio,
 calcolato con i pesi congelati $\theta^{-}$. Congelarli evita il *feedback*
 instabile in cui il bersaglio si muove insieme alla stima.
 
@@ -288,15 +288,19 @@ figura è in scala ridotta: in un addestramento vero le esperienze in memoria
 sono un milione e quelle pescate a ogni giro sono trentadue.
 ```
 
-Si vede anche quale dei tre ingredienti ciascun accorgimento addolcisce. La
-copia congelata addolcisce il bootstrapping, cioè il correggere una stima
-guardandone un'altra: quell'altra adesso sta ferma per un po’ e si fa
-raggiungere. La memoria di replay addolcisce l'off-policy, cioè l'imparare da
-partite giocate in un altro modo: pescando a caso da un milione di ricordi
-l'agente si allena su un miscuglio largo, invece che sulla manciata di
-situazioni che sta attraversando in questo momento. Il primo ingrediente, la
-rete al posto della tabella, resta intatto: è quello per cui si è fatto tutto
-il resto.
+Si vede anche quale dei tre ingredienti ciascuno dei due addolcisce, e la
+risposta è meno simmetrica di quanto sembri. La copia congelata addolcisce il
+bootstrapping, cioè il correggere una stima guardandone un'altra: quell'altra
+adesso sta ferma per un po’ e si fa raggiungere. La memoria di replay, invece,
+della triade non addolcisce niente: il legame che spezza, quello fra
+un'esperienza e la successiva, fra i tre ingredienti non c'è. Sull'off-policy,
+semmai, tira dall'altra parte, perché pescare da un milione di ricordi vuol
+dire allenarsi su partite giocate da versioni vecchie di sé, cioè più lontane
+da quelle che l'agente giocherebbe adesso. Il quaderno l'off-policy lo
+pretende, non lo cura: senza qualcuno che giochi da esploratore e prenda
+appunti da campione, un ricordo vecchio non si potrebbe riusare affatto. Il
+primo ingrediente, la rete al posto della tabella, resta intatto: è quello per
+cui si è fatto tutto il resto.
 
 La rete, in PyTorch, si costruisce in poche righe. Un paio di numeri prima di
 leggerla. I fotogrammi arrivano ridotti a $84\times84$ punti in scala di grigi
@@ -307,9 +311,9 @@ più lungo è il salto più piccolo è ciò che restituisce. Le finestrelle sono
 otto, quattro e tre punti: il primo strato salta di quattro punti alla volta e
 riduce $84$ a $20$, il secondo salta di due e porta $20$ a $9$, il terzo salta
 di uno e lascia $7$. Alla fine restano $7\times7$ caselle per ciascuno dei $64$
-**filtri**, cioè dei rivelatori che quello strato ha imparato (uno reagisce ai
+filtri, cioè dei rivelatori che quello strato ha imparato (uno reagisce ai
 bordi verticali, un altro alla pallina, e così via). Da lì esce il `64 * 7 * 7`
-del primo **strato denso**, quello in cui ogni numero in entrata parla con ogni
+del primo strato denso, quello in cui ogni numero in entrata parla con ogni
 numero in uscita, senza più finestrelle.
 
 ```python
@@ -358,7 +362,7 @@ grigi, ridotti a $84\times84$, per dare alla rete un senso del movimento (dove
 va la pallina?). Nessuna informazione sulle regole, e nessuna misura scelta e
 calcolata a mano da un programmatore (in gergo, nessuna *feature*: niente
 «distanza fra pallina e racchetta», niente «numero di mattoni rimasti»). Lo
-**stesso** algoritmo, con le **stesse** manopole di regolazione (gli
+stesso algoritmo, con le stesse manopole di regolazione (gli
 *iperparametri*: quelli che si decidono prima e non si imparano), fu addestrato
 su 49 giochi diversi: raggiunse un livello comparabile a quello di
 un tester umano professionista, ottenendo almeno il 75% del suo punteggio in
@@ -369,7 +373,7 @@ imparava una gamma così ampia di compiti partendo da input sensoriali grezzi.
 ## Il difetto che il massimo si porta dietro
 
 Nel bersaglio di DQN c'è un'operazione che sembra innocua e non lo è:
-**prendere il valore più alto**. Conviene capire perché gonfia le stime, sia
+prendere il valore più alto. Conviene capire perché gonfia le stime, sia
 perché è controintuitivo (prendere il massimo è proprio quello che si vuole
 fare), sia perché lo stesso difetto e la stessa cura torneranno, identici,
 nella {doc}`sezione sul controllo continuo <controllo-continuo>`.
@@ -399,9 +403,9 @@ resta dov'era: si tramanda.
 
 Il rimedio si chiama **Double DQN**, e divide in due un lavoro che prima faceva
 una rete sola. Prima: la stessa rete decide qual è la mossa migliore *e* dice
-quanto vale. Dopo: **la rete che sta imparando dice quale mossa**, e la **copia
-congelata dice quanto vale quella mossa lì**. Che i due ruoli stiano su reti
-**diverse** è tutta la sostanza: l'errore che ha fatto *sembrare* buona quella
+quanto vale. Dopo: la rete che sta imparando dice quale mossa, e la copia
+congelata dice quanto vale quella mossa lì. Che i due ruoli stiano su reti
+diverse è tutta la sostanza: l'errore che ha fatto *sembrare* buona quella
 mossa non è lo stesso errore che poi ne *misura* il valore, così la fortuna non
 viene contata due volte. E non si assegnano a caso: a dire *quanto vale* deve
 essere la copia congelata, altrimenti si perde il bersaglio fermo che serviva a
@@ -418,7 +422,7 @@ invece che alti.
 `````{tab} Superiore
 
 La causa non è che le singole stime siano distorte, perché non lo sono: è
-l'incontro fra il **rumore** e la **convessità del massimo**, che la
+l'incontro fra il rumore e la convessità del massimo, che la
 disuguaglianza di Jensen mette in conto. Per stime $\hat Q$ non distorte,
 
 $$
@@ -427,16 +431,16 @@ $$
 $$
 
 e il divario cresce con il numero di azioni e con la varianza dell'errore: la
-disuguaglianza è **stretta** ogni volta che il rumore può cambiare quale azione
+disuguaglianza è stretta ogni volta che il rumore può cambiare quale azione
 risulti la migliore, e con stime esatte si ridurrebbe a un'uguaglianza. Basta
 quindi un errore di stima a media nulla
 perché il bersaglio sia sistematicamente gonfio, e il bootstrapping lo propaga
 all'indietro.
 
-Il **Double DQN** {cite}`vanhasselt2016deep` disaccoppia i due ruoli. Il
+Il Double DQN {cite}`vanhasselt2016deep` disaccoppia i due ruoli. Il
 bersaglio di DQN usa $\theta^{-}$ sia per scegliere sia per valutare; quello di
-Double DQN fa scegliere alla rete **online** $\theta$ e valutare alla rete
-**target** $\theta^{-}$:
+Double DQN fa scegliere alla rete online $\theta$ e valutare alla rete
+target $\theta^{-}$:
 
 $$
 y^{\text{Double}} = r + \gamma\, Q\Big(s',\;
@@ -452,12 +456,12 @@ bersaglio, buttando via il congelamento che era servito a stabilizzarlo.
 
 Gli autori sono prudenti sul risultato, e conviene esserlo con loro: l'algoritmo
 «riduce le sovrastime osservate», non le elimina. Il disaccoppiamento
-annullerebbe il bias solo con due stimatori **indipendenti**, e qui il secondo
+annullerebbe il bias solo con due stimatori indipendenti, e qui il secondo
 non lo è: la rete target è una copia ritardata del primo, scelta perché è il
 candidato che c'era già, e il paper stesso avverte che il disaccoppiamento non è
 completo. Resta inoltre che il correttivo non è neutro: quando i valori veri
 delle azioni non sono tutti uguali, lo stimatore doppio tende a sostituire la
-sovrastima con una lieve **sottostima**.
+sovrastima con una lieve sottostima.
 
 `````
 
@@ -465,8 +469,8 @@ sovrastima con una lieve **sottostima**.
 
 Sul telaio di DQN la ricerca ha montato una famiglia intera di migliorie. Due
 sono entrate nella pratica quasi quanto il Double DQN, e portano un'idea
-ciascuna: una cambia **che cosa si ripassa**, l'altra **come si scompone il
-voto**.
+ciascuna: una cambia che cosa si ripassa, l'altra come si scompone il
+voto.
 
 `````{tab} Elementare
 
@@ -548,17 +552,17 @@ Molti confini di questo approccio hanno guidato la ricerca successiva, e
 conviene metterli in fila. Oltre alla sovrastima del massimo, che il Double
 DQN attenua e basta, ne restano tre.
 
-- **Fame di dati.** Servono decine di milioni di fotogrammi per gioco:
+- Fame di dati. Servono decine di milioni di fotogrammi per gioco:
   l'equivalente di settimane di gioco ininterrotto. Un umano impara in pochi
   minuti. DQN è potente ma spaventosamente inefficiente.
-- **Le mosse devono essere poche e distinte** (in gergo *discrete*, cioè
+- Le mosse devono essere poche e distinte (in gergo *discrete*, cioè
   contabili una per una, come le voci di un menu). Prendere il valore più alto
   vuol dire scorrerle tutte: va bene per un joystick a poche direzioni, non per
   uno sterzo o un braccio robotico, dove la mossa è una quantità da dosare e le
-  possibilità sono infinite. Da lì nascono gli algoritmi **attore-critico**
+  possibilità sono infinite. Da lì nascono gli algoritmi attore-critico
   (*actor-critic*), dove uno propone la mossa e l'altro la giudica, che
   incontreremo nel gradiente di policy e nel controllo continuo.
-- **Ricompense rade.** In certi giochi il punteggio arriva solo dopo lunghe
+- Ricompense rade. In certi giochi il punteggio arriva solo dopo lunghe
   sequenze di mosse esatte: in *Montezuma's Revenge*, per esempio, bisogna
   scendere una scala, saltare una fune e schivare un teschio prima di prendere
   la chiave che vale il primo punto. Lì DQN sostanzialmente fallisce: senza
@@ -567,34 +571,36 @@ DQN attenua e basta, ne restano tre.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- **DQN** butta via lo schedario che aveva un cartellino per ogni schermata e
+- DQN butta via lo schedario che aveva un cartellino per ogni schermata e
   ci mette una rete neurale: guarda i pixel e dice a colpo d'occhio quanto
   vale ciascuna mossa, anche su schermate mai viste prima.
-- Per anni un'idea così divergeva, e per una ragione precisa, la **triade
-  fatale**: una rete al posto della tabella, stime aggiornate a partire da
+- Per anni un'idea così divergeva, e per una ragione precisa, la triade
+  fatale: una rete al posto della tabella, stime aggiornate a partire da
   altre stime, e una strategia imparata mentre se ne gioca un'altra. Due
   qualunque dei tre convivono senza danni, tutti e tre insieme no: i valori
-  possono crescere senza fermarsi. Il **controesempio di Baird** lo mostra su
+  possono crescere senza fermarsi. Il controesempio di Baird lo mostra su
   sette stati in cui non si guadagna mai nulla e la risposta giusta ("tutto
   vale zero") il sistema saprebbe rappresentarla alla perfezione: i numeri
   crescono lo stesso, e non si fermano.
-- Due accorgimenti lo rendono stabile: il **quaderno degli appunti**, che si
-  chiama **memoria di replay** (ogni esperienza viene annotata e ripescata a
+- Due accorgimenti lo rendono stabile: il quaderno degli appunti, che si
+  chiama memoria di replay (ogni esperienza viene annotata e ripescata a
   caso, così l'agente mescola situazioni lontane invece di rileggere cento volte
   la stessa pagina) e la
-  **copia congelata** della rete, che tiene fermo il bersaglio abbastanza a
-  lungo perché lo si possa raggiungere. Nessuno dei tre ingredienti sparisce: il
-  quaderno addolcisce l'off-policy (imparare da partite giocate in un altro
-  modo) e la copia congelata il bootstrapping (correggere una stima guardandone
-  un'altra); l'approssimazione, la rete al posto della tabella, resta intatta.
-- Prendere sempre il **voto più alto** gonfia i voti: fra tante stime sporcate
+  copia congelata della rete, che tiene fermo il bersaglio abbastanza a
+  lungo perché lo si possa raggiungere. Nessuno dei tre ingredienti sparisce:
+  la copia congelata addolcisce il bootstrapping (correggere una stima
+  guardandone un'altra), mentre il quaderno toglie un guaio che nella triade
+  non c'era, cioè proprio quel rileggere la stessa pagina; sull'off-policy,
+  semmai, tira dall'altra parte, perché i ricordi vengono da partite giocate
+  in un altro modo e più vecchie.
+- Prendere sempre il voto più alto gonfia i voti: fra tante stime sporcate
   da un errore, la più alta è quasi sempre una stima fortunata, non la mossa
-  migliore. Il **Double DQN** attenua il difetto facendo dire *quale mossa*
+  migliore. Il Double DQN attenua il difetto facendo dire *quale mossa*
   alla rete che impara e *quanto vale* alla copia congelata; non lo elimina,
   perché le due reti sono parenti strette.
 - Due migliorie con un'idea ciascuna: si ripassa più spesso ciò che ha
-  **sorpreso** (contando un po’ meno i ripassi pescati apposta, per non farsi
-  un'idea storta), e si giudica la **situazione** separatamente dalle mosse,
+  sorpreso (contando un po’ meno i ripassi pescati apposta, per non farsi
+  un'idea storta), e si giudica la situazione separatamente dalle mosse,
   così si impara anche dove le mosse non contano.
 - Il risultato storico del 2015: un solo programma, con le stesse manopole di
   regolazione, arriva al livello di un tester umano professionista su molti
@@ -607,25 +613,27 @@ DQN attenua e basta, ne restano tre.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- **DQN** sostituisce la tabella $Q$ con una rete neurale $Q(s,a;\theta)$ che
+- DQN sostituisce la tabella $Q$ con una rete neurale $Q(s,a;\theta)$ che
   mappa i pixel dello stato ai valori delle azioni.
-- Divergeva per una ragione precisa, la **triade fatale**: approssimazione,
+- Divergeva per una ragione precisa, la triade fatale: approssimazione,
   bootstrapping e off-policy insieme possono far esplodere i valori. Con due
-  soli dei tre l'instabilità si può evitare, con tutti e tre no, e il **controesempio di
-  Baird** lo mostra su sette stati con ricompense tutte nulle, dove la
-  soluzione esatta è rappresentabile e i pesi divergono lo stesso.
-- Due accorgimenti lo rendono stabile: l’**experience replay** (memoria di
-  transizioni campionate a caso) e la **rete-target** (bersaglio congelato).
-  Non rinunciano a nessuno dei tre ingredienti: ne attenuano due.
-- Il $\max$ nel bersaglio **sovrastima** perché il rumore incontra una funzione
+  soli dei tre l'instabilità si può evitare, con tutti e tre no, e il
+  controesempio di Baird lo mostra su sette stati con ricompense tutte nulle,
+  dove la soluzione esatta è rappresentabile e i pesi divergono lo stesso.
+- Due accorgimenti lo rendono stabile: l’experience replay (memoria di
+  transizioni campionate a caso) e la rete-target (bersaglio congelato).
+  Nessuno dei tre ingredienti sparisce, e uno solo viene attenuato: la
+  rete-target smorza il bootstrapping; il replay decorrela i campioni, e
+  l'off-policy lo presuppone invece di attenuarlo.
+- Il $\max$ nel bersaglio sovrastima perché il rumore incontra una funzione
   convessa, non perché le stime siano distorte (Jensen; stretta solo se il
   rumore può cambiare quale azione risulta la migliore, non su tutte le stime
   aleatorie):
-  $\mathbb{E}[\max_a \hat Q] \ge \max_a \mathbb{E}[\hat Q]$. Il **Double DQN**
+  $\mathbb{E}[\max_a \hat Q] \ge \max_a \mathbb{E}[\hat Q]$. Il Double DQN
   fa scegliere l'azione a $\theta$ e valutarla a $\theta^{-}$: *riduce* il bias,
   non lo annulla, perché i due stimatori non sono indipendenti.
-- Il **prioritized replay** campiona con $P(i)\propto|\delta_i|^{\alpha}$ e
-  corregge il bias con pesi di importance sampling; la **dueling network**
+- Il prioritized replay campiona con $P(i)\propto|\delta_i|^{\alpha}$ e
+  corregge il bias con pesi di importance sampling; la dueling network
   ricompone $Q = V + (A - \bar A)$ e allena $V$ a ogni aggiornamento. Con
   Double DQN e altre tre migliorie confluiscono in Rainbow.
 - Il risultato storico (Mnih et al., 2015): livello umano su molti giochi

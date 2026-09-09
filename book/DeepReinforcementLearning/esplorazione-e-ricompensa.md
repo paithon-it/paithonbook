@@ -2,7 +2,7 @@
 
 DeepMind mise alla prova il DQN su 49 giochi Atari, nel 2015, e su decine di
 essi l'agente resse il confronto con un collaudatore umano professionista. Su
-uno solo collezionò un punteggio desolante: **zero** {cite}`mnih2015human`.
+uno solo collezionò un punteggio desolante: zero {cite}`mnih2015human`.
 
 Il gioco è *Montezuma's Revenge*, un platform del 1984. Un esploratore in un
 tempio azteco deve scendere una scala, saltare una fune, scansare un teschio
@@ -14,7 +14,7 @@ non vedrà mai una ricompensa da cui imparare.
 Notare che cosa *non* è andato storto. Il DQN quello schermo lo vedeva
 benissimo, e i suoi conti li faceva come sugli altri quarantotto giochi. Il muro
 è un altro: come si va a cercare qualcosa in un mondo dove le ricompense sono
-**rade**, o come si dice di solito **sparse**,
+rade, o come si dice di solito **sparse**,
 cioè capitano una volta ogni tanto e in mezzo non c'è niente. Si chiama
 **esplorazione**.
 
@@ -55,7 +55,7 @@ minuscola, e si schiaccia ancora di più per ogni svolta che si aggiunge alla
 catena.
 
 L'esplorazione casuale è così: agita le mani nel buio nei dintorni di dove sei
-già. Quello che servirebbe è un'esplorazione **diretta**: una spinta a puntare
+già. Quello che servirebbe è un'esplorazione diretta: una spinta a puntare
 verso i posti che non hai *ancora* visto, invece di rimescolare a caso quelli
 di sempre.
 
@@ -75,7 +75,7 @@ L'esplorazione *diretta* (o *deep exploration*) tiene invece conto di ciò che
 l'agente ha già visto e orienta deliberatamente il comportamento verso le
 regioni poco note dello spazio degli stati. Il modo più naturale per ottenerla
 è modificare non *come* si sceglie, ma *cosa* si ottiene: aggiungere alla
-ricompensa dell'ambiente un **bonus** che premia la novità.
+ricompensa dell'ambiente un bonus che premia la novità.
 
 `````
 
@@ -175,7 +175,7 @@ pezzo in più, e l'agente si dirige verso l'ignoto credendo di dirigersi verso i
 guadagno. Non gli si è insegnata la curiosità: gliel'hanno pagata.
 
 La via d'uscita, quando le situazioni non si possono contare, è smettere
-di contare e cominciare a **stimare**: si valuta quanto una schermata assomigli
+di contare e cominciare a stimare: si valuta quanto una schermata assomigli
 a quelle già viste, e da quella somiglianza si ricava un conteggio finto, uno
 *pseudo-conteggio*, che si usa al posto di quello vero. È così che, nel 2016,
 sono arrivati i primi progressi veri proprio su Montezuma's Revenge.
@@ -239,14 +239,14 @@ cosa si faccia. Si tiene quello che serve all'indovinello e si butta il resto:
 
 `````{tab} Superiore
 
-Nel modulo di curiosità intrinseca **ICM** (*Intrinsic Curiosity Module*,
+Nel modulo di curiosità intrinseca ICM (*Intrinsic Curiosity Module*,
 Pathak e colleghi, 2017 {cite}`pathak2017curiosity`) la ricompensa intrinseca
 è l’**errore di predizione** di un modello di dinamica. La chiave è che la
-previsione non avviene sui pixel grezzi ma in uno **spazio di feature**
+previsione non avviene sui pixel grezzi ma in uno spazio di feature
 $\phi(s)$ appreso, che cattura solo ciò che l'agente *può controllare* e ignora
 il rumore irrilevante dell'ambiente. Come si ottenga una proprietà del genere è
 metà del lavoro: $\phi$ non si addestra da sé, si addestra
-con un modello di dinamica **inversa**, una rete che da $\phi(s_t)$ e
+con un modello di dinamica inversa, una rete che da $\phi(s_t)$ e
 $\phi(s_{t+1})$ deve indovinare l'azione $a_t$ che ha portato dall'uno all'altro.
 Per riuscirci $\phi$ è costretta a conservare tutto ciò che le azioni
 influenzano, e non ha ragione di conservare il resto: una foglia che si muove
@@ -265,9 +265,9 @@ l'errore di predizione, con $\eta>0$ un fattore di scala. Alta sugli stati la
 cui dinamica il modello non ha ancora imparato, la ricompensa si spegne man
 mano che il modello migliora: la curiosità è auto-esauribile.
 
-Una variante più semplice e sorprendentemente efficace è **RND** (*Random
+Una variante più semplice e sorprendentemente efficace è RND (*Random
 Network Distillation*, Burda e colleghi, 2019 {cite}`burda2019exploration`).
-Si fissa una rete *target* $f$ dai pesi **casuali e mai addestrati**, e si
+Si fissa una rete *target* $f$ dai pesi casuali e mai addestrati, e si
 allena una rete *predictor* $\hat f$ a imitarne l'output sugli stati
 visitati. La ricompensa intrinseca è la distanza fra le due:
 
@@ -331,16 +331,16 @@ optimizer.step()
 ## Un modo diverso di guardare la curiosità
 
 In tutto quello che abbiamo visto finora la curiosità
-è un **premio in più**: c'era una ricompensa, ci siamo accorti che non
+è un premio in più: c'era una ricompensa, ci siamo accorti che non
 bastava, e gliene abbiamo affiancata un'altra, fabbricata da noi. È una toppa
 che funziona benissimo, ma resta una toppa.
 
 Esiste una lettura opposta, e chiarisce parecchio anche a chi non intende
-seguirla. Nel quadro dell’**inferenza attiva**, che nelle neuroscienze teoriche
+seguirla. Nel quadro dell’inferenza attiva, che nelle neuroscienze teoriche
 descrive percezione e azione come un unico problema {cite}`parr2022active`,
 l'agente non massimizza una ricompensa: minimizza un'unica grandezza che tiene
 insieme quanto un'azione lo avvicina a ciò che preferisce e quanto gli farebbe
-**guadagnare informazione**. Il nome, **energia libera attesa**, è preso in
+guadagnare informazione. Il nome, energia libera attesa, è preso in
 prestito dalla fisica, e qui conta soltanto che le due cose stiano in un conto
 unico. All'inferenza attiva il {doc}`capitolo sui world model
 </WorldModels/overview>` dedica una sezione, e il capitolo
@@ -384,7 +384,7 @@ Formalmente il legame è più stretto di un'analogia. Gli autori mostrano che
 diversi schemi noti si riottengono togliendo pezzi alla loro grandezza:
 annullate le preferenze dell'agente, l'energia libera attesa, cambiata di
 segno, «è variamente nota come sorpresa bayesiana attesa (nel contesto
-dell'esplorazione attentiva) o **motivazione intrinseca** (nel contesto
+dell'esplorazione attentiva) o motivazione intrinseca (nel contesto
 dell'apprendimento autonomo)» {cite}`parr2022active`, che è esattamente la
 famiglia dei bonus di novità e della curiosità intrinseca. Il segno va
 guardato: quella grandezza si massimizza, come si massimizza un bonus di
@@ -463,7 +463,7 @@ dov'era.
 Il rischio del reward shaping ingenuo è cambiare la policy ottima: un termine
 aggiuntivo mal scelto può rendere conveniente un comportamento che l'obiettivo
 originale non premia. Ng, Harada e Russell {cite}`ng1999policy` hanno
-dimostrato che esiste una forma di shaping **garantita** a preservare l'ordine
+dimostrato che esiste una forma di shaping garantita a preservare l'ordine
 delle policy: il
 **potential-based reward shaping**. Si sceglie una funzione potenziale
 $\Phi(s)$ sugli stati e si aggiunge alla ricompensa il termine
@@ -523,7 +523,7 @@ La legge porta il nome di Charles Goodhart, un economista britannico che nel
 1975 la osservò a proposito della moneta: le banche centrali usavano certi
 indicatori per capire come andasse l'economia, e quegli indicatori smisero di
 funzionare non appena si cominciò a governarli. Ma quella frase così memorabile
-è dell'antropologa **Marilyn Strathern**, che la scrisse nel 1997
+è dell'antropologa Marilyn Strathern, che la scrisse nel 1997
 studiando come si valutano le università britanniche
 {cite}`strathern1997improving`, ed è la formulazione che ha portato la legge
 fuori dall'economia.
@@ -534,7 +534,7 @@ gare di barche, l'agente doveva completare un percorso il più in fretta
 possibile. La ricompensa, però, era stata legata ai punti raccolti lungo il
 tragitto, non all'arrivo. L'agente scoprì che in una laguna un gruppo di bonus
 ricompariva a ciclo continuo: imparò a girare in tondo là dentro, andando a
-sbattere e prendendo fuoco, incassando in media il **20% di punti in più** dei
+sbattere e prendendo fuoco, incassando in media il 20% di punti in più dei
 giocatori umani senza mai finire la gara. Aveva "vinto" secondo la lettera
 della ricompensa, perdendo secondo ogni ragionevole intento.
 
@@ -575,7 +575,7 @@ Le difese sono un ambito di ricerca attivo e nessuna è risolutiva: vincoli e
 penalità esplicite, apprendimento della ricompensa dalle preferenze umane
 (*reward modeling*, RLHF), verifica di robustezza rispetto a piccole modifiche
 della specifica. Il nodo di fondo (specificare compiutamente ciò che vogliamo
-tramite una funzione scalare) è il **problema dell'allineamento**, che
+tramite una funzione scalare) è il problema dell'allineamento, che
 affronteremo nel {doc}`capitolo sull'AI responsabile
 </AIResponsabile/overview>`. Il reward hacking è il punto in cui
 l'ottimizzazione tecnica incontra una domanda che tecnica non è del tutto:
@@ -613,31 +613,31 @@ sull'AI responsabile comincia da qui.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Quando la ricompensa arriva **di rado** (l'emblema è *Montezuma's Revenge*,
+- Quando la ricompensa arriva di rado (l'emblema è *Montezuma's Revenge*,
   dove il DQN segnava zero), tirare a caso ogni tanto non basta: è come
   esplorare una città imboccando quasi sempre la strada che sembra migliore e
   tirando un dado a un incrocio ogni tanto, e si gira per ore nello stesso
-  quartiere. Serve una spinta che punti **deliberatamente** verso quello che
+  quartiere. Serve una spinta che punti deliberatamente verso quello che
   non si è ancora visto.
-- Il modo più semplice è il **premio alla novità**, il principio del turista
+- Il modo più semplice è il premio alla novità, il principio del turista
   curioso: un piccolo premio ogni volta che metti piede in un posto nuovo, che
   si spegne man mano che quel posto diventa familiare. Negli spazi enormi, dove
   ogni schermata è unica e nessun posto si ripete mai, il conteggio non si può
   fare e lo si stima.
-- L'idea più elegante è la **curiosità**: il premio non va a ciò che è raro, va
-  a ciò che **sorprende**, come il bambino che spinge il bicchiere oltre il
+- L'idea più elegante è la curiosità: il premio non va a ciò che è raro, va
+  a ciò che sorprende, come il bambino che spinge il bicchiere oltre il
   bordo del tavolo finché non ha imparato cosa succede. L'agente si costruisce
   una previsione di come andrà a finire, e ogni volta che sbaglia la previsione
   incassa. Si spegne da sé: quando ha imparato, non c'è più sorpresa. Ma solo
   se a sorprenderlo è qualcosa su cui la sua mano fa la differenza, perché
   davanti alla pioggia dietro il vetro, che nessuno sa prevedere, resterebbe lì
   per sempre.
-- Aggiungere premietti intermedi per guidare l'agente (**reward shaping**)
+- Aggiungere premietti intermedi per guidare l'agente (reward shaping)
   funziona, ma può cambiargli l'obiettivo sotto il naso: il robot scopre che gli
   conviene oscillare davanti alla porta incassando premietti, senza mai uscire.
   C'è però un modo di darli che quel rischio non ce l'ha mai, e sono le
   *differenze di quota*.
-- Il pericolo grosso ha un nome, **reward hacking**: l'idraulico pagato a tubi
+- Il pericolo grosso ha un nome, reward hacking: l'idraulico pagato a tubi
   sostituiti che comincia a sostituire tubi sani, la barca di *CoastRunners* che
   gira in tondo prendendo fuoco. Il problema è che l'agente obbedisce troppo
   bene, alla lettera sbagliata. Ed è il ponte verso il
@@ -648,28 +648,28 @@ sull'AI responsabile comincia da qui.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Con **ricompense sparse** (l'emblema è *Montezuma's Revenge*, dove il DQN
+- Con ricompense sparse (l'emblema è *Montezuma's Revenge*, dove il DQN
   segnava zero) l'esplorazione casuale di $\varepsilon$-greedy fallisce: la
   probabilità di azzeccare $n$ azioni insolite di fila scala come
-  $(\varepsilon/|\mathcal{A}|)^n$. Serve esplorazione **diretta**, non rumore
+  $(\varepsilon/|\mathcal{A}|)^n$. Serve esplorazione diretta, non rumore
   locale.
-- I **bonus di novità** *count-based* premiano gli stati poco visitati
+- I bonus di novità *count-based* premiano gli stati poco visitati
   ($\propto 1/\sqrt{N(s)}$, con un $+1$ a smorzare l'infinito); negli spazi
-  grandi il conteggio esatto non ha senso e si usano **pseudo-conteggi**
+  grandi il conteggio esatto non ha senso e si usano pseudo-conteggi
   derivati da una densità.
-- La **curiosità intrinseca** trasforma la *sorpresa* in ricompensa: **ICM**
+- La curiosità intrinseca trasforma la *sorpresa* in ricompensa: ICM
   usa l'errore di predizione della dinamica in uno spazio di feature appreso,
-  **RND** l'errore nel predire una rete casuale fissa. RND fu il primo a
+  RND l'errore nel predire una rete casuale fissa. RND fu il primo a
   superare il punteggio umano medio su Montezuma senza dimostrazioni né accesso
   allo stato dell'emulatore; il gioco non lo «risolse», e il paper stesso dice
   che il primo livello lo completa solo occasionalmente.
-- Il **reward shaping** densifica il segnale; solo la forma *potential-based*
+- Il reward shaping densifica il segnale; solo la forma *potential-based*
   $F=\gamma\Phi(s')-\Phi(s)$ (Ng, Harada, Russell, 1999) preserva la policy
   ottima, per un argomento telescopico valido *per qualunque* $\Phi$.
-- Il **reward hacking** è l'agente che ottimizza la *lettera* della ricompensa,
+- Il reward hacking è l'agente che ottimizza la *lettera* della ricompensa,
   non l'intento, come la barca di *CoastRunners*. La legge che porta il nome di
   Goodhart, nella formulazione che tutti citano, è in realtà di Marilyn
-  Strathern (1997). È il ponte verso il problema dell’**allineamento**.
+  Strathern (1997). È il ponte verso il problema dell’allineamento.
 ```
 `````
 

@@ -41,17 +41,17 @@ giro si trovano soprattutto due cose: articoli che promettono tutto senza
 spiegare niente, e testi che spiegano bene ma danno per acquisiti corsi
 universitari di analisi e statistica. Questo libro prova a stare nel mezzo, in
 italiano, partendo da zero e senza saltare i passaggi difficili. Ogni concetto
-che conta è spiegato **due volte**, una con un'analogia di tutti i giorni e una
+che conta è spiegato due volte, una con un'analogia di tutti i giorni e una
 con la notazione e le formule per intero. Non è la stessa spiegazione in
 versione corta e in versione lunga: sono due strade per lo stesso posto, e
 prendendone una non perdi l'altra.
 
 :::{only} html
-E **«due volte» ha un secondo senso**, che riguarda come queste pagine sono
-scritte. Le stende un'intelligenza artificiale; le rilegge **un'altra AI**,
+E «due volte» ha un secondo senso, che riguarda come queste pagine sono
+scritte. Le stende un'intelligenza artificiale; le rilegge un'altra AI,
 che alla stesura non ha partecipato e ha un compito solo, cercare l'errore;
 e alla fine passano da me, ed è quel passaggio a decidere che cosa resta.
-Questo libro è, alla lettera, **l'AI che spiega se stessa**. Perché il metodo
+Questo libro è, alla lettera, l'AI che spiega se stessa. Perché il metodo
 è severo, su che cosa il libro scommette, e perché il segno qui sopra è un
 triangolo impossibile, sta nella {doc}`Prefazione </prefazione>`.
 :::
@@ -73,15 +73,15 @@ in un colpo solo, e si cambia quando vuoi.
 :::
 
 :::{only} html
-Questa versione online del libro **è gratuita** ed **è in continuo aggiornamento** per stare al passo con le innovazioni di questa materia: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice usa **PyTorch**, NumPy e scikit-learn, e per provarlo non devi installare niente. Dove in alto compare **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che fa girare il codice su una macchina di Google (serve un account Google). Qualche pagina è essa stessa un notebook, e si riconosce dal razzo 🚀 fra i comandi in cima alla pagina: lì il codice si esegue restando nel libro. Altrove si legge qui e si copia dove preferisci.
+Questa versione online del libro è gratuita ed è in continuo aggiornamento per stare al passo con le innovazioni di questa materia: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice usa PyTorch, NumPy e scikit-learn, e per provarlo non devi installare niente. Dove in alto compare **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che fa girare il codice su una macchina di Google (serve un account Google). Qualche pagina è essa stessa un notebook, e si riconosce dal razzo 🚀 fra i comandi in cima alla pagina: lì il codice si esegue restando nel libro. Altrove si legge qui e si copia dove preferisci.
 
-Che cosa è cambiato, e quando, sta scritto: {doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa è la versione **{{ versione }}** ({{ data_versione }}).
+Che cosa è cambiato, e quando, sta scritto: {doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa è la versione {{ versione }} ({{ data_versione }}).
 :::
 
 :::{only} latex
-Il libro **è gratuito** ed è in continuo aggiornamento per stare al passo con
+Il libro è gratuito ed è in continuo aggiornamento per stare al passo con
 questa materia: sezioni, argomenti ed esempi si aggiungono di continuo. Il
-codice usa **PyTorch**, NumPy e scikit-learn, e online si esegue senza
+codice usa PyTorch, NumPy e scikit-learn, e online si esegue senza
 installare niente, dentro il libro o su Google Colab. Qui il codice si legge e
 si copia; per eseguirlo, l'indirizzo è nel colophon.
 :::
@@ -416,9 +416,9 @@ sempre: si può leggere un capitolo tutto all'Elementare, uno tutto al
 Superiore, oppure lo stesso due volte, prima di qua e poi di là.
 
 :::{only} html
-**Come si sceglie.** Ogni concetto ha due schede, e si apre quella che si
-vuole. L'icona a **due barrette** in alto nella barra, invece, imposta il
-livello di **tutto il libro** in un colpo, e la scelta resta salvata nel
+Come si sceglie. Ogni concetto ha due schede, e si apre quella che si
+vuole. L'icona a due barrette in alto nella barra, invece, imposta il
+livello di tutto il libro in un colpo, e la scelta resta salvata nel
 browser: la ritrovi al ritorno, capitolo dopo capitolo. Le due cose convivono,
 e l'interruttore decide solo da dove *parte* ogni pagina: se leggi
 all'Elementare e vuoi sbirciare una formula, sbirciala, due paragrafi più
@@ -481,9 +481,9 @@ f(x) = \begin{cases}
 $$
 
 Questa funzione prende un input $x$ e restituisce $x$ se $x$ è positivo; altrimenti, restituisce zero.
-La ReLU è ampiamente utilizzata nelle reti neurali perché introduce una non linearità essenziale e la sua derivata vale esattamente $1$ per $x > 0$: durante la *backpropagation*, **lungo i cammini attivi**, il gradiente non si attenua per colpa dell'attivazione, e sparisce la saturazione che affligge sigmoide e tangente iperbolica.
+La ReLU è ampiamente utilizzata nelle reti neurali perché introduce una non linearità essenziale e la sua derivata vale esattamente $1$ per $x > 0$: durante la *backpropagation*, lungo i cammini attivi, il gradiente non si attenua per colpa dell'attivazione, e sparisce la saturazione che affligge sigmoide e tangente iperbolica.
 
-Attenzione però a non chiedere alla ReLU più di quanto dia. Il gradiente che attraversa uno strato è $\mathbf{W}^\top \mathrm{diag}(\mathbb{1}[\mathbf{z}>0])$, dove $\mathbf{W}$ sono i pesi dello strato e $\mathbf{z}$ le sue preattivazioni: l'attenuazione la producono i pesi e le unità spente, non l'attivazione. Che il segnale sopravviva a molti strati dipende quindi dalla **scala dell'inizializzazione**, e con quella sbagliata si vede subito: attraversando cinquanta strati di sole ReLU, con la scala di Xavier (giusta per la tangente iperbolica) il gradiente si attenua di sette ordini di grandezza, e con una scala un po’ troppo grande esplode di otto. È proprio la ReLU a richiedere una scala sua, il fattore $2$ di He, perché azzera metà delle unità: la frazione di derivate nulle, misurata, è $0{,}50$.
+Attenzione però a non chiedere alla ReLU più di quanto dia. Il gradiente che attraversa uno strato è $\mathbf{W}^\top \mathrm{diag}(\mathbb{1}[\mathbf{z}>0])$, dove $\mathbf{W}$ sono i pesi dello strato e $\mathbf{z}$ le sue preattivazioni: l'attenuazione la producono i pesi e le unità spente, non l'attivazione. Che il segnale sopravviva a molti strati dipende quindi dalla scala dell'inizializzazione, e con quella sbagliata si vede subito: attraversando cinquanta strati di sole ReLU, con la scala di Xavier (giusta per la tangente iperbolica) il gradiente si attenua di sette ordini di grandezza, e con una scala un po’ troppo grande esplode di otto. È proprio la ReLU a richiedere una scala sua, il fattore $2$ di He, perché azzera metà delle unità: la frazione di derivate nulle, misurata, è $0{,}50$.
 
 In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il sottodifferenziale è l'intervallo $[0, 1]$ e nella pratica, PyTorch compreso, si adotta la convenzione $f'(0) = 0$.
 

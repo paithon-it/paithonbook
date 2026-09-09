@@ -10,7 +10,7 @@ grado dalla posizione prevista. L'espressione rimasta celebre è di François
 Arago: Le Verrier ha scoperto un pianeta «sulla punta della penna».
 
 Per quasi due secoli la scienza ha funzionato così: leggi di natura scritte
-come **equazioni differenziali** (regole compatte su come cambiano le cose) e
+come equazioni differenziali (regole compatte su come cambiano le cose) e
 risolte, a mano finché si è potuto, poi al calcolatore. Previsioni del tempo,
 gallerie del vento, reattori nucleari: sotto c'è sempre un'equazione.
 
@@ -24,7 +24,7 @@ precisione ammirevole, e a scarseggiare sono i dati, perché lì misurare costa:
 una sonda calata sul fondo del mare, un sensore infilato dentro un'arteria, un
 prototipo messo in galleria del vento sono misure che si contano sulle dita.
 E nessuna dà il valore vero: lo strumento sbaglia sempre un pochino, un po’
-sopra o un po’ sotto, e di misure fatte così si dice che sono **rumorose**. La
+sopra o un po’ sotto, e di misure fatte così si dice che sono rumorose. La
 domanda di questo capitolo, allora: e se si potessero usare *entrambi*?
 
 ## Una regola che dice come cambiano le cose
@@ -37,8 +37,8 @@ basta, e conviene vedere subito perché.
 `````{tab} Elementare
 
 Posa una tazza di caffè bollente sulla scrivania. Nessuno sa dire d'un fiato
-che temperatura avrà tra dieci minuti, ma la regola la conosciamo tutti: **il
-caffè si raffredda tanto più in fretta quanto più è caldo della stanza**, di
+che temperatura avrà tra dieci minuti, ma la regola la conosciamo tutti: il
+caffè si raffredda tanto più in fretta quanto più è caldo della stanza, di
 corsa quando scotta, piano da tiepido, e da fermo quando è arrivato alla
 temperatura dell'aria intorno.
 
@@ -53,7 +53,7 @@ partenza le curve che obbediscono alla regola sarebbero infinite: l'80 sceglie
 la nostra. Le leggi di Newton che Le Verrier stava applicando sono regole
 così, con la gravità al posto del caffè.
 
-Quel conto minuto per minuto è il **metodo classico**: dagli anni Cinquanta i
+Quel conto minuto per minuto è il metodo classico: dagli anni Cinquanta i
 calcolatori risolvono così le equazioni differenziali, un passettino alla
 volta lungo una fitta rete di puntini. La rete di puntini si chiama
 **griglia**, e il programma che la macina **solutore**. Per il caffè i puntini
@@ -68,7 +68,7 @@ forma del problema, e tagliarla è un mestiere a sé. E i puntini esplodono
 quando la risposta dipende da tante cose insieme.
 
 La sbarra chiede anche un'altra cosa. Per il caffè bastava sapere da dove si
-parte; per la sbarra serve pure sapere che cosa le succede **ai due capi**,
+parte; per la sbarra serve pure sapere che cosa le succede ai due capi,
 perché lì il calore entra o esce: una fiamma sotto un'estremità e un blocco di
 ghiaccio sull'altra danno due storie diverse. Sono, letteralmente, le
 condizioni ai bordi, o al contorno, che è il nome che portano di solito.
@@ -133,8 +133,8 @@ A rilanciare questa mossa, nel 2019, sono Maziar Raissi, Paris Perdikaris e
 George Karniadakis {cite}`raissi2019physics`, e il nome che le danno è quello
 in cima al capitolo: **Physics-Informed Neural Networks**, PINN, cioè reti
 neurali informate dalla fisica. L'idea però è più vecchia di loro, e la
-prossima sezione racconta da dove viene e perché ha dovuto aspettare
-vent'anni; è da qui che diventa praticabile.
+prossima sezione racconta da dove viene e perché ha dovuto aspettare un
+quarto di secolo; è da qui che diventa praticabile.
 
 `````{tab} Elementare
 
@@ -156,12 +156,12 @@ gradi, e la regola (un decimo della differenza al minuto) impone
 che in quel momento stia scendendo di 4 gradi al minuto. Non uno, non otto:
 quattro. Se la curva scende di uno, lo scarto fra quello che fa e quello che
 dovrebbe fare vale 3, e la penalità cresce con lui. Quel «quanto sta
-scendendo», in un punto di una curva, si chiama **pendenza**: è la ripidità
+scendendo», in un punto di una curva, si chiama pendenza: è la ripidità
 della strada misurata sotto i piedi, non su tutta la salita.
 
 Le penalità dei due esaminatori si sommano in un punteggio unico, quella
 loss che ci accompagna da inizio libro, e la rete aggiusta le sue manopole
-interne (i **pesi**) per farlo calare. Quanto conta ciascuno dei due lo
+interne (i pesi) per farlo calare. Quanto conta ciascuno dei due lo
 decidiamo noi: se il secondo esaminatore urla dieci volte più forte, la
 curva si scosta dalle misure pur di non contraddire la regola, e le tre
 letture del termometro non contano quasi più. Con le dosi giuste, dove ci
@@ -202,7 +202,7 @@ come faremo per $u'(0)$ nella prossima sezione); i $(x_j, t_j)$ sono $N_c$
 **punti di collocazione**
 estratti a caso nel dominio (nessuna griglia) e $\lambda$ bilancia i due
 termini. Il tocco elegante è il calcolo delle derivate di $u_\theta$ rispetto
-agli *ingressi*: le fornisce la **differenziazione automatica**, cioè la
+agli *ingressi*: le fornisce la differenziazione automatica, cioè la
 regola della catena della backpropagation applicata a $x$ e $t$ anziché ai
 pesi {cite}`rumelhart1986learning`. In PyTorch è una chiamata a
 `torch.autograd.grad` {cite}`paszke2019pytorch`: derivate esatte a meno della
@@ -214,12 +214,12 @@ discretizzazione da scegliere.
 ## Perché ci interessa
 
 Tre proprietà rendono la ricetta interessante, e tutte e tre nascono da una
-cosa sola: **la griglia non c'è più**. Alla fine di un conto classico resta
+cosa sola: la griglia non c'è più. Alla fine di un conto classico resta
 una tabella, i valori calcolati sui puntini e nient'altro; alla fine di un
 addestramento resta la rete, e a una rete si può chiedere il valore in
 qualunque punto, anche in mezzo a due puntini, anche dove nessun puntino c'era.
 
-La prima proprietà è la più diretta: **non c'è nessuna griglia da costruire**.
+La prima proprietà è la più diretta: non c'è nessuna griglia da costruire.
 I punti di collocazione si spargono a pioggia anche dentro una forma
 complicata, il condotto di un'aorta dove si vuole sapere come scorre il
 sangue, il profilo di un'ala dove si vuole sapere come si comporta l'aria. La
@@ -246,7 +246,7 @@ davvero i risultati si ottengono con varianti costruite apposta, non con la
 ricetta base di questo capitolo, ed è ricerca ancora in corso
 {cite}`hu2024tackling`.
 
-La seconda proprietà è quella dei **dati scarsi**. Dove il laboratorio arriva
+La seconda proprietà è quella dei dati scarsi. Dove il laboratorio arriva
 con tre sensori, la legge riempie i vuoti: fra le infinite curve che passano
 vicino a quei tre punti restano solo quelle che l'equazione ammette, e sono
 pochissime. La terza, la più sorprendente, è quella dei **problemi inversi**.
@@ -296,8 +296,8 @@ nome di **scientific machine learning** {cite}`karniadakis2021physics`.
 
 ## Un'onestà dovuta
 
-Chiariamolo prima di innamorarcene: le PINN **non mandano in pensione i
-solutori classici**, e il loro territorio è più stretto di quanto le pagine
+Chiariamolo prima di innamorarcene: le PINN non mandano in pensione i
+solutori classici, e il loro territorio è più stretto di quanto le pagine
 precedenti lascino credere. Sta dove legge e misure vanno usate
 insieme per rispondere alla stessa domanda; dove le grandezze in gioco sono
 troppe perché una griglia stia in piedi; e sui problemi inversi, non perché i
@@ -308,7 +308,7 @@ scritto su misura per quell'equazione, e una PINN no. Altrove niente.
 
 Su un problema ordinario (regola nota, forma regolare, nessuna misura da
 tenere insieme alla legge) il conto a passettini vince, e non di poco: è più
-rapido ed è più preciso. Di quel conto si sa **dimostrare** al massimo quanto
+rapido ed è più preciso. Di quel conto si sa dimostrare al massimo quanto
 può sbagliare, e che accorciando i passi sbaglia meno: è una garanzia scritta
 prima di partire, non un risultato osservato dopo.
 
@@ -336,7 +336,7 @@ accurati e con garanzie di convergenza che un'ottimizzazione non convessa non
 può offrire: per un metodo classico si dimostra un ordine di convergenza,
 l'errore scende come $O(h^p)$ al raffinarsi del passo $h$. Il teorema ha le
 sue ipotesi, e senza di quelle la garanzia non vale: lo schema dev'essere
-consistente **e stabile** (per uno schema esplicito sul
+consistente e stabile (per uno schema esplicito sul
 calore, infittire solo in spazio fa divergere), e la soluzione esatta
 abbastanza regolare, perché su un urto l'ordine $p$ crolla comunque. Ma sono
 ipotesi verificabili in anticipo, mentre la discesa del gradiente su una loss
@@ -351,7 +351,7 @@ solutore maturo impiega millisecondi, e a volte fallisce senza preavviso
 
 Dalla cornice al banco di lavoro. Nella prossima sezione costruiremo il metodo
 per intero, con una PINN scritta in PyTorch, e il banco di prova sarà una
-**molla che oscilla e si smorza**: la rete, la misura di quanto viola la
+molla che oscilla e si smorza: la rete, la misura di quanto viola la
 regola, il punteggio che mette insieme i due controlli, e infine il problema
 inverso, con un pezzo di legge che fingeremo di non conoscere. Chiuderemo con
 le applicazioni reali (il sangue nelle arterie, i materiali, il clima) e una
@@ -361,8 +361,8 @@ mappa onesta dei limiti: quando convengono, quando no.
 
 ```{admonition} Da ricordare
 :class: important
-- Un’**equazione differenziale** non dice quanto vale una grandezza ma **come
-  cambia** (il caffè si raffredda tanto più in fretta quanto più è caldo della
+- Un’equazione differenziale non dice quanto vale una grandezza ma come
+  cambia (il caffè si raffredda tanto più in fretta quanto più è caldo della
   stanza). Sapendo da dove si parte, e cosa succede ai bordi quando conta
   anche lo spazio (ai due capi della sbarra che si scalda), la storia è
   determinata tutta. Vale per le equazioni ben educate che incontreremo qui,
@@ -371,24 +371,24 @@ mappa onesta dei limiti: quando convengono, quando no.
   ancora riuscito a dimostrare che, dato un inizio, la storia che ne segue sia
   una sola. È uno dei problemi aperti della matematica, e i nostri due esempi
   stanno lontani da lì.
-- I metodi classici **spezzettano** il problema: riempiono il dominio di una
+- I metodi classici spezzettano il problema: riempiono il dominio di una
   fitta rete di puntini e avanzano da un puntino all'altro. Sono accurati e
   velocissimi, e se la cavano anche con forme complicate; ma quella rete va
   costruita su misura, e quando le grandezze in gioco sono molte il numero di
   puntini esplode.
-- Una **PINN** usa una rete neurale come curva candidata e la corregge con
+- Una PINN usa una rete neurale come curva candidata e la corregge con
   due esaminatori: il righello, che la tiene vicina alle (poche) misure e al
   punto da cui si parte, e il controllo della regola in punti scelti a caso,
-  i **punti di collocazione**,
+  i punti di collocazione,
   dove ogni violazione costa punti {cite}`raissi2019physics`. Funziona perché
-  una legge sa dire che una risposta è **sbagliata** anche quando nessuno sa
+  una legge sa dire che una risposta è sbagliata anche quando nessuno sa
   dire quale sia quella giusta. Le pendenze che servono a controllarla
   gliele darà il meccanismo con cui la rete già si addestra, quello che a ogni
   giro le dice di quanto ritoccare ciascun peso: è il colpo di scena della
   prossima sezione.
 - Punti di forza: dati scarsi ma legge nota, molte grandezze in gioco, domini
-  dalla forma complicata senza una griglia da costruire, e i **problemi
-  inversi** (il pezzo di regola che manca diventa una manopola che
+  dalla forma complicata senza una griglia da costruire, e i problemi
+  inversi (il pezzo di regola che manca diventa una manopola che
   l'addestramento regola da sé).
 - Onestà: sui problemi standard i metodi classici restano superiori; le PINN
   si affiancano, non li sostituiscono {cite}`karniadakis2021physics`.
@@ -400,23 +400,23 @@ mappa onesta dei limiti: quando convengono, quando no.
 
 ```{admonition} Da ricordare
 :class: important
-- Un’**equazione differenziale** non dice quanto vale una grandezza ma **come
-  cambia**; con condizioni iniziali e al contorno questo basta a determinarla
+- Un’equazione differenziale non dice quanto vale una grandezza ma come
+  cambia; con condizioni iniziali e al contorno questo basta a determinarla
   (ODE: una variabile indipendente; PDE: più di una). Vale per le equazioni
   ben educate che risolveremo qui, il caffè e la molla; per certe equazioni
   difficili, come quelle dei fluidi in tre dimensioni, che una soluzione
   unica esista sempre nessuno l'ha ancora dimostrato.
-- I solutori classici **discretizzano**: differenze finite o elementi finiti
+- I solutori classici discretizzano: differenze finite o elementi finiti
   su una griglia (accurati, veloci e a loro agio anche su forme complicate;
   ma la griglia va costruita su misura, e con molte variabili il conto
   diventa proibitivo).
-- Una **PINN** usa una rete $u_\theta(x,t)$ come candidata soluzione, con una
-  loss doppia: aderenza ai (pochi) dati più penalità sul **residuo fisico**
+- Una PINN usa una rete $u_\theta(x,t)$ come candidata soluzione, con una
+  loss doppia: aderenza ai (pochi) dati più penalità sul residuo fisico
   $r_\theta = \partial_t u_\theta - \alpha\,\partial_{xx} u_\theta$ nei punti
   di collocazione {cite}`raissi2019physics`; derivate dalla
-  **differenziazione automatica**, esatte e senza griglia.
+  differenziazione automatica, esatte e senza griglia.
 - Punti di forza: dati scarsi ma leggi note, molte variabili, domini dalla
-  forma complicata senza dover costruire una griglia, **problemi inversi**
+  forma complicata senza dover costruire una griglia, problemi inversi
   (il parametro ignoto diventa una variabile addestrabile).
 - Onestà: sui problemi standard i solutori classici restano superiori; le
   PINN sono un complemento, non un rimpiazzo {cite}`karniadakis2021physics`.

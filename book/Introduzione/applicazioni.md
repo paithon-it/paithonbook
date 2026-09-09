@@ -35,7 +35,7 @@ per fermare il risciacquo esiste, ed è corta.
 Esiste però un ponte fra i due mondi, ed è fatto di programmi che imparano per
 tentativi ed errori, incassando un «premio» ogni volta che fanno bene, un po’
 come si addestra un cucciolo premiandolo quando obbedisce. Quel ramo
-dell'intelligenza artificiale si chiama **reinforcement learning**
+dell'intelligenza artificiale si chiama reinforcement learning
 (apprendimento per rinforzo). È così che oggi si insegna a un robot a
 camminare, ad afferrare oggetti o a mantenere l'equilibrio, e quando a fare il
 lavoro sono le reti neurali si parla di *deep reinforcement learning*, cioè lo

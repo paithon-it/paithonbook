@@ -11,7 +11,7 @@ acini di una vite. Borges avrebbe potuto farne un genio, e ne fa il contrario:
 quel ragazzo, sospetta chi racconta, non era molto capace di pensare, perché
 «pensare è dimenticare differenze, è generalizzare, astrarre»[^funes].
 
-Il difetto di Funes, detto in una parola, è che non sa **accorciare**. Per lui
+Il difetto di Funes, detto in una parola, è che non sa accorciare. Per lui
 il cane visto di profilo alle tre e quattordici e lo stesso cane visto di
 fronte tre minuti dopo sono due cose distinte, e due cose distinte vogliono due
 nomi: il suo mondo non sta in nessuna descrizione più breve del mondo stesso.
@@ -19,8 +19,8 @@ Un modello che impara a memoria il proprio insieme di addestramento è un Funes,
 e {doc}`Overfitting e validazione </MachineLearning/overfitting-validazione>`
 lo ha già mostrato in azione con altri nomi.
 
-Le pagine precedenti hanno detto **che cos'è** l'auto-supervisione, **come** si
-fabbrica un pretesto e **che cosa va storto**. Nessuna ha risposto alla domanda
+Le pagine precedenti hanno detto che cos'è l'auto-supervisione, come si
+fabbrica un pretesto e che cosa va storto. Nessuna ha risposto alla domanda
 più imbarazzante di tutte, quella che uno studente fa al secondo minuto: perché
 coprire una parola e farla indovinare dovrebbe produrre qualcosa che sa di
 biologia. Una parte del campo
@@ -32,7 +32,7 @@ prevedere bene bisogna accorciare, e per accorciare bisogna aver capito.
 Qui non si ricomincia da zero: quello che si dà per acquisito è già scritto
 altrove e non si ripete.
 
-La prima cosa è appunto che **predire e comprimere sono la stessa operazione**,
+La prima cosa è appunto che predire e comprimere sono la stessa operazione,
 e la regola che le tiene insieme è una sola: più una cosa è attesa, meno costa
 scriverla. La ricava dal teorema di Shannon la sezione
 {doc}`Teoria dell'informazione </Matematica/teoria-informazione>`: il numero di
@@ -42,7 +42,7 @@ La formula si legge anche senza farne il conto: se il modello dava per quasi
 certo quello che è arrivato, il prezzo va quasi a zero; se lo dava per
 improbabile, il prezzo si impenna. L'ha resa operativa
 {doc}`A che serve saperlo, e dove sbaglia </VerosimiglianzaEsatta/a-che-serve>`:
-un modello che sa dire $p(\mathbf{x})$, cioè quanto è probabile un dato, **è**
+un modello che sa dire $p(\mathbf{x})$, cioè quanto è probabile un dato, è
 un compressore, non per analogia, e infatti quella famiglia di modelli si
 misura in bit per dimensione, cioè in quanti bit costa in media ogni singolo
 numero del dato.
@@ -53,7 +53,7 @@ Minimizzare la cross-entropia su un corpus e minimizzare la lunghezza del file
 compresso sono la stessa istruzione scritta in due gerghi.
 
 Quello che di nuovo c'è qui è il passo successivo, e non è piccolo: se
-addestrare **è** comprimere, allora una teoria della compressione è una teoria
+addestrare è comprimere, allora una teoria della compressione è una teoria
 dell'apprendimento, e qualcuno ha provato a leggerla come una teoria
 dell'intelligenza.
 
@@ -62,8 +62,8 @@ dell'intelligenza.
 Prima della teoria, un esperimento che sta in una pagina e si può rilanciare.
 Costruiamo una lingua con una regola sola: quattro lettere, due «vocali» e due
 «consonanti», e dopo una consonante arriva quasi sempre una vocale. La tabella
-delle transizioni è fatta in modo che le quattro lettere escano **ugualmente
-frequenti**, e questo è il punto: chi si limita a contarle non troverà niente
+delle transizioni è fatta in modo che le quattro lettere escano ugualmente
+frequenti, e questo è il punto: chi si limita a contarle non troverà niente
 da dire, perché tutta la struttura sta nel passaggio da una all'altra.
 
 Poi proviamo a scrivere duecentomila lettere di quella lingua nel modo più
@@ -170,34 +170,34 @@ non è un risultato sperimentale: si calcola dalla tabella. Nessun codice, per
 quanto ingegnoso, spende in media meno di $1{,}4367$ bit per lettera su testi
 sorteggiati da questa lingua.
 
-Conviene leggere quella frase con attenzione, perché la sezione dopo ci gioca
-sopra: è un limite **in media sulla sorgente**, non un limite su *questa*
-stringa. Chi avesse in mano proprio queste duecentomila lettere le scriverebbe
-in un programma di poche righe (il seme, la tabella, il ciclo), cioè in
-pochissimi bit per lettera; ma quel programma sa una cosa che nessun
+Conviene leggere quella frase con attenzione, perché la sezione sul programma
+più corto ci gioca sopra: è un limite in media sulla sorgente, non un limite
+su *questa* stringa. Chi avesse in mano proprio queste duecentomila lettere le
+scriverebbe in un programma di poche righe (il seme, la tabella, il ciclo), cioè
+in pochissimi bit per lettera; ma quel programma sa una cosa che nessun
 compressore, guardando il testo, può indovinare.
 
-La riga dell’**oracolo** serve a non attribuire all'apprendimento un merito
+La riga dell’oracolo serve a non attribuire all'apprendimento un merito
 che non è suo. L'oracolo
 non impara niente: la tabella la conosce dall'inizio, e su questo testo spende
 $1{,}4398$. È già tre millesimi sopra il fondo, e quei tre millesimi non
-c'entrano niente con nessun modello: sono **fortuna del sorteggio**, cioè il
+c'entrano niente con nessun modello: sono fortuna del sorteggio, cioè il
 fatto che proprio queste duecentomila lettere sono uscite un po’ più
 sorprendenti della media. Che sia fluttuazione e non guasto lo dice il conto:
 lo scarto tipico, a duecentomila lettere, è di circa due millesimi di bit, e
 tre ci stanno dentro. Chiunque confronti un modello direttamente col fondo
 teorico si mette in conto quello scarto senza accorgersene.
 
-Il modello di **ordine 0**, quello che conta quanto è frequente ciascuna
+Il modello di ordine 0, quello che conta quanto è frequente ciascuna
 lettera, non guadagna niente: $2{,}0001$ contro i $2{,}0000$ di chi non sa
 nulla, cioè spende leggermente di più di quanto spenderebbe tirando a caso.
 In questa lingua le frequenze delle lettere non contengono informazione, per
 costruzione. Ha guardato nel posto sbagliato,
 e guardare non è gratis.
 
-Il modello di **ordine 1**, quello che per indovinare una lettera guarda la
+Il modello di ordine 1, quello che per indovinare una lettera guarda la
 precedente e quindi l'unico ad avere la forma della regola, arriva a
-$1{,}4402$, cioè **quattro decimillesimi** sopra l'oracolo. Quello, e solo
+$1{,}4402$, cioè quattro decimillesimi sopra l'oracolo. Quello, e solo
 quello, è il prezzo di imparare la regola invece di riceverla, ed è pagato
 dentro il numero, perché nelle prime lettere il modello non sapeva ancora
 niente e ha speso di più. E c'è un conto classico che lo prevede: un codice
@@ -207,11 +207,11 @@ dodici, cioè quattro contesti per tre probabilità ciascuno (la quarta è quell
 che avanza per arrivare a uno), e con $N$ pari a duecentomila
 il conto dà $0{,}0005$ contro i $0{,}0004$ misurati. È un'asintotica e
 sovrastima un poco, come si vedrà anche fra due righe, ma l'ordine di grandezza
-è quello. Su quel prezzo torna «Chi paga il vocabolario», qui in fondo, perché
-è il punto in cui la tesi rischia di rompersi.
+è quello. Su quel prezzo torna la sezione «Chi paga il vocabolario», perché è il
+punto in cui la tesi rischia di rompersi.
 
-Il modello di **ordine 2**, che tiene memoria di due lettere invece di una, fa
-$1{,}4411$: **peggio** di quello di ordine 1. Ha sedici contesti da riempire
+Il modello di ordine 2, che tiene memoria di due lettere invece di una, fa
+$1{,}4411$: peggio di quello di ordine 1. Ha sedici contesti da riempire
 invece di quattro, e il suo prezzo di apprendimento è $0{,}0013$, cioè più del
 triplo, in cambio di nulla, perché nella lingua non c'è niente oltre la lettera
 precedente. Qui i parametri liberi sono quarantotto, e la formula di prima ne
@@ -227,7 +227,7 @@ qualcosa ($1{,}8010$ e $1{,}6885$ contro i $2{,}0000$ di partenza) ma restano
 lontani dal fondo. Cercano ripetizioni letterali, e qui non ce ne sono: c'è una
 regola, e la regola la trova solo chi ha la forma giusta per ospitarla.
 
-La media finale però nasconde la cosa più interessante, che è **quando** ognuno
+La media finale però nasconde la cosa più interessante, che è quando ognuno
 paga. La {numref}`fig-il-codice-si-accorcia` mostra le tre curve mentre
 scorrono: tutte partono da due bit, cioè da «non so niente», e da lì in poi le
 strade si dividono. Quello di ordine 1 si porta a cinque centesimi di bit dal
@@ -249,7 +249,7 @@ mette più tempo e arriva un po’ più in su.
 
 ```{admonition} Il gesto da portarsi via
 :class: tip
-Il fondo lo tocca il modello che ha **la forma della regola**, non il più
+Il fondo lo tocca il modello che ha la forma della regola, non il più
 grosso e non il più generico. Se questa frase suona come una descrizione di
 tutto il machine learning, è perché lo è: qui la si è misurata in bit invece
 che in accuratezza.
@@ -258,8 +258,8 @@ che in accuratezza.
 ## Il programma più corto
 
 Quel «fondo» esiste perché la sorgente l'abbiamo scritta noi e ne conosciamo la
-regola. Nel mondo vero la regola non si conosce, e la domanda diventa: **esiste
-un fondo anche quando non sappiamo che cosa stiamo guardando?**
+regola. Nel mondo vero la regola non si conosce, e la domanda diventa: esiste
+un fondo anche quando non sappiamo che cosa stiamo guardando?
 
 La risposta è sì, e ci sono arrivate tre persone in tre modi diversi nel giro di
 due anni: Ray Solomonoff, che cercava una teoria dell'induzione
@@ -288,7 +288,7 @@ secondo non c'è niente di meglio che leggergliele una per una: nessuna ricetta
 corta le produce, perché non c'è nessuna ragione per cui la cifra dopo debba
 essere proprio quella.
 
-La lunghezza della **dettatura più corta possibile** è la misura che serve, e
+La lunghezza della dettatura più corta possibile è la misura che serve, e
 ha il nome del matematico russo che è uno dei tre ad averci pensato:
 **complessità di Kolmogorov**. Dice quanto quel foglio è complicato davvero,
 non quanto sembra: il primo è semplicissimo e sembra caotico, il secondo è
@@ -358,7 +358,7 @@ $$
 
 perché un programma che stampa $x$ si può sempre scrivere come «ecco il
 decompressore $C^{-1}$, ecco i dati $C(x)$, eseguilo». La complessità di
-Kolmogorov è quindi il limite inferiore di **ogni** compressore possibile,
+Kolmogorov è quindi il limite inferiore di ogni compressore possibile,
 codice del compressore incluso: nessuno può fare meglio, e chiunque si avvicini
 lo fa perché ha trovato struttura vera.
 
@@ -371,14 +371,14 @@ $$
 
 cioè il valore atteso di $K$ sta sempre sopra l'entropia e la supera al più
 della complessità della sorgente stessa {cite}`grunwald2004shannon`. La
-costante misura quanto costa **descrivere** $P$, e non è universale. Sono due
+costante misura quanto costa descrivere $P$, e non è universale. Sono due
 nozioni diverse di informazione, una per singolo oggetto e l'altra per
 distribuzione, e su una sorgente semplice come quella della sezione precedente
 si toccano; è la ragione per cui lì il fondo di Shannon e il fondo algoritmico
 raccontano la stessa storia, e insieme la ragione per cui su *una* stringa
 sorteggiata possono divergere di molto.
 
-Il terzo è che $K$ è **non computabile**: nessun algoritmo, dato $x$, ne
+Il terzo è che $K$ è non computabile: nessun algoritmo, dato $x$, ne
 restituisce $K(x)$. Segue dall'indecidibilità della fermata ed è già in
 Kolmogorov e Solomonoff; quello che è di Chaitin, dieci anni dopo, è la
 conseguenza più famosa, la versione algoritmica dell'incompletezza
@@ -386,25 +386,25 @@ conseguenza più famosa, la versione algoritmica dell'incompletezza
 di dimostrare gli enunciati veri della forma «esiste un programma più corto di
 $c$ che stampa $x$» (l'aritmetica di Peano e ZFC lo sono) esiste una costante
 $c_F$, dell'ordine della complessità di $F$ stesso, tale che $F$ non dimostra
-$K(x) > c_F$ per **nessuna** stringa.
+$K(x) > c_F$ per nessuna stringa.
 
 Il paradosso che ne esce va enunciato in due pezzi, perché sono due fatti
 diversi. Che quasi tutte le stringhe siano incomprimibili è un conteggio da una
 riga: i programmi più corti di $n$ bit sono meno delle stringhe lunghe $n$, e
 quindi la maggior parte delle stringhe non ne ha uno. Che di nessuna, oltre la
-soglia $c_F$, lo si possa **dimostrare** è il risultato di Chaitin.
+soglia $c_F$, lo si possa dimostrare è il risultato di Chaitin.
 
-Sono da tenere distinti, infine, $K(x)$ e la **quantità di struttura** di $x$:
+Sono da tenere distinti, infine, $K(x)$ e la quantità di struttura di $x$:
 una stringa casuale ha $K$ massimo e struttura nulla. $K(x)$ da sola non dice
-**dove** passa il confine fra la regola e il rumore; a separarli è la lunghezza
-minima in **due parti**, ed è il mestiere della funzione di struttura di
+dove passa il confine fra la regola e il rumore; a separarli è la lunghezza
+minima in due parti, ed è il mestiere della funzione di struttura di
 Kolmogorov. Non è un'osservazione oziosa: MDL, il criterio pratico che ne
 discende, è esattamente un codice in due parti, ed è per quello che serve a
 scegliere un modello mentre $K$ da sola non servirebbe.
 
 `````
 
-E il legame conta: quello appena scritto **è** il rasoio di Occam, in una forma
+E il legame conta: quello appena scritto è il rasoio di Occam, in una forma
 che si può mettere in un programma. Il capitolo sul
 machine learning aveva enunciato il rasoio come massima («a parità di
 spiegazione, vince la più semplice») e poi l'aveva reso operativo con la
@@ -445,7 +445,7 @@ quella tesi: se comprimi il testo meglio dei tuoi predecessori, il tuo
 programma con ogni probabilità è più intelligente dei loro.
 
 Hutter non si è fermato al premio. Insieme a Shane Legg ha proposto una
-**definizione formale di intelligenza** costruita esattamente su questi
+definizione formale di intelligenza costruita esattamente su questi
 ingredienti: la capacità di un agente di raggiungere obiettivi in una gamma
 molto ampia di ambienti, con gli ambienti pesati in base alla loro semplicità
 algoritmica, cioè con un peso che decresce al crescere della lunghezza del
@@ -460,14 +460,15 @@ non dice perché un modello che impara a indovinare parole coperte finisca col
 saperne di biologia. La mossa che colma quel salto è tornata in circolazione
 con un intervento senza articolo dietro, *An Observation on Generalization*,
 tenuto da Ilya Sutskever al Simons Institute di Berkeley il 14 agosto 2023
-{cite}`sutskever2023observation`. L'idea è sua, e per seguirla bastano gli strumenti delle pagine precedenti.
+{cite}`sutskever2023observation`. Per seguirla bastano gli strumenti delle
+pagine precedenti.
 
-Il problema è questo. L'apprendimento supervisionato **ha** una teoria: se
+Il problema è questo. L'apprendimento supervisionato ha una teoria: se
 l'errore sull'insieme di addestramento è basso e gli esempi sono
 molti di più dei gradi di libertà del modello, l'errore su dati nuovi è basso
 anche lui, e la sezione sull'overfitting l'ha raccontata. C'è una condizione che
 si dimentica sempre di dire e che regge tutto: la distribuzione di prova e
-quella di addestramento devono essere **la stessa**. Rispettata quella, il
+quella di addestramento devono essere la stessa. Rispettata quella, il
 teorema si applica e si può andare tranquilli a raccogliere dati.
 
 L'auto-supervisione no. Lì si ottimizza un obiettivo (indovinare la parola
@@ -477,7 +478,7 @@ perché debba succedere. Ottimizzi una cosa, te ne interessa un'altra, e la
 seconda migliora: detta così ha l'aria di un trucco di prestigio. La teoria non
 era debole: proprio non c'era.
 
-**Prima mossa: un caso in cui la garanzia c'è.** Esiste un modo di imparare
+Prima mossa: un caso in cui la garanzia c'è. Esiste un modo di imparare
 senza etichette che, come il supervisionato, *deve* funzionare, e il suo
 esempio più antico è il cifrario a sostituzione, quello in cui a ogni lettera
 se ne mette un'altra. Nessuno ti dà la chiave. Eppure su un messaggio
@@ -485,7 +486,7 @@ abbastanza lungo la chiave si trova lo stesso, perché la lingua in chiaro ha le
 sue abitudini (certe lettere frequenti, certe coppie che ricorrono, certe altre
 che non compaiono mai) e c'è un solo modo di rimettere le lettere a posto che
 le rispetti tutte quante. Non hai avuto nemmeno un esempio risolto da cui
-imparare: ti è bastato pretendere che il risultato **somigliasse** a della
+imparare: ti è bastato pretendere che il risultato somigliasse a della
 lingua vera.
 
 Quel gesto si generalizza, e si chiama **far combaciare le distribuzioni**.
@@ -502,7 +503,7 @@ serio.
 
 Il difetto è che è un caso artificiale. Nessuno addestra così, e serve
 un'ipotesi forte, cioè che una trasformazione semplice esista. La seconda mossa
-toglie l'artificio, e la parte notevole è che **contiene** la prima.
+toglie l'artificio, e la parte notevole è che contiene la prima.
 
 `````{tab} Elementare
 
@@ -583,10 +584,10 @@ $$
 K(X, Y) \;=\; K(X) \;+\; K(Y \mid X) \;\pm\; O(\log K(X, Y)),
 $$
 
-dove il termine d'errore va inteso nei **due** sensi (nella forma con errore
+dove il termine d'errore va inteso nei due sensi (nella forma con errore
 costante il condizionale si prende rispetto al programma più corto di $X$ e non
 a $X$ nudo, cioè $K(X,Y) = K(X) + K(Y \mid X^*) + O(1)$). Si legge così:
-comprimere $X$ e $Y$ **insieme** non è sostanzialmente diverso dal comprimere
+comprimere $X$ e $Y$ insieme non è sostanzialmente diverso dal comprimere
 prima $X$ e poi $Y$ sfruttando $X$. Da qui la mossa pratica: un condizionale
 non lo si sa addestrare, un congiunto sì, ed è esattamente ciò che fa la
 massima verosimiglianza su un corpus grande. Scritta in bit, e con la
@@ -600,18 +601,18 @@ che una **codifica aritmetica** trasforma in un file lungo altrettanto, a meno
 di un paio di bit di arrotondamento: la perdita che si minimizza addestrando e
 la lunghezza di descrizione sono lo stesso numero, ed è la ragione per cui qui
 si scrivono con la stessa lettera. Il teorema di codifica di sorgente da solo
-non basterebbe, perché parla della lunghezza **attesa** e dà una
+non basterebbe, perché parla della lunghezza attesa e dà una
 disuguaglianza, non un'uguaglianza su una stringa particolare. (Qui
 $L(\cdot)$ è una lunghezza in bit, non la dimensione di un latente; e $X$ e $Y$
 sono stringhe, non matrici: restano tonde.)
 
 Il passaggio che chiude l'argomento va scritto per esteso, perché dalla regola
-della catena non segue da solo: minimizzare $K(X,Y)$ non dice **come** il
+della catena non segue da solo: minimizzare $K(X,Y)$ non dice come il
 totale si ripartisca fra i due addendi. Sia $C$ un compressore con rimpianto
 $\varepsilon$ sul congiunto, cioè $|C(X,Y)| \le K(X,Y) + \varepsilon$. Per la
 regola della catena il secondo membro vale $K(X) + K(Y \mid X) + \varepsilon$,
 a meno del termine logaritmico; e siccome la disuguaglianza di prima dà
-$|C(X)| \ge K(X) - K(C) - O(1)$, il **costo incrementale** di aggiungere $Y$ a
+$|C(X)| \ge K(X) - K(C) - O(1)$, il costo incrementale di aggiungere $Y$ a
 un $X$ già compresso soddisfa
 
 $$
@@ -621,7 +622,7 @@ $$
 
 Dei due termini che si aggiungono a $\varepsilon$ uno è una costante vera, la
 descrizione del compressore; l'altro, quello della regola della catena, cresce
-come il **logaritmo** dei dati. Nessuno dei due cresce quanto i dati stessi,
+come il logaritmo dei dati. Nessuno dei due cresce quanto i dati stessi,
 ed è quello che serve: diviso per la lunghezza di $Y$, il sovrapprezzo tende a
 zero. È qui che il rimpianto sul congiunto, che si sa minimizzare addestrando, diventa
 rimpianto sul condizionale, che è quello che interessa; e qui il rimpianto
@@ -643,12 +644,12 @@ La parola tecnica dell'argomento è **rimpianto**. È quella che mette
 l'auto-supervisione alla pari col supervisionato, ed è anche la più
 fraintesa.
 
-Il rimpianto non misura quanto sei bravo: misura **quanta parte del valore
-contenuto nei dati non etichettati ti sei lasciato sfuggire**. Avere rimpianto
+Il rimpianto non misura quanto sei bravo: misura quanta parte del valore
+contenuto nei dati non etichettati ti sei lasciato sfuggire. Avere rimpianto
 basso vuol dire che nessun altro, con un compressore migliore del tuo, avrebbe
 potuto cavare da quei dati più aiuto di quanto ne hai cavato tu.
 
-La forza sta in quello che questa garanzia **non** richiede. Non richiede che i
+La forza sta in quello che questa garanzia non richiede. Non richiede che i
 dati non etichettati siano utili. Possono contenere la risposta, oppure essere
 inservibili, oppure essere rumore puro: tu non lo sai, e non c'è modo di
 saperlo in anticipo. Ma con un algoritmo a rimpianto basso, dice Sutskever, in
@@ -658,7 +659,7 @@ quello del supervisionato, e altrettanto solido: là si garantisce un risultato,
 qui si garantisce di non aver sprecato niente.
 
 Va detto anche quello che l'immagine del bagaglio non porta con sé. Il
-«peggio che va, si va in pari» è una proprietà del compressore **ideale**, che
+«peggio che va, si va in pari» è una proprietà del compressore ideale, che
 per definizione non fa mai peggio del meglio possibile. Una rete vera, cercata
 con la discesa del gradiente, quella garanzia non ce l'ha: capita che un
 pre-addestramento su dati estranei lasci il modello peggiore di come sarebbe
@@ -683,10 +684,10 @@ non ce n'è, e il rimpianto è quanto se ne è lasciato sul piatto.
 ```{admonition} Un corollario inatteso, sulle architetture
 :class: tip
 Se una rete è una macchina che ne può simulare un'altra pagandone la
-descrizione, allora **inventare un'architettura migliore deve essere
-difficile**, e per una ragione precisa: quasi ogni architettura nuova la
+descrizione, allora inventare un'architettura migliore deve essere
+difficile, e per una ragione precisa: quasi ogni architettura nuova la
 vecchia la sa già imitare, quindi il guadagno è nullo. I salti veri capitano
-solo quando la simulazione è **preclusa** da un collo di bottiglia strutturale.
+solo quando la simulazione è preclusa da un collo di bottiglia strutturale.
 L'esempio che Sutskever porta è il passaggio dalle reti ricorrenti al
 transformer: una ricorrente fatica a implementare un transformer perché tutto
 il passato le deve passare attraverso uno stato nascosto di dimensione fissa.
@@ -702,7 +703,7 @@ percorrono davvero.
 L'obiezione più seria a questa tesi è anche quella che se ne cita di meno, e
 gliela muove per primo chi l'ha proposta. Sui modelli di linguaggio la teoria
 della compressione
-**non si può mettere alla prova**, perché il loro comportamento si spiega anche
+non si può mettere alla prova, perché il loro comportamento si spiega anche
 senza di essa: sono la distribuzione condizionata del testo che sta in rete, e
 l'apprendimento da pochi esempi si racconta dicendo che un documento con uno
 schema ripetuto tende a continuare con quello schema. Nessuna compressione, e la
@@ -715,14 +716,14 @@ dominio sono le immagini. Da lì nasce **iGPT** {cite}`chen2020generative`: si
 prende un'immagine, la si stende in una sequenza di pixel, si riduce ogni
 pixel a uno di cinquecentododici colori e si addestra un transformer a
 indovinare
-il **pixel successivo**. Nient'altro, esattamente il compito dei modelli di
+il pixel successivo. Nient'altro, esattamente il compito dei modelli di
 linguaggio con i pixel al posto delle parole. Poi si blocca la rete perché non
 impari più, si sceglie lo strato che dà i risultati migliori, ci si appoggia
 sopra un classificatore lineare e si guarda quanto va. Su CIFAR-10 quel
 sondaggio arriva al $96{,}3\%$, meglio di una rete convoluzionale addestrata
 con le etichette; e le due curve, quella della bravura a indovinare il pixel
 dopo e quella del classificatore lineare, salgono insieme. È il punto:
-**migliora il predittore e migliora la rappresentazione**, senza che nessuno
+migliora il predittore e migliora la rappresentazione, senza che nessuno
 abbia mai detto alla rete che cosa sia un gatto. (Scongelando la rete e
 rifinendola per intero si arriva al $99{,}0\%$, ma quello diventa
 addestramento con le etichette invece che un sondaggio, e non dimostra la
@@ -737,22 +738,22 @@ dell'epoca non venne colmato del tutto.
 
 Resta un pezzo che la teoria non spiega, e Sutskever lo dice in chiaro: la
 compressione non richiede affatto che le rappresentazioni interne diventino
-**linearmente separabili**, cioè che basti un classificatore lineare per
-leggerle. Quella, dice, è un premio in più, non una conseguenza; quello che la
-teoria predice è che il modello si lasci rifinire bene, perché comprimere
-insieme è già una rifinitura approssimativa fatta con un cercatore mediocre.
+linearmente separabili, cioè che basti un classificatore lineare per
+leggerle. Quella arriva in più, non è una conseguenza; quello che la teoria
+predice è che il modello si lasci rifinire bene, perché comprimere insieme è già
+una rifinitura approssimativa fatta con un cercatore mediocre.
 Eppure la separabilità lineare si presenta sempre, ed è la proprietà su cui
 poggia tutta la pratica del sondaggio lineare, quella della sezione su
 collasso e misura.
 
 C'è persino un fatto in più, misurato e non spiegato: i modelli che indovinano
-il pixel successivo producono rappresentazioni lineari **migliori** di quelli
+il pixel successivo producono rappresentazioni lineari migliori di quelli
 addestrati a mascherare alla maniera di BERT. La spiegazione che Sutskever
 azzarda è che coprirne una frazione, il quindici per cento nell'esperimento,
 lasci quasi tutte le previsioni
 risolvibili guardando un po’ prima e un po’ dopo, mentre indovinare il pixel
 successivo obbliga a tenere insieme la struttura lontana: cambia la difficoltà
-della previsione **più difficile**. E aggiunge che lo stesso sospetto dovrebbe
+della previsione più difficile. E aggiunge che lo stesso sospetto dovrebbe
 valere per i modelli di diffusione, il che, se vero, rende il mistero più
 grande invece che più piccolo.
 
@@ -769,8 +770,8 @@ ragione per cui se ne parla, è il gesto di puntarle sul pre-addestramento.
 Fin qui la tesi. Dal 2023 esistono due misure che la mettono alla prova, e
 conviene guardarle da vicino perché dicono cose diverse.
 
-La prima chiede: **un modello di linguaggio, usato come compressore, quanto è
-bravo?** La risposta di un gruppo di DeepMind è: molto, e anche fuori dal proprio
+La prima chiede: un modello di linguaggio, usato come compressore, quanto è
+bravo? La risposta di un gruppo di DeepMind è: molto, e anche fuori dal proprio
 mestiere {cite}`deletang2024language`. Prendono Chinchilla, settanta miliardi
 di parametri addestrati essenzialmente su testo, e lo mettono a fare il
 predittore dentro un codificatore aritmetico, cioè il congegno che trasforma in
@@ -778,8 +779,8 @@ bit le probabilità che il modello dichiara. Il gigabyte di Wikipedia scende
 all’$8{,}3\%$ della dimensione originale, contro il $48{,}1\%$ di `gzip` alle
 stesse condizioni. Fin qui nessuna sorpresa: è testo, ed è il suo mestiere.
 
-La sorpresa è che lo stesso modello, sulle **immagini** di ImageNet, scende al
-$48{,}0\%$ dove PNG si ferma al $61{,}7\%$, e sull’**audio** di LibriSpeech al
+La sorpresa è che lo stesso modello, sulle immagini di ImageNet, scende al
+$48{,}0\%$ dove PNG si ferma al $61{,}7\%$, e sull’audio di LibriSpeech al
 $21{,}0\%$ dove FLAC si ferma al $30{,}3\%$: un modello addestrato su testo che
 batte i formati progettati apposta per quei due mestieri. E sui dati di
 addestramento gli autori scrivono che immagini e suoni non ce n'erano, a meno
@@ -793,7 +794,7 @@ guardare in una volta, e per le immagini sono rettangoli di 32 per 64 pixel in
 scala di grigio. Su blocchi così corti anche i formati specializzati rendono
 meno di quanto potrebbero, perché di contesto ne hanno poco da sfruttare.
 
-E una riga di controllo che vale quanto tutte le altre: su **dati casuali** lo
+E una riga di controllo che vale quanto tutte le altre: su dati casuali lo
 stesso modello dà $100{,}8\%$, cioè il file cresce. Non c'è nessuna magia da
 spiegare: dove non c'è struttura non c'è compressione, per nessuno.
 
@@ -801,20 +802,21 @@ spiegare: dove non c'è struttura non c'è compressione, per nessuno.
 :class: note
 L'abstract di quell'articolo riporta $43{,}4\%$ per ImageNet e $16{,}4\%$ per
 LibriSpeech, mentre la tabella 1 dello stesso articolo dà $48{,}0\%$ e
-$21{,}0\%$, e i due numeri dell'abstract nel corpo non compaiono da nessuna
-parte. Non è il ritaglio dei dati a spiegarli: il modello legge sempre e
-soltanto blocchi da 2048 byte, quanto gli entra nel contesto, quindi la sua
-colonna è la stessa nelle due letture. Cambiano invece i termini di confronto,
-che senza il ritaglio hanno più contesto da sfruttare e rendono meglio: su
-ImageNet PNG passa dal $61{,}7\%$ al $58{,}5\%$, e con quello accanto il divario
-si allarga da 13,7 punti a 15,1. Qui si usano i numeri della tabella, che sono
-i più conservativi e i soli confrontabili riga per riga alle stesse
-condizioni. La conclusione non cambia in nessuna delle due letture; il numero
-sì, e chi rifà il conto ha diritto di sapere quale ha in mano.
+$21{,}0\%$, e i due numeri dell'abstract non ricompaiono in nessun risultato.
+Non è il ritaglio dei dati a spiegarli: il modello legge sempre e soltanto
+blocchi da 2048 byte, quanto gli entra nel contesto, quindi la sua colonna è la
+stessa nelle due letture. Cambia invece un termine di confronto, che senza il
+ritaglio ha più contesto da sfruttare e rende meglio, e su ImageNet PNG passa
+dal $61{,}7\%$ al $58{,}5\%$, allargando il divario da 13,7 punti a 15,1.
+Sull'audio non cambia nemmeno quello, perché il $30{,}3\%$ di FLAC è lo stesso
+numero nelle due letture. Qui si usano i numeri della tabella, che sono i più
+conservativi e i soli confrontabili riga per riga alle stesse condizioni. La
+conclusione non cambia in nessuna delle due letture; il numero sì, e chi rifà il
+conto ha diritto di sapere quale ha in mano.
 ```
 
-La seconda misura chiede l'inverso: **fra modelli, chi comprime meglio è anche
-più bravo?** Quattro ricercatori fra la HKUST e Tencent hanno preso trentuno
+La seconda misura chiede l'inverso: fra modelli, chi comprime meglio è anche
+più bravo? Quattro ricercatori fra la HKUST e Tencent hanno preso trentuno
 modelli pubblici di organizzazioni diverse. Per ciascuno hanno confrontato due
 cose: quanto comprime un corpus esterno (prosa presa dal web per la conoscenza,
 codice Python per la programmazione, articoli di matematica per la matematica)
@@ -829,8 +831,8 @@ quadrato dice che resta fuori circa un settimo della variabilità dei punteggi.
 Il segno è negativo perché meno bit vuol dire modello migliore, cioè è una
 retta che scende.
 
-È un risultato bello e va letto per quello che è. Dice che, **dentro la
-famiglia dei modelli linguistici di oggi**, la compressione è un ottimo
+È un risultato bello e va letto per quello che è. Dice che, dentro la
+famiglia dei modelli linguistici di oggi, la compressione è un ottimo
 termometro: un numero che si ottiene da testo grezzo, senza etichette e senza
 costruire una prova d'esame, e che ordina i modelli come li ordinerebbero dodici
 prove d'esame. Non dice che comprimere *sia* essere intelligenti, per la stessa
@@ -895,7 +897,7 @@ colonna corretta: contando i parametri a due byte l'uno, la resa di Chinchilla
 70B su `enwik9` passa da $8{,}3\%$ a $14\,008{,}3\%$
 {cite}`deletang2024language`.
 
-La via d'uscita sta nel **cambiare codice**, più che nell'aggiustare il conto.
+La via d'uscita sta nel cambiare codice, più che nell'aggiustare il conto.
 Il codice
 *prequenziale*, o in linea, non trasmette mai i parametri. Fissati istanti di
 riaddestramento $1 = t_0 < t_1 < \dots < t_S = n$, la lunghezza è
@@ -927,7 +929,7 @@ etichette dei cinquantamila esempi:
 | prequenziale | 45,3 kbit | 0,27 | 93,3% |
 
 Due note sulla tabella, perché chi apre l'articolo le trova. La riga in due
-parti è un **limite inferiore** che conta i soli pesi e non i dati, ed è
+parti è un limite inferiore che conta i soli pesi e non i dati, ed è
 ripresa da un altro lavoro: non è la stessa rete della riga prequenziale, che è
 invece quella degli autori. E l'accuratezza della riga variazionale è quella
 della loro tabella; il corpo dello stesso articolo, in due punti, ne dà
@@ -935,13 +937,13 @@ $61{,}6\%$.
 
 Resta che sono due reti convoluzionali che arrivano quasi allo stesso posto,
 $92{,}9\%$ e $93{,}3\%$, e che a parità di risultato una viene contata
-**duemilacinquecento volte peggio** del non fare niente e l'altra **quasi
-quattro volte meglio**. È la differenza fra «il deep learning contraddice il
+duemilacinquecento volte peggio del non fare niente e l'altra quasi
+quattro volte meglio. È la differenza fra «il deep learning contraddice il
 rasoio di Occam» e «il deep learning lo rispetta»,
 e a deciderla è la scelta del codice, non il modello.
 
 La ragione profonda è che il codice prequenziale misura la
-**generalizzazione**: è corto se e solo se il modello, a ogni dimensione
+generalizzazione: è corto se e solo se il modello, a ogni dimensione
 dell'insieme visto, prevede bene i dati che ancora non ha visto. E ha un difetto
 noto, il fenomeno del ritardo: un'architettura grande all'inizio va in
 sovradattamento sui pochi dati disponibili, quindi i primi blocchi costano più
@@ -950,8 +952,8 @@ del codice uniforme, e il debito si recupera solo dopo.
 `````
 
 Che non sia una finezza da teorici lo dice il fatto che ci si arriva anche
-dalla parte opposta, e senza chiamarla per nome: se si addestra facendo **una
-sola passata** sui dati, basta sommare le log-probabilità man mano che
+dalla parte opposta, e senza chiamarla per nome: se si addestra facendo una
+sola passata sui dati, basta sommare le log-probabilità man mano che
 l'addestramento procede, e quella somma è già la compressione dei dati fatta
 dal modello. È il codice prequenziale detto in una riga, ed è la stessa
 osservazione che Sutskever fa a Berkeley. Una sola passata vuol dire che ogni
@@ -963,33 +965,33 @@ riguarda solo la compressione. Due gruppi seri possono guardare la stessa rete
 addestrata e concludere che comprime magnificamente o che è un disastro, senza
 che nessuno dei due sbagli un conto: cambia che cosa si mette nel prezzo. Ogni
 volta che si legge «il modello X comprime al tot per cento», la domanda da fare
-è **chi paga il vocabolario**, più che quanto.
+è chi paga il vocabolario, più che quanto.
 
 ## Dove la tesi si ferma
 
 Un'idea affascinante va chiusa dicendo dove si rompe. Qui i punti sono sette,
 e i primi tre non vengono dai critici: li mette in conto Sutskever stesso.
 
-**La teoria ignora il costo di calcolo**, ed è lui a chiamarla una debolezza
+La teoria ignora il costo di calcolo, ed è lui a chiamarla una debolezza
 pratica enorme: il conto è tutto in informazione e niente in tempo di
 macchina. La conseguenza è che dal punto di vista di questa teoria un modello
-autoregressivo, uno di diffusione e uno a energia sono la **stessa cosa**, a
+autoregressivo, uno di diffusione e uno a energia sono la stessa cosa, a
 meno di un fattore dieci o quindici di calcolo; e siccome nessuno ha un fattore
 quindici da buttare, la scelta la fanno considerazioni di cui la teoria non sa
 niente. L'esempio che porta è il *universal transformer*, che riusa gli stessi
 pesi a ogni strato: ottima idea a guardare i bit, e nessuno la usa, perché quei
 parametri si pagano in calcolo.
 
-**L'analogia con la ricerca fra programmi è la parte più fragile.** Per il
+L'analogia con la ricerca fra programmi è la parte più fragile. Per il
 compressore ideale l'ordine dei dati non conta: enumera tutti i programmi da
 capo ogni volta. Per una rete conta eccome, perché le scorciatoie imparate
 presto restano, e questo è un fatto sperimentale. L'obiezione è accolta senza
-attenuarla, e il punto di rottura è dichiarato: **la procedura di ricerca**,
+attenuarla, e il punto di rottura è dichiarato: la procedura di ricerca,
 che nel caso ideale è infinitamente costosa e nel caso vero è la discesa del
 gradiente. Un'analogia da maneggiare con cautela, perché non vale
 universalmente.
 
-**E la teoria parla di un insieme di dati fisso, non di un flusso.** In teoria
+E la teoria parla di un insieme di dati fisso, non di un flusso. In teoria
 si comprime un file che sta lì; nell'addestramento vero c'è un insieme di
 addestramento e poi dati nuovi che, di fatto, non finiscono mai. Se quello che
 si vuole comprimere non finisce mai, la dimensione del compressore smette di
@@ -1003,16 +1005,16 @@ cosa risolta.
 Gli altri quattro sono quelli soliti, e uno lo abbiamo appena finito di
 guardare.
 
-**La contabilità**, che è tutto «Chi paga il vocabolario»: senza specificare chi
+La contabilità, che è tutto «Chi paga il vocabolario»: senza specificare chi
 paga il modello, «comprime meglio» non è un'affermazione con un valore di
 verità.
 
-**Il fondo non è calcolabile.** $K$ non è una procedura, quindi non esiste modo
+Il fondo non è calcolabile. $K$ non è una procedura, quindi non esiste modo
 di sapere quanto si è lontani dall'ottimo: si sa solo confrontare due
 compressori fra loro. La teoria dà un metro e non dà mai una misura, e chi la
 usa come se desse una misura sta dicendo più di quel che ha.
 
-**L'intelligenza, in gran parte, è compressione con perdita**, e tutto ciò di
+L'intelligenza, in gran parte, è compressione con perdita, e tutto ciò di
 cui si è parlato qui è senza perdita. Un modello utile butta via il colore
 esatto del pixel in alto a sinistra e tiene «c'è un gatto»; un compressore
 senza perdita deve tenere anche il pixel. Ed è la stessa cosa che
@@ -1021,10 +1023,10 @@ compressione senza perdita, presa alla lettera, chiede a un modello di
 ricordarne di più, cioè di essere un po’ più Funes. Che poi il pre-addestramento
 funzioni lo stesso è un fatto, e resta parzialmente non spiegato.
 
-**E c'è chi misura con un altro metro.** È l'obiezione più profonda, e viene da
+E c'è chi misura con un altro metro. È l'obiezione più profonda, e viene da
 chi ha proposto una definizione alternativa. Nella lettura di François Chollet,
-l'intelligenza non è un'abilità ma l’**efficienza con cui si acquistano abilità
-nuove**, misurata tenendo conto dell'esperienza e delle conoscenze pregresse
+l'intelligenza non è un'abilità ma l’efficienza con cui si acquistano abilità
+nuove, misurata tenendo conto dell'esperienza e delle conoscenze pregresse
 che sono servite
 {cite}`chollet2019measure`. Con quel metro, un sistema che ha letto tutto
 internet e comprime benissimo può avere un'intelligenza bassa, perché ha pagato
@@ -1044,30 +1046,30 @@ casuali, quel $100{,}8\%$, dove il fondo coincide con il grezzo e non c'è
 niente da guadagnare per nessuno. Se l'universo che ci circonda non fosse
 pieno di regolarità, saremmo tutti in quella riga lì, e nessuna intelligenza
 di nessun tipo sarebbe possibile. La comprimibilità, prima che una proprietà
-della mente che comprime, è una proprietà **del mondo**: che comprimere
+della mente che comprime, è una proprietà del mondo: che comprimere
 funzioni è, prima di tutto, un'informazione su dove abitiamo.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Il personaggio di Borges che ricorda **tutto** non riesce a pensare, perché
+- Il personaggio di Borges che ricorda tutto non riesce a pensare, perché
   pensare vuol dire dimenticare le differenze che non contano. Un modello che
   impara a memoria gli esempi ha lo stesso problema.
-- **Prevedere bene e comprimere bene sono la stessa cosa**: chi sa che cosa
+- Prevedere bene e comprimere bene sono la stessa cosa: chi sa che cosa
   aspettarsi può scrivere le sorprese invece delle parole, e le sorprese sono
   poche. Era già stabilito nei richiami di matematica.
-- Per ogni sorgente esiste un **fondo**: nessun compressore, in media, può
+- Per ogni sorgente esiste un fondo: nessun compressore, in media, può
   spendere meno di così, e ci arriva solo chi ha la forma giusta per ospitarne
   la regola. Nella lingua a quattro lettere ci arriva il modello che guarda la
-  lettera precedente; quello che ne ricorda due **paga e non rende**, e `zlib` e
+  lettera precedente; quello che ne ricorda due paga e non rende, e `zlib` e
   `lzma`, che cercano ripetizioni, restano a metà strada. È il rasoio di Occam,
   misurato in bit.
-- Da qui la tesi: **comprimere bene è capire**. C'è chi ci ha messo
+- Da qui la tesi: comprimere bene è capire. C'è chi ci ha messo
   cinquecentomila euro di premio per chi comprime Wikipedia meglio dei
   predecessori, e chi l'ha usata per spiegare perché il pre-addestramento
   funziona.
-- La garanzia non è «funzionerà», è **«non ho sprecato niente»**: nessuno, con
+- La garanzia non è «funzionerà», è «non ho sprecato niente»: nessuno, con
   un compressore migliore del mio, avrebbe cavato da quei dati più aiuto di
   quanto ne ho cavato io. Vale anche quando i dati non contengono niente di
   utile, ed è per questo che è seria; vale però per la valigia fatta alla
@@ -1075,14 +1077,14 @@ funzioni è, prima di tutto, un'informazione su dove abitiamo.
 - Le prove ci sono: un modello di linguaggio comprime immagini e suoni meglio
   dei formati fatti apposta, pur non avendone mai visti, e fra trentun modelli
   chi comprime meglio va meglio anche a scuola. La prova cercata apposta è del
-  2020: una rete addestrata solo a **indovinare il pixel dopo** impara da sola a
+  2020: una rete addestrata solo a indovinare il pixel dopo impara da sola a
   riconoscere quello che c'è nelle figure, e più ci diventa brava, meglio le
   riconosce.
-- **Ma bisogna guardare chi paga il dizionario.** Contando anche il modello che
+- Ma bisogna guardare chi paga il dizionario. Contando anche il modello che
   serve a leggerlo, quello da settanta miliardi di parametri non ha
   rimpicciolito Wikipedia: l'ha fatta crescere di centoquaranta volte. Il conto
   torna solo se il modello si costruisce mentre si legge, senza spedirlo mai.
-- E resta un punto scomodo: pensare è **dimenticare**, mentre qui si è parlato
+- E resta un punto scomodo: pensare è dimenticare, mentre qui si è parlato
   sempre di compressione che non perde niente. Su questo la tesi non ha ancora
   una risposta.
 ```
@@ -1093,80 +1095,79 @@ funzioni è, prima di tutto, un'informazione su dove abitiamo.
 
 ```{admonition} Da ricordare
 :class: important
-- La **complessità di Kolmogorov** $K(x)$ (nella variante *prefix*) è la
+- La complessità di Kolmogorov $K(x)$ (nella variante *prefix*) è la
   lunghezza del programma più corto che stampa $x$; è definita a meno di una
   costante additiva (teorema di invarianza), limita dal basso ogni compressore
   reale ($K(x) \le |C(x)| + K(C) + O(1)$), sta in media sopra l'entropia di
-  Shannon e la supera al più di $K(P)$ per sorgenti computabili, e **non è
-  computabile**. Tre proposte indipendenti:
+  Shannon e la supera al più di $K(P)$ per sorgenti computabili, e non è
+  computabile. Tre proposte indipendenti:
   {cite}`solomonoff1964formal`, {cite}`kolmogorov1965three`,
   {cite}`chaitin1966length`.
-- **MDL** {cite}`rissanen1978modeling` e **MML**
+- MDL {cite}`rissanen1978modeling` e MML
   {cite}`wallace1968information` sono la forma praticabile dello stesso
   criterio: si minimizza $L(\theta) + L(x \mid \theta)$ su una famiglia di
   modelli invece che su una macchina universale. È il rasoio di Occam reso
   operativo, e la lingua a quattro lettere lo mostra: il modello di ordine 2
   spende $1{,}4411$ contro $1{,}4402$ dell'ordine 1, perché ha sedici contesti
   da stimare e nessuna struttura in più da catturare.
-- **L'argomento di Sutskever** {cite}`sutskever2023observation` in due mosse. La
-  prima è il **far combaciare le distribuzioni**: cercare $F$ con
+- L'argomento di Sutskever {cite}`sutskever2023observation` in due mosse. La
+  prima è il far combaciare le distribuzioni: cercare $F$ con
   $\operatorname{distr}(F(X)) \approx \operatorname{distr}(Y)$ su due corpora
   non appaiati è un compito non supervisionato che, come il supervisionato,
   *deve* riuscire, se la dimensionalità è alta abbastanza da rendere il vincolo
   quasi determinante (i cifrari a sostituzione cadono così). La seconda, che
-  contiene la prima, è la compressione **congiunta**: l'ideale è
+  contiene la prima, è la compressione congiunta: l'ideale è
   $K(Y \mid X)$, ma per la regola
   della catena $K(X,Y) = K(X) + K(Y \mid X) \pm O(\log K(X,Y))$, quindi basta
   comprimere tutto insieme, che è ciò che fa la massima verosimiglianza su un
-  corpus grande; il passaggio da fare per esteso è che il **costo incrementale**
+  corpus grande; il passaggio da fare per esteso è che il costo incrementale
   $|C(X,Y)| - |C(X)|$ è al più $K(Y \mid X)$ più il rimpianto. Il divario fra
-  congiunto e separato è l’**informazione mutua algoritmica**.
-- La quantità garantita è il **rimpianto**, non la prestazione: rimpianto basso
+  congiunto e separato è l’informazione mutua algoritmica.
+- La quantità garantita è il rimpianto, non la prestazione: rimpianto basso
   vuol dire che nessun compressore avrebbe estratto da $X$ più aiuto per $Y$.
   La garanzia vale anche quando $X$ è inutile (il caso limite dichiarato è la
   distribuzione uniforme), ed è ciò che la mette alla pari col supervisionato.
-  È però una proprietà del compressore **ideale**: che una rete cercata con la
+  È però una proprietà del compressore ideale: che una rete cercata con la
   discesa del gradiente abbia rimpianto basso è un'ipotesi, non un risultato, e
   un pre-addestramento su dati estranei può lasciare il modello peggiore del
   punto di partenza.
-- **Convalida cercata apposta**: sui modelli di linguaggio la tesi non è
+- Convalida cercata apposta: sui modelli di linguaggio la tesi non è
   falsificabile, perché il loro comportamento si spiega anche come semplice
   distribuzione condizionata del testo. Di qui iGPT
   {cite}`chen2020generative`: previsione del pixel successivo su immagini a
   bassa risoluzione, e sondaggio lineare che sale insieme alla bravura del
   predittore ($96{,}3\%$ su CIFAR-10 con l'encoder congelato; il $99{,}0\%$ che
   si legge in giro è la rete rifinita per intero, cioè un'altra prova). La
-  separabilità lineare resta **non spiegata**
-  e Sutskever la chiama un premio in più, non una conseguenza; quello che la
-  teoria predice è la buona rifinitura.
-- **Prove empiriche.** Chinchilla 70B con codifica aritmetica
+  separabilità lineare resta non spiegata, e non è una conseguenza della
+  compressione; quello che la teoria predice è la buona rifinitura.
+- Prove empiriche. Chinchilla 70B con codifica aritmetica
   {cite}`deletang2024language`: `enwik9` $8{,}3\%$, ImageNet $48{,}0\%$ (PNG
   $61{,}7\%$), LibriSpeech $21{,}0\%$ (FLAC $30{,}3\%$), dati casuali
   $100{,}8\%$. Su 31 modelli e 12 prove, correlazione di Pearson fra bit per
   carattere e punteggio medio pari a $-0{,}93$ complessiva, e $-0{,}935$,
   $-0{,}937$ e $-0{,}953$ per conoscenza, codice e matematica
   {cite}`huang2024compression`.
-- **La contabilità decide il verdetto.** Il conto a modello dato non è una
+- La contabilità decide il verdetto. Il conto a modello dato non è una
   lunghezza di descrizione: contando i parametri, lo stesso Chinchilla 70B passa
-  da $8{,}3\%$ a $14\,008{,}3\%$. Il codice **prequenziale** non trasmette i
+  da $8{,}3\%$ a $14\,008{,}3\%$. Il codice prequenziale non trasmette i
   parametri e li fa ricostruire al decodificatore riaddestrando sui dati già
   inviati: su CIFAR-10 due reti che arrivano quasi alla stessa accuratezza
   danno rapporto $>2500$ codificando i pesi in `float32` (limite inferiore
   ripreso da un altro lavoro, sui soli pesi) e $0{,}27$ in prequenziale
   {cite}`blier2018description`. Difetto noto: il fenomeno del ritardo sui primi
   blocchi.
-- **Limiti dichiarati dall'autore stesso**, e sono i tre più utili: la teoria
-  **ignora il costo di calcolo** (una debolezza pratica enorme, a detta sua),
+- Limiti dichiarati dall'autore stesso, e sono i tre più utili: la teoria
+  ignora il costo di calcolo (una debolezza pratica enorme, a detta sua),
   quindi rende indistinguibili autoregressivo, diffusione ed energia a meno di
   un fattore dieci-quindici di macchina; l'analogia fra discesa del gradiente e
-  ricerca fra programmi **si rompe sulla procedura di ricerca**, tant'è che per
+  ricerca fra programmi si rompe sulla procedura di ricerca, tant'è che per
   il compressore ideale l'ordine dei dati è irrilevante mentre per una rete non
-  lo è; e la teoria parla di un **file fisso**, mentre l'addestramento vero
+  lo è; e la teoria parla di un file fisso, mentre l'addestramento vero
   guarda a dati che non finiscono, e su un flusso infinito la dimensione del
   compressore smette di contare (che è il contrappeso al punto precedente).
-- **Limiti esterni.** $K$ non è computabile, quindi si confrontano compressori
+- Limiti esterni. $K$ non è computabile, quindi si confrontano compressori
   e non si misura mai la distanza dall'ottimo; l'intelligenza è in larga parte
-  compressione **con perdita**, e qui tutto è senza perdita; e con la
+  compressione con perdita, e qui tutto è senza perdita; e con la
   definizione alternativa di Chollet {cite}`chollet2019measure`, che misura
   l'efficienza nell'acquisire abilità nuove, un buon compressore addestrato su
   tutto internet può risultare poco intelligente. La riga dei dati casuali

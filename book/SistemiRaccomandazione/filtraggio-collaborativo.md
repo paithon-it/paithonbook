@@ -17,9 +17,9 @@ lasciato sui documenti, e quelle reazioni bisognava scriverle a mano. Due anni
 dopo GroupLens rese automatico il passaggio successivo, cioè trovare da solo i
 lettori con i gusti più vicini ai tuoi {cite}`resnick1994grouplens`. Le due
 parole dicono esattamente cosa succede.
-**Collaborativo** perché ognuno, mettendo un voto, senza saperlo aiuta degli
+Collaborativo perché ognuno, mettendo un voto, senza saperlo aiuta degli
 sconosciuti che gli somigliano: nessuno collabora di proposito, eppure il
-lavoro è collettivo. **Filtraggio** perché di fronte a un catalogo enorme il
+lavoro è collettivo. Filtraggio perché di fronte a un catalogo enorme il
 mestiere è lasciar passare e non produrre: di centomila titoli te ne arrivano
 dieci, e il sistema è il setaccio.
 
@@ -49,7 +49,7 @@ La {numref}`fig-matrice-voti` indica un vicino, non il vincitore di una
 classifica, e conviene dire perché. Applicando alla lettera il modo standard di
 misurare la somiglianza, davanti a Bruno finiscono in due: prima Dario, poi
 Anna. E Dario
-con Carla ha in comune **un film solo**, il che, come vedremo fra poco, basta
+con Carla ha in comune un film solo, il che, come vedremo fra poco, basta
 a farlo sembrare un gemello perfetto. Il difetto si vede già qui, su una
 griglia di venticinque caselle.
 
@@ -62,7 +62,7 @@ numeri, che è la mossa della fattorizzazione.
 
 `````{tab} Elementare
 
-**Da utente a utente.** Per consigliare *Notting Hill* a Carla cerco i suoi
+Da utente a utente. Per consigliare *Notting Hill* a Carla cerco i suoi
 "gemelli di gusto": le persone che le hanno dato voti simili sui film che
 entrambi hanno visto. I film che uno dei due non ha visto restano fuori dal
 conto: una casella vuota dice «non l'ho visto», non «non mi è piaciuto».
@@ -86,7 +86,7 @@ mediarli, perché c'è chi dà 5 a tutto e chi non supera mai il 3: un 2 da chi 
 media dà 4 è una stroncatura, un 3 da chi di media dà 2 è un elogio. Nella
 media entrano questi scarti, e alla fine si sommano alla media di Carla.
 
-**Da oggetto a oggetto.** Si può ribaltare il punto di vista: invece di
+Da oggetto a oggetto. Si può ribaltare il punto di vista: invece di
 cercare utenti simili, cerco *film* simili; dove "simili" non significa stesso
 genere, ma "votati in modo simile dalle stesse persone". È il celebre «chi ha
 comprato questo ha comprato anche...» di Amazon: per stimare quanto ti piacerà
@@ -101,7 +101,7 @@ tutte.
 
 Ogni utente $u$ è rappresentato dalla riga $\mathbf{r}_u$ della matrice dei
 voti, un vettore con una componente per film (quasi tutte mancanti). La
-somiglianza fra due utenti è la **similarità del coseno** incontrata nella
+somiglianza fra due utenti è la similarità del coseno incontrata nella
 {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`, ristretta
 all'insieme $\mathcal{I}_{uv}$ dei film votati da entrambi:
 
@@ -137,7 +137,7 @@ $|\mathcal{I}_{uv}| = 0$ la similarità non è definita e i due utenti
 semplicemente non si vedono, cioè un falso negativo, sgradevole ma
 riconoscibile.
 Con $|\mathcal{I}_{uv}| = 1$ la formula restituisce $\mathrm{sim}(u,v) = 1$
-**sempre**, qualunque siano i due voti: anche se uno ha dato 1 e l'altro 5, il
+sempre, qualunque siano i due voti: anche se uno ha dato 1 e l'altro 5, il
 numeratore e il denominatore coincidono. Il metodo fabbrica cioè un gemello
 perfetto, con peso massimo nella media, a partire da nessuna evidenza; e
 centrare i voti sposta il guasto di un passo invece di chiuderlo, perché su un
@@ -155,8 +155,8 @@ quella soglia si dichiara di non sapere.
 
 Questa forma media voti grezzi, e i voti grezzi non sono confrontabili da
 persona a persona: c'è chi dà 5 a tutto e chi non supera mai il 3. Sottrarre a
-ciascuno la propria media è il correttivo standard, e si applica in **due
-punti indipendenti**, che conviene non confondere. Nella *predizione* si media
+ciascuno la propria media è il correttivo standard, e si applica in due
+punti indipendenti, che conviene non confondere. Nella *predizione* si media
 lo scarto di ogni vicino dalla propria media, e il risultato si riporta sulla
 scala di $u$:
 
@@ -176,7 +176,7 @@ un pomeriggio: gran parte della letteratura di settore, fin da GroupLens,
 chiama «correlazione di Pearson» anche la seconda variante, quindi lo stesso
 nome copre due formule diverse a seconda di chi lo scrive.
 
-La variante **item-based** applica le stesse formule alle *colonne* della
+La variante item-based applica le stesse formule alle *colonne* della
 matrice: similarità fra film, previsione come media dei voti di $u$ sui film
 simili a $i$ {cite}`sarwar2001item`. In produzione è spesso preferita, ed è la
 scelta con cui Amazon ha fatto girare il proprio motore
@@ -209,7 +209,7 @@ La mossa vincente del Netflix Prize, la gara raccontata nella prima pagina del
 capitolo, fu cambiare il modo di guardare i dati. Invece di confrontare fra
 loro le righe e le colonne della tabella, si parte da un'ipotesi: dietro quella
 tabella gigantesca c'è una struttura piccola, pochi tratti di fondo che bastano
-a spiegare i gusti. È la **fattorizzazione di matrici** (*matrix
+a spiegare i gusti. È la fattorizzazione di matrici (*matrix
 factorization*) {cite}`koren2009matrix`, e «fattorizzare» è la stessa parola
 della prima pagina del capitolo: scomporre in pezzi, qui una tabella al posto
 di un numero. Il disegno è in {numref}`fig-matrix-factorization`.
@@ -297,7 +297,7 @@ dove $\mu$ è la media globale dei voti, $b_u$ il bias dell'utente (quanto
 vota sopra o sotto la media), $b_i$ il bias del film (quanto è votato sopra o
 sotto la media), e il prodotto scalare $\mathbf{p}_u^\top \mathbf{q}_i$ cattura
 l'interazione personale tra i gusti di $u$ e i tratti di $i$. I parametri si
-stimano minimizzando l'errore quadratico **sui soli voti osservati**
+stimano minimizzando l'errore quadratico sui soli voti osservati
 $\mathcal{K}$, con regolarizzazione $L_2$:
 
 $$
@@ -310,7 +310,7 @@ $$
 dove $\lambda$ governa il compromesso tra aderenza ai voti noti e semplicità
 dei fattori. Il vincolo «solo celle osservate» è ciò che distingue questo
 problema dalla SVD classica dell'algebra lineare, che richiederebbe la
-matrice completa: nella fattorizzazione **per feedback esplicito** i buchi non
+matrice completa: nella fattorizzazione per feedback esplicito i buchi non
 sono zeri, sono incognite, e restano fuori dalla somma.
 
 Attenzione a non promuovere questa frase a proprietà generale della
@@ -331,7 +331,7 @@ $$
 + \lambda \Big( \sum_u \lVert \mathbf{p}_u \rVert^2 + \sum_i \lVert \mathbf{q}_i \rVert^2 \Big),
 $$
 
-dove la somma corre su **tutte** le celle, osservate e no. È un cambio di
+dove la somma corre su tutte le celle, osservate e no. È un cambio di
 regime, non una variante: i termini diventano miliardi, la discesa stocastica
 sulle triple non è più praticabile per questa loss, e i minimi quadrati
 alternati (ALS) smettono di essere un'alternativa di gusto, grazie
@@ -458,9 +458,9 @@ basta ricordare, e l'errore che leggeremo fra poco è di quel tanto più basso
 del vero.
 
 L'addestramento è un normale ciclo PyTorch. A ogni giro completo sui voti, e un
-giro si chiama **epoca**, il modello prevede, si misura di quanto ha sbagliato
+giro si chiama epoca, il modello prevede, si misura di quanto ha sbagliato
 e l'ottimizzatore ritocca le schede. La misura è l'errore quadratico medio, la
-**MSE** incontrata nella
+MSE incontrata nella
 {doc}`sezione sulle metriche </MachineLearning/metriche>`. È lo stesso metro
 del Netflix Prize, meno l'ultimo passaggio: il RMSE della prima pagina del
 capitolo è la radice quadrata della MSE che vedremo stampata. Una MSE di
@@ -558,8 +558,8 @@ aspetta di vedere anche da un modello che non ha capito niente.
 
 Il numero che conta è il secondo. Sui voti tenuti da parte, che il modello non
 ha mai visto, l'errore si ferma a $0{,}42$: più che accettabile contro lo
-$0{,}997$ della previsione banale «a tutti il voto medio», ma **ventidue volte
-peggio** di quello che si legge sui voti già visti. Le due cose insieme sono la
+$0{,}997$ della previsione banale «a tutti il voto medio», ma ventidue volte
+peggio di quello che si legge sui voti già visti. Le due cose insieme sono la
 misura onesta. Il modello ha imparato qualcosa di vero, perché $0{,}42$ è meno
 della metà di $0{,}997$; anche se, essendo errori al quadrato, in stelle il
 vantaggio si assottiglia, $0{,}65$ contro $1{,}00$. E insieme ha memorizzato
@@ -596,7 +596,7 @@ nessun raffinamento del modello le elimina davvero.
 
 `````{tab} Elementare
 
-**La partenza a freddo.** Il nuovo iscritto è un perfetto sconosciuto: il
+La partenza a freddo. Il nuovo iscritto è un perfetto sconosciuto: il
 libraio che consiglia in base agli acquisti passati, con chi non ha mai
 comprato nulla, è muto. Lo stesso vale per un film appena uscito: finché
 nessuno lo vota non somiglia a niente, e nessun sistema collaborativo può
@@ -616,7 +616,7 @@ entusiasti sembra amatissimo per la stessa ragione per cui due persone con un
 film solo in comune sembrano gemelle, quindi quella classifica va fatta
 contando anche quante persone hanno votato.
 
-**La dittatura della popolarità.** I film con moltissimi voti entrano nei conti
+La dittatura della popolarità. I film con moltissimi voti entrano nei conti
 di tutti, vengono consigliati spesso, e così raccolgono altri voti: i
 ricchi diventano più ricchi. Il capolavoro di nicchia con dodici voti
 entusiasti resta invisibile: proprio il titolo che il tuo amico cinefilo, lui
@@ -633,7 +633,7 @@ lista salta la domanda più semplice.
 
 `````{tab} Superiore
 
-**Partenza a freddo.** L'embedding di un utente o di un item senza interazioni
+Partenza a freddo. L'embedding di un utente o di un item senza interazioni
 non compare in nessun termine della somma, quindi niente lo determina: con
 l'SGD sulle sole triple resta all'inizializzazione, con ALS o con un
 decadimento dei pesi finisce a zero. In nessuno dei due casi il modello
@@ -652,7 +652,7 @@ già servendo, quindi tanto vale sceglierla apposta e sceglierla robusta,
 perché $b_i$ stimato su una manciata di voti è esposto allo stesso guasto
 della similarità su due film in comune.
 
-**Bias di popolarità.** La distribuzione delle interazioni è a coda lunga, e
+Bias di popolarità. La distribuzione delle interazioni è a coda lunga, e
 l'obiettivo di minimizzare l'errore medio concentra la capacità del modello
 sulla testa della distribuzione, dove stanno quasi tutti i termini della
 somma. Il feedback loop visto nella panoramica fa il resto: più esposizione,
@@ -664,7 +664,7 @@ correggere una volta per tutte.
 
 La popolarità però non è solo una patologia. Raccomandare i titoli più
 popolari, senza alcuna personalizzazione e con zero parametri appresi, è anche
-una **baseline difficile da battere**: è la prima riga che un revisore serio
+una baseline difficile da battere: è la prima riga che un revisore serio
 cerca in fondo a una tabella di confronto, e la ragione per cui la cerca è che
 molti metodi pubblicati non la battono. Quando lo fanno, il margine dice quanto
 vale davvero la personalizzazione; senza quella riga, non lo dice niente.
@@ -685,7 +685,7 @@ Prima però, il riepilogo.
   prevede i gusti di una persona dai giudizi di chi le somiglia (oppure dai
   voti che lei stessa ha dato a film votati in modo simile), guardando solo la
   tabella dei voti: né trama, né genere, né regista.
-- La **fattorizzazione** riassume ogni persona e ogni film in una scheda di
+- La fattorizzazione riassume ogni persona e ogni film in una scheda di
   poche manopole, e prevede il voto confrontando le due schede voce per voce,
   corretto da quanto quella persona vota alto in generale e da quanto quel film
   è apprezzato in generale. Le manopole non le sceglie nessuno: le trova
@@ -698,16 +698,16 @@ Prima però, il riepilogo.
   crede.
 - In PyTorch sono due tabelle di schede e un confronto voce per voce: poche
   righe, la stessa idea che ha vinto il Netflix Prize.
-- L'errore va guardato **sui voti messi da parte**, non su quelli con cui il
+- L'errore va guardato sui voti messi da parte, non su quelli con cui il
   modello si è addestrato: qui fa $0{,}42$ sui voti messi da parte e $0{,}019$
   su quelli di addestramento, e solo lo $0{,}42$ dice se ha imparato o se ha
   imparato a memoria.
 - Due limiti restano: di chi è appena arrivato non si sa nulla, e il libraio
-  che consiglia in base agli acquisti passati è muto (**partenza a freddo**,
+  che consiglia in base agli acquisti passati è muto (partenza a freddo,
   e nell'attesa la cosa migliore da fare è mostrare i titoli che piacciono a
   tutti); i titoli già molto votati si consigliano da soli, e il capolavoro di
-  nicchia con dodici voti entusiasti resta invisibile (**dittatura della
-  popolarità**). La popolarità però fa due mestieri: è la patologia, ed è anche
+  nicchia con dodici voti entusiasti resta invisibile (dittatura della
+  popolarità). La popolarità però fa due mestieri: è la patologia, ed è anche
   l'avversario che parecchi sistemi sofisticati non riescono a battere.
 ```
 
@@ -720,19 +720,19 @@ Prima però, il riepilogo.
 - Il filtraggio collaborativo prevede i gusti di un utente dai giudizi degli
   utenti (o degli oggetti) simili, usando solo la matrice dei voti: nessuna
   informazione sui contenuti.
-- La **fattorizzazione di matrici** comprime la matrice in fattori latenti:
+- La fattorizzazione di matrici comprime la matrice in fattori latenti:
   $\hat{r}_{ui} = \mu + b_u + b_i + \mathbf{p}_u^\top \mathbf{q}_i$, con loss
-  MSE regolarizzata **sui soli voti osservati**. Il «solo osservati» vale per
+  MSE regolarizzata sui soli voti osservati. Il «solo osservati» vale per
   il feedback esplicito: sull'implicito il metodo canonico (iALS) somma su
   tutte le celle e le distingue con un peso di confidenza.
 - In PyTorch il modello è due `nn.Embedding` e un prodotto scalare: poche
   righe, la stessa idea che ha vinto il Netflix Prize. Con quasi un parametro
   per voto, però, l'MSE di addestramento non è una misura: qui $0{,}019$ sui
   voti visti contro $0{,}42$ su quelli tenuti da parte.
-- Limiti strutturali: **partenza a freddo** (*cold start*: senza interazioni
+- Limiti strutturali: partenza a freddo (*cold start*: senza interazioni
   il termine personalizzato è rumore e resta $\mu + b_i$, cioè una classifica
   per gradimento medio uguale per tutti; tanto vale sceglierla apposta, e
-  sceglierla robusta) e **bias di popolarità** (la coda lunga resta
+  sceglierla robusta) e bias di popolarità (la coda lunga resta
   invisibile). La popolarità è insieme la patologia e la baseline che molti
   metodi pubblicati non battono.
 ```

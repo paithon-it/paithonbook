@@ -5,12 +5,12 @@ Chiedere «la copia somiglia all’originale?» produce un archivio che si rileg
 benissimo e da cui non si può pescare, perché sull’ordine del cassetto quella
 domanda non dice niente.
 
-Cambiamola, allora, e cambiamola in modo radicale. La domanda nuova è: **quanto
-era probabile che uscisse proprio questa cifra?** A prima vista sembra un
+Cambiamola, allora, e cambiamola in modo radicale. La domanda nuova è: quanto
+era probabile che uscisse proprio questa cifra? A prima vista sembra un
 peggioramento, perché è più astratta e più difficile da calcolare. Il resto
 della sezione racconta come mai è invece esattamente la domanda giusta, e come
 mai la regola che alla sezione precedente mancava, quella su dove vanno messe
-le schede, non bisogna aggiungerla: **cade fuori da sola** dal tentativo di
+le schede, non bisogna aggiungerla: cade fuori da sola dal tentativo di
 rispondere.
 
 Il percorso è in quattro passi: il conto che non
@@ -60,16 +60,16 @@ p_\theta(\mathbf{x} \mid \mathbf{z}^{(s)}),
 \qquad \mathbf{z}^{(s)} \sim p(\mathbf{z}),
 $$
 
-dove $S$ è il numero di campioni e $\mathbf{z}^{(s)}$ l’$s$-esimo, è **non
-distorta** per $p_\theta(\mathbf{x})$ ma inutile in pratica. Il motivo è che
+dove $S$ è il numero di campioni e $\mathbf{z}^{(s)}$ l’$s$-esimo, è non
+distorta per $p_\theta(\mathbf{x})$ ma inutile in pratica. Il motivo è che
 $p_\theta(\mathbf{x} \mid \mathbf{z})$, come funzione di $\mathbf{z}$, è
 concentrata in una regione la cui massa sotto il prior decade
 esponenzialmente con $L$: la somma è dominata da pochissimi termini, e la sua
 varianza relativa cresce anch’essa esponenzialmente.
 
 Due conseguenze si misurano su un caso in cui $p_\theta(\mathbf{x})$ si
-conosce in forma chiusa. La prima: in scala logaritmica la stima è **distorta
-verso il basso**, perché $\log$ è concava e la
+conosce in forma chiusa. La prima: in scala logaritmica la stima è distorta
+verso il basso, perché $\log$ è concava e la
 disuguaglianza di Jensen impone
 $\mathbb{E}[\log \hat{p}] \le \log \mathbb{E}[\hat{p}] = \log p_\theta(\mathbf{x})$.
 La seconda: la quota che il campione più grosso si prende sul totale è la
@@ -86,7 +86,7 @@ semplice la probabilità del dato si sa scrivere con carta e penna.
 
 Nella tabella «dimensioni» vuol dire quanti numeri ha la causa nascosta, ed è
 il conto che si allunga da uno a quaranta. Le colonne «vero» e «stimato» sono
-scritte **in scala logaritmica**, cioè schiacciate col logaritmo dei richiami
+scritte in scala logaritmica, cioè schiacciate col logaritmo dei richiami
 di matematica: senza, sarebbero numeri con decine di zeri dopo la virgola e non
 si guarderebbero. La colonna che conta è quella dell’errore, che è la loro
 differenza.
@@ -141,8 +141,8 @@ Con una causa nascosta da un numero solo, centomila sorteggi danno la risposta
 esatta a due cifre decimali. Con quaranta numeri sbagliano di dieci nat, e
 dieci nat non vogliono dire «un po’»: i nat si sommano dove le probabilità si
 moltiplicano, quindi dieci nat di scarto sono una probabilità stimata
-**ventiduemila volte più piccola** di quella vera. E l’errore, salendo di
-dimensione, è tutto dalla stessa parte: **per difetto**. (Nelle poche
+ventiduemila volte più piccola di quella vera. E l’errore, salendo di
+dimensione, è tutto dalla stessa parte: per difetto. (Nelle poche
 dimensioni la stima balla in tutti e due i versi, e infatti a cinque il segno
 è positivo per un centesimo: la spinta verso il basso è una tendenza, e diventa
 schiacciante quando le dimensioni crescono.) La colonna a
@@ -151,7 +151,7 @@ per cento del totale. Non stiamo facendo una media, stiamo aspettando un colpo
 di fortuna.
 
 E la scheda delle nostre cifre ha otto numeri soltanto. Quella che permette a
-**Stable Diffusion**, il generatore di immagini che il libro racconta più
+Stable Diffusion, il generatore di immagini che il libro racconta più
 avanti, di girare su un computer di casa, ne ha sedicimila.
 
 ## Chiedere a chi sa dove guardare
@@ -162,11 +162,11 @@ l’archivista.
 
 Ecco allora la mossa, prima in italiano che in formule.
 Invece di sorteggiare schede alla cieca, chiediamo all’archivista di
-**proporre** lui le poche schede che valga la pena guardare per *questa*
+proporre lui le poche schede che valga la pena guardare per *questa*
 cifra. Poi correggiamo il conto per tenere conto del fatto che le schede non
 le abbiamo pescate a caso, ma ce le siamo fatte suggerire. È lo stesso
 mestiere che fa l’encoder della sezione precedente, con una differenza sola:
-non propone una scheda, propone **una zona**.
+non propone una scheda, propone una zona.
 
 `````{tab} Elementare
 
@@ -183,7 +183,7 @@ la probabilità vera, cioè un numero che sta sicuramente sotto a quello giusto.
 
 Perché sotto e non sopra? Non per via della fetta, ma per l’ordine di due
 operazioni. I numeri in gioco sono minuscoli, e per maneggiarli si
-**schiacciano**, cioè di ciascuno si tiene solo quanti zeri ha, che è il suo
+schiacciano, cioè di ciascuno si tiene solo quanti zeri ha, che è il suo
 ordine di grandezza. Prendi 1 e 100: la media è 50,5, ma schiacciati diventano
 0 e 2, la cui media è 1, cioè 10. Il 100, che nella media si prendeva quasi
 tutto, schiacciato non pesa quasi niente. Il conto che sappiamo fare è quello
@@ -234,7 +234,7 @@ ma per due ragioni e non per una: la posterior vera è proporzionale a
 $p_\theta(\mathbf{x} \mid \mathbf{z})\, p(\mathbf{z})$, e con un prior
 gaussiano e una verosimiglianza positiva ovunque nessuno dei due fattori si
 annulla.) I due addendi hanno un
-nome: il primo è l’**ELBO** (*evidence lower bound*, limite inferiore
+nome: il primo è l’ELBO (*evidence lower bound*, limite inferiore
 dell’evidenza), il secondo è la divergenza di Kullback–Leibler fra la posterior
 approssimata e quella vera. Quindi
 
@@ -249,7 +249,7 @@ dove $\mathcal{E}_{\theta,\phi}(\mathbf{x})$ è l’ELBO, e la disuguaglianza va
 perché una divergenza di Kullback–Leibler non è mai negativa. Ne discendono i
 due fatti che reggono tutto il metodo {cite}`kingma2019introduction`:
 
-- il **divario** fra l’ELBO e la log-verosimiglianza vera *è* la distanza fra
+- il divario fra l’ELBO e la log-verosimiglianza vera *è* la distanza fra
   la posterior approssimata e quella vera. Non la limita, la eguaglia. Un
   encoder perfetto rende l’ELBO esatto;
 - massimizzando l’ELBO rispetto a $\theta$ e $\phi$ insieme si ottengono due
@@ -264,7 +264,7 @@ riconoscerà l’oggetto. E chi arriva dalla {doc}`sezione su riduzione e
 clustering </MachineLearning/riduzione-clustering>` riconosce la struttura
 dell’algoritmo EM, che alterna il miglioramento del bound rispetto a $q$ e
 rispetto a $\theta$; la differenza è che qui $q$ non si calcola in forma
-chiusa, si **apprende**.
+chiusa, si apprende.
 
 `````
 
@@ -302,10 +302,10 @@ prendere sul serio.
 
 Il conto si spezza in due voci, e sono le due voci di una spesa.
 
-**Prima voce: quanto male ridipinge il copista.** È la stessa della sezione
+Prima voce: quanto male ridipinge il copista. È la stessa della sezione
 precedente, nient’altro che il vecchio «la copia somiglia all’originale?».
 
-**Seconda voce: quanto costa scrivere la scheda.** Qui c’è la novità, ed è la
+Seconda voce: quanto costa scrivere la scheda. Qui c’è la novità, ed è la
 regola che mancava. Un **vocabolario comune** è stato fissato prima che i due
 cominciassero, e non lo decidono loro: un modo standard di descrivere un
 quadro, che vale per tutti i quadri e non è stato adattato a nessuno. Quando
@@ -316,8 +316,8 @@ descriverlo nel dettaglio, con precisione al millimetro, costa molto.
 L’archivista si trova quindi stretto fra due spinte opposte, e questo è il
 cuore di tutto. Se resta sul vago, la scheda costa poco e il copista dipinge
 male. Se è precisissimo, il copista dipinge benissimo e la scheda costa
-un’esagerazione. Il punto di equilibrio è la scheda **più vaga che ancora
-basta**: gli si chiede di essere impreciso quanto può permettersi.
+un’esagerazione. Il punto di equilibrio è la scheda più vaga che ancora
+basta: gli si chiede di essere impreciso quanto può permettersi.
 
 Ed è quella imprecisione voluta a riempire i buchi della sezione precedente. Se
 ogni quadro non è descritto da un punto ma da un alone, gli aloni di quadri
@@ -326,7 +326,7 @@ cade dentro l’alone di qualcuno.
 
 C’è una seconda conseguenza, meno ovvia. Il vocabolario comune è uno solo e sta
 in un posto solo: quindi pagare poco non vuol dire soltanto essere vaghi, vuol
-dire anche **stare lì attorno**. Le schede si raccolgono tutte nella stessa
+dire anche stare lì attorno. Le schede si raccolgono tutte nella stessa
 zona, che è poi la zona in cui si andrà a pescare, ed è per questo che pescare
 funziona.
 
@@ -356,14 +356,14 @@ $$
 dove il primo termine premia i codici da cui il dato si ricostruisce bene e il
 secondo penalizza gli encoder che si allontanano dal prior. Il secondo è
 esattamente la regolarizzazione che la sezione precedente cercava, e il punto è
-che **non è stata aggiunta**: è comparsa spezzando in due un’identità.
+che non è stata aggiunta: è comparsa spezzando in due un’identità.
 
 La lettura come costo di codifica è precisa e non è una metafora. La
 divergenza di Kullback–Leibler dei richiami di matematica misura quanto si paga
 in più codificando con la distribuzione sbagliata (là il conto è in bit, qui in
 nat: cambia solo la base del logaritmo); qui è il sovrapprezzo
 di descrivere $\mathbf{z}$ con la posterior specifica di quel dato invece che
-con il codice comune $p(\mathbf{z})$. Il **negativo** dell’ELBO è quindi, alla
+con il codice comune $p(\mathbf{z})$. Il negativo dell’ELBO è quindi, alla
 lettera, un costo di descrizione totale: i nat spesi per la scheda più i nat
 spesi per rifare il dato a partire dalla scheda. Massimizzare l’ELBO è
 minimizzare quel costo, che è la formulazione a *minimum description length*
@@ -392,7 +392,7 @@ il modo in cui il metodo può fallire.
 Manca un pezzo, tecnico e decisivo: senza, niente di tutto
 questo si potrebbe addestrare in un tempo ragionevole.
 
-Il problema è che nel mezzo del conto c’è un **sorteggio**. L’archivista non
+Il problema è che nel mezzo del conto c’è un sorteggio. L’archivista non
 consegna una scheda: consegna una zona, e da quella zona si pesca. La
 correzione che deve tornargli indietro riguarda la zona, non il singolo punto
 pescato; ma quello che il copista ha visto è il punto.
@@ -415,7 +415,7 @@ andate dove sono andate anche per conto loro, e il punteggio è cambiato per due
 motivi mescolati, lo spostamento e la fortuna. Per districarli servono migliaia
 di tiri.
 
-Il trucco è decidere gli **scarti prima**, e tenerli. Stabilisci in anticipo:
+Il trucco è decidere gli scarti prima, e tenerli. Stabilisci in anticipo:
 questa freccetta cade tre centimetri sopra il punto di mira, la seconda uno a
 destra, la terza due sotto. Adesso sposti la mira, e tutte e dieci le freccette
 si spostano insieme a lei, rigidamente, perché il loro scarto dal punto di mira
@@ -429,8 +429,8 @@ niente di ciò che vogliamo aggiustare, e la strada per le correzioni resta
 aperta.
 
 C’è anche un altro modo di rispondere alla domanda: invece di seguire dove va
-la freccetta, si tiene conto di **quanto era probabile che finisse proprio
-lì**. Funziona, non imbroglia, e si usa quando gli scarti non si possono
+la freccetta, si tiene conto di quanto era probabile che finisse proprio
+lì. Funziona, non imbroglia, e si usa quando gli scarti non si possono
 decidere prima. Ma la mano trema molto di più, e la differenza si misura.
 
 Il punto di rottura, che serve alla sezione seguente: il trucco degli scarti
@@ -461,8 +461,9 @@ riparametrizzazione**, proposto indipendentemente da Kingma e Welling
 {cite}`rezende2014stochastic`, riscrive la variabile aleatoria come funzione
 derivabile di una sorgente di rumore che di $\phi$ non sa niente (e non furono
 i primi: la monografia di Kingma e Welling {cite}`kingma2019introduction`
-segnala un lavoro precedente che aveva usato la stessa riscrittura per
-apprendere i parametri di una famiglia esponenziale invece che il latente):
+segnala un lavoro precedente che aveva usato una riscrittura simile per
+apprendere i parametri della distribuzione approssimante invece che il
+latente):
 
 $$
 \mathbf{z} = \boldsymbol{\mu}_\phi(\mathbf{x})
@@ -480,7 +481,7 @@ stimatore non distorto del gradiente.
 Quella disuguaglianza è scritta per un $f$ che di $\phi$ non dipende, mentre
 nell’ELBO l’integrando contiene $-\log q_\phi(\mathbf{z} \mid \mathbf{x})$, che
 da $\phi$ dipende eccome. Il conto completo ha allora un addendo in più, e
-quell’addendo ha **media nulla**, perché è
+quell’addendo ha media nulla, perché è
 $-\mathbb{E}_{q_\phi}[\nabla_\phi \log q_\phi(\mathbf{z} \mid \mathbf{x})]$.
 Lasciarlo cadere dà quindi un secondo stimatore, anch’esso non distorto, e con
 una proprietà notevole: la sua varianza tende a zero man mano che la posterior
@@ -504,7 +505,7 @@ guarda il suo quadrato, e ci si chiede di quanto cambierebbe la media di quel
 quadrato se il centro si spostasse. La risposta esatta si sa: la media del
 quadrato vale il quadrato del centro più uno (l’uno è quanto balla il
 sorteggio), quindi spostando il centro di un pochino la media cambia del doppio
-del centro. Col centro a 2, la risposta è **4**. Vediamo quanto ci si
+del centro. Col centro a 2, la risposta è 4. Vediamo quanto ci si
 avvicinano i due metodi, e soprattutto con quanta mano ferma.
 
 ```python
@@ -544,10 +545,10 @@ la varianza del secondo e' 22 volte quella del primo
 
 Tutti e due i metodi puntano al valore giusto, 4: nessuno dei due imbroglia. La
 differenza è la mano, che nel secondo trema molto di più, e a dirlo è la
-**deviazione standard**, cioè quanto una singola risposta balla attorno al
+deviazione standard, cioè quanto una singola risposta balla attorno al
 valore giusto: 2,0 per il primo metodo, 9,3 per il secondo. Il numero in
 fondo eleva al quadrato quelle due, che è il passaggio con cui si arriva alla
-**varianza**: 9,3 al quadrato contro 2 al quadrato, cioè ventidue volte tanto.
+varianza: 9,3 al quadrato contro 2 al quadrato, cioè ventidue volte tanto.
 
 Ventidue volte di varianza vuol dire, a parità di precisione, ventidue volte i
 campioni. In un addestramento che di campioni ne tira uno per esempio, è la
@@ -612,7 +613,7 @@ costo descrizione     3.6 nat
 ELBO                -23.8 nat  (log p(x) sta piu' in alto di qui)
 ```
 
-La prima cosa da notare è che la ricostruzione è **peggiorata**: 20,2 nat
+La prima cosa da notare è che la ricostruzione è peggiorata: 20,2 nat
 contro i 16,3 della clessidra semplice, sulle stesse cifre e con la stessa
 architettura, a parte la testa dell’encoder che qui deve produrre anche la
 larghezza. È il prezzo: quei quasi quattro nat sono la vaghezza che abbiamo
@@ -626,7 +627,7 @@ l’archivista propone. Vediamo che cosa abbiamo preso in cambio di quei quasi
 quattro nat.
 
 Il vocabolario comune, nel gergo di questa materia e nel codice, si chiama
-**prior**, che in inglese vuol dire «ciò che viene prima»: prima di guardare il
+prior, che in inglese vuol dire «ciò che viene prima»: prima di guardare il
 dato, è quello che ci si aspetta dalla scheda.
 
 ```python
@@ -660,16 +661,16 @@ quattro cifre pescate dal prior e decodificate
 ```
 
 Una precisazione prima di guardarle, perché cambia come si leggono: quello che
-il blocco stampa è il **grigio medio** che il copista dichiara per ciascun
+il blocco stampa è il grigio medio che il copista dichiara per ciascun
 pixel, non un sorteggio. Sorteggiando davvero uscirebbe sale e pepe, e
 una parte della morbidezza che si vede è quindi una scelta di come disegnare,
 non solo del modello.
 
 Detto questo, non sono capolavori: grosse, un po’ molli, e su qualcuna si esita
-fra due cifre. Quello che conta è un’altra cosa: **non è stato dato in pasto
-niente**. Quei quattro disegni vengono da quattro file di otto numeri
+fra due cifre. Quello che conta è un’altra cosa: non è stato dato in pasto
+niente. Quei quattro disegni vengono da quattro file di otto numeri
 sorteggiate da una gaussiana, e da nient’altro, e quella gaussiana era
-**dichiarata in partenza**. Alla clessidra della sezione precedente una
+dichiarata in partenza. Alla clessidra della sezione precedente una
 gaussiana si era dovuta adattare ai codici a cose fatte, sperando che ci
 somigliassero: è lì che si era aperto il buco.
 
@@ -737,12 +738,12 @@ autoencoder variazionale                1.0x                  1.09
 Prima di leggerla, una precisazione onesta: le due righe non pescano allo
 stesso modo. Per il VAE si pesca dal vocabolario comune, che è dichiarato in
 partenza; per la clessidra un vocabolario non c’è, e bisogna adattarne uno ai
-codici a cose fatte. Quella differenza nel modo di pescare **è** la differenza
+codici a cose fatte. Quella differenza nel modo di pescare è la differenza
 fra le due macchine, e nasconderla renderebbe il confronto inutile invece che
 equo.
 
 La prima colonna è la geometria: un codice sorteggiato dal prior cade, per il
-VAE, **praticamente alla distanza tipica** fra i codici che il decoder ha visto
+VAE, praticamente alla distanza tipica fra i codici che il decoder ha visto
 in addestramento. È casa, non terra sconosciuta. Per la clessidra semplice
 distava più del doppio.
 
@@ -783,16 +784,16 @@ immagini, alla fine racconta altro.
 
 `````{tab} Elementare
 
-**Le immagini vengono morbide.** E non si risolve allenando di più. La pagella
+Le immagini vengono morbide. E non si risolve allenando di più. La pagella
 con cui il copista è giudicato lo punisce moltissimo se dichiara
 quasi impossibile un quadro che invece esiste, e quasi per niente se dichiara
 possibile un quadro che non esisterebbe mai. Le due pene non sono pari, e
-allora conviene **abbondare**: dichiarare possibile più di quel che serve, e in
+allora conviene abbondare: dichiarare possibile più di quel che serve, e in
 dubbio coprire. Un archivio che copre più di quello che c’è produce quadri che
 somigliano un po’ a tutto e precisamente a niente, ed è quello che sullo
 schermo si legge come sfocatura.
 
-**L’archivista può decidere di non scrivere niente.** Se il copista se la cava
+L’archivista può decidere di non scrivere niente. Se il copista se la cava
 già bene da solo, o se all’inizio dell’addestramento la ricostruzione conta
 poco, la strada più conveniente è la scheda vuota: costo di descrizione zero, e
 il copista dipinge il quadro medio. Da quello stato è difficile uscire, perché
@@ -801,7 +802,7 @@ mestiere (far pesare poco la seconda voce all’inizio, oppure garantire un
 minimo di informazione per riga della scheda), ma è una toppa, non una
 soluzione.
 
-**L’archivio, guardato tutto insieme, non è proprio quello promesso.** La
+L’archivio, guardato tutto insieme, non è proprio quello promesso. La
 regola tiene ogni singola scheda vicina al vocabolario comune, una alla volta.
 Che poi *l’insieme* di tutte le schede assomigli al vocabolario comune non è
 garantito da nessuno, e infatti non succede del tutto: restano zone che il
@@ -818,7 +819,7 @@ minimizzare $D_{\mathrm{KL}}(q_{\mathcal{D},\phi}(\mathbf{x}, \mathbf{z})
 $q_{\mathcal{D},\phi}(\mathbf{x}, \mathbf{z}) = p_{\text{dati}}(\mathbf{x})\,
 q_\phi(\mathbf{z} \mid \mathbf{x})$ è la congiunta che si ottiene pescando un
 dato vero e poi codificandolo: è una KL in cui la distribuzione dei dati sta a
-**sinistra**. In quella direzione il costo di mettere probabilità
+sinistra. In quella direzione il costo di mettere probabilità
 quasi nulla dove i dati ci sono diverge, mentre il costo di metterne dove i
 dati non ci sono è mite: il modello ottimale è quindi più disperso dei dati, e
 su immagini «più disperso» si legge come sfocato. È la spiegazione che danno
@@ -837,8 +838,8 @@ gruppo di componenti latenti. Il caso peggiore è un decoder molto espressivo
 (autoregressivo, per dire), che può modellare i dati da solo e rende il latente
 superfluo.
 
-**Scarto fra prior e posterior aggregata.** Il termine KL agisce **su un
-esempio alla volta**, quindi vincola ciascuna $q_\phi(\mathbf{z} \mid
+**Scarto fra prior e posterior aggregata.** Il termine KL agisce su un
+esempio alla volta, quindi vincola ciascuna $q_\phi(\mathbf{z} \mid
 \mathbf{x})$ e non l’aggregato $q_\phi(\mathbf{z}) =
 \mathbb{E}_{p_{\text{dati}}}[q_\phi(\mathbf{z} \mid \mathbf{x})]$. I due non
 coincidono {cite}`hoffman2016elbo,rosca2018distribution`, e nello scarto
@@ -850,11 +851,11 @@ risolverlo.
 
 Una semplificazione va dichiarata. La verosimiglianza usata è una Bernoulli per
 pixel applicata a livelli di grigio continui, che è la ricetta consueta su
-questi dati e **non è una densità normalizzata** su $[0,1]$: il numero stampato
+questi dati e non è una densità normalizzata su $[0,1]$: il numero stampato
 come ELBO è quindi un ELBO rispetto a quel modello, non rispetto a una densità
 propria. La correzione esiste, si chiama Bernoulli continua
 {cite}`loaizaganem2019continuous`: i suoi autori misurano che applicarla cambia
-i punteggi **e** rende i campioni più nitidi, cioè tocca proprio la sfocatura.
+i punteggi e rende i campioni più nitidi, cioè tocca proprio la sfocatura.
 Il confronto fra clessidra e VAE regge lo stesso, perché i due sono addestrati
 con la medesima verosimiglianza; il valore assoluto dei nat, no.
 
@@ -873,18 +874,18 @@ Qual è, lo dice la sezione seguente.
 :class: important
 - Si cambia domanda: non «la copia somiglia all’originale?» ma «quanto era
   probabile che uscisse proprio questo dato?». La regola che mancava non si
-  aggiunge: **esce da sola** provando a rispondere.
-- Quel conto non si può fare, e **non basta tirare a sorte**: quasi tutte le
+  aggiunge: esce da sola provando a rispondere.
+- Quel conto non si può fare, e non basta tirare a sorte: quasi tutte le
   cause sorteggiate a caso spiegano il dato malissimo, e con quaranta numeri
   nascosti uno solo su centomila sorteggi si prende un terzo del totale.
 - Si chiede allora all’archivista, che il dato ce l’ha sotto gli occhi, dove
-  conviene guardare. Ne esce una **stima prudente**, sicuramente più bassa del
+  conviene guardare. Ne esce una stima prudente, sicuramente più bassa del
   vero, e il divario è esattamente quanto il consiglio è impreciso. Spingerla
   in alto migliora, quasi sempre, il modello e il consiglio insieme.
-- La stima ha due voci: quanto male si ricostruisce, e **quanto costa scrivere
-  la scheda** rispetto a un vocabolario comune deciso prima. La seconda voce è
+- La stima ha due voci: quanto male si ricostruisce, e quanto costa scrivere
+  la scheda rispetto a un vocabolario comune deciso prima. La seconda voce è
   ciò che riempie i buchi.
-- Per addestrare serve **decidere gli errori prima**: si sorteggia uno scarto,
+- Per addestrare serve decidere gli errori prima: si sorteggia uno scarto,
   e lo si appoggia sulla zona proposta. Così le correzioni tornano indietro.
   L’altro modo (tenere conto di quanto era probabile pescare proprio quel
   punto) funziona e non imbroglia, ma ha la mano molto meno ferma: in questo
@@ -918,15 +919,15 @@ Qual è, lo dice la sezione seguente.
 - La stima Monte Carlo dal prior è non distorta e inservibile: la sua versione
   logaritmica è distorta verso il basso per Jensen, e in 40 dimensioni sbaglia
   di 10 nat con $10^5$ campioni.
-- **Riparametrizzazione** {cite}`kingma2014auto,rezende2014stochastic`:
+- Riparametrizzazione {cite}`kingma2014auto,rezende2014stochastic`:
   $\mathbf{z} = \boldsymbol{\mu}_\phi + \boldsymbol{\sigma}_\phi \odot
   \boldsymbol{\epsilon}$ con $\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0},
   \mathbf{I})$. Sposta il caso fuori dal grafo delle derivate; misurato, ha
   varianza 22 volte minore dello stimatore a punteggio (REINFORCE), che però si
   applica anche ai latenti discreti, dove la riparametrizzazione non arriva.
-- Limiti strutturali: **sfocatura** (direzione della KL, quindi copertura),
-  **collasso della posterior** {cite}`bowman2016generating,kingma2016improved`
-  e **scarto fra prior e posterior aggregata**
+- Limiti strutturali: sfocatura (direzione della KL, quindi copertura),
+  collasso della posterior {cite}`bowman2016generating,kingma2016improved`
+  e scarto fra prior e posterior aggregata
   {cite}`hoffman2016elbo,rosca2018distribution`.
 ```
 

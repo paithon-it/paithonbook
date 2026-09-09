@@ -12,7 +12,7 @@ nei dati di addestramento comparivano in un documento solo, e da lì
 da solo, come effetto collaterale dell'imparare.
 
 Questo episodio apre il secondo dei tre temi annunciati nell'apertura del
-capitolo. Dopo l'equità affrontiamo insieme **privacy** e **robustezza**, che
+capitolo. Dopo l'equità affrontiamo insieme privacy e robustezza, che
 sono due facce della stessa domanda scomoda: un modello messo davvero nel
 mondo, quanto sa tenere un segreto e quanto è facile fargli sbagliare? Il filo
 conduttore è che nessuna delle due proprietà si aggiunge alla fine come una
@@ -22,7 +22,7 @@ vernice. Vanno costruite dentro l'addestramento, e costano accuratezza.
 
 Un modello, in fondo, non è altro che i suoi dati di addestramento compressi:
 occupa molto meno spazio di quello che ha letto, e per riuscirci qualcosa lo
-butta via. È come la compressione **con perdite** di una foto salvata male,
+butta via. È come la compressione con perdite di una foto salvata male,
 quella che riemerge sgranata: si perde qualche dettaglio in cambio di spazio.
 Solo che ogni tanto, invece di riassumere un dettaglio, lo conserva per
 intero. Quando quel dettaglio è un'informazione personale, la memorizzazione
@@ -41,7 +41,7 @@ trattare i dati di qualcuno bisogna
 avere una **base giuridica**, cioè una ragione fra quelle che la legge ammette
 (il consenso della persona, l'esecuzione di un contratto, oppure il *legittimo
 interesse* di chi tratta i dati, che va però motivato e messo per iscritto). La
-seconda è che alla persona restano attaccati dei **diritti** che può esercitare
+seconda è che alla persona restano attaccati dei diritti che può esercitare
 in qualunque momento: farsi dire quali suoi dati ci sono (accesso, art. 15),
 farli correggere (rettifica, art. 16), farli cancellare (cancellazione, art.
 17), opporsi al trattamento (art. 21).
@@ -60,7 +60,7 @@ percorso.
 ```
 
 Il punto che {numref}`fig-flusso-dati-personali` rende difficile da aggirare è
-la seconda stazione, dove i dati diventano **pesi**: i milioni di numeri
+la seconda stazione, dove i dati diventano pesi: i milioni di numeri
 interni che l'addestramento aggiusta un pochino alla volta finché il modello
 non funziona. Nelle altre stazioni un dato è un dato, sta in un archivio, si
 trova e si cancella. Nei pesi non c'è più, e c'è ancora: è stato sciolto
@@ -108,7 +108,7 @@ singoli esempi, più li lascia riconoscere. L’**estrazione di dati di
 addestramento** è più aggressiva: Carlini e colleghi
 {cite}`carlini2021extracting` mostrarono che da
 GPT-2 si potevano recuperare *verbatim* sequenze memorizzate (nomi, recapiti,
-frammenti di codice) presenti anche in un **solo documento** del corpus. La
+frammenti di codice) presenti anche in un solo documento del corpus. La
 memorizzazione cresce con la dimensione del modello e con la ripetizione del
 dato: un problema strutturale dei grandi modelli linguistici, non un bug
 isolato. Serve quindi una nozione di privacy che sia una *garanzia
@@ -190,7 +190,7 @@ $$
    \lVert f(\mathcal{D})-f(\mathcal{D}')\rVert_1,
 $$
 
-dove il massimo corre sui soli **dataset vicini** di poco fa, quelli che
+dove il massimo corre sui soli dataset vicini di poco fa, quelli che
 differiscono per una riga: è quanto al massimo un singolo individuo può far
 variare il valore di $f$. Poi si restituisce
 
@@ -218,7 +218,7 @@ uno, perché una persona o c'è o non c'è. Quello è il metro con cui si dosa i
 rumore. Poi si sceglie quanta protezione si vuole, girando la manopola
 $\varepsilon$ di poco fa: la mettiamo a $0{,}5$, che è severa. La taglia dello
 sporco si ottiene dividendo la prima cosa per la seconda, $1$ diviso $0{,}5$,
-cioè **due unità**: più la manopola è piccola, più sporco esce. Al $42$ vero si
+cioè due unità: più la manopola è piccola, più sporco esce. Al $42$ vero si
 somma quindi un numero estratto a caso attorno allo zero, di solito entro un
 paio di unità e ogni tanto molto di più.
 
@@ -252,7 +252,7 @@ infatti tre di questi cinque tiri sono lì attorno. Gli altri due no: uno
 sbaglia di cinque unità e l'altro pubblica $35{,}2$ dove il vero è $42$. È il
 prezzo di $\varepsilon = 0{,}5$ su un conteggio piccolo, e si vede a occhio.
 
-Resta da dire con precisione **che cosa** si è comprato, perché la formula
+Resta da dire con precisione che cosa si è comprato, perché la formula
 rassicurante («adesso nessuno può sapere se quella persona c'era») è più forte
 del vero, e non è quello che la privacy differenziale promette. Anzi: quella
 garanzia lì, «dal risultato non si impara nulla su nessuno», è
@@ -264,14 +264,14 @@ quasi altrettanto facilmente anche se quella persona non fosse stata
 nell'elenco. Quanto «quasi» lo decide la manopola, ed è l'altra faccia della
 stessa scelta: un conto fisso la trasforma in un fattore, e a
 $\varepsilon = 0{,}5$ quel fattore vale $1{,}65$. Vuol dire che togliendo
-quella persona quel numero sarebbe uscito al più una volta e mezza meno
-facilmente. Chi guarda il numero pubblicato può quindi farsi
-un'idea sulla presenza di quella persona, e quell'idea può spostarsi: ma di
-tanto così, il che fa di quel numero un indizio e non una prova.
+quella persona quel numero sarebbe uscito al più $1{,}65$ volte meno
+facilmente. Chi guarda il numero pubblicato può quindi farsi un'idea sulla
+presenza di quella persona, e quell'idea può spostarsi: ma di tanto così, il
+che fa di quel numero un indizio e non una prova.
 
 E c'è una seconda cosa da cui la privacy differenziale non protegge, ed è
 quella che sorprende chi la incontra per la prima volta: le conclusioni
-**sulla popolazione**. Se uno studio protetto conclude che il fumo causa il
+sulla popolazione. Se uno studio protetto conclude che il fumo causa il
 cancro, un fumatore ne subisce le conseguenze (l'assicurazione che alza il
 premio, per esempio) tanto se era nello studio quanto se non c'era. La privacy
 differenziale non lo impedisce e non pretende di farlo: dice soltanto che la
@@ -296,9 +296,9 @@ Nell'addestramento normale ogni esempio spinge i pesi del modello nella
 direzione che riduce il suo errore. Il problema di privacy è che un esempio
 *insolito* può dare una spinta enorme e riconoscibile: la sua impronta resta
 nei pesi. DP-SGD fa due cose per cancellare quell'impronta. Primo, mette un
-**tetto** alla spinta di ogni singolo esempio: per quanto strano sia, non può
+tetto alla spinta di ogni singolo esempio: per quanto strano sia, non può
 spingere più di tanto. Secondo, alla spinta complessiva del gruppo aggiunge un
-po’ di **rumore casuale**, così da confondere il contributo dei singoli. Il
+po’ di rumore casuale, così da confondere il contributo dei singoli. Il
 modello impara comunque la tendenza generale (la spingono tutti nella stessa
 direzione) ma il segno particolare di ciascuno si perde nel rumore. Si paga in
 accuratezza, com'è giusto: la privacy non è mai gratis.
@@ -313,8 +313,8 @@ si dice dove la manopola è stata girata.
 
 `````{tab} Superiore
 
-Ad ogni passo, su un minibatch, DP-SGD calcola il gradiente della loss **per
-ogni esempio separatamente**,
+Ad ogni passo, su un minibatch, DP-SGD calcola il gradiente della loss per
+ogni esempio separatamente,
 $\mathbf{g}_i = \nabla_\theta \mathcal{L}(\theta, \mathbf{x}^{(i)}, y^{(i)})$, e
 lo sottopone a due operazioni. Il **clipping per-esempio** limita la norma di
 ciascun gradiente a una soglia $C$,
@@ -363,9 +363,8 @@ dove è girata.
 ## Federated learning: portare il modello ai dati
 
 C'è una via complementare alla privacy: non proteggere l'output di un modello
-addestrato su dati raccolti in un unico posto, ma **non raccoglierli
-affatto**. È l'idea del *federated learning*, proposta pensando alla tastiera
-predittiva dei telefoni da McMahan e colleghi
+addestrato su dati raccolti in un unico posto, ma non raccoglierli affatto.
+È l'idea del *federated learning*, proposta da McMahan e colleghi
 {cite}`mcmahan2017communication` per addestrare la tastiera predittiva di
 milioni di telefoni senza spedire a un server ciò che le persone digitano.
 
@@ -374,8 +373,8 @@ milioni di telefoni senza spedire a un server ciò che le persone digitano.
 Il modo ovvio di addestrare un modello su dati di tanti ospedali sarebbe
 raccogliere tutte le cartelle cliniche in un unico grande archivio. Ma quelle
 cartelle non devono uscire dall'ospedale. Il *federated learning* rovescia il
-verso del viaggio: invece di portare i dati al modello, porta il **modello ai
-dati**. Il server manda a ogni ospedale una copia del modello; ognuno lo
+verso del viaggio: invece di portare i dati al modello, porta il modello ai
+dati. Il server manda a ogni ospedale una copia del modello; ognuno lo
 allena un po’ sui propri pazienti, in casa; poi rispedisce indietro non i
 dati, ma solo il modello aggiornato: cosa ha *imparato*, non cosa ha *visto*.
 Il server fonde insieme le versioni in un modello migliore, contando di più
@@ -396,7 +395,7 @@ lo cancella.
 L'algoritmo di riferimento è **FedAvg**. A ogni round, il server invia i pesi
 correnti $\theta_t$ a un sottoinsieme di $K$ client; ciascun client $k$ esegue
 alcune epoche di discesa del gradiente sui propri $n_k$ dati locali, ottenendo
-$\theta_{t+1}^{k}$; il server li ricompone con una **media pesata** dalla
+$\theta_{t+1}^{k}$; il server li ricompone con una media pesata dalla
 numerosità locale,
 
 $$
@@ -406,8 +405,8 @@ $$
 
 Il vantaggio è duplice: i dati grezzi restano sul dispositivo e comunicare i
 pesi ogni tanto costa molto meno che spedire i dati ad ogni passo. Ma
-attenzione a non dichiarare vittoria troppo presto: **i gradienti perdono
-informazione**. Zhu e colleghi {cite}`zhu2019deep` hanno mostrato che da
+attenzione a non dichiarare vittoria troppo presto: i gradienti perdono
+informazione. Zhu e colleghi {cite}`zhu2019deep` hanno mostrato che da
 un aggiornamento condiviso si possono talvolta *ricostruire* gli esempi che
 l'hanno prodotto. Il federated learning va perciò combinato con la privacy
 differenziale (rumore sugli aggiornamenti) e con l'aggregazione sicura, che
@@ -421,7 +420,7 @@ Decentrare i dati riduce il rischio, non lo azzera.
 Passiamo dalla discrezione alla fragilità. Nel 2013 Szegedy e colleghi
 {cite}`szegedy2014intriguing` scoprirono una proprietà sconcertante delle reti
 neurali: si può prendere un'immagine classificata correttamente, aggiungerle
-una perturbazione così piccola da essere **invisibile all'occhio**, e far
+una perturbazione così piccola da essere invisibile all'occhio, e far
 cambiare idea alla rete con altissima sicurezza. L'anno dopo Goodfellow,
 Shlens e Szegedy spiegarono il fenomeno e ne diedero la ricetta più semplice
 {cite}`goodfellow2015explaining`. Il loro esempio è diventato un'icona, e lo
@@ -470,13 +469,13 @@ panda resta un panda.
 `````{tab} Superiore
 
 Un avviso sui simboli, prima delle formule. In letteratura il raggio della
-perturbazione ammessa si scrive $\varepsilon$, la **stessa lettera** del budget
+perturbazione ammessa si scrive $\varepsilon$, la stessa lettera del budget
 di privacy differenziale: sono le notazioni standard di due campi diversi, e si
 incontrano appena privacy e robustezza si raccontano di seguito.
 Il raggio lo chiamiamo $\rho$, perché la $\varepsilon$ della privacy
 è dentro il nome delle sue definizioni ($\varepsilon$-DP) e rinominare quella
 sarebbe peggio. Con $\delta$ l'incrocio si ripete e il rimedio cambia: la
-perturbazione è un **vettore** e si scrive $\boldsymbol{\delta}$, mentre il
+perturbazione è un vettore e si scrive $\boldsymbol{\delta}$, mentre il
 margine della $(\varepsilon,\delta)$-DP è uno scalare e resta tondo. Dietro le
 due soluzioni c'è una regola sola: si rinomina ciò che si può rinominare senza
 rompere un nome proprio, e dove non si può si usa la forma dei simboli. In un
@@ -485,7 +484,7 @@ $\varepsilon$.
 
 Il metodo si chiama **Fast Gradient Sign Method** (FGSM). Fissati i pesi
 $\theta$, invece di derivare la loss rispetto ai parametri (come
-nell'addestramento) la si deriva rispetto all’**input**, e ci si muove nella
+nell'addestramento) la si deriva rispetto all’input, e ci si muove nella
 direzione che la *aumenta*:
 
 $$
@@ -614,7 +613,7 @@ predizione è invariante.
 Anche qui la garanzia va letta per quello che è. Il teorema riguarda il
 classificatore lisciato, non quello di partenza; e siccome il lisciato non è
 calcolabile esattamente, predizione e raggio si stimano per campionamento
-Monte Carlo, con una procedura che può **astenersi** e la cui garanzia vale a
+Monte Carlo, con una procedura che può astenersi e la cui garanzia vale a
 meno di una probabilità di errore, che sceglie chi certifica. Non è un
 certificato deterministico come quelli che si ottengono propagando intervalli
 o limitando la costante di Lipschitz. Le certificazioni coprono raggi ancora
@@ -662,7 +661,7 @@ sono troppe. In un testo scritto da una persona sarebbero circa la metà, perch�
 quel sorteggio la persona non lo conosceva.
 
 E il limite si legge nella figura stessa, in filigrana: quello che si misura è
-una **proporzione**, quindi serve abbastanza testo perché lo sbilanciamento si
+una proporzione, quindi serve abbastanza testo perché lo sbilanciamento si
 distingua dal caso. Su una frase corta non c'è niente da misurare, e riscrivere
 il brano con parole proprie diluisce l'eccesso fino a cancellarlo.
 
@@ -677,7 +676,7 @@ non lascia traccia. Sul testo pieno di scelte, come un racconto, la marca si
 nasconde benissimo; su codice sorgente, citazioni, elenchi di numeri, quasi
 per niente.
 
-Sulle **immagini** l'idea è la stessa e cambiano i mezzi: la filigrana nascosta
+Sulle immagini l'idea è la stessa e cambiano i mezzi: la filigrana nascosta
 sposta di pochissimo migliaia di pixel secondo uno schema segreto, così che
 l'occhio non veda niente e un rilevatore che conosce lo schema ritrovi il segno
 anche dopo una compressione moderata. SynthID di Google DeepMind fa questo su
@@ -697,7 +696,7 @@ consumata. In compenso il cartellino racconta una storia, la filigrana
 dice soltanto «sono artificiale».
 
 Né la filigrana né il cartellino chiudono la porta, e non è questione di farle
-meglio: si **dimostra** che chi sa giudicare quando un contenuto è venuto bene,
+meglio: si dimostra che chi sa giudicare quando un contenuto è venuto bene,
 e sa riscriverlo lasciandolo equivalente, la strada che cancella la marca la
 trova sempre. Chi ha tempo riscrive il testo con altre parole, ritaglia e
 ricomprime l'immagine finché il segno non si legge più, e il cartellino lo
@@ -710,7 +709,7 @@ autentico un contenuto fabbricato smette di essere gratis.
 
 Sul testo il meccanismo è diverso e istruttivo. A ogni passo di generazione si
 partiziona pseudo-casualmente il vocabolario in una lista "verde" e una
-"rossa", con un seme derivato dal **token precedente**, e si aggiunge un piccolo
+"rossa", con un seme derivato dal token precedente, e si aggiunge un piccolo
 bias ai logit dei verdi. Il testo resta fluido dove le alternative
 plausibili sono molte; e su una sequenza lunga la frazione di token verdi si
 scosta dalla frazione attesa $\gamma$ (che è un parametro, non una costante:
@@ -736,7 +735,7 @@ l'entità del bias sui logit) comprano forza di rilevazione in cambio di qualit�
 del testo, e il tetto che possono raggiungere lo fissa l'entropia, non la sola
 lunghezza.
 
-Ed è anche il punto debole: **una parafrasi distrugge la marca**. Basta far
+Ed è anche il punto debole: una parafrasi distrugge la marca. Basta far
 riscrivere il testo a un altro modello e la partizione verde/rossa si dissolve.
 Sulle immagini, ridimensionamento, ritaglio, ricompressione o una foto dello
 schermo erodono il segnale; i metadati C2PA li cancella uno screenshot.
@@ -749,8 +748,8 @@ impercettibile e robusto: si può sempre costruire una sequenza di
 trasformazioni che preserva il significato e cancella la marca.
 
 La conclusione onesta è la stessa della crittografia applicata: il watermarking
-non stabilisce cosa è vero, **alza il costo di far passare il sintetico per
-autentico**. Non esiste il lucchetto inviolabile, esiste il lucchetto che costa
+non stabilisce cosa è vero, alza il costo di far passare il sintetico per
+autentico. Non esiste il lucchetto inviolabile, esiste il lucchetto che costa
 più della refurtiva.
 
 `````
@@ -914,31 +913,31 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
 
 ```{admonition} Da ricordare
 :class: important
-- I modelli **imparano a memoria** le cose rare o ripetute, come lo studente che
+- I modelli imparano a memoria le cose rare o ripetute, come lo studente che
   recita la pagina invece di ragionare. Due conseguenze: dandogli l'inizio di
   una frase che c'era nei dati può completarla identica, e si può spesso
   indovinare *se una certa persona era nei dati* osservando che il modello è
   stranamente sicuro proprio sui suoi esempi.
 - In Europa una legge dice cosa si può fare con i dati di una persona, e le dà
   il diritto di sapere quali dati ci sono, farli correggere e farli cancellare.
-  Il punto scomodo è che dai **pesi** del modello, una volta addestrato, non si
+  Il punto scomodo è che dai pesi del modello, una volta addestrato, non si
   tolgono senza rifare tutto: si cancellano dagli archivi, non da lì.
-- Il trucco della **moneta lanciata prima di rispondere** protegge la singola
+- Il trucco della moneta lanciata prima di rispondere protegge la singola
   persona e lascia leggere il totale: si aggiunge un po’ di caso, in quantità
   nota. Una manopola decide quanto: più caso, più protezione e meno precisione.
   Ma non promette che di te non si sappia più nulla, promette che la *tua
   presenza* cambi poco le idee di chi guarda; e non ti protegge dalle
   conclusioni sulla popolazione a cui appartieni.
-- Un'altra strada è **non raccogliere i dati affatto**: si manda il modello a
+- Un'altra strada è non raccogliere i dati affatto: si manda il modello a
   casa di chi li ha, ognuno lo allena un po’ sui propri e rimanda indietro solo
   quello che ha imparato. Riduce il rischio, non lo azzera.
-- Si può far sbagliare una rete a comando con **tante piccole spinte concordi**,
+- Si può far sbagliare una rete a comando con tante piccole spinte concordi,
   invisibili una per una. Difendersi è una rincorsa: al momento non esiste una
   difesa definitiva, e «robusto» vuol sempre dire robusto contro un attacco
   preciso e dentro un limite dichiarato.
-- Quello che un modello **produce** si può marchiare in due modi opposti: un
+- Quello che un modello produce si può marchiare in due modi opposti: un
   segno nascosto dentro il testo o l'immagine, che l'occhio non vede e un
-  rilevatore ritrova; oppure un **cartellino allegato** che dice chi l'ha
+  rilevatore ritrova; oppure un cartellino allegato che dice chi l'ha
   fatto, con un sigillo che solo lui sa produrre. Chi ha tempo riscrive il
   testo, ricomprime l'immagine e il cartellino lo stacca in un secondo: quello
   che si compra è il prezzo, non una porta chiusa.
@@ -952,38 +951,38 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
 
 ```{admonition} Da ricordare
 :class: important
-- I modelli **memorizzano** i dati rari o ripetuti: da qui i *membership
-  inference* (capire se un individuo era nel training) e l’**estrazione**
+- I modelli memorizzano i dati rari o ripetuti: da qui i *membership
+  inference* (capire se un individuo era nel training) e l’estrazione
   verbatim di dati sensibili dagli LLM. La memorizzazione è overfitting visto
   come falla di privacy.
-- La **privacy differenziale** {cite}`dwork2006calibrating` garantisce che
+- La privacy differenziale {cite}`dwork2006calibrating` garantisce che
   l'output cambi al più di un fattore $e^{\varepsilon}$ se un individuo entra o
   esce dai dati, aggiungendo rumore (meccanismo di Laplace) calibrato alla
-  sensibilità. È un **limite all'inferenza**, non un'impossibilità di dedurre
+  sensibilità. È un limite all'inferenza, non un'impossibilità di dedurre
   ({cite}`dwork2014algorithmic`: *nothing is learned* è irraggiungibile), e non
   copre le inferenze sulla popolazione. Il valore di $\varepsilon$ va sempre
   guardato: $e^{0{,}5}\approx 1{,}65$, ma $e^{8}\approx 3000$.
-  **DP-SGD** {cite}`abadi2016deep` la porta nel deep learning con clipping
+  DP-SGD {cite}`abadi2016deep` la porta nel deep learning con clipping
   per-esempio + rumore gaussiano, a circa un punto di accuratezza su MNIST.
-- Il **federated learning** {cite}`mcmahan2017communication` porta il modello ai
+- Il federated learning {cite}`mcmahan2017communication` porta il modello ai
   dati invece del contrario (FedAvg); ma i gradienti condivisi perdono
   informazione, e vanno protetti con DP e aggregazione sicura.
-- Gli **esempi avversari** {cite}`goodfellow2015explaining` ingannano una rete
-  con perturbazioni impercettibili: **FGSM** somma $\rho$ per il segno del
-  gradiente della loss rispetto all'input; **PGD** {cite}`madry2018towards` ne è
+- Gli esempi avversari {cite}`goodfellow2015explaining` ingannano una rete
+  con perturbazioni impercettibili: FGSM somma $\rho$ per il segno del
+  gradiente della loss rispetto all'input; PGD {cite}`madry2018towards` ne è
   la versione iterativa e la base dell’*adversarial training*. Attenzione al
   simbolo: il raggio della perturbazione qui è $\rho$, mentre negli articoli si
   scrive $\varepsilon$, che in questo capitolo è già il budget di privacy.
 - La palla $\ell_p$ è una comodità matematica, non il modello di minaccia: la
   robustezza si dichiara sempre con accanto perimetro e attacco.
-- Sul lato dell'output, il **watermarking** del testo sbilancia la scelta dei
+- Sul lato dell'output, il watermarking del testo sbilancia la scelta dei
   token verso una lista pseudo-casuale e si rileva con un test d'ipotesi
   {cite}`kirchenbauer2023watermark`: regge dove l'entropia è alta, non sul
-  testo quasi obbligato, e una parafrasi lo cancella; il **C2PA** allega invece
+  testo quasi obbligato, e una parafrasi lo cancella; il C2PA allega invece
   una provenienza firmata, che uno screenshot toglie. Nessun watermark può
   essere insieme impercettibile e robusto {cite}`zhang2023watermarks`: alza il
   costo del falso, non stabilisce che cosa è vero.
-- Non esiste difesa definitiva: è una **corsa agli armamenti**. La robustezza
+- Non esiste difesa definitiva: è una corsa agli armamenti. La robustezza
   certificata offre garanzie provate ma su raggi piccoli, e nel caso del
   *randomized smoothing* {cite}`cohen2019certified` sono garanzie probabilistiche
   sul classificatore lisciato; *data poisoning* e *backdoor* attaccano invece in

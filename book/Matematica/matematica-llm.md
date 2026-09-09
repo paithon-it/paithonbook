@@ -118,7 +118,7 @@ E anche potendo scriverlo, quel quaderno sarebbe quasi tutto vuoto: la
 stragrande maggioranza delle frasi sensate non è mai stata scritta da
 nessuno, quindi avrebbe conteggio zero, e un conteggio zero non è una
 previsione. Serve un oggetto diverso: non una tabella da consultare ma una
-**funzione** da calcolare, che dato un contesto qualsiasi (anche mai visto)
+funzione da calcolare, che dato un contesto qualsiasi (anche mai visto)
 produca una distribuzione sensata. Una funzione che abbia imparato da «Il
 gatto nero salta sul muro» qualcosa di utile anche per «Il cane bianco corre
 sul prato».
@@ -138,7 +138,7 @@ nulla.
 La via d'uscita è sostituire la tabella con una funzione parametrica
 $f_\theta$ che mappa contesti in distribuzioni, con $|\theta|$ fissato e
 indipendente dal numero di contesti. Il costo dell'approssimazione è pagato
-in *bias*, il guadagno è la **generalizzazione**: contesti diversi ma vicini
+in *bias*, il guadagno è la generalizzazione: contesti diversi ma vicini
 nello spazio delle rappresentazioni ricevono distribuzioni vicine, e questo
 è, in sostanza, uno smoothing implicito e appreso al posto di quelli
 progettati a mano (Laplace, Good–Turing, Kneser–Ney).
@@ -146,7 +146,7 @@ progettati a mano (Laplace, Good–Turing, Kneser–Ney).
 Un'ultima osservazione su che cosa *non* cambia. Un modello linguistico ha una
 lunghezza massima di contesto fissata a progetto, e tutto ciò che precede
 quella soglia è invisibile: formalmente resta quindi una catena di
-**Markov di ordine finito**, per quanto altissimo
+Markov di ordine finito, per quanto altissimo
 {cite}`shalizi2023attention`. Cambia il modo di stimare le probabilità di
 transizione, non la classe del modello.
 
@@ -172,7 +172,7 @@ esattamente quanto «gatto» e «sebbene». Tutto quello che il modello impara s
 primo va reimparato da capo sul secondo.
 
 L'alternativa è dare a ogni token una lista molto più corta (da qualche
-centinaio a qualche migliaio di numeri) e, soprattutto, **non deciderla noi**:
+centinaio a qualche migliaio di numeri) e, soprattutto, non deciderla noi:
 quei numeri sono manopole come tutte le altre, e l'addestramento li regola
 insieme al resto. È l’**embedding**, e il capitolo sul Natural Language
 Processing lo tratta per esteso, insieme alla ragione per cui funziona: una
@@ -197,7 +197,7 @@ dichiara che «gatto» e «cane» sono diversi fra loro esattamente quanto
 «gatto» e «sebbene». Ogni cosa imparata sul primo va reimparata da capo sul
 secondo.
 
-L'alternativa è una **matrice di embedding** $\mathbf{E} \in
+L'alternativa è una matrice di embedding $\mathbf{E} \in
 \mathbb{R}^{|\mathcal{V}| \times d}$, di cui la riga $\mathbf{e}_w \in
 \mathbb{R}^d$ è la rappresentazione del token $w$; la dimensione $d$ è moderata
 (nei modelli attuali da qualche centinaio a qualche migliaio) e tutte le
@@ -220,10 +220,10 @@ cui l'algebra lineare ha qualcosa da dire.
 C'è però un limite strutturale in un vettore per token, e si vede a occhio
 nudo in italiano con la parola «piano»:
 
-- «Suonava il **piano** a orecchio» (lo strumento);
-- «Abita al terzo **piano**» (il livello di un edificio);
-- «Cammina **piano**, che dorme» (l'avverbio);
-- «Non avevano un **piano**» (il progetto).
+- «Suonava il piano a orecchio» (lo strumento);
+- «Abita al terzo piano» (il livello di un edificio);
+- «Cammina piano, che dorme» (l'avverbio);
+- «Non avevano un piano» (il progetto).
 
 Un solo punto nello spazio non può stare vicino a «pianoforte», a «scala», a
 «lentamente» e a «strategia» contemporaneamente. La polisemia è la norma più
@@ -321,7 +321,7 @@ una sola aggregazione, e vive in $\mathbb{R}^k$ con $k < d$. La
 rappresentazione contestuale $\mathbf{h}_i \in \mathbb{R}^d$ dell'obiettivo
 si ottiene solo più avanti, ricomponendo le $H$ aggregazioni parallele.)
 
-Entrambi da **tre trasformazioni lineari apprese** applicate ai vettori
+Entrambi da tre trasformazioni lineari apprese applicate ai vettori
 stessi. Con $\mathbf{W}^A, \mathbf{W}^B, \mathbf{W}^C \in \mathbb{R}^{k
 \times d}$:
 
@@ -351,7 +351,7 @@ La divisione per $\sqrt{k}$ è igiene numerica: se le componenti dei due
 vettori sono all'incirca indipendenti, a media nulla e varianza unitaria, il
 loro prodotto scalare ha varianza $k$, e punteggi che crescono con la
 dimensione saturerebbero il passo successivo azzerandone i gradienti.
-Poiché $\mathbf{W}^A \neq \mathbf{W}^B$, il punteggio è **asimmetrico**:
+Poiché $\mathbf{W}^A \neq \mathbf{W}^B$, il punteggio è asimmetrico:
 $r_{ij} \neq r_{ji}$ in generale, che è precisamente ciò che serviva.
 
 I punteggi sono numeri reali di segno qualunque, e vanno trasformati in pesi.
@@ -411,7 +411,7 @@ Una **forma bilineare** è un modo di misurare l'accordo fra due liste di
 numeri passando per una tabella: si prende la prima lista, la si fa attraversare
 dalla tabella e si fa il prodotto scalare con la seconda.
 
-Il **rango** di una tabella è un po’ più sottile (la {doc}`sezione sui sistemi
+Il rango di una tabella è un po’ più sottile (la {doc}`sezione sui sistemi
 lineari </Matematica/sistemi-lineari>` lo definisce per bene) e conviene
 vederlo su un esempio piccolo. Una tabella di cento righe sembra contenere cento
 informazioni, ma può darsi che la terza riga sia semplicemente la prima più la
@@ -477,7 +477,7 @@ r_{ij} \;\propto\; \mathbf{a}_i^\top \mathbf{b}_j
 = \mathbf{e}_i^\top \underbrace{(\mathbf{W}^A)^\top \mathbf{W}^B}_{\textstyle \mathbf{M}} \,\mathbf{e}_j .
 $$
 
-È una **forma bilineare** in $\mathbf{e}_i$ e $\mathbf{e}_j$: una funzione
+È una forma bilineare in $\mathbf{e}_i$ e $\mathbf{e}_j$: una funzione
 $\beta(\mathbf{x}, \mathbf{y})$ lineare in ciascun argomento quando l'altro è
 tenuto fisso. La forma bilineare più generale su $\mathbb{R}^d$ si scrive
 $\mathbf{x}^\top \mathbf{M} \mathbf{y}$ con $\mathbf{M}$ di dimensione $d
@@ -485,8 +485,8 @@ $\mathbf{x}^\top \mathbf{M} \mathbf{y}$ con $\mathbf{M}$ di dimensione $d
 
 La differenza sta nel rango. Se $\mathbf{W}^A$ e $\mathbf{W}^B$ sono $k
 \times d$ con $k < d$, allora $\operatorname{rank}(\mathbf{M}) \le k$: non si
-sta imparando una forma bilineare qualsiasi, ma una **parametrizzazione a
-rango basso**, cioè un elemento di una famiglia ristretta. I conti, con i
+sta imparando una forma bilineare qualsiasi, ma una parametrizzazione a
+rango basso, cioè un elemento di una famiglia ristretta. I conti, con i
 valori di GPT-3 ($d = 12\,288$, $k = d/H = 128$): la matrice piena avrebbe
 $d^2 = 150\,994\,944$ parametri, la coppia di fattori ne ha $2kd =
 3\,145\,728$, quarantotto volte meno. Il vincolo di rango agisce come
@@ -555,7 +555,7 @@ $$
 = \mathbf{e}_i^\top (\mathbf{W}^A)^\top \mathbf{W}^B \mathbf{e}_j ,
 $$
 
-cioè i punteggi non cambiano. Le due matrici non sono **identificabili**
+cioè i punteggi non cambiano. Le due matrici non sono identificabili
 separatamente: lo è solo il loro prodotto $\mathbf{M}$
 {cite}`shalizi2023attention`. L'ortogonalità, per giunta, è più di quanto
 serva: per ogni $\mathbf{S} \in \mathbb{R}^{k\times k}$ invertibile,
@@ -589,7 +589,7 @@ coincidere, il che accade solo se $\mathbf{R}$ è ortogonale. L'indeterminazione
 resta, insomma, ma si restringe alle rotazioni, che è esattamente il gruppo di
 cui parla l'analogia che segue.
 
-La situazione è la stessa della **rotazione dei fattori** nell'analisi
+La situazione è la stessa della rotazione dei fattori nell'analisi
 fattoriale, dove i fattori estratti sono determinati solo a meno di una
 trasformazione ortogonale, ed è il motivo per cui esistono i criteri di
 rotazione (varimax e simili) e le liti su quale usare. Due conseguenze,
@@ -722,8 +722,8 @@ che vengono i numeri da capogiro. Prendendo GPT-3, lo stesso modello dei
 conti di prima: novantasei strati, ciascuno con novantasei
 relazioni, ciascuna con le sue tre tabelle, più le tabelle della parte non
 lineare. E ogni singola tabella, l'abbiamo visto, è già di suo qualche milione
-di caselle. Messo tutto insieme si arriva a circa **centosettantacinque
-miliardi** di manopole, ed è il numero che compare nella scheda tecnica del
+di caselle. Messo tutto insieme si arriva a circa centosettantacinque
+miliardi di manopole, ed è il numero che compare nella scheda tecnica del
 modello.
 
 `````
@@ -753,7 +753,7 @@ gradiente accanto a quella che passa per $f$.
 Quanto quella via resti davvero libera dipende però da dove si mette la
 normalizzazione, e qui il testo non può promettere più di quanto la formula
 mantenga. Nella forma del 2017 (*post-LN*) la
-normalizzazione sta **sopra** la somma, quindi il gradiente la attraversa a
+normalizzazione sta sopra la somma, quindi il gradiente la attraversa a
 ogni strato e viene moltiplicato per la sua Jacobiana, che identità non è: il
 termine si attenua, tanto più quanto più il residuo cresce in norma, ed è il
 motivo per cui il post-LN richiede un riscaldamento del tasso di
@@ -786,7 +786,7 @@ C'è una cosa che la media pesata, così com'è scritta, non sa fare, ed è
 istruttivo che il difetto si veda direttamente dalla formula.
 
 Nel conto del punteggio fra due parole entrano le loro liste di numeri e
-nient'altro: non entra mai il **posto** che occupano nella frase, cioè se una è
+nient'altro: non entra mai il posto che occupano nella frase, cioè se una è
 la seconda parola e l'altra la quinta. Il punteggio dipende da *che cosa* c'è
 in quelle due posizioni, mai da *quali* posizioni siano. Se si mescolano le
 parole della frase, i punteggi restano gli stessi, solo riordinati:
@@ -796,11 +796,11 @@ modello che le confonde non è un modello del linguaggio.
 
 L'informazione di posizione va quindi immessa a mano. La via storica è la più
 diretta: si costruisce una lista di numeri per ogni posizione (una per la
-prima parola, una per la seconda, e così via) e la si **somma** alla lista
+prima parola, una per la seconda, e così via) e la si somma alla lista
 della parola che sta lì {cite}`vaswani2017attention`. Chi legge quel vettore si
 ritrova dentro, mescolate, due informazioni: quale parola è e dove sta.
 
-Le soluzioni oggi prevalenti codificano invece la posizione **relativa**, cioè
+Le soluzioni oggi prevalenti codificano invece la posizione relativa, cioè
 la distanza fra le due parole e non il numero d'ordine di ciascuna, per due
 ragioni. La prima è che il legame fra due parole dipende da quanto sono
 lontane, non da dove cadono nel testo. La seconda è che un modello addestrato
@@ -920,9 +920,9 @@ $$
 \log P_{\theta}(w_i \mid w_1, \dots, w_{i-1}) .
 $$
 
-È **massima verosimiglianza**, con il logaritmo che trasforma il prodotto
+È massima verosimiglianza, con il logaritmo che trasforma il prodotto
 della regola della catena in una somma. Cambiando segno e mediando si
-ottiene la log-verosimiglianza negativa, che è poi la **cross-entropia** fra
+ottiene la log-verosimiglianza negativa, che è poi la cross-entropia fra
 la distribuzione vera e quella del modello: la sezione sulla teoria
 dell'informazione ha già mostrato che sono la stessa cosa, e in questo caso
 specifico il perché si vede in due righe. La distribuzione «vera» su ogni
@@ -935,9 +935,9 @@ il «pavimento» della loss è zero: la sezione sulla teoria dell'informazione
 osservava che il minimo teorico è $H(p)$, ed è vero della distribuzione
 condizionata vera del processo, non di questo bersaglio empirico.)
 
-La massimizzazione avviene per **discesa del gradiente stocastica**: si calcola
+La massimizzazione avviene per discesa del gradiente stocastica: si calcola
 il gradiente su un sottoinsieme casuale di sequenze invece che sull'intero
-corpus, il che dà una stima rumorosa ma **non distorta**, cioè sbagliata in
+corpus, il che dà una stima rumorosa ma non distorta, cioè sbagliata in
 media di zero: gli errori dei singoli passi si compensano invece di sommarsi in
 una direzione. I parametri si aggiornano nella direzione che migliora
 l'obiettivo. Che il gradiente sia calcolabile attraverso decine di strati viene
@@ -1145,7 +1145,7 @@ identificabili separatamente.
   su un vocabolario da 50 000 fanno un numero con 47 cifre, il doppio delle
   molecole d'acqua degli oceani), quindi al posto di un quaderno da consultare
   serve una funzione da calcolare, che generalizzi anche ai contesti mai visti.
-- Il motore è una **media pesata**: per capire una parola si mescola un po’ di
+- Il motore è una media pesata: per capire una parola si mescola un po’ di
   ciò che sanno le altre, in proporzioni decise dai vettori stessi. Le
   proporzioni non le scrive nessuno: sono il risultato di parametri appresi,
   ed è per questo che il modello non riceve la grammatica ma può arrivarci.
@@ -1188,18 +1188,18 @@ identificabili separatamente.
   rappresentazione $\mathbf{h}_i \in \mathbb{R}^d$ è la ricomposizione delle
   $H$ uscite, $\mathbf{h}_i = \mathbf{W}^O[\mathbf{o}^{(1)}_i;\dots;
   \mathbf{o}^{(H)}_i]$.
-- Il punteggio è una **forma bilineare**
+- Il punteggio è una forma bilineare
   $\mathbf{e}_i^\top \mathbf{M} \mathbf{e}_j$ con
   $\mathbf{M} = (\mathbf{W}^A)^\top\mathbf{W}^B$ di rango $\le k$: una
   parametrizzazione a rango basso che riduce i parametri (per GPT-3, $2kd$
   contro $d^2$: quarantotto volte meno) e regolarizza.
-- $\mathbf{W}^A$ e $\mathbf{W}^B$ **non sono identificabili** separatamente:
+- $\mathbf{W}^A$ e $\mathbf{W}^B$ non sono identificabili separatamente:
   per ogni $\mathbf{O}$ ortogonale la coppia
   $(\mathbf{O}\mathbf{W}^A, \mathbf{O}\mathbf{W}^B)$ dà gli stessi punteggi, e
   con una $\mathbf{S}$ invertibile qualsiasi resta invariata $\mathbf{M}$.
   È il problema della rotazione dei fattori: male per l'interpretazione,
   bene per l'ottimizzazione. Riparametrizzare gli embedding richiede di
-  trasformare **anche** $\mathbf{W}^C$: senza, i punteggi restano ma l'uscita
+  trasformare anche $\mathbf{W}^C$: senza, i punteggi restano ma l'uscita
   cambia.
 - Le $H$ copie parallele (*head*) sono capacità progettata, non ruoli
   assegnati: l'allineamento con le categorie linguistiche è parziale, e la
@@ -1212,7 +1212,7 @@ identificabili separatamente.
   attenua). Nulla è condiviso fra strati: $12d^2$ parametri per
   strato, che per GPT-3 ($d=12\,288$, $L=96$) fanno i 175 miliardi
   complessivi.
-- L'ultimo strato è una **regressione logistica multinomiale** su
+- L'ultimo strato è una regressione logistica multinomiale su
   $|\mathcal{V}|$ categorie, $P(v) \propto \exp(\mathbf{u}_v^\top
   \mathbf{h}^{(L)}_n)$, con covariate calcolate dai $L$ strati precedenti; i
   $\mathbf{u}_v$ di solito non sono parametri nuovi, ma le righe di

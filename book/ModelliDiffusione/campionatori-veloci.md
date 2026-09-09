@@ -68,7 +68,7 @@ $$
 \boldsymbol{\epsilon}_\theta(\mathbf{x}_u,u)\,\mathrm{d}u .
 $$
 
-Il primo addendo è **esatto**, per qualunque ampiezza del passo: nessuna
+Il primo addendo è esatto, per qualunque ampiezza del passo: nessuna
 approssimazione, nessun errore accumulato. Tutto l'errore di discretizzazione
 sta nell'integrale, cioè nella sola parte che dipende dalla rete.
 
@@ -96,8 +96,8 @@ parte del ritorno l'immagine è indistinguibile dal rumore e i cambiamenti sono
 grossolani; nell'ultimo tratto si decidono i dettagli, e lì i passi vanno
 fitti. Passi uniformi nel tempo ne sprecano parecchi dove non serve.
 
-La grandezza rispetto a cui conviene spaziarli è **quanto segnale c'è rispetto
-al rumore**, misurata in scala logaritmica. Distribuire i passi uniformemente
+La grandezza rispetto a cui conviene spaziarli è quanto segnale c'è rispetto
+al rumore, misurata in scala logaritmica. Distribuire i passi uniformemente
 lungo quella scala significa fare in modo che a ogni passo il rapporto fra
 segnale e rumore cambi sempre della stessa proporzione, ed è quello che rende
 i passi ugualmente informativi.
@@ -118,14 +118,14 @@ $$
 \lambda_t := \log\frac{\alpha_t}{\sigma_t},
 $$
 
-dove il rapporto è quello fra le ampiezze, come nella sezione sul limite
-continuo: gli articoli che definiscono il rapporto sulle potenze scrivono
-quindi $2\lambda_t$ dove qui c'è $\lambda_t$.
-
 funzione strettamente decrescente di $t$, quindi invertibile:
-$t = t_\lambda(\lambda)$. Cambiando variabile nell'integrale, e usando le
-identità $\mathrm{d}\lambda = -\tfrac{g^2}{2\sigma_t^2}\mathrm{d}t$ valide per
-i programmi affini, la soluzione esatta assume la forma
+$t = t_\lambda(\lambda)$. Il rapporto è quello fra le ampiezze, come nella
+sezione sul limite continuo: gli articoli che lo definiscono sulle potenze
+scrivono quindi $2\lambda_t$ dove qui c'è $\lambda_t$.
+
+Cambiando variabile nell'integrale, e usando le identità
+$\mathrm{d}\lambda = -\tfrac{g^2}{2\sigma_t^2}\mathrm{d}t$ valide per i
+programmi affini, la soluzione esatta assume la forma
 
 $$
 \mathbf{x}_t = \frac{\alpha_t}{\alpha_s}\,\mathbf{x}_s
@@ -138,7 +138,7 @@ con $\hat{\boldsymbol{\epsilon}}_\theta(\lambda) :=
 riscrittura su cui si fonda DPM-Solver {cite}`lu2022dpm`, e ha due
 conseguenze.
 
-La prima è che l'integrale è **pesato esponenzialmente**, quindi si approssima
+La prima è che l'integrale è pesato esponenzialmente, quindi si approssima
 bene con una espansione di Taylor di $\hat{\boldsymbol{\epsilon}}$ in
 $\lambda$: i coefficienti che servono sono gli integrali
 $\int e^{-\lambda}\lambda^k\,\mathrm{d}\lambda$, che hanno primitiva
@@ -158,7 +158,7 @@ scelte ortogonali, e si sbaglia a considerarle una sola.
 `````{tab} Elementare
 
 Supponendo che la risposta della rete resti la stessa per tutta la durata del
-passo, si ottiene una formula che era già nota: è **DDIM**, il campionatore
+passo, si ottiene una formula che era già nota: è DDIM, il campionatore
 veloce comparso pochi mesi dopo DDPM. All'epoca ci si era arrivati da
 tutt'altra parte, ed è la strada che racconta la {doc}`sezione su come funziona
 la diffusione </ModelliDiffusione/come-funziona>`; visto da qui è semplicemente
@@ -183,7 +183,7 @@ $$
 \qquad h := \lambda_t - \lambda_s ,
 $$
 
-che riscritta è esattamente l'aggiornamento **DDIM**
+che riscritta è esattamente l'aggiornamento DDIM
 {cite}`song2021denoising`:
 
 $$
@@ -195,7 +195,7 @@ $$
 Le due scritture sono la stessa cosa, e la seconda è quella con cui DDIM viene
 di solito presentato: si stima il dato pulito e lo si rimescola al livello di
 rumore successivo. L'errore locale è $O(h^2)$ e quello globale $O(h)$: DDIM è
-un metodo del **primo ordine**, ed è un integratore esponenziale, non un
+un metodo del primo ordine, ed è un integratore esponenziale, non un
 Eulero. La differenza si misura, ed è grande.
 
 `````
@@ -289,7 +289,7 @@ print("ordine misurato:", [round(float(np.log(misure[32][i] / misure[128][i])
 Gli ordini misurati (l'esponente per cui, raddoppiando i passi, l'errore si
 divide per due elevato a quell'esponente) dicono che i metodi si comportano
 esattamente come la teoria prevede: DDIM è del primo ordine ($1{,}07$),
-DPM-Solver del secondo ($2{,}08$). Eulero invece **non raggiunge** il primo
+DPM-Solver del secondo ($2{,}08$). Eulero invece non raggiunge il primo
 ordine ($0{,}78$), e non per un difetto del metodo ma perché la parte che lui
 approssima invece di risolvere è proprio quella che cambia in fretta.
 
@@ -306,7 +306,7 @@ che in pratica sorprende.
 
 `````{tab} Elementare
 
-Con otto sole valutazioni il metodo del secondo ordine fa **peggio** del primo
+Con otto sole valutazioni il metodo del secondo ordine fa peggio del primo
 ordine: cinque centesimi contro un centesimo. Non c'è niente di sbagliato nel
 conto: i metodi di ordine alto sono più precisi quando i passi sono piccoli, e
 più fragili quando sono grandi. Un metodo del secondo ordine guarda avanti
@@ -359,7 +359,7 @@ DPM-Solver++ {cite}`lu2022dpmpp` risolve il problema riscrivendo l'integrale
 nella parametrizzazione $\hat{\mathbf{x}}_0$, che a guida alta esce
 dall'intervallo dei dati molto meno del rumore predetto (e quel che ne esce si
 riporta dentro con una soglia dinamica), e adottando uno schema
-**multipasso** (che riusa le valutazioni precedenti, come i metodi di Adams)
+multipasso (che riusa le valutazioni precedenti, come i metodi di Adams)
 invece che a passo singolo: a parità di ordine dimezza le valutazioni. DEIS
 arriva alla stessa famiglia per la via dell'estrapolazione polinomiale.
 
@@ -400,21 +400,21 @@ altro interruttore, quello che ridistribuisce i livelli di rumore.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- L'equazione da percorrere è **per metà nota**: un pezzo riscala lo stato
+- L'equazione da percorrere è per metà nota: un pezzo riscala lo stato
   secondo il programma di rumore che abbiamo scelto noi e si risolve a penna,
   l'altro contiene la rete. I metodi buoni spendono i passi solo sul secondo,
   quelli generici li spendono su tutti e due.
-- I passi vanno spaziati non nel tempo ma rispetto a **quanto segnale c'è
-  rispetto al rumore**, in scala logaritmica: così ogni passo cambia le cose
+- I passi vanno spaziati non nel tempo ma rispetto a quanto segnale c'è
+  rispetto al rumore, in scala logaritmica: così ogni passo cambia le cose
   della stessa proporzione. È un parametro a parte rispetto al metodo, e da
   solo vale una fetta del risparmio.
-- **DDIM è il primo gradino** di questa scala, ricavato per un'altra strada nel
+- DDIM è il primo gradino di questa scala, ricavato per un'altra strada nel
   2020. Riconoscerlo come tale dice subito come costruire i gradini successivi.
 - Misurato sullo stesso banco: per arrivare dove DDIM arriva con trentadue
   valutazioni, a Eulero ne servono più di centoventotto e a un metodo del
   secondo ordine ventidue; con trentadue, quello del secondo ordine è già tre
   volte più preciso.
-- L'ordine alto **non conviene sempre**. Con pochissimi passi è più fragile e
+- L'ordine alto non conviene sempre. Con pochissimi passi è più fragile e
   fa peggio; con la guida forte va riscritto in modo da estrapolare la stima
   dell'immagine pulita invece del disturbo; e sotto una certa soglia il limite
   diventa l'errore della rete, che nessun integratore può togliere.
@@ -424,18 +424,18 @@ altro interruttore, quello che ridistribuisce i livelli di rumore.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- La PF-ODE è **semilineare**: la parte $f(t)\mathbf{x}$ ha soluzione esatta
+- La PF-ODE è semilineare: la parte $f(t)\mathbf{x}$ ha soluzione esatta
   per fattore integrante, e l'unico errore di discretizzazione sta
   nell'integrale che contiene
-  $\boldsymbol{\epsilon}_\theta$. È la definizione di **integratore
-  esponenziale**, famiglia nata per i problemi stiff.
+  $\boldsymbol{\epsilon}_\theta$. È la definizione di integratore
+  esponenziale, famiglia nata per i problemi stiff.
 - Nel tempo $\lambda_t=\log(\alpha_t/\sigma_t)$ la soluzione è
   $\mathbf{x}_t = \frac{\alpha_t}{\alpha_s}\mathbf{x}_s -
   \alpha_t\int_{\lambda_s}^{\lambda_t}e^{-\lambda}
   \hat{\boldsymbol{\epsilon}}_\theta\,\mathrm{d}\lambda$: l'integrale è pesato
   esponenzialmente, quindi Taylor in $\lambda$ con coefficienti
   $\int e^{-\lambda}\lambda^k$ in forma chiusa.
-- Troncando all'ordine zero si riottiene **DDIM**,
+- Troncando all'ordine zero si riottiene DDIM,
   $\mathbf{x}_t=\frac{\alpha_t}{\alpha_s}\mathbf{x}_s-\sigma_t(e^h-1)
   \boldsymbol{\epsilon}_\theta$, che è quindi un integratore esponenziale del
   primo ordine e non un Eulero. Ordini misurati sul banco di prova: Eulero
@@ -443,9 +443,9 @@ altro interruttore, quello che ridistribuisce i livelli di rumore.
 - I tre limiti dell'ordine alto: instabilità a passo grande (il pareggio col
   primo ordine cade attorno alle sedici valutazioni), norma di
   $\tilde{\boldsymbol{\epsilon}}$ che cresce con la guida (donde
-  **DPM-Solver++**, che estrapola $\hat{\mathbf{x}}_0$ ed è multipasso), e il
+  DPM-Solver++, che estrapola $\hat{\mathbf{x}}_0$ ed è multipasso), e il
   pavimento dovuto all'errore $\delta$ della rete.
-- La griglia è una scelta **ortogonale** al metodo, e va uniforme in
+- La griglia è una scelta ortogonale al metodo, e va uniforme in
   $\lambda$.
 ```
 `````

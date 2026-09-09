@@ -4,7 +4,7 @@ Nel luglio del 1948, sulla rivista tecnica dei Bell Labs, un ingegnere
 trentaduenne di nome Claude Shannon pubblica un articolo dal titolo
 volutamente sobrio: *A Mathematical Theory of Communication*
 {cite}`shannon1948mathematical`. Dentro c'è un'idea che cambierà il mondo più
-di quanto il titolo lasci intuire: l'informazione si può **misurare**, con la
+di quanto il titolo lasci intuire: l'informazione si può misurare, con la
 stessa oggettività con cui si misurano metri e chilogrammi. L'unità di misura
 è il **bit**: contrazione di *binary digit*, parola che Shannon attribuisce al
 collega John Tukey e che proprio in quell'articolo compare a stampa per la
@@ -15,7 +15,7 @@ ancora oggi, **entropia**, lo stesso della termodinamica: è il nome
 dell'aneddoto raccontato in apertura di capitolo, quello che von Neumann
 avrebbe suggerito a Shannon. Qui lo riempiamo di contenuto, perché ci riguarda
 da vicino: il punteggio d'errore con cui addestreremo quasi tutti
-i **classificatori** (cioè i modelli che devono scegliere fra
+i classificatori (cioè i modelli che devono scegliere fra
 alternative: gatto o cane, spam o no) discende in linea diretta da
 quell'articolo del 1948, e si chiama *cross-entropy*.
 
@@ -83,8 +83,8 @@ $$
 
 dove il segno meno rende la quantità positiva (i logaritmi di numeri fra $0$ e
 $1$ sono negativi) e la base $2$ fissa l'unità di misura in bit. La forma
-logaritmica è obbligata: è l'unica forma **continua** (a meno della base)
-che rende la sorpresa **additiva** per eventi indipendenti; se
+logaritmica è obbligata: è l'unica forma continua (a meno della base)
+che rende la sorpresa additiva per eventi indipendenti; se
 $p(x,y)=p(x)\,p(y)$, allora $I(x,y)=I(x)+I(y)$, perché il logaritmo trasforma i
 prodotti in somme. L'aggettivo serve: l'equazione funzionale $f(pq)=f(p)+f(q)$
 ha anche soluzioni patologiche, che però si costruiscono solo rinunciando a
@@ -101,7 +101,7 @@ $\log_2$ l'unità si chiama *nat*: è la convenzione usata dalle loss di PyTorch
 ## L'entropia: la sorpresa media
 
 Un singolo esito ha una sorpresa; una *sorgente* di esiti (una moneta, un
-dado, una lingua) ha una sorpresa **media**. È l'entropia: quanto ci
+dado, una lingua) ha una sorpresa media. È l'entropia: quanto ci
 aspettiamo di essere sorpresi, in media, a ogni estrazione
 ({numref}`fig-entropia-monete`).
 
@@ -125,16 +125,16 @@ media pesata fa $0{,}9 \times 0{,}15 + 0{,}1 \times 3{,}32 \approx 0{,}47$ bit
 per lancio: meno della metà del bit pieno della moneta equa. Ha senso: una
 moneta prevedibile ci sorprende poco, e infatti "produce" poca informazione.
 
-La regola generale: l'entropia è **massima quando tutto è ugualmente
-possibile** (massima incertezza: 1 bit per la moneta equa, circa 2,6 bit per il
-dado onesto) e **scende verso zero** man mano che un esito diventa dominante.
+La regola generale: l'entropia è massima quando tutto è ugualmente
+possibile (massima incertezza: 1 bit per la moneta equa, circa 2,6 bit per il
+dado onesto) e scende verso zero man mano che un esito diventa dominante.
 Una moneta con due teste ha entropia zero: nessuna sorpresa, mai.
 
 `````
 
 `````{tab} Superiore
 
-Per una distribuzione discreta $p=(p_1,\dots,p_n)$, l’**entropia** è il valore
+Per una distribuzione discreta $p=(p_1,\dots,p_n)$, l’entropia è il valore
 atteso dell'autoinformazione:
 
 $$
@@ -152,7 +152,7 @@ degeneri (un esito certo); e $H(p)\le \log_2 n$, con uguaglianza solo per la
 distribuzione uniforme. L'entropia è quindi una misura di *incertezza*: nulla
 quando l'esito è scritto, massima quando le $n$ alternative sono equiprobabili.
 
-Entrambe valgono nel **discreto**, e nel continuo la prima cade. L'analogo
+Entrambe valgono nel discreto, e nel continuo la prima cade. L'analogo
 per una densità, l’*entropia differenziale*
 $h(f) = -\int f\log_2 f$, può essere negativo appena la densità si concentra:
 $h(\mathcal{N}(0,1)) = +2{,}05$ bit, ma $h(\mathcal{N}(0,\,0{,}1^2)) =
@@ -168,7 +168,7 @@ learning ce ne sono sempre *due*, e conviene dire di quali si tratta. La prima
 descrive come vanno le cose davvero: quanto spesso, nel mondo, esce ciascuna
 risposta. Nessuno la conosce per intero (con la moneta truccata sì, perché
 l'abbiamo truccata noi; con le foto di gatti no), ma esiste, e la chiamiamo
-$p$. La seconda è quello che il **modello** crede: le probabilità che assegna
+$p$. La seconda è quello che il modello crede: le probabilità che assegna
 lui, e che sono sbagliate finché non impara. La chiamiamo $q$. Serve un modo
 per misurare quanto la seconda sbaglia rispetto alla prima.
 
@@ -196,8 +196,8 @@ in pratica si minimizzi la cross-entropia e non la KL. Le due quantità
 differiscono per una sola cosa, la sorpresa media della realtà $p$, che
 dipende dai dati e non da chi li prevede: è la stessa qualunque modello si
 usi. Spingere in basso l'una o l'altra porta quindi esattamente allo stesso
-modello, e la cross-entropia ha il vantaggio di potersi **stimare dai soli
-esempi**, senza mai scrivere $p$.
+modello, e la cross-entropia ha il vantaggio di potersi stimare dai soli
+esempi, senza mai scrivere $p$.
 
 A prima vista sembra impossibile, visto che nella definizione la $p$ c'è. Il
 punto è che non serve la tabella completa delle probabilità vere: bastano gli
@@ -219,7 +219,7 @@ Il codice Morse assegna il segnale più corto (un punto) alla E, che in inglese
 comuni, così i messaggi restano brevi. Ora immagina di telegrafare in italiano
 usando il Morse *tarato sull'inglese*: funziona, ogni lettera ha il suo
 codice, ma le frequenze delle lettere sono diverse e ogni tanto una lettera
-comune da noi si porta dietro un codice lungo. In media, **sprechi**.
+comune da noi si porta dietro un codice lungo. In media, sprechi.
 
 La **cross-entropia** è la lunghezza media dei tuoi messaggi quando usi il
 codice pensato per la lingua sbagliata: le lettere arrivano secondo la realtà
@@ -253,7 +253,7 @@ $p=q$. Esempio con le nostre monete: se la realtà è la moneta truccata
 $D_{KL} = 1 - 0{,}469 \approx 0{,}531$ bit. Nel verso opposto (realtà equa,
 modello convinto del trucco) $H(p,q) \approx 1{,}737$ bit e
 $D_{KL} \approx 0{,}737$ bit. I due valori differiscono: la KL è
-**asimmetrica**, $D_{KL}(p\,\|\,q) \ne D_{KL}(q\,\|\,p)$ in generale, e non
+asimmetrica, $D_{KL}(p\,\|\,q) \ne D_{KL}(q\,\|\,p)$ in generale, e non
 soddisfa la disuguaglianza triangolare. Non è una distanza in senso
 matematico, per quanto la si usi come misura di dissimilarità.
 
@@ -297,8 +297,8 @@ $$
 e $H(p)$ non dipende da $\theta$: il minimo teorico della loss non è zero ma
 l'entropia dei dati, la loro incertezza irriducibile.
 
-Attenzione però a **quale** $p$, perché lo stesso simbolo (qui come
-dappertutto) copre due cose diverse. Se $p$ è la distribuzione condizionata vera del
+Attenzione però a quale $p$, perché lo stesso simbolo (qui come dappertutto)
+copre due cose diverse. Se $p$ è la distribuzione condizionata vera del
 processo che genera i dati, il pavimento è $H(p) > 0$ e nessun modello scende
 sotto. Se invece $p$ è il bersaglio empirico di un singolo esempio, cioè
 «questa immagine è un gatto» con probabilità $1$ e tutto il resto a zero,
@@ -389,7 +389,7 @@ Natural Language Processing.
 ## Il limite della compressione
 
 Chiudiamo con la conseguenza più concreta del lavoro di Shannon: l'entropia è
-un **limite alla compressione**. Comprimere un file, come fa un programma tipo
+un limite alla compressione. Comprimere un file, come fa un programma tipo
 `zip` o `gzip`, vuol dire riscriverlo più corto in modo da poterlo poi
 ricostruire identico. Shannon dimostrò che quel «più corto» ha un fondo:
 nessun programma, per quanto ingegnoso, può scendere sotto l’**entropia per
@@ -398,12 +398,12 @@ con sé. In media, sotto quella soglia non si scende.
 
 L'aggettivo «per simbolo» regge tutta l'affermazione, ed è il punto in cui la
 frase detta male diventa falsa. La sorpresa media $H$ calcolata sulle sole
-frequenze delle lettere descrive una sorgente **senza memoria**, una che
+frequenze delle lettere descrive una sorgente senza memoria, una che
 estrae ogni lettera indipendentemente dalle precedenti. Una lingua non è così:
 dopo una «q» arriva quasi sempre una «u», dopo «il gatto ne» le continuazioni
 plausibili sono poche. Per una sorgente con memoria il limite vero è più
-basso, ed è la sorpresa media di ogni lettera **dato tutto ciò che la
-precede**.
+basso, ed è la sorpresa media di ogni lettera dato tutto ciò che la
+precede.
 
 La differenza si tocca con mano su una sorgente con memoria costruita apposta,
 dove si sa in partenza dove la memoria sta. Si estraggono a caso ventimila
@@ -421,7 +421,7 @@ mezzo bit della sorgente vera, perché un compressore generico quella struttura
 la indovina, non la conosce.
 
 È la stessa quantità che Shannon stimò nel 1951 per l'inglese scritto in circa
-**un bit per lettera** {cite}`shannon1951prediction`, e va confrontata con i
+un bit per lettera {cite}`shannon1951prediction`, e va confrontata con i
 quasi $5$ bit che darebbero ventisei lettere equiprobabili tenendo conto solo
 di quante sono. Uno zip morde bene un testo perché quella ridondanza c'è tutta;
 non morde più niente su un file già compresso, dove è già stata spremuta via.
@@ -498,29 +498,29 @@ print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- L'informazione è **sorpresa**: una notizia scontata (domani sorge il sole)
-  non informa, una rara sì. Si misura in **bit**, e un bit è una domanda ben
+- L'informazione è sorpresa: una notizia scontata (domani sorge il sole)
+  non informa, una rara sì. Si misura in bit, e un bit è una domanda ben
   posta, con risposta sì o no.
-- L’**entropia** è la sorpresa media di una sorgente: 1 bit a lancio per la
+- L’entropia è la sorpresa media di una sorgente: 1 bit a lancio per la
   moneta equa, circa 0,47 per quella truccata che dà testa nove volte su dieci,
   circa 2,585 per il dado a sei facce. Massima quando tutti gli esiti sono
   ugualmente possibili, nulla quando l'esito è già deciso in partenza.
-- La **cross-entropia** è quanto costa scrivere i messaggi con il codice
+- La cross-entropia è quanto costa scrivere i messaggi con il codice
   sbagliato (il Morse tarato sull'inglese, usato per l'italiano); i bit pagati
-  in più rispetto al codice giusto, cioè lo spreco puro, sono la **divergenza
-  di Kullback–Leibler**: mai negativa, zero solo se il modello indovina la
+  in più rispetto al codice giusto, cioè lo spreco puro, sono la divergenza
+  di Kullback–Leibler: mai negativa, zero solo se il modello indovina la
   realtà, e diversa a seconda del verso in cui si sbaglia (perciò non è una
   distanza).
 - Addestrare un classificatore rendendo la risposta giusta sempre meno
   sorprendente, avvicinare le credenze del modello alla realtà e scegliere i
   parametri che rendono i dati più plausibili sono tre nomi per la stessa
   operazione.
-- La **perplessità** traduce l'entropia in facce del dado: quante alternative
+- La perplessità traduce l'entropia in facce del dado: quante alternative
   ugualmente probabili darebbero la stessa incertezza (2 per la moneta equa, 6
   per il dado). Meno facce, meno incertezza: è un numero da far scendere, e
   sotto $1$ non va. La ritroveremo nei modelli di linguaggio.
-- Comprimere senza perdere niente ha un limite, ed è l'entropia **per
-  simbolo** della sorgente: quanta sorpresa porta in media ogni pezzo di
+- Comprimere senza perdere niente ha un limite, ed è l'entropia per
+  simbolo della sorgente: quanta sorpresa porta in media ogni pezzo di
   messaggio, tenuto conto di tutto quello che lo precede. È molto meno di
   quanto direbbero le sole frequenze delle lettere, ed è la ragione per cui
   uno zip su un testo fa meglio di quel conto ingenuo, e non fa niente su un
@@ -531,20 +531,20 @@ print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- L'informazione è **sorpresa**: un esito di probabilità $p$ vale $-\log_2 p$
+- L'informazione è sorpresa: un esito di probabilità $p$ vale $-\log_2 p$
   bit; tanto più, quanto più è raro.
-- L’**entropia** $H(p)=-\sum_i p_i \log_2 p_i$ è la sorpresa media: 1 bit per
+- L’entropia $H(p)=-\sum_i p_i \log_2 p_i$ è la sorpresa media: 1 bit per
   la moneta equa, 0,47 per quella truccata, 2,585 per il dado. Massima
   sull'uniforme, nulla sul certo.
-- La **cross-entropia** $H(p,q)$ è il costo di usare il "codice" sbagliato; la
-  **divergenza KL** $D_{KL}(p\,\|\,q)=H(p,q)-H(p)\ge 0$ è lo spreco puro.
+- La cross-entropia $H(p,q)$ è il costo di usare il "codice" sbagliato; la
+  divergenza KL $D_{KL}(p\,\|\,q)=H(p,q)-H(p)\ge 0$ è lo spreco puro.
   Asimmetrica: non è una distanza.
 - Minimizzare la cross-entropy come loss = minimizzare la KL fra dati e
   modello = massima verosimiglianza: tre nomi per la stessa operazione.
-- La **perplessità** $2^{H}$ traduce l'entropia in "facce del dado": si
+- La perplessità $2^{H}$ traduce l'entropia in "facce del dado": si
   minimizza come l'entropia, con pavimento $1$, e la ritroveremo nei modelli di
   linguaggio.
-- Il limite della compressione senza perdite è l’**entropia per simbolo**
+- Il limite della compressione senza perdite è l’entropia per simbolo
   (*entropy rate*) $\lim_n H(X_1,\dots,X_n)/n$, non la $H$ di ordine zero
   calcolata sulle frequenze marginali: per una sorgente con memoria la seconda
   sovrastima largamente, e un compressore generico la scavalca senza

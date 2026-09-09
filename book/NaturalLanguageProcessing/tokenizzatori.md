@@ -3,7 +3,7 @@
 Nella sezione precedente abbiamo dato per buono che il testo si tagli in
 token, e abbiamo detto che i sistemi moderni usano pezzi più piccoli della
 parola. Resta però la domanda che conta davvero, ed è una domanda di
-ingegneria: **quali** pezzi? Nessuno decide a mano che *tokenizzazione* vada
+ingegneria: quali pezzi? Nessuno decide a mano che *tokenizzazione* vada
 spezzata in `token` + `izzazione`. Quella decisione è il risultato di un
 algoritmo che ha letto un corpus enorme e ha scelto, uno per uno, i mattoncini
 da tenere. Questa sezione apre quell'algoritmo.
@@ -25,18 +25,18 @@ All'estremo opposto c'è la soluzione radicale: un vocabolario di singoli
 caratteri. Le parole sconosciute spariscono per costruzione, perché ogni testo
 è fatto di lettere che il vocabolario contiene tutte. Ma si paga due volte.
 
-**La prima: le sequenze si allungano di brutto.** Una parola italiana media sta
+La prima: le sequenze si allungano di brutto. Una parola italiana media sta
 attorno ai cinque o sei caratteri, quindi contare a lettere invece che a parole
 allunga il testo di cinque volte. E la lunghezza si paga cara. Il motivo è un
 meccanismo che incontreremo fra qualche sezione, con la traduzione automatica,
-e per esteso nel {doc}`capitolo sui Transformer </Transformers/overview>`: l’**attenzione**, cioè il modo in
-cui un modello moderno guarda tutte le parole della frase insieme e decide
-quali contano davvero. Per farlo confronta ogni posizione con ogni altra, e
-quel conto cresce con il **quadrato** della lunghezza: raddoppiare le posizioni
-quadruplica i confronti, e una sequenza cinque volte più lunga costa
-venticinque volte il lavoro.
+e per esteso nel {doc}`capitolo sui Transformer </Transformers/overview>`:
+l’attenzione, cioè il modo in cui un modello moderno guarda tutte le parole
+della frase insieme e decide quali contano davvero. Per farlo confronta ogni
+posizione con ogni altra, e quel conto cresce con il quadrato della
+lunghezza: raddoppiare le posizioni quadruplica i confronti, e una sequenza
+cinque volte più lunga costa venticinque volte il lavoro.
 
-**La seconda: si spreca il modello.** Un modello ha una quantità finita di
+La seconda: si spreca il modello. Un modello ha una quantità finita di
 numeri regolabili dentro di sé, ed è quella la sua capienza: tutto ciò che
 impara deve stare lì. Partire dalle lettere vuol dire spenderne una parte per
 riscoprire che *g*, *a*, *t*, *t*, *o* stanno spesso in quest'ordine, cioè per
@@ -86,14 +86,14 @@ contare.
 Sia $V$ il vocabolario e $|V|$ la sua taglia. Due quantità dipendono da $|V|$
 in verso opposto.
 
-La prima è la **lunghezza media della sequenza** dopo la tokenizzazione, la
+La prima è la lunghezza media della sequenza dopo la tokenizzazione, la
 *fertilità* del tokenizzatore (token prodotti per parola di testo). Cresce al
 ridursi di $|V|$: nel limite dei caratteri vale la lunghezza media in lettere,
 nel limite delle parole intere vale $1$. La lunghezza $n$ della sequenza è la
 grandezza che governa il costo dell'attenzione, $O(n^2 d_{\text{model}})$, e
 il consumo della finestra di contesto.
 
-La seconda è il **numero di parametri legati al vocabolario**. La matrice di
+La seconda è il numero di parametri legati al vocabolario. La matrice di
 embedding ha forma $|V| \times d_{\text{model}}$, e altrettanto la matrice di
 proiezione finale se non è condivisa con essa. Con $|V| = 50\,000$ e
 $d_{\text{model}} = 4096$ sono $204{,}8$ milioni di parametri per la sola
@@ -115,7 +115,7 @@ migliore.
 
 Il primo e più usato di questi algoritmi non nasce nella linguistica
 computazionale, ma nel mestiere di far stare i file in meno spazio. Serve
-allora una parola sola, che poi torna fino in fondo al capitolo: il **byte**.
+allora una parola sola, che poi torna fino in fondo al capitolo: il byte.
 Un byte è il mattoncino minimo con cui un computer scrive qualunque cosa, otto
 caselle che valgono 0 o 1; le combinazioni possibili sono $2^8 = 256$, né una
 di più né una di meno, e un file di testo non è che una fila di byte. Di quei
@@ -154,7 +154,7 @@ risolve un problema completamente diverso: la traduzione automatica delle
 parole rare. Cambiano due cose: fondono caratteri (e sequenze di caratteri)
 invece che byte, e invece di comprimere si fermano quando il vocabolario ha
 raggiunto la taglia voluta. Nel loro articolo il numero di
-fusioni è, testualmente, l'unico **iperparametro** dell'algoritmo: l'unica
+fusioni è, testualmente, l'unico iperparametro dell'algoritmo: l'unica
 manopola, cioè, che chi lo usa deve girare a mano, perché tutto il resto lo
 decidono i conteggi. Il lavoro viene presentato nel 2016 alla conferenza ACL
 ed è, ancora oggi, la base di quasi tutti i tokenizzatori in circolazione.
@@ -181,7 +181,7 @@ compare, e dopo una fusione aggiorna solo quelli che sono cambiati. In un modo
 o nell'altro è un lavoro che si fa una volta sola.
 
 Alla fine avete due cose: un elenco di pezzi (il vocabolario) e, soprattutto,
-l’**elenco ordinato delle fusioni**. Il secondo è più importante del primo,
+l’elenco ordinato delle fusioni. Il secondo è più importante del primo,
 perché è la ricetta. Per tokenizzare una parola nuova non serve cercarla da
 nessuna parte: la si spezza in lettere e le si riapplicano le stesse fusioni,
 nello stesso ordine in cui erano state imparate. Se la parola contiene pezzi
@@ -216,7 +216,7 @@ si arresta quando $|\Sigma| + k$ raggiunge la taglia $|V|$ desiderata: il
 numero di fusioni è quindi $k = |V| - |\Sigma|$, e il modello finale è la
 coppia $(\Sigma, M)$.
 
-La codifica di una stringa mai vista è il **replay** della lista: si parte dai
+La codifica di una stringa mai vista è il replay della lista: si parte dai
 caratteri e si applicano $m_1, \dots, m_k$ in quest'ordine. L'ordine è
 sostanziale, non convenzionale: una fusione tardiva può agire su simboli che
 solo le precedenti sanno produrre, e invertirne due dà in generale una
@@ -270,7 +270,7 @@ questo criterio con quello di WordPiece, che divide proprio per delle
 frequenze). Ogni parola parte spezzata nelle sue lettere: `b a s s o`,
 `b a s s o t t o`, e così via.
 
-**Passo 1.** Contiamo ogni coppia adiacente, pesandola con la frequenza della
+Passo 1. Contiamo ogni coppia adiacente, pesandola con la frequenza della
 parola. La coppia `s`+`s` compare una volta in ciascuna delle cinque parole,
 quindi vale $6+2+3+9+5 = 25$; la coppia `s`+`o` compare in tutte tranne
 `rossetto` (dove alla doppia s segue una e), quindi $6+2+3+9 = 20$; la coppia
@@ -291,26 +291,26 @@ quindi vale $6+2+3+9+5 = 25$; la coppia `s`+`o` compare in tutte tranne
 | `b` `o` | 3 | `bosso` |
 | `o` `t` | 2 | `bassotto` |
 
-Vince `s`+`s` con 25. Prima fusione: **`ss`**. Il corpus diventa
+Vince `s`+`s` con 25. Prima fusione: `ss`. Il corpus diventa
 `b a ss o`, `b a ss o t t o`, `b o ss o`, `r o ss o`, `r o ss e t t o`.
 
-**Passo 2.** Si ricontano le coppie sulla nuova segmentazione. Ora `ss` è un
+Passo 2. Si ricontano le coppie sulla nuova segmentazione. Ora `ss` è un
 simbolo unico, e le coppie che lo coinvolgono sono `ss`+`o` (in `basso`,
 `bassotto`, `bosso`, `rosso`: $6+2+3+9 = 20$) e `o`+`ss` (in `bosso`, `rosso`,
 `rossetto`: $3+9+5 = 17$). Le altre non sono cambiate: `r o` resta 14, `b a` e
 `a ss` valgono 8, `t t` e `t o` valgono 7. Vince `ss`+`o` con 20. Seconda
-fusione: **`sso`**.
+fusione: `sso`.
 
-**Passo 3.** Quattro parole su cinque contengono ora il simbolo `sso`:
+Passo 3. Quattro parole su cinque contengono ora il simbolo `sso`:
 `b a sso`, `b a sso t t o`, `b o sso`, `r o sso`; `rossetto` è rimasta
 `r o ss e t t o` perché lì alla doppia s non segue una o. I conteggi:
 `r`+`o` vale 14 (in `rosso` e `rossetto`), `o`+`sso` vale $3+9 = 12$,
 `b`+`a` e `a`+`sso` valgono 8 a testa. Vince `r`+`o` con 14. Terza fusione:
-**`ro`**.
+`ro`.
 
-**Passo 4.** Adesso succede la cosa interessante. La coppia più frequente è
+Passo 4. Adesso succede la cosa interessante. La coppia più frequente è
 `ro`+`sso`, con 9, cioè tutte e sole le occorrenze di `rosso`, e la fusione
-produce **`rosso`**: una parola intera diventa un singolo token. Non c'è nulla
+produce `rosso`: una parola intera diventa un singolo token. Non c'è nulla
 di speciale nella regola, è sempre la stessa; è la parola più frequente del
 corpus, quindi i suoi pezzi si trovano insieme più spesso di chiunque altro e
 si saldano per primi. È il motivo per cui, nei tokenizzatori veri, *casa* o
@@ -344,7 +344,7 @@ pezzi sbagliati.
 
 Il collaudo è tokenizzare qualcosa che nel corpus non c'era. Prendiamo
 `bassetto`. Si parte dalle lettere, `b a s s e t t o`, e si riapplicano le
-fusioni imparate **nell'ordine in cui sono state imparate**. Con le prime
+fusioni imparate nell'ordine in cui sono state imparate. Con le prime
 quattro: `ss` si applica (`b a ss e t t o`), `sso` no (dopo la doppia s c'è
 una e), `ro` no, `rosso` no.
 
@@ -366,7 +366,7 @@ strada per cui quelle due lettere si saldano passa prima per `a`+`sso` e poi
 per `b`+`asso`, e in `bassetto` dopo la doppia s non c'è una o: la prima delle
 due fusioni non scatta, la catena si spezza al primo anello, e la coppia
 `b`+`a`, che pure nel corpus è frequente, non è mai stata imparata come fusione
-a sé. **BPE non cerca la scomposizione migliore: riapplica una ricetta.** La
+a sé. BPE non cerca la scomposizione migliore: riapplica una ricetta. La
 segmentazione che ne esce somiglia spesso alla morfologia, ma non è morfologia,
 e quando le due divergono vince la ricetta.
 
@@ -397,7 +397,7 @@ noti: è un programma didattico, non un tokenizzatore di produzione.
 
 Il punto vero è quello, però, e conviene metterlo per iscritto. L'affermazione
 «con le sotto-parole non resta fuori niente» non è una proprietà
-dell'algoritmo: è una **scommessa sull'alfabeto di partenza**. Si vince finché
+dell'algoritmo: è una scommessa sull'alfabeto di partenza. Si vince finché
 il corpus di addestramento conteneva ogni carattere che potrà mai arrivare.
 Con cinque parole la scommessa è persa in partenza; con un corpus vero è quasi
 sempre vinta, e a tradirla bastano un ideogramma raro o un'emoji uscita l'anno
@@ -499,12 +499,12 @@ che segue.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- La **scatola dei mattoncini**: con le sole lettere si costruisce qualunque
+- La scatola dei mattoncini: con le sole lettere si costruisce qualunque
   parola, ma ci vuole un'eternità; con un pezzo già fatto per ogni parola del
   dizionario si va veloci, ma la scatola non basta mai. I pezzi
-  **sotto-parola** sono il compromesso che ha vinto: pezzi grandi per ciò che
+  sotto-parola sono il compromesso che ha vinto: pezzi grandi per ciò che
   ricorre, lettere singole di riserva per tutto il resto.
-- **BPE** parte dalle lettere e incolla ogni volta la coppia di pezzi vicini
+- BPE parte dalle lettere e incolla ogni volta la coppia di pezzi vicini
   che compare più spesso, segnandosi la fusione su un elenco. Per spezzare una
   parola mai vista non la cerca da nessuna parte: riapplica l'elenco nello
   stesso ordine. Non cerca la scomposizione migliore, ripete una ricetta.
@@ -516,10 +516,10 @@ che segue.
 :class: important
 - Un vocabolario di parole intere produce `<UNK>` (informazione persa e non
   generabile), uno di caratteri allunga le sequenze e fa pagare il costo
-  quadratico dell'attenzione: le **sotto-parole** sono il compromesso.
-- **BPE** {cite}`sennrich2016neural` parte dai caratteri e fonde, una alla
-  volta, la **coppia adiacente più frequente**. Il modello è la lista
-  **ordinata** delle fusioni, e tokenizzare una parola nuova vuol dire
+  quadratico dell'attenzione: le sotto-parole sono il compromesso.
+- BPE {cite}`sennrich2016neural` parte dai caratteri e fonde, una alla
+  volta, la coppia adiacente più frequente. Il modello è la lista
+  ordinata delle fusioni, e tokenizzare una parola nuova vuol dire
   riapplicarle nello stesso ordine: nessuna ricerca, nessuna ottimizzazione.
 ```
 `````

@@ -38,6 +38,15 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-6)=
+
+## 1.12.6 · 9 settembre 2026
+
+### Correzioni
+
+- **La rilettura a due lettori è arrivata a tutti i trentotto capitoli.** Dopo i ventisei della 1.12.5, anche i dodici restanti (fra cui Matematica, i modelli di diffusione, il deep reinforcement learning, le GAN, le PINN) sono stati riletti due volte, come lettore alle prime armi e come lettore esperto, con le formule rifatte, il codice rieseguito e le fonti aperte. Corretti errori di fatto (un «92 %» dove la pagina misura 93, un termine attribuito ai codec audio che lì non c'è, un «vent'anni» fra il 1994 e il 2019, un rimando a sezioni nell'ordine sbagliato), affermazioni più forti delle fonti e promesse che non dicevano dove sarebbero state mantenute.
+- **Meno grassetto in tutto il libro.** La passata sul neretto, iniziata nella 1.12.4, è finita: tutti i trentotto capitoli e la pagina di apertura, da quattordici marcature ogni mille parole a meno di tre. Il neretto segna un termine la prima volta che compare e poi lo lascia stare; dove una definizione serviva a un capitolo successivo è rimasta. Le parole sono le stesse.
+
 (v1-12-5)=
 
 ## 1.12.5 · 8 settembre 2026

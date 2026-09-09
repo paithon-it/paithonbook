@@ -18,7 +18,7 @@ fare tutti i suoni, altri sei per farli suonare naturali. A tenere la console,
 qui e poi a San Francisco, servivano ventiquattro operatrici, e per trovarle
 ne provarono oltre trecento, tutte centraliniste.
 
-Quasi novant'anni dopo, la **sintesi vocale** (TTS, *Text-to-Speech*) legge ad
+Quasi novant'anni dopo, la sintesi vocale (TTS, *Text-to-Speech*) legge ad
 alta voce le indicazioni stradali, gli audiolibri, i messaggi mentre guidiamo.
 Il problema è ancora quello del Voder, tolte le dita: fabbricare da zero
 un'onda di pressione, cioè un'aria che vibra, che un orecchio accetti come
@@ -59,15 +59,15 @@ una.
 ```
 
 Attenzione a un nome che torna e cambia mestiere. Nel riconoscimento il
-**modello acustico** era il pezzo che, ascoltando il suono, diceva quali
+modello acustico era il pezzo che, ascoltando il suono, diceva quali
 suoni ci fossero dentro; qui è il pezzo che, letto il testo, decide
 quali suoni *produrre*. Stesso nome, freccia rovesciata: è il punto in cui la
 specularità della figura si vede meglio.
 
 Perché tante tappe, invece di andare dritti dal testo all'onda? Perché l'onda
-è lunghissima. Dentro un computer è la fila di **campioni** di cui parlavamo
+è lunghissima. Dentro un computer è la fila di campioni di cui parlavamo
 nella sezione precedente: la pressione dell'aria misurata a intervalli
-regolari, migliaia di volte al secondo. In **Tacotron 2**, il modello che
+regolari, migliaia di volte al secondo. In Tacotron 2, il modello che
 vedremo fra poco, un secondo di parlato sono ventiquattromila campioni in
 fila. Lo stesso secondo, disegnato come immagine a bande, sta in ottanta
 colonne: una ogni dodici millesimi e mezzo di secondo, e siccome in un secondo
@@ -79,7 +79,7 @@ Ventiquattromila contro ottanta: trecento volte meno. Attenzione a cosa dice
 davvero questo trecento. Non dice che l'immagine sia trecento volte più
 piccola, perché ogni colonna sono ottanta misure e non un numero solo, una per
 banda: in tutto fanno seimilaquattrocento numeri contro ventiquattromila,
-cioè quasi quattro volte meno, che non è granché. Dice che i **passi** da fare
+cioè quasi quattro volte meno, che non è granché. Dice che i passi da fare
 uno dopo l'altro sono trecento volte meno, e quando le decisioni vanno prese
 in fila, ciascuna aspettando la precedente, è quello il numero che conta.
 
@@ -182,14 +182,14 @@ diversi se esiste una **coppia minima** che li oppone (/p/ e /k/ in
 (l'esempio di coarticolazione della panoramica del capitolo) suonano diverse,
 e non sono nemmeno intercambiabili (le sceglie il contesto: velare davanti a
 velare, bilabiale davanti a bilabiale), ma scambiarle non cambierebbe la
-parola, solo la pronuncia. La conversione **grafema→fonema**
+parola, solo la pronuncia. La conversione grafema→fonema
 (G2P, *grapheme-to-phoneme*) è quasi deterministica per le ortografie
 trasparenti come l'italiano (poche regole contestuali: ⟨c⟩ → /tʃ/ davanti a
 ⟨e, i⟩, /k/ altrove; restano imprevedibili l'apertura delle vocali medie e la
 posizione dell'accento, che l'ortografia non marca), mentre per l'inglese è un
 problema di apprendimento a tutti gli effetti, spesso risolto con un
 dizionario di pronuncia più un modello seq2seq per le parole fuori lista.
-Sopra i fonemi c'è la **prosodia**: il contorno della frequenza fondamentale
+Sopra i fonemi c'è la prosodia: il contorno della frequenza fondamentale
 $F_0$ (l'intonazione), le durate dei foni, le pause. Nei sistemi end-to-end
 moderni la prosodia non è annotata: il modello la assorbe implicitamente dai
 dati, ed è lì che si gioca la naturalezza.
@@ -209,11 +209,11 @@ voce: fabbrica quelle risonanze da zero, con generatori di suono e filtri, e
 la ricetta gliela scrive una persona. Si capisce benissimo, non si stanca mai,
 e non somiglia a nessuno: è la voce robotica per definizione.
 
-Le ricette migliori le scrisse **Dennis Klatt**, al MIT, e per scriverle prese
+Le ricette migliori le scrisse Dennis Klatt, al MIT, e per scriverle prese
 a modello la propria voce: la misurò, e mise nelle regole le frequenze che ci
 aveva trovato. Non è una registrazione (nessun pezzo di Klatt finisce nella
 macchina) ma il risultato gli somiglia, ed è la voce che tutti conoscono come
-*Perfect Paul*. Quelle regole, prese in licenza, finirono nel **DECtalk**
+*Perfect Paul*. Quelle regole, prese in licenza, finirono nel DECtalk
 (1984), il sintetizzatore più famoso di quella generazione; e dallo stesso suo
 lavoro derivava anche un apparecchio di un'altra ditta, il CallText 5010 di
 Speech Plus, che ha una voce della stessa famiglia. Fu quest'ultimo a entrare
@@ -243,7 +243,7 @@ voce umana) ma le giunture si sentono, e il sistema è rigido: per cambiare
 stile, o anche solo correggere un'intonazione, bisogna tornare in studio di
 registrazione.
 
-La terza generazione è quella neurale, e comincia nel 2016 con **WaveNet**
+La terza generazione è quella neurale, e comincia nel 2016 con WaveNet
 {cite}`oord2016wavenet`, che fa una cosa che nessuno credeva possibile:
 fabbrica l'onda sonora un campione alla volta, sedicimila al secondo, con una
 rete sola e una qualità mai sentita prima. Dimostrato che si poteva,
@@ -321,7 +321,7 @@ $$
 dove il testo in ingresso si chiama $c$ e non $\mathbf{x}$ perché in questo
 capitolo $\mathbf{x}$ è già il vettore acustico di un frame: qui la freccia va
 nell'altro verso, e all'ingresso c'è il testo. È una funzione autoregressiva ma
-**deterministica**: niente densità da
+deterministica: niente densità da
 massimizzare, la loss è l'errore quadratico sui frame mel, più un predittore
 di stop che decide quando la frase è finita. Ogni passo è condizionato da un
 vettore di contesto calcolato con l'attenzione di Bahdanau vista nella
@@ -336,7 +336,7 @@ significativo. Le due misure non si contraddicono: dicono che la media dei voti
 
 FastSpeech 2 elimina l'autoregressione
 con un *variance adaptor* a tre rami (durate, pitch, energia): il predittore di
-**durate** stima quanti frame occupa ciascun fonema e il *length regulator*
+durate stima quanti frame occupa ciascun fonema e il *length regulator*
 replica gli stati dell'encoder di conseguenza ($T = \sum_i d_i$, dove $d_i$ è
 il numero di frame assegnati al fonema $i$-esimo), mentre gli altri due rami
 stimano pitch ed energia per frame; il mel si genera poi in parallelo. Niente
@@ -376,7 +376,7 @@ universale con una tastiera al posto del cavo.
 `````{tab} Elementare
 
 Il mel-spettrogramma è il progetto della casa; il vocoder è l'impresa che la
-costruisce mattone su mattone. **WaveNet** (l'abbiamo già incontrata in
+costruisce mattone su mattone. WaveNet (l'abbiamo già incontrata in
 {doc}`Generare suono e musica </Audio/generazione-audio>`, quando generava
 musica) lavora come un amanuense: scrive l'onda un campione alla volta,
 sedicimila al secondo, decidendo ognuno sulla base di quelli che ha già
@@ -385,7 +385,7 @@ dell'anno dopo, *Parallel WaveNet*, la cronometra su una scheda grafica di
 allora: centosettantadue campioni al secondo, su un'onda che ne conta
 ventiquattromila per ogni secondo di suono. Sono più di due minuti di calcolo
 per un secondo di parlato. **HiFi-GAN** risolve il problema con una gara fra
-falsario ed esperti d'arte. È l'idea delle **GAN**, le reti
+falsario ed esperti d'arte. È l'idea delle GAN, le reti
 avversarie generative, a cui più avanti è dedicato un capitolo intero: qui
 basta il gioco. Una rete-falsario impara a produrre l'onda intera
 in un colpo solo, e delle reti-esperto provano a distinguere l'audio vero da
@@ -398,8 +398,8 @@ falsario non può cavarsela con una voce bellissima che dice un'altra frase.
 Falsario ed esperti si allenano a vicenda finché il falso non si distingue
 più.
 
-Risultato: qualità paragonabile a WaveNet, ma molto **più veloce del tempo
-reale**, che vuol dire questo: per fabbricare un secondo di parlato ci mette
+Risultato: qualità paragonabile a WaveNet, ma molto più veloce del tempo
+reale, che vuol dire questo: per fabbricare un secondo di parlato ci mette
 molto meno di un secondo, tanto che in un secondo di calcolo ne produce minuti.
 Il conto gira su una scheda grafica, che qui non disegna niente: fa migliaia di
 moltiplicazioni insieme.
@@ -424,7 +424,7 @@ compansione $\mu$-law nella versione originale), $T'$ è il numero di campioni
 dell'onda (da non confondere con il $T$ delle colonne di mel: qui i campioni
 sono centinaia di volte più numerosi) e $\mathbf{M}$ è il mel-spettrogramma
 che condiziona la generazione. L'architettura usa convoluzioni causali
-**dilatate**, con dilatazione che raddoppia a ogni strato fino a un tetto e poi
+dilatate, con dilatazione che raddoppia a ogni strato fino a un tetto e poi
 riparte da uno: dentro un ciclo il campo recettivo cresce esponenzialmente, e i
 cicli impilati lo portano a un paio di centinaia di millisecondi. Il
 limite è strutturale: $T'$ passi sequenziali, cioè ventiquattromila per ogni
@@ -458,8 +458,8 @@ Come si giudica un doppiatore? Lo si ascolta. Il **MOS** (*mean opinion
 score*, punteggio medio di opinione) è esattamente questo: si fa ascoltare la
 stessa frase a un gruppo di persone e si chiede un voto da 1 («pessima») a 5
 («eccellente»); il MOS è la media. Il voto da solo, però, non dice niente:
-per leggerlo serve il termine di paragone, cioè quanto hanno preso, **nella
-stessa prova**, delle registrazioni di voce umana vera, infilate fra le altre
+per leggerlo serve il termine di paragone, cioè quanto hanno preso, nella
+stessa prova, delle registrazioni di voce umana vera, infilate fra le altre
 senza dirlo a nessuno. Se il sistema prende 4,2 e le registrazioni 4,5, quei
 tre decimi sono il divario; lo stesso 4,2 in una prova dove le registrazioni
 prendono 3,9 direbbe l'opposto, cioè che la voce sintetica è piaciuta più di
@@ -473,7 +473,7 @@ il MOS di un articolo con quello di un altro, quindi, non dice niente: è come
 confrontare i voti di due professori diversi. Lo stesso tremolio, in piccolo,
 c'è anche dentro una prova sola: cambia il gruppo di ascoltatori e i voti si
 spostano di qualche centesimo. Tre decimi sono un divario; tre centesimi sono
-rumore. L'alternativa più affidabile è il **test A/B**: due
+rumore. L'alternativa più affidabile è il test A/B: due
 versioni della stessa frase, «quale preferisci?». Chiedere quale delle due si
 preferisce è una domanda più facile, e più fine, che chiedere un voto in
 assoluto. Non esiste comunque una formula che sostituisca le
@@ -525,7 +525,7 @@ Riconosce la voce e trasferisce 220.000 euro. La voce era fabbricata. Da
 allora lo schema si è ripetuto in tutte le taglie, fino
 alle telefonate che imitano la voce di un familiare in difficoltà.
 
-La questione di fondo è il **consenso**. La voce è un dato biometrico, cioè
+La questione di fondo è il consenso. La voce è un dato biometrico, cioè
 una misura del corpo che identifica una persona come un'impronta digitale, ed
 è anche un pezzo della sua identità: Hawking, che rifiutò per trent'anni voci
 «migliori» della sua, lo sapeva bene. Clonarla senza permesso è una forma di
@@ -586,7 +586,7 @@ ascoltati: nessuna descrizione scritta dice quello che dicono.
 :::
 
 Qualche parola sul codice. Un *bundle* è la confezione già pronta: i due
-modelli e i numeri che hanno imparato (i **pesi**), scaricati insieme. Quei
+modelli e i numeri che hanno imparato (i pesi), scaricati insieme. Quei
 pesi sono addestrati su una voce inglese, quindi una frase italiana la leggerà
 con un buffo accento anglofono.
 
@@ -617,34 +617,34 @@ quando chiedi «che ore sono?» al telefono, e una voce sintetica ti risponde.
 
 ```{admonition} Da ricordare
 :class: important
-- La sintesi vocale rifà la strada del riconoscimento **al contrario**: testo
+- La sintesi vocale rifà la strada del riconoscimento al contrario: testo
   → si sciolgono numeri e sigle → si scrivono i suoni → si disegna
   l'immagine a bande del suono → si costruisce l'onda. Quell'immagine a bande
-  (il **mel-spettrogramma**) è il punto in cui i due viaggi si toccano, ma
+  (il mel-spettrogramma) è il punto in cui i due viaggi si toccano, ma
   disegnata con un righello diverso dalle due parti: quella che esce da un
   sintetizzatore non si dà in pasto a un riconoscitore.
-- Attenzione al **modello acustico**, che nei due viaggi fa mestieri opposti:
+- Attenzione al modello acustico, che nei due viaggi fa mestieri opposti:
   all'andata ascolta i suoni e dice quali sono, al ritorno legge il testo e
   decide quali suoni produrre. Stesso nome, freccia rovesciata.
-- Sciogliere il testo (la **normalizzazione**) è il lavoro meno appariscente e
+- Sciogliere il testo (la normalizzazione) è il lavoro meno appariscente e
   quello dove si sbaglia di più: «1901» è «millenovecentouno» o «uno nove zero
   uno» a seconda di cosa sia. Poi si passa dalle lettere ai suoni veri, i
-  **fonemi**, e il passaggio si chiama **G2P**: la c di *casa* e la c di
+  fonemi, e il passaggio si chiama G2P: la c di *casa* e la c di
   *ciao* sono la stessa lettera e due fonemi diversi. E sopra tutto c'è la
-  **prosodia**, la musica della frase: pause, durate, intonazione.
-- Tre generazioni di macchine parlanti: quella **per formanti** (fabbrica i
+  prosodia, la musica della frase: pause, durate, intonazione.
+- Tre generazioni di macchine parlanti: quella per formanti (fabbrica i
   suoni da zero seguendo regole, ed è la voce robotica di Hawking), quella
-  **concatenativa** (ritagli di voce vera ricuciti insieme), quella
-  **neurale**, di oggi.
+  concatenativa (ritagli di voce vera ricuciti insieme), quella
+  neurale, di oggi.
 - Oggi il lavoro è diviso in due: un modello scrive l'immagine del suono
-  (**Tacotron 2** una colonna alla volta, **FastSpeech 2** tutte insieme e
-  senza balbettare) e un secondo modello, il **vocoder**, la trasforma in
-  onda (**WaveNet** un campione alla volta e lentissimo, **HiFi-GAN** tutto in
+  (Tacotron 2 una colonna alla volta, FastSpeech 2 tutte insieme e
+  senza balbettare) e un secondo modello, il vocoder, la trasforma in
+  onda (WaveNet un campione alla volta e lentissimo, HiFi-GAN tutto in
   un colpo e velocissimo).
-- Se la qualità è buona lo decide l'orecchio: si fa votare la gente (**MOS**)
-  o le si chiede quale delle due versioni preferisce (**test A/B**). Un voto
-  da solo non dice niente: si legge accanto a quanto hanno preso, **nella
-  stessa prova**, delle registrazioni di voce vera. E nessun conto automatico
+- Se la qualità è buona lo decide l'orecchio: si fa votare la gente (MOS)
+  o le si chiede quale delle due versioni preferisce (test A/B). Un voto
+  da solo non dice niente: si legge accanto a quanto hanno preso, nella
+  stessa prova, delle registrazioni di voce vera. E nessun conto automatico
   basta, perché la stessa frase si può dire bene in mille modi diversi.
 - Clonare una voce è facile e serve già alle truffe. La voce è un pezzo di
   identità: il permesso di chi parla è il minimo, e al telefono la difesa che
@@ -657,29 +657,29 @@ quando chiedi «che ore sono?» al telefono, e una voce sintetica ti risponde.
 
 ```{admonition} Da ricordare
 :class: important
-- Il TTS percorre la pipeline dell'ASR **al contrario**: testo →
+- Il TTS percorre la pipeline dell'ASR al contrario: testo →
   normalizzazione → fonemi → mel-spettrogramma → onda. Il mel-spettrogramma
   è il punto d'incontro dei due viaggi, ma non è lo stesso tensore: finestre e
   passi sono diversi dalle due parti (10 ms nell'ASR, 12,5 ms in Tacotron 2).
-- La **normalizzazione** scioglie numeri, date e sigle («1901» →
+- La normalizzazione scioglie numeri, date e sigle («1901» →
   «millenovecentouno») e disambigua gli omografi (*àncora/ancóra*) col
-  contesto; il **G2P** converte i grafemi in **fonemi** (la c di *casa* è
+  contesto; il G2P converte i grafemi in fonemi (la c di *casa* è
   /k/, quella di *ciao* è /tʃ/): facile in italiano, difficile in inglese.
-  Sopra tutto c'è la **prosodia**: intonazione, durate, pause.
-- Tre generazioni: sintesi **per formanti** (robotica: le regole di Klatt, il
-  DECtalk, e il CallText 5010 che dava la voce a Hawking), **concatenativa**
-  (ritagli di voce vera ricuciti), **neurale**.
-- Il TTS neurale lavora in **due stadi**: un modello acustico testo→mel
-  (**Tacotron 2**, seq2seq con attenzione; **FastSpeech 2**, parallelo e più
+  Sopra tutto c'è la prosodia: intonazione, durate, pause.
+- Tre generazioni: sintesi per formanti (robotica: le regole di Klatt, il
+  DECtalk, e il CallText 5010 che dava la voce a Hawking), concatenativa
+  (ritagli di voce vera ricuciti), neurale.
+- Il TTS neurale lavora in due stadi: un modello acustico testo→mel
+  (Tacotron 2, seq2seq con attenzione; FastSpeech 2, parallelo e più
   stabile, ma con le durate fornite da un allineatore forzato esterno) e un
-  **vocoder** mel→onda (**WaveNet**, autoregressivo e lento; **HiFi-GAN**,
+  vocoder mel→onda (WaveNet, autoregressivo e lento; HiFi-GAN,
   avversario e di ordini di grandezza più veloce).
-- La qualità si misura con l'orecchio: **MOS** e test A/B; nessuna metrica
+- La qualità si misura con l'orecchio: MOS e test A/B; nessuna metrica
   automatica è pienamente affidabile, perché la sintesi è un problema
   uno-a-molti. Il MOS non si confronta fra prove diverse, e dentro la stessa
   prova due numeri con intervalli di confidenza sovrapposti non si leggono per
   differenza.
-- La **clonazione vocale** è già usata nelle truffe: la voce è un dato
+- La clonazione vocale è già usata nelle truffe: la voce è un dato
   biometrico, e consenso e watermarking sono il minimo sindacale.
 ```
 

@@ -5,12 +5,12 @@ pezzi, ognuno col suo voto, e il prodotto. Questa la ottiene senza spezzare
 niente, con una mossa che a prima vista sembra un imbroglio.
 
 L'idea è questa. Non proviamo a descrivere la distribuzione dei dati, che è
-complicatissima. Proviamo invece a costruire una **macchina che li raddrizza**:
+complicatissima. Proviamo invece a costruire una macchina che li raddrizza:
 prende una fotografia e la porta in un punto di una nuvola semplice, una
 gaussiana, dove sappiamo dire tutto perché la formula ce l'abbiamo. Se quella
 macchina si può usare anche al contrario, allora abbiamo due cose in un colpo
-solo. Per **generare**: si pesca un punto a caso nella gaussiana e lo si fa
-tornare indietro, e quello che esce è una fotografia. Per **valutare**: si
+solo. Per generare: si pesca un punto a caso nella gaussiana e lo si fa
+tornare indietro, e quello che esce è una fotografia. Per valutare: si
 manda avanti la fotografia, si legge quanto è probabile il punto in cui è
 finita, e si corregge di un fattore che diremo fra poco.
 
@@ -85,11 +85,11 @@ area sotto la densita' di y, senza fattore: 3.000  <- non e' una probabilita'
 
 In una dimensione il fattore è lo stiramento, cioè di quanto la trasformazione
 allunga o accorcia. Attenzione al verso, perché è la trappola: stirando i dati
-sul tavolo la densità è scesa, mentre la macchina di cui parliamo stira **verso
-la gaussiana**, e allora quel fattore va moltiplicato. In molte dimensioni la
+sul tavolo la densità è scesa, mentre la macchina di cui parliamo stira verso
+la gaussiana, e allora quel fattore va moltiplicato. In molte dimensioni la
 trasformazione può allungare in una direzione, accorciare in un'altra e ruotare
 il tutto, e allora il fattore giusto è quello che dice di quante volte è
-cambiato il **volume**: il **determinante** della tabella delle derivate, la
+cambiato il volume: il determinante della tabella delle derivate, la
 *jacobiana*.
 
 `````{tab} Elementare
@@ -129,8 +129,8 @@ Per questo un flusso esce con esattamente tanti numeri quanti ne sono entrati.
 
 E adesso il guaio. Calcolare un determinante costa, e costa tantissimo: per una
 tabella di mille righe per mille colonne il conto generale richiede all'incirca
-un miliardo di operazioni, e va rifatto **per ogni immagine e a ogni passo
-dell'addestramento**. Mille righe per mille colonne è una figurina di 32 pixel
+un miliardo di operazioni, e va rifatto per ogni immagine e a ogni passo
+dell'addestramento. Mille righe per mille colonne è una figurina di 32 pixel
 per lato in bianco e nero. Su una fotografia vera non se ne parla nemmeno.
 
 `````
@@ -148,7 +148,7 @@ p_X(\mathbf{x}) = p_Z\big(f(\mathbf{x})\big)\,
 + \log \left\lvert \det \mathbf{J}_f(\mathbf{x}) \right\rvert .
 $$
 
-Il valore assoluto serve perché il determinante è **con segno** (dice anche se
+Il valore assoluto serve perché il determinante è con segno (dice anche se
 la trasformazione ribalta l'orientamento) mentre a noi interessa solo il
 rapporto fra i volumi. Componendo più trasformazioni i logaritmi si sommano,
 ed è la ragione per cui in pratica si scrive tutto in scala logaritmica: una
@@ -158,7 +158,7 @@ $\log\lvert\det \mathbf{J}_f\rvert = \sum_\ell \log\lvert\det
 
 Due vincoli cadono da qui, ed entrambi pesano.
 
-Il primo è che $f$ dev'essere **invertibile**, quindi in particolare
+Il primo è che $f$ dev'essere invertibile, quindi in particolare
 $D_{\text{ingresso}} = D_{\text{uscita}}$: un flusso non riduce la dimensione,
 mai. Il secondo è il costo: il determinante di una matrice $D \times D$ costa
 $\mathcal{O}(D^3)$ con i metodi generali, e $D$ qui è il numero di pixel per
@@ -172,12 +172,12 @@ anche il gradiente di quel determinante. Impraticabile.
 
 La via d'uscita è cambiare la domanda. Invece di calcolare in fretta il
 determinante di una matrice qualunque, si costruisce la trasformazione in modo
-che il suo determinante sia **già scritto**.
+che il suo determinante sia già scritto.
 
 La ricetta si chiama **strato di accoppiamento**, e il gesto è questo: si
-spaccano le coordinate in due metà. La prima metà **passa intatta**, non la si
+spaccano le coordinate in due metà. La prima metà passa intatta, non la si
 tocca. La seconda metà viene scalata e traslata, e i numeri con cui la si scala
-e la si trasla sono decisi **dalla prima metà**, quella che è passata intatta.
+e la si trasla sono decisi dalla prima metà, quella che è passata intatta.
 Poi si scambiano i ruoli e si ripete, così che tutte le coordinate prima o poi
 vengano trasformate e prima o poi facciano da guida.
 
@@ -190,12 +190,12 @@ che si usa oggi e che il flusso sulle due lune mette in pratica.
 
 Tre proprietà cadono tutte insieme, ed è per questo che la ricetta ha vinto.
 
-**Si inverte a occhio.** Per tornare indietro serve sapere con che cosa si è
+Si inverte a occhio. Per tornare indietro serve sapere con che cosa si è
 scalato e traslato, e quei numeri dipendono solo dalla prima metà, che è
 arrivata intatta: si legge, si ricalcolano scala e traslazione, si disfa. Non
 serve invertire nessuna rete.
 
-**Il determinante è gratis.** La prima metà non cambia, quindi la parte
+Il determinante è gratis. La prima metà non cambia, quindi la parte
 corrispondente della tabella delle derivate è l'identità; la seconda metà
 dipende dalla prima in un modo complicatissimo, ma quel blocco della tabella
 sta sotto la diagonale e il determinante di una tabella triangolare è
@@ -205,9 +205,9 @@ mano. Da un miliardo di operazioni a una moltiplicazione per ogni coordinata
 scalata: sulla figurina di 32 pixel per lato di poco fa, cinquecento invece di
 un miliardo.
 
-**La rete che decide non ha vincoli.** Ed è il punto più bello, quello che
+La rete che decide non ha vincoli. Ed è il punto più bello, quello che
 sfugge a una prima lettura: la rete che, guardando la prima metà, produce scala
-e traslazione **non deve essere invertibile**, e infatti non lo è. Può essere
+e traslazione non deve essere invertibile, e infatti non lo è. Può essere
 qualunque cosa, profonda quanto si vuole, con le funzioni di attivazione che si
 vogliono. L'invertibilità del flusso non sta nel pezzo che impara: sta nel modo
 in cui i pezzi sono montati.
@@ -348,7 +348,7 @@ macchina si usa nei due sensi: andata e ritorno riportano al punto di partenza
 con un errore di poco più di un milionesimo, che è il rumore dei numeri a
 trentadue bit e non un'approssimazione del metodo. La seconda e la terza sono
 quelle che importano a questo capitolo, e vanno lette insieme: la densità del
-modello, integrata numericamente su una griglia che la copre tutta, fa **uno**,
+modello, integrata numericamente su una griglia che la copre tutta, fa uno,
 e non perché qualcuno l'abbia normalizzata a mano. Fa uno perché il cambio di
 variabile lo garantisce, e la riga dopo lo mostra togliendo il fattore dagli
 stessi identici pesi: senza, l'area scende a un quarto, e un numero la cui area
@@ -377,7 +377,7 @@ trasformano l'uno nell'altro tirando una riga nello spazio latente.
 
 E qui il capitolo deve essere onesto su come è andata a finire. I flussi, sulle
 immagini, hanno perso, e non per un dettaglio di ingegneria: per il vincolo di
-partenza. Una trasformazione invertibile **conserva la dimensione**, quindi un
+partenza. Una trasformazione invertibile conserva la dimensione, quindi un
 flusso su fotografie di $512 \times 512$ a colori deve muovere 786.432 numeri
 dall'inizio alla fine, senza mai poterne buttare via uno. Confrontalo con la
 diffusione latente del capitolo precedente, che sulla stessa fotografia di
@@ -390,19 +390,19 @@ scritto nella definizione stessa della famiglia.
 
 ```{admonition} Da ricordare
 :class: important
-- Un **flusso** non prova a descrivere i dati: costruisce una macchina che li
-  **raddrizza**, portandoli su una nuvola semplice di cui sappiamo tutto. Se la
+- Un flusso non prova a descrivere i dati: costruisce una macchina che li
+  raddrizza, portandoli su una nuvola semplice di cui sappiamo tutto. Se la
   macchina si usa nei due sensi, generare è pescare un punto nella nuvola e
   farlo tornare indietro.
-- Chi deforma lo spazio deve pagare un **fattore di correzione**: la stessa
+- Chi deforma lo spazio deve pagare un fattore di correzione: la stessa
   acqua su un tavolo tre volte più largo sta tre volte più bassa. Senza quel
   fattore l'area sotto la curva non fa più uno, e un numero la cui area non fa
   uno non è una probabilità. Il conto sul tavolo allargato di tre volte lo
   mostra: con il fattore l'area fa 1,000, senza farebbe 3.
 - Il fattore, in molte dimensioni, costa un'eternità da calcolare. Il trucco è
-  costruire la macchina in modo che sia **già scritto**: metà delle coordinate
+  costruire la macchina in modo che sia già scritto: metà delle coordinate
   passano intatte, l'altra metà viene scalata e traslata in base alla prima. E
-  il pezzo che decide come, cioè la rete che impara, **non ha nessun vincolo**:
+  il pezzo che decide come, cioè la rete che impara, non ha nessun vincolo:
   l'invertibilità sta nel montaggio, non nel motore.
 - Il prezzo lo si paga sulla taglia: una macchina che si usa nei due sensi non
   può buttare via niente, quindi non può comprimere. Sulle fotografie, dove
@@ -416,12 +416,12 @@ scritto nella definizione stessa della famiglia.
 
 ```{admonition} Da ricordare
 :class: important
-- **Cambio di variabile**: $\log p_X(\mathbf{x}) = \log p_Z(f(\mathbf{x})) +
+- Cambio di variabile: $\log p_X(\mathbf{x}) = \log p_Z(f(\mathbf{x})) +
   \log\lvert\det \mathbf{J}_f(\mathbf{x})\rvert$, con $f$ diffeomorfa. I
   logaritmi dei determinanti si sommano lungo la composizione.
 - Due vincoli: $f$ conserva la dimensione, e $\det \mathbf{J}$ costa
   $\mathcal{O}(D^3)$ in generale.
-- **Strato di accoppiamento**: partizione $\mathbf{x} = (\mathbf{x}_a,
+- Strato di accoppiamento: partizione $\mathbf{x} = (\mathbf{x}_a,
   \mathbf{x}_b)$, con $\mathbf{z}_a = \mathbf{x}_a$ e $\mathbf{z}_b =
   \mathbf{x}_b \odot \exp(s(\mathbf{x}_a)) + t(\mathbf{x}_a)$. La forma
   additiva ($s \equiv 0$) è di NICE {cite}`dinh2015nice` ed è a volume
@@ -430,11 +430,11 @@ scritto nella definizione stessa della famiglia.
   alto a sinistra, quindi $\log\lvert\det\rvert = \sum_i s_i(\mathbf{x}_a)$:
   costo lineare. L'inversa è esplicita, e $s, t$ possono essere reti arbitrarie
   e non invertibili.
-- **Glow** {cite}`kingma2018glow` sostituisce la permutazione fissa fra i due
-  blocchi con una **convoluzione $1\times1$ invertibile**, il cui determinante
+- Glow {cite}`kingma2018glow` sostituisce la permutazione fissa fra i due
+  blocchi con una convoluzione $1\times1$ invertibile, il cui determinante
   costa $\mathcal{O}(c^3)$ nei soli canali (e si abbatte ulteriormente con la
   parametrizzazione LU).
-- Il limite strutturale è la **conservazione della dimensione**: nessun
+- Il limite strutturale è la conservazione della dimensione: nessun
   collo di bottiglia, quindi nessuna compressione. Su $512\times512\times3$
   sono $786.432$ dimensioni da trasportare, contro le $16.384$ del latente di
   Stable Diffusion (il fattore 48 già contato nel capitolo precedente). È la

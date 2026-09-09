@@ -30,8 +30,8 @@ persone possono guadagnarne trecentomila?
 Al massimo una su dieci, e il ragionamento sta in una riga: se fossero anche
 solo undici su cento, quelle undici da sole porterebbero il totale della sala
 sopra trentamila euro a testa, e la media sarebbe più alta di quella che ci
-hanno detto. La regola generale è questa: **la frazione di casi che supera una
-certa soglia non può essere più grande della media divisa per la soglia**. Qui
+hanno detto. La regola generale è questa: la frazione di casi che supera una
+certa soglia non può essere più grande della media divisa per la soglia. Qui
 trentamila diviso trecentomila fa un decimo.
 
 Due cose vanno notate, perché dicono che tipo di strumento sia.
@@ -74,7 +74,7 @@ soglia con la soglia stessa.
 
 L'ipotesi $X\ge 0$ è essenziale e non decorativa: senza di essa i valori
 negativi possono compensare quelli grandi e la media non dice più niente sulla
-coda. La disuguaglianza è inoltre **stretta**, cioè esiste una distribuzione
+coda. La disuguaglianza è inoltre stretta, cioè esiste una distribuzione
 che la realizza con l'uguale: $X=a$ con probabilità $\mathbb{E}[X]/a$ e $X=0$
 altrimenti. Non si può quindi migliorare a parità di informazione, e tutte le
 disuguaglianze più forti si ottengono chiedendo di sapere qualcosa in più.
@@ -84,8 +84,8 @@ disuguaglianze più forti si ottengono chiedendo di sapere qualcosa in più.
 ## Con media e larghezza: la disuguaglianza di Čebyšëv
 
 Il salto che rende utile la famiglia consiste nell'applicare la regola di
-Markov non alla quantità stessa, ma al **quadrato della sua distanza dalla
-media**. È una mossa da guardare da vicino, perché ritorna identica in mezza
+Markov non alla quantità stessa, ma al quadrato della sua distanza dalla
+media. È una mossa da guardare da vicino, perché ritorna identica in mezza
 statistica.
 
 `````{tab} Elementare
@@ -97,9 +97,9 @@ quello che serve per parlare di code. E il valore medio di quello scarto al
 quadrato è una grandezza che si conosce già: la varianza, cioè la larghezza al
 quadrato.
 
-Fatto il conto viene fuori una regola che si ricorda a memoria. **Qualunque sia
+Fatto il conto viene fuori una regola che si ricorda a memoria. Qualunque sia
 la forma dei dati, almeno tre quarti di essi stanno entro due larghezze dalla
-media, e almeno otto su nove entro tre.** Non si è chiesto niente:
+media, e almeno otto su nove entro tre. Non si è chiesto niente:
 niente campana, niente simmetria, niente code sottili. Vale per i redditi, per
 i tempi di risposta di un server, per gli errori di un modello.
 
@@ -178,7 +178,7 @@ completamente le garanzie, perché toglie di mezzo lo scenario che rovina tutto,
 quello in cui un solo caso mostruoso sposta la media da solo.
 
 Con i valori limitati, la probabilità di sbagliare di tanto non cala in
-proporzione al numero di prove: **crolla**, come cala una potenza quando si
+proporzione al numero di prove: crolla, come cala una potenza quando si
 alza l'esponente. Il risultato pratico si legge sulla domanda che ogni persona
 si fa prima di preparare un banco di prova: quante domande servono per
 misurare l'accuratezza a meno di due punti percentuali, sbagliando al massimo
@@ -234,7 +234,7 @@ massimo per una variabile in $[0,1]$) dà $n\ge 12\,500$; l'approssimazione
 normale, $n\ge (1{,}96)^2\cdot 0{,}25/\varepsilon^2 = 2401$.
 
 Due osservazioni che cambiano il modo di progettare una valutazione. La prima:
-$n$ non dipende dalla **cardinalità della popolazione**, solo dalla precisione
+$n$ non dipende dalla cardinalità della popolazione, solo dalla precisione
 voluta. La seconda: $\varepsilon$ compare al quadrato, quindi dimezzare la
 tolleranza quadruplica il costo, ed è la stessa tassa $1/\sqrt{n}$ vista
 altrove, qui in forma esplicita.
@@ -289,7 +289,7 @@ po' peggio, e scegliendo la più fortunata si è scelta esattamente la fortuna.
 
 Il meccanismo si capisce contando le occasioni. Ogni singola variante ha una
 probabilità piccola di sembrare molto meglio di quel che è; con cento varianti
-quelle probabilità piccole si sommano, e la probabilità che **almeno una**
+quelle probabilità piccole si sommano, e la probabilità che almeno una
 sembri molto meglio diventa grande. Più cose si guardano, più è probabile che
 qualcuna sembri straordinaria per caso.
 
@@ -335,7 +335,7 @@ learning </MachineLearning/overview>` lo affronta dal lato pratico parlando di
 sovradattamento.
 
 Una precisazione che evita un errore frequente: la correzione va applicata al
-numero di confronti **effettivamente fatti**, non a quelli dichiarati. Chi
+numero di confronti effettivamente fatti, non a quelli dichiarati. Chi
 prova venti configurazioni, ne riporta una e chiama le altre esplorazione
 preliminare ha comunque fatto venti confronti.
 
@@ -392,29 +392,29 @@ for k in (2, 3):
 
 Accanto a ogni numero di larghezze ci sono due colonne, quello che succede e
 quello che Čebyšëv garantisce, e la garanzia tiene con larghissimo margine,
-come quasi sempre. Il punto è che tiene **senza sapere** che i dati erano
+come quasi sempre. Il punto è che tiene senza sapere che i dati erano
 esponenziali, e avrebbe tenuto anche se fossero stati fatti apposta per
 metterla in difficoltà.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Sapendo solo la **media** di una quantità che non può essere negativa, la
+- Sapendo solo la media di una quantità che non può essere negativa, la
   frazione di casi sopra una soglia non supera la media divisa per la soglia:
   in una sala con reddito medio trentamila euro, al più uno su dieci ne
   guadagna trecentomila.
-- Sapendo anche la **larghezza**, almeno tre quarti dei dati stanno entro due
+- Sapendo anche la larghezza, almeno tre quarti dei dati stanno entro due
   larghezze dalla media, e almeno otto su nove entro tre. Vale qualunque forma
   abbiano i dati, e questa è tutta la sua forza; se la forma fosse una campana
   i numeri sarebbero il novantacinque e mezzo e il novantanove e sette, e
   quella differenza è quanto vale saperlo.
-- Se in più i valori stanno **dentro un intervallo noto** (le risposte giuste o
+- Se in più i valori stanno dentro un intervallo noto (le risposte giuste o
   sbagliate valgono zero oppure uno) la garanzia diventa molto più forte, e si
   può calcolare quante prove servono: per misurare un'accuratezza a meno di due
   punti, sbagliando al massimo una volta su venti, ne bastano circa
-  quattromilaseicento. E quel numero **non dipende** da quanto è grande
+  quattromilaseicento. E quel numero non dipende da quanto è grande
   l'insieme da cui le prove vengono estratte.
-- Dimezzare la tolleranza **quadruplica** il numero di prove.
+- Dimezzare la tolleranza quadruplica il numero di prove.
 - Tutto questo vale per una misura sola. Provando cento varianti e tenendo la
   migliore, la vincitrice sembra migliore di quello che è anche quando sono
   tutte identiche: con cento varianti arriva a tre o quattro punti sopra il
@@ -427,19 +427,19 @@ metterla in difficoltà.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- **Markov**: per $X\ge 0$, $\Pr[X\ge a]\le \mathbb{E}[X]/a$. Usa solo la
+- Markov: per $X\ge 0$, $\Pr[X\ge a]\le \mathbb{E}[X]/a$. Usa solo la
   media, è stretta, e la non negatività è essenziale.
-- **Čebyšëv**: $\Pr[|X-\mu|\ge k\sigma]\le 1/k^2$, ottenuta applicando Markov
+- Čebyšëv: $\Pr[|X-\mu|\ge k\sigma]\le 1/k^2$, ottenuta applicando Markov
   a $(X-\mu)^2$. Applicata a $\bar{X}_n$, con
   $\mathrm{Var}(\bar{X}_n)=\sigma^2/n$, dimostra la legge dei grandi numeri in
   tre righe e spiega perché l'errore cala come $1/\sqrt{n}$.
-- **Hoeffding**: per $X_i\in[a,b]$ indipendenti,
+- Hoeffding: per $X_i\in[a,b]$ indipendenti,
   $\Pr[|\bar{X}_n-\mu|\ge\varepsilon]\le 2\exp(-2n\varepsilon^2/(b-a)^2)$,
   cioè decadimento esponenziale invece che polinomiale. Invertita dà
   $n \ge (b-a)^2\log(2/\delta)/(2\varepsilon^2)$: per $\varepsilon=0{,}02$ e
   $\delta=0{,}05$ su $[0,1]$, $n\ge 4612$ contro i $12\,500$ di Čebyšëv e i
   $2401$ dell'approssimazione normale.
-- **Disuguaglianza dell'unione**: valutando $k$ ipotesi sullo stesso insieme, la
+- Disuguaglianza dell'unione: valutando $k$ ipotesi sullo stesso insieme, la
   tolleranza diventa $\varepsilon(k)=\sqrt{\log(2k/\delta)/(2n)}$, che cresce
   come $\sqrt{\log k}$. È il *winner's curse*, ed è lo stesso conto che regge i
   limiti di generalizzazione. La correzione si applica ai confronti fatti, non

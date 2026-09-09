@@ -18,7 +18,7 @@ associato un numero, e quel numero si chiama **energia**.
 Conviene fermarsi subito su quella parola, perché è una parola presa in
 prestito. Qui «energia» non è la corrente che accende una lampadina né le
 calorie di un piatto di pasta: non è una sostanza che la rete possiede e
-consuma. È un **voto**, un numero che il modello dà a ogni risposta possibile:
+consuma. È un voto, un numero che il modello dà a ogni risposta possibile:
 basso se la risposta è sensata, alto se è assurda. Poteva chiamarsi punteggio,
 o stranezza, o altezza. Si chiama energia per due motivi: la formula che lo
 calcola è, lettera per lettera, quella con cui i fisici descrivono una
@@ -28,8 +28,8 @@ valle.
 
 Sarà così per tutto il capitolo: ogni volta che una parola arriva dalla
 fisica il testo la scioglie sul posto. La prima è quella appena sciolta,
-**energia**; le altre che contano sono **temperatura**, **partizione** e
-**spin**, e arrivano in quest'ordine.
+energia; le altre che contano sono temperatura, partizione e
+spin, e arrivano in quest'ordine.
 
 E c'è una ragione precisa per cui il fondo, e non la cima. Una pallina, nel
 mondo, cade: nei punti bassi ci va da sola, mentre in cima a un monte non ci
@@ -56,7 +56,7 @@ pezzetto alla volta; i flussi, che li deformano, non possono buttare via niente
 e quindi non possono comprimere. I due prezzi sono diversi, ma la ragione è la
 stessa: perché il conto delle probabilità torni esatto, la rete non si può più
 fare come si vuole, e la forma gliela detta il conto. Qui si prende la strada
-opposta: si rinuncia in partenza a **normalizzare**, cioè a far tornare cento
+opposta: si rinuncia in partenza a normalizzare, cioè a far tornare cento
 le percentuali, e si tiene un voto e basta. Tutto il capitolo racconta come si
 vive senza quel cento per cento, e quanto costa.
 
@@ -102,7 +102,7 @@ differenza di mentalità che attraversa quasi tutto il capitolo. Un
 classificatore o un regressore *ottimizzano*: cercano la risposta migliore e
 si fermano lì. La prima rete che incontreremo, quella di Hopfield, fa lo
 stesso. Ma dalla seconda sezione in poi i modelli di questo capitolo
-**campionano**, cioè producono una risposta alla volta, e la pescano in modo
+campionano, cioè producono una risposta alla volta, e la pescano in modo
 che a lungo andare le risposte buone escano
 spesso, quelle mediocri ogni tanto e quelle assurde quasi mai: è la frequenza
 che il paesaggio prescrive. Per riuscirci accettano di peggiorare per un
@@ -115,7 +115,7 @@ Un modello probabilistico, per dire quanto è verosimile una risposta, deve
 tenere il conto di tutte le risposte possibili: le percentuali che dà a tutte
 le risposte, sommate, devono fare cento, e quel cento è un vincolo che tiene
 insieme il mondo intero. Un modello a energia rinuncia al vincolo.
-Assegna a ogni **configurazione** (cioè a ogni risposta possibile: un'immagine,
+Assegna a ogni configurazione (cioè a ogni risposta possibile: un'immagine,
 una frase, uno stato della rete) un numero, l'energia, e si limita a pretendere
 che le configurazioni sensate stiano in basso e le altre in alto. Nessuna
 somma da chiudere, nessun totale da rispettare: solo un paesaggio.
@@ -170,7 +170,7 @@ p_\theta(\mathbf{x}) = \frac{e^{-E_\theta(\mathbf{x})}}{Z(\theta)},
 Z(\theta) = \int e^{-E_\theta(\mathbf{x}')}\, d\mathbf{x}',
 $$
 
-dove $Z(\theta)$ è la **funzione di partizione**, l'integrale (o la somma, nel
+dove $Z(\theta)$ è la funzione di partizione, l'integrale (o la somma, nel
 caso discreto) su *tutto* lo spazio delle configurazioni. Ogni energia per
 cui quell'integrale è finito definisce una densità, e ogni densità
 strettamente positiva si riscrive come
@@ -214,10 +214,10 @@ argomenti distinti. Sono lo stesso, e questo capitolo lo guarda in faccia.
 
 ## Dal paesaggio all'energia
 
-Si comincia da dove l'idea è nata: la **memoria associativa** di Hopfield
+Si comincia da dove l'idea è nata: la memoria associativa di Hopfield
 {cite}`hopfield1982neural`, venticinque neuroni che ricostruiscono un ricordo
 rovinato rotolando in fondo a una valle, con il codice per vederlo accadere.
-Poi la **macchina di Boltzmann** {cite}`ackley1985learning`, che aggiunge
+Poi la macchina di Boltzmann {cite}`ackley1985learning`, che aggiunge
 temperatura e neuroni nascosti, trasforma il paesaggio in percentuali e proprio
 per questo incontra il muro contro cui va a sbattere metà del capitolo: per
 dire che una risposta vale il 30% bisogna aver pesato tutte le altre, cioè aver
@@ -235,7 +235,7 @@ esattamente quello che quel conto fa.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Un **modello a energia** è una carta geografica in rilievo di tutte le
+- Un modello a energia è una carta geografica in rilievo di tutte le
   risposte possibili: ogni risposta ha la sua altezza, bassa se è sensata e
   alta se è assurda. Rispondere significa lasciar rotolare una pallina e
   guardare in che valle si ferma; imparare significa scavare le valli nei
@@ -245,9 +245,9 @@ esattamente quello che quel conto fa.
   tutto quello che gatto non è. Il paesaggio non lo chiede mai: per
   sapere quale di due risposte torna di più bastano due altezze messe a
   confronto. Quel conto di tutto il resto del mondo, che nessuno riesce a
-  fare, si chiama **funzione di partizione**, ed è l'ostacolo contro cui si
+  fare, si chiama funzione di partizione, ed è l'ostacolo contro cui si
   scontra metà del capitolo.
-- Il **premio Nobel per la fisica del 2024** a Hopfield e Hinton ha ricordato
+- Il premio Nobel per la fisica del 2024 a Hopfield e Hinton ha ricordato
   a tutti che questo modo di ragionare non se n'è mai andato: i generatori di
   immagini a diffusione ripuliscono il rumore seguendo la pendenza di un
   paesaggio, e le reti di Hopfield di oggi richiamano un ricordo con lo
@@ -263,15 +263,15 @@ esattamente quello che quel conto fa.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Un **modello a energia** assegna un numero a ogni configurazione (basso se
+- Un modello a energia assegna un numero a ogni configurazione (basso se
   plausibile, alto se no) e risponde cercando il minimo:
   $\hat{y} = \arg\min_y E_\theta(\mathbf{x}, y)$. Niente probabilità da far
   sommare a uno.
 - Energia e probabilità sono legate dalla distribuzione di Boltzmann–Gibbs,
   $p_\theta(\mathbf{x}) = e^{-E_\theta(\mathbf{x})}/Z(\theta)$. Il ponte si
-  paga con la **funzione di partizione** $Z(\theta)$, intrattabile in alta
+  paga con la funzione di partizione $Z(\theta)$, intrattabile in alta
   dimensione: è il personaggio contro cui si scontra metà del capitolo.
-- Il premio **Nobel per la fisica 2024** a Hopfield e Hinton ha riportato
+- Il premio Nobel per la fisica 2024 a Hopfield e Hinton ha riportato
   alla luce un filone che non se n'era mai andato: lo *score* della
   diffusione è $-\nabla_{\mathbf{x}} E_t$, una pendenza per ogni livello di
   rumore; la JEPA è un'energia non normalizzata; l'aggiornamento delle Hopfield

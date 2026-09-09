@@ -21,7 +21,7 @@ intravedere.
 
 ## Il percorso, guardato dall'alto
 
-**Il primo tratto** sono i mattoni: vettori, matrici, derivate, probabilità.
+Il primo tratto sono i mattoni: vettori, matrici, derivate, probabilità.
 Non erano un rito d'iniziazione, ma il vocabolario di tutto il resto. Un
 neurone è un prodotto scalare: moltiplica ogni ingresso per il suo peso e somma
 i risultati, come alla cassa si moltiplica ogni quantità per il suo prezzo e si
@@ -38,7 +38,7 @@ risposta davanti a uno nuovo), misurare con onestà. Una disciplina che vale
 identica per un modello con dieci parametri (le manopole che l'addestramento
 regola) e per uno con mille miliardi.
 
-**Il secondo tratto** sono le reti neurali, che hanno cambiato la scala e ci
+Il secondo tratto sono le reti neurali, che hanno cambiato la scala e ci
 hanno costretti a guardare anche sotto il cofano. Con
 [PyTorch](../PyTorch/overview.md) abbiamo impilato strati e scritto a mano il
 ciclo di addestramento (il *training loop*); col capitolo sulla
@@ -70,7 +70,7 @@ cresciuto il mestiere di farle stare nei conti,
 l’[efficienza](../Efficienza/overview.md): far entrare in una scheda sola, e in
 una bolletta sola, un modello che non ci starebbe.
 
-**Il terzo tratto** è quello in cui cambia la domanda: non più solo riconoscere
+Il terzo tratto è quello in cui cambia la domanda: non più solo riconoscere
 quello che c'è (questa foto è un gatto), ma generare quello che non c'è (una
 foto di un gatto che non esiste) e agire per ottenere qualcosa. Sono i modelli
 generativi, che il libro percorre in cinque famiglie: i [modelli
@@ -145,7 +145,7 @@ quello dell'indice, quello di questo ripasso (che raggruppa per domanda e non
 per parte) e quello della storia.
 `````
 
-E poi gli ultimi capitoli, che non parlano di architetture ma di **mestiere**:
+E poi gli ultimi capitoli, che non parlano di architetture ma di mestiere:
 portare un modello in produzione e tenerlo in vita
 ([MLOps](../MLOps/overview.md)), aprirlo per capire perché ha deciso così
 ([interpretabilità](../Interpretabilita/overview.md)), rispondere delle sue
@@ -174,7 +174,7 @@ capitoli sul mestiere (produzione, interpretabilità, responsabilità) non stann
 su questo asse: stanno attorno a tutto.
 ```
 
-I **dati** vengono prima di tutto: nessun modello sa più di ciò che ha visto.
+I dati vengono prima di tutto: nessun modello sa più di ciò che ha visto.
 L'introduzione li ha paragonati all'ossigeno, e adesso che il percorso è finito
 quel paragone si può stringere. L'ossigeno è l'avanzo di una vita che non era
 la nostra, e noi siamo diventati quello che siamo imparando a respirarlo; i
@@ -188,7 +188,7 @@ noiose accanto alle architetture: come si dividono i dati, che cosa succede
 quando cambiano sotto i piedi, chi li ha lasciati e se era d'accordo. Un
 modello non è più intelligente dell'aria che gli hai dato da respirare.
 
-Le **rappresentazioni apprese** sono il cuore, cioè la parte che il deep
+Le rappresentazioni apprese sono il cuore, cioè la parte che il deep
 learning ha cambiato più di ogni altra.
 
 `````{tab} Elementare
@@ -225,7 +225,7 @@ Il feature engineering manuale del machine learning classico non è sparito, ma
 va detto dove è finito, perché le destinazioni sono due e il libro le insegna
 in capitoli diversi. Una parte è stata assorbita dentro $\theta$ e delegata
 all'ottimizzazione, ed è la parte che si racconta di solito. L'altra si è
-spostata nell’**architettura**, come bias induttivo: la convoluzione dichiara
+spostata nell’architettura, come bias induttivo: la convoluzione dichiara
 che un motivo va riconosciuto ovunque compaia, una rete su grafo che l'ordine
 con cui si elencano i nodi non cambia la risposta. Sono proprietà della forma
 della funzione, vere per ogni valore di $\theta$ e anche a rete non addestrata:
@@ -233,7 +233,7 @@ non sono state imparate, le ha scritte a mano il progettista prima che
 l'ottimizzazione cominciasse.
 `````
 
-E l’**ottimizzazione** è il motore che rende tutto questo possibile: apprendere
+E l’ottimizzazione è il motore che rende tutto questo possibile: apprendere
 significa, quasi sempre, cercare i parametri che minimizzano un errore.
 
 `````{tab} Elementare
@@ -244,7 +244,7 @@ il modello guarda quanto ha sbagliato e sposta ciascuna manopola nella
 direzione che riduce l'errore, un pochino. Ripetuto abbastanza volte, funziona.
 
 Con un mixer vero la direzione giusta la scopri provando, e con milioni di
-manopole non finiresti mai. Il modello non prova: la **calcola**. Per ogni
+manopole non finiresti mai. Il modello non prova: la calcola. Per ogni
 manopola si chiede "se la giro di un pelo in su, l'errore sale o scende, e di
 quanto?", e ottiene tutte le risposte insieme con un conto solo, invece che con
 milioni di tentativi. Quel conto è il gradiente, e il modo di ottenerlo in una
@@ -266,8 +266,8 @@ seguendo una procedura, per vedere che cosa ne esce.
 `````
 
 `````{tab} Superiore
-La forma che copre il grosso del libro è la minimizzazione del **rischio
-empirico** su un campione etichettato:
+La forma che copre il grosso del libro è la minimizzazione del rischio
+empirico su un campione etichettato:
 
 $$
 \theta^\star = \arg\min_{\theta}\ \mathcal{L}(\theta)
@@ -291,16 +291,16 @@ stocastica, che su una rete profonda si ferma dove il gradiente si annulla,
 senza garanzia che sia il minimo globale.
 
 Il perimetro di quella scrittura, però, va dichiarato, perché è più stretto del
-libro, e le eccezioni sono istruttive. **Le GAN** non ci
+libro, e le eccezioni sono istruttive. Le GAN non ci
 stanno: l'ottimizzazione simultanea di un gioco minimax non equivale a
-minimizzare una singola funzione, ed è la radice della loro instabilità. **Il
+minimizzare una singola funzione, ed è la radice della loro instabilità. Il
 reinforcement
-learning** non ci sta: la distribuzione
+learning non ci sta: la distribuzione
 dei dati dipende dalla politica che si sta cercando e l'obiettivo è
 massimizzare un ritorno atteso; perfino nella variante offline, dove un
 campione fisso di traiettorie esiste, l'obiettivo resta un ritorno e non una
-media su coppie. **I
-modelli a energia** non ci stanno: la
+media su coppie. I
+modelli a energia non ci stanno: la
 verosimiglianza che vorrebbero massimizzare contiene una funzione di partizione
 che non si sa calcolare, e si ripiega su surrogati come lo score matching. E
 nemmeno sul versante classico la copertura è totale: $k$-means almeno un
@@ -310,7 +310,7 @@ fusione greedy, e nessuno dei due è il minimo di un obiettivo globale; anche un
 albero di decisione cresce con split localmente ottimi, non minimizzando una
 funzione sull'albero finito.
 
-Resta vero che sono quasi tutti problemi di **ottimizzazione**, ed è questo che
+Resta vero che sono quasi tutti problemi di ottimizzazione, ed è questo che
 tiene insieme il libro. Da una famiglia all'altra cambia la natura
 dell'obiettivo: una somma su un campione, un equilibrio fra due giocatori, un
 ritorno atteso lungo traiettorie che il modello stesso genera, una
@@ -405,7 +405,7 @@ chiedeva ancora se una macchina potesse riconoscere un gatto in una foto: a
 quella si è risposto, a queste no. Sono quattro, e hanno una cosa in comune:
 in nessuna delle quattro basta fare più grande.
 
-**Quanto costa.** Per capire un testo, un Transformer confronta fra loro tutte
+Quanto costa. Per capire un testo, un Transformer confronta fra loro tutte
 le sue parole, e quel confronto costa quanto il quadrato della lunghezza:
 raddoppia il testo e quel pezzo di conto si moltiplica per quattro. Su un testo
 corto è una spesa fra le tante, e lo resta più a lungo di quanto quel quadrato
@@ -414,13 +414,13 @@ migliaia di parole in su, e prima ancora a riempirsi è la memoria, che è un
 guaio diverso. C'è una gara in corso per pagare meno, ed è il mestiere del
 capitolo sull'efficienza e dei due sulle architetture nate apposta.
 
-**Se capisce o indovina.** Un modello che risponde bene non è per forza un
+Se capisce o indovina. Un modello che risponde bene non è per forza un
 modello che ha capito, e per saperlo bisogna aprirlo e guardarci dentro. Non è
 facile: quello che ha imparato non sta scritto in chiaro da nessuna parte, è
 spalmato su miliardi di numeri, e un singolo pezzo di rete si accende per cose
 che fra loro non c'entrano niente.
 
-**Se ci si può fidare.** Un agente lavora da solo per venti passi di fila, e
+Se ci si può fidare. Un agente lavora da solo per venti passi di fila, e
 ogni passo gli riesce 95 volte su 100. Quante volte gli riescono tutti e venti?
 Il conto sta in una calcolatrice: si moltiplica, perché ogni passo aggiunge una
 condizione da soddisfare, e 0,95 per venti volte fa 0,3585, appena 36 su 100.
@@ -434,7 +434,7 @@ le volte buone risalgono a 95 su 100. Il 36 su 100 è quindi il caso di
 riferimento, non il peggiore, e quello che non cambia mai è che ogni passo in
 più è una condizione in più: per questo i compiti lunghi restano difficili.
 
-**Quanto consuma.** Addestrare e far girare questi modelli costa corrente,
+Quanto consuma. Addestrare e far girare questi modelli costa corrente,
 acqua per raffreddare i calcolatori e chip che sanno fabbricare pochissime
 aziende al mondo. Non è un conto che si chiude in laboratorio: tocca le reti
 elettriche, le riserve d'acqua e quelle poche fabbriche. E sotto sotto la
@@ -451,10 +451,10 @@ arrivato.
 `````
 
 `````{tab} Superiore
-I **foundation model** funzionano così: pre-addestramento auto-supervisionato
+I foundation model funzionano così: pre-addestramento auto-supervisionato
 su corpora enormi, poi adattamento via fine-tuning o prompting
 {cite}`bommasani2021opportunities`. Le *scaling laws* hanno mostrato che la
-**cross-entropy loss** cala in modo prevedibile con parametri, dati e calcolo
+cross-entropy loss cala in modo prevedibile con parametri, dati e calcolo
 {cite}`kaplan2020scaling`, e Hoffmann e colleghi ne hanno poi corretto la
 conclusione operativa sull'allocazione fra parametri e dati
 {cite}`hoffmann2022training`. Che a una loss più bassa corrispondano *capacità*
@@ -465,7 +465,7 @@ siano in buona parte un artefatto della metrica scelta. In ogni caso le leggi
 di scala non promettono che *scalare* basti a risolvere tutto, e i quattro
 fronti aperti sono, non per caso, quelli in cui scalare non basta.
 
-**L'efficienza dell'attenzione.** Sui contesti lunghi il costo quadratico
+L'efficienza dell'attenzione. Sui contesti lunghi il costo quadratico
 dell'attenzione diventa il vincolo economico dominante. "Sui contesti lunghi" è
 un'ipotesi con una soglia, e conviene calcolarla, perché la scrittura
 asintotica la fa sembrare più vicina di quanto sia. Detta $n$ la lunghezza del
@@ -490,12 +490,12 @@ ibride alternano i due tipi di strato: il costo resta quadratico, perché
 qualche strato ad attenzione piena resta, ma la costante davanti è più
 piccola.
 
-**La comprensione del modello.** L'interpretabilità meccanicistica prova a
+La comprensione del modello. L'interpretabilità meccanicistica prova a
 leggere i circuiti dentro i pesi, ed è lo strumento più diretto per distinguere
 una risposta corretta da una risposta corretta *per il motivo giusto*, perché
 guarda dentro il modello invece di fermarsi al comportamento.
 
-**L'affidabilità degli agenti.** Componendo più passi gli errori si accumulano:
+L'affidabilità degli agenti. Componendo più passi gli errori si accumulano:
 detta $p$ la probabilità di sbagliare un singolo passo e $T$ la lunghezza della
 traiettoria, se i passi sono indipendenti e ogni errore è fatale la probabilità
 di arrivare in fondo senza inciampi è $(1-p)^T$, che precipita. Le due ipotesi
@@ -512,12 +512,12 @@ agente vuol dire giudicare una traiettoria e non una risposta,
 distinguendo il successo raggiunto per la strada giusta da quello arrivato per
 caso.
 
-**Il conto fisico.** Energia, acqua, silicio e la concentrazione di tutto
+Il conto fisico. Energia, acqua, silicio e la concentrazione di tutto
 questo in pochi attori: un problema di politica industriale travestito da
 problema tecnico.
 
 E una direzione che è più una scommessa che una tendenza, una sola e dichiarata
-come tale: i **modelli del mondo**, cioè imparare la dinamica dell'ambiente
+come tale: i modelli del mondo, cioè imparare la dinamica dell'ambiente
 invece delle sole correlazioni nei dati. Se funzionasse su larga scala,
 cambierebbe l'ordine dei capitoli di un libro come questo.
 `````
@@ -545,7 +545,7 @@ arrivati per primi i risultati che hanno fatto notizia. Torna il discorso
 dell'aria: il mondo digitale è il posto dove quell'aria è più densa, e lì un
 polmone respira a pieno.
 
-Non è una gara alla pari, è una **partita in casa**. E la cosa da portarsi via
+Non è una gara alla pari, è una partita in casa. E la cosa da portarsi via
 è che buona parte del vantaggio non viene dall'intelligenza, viene dal terreno.
 
 Questa però è una lettura, non un risultato, e c'è chi la ribalta. Le rette
@@ -585,7 +585,7 @@ la partita dice subito com'è andata, e al braccio no.
 Da qui viene la tentazione di rilassarsi, perché a noi resterebbe il mondo
 vero. È giusto a metà, e la metà che manca conta.
 
-La prima cosa che manca è che **il campo si allarga**. Ogni sensore, ogni
+La prima cosa che manca è che il campo si allarga. Ogni sensore, ogni
 telecamera, ogni pagamento tracciato prende un pezzo di mondo vero e lo
 trasforma in numeri, cioè lo porta dentro casa loro. È l'altra faccia di quello
 che l'introduzione chiamava scarto: ciò che lasciamo dietro è l'aria che
@@ -597,11 +597,11 @@ indietro, perché le profezie scadono: è il motivo per cui lì ogni tentativo
 costa più che al chiuso, e se un giorno costerà meno sarà perché uno di quei
 tre pezzi, il tempo, l'usura o la caduta, è cambiato.
 
-La seconda è che quello che resta nostro è un **mestiere** e non un
-**territorio**: un territorio si perde, e ce ne si accorge quando qualcun altro
+La seconda è che quello che resta nostro è un mestiere e non un
+territorio: un territorio si perde, e ce ne si accorge quando qualcun altro
 ci sta già giocando.
 
-Quel mestiere è fatto di due cose. La prima è **rispondere** di una scelta, e
+Quel mestiere è fatto di due cose. La prima è rispondere di una scelta, e
 in italiano quella parola ne vuol dire due: dare una risposta, e assumersi le
 conseguenze. Una macchina fa la prima cosa benissimo e la seconda no. Non
 perché le manchi qualcosa di misterioso: quando una decisione fa un danno,
@@ -611,7 +611,7 @@ fatta di persone. Vale anche per un'azienda, che di suo non ha faccia né
 braccia: la responsabilità non si trova, si assegna, e la si assegna a chi può
 portarla.
 
-La seconda è **decidere quale partita giocare**. A un sistema si dà un
+La seconda è decidere quale partita giocare. A un sistema si dà un
 punteggio da far salire, e lui lo fa salire con una costanza che noi non
 abbiamo: se il punteggio è «quanti minuti resti a guardare», diventerà bravo a
 tenerti lì, e ci riuscirà. Se quello sia il numero giusto da far salire è una
@@ -632,7 +632,7 @@ cose è una sorpresa, e la ragione di tutt'e due sta in come viene addestrato.
 
 Prima però una domanda che si fa di rado: chi è nella posizione di
 accorgersene? Dipende da come il modello viene messo a disposizione, e i modi
-sono due. Di alcuni modelli si possono scaricare i **pesi**, cioè i numeri che
+sono due. Di alcuni modelli si possono scaricare i pesi, cioè i numeri che
 l'addestramento ha regolato, le manopole di prima: sono un file che chiunque
 può tenersi, e quindi misurarne i difetti, sondarlo, smentirlo. Altri si
 raggiungono solo attraverso un'interfaccia, cioè mandando domande al server di
@@ -700,7 +700,7 @@ tentativo di regolarle. Il fact-check umano, per noi, non è opzionale.
 
 ## Come continuare a imparare
 
-Questo libro è una mappa, non il territorio. Per proseguire: leggi i **paper**
+Questo libro è una mappa, non il territorio. Per proseguire: leggi i paper
 originali, cioè gli articoli scientifici in cui ciascuna di queste idee è stata
 proposta per la prima volta. Quelli degli ultimi quindici anni stanno quasi
 tutti su **arXiv**, l'archivio pubblico e gratuito dove i ricercatori
@@ -759,7 +759,7 @@ Poi mettiti alla prova. **Kaggle** è il sito dove chiunque può misurarsi su un
 problema di dati vero, con una classifica e il codice degli altri partecipanti
 sotto gli occhi. Partecipa a una competizione: è il modo più rapido per vedere
 la differenza fra un modello che gira sul tuo computer e un modello che regge
-dati che non hai scelto tu. Contribuisci a un progetto **open source**, cioè a
+dati che non hai scelto tu. Contribuisci a un progetto open source, cioè a
 un programma il cui codice è pubblico e chiunque può migliorarlo. E tieni un
 quaderno degli esperimenti falliti, che insegnano più dei successi.
 
@@ -778,10 +778,10 @@ mandacelo: i pulsanti che compaiono servono esattamente a questo.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Tutto il libro poggia su tre idee ricorrenti: i **dati** (nessun modello sa
-  più di ciò che ha visto), le **rappresentazioni apprese** (le "lenti" che la
+- Tutto il libro poggia su tre idee ricorrenti: i dati (nessun modello sa
+  più di ciò che ha visto), le rappresentazioni apprese (le "lenti" che la
   rete si costruisce da sola, dentro un apparecchio che l'esperto disegna
-  ancora a mano) e l’**ottimizzazione** (le manopole del mixer, regolate un
+  ancora a mano) e l’ottimizzazione (le manopole del mixer, regolate un
   pochino alla volta).
 - Addestrare vuol dire quasi sempre la stessa cosa: misurare quanto il modello
   ha sbagliato e spostare ogni manopola nella direzione che riduce l'errore,
@@ -795,14 +795,14 @@ mandacelo: i pulsanti che compaiono servono esattamente a questo.
   gli agenti con tre, mentre il modello di fondazione è diventato così normale
   da non avere più bisogno di un nome. Restano varianti di dati,
   rappresentazioni e ottimizzazione, non magia.
-- I fronti davvero aperti sono quelli in cui **fare più grande non basta**: il
+- I fronti davvero aperti sono quelli in cui fare più grande non basta: il
   costo dei testi lunghissimi, il capire *perché* un modello ha risposto così,
   la fiducia in un agente che lavora da solo per una ventina di passi, e il
   conto di corrente, acqua e chip che tutto questo presenta a qualcuno.
 - Potenza e responsabilità crescono insieme: i fatti inventati con sicurezza e
   i pregiudizi ereditati dai dati sono limiti strutturali, e verificare a mano
   quello che il modello dice non è opzionale.
-- Gli ultimi capitoli non parlano di architetture ma di **mestiere**: portare
+- Gli ultimi capitoli non parlano di architetture ma di mestiere: portare
   un modello in produzione, aprirlo per capire, rispondere delle sue
   conseguenze. È la parte che decide se quello che hai costruito serve o fa
   danni.
@@ -812,8 +812,8 @@ mandacelo: i pulsanti che compaiono servono esattamente a questo.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Tutto il libro poggia su tre idee ricorrenti: **dati**, **rappresentazioni
-  apprese** e **ottimizzazione**.
+- Tutto il libro poggia su tre idee ricorrenti: dati, rappresentazioni
+  apprese e ottimizzazione.
 - L'apprendimento è, per il grosso del libro, la minimizzazione di un rischio
   empirico, $\theta^\star = \arg\min_\theta \mathcal{L}(\theta)$. Le eccezioni
   sono istruttive e vanno tenute a mente: GAN (gioco minimax), reinforcement
@@ -826,12 +826,12 @@ mandacelo: i pulsanti che compaiono servono esattamente a questo.
   model non hanno nemmeno una sezione propria, si sono sciolti dentro quello sui
   Transformer). Restano varianti di dati, rappresentazioni e ottimizzazione, non
   magia.
-- I fronti davvero aperti sono quelli in cui **scalare non basta**: il costo
+- I fronti davvero aperti sono quelli in cui scalare non basta: il costo
   dell'attenzione sui contesti lunghi, l'interpretabilità, l'affidabilità degli
   agenti, il conto energetico e industriale.
 - Potenza e responsabilità crescono insieme: allucinazioni e bias sono limiti
   strutturali, e il fact-check umano non è opzionale.
-- Gli ultimi capitoli non parlano di architetture ma di **mestiere**:
+- Gli ultimi capitoli non parlano di architetture ma di mestiere:
   produzione, interpretabilità, responsabilità. È la parte che decide se
   quello che hai costruito serve o fa danni.
 ```

@@ -13,7 +13,7 @@ attaccato. Come si vedrà, non è banale nemmeno quello.
 ## L'argomento, in due mosse
 
 Le critiche mosse all'apprendimento per rinforzo «puro» sono quattro, e due si
-discutono qui. Vanno viste come **due mosse dello stesso ragionamento**, non
+discutono qui. Vanno viste come due mosse dello stesso ragionamento, non
 come due obiezioni separate.
 
 Le altre due hanno già avuto il loro spazio: la ricompensa scritta male e
@@ -34,7 +34,7 @@ giornata intera. Se invece qualcuno ti avesse commentato ogni singolo
 avvistamento, avresti ricevuto migliaia di volte più informazione.
 
 La seconda obiezione è più insidiosa, e non riguarda la quantità: riguarda il
-fatto che quella frase, per essere utile, **va distribuita**. Nella giornata hai
+fatto che quella frase, per essere utile, va distribuita. Nella giornata hai
 fatto centinaia di cose. Hai preso il sentiero giusto, ti sei fermato troppo
 presto a una radura, hai avuto la pazienza di aspettare mezz'ora sotto un faggio,
 e a un certo punto hai fatto rumore e hai fatto volare via tutto. Alla fine il
@@ -111,7 +111,7 @@ l'agente ha sbagliato, e ricevono la stessa spinta di tutti gli altri.
 ## Che cosa propone LeCun al suo posto
 
 Per LeCun la conseguenza di questo argomento non è che il rinforzo sia inutile,
-ma che sia **nel posto sbagliato**: va bene per rifinire una policy quando la
+ma che sia nel posto sbagliato: va bene per rifinire una policy quando la
 comprensione del mondo è già stata costruita altrove, e non va bene come modo
 di costruirla.
 
@@ -130,7 +130,7 @@ invece la comprensione del mondo si costruisce guardando, cioè con un segnale
 grande quanto il dato, l'interazione serve solo là dove la previsione fallisce,
 ed è pochissima. È la stessa aritmetica, letta come progetto di macchina.
 
-Va detto che questa è una **posizione dentro un dibattito aperto**, non un
+Va detto che questa è una posizione dentro un dibattito aperto, non un
 risultato: dice come andrebbe costruita una macchina, e le macchine costruite
 così non sono ancora quelle che funzionano meglio. Il capitolo sui world model
 la prende sul serio esattamente in questi termini.
@@ -174,7 +174,7 @@ the right solution. Every single one of those incorrect things you did, as long
 as you got to the correct solution, will be upweighted as, "Do more of this."
 It's terrible. It's noise» {cite}`karpathy2025dwarkesh`.
 
-Va però riportato anche quello che dice **nella stessa risposta**, perché senza
+Va però riportato anche quello che dice nella stessa risposta, perché senza
 di esso la posizione diventa un'altra:
 
 > L'apprendimento per rinforzo è terribile. Si dà solo il caso che tutto quello
@@ -184,7 +184,7 @@ di esso la posizione diventa un'altra:
 e, poche righe dopo, che il rinforzo permette di fare meglio della sola
 imitazione, che su certi problemi si può migliorare senza avere traiettorie di
 esperti da copiare, e che «il modello può anche scoprire soluzioni che una
-persona non troverebbe mai. È incredibile. Eppure, è ancora stupido».
+persona potrebbe non trovare mai. È incredibile. Eppure, è ancora stupido».
 
 Non è dunque una richiesta di abbandonare il rinforzo. È la tesi che lo
 strumento che oggi si usa sia molto peggiore di come viene percepito, e che il
@@ -197,7 +197,7 @@ comuni: si attribuisce una posizione a chi non l'ha mai espressa, solo perché
 il racconto suona plausibile.
 
 La tesi è questa: l'apprendimento per rinforzo applicato ai modelli linguistici
-non aggiungerebbe capacità nuove, si limiterebbe a **restringere e selezionare**
+non aggiungerebbe capacità nuove, si limiterebbe a restringere e selezionare
 percorsi di ragionamento che il modello aveva già acquisito nel
 pre-addestramento.
 
@@ -228,7 +228,7 @@ sono gli autori i primi a dirlo. Il trucco delle tante risposte non si può
 spingere all'infinito: se i tentativi fossero un numero assurdo, prima o poi
 anche battendo i tasti a caso salterebbe fuori la risposta giusta, e il
 confronto non direbbe più niente. Quello che è stato misurato è il modo in cui
-questo addestramento si fa **oggi**, non un limite di principio.
+questo addestramento si fa oggi, non un limite di principio.
 
 `````
 
@@ -236,23 +236,23 @@ questo addestramento si fa **oggi**, non un limite di principio.
 
 Il protocollo è il **pass@$k$**: la probabilità che almeno una fra $k$ risposte
 campionate indipendentemente alla stessa domanda sia corretta. È una misura del
-**confine** delle capacità, non della loro affidabilità: per $k = 1$ premia chi
+confine delle capacità, non della loro affidabilità: per $k = 1$ premia chi
 azzecca al primo colpo, per $k$ grande premia chi *possiede* la soluzione da
 qualche parte nella propria distribuzione, anche se raramente.
 
-Il risultato, dall'abstract (RLVR è il rinforzo con ricompensa **verificabile**,
+Il risultato, dall'abstract (RLVR è il rinforzo con ricompensa verificabile,
 quella che un controllo automatico assegna senza il giudizio di nessuno):
-«l'attuale impostazione di addestramento suscita
-di rado schemi di ragionamento fondamentalmente nuovi. Mentre i modelli
-addestrati con RLVR superano i loro modelli base per valori piccoli di $k$ (per
-esempio $k=1$), i modelli base ottengono un punteggio pass@$k$ più alto quando
-$k$ è grande» {cite}`yue2025rlvr`. Gli autori osservano inoltre che il confine
-delle capacità di ragionamento **spesso si restringe** al procedere
-dell'addestramento. Le curve pubblicate arrivano a $k = 1024$, e il sorpasso
-non richiede di arrivare fin lì: avviene «man mano che $k$ cresce fino a decine
-o centinaia», e sul banco di prova Minerva, con un modello da 32 miliardi di
-parametri, a $k = 128$ il modello base risolve circa il 9% di problemi in più di
-quello addestrato.
+«l'addestramento attuale suscita di rado schemi di ragionamento
+fondamentalmente nuovi. Mentre i modelli addestrati con RLVR superano i loro
+modelli base per valori più piccoli di $k$ (per esempio $k=1$), i modelli base
+ottengono un punteggio pass@$k$ più alto quando $k$ è grande»
+{cite}`yue2025rlvr`. Gli autori osservano inoltre che il
+confine delle capacità di ragionamento spesso si restringe al procedere
+dell'addestramento. Le curve pubblicate arrivano al più a $k = 1024$, e il
+sorpasso non richiede di arrivare fin lì: avviene «man mano che $k$ cresce fino
+a decine o centinaia», e sul banco di prova Minerva, con un modello da 32
+miliardi di parametri, a $k = 128$ il modello base risolve circa il 9% di
+problemi in più di quello addestrato.
 
 Tre avvertenze, e le pone il lavoro stesso. La prima: la misura riguarda gli
 schemi di ragionamento accessibili per campionamento, quindi la conclusione è
@@ -273,7 +273,7 @@ l'impostazione di oggi, il confine delle capacità non si allarga. Ma la seconda
 non è un'affermazione della prima persona, e chi le fonde attribuisce a Karpathy
 una misura che non ha fatto e una conclusione che nella stessa intervista
 contraddice, quando dice che il rinforzo fa scoprire soluzioni che una persona
-non troverebbe.
+potrebbe non trovare.
 
 ## E chi non è d'accordo
 
@@ -288,7 +288,7 @@ giudizio delle persone, un modello più di cento volte più grande. Se il
 rinforzo è una ciliegina, è una ciliegina che ha cambiato il sapore della torta.
 
 La seconda è più recente e più diretta al punto. I modelli cosiddetti
-«ragionanti» si addestrano col rinforzo su problemi a **risposta verificabile**
+«ragionanti» si addestrano col rinforzo su problemi a risposta verificabile
 (la correttezza di un risultato matematico, il superamento di una batteria di
 test per il codice), dove la ricompensa non richiede il giudizio di nessuno. Lì
 non solo il metodo funziona, ma fa emergere comportamenti che non erano stati
@@ -297,14 +297,14 @@ resoconto che si legge nel rapporto tecnico di DeepSeek-R1
 {cite}`guo2025deepseek`. È
 un'osservazione che convive senza contraddizione con il risultato di Yue e
 colleghi, e le due cose insieme dicono una terza cosa: l'addestramento sposta
-massa di probabilità verso strade che pagano, e questo è utilissimo **e** non è
+massa di probabilità verso strade che pagano, e questo è utilissimo e non è
 la stessa cosa che insegnare una strada nuova.
 
 C'è infine un argomento di prospettiva da tenere presente. Le critiche fin qui
-riguardano il rinforzo **come unico maestro**, cioè l'idea di
+riguardano il rinforzo come unico maestro, cioè l'idea di
 costruire un sistema per tentativi ed errori a partire da zero. Nessuno dei
 due critici propone questo: la ciliegina è una ciliegina perché viene
-**dopo**, su una torta già cotta. Criticare il rinforzo come unico maestro non
+dopo, su una torta già cotta. Criticare il rinforzo come unico maestro non
 è quindi criticarlo come rifinitura, e le due frasi si somigliano tanto che
 vengono scambiate di continuo.
 
@@ -314,11 +314,11 @@ Tutte queste critiche hanno la stessa forma: il segnale è povero.
 La risposta più ovvia è allora arricchirlo, e infatti è quello che si fa (un
 critico che dà un voto passo per passo, un premio interno per la novità, un
 giudice che commenta le soluzioni parziali). C'è però una risposta diversa, che
-non arricchisce il premio ma **cambia la quantità che si sta ottimizzando**, e
+non arricchisce il premio ma cambia la quantità che si sta ottimizzando, e
 merita un posto qui perché è l'unica obiezione di principio, non di rimedio.
 
 Viene da fuori dall'informatica. Nelle neuroscienze teoriche esiste un quadro,
-l’**inferenza attiva**, che descrive percezione, pianificazione e azione come
+l’inferenza attiva, che descrive percezione, pianificazione e azione come
 un unico problema di inferenza {cite}`parr2022active`. Al posto della
 ricompensa mette una grandezza da minimizzare, l’**energia libera attesa**: la
 sorella rivolta al futuro dell'energia libera variazionale nominata in
@@ -337,8 +337,8 @@ che non gli porta nessun caffè, e nemmeno un passo verso il caffè: gli porta
 soltanto *informazione*. Solo dopo, sapendo che giorno è, va al bar giusto, e
 quella seconda azione è quella che gli porta la cosa che voleva.
 
-Le due azioni valgono per ragioni diverse: la prima **risolve un'incertezza**,
-la seconda **realizza una preferenza**. Ed è qui il punto: un sistema che sappia
+Le due azioni valgono per ragioni diverse: la prima risolve un'incertezza,
+la seconda realizza una preferenza. Ed è qui il punto: un sistema che sappia
 valutare solo la seconda non ha modo di scegliere il calendario, perché il
 calendario non porta caffè. Può solo tirare a caso fra i due bar, e come dicono
 gli autori, spesso il caffè non se lo beve.
@@ -358,7 +358,7 @@ cui il caffè non c'è.
 
 `````{tab} Superiore
 
-L’**energia libera attesa** di una politica $\pi$ si scompone in
+L’energia libera attesa di una politica $\pi$ si scompone in
 
 $$
 G(\pi) \;=\; -\,\underbrace{I(\pi)}_{\text{valore epistemico}}
@@ -382,7 +382,7 @@ dell'ottimizzazione della stessa funzione» {cite}`parr2022active`.
 Il quadro ha inoltre una proprietà che aiuta a collocarlo: togliendo pezzi a
 $G$ si riottengono schemi già noti. Tolte le preferenze, cioè annullato il
 valore pragmatico, quel che resta, cambiato di segno, «è variamente noto come
-sorpresa bayesiana attesa o **motivazione intrinseca**», che è esattamente la
+sorpresa bayesiana attesa o motivazione intrinseca», che è esattamente la
 curiosità che la sezione sull'esplorazione, nel capitolo sul deep reinforcement
 learning, costruisce come bonus aggiunto. Il che dice in che rapporto stanno le
 due letture: non sono in concorrenza, una è il caso particolare dell'altra.
@@ -390,8 +390,8 @@ due letture: non sono in concorrenza, una è il caso particolare dell'altra.
 `````
 
 Due avvertenze prima di lasciare l'argomento, perché è il punto in cui sarebbe
-facile promettere troppo. La prima: **non è così che si addestrano oggi i
-sistemi di cui si è parlato fin qui.** L'inferenza attiva nasce come teoria del
+facile promettere troppo. La prima: non è così che si addestrano oggi i
+sistemi di cui si è parlato fin qui. L'inferenza attiva nasce come teoria del
 comportamento biologico, e le sue realizzazioni sono modelli di laboratorio,
 non i sistemi su cui gira il mondo. La seconda la dicono gli autori
 stessi in apertura, e conviene riportarla perché evita di trasformarli in
@@ -409,19 +409,19 @@ comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </Worl
 
 ```{admonition} Da ricordare
 :class: important
-- Nella torta di LeCun l'apprendimento per rinforzo è la **ciliegina**, e la
+- Nella torta di LeCun l'apprendimento per rinforzo è la ciliegina, e la
   ragione è quella del conto sui bit: il segnale che porta è pochissimo, una
   frase per un'intera giornata.
-- A quella si aggiunge una seconda obiezione, che è peggiore perché **moltiplica**
-  la prima: quella frase va anche **distribuita** fra le centinaia di cose fatte
+- A quella si aggiunge una seconda obiezione, che è peggiore perché moltiplica
+  la prima: quella frase va anche distribuita fra le centinaia di cose fatte
   durante la giornata, e nessuno dice quali erano quelle buone. Se la giornata è
   andata bene si tende a ripetere tutto, compresi gli sbagli.
-- Karpathy lo dice così: si sta **aspirando la supervisione attraverso una
-  cannuccia**, e quel poco lo si spalma su tutto quello che si è fatto. Nella
+- Karpathy lo dice così: si sta aspirando la supervisione attraverso una
+  cannuccia, e quel poco lo si spalma su tutto quello che si è fatto. Nella
   stessa risposta però dice anche che il rinforzo è oggi il meglio che si abbia,
-  e che fa scoprire soluzioni che una persona non troverebbe mai.
-- Una tesi che gira col nome sbagliato: che il rinforzo **restringa** invece di
-  allargare le capacità del modello non l'ha detta Karpathy, l'hanno **misurata**
+  e che fa scoprire soluzioni che una persona potrebbe non trovare mai.
+- Una tesi che gira col nome sbagliato: che il rinforzo restringa invece di
+  allargare le capacità del modello non l'ha detta Karpathy, l'hanno misurata
   Yue e colleghi, chiedendo al modello tante risposte alla stessa domanda invece
   di una. Con una sola risposta vince il modello addestrato; con moltissime
   vince quello di partenza. Vale per come questo addestramento si fa oggi:
@@ -431,12 +431,12 @@ comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </Worl
   giorni sono rifiniti proprio così, e i modelli «ragionanti» si addestrano così
   sui problemi dove la risposta si può verificare. Nessuno propone di buttare il
   rinforzo: si discute se basti a spiegare da dove venga la comprensione.
-- LeCun non dice che sia inutile: dice che è **nel posto sbagliato**, buono per
+- LeCun non dice che sia inutile: dice che è nel posto sbagliato, buono per
   rifinire e non per costruire la comprensione, che va costruita guardando. È
   una posizione dentro un dibattito aperto, e le macchine fatte così non sono
   ancora quelle che funzionano meglio.
 - C'è poi una risposta di tipo diverso, che non arricchisce il premio ma
-  **cambia la cosa da massimizzare**: chi vuole un caffè e non sa che giorno è
+  cambia la cosa da massimizzare: chi vuole un caffè e non sa che giorno è
   guarda prima il calendario, e quel gesto non porta caffè, porta informazione.
   Se il valore di sapere sta già dentro la quantità da minimizzare,
   l'esplorazione non si paga a parte. Non è però così che i sistemi di oggi si
@@ -453,33 +453,33 @@ comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </Worl
   ricompensa scritta male e ottimizzata alla lettera, e il costo in esperienza
   dell'imparare per tentativi nel mondo), e le due discusse qui sono due mosse
   dello stesso argomento.
-- **Quanti bit**: il bersaglio è uno scalare per episodio, cioè pochi bit,
+- Quanti bit: il bersaglio è uno scalare per episodio, cioè pochi bit,
   contro l'ordine di $10^5$ bit per esempio del pre-addestramento
   auto-supervisionato.
-- **Assegnazione del credito**: nel gradiente di policy elementare lo stesso
+- Assegnazione del credito: nel gradiente di policy elementare lo stesso
   ritorno $R^{(m)}$ moltiplica $\nabla_\theta \log \pi_\theta(a_t \mid s_t)$ per
   ogni $t$ della traiettoria. La linea di base riduce la varianza, il critico
   stima il vantaggio azione per azione e lo sconto accorcia l'orizzonte di
   attribuzione; nessuno dei tre fabbrica informazione assente dal segnale.
-- **Karpathy** {cite}`karpathy2025dwarkesh`: «sucking supervision through a
+- Karpathy {cite}`karpathy2025dwarkesh`: «sucking supervision through a
   straw», e il ritorno finale «trasmesso per radiodiffusione a tutta la
   traiettoria». Nella stessa risposta: il rinforzo resta il meglio disponibile e
-  «può scoprire soluzioni che una persona non troverebbe mai».
-- **Attribuzione da tenere dritta**: la tesi che l'RLVR restringa il confine
-  delle capacità è di **Yue e colleghi** {cite}`yue2025rlvr`, misurata col
-  **pass@$k$**: i modelli addestrati vincono a $k$ piccolo, i modelli base a $k$
+  «può scoprire soluzioni che una persona potrebbe non trovare mai».
+- Attribuzione da tenere dritta: la tesi che l'RLVR restringa il confine
+  delle capacità è di Yue e colleghi {cite}`yue2025rlvr`, misurata col
+  pass@$k$: i modelli addestrati vincono a $k$ piccolo, i modelli base a $k$
   grande. Vale per l'impostazione corrente, non in linea di principio.
 - Il contraddittorio: post-addestramento sulle preferenze e RLVR sui domini
   verificabili funzionano, e non contraddicono il risultato precedente. Spostare
-  massa di probabilità verso strade che pagano è utile **e** non equivale a
+  massa di probabilità verso strade che pagano è utile e non equivale a
   insegnare una strada nuova.
-- **La proposta di LeCun**: il rinforzo va sostituito, come costruttore della
-  comprensione, dal **controllo predittivo basato su modello**, e resta per la
+- La proposta di LeCun: il rinforzo va sostituito, come costruttore della
+  comprensione, dal controllo predittivo basato su modello, e resta per la
   rifinitura. È una posizione dentro un dibattito aperto, non un risultato.
-- **Inferenza attiva** {cite}`parr2022active`: l'energia libera attesa $G(\pi)$
+- Inferenza attiva {cite}`parr2022active`: l'energia libera attesa $G(\pi)$
   si scompone in valore epistemico e valore pragmatico, quindi non c'è nessun
   compromesso fra esplorazione e sfruttamento da regolare a mano; tolte le
-  preferenze resta, cambiata di segno, la **motivazione intrinseca**, cioè il
+  preferenze resta, cambiata di segno, la motivazione intrinseca, cioè il
   bonus di curiosità come caso particolare. Quadro di laboratorio, non il modo
   in cui i sistemi si addestrano oggi.
 ```
