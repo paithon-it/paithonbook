@@ -60,6 +60,15 @@ toglierli di mezzo prima di rileggere:
              finisce per dirla due volte. Ne sono state trovate quattordici in
              una passata sola, in nove capitoli, e nessuna l'ha vista un
              controllo: la build non se ne accorge e il testo resta valido
+  enfasi     il neretto per mille parole di prosa, capitolo per capitolo,
+             contro il tetto di cinque. Non giudica QUALE marcatura sia
+             giusta (i due assi in fondo a questa nota ci hanno provato e
+             sono affogati nel rumore): conta, e la soglia e' decisa altrove.
+             `aggiornamenti.md` sta fuori, ed e' scritto nell'uscita: la
+             genera un altro script e il suo neretto sono i titoli delle voci
+             del registro. In piu', come elenco e non come errore, i termini
+             marcati in piu' di un capitolo, che una rilettura a un capitolo
+             per volta non puo' vedere
   verso      rimandi che vanno dalla parte sbagliata: «come abbiamo visto»
              seguito da un capitolo che il lettore non ha ancora letto (e il
              contrario, «vedremo» verso un capitolo gia' letto). L'ordine di
@@ -189,6 +198,36 @@ def sorgenti() -> dict[str, str]:
             if "_static" not in p.parts and "_build" not in p.parts}
 
 
+def pagine_del_toc() -> list[Path]:
+    """Le pagine del libro, in ordine di lettura, prese dal `_toc.yml`.
+
+    Non da un glob: `book/**/*.md` non e' il libro (ci sono anche i `.ipynb`,
+    e sotto `book/` stanno anche file che il toc non elenca), e una pagina
+    saltata non protesta.
+
+    **E il toc non e' fatto di sole voci `file:`**: la prima pagina e' la
+    `root:`. Un perimetro che cerca solo `file:` la perde, torna un conto piu'
+    basso di uno e non solleva niente: e' un numero appena sbagliato, cioe'
+    quello che si crede da se'. La pagina di apertura e' anche la prima che il
+    lettore incontra, quindi e' la peggiore da non guardare.
+
+    Sta qui in una copia sola, e non una per attrezzo, perche' due perimetri
+    divergono e allora non si sa piu' quale dei due conti abbia ragione: la
+    stessa funzione la usa `scripts/genera-figure-scure.py`.
+    """
+    nomi = re.findall(r"^\s*-?\s*(?:file|root):\s*(\S+)",
+                      (LIBRO / "_toc.yml").read_text(encoding="utf-8"), re.M)
+    assert nomi, "il _toc.yml non elenca nessuna pagina"
+    fuori = []
+    for n in nomi:
+        for estensione in ("", ".md", ".ipynb"):
+            p = LIBRO / (n + estensione)
+            if p.is_file():
+                fuori.append(p)
+                break
+    return list(dict.fromkeys(fuori))
+
+
 _RX_RECINTO_CODICE = re.compile(
     r"^\{?(?:code-block|code|literalinclude|eval-rst)\}?\b"
     r"|^(?:python|py|ipython3?|text|bash|sh|shell|console|json|ya?ml|toml"
@@ -196,7 +235,7 @@ _RX_RECINTO_CODICE = re.compile(
     r"|dockerfile|xml|markdown|md|r|julia|rust|go)\b", re.I)
 
 
-def _maschera_prosa(testo: str) -> str:
+def _maschera_prosa(testo: str, riempitivo: str = " ") -> str:
     """Il testo con **il solo codice**, la matematica e gli URL messi a spazi.
 
     Serve a ogni asse che cerca un segno di prosa, perche' in un libro tecnico
@@ -223,6 +262,15 @@ def _maschera_prosa(testo: str) -> str:
     dice niente, che e' il caso dei blocchi di uscita), e la prosa dentro le
     schede resta visibile. Le righe di apertura e chiusura si azzerano sempre,
     perche' i backtick non sono testo.
+
+    Il `riempitivo` esiste per chi cerca una **marcatura**, e non un segno di
+    prosa: `**indipendentemente da $x$ e $y$**`, mascherato con gli spazi,
+    finisce con uno spazio davanti al `**` di chiusura, e un pattern che
+    pretende un carattere pieno li' non chiude piu' la marcatura: il match si
+    allunga fino a quella dopo e **due ne diventano una**. Il conto cala, e un
+    conto che cala assomiglia al lavoro che procede. Chi passa un riempitivo
+    pieno lo vuole di un carattere che non sia ne' spazio ne' `*`, e le
+    posizioni restano ferme in tutti e due i casi.
 
     La quarta l'ha portata una riga di uscita vera: **dentro un recinto di
     codice non si apre niente**. Dal 3.11 il traceback di Python sottolinea il
@@ -251,13 +299,14 @@ def _maschera_prosa(testo: str) -> str:
                 pila.append((tick, bool(_RX_RECINTO_CODICE.match(info)) or not info))
             else:
                 pila.pop()
-            fuori.append(" " * len(riga))
+            fuori.append(riempitivo * len(riga))
             continue
         dentro_codice = any(e_codice for _, e_codice in pila)
-        fuori.append(" " * len(riga) if dentro_codice else riga)
+        fuori.append(riempitivo * len(riga) if dentro_codice else riga)
     t = "\n".join(fuori)
     for rx in (r"\$\$.*?\$\$", r"\$[^$]*?\$", r"`[^`]*`", r"https?://\S+"):
-        t = re.sub(rx, lambda m: re.sub(r"[^\n]", " ", m.group(0)), t, flags=re.S)
+        t = re.sub(rx, lambda m: re.sub(r"[^\n]", riempitivo, m.group(0)),
+                   t, flags=re.S)
     return t
 
 
@@ -318,6 +367,82 @@ def contrapposizioni(testo: str) -> list[tuple[int, str]]:
     return [(pulito[:pos].count("\n") + 1,
              " ".join(trovati[pos].group(0).split()))
             for pos in sorted(trovati)]
+
+
+# La marcatura di enfasi, contro cui `CLAUDE.md` e `CONTRIBUTING.md` mettono un
+# tetto. `(?!\s)` e `(?<!\s)` perche' `** ` e ` **` in CommonMark non aprono e
+# non chiudono niente, e `re.S` perche' il libro va a capo a ottanta colonne:
+# meta' delle marcature lunghe sta a cavallo di un a capo, e un pattern che non
+# lo attraversa ne conta la meta'.
+RX_NERETTO = re.compile(r"\*\*(?!\s)(?:(?!\*\*).)+?(?<!\s)\*\*", re.S)
+
+# Il riempitivo con cui questo asse maschera: un carattere pieno, per la
+# ragione scritta in `_maschera_prosa`. E prima della maschera va tolto `\*`,
+# l'asterisco protetto di `**A\***`: lasciato li' fa chiudere il match un
+# carattere prima e la marcatura si conta male. Si sostituisce con due
+# caratteri, non con uno, cosi' le posizioni non si spostano.
+_PIENO = "~"
+_ASTERISCO_PROTETTO = ".."
+
+
+def parole_e_marcature(testo: str) -> tuple[int, list[str]]:
+    """(parole di prosa, testo di ogni marcatura `**...**`) di una pagina.
+
+    Sta qui, a livello di modulo, perche' **chi misura deve poter eseguire il
+    rilevatore vero** invece di riscriverne una copia: due copie divergono, e
+    a quel punto non si sa piu' quale dei due conti abbia ragione.
+
+    Le parole si contano sulla maschera a spazi e le marcature su quella
+    piena, e non e' un capriccio: a spazi la matematica non conta come parola
+    (giusto, non e' prosa), piena non spezza una marcatura che se la porta
+    dentro (giusto, e' una marcatura sola). «Parola» qui e' una sequenza di
+    caratteri non-spazio, quindi il denominatore comprende anche la
+    punteggiatura e i segni del Markdown: e' una stima **larga**, cioe' un
+    tasso prudente, ed e' la stessa con cui il tetto e' stato tarato.
+    """
+    parole = len(re.findall(r"\S+", _maschera_prosa(testo)))
+    pieno = _maschera_prosa(testo.replace("\\*", _ASTERISCO_PROTETTO), _PIENO)
+    return parole, [m[2:-2] for m in RX_NERETTO.findall(pieno)]
+
+
+def termine_marcato(marcatura: str) -> str:
+    """Il termine dietro una marcatura: minuscolo, senza i segni ai bordi.
+
+    `**Il peso.**` e `**peso**` sono lo stesso termine, e la regola del libro
+    («il grassetto marca un termine al suo primo uso, una volta sola») parla
+    del termine, non della stringa.
+
+    **E lo spazio dentro la marcatura non e' uno spazio**: il libro va a capo
+    a ottanta colonne, quindi lo stesso termine si scrive `**stato\nnascosto**`
+    in un capitolo e `**stato nascosto**` in un altro, a seconda di dove cade
+    il margine. Chi non appiana quell'a capo si ritrova due termini diversi e
+    conta **meno del vero**, che e' la direzione in cui un rilevatore mente
+    piu' volentieri.
+    """
+    return re.sub(r"^[^\w$]+|[^\w$]+$", "",
+                  re.sub(r"\s+", " ", marcatura).strip().lower())
+
+
+def prosa_della_pagina(percorso: Path) -> str:
+    """Il testo di una pagina del libro, notebook compresi.
+
+    In un `.ipynb` la prosa sta nelle celle `markdown`: contare il resto vuol
+    dire mettere nel denominatore le virgolette e i `"cell_type"` del JSON. E
+    il campo `source` di una cella e' una lista di righe **oppure** una
+    stringa, quindi vanno prese tutt'e due, o lo stesso ciclo conta le righe
+    in un file e i caratteri nell'altro senza sollevare niente.
+    """
+    testo = percorso.read_text(encoding="utf-8", errors="ignore")
+    if percorso.suffix != ".ipynb":
+        return testo
+    pezzi = []
+    for cella in json.loads(testo).get("cells", []):
+        if cella.get("cell_type") != "markdown":
+            continue
+        sorgente = cella.get("source", "")
+        pezzi.append("".join(sorgente) if isinstance(sorgente, list)
+                     else str(sorgente))
+    return "\n\n".join(pezzi)
 
 
 @functools.lru_cache(maxsize=1)
@@ -418,7 +543,7 @@ def main():
         "numref", "cite", "ref", "figure", "toc", "landing", "animazioni",
         "schede", "ricordare", "simboli", "avanti", "palette", "clip", "ambiente",
         "lineette", "stampa", "verso", "matematica", "doppioni",
-        "contrapposizioni"}
+        "contrapposizioni", "enfasi"}
 
     testi = sorgenti()
     problemi = defaultdict(list)
@@ -1158,6 +1283,124 @@ def main():
             if len(righe) > 4:
                 problemi[chiave].append(f"    … e altre {len(righe) - 4}")
 
+    if "enfasi" in attivi:
+        # Il tetto e' scritto in `CLAUDE.md` e in `CONTRIBUTING.md`: **cinque
+        # marcature di enfasi ogni mille parole di prosa**. Nasce da un
+        # confronto con testi tecnici di riferimento, che non sono piu'
+        # semplici ne' piu' poveri di analogie: non marcano tipograficamente
+        # il ritmo del proprio ragionamento.
+        #
+        # Questo asse non giudica **quale** marcatura sia giusta, e non e' una
+        # rinuncia: i due assi provati e scartati che stanno in cima a questo
+        # file volevano proprio quello (un termine usato prima di essere
+        # definito, un termine coniato nella sola Superiore) e sono affogati
+        # nel rumore, perche' nel libro il grassetto non marca solo
+        # l'introduzione di un termine. Un tasso non ha quel problema: conta,
+        # e la soglia e' gia' decisa altrove.
+        #
+        # Il perimetro viene dal `_toc.yml` (`file:` e `root:`), non da un
+        # glob, e il conto stampa quante pagine ha letto: un conteggio senza
+        # il suo denominatore non e' una misura, e zero e' l'unico numero che
+        # non si verifica da se'.
+        TETTO = 5.0
+        # `aggiornamenti.md` sta fuori, e l'esclusione e' **dichiarata**: la
+        # scrive `scripts/genera-aggiornamenti.py` dal registro delle
+        # versioni, e il suo neretto e' il titolo di ciascuna voce, cioe'
+        # struttura. Senza, un elenco di duecento voci diventa un muro di
+        # prosa. Ripararla a mano non avrebbe senso (la prossima
+        # rigenerazione lo cancella) e lasciarla dentro darebbe un rosso che
+        # nessuno puo' togliere, cioe' un controllo che si impara ad
+        # aggirare. Un'esclusione taciuta e' un buco; dichiarata e' una
+        # decisione.
+        ESCLUSE = {"aggiornamenti.md":
+                   "generata da scripts/genera-aggiornamenti.py: il suo "
+                   "neretto sono i titoli delle voci del registro"}
+        # Sotto questa soglia il tasso non e' una misura: una marcatura sola
+        # lo sposta di piu' di due per mille. Riguarda le pagine che non sono
+        # prosa (`references.md` e' una direttiva `{bibliography}`), e anche
+        # questa esclusione si stampa invece di tacere.
+        MINIMO = 500
+
+        pagine = pagine_del_toc()
+        assert pagine, "perimetro vuoto: il _toc.yml non elenca nessuna pagina"
+        gruppi: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+        capitoli_del_termine = defaultdict(list)
+        lette = 0
+        for pagina in pagine:
+            rel = pagina.relative_to(LIBRO).as_posix()
+            if rel in ESCLUSE:
+                continue
+            lette += 1
+            parole, marcature = parole_e_marcature(prosa_della_pagina(pagina))
+            gruppo = rel.split("/")[0] if "/" in rel else rel
+            gruppi[gruppo][0] += len(marcature)
+            gruppi[gruppo][1] += parole
+            # I termini si contano nei soli **capitoli**: la regola «una volta
+            # sola» parla di un termine presentato al lettore, e la pagina di
+            # apertura per mestiere nomina tutto il libro.
+            if "/" in rel:
+                for m in marcature:
+                    termine = termine_marcato(m)
+                    if termine:
+                        capitoli_del_termine[termine].append(gruppo)
+
+        marcature_totali = sum(m for m, _ in gruppi.values())
+        parole_totali = sum(w for _, w in gruppi.values())
+        piccoli = sorted(g for g, (_, w) in gruppi.items() if w < MINIMO)
+        # Il conto dice **quante pagine ha letto**, e le esclusioni le nomina
+        # una per una con la loro ragione: un conteggio senza il suo
+        # denominatore non e' una misura, e un'esclusione taciuta e' un buco.
+        fuori = [f"{nome} ({ragione})" for nome, ragione in ESCLUSE.items()]
+        if piccoli:
+            fuori.append(f"{', '.join(piccoli)} sotto le {MINIMO} parole,"
+                         f" dove il tasso non e' una misura")
+        print(f"   (enfasi: {lette} pagine lette su {len(pagine)} del toc,"
+              f" {marcature_totali} marcature su {parole_totali} parole di"
+              f" prosa, {1000 * marcature_totali / parole_totali:.2f} per"
+              f" mille. Fuori: {'; '.join(fuori)})")
+
+        for gruppo, (marcature, parole) in sorted(gruppi.items()):
+            if parole < MINIMO:
+                continue
+            tasso = 1000 * marcature / parole
+            if tasso > TETTO:
+                problemi["enfasi oltre il tetto di cinque per mille"].append(
+                    f"{gruppo}: {tasso:.2f} per mille ({marcature} marcature"
+                    f" su {parole} parole di prosa, tetto {TETTO:.0f})")
+
+        # E l'altra meta', che una campagna a un capitolo per volta non puo'
+        # vedere: **lo stesso termine marcato in due capitoli**. La regola e'
+        # una proprieta' del libro, non di un capitolo, e chi legge un
+        # capitolo per volta non la puo' controllare. Non e' un errore, ed e'
+        # per questo che qui si elenca: molti sono omonimi legittimi (il
+        # `peso` di una rete e il `peso` di un campione), e a distinguerli
+        # bisogna leggere. Quello che l'elenco dice e' **dove guardare**.
+        multi = {t: c for t, c in capitoli_del_termine.items()
+                 if len(set(c)) > 1}
+        if multi:
+            chiave = "termini in neretto in piu' di un capitolo (da leggere)"
+            problemi[chiave].append(
+                f"{len(multi)} termini, per "
+                f"{sum(len(c) for c in multi.values())} marcature su "
+                f"{sum(len(c) for c in capitoli_del_termine.values())} "
+                f"nei capitoli")
+            for termine, dove in sorted(
+                    multi.items(),
+                    key=lambda kv: (-len(set(kv[1])), -len(kv[1]), kv[0])):
+                if len(set(dove)) < 3:
+                    continue
+                problemi[chiave].append(
+                    f"{termine}: {len(set(dove))} capitoli"
+                    f" ({', '.join(sorted(set(dove)))})")
+            # Qui sopra si elencano i termini che stanno in **tre o piu'**
+            # capitoli, che sono l'elenco corto e ad alto segnale. Quelli in
+            # due si contano e basta: sono la coda lunga, e un elenco di
+            # duecento righe nessuno lo legge.
+            due = sum(1 for c in multi.values() if len(set(c)) == 2)
+            problemi[chiave].append(
+                f"… e {due} termini marcati in due capitoli soltanto,"
+                f" contati e non elencati")
+
     if "matematica" in attivi:
         # Dentro `$...$` la tipografia italiana non vale, e nessuno se ne
         # accorge. Una campagna che ha sostituito 1086 apostrofi ASCII con
@@ -1395,6 +1638,8 @@ def main():
               "lineette scritte in ASCII (-- oppure - )",
               "«non e' X, e' Y» oltre il tetto di due",
               "«non e' X, e' Y» oltre il tetto (campagna in corso)",
+              "enfasi oltre il tetto di cinque per mille",
+              "termini in neretto in piu' di un capitolo (da leggere)",
               "frasi scritte due volte",
               "«Da ricordare» fuori dalle schede",
               "una lettera con due glosse nello stesso capitolo",
@@ -1415,6 +1660,7 @@ def main():
     # Assi che elencano e basta: dicono cosa guardare, non cosa e' rotto, e
     # quindi non fanno fallire niente.
     solo_elenco = {"schede Elementari molto lunghe (da rileggere)",
+                   "termini in neretto in piu' di un capitolo (da leggere)",
                    "una lettera con due glosse nello stesso capitolo",
                    "rimandi in avanti (da leggere)",
                    "colori fuori palette (decisione del repo brand)",

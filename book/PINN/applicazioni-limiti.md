@@ -319,7 +319,7 @@ di una curva, e fatica moltissimo sulle increspature strette e rapide. Chi
 lavora in questo campo le chiama **alte frequenze**, prendendo in prestito la
 parola dai suoni, dove alto di frequenza vuol dire acuto: qui vuol dire fitto,
 cioè che la cosa cambia parecchie volte nello spazio di poco. Il fenomeno ha
-un nome, lo **spectral bias**, ma l'intuizione è tutta lì.
+un nome, lo spectral bias, ma l'intuizione è tutta lì.
 
 `````{tab} Elementare
 

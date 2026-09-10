@@ -1,6 +1,7 @@
 {
  "alfabeta-pota.svg": "edc10cb3c37d55d8",
  "apertura-flusso.svg": "8c02eb7c5460b1c3",
+ "assi-girati.svg": "984d12532b0d5254",
  "attacco-epsilon.svg": "da45ed439bf4fa76",
  "attenzione-mascherata.gif": "666149434ad615b4",
  "autovettori.svg": "fcbd97aebafb0964",
@@ -15,6 +16,7 @@
  "ciclo-addestramento.svg": "5003bd7873952d24",
  "ciclo-agente.svg": "c215ea79193613a1",
  "convoluzione.gif": "b7c639566ccad2e5",
+ "corrimano-e-taratura.svg": "8185d1683fe7dc17",
  "credito-spalmato.svg": "248d34324909c999",
  "ctc-collassa.svg": "ba28f66138186e5a",
  "decodifica-per-differenza.svg": "fe4482f3ac5e3f71",
@@ -39,6 +41,7 @@
  "kmeans-converge.svg": "303794155b0f7457",
  "learning-rate.svg": "5845d4dffc821dc6",
  "limite-centrale.gif": "d55373326361cdda",
+ "linee-di-base.svg": "9496288cece5293e",
  "message-passing.gif": "480bdfc633a7095d",
  "origine-mobile.svg": "ba057373d48f11c7",
  "percettrone-impara.svg": "acf401934d81fee5",
@@ -48,6 +51,7 @@
  "sogno-diverge.svg": "21b45eaf58ff5cfa",
  "spartito-in-fila.svg": "697ce36a8aa7b500",
  "stato-ricorrente.gif": "ce7997676f98a338",
+ "temperature-top-p.svg": "9fb1630297c8f942",
  "vetrina-si-ordina.svg": "e710e29571655741",
  "xor-non-separabile.svg": "67bdac7b9a76dda3",
  "xor-si-piega.svg": "bbac836ae2e0f404"

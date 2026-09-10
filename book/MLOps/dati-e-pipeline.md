@@ -189,7 +189,7 @@ affidabile.
 
 C'è una decisione che si prende all'inizio, che sembra tecnica e non lo è: come
 i dati stanno scritti su disco fra uno stadio e il successivo. Quasi tutti,
-senza pensarci, scelgono il **CSV**, che è il modo più semplice di scrivere una
+senza pensarci, scelgono il CSV, che è il modo più semplice di scrivere una
 tabella in un file di testo: una riga del file per ogni riga della tabella, e
 dentro ogni riga i valori separati da una virgola. È quello che esce da un
 foglio di calcolo quando gli si chiede di esportare. Ed è quasi sempre la
@@ -283,7 +283,7 @@ statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
 un filtro `data > 2026-01-01` può saltare interi blocchi senza
 decomprimerli.
 
-A questo si aggiunge una cosa che il CSV strutturalmente non ha: uno **schema**
+A questo si aggiunge una cosa che il CSV strutturalmente non ha: uno schema
 con i tipi. Un CSV è testo, e ogni lettore riscopre i tipi per euristica, il
 che è la sorgente di una classe intera di bug silenziosi (l'identificativo con
 gli zeri iniziali letto come intero, la data interpretata secondo la

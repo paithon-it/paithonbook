@@ -1,15 +1,14 @@
 # LLMOps: operare i grandi modelli
 
 Il 30 novembre 2022 OpenAI mette online ChatGPT. Cinque giorni dopo Sam Altman
-annota su Twitter che ha superato il milione di utenti. Nello stesso giorno,
-alla domanda su quanto costi tutto questo, risponde con una parola diventata
-celebre: i costi di calcolo sono *eye-watering*, da far venire le lacrime agli
-occhi, e siamo nell'ordine di qualche centesimo di dollaro a conversazione. Il
-dettaglio interessante è quello che *non* dice: il modello dietro ChatGPT, un
-GPT-3.5, era già pronto da mesi, addestrato e poi rifinito perché rispondesse
-come ci si aspetta da un assistente e non come da un completatore di testi. La
-cosa nuova, quella che teneva svegli gli ingegneri, era operarlo invece che
-costruirlo:
+annota su Twitter che ha superato il milione di utenti. Lo stesso giorno,
+rispondendo a due persone diverse, dice le due cose rimaste celebri: i costi di
+calcolo sono *eye-watering*, da far venire le lacrime agli occhi, e siamo
+nell'ordine di qualche centesimo di dollaro a conversazione. Il dettaglio
+interessante è quello che *non* dice: il modello dietro ChatGPT, un GPT-3.5,
+era già pronto da mesi, addestrato e poi rifinito perché rispondesse come ci si
+aspetta da un assistente e non come da un completatore di testi. La cosa nuova,
+quella che teneva svegli gli ingegneri, era operarlo invece che costruirlo:
 servirlo a milioni di persone, in fretta, in modo affidabile, senza che la
 bolletta della GPU divorasse l'azienda.
 
@@ -86,10 +85,15 @@ rilettura (non il calcolo) è ciò che scandisce il ritmo.
 
 `````{tab} Superiore
 
-La generazione autoregressiva rende l'inferenza di un LLM **memory-bound**,
+La generazione autoregressiva rende l'inferenza di un LLM memory-bound,
 non compute-bound. Per produrre un solo token il modello deve leggere *tutti*
-i suoi pesi dalla memoria della GPU; l'aritmetica per token è modesta, ma il
-traffico di memoria è enorme. Un conto d'ordine di grandezza lo rende
+i suoi pesi dalla memoria della GPU. In una
+{doc}`mixture of experts </Transformers/mixture-of-experts>` ne legge i soli
+parametri attivi, e con poche sequenze in volo il risparmio è reale: i totali
+dicono se il modello ci sta, gli attivi quanto costa un token. Appena il mazzo
+di richieste si riempie, però, token diversi chiamano esperti diversi e la
+lettura torna quasi completa. L'aritmetica per token è modesta, il traffico di
+memoria è enorme. Un conto d'ordine di grandezza lo rende
 concreto: un modello da 7 miliardi di parametri in 16 bit pesa circa 14 GB, e
 una GPU con banda di memoria attorno a 2 TB/s impiega
 $14/2000 \approx 0{,}007$ s, cioè circa 7 ms, solo per far scorrere quei
@@ -170,12 +174,15 @@ E appena una sedia si libera ci fa accomodare la prossima persona in fila,
 senza aspettare che se ne vada l'intera comitiva, ed è il **continuous
 batching**, il mazzo continuo.
 
-Più coperti nella stessa sala vogliono dire più clienti serviti nella stessa
-serata, ed è ciò che permette a un LLM di rispondere a migliaia di persone con
-lo stesso hardware. Un prezzo però c'è, e lo paga chi è già seduto, perché con
-la sala piena il cameriere ha più tavoli da servire e il piatto arriva un po’
-più tardi. Dove mettere l'ago dipende dal locale, visto che una mensa vuole
-coperti e un ristorante vuole il piatto puntuale.
+E c'è una ragione per cui conviene riempirla, quella sala: il cameriere fa un
+giro solo, e con quel giro serve tutti i tavoli pronti, dieci o cinquanta che
+siano, perché il tempo se ne va nel giro e non nei piatti che porta. Più
+coperti vogliono dire più clienti serviti nella stessa serata, ed è ciò che
+permette a un LLM di rispondere a migliaia di persone con lo stesso hardware.
+Un prezzo però c'è, e lo paga chi è già seduto, perché con la sala piena anche
+il giro si allunga un po’ e il piatto arriva più tardi. Dove mettere l'ago
+dipende dal locale, visto che una mensa vuole coperti e un ristorante vuole il
+piatto puntuale.
 
 `````
 
@@ -258,9 +265,11 @@ numero, una svolta del discorso) invece sbaglia. Lo stagista è un secondo
 modello, piccolo e rapido, il **modello bozza**; il revisore è quello grande.
 
 Il revisore legge le quattro proposte in un colpo, con una rilettura sola del
-manuale. Quelle che avrebbe scritto anche lui passano subito; quelle che lo
-convincono meno passano solo ogni tanto, e alla prima bocciata butta il resto e
-riscrive la riga di suo pugno. Senza il suo assenso non passa niente.
+manuale. Quelle su cui è convinto almeno quanto lo era lo stagista passano
+subito; quelle su cui è convinto meno di lui passano solo ogni tanto, tanto
+più di rado quanto più i due la pensavano diversamente, e alla prima bocciata
+butta il resto e riscrive la riga di suo pugno. Senza il suo assenso non passa
+niente.
 
 Se lo stagista ne azzecca tre su quattro, escono quattro righe nel tempo di
 una. Se sbaglia quasi sempre si va più piano che senza di lui, perché il
@@ -305,7 +314,9 @@ pratica si osservano accelerazioni di 2–3 volte. Il modello bozza dev'essere
 molto più economico del target e allineato nella distribuzione, altrimenti
 $\alpha$ crolla e il costo delle bozze rifiutate mangia il guadagno.
 
-Le varianti *self-speculative* evitano di mantenere un secondo modello, e vanno
+Le varianti che evitano di mantenere un secondo modello (in letteratura
+*self-drafting*, da non confondere con il *self-speculative decoding*, che è un
+metodo preciso e fa la bozza saltando strati del modello stesso) vanno
 distinte proprio sulla proprietà appena rivendicata. Alcune cambiano solo chi
 propone e tengono la verifica standard, quindi restano esatte: il *prompt
 lookup*, che pesca le proposte dal testo già presente nel contesto, ed EAGLE,
@@ -373,8 +384,10 @@ centimetri di spazio.
 
 Fra i miliardi di numeri di un modello succede lo stesso. Una manciata è
 fragile e portante, e arrotondarla come le altre fa crollare la qualità.
-Riconoscerla è il difficile, perché non si vede dalla stazza: conta quanta roba
-ci passa sopra.
+Riconoscerla è il difficile, perché non si vede dalla stazza: quei pochi
+numeri sono quelli da cui passa tutto, e non i più grossi, come il corridoio
+di casa, che è il pezzo più stretto e ci deve passare tutto quello che entra
+ed esce.
 
 Poi ognuno ha il suo modo di proteggere i pochi delicati. C'è chi li tiene in
 una scatola a parte, senza schiacciarli. C'è chi li imbottisce prima e poi li
@@ -393,21 +406,25 @@ All'arrivo le scatole delicate si aprono per controllare.
 `````{tab} Superiore
 
 La mappa affine $r = S\,(q - Z)$ della sezione sul deployment vale qui
-identica. Tre metodi post-training si sono affermati, e condividono
-l'intuizione che *non tutti i numeri contano uguale*. Tutti e tre guardano le
-attivazioni, cioè i numeri che attraversano il modello mentre risponde: si
-distinguono per che cosa ne fanno, ed è la distinzione che di solito si
-perde.
+identica, e il principio che la regge, guardare che cosa un peso fa invece di
+quanto vale, lo costruisce {doc}`Meno bit </Efficienza/meno-bit>`: qui
+interessa che cosa cambia quando il modello non si può riaddestrare. Tre metodi
+post-training si sono affermati, e condividono l'intuizione che *non tutti i
+numeri contano uguale*, e tutti e tre guardano le attivazioni, cioè i numeri
+che attraversano il modello mentre risponde: si distinguono per che cosa ne
+fanno, ed è la distinzione che di solito si perde.
 
 Il primo, **LLM.int8()**, ci cerca dentro i valori anomali
 {cite}`dettmers2022llmint8`. Scopre che oltre una certa scala ne emergono, e
-che sono concentrati in poche dimensioni: quantizzare quelle dimensioni a 8 bit
-come le altre distrugge la qualità. La soluzione è una moltiplicazione di
+che sono concentrati in poche dimensioni. Siccome la scala di quantizzazione
+la fissa il valore più grande, quelle poche dimensioni enormi schiacciano
+tutte le altre in pochi gradini, e una scala sola per tutti distrugge la
+qualità. La soluzione è una moltiplicazione di
 matrici a precisione mista, con la stragrande maggioranza dei valori in
 `int8` e le poche dimensioni anomale tenute in 16 bit. Così la qualità regge
 fino a 175 miliardi di parametri.
 
-Il secondo, **GPTQ**, le usa per stimare la curvatura
+Il secondo, GPTQ, le usa per stimare la curvatura
 {cite}`frantar2023gptq`. Fa passare per il modello un piccolo insieme di testi
 di calibrazione, e dagli ingressi di ogni strato ricava la matrice hessiana,
 cioè l'informazione del second'ordine che dice quanto l'uscita di quello strato
@@ -416,7 +433,7 @@ l'altro, correggendo man mano sui pesi rimasti l'errore appena introdotto. Così
 scende a 3 o 4 bit per peso; un modello da 175 miliardi di parametri gli
 costa circa quattro ore su una sola A100, con degrado trascurabile.
 
-Il terzo, **AWQ** (*Activation-aware Weight Quantization*), le usa per decidere
+Il terzo, AWQ (*Activation-aware Weight Quantization*), le usa per decidere
 quali pesi proteggere {cite}`lin2024awq`. I pesi che contano non sono i più
 grandi ma quelli attraversati dai valori più grandi, e sono circa l'uno per
 cento: i canali salienti. La mossa poi sta nel riscalarli prima di
@@ -440,8 +457,8 @@ Il compromesso è sempre lo stesso (meno bit significano meno memoria e più
 velocità, ma più rischio per la qualità) e vale la regola d'oro della sezione
 sul deployment: la quantizzazione va misurata su dati di validazione, mai
 data per gratuita. I 4 bit sono il punto in cui, per la maggior parte dei
-modelli densi, il rapporto fra risparmio e degrado cambia segno: scendendo
-sotto, il degrado cresce più in fretta di quanto si risparmi.
+modelli densi, la convenienza si rovescia: scendendo sotto, il degrado cresce
+più in fretta di quanto si risparmi.
 
 `````
 
@@ -464,8 +481,8 @@ il
 senso, ed è quello che si fa; su un modello da miliardi di numeri quella
 rilettura costerebbe quanto costruirlo, e nessuno la fa dopo un rilascio. Per
 questo qui si strappa molto meno, e si sceglie con cura: le pagine da togliere
-sono quelle su cui è passato meno lettore, non quelle scritte più in
-piccolo. Con questa cautela si arriva a buttarne circa metà senza danni
+sono quelle scritte in piccolo *e* che nessuno rilegge mai, non quelle scritte
+in piccolo e basta. Con questa cautela si arriva a buttarne circa metà senza danni
 evidenti; oltre, il conto si fa salato.
 
 `````
@@ -508,7 +525,7 @@ scritta*?
 
 Il secondo sono gli esami standard, i benchmark, sempre visti nel capitolo
 sui Transformer, che sono compiti in classe uguali per tutti i modelli. Vanno
-letti con un sospetto preciso, quello della **contaminazione**: se le domande
+letti con un sospetto preciso, quello della contaminazione: se le domande
 dell'esame erano già finite dentro i testi su cui il modello si è allenato, il
 suo bel voto non dice niente, perché quelle domande le aveva già viste.
 
@@ -529,9 +546,10 @@ si può rispondere anche quando la prima non ha risposta.
 Il cambio di domanda in {numref}`fig-llm-giudice` è ciò che rende il metodo
 praticabile, e insieme ciò che ne fissa i limiti. Un ordine fra due risposte si
 può stabilire senza un riferimento assoluto. Ma un giudice che *preferisce*
-porta con sé i propri gusti, e quei gusti si ripetono sempre uguali: premia chi
-gli è stato presentato per primo, premia chi scrive di più, premia chi scrive
-come scriverebbe lui. Non sono errori di programmazione, che qualcuno prima o
+porta con sé i propri gusti, e due di quei gusti si ripetono sempre uguali:
+premia chi gli è stato presentato per primo, e premia chi scrive di più. Un
+terzo, la simpatia per chi scrive come scriverebbe lui, è sospettato e non
+dimostrato. Non sono errori di programmazione, che qualcuno prima o
 poi correggerà: sono la conseguenza di aver chiesto una preferenza invece di
 una verifica.
 
@@ -551,9 +569,12 @@ ottimo affare.
 Ha però le sue manie, sempre le stesse. A parità di tutto il resto dà il voto
 più alto al tema che ha letto per primo. Premia il tema lungo, scambiando
 l'abbondanza di parole per competenza, anche quando una risposta breve e
-centrata sarebbe migliore. E apprezza chi scrive come scrive lui. Contro la
-mania dell'ordine un rimedio parziale c'è: dargli i due temi anche nell'ordine
-opposto e fare la media. Le altre restano.
+centrata sarebbe migliore; i più svegli ci cascano molto meno, ma nessuno ne è
+immune. Si sospetta che apprezzi anche chi scrive come scrive lui, ma i temi
+raccolti non bastano a dirlo. Contro la mania
+dell'ordine un rimedio c'è: dargli i due temi anche nell'ordine opposto, e
+tenere per buono solo chi vince tutte e due le volte; se i due giri si
+contraddicono, è pari. La mania del tema lungo resta.
 
 Il guaio grosso arriva se la classe capisce come ragiona l'esaminatore. Da quel
 momento tutti scrivono lungo, e per primi quando possono: i voti salgono e i
@@ -564,21 +585,32 @@ che cosa si insegna.
 
 `````{tab} Superiore
 
-Il pattern si chiama **LLM-as-a-judge** {cite}`zheng2023judging`: si usa un
-modello forte (nel lavoro originale, GPT-4) per assegnare un punteggio o per
-scegliere la migliore fra due risposte. Zheng e colleghi lo validano su due
-banchi di prova (**MT-Bench**, ottanta domande a più turni, e **Chatbot
-Arena**, confronti a coppie raccolti dal pubblico e aggregati con un punteggio
-Elo) e misurano che il giudice-GPT-4 concorda con le preferenze umane oltre
-l’80% delle volte: lo stesso livello di accordo che due esseri umani hanno
-fra loro. Il giudice automatico non è però neutro, e i suoi bias hanno nomi
-precisi: il **position bias** (tende a preferire la risposta presentata per
-prima), il **verbosity bias** (favorisce le risposte lunghe) e il
-**self-enhancement bias** (predilige lo stile dei modelli affini a sé). Alcuni
-si mitigano (per il position bias, valutare entrambi gli ordinamenti e
-mediare) ma nessuno sparisce del tutto. È la stessa lezione del reward model
-del capitolo sui Transformer: un giudice appreso è un surrogato del giudizio
-umano, e ottimizzare troppo contro un surrogato porta al *reward hacking*.
+Il pattern si chiama LLM-as-a-judge {cite}`zheng2023judging`: si usa un modello
+forte (nel lavoro originale, GPT-4) per assegnare un punteggio o per scegliere
+la migliore fra due risposte. Zheng e colleghi lo validano su due banchi di
+prova (**MT-Bench**, ottanta domande a più turni, e **Chatbot Arena**,
+confronti a coppie raccolti dal pubblico e aggregati con un punteggio Elo) e
+misurano che il giudice-GPT-4 concorda con le preferenze umane oltre l’80%
+delle volte: lo stesso livello di accordo che due esseri umani hanno fra loro.
+Quell’oltre l’80% ha un protocollo, e sta nella tabella: è l’85% sui soli voti
+non pari, dove due giudici a caso concorderebbero già nella metà dei casi (fra
+due umani, 81%); contando anche i pareggi e le incoerenze si scende al 66%,
+quanto due umani fra loro (che stanno al 63% sul primo turno e al 67% sul
+secondo), là dove il caso darebbe 33. Il giudice automatico non è poi neutro, e
+i suoi bias hanno nomi precisi: il **position bias** (tende a preferire la
+risposta presentata per prima) e il **verbosity bias** (favorisce le risposte
+lunghe), misurati tutti e due, il secondo con un attacco che allunga la
+risposta senza aggiungerci niente e a cui GPT-4 resiste molto meglio degli
+altri giudici provati (ci casca nell'8,7% dei casi, contro il 91,3%); il terzo,
+il **self-enhancement bias**, gli autori lo osservano senza poterlo dimostrare,
+perché qualche giudice preferisce sé stesso (GPT-4 di dieci punti di *win
+rate*, Claude-v1 di venticinque) ma preferisce anche modelli diversi da sé, e
+GPT-3.5 non preferisce sé stesso. Il position bias si mitiga chiamando il
+giudice due volte a ordini scambiati e dichiarando vincitore solo chi vince in
+tutti e due i giri, pari quando i due giri si contraddicono; il resto non
+sparisce. È la stessa lezione del reward model del capitolo sui Transformer: un
+giudice appreso è un surrogato del giudizio umano, e ottimizzare troppo contro
+un surrogato porta al *reward hacking*.
 
 `````
 
@@ -588,7 +620,7 @@ risposte sono preferibili e quali no: sono le due tecniche del capitolo sui
 Transformer che là si chiamano per sigla, RLHF e DPO. Quell'insegnamento lo
 rende meno incline a rispondere in modo dannoso, ma non offre garanzie: restano
 una disposizione appresa, e una disposizione si aggira. Per questo i sistemi
-reali aggiungono dei **guardrail**, che in italiano sono proprio i guard rail
+reali aggiungono dei guardrail, che in italiano sono proprio i guard rail
 dell'autostrada: filtri e classificatori indipendenti dal modello, che
 ispezionano quello che entra e quello che esce. Servono a bloccare contenuti
 dannosi e dati personali, ma anche due mosse che hanno un nome preciso: le
@@ -635,8 +667,8 @@ comporre più passi in un agente. È il
   memoria che si ha, prima ancora di quale sia migliore: se non ci sta, non è
   lento, proprio non parte.
 - Servendo tante richieste insieme quella rilettura si paga una volta per
-  tutte: è il motivo per cui un buon maître non riserva tavoloni e riempie ogni
-  sedia appena si libera.
+  tutte, quindi conviene servirne più che si può: per questo un buon maître
+  non riserva tavoloni e riempie ogni sedia appena si libera.
 - Si può far indovinare in anticipo un modello piccolo e far verificare al
   grande in blocco quello che ha indovinato: se il piccolo azzecca si va molto
   più veloci, e passa solo quello che il grande avrebbe potuto scrivere lui.
@@ -647,8 +679,10 @@ comporre più passi in un agente. È il
   buoni in un trasloco, e vanno trattati a parte.
 - Giudicare un testo aperto non ha una risposta esatta: si usa un altro
   modello come esaminatore, comodo ed economico, sapendo che ha sempre le
-  stesse manie (premia il tema che ha letto per primo, quello più lungo e chi
-  scrive come lui).
+  stesse due manie, il tema che ha letto per primo e quello più lungo.
+- E quello che il modello scrive va comunque filtrato all'ingresso e
+  all'uscita: quel che ha imparato a non dire è una disposizione, e una
+  disposizione si aggira.
 - Quello che qui si conserva versione per versione non sono i pesi, che spesso
   arrivano già fatti: è l'istruzione con cui si parla al modello, che è
   fragile come il codice e come il codice va provata prima di sostituirla.
@@ -683,10 +717,11 @@ comporre più passi in un agente. È il
   scegliere l'1% di pesi da proteggere {cite}`lin2024awq`. Sempre da
   misurare.
 - Valutare l'invalutabile: la perplessità non basta e i benchmark si
-  contaminano; per l'output aperto si usa LLM-as-a-judge, che concorda con
-  l'uomo oltre l'80% delle volte {cite}`zheng2023judging`, coi suoi bias (di
-  posizione, di verbosità, di auto-preferenza). In produzione servono
-  guardrail su ingresso e uscita.
+  contaminano; per l'output aperto si usa LLM-as-a-judge, che sui soli voti
+  non pari concorda con l’uomo l’85% delle volte contro l’81% fra due
+  umani {cite}`zheng2023judging`, coi suoi bias di posizione e di verbosità
+  (l'auto-preferenza gli autori non riescono a dimostrarla). In produzione
+  servono guardrail su ingresso e uscita.
 - Il ciclo LLMOps versiona i prompt come codice e monitora
   allucinazioni, deriva e costo per token, con valutazione
   continua. RAG avanzato, *tool use* e agenti hanno un capitolo dedicato,

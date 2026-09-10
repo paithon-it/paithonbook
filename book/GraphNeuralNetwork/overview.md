@@ -127,7 +127,7 @@ La soluzione è tanto semplice da enunciare quanto potente nelle conseguenze:
 > che lo descrive, e costruirla facendo circolare l'informazione lungo gli
 > archi: ogni nodo ascolta i suoi vicini e si aggiorna, e si ricomincia.
 
-Quella fila di numeri si chiama **rappresentazione** del nodo, ed è la parola
+Quella fila di numeri si chiama rappresentazione del nodo, ed è la parola
 che in questo capitolo torna più spesso: vuol dire sempre questo, la fila di
 numeri con cui il modello descrive un nodo in un certo momento. All'inizio non
 contiene niente di speciale, sono le informazioni che sul nodo abbiamo già noi

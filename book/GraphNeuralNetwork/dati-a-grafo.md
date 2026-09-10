@@ -48,7 +48,7 @@ Nella didascalia sono già comparse le tre parole che ricorrono da qui alla
 fine del capitolo, e conviene non lasciarle lì: i nodi a cui un nodo è
 collegato sono i suoi **vicini**, tutti insieme sono il suo **vicinato**, e
 quanti sono è il suo **grado**. Una quarta parola riguarda le tabelle: una
-tabella di numeri, in matematica, si chiama **matrice**, quindi la tabella
+tabella di numeri, in matematica, si chiama matrice, quindi la tabella
 $\mathbf{A}$ è la matrice $\mathbf{A}$, e il libro userà l'una o l'altra
 parola indifferentemente.
 
@@ -69,7 +69,7 @@ mettiamo pesi, è come dire che ogni arco vale 1: il collegamento o c'è o non
 c'è.
 
 Infine, sia i nodi sia (a volte) gli archi portano con sé delle
-**caratteristiche**, in gergo *feature*: per una persona l'età e gli interessi,
+caratteristiche, in gergo *feature*: per una persona l'età e gli interessi,
 per un atomo il tipo di elemento. Nella figura sono le tre caselline accanto a
 ogni nodo: tre caselle in fila, una per caratteristica. Nel disegno restano
 vuote, perché quali numeri ci vadano dipende da che cosa sono i nodi; se
@@ -82,7 +82,7 @@ poi è uguale per tutti i nodi: nel disegno sono tre perché tre ci stanno nella
 pagina, in un caso vero sono decine o centinaia.
 
 E qui conviene mettere in fila i nomi, perché finora ne sono usciti tre per una
-cosa sola: fila di numeri, vettore, rappresentazione. **Vettore** è come si
+cosa sola: fila di numeri, vettore, rappresentazione. Vettore è come si
 chiama l'oggetto: una fila di numeri, punto. La rappresentazione di un
 nodo, la parola dell'introduzione, è il vettore che
 in un certo momento descrive quel nodo: all'inizio sono proprio le caselline
@@ -300,7 +300,7 @@ L'obiettivo è quello di sempre: dare a ogni nodo una fila di qualche decina di
 numeri, fatta in modo che due nodi vicini nel grafo ricevano due file che si
 somigliano, numero per numero. Un vettore costruito con questa intenzione (i
 simili vicini fra loro) ha un nome che il capitolo sul linguaggio ha già usato
-per le parole: si chiama **embedding**. È sempre una fila di numeri, e
+per le parole: si chiama embedding. È sempre una fila di numeri, e
 «embedding» dice a che scopo è stata costruita. Lì l'idea era
 che a ogni parola tocca un punto, e che parole di significato simile finiscono
 vicine; e «vicine» va preso alla lettera, come su una mappa, solo che le

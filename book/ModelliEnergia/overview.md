@@ -90,7 +90,7 @@ gli atomi hanno tempo di sistemarsi bene. È la mossa su cui è costruita la
 seconda sezione, quella delle macchine di Boltzmann.
 
 Ed ecco la seconda parola presa in prestito dalla fisica, quella che nel
-disegno è la «T»: **temperatura**. Qui non c'è niente di caldo e non c'è
+disegno è la «T»: temperatura. Qui non c'è niente di caldo e non c'è
 nessun termometro. «Temperatura» vuol dire soltanto *quanto forte stiamo
 scuotendo*: alta quando la pallina salta dappertutto, bassa quando resta nei
 fondovalle, zero quando può solo scendere. La seconda sezione la riprende per
@@ -191,7 +191,7 @@ Prendiamo di nuovo i modelli di diffusione. Partono da un'immagine tutta
 sporca di rumore e arrivano, mille passi più tardi, a
 un'immagine pulita; e ogni passo ha il suo paesaggio: all'inizio liscio, con
 poche valli larghe, poi via via più dettagliato. Quello che quei modelli
-imparano, punto per punto, è la **pendenza** di quei paesaggi: da che parte si
+imparano, punto per punto, è la pendenza di quei paesaggi: da che parte si
 scende e quanto ripido. In inglese quella pendenza si chiama *score*, ed è la
 parola che si incontra nei loro articoli. Attraversare quella successione di
 paesaggi, dal più liscio al più dettagliato, *è* generare.

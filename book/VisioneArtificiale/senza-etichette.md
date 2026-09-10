@@ -371,8 +371,9 @@ mini-batch da $256$, la coda copre esattamente $256$ passi di addestramento).
 La copia lenta, quella che si aggiorna di un millesimo alla volta (si chiama
 **media mobile**) e che fa da riferimento senza mai prendere punteggio, è la
 stessa costruzione che il libro incontra nel {doc}`capitolo sui world
-model </WorldModels/overview>`. Qui tiene coerente un dizionario di negativi; fra poco servirà a farne
-del tutto a meno.
+model </WorldModels/overview>`, dove una macchina si costruisce un simulatore
+interno di come va il mondo. Qui tiene coerente un dizionario di negativi; fra
+poco servirà a farne del tutto a meno.
 
 ## Toglierli del tutto
 
@@ -747,7 +748,7 @@ addestravamo, non sapevamo nemmeno quali sarebbero stati.
 
 La varietà dei nomi nasconde un'unica struttura. Chi mette a confronto (SimCLR,
 MoCo), chi predice senza rivali (BYOL, DINO) e chi ricostruisce quello che ha
-coperto (il MAE, e si chiamano **generativi** proprio perché il compito è
+coperto (il MAE, e si chiamano generativi proprio perché il compito è
 produrre di nuovo un pezzo di immagine) risolvono lo stesso problema:
 fabbricare un compito la cui risposta è già nei dati e che sia abbastanza
 difficile da non poter essere risolto per scorciatoia. Quello che li distingue è

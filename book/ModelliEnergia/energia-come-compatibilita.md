@@ -42,7 +42,7 @@ fondo non ci arriva nessuno. Quello che ti consegna è il migliore fra quelli
 che ha guardato, e nessuno può giurare che più indietro non ce ne fosse uno
 più adatto. Il risparmio sulle percentuali è vero; la fila, però, si paga.
 
-C'è poi un pericolo, e ha un nome preciso: il **collasso**. Il buttafuori pigro
+C'è poi un pericolo, e ha un nome preciso: il collasso. Il buttafuori pigro
 ha scoperto la scorciatoia perfetta: dire sempre sì. Chiunque si presenti,
 passa. Nessuna coppia si lamenta mai, e il suo giudizio non vale più niente. Se
 durante l'addestramento premi il modello solo quando dà energia bassa alle
@@ -125,7 +125,7 @@ parecchie: sono quelle a decidere se il collasso è possibile oppure no.
 L'articolo di LeCun le mette in fila in una tabella e accanto a ciascuna
 scrive una cosa sola: con quale dislivello fra una coppia giusta e una
 sbagliata quella regola basta a tenere lontano il collasso. Quel dislivello ha
-un nome, **margine**: una superficie piatta non ha dislivelli, quindi una
+un nome, margine: una superficie piatta non ha dislivelli, quindi una
 regola che ne pretende uno qualunque la rifiuta per costruzione.
 
 La prima regola della lista è anche la più ingenua, quella che si limita ad

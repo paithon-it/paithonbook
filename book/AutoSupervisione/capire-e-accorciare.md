@@ -640,7 +640,7 @@ si avvicinano al compressore di Kolmogorov, e quindi meno rimpianto hanno.
 
 ## Il rimpianto, che è la parte che regge tutto
 
-La parola tecnica dell'argomento è **rimpianto**. È quella che mette
+La parola tecnica dell'argomento è rimpianto. È quella che mette
 l'auto-supervisione alla pari col supervisionato, ed è anche la più
 fraintesa.
 

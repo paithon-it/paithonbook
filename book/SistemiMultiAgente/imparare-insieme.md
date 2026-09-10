@@ -756,8 +756,8 @@ Conviene chiudere il cerchio su una cosa che il libro racconterà per esteso pi�
 avanti, nel capitolo sulle GAN, e che da qui si riconosce a colpo d'occhio.
 Non serve averlo già letto: quello che serve sta in due righe. Una GAN è una
 coppia di reti che si allenano l'una contro l'altra. La prima, il
-**generatore**, fabbrica esemplari falsi (di solito immagini) partendo dal caso;
-la seconda, il **discriminatore**, guarda un esemplare e dice se è vero o falso.
+generatore, fabbrica esemplari falsi (di solito immagini) partendo dal caso;
+la seconda, il discriminatore, guarda un esemplare e dice se è vero o falso.
 Il generatore vince quando inganna, il discriminatore quando smaschera.
 Nient'altro.
 

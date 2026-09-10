@@ -7,10 +7,10 @@ contano gli errori: il modello dà le cinque etichette che ritiene più
 probabili, e si segna un errore solo se quella giusta non è fra quelle cinque.
 La visione artificiale non fu più la stessa
 {cite}`krizhevsky2012imagenet`. Ma dietro
-quel risultato c'erano 1,2 milioni di immagini etichettate e giorni di
-addestramento su GPU, le schede grafiche che macinano molti conti in parallelo
-e sono il motore di tutto il deep learning. La buona notizia è che quasi
-nessuno di noi deve
+quel risultato c'erano 1,2 milioni di immagini etichettate in mille categorie e
+giorni di addestramento su GPU, le schede grafiche che macinano molti conti in
+parallelo e sono il motore di tutto il deep learning. La buona notizia è che
+quasi nessuno di noi deve
 ripetere quella fatica: possiamo *prendere in prestito* ciò che quelle reti
 hanno già imparato. Si chiama **transfer learning** ed è, oggi, il modo
 normale di costruire un classificatore di immagini.
@@ -18,16 +18,21 @@ normale di costruire un classificatore di immagini.
 ## Dalla foto all'etichetta: la pipeline
 
 Prima di riusarla, capiamo cosa fa una rete convoluzionale (CNN) quando
-classifica un'immagine: la *pipeline*, cioè la catena di passaggi che porta
-dalla foto all'etichetta.
+classifica un'immagine. La catena di passaggi che porta dalla foto
+all'etichetta si chiama **pipeline**, che in inglese è la conduttura: una fila
+di stazioni in cui ognuna prende quello che le consegna la precedente e passa
+avanti il proprio risultato. Il nome vale per qualunque catena fatta così, non
+solo per questa.
 
 `````{tab} Elementare
 
 L'immagine entra come una griglia di pixel. La rete la fa passare attraverso
-una pila di strati convoluzionali, quelli del capitolo precedente: ognuno
-passa sull'immagine una lente piccola, sempre la stessa, e segna dove trova il
-disegno che quella lente cerca. I primi riconoscono cose semplici (bordi,
-angoli, macchie di colore), quelli più profondi combinano questi pezzetti in
+una pila di strati convoluzionali, quelli della {doc}`sezione sulle reti
+convoluzionali </DeepLearning/reti-convoluzionali>`: ognuno passa
+sull'immagine una lente piccola, sempre la stessa (il suo nome tecnico è
+*filtro*), e segna dove trova il disegno che quella lente cerca. I primi
+riconoscono cose semplici (bordi, angoli, macchie di colore), quelli più
+profondi combinano questi pezzetti in
 forme via via più complesse: la trama di un pelo, un occhio, un muso. Alla fine
 tutte queste "prove raccolte" vengono riassunte in una lista di numeri, e un
 ultimo strato le trasforma in probabilità: `cane 0.82`, `gatto 0.11`, e così
@@ -43,11 +48,12 @@ una voce sola: quella dell'etichetta vera. Un `0.82` lì sopra costa poco, un
 che ha dentro, dalla prima lente all'ultimo strato, per far salire quella
 voce. Ripetuto su milioni di foto, questo è l'addestramento.
 
-Quello che la rete ha dentro non è distribuito alla pari. La coda, cioè gli
+Quello che la rete ha dentro non è distribuito alla pari. La punta, cioè gli
 strati che vengono dopo le lenti, in una rete moderna tiene pochi numeri; nelle
 prime reti di questo genere era il contrario. In AlexNet novantasei numeri su
-cento stavano nei suoi ultimi tre strati, e rifare quella coda voleva dire
-rifare quasi tutta la rete.
+cento stavano nei suoi ultimi tre strati, e rifare quella punta voleva dire
+rifare quasi tutta la rete: è il motivo per cui, su una rete di allora e su una
+di oggi, cambiare la punta è un lavoro di due misure diverse.
 
 `````
 
@@ -55,14 +61,18 @@ rifare quasi tutta la rete.
 
 L'input è un tensore $\mathbf{X} \in \mathbb{R}^{C\times H\times W}$ (canali,
 altezza, larghezza: l'ordine *channels-first* di PyTorch). Una successione di
-blocchi convoluzione + non linearità + pooling
+blocchi convoluzione + batch normalization + non linearità
 lo trasforma in una *feature map* sempre più piccola nello spazio ma più ricca
-in profondità. Nelle architetture moderne un *global average pooling* la riduce
-a un vettore $\mathbf{z}\in\mathbb{R}^d$ (le reti della prima generazione,
-AlexNet e VGG, appiattivano invece la mappa e la mandavano in tre strati densi
-pesantissimi: in AlexNet sono il 96% dei parametri, ed è il motivo per cui
+in profondità: a rimpicciolirla è il pooling nelle architetture della prima
+generazione e il passo di convoluzione maggiore di uno in quelle di oggi (in
+ResNet-18, due soli strati di pooling contro sette convoluzioni a passo due).
+Alla fine un *global average pooling* riduce la mappa
+a un vettore $\mathbf{z}\in\mathbb{R}^d$, con $d = 512$ in ResNet-18 (le reti
+della prima generazione, AlexNet e VGG, appiattivano invece la mappa e la
+mandavano in tre strati densi pesantissimi: in AlexNet sono il 96% dei
+$60\,965\,224$ parametri della versione dell'articolo, ed è il motivo per cui
 «sostituire la testa» vuol dire due cose molto diverse sulle due famiglie), che
-uno strato *fully-connected* con softmax
+uno strato *fully-connected* seguito dalla softmax
 mappa in una distribuzione sulle $K$ classi:
 
 $$
@@ -75,7 +85,10 @@ Su un esempio il costo è la *cross-entropy*
 $\ell = -\sum_k y_k \log \hat{y}_k$, dove $y_k$ vale 1 sulla classe vera
 e 0 sulle altre (resta quindi il solo termine $-\log \hat{y}_{\text{vera}}$);
 l'addestramento minimizza la sua media $\mathcal{L}$ sull'insieme, ottimizzando
-tutti i parametri $\theta$ della rete.
+tutti i parametri $\theta$ della rete. La softmax sta nella formula e non nel
+modulo: `nn.CrossEntropyLoss` vuole i logit e applica la softmax al proprio
+interno, quindi la testa che si scrive in codice è una `nn.Linear` nuda
+({doc}`Moduli, strati, loss </PyTorch/moduli>`).
 
 `````
 
@@ -132,20 +145,27 @@ specifici del compito. Yosinski e colleghi {cite}`yosinski2014transferable`
 hanno quantificato questa *transferibilità*: le caratteristiche dei primi
 strati si trasferiscono quasi senza perdita a compiti diversi, mentre quelle
 degli ultimi strati sono tanto più specializzate (e meno riusabili) quanto più
-ci si avvicina all'uscita. Da qui la strategia: congelare gli strati bassi
-(generici) e riaddestrare quelli alti (specifici) sul nuovo dominio.
+ci si avvicina all'uscita. A far scendere il rendimento del trasferimento,
+però, non è solo la specializzazione: pesa anche il taglio in sé, perché separa
+neuroni che si erano adattati l'uno all'altro, e il conto si paga pure
+trasferendo un compito su sé stesso. Da qui la strategia: congelare gli strati
+bassi (generici) e riaddestrare quelli alti (specifici) sul nuovo dominio,
+sapendo che partire da pesi trasferiti conviene quasi sempre, anche quando poi
+si rifinisce tutto.
 
 `````
 
-Riusiamo dunque la parte generica già addestrata e sostituiamo solo la punta.
+Riusiamo dunque la parte generica già addestrata e sostituiamo solo la punta,
+quella che d'ora in avanti chiameremo la testa.
 
 ```{figure} ../figures/transfer-learning.svg
 :name: fig-transfer
 :alt: Un'immagine entra in una base convoluzionale pre-addestrata su ImageNet con i pesi congelati, seguita da una testa di classificazione nuova e addestrabile che produce le probabilità delle classi.
 :width: 90%
 
-La rete pre-addestrata (in teal) fa da estrattore di caratteristiche; sopra
-di essa montiamo una testa nuova (in terracotta) per il nostro compito.
+La rete pre-addestrata (in teal, il verde-azzurro) fa da estrattore di
+caratteristiche: riduce l'immagine alla lista di numeri che la descrivono.
+Sopra di essa montiamo una testa nuova (in terracotta) per il nostro compito.
 ```
 
 Come mostra {numref}`fig-transfer`, teniamo la **base convoluzionale**
@@ -166,12 +186,12 @@ quadratino di griglia in un numero solo, e così la rimpicciolisce): è il modo
 in cui la rete smette di guardare i pixel e comincia a guardare le cose.
 ```
 
-I due movimenti di {numref}`fig-gerarchia-pooling` vanno in verso opposto.
-Buttare via la posizione
+I due movimenti di {numref}`fig-gerarchia-pooling` non si riusano allo stesso
+modo. Buttare via la posizione
 esatta dei pixel per costruire forme sempre più grandi serve in qualunque
 fotografia del mondo; riconoscere in fondo alla pila proprio le mille categorie
 di ImageNet serve solo lì. Ecco perché la pila si riusa quasi tutta, e a rifarsi
-è la punta.
+è la testa.
 
 ## Congelare o rifinire: feature extraction vs fine-tuning
 
@@ -194,19 +214,19 @@ questo il fine-tuning si fa con spostamenti cento volte più piccoli di quelli
 con cui si allena la testa.
 
 E la base congelata riserva una sorpresa: continua a cambiare da sola. Dentro
-ci sono delle centraline che, prima di passare i numeri allo strato dopo, li
-rimettono in scala su quanto sono chiare e variegate le foto che la rete sta
-guardando in quel momento, come la macchina fotografica che regola da sé la
-luce sulla media di quello che ha inquadrato. Di quelle medie la rete tiene
-anche un appunto, che non è una delle sue manopole e si aggiorna da sé ogni
-volta che una foto la attraversa, anche dopo che le manopole sono state
-bloccate tutte. Chi si ferma lì manda dentro le proprie mille lastre e si
-ritrova, senza essersene accorto, una base tarata sulle lastre: la testa impara
-inseguendo un bersaglio che si sposta, e i numeri di stamattina non sono
-confrontabili con quelli di ieri. Perché la base resti ferma davvero bisogna
-dire anche a quelle centraline di smettere di prendere appunti; lo si dice pure
-quando si sbloccano gli ultimi strati, perché una media presa su poche foto
-alla volta salta da un gruppetto all'altro.
+ci sono gli strati di *batch normalization*, quelli che prima di passare i
+numeri allo strato dopo li rimettono in scala su quanto sono chiare e variegate
+le foto che la rete sta guardando in quel momento, come la macchina fotografica
+che regola da sé la luce sulla media di quello che ha inquadrato. Di quelle
+medie la rete tiene anche un appunto, che non è una delle sue manopole e si
+aggiorna da sé ogni volta che una foto la attraversa, anche dopo che le
+manopole sono state bloccate tutte. Chi congela le sole manopole manda dentro
+le proprie lastre e si ritrova, senza essersene accorto, una base tarata sulle
+lastre: la testa impara inseguendo un bersaglio che si sposta, e le liste di
+numeri su cui si allena adesso non sono più quelle di prima. Perché la base
+resti ferma davvero bisogna dire anche a quegli strati di smettere di prendere
+appunti; lo si dice pure quando si sbloccano gli ultimi strati, perché una
+media presa su un gruppetto di foto alla volta salta da un gruppetto all'altro.
 
 `````
 
@@ -237,8 +257,10 @@ su ImageNet.
 
 `torchvision.models`, la libreria di visione che accompagna PyTorch, include
 decine di reti già addestrate su ImageNet, pronte da scaricare. Usiamo
-ResNet-18 {cite}`he2016deep`, dove il numero è semplicemente il conto degli
-strati: compatta, collaudata, e il modello più leggero della sua famiglia.
+ResNet-18 {cite}`he2016deep`, dove il numero conta gli strati con pesi sul
+percorso principale (diciassette convoluzioni più la testa, e restano fuori le
+tre convoluzioni di raccordo): compatta, collaudata, e il modello più leggero
+della sua famiglia.
 Il compito è dividere le foto in cinque categorie. Prima la feature extraction.
 
 ```python
@@ -281,15 +303,30 @@ accorciando molto quel passo.
 for p in model.layer4.parameters():
     p.requires_grad_(True)
 
+# I BatchNorm vanno rimessi in valutazione: il training loop ha chiamato
+# model.train(), che li ha riportati tutti in modalità di addestramento.
+for m in model.modules():
+    if isinstance(m, nn.BatchNorm2d):
+        m.eval()
+
 optimizer = optim.Adam(
     [p for p in model.parameters() if p.requires_grad],
     lr=1e-5,   # lr basso: cautela
 )
+
+addestrabili = sum(p.numel() for p in model.parameters() if p.requires_grad)
+totali = sum(p.numel() for p in model.parameters())
+print(f"addestrabili {addestrabili} su {totali}")
 ```
 
-Con poche centinaia di immagini per classe questa ricetta arriva, in pochi
-minuti di calcolo, dove una rete addestrata da zero sugli stessi dati non
-arriva affatto: con così pochi esempi quella rete impara a memoria prima di
+Quel «solo l'ultimo blocco» è meno modesto di come suona: in una ResNet-18
+`layer4` tiene da solo tre quarti dei pesi, perché in una rete residua i
+parametri si addensano verso l'uscita, e la cautela sul passo non è prudenza
+di maniera.
+
+Con poche centinaia di immagini per classe questa ricetta arriva dove una rete
+addestrata da zero sugli stessi dati resta molto indietro: con così pochi
+esempi quella rete impara a memoria prima di
 aver imparato a vedere. Quanti dati le servirebbero per rifarsi da sola le
 tecniche di base non è una domanda con una risposta sola. Dipende da quanto le
 nostre immagini somigliano a quelle su cui la base è stata addestrata, ed è la
@@ -299,7 +336,10 @@ meno c'è da riusare e più c'è da riaddestrare. Sostituendo `resnet18` con
 `resnet50` la struttura del codice non cambia. Cambiando famiglia cambiano i
 nomi, e vanno guardati: in `efficientnet_b0` {cite}`tan2019efficientnet` la
 testa si chiama `classifier[1]` e non `fc`, e gli strati alti stanno dentro
-`features` e non in un `layer4`.
+`features` e non in un `layer4`. E su una famiglia che al posto della batch
+normalization usa la LayerNorm, come i Vision Transformer, di BatchNorm non ce
+n'è nessuno: quel ciclo gira a vuoto senza protestare, e la deriva delle
+statistiche non c'è, perché la LayerNorm statistiche non ne conserva.
 
 `````{tab} Elementare
 
@@ -317,8 +357,8 @@ testa si chiama `classifier[1]` e non `fc`, e gli strati alti stanno dentro
   fotografia, gli ultimi (la ricetta) no, e sono quelli da rifare.
 - Due modi di procedere. Bloccare tutta la base e allenare solo la punta:
   veloce, e basta poco materiale; bloccarla davvero però vuol dire due cose e
-  non una, fermare le manopole e dire anche alle centraline che rimettono in
-  scala i numeri di smettere di prendere appunti. Oppure sbloccare anche gli
+  non una, fermare le manopole e dire anche agli strati di *batch
+  normalization* di smettere di prendere appunti. Oppure sbloccare anche gli
   ultimi strati della base e ritoccarli a passi piccolissimi: rende di più,
   ma vuole più foto e più cautela, perché a passi grandi la rete dimentica
   quello che sapeva.

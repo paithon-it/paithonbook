@@ -1,42 +1,84 @@
-<svg viewBox="0 0 720 316" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema: la stessa distribuzione sui token, riscalata dalla temperatura e troncata dal top_p, e il taglio del top_p che si sposta quando cambia la temperatura">
-  <rect x="0" y="0" width="720" height="316" fill="#F8F5EE"/>
-  <text x="360" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Una distribuzione, due manopole</text>
-  <g font-family="Inter, system-ui, sans-serif" font-size="12">
-    <text x="130" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#1A1A1A">originale (T = 1)</text>
-    <line x1="40" y1="200" x2="220" y2="200" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="50" y="110" width="24" height="90" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="82" y="140" width="24" height="60" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="114" y="168" width="24" height="32" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="146" y="188" width="24" height="12" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="178" y="194" width="24" height="6" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="130" y="222" text-anchor="middle" fill="#1A1A1A">token ordinati per probabilità</text>
-    <text x="130" y="240" text-anchor="middle" fill="#5A524A">45 · 30 · 16 · 6 · 3 per cento</text>
-  </g>
-  <g font-family="Inter, system-ui, sans-serif" font-size="12">
-    <text x="360" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#B5532C">temperatura alta (T = 2)</text>
-    <line x1="270" y1="200" x2="450" y2="200" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="280" y="134" width="24" height="66" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="312" y="146" width="24" height="54" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="344" y="161" width="24" height="39" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="376" y="176" width="24" height="24" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="408" y="183" width="24" height="17" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="360" y="222" text-anchor="middle" fill="#1A1A1A">riscala tutti, non esclude nessuno</text>
-    <text x="360" y="240" text-anchor="middle" fill="#5A524A">33 · 27 · 20 · 12 · 9 per cento</text>
-  </g>
-  <g font-family="Inter, system-ui, sans-serif" font-size="12">
-    <text x="590" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#2D5A5C">top_p = 0,9 (a T = 1)</text>
-    <line x1="500" y1="200" x2="680" y2="200" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="510" y="110" width="24" height="90" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="542" y="140" width="24" height="60" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="574" y="168" width="24" height="32" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="606" y="188" width="24" height="12" fill="#E2DCC9" stroke="#5A524A" stroke-width="1.5" stroke-dasharray="4 3"/>
-    <rect x="638" y="194" width="24" height="6" fill="#E2DCC9" stroke="#5A524A" stroke-width="1.5" stroke-dasharray="4 3"/>
-    <line x1="602" y1="96" x2="602" y2="206" stroke="#B5532C" stroke-width="2" stroke-dasharray="6 4"/>
-    <text x="602" y="88" text-anchor="middle" fill="#B5532C" font-weight="bold">cumulata 91%</text>
-    <text x="590" y="222" text-anchor="middle" fill="#1A1A1A">taglia: la coda va a zero</text>
-    <text x="590" y="240" text-anchor="middle" fill="#5A524A">3 token bastano a superare 0,9</text>
-  </g>
-  <line x1="40" y1="258" x2="680" y2="258" stroke="#C5BEAA" stroke-width="1.5"/>
-  <text x="360" y="280" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Ma non sono indipendenti: con lo stesso p = 0,9, a T = 1 il nucleo è di 3 token, a T = 2 di 4.</text>
-  <text x="360" y="298" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#B5532C">la temperatura sposta il taglio</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: Le due manopole in fila: la temperatura ripesa, il top_p taglia
+  Generata da animazioni/svg/temperature-top-p.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 404"
+     role="img" aria-label="Cinque barre orizzontali, una per candidato, ordinate per probabilità, con accanto la percentuale e la somma cumulata. La figura ripete un ciclo di sei tappe. A temperatura 1 le percentuali sono 45 · 30 · 16 · 6 · 3 e le cumulate 45 · 75 · 91 · 97 · 100: una linea orizzontale segnata «taglio» scende sotto la riga 3, perché lì la cumulata fa 91 e supera la soglia di novanta; le barre escluse spariscono e le altre si allargano fino a ricomporre cento. Poi la temperatura sale a 2: tornano tutte e cinque le barre, più vicine fra loro (33 · 27 · 20 · 12 · 8, cumulate 33 · 60 · 80 · 92 · 100), e la stessa linea del taglio, con la stessa soglia, scende di una riga, sotto la 4, perché alla riga 3 la cumulata adesso fa 80 e non basta più.">
+  <style>
+    svg  { --d: 10.8s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .bar { stroke:none; }
+    .ord { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .pct { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700;
+            fill:#1A1A1A; opacity:0; }
+    .cum { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#5A524A; opacity:0; }
+    .tag { stroke:#B5532C; stroke-width:2.5; stroke-dasharray:7 5;
+            stroke-linecap:round; }
+    .tagl { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700;
+            fill:#B5532C; }
+    .tit { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:700;
+            fill:#B5532C; opacity:0; }
+    .rig { font-family:Inter, system-ui, sans-serif; font-size:13.5px; fill:#5A524A; opacity:0; }
+    .fin { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#1A1A1A; }
+        @keyframes bar0{0.00%{width:252.0px}33.33%{width:252.0px}39.00%{width:276.9px}50.00%{width:276.9px}55.67%{width:184.4px}83.33%{width:184.4px}89.00%{width:201.6px}100.00%{width:201.6px}}
+    @keyframes col0{0.00%{fill:#2D5A5C}100.00%{fill:#2D5A5C}}
+    @keyframes viv0{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes p0_0{0.00%{opacity:1}15.67%{opacity:1}16.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p0_1{0.00%{opacity:0}15.17%{opacity:0}16.67%{opacity:1}32.33%{opacity:1}33.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p0_2{0.00%{opacity:0}31.83%{opacity:0}33.33%{opacity:1}49.00%{opacity:1}50.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes p0_3{0.00%{opacity:0}48.50%{opacity:0}50.00%{opacity:1}65.67%{opacity:1}66.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p0_4{0.00%{opacity:0}65.17%{opacity:0}66.67%{opacity:1}82.33%{opacity:1}83.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p0_5{0.00%{opacity:0}81.83%{opacity:0}83.33%{opacity:1}100.00%{opacity:1}}
+    @keyframes bar1{0.00%{width:168.0px}33.33%{width:168.0px}39.00%{width:184.6px}50.00%{width:184.6px}55.67%{width:150.6px}83.33%{width:150.6px}89.00%{width:164.6px}100.00%{width:164.6px}}
+    @keyframes col1{0.00%{fill:#2D5A5C}100.00%{fill:#2D5A5C}}
+    @keyframes viv1{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes p1_0{0.00%{opacity:1}15.67%{opacity:1}16.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p1_1{0.00%{opacity:0}15.17%{opacity:0}16.67%{opacity:1}32.33%{opacity:1}33.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p1_2{0.00%{opacity:0}31.83%{opacity:0}33.33%{opacity:1}49.00%{opacity:1}50.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes p1_3{0.00%{opacity:0}48.50%{opacity:0}50.00%{opacity:1}65.67%{opacity:1}66.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p1_4{0.00%{opacity:0}65.17%{opacity:0}66.67%{opacity:1}82.33%{opacity:1}83.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p1_5{0.00%{opacity:0}81.83%{opacity:0}83.33%{opacity:1}100.00%{opacity:1}}
+    @keyframes bar2{0.00%{width:89.6px}33.33%{width:89.6px}39.00%{width:98.5px}50.00%{width:98.5px}55.67%{width:110.0px}83.33%{width:110.0px}89.00%{width:120.2px}100.00%{width:120.2px}}
+    @keyframes col2{0.00%{fill:#2D5A5C}100.00%{fill:#2D5A5C}}
+    @keyframes viv2{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes p2_0{0.00%{opacity:1}15.67%{opacity:1}16.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p2_1{0.00%{opacity:0}15.17%{opacity:0}16.67%{opacity:1}32.33%{opacity:1}33.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p2_2{0.00%{opacity:0}31.83%{opacity:0}33.33%{opacity:1}49.00%{opacity:1}50.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes p2_3{0.00%{opacity:0}48.50%{opacity:0}50.00%{opacity:1}65.67%{opacity:1}66.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p2_4{0.00%{opacity:0}65.17%{opacity:0}66.67%{opacity:1}82.33%{opacity:1}83.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p2_5{0.00%{opacity:0}81.83%{opacity:0}83.33%{opacity:1}100.00%{opacity:1}}
+    @keyframes bar3{0.00%{width:33.6px}33.33%{width:33.6px}39.00%{width:0.0px}50.00%{width:0.0px}55.67%{width:67.3px}83.33%{width:67.3px}89.00%{width:73.6px}100.00%{width:73.6px}}
+    @keyframes col3{0.00%{fill:#2D5A5C}16.67%{fill:#2D5A5C}22.33%{fill:#5A524A}50.00%{fill:#5A524A}55.67%{fill:#2D5A5C}100.00%{fill:#2D5A5C}}
+    @keyframes viv3{0.00%{opacity:1}33.33%{opacity:1}39.00%{opacity:0}50.00%{opacity:0}55.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes p3_0{0.00%{opacity:1}15.67%{opacity:1}16.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p3_1{0.00%{opacity:0}15.17%{opacity:0}16.67%{opacity:1}32.33%{opacity:1}33.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p3_3{0.00%{opacity:0}48.50%{opacity:0}50.00%{opacity:1}65.67%{opacity:1}66.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p3_4{0.00%{opacity:0}65.17%{opacity:0}66.67%{opacity:1}82.33%{opacity:1}83.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p3_5{0.00%{opacity:0}81.83%{opacity:0}83.33%{opacity:1}100.00%{opacity:1}}
+    @keyframes bar4{0.00%{width:16.8px}33.33%{width:16.8px}39.00%{width:0.0px}50.00%{width:0.0px}55.67%{width:47.6px}83.33%{width:47.6px}89.00%{width:0.0px}100.00%{width:0.0px}}
+    @keyframes col4{0.00%{fill:#2D5A5C}16.67%{fill:#2D5A5C}22.33%{fill:#5A524A}50.00%{fill:#5A524A}55.67%{fill:#2D5A5C}66.67%{fill:#2D5A5C}72.33%{fill:#5A524A}100.00%{fill:#5A524A}}
+    @keyframes viv4{0.00%{opacity:1}33.33%{opacity:1}39.00%{opacity:0}50.00%{opacity:0}55.67%{opacity:1}83.33%{opacity:1}89.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes p4_0{0.00%{opacity:1}15.67%{opacity:1}16.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p4_1{0.00%{opacity:0}15.17%{opacity:0}16.67%{opacity:1}32.33%{opacity:1}33.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p4_3{0.00%{opacity:0}48.50%{opacity:0}50.00%{opacity:1}65.67%{opacity:1}66.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p4_4{0.00%{opacity:0}65.17%{opacity:0}66.67%{opacity:1}82.33%{opacity:1}83.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes tag{0.00%{transform:translateY(44.0px)}16.67%{transform:translateY(44.0px)}22.33%{transform:translateY(-44.0px)}50.00%{transform:translateY(-44.0px)}55.67%{transform:translateY(44.0px)}66.67%{transform:translateY(44.0px)}72.33%{transform:translateY(0.0px)}100.00%{transform:translateY(0.0px)}}
+    @keyframes tagv{0.00%{opacity:0}16.67%{opacity:0}22.33%{opacity:1}50.00%{opacity:1}55.67%{opacity:0}66.67%{opacity:0}72.33%{opacity:1}100.00%{opacity:1}}
+    @keyframes txt0{0.00%{opacity:1}15.67%{opacity:1}16.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes txt1{0.00%{opacity:0}15.17%{opacity:0}16.67%{opacity:1}32.33%{opacity:1}33.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes txt2{0.00%{opacity:0}31.83%{opacity:0}33.33%{opacity:1}49.00%{opacity:1}50.00%{opacity:0}100.00%{opacity:0}}
+    @keyframes txt3{0.00%{opacity:0}48.50%{opacity:0}50.00%{opacity:1}65.67%{opacity:1}66.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes txt4{0.00%{opacity:0}65.17%{opacity:0}66.67%{opacity:1}82.33%{opacity:1}83.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes txt5{0.00%{opacity:0}81.83%{opacity:0}83.33%{opacity:1}100.00%{opacity:1}}
+    @media (prefers-reduced-motion:reduce) { .bar, .ord, .pct, .cum, .tit, .rig, .tgr { animation:none !important; } }
+  </style>
+  <text class="lbs" x="84" y="38">i candidati, ordinati per probabilità</text><text class="lbs" x="486" y="38">cumulata</text><rect class="bar" x="84" y="61" width="201.6" height="30" rx="4" fill="#2D5A5C" style="animation:bar0 var(--d) infinite, col0 var(--d) infinite"/><text class="ord" x="62" y="81" text-anchor="end" style="animation:viv0 var(--d) infinite;opacity:1">1</text><text class="pct" x="392" y="82" style="animation:p0_0 var(--d) infinite">45%</text><text class="cum" x="486" y="82" style="animation:p0_0 var(--d) infinite">45</text><text class="pct" x="392" y="82" style="animation:p0_1 var(--d) infinite">45%</text><text class="cum" x="486" y="82" style="animation:p0_1 var(--d) infinite">45</text><text class="pct" x="392" y="82" style="animation:p0_2 var(--d) infinite">49%</text><text class="cum" x="486" y="82" style="animation:p0_2 var(--d) infinite">49</text><text class="pct" x="392" y="82" style="animation:p0_3 var(--d) infinite">33%</text><text class="cum" x="486" y="82" style="animation:p0_3 var(--d) infinite">33</text><text class="pct" x="392" y="82" style="animation:p0_4 var(--d) infinite">33%</text><text class="cum" x="486" y="82" style="animation:p0_4 var(--d) infinite">33</text><text class="pct" x="392" y="82" style="animation:p0_5 var(--d) infinite;opacity:1">36%</text><text class="cum" x="486" y="82" style="animation:p0_5 var(--d) infinite;opacity:1">36</text><rect class="bar" x="84" y="105" width="164.6" height="30" rx="4" fill="#2D5A5C" style="animation:bar1 var(--d) infinite, col1 var(--d) infinite"/><text class="ord" x="62" y="125" text-anchor="end" style="animation:viv1 var(--d) infinite;opacity:1">2</text><text class="pct" x="392" y="126" style="animation:p1_0 var(--d) infinite">30%</text><text class="cum" x="486" y="126" style="animation:p1_0 var(--d) infinite">75</text><text class="pct" x="392" y="126" style="animation:p1_1 var(--d) infinite">30%</text><text class="cum" x="486" y="126" style="animation:p1_1 var(--d) infinite">75</text><text class="pct" x="392" y="126" style="animation:p1_2 var(--d) infinite">33%</text><text class="cum" x="486" y="126" style="animation:p1_2 var(--d) infinite">82</text><text class="pct" x="392" y="126" style="animation:p1_3 var(--d) infinite">27%</text><text class="cum" x="486" y="126" style="animation:p1_3 var(--d) infinite">60</text><text class="pct" x="392" y="126" style="animation:p1_4 var(--d) infinite">27%</text><text class="cum" x="486" y="126" style="animation:p1_4 var(--d) infinite">60</text><text class="pct" x="392" y="126" style="animation:p1_5 var(--d) infinite;opacity:1">29%</text><text class="cum" x="486" y="126" style="animation:p1_5 var(--d) infinite;opacity:1">65</text><rect class="bar" x="84" y="149" width="120.2" height="30" rx="4" fill="#2D5A5C" style="animation:bar2 var(--d) infinite, col2 var(--d) infinite"/><text class="ord" x="62" y="169" text-anchor="end" style="animation:viv2 var(--d) infinite;opacity:1">3</text><text class="pct" x="392" y="170" style="animation:p2_0 var(--d) infinite">16%</text><text class="cum" x="486" y="170" style="animation:p2_0 var(--d) infinite">91</text><text class="pct" x="392" y="170" style="animation:p2_1 var(--d) infinite">16%</text><text class="cum" x="486" y="170" style="animation:p2_1 var(--d) infinite">91</text><text class="pct" x="392" y="170" style="animation:p2_2 var(--d) infinite">18%</text><text class="cum" x="486" y="170" style="animation:p2_2 var(--d) infinite">100</text><text class="pct" x="392" y="170" style="animation:p2_3 var(--d) infinite">20%</text><text class="cum" x="486" y="170" style="animation:p2_3 var(--d) infinite">80</text><text class="pct" x="392" y="170" style="animation:p2_4 var(--d) infinite">20%</text><text class="cum" x="486" y="170" style="animation:p2_4 var(--d) infinite">80</text><text class="pct" x="392" y="170" style="animation:p2_5 var(--d) infinite;opacity:1">22%</text><text class="cum" x="486" y="170" style="animation:p2_5 var(--d) infinite;opacity:1">87</text><rect class="bar" x="84" y="193" width="73.6" height="30" rx="4" fill="#2D5A5C" style="animation:bar3 var(--d) infinite, col3 var(--d) infinite"/><text class="ord" x="62" y="213" text-anchor="end" style="animation:viv3 var(--d) infinite;opacity:1">4</text><text class="pct" x="392" y="214" style="animation:p3_0 var(--d) infinite">6%</text><text class="cum" x="486" y="214" style="animation:p3_0 var(--d) infinite">97</text><text class="pct" x="392" y="214" style="animation:p3_1 var(--d) infinite">6%</text><text class="cum" x="486" y="214" style="animation:p3_1 var(--d) infinite">97</text><text class="pct" x="392" y="214" style="animation:p3_3 var(--d) infinite">12%</text><text class="cum" x="486" y="214" style="animation:p3_3 var(--d) infinite">92</text><text class="pct" x="392" y="214" style="animation:p3_4 var(--d) infinite">12%</text><text class="cum" x="486" y="214" style="animation:p3_4 var(--d) infinite">92</text><text class="pct" x="392" y="214" style="animation:p3_5 var(--d) infinite;opacity:1">13%</text><text class="cum" x="486" y="214" style="animation:p3_5 var(--d) infinite;opacity:1">100</text><rect class="bar" x="84" y="237" width="0.0" height="30" rx="4" fill="#5A524A" style="animation:bar4 var(--d) infinite, col4 var(--d) infinite"/><text class="ord" x="62" y="257" text-anchor="end" style="animation:viv4 var(--d) infinite;opacity:0">5</text><text class="pct" x="392" y="258" style="animation:p4_0 var(--d) infinite">3%</text><text class="cum" x="486" y="258" style="animation:p4_0 var(--d) infinite">100</text><text class="pct" x="392" y="258" style="animation:p4_1 var(--d) infinite">3%</text><text class="cum" x="486" y="258" style="animation:p4_1 var(--d) infinite">100</text><text class="pct" x="392" y="258" style="animation:p4_3 var(--d) infinite">8%</text><text class="cum" x="486" y="258" style="animation:p4_3 var(--d) infinite">100</text><text class="pct" x="392" y="258" style="animation:p4_4 var(--d) infinite">8%</text><text class="cum" x="486" y="258" style="animation:p4_4 var(--d) infinite">100</text><g class="tgr" style="animation:tag var(--d) infinite, tagv var(--d) infinite"><line class="tag" x1="50" y1="230.0" x2="560" y2="230.0"/><text class="tagl" x="566" y="235.0">taglio</text></g><text class="tit" x="84" y="316" style="animation:txt0 var(--d) infinite">temperatura 1</text><text class="rig" x="84" y="340" style="animation:txt0 var(--d) infinite">la classifica sulla parola dopo, com'è</text><text class="tit" x="84" y="316" style="animation:txt1 var(--d) infinite">il top_p taglia a 0,9</text><text class="rig" x="84" y="340" style="animation:txt1 var(--d) infinite">alla riga 3 la cumulata fa 91, e novanta è passato</text><text class="tit" x="84" y="316" style="animation:txt2 var(--d) infinite">e la massa si ridistribuisce</text><text class="rig" x="84" y="340" style="animation:txt2 var(--d) infinite">si pesca fra tre, e sono di nuovo cento</text><text class="tit" x="84" y="316" style="animation:txt3 var(--d) infinite">temperatura 2: si ripesa tutto</text><text class="rig" x="84" y="340" style="animation:txt3 var(--d) infinite">stessa classifica, distacchi più corti; nessuno escluso</text><text class="tit" x="84" y="316" style="animation:txt4 var(--d) infinite">la stessa soglia, 0,9</text><text class="rig" x="84" y="340" style="animation:txt4 var(--d) infinite">adesso alla riga 3 la cumulata non basta più</text><text class="tit" x="84" y="316" style="animation:txt5 var(--d) infinite;opacity:1">temperatura 2: il nucleo è di quattro</text><text class="rig" x="84" y="340" style="animation:txt5 var(--d) infinite;opacity:1">stessa soglia 0,9, e la massa si è ridistribuita sui quattro</text><text class="fin" x="84" y="380">i due gesti stanno in fila, non affiancati: il taglio cade sulla classifica già ripesata</text>
 </svg>

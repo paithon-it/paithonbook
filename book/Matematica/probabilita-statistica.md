@@ -152,7 +152,7 @@ un dado onesto vale $\tfrac{1+2+3+4+5+6}{6}=3{,}5$: un numero che non uscirà
 mai in un singolo lancio, ma attorno al quale si assesta la media di tanti
 lanci.
 
-La **varianza**, che si scrive $\mathrm{Var}(X)$ e si legge «varianza di X»,
+La varianza, che si scrive $\mathrm{Var}(X)$ e si legge «varianza di X»,
 misura invece quanto tipicamente ci si allontana da quel centro: piccola se i
 valori sono raccolti, grande se sono sparpagliati. Il conto è meno spaventoso
 del nome, e sul dado si fa a mano in un minuto. Si guarda di quanto ciascuna

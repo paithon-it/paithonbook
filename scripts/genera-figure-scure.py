@@ -68,6 +68,13 @@ LIBRO = QUI / "book"
 FIGURE = LIBRO / "figures"
 SCURE = FIGURE / "scure"
 
+# Il perimetro del libro sta in `coerenza.py`, in una copia sola: due copie
+# divergono, e quella che stava qui leggeva il toc con un lettore suo. Il
+# `sys.path` e' esplicito perche' lanciando questo file come script la
+# cartella c'e' gia', ma importandolo da altrove no.
+sys.path.insert(0, str(QUI / "scripts"))
+from coerenza import pagine_del_toc                        # noqa: E402
+
 # chiaro -> scuro, e il token del brand da cui viene. L'ordine e' quello della
 # scala: prima gli ancoraggi, poi i grigi dal piu' scuro al piu' chiaro.
 MAPPA = {
@@ -110,41 +117,6 @@ INTESTAZIONE = """<!--
   fonte: ../{nome}
 -->
 """
-
-
-def pagine_del_toc() -> list[pathlib.Path]:
-    """Le pagine del libro: dal `_toc.yml`, e con i `.ipynb` dentro.
-
-    Non `book/**/*.md`: quel glob salta i notebook e prende i file fuori dal
-    toc, cioe' misura un libro che non esiste.
-    """
-    import yaml
-
-    dati = yaml.safe_load((LIBRO / "_toc.yml").read_text(encoding="utf-8"))
-    nomi: list[str] = []
-
-    def scava(nodo):
-        if isinstance(nodo, dict):
-            if "file" in nodo:
-                nomi.append(str(nodo["file"]))
-            for valore in nodo.values():
-                scava(valore)
-        elif isinstance(nodo, list):
-            for valore in nodo:
-                scava(valore)
-
-    scava(dati)
-    if "root" in dati:
-        nomi.append(str(dati["root"]))
-
-    pagine = []
-    for nome in nomi:
-        for estensione in (".md", ".ipynb", ""):
-            percorso = LIBRO / (nome + estensione)
-            if percorso.is_file():
-                pagine.append(percorso)
-                break
-    return sorted(set(pagine))
 
 
 def figure_richiamate() -> set[str]:

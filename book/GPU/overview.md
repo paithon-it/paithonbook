@@ -58,7 +58,7 @@ paradiso del parallelismo.
 
 Nel 2006-2007 NVIDIA fece una mossa che avrebbe cambiato la storia dell'AI:
 diede a chiunque il modo di far fare a quei chip conti qualunque, e non più
-soltanto disegni. Quel modo si chiama **CUDA** {cite}`nickolls2008scalable`, ed
+soltanto disegni. Quel modo si chiama CUDA {cite}`nickolls2008scalable`, ed
 è un dialetto di un linguaggio di programmazione più il corredo di strumenti
 che serve a usarlo: si scrive un programma normale, e si dice quali pezzi
 devono girare sulla scheda video invece che sul processore.

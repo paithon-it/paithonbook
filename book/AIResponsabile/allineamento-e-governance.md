@@ -251,8 +251,8 @@ possibile.
 
 `````{tab} Superiore
 
-Il procedimento è in due tempi. I confronti umani addestrano un **reward
-model** che impara a dare voti; quel modello fa poi da giudice mentre la
+Il procedimento è in due tempi. I confronti umani addestrano un reward
+model che impara a dare voti; quel modello fa poi da giudice mentre la
 *policy* del linguaggio (cioè il modello generativo, visto come la regola che
 sceglie il prossimo token) viene ottimizzata con PPO, l'algoritmo di
 reinforcement learning descritto nel {doc}`capitolo sul deep reinforcement

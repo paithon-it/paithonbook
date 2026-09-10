@@ -38,7 +38,7 @@ modello ha azzeccato (VP e VN) e, soprattutto, *in che modo* ha sbagliato
 (falso allarme o incendio mancato). Non è mai indifferente quale dei due.
 
 Da questi quattro numeri si ricava tutto il resto. Il primo e più ovvio è
-l’**accuratezza**: la quota di volte in cui il modello ha risposto giusto,
+l’accuratezza: la quota di volte in cui il modello ha risposto giusto,
 cioè i due casi buoni (VP e VN) divisi per il totale delle risposte. Cento
 allarmi, novantanove giusti: accuratezza del 99%. Il conto regge anche quando
 le risposte in gioco sono più di due (silenzio, fumo di padella, incendio

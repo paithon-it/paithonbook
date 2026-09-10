@@ -16,7 +16,7 @@ benissimo, e i suoi conti li faceva come sugli altri quarantotto giochi. Il muro
 è un altro: come si va a cercare qualcosa in un mondo dove le ricompense sono
 rade, o come si dice di solito **sparse**,
 cioè capitano una volta ogni tanto e in mezzo non c'è niente. Si chiama
-**esplorazione**.
+esplorazione.
 
 ## Il problema delle ricompense sparse
 

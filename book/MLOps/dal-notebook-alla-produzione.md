@@ -1,6 +1,6 @@
 # Dal notebook alla produzione
 
-Il notebook ha quarantasette **celle**, i pezzetti in cui il programma è
+Il notebook ha quarantasette celle, i pezzetti in cui il programma è
 spezzato e che si possono eseguire uno alla volta, in qualunque ordine. A lato
 di ciascuna un numero fra parentesi quadre dice quando è stata eseguita
 l'ultima volta, e quei numeri raccontano una storia sconfortante: `[12]`, poi
@@ -136,7 +136,7 @@ fasi ricorrenti di un progetto di machine learning
    machine learning (si veda [Overfitting e
    validazione](../MachineLearning/overfitting-validazione.md)).
 5. Deploy: mettere il modello in un servizio che risponde a richieste
-   reali, dietro un’**API** o dentro un'applicazione. Un'API è una specie di
+   reali, dietro un’API o dentro un'applicazione. Un'API è una specie di
    sportello elettronico: un indirizzo a cui un altro programma manda una
    domanda e da cui riceve la risposta, senza sapere né dover sapere che cosa
    c'è dietro.
@@ -221,7 +221,7 @@ all'archivio) e si tiene l'artefatto vero altrove.
 
 Il seme casuale merita una riga a parte, perché è la fonte di riproducibilità
 più facile da dimenticare e più economica da fissare. Il computer i dadi li
-tira per finta: segue una lista di numeri preparata in anticipo, e il **seme**
+tira per finta: segue una lista di numeri preparata in anticipo, e il seme
 è il punto della lista da cui parte. Fissarlo vuol dire far uscire sempre gli
 stessi dadi. E i dadi qui si tirano almeno in tre punti: quando i dati si
 dividono fra addestramento e prova, quando i pesi della rete ricevono i loro

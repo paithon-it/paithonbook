@@ -11,11 +11,11 @@ C'è uno spreco evidente in tutto questo, e una domanda che se ne ricava: e se
 la macchina imparasse la struttura del suono *da sola*, ascoltando quelle
 montagne di audio grezzo, e usassimo poi ciò che ha imparato per i compiti
 veri (riconoscere il parlato, classificare suoni, generare musica) con *poche*
-etichette? È l'idea dell'apprendimento **auto-supervisionato**
+etichette? È l'idea dell'apprendimento auto-supervisionato
 (*self-supervised*).
 
 C'è una parola che regge tutto il resto della sezione, e conviene fissarla
-subito: **rappresentazione**. È il gruppetto di numeri con cui un modello si
+subito: rappresentazione. È il gruppetto di numeri con cui un modello si
 tiene in mente un pezzetto di suono: qualche centinaio di numeri ogni venti
 millesimi di secondo, cioè cinquanta gruppetti per ogni secondo di audio, che
 nessuno ha scritto a mano e che nessuno saprebbe leggere uno per uno.
@@ -89,7 +89,7 @@ $\mathcal{D}_U$ (decine di migliaia di ore) e di un piccolo insieme
 etichettato $\mathcal{D}_L = \{(\mathbf{x}^{(i)}, \mathbf{y}^{(i)})\}$, con
 $|\mathcal{D}_L| \ll |\mathcal{D}_U|$ (il simbolo $\mathcal{L}$ resta
 riservato alle funzioni di perdita). Il pretraining ottimizza su $\mathcal{D}_U$
-un obiettivo che non richiede $\mathbf{y}$, un **pretesto** (*pretext task*)
+un obiettivo che non richiede $\mathbf{y}$, un pretesto (*pretext task*)
 costruito dai dati stessi, per apprendere un encoder $f_\theta$ che mappa la
 forma d'onda in rappresentazioni contestuali. Il fine-tuning aggiunge sopra
 $f_\theta$ una testa leggera (per il riconoscimento vocale, in sigla ASR,
@@ -204,7 +204,7 @@ embedding), $\kappa$ una temperatura (un'altra: non ha niente a che vedere con
 la $\tau$ della Gumbel-softmax di poco sopra, che sceglie l'unità, mentre
 questa smussa il confronto) e $\mathcal{Q}_t$ l'insieme dei candidati. È una
 softmax che premia il modello quando assegna a $\mathbf{q}_t$ la probabilità più alta.
-Un secondo termine di **diversità** incoraggia a usare tutte le voci del
+Un secondo termine di diversità incoraggia a usare tutte le voci del
 dizionario, evitando che ne collassi solo qualcuna. A valle, con una testa CTC
 su pochissime etichette, wav2vec 2.0 raggiunge un WER di
 $4{,}8/8{,}2$ su *test-clean/test-other* di Librispeech usando 10 minuti

@@ -17,7 +17,7 @@ Nonequilibrium Thermodynamics* {cite}`sohl2015deep`. L'ispirazione viene
 davvero dalla termodinamica di non equilibrio, e l'idea è di un'eleganza
 spudorata: se distruggere è facile e costruire da zero non lo sa fare nessuno,
 filmiamo la distruzione e insegniamo a una rete a proiettare il film al
-contrario. Prendi una fotografia e aggiungile del **rumore**, cioè numeri
+contrario. Prendi una fotografia e aggiungile del rumore, cioè numeri
 sorteggiati a caso che si sommano ai colori veri e li sporcano di puntini: un
 pizzico alla volta, finché non resta che pulviscolo. Questo è il verso facile,
 la goccia che si disperde. Poi addestra una rete a percorrere la pellicola
@@ -92,8 +92,8 @@ ragione richiede i numeri, e ce li prendiamo nella prossima sezione.
 
 `````{tab} Superiore
 
-Il processo diretto è una catena di Markov che corrompe il dato $\mathbf{x}_0$ in $T$
-passi (in DDPM, $T = 1000$):
+Il processo diretto, l'andata, è una catena di Markov che corrompe il dato
+$\mathbf{x}_0$ in $T$ passi (in DDPM, $T = 1000$):
 
 $$
 q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) = \mathcal{N}\!\left(\mathbf{x}_t;\ \sqrt{1-\beta_t}\,\mathbf{x}_{t-1},\
@@ -122,10 +122,10 @@ $q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ è approssimativamente gaussiano. Non
 viene dal deep learning e lo precede di decenni: lo si deve a William Feller,
 che lo pubblica nel 1949 {cite}`feller1949theory`; Sohl-Dickstein e colleghi lo
 riprendono e ci costruiscono sopra il modello {cite}`sohl2015deep`. Ha quindi
-senso modellare il processo inverso con una gaussiana parametrizzata da una
-rete, $p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$, con parametri appresi
-$\theta$. Il contributo di DDPM {cite}`ho2020denoising` è una parametrizzazione
-che riduce ogni cosa a una regressione: la rete
+senso modellare il processo inverso, il ritorno, con una gaussiana
+parametrizzata da una rete, $p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$, con
+parametri appresi $\theta$. Il contributo di DDPM {cite}`ho2020denoising` è una
+parametrizzazione che riduce ogni cosa a una regressione: la rete
 $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ predice il rumore
 $\boldsymbol{\epsilon}$ della scorciatoia in forma chiusa, cioè quello
 accumulato da $\mathbf{x}_0$ a $\mathbf{x}_t$ e non l'incremento del solo passo
@@ -378,8 +378,8 @@ applicata a uno stato fatto di simboli invece che di numeri, cioè al testo.
   stabile come un problema supervisionato.
 - Nel 2021 la diffusione supera le GAN in qualità e copertura dei modi
   {cite}`dhariwal2021diffusion`; nel 2022, con DALL·E 2, Imagen, Midjourney
-  e lo Stable Diffusion open source {cite}`rombach2022high`, diventa un
-  fenomeno pubblico.
+  e Stable Diffusion, rilasciato con i pesi aperti {cite}`rombach2022high`,
+  diventa un fenomeno pubblico.
 - Rispetto alle GAN: niente duello, niente *mode collapse*, addestramento
   stabile, ma il campionamento costa molti passi di rete invece di uno.
 - Nel resto del capitolo: DDPM in dettaglio, il limite continuo che ne fa

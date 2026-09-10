@@ -438,8 +438,11 @@ esponenziale delle lunghezze osservate, cioè un bersaglio che il termine si
 sceglie da solo strada facendo. Lo jacobiano non si calcola mai per esteso:
 basta l'identità $\mathbf{J}_{\mathbf{w}}^{\top}\mathbf{u} =
 \nabla_{\mathbf{w}}\big(g(\mathbf{w}) \cdot \mathbf{u}\big)$, che è una normale
-retropropagazione. È un vincolo di buon condizionamento della mappa
-latente-immagine, e ha un effetto collaterale utile dichiarato dagli autori: i
+retropropagazione. È un vincolo di buon condizionamento *numerico* della
+mappa latente-immagine (numerico nel senso dell'analisi numerica, cioè quanto
+la mappa amplifica una differenza in ingresso; niente a che vedere con il
+condizionamento della GAN condizionale, che è un'etichetta data in pasto alle
+due reti), e ha un effetto collaterale utile dichiarato dagli autori: i
 generatori così regolarizzati sono molto più facili da invertire, cioè da
 usare al contrario per trovare il $\mathbf{w}$ che produce una data fotografia,
 e questo permette di attribuire un'immagine generata alla rete che l'ha fatta.
@@ -784,8 +787,8 @@ duello, e conviene ripassarle così.
   da una coppia asimmetrica (*skip* nel generatore, connessioni residue nel
   discriminatore), e arriva la *path length regularization*, che spinge un
   passo di ampiezza fissa in $\mathcal{W}$ a produrre un cambiamento di
-  ampiezza fissa nell'immagine: migliora il condizionamento della mappa
-  $\mathcal{W} \to$ immagine e rende il generatore molto più facile da
+  ampiezza fissa nell'immagine: migliora il condizionamento *numerico* della
+  mappa $\mathcal{W} \to$ immagine e rende il generatore molto più facile da
   invertire.
 - pix2pix e CycleGAN fanno traduzione immagine-a-immagine (la seconda
   senza coppie, grazie alla *cycle-consistency* pesata da un $\lambda$); il

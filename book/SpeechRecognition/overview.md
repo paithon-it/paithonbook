@@ -169,9 +169,8 @@ come encoder e decoder.
 Dal microfono al testo il suono passa per alcune tappe, sempre le stesse
 ({numref}`fig-asr-pipeline`). Adesso sono finite tutte dentro un'unica rete e
 non si vedono più dall'esterno, ma i nomi sono rimasti quelli e li useremo per
-tutto il capitolo. La catena nel suo
-insieme si chiama pipeline, che in inglese è la conduttura, e qui vale
-quello che da noi si chiamerebbe catena di montaggio.
+tutto il capitolo. La catena nel suo insieme è la pipeline del riconoscimento
+vocale, e qui vale quello che da noi si chiamerebbe catena di montaggio.
 
 ```{figure} ../figures/asr-pipeline.svg
 :name: fig-asr-pipeline

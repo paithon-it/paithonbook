@@ -25,7 +25,7 @@ affatto uscita di scena.
 
 ## La parola, prima della mappa
 
-**Verosimiglianza** l'abbiamo già incontrata nei richiami di matematica, alla
+Verosimiglianza l'abbiamo già incontrata nei richiami di matematica, alla
 sezione sulla probabilità, dove serviva a scegliere i parametri: quanto è
 probabile ciò che ho visto, se il modello fosse questo. Qui la guardiamo
 dall'altro capo, a modello ormai fissato: è il valore che quel modello assegna

@@ -70,7 +70,7 @@ $\mathcal{E}$ sono le entità e $\mathcal{R}$ i tipi di relazione. È un
 relazioni diverse, e la direzione conta ($r$ e la sua inversa sono relazioni
 distinte).
 
-Sopra le triple sta di solito uno **schema** (o ontologia): una gerarchia di
+Sopra le triple sta di solito uno schema (o ontologia): una gerarchia di
 tipi (`Città` è un `LuogoAbitato` è un `Luogo`) e i vincoli di dominio e
 codominio di ogni relazione (`sindaco-di` va da una `Persona` a un
 `LuogoAbitato`). Lo schema serve a due cose molto pratiche: validare ciò che

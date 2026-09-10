@@ -170,8 +170,8 @@ il minimo è il modello ottimale.
 Un'avvertenza sull'ambito di validità, perché il vocabolario viaggia più
 lontano del teorema. La decomposizione è un’identità della loss quadratica:
 per la loss 0-1 dei classificatori non esiste una scomposizione additiva
-analoga, e più varianza può perfino *ridurre* l'errore quando il bias sta dalla
-parte sbagliata della soglia {cite}`wood2023unified`. Da qui in avanti «bias» e
+analoga {cite}`wood2023unified`, e più varianza può perfino *ridurre* l'errore
+quando il bias sta dalla parte sbagliata della soglia. Da qui in avanti «bias» e
 «varianza» restano utilissimi come vocabolario anche parlando di alberi e di
 foreste; non come aritmetica.
 
@@ -281,19 +281,21 @@ $3{,}471 - 0{,}09 = 3{,}38$.
 
 Il modello lineare, passando da 120 a 2400 esempi, chiude il divario da
 $+0{,}230$ a $+0{,}013$: le due curve si sono toccate. Ma si sono toccate a
-$2{,}335$, che è ancora quasi in cima: dai $3{,}471$ di partenza sono
-scesi appena $1{,}14$ su $3{,}38$, cioè un terzo della strada. (Metà strada
-sarebbe stata $0{,}09 + 3{,}38/2 = 1{,}78$, parecchio più in basso.)
-L'errore di addestramento, per giunta, non è migliorato di un'unghia, anzi è
-salito appena ($2{,}294$ con 120 esempi, $2{,}321$ con 2400). Il rialzo è
-normale, ed è il segno che stiamo cercando: con pochi esempi una retta riesce a
-passare un po’ più vicino a tutti; con tanti non ce la fa più, perché la forma
-giusta non è una retta e i punti in più non fanno che ricordarglielo. Quel
-modello ha dato tutto quello che aveva, e altri diecimila esempi non
-sposterebbero nulla. Se serve di meglio, serve un modello diverso.
+$2{,}335$, che è ancora quasi in cima: dai $3{,}471$ di partenza sono scesi
+appena $1{,}14$ su $3{,}38$, cioè un terzo della strada. (Metà strada sarebbe
+stata $0{,}09 + 3{,}38/2 = 1{,}78$, parecchio più in basso.) L'errore di
+addestramento, per giunta, non è migliorato di un'unghia ($2{,}294$ con 120
+esempi, $2{,}321$ con 2400: la differenza è più piccola di quanto il sorteggio
+dei blocchi sposti da solo). Quello che non fa è scendere, ed è il segno che
+stiamo cercando: con pochi esempi una retta riesce a passare un po’ più vicino
+a tutti, con tanti non ce la fa più, perché la forma giusta non è una retta e i
+punti in più non fanno che ricordarglielo. Quel modello ha dato tutto quello
+che aveva, e altri diecimila esempi non sposterebbero nulla. Se serve di
+meglio, serve un modello diverso.
 
 La foresta (una foresta casuale, un modello fatto di tanti alberi di
-decisione che votano: la incontreremo nella sezione sugli alberi, e qui basta
+decisione che votano: la incontreremo negli {doc}`alberi decisionali e metodi
+ensemble </MachineLearning/alberi-ensemble>`, e qui basta
 sapere che è molto più flessibile di una retta) arriva a $0{,}031$
 sull'addestramento e
 $0{,}215$ in validazione, con un divario di $+0{,}184$ ancora aperto: ha
@@ -313,10 +315,10 @@ l'addestramento di una rete, dove sull'asse orizzontale ci sono le epoche
 (un'epoca è una passata completa su tutti gli esempi: si addestra facendone
 molte di seguito): quelle diagnosticano l'andamento di *quella* sessione (passi
 della discesa del gradiente troppo lunghi o troppo corti, overfitting che
-comincia, quando fermarsi) e sono trattate nel capitolo su
-PyTorch. Qui l'asse orizzontale è la quantità di dati, e la domanda è
-diversa: non «come sta andando questo addestramento» ma «questo modello, con
-più dati, andrebbe meglio».
+comincia, quando fermarsi) e sono trattate nel {doc}`training loop
+</PyTorch/addestramento>`. Qui l'asse orizzontale è la quantità di dati, e la
+domanda è diversa: non «come sta andando questo addestramento» ma «questo
+modello, con più dati, andrebbe meglio».
 ```
 
 ## Train, validation e test: perché il test non si tocca
@@ -329,10 +331,11 @@ studio, prove ed esame.
 - **Training set** (lo studio): i dati su cui il modello impara i suoi parametri
   (i numeri interni, la $\theta$ dell'apertura del capitolo). È la fetta più
   grossa.
-- **Validation set** (le prove): i dati su cui si scelgono gli *iperparametri*,
-  cioè le
-  scelte di contorno che non si imparano dai dati: quanto complesso può essere
-  il modello, quanto forte il freno alla memorizzazione che vedremo tra poco.
+- **Validation set** (le prove): i dati tenuti da parte per giudicare, quelli
+  che nelle curve di apprendimento davano la seconda curva, e su cui si
+  scelgono gli *iperparametri*, cioè le scelte di contorno che non si imparano
+  dai dati: quanto complesso può essere il modello, quanto forte il freno alla
+  memorizzazione che vedremo tra poco.
 - **Test set** (l'esame): i dati che si guardano una sola volta, alla fine,
   per stimare onestamente le prestazioni nel mondo reale.
 
@@ -461,9 +464,13 @@ diverse del programma invece di giocarsi tutto su una sola interrogazione: il
 giudizio finale è più affidabile e meno soggetto al caso.
 
 Si può spingere all'estremo: un blocco per ogni singolo esempio, cioè tanti
-compiti quanti sono i dati. Il giudizio è ancora più solido, però il modello va
-riaddestrato una volta per esempio, e con centomila esempi il conto non sta in
-piedi. Cinque o dieci blocchi sono il punto in cui la spesa vale il guadagno.
+compiti quanti sono i dati. Sembra il giudizio più solido di tutti, e non lo è.
+Quello che il modello ha studiato prima di un compito e prima del successivo
+cambia di un esempio soltanto, quindi i giudizi si somigliano tutti, e la media
+di tanti giudizi che si somigliano non è più stabile di uno solo. In più il
+modello va riaddestrato una volta per esempio, e con centomila esempi il conto
+non sta in piedi. Cinque o dieci blocchi sono il punto in cui la spesa vale il
+guadagno.
 
 Tutto questo regge su una condizione che salta più spesso di quanto sembri: le
 domande dei cinque compiti devono essere davvero diverse fra loro. Se nel
@@ -495,8 +502,22 @@ $$
 
 dove $f_\theta^{(-i)}$ è il modello addestrato escludendo il fold $i$-esimo. Il
 caso estremo $k=m$ (un fold per esempio) è la *leave-one-out*: quasi non
-distorta ma costosa. Valori $k=5$ o $k=10$ offrono il miglior compromesso tra
-costo computazionale e stabilità della stima.
+distorta, perché ogni modello studia su $m-1$ esempi, ma costosa e con
+varianza più alta della $k$-fold con $k<m$ {cite}`james2023introduction`,
+perché media $m$ modelli addestrati su insiemi quasi identici e quindi
+fortemente correlati fra loro, e la media di quantità correlate non si
+stabilizza. Valori $k=5$ o $k=10$ offrono il miglior compromesso fra
+distorsione, costo computazionale e stabilità della stima.
+
+E quando più configurazioni risultano a pari merito dentro l'incertezza della
+stima, la convenzione per decidere è la **regola dell'errore standard**: si
+tiene la più semplice fra le configurazioni il cui errore sta entro un errore
+standard dal minimo {cite}`james2023introduction`. L'errore standard di una
+stima cross-validata vale la dispersione fra i $k$ giri divisa per $\sqrt{k}$,
+quindi con cinque blocchi meno della metà: usare la dispersione al suo posto
+allarga la fascia di un fattore $2{,}2$ e fa scegliere un modello più semplice
+del dovuto. È il rasoio di Occam applicato a una
+classifica che si sa incerta.
 
 Un'ipotesi va però dichiarata, perché è quella che regge tutto il
 ragionamento: $\text{CV}_k$ stima l'errore a patto che le righe siano
@@ -507,13 +528,14 @@ il rimescolamento mette quasi-duplicati sia in training sia in validation, e il
 modello ritrova in validation ciò che ha già visto. Il risultato è una stima
 priva di significato, non solo un po’ ottimista, e non dà nessun
 segnale d'allarme. Con duecento soggetti, dieci misure quasi identiche
-ciascuno e un'etichetta assegnata a caso (quindi non c'è niente da
-imparare, e la verità è $0{,}50$), la 5-fold mescolata riporta accuratezza
-$1{,}000$; raggruppando per soggetto torna attorno a $0{,}5$, dove deve stare.
-In questi casi i fold vanno costruiti per soggetto (`GroupKFold`,
+ciascuno e un'etichetta assegnata a caso a ogni soggetto (quindi non c'è
+niente da imparare, e la verità è $0{,}50$), un classificatore capace di
+memorizzare, come il $k$-NN a un vicino, in 5-fold mescolata riporta
+accuratezza $1{,}000$; raggruppando per soggetto torna attorno a $0{,}5$, dove
+deve stare. In questi casi i fold vanno costruiti per soggetto (`GroupKFold`,
 `GroupShuffleSplit`); se invece le righe sono ordinate nel tempo vale il
-discorso della sezione sui dati che cambiano, cioè `TimeSeriesSplit` e non un
-rimescolamento.
+discorso dei {doc}`dati che cambiano </MachineLearning/dati-che-cambiano>`,
+cioè `TimeSeriesSplit` e non un rimescolamento.
 
 `````
 
@@ -538,15 +560,22 @@ from sklearn.linear_model import Ridge
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42)
 
-modello = Ridge(alpha=1.0)              # alpha = quanto frena il modello (v. sotto)
+modello = Ridge(alpha=1.0)   # alpha: quanto si fa pagare la complessità
 scores = cross_val_score(modello, X_train, y_train, cv=5,
                          scoring="neg_mean_squared_error")  # 5-fold CV
-print(-scores.mean())                  # errore medio di validazione
+print(f"errore medio di validazione: {-scores.mean():.3f}")
+print(f"quanto ballano i cinque giri: {scores.std():.3f}")
 ```
 
 ```text
-2.248011007321831
+errore medio di validazione: 2.248
+quanto ballano i cinque giri: 0.217
 ```
+
+Il ballo è $0{,}217$ su una media di $2{,}248$, cioè poco meno di un decimo.
+Su questi dati, quindi, due modelli che si scostassero di qualche centesimo di
+errore la cross-validation non li saprebbe ordinare, e la sola media non lo
+direbbe.
 
 ## Mettere un freno: la regolarizzazione
 
@@ -579,9 +608,11 @@ disegnare.
 Immagina un piano con due soli pesi, $w_1$ e $w_2$, uno per asse. È lo stesso
 gesto della collina nella nebbia: gli assi non portano più i dati, portano le
 manopole del modello, e ogni punto del piano è una scelta possibile dei due
-numeri. Dire al modello «non spendere più di tanto in pesi» equivale, per
-ogni valore del prezzo, a recintare una regione attorno all'origine e
-obbligarlo a restare dentro. Se la spesa si conta sommando i valori
+numeri. Far pagare un prezzo alla spesa in pesi e mettere un tetto a quella
+spesa sono due modi di dire la stessa cosa: a ogni prezzo corrisponde il tetto
+che porta alla stessa soluzione, e viceversa. Il tetto conviene perché si
+disegna: è una regione attorno all'origine, e il modello deve restare dentro.
+Se la spesa si conta sommando i valori
 assoluti (la L1), il recinto è un rombo con le punte sugli assi: per star
 dentro basta che $|w_1| + |w_2|$ non superi il budget, e i due estremi sono
 spendere tutto su un peso solo, che sono appunto le punte. Se si conta
@@ -608,14 +639,15 @@ punta: lì un peso è esattamente zero. A destra il cerchio della L2, che di
 punte non ne ha e non privilegia nessuna direzione.
 ```
 
-Un anello che si allarga incontra un rombo quasi
-sempre in una punta, come mostra {numref}`fig-l1-l2`, e le punte del rombo
-stanno sugli assi, cioè in punti
-dove uno dei due pesi vale esattamente zero. Un cerchio invece non ha punte, e
-il primo contatto cade in un posto qualunque del bordo, dove entrambi i pesi
-sono piccoli ma nessuno è nullo. Ecco perché sommare i valori assoluti seleziona
-le caratteristiche e sommare i quadrati no: la ragione sta tutta nella forma
-del recinto.
+Un anello che si allarga incontra un rombo in una punta, come mostra
+{numref}`fig-l1-l2`, e le punte del rombo stanno sugli assi, cioè in punti dove
+uno dei due pesi vale esattamente zero. Succede tanto più spesso quanto più
+stretto è il budget, ed è la ragione per cui il Lasso azzera di più quando il
+freno è tirato di più. Un cerchio invece non ha punte, e il primo contatto
+cade in un posto qualunque del bordo, dove entrambi i pesi sono piccoli ma
+nessuno è nullo. Ecco perché sommare i valori assoluti seleziona le
+caratteristiche e sommare i quadrati no: la ragione sta tutta nella forma del
+recinto.
 
 `````{tab} Elementare
 
@@ -698,7 +730,8 @@ lascerebbe in pace mentre schiaccia quello di una percentuale. Vale qui la
 stessa avvertenza del k-NN e delle SVM, con la differenza
 che qui è meno visibile, perché un modello mal regolarizzato funziona
 comunque, solo peggio: `Ridge` e `Lasso` non standardizzano da soli, e vanno
-messi in una pipeline dietro uno `StandardScaler`.
+messi dietro uno `StandardScaler` dentro una `Pipeline`, la catena di passaggi
+che scikit-learn tratta come se fosse un modello solo.
 
 L’**Elastic Net** somma le due penalità,
 $\lambda\big(\alpha\sum_j|\theta_j| + \tfrac{1-\alpha}{2}\sum_j\theta_j^2\big)$,
@@ -769,13 +802,15 @@ di continuare a salire.
 
 Il punto interessante di {numref}`fig-double-descent` è il picco, non le
 discese, e per capirlo serve l'immagine della curva che passa per dei punti.
-Il picco sta dove il modello ha esattamente le manopole che servono per passare
-per tutti i dati e nemmeno una di più: di curve così ne esiste una sola, il
-modello è costretto a prendere quella, e quella è una curva che fra un punto e
-l'altro impazzisce. Appena si aggiungono manopole, invece, le curve che passano
-per tutti i punti tornano a essere infinite, e fra infinite ce n'è anche
-qualcuna tranquilla: la parte sorprendente, di cui si parla fra poco, è che
-l'addestramento tende proprio a quelle.
+Il picco sta dove il modello ha esattamente le manopole che servono per
+passare per tutti i dati e nemmeno una di più. Di curve così ne esiste una
+sola (dieci punti e dieci manopole: il polinomio di nono grado che ci passa è
+uno e uno solo), il modello è costretto a prendere quella, e per obbedire a
+tutti i punti insieme quella curva fra l'uno e l'altro impazzisce. Appena si
+aggiungono manopole, invece, le curve che passano per tutti i punti tornano a
+essere infinite, e fra infinite ce n'è anche qualcuna tranquilla: la parte
+sorprendente, di cui si parla fra poco, è che l'addestramento tende proprio a
+quelle.
 
 `````{tab} Elementare
 
@@ -802,9 +837,9 @@ gentile.
 La gobba, poi, non compare soltanto ingrandendo il modello. Si vede anche
 allungando l'addestramento, e perfino aumentando i dati: se il modello sta
 vicino al punto di interpolazione, raccogliere altri esempi può fargli fare
-peggio, perché lo spinge proprio là dove non ha margine. Il prezzo messo sui
-pesi grandi, invece, l'appiana: la doppia discesa si vede tanto più quanto
-meno si frena.
+peggio, perché lo spinge proprio là dove non ha margine. Ma non compare
+sempre: la si vede soprattutto quando fra le risposte giuste ce n'è una quota
+sbagliata, e il prezzo messo sui pesi grandi l'appiana.
 
 Ne esce un solo consiglio pratico. Quando l'errore sui dati nuovi ha toccato il
 fondo e ha ricominciato a salire, non è detto che si sia già visto il meglio:
@@ -815,7 +850,7 @@ ingrandire ancora, qualche volta, ripaga.
 `````{tab} Superiore
 
 Il fenomeno è stato descritto sistematicamente da Belkin e colleghi (2019)
-{cite}`belkin2019reconciling` e poi in ambito neurale da Nakkiran e colleghi
+{cite}`belkin2019reconciling` e poi sulle reti profonde da Nakkiran e colleghi
 (2020) {cite}`nakkiran2020deep`. Tre precisazioni che evitano
 di trarne la conclusione sbagliata.
 
@@ -831,9 +866,15 @@ dell'ipotesi. La discesa del gradiente ha un *bias implicito* verso soluzioni
 a norma piccola, e in quel senso continua a scegliere la spiegazione più
 semplice: solo che «semplice» non si conta in parametri.
 
-La regolarizzazione appiana il picco. Con regolarizzazione adeguata la gobba
-attorno all'interpolazione si attenua o sparisce: la doppia discesa è più
-marcata proprio dove non si regolarizza.
+Si vede soprattutto con le etichette sporche, e la regolarizzazione appiana il
+picco. La prima clausola è degli autori stessi («le osserviamo tutte con più
+forza dove le etichette hanno del rumore»), che però elencano subito dopo i
+casi in cui il picco c'è anche con le etichette pulite, e ne mostrano almeno
+uno in cui sopravvive perfino all'arresto anticipato scelto al meglio. La
+seconda viene da un lavoro successivo dello stesso gruppo
+{cite}`nakkiran2021optimal`: una penalità $\ell_2$ tarata al meglio rende
+monotona la curva sui modelli lineari con dati isotropi, e attenua il picco
+anche sulle reti.
 
 Resta parecchio da capire: quali architetture e quali regimi la mostrino, e
 perché il bias implicito abbia la forma che ha. Il consiglio operativo non è
@@ -923,12 +964,13 @@ raggiungevano l'accuratezza piena in un numero comparabile di iterazioni.
 Due avvertenze di onestà, perché il risultato è più fragile di come viene
 spesso citato.
 
-Alla scala grande la ricetta va corretta, e la correzione non è nel lavoro
-del 2019 ma in uno successivo degli stessi autori {cite}`frankle2020linear`: su
-reti profonde e dataset seri il riavvolgimento a $\theta_0$ smette di
-funzionare, e si riavvolge invece a un $\theta_k$ dopo qualche iterazione di
-addestramento (*rewinding* tardivo). Il biglietto, quindi, non è del tutto
-presente all'inizializzazione: si forma nelle prime fasi.
+Alla scala grande la ricetta va corretta, e la correzione non è nel lavoro del
+2019 ma in uno successivo di Frankle e Carbin con Dziugaite e Roy
+{cite}`frankle2020linear`: su reti profonde e dataset seri il riavvolgimento a
+$\theta_0$ smette di funzionare, e si riavvolge invece a un $\theta_k$ dopo
+qualche iterazione di addestramento (*rewinding* tardivo). Il biglietto,
+quindi, non è del tutto presente all'inizializzazione: si forma nelle prime
+fasi.
 
 Non è un metodo di compressione pratico. Per *trovare* il biglietto
 bisogna addestrare la rete piena, più volte. Il valore è conoscitivo (dice
@@ -974,8 +1016,11 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
   del vero. E anche i preparativi (rimettere le colonne in scala, riempire le
   caselle vuote) vanno fatti guardando solo la parte di studio.
 - Con pochi dati conviene la cross-validation: si divide in cinque blocchi
-  e a turno uno fa da prova, come far correggere il compito a cinque professori
-  invece che a uno. Contano la media dei cinque voti e quanto sono discordi.
+  e a turno uno fa da prova, come cinque compiti in classe su cinque parti
+  diverse del programma invece di una sola interrogazione. Contano la media dei
+  cinque voti e quanto sono discordi. Vale però solo se i cinque compiti
+  chiedono cose davvero diverse: se lo stesso soggetto ricompare in più righe,
+  le sue righe vanno tenute tutte nello stesso blocco.
 - Per frenare la memorizzazione si mette un prezzo alla complessità: il
   modello può usare pesi grandi solo se ne conviene. Contando la spesa a
   valori assoluti alcuni pesi vanno esattamente a zero (le caratteristiche
@@ -985,6 +1030,11 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
   doppia discesa, dove oltre il punto in cui il modello impara tutto a
   memoria ingrandirlo ancora torna a farlo funzionare meglio: quello che conta
   è quanto sono grandi i pesi, più che quante manopole ha il modello.
+- E una risposta c'è anche alla domanda a che cosa serva tutta quella taglia:
+  dentro una rete grande ce n'è una piccola già disposta bene per il compito, e
+  funziona solo se riparte dai numeri che aveva all'inizio, o poco dopo quando
+  la rete è grande davvero. Trovarla costa più che addestrare la rete intera,
+  quindi è un modo di capire, non di risparmiare.
 ```
 
 `````

@@ -12,7 +12,7 @@ un canto, un allarme) prima ancora di provare a capire *cosa* quel suono
 significhi: trasformare un'onda in numeri, e i numeri in un'immagine su cui un
 modello sa lavorare.
 
-**Feature** sono i numeri con cui descriviamo una cosa da dare in pasto a un
+Feature sono i numeri con cui descriviamo una cosa da dare in pasto a un
 modello: qui, i numeri con cui descriviamo un suono. Quali scegliere, e perché
 proprio quelli, è tutto il resto.
 
@@ -23,12 +23,13 @@ avanti e indietro seguendo la pressione dell'aria. Per portare quel movimento
 dentro un computer dobbiamo misurarlo.
 
 Prima però conviene fissare una parola, perché regge tutto il resto del
-capitolo. Quel movimento è un'oscillazione, e quante volte al secondo la
-membrana va avanti e indietro si chiama **frequenza**: si misura in hertz (Hz), e
-mille hertz fanno un kilohertz (kHz). La traduzione da tenere a mente è
-semplice: frequenza alta vuol dire suono acuto, frequenza bassa vuol dire
-suono grave. Il la del diapason oscilla 440 volte al secondo, cioè 440 Hz; la
-stessa nota un'ottava sopra ne fa il doppio, 880.
+capitolo. Quel movimento è un'oscillazione, e la membrana non fa che ricopiare
+quella dell'aria: quante volte al secondo l'aria si comprime e si dirada si
+chiama **frequenza**. Si misura in hertz (Hz), e mille hertz fanno un
+kilohertz (kHz). La traduzione da tenere a mente è semplice: frequenza alta
+vuol dire suono acuto, frequenza bassa vuol dire suono grave. Il la del
+diapason oscilla 440 volte al secondo, cioè 440 Hz; la stessa nota un'ottava
+sopra ne fa il doppio, 880.
 
 `````{tab} Elementare
 
@@ -60,10 +61,12 @@ audio "CD" è quindi, per ogni canale, un vettore di $44\,100$ interi.
 `````
 
 Ognuna di quelle annotazioni si chiama **campione**: una singola misura della
-posizione della membrana, presa in un istante preciso. Un suono digitale è una
-fila di campioni, e restano due domande: quanti prenderne al secondo e quanto
-precisa debba essere ciascuna misura. Alla prima risponde il teorema di
-Nyquist; alla seconda bastano due righe.
+posizione della membrana, presa in un istante preciso. Non è il campione della
+statistica, il gruppo di esempi estratto a sorte da un mucchio più grande: qui
+è una misura sola, presa a orologeria, e prenderle si dice campionare. Un suono
+digitale è una fila di campioni, e restano due domande: quanti prenderne al
+secondo e quanto precisa debba essere ciascuna misura. Alla prima risponde il
+teorema di Nyquist; alla seconda bastano due righe.
 
 ## Quanti campioni al secondo? Il teorema di Nyquist
 
@@ -97,15 +100,17 @@ Ecco perché il fischio troppo acuto si spegne prima di cominciare a misurare, e
 non dopo.
 
 La regola che tiene lontano il travestimento è semplice: misurare più del
-doppio delle volte rispetto alla vibrazione più rapida che vogliamo
-catturare. L'orecchio
-umano arriva a circa $20\,000$ oscillazioni al secondo (20 kHz), quindi servono
-più di $40\,000$ misure al secondo: i CD ne fanno $44\,100$, che stanno larghi
-apposta. Per la voce al telefono bastano $8\,000$ misure al secondo, perché la
-linea butta via, prima di misurare, tutte le oscillazioni sopra le $3\,400$ al
-secondo, e sotto quella soglia la voce "vive" quasi tutta. (Il doppio di 3.400
-sarebbe 6.800: gli 8.000 lasciano un margine, perché nessun filtro taglia di
-netto.)
+doppio delle volte rispetto alla vibrazione più rapida che vogliamo catturare.
+E il doppio viene da qui: per accorgersi che qualcosa sale e scende bisogna
+sorprenderlo almeno due volte a ogni giro, una mentre è su e una mentre è giù.
+Chi guarda una volta sola per giro lo ritrova sempre allo stesso punto, e lo
+vede fermo, come la ruota. L'orecchio umano arriva a circa $20\,000$
+oscillazioni al secondo (20 kHz), quindi servono più di $40\,000$ misure al
+secondo: i CD ne fanno $44\,100$, che stanno larghi apposta. Per la voce al
+telefono bastano $8\,000$ misure al secondo, perché la linea butta via, prima
+di misurare, tutte le oscillazioni sopra le $3\,400$ al secondo, e sotto quella
+soglia la voce "vive" quasi tutta. (Il doppio di 3.400 sarebbe 6.800: gli 8.000
+lasciano un margine, perché nessun filtro taglia di netto.)
 
 E c'è una via di mezzo, $16\,000$ misure al secondo, che copre le oscillazioni
 fino a poco meno di $8\,000$ (la regola dice «più del doppio», quindi $8\,000$
@@ -185,9 +190,10 @@ X[k] = \sum_{n=0}^{N-1} x[n]\, e^{-\,i\,2\pi kn/N}.
 $$
 
 Qui $x[n]$ sono i campioni nel tempo, $X[k]$ è il coefficiente (complesso)
-associato alla frequenza $k$, e $|X[k]|$ ne misura l'ampiezza. Non deriviamo la
-formula: ci basta l'interpretazione. La DFT trasforma $N$ numeri "nel tempo" in
-$N$ numeri "in frequenza", senza perdere informazione.
+associato alla $k$-esima frequenza della griglia, che in hertz vale
+$k\,f_s/N$, e $|X[k]|$ ne misura l'ampiezza. Non deriviamo la formula: ci
+basta l'interpretazione. La DFT trasforma $N$ numeri "nel tempo" in $N$ numeri
+"in frequenza", senza perdere informazione.
 
 `````
 
@@ -202,7 +208,10 @@ letteratura si trova sempre con la sigla inglese: **STFT**, *Short-Time Fourier
 Transform*. Il risultato,
 disposto in una tabella, è lo **spettrogramma**: un'immagine con il tempo
 sull'asse orizzontale, la frequenza su quello verticale, e l'intensità di
-ciascuna frequenza resa dal colore ({numref}`fig-onda-spettrogramma`).
+ciascuna frequenza resa dal colore ({numref}`fig-onda-spettrogramma`). Di ogni
+frequenza l'immagine tiene quanta ce n'è, e non a che punto della propria
+oscillazione si trovava: quel secondo dato si chiama fase, e senza di esso
+dall'immagine non si torna indietro al suono.
 
 ```{figure} ../figures/onda-spettrogramma.svg
 :name: fig-onda-spettrogramma
@@ -284,8 +293,9 @@ $3{,}5 \times 23 = 80{,}5$ e $14 \times 5{,}75 = 80{,}5$. Identico.
 
 Quel prodotto resta lo stesso comunque si allunghi o accorci la finestra.
 Cambiandole la *forma* si scende un pochino, poi ci si ferma: sotto una certa
-soglia non ci va nessuna curva. Nemmeno guardare più spesso aiuta: colonne più
-fitte sono la stessa macchia ridisegnata più larga.
+soglia non ci va nessuna curva. Nemmeno far scorrere la finestra a passi più
+fitti aiuta: le colonne si stringono, ma la macchia è la stessa, ridisegnata
+più larga.
 
 `````
 
@@ -392,8 +402,9 @@ stessa idea applicata alle *intensità*: fra un sussurro e un concerto ci passa
 un fattore diecimila, e sulla stessa immagine il sussurro sparirebbe sotto
 l'altro. Allora si schiacciano, in modo che passare da 1 a 10 conti quanto
 passare da 10 a 100 e da 100 a 1.000. È il trucco dei decibel, la scala con
-cui si misurano i rumori: quel fattore diecimila diventa la distanza fra 30 (una
-biblioteca) e 110 (un concerto), due numeri vicini per due mondi lontanissimi.
+cui si misurano i rumori, dove ogni moltiplicazione per dieci vale venti
+gradini: quel fattore diecimila diventa la distanza fra 30 (una biblioteca) e
+110 (un concerto), due numeri vicini per due mondi lontanissimi.
 Uno spettrogramma log-mel è l'immagine del suono con le frequenze riscritte a
 orecchio e le intensità schiacciate allo stesso modo.
 
@@ -525,7 +536,7 @@ assi dei tempi diversi e un errore di dimensione incomprensibile.
 :class: important
 - Per un computer un suono è una lunghissima lista di numeri: la posizione
   della membrana del microfono, annotata migliaia di volte al secondo come fa
-  un sismografo.
+  un sismografo. Ognuna di quelle annotazioni è un campione.
 - Frequenza vuol dire quante volte al secondo qualcosa oscilla, e si misura
   in hertz: tanta frequenza è un suono acuto, poca è un suono grave. Da non
   confondere con la frequenza di campionamento, che è quante volte al
@@ -536,10 +547,12 @@ assi dei tempi diversi e un errore di dimensione incomprensibile.
 - La trasformata di Fourier è il prisma che scompone l'onda nelle sue
   frequenze pure; applicata a tante finestrelle brevi una dopo l'altra dà lo
   spettrogramma, l'immagine del suono (tempo in orizzontale, frequenze in
-  verticale).
+  verticale). L'immagine però tiene di ogni frequenza soltanto quanta ce n'è,
+  e non a che punto della propria oscillazione stava: da lì al suono non si
+  torna indietro.
 - Le finestrelle non si possono avere insieme corte e precise sulle note:
   allungarle di quattro volte fa guadagnare quattro sulle note e perdere quattro
-  sugli istanti, e il prodotto delle due precisioni resta lo stesso. Sceglierne
+  sugli istanti, e il prodotto delle due imprecisioni resta lo stesso. Sceglierne
   la lunghezza vuol dire decidere quale delle due si compra.
 - La scala mel e gli MFCC rileggono quell'immagine come la sente un
   orecchio (preciso sui suoni gravi, approssimativo sugli acuti) e la

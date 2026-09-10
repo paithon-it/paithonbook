@@ -174,7 +174,7 @@ serve, che è la parte che dura, poi come si chiama l'attrezzo che oggi la fa.
   progetto. E può rivolgersi a programmi esterni, purché
   qualcuno gli abbia detto quali operazioni esistono e come si chiedono: dal
   2024 c'è un modo aperto di dirglielo, adottato da più fornitori, che si
-  chiama **MCP** (*Model Context Protocol*). È così che il ciclo tocca il
+  chiama MCP (*Model Context Protocol*). È così che il ciclo tocca il
   mondo invece di limitarsi a produrre testo.
 
 Nessuno di questi attrezzi è «intelligente». Sono impalcatura, e come ogni
@@ -250,7 +250,7 @@ cancello, non un augurio. Un cancello ha due stati, aperto o chiuso; non
 esiste il «quasi passato». (In inglese si chiama *validation gate*, ed è la
 stessa cosa: il cancello che convalida.)
 
-Nel caso del codice i controlli sono tre, tutti automatici. I **test** devono
+Nel caso del codice i controlli sono tre, tutti automatici. I test devono
 passare: sono piccoli programmi scritti apposta per verificare che il codice
 faccia quel che promette. Il **linter** non deve protestare: è un programma
 che rilegge il codice e segnala le sciatterie, un valore calcolato e poi mai
@@ -452,7 +452,7 @@ test che il progetto già aveva: né l'uno né gli altri li ha scritti chi
 valuta.
 ```
 
-Il banco di prova disegnato in {numref}`fig-swe-bench` è **SWE-bench**
+Il banco di prova disegnato in {numref}`fig-swe-bench` è SWE-bench
 {cite}`jimenez2024swebench`, che nel capitolo sugli Agenti abbiamo già usato e
 discusso. Il suo pregio è anche il suo limite. Un banco così misura ciò che i
 test sanno vedere, e i test non sanno vedere tutto: una modifica che li supera

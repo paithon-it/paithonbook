@@ -170,7 +170,7 @@ d^2)$ delle ricorrenti; la memoria per i punteggi è $O(n^2)$, contro
 l’$O(n \cdot d)$ delle attivazioni ricorrenti. Sotto questo vincolo sono
 nate le finestre di contesto limitate dei grandi modelli, e una vasta
 letteratura di rimedi:
-attenzione **sparsa** o a finestre locali (Longformer, BigBird),
+attenzione sparsa o a finestre locali (Longformer, BigBird),
 approssimazioni a rango basso o kernel (Linformer, Performer), e
 ottimizzazioni esatte ma efficienti in memoria come FlashAttention, che
 riorganizza il calcolo per sfruttare la gerarchia di memoria delle GPU.

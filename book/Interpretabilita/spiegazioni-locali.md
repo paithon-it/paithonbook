@@ -90,12 +90,12 @@ che vanno ugualmente bene si prende quella con meno voci.
 C'è però una regola in più, ed è quella che fa tutto il lavoro: nel conto, i
 fantasmi più simili alla pratica vera di Maria contano di più, quelli
 lontani quasi niente. Un conto così, in cui ogni voce entra con un'importanza
-sua, si dice **pesato**. Qui sta il «solo qui vicino», e sta nel conteggio, non
-nella fabbrica: i fantasmi
-nascono sparsi un po’ dappertutto, ed è soltanto quando si tirano le somme che
-quelli lontani vengono messi a tacere. Più caselle ha la pratica, però, meno
-fantasmi le somigliano davvero, e il conto finisce per reggersi su una manciata
-di casi.
+sua, si dice pesato. E quando i dati stanno in una tabella, il «solo qui
+vicino» sta tutto in quel conteggio e non nella fabbrica: i fantasmi nascono
+sparsi un po’ dappertutto, presi dai valori che quelle colonne hanno negli
+altri clienti, ed è soltanto quando si tirano le somme che quelli lontani
+vengono messi a tacere. Più caselle ha la pratica, però, meno fantasmi le
+somigliano davvero, e il conto finisce per reggersi su una manciata di casi.
 
 I numeri di quella somma *sono* la spiegazione: «il reddito basso ha spinto
 verso il no di tanto, i debiti di tanto, l'anzianità di lavoro ha spinto un po’
@@ -105,6 +105,13 @@ strada, ma della salita sotto i tuoi piedi ti dice tutto. Quanto prenderlo lungo
 lo decidi tu, e si sbaglia in due modi: lungo, scavalca un tornante e dà una
 pendenza media che sotto i piedi non ha nessuno; cortissimo, si appoggia a due
 sassi, e basta che uno sia storto per farlo pendere.
+
+E se il caso da spiegare non è una pratica ma una fotografia, i fantasmi si
+fabbricano in un altro modo, e nascono già vicini: l'immagine si divide in una
+manciata di pezzetti, e ogni fantasma è la stessa foto con qualcuno dei
+pezzetti spento. Gli spegnimenti che fanno cambiare idea al modello indicano i
+pezzi su cui la risposta si appoggiava, e le macchie colorate che smascherarono
+il riconoscitore di lupi sono nate così.
 
 Un avvertimento, però, prima di fidarsene troppo. Di scelte, in tutto questo, ce
 ne sono parecchie, e nessuna la suggeriscono i dati: quanti fantasmi fabbricare,
@@ -133,7 +140,7 @@ $g$ (per esempio il numero di feature non nulle, per una spiegazione corta).
 Un passaggio del paper va reso esplicito, perché decide tutto il resto: il
 surrogato $g$ non vive nello spazio dell'input. Vive in una
 **rappresentazione interpretabile** binaria $\{0,1\}^{d'}$, di presenza o
-assenza di componenti: segmenti contigui di pixel (*superpixel*) per le
+assenza di $d'$ componenti: segmenti contigui di pixel (*superpixel*) per le
 immagini, parole per il testo, intervalli di valore per le colonne numeriche. Le
 perturbazioni si ottengono spegnendo a caso alcune di quelle componenti,
 non muovendo i valori originali, ed è ciò che rende LIME applicabile a
@@ -264,8 +271,10 @@ cose ovvie come quella appena vista tornare, e ognuna ha il suo nome.
 - Che il conto torni senza avanzi, come qui $25 + 15 = 50 - 10$, si chiama
   **efficienza**.
 - Che due colonne che fanno esattamente lo stesso mestiere ricevano lo stesso
-  merito si chiama **simmetria**: è quello che ha diviso a metà i dieci punti.
-  Sull'intero conto le due non lo fanno, e infatti prendono 25 e 15.
+  merito si chiama **simmetria**: dentro l'interazione reddito e pagamenti sono
+  intercambiabili (nessuno dei due vale niente senza l'altro), ed è per questo
+  che i dieci punti si sono divisi a metà. Sul conto intero non lo sono, e
+  infatti prendono 25 e 15.
 - Che una colonna che non aggiunge mai niente, in nessun ordine, prenda zero si
   chiama **giocatore nullo**. Sembra una banalità e invece torna comoda: quando
   in un conto c'è una colonna che non c'entra, la si può togliere di mezzo e
@@ -525,7 +534,7 @@ azionabilità (non modificare feature immutabili come l'età o l'etnia).
 
 C'è poi un parallelo tecnico esatto. Cercare la perturbazione minima di
 $\mathbf{x}_0$ che cambia l'uscita del modello è, formalmente, lo stesso
-problema degli **esempi avversari**: le impercettibili modifiche d'input che
+problema degli esempi avversari: le impercettibili modifiche d'input che
 ingannano una rete, studiate da Goodfellow, Shlens e Szegedy
 {cite}`goodfellow2015explaining` e riprese nel {doc}`capitolo sull'AI
 responsabile </AIResponsabile/overview>`. La matematica è la medesima,
@@ -766,7 +775,7 @@ colonna, che un numero suo non ce l'ha. Il modo più pulito di capire perché no
 è così è rifare il conto con carta e penna, usando le quattro proprietà, una
 dopo l'altra.
 
-Si comincia dall’additività, quella dell'esempio delle due pagelle: un
+Si comincia dall’additività, quella dei due punteggi calcolati a parte: un
 conto che è una somma si può spezzare, fare i conti sui pezzi e sommare i
 risultati. Qui i pezzi sono i tre addendi, e su ciascuno il merito si vede a
 occhio.
@@ -825,9 +834,11 @@ però, è questa.
   strada di montagna che da vicino sembra dritta.
 - LIME fabbrica tanti casi-fantasma, chiede al modello che cosa
   risponderebbe per ciascuno, e su quella nuvola costruisce un modellino a
-  somma, contando di più i fantasmi più simili al caso da spiegare. Il «solo
-  qui vicino» sta tutto in quel conteggio, non nel modo in cui i fantasmi sono
-  nati. I numeri di quella somma sono la spiegazione. Funziona con qualunque
+  somma, contando di più i fantasmi più simili al caso da spiegare. Su una
+  tabella il «solo qui vicino» sta tutto in quel conteggio, non nel modo in cui
+  i fantasmi sono nati; su una fotografia i fantasmi sono la stessa immagine
+  con qualche pezzo spento, e nascono vicini per costruzione. I numeri di
+  quella somma sono la spiegazione. Funziona con qualunque
   modello, ma è instabile: rilanciato sullo stesso caso dà numeri diversi, e
   cambia anche a seconda di quanto largo si prende il vicinato e di come si è
   deciso di spezzettare il caso in parti.

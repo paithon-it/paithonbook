@@ -121,7 +121,7 @@ mentre nel silenzio non c'è niente che copra niente.
 Per WaveNet, infine, c'è un guadagno pratico. Indovinare ogni puntino
 scegliendolo fra $256$ possibilità è un test a crocette gestibile, e $256$ è
 esattamente quello che si scrive con otto di quelle risposte sì/no della
-sezione sui codec: otto bit, che messi insieme si chiamano un **byte**. La
+sezione sui codec: otto bit, che messi insieme si chiamano un byte. La
 registrazione di partenza, quella dei CD, ne usa sedici, e sedici risposte sì/no
 fanno $65\,536$ possibilità: un test a crocette con sessantacinquemila risposte,
 per ogni singolo puntino, non sarebbe gestibile affatto.

@@ -140,7 +140,7 @@ tutti quegli scarti si fa la media. La scoperta è che quella media *funziona*:
 sommata a una frase italiana, la porta così vicino alla sua traduzione inglese
 che, più della metà delle volte, fra tutte le frasi inglesi è proprio quella la
 più vicina. Lo spostamento, cioè, dipende in gran parte dalla coppia di lingue
-e poco dalla frase. Le due frasi, dunque, non coincidono: le due lingue
+e poco dalla frase. I due indirizzi, dunque, non coincidono: le due lingue
 occupano due copie della stessa mappa, una accanto all'altra.
 
 La conseguenza pratica arriva subito, e va enunciata con cura, perché lo
@@ -149,14 +149,14 @@ impara a riconoscere qualcosa guardando dove cadono le frasi inglesi (dire se
 una recensione è arrabbiata, per esempio: impara che gli arrabbiati stanno da
 quella parte del quartiere inglese), lo stesso programma funziona anche sulle
 frasi italiane, pur senza aver mai visto una frase italiana e pur senza che
-nessuno gli tolga di mezzo lo spostamento. Il motivo è che lo spostamento fra
-i due quartieri è piccolo rispetto alle distanze che contano dentro un
-quartiere: separa l'italiano dall'inglese molto meno di quanto una recensione
-arrabbiata sia separata da una entusiasta. Il confine imparato in inglese, se
-lo si appoggia sul quartiere italiano, cade quindi ancora al posto giusto. Che
-poi non ci cada perfettamente è vero, ed è la ragione per cui il trasferimento
-funziona bene ma non benissimo: quanto si perda dipende da quali sono le due
-lingue, e si misura.
+nessuno gli tolga di mezzo lo spostamento. Il motivo sta nella direzione di
+quello spostamento: porta tutte le frasi italiane dalla stessa parte, e lo fa
+scivolando lungo il confine fra arrabbiate ed entusiaste invece di
+attraversarlo. Il confine imparato in inglese, se lo si appoggia sul quartiere
+italiano, cade quindi ancora al posto giusto. Che poi non ci cada
+perfettamente è vero, ed è la ragione per cui il trasferimento funziona bene
+ma non benissimo: quanto si perda dipende da quali sono le due lingue, e si
+misura.
 
 `````{tab} Elementare
 
@@ -370,11 +370,12 @@ multilingui esistono.
 
 Si pre-addestra un modello su molte lingue, cioè gli si fa fare per settimane
 l'esercizio a buchi del pentolone. Poi lo si rifinisce, che vuol dire
-rimetterlo a studiare per poche ore su un compito preciso, con esempi che hanno
-accanto la risposta giusta scritta da una persona: gli si spostano gli stessi
-numeri interni di prima, solo di pochissimo e in una direzione sola. Quegli
-esempi con la risposta accanto si chiamano dati etichettati, e una raccolta
-di dati etichettati si chiama un dataset.
+rimetterlo a studiare per poche ore su un compito preciso, con esempi che
+hanno accanto la risposta giusta scritta da una persona: gli si spostano i
+numeri interni del modello, gli stessi che l'esercizio a buchi aveva messo a
+punto e che decidono dove ogni frase finisce sulla mappa. Quegli esempi con la
+risposta accanto si chiamano dati etichettati, e una raccolta di dati
+etichettati si chiama un dataset.
 
 Il punto è che per rifinire basta una lingua sola, tipicamente l'inglese,
 perché è lì che i dataset stanno. Poi si usa il modello su tutte le altre,
@@ -385,40 +386,59 @@ fra avere un programma che funziona e non averlo.
 
 Due avvertenze, che non si trovano nei tutorial.
 
-La prima: la rifinitura consuma l'allineamento. I numeri che si spostano
-per imparare il compito sono gli stessi che tenevano vicine le lingue. Se
-adatti il modello a etichettare le parti del discorso di una frase inglese
-(dire per ogni parola se è nome, verbo, aggettivo: si chiama *POS tagging*), poi
-quello stesso modello ritrova molto peggio le traduzioni di una frase. È una
-forma di quella che il libro ha chiamato **dimenticanza catastrofica**,
-imparare una cosa nuova cancellandone una vecchia, con la particolarità che
-qui non viene cancellato un compito precedente ma una proprietà emersa per
-conto suo lungo la strada; e si attenua continuando a far fare al modello, in
-sottofondo, anche il vecchio esercizio a buchi mentre impara il compito nuovo.
+La prima: la rifinitura consuma l'allineamento. I numeri che si spostano per
+imparare il compito sono gli stessi che tenevano vicine le lingue. Se adatti
+il modello a etichettare le parti del discorso di una frase inglese (dire per
+ogni parola se è nome, verbo, aggettivo: si chiama *POS tagging*), poi quello
+stesso modello ritrova molto peggio le traduzioni di una frase. Liu e colleghi
+l'hanno misurato {cite}`liu2020continual`: dopo quella rifinitura la
+perplessità sull'esercizio a buchi in inglese peggiora di venti volte, e
+ritrovare la traduzione inglese di una frase italiana riesce 26 volte su cento
+invece di 45. È **dimenticanza catastrofica**, cioè imparare una cosa nuova
+cancellandone una vecchia, un fenomeno descritto sulle reti neurali fin dal
+1989 {cite}`mccloskey1989catastrophic`. Il rimedio ovvio è rimettere il vecchio
+esercizio a buchi accanto al compito nuovo, e non funziona: la perplessità
+torna dov'era, anzi un filo sotto, e le traduzioni si ritrovano perfino peggio
+di prima, 25 volte su cento invece di 26. Riavere l'esercizio non basta a
+riavere l'allineamento, che quindi non ne era un semplice prodotto secondario.
+Quel che funziona è più cauto: si lascia imparare il compito nuovo vietando
+agli errori sul vecchio di crescere, e una parte dell'allineamento resta, 32
+volte su cento. Per riaverne quasi tutto, 64, bisogna chiedere durante la
+rifinitura proprio la cosa che si vuole conservare, cioè appaiare le frasi con
+le loro traduzioni, e tornano a servire le frasi appaiate che per quasi tutte
+le lingue non ci sono.
 
 La seconda: il trasferimento non è uniforme, e il modo in cui non lo è riserva
 una sorpresa. Le lingue si possono raggruppare per l'ordine in cui mettono le
 parole in una frase: l'italiano, l'inglese e il francese sono lingue **SVO**,
 soggetto-verbo-oggetto («il gatto morde il cane»); il turco, il coreano e il
 giapponese sono lingue **SOV**, soggetto-oggetto-verbo, e direbbero «il gatto
-il cane morde». Pires e colleghi hanno misurato il trasferimento in tutte e
-quattro le combinazioni possibili, sull'etichettatura delle parti del discorso
-(per ogni parola, dire se è nome, verbo o aggettivo), e il punteggio è la
-percentuale di parole etichettate giuste, mediata su tutte le coppie di lingue
-di ciascun gruppo. Rifinendo su una lingua del primo gruppo e usando su
-un'altra del primo gruppo si ottiene 81,6; rifinendo sul primo e usando sul
-secondo si scende a 66,5.
+il cane morde». Pires e colleghi {cite}`pires2019multilingual` hanno misurato
+il trasferimento in tutte e quattro le combinazioni possibili, sempre sul POS
+tagging, e il punteggio è la percentuale di parole etichettate giuste, mediata
+su tutte le coppie di lingue diverse di ciascun gruppo. Rifinendo su una
+lingua SVO e usando su un'altra SVO si ottiene 81,6; rifinendo su una SVO e
+usando su una SOV si scende a 66,5.
 
-Fin qui sembra la solita morale, «lingue simili, salto facile». Le altre due
-combinazioni la smentiscono: rifinendo su una lingua SOV e usando su un'altra
-SOV si ottiene 64,2, e rifinendo su una SOV per usare su una SVO si ottiene
-64,0, cioè lo stesso numero. Fra due lingue costruite allo stesso modo, dunque,
-il salto è facile in un caso e non nell'altro: non c'è simmetria, e il caso
-facile è partire da una lingua SVO, più che avere lingue che si
-somigliano, ed è poi il caso in cui casca l'italiano. Chi misura la resa
-sull'italiano e
-ne deduce la resa «sulle altre lingue» sta misurando la cosa più facile che
-c'era da misurare.
+Fin qui sembra la solita morale, «lingue simili, salto facile», ed è quella che
+gli autori traggono. Le altre due combinazioni dicono però quanto poco garantisca:
+rifinendo su una lingua SOV e usando su un'altra SOV si ottiene 64,2, e
+rifinendo su una SOV per usare su una SVO si ottiene 64,0. Due decimi di
+scarto, contro i quindici punti che separano le due combinazioni di prima.
+Condividere l'ordine delle parole aiuta molto quando si parte da una lingua
+SVO e quasi niente quando si parte da una SOV, e quel che conta di più è
+dunque da dove si parte. È poi il caso in cui casca l'italiano: chi misura la
+resa sull'italiano e ne deduce la resa «sulle altre lingue» sta misurando la
+cosa più facile che c'era da misurare.
+
+Un avvertimento sul confronto, però, perché i due gruppi non differiscono solo
+per l'ordine delle parole. Quello SVO raccoglie ventisei varietà, e ci stanno
+dentro i due norvegesi, i due portoghesi e famiglie intere di lingue
+imparentate; quello SOV ne raccoglie dieci, in gran parte non imparentate e
+scritte in sette alfabeti diversi (ma hindi e urdu sono la stessa lingua in due
+grafie). Parentela, alfabeto condiviso e quantità di testo disponibile
+tirano tutti nello stesso verso dell'ordine delle parole, e quei quattro numeri
+non li separano.
 
 ## La maledizione della multilingualità
 
@@ -527,11 +547,10 @@ lingue si parlano.
   {doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>`.
 - Il motivo pratico di tutto questo è rifinire in inglese e usare in
   italiano, senza un solo esempio etichettato in italiano. Due avvertenze:
-  la rifinitura consuma l'allineamento (i pesi che si spostano per
+  la rifinitura consuma l'allineamento (i numeri interni che si spostano per
   imparare il compito sono gli stessi che tenevano vicine le lingue), e il
-  salto non riesce uguale in tutte le direzioni: quel che conta è partire da
-  una lingua che mette le parole nell'ordine dell'italiano e dell'inglese, più
-  che la somiglianza fra le due.
+  salto non riesce uguale in tutte le direzioni: quel che conta è da quale
+  lingua si parte, più che la somiglianza fra le due.
 - La maledizione della multilingualità: lo spazio è una coperta corta.
   Oltre un certo numero di lingue, ognuna in più peggiora un po’ tutte le
   altre, e l'unico rimedio pieno è un modello più grande.
@@ -556,9 +575,8 @@ lingue si parlano.
   (immagine, didascalia) c'è (frase, traduzione).
 - Lo zero-shot cross-lingual transfer (rifinire in inglese, usare in
   italiano) è la ragione pratica di tutto questo. Attenzione: il fine-tuning
-  erode l'allineamento, e il trasferimento non è simmetrico: conta più
-  l'ordine delle parole della lingua di partenza (SVO) della somiglianza fra
-  le due.
+  erode l'allineamento, e il trasferimento non è simmetrico: conta più la
+  lingua di partenza (nel campione, quelle SVO) della somiglianza fra le due.
 - La maledizione della multilingualità: a capacità fissa, oltre un certo
   numero di lingue ognuna in più peggiora tutte le altre. È un vincolo di
   capacità, e l'unico rimedio pieno è un modello più grande.

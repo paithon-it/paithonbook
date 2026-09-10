@@ -180,7 +180,7 @@ Se le prime due o tre direzioni catturano quasi tutta la
 dispersione, possiamo buttare le altre e rappresentare ogni dato con due o tre
 numeri soltanto, quasi senza perdite.
 
-La «dispersione» ha un nome tecnico, **varianza**, ed è la stessa parola che
+La «dispersione» ha un nome tecnico, varianza, ed è la stessa parola che
 abbiamo già usato parlando del compromesso bias-varianza. Ma non indica la
 stessa cosa, e tenere separati i due usi evita un equivoco. Là la varianza era
 l'irrequietezza di un
@@ -716,8 +716,8 @@ I limiti di k-means, però, non si esauriscono nella scelta di $k$. L'algoritmo
 assume che i cluster siano sferici e di dimensione simile (minimizza
 distanze quadrate attorno a un centro), quindi inciampa su forme allungate o
 concentriche. Ed è sensibile all'inizializzazione: partenze diverse
-possono portare a soluzioni diverse, ciascuna delle quali è un **minimo
-locale**, cioè un assetto che non si può migliorare con una mossa piccola pur
+possono portare a soluzioni diverse, ciascuna delle quali è un minimo
+locale, cioè un assetto che non si può migliorare con una mossa piccola pur
 non essendo il migliore possibile (come una pallina che si ferma in una
 conchetta a mezza costa invece di arrivare a valle: da lì, in qualunque
 direzione si guardi, si sale). Il rimedio standard è

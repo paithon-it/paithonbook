@@ -65,11 +65,18 @@ lavorare), che vedremo in fondo alla sezione.
 
 Quando un programma parla con un modello non gli spedisce un testo e basta:
 gli spedisce dei messaggi, ognuno con un mittente dichiarato. È il formato a
-**ruoli**, e i ruoli fondamentali sono tre: *system*, *user* e *assistant*.
-(La via per cui un programma si rivolge a un altro programma, qui al servizio
-che ospita il modello, si chiama **API**: è l'ingresso di servizio, quello che
-non passa dalla pagina web. Ogni richiesta spedita di lì è una **chiamata**, e
-il termine tornerà spesso: è l'unità di lavoro, e quella che si paga.)
+**ruoli**, e i ruoli fondamentali sono tre, nella convenzione più diffusa:
+*system*, *user* e *assistant*; altrove il primo non è un messaggio ma un
+campo a parte, e il meccanismo resta lo stesso.
+
+La via per cui un programma si rivolge a un altro programma, qui al servizio
+che ospita il modello, si chiama API: è l'ingresso di servizio, quello che non
+passa dalla pagina web. Ogni richiesta spedita di lì è una **chiamata** al
+modello, e porta con sé due cose: il testo, e le impostazioni con cui si vuole
+la risposta. È l'unità di lavoro, e quella che si paga. Attenzione al verso,
+perché la parola è già passata: la chiamata a uno strumento degli agenti va
+nell'altra direzione, la emette il modello, e viaggia come testo dentro una
+chiamata al modello invece di essere una voce di spesa a sé.
 
 `````{tab} Elementare
 
@@ -113,11 +120,15 @@ reale: esempi «recitati» che condizionano lo stile della risposta.
 ## Le due manopole del campionamento
 
 Il prompt decide *cosa* chiedi; due impostazioni decidono *come* il modello
-sceglie le parole mentre risponde: la **temperatura** e il **top_p**. Quel
-«come» ha un nome, **campionamento**: il modello, come si è visto poco fa, non
-produce una parola ma una classifica di parole con le loro probabilità, e
-campionare vuol dire pescarne una da quella classifica invece di prendere
-sempre la prima. Le due manopole governano il modo di pescare.
+sceglie le parole mentre risponde: la temperatura e il top_p, che è il top-p
+della {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`
+scritto come lo si scrive dentro un programma. Quel «come» è il campionamento:
+il modello non produce una parola ma una classifica di parole con le loro
+probabilità, e campionare vuol dire tirare un dado truccato secondo quelle
+probabilità invece di prendere sempre la prima. Là le manopole erano tre,
+perché c'era anche il top-k, che tiene un numero fisso di candidati; qui ne
+bastano due, perché sono quelle che si girano davvero quando si regola una
+chiamata.
 
 Una precisazione prima di girarle, perché è la prima cosa che un lettore va a
 cercare e non la trova: queste due manopole non stanno nella casella della
@@ -137,35 +148,37 @@ la loro speranza (il valore si può di solito girare fra 0 e 2). Il top_p
 invece taglia: si tiene i candidati più probabili finché le loro percentuali,
 sommate una dopo l'altra, non arrivano alla soglia che gli abbiamo dato (la
 *p* sta per probabilità, e 0,9 vuol dire il 90 per cento), e butta via tutti
-gli altri. Il gruppetto di superstiti ha un nome, **nucleo**, e
-{numref}`fig-due-manopole` mostra i due gesti sulla stessa classifica di
-partenza.
+gli altri. Il gruppetto che resta è il nucleo, le carte buone rimaste nel
+mazzo, e {numref}`fig-due-manopole` mostra i due gesti sulla stessa classifica
+di partenza.
 
 ```{figure} ../figures/temperature-top-p.svg
 :name: fig-due-manopole
-:alt: "Tre grafici a barre affiancati con la stessa distribuzione sulla parola successiva. Il primo è l'originale: 45, 30, 16, 6 e 3 per cento. Il secondo mostra l'effetto della temperatura alta, che riscala tutte le barre avvicinandole fra loro (33, 27, 20, 12, 9 per cento) senza escludere nessuno. Il terzo mostra il top_p a 0,9, che tiene le prime tre barre, la cui probabilità cumulata è il 91 per cento, e azzera le altre due. Una riga in fondo avverte che le due manopole non sono indipendenti: con lo stesso p, a temperatura 1 il nucleo è di tre token e a temperatura 2 di quattro."
+:alt: "Cinque barre orizzontali, una per candidato, ordinate per probabilità, con accanto la percentuale e la somma cumulata. La figura ripete un ciclo di sei tappe. A temperatura 1 le percentuali sono 45 · 30 · 16 · 6 · 3 e le cumulate 45 · 75 · 91 · 97 · 100: una linea orizzontale segnata «taglio» scende sotto la riga 3, perché lì la cumulata fa 91 e supera la soglia di novanta; le barre escluse spariscono e le altre si allargano fino a ricomporre cento. Poi la temperatura sale a 2: tornano tutte e cinque le barre, più vicine fra loro (33 · 27 · 20 · 12 · 8, cumulate 33 · 60 · 80 · 92 · 100), e la stessa linea del taglio, con la stessa soglia, scende di una riga, sotto la 4, perché alla riga 3 la cumulata adesso fa 80 e non basta più."
 :width: 96%
 
-Due manopole, due gesti diversi: una riscala, l'altra taglia. Ma i due gesti
-avvengono in fila, non in parallelo, e per questo non sono indipendenti.
+I due gesti non stanno affiancati, stanno in fila: la temperatura ripesa
+l'intera classifica, e solo dopo il taglio cade su quella già ripesata. La
+soglia non si muove mai; il taglio sì.
 ```
 
-La riga in fondo alla figura è il punto in cui l'intuizione comune sbaglia. I
-due gesti non avvengono in parallelo, avvengono in fila: prima la
-temperatura ripesa tutti i candidati, poi il top_p taglia su quella classifica
-*già ripesata*. Ne segue che le due manopole non sono indipendenti, e la
-figura lo fa vedere: alla temperatura normale le prime tre parole arrivano al
-91 per cento e il nucleo è di tre; a temperatura 2 le percentuali si
-riavvicinano fra loro, le prime tre restano poco sotto l'80 e non bastano
-più, così il nucleo diventa di quattro, senza che nessuno abbia toccato la
-soglia.
+Ed è qui che l'intuizione comune sbaglia. Prima la temperatura ripesa tutti i
+candidati, poi il top_p taglia su quella classifica *già ripesata*: le due
+manopole non sono indipendenti, e la figura lo fa vedere. A temperatura 1 le
+prime tre parole arrivano al 91 per cento e il nucleo è di tre; a temperatura
+2 le percentuali si riavvicinano fra loro, le prime tre si fermano a ottanta e
+non arrivano più a novanta, così il nucleo diventa di quattro, senza che
+nessuno abbia toccato la soglia. E le superstiti si spartiscono la probabilità
+di quelle buttate via: dopo il taglio la somma torna a cento, sempre.
 
-E più candidati ci sono, più lo scarto cresce. Il conto si rifà in poche righe
-di Python, e con cinquanta candidati (presi a caso, ma sempre gli stessi per
-tutte le prove) la stessa soglia di 0,9 ne lascia passare due a temperatura
-0,2, sedici a temperatura 1 e trentotto a temperatura 3. Il vocabolario di un
-modello vero, di candidati, ne ha decine di migliaia. Girare le due manopole
-insieme nella stessa direzione, insomma, non fa la somma dei due effetti: li
+E più la classifica di partenza è piatta, più lo scarto cresce. Il conto si
+rifà in poche righe di Python, e con cinquanta candidati abbastanza appaiati
+(presi a caso, ma sempre gli stessi per tutte le prove) la stessa soglia di 0,9
+ne lascia passare due a temperatura 0,2, sedici a temperatura 1 e trentotto a
+temperatura 3. Cambiando i candidati i tre numeri cambiano, e parecchio; che
+crescano insieme alla temperatura no, ed è quello il punto. Girare le due
+manopole insieme nella stessa direzione, insomma, non fa la somma dei due
+effetti: li
 mette uno sopra l'altro, e il risultato smette di essere prevedibile a mente.
 Da qui la regola pratica di muoverne una per volta.
 
@@ -192,12 +205,9 @@ T = 1: nucleo di 16 token
 T = 3: nucleo di 38 token
 ```
 
-Come si passi da una classifica di probabilità alla parola scelta, e come la
-temperatura riscali quella classifica, l'abbiamo visto nella
-{doc}`sezione sui grandi modelli linguistici </Transformers/llm>`, dove quel
-passaggio si chiama *decoding*, cioè decodifica. Qui non lo ripetiamo: ci serve
-l'intuizione operativa, quella che si usa davvero quando si regola una
-chiamata.
+Come si passi da una classifica di probabilità alla parola scelta l'abbiamo
+visto nella {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`,
+dove quel passaggio si chiama *decoding*, cioè decodifica.
 
 `````{tab} Elementare
 
@@ -213,21 +223,27 @@ sorprendenti, ma anche più a rischio di sbandare.
 
 E muovine una per volta, perché la seconda lavora su quello che le ha lasciato
 la prima. Una rosa di candidati si forma così: tieni i nomi migliori finché i
-loro voti, sommati, non arrivano al novanta per cento. Se prima riavvicini fra
-loro i voti, per arrivare a novanta te ne servono di più, e la rosa si allunga
-da sé.
+loro voti, sommati, non arrivano al novanta per cento. Se c'è un favorito
+schiacciante la rosa viene corta da sé, un nome o due; se l'elezione è
+combattuta te ne servono dieci per fare novanta, e nessuno ha deciso quanti
+fossero. Ed è qui che la prima manopola entra nella seconda: la temperatura
+riavvicina i voti fra loro prima dello spoglio, cioè rende l'elezione più
+combattuta, e la rosa si allunga.
 La soglia non l'hai toccata, eppure il taglio è caduto da un'altra parte.
 
 Un'ultima cosa, perché sorprende tutti: nemmeno a temperatura zero il modello
 ti darà *sempre* identica la stessa risposta, e la ragione è che il computer
 dall'altra parte non serve solo te: mette insieme le richieste che
-gli arrivano nello stesso momento e le calcola in blocco, e a seconda di quante
-ne ha per le mani i conti finiscono per differire nelle ultimissime cifre
-decimali. Quasi sempre non cambia niente; ma quando due candidati sono
-appaiati, a decidere è proprio quella cifra lì, e una parola cambia. Perciò,
-se provi due modi di scrivere la stessa richiesta per vedere quale rende
-meglio, una prova per parte non decide niente: ne servono parecchie di qua e
-parecchie di là.
+gli arrivano nello stesso momento e le calcola in blocco. E i conti con la
+virgola sono come lo scontrino delle due cassiere della {doc}`sezione
+sull'analisi numerica </Matematica/analisi-numerica>`: lo stesso totale,
+spezzato in un numero diverso di colonne, arrotonda in punti diversi e finisce
+per differire nelle ultimissime cifre decimali. In quante colonne spezzarlo,
+qui, lo decide quanti altri stanno chiedendo nello stesso istante. Quasi
+sempre non cambia niente; ma quando due candidati sono appaiati, a decidere è
+proprio quella cifra lì, e una parola cambia. Perciò, se provi due modi di
+scrivere la stessa richiesta per vedere quale rende meglio, una prova per parte
+non decide niente: ne servono parecchie di qua e parecchie di là.
 
 `````
 
@@ -264,8 +280,10 @@ più concentrati i tre numeri cambiano; il fatto che crescano con $T$ no, ed è
 quello il punto. La raccomandazione della guida DAIR.AI di regolarne
 uno solo per volta resta quindi valida, ma non perché gli effetti si
 confondano nella testa di chi guarda: perché si compongono davvero. La
-derivazione completa e il confronto con *top-k* e *beam search* sono nel
-capitolo sui Transformer.
+formula del nucleo e il confronto con il *top-k* stanno nella stessa sezione
+sui grandi modelli linguistici; la *beam search*, che è un'altra famiglia
+ancora, sta nella {doc}`sezione sulla traduzione automatica
+</NaturalLanguageProcessing/seq2seq-traduzione>`.
 
 `````
 
@@ -308,13 +326,15 @@ differenza tra una risposta sbagliata e una giusta.
 
 `````{tab} Elementare
 
-È come insegnare un gioco nuovo a un amico. Puoi spiegargli le regole a parole
-(zero-shot) e sperare che afferri. Oppure gli mostri una mano giocata:
-«guarda, con queste carte si fa così». Dopo due o tre mani d'esempio ha capito
-il ritmo, il formato, cosa conta, e gioca da solo. Gli esempi non gli hanno
-cambiato il cervello: gli hanno mostrato lo schema. Col modello è identico.
-Se voglio che etichetti frasi come positive o negative, gliene mostro qualcuna
-già etichettata:
+È come insegnare un gioco nuovo a un amico che fra una partita e l'altra
+dimentica tutto. Puoi spiegargli le regole a parole (zero-shot) e sperare che
+afferri. Oppure gli mostri una mano giocata: «guarda, con queste carte si fa
+così». Dopo due o tre mani d'esempio ha capito il ritmo, il formato, cosa
+conta, e gioca da solo, finché quelle mani gli restano scoperte sul tavolo:
+toglile, e alla partita dopo si ricomincia da capo.
+Gli esempi non gli hanno insegnato il gioco: gli hanno mostrato lo schema. Col
+modello è identico. Se voglio che etichetti frasi come positive o negative,
+gliene mostro qualcuna già etichettata:
 
 ```text
 Recensione: "Cibo ottimo, servizio lento." → Sentiment: neutro
@@ -351,7 +371,7 @@ affatto, e restituisce un campione da $P$ soltanto per $T = 1$ e senza
 troncamento: a $T \neq 1$ campiona dalla distribuzione temperata
 $\propto P^{1/T}$, e con il top_p da quella troncata al nucleo). Qui basti
 ricordare che gli esempi agiscono come
-**condizionamento**, spostando la distribuzione condizionata del modello verso
+condizionamento, spostando la distribuzione condizionata del modello verso
 lo stile e il formato mostrati, non come dati d'addestramento. Alcune
 avvertenze empiriche contano nella pratica: la scelta degli esempi, il
 loro ordine e persino il formato dell'etichetta influenzano il
@@ -375,10 +395,13 @@ entra la catena di pensiero.
 Chiedi a un modello «Quanto fa 17 × 24?» e potresti ricevere un numero secco,
 spesso sbagliato. Chiedigli di mostrare i passaggi e la musica cambia: se
 scrive «17 × 24 = 17 × 20 + 17 × 4 = 340 + 68 = 408», arriva alla risposta
-giusta molto più spesso. È l'idea della **chain-of-thought**, la catena di
-pensiero, proposta da Wei e colleghi nel 2022 {cite}`wei2022chain`: far
-scrivere al modello i passaggi intermedi del ragionamento *prima* della
-conclusione.
+giusta molto più spesso. È l'idea della chain-of-thought, la catena di
+pensiero: far scrivere al modello i passaggi intermedi del ragionamento
+*prima* della conclusione. La propongono nel 2022 Wei e colleghi
+{cite}`wei2022chain`, che la ottengono mostrando esempi già svolti in cui
+accanto alla risposta c'è il ragionamento; che bastasse chiederla, senza
+mostrare niente, lo scoprono nello stesso anno Kojima e colleghi
+{cite}`kojima2022zeroshot`, ed è la forma che si usa più spesso.
 
 ```{figure} ../figures/chain-of-thought.svg
 :name: fig-chain-of-thought
@@ -407,9 +430,10 @@ a voce («3 per 12 fa 36, meno 8 fa 28»), quasi non sbagli. Scrivere i passaggi
 ti obbliga a farne uno per volta, e ognuno è facile. Il modello funziona
 uguale: se gli chiedi solo il risultato, tira a indovinare in un colpo; se gli
 chiedi di ragionare passo per passo, spezza il problema in pezzi piccoli e ci
-inciampa molto meno. Non è più «intelligente»: sta solo pensando ad alta voce
-invece che in silenzio. Dove non c'è niente da contare o da calcolare, però, il
-guadagno si assottiglia fin quasi a sparire.
+inciampa molto meno. Non è più «intelligente»: pensando ad alta voce non deve
+più tenere niente a mente, perché ogni pezzo che ha già detto gli resta davanti
+mentre affronta quello dopo. Dove non c'è niente da contare o da calcolare,
+però, il guadagno si assottiglia fin quasi a sparire.
 
 Un avvertimento sul pensare ad alta voce. Chiedi a una persona perché ha scelto
 proprio quella risposta: quasi sempre ti dà una spiegazione ordinata e
@@ -479,13 +503,17 @@ Se un problema difficile lo dai a dieci persone e otto arrivano allo stesso
 numero, quel numero è probabilmente giusto, anche se ognuna ci è arrivata per
 una strada un po’ diversa. La self-consistency fa questo con un solo modello:
 gli fai risolvere lo stesso problema dieci volte, con un pizzico di casualità
-(temperatura non nulla) perché ogni volta ragioni in modo un po’ diverso, e poi
-tieni la risposta che compare più spesso. Delle strade non ti importa niente:
-guardi il numero in fondo al foglio e basta. Le catene sbagliate sbagliano
-ciascuna a modo suo e si disperdono; quella giusta viene ritrovata da più parti
-e vince per numero. È il voto di maggioranza applicato al ragionamento, e si
-paga come tale: dieci risposte costano dieci volte una, anche se, chiedendole
-tutte insieme, non ti fanno aspettare dieci volte tanto.
+(temperatura non nulla) perché ogni volta ragioni in modo un po’ diverso, e
+poi tieni la risposta che compare più spesso. Qui la varietà conviene, mentre
+per una risposta sola e prevedibile si tiene la temperatura bassa: a decidere
+è quante volte una risposta torna, e non quanto è buona quella singola. Delle
+strade non ti importa niente: guardi il numero in fondo al foglio e basta. Le
+catene sbagliate sbagliano ciascuna a modo suo e si disperdono; quella giusta
+viene ritrovata da più parti e vince per numero. È il voto di maggioranza
+applicato al ragionamento, e si paga come tale: dieci risposte costano fino a
+dieci volte una, e chiedendole tutte insieme non ti fanno aspettare dieci
+volte tanto, né sempre pagare dieci volte l'inizio della domanda, che è uguale
+per tutte.
 
 Con il modello, però, le dieci teste sono una sola: è come interrogare la
 stessa persona dieci volte, e fra una volta e l'altra cambia soltanto un po’ di
@@ -567,7 +595,7 @@ sbagliano ciascuna a modo suo e non fanno numero.
 L'idea si spinge anche oltre la catena dritta. Invece di generare catene
 separate e votare alla fine, si possono esplorare i passaggi intermedi come i
 rami di un albero, giudicandoli via via e tornando indietro da quelli che
-non promettono bene. È il **Tree of Thoughts**, l'albero dei pensieri
+non promettono bene. È il Tree of Thoughts, l'albero dei pensieri
 {cite}`yao2023tree`, già incontrato nel capitolo sugli Agenti, e qui basta il
 richiamo: stessa idea di fondo, far lavorare il modello di più per farlo
 ragionare meglio, con una ricerca fatta meglio.
@@ -619,16 +647,22 @@ calma, e riportare davanti, nelle caselle, soltanto la conclusione.
 
 `````{tab} Superiore
 
-Molte API offrono una modalità *JSON* o uno *schema* imposto: invece di
-sperare che il modello rispetti il formato, il decoder viene vincolato a
-generare solo sequenze conformi a una grammatica, e il formato diventa una
-garanzia invece che un auspicio. Garantisce però meno di quanto la formula
-«togliere il problema alla radice» lascerebbe credere: la validità sintattica
-rispetto allo schema, cioè che i campi ci siano e siano del tipo dichiarato.
-Non garantisce che dicano il vero: `{"sentiment": "positivo"}` su una
-stroncatura è output perfettamente conforme. Toglie di mezzo la classe di
-errori più fastidiosa (la risposta che non si riesce ad aprire), non quella di
-contenuto, che resta da verificare a valle.
+Molte API offrono una modalità *JSON* o uno *schema* imposto, e le due non
+garantiscono la stessa cosa: la prima assicura soltanto che quello che esce
+sia JSON valido, la seconda anche che rispetti lo schema, cioè che i campi ci
+siano e siano del tipo dichiarato. In tutti e due i casi, invece di sperare
+che il modello rispetti il formato, il decoder viene vincolato a generare solo
+sequenze conformi a una grammatica, e il formato diventa una garanzia invece
+che un auspicio.
+
+Garantisce però meno di quanto la formula «togliere il problema alla radice»
+lascerebbe credere. Intanto cade se la generazione si interrompe a metà, per
+il tetto sui token o per un rifiuto: quello che resta non è più conforme a
+niente. E anche quando regge, la conformità non dice che i campi siano veri:
+`{"sentiment": "positivo"}` su una stroncatura è output perfettamente
+conforme. Toglie di mezzo la classe di errori più fastidiosa (la risposta che
+non si riesce ad aprire), non quella di contenuto, che resta da verificare a
+valle.
 
 E il vincolo non è gratuito. Tam e colleghi {cite}`tam2024format` confrontano
 decoding vincolato, istruzioni di formato e conversione a posteriori su più
@@ -785,7 +819,9 @@ il loop, che affrontiamo nelle sezioni seguenti.
   ci sono: quanto lasciarlo osare e quanto restringere il ventaglio
   delle parole possibili. Bassa audacia per i fatti e per il codice, più alta
   per inventare; e si muove una manopola per volta, perché la seconda lavora
-  su quello che le ha lasciato la prima.
+  su quello che le ha lasciato la prima. Prevedibile però non vuol dire
+  identica: nemmeno con l'audacia a zero la risposta torna sempre uguale, e
+  una prova per parte non basta a decidere quale di due messaggi renda meglio.
 - Mostrare esempi già svolti dentro il messaggio è la leva più affidabile
   di tutte: il modello non impara niente di nuovo, ma capisce che cosa vuoi e
   in che forma lo vuoi.

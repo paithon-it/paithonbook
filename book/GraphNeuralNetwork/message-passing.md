@@ -444,7 +444,7 @@ perché in fondo c'è un premio: spiega da sola il difetto più famoso delle GNN
 `````{tab} Elementare
 
 Su un'immagine, quanto in fretta le cose cambiano da un punto al punto accanto
-si chiama **frequenza**: bassa vuol dire zone di colore che cambiano piano,
+si chiama frequenza: bassa vuol dire zone di colore che cambiano piano,
 alta vuol dire dettagli fitti e bordi netti. Un filtro che «sfoca» toglie le
 alte e tiene le basse.
 

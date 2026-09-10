@@ -38,6 +38,20 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-7)=
+
+## 1.12.7 · 10 settembre 2026
+
+### Pagine ampliate
+
+- **Quattro figure animate nuove, dove il tempo era il contenuto.** Le quattro linee di base disegnate sulla stessa serie storica; le due manopole del campionamento in fila, con il taglio che cade sulla classifica già ripesata; gli assi che girano sopra una nuvola di punti che non si muove, per vedere perché i fattori di un modello latente non si separano da soli; e la scorciatoia con la taratura nei due montaggi del Transformer, con le quattro interruzioni contro nessuna. In tutte i numeri li calcola la scena. Due figure esistenti sono state ritoccate guardandole: il flow matching, dove un pallino si nascondeva nella punta della freccia, e il RAG spiegato.
+
+### Correzioni
+
+- **Sessanta termini che il libro usava prima di spiegarli, passati al setaccio.** Una passata nuova, che continua: per ogni parola messa in neretto si è cercato dove il lettore la incontra per la prima volta nell'ordine del libro. Dodici volte arrivava prima della spiegazione (fra le altre «validazione», «linea di base», «pipeline», «kernel», «inferenza», «normalizzazione», «dimenticanza catastrofica», che si dichiarava già spiegata e non lo era mai stata) e adesso è spiegata dove compare, o rimanda per nome alla sezione che la spiega. Le pagine che spiegano quei termini sono state rilette con i due lettori e rifatte sulle fonti: il giudice automatico delle risposte riportato con i numeri e le manie che il suo paper misura davvero, la leave-one-out che è meno stabile e non più solida, il transfer learning e la ricerca densa con i numeri dei loro paper, il diffusion transformer riletto sulle sue tabelle.
+- **Una rilettura di tutto ciò che è cambiato dalla 1.12.6, con le fonti aperte.** Cinque affermazioni erano più forti o diverse dai lavori citati e sono state riportate a quello che i lavori dicono: il rimedio alla dimenticanza catastrofica che il paper misura fallire, la doppia discesa che sopravvive all'arresto anticipato, il blocco più economico del diffusion transformer, l'accordo fra giudice automatico e umani contato sui due turni. Nove conti sono stati rifatti eseguendo i blocchi della pagina, e dove un numero era scritto a mano ora lo stampa il codice. Sistemate anche le frasi che una riscrittura aveva lasciato a metà e i punti in cui una scheda diceva una cosa e l'altra la correggeva.
+- **Un termine in neretto una volta sola in tutto il libro.** La passata sul grassetto, chiusa capitolo per capitolo nella 1.12.6, è stata rifatta sull'intero libro: 161 marcature tolte in 72 pagine dove lo stesso termine era già stato marcato in un capitolo precedente, e gli omonimi (la stessa parola per mestieri diversi) dichiarati sul posto.
+
 (v1-12-6)=
 
 ## 1.12.6 · 9 settembre 2026

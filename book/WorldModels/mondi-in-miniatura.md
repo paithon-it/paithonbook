@@ -167,8 +167,10 @@ l'amica onesta non risponde con una certezza ma con un ventaglio, «quasi
 sempre esci largo; ogni tanto la tieni». M è costruita così: per ogni
 situazione prevede le diverse continuazioni possibili, ciascuna con la sua
 probabilità, come le previsioni del tempo che dicono «pioggia al 70%» invece
-di giurare sul sole. Il futuro di un gioco (e del mondo) non è mai scritto del
-tutto, e un modello che finge di saperlo mente.
+di giurare sul sole. E non sceglie fra due o tre finali già pronti: dà una
+probabilità a ogni pezzo della descrizione, e i finali che ne può comporre
+mettendo insieme i pezzi sono innumerevoli. Il futuro di un gioco (e del
+mondo) non è mai scritto del tutto, e un modello che finge di saperlo mente.
 
 `````
 
@@ -477,23 +479,24 @@ modello: le partite su cui si allena sono tutte immaginate, e sono immaginate
 nello spazio dei codici, non in quello dei pixel. Una catena di passi generati
 uno dall'altro si chiama **rollout**, ed è esattamente il sogno di poco fa; la
 parola vale anche per le partite vere, quando si raccolgono una mossa alla
-volta. A imparare da quei rollout sono due reti che si danno il
-cambio, e le abbiamo incontrate nella {doc}`sezione sul controllo
-continuo </DeepReinforcementLearning/controllo-continuo>`:
-l’attore, che sceglie la mossa, e il critico, che stima quanto vale la
-situazione in cui l'attore si è cacciato, così che l'attore sappia subito se ha
-fatto bene invece di dover aspettare la fine della partita. DreamerV2 (2021) è
-il primo agente a livello umano sul banco di prova dei giochi Atari imparando
-dentro un world model; DreamerV3, pubblicato su *Nature* nel 2025
+volta. A imparare da quei rollout sono due reti che si danno il cambio, e le
+abbiamo incontrate nella {doc}`sezione sul gradiente di
+policy </DeepReinforcementLearning/policy-gradient>`: l’attore, che sceglie la
+mossa, e il critico, che stima quanto vale la situazione in cui l'attore si è
+cacciato, così che l'attore sappia subito se ha fatto bene invece di dover
+aspettare la fine della partita. Fra gli agenti che imparano a giocare dentro
+un world model, DreamerV2 (2021) è il primo a raggiungere il livello umano sul
+banco di prova dei giochi Atari: il DQN ci era arrivato sei anni prima, ma
+provando nel gioco vero. DreamerV3, pubblicato su *Nature* nel 2025
 {cite}`hafner2023mastering`, affronta più di 150 compiti (robot simulati,
-Atari, navigazione 3D) con la stessa identica configurazione, senza
-ritocchi per dominio. Il risultato simbolo: applicato così com'è a Minecraft,
-è il primo algoritmo a raccogliere diamanti partendo da zero, senza
-dimostrazioni umane né curricula. Arrivarci richiede una catena lunghissima di
-sotto-obiettivi (legno, banco da lavoro, picconi via via migliori, ferro da
-fondere, scavi in profondità) con ricompense rarissime lungo il cammino: il
-tipo di compito su cui, come ha mostrato il capitolo sul Deep Reinforcement
-Learning con *Montezuma's Revenge*, il DQN si arena.
+Atari, navigazione 3D) con la stessa identica configurazione, senza ritocchi
+per dominio. Il risultato simbolo: applicato così com'è a Minecraft, è il primo
+algoritmo a raccogliere diamanti partendo da zero, senza dimostrazioni umane né
+curricula. Arrivarci richiede una catena lunghissima di sotto-obiettivi (legno,
+banco da lavoro, picconi via via migliori, ferro da fondere, scavi in
+profondità) con ricompense rarissime lungo il cammino: il tipo di compito su
+cui, come ha mostrato il capitolo sul Deep Reinforcement Learning con
+*Montezuma's Revenge*, il DQN si arena.
 
 È qui il raccordo con il capitolo sul Deep Reinforcement Learning: i world
 model sono la risposta model-based alla fame di esperienza vera dei metodi
@@ -527,23 +530,25 @@ poco, giocarle davvero resta competitivo: fra chi sogna e chi prova, la partita
 `````{tab} Superiore
 
 Un metodo *model-free* come il DQN stima direttamente valori o policy
-dall'esperienza; un metodo *model-based* impara anche un modello della
-dinamica $p(s_{t+1} \mid s_t, a_t)$ e lo usa per generare transizioni
-sintetiche. Dyna {cite}`sutton1990integrated` è lo schema capostipite: gli
-aggiornamenti di $Q$ attingono sia da transizioni reali sia da transizioni
-simulate dal modello appreso, mescolando apprendimento e pianificazione. I
-Dreamer ne sono l'erede profondo: un modello ricorrente dello stato (RSSM),
-con una componente deterministica e una stocastica, apprende la dinamica nello
-spazio latente; attore e critico vengono addestrati per retropropagazione
-attraverso rollout immaginati con orizzonte breve (una quindicina di passi)
-per contenere l'accumulo degli errori del modello; DreamerV3 aggiunge
-normalizzazioni robuste (osservazioni, ricompense, ritorni) che rendono gli
-stessi iperparametri validi su domini radicalmente diversi
-{cite}`hafner2023mastering`. Il guadagno è l'efficienza campionaria; il tetto
-è la qualità del modello: la policy è buona quanto il sogno in cui è
-cresciuta, e su dinamiche caotiche o eventi rari i modelli restano il punto
-debole. Il confronto con i metodi model-free, competitivi quando i campioni
-costano poco, è tutt'altro che chiuso.
+dall'esperienza; un metodo *model-based* impara anche un modello della dinamica
+$p(s_{t+1} \mid s_t, a_t)$ e lo usa per generare transizioni sintetiche. Dyna
+{cite}`sutton1990integrated` è lo schema capostipite: gli aggiornamenti di $Q$
+attingono sia da transizioni reali sia da transizioni simulate dal modello
+appreso, mescolando apprendimento e pianificazione. I Dreamer ne sono l'erede
+profondo, e il modello che adoperano non è farina del loro sacco: l'RSSM (il
+modello ricorrente a spazio di stati) lo introduce PlaNet
+{cite}`hafner2019learning`, un anno prima, per pianificare dentro il latente.
+Con una componente deterministica e una stocastica, apprende la dinamica nello
+spazio latente;
+attore e critico vengono addestrati per retropropagazione attraverso rollout
+immaginati con orizzonte breve (una quindicina di passi) per contenere
+l'accumulo degli errori del modello; DreamerV3 aggiunge normalizzazioni robuste
+(osservazioni, ricompense, ritorni) che rendono gli stessi iperparametri validi
+su domini radicalmente diversi {cite}`hafner2023mastering`. Il guadagno è
+l'efficienza campionaria; il tetto è la qualità del modello: la policy è buona
+quanto il sogno in cui è cresciuta, e su dinamiche caotiche o eventi rari i
+modelli restano il punto debole. Il confronto con i metodi model-free,
+competitivi quando i campioni costano poco, è tutt'altro che chiuso.
 
 `````
 

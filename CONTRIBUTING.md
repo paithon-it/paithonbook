@@ -263,7 +263,12 @@ lì questi tetti, che sono vincoli e non preferenze.
 
 - **Niente grassetto su una parola-funzione** (*non*, *solo*, *due*, *mai*,
   *sempre*). Il grassetto presenta un termine al suo primo uso, una volta
-  sola, e non avvolge mai una frase intera.
+  sola, e non avvolge mai una frase intera. Il tetto è **cinque marcature
+  ogni mille parole di prosa**, per capitolo, e lo conta
+  `python3 scripts/coerenza.py --solo enfasi`: lo stesso comando elenca i
+  termini marcati in più di un capitolo, che sono da leggere e non da
+  correggere a occhi chiusi (il *peso* di una rete e il *peso* di un campione
+  sono due cose).
 - **Al massimo due «non è X, è Y» per capitolo.** Contano anche le sorelle
   corte: «non è un dettaglio», «non è un caso», «non è teoria». Usato una
   volta è una scossa; ripetuto, diventa il ritmo di fondo della voce e smette

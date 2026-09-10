@@ -49,15 +49,15 @@ controllare se gira, compilano un modulo, prenotano, propongono una correzione a
 un programma vero. È il mondo di SWE-bench, ed è il mondo di questo capitolo.
 
 Prima di andare avanti, mettiamo un paletto che vale per tutto il capitolo. Un
-**modello** è la rete che, dato un testo, ne predice la continuazione: quello
-che abbiamo studiato nel {doc}`capitolo sui Transformer </Transformers/overview>`. Un **agente** è un
-*sistema* costruito attorno a un modello: un programma che guarda l'ambiente,
-lascia che il modello decida la mossa successiva, la esegue davvero, osserva
-com'è andata e ricomincia. L’**ambiente** è tutto ciò su cui l'agente può
-mettere le mani e da cui può ricevere notizie: le pagine del web, i file di un
-computer, i servizi a cui si può chiedere qualcosa. Il modello è il motore;
-l'agente è l'automobile, con volante, ruote e strada. Questo capitolo è
-dedicato all'automobile.
+modello è la rete che, dato un testo, ne predice la continuazione: quello che
+abbiamo studiato nel {doc}`capitolo sui Transformer </Transformers/overview>`.
+Un agente è un *sistema* costruito attorno a un modello: un programma che
+guarda l'ambiente, lascia che il modello decida la mossa successiva, la esegue
+davvero, osserva com'è andata e ricomincia. L’ambiente è tutto ciò su cui
+l'agente può mettere le mani e da cui può ricevere notizie: le pagine del web,
+i file di un computer, i servizi a cui si può chiedere qualcosa. Il modello è
+il motore; l'agente è l'automobile, con volante, ruote e strada. Questo
+capitolo è dedicato all'automobile.
 
 ## Dal completare testo all'agire
 

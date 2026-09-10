@@ -50,12 +50,12 @@ E serve sapere quando si è arrivati, cioè riconoscere lo stato di fine.
 
 Da queste tre cose l’oggetto che nasce è sempre lo stesso. Dallo stato di
 partenza si dipartono tante linee quante sono le mosse possibili; da ciascuno
-degli stati che ne escono, altrettante; e così via. È un **albero**, con la
-radice in alto e i rami che si moltiplicano scendendo, e ogni situazione che ci
-sta dentro è un **nodo**. È un albero capovolto rispetto a quelli veri: la
-radice sta in cima, e in fondo, alla punta di ogni ramo, ci sono le **foglie**,
-i nodi in cui non si va più avanti perché la partita è finita. Ogni cammino
-dalla radice a una foglia è un futuro possibile.
+degli stati che ne escono, altrettante; e così via. È un albero, la stessa
+forma degli {doc}`alberi decisionali </MachineLearning/alberi-ensemble>`, e
+ogni situazione che ci sta dentro è un nodo. È un albero capovolto rispetto a
+quelli veri: la radice sta in cima, e in fondo, alla punta di ogni ramo, ci
+sono le foglie, i nodi in cui non si va più avanti perché la partita è finita.
+Ogni cammino dalla radice a una foglia è un futuro possibile.
 
 `````{tab} Elementare
 

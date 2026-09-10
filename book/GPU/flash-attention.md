@@ -20,7 +20,7 @@ eseguire in fretta. Primo: ogni parola del testo viene confrontata con tutte le
 altre, e da ogni confronto esce un punteggio di somiglianza. È la grande
 tabella. Secondo: i punteggi di ciascuna riga vengono
 trasformati in percentuali che sommano a cento, e questa trasformazione ha un
-nome che ricorrerà per tutta la sezione, la **softmax**. Terzo: quelle
+nome che ricorrerà per tutta la sezione, la softmax. Terzo: quelle
 percentuali dicono in che proporzione mescolare. Ogni parola si porta dietro
 una manciata di numeri, che è il modo in cui il modello dice che cosa
 significa lì dentro; se «salta» ha preso il 70% su «gatto» e il 20% su «muro»,
@@ -437,14 +437,15 @@ chiave e valore, quindi due volte tanto; e ogni numero occupa due byte. In
 tutto $2 \times 32 \times 8 \times 128 \times 2$ byte, cioè $131\,072$ per
 ogni parola letta. Su centomila parole di contesto fanno tredici
 gigabyte, per una conversazione sola, su una scheda che di gigabyte ne ha
-ottanta. FlashAttention non lo tocca: è un altro mestiere, e lo
-raccontano la sezione sui {doc}`grandi modelli linguistici
-</Transformers/llm>` e quella su {doc}`prefill e decodifica
-</MLOps/metriche-di-servizio>`, dove si trovano anche le tecniche che quel
-problema lo affrontano davvero. E FlashAttention non riduce il numero di conti
-da fare, che resta proporzionale al quadrato della lunghezza: quello è il
-mestiere del {doc}`capitolo sull'attenzione lineare
-</AttenzioneLineare/overview>`.
+ottanta. FlashAttention non lo tocca: è un altro mestiere. Leggere la domanda
+tutta insieme e scrivere la risposta una parola per volta hanno un nome
+ciascuno, e da qui in avanti tornano spesso: il *prefill* e la *decodifica*.
+Il peso del taccuino lo affrontano davvero altre tecniche, e stanno nella
+sezione sui {doc}`grandi modelli linguistici </Transformers/llm>` e in quella
+su {doc}`prefill e decodifica </MLOps/metriche-di-servizio>`. E
+FlashAttention non riduce il numero di conti da fare, che resta proporzionale
+al quadrato della lunghezza: quello è il mestiere del
+{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`.
 
 Onestà anche sul codice: l'idea è semplice, il kernel che la realizza è
 notoriamente complicato (indici, gestione della shared memory, casi limite

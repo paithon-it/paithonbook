@@ -376,17 +376,20 @@ denominatore impedisce che si divida zero per zero.
 `torch.no_grad()` è un context manager che sospende la
 costruzione del grafo autograd: non vengono salvati i valori intermedi per un
 `backward()` che non arriverà mai, con un risparmio di memoria che cresce con
-la profondità della rete, e l'inferenza accelera. Sono due meccanismi
-indipendenti e servono entrambi: `eval()` senza `no_grad()` dà predizioni
-corrette ma spreca memoria; `no_grad()` senza `eval()` lascia il dropout
-acceso e falsa le predizioni. Il nostro MLP non ha né dropout né batch norm,
-quindi qui `eval()` è tecnicamente superfluo, ma scriverlo sempre è
-un'abitudine che evita bug sottili appena il modello cresce. Quando si fa
-soltanto inferenza esiste una forma più stretta di `no_grad()`,
-`torch.inference_mode()`, che oltre a non registrare rinuncia anche al
-*version counter* e al tracciamento delle viste: è leggermente più veloce, al
-prezzo che i tensori che produce non possono poi rientrare in un grafo
-autograd.
+la profondità della rete, e accelera il momento in cui il modello risponde e
+basta, senza più imparare niente. In gergo quel momento si chiama
+*inferenza*, parola presa in prestito dalla statistica che qui indica soltanto
+un modello già addestrato messo in uso, senza nessun ragionamento dentro.
+Sono due meccanismi indipendenti e servono entrambi: `eval()` senza
+`no_grad()` dà predizioni corrette ma spreca memoria; `no_grad()` senza
+`eval()` lascia il dropout acceso e falsa le predizioni. Il nostro MLP non ha
+né dropout né batch norm, quindi qui `eval()` è tecnicamente superfluo, ma
+scriverlo sempre è un'abitudine che evita bug sottili appena il modello
+cresce. Quando si fa soltanto inferenza esiste una forma più stretta di
+`no_grad()`, `torch.inference_mode()`, che oltre a non registrare rinuncia
+anche al *version counter* e al tracciamento delle viste: è leggermente più
+veloce, al prezzo che i tensori che produce non possono poi rientrare in un
+grafo autograd.
 `````
 
 ## Quando fermarsi: la validazione
@@ -402,10 +405,12 @@ ogni epoca e in base a quel numero decido quando fermarmi o che cosa cambiare,
 allora quelle immagini hanno partecipato alle mie decisioni, e il voto che mi
 danno non è più il voto di uno che non le aveva mai viste.
 
-Per questo i mucchi in un progetto serio sono tre. L'addestramento è quello
-su cui il modello impara. La **validazione** è quello che si guarda spesso, a
-ogni epoca, per decidere: è la simulazione d'esame, e la si può consumare senza
-danno perché serve proprio a quello. Il **test** è quello che si tocca una
+Per questo i mucchi in un progetto serio sono tre, ed è la divisione fra
+studio, prove ed esame della {doc}`sezione su overfitting e validazione
+</MachineLearning/overfitting-validazione>`. L'addestramento è quello su cui
+il modello impara. La validazione è quello che si guarda spesso, a ogni
+epoca, per decidere: è la simulazione d'esame, e la si può consumare senza
+danno perché serve proprio a quello. Il test è quello che si tocca una
 volta sola, alla fine, e che dà il voto vero. Nel programma qui sopra ne
 abbiamo usati due per non appesantire il codice, ed è una scorciatoia comune
 negli esempi: fuori dagli esempi, il terzo mucchio si ritaglia.

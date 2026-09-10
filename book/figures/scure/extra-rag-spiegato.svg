@@ -5,7 +5,7 @@
   di book/_static/brand/tokens.css.
   fonte: ../extra-rag-spiegato.svg
 -->
-<svg viewBox="0 0 760 300" width="100%" role="img" aria-label="Pipeline RAG: documenti, chunking, embedding, vector store, retrieval, LLM, risposta con citazioni" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 760 300" width="100%" role="img" aria-label="Pipeline RAG divisa in due fasi. La prima, di indicizzazione, si esegue una volta sola: i documenti vengono spezzati in passaggi, ognuno convertito in un vettore e depositato in un archivio di vettori. La seconda, a ogni domanda: la domanda diventa un vettore, si recuperano i passaggi più vicini, e questi entrano nel prompt del modello, che risponde citando le fonti." xmlns="http://www.w3.org/2000/svg">
   <rect x="0" y="0" width="760" height="300" fill="#0E0C0A"/>
   <defs>
     <marker id="fr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
@@ -21,7 +21,7 @@
 
   <rect x="180" y="55" width="100" height="60" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
   <text x="230" y="82" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="middle">Chunk</text>
-  <text x="230" y="100" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1" text-anchor="middle">blocchi brevi</text>
+  <text x="230" y="100" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1" text-anchor="middle">passaggi brevi</text>
 
   <rect x="320" y="55" width="100" height="60" rx="6" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2"/>
   <text x="370" y="82" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="middle">Embedding</text>
@@ -43,7 +43,7 @@
 
   <rect x="180" y="200" width="120" height="60" rx="6" fill="#0E0C0A" stroke="#DDB874" stroke-width="2"/>
   <text x="240" y="227" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD" text-anchor="middle">Retrieval</text>
-  <text x="240" y="245" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1" text-anchor="middle">chunk più vicini</text>
+  <text x="240" y="245" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1" text-anchor="middle">passaggi più vicini</text>
 
   <rect x="340" y="200" width="110" height="60" rx="6" fill="#E27B52"/>
   <text x="395" y="227" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#0E0C0A" text-anchor="middle">LLM</text>

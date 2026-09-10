@@ -73,7 +73,7 @@ differenza concettuale: qui i due assi non sono omogenei (uno è il tempo,
 l'altro la frequenza). La conseguenza però non riguarda la località, che non
 è mai stata in discussione (una firma sonora è un motivo locale nel piano
 tempo–frequenza esattamente come un occhio lo è in una foto): riguarda la
-**condivisione dei pesi**, cioè l'equivarianza per traslazione. Applicare gli
+condivisione dei pesi, cioè l'equivarianza per traslazione. Applicare gli
 stessi filtri a ogni banda equivale ad assumere che traslare un motivo non ne
 cambi la classe. Lungo il tempo è una simmetria vera, un latrato è un latrato
 mezzo secondo dopo; lungo la frequenza no, perché su una scala quasi
@@ -175,7 +175,7 @@ quei due numeri la fonte è la pagina del dataset, non il paper. Le etichette so
 localizzazione temporale, ed essendo multi-etichetta si prestano naturalmente
 alla coppia sigmoide + BCE. La metrica di riferimento non è
 l'accuratezza (inadatta a un problema multi-etichetta e sbilanciato) ma la
-**mean Average Precision** (mAP), che per ogni classe fa la media delle
+mean Average Precision (mAP), che per ogni classe fa la media delle
 precisioni raggiunte a ciascuna soglia, pesandole con l'aumento di richiamo che
 quella soglia porta, e poi media sulle classi. Si massimizza. Un dataset grande
 e debolmente etichettato sposta il collo di bottiglia: non più «troppi pochi

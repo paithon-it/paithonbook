@@ -918,10 +918,23 @@ con $\mathrm{RMS}(\mathbf{x}) = \sqrt{\tfrac{1}{d}\sum_i x_i^2}$: meno conti
 per strato, e in pratica la stessa stabilità.
 `````
 
+```{figure} ../figures/corrimano-e-taratura.svg
+:name: fig-corrimano-taratura
+:alt: "Due torri affiancate, ciascuna con 2 blocchi da 2 sotto-strati. In ognuna una retta verticale, la scorciatoia, va dall'ingresso in fondo all'uscita in cima, e da essa si stacca a ogni sotto-strato un ramo che attraversa un riquadro («attenzione» o «lavoro a parte») e rientra in una sommatoria segnata con un più. A sinistra, intestata «post-LN, il montaggio del 2017» e «LayerNorm(x + Sub(x))», una taratura sta sulla scorciatoia subito sopra ogni sommatoria e la interrompe 4 volte. A destra, intestata «pre-LN, i modelli di oggi» e «x + Sub(LayerNorm(x))», le tarature stanno sui rami all'ingresso dei sotto-strati e la scorciatoia corre intera dall'alto in basso. Un pallino, il gradiente, scende lungo le due scorciatoie. In fondo il conto: in una pila da 96 blocchi sono 192 interruzioni contro nessuna."
+:width: 92%
+
+Gli stessi tre pezzi, montati in due modi. A sinistra la taratura sta sulla
+scorciatoia, e il gradiente che scende la attraversa a ogni somma: quattro
+volte nei due blocchi disegnati, centonovantadue in una pila da novantasei. A
+destra è stata spostata all'ingresso dei sotto-strati, e la scorciatoia corre
+intera dall'alto in basso.
+```
+
 Scorciatoia e taratura sono la parte che nessuno racconta mai, e senza la quale
-niente di tutto il resto starebbe in piedi: l'attenzione è l'idea, ma un'idea
-impilata sessanta volte (tanti sono i blocchi di un modello grande di oggi) si
-sfalda, e questi due accorgimenti sono ciò che la tiene insieme. Con il
+niente di tutto il resto starebbe in piedi: l'attenzione è l'idea, ma in un
+modello grande di oggi i blocchi vanno da sessanta a più di cento, e un'idea
+impilata così si sfalda. Questi due accorgimenti, montati come in
+{numref}`fig-corrimano-taratura`, sono ciò che la tiene insieme. Con il
 meccanismo in mano, la {doc}`sezione sulla struttura del Transformer
 <architettura>` prende questi pezzi e li monta nelle due torri di una macchina
 vera.

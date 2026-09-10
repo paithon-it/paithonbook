@@ -12,18 +12,18 @@ preso in prestito da mestieri diversi (le basi di dati, le scienze cognitive,
 l'elettrotecnica) e appiccicato sopra a operazioni che avevano già un nome,
 non il contenuto.
 
-Dei quattro nomi di cui si lamenta, uno serve subito e va tolto di mezzo: un
-**token** è il pezzetto di testo su cui il modello lavora, non proprio una
-parola ma un frammento (una parola corta per intero, la radice di una lunga, un
-segno di punteggiatura), e una frase, per il modello, è la fila dei suoi token.
-Gli altri tre (*query*, *chiave*, *testa*) sono etichette appiccicate a tre
-oggetti che qui nasceranno con un nome italiano, e il nome inglese si
-affiancherà a quello quando ci sarà qualcosa da tradurre.
+Dei quattro nomi che quelle righe mettono in fila, uno serve subito e va tolto
+di mezzo: un **token** è il pezzetto di testo su cui il modello lavora, non
+proprio una parola ma un frammento (una parola corta per intero, la radice di
+una lunga, un segno di punteggiatura), e una frase, per il modello, è la fila
+dei suoi token. Gli altri tre (*query*, *chiave*, *testa*) sono etichette
+appiccicate a tre oggetti che qui nasceranno con un nome italiano, e il nome
+inglese si affiancherà a quello quando ci sarà qualcosa da tradurre.
 
 Qui il percorso è lo stesso, ed è il punto in cui la cassetta degli
 attrezzi si richiude. L'architettura Transformer resta fuori, perché il
 capitolo dedicato la smonterà pezzo per pezzo con i suoi nomi standard; la
-domanda è più stretta e, per chi ha appena finito cinque sezioni di
+domanda è più stretta e, per chi ha appena attraversato le sezioni di
 matematica, più urgente: *di che cosa è fatto un modello linguistico, se lo si
 guarda con gli strumenti visti fin qui?*
 
@@ -504,10 +504,10 @@ non lo sono. Il perché sta nella non identificabilità delle singole matrici.
 
 ## Due matrici che nessuno può identificare
 
-Da questa fattorizzazione discende un fatto curioso, e che riguarda tutti e
-due i mestieri: chi vuole capire cosa un modello ha imparato, e chi deve
-addestrarlo. Per il primo è una brutta notizia, per il secondo ottima, ed è la
-stessa notizia.
+Che la tabella grande sia il prodotto di due tabelle sottili ha una
+conseguenza curiosa, e riguarda tutti e due i mestieri: chi vuole capire cosa
+un modello ha imparato, e chi deve addestrarlo. Per il primo è una brutta
+notizia, per il secondo ottima, ed è la stessa notizia.
 
 `````{tab} Elementare
 
@@ -579,20 +579,27 @@ $\mathbf{R}^{-\top}$.)
 
 Due dettagli del modello vero stringono però la libertà di $\mathbf{R}$, e
 mostrano che l'indeterminazione è reale ma non sconfinata. Il primo è la
-normalizzazione, che agisce sul flusso residuo e non
-commuta con una trasformazione qualsiasi: normalizzare un vettore ruotato non
-dà il vettore normalizzato e poi ruotato, salvo che $\mathbf{R}$ sia una
-rotazione compatibile. Il secondo è la pratica, diffusissima, di riusare la
+normalizzazione, cioè il passaggio che rimette su una scala fissa i vettori
+che attraversano la pila: agisce proprio su quelli che $\mathbf{R}$
+ruoterebbe, e non commuta con una trasformazione qualsiasi. Normalizzare un
+vettore ruotato non dà il vettore normalizzato e poi ruotato, salvo che
+$\mathbf{R}$ lasci ferma la direzione lungo cui si prende la media che la
+normalizzazione sottrae. Il secondo è la pratica, diffusissima, di riusare la
 stessa matrice per l'ingresso e per l'uscita (i vettori $\mathbf{u}_v$ sono le
 righe di $\mathbf{E}$): allora $\mathbf{R}$ e $\mathbf{R}^{-\top}$ devono
-coincidere, il che accade solo se $\mathbf{R}$ è ortogonale. L'indeterminazione
-resta, insomma, ma si restringe alle rotazioni, che è esattamente il gruppo di
-cui parla l'analogia che segue.
+coincidere, il che accade solo se $\mathbf{R}$ è ortogonale. La libertà di
+$\mathbf{R}$ resta, insomma, ma si restringe alle rotazioni. Quella di
+$\mathbf{S}$, che lavora dentro la singola relazione e non tocca né gli
+embedding né ciò che li rilegge, no.
 
-La situazione è la stessa della rotazione dei fattori nell'analisi
-fattoriale, dove i fattori estratti sono determinati solo a meno di una
-trasformazione ortogonale, ed è il motivo per cui esistono i criteri di
-rotazione (varimax e simili) e le liti su quale usare. Due conseguenze,
+Sulle rotazioni la situazione è analoga a quella dei fattori nell'analisi
+fattoriale, il metodo che spiega molte misure osservate con poche cause
+nascoste, chiamate appunto fattori: anche là i fattori estratti sono
+determinati solo a meno di una trasformazione ortogonale
+{cite}`hastie2009elements`, ed è il motivo per cui esistono i criteri di
+rotazione (varimax e simili) e le liti su quale usare. Lo stesso argomento,
+rifatto sulle immagini invece che sulle matrici, sta nella {doc}`sezione sul
+latente che si usa </ModelliLatenti/il-latente-che-si-usa>`. Due conseguenze,
 opposte di segno. Per l'interpretabilità è una cattiva notizia: le quantità
 che hanno senso studiare sono quelle invarianti (i prodotti, i pesi
 $\alpha_{ij}$, le direzioni nello spazio delle rappresentazioni), non le
@@ -750,21 +757,25 @@ di uno svaniscono esponenzialmente con la profondità. La struttura additiva
 mette in ogni derivata un termine dell'identità, cioè una via diretta per il
 gradiente accanto a quella che passa per $f$.
 
-Quanto quella via resti davvero libera dipende però da dove si mette la
-normalizzazione, e qui il testo non può promettere più di quanto la formula
-mantenga. Nella forma del 2017 (*post-LN*) la
-normalizzazione sta sopra la somma, quindi il gradiente la attraversa a
-ogni strato e viene moltiplicato per la sua Jacobiana, che identità non è: il
-termine si attenua, tanto più quanto più il residuo cresce in norma, ed è il
-motivo per cui il post-LN richiede un riscaldamento del tasso di
-apprendimento. I modelli recenti spostano la normalizzazione a monte del
-sotto-strato (*pre-LN*) e solo lì la scorciatoia resta pulita. Il capitolo sui
-Transformer entra nel merito con i numeri.
-
-**Normalizzazione.** Dopo ciascuno dei due sotto-strati i vettori vengono
+**Normalizzazione.** Dopo ciascuno dei due sotto-strati, cioè dopo
+l'aggregazione contestuale e dopo la parte non lineare, i vettori vengono
 standardizzati (media nulla e varianza unitaria sulle coordinate): un
 accorgimento che tiene le grandezze in un intervallo trattabile lungo tutta
-la pila.
+la pila. In inglese si chiama *layer normalization*: è la LN di *post-LN* e
+*pre-LN*.
+
+Dove la si mette decide quanto resti libera la via diretta del gradiente, e
+qui il testo non può promettere più di quanto la formula mantenga. Nella forma
+del 2017, il *post-LN*, la normalizzazione sta sopra la somma, quindi il
+gradiente la attraversa a ogni strato e viene moltiplicato per la sua
+Jacobiana, che identità non è: il termine si attenua, tanto più quanto più
+cresce in norma il vettore che percorre la pila. I modelli recenti la spostano
+a monte del sotto-strato, ed è il *pre-LN*: solo lì la scorciatoia resta
+pulita. Senza quello spostamento il tasso di apprendimento va fatto salire
+piano nei primi passi invece di partire subito al valore scelto, un
+*riscaldamento* senza il quale l'addestramento non regge
+{cite}`xiong2020layer`. Il capitolo sui Transformer scrive le due formule per
+esteso.
 
 I parametri non sono condivisi fra strati, e questo spiega gli ordini di
 grandezza. Contiamoli per GPT-3 {cite}`brown2020language`, con $d = 12\,288$,
@@ -1210,8 +1221,8 @@ identificabili separatamente.
   termine dell'identità; quanto quel cammino resti libero dipende però da dove
   sta la normalizzazione (in post-LN il gradiente la attraversa e il termine si
   attenua). Nulla è condiviso fra strati: $12d^2$ parametri per
-  strato, che per GPT-3 ($d=12\,288$, $L=96$) fanno i 175 miliardi
-  complessivi.
+  strato, che per GPT-3 ($d=12\,288$, $L=96$) fanno $174$ miliardi, i $175$
+  dichiarati una volta aggiunti gli embedding.
 - L'ultimo strato è una regressione logistica multinomiale su
   $|\mathcal{V}|$ categorie, $P(v) \propto \exp(\mathbf{u}_v^\top
   \mathbf{h}^{(L)}_n)$, con covariate calcolate dai $L$ strati precedenti; i

@@ -9,9 +9,9 @@ delicata, di riempire la finestra di contesto con *la giusta informazione per
 il passo successivo* {cite}`karpathy2025context`.
 
 Due parole di quella frase vanno sciolte subito, perché torneranno in ogni
-pagina del capitolo. Il **prompt** è il messaggio che scriviamo al modello: la
-richiesta, più tutto quello che le mettiamo attorno. La **finestra di
-contesto** è il tetto di testo che un modello riesce a leggere in una volta
+pagina del capitolo. Il prompt è il messaggio che scriviamo al modello: la
+richiesta, più tutto quello che le mettiamo attorno. La finestra di
+contesto è il tetto di testo che un modello riesce a leggere in una volta
 sola: tutto ciò che vogliamo che sappia, prima di rispondere, deve starci
 dentro, e quando è piena qualcosa va tolto per far posto. È un limite di
 progetto del modello e non una metafora, ed è la ragione per cui riempirla
@@ -28,7 +28,7 @@ Karpathy aveva preparato il terreno da tempo. Anni prima aveva parlato di
 **Software 2.0**: nei sistemi di apprendimento automatico il programma non lo
 scrive più una persona riga per riga, lo si *addestra*, cioè gli si mostrano
 montagne di esempi e lo si lascia aggiustare da sé, un pochino alla volta, i
-numeri che ha dentro. Quei numeri, in una rete neurale, si chiamano **pesi**,
+numeri che ha dentro. Quei numeri, in una rete neurale, si chiamano pesi,
 sono milioni o miliardi, e sono in tutto e per tutto quello che il modello ha
 imparato: il suo codice. Nel 2025 ha aggiunto un terzo capitolo, il **Software
 3.0**, osservando che oggi, con i grandi modelli linguistici, «si programma in
@@ -81,7 +81,7 @@ addestrato, cioè uno di quelli che si trovano pronti e che sanno già leggere e
 scrivere, noi non programmiamo più toccando i pesi: quelli sono congelati,
 li ha fissati l'addestramento. «Congelati» non vuol dire immutabili per
 sempre: riaprirli e proseguire l'addestramento sui propri dati si può, si
-chiama **fine-tuning**, e fra poco vedremo perché è la più cara delle strade
+chiama fine-tuning, e fra poco vedremo perché è la più cara delle strade
 che abbiamo. Vuol dire che nel modo di lavorare di cui parla questo capitolo
 restano fermi. Programmiamo con le
 parole, cioè con il testo che gli mettiamo davanti prima di chiedergli una
@@ -173,11 +173,11 @@ vogliamo: chiarezza, esempi, formato richiesto, il modo di chiedere il
 ragionamento passo passo. È il livello a cui si pensa istintivamente, ed è
 dove si comincia.
 
-Il secondo cerchio, che racchiude il primo, è il **context engineering**:
+Il secondo cerchio, che racchiude il primo, è il context engineering:
 l'intera finestra come sistema. Qui il prompt dell'utente è solo un pezzo.
 Ci sono le istruzioni di fondo, gli esempi, la memoria di ciò che si è detto
 prima, i documenti recuperati da un archivio, le descrizioni degli
-**strumenti** a disposizione: le operazioni che il modello può chiedere al
+strumenti a disposizione: le operazioni che il modello può chiedere al
 programma di eseguire per lui (cercare sul web, interrogare un archivio,
 mandare una mail). Gli strumenti sono il cuore del capitolo precedente, quello
 sugli **agenti**: un agente è un programma che si serve del modello a più
@@ -256,7 +256,7 @@ si tiene traccia, come si fa col codice.
 Il costo si vede meglio in una figura. Quando un modello non fa quello che
 vogliamo, davanti abbiamo tre strade, e non costano uguale: riscrivere il
 messaggio; andare a prendere i documenti che al modello mancano e metterglieli
-davanti insieme alla domanda (è il **RAG**); oppure riaprire i pesi e
+davanti insieme alla domanda (è il RAG); oppure riaprire i pesi e
 riaddestrarlo un po’ sui nostri esempi (il fine-tuning). Le prime due
 lasciano il modello com'è, la terza lo cambia, ed è la più cara di tutte.
 

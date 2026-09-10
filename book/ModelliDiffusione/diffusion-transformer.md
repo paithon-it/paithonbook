@@ -55,16 +55,16 @@ grosse tagliare le tessere è una scelta: a 4 caselle per lato le parole
 sarebbero 64 invece di 256, e leggerle costerebbe quattro volte meno. È la
 manopola con cui si decide quanto far lavorare la torre.
 
-Da qui in poi il lavoro lo conosciamo dal capitolo sui Transformer: la torre di
-lettori, con i suoi piani (in gergo si chiamano blocchi). I lettori sono le
-tessere: a ogni piano ce n'è uno per tessera, duecentocinquantasei in fila, e
-ciascuno tiene i suoi appunti, una lista di numeri lunga sempre uguale. A ogni
+Da qui in poi il lavoro lo conosciamo dal capitolo sui Transformer: la torre,
+con i suoi piani (in gergo si chiamano blocchi). Le tessere prendono il posto
+che là avevano le parole: duecentocinquantasei in fila, e a ogni piano ognuna
+si porta dietro i suoi appunti, una lista di numeri lunga sempre uguale. A ogni
 piano, ogni tessera guarda *tutte* le altre (per capire quanto rumore c'è
 sull'orecchio del gatto aiuta guardare anche la tessera con la coda, dall'altra
 parte della scheda) e poi rielabora per conto suo quello che ha visto.
 All'ultimo piano, ogni tessera riconsegna la propria porzione di rumore
-stimato, e le porzioni ricomposte formano la mappa completa: la torre di
-lettori, tutta insieme, *è* il restauratore, e quella mappa è la sua risposta a
+stimato, e le porzioni ricomposte formano la mappa completa: la torre, tutta
+insieme, *è* il restauratore, e quella mappa è la sua risposta a
 ogni passo di pulitura. La differenza con la U-Net è di principio: le
 convoluzioni, cioè il modo di guardare che rende una rete di visione una rete
 di visione, davano la precedenza ai vicini di casa per costruzione; il
@@ -75,19 +75,20 @@ tessera per tessera.
 
 `````{tab} Superiore
 
-L'ingresso è il latente rumoroso $\mathbf{z}_t \in \mathbb{R}^{32 \times 32 \times 4}$
-(immagini $256 \times 256$ compresse dal VAE con fattore $f = 8$). Il
-*patchify* lo suddivide in patch quadrate di lato $p$ e proietta linearmente
-ciascuna in un embedding di dimensione $d$: si ottiene una sequenza di
-$N = (32/p)^2$ token (usiamo $N$, perché in questo capitolo $T$ è già il
-numero di passi di diffusione), a cui si somma un positional encoding
-(sinusoidale
-bidimensionale, fisso) che ne registra la posizione nella griglia. Segue una
-pila di blocchi Transformer del tutto standard (multi-head self-attention più
-MLP, con residual e layer normalization, come nel capitolo sui Transformer) e
-una testa lineare finale che da ogni token ricostruisce la sua patch di rumore
-stimato (nel DiT originale, anche i parametri della covarianza), riassemblata
-poi in un tensore della stessa forma dell'ingresso: la rete resta una
+L'ingresso è il latente rumoroso $\mathbf{z}_t \in \mathbb{R}^{32 \times 32
+\times 4}$ (immagini $256 \times 256$ compresse dal VAE con fattore $f = 8$).
+Il *patchify* lo suddivide in patch quadrate di lato $p$ e proietta linearmente
+ciascuna in un embedding di dimensione $d$: si ottiene una sequenza di $N =
+(32/p)^2$ token (usiamo $N$, perché in questo capitolo $T$ è già il numero di
+passi di diffusione; il paper fa il contrario, chiama $T$ i token e $N$ il
+numero di strati, quindi le sue tabelle vanno lette con quel dizionario in
+mano), a cui si somma un positional encoding (sinusoidale bidimensionale,
+fisso) che ne registra la posizione nella griglia. Segue una pila di blocchi
+Transformer del tutto standard (multi-head self-attention più MLP, con residual
+e layer normalization, come nel capitolo sui Transformer) e una testa lineare
+finale che da ogni token ricostruisce la sua patch di rumore stimato (nel DiT
+originale, anche i parametri della covarianza), riassemblata poi in un tensore
+della stessa forma dell'ingresso: la rete resta una
 $\boldsymbol{\epsilon}_\theta(\mathbf{z}_t, t)$, cambia solo ciò che ha dentro.
 
 Il lato $p$ della patch è la manopola del calcolo: con $p = 2$ i token sono
@@ -95,12 +96,14 @@ $N = 256$, con $p = 4$ sono 64, con $p = 8$ sono 16. Dimezzare $p$ quadruplica
 i token e con essi il costo di una passata a parità di parametri: nel paper la
 taglia XL passa da 29,1 Gflops con $p = 4$ a 118,6 con $p = 2$, cioè un fattore
 $4{,}08$, e non di più. Il termine quadratico dell'attenzione c'è, ma a queste
-lunghezze di sequenza vale meno del 4% del totale: per blocco pesa $2N^2 d$
+lunghezze di sequenza è piccolo: per blocco pesa $2N^2 d$
 contro i $12Nd^2$ delle proiezioni e dell'MLP, cioè un rapporto $N/(6d)$ che
 per DiT-XL/2, dove la larghezza è $d = 1152$, fa
-$256/(6 \cdot 1152) \approx 3{,}7\%$. È a risoluzioni
-molto maggiori che quel termine diventa il vincolo, ed è il problema da cui
-parte il
+$256/(6 \cdot 1152) \approx 3{,}7\%$ del termine lineare, e quindi il
+$3{,}6\%$ del totale. Il rapporto però cresce con il quadrato del lato: alla
+stessa larghezza, $512$ pixel portano $N$ a $1024$ e il quadratico al $15\%$
+del lineare, $1024$ pixel lo portano al $59\%$. È lì che quel termine diventa
+il vincolo, ed è il problema da cui era partito il
 {doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`. Da qui
 la nomenclatura del paper: quattro taglie (DiT-S, B, L, XL)
 per tre patch (/8, /4, /2), dodici modelli che, vedremo tra poco, sono il vero
@@ -113,9 +116,15 @@ esperimento del lavoro.
 Manca un pezzo. Alla rete bisogna dire due cose che non stanno nell'immagine:
 *a che punto della scala* sta lavorando (il numero del passo) e *che cosa* deve
 disegnare (nel DiT originale la categoria dell'oggetto, nei suoi discendenti un
-testo). Le due insieme si chiamano il **condizionamento**, che è il termine
-usato in tutta questa sezione e vuol dire esattamente quello: le informazioni
-che orientano il lavoro senza far parte di ciò su cui si lavora.
+testo). Le due insieme si chiamano il **condizionamento**, che vuol dire
+esattamente quello: le informazioni che orientano il lavoro senza far parte di
+ciò su cui si lavora. La parola è quella della probabilità condizionata, e il
+legame è letterale, perché ciò che la rete impara è la distribuzione delle
+immagini *dato* quello che le si è chiesto. Il «condizionamento numerico»
+della {doc}`sezione sul limite continuo </ModelliDiffusione/sde-e-ode>` è
+tutt'altro mestiere: là si misura quanto un conto amplifica gli errori di chi
+glieli passa, ed è il numero di condizionamento dell’{doc}`analisi numerica
+</Matematica/analisi-numerica>`.
 
 La U-Net aveva un modo semplice di riceverle, appenderle come un'etichetta; con
 le tessere in fila si aprono più strade, e Peebles e Xie le mettono a
@@ -125,27 +134,33 @@ scritta. Vince invece la soluzione più discreta, battezzata **adaLN-zero**: il
 condizionamento non entra nella conversazione, regola le manopole. Il nome è
 una sigla e conviene scioglierla subito, perché torna spesso: *ada* sta per
 adattivo, cioè che si regola secondo il momento; *LN* è il nome di
-un'operazione che i Transformer hanno dentro (la *layer normalization* del
-capitolo che porta il loro nome, quella che rimette i numeri in un ordine di
-grandezza maneggevole prima di ogni passaggio); e *zero* è il modo in cui si
-parte, che vedremo fra poco.
+un'operazione che i Transformer hanno dentro, la *layer normalization*, cioè
+la taratura che rimette i numeri in un ordine di grandezza maneggevole prima
+di ogni passaggio, con accanto una manopola imparata che li riallarga o li
+restringe; e *zero* è il modo in cui si parte, che vedremo fra poco.
 
 `````{tab} Elementare
 
-La torre di lettori ha una regia, collegata con l'auricolare a ogni piano. La
-regia non suggerisce parole: dà istruzioni di *regolazione*. A
-ogni piano dice quanto alzare o abbassare il volume di ciò che passa, come
-spostarne il tono, e soprattutto quanto di quel piano deve finire nel
-risultato. Quest'ultima manopola misura l'intervento del piano, non il
-volume del segnale: a fondo scala il piano interviene a piena forza, a zero
-non interviene affatto e quello che ha ricevuto prosegue intatto. Le istruzioni
-dipendono dal momento: se siamo ai primi passi della pulitura (quasi tutto
-rumore) o agli ultimi ritocchi, se si sta disegnando un gatto o un faro.
+La torre ha una regia, e a ogni piano c'è un tecnico che la ascolta in
+auricolare: il messaggio è lo stesso per tutti, ma ognuno ne ricava le
+regolazioni buone per il proprio piano. La regia non suggerisce parole: dà
+istruzioni di *regolazione*, e le manopole
+sono di due specie, perché stanno ai due capi del piano. Le prime due sono
+all'ingresso, e dicono quanto alzare o abbassare il volume di ciò che arriva e
+come spostarne il tono: cambiano quello che il piano si trova davanti da
+leggere. La terza è all'uscita, e dice quanto di ciò che il piano ha prodotto
+va aggiunto a quello che c'era prima: a fondo scala il piano interviene a piena
+forza, a zero il suo lavoro resta nel cassetto e quello che era arrivato
+prosegue intatto. Le istruzioni dipendono dal momento: se siamo ai primi passi
+della pulitura (quasi tutto rumore) o agli ultimi ritocchi, se si sta
+disegnando un gatto o un faro.
 
 Il "-zero" del nome è un'astuzia da cantiere: il primo giorno di addestramento
-tutte le manopole d'intervento sono a zero, e quindi nessun piano tocca
-niente. Ogni piano impara poi strada facendo quanto farsi sentire. Sembra
-pigrizia, ma è il modo
+tutte le manopole d'uscita sono a zero, e quindi nessun piano tocca niente. Il
+lavoro i piani lo fanno lo stesso, solo che nessuno lo ascolta, ed è da lì che
+imparano: a fine giornata si guarda quanto sarebbe servito dare retta a
+ciascuno, e ognuno alza la propria manopola di conseguenza. Sembra pigrizia,
+ma è il modo
 più stabile di cominciare: nessun piano rovina il lavoro degli altri prima
 di aver imparato il proprio.
 
@@ -156,10 +171,10 @@ di aver imparato il proprio.
 Ricordiamo dal capitolo sui Transformer la layer normalization: normalizza
 ogni token a media zero e varianza uno, poi riscala con un guadagno e un bias
 appresi, uguali per tutti gli input. L’adaptive layer norm (adaLN) rende
-guadagno e bias *funzioni del condizionamento*: un piccolo MLP riceve
-$\mathbf{c} = \mathrm{emb}(t) + \mathrm{emb}(y)$ (embedding sinusoidale del
-passo più embedding della classe) e produce, per ciascun sotto-strato di
-ciascun blocco, tre vettori
+guadagno e bias *funzioni del condizionamento*: ogni blocco ha il suo piccolo
+MLP, che riceve $\mathbf{c} = \mathrm{emb}(t) + \mathrm{emb}(y)$ (embedding
+sinusoidale del passo più embedding della classe) e produce, per ciascuno dei
+due sotto-strati, tre vettori
 $(\boldsymbol{\beta}_c, \boldsymbol{\gamma}_c, \boldsymbol{\alpha}_c)$:
 
 $$
@@ -170,25 +185,39 @@ $$
 \mathrm{Sottostrato}\big(\mathrm{adaLN}(\mathbf{x})\big),
 $$
 
-dove $\mathrm{LN}$ è la normalizzazione *senza* parametri appresi,
-$\boldsymbol{\gamma}_c$ e $\boldsymbol{\beta}_c$ sono scala e traslazione
-dettate dal condizionamento, $\odot$ è il prodotto elemento per elemento e
+dove $\mathbf{h}$ e $\mathbf{x}$ sono lo stesso oggetto, la rappresentazione
+di un token in ingresso al sotto-strato, $\mathrm{Sottostrato}$ è l'attenzione
+o l'MLP del blocco, $\mathrm{LN}$ è la normalizzazione *senza* parametri
+appresi, $\boldsymbol{\gamma}_c$ e $\boldsymbol{\beta}_c$ sono scala e
+traslazione dettate dal condizionamento, $\odot$ è il prodotto elemento per
+elemento e
 $\boldsymbol{\alpha}_c$ è un *gate* che dosa il contributo
 del sotto-strato prima della somma residua. Il pedice $c$ non è decorativo e
 va letto: $\boldsymbol{\alpha}_c, \boldsymbol{\beta}_c, \boldsymbol{\gamma}_c$
 vengono dal condizionamento e non
 hanno niente a che vedere con $\alpha_t$ e $\beta_t$, che in questo capitolo
-sono lo schedule del rumore. Il suffisso *zero* sta
-nell'inizializzazione: l'ultimo strato dell'MLP parte azzerato, quindi
-$\boldsymbol{\gamma}_c = \boldsymbol{\beta}_c = \boldsymbol{\alpha}_c = 0$ e
-ogni blocco all'inizio è l’identità;
-la rete comincia come un tubo vuoto e i blocchi si accendono gradualmente.
+sono lo schedule del rumore. Il suffisso *zero* sta nell'inizializzazione, e
+basta azzerare $\boldsymbol{\alpha}_c$: con il gate a zero il ramo residuo non
+passa, e il blocco è l’identità qualunque cosa facciano scala e traslazione. Il
+paper dichiara azzerato quello; l'implementazione di riferimento azzera per
+comodità l'ultimo strato dell'MLP per intero, e la differenza non si vede,
+perché finché $\boldsymbol{\alpha}_c = 0$ il gradiente di scala e traslazione è
+nullo e a muoversi è solo il gate. Il gradiente del gate no, perché vale il
+prodotto scalare fra ciò che il sotto-strato ha prodotto e la direzione in cui
+l'uscita andrebbe spostata: il blocco impara quanto aprirsi pur non
+contribuendo ancora, e la rete che comincia come un tubo vuoto si accende un
+piano alla volta.
 L'idea di modulare le normalizzazioni ha un precedente illustre che
 conosciamo: l'AdaIN con cui StyleGAN {cite}`karras2019style` inietta lo stile
-nel generatore. Nelle ablazioni del paper, adaLN-zero batte sia i token
-in-context sia la cross-attention a parità di calcolo, e costa quasi nulla,
-perché produce vettori di manopole, non token aggiuntivi da far partecipare
-all'attenzione.
+nel generatore. Nelle ablazioni del paper adaLN-zero batte sia i token
+in-context sia la cross-attention, e le batte spendendo meno: $118{,}6$
+Gflops contro i $119{,}4$ dell'in-context e i $137{,}6$ della
+cross-attention, che è un sedici per cento in più. In Gflops, quindi, le
+manopole non costano quasi niente, perché sono vettori e non token da far
+partecipare all'attenzione. In parametri costano parecchio: gli MLP di
+modulazione sono $226$ dei $675$ milioni di DiT-XL/2, cioè un terzo della
+rete, e il confronto delle ablazioni corre a passi di addestramento pari, non
+a parametri pari.
 
 `````
 
@@ -209,14 +238,17 @@ lavoro si conta in Gflops, i miliardi di operazioni che costa far passare
 un'immagine dall'ingresso all'uscita; la grandezza si conta in parametri,
 cioè quanti numeri interni ha la rete; e la qualità delle immagini si misura
 con il FID incontrato all'apertura del capitolo, che confronta il mucchio delle
-immagini generate con il mucchio di quelle vere.
+immagini generate con il mucchio di quelle vere. Il FID è una distanza, quindi
+va letto al rovescio delle altre due: più è basso e meglio è, e una qualità
+che migliora si vede come un numero che scende.
 
 Va detto subito che cosa questo non significa, perché è il passo che si fa
 più facilmente ed è sbagliato: non significa che l'architettura non conti più.
 Lo stesso lavoro contiene anche delle *ablazioni* (gli esperimenti in cui si
 cambia un pezzo solo e si guarda che effetto fa) sul modo di far entrare il
-condizionamento, e a Gflops sostanzialmente pari quel modo cambia la qualità in
-misura tutt'altro che marginale: è lì che adaLN-zero vince. Le due
+condizionamento, e quel modo cambia la qualità in misura tutt'altro che
+marginale: è lì che adaLN-zero vince, e vince spendendo meno degli altri
+due. Le due
 affermazioni stanno insieme senza contraddirsi, a patto di enunciarle con
 precisione: fra modelli costruiti tutti allo stesso modo, il calcolo
 predice la qualità meglio della taglia o del numero di tessere presi da soli.
@@ -243,22 +275,30 @@ Un risultato prezioso proprio perché prevedibile: se so quanto
 miglioro raddoppiando il lavoro, so anche se conviene raddoppiarlo, prima di
 spendere i soldi.
 
-Dodici torri di lettori, tutte con lo stesso mestiere ma di taglie diverse.
+Dodici torri, tutte con lo stesso mestiere ma di taglie diverse.
 Le misure di torre sono quattro, e più grande è la torre più sono i piani e più
 lunghi gli appunti; i modi di tagliare il mosaico sono tre, e più piccole sono
-le tessere più sono i lettori seduti a ogni piano. Quattro per tre fa dodici.
+le tessere più ne sta in fila a ogni piano. Quattro per tre fa dodici.
 
 Ora mettile in fila non per quanto sono grandi, ma per quanto lavoro fanno:
 quante operazioni servono a far passare un'immagine dall'ingresso all'uscita.
 In quell'ordine, i risultati migliorano quasi in linea retta. E la sorpresa non
 è che chi lavora di più faccia meglio, che sarebbe ovvio: è che non conta
-come quel lavoro è stato speso. Una torre alta e stretta e una bassa e larga,
-se fanno la stessa quantità di lavoro, arrivano più o meno allo stesso punto.
-Le tre cose che puoi girare (i piani, la lunghezza degli appunti, la misura
-delle tessere) diventano una sola davanti al risultato, e restano tre davanti
-al calcolatore: una torre alta e una larga non gli chiedono la stessa memoria
-né la stessa attesa. Si gira allora la manopola che la propria macchina regge
-meglio, tanto a decidere il risultato sarà il totale.
+come quel lavoro è stato speso. Una torre piccola che legge tante tessere e
+una torre grande che ne legge poche, se fanno la stessa quantità di lavoro,
+arrivano più o meno allo stesso punto, e la coppia che Peebles e Xie mettono a
+confronto è proprio così fatta. Le due manopole che puoi girare (la taglia
+della torre e la misura delle tessere) diventano una sola davanti al
+risultato, e restano due davanti al calcolatore: una torre grande e una fila
+lunga di tessere non gli chiedono la stessa memoria né la stessa attesa. Si
+gira allora la manopola che la propria macchina regge meglio, tanto a decidere
+il risultato sarà il totale.
+
+Con un limite, e nei dati si vede bene. Tagliando le tessere ancora più
+grosse, otto caselle per lato, ne restano quattro per lato e sedici in tutto:
+una fila cortissima, in cui a ciascuna resta poco da guardare. Quelle torri
+restano indietro comunque, anche facendo esattamente lo stesso lavoro delle
+altre, e la regola vale finché le tessere restano piccole.
 
 Detta così sembra la fine dell'ingegneria, e non lo è. Nella stessa ricerca si
 vede che *a parità di lavoro* il modo di dare le istruzioni alla torre (la
@@ -273,19 +313,33 @@ modo di costruire la torre, da lì in poi conta quanto la fai lavorare.
 L'affermazione va delimitata, perché è il tipo di regolarità che si generalizza
 troppo in fretta. La correlazione fra Gflops e qualità è misurata
 su una sola famiglia (i dodici DiT), su un solo compito (generazione
-condizionata alla classe), a un solo budget di addestramento e senza
-guidance. La cifra titolare del lavoro, invece, è ottenuta *con* la
-classifier-free guidance, e non sta su quella curva: sono due misure diverse, e
-confonderle è l'errore più comune quando si cita questo risultato.
+condizionata alla classe), a quattrocentomila passi di addestramento e senza
+guidance. La cifra titolare del lavoro sta fuori da quella curva per due
+ragioni insieme, e citarne una sola è l'errore più comune: è ottenuta *con* la
+classifier-free guidance, e su un modello che ha continuato ad addestrarsi
+fino a sette milioni di passi, cioè diciassette volte e mezzo il budget della
+curva.
 
 Il meccanismo che resta, e che ha superato la prova del tempo, è più modesto e
 più utile dell'enunciato forte: fissato il disegno del blocco, i Gflops
-predicono la qualità meglio del numero di parametri, e sono indifferenti a
-quale manopola si giri per aumentarli. Le tre manopole (profondità, larghezza,
-lato della tessera) non si equivalgono affatto in memoria né in latenza, ma si
-equivalgono rispetto alla qualità finale. È questo che permette di pianificare:
-si sceglie la manopola che conviene sull'hardware disponibile, sapendo che il
-risultato dipenderà dal totale e non dalla scelta.
+predicono la qualità meglio del numero di parametri. Quello che il paper misura
+è una correlazione forte, $-0{,}93$ fra Gflops e FID, e forte vuol dire con
+delle eccezioni. Le eccezioni hanno un nome: sono le tessere da otto caselle,
+un terzo della famiglia. A Gflops quasi uguali ($1{,}41$ contro $1{,}42$)
+DiT-S/4 fa $100{,}4$ e DiT-B/8 fa $122{,}7$; e il caso che non lascia scampo è
+DiT-XL/8, che spende il ventidue per cento in più di DiT-S/2 e arriva trentotto
+punti di FID più indietro ($106{,}4$ contro $68{,}4$). La coppia che il paper
+porta come esempio, DiT-S/2 contro DiT-B/4 ($68{,}40$ e $68{,}38$), sta fra
+quelle che si equivalgono davvero.
+
+E due delimitazioni sulle manopole. Profondità e larghezza l'esperimento non le
+separa mai, perché le quattro taglie le fissano insieme seguendo le
+configurazioni del Vision Transformer: ciò che viene messo davvero a confronto
+è la taglia contro il lato della tessera. E profondità, larghezza e lato della
+tessera non si equivalgono affatto in memoria né in latenza. Quello che si può
+pianificare, allora, è più stretto dell'enunciato forte: dentro la parte della
+famiglia in cui la regola tiene si sceglie la manopola che conviene
+sull'hardware disponibile, sapendo che a decidere sarà il totale.
 
 `````
 
@@ -308,9 +362,13 @@ pezzetto di durata. Quelle tessere si mettono in fila e si dànno da leggere
 alla torre, esattamente come prima. L'addestramento avviene su video e
 immagini di durate, risoluzioni e proporzioni diverse. E la qualità cresce
 «sensibilmente» al crescere del lavoro speso ad addestrare: il confronto
-mostrato è fra lo stesso modello a cui si è fatto fare il lavoro base, poi
-quattro volte tanto, poi trentadue volte tanto, che è la regolarità del
-paragrafo qui sopra vista all'opera su un prodotto vero. È la ricetta DiT
+mostrato è fra lo stesso modello addestrato con il lavoro base, poi con
+quattro volte tanto, poi con trentadue volte tanto. Quel lavoro è una grandezza
+diversa da quella dei dodici DiT, e conviene non scambiarle: là si contavano
+le operazioni di una passata sola e si misurava il FID, qui si conta il calcolo
+speso ad addestrare e i tre filmati si confrontano a occhio. Sono due membri
+della stessa famiglia, quella delle leggi di scala dei modelli di linguaggio,
+su due assi diversi. Ed è la ricetta DiT
 estesa di una dimensione: dove il Vision Transformer affettava un'immagine,
 qui si affetta un blocco di fotogrammi.
 
@@ -365,18 +423,20 @@ stanza: parla solo quando lo interrogano, e non sente quello che succede sul
 tavolo.
 
 MM-DiT fa entrare il consulente nella stanza. Le parole della richiesta e le
-tessere dell'immagine diventano due file di lettori seduti allo stesso
+tessere dell'immagine si siedono in due file allo stesso
 tavolo, e a ogni piano della torre si guardano a vicenda: le tessere guardano
-le parole, come già facevano, ma anche le parole guardano le tessere. La parola
+le parole, come già facevano in Stable Diffusion, ma adesso anche le parole
+guardano le tessere. La parola
 «acquerello» può accorgersi di che cosa sta effettivamente succedendo nel
 disegno, e regolarsi. Ciascuna delle due file conserva un mestiere proprio (chi
-legge parole e chi legge tessere non fa lo stesso lavoro, e ha strumenti suoi),
-ma si parlano da pari.
+elabora parole e chi elabora tessere non fa lo stesso lavoro, e ha strumenti
+suoi), ma si parlano da pari.
 
 La regia con l'auricolare non se ne va: a ogni piano continua a dire a che
-punto della pulitura siamo e che aria generale deve avere il quadro. A cambiare
-mestiere sono le parole della richiesta, che da istruzione arrivata da fuori
-diventano lettori al tavolo.
+punto della pulitura siamo e che aria generale deve avere il quadro. Quell'aria
+generale è la richiesta riassunta in un pugno di numeri, che è cosa diversa
+dalle sue parole una per una; le parole per esteso sono adesso l'altra fila al
+tavolo, e non arrivano più dall'auricolare.
 
 `````
 
@@ -400,11 +460,14 @@ restauratore: il latente passa da 4 a 16 canali, cioè da quattro a sedici
 numeri per ogni casella della scheda. È la correzione diretta
 del limite discusso nella sezione precedente, cioè il soffitto che il
 compressore impone alla qualità finale; a parità di fattore di compressione,
-più canali significano una ricostruzione nettamente migliore, ed è una delle
+più canali significano una ricostruzione nettamente migliore, e nel lavoro di
+Esser e colleghi il FID di ricostruzione dell'autoencoder scende da $2{,}41$
+con quattro canali a $1{,}06$ con sedici. È una delle
 ragioni per cui le scritte e i dettagli fini smettono di essere il difetto
 caratteristico della famiglia. Chi legge il capitolo in ordine ha visto
-presentare l'archivista come un accorgimento per risparmiare tempo: questa è la
-misura di quanto quell'accorgimento pesasse anche sulla qualità.
+presentare l'archivista come un accorgimento per risparmiare tempo: quei due
+numeri sono la misura di quanto quell'accorgimento pesasse anche sulla
+qualità.
 
 La terza novità tocca il cuore del capitolo, cioè il modo stesso di andare dal
 rumore all'immagine. Stable Diffusion 3 abbandona la catena di rumore di DDPM
@@ -417,7 +480,7 @@ parole e una con la matematica.
 
 ```{figure} ../figures/flow-matching-traiettorie-dritte.svg
 :name: fig-traiettorie-dritte
-:alt: "Due percorsi fra gli stessi due estremi, un cerchio «rumore» a sinistra e un cerchio «dati, immagine» a destra. In alto, in terracotta, quello della diffusione: una linea che serpeggia, con nove puntini a segnare le fermate. In basso, in teal, quello del flow matching: una freccia dritta con tre sole fermate."
+:alt: "Due percorsi fra gli stessi due estremi, un cerchio «rumore» a sinistra e un cerchio «dati, immagine» a destra. In alto, in terracotta, quello della diffusione: una linea che serpeggia, con nove puntini a segnare le fermate. In basso, in teal, quello del flow matching: una freccia dritta con quattro sole fermate."
 :width: 92%
 
 Stessi estremi, due strade. Su una linea dritta si può camminare a grandi
@@ -448,7 +511,7 @@ la risposta giusta la sappiamo già: la linea l'abbiamo tracciata noi, e la sua
 direzione è sempre la stessa.
 
 Facciamo i conti su un numero solo. Non un pixel, che qui non si tocca: uno
-dei quattro numeri di una casella della scheda, su una scala che per comodità
+dei numeri di una casella della scheda, su un intervallo che per comodità
 prendiamo da 0 a 1. Nella scheda tutta rumore vale 0,2; nella scheda
 dell'immagine finita vale 0,8. A metà strada vale la media: 0,5. La marcia,
 quindi, va sempre in su, e di
@@ -474,8 +537,10 @@ differenza fra un tornante di montagna e una provinciale con qualche curva.
 
 `````{tab} Superiore
 
-Si fissa una scala continua $t \in [0, 1]$ (dato pulito a $t = 0$, rumore puro
-a $t = 1$, coerente con il verso del capitolo) e si collega ogni dato al
+Si fissa un tempo continuo $t \in [0, 1]$, al posto del passo intero della
+catena (dato pulito a $t = 0$, rumore puro a $t = 1$, coerente con il verso del
+capitolo; Liu e colleghi lo scrivono all'inverso, quindi aprendo il loro
+articolo la scala va rovesciata), e si collega ogni dato al
 rumore con un’interpolazione lineare:
 
 $$
@@ -483,13 +548,15 @@ $$
 \qquad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
-dove $\mathbf{x}_0$ è un dato del training set (in Stable Diffusion 3, un latente)
-ed $\boldsymbol{\epsilon}$ il rumore gaussiano. Lungo questo segmento la velocità è
-costante: $\mathrm{d}\mathbf{x}_t/\mathrm{d}t = \boldsymbol{\epsilon} - \mathbf{x}_0$. Il campo appreso punta
-dunque *verso il rumore*, e la generazione lo percorre all'indietro: è per
-questo che, camminando nel verso della generazione, lo stesso numero va letto
-col segno opposto. Il modello $\mathbf{v}_\theta(\mathbf{x}_t, t)$ viene
-addestrato a regredirla:
+dove $\mathbf{x}_0$ è un dato del training set (in Stable Diffusion 3 un
+latente, cioè lo stesso oggetto che nel resto del capitolo si scrive
+$\mathbf{z}$) ed $\boldsymbol{\epsilon}$ il rumore gaussiano. Lungo questo
+segmento la velocità è costante: $\mathrm{d}\mathbf{x}_t/\mathrm{d}t =
+\boldsymbol{\epsilon} - \mathbf{x}_0$. Il campo appreso punta dunque *verso il
+rumore*, e la generazione lo percorre all'indietro: è per questo che,
+camminando nel verso della generazione, lo stesso numero va letto col segno
+opposto. Il modello $\mathbf{v}_\theta(\mathbf{x}_t, t)$ viene addestrato a
+regredirla:
 
 $$
 \mathcal{L}_{\mathrm{CFM}} = \mathbb{E}_{\mathbf{x}_0,\, \boldsymbol{\epsilon},\, t}
@@ -507,18 +574,21 @@ stocastico, come già nel campionatore DDIM, ma qui il campo dell'ODE è appreso
 direttamente, non ricavato a posteriori da un predittore di rumore.
 
 Perché bastano meno passi? Il campo appreso in un punto è la media delle
-velocità di tutte le coppie $(\mathbf{x}_0, \boldsymbol{\epsilon})$ le cui interpolazioni
-passano di lì: le traiettorie marginali non sono esattamente rette, ma
-risultano molto meno curve di quelle dell'ODE associata alla diffusione
-variance-preserving, e l'errore di discretizzazione a parità di passi è
-più piccolo. Il flow matching di Lipman e colleghi
-{cite}`lipman2023flow` mostra inoltre che la famiglia dei cammini
-gaussiani è generale e include i cammini della diffusione come caso
-particolare: DDPM diventa un punto in uno spazio di scelte progettuali.
-Esser e colleghi {cite}`esser2024scaling` confrontano sistematicamente le
-varianti e adottano il rectified flow con un campionamento di $t$
-concentrato sugli istanti intermedi, i più difficili: in pratica Stable
-Diffusion 3 genera in poche decine di passi.
+velocità di tutte le coppie $(\mathbf{x}_0, \boldsymbol{\epsilon})$ le cui
+interpolazioni passano di lì: le traiettorie marginali non sono esattamente
+rette, ma risultano molto meno curve di quelle dell'ODE associata alla
+diffusione variance-preserving, e l'errore di discretizzazione a parità di
+passi è più piccolo. Il flow matching di Lipman e colleghi
+{cite}`lipman2023flow` mostra inoltre che la famiglia dei cammini gaussiani è
+generale e include i cammini della diffusione come caso particolare: DDPM
+diventa un punto in uno spazio di scelte progettuali. Esser e colleghi
+{cite}`esser2024scaling` confrontano sistematicamente le varianti e adottano il
+rectified flow con un campionamento di $t$ concentrato sugli istanti intermedi,
+i più difficili (una logit-normale centrata su $t = 0{,}5$): in pratica Stable
+Diffusion 3 genera in poche decine di passi. Il *reflow*, cioè la
+rettificazione ripetuta, riaddestra sulle coppie generate, raddrizza ancora le
+traiettorie e in Liu e colleghi porta al passo singolo. Stable Diffusion 3 non
+lo fa: quello che addestra è un flusso rettificato una volta sola.
 
 `````
 
@@ -627,10 +697,12 @@ la riga stampa. È un controllo che chi scrive codice fa di solito a mente
 zero smette di uscire, vuol dire che l'inizializzazione si è rotta.
 
 Il DiT vero differisce dal nostro nei numeri (nella taglia più grande, 28
-piani e appunti da 1152 numeri per lettore, contro i nostri 4 e 128), nel fatto
+piani e appunti da 1152 numeri per tessera, contro i nostri 4 e 128), nel fatto
 che
-predice qualcosa in più oltre al rumore, e nel modo di dire a ogni tessera
-dove si trova nella griglia. Ma non nella logica: quella sta tutta qui.
+predice, accanto al rumore, anche quanta incertezza lasciarsi attorno a ogni
+passo (i parametri della covarianza), e nel modo di dire a ogni tessera dove si
+trova nella griglia, che nel DiT è una tabella di posizioni fissata in partenza
+invece dei nostri numeri appresi. Ma non nella logica: quella sta tutta qui.
 
 ## Il conto, in due colonne
 
@@ -640,7 +712,7 @@ quella di un rincaro: già lo Stable Diffusion del 2022 chiedeva le
 centocinquantamila ore di calcolo che sappiamo, i suoi successori a miliardi di
 numeri interni ne chiedono un multiplo che nessuno dichiara, e su Sora OpenAI
 non pubblica né costi né dimensioni. La grandezza
-è diventata un ingrediente della ricetta, e le curve di questa sezione lo
+è diventata un ingrediente della ricetta, e le curve di Peebles e Xie lo
 dicono senza giri di parole.
 
 Usare un modello già addestrato, però, è un'altra storia, e in gergo si chiama
@@ -672,20 +744,21 @@ senza fermarci.
 
 ```{admonition} Da ricordare
 :class: important
-- DiT manda in pensione la rete di visione e mette al suo posto la torre di
-  lettori del capitolo sui Transformer. La scheda dell'archivista si taglia a
+- DiT manda in pensione la rete di visione e mette al suo posto la torre del
+  capitolo sui Transformer. La scheda dell'archivista si taglia a
   tessere, le tessere si mettono in fila come parole, e ogni tessera guarda
   tutte le altre invece dei soli vicini di casa. L'archivista e il lavoro sulle
   schede compresse restano quelli della sezione precedente.
 - Le istruzioni (a che punto della pulitura siamo, che cosa disegnare) non
-  entrano nella conversazione: arrivano da una regia che a ogni piano
-  regola le manopole. E il primo giorno tutte le manopole sono a zero, così
-  ogni piano parte lasciando passare tutto e impara strada facendo quanto
-  farsi sentire.
+  entrano nella conversazione: arrivano da una regia che ogni piano ascolta e
+  traduce nelle proprie manopole. E il primo giorno le manopole d'uscita sono
+  a zero, così ogni piano parte lasciando passare tutto, lavora senza che
+  nessuno lo ascolti, e impara strada facendo quanto farsi sentire.
 - Il risultato che ha fatto scuola: mettendo in fila dodici modelli (quattro
   taglie di torre per tre misure di tessera) per
   quanto lavoro fanno, la qualità migliora quasi in linea retta, e non
-  conta *come* quel lavoro sia stato speso. Non vuol dire che l'architettura
+  conta *come* quel lavoro sia stato speso, purché le tessere non si taglino
+  troppo grosse. Non vuol dire che l'architettura
   non conti: a parità di lavoro, il modo di dare le istruzioni cambia ancora
   molto. Vuol dire che, scelto un buon disegno, da lì in poi comanda il
   calcolo.
@@ -696,7 +769,9 @@ senza fermarci.
   tavolo invece che uno a consulenza dell'altro, dà all'archivista quattro
   volte più spazio per le sue schede, e sostituisce il sentiero tortuoso con
   una linea dritta, che si percorre a grandi falcate e quindi in molti
-  meno passi.
+  meno passi. Dritta per modo di dire: le strade che la rete impara sono la
+  media di milioni di linee che si incrociano, quindi qualche fermata serve
+  ancora.
 - Allenare questi modelli resta roba da centri di calcolo; usarli no. Ed è
   una storia di mattoni ricombinati, non di rivoluzioni improvvise.
 ```
@@ -714,15 +789,19 @@ senza fermarci.
   {cite}`rombach2022high`.
 - Il condizionamento su $t$ e classe entra via adaLN-zero: scala,
   traslazione e gate della layer norm generati da un MLP del condizionamento,
-  con inizializzazione a zero (ogni blocco parte come identità).
+  uno per blocco, con inizializzazione a zero: a fare del blocco l'identità è
+  il gate.
 - Risultato chiave: dentro la famiglia DiT la qualità scala con i Gflops in
-  modo regolare, comunque li si spenda, e le leggi di scala
-  {cite}`kaplan2020scaling` arrivano alla diffusione. Non è la fine
-  dell'architettura: le ablazioni dello stesso lavoro mostrano che a Gflops
-  pari il disegno del blocco cambia ancora molto il risultato.
+  modo regolare (correlazione $-0{,}93$), quasi comunque li si spenda, e le
+  leggi di scala {cite}`kaplan2020scaling` arrivano alla diffusione. Il «quasi»
+  sono le patch da otto, che a Gflops pari restano indietro di decine di punti
+  di FID. Non è la fine dell'architettura: le ablazioni dello stesso lavoro
+  mostrano che il disegno del blocco cambia ancora molto il risultato, e che il
+  disegno vincente è anche fra i più economici in Gflops.
 - Sora {cite}`brooks2024video` dichiara un diffusion transformer su
-  *spacetime patches* di video compressi, con qualità che cresce col
-  calcolo: la ricetta DiT estesa al tempo. Se ciò faccia dei video
+  *spacetime patches* di video compressi, con qualità che cresce col calcolo
+  speso ad addestrare, che è un asse diverso da quello dei dodici DiT: la
+  ricetta DiT estesa al tempo. Se ciò faccia dei video
   generativi dei "simulatori di mondo" è la domanda del capitolo sui World
   Model.
 - Stable Diffusion 3 {cite}`esser2024scaling` cambia tre cose: l'MM-DiT
@@ -731,7 +810,8 @@ senza fermarci.
   precedente) e il passaggio al rectified flow {cite}`liu2023rectified`,
   della famiglia del *flow matching* {cite}`lipman2023flow`: interpolazioni
   lineari dato–rumore, una velocità appresa per regressione, generazione
-  integrando un'ODE in poche decine di passi.
+  integrando un'ODE in poche decine di passi. Le traiettorie marginali però
+  restano curve, e senza il *reflow* i passi non scendono a uno.
 - Addestrare resta un affare da data center; usare no: i pesi aperti e
   il latente compresso tengono l'inferenza alla portata di una GPU
   domestica. La storia del capitolo è ricombinazione di mattoni noti, non
@@ -742,9 +822,10 @@ senza fermarci.
 
 La ricetta sta in tre gesti (comprimere, sporcare di rumore, insegnare a
 ripulire), ma quello che serve più avanti è l'abitudine con cui è stata letta,
-guardare un'architettura nuova cercandoci dentro i mattoni vecchi.
-«Verosimiglianza esatta» tiene la stessa domanda, generare, e cambia il metro
-di giudizio: chiede a un modello
-non soltanto di produrre dati plausibili, ma di dire con un numero preciso
-quanto lo sono, e mostra a che cosa serve quel numero fuori dalla generazione,
-comprimere e accorgersi di ciò che è fuori posto.
+guardare un'architettura nuova cercandoci dentro i mattoni vecchi. Il rectified
+flow ha appena legato il numero di fermate a quanto la strada curvi, e non a
+quanto sia lunga. Quella è una risposta di disegno, e ne esiste un'altra: la
+{doc}`sezione che risolve l'equazione invece di simularla
+</ModelliDiffusione/campionatori-veloci>` prende la stessa domanda dall'altro
+capo, e chiede quanto si può scendere con la rete che si ha già, senza
+riaddestrare niente.

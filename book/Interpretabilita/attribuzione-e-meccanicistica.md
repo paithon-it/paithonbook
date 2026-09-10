@@ -38,7 +38,7 @@ Conviene ricordare in due righe che cos'è, il gradiente, perché tutto quel che
 segue ci si appoggia. Immagina un apparecchio pieno di manopole e con un solo
 indicatore. La domanda «di quanto si sposta l'indicatore se giro questa manopola
 di un nulla?» ha una risposta tecnica che si chiama derivata; il
-**gradiente** è la stessa cosa fatta per tutte le manopole insieme, cioè
+gradiente è la stessa cosa fatta per tutte le manopole insieme, cioè
 l'elenco completo di quelle risposte, una per manopola.
 
 Nell'addestramento di una rete le manopole erano i numeri interni della rete
@@ -418,9 +418,9 @@ metodi popolari, la mappa cambia pochissimo, e resta riconoscibile come una
 sagoma dell'oggetto.
 
 Il test però non li boccia tutti. I colpetti pixel per pixel e i faretti di
-Grad-CAM reagiscono, e il test lo superano; i faretti con una precisazione che
+Grad-CAM reagiscono, e il test lo superano; Grad-CAM con una precisazione che
 gli autori mettono per esteso, cioè che la mappa cambia quando a essere
-cancellata è la parte di rete che il loro conto attraversa. A fallirlo sono due
+cancellata è la parte di rete che il suo conto attraversa. A fallirlo sono due
 metodi non ancora incontrati, *Guided BackProp* e *Guided Grad-CAM*: sono due
 raffinamenti costruiti sopra i primi due, con qualche accorgimento in più per
 avere mappe visivamente più nitide, e proprio quegli accorgimenti sono ciò che
@@ -550,7 +550,7 @@ strumenti che fanno questo conto si chiamano **attention rollout** e
 **attention flow**, e restituiscono una mappa sulle parole di partenza, spesso
 più sensata di quella del singolo strato.
 
-C'è infine un attrezzo complementare, il **probing** (sondaggio): per scoprire
+C'è infine un attrezzo complementare, il probing (sondaggio): per scoprire
 se a un certo piano della rete è scritta una data informazione (per esempio, se
 una parola è un nome o un verbo), si prova a leggerla da lì con lo strumento
 più semplice che c'è, un piccolo classificatore addestrato apposta. Se ci
@@ -583,6 +583,9 @@ $$
 
 dove $\mathbf{W}^{(l)}_{\text{att}}$ è la matrice di attenzione grezza dello
 strato $l$, $\mathbf{I}$ l'identità e $\mathbf{R}^{(l)}$ la matrice corretta.
+I due mezzi non sono una taratura: le righe dell'attenzione sommano a uno e
+quelle dell'identità pure, quindi sommandole si arriverebbe a due, e la
+rinormalizzazione riporta ogni riga a uno.
 Si moltiplicano poi le $\mathbf{R}^{(l)}$ fra loro per ottenere quanto di ogni
 token di ingresso è finito in ogni posizione all'altezza voluta. È l’attention
 rollout. La variante *attention flow* tratta la stessa struttura come un
@@ -959,7 +962,7 @@ volevamo poter vedere.
   (Adebayo e colleghi, 2018) mostrano che, cancellando ciò che il modello ha
   imparato, per parecchi metodi la mappa resta quasi identica: descriveva
   l'immagine, non la rete. I colpetti pixel per pixel e Grad-CAM il test lo
-  superano, i faretti per la parte di rete che il loro conto attraversa; a
+  superano, quest'ultimo per la parte di rete che il suo conto attraversa; a
   fallirlo sono due varianti più elaborate, *Guided BackProp* e
   *Guided Grad-CAM*; e gli Integrated Gradients stanno in mezzo, perché la mappa
   cambia ma la sagoma della foto resta lì a farla sembrare sensata. Una

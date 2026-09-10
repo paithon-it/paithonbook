@@ -286,7 +286,9 @@ la qualità estetica; e fuori dalle immagini, l'energia di una molecola o
 l'aderenza a una legge fisica. Nessuna di queste richiede di toccare il modello
 generativo. Si paga però al momento di generare: per sapere in che direzione
 ritoccare i pixel bisogna ripercorrere la rete all'indietro, e un passo guidato
-è un'andata più un ritorno, contro la sola andata di un passo normale.
+la attraversa due volte invece di una, all'andata e al ritorno: siccome il
+modello non si sta addestrando, il ritorno costa quanto l'andata, e il passo
+costa il doppio.
 
 C'è un accorgimento che fa la differenza fra funzionare e non funzionare, ed è
 istruttivo. La misura va applicata non all'immagine rumorosa che si ha in

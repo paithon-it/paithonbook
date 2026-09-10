@@ -1116,12 +1116,15 @@ risolvono problemi diversi:
 
 La ragione per cui il GIL, in pratica, morde meno di quanto sembri: NumPy e
 PyTorch lo rilasciano durante le operazioni pesanti, che girano in codice C o
-in kernel BLAS/CUDA già multi-thread al loro interno. Una moltiplicazione fra
-matrici usa tutti i nuclei anche da un solo thread Python. Il GIL torna a
-mordere sul codice Python puro: i cicli sui campioni, la decodifica delle
-immagini, il *preprocessing*. È esattamente lì che il `DataLoader` di PyTorch
-avvia processi con `num_workers`, e la stessa ragione per cui `DataParallel`,
-che pilota più GPU da un solo processo, è sconsigliato in favore di
+in routine di calcolo compilate apposta per il processore (BLAS) o per la
+scheda grafica (CUDA), già multi-thread al loro interno. Anche quelle si
+chiamano *kernel*, ed è la stessa parola con un mestiere diverso da quello del
+processo che tiene vivo un notebook. Una moltiplicazione fra matrici usa tutti
+i nuclei anche da un solo thread Python. Il GIL torna a mordere sul codice
+Python puro: i cicli sui campioni, la decodifica delle immagini, il
+*preprocessing*. È esattamente lì che il `DataLoader` di PyTorch avvia
+processi con `num_workers`, e la stessa ragione per cui `DataParallel`, che
+pilota più GPU da un solo processo, è sconsigliato in favore di
 `DistributedDataParallel`, che ne usa uno per GPU.
 
 ```{admonition} Il GIL non è per sempre

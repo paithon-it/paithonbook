@@ -152,9 +152,9 @@ Una parola sulle parole, già che ci siamo. Riassunto, embedding,
 rappresentazione e «spazio delle idee», in questo capitolo, indicano la stessa
 cosa: la manciata di numeri in cui una rete ha condensato quello che ha
 guardato. Cambia il registro, non l'oggetto. Fa eccezione *latente*, che nei
-paper indica anche un'altra cosa, e poco fa l'ha indicata: la $\mathbf{z}$
-della formula generale, che non riassume niente di visto ma dice quale dei
-futuri possibili si è realizzato.
+paper indica anche un'altra cosa: la variabile $\mathbf{z}$, la manopola che
+non riassume niente di visto ma dice quale dei futuri possibili si è
+realizzato.
 
 ```{figure} ../figures/jepa-architettura.svg
 :name: fig-jepa-architettura
@@ -171,7 +171,7 @@ singoli puntini, e la loss lo punisce anche su ogni foglia che trema; nel
 pannello B la previsione parte dal contesto e arriva al target senza mai uscire
 dallo **spazio delle rappresentazioni**, che è lo spazio delle idee del titolo:
 i dettagli irrilevanti restano fuori dalla porta. Quello del pannello B è lo
-schema che dà il nome a tutta questa linea di ricerca: **JEPA**,
+schema che dà il nome a tutta questa linea di ricerca: JEPA,
 *Joint-Embedding Predictive Architecture*, cioè «architettura che predice fra
 due riassunti»: la parola *joint*, congiunto, dice che i due riassunti vivono
 nello stesso spazio, ed è lì che si possono confrontare.
@@ -223,9 +223,11 @@ dei dieci di divario. Per raggiungerlo davvero gli servono centinaia di passi,
 e nel frattempo il bersaglio cambia idea solo al ritmo a cui l'allievo migliora
 *davvero*; verso la fine il dosaggio scende a zero, e l'insegnante non cambia
 più idea affatto. Delle due accortezze, quella che impedisce la truffa è
-l'insegnante senza voce in capitolo; la lentezza serve a rendere l'esercizio
-stabile, e, a toglierla, la truffa non ricomincia. È una soluzione empirica
-(perché funzioni così bene è ancora oggetto di studio) ma funziona.
+l'insegnante senza voce in capitolo: su un esercizio in miniatura la lentezza
+si può togliere e la truffa non ricomincia. Sui sistemi veri, però, nessuno la
+toglie, e chi li ha costruiti la dichiara necessaria: la lentezza fa qualcosa
+di più che rendere stabile l'esercizio, e che cosa esattamente è ancora
+oggetto di studio.
 
 `````
 
@@ -302,11 +304,10 @@ servono i trucchi artigianali con cui di solito si addestrano questi sistemi
 da chi progetta). Basta l'indovinello. E i risultati danno ragione alla
 scommessa: con appena l'1% delle etichette di ImageNet (una dozzina di foto
 etichettate per categoria) I-JEPA classifica meglio dei metodi che
-ricostruiscono i pixel: 73 risposte giuste su cento contro 71. E ci arriva con
-molto meno calcolo. Quel risparmio è
-facile capirlo al contrario: non è che ogni ripasso costi meno (costa anzi un
-pelo di più, c'è una rete in più da far girare), è che di ripassi ne servono
-cinque volte meno.
+ricostruiscono i pixel: 73 risposte giuste su cento contro poco più di 71. E ci
+arriva con molto meno calcolo. Quel risparmio è facile capirlo al contrario:
+non è che ogni ripasso costi meno (costa anzi un pelo di più, c'è una rete in
+più da far girare), è che di ripassi ne servono cinque volte meno.
 
 `````
 
@@ -641,7 +642,7 @@ un'immagine; qui le tessere nascono da un contenuto comune più rumore). Il
 modello vede 6 tessere di contesto e deve prevedere l’embedding (non i
 valori!) delle 2 tessere coperte. Il commento chiave è sull’asimmetria: il
 bersaglio non riceve gradiente, e per questo non può mettersi d'accordo con
-l'encoder. Quel «non riceve gradiente» ha un nome, **stop-gradient**, ed è la
+l'encoder. Quel «non riceve gradiente» ha un nome, stop-gradient, ed è la
 traduzione in codice dell'insegnante che non può lamentarsi del voto: è lui a
 tenere il sistema lontano dal collasso. L'EMA rende il bersaglio più lento e
 più stabile, cosa che nei sistemi veri conta parecchio, ma non è lei a reggere
@@ -756,7 +757,9 @@ ingegneria; la logica è tutta in queste righe.
   per rispondere sempre «boh»: si chiama collasso. A impedirlo è una cosa
   sola, che l'insegnante non riceva mai lamentele sul voto: non potendo
   contrattare, non può accordarsi al ribasso. Che sia anche una copia lenta
-  dell'allievo serve a rendere l'esercizio stabile, non a fermare la truffa.
+  dell'allievo serve a rendere l'esercizio stabile; su un esercizio in
+  miniatura la lentezza si può togliere senza che la truffa ricominci, ma sui
+  sistemi veri nessuno la toglie.
 - La prova sulle immagini è il gioco della cartolina strappata: si coprono
   quattro rettangoli grandi e si chiede di *descriverli*, non di
   ridisegnarli. Funziona, e impara con molto meno calcolo dei metodi che

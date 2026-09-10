@@ -4,10 +4,9 @@ Nel 2016 tre ricercatori dell'Università di Washington (Marco Tulio Ribeiro,
 Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
 Doveva guardare una fotografia e dire se ritraeva un husky o un lupo, e
 nessuno gliel'aveva insegnato a parole: l'aveva imparato da solo, guardando
-delle foto su cui qualcuno aveva già scritto la risposta giusta. Dare in pasto
-a un programma quegli esempi si chiama **addestrarlo**, e il programma che ne
-esce, quello che d'ora in poi risponde da solo sulle foto nuove, si chiama
-**modello**. È la parola che tornerà in ogni riga di questo capitolo.
+delle foto su cui qualcuno aveva già scritto la risposta giusta. Quegli esempi
+sono il suo addestramento, e il programma che ne è uscito è il modello: la
+parola che tornerà in ogni riga di questo capitolo.
 
 Il trucco stava nelle foto. Erano venti soltanto, poche apposta, e scelte a mano
 in modo che tutti i lupi comparissero su sfondo innevato e nessun husky lo
@@ -58,10 +57,8 @@ apriamo il programma e leggiamo cosa c'è scritto. Qui non funziona, e la
 ragione è che le regole di questo programma non le ha scritte nessuno. Il
 modello se le è ricavate da solo guardando gli esempi, e ciò che ne è uscito
 non è un elenco di frasi ma una tabella di numeri senza nome: milioni, nei
-modelli di oggi. Quei numeri si chiamano **parametri**. E il tipo di
-modello che li organizza a strati, dove il primo strato fa un po’ di conti sui
-dati in arrivo, il secondo rifà i conti sul risultato del primo, e così via fino
-in fondo, si chiama **rete neurale**.
+modelli di oggi. Sono i parametri della rete a strati che il {doc}`capitolo
+sulle reti neurali </RetiNeurali/overview>` ha montato pezzo per pezzo.
 
 Nessuno di quei numeri, preso da solo, significa qualcosa. Il modello non
 risponde «lupo» e basta: risponde con un punteggio, mettiamo 87 su 100 a favore
@@ -79,11 +76,10 @@ modello decide se concedere un mutuo, se un tumore è maligno o se rilasciare un
 imputato, la domanda «perché?» diventa una questione di fiducia e di giustizia.
 
 Da qui in avanti gli esempi cambieranno spesso faccia. Quando non sono
-fotografie, i dati stanno in una tabella: una riga per persona, e una
-colonna per ogni informazione che di lei si conosce, il reddito, l'età, i
-debiti in corso. Sono quelle colonne che il capitolo passerà il tempo a
-interrogare, e più avanti le chiameremo anche **feature**, che è il termine di
-mestiere.
+fotografie, i dati stanno in una tabella: una riga per persona, e una colonna
+per ogni informazione che di lei si conosce, il reddito, l'età, i debiti in
+corso. Sono quelle colonne, le feature, che il capitolo passerà il tempo a
+interrogare.
 
 La domanda «perché?», dicevamo, è anche una questione di legge. Il Regolamento
 generale sulla protezione dei dati europeo (GDPR, applicabile dal 2018) detta
@@ -144,8 +140,11 @@ davvero, e che l'accuratezza aggregata, per costruzione, non può vedere.
 ## Perché aprire la scatola
 
 Le ragioni per volere una spiegazione non sono una sola, e non hanno tutte lo
-stesso peso. Conviene elencarle, perché guidano *che tipo* di spiegazione
-cerchiamo.
+stesso peso. Hanno però una radice comune {cite}`doshi2017towards`: si vuole
+una spiegazione dove il problema non si è riusciti a scriverlo per intero, cioè
+dove il punteggio che il modello fa salire non dice tutto quello che davvero
+gli si chiede. Elencarle conviene lo stesso, perché guidano *che tipo* di
+spiegazione cerchiamo.
 
 - **Fiducia.** Un medico non delega una diagnosi a un sistema di cui non
   capisce il ragionamento. E senza una spiegazione non può nemmeno fare il
@@ -237,7 +236,7 @@ A ogni metodo di spiegazione si fanno tre domande.
 - Il modello si legge da sé, o va spiegato dopo? Alcuni modelli decidono
   con una catena di domande sì/no («il reddito supera i 30 000? se sì, l'età
   supera i 40? se no, rifiuta»). Disegnato, un modello così si biforca a ogni
-  domanda, e per questo si chiama **albero di decisione**: leggerlo è come
+  domanda, ed è l'albero di decisione già incontrato: leggerlo è come
   leggere una ricetta, e diciamo che è trasparente. Un modello con milioni
   di numeri dentro no: lì serve uno strumento esterno che lo interroghi *dopo*
   che ha finito di imparare, e una
@@ -405,21 +404,28 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
 
 # dieci gruppi: nove per imparare, uno per l'esame, e si gira dieci volte
+albero_alto = DecisionTreeClassifier(max_depth=3, random_state=0)
 foresta = RandomForestClassifier(n_estimators=300, random_state=0)
-for nome, m in [("alberello", albero), ("foresta casuale", foresta)]:
-    print(f"{nome:16} {cross_val_score(m, X, y, cv=10).mean():.1%}")
+for nome, m in [("alberello", albero), ("alberello più alto", albero_alto),
+                ("foresta casuale", foresta)]:
+    print(f"{nome:18} {cross_val_score(m, X, y, cv=10).mean():.1%}")
 ```
 
 ```text
-alberello        94.7%
-foresta casuale  96.0%
+alberello          94.7%
+alberello più alto 96.0%
+foresta casuale    96.0%
 ```
 
 Tanti pareri sbagliano meno di uno, e infatti la foresta indovina un po’ più
 dell'alberello: la differenza è di un punto e tre. In cambio, la logica
 della foresta non si stampa più, perché sono centinaia di ricette che votano
-invece di una sola. È in questo scambio che nascono i metodi del capitolo; su
-questi fiori, però, conviene poco.
+invece di una sola. È in questo scambio che nascono i metodi del capitolo.
+
+Quel punto e tre, però, misura il tetto che all'albero abbiamo messo noi per
+farlo stare in sette righe, non il prezzo della leggibilità. Concedendogli una
+domanda in più, un albero di profondità tre, che si stampa ancora tutto in una
+schermata, arriva dove arriva la foresta. Su questi fiori lo scambio non c'è.
 
 ## Una spiegazione può convincere ed essere falsa
 
@@ -501,7 +507,7 @@ questa: che chiarezza e bravura si paghino l'una con l'altra, cioè che un
 modello leggibile sia per forza più scarso di uno oscuro, e che quindi
 l'oscurità sia un prezzo che si paga volentieri per avere ragione più spesso.
 Chiamiamolo il presunto **scambio fra accuratezza e chiarezza**; sui fiori di
-poco fa lo abbiamo visto valere un punto e tre.
+poco fa non lo abbiamo trovato.
 
 Cynthia Rudin {cite}`rudin2019stop` sostiene una tesi tagliente: per le
 decisioni che pesano davvero (giustizia, sanità, credito) si dovrebbe
@@ -562,7 +568,8 @@ mantengano, e la stessa domanda vale per i pesi di attenzione della
 sembrano una spiegazione già pronta e non lo sono. E finiremo con il tentativo
 più ambizioso e più giovane, quello di smontare una rete pezzo per pezzo come
 un ingegnere apre un chip per capire che cosa fa ciascun componente: si chiama
-interpretabilità meccanicistica.
+interpretabilità meccanicistica, e i pezzi che prova a isolare, piccoli gruppi
+di neuroni che insieme svolgono un compito riconoscibile, si chiamano circuiti.
 
 Un filo, sopra a tutto, tiene insieme il capitolo con quello sull’AI
 responsabile: aprire la scatola nera non è un vezzo accademico, ma il primo
@@ -603,10 +610,11 @@ guardarci dentro.
   non basta guardare: bisogna provare a far fallire la spiegazione.
 - Il dibattito: si crede che un modello chiaro sia per forza più scarso di uno
   oscuro, ma sui dati a righe e colonne quello scambio spesso non c'è (sui
-  fiori dell'esempio la foresta guadagna un punto e tre). Per le decisioni
-  che pesano davvero (giustizia, sanità, credito) Cynthia Rudin dice quindi che
-  è meglio usare un modello trasparente invece di appiccicare una spiegazione a
-  una scatola nera. Su foto, testo e suoni, però, la scatola nera resta la più
+  fiori dell'esempio un albero con una domanda in più arriva dove arriva la
+  foresta, e resta leggibile). Per le decisioni che pesano
+  davvero (giustizia, sanità, credito) Cynthia Rudin dice quindi che è meglio
+  usare un modello trasparente invece di appiccicare una spiegazione a una
+  scatola nera. Su foto, testo e suoni, però, la scatola nera resta la più
   brava, e la spiegazione appiccicata dopo è l'unica finestra che abbiamo.
 ```
 

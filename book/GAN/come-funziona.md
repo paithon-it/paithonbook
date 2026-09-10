@@ -19,7 +19,7 @@ due i nomi, e cominciamo da che cosa entra e che cosa esce da ciascuno.
 ## Il generatore: dal rumore al dato
 
 Il generatore parte dal nulla, letteralmente da un pugno di numeri estratti a
-caso, che d'ora in poi chiamiamo **rumore** (è il termine tecnico, e non ha
+caso, che d'ora in poi chiamiamo rumore (è il termine tecnico, e non ha
 niente a che vedere con il suono: dice solo che quei numeri non significano
 niente in partenza), e deve costruire un dato che sembri autentico.
 

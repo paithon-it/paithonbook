@@ -77,8 +77,9 @@ dove $\beta > 0$ pesa il costo di descrizione. Con $\beta = 1$ si torna
 all’ELBO. Gli autori lo ricavano come lagrangiana di un problema vincolato,
 «massimizza la ricostruzione con $D_{\mathrm{KL}} \le \varepsilon$», dove
 $\varepsilon$ è il tetto che ci si dà e $\beta$ è il moltiplicatore: sotto
-quella luce la manopola diventa il prezzo ombra di un vincolo di capacità sul
-canale latente.
+quella luce la manopola è il prezzo di quel tetto, cioè dice di quanto
+migliorerebbe la ricostruzione se al costo di descrizione si concedesse un
+nat in più.
 
 Due osservazioni che tolgono al parametro l’aria di magia. La prima: $\beta$ era
 già lì, nascosto nella scelta della verosimiglianza. Con un decoder
@@ -260,9 +261,13 @@ spessore» né «l’inclinazione».
 
 Ed è la regola, non l’eccezione. Chiamiamo **fattori** gli ingredienti di cui un
 dato è fatto e che si vorrebbero tenere separati: per un volto, la luce, quanto
-la testa è girata, l’espressione. Nel 2019 Francesco Locatello e colleghi hanno
-addestrato più di dodicimila modelli di questa famiglia, con tutte le varianti
-proposte fino ad allora, per rispondere a una domanda sola: la manopola separa
+la testa è girata, l’espressione. La parola arriva dall’analisi fattoriale di
+Spearman, con cui il capitolo si apre, e vuol dire cause che concorrono a un
+effetto: i fattori di una moltiplicazione sono un’altra cosa. Tenerli separati
+in inglese si chiama *disentanglement*, ed è il nome con cui cercarne la
+letteratura. Nel 2019 Francesco Locatello e colleghi hanno addestrato più di
+dodicimila modelli di questa famiglia, su sette insiemi di dati e con le
+varianti più diffuse, per rispondere a una domanda sola: la manopola separa
 davvero i fattori? La risposta ha due parti, ed è una delle poche dimostrazioni
 di impossibilità che il libro incontra {cite}`locatello2019challenging`.
 
@@ -272,15 +277,37 @@ pratica. La ragione si vede con un esempio. Metti che l’archivista ci sia
 riuscito: la prima riga della scheda dice quanto la testa è girata, la seconda
 quanta luce c’è. Adesso prendi quelle due righe e falle ruotare insieme,
 come si gira di sbieco una coppia di assi disegnata su un foglio: al posto di
-«inclinazione» e «luce» restano due righe che ne portano un po’ per una.
+«inclinazione» e «luce» restano due righe che ne portano un po’ per una
+({numref}`fig-assi-girati`).
 
-Guarda che cosa non cambia. Il vocabolario comune non se ne accorge, perché non
-ha un verso suo: girarlo lo lascia identico a prima. Al copista basta leggere
-le righe girate all’indietro dello stesso angolo, e ridipinge esattamente i
-quadri di sempre. E il conto del costo torna identico. Niente, in
-quello che abbiamo chiesto alla macchina, dice che la coppia di partenza sia
-più giusta di quella girata: sono due descrizioni ugualmente buone, e la
-macchina non ha modo di preferire quella che a noi sembra sensata.
+```{figure} ../figures/assi-girati.svg
+:name: fig-assi-girati
+:alt: "Due riquadri affiancati con dentro la stessa nuvola di punti, negli stessi posti. A sinistra la nuvola è letta con una coppia di assi orizzontale e verticale, intestati «prima riga: inclinazione» e «seconda riga: luce»; a destra con una coppia di assi girata di 30 gradi. In tutti e due i riquadri è marcato lo stesso punto, con le linee tratteggiate che lo proiettano sui due assi: a sinistra si legge 0,50 e 0,90, a destra 0,88 e 0,53, e la sua distanza dal centro resta 1,03 in tutti e due."
+:width: 100%
+
+Ogni pallino è una scheda, e le due nuvole sono la stessa nuvola: a spostarsi
+sono gli assi, non le schede. Quella marcata resta dov’è, alla stessa distanza
+dal centro, e cambiano soltanto i due numeri con cui la si scrive: $0{,}50$ e
+$0{,}90$ diventano $0{,}88$ e $0{,}53$.
+```
+
+Guarda che cosa non cambia. Il vocabolario comune non ha un verso suo, è tondo
+come una moneta, e una moneta girata resta la stessa moneta: girarlo lo lascia
+identico a prima. Al copista basta leggere le righe girate all’indietro dello
+stesso angolo, e ridipinge esattamente i quadri di sempre. E il conto del costo
+torna identico. Nei quadri, quindi, non c’è niente che dica che la coppia di
+partenza sia più giusta di quella girata: sono due descrizioni ugualmente
+buone, e dai dati non arriva nessun motivo per preferire quella che a noi
+sembra sensata.
+
+Un motivo, per la verità, c’è, e non viene da quello che abbiamo chiesto: viene
+da come l’archivista è fatto. L’alone attorno a ogni scheda lo decide una riga
+per volta, quindi resta sempre squadrato sulle righe, e una scheda girata non
+la sa descrivere come descrive quella diritta. Le direzioni che finisce per
+scegliere somigliano a quelle della PCA {cite}`rolinek2019variational`: è un
+appiglio, e spiega perché qualcosa si separi invece di niente; ma la PCA guarda
+dove i quadri si sparpagliano di più, e quello non è l’elenco degli
+ingredienti.
 
 La seconda parte è sperimentale, ed è la più scomoda. Fra i dodicimila modelli,
 a contare non era quale metodo si fosse scelto. Contavano il sorteggio con
@@ -418,10 +445,11 @@ corrisponde nessuna immagine, e il sogno si spezzerebbe dopo pochi passi.
 - Girata troppo, l’archivista smette di scrivere: la scheda non governa più
   niente e il copista dipinge sempre lo stesso quadro.
 - La manopola compra spazio sulla scheda, non significato: muovendo una
-  riga cambiano più cose insieme. Che senza aiuti dall’esterno separare gli
-  ingredienti di un dato non si possa, e non per difficoltà pratica, è una
-  dimostrazione. E che in pratica conti più il sorteggio iniziale del metodo
-  scelto lo hanno mostrato, nel 2019, dodicimila modelli.
+  riga cambiano più cose insieme. È dimostrato, e non è una difficoltà
+  pratica: senza aiuti dall’esterno, e senza qualche idea in più su com’è
+  fatta la macchina, gli ingredienti di un dato non si separano. E che in
+  pratica contino più il sorteggio iniziale e le manopole del metodo scelto lo
+  hanno mostrato, nel 2019, dodicimila modelli.
 - La scheda può essere fatta di simboli invece che di numeri, e allora
   diventa un testo su cui si può mettere al lavoro la macchina del linguaggio.
   Costa un’altra idea, perché con i simboli il trucco delle correzioni non

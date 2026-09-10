@@ -89,3 +89,24 @@ istanti = [0.10, 0.35, 0.90]
 # della loss c'e' gia' e la formula non e' ancora cominciata, cosi' i tre fermi
 # danno i tre stati che la didascalia promette: l'andata, l'errore misurato, e
 # il ritorno con la catena completa.
+
+[temperature-top-p]
+istanti = [0.267, 0.767, 0.933]
+# perche': i default cadono male due volte. Il 50% e' l'istante esatto in cui
+# comincia la quarta tappa, cioe' dentro la transizione: le etichette sono gia'
+# quelle nuove e le barre ancora quelle vecchie, con due righe sparite e la
+# linea del taglio rimasta dov'era. E il 10% pesca la tappa di partenza, quella
+# senza taglio, quindi in stampa il confronto che la figura esiste per fare
+# (stessa soglia, taglio in un altro punto) non si vedeva in nessuno dei tre.
+# I tre istanti nuovi cadono dentro la sosta della seconda, della quinta e della
+# sesta tappa: il taglio dopo la terza riga a temperatura 1, lo stesso taglio
+# dopo la quarta a temperatura 2, e la massa ridistribuita.
+
+[linee-di-base]
+istanti = [0.30, 0.70, 0.95]
+# perche': le tappe sono cinque, e ai default il secondo fermo (50%) pesca il
+# naive, cioe' una riga piatta, e il terzo (90%) le quattro linee insieme. Il
+# fermo che manca e' quello del naive stagionale, l'unica tappa che porta
+# l'arco fra il marzo osservato e il marzo previsto, cioe' il conto con k che
+# il testo svolge in formula. Adesso i tre sono: la serie con la prima linea di
+# base, il naive stagionale con il suo arco, e le quattro insieme.

@@ -411,7 +411,7 @@ $$
 dove $\mathbf{x}$ è l'input del blocco, $\{\mathbf{W}_i\}$ i suoi pesi e
 $\mathbf{y}$
 l'uscita (a cui si applica poi la non-linearità). Il blocco apprende il
-**residuo** $\mathcal{F}(\mathbf{x}) = \mathcal{H}(\mathbf{x}) - \mathbf{x}$
+residuo $\mathcal{F}(\mathbf{x}) = \mathcal{H}(\mathbf{x}) - \mathbf{x}$
 rispetto alla mappa desiderata $\mathcal{H}$: azzerare $\mathcal{F}$ per
 ottenere l'identità è facile, ricostruire l'identità da zero no. In più il
 termine additivo $\mathbf{x}$ apre una via diretta al gradiente durante la

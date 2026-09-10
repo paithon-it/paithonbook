@@ -523,9 +523,9 @@ come $\nabla_\theta \log \pi_\theta(a\mid s)\,\hat{A}_t$, con il vantaggio
 $\hat{A}_t$ al posto di $R_t - \bar{R}_t$ (il cappello lo mettiamo qui per non
 confondere il vantaggio con l'azione $A_t$ delle formule precedenti; nel
 capitolo di deep RL, dove l'ambiguità non c'è, si scriverà $A_t$). Il
-*vantaggio* dell'actor-critic nasce qui, e nasce
-per la stessa ragione: ridurre la varianza senza spostare la media del
-gradiente.
+*vantaggio* dell'actor-critic, l'architettura che affianca a chi decide le
+mosse una seconda rete che le giudica, nasce qui, e nasce per la stessa
+ragione: ridurre la varianza senza spostare la media del gradiente.
 
 Che la baseline serva davvero si misura. Sul banco di prova centrato in zero il
 metodo arriva all’84,1%. Traslando tutte le ricompense di $+4$, cosa

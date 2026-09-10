@@ -12,9 +12,9 @@ numeri: una lunga fila di valori, o una tabella, o una pila di tabelle,
 comunque tanti numeri raccolti sotto un nome solo. `a + b` somma i due mucchi
 posizione per posizione.) Il kernel è l'unità di lavoro che gira davvero sulla
 GPU, e finora l'abbiamo solo nominata. Nella sezione sull'architettura abbiamo
-visto *chi* esegue (gli Streaming Multiprocessor, i warp da 32 thread); in quella
-sulla memoria, *da dove* arrivano i dati. Qui vediamo *cosa* eseguono: il
-kernel, appunto, e come lo si scrive.
+visto *chi* esegue (gli Streaming Multiprocessor, i warp da 32 thread); in
+quella sulla memoria, *da dove* arrivano i dati. Qui vediamo *cosa* eseguono:
+il kernel, appunto, e come lo si scrive.
 
 ## Un programma solo, un milione di esecutori
 
@@ -32,8 +32,8 @@ del numero in posizione 7 dell'array, e così via.
 Il kernel, dunque, si scrive per uno e si lancia su tutti. «Lanciare», qui, è
 il verbo tecnico: si passa alla GPU il programmino e le si dice su quanti
 esecutori farlo partire. Quell'insieme di esecutori è la griglia (in
-inglese *grid*) vista nell'architettura, cioè l'operazione intera, tutte le
-squadre messe insieme. Ognuno esegue lo stesso codice su dati diversi, e per
+inglese *grid*) vista nell'architettura, cioè l'operazione intera, tutti i
+blocchi messi insieme. Ognuno esegue lo stesso codice su dati diversi, e per
 sapere *su quali*, comincia col ricavare il proprio numero.
 
 `````{tab} Elementare
@@ -101,7 +101,10 @@ i = \text{blockIdx} \cdot \text{blockDim} + \text{threadIdx},
 $$
 
 dove $i$ è l'indice dell'elemento di cui *questo* thread si occupa
-({numref}`fig-kernel-indice`). Con blocchi da 4 thread, il thread
+({numref}`fig-kernel-indice`). Le tre variabili sono in realtà terne, con le
+componenti `.x`, `.y` e `.z`: griglia e blocchi si possono disporre su una, due
+o tre dimensioni, e su un array a una dimensione si usa la sola `x`, cioè
+`blockIdx.x * blockDim.x + threadIdx.x`. Con blocchi da 4 thread, il thread
 `threadIdx=2` del blocco `blockIdx=1` lavora sull'elemento
 $1 \cdot 4 + 2 = 6$. Da lì in poi il kernel è codice ordinario (legge `x[i]`,
 calcola, scrive `y[i]`) con la sola avvertenza che l'ultimo blocco può sforare
@@ -132,18 +135,24 @@ programmazione con cui si parla alle macchine quando si vuole controllare tutto:
 potente, e faticoso. Chi lo usa deve calcolarsi gli indici a mano, decidere in
 quale memoria mettere ogni numero, tenere a mente i dettagli della scheda che
 ha davanti. Nel 2019 Philippe Tillet ha proposto un'alternativa che ha cambiato
-le carte in tavola: **Triton** {cite}`tillet2019triton`, un modo di scrivere
-kernel *dentro* Python.
+le carte in tavola, **Triton** {cite}`tillet2019triton`: un linguaggio che
+ragiona a *tessere*, cioè a riquadri di dati di forma fissa, invece che al
+singolo esecutore. Quella prima versione era ancora un dialetto del C, e la
+riscrittura *dentro* Python, quella con cui i kernel Triton si scrivono oggi,
+arriva nel 2021, quando Tillet la pubblica da OpenAI
+{cite}`tillet2021triton`.
 
 Il motivo per cui ci riguarda da vicino è che Triton non serve solo a chi
-scrive kernel a mano. Quando in «Prestazioni e scala» si chiedeva a PyTorch di
-riscriversi il programma in forma più efficiente, la lingua in cui PyTorch se
-lo riscrive è proprio questa: guardare un kernel Triton significa vedere che
-cosa quella riga fabbrica.
+scrive kernel a mano. Quando la sezione {doc}`«Prestazioni e scala»
+</PyTorch/prestazioni>` chiedeva a PyTorch di riscriversi il programma in forma
+più efficiente, con la riga `torch.compile`, la lingua in cui PyTorch se lo
+riscrive è proprio questa: guardare un kernel Triton significa vedere che cosa
+fabbrica quella riga.
 
-Ecco un kernel che calcola in un colpo solo $y = \max(0,\; a x + b)$. In
-parole povere: prendi ogni numero della lista, moltiplicalo per $a$, aggiungi
-$b$ e, se il risultato viene negativo, sostituiscilo con uno zero. Con $a = 2$
+Ecco un kernel che calcola in un colpo solo
+$\mathbf{y} = \max(0,\; a \mathbf{x} + b)$. In parole povere: prendi ogni
+numero della lista, moltiplicalo per $a$, aggiungi $b$ e, se il risultato
+viene negativo, sostituiscilo con uno zero. Con $a = 2$
 e $b = 1$: da $3$ esce $7$; da $-4$ uscirebbe $-7$, che diventa $0$.
 Quell'ultima mossa («se è sotto zero, metti zero») è la ReLU incontrata fra le
 {doc}`funzioni di attivazione </RetiNeurali/funzioni-attivazione>` delle reti
@@ -184,34 +193,39 @@ C'è una differenza di *taglia* rispetto all'esercito di prima. Con CUDA (il
 modo di programmare le GPU aperto da NVIDIA) l'ordine si dà al singolo soldato,
 che si occupa di una cassetta sola. In Triton lo si dà a un'intera squadra:
 «voi della seconda squadra, occupatevi delle cassette dalla 1024 alla 2047».
-Le squadre qui sono da 1024, molto più grandi delle quattro persone di poco fa,
-ed è la riga `BLOCK_SIZE=1024` del codice.
+Il lotto che tocca a ogni squadra è di 1024 cassette, molto più delle quattro
+di poco fa, ed è la riga `BLOCK_SIZE=1024` del codice. Quante persone abbia la
+squadra, invece, in quell'ordine non c'è scritto: se non lo dici lo decide
+Triton, e le cassette restano comunque più delle persone, perché ognuna ne
+lavora parecchie.
 
-La misura della squadra non si sceglie a piacere: dev'essere una potenza di
-due, 256, 512, 1024. Le ragioni sono due, una per ciascuno dei due mestieri.
-I lavoratori marciano in plotoni da 32, quindi una squadra che non sia un
-multiplo di 32 lascerebbe l'ultimo plotone mezzo vuoto; e chi traduce l'ordine
-sa spezzare in parti uguali solo le taglie che si dimezzano fino in fondo, e su
-una taglia come 96 (che pure di 32 è multiplo) si ferma e protesta invece di
-provarci. Quale potenza di due, invece, non si sa a tavolino: dipende dalla
-scheda che si ha davanti e dal conto che le si sta chiedendo, e il modo di
-trovarlo è provarne qualcuna e cronometrare. Quel numero
-però va scritto nell'ordine prima che l'ordine parta, non deciso per strada: chi
-traduce l'ordine vuole saperlo in anticipo, così prepara istruzioni tagliate
-apposta per squadre di quella taglia.
+La misura del lotto non si sceglie a piacere: dev'essere una potenza di due,
+256, 512, 1024. Le ragioni sono due, una per ciascuno dei due mestieri. I
+lavoratori marciano in plotoni da 32, quindi un lotto che non sia un multiplo
+di 32 lascerebbe l'ultimo plotone con delle corsie vuote; e chi traduce
+l'ordine sa spezzare in parti uguali solo le taglie che si dimezzano fino in
+fondo, e su una taglia come 96 (che pure di 32 è multiplo) si ferma e protesta
+invece di provarci. Quale potenza di due, invece, non si sa a tavolino: dipende
+dalla scheda che si ha davanti e dal conto che le si sta chiedendo, e il modo
+di trovarlo è provarne qualcuna e cronometrare. Quel numero però va scritto
+nell'ordine prima che l'ordine parta, non deciso per strada: chi traduce
+l'ordine vuole saperlo in anticipo, così prepara istruzioni tagliate apposta
+per squadre di quella taglia.
 
-Poi si conta quante squadre servono, e come sempre qualcuno avanza. Un milione
-di cassette in squadre da 1024 fa 976 squadre piene e un resto di 576 cassette:
-si mandano 977 squadre, e nell'ultima 448 persone restano senza cassetta. Per
-loro vale la riga di prima, chi supera l'ultima cassetta si ferma, ed è la riga
-del codice che marca quali indici sono buoni.
+Poi si conta quanti lotti servono, e come sempre qualcosa avanza. Un milione
+di cassette in lotti da 1024 fa 976 lotti pieni e un resto di 576 cassette:
+di squadre ne partono 977, e l'ultima ha in mano un lotto in cui 448 cassette
+non esistono. Per quelle vale la riga di prima, chi supera l'ultima cassetta si
+ferma, ed è la riga `mask` del codice, quella che marca quali indici sono
+buoni.
 
-Come le mille e passa persone si spartiscano il lavoro dentro la squadra non è
-più affar tuo: lo decide Triton, che sa come tenere occupati i lavoratori della
-GPU meglio di quanto faresti a mano. Tu ragioni a squadre; il **compilatore**,
-cioè il programma che traduce quello che scrivi in istruzioni per la macchina,
-scende ai dettagli. È per questo che un kernel Triton sta in dieci righe di
-Python leggibile invece che in una pagina di C.
+Come le persone della squadra si spartiscano poi il lotto non è
+più affar tuo: lo decide Triton, che tiene occupati i lavoratori della GPU
+quasi sempre come farebbe a mano un esperto. Tu ragioni a lotti; il
+**compilatore**, cioè il programma che traduce quello che scrivi in istruzioni
+per la macchina, scende ai dettagli. È per questo che un kernel Triton si
+scrive in Python leggibile, senza toccare né l'indice del singolo esecutore né
+la memoria in cui appoggiare i numeri.
 
 `````
 
@@ -239,21 +253,24 @@ CUDA (dove invece scriveresti esplicitamente cosa fa *un* thread) e un livello
 sotto PyTorch. `BLOCK_SIZE` è un `tl.constexpr`, cioè una costante nota a
 tempo di compilazione: Triton la usa per generare codice specializzato
 (srotolare cicli, dimensionare i registri), ed è uno dei pomelli su cui
-l'autotuning cerca il valore migliore.
+l’*autotuning* cerca il valore migliore, provandone diversi al primo lancio e
+tenendo il più veloce.
 
 E quel kernel non è illustrativo: gira. Non serve nemmeno una GPU per
 guardarlo lavorare, perché con la variabile d'ambiente `TRITON_INTERPRET=1`
-Triton esegue il kernel in un interprete sulla CPU, un thread per volta: con
-$a = 2$ e $b = 1$ da $3$ esce $7$ e da $-4$ esce $0$, cioè esattamente i numeri
-promessi qualche riga più su. E se si vuole vedere che cosa il compilatore ne
-fa, `triton.compile` lo traduce nel **PTX** (la lingua intermedia in cui NVIDIA descrive un
-programma per GPU, che il driver traduce poi nelle istruzioni della scheda che
-si ha davanti) per
-un'architettura scelta a tavolino, `sm_90` per esempio, senza che
-quell'architettura sia presente. Lì dentro il risultato si legge in linguaggio
-macchina: la moltiplicazione e la somma non compaiono come istruzioni separate,
-al posto delle due c'è una `fma.rn.f32` (*fused multiply-add*), cioè la fusione
-già avvenuta dentro una singola istruzione. Quello per cui una GPU vera serve
+Triton esegue il kernel in un interprete sulla CPU, un'istanza di programma
+per volta: con $a = 2$ e $b = 1$ da $3$ esce $7$ e da $-4$ esce $0$, cioè
+esattamente i numeri promessi. E se si vuole vedere che cosa il compilatore ne
+fa, `triton.compile` lo traduce nel **PTX** (la lingua intermedia in cui NVIDIA
+descrive un programma per GPU, che il driver traduce poi nelle istruzioni della
+scheda che si ha davanti) per un'architettura scelta a tavolino, `sm_90` per
+esempio, senza che quell'architettura sia presente. Lì dentro la
+moltiplicazione e la somma non compaiono come istruzioni separate: al posto
+delle due c'è una `fma.rn.f32` (*fused multiply-add*). È una fusione di un
+altro genere, dentro una singola istruzione invece che fra kernel: non
+risparmia né un lancio né un viaggio in memoria, e in cambio arrotonda una
+volta sola invece di due, quindi il numero che esce non è bit per bit quello
+di una moltiplicazione seguita da una somma. Quello per cui una GPU vera serve
 davvero è misurare quanto va veloce, non sapere che cosa calcola.
 
 `````
@@ -262,10 +279,11 @@ davvero è misurare quanto va veloce, non sapere che cosa calcola.
 
 Perché prendersi la briga di scrivere un kernel fuso come quello, invece della
 riga PyTorch pulita `y = torch.relu(a * x + b)`? Perché quella riga contiene
-tre operazioni (moltiplica, somma, azzera i negativi) e nel modo di
-eseguire di partenza, che si chiama *eager*, «impaziente», sono tre kernel
-distinti e non una cosa sola, lanciati uno dopo l'altro, e ogni lancio
-ha un prezzo.
+tre operazioni (moltiplica, somma, azzera i negativi) e nel modo di eseguire
+di partenza sono tre kernel distinti e non una cosa sola, lanciati uno dopo
+l'altro, e ogni lancio ha un prezzo. Quel modo si chiama *eager*, «impaziente»,
+perché esegue ogni operazione appena la incontra, senza aspettare di aver letto
+il resto del programma.
 
 `````{tab} Elementare
 
@@ -273,10 +291,11 @@ Ogni volta che lanci un kernel è come fare una telefonata per piazzare un
 ordine: c'è un costo fisso di «comporre il numero e spiegarsi» che paghi
 uguale, che l'ordine sia grande o minuscolo. Scrivere `relu(a * x + b)` in
 modo ingenuo sono tre telefonate: una per la moltiplicazione, una per la
-somma, una per la ReLU. E c'è di peggio del costo delle chiamate. A ogni
-telefonata, l'intero array viene tirato su dalla memoria, gli si fa un solo,
-misero conticino, e lo si rispedisce indietro, per poi ritirarlo su di nuovo
-alla telefonata dopo. Tre viaggi di andata e ritorno per un milione di numeri,
+somma, una per la ReLU. E c'è di peggio del costo delle chiamate, perché a
+ogni telefonata parte anche un camion, e quello si paga a merce trasportata.
+L'intero array viene tirato su dalla memoria, gli si fa un solo, misero
+conticino, e lo si rispedisce indietro, per poi ritirarlo su di nuovo alla
+telefonata dopo. Tre viaggi di andata e ritorno per un milione di numeri,
 per fare un lavoro che si poteva fare in un viaggio solo. **Fondere** i kernel
 vuol dire proprio questo: una telefonata sola, i dati salgono una volta, si
 fanno tutti e tre i conti mentre sono lì a portata di mano, e si riscrive una
@@ -309,7 +328,7 @@ una somma vettoriale fa circa $1$ FLOP ogni $12$ byte spostati (profondamente
 *memory-bound*). Tre op separate leggono e riscrivono l'array tre volte; il
 kernel fuso una sola. A parità di FLOP, tagliare i byte alza l'intensità
 aritmetica e sposta l'operazione verso destra sul roofline, dal tetto di banda
-verso quello di calcolo. È esattamente ciò che fa la **kernel fusion** di
+verso quello di calcolo. È esattamente ciò che fa la kernel fusion di
 `torch.compile`, descritta in «Prestazioni e scala»: TorchInductor riconosce
 le catene di operazioni fondibili e ne sintetizza un unico kernel Triton, così
 che la memoria venga letta e scritta una volta invece di $k$. Il guadagno
@@ -339,7 +358,9 @@ un colpo solo e le riscrive da sé come un ordine unico: fonde le telefonate al
 posto tuo, senza che tu debba scrivere niente. Le richieste davvero
 impegnative restano affidate agli specialisti (kernel scritti a mano dal
 costruttore della GPU); tutto il contorno di operazioni piccole viene
-accorpato. Meno telefonate, meno viaggi, stesso identico risultato.
+accorpato. Meno telefonate, meno viaggi, e lo stesso risultato salvo
+l'ultima cifra: facendo i conti tutti di fila si arrotonda meno volte, e in
+virgola mobile ogni arrotondamento si sente.
 
 `````
 
@@ -373,25 +394,24 @@ da 32), *da dove* arrivano i dati (la piramide della memoria) e *che cosa* si
 esegue (il kernel).
 
 Tre sezioni hanno però lasciato per strada parecchi mestieri, e conviene
-metterli in fila una volta per tutte, perché sono la stessa cosa vista da
-angoli diversi. La formica, il rilevatore del censimento, il soldato con il
-numero sulla divisa e il lavoratore alla scrivania sono tutti la stessa cosa:
-un thread. Con l'avvertenza dell'architettura, che nelle analogie si perde:
-il thread è il *compito*, non chi lo esegue; se qui sembrano coincidere è
-perché ogni lavoratore ha esattamente un compito. Il plotone da 32 e la squadra
-al tavolo comune sono il warp e il blocco: il primo è il gruppetto che
-marcia insieme, il secondo la squadra più grande che condivide il ripiano.
-L'officina con il caposquadra è lo Streaming Multiprocessor. La dispensa,
-il magazzino e l'armadio dall'altra parte della stanza sono sempre la stessa
-cosa, la memoria grande della scheda.
+metterli in fila una volta per tutte. Il thread è l'unità di lavoro più
+piccola, ed è il *compito*, non il pezzo di silicio che lo lavora: i compiti
+che una scheda ha in carico sono molti più delle postazioni vere, ed è proprio
+quell'eccedenza a tenerla sempre occupata. Il warp è il gruppetto di 32 thread
+che avanzano insieme, il blocco è il gruppo più grande che condivide la memoria
+veloce, lo Streaming Multiprocessor è l'officina che esegue i blocchi, e la
+memoria grande della scheda è quella da cui i dati arrivano e a cui tornano.
 
 Resta la domanda che tiene insieme le tre risposte: com'è fatto il kernel su
-cui una rete neurale spende quasi tutto il suo tempo, quello che moltiplica fra
+cui una rete neurale spende gran parte del suo tempo, quello che moltiplica fra
 loro due tabelloni di numeri. È la prossima sezione.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
+- Il rilevatore del censimento, il soldato con il numero sulla divisa e il
+  lavoratore alla scrivania erano sempre la stessa cosa, un thread; la dispensa
+  e il magazzino sempre la stessa, la memoria grande della scheda.
 - Un kernel è il programmino che gira sulla GPU. La cosa spiazzante è che
   non descrive il lavoro intero: descrive quello di un solo esecutore su un
   pezzetto di dato, e la GPU lo fa eseguire identico a un'intera folla.
@@ -399,17 +419,19 @@ loro due tabelloni di numeri. È la prossima sezione.
   proprio numero e capisce di quale pezzetto occuparsi: è il numero cucito
   sulla divisa dei soldati che consegnano i volantini. Senza, si
   accalcherebbero tutti sulla stessa cassetta.
-- Triton {cite}`tillet2019triton` è un modo di scrivere questi programmini
-  direttamente in Python, dando l'ordine a una squadra invece che al singolo
-  esecutore. È anche la lingua in cui PyTorch, quando gli si chiede di
-  ottimizzare, si scrive da sé i propri kernel.
+- Triton {cite}`tillet2019triton`, dal 2021 scrivibile dentro Python, dà
+  l'ordine a una squadra invece che al singolo esecutore. È anche la lingua in
+  cui PyTorch, quando gli si chiede di ottimizzare, si scrive da sé i propri
+  kernel.
 - Ogni volta che si lancia un kernel si paga una telefonata: un costo fisso
   che c'è sia per un ordine grande sia per uno minuscolo. E a ogni telefonata i
   dati fanno un viaggio di andata e ritorno dalla memoria.
 - Fondere più operazioni in un kernel solo vuol dire fare una telefonata al
-  posto di tre e un viaggio al posto di tre: stesso risultato, molto meno
-  tempo. È il grosso di quello che fa quella riga di `torch.compile` vista nel
-  {doc}`capitolo su PyTorch </PyTorch/overview>`.
+  posto di tre e un viaggio al posto di tre, e molto meno tempo. Si guadagna
+  però solo dove il trasporto pesa più del conto: se su ogni numero ci fosse
+  molto da calcolare, fondere non cambierebbe niente. È il grosso di quello
+  che fa quella riga di `torch.compile` vista nella sezione
+  {doc}`«Prestazioni e scala» </PyTorch/prestazioni>`.
 ```
 `````
 
@@ -421,9 +443,10 @@ loro due tabelloni di numeri. È la prossima sezione.
   (stile SPMD/SIMT). Ogni thread calcola il proprio indice globale
   $i = \text{blockIdx} \cdot \text{blockDim} + \text{threadIdx}$ per scegliere
   il dato su cui lavorare {cite}`nickolls2008scalable`.
-- Triton {cite}`tillet2019triton` permette di scrivere kernel in Python
-  ragionando a *blocchi* di lavoro (non a singoli thread): è il linguaggio in
-  cui `torch.compile` (via TorchInductor) genera i suoi kernel fusi.
+- Triton {cite}`tillet2019triton`, dal 2021 scrivibile in Python, permette di
+  ragionare a *tessere* di dati invece che a singoli thread: è il linguaggio
+  in cui `torch.compile` (via TorchInductor) genera i suoi kernel fusi su GPU,
+  mentre su CPU Inductor emette C++.
 - Ogni lancio di kernel ha un costo fisso, e ogni operazione
   elemento-per-elemento rilegge e riscrive l'intero array: una catena di op è
   tanti kernel e tanti viaggi in memoria (*memory-bound*).

@@ -288,9 +288,9 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
   riproducibilità, versionamento degli artefatti (dati, codice, modello),
   esperimenti tracciabili, il debito tecnico da tenere a bada.
 - {doc}`Dati e pipeline </MLOps/dati-e-pipeline>`, l'ingranaggio più grande e
-  più trascurato. Una *pipeline* è alla lettera una conduttura: la catena di
-  stazioni che prende il dato grezzo, lo pulisce e lo consegna pronto al
-  modello. Qui si vede come si raccoglie, come si controlla e come si fa in
+  più trascurato. La pipeline dei dati è la catena di stazioni che prende il
+  dato grezzo, lo pulisce e lo consegna pronto al modello. Qui si vede come si
+  raccoglie, come si controlla e come si fa in
   modo che il dato su cui il modello impara e quello su cui risponde siano
   costruiti allo stesso modo.
 - {doc}`Servire un modello </MLOps/deployment-e-serving>`, cioè come lo si

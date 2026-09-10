@@ -170,7 +170,7 @@ accortezze. La prima è misurare la distanza nella forma giusta: se le monete
 variano molto in peso e poco in diametro, un grammo di differenza conta meno di
 un millimetro. La seconda è la solita correzione per quanto sono comuni le due
 specie, che non sparisce nemmeno qui. Il confine che ne esce è una retta, ed è il
-metodo di Fisher, l'analisi discriminante **lineare**, LDA per gli amici.
+metodo di Fisher, l'analisi discriminante lineare, LDA per gli amici.
 
 Se invece le due specie hanno forme diverse (una varia tanto in peso, l'altra
 tanto in diametro) la vicinanza al centro da sola inganna. Una specie molto
@@ -179,7 +179,7 @@ tutte le monete dubbie; quindi dal suo giudizio si toglie tanto più quanto più
 quella specie è larga. Con una forma sola quello sconto sarebbe stato identico
 per le due specie e non avrebbe spostato il confine di un millimetro; con due
 forme diverse decide. Impari una forma per ciascuna, e il confine che ne esce si
-incurva. È l'analisi discriminante **quadratica**, QDA.
+incurva. È l'analisi discriminante quadratica, QDA.
 
 Sembra che convenga sempre la seconda, visto che può fare tutto quello che fa la
 prima. Non è così, ed è il compromesso bias-varianza in una delle sue forme più

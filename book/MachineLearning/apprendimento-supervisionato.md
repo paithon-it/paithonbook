@@ -164,7 +164,7 @@ tanto, che sia la seconda o la quinta.
 
 Il conto allora è di quelli che si fanno a mano. A ogni caratteristica si
 attacca un numero che dice quanto quella caratteristica conta: si chiama
-**peso**, e non ha niente a che vedere con i chili. Poi si moltiplica ogni
+peso, e non ha niente a che vedere con i chili. Poi si moltiplica ogni
 caratteristica per il suo peso, si sommano i risultati, e la somma è la
 risposta. Nient'altro: niente potenze, niente caratteristiche moltiplicate fra
 loro. Una risposta ottenuta così, moltiplicando e sommando e basta, in gergo si
@@ -217,7 +217,7 @@ sue misure. La direzione di massima discesa si chiama gradiente, e la
 camminata che ripete il passo discesa del gradiente. La lunghezza del
 passo la decidiamo noi, e cambia tutto, perché una corta ci mette un'eternità
 e una lunga scavalca il fondovalle e rimbalza da un fianco all'altro. Si
-chiama **learning rate** (il *tasso di apprendimento*), e a come si sceglie è
+chiama learning rate (il *tasso di apprendimento*), e a come si sceglie è
 dedicata una sezione intera.
 
 Nella nebbia ci si ferma nella prima conca, senza sapere mai che dietro il
@@ -715,7 +715,7 @@ Il cerchio disegnato in {numref}`fig-knn` è tutta la scelta: allargandolo si
 interpellano vicini via via più lontani, e la risposta diventa più stabile
 (pochi voti strani non la ribaltano) ma anche più grossolana, perché smette di
 accorgersi delle particolarità di quel pezzetto di quartiere. Con $k=1$ il
-modello ripete pari pari il vicino più prossimo, **rumore** compreso. Conviene
+modello ripete pari pari il vicino più prossimo, rumore compreso. Conviene
 fermarsi su questa parola, perché da qui in avanti torna in ogni sezione: il
 rumore non ha niente a che fare con il suono, è tutto ciò che nei dati è
 accidente invece che regola. L'errore di chi ha misurato, la casa venduta a

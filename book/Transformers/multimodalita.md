@@ -96,8 +96,8 @@ learning* che avevamo visto per le immagini, arrivato al linguaggio).
 **ELECTRA** {cite}`clark2020electra` attacca l'inefficienza del masked language
 modeling: mascherando il $15\%$ dei token, il segnale di addestramento arriva
 solo da quel $15\%$. La sostituisce con la ***replaced token detection***. Un
-**generatore** piccolo (un MLM ordinario) rimpiazza i token mascherati con
-campioni plausibili; il **discriminatore**, che è ELECTRA, riceve la sequenza
+generatore piccolo (un MLM ordinario) rimpiazza i token mascherati con
+campioni plausibili; il discriminatore, che è ELECTRA, riceve la sequenza
 così corrotta e classifica ogni posizione come originale o sostituita. Il
 segnale viene da tutta la sequenza, il compito binario è più economico del
 softmax sul vocabolario, e a valle si getta il generatore e si rifinisce il
@@ -138,7 +138,7 @@ L'idea di {numref}`fig-t5-text-to-text` sembra un dettaglio ingegneristico e
 invece anticipa il modo in cui oggi si usano i modelli di linguaggio. Se ogni
 compito si può scrivere come testo in ingresso e testo in uscita, allora
 cambiare compito non richiede di cambiare il modello: basta cambiare quello che
-gli si scrive davanti. Quel «quello che gli si scrive davanti» è il **prompt**,
+gli si scrive davanti. Quel «quello che gli si scrive davanti» è il prompt,
 la parola che da qui in avanti tornerà in tutto il capitolo, e che vuol dire
 esattamente questo: le istruzioni e il testo che si consegnano al modello prima
 che risponda. Dentro il prompt ci si può mettere la sola consegna a parole, o
@@ -373,7 +373,7 @@ per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
   studiano) da miliardi di parole contengono errori, stereotipi e contenuti
   tossici, e i modelli li assorbono. Se in quei testi le infermiere sono sempre
   donne e gli ingegneri sempre uomini, il modello impara quella regola come
-  impara la grammatica: sono i **bias**, cioè le distorsioni sistematiche dei
+  impara la grammatica: sono i bias, cioè le distorsioni sistematiche dei
   dati, che diventano distorsioni del modello.
 - Affidabilità: un modello autoregressivo (che scrive una parola alla
   volta, ogni volta scegliendo la continuazione più probabile di quello che ha

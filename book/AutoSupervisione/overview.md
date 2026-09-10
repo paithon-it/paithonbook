@@ -26,7 +26,7 @@ pre-addestramento di quasi tutti i modelli di cui si parla.
 
 Il nome è **apprendimento auto-supervisionato**, e la definizione sta in una
 riga: ci si inventa un compito la cui risposta corretta è ricavabile dai dati
-stessi, senza che nessuno la scriva. Un compito così si chiama un **pretesto**,
+stessi, senza che nessuno la scriva. Un compito così si chiama un pretesto,
 e il nome è onesto: risolverlo non interessa a nessuno. Interessa quello che il
 modello è costretto a capire per riuscirci, e che gli resta addosso quando il
 pretesto si butta via.
@@ -274,9 +274,9 @@ righe sono strada percorsa; l'ultima è quella che viene subito dopo.
 
 Cinque pretesti diversi e un meccanismo solo, che occupa sei capitoli perché il
 linguaggio ne prende due. La colonna di mezzo cambia sempre; la colonna di
-destra è sempre la stessa cosa, una **rappresentazione**, cioè il riassunto
+destra è sempre la stessa cosa, una rappresentazione, cioè il riassunto
 interno che il modello si costruisce e che tutto il resto usa come materia
-prima. Il pezzo di rete che produce quel riassunto si chiama **encoder**, ed è
+prima. Il pezzo di rete che produce quel riassunto si chiama encoder, ed è
 esattamente quello che si tiene quando il pretesto si butta.
 
 C'è poi un sesto caso, che non è un capitolo ma un organismo vivo. Nelle

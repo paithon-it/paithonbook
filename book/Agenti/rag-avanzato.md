@@ -3,10 +3,10 @@
 Ricapitoliamo in due righe di che cosa parliamo. RAG vuol dire questo:
 prima di far rispondere il modello, si va a cercare in un archivio i pezzi di
 testo che c'entrano con la domanda e glieli si mette davanti, così che risponda
-leggendo invece che ricordando. Quei pezzi di testo li chiameremo
-**passaggi**: sono i pezzetti in cui l'archivio è stato tagliato, lunghi una
-frase o un paragrafo. Chi va a cercarli è il cercatore (in inglese
-*retriever*), chi poi scrive la risposta è il generatore.
+leggendo invece che ricordando. Quei pezzi di testo sono i passaggi, i pezzetti
+in cui l'archivio è stato tagliato, lunghi una frase o un paragrafo. Chi va a
+cercarli è il cercatore (in inglese *retriever*), chi poi scrive la risposta è
+il generatore.
 
 «Su cosa salta il gatto nero?». Nella sezione {doc}`«Cercare per rispondere»
 </Transformers/rag>` il nostro cercatore in miniatura aveva risposto quasi
@@ -17,8 +17,9 @@ domanda. Era il quasi-pertinente, e non era un incidente di percorso.
 
 Era il sintomo di un limite di fondo. Se il passaggio giusto non viene
 ripescato, il generatore non ha modo di rimediare: gli resta solo ricordare, e
-ricordando un modello inventa, mentre leggendo no. La quota dei passaggi
-giusti che la ricerca riesce a ripescare ha un nome, il *recall*, ed è il
+ricordando un modello inventa molto più che leggendo, senza per giunta lasciare
+accanto la fonte con cui lo si potrebbe controllare. La quota dei passaggi
+giusti che la ricerca riesce a ripescare ha un nome, la *recall*, ed è il
 tetto di tutto il sistema: nessun accorgimento applicato dopo può
 recuperare ciò che la ricerca non ha trovato.
 
@@ -41,13 +42,15 @@ La RAG di base, così come l'abbiamo costruita, faceva tre gesti: trasformava
 domanda e passaggi in punti su una mappa del significato, prendeva i pochi
 passaggi più vicini alla domanda (quanti, lo decidiamo noi: diciamo i primi
 cinque) e li incollava nel foglietto di istruzioni che si dà al modello, il
-*prompt*, prima di fargli scrivere la risposta {cite}`karpukhin2020dense`. È
-un ottimo punto di partenza e un pessimo punto di arrivo.
+*prompt*, prima di fargli scrivere la risposta. Il cercatore è quello di DPR
+{cite}`karpukhin2020dense`; la catena intera, con il generatore in fondo, è
+quella di Lewis e colleghi. È un ottimo punto di partenza e un pessimo punto di
+arrivo.
 
 Questa sezione raccoglie le tecniche che spingono quel tetto più in alto. Sono
-tre, e si distinguono per dove intervengono lungo la catena di passi che porta
-dalla domanda alla risposta (una catena così, in gergo, si chiama
-**pipeline**): *prima* di cercare, migliorando la domanda; *dopo* aver
+tre, e si distinguono per dove intervengono lungo la pipeline, la catena di
+passi che porta dalla domanda alla risposta: *prima* di cercare, migliorando
+la domanda; *dopo* aver
 cercato, riordinando i candidati; e *attorno* all'intero ciclo, facendo
 decidere al modello se e quando cercare. Chiudiamo con la domanda che tiene
 onesto tutto il resto: come si misura se un sistema RAG funziona davvero.
@@ -64,7 +67,7 @@ riordino.
 ```
 
 Conviene tenere {numref}`fig-rag-avanzato` sott'occhio mentre si legge il
-resto. Dei suoi blocchi, due li sbrighiamo subito in poche righe (la doppia
+resto. Dei suoi riquadri, due li sbrighiamo subito in poche righe (la doppia
 ricerca e la fusione) e gli altri hanno una sezione ciascuno. La regola che
 governa l'insieme è una sola: il recupero grezzo, quello all'inizio, deve
 essere generoso (meglio cento candidati mediocri che dieci scelti male,
@@ -103,27 +106,27 @@ guarda la stessa catena da un'altra angolatura, non *dove* si interviene ma
 
 ```{figure} ../figures/extra-rag-spiegato.svg
 :name: fig-rag-due-fasi
-:alt: "Pipeline RAG divisa in due fasi. La prima, di indicizzazione, si esegue una volta sola: i documenti vengono spezzati in blocchi, ogni blocco convertito in un vettore e depositato in un archivio di vettori. La seconda, a ogni domanda: la domanda diventa un vettore, si recuperano i blocchi più vicini, e questi entrano nel prompt del modello, che risponde citando le fonti."
+:alt: "Pipeline RAG divisa in due fasi. La prima, di indicizzazione, si esegue una volta sola: i documenti vengono spezzati in passaggi, ognuno convertito in un vettore e depositato in un archivio di vettori. La seconda, a ogni domanda: la domanda diventa un vettore, si recuperano i passaggi più vicini, e questi entrano nel prompt del modello, che risponde citando le fonti."
 :width: 100%
 
 Due fasi con tempi diversi. Nella prima si prepara l'archivio: i documenti si
-spezzano in blocchi (nel disegno, *chunk*), ogni blocco diventa un punto sulla
-mappa del significato (un *embedding*) e va a finire nell'archivio di quei
-punti (*vector store*). Si paga una volta sola e si riusa sempre. La seconda
-fase, invece, si paga a ogni domanda: si cercano i blocchi più vicini
-(*retrieval*), si incollano nel prompt e il modello risponde citando le fonti.
+spezzano in passaggi (nel disegno, col nome inglese, *chunk*), ogni passaggio
+diventa un punto sulla mappa del significato (un *embedding*) e va a finire
+nell'archivio di quei punti (*vector store*). Si paga una volta sola e si riusa
+sempre. La seconda fase, invece, si paga a ogni domanda: si cercano i passaggi
+più vicini (*retrieval*), si incollano nel prompt e il modello risponde citando
+le fonti.
 ```
 
 La separazione di {numref}`fig-rag-due-fasi` conviene tenerla in testa per
 tutto il resto: le tecniche che seguono intervengono quasi tutte nella seconda
-fase, quella che si ripaga a ogni domanda ricevuta e che decide quanti secondi
-l'utente aspetta prima di vedere qualcosa (quell'attesa si chiama **latenza**,
-e tornerà più volte).
+fase, quella che si paga di nuovo a ogni domanda ricevuta e che decide quanti
+secondi l'utente aspetta prima di vedere qualcosa, cioè la latenza.
 
 ## Migliorare la domanda: riscrittura ed espansione
 
 Prima di entrare nel merito, una parola sul termine che tornerà in ogni riga
-di questa sezione. Nel gergo del recupero si chiama **query** il testo con cui
+di questa sezione. Nel gergo del recupero si chiama query il testo con cui
 si interroga l'archivio. Non è sempre la domanda dell'utente, ed è proprio
 questo il punto: la domanda è quello che una persona ha scritto, la query è
 quello che mandiamo davvero a cercare. Tutta la prima leva consiste nel non
@@ -184,9 +187,9 @@ primo giorno, quando l'archivio è nuovo e nessuno ci ha ancora cercato niente.
 `````{tab} Superiore
 
 Cercare con una risposta inventata invece che con la domanda ha un nome
-(HyDE, *Hypothetical Document Embeddings* {cite}`gao2023hyde`) e risolve
-un problema geometrico preciso: la
-asimmetria tra query e documenti. Una domanda («su cosa salta il gatto?»)
+(HyDE, *Hypothetical Document Embeddings* {cite}`gao2023hyde`) e attacca
+un problema geometrico preciso: l'asimmetria tra query e documenti.
+Una domanda («su cosa salta il gatto?»)
 e il passaggio che la soddisfa («il gatto salta sul muro») sono testi di forma
 diversa, e un encoder addestrato genericamente può collocarli non così
 vicini quanto vorremmo. HyDE aggira l'ostacolo: chiede a un LLM di generare
@@ -231,8 +234,10 @@ classifiche che mettono in alto, nei primi dieci posti, i documenti giusti, ed
 retriever addestrato sul dominio, ma in modo asimmetrico: su TREC DL19 passa
 da $62{,}1$ a $67{,}4$, su DL20 da $63{,}2$ a $63{,}5$, cioè tre decimi, che è
 niente. Con generatori più deboli lo
-peggiora su entrambe le raccolte, di poco. La lettura onesta è che HyDE
-risolve il problema di chi non ha etichette di rilevanza; dove quelle
+peggiora su entrambe le raccolte, di poco. La lettura onesta è quella degli
+autori: senza etichette di rilevanza HyDE regge il confronto con un retriever
+addestrato meglio di qualunque altro metodo che di etichette non ne usi, il che
+non vuol dire che lo pareggi ovunque; dove quelle
 etichette ci sono, è una cosa da provare e misurare, non un guadagno che si
 somma a occhi chiusi. Gli autori stessi lo inquadrano come una fase: HyDE il
 primo giorno, quando non c'è ancora niente su cui addestrare, e via via che il
@@ -302,14 +307,14 @@ far confrontare una domanda con un passaggio.
 
 Il primo è quello che abbiamo usato finora: si riassume il passaggio in un
 punto sulla mappa, si riassume la domanda in un altro punto, e si guarda
-quanto sono vicini. Ha un nome, **bi-encoder** («due codificatori», perché i
+quanto sono vicini. Ha un nome, bi-encoder («due codificatori», perché i
 due testi vengono letti separatamente, ciascuno per conto proprio), ed è
 velocissimo per una ragione sola: i punti dei passaggi si calcolano una volta
 per tutte, quando si prepara l'archivio, e poi si riusano a ogni domanda.
 
 Il secondo modo è dare i due testi insieme a un unico modello, che li legge
 uno accanto all'altro e dice, guardandoli entrambi, quanto il secondo risponde
-al primo. Si chiama **cross-encoder** («codificatore incrociato», perché
+al primo. Si chiama cross-encoder («codificatore incrociato», perché
 incrocia i due testi invece di tenerli separati), ed è molto più accurato,
 perché può accorgersi che una frase parla dello stesso argomento senza
 rispondere alla domanda. Il prezzo è che non si può precalcolare niente: il
@@ -321,7 +326,7 @@ Il primo stadio, il bi-encoder, fa il grosso: percorre l'archivio con le scale
 successive di poco fa e restituisce non i pochi passaggi che finiranno sotto
 gli occhi del modello, ma molti più candidati grezzi (cinquanta, cento)
 tra cui, si spera, ci sono anche i migliori. Il secondo stadio, il
-**reranker** cross-encoder, si applica *solo* a quella rosa ristretta e la
+reranker cross-encoder, si applica *solo* a quella rosa ristretta e la
 riordina con cura, promuovendo i passaggi che davvero rispondono e affondando
 i quasi-pertinenti. È il compromesso classico dell'ingegneria del recupero:
 recuperare tanto e alla svelta, poi riordinare poco e per bene.
@@ -362,16 +367,20 @@ pugno di confronti in più invece del doppio.
 
 Sulla forma esatta di quella crescita conviene però essere precisi, perché è
 il punto in cui si tende a promettere un teorema che non c'è. Gli autori
-argomentano una scalabilità logaritmica in $N$ e la misurano in un
+argomentano una scalabilità logaritmica in $N$, il numero di vettori
+nell'archivio, e la misurano in un
 caso solo (vettori casuali a otto dimensioni, dieci vicini cercati, recall
 tenuto fermo a $0{,}95$), dove osservano una complessità «non peggiore che
 logaritmica». È evidenza empirica su dati sintetici a bassa dimensione, non
-una garanzia dimostrata in generale. E in ogni caso il logaritmo è in $N$, non
-nella dimensione degli embedding: il prezzo di vettori più lunghi non
-sparisce, si sposta nel costo del singolo confronto.
+una garanzia dimostrata in generale. E il logaritmo è in $N$: il prezzo di
+vettori più lunghi non sparisce, si paga nel costo del singolo confronto e,
+sui dati veri ad alta dimensione, anche in uno scostamento dal logaritmo che
+gli autori stessi registrano.
 
 Formalmente il primo stadio ordina l'archivio con la similarità del bi-encoder
-$E_q(q)^\top E_p(d)$ e ne trattiene i primi $k_1$; il secondo riordina
+già incontrata, $E_q(q)^\top E_p(d)$ ($d$ è il passaggio, $E_p$ il suo encoder:
+le lettere sono quelle di HyDE, e «Cercare per rispondere» chiamava gli stessi
+due oggetti $z$ ed $E_z$), e ne trattiene i primi $k_1$; il secondo riordina
 questi $k_1$ con il punteggio del cross-encoder
 $\mathrm{score}(q, d) = \mathrm{CrossEnc}([q; d])$, dove $[q; d]$ è la
 concatenazione dei due testi data in input a un unico Transformer, e tiene i
@@ -382,7 +391,7 @@ cosa e di parecchi ordini di grandezza più grande). Il costo del reranking è
 $k_1$ inferenze di cross-encoder per query: accettabile con quei valori di
 $k_1$, proibitivo sull'intero archivio.
 
-Tra i due estremi esiste una via di mezzo elegante: l’**interazione tardiva**
+Tra i due estremi esiste una via di mezzo elegante: l’interazione tardiva
 di ColBERT {cite}`khattab2020colbert`. Invece di collassare ogni testo in
 *un* vettore (bi-encoder) o di rifare l'attenzione congiunta a ogni query
 (cross-encoder), ColBERT conserva un embedding *per token* e calcola la
@@ -410,16 +419,16 @@ riassunta da quattro numeri, uno per ciascuno dei quattro temi presenti: gatti,
 muri, automobili, cucina) e la stessa domanda; aggiungiamo lo stadio di
 reranking. Quanto due frasi si somiglino lo dice un numero che qui va da $0$
 (niente in comune) a $1$ (stessa direzione esatta): si chiama coseno,
-perché si ricava dall'angolo fra i due punti sulla mappa, ed è la stessa misura
-che avevamo usato per costruire il cercatore.
+perché si ricava dall'angolo fra le frecce che dall'origine arrivano ai due
+punti, ed è la stessa misura che avevamo usato per costruire il cercatore.
 
 Il cross-encoder è finto, non è un vero modello addestrato, ma imita la cosa
 che conta: legge la coppia. Il bi-encoder ha schiacciato ogni frase in un punto
 solo, e da lì «gatto» e «salta» sono ormai mescolati; il nostro reranker riceve
 invece *domanda e passaggio* e conta quanti concetti della domanda il passaggio
-copre, dando un premio a ogni coppia di concetti che compaiono insieme.
-È il punto: a rispondere non è il gatto, e nemmeno il saltare, ma un gatto *che
-salta*.
+copre. È lì la differenza: guardando i due testi insieme si vede se il gatto e
+il saltare ci sono tutti e due, e a rispondere non è il gatto, e nemmeno il
+saltare, ma un gatto *che salta*.
 
 La regola esatta, così il conto si può rifare a mente: ogni concetto della
 domanda che il passaggio copre vale un punto, e ogni coppia di concetti coperti
@@ -427,9 +436,12 @@ insieme ne vale due. La domanda porta tre concetti (gatto, nero, saltare); il
 passaggio giusto li copre tutti e tre, quindi fa $3$ punti per i concetti più
 $2 \times 3 = 6$ per le tre coppie che se ne ricavano, in tutto $9$. «Il gatto
 dorme accanto ai fornelli» copre il solo «gatto»: un concetto, nessuna coppia,
-un punto. Il premio alle coppie ce lo siamo scelto noi, ed è la sola cosa finta
-di tutto il blocco: in un cross-encoder vero questa preferenza per le
-combinazioni non si scrive a mano, si impara dagli esempi.
+un punto. Il premio alle coppie non sposta la classifica, perché il conto si
+semplifica nel quadrato dei concetti coperti ($3^2$ contro $1^2$): tutto il suo
+lavoro lo fa sulla *distanza* fra i punteggi, che è quello che serve qui. Ed è
+la sola cosa finta di tutto il blocco: un cross-encoder vero non conta le
+coppie, legge quali concetti sono e come stanno insieme nella frase, e non lo
+si scrive a mano, lo si impara dagli esempi.
 
 ```python
 import torch
@@ -476,8 +488,9 @@ for v, i in zip(val, cand):
 # Il bi-encoder ha collassato ogni frase in un unico vettore: cosi' un
 # passaggio che condivide solo il tema "gatto" gli sembra vicino. Un
 # cross-encoder legge domanda e passaggio INSIEME. Qui lo simuliamo con i
-# concetti dei due testi, premiando le CO-OCCORRENZE: a rispondere non e' il
-# gatto, ne' il saltare, ma un gatto CHE SALTA.
+# concetti dei due testi, allargando la distanza fra chi copre tutta la
+# domanda e chi ne copre un pezzo: a rispondere non e' il gatto, ne' il
+# saltare, ma un gatto CHE SALTA.
 concetti = {
     domanda: {"gatto", "nero", "saltare"},
     0: {"gatto", "nero", "saltare", "muro", "giardino"},  # copre tutto: risponde
@@ -491,7 +504,8 @@ concetti = {
 def cross_encoder(domanda, i):
     """Punteggio della COPPIA (domanda, passaggio), non del solo passaggio.
     Ogni concetto della domanda coperto vale 1; ogni coppia di concetti
-    coperti INSIEME vale 2, perche' e' la combinazione a rispondere."""
+    coperti INSIEME vale 2, e i due termini insieme fanno il quadrato dei
+    concetti coperti: stessa classifica, distanze molto piu' larghe."""
     coperti = concetti[domanda] & concetti[i]
     return len(coperti) + 2 * len(list(combinations(coperti, 2)))
 
@@ -546,17 +560,17 @@ punteggi indistinguibili l'unica regola disponibile è «prendine i primi $k$»,
 riempiendo i posti si finisce per infilare nel prompt un passaggio che non
 risponde. Con punteggi separati si può mettere una soglia: qui teniamo chi
 supera metà del punteggio migliore, cioè $4{,}5$, e l'unico a passare è il $9$.
-Metà, però, con un minimo assoluto sotto, o una domanda a cui nessun passaggio
-risponde li farebbe passare tutti: metà di zero è zero. Al generatore arriva un
-passaggio solo, quello giusto, senza compagnia fuorviante. Notiamo anche che
-«Il muro portante sostiene il solaio», che pure condivide una parola con la
-risposta, finisce a zero, ed è corretto: la domanda parlava di un gatto che
-salta, non di solai.
+Metà, però, vuole un minimo assoluto sotto, qui un punto: una domanda a cui
+nessun passaggio risponde li farebbe passare tutti, perché metà di zero è zero.
+Al generatore arriva un passaggio solo, quello giusto, senza compagnia
+fuorviante. Notiamo anche che «Il muro portante sostiene il solaio», che pure
+condivide una parola con la risposta, finisce a zero, ed è corretto: la domanda
+parlava di un gatto che salta, non di solai.
 
-Non abbiamo alzato il recall, perché il passaggio giusto era già stato
+Non abbiamo alzato la recall, perché il passaggio giusto era già stato
 recuperato. Abbiamo alzato un'altra cosa, la precisione: la quota di roba
 buona fra quella che consegniamo al generatore. Sono due misure gemelle e
-raccontano due guai diversi: il recall dice quanto ci siamo persi per strada,
+raccontano due guai diversi: la recall dice quanto ci siamo persi per strada,
 la precisione quanta spazzatura abbiamo consegnato insieme al buono. Il tetto
 del sistema resta il primo, perché ciò che non si trova non si recupera più; ma
 la seconda si può alzare a valle, ed è quello che abbiamo appena fatto,
@@ -584,10 +598,10 @@ rigidità in questo capitolo: lascia che sia il modello a decidere se,
 quando e quante volte cercare.
 
 C'è anche una via diversa al secondo dei due problemi, e non passa dal cercare
-più volte: passa dal cambiare la forma dell'archivio. Invece di paragrafi si
-tengono i fatti in una rete di collegamenti, come una mappa di città unite da
-strade, e allora incrociare due fatti vuol dire percorrere due strade. La
-sezione {doc}`sui knowledge graph </GraphNeuralNetwork/knowledge-graph>` la
+più volte: passa dal cambiare la forma dell'archivio. Invece di passaggi di
+prosa si tengono i fatti in una rete di collegamenti, come una mappa di città
+unite da strade, e allora incrociare due fatti vuol dire percorrere due strade.
+La sezione {doc}`sui knowledge graph </GraphNeuralNetwork/knowledge-graph>` la
 riprende per esteso.
 
 `````{tab} Elementare
@@ -598,12 +612,15 @@ rischia di copiare la pagina sbagliata. Lo studente maturo fa tre cose in più.
 
 Si chiede *se* gli serve il libro, e non se lo chiede una volta sola: a metà
 di una risposta può saltare fuori una data che a memoria non ha, e allora
-apre; alle domande che sa già risponde e basta.
+apre; alle domande che sa già risponde e basta. E quando la pagina che ha
+davanti gli basta anche per la frase dopo, non ne cerca un'altra: tiene
+quella.
 
 Quando lo apre, rilegge criticamente, con due domande diverse: «questa
 pagina risponde alla domanda che mi hanno fatto, o l'ho aperta a caso?» e,
 riga per riga, «quello che sto scrivendo sta davvero scritto qui, o l'ho
-aggiunto io?».
+aggiunto io?». E alla fine, che il libro l'abbia aperto o no, una terza:
+«quello che ho scritto serve a chi me l'ha chiesto?».
 
 E se una pagina non basta ne apre un'altra, e un'altra ancora, finché non ha
 in mano tutto quello che serve; se gli vengono in mente due modi di
@@ -612,14 +629,15 @@ che suona meglio.
 
 Non è più un gesto automatico (apri, copia) ma un piccolo ciclo di decisioni:
 mi serve cercare? ho trovato la cosa giusta? quello che ho scritto sta nelle
-pagine? mi manca ancora qualcosa? È la differenza tra consultare un libro e
-saperlo consultare.
+pagine? serve a chi me l'ha chiesto? mi manca ancora qualcosa? È la differenza
+tra consultare un libro e saperlo consultare.
 
-Le due cose hanno un nome. Un modello addestrato a chiedersi da sé se gli serve
-aprire il libro, e a rileggere con occhio critico quello che ha trovato, si
-chiama **Self-RAG**, cioè «RAG che si controlla da solo». Un agente che invece torna a cercare quante volte gli
-serve, perché cercare non è più un passo obbligato ma un attrezzo che prende
-quando vuole, fa il **RAG agentico**.
+Chiedersi da sé se serve aprire il libro, rileggere con occhio critico quello
+che si è trovato e guardare alla fine se la risposta serve davvero sono le
+mosse di un modello che si chiama **Self-RAG**, cioè «RAG che si controlla da
+solo». Tornare a cercare quante volte serve fa
+invece il **RAG agentico**: lì cercare smette di essere un passo obbligato e
+diventa un attrezzo che si prende quando si vuole.
 
 `````
 
@@ -628,10 +646,14 @@ quando vuole, fa il **RAG agentico**.
 Il primo dei due comportamenti è Self-RAG {cite}`asai2024selfrag`: il
 modello è addestrato a emettere, intercalati al testo, degli speciali **token
 di riflessione**. Un token *Retrieve* decide, passo per passo, se in quel
-momento serve recuperare (`sì`/`no`/`continua`); quando il recupero avviene,
-altri token *critici* valutano ciascun passaggio (è rilevante per la
-domanda? la frase generata è supportata dal passaggio, o lo travisa? la
-risposta è nel complesso utile?) e questi giudizi diventano un punteggio
+momento serve recuperare (`sì`/`no`/`continua`, dove il terzo vuol dire
+tenersi il passaggio che si ha già in mano invece di cercarne un altro);
+quando il recupero avviene, altri token *critici* danno tre giudizi diversi:
+se il passaggio è rilevante per la domanda, se la frase appena generata è
+supportata da quel passaggio o lo travisa, e se la risposta nel complesso
+serve a chi ha fatto la domanda, che è l'unico dei tre a non guardare nessun
+passaggio e viene emesso anche quando il recupero non c'è stato. Questi
+giudizi diventano un punteggio
 che seleziona la generazione migliore. Il modello impara così non solo a
 rispondere, ma a *criticare le proprie fonti e sé stesso*, riducendo il caso
 in cui un passaggio recuperato ma irrilevante trascina la risposta fuori
@@ -712,23 +734,23 @@ $$
 $$
 
 dove una *claim* è una singola affermazione verificabile estratta dalla
-risposta. La pertinenza della risposta valuta invece se la risposta
-indirizza la domanda posta (non un tema adiacente), e la precision/recall
-del contesto misurano la qualità del recupero a monte: quanti dei passaggi
-recuperati sono rilevanti (precision) e quanti dei rilevanti sono stati
-recuperati (recall); quest'ultimo è proprio il *tetto* da cui siamo partiti.
-Il quadro operativo di riferimento è **RAGAS** {cite}`es2024ragas`, che
-nell'articolo originale propone tre metriche senza risposte di riferimento
-(*reference-free*): fedeltà, pertinenza della risposta e rilevanza del
-contesto (una precision), affidate a un LLM che fa da giudice. La recall del
-contesto fa eccezione: per contare i rilevanti *mancati* serve una risposta di
-riferimento annotata, e infatti la libreria la calcola solo se gliene si dà
-una. Il reference-free è comodo perché non richiede un dataset etichettato a
-mano, ma eredita in blocco i limiti
-dell’LLM-as-a-judge che vedremo più avanti, parlando di
-{doc}`LLMOps </MLOps/llmops>` (il *position bias*, il *verbosity bias*,
-l'auto-preferenza), e va perciò calibrato
-contro un campione di giudizi umani, mai preso per oracolo.
+risposta. La pertinenza della risposta valuta invece se la risposta indirizza
+la domanda posta (non un tema adiacente), e la precision/recall del contesto
+misurano la qualità del recupero a monte: quanti dei passaggi recuperati sono
+rilevanti (precision) e quanti dei rilevanti sono stati recuperati (recall);
+quest'ultimo è proprio il *tetto* da cui siamo partiti. Il quadro operativo di
+riferimento è **RAGAS** {cite}`es2024ragas`, che nell'articolo originale
+propone tre metriche senza risposte di riferimento (*reference-free*), affidate
+a un LLM che fa da giudice: fedeltà, pertinenza della risposta e rilevanza del
+contesto, che al posto dei passaggi conta le frasi, cioè quante di quelle del
+contesto recuperato servono davvero a rispondere. La recall del contesto fa
+eccezione: per contare i rilevanti *mancati* serve una risposta di riferimento
+annotata, e infatti la libreria la calcola solo se gliene si dà una. Il
+reference-free è comodo perché non richiede un dataset etichettato a mano, ma
+eredita in blocco i limiti dell’LLM-as-a-judge che vedremo più avanti, parlando
+di {doc}`LLMOps </MLOps/llmops>` (il *position bias*, il *verbosity bias*,
+l'auto-preferenza), e va perciò calibrato contro un campione di giudizi umani,
+mai preso per oracolo.
 
 `````
 
@@ -791,7 +813,7 @@ chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
 
 ```{admonition} Da ricordare
 :class: important
-- Il recall del retriever è il vincolo dominante del sistema RAG: il
+- La recall del retriever è il vincolo dominante del sistema RAG: il
   generatore recupera dalla memoria parametrica solo una frazione di ciò che il
   recupero ha mancato ($11{,}8\%$ su NQ nel lavoro originale
   {cite}`lewis2020retrieval`). La RAG avanzata interviene *prima* di cercare
@@ -813,12 +835,12 @@ chi la usa dal dovere di scegliere bene cosa mettere nell'archivio.
   MaxSim token-a-token ed embedding precalcolabili. Il guadagno vero del secondo stadio
   è la separazione dei punteggi, che rende possibile una soglia.
 - RAG che si corregge: Self-RAG {cite}`asai2024selfrag` addestra il
-  modello a decidere *se* recuperare e a criticare i passaggi con token di
-  riflessione; il RAG agentico usa il recupero come strumento invocabile più
-  volte (multi-hop). Ogni giro in più costa latenza e denaro.
+  modello a decidere *se* recuperare e a criticare i passaggi e la risposta
+  con token di riflessione; il RAG agentico usa il recupero come strumento
+  invocabile più volte (multi-hop). Ogni giro in più costa latenza e denaro.
 - Valutare: fedeltà/*groundedness* (la risposta è supportata dai
   passaggi?), pertinenza della risposta, precision/recall del contesto.
-  RAGAS {cite}`es2024ragas` stima fedeltà, pertinenza e precision del
+  RAGAS {cite}`es2024ragas` stima fedeltà, pertinenza e rilevanza del
   contesto senza risposte di riferimento, con un LLM-giudice (la recall del
   contesto vuole una risposta annotata) e con i bias dell’LLM-as-a-judge di
   LLMOps.

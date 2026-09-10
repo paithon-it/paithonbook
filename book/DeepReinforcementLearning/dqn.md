@@ -251,8 +251,9 @@ raggiungerlo.
 `````{tab} Superiore
 
 Si mantiene una rete-target con parametri $\theta^{-}$, copia periodica dei
-$\theta$ ogni $C$ passi. La rete si allena minimizzando l'errore quadratico
-sull'equazione di Bellman:
+$\theta$ ogni $C$ passi. Quella dei $\theta$ è la rete che sceglie le mosse e
+si aggiorna a ogni passo, e per contrasto si chiama *rete online*: è lei che
+si allena minimizzando l'errore quadratico sull'equazione di Bellman:
 
 $$
 \mathcal{L}(\theta) = \mathbb{E}_{(s,a,r,s')\sim U(\mathcal{D})}

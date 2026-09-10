@@ -231,7 +231,7 @@ $$
 \mathbf{o}_t = \frac{\mathbf{S}_t\, \phi(\mathbf{q}_t)}{\mathbf{z}_t^\top\, \phi(\mathbf{q}_t)}.
 $$
 
-Qui $\mathbf{S}_t \in \mathbb{R}^{d\times d}$ è lo **stato**, una memoria chiave→valore
+Qui $\mathbf{S}_t \in \mathbb{R}^{d\times d}$ è lo stato, una memoria chiave→valore
 che a ogni passo incassa il prodotto esterno $\mathbf{v}_t\, \phi(\mathbf{k}_t)^\top$ (scrivi il
 value $\mathbf{v}_t$ sotto l'etichetta $\phi(\mathbf{k}_t)$); $\mathbf{z}_t$ è il normalizzatore che
 accumula le key trasformate; $\mathbf{o}_t$ è l'uscita. Leggere con $\phi(\mathbf{q}_t)$ significa

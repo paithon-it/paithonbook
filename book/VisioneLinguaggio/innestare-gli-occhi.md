@@ -420,7 +420,8 @@ domanda.
 
 `````{tab} Superiore
 
-Il punto si formula bene in termini di condizionamento. Un connettore con
+Il punto si formula bene in termini di condizionamento, cioè di che cosa si sa
+del compito nel momento in cui si sceglie che cosa tenere. Un connettore con
 $M \ll N$ è un canale a capacità fissa, e la funzione $g_\theta$ che decide che
 cosa passa viene appresa marginalizzando sulla distribuzione dei compiti
 visti in addestramento: produce il riassunto ottimo *in media*. All'inferenza

@@ -7,6 +7,13 @@ riga tirata su quel foglio le divide. Qui
 entra in gioco l'idea più affascinante di tutta la storia delle SVM, quella
 che le ha rese celebri: il **kernel trick**.
 
+Una parola, però, prima di cominciare. *Kernel* nel libro si è già visto due
+volte, e ogni volta voleva dire un'altra cosa: il programma che tiene lo stato
+di un notebook, e il pezzo di codice specializzato per il ferro su cui gira,
+quello che una libreria sceglie per il processore e che sulla scheda grafica ha
+il suo {doc}`corrispettivo </GPU/kernel-e-cuda>`. Qui non c'entra né con l'uno
+né con l'altro: è una regola che dice quanto due punti si somigliano.
+
 `````{tab} Elementare
 
 Solleva in aria i punti del bersaglio, e dai a ciascuno un'altezza pari alla

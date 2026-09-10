@@ -13,7 +13,7 @@ e un altro, oppure la stessa scena con i colori spostati), e chiediamo al
 modello di dire che si somigliano. La risposta che vince sempre è dire che
 tutte le foto si somigliano, descrivendole tutte allo stesso identico modo.
 Punteggio pieno, niente da correggere, e un modello che non ha guardato niente.
-Quella risposta vuota si chiama **collasso**.
+Quella risposta vuota si chiama collasso.
 
 Quindi la domanda vera non è «quale pretesto». È: che cosa impedisce la
 risposta vuota. Le quattro famiglie sono quattro risposte a questa domanda, e
@@ -28,7 +28,7 @@ avvicinarsi al gemello, quindi, ma anche di allontanarsi dai rivali, e la
 risposta vuota diventa impossibile per costruzione: se descrivo tutto allo
 stesso modo, non distinguo nessun rivale dal gemello e il punteggio crolla.
 
-È la famiglia **contrastiva**, già percorsa per intero in
+È la famiglia contrastiva, già percorsa per intero in
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`:
 la ricetta di base, il costo dei rivali, e la coda di rivali già elaborati che
 permette di averne molti senza doverli calcolare tutti insieme. Qui interessa
@@ -48,7 +48,7 @@ niente che allontani; a impedire il collasso è che le due reti non sono
 intercambiabili, una impara e l'altra insegue in ritardo, e una sola delle due
 ha un passaggio in più prima del confronto.
 
-È la famiglia della **distillazione**, perché una rete impara da quello che
+È la famiglia della distillazione, perché una rete impara da quello che
 dice l'altra, e anche questa è già stata percorsa in «Imparare a vedere senza
 etichette». Qui basta il posto nello schema: il collasso lo impedisce
 un'asimmetria, cioè una differenza costruttiva fra i due rami.

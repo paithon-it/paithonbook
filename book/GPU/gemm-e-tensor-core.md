@@ -281,7 +281,7 @@ condiviso della squadra, la shared memory). La logica è questa.
 Il tiling risolve il problema dei byte. Resta quello dei conti: anche
 saturando la banda, ogni moltiplicazione la deve pur fare qualcuno. Dal 2017
 quel qualcuno non è più il generico CUDA core, ma un'unità costruita apposta
-per il prodotto tra matrici: il **tensor core**.
+per il prodotto tra matrici: il tensor core.
 
 `````{tab} Elementare
 Un ragioniere compila a mano una tabellina di quattro righe per quattro
@@ -333,7 +333,7 @@ per unità (l'operazione è esposta al programmatore, a livello di warp, su
 tessere $16 \times 16$). Le forme sono quelle di Volta: le generazioni
 successive ne usano di più grandi, e da Hopper l'unità che emette l'istruzione
 non è più il singolo warp ma un gruppo di quattro. Il cuore è la
-**precisione mista** {cite}`micikevicius2018mixed`: gli ingressi $\mathbf{A}$ e
+precisione mista {cite}`micikevicius2018mixed`: gli ingressi $\mathbf{A}$ e
 $\mathbf{B}$
 sono a 16 bit (`float16` sulla V100; le architetture successive, da Ampere in
 poi, aggiungono anche `bfloat16`), mentre l'accumulo di $\mathbf{C}$ e

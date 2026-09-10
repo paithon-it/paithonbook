@@ -16,7 +16,7 @@ se una previsione vale qualcosa sono altre due domande: come le si dà un voto
 senza barare col futuro, e come si rappresenta il tempo perché un normale
 modello tabellare (uno che vuole una tabella di righe, come la regressione o
 gli alberi) possa impararlo. Le colonne di quella tabella si chiamano
-**feature**.
+feature.
 
 Il modo di valutare che vedremo si chiama **backtesting**, ed è esattamente
 quello che il nome dice: provare all'indietro. Si finge di essere in un giorno
@@ -141,11 +141,11 @@ una previsione? Il MAE e l'RMSE, già incontrati per la regressione, restano i
 mattoni di base, e la differenza fra i due sta tutta in come trattano gli
 sbagli grossi.
 
-Il **MAE** è la media degli errori presi senza segno: un giorno in cui hai
+Il MAE è la media degli errori presi senza segno: un giorno in cui hai
 previsto tre gradi in più e uno in cui ne hai previsti tre in meno per lui sono
 la stessa cosa, tre gradi di errore.
 
-L’**RMSE** fa tre cose in fila, e il nome le elenca al contrario. Prima eleva
+L’RMSE fa tre cose in fila, e il nome le elenca al contrario. Prima eleva
 al quadrato ogni errore, poi ne fa la media, e infine prende la radice
 quadrata del risultato, che è la R del nome (*root*) e serve solo a riportare
 il numero nell'unità di partenza, perché senza di essa un errore in gradi
@@ -290,7 +290,7 @@ l'intera previsione probabilistica {cite}`hyndman2021forecasting`.
 Attenzione però a cosa misura, perché non è la calibrazione. Essere un punteggio
 proprio significa che è minimizzata in media dalla distribuzione vera, e
 quindi che serve benissimo come funzione di costo in addestramento e come
-criterio di confronto complessivo. Ma premia insieme la **calibrazione** (la
+criterio di confronto complessivo. Ma premia insieme la calibrazione (la
 banda copre davvero quello che dichiara) e la **finezza** (la banda è stretta),
 e non sa dire quale delle due manca. Il conto, su dati gaussiani veri e mediando
 su nove livelli di quantile: un modello che azzecca la mediana ma dichiara
@@ -311,46 +311,82 @@ guarda se fa l'80%. La macchina per farlo è il walk-forward.
 ## Le linee di base che bisogna sempre battere
 
 Prima di dichiarare vittoria con una rete neurale, un modello va confrontato con
-avversari volutamente banali. Se non li batte, non serve. Noi li chiamiamo
-**linee di base**; in inglese si dice *baseline*, ed è la parola che si trova
-nel codice e nei manuali.
+avversari volutamente banali. Se non li batte, non serve. È l'idea di linea di
+base incontrata con gli {doc}`alberi decisionali e metodi ensemble
+</MachineLearning/alberi-ensemble>`, il termine di paragone volutamente
+semplice che un modello più elaborato deve battere; una serie storica ha i
+suoi.
 
-Le tre classiche {cite}`hyndman2021forecasting` si scrivono quasi tutte con
-quattro simboli: $y_t$ è il valore osservato all'istante $t$, il cappellino di
-$\hat{y}$ vuol dire «previsto» invece che «osservato», $h$ è quanti passi avanti
-si guarda e $m$ la lunghezza del ciclo stagionale (7 per una settimana, 12 per
-un anno di mesi).
+Le classiche sono quattro {cite}`hyndman2021forecasting`, e la prima è già in
+mano: rispondere sempre la media di tutto quello che si è osservato, che è la
+linea piatta contro cui la sezione precedente ha misurato i modelli classici.
+Le altre tre si scrivono con quattro simboli, e il naive stagionale ne aggiunge
+un quinto che definisce sul posto: $y_t$ è il valore osservato all'istante $t$,
+e in tutte e tre $t$ è l'ultimo istante osservato, l'origine da cui si guarda
+avanti; il cappellino di $\hat{y}$ vuol dire «previsto» invece che «osservato»;
+$h$ è quanti passi avanti si guarda, cioè l'orizzonte della previsione; e $m$ è
+la lunghezza del ciclo stagionale (7 per una settimana, 12 per un anno di
+mesi).
 
 - **Naive**, cioè ingenuo: la previsione per ogni istante futuro è l’ultimo
   valore osservato, $\hat{y}_{t+h}=y_t$. Sembra una resa, e invece è
-  durissimo da battere sulle serie che camminano alla cieca (i prezzi
-  finanziari, per dire): se ogni scossa sposta il livello per sempre, il punto
-  in cui la serie sta oggi *è* la migliore informazione che si ha su domani.
+  durissimo da battere sulle passeggiate aleatorie (i prezzi finanziari, per
+  dire), quelle che camminano alla cieca: se ogni scossa sposta il livello per
+  sempre, tutto ciò che è successo prima è già dentro il valore di oggi e
+  quello che verrà è ancora da estrarre, sicché il punto in cui la serie sta
+  adesso *è* la migliore informazione che si ha su domani. Vale finché non c'è
+  anche una deriva a tirare la serie da una parte: se c'è, il metodo giusto è
+  il drift, che chiude l'elenco.
 - **Naive stagionale**: si ripete il valore dello stesso istante del periodo
   precedente. Le vendite di questo dicembre sono quelle dello scorso
-  dicembre. Quando l'orizzonte supera un ciclo intero si ricicla sempre
-  l'ultimo ciclo *osservato*, invece di andare a pescare stagioni che non sono
-  ancora accadute: $\hat{y}_{t+h}=y_{t+h-m(k+1)}$ con
+  dicembre. Quando l'orizzonte supera un ciclo intero, però, «lo stesso
+  istante del periodo precedente» cade a sua volta nel futuro, e non è ancora
+  stato osservato; si ricicla allora sempre l'ultimo ciclo *osservato*:
+  $\hat{y}_{t+h}=y_{t+h-m(k+1)}$ con
   $k = \lfloor (h-1)/m \rfloor$, la stessa contabilità del metodo Holt-Winters
   della sezione precedente (le due parentesi tagliate in basso vogliono dire
-  «arrotonda per difetto», e servono a contare quanti cicli interi stanno dentro
-  l'orizzonte). Con i numeri: siamo a dicembre, i mesi fanno $m=12$, e vogliamo
-  prevedere quindici mesi avanti, cioè il marzo dell'anno dopo il prossimo.
-  Allora $k = \lfloor 14/12 \rfloor = 1$, e l'indice da andare a pescare è
-  $t + 15 - 12\cdot 2 = t - 9$, cioè nove mesi fa: il marzo scorso, che è
-  l'ultimo marzo che abbiamo davvero visto. È la linea di base da battere ogni
-  volta che c'è stagionalità.
+  «arrotonda per difetto», e servono a contare quanti cicli interi si chiudono
+  *prima* dell'istante da prevedere, che non è lo stesso che contarli dentro
+  l'orizzonte: con $h=m$, cioè un ciclo tondo avanti, $k$ vale zero e la
+  previsione è l'ultimo valore osservato). Con i numeri: siamo a dicembre, i
+  mesi fanno $m=12$, e vogliamo prevedere quindici mesi avanti, cioè il marzo
+  dell'anno dopo il prossimo. Allora $k = \lfloor 14/12 \rfloor = 1$, e l'indice
+  da andare a pescare è $t + 15 - 12\cdot 2 = t - 9$, cioè nove mesi fa: il
+  marzo scorso, che è l'ultimo marzo che abbiamo davvero visto. È la linea di
+  base da battere ogni volta che c'è stagionalità.
 - **Drift**, cioè deriva: come il naive, ma con una retta di tendenza
   tirata fra i due estremi della serie,
   $\hat{y}_{t+h}=y_t+h\cdot\frac{y_t-y_1}{t-1}$: la frazione è la salita media
   per passo (quanto è cresciuta la serie dal primo all'ultimo punto, diviso
   quanti passi ci sono voluti), e moltiplicandola per $h$ si prolunga in avanti
   il segmento che unisce il primo e l'ultimo punto. Con i numeri: la serie è
-  partita da 10, adesso sta a 40, e ci ha messo 30 giorni; sale dunque di
-  $30/30 = 1$ al giorno, e la previsione per fra una settimana è $40 + 7 = 47$.
+  partita da 10, adesso sta a 40, e fra il primo e l'ultimo punto sono passati
+  30 giorni; sale dunque di $30/30 = 1$ al giorno, e la previsione per fra una
+  settimana è $40 + 7 = 47$.
 
-È il solo modo di accorgersi quando un modello complicato sta imitando, e per
-giunta peggio, quello che una riga di codice farebbe gratis.
+Disegnate sulla stessa serie sono quattro forme, e una forma si ricorda meglio
+di una formula ({numref}`fig-linee-di-base`): una riga piatta a mezz'altezza,
+una riga piatta all'ultimo valore, l'ultimo ciclo ricopiato in avanti, una
+retta che prolunga la salita. La scena è quella del conto di poco sopra, una
+serie che finisce a dicembre e una previsione a quindici mesi, e l'arco fa
+vedere anche la cosa che il conto serve a evitare: oltre l'anno si ricicla
+sempre l'ultimo ciclo osservato, non quello dell'anno appena prima di quello da
+prevedere, che non è ancora accaduto.
+
+```{figure} ../figures/linee-di-base.svg
+:name: fig-linee-di-base
+:alt: "Un grafico a linee. A sinistra la serie osservata, 36 mesi che salgono lentamente con un'onda annuale che ha la punta a dicembre; una riga verticale segna l'ultimo mese osservato, un dicembre. A destra della riga, 15 mesi di previsione, con le quattro linee di base sovrapposte alla stessa scala: grigia e piatta a mezz'altezza la media di tutta la serie, ocra e piatta all'altezza dell'ultimo valore il naive, teal e ondulata il naive stagionale, che ricopia in avanti i mesi dell'ultimo anno osservato, e terracotta in salita il drift, che prolunga la retta fra il primo e l'ultimo punto. Un arco collega il marzo osservato, nove mesi prima dell'ultimo, al marzo previsto quindici mesi dopo: è il valore che il naive stagionale copia, e la ragione per cui oltre un ciclo intero si ricicla sempre l'ultimo anno osservato invece di un anno che non è ancora accaduto."
+:width: 100%
+
+Le quattro linee di base sulla stessa serie. A sinistra i tre anni osservati,
+a destra i quindici mesi previsti da ciascuna: nessuna delle quattro guarda i
+dati più di così, ed è per questo che battere tutte e quattro è il minimo che
+si chieda a un modello.
+```
+
+Farle correre accanto al proprio modello è il modo più diretto di accorgersi
+quando un modello complicato sta imitando, e per giunta peggio, quello che una
+riga di codice farebbe da sola.
 
 ## Le bande di previsione sono più strette di quello che dichiarano
 
@@ -625,37 +661,66 @@ serie = 10 + 0.05 * t + 3 * np.sin(2 * np.pi * t / m) + rng.normal(0, 0.4, n)
 # fissato UNA volta sul training iniziale, così i MASE dei vari giri sono
 # tutti espressi nella stessa unità e si possono mediare.
 scalatore = np.mean(np.abs(serie[m:28] - serie[:28 - m]))
+scalatore_1 = np.mean(np.abs(serie[1:28] - serie[:27]))   # il metro a un passo
 
 mase_stagionale, mase_semplice = [], []
+mase_stag_1, mase_sempl_1 = [], []          # gli stessi due, con l'altro metro
 for idx_train, idx_test in walk_forward_split(n, min_train=28, horizon=m):
     storia, futuro = serie[idx_train], serie[idx_test]
-    pred_stagionale = storia[-m:]            # naive stagionale: ripeti l'ultima settimana
-    pred_semplice = np.full(m, storia[-1])   # naive semplice: ripeti l'ultimo valore
+    # naive stagionale: ricicla l'ultimo ciclo osservato. np.resize lo ripete
+    # quanto serve se l'orizzonte supera m: e' la formula con k, in NumPy
+    pred_stagionale = np.resize(storia[-m:], len(futuro))
+    pred_semplice = np.full(len(futuro), storia[-1])   # ripeti l'ultimo valore
     mase_stagionale.append(mase(futuro, pred_stagionale, scalatore))
     mase_semplice.append(mase(futuro, pred_semplice, scalatore))
+    mase_stag_1.append(mase(futuro, pred_stagionale, scalatore_1))
+    mase_sempl_1.append(mase(futuro, pred_semplice, scalatore_1))
 
 print(f"iterazioni di walk-forward: {len(mase_stagionale)}")
 print(f"MASE medio - naive stagionale: {np.mean(mase_stagionale):.3f}")
 print(f"MASE medio - naive semplice:   {np.mean(mase_semplice):.3f}")
+print("con il metro a un passo invece che a sette:")
+print(f"MASE medio - naive stagionale: {np.mean(mase_stag_1):.3f}")
+print(f"MASE medio - naive semplice:   {np.mean(mase_sempl_1):.3f}")
+
+# lo stesso conto su dieci semi: lo scalatore e' stimato su ventun differenze
+# sole, quindi il metro balla, ed e' bene sapere di quanto
+def mase_stagionale_con(seme):
+    rng = np.random.default_rng(seme)
+    s = 10 + 0.05 * t + 3 * np.sin(2 * np.pi * t / m) + rng.normal(0, 0.4, n)
+    sc = np.mean(np.abs(s[m:28] - s[:28 - m]))
+    return np.mean([mase(s[te], np.resize(s[tr][-m:], len(te)), sc)
+                    for tr, te in walk_forward_split(n, 28, m)])
+
+su_dieci = [mase_stagionale_con(seme) for seme in range(10)]
+print(f"su dieci semi diversi: da {min(su_dieci):.2f} a {max(su_dieci):.2f}")
 ```
 
 ```text
 iterazioni di walk-forward: 16
 MASE medio - naive stagionale: 1.056
 MASE medio - naive semplice:   5.058
+con il metro a un passo invece che a sette:
+MASE medio - naive stagionale: 0.343
+MASE medio - naive semplice:   1.643
+su dieci semi diversi: da 0.81 a 1.36
 ```
 
-Il naive stagionale esce a $1{,}06$, e non poteva che essere altrimenti: su
+Il naive stagionale esce a $1{,}06$, cioè attorno a uno, ed era prevedibile: su
 una serie con un ciclo settimanale il metro è lui, quindi sta pareggiando con
-sé stesso. Il naive semplice, cieco alla settimana, sta a $5{,}06$: sbaglia
+sé stesso. Attorno, non esattamente: il denominatore è stimato su ventun
+differenze sole, e su dieci semi diversi il valore oscilla fra $0{,}81$ e
+$1{,}36$; allargando il campione si scende sotto $0{,}7$ e si sale sopra
+$1{,}6$. Il naive semplice, cieco alla settimana, sta a $5{,}06$: sbaglia
 cinque volte tanto. La morale è che su una serie stagionale il metro giusto è
 quello, e chi non lo batte non ha un modello.
 
 La scelta del metro cambia il verdetto, ed è una
 scorciatoia che si incontra spesso: mettendo sotto la linea di frazione il
 naive a un passo invece che a sette, gli stessi due predittori escono a
-$0{,}34$ e $1{,}64$, e il primo sembrerebbe bravissimo. Non ha previsto meglio
-di prima: è cambiato il righello. È la lettura che rende la MASE preziosa e
+$0{,}343$ e $1{,}643$, come stampano le ultime due righe, e il primo
+sembrerebbe bravissimo. Non ha previsto meglio di prima: è cambiato il
+righello. È la lettura che rende la MASE preziosa e
 insieme la sua unica insidia: un numero senza unità dice al volo se un modello
 vale più della pigrizia, purché si dichiari quale pigrizia.
 
@@ -683,9 +748,9 @@ vale più della pigrizia, purché si dichiari quale pigrizia.
   impresa che su domani. E va detto quale pigrizia si è messa al
   denominatore, perché su una serie con un ciclo settimanale il paragone giusto
   è con chi copia la settimana scorsa, e cambiando paragone cambia il verdetto.
-- Vanno sempre battute le linee di base: chi copia l'ultimo valore, chi copia
-  il ciclo precedente, chi prolunga la retta fra il primo e l'ultimo punto. Se il
-  modello non le supera, non serve.
+- Vanno sempre battute le linee di base: chi risponde sempre la media, chi
+  copia l'ultimo valore, chi copia il ciclo precedente, chi prolunga la retta
+  fra il primo e l'ultimo punto. Se il modello non le supera, non serve.
 - Una serie si trasforma in una tabella dando al modello, per ogni giorno, un
   riassunto del suo passato recente: i valori dei giorni prima, le medie degli
   ultimi giorni, il calendario, e poche onde regolari per dire a che punto del
@@ -726,9 +791,9 @@ vale più della pigrizia, purché si dichiari quale pigrizia.
   proprio ma premia insieme calibrazione e finezza: la calibrazione si controlla
   a parte, con la copertura empirica, che a differenza di tutte le altre non
   si minimizza né si massimizza, deve coincidere col livello dichiarato.
-- Vanno sempre battute le linee di base: naive, naive stagionale
-  ($\hat y_{t+h} = y_{t+h-m(k+1)}$), drift. Se il modello non le supera, non
-  serve.
+- Vanno sempre battute le linee di base: media, naive, naive stagionale
+  ($\hat y_{t+h} = y_{t+h-m(k+1)}$, con $k = \lfloor (h-1)/m \rfloor$), drift.
+  Se il modello non le supera, non serve.
 - Il feature engineering temporale (lag, finestre mobili, calendario,
   termini di Fourier) riduce il forecasting a un problema supervisionato
   tabellare, senza mai usare informazione dal futuro, comprese le statistiche

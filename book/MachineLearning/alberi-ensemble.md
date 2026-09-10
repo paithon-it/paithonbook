@@ -929,12 +929,16 @@ alberi non costruiti sono quelli che avrebbero cominciato a imparare a memoria.
 
 Un consiglio pratico, che riassume tutta la sezione: su un problema tabellare
 nuovo, una random forest con i parametri di default è quasi sempre la prima
-cosa da provare; è la linea di base onesta contro cui misurare tutto il resto.
-Se serve spremere di più, si passa a XGBoost o LightGBM con learning rate
-basso ed early stopping. Per il *deep learning* (che affronteremo con PyTorch
-nei capitoli successivi), il turno arriva sui dati non tabellari: immagini,
-testo, audio, dove queste stesse foreste e questi boosting cedono il passo
-alle reti.
+cosa da provare; è la **linea di base** onesta contro cui misurare tutto il
+resto, cioè il termine di paragone volutamente semplice che un modello più
+elaborato deve battere per giustificare quello che costa (in inglese
+*baseline*, ed è la parola che si legge nel codice e nei manuali). Quando quel
+modello non la batte, la risposta non è insistere: la foresta era già la
+risposta, e il conto in più non si è pagato. Se serve spremere di più, si passa
+a XGBoost o LightGBM con learning rate basso ed early stopping. Per il *deep
+learning* (che affronteremo con PyTorch nei capitoli successivi), il turno
+arriva sui dati non tabellari: immagini, testo, audio, dove queste stesse
+foreste e questi boosting cedono il passo alle reti.
 
 `````{tab} Elementare
 

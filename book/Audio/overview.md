@@ -142,7 +142,7 @@ trattare come un'immagine.
 Prima della strada nuova conviene guardare quella già battuta, che
 {numref}`fig-whisper-pipeline` riassume in quattro passaggi: l'onda diventa
 immagine, e dall'immagine un modello ricava le parole. Le parole escono a
-destra, una per riquadro, e ciascuno di quei riquadri si chiama **token**. È la
+destra, una per riquadro, e ciascuno di quei riquadri si chiama token. È la
 parola che regge tutto il capitolo, e vuol dire una cosa sola: un simbolo preso
 da un elenco chiuso, deciso in anticipo. Quanto grosso sia il pezzo che un
 token rappresenta cambia da caso a caso (nel disegno è una parola intera,

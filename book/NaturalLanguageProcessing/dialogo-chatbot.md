@@ -338,7 +338,7 @@ proposero di riordinare le ipotesi con la mutua informazione tra $x$ e $y$).
 
 Il salto di qualità arriva con la scala (modelli decoder-only pre-addestrati
 su corpora web {cite}`brown2020language`) ma soprattutto con il
-**post-training**, che risolve il disallineamento di fondo: un language model
+post-training, che risolve il disallineamento di fondo: un language model
 modella $P(\text{continuazione} \mid \text{prefisso})$, non «rispondi in modo
 utile e onesto». La ricetta è in due tempi {cite}`ouyang2022training`:
 **instruction tuning** (fine-tuning supervisionato su coppie richiesta → buona

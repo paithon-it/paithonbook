@@ -212,7 +212,7 @@ Resta la seconda domanda: come si misura se il riassunto è buono.
 
 Lo strumento standard è già costruito in
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
-e si chiama **sondaggio lineare**: si congela l'encoder, gli si affianca un
+e si chiama sondaggio lineare: si congela l'encoder, gli si affianca un
 classificatore così semplice da non poter aggiungere niente di suo, e si guarda
 se passa l'esame. Se un giudice tanto sprovveduto ci riesce, il merito è del
 riassunto.

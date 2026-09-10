@@ -517,7 +517,7 @@ risponde la *stragrande maggioranza*. Il cliente scontento sta nel gruppetto
 lento.
 
 Quel «novantacinque su cento entro dieci minuti» ha un nome: si chiama
-**percentile**. La **p95** è il tempo entro cui è servito il 95% delle
+percentile. La **p95** è il tempo entro cui è servito il 95% delle
 richieste, cioè il caso peggiore su venti; la **p99** è il caso peggiore su
 cento. Quale dei due mettere nel mirino è una scelta di severità: la p99 è più
 difficile da rispettare, perché lascia fuori cinque volte meno gente della p95.

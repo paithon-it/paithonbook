@@ -31,7 +31,7 @@ fare il vecchio, più ciò che gli abbiamo aggiunto. Nel codice l'eredità si
 scrive mettendo il nome dello stampo di partenza fra parentesi,
 `class MLP(nn.Module):`. E la prima riga di `__init__` (che è il metodo
 eseguito quando l'oggetto viene creato, quello che lo mette insieme: si chiama
-**costruttore**) è `super().__init__()`, la chiamata con cui lo stampo vecchio
+costruttore) è `super().__init__()`, la chiamata con cui lo stampo vecchio
 si prepara prima che noi ci aggiungiamo il nostro. Va scritta sempre, ed è la
 ragione per cui la
 si ritroverà, identica, in ogni modello del capitolo. Ciò che si eredita da

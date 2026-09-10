@@ -144,7 +144,7 @@ $$
 dove $\mathbf{C} \mathbf{B}^\top$ è la matrice $L\times L$ (lunghezza per
 lunghezza) di tutte le affinità query–chiave, esattamente
 $\mathbf{Q}\mathbf{K}^\top$ dell'attenzione; $\odot$ è il prodotto elemento per
-elemento; e $\mathbf{M}$ è una **maschera causale con decadimento**: azzera il
+elemento; e $\mathbf{M}$ è una maschera causale con decadimento: azzera il
 futuro (triangolo superiore) e pesa il passato con i prodotti degli scalari
 $a_t$. Il paper di Mamba-2 chiama $\mathbf{L}$ questa maschera; qui la
 chiamiamo $\mathbf{M}$ perché in tutto il libro $L$ è la lunghezza della
@@ -220,7 +220,7 @@ ripesca quella giusta invece di una via di mezzo fra due.
 
 Un'avvertenza, la stessa del capitolo precedente: la grande tabella dei
 confronti non si forma mai per intero, perché su un testo lungo sarebbe di
-nuovo la tabella da cui eravamo scappati. Si lavora **a blocchi**: dentro un
+nuovo la tabella da cui eravamo scappati. Si lavora a blocchi: dentro un
 blocco di poche centinaia di parole la tabella è piccola e si fa tutta insieme,
 e da un blocco al successivo passa soltanto il riassunto. Tabella dentro il
 blocco, riassunto da un blocco all'altro: è così che il lavoro resta

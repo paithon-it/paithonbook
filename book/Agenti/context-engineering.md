@@ -12,7 +12,7 @@ cambia il carburante che gli versi nel serbatoio.
 Quello «davanti al modello» ha un nome preciso ed è il perno di questa
 sezione. Un modello legge tutto in un colpo solo, e quanto testo riesca a
 tenere davanti agli occhi in una volta è un numero fisso, deciso da chi l'ha
-costruito. Quello spazio si chiama **finestra di contesto**, e ciò che ci
+costruito. Quello spazio si chiama finestra di contesto, e ciò che ci
 scrivi dentro si chiama contesto. Larga quanto vuoi, resta finita.
 
 È il cuore di questo capitolo: con un modello di oggi non si programma

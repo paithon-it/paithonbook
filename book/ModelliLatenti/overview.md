@@ -34,7 +34,7 @@ stessa cosa.
 Se quella quantità esista davvero, e che cosa sia, è oggetto di una discussione
 che dura da oltre un secolo, e il libro non prende posizione: quello
 che ci serve è la mossa, non la conclusione. La mossa è sopravvissuta
-alla discussione, ha preso un nome (**variabile latente**, dal latino *latere*,
+alla discussione, ha preso un nome (variabile latente, dal latino *latere*,
 «stare nascosto») e ha una macchina matematica che la rende operativa, che
 Spearman inventò per sostenere la sua tesi e che oggi si chiama analisi
 fattoriale. Quella macchina è l’antenata di tutto questo capitolo, e ne è la
@@ -42,10 +42,16 @@ versione più semplice: quella in cui la quantità nascosta e le cose visibili
 sono legate da somme e moltiplicazioni, e da nient’altro.
 
 Anche l’altra metà del titolo si scioglie qui. **Inferenza** è il mestiere di
-risalire alla causa nascosta a partire da quello che si vede, cioè fare la
-strada al contrario; **variazionale** dice come lo faremo, e cioè rinunciando
-alla risposta esatta e cercando la migliore dentro una famiglia di risposte
-semplici, scelta da noi. La seconda metà del capitolo non fa altro che questo.
+risalire alla causa nascosta a partire da quello che si vede, dai voti di quei
+ragazzi alla quantità che nessuno ha misurato, ed è il senso che la parola ha
+in tutto il capitolo. Nel gergo del deep learning la stessa parola indica
+quasi sempre una cosa molto più modesta, il momento in cui un modello già
+addestrato risponde e basta, e chi la incontra di solito in quel senso qui
+deve lasciarla da parte. **Variazionale** dice come lo faremo, e cioè
+rinunciando alla risposta esatta e cercandone la migliore dentro una famiglia
+scelta da noi, dove «risposta» non è un numero ma una distribuzione, il
+ventaglio delle cause possibili con quanto ciascuna è credibile. La seconda
+metà del capitolo non fa altro che questo.
 
 ## La mossa: spiegare il visibile con l’invisibile
 
@@ -193,7 +199,7 @@ sono tantissime.)
 Guardando {numref}`fig-due-gobbe` si capisce anche perché conviene: chi volesse
 descrivere la curva di destra senza sapere dei sacchetti dovrebbe inventarsi
 una formula per una cosa a due gobbe, mentre a noi sono bastate due gobbe
-semplici (nel disegno si chiamano **campane**, che è il loro nome consueto) e
+semplici (si chiamano **campane**, che è il loro nome consueto) e
 la regola con cui si sceglie il sacchetto.
 
 ## Il prezzo: la somma che non si può fare
@@ -324,13 +330,13 @@ Tre sezioni, e ciascuna toglie un pezzo al problema. La prima parte dalla
 strada più corta, l’autoencoder, cioè una rete che impara a comprimere e a
 ricostruire senza che nessuno le parli di probabilità: funziona benissimo per
 comprimere e fallisce per generare, e il perché di quel fallimento è il modo
-migliore per capire che cosa manchi. La seconda è il cuore: la
-verosimiglianza intrattabile, il limite inferiore che la sostituisce
-(l’ELBO), i suoi due termini letti come ricostruzione e costo di
-descrizione, e un trucco senza il quale la macchina non si potrebbe addestrare
-in un tempo ragionevole, perché in mezzo c’è un sorteggio e le correzioni, da
-sole, un sorteggio non lo attraversano. La terza guarda che cosa si fa con quel
-riassunto nascosto una volta che c’è: la manopola con cui gli si può chiedere
-di tenere separate le cose di cui il dato è fatto (la luce, l’inclinazione, il
-soggetto), il riassunto fatto di simboli invece che di numeri, e i quattro
-punti del libro in cui questa macchina è al lavoro.
+migliore per capire che cosa manchi. La seconda è il cuore: la verosimiglianza
+intrattabile, il limite inferiore che la sostituisce (l’ELBO, dalle iniziali
+inglesi di *evidence lower bound*), i suoi due termini letti come ricostruzione
+e costo di descrizione, e un trucco senza il quale la macchina non si potrebbe
+addestrare in un tempo ragionevole, perché in mezzo c’è un sorteggio e le
+correzioni, da sole, un sorteggio non lo attraversano. La terza guarda che cosa
+si fa con quel riassunto nascosto una volta che c’è: la manopola con cui gli si
+può chiedere di tenere separate le cose di cui il dato è fatto (la luce,
+l’inclinazione, il soggetto), il riassunto fatto di simboli invece che di
+numeri, e i quattro punti del libro in cui questa macchina è al lavoro.

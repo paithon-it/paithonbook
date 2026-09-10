@@ -619,7 +619,7 @@ lontano: il vicinato era un aiuto, non un difetto da togliere.
 
 `````{tab} Superiore
 
-Un **Graph Transformer** sostituisce l'aggregazione sui vicini con
+Un Graph Transformer sostituisce l'aggregazione sui vicini con
 un'attenzione su tutte le coppie di nodi. Il beneficio è strutturale:
 ogni nodo raggiunge ogni altro in un solo passo, quindi l'over-squashing
 sparisce per costruzione e non serve profondità per avere portata.

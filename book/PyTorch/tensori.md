@@ -414,7 +414,7 @@ per percorrerlo no. Chiederli in prestito è `retain_graph=True`, e serve tutte
 le volte che da una sola passata in avanti partono due passate all'indietro
 (due loss che pescano da un tronco comune, il generatore di una GAN che
 alimenta due obiettivi); costa memoria, quindi non si mette per abitudine.
-Secondo: il gradiente si deposita solo sulle **foglie** del grafo, i tensori
+Secondo: il gradiente si deposita solo sulle foglie del grafo, i tensori
 creati da noi con `requires_grad=True`, e i parametri di un modello lo sono
 tutti. Su un tensore intermedio, cioè prodotto da un'operazione, `.grad`
 resta `None` con tanto di avviso: per leggerlo a metà strada si chiama

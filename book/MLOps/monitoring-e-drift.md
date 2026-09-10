@@ -109,10 +109,10 @@ allontanarsi da com'era durante l'addestramento
 {cite}`quinonero2009dataset`, e qui non serve rifare quel discorso: basta
 richiamare i tre nomi, con accanto in una riga che cosa vuol dire ciascuno.
 
-Il **covariate shift** è quando cambia il *tipo di richieste che arrivano*:
-arriva altra gente, con altre caratteristiche. Il **label shift** è quando
+Il covariate shift è quando cambia il *tipo di richieste che arrivano*:
+arriva altra gente, con altre caratteristiche. Il label shift è quando
 cambiano le *proporzioni delle risposte giuste*: le frodi erano una su cento e
-adesso sono una su dieci. Il **concept shift** è il più insidioso: le richieste
+adesso sono una su dieci. Il concept shift è il più insidioso: le richieste
 sembrano identiche, ma è cambiata *la regola* che lega la richiesta alla
 risposta giusta, e quindi il modello continua a rispondere come ha imparato
 mentre la risposta corretta è diventata un'altra.

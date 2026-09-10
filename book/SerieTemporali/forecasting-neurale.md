@@ -143,8 +143,8 @@ Il primo strumento neurale per le sequenze lo abbiamo già costruito, nella
 {doc}`sezione sui modelli di sequenza
 </NaturalLanguageProcessing/modelli-sequenza>`: una rete che legge un pezzo per
 volta e si porta dietro un riassunto di quello che ha letto fin lì. Quel
-riassunto si chiama **stato nascosto**, ed è tutta la memoria che la rete ha.
-Le **reti ricorrenti** (RNN) funzionano così; la **LSTM** di Sepp Hochreiter e
+riassunto si chiama stato nascosto, ed è tutta la memoria che la rete ha.
+Le reti ricorrenti (RNN) funzionano così; la LSTM di Sepp Hochreiter e
 Jürgen Schmidhuber {cite}`hochreiter1997long` è la versione che a ogni passo
 decide anche che cosa di quel riassunto conviene tenere e che cosa buttare
 (sono i suoi cancelli). Lì il problema era il linguaggio, qui è una serie
@@ -236,7 +236,7 @@ Una TCN con convoluzioni causali (nessun arco viene dal futuro) e
 dilatate (i salti raddoppiano a ogni strato: 1, 2, 4). Ogni nodo guarda due
 soli nodi dello strato sotto, ma bastano tre strati perché il nodo in cima ne
 raccolga $2^3 = 8$: quanto passato arriva a un singolo nodo di uscita si chiama
-**campo recettivo**, e cresce in modo esponenziale con la profondità.
+campo recettivo, e cresce in modo esponenziale con la profondità.
 ```
 
 `````{tab} Elementare
@@ -310,7 +310,7 @@ nome e si chiamano **covariate**.
 
 La seconda idea è più sottile: DeepAR non predice un *numero*, predice un
 ventaglio di valori possibili con le loro probabilità. Un oggetto del genere, in
-statistica, si chiama **distribuzione**.
+statistica, si chiama distribuzione.
 
 `````{tab} Elementare
 
@@ -332,7 +332,7 @@ sta esattamente in mezzo, con metà delle storie sotto e metà sopra, si chiama
 **mediana**, ed è la previsione; e si scarta il 10% delle storie più basse e il
 10% delle più alte, così quello che resta in mezzo è la **banda di
 incertezza**, dentro cui cadono otto storie su dieci. Questo modo di procedere,
-tira un valore e ripartici, ha un nome: **campionamento ancestrale**. Una
+tira un valore e ripartici, ha un nome: campionamento ancestrale. Una
 previsione seria è un numero *con la sua incertezza*.
 
 `````
@@ -461,7 +461,7 @@ intervalli si potrebbero calcolare anche con carta e penna, senza generare
 nessuna storia, e infatti i due conti coincidono a un paio di centesimi: la
 differenza che resta è il tremolio del sorteggio, non un difetto del metodo.
 Generare tante storie a caso e leggere il ventaglio che ne viene fuori ha un
-nome, **metodo Monte Carlo**, come il casinò, ed è la sola strada praticabile
+nome, metodo Monte Carlo, come il casinò, ed è la sola strada praticabile
 nella rete vera, dove il conto passa per una LSTM e per ventagli che una formula
 chiusa non ce l'hanno. Ma è questo, in ogni caso, che una previsione
 probabilistica dichiara e una puntuale nasconde.

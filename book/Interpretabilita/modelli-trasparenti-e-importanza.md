@@ -39,7 +39,7 @@ ogni colonna, la moltiplica per un numero suo, e somma tutto. Sono i due
 modelli incontrati nella {doc}`sezione sull'apprendimento supervisionato
 </MachineLearning/apprendimento-supervisionato>` con i nomi di regressione
 lineare (quando la risposta è una quantità, un prezzo) e regressione logistica
-(quando è un sì o un no). Quei numeri, uno per colonna, si chiamano **pesi**
+(quando è un sì o un no). Quei numeri, uno per colonna, si chiamano pesi
 (o, con la parola che si usa più spesso in statistica, **coefficienti**: sono
 la stessa cosa), e una somma fatta così si dice pesata. Il punto è che quei
 pesi *sono* la storia che il modello racconta: non c'è altro da sapere.
@@ -51,7 +51,7 @@ pesi *sono* la storia che il modello racconta: non c'è altro da sapere.
 
 La retta e ciò che le sfugge. Ogni punto è un esempio (una casa, con i suoi
 metri quadri e il suo prezzo) e il segmento verticale è di quanto il modello
-sbaglia proprio su quello: si chiama **residuo**. La retta scelta è quella che
+sbaglia proprio su quello: si chiama residuo. La retta scelta è quella che
 li rende complessivamente più piccoli, e li lascia tutti in bella vista.
 ```
 
@@ -110,9 +110,10 @@ coefficiente $w_j$ è
 l'effetto marginale della feature $j$: a parità di tutte le altre, un aumento
 unitario di $x_j$ sposta la predizione di esattamente $w_j$. Nella regressione
 logistica $\hat{y} = \sigma(\mathbf{w}^\top \mathbf{x} + b)$
-l'interpretazione passa alle *log-odds*: $w_j$ è la variazione del logaritmo
-del rapporto di probabilità
-$\log\frac{p}{1-p}$ per un incremento unitario di $x_j$, cosicché $e^{w_j}$
+l'interpretazione passa alle *log-odds*: detta $p = P(y = 1 \mid \mathbf{x})$
+la probabilità che il modello assegna alla risposta positiva, $w_j$ è la
+variazione di $\log\frac{p}{1-p}$ per un incremento unitario di $x_j$,
+cosicché $e^{w_j}$
 moltiplica l’*odds* $p/(1-p)$ ed è quindi l’*odds ratio* fra il dopo e il
 prima dell'incremento.
 
@@ -130,10 +131,10 @@ regolarizzazione Ridge/Lasso vista nel capitolo di machine learning).
 La trasparenza non finisce con i modelli lineari. Gli alberi di decisione,
 studiati nella {doc}`sezione su alberi e metodi ensemble
 </MachineLearning/alberi-ensemble>`, sono l'altro archetipo di «scatola
-bianca»: si parte dalla domanda in cima (che si chiama **radice**, perché
+bianca»: si parte dalla domanda in cima (che si chiama radice, perché
 l'albero si disegna capovolto, con le foglie in basso) e a ogni risposta si
 scende di un ramo, fino a una casella finale che porta la decisione (una
-**foglia**). Quel percorso *è* la spiegazione.
+foglia). Quel percorso *è* la spiegazione.
 
 ```{figure} ../figures/alberi-di-decisione.svg
 :name: fig-albero-percorso
@@ -186,7 +187,7 @@ g\big(\mathbb{E}[y \mid \mathbf{x}]\big) = b + \sum_j f_j(x_j),
 $$
 
 dove ogni $f_j$ è una funzione liscia stimata dai dati (spline, smoother) e $g$
-è la **funzione di legame** ereditata dai modelli lineari generalizzati:
+è la funzione di legame ereditata dai modelli lineari generalizzati:
 l'identità in regressione, il logit in classificazione. È $g$ il
 «generalizzato» del nome, ed è ciò che rende il modello utilizzabile fuori dal
 caso di una risposta continua: senza di essa la somma additiva vivrebbe su
@@ -299,7 +300,7 @@ clienti mai visti: indovina 90 volte su 100. Ora prendiamo una colonna sola
 (il reddito) e ne rimescoliamo i valori tra i 100 clienti: ognuno si
 ritrova il reddito di qualcun altro. Il resto è intatto, ma quella colonna
 adesso porta numeri che con la persona non c'entrano niente: è diventata
-**rumore**, cioè dati che non portano informazione. Riproviamo il modello: ora
+rumore, cioè dati che non portano informazione. Riproviamo il modello: ora
 indovina solo 72 volte. Ha perso 18 punti *solo* perché gli abbiamo scombinato
 il reddito, segno che ci si appoggiava molto, e quel calo, $90\% - 72\% = 18$
 punti, è l'importanza del reddito.
@@ -387,10 +388,10 @@ lo divide in due gruppi, e il taglio buono è quello che rende i due gruppi il
 più possibile omogenei. Quanto un gruppo è mescolato si chiama **impurità**, e
 si misura con formule dai nomi tecnici (l'indice di Gini, l'entropia) che non
 cambiano l'idea: massima quando le risposte dentro il gruppo sono di tutti i
-tipi, zero quando sono tutte uguali. Ogni taglio (in inglese **split**) fa
+tipi, zero quando sono tutte uguali. Ogni taglio (in inglese split) fa
 scendere l'impurità di un tanto, e quel tanto è il merito che si accredita alla
 colonna su cui il taglio è stato fatto. Il taglio, si badi, è una domanda con un
-numero dentro: «il reddito supera i 30 000?». Quel numero si chiama **soglia**,
+numero dentro: «il reddito supera i 30 000?». Quel numero si chiama soglia,
 e per una colonna con tanti valori diversi le soglie fra cui scegliere sono
 tantissime.
 

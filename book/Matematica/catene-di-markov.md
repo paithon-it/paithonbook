@@ -14,7 +14,7 @@ c'è una salita graduale, c'è una soglia, e sta fra la quinta mescolata e la
 settima.
 
 Quel risultato riguarda un mazzo di carte e la matematica che lo produce è
-tutta qui dentro. Un mazzo mescolato è uno **stato**; la mescolata è una regola
+tutta qui dentro. Un mazzo mescolato è uno stato; la mescolata è una regola
 che porta da uno stato al successivo, con un po' di caso; e la domanda «dopo
 quante volte non si distingue più da un mazzo qualsiasi?» ha una risposta che,
 sorprendentemente, si legge in un autovalore.

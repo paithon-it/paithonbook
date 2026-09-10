@@ -141,14 +141,14 @@ posto).
 
 L'indice invertito ha un difetto congenito: cerca parole, non significati.
 Chi scrive «abitazione» non trova il documento che dice «casa». Il rimedio è la
-stessa mappa del significato incontrata parlando delle cento lingue: ogni
-parola, e poi ogni frase, diventa un punto su una mappa, con la regola che cose
-che vogliono dire cose simili finiscono in punti vicini. Cercare, allora,
-diventa misurare distanze invece che confrontare parole. Il modo di cercare
-che ne esce si
-chiama **retrieval denso**, dove «denso» sta per il tipo di indirizzi che usa:
-non una casella per ogni parola del vocabolario, quasi tutte vuote, ma poche
-centinaia di numeri tutti pieni e tutti significativi.
+stessa mappa del significato della {doc}`sezione sui modelli multilingua
+</Transformers/multilingua>`: ogni parola, e poi ogni frase, diventa un punto
+su una mappa, con la regola che cose che vogliono dire cose simili finiscono in
+punti vicini. Cercare, allora, diventa misurare distanze invece che
+confrontare parole. Il modo di cercare che ne esce si chiama **retrieval
+denso**, dove «denso» dice come è fatto quel punto: non una casella per ogni
+parola della lingua, quasi tutte vuote, ma poche centinaia di numeri tutti
+pieni e tutti significativi.
 
 Su una mappa del genere si possono perfino fare dei conti.
 
@@ -177,6 +177,17 @@ documento che parla solo di «tagliando dell'auto», perché non condividono una
 sola parola. Il rimedio ha un nome, ed è quello che la {doc}`sezione su come si
 rappresenta il testo </NaturalLanguageProcessing/rappresentare-testo>` dà agli
 indirizzi su quella mappa: gli embedding.
+
+Con la mappa cambia anche l'unità di misura. Un documento intero non si lascia
+ridurre a un punto solo, perché un manuale di quattrocento pagine, dovendo
+riassumersi in un indirizzo, finirebbe per parlare di tutto e quindi di
+niente. L'archivio si taglia prima in pezzi lunghi una frase o un paragrafo, e
+sono quelli a diventare punti sulla mappa. Si chiamano **passaggi**, e nei
+programmi portano il nome inglese *chunk*; ognuno porta poche idee, spesso una
+sola, ed è per questo che si fa trovare quando quell'idea viene chiesta. Il
+taglio è una scelta, e si paga nei due versi: troppo fine, e al pezzo manca il
+contesto che lo rende comprensibile; troppo grosso, e si torna al manuale che
+parla di tutto.
 
 `````{tab} Elementare
 
@@ -208,8 +219,9 @@ L'architettura standard è il **bi-encoder**, cioè la struttura siamese della
 </NaturalLanguageProcessing/rappresentare-testo>` applicata a due tipi di
 ingresso diversi: due encoder Transformer (o uno
 condiviso), $E_q$ per le query ed $E_z$ per i passaggi, producono vettori in
-$\mathbb{R}^d$, e la rilevanza fra una query $q$ e un passaggio $z$ è il
-prodotto scalare
+$\mathbb{R}^d$, dove $d$ è la dimensione dell'embedding e non il documento che
+la stessa lettera indicava in BM25; la rilevanza fra una query $q$ e un
+passaggio $z$ è il prodotto scalare
 $\mathrm{sim}(q, z) = E_q(q)^\top E_z(z)$, che coincide con la similarità
 del coseno, già incontrata nella
 {doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>`, quando i
@@ -217,20 +229,27 @@ vettori sono
 normalizzati. Il vantaggio computazionale è decisivo: gli embedding dei
 passaggi si calcolano una volta sola, offline; a query time restano una
 codifica e una ricerca di vicini più prossimi, che su milioni di vettori si fa
-con indici approssimati (ANN); è il servizio che oggi vendono i database
-vettoriali.
+con indici approssimati dei vicini più prossimi (in sigla ANN, *approximate
+nearest neighbor*: non è la sigla delle reti neurali); è il servizio che oggi
+vendono i database vettoriali.
 
-Il risultato che ha sdoganato l'approccio è DPR (*Dense Passage
-Retrieval*) {cite}`karpukhin2020dense`: due BERT addestrati in modo
-contrastivo, avvicinare le coppie domanda–passaggio corrette, allontanare i
-negativi, riciclando come negativi gli altri esempi del batch (*in-batch
-negatives*). Il salto misurato dagli autori sulle raccolte di question
-answering a dominio aperto dell'epoca è ampio (dai 9 ai 19 punti di
-accuratezza top-20 sopra un BM25 ben tarato), ma quel che resta valido oltre
-quei numeri è il perché: il denso recupera ciò che è detto con altre
-parole, il lessicale ciò che è scritto con quelle esatte. E infatti su termini
-rari, sigle ed entità fuori distribuzione il lessicale regge, e gli ibridi
-BM25 + denso restano una scelta di buon senso.
+Il risultato che ha sdoganato l'approccio è DPR (*Dense Passage Retrieval*)
+{cite}`karpukhin2020dense`: due BERT addestrati in modo contrastivo, avvicinare
+le coppie domanda–passaggio corrette, allontanare i negativi, riciclando come
+negativi gli altri esempi del batch (*in-batch negatives*) e aggiungendo a ogni
+domanda un negativo pescato da BM25: è la configurazione con cui sono ottenuti
+i numeri che seguono. Il salto sopra un BM25 ben tarato è ampio su quattro
+delle cinque raccolte di question answering a dominio aperto dell'epoca, dagli
+$8{,}9$ ai $19{,}3$ punti di accuratezza top-20, cioè della quota di domande
+per cui la risposta compare in almeno uno dei primi venti passaggi. Sulla
+quinta, SQuAD, DPR resta sotto di $5{,}6$ punti, e gli autori lo spiegano con
+il modo in cui quella raccolta è nata: le domande sono state scritte avendo il
+passaggio sotto gli occhi, quindi ne ricalcano le parole, e vengono tutte da
+poco più di cinquecento articoli. Quel che resta valido oltre i numeri è il
+perché: il denso recupera ciò che è detto con altre parole, il lessicale ciò
+che è scritto con quelle esatte. E infatti su termini rari, sigle ed entità
+fuori distribuzione il lessicale regge, e gli ibridi BM25 + denso restano una
+scelta di buon senso.
 
 Un raffinamento chiude il quadro: il bi-encoder codifica query e passaggio
 *separatamente*, mentre un **cross-encoder** li concatena in un unico
@@ -346,8 +365,13 @@ di chi scrive.
 Nel modello originale {cite}`lewis2020retrieval` le due metà sono esplicite:
 un retriever DPR fornisce $p_\eta(z \mid x)$, la probabilità di recuperare il
 passaggio $z$ data la domanda $x$, e un generatore seq2seq (BART) fornisce
-$p_\theta(y \mid x, z)$. (Qui $\eta$ sono i parametri del retriever, come nel
-paper: non è il tasso di apprendimento che $\eta$ indica nel resto del libro.)
+$p_\theta(y \mid x, z)$. Il prodotto scalare del bi-encoder diventa quella
+probabilità nel modo consueto, passando per l'esponenziale e normalizzando su
+tutto l'archivio:
+$p_\eta(z \mid x) \propto \exp\!\big(E_z(z)^\top E_q(x)\big)$. (Due avvisi
+sulle lettere, presi tutti e due dal paper: $\eta$ sono i parametri del
+retriever e non il tasso di apprendimento che $\eta$ indica nel resto del
+libro; e la domanda qui è $x$, la stessa che il bi-encoder chiamava $q$.)
 La risposta marginalizza sui passaggi recuperati:
 
 $$
@@ -363,8 +387,8 @@ altri $p_\eta(z \mid x)$ è trascurabile.
 
 Il tutto si addestra end-to-end sulle sole coppie
 domanda–risposta: il gradiente attraversa il generatore e l'encoder delle
-query (l'indice dei passaggi, circa 21 milioni di blocchi da cento parole di
-Wikipedia nell'articolo, resta congelato). La lettura concettuale è la più
+query (l'indice dei passaggi, che nell'articolo sono circa 21 milioni da cento
+parole di Wikipedia, resta congelato). La lettura concettuale è la più
 duratura: il modello ha una **memoria parametrica** (i pesi) e una **memoria
 non parametrica** (l'indice), e la seconda si può ispezionare, correggere e
 aggiornare senza toccare la prima.
@@ -373,14 +397,19 @@ Oggi il termine RAG indica più spesso la variante leggera, senza addestramento
 congiunto: recupero, poi *prompt augmentation* verso un modello già istruito
 col post-training della sezione precedente; è proprio l'instruction tuning a
 rendergli eseguibile una consegna come «rispondi usando solo i passaggi e cita
-le fonti». I limiti però non cambiano: il recall del retriever è il tetto di
-ciò che il sistema può dire in modo fondato e citabile (quel che non viene
-recuperato non può entrare nella risposta *a partire dai documenti*; il modello
-può sempre rispondere di suo, ma allora è tornato all'esame a libro chiuso, e
-senza dirlo); il generatore può ignorare i passaggi o contraddirli, tanto che la
-fedeltà alla fonte (*groundedness*) è oggi una metrica di valutazione a sé; e
-una citazione formalmente corretta non rende vera una risposta che ne travisa
-il contenuto.
+le fonti». I limiti però non cambiano. Il tetto di ciò che il sistema può dire
+in modo fondato e citabile è la recall del retriever, cioè la quota dei
+passaggi pertinenti che la ricerca riesce a ripescare: è la stessa domanda
+della recall di un classificatore, quanti dei casi buoni si riescono a
+prendere, con i passaggi pertinenti dell'archivio al posto dei positivi da
+trovare (la
+{doc}`sezione sulle metriche </MachineLearning/metriche>` la definisce per
+esteso). Quel che non viene recuperato non può entrare nella risposta *a
+partire dai documenti*, e il modello può sempre rispondere di suo, ma allora è
+tornato all'esame a libro chiuso, e senza dirlo. Il generatore, poi, può
+ignorare i passaggi o contraddirli, tanto che la fedeltà alla fonte
+(*groundedness*) è oggi una metrica di valutazione a sé; e una citazione
+formalmente corretta non rende vera una risposta che ne travisa il contenuto.
 
 `````
 
@@ -495,13 +524,13 @@ servizio in funzione, i passi sono pochi. Al posto degli indirizzi scritti a
 mano ci va un modello addestrato apposta a produrli: quello che ha fatto scuola
 si chiama **DPR**, *Dense Passage Retrieval*, e sono due encoder addestrati
 insieme a mettere vicine le domande e i passaggi che le soddisfano. Al posto
-delle sei righe ci vanno milioni di passaggi, ottenuti spezzando i documenti in
-blocchi (il *chunking*) e serviti da un indice che sa trovare i punti vicini su
-una mappa di milioni di punti senza confrontarli tutti: si accontenta dei
-quasi-vicini in cambio della velocità, e per questo si chiama approssimato.
-Al posto del `print` finale ci va la chiamata a un modello istruito. La
-struttura (si codifica, si misura il coseno, si tengono i primi $k$, si monta
-il prompt) è esattamente quella che hai appena eseguito.
+delle sei righe ci vanno milioni di passaggi, tagliati da un archivio vero e
+serviti da un indice che sa trovare i punti vicini su una mappa di milioni di
+punti senza confrontarli tutti: si accontenta dei quasi-vicini in cambio della
+velocità, e per questo si chiama
+approssimato. Al posto del `print` finale ci va la chiamata a un modello
+istruito. La struttura (si codifica, si misura il coseno, si tengono i primi
+$k$, si monta il prompt) è esattamente quella che hai appena eseguito.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -548,7 +577,7 @@ il prompt) è esattamente quella che hai appena eseguito.
   estrattivo (evidenziare lo span: SQuAD {cite}`rajpurkar2016squad`) o
   generativo (scrivere la risposta).
 - La RAG {cite}`lewis2020retrieval` incatena recupero, prompt aumentato e
-  generazione con fonti: mitiga le allucinazioni ma non le elimina (il
+  generazione con fonti: mitiga le allucinazioni ma non le elimina (la
   recall del retriever è il tetto), e offre citabilità e aggiornabilità;
   l'archivio si cambia, il modello no.
 ```

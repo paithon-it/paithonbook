@@ -96,28 +96,30 @@ successivo e $\theta$ i parametri (tipicamente di una rete neurale) stimati
 dalle transizioni osservate; spesso si apprende anche un modello della
 ricompensa $r_\theta(s_t, a_t)$. Un modello così abilita tre operazioni:
 predizione (srotolare traiettorie future senza toccare l'ambiente),
-pianificazione (cercare, tra le traiettorie immaginate, quella con il
-ritorno più alto) e simulazione di alternative («e se agissi
-diversamente?»). Su quest'ultima una precisazione da manuale di causalità:
-ri-simulare da $s_t$ con un'altra azione è, nel lessico di Pearl, un
-*intervento* nel modello; il controfattuale in senso stretto («cosa *sarebbe*
-successo in *quella* traiettoria») chiederebbe invece di tenere fisso il caso
-già uscito (di riusare cioè la stessa realizzazione del rumore esogeno di
-quella traiettoria, non di ri-estrarlo) e di ri-simulare cambiando la sola
-azione; le due cose coincidono quando la dinamica è deterministica. C'è però
-un dettaglio che occuperà mezzo capitolo: nel mondo reale lo stato non si
-osserva. Si osservano pixel, suoni, letture di
-sensori: un'osservazione $\mathbf{x}_t$ ad alta dimensione e piena di dettagli
-irrilevanti. I world model moderni imparano perciò due oggetti distinti: un
-codice compatto della singola osservazione, $\mathbf{z}_t = f_\phi(\mathbf{x}_t)$ con
-$f_\phi$ un encoder appreso, e una memoria $\mathbf{h}_t$ che riassume la storia
-precedente. Da un solo fotogramma mancherebbero, per dire, le velocità: è $\mathbf{h}_t$
-a portarle, ed è la memoria della prossima sezione. Lo stato del modello è
-quindi la coppia $(\mathbf{z}_t, \mathbf{h}_t)$ e la dinamica si scrive
-$p_\theta(\mathbf{z}_{t+1} \mid \mathbf{z}_t, a_t, \mathbf{h}_t)$; nell'RSSM dei Dreamer i due oggetti
-sopravvivono con gli stessi nomi, $\mathbf{h}_t$ deterministico e $\mathbf{z}_t$ stocastico
-condizionato su di esso. Che cosa debba finire in $\mathbf{z}_t$ (e che cosa sia giusto
-lasciar fuori) è una delle domande centrali del capitolo.
+pianificazione (cercare, tra le traiettorie immaginate, quella con il ritorno
+più alto) e simulazione di alternative («e se agissi diversamente?»). Su
+quest'ultima una precisazione da manuale di causalità: ri-simulare da $s_t$ con
+un'altra azione è, nel lessico di Pearl, un *intervento* nel modello; il
+controfattuale in senso stretto («cosa *sarebbe* successo in *quella*
+traiettoria») chiederebbe invece di tenere fisso il caso già uscito (di riusare
+cioè la stessa realizzazione del rumore esogeno di quella traiettoria, non di
+ri-estrarlo) e di ri-simulare cambiando la sola azione; le due cose coincidono
+quando la dinamica è deterministica. C'è però un dettaglio che occuperà mezzo
+capitolo: nel mondo reale lo stato non si osserva. Si osservano pixel, suoni,
+letture di sensori: un'osservazione $\mathbf{x}_t$ ad alta dimensione e piena
+di dettagli irrilevanti. I world model moderni imparano perciò due oggetti
+distinti: un codice compatto della singola osservazione, $\mathbf{z}_t =
+f_\phi(\mathbf{x}_t)$ con $f_\phi$ un encoder appreso, e una memoria
+$\mathbf{h}_t$ che riassume la storia precedente. Da un solo fotogramma
+mancherebbero, per dire, le velocità: è $\mathbf{h}_t$ a portarle, ed è la
+memoria della prossima sezione. Lo stato del modello è quindi la coppia
+$(\mathbf{z}_t, \mathbf{h}_t)$ e la dinamica si scrive
+$p_\theta(\mathbf{z}_{t+1} \mid \mathbf{z}_t, a_t, \mathbf{h}_t)$; nell'RSSM
+(*recurrent state-space model*, il modello ricorrente a spazio di stati che i
+Dreamer adottano) i due oggetti sopravvivono con gli stessi nomi,
+$\mathbf{h}_t$ deterministico e $\mathbf{z}_t$ stocastico condizionato su di
+esso. Che cosa debba finire in $\mathbf{z}_t$ (e che cosa sia giusto lasciar
+fuori) è una delle domande centrali del capitolo.
 
 `````
 
@@ -294,8 +296,9 @@ basta quel riassunto, e la strategia dell'agente (in gergo la sua *policy*) si
 allena lì dentro senza mai toccare il gioco vero.
 Quella linea di ricerca arriva ai Dreamer di Danijar Hafner e colleghi
 (dal 2020, con l'ultima versione uscita su *Nature* nel 2025), che imparano
-quasi soltanto immaginando, fino a ottenere (primo
-algoritmo al mondo) un diamante in *Minecraft* senza dimostrazioni umane.
+quasi soltanto immaginando, fino a ottenere un diamante in *Minecraft* senza
+dimostrazioni umane: il primo algoritmo, dichiarano, a riuscirci partendo da
+zero.
 
 Seconda tappa, la via di LeCun. Invece di immaginare il mondo puntino per
 puntino, lo immagina per idee: prevede a grandi linee che cosa ci sarà, non

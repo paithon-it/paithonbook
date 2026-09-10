@@ -165,7 +165,7 @@ Quarta tappa, il 2017. Fino a lì un programma leggeva la frase parola per
 parola, in fila, e a ogni passo si portava dietro un riassunto di quello che
 aveva già letto. L'ultimo salto è stato un modello che guarda l'intera frase
 tutta insieme e decide, parola per parola, quali delle altre contano davvero
-per capirla: si chiama **Transformer**, e a quel nome è dedicato il capitolo
+per capirla: si chiama Transformer, e a quel nome è dedicato il capitolo
 successivo a questo.
 
 Cambiano due cose insieme. Con il riassunto, l'inizio di una frase lunga

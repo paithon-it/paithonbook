@@ -24,8 +24,8 @@ imparano, non si adattano ai dati.
 
 Un codec neurale ribalta l'approccio. Invece di scrivere le regole, le fa
 imparare a una rete. La struttura ha un nome, **autoencoder**, e una forma
-da guardare: un **encoder** che stringe quello che entra fino a farlo diventare
-un pugno di numeri, e un **decoder** che da quel pugno di numeri cerca di
+da guardare: un encoder che stringe quello che entra fino a farlo diventare
+un pugno di numeri, e un decoder che da quel pugno di numeri cerca di
 ritirare fuori l'originale. I due si addestrano *insieme*, con un'unica regola:
 quello che esce deve somigliare a quello che è entrato. Questa forma vale per
 qualunque cosa si voglia comprimere, non solo per il suono, ed è qui che il
@@ -245,7 +245,7 @@ mettendo più prototipi per avvicinarci di più. Ma allargare costa, e conviene
 guardare da vicino *quanto*, perché è tutta la ragione di quello che viene
 dopo.
 
-Serve prima la parola con cui si misura il costo. Un **bit** è una risposta
+Serve prima la parola con cui si misura il costo. Un bit è una risposta
 sì/no. Con 3 bit, cioè tre risposte sì/no in fila, si distinguono
 $2 \times 2 \times 2 = 8$ casi; con 10 bit se ne distinguono 1024. Per dire a
 quale prototipo si riferisce, un token deve spendere tanti bit quanti bastano a
@@ -286,10 +286,10 @@ allontanarti dalla cifra.
 
 La RVQ fa la stessa cosa con i vettori del suono. Il primo codebook dà
 l'approssimazione grossolana: la moneta da 50. Poi calcola quanto ha sbagliato
-(il **residuo**, il resto da coprire) e chiede a un secondo codebook di
+(il residuo, il resto da coprire) e chiede a un secondo codebook di
 approssimare *quel residuo*. Il secondo lascia a sua volta un residuo più
 piccolo, che un terzo codebook rifinisce ancora, e così via. Alla fine ogni
-pezzetto di audio non è più un solo token, ma una **pila** di token (uno per
+pezzetto di audio non è più un solo token, ma una pila di token (uno per
 codebook) che insieme lo descrivono con la precisione che serve, spendendo
 pochissimi bit.
 
@@ -372,7 +372,7 @@ possibile tutto il resto del capitolo.
 Da quei 600 numeri il decoder tira fuori un suono che *suona* come l'originale,
 e la parola «ricostruire» va presa con le pinze. Quel decoder non impara solo a
 sbagliare poco. Accanto a lui, durante l'addestramento, lavora un
-**discriminatore**: una seconda rete il cui unico mestiere è smascherare l'audio
+discriminatore: una seconda rete il cui unico mestiere è smascherare l'audio
 finto, e che quindi lo costringe a produrre qualcosa che *suoni* vero, non
 soltanto qualcosa di numericamente vicino all'originale (è il meccanismo delle
 {doc}`GAN </GAN/overview>`, raccontato per intero più avanti).

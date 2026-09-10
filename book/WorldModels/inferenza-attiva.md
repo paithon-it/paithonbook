@@ -60,11 +60,17 @@ quello che ti aspettavi e quello che trovi. E la tesi dell'inferenza attiva è
 che siano davvero la stessa operazione, fatta in due direzioni: percepire
 piega le tue idee verso il mondo, agire piega il mondo verso le tue idee.
 
-Quanto sia sorprendente davvero quella stanza al buio, però, non lo sai: quello
-che senti è il tuo sconcerto, e lo sconcerto è sempre almeno quanto la sorpresa
-vera, mai meno. Trovata la spiegazione giusta lo sconcerto cala, e si ferma
-contro quel fondo di sorpresa che la scena ha comunque. Quel che resta in mezzo
-è quanto la tua spiegazione dista dalla migliore che il buio consente.
+Quanto sia sorprendente davvero quella stanza al buio, però, non lo sai: per
+saperlo dovresti già conoscere la spiegazione giusta. Quello che senti è lo
+sconcerto, cioè quanto il buio stona con la spiegazione che in quel momento ti
+sei dato, e finché quella spiegazione è sbagliata lo sconcerto è più grosso
+della sorpresa vera, perché ci hai messo dentro anche il tuo errore. Trovata
+quella giusta lo sconcerto cala, e si ferma contro il fondo di sorpresa che la
+scena ha comunque (una stanza spenta quando la credevi accesa un po’ sorprende,
+e nessuna spiegazione te lo toglie): sotto quel fondo non scende mai. Quel che
+resta in mezzo è quanto la tua spiegazione dista dalla migliore che il buio
+consente. Lo sconcerto, nel linguaggio dell'inferenza attiva, si chiama energia
+libera.
 
 C'è un terzo modo: **imparare**. Se le sorprese si ripetono, non basta più
 aggiustare l'idea di oggi, conviene cambiare il modello che quelle idee le
@@ -203,7 +209,10 @@ rinforzo </AutoSupervisione/dibattito-rl>` e in quella
 
 `````{tab} Elementare
 
-Un agente così, prima di muoversi, misura ogni mossa due volte.
+Un agente così, prima di muoversi, misura ogni mossa due volte. Attenzione a
+che cosa sta misurando: non lo sconcerto di adesso, che è quello di cui si è
+parlato fin qui, ma quello che la mossa promette per il seguito. È una seconda
+grandezza, parente stretta della prima e con un mestiere suo.
 
 La prima misura è quella che ci si aspetta: quanto quella mossa lo porta verso
 le condizioni in cui vuole trovarsi. È il valore di **ottenere**.
@@ -298,7 +307,7 @@ scrive nessuno, arriva da sé, ed è il segnale successivo.
 ```{admonition} Due energie, e non sono la stessa cosa
 :class: warning
 Il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` chiama
-**energia** un punteggio di compatibilità: quanto una configurazione «sta bene
+energia un punteggio di compatibilità: quanto una configurazione «sta bene
 insieme», con il buttafuori che dà i voti e i paesaggi in cui si cerca il punto
 più basso. L’**energia libera** dell'inferenza attiva misura un'altra cosa:
 quanto quel che capita si discosta da quel che ci si aspettava, ed è alta
@@ -337,11 +346,12 @@ si valutano modello per modello, come per qualunque altra teoria.
 
 ## La stessa formula, sotto un altro nome
 
-Fra le riscritture dell'energia libera attesa, gli autori osservano che
-togliendone un pezzo si riottengono schemi già noti, e in particolare che «se
-si rimuove l'ambiguità, lo schema risultante corrisponde al controllo
-sensibile al rischio o al controllo KL nella teoria del controllo»
-{cite}`parr2022active`.
+Fra le riscritture dell'energia libera attesa (quella rivolta al futuro: non lo
+sconcerto di adesso, ma quello che un piano promette) gli autori osservano che
+togliendone un pezzo si riottengono schemi già noti. Uno di quei pezzi è
+l'ambiguità, cioè quanto da un posto si vede male: tolta quella, scrivono, «lo
+schema risultante corrisponde al controllo sensibile al rischio o al controllo
+KL nella teoria del controllo» {cite}`parr2022active`.
 
 Ora, «controllo KL» vuol dire una cosa precisa: un problema di controllo in cui
 al costo si aggiunge la divergenza da una distribuzione di riferimento. E un

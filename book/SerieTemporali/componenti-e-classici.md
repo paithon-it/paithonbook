@@ -165,7 +165,7 @@ ne troverà una terza che non vale né qui né lì.
 
 Qui interessa il *perché* quasi tutti i modelli classici la pretendono, e la
 ragione è semplice. Un modello si sceglie pochi numeri guardando i dati (li
-chiameremo d'ora in poi i suoi **parametri**: la frazione con cui ieri pesa su
+chiameremo d'ora in poi i suoi parametri: la frazione con cui ieri pesa su
 oggi, l'ampiezza tipica degli scossoni) e poi li dà per buoni su tutta la serie,
 passato e futuro. Se la media scivola verso l'alto, o se l'ampiezza
 delle oscillazioni cambia, quei parametri descrivono bene un pezzo di serie e ne
@@ -347,7 +347,7 @@ combinazione dei valori appena passati, più una spinta casuale.
 Domani la temperatura sarà simile a quella di oggi, con una correzione. Se oggi
 fa più caldo della media di stagione, è probabile che anche domani sia sopra la
 media, ma un po’ meno: il caldo «rientra» piano verso il normale. Un modello
-**autoregressivo** cattura proprio questo: prende gli ultimi valori, li pesa, li
+autoregressivo cattura proprio questo: prende gli ultimi valori, li pesa, li
 somma, e aggiunge un pizzico di imprevedibile per il resto. «Auto-regressivo»
 vuol dire che la serie fa da predittore *a sé stessa*: guarda il proprio
 passato, non variabili esterne.
@@ -883,7 +883,7 @@ Machine Learning tiene separati i dati su cui il modello impara da quelli su cui
 lo si esamina, applicata qui a un oggetto diverso.
 
 Le due cose hanno un nome, e conviene averlo prima di vederle all'opera. Il
-criterio che sceglie fra i modelli si chiama **AIC**: più è basso, meglio è. Ma
+criterio che sceglie fra i modelli si chiama AIC: più è basso, meglio è. Ma
 è un numero che vale solo per differenza, e la differenza va guardata con una
 soglia in testa: sotto le due unità l'AIC non sta distinguendo niente, e due
 modelli così vicini sono, per lui, lo stesso modello. Quel due è la regola
@@ -899,7 +899,7 @@ senza nessuna regolarità dentro si chiama **rumore bianco**, ed è il
 complimento più alto che si possa fare agli errori di un modello: vuol dire che
 tutto ciò che si poteva spremere è stato spremuto.
 
-La risposta del test è un numero fra $0$ e $1$ chiamato **$p$-value**, e va
+La risposta del test è un numero fra $0$ e $1$ chiamato $p$-value, e va
 letta al contrario di quanto verrebbe naturale: alto vuol dire «nessuna traccia
 di regolarità», cioè il modello va bene; vicino a zero vuol dire «una regolarità
 c'è, e l'hai lasciata fuori». La soglia d'uso è $0{,}05$, per convenzione.
@@ -997,7 +997,7 @@ il modello vero tre volte su quattro.
 L'AIC non ha difetti: è fatto per scegliere il modello che prevede meglio, non
 per indovinare quello che ha generato i dati, e quando due modelli spiegano i
 dati quasi ugualmente bene i due obiettivi non coincidono. A puntare
-sull'identificazione è semmai il **BIC**, un parente stretto che penalizza i
+sull'identificazione è semmai il BIC, un parente stretto che penalizza i
 parametri tanto più severamente quante più osservazioni ci sono. La lezione che
 invece tiene su tutti i semi e a tutte e due le numerosità è un'altra: il
 Ljung-Box non rifiuta mai, e il $p$-value più basso osservato in quaranta
@@ -1245,7 +1245,7 @@ migliore, e viene dall'ingegneria dei sistemi di controllo. La
 {doc}`sezione sui sistemi dinamici </StateSpaceModel/dai-sistemi-dinamici-a-s4>`
 racconta la formulazione che Rudolf Kálmán pubblicò nel 1960: descrivere
 quello che evolve nel tempo con una manciata di variabili nascoste, lo
-**stato**, e tenere separata la misura che se ne prende. Lo stesso ciclo era
+stato, e tenere separata la misura che se ne prende. Lo stesso ciclo era
 stato scritto altrove e prima, dall'astronomo danese Thorvald Thiele nel 1880 e
 da Ruslan Stratonovich e Peter Swerling alla fine degli anni Cinquanta
 {cite}`russell2020artificial`; il nome è rimasto a Kálmán perché è la sua
@@ -1577,7 +1577,7 @@ visto, e questo vale pure quando la serie è corta o disturbata. La **frugalità
 di dati**: gran parte delle serie reali (le vendite mensili di un prodotto, i
 pazienti di un reparto) hanno poche decine o centinaia di osservazioni, troppo
 poche per addestrare una rete affamata di dati, più che sufficienti per un
-ARIMA. E l’**interpretabilità**. La frazione con cui il passato pesa sul futuro,
+ARIMA. E l’interpretabilità. La frazione con cui il passato pesa sul futuro,
 la componente stagionale, la forbice dentro cui il modello dichiara che cadrà il
 valore vero (il filo rosso dell'introduzione al capitolo): sono oggetti che un
 analista legge, discute e difende davanti a chi deve decidere. I numeri interni
@@ -1597,7 +1597,7 @@ quadrati degli scarti, che è lo stesso criterio con cui la {doc}`sezione
 sull'apprendimento supervisionato
 </MachineLearning/apprendimento-supervisionato>` sceglieva la retta che passa
 meglio in mezzo ai dati. In statistica quel criterio ha un nome, il metodo dei
-**minimi quadrati**. Generiamo una serie dal modello con una frazione $\phi$
+minimi quadrati. Generiamo una serie dal modello con una frazione $\phi$
 nota e verifichiamo di saperla recuperare, poi facciamo una previsione a un
 passo. Tutto in puro NumPy.
 
@@ -1643,7 +1643,7 @@ con cinquecento osservazioni i minimi quadrati ricostruiscono bene. La
 previsione a un passo è semplicemente la formula del modello applicata
 all'ultimo valore osservato. Da qui in avanti si può ripetere il conto in
 avanti per prevedere più giorni (quanto lontano si guarda si chiama
-**orizzonte**). Ricadendo, però, in un guaio: dal secondo giorno in poi il
+orizzonte). Ricadendo, però, in un guaio: dal secondo giorno in poi il
 conto non parte più da un valore osservato, parte da una previsione, cioè da un
 numero che può già essere sbagliato, e quello sbaglio si trascina fino in
 fondo. La sezione seguente lo riprende per esteso.

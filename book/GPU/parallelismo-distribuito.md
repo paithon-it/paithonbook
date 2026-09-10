@@ -78,7 +78,7 @@ una copia identica del modello e una fetta diversa del mini-batch (il
 mazzetto di esempi che si guardano in una volta sola prima di aggiornare i
 pesi), calcola le proprie correzioni, e alla fine tutte si mettono d'accordo
 facendone la media. L'operazione con cui si mettono d'accordo si chiama
-**all-reduce**: ogni scheda mette dentro i propri numeri, si sommano, e alla
+all-reduce: ogni scheda mette dentro i propri numeri, si sommano, e alla
 fine tutte quante hanno in mano lo stesso risultato. Dopo la media, le
 repliche applicano lo stesso aggiornamento e restano perfettamente uguali. È
 il primo dei tre pannelli in {numref}`fig-parallelismo-strategie`, da guardare

@@ -552,7 +552,7 @@ insieme; infine i chip costruiti apposta per questo mestiere, come le TPU di
 Google.
 
 Ed è in debito con Internet, che ha fatto molto più che diffondere articoli e
-video: ha reso raccoglibili i **dati** su cui i modelli si addestrano, dalle
+video: ha reso raccoglibili i dati su cui i modelli si addestrano, dalle
 grandi collezioni di immagini già etichettate, come ImageNet, al testo del web.
 Dati, potenza di calcolo e algoritmi maturi: sono questi a essere arrivati
 insieme, e il {doc}`capitolo sul deep learning </DeepLearning/overview>` li

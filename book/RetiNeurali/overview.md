@@ -33,7 +33,7 @@ certa soglia, il verdetto è "sì"; altrimenti "no". Un neurone artificiale è
 esattamente questo: prende dei numeri in ingresso, li pesa, li somma e decide.
 
 Due nomi, perché torneranno a ogni pagina. Quel "quanto ci fidiamo" di
-ciascun giurato è un numero, e si chiama **peso**. E il presidente ha una sua
+ciascun giurato è un numero, e si chiama peso. E il presidente ha una sua
 inclinazione ancora prima di sentire la giuria, chi parte prevenuto verso il
 sì e chi verso il no: anche quella è un numero, e si chiama **bias**.
 

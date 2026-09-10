@@ -72,7 +72,7 @@ $\theta$.
 `````
 
 Il risultato di tutto questo ha un nome, ed è la parola che tornerà da qui alla
-fine: il **modello**. Non è il
+fine: il modello. Non è il
 modellino di un aeroplano né chi sfila in passerella. È il programma *dopo* che
 ha visto i dati: la regola che quei dati hanno prodotto. Una regola del genere,
 dentro un calcolatore, è fatta di numeri (quanto conta la parola «vincita»,
@@ -198,9 +198,9 @@ meno numeri senza perderne l'essenza; e i sistemi che rilevano anomalie in una
 transazione.
 
 **Apprendimento per rinforzo.** Non ci sono etichette, e non c'è nemmeno un
-mucchio di esempi fissato in partenza: c'è un **agente** (un programma che
+mucchio di esempi fissato in partenza: c'è un agente (un programma che
 agisce, non una persona) che compie azioni in un ambiente e riceve, di tanto in
-tanto, una **ricompensa**. L'agente impara per tentativi la strategia che
+tanto, una ricompensa. L'agente impara per tentativi la strategia che
 massimizza la ricompensa nel tempo. È il modo in cui il programma AlphaGo, del
 laboratorio DeepMind, imparò nel 2016 a battere i campioni del go, un antico
 gioco da tavolo orientale: quella prima versione studiò anche partite umane
@@ -242,10 +242,10 @@ I passaggi, in ordine:
 3. **Modello**: decidere che *forma* dare al modello (una retta? un albero di
    domande? una rete?) e poi addestrarlo sui dati.
    Dentro un modello ci sono dei numeri regolabili, come le manopole di un
-   vecchio amplificatore: si chiamano **parametri** (nelle formule del libro:
+   vecchio amplificatore: si chiamano parametri (nelle formule del libro:
    $\theta$, la lettera greca *theta*). Addestrare vuol dire girare quelle
    manopole finché il modello sbaglia il meno possibile, e «quanto sbaglia» è a
-   sua volta un numero, che si chiama **loss** (la *perdita*: quanto ci costa
+   sua volta un numero, che si chiama loss (la *perdita*: quanto ci costa
    ogni risposta sbagliata). Attenzione a non confondere i due momenti: la
    forma la scegliamo prima, i numeri dentro li trova l'addestramento, e
    «modello» in senso stretto è il risultato dei due messi insieme.
@@ -400,8 +400,9 @@ Le ragioni identificate sono strutturali, non contingenti:
 
 Il corollario pratico riguarda il costo: un gradient boosting si addestra
 in minuti su CPU e si mette in produzione senza GPU. Prima di pagare il conto
-del deep learning conviene avere una baseline classica ben tarata, e succede
-spesso che quella baseline sia già la risposta.
+del deep learning conviene avere una linea di base classica ben tarata (la
+*baseline* dei paper), e succede spesso che quella linea di base sia già la
+risposta.
 
 `````
 

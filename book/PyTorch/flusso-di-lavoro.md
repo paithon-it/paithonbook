@@ -112,7 +112,7 @@ X_test,  y_test  = X[taglio:], y[taglio:]       # (10, 1)
 Due dettagli meritano attenzione, perché tornano in ogni progetto.
 `unsqueeze(dim=1)` trasforma la fila di cinquanta numeri in una tabella di
 cinquanta righe e una colonna: gli strati di PyTorch vogliono una riga per
-esempio, e su ogni riga le **caratteristiche** di quell'esempio (in inglese
+esempio, e su ogni riga le caratteristiche di quell'esempio (in inglese
 *feature*, ed è la parola che si troverà nel codice: `in_features`,
 `out_features`). Qui la caratteristica è una sola, ma la colonna ci vuole lo
 stesso, ed è per questo che il conto delle dimensioni è il primo dei

@@ -213,7 +213,7 @@ punto in cui guardo». La $g$ del riquadro in basso è il valore che la
 soluzione deve assumere sul bordo.
 
 Lo scarto fra i due membri dell'equazione, quello che il ramo in alto calcola,
-si chiama **residuo**: è lo stesso oggetto che nel racconto del compito in
+si chiama residuo: è lo stesso oggetto che nel racconto del compito in
 classe erano i punti persi per una violazione della regola. Un'avvertenza che
 tornerà utile: nel resto della sezione «residuo» indicherà quasi sempre il
 *punteggio* che se ne ricava, cioè la media dei residui elevati al quadrato
