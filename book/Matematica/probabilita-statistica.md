@@ -652,24 +652,24 @@ perché ci si creda: si scrive perché è l'unica su cui si sappiano fare i cont
 perché truccata al cinquantacinque per cento e truccata al novanta sono due
 mondi diversi.
 
-Il conto a mente si può fare, con la regola delle campane. Su cento lanci di
-una moneta onesta le teste si accumulano attorno a cinquanta, e la larghezza
-tipica di quella campana è la radice di un quarto dei lanci: un quarto di cento
-fa venticinque, la cui radice è cinque teste. (È lo stesso conto del
-margine dei sondaggi, dove con cento intervistati venivano dieci punti: là
-erano due larghezze, cioè il margine al $95\%$, qui è una sola.) Sessanta sta
-dunque due larghezze sopra il centro, e fuori da due larghezze si finisce circa
-cinque volte su cento. «Circa cinque su cento» però non basta a decidere,
-perché la soglia è proprio cinque su cento, e la campana è un'approssimazione
-di un conto che si può fare esatto, contando quante file di cento testa-o-croce
-hanno sessanta teste o più. Fatto esatto: uno sbilanciamento di sessanta e più
-(o di quaranta e meno) capita a una moneta onesta $57$ volte su mille, cioè
-$0{,}057$. La regola a mente dava il paese giusto, la decisione la prende la
-cifra. Quel numero, cioè quanto spesso il caso da solo produrrebbe una
-stranezza almeno pari a quella vista, si chiama $p$, o $p$-value.
-Attenzione alla lettera: questa $p$ è una proprietà della *prova* appena fatta,
-e non ha niente a che vedere con la $p$ con cui poco fa si indicava la
-probabilità che esca testa, che è una proprietà *della moneta*.
+Il conto a mente si può fare, con la regola 68–95. Su cento lanci di una
+moneta onesta le teste si accumulano attorno a cinquanta, e la larghezza
+tipica di quella campana è la radice di un quarto dei lanci: un quarto di
+cento fa venticinque, la cui radice è cinque teste. (È lo stesso conto del
+margine dei sondaggi: cento diviso la radice di cento fa dieci punti, che là
+erano due larghezze, cioè il margine al $95\%$, mentre qui la larghezza è una
+sola.) Sessanta sta dunque due larghezze sopra il centro, e fuori da due
+larghezze si finisce circa cinque volte su cento. «Circa cinque su cento» però
+non basta a decidere, perché la soglia è proprio cinque su cento, e la campana
+è un'approssimazione di un conto che si può fare esatto, contando quante file
+di cento testa-o-croce hanno sessanta teste o più. Fatto esatto: uno
+sbilanciamento di sessanta e più (o di quaranta e meno) capita a una moneta
+onesta $57$ volte su mille, cioè $0{,}057$. La regola a mente dava il paese
+giusto, la decisione la prende la cifra. Quel numero, cioè quanto spesso il
+caso da solo produrrebbe una stranezza almeno pari a quella vista, si chiama
+$p$, o $p$-value. Attenzione alla lettera: questa $p$ è una proprietà della
+*prova* appena fatta, e non ha niente a che vedere con la $p$ con cui poco fa
+si indicava la probabilità che esca testa, che è una proprietà *della moneta*.
 
 Si contano anche i quaranta e meno perché la domanda era «è truccata», e non «è
 truccata a favore di testa». Chi decide il verso dopo aver visto il risultato ha
@@ -689,8 +689,9 @@ passare una moneta truccata, e questo capita tanto più spesso quanto meno lanci
 si sono fatti: con venti lanci e dodici teste $p$ vale $0{,}503$, cioè con una
 prova così corta la stessa proporzione di teste non dice più niente. Non
 accusare non è assolvere. E i due errori si scambiano: alzare l'asticella per
-accusare vuol dire lasciar passare più monete truccate, e viceversa. L'unico
-modo di stringerli tutti e due insieme è lanciare di più.
+accusare vuol dire lasciar passare più monete truccate, e viceversa. Con la
+stessa prova in mano, l'unico modo di stringerli tutti e due insieme è
+lanciare di più.
 
 E c'è un modo di leggere $p$ che è sbagliato, ed è quello che viene in mente per
 primo: $p$ non è la probabilità che la moneta sia onesta. Per dire quella
@@ -727,7 +728,7 @@ Il livello $\alpha$ si fissa prima, e Neyman e Pearson
 {cite}`neyman1933problem` gli danno il significato che ancora si usa: è la
 frequenza con cui la procedura rifiuta $H_0$ quando $H_0$ è vera, cioè l'errore
 di prima specie. L'errore di seconda specie $\beta$ è non rifiutare quando
-$H_1$ è vera, e $1-\beta$ è la potenza. A parità di dati i due si scambiano;
+$H_1$ è vera, e $1-\beta$ è la potenza. A test fissato i due si scambiano;
 per stringerli insieme serve $n$.
 
 La dualità con gli intervalli di confidenza vale a parità di famiglia:
@@ -742,15 +743,16 @@ Wilson con il test $z$ che lo calcola sotto $H_0$. Test e intervallo dicono la
 stessa cosa in due modi, e l'intervallo dice in più *quali* valori restano
 compatibili.
 
-Sull'interpretazione l'American Statistical Association ha ritenuto necessario un
-comunicato {cite}`wasserstein2016asa`, sei principi di cui il primo dice che
-cosa il $p$-value fa (indica quanto i dati siano incompatibili con un modello
-statistico specificato) e due dicono che cosa non fa: non misura la probabilità
-che l'ipotesi studiata sia vera, né la probabilità che i dati siano stati
-prodotti dal solo caso; e nessuna conclusione dovrebbe reggersi soltanto sul
-fatto che un $p$-value superi o non superi una soglia. La prima delle due
-proibizioni è il passaggio da $\Pr(\text{dati} \mid H_0)$ a
-$\Pr(H_0 \mid \text{dati})$, che senza una probabilità a priori non si fa.
+Sull'interpretazione l'American Statistical Association ha ritenuto necessario
+un comunicato {cite}`wasserstein2016asa`, sei principi. Il primo dice che cosa
+il $p$-value fa: indica quanto i dati siano incompatibili con un modello
+statistico specificato. Un altro dice che cosa non fa: non misura la
+probabilità che l'ipotesi studiata sia vera, né la probabilità che i dati
+siano stati prodotti dal solo caso. Un terzo non parla del $p$-value ma di chi
+lo legge: nessuna conclusione dovrebbe reggersi soltanto sul fatto che un
+$p$-value superi o non superi una soglia. Il divieto del secondo è il
+passaggio da $\Pr(\text{dati} \mid H_0)$ a $\Pr(H_0 \mid \text{dati})$, che
+senza una probabilità a priori non si fa.
 
 Il punto di rottura è a monte del conto. Il $p$-value ha il significato dichiarato
 solo se la statistica, il verso e la soglia sono stati scelti prima di
@@ -773,8 +775,9 @@ domanda non regge trecento.
 Una scatola con mille monete, novecento oneste e cento truccate, e da fuori non
 si vede quali. Le truccate escono testa il sessantacinque per cento delle volte:
 al sessanta, come si è appena visto, in cento lanci non si distinguerebbero. Le
-si lancia cento volte ciascuna e si accusa quella che sbilancia troppo, con la
-solita soglia di cinque su cento, cioè da sessantuno teste in su.
+si lancia cento volte ciascuna e si accusa quella che sbilancia troppo da una
+parte o dall'altra, con la solita soglia di cinque su cento: da sessantuno
+teste in su, o da trentanove in giù.
 
 Il guaio si vede prima ancora di aprire la scatola. La soglia prometteva cinque
 accuse ingiuste ogni cento monete oneste, che con novecento farebbero
@@ -805,13 +808,13 @@ accusarne molte di più.
 La ricetta si mette in una riga. Si allineano le mille monete dalla più
 sbilanciata alla meno, e alla moneta che sta al posto numero $k$ si chiede la
 soglia divisa per mille diviso $k$: alla prima la soglia divisa per mille,
-come faceva Bonferroni; alla seconda divisa per cinquecento; alla decima divisa
-per cento; alla centesima divisa per dieci. Si scende finché una ce la fa, si
-segna quel posto, e si accusano tutte le monete da lì in su. Sì: nel gruppo
-finisce anche qualcuna che da sola non ce l'avrebbe fatta, ed è voluto. Il nome
-della cosa che si tiene sotto controllo è **tasso di false scoperte**, e
-«scoperta» è il nome che si dà a un'accusa quando il colpevole non è una moneta
-ma un gene o un guasto.
+come faceva Bonferroni; alla seconda divisa per cinquecento; alla decima
+divisa per cento; alla centesima divisa per dieci. Si scende fino all'ultima
+che ce la fa, si segna quel posto, e si accusano tutte le monete da lì in su.
+Sì: nel gruppo finisce anche qualcuna che da sola non ce l'avrebbe fatta, ed è
+voluto. Il nome della cosa che si tiene sotto controllo è **tasso di false
+scoperte**, e «scoperta» è il nome che si dà a un'accusa quando il colpevole
+non è una moneta ma un gene o un guasto.
 
 Ed è anche la ragione per cui la promessa più debole permette di accusarne di
 più. Bonferroni giudica ogni moneta da sola, come se fosse l'unica; qui una
@@ -887,7 +890,7 @@ nello stesso blocco. Per la scatola: mille monete, cento delle quali escono
 testa il $65\%$ delle volte e le altre novecento oneste, cento lanci a testa, e
 il $p$ calcolato contando le combinazioni; il tutto ripetuto trecento volte con
 scatole sorteggiate in modo diverso, perché una quota media si guarda su molte
-prove e con trenta non si era ancora assestata.
+prove.
 
 ```python
 import numpy as np
@@ -900,7 +903,8 @@ def massa_binomiale(n):
     return [comb(n, i) / 2**n for i in range(n + 1)]
 
 def tabella_p(n):
-    """Per ogni k, quanto spesso una moneta onesta sbilancia almeno quanto k teste."""
+    """Quanto spesso una moneta onesta sbilancia almeno quanto k teste,
+    contando tutti e due i versi."""
     massa = massa_binomiale(n)
     return [min(1.0, 2 * min(sum(massa[:k+1]), sum(massa[k:]))) for k in range(n + 1)]
 
@@ -958,7 +962,7 @@ che hanno la virgola. Senza correzione si annunciano centoquindici scoperte e
 più di una su quattro è rumore: la soglia del cinque per cento sta facendo il
 suo mestiere una domanda alla volta, e chi legge l'elenco intero non ha nessuna
 delle garanzie che crede di avere. Bonferroni porta i falsi quasi a zero e trova
-dodici monete truccate su cento; Benjamini-Hochberg ne trova quarantasette, e la
+tredici monete truccate su cento; Benjamini-Hochberg ne trova quarantasette, e la
 quota di oneste fra le accusate resta al $3{,}5\%$, sotto il $4{,}5\%$ promesso
 (che è il cinque per cento moltiplicato per la quota di monete oneste nella
 scatola). L'ultima colonna, quante truccate si trovano su cento, ha un nome: è

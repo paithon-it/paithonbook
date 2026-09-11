@@ -209,6 +209,11 @@ print(round(r.sum(), 12), round(uno @ r, 12))   # -> 0.0 0.0
 print(round(r @ r, 10), round(5 * y.var(), 10))  # -> 0.0034 0.0034
 ```
 
+I due arrotondamenti a dodici cifre meritano una riga: la somma degli scarti
+non viene esattamente zero ma un numero dell'ordine di $10^{-16}$, cioè il
+gradino più piccolo che la macchina sa scrivere accanto a $2$, e il motivo lo
+spiega la {doc}`sezione di analisi numerica </Matematica/analisi-numerica>`.
+
 ## Proiettare su un piano, e perché quella è la risposta migliore
 
 Una direzione sola basta di rado. Il caso che interessa è quello in cui le
@@ -907,7 +912,8 @@ soglia, scelta da chi ha scritto la libreria e non da chi la usa.
 
 C'è un fatto sull'ortogonalità che nello spazio di tutti i giorni non si vede,
 e che regge buona parte di come funzionano le rappresentazioni interne dei
-modelli.
+modelli, cioè le liste di numeri con cui una rete descrive quello che ha
+davanti.
 
 `````{tab} Elementare
 
@@ -930,8 +936,9 @@ dimensioni si possono sistemare molte più di mille direzioni tutte quasi
 perpendicolari fra loro: rinunciando alla perpendicolarità esatta e
 accontentandosi di «quasi», la capienza esplode. È il motivo per cui una rete
 può tenere in uno spazio di poche migliaia di dimensioni un numero di concetti
-molto più grande, dando a ciascuno una direzione propria e sperando che si
-disturbino poco. La {doc}`sezione sull'interpretabilità meccanicistica
+molto più grande: a ciascuno tocca una lista di numeri sua, cioè una direzione
+sua, e finché le direzioni restano quasi perpendicolari i concetti si
+confondono poco. La {doc}`sezione sull'interpretabilità meccanicistica
 </Interpretabilita/attribuzione-e-meccanicistica>` racconta che cosa succede
 quando invece si disturbano.
 
@@ -994,17 +1001,35 @@ for d in (3, 100, 1000):
 # -> 1000 0.0252 0.166 0.0316
 ```
 
+```{figure} ../figures/quasi-perpendicolari.svg
+:name: fig-quasi-perpendicolari
+:alt: "Tre istogrammi affiancati, con la stessa scala verticale da zero a cento per cento, mostrano come si distribuisce il coseno fra due direzioni sorteggiate a caso. A sinistra, in tre dimensioni, le venti fasce sono tutte alte uguali, un tappeto piatto al cinque per cento: ogni angolo è ugualmente probabile, e il coseno medio vale zero virgola cinquanta. Al centro, in cento dimensioni, le fasce calano da sinistra a destra e dopo la sesta non ce n'è quasi più nessuna: il coseno medio vale zero virgola zero otto. A destra, in mille dimensioni, resta un picco solo appoggiato allo zero, alto quasi il novanta per cento, e il coseno medio vale zero virgola zero tre. Sotto ogni istogramma, la quota di coppie con coseno sotto un decimo: dieci per cento in tre dimensioni, sessantotto in cento, novantanove virgola otto in mille."
+:width: 100%
+
+Il coseno fra due direzioni sorteggiate a caso, misurato su tremila direzioni
+per ogni spazio e diviso in venti fasce. In tre dimensioni le fasce sono tutte
+ugualmente piene, cioè fra due direzioni può capitare qualunque angolo; in
+mille ne resta piena una sola, appoggiata allo zero, e il 99,8% delle coppie
+sta sotto un decimo.
+```
+
+La media da sola non distingue un coseno che si è spostato da uno che si è
+stretto, e {numref}`fig-quasi-perpendicolari` fa vedere che è la seconda.
 Tremila direzioni sorteggiate in mille dimensioni, cioè tre volte più direzioni
 che dimensioni, e fra i quattro milioni e mezzo di coppie possibili la più
 allineata di tutte ha coseno $0{,}166$, che è un angolo di poco più di ottanta
 gradi. Le stesse tremila direzioni in tre dimensioni danno invece coseno
 massimo $1{,}0$: là dentro non c'è posto, e due finiscono per sovrapporsi.
 
-I due arrotondamenti a dodici cifre del conto sulle cinque misure meritano una
-riga: la somma degli scarti non viene esattamente zero ma un numero
-dell'ordine di $10^{-16}$, cioè il gradino più piccolo che la macchina sa
-scrivere accanto a $2$, e il motivo lo spiega la
-{doc}`sezione di analisi numerica </Matematica/analisi-numerica>`.
+La stessa capienza spiega una mossa che a prima vista sembra sconsiderata:
+sommare due informazioni diverse dentro gli stessi numeri invece di tenerle in
+caselle separate. Se le due liste puntano in direzioni quasi perpendicolari la
+somma le contiene tutte e due, e restano abbastanza separate perché una rete
+possa imparare a tenerle distinte, visto che ciascuna sporca l'altra di quei
+due centesimi e mezzo. È una delle ragioni per cui un Transformer somma ai
+numeri di una parola quelli che ne dicono la posizione invece di attaccarglieli
+in fondo, e il gesto sta nella {doc}`sezione sull'architettura del Transformer
+</Transformers/architettura>`.
 
 ## In pratica, con NumPy
 

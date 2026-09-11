@@ -54,8 +54,9 @@ E tutto questo regge finché vale il divieto di guardare avanti. Se ogni parola
 potesse tenere d'occhio anche quelle che verranno, aggiungerne una in fondo
 cambierebbe l'etichetta di tutte le altre, e quanto si era scritto prima
 andrebbe buttato e rifatto da capo a ogni parola nuova: non resterebbe niente
-da riusare. Le macchine che leggono un testo già finito lavorano proprio così,
-e infatti non conservano niente da una parola all'altra.
+da riusare. Le macchine a cui quel divieto non si applica, quelle che un testo
+già scritto lo leggono per capirlo invece che per continuarlo, lavorano proprio
+così, e infatti non conservano niente da una parola all'altra.
 `````
 
 `````{tab} Superiore
@@ -123,12 +124,13 @@ duemillesima duemila. Chi dice che il taccuino rende la scrittura gratis sta
 guardando solo la metà che si risparmia.
 
 E c'è un prezzo di spazio che si vede subito appena si prova a immaginare il
-taccuino di una conversazione lunga. Un palazzo di trentadue piani con
-trentadue lettori per piano vuol dire mille taccuini, ciascuno con due righe
-per ogni parola scritta: qualche centinaio di kilobyte a parola, che per una
-conversazione da ottomila parole diventano gigabyte di carta da tenere
-aperta. Da lì in poi la domanda non è più come far scrivere il modello, ma
-dove mettere i taccuini.
+taccuino di una conversazione lunga. Un palazzo moderno, molto più alto di
+quello del 2017: trentadue piani con trentadue lettori per piano, cioè mille
+taccuini, ciascuno con due righe per ogni parola scritta, e ogni riga è
+centoventotto numeri da due byte l'uno: mille per due per centoventotto per due
+fa mezzo megabyte a parola, e una conversazione da ottomila parole ne vuole
+quattro gigabyte di carta da tenere aperta. Da lì in poi la domanda non è più
+come far scrivere il modello, ma dove mettere i taccuini.
 `````
 
 `````{tab} Superiore
@@ -230,23 +232,37 @@ $\mathbf{q}_t$ non resta traccia da nessuna parte.
 Il conto della cache dipende dal numero di teste di chiave-valore e ignora
 quelle di query. È una porta lasciata aperta, e dal 2019 in poi ci sono
 passate MQA, GQA e MLA, ciascuna con un modo diverso di stringere lo stesso
-bullone.
+bullone. {numref}`fig-teste-e-taccuini` le mette una accanto all'altra.
+
+```{figure} ../figures/i-lettori-restano-otto.svg
+:name: fig-teste-e-taccuini
+:alt: "Quattro schemi affiancati, uno per formulazione. In ciascuno, in alto, la stessa fila di otto pallini: i lettori, cioè le teste di query. Sotto, i taccuini di chiave e valore, e una linea porta ogni lettore al taccuino che consulta. In MHA i taccuini sono otto, uno per lettore. In GQA sono due, ciascuno condiviso da quattro lettori, e lo spazio scende a un quarto. In MQA è uno solo, letto da tutti e otto, e lo spazio scende a un ottavo. In MLA è ancora uno, letto da tutti e otto, ma tratteggiato perché dentro c'è un riassunto stenografato, e accanto sta una striscia ocra a parte che porta il segnale dell'ordine delle parole. La fila di otto pallini in cima resta identica nei quattro schemi."
+:width: 100%
+
+Le quattro formulazioni, una accanto all'altra. In alto, in tutte e quattro,
+la stessa fila di otto teste di query; sotto, i taccuini di chiave e valore
+che ciascuna consulta. MHA ne dà uno a testa, GQA uno per gruppo, MQA uno per
+tutti; MLA ne tiene uno solo come MQA, ma dentro ci scrive un riassunto, e
+lascia fuori il segnale dell'ordine delle parole, su una striscia a parte. La
+larghezza di un taccuino dice a quanti lettori serve, non quanto occupa.
+```
 
 `````{tab} Elementare
-In un palazzo con otto lettori per piano, finora ognuno teneva il proprio
-taccuino: otto etichette e otto informazioni per ogni parola, per ogni piano.
-Guardando i taccuini, però, viene un sospetto: i lettori si distinguono per le
-domande che pongono, non per il materiale che consultano. E allora perché non
-farli leggere dallo stesso taccuino?
+Torniamo al palazzo del 2017, otto lettori per piano, che con numeri piccoli si
+segue meglio: finora ognuno teneva il proprio taccuino: otto etichette e otto
+informazioni per ogni parola, per ogni piano. Nei testi quel modo si trova con
+la sigla MHA. Guardando i taccuini, però, viene un sospetto: i lettori si
+distinguono per le domande che pongono, non per il materiale che consultano. E
+allora perché non farli leggere dallo stesso taccuino?
 
-La versione estrema lo fa: un taccuino solo per piano, otto lettori che ci
-attingono tutti, ciascuno con le sue domande. Lo spazio si divide per otto, la
-scrittura diventa molto più svelta, e si perde qualcosa in qualità, perché
-otto punti di vista che consultavano appunti diversi adesso consultano gli
-stessi.
+La versione estrema lo fa, e la sigla è MQA: un taccuino solo per piano, otto
+lettori che ci attingono tutti, ciascuno con le sue domande. Lo spazio si
+divide per quanti sono i lettori, la scrittura diventa molto più svelta, e si
+perde qualcosa in qualità, perché otto punti di vista che consultavano appunti
+diversi adesso consultano gli stessi.
 
-La versione di mezzo divide i lettori in gruppi: due gruppi da quattro, e un
-taccuino per gruppo. Si sceglie quanti gruppi fare, e con quella manopola si
+La versione di mezzo, GQA, divide i lettori in gruppi: due gruppi da quattro, e
+un taccuino per gruppo. Si sceglie quanti gruppi fare, e con quella manopola si
 decide dove stare fra i due estremi. È la soluzione che hanno adottato quasi
 tutti, perché con pochi gruppi la perdita si assottiglia fino a non vedersi. E
 c'è una seconda ragione, che ha pesato quanto la prima: un palazzo già
@@ -255,15 +271,15 @@ tirarlo giù. Si fondono gli appunti dei lettori di uno stesso gruppo, si
 rimette a punto il tutto per un tempo breve rispetto a quello che era costato
 costruirlo, e il palazzo riapre.
 
-L'ultima strada cambia mestiere. Invece di ridurre il numero di taccuini,
-riscrive che cosa ci si annota: al posto delle etichette e delle informazioni
-per esteso, un riassunto compatto da cui le une e le altre si possono
-ricostruire al momento del bisogno. Un taccuino di appunti stenografati, che
-occupa una frazione dello spazio e si rilegge quando serve. La stenografia ha
-un punto scomodo, e riguarda il modo in cui il modello sa in che ordine stanno
-le parole: quel segnale va tenuto fuori dal riassunto, su una riga a parte,
-altrimenti il risparmio che rende conveniente la stenografia non c'è
-più.
+L'ultima strada, MLA, cambia mestiere. Invece di far leggere a più lettori lo
+stesso taccuino, riscrive che cosa ci si annota: al posto delle etichette e
+delle informazioni per esteso, un riassunto compatto da cui le une e le altre
+si possono ricostruire al momento del bisogno. Un taccuino di appunti
+stenografati, che occupa una frazione dello spazio e si rilegge quando serve.
+La stenografia ha un punto scomodo, e riguarda il modo in cui il modello sa in
+che ordine stanno le parole: quel segnale va tenuto fuori dal riassunto, su una
+riga a parte, altrimenti il risparmio che rende conveniente la stenografia non
+c'è più.
 
 Un equivoco da togliere subito, perché è quello che si sente ripetere. Nessuna
 di queste strade tocca il numero di lettori. Le domande restano otto, i punti
@@ -606,10 +622,10 @@ invece, dipendono dalla versione e vanno letti in quella installata.
 - E il taccuino occupa spazio, tanto: per un modello di taglia ordinaria mezzo
   megabyte per ogni parola, e già quattro conversazioni lunghe servite
   insieme occupano più memoria del modello stesso.
-- Di lì le varianti: far leggere più lettori dallo stesso taccuino (tutti, o a
-  gruppi), oppure annotare un riassunto stenografato da cui etichette e
-  informazioni si ricostruiscono. Nessuna di queste tocca il numero di lettori,
-  cioè i punti di vista restano quanti erano.
+- Di lì le varianti: far leggere più lettori dallo stesso taccuino, tutti (MQA)
+  o a gruppi (GQA), oppure annotare un riassunto stenografato da cui etichette
+  e informazioni si ricostruiscono (MLA). Nessuna di queste tocca il numero di
+  lettori, cioè i punti di vista restano quanti erano.
 - Sotto la parola «quadratico» stanno cose diverse: quanti conti si fanno,
   quanta memoria si occupa di passaggio, e quanti byte si spostano. Tenerle
   insieme è la fonte di quasi tutti gli equivoci sui costi.

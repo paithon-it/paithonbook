@@ -444,12 +444,12 @@ giusta.
 
 ## Algebra lineare, in una riga
 
-Qui i conti della {doc}`sezione di algebra lineare
-</Matematica/algebra-lineare>` diventano codice, e quello che conta è una cosa
-sola: ogni operazione è una riga. Prodotto scalare, prodotto matrice-vettore e
-prodotto fra matrici sono tutti l'operatore `@`, e `np.linalg` raccoglie il
-resto. Che cosa siano un vettore, una matrice e i loro prodotti lo spiega
-quella sezione.
+Un vettore è una fila di numeri, una matrice è una tabella di numeri: qui
+basta questo, e che cosa siano davvero, insieme ai conti che ci si fanno
+sopra, lo spiegherà la {doc}`sezione di algebra lineare
+</Matematica/algebra-lineare>`. Quello che conta adesso è una cosa sola: ogni
+operazione è una riga. Prodotto scalare, prodotto matrice-vettore e prodotto
+fra matrici sono tutti l'operatore `@`, e `np.linalg` raccoglie il resto.
 
 ```python
 A = np.array([[1., 2.],
@@ -464,6 +464,10 @@ np.linalg.norm(v)      # norma euclidea
 np.linalg.inv(A)       # inversa
 np.linalg.solve(A, v)  # risolve A z = v  (più stabile dell'inversa)
 ```
+
+I due numeri di `A @ v` si leggono a occhio, e conviene farlo: $3$ è
+$1 + 2$, $7$ è $3 + 4$, cioè ogni riga di `A` moltiplicata voce per voce per
+`v` e poi sommata.
 
 Un'avvertenza che torna spesso: per risolvere un sistema
 $\mathbf{A}\mathbf{z} = \mathbf{v}$ si usa

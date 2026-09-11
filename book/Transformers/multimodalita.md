@@ -12,7 +12,7 @@ funzionato anche lì.
 ## GPT, BERT, T5: tre modi di studiare la lingua
 
 I tre capostipiti, cioè i modelli da cui discendono tutti gli altri, si
-distinguono per una cosa sola: l'esercizio che fanno su miliardi di frasi prima
+distinguono soprattutto per l'esercizio che fanno su miliardi di frasi prima
 di essere messi al lavoro. Quella fase di studio generale si chiama
 **pre-addestramento**, e a seconda dell'esercizio scelto ne esce un modello
 bravo a scrivere o uno bravo a capire.
@@ -26,25 +26,30 @@ La stessa frase, due permessi di lettura. Non cambia l'architettura: cambia
 cosa ogni parola ha il diritto di guardare, e da lì discende tutto il resto.
 ```
 
-{numref}`fig-bert-vs-gpt` mostra la sola cosa che li distingue davvero: non
-l'architettura, che è la stessa, ma quali parole ciascuno ha il permesso di
-guardare. BERT può guardare anche le parole che vengono dopo, e chi vede tutta
-la frase la capisce meglio (dire di che parla, trovarci dentro una risposta,
-giudicarla); GPT vede solo le parole che precedono, ed è costretto a indovinare
-come si continua, che è esattamente l'esercizio da fare per imparare a
-scrivere.
+{numref}`fig-bert-vs-gpt` mostra la sola cosa che distingue i primi due: non
+l'architettura, che per loro è la stessa, ma quali parole ciascuno ha il
+permesso di guardare. BERT può guardare anche le parole che vengono dopo, e
+chi vede tutta la frase la capisce meglio (dire di che parla, trovarci dentro
+una risposta, giudicarla); GPT vede solo le parole che precedono, ed è
+costretto a indovinare come si continua, che è esattamente l'esercizio da fare
+per imparare a scrivere.
 
 `````{tab} Elementare
 Tre studenti si preparano allo stesso esame in tre modi diversi. GPT studia
-coprendo con la mano il resto della pagina. Legge "Il gatto nero salta sul..." e
-prova a indovinare la parola dopo, milioni di volte, e così diventa bravissimo a
-*continuare* un testo, cioè a scrivere. BERT studia con gli esercizi a
-buchi. Riceve "Il gatto ___ salta sul muro" e indovina la parola mancante
-guardando sia prima che dopo il buco, e così diventa bravissimo a *capire* le
-frasi, meno a scriverle. T5 trasforma ogni compito in un tema. Scrive in
-cima al foglio "traduci:" oppure "riassumi:", e la risposta è sempre un testo,
-qualunque sia la domanda. Quando ChatGPT ti risponde, sotto c'è il metodo di
-GPT, coprire e indovinare, con miliardi di esempi alle spalle.
+coprendo con la mano il resto della pagina. Legge "Il gatto nero salta sul..."
+e prova a indovinare la parola dopo, milioni di volte, e così diventa
+bravissimo a *continuare* un testo, cioè a scrivere. BERT studia con gli
+esercizi a buchi. Riceve "Il gatto ___ salta sul muro" e indovina la parola
+mancante guardando sia prima che dopo il buco; e in più, date due frasi, deve
+dire se la seconda veniva davvero dopo la prima o è stata pescata a caso da
+un'altra pagina. Così diventa bravissimo a *capire* le frasi, meno a
+scriverle. T5 studia con i buchi lunghi: non sparisce una parola sola ma un
+pezzo di frase intero, e al suo posto resta un segnalibro; il compito è
+riscrivere i pezzi tolti, ciascuno dietro il suo segnalibro. Poi trasforma
+ogni compito in un tema: scrive in cima al foglio "traduci:" oppure
+"riassumi:", e la risposta è sempre un testo, qualunque sia la domanda. Quando
+ChatGPT ti risponde, sotto c'è il metodo di GPT, coprire e indovinare, con
+miliardi di esempi alle spalle.
 
 Nessuno dei tre, in quei milioni di ripetizioni, sta studiando il compito che
 gli verrà chiesto davvero. Studiano la lingua, e si correggono da soli, perché
@@ -58,8 +63,8 @@ studiare.
 Al banco di fianco un quarto studente, **ELECTRA**, guarda i quaderni del
 compagno degli esercizi a buchi. I buchi non sono uno per frase. Sparisce circa
 il quindici per cento delle parole, grosso modo una ogni sette, e solo su quelle
-il compagno viene interrogato. Le altre sei su sette le legge e basta, fatica
-uguale, e non impara niente.
+il compagno viene interrogato. Le altre sei su sette servono a capire la frase,
+ma non gli fruttano nessun voto.
 
 Così ELECTRA si fa preparare le pagine da un ragazzo più piccolo, che invece di
 cancellare le parole le *sostituisce* con altre plausibili. Poi fa il correttore
@@ -77,21 +82,31 @@ bozze.
 `````
 
 `````{tab} Superiore
-GPT (OpenAI, 2018) è un Transformer *decoder-only* con maschera causale,
-addestrato come modello di linguaggio autoregressivo: massimizza
-$\prod_t p(x_t \mid x_1, \dots, x_{t-1})$, dove $x_t$ è il token in posizione
-$t$ e il prodotto corre su tutta la sequenza. La linea di scala culmina in GPT-3
-{cite}`brown2020language` (175 miliardi di parametri), che mostra capacità
-*few-shot*: adattarsi a un compito descritto nel prompt, senza aggiornare i
-pesi. BERT {cite}`devlin2019bert` (Google) è *encoder-only* e
-bidirezionale, pre-addestrato con *masked language modeling* (predire il ~15%
-di token mascherati) e *next sentence prediction*; eccelle nei compiti di
-comprensione (classificazione, estrazione di risposte) previo fine-tuning.
-T5 (Google, 2019) mantiene l'encoder–decoder completo e riformula ogni
-task NLP come *text-to-text*, mostrando che un solo formato copre traduzione,
-sintesi, classificazione. La lezione comune: pre-addestramento
-auto-supervisionato su corpora enormi + adattamento leggero (il *transfer
-learning* che avevamo visto per le immagini, arrivato al linguaggio).
+GPT {cite}`radford2018improving` (OpenAI, 2018) è un Transformer *decoder-only*
+con maschera causale, addestrato come modello di linguaggio autoregressivo:
+massimizza $\prod_t p(x_t \mid x_1, \dots, x_{t-1})$, dove $x_t$ è il token in
+posizione $t$ e il condizionamento arriva fin dove arriva la finestra di
+contesto. La linea di scala culmina in GPT-3 {cite}`brown2020language` (175
+miliardi di parametri), che mostra capacità *few-shot*: adattarsi a un compito
+descritto nel prompt, senza aggiornare i pesi. BERT {cite}`devlin2019bert`
+(Google) è *encoder-only* e bidirezionale, pre-addestrato con *masked language
+modeling* (si sorteggia il $15\%$ dei token e si chiede di predirli: di quelli
+scelti l’$80\%$ diventa `[MASK]`, il $10\%$ un token a caso e il $10\%$ resta
+com'è) e *next sentence prediction*, cioè dire se la seconda frase segue
+davvero la prima; eccelle nei compiti di comprensione (classificazione,
+estrazione di risposte) previo fine-tuning. T5 {cite}`raffel2020exploring`
+(Google, 2019) mantiene l'encoder–decoder completo, e il suo esercizio è un
+*denoising*: si elimina il 15% dei token, a spezzoni contigui di tre in media,
+e ogni spezzone lascia al suo posto un solo *sentinel token*, unico nella
+sequenza; il bersaglio è la concatenazione degli spezzoni tolti, ciascuno
+preceduto dal sentinel che lo sostituiva. Il contributo che gli ha dato il nome
+sta però a valle: riformula ogni task NLP come *text-to-text*, mostrando che un
+solo formato copre traduzione, sintesi, classificazione. La lezione comune:
+pre-addestramento auto-supervisionato su corpora enormi + adattamento leggero
+(il *transfer learning* che avevamo visto per le immagini, arrivato al
+linguaggio; con una differenza che conta, perché sulle immagini quel
+pre-addestramento era supervisionato, e il segnale glielo davano le etichette
+di ImageNet).
 
 **ELECTRA** {cite}`clark2020electra` attacca l'inefficienza del masked language
 modeling: mascherando il $15\%$ dei token, il segnale di addestramento arriva
@@ -264,14 +279,13 @@ fatto milioni di esperimenti, e quelli sono i dati.
 
 Il blocco centrale di {numref}`fig-alphafold` è dove l'attenzione fa il suo
 mestiere, ed è facile vedere perché sia lei la persona giusta. Gli anelli della
-catena, in gergo, si chiamano **residui** (nel libro la parola «residuo» è già
-comparsa per le connessioni residue, la scorciatoia attorno a un blocco: è la
-stessa parola usata per due cose che non c'entrano niente, e capita). Due
-residui lontanissimi lungo la catena possono ritrovarsi appiccicati una volta
-che la catena si è ripiegata: è la relazione fra due elementi lontani che i
-filtri delle reti per immagini faticano a vedere, ed è esattamente il caso che
-l'attenzione tratta come normale, perché per lei ogni coppia è a un passo di
-distanza.
+catena, in gergo, si chiamano **residui** (la stessa parola indica anche la
+connessione residua, la scorciatoia attorno a un blocco: due cose che non
+c'entrano niente fra loro, e capita). Due residui lontanissimi lungo la catena
+possono ritrovarsi appiccicati una volta che la catena si è ripiegata: è la
+relazione fra due elementi lontani che i filtri delle reti per immagini
+faticano a vedere, ed è esattamente il caso che l'attenzione tratta come
+normale, perché per lei ogni coppia è a un passo di distanza.
 
 `````{tab} Elementare
 
@@ -386,8 +400,9 @@ per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
 :class: important
 - Tre modi di studiare, tre mestieri. GPT copre la pagina con la mano e
   indovina la parola dopo: diventa bravo a scrivere. BERT fa gli esercizi a
-  buchi guardando prima e dopo: diventa bravo a capire. T5 riscrive ogni
-  compito come un tema, con il nome del compito davanti.
+  buchi guardando prima e dopo: diventa bravo a capire. T5 rimette al loro
+  posto i pezzi di frase che gli sono stati tolti, e riscrive ogni compito
+  come un tema, con il nome del compito davanti.
 - La ricetta è sempre la stessa: prima si studia tantissimo per conto proprio,
   su montagne di testo e senza nessuno che corregga; poi si aggiusta il tiro sul
   compito che serve, con pochi esempi o solo con le istruzioni scritte davanti
@@ -400,6 +415,11 @@ per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
   rispondere a parole. La comodità si paga in esempi: che due tessere vicine
   siano imparentate va imparato da milioni di fotografie, e quando le foto sono
   poche conviene ancora il metodo che ne guarda un pezzetto alla volta.
+- Lo stesso meccanismo che pesa le parole di una frase pesa le coppie di
+  anelli di una proteina, e AlphaFold prevede come la catena si ripiega
+  leggendo la stessa proteina in migliaia di specie: le posizioni che cambiano
+  in coppia sono quelle che si toccano. Dove i parenti mancano la traccia non
+  c'è, e la previsione peggiora.
 - I limiti vanno messi in conto quanto i pregi: costano moltissimo da
   addestrare, si portano dentro i pregiudizi dei testi su cui hanno studiato, e
   scrivono con la stessa sicurezza cose vere e cose inventate.
@@ -410,8 +430,9 @@ per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
 ```{admonition} Da ricordare
 :class: important
 - GPT = decoder-only, indovina la parola successiva, forte nel generare;
-  BERT = encoder-only bidirezionale, forte nel capire; T5 = tutto
-  come text-to-text.
+  BERT = encoder-only bidirezionale, forte nel capire; T5 =
+  encoder-decoder, denoising a spezzoni, e ogni task riscritto come
+  text-to-text.
 - La ricetta comune è pre-addestramento auto-supervisionato su corpora
   enormi + adattamento (fine-tuning o prompt).
 - ELECTRA mostra che l'obiettivo conta quanto l'architettura: sostituire
@@ -421,6 +442,11 @@ per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
 - ViT tratta l'immagine come una frase di tessere $16\times16$, e paga in
   dati la località che le CNN hanno gratis nell'architettura; i modelli
   multimodali (CLIP, GPT-4) allineano testo e immagini.
+- AlphaFold 2 tiene in dialogo l'MSA e la rappresentazione di coppia dentro
+  l'Evoformer, e la *triangle attention* rende esprimibile, non obbligatoria,
+  la disuguaglianza triangolare sulle distanze. Stima la propria confidenza
+  (pLDDT) e dipende dall'MSA, quindi è più debole dove la storia evolutiva è
+  povera.
 - Costi computazionali, bias nei dati e allucinazioni sono limiti
   strutturali, da mettere in conto quanto i vantaggi.
 ```

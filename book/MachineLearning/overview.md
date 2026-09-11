@@ -383,9 +383,10 @@ regola per bene, e molto spesso la risposta è già quella.
 L'osservazione è stata messa alla prova sistematicamente: Grinsztajn, Oyallon e
 Varoquaux (NeurIPS 2022) {cite}`grinsztajn2022why` hanno confrontato modelli ad
 albero e reti neurali su decine di dataset tabulari, trovando che i primi
-restano superiori anche a parità di ricerca degli iperparametri sui dati di
-taglia media, dell'ordine dei diecimila esempi, che è la scala su cui il
-confronto è stato fatto. Fuori da quella scala il confronto resta aperto.
+restano superiori anche a parità di ricerca degli iperparametri, cioè delle
+scelte che si fissano a mano prima di addestrare, sui dati di taglia media,
+dell'ordine dei diecimila esempi, che è la scala su cui il confronto è stato
+fatto. Fuori da quella scala il confronto resta aperto.
 
 Le ragioni identificate sono strutturali, non contingenti:
 

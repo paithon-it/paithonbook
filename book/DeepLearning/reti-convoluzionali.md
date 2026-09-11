@@ -237,6 +237,22 @@ convoluzionale, in inglese *layer*, produce una pila di feature map, una per
 filtro; i primi strati imparano motivi elementari (bordi, angoli), i più
 profondi li combinano in parti sempre più astratte (occhi, ruote, volti).
 
+Quella pila decide anche la forma di un filtro: {numref}`fig-filtro-mazzo` lo
+disegna come un mazzo di griglie, alto quanto le mappe che gli arrivano.
+
+```{figure} ../figures/filtro-alto-quanto-le-mappe.svg
+:name: fig-filtro-mazzo
+:alt: "Due pannelli affiancati mostrano lo stesso percorso a due strati diversi. A sinistra, il primo strato: tre mappe quadrate sfalsate in un mazzo, ciascuna divisa in venticinque celle, con la stessa finestra da tre per tre evidenziata nello stesso punto di tutte e tre. Una freccia porta a un mazzo di tre griglie da nove, che è il filtro, poi a un cerchio col simbolo di somma, poi a una mappa in uscita in cui una sola casella è colorata. Sotto, il conto: una griglia per ogni mappa che arriva, tre per tre per tre fa ventisette pesi, ventotto col bias, e con trentadue filtri escono trentadue mappe e trentadue per ventotto fa ottocentonovantasei pesi. A destra, lo strato dopo: identico, ma le mappe in ingresso sono trentadue, disegnate come quattro mappe più dei puntini di continuazione, e il mazzo del filtro è alto trentadue allo stesso modo; l'uscita resta una casella sola."
+:width: 100%
+
+Lo stesso gesto, a due strati diversi. La finestra si affaccia su tutte le
+mappe che arrivano, nello stesso punto di ognuna, e i prodotti si sommano
+tutti insieme in un numero solo: quindi un filtro è un mazzo di griglie alto
+quanto le mappe, ventisette pesi più il bias al primo strato e trentadue
+griglie allo strato dopo, dove le mappe che arrivano sono quelle uscite dai
+trentadue filtri di sopra.
+```
+
 ## Il pooling: mappe più piccole, e cosa si guadagna
 
 Dopo la convoluzione si applica quasi sempre il **pooling**, che rimpicciolisce

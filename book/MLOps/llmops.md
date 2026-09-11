@@ -140,14 +140,14 @@ tenuti per un'iterazione, il primo ne usa 28 su 48 e il secondo tutti e 48,
 senza contare quel che costa far entrare una richiesta nel mazzo.
 ```
 
-La prima è quella che {numref}`fig-continuous-batching` mette in evidenza: le
+Una è quella che {numref}`fig-continuous-batching` mette in evidenza: le
 risposte non durano tutte uguale, e non si sa in anticipo quanto dureranno. Se
 si forma il mazzo e lo si tiene insieme fino alla fine (è il **batching
 statico**), chi ha finito presto lascia il suo posto vuoto e nessuno lo occupa
 finché non ha finito anche il più lento. In un mazzo grande basta una risposta
 lunga per tenere fermi tutti gli altri.
 
-La seconda riguarda la memoria. Mentre scrive, il modello tiene degli appunti
+L'altra riguarda la memoria. Mentre scrive, il modello tiene degli appunti
 su ciò che ha già letto, per non doverlo rileggere da capo a ogni parola nuova:
 sono la KV cache già incontrata nel capitolo sui Transformer. Ogni risposta in
 corso porta con sé i propri appunti, e quegli appunti crescono a ogni token
@@ -193,7 +193,7 @@ piatto puntuale.
 
 `````{tab} Superiore
 
-Il «tavolone prenotato» è la gestione ingenua della KV cache: si riserva un
+La gestione ingenua della KV cache riserva un
 blocco di memoria contiguo grande quanto il contesto massimo possibile, anche
 se la sequenza resterà corta. Ne nascono due sprechi, **frammentazione
 interna** (lo spazio riservato e mai usato) ed **esterna** (i buchi fra
@@ -203,7 +203,7 @@ blocchi di taglia diversa), che negli approcci precedenti bruciavano tra il
 vecchia di sessant'anni dai sistemi operativi: la *paginazione* della memoria
 virtuale. La cache di ogni sequenza è spezzata in blocchi di taglia fissa,
 sistemati in modo non contiguo dove c'è spazio, con una *block table* che
-mappa posizioni logiche a fisiche: proprio il foglietto del maître. Lo spreco
+mappa posizioni logiche a fisiche. Lo spreco
 scende sotto il 4%, e i blocchi possono perfino essere condivisi tra
 sequenze (un prompt comune, o le ipotesi di una beam search) senza duplicarli.
 
@@ -529,18 +529,17 @@ senza riaddestramento e con degrado contenuto; oltre, il conto si fa salato.
 
 `````
 
-La ragione per cui su un LLM la potatura è più difficile è tutta in quella
-riga: non si può riaddestrare. Su una rete piccola il riaddestramento è il
-passaggio che riporta la rete dov'era, e {doc}`Meno pesi
-</Efficienza/meno-pesi>` lo misura; qui quel passaggio non c'è, perché
-riaddestrare un modello da miliardi di parametri non è una cosa che si fa a
-valle di un deploy. SparseGPT e Wanda esistono proprio per sostituirlo: invece
-di riaddestrare tutto, aggiustano strato per strato i pesi rimasti, guardando
-che cosa ci passa attraverso. È un rimedio locale, e si vede dal traguardo:
-metà dei pesi, non i nove decimi. Da qui la regola
-pratica: a parità di rischio si comincia dalla quantizzazione, che il
-riaddestramento non lo chiede. E vale la regola di sempre, misurare, perché
-il degrado si distribuisce in modo diseguale fra i compiti e una media
+La ragione per cui su un LLM la potatura è più difficile è una sola: non si può
+riaddestrare. Su una rete piccola il riaddestramento è il passaggio che riporta
+la rete dov'era, e {doc}`Meno pesi </Efficienza/meno-pesi>` lo misura; qui quel
+passaggio non c'è, perché riaddestrare un modello da miliardi di parametri non
+è una cosa che si fa a valle di un deploy. I metodi che si usano sugli LLM
+esistono proprio per sostituirlo: invece di riaddestrare tutto, aggiustano
+strato per strato i pesi rimasti, guardando che cosa ci passa attraverso. È un
+rimedio locale, e si vede dal traguardo: metà dei pesi, non i nove decimi. Da
+qui la regola pratica: a parità di rischio si comincia dalla quantizzazione,
+che il riaddestramento non lo chiede. E vale la regola di sempre, misurare,
+perché il degrado si distribuisce in modo diseguale fra i compiti e una media
 aggregata lo nasconde.
 
 ## Valutare l'invalutabile
@@ -577,8 +576,9 @@ risposta è corretta: dice quale delle due preferisce, ed è una domanda a cui
 si può rispondere anche quando la prima non ha risposta.
 ```
 
-Il cambio di domanda in {numref}`fig-llm-giudice` è ciò che rende il metodo
-praticabile, e insieme ciò che ne fissa i limiti. Un ordine fra due risposte si
+Il cambio di domanda in {numref}`fig-llm-giudice` è ciò che rende praticabile
+il metodo, che si chiama LLM-as-a-judge, «il modello che fa da giudice», e
+insieme ciò che ne fissa i limiti. Un ordine fra due risposte si
 può stabilire senza un riferimento assoluto. Ma un giudice che *preferisce*
 porta con sé i propri gusti, e due di quei gusti si ripetono sempre uguali:
 premia chi gli è stato presentato per primo, e premia chi scrive di più. Un
@@ -619,7 +619,7 @@ che cosa si insegna.
 
 `````{tab} Superiore
 
-Il pattern si chiama LLM-as-a-judge {cite}`zheng2023judging`: si usa un modello
+Il pattern, LLM-as-a-judge {cite}`zheng2023judging`, usa un modello
 forte (nel lavoro originale, GPT-4) per assegnare un punteggio o per scegliere
 la migliore fra due risposte. Zheng e colleghi lo validano su due banchi di
 prova (**MT-Bench**, ottanta domande a più turni, e **Chatbot Arena**,
@@ -679,7 +679,7 @@ per vedere quale funziona meglio (è il test *A/B* della sezione sul
 monitoraggio). Il
 monitoraggio, a sua volta, insegue bersagli nuovi: le allucinazioni
 (risposte sicure di sé e sbagliate), la deriva dell'uso rispetto a ciò per
-cui il sistema era tarato, e il **costo per token**, che scala con quanto
+cui il sistema era tarato, e il costo per token, che scala con quanto
 testo entra ed esce; un prompt gonfio è una bolletta più salata. E poiché il
 testo aperto non si collauda con i test unitari del software classico, serve
 una **valutazione continua**: una batteria di esempi che gira a ogni cambio di

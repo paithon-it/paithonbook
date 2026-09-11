@@ -153,13 +153,15 @@ scomporre a mano acustica e linguaggio. Tecniche come la CTC
 modelli con attenzione (una parte della rete ascolta tutto, l'altra
 scrive, e mentre scrive torna a guardare il punto dell'audio che le serve:
 quel tornare a guardare è l'attenzione) hanno reso possibile addestrare
-l'intero sistema da coppie (audio, testo). Le vedremo una per una nella
-prossima sezione: qui bastano i nomi.
+l'intero sistema da coppie (audio, testo); e il trasduttore, nato dalla CTC
+per darle quello che le mancava, scrive mentre ascolta senza dimenticare
+quello che ha già messo giù.
+Le vedremo una per una nella prossima sezione: qui bastano i nomi.
 
 L'esempio più noto è Whisper di OpenAI (2022): trascrive e traduce
-decine di lingue, italiano compreso, con un unico modello, allenato su circa
-680.000 ore di audio multilingue. Per farsi un'idea di quelle ore: sono
-settantasette anni di parlato ininterrotto, giorno e notte, senza una pausa.
+quasi cento lingue, italiano compreso, con un unico modello, allenato su circa
+680.000 ore di audio multilingue. Per farsi un'idea di quelle ore: sono quasi
+settantotto anni di parlato ininterrotto, giorno e notte, senza una pausa.
 La rete che ci sta dentro è un Transformer, l'architettura del
 {doc}`capitolo sui Transformer </Transformers/overview>`, montata anche lei
 come encoder e decoder.

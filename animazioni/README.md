@@ -195,6 +195,7 @@ nota, e costa meno di un minuto.
 | `svg/apertura-flusso.py` | `fig-apertura-flusso` | `VisioneArtificiale/geometria-e-profondita.md` |
 | `svg/attacco-epsilon.py` | `fig-attacco-epsilon` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/assi-girati.py` | `fig-assi-girati` | `ModelliLatenti/il-latente-che-si-usa.md` |
+| `svg/attesa-che-si-copre.py` | `fig-attesa-coperta` | `GPU/overview.md` |
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
 | `svg/bootstrap-si-accumula.py` | `fig-bootstrap-accumula` | `MachineLearning/il-bootstrap.md` |
 | `svg/boosting-si-somma.py` | `fig-boosting-si-somma` | `MachineLearning/alberi-ensemble.md` |
@@ -217,6 +218,7 @@ nota, e costa meno di un minuto.
 | `svg/dropout.py` | `fig-dropout` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/euclide-scende.py` | `fig-euclide-scende` | `Introduzione/overview.md` |
 | `svg/finestra-spettrogramma.py` | `fig-finestra-spettrogramma` | `Audio/dal-suono-alle-feature.md` |
+| `svg/filtro-alto-quanto-le-mappe.py` | `fig-filtro-mazzo` | `DeepLearning/reti-convoluzionali.md` |
 | `svg/flash-attention-blocchi.py` | `fig-flash-attention-blocchi` | `GPU/flash-attention.md` |
 | `svg/formiche-feromone.py` | `fig-formiche-feromone` | `SistemiMultiAgente/sciami-e-simulazioni.md` |
 | `svg/frontiera-che-si-allarga.py` | `fig-frontiera` | `Ricerca/esplorare-lo-spazio.md` |
@@ -225,12 +227,15 @@ nota, e costa meno di un minuto.
 | `svg/gradienti-integrati.py` | `fig-gradienti-integrati` | `Interpretabilita/attribuzione-e-meccanicistica.md` |
 | `svg/grokking-tarda.py` | `fig-grokking` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/hopfield-ricorda.py` | `fig-hopfield-ricorda` | `ModelliEnergia/memoria-associativa.md` |
+| `svg/i-lettori-restano-otto.py` | `fig-teste-e-taccuini` | `Transformers/attenzione-in-pratica.md` |
 | `svg/il-codice-si-accorcia.py` | `fig-il-codice-si-accorcia` | `AutoSupervisione/capire-e-accorciare.md` |
+| `svg/il-picco-che-schiaccia.py` | `fig-picco-schiaccia` | `GAN/applicazioni-evoluzioni.md` |
 | `svg/kmeans-converge.py` | `fig-kmeans-converge` | `MachineLearning/riduzione-clustering.md` |
 | `svg/learning-rate.py` | `fig-learning-rate` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/linee-di-base.py` | `fig-linee-di-base` | `SerieTemporali/validazione-e-feature.md` |
 | `svg/lune-si-raddrizzano.py` | `fig-flusso-lune` | `VerosimiglianzaEsatta/flussi.md` |
 | `svg/nastro-si-riavvolge.py` | `fig-nastro-autograd` | `PyTorch/tensori.md` |
+| `svg/ogni-turno-costa-uguale.py` | `fig-torneo-costo-piatto` | `MachineLearning/iperparametri.md` |
 | `svg/origine-mobile.py` | `fig-walk-forward-validazione` | `SerieTemporali/validazione-e-feature.md` |
 | `svg/orbite-che-non-cadono.py` | `fig-orbite-chiuse` | `SistemiMultiAgente/imparare-insieme.md` |
 | `svg/pandas-selezione-filtri-groupby.py` | `fig-split-apply-combine` | `Python/pandas-matplotlib.md` |
@@ -241,6 +246,7 @@ nota, e costa meno di un minuto.
 | `svg/plotone-si-divide.py` | `fig-plotone-si-divide` | `GPU/architettura-gpu.md` |
 | `svg/posto-che-si-libera.py` | `fig-continuous-batching` | `MLOps/llmops.md` |
 | `svg/potatura-che-assottiglia.py` | `fig-potatura` | `Efficienza/meno-pesi.md` |
+| `svg/quasi-perpendicolari.py` | `fig-quasi-perpendicolari` | `Matematica/ortogonalita-proiezioni.md` |
 | `svg/quattro-ingredienti.py` | `fig-quattro-ingredienti` | `PINN/applicazioni-limiti.md` |
 | `svg/scan-parallelo.py` | `fig-scan-parallelo` | `StateSpaceModel/mamba.md` |
 | `svg/scossa-che-resta.py` | `fig-scossa-che-resta` | `SerieTemporali/componenti-e-classici.md` |
@@ -255,6 +261,7 @@ nota, e costa meno di un minuto.
 | `svg/xor-non-separabile.py` | `fig-xor-non-separabile` | `RetiNeurali/percettrone.md` |
 | `svg/xor-si-piega.py` | `fig-xor-si-piega` | `RetiNeurali/percettrone.md` |
 | `svg/ramo-contestato.py` | `fig-ramo-contestato` | `SistemiMultiAgente/protocolli-e-consenso.md` |
+| `svg/interferenza-da-subito.py` | `fig-interferenza-da-subito` | `StateSpaceModel/panorama-e-limiti.md` |
 | `attenzione-mascherata.py` | `fig-attenzione-mascherata` | `Transformers/architettura.md` |
 | `backpropagation.py` | `fig-backpropagation-animata` | `RetiNeurali/backpropagation.md` |
 | `convoluzione.py` | `fig-convoluzione-animata` | `DeepLearning/reti-convoluzionali.md` |

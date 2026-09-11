@@ -117,8 +117,8 @@ candidati vanno disposti in progressione geometrica
 
 La prima alternativa sembra una resa: invece di una griglia ordinata, estrarre
 le combinazioni a caso dentro gli stessi intervalli. Nel 2012 James
-Bergstra e Yoshua Bengio mostrarono che questa mossa apparentemente pigra è,
-quasi sempre, la più efficiente {cite}`bergstra2012random`. Il motivo sta in
+Bergstra e Yoshua Bengio mostrarono che questa mossa apparentemente pigra rende
+quasi sempre più della griglia {cite}`bergstra2012random`. Il motivo sta in
 un fatto empirico: in quasi tutti i problemi poche manopole contano
 davvero, e non sappiamo in anticipo quali.
 
@@ -171,23 +171,23 @@ sopra il centesimo, e le grane fini non le prova nessuno.
 
 `````{tab} Superiore
 
-L'argomento formale è la proiezione: se l'errore di validazione dipende in
-modo apprezzabile solo da un piccolo sottoinsieme delle $d$ dimensioni (*low
+L'argomento formale è la proiezione: se l'errore di validazione dipende in modo
+apprezzabile solo da un piccolo sottoinsieme delle $d$ dimensioni (*low
 effective dimensionality*), una griglia di $N$ punti ne proietta appena
 $N^{1/d}$ distinti su ciascun asse, mentre $N$ punti casuali ne proiettano $N$
-{cite}`bergstra2012random`. C'è anche una garanzia indipendente da $d$: se
-esiste una regione "buona" che copre il 5% del volume dello spazio di ricerca,
-la probabilità che $N$ estrazioni indipendenti la manchino tutte è
-$(1-0{,}05)^N = 0{,}95^N$; quindi la probabilità di centrarla almeno una
-volta è il complementare, $1 - 0{,}95^N$, che per $N = 60$ vale $0{,}954$:
-sessanta prove la centrano con il 95% di confidenza, in qualunque dimensione.
-Se la regione buona copre l'1% del volume, le stesse sessanta prove la centrano
-con probabilità $1 - 0{,}99^{60} = 0{,}453$.
-(Vale *se* una tale regione esiste ed è così larga: è un'ipotesi sul problema,
-non una promessa.) In pratica contano anche le distribuzioni: per i parametri
-di scala si campiona in **log-uniforme**, cioè uniforme sull'esponente, così
-che il learning rate cada tra $10^{-5}$ e $10^{-4}$ con la stessa probabilità
-con cui cade tra $10^{-2}$ e $10^{-1}$.
+{cite}`bergstra2012random`. Indipendente dalla fonte, e vera in ogni
+dimensione, c'è poi una semplice contabilità del volume: se esiste una regione
+"buona" che copre il 5% del volume dello spazio di ricerca, la probabilità che
+$N$ estrazioni indipendenti la manchino tutte è $(1-0{,}05)^N = 0{,}95^N$;
+quindi la probabilità di centrarla almeno una volta è il complementare, $1 -
+0{,}95^N$, che per $N = 60$ vale $0{,}954$: sessanta prove la centrano
+novantacinque volte su cento, in qualunque dimensione. Se la regione buona
+copre l'1% del volume, le stesse sessanta prove la centrano con probabilità $1
+- 0{,}99^{60} = 0{,}453$. (Vale *se* una tale regione esiste ed è così larga: è
+un'ipotesi sul problema, non una promessa.) In pratica contano anche le
+distribuzioni: per i parametri di scala si campiona in **log-uniforme**, cioè
+uniforme sull'esponente, così che il learning rate cada tra $10^{-5}$ e
+$10^{-4}$ con la stessa probabilità con cui cade tra $10^{-2}$ e $10^{-1}$.
 
 `````
 
@@ -207,6 +207,19 @@ dei suoi esempi. Un addestramento serio ne fa decine o centinaia, e il costo di
 una ricerca si conta in epoche esattamente come il costo di un viaggio si conta
 in litri.
 
+Contato in epoche, un torneo ha una proprietà che {numref}`fig-torneo-costo-piatto`
+mette in fila: il costo di un turno è lo stesso a ogni turno.
+
+```{figure} ../figures/ogni-turno-costa-uguale.svg
+:name: fig-torneo-costo-piatto
+:alt: "Cinque righe orizzontali lunghe uguali, una per turno del torneo. La prima è divisa in ottantun celle sottilissime, ed è etichettata ottantuno candidate con una epoca a testa; la seconda in ventisette celle tre volte più larghe, con tre epoche a testa; la terza in nove celle, con nove epoche; la quarta in tre celle, con ventisette epoche; l'ultima è un blocco solo, in terracotta, con ottantuno epoche. A destra di ogni riga il prodotto, che vale ottantuno tutte e cinque le volte. Sotto, la somma: cinque turni da ottantuno fanno quattrocentocinque epoche in tutto."
+:width: 92%
+
+Cinque turni, cinque righe lunghe uguali: le celle si allargano mentre
+diventano meno, e la lunghezza della riga, che è il costo del turno, non cambia
+mai. In tutto quattrocentocinque epoche.
+```
+
 `````{tab} Elementare
 
 Un torneo di tennis non fa giocare cento partite a ogni iscritto: fa giocare a
@@ -214,7 +227,9 @@ tutti *una* partita, e solo chi vince continua. Il *successive halving* fa lo
 stesso con le combinazioni di manopole: parti con 81 candidate e concedi a
 ciascuna una
 sola epoca di addestramento; le 27 migliori ne ricevono tre; le 9 migliori
-nove; le 3 migliori ventisette; la finalista arriva a 81.
+nove; le 3 migliori ventisette; la finalista arriva a 81. Il nome parla di
+dimezzare perché la prima versione a ogni turno ne buttava via la metà; quante
+ne passano è una manopola, e la scelta più comune è quella di qui, una su tre.
 
 Il bello è che ogni turno costa quanto gli altri, perché a ogni giro i
 sopravvissuti si riducono a un terzo e le epoche a testa si triplicano:
@@ -242,29 +257,29 @@ poi.
 
 Il *successive halving* è di Karnin, Koren e Somekh (ICML 2013)
 {cite}`karnin2013almost`, che lo introdussero per il bandit stocastico a pura
-esplorazione; Jamieson e Talwalkar {cite}`jamieson2016non` ne definiscono la
-variante non stocastica e la portano agli iperparametri, ed è la forma che
-si usa qui. Con fattore di eliminazione
-$\eta$ (tipicamente 3): date $n$ configurazioni con budget iniziale $r$
-ciascuna (epoche, o frazione del dataset), a ogni round tiene le migliori
-$1/\eta$ e moltiplica per $\eta$ il budget individuale. I round sono
-$\lfloor \log_\eta n \rfloor + 1$ e ognuno costa circa $n \cdot r$: per
-$n=81$, $r=1$, $\eta=3$, 405 epoche-modello contro le $81 \times 81 = 6\,561$
-della valutazione completa. L'analisi inquadra il problema come *best-arm
-identification* in un bandit non stocastico (la famiglia di problemi che il
-capitolo sul reinforcement learning introduce per prima, dove ogni
+esplorazione; Jamieson e Talwalkar {cite}`jamieson2016non` lo portano agli
+iperparametri lasciandolo tale e quale, e ne riscrivono l'analisi per il caso
+non stocastico, dove i punteggi parziali non sono più estrazioni da una
+distribuzione. La forma con un fattore di eliminazione qualsiasi, invece della
+metà secca, è di Hyperband {cite}`li2018hyperband`, ed è quella che si usa qui.
+Con fattore di eliminazione $\eta$ (tipicamente 3): date $n$ configurazioni con
+budget iniziale $r$ ciascuna (epoche, o frazione del dataset), a ogni round
+tiene le migliori $1/\eta$ e moltiplica per $\eta$ il budget individuale. I
+round sono $\lfloor \log_\eta n \rfloor + 1$ e ognuno costa circa $n \cdot r$:
+per $n=81$, $r=1$, $\eta=3$, 405 epoche-modello contro le $81 \times 81 =
+6\,561$ della valutazione completa. L'analisi inquadra il problema come
+*best-arm identification* in un bandit non stocastico (la famiglia di problemi
+della {doc}`sezione sui banditi </ReinforcementLearning/banditi>`, dove ogni
 configurazione è una leva e addestrarla per un'epoca è un tiro): basta che le
-classifiche parziali
-siano abbastanza indicative di quelle finali, ed è proprio questa l'ipotesi
-fragile, perché una configurazione a convergenza lenta viene eliminata da
-giovane. Hyperband {cite}`li2018hyperband` aggira il dilemma tra molte
-configurazioni e molto budget per testa eseguendo $s_{\max}+1$ istanze di
+classifiche parziali siano abbastanza indicative di quelle finali, ed è proprio
+questa l'ipotesi fragile, perché una configurazione a convergenza lenta viene
+eliminata da giovane. Hyperband {cite}`li2018hyperband` aggira il dilemma tra
+molte configurazioni e molto budget per testa eseguendo $s_{\max}+1$ istanze di
 successive halving (i *bracket*, $s_{\max} = \lfloor \log_\eta R \rfloor$ con
-$R$ budget massimo per configurazione), dalla più aggressiva
-($\sim \eta^{s_{\max}}$ configurazioni con budget iniziale
-$R/\eta^{s_{\max}}$) alla più conservativa, poche configurazioni a budget
-pieno; la garanzia teorica è restare entro fattori logaritmici dal bracket
-migliore col senno di poi.
+$R$ budget massimo per configurazione), dalla più aggressiva ($\sim
+\eta^{s_{\max}}$ configurazioni con budget iniziale $R/\eta^{s_{\max}}$) alla
+più conservativa, poche configurazioni a budget pieno; la garanzia teorica è
+restare entro fattori logaritmici dal bracket migliore col senno di poi.
 
 `````
 
@@ -284,15 +299,16 @@ comunque una per volta. Su cento macchine è uno spreco: novantanove restano a
 girarsi i pollici aspettando la centesima, e basta una candidata lenta a
 bloccare tutto.
 
-La versione **asincrona** (nota come ASHA) toglie la barriera, e lo fa
-cambiando il criterio di promozione. Invece di chiedere «sei fra le migliori
-tre di nove?», che è una domanda a cui non si può rispondere finché le nove non
-sono arrivate, chiede: «rispetto a chi è già passato di qui prima di te, saresti
-nel terzo migliore?». È una classifica parziale, fatta sulle candidate finite
-fino a quel momento, e si può rispondere subito. Chi supera la prova viene
-promosso all'istante, e la macchina che si libera prende il lavoro successivo.
-Si accetta di decidere con informazione incompleta in cambio di non lasciare
-nessuno fermo, ed è quasi sempre il baratto giusto.
+La versione **asincrona** (nota come ASHA, *asynchronous successive halving*)
+{cite}`li2020system` toglie la barriera, e lo fa cambiando il criterio di
+promozione. Invece di chiedere «sei fra le migliori tre di nove?», che è una
+domanda a cui non si può rispondere finché le nove non sono arrivate, chiede:
+«rispetto a chi è già passato di qui prima di te, saresti nel primo terzo?». È
+una classifica parziale, fatta sulle candidate finite fino a quel momento, e si
+può rispondere subito. Chi supera la prova viene promosso all'istante, e la
+macchina che si libera prende il lavoro successivo. Si accetta di decidere con
+informazione incompleta in cambio di non lasciare nessuno fermo, ed è quasi
+sempre il baratto giusto.
 
 ## Cercare con giudizio: l'ottimizzazione bayesiana
 
@@ -410,6 +426,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42)   # il test resta nel cassetto
 
 # Grid search: 4 x 4 = 16 combinazioni, x 5 blocchi di CV = 80 addestramenti
+# (piu' il riaddestramento finale sul training intero, che sklearn fa da se')
 griglia = {"C": [0.1, 1, 10, 100],
            "gamma": [1e-4, 1e-3, 1e-2, 1e-1]}
 ricerca_griglia = GridSearchCV(SVC(), griglia, cv=5, n_jobs=-1)
@@ -424,6 +441,12 @@ ricerca_casuale = RandomizedSearchCV(SVC(), distribuzioni, n_iter=20,
 ricerca_casuale.fit(X_train, y_train)
 print(ricerca_casuale.best_params_, round(ricerca_casuale.best_score_, 3))
 
+# quanto distano i due punteggi, contro quanto ballano fra un blocco e l'altro
+for nome, ricerca in [("griglia", ricerca_griglia), ("caso", ricerca_casuale)]:
+    i = ricerca.best_index_
+    ballo = ricerca.cv_results_["std_test_score"][i]
+    print(f"{nome}: {ricerca.best_score_:.4f} ± {ballo:.4f}")
+
 # il test si apre una sola volta, alla fine
 print(ricerca_casuale.score(X_test, y_test))
 ```
@@ -431,8 +454,18 @@ print(ricerca_casuale.score(X_test, y_test))
 ```text
 {'C': 10, 'gamma': 0.001} 0.99
 {'C': np.float64(26.373339933815235), 'gamma': np.float64(0.0015876781526923994)} 0.989
+griglia: 0.9896 ± 0.0038
+caso: 0.9889 ± 0.0051
 0.9888888888888889
 ```
+
+Qui la griglia vince: $0{,}9896$ con ottanta addestramenti contro $0{,}9889$
+con cento. Lo scarto fra i due punteggi è di sette decimillesimi, meno di
+quanto ciascuno dei due balli passando da un blocco di dati all'altro, ed è
+per questo che il blocco stampa anche quel ballo: senza, un pareggio si legge
+come una vittoria. Ed è il pareggio che ci si deve aspettare: il sorteggio
+guadagna dove le manopole sono tante e quasi tutte ininfluenti, e qui sono
+due, e contano tutte e due.
 
 Il trucco di `loguniform` merita una riga, perché tornerà ogni volta che si
 sceglie un learning rate: si sorteggia l'esponente, non il valore. Invece
@@ -452,15 +485,16 @@ interrotte in corsa.
 
 Tre avvertenze, prima di chiudere.
 
-La prima è il costo. Ogni combinazione provata non costa un addestramento
-ma cinque, perché la si giudica in cross-validation su cinque blocchi, e quel
-fattore cinque non lo toglie nessun algoritmo: i metodi furbi lo spendono
-meglio, non lo evitano. Griglia e caso hanno almeno il vantaggio di spalmarsi
-su tante macchine senza sforzo; l'ottimizzazione bayesiana no, perché è fatta
-per scegliere la prossima prova dopo aver visto l'esito della precedente.
-Esistono varianti che ne lanciano un gruppo alla volta (già Snoek e colleghi ne
-proponevano una {cite}`snoek2012practical`), ma ogni prova, presa da sola,
-rende meno.
+La prima è il costo. Se ogni combinazione si giudica in cross-validation su
+cinque blocchi, non costa un addestramento ma cinque, e quel fattore lo decide
+il modo di giudicare, non il modo di cercare: nessun algoritmo di ricerca lo
+toglie, e a toglierlo è semmai la scelta di giudicare su una validazione sola,
+che è quella con cui abbiamo contato le quattrocentocinque epoche del torneo.
+Griglia e caso hanno almeno il vantaggio di spalmarsi su tante macchine senza
+sforzo; l'ottimizzazione bayesiana no, perché è fatta per scegliere la prossima
+prova dopo aver visto l'esito della precedente. Esistono varianti che ne
+lanciano un gruppo alla volta (già Snoek e colleghi ne proponevano una
+{cite}`snoek2012practical`), ma ogni prova, presa da sola, rende meno.
 
 La seconda è la riproducibilità. Un computer non sa tirare a caso davvero:
 produce numeri che *sembrano* casuali partendo da un numero iniziale, il

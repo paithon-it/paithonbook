@@ -26,12 +26,12 @@ sempre più alte; nel 2005 Herb Sutter, che presiedeva il comitato di
 standardizzazione del linguaggio C++, mise la cosa nero su bianco in un saggio
 dal titolo diventato celebre, *The Free Lunch Is Over*. La morale era semplice
 e spiazzante: da lì in avanti, per andare più veloci non si sarebbe più potuto
-contare su un **core** più rapido,
-ma solo su *più core che lavorano insieme*. Un core è un calcolatore completo
-in miniatura, capace di eseguire un'istruzione alla volta: fino a quel momento
-i chip ne avevano uno, o pochi, e li facevano correre sempre di più; da lì in
-avanti ne avrebbero messi tanti, ciascuno alla velocità di prima. Il futuro,
-scriveva Sutter, era parallelo ({numref}`fig-free-lunch`).
+contare su un **core** più rapido, ma solo su *più core che lavorano insieme*.
+Un core è un calcolatore completo in miniatura, capace di portare avanti da sé
+un programma: fino a quel momento i chip ne avevano uno, o pochi, e li facevano
+correre sempre di più; da lì in avanti ne avrebbero messi tanti, ciascuno alla
+velocità di prima. Il futuro, scriveva Sutter, era parallelo
+({numref}`fig-free-lunch`).
 
 ```{figure} ../figures/free-lunch-parallelismo.svg
 :name: fig-free-lunch
@@ -72,8 +72,8 @@ addestrata non su un supercalcolatore ma su due normali schede da
 videogiocatori. Da allora hardware parallelo e deep learning non si sono più
 lasciati.
 
-La sezione «Prestazioni e scala» del {doc}`capitolo su PyTorch
-</PyTorch/overview>` aveva insegnato i *gesti*, cioè le poche righe di codice
+La {doc}`sezione sulle prestazioni e la scala </PyTorch/prestazioni>` del
+capitolo su PyTorch aveva insegnato i *gesti*, cioè le poche righe di codice
 da scrivere per usare una scheda: spostare i dati sulla scheda
 (`.to(device)`), far lavorare i conti su numeri scritti in metà spazio
 (`autocast`), lasciare che PyTorch riscriva da sé il programma in una forma
@@ -96,8 +96,9 @@ centrale di elaborazione). Una CPU ha pochi core, ciascuno velocissimo e capace
 di fare da sé qualunque cosa. La GPU mette al loro posto migliaia di unità di
 calcolo molto più semplici, ciascuna capace solo di fare conti, ma tutte attive
 nello stesso istante. (Anche quelle si chiamano «core», per estensione, ed è
-una parola che nelle due macchine indica cose piuttosto diverse: la sezione
-sull'architettura ci torna sopra.)
+una parola che nelle due macchine indica cose piuttosto diverse: la
+{doc}`sezione su com'è fatta una GPU dentro <architettura-gpu>` ci torna
+sopra.)
 
 ```{figure} ../figures/deep-learning-gpu.svg
 :name: fig-hardware-e-modelli
@@ -174,6 +175,21 @@ indipendenti l'uno dall'altro. La sezione sull'architettura scioglie i
 dettagli di questo modello: Streaming Multiprocessor, warp, SIMT, occupancy.
 `````
 
+La copertura delle attese si legge meglio istante per istante, ed è quello che
+{numref}`fig-attesa-coperta` disegna: le stesse attese, con un'unità di calcolo
+sola e con quattro che si danno il cambio.
+
+```{figure} ../figures/attesa-che-si-copre.svg
+:name: fig-attesa-coperta
+:alt: "Due pannelli sovrapposti, ciascuno una linea del tempo di dodici istanti disegnati come caselle. Nel pannello di sopra, intestato «una sola unità di calcolo», una riga mostra l'unità che conta in un istante su quattro (casella piena) e aspetta un dato negli altri tre (casella tratteggiata); la riga sotto, «la macchina conta», ha lo stesso disegno, e una nota dice che la macchina resta ferma nove istanti su dodici. Nel pannello di sotto, intestato «quattro unità che si danno il cambio», quattro righe mostrano quattro unità sfalsate di un istante l'una dall'altra: ognuna conta in un istante su quattro e aspetta negli altri tre, esattamente come l'unità sola di sopra, ma in ogni istante è il turno di una di loro. La riga «la macchina conta» è quindi piena da un capo all'altro, e la nota dice che resta ferma zero istanti su dodici. In basso la legenda: casella piena vuol dire che conta, casella tratteggiata che aspetta un dato."
+:width: 100%
+
+Dodici istanti, con un'unità di calcolo e con quattro. L'attesa di ciascuna è
+la stessa nei due casi, tre istanti per ogni conto fatto, e nessuno l'ha
+accorciata. Quello che cambia è la macchina: da sola sta ferma nove istanti su
+dodici, con quattro che si danno il cambio non sta ferma mai.
+```
+
 ## Il collo di bottiglia è muovere i dati
 
 La seconda idea è meno intuitiva, e proprio per questo va detta subito: il limite
@@ -214,8 +230,8 @@ su una cassetta sola è l'estremo opposto: le cassette arrivano molto prima che
 servano, e a decidere la velocità sono i cuochi. Quasi tutte le tecniche che
 seguono servono a portare le ricette dalla parte del ragù: fare più piatti con
 ogni cassetta prima di rimandare qualcuno in dispensa, e tenere le cassette
-vicino a chi cucina. La sezione sulla memoria misura questa cucina piano per
-piano.
+vicino a chi cucina. La {doc}`sezione sulla memoria <gerarchia-memoria>` misura
+questa cucina piano per piano.
 `````
 
 `````{tab} Superiore
@@ -295,9 +311,8 @@ parentesi, la cosa che significa, ed è quella la promessa della sezione.
 - Da qui il filo conduttore di tutto il capitolo, che tornerà con nomi diversi
   in ogni sezione: fare più conti con ogni carico di ingredienti, e tenere
   gli ingredienti il più vicino possibile a chi cucina.
-- Questo capitolo è il «sotto il cofano» della sezione «Prestazioni e scala»:
-  non serve saper programmare una GPU per usarla (PyTorch lo fa al posto tuo),
-  ma sapere come è fatta spiega perché un addestramento va veloce o lento.
+- A programmare la GPU ci pensa PyTorch. Sapere com'è fatta serve lo stesso,
+  ed è quello che spiega perché un addestramento va veloce o lento.
 - Quando una scheda non basta, il lavoro si spartisce fra più schede: è
   così che nascono i modelli di cui leggiamo i nomi ogni settimana.
 ```
@@ -321,9 +336,8 @@ parentesi, la cosa che significa, ed è quella la promessa della sezione.
 - Un unico filo conduttore lega tutto il capitolo, coalescenza, tiling,
   kernel fusion, FlashAttention {cite}`dao2022flashattention`: fare
   più conti per ogni byte spostato, e tenere il byte vicino ai core.
-- Questo capitolo è il «sotto il cofano» della sezione «Prestazioni e
-  scala»: non serve programmare una GPU per usarla (PyTorch lo fa) ma sapere
-  come funziona spiega perché un addestramento va veloce o lento.
+- A programmare la GPU ci pensa PyTorch: sapere come funziona resta quello
+  che spiega perché un addestramento va veloce o lento.
 - Quando una GPU non basta, il lavoro si divide su più schede (parallelismo
   dati, tensor, pipeline, sharding): è così che nascono i modelli di frontiera.
 ```

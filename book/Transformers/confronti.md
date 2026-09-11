@@ -204,14 +204,16 @@ vettori ortogonali, che nessuno ha dimostrato. «Universale» vuol dire che ci
 si arriva, non che ci si arriva alla stessa profondità: la sparsificazione non
 è gratis, baratta ampiezza con altezza.
 
-Il capitolo sulle reti neurali su grafo
-riprende questa lettura dall'altro capo, mostrando che la self-attention è
-message passing su un grafo completo, e ne trae la conseguenza: i **Graph
-Transformer** applicano questo modello a un grafo qualunque, e per non perdere
-la topologia devono reintrodurla come codifica posizionale. Quella codifica
-nasce dallo stesso ragionamento delle sinusoidi viste qui, ma non ne è la
-stessa cosa scritta in generale: là il confronto è fatto numero alla mano, e
-le due famiglie si somigliano senza coincidere.
+La {doc}`sezione sui Graph Transformer
+</GraphNeuralNetwork/architetture-applicazioni>` riprende questa lettura
+dall'altro capo. Là il giro in cui ogni nodo raccoglie i vettori dei suoi
+vicini e ne fonde il riassunto col proprio ha un nome, *message passing*, e la
+self-attention è il caso in cui quel grafo è completo; da lì la conseguenza: i
+**Graph Transformer** applicano questo modello a un grafo qualunque, e per non
+perdere la topologia devono reintrodurla come codifica posizionale. Quella
+codifica nasce dallo stesso ragionamento delle sinusoidi viste qui, ma non ne
+è la stessa cosa scritta in generale: là il confronto è fatto numero alla
+mano, e le due famiglie si somigliano senza coincidere.
 
 Longformer e BigBird decidono in anticipo quali archi tenere, in base alla
 posizione. Il **Reformer** {cite}`kitaev2020reformer` prende la strada

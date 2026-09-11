@@ -44,7 +44,11 @@ Alla fine nella scatola convivono pezzi di ogni taglia. Le parole comunissime,
 si scrive come `token` + `izzazione`, due pezzi visti tante volte altrove. E una
 parola mai incontrata, un cognome o una sigla, si scrive lo stesso, al peggio
 lettera per lettera, purché quelle lettere fossero nel testo da cui la scatola
-è stata riempita: è una condizione che sembra scontata e non lo è.
+è stata riempita. La condizione sembra scontata e non lo è: basta un alfabeto
+che in quel testo non compariva, il greco o il coreano, perché al posto della
+parola finisca un segnaposto che non vuol dire niente. La {doc}`sezione oltre
+il BPE </NaturalLanguageProcessing/oltre-il-bpe>` racconta come ci si è
+liberati anche di questo limite, scendendo sotto la lettera.
 
 `````
 
@@ -56,7 +60,9 @@ token $\in V$. La segmentazione a spazi bianchi soffre di due problemi: un
 vocabolario enorme e le parole fuori dizionario (*out-of-vocabulary*).
 
 I sistemi moderni usano perciò tokenizzatori sottoparola (*subword*). Il
-*Byte Pair Encoding* {cite}`sennrich2016neural` parte dai singoli caratteri e
+*Byte Pair Encoding* porta il nome che gli diede Philip Gage
+{cite}`gage1994new` e la forma con cui Sennrich e colleghi lo portarono sul
+testo {cite}`sennrich2016neural`: parte dai singoli caratteri e
 fonde iterativamente la coppia di simboli più frequente; *WordPiece*
 {cite}`schuster2012japanese` adotta una strategia analoga, ma sceglie la
 coppia con un criterio che premia le coppie sorprendenti invece di quelle
@@ -207,7 +213,8 @@ $$
 $$
 
 dove $\text{tf}(t,d)$ è la frequenza di $t$ in $d$, $N$ il numero totale di
-documenti, $\text{df}(t)$ il numero di documenti che contengono $t$, e il
+documenti, $\text{df}(t)$ il numero di documenti che contengono $t$ (la misura
+è di Spärck Jones {cite}`sparckjones1972statistical`), e il
 logaritmo è quello naturale (la base cambia solo un fattore di scala comune
 a tutti i termini). Il fattore logaritmico penalizza i termini onnipresenti
 (df alto) fino ad azzerare chi compare ovunque: se $\text{df}(t) = N$ allora
@@ -232,10 +239,16 @@ corpus = ["il gatto nero salta sul muro",
 vec = TfidfVectorizer()
 X = vec.fit_transform(corpus)   # matrice sparsa documenti x vocabolario
 print(vec.get_feature_names_out())  # il vocabolario appreso
-print(X.toarray())                  # pesi TF-IDF per ciascun documento
+print(X.toarray().round(3))         # pesi TF-IDF per ciascun documento
 ```
 
-I numeri che compaiono a schermo non sono però quelli del TF-IDF «da
+```text
+['cane' 'divano' 'dorme' 'gatto' 'il' 'muro' 'nero' 'salta' 'sul']
+[[0.    0.    0.    0.447 0.318 0.447 0.447 0.447 0.318]
+ [0.499 0.499 0.499 0.    0.355 0.    0.    0.    0.355]]
+```
+
+I numeri che ne escono non sono però quelli del TF-IDF «da
 manuale»: la libreria ne usa una variante, per ragioni pratiche. Il verso resta
 quello, le parole rare pesano più di quelle comuni; i numeri no, e su una
 raccolta piccola la differenza si vede.
@@ -283,13 +296,13 @@ $\ln\frac{1+N}{2} + 1$.
 
 ## Vettori densi: i word embedding
 
-Il salto concettuale arriva nel 2013. L'idea guida è vecchia, il linguista
-John Firth nel 1957 la riassunse così: *"You shall know a word by the company
-it keeps"*, conoscerai una parola dalla compagnia che frequenta. Parole che
-appaiono in contesti simili hanno significati simili. Se lo facciamo dire ai
-numeri, otteniamo i **word embedding**: la parola inglese vuol dire
-«immersione», e l'immagine è quella di ogni parola calata dentro uno spazio,
-in un punto suo.
+Il salto concettuale arriva nel 2013. L'idea guida è vecchia, il linguista John
+Firth nel 1957 la riassunse così: *"You shall know a word by the company it
+keeps"* {cite}`firth1957synopsis`, conoscerai una parola dalla compagnia che
+frequenta. Parole che appaiono in contesti simili hanno significati simili. Se
+lo facciamo dire ai numeri, otteniamo i **word embedding**: la parola inglese
+vuol dire «immersione», e l'immagine è quella di ogni parola calata dentro uno
+spazio, in un punto suo.
 
 Come si fa in pratica lo mostra la {numref}`fig-finestra-contesto`. Si prende
 una finestra, cioè un ritaglio di poche parole che scorre lungo il testo,
@@ -370,11 +383,14 @@ appreso dai dati. **word2vec** {cite}`mikolov2013efficient` addestra una rete
 poco profonda a predire il contesto data la parola (*skip-gram*) o viceversa
 (*CBOW*). Nello skip-gram l'obiettivo è massimizzare, su ogni coppia
 parola-vicina $(w, c)$ del corpus, la probabilità
-$p(c \mid w) = \mathrm{softmax}(\mathbf{u}_c^\top \mathbf{v}_w)$, dove
+$p(c \mid w) = \exp(\mathbf{u}_c^\top \mathbf{v}_w) / \sum_{c' \in V}
+\exp(\mathbf{u}_{c'}^\top \mathbf{v}_w)$, dove
 $\mathbf{v}$ e $\mathbf{u}$ sono i vettori della parola come centro e come
-contesto. Quella softmax corre però su tutto il vocabolario, e in pratica la
-si sostituisce con il **negative sampling** {cite}`mikolov2013distributed`:
-per ogni coppia vera si pescano $k$ parole a caso dal corpus e si addestra un
+contesto. Quella softmax corre però su tutto il vocabolario, e in pratica la si
+sostituisce con il **negative sampling** {cite}`mikolov2013distributed`: per
+ogni coppia vera si pescano $k$ parole da una distribuzione sulle frequenze, e
+non uniforme: Mikolov e colleghi trovano che l'unigramma elevato a $3/4$ batte
+nettamente sia l'uniforme sia l'unigramma puro. Si addestra poi un
 classificatore binario a distinguere la vicina vera dalle intruse,
 massimizzando
 
@@ -521,8 +537,12 @@ figura è un'idealizzazione.
 E le frecce portano con sé anche quello che non vorremmo. I numeri vengono da
 testi scritti da persone, e le associazioni che stavano in quei testi ci
 finiscono dentro tali e quali. Fatta la stessa domanda con *medico* al posto di
-*re*, la risposta che il programma dà per *donna* è *infermiera*. Il conto non
-ha sbagliato niente: ha restituito quello che nei testi c'era.
+*re*, la risposta che esce per *donna* è *infermiera*. Il conto non ha
+sbagliato niente: ha restituito quello che nei testi c'era. Vale però anche
+qui la regola di poco fa, e va tenuta presente prima di prendere il risultato
+per una misura del pregiudizio: la risposta esce così perché *medico* è stato
+tolto dalla gara, e senza quella regola la parola più vicina tornerebbe a
+essere *medico*.
 
 `````
 
@@ -548,8 +568,8 @@ $$
 La ricerca però si fa escludendo dai candidati le tre parole della domanda,
 e quel vincolo pesa: senza di esso il primo vicino è quasi sempre *re* stesso.
 Su GloVe da $100$ dimensioni addestrato su 6 miliardi di token (i vettori
-distribuiti come `glove-wiki-gigaword-100`, su cui i conti che seguono si
-rifanno in tre righe), il coseno con *king* vale $0{,}855$ contro lo $0{,}783$
+distribuiti come `glove-wiki-gigaword-100`, sommati e sottratti come sono,
+senza normalizzarli prima), il coseno con *king* vale $0{,}855$ contro lo $0{,}783$
 di *queen*, e la stessa cosa succede a `man : doctor :: woman : ?` ($0{,}866$
 per *doctor*, $0{,}776$ per *nurse*) e a `good : better :: bad : ?` ($0{,}886$
 per *bad*, $0{,}839$ per *worse*). L'enunciato onesto non è dunque l’$\approx$
@@ -591,8 +611,8 @@ C'è anche una ragione di costo, e da sola decide l'architettura. Dare a un
 modello le due frasi attaccate, perché le legga come un testo solo, dà il
 giudizio migliore ma vale per quella coppia sola: su diecimila frasi le coppie
 sono quasi cinquanta milioni ($10\,000 \times 9\,999$ diviso $2$), e gli autori
-di **Sentence-BERT** {cite}`reimers2019sentence` le hanno cronometrate in circa
-65 ore su una GPU del 2019. Riassumere invece una volta sola le diecimila
+di **Sentence-BERT** {cite}`reimers2019sentence` le stimano in circa
+65 ore su una scheda V100. Riassumere invece una volta sola le diecimila
 frasi costa cinque secondi, e i cinquanta milioni di confronti fra file già
 pronte un centesimo di secondo: è la differenza fra un'idea e un prodotto.
 
@@ -608,8 +628,9 @@ l'ordine, e «il cane morde l'uomo» e «l'uomo morde il cane» diventano lo
 stesso riassunto. E le parole piccole pesano quanto le altre, così fra «il
 film mi è piaciuto» e «il film non mi è piaciuto» il «non» annega.
 
-Si fa aiutare da un lettore che l'ordine lo tiene, della famiglia dei
-Transformer. Si chiama **BERT**, è del 2018, e si è allenato su tre miliardi di
+Si fa aiutare da un lettore che l'ordine lo tiene, uno di quelli che il
+{doc}`capitolo sui Transformer </Transformers/overview>` racconterà per esteso.
+Si chiama **BERT**, è del 2018, e si è allenato su tre miliardi di
 parole, fra libri e Wikipedia, con due esercizi: indovinare le parole che gli
 avevano cancellato, e dire se due frasi stessero davvero una dopo l'altra.
 Quell'allenamento si riusa per compiti diversissimi senza rifare tutto. Ma
@@ -617,13 +638,13 @@ nessuno gli ha mai chiesto quanto due moduli vogliano dire la stessa cosa, e
 infatti lo giudica male: quello che si vuole da uno spazio bisogna
 insegnarglielo.
 
-Gliela insegna tre moduli per volta: uno di riferimento, l’**ancora**, uno che
-dice la stessa cosa, uno che parla d'altro. Chiede solo che l'ancora finisca
-più vicina al primo che al secondo, e non di un soffio, ma di uno scarto minimo
-deciso in partenza, il margine; dove vadano i tre non lo dice. Le terne che
-rispettano già il margine non hanno più niente da insegnare, e le mette da
-parte. Su milioni di terne lo spazio si riordina da sé, e «vicino» diventa
-«stesso argomento».
+La somiglianza gliela insegna tre moduli per volta: uno di riferimento,
+l’**ancora**, uno che dice la stessa cosa, uno che parla d'altro. Chiede solo
+che l'ancora finisca più vicina al primo che al secondo, e non di un soffio, ma
+di uno scarto minimo deciso in partenza, il margine; dove vadano i tre non lo
+dice. Le terne che rispettano già il margine non hanno più niente da insegnare,
+e le mette da parte. Su milioni di terne lo spazio si riordina da sé, e
+«vicino» diventa «stesso argomento».
 
 Il lettore dev'essere lo stesso per tutti e tre i moduli, e la rete si dice
 **siamese** per questo: tre riassuntori diversi darebbero numeri non
@@ -645,7 +666,8 @@ spazio.
 `````{tab} Superiore
 
 La *media dei vettori di parola* è una baseline seria (con pesatura
-inversa alla frequenza regge il confronto con molti metodi neurali), ma è
+inversa alla frequenza regge il confronto con molti metodi neurali
+{cite}`arora2017simple`), ma è
 invariante alla permutazione, quindi cieca alla sintassi, e diluisce le
 parole di funzione che ne rovesciano il senso.
 
@@ -661,7 +683,13 @@ per caso.
 Sentence-BERT {cite}`reimers2019sentence` risolve il problema con una
 struttura **siamese**: lo stesso encoder $f_\theta$ (pesi condivisi, non due
 reti gemelle) applicato a ciascun ingresso, un *pooling* sui token (la media
-funziona meglio del `[CLS]`) e un obiettivo che agisce sulle distanze.
+funziona meglio del token riassuntivo `[CLS]`, quello che BERT antepone alla
+frase per tenerci il riassunto) e un obiettivo di messa a punto che rende i
+due vettori confrontabili con il coseno. Il lavoro ne propone tre, e quale si
+usi dipende da come sono annotati i dati: una classificazione a tre vie dove le
+coppie portano un'etichetta, una regressione sul coseno dove l'annotazione è un
+punteggio di somiglianza, la terna con il margine dove ci sono le terne. Il
+modello distribuito nasce dalla prima.
 
 Le funzioni obiettivo di questa famiglia, il *metric learning*, sono tre e
 conviene distinguerle.
@@ -823,7 +851,8 @@ che si ha davvero, e non una classifica generica.
 :class: important
 - Tokenizzare vuol dire affettare il testo in pezzi. I sistemi moderni
   usano pezzi più piccoli della parola, così anche una parola mai vista si
-  ricostruisce dai suoi mattoncini.
+  ricostruisce dai suoi mattoncini, purché siano mattoncini che la scatola
+  contiene.
 - Un vettore è una fila di numeri, e niente di più. Il modo più ingenuo di
   darne uno a una parola è la pulsantiera con un interruttore acceso e tutti
   gli altri spenti: funziona, ma per lei *gatto* e *felino* sono lontani
@@ -854,7 +883,8 @@ che si ha davvero, e non una classifica generica.
 ```{admonition} Da ricordare
 :class: important
 - Tokenizzare spezza il testo in unità; i sistemi moderni usano token
-  *sottoparola* per gestire qualunque parola.
+  *sottoparola*: resta rappresentabile ogni stringa fatta di simboli visti in
+  addestramento, e la copertura diventa totale solo scendendo al byte.
 - One-hot e bag-of-words / TF-IDF danno vettori enormi, sparsi e senza
   nozione di somiglianza tra parole diverse.
 - I word embedding (word2vec, GloVe) sono densi e a bassa dimensione: la
@@ -866,7 +896,8 @@ che si ha davvero, e non una classifica generica.
   equazioni, vince *re* {cite}`nissim2020fair`.
 - fastText somma i vettori degli *n-grammi di caratteri*: dà un vettore
   anche alle parole mai viste e sfrutta la morfologia; un aiuto concreto per
-  lingue flessive come l'italiano.
+  lingue a morfologia ricca, dove Bojanowski e colleghi misurano i guadagni
+  maggiori (ceco e tedesco).
 - Per un vettore di frase la media dei vettori di parola è una baseline
   onesta ma cieca all'ordine; e un BERT preso così com'è dà embedding di frase
   mediocri, perché è stato addestrato ad altro. La similarità va

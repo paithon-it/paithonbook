@@ -51,11 +51,12 @@ codice: l’*input* è ciò che entra, l’*encoder* la parte che stringe, il
 che esce. Il pugno di numeri che sopravvive nella strozzatura si chiama
 **latente**, ed è una parola che da qui in poi torna in ogni pagina: latente
 perché quei numeri non li ha scelti nessuno e non dicono niente a guardarli, ma
-dentro c'è tutto ciò che serve per rifare il suono. E siccome un pugno di numeri
-si può sempre immaginare come un punto, l'insieme di tutti i latenti possibili
-prende il nome di spazio latente: il magazzino dove la rete tiene i suoi
-riassunti. È un nome che nel libro tornerà ogni volta che un modello preferisce
-lavorare sulla versione compressa dei dati invece che sui dati. Le lettere sono
+dentro c'è quanto basta per rifare un suono che passi per l'originale. E
+siccome un pugno di numeri si può sempre immaginare come un punto, l'insieme di
+tutti i latenti possibili prende il nome di spazio latente: tutti i riassunti
+che la rete potrebbe scrivere, non soltanto quelli che ha già scritto. È un
+nome che nel libro tornerà ogni volta che un modello preferisce lavorare sulla
+versione compressa dei dati invece che sui dati. Le lettere sono
 le abbreviazioni consuete ($\mathbf{x}$ l'ingresso, $\hat{\mathbf{x}}$ la sua
 ricostruzione, $\mathbf{z}$ il latente, *loss* la distanza fra i primi due, cioè
 quanto la rete ha sbagliato).
@@ -173,20 +174,19 @@ Un dettaglio importante: l'operazione $\arg\min$ non è differenziabile, quindi
 il gradiente non attraverserebbe la quantizzazione. Il VQ-VAE
 {cite}`oord2017neural` lo aggira con lo **straight-through estimator** (il
 gradiente del decoder viene copiato tal quale sull'uscita dell'encoder, come se
-$q$ fosse l'identità) e con due termini quadratici: il *codebook loss*
-$\lVert \mathrm{sg}[\mathbf{z}] - \mathbf{e}_{k^\star} \rVert^2$, che tira il
-prototipo scelto verso i latenti che l'hanno scelto, ed è l'unica cosa che fa
-imparare il codebook visto che l’$\arg\min$ non lascia passare gradiente, e la
-*commitment loss*
-$\beta \lVert \mathbf{z} - \mathrm{sg}[\mathbf{e}_{k^\star}] \rVert^2$, che
-tira i latenti verso i prototipi ($\mathrm{sg}$ è lo *stop-gradient*, e il
-verso della freccia sta tutto in quale dei due membri lo porta). Molte
-implementazioni sostituiscono il primo con una media mobile esponenziale, che
-è la stessa idea scritta in modo più stabile: la regola alla k-means, che
-sposta ogni prototipo verso la media dei latenti che l'hanno scelto. Resta il
-compromesso di fondo: un codebook
-grande ($K$ alto) ricostruisce meglio ma costa più bit per token; uno piccolo
-comprime di più ma perde fedeltà.
+$q$ fosse l'identità) e con due termini quadratici: il *codebook loss* $\lVert
+\mathrm{sg}[\mathbf{z}] - \mathbf{e}_{k^\star} \rVert^2$, che tira il prototipo
+scelto verso i latenti che l'hanno scelto, ed è l'unica cosa che fa imparare il
+codebook: la scorciatoia appena vista scavalca il prototipo, quindi dalla
+ricostruzione ai prototipi non arriva niente. E la *commitment loss* $\beta
+\lVert \mathbf{z} - \mathrm{sg}[\mathbf{e}_{k^\star}] \rVert^2$, che tira i
+latenti verso i prototipi ($\mathrm{sg}$ è lo *stop-gradient*, e il verso della
+freccia sta tutto in quale dei due membri lo porta). Molte implementazioni
+sostituiscono il primo con una media mobile esponenziale, che è la stessa idea
+scritta in modo più stabile: la regola alla k-means, che sposta ogni prototipo
+verso la media dei latenti che l'hanno scelto. Resta il compromesso di fondo:
+un codebook grande ($K$ alto) ricostruisce meglio ma costa più bit per token;
+uno piccolo comprime di più ma perde fedeltà.
 
 `````
 
@@ -259,18 +259,17 @@ qui più è basso, meglio è, perché vuol dire meno roba da trasmettere a
 parità di suono.
 
 Adesso il conto si può fare al contrario, ed è lì che l'idea di allargare si
-schianta. SoundStream lo svolge sul proprio caso: 6.000 bit al secondo divisi
-per 75 pezzetti fanno 80 bit a pezzetto, e per indirizzare 80 bit un elenco
-solo dovrebbe avere $2^{80}$ prototipi, cioè un milione di miliardi di
-miliardi. Il problema non è il prezzo: quei prototipi bisogna tenerli in
-memoria e percorrerli tutti, a ogni pezzetto, per trovare il più vicino, e da
-nessuna parte ci stanno. Otto elenchi
-da 1024 voci spendono esattamente gli stessi 80 bit, e di prototipi ne hanno
-8.192 in tutto.
+schianta. SoundStream, un codec neurale di Google, lo svolge sul proprio caso:
+6.000 bit al secondo divisi per 75 pezzetti fanno 80 bit a pezzetto, e per
+indirizzare 80 bit un elenco solo dovrebbe avere $2^{80}$ prototipi, cioè un
+milione di miliardi di miliardi. Il problema non è il prezzo: quei prototipi
+bisogna tenerli in memoria e percorrerli tutti, a ogni pezzetto, per trovare il
+più vicino, e da nessuna parte ci stanno. Otto elenchi da 1024 voci spendono
+esattamente gli stessi 80 bit, e di prototipi ne hanno 8.192 in tutto.
 
 La soluzione, elegante, è la **residual vector quantization** (RVQ), introdotta
-per i codec neurali da **SoundStream** {cite}`zeghidour2021soundstream`, di
-Google, e poi da **EnCodec** {cite}`defossez2023high`, di Meta: invece di un solo
+per i codec neurali da **SoundStream** {cite}`zeghidour2021soundstream`
+e poi da **EnCodec** {cite}`defossez2023high`, di Meta: invece di un solo
 codebook enorme, si mettono in cascata più codebook piccoli, ciascuno che
 corregge l'errore lasciato dal precedente.
 
@@ -501,12 +500,14 @@ bit e se ne usa una parte, e si chiama **codebook collapse**. Quanto morda
 dipende da dove si parte: se i prototipi nascono sparsi molto più larghi dei
 pezzetti che dovranno descrivere, ne sopravvivono pochissimi, perché tutti i
 pezzetti finiscono addosso agli stessi due o tre. I rimedi sono di ingegneria e
-stanno nei codec citati qui sopra: EnCodec {cite}`defossez2023high` sostituisce
-le voci mai usate con pezzetti presi dal mucchietto che sta processando in quel
-momento, dandogli così un posto dove sono utili (si chiama *restart*); altri
-arrotondano in uno spazio più piccolo e riportano prototipi e pezzetti alla
-stessa scala. Un codebook va sempre misurato per quante voci usa davvero,
-non per quante ne dichiara.
+stanno nei codec di questa sezione: il primo lo prende SoundStream
+{cite}`zeghidour2021soundstream` da Jukebox, e lo adotta poi anche EnCodec
+{cite}`defossez2023high`, e consiste nel sostituire le voci mai usate con
+pezzetti presi dal mucchietto che si sta processando in quel momento, dandogli
+così un posto dove sono utili (si chiama *restart*); altri arrotondano in uno
+spazio più piccolo e riportano prototipi e pezzetti alla stessa scala. Un
+codebook va sempre misurato per quante voci usa davvero, non per quante ne
+dichiara.
 
 Sulla misura della qualità serve poi una distinzione che il gergo tende a
 cancellare, e conviene dirla in ordine. Primo: l'errore quadratico medio sui
@@ -518,19 +519,24 @@ Secondo, ed è il punto: quelli sono obiettivi di addestramento. Dicono al
 modello dove andare, non dicono a noi dove è arrivato, e un discriminatore che
 promuove il proprio generatore è metà di una partita, non un verdetto.
 
-Misurare la qualità è un problema diverso, e ancora aperto. Esistono voti
-che una macchina può dare da sola, e vanno letti in due versi opposti: in PESQ,
+Misurare la qualità è un problema diverso, e ancora aperto. Esistono voti che
+una macchina può dare da sola, e vanno letti in due versi opposti: in PESQ,
 STOI e ViSQOL il numero alto è quello buono, mentre la FAD è una distanza,
 quindi lì il numero buono è il basso. Sono tutti approssimazioni, ognuna tarata
-su un tipo di difetto e nessuna affidabile fuori dal suo. I primi due, per
-dire, nascono per il parlato rovinato dal rumore, e si comportano male davanti
-a un decoder che il segnale se lo reinventa. Per questo i lavori del settore
-continuano a chiudere con prove d'ascolto fatte da persone, secondo un
-protocollo che si chiama **MUSHRA**: a chi ascolta si fanno sentire, mescolati
-e senza dire quale è quale, il suono da giudicare, l'originale intatto e una
-versione volutamente rovinata, così che nessuno sappia mai cosa sta votando.
-Quando un lavoro riporta un solo voto automatico, quel voto è un indizio, non
-la qualità.
+su un tipo di difetto e nessuna affidabile fuori dal suo. PESQ, per dire, nasce
+per il parlato che passa in una linea telefonica a banda stretta, e lavora
+mettendo a confronto il suono uscito e l'originale fettina per fettina, dopo
+averli allineati nel tempo: davanti a un decoder che il segnale se lo reinventa
+trova differenze a ogni fettina anche quando all'orecchio non se ne sente
+nessuna, e il voto crolla per il motivo sbagliato. Per questo i lavori del
+settore continuano a chiudere con prove d'ascolto fatte da persone, secondo un
+protocollo che si chiama **MUSHRA**: chi ascolta ha da una parte l'originale,
+dichiarato, che vale cento per definizione, e dall'altra un mucchio mescolato
+in cui stanno i suoni da giudicare, due versioni apposta rovinate che fissano
+il fondo della scala, e una seconda copia dell'originale, questa nascosta. Chi
+dà un voto basso alla copia nascosta si è squalificato da solo, ed è per questo
+che c'è. Quando un lavoro riporta un solo voto automatico, quel voto è un
+indizio, non la qualità.
 
 `````{tab} Elementare
 

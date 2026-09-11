@@ -3,18 +3,18 @@
 Dopo tanta architettura, mettiamo i Transformer al lavoro su due compiti
 concreti: tradurre una frase e capire se una recensione è entusiasta o delusa.
 Sono gli stessi esempi che un lettore incontra ogni giorno senza pensarci (il
-tasto "traduci" sotto un post, il termometro delle recensioni di un prodotto)
-e per fortuna non serve addestrare nulla da zero. Qualcun altro ha già fatto la
+tasto "traduci" sotto un post, il termometro delle recensioni di un prodotto) e
+per fortuna non serve addestrare nulla da zero. Qualcun altro ha già fatto la
 parte cara del lavoro: ha preso una di queste macchine ancora vuota, le ha dato
 in pasto montagne di testo e ha lasciato che si aggiustasse i numeri da sola
-per settimane, spendendo in elettricità quanto una casa in un anno. Il
-risultato di quella fatica si scarica e si usa in tre righe, ed è quello che
-chiamiamo un modello **pre-addestrato**. A tenerne il catalogo è Hugging Face,
-un'azienda che ospita un sito da cui chiunque può scaricarli; il programma con
-cui li si adopera si chiama `transformers` {cite}`wolf2020transformers` ed è
-una *libreria*, cioè una
-cassetta degli attrezzi già pronta che un programma può aprire e usare.
-Sotto c'è PyTorch, lo strumento con cui in questo libro si costruiscono le reti.
+per giorni interi, su una fila di processori in parallelo. Il risultato di
+quella fatica si scarica e si usa in tre righe, ed è quello che chiamiamo un
+modello **pre-addestrato**. A tenerne il catalogo è Hugging Face, un'azienda
+che ospita un sito da cui chiunque può scaricarli; il programma con cui li si
+adopera si chiama `transformers` {cite}`wolf2020transformers` ed è una
+*libreria*, cioè una cassetta degli attrezzi già pronta che un programma può
+aprire e usare. Sotto c'è PyTorch, lo strumento con cui in questo libro si
+costruiscono le reti.
 
 Dei due esempi conta soprattutto il secondo, e non per quello che indovina:
 per quello che sbaglia. Il prezzo dell'architettura si è visto in astratto,

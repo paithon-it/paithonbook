@@ -423,18 +423,22 @@ l'architettura raggiunge o supera le reti convoluzionali (le CNN, la famiglia
 di modelli per immagini del {doc}`capitolo sul deep learning
 </DeepLearning/overview>`) solo dopo essere stata addestrata una prima volta su
 quantità di dati enormi, e solo allora rifinita sul compito che interessa: è
-quello che si chiama *pre-addestramento*. Nel paper quelle quantità sono
-ImageNet-21k, o il JFT-300M interno a Google, trecento milioni di immagini mai
-rese pubbliche. Addestrato da zero sul solo ImageNet-1k, lo stesso identico
-codice dà risultati mediocri, e questo è un *risultato* del paper, non un
-fallimento della replica.
+quello che si chiama *pre-addestramento*. La parola dice in che ordine si
+fanno le cose, e lascia aperto il resto: qui le immagini portano ancora la
+loro etichetta, mentre sul testo la stessa mossa si farà senza che nessuno
+etichetti niente. Nel paper quelle quantità sono ImageNet-21k, ventunomila
+categorie su quattordici milioni di immagini, o il JFT-300M interno a Google,
+diciottomila categorie su trecento milioni di immagini mai rese pubbliche.
+Addestrato da zero sul solo ImageNet-1k, lo stesso identico codice dà
+risultati mediocri, e questo è un *risultato* del paper, non un fallimento
+della replica.
 
 Sapere in anticipo che la riproduzione completa è impossibile cambia
 l'obiettivo, e in meglio: si replica l'architettura, la si verifica scaricando
 i pesi che gli autori hanno pubblicato, e si addestra su un problema alla
 propria portata partendo da quei pesi invece che da zero. Quest'ultima mossa si
-chiama *transfer learning*, ed è l'argomento del capitolo sulla visione
-artificiale.
+chiama *transfer learning*, ed è l'argomento della {doc}`sezione sul transfer
+learning </VisioneArtificiale/classificazione-transfer>`.
 
 Quando invece i numeri dovrebbero tornare e non tornano, la lista dei sospetti
 è quasi sempre questa, in ordine di frequenza:

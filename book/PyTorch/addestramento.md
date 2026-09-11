@@ -305,7 +305,8 @@ Cinque epoche, e l'accuratezza sul test arriva attorno al 97–98%:
 novantasette cifre su cento lette correttamente da $101\,770$ numeri che prima
 di partire erano casuali. Quanto ci vuole dipende molto dalla macchina, e
 conviene dirlo per non lasciare aspettative sbagliate: su una GPU sono decine
-di secondi, su una CPU normale si va sui minuti, e su quattro core sono sette.
+di secondi, mentre su un processore normale sono minuti, e sono sette con
+quattro unità di calcolo (i *core*) che lavorano in parallelo.
 
 ## Studiare e dare l'esame: `train()` ed `eval()`
 

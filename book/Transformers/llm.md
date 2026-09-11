@@ -40,13 +40,12 @@ senza supervisione*.
 
 ## Una biblioteca sterminata: il pretraining su scala web
 
-La lunga fase di studio generale in cui un modello legge tutto quel testo si
-chiama pretraining, «pre-addestramento», e il «pre» dice già che dopo verrà
-dell'altro: prima si impara la lingua e il mondo, poi si impara un mestiere.
-Qui parliamo del primo tempo.
+Il pre-addestramento, in inglese *pretraining*, è il primo di due tempi, e il
+«pre» lo dice: prima si impara la lingua e il mondo, poi si impara un
+mestiere. Qui parliamo del primo.
 
-Trecento miliardi di token non stanno in nessuna enciclopedia: l'unico posto
-dove trovarli è il web. Ma il web è una soffitta piena di tutto e non
+Trecento miliardi di token non stanno in nessuna enciclopedia, e il grosso
+può venire solo dal web. Ma il web è una soffitta piena di tutto e non
 una biblioteca ordinata, dove i libri buoni stanno accanto allo spam, alle
 pagine duplicate e ai commenti scritti di fretta. Metà del lavoro di chi
 costruisce un grande modello sta nel preparare la biblioteca, prima ancora di
@@ -55,25 +54,25 @@ addestrarlo.
 `````{tab} Elementare
 Una lingua straniera si può imparare con *un solo tipo di esercizio*:
 frasi da completare. Nessuna grammatica, nessun insegnante, nessuna correzione
-a penna rossa: solo miliardi di esercizi di completamento, ricavati coprendo
-l'ultima parola di frasi vere. «Il gatto nero salta sul ___»: provi, sbagli,
-aggiusti, passi alla frase dopo. Il voto che conta è quanto si sbaglia in media
-su una frase: il totale degli sbagli, con miliardi di frasi, direbbe soltanto
-che le frasi erano tante. Con abbastanza esercizi, per completare bene
-*devi* assorbire ortografia, grammatica, modi di dire, e perfino nozioni sul
-mondo: non puoi completare «la capitale della Francia è ___» senza sapere di
-Parigi. Il bello è che gli esercizi si fabbricano da soli: qualunque testo
-esistente è già un esercizio con la soluzione inclusa. Serve però una
-biblioteca sterminata e *pulita*: se la soffitta è piena di doppioni,
-l'allievo impara a memoria invece di imparare la lingua; se è piena di
-spazzatura, impara la spazzatura. Per questo, prima di studiare, si butta via
-moltissimo: pagine duplicate, testo generato da macchine, contenuti di bassa
-qualità. A decidere che cosa buttare non c'è nessuno che legge: c'è un giudice
-automatico, a cui sono stati mostrati due o tre scaffali scelti bene, e che
-tiene le pagine somiglianti a quelli. E quello che resta non pesa tutto uguale:
-del mucchio raccolto dal web si legge una parte, mentre gli scaffali migliori
-si ripassano più volte, così contano nello studio più di quanto la loro mole
-direbbe.
+a penna rossa: solo miliardi di esercizi di completamento, ricavati coprendo a
+turno ogni parola di frasi vere. «Il gatto nero salta sul ___»: provi, sbagli,
+aggiusti, scopri la parola e passi a coprire quella dopo. Il voto che conta è
+quanto si sbaglia in media su una parola: il totale degli sbagli, con miliardi
+di parole, direbbe soltanto che le parole erano tante. Con abbastanza
+esercizi, per completare bene *devi* assorbire ortografia, grammatica, modi di
+dire, e perfino nozioni sul mondo: non puoi completare «la capitale della
+Francia è ___» senza sapere di Parigi. Il bello è che gli esercizi si
+fabbricano da soli: qualunque testo esistente è già un esercizio con la
+soluzione inclusa. Serve però una biblioteca sterminata e *pulita*: se la
+soffitta è piena di doppioni, l'allievo impara a memoria invece di imparare la
+lingua; se è piena di spazzatura, impara la spazzatura. Per questo, prima di
+studiare, si butta via moltissimo: pagine duplicate, testo generato da
+macchine, contenuti di bassa qualità. A decidere che cosa buttare non c'è
+nessuno che legge: c'è un giudice automatico, a cui sono stati mostrati due o
+tre scaffali scelti bene, e che tiene le pagine somiglianti a quelli. E quello
+che resta non pesa tutto uguale: del mucchio raccolto dal web si legge una
+parte, mentre gli scaffali migliori si ripassano più volte, così contano nello
+studio più di quanto la loro mole direbbe.
 `````
 
 `````{tab} Superiore
@@ -86,7 +85,8 @@ indesiderati. Il dataset di GPT-3 {cite}`brown2020language` è una miscela
 pesata a mano, e il peso non segue la dimensione: il Common Crawl filtrato dà
 il 60% dei token visti in addestramento; le fonti ritenute migliori, e più
 piccole, vengono ripassate più volte (WebText2 quasi tre, Wikipedia più di
-tre) e pesano il 22% e il 3%. Nel mezzo due corpora di libri, 8% ciascuno.
+tre) e pesano il 22% e il 3%. Nel mezzo due corpora di libri, 8% ciascuno
+(le quote della tabella sommano a 101 per arrotondamento).
 Il testo è segmentato in sub-word con BPE, come visto nella
 {doc}`sezione sui tokenizzatori </NaturalLanguageProcessing/tokenizzatori>`
 {cite}`sennrich2016neural`.
@@ -100,29 +100,33 @@ $$
 
 dove $x_t$ è il token in posizione $t$, $p_\theta$ è la distribuzione prodotta
 dal Transformer con parametri $\theta$ (softmax sull'intero vocabolario) e la
-somma corre sugli $n$ token del corpus. Quando servirà la loss per token,
+somma corre sugli $n$ token del corpus, che però è spezzato in sequenze
+indipendenti: il condizionamento si ferma alla finestra di contesto, e dentro
+ciascuna sequenza riparte da capo. Quando servirà la loss per token,
 cioè la stessa quantità divisa per $n$, la scriveremo $\bar{\mathcal{L}} =
 \mathcal{L}/n$: la distinzione sembra pedanteria e non lo è, perché più avanti
 la perplessità si calcola mettendo all'esponente proprio quella, e chi confonde
 le due sbaglia di un fattore $n$. È la stessa `nn.CrossEntropyLoss` dei
 capitoli precedenti, applicata a un problema di classificazione con decine di
-migliaia di classi (le parole possibili) ripetuto miliardi di volte. Nessuna
-etichetta umana: per questo si parla di apprendimento auto-supervisionato.
-Sui rischi di corpora così raccolti (bias, contenuti tossici, opacità) il
-dibattito è aperto e acceso {cite}`bender2021dangers`.
+migliaia di classi (le parole possibili) ripetuto miliardi di volte; e quella
+che restituisce di suo è $\bar{\mathcal{L}}$, perché la sua riduzione
+predefinita è la media. Nessuna etichetta umana: per questo si parla di
+apprendimento auto-supervisionato. Sui rischi di corpora così raccolti (bias,
+contenuti tossici, opacità) il dibattito è aperto e acceso
+{cite}`bender2021dangers`.
 `````
 
 Quell'idea, che qualunque testo esistente sia già un esercizio con la soluzione
-inclusa, ha un nome e non riguarda soltanto il linguaggio: si chiama
-apprendimento auto-supervisionato. È lo stesso meccanismo con cui il
-{doc}`capitolo sulla visione </VisioneArtificiale/overview>` ha fatto imparare
-a guardare senza etichette, e con cui più avanti si riconoscerà il parlato
-senza trascrizioni e si allineeranno le immagini alle loro didascalie. Il
-{doc}`capitolo sull'auto-supervisione </AutoSupervisione/overview>` lo tratta
-come il paradigma che è, e dice anche perché ha finito per reggere quasi
-tutto: la correzione che il modello riceve a ogni singola parola è
-incomparabilmente più ricca di un'etichetta scritta sotto una fotografia, e di
-un «hai vinto» a fine partita.
+inclusa, è l'apprendimento auto-supervisionato, e non riguarda soltanto il
+linguaggio. È lo stesso meccanismo con cui il {doc}`capitolo sulla visione
+</VisioneArtificiale/overview>` ha fatto imparare a guardare senza etichette, e
+con cui più avanti si riconoscerà il parlato senza trascrizioni e si
+allineeranno le immagini alle loro didascalie. Il {doc}`capitolo
+sull'auto-supervisione </AutoSupervisione/overview>` lo tratta come il
+paradigma che è, e dice anche perché ha finito per reggere quasi tutto: la
+correzione che il modello riceve a ogni singola parola è incomparabilmente più
+ricca di un'etichetta scritta sotto una fotografia, e di un «hai vinto» a fine
+partita.
 
 ## La ricetta a tre ingredienti: le leggi di scala
 
@@ -767,7 +771,7 @@ l'idea della {doc}`sezione sui modelli a esperti <mixture-of-experts>`.
 ```{admonition} Da ricordare
 :class: important
 - Un grande modello linguistico gioca il gioco di Shannon su scala
-  industriale: coprire l'ultima parola di una frase vera e provare a
+  industriale: coprire a turno ogni parola di una frase vera e provare a
   indovinarla, miliardi di volte, su una biblioteca raccolta dal web e
   ripulita. Nessuno gli corregge i compiti: la soluzione era già nel testo.
 - Più manopole interne, più testo da leggere e più ore di calcolo danno un

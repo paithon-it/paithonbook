@@ -799,12 +799,11 @@ costo si sposta interamente sulla previsione, ed è $O(mn)$ per query nella
 versione ingenua, non $O(m)$: le distanze da calcolare sono $m$, una per
 esempio, ma ciascuna costa $n$ operazioni, una per colonna. Quel fattore $n$
 conta due volte, perché il numero di colonne pesa sul costo e decide anche se
-il metodo funziona, e la sezione su riduzione e
-clustering lo mette al centro. Il valore di $k$ regola il compromesso: $k$
-piccolo segue il rumore,
-$k$ grande liscia troppo. La distanza euclidea, inoltre, impone di
-normalizzare le feature, altrimenti quella con la scala più ampia domina il
-conto.
+il metodo funziona, e la {doc}`sezione su riduzione e clustering
+<riduzione-clustering>` lo mette al centro. Il valore di $k$ regola il
+compromesso: $k$ piccolo segue il rumore, $k$ grande liscia troppo. La
+distanza euclidea, inoltre, impone di normalizzare le feature, altrimenti
+quella con la scala più ampia domina il conto.
 
 Due raffinamenti sono già in scikit-learn. Il voto pesato
 (`weights="distance"`) fa contare di più i vicini più prossimi invece di dare

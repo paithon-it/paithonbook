@@ -466,15 +466,19 @@ bit-a-bit ai casi in cui serve davvero, come il debugging di una regressione.
 Il consiglio che si sente più spesso è l'opposto, ma si può modularizzare
 troppo presto. Un'idea che non si sa ancora se funzioni non ha
 bisogno di cinque file, di un parser degli argomenti e di un'impalcatura di
-oggetti; ha bisogno di essere provata in venti minuti. La divisione in moduli è
-un investimento che si ripaga quando qualcosa si ripete, e non prima.
+oggetti; ha bisogno di essere provata in venti minuti. La divisione in moduli
+(qui i file del progetto, non i moduli della rete) è un investimento che si
+ripaga quando qualcosa si ripete, e non prima.
 
-Il criterio pratico è quello delle **tre volte**: la prima volta si scrive nel
+La regola pratica è quella delle **tre volte**: la prima volta si scrive nel
 notebook; la seconda si copia e incolla, borbottando; la terza si estrae una
-funzione. E il passaggio non è mai tutto-o-niente: si può tenere il notebook
-come interfaccia di esplorazione e importarvi `engine.py`, ottenendo il meglio
-delle due cose (grafici e assaggi nel notebook, logica stabile e testabile nei
-file).
+funzione. Il numero conta meno del borbottio, che è il segnale vero, e la
+misura è quella piccola: una funzione, non un file. I file vengono dopo, e
+ciascuno nasce quando le funzioni che ospita sono diventate un mestiere a sé
+(preparare i dati, costruire il modello, addestrare). E il passaggio non è mai
+tutto-o-niente: si può tenere il notebook come interfaccia di esplorazione e
+importarvi `engine.py`, ottenendo il meglio delle due cose (grafici e assaggi
+nel notebook, logica stabile e testabile nei file).
 
 Cinque file, un comando, un seme fissato: è tutto quello che serve perché un
 esperimento smetta di essere un ricordo.

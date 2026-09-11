@@ -17,11 +17,11 @@ stampato su una rivista scientifica solo tre anni dopo, nel 2020.)
 
 Le sezioni precedenti hanno costruito la cassetta degli attrezzi classica
 (ARIMA, Holt-Winters) e hanno insistito su un punto scomodo: quei metodi di
-mezzo secolo fa restano una linea di base durissima da battere. Questa
-sezione racconta l'altra famiglia, quella delle reti neurali: quando conviene
-davvero, come si è evoluta dalle reti ricorrenti alle convoluzioni causali
-fino ai Transformer, e dove sta arrivando oggi con i *foundation model*. Con
-la stessa onestà: il deep learning non è un miglioramento automatico.
+mezzo secolo fa restano una linea di base durissima da battere. Tocca ora
+all'altra famiglia, quella delle reti neurali: quando conviene davvero, come si
+è evoluta dalle reti ricorrenti alle convoluzioni causali fino ai Transformer,
+e dove sta arrivando oggi con i *foundation model*. Con la stessa onestà: il
+deep learning non è un miglioramento automatico.
 
 ## Quando conviene il deep learning
 
@@ -114,21 +114,21 @@ $$
 y(t) = g(t) + s(t) + h(t) + \varepsilon_t ,
 $$
 
-con $g$ una tendenza lineare a tratti, i cui punti di svolta sono stimati
-dai dati (è quella di default, e c'è anche una crescita che satura verso un
-tetto dichiarato; ed è la notazione dell'articolo: questa $g$ non ha niente a
-che vedere con il $g_\theta$ di DeepAR); $s$ una somma di serie di
-Fourier troncate a $K$ armoniche (le stesse colonne $\sin(2\pi kt/m)$ e
-$\cos(2\pi kt/m)$ della sezione sulle feature, il che permette di sovrapporre
-più periodi e di regolare la flessibilità scegliendo $K$); $h$ gli effetti
-puntuali su date dichiarate (è la notazione dell'articolo: $h(t)$ è una
-funzione del tempo, non l'orizzonte di previsione che $h$ indica altrove);
-e $\varepsilon_t$ il residuo. Il modello è scritto in forma bayesiana, ma di
-norma la stima si ferma al massimo a posteriori invece di campionare
-l'intera distribuzione. Anche gli intervalli non vengono da una formula chiusa:
-si ottengono simulando in avanti cambi di pendenza con la stessa frequenza e la
-stessa ampiezza di quelli visti nel passato, che è un'ipotesi forte, e che gli
-autori dichiarano per quello che è.
+con $g$ una tendenza lineare a tratti, i cui punti di svolta sono scelti dai
+dati fra molti candidati fissati in anticipo (è quella di default, e c'è anche
+una crescita che satura verso un tetto dichiarato; ed è la notazione
+dell'articolo: questa $g$ non ha niente a che vedere con il $g_\theta$ di
+DeepAR); $s$ una somma di serie di Fourier troncate a $K$ armoniche (le stesse
+colonne $\sin(2\pi kt/m)$ e $\cos(2\pi kt/m)$ della sezione sulle feature, il
+che permette di sovrapporre più periodi e di regolare la flessibilità
+scegliendo $K$); $h$ gli effetti puntuali su date dichiarate (è la notazione
+dell'articolo: $h(t)$ è una funzione del tempo, non l'orizzonte di previsione
+che $h$ indica altrove); e $\varepsilon_t$ il residuo. Il modello è scritto in
+forma bayesiana, ma di norma la stima si ferma al massimo a posteriori invece
+di campionare l'intera distribuzione. Anche gli intervalli non vengono da una
+formula chiusa: si ottengono simulando in avanti cambi di pendenza con la
+stessa frequenza e la stessa ampiezza di quelli visti nel passato, che è
+un'ipotesi forte, e che gli autori dichiarano per quello che è.
 
 Il punto che la distingue dalle altre due, e che vale più della formula, è che
 $y$ è una regressione sul tempo, non sui valori passati: non c'è nessuno
@@ -254,16 +254,20 @@ giorni, che è la scelta più piccola possibile: il primo guarda ieri e oggi, il
 secondo salta di due giorni, il terzo di quattro, il quarto di otto. I salti
 messi in fila fanno $1 + 2 + 4 + 8 = 15$ giorni, più oggi fa sedici; con dieci
 strati si passano i mille. È la dilatazione, e con finestre più larghe di due
-il conto cresce ancora.
+il conto cresce ancora. Il diciassettesimo giorno indietro, però, con quattro
+strati non c'è: non sbiadito, proprio assente, e nessuna finestra di ingresso
+più lunga glielo fa comparire. Per guardare più indietro si aggiunge uno
+strato, o si allarga la finestra di ciascuno.
 
 Uno strato non riscrive il diario da capo: si tiene accanto la pagina com'era e
 ci annota soltanto quello che ha da aggiungere. Il vantaggio si vede quando si
-corregge: la correzione viaggia all'indietro strato per strato e, se gli strati
-sono tanti, per strada si smorza fino a sparire; se ogni strato però conserva
-la pagina di partenza, la correzione trova sempre una scorciatoia per tornare
-in fondo, e anche una pila alta resta correggibile. Il tutto senza ricorrenza:
-ogni istante si calcola in parallelo agli altri, e l'addestramento vola sulle
-GPU invece di procedere in fila.
+corregge: la correzione risale la pila, dall'ultimo strato al primo, che è un
+viaggio dentro la rete e non dentro il calendario. Se gli strati sono tanti per
+strada si smorza fino a sparire; se
+ogni strato però conserva la pagina di partenza, la correzione trova sempre una
+scorciatoia per arrivare in fondo, e anche una pila alta resta correggibile. Il
+tutto senza ricorrenza: ogni istante si calcola in parallelo agli altri, e
+l'addestramento vola sulle GPU invece di procedere in fila.
 
 `````
 
@@ -277,9 +281,12 @@ $$
 y_t = \sum_{i=0}^{k-1} w_i \, x_{t - i\cdot d},
 $$
 
-dove $w_0, \dots, w_{k-1}$ sono i pesi del filtro (condivisi lungo tutta la
-sequenza) e $d$ è il passo di dilatazione. Impilando $L$ strati con dilatazioni
-$d_\ell = 2^{\ell}$ per $\ell = 0, \dots, L-1$, il campo recettivo è
+dove $y_t$ è l'uscita dello strato al tempo $t$ (non la serie, che qui resta
+$x$), $w_0, \dots, w_{k-1}$ sono i pesi del filtro, condivisi lungo tutta la
+sequenza, e $d$ è il passo di dilatazione. Dentro questa formula, e solo qui,
+$w$ è un peso: altrove nella sezione $w$ è la lunghezza della finestra passata.
+Impilando $L$ strati con dilatazioni $d_\ell = 2^{\ell}$ per
+$\ell = 0, \dots, L-1$, il campo recettivo è
 
 $$
 r = 1 + (k-1)\sum_{\ell=0}^{L-1} 2^{\ell} = 1 + (k-1)\,(2^{L}-1),
@@ -301,6 +308,12 @@ capitolo: non «quello che avanza dopo aver tolto trend e stagione», ma una
 scorciatoia che porta l'ingresso oltre il blocco, così che al blocco resti da
 imparare soltanto la differenza. Rispetto a una RNN, il calcolo è interamente
 parallelizzabile lungo il tempo: $O(1)$ passi sequenziali invece di $O(n)$.
+
+Il punto di rottura c'è, ed è di specie diversa da quello delle RNN. Una
+ricorrente la memoria lontana la sbiadisce; una TCN la taglia di netto: oltre
+$r$ istanti non arriva niente, mai, per costruzione. Allungare la finestra di
+ingresso oltre il campo recettivo non serve a nulla, e per guardare più
+indietro si aggiungono strati o si allarga il filtro.
 
 `````
 
@@ -373,8 +386,11 @@ dei dati. Con un'ipotesi che va detta perché non si vede nella formula: in
 addestramento lo stato $\mathbf{h}_t$ si calcola dal valore osservato del passo
 prima, in inferenza da quello appena campionato. È il *teacher forcing* della
 {doc}`sezione sul seq2seq </NaturalLanguageProcessing/seq2seq-traduzione>`, e il
-disallineamento fra le due fasi resta; gli autori riportano di aver provato
-varianti dello *scheduled sampling* senza guadagni di accuratezza.
+disallineamento fra le due fasi non si chiude. Gli autori però dichiarano di
+non averne osservato effetti negativi nel forecasting, a differenza di quanto
+è stato riportato per il linguaggio, e di aver provato varianti dello
+*scheduled sampling* senza guadagni di accuratezza e con una convergenza più
+lenta.
 
 È la ricetta di
 {doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`, applicata a
@@ -462,20 +478,23 @@ regola resta uguale a sé stesso, $\mu = 4/(1-0{,}6) = 10$. E si vede la banda
 allargarsi: la distanza fra i suoi due estremi, che il programma stampa in
 fondo a ogni riga, passa da $2{,}56$ a $3{,}01$ a $3{,}15$.
 
-Poi, dal terzo giorno in poi, la salita quasi si spegne: $3{,}149$,
-$3{,}159$, $3{,}166$, cioè meno di un centesimo per volta. Ed è la ragione per
-cui il programma stampa la larghezza invece di lasciarla ricavare dai due
-estremi: quegli estremi sono arrotondati al centesimo, e sottraendoli si
-otterrebbe $3{,}15$, $3{,}15$, $3{,}16$, cioè un giorno in cui la banda non è
-cresciuta affatto. È cresciuta: quel che le resta da crescere è ormai una
-manciata di millesimi. Sta arrivando al suo limite, che qui vale $3{,}20$, e al
-quinto giorno la banda vera ne ha già raggiunto il $99{,}7\%$.[^banda-limite]
+Poi, dal terzo giorno in poi, la salita quasi si spegne: $3{,}149$, $3{,}159$,
+$3{,}166$, cioè un centesimo scarso per volta. Ed è la ragione per cui il
+programma stampa la larghezza invece di lasciarla ricavare dai due estremi:
+quegli estremi sono arrotondati al centesimo, e sottraendoli si otterrebbe
+$3{,}15$, $3{,}15$, $3{,}16$, cioè un giorno in cui la banda non è cresciuta
+affatto. È cresciuta, e più di quanto quelle cifre lascino credere: il conto
+esatto la dà a $3{,}13$, $3{,}18$, $3{,}19$, cioè quasi cinque centesimi fra il
+terzo giorno e il quarto, quasi cinque volte quello che il sorteggio riesce a
+mostrare. A spegnersi, dunque, non è tanto l'allargamento quanto la capacità di
+misurarlo con ventimila storie. Il limite, qui, vale $3{,}20$, e al quinto
+giorno la banda vera ne ha già raggiunto il $99{,}7\%$.[^banda-limite]
 Disegnata su dieci giorni ({numref}`fig-ventaglio-che-si-assesta`), quella
 salita che si spegne è la forma dell'intero ventaglio.
 
 ```{figure} ../figures/ventaglio-che-si-assesta.svg
 :name: fig-ventaglio-che-si-assesta
-:alt: "Due grafici affiancati. A sinistra, il ventaglio di previsione: in ascissa i giorni previsti in avanti, da oggi a dieci, in ordinata il valore. Dall'ultimo giorno osservato, un punto in alto a sinistra, parte una linea terracotta, la mediana, che scende e si appiattisce sulla riga ocra della media di lungo periodo, che vale dieci; attorno a essa si apre una banda teal. A destra, la larghezza di quella stessa banda contro l'orizzonte: parte da 2,563 al primo giorno, sale a 3,128 al terzo e arriva a 3,204 al decimo, appoggiandosi da sotto a una riga tratteggiata che segna il tetto, 3,204, che sfiora senza superare. Quasi tutto l'allargamento sta nei primi tre giorni."
+:alt: "Due grafici affiancati. A sinistra, il ventaglio di previsione: in ascissa i giorni previsti in avanti, da oggi a dieci, in ordinata il valore. Dall'ultimo giorno osservato, un punto in alto a sinistra, parte una linea terracotta, la mediana, che scende e si appiattisce sulla riga ocra della media di lungo periodo, che vale dieci; attorno a essa si apre una banda teal. A destra, la larghezza di quella stessa banda contro l'orizzonte: parte da 2,563 al primo giorno, sale a 3,128 al terzo e arriva a 3,2038 al decimo, dove la riga tratteggiata del tetto, 3,2039, le resta appena sopra: a questa scala le due linee non si distinguono. Quasi tutto l'allargamento sta nei primi tre giorni."
 :width: 100%
 
 Il ventaglio a sinistra e la sua larghezza a destra, sulla stessa regola AR(1)
@@ -584,19 +603,20 @@ scrivono gli autori, i mattoni del deep learning si bastavano da soli
 
 ## Transformer per le serie, e un lineare che li imbarazza
 
-Nella {doc}`sezione sul meccanismo di attenzione </Transformers/attenzione>` il
-libro ha raccontato una rete che, invece di leggere una sequenza un pezzo per
-volta, guarda tutti i pezzi in una volta sola e decide da sé a quali dare peso:
-quel «decidere a quali dare peso» è l’attenzione, e nel trattamento del
-linguaggio ha spazzato via le reti che leggevano in fila
-{cite}`vaswani2017attention`. Portarla nelle serie temporali era una tentazione
-irresistibile, per una ragione precisa: un Transformer mette in comunicazione
-due giorni lontanissimi con un solo passaggio, mentre una rete ricorrente
-deve trascinarsi l'informazione attraverso tutti i giorni in mezzo, ed è per
-questo che se la dimentica.
+La {doc}`sezione sul meccanismo di attenzione </Transformers/attenzione>` ha
+raccontato una rete che, invece di leggere una sequenza un pezzo per volta,
+guarda tutti i pezzi in una volta sola e decide da sé a quali dare peso: quel
+«decidere a quali dare peso» è l’attenzione, e nel trattamento del linguaggio
+ha spazzato via le reti che leggevano in fila {cite}`vaswani2017attention`.
+Portarla nelle serie temporali era una tentazione irresistibile, per una
+ragione precisa: un Transformer mette in comunicazione due giorni lontanissimi
+con un solo passaggio, mentre una rete ricorrente deve trascinarsi
+l'informazione attraverso tutti i giorni in mezzo, ed è per questo che se la
+dimentica.
 
-Fioccarono architetture dedicate, e le due più note sono due risposte opposte
-allo stesso problema. Il problema è il tempo di calcolo: confrontare ogni
+Fioccarono architetture dedicate, e le due più note partono dallo stesso
+inciampo e vanno in direzioni opposte. L'inciampo è il tempo di calcolo:
+confrontare ogni
 giorno con ogni altro giorno vuol dire, su una finestra di mille giorni, un
 milione di confronti, e più si allunga la finestra più il conto esplode.
 **Informer** {cite}`zhou2021informer` taglia i confronti, e ne fa solo una
@@ -656,19 +676,23 @@ decidere.
 `````{tab} Superiore
 
 Il costo quadratico $O(n^2)$ dell'attenzione piena sulle sequenze lunghe aveva
-motivato le varianti efficienti (Informer {cite}`zhou2021informer`, Autoformer
-{cite}`wu2021autoformer`, FEDformer {cite}`zhou2022fedformer`). Zeng e
-colleghi {cite}`zeng2023transformers` proposero come confronto una famiglia di
-modelli lineari: il più semplice è una singola mappa
-$\hat{\mathbf{x}}_{t+1:t+h} = \mathbf{W}\,\mathbf{x}_{t-w+1:t}$, e la
-variante DLinear decompone prima la serie in trend e stagionalità e applica
-una mappa a ciascuna componente. Su nove dataset di forecasting a lungo
-orizzonte quella famiglia eguaglia o supera i Transformer dedicati. Il
-protocollo va detto, perché sta in appendice e cambia la lettura del confronto:
-nella tabella principale i modelli lineari ricevono una finestra passata di
-$336$ istanti e i Transformer di $96$. Gli autori lo giustificano con la prova
-sulla lunghezza della finestra passata, e i lavori successivi hanno ricopiato
-quella scelta dichiarandola.
+motivato una fila di architetture dedicate (Informer {cite}`zhou2021informer`,
+Autoformer {cite}`wu2021autoformer`, FEDformer {cite}`zhou2022fedformer`), che
+scendono tutte sotto il quadrato pur dichiarando, le ultime due, di inseguire
+l'accuratezza prima dell'efficienza. Zeng e colleghi
+{cite}`zeng2023transformers` proposero come confronto una famiglia di modelli
+lineari, che nei lavori successivi si trova come LTSF-Linear: il più semplice è
+una singola mappa $\hat{\mathbf{x}}_{t+1:t+h} =
+\mathbf{W}\,\mathbf{x}_{t-w+1:t}$, dove $w$ è la lunghezza della finestra
+passata, $h$ l'orizzonte e $\mathbf{W}$ la matrice appresa, e la variante
+DLinear decompone prima la
+serie in trend e stagionalità e applica una mappa a ciascuna componente. Su
+nove dataset di forecasting a lungo orizzonte quella famiglia eguaglia o supera
+i Transformer dedicati. Il protocollo va detto, perché sta in appendice e
+cambia la lettura del confronto: nella tabella principale i modelli lineari
+ricevono una finestra passata di $336$ istanti e i Transformer di $96$. Gli
+autori lo giustificano con la prova sulla lunghezza della finestra passata, e i
+lavori successivi hanno ricopiato quella scelta dichiarandola.
 
 Il verdetto da solo sarebbe una classifica, e le classifiche invecchiano. Quello
 che non invecchia sono le due prove con cui gli autori lo spiegano. I numeri
@@ -683,8 +707,10 @@ percentuale, e per due dei tre è perfino in meglio) mentre lo stesso
 trattamento
 fa perdere il 27% al modello lineare: lì il tempo lo sta usando la retta.
 
-Su ETTh1 il quadro è un altro, e va detto perché è la metà che si cita di meno:
-lì mescolando peggiorano anche i Transformer che hanno un'idea del tempo dentro,
+Su ETTh1, che raccoglie la temperatura dell'olio di un trasformatore elettrico
+(la macchina di una cabina, non l'architettura) e sei misure di carico, il
+quadro è un altro, e va detto perché è la metà che si cita di meno: lì
+mescolando peggiorano anche i Transformer che hanno un'idea del tempo dentro,
 FEDformer del 73% e Autoformer del 57% (il lineare dell'81%). Informer no: si
 ferma al 2%. La conclusione onesta, quindi, non è che i Transformer siano
 ciechi al tempo per costruzione, ed è più utile: un banco di prova su cui un
@@ -875,9 +901,11 @@ confronto con la linea di base classica.
   {cite}`taylor2018forecasting`.
 - Le reti ricorrenti leggono la serie un giorno per volta portandosi dietro
   una memoria, ma su storie lunghe se la dimenticano e sono lente da addestrare.
-  Le TCN {cite}`bai2018empirical` risolvono entrambe le cose rileggendo il
+  Le TCN {cite}`bai2018empirical` rimediano a tutt'e due rileggendo il
   diario a salti che raddoppiano: quattro strati vedono sedici giorni, dieci
-  ne vedono più di mille, e nessuno strato può sbirciare in avanti.
+  ne vedono più di mille, e nessuno strato può sbirciare in avanti. Il prezzo
+  è che oltre quei giorni non vedono niente del tutto, mentre una rete
+  ricorrente il passato lontano lo sbiadisce e basta.
 - DeepAR {cite}`salinas2020deepar` addestra una sola rete su tutte le
   serie insieme e non prevede un numero, prevede un ventaglio di futuri
   possibili: tira i dadi tante volte, ogni volta ripartendo dal valore appena
@@ -915,12 +943,18 @@ confronto con la linea di base classica.
   TCN {cite}`bai2018empirical` usano convoluzioni causali dilatate: campo
   recettivo esponenziale, $1+(k-1)(2^L-1)$ con una convoluzione per livello e il
   doppio meno uno con le due del blocco originale, e calcolo parallelizzabile.
+  Oltre quel raggio però non arriva niente, per costruzione: dove una
+  ricorrente sbiadisce, una TCN taglia.
 - DeepAR {cite}`salinas2020deepar` è una RNN autoregressiva globale (una
   rete per molte serie) che emette una distribuzione; la previsione
   multi-passo è per campionamento ancestrale. La banda si allarga senza limite
   con l'orizzonte se il processo non è stazionario; se lo è, tende dal basso
   alla larghezza che le compete a regime, $2 z_{1-\alpha/2}\,\sigma_\infty$,
-  senza raggiungerla in un numero finito di passi.
+  dove $\sigma_\infty$ è la deviazione standard del processo e
+  $z_{1-\alpha/2}$ il quantile che fissa il livello. Che non la raggiunga in
+  un numero finito di passi vale quando i pesi della rappresentazione a media
+  mobile non si annullano mai, come nell'AR(1); per un MA(q) si annullano, e
+  la banda tocca il tetto al passo $q+1$.
 - N-BEATS {cite}`oreshkin2020nbeats` usa blocchi di soli MLP
   (percettroni multistrato: pile di strati densi) con doppio residuo
   backcast/forecast, ed è interpretabile quando la base è vincolata. Il suo
@@ -960,7 +994,8 @@ le misure.
     centesimi, ed è quello che il campionamento non riesce più a distinguere.
 
 [^date-nbeats]: L'articolo circolò online nel 2019 e fu presentato in conferenza
-    l'anno dopo, come era successo a DeepAR. Questi due lavori sono datati alla
+    l'anno dopo; a DeepAR era successa una cosa simile, con tre anni e una
+    rivista al posto di una conferenza. Questi due lavori sono datati alla
     prima circolazione, che è la data in cui l'idea è entrata nel campo. Quando
     le due date si allontanano e la distanza conta, il capitolo la dichiara; la
     voce in bibliografia resta invece quella della pubblicazione, ed è normale

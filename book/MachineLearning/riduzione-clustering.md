@@ -507,8 +507,7 @@ dovuto a Stuart Lloyd (formulato ai Bell Labs nel 1957, pubblicato nel 1982)
 {cite}`lloyd1982least`; il nome «$k$-means» compare in James MacQueen nel 1967
 {cite}`macqueen1967some`.
 
-Prima della figura, una parola sul nome che ci compare sopra: **centroide**. È
-semplicemente il punto che sta nel mezzo di un gruppo, quello che si ottiene
+Il punto che sta nel mezzo di un gruppo si chiama **centroide**, e si ottiene
 facendo la media delle posizioni di tutti i suoi membri. Nei disegni si segna
 con una x, e non è uno dei dati, ma un punto che ci mettiamo noi.
 
@@ -601,13 +600,12 @@ $$
 A(1,1),\ B(1,2),\ C(2,1),\ D(8,8),\ E(9,8),\ F(8,9).
 $$
 
-Il centro di un gruppo si chiama centroide e nelle formule si scrive con la
-lettera greca *mi* in grassetto, $\boldsymbol{\mu}$: in statistica quella
-lettera indica da sempre una media (un centroide, in fondo, è la media delle
-posizioni dei suoi punti) e il grassetto ricorda che non è un numero solo, ma
-un punto con tutte le sue coordinate. Le distanze fra
-due punti le calcoliamo con Pitagora, come sul foglio a quadretti: differenza
-delle ascisse e delle ordinate, ciascuna al quadrato, sommate, e radice.
+Nelle formule il centroide si scrive con la lettera greca *mi* in grassetto,
+$\boldsymbol{\mu}$: in statistica quella lettera indica da sempre una media, e
+il grassetto ricorda che non è un numero solo, ma un punto con tutte le sue
+coordinate. Le distanze fra due punti le calcoliamo con Pitagora, come sul
+foglio a quadretti: differenza delle ascisse e delle ordinate, ciascuna al
+quadrato, sommate, e radice.
 
 Partiamo (di proposito male) con i centroidi $\boldsymbol{\mu}_1 = (1,1)$ e
 $\boldsymbol{\mu}_2 = (2,1)$, entrambi in mezzo al gruppo di sinistra.
@@ -817,6 +815,16 @@ taglio netto attorno a due centri), mentre DBSCAN segue il filo della densità.
 Non è che un metodo sia sempre migliore: k-means è veloce, scala benissimo e
 va bene quando i gruppi sono blob compatti; DBSCAN brilla su forme irregolari
 e in presenza di rumore, ma teme le densità disomogenee.
+
+C'è poi un'asimmetria che si sente il giorno dopo, quando il raggruppamento va
+usato. k-means lascia in mano i suoi $k$ centroidi, e un punto che arriva
+domani si colloca confrontandolo con quelli; DBSCAN non lascia niente di
+simile, perché l'appartenenza dipende da quanti vicini ha il punto, e per
+contarli servono i dati di partenza. In scikit-learn la differenza si vede
+nell'interfaccia: `KMeans` ha un metodo `predict`, `DBSCAN` ha soltanto
+`fit_predict`, e per collocare un punto nuovo si addestra un classificatore
+per vicinanza sui soli punti core, con l'etichetta che hanno ricevuto
+{cite}`geron2022hands`.
 
 Una terza via, utile quando si vuole *esplorare* la struttura a diversi
 livelli di granularità, è il **clustering gerarchico**: invece di fissare i
@@ -1182,7 +1190,9 @@ criterio invece che con un giudizio a occhio su un grafico.
   gruppi cercare, e preferisce i gruppi tondi e della stessa taglia.
 - DBSCAN guarda invece le zone fitte, come le luci di una città viste
   dall'aereo: scopre da solo quanti gruppi ci sono, riconosce forme di qualunque
-  sagoma, e ha il buon senso di lasciare fuori i puntini isolati.
+  sagoma, e ha il buon senso di lasciare fuori i puntini isolati. In cambio non
+  lascia una regola per collocare un punto che arriva dopo: per dire di chi è
+  servono di nuovo tutti gli altri.
 - Le misture gaussiane imparano di ogni gruppo anche la forma, non solo il
   centro, e invece di un'etichetta secca rispondono «al 90% di qua e al 10% di
   là»: sul confine l'incertezza c'è davvero, ed è onesto dirlo.
@@ -1209,8 +1219,10 @@ criterio invece che con un giudizio a occhio su un grafico.
   (algoritmo di Lloyd); richiede $k$ a priori (gomito, silhouette), assume
   cluster sferici ed è sensibile all'inizializzazione (k-means++).
 - DBSCAN raggruppa per densità ($\varepsilon$, $\mathrm{minPts}$):
-  trova cluster di forma arbitraria, marca il rumore e non richiede $k$;
-  il clustering gerarchico offre un dendrogramma da tagliare a piacere.
+  trova cluster di forma arbitraria, marca il rumore e non richiede $k$, ma
+  non restituisce un modello con cui assegnare un punto nuovo, perché
+  l'appartenenza è una proprietà del vicinato; il clustering gerarchico offre
+  un dendrogramma da tagliare a piacere.
 - Le misture gaussiane imparano di ogni gruppo non solo il centro ma la
   forma (la covarianza), e assegnano una probabilità invece di
   un'etichetta secca. Si stimano con l’algoritmo EM, che alterna il calcolo

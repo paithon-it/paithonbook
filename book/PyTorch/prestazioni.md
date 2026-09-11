@@ -575,10 +575,9 @@ spostano davvero il cronometro sono più modeste e più vicine:
   riprova). Una GPU mezza vuota è il modo più comune di sprecarla.
 - Rifornisci la GPU: se l'utilizzo della scheda langue, il collo di
   bottiglia è quasi sempre la catena dei dati, non il calcolo. Nel
-  `DataLoader`, `num_workers=4` (o quanti sono i core del processore, cioè le
-  unità di calcolo indipendenti che ha dentro: `os.cpu_count()` le conta)
-  prepara i batch in parallelo mentre la GPU lavora, e `pin_memory=True`
-  accelera il trasferimento.
+  `DataLoader`, `num_workers=4` (o quanti sono i core del processore, che
+  `os.cpu_count()` conta) prepara i batch in parallelo mentre la GPU lavora, e
+  `pin_memory=True` accelera il trasferimento.
 - Precisione mista anche in piccolo: i tensor core li hanno tutte le
   GeForce RTX. Le cinque righe di `autocast`
   viste sopra sono spesso il singolo guadagno più grande disponibile su una

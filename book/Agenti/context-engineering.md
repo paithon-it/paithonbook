@@ -136,9 +136,9 @@ i Transformer lo chiamavamo KV cache) cresce con la lunghezza
 del contesto. In secondi di attesa, perché più testo c'è, più tempo passa
 prima che compaia la risposta. E in denaro, perché un modello si paga a
 consumo, un tanto per ogni token che entra e per ogni token che esce: quel
-listino si chiama *costo per token*, e sarà uno dei temi del capitolo su
-MLOps. Un prompt gonfio è una bolletta più salata e una risposta più lenta, e
-riempire la finestra fino all'orlo «per sicurezza» è quasi sempre un cattivo
+listino si chiama *costo per token*, ed è una delle cose che LLMOps tiene
+d'occhio. Un prompt gonfio è una bolletta più salata e una risposta più lenta,
+e riempire la finestra fino all'orlo «per sicurezza» è quasi sempre un cattivo
 affare.
 
 La {numref}`fig-context-window` mostra come la finestra si riempie in una

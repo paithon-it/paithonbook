@@ -114,9 +114,11 @@ default appiattisce da `start_dim=1`, preservando il batch) e
 $d_{\text{in}} = C \cdot H \cdot W$.
 
 **Composizione.** In una `nn.Sequential`, `out_features` di uno strato deve
-uguagliare `in_features` del successivo. Quando la dimensione dipende da
-calcoli (l'uscita di uno stack convoluzionale, per esempio, dove ogni `stride`
-e ogni `padding` la modificano), conviene non calcolarla a mano:
+uguagliare `in_features` del successivo. La dimensione, però, a volte dipende
+da calcoli: succede con gli strati che fanno scorrere un filtro sull'immagine,
+dove ogni `stride` e ogni `padding` cambiano la forma di quello che esce (li
+monta pezzo per pezzo la {doc}`sezione sulle reti convoluzionali
+</DeepLearning/reti-convoluzionali>`). Lì conviene non calcolarla a mano:
 `nn.LazyLinear(d_out)` la deduce dal primo tensore che riceve, materializzando
 i pesi alla prima chiamata. È comodo in fase esplorativa; nel codice
 definitivo, meglio fissare il numero.

@@ -16,12 +16,14 @@ mestiere all'altro, e per moltissimi settori non esiste affatto. Le immagini
 Da questa asimmetria nasce la domanda: si può insegnare a una rete a descrivere
 bene un'immagine senza che nessuno dica mai che cosa c'è nella foto? Quella
 descrizione, la lista di numeri in cui la rete riassume un'immagine, si chiama
-la sua **rappresentazione**, ed è la cosa che vogliamo: il resto si costruisce
-sopra. La risposta è sì, e per arrivarci bisogna rovesciare l'uso di uno
-strumento appena costruito. Nella {doc}`sezione sulla data augmentation
-</VisioneArtificiale/data-augmentation>` le trasformazioni erano un freno, un
-modo di impedire alla rete di imparare a memoria. Qui non frenano niente: qui
-l'augmentation è il segnale di addestramento.
+la sua **rappresentazione**, ed è la cosa che vogliamo. Due liste di numeri si
+possono confrontare, e una rappresentazione è buona quando due immagini simili
+ne ricevono due vicine: su una descrizione così si costruisce il resto, cioè
+riconoscere, cercare, raggruppare. La risposta è sì, e per arrivarci bisogna
+rovesciare l'uso di uno strumento appena costruito. Nella {doc}`sezione sulla
+data augmentation </VisioneArtificiale/data-augmentation>` le trasformazioni
+erano un freno, un modo di impedire alla rete di imparare a memoria. Qui non
+frenano niente: qui l'augmentation è il segnale di addestramento.
 
 ## Un compito la cui risposta è già nei dati
 

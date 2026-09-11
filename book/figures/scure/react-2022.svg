@@ -25,7 +25,7 @@
   <rect x="170" y="232" width="380" height="56" rx="6" fill="#0E0C0A" stroke="#DDB874" stroke-width="2"/>
   <rect x="170" y="232" width="10" height="56" fill="#DDB874"/>
   <text x="196" y="256" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="#DDB874">OSSERVAZIONE</text>
-  <text x="196" y="275" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Ha esordito con un film, ma manca l'anno.</text>
+  <text x="196" y="275" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">Ha esordito con «titolo del film»: manca l'anno.</text>
 
   <!-- Box 4: Pensiero -->
   <rect x="170" y="320" width="380" height="56" rx="6" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>

@@ -234,15 +234,14 @@ Nel resto del capitolo restano sottintese.
 
 ## Da dove nascono query, chiavi e valori
 
-Resta da dire *come* si decide l'intensità dell'evidenziatore. Ogni parola,
-per partecipare al gioco,
-fa tre mestieri diversi, e la rete se ne costruisce tre versioni diverse:
-la **query**, la **key** e il **value**. In italiano sarebbero *domanda*,
-*etichetta* e *contenuto*, ma i nomi inglesi sono ormai quelli che si trovano
-scritti ovunque, e li useremo anche noi. Tutte e tre nascono dalla stessa lista
-di partenza, moltiplicata per tre matrici diverse e apprese, e il percorso che
-ne segue, dalla proiezione fino alla miscela dei value, è quello che
-{numref}`fig-qkv` disegna per una parola sola.
+Resta da dire *come* si decide l'intensità dell'evidenziatore. Ogni parola, per
+partecipare al gioco, fa tre mestieri diversi, e la rete se ne costruisce tre
+versioni diverse: la **query**, la **key** e il **value**. In italiano sono
+*domanda*, *chiave* e *valore*, ma i nomi inglesi sono ormai quelli che si
+trovano scritti ovunque, nei paper e nel codice, e li useremo anche noi. Tutte
+e tre nascono dalla stessa lista di partenza, moltiplicata per tre matrici
+diverse e apprese, e il percorso che ne segue, dalla proiezione fino alla
+miscela dei value, è quello che {numref}`fig-qkv` disegna per una parola sola.
 
 `````{tab} Elementare
 Tre versioni della stessa parola, una per mestiere. La prima dice che cosa
@@ -728,11 +727,11 @@ della propria frase, e anche sé stessa. Nella **cross-attention** le query
 vengono da un flusso e chiavi e valori dall'altro, ed è il traduttore che,
 mentre scrive in italiano, torna a rileggersi l'inglese.
 
-| | query da | chiavi e valori da |
-|---|---|---|
-| self-attention | la sequenza stessa | la sequenza stessa |
-| cross-attention | il flusso che scrive | il flusso che è stato letto |
-| self-attention causale | la sequenza stessa | la sequenza stessa |
+| | query da | chiavi e valori da | collegamenti permessi |
+|---|---|---|---|
+| self-attention | la sequenza stessa | la sequenza stessa | tutte le posizioni |
+| cross-attention | il flusso che scrive | il flusso che è stato letto | tutte le posizioni lette |
+| self-attention causale | la sequenza stessa | la sequenza stessa | sé stessa e quelle prima |
 
 Due parole che il gergo confonde volentieri, e che la tabella tiene separate.
 «Self-attention» dice da dove vengono le tre proiezioni; «causale» dice

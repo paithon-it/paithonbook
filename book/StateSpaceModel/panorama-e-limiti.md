@@ -1,12 +1,13 @@
 # Panorama e limiti
 
 Abbiamo attraversato due capitoli (l'attenzione lineare e gli *state space
-model*) che sembravano raccontare storie diverse: uno partiva dai Transformer
-e toglieva all'attenzione il pezzo che la faceva costare tanto, l'altro dai
-sistemi dinamici continui e li misurava a intervalli. Eppure siamo arrivati,
-ogni volta, allo stesso posto. Conviene, ora che li abbiamo entrambi in mano,
-mettere i pezzi in fila e chiedersi cosa abbiamo davvero costruito, dove regge
-e dove no.
+model*) che sembravano raccontare storie diverse: uno partiva dai Transformer e
+toglieva all'attenzione il pezzo che la faceva costare tanto, l'altro dalla
+matematica con cui si descrive una cosa che cambia di continuo nel tempo (un
+sistema dinamico continuo), guardata però solo a istanti staccati, uno ogni
+tanto. Eppure siamo arrivati, ogni volta, allo stesso posto. Conviene, ora che
+li abbiamo entrambi in mano, mettere i pezzi in fila e chiedersi cosa abbiamo
+davvero costruito, dove regge e dove no.
 
 Il punto di partenza era un difetto ben preciso. Nel {doc}`capitolo sui Transformer </Transformers/overview>`,
 confrontandoli con le RNN, avevamo trovato il loro tallone d'Achille: far
@@ -25,17 +26,17 @@ inferenza un token alla volta a costo costante come una RNN.
 
 ## Un'unica famiglia
 
-Riprendiamo l'immagine del
-{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`. Quella
-memoria è un foglio-registro: a ogni parola ci si scrive una voce nuova,
-formata da un’etichetta e da un contenuto, e per rileggere si presenta
-un'etichetta e si riceve indietro ciò che le assomiglia di più. Il foglio ha
-un numero fisso di caselle, sempre quello, e ogni voce nuova lascia un
-segno un po’ in tutte.
-Prima di archiviare la voce nuova, però, quello che c'è già viene sbiadito un
-po’: è la **transizione**, ed è l'unica cosa su cui le architetture di questi
-due capitoli sono davvero diverse fra loro. Da RetNet a Mamba, cambia come e
-quanto si sbiadisce, e chi lo decide.
+Riprendiamo l'immagine della {doc}`sezione dalla softmax alla ricorrenza
+</AttenzioneLineare/dalla-softmax-alla-ricorrenza>`. Quella memoria è un
+foglio-registro: a ogni parola ci si scrive una voce nuova, formata da
+un’etichetta e da un contenuto, e per rileggere si presenta un'etichetta e si
+riceve indietro ciò che le assomiglia di più. Il foglio ha un numero fisso di
+caselle, sempre quello, e non è uno schedario con una voce per casella: la voce
+nuova si somma a quello che c'è già, e lascia un segno un po’ in tutte. Prima
+di sommarla, però, quello che c'è già viene sbiadito un po’: è la
+**transizione**, ed è dove passa quasi tutta la differenza fra le architetture
+di questi due capitoli. Da RetNet a Mamba, cambia come e quanto si sbiadisce, e
+chi lo decide.
 
 `````{tab} Elementare
 
@@ -58,12 +59,15 @@ senza guardare che cosa butta via, cancellare di mira tiene in ordine una voce
 sola. Non
 sbiadire affatto, però, non vuol dire tenere tutto: le caselle restano quelle,
 le voci continuano ad ammucchiarsi una sopra l'altra, e più se ne ammucchiano
-meno pulita torna ciascuna. Anche questa manopola ha il suo prezzo. Con una
-regola di sbiadire semplice, uguale per tutte le caselle, l'apparecchio sbriga
-la pagina intera in una volta sola; più la regola guarda al dettaglio della
-singola voce, più quel lavoro in blocco diventa difficile da organizzare, e si
-finisce per procedere a pezzi piccoli. Quello che si compra in cambio è un
-registro tenuto in ordine, e riletture che tornano più precise.
+meno pulita torna ciascuna. Anche questa manopola ha il suo prezzo, e si paga
+in velocità. Un calcolatore di oggi ha migliaia di piccoli operai che lavorano
+fianco a fianco, e rende quando gli si dà una cosa grossa sola invece di mille
+cose piccole in fila. Con una regola di sbiadire semplice, uguale per tutte le
+caselle, l'apparecchio sbriga la pagina intera in una volta e li tiene
+occupati tutti; più la regola guarda al dettaglio della singola voce, più quel
+lavoro in blocco si spezzetta, e chi resta senza il suo pezzo aspetta fermo.
+Quello che si compra in cambio è un registro tenuto in ordine, e riletture che
+tornano più precise.
 
 La terza manopola decide se queste scelte sono **fisse**, uguali
 per ogni parola, o se invece è la parola stessa a deciderle, momento per
@@ -136,7 +140,7 @@ dove l’**oblio** è compreso fra $0$ e $1$ e cambia forma lungo la fila: dove
 moltiplica l'identità è lo scalare $\alpha_t$, un numero solo; dentro
 $\mathrm{Diag}$ è il vettore $\boldsymbol{\alpha}_t \in (0,1)^d$, un valore per
 canale, e il grassetto è lì apposta per non far leggere le due cose come una
-sola. $\beta_t \in (0,1)$ è invece la **forza di riscrittura** della delta
+sola. $\beta_t \in (0,1)$ è invece la forza di scrittura della delta
 rule, e nelle due righe che la usano moltiplica anche il termine di scrittura,
 che diventa $\beta_t\, \mathbf{v}_t \mathbf{k}_t^\top$. Si va dall'accumulo
 puro (identità, non si dimentica nulla) al decadimento scalare uniforme, a
@@ -151,12 +155,18 @@ un'inclusione, perché quel decadimento e la correzione mirata di Householder
 sono capacità complementari e nessuna delle due contiene l'altra. La
 seconda: quello che il Gated DeltaNet unisce non è la coppia appena nominata.
 Il suo $\alpha_t$ è uno scalare, quindi mette insieme il decadimento
-*globale* con la delta rule, e contiene quei due gradini ma non quello del
-decadimento per canale: il gating della GLA resta fuori anche dall'ultimo
-gradino. Lungo tutta la catena, però, il conto è lo stesso: si paga in
-complessità della transizione (via via più difficile da rendere
-parallelizzabile) ciò che si guadagna in *state tracking* e in *recall*
-preciso.
+*globale* con la delta rule, e il gating per canale della GLA resta fuori
+anche dall'ultimo gradino. Contiene la delta rule pura ($\alpha_t \to 1$), non
+il decadimento scalare puro: qui $\beta_t$ moltiplica anche la scrittura,
+quindi spegnendo la correzione si spegne pure quella e resta una memoria che
+decade a zero senza registrare più niente. Lungo tutta la catena, però, il
+conto è lo stesso: si paga in complessità della transizione (via via più
+difficile da rendere parallelizzabile) ciò che si guadagna in *recall*
+preciso. Non in *state tracking*: con gli intervalli dichiarati per
+$\alpha_t$ e $\beta_t$ gli
+autovalori della transizione restano tutti positivi, e serve estendere
+$\beta_t$ oltre $1$ perché ne compaia uno negativo e la memoria sappia tenere
+il conto.
 
 **3. Il grado di dipendenza dai dati.** La transizione può essere fissa
 (scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
@@ -187,6 +197,18 @@ aggiusta: è la conseguenza dell'essere di taglia fissa. Il punto in cui si vede
 letto centinaia di pagine prima; nel gergo del campo, il *recall associativo
 esatto*.
 
+```{figure} ../figures/interferenza-da-subito.svg
+:name: fig-interferenza-da-subito
+:alt: "Due grafici affiancati, sullo stesso foglio-registro da 32 caselle. A sinistra, due riletture messe a confronto con delle barre: dopo 8 voci scritte la voce cercata pesa 1,00 e le briciole delle altre 0,46; dopo 32 voci, cioè tante quante le caselle, la voce cercata pesa sempre 1,00 e le briciole 0,98, cioè altrettanto. A destra, la stessa misura per ogni numero di voci da 1 a 64: una curva che sale da 0,00 e attraversa la riga orizzontale del pari poco dopo le 32 voci. La curva non ha nessun gradino e nessun ginocchio: comincia a salire dalla prima voce scritta. Due punti marcati la segnano a 8 e a 32 voci, e un trattino verticale scende dal secondo."
+:width: 100%
+
+Il guasto non aspetta che il foglio sia pieno. Scritte otto voci in un foglio
+da trentadue caselle, le briciole delle altre pesano già quasi la metà del
+valore che si cercava; scritte trentadue voci, cioè tante quante le caselle,
+pesano altrettanto. A destra la stessa misura per ogni numero di voci: una
+curva che sale dalla prima, senza nessun ginocchio a segnare una soglia.
+```
+
 `````{tab} Elementare
 
 Un quaderno di appunti da una parte, una biblioteca dall'altra: la differenza è
@@ -207,15 +229,17 @@ punto il quaderno si riempia e smetta di funzionare: peggiora da subito, un
 pochino a ogni pagina, e a un certo punto quel pochino è diventato troppo per
 la domanda che gli stai facendo. Quando le voci ammucchiate sono più o meno
 tante quante le caselle, quello che rileggi è per metà la voce che cercavi e
-per metà le briciole di tutte le altre. Il quaderno costa
-pochissimo: resta sempre dello stesso spessore per quante pagine tu legga. Ma
-proprio perché non cresce, non può contenere tutto: se dopo mille pagine ti
-chiedo di citare a memoria una frase precisa di pagina 900, il quaderno ti
-dà il senso generale, non le parole esatte. Le hai riassunte, non trascritte.
-Che sia proprio così lo si misura con due prove fatte apposta: nascondere una
-frase in un testo lunghissimo e chiedere di ripescarla alla lettera (è *l'ago
-nel pagliaio*), oppure riempire la memoria di centinaia di coppie nome-numero e
-chiedere a bruciapelo il numero di un nome qualsiasi.
+per metà le briciole di tutte le altre, e in
+{numref}`fig-interferenza-da-subito` si vede il conto, con quello che succede
+già molto prima. Il quaderno costa pochissimo: resta sempre dello stesso
+spessore per quante pagine tu legga. Ma proprio perché non cresce, non può
+contenere tutto: se dopo mille pagine ti chiedo di citare a memoria una frase
+precisa di pagina 900, il quaderno ti dà il senso generale, non le parole
+esatte. Le hai riassunte, non trascritte. Che sia proprio così lo si misura con
+due prove fatte apposta: nascondere una frase in un testo lunghissimo e
+chiedere di ripescarla alla lettera (è *l'ago nel pagliaio*), oppure riempire
+la memoria di centinaia di coppie nome-numero e chiedere a bruciapelo il numero
+di un nome qualsiasi.
 
 Non tutti i quaderni si tengono allo stesso modo, e si vede: chi cancella la
 voce vecchia prima di metterci la nuova, invece di lasciare che le scritte si
@@ -251,7 +275,8 @@ costo complessivo quadratico).
 Questo divario si misura con i benchmark di recall. Nel *needle in a
 haystack* si nasconde un fatto preciso (l'ago) in un contesto molto lungo (il
 pagliaio) e si chiede al modello di recuperarlo verbatim. In **MQAR**
-(*Multi-Query Associative Recall*) si presentano molte coppie chiave-valore e
+(*Multi-Query Associative Recall*) {cite}`arora2023zoology` si presentano molte
+coppie chiave-valore e
 si interroga il modello su chiavi arbitrarie. Sono proprio i compiti su cui la
 dimensione dello stato diventa il collo di bottiglia. I progressi nella
 transizione aiutano (la delta rule di DeltaNet, che *riscrive* invece di
@@ -267,13 +292,14 @@ conviene non giocare da sole.
 ## Il meglio dei due mondi: gli ibridi
 
 Se una delle due vince sul ricordo alla lettera e l'altra sul costo, la mossa
-ovvia è non scegliere: pochi strati di biblioteca dove serve ripescare la
-citazione esatta, molti strati di quaderno per tutto il resto. È la strada che
-ricorre in tutti i lavori recenti, e sono le architetture ibride: alternano
-pochi strati di attenzione piena a molti strati lineari o
-SSM. Il costo che cresce al quadrato non
-sparisce, ma lo paga una minoranza di strati, e finché il contesto non diventa
-smisurato pesa poco sul totale.
+ovvia è non scegliere. Un modello è una pila di strati, uno sopra l'altro, e
+ognuno ha la sua memoria: niente vieta allora di
+montare nella stessa pila strati dei due tipi, pochi di biblioteca dove serve
+ripescare la citazione esatta e molti di quaderno per tutto il resto. È la
+strada che ricorre in gran parte dei lavori recenti, e sono le architetture
+ibride, che alternano pochi strati di attenzione piena a molti strati lineari o
+SSM. Il costo che cresce al quadrato non sparisce, ma lo paga una minoranza di
+strati, e finché il contesto non diventa smisurato pesa poco sul totale.
 
 `````{tab} Elementare
 
@@ -303,22 +329,20 @@ vicino, a una frazione del prezzo. Le due figure sono brave in cose diverse, ed
 
 `````{tab} Superiore
 
-L'idea compare, con dosaggi diversi, in gruppi di ricerca che non si parlano
-fra loro, ed è questo più della singola misura a renderla interessante.
-Jamba
-(AI21 Labs, 2024) intervalla strati di attenzione e strati Mamba in una
-proporzione sbilanciata verso questi ultimi, aggiungendo esperti selettivi
-(*mixture-of-experts*), e regge contesti molto lunghi con una occupazione di
-memoria contenuta {cite}`lieber2024jamba`. Samba {cite}`ren2024samba`
-(Microsoft, 2024) combina strati Mamba con strati di attenzione a finestra
-scorrevole (*sliding-window attention*): l'attenzione locale copre il
-contesto ravvicinato, Mamba porta la memoria a lungo raggio, e insieme
-estrapolano a lunghezze molto oltre quella di addestramento. La stessa ricetta
-appare come variante ibrida sia del Gated DeltaNet {cite}`yang2024gateddelta`
-(combinato con attenzione a finestra scorrevole o con strati Mamba-2) sia di
-Mamba-2
-{cite}`dao2024mamba2`, il cui articolo studia esplicitamente l'aggiunta di
-pochi strati di attenzione a uno stack SSM.
+L'idea compare, con dosaggi diversi, in gran parte dei lavori recenti, e i suoi
+autori se la passano dichiarandolo: il Gated DeltaNet scrive di seguire Griffin
+e Samba, e Mamba-2 cita Jamba. Jamba (AI21 Labs, 2024) intervalla strati di
+attenzione e strati Mamba in una proporzione sbilanciata verso questi ultimi,
+aggiungendo esperti selettivi (*mixture-of-experts*), e regge contesti molto
+lunghi con una occupazione di memoria contenuta {cite}`lieber2024jamba`. Samba
+{cite}`ren2024samba` (Microsoft, 2024) combina strati Mamba con strati di
+attenzione a finestra scorrevole (*sliding-window attention*): l'attenzione
+locale copre il contesto ravvicinato, Mamba porta la memoria a lungo raggio, e
+insieme estrapolano a lunghezze molto oltre quella di addestramento. La stessa
+ricetta appare come variante ibrida sia del Gated DeltaNet
+{cite}`yang2024gateddelta` (combinato con attenzione a finestra scorrevole o
+con strati Mamba-2) sia di Mamba-2 {cite}`dao2024mamba2`, il cui articolo
+studia esplicitamente l'aggiunta di pochi strati di attenzione a uno stack SSM.
 
 La tendenza è la stessa in tutti questi lavori, e il messaggio è più solido e
 più modesto di «l'ibrido vince sempre». I due ingredienti hanno
@@ -326,7 +350,7 @@ punti di forza complementari (recall verbatim l'uno, costo e memoria
 costanti l'altro), e complementare vuol dire che mescolarli in proporzione
 sbilanciata (poca attenzione, molta ricorrenza) costa poco e rende quasi
 quanto l'attenzione piena. È il motivo per cui la ricetta ricompare, con
-dosaggi diversi, in architetture nate da gruppi che non si parlano.
+dosaggi diversi, in architetture per il resto lontanissime fra loro.
 
 `````
 
@@ -370,8 +394,9 @@ stesso scheletro sotto il prossimo nome che farà rumore.
 
 ```{admonition} Da ricordare
 :class: important
-- Una sola famiglia: attenzione lineare (RetNet, GLA, DeltaNet, RWKV,
-  xLSTM) e *state space model* (S4, Mamba) sono lo stesso apparecchio, una
+- Una sola famiglia: attenzione lineare (RetNet, GLA, DeltaNet, RWKV dalla
+  quinta versione in poi, e la cella di xLSTM che tiene la memoria a griglia)
+  e *state space model* (S4, Mamba) sono lo stesso apparecchio, una
   memoria di taglia fissa che a ogni parola scrive una voce nuova e rilegge le
   vecchie. Si addestrano tutti insieme, in parallelo, e generano una parola
   alla volta con una memoria che non cresce mai.
@@ -387,7 +412,9 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   sbiadire, quella che sbiadisce tutto in blocco; lo sbiadire casella per casella, invece, resta fuori anche da lui.
 - La dualità di Mamba-2 {cite}`dao2024mamba2` dimostra che uno *state space
   model* che sbiadisce tutto in blocco è esattamente un'attenzione lineare che
-  guarda solo all'indietro: le due famiglie sono due viste della stessa cosa.
+  guarda solo all'indietro e che per giunta sbiadisce man mano che si
+  allontana: lo sbiadire non è un'aggiunta, sta dentro il modo stesso in cui
+  guarda. Le due famiglie sono due viste della stessa cosa.
 - Il limite onesto: una memoria che non cresce è un quaderno di appunti, non
   una biblioteca. Va benissimo per il senso del discorso, ma se dopo mille
   pagine chiedi di citare alla lettera una frase di pagina 900, il quaderno
@@ -397,15 +424,17 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   frase in un testo lunghissimo e chiedere di ripescarla (è *l'ago nel
   pagliaio*), e riempire la memoria di centinaia di coppie nome-numero per poi
   chiedere a bruciapelo il numero di un nome qualsiasi.
-- Gli ibridi sono la ricetta che ricorre in tutti i lavori recenti: pochi
-  strati di attenzione piena (gli archivisti, che ripescano la citazione esatta
-  quando serve) intervallati a molti strati a memoria fissa (i cronisti, che
+- Gli ibridi sono la ricetta che ricorre in gran parte dei lavori recenti:
+  pochi strati di attenzione piena (gli archivisti, che ripescano la
+  citazione esatta quando serve) intervallati a molti strati a memoria fissa
+  (i cronisti, che
   tengono il filo a costo basso). Fanno così Jamba {cite}`lieber2024jamba`,
   Samba {cite}`ren2024samba` e le varianti ibride di Gated DeltaNet
   {cite}`yang2024gateddelta` e Mamba-2.
 - Prospettiva sobria: non un «killer dei Transformer» ma un ecosistema
-  misto. Le ricorrenze lineari danno il meglio sui testi lunghissimi, quando
-  la memoria deve restare costante, sui dati che arrivano in flusso continuo e
+  misto. Le ricorrenze lineari danno il meglio sui testi lunghissimi quando
+  non serve ripescare una frase alla lettera, quando la memoria deve restare
+  costante, sui dati che arrivano in flusso continuo e
   sui dispositivi con poca memoria. Nessuna architettura vince per sempre: chi
   conosce le idee semplici riconosce lo stesso scheletro sotto ogni nuovo nome.
 ```
@@ -416,11 +445,15 @@ stesso scheletro sotto il prossimo nome che farà rumore.
 
 ```{admonition} Da ricordare
 :class: important
-- Una sola famiglia: attenzione lineare (RetNet, GLA, DeltaNet, RWKV, xLSTM)
-  e *state space model* (S4, Mamba) sono tutte RNN lineari a stato fisso
+- Una sola famiglia: attenzione lineare (RetNet, GLA, DeltaNet, RWKV dalla
+  v5, la cella mLSTM di xLSTM) e *state space model* (S4, Mamba) sono tutte
+  RNN lineari a stato fisso
   $\mathbf{S}_t = \mathbf{S}_{t-1}\, (\text{transizione}_t) + \mathbf{v}_t \mathbf{k}_t^\top$, con lettura
   $\mathbf{o}_t = \mathbf{S}_t \mathbf{q}_t$. Si addestrano in parallelo, fanno
-  inferenza ricorrente a memoria costante per token.
+  inferenza ricorrente a memoria costante per token. Le due eccezioni ritagliate
+  dal capitolo precedente restano fuori: la RWKV-4, il cui stato è un vettore
+  per canale, e la cella sLSTM, che il mescolamento fra celle rende
+  ricorrente e non parallelizzabile.
 - Tre manopole di progetto: la dimensione dello stato (capacità), la
   struttura della transizione ($\mathbf{I} \to \alpha_t \mathbf{I} \to
   \mathrm{Diag}(\boldsymbol{\alpha}_t) \to \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top
@@ -440,16 +473,18 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   quanto il valore cercato. L'attenzione piena, che conserva ogni token nella
   KV cache, resta superiore sul retrieval verbatim (benchmark *needle in a
   haystack*, MQAR): al prezzo del costo quadratico.
-- Gli ibridi sono la ricetta che ricorre in tutti i lavori recenti: pochi
-  strati di attenzione piena intervallati a molti strati lineari/SSM (Jamba
-  {cite}`lieber2024jamba`, Samba {cite}`ren2024samba`, le varianti ibride di
+- Gli ibridi sono la ricetta che ricorre in gran parte dei lavori recenti:
+  pochi strati di attenzione piena intervallati a molti strati lineari o SSM
+  (Jamba {cite}`lieber2024jamba`, Samba {cite}`ren2024samba`, le varianti
+  ibride di
   Gated DeltaNet {cite}`yang2024gateddelta` e Mamba-2). Recall esatto dove
   serve, costo basso per il resto.
 - Prospettiva sobria: non un «killer dei Transformer» ma un ecosistema
   misto. I punti di forza delle ricorrenze lineari sono il contesto
-  lunghissimo, l'inferenza a memoria costante, lo streaming e i dispositivi con
-  poca memoria. Nessuna architettura vince per sempre: chi conosce le idee
-  semplici riconosce lo stesso scheletro sotto ogni nuovo nome.
+  lunghissimo quando non serve il richiamo alla lettera, l'inferenza a memoria
+  costante, lo streaming e i dispositivi con poca memoria. Nessuna
+  architettura vince per sempre: chi conosce le idee semplici riconosce lo
+  stesso scheletro sotto ogni nuovo nome.
 ```
 
 `````

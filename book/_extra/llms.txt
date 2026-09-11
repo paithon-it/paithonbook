@@ -180,7 +180,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [RAG avanzato](https://book.paithon.it/main/Agenti/rag-avanzato.html)
   - [Il contesto è l'interfaccia](https://book.paithon.it/main/Agenti/context-engineering.html)
   - [Architetture e valutazione](https://book.paithon.it/main/Agenti/architetture-e-valutazione.html)
-- [Prompt, contesto e loop](https://book.paithon.it/main/IngegneriaLLM/overview.html): Nel giugno 2025 Andrej Karpathy (tra i fondatori di OpenAI, per anni a capo dell'intelligenza artificiale in Tesla) ha reso popolare un nome per un mestiere che esisteva già ma non si sapeva ancora…
+- [Prompt, contesto e loop](https://book.paithon.it/main/IngegneriaLLM/overview.html): Nel giugno 2025 Andrej Karpathy (tra i fondatori di OpenAI, per anni a capo dell'intelligenza artificiale in Tesla) ha dato credito a un nome appena proposto per un mestiere che esisteva già.
   - [Prompt engineering](https://book.paithon.it/main/IngegneriaLLM/prompt-engineering.html)
   - [Context engineering](https://book.paithon.it/main/IngegneriaLLM/context-engineering.html)
   - [Loop engineering](https://book.paithon.it/main/IngegneriaLLM/loop-engineering.html)

@@ -548,10 +548,11 @@ f_j \leftarrow \mathcal{S}_j \Bigl( \mathbf{y} - \theta_0 -
 $$
 
 cioè si liscia il residuo parziale rispetto alla sola $x_j$, e si ripete fino a
-convergenza. È lo schema «alterna, tenendo fermo tutto il resto» che
-il capitolo ritroverà in $k$-means e in EM, nella sezione sul clustering. Se
-ogni $\mathcal{S}_j$ è una proiezione, il procedimento converge alla soluzione
-dei minimi quadrati vincolati allo spazio additivo {cite}`buja1989linear`.
+convergenza. È lo schema «alterna, tenendo fermo tutto il resto» che il
+capitolo ritroverà in $k$-means e in EM, nella {doc}`sezione su riduzione e
+clustering <riduzione-clustering>`. Se ogni $\mathcal{S}_j$ è una proiezione,
+il procedimento converge alla soluzione dei minimi quadrati vincolati allo
+spazio additivo {cite}`buja1989linear`.
 
 Costruire un GAM con B-spline non richiede altro che quanto già visto: si
 espande ogni colonna nella sua base e si risolve un unico problema lineare

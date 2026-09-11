@@ -128,9 +128,10 @@ centro, la media dei loro scarti moltiplicati a due a due dà la forma. Fine.
 
 È un caso fortunato, e conviene dire subito perché. Quando le etichette non ci
 sono, gli stessi due ingredienti vanno indovinati insieme all'appartenenza
-di ciascun punto, e ci vuole una procedura iterativa: è quello che la sezione
-sul clustering farà con le misture gaussiane e l'algoritmo EM. Qui le etichette
-ci sono, quindi non c'è niente da indovinare.
+di ciascun punto, e ci vuole una procedura iterativa: è quello che la
+{doc}`sezione su riduzione e clustering <riduzione-clustering>` farà con le
+misture gaussiane e l'algoritmo EM. Qui le etichette ci sono, quindi non c'è
+niente da indovinare.
 
 ## Analisi discriminante: lineare o quadratica
 

@@ -696,8 +696,9 @@ la traiettoria è chiara: dal *cosa*, al *dove*, fino al contorno esatto.
   uno stadio (YOLO, SSD) più veloci; la *focal loss* ha in gran parte
   sanato lo squilibrio oggetto/sfondo che costava quel divario, lasciando la
   velocità come differenza principale. E una terza via, i rilevatori a
-  predizione di insieme (DETR), che con l'abbinamento bipartito eliminano
-  per costruzione sia le ancore sia l'NMS.
+  predizione di insieme (DETR), che abbinano una a una le risposte della rete
+  agli oggetti veri (due insiemi distinti, e per questo l'abbinamento si dice
+  *bipartito*) ed eliminano per costruzione sia le ancore sia l'NMS.
 - Le anchor box danno alla rete riquadri di partenza a più scale e
   proporzioni: si predicono piccoli offset, non riquadri dal nulla.
 - La IoU misura la sovrapposizione riquadro-realtà, non un tasso di errore;

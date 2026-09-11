@@ -1,14 +1,14 @@
 # Evoluzioni e applicazioni
 
-Le prime immagini generate da una GAN, nel 2014, erano cifre sgranate e
-faccine indistinte, appena qualche decina di pixel di lato. Ian Goodfellow le
-mostrava con orgoglio, ma nessuno le avrebbe scambiate per fotografie. Cinque
-anni dopo, il sito già incontrato in apertura di capitolo,
-*thispersondoesnotexist.com*, sforna a ripetizione volti fotorealistici di
-persone che non esistono. In mezzo c'è la storia di questa sezione: una
-sequenza di idee (quasi una all'anno) che ha trasformato un'intuizione fragile
-in una delle famiglie di modelli generativi più influenti del decennio.
-Ripercorriamola, seguendo il filo delle idee più che il calendario.
+Le prime immagini generate da una GAN, nel 2014, erano cifre sgranate e faccine
+indistinte, appena qualche decina di pixel di lato. Ian Goodfellow le mostrava
+con orgoglio, ma nessuno le avrebbe scambiate per fotografie. Cinque anni dopo
+un sito, *thispersondoesnotexist.com*, sforna a ripetizione volti
+fotorealistici di persone che non esistono. In mezzo ci sono cinque anni e una
+sequenza di idee, quasi una all'anno, che hanno trasformato
+un'intuizione fragile in una delle famiglie di modelli generativi più influenti
+del decennio. Ripercorriamola, seguendo il filo delle idee più che il
+calendario.
 
 I due personaggi restano quelli: un falsario che dipinge e un esperto che
 giudica. Quello che cambia, di variante in variante, è come sono fatti dentro
@@ -55,15 +55,31 @@ essere macchie e cominciano ad avere bordi netti e coerenza.
 
 E su quel pugno di numeri di partenza si possono fare i conti. Si prendono i
 numeri che hanno fatto tre uomini con gli occhiali, si tolgono quelli di tre
-uomini senza, si aggiungono quelli di tre donne: esce una donna con gli
+uomini senza, si aggiungono quelli di tre donne senza: esce una donna con gli
 occhiali. Con un esemplare solo per gruppo il conto salta, perché «occhiali»
 sta in una zona di quei numeri e non in un punto preciso.
 `````
 
 `````{tab} Superiore
-La DCGAN codifica una serie di scelte architetturali diventate standard: il generatore $G$ usa convoluzioni trasposte (*strided transposed convolutions*) per l'upsampling, il discriminatore $D$ usa convoluzioni con *stride*; nessun pooling; *batch normalization* in entrambe le reti, con due eccezioni che il paper stesso impone (niente batchnorm sullo strato di uscita di $G$ e su quello d'ingresso di $D$, dove gli autori riportano oscillazioni dei campioni e instabilità); attivazioni ReLU nel generatore (tranne l'output con $\tanh$) e LeakyReLU nel discriminatore.
+La DCGAN codifica una serie di scelte architetturali diventate standard: il
+generatore $G$ usa convoluzioni trasposte (nel paper si chiamano
+*fractional-strided convolutions*, ed è la `ConvTranspose2d` di PyTorch) per
+l'upsampling, il discriminatore $D$ usa convoluzioni con *stride*; nessun
+pooling; *batch normalization* in entrambe le reti, con due eccezioni che il
+paper stesso impone (niente batchnorm sullo strato di uscita di $G$ e su
+quello d'ingresso di $D$, dove gli autori riportano oscillazioni dei campioni
+e instabilità); attivazioni ReLU nel generatore (tranne l'output con $\tanh$)
+e LeakyReLU nel discriminatore.
 
-Il paper mostra anche che lo spazio latente $\mathcal{Z}$ è semanticamente strutturato: aritmetica vettoriale come "uomo con occhiali $-$ uomo $+$ donna" produce, decodificata da $G$, il volto di una donna con occhiali. Con una cautela che il paper stesso dichiara, e che pesa: sui singoli vettori l'operazione è instabile, e il risultato regge mediando i $\mathbf{z}$ di tre esemplari per concetto. La struttura c'è, ma è una proprietà di regioni dello spazio, non di punti singoli; ed è comunque un indizio precoce del fatto che la rete apprende una rappresentazione, non una tabella di memorizzazione.
+Il paper mostra anche che lo spazio latente $\mathcal{Z}$ è semanticamente
+strutturato: aritmetica vettoriale come "uomo con occhiali $-$ uomo senza
+occhiali $+$ donna senza occhiali" produce, decodificata da $G$, il volto di
+una donna con occhiali. Con una cautela che il paper stesso dichiara, e che
+pesa: sui singoli vettori l'operazione è instabile, e il risultato regge
+mediando i $\mathbf{z}$ di tre esemplari per concetto. La struttura c'è, ma è
+una proprietà di regioni dello spazio, non di punti singoli; ed è comunque un
+indizio precoce del fatto che la rete apprende una rappresentazione, non una
+tabella di memorizzazione.
 `````
 
 ## Conditional GAN: prendere il controllo
@@ -234,12 +250,14 @@ attivazione in tre canali RGB (*toRGB*) e viceversa (*fromRGB*). Passando da
 risoluzione $R$ a $2R$, per un certo numero di iterazioni l'uscita è
 
 $$
-\mathbf{x} = (1 - \alpha)\, \mathrm{up}\big(\mathrm{toRGB}_R(\mathbf{h}_R)\big)
+\tilde{\mathbf{x}} = (1 - \alpha)\, \mathrm{up}\big(\mathrm{toRGB}_R(\mathbf{h}_R)\big)
 \;+\; \alpha\, \mathrm{toRGB}_{2R}(\mathbf{h}_{2R}),
 \qquad \alpha: 0 \to 1,
 $$
 
-con $\mathrm{up}$ un semplice raddoppio per interpolazione: il vecchio ramo
+dove $\tilde{\mathbf{x}}$ è l'immagine che esce dal generatore durante il
+passaggio, $\mathbf{h}_R$ e $\mathbf{h}_{2R}$ sono le mappe di attivazione alle
+due risoluzioni e $\mathrm{up}$ un raddoppio per interpolazione: il vecchio ramo
 resta in funzione e cede il passo con continuità. Il discriminatore fa il
 percorso simmetrico sui *fromRGB*.
 
@@ -274,16 +292,16 @@ adattiva, una corsia alla volta». Le corsie sono la parte da spiegare.
 
 Il gesto ha due tempi. Primo tempo, si azzera: dentro il falsario, a ogni
 livello, il segnale viaggia in tante corsie parallele (le stesse pile di valori
-della DCGAN, che in gergo si chiamano *canali*), e di ciascuna corsia si prende il livello medio e l'ampiezza
-delle sue oscillazioni e li si riporta a zero e a uno. Tutte le corsie escono
-da lì con la stessa taratura, come un mixer con tutti i cursori rimessi in
-posizione neutra. Secondo tempo, si riassegna: a ciascuna corsia si rimette un
-livello medio e un'ampiezza, e questa volta a dirli è lo stile, cioè la
-manciata di numeri consegnata a quel livello. Non c'è nessun ordine impartito
-all'immagine, c'è una taratura del mixer: ed è per questo che cambiando lo
-stile dei primi livelli cambia la posa e cambiando quello degli ultimi cambiano
-le lentiggini, perché nei primi livelli le corsie decidono cose grosse e negli
-ultimi cose fini.
+della DCGAN, che in gergo si chiamano *canali*), e di ciascuna corsia si prende
+il valore medio e l'ampiezza delle sue oscillazioni e li si riporta a zero e a
+uno. Tutte le corsie escono da lì con la stessa taratura, come un mixer con
+tutti i cursori rimessi in posizione neutra. Secondo tempo, si riassegna: a
+ciascuna corsia si rimette un valore medio e un'ampiezza, e questa volta a
+dirli è lo stile, cioè la manciata di numeri consegnata a quel livello. Non c'è
+nessun ordine impartito all'immagine, c'è una taratura del mixer: ed è per
+questo che cambiando lo stile dei primi livelli cambia la posa e cambiando
+quello degli ultimi cambiano le lentiggini, perché nei primi livelli le corsie
+decidono cose grosse e negli ultimi cose fini.
 
 Il meccanismo non nasce qui. Viene dal trasferimento di stile fra immagini,
 dove Xun Huang e Serge Belongie {cite}`huang2017arbitrary` l'avevano proposto
@@ -312,7 +330,23 @@ dell'immagine un picco enorme, così enorme da dominare da solo la statistica
 della corsia; quando la normalizzazione divide per quell'ampiezza gonfiata,
 tutto il resto della corsia esce schiacciato della quantità che serviva. Il
 picco è la goccia. Il costo di una macchia in un angolo, per lui, è minore del
-costo di perdere quel controllo.
+costo di perdere quel controllo, e {numref}`fig-picco-schiaccia` fa il conto.
+
+```{figure} ../figures/il-picco-che-schiaccia.svg
+:name: fig-picco-schiaccia
+:alt: "Due colonne a confronto. A sinistra, in alto, una corsia di sedici caselle disegnate come barrette sopra e sotto una mezzeria; in basso la stessa corsia dopo la taratura, che divide per quanto la corsia oscilla, e le barrette restano ben visibili. A destra la stessa corsia con una sola casella cambiata, un picco in terracotta molto più alto di tutte le altre barrette, con il suo valore, 8,0, scritto sopra perché la scala del disegno non arriva fin lì. Dopo la taratura, che ora divide per un numero molto più grande, tutte le altre barrette escono schiacciate, di poco più di tre volte, mentre il picco resta altissimo, col suo nuovo valore, 3,7, scritto sopra. In fondo il conto: l'ampiezza passa da 0,60 a 2,03 e il resto della corsia esce 3,4 volte più piccolo."
+:width: 100%
+
+Che cosa il picco si ricompra. A sinistra una corsia qualunque, a destra la
+stessa corsia con una casella sola cambiata. La taratura divide per quanto la
+corsia oscilla, e quel divisore adesso lo decide il picco: tutto il resto esce
+più di tre volte più piccolo. Quel fattore è l'ampiezza che la taratura aveva
+tolto, e che il falsario si riprende scegliendo quanto alto fare il picco.
+```
+
+L'altra metà dell'enigma, invece, resta aperta, e sono gli stessi autori a
+lasciarla lì: una macchia tanto costante l'esperto dovrebbe vederla, e perché
+non la penalizzi non lo spiega la diagnosi.
 
 Il rimedio, che arriva con StyleGAN2, è elegante e vale come regola generale:
 invece di tarare le
@@ -344,19 +378,20 @@ meritano di essere guardati da vicino.
 `````{tab} Elementare
 
 Le altre due revisioni sono queste. La prima è che la crescita per gradini
-viene messa da parte. Serviva a
-tenere in piedi un addestramento che nel frattempo si era imparato a tenere in
-piedi in altri modi, e in cambio faceva un danno: inchiodava i dettagli a
-posizioni fisse sul foglio. Nei volti che si muovono si vedeva benissimo,
-perché i denti restavano orientati verso l'obiettivo invece di seguire la
-testa. Al posto dei gradini, dentro ciascuna rete si aprono delle scorciatoie
-che portano il segnale da un livello all'uscita senza passare per tutti gli
-altri, e le due reti non prendono lo stesso genere di scorciatoia.
+viene messa da parte. Serviva a tenere in piedi un addestramento che nel
+frattempo si era imparato a tenere in piedi in altri modi, e in cambio faceva
+un danno: inchiodava i dettagli a posizioni fisse sul foglio. Nei volti che si
+muovono si vedeva benissimo, perché i denti restavano orientati verso la
+macchina fotografica invece di seguire la testa. Al posto dei gradini, dentro
+ciascuna rete si aprono delle scorciatoie che portano il segnale oltre gli
+strati invece di farlo passare per tutti, e le due reti non prendono lo
+stesso genere di scorciatoia.
 
 La seconda è una regola nuova che chiede al falsario di camminare a passo
 costante: spostare le manopole di un tanto deve cambiare l'immagine di un
 tanto, né di più né di meno, dovunque ci si trovi.
-Serve a fare immagini migliori, e regala un mestiere in più: un falsario che
+Serve a togliere di mezzo i punti in cui uno spostamento minimo stravolge
+l'immagine, e regala un mestiere in più: un falsario che
 cammina a passo costante è molto più facile da percorrere al contrario,
 cioè da usare per scoprire quali manopole produrrebbero una fotografia che
 abbiamo già in mano, e quindi per dire se un volto l'ha fatto lui.
@@ -415,7 +450,8 @@ preferenza per le posizioni fisse (i denti che restano allineati alla macchina
 fotografica invece di seguire la posa). Al suo posto va una coppia
 asimmetrica, e l'asimmetria è il risultato: fra le nove combinazioni
 provate, il generatore vuole connessioni *skip* e il discriminatore
-connessioni residue, mentre un generatore residuo peggiora le cose.
+connessioni residue, mentre un generatore residuo peggiora le cose dappertutto
+tranne che in un caso, su un insieme di automobili.
 
 Arriva poi la **path length regularization**. L'ideale che insegue è che un
 passo di ampiezza fissa in $\mathcal{W}$ produca nell'immagine un cambiamento
@@ -432,7 +468,8 @@ $$
 $$
 
 dove $g$ è il generatore, $\mathbf{u}$ è l'immagine di rumore gaussiano su cui
-si proietta (il paper la chiama $\mathbf{y}$, lettera che qui è già lo stile) e
+si proietta (il paper la chiama $\mathbf{y}$, lettera che in StyleGAN è già lo
+stile) e
 $a$ non è un iperparametro ma una media mobile
 esponenziale delle lunghezze osservate, cioè un bersaglio che il termine si
 sceglie da solo strada facendo. Lo jacobiano non si calcola mai per esteso:
@@ -494,7 +531,14 @@ $$
 +\mathbb{E}_{\mathbf{y}}\big\lVert G(F(\mathbf{y}))-\mathbf{y}\big\rVert_1 .
 $$
 
-I termini misurano, in norma $\ell_1$, quanto la doppia traduzione si discosta dall'originale: $G(\mathbf{x})$ porta $\mathbf{x}$ nel dominio $\mathcal{Y}$, $F$ lo riporta indietro, e il risultato deve coincidere con $\mathbf{x}$. Nell'obiettivo completo la $\mathcal{L}_{\text{cyc}}$ non compare da sola ma pesata da un coefficiente $\lambda$ (nel paper, $\lambda = 10$) accanto alle due perdite avversarie: il rapporto fra le due spinte è un iperparametro, e non dei più innocui.
+I termini misurano, in norma $\ell_1$, quanto la doppia traduzione si discosta
+dall'originale: $G(\mathbf{x})$ porta $\mathbf{x}$ nel dominio $\mathcal{Y}$,
+$F$ lo riporta indietro, e il risultato deve coincidere con $\mathbf{x}$; qui
+$\mathbf{y}$ è un'immagine del secondo dominio, che è la lettera di Zhu e
+colleghi e non lo stile di StyleGAN. Nell'obiettivo completo la
+$\mathcal{L}_{\text{cyc}}$ non compare da sola ma pesata da un coefficiente
+$\lambda$ (nel paper, $\lambda = 10$) accanto alle due perdite avversarie: il
+rapporto fra le due spinte è un iperparametro, e non dei più innocui.
 
 Questo vincolo rende superfluo l'allineamento a coppie. Che poi «ancori il contenuto» è vero solo in parte, ed è un limite noto: Chu, Zhmoginov e Sandler {cite}`chu2017cyclegan` hanno mostrato che CycleGAN impara a soddisfare il ciclo nascondendo l'immagine di partenza dentro quella tradotta, come un segnale ad alta frequenza quasi invisibile a occhio, che $F$ poi rilegge per ricostruire l'originale. Il ciclo si chiude, ma per steganografia invece che per conservazione del soggetto: una $\mathcal{L}_{\text{cyc}}$ bassa non è di per sé una garanzia di fedeltà.
 `````
@@ -561,9 +605,9 @@ accorciamento le immagini tornano nitide.
 
 I numeri dicono quanto pesa il trucco. Con un fattore di riduzione $f = 16$
 un'immagine di $256 \times 256$ diventa una griglia di $16 \times 16$, cioè
-256 simboli presi da un catalogo di 1.024 voci; il VQ-VAE-2, uscito un anno
-e mezzo prima, a parità di fedeltà nel rimettere insieme l'immagine ne chiedeva
-5.120. Duecentocinquantasei
+256 simboli presi da un catalogo di 1.024 voci; il VQ-VAE-2
+{cite}`razavi2019generating`, uscito un anno e mezzo prima, a parità di fedeltà
+nel rimettere insieme l'immagine ne chiedeva 5.120. Duecentocinquantasei
 simboli sono una fila che un Transformer digerisce senza fatica, e da lì in poi
 generare un'immagine è, alla lettera, scrivere una frase di 256 parole.
 
@@ -607,13 +651,14 @@ L'encoder $E$ produce $\hat{\mathbf{z}} = E(\mathbf{x}) \in \mathbb{R}^{h
 del codebook $\mathcal{C} = \{\mathbf{e}_1, \dots, \mathbf{e}_K\}$ con la
 regola e lo *straight-through estimator* già visti per il VQ-VAE
 {cite}`oord2017neural`. La differenza sta nella loss del primo stadio, e sono
-due mosse distinte: la ricostruzione $\ell_2$ sui pixel viene sostituita da
-una **loss percettiva**, e sopra si aggiunge una **loss avversaria** con un
-discriminatore *patch-based*, quello di pix2pix {cite}`isola2017image`, che
-giudica riquadri invece dell'immagine intera e quindi valuta la resa locale più
-che il contenuto globale. I due termini che tengono agganciati codebook ed
-encoder (la perdita sul codebook e la *commitment loss*) restano quelli del
-VQ-VAE.
+due mosse distinte: la ricostruzione $\ell_2$ sui pixel viene sostituita da una
+**loss percettiva**, cioè una distanza calcolata non fra i pixel delle due
+immagini ma fra quello che una rete già addestrata vede in ciascuna, e sopra si
+aggiunge una **loss avversaria** con un discriminatore *patch-based*, quello di
+pix2pix {cite}`isola2017image`, che giudica riquadri invece dell'immagine
+intera e quindi valuta la resa locale più che il contenuto globale. I due
+termini che tengono agganciati codebook ed encoder (la perdita sul codebook e
+la *commitment loss*) restano quelli del VQ-VAE.
 
 L'effetto dichiarato è sul fattore di compressione ammissibile: con
 $f = 16$ e $K = 1024$ un'immagine $256 \times 256$ si riduce a $16 \times 16 =
@@ -741,7 +786,7 @@ duello, e conviene ripassarle così.
   StyleGAN2 la fa sparire tarando i pesi invece del segnale, cioè con un
   controllo che l'immagine non la guarda; e con la stessa revisione mette da
   parte anche la crescita per gradini, sostituita da scorciatoie che portano il
-  segnale da un livello all'uscita.
+  segnale oltre gli strati, di specie diversa nelle due reti.
 - pix2pix e CycleGAN traducono un'immagine in un'altra (schizzo in
   foto, foto in Monet); la seconda ci riesce senza coppie di immagini
   corrispondenti, grazie alla regola dell'andata e ritorno, che però va tenuta

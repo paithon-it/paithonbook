@@ -82,7 +82,10 @@ Una rete profonda è fatta di strati: gruppi di neuroni messi in fila, dove
 il primo riceve i numeri dell'immagine e ognuno dei successivi riceve quello che
 ha prodotto quello prima di lui. (Un neurone, qui, è un pezzetto di conto e non
 una cellula: prende dei numeri, li somma dopo averli pesati e ne restituisce
-uno.) Cosa impara davvero uno strato?
+uno.) Quello che uno strato consegna al successivo è a sua volta una lista di
+numeri, ed è la rappresentazione che lo strato si è fatto di ciò che ha
+ricevuto: ce n'è una per piano, ciascuna costruita su quella di sotto, ed è
+questo a renderle gerarchiche. Cosa impara davvero uno strato?
 
 Nel 2014 Zeiler e Fergus {cite}`zeiler2014visualizing` trovarono il modo di
 "visualizzarlo", cioè di risalire, per ogni neurone di una rete
@@ -197,12 +200,15 @@ Il primo guaio sta nella funzione che ogni neurone applica al numero uscito dai
 suoi conti. Era una curva che fa da rubinetto strozzato: giri quanto vuoi,
 l'acqua che esce è sempre quella. Numero grande o numero piccolo, quello che
 passava era più o meno uguale, e la rete non poteva accorgersi della
-differenza. C'è di peggio, ed è lo stesso strozzamento visto al ritorno. La
-correzione torna indietro dall'ultimo strato verso il primo e attraversa uno di
-quei rubinetti a ogni strato che risale; ognuno ne lascia passare una frazione,
-e ai primi strati non arrivava quasi niente. Il rimedio è un rubinetto che o è
-chiuso o è spalancato: i numeri positivi passano come sono, i negativi
-diventano zero. Se entra 5 esce 5, se entra $-3$ esce 0. Si chiama ReLU.
+differenza. C'è di peggio, ed è lo stesso strozzamento visto al ritorno. Quello
+che torna indietro non è l'acqua, ma di quanto l'acqua cambia se giri la
+manopola, e da un rubinetto strozzato quella quantità è piccola per
+definizione. La correzione torna indietro dall'ultimo strato verso il primo e
+attraversa uno di quei rubinetti a ogni strato che risale; ognuno la
+rimpicciolisce, e ai primi strati non arrivava quasi niente. Il rimedio è un
+rubinetto che o è chiuso o è spalancato: i numeri positivi passano come sono, i
+negativi diventano zero. Se entra 5 esce 5, se entra $-3$ esce 0. Si chiama
+ReLU.
 
 Il secondo guaio è che la rete si impara a memoria le fotografie
 dell'addestramento. Sembrerebbe un pregio, ed è il modo più sicuro di fallire:

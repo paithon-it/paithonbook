@@ -270,14 +270,16 @@ quella «quasi», la terza dal «quasi del quasi», e l'errore si gonfia a ogni
 passo.
 
 *Quanto* si gonfi, però, dipende dal mondo che stai immaginando, ed è la parte
-che sfugge. Ci sono sistemi che si rimettono a posto da soli, come una biglia in
-fondo a una scodella: lì uno scarto piccolo resta piccolo per sempre, e si può
-sognare a lungo senza troppi danni. E ci sono sistemi instabili, come la biglia
-in equilibrio sulla scodella rovesciata, dove ogni passaggio ingrandisce lo
-scarto invece di smorzarlo: bastano pochi passi e il sogno non ha più niente a
-che vedere con la realtà.
+che sfugge. Ci sono sistemi che si rimettono a posto da soli, come una biglia
+in fondo a una scodella: lì uno scarto piccolo resta piccolo per sempre, e si
+può sognare a lungo senza troppi danni. E ci sono sistemi instabili, come la
+biglia in equilibrio sulla scodella rovesciata, dove ogni passaggio ingrandisce
+lo scarto invece di smorzarlo: bastano pochi passi e il sogno non ha più niente
+a che vedere con la realtà. E c'è un terzo caso, che è quello che frega: una
+scodella lunga e storta. La biglia in fondo ci arriva lo stesso, ma prima fa un
+giro larghissimo, e il sogno dura quanto il giro, non quanto l'arrivo.
 
-Morale: in quale dei due mondi ti trovi quasi mai lo sai, quindi le previsioni
+Morale: in quale di questi mondi ti trovi quasi mai lo sai, quindi le previsioni
 su cui puoi contare sono quelle a breve. La cura è disarmante nella sua
 semplicità, e nel 2019 trova la formulazione che farà scuola, un algoritmo che
 si chiama **MBPO** («ottimizzare la strategia basandosi su un modello»): invece
@@ -304,17 +306,20 @@ $$
 $$
 
 e i tre regimi sono diversissimi fra loro. Per $L>1$ la somma esplode
-esponenzialmente in $k$, ed è questo il caso che rende il compounding error
-un problema: un sistema instabile, o caotico, è per definizione uno dove $L>1$.
-Per $L=1$ esattamente si ha la crescita lineare, $k\epsilon$, che è il caso
-limite e non il caso tipico. E per $L<1$, cioè quando la dinamica è
-contrattiva e gli scostamenti si riassorbono da sé, lo scarto è limitato da
-$\epsilon/(1-L)$ e smette proprio di crescere: con $\epsilon = 0{,}01$, a
-cinquanta passi e $L=0{,}5$ lo scarto resta $0{,}020$, contro i $0{,}500$ che
-darebbe la lettura lineare, ed è già fermo lì dal ventesimo passo. È il
-**compounding error**, e impone un compromesso: rollout lunghi danno più segnale
-di allenamento ma sempre meno affidabile, e quanto meno affidabile non lo decide
-l'orizzonte da solo, lo decide il sistema.
+esponenzialmente in $k$, ed è questo il caso che rende il compounding error un
+problema. Attenzione al verso: un sistema instabile ha per forza $L>1$, ma non
+vale il contrario, e il caso che sfugge è il peggiore di tutti. Una dinamica
+che alla lunga si riassorbe può intanto allargare lo scarto di decine di volte,
+cioè proprio nei pochi passi in cui il sogno vive. Per $L=1$ esattamente si ha
+la crescita lineare, $k\epsilon$, che è il caso limite e non il caso tipico. E
+per $L<1$, cioè quando la dinamica è contrattiva e gli scostamenti si
+riassorbono da sé, lo scarto è limitato da $\epsilon/(1-L)$ e smette proprio di
+crescere: con $\epsilon = 0{,}01$, a cinquanta passi e $L=0{,}5$ lo scarto
+resta $0{,}020$, contro i $0{,}500$ che darebbe la lettura lineare, ed è già
+fermo lì dal ventesimo passo. È il **compounding error**, e impone un
+compromesso: rollout lunghi danno più segnale di allenamento ma sempre meno
+affidabile, e quanto meno affidabile non lo decide l'orizzonte da solo, lo
+decide il sistema.
 
 MBPO (*Model-Based Policy Optimization*, Janner et al., 2019
 {cite}`janner2019trust`) risolve il compromesso con un'idea nel titolo del
@@ -338,10 +343,14 @@ Fin qui abbiamo dato per scontata una cosa: che l'agente, per costruirsi il suo
 simulatore, sappia sempre com'è fatto il mondo in cui si trova. Ma in Go, negli
 scacchi, in un videogioco Atari, quello che riceve sono pietre su una griglia o
 puntini colorati su uno schermo, e le regole che li fanno muovere possono
-essergli ignote, o essere troppo complicate da scrivere a mano. Nel 2020 un
-gruppo di DeepMind guidato da Julian Schrittwieser presenta **MuZero**
+essergli ignote, o essere troppo complicate da scrivere a mano. Nel novembre
+2019 (su *Nature* l'anno dopo) un gruppo di DeepMind presenta **MuZero**
 {cite}`schrittwieser2020mastering`, che fa un passo che sembra un gioco di
 prestigio: pianifica in profondità *senza conoscere le regole del gioco*.
+
+Il modello che MuZero si costruisce tiene, al posto del mondo, un riassunto: il
+minimo che serve a decidere. In gergo quel riassunto si chiama latente, e la
+parola vuol dire nascosto, perché là dentro la scacchiera non c'è più.
 
 `````{tab} Elementare
 
@@ -401,17 +410,19 @@ racconta per esteso e che qui serve solo a completare il quadro: costruirsi un
 simulatore interno dell'ambiente (un world model) e allenare la strategia
 *interamente lì dentro*, senza mai fermarsi a pianificare.
 
-Perché questa terza via funzioni così bene c'è una ragione precisa, e sta nel
-fatto che anche il simulatore è una rete neurale. Una rete sa correggersi
-all'indietro: si parte da com'è andata a finire e si risale, un pezzo alla
-volta, fino ai numeri interni che hanno prodotto quel risultato. Ora, se il
-simulatore è una rete e il pilota pure, allora la catena all'indietro non si
-ferma alla fine della partita immaginata: risale lungo tutta la partita, mossa
-dopo mossa, fino alla prima. Il pilota impara quindi non solo *che* la manovra è
-finita male, ma anche *quale* dettaglio della manovra andava cambiato.
+La terza via ha una possibilità che alle altre due manca, e sta nel fatto che
+sono reti neurali tutte e due: il simulatore e la strategia che si allena
+dentro di esso. Una rete sa correggersi all'indietro: si parte da com'è andata
+a finire e si risale, un pezzo alla volta, fino ai numeri interni che hanno
+prodotto quel risultato. Se sono reti tutte e due, allora la catena
+all'indietro può non fermarsi alla fine della partita immaginata: risale lungo
+tutta la partita, mossa dopo mossa, fino alla prima. Così la strategia impara
+non solo *che* la partita è finita male, ma anche *quale* mossa andava
+cambiata.
 
-Il riassunto che il simulatore tiene al posto del mondo, in gergo, si chiama
-latente.
+E la partita immaginata si srotola dentro il latente: a ogni passo il
+simulatore prevede il riassunto successivo, senza mai ridisegnare quello che
+si vedrebbe.
 
 `````{tab} Elementare
 
@@ -538,13 +549,13 @@ sapere dove metterla è oggi materia di ricerca aperta.
   *Quanto* si gonfi dipende dal sistema: dove gli scarti si riassorbono da sé
   l'errore resta piccolo per sempre, dove il sistema li ingigantisce esplode in
   pochi passi. La cura è tenere i sogni corti e farli partire da situazioni
-  davvero visitate, così l'errore non fa in tempo ad accumularsi.
+  davvero visitate: si chiama MBPO, e l'errore non fa in tempo ad accumularsi.
 - MuZero (2020) le regole del gioco se le costruisce da solo guardando le
   partite, e non si fa un modello che ridisegna la scacchiera pezzo per pezzo:
-  tiene solo il riassunto che serve a rispondere a "chi è in vantaggio, che
-  ricompensa arriva ora, quale mossa conviene". Lì dentro esplora a fondo le
-  linee promettenti prima di decidere. È l'erede di AlphaZero, che invece le
-  regole le riceveva già scritte.
+  tiene solo il riassunto (il latente) che serve a rispondere a "chi è in
+  vantaggio, che ricompensa arriva ora, quale mossa conviene". Lì dentro
+  esplora a fondo le linee promettenti prima di decidere. È l'erede di
+  AlphaZero, che invece le regole le riceveva già scritte.
 - Dreamer allena il pilota interamente dentro il sogno, e DreamerV3 se la
   cava con la stessa configurazione su oltre 150 compiti diversi. Il limite di
   fondo non sparisce: una strategia vale quanto il mondo immaginario in cui è
@@ -566,10 +577,10 @@ sapere dove metterla è oggi materia di ricerca aperta.
   le perturbazioni ($L>1$), lineare solo nel caso limite $L=1$, limitato se è
   contrattiva. MBPO (Janner et al., 2019) lo aggira con rollout *brevi*
   diramati da stati reali, usando il modello solo dove è affidabile.
-- MuZero (Schrittwieser et al., 2020) apprende un modello *latente*
-  (dinamica, ricompensa, valore) e pianifica con MCTS *senza conoscere le
-  regole* del gioco: è l'erede di AlphaZero, che il modello lo riceveva già
-  fatto.
+- MuZero (Schrittwieser et al., 2020) apprende un modello *latente* addestrato
+  a predire policy, valore e ricompensa, e pianifica con MCTS *senza
+  conoscere le regole* del gioco: è l'erede di AlphaZero, che il modello lo
+  riceveva già fatto.
 - Dreamer (Hafner et al.) allena la policy interamente nell'immaginazione
   latente; DreamerV3 è generalista su oltre 150 compiti. Il limite di fondo
   resta uno: la policy è buona quanto il modello in cui è cresciuta.

@@ -43,9 +43,9 @@ parole, in italiano) e che cosa bisogna infilarci dentro perché funzioni. Quel
 terzo pezzo, in gergo, sono gli argomenti: per una calcolatrice il conto da
 fare, per una ricerca le parole da cercare, e niente a che vedere con gli
 argomenti di cui si discute. Dal lato del programma ogni attrezzo è una
-funzione, nel senso informatico che abbiamo dato all'inizio del capitolo, e da
-lì il nome inglese di tutto il meccanismo: **function calling**, «chiamata di
-funzione».
+funzione, cioè un pezzo di programma con un nome che fa una cosa quando
+qualcuno lo invoca, e da lì il nome inglese di tutto il meccanismo:
+**function calling**, «chiamata di funzione».
 
 Quando il modello ritiene che serva uno strumento, non risponde con del testo
 per l'utente: emette una richiesta strutturata. Non una frase rivolta a una
@@ -97,8 +97,8 @@ una richiesta che non si può eseguire.
 Chi sta di là non esegue a occhi chiusi: legge il modulo, e se manca un dato o
 se la cosa chiesta non è nell'elenco torna indietro senza aver fatto niente. Il
 modello non tiene mai in mano un attrezzo: tutto quello che fa è scrivere.
-Compilare bene quei moduli, del resto, si impara vedendone tanti già compilati
-bene.
+Compilare bene quei moduli, del resto, si impara vedendone qualcuno già
+compilato bene, e a volte ne bastano due.
 
 `````
 
@@ -133,25 +133,26 @@ chiave che lo contiene invece cambia da un fornitore all'altro
 (`parameters`, `input_schema`, `inputSchema`); la forma dello schema no, ed è
 quella che conta.
 
-La descrizione è il testo su cui il modello ragiona per
-decidere *se* e *quando* invocare lo strumento, ed è quindi parte del prompt a
-tutti gli effetti. Il modello, invece di campionare token destinati
-all'utente, emette una struttura `{"name": "calcola", "arguments":
-{"espressione": "4831 * 7092"}}`; il runtime la valida contro lo schema, esegue
-la funzione, e re-inietta il risultato nel contesto come messaggio di ruolo
-*tool*. Anche qui i nomi esatti cambiano da un fornitore all'altro
-(`tool_use` e `tool_result` per gli uni, come nella figura; per gli altri la
-chiamata si chiama `function_call` e il risultato arriva come messaggio a sé,
-con gli `arguments` passati come stringa JSON invece che come oggetto); il giro
-è lo stesso. La capacità di
-scegliere lo strumento e compilarne gli argomenti
-nel formato giusto non è innata, e ci si arriva per due strade: addestrando il
-modello su tracce di chiamate già fatte, oppure mostrandogliene una o due nel
-prompt, che è quanto basta allo schema ReAct che il ciclo dell'agente userà.
-L'addestramento la rende affidabile, non la crea. Il
-modello resta un generatore di testo: «chiamare uno strumento» è, sotto il
-cofano, generare una particolare sequenza di token che il sistema ha imparato a
-interpretare come una chiamata.
+La descrizione è il testo su cui il modello ragiona per decidere *se* e
+*quando* invocare lo strumento, ed è quindi parte del prompt a tutti gli
+effetti. Il modello, invece di campionare token destinati all'utente, emette
+una struttura che dice il nome dello strumento e i valori da metterci dentro;
+il runtime la valida contro lo schema, esegue la funzione, e re-inietta il
+risultato nel contesto. Anche qui la forma esatta cambia da un fornitore
+all'altro, e si guarda prima di scrivere del codice: per gli uni è un blocco
+`tool_use` con i valori sotto la chiave `input`, e il risultato torna come
+blocco `tool_result` dentro un messaggio di ruolo *user* (è la coppia della
+figura); per gli altri è un elemento `function_call` con i valori sotto
+`arguments`, ma come stringa JSON invece che come oggetto, e il risultato
+rientra come elemento a sé, `function_call_output`. Il giro è lo stesso. La
+capacità di scegliere lo strumento e compilarne gli argomenti nel formato
+giusto non è innata, e ci si arriva per due strade: addestrando il modello su
+tracce di chiamate già fatte, oppure mostrandogliene qualcuna nel prompt: allo
+schema ReAct che il ciclo dell'agente userà ne bastano da uno a sei, secondo il
+compito. L'addestramento la rende affidabile, non la crea. Il modello resta un
+generatore di testo: «chiamare uno strumento» è, sotto il cofano, generare una
+particolare sequenza di token che il sistema ha imparato a interpretare come
+una chiamata.
 
 `````
 
@@ -176,10 +177,13 @@ giornali fra un anno; la forma invece è la stessa per tutti.
 :width: 100%
 
 Lo stesso catalogo, ma standardizzato. A parlare il protocollo è
-l'applicazione che ospita il modello, la quale apre un canale per ogni
-sistema esterno (nel disegno sono due, uno che governa dei file e uno che
-governa un archivio di dati) e li interroga tutti allo stesso modo. Al modello
-arrivano poi strumenti come gli altri, senza che debba sapere da dove vengono.
+l'applicazione che ospita il modello, che per ogni sistema esterno apre un
+canale e li interroga tutti allo stesso modo. Le due estremità di ogni canale
+portano i nomi che il protocollo dà loro: *client* il connettore dalla parte
+dell'applicazione, *server* il programma dall'altra parte, quello che dichiara
+gli attrezzi che mette a disposizione (nel disegno uno governa dei file e uno
+un archivio di dati). Al modello arrivano poi strumenti come gli altri, senza
+che debba sapere da dove vengono.
 ```
 
 Il salto di {numref}`fig-mcp` non è nel meccanismo, che resta quello di prima
@@ -319,7 +323,7 @@ perché la prima osservazione è la domanda dell'utente, che è già lì.
 
 ```{figure} ../figures/react-2022.svg
 :name: fig-react
-:alt: "Il ciclo ReAct come sequenza verticale: un PENSIERO («mi serve il film d'esordio del regista, lo cerco»), un'AZIONE (cerca con il nome del regista), un'OSSERVAZIONE («ha esordito con un film, ma manca l'anno»); poi un secondo giro con un nuovo pensiero, l'azione di cercare il titolo del film e l'osservazione «uscito nel 1994, ora posso rispondere». Una parentesi laterale marca un giro del ciclo."
+:alt: "Il ciclo ReAct come sequenza verticale: un PENSIERO («mi serve il film d'esordio del regista, lo cerco»), un'AZIONE (cerca con il nome del regista), un'OSSERVAZIONE («ha esordito con “titolo del film”: manca l'anno»); poi un secondo giro con un nuovo pensiero, l'azione di cercare il titolo del film e l'osservazione «uscito nel 1994, ora posso rispondere». Una parentesi laterale marca un giro del ciclo."
 :width: 62%
 
 Due giri di ReAct su una domanda che nessuna singola ricerca risolve. Ogni
@@ -349,8 +353,8 @@ brutta, parlando di come si riempie la finestra di contesto.
 
 Il guadagno dell'osservazione, poi, è di un'altra specie rispetto a quello del
 pensiero, e non si legge nel punteggio: si legge in che cosa smette di
-succedere. Per apprezzarlo serve un nome. Quando un modello inventa un fatto e
-lo dice con la faccia di chi lo sa, si parla di allucinazione: il modello
+succedere, e la cosa che smette di succedere è l'allucinazione, cioè il
+fatto inventato e detto con la faccia di chi lo sa: il modello
 genera la continuazione più plausibile, e nessuno gli ha mai chiesto di
 controllare. Un'osservazione che arriva da fuori, invece, non se l'è inventata
 lui: è testo che gli è stato messo davanti dal programma. Il pensiero decide
@@ -413,14 +417,17 @@ batte nettamente le politiche che agiscono senza pensare.
 
 Sui compiti a forte intensità di conoscenza, invece, l'ancoraggio va letto per
 quello che è: uno scambio, non un guadagno secco. Sulla verifica di fatti
-(FEVER) ReAct supera la sola chain-of-thought; sulla domanda-risposta
-multi-hop (HotpotQA) le resta appena sotto. Le allucinazioni crollano (nei
-fallimenti passano da oltre metà a zero) ma il ragionamento si irrigidisce
+(FEVER) ReAct supera la sola chain-of-thought; sulla domanda-risposta che vuole
+due fatti in fila (HotpotQA) le resta appena sotto. Le allucinazioni crollano
+(nei fallimenti passano da oltre metà a zero) ma il ragionamento si irrigidisce
 sulla forma pensiero-azione-osservazione, e gli errori di ragionamento quasi
-triplicano, dal 16% al 47% delle traiettorie fallite esaminate; per
-giunta nasce un modo di fallire che prima non esisteva, la
-ricerca che torna a mani vuote. Il risultato migliore del lavoro viene dalla
-combinazione dei due, che si alternano quando l'uno si arena.
+triplicano, dal 16% al 47% delle traiettorie fallite esaminate; per giunta
+nasce un modo di fallire che prima non esisteva, la ricerca che torna a mani
+vuote. Fra i prompt il risultato migliore viene dalla combinazione dei due, e
+la regola che decide chi ha il turno è una per verso: si torna al solo
+ragionamento quando ReAct esaurisce i passi senza arrivare a una risposta, e si
+torna a ReAct quando il solo ragionamento, provato più volte, non fa cadere la
+maggioranza delle prove sulla stessa risposta.
 
 Il costo è in token e latenza (ogni pensiero è testo generato in più). In
 cambio la traccia è ispezionabile, ed è un vantaggio operativo vero. Ma
@@ -611,6 +618,8 @@ regola scritta a mano.
 def llm_finto(traccia):
     """Data la traccia finora, emette (pensiero, azione, argomento).
     Un vero LLM genererebbe questo testo; qui lo decide una regola."""
+    # quasi sempre basta l'ultima osservazione; solo l'ultimo ramo torna
+    # indietro a prendere l'anno. Un LLM vero rilegge tutta la traccia.
     ultima = traccia[-1]["osservazione"] if traccia else None
     if ultima is None:
         return ("Non conosco a memoria l'anno del paper: lo cerco.",
@@ -621,8 +630,10 @@ def llm_finto(traccia):
     if ultima == "2017":
         return ("Il paper è del 2017. Calcolo quanti anni fa, dal 2026.",
                 "calcola", "2026 - 2017")
+    anno = traccia[0]["osservazione"]   # l'anno viene dalla ricerca, non da qui
     return (f"Il calcolo dice {ultima}: ho tutto per rispondere.",
-            "Answer", "'Attention Is All You Need' è del 2017: 9 anni fa nel 2026.")
+            "Answer", f"'Attention Is All You Need' è del {anno}: "
+                      f"{ultima} anni fa nel 2026.")
 
 # --- il ciclo dell'agente ---
 
@@ -719,6 +730,12 @@ Da portarsi via, prima di passare al recupero dei documenti.
   che scopre quando gli conviene la calcolatrice: prova a infilare una chiamata
   qua e là e tiene quelle che lo aiutano a indovinare meglio le parole
   successive.
+- Quando i sistemi esterni da collegare diventano venti, riscrivere il
+  catalogo per ognuno non regge più, e ci si accorda su un modo unico di
+  chiedere «che attrezzi hai?» ed «esegui questo». Quell'accordo si chiama
+  protocollo, la stessa idea per cui due computer che non si sono mai visti si
+  scambiano una pagina web; MCP è quello nato apposta per gli attrezzi di un
+  modello. A parlarlo è l'applicazione che ospita il modello, non il modello.
 - ReAct {cite}`yao2023react` è il metodo del detective che ragiona a voce
   alta: penso → controllo → scopro, e si ricomincia (è lo stesso giro di
   prima, raccontato partendo dal pensiero). Le allucinazioni, cioè i fatti
@@ -751,14 +768,21 @@ Da portarsi via, prima di passare al recupero dei documenti.
   di rispondere, emette una chiamata strutturata a uno strumento, che il
   sistema esegue e il cui risultato rientra nel contesto.
 - Ogni strumento è uno schema (nome, descrizione, argomenti tipati, in
-  JSON Schema: `type`, `properties`, `required`); la capacità di sceglierlo e
-  compilarne gli argomenti emerge dall'instruction tuning. Toolformer
+  JSON Schema: `type`, `properties`, `required`); alla capacità di sceglierlo e
+  di compilarne gli argomenti si arriva per due strade, addestrando il modello
+  su tracce di chiamate già fatte oppure mostrandogliene qualcuna nel prompt, e
+  l'addestramento la rende affidabile senza crearla. Toolformer
   {cite}`schick2023toolformer` impara *da solo*, con auto-supervisione, dove
   conviene chiamare un'API: tiene le chiamate che riducono la cross-entropia
   pesata sui cinque token a partire dal punto della chiamata. Non sa però
   comporre gli strumenti in catena, e a quel problema risponde ReAct, che però
   è di quattro mesi prima: due risposte a due domande diverse, non due tappe di
   una scala.
+- Un protocollo è un accordo su come si chiede a un sistema esterno che
+  strumenti offre e come glieli si fa eseguire, e serve quando i sistemi da
+  collegare sono tanti: MCP (Anthropic, 2024) è quello nato per questo. A
+  parlarlo è l'applicazione che ospita il modello, che apre un canale per ogni
+  sistema, e gli strumenti arrivano al modello come tutti gli altri.
 - ReAct {cite}`yao2023react` intreccia in un loop Thought → Action →
   Observation: le osservazioni àncorano il ragionamento a fatti reali e le
   allucinazioni crollano, ma è uno scambio, non un guadagno secco (fra le

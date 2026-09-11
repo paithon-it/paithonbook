@@ -371,7 +371,8 @@ quei nomi te li sei inventati tu.
 
 HuBERT alterna due passi. **Passo di clustering** (offline): si estraggono
 feature dall'audio e le si raggruppa con un semplice k-means, ottenendo
-per ogni frame un'etichetta discreta $u_t \in \{1, \dots, C\}$, l’«unità
+per ogni frame (una posizione della finestra che scorre sul segnale)
+un'etichetta discreta $u_t \in \{1, \dots, C\}$, l’«unità
 nascosta», dove $C$ è il numero di cluster ed è l'intero inventario discreto.
 La lettera è quella del paper, e tiene separato questo conto dalla $V$ di
 wav2vec 2.0, che conta le voci di *uno* dei due codebook: là l'inventario è il

@@ -38,6 +38,19 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-9)=
+
+## 1.12.9 · 11 settembre 2026
+
+### Pagine ampliate
+
+- **Sette figure nuove, tutte con un generatore che difende la didascalia.** Le briciole di una memoria a stato fisso che crescono da subito e non a soglia; l'attesa che quattro unità di calcolo coprono senza accorciarla; il filtro alto quanto le mappe che legge; i cinque turni di un torneo che costano uguale; il coseno fra direzioni a caso in tre, cento e mille dimensioni; i lettori che restano otto mentre i taccuini si condividono; il picco che schiaccia il resto della corsia. In tutte i numeri li calcola la scena, e per ciascuna è stato provato che cambiare una costante fa cadere l'asserzione.
+
+### Correzioni
+
+- **Altri venticinque termini che il libro usava prima di spiegarli, passati al setaccio.** La passata continua sull'indice, e stavolta il rilevatore ha trovato poco sulle righe che aveva in mano (cinque casi veri su venticinque: «latente», «iperparametri», «rappresentazione», «reti convoluzionali», «core») e di più nei vicini di casa, cioè nelle pagine che coniano un termine e ne usano altri due prima di spiegarli («message passing» e «bipartito», usati ottantasette e centoventicinque pagine prima del capitolo sui grafi). Le trentotto pagine riaperte sono state rilette con i due lettori e rifatte sulle fonti: fra le altre, le due regole della potenza statistica che la scheda enunciava e il codice non eseguiva, l'esercizio di pre-addestramento di T5 che mancava, la tabella dell'attenzione con la colonna che distingueva davvero le righe, DBSCAN che non colloca un punto arrivato dopo, il costo di un turno del torneo delle configurazioni.
+- **Una rilettura di tutto ciò che è cambiato dalla 1.12.8, con le fonti aperte.** Ventotto affermazioni dicevano più, o altro, dei lavori citati e sono state riportate a quello che i lavori dicono: fra le altre, il pre-addestramento di BERT è durato quattro giorni su sedici chip e non settimane; un sistema con costante di espansione maggiore di uno non è per definizione instabile, e il caso che frega è la scodella lunga e storta; a affamare il codebook è la scorciatoia del gradiente, non l'argmin; il riavvio delle voci morte è di SoundStream, che lo prende da Jukebox; MUSHRA dà il riferimento due volte, una in chiaro; Whisper copre novantasei lingue oltre l'inglese, non «decine». Sei punti in cui una correzione era arrivata a un livello solo sono stati chiusi sull'altro, diciannove rimandi aperti alla destinazione, ventisette righe spezzate riavvolte con la prova che nessun carattere è cambiato, e quattro voci di bibliografia aggiunte, fra cui la fonte dell'idf.
+
 (v1-12-8)=
 
 ## 1.12.8 · 11 settembre 2026

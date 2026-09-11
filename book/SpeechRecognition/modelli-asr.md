@@ -37,8 +37,9 @@ ogni suono. Questo è l'allineamento: appaiare i tanti pezzetti di audio ai
 pochi caratteri del testo.
 
 Una cosa però la sai già: si va nello stesso verso. Il video scorre, il testo
-scorre con lui, e quello che si sente prima è anche scritto prima; non capita
-mai di dover risalire il nastro per un suono che arriva dopo.
+scorre con lui, e quello che si sente prima è anche scritto prima. Un passaggio
+impastato lo si riascolta quante volte si vuole; quello che non capita mai è
+che una lettera debba scavalcare quella di prima.
 
 I tempi si potrebbero anche segnare a mano, cronometro alla mano, suono per
 suono: su un video si fa, su milioni di ore di registrazioni non lo farà
@@ -128,7 +129,10 @@ affari della rete.
 Gli allineamenti sono tanti anche per una parola di cinque lettere, e quanti
 siano non è una magia: si contano, e il conto si può rifare a mano. Il più
 corto sta in sei frame, uno per lettera più il vuoto obbligatorio in mezzo
-alle due «L»: `P A L ∅ L A`, e in sei frame non ce n'è nessun altro. Con sette
+alle due «L»: `P A L ∅ L A`, e in sei frame non ce n'è nessun altro. In cinque
+non ce ne sta nessuno, e non è che il metodo vada male: non c'è niente da
+sommare, e la CTC non sa dire nulla. È la ragione per cui serve ad ascoltare e
+non a parlare, dove il testo è più lungo del suono. Con sette
 frame ne avanza uno, e si può spendere in due modi soltanto: tenere un simbolo
 per due frame invece che per uno, e allora i modi sono sei, uno per ciascun
 simbolo (`P P A L ∅ L A`, `P A A L ∅ L A`, e così via); oppure infilare un
@@ -305,7 +309,7 @@ avanti qualche passo prima di scegliere. L'idea è la stessa, ma una cosa
 cambia, ed è proprio quella di prima: qui molti percorsi diversi danno la
 stessa identica parola. Nella traduzione le ipotesi
 competono: due strade diverse sono due frasi diverse, e alla fine ne resta
-una. Nel CTC no: due percorsi che si ripuliscono nello stesso testo sono la
+una. Nella CTC no: due percorsi che si ripuliscono nello stesso testo sono la
 stessa ipotesi, e i loro punteggi vanno sommati invece di essere messi in
 concorrenza. Una beam search che se ne dimentica scarta la trascrizione
 giusta, esattamente come fa il percorso migliore.
@@ -446,22 +450,23 @@ così non trascrive mentre ascolta.
 
 ## Il trasduttore: tenersi tutte e due le cose
 
-Messe una accanto all'altra, le due famiglie sembrano costringere a una
-scelta. La CTC scorre l'audio in avanti e non torna mai indietro, quindi può
-scrivere mentre ascolta, purché la rete che dà i voti non abbia bisogno anche
-del suono che viene dopo. Ce ne sono che ne hanno bisogno: quelle che
-ripercorrono la registrazione anche all'indietro, per decidere un frame
-sapendo come va a finire, e la rete dell'articolo del 2006 era di quelle,
-tanto che in diretta non trascriveva. La CTC, però, non sa niente di cosa ha
-già scritto. Il decoder
-con attenzione sa benissimo cosa ha già scritto, ma per farlo deve aver
-ascoltato tutto, e per giunta può perdere il segno. Nella pratica quella
-scelta non esiste, perché esiste una terza famiglia che tiene le due cose
-insieme: il **trasduttore neurale**, proposto da Alex Graves nel 2012
-{cite}`graves2012sequence`, cioè da chi aveva scritto la CTC sei anni prima.
-Nei testi si trova sempre con la sigla RNN-T, dove le prime tre lettere
-sono le reti ricorrenti del capitolo sul linguaggio naturale, quelle che
-leggono una sequenza un pezzo alla volta tenendosi in mente il pezzo di prima.
+Messe una accanto all'altra, le due famiglie sembrano costringere a una scelta.
+La CTC scorre l'audio in avanti e non torna mai indietro, quindi può scrivere
+mentre ascolta, purché la rete che dà i voti non abbia bisogno anche del suono
+che viene dopo. Ce ne sono che ne hanno bisogno: quelle che la registrazione la
+ripercorrono anche dal fondo, per decidere un frame sapendo come va a finire. A
+tornare indietro lì non è l'allineamento, che resta in avanti: è la lettura del
+suono, rifatta una seconda volta a ritroso. La rete dell'articolo del 2006 era
+di quelle, tanto che in diretta non trascriveva. La CTC, però, non sa niente di
+cosa ha già scritto. Il decoder con attenzione sa benissimo cosa ha già
+scritto, ma per farlo deve aver ascoltato tutto, e per giunta può perdere il
+segno. Nella pratica quella scelta non esiste, perché esiste una terza famiglia
+che tiene le due cose insieme: il **trasduttore neurale**, proposto da Alex
+Graves nel 2012 {cite}`graves2012sequence`, cioè da chi aveva scritto la CTC
+sei anni prima. Nei testi si trova sempre con la sigla RNN-T, dove le prime tre
+lettere sono le reti ricorrenti del capitolo sul linguaggio naturale, quelle
+che leggono una sequenza un pezzo alla volta tenendosi in mente il pezzo di
+prima.
 
 Quella data va guardata. Il trasduttore non arriva *dopo* i modelli con
 attenzione per rimediare ai loro difetti: precede di tre anni *Listen, Attend
@@ -482,7 +487,9 @@ Il trasduttore è questo. A ogni istante ha due mosse possibili: scrivere un
 carattere (e allora rilegge il foglio aggiornato, ma resta fermo sull'audio) o
 passare al frame successivo senza scrivere niente. Alternando le due mosse
 copre tutto l'audio e produce tutto il testo, senza mai tornare indietro e
-senza mai dimenticare quello che ha già messo giù.
+senza mai dimenticare quello che ha già messo giù. Le due «L» di PALLA, qui,
+non hanno bisogno di niente in mezzo: nessuno fonde più i simboli uguali, si
+scrivono due volte e basta.
 
 Quando scrivere e quando spostarsi non gliel'ha detto nessuno. I ritmi
 possibili sono moltissimi, come i modi di etichettare i frame nella CTC, e in
@@ -582,23 +589,23 @@ di quali suoni è fatta ogni parola.
 
 Quei tre compiti restano anche qui, ma nessuno
 li ha più assegnati a un pezzo suo: sono sparsi nei pesi, cioè nei numeri che
-la rete ha imparato. Ed è per questo che un modello solo può coprire decine di
-lingue: non c'è più niente da compilare a mano lingua per lingua, il
+la rete ha imparato. Ed è per questo che un modello solo può coprire tante lingue
+insieme: non c'è più niente da compilare a mano lingua per lingua, il
 dizionario di pronuncia per primo, e aggiungerne una vuol dire darle altro
 audio con la sua trascrizione, non scriverle un pezzo su misura.
 
 La sua forza, però, non è tanto l'architettura quanto i dati: 680.000 ore di
-audio, che sono settantotto anni di ascolto senza mai staccare, raccolte dal
-web con **etichettatura debole**, cioè trascrizioni già
-esistenti in rete, scritte da qualcuno per i propri scopi e non per addestrare
-un modello. «Debole» non vuol dire «non curata». Gli autori le passano al
-setaccio con filtri automatici, buttando via quelle prodotte da altri
-riconoscitori (imparare da un altro riconoscitore vuol dire ereditarne gli
-errori) e i duplicati; e ispezionano a mano le fonti che sbagliano di più, per
-eliminarle. Le coppie in cui la lingua parlata non è quella scritta le
-buttano via anche loro, con un'eccezione che conta: se il testo è in inglese
-la coppia resta, e diventa un esempio di traduzione. Sono 125.000 ore, e sono
-la ragione per cui lo stesso modello, oltre a trascrivere, traduce.
+audio, che sono quasi settantotto anni di ascolto senza mai staccare, raccolte
+dal web con **etichettatura debole**, cioè trascrizioni già esistenti in rete,
+scritte da qualcuno per i propri scopi e non per addestrare un modello.
+«Debole» non vuol dire «non curata». Gli autori le passano al setaccio con
+filtri automatici, buttando via quelle prodotte da altri riconoscitori
+(imparare da un altro riconoscitore vuol dire ereditarne gli errori) e i
+duplicati; e ispezionano a mano le fonti che sbagliano di più, per eliminarle.
+Le coppie in cui la lingua parlata non è quella scritta le buttano via anche
+loro, con un'eccezione che conta: se il testo è in inglese la coppia resta, e
+diventa un esempio di traduzione. Sono 125.000 ore, e sono la ragione per cui
+lo stesso modello, oltre a trascrivere, traduce.
 
 Quelle ore coprono quasi cento lingue, l'inglese e altre novantasei, ma non
 allo stesso modo: l'inglese se ne prende circa due terzi, e la maggior parte
@@ -762,10 +769,13 @@ $S + D + C$ con $C$ le parole indovinate. Attenzione ai nomi,
 perché sono dal punto di vista del sistema e non di chi corregge: una
 *cancellazione* è una parola che il sistema si è mangiato, un’*inserzione* è
 una parola che ha aggiunto di suo. Chi corregge fa il gesto opposto, ma
-l'errore si chiama così. Un WER di $0$ è la trascrizione perfetta, e siccome
-$N = S + D + C$ il rapporto supera $1$ esattamente quando le parole aggiunte
-sono più di quelle indovinate, $I > C$: non serve che il sistema ne aggiunga
-più di quante ce ne siano.
+l'errore si chiama così. Un WER di $0$ è la trascrizione perfetta, e il
+rapporto può anche superare $1$. Quando, lo dice un passaggio solo: siccome
+$N = S + D + C$, chiedere $S + D + I > N$ vuol dire chiedere
+$S + D + I > S + D + C$, dove $S$ e $D$ stanno da tutt'e due le parti e se ne
+vanno. Resta $I > C$: basta che le parole aggiunte siano più di quelle
+azzeccate, e non serve affatto che siano più di quante ne contiene il
+riferimento.
 
 Un conto per intero, sull'esempio di *carta* e *casa* del capitolo
 sul linguaggio naturale. Il riferimento è «il gatto nero salta sul muro», sei
@@ -858,7 +868,7 @@ Tiriamo le fila.
   {cite}`graves2012sequence` tiene il reticolo monotono e ci aggiunge una
   *prediction network*, cioè un LM interno.
 - Addestramento e decodifica non sono la stessa cosa: il *best path* non
-  massimizza $p(y \mid \mathbf{X})$, e la beam search del CTC somma i
+  massimizza $p(y \mid \mathbf{X})$, e la beam search della CTC somma i
   percorsi che collassano nello stesso prefisso invece di metterli in
   concorrenza.
 - I Transformer end-to-end come Whisper {cite}`radford2022robust`
