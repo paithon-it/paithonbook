@@ -182,8 +182,8 @@ $N$ estrazioni indipendenti la manchino tutte è $(1-0{,}05)^N = 0{,}95^N$;
 quindi la probabilità di centrarla almeno una volta è il complementare, $1 -
 0{,}95^N$, che per $N = 60$ vale $0{,}954$: sessanta prove la centrano
 novantacinque volte su cento, in qualunque dimensione. Se la regione buona
-copre l'1% del volume, le stesse sessanta prove la centrano con probabilità $1
-- 0{,}99^{60} = 0{,}453$. (Vale *se* una tale regione esiste ed è così larga: è
+copre l'1% del volume, le stesse sessanta prove la centrano con probabilità
+$1 - 0{,}99^{60} = 0{,}453$. (Vale *se* una tale regione esiste ed è così larga: è
 un'ipotesi sul problema, non una promessa.) In pratica contano anche le
 distribuzioni: per i parametri di scala si campiona in **log-uniforme**, cioè
 uniforme sull'esponente, così che il learning rate cada tra $10^{-5}$ e

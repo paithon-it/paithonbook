@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-10)=
+
+## 1.12.10 · 11 settembre 2026
+
+### Correzioni
+
+- **Tre capoversi che un a capo spezzava in un elenco.** Una riga che comincia con «1.», con «-» o con «+» è per il formato del libro la voce di un elenco, anche nel mezzo di una frase, e tre righe cominciavano così per il solo riavvolgimento del testo. Nella scheda sulla ricerca casuale degli iperparametri la probabilità di centrare la regione buona andava a capo sul segno meno, e nel PDF della 1.12.9 il resto della frase finiva composto come formula, senza le lettere accentate; nel capitolo sulle PINN il moltiplicatore «a 1.» apriva un elenco numerato; nella pagina sui classici delle serie temporali la varianza campionaria di un MA(q) andava a capo sul più. Le tre righe sono state riavvolte e nessun carattere è cambiato; una lettura dell'intero indice con lo stesso analizzatore del libro non trova altri capoversi interrotti.
+
 (v1-12-9)=
 
 ## 1.12.9 · 11 settembre 2026

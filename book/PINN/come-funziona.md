@@ -532,8 +532,8 @@ Un moltiplicatore messo lì per bilanciare due termini di una loss si chiama
 è la stessa e le tre cose non c'entrano niente l'una con l'altra, quindi
 conviene tenerle separate a mente.
 
-Che la faccenda sia seria si tocca con mano abbassando quel moltiplicatore a
-1. In una prova fatta così, e senza cambiare nient'altro, l'addestramento è
+Che la faccenda sia seria si tocca con mano abbassando quel moltiplicatore a 1.
+In una prova fatta così, e senza cambiare nient'altro, l'addestramento è
 arrivato a un residuo di $2 \cdot 10^{-5}$ sui suoi duecento punti, cioè due
 centomillesimi; con il moltiplicatore a 100, sulla stessa misura e sullo
 stesso seme, il residuo si ferma a $8 \cdot 10^{-3}$, otto millesimi,

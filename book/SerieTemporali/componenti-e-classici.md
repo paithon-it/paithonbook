@@ -437,8 +437,8 @@ z_{1-\alpha/2}/\sqrt{n}$, cioè $\pm 1{,}96/\sqrt{n}$ al 95%, che è l'intervall
 in cui cadrebbe un'autocorrelazione campionaria se il processo fosse rumore
 bianco ($n$ è il numero di osservazioni). L'ipotesi non è «se quella vera
 fosse zero», ed è una differenza che morde proprio dove l'identificazione manda
-a guardare: su un MA($q$), oltre il ritardo $q$ la varianza campionaria è $\big(1
-+ 2\sum_{j=1}^{q}\rho_j^2\big)/n$, cioè più larga, e chi usa la banda stretta
+a guardare: su un MA($q$), oltre il ritardo $q$ la varianza campionaria è
+$\big(1 + 2\sum_{j=1}^{q}\rho_j^2\big)/n$, cioè più larga, e chi usa la banda stretta
 vede uscire barre che non escono e sovrastima l'ordine (la banda giusta è
 quella di Bartlett, e le librerie la offrono). Va letta anche sapendo che è una
 banda puntuale, valida un ritardo per volta: su venti ritardi di rumore bianco
